@@ -1,187 +1,137 @@
-Return-Path: <bpf+bounces-61374-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61375-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03EE5AE65B4
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 14:58:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6D50AE669F
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 15:34:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C2E416B140
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 12:54:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE4BC3AAD83
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 13:34:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AE6429B22D;
-	Tue, 24 Jun 2025 12:54:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB61C298CDD;
+	Tue, 24 Jun 2025 13:34:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JGD8liT9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TZXm/iT3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D18D293C6C;
-	Tue, 24 Jun 2025 12:54:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABB862A1A4
+	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 13:34:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750769668; cv=none; b=hwz4WLvi+Xc5Gttm/1JdKSGIfewxYWzRIyaYHK/IUOEX1hYI37UIj4P+iQdjnfpku9XtxasxeDv1XP34yMA1155XnHF7i6D4USs0AY4jOgCXAivDkuGLR/OR73gFzZLi8xfgM/UncEsASzV0rFL+ai9RNaKFI8Y5/qwtTWiCkvI=
+	t=1750772092; cv=none; b=eTkZcnRPAM3L4t3FcOX8b1gV0xAjeu4NRo2WlM3y71X/Xmo4ILTDO9UUP04blARZZO7ovua2eK0TiTAR9oi4icqoh3gqSp0ZH18ywx/zWjSrtMiT83ryIj8gVxJylzJdEkKbYamHRxhlloHk6UQSg1nfsrM1R/ww/HESa4dfbFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750769668; c=relaxed/simple;
-	bh=gKBoaYk7vb2XTZq7rPJb+3NVYtZwvMVFUQmqVN2ZBMo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GioQZEeaTOfmIFBDVA0vTI0nyKpBrYy5UAelillRqUug+WnltKBUcNkDJd7v+/wZnHRPO4LgC3l1jLdSL3ckKQS82uCu7x9sZXFWQJdkl/rx4wvavVhX8TxD/7pQo/Y8Vgfdl4aaWRRuD6/+6YKEejYc52eBTtMF95X5HawWyhs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JGD8liT9; arc=none smtp.client-ip=209.85.166.170
+	s=arc-20240116; t=1750772092; c=relaxed/simple;
+	bh=7rtS229PZXA2TypExRx7X3cfgtKiK4dj6mlbyReK3+k=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZcSXGrhm2TAaKwCjEarMNrAke4kMxmsbtcJxt1Fw3j4P8zwIqaaxwpVTjq8RCiKjGfObvbSIytXhxlwHvzEwHF/8aE+7bnSm8d9fbKyIk/D+vEdyB3bPbNOkI3drSjlnSyFnh17Zp4Ng7p9GcBKaEQGZRWMFbR1b6yGKxup6MWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TZXm/iT3; arc=none smtp.client-ip=209.85.208.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-3df303e45d3so299795ab.0;
-        Tue, 24 Jun 2025 05:54:26 -0700 (PDT)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-60497d07279so11521139a12.3
+        for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 06:34:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750769666; x=1751374466; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D1mXLVDk+FgPSfnGNgg4NgTw2hQPSDxfgCF5VVvc5Rs=;
-        b=JGD8liT95CNZTUhhyKs9QGoMAaXAVRy5rSus/X0NS7zPOrrtkjowPe7FYaroMDo+No
-         8UQw5OYSSnbv5HBNsSitctuQqTSUSAvpy5AOO1AJIix7nnUH2FN5UPZLXBcsX8WAVBlD
-         Wk6ftS3hn1Jlwo5NiO7583gR3beYfoG+8kdIdVoEDencw1MuZRvQdxiSyxCtk6igureH
-         iHIxXjqoeO0m7nIH3smcoRKxGggfsZxa9OQziW1Gt1jt7LpCzUkUe9orl1j/WB3SpqGM
-         QgCnMKMlxHXxrCdBaI9D3jFJsS0mDL7ZIV1ZWbpeE/ok/FbgqM1qZh2cmmjbNPzoN0w7
-         2zNg==
+        d=gmail.com; s=20230601; t=1750772089; x=1751376889; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/EKZJlEwQXoxjKuPNRY0WVO2VA3vk6mG/IMGeDYwqH8=;
+        b=TZXm/iT3yD/cAatBfOPsURihdL9V1eiQ6oHVil9z1vvZl/1usbhe91hCNSRn8Tn+tV
+         mQpJir0pwTRGK4D+uzMFcY5YynfD4FVWohSA/ZnfulSHD++m/Dyi7hErBSQLcWc9X8F1
+         /vMSfclumMx8t92bpd1eGXislcgj4FwB7Nwue8Fra3ULV2mpRj9eWYxaoIvwN4jjInxu
+         mjCbMHpQt9IAvj5sEDwTqX3O9X9/VN5Wiah8gvsBLU67fKBsG9kLinZU9rhbRuhwX3PT
+         3Oe6dA8fkRhcixDdkH72q2/Ge07q6W9VPYgZCpvjZJIZmYRWgk7taNiYt0BLkFihYfuE
+         RWVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750769666; x=1751374466;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=D1mXLVDk+FgPSfnGNgg4NgTw2hQPSDxfgCF5VVvc5Rs=;
-        b=u6D9qZuwxGCWzikEzsUuFWgGg/2q9eX6FchzM7EHSFpdHCgilqmv8BXiaD/b8uObQT
-         P13fFLTz3EmtEFz4z4QQQOZPi2u2+RdpZcCAiZF3TyoLf52ED1WZKS9fx/7h5t+Yfloa
-         pcoO8vKEEyzPy8Wh4QZWesD9Zl3/pTOEMoZpx1oh5czMPBHOl3lePSrDGgGWd4TDJANu
-         naqvejprWIQAf0daN2qjesJZJx4q7n6v1PjAUfDF+AK6On5z14S2wbJIxX2OrN+tsVqy
-         1M1k6tPyXAKqIfEhsQq40dbdw9VILl23nCqIZWV32nkM7PASsCvMssMbKkMZuctO131X
-         kCqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUmun7siDeWlucKHp99yVu1uUcxedfrj2mMqTQeO3IaqJ5wsVLBHcigDzx8zF1QsFo3glw=@vger.kernel.org, AJvYcCW5QfCryjsZYn9rCo1jw6VxWopLACSZTGlCFyDIOqTl9Y5ROXYjYpHE1b8+GNYF4nKBJMfNumwc@vger.kernel.org
-X-Gm-Message-State: AOJu0YzOsmJkSodjLGH8hU5UfWf9Xb+4Ov9grIAk2LPSVSKaaFI9Aciw
-	JR8z+3T4G372jdTdTERORhJtzYxOs+SNd0NIF+O+qRPwcPkOFhYGc1y+rh8J8IS2YlS/8blKa8F
-	XMGK3egJcjYbMUYhOPL/WGhU+4nLxbJXskoPB
-X-Gm-Gg: ASbGncv1tlsob+QOwQSOFxwh6wHncf7l5RetU0WYEEPBUwkLgPPNfds4/W0Qv/pyyjm
-	bVeKlIbLcep4tTt9ptRg82gtMG3mfYi0engm1CoSZI82RumaGDD3xbpRgjDL17iQW/1WSYyiXI7
-	vfEuzH+YI316x8Ohw5HF/3ZF2PbRoN7+zojXFwl5jbQoDa1y7IKi8+pw==
-X-Google-Smtp-Source: AGHT+IHQR9u852cwc20uqrVCaxx8/sHdOZTCToIPu8TmHEQ950fZbo/f6g62hgr8bpSNsV3H/46IzQIBjQ0sAh4fGo4=
-X-Received: by 2002:a05:6e02:3e02:b0:3dd:f1bb:da0b with SMTP id
- e9e14a558f8ab-3de38c3173fmr175342595ab.7.1750769665949; Tue, 24 Jun 2025
- 05:54:25 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1750772089; x=1751376889;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/EKZJlEwQXoxjKuPNRY0WVO2VA3vk6mG/IMGeDYwqH8=;
+        b=NHcHRkiqexbjNFVU2lGJYFMP7uhdFLLc3278D/FYpGmir2DmeF61A+hH5amY/5o7Am
+         6LFv6EDVnUf3puH8s9ETIl++wK7sUT/7DkGcikemFNQBLEaT2LX+quWrTRCIf1+kV7oH
+         uc92yRZsP04UDlGA+SxCyjzYLZDoSzLJY7CQ2QlZ6h5tEsfG9XdKCVmobcYmBYm5fba7
+         rTOLKQs1sifMulFNd2AUKp12p2FNdo51DK++eZdhOAqeoSC9G3X9TWl32TKhdB+FUVzb
+         QVM4kAq1PUwgkjIHx9ucOzvvAumt+a6a0i70PYol98DtBqlTTT0kMogF3hce1Qo+MStP
+         uIQA==
+X-Forwarded-Encrypted: i=1; AJvYcCXdM+fMA8a2mQdJ6u+tGPH3V8wg/Hhpwt9NoittuCo0vSn0YvUy+xAGXFBQpdCuVBOTwSY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywt7ydxmVz2OZLUx0f1TchbinvnlzJin0Qwr+0SDKUQnXc4MRb+
+	zMKv36iHrYtFs0Yu3ALigfhpU6VE7v+td3MI4rYtZS9QJ2Fc3OHlGCdE
+X-Gm-Gg: ASbGnct3INYIYFVyWMHoPtJGhVognGX48a7Oq9wG1hBPL53G4FVa5BYteFnMaKnANhZ
+	laNeMALAJ9q4aMW1jXM5GkANRf6DsEOyLVhIiqHT9aZk35QsmJ+mKzUKadAkvqK0aFkVbkBC9Im
+	jO9p15oiY+2Mw0lhOETRcb8mT4g8J56PPwkCAN4aNOQi2LA301Lohuh/rBVC4RL9zxnVyCzaL2i
+	ToPgQCiUnE837jh8BxwVsQ4Vpk5TjnYXVcWjQ21Y399Tnxvww6HNhqgW+ENblAPmZBOBpspDloB
+	CvhgbTCfb2ToR5CpNy98eNIIKiGUI19ZwP2C3uqqyZyfKkf3lQ==
+X-Google-Smtp-Source: AGHT+IGSaA2R9yKFNgZowuLbBBFoSECPp6D7D7LMnSwTfcr3hrnFXvmpXHf75S/fI4eaQf+/CRkrGQ==
+X-Received: by 2002:a17:906:9f8a:b0:adb:43d0:aedb with SMTP id a640c23a62f3a-ae057fa74c6mr1522123266b.61.1750772088476;
+        Tue, 24 Jun 2025 06:34:48 -0700 (PDT)
+Received: from krava ([176.74.159.170])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae053ecbd9esm880295266b.38.2025.06.24.06.34.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Jun 2025 06:34:48 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 24 Jun 2025 15:34:46 +0200
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, bpf@vger.kernel.org,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Emil Tsalapatis <emil@etsalapatis.com>,
+	Barret Rhoden <brho@google.com>,
+	Matt Bobrowski <mattbobrowski@google.com>, kkd@meta.com,
+	kernel-team@meta.com
+Subject: Re: [PATCH bpf-next v3 02/12] bpf: Introduce BPF standard streams
+Message-ID: <aFqpdkLaRsjTw7Ik@krava>
+References: <20250624031252.2966759-1-memxor@gmail.com>
+ <20250624031252.2966759-3-memxor@gmail.com>
+ <aFqTiLd4HmjPS5eP@krava>
+ <CAP01T77EXWDdRYtrJHUR6qLBgLqe4oT0A0N74CGBBRVGYPuKnQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250623073129.23290-1-kerneljasonxing@gmail.com> <aFlmQ94TeHb9v-OC@mini-arch>
-In-Reply-To: <aFlmQ94TeHb9v-OC@mini-arch>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Tue, 24 Jun 2025 20:53:47 +0800
-X-Gm-Features: Ac12FXwGDtZ25RiELvIz-ZKUDP_831GYX8Y3XPAbgk9x8iA6OWaXEM9agkt0AgI
-Message-ID: <CAL+tcoAEQgefeBWeXQmkvLTnbojDfSWbPtJKX3G_=OYNDNdfLg@mail.gmail.com>
-Subject: Re: [PATCH net-next v2] net: xsk: update tx queue consumer
- immediately after transmission
-To: Stanislav Fomichev <stfomichev@gmail.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com, 
-	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com, sdf@fomichev.me, 
-	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
-	john.fastabend@gmail.com, joe@dama.to, willemdebruijn.kernel@gmail.com, 
-	bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP01T77EXWDdRYtrJHUR6qLBgLqe4oT0A0N74CGBBRVGYPuKnQ@mail.gmail.com>
 
-On Mon, Jun 23, 2025 at 10:35=E2=80=AFPM Stanislav Fomichev
-<stfomichev@gmail.com> wrote:
->
-> On 06/23, Jason Xing wrote:
-> > From: Jason Xing <kernelxing@tencent.com>
+On Tue, Jun 24, 2025 at 02:15:09PM +0200, Kumar Kartikeya Dwivedi wrote:
+> On Tue, 24 Jun 2025 at 14:01, Jiri Olsa <olsajiri@gmail.com> wrote:
 > >
-> > For afxdp, the return value of sendto() syscall doesn't reflect how man=
-y
-> > descs handled in the kernel. One of use cases is that when user-space
-> > application tries to know the number of transmitted skbs and then decid=
-es
-> > if it continues to send, say, is it stopped due to max tx budget?
+> > On Mon, Jun 23, 2025 at 08:12:42PM -0700, Kumar Kartikeya Dwivedi wrote:
+> > > Add support for a stream API to the kernel and expose related kfuncs to
+> > > BPF programs. Two streams are exposed, BPF_STDOUT and BPF_STDERR. These
+> > > can be used for printing messages that can be consumed from user space,
+> > > thus it's similar in spirit to existing trace_pipe interface.
+> > >
+> > > The kernel will use the BPF_STDERR stream to notify the program of any
+> > > errors encountered at runtime. BPF programs themselves may use both
+> > > streams for writing debug messages. BPF library-like code may use
+> > > BPF_STDERR to print warnings or errors on misuse at runtime.
 > >
-> > The following formular can be used after sending to learn how many
-> > skbs/descs the kernel takes care of:
+> > just curious, IIUC we can't mix the output of the streams when we dump
+> > them, right? I wonder it'd be handy to be able to get combined output
+> > and see messages from bpf programs sorted out with messages from kernel
 > >
-> >   tx_queue.consumers_before - tx_queue.consumers_after
-> >
-> > Prior to the current patch, in non-zc mode, the consumer of tx queue is
-> > not immediately updated at the end of each sendto syscall when error
-> > occurs, which leads to the consumer value out-of-dated from the perspec=
-tive
-> > of user space. So this patch requires store operation to pass the cache=
-d
-> > value to the shared value to handle the problem.
-> >
-> > More than those explicit errors appearing in the while() loop in
-> > __xsk_generic_xmit(), there are a few possible error cases that might
-> > be neglected in the following call trace:
-> > __xsk_generic_xmit()
-> >     xskq_cons_peek_desc()
-> >         xskq_cons_read_desc()
-> >           xskq_cons_is_valid_desc()
-> > It will also cause the premature exit in the while() loop even if not
-> > all the descs are consumed.
-> >
-> > Based on the above analysis, using 'cached_prod !=3D cached_cons' could
-> > cover all the possible cases because it represents there are remaining
-> > descs that are not handled and cached_cons are not updated to the globa=
-l
-> > state of consumer at this time.
->
-> > Signed-off-by: Jason Xing <kernelxing@tencent.com>
-> > ---
-> > V2
-> > Link: https://lore.kernel.org/all/20250619093641.70700-1-kerneljasonxin=
-g@gmail.com/
-> > 1. filter out those good cases because only those that return error nee=
-d
-> > updates.
-> > Side note:
-> > 1. in non-batched zero copy mode, at the end of every caller of
-> > xsk_tx_peek_desc(), there is always a xsk_tx_release() function that us=
-ed
-> > to update the local consumer to the global state of consumer. So for th=
-e
-> > zero copy mode, no need to change at all.
-> > 2. Actually I have no strong preference between v1 (see the above link)
-> > and v2 because smp_store_release() shouldn't cause side effect.
-> > Considering the exactitude of writing code, v2 is a more preferable
-> > one.
-> > ---
-> >  net/xdp/xsk.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> > index 5542675dffa9..b9223a2a6ada 100644
-> > --- a/net/xdp/xsk.c
-> > +++ b/net/xdp/xsk.c
-> > @@ -856,6 +856,9 @@ static int __xsk_generic_xmit(struct sock *sk)
-> >       }
-> >
-> >  out:
-> > +     if (xs->tx->cached_prod !=3D xs->tx->cached_cons)
->
-> Can we use xskq_has_descs() here instead?
+> 
+> Yeah, this is a good point.
+> Right now, no, in the sense that sequentiality is definitely broken
+> across the two streams.
+> We can force print a timestamp for every message and do the sorting
+> from bpftool side, or it can just be piped to sort after dumping both
+> stdout and stderr.
+> Output will look like trace_pipe with some fixed format before the
+> actual message.
+> WDYT? Others are also welcome to chime in.
 
-Sure, thanks.
+yes, keeping the kernel simple (just adding timestamp) and sorting
+it in bpftool seems good to me
 
->
-> And still would be nice to verify this with a test. Should not be much wo=
-rk,
-> most of the things (setup/etc) are already there, so you won't have
-> to write everything from scratch...
-
-Ah, finally I managed to make it work but a bit ugly... Let me try if
-I can find a
-better way to write the test patch.
-
-Thanks,
-Jason
+jirka
 
