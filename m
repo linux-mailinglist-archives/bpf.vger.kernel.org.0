@@ -1,326 +1,179 @@
-Return-Path: <bpf+bounces-61431-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61432-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAE86AE7026
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 21:49:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51C38AE7029
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 21:49:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61AF83BCD8F
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 19:48:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DC4F179AC7
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 19:49:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C0922E3380;
-	Tue, 24 Jun 2025 19:48:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBAB02EA46B;
+	Tue, 24 Jun 2025 19:49:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MN0RmkeW"
+	dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b="Nh9SL7Sc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B82722D9ED
-	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 19:48:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00FC82E9729
+	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 19:49:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750794529; cv=none; b=ulTATSgGH4L1K6OdFGJv9feg2Kqt5g5IMQZVhgqYZyaNemAvm0rjjn/vnnO+IsBcq5rjFwOe3Iyhx2DC8PHw+9R1GvqZe1V4wLbPaAwfLkDhQFWKReiQXR4cqpPN+Qglz0Uh60aWiW66sAkiTnRo6OPdCeL8cMyCkHFx/a/mTbM=
+	t=1750794553; cv=none; b=kqcQNuyh1hTf5sMVdqRIW8hX8fYyUkr++hdD5oBB4zPMlK2pH609nBnl4Iy+q9CQQDJ3bZ+s15jhz790m6lc9ibNIXu90hRad9HyuJvsxKs90qqfwoT5oWas6KjQJNFsOOqtEn6q75bXhN02E6JtkKItxYb3n63+UIltkz28epI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750794529; c=relaxed/simple;
-	bh=zPnP1t4WQI454xYt8lPJw2mvMsEYZ31Yww15CQZ+zHI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=W8DaqtalkWITmFTirKPCzao1NKvVIDENWvAbfQMZkLaO6lJOaNB4DuPX8oXAAV9ene3H+0JHrAbaDHptRczXfS0a0Q99i1lAxsRY6Y3iShc213A+Q5r+KHlMAkCp3PVdDdZqXlL6s+5wwt3svKkLygfadVWUOcEnk8kNEowivUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MN0RmkeW; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-311c95ddfb5so829785a91.2
-        for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 12:48:47 -0700 (PDT)
+	s=arc-20240116; t=1750794553; c=relaxed/simple;
+	bh=84iEEQ5zcFz6F0qxkt3i0soW6FCDAA0P690dJ4N0ytE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QVlIRvkFfkyPRVwoWnUsbNUiEwb58s0V+9Hk7XzRQLgWQgjRnJbEaKOfUTNFduvfYgZ4A7syr2v+czOx1uFHBvjm7osZpnmIUVExBmwbf/YMU+tgz7QyhjiAH+AqQ9mXuxB/OfwxRhBw0vLITnSmBtkZ6duHufB7X3qnMv5PrVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io; spf=none smtp.mailfrom=jrife.io; dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b=Nh9SL7Sc; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=jrife.io
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-7481adb0b90so268126b3a.1
+        for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 12:49:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750794527; x=1751399327; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KjC3IRdcQGtm9LBHXsq2rTz46ZqRYrA5Ev8KF3WoHB0=;
-        b=MN0RmkeWGkzVH3LziqW16SNYB52CI0F2lvuKw129E63jZ1Cl8qmIag1Qeek3mbphWu
-         p51LZv3JyClC9CyGGVk1FtASls6jtcjrwzg89dp2qTPKhdwAKvyRMgNlYWL17ZaElMYj
-         AcPzL3m9LTGC//LZ1wtByWoVRgEY+iY8hR5r51IL0M7MQ42UjaOmbZATsyXAKo1YKB0A
-         4xMuEJxtn6Vrqb+TuHjpISkaWOS4FTwDfcJ0MGsTFN7FchyT3aZ4XyGehU7pCJGGPx3I
-         5+OMDhqbcHln1eZsWXvo1fWfobE6cPyxmyOSJUHzh5peS7CvTztRPOLNVnv2dwYzZeOE
-         OaSw==
+        d=jrife-io.20230601.gappssmtp.com; s=20230601; t=1750794550; x=1751399350; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TEMl6eJ3YJldsq7k3k18NC5vKc+7ht1rDEBshbgwz1A=;
+        b=Nh9SL7ScVs065LUIGpzXJbWscmByfserfP1Jg6PvC8yjzJ/EZ86Gw6Ppl1cxFg/mXC
+         jtr7mFsO7eW+hOdrfEUw9iFUpaHOfhd/RFEfJ/1wa86nHfruClVaACWHofQUCsSP/Z3U
+         FPe3wZ8vmTutNS333jZIuBd2DFu9RSmeYtwwdpto7rfWpv6TetLRG0mMSFtf1tIsAkej
+         MXFq2jzlKWqfmmctCVf7tLLgfDO1IYp0jopSDmiliNajxHTShbcvYuQFQEvUha4RAnLZ
+         qEPBzp4hlUwsVLp02plTUtui651lBM/PvFXZTllsCHBHK7qMr0MeYgsJc84aqzPr484D
+         GXPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750794527; x=1751399327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KjC3IRdcQGtm9LBHXsq2rTz46ZqRYrA5Ev8KF3WoHB0=;
-        b=YS1Ie6lok7Z3TuwZwae1sd9GnvH00gku2ILz2J/gvBMCeErqJ+2UR4Asc9uENXCG3J
-         CV/zsB65o+sxYcTRyIkkvsQ83UNpVEjx7c4Mk/YImyWcznRABZlg1ee6Iy1dRR+v+m5u
-         8NZpmqO/KSECxF259D2Fr5jUGVnQqFy60duYuKp/0+0u/gf5p9Hk3g89hPXbQpJZ4HNc
-         sfCs/rPeYeVgKtcaZN11xI3ao769l9LKfrW+NpxbiFY/Mzh+TLKR8RdR22LTM1VU6cCy
-         zl5e6qQu/5CF1fmqUQg3V4OrMdC145oY52gkn21HE+BQyWhxLCva8yJ3uAWDN4BDCN64
-         /pAA==
-X-Gm-Message-State: AOJu0YyLo+rBYz8opvuKchft7t16p2d8v4YMEPsWcPvxhpNBD9mrHI76
-	fCN1BnOoNKbBQNoa14tLFVY1M+F6ABx0IFhZ+bdsngI61ndyXs0BQMoEqeSrheDj16o38eyWnys
-	oBOkc5JkesnaA8XbJdJBm8fFxGCqVw30=
-X-Gm-Gg: ASbGncvYXiU2320Tz72DA2WAaUmomdKf843IsfCw6i88sqRFfm58Va4Pl2pJjQrmKFY
-	84m3dmmL0GylhlWZ6txorXZq1jIDjZ2nJa+HbI/wGp7/XKO5ZfQD7VTz1VUY+TSsMXVXRJ2qP74
-	QWj/XQIxMEcSNpns2Uh+d+a2WviPMJL4qa0fuFRe2sQA==
-X-Google-Smtp-Source: AGHT+IHCL6UU+egcZDaloT/7MJnM0KSlhyrf9v0jn/dkYGLoxbza4rLpgTapG1oZ2BAhMQawRhCrd4nUN/7PMwHY7K8=
-X-Received: by 2002:a17:90b:2dc2:b0:311:ea13:2e6e with SMTP id
- 98e67ed59e1d1-315f26b86abmr141103a91.28.1750794527233; Tue, 24 Jun 2025
- 12:48:47 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1750794550; x=1751399350;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TEMl6eJ3YJldsq7k3k18NC5vKc+7ht1rDEBshbgwz1A=;
+        b=RjmsPWEDidcZlx3/PFoQw9lmP0t0UaKzm6ge4RFCTFQTfcr9Xb4aWN3A+dbfv5EEhe
+         SywcZLJfzDIQPTEc/1UITIa+0eLjzh7MWNIDf+D0bSWAOTIHocq2TBZ3HDTcGKA9Javq
+         VIyBHYVX5P6vAKM1rlEeOKxYKBF0rh6R8faX2mQvUSolVCL6ORTtDtew9sAF+hyCg6fe
+         Qy1XH1aqQLDIMiWavOGly2Fa6KZ/f5OAb9Gu0vG319yYkRVnbr4TeV6T1XqFAf92aYKK
+         91mwa8usYovOu+ENb014pTQmlVSQuXbAJJlOpGIFMd1XllWxz2NLdbRcDEJXKswa8Wo7
+         +jdg==
+X-Forwarded-Encrypted: i=1; AJvYcCUhOwssiLjJDhguqYHPjE3vFhBZXq8ryDzr9H4beNhdWsignpOUkgBfKfgnYtVOJSMlBFY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxdGqb+HVzUkjSLxrhndnOMTVt/v0s7yFyeDK34hge107DlZhFy
+	rOm+QCYjd/p4UqR5OA4OWPfwP2aVXAtLTntzQsAfz+9ty59KH10iid6T1KE+Mt2E04w=
+X-Gm-Gg: ASbGncu82Eb2bXQvFTf08gGtT6kob02vklv9DQCRQf7qa15875CKvGwe55Y9fpXlUU5
+	aSB/MdicgK4qeZMn27tPuffwTGSPHBEo88ev4tOlBsw0M7X+tssHoeT6GXe0P4yONxMPvxCONPf
+	z1iEok6E/Ifm/+WCp72eWLZhSpagn/I2VdSZ6NIQ4+WPTgt6TRDl8jFdJ27d5MQTrU+JyNzSQVW
+	M9j3XNM+u0Tfk4J197NDyIFmQJoCAOTnc2HY/GRgQGralX05wUx4yHI0A7lW5+78VckE+WRwelQ
+	ollGdtbsE7slQvXz0Dzwr3++YdWk2iVMiau/BjOcSyb8Fck=
+X-Google-Smtp-Source: AGHT+IG+qBW4zr65fekP5/GsWiiX7SdOGOxL18FEHTp64/LOAjCnzrksvNIX70PxM/joR+Sj9G6dQQ==
+X-Received: by 2002:a05:6a00:349b:b0:736:a9b1:722a with SMTP id d2e1a72fcca58-74ad4610130mr181731b3a.7.1750794550260;
+        Tue, 24 Jun 2025 12:49:10 -0700 (PDT)
+Received: from t14 ([2a00:79e1:abc:133:b63c:7792:e98f:f4a5])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-749b5e21931sm2719417b3a.56.2025.06.24.12.49.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Jun 2025 12:49:09 -0700 (PDT)
+Date: Tue, 24 Jun 2025 12:49:07 -0700
+From: Jordan Rife <jordan@jrife.io>
+To: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Subject: Re: [RESEND PATCH v2 bpf-next 02/12] bpf: tcp: Make sure iter->batch
+ always contains a full bucket snapshot
+Message-ID: <posiabqearkkbt3o4l4yueyn3kl6jvw2r4fuxceabgju2etg7x@m7fepnnvkgjj>
+References: <20250618162545.15633-1-jordan@jrife.io>
+ <20250618162545.15633-3-jordan@jrife.io>
+ <aFMJHoasszw3x2kX@mini-arch>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250615185345.2756663-1-yonghong.song@linux.dev>
- <20250615185351.2757391-1-yonghong.song@linux.dev> <CAEf4BzZmzrT7+nB0eyK-iLv+un68VtLY-TAq3G5Pti=sjM41TQ@mail.gmail.com>
- <b3ce39f0-c52b-4787-980c-973bd4228349@linux.dev> <CAEf4BzbWqj9a7zrocg5pLDKTG9aJgRK61=SFLzH=ANtAAs_bLA@mail.gmail.com>
- <cc78ac6b-6f87-4d85-ac3e-36bb06fdd3e3@linux.dev>
-In-Reply-To: <cc78ac6b-6f87-4d85-ac3e-36bb06fdd3e3@linux.dev>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 24 Jun 2025 12:48:35 -0700
-X-Gm-Features: AX0GCFvm6-JwCnPke46wZsH6NK1z1kAwA62KS9tOFGlE4FKUEpsIVWVJsdpfod0
-Message-ID: <CAEf4BzanoB1D0s+9Tw8Pt0L_dsMUm92_H1cRi0yhkEe1JzWkHw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/3] selftests/bpf: Refactor the failed
- assertion to another subtest
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
-	Martin KaFai Lau <martin.lau@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aFMJHoasszw3x2kX@mini-arch>
 
-On Tue, Jun 24, 2025 at 9:15=E2=80=AFAM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
->
->
->
-> On 6/24/25 8:36 AM, Andrii Nakryiko wrote:
-> > On Tue, Jun 17, 2025 at 9:36=E2=80=AFPM Yonghong Song <yonghong.song@li=
-nux.dev> wrote:
-> >>
-> >>
-> >> On 6/16/25 3:00 PM, Andrii Nakryiko wrote:
-> >>> On Sun, Jun 15, 2025 at 11:54=E2=80=AFAM Yonghong Song <yonghong.song=
-@linux.dev> wrote:
-> >>>> When building the selftest with arm64/clang20, the following test fa=
-iled:
-> >>>>       ...
-> >>>>       ubtest_multispec_usdt:PASS:usdt_100_called 0 nsec
-> >>>>       subtest_multispec_usdt:PASS:usdt_100_sum 0 nsec
-> >>>>       subtest_multispec_usdt:FAIL:usdt_300_bad_attach unexpected poi=
-nter: 0xaaaad82a2a80
-> >>>>       #469/2   usdt/multispec:FAIL
-> >>>>       #469     usdt:FAIL
-> >>>>
-> >>>> The failed assertion
-> >>>>       subtest_multispec_usdt:FAIL:usdt_300_bad_attach unexpected poi=
-nter: 0xaaaad82a2a80
-> >>>> is caused by bpf_program__attach_usdt() which is expected to fail. B=
-ut
-> >>>> with arm64/clang20 bpf_program__attach_usdt() actually succeeded.
-> >>> I think I missed that it's unexpected *success* that is causing
-> >>> issues. If that's so, then I think it might be more straightforward t=
-o
-> >>> just ensure that test is expectedly failing regardless of compiler
-> >>> code generation logic. Maybe something along the following lines:
-> >>>
-> >>> diff --git a/tools/testing/selftests/bpf/prog_tests/usdt.c
-> >>> b/tools/testing/selftests/bpf/prog_tests/usdt.c
-> >>> index 495d66414b57..fdd8642cfdff 100644
-> >>> --- a/tools/testing/selftests/bpf/prog_tests/usdt.c
-> >>> +++ b/tools/testing/selftests/bpf/prog_tests/usdt.c
-> >>> @@ -190,11 +190,21 @@ static void __always_inline f300(int x)
-> >>>           STAP_PROBE1(test, usdt_300, x);
-> >>>    }
-> >>>
-> >>> +#define RP10(F, X)  F(*(X+0)); F(*(X+1));F(*(X+2)); F(*(X+3)); F(*(X=
-+4)); \
-> >>> +                   F(*(X+5)); F(*(X+6)); F(*(X+7)); F(*(X+8)); F(*(X=
-+9));
-> >>> +#define RP100(F, X) RP10(F,X+
-> >>> 0);RP10(F,X+10);RP10(F,X+20);RP10(F,X+30);RP10(F,X+40); \
-> >>> +
-> >>> RP10(F,X+50);RP10(F,X+60);RP10(F,X+70);RP10(F,X+80);RP10(F,X+90);
-> >>> +
-> >>>    __weak void trigger_300_usdts(void)
-> >>>    {
-> >>> -       R100(f300, 0);
-> >>> -       R100(f300, 100);
-> >>> -       R100(f300, 200);
-> >>> +       volatile int arr[300], i;
-> >>> +
-> >>> +       for (i =3D 0; i < 300; i++)
-> >>> +               arr[i] =3D 300;
-> >>> +
-> >>> +       RP100(f300, arr + 0);
-> >>> +       RP100(f300, arr + 100);
-> >>> +       RP100(f300, arr + 200);
-> >>>    }
-> >>>
-> >>>
-> >>> So basically force the compiler to use 300 different locations for
-> >>> each of 300 USDT instantiations? I didn't check how that will look
-> >>> like on arm64, but on x86 gcc it seems to generate what is expected o=
-f
-> >>> it.
-> >>>
-> >>> Can you please try it on arm64 and see if that works?
-> >> I tried the above on arm64 and it does not work. It has the same usdt =
-arguments
-> >> as without this patch:
-> >>
-> >>     stapsdt              0x0000002e       NT_STAPSDT (SystemTap probe =
-descriptors)
-> >>       Provider: test
-> >>       Name: usdt_300
-> >>       Location: 0x00000000000009e0, Base: 0x0000000000000000, Semaphor=
-e: 0x0000000000000008
-> >>       Arguments: -4@[x9]
-> >>     stapsdt              0x0000002e       NT_STAPSDT (SystemTap probe =
-descriptors)
-> >>       Provider: test
-> >>       Name: usdt_300
-> >>       Location: 0x00000000000009f8, Base: 0x0000000000000000, Semaphor=
-e: 0x0000000000000008
-> >>       Arguments: -4@[x9]
-> >>     ...
-> >>
-> >> But I found if we build usdt.c file with -O2 (RELEASE=3D1) on arm64, t=
-he test will be successful:
-> >>
-> >>     stapsdt              0x0000002b       NT_STAPSDT (SystemTap probe =
-descriptors)
-> >>       Provider: test
-> >>       Name: usdt_300
-> >>       Location: 0x00000000000001a4, Base: 0x0000000000000000, Semaphor=
-e: 0x0000000000000008
-> >>       Arguments: -4@0
-> >>     stapsdt              0x0000002b       NT_STAPSDT (SystemTap probe =
-descriptors)
-> >>       Provider: test
-> >>       Name: usdt_300
-> >>       Location: 0x00000000000001a8, Base: 0x0000000000000000, Semaphor=
-e: 0x0000000000000008
-> >>       Arguments: -4@1
-> >>     ...
-> >>
-> >> But usdt.c with -O2 will have a problem with gcc14 on x86:
-> >>
-> >>     stapsdt              0x00000087       NT_STAPSDT (SystemTap probe =
-descriptors)
-> >>       Provider: test
-> >>       Name: usdt12
-> >>       Location: 0x000000000000258f, Base: 0x0000000000000000, Semaphor=
-e: 0x0000000000000006
-> >>       Arguments: -4@$2 -4@$3 -8@$42 -8@$44 -4@$5 -8@$6 8@%rdx 8@%rsi -=
-4@$-9 -2@%cx -2@nums(%rax,%rax) -1@t1+4(%rip)
-> >>     ...
-> >>
-> >> You can see the above last two arguments which are not supported by li=
-bbpf.
-> >>
-> >> So let us say usdt.c is compiled with -O2:
-> >>      x86:
-> >>        gcc14 built kernel/selftests: failed, see the above
-> >>        clang built kernel/selftests: good
-> >>      arm64:
-> >>        both gcc14/clang built kernel/selftrests: good
-> >>
-> >> arm64 has more reigsters so it is likely to have better argument repre=
-sentation, e.g.,
-> >> for arm64/gcc with -O2, we have
-> >>
-> >>     stapsdt              0x00000071       NT_STAPSDT (SystemTap probe =
-descriptors)
-> >>       Provider: test
-> >>       Name: usdt12
-> >>       Location: 0x0000000000002e74, Base: 0x0000000000000000, Semaphor=
-e: 0x000000000000000a
-> >>       Arguments: -4@2 -4@3 -8@42 -8@44 -4@5 -8@6 8@x1 8@x3 -4@-9 -2@x2=
- -2@[x0, 8] -1@[x3, 28]
-> >>
-> >> Eduard helped me to figure out how to compile prog_tests/usdt.c with -=
-O2 alone.
-> >> The following patch resolved the issue and usdt test will be happy for=
- both x86 and arm64:
-> >>
-> >> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/self=
-tests/bpf/Makefile
-> >> index 97013c49920b..05fc9149bc4f 100644
-> >> --- a/tools/testing/selftests/bpf/Makefile
-> >> +++ b/tools/testing/selftests/bpf/Makefile
-> >> @@ -760,6 +760,14 @@ TRUNNER_BPF_BUILD_RULE :=3D $$(error no BPF objec=
-ts should be built)
-> >>    TRUNNER_BPF_CFLAGS :=3D
-> >>    $(eval $(call DEFINE_TEST_RUNNER,test_maps))
-> >>
-> >> +# Compiler prog_tests/usdt.c with -O2 with clang compiler.
-> >> +# Otherwise, with -O0 on arm64, the usdt test will fail.
-> >> +ifneq ($(LLVM),)
-> >> +$(OUTPUT)/usdt.test.o: CFLAGS:=3D$(subst O0,O2,$(CFLAGS))
-> >> +$(OUTPUT)/cpuv4/usdt.test.o: CFLAGS:=3D$(subst O0,O2,$(CFLAGS))
-> >> +$(OUTPUT)/no_alu32/usdt.test.o: CFLAGS:=3D$(subst O0,O2,$(CFLAGS))
-> >> +endif
-> >> +
-> >>    # Define test_verifier test runner.
-> >>    # It is much simpler than test_maps/test_progs and sufficiently dif=
-ferent from
-> >>    # them (e.g., test.h is using completely pattern), that it's worth =
-just
-> >>
-> >> Another choice is to support argument like `-2@nums(%rax,%rax)` and `-=
-1@t1+4(%rip)`.
-> >> But I am not sure whether we should do it or not as typically a usdt p=
-robe
-> >> probably won't have lots of diverse arguments.
-> >>
-> >> WDYT?
-> > Can we just make that part of the test x86-64 specific for now? All
-> > other alternatives seem worse, tbh.
->
-> So something like below?
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/usdt.c b/tools/testin=
-g/selftests/bpf/prog_tests/usdt.c
-> index 495d66414b57..1e7e222034f7 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/usdt.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/usdt.c
-> @@ -270,8 +270,16 @@ static void subtest_multispec_usdt(void)
->           */
->          trigger_300_usdts();
->
-> -       /* we'll reuse usdt_100 BPF program for usdt_300 test */
->          bpf_link__destroy(skel->links.usdt_100);
-> +
-> +       /* If built with clang with arm64 target, there will be much less
-> +        * number of specs for usdt_300 call sites.
-> +        */
-> +#if defined(__clang__) && defined(__aarch64__)
-> +       bss->usdt_100_called =3D 0;
-> +       bss->usdt_100_sum =3D 0;
+> Can we try to unroll this? Add new helpers to hide the repeating parts,
+> store extra state in iter if needed.
+> 
+> AFAIU, we want the following:
+> 1. find sk, try to fill the batch, if it fits -> bail out
+> 2. try to allocate new batch with GPU_USER, try to fill again -> bail
+>    out
+> 3. otherwise, attempt GPF_NOWAIT and do that dance where you copy over
+>    previous partial copy
+> 
+> The conditional put in bpf_iter_tcp_put_batch does not look nice :-(
 
-I'd add this right before usdt_400 attachment unconditionally and
-avoid #if/#else/#endif branching. But other than that, yeah, something
-like that.
+With the unrolling, I think it should be simple enough to just call
+bpf_iter_tcp_put_batch in the right place instead of embedding it inside
+bpf_iter_tcp_realloc_batch conditional. Agree this might be clearer.
 
-> +#else
-> +       /* we'll reuse usdt_100 BPF program for usdt_300 test */
->          skel->links.usdt_100 =3D bpf_program__attach_usdt(skel->progs.us=
-dt_100, -1, "/proc/self/exe",
->                                                          "test", "usdt_30=
-0", NULL);
->          err =3D -errno;
-> @@ -289,6 +297,7 @@ static void subtest_multispec_usdt(void)
->
->          ASSERT_EQ(bss->usdt_100_called, 0, "usdt_301_called");
->          ASSERT_EQ(bss->usdt_100_sum, 0, "usdt_301_sum");
-> +#endif
->
->          /* This time we have USDT with 400 inlined invocations, but arg =
-specs
->           * should be the same across all sites, so libbpf will only need=
- to
->
+> Same for unconditional memcpy (which, if I understand correctly, only
+> needed for GFP_NOWAIT case). I'm 99% sure your current version works,
+
+This matters for both cases. Later in this series, this memcpy is
+necessary to copy socket cookies stored in iter->batch to find our place
+in the bucket again after reacquiring the lock. IMO this still belongs
+here; in both cases, we need to copy the contents from the old batch
+before freeing it.
+
+> but it's a bit hard to follow :-(
+> 
+> Untested code to illustrate the idea below. Any reason it won't work?
+
+After revisiting the code, I now remember why I didn't do something like
+this before.
+
+> 
+> /* fast path */
+> 
+> sk = tcp_seek_last_pos(seq);
+> if (!sk) return NULL;
+> fits = bpf_iter_tcp_fill_batch(...);
+> bpf_iter_tcp_unlock_bucket(iter);
+> if (fits) return sk;
+> 
+> /* not enough space to store full batch, try to reallocate with GFP_USER */
+> 
+> bpf_iter_tcp_free_batch(iter);
+> 
+> if (bpf_iter_tcp_alloc_batch(iter, GFP_USER)) {
+> 	/* allocated 'expected' size, try to fill again */
+> 
+> 	sk = tcp_seek_last_pos(seq);
+
+Since you release the lock on the bucket above, and it could have
+changed in various interesting ways in the meantime (e.g. maybe it's
+empty now), tcp_seek_last_pos may have moved on to a different bucket.
+
+> 	if (!sk) return NULL;
+> 	fits = bpf_iter_tcp_fill_batch(...);
+
+If that new bucket is bigger then this fails and we immediately move
+onto the GFP_NOWAIT block. Before, we were trying to avoid falling back
+to GFP_NOWAIT if possible; it was only there to ensure we could capture
+a full snapshot in case of a fast-growing bucket. With the unrolled
+logic, we widen the set of scenarios where we use GFP_NOWAIT. With the
+loop (goto again) we would just realloc with GFP_USER if the bucket had
+advanced. The original intent was to try GFP_USER once per bucket, but
+unrolling shifts this to once per call.
+
+> 	if (fits) {
+> 		bpf_iter_tcp_unlock_bucket(iter);
+> 		return sk;
+> 	}
+> }
+
+Both approaches work. Overall, the unrolled logic is slghtly clearer
+while making the GFP_NOWAIT condition slightly more likely while the
+loop logic is slightly less clear while making the GFP_NOWAIT condition
+less likely.
+
+In practice, the difference is probably negligible though, so yeah it
+might be better to just favor clarity here. Let me go ahead and try to
+unroll this. If I run into any issues which make it impracical I'll let
+you know.
+
+Jordan
 
