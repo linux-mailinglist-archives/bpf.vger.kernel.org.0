@@ -1,143 +1,155 @@
-Return-Path: <bpf+bounces-61334-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61335-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3755EAE5970
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 03:55:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8996AE5980
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 04:04:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92CE23BB8A1
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 01:54:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F2AF17F1AE
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 02:04:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B3111F30AD;
-	Tue, 24 Jun 2025 01:55:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D56F31C84DF;
+	Tue, 24 Jun 2025 02:03:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W8zox4XS"
 X-Original-To: bpf@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD2D223741;
-	Tue, 24 Jun 2025 01:55:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from mail-yw1-f195.google.com (mail-yw1-f195.google.com [209.85.128.195])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C294214A4CC;
+	Tue, 24 Jun 2025 02:03:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750730113; cv=none; b=oNlFcLLWT3q3GZ0vq3dJVjBqWeoVmhWkqrBSfQxX2DeHrMoxPyVSzEKNczCvWQFWiJ9mfQlGWRr5/XRmuOjm5qz8eRZaNb6DVz8vxhLBcA7+gR91MNDJnh6mjKSG/B4vcbdYpx7FGiHypzG2GmpApmR3uZUsB6f2X+7DZ2h0tdk=
+	t=1750730639; cv=none; b=QL957ZVPHFF/oKSa6FjpVQ39dSvNujsqkWSQk3Rs/a0fkZxiUxXptmUmL3IQe/2HwrIXacsQS/fnZDTY1CHrCdsiJ0KmvbICrRHWfCrHmpmqdnzEKXf1wjuqtHJiQBL5lSx1MXJtzga3A3QBbkA3J160AfvQ8Cnxuo2fhoCVJ7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750730113; c=relaxed/simple;
-	bh=2ISrvwIgX3jixWuefaXZJkNIcgEtijnZyZas0qVkkuw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cUk68mWCNce9XpoOec/0LevIYtlG81eAKanwLqp7TOpwPcteFecGh+hD3VqlW6nmI5tVQjtQ1UUHvB6Fs2OWC7/Yd4oUmM6d+kgUFDlKcc+jvlcDb/ymTFHnyUSKurdZo7eqEqEOQC1jbG7e11WCswyDY2vNp2xYgTJAyTJ1WGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-681ff7000002311f-0d-685a05782dd9
-Date: Tue, 24 Jun 2025 10:54:58 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: Mina Almasry <almasrymina@google.com>,
-	David Hildenbrand <david@redhat.com>, Zi Yan <ziy@nvidia.com>,
-	willy@infradead.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	kernel_team@skhynix.com, kuba@kernel.org,
-	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
-	akpm@linux-foundation.org, davem@davemloft.net,
-	john.fastabend@gmail.com, andrew+netdev@lunn.ch, toke@redhat.com,
-	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com,
-	saeedm@nvidia.com, leon@kernel.org, ast@kernel.org,
-	daniel@iogearbox.net, lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
-	surenb@google.com, mhocko@suse.com, horms@kernel.org,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-	vishal.moola@gmail.com, hannes@cmpxchg.org, jackmanb@google.com
-Subject: Re: [PATCH net-next v6 9/9] page_pool: access ->pp_magic through
- struct netmem_desc in page_pool_page_is_pp()
-Message-ID: <20250624015458.GD5820@system.software.com>
-References: <20250620041224.46646-1-byungchul@sk.com>
- <20250620041224.46646-10-byungchul@sk.com>
- <ce5b4b18-9934-41e3-af04-c34653b4b5fa@redhat.com>
- <20250623101622.GB3199@system.software.com>
- <460ACE40-9E99-42B8-90F0-2B18D2D8C72C@nvidia.com>
- <a8d40a05-db4c-400f-839b-3c6159a1feab@redhat.com>
- <41e68e52-5747-4b18-810d-4b20ada01c9a@gmail.com>
- <CAHS8izPRVBhz+55DJQw1yjBdWqAUo7y4T6StsyD_dkL3X1wcGQ@mail.gmail.com>
- <69762ce3-ead1-4324-ba33-9839efbe31e7@gmail.com>
+	s=arc-20240116; t=1750730639; c=relaxed/simple;
+	bh=UJE2/Y7LI/pKefGOhbN7ZDMBgEeuetvdd15cyoz+nKw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mK2GyvndggGR6EjtK+EwFgjUclnegh0i0J7ArSPuU3xZmJU84uqwI+xI57CgsccCfUgoBJBnhdS3feXR20UkDqVPGd01LhX1xR0By3iFzOYLqVYJqtcKRkJmfs9Y+waScOxgrhbh/Kl0a4wG0S35T0JXLzSUZJ9IVegnpz7bUl4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W8zox4XS; arc=none smtp.client-ip=209.85.128.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f195.google.com with SMTP id 00721157ae682-7113ac6d4b3so44657707b3.3;
+        Mon, 23 Jun 2025 19:03:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1750730636; x=1751335436; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LbET8ZuLZumqrMIKpSUW3w2wpA6THdEQI6aTEMnHyl4=;
+        b=W8zox4XSyrGoow1yeCIiJ/X0LNsvpmyXBmMLfgBJANUmqNIPSTHOq2AYfPNTSB2IEa
+         ec8WKfqCYgOUFklFqTpP3FiOuB4onZvWAPq85hUsJvukhFSXpe83pe0jpXJeupLsCtSR
+         YES6yMsmtLxAjh0Gjz+UU7RngyZwPXfAm+T6w/821KFCq4ZKKjKmifXRh3QAJYv1jwO+
+         tUJV9KvHjhI/pdTUPDGl695T8GL2p9pkUTKPu7UHv+HnwdI2o2va0Z+iCQp+qgK5yruH
+         8Tu4+J2hIA0+d32y5ap++/HeI6rBWNbd03bhWiHq5QL0yzw/vZvLvaFRx1MBFtmj+4i0
+         qH3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750730636; x=1751335436;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LbET8ZuLZumqrMIKpSUW3w2wpA6THdEQI6aTEMnHyl4=;
+        b=ZfxFwO7gU9UizBtmIKc8YJVw+dwVrzV026nuVgcPwrjtFsqG78Vqbtqf/ZnOjQPSYy
+         1VkjouOWpAjrtxvfILcEyQt+OQRSlv2yPrq3UdDgsFtlQN8Dbo+2S0q5JPMEhSQK9VHf
+         Thcp/RXsKcLMt2aebuBSTxLtgfyG+50fcPgYbFf1s6RdjmOqUT6TFiHSy3IuyHi1E3mc
+         I7jN9vOjFtUd+NCcbP6OpJ7kJubopqxYZZKnG/CmZjtjXDnsghNLafwbT7/h0xSDZ12L
+         tibE9b+KVliOaZUvgY8C/99xzSQLpR6Q0g6AyjtXQ+v+Gzcgjxnr4kop+5B1107/xul2
+         twjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVqqEdTTnWK0WymlhM9/z6vwuUsFqGtqdkIy265S0atPcbfxFVsPf0tqhXI6dkcocWC91DbpyZ8v/KZsrHB@vger.kernel.org, AJvYcCWXdObsHr2HR32wV02KBX/YP+chFy+WOfSVROAKz0jP9RYuZpDraE65Te/x+K67obBsLfY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxz1iofUHRbl+FCduTfkAD3vFW31eKWABeT5gVa4WF1QAepZL9j
+	pfPVA4SOuMDtCGNzKLMqnLtCqL+V1AKlA97TcUhk5IdaSEQCXFEavUaPMUTe55yxforFt/rcX85
+	81a76ol4RcyGlpw+4v/UTEQsHskCd7X8=
+X-Gm-Gg: ASbGncu4giLAh7KooZ6Ve3eMEtoTvh+oJig/YBBFDpzJ5iI+sXsnNL8A4ImlFq8d/NG
+	DQsTdzrWGBJWFx8E48oy4SIZMs8JKXUpG9TrV8X1+3+GXjDyHPjnNec6HhwyW6acHzbdOVY8B/B
+	LLJKN57YjwysgT1ACGdrXQCq0ow/gew7Cg+pjwWrIfJj8=
+X-Google-Smtp-Source: AGHT+IHOPhdtF/Z59QPk3w46p7Lp0drAeKTcVm8UPsK5Kg2MvMFSi2UmEpSzHr9pm8xE1Jb7PAqQtqtwFxDigvZ7uiA=
+X-Received: by 2002:a05:690c:720a:b0:70e:1d14:2b76 with SMTP id
+ 00721157ae682-712c65176efmr217686177b3.23.1750730635611; Mon, 23 Jun 2025
+ 19:03:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <69762ce3-ead1-4324-ba33-9839efbe31e7@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRjG/e+cnXMcDY7L8p8S0SpKS62QerMLIwgO3VQMSftgKw9t5SVm
-	2SwKLSGSvNAFalpNIp0XWE2ds0zqaF7ooqysmeZslthNS8ums8s2ifz243mf93neDy9DyKrF
-	gYw69QivSVUmyykJKfkyqyRUK05QrfwxwkKxsYqCSqcWyvotYiiuMCP4PtFDw1hzKwU3S8YJ
-	KO7IIeGHcZKA9y0OGipNO8BeOkhCw9k6AhwFbRTk5bgIuD8xTMNpi0EEneZ8MVyavEVAXVY/
-	Dc/vFlPQV/VHDINCHgntunIS7PkKaNHPhfHHnxE0G+tEMH7+GgUXrXoKBnLsCKxNDhKKsvMR
-	GBttYnA53RlFj/poxWKu6fMIwdWUd4u4et0bmtObjnLVhhAu12YlOFPFOYozjV6gud6XDRTX
-	dsVFcvWWMRGXd2aY4r69f01yI41dFGes6SK5J/pmOtovQbIhiU9WZ/Ca8E17JaoJ4TZ1+INU
-	25PbgbLQJ0ku8mUwG4ELv+aI/3FrVj3pYZJdgvVD/bSHKXYpttkmCA/7s8vxp1eCW5cwBNtC
-	4a/vnnkXZrNa7HIMek1Sdi3OuygQHpOM7SZw+806enrgh9uvvvMuEO7UqetWt4lxcxAu+81M
-	ywvwmdoib44vuxE/sL322uewi/ADc6vIk4nZNgYbDW+p6avn4YcGG1mI/HQzKnQzKnT/K3Qz
-	KvSIrEAydWpGilKdHBGmykxVa8P2p6WYkPuVSk9O7bGg0c5YAbEMks+SWiLjVTKxMiM9M0VA
-	mCHk/lJhc5xKJk1SZh7nNWmJmqPJfLqAghhSHiBdPX4sScYeUB7hD/H8YV7zbypifAOzULjk
-	LaxQCNk3Ohevjd4+0B1sdvgEnFBHj8X0x7tMRYnOW0PYfqo3csuL+LL566IUDcfu9ah+BR+0
-	S3f+DImMPI47nLu3VY+OmrcGvDJoG1cve3pPUbBu12WfNSsHohbWD/eGJnxMCbRmHuq606d2
-	7k+relgbsa8k0ScuODdmfW9grJxMVylXhRCadOVfzLhcDUYDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRjG+e+cnXMcrY5Hy4MFwiqspBsUvd3EROokFHa1IqhRhzZ0KlvZ
-	LCpr0kXSLgrVnDUTc85itdbcwjSOpVmSsdKmVg7TaRh5ycRb2ZxEfnt43t/z+/RSGJMrDqWU
-	SUd5dZI8UUZIcMnWtbrFWvE+xbKqBWCw3CegdEgLxR6HGAxmO4KB4RYSfr6oIaCwYBADQ30G
-	Dr8sIxh0VLeRUGrdAq33vDiUXyjDoO3KKwKyMkYxeDb8g4RzDpMIqvJrxfDOni2G3JEiDMrS
-	PSS8f2og4Mv9cTF4hSwcavUlOLRmR0G1cRYMvvmO4IWlTASDl/MJyHEZCfia0YrAVdWGQ97Z
-	bASWCrcYRod8jryXX8io+VzV9x6Ms5U0iTin/jPJGa3HuMemRVym24VxVvMlgrP2Xye5T43l
-	BPfq5ijOOR0/RVyW7gfB9XU041xPRQPBFXb1ijiLrQGPY/ZJ1h3mE5WpvHpp5EGJYlh4SKR8
-	k2pbMutROuqWZKIAiqVXsDXpTnwi4/R81tjlIScyQYezbvcwNpGD6Qi2+6Pg6yUURlcTbG/7
-	W/8giNayo21ePySlV7FZOQI2ATF0E8bWFpaRk4dAtvZWu3+A+axjt10+iPLl2WzxH2qyDmN1
-	T/L8ngB6Pfvc3ezHZ9Jz2ef2GtFVNF0/xaSfYtL/N+mnmIwIN6NgZVKqSq5MXLlEk6BIS1Jq
-	lxxKVlmR71funRq75kAD7zcJiKaQbJrUsWavghHLUzVpKgGxFCYLlgrRuxWM9LA87QSvTj6g
-	PpbIawQ0m8JlIdLYeP4gQx+RH+UTeD6FV/+7iqiA0HTUWHJa+eGSe7wAizcVfZon7HRqTTfs
-	21K3n+QLHlzcHaSb8duQvOHuFV2LPD8u7lHrnJNPwpxDzMLje5r6YhvGVLuQJZzqrKhf76nz
-	hpy5Y4+S2s7sjwlU1TFmBcGf37w6NmZxtMadELFhR29d5Jbiyv5K2+sV1tz+zojAjd+UIzJc
-	o5AvX4SpNfK/8tmQEicDAAA=
-X-CFilter-Loop: Reflected
+References: <20250621045501.101187-1-dongml2@chinatelecom.cn> <CAADnVQLz7-tVmJ7C3VdNDcL8y07Vyg5Ad+DhKAQ7odQAo_BO=Q@mail.gmail.com>
+In-Reply-To: <CAADnVQLz7-tVmJ7C3VdNDcL8y07Vyg5Ad+DhKAQ7odQAo_BO=Q@mail.gmail.com>
+From: Menglong Dong <menglong8.dong@gmail.com>
+Date: Tue, 24 Jun 2025 10:03:12 +0800
+X-Gm-Features: Ac12FXyvar2ZApG5VPKeQGwM1dztSP5um2keuHqSibu6UiSRKIDa7zDE1AnkIEI
+Message-ID: <CADxym3bJUNA4H_ksUhX9tjcDQSrLTvr0kKaPzVzeEC79o0OVTQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: make update_prog_stats always_inline
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Menglong Dong <dongml2@chinatelecom.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 23, 2025 at 07:14:41PM +0100, Pavel Begunkov wrote:
-> On 6/23/25 18:28, Mina Almasry wrote:
-> > On Mon, Jun 23, 2025 at 10:05 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
-> ...>> As you said, it's just a sanity check, all page pool pages should
-> > > be freed by the networking code. It checks the ownership with
-> > > netmem_is_pp(), which is basically the same as page_pool_page_is_pp()
-> > > but done though some aliasing.
-> > > 
-> > > static inline bool netmem_is_pp(netmem_ref netmem)
-> > > {
-> > >          return (netmem_get_pp_magic(netmem) & PP_MAGIC_MASK) == PP_SIGNATURE;
-> > > }
-> > > 
-> > > I assume there is no point in moving the check to skbuff.c as it
-> > > already does exactly same test, but we can probably just kill it.
-> > > 
-> > 
-> > Even if we do kill it, maybe lets do that in a separate patch, and
-> > maybe a separate series. I would recommend not complicating this one?
-> FWIW, the discussion somewhat mentioned "long term", but I'm not
-> suggesting actually removing it, it serves the purpose. And in
-> long term the helper will be converted to use page->type / etc.
-> without touching pp fields, that should reduce the degree of
-> ugliness and make it more acceptable for keeping in mm.
+On Tue, Jun 24, 2025 at 12:26=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Fri, Jun 20, 2025 at 9:57=E2=80=AFPM Menglong Dong <menglong8.dong@gma=
+il.com> wrote:
+> >
+> > The function update_prog_stats() will be called in the bpf trampoline.
+> > In most cases, it will be optimized by the compiler by making it inline=
+.
+> > However, we can't rely on the compiler all the time, and just make it
+> > __always_inline to reduce the possible overhead.
+> >
+> > Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+> > ---
+> > v2:
+> > - split out __update_prog_stats() and make update_prog_stats()
+> >   __always_inline, as Alexei's advice
+> > ---
+> >  kernel/bpf/trampoline.c | 23 ++++++++++++++---------
+> >  1 file changed, 14 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> > index c4b1a98ff726..1f92246117eb 100644
+> > --- a/kernel/bpf/trampoline.c
+> > +++ b/kernel/bpf/trampoline.c
+> > @@ -911,18 +911,16 @@ static u64 notrace __bpf_prog_enter_recur(struct =
+bpf_prog *prog, struct bpf_tram
+> >         return bpf_prog_start_time();
+> >  }
+> >
+> > -static void notrace update_prog_stats(struct bpf_prog *prog,
+> > -                                     u64 start)
+> > +static void notrace __update_prog_stats(struct bpf_prog *prog, u64 sta=
+rt)
+> >  {
+> >         struct bpf_prog_stats *stats;
+> >
+> > -       if (static_branch_unlikely(&bpf_stats_enabled_key) &&
+> > -           /* static_key could be enabled in __bpf_prog_enter*
+> > -            * and disabled in __bpf_prog_exit*.
+> > -            * And vice versa.
+> > -            * Hence check that 'start' is valid.
+> > -            */
+> > -           start > NO_START_TIME) {
+> > +       /* static_key could be enabled in __bpf_prog_enter*
+> > +        * and disabled in __bpf_prog_exit*.
+> > +        * And vice versa.
+> > +        * Hence check that 'start' is valid.
+> > +        */
+>
+>
+> Instead of old networking style I reformatted above to normal
+> kernel style comment.
+>
+> > +       if (start > NO_START_TIME) {
+>
+> and refactored it to <=3D and removed extra indent in below.
+> while applying.
 
-Agree.
-
-	Byungchul
-> 
-> > Also, AFAIU, this is about removing/moving the checks in
-> > bad_page_reason() and page_expected_state()? I think this check does
-> > fire sometimes. I saw at least 1 report in the last year of a
-> > bad_page_reason() check firing because the page_pool got its
-> > accounting wrong and released a page to the buddy allocator early, so
-> > maybe that new patch that removes that check should explain why this
-> > check is no longer necessary.
-> 
-> --
-> Pavel Begunkov
+Looks much better, thanks a lot ~
 
