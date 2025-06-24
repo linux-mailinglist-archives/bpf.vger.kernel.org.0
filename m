@@ -1,90 +1,88 @@
-Return-Path: <bpf+bounces-61453-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61454-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2F8AAE7210
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 00:07:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F4F8AE7225
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 00:14:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E122A7A333E
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 22:06:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6EF91BC2664
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 22:15:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F7A525A624;
-	Tue, 24 Jun 2025 22:07:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 876A325B1C4;
+	Tue, 24 Jun 2025 22:14:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WSyQLaSr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KlB0Hm8i"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1D2F307483
-	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 22:07:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1F2C246BCD
+	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 22:14:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750802835; cv=none; b=ZIRpeBJT0A+0BgNZOS47zWCmmT0wnsOmBAknigNI1V6GJUlgJlvLMHihFlXbjJ18ckHSRVcH9STotU4U6TUc6AuDnI7ZXOSDspg/vMmGtmSZlIuBNxw1I/kyzzejx3bfaYrVpsAPrlMFkprS/TA0X20M3eRE2c6PI/f8ERY67fw=
+	t=1750803291; cv=none; b=dq2OYFOhxixTmVKFzux77o+oCHYaCLy33ATYCYE1XMAC90MMEsFIGLOamhiwmz9qIirIo670VTDxefhFo2HRiKsCVgK+x7U+MwL/2OevoBbJA2msNHRZ6fzwUy7x6ruRb3mZfYe+ajTtj5tDu4xaHiUY+TxgY6fFE1tjv+Cvn0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750802835; c=relaxed/simple;
-	bh=JyRIxXpGKrQoVZFa7L3MzxyIw5x1GX7XHf0ZHyNS2Lc=;
+	s=arc-20240116; t=1750803291; c=relaxed/simple;
+	bh=XZ/u9Oy/LrX221d7guExpNZD5rTlcb0NxC1sl3pNqhI=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=lwUkPyQaOncH5li8UBbH4kEr9xtecFmC3op6xwOrgqol6rptdu3l4WfU/lYDv4MRyJfT+douCqwyn0J+UofoVYhRXfLMWk7WqMohRwinKFMk9fPSb4SfM49tpEaUxiGIczCSSwYvQClW1dUfP5rjDBZTQxpCSoimdqJRqmi6lE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WSyQLaSr; arc=none smtp.client-ip=209.85.210.178
+	 Content-Type:MIME-Version; b=NVG7YhPiYgTQ5plWZlgww3VMfIXeqqQSlXMV1/U7qwkqhYtVLbOLpgOS4gr9ebPKwwzPt/PeWtRMu0j8P23hWVRppl9FgKHG52zB6p12uAoYKqpOyVE5mE4OcuasGhspQMP8KMq6EFhSdBjupZ6sHQ3t8lQEkn4DTC75RkgH3XM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KlB0Hm8i; arc=none smtp.client-ip=209.85.210.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-747fc77bb2aso4559548b3a.3
-        for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 15:07:13 -0700 (PDT)
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-73c17c770a7so6369626b3a.2
+        for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 15:14:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750802833; x=1751407633; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1750803289; x=1751408089; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=yetRafmNsPbsJXCOaSs+LmghSUEvFykf6/3syoGxU5U=;
-        b=WSyQLaSrNds1FWvKazJs64uY4XBo7kbQ4qutbGUxZ0M3bKLzvHandT0moyrDrfxkyg
-         LwbZ3eOb/0LsWnCTN4ZniCxBTntnY9FzixyWzgmNTBKKWVp4skCgaM0jB3B1Ww/6JtY7
-         swUZVUJd8hjpzsQRkbimKVY4It9cHznY/Z/HOlfN5HwqEuTj45kOPTozS4bleIjSJcvn
-         mN+dUbBDa0D58mLepYh7SHATJeRYsN9lT5wkb7tikDQuUlqUXt3mguxHhg50qr31KRgu
-         cUw/xLUaJf3QIx/gQgqKJY9Y0Wvvj6Es7A00boaRwQ8GCmhJ6mWgcwshZp96raNU9+Gs
-         tapQ==
+        bh=qC1Iz4sEqiZMcMa5DS15LIIYnBsZUNaGeA2wRZ3iBkY=;
+        b=KlB0Hm8iMh3q3ndLxFNR6z1pUVm6aZInvE+TbZRnXh10+Uq/MtXOjXs8qvunHZOvys
+         u1RR/3NpivAFaeuSGxw7nfXDkixjQXqjjT9hcZKvx74fvkTUmuCt8y8Zj88GsE7L/v9a
+         fg7c0AOWOkZasRPM2bBlRHz+s20PD65a4tQCbi+1TP2DAEdxpxJ8BNZV+5tR2VR4Ko/8
+         cl3Kj1E8qkwxJ27e/akuQL75Yh20kQCm5V9jGMSUwTze1BKiXrD2YmkJcvt4z/guhOMN
+         k5EKf9Rfm/HdGqyLYK8NI4TSzGne+VAccJ6C26OpqqV6ghUfWyLV3/R+pDKPkejL2MNy
+         Z+wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750802833; x=1751407633;
+        d=1e100.net; s=20230601; t=1750803289; x=1751408089;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=yetRafmNsPbsJXCOaSs+LmghSUEvFykf6/3syoGxU5U=;
-        b=kXVXsemEnDgqvNGtnevMpQBrnKkZnTG5+BmgQCkZEGCiE75SFaBI9h+5NQjZU8ujQw
-         YDAN0ZzmF18tGozc0gPsZ5PdJPGZ9Iwn/c3SbuP9X6UTT40G931uHChmI9fRPnd6GqTx
-         kGnePCTAdsWr+zzqtU5vSqEggCf4oNobB+zf44blzOANw4tKWXAd/8M76EV1yOzG52hQ
-         maBL6h4sPJEpuJX2EnAtyV1vRSiYqfly2/PsXYedZo89SvCS3mL7se5bNf4ctn64V6HV
-         5lAbWjWfqk9s+Ah2oNSBbwBR1xMIoRuS+yCEurJezJdbEH/g1nwv+8jdT/UvUVv/vDpX
-         M/9Q==
-X-Gm-Message-State: AOJu0YzQnw8YIScLi86vfEeBt3jrgiJFD3fKBROIUyHJ9qSTNUpLVfcs
-	JoO/2MTJpGjaEshIeWnbn3NN1oCPJJMFVf1kWX/F3mqTLDb4qNykWUnl
-X-Gm-Gg: ASbGnctxRAfrQqNUfIrVm0157BNBUCWrWj2rv+2fzsBtqILkpd32kIMQabPQ8WAhwLJ
-	zp/H428KhDVItVA2UpGotUvgp5DVI6UyNK+nz2KUWv0/loH7e9hHsEfhGsTHmd6ms1guxniJiQ3
-	wVIEiXKiOvEnaRwCrExokRRr6IOG1KqEpWadUtLhdj5+74izSlz5RSQTwLbbgYQA2DqkRBs4pdU
-	g5Rmi9t+j2dXBrQyWAIoIMUspqzKfyiawWVe8qy4xrne9nCKG+rYTck9q3GA2HGosbsUo/6S8Ep
-	sl1rXlEcarRKsQ6Nu65+VxyeFGw+pfPhALoa9wT2pHAyOkxehVm1Kr0bZ9q5/fvjQniT73+3Jbu
-	ZH02I00Imtw==
-X-Google-Smtp-Source: AGHT+IEtVitaQD98MwoZO35lnX0vpcUJEOtGhD2U7aa/SDSpml519wauCnjQiYSFZ4cMTffzyjIAig==
-X-Received: by 2002:a05:6a00:2e99:b0:740:6f69:dce9 with SMTP id d2e1a72fcca58-74ad42bd7efmr1060727b3a.0.1750802833081;
-        Tue, 24 Jun 2025 15:07:13 -0700 (PDT)
+        bh=qC1Iz4sEqiZMcMa5DS15LIIYnBsZUNaGeA2wRZ3iBkY=;
+        b=a0zCdmr1uZVdf98CaPlTVN8Rk7x0EdETViQk4xaUT3eImPZSOtHMk7TSB82lKaw9wh
+         ERNhA+Jzm0N/LzWKU4jKU0gasiDxG9z1fCU0LPho2d5OE55aWTSn08ZKDu7G8+umrdtH
+         pNgSgs85s2ECMqjgOgd/bzBtpiHc7uXcVssP+4yK44LqDEPWA71vSCNhFb2XD3jZchHv
+         GTWxy9VByxWVCy0fACgWXrg89PUYmyLeRp8TttpmxAUcUAy+/3OSzugxSQETKtGVn+Gg
+         i6cGkoNmA4l/OcNVIE4+kBpvFTP6E80w4JIkj9DQLEJaesCh7uPaAY1nqDhMMYR/4Eky
+         SQDg==
+X-Forwarded-Encrypted: i=1; AJvYcCUtr31HxJa6c0edPEmtCELg1dQd5LWUCjA3CXkCtRoh9HQOU35mA5AiZtB7XQLFGD3YzcQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YydCEZRXKU8gruEIyh+1hln7RbWAl0M8UVQevkBT9eTKlNMjmQO
+	JNMUHKPOU00aOc75fAY/Q2JDACuHf0AyCbRwPuTS+qdTqgMOOrCRr/fZ
+X-Gm-Gg: ASbGncsRzaQxOVkoeflreBbtrUJqTNgcjMo3V9zg/t+TIHf3JxfMjIenrMzdQP29RU5
+	YIAyJc3EHvUHL9XFpi3RDSvvAWHdLhQkv5Yv/SAKVCjfmGbrflFw+HmJ2dQr0xycoUUyK/C2z1y
+	pbzbel7bu6Xzdw2gub6eOxoKcyBAdF4+LnZIJ1KZb+SyqMGgzYxBoUVUngg9KQjRgfPDuGu4pQy
+	pVdVYW/8d2XzU7FMH0gIkbLoD/7hEwhSEU2xl6DTkOjNlLnJ8KYc8Nllpu28FCJiooZYi12JreJ
+	l5mlTQ18uhoEAsYJT1795Dh3Vw9VJrCB5/yaC6FT6cgJ2NBz168xI5GZiqF/iSIRNV3XUycbgFU
+	AQB9ye0Akbg==
+X-Google-Smtp-Source: AGHT+IHDzeQIKEyl9BzDVIjP2HlTAeRAcuEKYP9gucCiqUh3/f4cViFCQDgDRO5e/2RuRPO0sHqaaw==
+X-Received: by 2002:a05:6a21:680b:b0:204:4573:d854 with SMTP id adf61e73a8af0-2207f1adf3bmr881782637.9.1750803288898;
+        Tue, 24 Jun 2025 15:14:48 -0700 (PDT)
 Received: from ?IPv6:2a03:83e0:115c:1:9b77:d425:d62:b7ce? ([2620:10d:c090:500::6:f262])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-749c8872203sm2597616b3a.157.2025.06.24.15.07.11
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-749c88732a8sm2805204b3a.175.2025.06.24.15.14.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Jun 2025 15:07:12 -0700 (PDT)
-Message-ID: <9eb94c7757593de354faec9f0d228023f4428307.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v1 2/4] bpf: add bpf_features enum
+        Tue, 24 Jun 2025 15:14:48 -0700 (PDT)
+Message-ID: <19803713ab26e3c464710c9e9bae60c7dbb8fdd9.camel@gmail.com>
+Subject: Re: [PATCH v2 bpf-next 1/2] bpf: Add range tracking for BPF_NEG
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Andrii
- Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau	 <martin.lau@linux.dev>, Kernel Team <kernel-team@fb.com>,
- Yonghong Song	 <yonghong.song@linux.dev>
-Date: Tue, 24 Jun 2025 15:07:11 -0700
-In-Reply-To: <CAADnVQK=ML6A7OwQ4aQSgiRku83tgkKiNdAnKMYq=iDNe-7dRA@mail.gmail.com>
-References: <20250624191009.902874-1-eddyz87@gmail.com>
-	 <20250624191009.902874-3-eddyz87@gmail.com>
-	 <CAADnVQK=ML6A7OwQ4aQSgiRku83tgkKiNdAnKMYq=iDNe-7dRA@mail.gmail.com>
+To: Song Liu <song@kernel.org>, bpf@vger.kernel.org
+Cc: kernel-team@meta.com, andrii@kernel.org, ast@kernel.org,
+ daniel@iogearbox.net, 	martin.lau@linux.dev
+Date: Tue, 24 Jun 2025 15:14:47 -0700
+In-Reply-To: <20250624220038.656646-2-song@kernel.org>
+References: <20250624220038.656646-1-song@kernel.org>
+	 <20250624220038.656646-2-song@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
@@ -95,37 +93,74 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Tue, 2025-06-24 at 14:59 -0700, Alexei Starovoitov wrote:
+On Tue, 2025-06-24 at 15:00 -0700, Song Liu wrote:
 
 [...]
 
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 8fd65eb74051..01050d1f7389 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -44,6 +44,11 @@ static const struct bpf_verifier_ops * const bpf_ver=
-ifier_ops[] =3D {
-> >  #undef BPF_LINK_TYPE
-> >  };
-> >=20
-> > +enum bpf_features {
-> > +       BPF_FEAT_RDONLY_CAST_TO_VOID =3D 0,
-> > +       BPF_FEAT_TOTAL,
->=20
-> I don't see the value of 'total', but not strongly against it.
-> But pls be consistent with __MAX_BPF_CMD, __MAX_BPF_MAP_TYPE, ...
-> Say, __MAX_BPF_FEAT ?
->=20
->=20
-> Also it's better to introduce this enum in some earlier patch,
-> and then always add BTF_FEAT_... to this enum
-> in the same patch that adds the feature to make
-> sure backports won't screw it up.
-> Another rule should be to always assign a number to it.
->=20
-> At the end with random backports the __MAX_BPF_FEAT
-> won't be accurate, but whatever.
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_bounds_deduction.=
+c b/tools/testing/selftests/bpf/progs/verifier_bounds_deduction.c
+> index c506afbdd936..8d886c15fdcc 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_bounds_deduction.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_bounds_deduction.c
+> @@ -151,21 +151,4 @@ l0_%=3D:	r0 -=3D r1;					\
+>  "	::: __clobber_all);
+>  }
+> =20
+> -SEC("socket")
+> -__description("check deducing bounds from const, 10")
+> -__failure
+> -__msg("math between ctx pointer and register with unbounded min value is=
+ not allowed")
+> -__failure_unpriv
+> -__naked void deducing_bounds_from_const_10(void)
+> -{
+> -	asm volatile ("					\
+> -	r0 =3D 0;						\
+> -	if r0 s<=3D 0 goto l0_%=3D;				\
+> -l0_%=3D:	/* Marks reg as unknown. */			\
+> -	r0 =3D -r0;					\
+> -	r0 -=3D r1;					\
 
-Ack. Andrii asked to add MAX for people willing to do broken kind of
-feature detection and just in case.
+It looks like rX =3D -rX was used in a few tests as a source of unbound
+scalar values. It is probably not safe to throw these tests away or
+convert failure->success, unless we are sure the logic is tested
+elsewhere.
+
+One option to keep the tests is to call bpf_get_prandom_u32() and
+obtain an unbound value in r0 as a result.
+
+> -	exit;						\
+> -"	::: __clobber_all);
+> -}
+> -
+>  char _license[] SEC("license") =3D "GPL";
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_value_ptr_arith.c=
+ b/tools/testing/selftests/bpf/progs/verifier_value_ptr_arith.c
+> index fcea9819e359..799eccd181b5 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_value_ptr_arith.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_value_ptr_arith.c
+> @@ -225,9 +225,7 @@ l2_%=3D:	r0 =3D 1;						\
+> =20
+>  SEC("socket")
+>  __description("map access: known scalar +=3D value_ptr unknown vs unknow=
+n (lt)")
+> -__success __failure_unpriv
+> -__msg_unpriv("R1 tried to add from different maps, paths or scalars")
+> -__retval(1)
+> +__success __success_unpriv __retval(1)
+>  __naked void ptr_unknown_vs_unknown_lt(void)
+>  {
+>  	asm volatile ("					\
+> @@ -265,9 +263,7 @@ l2_%=3D:	r0 =3D 1;						\
+> =20
+>  SEC("socket")
+>  __description("map access: known scalar +=3D value_ptr unknown vs unknow=
+n (gt)")
+> -__success __failure_unpriv
+> -__msg_unpriv("R1 tried to add from different maps, paths or scalars")
+> -__retval(1)
+> +__success __success_unpriv __retval(1)
+>  __naked void ptr_unknown_vs_unknown_gt(void)
+>  {
+>  	asm volatile ("					\
 
