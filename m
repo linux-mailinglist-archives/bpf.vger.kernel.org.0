@@ -1,194 +1,295 @@
-Return-Path: <bpf+bounces-61327-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61328-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F1AFAE5834
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 01:55:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54B85AE583D
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 02:00:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB5427A96B8
-	for <lists+bpf@lfdr.de>; Mon, 23 Jun 2025 23:53:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01C4F1B600DA
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 00:00:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6D7E22DF85;
-	Mon, 23 Jun 2025 23:55:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8227C1E519;
+	Tue, 24 Jun 2025 00:00:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="awlZUWTu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FWz5H5i4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E13C452F88;
-	Mon, 23 Jun 2025 23:54:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D861179A3
+	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 00:00:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750722900; cv=none; b=paGb2opGhUyJ4C6McOIVM+Ljh/NbbfM9vMAF5+8iltFHjaq6e2pIkK5JTvw/Po7rpGcUVEVmbPotXXCQnNUgR4H0UTZJ5G3iK+F0yK6Fef68ux1TCIcFU8pJJFB7csbOsMxZvSnkqek22OshpjcAV4LooooA6am0zWA5mMVr9RQ=
+	t=1750723228; cv=none; b=hhFqs2M08tNsjfrf9eLxgPDAHFXaOcAF4hIAzrJe+x8VsqpanrABO/L4PvACm8gN6F/I3IjL1FNQcwBoT4RAMUykAABOvPuZN5rRikrv4JJwhQStnTinej7pm72+Bn7rfZxgj2S3VZGeuwedy2lh2PrjQgetyGBZ2I0NVmnjp3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750722900; c=relaxed/simple;
-	bh=3vWHVubH81WvqeFnvNvOfRONRFFAfmZct9THUsdR2pE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fUKckoRcfsVZF+xrm2OvRZJ8mZKb4Gx6Lg2v+R4aFGYpLN9KBxPtDXBzYpZXaeIWki9xf/JSrba2LZeK6sIv9IfRimm9ubqyxLVbs2VtgyTqVuRv1Umncc01rn20brRW9K70HkLc6e66yuyJkB9EwDveKcCbftRGbbSL0REJk7M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=awlZUWTu; arc=none smtp.client-ip=209.85.166.173
+	s=arc-20240116; t=1750723228; c=relaxed/simple;
+	bh=4lSh4J76y7BBtHf521PCkH3HMoKDppUoHinPELV6tB8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YjAGFIik/rmYrfhSCZYxCnhPNp3XsqW26LGYmANXsr/xi4MXiJMGgwEAeW3SKYVMvontosF3PVi9WFOQbnRPFXKgn1h4ju1NvOE+nvurJfFOmnTneOAoPPtnKooL8QFrb22bclr2VXd30SbFsnSHUITKkRFyTpWlyN3Zx3gtE5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FWz5H5i4; arc=none smtp.client-ip=209.85.221.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-3d948ce7d9dso20305285ab.2;
-        Mon, 23 Jun 2025 16:54:58 -0700 (PDT)
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3a365a6804eso2566117f8f.3
+        for <bpf@vger.kernel.org>; Mon, 23 Jun 2025 17:00:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750722898; x=1751327698; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cS262nr1YqD4iSvkVXAF+yWKGEdn5aCMiFwwKXBvYLw=;
-        b=awlZUWTuiAjEmzNt4UomSPBd2Nn+TeIEJrm2Vuk1oYbNU3Si3lUSq6y7ZB5CBCQkcJ
-         EIt6fN6+X2gINrgtnExUfDCloqC8SB0rgwoRTWVjA58O3EqEILf7EUmRMaL10uiToRWd
-         nJ/1ztOc2TlM8a+bZWENPiEcesRTAPE1v7xreB/trEborRzOX2E8RflV1ZKSthJdNaeI
-         Qn1UQeh3UNH4O9fmnT7wD8URjTLXusao1IB0zYusPnP5s0UZlWSN40GFjFBW8sQiiHP8
-         DOIsFuT6LPpvvusRFyQbEmo8UxVbqa8gsTeoQIv/sAgzUG1WcgNa5SYqrc/FOZpgL6iP
-         NqRg==
+        d=gmail.com; s=20230601; t=1750723224; x=1751328024; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SjJnY/Gtzsl7gs6ZtcqnNvgBILy8O/Km/B0eRd//6kI=;
+        b=FWz5H5i4GTjuUN/cmAALmoU/AWUgLuHXGtBcVFIaFJEWYh5dpzcvxjc5VgJBZ6bNj1
+         0qwZrUpkyFRmaWqzLWUJm7u/GkzMz8nSUcthVrSrhbAfnoJ01KdcxzRHGNnR4nWun2SC
+         z3olrwDi/F3CoEas+Pvt8Bp2AyiQGGSsuE8+xptlspl7UTedtZPWw8N5TadFfDE9V2Dn
+         wr6nob+JINkJMjFtEfZvuAE4M7fUSdT2nXoLPbxKOr4V6CkybYr7QGqHE0wYU9+gLwlo
+         wuXmmzIkQ5AaBCJSqKx7yo/q1gi2A78vyrr7HsACoa74q05KwnEJCul+lSypRj2oo0KR
+         w99Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750722898; x=1751327698;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cS262nr1YqD4iSvkVXAF+yWKGEdn5aCMiFwwKXBvYLw=;
-        b=b4JwI7LPC1SYoFu5XhL3Ql6BfNBYuA7CLaqFt+TEHF2w0mcGR20zrg+6/NrPwQ1fcc
-         P8VYUxm74KS/9OhXgM+mRFEMAGUfeF9py3pWGW8UIhWTy22Rj7jGrpIbtNMAw6cKdrxI
-         SThuIfXK8z4WmwlKWT/IAUssV8/ex/R0DsoCknaGln+FuGolcRCCpwb5VZfgtkzB6NM6
-         HXnkWe4Mp8uPi2heEwCaRsYgaHDBpjq+WrWcfoedFeonkJW7prHpuaY6E5BvB9mZZOiz
-         0FoABzWJqUMvJvTfYVyiOzdriDryjIL3/IrrtAF7sWA0w60MrF4Iccvzv3DCt2Sar4ro
-         tKnA==
-X-Forwarded-Encrypted: i=1; AJvYcCVU4lMRz0vups2kRC+g9yuLhVYO99ZY4q1LZTvzgvKVz8Cs86YvrAZKc8Y9UPauI+nxv80=@vger.kernel.org, AJvYcCWteLzBMA417WGynY52A95s2G1jA5LJHsZ2FoC5Rt4W0BSh58WZsPW6RRdtEmGypTnQ3H+3EyS4@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzv5TQNSoabKUz6C26Q6UPXW4FvkF7L1wbY+krHmyTDyf7T1wV4
-	bQ3doQjjjLt0Y4IT6ym/iUkHWijctwpavBS6e44IIhmDd0mRynkCzFpHYfsXbRkcFqJJRmU+Ynp
-	RGG+O1EMX66Dc2ctLTzUR5vFPr6mdTGc=
-X-Gm-Gg: ASbGncvu1lInJVUh5+oz6d6/sY/sF5SeVEhi0OX45Ben8KIl9GR3L1nGM9eqGnlmiop
-	btmexP9ySmTPSJz6XmNN7zaY5szWIXss8fEQJqCMWdL/A4DbMbb3s23gyOG4Atb6ttaZgtDxHyX
-	jRDHkrshKu+GsSL6i+w+DNE9rFtXUyFrq2fnqR45SyZy4=
-X-Google-Smtp-Source: AGHT+IH3H9K/mkBkrTyjQRJcGeR21bsCoDU0DsuIvEr5SxhGY71/KjekmELK+T+SK1ngADJysvcHvhbYC0OnyOdY7eY=
-X-Received: by 2002:a05:6e02:240f:b0:3dd:dd41:d3dc with SMTP id
- e9e14a558f8ab-3de38c1d694mr189599775ab.1.1750722897899; Mon, 23 Jun 2025
- 16:54:57 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1750723224; x=1751328024;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SjJnY/Gtzsl7gs6ZtcqnNvgBILy8O/Km/B0eRd//6kI=;
+        b=k1dQnYXAxj11iQ4Pwk2P4630Hx4NyQ81FCHSd2TWqWYuy/8h60+riE6yj7fp3Iwvhw
+         1BZNgU2EBhlBGEAbX3PKan9ErK8b1q21rzZn+CUmsrw6GjuPxpT7IY0+F2vJ1uPr5VBH
+         +iqYNZYA+0JmNPcsSopJUgHAqrcSYSc97/XRNBx2VyF74Td292EKcN281QW5KTtwsPmX
+         LMKkBXIIvQP9ZXAluYZR3Vivn9itGX5yXDmBGJZtqTQU0b6tI+TRNZaTtzUW+3AuLHUg
+         Af2vA+oxDCQC/lAxXDXSiArH07QwkB91cUOe5VYgv1g2J+NxXcQ3vLGGT9lNDaqAcJ0v
+         bGNg==
+X-Gm-Message-State: AOJu0YxFlJ/XlnbeF2W4UaG+CxH2Txmafazjk4tTcLlxbbeihrh5yNGF
+	puShhNypepGYnGdDkXWMOYA9XOe8wz39kq/DdEZjElU9giHNj9oaEqI+rfm3gA==
+X-Gm-Gg: ASbGncvfNTPXNSYq3TATeJ2ae9kb1VTAfPGZstIDCJkAun6EAN2cWQ0u6wL5RC90H2C
+	0CT2DeBkWSVhwYpcCtU1UblZ517dxI2Ff7EnkPpMivoGzSSqlR7ZCDEgfmWl+nA6xGjisEF5lfv
+	Yri4ipCeG64yanX08guIw7eAeb++R/5f7JMyOZgotlekrcPj7FTJzkp4lX8PnO+mlKvyjhA/2gH
+	jBF5HcHdEVLXPN7TH1gthjOPnmIQbZTDcK8El+1Tksnsr+9qUzJuEqG7SQ7M4or5k9FdXyEajB8
+	2NGZZFtIOTsHGJy+9WNIOfR1yyzg0536uaxQII9HXm7FNzZJ58LbSGgU5XjfB0Ww8kh52ZFlAXb
+	2fg5B0JIuIZyOiVxMpKvvxi+jTNDpQfwq6xJHUdLrHc0axg==
+X-Google-Smtp-Source: AGHT+IELMfEFpr6CpGDyTbjSRb2ydfqazpbaKlYp8LVnP7FklO9Lu1Qi01LCwmxBrrgPnrbKxM1A8Q==
+X-Received: by 2002:a05:6000:1a8f:b0:3a5:5298:ce28 with SMTP id ffacd0b85a97d-3a6d12fb253mr12017642f8f.4.1750723224093;
+        Mon, 23 Jun 2025 17:00:24 -0700 (PDT)
+Received: from ?IPV6:2a01:4b00:bf28:2e00:106b:a16d:4d49:8ce9? ([2a01:4b00:bf28:2e00:106b:a16d:4d49:8ce9])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a6e8051018sm443825f8f.16.2025.06.23.17.00.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Jun 2025 17:00:23 -0700 (PDT)
+Message-ID: <c05071fd-3e41-43ac-b1ff-1c002a107b24@gmail.com>
+Date: Tue, 24 Jun 2025 01:00:23 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250619090440.65509-1-kerneljasonxing@gmail.com>
- <20250619080904.0a70574c@kernel.org> <aFVvcgJpw5Cnog2O@mini-arch>
- <CAL+tcoAm-HitfFS+N+QRzECp5X0-X0FuGQEef5=e6cB1c_9UoA@mail.gmail.com>
- <aFWQoXrkIWF2LnRn@mini-arch> <CAL+tcoB-5Gt1_sJ_9-EjH5Nm_Ri+8+3QqFvapnLLpC5y4HW63g@mail.gmail.com>
- <aFliLQiRusx_SzQ4@mini-arch>
-In-Reply-To: <aFliLQiRusx_SzQ4@mini-arch>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Tue, 24 Jun 2025 07:54:21 +0800
-X-Gm-Features: AX0GCFvNtWp9KipRNYoFWaKGebo42MbnK4Osnwpv0ZzHsCptVVsEeyMwbbNwS8M
-Message-ID: <CAL+tcoBub4JpHrgWekK+OVCb0frXUaFYDGVd2XL3bvjHOTmFjQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v3] net: xsk: introduce XDP_MAX_TX_BUDGET set/getsockopt
-To: Stanislav Fomichev <stfomichev@gmail.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net, edumazet@google.com, 
-	pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com, 
-	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com, sdf@fomichev.me, 
-	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
-	john.fastabend@gmail.com, joe@dama.to, willemdebruijn.kernel@gmail.com, 
-	bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v4 2/3] selftests/bpf: support array presets in
+ veristat
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com,
+ eddyz87@gmail.com, Mykyta Yatsenko <yatsenko@meta.com>
+References: <20250618203903.539270-1-mykyta.yatsenko5@gmail.com>
+ <20250618203903.539270-3-mykyta.yatsenko5@gmail.com>
+ <CAEf4BzY8zDf4oZL=manmc_KsZpL8meC_m1jvp4EZ8MKnpkvFgQ@mail.gmail.com>
+Content-Language: en-US
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+In-Reply-To: <CAEf4BzY8zDf4oZL=manmc_KsZpL8meC_m1jvp4EZ8MKnpkvFgQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jun 23, 2025 at 10:18=E2=80=AFPM Stanislav Fomichev
-<stfomichev@gmail.com> wrote:
+On 6/23/25 23:10, Andrii Nakryiko wrote:
+> On Wed, Jun 18, 2025 at 1:39 PM Mykyta Yatsenko
+> <mykyta.yatsenko5@gmail.com> wrote:
+>> From: Mykyta Yatsenko <yatsenko@meta.com>
+>>
+>> Implement support for presetting values for array elements in veristat.
+>> For example:
+>> ```
+>> sudo ./veristat set_global_vars.bpf.o -G "arr[3] = 1"
+>> ```
+>> Arrays of structures and structure of arrays work, but each individual
+>> scalar value has to be set separately: `foo[1].bar[2] = value`.
+>>
+>> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+>> ---
+>>   tools/testing/selftests/bpf/veristat.c | 226 ++++++++++++++++++++-----
+>>   1 file changed, 180 insertions(+), 46 deletions(-)
+>>
+> [...]
 >
-> On 06/21, Jason Xing wrote:
-> > On Sat, Jun 21, 2025 at 12:47=E2=80=AFAM Stanislav Fomichev
-> > <stfomichev@gmail.com> wrote:
-> > >
-> > > On 06/21, Jason Xing wrote:
-> > > > On Fri, Jun 20, 2025 at 10:25=E2=80=AFPM Stanislav Fomichev
-> > > > <stfomichev@gmail.com> wrote:
-> > > > >
-> > > > > On 06/19, Jakub Kicinski wrote:
-> > > > > > On Thu, 19 Jun 2025 17:04:40 +0800 Jason Xing wrote:
-> > > > > > > @@ -424,7 +421,9 @@ bool xsk_tx_peek_desc(struct xsk_buff_poo=
-l *pool, struct xdp_desc *desc)
-> > > > > > >     rcu_read_lock();
-> > > > > > >  again:
-> > > > > > >     list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) =
-{
-> > > > > > > -           if (xs->tx_budget_spent >=3D MAX_PER_SOCKET_BUDGE=
-T) {
-> > > > > > > +           int max_budget =3D READ_ONCE(xs->max_tx_budget);
-> > > > > > > +
-> > > > > > > +           if (xs->tx_budget_spent >=3D max_budget) {
-> > > > > > >                     budget_exhausted =3D true;
-> > > > > > >                     continue;
-> > > > > > >             }
-> > > > > > > @@ -779,7 +778,7 @@ static struct sk_buff *xsk_build_skb(stru=
-ct xdp_sock *xs,
-> > > > > > >  static int __xsk_generic_xmit(struct sock *sk)
-> > > > > > >  {
-> > > > > > >     struct xdp_sock *xs =3D xdp_sk(sk);
-> > > > > > > -   u32 max_batch =3D TX_BATCH_SIZE;
-> > > > > > > +   u32 max_budget =3D READ_ONCE(xs->max_tx_budget);
-> > > > > >
-> > > > > > Hm, maybe a question to Stan / Willem & other XSK experts but a=
-re these
-> > > > > > two max values / code paths really related? Question 2 -- is ge=
-neric
-> > > > > > XSK a legit optimization target, legit enough to add uAPI?
-> > > > >
-> > > > > 1) xsk_tx_peek_desc is for zc case and xsk_build_skb is copy mode=
-;
-> > > > > whether we want to affect zc case given the fact that Jason seemi=
-ngly
-> > > > > cares about copy mode is a good question.
-> > > >
-> > > > Allow me to ask the similar question that you asked me before: even=
- though I
-> > > > didn't see the necessity to set the max budget for zc mode (just
-> > > > because I didn't spot it happening), would it be better if we separ=
-ate
-> > > > both of them because it's an uAPI interface. IIUC, if the setsockop=
-t
-> > > > is set, we will not separate it any more in the future?
-> > > >
-> > > > We can keep using the hardcoded value (32) in the zc mode like
-> > > > before and __only__ touch the copy mode? Later if someone or I foun=
-d
-> > > > the significance of making it tunable, then another parameter of
-> > > > setsockopt can be added? Does it make sense?
-> > >
-> > > Related suggestion: maybe we don't need this limit at all for the cop=
-y mode?
-> > > If the user, with a socket option, can arbitrarily change it, what is=
- the
-> > > point of this limit? Keep it on the zc side to make sure one socket d=
-oesn't
-> > > starve the rest and drop from the copy mode.. Any reason not to do it=
-?
-> >
-> > Thanks for bringing up the same question that I had in this thread. I
-> > saw the commit[1] mentioned it is used to avoid the burst as DPDK
-> > does, so my thought is that it might be used to prevent such a case
-> > where multiple sockets try to send packets through a shared umem
-> > nearly at the same time?
-> >
-> > Making it tunable is to provide a chance to let users seek for a good
-> > solution that is the best fit for them. It doesn't mean we
-> > allow/expect to see the burst situation.
+>> +static int resolve_rvalue(struct btf *btf, const struct rvalue *rvalue, long long *result)
+>> +{
+>> +       int err = 0;
+>> +
+>> +       switch (rvalue->type) {
+>> +       case INTEGRAL:
+>> +               *result = rvalue->ivalue;
+> return 0;
 >
-> The users can choose to moderate their batches by submitting less
-> with each sendmsg call. I see why having a batch limit might be useful fo=
-r
-> zerocopy to tx in batches to interleave multiple sockets, but not
-> sure how this limit helps for the copy mode. Since we are not running
-> qdisc layer on tx, we don't really have a good answer for multiple
-> sockets sharing the same device/queue..
+>> +               break;
+>> +       case ENUMERATOR:
+>> +               err = find_enum_value(btf, rvalue->svalue, result);
+>> +               if (err)
+>> +                       fprintf(stderr, "Can't resolve enum value %s\n", rvalue->svalue);
+> if (err) {
+>      fprintf(...);
+>      return err;
+> }
+>
+> return 0;
+>
+> ?
+>
+>> +               break;
+> default: fprintf("unknown blah"); return -EOPNOTSUPP;
+>
+>
+> I think I had a similar argument with Eduard before, so I'll explain
+> my logic here again. Whenever you have some branching in your code and
+> you know that branch's processing is effectively done and the only
+> thing left is to return success/failure signal, *do return early* and
+> explicitly ASAP (unless there is non-trivial clean up for error path,
+> in which case not duplicating and spreading clean up logic outweighs
+> the simplicity of early return code). Otherwise it takes *unnecessary*
+> extra mental effort to trace through the rest of the code to make sure
+> there is no extra common post-processing logic after that
+> branch/switch/for loop.
+>
+> So if we know the INTEGRAL case is a success, then have `return 0;`
+> right there, don't make anyone read through the rest of the function
+> just to make sure we don't do anything extra.
+I understand early returns, just in this case ditched it to make the 
+code more compact.
+I'll change this.
+>> +       }
+>> +       return err;
+>> +}
+>> +
+>> +/* Returns number of consumed atoms from preset, negative error if failed */
+>> +static int adjust_var_secinfo_array(struct btf *btf, int tid, struct var_preset *preset,
+>> +                                   int atom_idx, struct btf_var_secinfo *sinfo)
+>> +{
+>> +       struct btf_array *barr;
+>> +       int i = atom_idx, err;
+>> +       const struct btf_type *t;
+>> +       long long off = 0, idx;
+>> +
+>> +       if (atom_idx < 1) /* Array index can't be the first atom */
+> can atom_idx be -1 or negative? If not, then do `if (atom_idx == 0)`.
+> It's another small mental overhead that we can easily avoid, and so we
+> should.
+sure
+>
+>> +               return -EINVAL;
+>> +
+>> +       tid = btf__resolve_type(btf, tid);
+>> +       t = btf__type_by_id(btf, tid);
+>> +       if (!btf_is_array(t)) {
+>> +               fprintf(stderr, "Array index is not expected for %s\n",
+>> +                       preset->atoms[atom_idx - 1].name);
+>> +               return -EINVAL;
+>> +       }
+> [...]
+>
+>> @@ -1815,26 +1938,29 @@ const int btf_find_member(const struct btf *btf,
+>>   static int adjust_var_secinfo(struct btf *btf, const struct btf_type *t,
+>>                                struct btf_var_secinfo *sinfo, struct var_preset *preset)
+>>   {
+>> -       const struct btf_type *base_type, *member_type;
+>> -       int err, member_tid, i;
+>> -       __u32 member_offset = 0;
+>> -
+>> -       base_type = btf__type_by_id(btf, btf__resolve_type(btf, t->type));
+>> -
+>> -       for (i = 1; i < preset->atom_count; ++i) {
+>> -               err = btf_find_member(btf, base_type, 0, preset->atoms[i].name,
+>> -                                     &member_tid, &member_offset);
+>> -               if (err) {
+>> -                       fprintf(stderr, "Could not find member %s for variable %s\n",
+>> -                               preset->atoms[i].name, preset->atoms[i - 1].name);
+>> -                       return err;
+>> +       const struct btf_type *base_type;
+>> +       int err, i = 1, n;
+>> +       int tid;
+>> +
+>> +       tid = btf__resolve_type(btf, t->type);
+>> +       base_type = btf__type_by_id(btf, tid);
+>> +
+>> +       while (i < preset->atom_count) {
+>> +               if (preset->atoms[i].type == ARRAY_INDEX) {
+>> +                       n = adjust_var_secinfo_array(btf, tid, preset, i, sinfo);
+>> +                       if (n < 0)
+>> +                               return n;
+>> +                       i += n;
+>> +               } else {
+>> +                       err = btf_find_member(btf, base_type, 0, preset->atoms[i].name, sinfo);
+>> +                       if (err)
+>> +                               return err;
+>> +                       i++;
+>>                  }
+>> -               member_type = btf__type_by_id(btf, member_tid);
+>> -               sinfo->offset += member_offset / 8;
+>> -               sinfo->size = member_type->size;
+>> -               sinfo->type = member_tid;
+>> -               base_type = member_type;
+>> +               base_type = btf__type_by_id(btf, sinfo->type);
+>> +               tid = sinfo->type;
+>>          }
+>> +
+>>          return 0;
+>>   }
+> Is there a good reason to have adjust_var_secinfo() separate from
+> adjust_var_secinfo_array(). I won't know if I didn't miss anything
+> non-obvious, but in my mind this whole adjust_var_sec_info() should
+> look roughly like this:
+>
+> cur_type = /* resolve from original var */
+> cur_off = 0;
+>
+> for (i = 0; i < preset->atom_count; i++) {
+>      if (preset->atoms[i].type == ARRAY_INDEX) {
+>          /* a) error checking: cur_type should be array */
+>          /* b) resolve index (if it's enum)
+>          /* c) error checking: index should be within bounds of
+> cur_type (which is ARRAY)
+>          /* d) adjust cur_off += cur_type's elem_size * index_value
+>          /* e) cur_type = btf__resolve_type(cur_type->type) */
+>      } else {
+>          /* a) error checking: cur_type should be struct/union */
+>          /* b) find field by name with btf_find_member */
+>          /* c) cur_off += member_offset */
+>          /* d) cur_type = btf__resolve_type(field->type) */
+>      }
+> }
+>
+> It seems inelegant that we have an outer loop over FIELD references
+> (one at a time), but for ARRAY_INDEX we do N items skipping. Why? We
+> have a set of "instructions", just execute them one at a time, and
+> keep track of the current type and current offset we are at.
+>
+> Is there anything I am missing that would prevent this simple and more
+> uniform approach?
+yes, I think there is a small detail - `cur_type's elem_size`is not easy 
+to get for multi-dim array.
+If we have 3 dim array `arr` of NxMxK, to find an index of 
+`arr[x][y][z]` we calculate `(x*M + y)*K + z`
+This formula is tricky to integrate in the above loop an offset of the 
+current element depends on the next
+`btf_arr`s. Though, I can see a couple of ways to do it:
+1) Look forward for the next array dimensions to multiply with current 
+index: `x*M*K +  y*K + z`.
+2) Have a separate `array_off` variable, that will be multiplied with 
+current dimension and then zeroed when atom is non-array index:
+```
+   array_off = 0;
+   array_off *= N; array_off += x;
+   array_off *= M; array_off += y;
+   array_off *= K; array_off += z;
+...
+    off += array_off; array_off = 0;
+```
+I picked an option 2, but moved it into the separate function to make 
+things a little bit simpler.
+>
+> [...]
 
-It's worth mentioning that the xsk still holds the tx queue lock in
-the non-zc mode. So I assume getting rid of the limit might be harmful
-for other non xsk flows. That is what I know about the burst concern.
-
-Thanks,
-Jason
 
