@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-61355-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61356-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AC18AE5F33
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 10:29:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BE9FAE5F70
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 10:34:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5379C4A2DE0
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 08:28:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6136C3AD6E8
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 08:32:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE54725178E;
-	Tue, 24 Jun 2025 08:27:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DDB325C702;
+	Tue, 24 Jun 2025 08:32:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="MNtZQFKi"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="gngyiwTB"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20E0A258CE8;
-	Tue, 24 Jun 2025 08:26:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50DBF25B67E;
+	Tue, 24 Jun 2025 08:32:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.112
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750753621; cv=none; b=VMQwlK0m0fxD07y81nh/NSH02SS4QTMrgyGClgNrwh2TgVp0LKqIYZFUhyeDFj0jiryghN7l7eMSDzJo71gegwKF9fVHvoFkeODIpSIh5o8uwkAq9Ok/CBLNiFStQIse7vK2ByMfEyNSYkOPBRPr5+AYrK9RJTZHTdcPQuwyVk4=
+	t=1750753964; cv=none; b=TQUfX3NZ9FCJ87ttVsA8EXzmjYJWXBJMVOl1/u4DqCZuDccqr1o7C1A0sQaDjbj9nfJwckQE5JD9LQ3nzciBUawB7hxGqf8ek6P3nhGXVSQCSfGkTxCbSjmKRJIzwXFyoDWkliifsqrXSjbWe1p8iKgguzNg6Wyz+HiczfUlajk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750753621; c=relaxed/simple;
-	bh=MkhaNNhb/Nnu9+FEGNMen7PIoUiQXmzj3D47cfEMJU4=;
-	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To; b=AHmKkQl11eIzw+wkdgySVJ9XX/TjHMVDKSe8JRSrWL5ySxPmvi+XZR3sUz/+MzjJ/JGz4J7Mm6b3IYngtvSwheWTyJahlicFiBOpXK+AKXNW9KZmjaxfrl6jWTnduS7kTw/Rf/nYemzg/cbJIIlAcyy+xKdDuEqikR34qvZAcpc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=MNtZQFKi; arc=none smtp.client-ip=115.124.30.130
+	s=arc-20240116; t=1750753964; c=relaxed/simple;
+	bh=IP9zZ6vX1r03ltWl8w9ViI+/XIllLTAlSCc4K5E75r8=;
+	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To; b=fW6C5WTHgx1JVsRSyvw3nyG641+Av2heJ1HNMJlETCD15QK+GBDVNDKs4Wq+vrADqrOf/lvBtSm7owuXYqNJoEdHe0W4aLAslKgnCf+0yNO5XLlbtKY6/0OEOLF0gpdzCtOd4/P6yux49ufsg7uQ41l/5ojVk14LdjrWfzBx/P0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=gngyiwTB; arc=none smtp.client-ip=115.124.30.112
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1750753615; h=Message-ID:Subject:Date:From:To;
-	bh=IH71r0a24x4p09xci6xK0RIn16ZYIq9aUYduNMvc6Vc=;
-	b=MNtZQFKi96X4+NCXZ+zAUIcw3kfotjZ9xKPZcTxGHotnziCmn7U/13XWQVy1+9VpXS8Da8bE63MmEidF2hHa97nYEzQ3ZiuqdCfK0xNYiPEMgE+LKYQdJ2/mSFvwo4YpmW78GTvRSagWELD8lC56QqgWhrYMeNPHevWVfSdKtcI=
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0Weg--9u_1750753614 cluster:ay36)
+	t=1750753953; h=Message-ID:Subject:Date:From:To;
+	bh=xto8ohKa0ryNBVBrFTAZ50J9YmnkUMJE78zO1Eob+DM=;
+	b=gngyiwTB5wl/4ql3qUvMypZMauRuizllboob2BX57Qp1w+UpUZLzVz/fVm4PcPL4yt3P48jIe7dxgEV/GisbBuXZ3Yk4RQciJkSUf0C4oPCUeTyDmPpWD9agWctx8XxnNqJLo2HkqHPk6etNFmpfKI+VyPzcybtwOHhrnk4Co8E=
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0WegCBpn_1750753630 cluster:ay36)
           by smtp.aliyun-inc.com;
-          Tue, 24 Jun 2025 16:26:55 +0800
-Message-ID: <1750753610.4544265-4-xuanzhuo@linux.alibaba.com>
+          Tue, 24 Jun 2025 16:27:11 +0800
+Message-ID: <1750753624.9023402-5-xuanzhuo@linux.alibaba.com>
 Subject: Re: [PATCH net v2 2/2] virtio-net: xsk: rx: move the xdp->data adjustment to buf_to_xdp()
-Date: Tue, 24 Jun 2025 16:26:50 +0800
+Date: Tue, 24 Jun 2025 16:27:04 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: Bui Quang Minh <minhquangbui99@gmail.com>
 Cc: "Michael S. Tsirkin" <mst@redhat.com>,
@@ -76,7 +76,7 @@ On Sat, 21 Jun 2025 21:49:52 +0700, Bui Quang Minh <minhquangbui99@gmail.com> wr
 >
 > Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
 
-
+Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 
 > ---
 >  drivers/net/virtio_net.c | 16 ++++++++++++++--
