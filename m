@@ -1,194 +1,208 @@
-Return-Path: <bpf+bounces-61415-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61416-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A43CAE6DD2
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 19:46:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3BB4AE6DFE
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 20:00:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B97BA17D397
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 17:46:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 995733B79A8
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 18:00:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59F43231A51;
-	Tue, 24 Jun 2025 17:46:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B14BF2E3B16;
+	Tue, 24 Jun 2025 18:00:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kqxkrrv+"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Jos1yDt3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FE54126C05
-	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 17:46:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96FEB1FF1BF
+	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 18:00:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750787183; cv=none; b=KS7xbIZSYUWWPVW7ZM6m4h51k4Uy/fQrK2DZhnAqWlDYrnt6pNzw6aMJd6DK8MgLM2jSUxR6DdjjMY0vYFn6aLgKWiziAX0mPMmnanJuHP81dYfBtZAnFR5wNdSGTDlju3A2/OwQJsDUPpLkHpjNs+I+s6k4/P/msupIrFc8RQI=
+	t=1750788043; cv=none; b=VFC/zcJWUKyQpMgy0Bkjk33iQ0fjcUDvVWuJhSEvTly9Taj+aw5J9eexhxQY4x/T2yKiWpzIKPjwPG90M8TtdTPrceEy7XNFnO86C/X3Sq3Mhs/0hGuImEWyNTdQRR37f6MYzjkH3oXK/ZzGAMweIOgSXjvYHqfP0A4E6b2zt7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750787183; c=relaxed/simple;
-	bh=V0ObSnq57Aq7LhRDsj5zbxo7mMxyULksMGHebcfylY4=;
+	s=arc-20240116; t=1750788043; c=relaxed/simple;
+	bh=QHOWqcPUrJmp0AYLgakEfn72z5gvVH2RNePKPb9CByo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rnLBEHEyh9goGTyu345lOuV/xrk1qS6IAsJ7jC1INkg+oVL1gp72CxRVdQ1wbwjedPpkFmKptqxxqeEuTR2KoLB/PgQy3E7532dtAGm2bVFRP2HPZbdizujirtuxKqQYTtC6hgYKV27j/PBx4E2agq22rJwWvuVDMuRN8eGKp84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kqxkrrv+; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-453426170b6so531375e9.1
-        for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 10:46:20 -0700 (PDT)
+	 To:Cc:Content-Type; b=C8JJhuzZUt/up0bSQFUH8s22NA3KJRicJQriGa/9vDx1xFaK7wTfL9YvLbh2WSzHmaeN1v4M76xYkOEn+LzEIC53J0Cck8m3J1BC/T9QgRpJry2qUfi5XA6jzloTg1z1lVhKEUeQ7GxbjZIBPbLcnf0NASfk78a0zkLk5RdatCg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=Jos1yDt3; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-ade33027bcfso116221166b.1
+        for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 11:00:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750787179; x=1751391979; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h0bpciISCndgA54zjn9bnwP25l4dMBWZsrKIFL4F8Uw=;
-        b=Kqxkrrv+k6lvc/XMtPzXNUNLm5uwtSN/0kNDf0JBjlW93+rSn5Jz3EC0sHCqn4xgHJ
-         alB+KuwLC95KOlcsL+Si3OSPou60bD+3D55UROrgDHYo+FmF56EkAuk6ZvgkFVyNhTjM
-         CcdpZx7OP/09d58dyUM6Jc00WjyLn93R9nepnFxwfMFu2bZ4q0WdM6X5vpYSgpOSfRvJ
-         O5uQyD0YBhhLHF1ausLG52H9k2n3z31FbcOSjSqF6Ap4+E1PeHUL3rHiFawOrNfgThCZ
-         yEmAmP6njhaGLEVTeJu6nqrlIFcVGe4NG+38MzcRmGPmBmSYUmLcgdWVrp8Y29bT+G8M
-         NIkA==
+        d=broadcom.com; s=google; t=1750788040; x=1751392840; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=45Osn6urcSEJx2MxMy8sPkGIYcZvu5BwF60LcEEpoa0=;
+        b=Jos1yDt3H4MzluoTqZVFF4OL4fFrQOrtLkKpakYoPHJuMn2B14oaOleQUShC6sah77
+         9HP3P1Ikolb3XQpNutA4T9dmFBmGvW0DbCGur8Ga1m44euLunj8ntZS4m9S1OsbIy6Px
+         NePS8qkUvxApCDenj/w0HzZdW0ZzgiglUvtmA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750787179; x=1751391979;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=h0bpciISCndgA54zjn9bnwP25l4dMBWZsrKIFL4F8Uw=;
-        b=DI9Gs9q7nd/LDoOtZV6FyKWsK34+ypfWmurep2i2rTwObLOaFM/KkUBCsUmHNzIMjy
-         YeL3s+/KOrfGk2Lsgn/0rytWuG21bTlC+oFcYA66MKVAh85mNiz2nCjvxMcGqcmi8L2c
-         H65zuh6iWasvFW116iAxs2pTFJRsWuwJV8aPDyl49sBx/37+q1XwQhOyqoITx2e8Cs/7
-         DHWsC5yBFAM3Mat9mz/qjaNpJESFrmoDPEQIHWleB3Bmw7/7RrJIjqiFRV5Jd8P3GzP/
-         H+TnQ4iCTAHQOL8KaPlpAGRyhozYRD0dL7DZZZBsI4D8/BcdSsMflh8CDZUFvxJ2BQ8f
-         cK+w==
-X-Gm-Message-State: AOJu0YxiZzOKBJVulvll9QHe3JMDnzoj8AvFPZlgHSTKIkwejaOgqj6a
-	aXYp0N35bR16MS+GN3b25LHGqMYkH4fE23cztFp5kPjZ7izcFbp9BB03B8pRPEO/6DlANhSFlWp
-	nee9f64Ko2RSgOzM3/WaM/gBgNGdZuq0=
-X-Gm-Gg: ASbGncsoZMfgy3q+RbUABMDe4Z7wADOmJcxsd1VMvADWotaApxa0M59wpdOk9CEE+4o
-	zwIu9uvcdVwF6hk8bVykYMrRcKwgM7tFSoLbnoNLOeXlXhr2BUbiXC/ObHfivtDjujreUxrFkqr
-	CNIBDJ9Q6e39jNgb5ORrvon5hyrhE4MFPWLDITBn6EnIt75DAAIrKwT9wS1pk=
-X-Google-Smtp-Source: AGHT+IE/aNW+B/F8X0GgPCxi6zJ55wx1Tm7hR3X0O4/PvoKuxq/YDWVhEINem7BhlfgAhjoTrzK+oa3rzaqT/eH75b0=
-X-Received: by 2002:a05:6000:1acc:b0:3a4:e231:8632 with SMTP id
- ffacd0b85a97d-3a6e71cde0dmr3679589f8f.12.1750787179369; Tue, 24 Jun 2025
- 10:46:19 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1750788040; x=1751392840;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=45Osn6urcSEJx2MxMy8sPkGIYcZvu5BwF60LcEEpoa0=;
+        b=RULe2jNf5q4ign65iBTzirhBl0wVIRdeRPOkJJQsJkF6skQq4jDuXeygDV1TvJuPg5
+         4PJX7B1AYHYut/B0+77cbdys1LLRL/rIwpa6X3P5o7EWWLm5CrwRyEgqqA5nvR+KDGOL
+         6ZfzjdlKorN1C2M+wX8EsiQ8Qrv6ZY+F366Do8Br1MslDAYCLxuQ+kWooCXOHZwpjeEb
+         CRD7roVU/AAmRStHrgyp16EFeiqfgY+uzEMRu70/EjDOyB7fBfu9MiUrp4B9EuYHPXoP
+         6QbTR7tFrGLoMsHcdzxNgnyKhhJ6HYMSsLXWdOos+LXOZodRcU1TsT/MctLpkQdmK+aO
+         7Obw==
+X-Forwarded-Encrypted: i=1; AJvYcCUlqN2vbwxUrHFqFZO0dD1FrT8mrvX9HBt++3ppQ6AgCUxhr6IqyCs9SDG4HafzqwhQZkc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxXEBpFPHIyZ8ONnTQccUks1QpBjF+iS4d4/Wc+vBhZyt8Jni/Z
+	iMOfbF7MXU+BWfnPwzebJj2K4nsunHzG6xMaB/lYeldyWnIswTfrAkLCsqKe7jK7bDXggGwYpV3
+	fMBXvmuQjd/rdpbSZoX1Pzc0eMHYQHHLzkUCTIrLP
+X-Gm-Gg: ASbGnctCrgVlWEDjhhacRPFTGdbWC0xqJWYjPr8Hf2CpaD2+vJmsrREUdJ6ciJqvUwa
+	6YscTDaAmdo9U8l/QS48aV30B5TTW6+FiwD6D/gXZJrQ5eRKo2S9L0wjyyyAXtNyVI1lGiPRjLg
+	YX645ftcRUCIeoV58vhsyQiHGfcRLvYJ8kFA8KBq7l60qD
+X-Google-Smtp-Source: AGHT+IFzjcm+BsoHTOSMw6UWLJnFF2fHLv5NvLWu8Og24Sp6NVstBe7hiLul3tl5S1MbkyzWwKUahM6wuGTu8Zc+VKc=
+X-Received: by 2002:a17:907:c24c:b0:ad2:1cd6:aacf with SMTP id
+ a640c23a62f3a-ae0beed95bamr16035366b.47.1750788038323; Tue, 24 Jun 2025
+ 11:00:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250624031252.2966759-1-memxor@gmail.com> <20250624031252.2966759-6-memxor@gmail.com>
-In-Reply-To: <20250624031252.2966759-6-memxor@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 24 Jun 2025 10:46:08 -0700
-X-Gm-Features: Ac12FXxe1mtrc2mLaTaGyuRtiR3-STTWqe-GyR0vuITr5Cg22axdV7vM03VItY0
-Message-ID: <CAADnVQ+4NpB37Dc5dh1Mj19_=QbjMmNYU2UGqGLa=W8tsWAXmg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 05/12] bpf: Add function to find program from
- stack trace
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Emil Tsalapatis <emil@etsalapatis.com>, Barret Rhoden <brho@google.com>, 
-	Matt Bobrowski <mattbobrowski@google.com>, kkd@meta.com, Kernel Team <kernel-team@meta.com>
+References: <aFl7jpCNzscumuN2@debian.debian> <633986ae-75c4-44fa-96f8-2dde00e17530@kernel.org>
+In-Reply-To: <633986ae-75c4-44fa-96f8-2dde00e17530@kernel.org>
+From: Michael Chan <michael.chan@broadcom.com>
+Date: Tue, 24 Jun 2025 11:00:26 -0700
+X-Gm-Features: Ac12FXxljKyD3S_Y-OCEt4mQE8-W5cymxwwOigSk3YWUsWkRuolMG42B_YohZjs
+Message-ID: <CACKFLik8Ve4=eUV=TJMkwkScLN0H80TtiqPUwtuDqNEji+StSQ@mail.gmail.com>
+Subject: Re: [PATCH net] bnxt: properly flush XDP redirect lists
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: Yan Zhai <yan@cloudflare.com>, netdev@vger.kernel.org, 
+	Pavan Chebbi <pavan.chebbi@broadcom.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Andy Gospodarek <andrew.gospodarek@broadcom.com>, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kernel-team@cloudflare.com
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="000000000000379c790638551bf8"
+
+--000000000000379c790638551bf8
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 23, 2025 at 8:13=E2=80=AFPM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Mon, Jun 23, 2025 at 10:59=E2=80=AFPM Jesper Dangaard Brouer <hawk@kerne=
+l.org> wrote:
 >
-> In preparation of figuring out the closest program that led to the
-> current point in the kernel, implement a function that scans through the
-> stack trace and finds out the closest BPF program when walking down the
-> stack trace.
->
-> Special care needs to be taken to skip over kernel and BPF subprog
-> frames. We basically scan until we find a BPF main prog frame. The
-> assumption is that if a program calls into us transitively, we'll
-> hit it along the way. If not, we end up returning NULL.
->
-> Contextually the function will be used in places where we know the
-> program may have called into us.
->
-> Due to reliance on arch_bpf_stack_walk(), this function only works on
-> x86 with CONFIG_UNWINDER_ORC, arm64, and s390. Remove the warning from
-> arch_bpf_stack_walk as well since we call it outside bpf_throw()
-> context.
->
-> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
->  arch/x86/net/bpf_jit_comp.c |  1 -
->  include/linux/bpf.h         |  1 +
->  kernel/bpf/core.c           | 28 ++++++++++++++++++++++++++++
->  3 files changed, 29 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index 15672cb926fc..40e1b3b9634f 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -3845,7 +3845,6 @@ void arch_bpf_stack_walk(bool (*consume_fn)(void *c=
-ookie, u64 ip, u64 sp, u64 bp
->         }
->         return;
->  #endif
-> -       WARN(1, "verification of programs using bpf_throw should have fai=
-led\n");
->  }
->
->  void bpf_arch_poke_desc_update(struct bpf_jit_poke_descriptor *poke,
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index f30697c72ba9..cc14ff8e0b88 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -3669,5 +3669,6 @@ static inline bool bpf_is_subprog(const struct bpf_=
-prog *prog)
->
->  int bpf_prog_get_file_line(struct bpf_prog *prog, unsigned long ip, cons=
-t char **filep,
->                            const char **linep, int *nump);
-> +struct bpf_prog *bpf_prog_find_from_stack(void);
->
->  #endif /* _LINUX_BPF_H */
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index b4203f68cf33..3871d817396d 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -3262,4 +3262,32 @@ int bpf_prog_get_file_line(struct bpf_prog *prog, =
-unsigned long ip, const char *
->         return 0;
->  }
->
-> +struct walk_stack_ctx {
-> +       struct bpf_prog *prog;
-> +};
-> +
-> +static bool find_from_stack_cb(void *cookie, u64 ip, u64 sp, u64 bp)
-> +{
-> +       struct walk_stack_ctx *ctxp =3D cookie;
-> +       struct bpf_prog *prog;
-> +
-> +       rcu_read_lock();
-> +       prog =3D bpf_prog_ksym_find(ip);
-> +       rcu_read_unlock();
+> On 23/06/2025 18.06, Yan Zhai wrote:
+> > We encountered following crash when testing a XDP_REDIRECT feature
+> > in production:
+> >
+> [...]
+> >
+> (To Andy + Michael:)
+> The initial bug was introduced in [1] commit a7559bc8c17c ("bnxt:
+> support transmit and free of aggregation buffers") in bnxt_rx_xdp()
+> where case XDP_TX zeros the *event, that also carries the XDP-redirect
+> indication.
+> I'm wondering if the driver should not reset the *event value?
+> (all other drive code paths doesn't)
 
-Same here.
-Otherwise it looks like an rcu noob mistake.
+Resetting *event was only correct before XDP_REDIRECT support was added.
 
-> +       if (!prog)
-> +               return true;
-> +       if (bpf_is_subprog(prog))
-> +               return true;
-> +       ctxp->prog =3D prog;
-> +       return false;
-> +}
-> +
-> +struct bpf_prog *bpf_prog_find_from_stack(void)
-> +{
-> +       struct walk_stack_ctx ctx =3D {};
-> +
-> +       arch_bpf_stack_walk(find_from_stack_cb, &ctx);
-> +       return ctx.prog;
-> +}
-> +
->  #endif
-> --
-> 2.47.1
 >
+>
+> > We can stably reproduce this crash by returning XDP_TX
+> > and XDP_REDIRECT randomly for incoming packets in a naive XDP program.
+> > Properly propagate the XDP_REDIRECT events back fixes the crash.
+
+Thanks for the patch.  The fix is similar to edc0140cc3b7 ("bnxt_en:
+Flush XDP for bnxt_poll_nitroa0()'s NAPI")
+
+Somehow the fix was only applied to one chip's poll function and not
+the other chips' poll functions.
+Reviewed-by: Michael Chan <michael.chan@broadcom.com>
+
+--000000000000379c790638551bf8
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+OnaLEot1MoQO7BIe5S9H4AcCEXXcrJJiAtMCl47ARpyHmvQFQFFTrHgUYEd9V+9bOzY7MBIGSV1N
+/JfsT1sZw6HT0lJkSQefhPGpBniAob62DJP3qr11tu8CAwEAAaOCAdowggHWMA4GA1UdDwEB/wQE
+AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
+c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
+AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
+TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
+bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
+L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJAYDVR0R
+BB0wG4EZbWljaGFlbC5jaGFuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNV
+HSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU31rAyTdZweIF0tJTFYwfOv2w
+L4QwDQYJKoZIhvcNAQELBQADggEBACcuyaGmk0NSZ7Kio7O7WSZ0j0f9xXcBnLbJvQXFYM7JI5uS
+kw5ozATEN5gfmNIe0AHzqwoYjAf3x8Dv2w7HgyrxWdpjTKQFv5jojxa3A5LVuM8mhPGZfR/L5jSk
+5xc3llsKqrWI4ov4JyW79p0E99gfPA6Waixoavxvv1CZBQ4Stu7N660kTu9sJrACf20E+hdKLoiU
+hd5wiQXo9B2ncm5P3jFLYLBmPltIn/uzdiYpFj+E9kS9XYDd+boBZhN1Vh0296zLQZobLfKFzClo
+E6IFyTTANonrXvCRgodKS+QJEH8Syu2jSKe023aVemkuZjzvPK7o9iU7BKkPG2pzLPgxggJgMIIC
+XAIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
+EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxeQGjDntHGb2iaQkIw
+DQYJYIZIAWUDBAIBBQCggccwLwYJKoZIhvcNAQkEMSIEIGpVX2vlRib6zjuXXQgw/iclxwtq0F3S
+MEQNfMpA59S6MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI1MDYy
+NDE4MDA0MFowXAYJKoZIhvcNAQkPMU8wTTALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
+SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEB
+AQUABIIBAEBNGXn4pdi3vAmyJ17WeDopHMn+2kV0OwLMtEv0zJQtnjiVtIdhbEklM5YP7VEgziCV
+2e59XgE4VRZM9Vz8Du3Zw/yk+8GHLvZmBCuKyrGbBz3iNVwjIPXrAqWvV2lEYZSmww+broYoD8gE
+m3R08eq5MChzJbLmFdalkfBjG5S3g5WU88K1DEfw8SYqWfThVeH+i5NNAO6s9UO0j0shXIC2fyBq
+2dbxb9auOMg87pONiiFDc4OexLHppY7YhbiP3571bVcFj1AJB8EGcY98q8cgM/KFi8HW+xTel2I/
+NHx/VleXZU0SJdfHoutd4HcGmP/fNhBN4hpZbk06wNH4UKM=
+--000000000000379c790638551bf8--
 
