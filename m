@@ -1,207 +1,273 @@
-Return-Path: <bpf+bounces-61427-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61428-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DC73AE6F9B
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 21:31:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C50AAE6F9E
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 21:32:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08A763A24D5
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 19:30:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88E583A3D5A
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 19:31:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 487682E6123;
-	Tue, 24 Jun 2025 19:31:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCEBE26AAB2;
+	Tue, 24 Jun 2025 19:31:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IQQto+ZG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QxwDL52o"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5333E17A2E2
-	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 19:30:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BB9624169A
+	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 19:31:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750793460; cv=none; b=SJ/l6BBzCc50utPBhkTodzI/vh7le5QZfIxMT8uLdD3pxXU0tlHO8KcFUGXzFEdlHfhqiNqemsO04BYsELqEhh1EZJjnNuwCCkOgmtdmAN0+lHe4cbCq4RKRWA3pFOTXuNagFHCck2FDn/1b3Ykvd7RhK9cDQhP7QYlVHeVegEQ=
+	t=1750793514; cv=none; b=DcuA8tKmcCIG7BLVT1nbMDt4dHU+/Le2KnQNnClhXO/ef3g+Mv6IUedMdofHlnMJfpibpksf86+au3Y8tgsKplYuJ/GEDSfUybEWB9eX71Unj+IH+czeUgk7GDH+Rf0iqwM6evZUbIzTk6sUuEugQXIaQN2uEyitTRtRui1zTBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750793460; c=relaxed/simple;
-	bh=iFYBThftnqM5oFc636LXvkU+XjAhvyupP6d2iW8e63Q=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=l97GNmvOquDFnGRu2/wUWpAVIARQtMg3JSet6XE5QaIXx0E80+Mds0cK/+NGvYH4cHjygy+iknfIzQ3kznFVJO/WQvsuP2H/ylE3Og0tc3xyem4iYMzPIoPYDhGN/pGVM27U1/zscSGcqxE774J6ndkDnrFrmIb+Xogc/wgwj7M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IQQto+ZG; arc=none smtp.client-ip=209.85.210.175
+	s=arc-20240116; t=1750793514; c=relaxed/simple;
+	bh=TTpIAe+r4qZIMND8c/QIolov560/nCHmvf/RjvyTHbc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eMDbUn1OpwPfQaBNMN87rIYdAPFEOOtnSrAzVGh2zu+UBcCa0UPBl3rp0HrgJ1rxU+GoVcNP4SDQ6w1gMsXg5yRDRSg4hlcv5iPVbBZ8iAbOJoWXjNL6HOKCpga1ENNYqu+Xbe7lkWfdb/WJZY6dCaSOaIhi47pcA/TkfEYNBb4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QxwDL52o; arc=none smtp.client-ip=209.85.128.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-74801bc6dc5so108738b3a.1
-        for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 12:30:59 -0700 (PDT)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-453647147c6so9258985e9.2
+        for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 12:31:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750793458; x=1751398258; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=WE6Tv3TBgPqCs5QZxIFiKiHxBu/0shv/EAHm1UeNeMM=;
-        b=IQQto+ZGq9vvovzdPlyfkcqi3Npps4lfpqDPL2REDELaN4u6AOREDg+NLit1UgNLws
-         TA6Q/Ky21KSws6Kqap9RrALAfnA9wVq1aohMBJyitn74TnWDg4ysWzX+l3q+CQk4BGvU
-         jsGDS7r0XO25cvHdazL2DhRs//RrIXYclNsxjkPo7TBpLoePd/6fduke45pszlRjTkjW
-         eYG4nIPumYufCYEwEmlKXZ++N2LGHFWNeMn82S6pQn3+MBnf8wTwiWjbSHvH1w4CeNCh
-         2mnsPcymhPfjL45dF6slu5LrRgaLQVV20XcwfAMVJxJmVI3OBzMUHThrzD2JkeiHGo/K
-         aLpw==
+        d=gmail.com; s=20230601; t=1750793510; x=1751398310; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ao/A3f0CHV32D8vrlNke2o6S9RTMQZcejJKBKvgRpfY=;
+        b=QxwDL52op/1raDalWxPEUxbnqi8xAp+ua+HXDJzpVmAwJuYseBfVls7/XVlx4UfruK
+         0VqlDZPJcKx8lmQ53FM9wBUUxj3aHULHPH9/wZ0C2Nt5PvmQ6+ht6nVLdfQo0Ul7Wbrz
+         vZn5EhmSq/osLthNhRYvMmjcPRUMNJisWfkaNkmYpQ4ZMKf+LgGH/7ytzXV6Ym/n1iqp
+         PFJQonh78Qo/gg9OEbmA8mF1gqJ/iRoJ/CTdtMAOrSZuYWC0CVSjUzRoslXObqkZJORf
+         e9DhPhs56ql3egK0Zei9jhozdQDIeHkCvrfamZamLuXwVzORvSxFaIXNW/wKUa3zJsG2
+         6mHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750793458; x=1751398258;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WE6Tv3TBgPqCs5QZxIFiKiHxBu/0shv/EAHm1UeNeMM=;
-        b=rde8WJzcaXkrOmVB7dD+P/P6azgKqrjRYA4hpQ+1PXamwsopB/kgysevhuGOW5MCOv
-         ok3N++tFBJz92Ce5UZTlbXWtcd8POp4C4PAeAeKVweyUNjCPgqmUdG3nNfWWe1d0zrIh
-         6WO3qfoyddmEHkeqDpBgtGdNDozi/Zm/q4K4f04PD8xG3ohsCP08z2eAXDA6aMRst0KV
-         KGiBhVqa62L0DcpT3XKX/YT9xalQwNafdejYnfy50P03w+bcKBUFM6zTsMigqPx9vn7Z
-         NRmgcOWih5sPBuZQvp8/olndK7a8diY8yAJNc6zVZXLqqwTRM6gQyG2MBj3vnnM1YGul
-         4zgw==
-X-Forwarded-Encrypted: i=1; AJvYcCX6Z+5Ap1VdSSOcm7qXdjAFcFXcmczhoNYWR1HTzKkdlUvLTn9+nbRkimd4I5BUvEo9m9g=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwDitpH8f3jeaAVqO0PoMz4k18Q12nQvQKCIsHJK11Xw4UdpRiy
-	YrcV/Ox4wC04VwlLEmoHL2oT2hxR07ldT+nKCdKYzPcO6kqkfQAZ2Gkn
-X-Gm-Gg: ASbGncs1l5J7Ral4CB9FVsAnbFAA0DZhaMuGvYKUT5z49ky4f8Hdq4HDJq0E+SjQNbN
-	//5g7uKv5rdsmIqAYUIQW4iNjZoQ/5GEvERIBdgBaPFtq31sL2HBcfD55Gyoxh6AgLwRfHqyRka
-	ql7sx7mEYXICCIsmJ1cM77x8nsoRb9qfCqpxTU1nrCdDZrZHnHWD3nPYDXw/McBjaYmE724fc1u
-	HNZA6X+cgE4znB7QgqzIRJ32Cb8BBdtIUzXNhsuJjNICG5k2SbhxVjw3+iP6/lrOX/JSJpjP1NE
-	RUxGrVHCvyy/lnFAavXQKc4d9R7hM0BO662o7rB7sKKO4oAAjJzRUYjii2MaqHtnAzfMtsoLabc
-	gvkeQycn6i+huDzQBNcxZ
-X-Google-Smtp-Source: AGHT+IEiDOTukYtiQFGx6TOQP0s9ZnVav7CMa5Ry9Nt4Y56FHh+NWu5ynAFF1Yk5zpbFZEY53UB9Fg==
-X-Received: by 2002:a05:6a00:2396:b0:736:5969:2b6f with SMTP id d2e1a72fcca58-74ad4c0266cmr254015b3a.6.1750793457511;
-        Tue, 24 Jun 2025 12:30:57 -0700 (PDT)
-Received: from ?IPv6:2a03:83e0:115c:1:9b77:d425:d62:b7ce? ([2620:10d:c090:500::6:f262])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-749b5e09881sm2501753b3a.30.2025.06.24.12.30.56
+        d=1e100.net; s=20230601; t=1750793510; x=1751398310;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ao/A3f0CHV32D8vrlNke2o6S9RTMQZcejJKBKvgRpfY=;
+        b=dprZ+g36+RitW+1NLxt4YW+iuyRkwPgu9r3CeojW4SXulI1JnR5nhx2pUtclsQZ78t
+         st7YzV16Oxp5sROUyFUdVIf5uevq5dwNotyuC1IFttvSldtrzBCgkV/qp3UbDhlBawSd
+         CfPSjV0vUJ7Yc9HF2oQhHSlF0sg5oCkaBmyTOssCVIT/xmibagDEb5OwFHsGIQS+IoZE
+         yF5y2jx7J88fvLB1ES3E6iLRurd2ZnBnEPWISfYVgBuhZ9w3DrRRA5dXEcA+o+ATU1Sv
+         AvxTv+u30vVc8msVibJKCO0F/QnPOr6CqP7zY9hK0gVtLcALyaEhjneJHRZRFdIzFL4a
+         3Zow==
+X-Gm-Message-State: AOJu0YyjTvQPQ5ffptYO6WBASgwmUB+UhPVEeCCXaB/fku8h8jM+r/LR
+	5ZRus++OsrmOlViQwC1HsCTkmlFiz6HEiIJzwqbYxttmdaTRneOhpabLU13/fg==
+X-Gm-Gg: ASbGncs9tMkSxhqWYPpemmeApJLvlkurzn3eSqJhh5ehwdDAmt7J9tTOLREJtbSpwTK
+	RVdeq6514No23Bxa55E699557NyfdAH67uT/jAuRyz6pcydEwtWz9EHIwOXkrh1k9FDF3x1nlau
+	Tm6ukQ15ClBM62xQB09Rk7/O2A96gpbuDn3wYGd8TASniGnBKtBBx2RRmPW+7ISHnOHaqFh22Pf
+	SlU3kdx/aK0hNwo4coCjcHblxUYnlM61jnEahtcCr4LZP2r10kqJNEhum6pTExIMcGJyMEkBAKP
+	NFGsVuylZXV4twK/qJlECF9KynubkoHxfCvfi8+h2cpi0KqQH98Rqrcou17RDewPNFDbwggR1wj
+	XnQRTg6I=
+X-Google-Smtp-Source: AGHT+IGEFriIvA694QPNh2cjwv3UMsel/hszsArurt2OLdIThcFigfQsEcqY8XT8AOW5zY7LC8gGuw==
+X-Received: by 2002:a05:600c:1c0d:b0:453:58e8:a445 with SMTP id 5b1f17b1804b1-45381af1bbfmr1634695e9.11.1750793509957;
+        Tue, 24 Jun 2025 12:31:49 -0700 (PDT)
+Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4536470371csm149022455e9.30.2025.06.24.12.31.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Jun 2025 12:30:57 -0700 (PDT)
-Message-ID: <96b5c623be2b07ecab82a405637c9e4456548148.camel@gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Add range tracking for BPF_NEG
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Song Liu <song@kernel.org>, bpf@vger.kernel.org
-Cc: kernel-team@meta.com, andrii@kernel.org, ast@kernel.org,
- daniel@iogearbox.net, 	martin.lau@linux.dev
-Date: Tue, 24 Jun 2025 12:30:55 -0700
-In-Reply-To: <20250624172320.2923031-1-song@kernel.org>
-References: <20250624172320.2923031-1-song@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        Tue, 24 Jun 2025 12:31:49 -0700 (PDT)
+From: Anton Protopopov <a.s.protopopov@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Anton Protopopov <a.s.protopopov@gmail.com>,
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next] bpf: simplify code by exporting a btf helper
+Date: Tue, 24 Jun 2025 19:36:55 +0000
+Message-Id: <20250624193655.733050-1-a.s.protopopov@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Tue, 2025-06-24 at 10:23 -0700, Song Liu wrote:
-> Add range tracking for instruction BPF_NEG. Without this logic, a trivial
-> program like the following will fail
->
->     volatile bool found_value_b;
->     SEC("lsm.s/socket_connect")
->     int BPF_PROG(test_socket_connect)
->     {
->         if (!found_value_b)
->                 return -1;
->         return 0;
->     }
->
-> with verifier log:
->
-> "At program exit the register R0 has smin=3D0 smax=3D4294967295 should ha=
-ve
-> been in [-4095, 0]".
->
-> This is because range information is lost in BPF_NEG:
->
-> 0: R1=3Dctx() R10=3Dfp0
-> ; if (!found_value_b) @ xxxx.c:24
-> 0: (18) r1 =3D 0xffa00000011e7048       ; R1_w=3Dmap_value(...)
-> 2: (71) r0 =3D *(u8 *)(r1 +0)           ; R0_w=3Dscalar(smin32=3D0,smax=
-=3D255)
-> 3: (a4) w0 ^=3D 1                       ; R0_w=3Dscalar(smin32=3D0,smax=
-=3D255)
-> 4: (84) w0 =3D -w0                      ; R0_w=3Dscalar(range info lost)
->
-> Note that, the log above is manually modified to highlight relevant bits.
->
-> Fix this by maintaining proper range information with BPF_NEG, so that
-> the verifier will know:
->
-> 4: (84) w0 =3D -w0                      ; R0_w=3Dscalar(smin32=3D-255,sma=
-x=3D0)
->
-> Also add selftests to make sure the logic works as expected.
->
-> Signed-off-by: Song Liu <song@kernel.org>
-> ---
+There are places in code which can be simplified by using the
+btf_type_is_regular_int() helper (slightly patched to add an
+additional, optional, argument to check the exact size). So
+patch the helper, export it, and simplify code in a few files.
+(Suggested by Eduard in a bit different form in [1].)
 
-I double-checked and backtrack_insn operates as expected indeed.
+[1] https://lore.kernel.org/bpf/7edb47e73baa46705119a23c6bf4af26517a640f.camel@gmail.com/
 
-Note, bpf_reg_state->id has to be reset on BPF_NEG otherwise the
-following is possible:
+Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
+Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
+---
+ include/linux/btf.h            |  1 +
+ kernel/bpf/arraymap.c          | 11 +++------
+ kernel/bpf/bpf_local_storage.c |  8 +------
+ kernel/bpf/btf.c               | 43 +++++++++++++++++-----------------
+ kernel/bpf/local_storage.c     |  9 +------
+ 5 files changed, 27 insertions(+), 45 deletions(-)
 
-  4: (bf) r2 =3D r1                       ; R1_w=3Dscalar(id=3D2,...) R2_w=
-=3Dscalar(id=3D2,...)
-  5: (87) r1 =3D -r1                      ; R1_w=3Dscalar(id=3D2,...)
- =20
-On the master the id is reset by mark_reg_unknown.
-This id is used to transfer range knowledge over all scalars with the
-same id.
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index b2983706292f..dbd52be2dbc4 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -221,6 +221,7 @@ bool btf_is_vmlinux(const struct btf *btf);
+ struct module *btf_try_get_module(const struct btf *btf);
+ u32 btf_nr_types(const struct btf *btf);
+ struct btf *btf_base_btf(const struct btf *btf);
++bool btf_type_is_regular_int(const struct btf_type *t, size_t expected_size);
+ bool btf_member_is_reg_int(const struct btf *btf, const struct btf_type *s,
+ 			   const struct btf_member *m,
+ 			   u32 expected_offset, u32 expected_size);
+diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+index eb28c0f219ee..f7f84800c1dc 100644
+--- a/kernel/bpf/arraymap.c
++++ b/kernel/bpf/arraymap.c
+@@ -530,8 +530,6 @@ static int array_map_check_btf(const struct bpf_map *map,
+ 			       const struct btf_type *key_type,
+ 			       const struct btf_type *value_type)
+ {
+-	u32 int_data;
+-
+ 	/* One exception for keyless BTF: .bss/.data/.rodata map */
+ 	if (btf_type_is_void(key_type)) {
+ 		if (map->map_type != BPF_MAP_TYPE_ARRAY ||
+@@ -544,14 +542,11 @@ static int array_map_check_btf(const struct bpf_map *map,
+ 		return 0;
+ 	}
+ 
+-	if (BTF_INFO_KIND(key_type->info) != BTF_KIND_INT)
+-		return -EINVAL;
+-
+-	int_data = *(u32 *)(key_type + 1);
+-	/* bpf array can only take a u32 key. This check makes sure
++	/*
++	 * Bpf array can only take a u32 key. This check makes sure
+ 	 * that the btf matches the attr used during map_create.
+ 	 */
+-	if (BTF_INT_BITS(int_data) != 32 || BTF_INT_OFFSET(int_data))
++	if (!btf_type_is_regular_int(key_type, sizeof(u32)))
+ 		return -EINVAL;
+ 
+ 	return 0;
+diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
+index fa56c30833ff..1ea8fb93d55e 100644
+--- a/kernel/bpf/bpf_local_storage.c
++++ b/kernel/bpf/bpf_local_storage.c
+@@ -722,13 +722,7 @@ int bpf_local_storage_map_check_btf(const struct bpf_map *map,
+ 				    const struct btf_type *key_type,
+ 				    const struct btf_type *value_type)
+ {
+-	u32 int_data;
+-
+-	if (BTF_INFO_KIND(key_type->info) != BTF_KIND_INT)
+-		return -EINVAL;
+-
+-	int_data = *(u32 *)(key_type + 1);
+-	if (BTF_INT_BITS(int_data) != 32 || BTF_INT_OFFSET(int_data))
++	if (!btf_type_is_regular_int(key_type, sizeof(u32)))
+ 		return -EINVAL;
+ 
+ 	return 0;
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 682acb1ed234..ea21b74d5027 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -857,27 +857,27 @@ const struct btf_type *btf_type_by_id(const struct btf *btf, u32 type_id)
+ }
+ EXPORT_SYMBOL_GPL(btf_type_by_id);
+ 
+-/*
+- * Regular int is not a bit field and it must be either
+- * u8/u16/u32/u64 or __int128.
+- */
+-static bool btf_type_int_is_regular(const struct btf_type *t)
++static bool btf_type_int_is_regular(const struct btf_type *t, size_t expected_size)
+ {
+-	u8 nr_bits, nr_bytes;
+-	u32 int_data;
++	u32 int_data = btf_type_int(t);
++	u8 nr_bits = BTF_INT_BITS(int_data);
++	u8 nr_bytes = BITS_ROUNDUP_BYTES(nr_bits);
+ 
+-	int_data = btf_type_int(t);
+-	nr_bits = BTF_INT_BITS(int_data);
+-	nr_bytes = BITS_ROUNDUP_BYTES(nr_bits);
+-	if (BITS_PER_BYTE_MASKED(nr_bits) ||
+-	    BTF_INT_OFFSET(int_data) ||
+-	    (nr_bytes != sizeof(u8) && nr_bytes != sizeof(u16) &&
+-	     nr_bytes != sizeof(u32) && nr_bytes != sizeof(u64) &&
+-	     nr_bytes != (2 * sizeof(u64)))) {
+-		return false;
+-	}
++	return BITS_PER_BYTE_MASKED(nr_bits) == 0 &&
++	       BTF_INT_OFFSET(int_data) == 0 &&
++	       (nr_bytes <= 16 && is_power_of_2(nr_bytes)) &&
++	       (expected_size == 0 || nr_bytes == expected_size);
++}
+ 
+-	return true;
++/*
++ * Check that the type @t is a regular int. This means that @t is not
++ * a bit field and it has the same size as either of u8/u16/u32/u64
++ * or __int128. If @expected_size is not zero, then size of @t should
++ * be the same.
++ */
++bool btf_type_is_regular_int(const struct btf_type *t, size_t expected_size)
++{
++	return btf_type_is_int(t) && btf_type_int_is_regular(t, expected_size);
+ }
+ 
+ /*
+@@ -2180,7 +2180,7 @@ static int btf_int_check_kflag_member(struct btf_verifier_env *env,
+ 	u32 nr_copy_bits;
+ 
+ 	/* a regular int type is required for the kflag int member */
+-	if (!btf_type_int_is_regular(member_type)) {
++	if (!btf_type_int_is_regular(member_type, 0)) {
+ 		btf_verifier_log_member(env, struct_type, member,
+ 					"Invalid member base type");
+ 		return -EINVAL;
+@@ -2969,8 +2969,7 @@ static int btf_array_resolve(struct btf_verifier_env *env,
+ 		return env_stack_push(env, index_type, index_type_id);
+ 
+ 	index_type = btf_type_id_size(btf, &index_type_id, NULL);
+-	if (!index_type || !btf_type_is_int(index_type) ||
+-	    !btf_type_int_is_regular(index_type)) {
++	if (!index_type || !btf_type_is_regular_int(index_type, 0)) {
+ 		btf_verifier_log_type(env, v->t, "Invalid index");
+ 		return -EINVAL;
+ 	}
+@@ -2995,7 +2994,7 @@ static int btf_array_resolve(struct btf_verifier_env *env,
+ 		return -EINVAL;
+ 	}
+ 
+-	if (btf_type_is_int(elem_type) && !btf_type_int_is_regular(elem_type)) {
++	if (btf_type_is_int(elem_type) && !btf_type_int_is_regular(elem_type, 0)) {
+ 		btf_verifier_log_type(env, v->t, "Invalid array of int");
+ 		return -EINVAL;
+ 	}
+diff --git a/kernel/bpf/local_storage.c b/kernel/bpf/local_storage.c
+index 3969eb0382af..8645a39e8dd1 100644
+--- a/kernel/bpf/local_storage.c
++++ b/kernel/bpf/local_storage.c
+@@ -394,17 +394,10 @@ static int cgroup_storage_check_btf(const struct bpf_map *map,
+ 		if (!btf_member_is_reg_int(btf, key_type, m, offset, size))
+ 			return -EINVAL;
+ 	} else {
+-		u32 int_data;
+-
+ 		/*
+ 		 * Key is expected to be u64, which stores the cgroup_inode_id
+ 		 */
+-
+-		if (BTF_INFO_KIND(key_type->info) != BTF_KIND_INT)
+-			return -EINVAL;
+-
+-		int_data = *(u32 *)(key_type + 1);
+-		if (BTF_INT_BITS(int_data) != 64 || BTF_INT_OFFSET(int_data))
++		if (!btf_type_is_regular_int(key_type, sizeof(u64)))
+ 			return -EINVAL;
+ 	}
+ 
+-- 
+2.34.1
 
-[...]
-
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 279a64933262..93512596a590 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-
-[...]
-
-> @@ -15214,6 +15215,14 @@ static int adjust_scalar_min_max_vals(struct bpf=
-_verifier_env *env,
->  		scalar_min_max_sub(dst_reg, &src_reg);
->  		dst_reg->var_off =3D tnum_sub(dst_reg->var_off, src_reg.var_off);
->  		break;
-> +	case BPF_NEG:
-> +		struct bpf_reg_state dst_reg_copy =3D *dst_reg;
-
-Nit: there might be a concern regarding stack usage.
-     In struct bpf_verifier_env there are a few 'fake_reg'
-     scratch registers defined for similar purpose.
-     Also clangd warns me that declaration after label is a c23 extension.
-
-> +
-> +		___mark_reg_known(dst_reg, 0);
-> +		scalar32_min_max_sub(dst_reg, &dst_reg_copy);
-> +		scalar_min_max_sub(dst_reg, &dst_reg_copy);
-> +		dst_reg->var_off =3D tnum_neg(dst_reg_copy.var_off);
-> +		break;
->  	case BPF_MUL:
->  		dst_reg->var_off =3D tnum_mul(dst_reg->var_off, src_reg.var_off);
->  		scalar32_min_max_mul(dst_reg, &src_reg);
-
-[...]
-
-> diff --git a/tools/testing/selftests/bpf/progs/verifier_precision.c b/too=
-ls/testing/selftests/bpf/progs/verifier_precision.c
-> index 9fe5d255ee37..bcff70f8cebb 100644
-> --- a/tools/testing/selftests/bpf/progs/verifier_precision.c
-> +++ b/tools/testing/selftests/bpf/progs/verifier_precision.c
-
-Nit: tests are usually a separate patch.
-
-> @@ -231,4 +231,34 @@ __naked void bpf_cond_op_not_r10(void)
->  	::: __clobber_all);
->  }
->
-> +SEC("lsm.s/socket_connect")
-> +__success
-> +__naked int bpf_neg_2(void)
-
-Nit: I'd match __log_level(2) output to check the actual range
-     inferred by verifier.
-
-Maybe add a test that operates on 64-bit registers?
-
-[...]
 
