@@ -1,231 +1,123 @@
-Return-Path: <bpf+bounces-61443-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61444-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31152AE7177
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 23:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 667D6AE71A3
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 23:39:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB74C5A27CE
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 21:17:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B347E3AD9EE
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 21:38:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BFBB252900;
-	Tue, 24 Jun 2025 21:18:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DABBC25B1D8;
+	Tue, 24 Jun 2025 21:39:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from 69-171-232-180.mail-mxout.facebook.com (69-171-232-180.mail-mxout.facebook.com [69.171.232.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from neil.brown.name (neil.brown.name [103.29.64.221])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A52D47F4A
-	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 21:18:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 381DF25A2B1;
+	Tue, 24 Jun 2025 21:39:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.29.64.221
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750799899; cv=none; b=YxIuZ+zf52iu+1GwwVy2zQGCr2odMzFeqg2Xjx4a+hAbZdisXZQoctmNUEGbzc5qKfEU/N+8BETDXfA+wRHGnwfACTZaa+HzrsYUlhwBhNwe2XrAV1rOe1CFo9YK1WQ3SFaK6GiCxZ9BHTXpxPDJHRZyB9iFxNq8h9UgAPZudRU=
+	t=1750801146; cv=none; b=fbExkdWgD+/kFg4ryPeQcgsv8GQ892NWqL+IXAX9RkgZiC9zJVfQ5z8cgTh1MWfmF1CxSyD2wmv1K2Qfkabf0Kc7NhzRlr5r09BxSZtErglFFdaesOKwn9UdruKC0Jk7rfdm/jhI5ATjoJEzWzfAWML36/nTQKtJ32CNoEx4MeQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750799899; c=relaxed/simple;
-	bh=pFUG0trft62R96hu6NOuJtQUk+M8QOlre8YRJEvAASc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=U8V4T2TNuf2WCwfaiXLc7nF2GkA0mGQ0pAaR0dQQABzlShbSOVbJLLArw58rGZwf6TzWJR3S1VlNmGeOY+wroFsmYAA8SgAfLnuufnzFUmftLINb8ZDp4XqFCEtsQshP/P8+nZaEuW8GP/9IDTPeQ3fiKE0A/1M1r42PmH/81us=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
-Received: by devvm16039.vll0.facebook.com (Postfix, from userid 128203)
-	id DAA79A49EBF4; Tue, 24 Jun 2025 14:18:02 -0700 (PDT)
-From: Yonghong Song <yonghong.song@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v3] selftests/bpf: Fix usdt multispec failure with arm64/clang20 selftest build
-Date: Tue, 24 Jun 2025 14:18:02 -0700
-Message-ID: <20250624211802.2198821-1-yonghong.song@linux.dev>
-X-Mailer: git-send-email 2.47.1
+	s=arc-20240116; t=1750801146; c=relaxed/simple;
+	bh=Y4l0bh8VQKBCsky1AfAt+0j/ZyivsMcPWV96H9WTLso=;
+	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
+	 References:Date:Message-id; b=OldBsxGRXT5bZbpfl80R/FiGSRG6a84zwOOGEnWD1M6kUHWXCECwlyy0hwmi7cHxDxqOKcMqAg+KG5/Nx0NMNjChP44EqNpz6WnWWWHWpcxnW61PZdEgezEslvmL4C3OBmI2oUMaHvCAx0gxq8VqtBzY34RArfDvNvqevoCq110=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brown.name; spf=pass smtp.mailfrom=neil.brown.name; arc=none smtp.client-ip=103.29.64.221
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brown.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=neil.brown.name
+Received: from 196.186.233.220.static.exetel.com.au ([220.233.186.196] helo=home.neil.brown.name)
+	by neil.brown.name with esmtp (Exim 4.95)
+	(envelope-from <mr@neil.brown.name>)
+	id 1uUBLy-0042q4-5A;
+	Tue, 24 Jun 2025 21:38:54 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+From: "NeilBrown" <neil@brown.name>
+To: =?utf-8?q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+Cc: "Song Liu" <song@kernel.org>, bpf@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-security-module@vger.kernel.org, brauner@kernel.org,
+ kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
+ daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk,
+ jack@suse.cz, kpsingh@kernel.org, mattbobrowski@google.com, m@maowtm.org,
+ =?utf-8?q?G=C3=BCnther?= Noack <gnoack@google.com>
+Subject: Re: [PATCH v5 bpf-next 0/5] bpf path iterator
+In-reply-to: <20250624.xahShi0iCh7t@digikod.net>
+References: <>, <20250624.xahShi0iCh7t@digikod.net>
+Date: Wed, 25 Jun 2025 07:38:53 +1000
+Message-id: <175080113326.2280845.18404947256630567790@noble.neil.brown.name>
 
-When building the selftest with arm64/clang20, the following test failed:
-  ...
-  ubtest_multispec_usdt:PASS:usdt_100_called 0 nsec
-  subtest_multispec_usdt:PASS:usdt_100_sum 0 nsec
-  subtest_multispec_usdt:FAIL:usdt_300_bad_attach unexpected pointer: 0xa=
-aaad82a2a80
-  #471/2   usdt/multispec:FAIL
-  #471     usdt:FAIL
+On Wed, 25 Jun 2025, Micka=C3=ABl Sala=C3=BCn wrote:
+> On Fri, Jun 20, 2025 at 02:59:17PM -0700, Song Liu wrote:
+> > Hi Christian, Micka=C3=ABl, and folks,
+> >=20
+> > Could you please share your comments on this version? Does this
+> > look sane?
+>=20
+> This looks good to me but we need to know what is the acceptable next
+> step to support RCU.  If we can go with another _rcu helper, I'm good
+> with the current approach, otherwise we need to figure out a way to
+> leverage the current helper to make it compatible with callers being in
+> a RCU read-side critical section while leveraging safe path walk (i.e.
+> several calls to path_walk_parent).
 
-But arm64/gcc11 built kernel selftests succeeded. Further debug found arm=
-64/clang
-generated code has much less argument pattern after dedup, but gcc genera=
-ted
-code has a lot more.
+Can you spell out the minimum that you need?
 
-Check usdt probes with usdt.test.o on arm64 platform:
+My vague impression is that you want to search up from a given strut path,
+no further then some other given path, looking for a dentry that matches
+some rule.  Is that correct?
 
-with gcc11 build binary:
-  stapsdt              0x0000002e       NT_STAPSDT (SystemTap probe descr=
-iptors)
-    Provider: test
-    Name: usdt_300
-    Location: 0x00000000000054f8, Base: 0x0000000000000000, Semaphore: 0x=
-0000000000000008
-    Arguments: -4@[sp]
-  stapsdt              0x00000031       NT_STAPSDT (SystemTap probe descr=
-iptors)
-    Provider: test
-    Name: usdt_300
-    Location: 0x0000000000005510, Base: 0x0000000000000000, Semaphore: 0x=
-0000000000000008
-    Arguments: -4@[sp, 4]
-  ...
-  stapsdt              0x00000032       NT_STAPSDT (SystemTap probe descr=
-iptors)
-    Provider: test
-    Name: usdt_300
-    Location: 0x0000000000005660, Base: 0x0000000000000000, Semaphore: 0x=
-0000000000000008
-    Arguments: -4@[sp, 60]
-  ...
-  stapsdt              0x00000034       NT_STAPSDT (SystemTap probe descr=
-iptors)
-    Provider: test
-    Name: usdt_300
-    Location: 0x00000000000070e8, Base: 0x0000000000000000, Semaphore: 0x=
-0000000000000008
-    Arguments: -4@[sp, 1192]
-  stapsdt              0x00000034       NT_STAPSDT (SystemTap probe descr=
-iptors)
-    Provider: test
-    Name: usdt_300
-    Location: 0x0000000000007100, Base: 0x0000000000000000, Semaphore: 0x=
-0000000000000008
-    Arguments: -4@[sp, 1196]
-  ...
-  stapsdt              0x00000032       NT_STAPSDT (SystemTap probe descr=
-iptors)
-    Provider: test
-    Name: usdt_300
-    Location: 0x0000000000009ec4, Base: 0x0000000000000000, Semaphore: 0x=
-0000000000000008
-    Arguments: -4@[sp, 60]
+In general, the original dentry could be moved away from under the
+dentry you find moments after the match is reported.  What mechanisms do
+you have in place to ensure this doesn't happen, or that it doesn't
+matter?
 
-with clang20 build binary:
-  stapsdt              0x0000002e       NT_STAPSDT (SystemTap probe descr=
-iptors)
-    Provider: test
-    Name: usdt_300
-    Location: 0x00000000000009a0, Base: 0x0000000000000000, Semaphore: 0x=
-0000000000000008
-    Arguments: -4@[x9]
-  stapsdt              0x0000002e       NT_STAPSDT (SystemTap probe descr=
-iptors)
-    Provider: test
-    Name: usdt_300
-    Location: 0x00000000000009b8, Base: 0x0000000000000000, Semaphore: 0x=
-0000000000000008
-    Arguments: -4@[x9]
-  ...
-  stapsdt              0x0000002e       NT_STAPSDT (SystemTap probe descr=
-iptors)
-    Provider: test
-    Name: usdt_300
-    Location: 0x0000000000002590, Base: 0x0000000000000000, Semaphore: 0x=
-0000000000000008
-    Arguments: -4@[x9]
-  stapsdt              0x0000002e       NT_STAPSDT (SystemTap probe descr=
-iptors)
-    Provider: test
-    Name: usdt_300
-    Location: 0x00000000000025a8, Base: 0x0000000000000000, Semaphore: 0x=
-0000000000000008
-    Arguments: -4@[x8]
-  ...
-  stapsdt              0x0000002f       NT_STAPSDT (SystemTap probe descr=
-iptors)
-    Provider: test
-    Name: usdt_300
-    Location: 0x0000000000007fdc, Base: 0x0000000000000000, Semaphore: 0x=
-0000000000000008
-    Arguments: -4@[x10]
+Would it be sufficient to have an iterator which reported successive
+ancestors in turn, or reported that you need to restart because something
+changed?  Would you need to know that a restart happened or would it be
+acceptable to transparently start again at the parent of the starting
+point?
 
-There are total 300 locations for usdt_300. For gcc11 built binary, there=
- are
-300 spec's. But for clang20 built binary, there are 3 spec's. The default
-BPF_USDT_MAX_SPEC_CNT is 256, so bpf_program__attach_usdt() will fail for=
- gcc
-but it will succeed with clang.
+Or do you really need a "one step at a time" interface?
 
-To fix the problem, do not do bpf_program__attach_usdt() for usdt_300
-with arm64/clang setup.
+Do you need more complex movements around the tree, or is just walking
+up sufficient?
 
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
----
- tools/testing/selftests/bpf/prog_tests/usdt.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+If this has been discussed or documented elsewhere I'd be happy for you
+just to provide a reference, and I can come back with follow-up
+questions if needed.
 
-Changelogs:
-  v2 -> v3:
-    - v2: https://lore.kernel.org/bpf/20250615185345.2756663-1-yonghong.s=
-ong@linux.dev/
-    - Skip some tests where not arm64/clang setup will succeed and arm64/=
-clang
-      setup will fail.
-  v1 -> v2:
-    - v1: https://lore.kernel.org/bpf/20250613153446.2256725-1-yonghong.s=
-ong@linux.dev/
-    - The commit description in v1 is not right, it checks sdt's for usdt=
-_100
-      while actually it usdt_300 should be checked. Patch 1 has proper
-      descriptions.
-    - Refactor the code to add a new test ust/multispec_fail where a new
-      prog is added and in that new prog BPF_USDT_MAX_SPEC_CNT can overwr=
-ite
-      the default value in order to pass the test.
+Thanks,
+NeilBrown
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/usdt.c b/tools/testin=
-g/selftests/bpf/prog_tests/usdt.c
-index 495d66414b57..9057e983cc54 100644
---- a/tools/testing/selftests/bpf/prog_tests/usdt.c
-+++ b/tools/testing/selftests/bpf/prog_tests/usdt.c
-@@ -270,8 +270,16 @@ static void subtest_multispec_usdt(void)
- 	 */
- 	trigger_300_usdts();
-=20
--	/* we'll reuse usdt_100 BPF program for usdt_300 test */
- 	bpf_link__destroy(skel->links.usdt_100);
-+
-+	bss->usdt_100_called =3D 0;
-+	bss->usdt_100_sum =3D 0;
-+
-+	/* If built with arm64/clang, there will be much less number of specs
-+	 * for usdt_300 call sites.
-+	 */
-+#if !defined(__aarch64__) || !defined(__clang__)
-+	/* we'll reuse usdt_100 BPF program for usdt_300 test */
- 	skel->links.usdt_100 =3D bpf_program__attach_usdt(skel->progs.usdt_100,=
- -1, "/proc/self/exe",
- 							"test", "usdt_300", NULL);
- 	err =3D -errno;
-@@ -282,13 +290,11 @@ static void subtest_multispec_usdt(void)
- 	/* let's check that there are no "dangling" BPF programs attached due
- 	 * to partial success of the above test:usdt_300 attachment
- 	 */
--	bss->usdt_100_called =3D 0;
--	bss->usdt_100_sum =3D 0;
--
- 	f300(777); /* this is 301st instance of usdt_300 */
-=20
- 	ASSERT_EQ(bss->usdt_100_called, 0, "usdt_301_called");
- 	ASSERT_EQ(bss->usdt_100_sum, 0, "usdt_301_sum");
-+#endif
-=20
- 	/* This time we have USDT with 400 inlined invocations, but arg specs
- 	 * should be the same across all sites, so libbpf will only need to
---=20
-2.47.1
+
+>=20
+> >=20
+> > Thanks,
+> > Song
+> >=20
+> > On Mon, Jun 16, 2025 at 11:11=E2=80=AFPM Song Liu <song@kernel.org> wrote:
+> > >
+> > > In security use cases, it is common to apply rules to VFS subtrees.
+> > > However, filtering files in a subtree is not straightforward [1].
+> > >
+> > > One solution to this problem is to start from a path and walk up the VFS
+> > > tree (towards the root). Among in-tree LSMs, Landlock uses this solutio=
+n.
+> > >
+> >=20
+> > [...]
+> >=20
+>=20
 
 
