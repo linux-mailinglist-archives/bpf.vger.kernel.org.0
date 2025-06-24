@@ -1,92 +1,85 @@
-Return-Path: <bpf+bounces-61440-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61441-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3200FAE712E
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 23:00:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4834AAE715A
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 23:11:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B0E83BFF38
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 21:00:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF0AD1BC359E
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 21:11:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7C2718DB02;
-	Tue, 24 Jun 2025 21:00:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F0692571AD;
+	Tue, 24 Jun 2025 21:10:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F7BXV8A3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kbPsrAo+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 065C0366
-	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 21:00:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 364502475F2
+	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 21:10:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750798833; cv=none; b=JBERJwZ+TDsKl9PRSxBF7Msc/SCHlDMYswOi3yDe1CMUv2hHkDGhUgHBIGZty0WKB09GlEgozu+C26PlKOlX/fhSselH7V739FKsutQvPrnlA62pgQwHO1zYenR5l3mNQAFdOUWibx1qBrzH45OAGoBou5eH9O0MpzMIr73NFwk=
+	t=1750799455; cv=none; b=sMTN/yTnOvrOsYN1NjMc2utsORvv4DJeaBG8gMlBte371kOAa7qs+cu8XiHvJyjOdsvs9fKueMOPSjyuNbRHKMuhiFMlM0AxDCs/QA4fkz4ZenBsrTkt1QKIAqbJbnAgfERQ3N6pLR8eqILQaV8as393zDjcgbPLHAdS/fu9Cfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750798833; c=relaxed/simple;
-	bh=gClDrvb/6PGJvBljb5BAEmmL8XW8DnZpA9Yi7IljITs=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=MH8E+KMOHQwAlIcdl3XAeOgrbgd/YxI1vC77p119+FfJzwKhICpFiLBNBqUw+Q8F8F0DNayGnjLuhPIc5ggtqQIYKZhgPSGaK0uKTKcb1XpVX4KNs+K3w4HJPiuqcdZUb7XEK29AwhjUrpIq/7sPnwPXsizMJiPwOxGmHKQnYG0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F7BXV8A3; arc=none smtp.client-ip=209.85.210.181
+	s=arc-20240116; t=1750799455; c=relaxed/simple;
+	bh=PXZ3xhz5v/fttxGH56cOOdmHnVkzJMdvnQsa9jnCgdI=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=c27DthzeMdurTmbf9NbWzxCK6PLYeKqbtj7gotOTTftFpzhfwT56u/53sjela7AZN0z9FeF0gOqe0enTxQ5JEWZvJ3YGswVf1+uL5Pj1CWouh+NfINP00Ms3CxuH+J/B1o49unVAfxZ8WTN1UNcVG86VN5/S9P+UjZBXlxv6AOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kbPsrAo+; arc=none smtp.client-ip=209.85.210.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-748d982e92cso458534b3a.1
-        for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 14:00:31 -0700 (PDT)
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-748feca4a61so3144791b3a.3
+        for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 14:10:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750798831; x=1751403631; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1750799453; x=1751404253; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=zk6qdMLUDTabU9Az6GSpDMkI3DyhzWLukmk+m1DAp6I=;
-        b=F7BXV8A3+Yuf1rCxW41c1ZyR+H9g7phbBcJzdKBk+J3wEr214hkT2G9buufs5hKjz3
-         UJ19o8KmU22qWhzd2ZrC3MWuFrRiVaGJK37XwprXt7ZS3HwdKp82gErqbWbcCyCa1oRg
-         5jc46fbQlcOEJTvX0zIsakejUxeB2hN5Q8WGXSyJcy84fwMI8xrbKfhKo4+OMijH3SO8
-         RTfVHi1nTc1IOJbrpov/tlNXkJgUH25E+Z6VsuCj+5qAKau6O3yC9cQ5uX/B/AAUYHZ9
-         9poJctbrbEFzIbVYrcqF4H88/rInxWQDupDLpXoj+FrdsWZ6zqkp3oo10QAh6LMffOZX
-         BxTA==
+         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=P1S8P6EYMkOp2vsNJJlPBlejDxPt2HKT0r1zZ0Yxmgg=;
+        b=kbPsrAo+iTfqsH+SX15eaz0SGTvYzXnuqpwHA7aXpneqX/xKJXOGBRuSrhFwOw/jro
+         C7GQdzwJROAljhglQr610gHnCL98XGRqWPRakqfTEDJukQUH7BwtGdR2DV+10TR/kQsG
+         Ykpbl4/UgHvA0iKcHp1RrIhS4ZUQAgtdpSYkePa/t8Wn6v75L73mhH+2vvb5otq5Qh1t
+         fOACr9w/Y44iHYan3I0VVxNDofK1W4Uz1BIQNroFZPvPOrcBHQKq6g/06jIYYAA+vxBS
+         WQ5Z3PZuk2k5C6A6Y73DjXO0ossH09rowYaRaF5nVzaa9zbs7DdnEeUUj4K8AAIurTLe
+         vU9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750798831; x=1751403631;
+        d=1e100.net; s=20230601; t=1750799453; x=1751404253;
         h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zk6qdMLUDTabU9Az6GSpDMkI3DyhzWLukmk+m1DAp6I=;
-        b=r9Od9rJo7cu+cNHEdNWmYsbWyuw/YxTM4TEQ+9UbLyPgfIOyfd45y3Iv7PyIN7D1D3
-         uangwTgtOsV1QaEOdo9kFwopx82hqJLtnFF2BMzMKh0+T/nOucI+R23uZ0SnU0AQrIT4
-         2iG1ab0ggz3F+fe+tNfcsBIY7Ftmq4tRS1KwOy45V7Dwl0hFYy1gQpakJJLT+IabuHAS
-         8OWxLEV1dc+XJtnV4E+/0z16PDbEPISgEiuJhz0HzbQsPmTuQfod5Q6pYeVaoUgLPN/5
-         Quy2C5JaMnIvYQamvNXZrdeAd5h73e5hAl3BbMGaZRvS1J/FXHSlJ8tojCtkNWosMF/F
-         T0pA==
-X-Forwarded-Encrypted: i=1; AJvYcCWWf7mmCQRzdRF5rNwPcfNW4Do4TqZmau/a/Y5qrMFBVPfMPBhT4NY3jq/02OOdgwmE1tI=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywc7o14vNjJndrbMr2ADlAdxjchQq9rBxaiqetm8Q2Sg8+9f/WL
-	kXybgwM2ecNEFCCWkWM9LCG0jDNZnDSMedRkSzt9v0tp2b1djB6lcTny
-X-Gm-Gg: ASbGncsW7JlFYUJUYZOFTgczTGXkXJIw3W4S+ksPwVjWmEBS18GMpNzCTTig2Ncrogo
-	3EOZ0EMk8MqXfw1upmm0AaX52QIc9TLZb8Y0p+W3b4FQDJGlYG7wLM8GpPQoecWgWvvHoLDh1AN
-	vL9RxxJrTUvMx35rQhH7LEn7ZLM5bcpBsVR2uZ28yIhplnXv3wCHb1nRCNwT+d0oqtsbsrV2foR
-	bPbeck0dtuGf5oL9Y+I083z2sFZ1kD4I5oDIZnl1TxNtMXJT3CqeGSSJtx3W/OapBjqB9+/5JY7
-	F6ZaaKSQoO7xXqE81RnEPSREdeFbKBO3n6nD7h0EGzP/1oFfZ4nIQi7NDImu7o4u3sVo/YXABiX
-	ss0KL1WtQdOnaJ1IIAftn
-X-Google-Smtp-Source: AGHT+IH9cM6eO7gtwQVZ/AGaxkBjPY3lvfqSMGPrUnCYgdjRxLRlGjyPJO9JfpA7TR60vcT1GqVIfw==
-X-Received: by 2002:a05:6a20:c793:b0:21a:ed12:bdf9 with SMTP id adf61e73a8af0-2207f19700cmr676375637.17.1750798831090;
-        Tue, 24 Jun 2025 14:00:31 -0700 (PDT)
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=P1S8P6EYMkOp2vsNJJlPBlejDxPt2HKT0r1zZ0Yxmgg=;
+        b=xDe4HazH1hfsBuusQcobp7ta8wDb028Uk0oq6ThDrFP+yXu8x5a2rRdWkDmsoYqLx8
+         d+6ifd41K5+6q+QK+uicUQ0wO01yr+3+vI+cDB0ruWyUebFUHy8aDQTN0PW8v1o7PSd+
+         YDMcJr3QM30orkT6ZD+2yXc7FM18YR63Wzx4r7wG0huKElaeBGTp6xwH388QaKJHbMaZ
+         agtAVON2ueIUKaITArXO0JklQDhZrUWe9XkW/qpst1ZiZgxacKu0Vswc5J5ygRUPJhks
+         0A36qY5JzNQTlP1dhOyB0ZhskZPMxNI1zNspEa/KJcOTLo0zXJKKcvWRbR+QNVBP6VYs
+         r/Og==
+X-Forwarded-Encrypted: i=1; AJvYcCXkxs+L+sABXN1WjAHBaM/JFRAJXXWiliJVCArjDnabbjLEKmD/r873xnf9CE97gzb48bk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwJVlu5Gf9YyrDtDxcOvvjXmvBxUUDi8i1Mo1HwmQLN58HBPeXF
+	wAeKE+Hmwq/rpGoGeEQPHe6oWKykUptjKTYl+L/lKIAlADU5nPKcKPVBRiLWlu8vpxI=
+X-Gm-Gg: ASbGnctZfH8cBbkGrbZje5fFrWgIGFijhwn5A99X/xn1ZFs9FxoCHxkYgqdndUEA897
+	ohVz4UmY0rVap6B5tdGeI4bS9YcZhzka0i9JiNv4IPOJMw9qFzAZuaYlQ3gwCrdb60+kqH7OL1M
+	BHvRMJIP9ynz5aOvPdTp0WUPYSENNfJoRtmuH+C9cNLP0igmL1EGecznScljtiAPOkvBG3lCaPU
+	/qnHhBj39m8MSkR8WUL7dH8MnZE5MErTqWoKiBN/kesNDpD/m30eh5rUqf94OESeavVKbGx2b1i
+	/ynLqy8lS4CtBOnnIIQrOS6uEDnEhxE8kUbQqrT6anctcKTD2hXy7EVxmKpB1s5O/eCkJGqNip+
+	56PCZErUgug==
+X-Google-Smtp-Source: AGHT+IEUx5APZLq6OjlaznyDBDOH/iPyposgoiJCV+Ln24G++5Y+XOzZSNv7ksGjX7KHB7oVIwGwzg==
+X-Received: by 2002:a05:6a21:32a7:b0:220:658:860 with SMTP id adf61e73a8af0-2207f2066d9mr656596637.12.1750799453406;
+        Tue, 24 Jun 2025 14:10:53 -0700 (PDT)
 Received: from ?IPv6:2a03:83e0:115c:1:9b77:d425:d62:b7ce? ([2620:10d:c090:500::6:f262])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-749c8854878sm2753018b3a.135.2025.06.24.14.00.29
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-749c8850c6fsm2701652b3a.114.2025.06.24.14.10.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Jun 2025 14:00:30 -0700 (PDT)
-Message-ID: <4be25f7442a52244d0dd1abb47bc6750e57984c9.camel@gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Add range tracking for BPF_NEG
+        Tue, 24 Jun 2025 14:10:53 -0700 (PDT)
+Message-ID: <55bdd85e5db7dae94016ae57bf2d1ff233dc0881.camel@gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: simplify code by exporting a btf helper
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: Song Liu <songliubraving@meta.com>
-Cc: Song Liu <song@kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-  Kernel Team <kernel-team@meta.com>, "andrii@kernel.org"
- <andrii@kernel.org>, "ast@kernel.org"	 <ast@kernel.org>,
- "daniel@iogearbox.net" <daniel@iogearbox.net>,  "martin.lau@linux.dev"	
- <martin.lau@linux.dev>
-Date: Tue, 24 Jun 2025 14:00:29 -0700
-In-Reply-To: <11CF7792-6165-499B-96E7-BF28BD74F9B4@meta.com>
-References: <20250624172320.2923031-1-song@kernel.org>
-	 <96b5c623be2b07ecab82a405637c9e4456548148.camel@gmail.com>
-	 <11CF7792-6165-499B-96E7-BF28BD74F9B4@meta.com>
+To: Anton Protopopov <a.s.protopopov@gmail.com>, bpf@vger.kernel.org
+Date: Tue, 24 Jun 2025 14:10:52 -0700
+In-Reply-To: <20250624193655.733050-1-a.s.protopopov@gmail.com>
+References: <20250624193655.733050-1-a.s.protopopov@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
@@ -97,45 +90,32 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Tue, 2025-06-24 at 20:50 +0000, Song Liu wrote:
+On Tue, 2025-06-24 at 19:36 +0000, Anton Protopopov wrote:
+> There are places in code which can be simplified by using the
+> btf_type_is_regular_int() helper (slightly patched to add an
+> additional, optional, argument to check the exact size). So
+> patch the helper, export it, and simplify code in a few files.
+> (Suggested by Eduard in a bit different form in [1].)
+>=20
+> [1] https://lore.kernel.org/bpf/7edb47e73baa46705119a23c6bf4af26517a640f.=
+camel@gmail.com/
+>=20
+> Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
+> Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
+> ---
+
+I think such cleanup makes sense.
+Imo, the patch would be a bit simpler if:
+- original interface of the btf_type_int_is_regular() is preserved,
+  thus avoiding most of the changes in the btf.c;
+- helpers btf_is_i32 and btf_is_i64 are introduced for external usage.
+
+E.g. like here:
+https://github.com/kernel-patches/bpf/commit/d3c003f0a83cb66700f6a6e9b750d8=
+e425b53cf5
+(I use btf_is_u{32,64} there, but it should be i{32,64}).
+
+Nit: the subject is a bit too generic.
 
 [...]
-
-> > Note, bpf_reg_state->id has to be reset on BPF_NEG otherwise the
-> > following is possible:
-> >=20
-> >  4: (bf) r2 =3D r1                       ; R1_w=3Dscalar(id=3D2,...) R2=
-_w=3Dscalar(id=3D2,...)
-> >  5: (87) r1 =3D -r1                      ; R1_w=3Dscalar(id=3D2,...)
-> >=20
-> > On the master the id is reset by mark_reg_unknown.
-> > This id is used to transfer range knowledge over all scalars with the
-> > same id.
->=20
-> I think we should use "__mark_reg_known(dst_reg, 0);" here?
-
-That's an option, yes.
-
-[...]
-
-> > Nit: I'd match __log_level(2) output to check the actual range
-> >     inferred by verifier.
->=20
-> I tried __log_level(2). However, this program is so simple that
-> the verifier log is really simple:
->=20
-> VERIFIER LOG:
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> processed 3 insns (limit 1000000) max_states_per_insn 0 total_states 0 pe=
-ak_states 0 mark_read 0
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->=20
-> So I didn=E2=80=99t include __log_level(2) here.=20
-
-When __log_level(2) is specified every instruction visited by verifier
-should be printed in the log with range info etc.
-E.g. see verifier_precision.c:bpf_cond_op_not_r10().
-
-If that is not working for you could you please share a branch on gh
-or something like that?
 
