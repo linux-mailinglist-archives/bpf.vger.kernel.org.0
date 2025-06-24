@@ -1,148 +1,265 @@
-Return-Path: <bpf+bounces-61377-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61378-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08A42AE6998
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 16:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AF0D8AE69CE
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 16:57:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB30A4E55CB
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 14:46:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F0FC4E1F17
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 14:50:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1E512D662D;
-	Tue, 24 Jun 2025 14:36:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A8FF2E62A0;
+	Tue, 24 Jun 2025 14:43:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iqKAuJL8"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="h4zEgjxn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C07F2D4B55;
-	Tue, 24 Jun 2025 14:36:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0504D2D879D
+	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 14:43:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750775803; cv=none; b=VLxaZ6ng8DvpevW47mjbqn++gHZ9GBPlG2QUHipjTKBTHayCNQaHwDZKjjQNSvC+1LwvpYY2v2+3lNY6jNhobvwNexYBzmZOE1nbGLRuDodDSlZlnFU7bEfaQp9AHI+KRt0FZBOF+ZTb5rmkOcmpGu2vyuzKIxPt41W7MQXvX4A=
+	t=1750776224; cv=none; b=m9YVSocd4c8TVP7ZzTXqf9+APcd96EKAO7SNQUWOWlbbzDS4k/rXuNhLwiApDaMWARfq/oossVqosMuuJyckVjsIB6HQ7paRj8sKs+mSmxr2do8kF3CvZB65MzLjQ0p4xrFEITWwQaCdX3/ZeZELzcSfZvmZDfUTSZ228OtvMA8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750775803; c=relaxed/simple;
-	bh=cGvID7iNjFw3hCX2Q3UbTMYpmXpoJ9L97AGMCmURFBM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PUyO20NSCzRya7/C9wlbrMz32GUpa2CAVfsFFAwOY+i4OFSsZitGUPsVjemlIFtaeMJAqjhxdEVKuO1VtIFi0SfYzxop8HrODsyRDm91/NDAo+4Kv+PtQv/0xGviYGC/mpwgXeOVeAur7uhLiCFhGm1JYJNM5wURYHgfdgD0ujg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iqKAuJL8; arc=none smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-313bb9b2f5bso629524a91.3;
-        Tue, 24 Jun 2025 07:36:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750775801; x=1751380601; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KTVh9NYfR7GuqBMwngWQvuBj18Bm8G+r3At4Sh1jKm4=;
-        b=iqKAuJL8FUSbhwZurIa11DcRuPpGUo7Y9cDFyBj1A1uhgNHjkdMKZkN5UTPunmuGMt
-         Q0FGXs+sOxnrzfdDssyolAlgn8WDfz/IlW6rPaZ8dI6vCA44lrpkh0VUfjrEpna3h7rr
-         TwVAjeYleGBfvqIUstlRZxO7fDGLgzSUSNc85S3GMb1AnUxxVLAFJD+paO4Y4j5VoF7L
-         de/2r8ibM6UjPZFIjugcTL59KQ/+KDTjjqvRxQKsn222SVKjH/KDROEYIyxNvSW5kT8Z
-         S+FjqDrD0e43IrVYiOBpamdM2P1BjvdnURgbbQ9VpkBnO3KAAhFi4r2wmDTT08y41i8V
-         9lJg==
+	s=arc-20240116; t=1750776224; c=relaxed/simple;
+	bh=6r0las+/Ii+bobt18cWF8Yd39NfjYX1RuGTPL5F1ass=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=eTgTsWY9+Fj05/RDiXPUN2Hs8Yj2HWT9vtqZaKivIpI6ZuBhm2XSInGLyFHYard2MBYyf6UPf1z6mnSRBYnyiEfBQwM3KED1QskfvGmRmJW4mLQDRhCWAcaDPlErENkWUzXxIog584Hs9buFHTFZoJpEKvPSY6Iq6ZLwUBmumlE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=h4zEgjxn; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1750776222;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AsJFD8Xb7TNUkeNMyUpPYkjT7yFBNxg0JTSP55Zxpfs=;
+	b=h4zEgjxnUo9TU4OimXNDmYIgBbTmhSGTBD7RJVDo2b4KYS0NWNOXPsVqsuZYEaaGUkbOBc
+	KEnE10yXxFPVLn9jJRHMwbw1LEmYq7sgu9F/C6yfRJGcKQP+fFxcGIwB42M16ye9vAOTtg
+	DikavYpY22Q0yhMa1VKz+bgzCL7MXEM=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-365-Hil0b2UGOPW1Ai5xVXa7Mw-1; Tue, 24 Jun 2025 10:43:40 -0400
+X-MC-Unique: Hil0b2UGOPW1Ai5xVXa7Mw-1
+X-Mimecast-MFC-AGG-ID: Hil0b2UGOPW1Ai5xVXa7Mw_1750776219
+Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-553b396258eso2572478e87.3
+        for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 07:43:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750775801; x=1751380601;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KTVh9NYfR7GuqBMwngWQvuBj18Bm8G+r3At4Sh1jKm4=;
-        b=ZUK5dM8ChkLE+DsxuXPi02KCGQQOlTwbnjOYnL+6fRYtuhJ50HxbIn3Meyo0ZTJe+e
-         0LRr5tEmFz2LUZD5Ym5n4p+7ayCXdX3DVknEIqZiqNQeFh7ogpEMIKCiareFlHhF92hU
-         xvm7eF9stDOKF+6HbyU3auk+reklg8Dh2bgCqICkuaznapXQANMD9Czqxvxxsjv3VgFC
-         of5X06HXlyFVJDJLhL8B55hjDO0jbPS04gkibM3M1GMgJoxJwyIXqnVb52bcQ6as7zmb
-         Nan4qDFcDSLBe6E6/nDDrkFbnGw375FC92Pjw0lhpb/1fuT/6qPuuxX0y/7og7BZgoQH
-         sKnA==
-X-Forwarded-Encrypted: i=1; AJvYcCUoaj0ZnB+vlQ8wOoTuRl/O6vqdMGAEQ3osET4v7CG/uMp9b5V7DHjrAplrOttbE2lydUA=@vger.kernel.org, AJvYcCWbHbjlNwK71pl1nicsExZ89oDikCk5Y2JpJhbP06BSIAAZ5ve28ubixWB1sKn6kgVI0sGhphO5@vger.kernel.org, AJvYcCX0aTObQ1ZhztYQWnVhezKJCugn57Ew0lDonFKJsf8VwwrJT6ccV+p2uSM1DWA/2jKZQvXc1n6je+yHy9mG@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw+VUT2nk0BjfwQqKo8XwJx+id1OZjWe/BXLhkaAuBCYdYfVlfj
-	M59YYcCVPZqHXlbEDB1Fh7dmMJpuH7FjawdWaSUmOao6b2okfAXRBUN1
-X-Gm-Gg: ASbGncsjcafBBbA0m1B7c0ix3jgkFIuYdzs577pS4JB+hirAGsM0L+Nqq9K1EhP4GJt
-	JZN6VcCmtW5DzbV1hA74InWKpz/LzfOJpPlv+ZdOA61tEgFzyikBheGA3BbCPE9gF1Q2MtxyLMs
-	Zx4zeIZQMZ14c2QgC6KfI88r1Hcfd9/AUGDaLS753I113kGVSd2HDSCQavSad/wwCGUnGf47PI7
-	xd9uhw10NjcmqBINB4QI17Nwzzhzp5fCiEXFXxtOOcvZ0+MGpdn9NaWoj84ficdrhs67aPL0NX4
-	gQMDuTZEZdmWwJIWW+ZZVs6vvk+9BIADXhTcqG3sAf0THtlXqfMqeRAXGL7ZyjKKnueFmF2IdY+
-	xu29z65GuQ7YsBVSB8tpzQ2mF3WJD4iFtYtbIYzo0
-X-Google-Smtp-Source: AGHT+IHS9vDnuU2WNVX8FwC7SNF+yJeYaFCaub11naFV+gQ6pgp9/gLGfgnq2n1F7kLFckIWmcXERw==
-X-Received: by 2002:a17:90b:4a86:b0:313:1e60:584d with SMTP id 98e67ed59e1d1-3159d636181mr26151303a91.11.1750775801107;
-        Tue, 24 Jun 2025 07:36:41 -0700 (PDT)
-Received: from ?IPV6:2001:ee0:4f0e:fb30:1f60:cc25:9268:94fb? ([2001:ee0:4f0e:fb30:1f60:cc25:9268:94fb])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3159e07cedbsm11714380a91.42.2025.06.24.07.36.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Jun 2025 07:36:40 -0700 (PDT)
-Message-ID: <88387a67-98a4-4179-b685-18c2098fcdda@gmail.com>
-Date: Tue, 24 Jun 2025 21:36:32 +0700
+        d=1e100.net; s=20230601; t=1750776219; x=1751381019;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AsJFD8Xb7TNUkeNMyUpPYkjT7yFBNxg0JTSP55Zxpfs=;
+        b=B/yi2MQiYEn/01e78KXwgcmbBQsnHD9Hcm26Ti7J1FrPd+sZ/z8POd+BrructO9j8Q
+         RRNCjB72RKY6H/IAfkQViwNZnBORKhva7pVw+my34zsjtMNGgykekpjd7FzrCyhXw2MJ
+         Tooo4Ok5sZwZAFqZn1PfgA7x2Xdez2n8Y9q5WKi7WSUbNVj8oIBk8rNhLLsczJlVb1d7
+         CKa6uKhHF0RVNIupYhRy9kcSxuiJUEOgSnuPQw6bzpWzjJPkDUKjXDIK6FuI8YrxasYy
+         yGBAbb4lvTjrYuZ/3gZAibwuvbnau6LLwnCQWSkbTzrt/OJgwp099vcV7usmhlcNehXE
+         EnQw==
+X-Forwarded-Encrypted: i=1; AJvYcCUaFFnyLybeirTCW3FYebezdTMaNZpaXx0lkukvPL9pYDoXtjrFWdzJF+k9W7vnh+hEU7s=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzj4rqOxWMWbcGWh7jKrdDZ1y042BU7juxoHbbnNt5RFJR8MA+H
+	OuG2tS5+fWww12frz/slhiwJdsonVYbhVmxX9BQ9ko0DzppLHmGhekuldUb3PCTzGeCMpaHMDOq
+	AXEMdYecYBz8343HydzBcd+BH60lEzDPWWRF6FVvJAIpOKRhfbdDYbA==
+X-Gm-Gg: ASbGncswuIH2XSg5i3Vk1AUc1NWP70H6d55Ik0YolHFeU/fOrIH1TGsMnpdebfup4lh
+	iG208TrHZeD9uLmI0QgphxxhRiHRj9+2fcMvkXpE7ZfLqAmlY3nzIUm+g91Qd6qjP4dEBFRffyi
+	BncSiEfaSBdL+0A6ECaaPkodtFGzMHHlMtBrQJDw3F9ctSi3MTB/FmKkSGAgZStFe0TE1uilAX4
+	aDt/xJwx715gqVcuhLYl5GNuHD9XMGb34ozrcbFeNGxbvN8thQ8lL0cPKXKkAECGjLyQY1FUlCk
+	kiGVhJ7HjWD+1XKXA+Dv3oNsbbtzFYcbAZ+ITF3gGe81ywQ=
+X-Received: by 2002:ac2:51d5:0:b0:553:349c:646c with SMTP id 2adb3069b0e04-553e3bf2109mr4783145e87.27.1750776218748;
+        Tue, 24 Jun 2025 07:43:38 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF0aXMGFpRJQr9IDGvwiXOXGJUpblWAgU5bfHFxKSwW7q7amMW/E+3VuHA5u82kZnQnHCkEPw==
+X-Received: by 2002:ac2:51d5:0:b0:553:349c:646c with SMTP id 2adb3069b0e04-553e3bf2109mr4783111e87.27.1750776218257;
+        Tue, 24 Jun 2025 07:43:38 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-553e41cdf64sm1839877e87.234.2025.06.24.07.43.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Jun 2025 07:43:37 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 178B01B37786; Tue, 24 Jun 2025 16:43:36 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Zi Yan <ziy@nvidia.com>, David Hildenbrand <david@redhat.com>
+Cc: Byungchul Park <byungchul@sk.com>, willy@infradead.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ kernel_team@skhynix.com, kuba@kernel.org, almasrymina@google.com,
+ ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
+ akpm@linux-foundation.org, davem@davemloft.net, john.fastabend@gmail.com,
+ andrew+netdev@lunn.ch, asml.silence@gmail.com, tariqt@nvidia.com,
+ edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com,
+ leon@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
+ rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org,
+ linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com,
+ hannes@cmpxchg.org, jackmanb@google.com, "jesper@cloudflare.com"
+ <jesper@cloudflare.com>
+Subject: Re: [PATCH net-next v6 9/9] page_pool: access ->pp_magic through
+ struct netmem_desc in page_pool_page_is_pp()
+In-Reply-To: <42E9BEA8-9B02-440F-94BF-74393827B01E@nvidia.com>
+References: <20250620041224.46646-1-byungchul@sk.com>
+ <20250620041224.46646-10-byungchul@sk.com>
+ <ce5b4b18-9934-41e3-af04-c34653b4b5fa@redhat.com>
+ <20250623101622.GB3199@system.software.com>
+ <460ACE40-9E99-42B8-90F0-2B18D2D8C72C@nvidia.com>
+ <a8d40a05-db4c-400f-839b-3c6159a1feab@redhat.com>
+ <42E9BEA8-9B02-440F-94BF-74393827B01E@nvidia.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Tue, 24 Jun 2025 16:43:36 +0200
+Message-ID: <87o6udfbdz.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v2 1/2] virtio-net: xsk: rx: fix the frame's length
- check
-To: Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org
-Cc: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
- Xuan Zhuo <xuanzhuo@linux.alibaba.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?=
- <eperezma@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, virtualization@lists.linux.dev,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-References: <20250621144952.32469-1-minhquangbui99@gmail.com>
- <20250621144952.32469-2-minhquangbui99@gmail.com>
- <5fb3c0e4-759c-4f56-8a78-e599c891f618@redhat.com>
-Content-Language: en-US
-From: Bui Quang Minh <minhquangbui99@gmail.com>
-In-Reply-To: <5fb3c0e4-759c-4f56-8a78-e599c891f618@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 6/24/25 17:02, Paolo Abeni wrote:
-> On 6/21/25 4:49 PM, Bui Quang Minh wrote:
->> When calling buf_to_xdp, the len argument is the frame data's length
->> without virtio header's length (vi->hdr_len). We check that len with
->>
->> 	xsk_pool_get_rx_frame_size() + vi->hdr_len
->>
->> to ensure the provided len does not larger than the allocated chunk
->> size. The additional vi->hdr_len is because in virtnet_add_recvbuf_xsk,
->> we use part of XDP_PACKET_HEADROOM for virtio header and ask the vhost
->> to start placing data from
->>
->> 	hard_start + XDP_PACKET_HEADROOM - vi->hdr_len
->> not
->> 	hard_start + XDP_PACKET_HEADROOM
->>
->> But the first buffer has virtio_header, so the maximum frame's length in
->> the first buffer can only be
->>
->> 	xsk_pool_get_rx_frame_size()
->> not
->> 	xsk_pool_get_rx_frame_size() + vi->hdr_len
->>
->> like in the current check.
->>
->> This commit adds an additional argument to buf_to_xdp differentiate
->> between the first buffer and other ones to correctly calculate the maximum
->> frame's length.
->>
->> Fixes: a4e7ba702701 ("virtio_net: xsk: rx: support recv small mode")
-> It looks like the checks in the blamed commit above are correct and the
-> bug has been added with commit 99c861b44eb1f ("virtio_net: xsk: rx:
-> support recv merge mode")???
+Zi Yan <ziy@nvidia.com> writes:
 
-AFAICS, the small mode has only 1 buffer per frame and that buffer is 
-quite the same as first buffer in mergeable mode. That buffer still has 
-virtio header (though it's smaller than in mergeable case), so the 
-remaining space for data is only xsk_pool_get_rx_frame_size() not 
-xsk_pool_get_rx_frame_size() + vi->hdr_len.
+> On 23 Jun 2025, at 10:58, David Hildenbrand wrote:
+>
+>> On 23.06.25 13:13, Zi Yan wrote:
+>>> On 23 Jun 2025, at 6:16, Byungchul Park wrote:
+>>>
+>>>> On Mon, Jun 23, 2025 at 11:16:43AM +0200, David Hildenbrand wrote:
+>>>>> On 20.06.25 06:12, Byungchul Park wrote:
+>>>>>> To simplify struct page, the effort to separate its own descriptor f=
+rom
+>>>>>> struct page is required and the work for page pool is on going.
+>>>>>>
+>>>>>> To achieve that, all the code should avoid directly accessing page p=
+ool
+>>>>>> members of struct page.
+>>>>>>
+>>>>>> Access ->pp_magic through struct netmem_desc instead of directly
+>>>>>> accessing it through struct page in page_pool_page_is_pp().  Plus, m=
+ove
+>>>>>> page_pool_page_is_pp() from mm.h to netmem.h to use struct netmem_de=
+sc
+>>>>>> without header dependency issue.
+>>>>>>
+>>>>>> Signed-off-by: Byungchul Park <byungchul@sk.com>
+>>>>>> Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>>>>>> Reviewed-by: Mina Almasry <almasrymina@google.com>
+>>>>>> Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
+>>>>>> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+>>>>>> Acked-by: Harry Yoo <harry.yoo@oracle.com>
+>>>>>> ---
+>>>>>>    include/linux/mm.h   | 12 ------------
+>>>>>>    include/net/netmem.h | 14 ++++++++++++++
+>>>>>>    mm/page_alloc.c      |  1 +
+>>>>>>    3 files changed, 15 insertions(+), 12 deletions(-)
+>>>>>>
+>>>>>> diff --git a/include/linux/mm.h b/include/linux/mm.h
+>>>>>> index 0ef2ba0c667a..0b7f7f998085 100644
+>>>>>> --- a/include/linux/mm.h
+>>>>>> +++ b/include/linux/mm.h
+>>>>>> @@ -4172,16 +4172,4 @@ int arch_lock_shadow_stack_status(struct task=
+_struct *t, unsigned long status);
+>>>>>>     */
+>>>>>>    #define PP_MAGIC_MASK ~(PP_DMA_INDEX_MASK | 0x3UL)
+>>>>>>
+>>>>>> -#ifdef CONFIG_PAGE_POOL
+>>>>>> -static inline bool page_pool_page_is_pp(struct page *page)
+>>>>>> -{
+>>>>>> -     return (page->pp_magic & PP_MAGIC_MASK) =3D=3D PP_SIGNATURE;
+>>>>>> -}
+>>>>>> -#else
+>>>>>> -static inline bool page_pool_page_is_pp(struct page *page)
+>>>>>> -{
+>>>>>> -     return false;
+>>>>>> -}
+>>>>>> -#endif
+>>>>>> -
+>>>>>>    #endif /* _LINUX_MM_H */
+>>>>>> diff --git a/include/net/netmem.h b/include/net/netmem.h
+>>>>>> index d49ed49d250b..3d1b1dfc9ba5 100644
+>>>>>> --- a/include/net/netmem.h
+>>>>>> +++ b/include/net/netmem.h
+>>>>>> @@ -56,6 +56,20 @@ NETMEM_DESC_ASSERT_OFFSET(pp_ref_count, pp_ref_co=
+unt);
+>>>>>>     */
+>>>>>>    static_assert(sizeof(struct netmem_desc) <=3D offsetof(struct pag=
+e, _refcount));
+>>>>>>
+>>>>>> +#ifdef CONFIG_PAGE_POOL
+>>>>>> +static inline bool page_pool_page_is_pp(struct page *page)
+>>>>>> +{
+>>>>>> +     struct netmem_desc *desc =3D (struct netmem_desc *)page;
+>>>>>> +
+>>>>>> +     return (desc->pp_magic & PP_MAGIC_MASK) =3D=3D PP_SIGNATURE;
+>>>>>> +}
+>>>>>> +#else
+>>>>>> +static inline bool page_pool_page_is_pp(struct page *page)
+>>>>>> +{
+>>>>>> +     return false;
+>>>>>> +}
+>>>>>> +#endif
+>>>>>
+>>>>> I wonder how helpful this cleanup is long-term.
+>>>>>
+>>>>> page_pool_page_is_pp() is only called from mm/page_alloc.c, right?
+>>>>
+>>>> Yes.
+>>>>
+>>>>> There, we want to make sure that no pagepool page is ever returned to
+>>>>> the buddy.
+>>>>>
+>>>>> How reasonable is this sanity check to have long-term? Wouldn't we be
+>>>>> able to check that on some higher-level freeing path?
+>>>>>
+>>>>> The reason I am commenting is that once we decouple "struct page" from
+>>>>> "struct netmem_desc", we'd have to lookup here the corresponding "str=
+uct
+>>>>> netmem_desc".
+>>>>>
+>>>>> ... but at that point here (when we free the actual pages), the "stru=
+ct
+>>>>> netmem_desc" would likely already have been freed separately (remembe=
+r:
+>>>>> it will be dynamically allocated).
+>>>>>
+>>>>> With that in mind:
+>>>>>
+>>>>> 1) Is there a higher level "struct netmem_desc" freeing path where we
+>>>>> could check that instead, so we don't have to cast from pages to
+>>>>> netmem_desc at all.
+>>>>
+>>>> I also thought it's too paranoiac.  However, I thought it's other issue
+>>>> than this work.  That's why I left the API as is for now, it can be go=
+ne
+>>>> once we get convinced the check is unnecessary in deep buddy.  Wrong?
+>>>>
+>>>>> 2) How valuable are these sanity checks deep in the buddy?
+>>>>
+>>>> That was also what I felt weird on.
+>>>
+>>> It seems very useful when I asked last time[1]:
+>>>
+>>> |> We have actually used this at Cloudflare to catch some page_pool bug=
+s.
+>>
+>> My question is rather, whether there is some higher-level freeing path f=
+or netmem_desc where we could check that instead (IOW, earlier).
+>>
+>> Or is it really arbitrary put_page() (IOW, we assume that many possible =
+references can be held)?
+>
+> +Toke, who I talked about this last time.
+>
+> Maybe he can shed some light on it.
 
-Thanks,
-Quang Minh.
+As others have pointed out, basically, AFAIU: Yes, pages are *supposed*
+to go through a common freeing path where this check could reside, but
+we've had bugs where they ended up leaking anyway, which is why this
+check in MM was added in the first place.
+
+I don't recall the specifics of *what* the bug was; +Jesper who maybe does?
+
+-Toke
+
 
