@@ -1,91 +1,90 @@
-Return-Path: <bpf+bounces-61452-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61453-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 907F1AE720F
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 00:05:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2F8AAE7210
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 00:07:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C55B1893465
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 22:05:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E122A7A333E
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 22:06:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1EF025A355;
-	Tue, 24 Jun 2025 22:05:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F7A525A624;
+	Tue, 24 Jun 2025 22:07:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DUkvfUmW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WSyQLaSr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11942307483
-	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 22:05:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1D2F307483
+	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 22:07:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750802708; cv=none; b=tegmj3J7CQlEX7nvExrzbCTKshuPX6Fz7Z+NtMcgD4rEMd43WNEYcolhebOGofZCfmPpe8JgcMf/qxxuF3YlwyYiT3jrLbbxzbkSHRDSgXGtzdFuh16BOgn3GmudSi+nz8ezqBnI7veO4mId6wRD+Jy5Z2t4VcGlpISp1zCwXs4=
+	t=1750802835; cv=none; b=ZIRpeBJT0A+0BgNZOS47zWCmmT0wnsOmBAknigNI1V6GJUlgJlvLMHihFlXbjJ18ckHSRVcH9STotU4U6TUc6AuDnI7ZXOSDspg/vMmGtmSZlIuBNxw1I/kyzzejx3bfaYrVpsAPrlMFkprS/TA0X20M3eRE2c6PI/f8ERY67fw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750802708; c=relaxed/simple;
-	bh=hHM6oMxz6rRobrXek4MYYJ//JcY+VifSf02iHZB6Xl8=;
+	s=arc-20240116; t=1750802835; c=relaxed/simple;
+	bh=JyRIxXpGKrQoVZFa7L3MzxyIw5x1GX7XHf0ZHyNS2Lc=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Cldxt59I/zJ4xbtfvUReqggmdGa7Pdhp+AnaN/EGUDcSQyi1Fd/VdngidAvXT1H0o8BjSHH5RbcpZCmsIcQgi2Wx8mRA5uosigA7KPQ5AScgdKJNs8/ZbPI2NnrD2rzt501XA4vjxsd3ZWzuxesWPHDpq1sEXfl4wWdXgj0Wpws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DUkvfUmW; arc=none smtp.client-ip=209.85.210.182
+	 Content-Type:MIME-Version; b=lwUkPyQaOncH5li8UBbH4kEr9xtecFmC3op6xwOrgqol6rptdu3l4WfU/lYDv4MRyJfT+douCqwyn0J+UofoVYhRXfLMWk7WqMohRwinKFMk9fPSb4SfM49tpEaUxiGIczCSSwYvQClW1dUfP5rjDBZTQxpCSoimdqJRqmi6lE4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WSyQLaSr; arc=none smtp.client-ip=209.85.210.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-74801bc6dc5so213781b3a.1
-        for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 15:05:06 -0700 (PDT)
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-747fc77bb2aso4559548b3a.3
+        for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 15:07:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750802706; x=1751407506; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1750802833; x=1751407633; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=JP6DZ0V6JA2NRMtHzc3fUkJdLhuO8YJxwgaRF9tmA+Q=;
-        b=DUkvfUmW++vcvzZCDj3ltFOCgA5VvVv8GCwOUeOFQpAOajZrPaF8J3tZ0FdrD288OB
-         rjkOzcLI81w4dOgZKsOiJZeWpjy+4pc19sq3vYch59d6mFbNHqRYRRfUrM7mpcr4o6oT
-         UEjOLnne2ufCUhFuOlcWpk4JnoO13saIHnSGMDlgk7FUzJZahGqcAi4J0L/DkcwzEF4x
-         s/gDqLw3KMXnzGqnYk1q2doKdKeSMaENQg5XS4blYlIEzqNOvEKh6s0qL+Rp76W8FrYS
-         X3OZ3xdIBbeUC9wY9PYNGsxUUH66gKyAaT+K4PpKsnMNeZqHSEwNm5TtGMBtY52TBRTG
-         Or3A==
+        bh=yetRafmNsPbsJXCOaSs+LmghSUEvFykf6/3syoGxU5U=;
+        b=WSyQLaSrNds1FWvKazJs64uY4XBo7kbQ4qutbGUxZ0M3bKLzvHandT0moyrDrfxkyg
+         LwbZ3eOb/0LsWnCTN4ZniCxBTntnY9FzixyWzgmNTBKKWVp4skCgaM0jB3B1Ww/6JtY7
+         swUZVUJd8hjpzsQRkbimKVY4It9cHznY/Z/HOlfN5HwqEuTj45kOPTozS4bleIjSJcvn
+         mN+dUbBDa0D58mLepYh7SHATJeRYsN9lT5wkb7tikDQuUlqUXt3mguxHhg50qr31KRgu
+         cUw/xLUaJf3QIx/gQgqKJY9Y0Wvvj6Es7A00boaRwQ8GCmhJ6mWgcwshZp96raNU9+Gs
+         tapQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750802706; x=1751407506;
+        d=1e100.net; s=20230601; t=1750802833; x=1751407633;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=JP6DZ0V6JA2NRMtHzc3fUkJdLhuO8YJxwgaRF9tmA+Q=;
-        b=BvkciTUH+LQS7UCvVPS+sJW8lEhY3tpiAPa6cOPrMuQZmanmZ5ennjFdhfDnrHDYA2
-         guOQbp+rLdOtzac8OY+8/0e5e2+zKh+4QlezStyVWYpEWfYyudBCZqIz0wls1wq8kkYF
-         vUESAfbz15CB6eWBSrMWqKSanOUBpDDWm64MU7TDf/N78xGbJkyaRSCjYb4vE90RCOBd
-         zmWq8u7N9UzzA3cY7dofwNOCxi2hqyVWmwFbSnxIE0buEVJeenPBsU4nDRymRQmUcoKk
-         esYCPgnWFO8sRnfWuZUf/dBaWmmTrIp30YRntpOew0l5GxI7lyyCcJegFrMRI52aphev
-         2HTQ==
-X-Gm-Message-State: AOJu0Yx0OVjHCpfDLD6TfJRiZZkkc9mHfGb5ytSiAiNBLz9eTfGU84Vv
-	Ive2dB0wEOtEIsurPdPHHLvUB6tDv9ApPj035wxWvQrA/dMmXjv41+rq
-X-Gm-Gg: ASbGncur0wD8Sg4kQUn2uN1WZuh8GtkP0caEoC/uVsKwbxw00SwT+R0v9CAn0ENbUo0
-	RSJbCtYLz8JE9kj8bizYMLFTEO1RmyRnLZFjRqT80Y4NNR6X7Q8tzSpyFOZs64NVlH9KaQKd7r5
-	NLF2QzrvK0RJNQW5F/xQo2qMeuZVmsspVhS8S1eNQVkyrbyKrNQiiEICfMbuXJ4C4yZPKCUfqF6
-	1u0qSwzOgG+ix73TUn+9jw1ElL7n92r6mwAG5sElA+dgNG30hpIUkBaTa/Kg1W9V0Qa9yP8SXww
-	UL6B0OEKO5OtjnBNxPuESakrvQy9cKLZOnTuM1AAtldBRUfK0TwiQlSXBCfvhQhHZ/Uz16ri/7d
-	F4jNPat/kfQ==
-X-Google-Smtp-Source: AGHT+IGwswXr3XxdOBxGeAK3VdDKsOjWcG7+lDVNVcqpERKhL91roYryJyuKhhf3w5MuwKpQWIbWrA==
-X-Received: by 2002:a05:6a00:2396:b0:736:5969:2b6f with SMTP id d2e1a72fcca58-74ad4c0266cmr816275b3a.6.1750802706174;
-        Tue, 24 Jun 2025 15:05:06 -0700 (PDT)
+        bh=yetRafmNsPbsJXCOaSs+LmghSUEvFykf6/3syoGxU5U=;
+        b=kXVXsemEnDgqvNGtnevMpQBrnKkZnTG5+BmgQCkZEGCiE75SFaBI9h+5NQjZU8ujQw
+         YDAN0ZzmF18tGozc0gPsZ5PdJPGZ9Iwn/c3SbuP9X6UTT40G931uHChmI9fRPnd6GqTx
+         kGnePCTAdsWr+zzqtU5vSqEggCf4oNobB+zf44blzOANw4tKWXAd/8M76EV1yOzG52hQ
+         maBL6h4sPJEpuJX2EnAtyV1vRSiYqfly2/PsXYedZo89SvCS3mL7se5bNf4ctn64V6HV
+         5lAbWjWfqk9s+Ah2oNSBbwBR1xMIoRuS+yCEurJezJdbEH/g1nwv+8jdT/UvUVv/vDpX
+         M/9Q==
+X-Gm-Message-State: AOJu0YzQnw8YIScLi86vfEeBt3jrgiJFD3fKBROIUyHJ9qSTNUpLVfcs
+	JoO/2MTJpGjaEshIeWnbn3NN1oCPJJMFVf1kWX/F3mqTLDb4qNykWUnl
+X-Gm-Gg: ASbGnctxRAfrQqNUfIrVm0157BNBUCWrWj2rv+2fzsBtqILkpd32kIMQabPQ8WAhwLJ
+	zp/H428KhDVItVA2UpGotUvgp5DVI6UyNK+nz2KUWv0/loH7e9hHsEfhGsTHmd6ms1guxniJiQ3
+	wVIEiXKiOvEnaRwCrExokRRr6IOG1KqEpWadUtLhdj5+74izSlz5RSQTwLbbgYQA2DqkRBs4pdU
+	g5Rmi9t+j2dXBrQyWAIoIMUspqzKfyiawWVe8qy4xrne9nCKG+rYTck9q3GA2HGosbsUo/6S8Ep
+	sl1rXlEcarRKsQ6Nu65+VxyeFGw+pfPhALoa9wT2pHAyOkxehVm1Kr0bZ9q5/fvjQniT73+3Jbu
+	ZH02I00Imtw==
+X-Google-Smtp-Source: AGHT+IEtVitaQD98MwoZO35lnX0vpcUJEOtGhD2U7aa/SDSpml519wauCnjQiYSFZ4cMTffzyjIAig==
+X-Received: by 2002:a05:6a00:2e99:b0:740:6f69:dce9 with SMTP id d2e1a72fcca58-74ad42bd7efmr1060727b3a.0.1750802833081;
+        Tue, 24 Jun 2025 15:07:13 -0700 (PDT)
 Received: from ?IPv6:2a03:83e0:115c:1:9b77:d425:d62:b7ce? ([2620:10d:c090:500::6:f262])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-749b5e08cfbsm2838645b3a.18.2025.06.24.15.05.04
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-749c8872203sm2597616b3a.157.2025.06.24.15.07.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Jun 2025 15:05:05 -0700 (PDT)
-Message-ID: <1a9fbc392e1745c36670674eaab32cb27735ab7e.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v1 3/4] selftests/bpf: allow tests from
- verifier.c not to drop CAP_SYS_ADMIN
+        Tue, 24 Jun 2025 15:07:12 -0700 (PDT)
+Message-ID: <9eb94c7757593de354faec9f0d228023f4428307.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v1 2/4] bpf: add bpf_features enum
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Andrii
  Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
  Martin KaFai Lau	 <martin.lau@linux.dev>, Kernel Team <kernel-team@fb.com>,
  Yonghong Song	 <yonghong.song@linux.dev>
-Date: Tue, 24 Jun 2025 15:05:04 -0700
-In-Reply-To: <CAADnVQK8e7SqSRDab8xw1onFHe6YoBnTqoXJ+Pjg-_bDk5=sXA@mail.gmail.com>
+Date: Tue, 24 Jun 2025 15:07:11 -0700
+In-Reply-To: <CAADnVQK=ML6A7OwQ4aQSgiRku83tgkKiNdAnKMYq=iDNe-7dRA@mail.gmail.com>
 References: <20250624191009.902874-1-eddyz87@gmail.com>
-	 <20250624191009.902874-4-eddyz87@gmail.com>
-	 <CAADnVQK8e7SqSRDab8xw1onFHe6YoBnTqoXJ+Pjg-_bDk5=sXA@mail.gmail.com>
+	 <20250624191009.902874-3-eddyz87@gmail.com>
+	 <CAADnVQK=ML6A7OwQ4aQSgiRku83tgkKiNdAnKMYq=iDNe-7dRA@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
@@ -96,67 +95,37 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Tue, 2025-06-24 at 14:55 -0700, Alexei Starovoitov wrote:
-> On Tue, Jun 24, 2025 at 12:10=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.=
-com> wrote:
+On Tue, 2025-06-24 at 14:59 -0700, Alexei Starovoitov wrote:
+
+[...]
+
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 8fd65eb74051..01050d1f7389 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -44,6 +44,11 @@ static const struct bpf_verifier_ops * const bpf_ver=
+ifier_ops[] =3D {
+> >  #undef BPF_LINK_TYPE
+> >  };
 > >=20
-> > Originally prog_tests/verifier.c was developed to run tests ported
-> > from test_verifier binary. test_verifier runs tests with CAP_SYS_ADMIN
-> > dropped, hence this behaviour was copied in prog_tests/verifier.c.
-> > BPF_OBJ_GET_NEXT_ID BPF syscall command fails w/o CAP_SYS_ADMIN and
-> > this prevents libbpf from loading module BTFs.
+> > +enum bpf_features {
+> > +       BPF_FEAT_RDONLY_CAST_TO_VOID =3D 0,
+> > +       BPF_FEAT_TOTAL,
 >=20
-> You need this only because of 'bpf_kfunc_trusted_num_test' access
-> in patch 4?
-
-Yes.
-
-> Can you use kernel kfunc instead?
-
-Should be able to.
-
-> This needs more thought.
-> s/RUN/RUN_FULL_CAPS/ just because of kfunc in the bpf_testmod
-> doesn't look like a good long term approach.
+> I don't see the value of 'total', but not strongly against it.
+> But pls be consistent with __MAX_BPF_CMD, __MAX_BPF_MAP_TYPE, ...
+> Say, __MAX_BPF_FEAT ?
 >=20
-> I thought we agreed to relax BPF_OBJ_GET_NEXT_ID to allow for CAP_BPF.
-> Probably even unpriv can do it.
-> Just knowing a set of prog, map, bpf IDs is not a security threat.
 >=20
-> BPF_BTF_GET_FD_BY_ID can also be allowed for unpriv,
-> since one can do it already from /sys/kernel/btf/
+> Also it's better to introduce this enum in some earlier patch,
+> and then always add BTF_FEAT_... to this enum
+> in the same patch that adds the feature to make
+> sure backports won't screw it up.
+> Another rule should be to always assign a number to it.
+>=20
+> At the end with random backports the __MAX_BPF_FEAT
+> won't be accurate, but whatever.
 
-Makes sense to me.
-
-> > This commit adds an optout from capability drop.
-> >=20
-> > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> > ---
-> >  .../testing/selftests/bpf/prog_tests/verifier.c | 17 +++++++++++------
-> >  1 file changed, 11 insertions(+), 6 deletions(-)
-> >=20
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/=
-testing/selftests/bpf/prog_tests/verifier.c
-> > index c9da06741104..cedb86d8f717 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-> > @@ -115,14 +115,16 @@ struct test_val {
-> >  __maybe_unused
-> >  static void run_tests_aux(const char *skel_name,
-> >                           skel_elf_bytes_fn elf_bytes_factory,
-> > -                         pre_execution_cb pre_execution_cb)
-> > +                         pre_execution_cb pre_execution_cb,
-> > +                         bool drop_sysadmin)
->=20
-> I have an allergic reaction to bool arguments.
->=20
-> >         run_tests_aux("verifier_array_access",
-> >                       verifier_array_access__elf_bytes,
-> > -                     init_array_access_maps);
-> > +                     init_array_access_maps,
-> > +                     true);
->=20
-> This is not readable without looking at the argument name.
-
-I'll drop this change in v2.
+Ack. Andrii asked to add MAX for people willing to do broken kind of
+feature detection and just in case.
 
