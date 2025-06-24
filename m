@@ -1,339 +1,221 @@
-Return-Path: <bpf+bounces-61386-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61387-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C800CAE6BEC
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 17:59:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EA54AE6BEF
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 18:00:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96D9A3A9283
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 15:59:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8AC031BC63BB
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 16:00:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6BBE299AA1;
-	Tue, 24 Jun 2025 15:59:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68573299AAF;
+	Tue, 24 Jun 2025 15:59:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZBLONcSP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PPN7MEhX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE6EA274B58
-	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 15:59:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 160054C83
+	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 15:59:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750780779; cv=none; b=i8YtP+JLwui3T1qudnLVXZ8GqhjuU3l68tydWtUGZfcrttwhBQPxUAgeHOVf+ocQirP+vAHY+vsQ0FmVyPnd7yjuQu3ElDxd8c1wgKykKpkkVlVkRe8ZVJD1CBltBiwpfy0NVVJ/7DK5l6R4ILDlH842pwLZ3ophzKJuXJVeePc=
+	t=1750780793; cv=none; b=fZfUZL/uVcJ9KfcA11XFJn8ESX8mYfP2sB9oYDMP+p+V2n6sypIJW32WrYlImVa69Gd7d8p4ACYFEfZmz/42V/dKBniiYstGhWzTzCduwvzp2lpC2gTVoari/4oVltdP06LnYZleqJlXcokrWE1GrCtrK+S6xD/42+6ZlxGWCjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750780779; c=relaxed/simple;
-	bh=gLMlltYFxxl/Kfdw/zxRWtf/5ANAO3uJQIVLUcIhGXs=;
+	s=arc-20240116; t=1750780793; c=relaxed/simple;
+	bh=WSpjcYdve1oK9XbChweV2Jltym/er04HF4dPWXNNx84=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Gw+BIaua6NmOUgz8f4oeQVMsAx7MVdtfQ563z9gon9Ee3XhepSkoQGQkV9fJMUfszyuMhnkSYPrKd3thBQFOzj6hxR8G/EZnDTzbvVcnG7hyphR4XBFK8pofKtnVrhcRerKl/V8+V14+EZjLgZal/fDWQTmVLIhVAkzF3UjlPRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZBLONcSP; arc=none smtp.client-ip=209.85.216.53
+	 To:Cc:Content-Type; b=Bmr25tQGi5DEYS4xb6e9Zdx53W0A1Zgdw2vyMj5l9go7CDLqCjBmwWpSPpET7YEbtOTy1IqxcebaLEfLYyguqCELGFmgNyRcYJcuMufxJmawH81RONGgahnHG1kiG4/VDe//CrIdb5RR5tyTTX5GD1RQ+mhuTzVI6fyue7KSwNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PPN7MEhX; arc=none smtp.client-ip=209.85.221.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-3135f3511bcso5732541a91.0
-        for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 08:59:37 -0700 (PDT)
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3a4fd1ba177so5591f8f.0
+        for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 08:59:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750780777; x=1751385577; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1750780789; x=1751385589; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FCiHksvSaQ1Sle5Nc1wPxHHUAN7Ev8neMYAwY4Nk1zY=;
-        b=ZBLONcSPMxJHZCfeQPvl4hrT9eaY1JJc2qJKb5G/LaIQxLa+HMEhOZwfXccVhpWg7z
-         n0TG5vfqbE3c52XXAKSlmhexv9wbSqFl3t6n5zA62BSWhciXuVZGWvKIWfpguELIUzU7
-         pcST5suh7Zq7zLiga/oHDg0wVVcw/XFdv4xuq4mUiY3qYeW+rAqFq+dgXl4sb7caAM6R
-         r3MG+FZ6xO7c+kkZ4PK+GELHvlcC43mBi71hP5h/DoYaI9N3XaiGcXq6MdU23t8ZpPn4
-         eef7XfFSlpgNbyAg7voZKIPKJUTeFabKL7eevmRnnZWh78Sb4YIcVYxR2B36bIshkiFL
-         AoKA==
+        bh=NK+cMbqbAVYx+rEjsrUKTRwMkJm3OBJIDn6u/jptIc8=;
+        b=PPN7MEhXU8L73kaKKeLeRFQDE6UeBOf7Mt75NW9zhxMCg+qK6npNm0OGhFh+Mehrow
+         z6T6eFlqgRYkPK5PA8t1KM380i++Jnq/2SNjtrqnGCYcJDYDtAb5jGtvUgFfKZmZJvel
+         g6RPWg1FTfQVEsHozHyr2BDCYkvzpmTlPLoWw3Fh97ODhzITb8LMJUlUzJJpIIztW4JM
+         cshxfPXX3TiOYBPgFh0YAu1ueeLCWzzRQzHc3YWWr3qjXOdAFwh0ztQ9zsbRji/XKyjG
+         PSYQd8wHHa4rD9ul7QzAumYoT52ZW5BbaJwqOVREm+aatrp5EHD/wb9LoAmzENp89BeF
+         IUNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750780777; x=1751385577;
+        d=1e100.net; s=20230601; t=1750780789; x=1751385589;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FCiHksvSaQ1Sle5Nc1wPxHHUAN7Ev8neMYAwY4Nk1zY=;
-        b=O87sUa0Ng0Ojjl/EmwK0q5Vl/otP0KbCkMLIJ3Rew31EY63k5oY7VGAQoGFCb67Y53
-         8bP/wdSWLKyLD3fwD6RA2yXB5606CcUqH++OUa3Q7996Z5qCQjr+LObSOc8HuovIccY5
-         9UbfYDdq23ghG5c/gKTFUT09D3UoX4D1VA+7W2kGg7R5L9DD0NNwqgCtePLsQlZ/w0It
-         6VR+EX6FOf5TrcCLINx7+fF5feZ7o64b9ABObCPduHe6XzEf12Y8VuBs2Kc44wr6Qk/K
-         0kYyhoG0OwmHqE9eCO6We46kxNeENzG8GiqwRuWBGIdJR8X1ywdN24e5/4Y7y0DAScJj
-         9S6A==
-X-Gm-Message-State: AOJu0Yx7p0da8JHJpPbZ4mdeV5IEYhw6TeCJ75tfXZEDjL9070PjvWHa
-	Fm6gf9lSf8Y7yeZNc8uihRLwvPZdyfc78EwrNIPbmHSEU1xarQ+92VENE4QlPgnp86W7WJ0secw
-	eNM3SiGQbkIKQ/DdH87I3NjPYwVIVKGc=
-X-Gm-Gg: ASbGncusPUg0wlF8P+RokbmTl8xTlKOpXybaL9pTIbgX7VIfzCZKaN9lUCCm9H7zzj/
-	pusO/O4fRO7JU5Q2UHtkI/8Le5vMpuK3RXoKWk4CMWP12pbJW/zL9ZjhZO1yzXg0mstLNA64zv/
-	l0RmI2oAwQNV4+Tm0kEtO8fY0vBV6ZosZIC3aH8sNp5Q9RLEjj+eEa
-X-Google-Smtp-Source: AGHT+IHlK5+8geXXhLFrGwr10rhgGFk6s8RDzNHzQB4pviX/pzgye9Atgi7mx1z4nnbfNgQGI9+/dTM0GzOlhEUOa5Y=
-X-Received: by 2002:a17:90b:55c8:b0:312:ea46:3e66 with SMTP id
- 98e67ed59e1d1-3159d8c5e8emr23591478a91.21.1750780776866; Tue, 24 Jun 2025
- 08:59:36 -0700 (PDT)
+        bh=NK+cMbqbAVYx+rEjsrUKTRwMkJm3OBJIDn6u/jptIc8=;
+        b=p09v/G4vPuBRaNV4tvVH3amLjYVvZOw2XdlRNPh1vmDYukL0wwaf9MA9lZWOoNhGL+
+         3Rl5fRbBrsw/ttuoChkXZvWmKg2VPT6hlCG+TyitDWKYYbmkinfJ/P0L808NY9pfraA0
+         gkqhqZ/fJhH3J1R4F85LbWl/BkXsgnLNwjXP/mUSq6Ovi/gDnvg5mVaVsaZnE/I+qZQs
+         zosfx3Mv9F7xf0SkWZp2AIicJDw8jtGMyE+xsMBny4KmYOOaUMHIkGAsNQ3h4mMYdMfi
+         oss5PmDWP60drk+AovDqiN57idnMpTmNrQHZtb3WZqu27077FaxaBnEIOfxN5LAC8OmK
+         XRrA==
+X-Forwarded-Encrypted: i=1; AJvYcCX1Zmr03ooG7KniF7vgFx91zBiZCzEec8BhVnzz/dXz15oWWMG2p1QuUt5YxQz9wh8qxgQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyiogm8GcI1xFFKPoRU5YgsHi/bWOoNVWKhKoRq9Q78wB7jyISS
+	q93yGryDAyJ0T6Zq0LF+Pf+F6WmZmY47JmPzeg0qMaT6LqUV0IMm/o+wiSxq3vkNedHpt5UnesT
+	18d/ynk7azEkGFg7WSD1ZT0QheJ7ifgo=
+X-Gm-Gg: ASbGncu7ZG5JBvqaKlwd0gDgO2yTzPuCJtdNygNBe3sKD5p3giOU4w7Elq3Tjht5FTO
+	UvRcJqxt56m+sIeEya/FGoL2UeuBfhExs+L3tmhKpsEkEFFEib3mcvedbk0m9ADkEEJvPcz9kmH
+	d91raK4aH4MqbPvYVLJE3iQ8u3cW/MDahAN0GwRTYyusNq2FRtgFx9xVFFDoc=
+X-Google-Smtp-Source: AGHT+IFFBhlUgBt6nI/x9dI3jIG4xrmwkSQHRexhdhf1/XbI5eUISpc5rsi0pYt/oeS2pNoMGVi2JKMPA3hHD8TzmkE=
+X-Received: by 2002:a05:6000:22c1:b0:3a5:281b:9fac with SMTP id
+ ffacd0b85a97d-3a6e71d67famr3474342f8f.17.1750780789126; Tue, 24 Jun 2025
+ 08:59:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250618203903.539270-1-mykyta.yatsenko5@gmail.com>
- <20250618203903.539270-3-mykyta.yatsenko5@gmail.com> <CAEf4BzY8zDf4oZL=manmc_KsZpL8meC_m1jvp4EZ8MKnpkvFgQ@mail.gmail.com>
- <c05071fd-3e41-43ac-b1ff-1c002a107b24@gmail.com>
-In-Reply-To: <c05071fd-3e41-43ac-b1ff-1c002a107b24@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 24 Jun 2025 08:59:24 -0700
-X-Gm-Features: AX0GCFuMz_CqK1szEIt9yrmi2AcIf-Q9xlFKOCZZ_IX3ZDqM_kWnkMTh1SmbohM
-Message-ID: <CAEf4BzbGvceJoCsa_PjjVOPY-CQ=uDW0EK4Vgdc+uSBrh5gNGQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/3] selftests/bpf: support array presets in veristat
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, eddyz87@gmail.com, 
-	Mykyta Yatsenko <yatsenko@meta.com>
+References: <20250609232746.1030044-1-ameryhung@gmail.com> <CAEf4BzbFaPMG4C4h1BX_Wa2gzO-DvCosPFHosCph1u7++KwhPQ@mail.gmail.com>
+ <CAMB2axP_shzLPp=aFiuMtea=ALjcMtHe3ddaEBYsDF-hbDH9Rw@mail.gmail.com> <CAEf4BzbCGg6FRMudc7jZUpWWGckfxwLyPGZr2VvGuPeQHbWHSw@mail.gmail.com>
+In-Reply-To: <CAEf4BzbCGg6FRMudc7jZUpWWGckfxwLyPGZr2VvGuPeQHbWHSw@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 24 Jun 2025 08:59:36 -0700
+X-Gm-Features: Ac12FXx0xFtTt5LPGwt4utN_P5q3YGAa_jMIdSH_lwcXIC79aBaUu__09IC6M-s
+Message-ID: <CAADnVQKGp++fxK9OELOt5s5fUnYS4E4XCbNOEO8-Fm-+tD3oSA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/4] bpf: Save struct_ops instance pointer in bpf_prog_aux
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Amery Hung <ameryhung@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Tejun Heo <tj@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 23, 2025 at 5:00=E2=80=AFPM Mykyta Yatsenko
-<mykyta.yatsenko5@gmail.com> wrote:
+On Tue, Jun 24, 2025 at 8:38=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On 6/23/25 23:10, Andrii Nakryiko wrote:
-> > On Wed, Jun 18, 2025 at 1:39=E2=80=AFPM Mykyta Yatsenko
-> > <mykyta.yatsenko5@gmail.com> wrote:
-> >> From: Mykyta Yatsenko <yatsenko@meta.com>
-> >>
-> >> Implement support for presetting values for array elements in veristat=
-.
-> >> For example:
-> >> ```
-> >> sudo ./veristat set_global_vars.bpf.o -G "arr[3] =3D 1"
-> >> ```
-> >> Arrays of structures and structure of arrays work, but each individual
-> >> scalar value has to be set separately: `foo[1].bar[2] =3D value`.
-> >>
-> >> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
-> >> ---
-> >>   tools/testing/selftests/bpf/veristat.c | 226 ++++++++++++++++++++---=
---
-> >>   1 file changed, 180 insertions(+), 46 deletions(-)
-> >>
-> > [...]
+> On Wed, Jun 18, 2025 at 3:19=E2=80=AFPM Amery Hung <ameryhung@gmail.com> =
+wrote:
 > >
-> >> +static int resolve_rvalue(struct btf *btf, const struct rvalue *rvalu=
-e, long long *result)
-> >> +{
-> >> +       int err =3D 0;
-> >> +
-> >> +       switch (rvalue->type) {
-> >> +       case INTEGRAL:
-> >> +               *result =3D rvalue->ivalue;
-> > return 0;
+> > On Thu, Jun 12, 2025 at 4:08=E2=80=AFPM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Mon, Jun 9, 2025 at 4:27=E2=80=AFPM Amery Hung <ameryhung@gmail.co=
+m> wrote:
+> > > >
+> > > > Allows struct_ops implementors to infer the calling struct_ops inst=
+ance
+> > > > inside a kfunc through prog->aux->this_st_ops. A new field, flags, =
+is
+> > > > added to bpf_struct_ops. If BPF_STRUCT_OPS_F_THIS_PTR is set in fla=
+gs,
+> > > > a pointer to the struct_ops structure registered to the kernel (i.e=
+.,
+> > > > kvalue->data) will be saved to prog->aux->this_st_ops. To access it=
+ in
+> > > > a kfunc, use BPF_STRUCT_OPS_F_THIS_PTR with __prog argument [0]. Th=
+e
+> > > > verifier will fixup the argument with a pointer to prog->aux. this_=
+st_ops
+> > > > is protected by rcu and is valid until a struct_ops map is unregist=
+ered
+> > > > updated.
+> > > >
+> > > > For a struct_ops map with BPF_STRUCT_OPS_F_THIS_PTR, to make sure a=
+ll
+> > > > programs in it have the same this_st_ops, cmpxchg is used. Only if =
+a
+> > > > program is not already used in another struct_ops map also with
+> > > > BPF_STRUCT_OPS_F_THIS_PTR can it be assigned to the current struct_=
+ops
+> > > > map.
+> > > >
+> > >
+> > > Have you considered an alternative to storing this_st_ops in
+> > > bpf_prog_aux by setting it at runtime (in struct_ops trampoline) into
+> > > bpf_run_ctx (which I think all struct ops programs have set), and the=
+n
+> > > letting any struct_ops kfunc just access it through current (see othe=
+r
+> > > uses of bpf_run_ctx, if you are unfamiliar). This would avoid all thi=
+s
+> > > business with extra flags and passing bpf_prog_aux as an extra
+> > > argument.
+> > >
 > >
-> >> +               break;
-> >> +       case ENUMERATOR:
-> >> +               err =3D find_enum_value(btf, rvalue->svalue, result);
-> >> +               if (err)
-> >> +                       fprintf(stderr, "Can't resolve enum value %s\n=
-", rvalue->svalue);
-> > if (err) {
-> >      fprintf(...);
-> >      return err;
-> > }
+> > I didn't know this. Thanks for suggesting an alternative!
 > >
-> > return 0;
+> > > There will be no "only one struct_ops for this BPF program" limitatio=
+n
+> > > either: technically, you could have the same BPF program used from tw=
+o
+> > > struct_ops maps just fine (even at the same time). Then depending on
+> > > which struct_ops is currently active, you'd have a corresponding
+> > > bpf_run_ctx's struct_ops pointer. It feels like a cleaner approach to
+> > > me.
+> > >
 > >
-> > ?
+> > This is a cleaner approach for struct_ops operators. To make it work
+> > for kfuncs called in timer callback, I think prog->aux->st_ops is
+> > still needed, but at least we can unify how to get this_st_ops in
+> > kfunc, in a way that does not requires adding __prog to every kfuncs.
 > >
-> >> +               break;
-> > default: fprintf("unknown blah"); return -EOPNOTSUPP;
+> > +enum bpf_run_ctx_type {
+> > +        BPF_CG_RUN_CTX =3D 0,
+> > +        BPF_TRACE_RUN_CTX,
+> > +        BPF_TRAMP_RUN_CTX,
+> > +        BPF_TIMER_RUN_CTX,
+> > +};
 > >
+> > struct bpf_run_ctx {
+> > +        enum bpf_run_ctx_type type;
+> > };
 > >
-> > I think I had a similar argument with Eduard before, so I'll explain
-> > my logic here again. Whenever you have some branching in your code and
-> > you know that branch's processing is effectively done and the only
-> > thing left is to return success/failure signal, *do return early* and
-> > explicitly ASAP (unless there is non-trivial clean up for error path,
-> > in which case not duplicating and spreading clean up logic outweighs
-> > the simplicity of early return code). Otherwise it takes *unnecessary*
-> > extra mental effort to trace through the rest of the code to make sure
-> > there is no extra common post-processing logic after that
-> > branch/switch/for loop.
+> > +struct bpf_timer_run_ctx {
+> > +        struct bpf_prog_aux *aux;
+> > +};
 > >
-> > So if we know the INTEGRAL case is a success, then have `return 0;`
-> > right there, don't make anyone read through the rest of the function
-> > just to make sure we don't do anything extra.
-> I understand early returns, just in this case ditched it to make the
-> code more compact.
-> I'll change this.
-> >> +       }
-> >> +       return err;
-> >> +}
-> >> +
-> >> +/* Returns number of consumed atoms from preset, negative error if fa=
-iled */
-> >> +static int adjust_var_secinfo_array(struct btf *btf, int tid, struct =
-var_preset *preset,
-> >> +                                   int atom_idx, struct btf_var_secin=
-fo *sinfo)
-> >> +{
-> >> +       struct btf_array *barr;
-> >> +       int i =3D atom_idx, err;
-> >> +       const struct btf_type *t;
-> >> +       long long off =3D 0, idx;
-> >> +
-> >> +       if (atom_idx < 1) /* Array index can't be the first atom */
-> > can atom_idx be -1 or negative? If not, then do `if (atom_idx =3D=3D 0)=
-`.
-> > It's another small mental overhead that we can easily avoid, and so we
-> > should.
-> sure
+> > struct bpf_tramp_run_ctx {
+> >         ...
+> > +        void *st_ops;
+> > };
 > >
-> >> +               return -EINVAL;
-> >> +
-> >> +       tid =3D btf__resolve_type(btf, tid);
-> >> +       t =3D btf__type_by_id(btf, tid);
-> >> +       if (!btf_is_array(t)) {
-> >> +               fprintf(stderr, "Array index is not expected for %s\n"=
-,
-> >> +                       preset->atoms[atom_idx - 1].name);
-> >> +               return -EINVAL;
-> >> +       }
-> > [...]
+> > In bpf_struct_ops_prepare_trampoline(), the st_ops assignment will be
+> > emitted to the trampoline.
 > >
-> >> @@ -1815,26 +1938,29 @@ const int btf_find_member(const struct btf *bt=
-f,
-> >>   static int adjust_var_secinfo(struct btf *btf, const struct btf_type=
- *t,
-> >>                                struct btf_var_secinfo *sinfo, struct v=
-ar_preset *preset)
-> >>   {
-> >> -       const struct btf_type *base_type, *member_type;
-> >> -       int err, member_tid, i;
-> >> -       __u32 member_offset =3D 0;
-> >> -
-> >> -       base_type =3D btf__type_by_id(btf, btf__resolve_type(btf, t->t=
-ype));
-> >> -
-> >> -       for (i =3D 1; i < preset->atom_count; ++i) {
-> >> -               err =3D btf_find_member(btf, base_type, 0, preset->ato=
-ms[i].name,
-> >> -                                     &member_tid, &member_offset);
-> >> -               if (err) {
-> >> -                       fprintf(stderr, "Could not find member %s for =
-variable %s\n",
-> >> -                               preset->atoms[i].name, preset->atoms[i=
- - 1].name);
-> >> -                       return err;
-> >> +       const struct btf_type *base_type;
-> >> +       int err, i =3D 1, n;
-> >> +       int tid;
-> >> +
-> >> +       tid =3D btf__resolve_type(btf, t->type);
-> >> +       base_type =3D btf__type_by_id(btf, tid);
-> >> +
-> >> +       while (i < preset->atom_count) {
-> >> +               if (preset->atoms[i].type =3D=3D ARRAY_INDEX) {
-> >> +                       n =3D adjust_var_secinfo_array(btf, tid, prese=
-t, i, sinfo);
-> >> +                       if (n < 0)
-> >> +                               return n;
-> >> +                       i +=3D n;
-> >> +               } else {
-> >> +                       err =3D btf_find_member(btf, base_type, 0, pre=
-set->atoms[i].name, sinfo);
-> >> +                       if (err)
-> >> +                               return err;
-> >> +                       i++;
-> >>                  }
-> >> -               member_type =3D btf__type_by_id(btf, member_tid);
-> >> -               sinfo->offset +=3D member_offset / 8;
-> >> -               sinfo->size =3D member_type->size;
-> >> -               sinfo->type =3D member_tid;
-> >> -               base_type =3D member_type;
-> >> +               base_type =3D btf__type_by_id(btf, sinfo->type);
-> >> +               tid =3D sinfo->type;
-> >>          }
-> >> +
-> >>          return 0;
-> >>   }
-> > Is there a good reason to have adjust_var_secinfo() separate from
-> > adjust_var_secinfo_array(). I won't know if I didn't miss anything
-> > non-obvious, but in my mind this whole adjust_var_sec_info() should
-> > look roughly like this:
+> > In bpf_timer_cb(), prepare bpf_timer_run_ctx, where st_ops comes from
+> > prog->aux->this_st_ops and set current->bpf_ctx.
 > >
-> > cur_type =3D /* resolve from original var */
-> > cur_off =3D 0;
+> > Finally, in kfuncs that want to know the current struct_ops, call this
+> > new function below:
 > >
-> > for (i =3D 0; i < preset->atom_count; i++) {
-> >      if (preset->atoms[i].type =3D=3D ARRAY_INDEX) {
-> >          /* a) error checking: cur_type should be array */
-> >          /* b) resolve index (if it's enum)
-> >          /* c) error checking: index should be within bounds of
-> > cur_type (which is ARRAY)
-> >          /* d) adjust cur_off +=3D cur_type's elem_size * index_value
-> >          /* e) cur_type =3D btf__resolve_type(cur_type->type) */
-> >      } else {
-> >          /* a) error checking: cur_type should be struct/union */
-> >          /* b) find field by name with btf_find_member */
-> >          /* c) cur_off +=3D member_offset */
-> >          /* d) cur_type =3D btf__resolve_type(field->type) */
-> >      }
-> > }
+> > +void *bpf_struct_ops_current_st_ops(void)
+> > +{
+> > +        struct bpf_prog_aux aux;
+> > +
+> > +        if (!current->bpf_ctx)
+> > +                return NULL;
+> > +
+> > +        switch(current->bpf_ctx->type) {
+> > +        case BPF_TRAMP_RUN_CTX:
+> > +                return (struct bpf_tramp_run_ctx *)(current->bpf_ctx)-=
+>st_ops;
+> > +        case BPF_TIMER_RUN_CTX:
+> > +                aux =3D (struct bpf_timer_run_ctx *)(current->bpf_ctx)=
+->aux;
+> > +                return rcu_dereference(aux->this_st_ops);
+> > +        }
+> > +        return NULL;
+> > +}
 > >
-> > It seems inelegant that we have an outer loop over FIELD references
-> > (one at a time), but for ARRAY_INDEX we do N items skipping. Why? We
-> > have a set of "instructions", just execute them one at a time, and
-> > keep track of the current type and current offset we are at.
-> >
-> > Is there anything I am missing that would prevent this simple and more
-> > uniform approach?
-> yes, I think there is a small detail - `cur_type's elem_size`is not easy
-> to get for multi-dim array.
-> If we have 3 dim array `arr` of NxMxK, to find an index of
-> `arr[x][y][z]` we calculate `(x*M + y)*K + z`
-> This formula is tricky to integrate in the above loop an offset of the
-> current element depends on the next
-> `btf_arr`s. Though, I can see a couple of ways to do it:
-> 1) Look forward for the next array dimensions to multiply with current
-> index: `x*M*K +  y*K + z`.
-
-does it really matter if it's multi-dimenstional array or
-single-dimensional? In both cases you calculate the size of on array
-element (which for multi-dimensional will be another array with
-outermost dimension stripped, and in BTF that's a separate type
-referenced by array->type BTF ID), and multiply it by the index.
-
-So let's say you have
-
-struct my_struct {int x, y;};
-
-struct my_struct arr[10];
-
-And trying to calculate arr[5] offset (without yet going inside
-my_struct, one step only). You'll add 5 * sizeof(arr[0]) -> 5 * 8 =3D 40
-bytes.
-
-Now, let's say you have
-
-int arr[10][20];
-
-And you are processing the outermost array indexing step in arr[5][7].
-Here you'll adjust offset by 5 * sizeof(arr[0]) -> 5 * sizeof(int[20])
--> 5 * 20 * 4 =3D 80 bytes.
-
-In both cases you can just use btf__resolve_size() on
-btf_array(cur_type)->type to get the size of the array's element.
-
-Would that work?
-
-> 2) Have a separate `array_off` variable, that will be multiplied with
-> current dimension and then zeroed when atom is non-array index:
-> ```
->    array_off =3D 0;
->    array_off *=3D N; array_off +=3D x;
->    array_off *=3D M; array_off +=3D y;
->    array_off *=3D K; array_off +=3D z;
-> ...
->     off +=3D array_off; array_off =3D 0;
-> ```
-> I picked an option 2, but moved it into the separate function to make
-> things a little bit simpler.
-> >
-> > [...]
+> > What do you think?
 >
+> I'm not sure I particularly like different ways to get this st_ops
+> pointer depending whether we are in an async callback or not. So if
+> bpf_prog_aux is inevitable, I'd just stick to that. As far as
+> bpf_run_ctx, though, instead of bpf_run_ctx_type, shall we just put
+> `struct bpf_prog_aux *` pointer into common struct bpf_run_ctx and
+> always set it for all program types that support run_ctx?
+
+No. This is death by a thousand cuts.
+bpf trampoline is getting slower and slower.
+scx's 'this' case is not a common pattern.
 
