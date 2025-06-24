@@ -1,88 +1,89 @@
-Return-Path: <bpf+bounces-61454-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61455-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F4F8AE7225
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 00:14:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC2BDAE722D
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 00:18:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6EF91BC2664
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 22:15:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A3C117376E
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 22:18:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 876A325B1C4;
-	Tue, 24 Jun 2025 22:14:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF9B12505CE;
+	Tue, 24 Jun 2025 22:18:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KlB0Hm8i"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EsSKpQFh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1F2C246BCD
-	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 22:14:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E93703D3B8
+	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 22:18:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750803291; cv=none; b=dq2OYFOhxixTmVKFzux77o+oCHYaCLy33ATYCYE1XMAC90MMEsFIGLOamhiwmz9qIirIo670VTDxefhFo2HRiKsCVgK+x7U+MwL/2OevoBbJA2msNHRZ6fzwUy7x6ruRb3mZfYe+ajTtj5tDu4xaHiUY+TxgY6fFE1tjv+Cvn0M=
+	t=1750803517; cv=none; b=BV4t1fo0dzuI7ejQAIR66Es2t+C9b0Psz1qbx7L1s5f+q+oVMMvj3nbXs5Ses8725bynptooAvphseckA840N81Qn+NG5Uj1BtQEdBCV4vH6DoPSfhFAsLqCSY89U1/G+EreQz+uH29F9aT/f7gXoD7SfZBMmjpD34fUx8XX+zw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750803291; c=relaxed/simple;
-	bh=XZ/u9Oy/LrX221d7guExpNZD5rTlcb0NxC1sl3pNqhI=;
+	s=arc-20240116; t=1750803517; c=relaxed/simple;
+	bh=TghAdRQ65WxHodLiX8SSID0lUAanAHZKksxvdjhVnQA=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=NVG7YhPiYgTQ5plWZlgww3VMfIXeqqQSlXMV1/U7qwkqhYtVLbOLpgOS4gr9ebPKwwzPt/PeWtRMu0j8P23hWVRppl9FgKHG52zB6p12uAoYKqpOyVE5mE4OcuasGhspQMP8KMq6EFhSdBjupZ6sHQ3t8lQEkn4DTC75RkgH3XM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KlB0Hm8i; arc=none smtp.client-ip=209.85.210.181
+	 Content-Type:MIME-Version; b=JK3BHeQq+DQdobgzRcpb1VqV1F2OWcqPUNwYMw1Fr7SWwbDKZ3g8Hp9pe3qCGFDBdCWr7hhevu4rHyMGfefEl/dtIG+bFbYH/g1kfpB8EJ26lKqJMFTd5aqv5FUMTQx8O2QKWgt0evApXWZs6hvY3jtLnxmqEy+uSGRXxB9/ZBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EsSKpQFh; arc=none smtp.client-ip=209.85.216.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-73c17c770a7so6369626b3a.2
-        for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 15:14:49 -0700 (PDT)
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-315c1b0623cso3158866a91.1
+        for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 15:18:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750803289; x=1751408089; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1750803515; x=1751408315; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=qC1Iz4sEqiZMcMa5DS15LIIYnBsZUNaGeA2wRZ3iBkY=;
-        b=KlB0Hm8iMh3q3ndLxFNR6z1pUVm6aZInvE+TbZRnXh10+Uq/MtXOjXs8qvunHZOvys
-         u1RR/3NpivAFaeuSGxw7nfXDkixjQXqjjT9hcZKvx74fvkTUmuCt8y8Zj88GsE7L/v9a
-         fg7c0AOWOkZasRPM2bBlRHz+s20PD65a4tQCbi+1TP2DAEdxpxJ8BNZV+5tR2VR4Ko/8
-         cl3Kj1E8qkwxJ27e/akuQL75Yh20kQCm5V9jGMSUwTze1BKiXrD2YmkJcvt4z/guhOMN
-         k5EKf9Rfm/HdGqyLYK8NI4TSzGne+VAccJ6C26OpqqV6ghUfWyLV3/R+pDKPkejL2MNy
-         Z+wg==
+        bh=k8VF+nWcFKncSWDDp5nWs0R6y3IcDnmwVUoZ7a9t/Cs=;
+        b=EsSKpQFhm2KqBYw5WiWMZ7eUkhX/tLN1L4DtrIdCfXL9pSnzeTaqbc6SO0PS5CprZw
+         ZVRFnjKjmYJHsK8ZASV+1Lf9EYIm8gM6pWwmKmbT1QWtPsOobe303WewOC2x+WGz0juR
+         2fAqrcRXbqKuJwW5XVeYIUjbIOpD5dGTZZcBHQ8JPQOotcwS1B2I/C+tQP9dWShBE6Dr
+         JQVYy/vLr6Qhb9gMHTajDQWMQ6nZ8mkW0cNef6ch1PJXBnboCEH+gDPcvu3HUgIGari6
+         vQh2PEGEn/tGqIooEghNgLBqEZlI1GMc9UCe+ZYoiTDWdLYksG93kBPAyowCN1Vw3dEn
+         WyFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750803289; x=1751408089;
+        d=1e100.net; s=20230601; t=1750803515; x=1751408315;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=qC1Iz4sEqiZMcMa5DS15LIIYnBsZUNaGeA2wRZ3iBkY=;
-        b=a0zCdmr1uZVdf98CaPlTVN8Rk7x0EdETViQk4xaUT3eImPZSOtHMk7TSB82lKaw9wh
-         ERNhA+Jzm0N/LzWKU4jKU0gasiDxG9z1fCU0LPho2d5OE55aWTSn08ZKDu7G8+umrdtH
-         pNgSgs85s2ECMqjgOgd/bzBtpiHc7uXcVssP+4yK44LqDEPWA71vSCNhFb2XD3jZchHv
-         GTWxy9VByxWVCy0fACgWXrg89PUYmyLeRp8TttpmxAUcUAy+/3OSzugxSQETKtGVn+Gg
-         i6cGkoNmA4l/OcNVIE4+kBpvFTP6E80w4JIkj9DQLEJaesCh7uPaAY1nqDhMMYR/4Eky
-         SQDg==
-X-Forwarded-Encrypted: i=1; AJvYcCUtr31HxJa6c0edPEmtCELg1dQd5LWUCjA3CXkCtRoh9HQOU35mA5AiZtB7XQLFGD3YzcQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YydCEZRXKU8gruEIyh+1hln7RbWAl0M8UVQevkBT9eTKlNMjmQO
-	JNMUHKPOU00aOc75fAY/Q2JDACuHf0AyCbRwPuTS+qdTqgMOOrCRr/fZ
-X-Gm-Gg: ASbGncsRzaQxOVkoeflreBbtrUJqTNgcjMo3V9zg/t+TIHf3JxfMjIenrMzdQP29RU5
-	YIAyJc3EHvUHL9XFpi3RDSvvAWHdLhQkv5Yv/SAKVCjfmGbrflFw+HmJ2dQr0xycoUUyK/C2z1y
-	pbzbel7bu6Xzdw2gub6eOxoKcyBAdF4+LnZIJ1KZb+SyqMGgzYxBoUVUngg9KQjRgfPDuGu4pQy
-	pVdVYW/8d2XzU7FMH0gIkbLoD/7hEwhSEU2xl6DTkOjNlLnJ8KYc8Nllpu28FCJiooZYi12JreJ
-	l5mlTQ18uhoEAsYJT1795Dh3Vw9VJrCB5/yaC6FT6cgJ2NBz168xI5GZiqF/iSIRNV3XUycbgFU
-	AQB9ye0Akbg==
-X-Google-Smtp-Source: AGHT+IHDzeQIKEyl9BzDVIjP2HlTAeRAcuEKYP9gucCiqUh3/f4cViFCQDgDRO5e/2RuRPO0sHqaaw==
-X-Received: by 2002:a05:6a21:680b:b0:204:4573:d854 with SMTP id adf61e73a8af0-2207f1adf3bmr881782637.9.1750803288898;
-        Tue, 24 Jun 2025 15:14:48 -0700 (PDT)
+        bh=k8VF+nWcFKncSWDDp5nWs0R6y3IcDnmwVUoZ7a9t/Cs=;
+        b=OZBS+C+BNCKMFa/00B6RdXVNrKNSuVKfFslLUwB0rxtaUSVTg/YIFuLfI3fXEoheZ4
+         Wok8BMSj1vnN4Ij7OHyz2Qh4ofuxAYyJOhbF+GvwJGjPHd/id8UQCp29detdK5PPJ2QR
+         mtxt0Huy7PKHL+whZ8DEv0CJODwT5F9jb7r93hp9MtIDZ2EDm10qDp5Mc9o5lQS4Zwbg
+         6d2QLqdQezsNsmCHj0988jfSfRnXplV+IP+Q00YZ9jlBqO5h29CR15aNIHsXSOF6RbVc
+         HajXYmsWvgc4BtWDyyS0X+BEWW5lWsdg9ockKF+iU2HIL7taZMo26gwmCAfemrkT7poG
+         mNVg==
+X-Forwarded-Encrypted: i=1; AJvYcCV4UHqn9nTn3YWZrvppVLOrTyWlcyUdrRC3zfxi9j/ndJrzv5k0XrIAI0UZhmJm90RdBpM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwGmYgnLxE5CI+O8ebudJaOreOXvU69GpVGovVVYPmO9yU2Qrfo
+	+oKRz/C+sbfalN9YMYs8dPSBIle6oZplFmPEziAt+9kzarYhdLpx6oH5
+X-Gm-Gg: ASbGnctLcHinzj8levFGaoJA1x7m0qOFU7h4CELgD/FNLegOk+S6Gx75Y1+6q3itLUf
+	dBGeHD4i5vQVlJ9hyeFDCsjBzpD2mgVHBWku4FpY8cTIAtdEzLVx0N85FZMDjSSIVdLQJbHR1y9
+	oC3RR9hMIiR8RfLprdj7XxQZuw1RJbbhcdhw2rgMmpqbVMEJFHYCp6h8ykclRQ+JUuOG36gYf3G
+	ebdVrvVvtDy4/ICiSSj/wluKPEHk2a7x7KqUeCsKt8e75Q2mjMiRui6K80fe9DJCJfyRVcGdBIX
+	rDCqwL/oo5BEEL75yFroPwNSB9au4Dc9f4SCWtkLu8CLsdLT4zlngoK5K3wy3S03JXeu/S/Bmwu
+	Hq1FuBTqNKHZiaG38MYxx
+X-Google-Smtp-Source: AGHT+IHSP0WskiSeB64rV3bpHyPwWWQDyc/3a7nQIcFdjQjBfON25EVwTaTYEuERBmlBTRo5Q7+J1A==
+X-Received: by 2002:a17:90b:134b:b0:311:c939:c859 with SMTP id 98e67ed59e1d1-315f26c1c3bmr683807a91.30.1750803515257;
+        Tue, 24 Jun 2025 15:18:35 -0700 (PDT)
 Received: from ?IPv6:2a03:83e0:115c:1:9b77:d425:d62:b7ce? ([2620:10d:c090:500::6:f262])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-749c88732a8sm2805204b3a.175.2025.06.24.15.14.47
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b31f12584d6sm9492082a12.52.2025.06.24.15.18.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Jun 2025 15:14:48 -0700 (PDT)
-Message-ID: <19803713ab26e3c464710c9e9bae60c7dbb8fdd9.camel@gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/2] bpf: Add range tracking for BPF_NEG
+        Tue, 24 Jun 2025 15:18:35 -0700 (PDT)
+Message-ID: <9c18fcc83b4fa0c5685519bfb80f102436bcd675.camel@gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: Add tests for BPF_NEG
+ range tracking logic
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: Song Liu <song@kernel.org>, bpf@vger.kernel.org
 Cc: kernel-team@meta.com, andrii@kernel.org, ast@kernel.org,
  daniel@iogearbox.net, 	martin.lau@linux.dev
-Date: Tue, 24 Jun 2025 15:14:47 -0700
-In-Reply-To: <20250624220038.656646-2-song@kernel.org>
+Date: Tue, 24 Jun 2025 15:18:33 -0700
+In-Reply-To: <20250624220038.656646-3-song@kernel.org>
 References: <20250624220038.656646-1-song@kernel.org>
-	 <20250624220038.656646-2-song@kernel.org>
+	 <20250624220038.656646-3-song@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
@@ -97,70 +98,33 @@ On Tue, 2025-06-24 at 15:00 -0700, Song Liu wrote:
 
 [...]
 
-> diff --git a/tools/testing/selftests/bpf/progs/verifier_bounds_deduction.=
-c b/tools/testing/selftests/bpf/progs/verifier_bounds_deduction.c
-> index c506afbdd936..8d886c15fdcc 100644
-> --- a/tools/testing/selftests/bpf/progs/verifier_bounds_deduction.c
-> +++ b/tools/testing/selftests/bpf/progs/verifier_bounds_deduction.c
-> @@ -151,21 +151,4 @@ l0_%=3D:	r0 -=3D r1;					\
->  "	::: __clobber_all);
->  }
-> =20
-> -SEC("socket")
-> -__description("check deducing bounds from const, 10")
-> -__failure
-> -__msg("math between ctx pointer and register with unbounded min value is=
- not allowed")
-> -__failure_unpriv
-> -__naked void deducing_bounds_from_const_10(void)
-> -{
-> -	asm volatile ("					\
-> -	r0 =3D 0;						\
-> -	if r0 s<=3D 0 goto l0_%=3D;				\
-> -l0_%=3D:	/* Marks reg as unknown. */			\
-> -	r0 =3D -r0;					\
-> -	r0 -=3D r1;					\
+> +SEC("lsm.s/socket_connect")
+> +__success __log_level(2)
+> +__msg("0: (b7) r0 =3D 1")
+> +__msg("1: (84) w0 =3D -w0")
 
-It looks like rX =3D -rX was used in a few tests as a source of unbound
-scalar values. It is probably not safe to throw these tests away or
-convert failure->success, unless we are sure the logic is tested
-elsewhere.
+Sorry, my previous comment probably was ambiguous.
+What I meant is that you can match verifier output for "w0 =3D -w0 ; R0=3D-=
+1",
+thus checking that inferred value for "w0".
 
-One option to keep the tests is to call bpf_get_prandom_u32() and
-obtain an unbound value in r0 as a result.
+> +__msg("mark_precise: frame0: last_idx 2 first_idx 0 subseq_idx -1")
+> +__msg("mark_precise: frame0: regs=3Dr0 stack=3D before 1: (84) w0 =3D -w=
+0")
+> +__msg("mark_precise: frame0: regs=3Dr0 stack=3D before 0: (b7) r0 =3D 1"=
+)
+> +__naked int bpf_neg_2(void)
+> +{
+> +	/*
+> +	 * lsm.s/socket_connect requires a return value within [-4095, 0].
+> +	 * Returning -1 is allowed
+> +	 */
+> +	asm volatile (
+> +	"r0 =3D 1;"
+> +	"w0 =3D -w0;"
+> +	"exit;"
+> +	::: __clobber_all);
+> +}
 
-> -	exit;						\
-> -"	::: __clobber_all);
-> -}
-> -
->  char _license[] SEC("license") =3D "GPL";
-> diff --git a/tools/testing/selftests/bpf/progs/verifier_value_ptr_arith.c=
- b/tools/testing/selftests/bpf/progs/verifier_value_ptr_arith.c
-> index fcea9819e359..799eccd181b5 100644
-> --- a/tools/testing/selftests/bpf/progs/verifier_value_ptr_arith.c
-> +++ b/tools/testing/selftests/bpf/progs/verifier_value_ptr_arith.c
-> @@ -225,9 +225,7 @@ l2_%=3D:	r0 =3D 1;						\
-> =20
->  SEC("socket")
->  __description("map access: known scalar +=3D value_ptr unknown vs unknow=
-n (lt)")
-> -__success __failure_unpriv
-> -__msg_unpriv("R1 tried to add from different maps, paths or scalars")
-> -__retval(1)
-> +__success __success_unpriv __retval(1)
->  __naked void ptr_unknown_vs_unknown_lt(void)
->  {
->  	asm volatile ("					\
-> @@ -265,9 +263,7 @@ l2_%=3D:	r0 =3D 1;						\
-> =20
->  SEC("socket")
->  __description("map access: known scalar +=3D value_ptr unknown vs unknow=
-n (gt)")
-> -__success __failure_unpriv
-> -__msg_unpriv("R1 tried to add from different maps, paths or scalars")
-> -__retval(1)
-> +__success __success_unpriv __retval(1)
->  __naked void ptr_unknown_vs_unknown_gt(void)
->  {
->  	asm volatile ("					\
+[...]
 
