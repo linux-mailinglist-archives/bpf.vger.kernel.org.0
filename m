@@ -1,254 +1,103 @@
-Return-Path: <bpf+bounces-61391-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61392-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C13CAAE6C4D
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 18:17:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92EE1AE6C8A
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 18:37:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DC60188A038
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 16:16:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6597E5A6ADF
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 16:37:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 965F44A00;
-	Tue, 24 Jun 2025 16:16:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="R5PhAvlE"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9A7F2E54B6;
+	Tue, 24 Jun 2025 16:37:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 084C9221DB9
-	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 16:15:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CE7F2E2F19;
+	Tue, 24 Jun 2025 16:37:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750781761; cv=none; b=h6/YbOAEICDSX7qZ1MsVZEleTkzzRBZHqd3saX8eq539g8T7T8zuPrpHVzPNr60rTGacZJevPoRKbsmgrP9veSfknRihtVHMgTzZEsZsuEDwhnajjudPgjkLy6zhH0pdKlFAe5SSvlxN7F+MO+wamfoIQq0GjRpVG/C3bJev3sQ=
+	t=1750783032; cv=none; b=lc7TpG9UDCpjXoDtFSh3DzCUJJ2YZaORuYYilge+7YnokCBvQ6EYwLOtywDixxXlJjPPNCMitpfZnAFfOafC2ctP0GcVMnpkatzHCvZccqBQfcNXsh1GBDZOIo96zwoFEvyT0MfU55+FQzG1tIBbHqr0FJLD3LWi5C1qaaXQDm4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750781761; c=relaxed/simple;
-	bh=BOnR+ZzuOzM+zZeOLb75bco2OWXARpP18ZfzpU/ACe4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=INxGcjJp7uijQUwDuAOcdKyYn8EFoolZmpn+H38271K57MmWTjF1r8zwZL0cjhxuZo6baglb97/FuW5zYdCSOHIQ/7xts905+ZraPxDhbgE0wp109dcvVFgci9/7sleh8D9GFPMhklTZ+lXwmaiX4eArBE+utRqX6FkthSOeOW8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=R5PhAvlE; arc=none smtp.client-ip=95.215.58.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <cc78ac6b-6f87-4d85-ac3e-36bb06fdd3e3@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1750781756;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5y67SYMhZMQ1wESk1+QHWNaqj2AimUu8gJ3LURsrx1g=;
-	b=R5PhAvlEOfaN8EJb26JsVlQabYvrIn4HWzRrRx9UXU0gjvtQqnSc/M1JNOZlTZTv9ssTuP
-	RHkYcPui8h12UAapu6R9TZzXTBEURrjIP+EaugplFBLSLGDjIMY0K7V2KUKiH09iIxnA6f
-	rn9VowCxP4eVx3OC9nUV9cwW75MlrqE=
-Date: Tue, 24 Jun 2025 09:15:51 -0700
+	s=arc-20240116; t=1750783032; c=relaxed/simple;
+	bh=hdP9mpYsK2Q3RY9hTt8+NjB0LOi9gUf391YKK7ZgnTs=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=MAcZ0vjX4xNyTYguT3yRgc4aS259itih6J9G68jwkHZXCuPBIPIe4ja8wyvPaQt+U72y6MnXhJHhSwxugJoMu5AVTi/7UjQorY+lBgnQsq9Jh5BTj2HGe5PkQVljC2DaLoDPnWXKpw0urH3nhmSs/+V41RqSFFYX6EYcGzLPZok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf03.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay05.hostedemail.com (Postfix) with ESMTP id 4A3C55D0C6;
+	Tue, 24 Jun 2025 16:36:59 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf03.hostedemail.com (Postfix) with ESMTPA id A42996000E;
+	Tue, 24 Jun 2025 16:36:53 +0000 (UTC)
+Date: Tue, 24 Jun 2025 12:36:50 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, x86@kernel.org, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Josh Poimboeuf <jpoimboe@kernel.org>, Ingo Molnar <mingo@kernel.org>, Jiri
+ Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, Indu
+ Bhagat <indu.bhagat@oracle.com>, "Jose E. Marchesi" <jemarch@gnu.org>, Beau
+ Belgrave <beaub@linux.microsoft.com>, Jens Remus <jremus@linux.ibm.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton
+ <akpm@linux-foundation.org>
+Subject: Re: [PATCH v10 08/14] unwind deferred: Use bitmask to determine
+ which callbacks to call
+Message-ID: <20250624123650.45eaef1a@batman.local.home>
+In-Reply-To: <20250624150021.GX1613200@noisy.programming.kicks-ass.net>
+References: <20250611005421.144238328@goodmis.org>
+	<20250611010429.105907436@goodmis.org>
+	<20250620081542.GK1613200@noisy.programming.kicks-ass.net>
+	<20250624105538.6336a717@batman.local.home>
+	<20250624150021.GX1613200@noisy.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 1/3] selftests/bpf: Refactor the failed
- assertion to another subtest
-Content-Language: en-GB
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
-References: <20250615185345.2756663-1-yonghong.song@linux.dev>
- <20250615185351.2757391-1-yonghong.song@linux.dev>
- <CAEf4BzZmzrT7+nB0eyK-iLv+un68VtLY-TAq3G5Pti=sjM41TQ@mail.gmail.com>
- <b3ce39f0-c52b-4787-980c-973bd4228349@linux.dev>
- <CAEf4BzbWqj9a7zrocg5pLDKTG9aJgRK61=SFLzH=ANtAAs_bLA@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAEf4BzbWqj9a7zrocg5pLDKTG9aJgRK61=SFLzH=ANtAAs_bLA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: A42996000E
+X-Stat-Signature: b9n45wf7go7awot9scyeebizdcbc8p3w
+X-Rspamd-Server: rspamout03
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1/K1WJLrL429FH033FoToSviP7JS8Y5N5Y=
+X-HE-Tag: 1750783013-434321
+X-HE-Meta: U2FsdGVkX1/eGpnAFrsr5SJ+kTGyCoPgr4tj81pJfwf7jhNVf4oCC0Zt+mIisg5o8bjvCOdV/7bRJwgtfk9wSABDd2z29J0QLFOr8hxmopE7XfUcvLAjPF3ahGK8KJuWFNTPTVEU7AqckqOfvwAVwDk4GfFswRSaCliZ1+0lQGJKrKvw5NgtKPsl0kACRM8OYRTdHIDzNbiuHnpjlLf7MkN/Ib3tL/lgixK3b1vMwUdLnTYXzUmd4oWHuvRSGSPGhkdgLSPmD74n28aZ+mLQ8fo8k3iIyqCddiemdv+/ytxEeuKQFHOIRNKGx/T0BqTiblOmsIxbpN2XPY+XAQQuStEtEou+l1RlyTlnYgbn86Azr8SOZdWn3jLD+qDC10Fd
 
+On Tue, 24 Jun 2025 17:00:21 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
+> On Tue, Jun 24, 2025 at 10:55:38AM -0400, Steven Rostedt wrote:
+> 
+> > > Which is somewhat inconsistent;
+> > > 
+> > >   __clear_bit()/__set_bit()  
+> > 
+> > Hmm, are the above non-atomic?  
+> 
+> Yes, ctags or any other code browser of you choice should get you to
+> their definition, which has a comment explaining the non-atomicy of
+> them.
 
-On 6/24/25 8:36 AM, Andrii Nakryiko wrote:
-> On Tue, Jun 17, 2025 at 9:36 PM Yonghong Song <yonghong.song@linux.dev> wrote:
->>
->>
->> On 6/16/25 3:00 PM, Andrii Nakryiko wrote:
->>> On Sun, Jun 15, 2025 at 11:54 AM Yonghong Song <yonghong.song@linux.dev> wrote:
->>>> When building the selftest with arm64/clang20, the following test failed:
->>>>       ...
->>>>       ubtest_multispec_usdt:PASS:usdt_100_called 0 nsec
->>>>       subtest_multispec_usdt:PASS:usdt_100_sum 0 nsec
->>>>       subtest_multispec_usdt:FAIL:usdt_300_bad_attach unexpected pointer: 0xaaaad82a2a80
->>>>       #469/2   usdt/multispec:FAIL
->>>>       #469     usdt:FAIL
->>>>
->>>> The failed assertion
->>>>       subtest_multispec_usdt:FAIL:usdt_300_bad_attach unexpected pointer: 0xaaaad82a2a80
->>>> is caused by bpf_program__attach_usdt() which is expected to fail. But
->>>> with arm64/clang20 bpf_program__attach_usdt() actually succeeded.
->>> I think I missed that it's unexpected *success* that is causing
->>> issues. If that's so, then I think it might be more straightforward to
->>> just ensure that test is expectedly failing regardless of compiler
->>> code generation logic. Maybe something along the following lines:
->>>
->>> diff --git a/tools/testing/selftests/bpf/prog_tests/usdt.c
->>> b/tools/testing/selftests/bpf/prog_tests/usdt.c
->>> index 495d66414b57..fdd8642cfdff 100644
->>> --- a/tools/testing/selftests/bpf/prog_tests/usdt.c
->>> +++ b/tools/testing/selftests/bpf/prog_tests/usdt.c
->>> @@ -190,11 +190,21 @@ static void __always_inline f300(int x)
->>>           STAP_PROBE1(test, usdt_300, x);
->>>    }
->>>
->>> +#define RP10(F, X)  F(*(X+0)); F(*(X+1));F(*(X+2)); F(*(X+3)); F(*(X+4)); \
->>> +                   F(*(X+5)); F(*(X+6)); F(*(X+7)); F(*(X+8)); F(*(X+9));
->>> +#define RP100(F, X) RP10(F,X+
->>> 0);RP10(F,X+10);RP10(F,X+20);RP10(F,X+30);RP10(F,X+40); \
->>> +
->>> RP10(F,X+50);RP10(F,X+60);RP10(F,X+70);RP10(F,X+80);RP10(F,X+90);
->>> +
->>>    __weak void trigger_300_usdts(void)
->>>    {
->>> -       R100(f300, 0);
->>> -       R100(f300, 100);
->>> -       R100(f300, 200);
->>> +       volatile int arr[300], i;
->>> +
->>> +       for (i = 0; i < 300; i++)
->>> +               arr[i] = 300;
->>> +
->>> +       RP100(f300, arr + 0);
->>> +       RP100(f300, arr + 100);
->>> +       RP100(f300, arr + 200);
->>>    }
->>>
->>>
->>> So basically force the compiler to use 300 different locations for
->>> each of 300 USDT instantiations? I didn't check how that will look
->>> like on arm64, but on x86 gcc it seems to generate what is expected of
->>> it.
->>>
->>> Can you please try it on arm64 and see if that works?
->> I tried the above on arm64 and it does not work. It has the same usdt arguments
->> as without this patch:
->>
->>     stapsdt              0x0000002e       NT_STAPSDT (SystemTap probe descriptors)
->>       Provider: test
->>       Name: usdt_300
->>       Location: 0x00000000000009e0, Base: 0x0000000000000000, Semaphore: 0x0000000000000008
->>       Arguments: -4@[x9]
->>     stapsdt              0x0000002e       NT_STAPSDT (SystemTap probe descriptors)
->>       Provider: test
->>       Name: usdt_300
->>       Location: 0x00000000000009f8, Base: 0x0000000000000000, Semaphore: 0x0000000000000008
->>       Arguments: -4@[x9]
->>     ...
->>
->> But I found if we build usdt.c file with -O2 (RELEASE=1) on arm64, the test will be successful:
->>
->>     stapsdt              0x0000002b       NT_STAPSDT (SystemTap probe descriptors)
->>       Provider: test
->>       Name: usdt_300
->>       Location: 0x00000000000001a4, Base: 0x0000000000000000, Semaphore: 0x0000000000000008
->>       Arguments: -4@0
->>     stapsdt              0x0000002b       NT_STAPSDT (SystemTap probe descriptors)
->>       Provider: test
->>       Name: usdt_300
->>       Location: 0x00000000000001a8, Base: 0x0000000000000000, Semaphore: 0x0000000000000008
->>       Arguments: -4@1
->>     ...
->>
->> But usdt.c with -O2 will have a problem with gcc14 on x86:
->>
->>     stapsdt              0x00000087       NT_STAPSDT (SystemTap probe descriptors)
->>       Provider: test
->>       Name: usdt12
->>       Location: 0x000000000000258f, Base: 0x0000000000000000, Semaphore: 0x0000000000000006
->>       Arguments: -4@$2 -4@$3 -8@$42 -8@$44 -4@$5 -8@$6 8@%rdx 8@%rsi -4@$-9 -2@%cx -2@nums(%rax,%rax) -1@t1+4(%rip)
->>     ...
->>
->> You can see the above last two arguments which are not supported by libbpf.
->>
->> So let us say usdt.c is compiled with -O2:
->>      x86:
->>        gcc14 built kernel/selftests: failed, see the above
->>        clang built kernel/selftests: good
->>      arm64:
->>        both gcc14/clang built kernel/selftrests: good
->>
->> arm64 has more reigsters so it is likely to have better argument representation, e.g.,
->> for arm64/gcc with -O2, we have
->>
->>     stapsdt              0x00000071       NT_STAPSDT (SystemTap probe descriptors)
->>       Provider: test
->>       Name: usdt12
->>       Location: 0x0000000000002e74, Base: 0x0000000000000000, Semaphore: 0x000000000000000a
->>       Arguments: -4@2 -4@3 -8@42 -8@44 -4@5 -8@6 8@x1 8@x3 -4@-9 -2@x2 -2@[x0, 8] -1@[x3, 28]
->>
->> Eduard helped me to figure out how to compile prog_tests/usdt.c with -O2 alone.
->> The following patch resolved the issue and usdt test will be happy for both x86 and arm64:
->>
->> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
->> index 97013c49920b..05fc9149bc4f 100644
->> --- a/tools/testing/selftests/bpf/Makefile
->> +++ b/tools/testing/selftests/bpf/Makefile
->> @@ -760,6 +760,14 @@ TRUNNER_BPF_BUILD_RULE := $$(error no BPF objects should be built)
->>    TRUNNER_BPF_CFLAGS :=
->>    $(eval $(call DEFINE_TEST_RUNNER,test_maps))
->>
->> +# Compiler prog_tests/usdt.c with -O2 with clang compiler.
->> +# Otherwise, with -O0 on arm64, the usdt test will fail.
->> +ifneq ($(LLVM),)
->> +$(OUTPUT)/usdt.test.o: CFLAGS:=$(subst O0,O2,$(CFLAGS))
->> +$(OUTPUT)/cpuv4/usdt.test.o: CFLAGS:=$(subst O0,O2,$(CFLAGS))
->> +$(OUTPUT)/no_alu32/usdt.test.o: CFLAGS:=$(subst O0,O2,$(CFLAGS))
->> +endif
->> +
->>    # Define test_verifier test runner.
->>    # It is much simpler than test_maps/test_progs and sufficiently different from
->>    # them (e.g., test.h is using completely pattern), that it's worth just
->>
->> Another choice is to support argument like `-2@nums(%rax,%rax)` and `-1@t1+4(%rip)`.
->> But I am not sure whether we should do it or not as typically a usdt probe
->> probably won't have lots of diverse arguments.
->>
->> WDYT?
-> Can we just make that part of the test x86-64 specific for now? All
-> other alternatives seem worse, tbh.
+Bah, I did do a TAGS function (emacs) to find them, but totally missed
+the comment above. I just saw the macro magic of them, but totally
+missed the comment above them saying:
 
-So something like below?
+/*
+ * The following macros are non-atomic versions of their non-underscored
+ * counterparts.
+ */
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/usdt.c b/tools/testing/selftests/bpf/prog_tests/usdt.c
-index 495d66414b57..1e7e222034f7 100644
---- a/tools/testing/selftests/bpf/prog_tests/usdt.c
-+++ b/tools/testing/selftests/bpf/prog_tests/usdt.c
-@@ -270,8 +270,16 @@ static void subtest_multispec_usdt(void)
-          */
-         trigger_300_usdts();
-  
--       /* we'll reuse usdt_100 BPF program for usdt_300 test */
-         bpf_link__destroy(skel->links.usdt_100);
-+
-+       /* If built with clang with arm64 target, there will be much less
-+        * number of specs for usdt_300 call sites.
-+        */
-+#if defined(__clang__) && defined(__aarch64__)
-+       bss->usdt_100_called = 0;
-+       bss->usdt_100_sum = 0;
-+#else
-+       /* we'll reuse usdt_100 BPF program for usdt_300 test */
-         skel->links.usdt_100 = bpf_program__attach_usdt(skel->progs.usdt_100, -1, "/proc/self/exe",
-                                                         "test", "usdt_300", NULL);
-         err = -errno;
-@@ -289,6 +297,7 @@ static void subtest_multispec_usdt(void)
-  
-         ASSERT_EQ(bss->usdt_100_called, 0, "usdt_301_called");
-         ASSERT_EQ(bss->usdt_100_sum, 0, "usdt_301_sum");
-+#endif
-  
-         /* This time we have USDT with 400 inlined invocations, but arg specs
-          * should be the same across all sites, so libbpf will only need to
+ :-p
 
+-- Steve
 
