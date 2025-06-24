@@ -1,133 +1,99 @@
-Return-Path: <bpf+bounces-61418-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61419-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F802AE6E9F
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 20:31:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C9D3AE6ED7
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 20:46:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F08B1BC3133
-	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 18:32:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4ADEF17CFCC
+	for <lists+bpf@lfdr.de>; Tue, 24 Jun 2025 18:46:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD83B2E6D3E;
-	Tue, 24 Jun 2025 18:31:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96C912E7650;
+	Tue, 24 Jun 2025 18:46:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="frN3BPTD"
+	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="UQQwoqXE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-190a.mail.infomaniak.ch (smtp-190a.mail.infomaniak.ch [185.125.25.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C723C233134
-	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 18:31:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 386A423315A
+	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 18:46:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.25.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750789892; cv=none; b=eDPkLy5lHx69pKAkEnKHtqB3kQtW8uV7MwwnYnaAridGRTKhVBMpMDVfwHVEgSNTEwozR34O0GvrfCDKzT8qkLZewCA8rtbYJ0o8qGHSWwVm4/E0QWN+nYoyOHNYxj0klXuy1gZFP5PnjijYz3i0nhi8tx6uiuo5an2u8cTJFF8=
+	t=1750790774; cv=none; b=YK1Q5psHysMrEJTsyiUjPzTJtdjpbLX3cvvLdqFuBXuD+gYav6kwkp+2kBph8wg2m9762+DHU/dj0Ji2XGQeLRXCLDbGWYvx0bHN08LK7zP+1B1Jxkht3AkW/yW683owGny5GckJOwlDkkPas51rAa64KSuYvmaYV9QXOM3Q0TU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750789892; c=relaxed/simple;
-	bh=oxggGxlEAxQEG8dw/1WSvlADiepky9mdW9MNmieccOM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=s3SGIGaV93FTztMig4Arbeqk9UU9NM0zZNKnHcLsA1jbRNsd4gzF0+J7m31MLCPbBnAAYg2T9ZORzxQaxdzGNZz1iwtSVCo1Y+io8QSo1E/SY2RDSLFGeFwgZ9hddURIGUYrDZmoE0hmWlCVBDAU9FoZyk2Ultm4NK7NS2Cs2J0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=frN3BPTD; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3a6e2d85705so508634f8f.0
-        for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 11:31:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1750789889; x=1751394689; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6wcG9j8VdN/npPwgyr0htyxSJI9SVIjp3ma+CA4lJZY=;
-        b=frN3BPTDIdQzrJIYBwis8zfSQMoyLD4EMPu/S6n7IBWNYVWI7rppG0w6NnjxKAagin
-         pG+IFvzB3MiwhZgXdjQ2W3e+oMYDMfoUCs67iH47CDwS2sZcNLmNiV1qX5vD3sUeXdpr
-         IJJVqmxR9tb22c8BoJj7UudPDSjJtzMKTUJZM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750789889; x=1751394689;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6wcG9j8VdN/npPwgyr0htyxSJI9SVIjp3ma+CA4lJZY=;
-        b=JNTN40VZqqrTOIt+Z8eGff8OfmzeeJ3PVIu0etx7JP15+OjaEK3V7ZPBg125PjUvcx
-         rn7jLVaxIX+o2gSEWpFyZ6hb7UbD6TDLM+5oX2ECyf5PYdsObkct9Yn2DCAPD66eALHf
-         el+EFOjp4jUbCzjnxm6Wz/bdPhCIzkIBdfQofZJuc+UIV4NVTylx2X8f27lQqKUAS25+
-         hridlxO2SfK7UQNKIfrsPY7scApiBakIu3vpBOjtFiI8CugU96ZFxV5UxwYW8EflIKDw
-         Eo8xs/9VzPuwMqTUk/ubxn0yzhbYr6wYxT2E7KGkgJhjUh6QAztVV8Ca0CxV2bgczz62
-         PtiA==
-X-Forwarded-Encrypted: i=1; AJvYcCWUd0UM1jftTojOOtCmzFLz8ZLMyao62QuaUMUDtVI7iBdE8OMKX8KSuGFi+rFpfqfOk1k=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwFXGTWg3sAWwRv4AOTpXALT/GEgwdtZVB0CmplD+vUsFCn6NNL
-	6vQrHU8O7UxgNvw3cnNXBvOhC/7GNK067EX1KTn+OUIbVhKXqQHIeS+6959pR/BQSIGPLoT9vJe
-	Wu9DE+3kC3o3dLAmgtyamxiT/9B2dNUxtxcWWFtsf
-X-Gm-Gg: ASbGnct1t1kupD1f3RAGTRXh6jiV4snD81MjxMZ4xCk4XZ5oO0zP7W8dZafWyWSBgMc
-	7FqEs8VCwEepriPim6o/gJNEvkK5TSGXs2qRk5nQKhL9gxvhGDNdmc1mOefHt4yJLNA+HlrB2aO
-	2Gy7Bvb/m5GmQkB8CxdjM6LgNeHKNzNZ+CGAiEVxoa+qRa
-X-Google-Smtp-Source: AGHT+IHlsJf8+bi5OMmeyYd45t8XxJc7w9Vdsy57udvF0huW0fRWNhgY20XQo1TYvMIZI/PAdLdm921J3sfinlX3PFU=
-X-Received: by 2002:a05:6000:2f83:b0:3a5:2d42:aa25 with SMTP id
- ffacd0b85a97d-3a6ec4d3cd3mr776826f8f.50.1750789889090; Tue, 24 Jun 2025
- 11:31:29 -0700 (PDT)
+	s=arc-20240116; t=1750790774; c=relaxed/simple;
+	bh=n3gPP5ter8z/G2UK+N8u5iPsNH1l9p6GeoNFT2fHCLI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H3AAIc+/4K38BzDUKbWCPaL6JAXhhwparfMl+ca9TU8ddtfzXwzIstcWomTk2iVG1WcuL284xogq1/XH16Bc8M/LZynpMAT7NleV/2Kkl9mfmUIBwG2zlX4bSga2x0dGyt0xjMsuNAjtYc0zUsL6LT8gPW0rhzYEdvk3spljLZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=UQQwoqXE; arc=none smtp.client-ip=185.125.25.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
+Received: from smtp-3-0000.mail.infomaniak.ch (unknown [IPv6:2001:1600:4:17::246b])
+	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4bRYn45ytMzV6v;
+	Tue, 24 Jun 2025 20:46:00 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digikod.net;
+	s=20191114; t=1750790760;
+	bh=u1rRYMTWI2GRDd2TE9wM30VWfP4sJX0NGJS6BmSAJtM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UQQwoqXEpxtEJCOHOk2/X9CWB1KzMUyxiRIvB/4YzrwwoneL5tl9zyvuzpwFXI361
+	 sLM702qxP1UsO/Y9b+ljbx52e28Loed5fXRuzmGrjQnGZnOVhlTlHfKrzjGq1IA9cu
+	 ML8DLRd9DdBy5QQhRjKWspMBAf7cHbjjAxG3NIr4=
+Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4bRYn358gbzMBy;
+	Tue, 24 Jun 2025 20:45:59 +0200 (CEST)
+Date: Tue, 24 Jun 2025 20:45:58 +0200
+From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To: Song Liu <song@kernel.org>
+Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, brauner@kernel.org, 
+	kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk, jack@suse.cz, 
+	kpsingh@kernel.org, mattbobrowski@google.com, m@maowtm.org, neil@brown.name, 
+	=?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>
+Subject: Re: [PATCH v5 bpf-next 0/5] bpf path iterator
+Message-ID: <20250624.xahShi0iCh7t@digikod.net>
+References: <20250617061116.3681325-1-song@kernel.org>
+ <CAPhsuW5uu8cOYJWJ3Gne+ixpiWVAby1hZOnUgsXcFASEhV4Xhg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <aFl7jpCNzscumuN2@debian.debian> <633986ae-75c4-44fa-96f8-2dde00e17530@kernel.org>
- <CACKFLik8Ve4=eUV=TJMkwkScLN0H80TtiqPUwtuDqNEji+StSQ@mail.gmail.com>
-In-Reply-To: <CACKFLik8Ve4=eUV=TJMkwkScLN0H80TtiqPUwtuDqNEji+StSQ@mail.gmail.com>
-From: Andy Gospodarek <andrew.gospodarek@broadcom.com>
-Date: Tue, 24 Jun 2025 14:31:18 -0400
-X-Gm-Features: Ac12FXzy1JNsBli5zeDTmdvBa1itDipHFkLbZK-3c1TY40dRr2V_CjtW_YzgdDY
-Message-ID: <CACDg6nWEAKWU3s1x+NRU28BcXHK0=yFkAAU4MMkSTgEA9g592w@mail.gmail.com>
-Subject: Re: [PATCH net] bnxt: properly flush XDP redirect lists
-To: Michael Chan <michael.chan@broadcom.com>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, Yan Zhai <yan@cloudflare.com>, netdev@vger.kernel.org, 
-	Pavan Chebbi <pavan.chebbi@broadcom.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Stanislav Fomichev <sdf@fomichev.me>, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	kernel-team@cloudflare.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPhsuW5uu8cOYJWJ3Gne+ixpiWVAby1hZOnUgsXcFASEhV4Xhg@mail.gmail.com>
+X-Infomaniak-Routing: alpha
 
-On Tue, Jun 24, 2025 at 2:00=E2=80=AFPM Michael Chan <michael.chan@broadcom=
-.com> wrote:
->
-> On Mon, Jun 23, 2025 at 10:59=E2=80=AFPM Jesper Dangaard Brouer <hawk@ker=
-nel.org> wrote:
-> >
-> > On 23/06/2025 18.06, Yan Zhai wrote:
-> > > We encountered following crash when testing a XDP_REDIRECT feature
-> > > in production:
-> > >
-> > [...]
-> > >
-> > (To Andy + Michael:)
-> > The initial bug was introduced in [1] commit a7559bc8c17c ("bnxt:
-> > support transmit and free of aggregation buffers") in bnxt_rx_xdp()
-> > where case XDP_TX zeros the *event, that also carries the XDP-redirect
-> > indication.
-> > I'm wondering if the driver should not reset the *event value?
-> > (all other drive code paths doesn't)
->
-> Resetting *event was only correct before XDP_REDIRECT support was added.
->
-> >
-> >
-> > > We can stably reproduce this crash by returning XDP_TX
-> > > and XDP_REDIRECT randomly for incoming packets in a naive XDP program=
-.
-> > > Properly propagate the XDP_REDIRECT events back fixes the crash.
->
-> Thanks for the patch.  The fix is similar to edc0140cc3b7 ("bnxt_en:
-> Flush XDP for bnxt_poll_nitroa0()'s NAPI")
->
-> Somehow the fix was only applied to one chip's poll function and not
-> the other chips' poll functions.
+On Fri, Jun 20, 2025 at 02:59:17PM -0700, Song Liu wrote:
+> Hi Christian, Mickaël, and folks,
+> 
+> Could you please share your comments on this version? Does this
+> look sane?
 
-Odd that we missed this back then.  Thanks for the fix for all other device=
-s.
+This looks good to me but we need to know what is the acceptable next
+step to support RCU.  If we can go with another _rcu helper, I'm good
+with the current approach, otherwise we need to figure out a way to
+leverage the current helper to make it compatible with callers being in
+a RCU read-side critical section while leveraging safe path walk (i.e.
+several calls to path_walk_parent).
 
-> Reviewed-by: Michael Chan <michael.chan@broadcom.com>
-Reviewed-by: Andy Gospodarek <gospo@broadcom.com>
+> 
+> Thanks,
+> Song
+> 
+> On Mon, Jun 16, 2025 at 11:11 PM Song Liu <song@kernel.org> wrote:
+> >
+> > In security use cases, it is common to apply rules to VFS subtrees.
+> > However, filtering files in a subtree is not straightforward [1].
+> >
+> > One solution to this problem is to start from a path and walk up the VFS
+> > tree (towards the root). Among in-tree LSMs, Landlock uses this solution.
+> >
+> 
+> [...]
+> 
 
