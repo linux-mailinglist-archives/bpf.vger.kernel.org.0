@@ -1,73 +1,73 @@
-Return-Path: <bpf+bounces-61522-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61523-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CA46AE8327
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 14:50:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A52CAE837E
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 14:59:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4FBF178959
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 12:50:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 862117B794C
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 12:58:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D03526156F;
-	Wed, 25 Jun 2025 12:50:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2685A26156B;
+	Wed, 25 Jun 2025 12:59:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L36Fm4ho"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nUPdAewk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
+Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AD5B25D1E0;
-	Wed, 25 Jun 2025 12:50:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 127D025C711;
+	Wed, 25 Jun 2025 12:59:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750855818; cv=none; b=hQN7vIYJoaGg3y8KcO+Lm2Df9jAxnHsgHgZhDhKnouyRh+i+f9oe8p9BbcwVr76nzxtg5ncViRXW8NA3TWCsjecbgvMUpVo4Zs59sTCUbPUg3n81OjsVPCI5I50wQeVhmTXeYrRWjrJ8TOAUim7D8Y+M8vFQ9Oo1IcQh0mN+Afc=
+	t=1750856358; cv=none; b=c7rUFthS7+Ys7gjHd/xtN5wUtuu2zpSSiVo8cVz3YJuX/6LNUgkkPaxv3Dw2tQisaL6dyC8Gcncxj74iInSrirj27dEaWwz8ewyeYjmnracpWQHPCKkAU59vRCxdf5ItgMH32608gI3uUtxdvSPU6rNUITSmWFEsXDwSVWSF4bs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750855818; c=relaxed/simple;
-	bh=QLGFzP3/sxNPrkfh2CP+Tmg64IAG2Scn6S3cbmRklr4=;
+	s=arc-20240116; t=1750856358; c=relaxed/simple;
+	bh=3ZiR3kldQGRT+JR9d+Zx8f32CMuMhnHnVPXPztjL2Bk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QUD6jkQE+fG1a/lxDhg22KauK42F4zl3hLwWr8zjg32NJF+eGYvKXVwulBwLH6RkMduBO3nTBydeUj4J9zcruN2TCkhzahsJozx3qqQ7JNxC1vhSMBoiSXhF6GEJUQ8guqQ1aHgT0Um8AX+6w4za3GShCAmOB1UJz73gx3jhAWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L36Fm4ho; arc=none smtp.client-ip=209.85.166.42
+	 To:Cc:Content-Type; b=Hb97clcw2NGQ4DLEzMgvxJJ71rPk9e/2wMpm2veHwszmPjvwI8ku5vX+ckGRF95zVWGRApE650M2EBdmbBWHPMsRYEbYcAxFVnHUe2iDgG71q4cZgSwMJOshHTDsECSnEQZ0a2owGGFFMh5PZyQDqPDZ3RkO5eWhKV7B41FU3II=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nUPdAewk; arc=none smtp.client-ip=209.85.166.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-86cf9f46b06so216619239f.2;
-        Wed, 25 Jun 2025 05:50:16 -0700 (PDT)
+Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-3df34b727dcso6648665ab.2;
+        Wed, 25 Jun 2025 05:59:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750855815; x=1751460615; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1750856356; x=1751461156; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VEB+t9cZhMhKXuNVDSpqcCgPij5UADE4sfitMU0dBr0=;
-        b=L36Fm4ho3pLVCuTMbpD6erwzR8e2EjzDrIuswakDJKlmTH+pHCV2HqqxQ91jPw9cHe
-         8lDL2n6MV3XORKI/Jp3g3k3oUHrTnPnazQDh5TgmY79UoBfhU9euff1sEvkhpoJBA2tI
-         W85QhtyLdEn9QEjxdULyGS8ntCaeGo4sMrjBOHxEkkQ24GOzbH33Fwc2h52k53dBhuBG
-         AxgaaOWKo9SH2xSdhQo3vRPPtx6CtPt/RxU+VH9rU50MSdskaVfvfeEsFzOZbRFmiOkO
-         LUV+BtxfWiGtahtpHkhTaeRXM7bM5rSBCN6DH85pFDHEQzC2kFsVCSLI17LbgV2RElp+
-         xeWw==
+        bh=fh536MjySsyUDG6DwugOcuSs/2WVvy3wzmDmQ2Jwj6c=;
+        b=nUPdAewkXh37JWzsHvzDzdjCAsuvQzAjs+U85ODaOa8018ciJanSHUtEL2UUnjsLav
+         SjwC+u+nmQl0cXtbdaCcXOMw/fdJBOIc8mnBV0RbnPoSpclKTFnfunuvKAHaqK/A5D8T
+         J1116uMsECG+fQ0ImJBSHjT6I4uJ9it4ti6XI1riBypZI1FT5jixfpX1lLe1EC8TOtP/
+         GzncLtPebm73cTQcghVSLBPUv6KFSO+mvxDY9zBL96Wa+ylPymLLhd5UxEc/IEdYIoD7
+         Xl6Eamg3FgLKmyroDO90C2nl2ALIrvjV0Wpd/q4EfUY1PxtXHoAyxtSrOSEWGG/leUW8
+         Mbfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750855815; x=1751460615;
+        d=1e100.net; s=20230601; t=1750856356; x=1751461156;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VEB+t9cZhMhKXuNVDSpqcCgPij5UADE4sfitMU0dBr0=;
-        b=jWuI2EAkFtmUIvqN5QaYmC1zowTA78xyuWlN/GYvU3a4kmehrXL5IT71BzySRItshG
-         t3avfvr2+bZcYodR6oNzYHDllSLrTPSo3w8RDDnO/Bm2sHTdIKIV7qxG9dKtZVquBxZu
-         zSUiUoQO5O5Aaq5HEWnwdiq+jXY5SFju9zKzYQZSAX9s8kgzDeKRUwEQk5GDECBl7JXY
-         +Zu4hNNrqgS2Jm2STrBmtxmXN32ZWpAAjgDR5HoTcMtx2VAU6jgTHlIICHlGGo5xlvTk
-         ZeYzU62pp+EohM9AMHwuFoScXO0hmxKPNYass57rC2k3iveaHMdCdc7sf4xaKPkSMLBO
-         PHXA==
-X-Forwarded-Encrypted: i=1; AJvYcCVRc5KFMqix/0NvYJw3OFY5eMxuMAa6zDBH+7cQJbZUBB5k3TlqO3a4Ug1Zwi/u+t2+9Bk=@vger.kernel.org, AJvYcCWmTVpVG+yF6Mh16r7OtnzgIG7H+nKZklbyH7zA8IBR4KZtCq7o5BrZeQKv/M6ehhqfj5euf3Ae@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywz3vEO+o8DtsFa/KMBiJ5GaVHTBXM9tW4SoV3FV960Ay7CBHJW
-	d0kPL8LDm2iIDQrKJv7Ft7gJpkc0Bd5Lg66h+TUjK53EtZd+K1PVKR0fIQEGp1ZjuPnDOlCSqGA
-	kZ6eVEhMRXHKx/vCHafVYdbwJBtihgho=
-X-Gm-Gg: ASbGncsdX35l1jrUjBa2TI/9PwXGAWfTJKuzqoWezqJZaY/OcmAcFz70jviz1NZ9elh
-	DGOW+5Boi7wSofU4FdqU7TTpleB2Fp24zzsqxWGRPONy/k/ZBX03lScre3dg7l014VHeyldVnDG
-	ExWo5z9jCDt8wKsN2zr8gHb0VShcmOmbNi0A+DE5H2RnI=
-X-Google-Smtp-Source: AGHT+IFJblhjspcL9/xJzcahHCa03/6ApQYMcbTIledhe3BA10tbDbNZGa7Ygqlui7ZUNY7gnHtQNoN8RMjuHQiBuVo=
-X-Received: by 2002:a05:6e02:1789:b0:3dc:8b29:30b1 with SMTP id
- e9e14a558f8ab-3df3299f953mr35562645ab.14.1750855815228; Wed, 25 Jun 2025
- 05:50:15 -0700 (PDT)
+        bh=fh536MjySsyUDG6DwugOcuSs/2WVvy3wzmDmQ2Jwj6c=;
+        b=Cs7hlsl7Y4avyeGIAgafZeUAHw70lFe/JKTgroWOj3KRfYqhIO1ihPp4mCuF2eRVsv
+         wnP+6NitGffRW7Gg239d4hSre90i9B4N4MycMbQKpeV8n6h1cFKC3fqop3JFauSGE2eF
+         sANI3XZA8+B0IsH3XAEn+eKpBLO1WREsMaMdVBzIllcB6/g47vNMUB+W+Set3p18M04y
+         kRrBLkUJfcBHLh8TV7uFDq8gR0k3AezHrmqdulZHPu4dfm4JzIHiAOaYH03IDo1gogby
+         yXsmhYnV7sNnNT6/zUWsB/MjyhbfBosH0B0C/nJwXx/4/JZ7TO3FDkhvyjAIyaTvkGET
+         2FHA==
+X-Forwarded-Encrypted: i=1; AJvYcCWqXI8TjRsWSwELVo5bjbmRDE9vSJW0t87jmoAJ8kEuZE/G/BHrIBtFfyDjrMahx8KqAJg=@vger.kernel.org, AJvYcCXPNGb1uR2jHr/McPtkQS6NvY/pHeALy/Ajcw7rN3wQPchEQr6py5yjTerhoHs3CsaMk73omsim@vger.kernel.org
+X-Gm-Message-State: AOJu0YykefNYy/Ure5BoNMinjubsdr+DG8E87LoxdjzK4K19mVV2ElFu
+	q2cdjGJfMiKXrkZ1xl0GdVjAflVd0SqDnMVQHXPKs/pXGuN7GYNqkNI99fN0uZlRHA/3r7nY4P3
+	9t9/CAZCk6yzbJPyPsBJSBS1aSdOOWrw=
+X-Gm-Gg: ASbGncsso4eWxIkakNVA/D/JnTNFMNpToMsYlZLvZmv/GkafpM8U20+4fVInWJYltws
+	7fRZ5P0NIMVmnHT6dvRXJMVaK7R43zfW6uzezTxu2qGQPK16u+inIjG6s+jDsvS4OveLMj+R6EI
+	UdkyIU+0wQIWv0V09b+0HrZbpt7glY/LylmTBoXdxTw8w=
+X-Google-Smtp-Source: AGHT+IHcj0Wi0q1qsCWQgcLKjBYRLK6d4aCDMlhtkBlDngn2ZSxF6+rM4rPI3mZ19aCAuZeA1q5CknXX7b1BFWLNSl0=
+X-Received: by 2002:a05:6e02:1a0f:b0:3de:281b:d0e4 with SMTP id
+ e9e14a558f8ab-3df327fc2a2mr37898315ab.2.1750856356061; Wed, 25 Jun 2025
+ 05:59:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -75,14 +75,14 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20250625101014.45066-1-kerneljasonxing@gmail.com>
- <20250625101014.45066-2-kerneljasonxing@gmail.com> <aFvY10KkS9eUbcOw@boxer>
-In-Reply-To: <aFvY10KkS9eUbcOw@boxer>
+ <20250625101014.45066-3-kerneljasonxing@gmail.com> <aFvpNHqvZp0eishZ@boxer>
+In-Reply-To: <aFvpNHqvZp0eishZ@boxer>
 From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Wed, 25 Jun 2025 20:49:38 +0800
-X-Gm-Features: Ac12FXxSgQDtJuisoQNMD07REoeT0RG7U_jUcSi5OKYd-dziDZCmw0xIPTOI5RM
-Message-ID: <CAL+tcoBfg-HfMxYHTnP6xb0ZWp68KiP4R0U-AdUt9UE=UJYCkw@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 1/2] net: xsk: update tx queue consumer
- immediately after transmission
+Date: Wed, 25 Jun 2025 20:58:39 +0800
+X-Gm-Features: Ac12FXxFypVXdF1IXodPoD1OAx-EOH19pnFfEcLY20vyroa5yGzPf5knCklbQK4
+Message-ID: <CAL+tcoBOpBxJN=S8FWgz++WxTzFP0rG-d+HRhSfZ6DLQjNuYtQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 2/2] selftests/bpf: check if the global
+ consumer of tx queue updates after send call
 To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
 	pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com, 
@@ -93,137 +93,153 @@ Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Maciej,
-
-On Wed, Jun 25, 2025 at 7:09=E2=80=AFPM Maciej Fijalkowski
+On Wed, Jun 25, 2025 at 8:19=E2=80=AFPM Maciej Fijalkowski
 <maciej.fijalkowski@intel.com> wrote:
 >
-> On Wed, Jun 25, 2025 at 06:10:13PM +0800, Jason Xing wrote:
+> On Wed, Jun 25, 2025 at 06:10:14PM +0800, Jason Xing wrote:
 > > From: Jason Xing <kernelxing@tencent.com>
 > >
-> > For afxdp, the return value of sendto() syscall doesn't reflect how man=
-y
-> > descs handled in the kernel. One of use cases is that when user-space
-> > application tries to know the number of transmitted skbs and then decid=
-es
-> > if it continues to send, say, is it stopped due to max tx budget?
+> > The subtest sends 33 packets at one time on purpose to see if xsk
+> > exitting __xsk_generic_xmit() updates the global consumer of tx queue
+> > when reaching the max loop (max_tx_budget, 32 by default). The number 3=
+3
+> > can avoid xskq_cons_peek_desc() updates the consumer, to accurately
+> > check if the issue that the first patch resolves remains.
 > >
-> > The following formular can be used after sending to learn how many
-> > skbs/descs the kernel takes care of:
-> >
-> >   tx_queue.consumers_before - tx_queue.consumers_after
-> >
-> > Prior to the current patch, in non-zc mode, the consumer of tx queue is
-> > not immediately updated at the end of each sendto syscall when error
-> > occurs, which leads to the consumer value out-of-dated from the perspec=
-tive
-> > of user space. So this patch requires store operation to pass the cache=
-d
-> > value to the shared value to handle the problem.
-> >
-> > More than those explicit errors appearing in the while() loop in
-> > __xsk_generic_xmit(), there are a few possible error cases that might
-> > be neglected in the following call trace:
-> > __xsk_generic_xmit()
-> >     xskq_cons_peek_desc()
-> >         xskq_cons_read_desc()
-> >           xskq_cons_is_valid_desc()
-> > It will also cause the premature exit in the while() loop even if not
-> > all the descs are consumed.
-> >
-> > Based on the above analysis, using 'cached_prod !=3D cached_cons' could
-> > cover all the possible cases because it represents there are remaining
-> > descs that are not handled and cached_cons are not updated to the globa=
-l
-> > state of consumer at this time.
+> > Speaking of the selftest implementation, it's not possible to use the
+> > normal validation_func to check if the issue happens because the whole
+> > send packets logic will call the sendto multiple times such that we're
+> > unable to detect in time.
 > >
 > > Signed-off-by: Jason Xing <kernelxing@tencent.com>
 > > ---
-> > v3
-> > Link: https://lore.kernel.org/all/20250623073129.23290-1-kerneljasonxin=
-g@gmail.com/
-> > 1. use xskq_has_descs helper.
-> > 2. add selftest
+> >  tools/testing/selftests/bpf/xskxceiver.c | 30 ++++++++++++++++++++++--
+> >  1 file changed, 28 insertions(+), 2 deletions(-)
 > >
-> > V2
-> > Link: https://lore.kernel.org/all/20250619093641.70700-1-kerneljasonxin=
-g@gmail.com/
-> > 1. filter out those good cases because only those that return error nee=
-d
-> > updates.
-> > Side note:
-> > 1. in non-batched zero copy mode, at the end of every caller of
-> > xsk_tx_peek_desc(), there is always a xsk_tx_release() function that us=
-ed
-> > to update the local consumer to the global state of consumer. So for th=
-e
-> > zero copy mode, no need to change at all.
-> > 2. Actually I have no strong preference between v1 (see the above link)
-> > and v2 because smp_store_release() shouldn't cause side effect.
-> > Considering the exactitude of writing code, v2 is a more preferable
-> > one.
-> > ---
-> >  net/xdp/xsk.c | 3 +++
-> >  1 file changed, 3 insertions(+)
+> > diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/s=
+elftests/bpf/xskxceiver.c
+> > index 0ced4026ee44..f7aa83706bc7 100644
+> > --- a/tools/testing/selftests/bpf/xskxceiver.c
+> > +++ b/tools/testing/selftests/bpf/xskxceiver.c
+> > @@ -109,6 +109,8 @@
 > >
-> > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> > index 5542675dffa9..ab6351b24ac8 100644
-> > --- a/net/xdp/xsk.c
-> > +++ b/net/xdp/xsk.c
-> > @@ -856,6 +856,9 @@ static int __xsk_generic_xmit(struct sock *sk)
+> >  #include <network_helpers.h>
+> >
+> > +#define MAX_TX_BUDGET_DEFAULT 32
+>
+> and what if in the future you would increase the generic xmit budget on
+> the system? it would be better to wait with test addition when you
+> introduce the setsockopt patch.
+>
+> plus keep in mind that xskxceiver tests ZC drivers as well. so either we
+> should have a test that serves all modes or keep it for skb mode only.
+>
+> > +
+> >  static bool opt_verbose;
+> >  static bool opt_print_tests;
+> >  static enum test_mode opt_mode =3D TEST_MODE_ALL;
+> > @@ -1323,7 +1325,8 @@ static int receive_pkts(struct test_spec *test)
+> >       return TEST_PASS;
+> >  }
+> >
+> > -static int __send_pkts(struct ifobject *ifobject, struct xsk_socket_in=
+fo *xsk, bool timeout)
+> > +static int __send_pkts(struct test_spec *test, struct ifobject *ifobje=
+ct,
+> > +                    struct xsk_socket_info *xsk, bool timeout)
+> >  {
+> >       u32 i, idx =3D 0, valid_pkts =3D 0, valid_frags =3D 0, buffer_len=
+;
+> >       struct pkt_stream *pkt_stream =3D xsk->pkt_stream;
+> > @@ -1437,9 +1440,21 @@ static int __send_pkts(struct ifobject *ifobject=
+, struct xsk_socket_info *xsk, b
 > >       }
 > >
-> >  out:
-> > +     if (xskq_has_descs(xs->tx))
-> > +             __xskq_cons_release(xs->tx);
+> >       if (!timeout) {
+> > +             int prev_tx_consumer;
 > > +
-> >       if (sent_frame)
-> >               if (xsk_tx_writeable(xs))
-> >                       sk->sk_write_space(sk);
+> > +             if (!strncmp("TX_QUEUE_CONSUMER", test->name, MAX_TEST_NA=
+ME_SIZE))
+> > +                     prev_tx_consumer =3D *xsk->tx.consumer;
+> > +
+> >               if (complete_pkts(xsk, i))
+> >                       return TEST_FAILURE;
+> >
+> > +             if (!strncmp("TX_QUEUE_CONSUMER", test->name, MAX_TEST_NA=
+ME_SIZE)) {
+> > +                     int delta =3D *xsk->tx.consumer - prev_tx_consume=
+r;
 >
-> Hi Jason,
-> IMHO below should be enough to address the issue:
+> hacking the data path logic for single test purpose is rather not good.
+> I am also not really sure if this deserves a standalone test case or coul=
+d
+> we just introduce a check in data path in appropriate place.
 
-Sure, it can.
+The big headache is that if we expect to detect such a case, we have
+to re-invent a similar send packet logic or hack the data path (a bit
+like this patch). I admit it's ugly as I mentioned yesterday.
 
-Can I ask one more thing? Technically it's not considered a bug,
-right? I'm not sure if it's worth telling the stable team to backport
-in older versions.
-
->
->         if (sent_frame) {
-
-Using this condition means the consumer is updated in majority cases
-including those good cases [1]. The intention of the current patch is
-to update the consumer only when the error occurs because in other
-cases xskq_cons_peek_desc() does it.
-
-[1]: https://lore.kernel.org/all/aFVr60tw3QJopcOo@mini-arch/
-
->                 __xskq_cons_release(xs->tx);
->                 if (xsk_tx_writeable(xs))
->                         sk->sk_write_space(sk);
->         }
->
-> which basically is what xsk_tx_release() does for each tx socket in list.
-> zc drivers call it whenever there was a single descriptor produced to HW
-> ring. So should we on generic xmit side, based on @sent_frame.
-
-As you said, they would be the same :)
-
->
-> We could even wrap these 3 lines onto internal function, say
-> __xsk_tx_release() and use it in xsk_tx_release() as well.
-
-I can do it in the next respin.
-
-But I have no obvious opinion on how to write it. If no one is opposed
-to the taste of patch, I will follow your advice. Thanks.
+Sorry, Stanislav, no offense here. If you read this, please don't
+blame me. I know you wish me to add one related test case. So here we
+are. Since Maciej brought up the similar thought, I keep wondering if
+we should give up such a standalone test patch? Honestly it already
+involved more time than expected. The primary reason for me is that
+the issue doesn't cause much trouble to the application.
 
 Thanks,
 Jason
 
 >
+> > +
+> > +                     if (delta !=3D MAX_TX_BUDGET_DEFAULT)
+> > +                             return TEST_FAILURE;
+> > +             }
+> > +
+> >               usleep(10);
+> >               return TEST_PASS;
+> >       }
+> > @@ -1492,7 +1507,7 @@ static int send_pkts(struct test_spec *test, stru=
+ct ifobject *ifobject)
+> >                               __set_bit(i, bitmap);
+> >                               continue;
+> >                       }
+> > -                     ret =3D __send_pkts(ifobject, &ifobject->xsk_arr[=
+i], timeout);
+> > +                     ret =3D __send_pkts(test, ifobject, &ifobject->xs=
+k_arr[i], timeout);
+> >                       if (ret =3D=3D TEST_CONTINUE && !test->fail)
+> >                               continue;
+> >
+> > @@ -2613,6 +2628,16 @@ static int testapp_adjust_tail_grow_mb(struct te=
+st_spec *test)
+> >                                  XSK_UMEM__LARGE_FRAME_SIZE * 2);
+> >  }
+> >
+> > +static int testapp_tx_queue_consumer(struct test_spec *test)
+> > +{
+> > +     int nr_packets =3D MAX_TX_BUDGET_DEFAULT + 1;
+> > +
+> > +     pkt_stream_replace(test, nr_packets, MIN_PKT_SIZE);
+> > +     test->ifobj_tx->xsk->batch_size =3D nr_packets;
+> > +
+> > +     return testapp_validate_traffic(test);
+> > +}
+> > +
+> >  static void run_pkt_test(struct test_spec *test)
+> >  {
+> >       int ret;
+> > @@ -2723,6 +2748,7 @@ static const struct test_spec tests[] =3D {
+> >       {.name =3D "XDP_ADJUST_TAIL_SHRINK_MULTI_BUFF", .test_func =3D te=
+stapp_adjust_tail_shrink_mb},
+> >       {.name =3D "XDP_ADJUST_TAIL_GROW", .test_func =3D testapp_adjust_=
+tail_grow},
+> >       {.name =3D "XDP_ADJUST_TAIL_GROW_MULTI_BUFF", .test_func =3D test=
+app_adjust_tail_grow_mb},
+> > +     {.name =3D "TX_QUEUE_CONSUMER", .test_func =3D testapp_tx_queue_c=
+onsumer},
+> >       };
+> >
+> >  static void print_tests(void)
 > > --
 > > 2.41.3
 > >
