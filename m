@@ -1,97 +1,84 @@
-Return-Path: <bpf+bounces-61535-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61533-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96C6DAE878A
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 17:11:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83D2BAE8773
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 17:07:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB2971778F9
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 15:11:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBBD3177610
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 15:07:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8C5826A1A3;
-	Wed, 25 Jun 2025 15:11:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77C2F269CE8;
+	Wed, 25 Jun 2025 15:07:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RMyx0lNt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CwqLPHUa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E36726A0D0;
-	Wed, 25 Jun 2025 15:11:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79BC0269806
+	for <bpf@vger.kernel.org>; Wed, 25 Jun 2025 15:07:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750864278; cv=none; b=oYBa35RZkxxhnNmjy6wQAOSPUIV8wxONd1/Jm6aQRUsWZHWDMw1MVBw2PaO2RahmMyFyOnI1F7k/YoCJqVWSYlgq6KyQYKADIWxEekx6Agb4mUl9Afh6lDWqYlJyd1XPqoi2OGQ3j2lCwVOA+ksn8qNCEdGXnPwtwd0qD4bMAUA=
+	t=1750864036; cv=none; b=OTZcPJji0HtR2JHDdG8Chn3QV1UE18+LUZHYfSTxN6gYm0ieVqz3WXL2sdx6kkO7SVGe5wzIvT0VZlo0coMnH16LcdwvaSBBnRm6j9G6vqB7HzWvGp8uTS4U9bPmQwzlkHF6euir7GKkAowLpST3198O7iVuQbluYfhBuIT5YkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750864278; c=relaxed/simple;
-	bh=sQWzXMpttU3Q4RdTkLeDK11omHBR555qHYPgdiuh080=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r1gNwNnWczsTdtWBjRDjo2TrX5Kf/DwzwMu4QV+IEH32hRMa1ExMOnW89lg/yFWiwdzw6vwML79xONQqEXKGghYi7stekvpN3da8/kv8p/BY+UY/hVwYCjrdGTsVjLOzFukKmO8hnIzYQzI+bkuGq4iKrT0RM3UJwE1Nv2l93dM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RMyx0lNt; arc=none smtp.client-ip=209.85.218.45
+	s=arc-20240116; t=1750864036; c=relaxed/simple;
+	bh=q5nviAyII7Hh14AkaO2uHcpz8MaYBrlXCzai8i2Icr8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VYq+mhESlgzG9wiSWBKtlfaYbjq/CXRyqNQ2tVdPHZm4ydVOdIPFaaKUjIwC0VdT6CHLWC4ikwbdpHuWfok1752bJIGeMs9yw++XibbRemdfsW8Dj8d0b5KeH/3cSZ7HkapwLBbIZ6hbObEBy/GhK93CqMHyed9Drr3rJbDd6LQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CwqLPHUa; arc=none smtp.client-ip=209.85.128.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-ad572ba1347so1082598566b.1;
-        Wed, 25 Jun 2025 08:11:16 -0700 (PDT)
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-451d6ade159so50327275e9.1
+        for <bpf@vger.kernel.org>; Wed, 25 Jun 2025 08:07:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750864275; x=1751469075; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1750864033; x=1751468833; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=73ypKXXgUqafYwYORXlEImzIyHG0DLPjWMG5BzkdwL0=;
-        b=RMyx0lNt7NrHiF7IsQsWJfs2RykQjbgheqF4xRQwVAwv89ZM86MNPbLpv43RrWrcw3
-         etYxHUJN9JKsX4pnhaNCovk0ZQo4tJmGOloNmWuZXqUoDyfKNpjUQFyWZf576pEly5MJ
-         fKeGNoAnKAScbXJERIMjc+wsrRn61zRJRMK/C9s1dM7pMkSbv7OFoWW8k2bX80+S3vLL
-         Gi0mCSG9A7+0XwsCGfUBy4HtsKADanImyo06LK1uoCxhrsjzqAO52Yphitof5gJdTzyG
-         FWzkI7yhPUKw29Pjk0hqVaJjSCSyQj84FO4Qb/w0trRynkyA6EgfjIYYsKRSh3LlD3Xu
-         TFfA==
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WjQYoqci/qrxToR50QmpFdV0wns064FNlWvIK+glsFk=;
+        b=CwqLPHUaXN4tjVJ4Py/OHCc+2PzQyJht6t7KhLH3ok7Hu1oMXnQIiBJUa2C3AmmDA/
+         lEkkHBcUdGhVdDgonf23t6gFJWpYdnLo2bbgQ54yfzi6BL0LH1B78pevGyqg9VoacwKn
+         kWJKbYx2U4fXO2kZ164yiDqL2E5YdW7BRGAgg758jpQ7ViDRRiK5hXH3bg8ZaXdRNMr0
+         Ozf2kr1RR5gcOMRPAxeN6HICQ51ORM9v9SKxDgAGEglFxamiwAWaw9U+PRMxlkk+mASH
+         Y6kMy5Ga3BfrPkGAxDgQG2HkEWl/SJbiql41hDKaiXYMp2yNrRsX86UgFXFxx5IQCBw+
+         nJaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750864275; x=1751469075;
+        d=1e100.net; s=20230601; t=1750864033; x=1751468833;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=73ypKXXgUqafYwYORXlEImzIyHG0DLPjWMG5BzkdwL0=;
-        b=mA6CPCXAgvWxBFtXAxhAb/T5CYfIE+5wy6Swi8tt7fFRjMR9PV7mlvQDUKG5jPXz66
-         iSQ1oV9idJ7S+rF6xSjg5lwXp9EpovRKHt+GxwpxgPYOTbQe5MwA9LaXXxhQBw97G44R
-         seTwPRBOo9G2Is6JxIreckBWa70qTZFh2De94wkNxblRo+BRgRJlux0UBlT14q3HSo1A
-         zKwYYVwARAl5BK2xwIxeYzmai/OJs1seIBdapGVdBFnW0eW+M9D2qjUudhCyonBJ7KV1
-         Eip7uaKPFOt/ZYe6+IpScplCR6YB8AWdCE3JhTrrlSFYDYgSO74nVRxJ4mnUyHnlwtKV
-         NFhA==
-X-Forwarded-Encrypted: i=1; AJvYcCUSrGiriUY/tM1SUm9VWfs4TTNcGl8SoSGxI18ThyvpXm1KvgDOl1Ys2FXyuUuE5YnxdBJpFbZQNCyP3iRo7Wwt2slQ@vger.kernel.org, AJvYcCW/NK8UKdBcReMvzuN2+UCbd4Tr1QMVR27zLKoW41FiCVjO8anfRp9P271b7OYhxjLS8cXpNG+L/mZAIEzc@vger.kernel.org, AJvYcCXO4pzSi5Q/IZFHOBNoOMtqAGQ/6Fw+WkRnY9ZrwqA8Aovhqp0PLpDeQbjfYVd3yE/Ro7I=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzR9ylazOMMYXkOr0qK3Qns1U7c53Rda6QmAKi0vz5d2aP+l1Lk
-	ncVzU0jaQIPVhCqLYNJQQICBkBZ2Ew9CTLTjM5jpl7puuzQ8/PklInxV
-X-Gm-Gg: ASbGncsfhTzHqmZvSW/k2KjkGA6seOCp6nO3VkzvZvVwQYI+en5Lf+JIdgOEWdv51Zi
-	l6R70CtRaMjHTDDu9c+vXJSZzPfE6il/UA1su1IgkjddjW/YaFnbD87TszL5QnWvlKnnh+paxZ8
-	G7JSQRlCDNcdqE5ZguYOabOkJtP4bu7PGIrkdvDTCLIVWAZ3FfTjWq8Bq2ZP23E7BkAmTFcxzLE
-	81eSC+6+W6EK4uq/LkocHagysAPyNaw1njHpg7DeW5nb7shDRFrzoZOxg97jH3s9/ItJT/ksYPr
-	DtI69KkNKFo3s+KDZcD/oafq0jKmJJx+J3qvJ5pcA3Z8vCLJKQ==
-X-Google-Smtp-Source: AGHT+IHR73kNjkLY6I6z8/OKPl7imSBMI/aYV5GL05PY9WoiLG/9bgiLimAwHJf6yVTIF1PIfqYUzA==
-X-Received: by 2002:a17:907:26c2:b0:ae0:cca0:e6af with SMTP id a640c23a62f3a-ae0cca0ebf1mr95706966b.1.1750864272815;
-        Wed, 25 Jun 2025 08:11:12 -0700 (PDT)
-Received: from krava ([176.74.159.170])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae0543421e9sm1059851066b.185.2025.06.25.08.11.10
+        bh=WjQYoqci/qrxToR50QmpFdV0wns064FNlWvIK+glsFk=;
+        b=amCOrbPEga2N75bmdrxOI/FjfCacUim1oERiCcZjhdl8NHbnlDWnruV8KpUFrhFVUv
+         UoKkRixIaZkE3uF/FSQqo6q2swUhwYhSm2AU6TbouCOAdiflaQHfOta2uIxYaqR+BcvQ
+         jSdlwP6Iod4Yx9LQltE3aFCzm1tLq627sWlvHWf/PHcyhalJdiPk5nM+O/N+1m2F2ZRn
+         MyTkDflE7t4zMyAlRahM3enAG88kH3zBu6TlcLrbDRrk3Qq3wDIiiKvKW1lrxm/Cx/XG
+         GMM2yVQc8IifBNG26rqIjfyoJ8mBj+L4TxdAbsfV8jNtmsxYDEc822HRUziPS0xntceb
+         xPWg==
+X-Gm-Message-State: AOJu0YwxM/BnDpFiC6/iPvdafvWtg4RFDMXSH426MCdm64foo+0v24rF
+	qvy/8hL5eZAmOXZW2t3oMPXgjIi0JLBCloikEvmGESaddsJ8LpD7oTLU
+X-Gm-Gg: ASbGncvdgDPkh2DmP64ZaxbfDw82lg9eE3PfM17K0wPBY8aMCyX6NmNBjiYhAJMorOC
+	4SNwnfoO9MwellsymedLFYcLx8x/Vq8s1DrcomQZMIdwqf8vAzJTL7XBeHp5kiUh3GHcub/biEz
+	amu1F9+TsdezlQI8HHHKw1ZBsX+ldueGAAalcOfYulzzCi636yMc8QcYjwf6vuK1D3DK/zgyRmK
+	9iSjLJvfiaBLvA4biYJlNHjORBlnbPmYlpYxKzi1y12r9WmcZrtV8GQsCPlVhss48j+kluf3+Mb
+	bHxDQn7mI767GpMc90xDAioLq0YhT5S4S83T8IPu56Q8gFTPUj0opAcCviBCtUo2M5wh5sTOMA=
+	=
+X-Google-Smtp-Source: AGHT+IEdjrMl5l/GW93DSim2CZdQPLQUkwJ8qZZXgGGwQbN9BzaXRf4Gk2NBDKW50EvjmC37MJkXLA==
+X-Received: by 2002:a05:600c:1d16:b0:453:8042:ba47 with SMTP id 5b1f17b1804b1-45381b0aa8bmr32829365e9.19.1750864032502;
+        Wed, 25 Jun 2025 08:07:12 -0700 (PDT)
+Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-453814a6275sm19220635e9.1.2025.06.25.08.07.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Jun 2025 08:11:11 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 25 Jun 2025 17:11:09 +0200
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	x86@kernel.org, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	David Laight <David.Laight@aculab.com>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
-	Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCHv3 perf/core 07/22] uprobes: Add do_ref_ctr argument to
- uprobe_write function
-Message-ID: <aFwRjTkluiE-g-Ab@krava>
-References: <20250605132350.1488129-1-jolsa@kernel.org>
- <20250605132350.1488129-8-jolsa@kernel.org>
- <20250625154259.4a092f0213739404a0e9b210@kernel.org>
+        Wed, 25 Jun 2025 08:07:11 -0700 (PDT)
+Date: Wed, 25 Jun 2025 15:12:36 +0000
+From: Anton Protopopov <a.s.protopopov@gmail.com>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next] bpf: simplify code by exporting a btf helper
+Message-ID: <aFwR5KFVjVKE6NVd@mail.gmail.com>
+References: <20250624193655.733050-1-a.s.protopopov@gmail.com>
+ <55bdd85e5db7dae94016ae57bf2d1ff233dc0881.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -100,108 +87,38 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250625154259.4a092f0213739404a0e9b210@kernel.org>
+In-Reply-To: <55bdd85e5db7dae94016ae57bf2d1ff233dc0881.camel@gmail.com>
 
-On Wed, Jun 25, 2025 at 03:42:59PM +0900, Masami Hiramatsu wrote:
-> On Thu,  5 Jun 2025 15:23:34 +0200
-> Jiri Olsa <jolsa@kernel.org> wrote:
-> 
-> > Making update_ref_ctr call in uprobe_write conditional based
-> > on do_ref_ctr argument. This way we can use uprobe_write for
-> > instruction update without doing ref_ctr_offset update.
+On 25/06/24 02:10PM, Eduard Zingerman wrote:
+> On Tue, 2025-06-24 at 19:36 +0000, Anton Protopopov wrote:
+> > There are places in code which can be simplified by using the
+> > btf_type_is_regular_int() helper (slightly patched to add an
+> > additional, optional, argument to check the exact size). So
+> > patch the helper, export it, and simplify code in a few files.
+> > (Suggested by Eduard in a bit different form in [1].)
 > > 
-> 
-> Can we just decouple this update from uprobe_write()?
-> If we do this exclusively, I think we can do something like;
-> 
-> lock()
-> update_ref_ctr(uprobe, mm, +1);
-> ...
-> ret = uprobe_write();
-> ...
-> if (ret < 0)
->   update_ref_ctr(uprobe, mm, -1);
-> unlock()
-> 
-> Thank you,
-
-it was the intention in the v1 but as Oleg pointed out [1] it won't
-work, because the set_orig_refctr part of this change does not know
-if the refctr should be really updated or not
-
-while inside uprobe_write it happens right after verify callback and
-we make sure to update refctr only if the instruction was updated
-
-thanks,
-jirka
-
-
-[1] https://lore.kernel.org/bpf/20250427141335.GA9350@redhat.com/
-
-> 
-> 
-> > Acked-by: Oleg Nesterov <oleg@redhat.com>
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > [1] https://lore.kernel.org/bpf/7edb47e73baa46705119a23c6bf4af26517a640f.camel@gmail.com/
+> > 
+> > Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
+> > Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
 > > ---
-> >  include/linux/uprobes.h | 2 +-
-> >  kernel/events/uprobes.c | 8 ++++----
-> >  2 files changed, 5 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-> > index 518b26756469..5080619560d4 100644
-> > --- a/include/linux/uprobes.h
-> > +++ b/include/linux/uprobes.h
-> > @@ -200,7 +200,7 @@ extern unsigned long uprobe_get_trap_addr(struct pt_regs *regs);
-> >  extern int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma, unsigned long vaddr, uprobe_opcode_t,
-> >  			       bool is_register);
-> >  extern int uprobe_write(struct arch_uprobe *auprobe, struct vm_area_struct *vma, const unsigned long opcode_vaddr,
-> > -			uprobe_opcode_t *insn, int nbytes, uprobe_write_verify_t verify, bool is_register);
-> > +			uprobe_opcode_t *insn, int nbytes, uprobe_write_verify_t verify, bool is_register, bool do_update_ref_ctr);
-> >  extern struct uprobe *uprobe_register(struct inode *inode, loff_t offset, loff_t ref_ctr_offset, struct uprobe_consumer *uc);
-> >  extern int uprobe_apply(struct uprobe *uprobe, struct uprobe_consumer *uc, bool);
-> >  extern void uprobe_unregister_nosync(struct uprobe *uprobe, struct uprobe_consumer *uc);
-> > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> > index 1e5dc3b30707..6795b8d82b9c 100644
-> > --- a/kernel/events/uprobes.c
-> > +++ b/kernel/events/uprobes.c
-> > @@ -492,12 +492,12 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
-> >  		bool is_register)
-> >  {
-> >  	return uprobe_write(auprobe, vma, opcode_vaddr, &opcode, UPROBE_SWBP_INSN_SIZE,
-> > -			    verify_opcode, is_register);
-> > +			    verify_opcode, is_register, true /* do_update_ref_ctr */);
-> >  }
-> >  
-> >  int uprobe_write(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
-> >  		 const unsigned long insn_vaddr, uprobe_opcode_t *insn, int nbytes,
-> > -		 uprobe_write_verify_t verify, bool is_register)
-> > +		 uprobe_write_verify_t verify, bool is_register, bool do_update_ref_ctr)
-> >  {
-> >  	const unsigned long vaddr = insn_vaddr & PAGE_MASK;
-> >  	struct mm_struct *mm = vma->vm_mm;
-> > @@ -538,7 +538,7 @@ int uprobe_write(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
-> >  	}
-> >  
-> >  	/* We are going to replace instruction, update ref_ctr. */
-> > -	if (!ref_ctr_updated && uprobe->ref_ctr_offset) {
-> > +	if (do_update_ref_ctr && !ref_ctr_updated && uprobe->ref_ctr_offset) {
-> >  		ret = update_ref_ctr(uprobe, mm, is_register ? 1 : -1);
-> >  		if (ret) {
-> >  			folio_put(folio);
-> > @@ -590,7 +590,7 @@ int uprobe_write(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
-> >  
-> >  out:
-> >  	/* Revert back reference counter if instruction update failed. */
-> > -	if (ret < 0 && ref_ctr_updated)
-> > +	if (do_update_ref_ctr && ret < 0 && ref_ctr_updated)
-> >  		update_ref_ctr(uprobe, mm, is_register ? -1 : 1);
-> >  
-> >  	/* try collapse pmd for compound page */
-> > -- 
-> > 2.49.0
-> > 
 > 
+> I think such cleanup makes sense.
+> Imo, the patch would be a bit simpler if:
+> - original interface of the btf_type_int_is_regular() is preserved,
+>   thus avoiding most of the changes in the btf.c;
+> - helpers btf_is_i32 and btf_is_i64 are introduced for external usage.
 > 
-> -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> E.g. like here:
+> https://github.com/kernel-patches/bpf/commit/d3c003f0a83cb66700f6a6e9b750d8e425b53cf5
+> (I use btf_is_u{32,64} there, but it should be i{32,64}).
+
+Thanks. I also was choosing between this and what I've sent,
+will send v2.
+
+> Nit: the subject is a bit too generic.
+
+Agree
+
+> [...]
 
