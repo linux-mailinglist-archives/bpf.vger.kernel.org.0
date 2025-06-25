@@ -1,209 +1,170 @@
-Return-Path: <bpf+bounces-61507-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61508-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 238C3AE7EC0
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 12:12:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56DAAAE7F49
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 12:30:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF09D1708C9
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 10:12:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE066189F812
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 10:31:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 694B62BF00E;
-	Wed, 25 Jun 2025 10:10:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80D2629E0F6;
+	Wed, 25 Jun 2025 10:30:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I6vFSnzJ"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0w29L976";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="LzoVUj3D";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0w29L976";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="LzoVUj3D"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 798CB2BDC38;
-	Wed, 25 Jun 2025 10:10:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EDF217A31C
+	for <bpf@vger.kernel.org>; Wed, 25 Jun 2025 10:30:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750846241; cv=none; b=H5IkNc9yfs7F9UBc40O6pjEoupj5Rox7orWBlQdeazuLTUPREx6QJsDZBSKQSZGIu9xBEFMirLQsmTp5lMK9CwDBVGkJSd+1K0BZ/jztIBTwBKXHsq1k6/tpjyLyTka7XlwUF1KzPHRNqZ+raPbm65aUU2ptg5Z5L7/rASjck0c=
+	t=1750847442; cv=none; b=Pg/gjUBMsXfZqnvR9MpmcreoNrQeGwdeOlcmG1U5sNoCU94A6MbwSkPMY8UrIHvaWBrf0KYzkS5t/0DbowzE/AK1hAIM3RyF/rVsN1ZtPQRdtzrtz7vp+R2VJiDOalyUxW2eGPEudkzkotKaAQVAwTXgIVRWPnxG7jA/XATZB9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750846241; c=relaxed/simple;
-	bh=UPIyeW9W3kqd6AdVIfdrUFGW9GSHoK6qYZPW1Bg4fWk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XFQevkXTQgEtwUx3BbFOOjENBem6v5rYt++J4D++9RRkdTl3aViJm+QyYLvvXY0W87i43eUGdG2IHbfcVSTdcd2PyViAfeImOBvOC4KJ/cMb3wv33iypgw7PcXVH5fRWVSawhs1nq9fWCZ1fgQoMXyZ7kXSWf7+ob4GAiB9Nx5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I6vFSnzJ; arc=none smtp.client-ip=209.85.216.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-315c1b0623cso3614750a91.1;
-        Wed, 25 Jun 2025 03:10:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750846239; x=1751451039; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5AGCyX14dEKx9XCAcpASiiI7DxVWDRzZMzeJaYAUn4M=;
-        b=I6vFSnzJ6K5h2ErIEZMq7l8+oWjT6TZ5YZYQrvMY1Mk4htcrXiWLmwT68VcXeDlGCP
-         3TneJ0jYZgcyY1FVRP+0Rd7zRB5rxfy/N1hMGnSFaeY1wupIbeTiCe5YXqnaRMoXoM/J
-         rryEQ+n+DYfkToUbpUJEXPYPE719oFvqxP43PyJhJj05RdxoCwv4tGp7efAgkP4axUKg
-         vy+797xTsRGEB6GQkb3z4w4y63N+cPqT/mHv4KK9q+Oz6FEiA0y29QrGYRimSitlKOUT
-         /kfiaUcBKeCFmzTkvNCUNEeDzLHwRSZQ/EYO00iXu8WkRGXpKCscYeVbkp5s45X8zDKP
-         5btw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750846239; x=1751451039;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5AGCyX14dEKx9XCAcpASiiI7DxVWDRzZMzeJaYAUn4M=;
-        b=ixM5jZIVBj0OQithTX0JI6lAQZYuIAPzXaZlb6zQPo92U0DVkJigyDH/xxguDT3Cgq
-         hVSKOlljAULBGV/RiWLJVG7YIPaQDBQXTxG/l17ItI1SX3IUOQe71ee7Tu52uNj66HrA
-         wCnTrP8bXmhgrCdqhfUC1y7D7sKk/1HlWUOHrO+HfWB2V/DCiSu5wvlR2Or9PvW6TT1H
-         SYMgg9yFO2jU1anrqr6ThZ2ypzp046VvRjruaRJmXNBCodrIUXvQyE6VaQ2w9Zg6nXya
-         NSnrG7NZZpIUbEX7z/5vGFR+GGwT4HPFtPa++iwMxf3hXo8QjkBPwmIdLeWSs5eMzyjz
-         IySg==
-X-Forwarded-Encrypted: i=1; AJvYcCXLd5Rb7RMHce4C9kDrz1Uh94OzJxq6UR6GLdUSL3iPi0SE3jwI080WeOoILEptH+S0KVwnAlI=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxrh6Yq5WiX7lMuBtHFRK1c/APeHCkdjo7rj0H2wLc4PGdQzLzF
-	H7G2shmUsm2R8UZSsCZThIaWHLZdMFVeJHiq1gILLri4BFZXAKDjaSNg
-X-Gm-Gg: ASbGncsD+W8krQmVSkvJbAXsaHQPQRyTcGgQSdiNSfLVQQpQJ4k2fSwk5BPDXay3iZz
-	sWVymqWN3+6o/CkoJYGrHj3Q5N1hq++XcnqeV5DWlrkcD7NQXyXvjFtsLIxjQbAdI0OR3Eb4GVG
-	WdTpMWEMxxwiXPCA/0KuRbpfpGGTunyxncET+u054ngBf+eHe4Ij2IF+S6Yv1iMtwo0osvbGIkX
-	+59pr/tv7q+yg4kRJDtOCkMhET9gk1NYib3HJZvlTJJvH7fGxbUjzM9W15/8h5hZ+KA0l8FS/vD
-	nHbCkv8qHAjq77ydNg+dsWI4fHIjZngDSk0wlAgeGx8GFR4J1fisvwGF+i0hB1DO2qnZd1TIZt1
-	pfXoZQDLFFKTLiZ0hGV+kHAJsn9CkZZGODw==
-X-Google-Smtp-Source: AGHT+IEO2URLiZhS8bYplN02TdS3MALXZtd23O3nEBxnjrTt+qbG0lWZZUEDHqCbaGnbVZkiy6P/fg==
-X-Received: by 2002:a17:90b:55c4:b0:313:23ed:6ff with SMTP id 98e67ed59e1d1-315f25edccamr3164926a91.1.1750846238651;
-        Wed, 25 Jun 2025 03:10:38 -0700 (PDT)
-Received: from KERNELXING-MB0.tencent.com ([43.132.141.25])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-315f5437a0bsm1328838a91.35.2025.06.25.03.10.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Jun 2025 03:10:38 -0700 (PDT)
-From: Jason Xing <kerneljasonxing@gmail.com>
-To: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	bjorn@kernel.org,
-	magnus.karlsson@intel.com,
-	maciej.fijalkowski@intel.com,
-	jonathan.lemon@gmail.com,
-	sdf@fomichev.me,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	joe@dama.to,
-	willemdebruijn.kernel@gmail.com
-Cc: bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	Jason Xing <kernelxing@tencent.com>
-Subject: [PATCH net-next v3 2/2] selftests/bpf: check if the global consumer of tx queue updates after send call
-Date: Wed, 25 Jun 2025 18:10:14 +0800
-Message-Id: <20250625101014.45066-3-kerneljasonxing@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20250625101014.45066-1-kerneljasonxing@gmail.com>
-References: <20250625101014.45066-1-kerneljasonxing@gmail.com>
+	s=arc-20240116; t=1750847442; c=relaxed/simple;
+	bh=dGAZhOW9p7UwAYvCs8OxhJrCgfybhv8mUBpkNFp5PFA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=T4BFzyMQlxL5ZgJkxXdM2QoQ8EnxdzPiWn2o1zeuuwKPF4W2yKxQ5N+l2fhwi87MoFuDlVB5wvSTDL4s+sHTup5ZqINXCWOAqProplRI6a35ybYssaT4NkOz+LoKpQNBD1WK7qyAxsR+HvFnrgKU0Z3/lKIL3tgp++9hekOucz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0w29L976; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=LzoVUj3D; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0w29L976; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=LzoVUj3D; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id AB60C1F457;
+	Wed, 25 Jun 2025 10:30:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1750847438; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RvOY1s9oIG3GS4kWTIeUXpu8PIXRrkNntzq+8SohfCY=;
+	b=0w29L976TyeLxycUSigGqiNZWkVskGuKF7WjT9Wc6stkhOo2k9ha/8vytFUIV19bb7Uk08
+	YxPKaAdCqgdgOpypXqshCw4Mmw5/P0HnXaigCE0cAipDG5KZhJ469gStpb9dw/k+PWZcWL
+	x6Sy6iCIqTKbXriuaaWYCvfTeOJq9U8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1750847438;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RvOY1s9oIG3GS4kWTIeUXpu8PIXRrkNntzq+8SohfCY=;
+	b=LzoVUj3DQg2qvYZlo4LmGcETxvT6NjS+LkOf2+VwrID+aNzOKbwU1rFluXlnoZBU7iPt10
+	d5oVQtwRejbM8qBA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1750847438; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RvOY1s9oIG3GS4kWTIeUXpu8PIXRrkNntzq+8SohfCY=;
+	b=0w29L976TyeLxycUSigGqiNZWkVskGuKF7WjT9Wc6stkhOo2k9ha/8vytFUIV19bb7Uk08
+	YxPKaAdCqgdgOpypXqshCw4Mmw5/P0HnXaigCE0cAipDG5KZhJ469gStpb9dw/k+PWZcWL
+	x6Sy6iCIqTKbXriuaaWYCvfTeOJq9U8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1750847438;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RvOY1s9oIG3GS4kWTIeUXpu8PIXRrkNntzq+8SohfCY=;
+	b=LzoVUj3DQg2qvYZlo4LmGcETxvT6NjS+LkOf2+VwrID+aNzOKbwU1rFluXlnoZBU7iPt10
+	d5oVQtwRejbM8qBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8E5A113AC4;
+	Wed, 25 Jun 2025 10:30:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id DYq8Is7PW2hjRwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 25 Jun 2025 10:30:38 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 0F7D3A0857; Wed, 25 Jun 2025 12:30:34 +0200 (CEST)
+Date: Wed, 25 Jun 2025 12:30:34 +0200
+From: Jan Kara <jack@suse.cz>
+To: Song Liu <song@kernel.org>
+Cc: Jan Kara <jack@suse.cz>, bpf@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, 
+	ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
+	viro@zeniv.linux.org.uk, brauner@kernel.org, kpsingh@kernel.org, mattbobrowski@google.com, 
+	m@maowtm.org, neil@brown.name
+Subject: Re: [PATCH v5 bpf-next 1/5] namei: Introduce new helper function
+ path_walk_parent()
+Message-ID: <ob35gal3xcbkdkcdpekyvglwg5jsf6sgkdeyoj3gu4jr76ilxh@yhupo3iwet3l>
+References: <20250617061116.3681325-1-song@kernel.org>
+ <20250617061116.3681325-2-song@kernel.org>
+ <htn4tupeslsrhyzrqt7pi34tye7tpp7amziiwflfpluj3u2nhs@e2axcpfuucv5>
+ <CAPhsuW5GKn=0HWDKkmOMTge_rCEJ+UMRNnmo7HpT-gwtURHpiw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPhsuW5GKn=0HWDKkmOMTge_rCEJ+UMRNnmo7HpT-gwtURHpiw@mail.gmail.com>
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[suse.cz,vger.kernel.org,meta.com,kernel.org,gmail.com,iogearbox.net,linux.dev,zeniv.linux.org.uk,google.com,maowtm.org,brown.name];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:email]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -3.80
 
-From: Jason Xing <kernelxing@tencent.com>
+On Tue 24-06-25 10:37:36, Song Liu wrote:
+> On Tue, Jun 24, 2025 at 5:18 AM Jan Kara <jack@suse.cz> wrote:
+> > > + *
+> > > + * Returns: either an ERR_PTR() or the chosen parent which will have had
+> > > + * the refcount incremented.
+> > > + */
+> >
+> > The behavior with LOOKUP_NO_XDEV is kind of odd (not your fault) and
+> > interestingly I wasn't able to find a place that would depend on the path
+> > being updated in that case. So either I'm missing some subtle detail (quite
+> > possible) or we can clean that up in the future.
+> 
+> We have RESOLVE_NO_XDEV in uapi/linux/openat2.h, so I guess we
+> cannot really remove it?
 
-The subtest sends 33 packets at one time on purpose to see if xsk
-exitting __xsk_generic_xmit() updates the global consumer of tx queue
-when reaching the max loop (max_tx_budget, 32 by default). The number 33
-can avoid xskq_cons_peek_desc() updates the consumer, to accurately
-check if the issue that the first patch resolves remains.
+I didn't mean to remove the LOOKUP_NO_XDEV flag, I meant to not update the
+passed path if LOOKUP_NO_XDEV is set, we are crossing the mountpoint and
+thus returning -EXDEV. As far as I've checked once we return error,
+everybody just path_put()s the nd->path so its update is just pointless.
+But there are many (indirect) callers so I might have missed some case.
 
-Speaking of the selftest implementation, it's not possible to use the
-normal validation_func to check if the issue happens because the whole
-send packets logic will call the sendto multiple times such that we're
-unable to detect in time.
-
-Signed-off-by: Jason Xing <kernelxing@tencent.com>
----
- tools/testing/selftests/bpf/xskxceiver.c | 30 ++++++++++++++++++++++--
- 1 file changed, 28 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
-index 0ced4026ee44..f7aa83706bc7 100644
---- a/tools/testing/selftests/bpf/xskxceiver.c
-+++ b/tools/testing/selftests/bpf/xskxceiver.c
-@@ -109,6 +109,8 @@
- 
- #include <network_helpers.h>
- 
-+#define MAX_TX_BUDGET_DEFAULT 32
-+
- static bool opt_verbose;
- static bool opt_print_tests;
- static enum test_mode opt_mode = TEST_MODE_ALL;
-@@ -1323,7 +1325,8 @@ static int receive_pkts(struct test_spec *test)
- 	return TEST_PASS;
- }
- 
--static int __send_pkts(struct ifobject *ifobject, struct xsk_socket_info *xsk, bool timeout)
-+static int __send_pkts(struct test_spec *test, struct ifobject *ifobject,
-+		       struct xsk_socket_info *xsk, bool timeout)
- {
- 	u32 i, idx = 0, valid_pkts = 0, valid_frags = 0, buffer_len;
- 	struct pkt_stream *pkt_stream = xsk->pkt_stream;
-@@ -1437,9 +1440,21 @@ static int __send_pkts(struct ifobject *ifobject, struct xsk_socket_info *xsk, b
- 	}
- 
- 	if (!timeout) {
-+		int prev_tx_consumer;
-+
-+		if (!strncmp("TX_QUEUE_CONSUMER", test->name, MAX_TEST_NAME_SIZE))
-+			prev_tx_consumer = *xsk->tx.consumer;
-+
- 		if (complete_pkts(xsk, i))
- 			return TEST_FAILURE;
- 
-+		if (!strncmp("TX_QUEUE_CONSUMER", test->name, MAX_TEST_NAME_SIZE)) {
-+			int delta = *xsk->tx.consumer - prev_tx_consumer;
-+
-+			if (delta != MAX_TX_BUDGET_DEFAULT)
-+				return TEST_FAILURE;
-+		}
-+
- 		usleep(10);
- 		return TEST_PASS;
- 	}
-@@ -1492,7 +1507,7 @@ static int send_pkts(struct test_spec *test, struct ifobject *ifobject)
- 				__set_bit(i, bitmap);
- 				continue;
- 			}
--			ret = __send_pkts(ifobject, &ifobject->xsk_arr[i], timeout);
-+			ret = __send_pkts(test, ifobject, &ifobject->xsk_arr[i], timeout);
- 			if (ret == TEST_CONTINUE && !test->fail)
- 				continue;
- 
-@@ -2613,6 +2628,16 @@ static int testapp_adjust_tail_grow_mb(struct test_spec *test)
- 				   XSK_UMEM__LARGE_FRAME_SIZE * 2);
- }
- 
-+static int testapp_tx_queue_consumer(struct test_spec *test)
-+{
-+	int nr_packets = MAX_TX_BUDGET_DEFAULT + 1;
-+
-+	pkt_stream_replace(test, nr_packets, MIN_PKT_SIZE);
-+	test->ifobj_tx->xsk->batch_size = nr_packets;
-+
-+	return testapp_validate_traffic(test);
-+}
-+
- static void run_pkt_test(struct test_spec *test)
- {
- 	int ret;
-@@ -2723,6 +2748,7 @@ static const struct test_spec tests[] = {
- 	{.name = "XDP_ADJUST_TAIL_SHRINK_MULTI_BUFF", .test_func = testapp_adjust_tail_shrink_mb},
- 	{.name = "XDP_ADJUST_TAIL_GROW", .test_func = testapp_adjust_tail_grow},
- 	{.name = "XDP_ADJUST_TAIL_GROW_MULTI_BUFF", .test_func = testapp_adjust_tail_grow_mb},
-+	{.name = "TX_QUEUE_CONSUMER", .test_func = testapp_tx_queue_consumer},
- 	};
- 
- static void print_tests(void)
+								Honza
 -- 
-2.41.3
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
