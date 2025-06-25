@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-61602-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61611-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A89D1AE916F
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 00:58:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2FE5AE917B
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 00:59:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7735F5A8350
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 22:57:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A9D8189E211
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 22:59:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5D3F2F9490;
-	Wed, 25 Jun 2025 22:57:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 385322FCE37;
+	Wed, 25 Jun 2025 22:57:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
+Received: from relay.hostedemail.com (smtprelay0010.hostedemail.com [216.40.44.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0E972F49F5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E495B2F49FC;
 	Wed, 25 Jun 2025 22:57:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.11
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750892225; cv=none; b=SYx9XSHTCV7EasUoEBrJinuKhj7zbm27q896xQrNKJ6kfOR/Q5HGmfJ+aKpFw/qw5ZstRTBzRtGG0YtFcIPFzRMzu5K09LGttjap8cN/cp4yUIYTELgczReY9zFAWPX8aF8q82S3pUY4vOj6XtKqlK1GsJ28cfFsGNC8nTCpNVY=
+	t=1750892227; cv=none; b=L7MhCFxLwTAgadMA9Wmi2qmugAJcDkrsx2vPgS3/HPP0iEdCSSUYTI/iNQJPzhCmIX7HyPTnZJtJqx2F3VgTVdVz845Ucy7MSJfIUDy7ogskTQFev6YMTYibDDLyYF/WTKGyQUjCDURVzCE6j/f5SXsaBecMeU5I0Z+GH7o/8SY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750892225; c=relaxed/simple;
-	bh=/aoScwYOkCF4fLnSJ9PusAogYx2TOp0qIdg16G+Yb7Q=;
+	s=arc-20240116; t=1750892227; c=relaxed/simple;
+	bh=4vDOBIoUHUiC3BHSTDobiE9oNjdxoZfAGrZ2BlXpfY4=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=fQMQslXxeDM0F1A3cjGjzhJkXeoge3KY5g2CQtX0NRaBCv+Bw38pJw35icQxB+Uzu7eOwFs0LAKBz/emNo6muPBuJGJTLla/vNexmS9yHVN8x1/dfABC2SdMapegtimQZTXm8DLY8ILTatDuJlwWjajc+lvWh3/U9xdIWKTsM1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.11
+	 Content-Type; b=kF5tYh8JoVtjd4lFh/5zjS5+joadfKSNuaDzTBGFpiDV5Pda52mBTX/Tbk2JAevN5F+zeCcZSM93WKUUUFG2IHw0Wu071ifElBzgPVRmO5NS2eEou6/08hfn/40PJ6oJv3/y99/sEte7k2GI1bxnSKHTdRgAtopYirHZ5vnoYJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.10
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf11.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay06.hostedemail.com (Postfix) with ESMTP id CF0E71047D6;
-	Wed, 25 Jun 2025 22:56:54 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: nevets@goodmis.org) by omf11.hostedemail.com (Postfix) with ESMTPA id A6AD22002A;
+Received: from omf18.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay10.hostedemail.com (Postfix) with ESMTP id 2BE21C050D;
+	Wed, 25 Jun 2025 22:56:55 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: nevets@goodmis.org) by omf18.hostedemail.com (Postfix) with ESMTPA id E92FE2E;
 	Wed, 25 Jun 2025 22:56:51 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.98.2)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1uUZ3M-000000043ih-4AnM;
-	Wed, 25 Jun 2025 18:57:16 -0400
-Message-ID: <20250625225716.845688930@goodmis.org>
+	id 1uUZ3N-000000043jC-0hQc;
+	Wed, 25 Jun 2025 18:57:17 -0400
+Message-ID: <20250625225717.016385736@goodmis.org>
 User-Agent: quilt/0.68
-Date: Wed, 25 Jun 2025 18:56:12 -0400
+Date: Wed, 25 Jun 2025 18:56:13 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org,
@@ -62,7 +62,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Linus Torvalds <torvalds@linux-foundation.org>,
  Andrew Morton <akpm@linux-foundation.org>,
  Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH v11 12/14] unwind_user/x86: Enable frame pointer unwinding on x86
+Subject: [PATCH v11 13/14] perf/x86: Rename and move get_segment_base() and make it global
 References: <20250625225600.555017347@goodmis.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -71,57 +71,182 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Rspamd-Queue-Id: A6AD22002A
-X-Stat-Signature: y7ibt1sb6cisnqrdztz7p9mcbh1g56ua
-X-Rspamd-Server: rspamout06
+X-Stat-Signature: emrupgxgq1rapmeio3dk49kxngjxrbe5
+X-Rspamd-Server: rspamout03
+X-Rspamd-Queue-Id: E92FE2E
 X-Session-Marker: 6E657665747340676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX18chkwuygBM0JT0zRlSrIaGISejPZxbMlQ=
-X-HE-Tag: 1750892211-792006
-X-HE-Meta: U2FsdGVkX1+r5j0ZARwzTyfNU2rD/H9qo77ZocLDdMtt7vCtufq3VPug3j2uI/FyTqW3TgAt5cfMKkBSzCe3B2PVIEzLB47+BoA+PpbEa/XvMksYqvFowFuvP0SfOYOQ6Fw65dDCCLPTPp14yJRMIOhRVTR72h1N84iggZjRkuLiUCuKFs6y4DCcTFnddSH0PMdshMRpAeN9cRvLjmlJAJdN/0zyL0padb7MdtGjR5dTgriUwTDrMrrDkNuAnw3G5Bo5syrZe2jLYSX2I0e/Ni784ljIDtava2Dybt4IJhSbqVnF14Q4B3rqR8qyEMBjjl7meB67DqkmN/nSW6smNEp5b4umN6ippnJzDW6dZEz6nTmL26ti4C83cvb05gBQvgrfnGYv+9rrls/SZEGDKVjnintwMBXUmOEOGh3HtlQ=
+X-Session-ID: U2FsdGVkX19GfgKJWxcrDJRgBFxTqvaBoBbdblVc8GU=
+X-HE-Tag: 1750892211-928430
+X-HE-Meta: U2FsdGVkX18KJlGFqh5T1dVmBut0o+O7x3cW0+8YhZ/RxHEb+o7IHnGnIpghDKoHXtxhlpbeeWJx63yi9VX6n68dwQ1wHZj16C+3EV4bHy04IpuMMYur1oqfX583VDymNylXa4rzgNU/Fm5IeiEUu52KUuBQRbRw69VkEZhoY6vTaUHCJuHrTrWBCFVdE9CuodUFIBjokTrqD2Ok4XvRNDFk/qSQX1PBgPTH12/qQiMs4/ozQ6I9rU++g1s9sDSjI+bugBrrJ8OE7nRNJ7VC2oCiSDSEm7N27ihT63qMI5vz8+QIqRbbN9xOMGj69AoYHAD2ia88/o3+TfzdCMU3+HYx/9tjov9vdHFirI1AVniZ4xJxSV+ia5kAmpHuGmHh9RspvdD0kkCfInTNpmbxJOSs0EG81z8AiDOX0v4/U6w=
 
 From: Josh Poimboeuf <jpoimboe@kernel.org>
 
-Use ARCH_INIT_USER_FP_FRAME to describe how frame pointers are unwound
-on x86, and enable CONFIG_HAVE_UNWIND_USER_FP accordingly so the
-unwind_user interfaces can be used.
+get_segment_base() will be used by the unwind_user code, so make it
+global and rename it to segment_base_address() so it doesn't conflict with
+a KVM function of the same name.
+
+As the function is no longer specific to perf, move it to ptrace.c as that
+seems to be a better location for a generic function like this.
+
+Also add a lockdep_assert_irqs_disabled() to make sure it's always called
+with interrupts disabled.
 
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- arch/x86/Kconfig                   |  1 +
- arch/x86/include/asm/unwind_user.h | 11 +++++++++++
- 2 files changed, 12 insertions(+)
- create mode 100644 arch/x86/include/asm/unwind_user.h
+ arch/x86/events/core.c        | 44 ++++-------------------------------
+ arch/x86/include/asm/ptrace.h |  2 ++
+ arch/x86/kernel/ptrace.c      | 38 ++++++++++++++++++++++++++++++
+ 3 files changed, 45 insertions(+), 39 deletions(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 340e5468980e..2cdb5cf91541 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -302,6 +302,7 @@ config X86
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select HAVE_UACCESS_VALIDATION		if HAVE_OBJTOOL
- 	select HAVE_UNSTABLE_SCHED_CLOCK
-+	select HAVE_UNWIND_USER_FP		if X86_64
- 	select HAVE_USER_RETURN_NOTIFIER
- 	select HAVE_GENERIC_VDSO
- 	select VDSO_GETRANDOM			if X86_64
-diff --git a/arch/x86/include/asm/unwind_user.h b/arch/x86/include/asm/unwind_user.h
-new file mode 100644
-index 000000000000..8597857bf896
---- /dev/null
-+++ b/arch/x86/include/asm/unwind_user.h
-@@ -0,0 +1,11 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_X86_UNWIND_USER_H
-+#define _ASM_X86_UNWIND_USER_H
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index 7610f26dfbd9..2f2ec84f2a14 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -43,6 +43,7 @@
+ #include <asm/ldt.h>
+ #include <asm/unwind.h>
+ #include <asm/uprobes.h>
++#include <asm/ptrace.h>
+ #include <asm/ibt.h>
+ 
+ #include "perf_event.h"
+@@ -2808,41 +2809,6 @@ valid_user_frame(const void __user *fp, unsigned long size)
+ 	return __access_ok(fp, size);
+ }
+ 
+-static unsigned long get_segment_base(unsigned int segment)
+-{
+-	struct desc_struct *desc;
+-	unsigned int idx = segment >> 3;
+-
+-	if ((segment & SEGMENT_TI_MASK) == SEGMENT_LDT) {
+-#ifdef CONFIG_MODIFY_LDT_SYSCALL
+-		struct ldt_struct *ldt;
+-
+-		/*
+-		 * If we're not in a valid context with a real (not just lazy)
+-		 * user mm, then don't even try.
+-		 */
+-		if (!nmi_uaccess_okay())
+-			return 0;
+-
+-		/* IRQs are off, so this synchronizes with smp_store_release */
+-		ldt = smp_load_acquire(&current->mm->context.ldt);
+-		if (!ldt || idx >= ldt->nr_entries)
+-			return 0;
+-
+-		desc = &ldt->entries[idx];
+-#else
+-		return 0;
+-#endif
+-	} else {
+-		if (idx >= GDT_ENTRIES)
+-			return 0;
+-
+-		desc = raw_cpu_ptr(gdt_page.gdt) + idx;
+-	}
+-
+-	return get_desc_base(desc);
+-}
+-
+ #ifdef CONFIG_UPROBES
+ /*
+  * Heuristic-based check if uprobe is installed at the function entry.
+@@ -2899,8 +2865,8 @@ perf_callchain_user32(struct pt_regs *regs, struct perf_callchain_entry_ctx *ent
+ 	if (user_64bit_mode(regs))
+ 		return 0;
+ 
+-	cs_base = get_segment_base(regs->cs);
+-	ss_base = get_segment_base(regs->ss);
++	cs_base = segment_base_address(regs->cs);
++	ss_base = segment_base_address(regs->ss);
+ 
+ 	fp = compat_ptr(ss_base + regs->bp);
+ 	pagefault_disable();
+@@ -3019,11 +2985,11 @@ static unsigned long code_segment_base(struct pt_regs *regs)
+ 		return 0x10 * regs->cs;
+ 
+ 	if (user_mode(regs) && regs->cs != __USER_CS)
+-		return get_segment_base(regs->cs);
++		return segment_base_address(regs->cs);
+ #else
+ 	if (user_mode(regs) && !user_64bit_mode(regs) &&
+ 	    regs->cs != __USER32_CS)
+-		return get_segment_base(regs->cs);
++		return segment_base_address(regs->cs);
+ #endif
+ 	return 0;
+ }
+diff --git a/arch/x86/include/asm/ptrace.h b/arch/x86/include/asm/ptrace.h
+index 50f75467f73d..59357ec98e52 100644
+--- a/arch/x86/include/asm/ptrace.h
++++ b/arch/x86/include/asm/ptrace.h
+@@ -314,6 +314,8 @@ static __always_inline bool regs_irqs_disabled(struct pt_regs *regs)
+ 	return !(regs->flags & X86_EFLAGS_IF);
+ }
+ 
++unsigned long segment_base_address(unsigned int segment);
 +
-+#define ARCH_INIT_USER_FP_FRAME							\
-+	.cfa_off	= (s32)sizeof(long) *  2,				\
-+	.ra_off		= (s32)sizeof(long) * -1,				\
-+	.fp_off		= (s32)sizeof(long) * -2,				\
-+	.use_fp		= true,
+ /* Query offset/name of register from its name/offset */
+ extern int regs_query_register_offset(const char *name);
+ extern const char *regs_query_register_name(unsigned int offset);
+diff --git a/arch/x86/kernel/ptrace.c b/arch/x86/kernel/ptrace.c
+index 095f04bdabdc..81353a09701b 100644
+--- a/arch/x86/kernel/ptrace.c
++++ b/arch/x86/kernel/ptrace.c
+@@ -41,6 +41,7 @@
+ #include <asm/syscall.h>
+ #include <asm/fsgsbase.h>
+ #include <asm/io_bitmap.h>
++#include <asm/mmu_context.h>
+ 
+ #include "tls.h"
+ 
+@@ -339,6 +340,43 @@ static int set_segment_reg(struct task_struct *task,
+ 
+ #endif	/* CONFIG_X86_32 */
+ 
++unsigned long segment_base_address(unsigned int segment)
++{
++	struct desc_struct *desc;
++	unsigned int idx = segment >> 3;
 +
-+#endif /* _ASM_X86_UNWIND_USER_H */
++	lockdep_assert_irqs_disabled();
++
++	if ((segment & SEGMENT_TI_MASK) == SEGMENT_LDT) {
++#ifdef CONFIG_MODIFY_LDT_SYSCALL
++		struct ldt_struct *ldt;
++
++		/*
++		 * If we're not in a valid context with a real (not just lazy)
++		 * user mm, then don't even try.
++		 */
++		if (!nmi_uaccess_okay())
++			return 0;
++
++		/* IRQs are off, so this synchronizes with smp_store_release */
++		ldt = smp_load_acquire(&current->mm->context.ldt);
++		if (!ldt || idx >= ldt->nr_entries)
++			return 0;
++
++		desc = &ldt->entries[idx];
++#else
++		return 0;
++#endif
++	} else {
++		if (idx >= GDT_ENTRIES)
++			return 0;
++
++		desc = raw_cpu_ptr(gdt_page.gdt) + idx;
++	}
++
++	return get_desc_base(desc);
++}
++
+ static unsigned long get_flags(struct task_struct *task)
+ {
+ 	unsigned long retval = task_pt_regs(task)->flags;
 -- 
 2.47.2
 
