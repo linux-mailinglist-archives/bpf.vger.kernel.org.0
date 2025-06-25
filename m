@@ -1,137 +1,149 @@
-Return-Path: <bpf+bounces-61475-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61476-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C12ADAE73B6
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 02:19:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64492AE73BF
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 02:22:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7169C3BC30A
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 00:19:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15B4919210E9
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 00:22:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95F892B9A5;
-	Wed, 25 Jun 2025 00:19:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 772AB38FB0;
+	Wed, 25 Jun 2025 00:21:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fx366FEQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DFyhKi6J"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2B928F58;
-	Wed, 25 Jun 2025 00:19:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AC0C1C69D
+	for <bpf@vger.kernel.org>; Wed, 25 Jun 2025 00:21:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750810780; cv=none; b=nB30u9TPtAcqNq73FAz5OlfjInNXl3Iw3Xx+fs5oTRY8fTFJWeTYAfW4wdy3z8R7U3pIzVrMwpUPCVclfTmjMWf1CEbYfeXxbai0I1kIVtK8hcPRDQhN8ctXJb6YFRMNK3uBddb5VXaeADY3UjzaEvbAeeDevIPSx+m7MeDH9pM=
+	t=1750810917; cv=none; b=uIHA3FoXf8slkZNxe2qbGv6NhNqH6ckeK9mRNC23AyeIBN37gRmGfUxRxUqmR4VUBos/7XyjTldGQx+7Wl+V4/6a14uPY3lQz5ew1vFZG7iLkv6oQyDjOg6ERCHNPD5tbLG+X0klqZtTpJVvI5I42N5i/zffhU8TtLFtJ19D8lU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750810780; c=relaxed/simple;
-	bh=a7wjzVy/r7x+Nyd08sAoM4J2gWsjuRd+V4EGUw1R6XQ=;
+	s=arc-20240116; t=1750810917; c=relaxed/simple;
+	bh=xN2B0XXCpxlvEtmv/rIcjR2zd+P+LgsEBjSdHM2f/e8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pCOIT6ninLTaBh9Q7oLM9KWR13S0sClv//TtdLGLp6kRaaxl/UjVkaLN0/h14VPTUaf2Rn7RRIyOgQQs3HJhivM5mmuSSjNXeaDySiW04tOCBC0INsT1h2iumJt/rJd77T24gukajdPtuwui+mceYMbq85fYruV1mCmd9JJTZgM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fx366FEQ; arc=none smtp.client-ip=209.85.166.181
+	 To:Cc:Content-Type; b=k/Rb5fvLjK9vT7O5pM4RrrItMHZKNYFso6jd07qMeN6pbKPrSbhOe6FhzZAfB7iqI7abccwh/tguImTESmKzUyOcWVuzmHsDS+JLiU06YUubHEDTQmO4Iq+Hbk7rvGtb+k9EOXet+nWzoI1u5SAFJW2q0as8uorY9FqH3iCPFgw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DFyhKi6J; arc=none smtp.client-ip=209.85.128.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-3df2e7cdc64so7495695ab.1;
-        Tue, 24 Jun 2025 17:19:38 -0700 (PDT)
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4537deebb01so7570185e9.0
+        for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 17:21:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750810778; x=1751415578; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1750810914; x=1751415714; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yc+3hUor/fe4fOg/ZXIRIZ2LBDoXP14DIJKaJhU8spo=;
-        b=Fx366FEQuPC8bcURb48LKZfEjzJ/sgqqUwZZbTv6QqgOyIb6xCeEzyjVmcg/GKI5za
-         /fIU6rUrGaG2wrrN0DAFWEPNm1xuvoYrg4pZERh6lHuxrZfTvubszIOMj7A7gdSMLfU1
-         R7xyzetyjYz4/M/0LlI29vbdw5fn5JZfg42/rlAhT6UO0OgsMSlE0MnoOcGyOK0N28ES
-         rndLqnielTuqk1+vXjpMi2avYZFP3W7tneNf9HsX96+H3NK7r3EdYSyswr4tDr10/rP7
-         9cu1t+B0wZosdcSwqEFKWtawH8ZCfCuGACnrCXcHjVUbinTR+WoJsdRJ+cNdEGwsI79z
-         WP7w==
+        bh=ZFmo4zCtBcLHT8ekr4Vw4kevj33rtg3FGdaW2RbPSIk=;
+        b=DFyhKi6J/S+gEkLVP8N5QHT0K3aTDKPwdklCHN32+xQuoA0kpkeowKmTSKW5tC+3gG
+         sG9M4dmOqnHtAlo17LTyFDbuOIv0wWvu6oCsvNKeNOoZVBd7pSPPIxII+G36FKQq/ZS/
+         a/OvdE1ajWzd+2edeVDFBip7JoI5vawp/82zMwvtdd/s5ZYyiPeuihnFE2zw/5f9SsVv
+         nnYJ/tceXlULGKxfcjV0J8a7GQp2DQKZzETyfHaIveAsEZ8M3015CF6ZHF5G36+KQmik
+         r1Jb4OXCjjBwcOu78b3uUvEELWEbe3xp0Cy1+35dmqUmPsNtaHJpr8Dms94aF/BJ6GwZ
+         lPWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750810778; x=1751415578;
+        d=1e100.net; s=20230601; t=1750810914; x=1751415714;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yc+3hUor/fe4fOg/ZXIRIZ2LBDoXP14DIJKaJhU8spo=;
-        b=MV1Ty4P7drP/6ghD+EQAMRczcztemBPUU+tSY7JpsrzRfy6/qhDDbY60kqo35Iu0ER
-         ts2R4ixrT05R5NzYM6v42pfQ9XNcCh/h+GXLLOxpcppxfmG43Z+ysmAQedhPFwmEVHHM
-         HkCiUyigD7qyrvxjOKCOJCgKlwzy0FikqefK0jqdj1Ft+1VAOjJ+joISP62g+GB+eWFd
-         TbUiuIgQ37VU7RJICZS+zxg8vhv36kjbHuxkMNBtNE0LnegbFUESm8+zONnSGU0RbM4z
-         iXEcUTgi/KCTpM891CYL6KhiF+9+K7/fQHdjMWR1OzEvYqjYh8uQYsb8+8o9a+29O72K
-         2YaA==
-X-Forwarded-Encrypted: i=1; AJvYcCVolpJ1AOgQh5HatjgA30WMyRhw33fnvlOEgTL9Wxs1x21ks9lufNYQlFK/SbzTSXk+B4bDpGy3@vger.kernel.org, AJvYcCWvc7QZ9ch62Lh4/ey0I4frRl9XzYstKJcWd+k5LvSDocz285suvrqR+Eq1FySaqE9ZZ6s=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxq9mFOkudM95JIgb1/LV5xs1EEx+4IQmLd+ZrxsZB4WThzYtEa
-	AQpUJspB8tPdjfrYJ2yXjjhomecvKiVwuRVRQxcZLPHLIbHQS2gem/qzBDKS1bq9eurzIrNeLvI
-	jOZJNR44EniOT8gNsCCi8W9dTE/8mGiE=
-X-Gm-Gg: ASbGncueabusbegWAGe9tlHdLzIqcniUNyG06DDLLwtvTJ0uReO9demQWLScmfPselK
-	1REGVGJisbf5hU+ZP252Y/D2P/HRmEH5QPMC86GmQ0ZzuOM8+b8W43nZL05dZEaKGOiQ2Jxdws0
-	J+JtHpg9Lv1S+Ol49CbRm8FcZv/zHqpwz241uXf5ITWg==
-X-Google-Smtp-Source: AGHT+IFroH5KsAzHW2FXzYXlZZ9789zcgOoJ1xpqexS+mIEjVqj00OoM0laVq3MOYQXTFzzgjRHg8aqf5DSdN2Oeqs0=
-X-Received: by 2002:a05:6e02:3811:b0:3dd:b5ef:4556 with SMTP id
- e9e14a558f8ab-3df3290dd68mr16922755ab.18.1750810777698; Tue, 24 Jun 2025
- 17:19:37 -0700 (PDT)
+        bh=ZFmo4zCtBcLHT8ekr4Vw4kevj33rtg3FGdaW2RbPSIk=;
+        b=NXjm6gSw0uBQJ4GDyyttKitquRI+04NhVDugA/Z/sZ2d1o/B5s+AhtMLS5Ny8D+ZLt
+         VkVRmsxgqGAkxwo3B4Z5fMA7wcRoouE5TAiEHfE9f4uWSHQntaYkLOr0kiI9xnifMwvx
+         hZs52TxcY7/FblRSuEFA0QJ8PzcZ4KPh6upCaueflrgRv7yk8bHaWb++24fbqYSVhbTr
+         KE76yojF6PHCJCl5VhcApGLcE2C2+qD0/70fFxMwu+qDwkvJPRU0ckNHrEE482q65/6h
+         Sod5CLt7scPyC/IFEEEp840NXbwyKOxeDlZ9p9B2HG59/6rG8eQxEovbbyHuhDa3yxll
+         eY7A==
+X-Gm-Message-State: AOJu0YyR59I6fgz2cLU1NE8Jx1AyVNEC6rOLKF6WpeRObN0NRON8ZmeB
+	ilpq6dUhzXUMabDC94vv/rWaKUDtbtLIb3fDCeGyxPOAFxrgKXEuJj4GjKmmMBUY+wKM+0d/p3w
+	oRcNn4amGMxFKlNBqDXpdrCVznVrSF+k=
+X-Gm-Gg: ASbGncud/eOyh7iYLgDTeDP/2t9XKJ5AkWIHPtXja8QTBJTrh+e5QplJDtJ2ZVvPbPq
+	c4lQ2zmGEGn9VDmA6Bvkbw8xXLkBs14JkEVtFOT8AKqpDFIsK/ez3R+sk3vqQWvaeX1gNqXYfV1
+	5DQ0JLTtF6OyiEugE91kKUzHT4TJyDQ9WZyTOZcNavdA6b15CBA9B/xDdhUpwkkm3hpcS+8ZWSk
+	+AudoxcfPE=
+X-Google-Smtp-Source: AGHT+IGAWjfLw6S1TzZmWzgwS4eqyfrzxFJH+0cTKP5f2y6iHGNAAjhZusINqYaf3gzRR2wzQa+Fle129/kqMj4dK8U=
+X-Received: by 2002:a05:600c:a407:b0:43c:f8fc:f697 with SMTP id
+ 5b1f17b1804b1-45382a1d307mr1686185e9.9.1750810913465; Tue, 24 Jun 2025
+ 17:21:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250623021345.69211-1-kerneljasonxing@gmail.com> <20250624163114.712a9c43@kernel.org>
-In-Reply-To: <20250624163114.712a9c43@kernel.org>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Wed, 25 Jun 2025 08:19:01 +0800
-X-Gm-Features: Ac12FXyjJgvorLi2Ocj62AKXb1mCAGhn4uA6CwcCGwhfuZ8nxXa932I6D_EH2EI
-Message-ID: <CAL+tcoBQvDJO8n7npQjzKBd6HEZ8KhE08g4hRhqokU-bpTe6tw@mail.gmail.com>
-Subject: Re: [PATCH net-next v4] net: xsk: introduce XDP_MAX_TX_BUDGET setsockopt
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: davem@davemloft.net, edumazet@google.com, pabeni@redhat.com, 
-	bjorn@kernel.org, magnus.karlsson@intel.com, maciej.fijalkowski@intel.com, 
-	jonathan.lemon@gmail.com, sdf@fomichev.me, ast@kernel.org, 
-	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com, joe@dama.to, 
-	willemdebruijn.kernel@gmail.com, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	Jason Xing <kernelxing@tencent.com>
+References: <20250625000520.2700423-1-eddyz87@gmail.com> <20250625000520.2700423-3-eddyz87@gmail.com>
+ <CAADnVQ+OjowmcVdYkAR-VLZUWNbvkG=i78gV4-76YdFJL2DJ6Q@mail.gmail.com> <63fa058d2be2c91cd8c2835ee7d88b745dad2849.camel@gmail.com>
+In-Reply-To: <63fa058d2be2c91cd8c2835ee7d88b745dad2849.camel@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 24 Jun 2025 17:21:42 -0700
+X-Gm-Features: Ac12FXygxcgeE5VD_-5PeEc-jNOsj4b3RVnNpY38gYYHCUwWnx0vwNbDXOiAhdA
+Message-ID: <CAADnVQ+1h49trJcsobzPN=YnnbsaidJi98vMeGeBKpxh-nV2Hw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 2/3] bpf: allow void* cast using bpf_rdonly_cast()
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Kernel Team <kernel-team@fb.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 25, 2025 at 7:31=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
+On Tue, Jun 24, 2025 at 5:15=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
 >
-> On Mon, 23 Jun 2025 10:13:45 +0800 Jason Xing wrote:
-> > @@ -424,7 +421,9 @@ bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, s=
-truct xdp_desc *desc)
-> >       rcu_read_lock();
-> >  again:
-> >       list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
-> > -             if (xs->tx_budget_spent >=3D MAX_PER_SOCKET_BUDGET) {
-> > +             int max_budget =3D READ_ONCE(xs->max_tx_budget);
-> > +
-> > +             if (xs->tx_budget_spent >=3D max_budget) {
-> >                       budget_exhausted =3D true;
-> >                       continue;
-> >               }
+> On Tue, 2025-06-24 at 17:11 -0700, Alexei Starovoitov wrote:
 >
-> I still think you're mixing two very different things. In the generic
-> xmit path the value you're changing is a budget. But xsk_tx_peek_desc()
-> *does not* exit after the "per socket budget" gets spent. The per
-> socket budget only controls how many frames we pick from a single sock
-> before we move to the next. But if we run out of budget on all sockets
-> we give every socket a full budget again and start from the first one
-
-Ah, my fault. Thanks for reminding me. I missed the 'refilling budget'
-process...
-For the record:
-xsk_tx_peek_desc()
-    -> xs->tx_budget_spent =3D 0;
-
-> again.
+> [...]
 >
-> For the ZC case the true budget is set by the driver's NAPI loop.
+> > >  enum bpf_features {
+> > > -       __MAX_BPF_FEAT =3D 0,
+> > > +       BPF_FEAT_RDONLY_CAST_TO_VOID =3D 0,
+> > > +       __MAX_BPF_FEAT =3D 1,
+> >
+> > and the idea is to manually adjust it every time?!
+> > That's way too much churn.
+> > Either remove it or keep it without assignment.
+> > Just as __MAX_BPF_FEAT. Like similar thing in enum /.
+>
+> I probably did not understand your previous message:
+>
+>    > > +enum bpf_features {
+>    > > +       BPF_FEAT_RDONLY_CAST_TO_VOID =3D 0,
+>    > > +       BPF_FEAT_TOTAL,
+>    >
+>    > I don't see the value of 'total', but not strongly against it.
+>    > But pls be consistent with __MAX_BPF_CMD, __MAX_BPF_MAP_TYPE, ...
+>    > Say, __MAX_BPF_FEAT ?
+>    >
+>    >
+>    > Also it's better to introduce this enum in some earlier patch,
+>    > and then always add BTF_FEAT_... to this enum
+>    > in the same patch that adds the feature to make
+>    > sure backports won't screw it up.
+>    > Another rule should be to always assign a number to it.
+>
+>
+> Specifically: "Another rule should be to always assign a number to it."
+> The BPF_FEAT_RDONLY_CAST_TO_VOID already had a number, so I assumed
+> you were talking about __MAX_BPF_FEAT.
+> What did you mean?
 
-True.
+I mean to add " =3D 123," to actual features, so when they're
+backported the number stays the same.
+Not to __MAX_BPF_FEAT.
 
-I will remove this one.
+I doubt it matters though,
+since bpf progs suppose to use
+bpf_core_enum_value_exists(enum bpf_features, name)
+that doesn't care about the actual id.
 
-Thanks,
-Jason
-
-> --
-> pw-bot: cr
+In bpf helpers we got burned by broken backports and added
+constants to ___BPF_FUNC_MAPPER macro.
+Here I don't see it ever matter.
+Just like I don't think __MAX_BPF_FEAT is needed,
+but if we follow old steps, then let's do both __MAX_BPF_FEAT
+without number and every feature with the number.
+The end result will look like bpf_link_type.
 
