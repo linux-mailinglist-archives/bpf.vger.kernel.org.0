@@ -1,362 +1,183 @@
-Return-Path: <bpf+bounces-61529-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61530-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 361A4AE864B
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 16:22:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7F60AE86F0
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 16:46:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C79817E665
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 14:22:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 976AF3A550D
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 14:46:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62BEB26656D;
-	Wed, 25 Jun 2025 14:21:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72A3526A091;
+	Wed, 25 Jun 2025 14:46:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BjNUTOv0"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ovGoKcYh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f169.google.com (mail-il1-f169.google.com [209.85.166.169])
+Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0628528D8FB;
-	Wed, 25 Jun 2025 14:21:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 545C01D6188
+	for <bpf@vger.kernel.org>; Wed, 25 Jun 2025 14:46:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750861279; cv=none; b=CwjLLh15uzutjoupgktWWcJOMygff5YQzsOlOxPfQ+ROc4i8u/sotRlPZXCf0byhlo4KjWTyJ1TQ+gtWl+qKhcrsPvWEBqkl6Px3sQMBxT/n08/JdrirTfHossvYqKZiHg136M1OOBZVM91nFjPmdKIZsZKuNUXBfN7cYXsSoM0=
+	t=1750862764; cv=none; b=DEEjAAjkPiwAZSwpcPjJZf85dqjesd2IMFlc2OKW76xr+W1N4eh6kUOwp4Fyxz4it1Es4r/YlvP8nr6V7TahmWCkeBWkEQq++ZlmZNb0Hfu4g3UC02/GBKXonQh+NHwKxHC/OHugUmy9qYo8B2a11kV7aIvxVw17RR9Wy02uPfA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750861279; c=relaxed/simple;
-	bh=Z/AeoenbUGinh1j2XpcfN1DLfShTFchVD4CasX1XSSQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RVGhS49DF0p8+oaAmfz0a/pCgwvlaURVhcn+7X/Dg0vvrFK9xlxrYO2tAxN0KzNK2EueJJFhm7VhpGvAQyBMhP0sLcr75qrbvCClyopFRrvJzzNliAhIOTETAnlDptn7wAZMVDNjk1+iXa2jkrUOvdCm5MTLtrcQA5msBGpfNQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BjNUTOv0; arc=none smtp.client-ip=209.85.166.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f169.google.com with SMTP id e9e14a558f8ab-3df34b727dcso7371275ab.2;
-        Wed, 25 Jun 2025 07:21:17 -0700 (PDT)
+	s=arc-20240116; t=1750862764; c=relaxed/simple;
+	bh=yoF0KokkjotdOYrXmuA3qqpgQr4ybWAWolZ/EmYbBWI=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=nuuFAQgkQtdcJVKBs7O5TGuHO6E+KencpqwNf6jRZ2tN52qkIcRxWvuVq2WmDExooUKbTMq7Vx1umPSMuZlVDR8767pFIF5lKzJahPy1BYcHceKdv79XpKy7irRk7JJdGs/TKB/vmljBs/g7ymF8XbPpiFwkAwkTlxdhERxk1Zc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ovGoKcYh; arc=none smtp.client-ip=209.85.216.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-31202bbaafaso6640795a91.1
+        for <bpf@vger.kernel.org>; Wed, 25 Jun 2025 07:46:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750861277; x=1751466077; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=73firwkFGU0VIpzvcoJAAGBtq9CpAKQSh63K1Y8NuW0=;
-        b=BjNUTOv0Y+veADOyIaHRtHqmtYFmMXEWQU0OIz6U1PA9maP5GlGCMZ8Hnvxc3r/R0x
-         snY/JsdhBvUllk71ggXGv2AaOrPOsJZe9ogLBdJm6AvNfRSfJq383zBex9Fi50RKbtuS
-         h8DcyyT6wL3+AS+ssV7Y+gLyMx6h85+DY7nIcfeF0JfdIoPdbMVqBy/H+3XevJQiYu1n
-         HOSMNodSlBQt2izLjDDX9At3dv+D2vVI1iJRwc1vGuh/6fij2md6uQKAQSrsRKJOXktP
-         MuCPWix5zv6chCG+FLXOTpNSa8WaOvsx6WAp/ihAOeJZAt4L90JNgXYi+wcoBF6uY6LO
-         U7rw==
+        d=google.com; s=20230601; t=1750862760; x=1751467560; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8ICU5+XCoFVfw+pvlSIRLwAfwbdwsLkDlJRvVC647Yk=;
+        b=ovGoKcYhVYWFXj6R9Wp0vvL3VaKBY2II7n+qcC/oNDHOkKQr+96+9gXzcLjbYBxDWl
+         fST3y22pA8hEbfxe8EJklJDLvkl76y8MRvyD/rRtrYbaVvmn1jc+KlAj60msg6nydvqr
+         AO8DoRtb94XAs0X4qDEyFcstuYTk1ovoNIIseuawIUhPGad8Zj6kvHnZdDPE+cPEKwRq
+         9vqx5YtV5C3kMazKMpUr57tjZfbMUOO+bzacnoA/Tm0nSEfHdF8FaLgp5R/3AX4jyUvl
+         oGyj66FEyKzr1DCuNT84SrSzznZUNwOJPY+1p5Dbl1EqBH1GeUGgbLVplakUOZfMGH4A
+         z9Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750861277; x=1751466077;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=73firwkFGU0VIpzvcoJAAGBtq9CpAKQSh63K1Y8NuW0=;
-        b=D4avkjp0uvEkY0UyxlAKW213XzCixEiL1Ib89JTXOFH+SJBeDge1sTkQDE8DkSbgNO
-         MR7mpJSRCB4n2OVQiZ/fsDKDe+U7ecmUjDVd3XAsm8+LCidZ3RpsFBFeNjiSRUMYIUrr
-         OK74H0II11+VBKk9UchMzjRdREiXTR72lYVqZee+TcrH3xGcNdGQIBNTEFLInR4sPy6z
-         SLZOXiP16MHznaSxGywDbWndtcKs85hG2bjYBB1MmNW20tJB3fpObQuWgp0ZYrzpwlbg
-         uJwbN3Wjf9r2yzofyMW8qMpUclw+OeYrIjsolKbg8Jmj/C8P9b0sw28c4c2g3+1ueq2x
-         pIfQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVgg0drvqTe1RrP/5hegiuL5JlrdTuK0gYI49UHE0qllI3jJJqKEx13U3jBgnwTg5iHwRE=@vger.kernel.org, AJvYcCWSAhJJeN479t9J3yLbxfwYgIwBKg20LUpPoFAfgVvxTkxL27y70rZ7g+KYmWPMNsrBl4uqqNxl@vger.kernel.org
-X-Gm-Message-State: AOJu0YxHV9Qe7RYkSvxc6p3gxTkouzfcBhkt1zkjO7JPo022jsPIg1CL
-	hFSZx9LOmNdGm5DSNuxKwSQlAf+y1DzuZ9+vqQ+DWldswPb4xXQR77DvFHMokJFPsyh5O9jBQKR
-	5TUa1wP1WwjrpfOecqM1Kz6m1J49vtkcUDOdDEpOlCQ==
-X-Gm-Gg: ASbGncuLHhjSGVoOth65Gxldb5LeinrB7vENEyJZ3bsCWDxmHGNOGvCb2Qd/UdBZwpE
-	QwR2+2SDBARRsFEC3UpMFOsBFjWlbONx0HnqLX4qLjJTfaCgJ4lEIFa+ooEsOkV5AAdhACRKrf3
-	qTQp6i3OrfElFcCDCfv8LRgfRy1qNVPZ7G5/uxhAITmVg=
-X-Google-Smtp-Source: AGHT+IGoze6V3cplGyM7QdPbvtH9ZE908tCerukEcecaDNK3u32O7l1Fz6T/E6lmSY7lnhpOJ/WSwzairYOxoPKz8kA=
-X-Received: by 2002:a05:6e02:b28:b0:3df:3208:968e with SMTP id
- e9e14a558f8ab-3df328e2c22mr38972795ab.14.1750861277029; Wed, 25 Jun 2025
- 07:21:17 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1750862760; x=1751467560;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8ICU5+XCoFVfw+pvlSIRLwAfwbdwsLkDlJRvVC647Yk=;
+        b=h2/rDDMZ0EsiGWcrJFL9zvhLld4gCIMmAJlWYxB8pAZMecMZen8ZckFCz/e3GPhCio
+         bcilFLL0X9apxSbfvjchfIM3Rr64kdl5pcbxWIdLPF+255jB62xDy4PdtUkYXh+i1YB/
+         0zo0j9grtyaaQ3Q4SRFDVbq8Kw8+ZXqn+a84hZjuYCK5TDTtvjB3X/gQlwGym90us2es
+         1EYo8NhwZ6tYlJCZ/nc6NePp/2tS0oaqdg2uZeLh3Ecn/3wU47p4scTHpNwM3jpKxXWt
+         a+qsUmBrAV0TpdPfMhajZtj6Z9X8dQsXGEJDWdK3w3Ei/DrKTF20txSaM4RQ5+HdOCgE
+         2oJA==
+X-Forwarded-Encrypted: i=1; AJvYcCUy0uqUsO4sWvpasXrvDMdr+HswKbBZeoCrs3Ddhe8RfOt/RKEx1MVRc5XTnog5UuKpjqs=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyyflc00p2Jj69z2oI+ZuScm1AlWOUqnK1Nvu/qBK5yY9z6DA5s
+	G7rJv8XWtsrM6Ej+HBX3HtLbyKuL6imr4G0lh2KAs5WhFBTv9Ky9U6EzjxWjx3J7sIo0BWNHF70
+	LHlqEEA==
+X-Google-Smtp-Source: AGHT+IFDMtdXk5SSPSuJ3EMb+V+kr/F+ajAZV1NFxOvALvKGnoBD5whHEelbGvIw9+H52XqJQYE63qTRlc0=
+X-Received: from pjbqd16.prod.google.com ([2002:a17:90b:3cd0:b0:311:485b:d057])
+ (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:1d91:b0:311:abba:53c0
+ with SMTP id 98e67ed59e1d1-315f26137f1mr5585885a91.9.1750862760589; Wed, 25
+ Jun 2025 07:46:00 -0700 (PDT)
+Date: Wed, 25 Jun 2025 07:45:59 -0700
+In-Reply-To: <20250514064941.51609-1-liuyuntao12@huawei.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250625123527.98209-1-kerneljasonxing@gmail.com>
- <685bfbe2b5f51_21d18929413@willemb.c.googlers.com.notmuch> <aFv+aJFkVt/ehouG@boxer>
-In-Reply-To: <aFv+aJFkVt/ehouG@boxer>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Wed, 25 Jun 2025 22:20:40 +0800
-X-Gm-Features: Ac12FXxiB2GDDrb7EiIMiTy71y7t3tvL-b27rRxUorBwdUGsqjSpN-gRqwiqwM0
-Message-ID: <CAL+tcoDwm8TOJ5BUXtm3E5mQ7hdHxUXuemUS+JO75-bd7Tj8VA@mail.gmail.com>
-Subject: Re: [PATCH net-next v5] net: xsk: introduce XDP_MAX_TX_BUDGET setsockopt
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, davem@davemloft.net, 
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, bjorn@kernel.org, 
-	magnus.karlsson@intel.com, jonathan.lemon@gmail.com, sdf@fomichev.me, 
-	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
-	john.fastabend@gmail.com, joe@dama.to, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+References: <20250514064941.51609-1-liuyuntao12@huawei.com>
+Message-ID: <aFwLpyDYOsHUtCn-@google.com>
+Subject: Re: [PATCH] kvm: x86: fix infinite loop in kvm_guest_time_update when
+ tsc is 0
+From: Sean Christopherson <seanjc@google.com>
+To: Yuntao Liu <liuyuntao12@huawei.com>
+Cc: x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, pbonzini@redhat.com, tglx@linutronix.de, 
+	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com
+Content-Type: text/plain; charset="us-ascii"
 
-On Wed, Jun 25, 2025 at 9:50=E2=80=AFPM Maciej Fijalkowski
-<maciej.fijalkowski@intel.com> wrote:
->
-> On Wed, Jun 25, 2025 at 09:38:42AM -0400, Willem de Bruijn wrote:
-> > Jason Xing wrote:
-> > > From: Jason Xing <kernelxing@tencent.com>
-> > >
-> > > This patch provides a setsockopt method to let applications leverage =
-to
-> > > adjust how many descs to be handled at most in one send syscall. It
-> > > mitigates the situation where the default value (32) that is too smal=
-l
-> > > leads to higher frequency of triggering send syscall.
-> > >
-> > > Considering the prosperity/complexity the applications have, there is=
- no
-> > > absolutely ideal suggestion fitting all cases. So keep 32 as its defa=
-ult
-> > > value like before.
-> > >
-> > > The patch does the following things:
-> > > - Add XDP_MAX_TX_BUDGET socket option.
-> > > - Convert TX_BATCH_SIZE tx_budget_spent.
-> > > - Set tx_budget_spent to 32 by default in the initialization phase as=
- a
-> > >   per-socket granular control.
-> > >
-> > > The idea behind this comes out of real workloads in production. We us=
-e a
-> > > user-level stack with xsk support to accelerate sending packets and
-> > > minimize triggering syscalls. When the packets are aggregated, it's n=
-ot
-> > > hard to hit the upper bound (namely, 32). The moment user-space stack
-> > > fetches the -EAGAIN error number passed from sendto(), it will loop t=
-o try
-> > > again until all the expected descs from tx ring are sent out to the d=
-river.
-> > > Enlarging the XDP_MAX_TX_BUDGET value contributes to less frequency o=
-f
-> > > sendto() and higher throughput/PPS.
-> > >
-> > > Here is what I did in production, along with some numbers as follows:
-> > > For one application I saw lately, I suggested using 128 as max_tx_bud=
-get
-> > > because I saw two limitations without changing any default configurat=
-ion:
-> > > 1) XDP_MAX_TX_BUDGET, 2) socket sndbuf which is 212992 decided by
-> > > net.core.wmem_default. As to XDP_MAX_TX_BUDGET, the scenario behind
-> > > this was I counted how many descs are transmitted to the driver at on=
-e
-> > > time of sendto() based on [1] patch and then I calculated the
-> > > possibility of hitting the upper bound. Finally I chose 128 as a
-> > > suitable value because 1) it covers most of the cases, 2) a higher
-> > > number would not bring evident results. After twisting the parameters=
-,
-> > > a stable improvement of around 4% for both PPS and throughput and les=
-s
-> > > resources consumption were found to be observed by strace -c -p xxx:
-> > > 1) %time was decreased by 7.8%
-> > > 2) error counter was decreased from 18367 to 572
-> > >
-> > > [1]: https://lore.kernel.org/all/20250619093641.70700-1-kerneljasonxi=
-ng@gmail.com/
-> > >
-> > > Signed-off-by: Jason Xing <kernelxing@tencent.com>
-> > > ---
-> > > v5
-> > > Link: https://lore.kernel.org/all/20250623021345.69211-1-kerneljasonx=
-ing@gmail.com/
-> > > 1. remove changes around zc mode
-> > >
-> > > v4
-> > > Link: https://lore.kernel.org/all/20250619090440.65509-1-kerneljasonx=
-ing@gmail.com/
-> > > 1. remove getsockopt as it seems no real use case.
-> > > 2. adjust the position of max_tx_budget to make sure it stays with ot=
-her
-> > > read-most fields in one cacheline.
-> > > 3. set one as the lower bound of max_tx_budget
-> > > 4. add more descriptions/performance data in Doucmentation and commit=
- message.
-> > >
-> > > V3
-> > > Link: https://lore.kernel.org/all/20250618065553.96822-1-kerneljasonx=
-ing@gmail.com/
-> > > 1. use a per-socket control (suggested by Stanislav)
-> > > 2. unify both definitions into one
-> > > 3. support setsockopt and getsockopt
-> > > 4. add more description in commit message
-> > >
-> > > V2
-> > > Link: https://lore.kernel.org/all/20250617002236.30557-1-kerneljasonx=
-ing@gmail.com/
-> > > 1. use a per-netns sysctl knob
-> > > 2. use sysctl_xsk_max_tx_budget to unify both definitions.
-> > > ---
-> > >  Documentation/networking/af_xdp.rst |  8 ++++++++
-> > >  include/net/xdp_sock.h              |  1 +
-> > >  include/uapi/linux/if_xdp.h         |  1 +
-> > >  net/xdp/xsk.c                       | 20 ++++++++++++++++----
-> > >  tools/include/uapi/linux/if_xdp.h   |  1 +
-> > >  5 files changed, 27 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/Documentation/networking/af_xdp.rst b/Documentation/netw=
-orking/af_xdp.rst
-> > > index dceeb0d763aa..9eb6f7b630a5 100644
-> > > --- a/Documentation/networking/af_xdp.rst
-> > > +++ b/Documentation/networking/af_xdp.rst
-> > > @@ -442,6 +442,14 @@ is created by a privileged process and passed to=
- a non-privileged one.
-> > >  Once the option is set, kernel will refuse attempts to bind that soc=
-ket
-> > >  to a different interface.  Updating the value requires CAP_NET_RAW.
-> > >
-> > > +XDP_MAX_TX_BUDGET setsockopt
-> > > +----------------------------
-> > > +
-> > > +This setsockopt sets the maximum number of descriptors that can be h=
-andled
-> > > +and passed to the driver at one send syscall. It is applied in the n=
-on-zero
-> > > +copy mode to allow application to tune the per-socket maximum iterat=
-ion for
-> > > +better throughput and less frequency of send syscall. Default is 32.
-> > > +
-> > >  XDP_STATISTICS getsockopt
-> > >  -------------------------
-> > >
-> > > diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-> > > index e8bd6ddb7b12..ce587a225661 100644
-> > > --- a/include/net/xdp_sock.h
-> > > +++ b/include/net/xdp_sock.h
-> > > @@ -84,6 +84,7 @@ struct xdp_sock {
-> > >     struct list_head map_list;
-> > >     /* Protects map_list */
-> > >     spinlock_t map_list_lock;
-> > > +   u32 max_tx_budget;
-> > >     /* Protects multiple processes in the control path */
-> > >     struct mutex mutex;
-> > >     struct xsk_queue *fq_tmp; /* Only as tmp storage before bind */
-> > > diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.=
-h
-> > > index 44f2bb93e7e6..07c6d21c2f1c 100644
-> > > --- a/include/uapi/linux/if_xdp.h
-> > > +++ b/include/uapi/linux/if_xdp.h
-> > > @@ -79,6 +79,7 @@ struct xdp_mmap_offsets {
-> > >  #define XDP_UMEM_COMPLETION_RING   6
-> > >  #define XDP_STATISTICS                     7
-> > >  #define XDP_OPTIONS                        8
-> > > +#define XDP_MAX_TX_BUDGET          9
-> > >
-> > >  struct xdp_umem_reg {
-> > >     __u64 addr; /* Start of packet data area */
-> > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> > > index 72c000c0ae5f..97aded3555c1 100644
-> > > --- a/net/xdp/xsk.c
-> > > +++ b/net/xdp/xsk.c
-> > > @@ -33,8 +33,7 @@
-> > >  #include "xdp_umem.h"
-> > >  #include "xsk.h"
-> > >
-> > > -#define TX_BATCH_SIZE 32
-> > > -#define MAX_PER_SOCKET_BUDGET (TX_BATCH_SIZE)
-> > > +#define MAX_PER_SOCKET_BUDGET 32
-> > >
-> > >  void xsk_set_rx_need_wakeup(struct xsk_buff_pool *pool)
-> > >  {
-> > > @@ -779,7 +778,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_s=
-ock *xs,
-> > >  static int __xsk_generic_xmit(struct sock *sk)
-> > >  {
-> > >     struct xdp_sock *xs =3D xdp_sk(sk);
-> > > -   u32 max_batch =3D TX_BATCH_SIZE;
-> > > +   u32 max_budget =3D READ_ONCE(xs->max_tx_budget);
-> > >     bool sent_frame =3D false;
-> > >     struct xdp_desc desc;
-> > >     struct sk_buff *skb;
-> > > @@ -797,7 +796,7 @@ static int __xsk_generic_xmit(struct sock *sk)
-> > >             goto out;
-> > >
-> > >     while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
-> > > -           if (max_batch-- =3D=3D 0) {
-> > > +           if (max_budget-- =3D=3D 0) {
-> > >                     err =3D -EAGAIN;
-> > >                     goto out;
-> > >             }
-> > > @@ -1437,6 +1436,18 @@ static int xsk_setsockopt(struct socket *sock,=
- int level, int optname,
-> > >             mutex_unlock(&xs->mutex);
-> > >             return err;
-> > >     }
-> > > +   case XDP_MAX_TX_BUDGET:
-> > > +   {
-> > > +           unsigned int budget;
-> > > +
-> > > +           if (optlen !=3D sizeof(budget))
-> > > +                   return -EINVAL;
-> > > +           if (copy_from_sockptr(&budget, optval, sizeof(budget)))
-> > > +                   return -EFAULT;
-> > > +
-> > > +           WRITE_ONCE(xs->max_tx_budget, max(budget, 1));
-> >
-> > I still think that this needs a more sane upper bound than U32_MAX.
+On Wed, May 14, 2025, Yuntao Liu wrote:
+> Call Trace:
+>  <TASK>
+>  kvm_get_time_scale arch/x86/kvm/x86.c:2458 [inline]
+>  kvm_guest_time_update+0x926/0xb00 arch/x86/kvm/x86.c:3268
+>  vcpu_enter_guest.constprop.0+0x1e70/0x3cf0 arch/x86/kvm/x86.c:10678
+>  vcpu_run+0x129/0x8d0 arch/x86/kvm/x86.c:11126
+>  kvm_arch_vcpu_ioctl_run+0x37a/0x13d0 arch/x86/kvm/x86.c:11352
+>  kvm_vcpu_ioctl+0x56b/0xe60 virt/kvm/kvm_main.c:4188
+>  vfs_ioctl fs/ioctl.c:51 [inline]
+>  __do_sys_ioctl fs/ioctl.c:871 [inline]
+>  __se_sys_ioctl+0x12d/0x190 fs/ioctl.c:857
+>  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+>  do_syscall_64+0x59/0x110 arch/x86/entry/common.c:81
+>  entry_SYSCALL_64_after_hwframe+0x78/0xe2
+> 
+> ioctl$KVM_SET_TSC_KHZ(r2, 0xaea2, 0x1)
+> user_tsc_khz = 0x1
+> 	|
+> kvm_set_tsc_khz(struct kvm_vcpu *vcpu, u32 user_tsc_khz)
+> 	|
+> 	ioctl$KVM_RUN(r2, 0xae80, 0x0)
+> 		|
+> 		...
+> 	kvm_guest_time_update(struct kvm_vcpu *v)
+> 		|
+> 		if (kvm_caps.has_tsc_control)
+> 			tgt_tsc_khz = kvm_scale_tsc(tgt_tsc_khz,
+> 					    v->arch.l1_tsc_scaling_ratio);
+> 			|
+> 			kvm_scale_tsc(u64 tsc, u64 ratio)
+> 			|
+> 			__scale_tsc(u64 ratio, u64 tsc)
+> 			ratio=122380531, tsc=2299998, N=48
+> 			ratio*tsc >> N = 0.999... -> 0
+> 			|
+> 		kvm_get_time_scale
+> 
+> In function __scale_tsc, it uses fixed point number to calculate
+> tsc, therefore, a certain degree of precision is lost, the actual tsc
+> value of 0.999... would be 0. In function kvm_get_time_scale
+> tps32=tps64=base_hz=0, would lead second while_loop infinite. when
+> CONFIG_PREEMPT is n, it causes a soft lockup issue.
+> 
+> Fixes: 35181e86df97 ("KVM: x86: Add a common TSC scaling function")
+> Signed-off-by: Yuntao Liu <liuyuntao12@huawei.com>
+> ---
+>  arch/x86/kvm/x86.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 1fa5d89f8d27..3e9d6f368eed 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -2605,10 +2605,14 @@ static void kvm_track_tsc_matching(struct kvm_vcpu *vcpu)
+>   * point number (mult + frac * 2^(-N)).
+>   *
+>   * N equals to kvm_caps.tsc_scaling_ratio_frac_bits.
+> + *
+> + * return 1 if _tsc is 0.
+>   */
+>  static inline u64 __scale_tsc(u64 ratio, u64 tsc)
+>  {
+> -	return mul_u64_u64_shr(tsc, ratio, kvm_caps.tsc_scaling_ratio_frac_bits);
+> +	u64 _tsc = mul_u64_u64_shr(tsc, ratio, kvm_caps.tsc_scaling_ratio_frac_bits);
+> +
+> +	return  !_tsc ? 1 : _tsc;
 
-The reason why I didn't touch is that I refer to some existing
-mechanisms, like net.ipv4.tcp_limit_output_bytes that also doesn't
-constrain its max value for a single flow.
+This can be
 
-I really don't think it matters because 1) normally no one sets that
-large value to hope one send call can deal with that many desc, 2) the
-so-called proper value that may do harm to some unexpected cases which
-I'm unware of for now. I wonder why not give the user a choice. After
-all, it's his own decision.
+	return _tsc ? : 1;
 
-> >
-> > One limiting factor is the XSK TxQ length. At least it should be
-> > possible to fail if trying to set beyond that.
->
-> +1 and I don't really see a reason for something below 32.
+However, I'm 99% certain this only affects kvm_guest_time_update(), because it's
+the only code that scales a TSC *frequency*, versus scaling a TSC value.  Hmm,
+kvm_x86_vendor_init() also scales a frequency, but the multiplier and shift are
+KVM controlled, so that calculation can never be '0.
 
-Really? U32_MAX is a very very large value.
+So I think just this for a fix?  Because in all other cases, a result of '0' is
+totally fine, and arguably even more correct, e.g. when used in adjust_tsc_offset_host().
 
-> So how about
-> [32, xs->tx->nentries] range?
->
-> Also if there's no xsk tx ring present we could bail out.
-
-Sorry, I'm not sure about this. It seems to add more dependencies. But
-my opinion on the lower bound is one just like dev_weight :)
-
-Thanks,
-Jason
-
->
-> >
-> > > +           return 0;
-> > > +   }
-> > >     default:
-> > >             break;
-> > >     }
-> > > @@ -1734,6 +1745,7 @@ static int xsk_create(struct net *net, struct s=
-ocket *sock, int protocol,
-> > >
-> > >     xs =3D xdp_sk(sk);
-> > >     xs->state =3D XSK_READY;
-> > > +   xs->max_tx_budget =3D 32;
-> > >     mutex_init(&xs->mutex);
-> > >
-> > >     INIT_LIST_HEAD(&xs->map_list);
-> > > diff --git a/tools/include/uapi/linux/if_xdp.h b/tools/include/uapi/l=
-inux/if_xdp.h
-> > > index 44f2bb93e7e6..07c6d21c2f1c 100644
-> > > --- a/tools/include/uapi/linux/if_xdp.h
-> > > +++ b/tools/include/uapi/linux/if_xdp.h
-> > > @@ -79,6 +79,7 @@ struct xdp_mmap_offsets {
-> > >  #define XDP_UMEM_COMPLETION_RING   6
-> > >  #define XDP_STATISTICS                     7
-> > >  #define XDP_OPTIONS                        8
-> > > +#define XDP_MAX_TX_BUDGET          9
-> > >
-> > >  struct xdp_umem_reg {
-> > >     __u64 addr; /* Start of packet data area */
-> > > --
-> > > 2.41.3
-> > >
-> >
-> >
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index b58a74c1722d..de51dbd85a58 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -3258,9 +3258,11 @@ int kvm_guest_time_update(struct kvm_vcpu *v)
+ 
+        /* With all the info we got, fill in the values */
+ 
+-       if (kvm_caps.has_tsc_control)
++       if (kvm_caps.has_tsc_control) {
+                tgt_tsc_khz = kvm_scale_tsc(tgt_tsc_khz,
+                                            v->arch.l1_tsc_scaling_ratio);
++               tgt_tsc_khz = tgt_tsc_khz ? : 1;
++       }
+ 
+        if (unlikely(vcpu->hw_tsc_khz != tgt_tsc_khz)) {
+                kvm_get_time_scale(NSEC_PER_SEC, tgt_tsc_khz * 1000LL,
 
