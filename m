@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-61506-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61507-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60D73AE7ECA
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 12:13:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 238C3AE7EC0
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 12:12:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3DA323B591C
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 10:11:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF09D1708C9
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 10:12:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C89C29E0FF;
-	Wed, 25 Jun 2025 10:10:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 694B62BF00E;
+	Wed, 25 Jun 2025 10:10:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j5qIG90q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I6vFSnzJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF8C8285C80;
-	Wed, 25 Jun 2025 10:10:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 798CB2BDC38;
+	Wed, 25 Jun 2025 10:10:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750846237; cv=none; b=sbpVOermB6kD2Uae3Aw1X6E/LJSa4Vsz9APiMsl+neB3gbLn9xs0cTduEj+MlmCfuuOGL0za7ZrzluKhnr1voPNYd3DpNLdXQEPmnHhUkXssePAMOYkyCYUtXmnNMHrtysf5Zqs6DazRJoo8YQAxq/4AOeNbn8KdG+iKqWxZU1U=
+	t=1750846241; cv=none; b=H5IkNc9yfs7F9UBc40O6pjEoupj5Rox7orWBlQdeazuLTUPREx6QJsDZBSKQSZGIu9xBEFMirLQsmTp5lMK9CwDBVGkJSd+1K0BZ/jztIBTwBKXHsq1k6/tpjyLyTka7XlwUF1KzPHRNqZ+raPbm65aUU2ptg5Z5L7/rASjck0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750846237; c=relaxed/simple;
-	bh=00vN17MHpukAqGT9q1puBVUMA1WKzhxea+DAWJezqv0=;
+	s=arc-20240116; t=1750846241; c=relaxed/simple;
+	bh=UPIyeW9W3kqd6AdVIfdrUFGW9GSHoK6qYZPW1Bg4fWk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=V4zlztp7cLQr7Oql+2iSpAKpM/nRGZ2R1Rm+I6BI2/mcjfWXci5YRSToXl1xIeEQv9AazNlRz27VNlz4+rutAOsurKjrFM52lb7Y5oUbY98hlYhexRi6UZiMgrrxcEQyjXkg6MK+dQ0I0OZLSGNWm+XGLY8GHq5lacNdmlp+enw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j5qIG90q; arc=none smtp.client-ip=209.85.215.178
+	 MIME-Version; b=XFQevkXTQgEtwUx3BbFOOjENBem6v5rYt++J4D++9RRkdTl3aViJm+QyYLvvXY0W87i43eUGdG2IHbfcVSTdcd2PyViAfeImOBvOC4KJ/cMb3wv33iypgw7PcXVH5fRWVSawhs1nq9fWCZ1fgQoMXyZ7kXSWf7+ob4GAiB9Nx5Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I6vFSnzJ; arc=none smtp.client-ip=209.85.216.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-b2c4331c50eso1547752a12.3;
-        Wed, 25 Jun 2025 03:10:34 -0700 (PDT)
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-315c1b0623cso3614750a91.1;
+        Wed, 25 Jun 2025 03:10:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750846234; x=1751451034; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1750846239; x=1751451039; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AZuj22sFy39fmnoO1sd2k+eniIEVqjeisgIsRg/TPT4=;
-        b=j5qIG90qtXQVZMdN8q2aKC7ljwrGvlu5ylUq87fDQvgr8IoXRfVInaAqwx57BGFVsX
-         rlandYKKVtRsYbFlLcOUBgXFZGhBWjCeBZwKsLW9QhxqHJyT0/dHXyNUJ2Mb6nubAN3I
-         YR0Rn6bmfys31qfLZnKStrcpc6inj8yGY24x4xL2JS4hFCvQPPea5svbo1GFCZqqTbRL
-         mNQVpwRyVQ8a5Q1CKQg+lGgd+aaJ/bsRqgj2ukAEUC20uJca+I7VP5oEpxFvpBHJlS+J
-         79KynsYxEDPceqT97oIq2WOh5LXlq8UiDKQ3Pgdqk5FZ/PuLzuS6ZHj8r1p7Cu8ZwW9Q
-         LCtA==
+        bh=5AGCyX14dEKx9XCAcpASiiI7DxVWDRzZMzeJaYAUn4M=;
+        b=I6vFSnzJ6K5h2ErIEZMq7l8+oWjT6TZ5YZYQrvMY1Mk4htcrXiWLmwT68VcXeDlGCP
+         3TneJ0jYZgcyY1FVRP+0Rd7zRB5rxfy/N1hMGnSFaeY1wupIbeTiCe5YXqnaRMoXoM/J
+         rryEQ+n+DYfkToUbpUJEXPYPE719oFvqxP43PyJhJj05RdxoCwv4tGp7efAgkP4axUKg
+         vy+797xTsRGEB6GQkb3z4w4y63N+cPqT/mHv4KK9q+Oz6FEiA0y29QrGYRimSitlKOUT
+         /kfiaUcBKeCFmzTkvNCUNEeDzLHwRSZQ/EYO00iXu8WkRGXpKCscYeVbkp5s45X8zDKP
+         5btw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750846234; x=1751451034;
+        d=1e100.net; s=20230601; t=1750846239; x=1751451039;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=AZuj22sFy39fmnoO1sd2k+eniIEVqjeisgIsRg/TPT4=;
-        b=Bg++dggn4VlnoIJuHQMAuu6ciplSyFranY4QECPIxlfpclC14Qd6ldPPKq/URtHuK7
-         ByvKTNCnZCv4WYT0CFBmSSc/C1RrMqZCA13UVpscZq3tlKnR2gvVl3/2sL3IcP95sv6L
-         55HEnLlkKl1plTbykWY/puPBBpCK29nU4/01vEdnW0rh5gpV31xumfroY0eMRSbaPZgI
-         Kvw9s362sTXDVsIFJ27t0ayhlJR/dJXsm1fXELw/5j0TEbrK0+3aWJgxRvNY5FDHm0h3
-         ws+pIdeiTwh0TdD4QlKa3bdyNicv5bGJTlRnpq5Capy13nZR5XQGYZEBXfCt9toQLbKU
-         g9kQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWJKBKTW3bI9c0Epj1sDsOBsbJvGk62CJ1sTKtoOXx1KSRE4EzQ7u/tqQV4yjCCRwgHqsg+8QI=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx2+Sy6ObXywzsU7pmWyl0OdKyN3rnox0vSX8e8/6o5IbrJxV9/
-	EfO/VTxsIRWMg1vGyA8ijySsVvydDDPwwBACko4dwjcCbLH//t/C4550
-X-Gm-Gg: ASbGncuq/fRnEbNr7IeBkpot9QcgtXaVtNUKNz9xHq9rWVGRxGuKTYVPdYhBI9WnLx9
-	yWvjRvknViLlBLcDZiPoLKy2oxvM5WI+hkMJ+ecAAueYXb77OgDCa90jJjgXLew4AP3yC/uXfvt
-	dBXiRNldHdTGjZXtWQYWDutNM6050Xf9X7pb6mLiUcARnbw6KF0OnxGVk6+5z6Gb1AARZdILila
-	e5q/kNC7RWgbCa10yNATKChRIhGVfJY8zdeTI9WbkQghVrjMZ8n2SBtwo/hsgXdiie8VlutdW1b
-	3PY6aNbkm36+2fnVosxQn74kHERFebHwLzF/NNxi5rCQVrVN3NfII7APwWlIcZQsalw2N3fXJyc
-	Ak3OdM5WjzdAFJFt4F19D/+zAWMfNtr0NSjqBBUwhZ/1Z
-X-Google-Smtp-Source: AGHT+IFnVTnnOnKjBUpp4b4eIBBRNfZdI45MeCLh7lVpFqKopiYTvd2DlD9tcr8gHNnFQ2DVmmeXkg==
-X-Received: by 2002:a17:90b:2f88:b0:313:d6d9:8891 with SMTP id 98e67ed59e1d1-315f25d691emr3498583a91.3.1750846234084;
-        Wed, 25 Jun 2025 03:10:34 -0700 (PDT)
+        bh=5AGCyX14dEKx9XCAcpASiiI7DxVWDRzZMzeJaYAUn4M=;
+        b=ixM5jZIVBj0OQithTX0JI6lAQZYuIAPzXaZlb6zQPo92U0DVkJigyDH/xxguDT3Cgq
+         hVSKOlljAULBGV/RiWLJVG7YIPaQDBQXTxG/l17ItI1SX3IUOQe71ee7Tu52uNj66HrA
+         wCnTrP8bXmhgrCdqhfUC1y7D7sKk/1HlWUOHrO+HfWB2V/DCiSu5wvlR2Or9PvW6TT1H
+         SYMgg9yFO2jU1anrqr6ThZ2ypzp046VvRjruaRJmXNBCodrIUXvQyE6VaQ2w9Zg6nXya
+         NSnrG7NZZpIUbEX7z/5vGFR+GGwT4HPFtPa++iwMxf3hXo8QjkBPwmIdLeWSs5eMzyjz
+         IySg==
+X-Forwarded-Encrypted: i=1; AJvYcCXLd5Rb7RMHce4C9kDrz1Uh94OzJxq6UR6GLdUSL3iPi0SE3jwI080WeOoILEptH+S0KVwnAlI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxrh6Yq5WiX7lMuBtHFRK1c/APeHCkdjo7rj0H2wLc4PGdQzLzF
+	H7G2shmUsm2R8UZSsCZThIaWHLZdMFVeJHiq1gILLri4BFZXAKDjaSNg
+X-Gm-Gg: ASbGncsD+W8krQmVSkvJbAXsaHQPQRyTcGgQSdiNSfLVQQpQJ4k2fSwk5BPDXay3iZz
+	sWVymqWN3+6o/CkoJYGrHj3Q5N1hq++XcnqeV5DWlrkcD7NQXyXvjFtsLIxjQbAdI0OR3Eb4GVG
+	WdTpMWEMxxwiXPCA/0KuRbpfpGGTunyxncET+u054ngBf+eHe4Ij2IF+S6Yv1iMtwo0osvbGIkX
+	+59pr/tv7q+yg4kRJDtOCkMhET9gk1NYib3HJZvlTJJvH7fGxbUjzM9W15/8h5hZ+KA0l8FS/vD
+	nHbCkv8qHAjq77ydNg+dsWI4fHIjZngDSk0wlAgeGx8GFR4J1fisvwGF+i0hB1DO2qnZd1TIZt1
+	pfXoZQDLFFKTLiZ0hGV+kHAJsn9CkZZGODw==
+X-Google-Smtp-Source: AGHT+IEO2URLiZhS8bYplN02TdS3MALXZtd23O3nEBxnjrTt+qbG0lWZZUEDHqCbaGnbVZkiy6P/fg==
+X-Received: by 2002:a17:90b:55c4:b0:313:23ed:6ff with SMTP id 98e67ed59e1d1-315f25edccamr3164926a91.1.1750846238651;
+        Wed, 25 Jun 2025 03:10:38 -0700 (PDT)
 Received: from KERNELXING-MB0.tencent.com ([43.132.141.25])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-315f5437a0bsm1328838a91.35.2025.06.25.03.10.29
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-315f5437a0bsm1328838a91.35.2025.06.25.03.10.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Jun 2025 03:10:33 -0700 (PDT)
+        Wed, 25 Jun 2025 03:10:38 -0700 (PDT)
 From: Jason Xing <kerneljasonxing@gmail.com>
 To: davem@davemloft.net,
 	edumazet@google.com,
@@ -92,9 +92,9 @@ To: davem@davemloft.net,
 Cc: bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	Jason Xing <kernelxing@tencent.com>
-Subject: [PATCH net-next v3 1/2] net: xsk: update tx queue consumer immediately after transmission
-Date: Wed, 25 Jun 2025 18:10:13 +0800
-Message-Id: <20250625101014.45066-2-kerneljasonxing@gmail.com>
+Subject: [PATCH net-next v3 2/2] selftests/bpf: check if the global consumer of tx queue updates after send call
+Date: Wed, 25 Jun 2025 18:10:14 +0800
+Message-Id: <20250625101014.45066-3-kerneljasonxing@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20250625101014.45066-1-kerneljasonxing@gmail.com>
 References: <20250625101014.45066-1-kerneljasonxing@gmail.com>
@@ -108,75 +108,101 @@ Content-Transfer-Encoding: 8bit
 
 From: Jason Xing <kernelxing@tencent.com>
 
-For afxdp, the return value of sendto() syscall doesn't reflect how many
-descs handled in the kernel. One of use cases is that when user-space
-application tries to know the number of transmitted skbs and then decides
-if it continues to send, say, is it stopped due to max tx budget?
+The subtest sends 33 packets at one time on purpose to see if xsk
+exitting __xsk_generic_xmit() updates the global consumer of tx queue
+when reaching the max loop (max_tx_budget, 32 by default). The number 33
+can avoid xskq_cons_peek_desc() updates the consumer, to accurately
+check if the issue that the first patch resolves remains.
 
-The following formular can be used after sending to learn how many
-skbs/descs the kernel takes care of:
-
-  tx_queue.consumers_before - tx_queue.consumers_after
-
-Prior to the current patch, in non-zc mode, the consumer of tx queue is
-not immediately updated at the end of each sendto syscall when error
-occurs, which leads to the consumer value out-of-dated from the perspective
-of user space. So this patch requires store operation to pass the cached
-value to the shared value to handle the problem.
-
-More than those explicit errors appearing in the while() loop in
-__xsk_generic_xmit(), there are a few possible error cases that might
-be neglected in the following call trace:
-__xsk_generic_xmit()
-    xskq_cons_peek_desc()
-        xskq_cons_read_desc()
-	    xskq_cons_is_valid_desc()
-It will also cause the premature exit in the while() loop even if not
-all the descs are consumed.
-
-Based on the above analysis, using 'cached_prod != cached_cons' could
-cover all the possible cases because it represents there are remaining
-descs that are not handled and cached_cons are not updated to the global
-state of consumer at this time.
+Speaking of the selftest implementation, it's not possible to use the
+normal validation_func to check if the issue happens because the whole
+send packets logic will call the sendto multiple times such that we're
+unable to detect in time.
 
 Signed-off-by: Jason Xing <kernelxing@tencent.com>
 ---
-v3
-Link: https://lore.kernel.org/all/20250623073129.23290-1-kerneljasonxing@gmail.com/
-1. use xskq_has_descs helper.
-2. add selftest
+ tools/testing/selftests/bpf/xskxceiver.c | 30 ++++++++++++++++++++++--
+ 1 file changed, 28 insertions(+), 2 deletions(-)
 
-V2
-Link: https://lore.kernel.org/all/20250619093641.70700-1-kerneljasonxing@gmail.com/
-1. filter out those good cases because only those that return error need
-updates.
-Side note:
-1. in non-batched zero copy mode, at the end of every caller of
-xsk_tx_peek_desc(), there is always a xsk_tx_release() function that used
-to update the local consumer to the global state of consumer. So for the
-zero copy mode, no need to change at all.
-2. Actually I have no strong preference between v1 (see the above link)
-and v2 because smp_store_release() shouldn't cause side effect.
-Considering the exactitude of writing code, v2 is a more preferable
-one.
----
- net/xdp/xsk.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 5542675dffa9..ab6351b24ac8 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -856,6 +856,9 @@ static int __xsk_generic_xmit(struct sock *sk)
+diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
+index 0ced4026ee44..f7aa83706bc7 100644
+--- a/tools/testing/selftests/bpf/xskxceiver.c
++++ b/tools/testing/selftests/bpf/xskxceiver.c
+@@ -109,6 +109,8 @@
+ 
+ #include <network_helpers.h>
+ 
++#define MAX_TX_BUDGET_DEFAULT 32
++
+ static bool opt_verbose;
+ static bool opt_print_tests;
+ static enum test_mode opt_mode = TEST_MODE_ALL;
+@@ -1323,7 +1325,8 @@ static int receive_pkts(struct test_spec *test)
+ 	return TEST_PASS;
+ }
+ 
+-static int __send_pkts(struct ifobject *ifobject, struct xsk_socket_info *xsk, bool timeout)
++static int __send_pkts(struct test_spec *test, struct ifobject *ifobject,
++		       struct xsk_socket_info *xsk, bool timeout)
+ {
+ 	u32 i, idx = 0, valid_pkts = 0, valid_frags = 0, buffer_len;
+ 	struct pkt_stream *pkt_stream = xsk->pkt_stream;
+@@ -1437,9 +1440,21 @@ static int __send_pkts(struct ifobject *ifobject, struct xsk_socket_info *xsk, b
  	}
  
- out:
-+	if (xskq_has_descs(xs->tx))
-+		__xskq_cons_release(xs->tx);
+ 	if (!timeout) {
++		int prev_tx_consumer;
 +
- 	if (sent_frame)
- 		if (xsk_tx_writeable(xs))
- 			sk->sk_write_space(sk);
++		if (!strncmp("TX_QUEUE_CONSUMER", test->name, MAX_TEST_NAME_SIZE))
++			prev_tx_consumer = *xsk->tx.consumer;
++
+ 		if (complete_pkts(xsk, i))
+ 			return TEST_FAILURE;
+ 
++		if (!strncmp("TX_QUEUE_CONSUMER", test->name, MAX_TEST_NAME_SIZE)) {
++			int delta = *xsk->tx.consumer - prev_tx_consumer;
++
++			if (delta != MAX_TX_BUDGET_DEFAULT)
++				return TEST_FAILURE;
++		}
++
+ 		usleep(10);
+ 		return TEST_PASS;
+ 	}
+@@ -1492,7 +1507,7 @@ static int send_pkts(struct test_spec *test, struct ifobject *ifobject)
+ 				__set_bit(i, bitmap);
+ 				continue;
+ 			}
+-			ret = __send_pkts(ifobject, &ifobject->xsk_arr[i], timeout);
++			ret = __send_pkts(test, ifobject, &ifobject->xsk_arr[i], timeout);
+ 			if (ret == TEST_CONTINUE && !test->fail)
+ 				continue;
+ 
+@@ -2613,6 +2628,16 @@ static int testapp_adjust_tail_grow_mb(struct test_spec *test)
+ 				   XSK_UMEM__LARGE_FRAME_SIZE * 2);
+ }
+ 
++static int testapp_tx_queue_consumer(struct test_spec *test)
++{
++	int nr_packets = MAX_TX_BUDGET_DEFAULT + 1;
++
++	pkt_stream_replace(test, nr_packets, MIN_PKT_SIZE);
++	test->ifobj_tx->xsk->batch_size = nr_packets;
++
++	return testapp_validate_traffic(test);
++}
++
+ static void run_pkt_test(struct test_spec *test)
+ {
+ 	int ret;
+@@ -2723,6 +2748,7 @@ static const struct test_spec tests[] = {
+ 	{.name = "XDP_ADJUST_TAIL_SHRINK_MULTI_BUFF", .test_func = testapp_adjust_tail_shrink_mb},
+ 	{.name = "XDP_ADJUST_TAIL_GROW", .test_func = testapp_adjust_tail_grow},
+ 	{.name = "XDP_ADJUST_TAIL_GROW_MULTI_BUFF", .test_func = testapp_adjust_tail_grow_mb},
++	{.name = "TX_QUEUE_CONSUMER", .test_func = testapp_tx_queue_consumer},
+ 	};
+ 
+ static void print_tests(void)
 -- 
 2.41.3
 
