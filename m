@@ -1,151 +1,185 @@
-Return-Path: <bpf+bounces-61491-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61492-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F4C8AE75FD
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 06:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 13019AE7646
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 07:02:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E12E44A0AB9
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 04:36:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F138217A960
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 05:02:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 591BB20C00D;
-	Wed, 25 Jun 2025 04:34:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1E461D6DB6;
+	Wed, 25 Jun 2025 05:02:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="GRmqgvMR"
 X-Original-To: bpf@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 413781E00A0;
-	Wed, 25 Jun 2025 04:34:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A978C3074BC
+	for <bpf@vger.kernel.org>; Wed, 25 Jun 2025 05:02:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750826050; cv=none; b=t4nXRO1Y+Nl00cGOq3m+hYea+C1v/BLeLW1Ps1t99rdRA9BHudDTZ2bFByEIo+FJbdi/hhAnA+YinnM2LB20uYc9D57MyeMU70vLZOITm1UHhCAg4bxHG0hoksbRP96rq1J7O4rV8U0p77ptVV/IYVQCWVzRSF2zI89xwL5uCSY=
+	t=1750827768; cv=none; b=C6BqQhs9RlIleH5B08YKnmE8U1FLtkSEK2fqilgWs3UWPAtcXfKtyHHzwaun9xPtlyvWTHtY6UCH8TrfciIXsz0NvGMHnPF10VpdOaDTtF/qj9yKqjbVomkN8d7oRpFOfV/qifQS4buJZ/DuKw+F3et5028TVx3CsSKh9ZqoK98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750826050; c=relaxed/simple;
-	bh=fHXd1CHV5Rrj3/flHARgBJsR+7SIqdmHhmh1mD0f75Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XuxBi225OiOLamSUzTiYxFZ98zha2s85Vdpy3ffoJVbQHZFfnqvmEfiEozjnKhKOrZfz50U3KyRLsOP9AjwYU9A6/Ng2+xDMuwAMsUL0S9pqb7gIgaisY5b7O1eB61YXxk73dn17E6Ym8vH3F1JeOPI8tbVaILjNrQjI/uVhwDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-669ff7000002311f-27-685b7c397fc2
-From: Byungchul Park <byungchul@sk.com>
-To: willy@infradead.org,
-	netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	kernel_team@skhynix.com,
-	kuba@kernel.org,
-	almasrymina@google.com,
-	ilias.apalodimas@linaro.org,
-	harry.yoo@oracle.com,
-	hawk@kernel.org,
-	akpm@linux-foundation.org,
-	davem@davemloft.net,
-	john.fastabend@gmail.com,
-	andrew+netdev@lunn.ch,
-	asml.silence@gmail.com,
-	toke@redhat.com,
-	tariqt@nvidia.com,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	saeedm@nvidia.com,
-	leon@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	david@redhat.com,
-	lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com,
-	vbabka@suse.cz,
-	rppt@kernel.org,
-	surenb@google.com,
-	mhocko@suse.com,
-	horms@kernel.org,
-	linux-rdma@vger.kernel.org,
-	bpf@vger.kernel.org,
-	vishal.moola@gmail.com,
-	hannes@cmpxchg.org,
-	ziy@nvidia.com,
-	jackmanb@google.com
-Subject: [PATCH net-next v7 7/7] netmem: introduce a netmem API, virt_to_head_netmem()
-Date: Wed, 25 Jun 2025 13:33:50 +0900
-Message-Id: <20250625043350.7939-8-byungchul@sk.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20250625043350.7939-1-byungchul@sk.com>
-References: <20250625043350.7939-1-byungchul@sk.com>
+	s=arc-20240116; t=1750827768; c=relaxed/simple;
+	bh=V1AUKTWznoThobmmHnuNVZ8WrpiIvfVVDlCCcsEIFQ4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=a/JNBXNEdumnUWcr7chz+NH/PvtyZ8ffl824t765H7ypqJ6Edxm5jK8E/SvOyWRiBC+p5LGzzeOIPVE3G8wJpf8qYIjnEvECDHKFSwJNmsNRrG4J+ttiOEYfxCZcO5/Uo/fmI8ZPJbz+NNCINEgwkfxBDurZRKu0xIt8QHu8++M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=GRmqgvMR; arc=none smtp.client-ip=67.231.153.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55P22Irc015988
+	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 22:02:45 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=s2048-2021-q4; bh=cgGCGcQpACYxV/yXt2
+	g+Cnc1FYeuuhMyNMcBn+ieq+E=; b=GRmqgvMRM5HH4YROQkNUIPkESd2gVAJ100
+	SOBNP+QthOVEavaQku9ELjTXNaSrJ4e6udaMqfnc6zeSdzs7GWZE2m+hTp2d0rlj
+	iwF+5Waz6DvNNhmjrBBOmeYbR2o/woZ8ujSPmmoO49HVryMPrdGMuSd2JMXK+J3T
+	VAR6+RIZJrSS5fUnFbjLtcdzswcbasvH1EFcVOiA5zYdubybLfZfINxxhh53ewxf
+	j7ZFTnMyCNZmFz+51A0A7/HKz0yJdqOJaBSKcEcw7zcu/Aq14mpHwUHpAJPaoany
+	clJeUxcREIcxmg7Ba6a9JBw811PYTzohqUTdNqsNJwa/JJpiyNCA==
+Received: from mail.thefacebook.com ([163.114.134.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 47g00ec67s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 22:02:45 -0700 (PDT)
+Received: from twshared32712.16.frc2.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c08b:78::2ac9) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1748.24; Wed, 25 Jun 2025 05:02:43 +0000
+Received: by devvm16984.vll0.facebook.com (Postfix, from userid 673687)
+	id 63134DBC4AD2; Tue, 24 Jun 2025 22:02:31 -0700 (PDT)
+From: Adin Scannell <amscanne@meta.com>
+To: <bpf@vger.kernel.org>, <andrii@kernel.org>
+CC: <ast@kernel.org>, Adin Scannell <amscanne@meta.com>
+Subject: [PATCH bpf v2] libbpf: fix possible use-after-free for externs
+Date: Tue, 24 Jun 2025 22:02:15 -0700
+Message-ID: <20250625050215.2777374-1-amscanne@meta.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRjG++9/ds5xuDgtq9NFkmEWiyzL6u2KUMQ/IohuH+xDjjy40Vwy
-	02YUzNQicUu6kXPVMrKpk8lcusJuc2pR0TCKlXlh1QryglnLS2WbEvnt4Xl/z/O+H14Wy8rE
-	81i19qig0yo1clpCSfqiK5atO3FAtaKoNBYsDjsNNcN6uN3jFoOlugHB95EOBoa8bTTcvBHC
-	YHlZSMEPxyiGT60BBmqcO6G7MkhB05lGDIFzT2gwFo5huD/Sz8Apt00EvgaTGC6O3sLQaOhh
-	4NU9Cw1d9nExBD1GCp6aqyjoNqVAq3U2hJ71IvA6GkUQKrlKw4V2Kw0fCrsRtDcHKCjPNyFw
-	PPCLYWw43FHe0sWkxJPm3gFMXFVvReSuuZMhVmcOqbcpSLG/HRNn9VmaOL+dZ8j7N000eXJl
-	jCJ33UMiYizop8ngp3cUGXjwmiYO12uKPLd6mV0zUiUb0wWNOlfQLd+cJlFZO7uZrJYovavC
-	hA3IwBajKJbnknnTjz9UMWIn9Gl3RsSmucW83z+CIzqGS+KHAm1hRMJirpbmvfYOJjKYye3n
-	62y3JyCKW8TfsgfFES0N9xg6eujJ/oV8Td2jCSaKW81bAgVURMvCTNGbfDzJz+Cfln2cuAGH
-	FzuuySI2DkcL7pTjyF6ec7O8sXYcTXbO5R/b/FQp4sxT4ub/cfOUuBXhaiRTa3MzlWpNcqIq
-	T6vWJx46kulE4YepPPnrgBt98+3xII5F8mjpiqJUlUyszM3Oy/QgnsXyGOnltWFLmq7MOy7o
-	jhzU5WiEbA+az1LyOdKVoWPpMi5DeVQ4LAhZgu7fVMRGzTMgq6lheNXX9dPJloqeUH7TuClp
-	/te5X9wuU/Dhhke+ynhF/++iOPFIsK5Tsax9MGGNvSJR3SXs09T5ljPStJJpL2dl7Y7rvef2
-	HfNeTHjh3xqXdmmpaFOzLXk7n6iNXVJ23TXQd//sXj2b8vFhSCk17visr27ZtmCwqs/ys3FP
-	fY6cylYpkxRYl638C/6lrRosAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SXUiTcRTG++//fjmavS2tV0OFgZRSppB4Iim7kF6CyrrIMkpHvrXhnLKl
-	aRTMz0hy9ik1V01NM11N1soVaqJWSqGiKFPTyVLpQvvSJJ1QWxF59/A8v/Occ3EYLHUTgYxS
-	fVbQqOUqGSUmxAd2FmzdceG4IjJf7wtGi5mChp858HDCToKx/jmC+cVRGuY631JQXbmAwdhb
-	SMAPyxKGqTcuGhqs+8FZO01A86UmDK6yLgpKC90YWhY/05BvrxNBx91uEvqe60m4uVSDoUk3
-	QcPASyMF4+ZfJEy3lxLQbXhEgFMfB29M62Hh3QyCTkuTCBau3KXgRr+Jgo+FTgT9HS4CKvL0
-	CCytDhLcPz0dFa/H6bhQvmPmC+Ztj4ZF/AvDGM2brFn807pwvsTRj3lr/WWKt36/TvMfhpop
-	vuu2m+Bf2OdEfGnBZ4r/NjVC8F9aBym++tNXEW+xDRIJ0iRxbKqgUmYLmm27UsQK05iTznzt
-	k2Or0mMd0jEliGE4djtXbD9TgnwYit3EORyL2Kv92ChuzvWWKEFiBrOPKa7TPEp7g3XsEa6x
-	7uEfiGBDuRrzNOnVEk+PbnSC8mqODeEaGtv+MD5sNGd0FRBeLfUwRUN5+C+/luu+M0l4b8Ce
-	xZZ7Uq+NPaMFzyrwVSQxrKAM/ynDCsqEcD3yU6qz0+VKVXSENk2Rq1bmRJzKSLciz0vUXly+
-	ZkfzA3vbEcsg2WpJZFGSQkrKs7W56e2IY7DMT1Ie47EkqfLc84ImI1mTpRK07WgjQ8g2SPYl
-	CilS9oz8rJAmCJmC5l8qYnwCdeiqO7Z4k3220jz8/nARmTzi74p3X8wpb6ulqlRKh+pW6HTX
-	8hL+aNuzpifxYF/Q481hA7sl873DJzLVRwOcG4PMVb4Js/e3BAy0TM7GxhWvigmIhuDQyzUh
-	trhVPdKTu5LuSx4E7w4TNp+uvH7MdU578hD55FydIWjk1WR82Y5kfxmhVcijwrFGK/8NmtA4
-	EQ4DAAA=
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Authority-Analysis: v=2.4 cv=aaxhnQot c=1 sm=1 tr=0 ts=685b82f5 cx=c_pps a=CB4LiSf2rd0gKozIdrpkBw==:117 a=CB4LiSf2rd0gKozIdrpkBw==:17 a=6IFa9wvqVegA:10 a=VabnemYjAAAA:8 a=InPXK2lmKs2oRydpIwoA:9 a=gKebqoRLp9LExxC7YDUY:22
+X-Proofpoint-ORIG-GUID: PTy-Rqpjmy3PZ7YxOiwCxhI9D-63wuJP
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjI1MDAzNSBTYWx0ZWRfX75dEoBTof202 rf1osl2ALZnmOhNnnZhgOU2HhU2FeOraLeaX9+KcfYVfOG4K88ing/mr66gfi0DrbeY4ui6KIaJ UrMXUaTMNn7ZToLNQl76rbvS3NuVaM2E/DduqNNZ1NOxUUDzAAc0tZl/UMYThVVZLjvhFdpgzVy
+ ++B/RpjwRWXse5zqhcEDLKfUCqlZnPxIakQcexkgA+ztF5845uPJE5gGgjhzpr6gi6hPJEe+8qp 90i6oEPF3eKc8ON8N9dGAAGwcpzAiNjPXJT/8qNkhtXOFiNQv+lyVdHcc15GNoXG3yXFVnf9DQJ 2KbAlxj7NQKz2YZmYAdZ6Z9CRDASEqKuOVK38XoSEMZF/c84iVmVHvr3YtwwDF+VYSM+4znYMbK
+ Q/k3fcQA/9PahMl7WlDI9uD2b+360C2+A8CH9Jje7QwTs5BxA1XKUbvImMbUlu42o3mXyICY
+X-Proofpoint-GUID: PTy-Rqpjmy3PZ7YxOiwCxhI9D-63wuJP
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
+ definitions=2025-06-25_01,2025-06-23_07,2025-03-28_01
 
-To eliminate the use of struct page in page pool, the page pool code
-should use netmem descriptor and APIs instead.
+The `name` field in `obj->externs` points into the BTF data at initial
+open time. However, some functions may invalidate this after opening and
+before loading (e.g. `bpf_map__set_value_size`), which results in
+pointers into freed memory and undefined behavior.
 
-As part of the work, introduce a netmem API to convert a virtual address
-to a head netmem allowing the code to use it rather than the existing
-API, virt_to_head_page() for struct page.
+The simplest solution is to simply `strdup` these strings, similar to
+the `essent_name`, and free them at the same time.
 
-Signed-off-by: Byungchul Park <byungchul@sk.com>
-Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
-Reviewed-by: Mina Almasry <almasrymina@google.com>
+In order to test this path, the `global_map_resize` BPF selftest is
+modified slightly to ensure the presence of an extern, which causes this
+test to fail prior to the fix. Given there isn't an obvious API or error
+to test against, I opted to add this to the existing test as an aspect
+of the resizing feature rather than duplicate the test.
+
+Fixes: 9d0a23313b1a ("libbpf: Add capability for resizing datasec maps")
+Signed-off-by: Adin Scannell <amscanne@meta.com>
 ---
- include/net/netmem.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+ tools/lib/bpf/libbpf.c                           | 10 +++++++---
+ .../selftests/bpf/progs/test_global_map_resize.c | 16 ++++++++++++++++
+ 2 files changed, 23 insertions(+), 3 deletions(-)
 
-diff --git a/include/net/netmem.h b/include/net/netmem.h
-index 535cf17b9134..c7b1fc4b6c28 100644
---- a/include/net/netmem.h
-+++ b/include/net/netmem.h
-@@ -314,6 +314,13 @@ static inline netmem_ref netmem_compound_head(netmem_ref netmem)
- 	return page_to_netmem(compound_head(netmem_to_page(netmem)));
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index e9c641a2fb20..52e353368f58 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -597,7 +597,7 @@ struct extern_desc {
+ 	int sym_idx;
+ 	int btf_id;
+ 	int sec_btf_id;
+-	const char *name;
++	char *name;
+ 	char *essent_name;
+ 	bool is_set;
+ 	bool is_weak;
+@@ -4259,7 +4259,9 @@ static int bpf_object__collect_externs(struct bpf_o=
+bject *obj)
+ 			return ext->btf_id;
+ 		}
+ 		t =3D btf__type_by_id(obj->btf, ext->btf_id);
+-		ext->name =3D btf__name_by_offset(obj->btf, t->name_off);
++		ext->name =3D strdup(btf__name_by_offset(obj->btf, t->name_off));
++		if (!ext->name)
++			return -ENOMEM;
+ 		ext->sym_idx =3D i;
+ 		ext->is_weak =3D ELF64_ST_BIND(sym->st_info) =3D=3D STB_WEAK;
+=20
+@@ -9138,8 +9140,10 @@ void bpf_object__close(struct bpf_object *obj)
+ 	zfree(&obj->btf_custom_path);
+ 	zfree(&obj->kconfig);
+=20
+-	for (i =3D 0; i < obj->nr_extern; i++)
++	for (i =3D 0; i < obj->nr_extern; i++) {
++		zfree(&obj->externs[i].name);
+ 		zfree(&obj->externs[i].essent_name);
++	}
+=20
+ 	zfree(&obj->externs);
+ 	obj->nr_extern =3D 0;
+diff --git a/tools/testing/selftests/bpf/progs/test_global_map_resize.c b=
+/tools/testing/selftests/bpf/progs/test_global_map_resize.c
+index a3f220ba7025..ee65bad0436d 100644
+--- a/tools/testing/selftests/bpf/progs/test_global_map_resize.c
++++ b/tools/testing/selftests/bpf/progs/test_global_map_resize.c
+@@ -32,6 +32,16 @@ int my_int_last SEC(".data.array_not_last");
+=20
+ int percpu_arr[1] SEC(".data.percpu_arr");
+=20
++/* at least one extern is included, to ensure that a specific
++ * regression is tested whereby resizing resulted in a free-after-use
++ * bug after type information is invalidated by the resize operation.
++ *
++ * There isn't a particularly good API to test for this specific conditi=
+on,
++ * but by having externs for the resizing tests it will cover this path.
++ */
++extern int LINUX_KERNEL_VERSION __kconfig;
++long version_sink;
++
+ SEC("tp/syscalls/sys_enter_getpid")
+ int bss_array_sum(void *ctx)
+ {
+@@ -44,6 +54,9 @@ int bss_array_sum(void *ctx)
+ 	for (size_t i =3D 0; i < bss_array_len; ++i)
+ 		sum +=3D array[i];
+=20
++	/* see above; ensure this is not optimized out */
++	version_sink =3D LINUX_KERNEL_VERSION;
++
+ 	return 0;
  }
- 
-+static inline netmem_ref virt_to_head_netmem(const void *x)
-+{
-+	netmem_ref netmem = virt_to_netmem(x);
+=20
+@@ -59,6 +72,9 @@ int data_array_sum(void *ctx)
+ 	for (size_t i =3D 0; i < data_array_len; ++i)
+ 		sum +=3D my_array[i];
+=20
++	/* see above; ensure this is not optimized out */
++	version_sink =3D LINUX_KERNEL_VERSION;
 +
-+	return netmem_compound_head(netmem);
-+}
-+
- /**
-  * __netmem_address - unsafely get pointer to the memory backing @netmem
-  * @netmem: netmem reference to get the pointer for
--- 
-2.17.1
+ 	return 0;
+ }
+=20
+--=20
+2.48.1
 
 
