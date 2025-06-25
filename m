@@ -1,294 +1,145 @@
-Return-Path: <bpf+bounces-61561-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61562-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9619EAE8C0B
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 20:11:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBF7DAE8C4F
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 20:24:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27B483A48F3
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 18:10:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E1B34A1E0B
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 18:24:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 230692D5C61;
-	Wed, 25 Jun 2025 18:10:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B39432DA76D;
+	Wed, 25 Jun 2025 18:24:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bsc/Oi7a"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XAw44UI4"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B64A1A3159
-	for <bpf@vger.kernel.org>; Wed, 25 Jun 2025 18:10:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC9382D9EEB
+	for <bpf@vger.kernel.org>; Wed, 25 Jun 2025 18:24:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750875058; cv=none; b=FEoa/tP9lgzrcrz1JXDrZvboUNZCLK0a8J6V1707GlDiAiLKUtGWlj5upaJgXeEz5jTOUuC8aB/geHGW9CbxHVO3kAJw5xrwGnY1fDnBF5jTnfZC7BaLCehZceVya8N8V66DnR3Y8ebLj/H/xaRybRgMPO+boRAY++XMY1mcOQo=
+	t=1750875868; cv=none; b=oDRyMm178mPuIcX/fQKv4jyWM+DKPkHR1XrGOeS7kax0wMSnhDU9gxcnTgmKlMad3F2Rud767JJ/Fz0ZLTAt2GeX4yrZvGIgNra5cglCbKryim2ZWLXf7ndobxkYogSzv1Def1E+yAOTDFBbcCqmLDtLPuNw0hSAu9ifI+/JFS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750875058; c=relaxed/simple;
-	bh=KYBOPxX3GFTtq0HNLMi3mgjXngev0izBaHxSiZGxFRg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=np5KHuFHEm/DqDGCHRQm/U2J1M6SpZ4AjU5zXudPyQFuvauwb8JJnpMTpjymuYBF56W8fFZNiyqQ3o6kmhOxX2j9mnp+4ZBIOI40jykIMwbCMfjdH5ZFG+zrvtVw5Rr6FoRoqpnA0z4cWRz0Fn9U37RGEUmZ3RCY2vX5aVUifEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bsc/Oi7a; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1750875056;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/9NMhAJViuj1d9Wf05Bz/Ifw4S/GpLHKpGL5UhldLVE=;
-	b=bsc/Oi7aIiJ7YNWKj7eG3ePfxXMshVirP028FBexMqbODVU3DEOnVAHX3SzB4IKPOez9nN
-	ubGHnXF4cy0eenbbacFmfuNpHrFrBucmpBlNtPGEqOy+4UvkroBlJwOeTEN3iI74fwjtOt
-	wwT5p5dmy6WgCIdUML1Bf1QdtffWsGI=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-250-eZBAYtq8OyaIvcb7X-qHZA-1; Wed,
- 25 Jun 2025 14:10:51 -0400
-X-MC-Unique: eZBAYtq8OyaIvcb7X-qHZA-1
-X-Mimecast-MFC-AGG-ID: eZBAYtq8OyaIvcb7X-qHZA_1750875047
-Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id BD77919560A6;
-	Wed, 25 Jun 2025 18:10:46 +0000 (UTC)
-Received: from rotkaeppchen (unknown [10.45.225.238])
-	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id B37111956096;
-	Wed, 25 Jun 2025 18:10:37 +0000 (UTC)
-Date: Wed, 25 Jun 2025 20:10:33 +0200
-From: Philipp Rudo <prudo@redhat.com>
-To: Pingfan Liu <piliu@redhat.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, Jeremy Linton
- <jeremy.linton@arm.com>, Catalin Marinas <catalin.marinas@arm.com>, Will
- Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, Simon Horman
- <horms@kernel.org>, Gerd Hoffmann <kraxel@redhat.com>, Vitaly Kuznetsov
- <vkuznets@redhat.com>, Viktor Malik <vmalik@redhat.com>, Jan Hendrik Farr
- <kernel@jfarr.cc>, Baoquan He <bhe@redhat.com>, Dave Young
- <dyoung@redhat.com>, Andrew Morton <akpm@linux-foundation.org>,
- kexec@lists.infradead.org, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>
-Subject: Re: [PATCHv3 3/9] bpf: Introduce bpf_copy_to_kernel() to buffer the
- content from bpf-prog
-Message-ID: <20250625201033.419d158a@rotkaeppchen>
-In-Reply-To: <20250529041744.16458-4-piliu@redhat.com>
-References: <20250529041744.16458-1-piliu@redhat.com>
-	<20250529041744.16458-4-piliu@redhat.com>
-Organization: Red Hat inc.
+	s=arc-20240116; t=1750875868; c=relaxed/simple;
+	bh=IwxCZtd5SAodSu7/ZDZJ1FWKPJ4C5A5TKpGwkS6BnEI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OdSvJ0SD+FMk+MfiE2o8RoTD9gFCCyWNjBx2tsecyMqROswnmWkwEEdhBAJhkpwfuhjPRoBRJ4lJMl8mXEEN/RzsDQhdAwTdisqpmn14u/ALS/6VF3wI2Ox3yXcWBoLsyv6dHryBCOrz167Jfor7Hyo4uVbgKQ1eyl9VBLhFTrI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XAw44UI4; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-7425bd5a83aso371849b3a.0
+        for <bpf@vger.kernel.org>; Wed, 25 Jun 2025 11:24:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1750875866; x=1751480666; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=p3MgTJCuo7AY/jsRMAqfKyXfMeRrASKvBm3D3vjYrcw=;
+        b=XAw44UI4VYZOdiIrw4V65C3ZE7PCCoU/MU3ipT/PacJ0DvvkrJJFXWRO0XtEX9YWC6
+         R4LFdpo8kW1elOIbKBNkqZMf3fqFtXPu11/177R1z5qPFynQL4lFppqFiEAPqEGr2MvP
+         +Y/ExBM4cHZfdyIG5NZDVga4cTY+KCuwDRzjgJeV8H0R+Di8HJnhmSxfuHh57S4o8i/P
+         VdHNZM9fyPNp+m8GPHTrd0lpV8MhUCJg0ci8l3qhLUpjjVvQrD9/FOh/sHR3+hKGRmdz
+         gNAtigqJQtLCF+cngT5y9AIywwrj0helalEMqgETfu6nsP4GwNl2CnPa76u0aJXShAxJ
+         zx6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750875866; x=1751480666;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=p3MgTJCuo7AY/jsRMAqfKyXfMeRrASKvBm3D3vjYrcw=;
+        b=MXyPw5D4ohoxDxj7h9ywHIv6W1uE/Jx9DhuWXu8aJxG7fBjCFp4QAwaEH/VECM93vL
+         I3RE1IYIhbnikxP1m5d8Za90lKsT6A5libZeBNW7vciwWMB2lyFwgGwyE0tbBM4WEFlF
+         37Dqo00RZsV3e+8gx0KMyUSc8b8neewUQ7w2xSxexOKtXRKkObXV93ZTCGZL4AoX5UAz
+         B3QniYZZsVTu/Yu3qgQeVKrIqPZjsCb7UmSrgN1GXiDlQOkLLx6KB6EA5uLymBHJI9rM
+         OtKzusCNhgu3sfq8OYTgPiiQBccf19fWybZ5Uf5BxiOC6t/n5VN8EFlhxGn5i+X7SSoh
+         UsSQ==
+X-Gm-Message-State: AOJu0Yyl5xTh085OMo4I3rs0E7BcvnSnWMnD2Dc8TK+AshiWQvY2Tim4
+	S7LtT5S6yFoufMutXG/XihCaho0obghKQ1PNJZatTjEw/fUEccuJoK8lBxPWy4BWClA=
+X-Gm-Gg: ASbGncsdZF+pw9aRHNq/kfR9St1/wnjOmR0BAvmdOmn0eZehkIeE+IwOkXoH93tklpW
+	p85w7IvTgTIPJYUhnef6YARduDCBv9VYS/YQ6ovZZDEyReQRKRo+BUhFzGJKU0LDgSvhnbelOhq
+	G2fVYlNkSVORJss6QQyqhcHxyIemW9vllNqn7+2omJ5jbuJDsJpGF35JbtzMwtY7FTQTibc1rnb
+	WfULwoUariZ8vBa8QLUo5eQFB2FiT5UjftI5y115jnHK6pTeEryyxVSOBCV/NQgVpPj5AqmGvD9
+	JnGZ5BeTaozr8FSDsEKVW+jTSQ6NXp+6c3pyqZXK+611mGT0/NHhjAvsSctnBhCjv148e7Nosls
+	VT1r2fTCnWA==
+X-Google-Smtp-Source: AGHT+IG66cAc95MDOL5iYhDattAPCifmMi71P3++KcuvR6MQIfI6PI5qqCgVL2At+1EMPWuzXahJxQ==
+X-Received: by 2002:a05:6a21:9006:b0:21f:5aa1:3124 with SMTP id adf61e73a8af0-2207f20ac1fmr6166153637.13.1750875865770;
+        Wed, 25 Jun 2025 11:24:25 -0700 (PDT)
+Received: from ezingerman-fedora-PF4V722J.thefacebook.com ([2620:10d:c090:500::5:1734])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b31f1258b4asm13322939a12.60.2025.06.25.11.24.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Jun 2025 11:24:25 -0700 (PDT)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	andrii@kernel.org
+Cc: daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	kernel-team@fb.com,
+	yonghong.song@linux.dev,
+	eddyz87@gmail.com
+Subject: [PATCH bpf-next v3 0/3] bpf: allow void* cast using bpf_rdonly_cast()
+Date: Wed, 25 Jun 2025 11:24:11 -0700
+Message-ID: <20250625182414.30659-1-eddyz87@gmail.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
+Content-Transfer-Encoding: 8bit
 
-Hi Pingfan,
-Hi Alexei,
+Currently, pointers returned by `bpf_rdonly_cast()` have a type of
+"pointer to btf id", and only casts to structure types are allowed.
+Access to memory pointed to by these pointers is done through
+`BPF_PROBE_{MEM,MEMSX}` instructions and does not produce errors on
+invalid memory access.
 
-sorry for the late reply.
+This patch set extends `bpf_rdonly_cast()` to allow casts to an
+equivalent of 'void *', effectively replacing
+`bpf_probe_read_kernel()` calls in situations where access to
+individual bytes or integers is necessary.
 
-On Thu, 29 May 2025 12:17:38 +0800
-Pingfan Liu <piliu@redhat.com> wrote:
+The mechanism was suggested and explored by Andrii Nakryiko in [1].
 
-> In the security kexec_file_load case, the buffer which holds the kernel
-> image is invisible to the userspace.
-> 
-> The common data flow in bpf scheme is from kernel to bpf-prog.  In the
-> case of kexec_file_load, the kexec component needs to buffer the parsed
-> result by bpf-prog (opposite the usual direction) to the next stage
-> parsing. bpf_kexec_carrier() makes the opposite data flow possible. A
-> bpf-prog can publish the parsed payload address to the kernel, and the
-> latter can copy them for future use.
-> 
-> Signed-off-by: Pingfan Liu <piliu@redhat.com>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> Cc: Eduard Zingerman <eddyz87@gmail.com>
-> Cc: Song Liu <song@kernel.org>
-> Cc: Yonghong Song <yonghong.song@linux.dev>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: Stanislav Fomichev <sdf@fomichev.me>
-> Cc: Hao Luo <haoluo@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> To: bpf@vger.kernel.org
-> ---
->  include/linux/bpf.h          |  23 +++++
->  kernel/bpf/Makefile          |   2 +-
->  kernel/bpf/helpers.c         |   2 +
->  kernel/bpf/helpers_carrier.c | 194 +++++++++++++++++++++++++++++++++++
->  4 files changed, 220 insertions(+), 1 deletion(-)
->  create mode 100644 kernel/bpf/helpers_carrier.c
-> 
+To help with detecting support for this feature, an
+`enum bpf_features` is added with intended usage as follows:
 
-[...]
+  if (bpf_core_enum_value_exists(enum bpf_features,
+                                 BPF_FEAT_RDONLY_CAST_TO_VOID))
+    ...
 
-> diff --git a/kernel/bpf/helpers_carrier.c b/kernel/bpf/helpers_carrier.c
-> new file mode 100644
-> index 0000000000000..c4e45fdf0ebb8
-> --- /dev/null
-> +++ b/kernel/bpf/helpers_carrier.c
-> @@ -0,0 +1,194 @@
+[1] https://github.com/anakryiko/linux/tree/bpf-mem-cast
 
-[...]
+Changelog:
 
-> +__bpf_kfunc int bpf_mem_range_result_put(struct mem_range_result *result)
+v2: https://lore.kernel.org/bpf/20250625000520.2700423-1-eddyz87@gmail.com/
+v2 -> v3:
+- dropped direct numbering for __MAX_BPF_FEAT.
 
-I'm concerned about the use of kfuncs for our use case. I don't believe
-they provide the stability we need.
+v1: https://lore.kernel.org/bpf/20250624191009.902874-1-eddyz87@gmail.com/
+v1 -> v2:
+- renamed BPF_FEAT_TOTAL to __MAX_BPF_FEAT and moved patch introducing
+  bpf_features enum to the start of the series (Alexei);
+- dropped patch #3 allowing optout from CAP_SYS_ADMIN drop in
+  prog_tests/verifier.c, use a separate runner in prog_tests/*
+  instead.
 
-With kexec we deal with two different kernels. The 1st kernel, aka. the
-one that executes kexec to load the 2nd kernel, and the 2nd kernel that
-is being loaded. In general both kernels are built from different
-versions with different configs and it is expected that kexec works
-even when both kernels are years apart.
+Eduard Zingerman (3):
+  bpf: add bpf_features enum
+  bpf: allow void* cast using bpf_rdonly_cast()
+  selftests/bpf: check operations on untrusted ro pointers to mem
 
-The problem is that in our design the bpf-prog is part of the
-image of and built from the sources of the 2nd kernel, but runs in the
-1st kernel. So the definitions of the kfuncs in both kernels have to
-match. What makes it worse is that for it to work with secure boot the
-kernel image, including the bpf-prog, needs to be signed. Which means
-that the bpf-prog is fixed after build and can no longer be updated.
+ kernel/bpf/verifier.c                         |  79 ++++++++--
+ .../bpf/prog_tests/mem_rdonly_untrusted.c     |   9 ++
+ .../bpf/progs/mem_rdonly_untrusted.c          | 136 ++++++++++++++++++
+ 3 files changed, 212 insertions(+), 12 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/mem_rdonly_untrusted.c
+ create mode 100644 tools/testing/selftests/bpf/progs/mem_rdonly_untrusted.c
 
-All in all I'm afraid we need a uapi-like stability for those kfuncs
-for our design to work. Do you have any comments on my concern? Or any
-idea how we could archive the stability despite using kfuncs?
-
-Thanks
-Philipp
-
-
-
-> +{
-> +	return mem_range_result_put(result);
-> +}
-> +
-> +/*
-> + * Cache the content in @buf into kernel
-> + */
-> +__bpf_kfunc int bpf_copy_to_kernel(const char *name, char *buf, int size)
-> +{
-> +	struct mem_range_result *range;
-> +	struct mem_cgroup *memcg, *old_memcg;
-> +	struct str_listener *item;
-> +	resource_handler handler;
-> +	bool kmalloc;
-> +	char *kbuf;
-> +	int id, ret = 0;
-> +
-> +	id = srcu_read_lock(&srcu);
-> +	item = find_listener(name);
-> +	if (!item) {
-> +		srcu_read_unlock(&srcu, id);
-> +		return -EINVAL;
-> +	}
-> +	kmalloc = item->kmalloc;
-> +	handler = item->handler;
-> +	srcu_read_unlock(&srcu, id);
-> +	memcg = get_mem_cgroup_from_current();
-> +	old_memcg = set_active_memcg(memcg);
-> +	range = kmalloc(sizeof(struct mem_range_result), GFP_KERNEL);
-> +	if (!range) {
-> +		pr_err("fail to allocate mem_range_result\n");
-> +		ret = -ENOMEM;
-> +		goto err;
-> +	}
-> +
-> +	kref_init(&range->ref);
-> +	if (item->kmalloc)
-> +		kbuf = kmalloc(size, GFP_KERNEL | __GFP_ACCOUNT);
-> +	else
-> +		kbuf = __vmalloc(size, GFP_KERNEL | __GFP_ACCOUNT);
-> +	if (!kbuf) {
-> +		kfree(range);
-> +		ret = -ENOMEM;
-> +		goto err;
-> +	}
-> +	ret = copy_from_kernel_nofault(kbuf, buf, size);
-> +	if (unlikely(ret < 0)) {
-> +		kfree(range);
-> +		if (item->kmalloc)
-> +			kfree(kbuf);
-> +		else
-> +			vfree(kbuf);
-> +		ret = -EINVAL;
-> +		goto err;
-> +	}
-> +	range->kmalloc = item->kmalloc;
-> +	range->buf = kbuf;
-> +	range->buf_sz = size;
-> +	range->data_sz = size;
-> +	range->memcg = memcg;
-> +	mem_cgroup_tryget(memcg);
-> +	range->status = 0;
-> +	ret = handler(name, range);
-> +	mem_range_result_put(range);
-> +err:
-> +	set_active_memcg(old_memcg);
-> +	mem_cgroup_put(memcg);
-> +	return ret;
-> +}
-> +
-> +int register_carrier_listener(struct carrier_listener *listener)
-> +{
-> +	struct str_listener *item;
-> +	unsigned int hash;
-> +	int ret;
-> +
-> +	if (!listener->name)
-> +		return -EINVAL;
-> +	item = kmalloc(sizeof(*item), GFP_KERNEL);
-> +	if (!item)
-> +		return -ENOMEM;
-> +	item->str = kstrdup(listener->name, GFP_KERNEL);
-> +	if (!item->str) {
-> +		kfree(item);
-> +		return -ENOMEM;
-> +	}
-> +	item->handler = listener->handler;
-> +	item->kmalloc = listener->kmalloc;
-> +	hash = jhash(item->str, strlen(item->str), 0);
-> +	mutex_lock(&str_listeners_mutex);
-> +	if (!find_listener(item->str)) {
-> +		hash_add(str_listeners, &item->node, hash);
-> +	} else {
-> +		kfree(item->str);
-> +		kfree(item);
-> +		ret = -EBUSY;
-> +	}
-> +	mutex_unlock(&str_listeners_mutex);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(register_carrier_listener);
-> +
-> +int unregister_carrier_listener(char *str)
-> +{
-> +	struct str_listener *item;
-> +	int ret = 0;
-> +
-> +	mutex_lock(&str_listeners_mutex);
-> +	item = find_listener(str);
-> +	if (!!item)
-> +		hash_del(&item->node);
-> +	else
-> +		ret = -EINVAL;
-> +	mutex_unlock(&str_listeners_mutex);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(unregister_carrier_listener);
-> +
+-- 
+2.47.1
 
 
