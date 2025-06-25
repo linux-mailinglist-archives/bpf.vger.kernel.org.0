@@ -1,60 +1,65 @@
-Return-Path: <bpf+bounces-61567-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61568-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBD29AE8E5F
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 21:18:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E1D9AE8EB1
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 21:28:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF99D169421
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 19:18:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8C294A5C98
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 19:28:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 750FC2DAFC1;
-	Wed, 25 Jun 2025 19:17:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AA562E06CD;
+	Wed, 25 Jun 2025 19:28:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KEcGmrEI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F65Rg3/3"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D822E1DE3A4;
-	Wed, 25 Jun 2025 19:17:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A27A12DCBEE;
+	Wed, 25 Jun 2025 19:28:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750879074; cv=none; b=t1W2hq3qNeOMBDxJowTYeBv7aIlEF4uVQiDD69rQiSHUsLv5UEncqfraZt8vTyAmpO45oKNJKLBezxqOEkII+GHaM+KbTSGprP3HneVnjN/aocPsOlUBOwYN3c+BAv+Bp+bFhCq1C+pv67DymB8K3mH3kak8BMYITXISbnnClsI=
+	t=1750879692; cv=none; b=X5a5y2HEKvxeVtAO5v1FhaY9yHzLlwvlMgurUw+P5M+RlBT6YwLBsiw1Df0SxzRqDwpfVxGatibP19MEm5+vm20wxmS3KIwh2xcPQaqp3QuwBRSoQPrNn+WUVJLvLo7FMC0M/rswEOUlXZQuVVdT5czc9LfAjlposokp3RVEbDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750879074; c=relaxed/simple;
-	bh=ObS53t5ibbJ70VRvdlHBqAuCY+N+9Uhjg1MN6x/9rLM=;
+	s=arc-20240116; t=1750879692; c=relaxed/simple;
+	bh=wRuV8u4487v8pd6cIb11D4QOkkKgieStdC4qajmZOwA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LbkVFe5YVdcOolooqgLNez7q4CbT4n4EJIdLJxn23JnCzFjWPx9Z7DjyTn6s4O496NxFXC6wZQ4sXd9gUrarpz3iyCqmu08aAIy4KfkX3HN51YpkmZhv29FypIBjUEPjVwdd4bFctaHdDKCm2ZN4AGjOY08Et0Mfj0Mo3EAc6UY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KEcGmrEI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2455EC4CEEA;
-	Wed, 25 Jun 2025 19:17:52 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=QwuwHVviYrRpPjuovuSOA07si/SIAdlu2DjR1PTZ5UUkesRmATF3LTIeqkKi5YaTDVbovWQrn+O6AV6uNRkm2+C7UAY5CQ3y012e1CfL/+cpoIyZGQDPr2pg6PHX0hpz3PNLK1ofnd8sJWSEP0qB72pzlBWlOQpOGSUZsj3U07Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F65Rg3/3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A7EAC4CEEA;
+	Wed, 25 Jun 2025 19:28:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750879073;
-	bh=ObS53t5ibbJ70VRvdlHBqAuCY+N+9Uhjg1MN6x/9rLM=;
+	s=k20201202; t=1750879691;
+	bh=wRuV8u4487v8pd6cIb11D4QOkkKgieStdC4qajmZOwA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KEcGmrEIusRhIcchiSq3qKmWZyA/UeSxICFhselvTbVCTgvM4berIzQCxRAwBS9eH
-	 QziPxu2NxKePi4F7XcuvivPw+Xi58ISbGLRyMherR/eGX5+xGap7NTg8oQtzTguVyu
-	 PhbS4VeZWny86NNgZWuMN4ZKovjDgaPuTyGWRUUvSIHdNV6A9cfd1U4SY+sY9veNQa
-	 ExAjCp4KBnPvb2ncTMG91Vs9OErsnAs0TDK9Yfoz/b3AGO03MmRtZ3SsZ1ZXPDiFMG
-	 KxyGlVf/sbiJxiB+z1K26ZN3lINm0yPTK0nZNqEOGlSW8oOM/7rhNYIKyecJywFIdh
-	 tEF6mYhn3V21g==
-Date: Wed, 25 Jun 2025 16:17:50 -0300
+	b=F65Rg3/3Kmack2u+Vxnr7TZpy8d+uuu7JIPCphjO4srYS7ct4zwBMxLAPXthT20sw
+	 XcaKIzqBgJnTdEq1Bx2v7b/vS6gdoVKyhykjGk/iiOKIKcl4JpkizRLSyxdCkoEOSa
+	 grepEB3j+PWraoJncOKnFh3ogIEVslq9kXsrxh5r2kdhBUKBHHzf5yOkg/zHpgFbzF
+	 /tPJVPAoVDTeQpr64hjz67gu/Qtes93sDdubn39CHBbUdN7eD617VjmUQB9+zIA7d0
+	 ZbovYpRuHCc+zCao8dMSN5RQSIFE8vRyVCeRDt0uBLBDE7RQetKXkJmOTGx0jAWlFb
+	 mjKuS677iz7Sg==
+Date: Wed, 25 Jun 2025 16:28:07 -0300
 From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
+To: James Clark <james.clark@linaro.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
 	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
-	bpf@vger.kernel.org, Howard Chu <howardchu95@gmail.com>
-Subject: Re: [PATCH v2] perf trace: Split BPF skel code to
- util/bpf_trace_augment.c
-Message-ID: <aFxLXpOaIuEe3zEZ@x1>
-References: <20250623225721.21553-1-namhyung@kernel.org>
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Mike Leach <mike.leach@linaro.org>, Nick Terrell <terrelln@fb.com>,
+	David Sterba <dsterba@suse.com>,
+	Collin Funk <collin.funk1@gmail.com>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH] perf test: Change all remaining #!/bin/sh to #!/bin/bash
+Message-ID: <aFxNx8250L1bBaC9@x1>
+References: <20250623-james-perf-bash-tests-v1-1-f572f54d4559@linaro.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,654 +68,523 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250623225721.21553-1-namhyung@kernel.org>
+In-Reply-To: <20250623-james-perf-bash-tests-v1-1-f572f54d4559@linaro.org>
 
-On Mon, Jun 23, 2025 at 03:57:21PM -0700, Namhyung Kim wrote:
-> And make builtin-trace.c less conditional.  Dummy functions will be
-> called when BUILD_BPF_SKEL=0 is used.  This makes the builtin-trace.c
-> slightly smaller and simpler by removing the skeleton and its helpers.
+On Mon, Jun 23, 2025 at 10:00:12AM +0100, James Clark wrote:
+> There are 43 instances of posix shell tests and 35 instances of bash. To
+> give us a single consistent language for testing in, replace
+> all #!/bin/sh to #!/bin/bash. Common sources that are included in both
+> different shells will now work as expected. And we no longer have to fix
+> up bashisms that appear to work when someone's system has sh symlinked
+> to bash, but don't work on other systems that have both shells
+> installed.
 > 
-> The conditional guard of trace__init_syscalls_bpf_prog_array_maps() is
-> changed from the HAVE_BPF_SKEL to HAVE_LIBBPF_SUPPORT as it doesn't
-> have a skeleton in the code directly.  And a dummy function is added so
-> that it can be called unconditionally.  The function will succeed only
-> if the both conditions are true.
+> Although we could have chosen sh, it's not backwards compatible so it
+> wouldn't be possible to bulk convert without re-writing the existing
+> bash tests.
 > 
-> Do not include trace_augment.h from the BPF code and move the definition
-> of TRACE_AUG_MAX_BUF to the BPF directly.
+> Choosing bash also gives us some nicer features including 'local'
+> variable definitions and regexes in if statements that are already
+> widely used in the tests.
+> 
+> It's not expected that there are any users with only sh available due to
+> the large number of bash tests that exist.
+> 
+> Discussed in relation to running shellcheck here:
+> https://lore.kernel.org/linux-perf-users/e3751a74be34bbf3781c4644f518702a7270220b.1749785642.git.collin.funk1@gmail.com/
 
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+The reasoning is sound, agreed:
+
+Acked-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 
 - Arnaldo
  
-> Reviewed-by: Howard Chu <howardchu95@gmail.com>
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> Signed-off-by: James Clark <james.clark@linaro.org>
 > ---
-> v2)
->  * rename to bpf_trace_augment.c
->  * rebase to the current perf-tools-next
->  * add Howard's Reviewed-by
+>  tools/perf/tests/perf-targz-src-pkg                          | 2 +-
+>  tools/perf/tests/shell/amd-ibs-swfilt.sh                     | 2 +-
+>  tools/perf/tests/shell/buildid.sh                            | 2 +-
+>  tools/perf/tests/shell/coresight/asm_pure_loop.sh            | 2 +-
+>  tools/perf/tests/shell/coresight/memcpy_thread_16k_10.sh     | 2 +-
+>  tools/perf/tests/shell/coresight/thread_loop_check_tid_10.sh | 2 +-
+>  tools/perf/tests/shell/coresight/thread_loop_check_tid_2.sh  | 2 +-
+>  tools/perf/tests/shell/coresight/unroll_loop_thread_10.sh    | 2 +-
+>  tools/perf/tests/shell/diff.sh                               | 2 +-
+>  tools/perf/tests/shell/ftrace.sh                             | 2 +-
+>  tools/perf/tests/shell/lib/perf_has_symbol.sh                | 2 +-
+>  tools/perf/tests/shell/lib/probe_vfs_getname.sh              | 2 +-
+>  tools/perf/tests/shell/lib/setup_python.sh                   | 2 +-
+>  tools/perf/tests/shell/lib/waiting.sh                        | 2 +-
+>  tools/perf/tests/shell/list.sh                               | 2 +-
+>  tools/perf/tests/shell/lock_contention.sh                    | 2 +-
+>  tools/perf/tests/shell/perf-report-hierarchy.sh              | 2 +-
+>  tools/perf/tests/shell/probe_vfs_getname.sh                  | 2 +-
+>  tools/perf/tests/shell/record+probe_libc_inet_pton.sh        | 2 +-
+>  tools/perf/tests/shell/record+script_probe_vfs_getname.sh    | 2 +-
+>  tools/perf/tests/shell/record+zstd_comp_decomp.sh            | 2 +-
+>  tools/perf/tests/shell/record_bpf_filter.sh                  | 2 +-
+>  tools/perf/tests/shell/record_offcpu.sh                      | 2 +-
+>  tools/perf/tests/shell/record_sideband.sh                    | 2 +-
+>  tools/perf/tests/shell/script.sh                             | 2 +-
+>  tools/perf/tests/shell/stat+csv_summary.sh                   | 2 +-
+>  tools/perf/tests/shell/stat+shadow_stat.sh                   | 2 +-
+>  tools/perf/tests/shell/stat_all_pfm.sh                       | 2 +-
+>  tools/perf/tests/shell/stat_bpf_counters.sh                  | 2 +-
+>  tools/perf/tests/shell/stat_bpf_counters_cgrp.sh             | 2 +-
+>  tools/perf/tests/shell/test_arm_callgraph_fp.sh              | 2 +-
+>  tools/perf/tests/shell/test_arm_coresight.sh                 | 2 +-
+>  tools/perf/tests/shell/test_arm_coresight_disasm.sh          | 2 +-
+>  tools/perf/tests/shell/test_arm_spe.sh                       | 2 +-
+>  tools/perf/tests/shell/test_arm_spe_fork.sh                  | 2 +-
+>  tools/perf/tests/shell/test_bpf_metadata.sh                  | 2 +-
+>  tools/perf/tests/shell/test_intel_pt.sh                      | 2 +-
+>  tools/perf/tests/shell/trace+probe_vfs_getname.sh            | 2 +-
+>  tools/perf/tests/shell/trace_btf_enum.sh                     | 2 +-
+>  tools/perf/tests/shell/trace_exit_race.sh                    | 2 +-
+>  tools/perf/tests/shell/trace_record_replay.sh                | 2 +-
+>  tools/perf/tests/shell/trace_summary.sh                      | 2 +-
+>  tools/perf/tests/tests-scripts.c                             | 2 +-
+>  43 files changed, 43 insertions(+), 43 deletions(-)
 > 
->  tools/perf/builtin-trace.c                    | 187 +++++-------------
->  tools/perf/util/Build                         |   1 +
->  .../bpf_skel/augmented_raw_syscalls.bpf.c     |   3 +-
->  tools/perf/util/bpf_trace_augment.c           | 143 ++++++++++++++
->  tools/perf/util/trace_augment.h               |  62 +++++-
->  5 files changed, 255 insertions(+), 141 deletions(-)
->  create mode 100644 tools/perf/util/bpf_trace_augment.c
+> diff --git a/tools/perf/tests/perf-targz-src-pkg b/tools/perf/tests/perf-targz-src-pkg
+> index b3075c168cb2..52a90e6bd8af 100755
+> --- a/tools/perf/tests/perf-targz-src-pkg
+> +++ b/tools/perf/tests/perf-targz-src-pkg
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # SPDX-License-Identifier: GPL-2.0
+>  # Test one of the main kernel Makefile targets to generate a perf sources tarball
+>  # suitable for build outside the full kernel sources.
+> diff --git a/tools/perf/tests/shell/amd-ibs-swfilt.sh b/tools/perf/tests/shell/amd-ibs-swfilt.sh
+> index 83937aa687cc..7045ec72ba4c 100755
+> --- a/tools/perf/tests/shell/amd-ibs-swfilt.sh
+> +++ b/tools/perf/tests/shell/amd-ibs-swfilt.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # AMD IBS software filtering
+>  
+>  echo "check availability of IBS swfilt"
+> diff --git a/tools/perf/tests/shell/buildid.sh b/tools/perf/tests/shell/buildid.sh
+> index 3383ca3399d4..d2eb213da01d 100755
+> --- a/tools/perf/tests/shell/buildid.sh
+> +++ b/tools/perf/tests/shell/buildid.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # build id cache operations
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+> diff --git a/tools/perf/tests/shell/coresight/asm_pure_loop.sh b/tools/perf/tests/shell/coresight/asm_pure_loop.sh
+> index c63bc8c73e26..0301904b9637 100755
+> --- a/tools/perf/tests/shell/coresight/asm_pure_loop.sh
+> +++ b/tools/perf/tests/shell/coresight/asm_pure_loop.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh -e
+> +#!/bin/bash -e
+>  # CoreSight / ASM Pure Loop (exclusive)
+>  
+>  # SPDX-License-Identifier: GPL-2.0
+> diff --git a/tools/perf/tests/shell/coresight/memcpy_thread_16k_10.sh b/tools/perf/tests/shell/coresight/memcpy_thread_16k_10.sh
+> index 8e29630957c8..1f765d69acc3 100755
+> --- a/tools/perf/tests/shell/coresight/memcpy_thread_16k_10.sh
+> +++ b/tools/perf/tests/shell/coresight/memcpy_thread_16k_10.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh -e
+> +#!/bin/bash -e
+>  # CoreSight / Memcpy 16k 10 Threads (exclusive)
+>  
+>  # SPDX-License-Identifier: GPL-2.0
+> diff --git a/tools/perf/tests/shell/coresight/thread_loop_check_tid_10.sh b/tools/perf/tests/shell/coresight/thread_loop_check_tid_10.sh
+> index 0c4c82a1c8e1..7f43a93a2ac2 100755
+> --- a/tools/perf/tests/shell/coresight/thread_loop_check_tid_10.sh
+> +++ b/tools/perf/tests/shell/coresight/thread_loop_check_tid_10.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh -e
+> +#!/bin/bash -e
+>  # CoreSight / Thread Loop 10 Threads - Check TID (exclusive)
+>  
+>  # SPDX-License-Identifier: GPL-2.0
+> diff --git a/tools/perf/tests/shell/coresight/thread_loop_check_tid_2.sh b/tools/perf/tests/shell/coresight/thread_loop_check_tid_2.sh
+> index d3aea9fc6ced..a94d2079ed06 100755
+> --- a/tools/perf/tests/shell/coresight/thread_loop_check_tid_2.sh
+> +++ b/tools/perf/tests/shell/coresight/thread_loop_check_tid_2.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh -e
+> +#!/bin/bash -e
+>  # CoreSight / Thread Loop 2 Threads - Check TID (exclusive)
+>  
+>  # SPDX-License-Identifier: GPL-2.0
+> diff --git a/tools/perf/tests/shell/coresight/unroll_loop_thread_10.sh b/tools/perf/tests/shell/coresight/unroll_loop_thread_10.sh
+> index 7429d3a2ae43..cb3e97a0a89f 100755
+> --- a/tools/perf/tests/shell/coresight/unroll_loop_thread_10.sh
+> +++ b/tools/perf/tests/shell/coresight/unroll_loop_thread_10.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh -e
+> +#!/bin/bash -e
+>  # CoreSight / Unroll Loop Thread 10 (exclusive)
+>  
+>  # SPDX-License-Identifier: GPL-2.0
+> diff --git a/tools/perf/tests/shell/diff.sh b/tools/perf/tests/shell/diff.sh
+> index e05a5dc49479..fe05fdebcab5 100755
+> --- a/tools/perf/tests/shell/diff.sh
+> +++ b/tools/perf/tests/shell/diff.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # perf diff tests
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+> diff --git a/tools/perf/tests/shell/ftrace.sh b/tools/perf/tests/shell/ftrace.sh
+> index c243731d2fbf..7f8aafcbb761 100755
+> --- a/tools/perf/tests/shell/ftrace.sh
+> +++ b/tools/perf/tests/shell/ftrace.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # perf ftrace tests
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+> diff --git a/tools/perf/tests/shell/lib/perf_has_symbol.sh b/tools/perf/tests/shell/lib/perf_has_symbol.sh
+> index 561c93b75d77..0b35cce0b13d 100644
+> --- a/tools/perf/tests/shell/lib/perf_has_symbol.sh
+> +++ b/tools/perf/tests/shell/lib/perf_has_symbol.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+>  perf_has_symbol()
+> diff --git a/tools/perf/tests/shell/lib/probe_vfs_getname.sh b/tools/perf/tests/shell/lib/probe_vfs_getname.sh
+> index 58debce9ab42..88cd0e26d5f6 100644
+> --- a/tools/perf/tests/shell/lib/probe_vfs_getname.sh
+> +++ b/tools/perf/tests/shell/lib/probe_vfs_getname.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # Arnaldo Carvalho de Melo <acme@kernel.org>, 2017
+>  
+>  perf probe -l 2>&1 | grep -q probe:vfs_getname
+> diff --git a/tools/perf/tests/shell/lib/setup_python.sh b/tools/perf/tests/shell/lib/setup_python.sh
+> index c2fce1793538..a58e5536f2ed 100644
+> --- a/tools/perf/tests/shell/lib/setup_python.sh
+> +++ b/tools/perf/tests/shell/lib/setup_python.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+>  if [ "x$PYTHON" = "x" ]
+> diff --git a/tools/perf/tests/shell/lib/waiting.sh b/tools/perf/tests/shell/lib/waiting.sh
+> index bdd5a7c71591..3a152892e077 100644
+> --- a/tools/perf/tests/shell/lib/waiting.sh
+> +++ b/tools/perf/tests/shell/lib/waiting.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+>  tenths=date\ +%s%1N
+> diff --git a/tools/perf/tests/shell/list.sh b/tools/perf/tests/shell/list.sh
+> index 76a9846cff22..0c04b3159cef 100755
+> --- a/tools/perf/tests/shell/list.sh
+> +++ b/tools/perf/tests/shell/list.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # perf list tests
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+> diff --git a/tools/perf/tests/shell/lock_contention.sh b/tools/perf/tests/shell/lock_contention.sh
+> index 30d195d4c62f..dde5bc737eb2 100755
+> --- a/tools/perf/tests/shell/lock_contention.sh
+> +++ b/tools/perf/tests/shell/lock_contention.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # kernel lock contention analysis test
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+> diff --git a/tools/perf/tests/shell/perf-report-hierarchy.sh b/tools/perf/tests/shell/perf-report-hierarchy.sh
+> index 02e3b6aee4ed..e3c6f9a24f33 100755
+> --- a/tools/perf/tests/shell/perf-report-hierarchy.sh
+> +++ b/tools/perf/tests/shell/perf-report-hierarchy.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # perf report --hierarchy
+>  # SPDX-License-Identifier: GPL-2.0
+>  # Arnaldo Carvalho de Melo <acme@redhat.com> 
+> diff --git a/tools/perf/tests/shell/probe_vfs_getname.sh b/tools/perf/tests/shell/probe_vfs_getname.sh
+> index 0f52654c914a..5fe5682c28ce 100755
+> --- a/tools/perf/tests/shell/probe_vfs_getname.sh
+> +++ b/tools/perf/tests/shell/probe_vfs_getname.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # Add vfs_getname probe to get syscall args filenames (exclusive)
+>  
+>  # SPDX-License-Identifier: GPL-2.0
+> diff --git a/tools/perf/tests/shell/record+probe_libc_inet_pton.sh b/tools/perf/tests/shell/record+probe_libc_inet_pton.sh
+> index c4bab5b5cc59..cfad1bd7b780 100755
+> --- a/tools/perf/tests/shell/record+probe_libc_inet_pton.sh
+> +++ b/tools/perf/tests/shell/record+probe_libc_inet_pton.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # probe libc's inet_pton & backtrace it with ping (exclusive)
+>  
+>  # Installs a probe on libc's inet_pton function, that will use uprobes,
+> diff --git a/tools/perf/tests/shell/record+script_probe_vfs_getname.sh b/tools/perf/tests/shell/record+script_probe_vfs_getname.sh
+> index 1ad252f0d36e..002f7037f182 100755
+> --- a/tools/perf/tests/shell/record+script_probe_vfs_getname.sh
+> +++ b/tools/perf/tests/shell/record+script_probe_vfs_getname.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # Use vfs_getname probe to get syscall args filenames (exclusive)
+>  
+>  # Uses the 'perf test shell' library to add probe:vfs_getname to the system
+> diff --git a/tools/perf/tests/shell/record+zstd_comp_decomp.sh b/tools/perf/tests/shell/record+zstd_comp_decomp.sh
+> index 8929046e9057..f6b82223834e 100755
+> --- a/tools/perf/tests/shell/record+zstd_comp_decomp.sh
+> +++ b/tools/perf/tests/shell/record+zstd_comp_decomp.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # Zstd perf.data compression/decompression
+>  
+>  # SPDX-License-Identifier: GPL-2.0
+> diff --git a/tools/perf/tests/shell/record_bpf_filter.sh b/tools/perf/tests/shell/record_bpf_filter.sh
+> index 4d6c3c1b7fb9..383574cb3bd3 100755
+> --- a/tools/perf/tests/shell/record_bpf_filter.sh
+> +++ b/tools/perf/tests/shell/record_bpf_filter.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # perf record sample filtering (by BPF) tests
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+> diff --git a/tools/perf/tests/shell/record_offcpu.sh b/tools/perf/tests/shell/record_offcpu.sh
+> index 21a22efe08f5..860a2d6f4b75 100755
+> --- a/tools/perf/tests/shell/record_offcpu.sh
+> +++ b/tools/perf/tests/shell/record_offcpu.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # perf record offcpu profiling tests (exclusive)
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+> diff --git a/tools/perf/tests/shell/record_sideband.sh b/tools/perf/tests/shell/record_sideband.sh
+> index ac70ac27d590..2182551873be 100755
+> --- a/tools/perf/tests/shell/record_sideband.sh
+> +++ b/tools/perf/tests/shell/record_sideband.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # perf record sideband tests
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+> diff --git a/tools/perf/tests/shell/script.sh b/tools/perf/tests/shell/script.sh
+> index d3e2958d2242..7007f1cdf761 100755
+> --- a/tools/perf/tests/shell/script.sh
+> +++ b/tools/perf/tests/shell/script.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # perf script tests
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+> diff --git a/tools/perf/tests/shell/stat+csv_summary.sh b/tools/perf/tests/shell/stat+csv_summary.sh
+> index 323123ff4d19..9a4353db3825 100755
+> --- a/tools/perf/tests/shell/stat+csv_summary.sh
+> +++ b/tools/perf/tests/shell/stat+csv_summary.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # perf stat csv summary test
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+> diff --git a/tools/perf/tests/shell/stat+shadow_stat.sh b/tools/perf/tests/shell/stat+shadow_stat.sh
+> index 0c7d79a230ea..8824f445d343 100755
+> --- a/tools/perf/tests/shell/stat+shadow_stat.sh
+> +++ b/tools/perf/tests/shell/stat+shadow_stat.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # perf stat metrics (shadow stat) test
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+> diff --git a/tools/perf/tests/shell/stat_all_pfm.sh b/tools/perf/tests/shell/stat_all_pfm.sh
+> index 4d004f777a6e..c08c186af2c4 100755
+> --- a/tools/perf/tests/shell/stat_all_pfm.sh
+> +++ b/tools/perf/tests/shell/stat_all_pfm.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # perf all libpfm4 events test
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+> diff --git a/tools/perf/tests/shell/stat_bpf_counters.sh b/tools/perf/tests/shell/stat_bpf_counters.sh
+> index 95d2ad5d17c6..f43e28a136d3 100755
+> --- a/tools/perf/tests/shell/stat_bpf_counters.sh
+> +++ b/tools/perf/tests/shell/stat_bpf_counters.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # perf stat --bpf-counters test (exclusive)
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+> diff --git a/tools/perf/tests/shell/stat_bpf_counters_cgrp.sh b/tools/perf/tests/shell/stat_bpf_counters_cgrp.sh
+> index 2ec69060c42f..ff2e06c408bc 100755
+> --- a/tools/perf/tests/shell/stat_bpf_counters_cgrp.sh
+> +++ b/tools/perf/tests/shell/stat_bpf_counters_cgrp.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # perf stat --bpf-counters --for-each-cgroup test
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+> diff --git a/tools/perf/tests/shell/test_arm_callgraph_fp.sh b/tools/perf/tests/shell/test_arm_callgraph_fp.sh
+> index 9caa36130175..9172dd68a81d 100755
+> --- a/tools/perf/tests/shell/test_arm_callgraph_fp.sh
+> +++ b/tools/perf/tests/shell/test_arm_callgraph_fp.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # Check Arm64 callgraphs are complete in fp mode
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+> diff --git a/tools/perf/tests/shell/test_arm_coresight.sh b/tools/perf/tests/shell/test_arm_coresight.sh
+> index 573af9235b72..1c750b67d141 100755
+> --- a/tools/perf/tests/shell/test_arm_coresight.sh
+> +++ b/tools/perf/tests/shell/test_arm_coresight.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # Check Arm CoreSight trace data recording and synthesized samples (exclusive)
+>  
+>  # Uses the 'perf record' to record trace data with Arm CoreSight sinks;
+> diff --git a/tools/perf/tests/shell/test_arm_coresight_disasm.sh b/tools/perf/tests/shell/test_arm_coresight_disasm.sh
+> index be2d26303f94..0dfb4fadf531 100755
+> --- a/tools/perf/tests/shell/test_arm_coresight_disasm.sh
+> +++ b/tools/perf/tests/shell/test_arm_coresight_disasm.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # Check Arm CoreSight disassembly script completes without errors (exclusive)
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+> diff --git a/tools/perf/tests/shell/test_arm_spe.sh b/tools/perf/tests/shell/test_arm_spe.sh
+> index a69aab70dd8a..bb76ea88aa14 100755
+> --- a/tools/perf/tests/shell/test_arm_spe.sh
+> +++ b/tools/perf/tests/shell/test_arm_spe.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # Check Arm SPE trace data recording and synthesized samples (exclusive)
+>  
+>  # Uses the 'perf record' to record trace data of Arm SPE events;
+> diff --git a/tools/perf/tests/shell/test_arm_spe_fork.sh b/tools/perf/tests/shell/test_arm_spe_fork.sh
+> index 8efeef9fb956..5bcca51c03ac 100755
+> --- a/tools/perf/tests/shell/test_arm_spe_fork.sh
+> +++ b/tools/perf/tests/shell/test_arm_spe_fork.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # Check Arm SPE doesn't hang when there are forks
+>  
+>  # SPDX-License-Identifier: GPL-2.0
+> diff --git a/tools/perf/tests/shell/test_bpf_metadata.sh b/tools/perf/tests/shell/test_bpf_metadata.sh
+> index 11df592fb661..bc9aef161664 100755
+> --- a/tools/perf/tests/shell/test_bpf_metadata.sh
+> +++ b/tools/perf/tests/shell/test_bpf_metadata.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # SPDX-License-Identifier: GPL-2.0
+>  #
+>  # BPF metadata collection test.
+> diff --git a/tools/perf/tests/shell/test_intel_pt.sh b/tools/perf/tests/shell/test_intel_pt.sh
+> index 32a9b8dcb200..8ee761f03c38 100755
+> --- a/tools/perf/tests/shell/test_intel_pt.sh
+> +++ b/tools/perf/tests/shell/test_intel_pt.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # Miscellaneous Intel PT testing (exclusive)
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+> diff --git a/tools/perf/tests/shell/trace+probe_vfs_getname.sh b/tools/perf/tests/shell/trace+probe_vfs_getname.sh
+> index 5d5019988d61..7a0b1145d0cd 100755
+> --- a/tools/perf/tests/shell/trace+probe_vfs_getname.sh
+> +++ b/tools/perf/tests/shell/trace+probe_vfs_getname.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # Check open filename arg using perf trace + vfs_getname (exclusive)
+>  
+>  # Uses the 'perf test shell' library to add probe:vfs_getname to the system
+> diff --git a/tools/perf/tests/shell/trace_btf_enum.sh b/tools/perf/tests/shell/trace_btf_enum.sh
+> index c37017bfeb5e..572001d75d78 100755
+> --- a/tools/perf/tests/shell/trace_btf_enum.sh
+> +++ b/tools/perf/tests/shell/trace_btf_enum.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # perf trace enum augmentation tests
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+> diff --git a/tools/perf/tests/shell/trace_exit_race.sh b/tools/perf/tests/shell/trace_exit_race.sh
+> index 1e247693e756..db300cde94fb 100755
+> --- a/tools/perf/tests/shell/trace_exit_race.sh
+> +++ b/tools/perf/tests/shell/trace_exit_race.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # perf trace exit race
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+> diff --git a/tools/perf/tests/shell/trace_record_replay.sh b/tools/perf/tests/shell/trace_record_replay.sh
+> index 6b4ed863c1ef..88d30a03dcec 100755
+> --- a/tools/perf/tests/shell/trace_record_replay.sh
+> +++ b/tools/perf/tests/shell/trace_record_replay.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # perf trace record and replay
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+> diff --git a/tools/perf/tests/shell/trace_summary.sh b/tools/perf/tests/shell/trace_summary.sh
+> index f9bb7f9388be..22e2651d5919 100755
+> --- a/tools/perf/tests/shell/trace_summary.sh
+> +++ b/tools/perf/tests/shell/trace_summary.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # perf trace summary (exclusive)
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+> diff --git a/tools/perf/tests/tests-scripts.c b/tools/perf/tests/tests-scripts.c
+> index 1d5759d08141..684feed58254 100644
+> --- a/tools/perf/tests/tests-scripts.c
+> +++ b/tools/perf/tests/tests-scripts.c
+> @@ -85,7 +85,7 @@ static char *shell_test__description(int dir_fd, const char *name)
+>  	if (io.fd < 0)
+>  		return NULL;
+>  
+> -	/* Skip first line - should be #!/bin/sh Shebang */
+> +	/* Skip first line - should be #!/bin/bash Shebang */
+>  	if (io__get_char(&io) != '#')
+>  		goto err_out;
+>  	if (io__get_char(&io) != '!')
 > 
-> diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-> index bf9b5d0630d3ddac..56c0dd5acf73073e 100644
-> --- a/tools/perf/builtin-trace.c
-> +++ b/tools/perf/builtin-trace.c
-> @@ -20,9 +20,6 @@
->  #include <bpf/bpf.h>
->  #include <bpf/libbpf.h>
->  #include <bpf/btf.h>
-> -#ifdef HAVE_BPF_SKEL
-> -#include "bpf_skel/augmented_raw_syscalls.skel.h"
-> -#endif
->  #endif
->  #include "util/bpf_map.h"
->  #include "util/rlimit.h"
-> @@ -155,9 +152,6 @@ struct trace {
->  				*bpf_output;
->  		}		events;
->  	} syscalls;
-> -#ifdef HAVE_BPF_SKEL
-> -	struct augmented_raw_syscalls_bpf *skel;
-> -#endif
->  #ifdef HAVE_LIBBPF_SUPPORT
->  	struct btf		*btf;
->  #endif
-> @@ -3701,7 +3695,10 @@ static int trace__set_ev_qualifier_tp_filter(struct trace *trace)
->  	goto out;
->  }
->  
-> -#ifdef HAVE_BPF_SKEL
-> +#ifdef HAVE_LIBBPF_SUPPORT
-> +
-> +static struct bpf_program *unaugmented_prog;
-> +
->  static int syscall_arg_fmt__cache_btf_struct(struct syscall_arg_fmt *arg_fmt, struct btf *btf, char *type)
->  {
->         int id;
-> @@ -3719,26 +3716,8 @@ static int syscall_arg_fmt__cache_btf_struct(struct syscall_arg_fmt *arg_fmt, st
->         return 0;
->  }
->  
-> -static struct bpf_program *trace__find_bpf_program_by_title(struct trace *trace, const char *name)
-> -{
-> -	struct bpf_program *pos, *prog = NULL;
-> -	const char *sec_name;
-> -
-> -	if (trace->skel->obj == NULL)
-> -		return NULL;
-> -
-> -	bpf_object__for_each_program(pos, trace->skel->obj) {
-> -		sec_name = bpf_program__section_name(pos);
-> -		if (sec_name && !strcmp(sec_name, name)) {
-> -			prog = pos;
-> -			break;
-> -		}
-> -	}
-> -
-> -	return prog;
-> -}
-> -
-> -static struct bpf_program *trace__find_syscall_bpf_prog(struct trace *trace, struct syscall *sc,
-> +static struct bpf_program *trace__find_syscall_bpf_prog(struct trace *trace __maybe_unused,
-> +							struct syscall *sc,
->  							const char *prog_name, const char *type)
->  {
->  	struct bpf_program *prog;
-> @@ -3746,19 +3725,19 @@ static struct bpf_program *trace__find_syscall_bpf_prog(struct trace *trace, str
->  	if (prog_name == NULL) {
->  		char default_prog_name[256];
->  		scnprintf(default_prog_name, sizeof(default_prog_name), "tp/syscalls/sys_%s_%s", type, sc->name);
-> -		prog = trace__find_bpf_program_by_title(trace, default_prog_name);
-> +		prog = augmented_syscalls__find_by_title(default_prog_name);
->  		if (prog != NULL)
->  			goto out_found;
->  		if (sc->fmt && sc->fmt->alias) {
->  			scnprintf(default_prog_name, sizeof(default_prog_name), "tp/syscalls/sys_%s_%s", type, sc->fmt->alias);
-> -			prog = trace__find_bpf_program_by_title(trace, default_prog_name);
-> +			prog = augmented_syscalls__find_by_title(default_prog_name);
->  			if (prog != NULL)
->  				goto out_found;
->  		}
->  		goto out_unaugmented;
->  	}
->  
-> -	prog = trace__find_bpf_program_by_title(trace, prog_name);
-> +	prog = augmented_syscalls__find_by_title(prog_name);
->  
->  	if (prog != NULL) {
->  out_found:
-> @@ -3768,7 +3747,7 @@ static struct bpf_program *trace__find_syscall_bpf_prog(struct trace *trace, str
->  	pr_debug("Couldn't find BPF prog \"%s\" to associate with syscalls:sys_%s_%s, not augmenting it\n",
->  		 prog_name, type, sc->name);
->  out_unaugmented:
-> -	return trace->skel->progs.syscall_unaugmented;
-> +	return unaugmented_prog;
->  }
->  
->  static void trace__init_syscall_bpf_progs(struct trace *trace, int e_machine, int id)
-> @@ -3785,13 +3764,13 @@ static void trace__init_syscall_bpf_progs(struct trace *trace, int e_machine, in
->  static int trace__bpf_prog_sys_enter_fd(struct trace *trace, int e_machine, int id)
->  {
->  	struct syscall *sc = trace__syscall_info(trace, NULL, e_machine, id);
-> -	return sc ? bpf_program__fd(sc->bpf_prog.sys_enter) : bpf_program__fd(trace->skel->progs.syscall_unaugmented);
-> +	return sc ? bpf_program__fd(sc->bpf_prog.sys_enter) : bpf_program__fd(unaugmented_prog);
->  }
->  
->  static int trace__bpf_prog_sys_exit_fd(struct trace *trace, int e_machine, int id)
->  {
->  	struct syscall *sc = trace__syscall_info(trace, NULL, e_machine, id);
-> -	return sc ? bpf_program__fd(sc->bpf_prog.sys_exit) : bpf_program__fd(trace->skel->progs.syscall_unaugmented);
-> +	return sc ? bpf_program__fd(sc->bpf_prog.sys_exit) : bpf_program__fd(unaugmented_prog);
->  }
->  
->  static int trace__bpf_sys_enter_beauty_map(struct trace *trace, int e_machine, int key, unsigned int *beauty_array)
-> @@ -3901,7 +3880,7 @@ static struct bpf_program *trace__find_usable_bpf_prog_entry(struct trace *trace
->  		bool is_candidate = false;
->  
->  		if (pair == NULL || pair->id == sc->id ||
-> -		    pair->bpf_prog.sys_enter == trace->skel->progs.syscall_unaugmented)
-> +		    pair->bpf_prog.sys_enter == unaugmented_prog)
->  			continue;
->  
->  		for (field = sc->args, candidate_field = pair->args;
-> @@ -3967,7 +3946,7 @@ static struct bpf_program *trace__find_usable_bpf_prog_entry(struct trace *trace
->  		 */
->  		if (pair_prog == NULL) {
->  			pair_prog = trace__find_syscall_bpf_prog(trace, pair, pair->fmt ? pair->fmt->bpf_prog_name.sys_enter : NULL, "enter");
-> -			if (pair_prog == trace->skel->progs.syscall_unaugmented)
-> +			if (pair_prog == unaugmented_prog)
->  				goto next_candidate;
->  		}
->  
-> @@ -3983,12 +3962,17 @@ static struct bpf_program *trace__find_usable_bpf_prog_entry(struct trace *trace
->  
->  static int trace__init_syscalls_bpf_prog_array_maps(struct trace *trace, int e_machine)
->  {
-> -	int map_enter_fd = bpf_map__fd(trace->skel->maps.syscalls_sys_enter);
-> -	int map_exit_fd  = bpf_map__fd(trace->skel->maps.syscalls_sys_exit);
-> -	int beauty_map_fd = bpf_map__fd(trace->skel->maps.beauty_map_enter);
-> +	int map_enter_fd;
-> +	int map_exit_fd;
-> +	int beauty_map_fd;
->  	int err = 0;
->  	unsigned int beauty_array[6];
->  
-> +	if (augmented_syscalls__get_map_fds(&map_enter_fd, &map_exit_fd, &beauty_map_fd) < 0)
-> +		return -1;
-> +
-> +	unaugmented_prog = augmented_syscalls__unaugmented();
-> +
->  	for (int i = 0, num_idx = syscalltbl__num_idx(e_machine); i < num_idx; ++i) {
->  		int prog_fd, key = syscalltbl__id_at_idx(e_machine, i);
->  
-> @@ -4058,7 +4042,7 @@ static int trace__init_syscalls_bpf_prog_array_maps(struct trace *trace, int e_m
->  		 * For now we're just reusing the sys_enter prog, and if it
->  		 * already has an augmenter, we don't need to find one.
->  		 */
-> -		if (sc->bpf_prog.sys_enter != trace->skel->progs.syscall_unaugmented)
-> +		if (sc->bpf_prog.sys_enter != unaugmented_prog)
->  			continue;
->  
->  		/*
-> @@ -4083,7 +4067,13 @@ static int trace__init_syscalls_bpf_prog_array_maps(struct trace *trace, int e_m
->  
->  	return err;
->  }
-> -#endif // HAVE_BPF_SKEL
-> +#else // !HAVE_LIBBPF_SUPPORT
-> +static int trace__init_syscalls_bpf_prog_array_maps(struct trace *trace __maybe_unused,
-> +						    int e_machine __maybe_unused)
-> +{
-> +	return -1;
-> +}
-> +#endif // HAVE_LIBBPF_SUPPORT
->  
->  static int trace__set_ev_qualifier_filter(struct trace *trace)
->  {
-> @@ -4092,24 +4082,6 @@ static int trace__set_ev_qualifier_filter(struct trace *trace)
->  	return 0;
->  }
->  
-> -static int bpf_map__set_filter_pids(struct bpf_map *map __maybe_unused,
-> -				    size_t npids __maybe_unused, pid_t *pids __maybe_unused)
-> -{
-> -	int err = 0;
-> -#ifdef HAVE_LIBBPF_SUPPORT
-> -	bool value = true;
-> -	int map_fd = bpf_map__fd(map);
-> -	size_t i;
-> -
-> -	for (i = 0; i < npids; ++i) {
-> -		err = bpf_map_update_elem(map_fd, &pids[i], &value, BPF_ANY);
-> -		if (err)
-> -			break;
-> -	}
-> -#endif
-> -	return err;
-> -}
-> -
->  static int trace__set_filter_loop_pids(struct trace *trace)
->  {
->  	unsigned int nr = 1, err;
-> @@ -4138,8 +4110,8 @@ static int trace__set_filter_loop_pids(struct trace *trace)
->  	thread__put(thread);
->  
->  	err = evlist__append_tp_filter_pids(trace->evlist, nr, pids);
-> -	if (!err && trace->filter_pids.map)
-> -		err = bpf_map__set_filter_pids(trace->filter_pids.map, nr, pids);
-> +	if (!err)
-> +		err = augmented_syscalls__set_filter_pids(nr, pids);
->  
->  	return err;
->  }
-> @@ -4156,8 +4128,8 @@ static int trace__set_filter_pids(struct trace *trace)
->  	if (trace->filter_pids.nr > 0) {
->  		err = evlist__append_tp_filter_pids(trace->evlist, trace->filter_pids.nr,
->  						    trace->filter_pids.entries);
-> -		if (!err && trace->filter_pids.map) {
-> -			err = bpf_map__set_filter_pids(trace->filter_pids.map, trace->filter_pids.nr,
-> +		if (!err) {
-> +			err = augmented_syscalls__set_filter_pids(trace->filter_pids.nr,
->  						       trace->filter_pids.entries);
->  		}
->  	} else if (perf_thread_map__pid(trace->evlist->core.threads, 0) == -1) {
-> @@ -4480,41 +4452,18 @@ static int trace__run(struct trace *trace, int argc, const char **argv)
->  	err = evlist__open(evlist);
->  	if (err < 0)
->  		goto out_error_open;
-> -#ifdef HAVE_BPF_SKEL
-> -	if (trace->syscalls.events.bpf_output) {
-> -		struct perf_cpu cpu;
->  
-> -		/*
-> -		 * Set up the __augmented_syscalls__ BPF map to hold for each
-> -		 * CPU the bpf-output event's file descriptor.
-> -		 */
-> -		perf_cpu_map__for_each_cpu(cpu, i, trace->syscalls.events.bpf_output->core.cpus) {
-> -			int mycpu = cpu.cpu;
-> -
-> -			bpf_map__update_elem(trace->skel->maps.__augmented_syscalls__,
-> -					&mycpu, sizeof(mycpu),
-> -					xyarray__entry(trace->syscalls.events.bpf_output->core.fd,
-> -						       mycpu, 0),
-> -					sizeof(__u32), BPF_ANY);
-> -		}
-> -	}
-> +	augmented_syscalls__setup_bpf_output();
->  
-> -	if (trace->skel)
-> -		trace->filter_pids.map = trace->skel->maps.pids_filtered;
-> -#endif
->  	err = trace__set_filter_pids(trace);
->  	if (err < 0)
->  		goto out_error_mem;
->  
-> -#ifdef HAVE_BPF_SKEL
-> -	if (trace->skel && trace->skel->progs.sys_enter) {
-> -		/*
-> -		 * TODO: Initialize for all host binary machine types, not just
-> -		 * those matching the perf binary.
-> -		 */
-> -		trace__init_syscalls_bpf_prog_array_maps(trace, EM_HOST);
-> -	}
-> -#endif
-> +	/*
-> +	 * TODO: Initialize for all host binary machine types, not just
-> +	 * those matching the perf binary.
-> +	 */
-> +	trace__init_syscalls_bpf_prog_array_maps(trace, EM_HOST);
->  
->  	if (trace->ev_qualifier_ids.nr > 0) {
->  		err = trace__set_ev_qualifier_filter(trace);
-> @@ -5375,18 +5324,6 @@ static void trace__exit(struct trace *trace)
->  #endif
->  }
->  
-> -#ifdef HAVE_BPF_SKEL
-> -static int bpf__setup_bpf_output(struct evlist *evlist)
-> -{
-> -	int err = parse_event(evlist, "bpf-output/no-inherit=1,name=__augmented_syscalls__/");
-> -
-> -	if (err)
-> -		pr_debug("ERROR: failed to create the \"__augmented_syscalls__\" bpf-output event\n");
-> -
-> -	return err;
-> -}
-> -#endif
-> -
->  int cmd_trace(int argc, const char **argv)
->  {
->  	const char *trace_usage[] = {
-> @@ -5580,7 +5517,6 @@ int cmd_trace(int argc, const char **argv)
->  				       "cgroup monitoring only available in system-wide mode");
->  	}
->  
-> -#ifdef HAVE_BPF_SKEL
->  	if (!trace.trace_syscalls)
->  		goto skip_augmentation;
->  
-> @@ -5599,42 +5535,17 @@ int cmd_trace(int argc, const char **argv)
->  			goto skip_augmentation;
->  	}
->  
-> -	trace.skel = augmented_raw_syscalls_bpf__open();
-> -	if (!trace.skel) {
-> -		pr_debug("Failed to open augmented syscalls BPF skeleton");
-> -	} else {
-> -		/*
-> -		 * Disable attaching the BPF programs except for sys_enter and
-> -		 * sys_exit that tail call into this as necessary.
-> -		 */
-> -		struct bpf_program *prog;
-> +	err = augmented_syscalls__prepare();
-> +	if (err < 0)
-> +		goto skip_augmentation;
->  
-> -		bpf_object__for_each_program(prog, trace.skel->obj) {
-> -			if (prog != trace.skel->progs.sys_enter && prog != trace.skel->progs.sys_exit)
-> -				bpf_program__set_autoattach(prog, /*autoattach=*/false);
-> -		}
-> +	trace__add_syscall_newtp(&trace);
->  
-> -		err = augmented_raw_syscalls_bpf__load(trace.skel);
-> +	err = augmented_syscalls__create_bpf_output(trace.evlist);
-> +	if (err == 0)
-> +		trace.syscalls.events.bpf_output = evlist__last(trace.evlist);
->  
-> -		if (err < 0) {
-> -			libbpf_strerror(err, bf, sizeof(bf));
-> -			pr_debug("Failed to load augmented syscalls BPF skeleton: %s\n", bf);
-> -		} else {
-> -			augmented_raw_syscalls_bpf__attach(trace.skel);
-> -			trace__add_syscall_newtp(&trace);
-> -		}
-> -	}
-> -
-> -	err = bpf__setup_bpf_output(trace.evlist);
-> -	if (err) {
-> -		libbpf_strerror(err, bf, sizeof(bf));
-> -		pr_err("ERROR: Setup BPF output event failed: %s\n", bf);
-> -		goto out;
-> -	}
-> -	trace.syscalls.events.bpf_output = evlist__last(trace.evlist);
-> -	assert(evsel__name_is(trace.syscalls.events.bpf_output, "__augmented_syscalls__"));
->  skip_augmentation:
-> -#endif
->  	err = -1;
->  
->  	if (trace.trace_pgfaults) {
-> @@ -5831,8 +5742,6 @@ int cmd_trace(int argc, const char **argv)
->  		fclose(trace.output);
->  out:
->  	trace__exit(&trace);
-> -#ifdef HAVE_BPF_SKEL
-> -	augmented_raw_syscalls_bpf__destroy(trace.skel);
-> -#endif
-> +	augmented_syscalls__cleanup();
->  	return err;
->  }
-> diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-> index 7910d908c814feec..17c7b71128d15970 100644
-> --- a/tools/perf/util/Build
-> +++ b/tools/perf/util/Build
-> @@ -175,6 +175,7 @@ perf-util-$(CONFIG_PERF_BPF_SKEL) += btf.o
->  
->  ifeq ($(CONFIG_TRACE),y)
->    perf-util-$(CONFIG_PERF_BPF_SKEL) += bpf-trace-summary.o
-> +  perf-util-$(CONFIG_PERF_BPF_SKEL) += bpf_trace_augment.o
->  endif
->  
->  ifeq ($(CONFIG_LIBTRACEEVENT),y)
-> diff --git a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
-> index e4352881e3faa602..cb86e261b4de0685 100644
-> --- a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
-> +++ b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
-> @@ -7,7 +7,6 @@
->   */
->  
->  #include "vmlinux.h"
-> -#include "../trace_augment.h"
->  
->  #include <bpf/bpf_helpers.h>
->  #include <linux/limits.h>
-> @@ -27,6 +26,8 @@
->  
->  #define MAX_CPUS  4096
->  
-> +#define TRACE_AUG_MAX_BUF 32 /* for buffer augmentation in perf trace */
-> +
->  /* bpf-output associated map */
->  struct __augmented_syscalls__ {
->  	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
-> diff --git a/tools/perf/util/bpf_trace_augment.c b/tools/perf/util/bpf_trace_augment.c
-> new file mode 100644
-> index 0000000000000000..56ed17534caa4f3f
-> --- /dev/null
-> +++ b/tools/perf/util/bpf_trace_augment.c
-> @@ -0,0 +1,143 @@
-> +#include <bpf/libbpf.h>
-> +#include <internal/xyarray.h>
-> +
-> +#include "util/debug.h"
-> +#include "util/evlist.h"
-> +#include "util/trace_augment.h"
-> +
-> +#include "bpf_skel/augmented_raw_syscalls.skel.h"
-> +
-> +static struct augmented_raw_syscalls_bpf *skel;
-> +static struct evsel *bpf_output;
-> +
-> +int augmented_syscalls__prepare(void)
-> +{
-> +	struct bpf_program *prog;
-> +	char buf[128];
-> +	int err;
-> +
-> +	skel = augmented_raw_syscalls_bpf__open();
-> +	if (!skel) {
-> +		pr_debug("Failed to open augmented syscalls BPF skeleton\n");
-> +		return -errno;
-> +	}
-> +
-> +	/*
-> +	 * Disable attaching the BPF programs except for sys_enter and
-> +	 * sys_exit that tail call into this as necessary.
-> +	 */
-> +	bpf_object__for_each_program(prog, skel->obj) {
-> +		if (prog != skel->progs.sys_enter && prog != skel->progs.sys_exit)
-> +			bpf_program__set_autoattach(prog, /*autoattach=*/false);
-> +	}
-> +
-> +	err = augmented_raw_syscalls_bpf__load(skel);
-> +	if (err < 0) {
-> +		libbpf_strerror(err, buf, sizeof(buf));
-> +		pr_debug("Failed to load augmented syscalls BPF skeleton: %s\n", buf);
-> +		return err;
-> +	}
-> +
-> +	augmented_raw_syscalls_bpf__attach(skel);
-> +	return 0;
-> +}
-> +
-> +int augmented_syscalls__create_bpf_output(struct evlist *evlist)
-> +{
-> +	int err = parse_event(evlist, "bpf-output/no-inherit=1,name=__augmented_syscalls__/");
-> +
-> +	if (err) {
-> +		pr_err("ERROR: Setup BPF output event failed: %d\n", err);
-> +		return err;
-> +	}
-> +
-> +	bpf_output = evlist__last(evlist);
-> +	assert(evsel__name_is(bpf_output, "__augmented_syscalls__"));
-> +
-> +	return 0;
-> +}
-> +
-> +void augmented_syscalls__setup_bpf_output(void)
-> +{
-> +	struct perf_cpu cpu;
-> +	int i;
-> +
-> +	if (bpf_output == NULL)
-> +		return;
-> +
-> +	/*
-> +	 * Set up the __augmented_syscalls__ BPF map to hold for each
-> +	 * CPU the bpf-output event's file descriptor.
-> +	 */
-> +	perf_cpu_map__for_each_cpu(cpu, i, bpf_output->core.cpus) {
-> +		int mycpu = cpu.cpu;
-> +
-> +		bpf_map__update_elem(skel->maps.__augmented_syscalls__,
-> +				     &mycpu, sizeof(mycpu),
-> +				     xyarray__entry(bpf_output->core.fd,
-> +						    mycpu, 0),
-> +				     sizeof(__u32), BPF_ANY);
-> +	}
-> +}
-> +
-> +int augmented_syscalls__set_filter_pids(unsigned int nr, pid_t *pids)
-> +{
-> +	bool value = true;
-> +	int err = 0;
-> +
-> +	if (skel == NULL)
-> +		return 0;
-> +
-> +	for (size_t i = 0; i < nr; ++i) {
-> +		err = bpf_map__update_elem(skel->maps.pids_filtered, &pids[i],
-> +					   sizeof(*pids), &value, sizeof(value),
-> +					   BPF_ANY);
-> +		if (err)
-> +			break;
-> +	}
-> +	return err;
-> +}
-> +
-> +int augmented_syscalls__get_map_fds(int *enter_fd, int *exit_fd, int *beauty_fd)
-> +{
-> +	if (skel == NULL)
-> +		return -1;
-> +
-> +	*enter_fd = bpf_map__fd(skel->maps.syscalls_sys_enter);
-> +	*exit_fd  = bpf_map__fd(skel->maps.syscalls_sys_exit);
-> +	*beauty_fd = bpf_map__fd(skel->maps.beauty_map_enter);
-> +
-> +	if (*enter_fd < 0 || *exit_fd < 0 || *beauty_fd < 0) {
-> +		pr_err("Error: failed to get syscall or beauty map fd\n");
-> +		return -1;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +struct bpf_program *augmented_syscalls__unaugmented(void)
-> +{
-> +	return skel->progs.syscall_unaugmented;
-> +}
-> +
-> +struct bpf_program *augmented_syscalls__find_by_title(const char *name)
-> +{
-> +	struct bpf_program *pos;
-> +	const char *sec_name;
-> +
-> +	if (skel->obj == NULL)
-> +		return NULL;
-> +
-> +	bpf_object__for_each_program(pos, skel->obj) {
-> +		sec_name = bpf_program__section_name(pos);
-> +		if (sec_name && !strcmp(sec_name, name))
-> +			return pos;
-> +	}
-> +
-> +	return NULL;
-> +}
-> +
-> +void augmented_syscalls__cleanup(void)
-> +{
-> +	augmented_raw_syscalls_bpf__destroy(skel);
-> +}
-> diff --git a/tools/perf/util/trace_augment.h b/tools/perf/util/trace_augment.h
-> index 57a3e50459377983..4f729bc6775304b4 100644
-> --- a/tools/perf/util/trace_augment.h
-> +++ b/tools/perf/util/trace_augment.h
-> @@ -1,6 +1,66 @@
->  #ifndef TRACE_AUGMENT_H
->  #define TRACE_AUGMENT_H
->  
-> -#define TRACE_AUG_MAX_BUF 32 /* for buffer augmentation in perf trace */
-> +#include <linux/compiler.h>
-> +
-> +struct bpf_program;
-> +struct evlist;
-> +
-> +#ifdef HAVE_BPF_SKEL
-> +
-> +int augmented_syscalls__prepare(void);
-> +int augmented_syscalls__create_bpf_output(struct evlist *evlist);
-> +void augmented_syscalls__setup_bpf_output(void);
-> +int augmented_syscalls__set_filter_pids(unsigned int nr, pid_t *pids);
-> +int augmented_syscalls__get_map_fds(int *enter_fd, int *exit_fd, int *beauty_fd);
-> +struct bpf_program *augmented_syscalls__find_by_title(const char *name);
-> +struct bpf_program *augmented_syscalls__unaugmented(void);
-> +void augmented_syscalls__cleanup(void);
-> +
-> +#else /* !HAVE_BPF_SKEL */
-> +
-> +static inline int augmented_syscalls__prepare(void)
-> +{
-> +	return -1;
-> +}
-> +
-> +static inline int augmented_syscalls__create_bpf_output(struct evlist *evlist __maybe_unused)
-> +{
-> +	return -1;
-> +}
-> +
-> +static inline void augmented_syscalls__setup_bpf_output(void)
-> +{
-> +}
-> +
-> +static inline int augmented_syscalls__set_filter_pids(unsigned int nr __maybe_unused,
-> +						      pid_t *pids __maybe_unused)
-> +{
-> +	return 0;
-> +}
-> +
-> +static inline int augmented_syscalls__get_map_fds(int *enter_fd __maybe_unused,
-> +						  int *exit_fd __maybe_unused,
-> +						  int *beauty_fd __maybe_unused)
-> +{
-> +	return -1;
-> +}
-> +
-> +static inline struct bpf_program *
-> +augmented_syscalls__find_by_title(const char *name __maybe_unused)
-> +{
-> +	return NULL;
-> +}
-> +
-> +static inline struct bpf_program *augmented_syscalls__unaugmented(void)
-> +{
-> +	return NULL;
-> +}
-> +
-> +static inline void augmented_syscalls__cleanup(void)
-> +{
-> +}
-> +
-> +#endif /* HAVE_BPF_SKEL */
->  
->  #endif
+> ---
+> base-commit: edf2cadf01e8f2620af25b337d15ebc584911b46
+> change-id: 20250623-james-perf-bash-tests-88261a847552
+> 
+> Best regards,
 > -- 
-> 2.49.0
+> James Clark <james.clark@linaro.org>
 
