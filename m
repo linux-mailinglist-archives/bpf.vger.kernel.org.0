@@ -1,129 +1,92 @@
-Return-Path: <bpf+bounces-61612-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61613-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCB38AE918F
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 01:05:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 298AAAE9209
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 01:18:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A78537A4D20
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 23:03:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C04D7B6D85
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 23:16:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 761242D027F;
-	Wed, 25 Jun 2025 23:05:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C1422F5473;
+	Wed, 25 Jun 2025 23:15:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UodmVyY5"
 X-Original-To: bpf@vger.kernel.org
-Received: from neil.brown.name (neil.brown.name [103.29.64.221])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23AC225A33F;
-	Wed, 25 Jun 2025 23:05:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.29.64.221
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BA732D29D7;
+	Wed, 25 Jun 2025 23:15:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750892707; cv=none; b=Jfre1eebV1iGvO48lCwM1d0Y1CWvr47sKfsR61/+S94XiCbJJgrlBGaOvKyils8+tF+HBriDhh3jE03DB08jFC9gNz3c1BtAFec6l4VT784LFuSAA/qPEWmcXyT8bnB2/L8IftI3ul+wE76sBLLizzjheAAXLFE131vuf0nomng=
+	t=1750893307; cv=none; b=ixRzdGrvbcT1dQpceOEHczOVKLWbU+aqjbbYtHRlq71twNcbk7/2fuymgyFnuvTlzKpL0zzIP7AQdMmghC8vFUSLt6D/d0WLOtVhTxVDNEWUWU1anBUOcvGJeA1KwcEH/2fmc3CXObjTbFisLMM4zvceG9P5//zEwSA9rdOxk/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750892707; c=relaxed/simple;
-	bh=u7ptJ2XReCH4v22yKtQsXDi9KrS1wW909Hht8Ak/I6k=;
-	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
-	 References:Date:Message-id; b=t8GF8RFvijcDt0TiS3YeXd+PSWAZrw7bcbFOEa8yqrk5OaeGQBSjIuciNt6RRglRcjel63PeAiCD2etBLk53YLWJvM0/GO1l7aKm49MXgfhgtrLmnN8Y0rl6q7SVHHSA7riHaM+8fzoxvfJJN0FEk59zNULMKtd/bMjsT6RYVJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brown.name; spf=pass smtp.mailfrom=neil.brown.name; arc=none smtp.client-ip=103.29.64.221
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brown.name
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=neil.brown.name
-Received: from 196.186.233.220.static.exetel.com.au ([220.233.186.196] helo=home.neil.brown.name)
-	by neil.brown.name with esmtp (Exim 4.95)
-	(envelope-from <mr@neil.brown.name>)
-	id 1uUZAn-004tNX-Di;
-	Wed, 25 Jun 2025 23:04:57 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1750893307; c=relaxed/simple;
+	bh=ULpLJIaM9TeysiPeOAcS+WIhV2fOnk1DrQVpGmf26r0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=e6EdGOE1c+5Z0r0dUn8MEF95GudXltJ2HfCmn3k9Z1rRsFDky5KulVI+cd4exW+7V71dzNdtw+ljfMoLOR2bNXhGzLw/W/K9eB1DW6ObgaKZrycNCphh2QtPB4Ef+C5p8Muo60g/UBW9+p5cviCVCuuQDizCRWCLBTLsYNPbu5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UodmVyY5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDF42C4CEEA;
+	Wed, 25 Jun 2025 23:15:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1750893306;
+	bh=ULpLJIaM9TeysiPeOAcS+WIhV2fOnk1DrQVpGmf26r0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UodmVyY5VH9Sz5Hxy+Qk6bEH9syQ5IfHG4YR+ADKnsVNpuXPRWAREKVZqv/EUnEfG
+	 fePlHbL/wPzx1kh8iYGi42y7ayO3QJBAX2/YW93+g+bAjmqH9KfuwN9VcPz1nRk0di
+	 2TOYb+tkYralsp4THivq58cPs2HpxPJUMrJnb9bZwkKmigR4YRt75jnAC0B8vRaagA
+	 IJLKj2iTk4rTwgj+vNkUlUpSgijzzjUFI2CRAmAQXYxjjKB4i5FObPEgnw5dURF3mb
+	 JFzfmytkWvg5nFlDQKORyFzYqc5CL6+iKMwRRencmg0heAWyEGIzTWJg7zvTf3gWhA
+	 chGebt3qJLdAg==
+Date: Wed, 25 Jun 2025 13:15:05 -1000
+From: Tejun Heo <tj@kernel.org>
+To: jake@hillion.co.uk
+Cc: David Vernet <void@manifault.com>, Andrea Righi <arighi@nvidia.com>,
+	Changwoo Min <changwoo@igalia.com>, Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>, sched-ext@lists.linux.dev,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] sched_ext: Drop kfuncs marked for removal in 6.15
+Message-ID: <aFyC-WVI1fkk0rPN@slm.duckdns.org>
+References: <20250625-scx-kfunc-cleanup-v1-1-d93335286fd5@hillion.co.uk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: "NeilBrown" <neil@brown.name>
-To: =?utf-8?q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-Cc: "Song Liu" <song@kernel.org>, bpf@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-security-module@vger.kernel.org, brauner@kernel.org,
- kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
- daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk,
- jack@suse.cz, kpsingh@kernel.org, mattbobrowski@google.com,
- "Tingmao Wang" <m@maowtm.org>,
- =?utf-8?q?G=C3=BCnther?= Noack <gnoack@google.com>
-Subject: Re: [PATCH v5 bpf-next 0/5] bpf path iterator
-In-reply-to: <20250625.Ee2Ci6chae8h@digikod.net>
-References: <>, <20250625.Ee2Ci6chae8h@digikod.net>
-Date: Thu, 26 Jun 2025 09:04:56 +1000
-Message-id: <175089269668.2280845.5681675711269608822@noble.neil.brown.name>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250625-scx-kfunc-cleanup-v1-1-d93335286fd5@hillion.co.uk>
 
-On Wed, 25 Jun 2025, Mickaël Salaün wrote:
-> On Wed, Jun 25, 2025 at 07:38:53AM +1000, NeilBrown wrote:
-> > 
-> > Can you spell out the minimum that you need?
+On Wed, Jun 25, 2025 at 06:05:46PM +0100, Jake Hillion via B4 Relay wrote:
+> From: Jake Hillion <jake@hillion.co.uk>
 > 
-> Sure.  We'd like to call this new helper in a RCU
-> read-side critical section and leverage this capability to speed up path
-> walk when there is no concurrent hierarchy modification.  This use case
-> is similar to handle_dots() with LOOKUP_RCU calling follow_dotdot_rcu().
+> sched_ext performed a kfunc renaming pass in 6.13 and kept the old names
+> around for compatibility with old binaries. These were scheduled for
+> cleanup in 6.15 but were missed. Submitting for cleanup in for-next.
 > 
-> The main issue with this approach is to keep some state of the path walk
-> to know if the next call to "path_walk_parent_rcu()" would be valid
-> (i.e. something like a very light version of nameidata, mainly sequence
-> integers), and to get back to the non-RCU version otherwise.
+> Removed the kfuncs, their flags, and any references I could find to them
+> in doc comments. Left the entries in include/scx/compat.bpf.h as they're
+> still useful to make new binaries compatible with old kernels.
 > 
-> > 
-> > My vague impression is that you want to search up from a given strut path,
-> > no further then some other given path, looking for a dentry that matches
-> > some rule.  Is that correct?
+> Tested by applying to my kernel. It builds and a modern version of
+> scx_lavd loads fine.
 > 
-> Yes
-> 
-> > 
-> > In general, the original dentry could be moved away from under the
-> > dentry you find moments after the match is reported.  What mechanisms do
-> > you have in place to ensure this doesn't happen, or that it doesn't
-> > matter?
-> 
-> In the case of Landlock, by default, a set of access rights are denied
-> and can only be allowed by an element in the file hierarchy.  The goal
-> is to only allow access to files under a specific directory (or directly
-> a specific file).  That's why we only care of the file hierarchy at the
-> time of access check.  It's not an issue if the file/directory was
-> moved or is being moved as long as we can walk its "current" hierarchy.
-> Furthermore, a sandboxed process is restricted from doing arbitrary
-> mounts (and renames/links are controlled with the
-> LANDLOCK_ACCESS_FS_REFER right).
-> 
-> However, we need to get a valid "snapshot" of the set of dentries that
-> (could) lead to the evaluated file/directory.
+> Signed-off-by: Jake Hillion <jake@hillion.co.uk>
 
-A "snapshot" is an interesting idea - though looking at the landlock
-code you one need inodes, not dentries.
-I imagine an interface where you give it a starting path, a root, and
-and array of inode pointers, and it fills in the pointers with the path
-- all under rcu so no references are needed.
-But you would need some fallback if the array isn't big enough, so maybe
-that isn't a good idea.
+Applied to sched_ext/for-6.17.
 
-Based on the comments by Al and Christian, I think the only viable
-approach is to pass a callback to some vfs function that does the
-walking.
+Thanks.
 
-   vfs_walk_ancestors(struct path *path, struct path *root,
-		      int (*walk_cb)(struct path *ancestor, void *data),
-		      void *data)
-
-where walk_cb() returns a negative number if it wants to abort, and is
-given a NULL ancestor if vfs_walk_ancestors() needed to restart.
-
-vfs_walk_ancestors() would initialise a "struct nameidata" and
-effectively call handle_dots(&nd, LAST_DOTDOT) repeatedly, calling
-    walk_cb(&nd.path, data)
-each time.
-
-How would you feel about that sort of interface?
-
-NeilBrown
+-- 
+tejun
 
