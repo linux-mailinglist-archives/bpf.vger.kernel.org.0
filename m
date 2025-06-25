@@ -1,134 +1,116 @@
-Return-Path: <bpf+bounces-61557-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61558-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 049EDAE8BE7
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 20:01:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BD82AE8BF2
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 20:04:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A69F4A3D5E
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 18:01:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6163F4A41D8
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 18:04:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CE29285C82;
-	Wed, 25 Jun 2025 18:01:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC30D2D5415;
+	Wed, 25 Jun 2025 18:04:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lF1uAAY8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EPB+glgT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F77C17A2E3
-	for <bpf@vger.kernel.org>; Wed, 25 Jun 2025 18:01:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D05C81E102D
+	for <bpf@vger.kernel.org>; Wed, 25 Jun 2025 18:04:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750874508; cv=none; b=nbiC05aPuVeBB2iMqG0o/vXUMHj2SpFd+F1c+7dqK+6pPHkZDRtEcrDeLYGWGf7HwTYRcaNpbIGQHLa4ZYk9BmhGiRldzb5n2pKUFkfdaAVUPsVgNJgpcCsGWLm1sw2AQol3rkVlOwzf9Xk6rvKEXtvzI38ySbE824cK6K+ds5o=
+	t=1750874657; cv=none; b=AbOy4LwZ/uA/TWcTJTL0Di3bTFoee9IsaEsGifB5/SAHYv+d8zZ7LfMA3YWhO4EOBIBQF0YNmZnjiYxFRt7qrSaD8Fjs2F/BSZl6AWMeYPh5WOrbpVrzrsQeNMrqSF8mF+s8Avgx0G5qLTJiHHJ9SBrp56HovydSWfG3o9Dnets=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750874508; c=relaxed/simple;
-	bh=oNnIE8WDhul1DyROfgSN+os/CXCd8vlbW0GQb9H+3xE=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=KazTjwXX60UzkIIExxvtSZzigLVz57t1x0vJLaK438DcXmGPwdbFrsrAe9I8T+5NJPJWeiZQeJvzX0+0LEVCxpsJ3iKZnWrYBkKqBrBZuIyhWr+713gASQ95VpKl8B9CothIE0JrZbbmxvTl2Bkj8rH/NUiIm5zeb7iWqhSQO4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lF1uAAY8; arc=none smtp.client-ip=209.85.128.46
+	s=arc-20240116; t=1750874657; c=relaxed/simple;
+	bh=oksZnGerC6fDfkfwReIjQYIFC+Uv/ZsYCP1wrJv9HUU=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=nmcd4twsA3WQngfmmuZaEwen8Pt537RZohi7QQyXORbO1J5vGm1xIIsZHEJPo5WZpkhixA1ZfRqkRZHcwjTWcHXGo4OzFQILh/cNebrf0Mek7AuZMNGosAl1BA8ahWzseQECt1xpxq/tj1G8ahfwOQ2cQR8jmupaqIhFwFw7coo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EPB+glgT; arc=none smtp.client-ip=209.85.215.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-451e2f0d9c2so1461345e9.1
-        for <bpf@vger.kernel.org>; Wed, 25 Jun 2025 11:01:46 -0700 (PDT)
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-b31c84b8052so171594a12.1
+        for <bpf@vger.kernel.org>; Wed, 25 Jun 2025 11:04:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750874505; x=1751479305; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=N3uldPgfb5J91roohCeUKzXXqUd6R+oFg1sLEV2Tz3E=;
-        b=lF1uAAY8DGEa11azsp65gRCY/nP4UfSndQu8VPG8bt5OwDfOIkzJ5UsLtS1p4oPdon
-         1DL1lcINJM/nhFVAU91OfcC0z+xryHAIC6JuJPiJtHiyNHCCntAg3m8bAQxiiQwoUss1
-         OpJW9IInrrc12KieVPXPxWRtv2KIwEftbgOYIzd8fWnAur4YJ+ixSL9JT9ekzpYV17/f
-         LMIl3wa/gEBJfZPkZXWd21CZeEvHVQGfmT0Fr9wNRPjaaB9opSDIKh51CYfmFgOfL5g9
-         Ev0W5CQ95XyA2ALKvUwborU+5xqoMOZEbSoNWd5CavX4ZKGqo+i5ATvYbja8NWBZTd0t
-         xp/A==
+        d=gmail.com; s=20230601; t=1750874655; x=1751479455; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ch1XqppMoU9ofuGwbXO861DVZROkBCQ2tWzxovMtGJk=;
+        b=EPB+glgT1PGnpneVayOewgImCzA1aRXHy/K2tRbPFfZwbeDR9RLhkCJGvfyuk1MFwU
+         ucScuIytSzSsaBEl4EmyxLb65tmLTGDc5LCydEAyH06sFOMub9Kn9pkOhtJJesknEMUU
+         pYeX62PTKMIw2weCS4wER/NDHD3+EEK+ZwWSneVyQIO7rETn8wJmbSHGK+ihMrEFo2gi
+         cv5p6LRJVHJmMQuu+BFuwPv9XvcgC2ov7LdRNBFVhSHT+qaEBeqUc1QfJr2/1FbdYg0n
+         JgurgxC8zZ3oPaCuhm0bPdi8VyHgXTe1bguoN0zqJah8tgmGdCoH0AN0PzIkan3l16tq
+         hUqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750874505; x=1751479305;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=N3uldPgfb5J91roohCeUKzXXqUd6R+oFg1sLEV2Tz3E=;
-        b=XK6WUYG2Wf0pvwPoav1+5lZvmfqz1S963yf7AprItqtb9KNHH1YTHZApkeL9yoJkHa
-         2XDxubbtn3IBml19iQoS1vKC5YLkH8/ZocfFDAv0rgj/W7VqQSnMnXD+yQpfex5UnZ14
-         llB6gnUknod+9+U2ZbGtxCnIxqIaRRcTjhd8uMzbitZXklxamM/7lDGnrS+vroF88r5X
-         Dc5IujOzsfwWQWqvtWt12QRlWRCIv393sdZjt7XUzsg1bWgau+6ICdE7M8Js20rHLR+0
-         BJ2QxRBBwRjyrqvx7cmlVjHnNjbSHcPnsXQHhOU5w4jDYiMDv2GjTXFTYvZ+Fi5uHgn6
-         AXHg==
-X-Gm-Message-State: AOJu0YxZf1Nyjw8A8RfS03btl+yQkuzQIXeovgEvOjmXSj4A0JXbjNrd
-	QknvkX6jPPekB3eT+otkUkvIAHE5+I1Byi6PH4qkZIuQhar+T10pBf3dOBH/KEyG
-X-Gm-Gg: ASbGncsUwJuqm4xQirl5QOiqSKOoXNDIGQrWhyM6BDIFosCVtK+cNx7p5JKy6We3yob
-	LDrF443CvPCxrMX8Z3ZUZdsOE4BVlqHs6+BGURvAXo0FA/dRY25HpsIgl0dL4jSkzIVzmMEmyZy
-	bXgsFrB11R/dtmFjNIA2Jm+UkuTiwgvVjM/DQmB2iIkSrbxG091RfzMlqxIFTbjzW/IAtmZxQDQ
-	OHFihS6+8DTCwfPFjejh5jAUPINZCSBhQyCDTOwpRJdj2SUKBm5mRWljR7gD4EfRY7yC5JnZDrz
-	vHRmT4/Km5SfbIsaPqWH+QkF5lTSI7w2hJKK+FpQByI6rQZMHruAu5wLH8VesMEx3U8J+TblmiU
-	ixlPOrduPso974pTh1mGSnmMeb5oaQ4yh+PTBsZDJ3LUy/F/Hm+kTUvDiHuZ4vQ==
-X-Google-Smtp-Source: AGHT+IGYdnCrgN9SHWAXliSBomSTZXAe6BMb80es7UaLTa1iiur4Me9eSItCUnwWKUgvIDsDRGMg6g==
-X-Received: by 2002:a05:600c:1993:b0:43c:ed33:a500 with SMTP id 5b1f17b1804b1-453889e736bmr5190765e9.10.1750874504912;
-        Wed, 25 Jun 2025 11:01:44 -0700 (PDT)
-Received: from mail.gmail.com (2a01cb0889497e00b67e3b4611bd9a64.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:b67e:3b46:11bd:9a64])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45382363f7fsm26917285e9.27.2025.06.25.11.01.44
+        d=1e100.net; s=20230601; t=1750874655; x=1751479455;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=ch1XqppMoU9ofuGwbXO861DVZROkBCQ2tWzxovMtGJk=;
+        b=P5l1r0amqcyhx5dP9GlCFSE6/r0boNpeuZ/seyg619GhMp1IR2i2ECsI4J+53wv3h5
+         FClwlMGJBF1THwQ6EWDNBh19gcaWUM8yXwKe/wA5UlbMrBCdIk14COiH83oiIk5pWkav
+         QMvXJS83Frv6A7/fZqLUKmaQLEoTUtRQxTz1c0dH2gSAuab7AOV514jTXpvEsCWTt9Ve
+         7a/nls5ZDw1RcXZXroQB+1lVnVyQkt61Tj5vWKwpHs2Q/UvFdJlEMovQOrkLFHQACGtm
+         JNux4tymqnuwZdE1XcKn9dwqOIUtHHJmzTPf8d9xBqnbdSbbq2MfOz8vMh+ZNbomclT3
+         2ZUA==
+X-Forwarded-Encrypted: i=1; AJvYcCVFcvIO8j6ITSkCprDDmaG/5SgxP+nmMsDQQveiGc0+kb5tQkiDdw5koBGCNauAHw75sIo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzLe/sKRo54Rh6NO9/peHWxtvu999wtXWQerbcIuGmXTDXnLeqh
+	RMfshOkIkS5fLSLHnJsxjkAJa6iwhJA1lyNOtDPuFY2DfdWAVra0KTga2ft9H72/6E4=
+X-Gm-Gg: ASbGncvs4/SSTvZgO3J8v2gjdN/bFhWPxTUk81d11MRkwWXQPeeH9UqV0cR7t8FXLEf
+	ntFkoSzyBDh3CMZ5lL3u0UD5Xoum3eCzASnRyGD0fGxiV/M1YAMNpTMAk5U1WA4Crx8qGuLiESF
+	QVDi64ROPtDjFwcb7sbbiAxIiZGEf7x6cBsLMhMDC2uZHbal20XRHhgJVQ5bZZKZxLn9Mdw91Gl
+	0l+58UWkpnANaoe7hQG0rvDyRa3CWawM0w+YfQoBOYeG10L4p490KX/55g0RMslM6iaYW+/QQrG
+	d1NXIItckrrQcbrq36fGGLkn5iYQD0xi/556quv9r2ZbK68XZJLT20vknmBYnFzlsO7Do0JujcX
+	b7JwcQwWCgQw=
+X-Google-Smtp-Source: AGHT+IFJJ27dTjpF1wHZ8byuGn+5VLJ9M2v94lVmxe0NdKQIWbWuZ2VbJxhP4wI1iudgoo+bo5uk/g==
+X-Received: by 2002:a17:90a:d650:b0:308:7270:d6ea with SMTP id 98e67ed59e1d1-315f269d16amr6362217a91.30.1750874655038;
+        Wed, 25 Jun 2025 11:04:15 -0700 (PDT)
+Received: from ?IPv6:2a03:83e0:115c:1:2bd4:b3aa:7cc1:1d78? ([2620:10d:c090:500::5:1734])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-315f53da49asm2216427a91.36.2025.06.25.11.04.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Jun 2025 11:01:44 -0700 (PDT)
-Date: Wed, 25 Jun 2025 20:01:41 +0200
-From: Paul Chaignon <paul.chaignon@gmail.com>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Luis Gerhorst <luis.gerhorst@fau.de>
-Subject: [PATCH bpf-next] bpf: Fix unwarranted warning on speculative path
-Message-ID: <aFw5ha9TAf84MUdR@mail.gmail.com>
+        Wed, 25 Jun 2025 11:04:14 -0700 (PDT)
+Message-ID: <5a56993644fe6a81c1915048984f79d2cda1ab10.camel@gmail.com>
+Subject: Re: [PATCH v2 bpf-next] bpf: add btf_type_is_i{32,64} helpers
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Anton Protopopov <a.s.protopopov@gmail.com>, bpf@vger.kernel.org
+Date: Wed, 25 Jun 2025 11:04:13 -0700
+In-Reply-To: <20250625151621.1000584-1-a.s.protopopov@gmail.com>
+References: <20250625151621.1000584-1-a.s.protopopov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-Commit d6f1c85f2253 ("bpf: Fall back to nospec for Spectre v1") added a
-WARN_ON_ONCE to check that we're not skipping a nospec due to a jump.
-It however failed to take into account LDIMM64 instructions as below:
+On Wed, 2025-06-25 at 15:16 +0000, Anton Protopopov wrote:
+> There are places in BPF code which check if a BTF type is an integer
+> of particular size. This code can be made simpler by using helpers.
+> Add new btf_type_is_i{32,64} helpers, and simplify code in a few
+> files. (Suggested by Eduard for a patch which copy-pasted such a
+> check [1].)
+>=20
+>   v1 -> v2:
+>     * export less generic helpers (Eduard)
+>     * make subject less generic than in [v1] (Eduard)
+>=20
+> [1] https://lore.kernel.org/bpf/7edb47e73baa46705119a23c6bf4af26517a640f.=
+camel@gmail.com/
+> [v1] https://lore.kernel.org/bpf/20250624193655.733050-1-a.s.protopopov@g=
+mail.com/
+>=20
+> Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
+> Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
+> ---
 
-    15: (18) r1 = 0x2020200005642020
-    17: (7b) *(u64 *)(r10 -264) = r1
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
-This bytecode snippet generates a warning because the move from the
-LDIMM64 instruction to the next instruction is seen as a jump. This
-patch fixes it.
-
-Reported-by: syzbot+dc27c5fb8388e38d2d37@syzkaller.appspotmail.com
-Fixes: d6f1c85f2253 ("bpf: Fall back to nospec for Spectre v1")
-Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
----
- kernel/bpf/verifier.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 279a64933262..66841ed6dfc0 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -19819,6 +19819,7 @@ static int do_check(struct bpf_verifier_env *env)
- 	int insn_cnt = env->prog->len;
- 	bool do_print_state = false;
- 	int prev_insn_idx = -1;
-+	int insn_sz;
- 
- 	for (;;) {
- 		struct bpf_insn *insn;
-@@ -19942,7 +19943,8 @@ static int do_check(struct bpf_verifier_env *env)
- 			 * to document this in case nospec_result is used
- 			 * elsewhere in the future.
- 			 */
--			WARN_ON_ONCE(env->insn_idx != prev_insn_idx + 1);
-+			insn_sz = bpf_is_ldimm64(insn) ? 2 : 1;
-+			WARN_ON_ONCE(env->insn_idx != prev_insn_idx + insn_sz);
- process_bpf_exit:
- 			mark_verifier_state_scratched(env);
- 			err = update_branch_counts(env, env->cur_state);
--- 
-2.43.0
-
+[...]
 
