@@ -1,185 +1,138 @@
-Return-Path: <bpf+bounces-61492-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61493-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13019AE7646
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 07:02:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06E61AE76AC
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 08:04:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F138217A960
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 05:02:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A165E5A135E
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 06:04:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1E461D6DB6;
-	Wed, 25 Jun 2025 05:02:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 401441E3787;
+	Wed, 25 Jun 2025 06:04:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="GRmqgvMR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CXG/9r0d"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A978C3074BC
-	for <bpf@vger.kernel.org>; Wed, 25 Jun 2025 05:02:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2116367;
+	Wed, 25 Jun 2025 06:04:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750827768; cv=none; b=C6BqQhs9RlIleH5B08YKnmE8U1FLtkSEK2fqilgWs3UWPAtcXfKtyHHzwaun9xPtlyvWTHtY6UCH8TrfciIXsz0NvGMHnPF10VpdOaDTtF/qj9yKqjbVomkN8d7oRpFOfV/qifQS4buJZ/DuKw+F3et5028TVx3CsSKh9ZqoK98=
+	t=1750831473; cv=none; b=m3DNptbJV7ZDSbUg4OAT/ttKC5avHU73fYjrknMBJPKtEV11b55bedpjPD1m1oGxWAb0oB72LSEUgmL57V5ZceGlPEjXK8I1YV5jknf408nDxsL4KLRNmy4WpDLkGcYKnAgnuNg5sfeW3dXFpkoNoNHsV2NE8IwPTECaycOWnEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750827768; c=relaxed/simple;
-	bh=V1AUKTWznoThobmmHnuNVZ8WrpiIvfVVDlCCcsEIFQ4=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=a/JNBXNEdumnUWcr7chz+NH/PvtyZ8ffl824t765H7ypqJ6Edxm5jK8E/SvOyWRiBC+p5LGzzeOIPVE3G8wJpf8qYIjnEvECDHKFSwJNmsNRrG4J+ttiOEYfxCZcO5/Uo/fmI8ZPJbz+NNCINEgwkfxBDurZRKu0xIt8QHu8++M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=GRmqgvMR; arc=none smtp.client-ip=67.231.153.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55P22Irc015988
-	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 22:02:45 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
-	:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=s2048-2021-q4; bh=cgGCGcQpACYxV/yXt2
-	g+Cnc1FYeuuhMyNMcBn+ieq+E=; b=GRmqgvMRM5HH4YROQkNUIPkESd2gVAJ100
-	SOBNP+QthOVEavaQku9ELjTXNaSrJ4e6udaMqfnc6zeSdzs7GWZE2m+hTp2d0rlj
-	iwF+5Waz6DvNNhmjrBBOmeYbR2o/woZ8ujSPmmoO49HVryMPrdGMuSd2JMXK+J3T
-	VAR6+RIZJrSS5fUnFbjLtcdzswcbasvH1EFcVOiA5zYdubybLfZfINxxhh53ewxf
-	j7ZFTnMyCNZmFz+51A0A7/HKz0yJdqOJaBSKcEcw7zcu/Aq14mpHwUHpAJPaoany
-	clJeUxcREIcxmg7Ba6a9JBw811PYTzohqUTdNqsNJwa/JJpiyNCA==
-Received: from mail.thefacebook.com ([163.114.134.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 47g00ec67s-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 22:02:45 -0700 (PDT)
-Received: from twshared32712.16.frc2.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c08b:78::2ac9) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1748.24; Wed, 25 Jun 2025 05:02:43 +0000
-Received: by devvm16984.vll0.facebook.com (Postfix, from userid 673687)
-	id 63134DBC4AD2; Tue, 24 Jun 2025 22:02:31 -0700 (PDT)
-From: Adin Scannell <amscanne@meta.com>
-To: <bpf@vger.kernel.org>, <andrii@kernel.org>
-CC: <ast@kernel.org>, Adin Scannell <amscanne@meta.com>
-Subject: [PATCH bpf v2] libbpf: fix possible use-after-free for externs
-Date: Tue, 24 Jun 2025 22:02:15 -0700
-Message-ID: <20250625050215.2777374-1-amscanne@meta.com>
-X-Mailer: git-send-email 2.48.1
+	s=arc-20240116; t=1750831473; c=relaxed/simple;
+	bh=76VGGKAqigMaJenupp9hk8dQHtelG15+lysezKsW0wA=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=FjgzbnrLYOMqIVL3LOqOWzQOKfib11CCqP7iWVHMWzdNp7R4NuktB2hjkeWja4k99PAdtKziHLe3/JybpShGAKHdueihEg6khxj+ho6HgL9niUlaFJnLBI5H5enCYZ+d3XQ8aWl5x2/xWGJPOGHoHtJEWsb5CRH9DduziVmSwNY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CXG/9r0d; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2DBBC4CEEA;
+	Wed, 25 Jun 2025 06:04:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1750831473;
+	bh=76VGGKAqigMaJenupp9hk8dQHtelG15+lysezKsW0wA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=CXG/9r0dbh4S+Nh+g6uxzVpttvRdirM4k9Z1cPoX0AM6QKVangDyE7CZffoA5TUsZ
+	 iK3eFxH/x7XidVEMeZQbMpYH51wqQldsnAr8Yp2R61j+7R5sNeo7S0e/Sch1c5+td7
+	 yuL4fBsej9MabYdKiyc1AZrJvmeJaaQrRTjqXbT7b+fvkShJX1podJ+M+tWlcAeM2b
+	 qaApWhp69xAd9n2bfOoZpAMSyQ3jzOL0w5OuYlBnc6ACGkKIp4gJcb4UwHrC37HQyJ
+	 PsHfAkzeRWnDBE1ZXrm9vAbZdGGbqeKwowQSku4Etf56GF01HeRQsHbZiwL8G2asyl
+	 Ex4RQVU5GLQzw==
+Date: Wed, 25 Jun 2025 15:04:29 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ x86@kernel.org, Song Liu <songliubraving@fb.com>, Yonghong Song
+ <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, Hao Luo
+ <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, David Laight
+ <David.Laight@ACULAB.COM>, Thomas =?UTF-8?B?V2Vpw59zY2h1aA==?=
+ <thomas@t-8ch.de>, Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCHv3 perf/core 01/22] uprobes: Remove breakpoint in
+ unapply_uprobe under mmap_write_lock
+Message-Id: <20250625150429.0623e05b3b1bba2d95b57dc5@kernel.org>
+In-Reply-To: <20250605132350.1488129-2-jolsa@kernel.org>
+References: <20250605132350.1488129-1-jolsa@kernel.org>
+	<20250605132350.1488129-2-jolsa@kernel.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Authority-Analysis: v=2.4 cv=aaxhnQot c=1 sm=1 tr=0 ts=685b82f5 cx=c_pps a=CB4LiSf2rd0gKozIdrpkBw==:117 a=CB4LiSf2rd0gKozIdrpkBw==:17 a=6IFa9wvqVegA:10 a=VabnemYjAAAA:8 a=InPXK2lmKs2oRydpIwoA:9 a=gKebqoRLp9LExxC7YDUY:22
-X-Proofpoint-ORIG-GUID: PTy-Rqpjmy3PZ7YxOiwCxhI9D-63wuJP
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjI1MDAzNSBTYWx0ZWRfX75dEoBTof202 rf1osl2ALZnmOhNnnZhgOU2HhU2FeOraLeaX9+KcfYVfOG4K88ing/mr66gfi0DrbeY4ui6KIaJ UrMXUaTMNn7ZToLNQl76rbvS3NuVaM2E/DduqNNZ1NOxUUDzAAc0tZl/UMYThVVZLjvhFdpgzVy
- ++B/RpjwRWXse5zqhcEDLKfUCqlZnPxIakQcexkgA+ztF5845uPJE5gGgjhzpr6gi6hPJEe+8qp 90i6oEPF3eKc8ON8N9dGAAGwcpzAiNjPXJT/8qNkhtXOFiNQv+lyVdHcc15GNoXG3yXFVnf9DQJ 2KbAlxj7NQKz2YZmYAdZ6Z9CRDASEqKuOVK38XoSEMZF/c84iVmVHvr3YtwwDF+VYSM+4znYMbK
- Q/k3fcQA/9PahMl7WlDI9uD2b+360C2+A8CH9Jje7QwTs5BxA1XKUbvImMbUlu42o3mXyICY
-X-Proofpoint-GUID: PTy-Rqpjmy3PZ7YxOiwCxhI9D-63wuJP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
- definitions=2025-06-25_01,2025-06-23_07,2025-03-28_01
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-The `name` field in `obj->externs` points into the BTF data at initial
-open time. However, some functions may invalidate this after opening and
-before loading (e.g. `bpf_map__set_value_size`), which results in
-pointers into freed memory and undefined behavior.
+On Thu,  5 Jun 2025 15:23:28 +0200
+Jiri Olsa <jolsa@kernel.org> wrote:
 
-The simplest solution is to simply `strdup` these strings, similar to
-the `essent_name`, and free them at the same time.
+> Currently unapply_uprobe takes mmap_read_lock, but it might call
+> remove_breakpoint which eventually changes user pages.
+> 
+> Current code writes either breakpoint or original instruction, so it can
+> go away with read lock as explained in here [1]. But with the upcoming
+> change that writes multiple instructions on the probed address we need
+> to ensure that any update to mm's pages is exclusive.
+> 
+> [1] https://lore.kernel.org/all/20240710140045.GA1084@redhat.com/
+> 
 
-In order to test this path, the `global_map_resize` BPF selftest is
-modified slightly to ensure the presence of an extern, which causes this
-test to fail prior to the fix. Given there isn't an obvious API or error
-to test against, I opted to add this to the existing test as an aspect
-of the resizing feature rather than duplicate the test.
+Looks good to me.
 
-Fixes: 9d0a23313b1a ("libbpf: Add capability for resizing datasec maps")
-Signed-off-by: Adin Scannell <amscanne@meta.com>
----
- tools/lib/bpf/libbpf.c                           | 10 +++++++---
- .../selftests/bpf/progs/test_global_map_resize.c | 16 ++++++++++++++++
- 2 files changed, 23 insertions(+), 3 deletions(-)
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index e9c641a2fb20..52e353368f58 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -597,7 +597,7 @@ struct extern_desc {
- 	int sym_idx;
- 	int btf_id;
- 	int sec_btf_id;
--	const char *name;
-+	char *name;
- 	char *essent_name;
- 	bool is_set;
- 	bool is_weak;
-@@ -4259,7 +4259,9 @@ static int bpf_object__collect_externs(struct bpf_o=
-bject *obj)
- 			return ext->btf_id;
- 		}
- 		t =3D btf__type_by_id(obj->btf, ext->btf_id);
--		ext->name =3D btf__name_by_offset(obj->btf, t->name_off);
-+		ext->name =3D strdup(btf__name_by_offset(obj->btf, t->name_off));
-+		if (!ext->name)
-+			return -ENOMEM;
- 		ext->sym_idx =3D i;
- 		ext->is_weak =3D ELF64_ST_BIND(sym->st_info) =3D=3D STB_WEAK;
-=20
-@@ -9138,8 +9140,10 @@ void bpf_object__close(struct bpf_object *obj)
- 	zfree(&obj->btf_custom_path);
- 	zfree(&obj->kconfig);
-=20
--	for (i =3D 0; i < obj->nr_extern; i++)
-+	for (i =3D 0; i < obj->nr_extern; i++) {
-+		zfree(&obj->externs[i].name);
- 		zfree(&obj->externs[i].essent_name);
-+	}
-=20
- 	zfree(&obj->externs);
- 	obj->nr_extern =3D 0;
-diff --git a/tools/testing/selftests/bpf/progs/test_global_map_resize.c b=
-/tools/testing/selftests/bpf/progs/test_global_map_resize.c
-index a3f220ba7025..ee65bad0436d 100644
---- a/tools/testing/selftests/bpf/progs/test_global_map_resize.c
-+++ b/tools/testing/selftests/bpf/progs/test_global_map_resize.c
-@@ -32,6 +32,16 @@ int my_int_last SEC(".data.array_not_last");
-=20
- int percpu_arr[1] SEC(".data.percpu_arr");
-=20
-+/* at least one extern is included, to ensure that a specific
-+ * regression is tested whereby resizing resulted in a free-after-use
-+ * bug after type information is invalidated by the resize operation.
-+ *
-+ * There isn't a particularly good API to test for this specific conditi=
-on,
-+ * but by having externs for the resizing tests it will cover this path.
-+ */
-+extern int LINUX_KERNEL_VERSION __kconfig;
-+long version_sink;
-+
- SEC("tp/syscalls/sys_enter_getpid")
- int bss_array_sum(void *ctx)
- {
-@@ -44,6 +54,9 @@ int bss_array_sum(void *ctx)
- 	for (size_t i =3D 0; i < bss_array_len; ++i)
- 		sum +=3D array[i];
-=20
-+	/* see above; ensure this is not optimized out */
-+	version_sink =3D LINUX_KERNEL_VERSION;
-+
- 	return 0;
- }
-=20
-@@ -59,6 +72,9 @@ int data_array_sum(void *ctx)
- 	for (size_t i =3D 0; i < data_array_len; ++i)
- 		sum +=3D my_array[i];
-=20
-+	/* see above; ensure this is not optimized out */
-+	version_sink =3D LINUX_KERNEL_VERSION;
-+
- 	return 0;
- }
-=20
---=20
-2.48.1
+Thanks,
 
+
+
+> Acked-by: Oleg Nesterov <oleg@redhat.com>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  kernel/events/uprobes.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> index 84ee7b590861..257581432cd8 100644
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -483,7 +483,7 @@ static int __uprobe_write_opcode(struct vm_area_struct *vma,
+>   * @opcode_vaddr: the virtual address to store the opcode.
+>   * @opcode: opcode to be written at @opcode_vaddr.
+>   *
+> - * Called with mm->mmap_lock held for read or write.
+> + * Called with mm->mmap_lock held for write.
+>   * Return 0 (success) or a negative errno.
+>   */
+>  int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
+> @@ -1464,7 +1464,7 @@ static int unapply_uprobe(struct uprobe *uprobe, struct mm_struct *mm)
+>  	struct vm_area_struct *vma;
+>  	int err = 0;
+>  
+> -	mmap_read_lock(mm);
+> +	mmap_write_lock(mm);
+>  	for_each_vma(vmi, vma) {
+>  		unsigned long vaddr;
+>  		loff_t offset;
+> @@ -1481,7 +1481,7 @@ static int unapply_uprobe(struct uprobe *uprobe, struct mm_struct *mm)
+>  		vaddr = offset_to_vaddr(vma, uprobe->offset);
+>  		err |= remove_breakpoint(uprobe, vma, vaddr);
+>  	}
+> -	mmap_read_unlock(mm);
+> +	mmap_write_unlock(mm);
+>  
+>  	return err;
+>  }
+> -- 
+> 2.49.0
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
