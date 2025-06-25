@@ -1,178 +1,159 @@
-Return-Path: <bpf+bounces-61478-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61479-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 925BEAE73D1
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 02:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 66CBAAE7416
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 03:09:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B07D2171E47
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 00:30:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFFE517FBBC
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 01:09:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9B3C8634C;
-	Wed, 25 Jun 2025 00:29:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B759D136672;
+	Wed, 25 Jun 2025 01:09:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PTQyq/+T"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AGNrJh1z"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2B242B9A5
-	for <bpf@vger.kernel.org>; Wed, 25 Jun 2025 00:29:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3245B347B4;
+	Wed, 25 Jun 2025 01:09:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750811385; cv=none; b=cqYom2zCm4nv6gFiIuKLGZbaKJgWjNgXn/mvV973QeFXMGzb3HDUwrIkZWq0QzGuRx0mocJW0Pu2rxEfvigkLUzXigEDW0nnHEC+dAZSOnYiQxiqh+sb00PeQO3lEvrv/nuR3pxtsHwcfdE//AjupFM4oo8076sy/I3hCYZoics=
+	t=1750813779; cv=none; b=j+29xUKZGvQ4Tn7WKLO9Lhw3V5HdG53eQzXzvBpBWuJ2TYpLyVMQS82khaX3whBTQonvDyIOWplSORaZPCTub8P5MpUwiVXESv9otC0Wo6dbjARyd12r703ExFfwnliBFX7ji3Rp5da9q78VQEqCRG1ckANyqjBbG3AXdKS8jD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750811385; c=relaxed/simple;
-	bh=0uUUVP8j6Q3URCazKiS7D7m7TeBJDfjthqG9y6BL+zA=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=CMi5oc6AZFgQtz8hpy1A57UZCveHQj9tW90hQkAbVdz2MmNtncvjaltv4tMGOnDk/Y/adt1n6S0kvIqlrBISrHEICJH5LQQK4d9BWQfM8GbdHI3BH/rArxFI8L3IXrDJ6l316J1OGIcYQ0Lq42/D18yRF37YqmDq9hpkpLDRStg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PTQyq/+T; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-235f9ea8d08so11443955ad.1
-        for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 17:29:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750811383; x=1751416183; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Vfu1NeZRg3cD0kfl33EOpOMD0JyfBGhfysSfOeWiJ4w=;
-        b=PTQyq/+TEhSDKZnCtcJAan/ZFZALN60b9ZrHXyTZfpbFXg6PRzc44BdXRfW5Lav3v7
-         +9/Tv0oUAc1PVMQi3L7sMK2o3VctGQFAItDTThwrQm1IqhM4FANsW/2iLjLgeOfcWPTG
-         nXwmoMJ2c35g3P1edz01WJn+P/ZQcZgwa9pKgiTMiV1U3bks4u175aZFZAENWFTTsnBI
-         slvf98RIUxNRuikDVA6wGv299H2CGZNswH/McOurNsfurRdIHBbWiAv+nvZXS4hn7pzT
-         l+wK40lWiUGbYdb7kjA2ntx7htdjYaTByVxkvogoFnXINxc2Bjp4GQ2qsVUsiwubOtrW
-         yS8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750811383; x=1751416183;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Vfu1NeZRg3cD0kfl33EOpOMD0JyfBGhfysSfOeWiJ4w=;
-        b=WXpp3fT/QihXFK7+AVVVZfuAwgaY1+YrF7UL5ovthPS2162NaNu1adufzcJPkpnutX
-         E/NvuEULaESuDWb61Br6Gy9wULNVgjEc9gPdxsVk7ea6P51DRO0sSrjp3e0KJ7mq2n8d
-         mhklVIOtBu9W7wVqTTjB+sZc8S/xcIUTO8+LXMmoaJnFkMoch4jc7l0kDxuVmL0AWWCs
-         e++j2Kzq5+PbQTDf+nq9HO79ebKI2d9HPyYk5LD4oOSEibRj52QccLG0ofLaShAWqGPz
-         gqv9wLfDxwr16mXhcXdZNYMEoTLcBkRVau5B7VlGtZ5K1UgF24wCJHjamfXpHg5nQNJy
-         smPg==
-X-Forwarded-Encrypted: i=1; AJvYcCUj62kiV8QzKs805tCvxjc8FT7TeUv16fz6rJM8pxyPY1+9imBf+ZLaWjJlqWA2EmHL1Ck=@vger.kernel.org
-X-Gm-Message-State: AOJu0YykF8qNRRVNxaSaCSQqIU+9hquJLPZDctqyITr5xX96zbxL5a6k
-	cl5ott0ZlSyACUGsSaO3Kude3VId5NTUVPmng8wERSazEjgfmTuG+LKd
-X-Gm-Gg: ASbGncvqXy7lsP+YGs2MduUP2usYa07YYnqOw9tOTr7e/GhZgTe7/kSsCKCcU4j3+Yl
-	isR3tw5Ndcgd0g+opovfGxKFYeVanMO38QPDVTSFb84iPzDE1vPFXe2nwbHjlr6zmiYsaKQRYOA
-	WARD93m7eJLsdAN0QYjPzyChmwUFXYz33ph6LVrGDj3uZlE6N6iNuV2wGTGrjb9xRhXZBDzHI22
-	SbhPH+3F/n14BLsw2BXKb00LID3jJsr77BEOWNEJUcZQF+aMvpRbrHl741vOPRMQeb/j62+1IWr
-	TKzkUbCo5azwsst0IK7o25rHlG1FXCGvzd6n7PPoebQ4necGvDwgfYkDwZRZXrEAD0h/3QBZWH0
-	1WAbYz0ie9A==
-X-Google-Smtp-Source: AGHT+IGVrBt1KHojiNDD4N7nsGU8E0MQtDFGMLRlillxxllXVHNg5Eoqnaa8fEokyZbEhApOIKdJww==
-X-Received: by 2002:a17:903:41c3:b0:234:a66d:cce5 with SMTP id d9443c01a7336-2382407fdf9mr19887665ad.46.1750811382870;
-        Tue, 24 Jun 2025 17:29:42 -0700 (PDT)
-Received: from ?IPv6:2a03:83e0:115c:1:9b77:d425:d62:b7ce? ([2620:10d:c090:500::6:f262])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-237d8393541sm121737605ad.27.2025.06.24.17.29.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Jun 2025 17:29:42 -0700 (PDT)
-Message-ID: <7aa3235b66f293228ab43b8fe876723a7aff67d5.camel@gmail.com>
-Subject: Re: [PATCH v3 bpf-next 1/2] bpf: Add range tracking for BPF_NEG
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Song Liu <song@kernel.org>, bpf@vger.kernel.org
-Cc: kernel-team@meta.com, andrii@kernel.org, ast@kernel.org,
- daniel@iogearbox.net, 	martin.lau@linux.dev
-Date: Tue, 24 Jun 2025 17:29:41 -0700
-In-Reply-To: <20250624233328.313573-2-song@kernel.org>
-References: <20250624233328.313573-1-song@kernel.org>
-	 <20250624233328.313573-2-song@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1750813779; c=relaxed/simple;
+	bh=ZsvfSJ6ncx3+0Tez5j+qCZFZeyhCDFZJrU4gsWWe9U0=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=RNOQfcFHqc05euXlbW+0aLkucURfgL3kD/kECK3JPnG7eM29IRkrunWxYB/z9uMkBK6m1SIPqQi5UvEVaNwbiJ8rxSeE/1JRyIW4cJErIHqxXkhWDhZQ/Y86TnfuHAbFTpL0N49DrWz40Anai8UzgrVSlwhe9uUfD/VlH/NwDmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AGNrJh1z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B66C4C4CEE3;
+	Wed, 25 Jun 2025 01:09:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1750813778;
+	bh=ZsvfSJ6ncx3+0Tez5j+qCZFZeyhCDFZJrU4gsWWe9U0=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=AGNrJh1zVV/tMvhTqI17QotPLLiL+X0AktHnvCfoxCFNRgKQTxORSrZGRCzYmMvNI
+	 AeJ2gUL0rb1Iq9f2Gsitdo1yqT7RLmIvPoUuYM9MlHLAqo0OI34G0AoB7D0/5Xp3hi
+	 BKuSYox5a/qoVNV9Xjou4uCYJus5eyfu38bFxfySun2Ls1RkzX7ZVs4swkeAPVFEO9
+	 eGjms126m7Ga9mVmEnmpSdvf0WDrdwn+9oiAG2bWNbThVpnXNYPESdnh3myIU6hnE+
+	 P318oBPPMmU+tAuRGjzEpbOZTrLNlsnPotE6GuCxP9TuiXwoBbfnSJt1v33YZm2iow
+	 AbcHTpKYN0sbA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADD2739FEB73;
+	Wed, 25 Jun 2025 01:10:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] bnxt: properly flush XDP redirect lists
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175081380550.4090877.5607568768954736372.git-patchwork-notify@kernel.org>
+Date: Wed, 25 Jun 2025 01:10:05 +0000
+References: <aFl7jpCNzscumuN2@debian.debian>
+In-Reply-To: <aFl7jpCNzscumuN2@debian.debian>
+To: Yan Zhai <yan@cloudflare.com>
+Cc: netdev@vger.kernel.org, michael.chan@broadcom.com,
+ pavan.chebbi@broadcom.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
+ daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+ sdf@fomichev.me, andrew.gospodarek@broadcom.com,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kernel-team@cloudflare.com
 
-On Tue, 2025-06-24 at 16:33 -0700, Song Liu wrote:
+Hello:
 
-[...]
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-> diff --git a/tools/testing/selftests/bpf/progs/verifier_value_ptr_arith.c=
- b/tools/testing/selftests/bpf/progs/verifier_value_ptr_arith.c
-> index fcea9819e359..799eccd181b5 100644
-> --- a/tools/testing/selftests/bpf/progs/verifier_value_ptr_arith.c
-> +++ b/tools/testing/selftests/bpf/progs/verifier_value_ptr_arith.c
-> @@ -225,9 +225,7 @@ l2_%=3D:	r0 =3D 1;						\
-> =20
->  SEC("socket")
->  __description("map access: known scalar +=3D value_ptr unknown vs unknow=
-n (lt)")
-> -__success __failure_unpriv
-> -__msg_unpriv("R1 tried to add from different maps, paths or scalars")
-> -__retval(1)
-> +__success __success_unpriv __retval(1)
->  __naked void ptr_unknown_vs_unknown_lt(void)
->  {
->  	asm volatile ("					\
-> @@ -265,9 +263,7 @@ l2_%=3D:	r0 =3D 1;						\
-> =20
->  SEC("socket")
->  __description("map access: known scalar +=3D value_ptr unknown vs unknow=
-n (gt)")
-> -__success __failure_unpriv
-> -__msg_unpriv("R1 tried to add from different maps, paths or scalars")
-> -__retval(1)
-> +__success __success_unpriv __retval(1)
->  __naked void ptr_unknown_vs_unknown_gt(void)
->  {
->  	asm volatile ("					\
+On Mon, 23 Jun 2025 09:06:38 -0700 you wrote:
+> We encountered following crash when testing a XDP_REDIRECT feature
+> in production:
+> 
+> [56251.579676] list_add corruption. next->prev should be prev (ffff93120dd40f30), but was ffffb301ef3a6740. (next=ffff93120dd
+> 40f30).
+> [56251.601413] ------------[ cut here ]------------
+> [56251.611357] kernel BUG at lib/list_debug.c:29!
+> [56251.621082] Oops: invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
+> [56251.632073] CPU: 111 UID: 0 PID: 0 Comm: swapper/111 Kdump: loaded Tainted: P           O       6.12.33-cloudflare-2025.6.
+> 3 #1
+> [56251.653155] Tainted: [P]=PROPRIETARY_MODULE, [O]=OOT_MODULE
+> [56251.663877] Hardware name: MiTAC GC68B-B8032-G11P6-GPU/S8032GM-HE-CFR, BIOS V7.020.B10-sig 01/22/2025
+> [56251.682626] RIP: 0010:__list_add_valid_or_report+0x4b/0xa0
+> [56251.693203] Code: 0e 48 c7 c7 68 e7 d9 97 e8 42 16 fe ff 0f 0b 48 8b 52 08 48 39 c2 74 14 48 89 f1 48 c7 c7 90 e7 d9 97 48
+>  89 c6 e8 25 16 fe ff <0f> 0b 4c 8b 02 49 39 f0 74 14 48 89 d1 48 c7 c7 e8 e7 d9 97 4c 89
+> [56251.725811] RSP: 0018:ffff93120dd40b80 EFLAGS: 00010246
+> [56251.736094] RAX: 0000000000000075 RBX: ffffb301e6bba9d8 RCX: 0000000000000000
+> [56251.748260] RDX: 0000000000000000 RSI: ffff9149afda0b80 RDI: ffff9149afda0b80
+> [56251.760349] RBP: ffff9131e49c8000 R08: 0000000000000000 R09: ffff93120dd40a18
+> [56251.772382] R10: ffff9159cf2ce1a8 R11: 0000000000000003 R12: ffff911a80850000
+> [56251.784364] R13: ffff93120fbc7000 R14: 0000000000000010 R15: ffff9139e7510e40
+> [56251.796278] FS:  0000000000000000(0000) GS:ffff9149afd80000(0000) knlGS:0000000000000000
+> [56251.809133] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [56251.819561] CR2: 00007f5e85e6f300 CR3: 00000038b85e2006 CR4: 0000000000770ef0
+> [56251.831365] PKRU: 55555554
+> [56251.838653] Call Trace:
+> [56251.845560]  <IRQ>
+> [56251.851943]  cpu_map_enqueue.cold+0x5/0xa
+> [56251.860243]  xdp_do_redirect+0x2d9/0x480
+> [56251.868388]  bnxt_rx_xdp+0x1d8/0x4c0 [bnxt_en]
+> [56251.877028]  bnxt_rx_pkt+0x5f7/0x19b0 [bnxt_en]
+> [56251.885665]  ? cpu_max_write+0x1e/0x100
+> [56251.893510]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [56251.902276]  __bnxt_poll_work+0x190/0x340 [bnxt_en]
+> [56251.911058]  bnxt_poll+0xab/0x1b0 [bnxt_en]
+> [56251.919041]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [56251.927568]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [56251.935958]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [56251.944250]  __napi_poll+0x2b/0x160
+> [56251.951155]  bpf_trampoline_6442548651+0x79/0x123
+> [56251.959262]  __napi_poll+0x5/0x160
+> [56251.966037]  net_rx_action+0x3d2/0x880
+> [56251.973133]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [56251.981265]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [56251.989262]  ? __hrtimer_run_queues+0x162/0x2a0
+> [56251.996967]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [56252.004875]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [56252.012673]  ? bnxt_msix+0x62/0x70 [bnxt_en]
+> [56252.019903]  handle_softirqs+0xcf/0x270
+> [56252.026650]  irq_exit_rcu+0x67/0x90
+> [56252.032933]  common_interrupt+0x85/0xa0
+> [56252.039498]  </IRQ>
+> [56252.044246]  <TASK>
+> [56252.048935]  asm_common_interrupt+0x26/0x40
+> [56252.055727] RIP: 0010:cpuidle_enter_state+0xb8/0x420
+> [56252.063305] Code: dc 01 00 00 e8 f9 79 3b ff e8 64 f7 ff ff 49 89 c5 0f 1f 44 00 00 31 ff e8 a5 32 3a ff 45 84 ff 0f 85 ae
+>  01 00 00 fb 45 85 f6 <0f> 88 88 01 00 00 48 8b 04 24 49 63 ce 4c 89 ea 48 6b f1 68 48 29
+> [56252.088911] RSP: 0018:ffff93120c97fe98 EFLAGS: 00000202
+> [56252.096912] RAX: ffff9149afd80000 RBX: ffff9141d3a72800 RCX: 0000000000000000
+> [56252.106844] RDX: 00003329176c6b98 RSI: ffffffe36db3fdc7 RDI: 0000000000000000
+> [56252.116733] RBP: 0000000000000002 R08: 0000000000000002 R09: 000000000000004e
+> [56252.126652] R10: ffff9149afdb30c4 R11: 071c71c71c71c71c R12: ffffffff985ff860
+> [56252.136637] R13: 00003329176c6b98 R14: 0000000000000002 R15: 0000000000000000
+> [56252.146667]  ? cpuidle_enter_state+0xab/0x420
+> [56252.153909]  cpuidle_enter+0x2d/0x40
+> [56252.160360]  do_idle+0x176/0x1c0
+> [56252.166456]  cpu_startup_entry+0x29/0x30
+> [56252.173248]  start_secondary+0xf7/0x100
+> [56252.179941]  common_startup_64+0x13e/0x141
+> [56252.186886]  </TASK>
+> 
+> [...]
 
-Apologies for not being clear in previous messages.
-Could you please avoid flipping these tests from __failure_unpriv to __succ=
-ess_unpriv?
-Instead, the tests should be rewritten to conjure an unbound scalar
-value in some different way. For example like below:
+Here is the summary with links:
+  - [net] bnxt: properly flush XDP redirect lists
+    https://git.kernel.org/netdev/net/c/9caca6ac0e26
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_value_ptr_arith.c b=
-/tools/testing/selftests/bpf/progs/verifier_value_ptr_arith.c
-index fcea9819e359..3593b15d11af 100644
---- a/tools/testing/selftests/bpf/progs/verifier_value_ptr_arith.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_value_ptr_arith.c
-@@ -231,6 +231,10 @@ __retval(1)
- __naked void ptr_unknown_vs_unknown_lt(void)
- {
-        asm volatile ("                                 \
-+       r8 =3D r1;                                        \
-+       call %[bpf_get_prandom_u32];                    \
-+       r9 =3D r0;                                        \
-+       r1 =3D r8;                                        \
-        r0 =3D *(u32*)(r1 + %[__sk_buff_len]);            \
-        r1 =3D 0;                                         \
-        *(u64*)(r10 - 8) =3D r1;                          \
-@@ -244,12 +248,10 @@ l1_%=3D:    call %[bpf_map_lookup_elem];             =
-       \
-        if r0 =3D=3D 0 goto l2_%=3D;                          \
-        r4 =3D *(u8*)(r0 + 0);                            \
-        if r4 =3D=3D 1 goto l3_%=3D;                          \
--       r1 =3D 6;                                         \
--       r1 =3D -r1;                                       \
-+       r1 =3D r9;                                        \
-        r1 &=3D 0x3;                                      \
-        goto l4_%=3D;                                     \
--l3_%=3D: r1 =3D 6;                                         \
--       r1 =3D -r1;                                       \
-+l3_%=3D: r1 =3D r9;                                        \
-        r1 &=3D 0x7;                                      \
- l4_%=3D: r1 +=3D r0;                                       \
-        r0 =3D *(u8*)(r1 + 0);                            \
-@@ -259,7 +261,8 @@ l2_%=3D:      r0 =3D 1;                                =
-         \
-        : __imm(bpf_map_lookup_elem),
-          __imm_addr(map_array_48b),
-          __imm_addr(map_hash_16b),
--         __imm_const(__sk_buff_len, offsetof(struct __sk_buff, len))
-+         __imm_const(__sk_buff_len, offsetof(struct __sk_buff, len)),
-+         __imm(bpf_get_prandom_u32)
-        : __clobber_all);
- }
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
