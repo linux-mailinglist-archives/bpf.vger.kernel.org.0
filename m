@@ -1,119 +1,139 @@
-Return-Path: <bpf+bounces-61467-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61468-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA21FAE7399
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 02:04:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 706A9AE739A
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 02:05:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D40F43ABEDD
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 00:04:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 633DB1885DA1
+	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 00:05:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B1FE1FDA;
-	Wed, 25 Jun 2025 00:04:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 275A8322A;
+	Wed, 25 Jun 2025 00:05:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DybOHrKz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NAIUnahD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93BEFA31
-	for <bpf@vger.kernel.org>; Wed, 25 Jun 2025 00:04:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E8177F9
+	for <bpf@vger.kernel.org>; Wed, 25 Jun 2025 00:05:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750809894; cv=none; b=CTcEu8qR0cAC3zZxLS00uOI/9aPSvRaYI5Y4PzBxEJ05hWeumnOYXTJmL0stJvmtq0SeL+JrfnN5rf+UGJPQ8tmfPI/IRgy2CiLkrvD+keIYgj41xUNGrGOp9SWFGCjR82WXbj5zhgmDJA9xujmVxlT8t2i0UasK/frKlOvpbJ8=
+	t=1750809924; cv=none; b=eyKPMQp1FapE9/7HEPoTMm5OuGTbgvuUMJOTkB4omLfYaBW+hsJnLE2kmh4yjF410UrTj0sSkfDwV6kDMK8Q1ED92xHXHMePUSNrrE4oj5LS4+db6cPDkUGk6CRCbA9eQro7Q9PqBjA8UFLRYL1MU6nvwTuHXLkBTpEk3Z7MBLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750809894; c=relaxed/simple;
-	bh=K3sY+LHHBxBPADkRUebqy42hZORDw5nnmqAvESI14oE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=O1Pc7zPVCI0Lw2USKk/m05zuPS9hrPC4dM+toHRrH9fVlGaDXaURGySi/t8xuzz35cHuFQE+ufo/q/M7RNHYInLb5vJVwnfqsr3Dt/Mxl6/yA1+44VTDiovK03MXT0aHQw/sLxSjz7YTZpZBC4osp/pgdP8VVP/5/toBxJZv3BE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DybOHrKz; arc=none smtp.client-ip=209.85.221.50
+	s=arc-20240116; t=1750809924; c=relaxed/simple;
+	bh=+ODLrY6fIJ4CZhBZEzNMjeOoIyGbxhlHWwFDrsgFTlg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bdQwFIaqp+3sHwk/D3kFOZuccFuqTK4kVCmyUm1if6RM3VTIal9omoPdWD2QLxWWUZwjqRbDwi+kSMyvrtkxtgtVUgq2JLHBYbfd8d6aBn5nlCDyjxKvosfiCQUbY4SE5yGhj0ttxdFpyc49Qbi3rVptTI9XaNeDguw4kdAVznU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NAIUnahD; arc=none smtp.client-ip=209.85.128.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3a528243636so647312f8f.3
-        for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 17:04:52 -0700 (PDT)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-711d4689084so11279647b3.0
+        for <bpf@vger.kernel.org>; Tue, 24 Jun 2025 17:05:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750809891; x=1751414691; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K3sY+LHHBxBPADkRUebqy42hZORDw5nnmqAvESI14oE=;
-        b=DybOHrKz96ZEee7iD4mLXpeWL7QJIwENGU3VSXPC2T1G12+abvEjsVJTuwdBKL/bf5
-         W6V/+BFg0xfQH95wPKnmeWI9M7Pi7xZUWWnC0L94ewt3ki+bblEH02s34U0U6w3UMerr
-         qEwWlURy3E1CdEtV+9uZAqkt5NVFxqb+pYHEnQ581Khdtp14UbIoHwDaEQ+X+9eeipR/
-         weRb9A7EuZc5TqdcxJtZpp0fT8AA6NQU/gapZGhpJYKe9fov1vkEDD+ngyT2AttIqvMb
-         Nwo0iU5f7itAstGhOxULi6mtuKQC1WdnT+Da3GPpLHdKKm2Zy8kaEoxpGTx1Vf/m4p/E
-         hkSw==
+        d=gmail.com; s=20230601; t=1750809922; x=1751414722; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ytLsWD3WW5dCiTMn0NI4+qMgZ5gVwXXI1f12xB8R8Cg=;
+        b=NAIUnahDiEiCz22OinPQW5A8xFw4viA3XxNPrG2csH5kSg4K9eSGU03+VyLIVRiaAa
+         sTtYrKvSneStiwDiE/aPS5RpFvzZ2DpcXGUtn07YHbr8zw7T4VDS0fE1/BWJguf1NmI1
+         0HCMhwqgbyacB5zpEMH7xa6Z50GtyHa5y+rFcR0zOSLqZdu0WbSSIxs7XfSi3ua/tBk9
+         QUm4MMDympNdjoLYn5i6QNY+qjA4wxL4enI5yVSD/B7hkcZV/hVZ6LGd9FBDsEqZhxRx
+         zkPI2qNowd6To7EjEU8tG8VAh4AmPNAJwpseDfa41bi9gXS/Q2wDlAIRK/YNhieiosAt
+         VqRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750809891; x=1751414691;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=K3sY+LHHBxBPADkRUebqy42hZORDw5nnmqAvESI14oE=;
-        b=lOIP5X1ttGrc9IKMa4zcBOyYSv2aGQ0bqpJGf7mSBlfDp3T6PhEl0iaV5JMtY2uDSN
-         H/6POsauXEgdBiDEnBgHiVzXYszNdzH42rcHcDJ3qbXEjXoaoE1f+BAJ1bCC1YUnGRDR
-         Yj4yL8IOC5Ev5pS3nUktZVFz+thnbGZ95Z9wSL7kLRQl93xcX+CnI4XM6jyaJoa+W/4l
-         PukXA2yRt8akqFnFHTD8aD2AdFHjygUUBwMO4kaAzhN0rh/4CqBg1reXvFVDfokMLIUA
-         aUM5XCnhNldV/tyq5yJlrLzPMShvVCXmeRGg0+0WzgLShNe50bl5ggeoS1f7vCH+dUjc
-         2RNQ==
-X-Gm-Message-State: AOJu0YxR/Oiuv22v7BJA9553758C9ctO5httWjA1mdyxOMki6RxeLZHb
-	NcST+DT5SdrhOScmXX8IGzuOzA3wuyUh2qIzAndJV83UbVHfn1eMSLM1UKYODFYYBs4TZaS4+ru
-	2RRI8GBXEF7o9KaYZv90S5QZQfZOy+hOYnQ==
-X-Gm-Gg: ASbGnct0Q93cKnRcCKtny/ohAGJM+crkHZ1cvlJb5CTWdxI8DP/4AF8m/obLH97kpZt
-	N45NyfxU70ERmp8kjnCvDw3wY/YajbnlspO+L5Qh89R/tqE8fCcXzvaXGTjIR2rXYX/QfyUFBXv
-	bv4nUW9+QvzJ39erI+wlhLoehqbt2dtJu9zzztOiADXtMrz2dO/xJYyFU4VDvB/sgVK1oBuGu+
-X-Google-Smtp-Source: AGHT+IFMK2J65EacN9ZAaF55lseEYCysYDvhqvBehJfdrhJwkXLDlIde/4U4uWKWpIU5WOKUaqFcdJBW8BIRX2vCQwg=
-X-Received: by 2002:a5d:584a:0:b0:3a3:67bb:8f46 with SMTP id
- ffacd0b85a97d-3a6ed674eb1mr398435f8f.57.1750809890772; Tue, 24 Jun 2025
- 17:04:50 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1750809922; x=1751414722;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ytLsWD3WW5dCiTMn0NI4+qMgZ5gVwXXI1f12xB8R8Cg=;
+        b=kCaoDA/Tnb3hx/keOZUIKZ/MhXLzjpO2/gAQnfnIEI0qt42OMvxwUX+uOBXNvUFOqM
+         cP19CmJ36oaFbBeTmI5234OpZWmFaBSVFTUL79V9gf5d0K7zDEOhdSPO5/dcIG/Jzm7a
+         e2dpVasjfHupMn5mYHan9CwKP3KuD8noIJUbsPhbOVZInnyKHR5/xfAjTXVKM75PcATD
+         IetG6RjwoYBjIxOzOSNgfL/5aLHA/1B4QSqHJ+QWttNrFdgEULQOy8wi4Vi7RwQJdXqC
+         /JWvTRKaJ9obc9G1CfoHu+4KItV3odbG2jyQ/yjk6TIWt5zZk5ywxDFpvTgTBXofH1kF
+         zKcA==
+X-Gm-Message-State: AOJu0YyJacjNBNhXbNDUgL2kNYsWhCYqaxQEEx/s7Mpg3d9ZJXaLQ67F
+	ppiFx2KFHsP6G/sCdA2KojgGFxjHUypJFJvliGrHRsg3LII57d0aQkrB7WSLClCH
+X-Gm-Gg: ASbGncsnSPWC50jlMoeoekHFzDgUXMNbGVKNLCqF03scENtznFoGxdcEmdn3qQaSPaK
+	+y833jX9bfjP21uP4kIfY3KAglqUiNhpP3XXtaQ0W3eevuQXGdsdh89LtKH6JatjduWgTwCkcz+
+	hKZXe1QK1cHsvYAq+JAYXKJL6ch1SMOvC++WUqvWARL+I/yi+OrZphjqbmiUDedFcbpGyfCfV6B
+	G2QVHIervtAtV9xSW0nCcBlrSe99rivu0iS2ZRlvMISmd0pGrBwMFd1XN/pTxkIZ8lAMochf1+H
+	AqM/UjJ9cikg+4t/Bsk1aVyfKyheIIzi9xFq+K2thVtAEshzCPdK
+X-Google-Smtp-Source: AGHT+IEQFet5cmx/A3XjrSIuUoK9YYfY5udg74bVLV34X2MdX5cw+RYSxGmASnBoDdvCgpuaV8+Nvg==
+X-Received: by 2002:a05:690c:9692:b0:710:e81b:f7cf with SMTP id 00721157ae682-71406cafb2dmr13979007b3.13.1750809921978;
+        Tue, 24 Jun 2025 17:05:21 -0700 (PDT)
+Received: from localhost ([2a03:2880:25ff:2::])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-712c4c25e27sm22270847b3.125.2025.06.24.17.05.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Jun 2025 17:05:21 -0700 (PDT)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	andrii@kernel.org
+Cc: daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	kernel-team@fb.com,
+	yonghong.song@linux.dev,
+	eddyz87@gmail.com
+Subject: [PATCH bpf-next v1 0/3] bpf: allow void* cast using bpf_rdonly_cast()
+Date: Tue, 24 Jun 2025 17:05:17 -0700
+Message-ID: <20250625000520.2700423-1-eddyz87@gmail.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250624191009.902874-1-eddyz87@gmail.com> <20250624191009.902874-4-eddyz87@gmail.com>
- <CAADnVQK8e7SqSRDab8xw1onFHe6YoBnTqoXJ+Pjg-_bDk5=sXA@mail.gmail.com> <110807608b360cd18beb0e9cd621ce1b3c25a7f8.camel@gmail.com>
-In-Reply-To: <110807608b360cd18beb0e9cd621ce1b3c25a7f8.camel@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 24 Jun 2025 17:04:39 -0700
-X-Gm-Features: Ac12FXykGef8bklaPVO9ygWeNyQO9JflPLPHLVK0d1kgVrBsK5NGe5hv7bgKRq0
-Message-ID: <CAADnVQLUtFcH7FX9XP2n=LGatAJb2opv3KyZzf_YBpxpC+dkSQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 3/4] selftests/bpf: allow tests from
- verifier.c not to drop CAP_SYS_ADMIN
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Kernel Team <kernel-team@fb.com>, 
-	Yonghong Song <yonghong.song@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jun 24, 2025 at 4:31=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Tue, 2025-06-24 at 14:55 -0700, Alexei Starovoitov wrote:
-> > On Tue, Jun 24, 2025 at 12:10=E2=80=AFPM Eduard Zingerman <eddyz87@gmai=
-l.com> wrote:
-> > >
-> > > Originally prog_tests/verifier.c was developed to run tests ported
-> > > from test_verifier binary. test_verifier runs tests with CAP_SYS_ADMI=
-N
-> > > dropped, hence this behaviour was copied in prog_tests/verifier.c.
-> > > BPF_OBJ_GET_NEXT_ID BPF syscall command fails w/o CAP_SYS_ADMIN and
-> > > this prevents libbpf from loading module BTFs.
-> >
-> > You need this only because of 'bpf_kfunc_trusted_num_test' access
-> > in patch 4?
-> > Can you use kernel kfunc instead?
->
-> This turned out non-trivial, not many kernel kfuncs take pointers to
-> primitive types, and those that do are either STRUCT_OPS or need
-> device bound program or have special checks requiring stack pointers.
->
-> I declared a separate prog_tests/mem_rdonly_untrusted.c runner.
+Currently, pointers returned by `bpf_rdonly_cast()` have a type of
+"pointer to btf id", and only casts to structure types are allowed.
+Access to memory pointed to by these pointers is done through
+`BPF_PROBE_{MEM,MEMSX}` instructions and does not produce errors on
+invalid memory access.
 
-Just skip it for now.
-Adding unpriv btf access can be a follow up.
+This patch set extends `bpf_rdonly_cast()` to allow casts to an
+equivalent of 'void *', effectively replacing
+`bpf_probe_read_kernel()` calls in situations where access to
+individual bytes or integers is necessary.
+
+The mechanism was suggested and explored by Andrii Nakryiko in [1].
+
+To help with detecting support for this feature, an
+`enum bpf_features` is added with intended usage as follows:
+
+  if (bpf_core_enum_value_exists(enum bpf_features,
+                                 BPF_FEAT_RDONLY_CAST_TO_VOID))
+    ...
+
+[1] https://github.com/anakryiko/linux/tree/bpf-mem-cast
+
+Changelog:
+v1: https://lore.kernel.org/bpf/20250624191009.902874-1-eddyz87@gmail.com/
+v1 -> v2:
+- renamed BPF_FEAT_TOTAL to __MAX_BPF_FEAT and moved patch introducing
+  bpf_features enum to the start of the series (Alexei);
+- dropped patch #3 allowing optout from CAP_SYS_ADMIN drop in
+  prog_tests/verifier.c, use a separate runner in prog_tests/*
+  instead.
+
+Eduard Zingerman (3):
+  bpf: add bpf_features enum
+  bpf: allow void* cast using bpf_rdonly_cast()
+  selftests/bpf: check operations on untrusted ro pointers to mem
+
+ kernel/bpf/verifier.c                         |  79 ++++++++--
+ .../bpf/prog_tests/mem_rdonly_untrusted.c     |   9 ++
+ .../bpf/progs/mem_rdonly_untrusted.c          | 136 ++++++++++++++++++
+ 3 files changed, 212 insertions(+), 12 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/mem_rdonly_untrusted.c
+ create mode 100644 tools/testing/selftests/bpf/progs/mem_rdonly_untrusted.c
+
+-- 
+2.47.1
+
 
