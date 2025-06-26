@@ -1,146 +1,218 @@
-Return-Path: <bpf+bounces-61688-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61687-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34EC3AEA406
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 19:10:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31064AEA400
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 19:10:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36F4E4A8255
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 17:10:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 933B05622E3
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 17:10:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 245372ED85C;
-	Thu, 26 Jun 2025 17:10:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1DCF2EACF5;
+	Thu, 26 Jun 2025 17:10:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="REMqDf32"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from TYDPR03CU002.outbound.protection.outlook.com (mail-japaneastazon11013020.outbound.protection.outlook.com [52.101.127.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 111652ECE88;
-	Thu, 26 Jun 2025 17:10:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750957819; cv=none; b=dvwdlQHzi6bJS+sCsQ8M+kbLFGYrbU66dfSUxtFH2n/sX8711bQo4swnsUb58DCBmR8N2fpzSELsI0kfgT83QYYkmO7Szgmw4Vk3mkPBnpY51EQSbhH7AkzaNRNX6wXWUyJrva2W5gp1AnM6xvC87CU9+9YKywB/xjduQMEf97M=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750957819; c=relaxed/simple;
-	bh=dFE7wN6V0AnDyFE1cvo/wrWMzfKaPnVu9t9IoU0obTI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oMfTw35iSm6HQ2JAQ24C3efx9ReUNBP32EGWhp6FAnZqrj200ybT6mi/dZdci6BsOyxEmDWJdEDs4WhfaNkMy5wOnZNUgcJKv6UFzRwoBsahZj1Jd5XyGe+Wo53AQw9Gn17wT2Pe648Y8SukvePGcdWL4+TXG3AYq3/W2vd0kAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-601dfef6a8dso1946542a12.1;
-        Thu, 26 Jun 2025 10:10:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750957816; x=1751562616;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MuOcGODFJxLIsNTIxNnE68hhtwcbQnl8mVcIvSCtqqs=;
-        b=jspNK6mfshrc+9k3R63m1h2U4n+y1ijSu8GWC5X80iUcKba55TEnaEDtA3WgrH9hB1
-         jtzHqGMidsy+rwQGK0EadWa7g7eexXgTQX6G3Rv3r2iBPkgyBFRTBubwSlJRfoxaNuWU
-         ggcNt9HkltAX2c/eEHCy2WrhJFyuXgw7ftIDQvNk1epJTtcVtuRGpZw12khQoODxmeCl
-         fCw8scpJdJ9XtQKgupp+DYmIb37vD6OVC0i6s0TuTxUm/SpFvfi3Vp6+oOe8BkhapmAh
-         D3EPv3JF7ugnJbfvwedSiCg4VuZhMTB/zPC90Qr7QMI5VXNQEbcfoSL4k1XIGShM60L8
-         rzfw==
-X-Forwarded-Encrypted: i=1; AJvYcCU3wxzY2mclXt8qkYbUvYBDifto2nC1Jg38CCEYt9WJxGmLVW5NitC6PcI9GtklYF7FRElhnE1/P75MqNHbn2hx@vger.kernel.org, AJvYcCVNeEB0NUouwcVmxU+IYoKYLkCP3D0SOIjBnzUqMJDcCC67UlasVdV6TQexT3o13PIAij3qSanj@vger.kernel.org, AJvYcCVUB4fn3Oz8ieD9ek1/NxK1WhcCrDCklQhEOugE3Hv1e2EyFbysTUX++0w0X8jOT2fNpq4=@vger.kernel.org, AJvYcCXc/imh6KtJ4dboyEBxRPjhd6jYBXoMAsW0jBgqWC8SdoLbNRTptgEuneonYDvtyBsG7C7wMiWZv7UCPtQv@vger.kernel.org
-X-Gm-Message-State: AOJu0YwQ59nZ6nq8VyLoCuv3JMUT1agb6ytEDyenTJ5i3P22WVSs2SeX
-	k2awnD+S/HhQJT6+Zt3fzgOw4gVZ0HEcHZkxfIpgywXA60lhodtzvRrgasIwkA==
-X-Gm-Gg: ASbGnctLi/PgdI/2qMxLmM7LZAWhdXT0BjDUwYEX6FqZRHusqxilcPNqUlKXt75mYIu
-	+uA0jO1Jyoa3ogmdx6BYowmQd1dywgRSJIpJTK1gIu5djgP7NUUKpuUL+sff2D01y50UqkxX+Wq
-	1Uf72WBgnGCXVxzwbJV/n7ba1LwjoRCrPZ15QCAoYgu1mwg4wS1nc2QipyRg9vYjEOV69hI8kks
-	LbQMg41v4yCej/NKipydqn7JpB8ZvarhbVvmQD2eUqaelmzekEx07Z7aQx1D6LJn9m75HTcJGRD
-	ZHvk/bZaECWx6FhY1IApRCtRN0vTFOIrkYzYfD3AnLUoqHAH/9Ys
-X-Google-Smtp-Source: AGHT+IEwLDfOp5oX/3SNm58CDYQiNOY0hlTx9tedUeDwZqfaqJg+QqJC2Nvn58GQUJIoGBLUCj341w==
-X-Received: by 2002:a05:6402:42c1:b0:5f8:357e:bb1 with SMTP id 4fb4d7f45d1cf-60c4dd426aemr7706601a12.22.1750957816002;
-        Thu, 26 Jun 2025 10:10:16 -0700 (PDT)
-Received: from gmail.com ([2a03:2880:30ff:7::])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-60c826f6788sm255272a12.0.2025.06.26.10.10.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Jun 2025 10:10:15 -0700 (PDT)
-Date: Thu, 26 Jun 2025 10:10:13 -0700
-From: Breno Leitao <leitao@debian.org>
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Shuah Khan <shuah@kernel.org>, Simon Horman <horms@kernel.org>,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-	gustavold@gmail.com
-Subject: Re: [PATCH net-next v2 4/4] selftests: net: add netpoll basic
- functionality test
-Message-ID: <aF1+9YlFUF8vWH4P@gmail.com>
-References: <20250625-netpoll_test-v2-0-47d27775222c@debian.org>
- <20250625-netpoll_test-v2-4-47d27775222c@debian.org>
- <685d75ceb113c_2e676c294d1@willemb.c.googlers.com.notmuch>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76708216E24;
+	Thu, 26 Jun 2025 17:10:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.127.20
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1750957816; cv=fail; b=iqyOlFmrYFY61t/AMyV8LSCycEg7kuMlmruFIgAtIAvf9SNpW/0X+lWXsl7RU76SIIQtPGhp1PGrdSr1UJ9yd1oytBqWcyPVpFYZEtDqqD7bIiQVLk8aQjigefOFmLWdfiMgpokzx+3cewkZ5CoQZoskzgeiq905bkR84utWp+Y=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1750957816; c=relaxed/simple;
+	bh=avvBDJ5Qi3UfkZn0mW3O6NOnLyP2eOiuq1DHa3HGDGU=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=VNAdp06s/OyRB+1VFmuOgMXzIs4pLq8V+wJ8s4acRQxwxkAENrrrY1DAL3fd/oWspQ+IGJD/GRuumirWBG4FgBcspObgZUgMbisiNMeeQfwblJV7V+V2+fXO+fzd2mue1iKaycCncEr9JMSagI822B8fCb37nuiztwg2IrYnkPY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=REMqDf32; arc=fail smtp.client-ip=52.101.127.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=KnUwErZ4YGKlgnTmee6e9pvl48EUjoZe2b49pnUF/895vsEHHMaqa/YIMPVGqWSEIV9VsW0ClzpAjqRx7XUXASfDGbQoLhY/RrozI16eC5mN3vtArv21YazqbtH6bwq+qHom9eSrTxzTC1T1/HkFmkspAgLB06ZfCuPlQlz9ZaRHM9XNXgzXF+6kqFAxTVYjmSxgKu4E2flSQRBhHz/fq+AQZnoPokguUp7iOhZsTEWTdix2Wio4HpYDBSVkjTwbyq2+mjrawBUonj/jPPyFWQAH2mFq2IpEA/FE7hLJkD95SrE3ogUZiIpUPZJTsh0WPW8TmTlRdFPSanvQ8qXiKw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rmYVQNU2DXX8cxu/IfAvuzqp02Ybqd4zVBjOeUXs1tA=;
+ b=Z8xn4rAM77O8sa43NjUa+RIniyXH68oochyVAfkS7i1yRnwYh2PNIPkawu0WsFllXY5PHnIMQGVU5GgyUSimNl6n4IVko0ZqX9E0zZuXRAMuc/9qnHZ0Uq6nRASmtuPUAKosIJzIZwT4nkRl0i90E+GHhET3JgCZd52u5R6lTkgjxJCPn6EnrRUj9GscRT8FrdUkp5Pvj/rVDeCP9gh683KFs5nMsi50Dkl2+l18vBZFPWolrk7ZRkxQSvBzVdWg0WWcjwaRW9Z8J3oSLRMGjRoMJ/92ihAacRR5iAcQpvjHy2txWL92pwgKgNVeo0R2KwWKdfuiNWsepIXVlXwUQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rmYVQNU2DXX8cxu/IfAvuzqp02Ybqd4zVBjOeUXs1tA=;
+ b=REMqDf32WLV1KQCLW702/ca0suUex22PY4TkfTxKUq45OLpUmYgIhftLlPKRDiax+BFOGaR0SVEp8g9IG00SC7oaKvYDIT3fk2IZWamBjEcG6I8PnCWyFhRf7xcO6bdQNDd9JoXYoE6OAj3642mGTFhxqboYEPAiHnpYeESzWFQCJVqamnVvi1sI0U0e93rSdDB3x868l4BZCkPh5pslTHgFet2WOpFyALJ0bZbaqeTxFFp0IBXzgyAKxshMknJTEM+hmaFBMX7+StCg4Kk06IAzPOCNvWTZDZxhOKMri9aXD944qZWTuJDxCtOLLfYYCyaRy0Jjk0LNLtlzpK4X7Q==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from SEZPR06MB5269.apcprd06.prod.outlook.com (2603:1096:101:78::6)
+ by TY0PR06MB5610.apcprd06.prod.outlook.com (2603:1096:400:328::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8880.18; Thu, 26 Jun
+ 2025 17:10:09 +0000
+Received: from SEZPR06MB5269.apcprd06.prod.outlook.com
+ ([fe80::8c74:6703:81f7:9535]) by SEZPR06MB5269.apcprd06.prod.outlook.com
+ ([fe80::8c74:6703:81f7:9535%7]) with mapi id 15.20.8857.026; Thu, 26 Jun 2025
+ 17:10:08 +0000
+From: Yangtao Li <frank.li@vivo.com>
+To: axboe@kernel.dk,
+	aivazian.tigran@gmail.com,
+	viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	jack@suse.cz,
+	linkinjeon@kernel.org,
+	sj1557.seo@samsung.com,
+	yuezhang.mo@sony.com,
+	slava@dubeyko.com,
+	glaubitz@physik.fu-berlin.de,
+	frank.li@vivo.com,
+	shaggy@kernel.org,
+	konishi.ryusuke@gmail.com,
+	almaz.alexandrovich@paragon-software.com,
+	me@bobcopeland.com,
+	willy@infradead.org,
+	josef@toxicpanda.com,
+	kovalev@altlinux.org,
+	dave@stgolabs.net,
+	mhocko@suse.com,
+	chentaotao@didiglobal.com
+Cc: linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	jfs-discussion@lists.sourceforge.net,
+	linux-nilfs@vger.kernel.org,
+	ntfs3@lists.linux.dev,
+	linux-karma-devel@lists.sourceforge.net,
+	bpf@vger.kernel.org
+Subject: [PATCH 0/4] hfs/hfsplus: add uncached buffer io support
+Date: Thu, 26 Jun 2025 11:30:19 -0600
+Message-Id: <20250626173023.2702554-1-frank.li@vivo.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SGXP274CA0008.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::20)
+ To SEZPR06MB5269.apcprd06.prod.outlook.com (2603:1096:101:78::6)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <685d75ceb113c_2e676c294d1@willemb.c.googlers.com.notmuch>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SEZPR06MB5269:EE_|TY0PR06MB5610:EE_
+X-MS-Office365-Filtering-Correlation-Id: b99d971c-4b95-4e28-66e9-08ddb4d44d47
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|7416014|376014|52116014|1800799024|38350700014|921020;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?lP0XEJzRFMDGOXAAnsEWHG4RPipkGoA3f7qS3kKmhXN6o3JGgkusOymSpx8a?=
+ =?us-ascii?Q?kIqnuYjHjtq3XTUnk8hfEen9rrCthm41o0sfG7duuFdIgk+evLsJT8/3mfi7?=
+ =?us-ascii?Q?pX2Mwhg2hQkU1QaaSxuECmVDySvQD0kFecbsglDr6/02RR7W6heyAIjlq5ux?=
+ =?us-ascii?Q?pSMvC3c4qgw5PG14yjNOLlKnS8rRqtCkzJFXdlIvyIPz7ItN2S0FFB2QWWnP?=
+ =?us-ascii?Q?upvjkYo3VnECC8JsnGIWnkgViZmFJYVhZJFDw1UkPwhMaHSgmW2s6qwxyLu9?=
+ =?us-ascii?Q?Y+n4oQcjoFAY6+aJbYHkp8/zZ1obOXSShJ0jqgOb+BOqsUsO+iESaWkSKZ80?=
+ =?us-ascii?Q?dO+RFWZaJ9l/nUtYo825foJvh21jWa2CG1aUgl1daNK39sidrZ+qFZZO/6BJ?=
+ =?us-ascii?Q?QpXC9PnkMXuL11G2c4dWTnoZEFYVrrQW+F3PGqqj7FVEd3ieHbEeG4ngTMeY?=
+ =?us-ascii?Q?T1xwPP6cDT1SAdor3WoNkC8helOmJRVWg75vvDK6nDKX0ZsZBxbh8oqTREfb?=
+ =?us-ascii?Q?aPi6h9E35hvoED6CUYOxW5tJsGrQehn0fFb6KfLCZaFEfWbVDV43noPO1Wc9?=
+ =?us-ascii?Q?r/nMRPMezW4Rq54YcdT45dgXxEBPyOYEynzQ9Q86EPdH01nOQRj6zTYxiJlP?=
+ =?us-ascii?Q?tqtaRjcEANy54PS3/zP3eJ7lP1/gGdUCYxpG8FhBHq+pj0WJT93a4IVZxWo8?=
+ =?us-ascii?Q?v9FoVce1iAZ1TytX8XzpArJlEqNjNA4D4gtVw2yIPTeIyiDe1/2uW8ITqxaV?=
+ =?us-ascii?Q?FXgYVTEZYSUwwZxhM0BcBp8SDZfJQpoHUbSM6AJR3gaT3MQn1IC3yuVh7/lO?=
+ =?us-ascii?Q?gYqDvvRXoMBSTw0DNS9UhPXGS2j30EfswKiveR7yEDd69B9Yd52lKQzbkOJ+?=
+ =?us-ascii?Q?ZW2lZRaL+54UNv33OJ0h3/KuxHq4ON+QaIzHZj8WeGvGyvw5CIqi4mEBt42H?=
+ =?us-ascii?Q?ap9ySfapUNBLijZ/d/NsNkg1UQ991wmLU5oOb3x7IVMCfNsMw8s7wCAWmUxs?=
+ =?us-ascii?Q?yto8hJUrO8Gd0jtT2axJt7OstD7eWTswQJPxo9MYv1hkaDIMtrRwO9CL76PK?=
+ =?us-ascii?Q?Nr5D/ILiMcUyo62Mrlsywhx0rpHGkBcVvYttlrTIieUNruU+UjhqFwq8uFSg?=
+ =?us-ascii?Q?osx08FXzQA3UvmxPmtk6fGvKDOeJukJdUzdKXaIx16ibSejFdeJIc47MSnGT?=
+ =?us-ascii?Q?8rJ1+6qm0l/80a51BENpSQaxXxZxKDxW9kg5hXMiib3HS4SgTZFVseaf531u?=
+ =?us-ascii?Q?pr6dqN2jtBjNDRASWDfQEjAQwYjcl3Gv3wDkDD5nqjqsi0I+5iGbfv+BOtPX?=
+ =?us-ascii?Q?W0c/JrC5N2pft9E68x51zfKFBGR/vNReF2QXFhcXAnfof/LWmWmOl+T+vLlw?=
+ =?us-ascii?Q?JvN89NhMIVTkh1omce/3WBFN+I3jVtad9GQygP9sbVYFMOE8LsJ16tWl8BL8?=
+ =?us-ascii?Q?2s6u4AYM4e+dViWR3FGPJGojkuXolReJleRWL9XevQzLpxF5na92G1sa9uld?=
+ =?us-ascii?Q?NlHIJDMlfEAlaQs=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR06MB5269.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(376014)(52116014)(1800799024)(38350700014)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?ySK/GLbqHpiCg/NkWJZubmly88Uxn9WvHH7dJCuElAcI5SrLQ6JE3+9gaSQB?=
+ =?us-ascii?Q?GoYwSF9r5heWmqbojEUwne+hWh4a7nx0Yhvd912hKTlwNQZhNjDcfC6qHZSU?=
+ =?us-ascii?Q?aK+BR0QmUM1Cf9qDqr7bKja0r9PinciP2TJ5LYWNUMHT0XPsJc101XKxSfZS?=
+ =?us-ascii?Q?cb7KxKTuDIakTAuscoWxbPrVJgXe3/lB70g00t3wsYGeird6kNA+6tD/cXtD?=
+ =?us-ascii?Q?yh2TQu3r7MCl1UI3ZcDFjN7qGvZaQh2bEo9HuWuMt32kf8GbGydU6hzRhpxe?=
+ =?us-ascii?Q?F5GJ/QoYf6Ludmh9JMxxe/FRyP/D11T6PUIPvgTr60cDW29lGuw7ik1/yLCV?=
+ =?us-ascii?Q?gcZfSSytVzPxdVxT3XdXB+zTBF8uQcm1D7/Ehe/m1XPDyctkXrHuxhoPjyVS?=
+ =?us-ascii?Q?oesN0iL2cRLYDc4rzgvGP1wB55NYaFDJzjhKP7DyDnGwr04C3XZVN6o1wEbB?=
+ =?us-ascii?Q?qi2y1GYop5BBAjIb/Hd7RXUHQzEKbCcDZ0++5+ob8KY6cIMVFt/cRpZ4Cy0Y?=
+ =?us-ascii?Q?1M2o6g1VaxLxgo3txnxnDR/1o/CP54RACoOu6UFXRcb2XM7Tg1oK3vPR5/fQ?=
+ =?us-ascii?Q?tYedNXIaDSmFzbZQhERgYcmRZR0lAomJuxhnEhacrKrhl5CDiqBK9jFgHsg6?=
+ =?us-ascii?Q?8VA/iGBA7zz/nvOvwKG3tEhm7/5KuyktdO7xhHhecYSUyUgd+FUvmjOWGgB7?=
+ =?us-ascii?Q?MJFxuR1PAQTSGXzXUks0NL1zpYm6AJVi3zxzkAgWwAFRPeJsOXnZ5pXZ1nee?=
+ =?us-ascii?Q?bs5IOh66xDDsd1Pb5OVE4AcQRNaG/SJ9HTy2xfWpVN+kClX0Ch1se5EpnHou?=
+ =?us-ascii?Q?VdMi+PbHGPrNKJasu/09nv3ND1vYvvOaIMPdh9ZRt/nTZJhAWqbwbrDgqJhr?=
+ =?us-ascii?Q?ihCIoGBpD6s+3C7aGwjotOJrPVxccsP38XX1i+t1c/e3RhW5CGy01iaLT3Zl?=
+ =?us-ascii?Q?1nCU2GkPaTr5XDHq38/ys7LXfw2rm+JnTgZkwAo/UVxZh7a5k0lsoyKRCdEg?=
+ =?us-ascii?Q?1ws1bKHHfwsqm//6/2Q2BYUNl5Hjcl4diydMbcOJzat2RqnCj0A3QfIEjGmj?=
+ =?us-ascii?Q?zfy9GYRqDJNo1sGMzK5bZ54lKErtAGX37wV+SVpoRNQeuNx7SminWhvez9gO?=
+ =?us-ascii?Q?ebBlTGZu5lqJwV3EHdHBRqkJUMdOFbULjbrBziCK2ZP9CZhNSJ1AGiE7TSbT?=
+ =?us-ascii?Q?K8zzdaoeXHNEfmFh+BXP4H8dV9nu8vqEBONtor090sE+lK4UzT/HCCdYpVb6?=
+ =?us-ascii?Q?guZFKMwHDF0pOyWLmqlULmqWnjlMdhLqoCxkZhrSoOx/wyDxaPebrt8uRIrI?=
+ =?us-ascii?Q?BZIl4ibZJiwiIXxj20g4jMV24nebSx21HC3XtfG5Y23IAsGbAy5ZzGlupdh3?=
+ =?us-ascii?Q?SII1Fow6NxpHmyE0UeZKmCriXn3DKEI6V80eJexr9xvzlEmtOFoFB27kDdxB?=
+ =?us-ascii?Q?ErLSHVeHszh2tSibGEKWmrhp9xy8oacCbbcx/4+recl+3/Zv0gFWIt4CSrDH?=
+ =?us-ascii?Q?ulZxvZhB1KnwJ+3NtfuldMUBEHSIfaojDJCPltzX2WJZE1hKBQ/sGLwULbSf?=
+ =?us-ascii?Q?M2eY93MyaYCOUoLM/hjc090seyp5DObKklJ1kWx1?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b99d971c-4b95-4e28-66e9-08ddb4d44d47
+X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB5269.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jun 2025 17:10:08.3116
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sNHMNzkJxWdv/HesB/s4a1v6eaTSwSmDaBV520iXtSncWl2qBb8ZZfc7FIbCIfCc4hpsypP2Z41tg3lecm+SAw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY0PR06MB5610
 
-On Thu, Jun 26, 2025 at 12:31:10PM -0400, Willem de Bruijn wrote:
-> Breno Leitao wrote:
-> > Add a basic selftest for the netpoll polling mechanism, specifically
-> > targeting the netpoll poll() side.
-> > 
-> > The test creates a scenario where network transmission is running at
-> > maximum speed, and netpoll needs to poll the NIC. This is achieved by:
-> > 
-> >   1. Configuring a single RX/TX queue to create contention
-> >   2. Generating background traffic to saturate the interface
-> >   3. Sending netconsole messages to trigger netpoll polling
-> >   4. Using dynamic netconsole targets via configfs
-> >   5. Delete and create new netconsole targets after some messages
-> >   6. Start a bpftrace in parallel to make sure netpoll_poll_dev() is
-> >      called
-> >   7. If bpftrace exists and netpoll_poll_dev() was called, stop.
-> > 
-> > The test validates a critical netpoll code path by monitoring traffic
-> > flow and ensuring netpoll_poll_dev() is called when the normal TX path
-> > is blocked.
-> > 
-> > This addresses a gap in netpoll test coverage for a path that is
-> > tricky for the network stack.
-> > 
-> > Signed-off-by: Breno Leitao <leitao@debian.org>
-> 
-> > +def bpftrace_call() -> None:
-> > +    """Call bpftrace to find how many times netpoll_poll_dev() is called.
-> > +    Output is saved in the global variable `maps`"""
-> > +
-> > +    # This is going to update the global variable, that will be seen by the
-> > +    # main function
-> > +    global MAPS  # pylint: disable=W0603
-> > +
-> > +    # This will be passed to bpftrace as in bpftrace -e "expr"
-> > +    expr = "BEGIN{ @hits = 0;} kprobe:netpoll_poll_dev { @hits += 1; }"
-> 
-> Is that BEGIN statement needed? I generally just use count().
+Hi,
 
-If I use `hits += 1` then yes, but, I've learned that I don't need it if
-I use `count()`. So, I will see something like:
+This patchset based git [1], and w/ patchset [2].
 
-kprobe:netpoll_poll_dev { @hits = count(); }
+[1]
+kernel/git/torvalds/linux.git commit id=5e9388f7984a9cc7e659a105113f6ccf0aebedd0
+(selftests/bpf: adapt one more case in test_lru_map to the new target_free)
 
-> > +
-> > +    MAPS = bpftrace(expr, timeout=BPFTRACE_TIMEOUT, json=True)
-> > +    logging.debug("BPFtrace output: %s", MAPS)
-> > +
-> > +
-> > +def bpftrace_start():
-> > +    """Start a thread to call `call_bpf` in parallel for 2 seconds."""
-> 
-> Stale comment? BPFTRACE_TIMEOUT is set to 15.
+[2]
+https://lore.kernel.org/all/20250624121149.2927-1-chentaotao@didiglobal.com/
 
-Yes. I will remove it.
+Yangtao Li (4):
+  block: Add struct kiocb pointer to block_write_begin()
+  fs/buffer: parse IOCB_DONTCACHE flag in block_write_begin()
+  hfsplus: enable uncached buffer io support
+  hfs: enable uncached buffer io support
 
-Thanks for the review,
---breno
+ block/fops.c                |  2 +-
+ fs/bfs/file.c               |  2 +-
+ fs/buffer.c                 | 13 ++++++++-----
+ fs/exfat/inode.c            |  3 +--
+ fs/ext2/inode.c             |  2 +-
+ fs/hfs/inode.c              |  1 +
+ fs/hfsplus/inode.c          |  1 +
+ fs/jfs/inode.c              |  2 +-
+ fs/minix/inode.c            |  2 +-
+ fs/nilfs2/inode.c           |  2 +-
+ fs/nilfs2/recovery.c        |  2 +-
+ fs/ntfs3/inode.c            |  2 +-
+ fs/omfs/file.c              |  2 +-
+ fs/udf/inode.c              |  2 +-
+ fs/ufs/inode.c              |  2 +-
+ include/linux/buffer_head.h |  4 ++--
+ 16 files changed, 24 insertions(+), 20 deletions(-)
+
+-- 
+2.48.1
+
 
