@@ -1,104 +1,101 @@
-Return-Path: <bpf+bounces-61685-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61686-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08655AEA3BE
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 18:49:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 661C5AEA3DE
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 18:56:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7822E4E3325
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 16:48:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95A89562CC6
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 16:55:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFFC02EBB86;
-	Thu, 26 Jun 2025 16:48:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 234AF2ECE8C;
+	Thu, 26 Jun 2025 16:50:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JtSmL7zi"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 537E52EAB7D;
-	Thu, 26 Jun 2025 16:48:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D8E12E763F
+	for <bpf@vger.kernel.org>; Thu, 26 Jun 2025 16:50:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750956519; cv=none; b=V7AyWdUkCRGwfz1/jhNCAjKfEUcBxUy+k9hGRaRjP4AMtH4A4atUywCZsMXFGVXdXJMnAooQE7rHoAi3izpTP/1GWlL2iG6W9ve+P6i/8aaCdX8YX/qrJ0TL2UYC20LRBhuvx189nhuInnpDY4vbCxYB19FVd2PdymTg9yB+Wwk=
+	t=1750956623; cv=none; b=sH4lSp67QrL2wOvfoP111YngTJWKPqHlbLLmDHqAwj7fpwKurismqS4CTTO4hj8uJ2mgfGre9QtK4J53oR3yto/OebRK6SCZg3ulVQubwEntDo6P8Tvtn7eTjiXSvFjppQleVBIplEs4DtftZYTWhTvB4hqj3XhF390K13LrkJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750956519; c=relaxed/simple;
-	bh=y57ov1HPON+7RblMpng15MaR78IYc0SQnNTkR4ODTQw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NwQ4OYhqa4zFpnQpfdUd0TKMdFiQrlh4Q9gUDXX71BQtF5xPfyvvTtZqfur6RBKmFuzaNUTmbY3Vj0KagYN644bRTq4vjCjzBzBsfQVUdO1TJqYy0SBJvg3FVMbEji39QP6LNfSBlX3tv4su5hNpXeqCGl4Z5QHulV/VQeNF9uc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf01.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay08.hostedemail.com (Postfix) with ESMTP id 8A1E3140328;
-	Thu, 26 Jun 2025 16:48:33 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf01.hostedemail.com (Postfix) with ESMTPA id 63E5560016;
-	Thu, 26 Jun 2025 16:48:29 +0000 (UTC)
-Date: Thu, 26 Jun 2025 12:48:55 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org, x86@kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Thomas
- Gleixner <tglx@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, Indu
- Bhagat <indu.bhagat@oracle.com>, "Jose E. Marchesi" <jemarch@gnu.org>, Beau
- Belgrave <beaub@linux.microsoft.com>, Jens Remus <jremus@linux.ibm.com>,
- Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton
- <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH v11 06/14] unwind_user/deferred: Add deferred unwinding
- interface
-Message-ID: <20250626124855.116ef37d@gandalf.local.home>
-In-Reply-To: <20250625225715.825831885@goodmis.org>
-References: <20250625225600.555017347@goodmis.org>
-	<20250625225715.825831885@goodmis.org>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1750956623; c=relaxed/simple;
+	bh=4Ygi37k/IPSDwX2hC6IrKWbU4JDRCKVsD55GxKuR15c=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=Rw8NG7XtSF+tu9Q8Fq3b7UIooDIm54zzdF/Chi1/GYKFgQctP8mwVkxjnvGQTZ0j8j/n33NVnpwzIcOFjIf2JQgqqVc+Z1VwbrRSXi7t50l0C50bSwVnElpBDHIaaSHPtN0Jt+EAIpkFt3rWwZVCDNhRlAWjUk96gNZ1CP6x6ZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JtSmL7zi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34EB6C4CEEB;
+	Thu, 26 Jun 2025 16:50:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1750956623;
+	bh=4Ygi37k/IPSDwX2hC6IrKWbU4JDRCKVsD55GxKuR15c=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=JtSmL7ziwmFVpZkeQfCaK3O4iI6zv3xrWLSrGkeDrzXKwWa768/gAkR4ijSw/KvbM
+	 lwzF7SlLZRwvE3C0HN7zx44XMnlmc9MEIK6F+4z9ImtTDu8Vj7sOwSnYmtpCDxDBxD
+	 bHeBOiqFZ5bGJpRmhzn64tjQAXcRaHLIgMkdn/8OuQXj0M3y7/WuNSTVLb/eYxDsBY
+	 v5FVEX0etQzaIKFbtcqyNWio0EN8rjIQkGxMu01vopV+hjmWRv8bbHFHkn7oYZ3AF3
+	 caZFQ+laR1cnCE/1bt8YDrUgJDx+jfMKQdUScWafzp9btEZ45mo/fFk3PouIAXgeCb
+	 goTf/7NrD7xhQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADC283A40FCB;
+	Thu, 26 Jun 2025 16:50:50 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: 7ot81a5mikoo8gjr6whkszf3pmtfff9m
-X-Rspamd-Server: rspamout02
-X-Rspamd-Queue-Id: 63E5560016
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1+8u65s6mdvyn/bxtW51CRa4c+qOBayZ4I=
-X-HE-Tag: 1750956509-146722
-X-HE-Meta: U2FsdGVkX1/IV85kqIhmgvrBHUWfRrAiQq5kVJP/UBsRHt/vVFyJ6vGrppW+cwarjS6EdksjPJFRKJejl/ryM+Jm71O6QEil0DyZMzWKfChvk5tyZ65SQiyhjy+k5zPM3Awgsevu8T7jksfwDdQJMiLP4KPoXBPGHAnYegiG0OySbP9m6o8+8ek/GSsAoZMtkQHK1nsLCraR2HP8MqFWca9CTbOFsxDXyamBPCjBOp9Y1iMAjIsL3sYrlaUUzmf/LrFLIlOWJZXZjt7547Q+LOBSNEjlcTLCsRb+fVXMLclVFfMJNflsRALfMK07wkJB0fGT9FAx6eRAHeIdaMdWK5HcSUa6LCdpHqH8nbtuE/+4Zm79dMAIv1svNBqNkEa+
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v8 0/4] bpf: Add kfuncs for read-only string
+ operations
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175095664950.1268005.9831138846255038698.git-patchwork-notify@kernel.org>
+Date: Thu, 26 Jun 2025 16:50:49 +0000
+References: <cover.1750917800.git.vmalik@redhat.com>
+In-Reply-To: <cover.1750917800.git.vmalik@redhat.com>
+To: Viktor Malik <vmalik@redhat.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org
 
-On Wed, 25 Jun 2025 18:56:06 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Hello:
 
->  static __always_inline void unwind_reset_info(void)
->  {
-> -	if (unlikely(current->unwind_info.cache))
-> +	/* Exit out early if this was never used */
-> +	if (likely(!current->unwind_info.timestamp))
-> +		return;
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-I found that this breaks the use of perf using the unwind_user_faultable()
-directly and not relying on the deferred infrastructure (which it does when
-it traces a single task and also needs to remove the separate in_nmi()
-code). Because this still requires the nr_entries to be set to zero.
+On Thu, 26 Jun 2025 08:08:27 +0200 you wrote:
+> String operations are commonly used in programming and BPF programs are
+> no exception. Since it is cumbersome to reimplement them over and over,
+> this series introduce kfuncs which provide the most common operations.
+> For now, we only limit ourselves to functions which do not copy memory
+> since these usually introduce undefined behaviour in case the
+> source/destination buffers overlap which would have to be prevented by
+> the verifier.
+> 
+> [...]
 
-The clearing of the nr_entries has to be separate from the timestamp. To
-prevent unneeded writes after the cache is allocated, should we check the
-nr_entries is set before writing zero?
+Here is the summary with links:
+  - [bpf-next,v8,1/4] uaccess: Define pagefault lock guard
+    https://git.kernel.org/bpf/bpf-next/c/3a95a561f276
+  - [bpf-next,v8,2/4] bpf: Add kfuncs for read-only string operations
+    https://git.kernel.org/bpf/bpf-next/c/e91370550f1f
+  - [bpf-next,v8,3/4] selftests/bpf: Allow macros in __retval
+    https://git.kernel.org/bpf/bpf-next/c/a55b7d39328b
+  - [bpf-next,v8,4/4] selftests/bpf: Add tests for string kfuncs
+    https://git.kernel.org/bpf/bpf-next/c/e8763fb66a38
 
-	if (current->unwind_info.cache && current->unwind_info.cache->nr_entries)
-  		current->unwind_info.cache->nr_entries = 0;
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-?
 
--- Steve
-
-> +
-> +	if (current->unwind_info.cache)
->  		current->unwind_info.cache->nr_entries = 0;
-> +	current->unwind_info.timestamp = 0;
->  }
 
