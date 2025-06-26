@@ -1,40 +1,40 @@
-Return-Path: <bpf+bounces-61661-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61662-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3909AE9D44
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 14:12:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CE68AE9D46
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 14:13:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 642AE3BA6CB
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 12:11:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 869C74A1F9B
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 12:13:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53CB120FA8B;
-	Thu, 26 Jun 2025 12:12:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD53C216E1B;
+	Thu, 26 Jun 2025 12:13:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0014.hostedemail.com [216.40.44.14])
+Received: from relay.hostedemail.com (smtprelay0012.hostedemail.com [216.40.44.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 546113C2F;
-	Thu, 26 Jun 2025 12:12:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73C3FDDD2;
+	Thu, 26 Jun 2025 12:13:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750939929; cv=none; b=Nbqe8R4qi4fXnUvPusDkkkmLWSZ/W/wd5z145tO0YmhtoixK1wjrhDPV5CdEYeoCz8gRlf0J1IzYqeqoXKaDndbxcVjmJ0PPAo5LDVcwjxu5pGACHRryq0Ep2LAMmNpVyboja+u3zV7OGkhLPFZHYbmKGg+dC6lJJZSmI9eP/MU=
+	t=1750940020; cv=none; b=ETssuZGI8lilvkJ4Ap5N0eAhn7FERcvgPNuiLt7cUh/Y4xS9TtI6Nuvb2jYt3gq8puao2D1lTRvsIZ13qCT41mZZ0O0WYRmkU2FDkG9iZ3E9fW7uHYCckjyicQcQIWwOVHFkgLZKwBb1s4IcQUfRmYe6pByUNLce8YE+jNbj/Sg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750939929; c=relaxed/simple;
-	bh=S0He3klNKgx264BDmuWA7zCXhYd94x/8cNR57vffdQ8=;
+	s=arc-20240116; t=1750940020; c=relaxed/simple;
+	bh=ZJDkm+ay6O98NiXiGMPkpDGJGpWWhfw+/kn1f31F10Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=s4W+258R+7sNlUrwzUq/K06r5VjkL0BoYW9QGBAoL6v3nXwwR1mNGo4cWcLvZrod9zlnUvf7ZuePX9TzanAPQt223fQ5Oz6rT5ZOoh/V17xDLEbGc7/N+rTSH6Y8XM/1d9KdCJHmwM9ajLQPu29HM+DZwfUCuukSd3rjnxvHlzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.14
+	 MIME-Version:Content-Type; b=JGEk36fTRpeJ5yXjl5WYHWWf2Xc9HevGorBFptsvIQ00qcTKoLXgRiosTx3gJktyAAZk2VPt+LCBoAM6VSUgsH/nOS32z6KBXwWNc/Sl0zBqaArvxDeHbDAMqSJpvN1N8uLJQDcWsD9u4+/nj7InEFykVczwNcm0wHURpD9R7qs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf01.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay08.hostedemail.com (Postfix) with ESMTP id 7FDF014019D;
-	Thu, 26 Jun 2025 12:12:03 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf01.hostedemail.com (Postfix) with ESMTPA id 644EA60011;
-	Thu, 26 Jun 2025 12:11:59 +0000 (UTC)
-Date: Thu, 26 Jun 2025 08:12:20 -0400
+Received: from omf13.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay02.hostedemail.com (Postfix) with ESMTP id D538F1206B7;
+	Thu, 26 Jun 2025 12:13:35 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf13.hostedemail.com (Postfix) with ESMTPA id DE2412000E;
+	Thu, 26 Jun 2025 12:13:31 +0000 (UTC)
+Date: Thu, 26 Jun 2025 08:13:52 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Ingo Molnar <mingo@kernel.org>
 Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
@@ -48,13 +48,13 @@ Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
  Jens Remus <jremus@linux.ibm.com>, Linus Torvalds
  <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>,
  Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH v11 14/14] unwind_user/x86: Enable compat mode frame
- pointer unwinding on x86
-Message-ID: <20250626081220.71ac3ab6@gandalf.local.home>
-In-Reply-To: <aF0FwYq1ECJV5Fdi@gmail.com>
+Subject: Re: [PATCH v11 13/14] perf/x86: Rename and move get_segment_base()
+ and make it global
+Message-ID: <20250626081352.30b360f8@gandalf.local.home>
+In-Reply-To: <aF0IeDBaAfRypu1W@gmail.com>
 References: <20250625225600.555017347@goodmis.org>
-	<20250625225717.187191105@goodmis.org>
-	<aF0FwYq1ECJV5Fdi@gmail.com>
+	<20250625225717.016385736@goodmis.org>
+	<aF0IeDBaAfRypu1W@gmail.com>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -64,80 +64,55 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Stat-Signature: gikz5ymk5gtkqfsbe7umaz6ygmti5hdb
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: 644EA60011
+X-Stat-Signature: uys6ttrkumetetsc4q3cpeitdrxnbwkr
+X-Rspamd-Server: rspamout08
+X-Rspamd-Queue-Id: DE2412000E
 X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1+3QBRxWW5QKTEc4mL8hVqCKcePDm/UYrE=
-X-HE-Tag: 1750939919-377805
-X-HE-Meta: U2FsdGVkX193DTU0jxe+hcnGyWs5G+kMGoQ+BjeKhg3ibdZ049hEqDvRQOdn/n+fmBWDV3neU1YtovsnJY9UIDM79V7xzGvVJtumYGrQEg+adFQorFWXawPyyw3B/mNEHV3KCRcmPcY9vLYMwmCTehxc5/2TkYsltq60/bTRMNGrv4NQmlpYZ4ABC1PXa8tOK3/gnOlmIk8FrG5cTLKrHzOlDuvzEZLJGM925d+wWkY/GVGYRiB7e5o8gYHrLRm9k9f0B6jgLLCbxRjdt5wJxwielPiYeWaLP4L6E6T8yUR13Ghfk3qo9hc/zFIX8Kb2XKNcE1edOxfznjnsGrRTIfaU/9vkn29TvihmPMU5NZPexAoxv/6DKmTgkb8+fOfNp9qsaF2yTsH3g4v/xZnVjQ==
+X-Session-ID: U2FsdGVkX18rv6R1OBR9mcy111QH7t1FM1i8rlVGQg8=
+X-HE-Tag: 1750940011-661499
+X-HE-Meta: U2FsdGVkX1/qz+jyF9/tlZIldOEdrudCEWU5a97Pg8NrdTzggJLyt/G6ust73fl1uM28G8SoLmCp1MzDYLve+kVjCQMOJj1fZ5bFx5TzIIvRIax/WNSS6Nfm8IblnY7U66+aCfrWe3XzUzXayOZVVL60wng38G259CSVpirG52uKnhro+8qgaX9c+Fjc19tJyDhoxyYKezBgefNvhN4YwIQi1vYjdtu/BoEYF3iFiohTbVtHfhisEImvcNuQLkQALapWS2EKq+qRFoZnt4mQVzlO4pg5ugfSByIU32lGeGbpVse+Ni4DJkFaLT7e2OupK/8G4lFgS1tvLuws5tsn+J+YkiY7hrfbmA0mDDGdz4TD6bHN4cyP45lRqX6dWGW9syBoLLebtVuiQtO9E0bpug==
 
-On Thu, 26 Jun 2025 10:33:05 +0200
+On Thu, 26 Jun 2025 10:44:40 +0200
 Ingo Molnar <mingo@kernel.org> wrote:
 
 > * Steven Rostedt <rostedt@goodmis.org> wrote:
 > 
-> > diff --git a/arch/x86/include/asm/unwind_user_types.h b/arch/x86/include/asm/unwind_user_types.h
-> > new file mode 100644
-> > index 000000000000..d7074dc5f0ce
-> > --- /dev/null
-> > +++ b/arch/x86/include/asm/unwind_user_types.h
-> > @@ -0,0 +1,17 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +#ifndef _ASM_UNWIND_USER_TYPES_H
-> > +#define _ASM_UNWIND_USER_TYPES_H  
+> > From: Josh Poimboeuf <jpoimboe@kernel.org>
+> > 
+> > get_segment_base() will be used by the unwind_user code, so make it
+> > global and rename it to segment_base_address() so it doesn't conflict with
+> > a KVM function of the same name.  
 > 
-> This is not the standard x86 header guard pattern ...
-
-Should it be:
-
-#ifndef _ASM_X86_UNWIND_USER_TYPES_H
-
-?
-
+> So if you make an x86-internal helper function global, please prefix it 
+> with x86_ or so:
 > 
-> > +
-> > +#ifdef CONFIG_IA32_EMULATION
-> > +
-> > +struct arch_unwind_user_state {
-> > +	unsigned long ss_base;
-> > +	unsigned long cs_base;
-> > +};
-> > +#define arch_unwind_user_state arch_unwind_user_state  
+> 	unsigned long x86_get_segment_base(unsigned int segment)
 > 
-> Ran out of newlines? ;-)
+> Keeping the _get name also keeps it within the nomenclature of the 
+> general segment descriptor API family:
+> 
+> 	get_desc_base()
+> 	set_desc_base()
+> 	get_desc_limit()
+> 	set_desc_limit()
+>   [x86_]get_segment_base()
 
-I believe Josh purposely kept the #define and the structure together
-without a newline as one defines itself to be used in the generic code.
-
-Do you prefer them to be separated by a newline?
-
+Sounds good.
 
 > 
-> > +/*
-> > + * If an architecture needs to initialize the state for a specific
-> > + * reason, for example, it may need to do something different
-> > + * in compat mode, it can define arch_unwind_user_init to a
-> > + * function that will perform this initialization.  
+> > Also add a lockdep_assert_irqs_disabled() to make sure it's always 
+> > called with interrupts disabled.  
 > 
-> Please use 'func()' when referring to functions in comments.
-
-You mean to use "arch_unwind_user_init()"?
-
+> Please make this a separate patch, this change gets hidden in the noise 
+> of the function movement and renaming otherwise, plus it also makes the 
+> title false and misleading:
 > 
-> > +/*
-> > + * If an architecture requires some more updates to the state between
-> > + * stack frames, it can define arch_unwind_user_next to a function
-> > + * that will update the state between reading stack frames during
-> > + * the user space stack walk.  
+>    perf/x86: Rename and move get_segment_base() and make it global
 > 
-> Ditto.
 
-And this to have arch_unwind_user_next()?
+I'll break it up.
 
-I'll update.
-
-Thanks for the review.
+Thanks for the review!
 
 -- Steve
 
