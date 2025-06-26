@@ -1,191 +1,252 @@
-Return-Path: <bpf+bounces-61638-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61639-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36897AE9469
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 04:51:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DC36AE94BD
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 05:54:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FF803AF4D0
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 02:51:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE5007AE830
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 03:53:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E68D1F5828;
-	Thu, 26 Jun 2025 02:51:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Nz2Jt7+m"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B58B2080C4;
+	Thu, 26 Jun 2025 03:54:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD6D012CDBE
-	for <bpf@vger.kernel.org>; Thu, 26 Jun 2025 02:51:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDDC51A0728;
+	Thu, 26 Jun 2025 03:54:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750906279; cv=none; b=KWG4RbwnMaSwPGd1ArM9TkZYcQILg0+0Rg5Y7KqwLjuR/tQusUgWRZrf9pw7OIsl8V1XH0or61ITMD/tHWlxbTlvGUlTjEmBeASjaEo2UKP9m5rY5OG88VvUXxXmnCHiQgSgHPQ7x2zy2X2pLvx+i9ZTH8b5uP8aNiboS1Ffp40=
+	t=1750910077; cv=none; b=DSxZzROvhg/NNx9Xt0VQqsJBzgUYJoQpZ34DIP7UHZfcQgC7oIPirUYv762HV3BtHvoWfVDEs/CUbHyj+PukuyPeJa78XyxQKFkssSkwpJ4v+FJLEfjIcUy1rh+j0m8q9J7LxrKFSdD/QSiI0Tu2aaLDlSan5JRWZa9CU/hOwys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750906279; c=relaxed/simple;
-	bh=AbbTcY3G90uhbAvwfnDrpva8mh1yG4yY6IHShSbbWSY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rl3YYboEqmaR11Etg2G6X+dMbcd7kOu5pUyu08d7WIRFw9JFpHBZztqDDkcYRL00yJDkOza42pTVkhxZ1Z3iRm4tK1WefSY9NwEoapuKu9bTDm51FlodKCqhpu8TqLLBysWprQWI4EDXj4MF9QxeT/mFXfMYisPkfBFPOXdsS+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Nz2Jt7+m; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1750906275;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xEngYMz6+Uctu+0RSamLzUn3jyWMAMQ76O4pVQprsBY=;
-	b=Nz2Jt7+mvTxq/JhC/S16hrHNP7hlx8NIoI09U7qJcqHpL+V3oMq+cF4ImMrRE5F5/6Gxx8
-	N+0wjE7CLpVmerosqcD6KJOtIza/d3kLrA6mY/XBN/uP2DdWt5F8OovjYHve7Iq9FG3mU6
-	XYb5b0UEA2jNMQcIEJemSpt/rVa00Yo=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-318-lxZZmHh3PDm-21cj0u9ctg-1; Wed, 25 Jun 2025 22:51:14 -0400
-X-MC-Unique: lxZZmHh3PDm-21cj0u9ctg-1
-X-Mimecast-MFC-AGG-ID: lxZZmHh3PDm-21cj0u9ctg_1750906273
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-3122368d82bso873411a91.0
-        for <bpf@vger.kernel.org>; Wed, 25 Jun 2025 19:51:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750906273; x=1751511073;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xEngYMz6+Uctu+0RSamLzUn3jyWMAMQ76O4pVQprsBY=;
-        b=P2hNu8xWig1zGpdIQ9Wh7LZmgtK6ynYUtwYhUlK5C8ad/3XznCv0t7Jm+aGWbGccnA
-         Ncy436sfSQuIeCh2ZzNJ7ZgyZG3LL6JRgBDBjdV0mZJkcGH4fN501UKsSZfjuPB1P7YF
-         QBu7vdfioEodJwLcT/p9fUjIwIdFO4QhkWS8X2IF3CTTb8fLCxhnccskL1/aBpC3cKzf
-         hilMbGrFaKpLTmtNOelXMogEmDqHK0A/Aq8ae4qqKkTQlyI1PPQ1TknxWcSs2+uwXJ3b
-         Sk/WRd+pgcNSvQXynTOJrP4Ul2V96uVhI2hr6h3A1qkjzCzur9nBCf8Z9eHwShuq6NsY
-         kJqA==
-X-Forwarded-Encrypted: i=1; AJvYcCUNis3UmahhdjonYXYW7dd+NAKTMxSI94mEA8kGix78DucAx/4lrk4N0HaFuHsDFrvu6XM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxlnpd91XcOwb3BFBhVP+qKC0LRLWSgnejPEsB8dPLPZO4St3J2
-	02URqBAHmw0Hh65PX6KCMOi7nlp0RztoxWqQ4qEYml6JqaPLGHXyqctuliB7bOCfYKHvvh0+4hk
-	8wNTQ7Gq/cMQMyi91TTCcUrOSKKw9iTGvShHEie+RabmhQphxP6uizoo2o1iocfOF23GVlFvcv+
-	gxI8GZBfAMAqS/z4bv8aZe+DEeA2mw
-X-Gm-Gg: ASbGncvHGxSdqxZmVlIWomRVyz3LaHZMQwoBpZf/20MW1C/6IZGdsmXXPI7CKmOApC/
-	w2Yb4vXlP3dMwGuOVMvmKkClzYgMSC3oDn1C09KksKVANKE/4xKO2bD0iONpF1VwCgBQpfP61Jp
-	7VAMgh
-X-Received: by 2002:a17:90b:562d:b0:30e:3718:e9d with SMTP id 98e67ed59e1d1-315f26b3e52mr7507605a91.35.1750906273389;
-        Wed, 25 Jun 2025 19:51:13 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFy1oEFNW+pNyBHKxl5UFz4XuW+PyQ5F7+ZNjbo3jFzhfPpd3FRUMNsXAMnW3CCIEXyQmt+3K6tjBWZQ09ordg=
-X-Received: by 2002:a17:90b:562d:b0:30e:3718:e9d with SMTP id
- 98e67ed59e1d1-315f26b3e52mr7507572a91.35.1750906273025; Wed, 25 Jun 2025
- 19:51:13 -0700 (PDT)
+	s=arc-20240116; t=1750910077; c=relaxed/simple;
+	bh=W69Sh8U89J7pQtIt0QufN1Tq/U+T0/SmKCjwqwczS5o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PRBSSb4UONoQrT8iw7hvtOp22vi9dWEk3uAg8xQmaBKsMa8233UpY3c0FEMbrEvvM9Z4RPInKLtdkd6jcllsjm94NjJklc51BQiNLUCHV5BUULOT0s9OXFAM0CSRtC+peRfWITOoXuyCPhFrUNu3pZkcVJ5gCJwuzikVAhYooBs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 41cb6cd8524111f0b29709d653e92f7d-20250626
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
+	HR_CTT_TXT, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
+	HR_SJ_DIGIT_LEN, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM
+	HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_PRE_RE, HR_SJ_WS, HR_TO_COUNT
+	HR_TO_DOMAIN_COUNT, HR_TO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED
+	SA_EXISTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
+	CIE_BAD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO, GTI_C_BU
+	AMN_T1, AMN_GOOD, AMN_C_TI, AMN_C_BU
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.45,REQID:c2cb00be-2c47-4fa5-bfe6-0d7233a87b8a,IP:0,U
+	RL:0,TC:0,Content:6,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:1
+X-CID-INFO: VERSION:1.1.45,REQID:c2cb00be-2c47-4fa5-bfe6-0d7233a87b8a,IP:0,URL
+	:0,TC:0,Content:6,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
+	elease,TS:1
+X-CID-META: VersionHash:6493067,CLOUDID:1dff51c8eff28d8923e87fb0fe31e4c9,BulkI
+	D:250626093924HZVC9G85,BulkQuantity:2,Recheck:0,SF:17|19|64|66|78|80|81|82
+	|83|102|841,TC:nil,Content:4|50,EDM:-3,IP:nil,URL:0,File:nil,RT:nil,Bulk:4
+	0,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE
+	:0,ARC:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
+X-UUID: 41cb6cd8524111f0b29709d653e92f7d-20250626
+X-User: duanchenghao@kylinos.cn
+Received: from localhost [(10.44.16.150)] by mailgw.kylinos.cn
+	(envelope-from <duanchenghao@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 1415082984; Thu, 26 Jun 2025 11:54:27 +0800
+Date: Thu, 26 Jun 2025 11:54:24 +0800
+From: Chenghao Duan <duanchenghao@kylinos.cn>
+To: Hengqi Chen <hengqi.chen@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+	yangtiezhu@loongson.cn, chenhuacai@kernel.org, martin.lau@linux.dev,
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+	haoluo@google.com, jolsa@kernel.org, kernel@xen0n.name,
+	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
+	bpf@vger.kernel.org, guodongtai@kylinos.cn, youling.tang@linux.dev,
+	jianghaoran@kylinos.cn, Youling Tang <tangyouling@kylinos.cn>
+Subject: Re: [PATCH v2 1/4] LoongArch: BPF: The operation commands needed to
+ add a trampoline
+Message-ID: <20250626035424.GA436557@chenghao-pc>
+References: <20250618105048.1510560-1-duanchenghao@kylinos.cn>
+ <20250618105048.1510560-2-duanchenghao@kylinos.cn>
+ <CAEyhmHTA+6RdD4CbQuMn2E887Z3E6RudJQb3Wnmqosj1ozrXPw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250625160849.61344-1-minhquangbui99@gmail.com> <20250625160849.61344-5-minhquangbui99@gmail.com>
-In-Reply-To: <20250625160849.61344-5-minhquangbui99@gmail.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Thu, 26 Jun 2025 10:51:01 +0800
-X-Gm-Features: Ac12FXxCVxp6548gkQ8YE-vjFv3IjVZGUSKTIBIUxHnJq7DtVbLHmVNL-WVcg1k
-Message-ID: <CACGkMEv-EgkZs6d4MHwxj0t_-pQvxMRLTdgguP7GUijbg-kEoA@mail.gmail.com>
-Subject: Re: [PATCH net 4/4] virtio-net: allow more allocated space for
- mergeable XDP
-To: Bui Quang Minh <minhquangbui99@gmail.com>
-Cc: netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>, 
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	Stanislav Fomichev <sdf@fomichev.me>, virtualization@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEyhmHTA+6RdD4CbQuMn2E887Z3E6RudJQb3Wnmqosj1ozrXPw@mail.gmail.com>
 
-On Thu, Jun 26, 2025 at 12:10=E2=80=AFAM Bui Quang Minh
-<minhquangbui99@gmail.com> wrote:
->
-> When the mergeable receive buffer is prefilled before XDP is set, it
-> does not reserve the space for XDP_PACKET_HEADROOM and skb_shared_info.
-> So when XDP is set and this buffer is used to receive frame, we need to
-> create a new buffer with reserved headroom, tailroom and copy the frame
-> data over. Currently, the new buffer's size is restricted to PAGE_SIZE
-> only. If the frame data's length + headroom + tailroom exceeds
-> PAGE_SIZE, the frame is dropped.
->
-> However, it seems like there is no restriction on the total size in XDP.
-> So we can just increase the size of new buffer to 2 * PAGE_SIZE in that
-> case and continue to process the frame.
->
-> In my opinion, the current drop behavior is fine and expected so this
-> commit is just an improvement not a bug fix.
+On Thu, Jun 26, 2025 at 09:39:04AM +0800, Hengqi Chen wrote:
+> On Wed, Jun 18, 2025 at 6:51 PM Chenghao Duan <duanchenghao@kylinos.cn> wrote:
+> >
+> > Add branch jump function:
+> > larch_insn_gen_beq
+> > larch_insn_gen_bne
+> >
+> > Add instruction copy function: larch_insn_text_copy
+> >
+> 
+> Please rewrite the commit message properly.
+> These functions are generic, so you can drop the `BPF` prefix from subject line.
+> 
+Okay, I will make the changes in the next version.
 
-Then this should go for net-next.
+> > Co-developed-by: George Guo <guodongtai@kylinos.cn>
+> > Signed-off-by: George Guo <guodongtai@kylinos.cn>
+> > Co-developed-by: Youling Tang <tangyouling@kylinos.cn>
+> > Signed-off-by: Youling Tang <tangyouling@kylinos.cn>
+> > Signed-off-by: Chenghao Duan <duanchenghao@kylinos.cn>
+> > ---
+> >  arch/loongarch/include/asm/inst.h |  3 ++
+> >  arch/loongarch/kernel/inst.c      | 57 +++++++++++++++++++++++++++++++
+> >  2 files changed, 60 insertions(+)
+> >
+> > diff --git a/arch/loongarch/include/asm/inst.h b/arch/loongarch/include/asm/inst.h
+> > index 3089785ca..88bb73e46 100644
+> > --- a/arch/loongarch/include/asm/inst.h
+> > +++ b/arch/loongarch/include/asm/inst.h
+> > @@ -497,6 +497,7 @@ void arch_simulate_insn(union loongarch_instruction insn, struct pt_regs *regs);
+> >  int larch_insn_read(void *addr, u32 *insnp);
+> >  int larch_insn_write(void *addr, u32 insn);
+> >  int larch_insn_patch_text(void *addr, u32 insn);
+> > +int larch_insn_text_copy(void *dst, void *src, size_t len);
+> >
+> >  u32 larch_insn_gen_nop(void);
+> >  u32 larch_insn_gen_b(unsigned long pc, unsigned long dest);
+> > @@ -511,6 +512,8 @@ u32 larch_insn_gen_lu12iw(enum loongarch_gpr rd, int imm);
+> >  u32 larch_insn_gen_lu32id(enum loongarch_gpr rd, int imm);
+> >  u32 larch_insn_gen_lu52id(enum loongarch_gpr rd, enum loongarch_gpr rj, int imm);
+> >  u32 larch_insn_gen_jirl(enum loongarch_gpr rd, enum loongarch_gpr rj, int imm);
+> > +u32 larch_insn_gen_beq(enum loongarch_gpr rd, enum loongarch_gpr rj, int imm);
+> > +u32 larch_insn_gen_bne(enum loongarch_gpr rd, enum loongarch_gpr rj, int imm);
+> >
+> >  static inline bool signed_imm_check(long val, unsigned int bit)
+> >  {
+> > diff --git a/arch/loongarch/kernel/inst.c b/arch/loongarch/kernel/inst.c
+> > index 14d7d700b..7423b0772 100644
+> > --- a/arch/loongarch/kernel/inst.c
+> > +++ b/arch/loongarch/kernel/inst.c
+> > @@ -4,6 +4,7 @@
+> >   */
+> >  #include <linux/sizes.h>
+> >  #include <linux/uaccess.h>
+> > +#include <linux/set_memory.h>
+> >
+> >  #include <asm/cacheflush.h>
+> >  #include <asm/inst.h>
+> > @@ -218,6 +219,34 @@ int larch_insn_patch_text(void *addr, u32 insn)
+> >         return ret;
+> >  }
+> >
+> > +int larch_insn_text_copy(void *dst, void *src, size_t len)
+> > +{
+> > +       unsigned long flags;
+> 
+> Initialize flags ?
 
->
-> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
-> ---
->  drivers/net/virtio_net.c | 19 +++++++++++++++----
->  1 file changed, 15 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 844cb2a78be0..663cec686045 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -2277,13 +2277,26 @@ static void *mergeable_xdp_get_buf(struct virtnet=
-_info *vi,
->                                               len);
->                 if (!xdp_page)
->                         return NULL;
-> +
-> +               *frame_sz =3D PAGE_SIZE;
->         } else {
-> +               unsigned int total_len;
-> +
->                 xdp_room =3D SKB_DATA_ALIGN(XDP_PACKET_HEADROOM +
->                                           sizeof(struct skb_shared_info))=
-;
-> -               if (*len + xdp_room > PAGE_SIZE)
-> +               total_len =3D *len + xdp_room;
-> +
-> +               /* This must never happen because len cannot exceed PAGE_=
-SIZE */
-> +               if (unlikely(total_len > 2 * PAGE_SIZE))
->                         return NULL;
->
-> -               xdp_page =3D alloc_page(GFP_ATOMIC);
-> +               if (total_len > PAGE_SIZE) {
-> +                       xdp_page =3D alloc_pages(GFP_ATOMIC, 1);
+To be precise, it saves the IRQ (Interrupt Request) status. My
+understanding is that it involves passing parameters between the lock
+and unlock operations.
 
-I'm not sure it's worth optimizing the corner case here that may bring
-burdens for maintenance.
+> 
+> > +       size_t wlen = 0;
+> > +       size_t size;
+> > +       void *ptr;
+> > +       int ret = 0;
+> > +
+> > +       set_memory_rw((unsigned long)dst, round_up(len, PAGE_SIZE) / PAGE_SIZE);
+> > +       raw_spin_lock_irqsave(&patch_lock, flags);
+> > +       while (wlen < len) {
+> > +               ptr = dst + wlen;
+> > +               size = min_t(size_t, PAGE_SIZE - offset_in_page(ptr),
+> > +                            len - wlen);
+> > +
+> > +               ret = copy_to_kernel_nofault(ptr, src + wlen, size);
+> 
+> I am not familiar with this mm thing, but looking at other callsites
+> of copy_to_kernel_nofault(),
+> it seems like you can do this copy cross page boundaries.
+> 
 
-And a good optimization here is to reduce the logic duplication by
-reusing xdp_linearize_page().
+I didn't understand your point. May I ask if there's any issue with
+using it this way?
 
+> > +               if (ret) {
+> > +                       pr_err("%s: operation failed\n", __func__);
+> > +                       break;
+> > +               }
+> > +               wlen += size;
+> > +       }
+> > +       raw_spin_unlock_irqrestore(&patch_lock, flags);
+> > +       set_memory_rox((unsigned long)dst, round_up(len, PAGE_SIZE) / PAGE_SIZE);
+> > +
+> 
+> Do we need flush_icache_range() here ?
+> 
 
-> +                       *frame_sz =3D 2 * PAGE_SIZE;
-> +               } else {
-> +                       xdp_page =3D alloc_page(GFP_ATOMIC);
-> +                       *frame_sz =3D PAGE_SIZE;
-> +               }
->                 if (!xdp_page)
->                         return NULL;
->
-> @@ -2291,8 +2304,6 @@ static void *mergeable_xdp_get_buf(struct virtnet_i=
-nfo *vi,
->                        page_address(*page) + offset, *len);
->         }
->
-> -       *frame_sz =3D PAGE_SIZE;
-> -
->         put_page(*page);
->
->         *page =3D xdp_page;
-> --
+I understand it is necessary. After all, the trampoline code needs to
+be fetched by the PC (Program Counter) for instruction fetching, and
+flushing the I-cache (Instruction Cache) is required for the code to
+go through the I-cache.
 
-Thanks
+> > +       return ret;
+> > +}
+> > +
+> >  u32 larch_insn_gen_nop(void)
+> >  {
+> >         return INSN_NOP;
+> > @@ -336,3 +365,31 @@ u32 larch_insn_gen_jirl(enum loongarch_gpr rd, enum loongarch_gpr rj, int imm)
+> >
+> >         return insn.word;
+> >  }
+> > +
+> > +u32 larch_insn_gen_beq(enum loongarch_gpr rd, enum loongarch_gpr rj, int imm)
+> > +{
+> > +       union loongarch_instruction insn;
+> > +
+> > +       if ((imm & 3) || imm < -SZ_128K || imm >= SZ_128K) {
+> > +               pr_warn("The generated beq instruction is out of range.\n");
+> > +               return INSN_BREAK;
+> > +       }
+> > +
+> > +       emit_beq(&insn, rd, rj, imm >> 2);
+> > +
+> 
+> This does NOT match emit_beq's signature, should be:
+>     emit_beq(&insn, rj, rd, imm >> 2);
 
-> 2.43.0
->
+Okay, I will make the changes and conduct testing in the next version.
 
+> 
+> > +       return insn.word;
+> > +}
+> > +
+> > +u32 larch_insn_gen_bne(enum loongarch_gpr rd, enum loongarch_gpr rj, int imm)
+> > +{
+> > +       union loongarch_instruction insn;
+> > +
+> > +       if ((imm & 3) || imm < -SZ_128K || imm >= SZ_128K) {
+> > +               pr_warn("The generated bne instruction is out of range.\n");
+> > +               return INSN_BREAK;
+> > +       }
+> > +
+> > +       emit_bne(&insn, rj, rd, imm >> 2);
+> > +
+> > +       return insn.word;
+> > +}
+> > --
+> > 2.43.0
+> >
 
