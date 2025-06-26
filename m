@@ -1,118 +1,165 @@
-Return-Path: <bpf+bounces-61683-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61684-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F995AEA332
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 18:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C11F0AEA38D
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 18:33:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95D041C45075
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 16:08:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2F971C46B00
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 16:31:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FE971F0E26;
-	Thu, 26 Jun 2025 16:07:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAA2120F087;
+	Thu, 26 Jun 2025 16:31:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Lc1cVhrg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y0pJdBkO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BD0E8632C
-	for <bpf@vger.kernel.org>; Thu, 26 Jun 2025 16:07:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C12392F1FF9;
+	Thu, 26 Jun 2025 16:31:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750954064; cv=none; b=axioOrmRm1QPFKtalCqQwE9iHw2yuQb1JcXyfBD030iruzhnrRnBVBFpp+YgVeZNYuDFhbbu/lP6BO+kuYT2qozT1QoS0WCopMkmPx268ToNcFY10hcaDYwfasoKcuFysPP1REcocanh620LU5C/MNV6tJzIVC61YxbqkOqviJU=
+	t=1750955474; cv=none; b=LiKSUAEl7FD7JZpQPKwkEZa1OQYPInAFqOzd3Rx5gayc+O9JYL6IHTMV6+rDN5h5dwdBoxyyWf6mVq0K41fwM2NNmW25d9nKz95/rlyjEbEGgvrgCNzUz8qzKh9QdeiJM8L2q4CfyNrJrzt9Ht5H6Bq1zCQsWjpdOZ87/WyF1JI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750954064; c=relaxed/simple;
-	bh=hTsUMYbYaWIspEm5SbV/DSPAsg/4bjygT+9P2vF4OyI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rFW5cjUQ48/zDHob25Muvi7sHn3mzqn2Zpr5xoFpqoE0CbEdak8NvBUUvJMX/9Ltopj2Bqe8h0ycP/axVvS9gGkkQK7jawzlhV9VY6nIcs/1UnsMUDNvifeAy9eHh3VuhVD7m7sXgRVUShT9YdHFUpGk065nPwonsyQNBTi7uQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Lc1cVhrg; arc=none smtp.client-ip=209.85.221.49
+	s=arc-20240116; t=1750955474; c=relaxed/simple;
+	bh=HT7TrT+9RAo9P1265OpuBOUxaqxI8OngOWZcR/hl21A=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=AXtnBE3Djt/GS0ZoBIdwST20ELldEF5oeBTa3LpzOAJWq4/oBHlJWOOjNmlB1X942zxgQtxFV6R3mcYKmY/KCMO9QYt6npEPd/pniqnT5zspSKhAVqRQBmJgyaiu/IoLJEShJK9cBQyjRhKj3kQgV9EFfRJFFTu6Z1xW/FauglM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y0pJdBkO; arc=none smtp.client-ip=209.85.219.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3a365a6804eso762258f8f.3
-        for <bpf@vger.kernel.org>; Thu, 26 Jun 2025 09:07:41 -0700 (PDT)
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-e7387d4a336so1078278276.2;
+        Thu, 26 Jun 2025 09:31:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750954060; x=1751558860; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/rmFhKP/Kog47IU05v1nVpPXPNRAqnkX370h+r5lyKg=;
-        b=Lc1cVhrgJ/Qx1x+e8fgYyDh3v0wprd0jFhFo8ocA3ryJN0JD+e5PSUyyYFa98DA+1I
-         UlRHOZlG/S1ho4OyNQRjtVwg7X5KrXK6QIJ6VPMEzaEgkfPphrzDrcCqDlKqr2NZUjjl
-         dkGw66eOzZ92oEEOXCuvkEqGJyrC9iTAD5LbWSvOULutLN8X9FB6oz0TMXy9nOatM/nf
-         FxmGhDxOzAeIeUFLLCKls81ZP4xeuJBs/7Ekv1rQLAYRweRiwsVVsOTgK45GVyaYxRy9
-         rkVydbx5MOEQnVaqmpw7HuehfZj9tvwnbKisX0IPZKNqUwiLiWLFUtcb1PKGfqMZDDGG
-         mUAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750954060; x=1751558860;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1750955472; x=1751560272; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/rmFhKP/Kog47IU05v1nVpPXPNRAqnkX370h+r5lyKg=;
-        b=q8D0ulskug8vDpc7hiyCHxwqyEgczOI4EmABbSPdElfxXVSuNdYxbCuwq+Xb4wS21k
-         eUjnQH/3L3CxZvtHwIUjepZ/2w0qXrUi3wP+ktEBFNlrAc9lMJOz6GwWQSqCLhYNRTFh
-         P2+DuuSLpFXakYXyqJpPw+N7l0MWJiGkHaYNvnXh1V5GG7hnujFo/Kp+re1BUO3fhTIs
-         CyLNcTaDIb+d6bR3sClnCg3GWcq+C66wB2LvsVIW3dx8g8OkfSe5dZRQHr4f8Yit/61c
-         V8LMWwmM1+QmYq7LZe3lSHnvImwgnEgHoL93jJThlUmmjstZB1yEhsdDYWAQKQedvDvw
-         0aIw==
-X-Gm-Message-State: AOJu0Yz9VEjcHwOxHV/hGPyAYM0xMgqEwW1X6KY1wqMy9rKRAG2Sc8KM
-	62Vu2RmaV5oMptE499boiR1fhj7KAIScHJ7Jc60eA1gmGFpqPpnKIHw0SyYzsg/o
-X-Gm-Gg: ASbGncuEK2kHbvt7e48MNkahJLJuPyOsKFL5nJDTlDhA8nmQKZ5xqz5LHTKyv8ve5va
-	VuGRzTE6YyMrQnxUZQIMlhX5dRTpV24T6hOpGVCDW51bUTYtvjn0WcHFKDKpewzWeApgZOuTlmd
-	uFqrw8uSH8oRldsFWioewqH9TqeSGRFCUdqJ3Z9zvkts6YIMkrs6OxV4rXTZYD2GrQ4jMaXH8Jt
-	Swjs7pmZ8yQT+HTW2R7EbxndD6Ij/rbdRLChbvBdCWzwxwdvHh0ZvC/YXrOLNlOchwWZtNM+p+O
-	r1hptv+ad/+o/Dm7dtxUbm/gWM/NJn7PpsOSTAp39gwrnTBceYw5Q/Qc6MoFfsAaL+swb+vTmkN
-	JHp2FANeNu+AE7WD2gztC74awGEGKgzRvAM8L91gVm7391C+LGEMhzlNUlmoiPQ==
-X-Google-Smtp-Source: AGHT+IHxbf4HsdCG5BuklKAo9KekI3OvIYmJoSk/gRuben6CT3wlUpMJljnDp2FmBFn0nCgUbj+2Uw==
-X-Received: by 2002:a05:6000:2806:b0:3a5:2d42:aa23 with SMTP id ffacd0b85a97d-3a8fe5b33e2mr54685f8f.22.1750954060321;
-        Thu, 26 Jun 2025 09:07:40 -0700 (PDT)
-Received: from mail.gmail.com (2a01cb0889497e00ba828d421a4aa7ad.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:ba82:8d42:1a4a:a7ad])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a88c7e6f8bsm286398f8f.17.2025.06.26.09.07.38
+        bh=sU907uMABVIuqhXrvaDd1M5r5o0uDZff62vwsqKDZWA=;
+        b=Y0pJdBkOmarrN+IHFZDGP1iCHN3ett7qeY3sikhuq5Tb6PTJgR6Pd75I9Bm4O6aWWa
+         tTQcZotisrw9Zn5owJmMvvmF0LzIldVxybU2S95vAIbR3LRYbWZVE8WnmtYIO4EaJI5B
+         jV46nPYnywr0Kv3a2kJJOgDZV8CipTN3KJlvR9YM6dQlalDqTP2p51DE1iKxZHwsIvUy
+         c9yHEdeEY7XXgu+LwvQEZft8V+vH9VSaEA+utcSlVGdkakfb/hIABa58WWnQpRyaTvKu
+         YdYXccSZKZOI7DdNRgkixQhCr8RBukJGa7x9wuAiYKPMlv0lgWtfpucON7kFzv0r0veC
+         uDXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750955472; x=1751560272;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=sU907uMABVIuqhXrvaDd1M5r5o0uDZff62vwsqKDZWA=;
+        b=LYoZMxa/l05giENjb2ZFg30TgxNYjqfZDNhbVLW4eot2mUNLvFBYKoCa4f5sJ89t1y
+         a0DvFiASkaVQrKN93V2oLAQp9BFcIY7fOZjWJbRPR5V2pxE9f912HoP/QU5eSes4K35f
+         u8NHcvIhreYT/Z/sHNhMxl6LF0rCXnhBtT+6AZMQfzKEGwTQFdIlcwRRCjjrvxBMqSXr
+         ahkEk/+IOIsljzlcVh2NAkYqDfzxG2pGO4qSdBsLKGVnqvyYmyJSQmnPUQ/RzO7Hgfnl
+         fNQbxR1cpVYtvyFJQJ1wUfmYY6X+cDKw7rPeG389GN5dfjRWBEACssgm/cE70UlBtT+0
+         d0AA==
+X-Forwarded-Encrypted: i=1; AJvYcCUO5+T+v7aDBPq0LST+APP+XxeOY7cOZIJnM2Po4+5kClYOmFWDSkE3Aw3H8RHI7HN6L84=@vger.kernel.org, AJvYcCVQDccJMls02/QWF0Il5/wZw6Ro0+WSs+S4VU1hcHlS5MVgsrrunrqPC5F0X2N/AsVWTM4UQ/OLeOlUg3uYZxGN@vger.kernel.org, AJvYcCWuUvNckAs/bD4IBzyiN696nimzmRr0et09Z2G+TGDkWvQjBh/FwpmmAlbvO/Mtm27Zs7kTuWi6@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy1x4FuylZOjKf298XBBrPL+zrPXHpqlDfQZTs0x/ZeeVLjgp4Q
+	8yLYW7YSGMxk8f5jL6POY2w/y6nXqeYzjQMnnc/KZ+HJ9h10Dfy0Fuf2
+X-Gm-Gg: ASbGncvYWRsAvmdCQHu5cpt/0ZLbN+5t3w4HClg9ycGRyHBI9F7jNDPjq8WFl/veT27
+	VV2hQYljb2wY7dpt5xuocfvuqER2/lQIjFSCax2jRbiIbAA/3WyFvJFNOFVWfmU99IaV80mFB9W
+	Qgawmpa77qAiW0r1jILNcW1dfejLDfVfcmwDkaLaP23Iq9FWbp/+k6LuWtllGokMdgiDAvGNknT
+	zLm7kR0Ga4PV8XCvykvf8kBDwWzvGJDmPyFjzE73RAtNHvY5H2IMWKM9SyDRSdfOy8zRm6ZGHjU
+	JlgZSXFnOpE6LerfxC0cBjU1wAxYpbrdoeEId8DqjjqyiXuA8o5zNPLRTAhMFevBLULxz2D6Eo1
+	cQGHv3QYapt5AUp4jUkF7MZB3qyKifZVAcrEwQSU1lw==
+X-Google-Smtp-Source: AGHT+IFrPsJ7ocFnnJXVD1xPpmy2Gbr6SdxJFVUck73u2UFAzH256ovImqgekymICTAG/orEeonCbQ==
+X-Received: by 2002:a05:6902:5086:b0:e87:985c:d69f with SMTP id 3f1490d57ef6-e87985cd8c8mr5729673276.41.1750955471718;
+        Thu, 26 Jun 2025 09:31:11 -0700 (PDT)
+Received: from localhost (141.139.145.34.bc.googleusercontent.com. [34.145.139.141])
+        by smtp.gmail.com with UTF8SMTPSA id 3f1490d57ef6-e87a6bd0559sm85077276.32.2025.06.26.09.31.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Jun 2025 09:07:38 -0700 (PDT)
-Date: Thu, 26 Jun 2025 18:07:37 +0200
-From: Paul Chaignon <paul.chaignon@gmail.com>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf 2/2] selftests/bpf: Add negative test cases for snprintf
-Message-ID: <30ed8c0add8d08c22cec95f302d85d2e4a2dd760.1750953849.git.paul.chaignon@gmail.com>
-References: <9d7c0974af8ab9b99723bd3f72d4bea8972d7cb5.1750953849.git.paul.chaignon@gmail.com>
+        Thu, 26 Jun 2025 09:31:11 -0700 (PDT)
+Date: Thu, 26 Jun 2025 12:31:10 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Breno Leitao <leitao@debian.org>, 
+ Andrew Lunn <andrew+netdev@lunn.ch>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ Shuah Khan <shuah@kernel.org>, 
+ Simon Horman <horms@kernel.org>
+Cc: linux-kernel@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ bpf@vger.kernel.org, 
+ gustavold@gmail.com, 
+ Breno Leitao <leitao@debian.org>
+Message-ID: <685d75ceb113c_2e676c294d1@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20250625-netpoll_test-v2-4-47d27775222c@debian.org>
+References: <20250625-netpoll_test-v2-0-47d27775222c@debian.org>
+ <20250625-netpoll_test-v2-4-47d27775222c@debian.org>
+Subject: Re: [PATCH net-next v2 4/4] selftests: net: add netpoll basic
+ functionality test
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9d7c0974af8ab9b99723bd3f72d4bea8972d7cb5.1750953849.git.paul.chaignon@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-This patch adds a couple negative test cases with a trailing % at the
-end of the format string.
+Breno Leitao wrote:
+> Add a basic selftest for the netpoll polling mechanism, specifically
+> targeting the netpoll poll() side.
+> 
+> The test creates a scenario where network transmission is running at
+> maximum speed, and netpoll needs to poll the NIC. This is achieved by:
+> 
+>   1. Configuring a single RX/TX queue to create contention
+>   2. Generating background traffic to saturate the interface
+>   3. Sending netconsole messages to trigger netpoll polling
+>   4. Using dynamic netconsole targets via configfs
+>   5. Delete and create new netconsole targets after some messages
+>   6. Start a bpftrace in parallel to make sure netpoll_poll_dev() is
+>      called
+>   7. If bpftrace exists and netpoll_poll_dev() was called, stop.
+> 
+> The test validates a critical netpoll code path by monitoring traffic
+> flow and ensuring netpoll_poll_dev() is called when the normal TX path
+> is blocked.
+> 
+> This addresses a gap in netpoll test coverage for a path that is
+> tricky for the network stack.
+> 
+> Signed-off-by: Breno Leitao <leitao@debian.org>
 
-Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
----
- tools/testing/selftests/bpf/prog_tests/snprintf.c | 2 ++
- 1 file changed, 2 insertions(+)
+> +def bpftrace_call() -> None:
+> +    """Call bpftrace to find how many times netpoll_poll_dev() is called.
+> +    Output is saved in the global variable `maps`"""
+> +
+> +    # This is going to update the global variable, that will be seen by the
+> +    # main function
+> +    global MAPS  # pylint: disable=W0603
+> +
+> +    # This will be passed to bpftrace as in bpftrace -e "expr"
+> +    expr = "BEGIN{ @hits = 0;} kprobe:netpoll_poll_dev { @hits += 1; }"
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf.c b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-index 4be6fdb78c6a..594441acb707 100644
---- a/tools/testing/selftests/bpf/prog_tests/snprintf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-@@ -116,6 +116,8 @@ static void test_snprintf_negative(void)
- 	ASSERT_ERR(load_single_snprintf("%llc"), "invalid specifier 7");
- 	ASSERT_ERR(load_single_snprintf("\x80"), "non ascii character");
- 	ASSERT_ERR(load_single_snprintf("\x1"), "non printable character");
-+	ASSERT_ERR(load_single_snprintf("%p%"), "invalid specifier 8");
-+	ASSERT_ERR(load_single_snprintf("%s%"), "invalid specifier 9");
- }
- 
- void test_snprintf(void)
--- 
-2.43.0
+Is that BEGIN statement needed? I generally just use count().
 
+> +
+> +    MAPS = bpftrace(expr, timeout=BPFTRACE_TIMEOUT, json=True)
+> +    logging.debug("BPFtrace output: %s", MAPS)
+> +
+> +
+> +def bpftrace_start():
+> +    """Start a thread to call `call_bpf` in parallel for 2 seconds."""
+
+Stale comment? BPFTRACE_TIMEOUT is set to 15.
+
+> +    global BPF_THREAD  # pylint: disable=W0603
+> +
+> +    BPF_THREAD = threading.Thread(target=bpftrace_call)
+> +    BPF_THREAD.start()
+> +    if not BPF_THREAD.is_alive():
+> +        raise KsftSkipEx("BPFtrace thread is not alive. Skipping test")
+> +
+> +
 
