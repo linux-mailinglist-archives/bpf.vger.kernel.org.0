@@ -1,127 +1,146 @@
-Return-Path: <bpf+bounces-61681-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61682-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60575AEA2E3
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 17:42:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7F65AEA32E
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 18:06:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EEA41886F6E
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 15:38:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2829E56470D
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 16:06:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A10E2EBDEF;
-	Thu, 26 Jun 2025 15:37:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D5031EA7CC;
+	Thu, 26 Jun 2025 16:06:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hugWI0Qt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UaMPjkog"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3B012E6133;
-	Thu, 26 Jun 2025 15:37:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AD458632C
+	for <bpf@vger.kernel.org>; Thu, 26 Jun 2025 16:06:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750952268; cv=none; b=KCsPUqmcuUHoFFwQtDX9X+SyhdxSTCVJRmMsZFiX4fuUD8+I4ktTwrWHBQige6UAtZ6Fvnmg96hvCZ31M0Sc6tCPQ7cM9fb9tUClwyMFK7ZhQt6SpxF/0MiQ8KnKIPz6gg5+nx/L565AzxRMf5UjSq76VIuChhKgkcT6j6/rwJE=
+	t=1750954011; cv=none; b=TC+RpxXhpUaDa6WsOn/t1TyRp7/22IvZw/M+0SVMmgnnD9Rwhv+gGEQz3znAXbcAxjEKv9j8dDP1w04E/hvqgblnX0ruA5mjEO5kp6+FVtJh8MmVLEB4K083vxoEFQTtgLyr2Ejj4/rF3PoqTpEnSy2iSFZ5Eoo/oEmk1dOX5cg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750952268; c=relaxed/simple;
-	bh=1kTchX7hydmdDHaIeR4b7vCB4DidJo22IPgQr6l+BIw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hkys7LPlGDpx/Kj7YQnebrw+0wEu/f2b+frm4MtXL+0+P6Rt+OvdTYDKU27XBs1Y5CS/OSD3LJg52atnaHJH4dKU8umbV20Tlrw+OUOeJlgUtdlrJkyjVuHZUKH0DlH0ai5RtvcGIeaYE2i684dakld6om6EL9VVadulilV/jsI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hugWI0Qt; arc=none smtp.client-ip=209.85.214.172
+	s=arc-20240116; t=1750954011; c=relaxed/simple;
+	bh=CPv+h57roqoMlcIpiLcbaCIV52YfW3glAgWBhhfSIQE=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=geKn3usgOU5/PjjHPb5xEstY5XQIoAhzACmS9pM9l8w6XNATwd99hpz0tgyshkUO8+WAqYeqI9Jj8aLZsk1l9ZAAA55KFaKC1j5myfdaREJCKrohNWC4hk2VuqZlA0Sba8sOEfQYCaUPt4zGjcSJ5fi1RsCrisA62aP82MtVqKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UaMPjkog; arc=none smtp.client-ip=209.85.128.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-235d6de331fso16367055ad.3;
-        Thu, 26 Jun 2025 08:37:46 -0700 (PDT)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-453634d8609so9144205e9.3
+        for <bpf@vger.kernel.org>; Thu, 26 Jun 2025 09:06:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750952266; x=1751557066; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=gmail.com; s=20230601; t=1750954008; x=1751558808; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=WBS6+tGrLYEgP8XOrgQa7cC9L5XmsRCAXvGJg8Wcsyc=;
-        b=hugWI0QtJs7EZAmjASty5aAOx9U73zagwL1RVxlL+GvrSb2ssIsXCnw7wM1ln9Gf6V
-         GXeKPSMJF/0M2VqXx+aRZePH/9ujW/dttis2x7Zl8/jj4dfP8oY2ScVOR8dlhrQcSWeU
-         oofnABbm8deyChDcdX/96+Fzs6t0ztAwShP8p9rvYkzBH49O90vf+C1tZ/PTvGUSEC2O
-         yJoikCcH7lylEbXomx9bBZQ6Wg8lMhS3Ac+8vhDJqdRuXygOruhNeMhlfcrtWzphQFgA
-         cKzgwfvMG6Y5enZlABlRfcNKwrASAI9j49NVBAIJfnkwEHsPM26rY2DEP4gx01rcgdp3
-         EK8Q==
+        bh=NBs2TD5EsOW9d9MYe/9/LhyEbhxsu9WLg4UzFZ75eGU=;
+        b=UaMPjkogCwd9iVZEqbovQn3LI+CURncWau0Iqx8NvoZzdjEOWlEPab15O3G1+WShaS
+         NB9zAmcbhBU+AIQVzdMQeTSoXPvWE2sa7hxMDu32TbpjuS4aE+anUV8xYy46k3L+6bi2
+         A3la5APZa3uflVMxgUK8ssdL+GB/7agLnlNbNeM768rpLFsaS+dxheyXR9NkuOjjA+lk
+         jQbXvj5JH4U9B2KRNJCxiMQa07jArpknEHzpIJKQk93P815TCkq2jMoLzlCl7BLqwy0v
+         CWqqOXHJQPrTYVMyfbukBsYFV6stviytAusszqdreDptnStZrRgl/gjaEI5XC/LV97mK
+         cEnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750952266; x=1751557066;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1750954008; x=1751558808;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WBS6+tGrLYEgP8XOrgQa7cC9L5XmsRCAXvGJg8Wcsyc=;
-        b=Eiqz/wfl89uyAHuaZus5ScrIyI/tUGOiD48M8K0RuF1eE2gxWMFCY6Ivb73kMyDWcE
-         /UWh9jZxgbTqrV2qorkKRDg/C7A1pgOgr+oeVF1MGtIbtzHvrT9EJJqjSOc0H5bjZ8Pf
-         VWeGLNkg3yjXxDYnDCC/RmbDdboa1I1WIg/o7EFZErOQLVC6GfyXFwiukPlfSMvC6bQc
-         OQ/WOoQC4Ar4sDoS/FTzIVpuf7Ymnp/4vM4bFirp2EQn9gleWpW5noeyMPGzBC6fGyO5
-         zxLdMtw9Vr8WYZiceF2x/QNhhNgVeXGDUABJ3KfdoBv48y9F0OPd1C7i0MJRWjHHyQge
-         O8ig==
-X-Forwarded-Encrypted: i=1; AJvYcCUagjCGwrnRBhK/vkq9XtykoTsc/NcG0wYqvyQ2wg/HGEQ9EgjChXXyr3PphCWyd7ftwhj7LD8jyKCrhDZM@vger.kernel.org, AJvYcCXYZSn5jpadhBti387g9vSdRUVzQxQf74ovJKP0OwMtZSzn0T6Ce8SHY1tz2jgPaD/MlL4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxBNrI0rdwIg4kZhsd/mX+6bclRv81xHdZm7t01J3EBUQKA5coA
-	fGHLMMKxHdKrcQmwH9sLh+vL2zzsX1inQDol06420amxassCwEjSt0iqCbUY5w==
-X-Gm-Gg: ASbGnctq527zRL49oznA5gr324Uoc3S/7DUeLbR2TGy2cBi7khaTVNyUgNxeM6cOqmJ
-	6GS8l2YjPojPCZkl9MTmkM9CpNa2gH93QHu5ePa+Q04ueDB7Gu2zXO+zyrMYse7GExBezeByycr
-	T5APvheDuslPE5Lcg23LXPQYvBc4Zkfn5ORSLdsaVJaDjQY95eFRg6zVoq7mrtCIkN76JREzNbB
-	erg5Fpe9o9FZYr1T7PmUjjmHJE8lGqad8naky2a5gUBq+Eu/tZ287JOI2SZkTrKzpnNf8XqisMJ
-	BU0ypq9nI08TCP8WFD2wLFio322DPUrYAugVnjHvoGc+hVqofnNnLJ7BLLGo+xn44GDcdvgI77W
-	bb9TzHtKDtjLLAqTt+MoSxRWmV05FIkpZQNSKEnk=
-X-Google-Smtp-Source: AGHT+IE9HZQVIg9J0bGTauaoFxunVzdT6LAv+3ddjqizR0AY608ymj/oowE40lSal+PsH63zgCKDHQ==
-X-Received: by 2002:a17:903:2a87:b0:235:711:f810 with SMTP id d9443c01a7336-23823fe4dd9mr121698455ad.23.1750952266162;
-        Thu, 26 Jun 2025 08:37:46 -0700 (PDT)
-Received: from ?IPV6:2001:ee0:4f0e:fb30:2b9f:aa14:497d:25f1? ([2001:ee0:4f0e:fb30:2b9f:aa14:497d:25f1])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23abe329d23sm1164745ad.54.2025.06.26.08.37.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Jun 2025 08:37:45 -0700 (PDT)
-Message-ID: <8f0927bf-dc2f-4a20-887a-6d8529623dd7@gmail.com>
-Date: Thu, 26 Jun 2025 22:37:38 +0700
+        bh=NBs2TD5EsOW9d9MYe/9/LhyEbhxsu9WLg4UzFZ75eGU=;
+        b=HXbEYxMbzuzBx/cW9ZiLK6ulSAcvxepo5ouMWJOOHIN2xMB/VWfqgPzYtdTqFGoNGB
+         k3O04vSj+CwRJkVdKkn+NwAVVkg42QCOd1OpUbWCUlHj41vEwpPfYEIaL/gI0cxJklVv
+         GiQGngi0TW3cxr0yNrYKpfCf7IhY6psD0X21p1riSZGF17MfCy5RE4dVPWvaZ1gAFm58
+         W08XG/KNF+uTaoY02MSX4rq/7ZkCLH7mAwqx2BJ3Uzr9y5gxxsD77l3mrFiiuioVtxrd
+         FhhPTcT0LHVxvZPV69p2OTEcFg7NfgZLT9BzJmQFm5oTW3Szv+bYKqubDpLzU9Oxj6Oe
+         sNhg==
+X-Gm-Message-State: AOJu0YwRaFYbf5SngxaqA6N0nWIfQRAhru+qzWVXhZogeIvC1r3ujjqp
+	bcjtrC7Yr2+BIAHE57a3NkjUitRXs9bW0u8DBJCYnT1iSc2knvjnR/RiOjkod0Go
+X-Gm-Gg: ASbGncsklOX3uEAvblmU4ZPXEmdjpJERIOQjq8cHeY8XDQI7jIa07xpDn0cpxmvFfbo
+	UHmlVF70NJimQ577oTu2c6FXpusORaip05BUD0dnFsspzlcztnntmQoC27G4zVHIRfKbdwoTdHD
+	KIh7LvDPQWo/k22efms9ZEiuxeQls+hnckqI9LApcOHxPlLKLEIf38IGL2udrfDJXwxWPMRiUjO
+	GzWELW6wU846SNpUJPAo1dM0MtRW+InFdt+2oXSxS4XI7kWI/9kcg2lrM3FsKURdjjkMrXxVd9Q
+	dCKp+w4gkkwQFzoDVn8Xpbxu55eYjKJa39PIvUAlE1Y6Tkc/bZPNtE8dkiDqXL+e3KLqTr2cVG4
+	uWDX1R42TH6I2A61RnO4DUddROoqcK34F1/2teTRS2k1+kP4XXM9g6L88YEzCGA==
+X-Google-Smtp-Source: AGHT+IG2WaebGgLNib2/0k8U+yjwKM89JU2jZtRr6fyVpZ7tMkkDGzThbtlOGUGAfKK676d10Zu4iQ==
+X-Received: by 2002:a05:6000:400b:b0:3a4:e4ee:4ca9 with SMTP id ffacd0b85a97d-3a8fe5b2bc9mr85555f8f.23.1750954007521;
+        Thu, 26 Jun 2025 09:06:47 -0700 (PDT)
+Received: from mail.gmail.com (2a01cb0889497e00ba828d421a4aa7ad.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:ba82:8d42:1a4a:a7ad])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45380d628c6sm32778755e9.3.2025.06.26.09.06.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Jun 2025 09:06:44 -0700 (PDT)
+Date: Thu, 26 Jun 2025 18:06:42 +0200
+From: Paul Chaignon <paul.chaignon@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Florent Revest <revest@chromium.org>
+Subject: [PATCH bpf 1/2] bpf: Reject %p% format string in bprintf-like helpers
+Message-ID: <9d7c0974af8ab9b99723bd3f72d4bea8972d7cb5.1750953849.git.paul.chaignon@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 3/4] virtio-net: create a helper to check received
- mergeable buffer's length
-To: Jason Wang <jasowang@redhat.com>
-Cc: netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
- Xuan Zhuo <xuanzhuo@linux.alibaba.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?=
- <eperezma@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Stanislav Fomichev <sdf@fomichev.me>, virtualization@lists.linux.dev,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-References: <20250625160849.61344-1-minhquangbui99@gmail.com>
- <20250625160849.61344-4-minhquangbui99@gmail.com>
- <CACGkMEvY9pvvfq3Ok=55O1t3+689RCfqQJqaWjLcduHJ79CDWA@mail.gmail.com>
-Content-Language: en-US
-From: Bui Quang Minh <minhquangbui99@gmail.com>
-In-Reply-To: <CACGkMEvY9pvvfq3Ok=55O1t3+689RCfqQJqaWjLcduHJ79CDWA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 6/26/25 09:38, Jason Wang wrote:
-> On Thu, Jun 26, 2025 at 12:10 AM Bui Quang Minh
-> <minhquangbui99@gmail.com> wrote:
->> Currently, we have repeated code to check the received mergeable buffer's
->> length with allocated size. This commit creates a helper to do that and
->> converts current code to use it.
->>
->> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
-> I think it would be better to introduce this as patch 1, so a
-> mergeable XDP path can use that directly.
->
-> This will have a smaller changeset.
+    static const char fmt[] = "%p%";
+    bpf_trace_printk(fmt, sizeof(fmt));
 
-I'm just concerned that it might make backporting the fix harder because 
-the fix depends on this refactor and this refactor touches some function 
-that may create conflict.
+The above BPF program isn't rejected and causes a kernel warning at
+runtime:
 
-Thanks,
-Quang Minh.
+    Please remove unsupported %\x00 in format string
+    WARNING: CPU: 1 PID: 7244 at lib/vsprintf.c:2680 format_decode+0x49c/0x5d0
+
+This happens because bpf_bprintf_prepare skips over the second %,
+detected as punctuation, while processing %p. This patch fixes it by
+not skipping over punctuation. %\x00 is then processed in the next
+iteration and rejected.
+
+Reported-by: syzbot+e2c932aec5c8a6e1d31c@syzkaller.appspotmail.com
+Fixes: 48cac3f4a96d ("bpf: Implement formatted output helpers with bstr_printf")
+Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
+---
+ kernel/bpf/helpers.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index b71e428ad936..ad6df48b540c 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -884,6 +884,13 @@ int bpf_bprintf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
+ 		if (fmt[i] == 'p') {
+ 			sizeof_cur_arg = sizeof(long);
+ 
++			if (fmt[i + 1] == 0 || isspace(fmt[i + 1]) ||
++			    ispunct(fmt[i + 1])) {
++				if (tmp_buf)
++					cur_arg = raw_args[num_spec];
++				goto nocopy_fmt;
++			}
++
+ 			if ((fmt[i + 1] == 'k' || fmt[i + 1] == 'u') &&
+ 			    fmt[i + 2] == 's') {
+ 				fmt_ptype = fmt[i + 1];
+@@ -891,11 +898,9 @@ int bpf_bprintf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
+ 				goto fmt_str;
+ 			}
+ 
+-			if (fmt[i + 1] == 0 || isspace(fmt[i + 1]) ||
+-			    ispunct(fmt[i + 1]) || fmt[i + 1] == 'K' ||
++			if (fmt[i + 1] == 'K' ||
+ 			    fmt[i + 1] == 'x' || fmt[i + 1] == 's' ||
+ 			    fmt[i + 1] == 'S') {
+-				/* just kernel pointers */
+ 				if (tmp_buf)
+ 					cur_arg = raw_args[num_spec];
+ 				i++;
+-- 
+2.43.0
 
 
