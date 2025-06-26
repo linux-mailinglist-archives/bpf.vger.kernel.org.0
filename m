@@ -1,62 +1,62 @@
-Return-Path: <bpf+bounces-61645-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61646-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1CDAAE95AE
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 08:09:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 356CDAE95AD
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 08:09:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD7BC1895931
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 06:09:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8F5F5A6B6D
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 06:08:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D18322264AC;
-	Thu, 26 Jun 2025 06:09:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C84972264C8;
+	Thu, 26 Jun 2025 06:09:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Vt79WuZo"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YR7g/uj4"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C98E21A0BF1
-	for <bpf@vger.kernel.org>; Thu, 26 Jun 2025 06:08:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 530A81A0BF1
+	for <bpf@vger.kernel.org>; Thu, 26 Jun 2025 06:09:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750918141; cv=none; b=iRvP08AygVavw/GbKJgS0YRIq3+E7Viw6Wudte0Ar2TS57ginlIdUb3Mp+iUKRcw+HHeZeB4FsKZ7qrCDwMB7oTU6TN6yIblcguwjEcYyDdSfVoG0dDm9djvX+MFrMTwMClZs10wPO1ID4EsTO3ufkE4nKnxkV+SOg/5QeZJTQg=
+	t=1750918148; cv=none; b=jNQ3YpjPNPtXlcVEu7lLa8b0WYXw4MdlXtp+COI9VDzxWxY6wiTlQMfasf7wapxsB3+gkJ8FHD4og15fLpKMPU4sZx/EQeqTIxTB59EQSAyROZj8SuwNddR5AurrM4Xbw7TzxE2uxB5v8FzC3MwhuLP+2kwOVcLthwg8Fi4zy34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750918141; c=relaxed/simple;
-	bh=f6spr3VtX0+1LXtsVuY46OJ6JwE4zTELJQDLAyGCzcM=;
+	s=arc-20240116; t=1750918148; c=relaxed/simple;
+	bh=BfOrDEg7i5S3lU2PIAdFtZkaDgKeRu5mJURvo67ok0o=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nmOaFI4TRD/KlDPXWM3e/lxXY8ymI0U+LH2lCNNIeSGuhtfBz3TYJZE3Oot2RJW3wcuJO/aAkvFNf920KiNv69lUZGJ9oYX4ZxptKq7r2/9gtOT9En9hJmQ5AswsAnNuxSbI51UdZ5t1ldZP+5Iq90Ho5HJZW6UAw88CxnrcbhE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Vt79WuZo; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=pcn1gCqYVYsgiZAaLHwDEP8ZKQJxX5gk22H6C6veqg5YynAZnBmMc3zB3w3Q3biBeivXwBEH6YBL4Vif4llZ8MPw+0BBSpginesgCKdvtUWx0DQWkjRMknwPHiWF0EblDMX5cKMany4+BxaKMMjkfIqbHLd1KKFgiZ6ghYaJj+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YR7g/uj4; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1750918139;
+	s=mimecast20190719; t=1750918145;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=UQzuS9ticxFAIH0qqxTxFONjfiK7qksOljua+y6zsMg=;
-	b=Vt79WuZoEaJcVwUaIv19pxnir5CDtGWgtRBr7F6jTWUHbL43xeIAtLvYNiO7UoQec327G2
-	jpCK/8TAHTQnhUb0s0K2aRfNWHvDp1NgfQOb0U+lpL0+ZoBVok+qj/FzbSw0ERpAHYCG4+
-	TP/TuTgDlhIdjAvaAhwFFyR/Cv6Mpvc=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+	bh=k+y3m+THIn/CeuF8kktFdvx9JfzvHUXz39gnlA/HKpw=;
+	b=YR7g/uj4sUh/N84vJqdPUHEdmxiLUUl57gYoptdd9HQnxS/wiKEscsJb9RBzYtGtIGujn4
+	XAC2Fs+JBXuF4qPQ+pJ8kDZANe4xibMWjkf6Sw/BO2954payaQTGOurdrXkHxDdwCwenPi
+	znHhFQ94D27qr0hEMxY6PTJut4r5EhE=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-53-DAQzE0BGNVOg9NieephveA-1; Thu,
- 26 Jun 2025 02:08:55 -0400
-X-MC-Unique: DAQzE0BGNVOg9NieephveA-1
-X-Mimecast-MFC-AGG-ID: DAQzE0BGNVOg9NieephveA_1750918133
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-590-800ARuTSNZiBfQOKrnWmbA-1; Thu,
+ 26 Jun 2025 02:08:59 -0400
+X-MC-Unique: 800ARuTSNZiBfQOKrnWmbA-1
+X-Mimecast-MFC-AGG-ID: 800ARuTSNZiBfQOKrnWmbA_1750918137
 Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 5509C1956089;
-	Thu, 26 Jun 2025 06:08:53 +0000 (UTC)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 6CE0E18011EE;
+	Thu, 26 Jun 2025 06:08:57 +0000 (UTC)
 Received: from vmalik-fedora.brq.redhat.com (unknown [10.43.17.39])
-	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B9E4E19560A3;
-	Thu, 26 Jun 2025 06:08:49 +0000 (UTC)
+	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id AD1EB19560A3;
+	Thu, 26 Jun 2025 06:08:53 +0000 (UTC)
 From: Viktor Malik <vmalik@redhat.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -72,9 +72,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Hao Luo <haoluo@google.com>,
 	Jiri Olsa <jolsa@kernel.org>,
 	Viktor Malik <vmalik@redhat.com>
-Subject: [PATCH bpf-next v8 3/4] selftests/bpf: Allow macros in __retval
-Date: Thu, 26 Jun 2025 08:08:30 +0200
-Message-ID: <a6c6b551ae0575351faa7b7a1df52f9341a5cbe8.1750917800.git.vmalik@redhat.com>
+Subject: [PATCH bpf-next v8 4/4] selftests/bpf: Add tests for string kfuncs
+Date: Thu, 26 Jun 2025 08:08:31 +0200
+Message-ID: <090451a2e60c9ae1dceb4d1bfafa3479db5c7481.1750917800.git.vmalik@redhat.com>
 In-Reply-To: <cover.1750917800.git.vmalik@redhat.com>
 References: <cover.1750917800.git.vmalik@redhat.com>
 Precedence: bulk
@@ -86,128 +86,274 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
 
-Allow macro expansion for values passed to the `__retval` and
-`__retval_unpriv` attributes. This is especially useful for testing
-programs which return various error codes.
+Add both positive and negative tests cases using string kfuncs added in
+the previous patches.
 
-With this change, the code for parsing special literals can be made
-simpler, as the literals are defined via macros. The only exception is
-INT_MIN which expands to (-INT_MAX -1), which is not single number and
-cannot be parsed by strtol. So, we instead use a prefixed literal
-_INT_MIN in __retval and handle it separately (assign the expected
-return to INT_MIN). Also, strtol cannot handle the "ll" suffix so change
-the value of POINTER_VALUE from 0xcafe4all to 0xbadcafe.
+Positive tests check that the functions work as expected.
 
+Negative tests pass various incorrect strings to the kfuncs and check
+for the expected error codes:
+  -E2BIG  when passing too long strings
+  -EFAULT when trying to read inaccessible kernel memory
+  -ERANGE when passing userspace pointers on arches with non-overlapping
+          address spaces
+
+A majority of the tests use the RUN_TESTS helper which executes BPF
+programs with BPF_PROG_TEST_RUN and check for the expected return value.
+An exception to this are tests for long strings as we need to memset the
+long string from userspace (at least I haven't found an ergonomic way to
+memset it from a BPF program), which cannot be done using the RUN_TESTS
+infrastructure.
+
+Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
 Signed-off-by: Viktor Malik <vmalik@redhat.com>
 ---
- tools/testing/selftests/bpf/progs/bpf_misc.h  | 14 ++++++-----
- .../bpf/progs/verifier_div_overflow.c         |  4 ++--
- tools/testing/selftests/bpf/test_loader.c     | 24 +++++++------------
- 3 files changed, 19 insertions(+), 23 deletions(-)
+ .../selftests/bpf/prog_tests/string_kfuncs.c  | 65 ++++++++++++++
+ .../bpf/progs/string_kfuncs_failure1.c        | 87 +++++++++++++++++++
+ .../bpf/progs/string_kfuncs_failure2.c        | 23 +++++
+ .../bpf/progs/string_kfuncs_success.c         | 37 ++++++++
+ 4 files changed, 212 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/string_kfuncs.c
+ create mode 100644 tools/testing/selftests/bpf/progs/string_kfuncs_failure1.c
+ create mode 100644 tools/testing/selftests/bpf/progs/string_kfuncs_failure2.c
+ create mode 100644 tools/testing/selftests/bpf/progs/string_kfuncs_success.c
 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
-index a678463e972c..20dce508d8e0 100644
---- a/tools/testing/selftests/bpf/progs/bpf_misc.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
-@@ -83,9 +83,11 @@
-  *                   expect return value to match passed parameter:
-  *                   - a decimal number
-  *                   - a hexadecimal number, when starts from 0x
-- *                   - literal INT_MIN
-- *                   - literal POINTER_VALUE (see definition below)
-- *                   - literal TEST_DATA_LEN (see definition below)
-+ *                   - a macro which expands to one of the above
-+ *                   - literal _INT_MIN (expands to INT_MIN)
-+ *                   In addition, two special macros are defined below:
-+ *                   - POINTER_VALUE
-+ *                   - TEST_DATA_LEN
-  * __retval_unpriv   Same, but load program in unprivileged mode.
-  *
-  * __description     Text to be used instead of a program name for display
-@@ -125,8 +127,8 @@
- #define __success_unpriv	__attribute__((btf_decl_tag("comment:test_expect_success_unpriv")))
- #define __log_level(lvl)	__attribute__((btf_decl_tag("comment:test_log_level="#lvl)))
- #define __flag(flag)		__attribute__((btf_decl_tag("comment:test_prog_flags="#flag)))
--#define __retval(val)		__attribute__((btf_decl_tag("comment:test_retval="#val)))
--#define __retval_unpriv(val)	__attribute__((btf_decl_tag("comment:test_retval_unpriv="#val)))
-+#define __retval(val)		__attribute__((btf_decl_tag("comment:test_retval="XSTR(val))))
-+#define __retval_unpriv(val)	__attribute__((btf_decl_tag("comment:test_retval_unpriv="XSTR(val))))
- #define __auxiliary		__attribute__((btf_decl_tag("comment:test_auxiliary")))
- #define __auxiliary_unpriv	__attribute__((btf_decl_tag("comment:test_auxiliary_unpriv")))
- #define __btf_path(path)	__attribute__((btf_decl_tag("comment:test_btf_path=" path)))
-@@ -155,7 +157,7 @@
- #define __imm_insn(name, expr) [name]"i"(*(long *)&(expr))
- 
- /* Magic constants used with __retval() */
--#define POINTER_VALUE	0xcafe4all
-+#define POINTER_VALUE	0xbadcafe
- #define TEST_DATA_LEN	64
- 
- #ifndef __used
-diff --git a/tools/testing/selftests/bpf/progs/verifier_div_overflow.c b/tools/testing/selftests/bpf/progs/verifier_div_overflow.c
-index 458984da804c..34e0c012ee76 100644
---- a/tools/testing/selftests/bpf/progs/verifier_div_overflow.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_div_overflow.c
-@@ -77,7 +77,7 @@ l0_%=:	exit;						\
- 
- SEC("tc")
- __description("MOD32 overflow, check 1")
--__success __retval(INT_MIN)
-+__success __retval(_INT_MIN)
- __naked void mod32_overflow_check_1(void)
- {
- 	asm volatile ("					\
-@@ -92,7 +92,7 @@ __naked void mod32_overflow_check_1(void)
- 
- SEC("tc")
- __description("MOD32 overflow, check 2")
--__success __retval(INT_MIN)
-+__success __retval(_INT_MIN)
- __naked void mod32_overflow_check_2(void)
- {
- 	asm volatile ("					\
-diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/selftests/bpf/test_loader.c
-index 2c7e9729d5fe..78423cf89e01 100644
---- a/tools/testing/selftests/bpf/test_loader.c
-+++ b/tools/testing/selftests/bpf/test_loader.c
-@@ -40,7 +40,7 @@
- #define TEST_TAG_LOAD_MODE_PFX "comment:load_mode="
- 
- /* Warning: duplicated in bpf_misc.h */
--#define POINTER_VALUE	0xcafe4all
-+#define POINTER_VALUE	0xbadcafe
- #define TEST_DATA_LEN	64
- 
- #ifdef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
-@@ -318,20 +318,14 @@ static int parse_caps(const char *str, __u64 *val, const char *name)
- 
- static int parse_retval(const char *str, int *val, const char *name)
- {
--	struct {
--		char *name;
--		int val;
--	} named_values[] = {
--		{ "INT_MIN"      , INT_MIN },
--		{ "POINTER_VALUE", POINTER_VALUE },
--		{ "TEST_DATA_LEN", TEST_DATA_LEN },
--	};
--	int i;
--
--	for (i = 0; i < ARRAY_SIZE(named_values); ++i) {
--		if (strcmp(str, named_values[i].name) != 0)
--			continue;
--		*val = named_values[i].val;
-+	/*
-+	 * INT_MIN is defined as (-INT_MAX -1), i.e. it doesn't expand to a
-+	 * single int and cannot be parsed with strtol, so we handle it
-+	 * separately here. In addition, it expands to different expressions in
-+	 * different compilers so we use a prefixed _INT_MIN instead.
-+	 */
-+	if (strcmp(str, "_INT_MIN") == 0) {
-+		*val = INT_MIN;
- 		return 0;
- 	}
- 
+diff --git a/tools/testing/selftests/bpf/prog_tests/string_kfuncs.c b/tools/testing/selftests/bpf/prog_tests/string_kfuncs.c
+new file mode 100644
+index 000000000000..35af8044d059
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/string_kfuncs.c
+@@ -0,0 +1,65 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (C) 2025 Red Hat, Inc.*/
++#include <test_progs.h>
++#include "string_kfuncs_success.skel.h"
++#include "string_kfuncs_failure1.skel.h"
++#include "string_kfuncs_failure2.skel.h"
++#include <sys/mman.h>
++
++static const char * const test_cases[] = {
++	"strcmp",
++	"strchr",
++	"strchrnul",
++	"strnchr",
++	"strrchr",
++	"strlen",
++	"strnlen",
++	"strspn_str",
++	"strspn_accept",
++	"strcspn_str",
++	"strcspn_reject",
++	"strstr",
++	"strnstr",
++};
++
++void run_too_long_tests(void)
++{
++	struct string_kfuncs_failure2 *skel;
++	struct bpf_program *prog;
++	char test_name[256];
++	int err, i;
++
++	skel = string_kfuncs_failure2__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "string_kfuncs_failure2__open_and_load"))
++		return;
++
++	memset(skel->bss->long_str, 'a', sizeof(skel->bss->long_str));
++
++	for (i = 0; i < ARRAY_SIZE(test_cases); i++) {
++		sprintf(test_name, "test_%s_too_long", test_cases[i]);
++		if (!test__start_subtest(test_name))
++			continue;
++
++		prog = bpf_object__find_program_by_name(skel->obj, test_name);
++		if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
++			goto cleanup;
++
++		LIBBPF_OPTS(bpf_test_run_opts, topts);
++		err = bpf_prog_test_run_opts(bpf_program__fd(prog), &topts);
++		if (!ASSERT_OK(err, "bpf_prog_test_run"))
++			goto cleanup;
++
++		ASSERT_EQ(topts.retval, -E2BIG, "reading too long string fails with -E2BIG");
++	}
++
++cleanup:
++	string_kfuncs_failure2__destroy(skel);
++}
++
++void test_string_kfuncs(void)
++{
++	RUN_TESTS(string_kfuncs_success);
++	RUN_TESTS(string_kfuncs_failure1);
++
++	run_too_long_tests();
++}
+diff --git a/tools/testing/selftests/bpf/progs/string_kfuncs_failure1.c b/tools/testing/selftests/bpf/progs/string_kfuncs_failure1.c
+new file mode 100644
+index 000000000000..53af438bd998
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/string_kfuncs_failure1.c
+@@ -0,0 +1,87 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (C) 2025 Red Hat, Inc.*/
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <linux/limits.h>
++#include "bpf_misc.h"
++#include "errno.h"
++
++char *user_ptr = (char *)1;
++char *invalid_kern_ptr = (char *)-1;
++
++/*
++ * When passing userspace pointers, the error code differs based on arch:
++ *   -ERANGE on arches with non-overlapping address spaces
++ *   -EFAULT on other arches
++ */
++#if defined(__TARGET_ARCH_arm) || defined(__TARGET_ARCH_loongarch) || \
++    defined(__TARGET_ARCH_powerpc) || defined(__TARGET_ARCH_x86)
++#define USER_PTR_ERR -ERANGE
++#else
++#define USER_PTR_ERR -EFAULT
++#endif
++
++/*
++ * On s390, __get_kernel_nofault (used in string kfuncs) returns 0 for NULL and
++ * user_ptr (instead of causing an exception) so the below two groups of tests
++ * are not applicable.
++ */
++#ifndef __TARGET_ARCH_s390
++
++/* Passing NULL to string kfuncs (treated as a userspace ptr) */
++SEC("syscall") __retval(USER_PTR_ERR) int test_strcmp_null1(void *ctx) { return bpf_strcmp(NULL, "hello"); }
++SEC("syscall")  __retval(USER_PTR_ERR)int test_strcmp_null2(void *ctx) { return bpf_strcmp("hello", NULL); }
++SEC("syscall")  __retval(USER_PTR_ERR)int test_strchr_null(void *ctx) { return bpf_strchr(NULL, 'a'); }
++SEC("syscall")  __retval(USER_PTR_ERR)int test_strchrnul_null(void *ctx) { return bpf_strchrnul(NULL, 'a'); }
++SEC("syscall")  __retval(USER_PTR_ERR)int test_strnchr_null(void *ctx) { return bpf_strnchr(NULL, 1, 'a'); }
++SEC("syscall")  __retval(USER_PTR_ERR)int test_strrchr_null(void *ctx) { return bpf_strrchr(NULL, 'a'); }
++SEC("syscall")  __retval(USER_PTR_ERR)int test_strlen_null(void *ctx) { return bpf_strlen(NULL); }
++SEC("syscall")  __retval(USER_PTR_ERR)int test_strnlen_null(void *ctx) { return bpf_strnlen(NULL, 1); }
++SEC("syscall")  __retval(USER_PTR_ERR)int test_strspn_null1(void *ctx) { return bpf_strspn(NULL, "hello"); }
++SEC("syscall")  __retval(USER_PTR_ERR)int test_strspn_null2(void *ctx) { return bpf_strspn("hello", NULL); }
++SEC("syscall")  __retval(USER_PTR_ERR)int test_strcspn_null1(void *ctx) { return bpf_strcspn(NULL, "hello"); }
++SEC("syscall")  __retval(USER_PTR_ERR)int test_strcspn_null2(void *ctx) { return bpf_strcspn("hello", NULL); }
++SEC("syscall")  __retval(USER_PTR_ERR)int test_strstr_null1(void *ctx) { return bpf_strstr(NULL, "hello"); }
++SEC("syscall")  __retval(USER_PTR_ERR)int test_strstr_null2(void *ctx) { return bpf_strstr("hello", NULL); }
++SEC("syscall")  __retval(USER_PTR_ERR)int test_strnstr_null1(void *ctx) { return bpf_strnstr(NULL, "hello", 1); }
++SEC("syscall")  __retval(USER_PTR_ERR)int test_strnstr_null2(void *ctx) { return bpf_strnstr("hello", NULL, 1); }
++
++/* Passing userspace ptr to string kfuncs */
++SEC("syscall") __retval(USER_PTR_ERR) int test_strcmp_user_ptr1(void *ctx) { return bpf_strcmp(user_ptr, "hello"); }
++SEC("syscall") __retval(USER_PTR_ERR) int test_strcmp_user_ptr2(void *ctx) { return bpf_strcmp("hello", user_ptr); }
++SEC("syscall") __retval(USER_PTR_ERR) int test_strchr_user_ptr(void *ctx) { return bpf_strchr(user_ptr, 'a'); }
++SEC("syscall") __retval(USER_PTR_ERR) int test_strchrnul_user_ptr(void *ctx) { return bpf_strchrnul(user_ptr, 'a'); }
++SEC("syscall") __retval(USER_PTR_ERR) int test_strnchr_user_ptr(void *ctx) { return bpf_strnchr(user_ptr, 1, 'a'); }
++SEC("syscall") __retval(USER_PTR_ERR) int test_strrchr_user_ptr(void *ctx) { return bpf_strrchr(user_ptr, 'a'); }
++SEC("syscall") __retval(USER_PTR_ERR) int test_strlen_user_ptr(void *ctx) { return bpf_strlen(user_ptr); }
++SEC("syscall") __retval(USER_PTR_ERR) int test_strnlen_user_ptr(void *ctx) { return bpf_strnlen(user_ptr, 1); }
++SEC("syscall") __retval(USER_PTR_ERR) int test_strspn_user_ptr1(void *ctx) { return bpf_strspn(user_ptr, "hello"); }
++SEC("syscall") __retval(USER_PTR_ERR) int test_strspn_user_ptr2(void *ctx) { return bpf_strspn("hello", user_ptr); }
++SEC("syscall") __retval(USER_PTR_ERR) int test_strcspn_user_ptr1(void *ctx) { return bpf_strcspn(user_ptr, "hello"); }
++SEC("syscall") __retval(USER_PTR_ERR) int test_strcspn_user_ptr2(void *ctx) { return bpf_strcspn("hello", user_ptr); }
++SEC("syscall") __retval(USER_PTR_ERR) int test_strstr_user_ptr1(void *ctx) { return bpf_strstr(user_ptr, "hello"); }
++SEC("syscall") __retval(USER_PTR_ERR) int test_strstr_user_ptr2(void *ctx) { return bpf_strstr("hello", user_ptr); }
++SEC("syscall") __retval(USER_PTR_ERR) int test_strnstr_user_ptr1(void *ctx) { return bpf_strnstr(user_ptr, "hello", 1); }
++SEC("syscall") __retval(USER_PTR_ERR) int test_strnstr_user_ptr2(void *ctx) { return bpf_strnstr("hello", user_ptr, 1); }
++
++#endif /* __TARGET_ARCH_s390 */
++
++/* Passing invalid kernel ptr to string kfuncs should always return -EFAULT */
++SEC("syscall") __retval(-EFAULT) int test_strcmp_pagefault1(void *ctx) { return bpf_strcmp(invalid_kern_ptr, "hello"); }
++SEC("syscall") __retval(-EFAULT) int test_strcmp_pagefault2(void *ctx) { return bpf_strcmp("hello", invalid_kern_ptr); }
++SEC("syscall") __retval(-EFAULT) int test_strchr_pagefault(void *ctx) { return bpf_strchr(invalid_kern_ptr, 'a'); }
++SEC("syscall") __retval(-EFAULT) int test_strchrnul_pagefault(void *ctx) { return bpf_strchrnul(invalid_kern_ptr, 'a'); }
++SEC("syscall") __retval(-EFAULT) int test_strnchr_pagefault(void *ctx) { return bpf_strnchr(invalid_kern_ptr, 1, 'a'); }
++SEC("syscall") __retval(-EFAULT) int test_strrchr_pagefault(void *ctx) { return bpf_strrchr(invalid_kern_ptr, 'a'); }
++SEC("syscall") __retval(-EFAULT) int test_strlen_pagefault(void *ctx) { return bpf_strlen(invalid_kern_ptr); }
++SEC("syscall") __retval(-EFAULT) int test_strnlen_pagefault(void *ctx) { return bpf_strnlen(invalid_kern_ptr, 1); }
++SEC("syscall") __retval(-EFAULT) int test_strspn_pagefault1(void *ctx) { return bpf_strspn(invalid_kern_ptr, "hello"); }
++SEC("syscall") __retval(-EFAULT) int test_strspn_pagefault2(void *ctx) { return bpf_strspn("hello", invalid_kern_ptr); }
++SEC("syscall") __retval(-EFAULT) int test_strcspn_pagefault1(void *ctx) { return bpf_strcspn(invalid_kern_ptr, "hello"); }
++SEC("syscall") __retval(-EFAULT) int test_strcspn_pagefault2(void *ctx) { return bpf_strcspn("hello", invalid_kern_ptr); }
++SEC("syscall") __retval(-EFAULT) int test_strstr_pagefault1(void *ctx) { return bpf_strstr(invalid_kern_ptr, "hello"); }
++SEC("syscall") __retval(-EFAULT) int test_strstr_pagefault2(void *ctx) { return bpf_strstr("hello", invalid_kern_ptr); }
++SEC("syscall") __retval(-EFAULT) int test_strnstr_pagefault1(void *ctx) { return bpf_strnstr(invalid_kern_ptr, "hello", 1); }
++SEC("syscall") __retval(-EFAULT) int test_strnstr_pagefault2(void *ctx) { return bpf_strnstr("hello", invalid_kern_ptr, 1); }
++
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/string_kfuncs_failure2.c b/tools/testing/selftests/bpf/progs/string_kfuncs_failure2.c
+new file mode 100644
+index 000000000000..89fb4669b0e9
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/string_kfuncs_failure2.c
+@@ -0,0 +1,23 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (C) 2025 Red Hat, Inc.*/
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <linux/limits.h>
++
++char long_str[XATTR_SIZE_MAX + 1];
++
++SEC("syscall") int test_strcmp_too_long(void *ctx) { return bpf_strcmp(long_str, long_str); }
++SEC("syscall") int test_strchr_too_long(void *ctx) { return bpf_strchr(long_str, 'b'); }
++SEC("syscall") int test_strchrnul_too_long(void *ctx) { return bpf_strchrnul(long_str, 'b'); }
++SEC("syscall") int test_strnchr_too_long(void *ctx) { return bpf_strnchr(long_str, sizeof(long_str), 'b'); }
++SEC("syscall") int test_strrchr_too_long(void *ctx) { return bpf_strrchr(long_str, 'b'); }
++SEC("syscall") int test_strlen_too_long(void *ctx) { return bpf_strlen(long_str); }
++SEC("syscall") int test_strnlen_too_long(void *ctx) { return bpf_strnlen(long_str, sizeof(long_str)); }
++SEC("syscall") int test_strspn_str_too_long(void *ctx) { return bpf_strspn(long_str, "a"); }
++SEC("syscall") int test_strspn_accept_too_long(void *ctx) { return bpf_strspn("b", long_str); }
++SEC("syscall") int test_strcspn_str_too_long(void *ctx) { return bpf_strcspn(long_str, "b"); }
++SEC("syscall") int test_strcspn_reject_too_long(void *ctx) { return bpf_strcspn("b", long_str); }
++SEC("syscall") int test_strstr_too_long(void *ctx) { return bpf_strstr(long_str, "hello"); }
++SEC("syscall") int test_strnstr_too_long(void *ctx) { return bpf_strnstr(long_str, "hello", sizeof(long_str)); }
++
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/string_kfuncs_success.c b/tools/testing/selftests/bpf/progs/string_kfuncs_success.c
+new file mode 100644
+index 000000000000..46697f381878
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/string_kfuncs_success.c
+@@ -0,0 +1,37 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (C) 2025 Red Hat, Inc.*/
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++#include "errno.h"
++
++char str[] = "hello world";
++
++#define __test(retval) SEC("syscall") __success __retval(retval)
++
++/* Functional tests */
++__test(0) int test_strcmp_eq(void *ctx) { return bpf_strcmp(str, "hello world"); }
++__test(1) int test_strcmp_neq(void *ctx) { return bpf_strcmp(str, "hello"); }
++__test(1) int test_strchr_found(void *ctx) { return bpf_strchr(str, 'e'); }
++__test(11) int test_strchr_null(void *ctx) { return bpf_strchr(str, '\0'); }
++__test(-ENOENT) int test_strchr_notfound(void *ctx) { return bpf_strchr(str, 'x'); }
++__test(1) int test_strchrnul_found(void *ctx) { return bpf_strchrnul(str, 'e'); }
++__test(11) int test_strchrnul_notfound(void *ctx) { return bpf_strchrnul(str, 'x'); }
++__test(1) int test_strnchr_found(void *ctx) { return bpf_strnchr(str, 5, 'e'); }
++__test(11) int test_strnchr_null(void *ctx) { return bpf_strnchr(str, 12, '\0'); }
++__test(-ENOENT) int test_strnchr_notfound(void *ctx) { return bpf_strnchr(str, 5, 'w'); }
++__test(9) int test_strrchr_found(void *ctx) { return bpf_strrchr(str, 'l'); }
++__test(11) int test_strrchr_null(void *ctx) { return bpf_strrchr(str, '\0'); }
++__test(-ENOENT) int test_strrchr_notfound(void *ctx) { return bpf_strrchr(str, 'x'); }
++__test(11) int test_strlen(void *ctx) { return bpf_strlen(str); }
++__test(11) int test_strnlen(void *ctx) { return bpf_strnlen(str, 12); }
++__test(5) int test_strspn(void *ctx) { return bpf_strspn(str, "ehlo"); }
++__test(2) int test_strcspn(void *ctx) { return bpf_strcspn(str, "lo"); }
++__test(6) int test_strstr_found(void *ctx) { return bpf_strstr(str, "world"); }
++__test(-ENOENT) int test_strstr_notfound(void *ctx) { return bpf_strstr(str, "hi"); }
++__test(0) int test_strstr_empty(void *ctx) { return bpf_strstr(str, ""); }
++__test(0) int test_strnstr_found(void *ctx) { return bpf_strnstr(str, "hello", 6); }
++__test(-ENOENT) int test_strnstr_notfound(void *ctx) { return bpf_strnstr(str, "hi", 10); }
++__test(0) int test_strnstr_empty(void *ctx) { return bpf_strnstr(str, "", 1); }
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.49.0
 
