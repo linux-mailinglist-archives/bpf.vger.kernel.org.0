@@ -1,135 +1,100 @@
-Return-Path: <bpf+bounces-61659-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61660-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7096DAE9B1D
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 12:22:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FA5BAE9B8E
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 12:36:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46B081C40F21
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 10:23:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A4FE18823CA
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 10:36:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1861223301;
-	Thu, 26 Jun 2025 10:22:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D154026E702;
+	Thu, 26 Jun 2025 10:31:29 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from neil.brown.name (neil.brown.name [103.29.64.221])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0CE11891A9;
-	Thu, 26 Jun 2025 10:22:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.29.64.221
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC01921A420;
+	Thu, 26 Jun 2025 10:31:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750933363; cv=none; b=oVbOHZ8L8Ajx0zvlButpCtU1YzK/oAbtCDCKmn3tz9jOUM7/lOLbLTIglkxMNtGKXDF5mHTQNTkvy/SWLwiQ6U6SxIF/4/WECQ7WCCK7E53btPqMNbG5SAQPXxE+46DXpqE/RUf+BJPU4mtzgj98dnhfVlZScOiD/0YW8Je+i4E=
+	t=1750933889; cv=none; b=kkT4Tf+RQfflfn8g0Wthm4X/OweS3UHYFDfzNy09S7YNNBQiGY9ThFEugZHZ3/69rtFAC1ewnRI7ym5tCvUXGIO9e6Xt9dE8VGoIVTQqBMC97anUpJX40VOv3HZ3kPSvBGq1ShjyOfG8GxRSbv/Ad3ojfmWrcp8pX5ExAzw9ypg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750933363; c=relaxed/simple;
-	bh=2H+kJL+bS84EB32auPPLkuKNf04DurQZwXhkw/BdWuM=;
-	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
-	 References:Date:Message-id; b=acaBdbrc5WdG+BHNTTF6+4Aq9ojXh0epr45P5/KzzvAGAhma5AGRwUzJx0ROtV13RleFHt5J8PaWvp8GvTp896RnxDSu0qm9lye4QUACYzZQJDnuZ+kK8Z4yl6psayvbeNcWZE0Dvnlw3u65g74B25BARK8xSrDQ/wJPxuyd3eQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brown.name; spf=pass smtp.mailfrom=neil.brown.name; arc=none smtp.client-ip=103.29.64.221
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brown.name
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=neil.brown.name
-Received: from 196.186.233.220.static.exetel.com.au ([220.233.186.196] helo=home.neil.brown.name)
-	by neil.brown.name with esmtp (Exim 4.95)
-	(envelope-from <mr@neil.brown.name>)
-	id 1uUjkV-005OrH-U1;
-	Thu, 26 Jun 2025 10:22:32 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1750933889; c=relaxed/simple;
+	bh=GnDNt+q5EI8c/ZXXdaO/Ry+x4SX461tey5/yPbMiUC0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PAui7yG2oIIE2VXShNn8fGdGcjEtBHcGuGsSrOgUxoZ9Ct/cUXz9MrGQJDRtjLph/ot+DG2X8WpKRO/1Te8znVT6/Dkt4jFY7hecOeyTC31KPLndAJmpwgoYf43Jh6QFJ0PSgpzrB3MA4dDFgvvsRSnyV1YtFcVh35m5GJvUDT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-60c4521ae2cso1513661a12.0;
+        Thu, 26 Jun 2025 03:31:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750933886; x=1751538686;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OmpUdW5cO4HhOMld9+otLQ45frNnQ2stlAqm727cEZc=;
+        b=n3TA+GithyQbldQXglA7C4d7Ohtl4YBFeT3l0Oes+qvaUz1lyvcJjw3fIGxegeJCsR
+         5JcSP3Ro4q0SwjK/RN94QoD0Tu5Qlz3K29l/K5vSgGUxhGAwmUtVfKq8E+Hc+N1bBGJm
+         De09VridrF6/m6rW4y5Kg1Gisg/3pkE/sv49C//0Utl6eNeNVXHfCDo2dbv0SDwFEkWN
+         elwd6He5u7jzX0RA83/362B+p80H7dyddE/b+muVD6BeY0Qz9w1grSXToirJhTE33cfy
+         r/jZSdNRk52x1A2CqJQXy8ZAzM4E2myuoLVuH2MnS7dubzIu4IF+a2Me+hTbbjGumLkt
+         qUHA==
+X-Forwarded-Encrypted: i=1; AJvYcCUEthHSbPY3b+TKGEyPecCc8F0aL01hCcWIRmkw0TrEhCxZZ47/hQKERGj2ML93mI4p0pqlLs3vrXCHdMYxZ8up@vger.kernel.org, AJvYcCUR5CkolATV/yP7Iv9YHbK/INJ11mjPS7k1PC75RB/Uqvsv1MrE3Jhs7yt2lna7rcQFfbk=@vger.kernel.org, AJvYcCVFexzgOpTZ6SKQCAc1B5cDm1Eq49TuLnpPictFotHJDkuK6jNZlErj/bvrkczw0ag4V4fJm/jHQEBCbdB/@vger.kernel.org, AJvYcCVjghlNcWQQ6SSvQCQ7/sFRjaDw8Ma7IcQJ6bB79wqD6VawxYsG+4jIZjeMclZ5r8jIQ49bgHvn@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx+D7ihM0I63oL3WS+jR+f4x7hT0psVpZXtZIa0+/yIeDzO1mb6
+	V5bFzdOPguATaiWRYMgtOp90f6jXY2bbCFAIXYsEmnB+G01oPnbqpJCQ
+X-Gm-Gg: ASbGncstKuG4erZnD7Fy72ZW1gF4BznTVseyAE5/wRWtLv3csx9CerkWGEvgcnZwjuT
+	BcmlOufIbGw61m6Ghoja2dbatCRzSwzgpwZFDHiMDTixH1dOfvUd+CZplvKswbbF0zgNfHVODr2
+	EKgJIgrM5iitUq5Sp3Vbjkzz6WLqwc5ipJbSV6t/qJ5g1JlIhvR47XJL2QmAAWiN5lRqSLWAjDT
+	icPtz6cdFVHWeAuoz62ms/53qUipHlL8gUXRG8DTv2erKjUw1UdhyV72b/GwzYM6ukBRmILMmcb
+	6zCUO1mlEs1KA6DjxqHP6UvduuZNM9Xd6D1/gAuhqZM7p8YwMbIf
+X-Google-Smtp-Source: AGHT+IHd9W2v8OJUTxiUy7PQcBOs9sxn8KJRAFWKIx4csWgVqOlg3SR9T44yg3x21QnhYH8gtFjLPw==
+X-Received: by 2002:a17:906:f5a7:b0:ad9:f54f:70a2 with SMTP id a640c23a62f3a-ae0be88e5c9mr636284366b.22.1750933885862;
+        Thu, 26 Jun 2025 03:31:25 -0700 (PDT)
+Received: from gmail.com ([2a03:2880:30ff:4::])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae0d4815f46sm126845666b.185.2025.06.26.03.31.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Jun 2025 03:31:25 -0700 (PDT)
+Date: Thu, 26 Jun 2025 03:31:23 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Shuah Khan <shuah@kernel.org>, Simon Horman <horms@kernel.org>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	bpf@vger.kernel.org, gustavold@gmail.com
+Subject: Re: [PATCH net-next v2 4/4] selftests: net: add netpoll basic
+ functionality test
+Message-ID: <aF0hes00SoHF8umw@gmail.com>
+References: <20250625-netpoll_test-v2-0-47d27775222c@debian.org>
+ <20250625-netpoll_test-v2-4-47d27775222c@debian.org>
+ <20250625150919.7b06b436@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: "NeilBrown" <neil@brown.name>
-To: "Song Liu" <songliubraving@meta.com>
-Cc: "Tingmao Wang" <m@maowtm.org>,
- =?utf-8?q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
- "Song Liu" <song@kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-security-module@vger.kernel.org"
- <linux-security-module@vger.kernel.org>,
- "brauner@kernel.org" <brauner@kernel.org>,
- "Kernel Team" <kernel-team@meta.com>, "andrii@kernel.org" <andrii@kernel.org>,
- "eddyz87@gmail.com" <eddyz87@gmail.com>, "ast@kernel.org" <ast@kernel.org>,
- "daniel@iogearbox.net" <daniel@iogearbox.net>,
- "martin.lau@linux.dev" <martin.lau@linux.dev>,
- "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
- "jack@suse.cz" <jack@suse.cz>, "kpsingh@kernel.org" <kpsingh@kernel.org>,
- "mattbobrowski@google.com" <mattbobrowski@google.com>,
- =?utf-8?q?G=C3=BCnther?= Noack <gnoack@google.com>
-Subject: Re: [PATCH v5 bpf-next 0/5] bpf path iterator
-In-reply-to: <9BD19ABC-08B8-4976-912D-DFCC06C29CAA@meta.com>
-References: <>, <9BD19ABC-08B8-4976-912D-DFCC06C29CAA@meta.com>
-Date: Thu, 26 Jun 2025 20:22:29 +1000
-Message-id: <175093334910.2280845.2994364473463803565@noble.neil.brown.name>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250625150919.7b06b436@kernel.org>
 
-On Thu, 26 Jun 2025, Song Liu wrote:
->=20
->=20
-> > On Jun 25, 2025, at 6:05=E2=80=AFPM, NeilBrown <neil@brown.name> wrote:
->=20
-> [...]
->=20
-> >>=20
-> >> I can't speak for Micka=C3=ABl, but a callback-based interface is less f=
-lexible
-> >> (and _maybe_ less performant?).  Also, probably we will want to fallback
-> >> to a reference-taking walk if the walk fails (rather than, say, retry
-> >> infinitely), and this should probably use Song's proposed iterator.  I'm
-> >> not sure if Song would be keen to rewrite this iterator patch series in
-> >> callback style (to be clear, it doesn't necessarily seem like a good idea
-> >> to me, and I'm not asking him to), which means that we will end up with
-> >> the reference walk API being a "call this function repeatedly", and the
-> >> rcu walk API taking a callback.  I think it is still workable (after all,
-> >> if Landlock wants to reuse the code in the callback it can just call the
-> >> callback function itself when doing the reference walk), but it seems a
-> >> bit "ugly" to me.
-> >=20
-> > call-back can have a performance impact (less opportunity for compiler
-> > optimisation and CPU speculation), though less than taking spinlock and
-> > references.  However Al and Christian have drawn a hard line against
-> > making seq numbers visible outside VFS code so I think it is the
-> > approach most likely to be accepted.
-> >=20
-> > Certainly vfs_walk_ancestors() would fallback to ref-walk if rcu-walk
-> > resulted in -ECHILD - just like all other path walking code in namei.c.
-> > This would be largely transparent to the caller - the caller would only
-> > see that the callback received a NULL path indicating a restart.  It
-> > wouldn't need to know why.
->=20
-> I guess I misunderstood the proposal of vfs_walk_ancestors()=20
-> initially, so some clarification:
->=20
-> I think vfs_walk_ancestors() is good for the rcu-walk, and some=20
-> rcu-then-ref-walk. However, I don=E2=80=99t think it fits all use cases.=20
-> A reliable step-by-step ref-walk, like this set, works well with=20
-> BPF, and we want to keep it.=20
+On Wed, Jun 25, 2025 at 03:09:19PM -0700, Jakub Kicinski wrote:
+> On Wed, 25 Jun 2025 04:39:49 -0700 Breno Leitao wrote:
+> > +    raise KsftSkipEx("netpoll_poll_dev() was not called. Skipping test")
+> 
+> Let's make this an Xfail. Looks like the condition doesn't trigger 
+> in VM testing :(
 
-The distinction between rcu-walk and ref-walk is an internal
-implementation detail.  You as a caller shouldn't need to think about
-the difference.  You just want to walk.  Note that LOOKUP_RCU is
-documented in namei.h as "semi-internal".  The only uses outside of
-core-VFS code is in individual filesystem's d_revalidate handler - they
-are checking if they are allowed to sleep or not.  You should never
-expect to pass LOOKUP_RCU to an VFS API - no other code does.
+Exactly, there is a chance this will not trigger it, and you do not want
+this bothering you. Having it as Xfail will be a false positive.
 
-It might be reasonable for you as a caller to have some control over
-whether the call can sleep or not.  LOOKUP_CACHED is a bit like that.
-But for dotdot lookup the code will never sleep - so that is not
-relevant.
-
-I strongly suggest you stop thinking about rcu-walk vs ref-walk.  Think
-about the needs of your code.  If you need a high-performance API, then
-ask for a high-performance API, don't assume what form it will take or
-what the internal implementation details will be.
-
-I think you already have a clear answer that a step-by-step API will not
-be read-only on the dcache (i.e.  it will adjust refcounts) and so will
-not be high performance.  If you want high performance, you need to
-accept a different style of API.
-
-NeilBrown
+I have a plan to make this consitent by writing some configfs hook
+for debug, then maybe we can make it a debug?!
 
