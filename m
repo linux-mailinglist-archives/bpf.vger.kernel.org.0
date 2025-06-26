@@ -1,167 +1,221 @@
-Return-Path: <bpf+bounces-61700-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61701-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61C51AEA616
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 21:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 37063AEA7AE
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 22:04:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCC393B3853
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 19:06:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D20C53A5E86
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 20:03:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8A1E2EF9D4;
-	Thu, 26 Jun 2025 19:06:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47CF02EF65B;
+	Thu, 26 Jun 2025 20:04:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AcakhpBk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lv6HrmOv"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16C332EF655
-	for <bpf@vger.kernel.org>; Thu, 26 Jun 2025 19:06:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24CC82063F3
+	for <bpf@vger.kernel.org>; Thu, 26 Jun 2025 20:04:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750964792; cv=none; b=k3LwcHoRQauuk9E96wE6ad77qqdCLGcyCj2N1UrYUa2u2SPm8Hrmtkbe9Qa0QxApz0yy0UqP7pGU+9WEy8bpVh+7dpi+wUNRixZtIATmalrjCkOtLmI+YDCGjWI2i4LPg1Bl8Z21sHUU58zD/Q1BkzHFqsqqmi/NyvF9+H6qssA=
+	t=1750968250; cv=none; b=N8GOSdDWr/hAE2AD7O0yvh8c0tjJcssl2E7tZr5sOmymGSjjpqjS/9DIL7SaBnHE4AgArnDnvvy3qGTxPc0xGwWafJ7LDtFX7rjqmQAjG6GRA/o+UiYRkUH0hRfnsXRnGrRsmKHtOWfXoh5nSgPkyfeCh27tJoH5glbQT/fbz1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750964792; c=relaxed/simple;
-	bh=94wujlprhlS029mcra36E0Dntwgq9FBtExTdO7unzTs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AggSvXbEGEtjXqX8AmNfEm3B+fbYSHtsmyITv9bn++iiXtQr0awYp4itVKvv2O7C98QS6V+0CLqBat906Dzf8NoRXGXqIbOaOLep8YlJV3X91Vpyc/L+O8n3fsMULua01RUMsOqztIBkTdGt2QjC+X7OiLv8SgK/qiENwPsIPnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AcakhpBk; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1750964776;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=hRYA/eQeT9TuSYBJimjQD+4XXaxvKbVaBpqOU6qP1mI=;
-	b=AcakhpBkj96bUgTOzuoxqLIfIAc9ZQjOnqODJB0v3sF4JcbkR8FrCvNkH9Uz2of8AFDTx5
-	+VR1ghYe3Z1RWI0fzCI4gs3L1ykEp5+Z5qHA40jYNUtFHSehdlhINjCSqv7YLUkDDte/VN
-	IcPoTknOiDN34LvkQ/hDJqUpWu/n2fM=
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Tejun Heo <tj@kernel.org>
-Cc: "Paul E . McKenney" <paulmck@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	JP Kobryn <inwardvessel@gmail.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Ying Huang <huang.ying.caritas@gmail.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	bpf@vger.kernel.org,
-	linux-mm@kvack.org,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>
-Subject: [PATCH] llist: add [READ|WRITE]_ONCE tags for llist_node
-Date: Thu, 26 Jun 2025 12:05:50 -0700
-Message-ID: <20250626190550.4170599-1-shakeel.butt@linux.dev>
+	s=arc-20240116; t=1750968250; c=relaxed/simple;
+	bh=hhPgkMigG5Q72xiLy9vvN3QFPZsSY/kM8Ghs2rsMbUw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=r1q0O5DsbHHZ9y0WM2JjEgs342HzfTSOj+vh0zv6R+6I2TCFrJyA8RLeSGvmQ1xjum6e1f8c1g0J/eVJjrwdcp0/bTpQuq7WITD8yQGW4ruD1ZHcnhaRP57e8dz34wvuMMuFc3EgWlrefaj86rPttTyBBqck49vQz8Hkx9qedqw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lv6HrmOv; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3a53359dea5so915046f8f.0
+        for <bpf@vger.kernel.org>; Thu, 26 Jun 2025 13:04:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1750968247; x=1751573047; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rQCbS/HjgZKKichcZaS63aazCIIPAdL8cR0fR9IrlVI=;
+        b=lv6HrmOvasPzWtNhOuJ9uHH27dgODfAzikYivz/gdSTEG8HOSRzKVucDHuzfwtVuTi
+         fC21SSSB5nD0rF71iAIC3Ipv134FMIWB3oZwEmuCiZO1sHlYLrmg0NbG8hDexMQsHm18
+         9HEgAdB/T8UGy0JgCNRtmbD/nFzdygOzRw7rRe00BPaLcG9BxTQA42NXUupO3dAFr6Se
+         w7K5ghaqeO5xX3xbVmWwobihxhFQeJk6W8tY/UwDKDTKR0pNvFiVDBPgUiBzZuBDbKMM
+         /wexUWxgXo3RyTpKjal8/onF8zukbFK0lSfa8hevrVu/6Mtn3AM7UJDw6rp4D9vvIEvG
+         z5XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750968247; x=1751573047;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rQCbS/HjgZKKichcZaS63aazCIIPAdL8cR0fR9IrlVI=;
+        b=CNCqVSqxDUVkIoJVxEvxXMvavU5t35vy07CEZAoWL5MHgI9XcJ8AOUbu5v+Ic6M3dR
+         /sAO8Lph5pR4vpkJJaPaPXKrFIa5dWaYqK0FW2bSuCp/UDRp0WNY1xzXVWNQ/1O7FTHh
+         VL6BT9ulH/AVDmhzZm8RG4GjPf1P4Hz8k/dGn4HpWeDBXGiFzAL7NTJlodsrTGJQBogS
+         NNhycKxN7qIRTuyaZASqnuVWRQlBH2ibpUaqNjwLsgYoMnpHUDwKLXFVYsgTEkWl3OXg
+         CeGTxlnqblbkLt9Le7PoZqUGHRsd4k1PYnSnpPevJHCUsV/jSFmSJiMnMvzS0Q+tb5l9
+         IBbQ==
+X-Gm-Message-State: AOJu0YxsZDIUx3pB6SJ6P5WwYSZ1bTIUCdSAuDg5+3mn4nb4gNyJEq5/
+	PZDPUAoxhFseWBsbiX0aKMmsLfVaicew8gaVgLKKVq5aMO+zv/4rzSYxR7XLlshGnHW1R7HUPqQ
+	9dLbIfmf5E0tb/0ssSkK/IuwY7sxxwIY=
+X-Gm-Gg: ASbGnctiNu4AD75MoLLYf9f8ddeOqfOGlrPoYDeV7BMT6lK39a2pyS0gwG+a+Ukg/mS
+	5LXsAVqCuI3leWPmE4umWeH47hyqAqBnvh7D8/iFroxHi6vqjdkRz/PyiQpwdaI4FLGeP+MVc1c
+	z+n7dDvfiJ1za+gV8FH1pk4yCBa5RYpOGiNu6kIInkxJvHO6F2ZEwK3KC0edaZYxONmPu6cAHQJ
+	yUsLZJujTs=
+X-Google-Smtp-Source: AGHT+IHNsEyH4zXsR8XhUHCuIlAny2GHVSvoSwZ3KwdYJ7vl4ofvMDE2bRkJ4IU245CbPVCBaieFZi5SqWppHKQ8a2U=
+X-Received: by 2002:a05:6000:270e:b0:3a4:e609:dc63 with SMTP id
+ ffacd0b85a97d-3a8fdb2a345mr531042f8f.20.1750968247103; Thu, 26 Jun 2025
+ 13:04:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250501032718.65476-1-alexei.starovoitov@gmail.com>
+ <20250501032718.65476-7-alexei.starovoitov@gmail.com> <aB1UVkKSeJWEGECq@hyeyoo>
+ <CAADnVQKQ-kqpO_vkyDcaUdvrvntWjwUfDy00SOawuRMrx0rfzw@mail.gmail.com> <aFvfr1KiNrLofavW@hyeyoo>
+In-Reply-To: <aFvfr1KiNrLofavW@hyeyoo>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 26 Jun 2025 13:03:56 -0700
+X-Gm-Features: Ac12FXzYRjgVGeObofZlNcvYhCYwFL26bL4avlqFpoSTBUZRSJ7eZFkwdTTjh9A
+Message-ID: <CAADnVQJaOD7ovoZhA2=dcWiEXUYTtFeU=xW3PNz0e36E=YHb+A@mail.gmail.com>
+Subject: Re: SLAB_NO_CMPXCHG was:: [PATCH 6/6] slab: Introduce
+ kmalloc_nolock() and kfree_nolock().
+To: Harry Yoo <harry.yoo@oracle.com>
+Cc: bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	Vlastimil Babka <vbabka@suse.cz>, Shakeel Butt <shakeel.butt@linux.dev>, Michal Hocko <mhocko@suse.com>, 
+	Sebastian Sewior <bigeasy@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Before the commit 36df6e3dbd7e ("cgroup: make css_rstat_updated nmi
-safe"), the struct llist_node is expected to be private to the one
-inserting the node to the lockless list or the one removing the node
-from the lockless list. After the mentioned commit, the llist_node in
-the rstat code is per-cpu shared between the stacked contexts i.e.
-process, softirq, hardirq & nmi.
+On Wed, Jun 25, 2025 at 4:38=E2=80=AFAM Harry Yoo <harry.yoo@oracle.com> wr=
+ote:
+>
+> On Tue, Jun 24, 2025 at 10:13:49AM -0700, Alexei Starovoitov wrote:
+> > On Thu, May 8, 2025 at 6:03=E2=80=AFPM Harry Yoo <harry.yoo@oracle.com>=
+ wrote:
+> > > > +     s =3D kmalloc_slab(size, NULL, alloc_gfp, _RET_IP_);
+> > > > +
+> > > > +     if (!(s->flags & __CMPXCHG_DOUBLE))
+> > > > +             /*
+> > > > +              * kmalloc_nolock() is not supported on architectures=
+ that
+> > > > +              * don't implement cmpxchg16b.
+> > > > +              */
+> > > > +             return NULL;
+> > >
+> > > Hmm when someone uses slab debugging flags (e.g., passing boot
+> > > parameter slab_debug=3DFPZ as a hardening option on production [1], o=
+r
+> > > just for debugging), __CMPXCHG_DOUBLE is not set even when the arch
+> > > supports it.
+> > >
+> > > Is it okay to fail all kmalloc_nolock() calls in such cases?
+> >
+> > I studied the code and the git history.
+> > Looks like slub doesn't have to disable cmpxchg mode when slab_debug is=
+ on.
+>
+> A slight correction; Debug caches do not use cmpxchg mode at all by
+> design. If a future change enables cmpxchg mode for them, it will cause
+> the same consistency issue.
+>
+> > The commit 41bec7c33f37 ("mm/slub: remove slab_lock() usage for debug
+> > operations")
+> > removed slab_lock from debug validation checks.
+>
+> An excellent point!
+>
+> Yes, SLUB does not maintain cpu slab and percpu partial slabs on
+> debug caches.
 
-KCSAN reported the following race:
+Ohh. That was a crucial detail I was missing.
+Now I see that 90% of ___slab_alloc() logic is not executed
+for debug slabs :)
 
- Reported by Kernel Concurrency Sanitizer on:
- CPU: 60 UID: 0 PID: 5425 ... 6.16.0-rc3-next-20250626 #1 NONE
- Tainted: [E]=UNSIGNED_MODULE
- Hardware name: ...
- ==================================================================
- ==================================================================
- BUG: KCSAN: data-race in css_rstat_flush / css_rstat_updated
- write to 0xffffe8fffe1c85f0 of 8 bytes by task 1061 on cpu 1:
-  css_rstat_flush+0x1b8/0xeb0
-  __mem_cgroup_flush_stats+0x184/0x190
-  flush_memcg_stats_dwork+0x22/0x50
-  process_one_work+0x335/0x630
-  worker_thread+0x5f1/0x8a0
-  kthread+0x197/0x340
-  ret_from_fork+0xd3/0x110
-  ret_from_fork_asm+0x11/0x20
- read to 0xffffe8fffe1c85f0 of 8 bytes by task 3551 on cpu 15:
-  css_rstat_updated+0x81/0x180
-  mod_memcg_lruvec_state+0x113/0x2d0
-  __mod_lruvec_state+0x3d/0x50
-  lru_add+0x21e/0x3f0
-  folio_batch_move_lru+0x80/0x1b0
-  __folio_batch_add_and_move+0xd7/0x160
-  folio_add_lru_vma+0x42/0x50
-  do_anonymous_page+0x892/0xe90
-  __handle_mm_fault+0xfaa/0x1520
-  handle_mm_fault+0xdc/0x350
-  do_user_addr_fault+0x1dc/0x650
-  exc_page_fault+0x5c/0x110
-  asm_exc_page_fault+0x22/0x30
- value changed: 0xffffe8fffe18e0d0 -> 0xffffe8fffe1c85f0
-
-$ ./scripts/faddr2line vmlinux css_rstat_flush+0x1b8/0xeb0
-css_rstat_flush+0x1b8/0xeb0:
-init_llist_node at include/linux/llist.h:86
-(inlined by) llist_del_first_init at include/linux/llist.h:308
-(inlined by) css_process_update_tree at kernel/cgroup/rstat.c:148
-(inlined by) css_rstat_updated_list at kernel/cgroup/rstat.c:258
-(inlined by) css_rstat_flush at kernel/cgroup/rstat.c:389
-
-$ ./scripts/faddr2line vmlinux css_rstat_updated+0x81/0x180
-css_rstat_updated+0x81/0x180:
-css_rstat_updated at kernel/cgroup/rstat.c:90 (discriminator 1)
-
-These are expected race and a simple READ_ONCE/WRITE_ONCE resolves these
-reports.
-
-Fixes: 36df6e3dbd7e ("cgroup: make css_rstat_updated nmi safe")
-Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
----
- include/linux/llist.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/llist.h b/include/linux/llist.h
-index 27b17f64bcee..607b2360c938 100644
---- a/include/linux/llist.h
-+++ b/include/linux/llist.h
-@@ -83,7 +83,7 @@ static inline void init_llist_head(struct llist_head *list)
-  */
- static inline void init_llist_node(struct llist_node *node)
+> Alloc/free is done under n->list_lock, so no need for
+> cmpxchg double and slab_lock() at all :)
+>
+> > So right now slab_lock() only serializes slab->freelist/counter update.
+> > It's still necessary on arch-s that don't have cmpxchg, but that's it.
+> > Only __update_freelist_slow() is using it.
+>
+> Yes.
+>
+> > The comment next to SLAB_NO_CMPXCHG is obsolete as well.
+> > It's been there since days that slab_lock() was taken during
+> > consistency checks.
+>
+> Yes.
+>
+> > I think the following diff is appropriate:
+> >
+> > diff --git a/mm/slub.c b/mm/slub.c
+> > index 044e43ee3373..9d615cfd1b6f 100644
+> > --- a/mm/slub.c
+> > +++ b/mm/slub.c
+> > @@ -286,14 +286,6 @@ static inline bool
+> > kmem_cache_has_cpu_partial(struct kmem_cache *s)
+> >  #define DEBUG_DEFAULT_FLAGS (SLAB_CONSISTENCY_CHECKS | SLAB_RED_ZONE |=
+ \
+> >                                 SLAB_POISON | SLAB_STORE_USER)
+> >
+> > -/*
+> > - * These debug flags cannot use CMPXCHG because there might be consist=
+ency
+> > - * issues when checking or reading debug information
+> > - */
+> > -#define SLAB_NO_CMPXCHG (SLAB_CONSISTENCY_CHECKS | SLAB_STORE_USER | \
+> > -                               SLAB_TRACE)
+> > -
+> > -
+> >
+> >  /*
+> >   * Debugging flags that require metadata to be stored in the slab.  Th=
+ese get
+> >   * disabled when slab_debug=3DO is used and a cache's min order increa=
+ses with
+> > @@ -6654,7 +6646,7 @@ int do_kmem_cache_create(struct kmem_cache *s,
+> > const char *name,
+> >         }
+> >
+> >  #ifdef system_has_freelist_aba
+> > -       if (system_has_freelist_aba() && !(s->flags & SLAB_NO_CMPXCHG))=
  {
--	node->next = node;
-+	WRITE_ONCE(node->next, node);
- }
- 
- /**
-@@ -97,7 +97,7 @@ static inline void init_llist_node(struct llist_node *node)
-  */
- static inline bool llist_on_list(const struct llist_node *node)
- {
--	return node->next != node;
-+	return READ_ONCE(node->next) != node;
- }
- 
- /**
-@@ -220,7 +220,7 @@ static inline bool llist_empty(const struct llist_head *head)
- 
- static inline struct llist_node *llist_next(struct llist_node *node)
- {
--	return node->next;
-+	return READ_ONCE(node->next);
- }
- 
- /**
--- 
-2.47.1
+> > +       if (system_has_freelist_aba()) {
+> >                 /* Enable fast mode */
+> >                 s->flags |=3D __CMPXCHG_DOUBLE;
+> >         }
+> >
+> > It survived my stress tests.
+> > Thoughts?
+>
+> Perhaps it's better to change the condition in
+> kmalloc_nolock_noprof() from;
+>
+>     if (!(s->flags & __CMPXCHG_DOUBLE))
+>         return NULL;
+>
+> to;
+>
+>     if (!(s->flags & __CMPXCHG_DOUBLE) && !kmem_cache_debug(s))
+>         return NULL;
+>
+> Because debug caches do not use cmpxchg double (and that's why
+> it survived your test), it is not accurate to set __CMPXCHG_DOUBLE.
+>
+> And it'll get into trouble anyway if debug caches use cmpxchg double.
 
+All makes sense. Tested this suggestion. Indeed behaves as
+you described :) It's quite a relief, since I was also worried
+that __CMPXCHG_DOUBLE limitation of kmalloc_nolock() might hurt
+debug_slab cases.
+
+Only slub_tiny case left to do before I can post v2.
 
