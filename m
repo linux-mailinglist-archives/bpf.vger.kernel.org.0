@@ -1,87 +1,81 @@
-Return-Path: <bpf+bounces-61658-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61659-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20D8CAE9A5F
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 11:44:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7096DAE9B1D
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 12:22:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C6F24A2E32
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 09:44:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46B081C40F21
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 10:23:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D25E2BEC35;
-	Thu, 26 Jun 2025 09:44:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="Es/nqOpR"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1861223301;
+	Thu, 26 Jun 2025 10:22:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-42aa.mail.infomaniak.ch (smtp-42aa.mail.infomaniak.ch [84.16.66.170])
+Received: from neil.brown.name (neil.brown.name [103.29.64.221])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB696295DAA
-	for <bpf@vger.kernel.org>; Thu, 26 Jun 2025 09:43:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=84.16.66.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0CE11891A9;
+	Thu, 26 Jun 2025 10:22:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.29.64.221
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750931042; cv=none; b=I8mrA+tGTyMSZzTEcNBULAO2mgvd7YtVxB+TPqLhQmsUEBTrmr9aljMbY7xICtsPFVnhAHLR1X3kQQeVGaV//n/Pz3z2j6/N5YeGQ5AuhCn89tpW9EDXwWnzsxG18PjBHeXwzY5vuqRc92wKTAy+ALjgjUJdxYejSmT9r9e68Fo=
+	t=1750933363; cv=none; b=oVbOHZ8L8Ajx0zvlButpCtU1YzK/oAbtCDCKmn3tz9jOUM7/lOLbLTIglkxMNtGKXDF5mHTQNTkvy/SWLwiQ6U6SxIF/4/WECQ7WCCK7E53btPqMNbG5SAQPXxE+46DXpqE/RUf+BJPU4mtzgj98dnhfVlZScOiD/0YW8Je+i4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750931042; c=relaxed/simple;
-	bh=jxrqVWlNu9OTIwE5HUzDPcHmbqs+mlSWJ9SdYDE/kkQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LVhfUcLG1Rz1BK4nWu9K8KS6pSWmiBTJvy/YC+VmAlHoaLKu/gD9OFgybp5BoXEJscFnl7DBZZjQLvk2VLKWAhn/apEOS3DnMe8pvZQcYip3gvYln7xibVK3ofpI2vVL6dil9T0prmS9LYZ5nU5aKT5HAMnIwHIrizGjWCZS64o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=Es/nqOpR; arc=none smtp.client-ip=84.16.66.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
-Received: from smtp-3-0000.mail.infomaniak.ch (unknown [IPv6:2001:1600:4:17::246b])
-	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4bSYfb3HJLzhXX;
-	Thu, 26 Jun 2025 11:43:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digikod.net;
-	s=20191114; t=1750931031;
-	bh=Z/uNTZquS++80fsem6ySxdoivWSYkihrZf+FpIs4Vc0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Es/nqOpRPK/X1DZtD1Gki12xHc9rguh5Tr/5wSoWATCvAdcpwUj3sD1lOKTUluF5A
-	 64ftEmAcWVYq1zaSH8n3Lt90Nzvkm5fwKfciI3XCP2n3ocopQ7l1la8Acyr19ljcu9
-	 mbE74nvsOmrC1MEW70Jjmitphhon/2VSjabNGBQs=
-Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4bSYfZ1m9czlKv;
-	Thu, 26 Jun 2025 11:43:50 +0200 (CEST)
-Date: Thu, 26 Jun 2025 11:43:49 +0200
-From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To: Song Liu <songliubraving@meta.com>
-Cc: NeilBrown <neil@brown.name>, Tingmao Wang <m@maowtm.org>, 
-	Song Liu <song@kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>, "brauner@kernel.org" <brauner@kernel.org>, 
-	Kernel Team <kernel-team@meta.com>, "andrii@kernel.org" <andrii@kernel.org>, 
-	"eddyz87@gmail.com" <eddyz87@gmail.com>, "ast@kernel.org" <ast@kernel.org>, 
-	"daniel@iogearbox.net" <daniel@iogearbox.net>, "martin.lau@linux.dev" <martin.lau@linux.dev>, 
-	"viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>, "jack@suse.cz" <jack@suse.cz>, 
-	"kpsingh@kernel.org" <kpsingh@kernel.org>, "mattbobrowski@google.com" <mattbobrowski@google.com>, 
-	=?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>
-Subject: Re: [PATCH v5 bpf-next 0/5] bpf path iterator
-Message-ID: <20250626.eifo4iChohWo@digikod.net>
-References: <4577db64-64f2-4102-b00e-2e7921638a7c@maowtm.org>
- <175089992300.2280845.10831299451925894203@noble.neil.brown.name>
- <9BD19ABC-08B8-4976-912D-DFCC06C29CAA@meta.com>
+	s=arc-20240116; t=1750933363; c=relaxed/simple;
+	bh=2H+kJL+bS84EB32auPPLkuKNf04DurQZwXhkw/BdWuM=;
+	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
+	 References:Date:Message-id; b=acaBdbrc5WdG+BHNTTF6+4Aq9ojXh0epr45P5/KzzvAGAhma5AGRwUzJx0ROtV13RleFHt5J8PaWvp8GvTp896RnxDSu0qm9lye4QUACYzZQJDnuZ+kK8Z4yl6psayvbeNcWZE0Dvnlw3u65g74B25BARK8xSrDQ/wJPxuyd3eQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brown.name; spf=pass smtp.mailfrom=neil.brown.name; arc=none smtp.client-ip=103.29.64.221
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brown.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=neil.brown.name
+Received: from 196.186.233.220.static.exetel.com.au ([220.233.186.196] helo=home.neil.brown.name)
+	by neil.brown.name with esmtp (Exim 4.95)
+	(envelope-from <mr@neil.brown.name>)
+	id 1uUjkV-005OrH-U1;
+	Thu, 26 Jun 2025 10:22:32 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9BD19ABC-08B8-4976-912D-DFCC06C29CAA@meta.com>
-X-Infomaniak-Routing: alpha
+From: "NeilBrown" <neil@brown.name>
+To: "Song Liu" <songliubraving@meta.com>
+Cc: "Tingmao Wang" <m@maowtm.org>,
+ =?utf-8?q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+ "Song Liu" <song@kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-security-module@vger.kernel.org"
+ <linux-security-module@vger.kernel.org>,
+ "brauner@kernel.org" <brauner@kernel.org>,
+ "Kernel Team" <kernel-team@meta.com>, "andrii@kernel.org" <andrii@kernel.org>,
+ "eddyz87@gmail.com" <eddyz87@gmail.com>, "ast@kernel.org" <ast@kernel.org>,
+ "daniel@iogearbox.net" <daniel@iogearbox.net>,
+ "martin.lau@linux.dev" <martin.lau@linux.dev>,
+ "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+ "jack@suse.cz" <jack@suse.cz>, "kpsingh@kernel.org" <kpsingh@kernel.org>,
+ "mattbobrowski@google.com" <mattbobrowski@google.com>,
+ =?utf-8?q?G=C3=BCnther?= Noack <gnoack@google.com>
+Subject: Re: [PATCH v5 bpf-next 0/5] bpf path iterator
+In-reply-to: <9BD19ABC-08B8-4976-912D-DFCC06C29CAA@meta.com>
+References: <>, <9BD19ABC-08B8-4976-912D-DFCC06C29CAA@meta.com>
+Date: Thu, 26 Jun 2025 20:22:29 +1000
+Message-id: <175093334910.2280845.2994364473463803565@noble.neil.brown.name>
 
-On Thu, Jun 26, 2025 at 05:52:50AM +0000, Song Liu wrote:
-> 
-> 
-> > On Jun 25, 2025, at 6:05 PM, NeilBrown <neil@brown.name> wrote:
-> 
+On Thu, 26 Jun 2025, Song Liu wrote:
+>=20
+>=20
+> > On Jun 25, 2025, at 6:05=E2=80=AFPM, NeilBrown <neil@brown.name> wrote:
+>=20
 > [...]
-> 
-> >> 
-> >> I can't speak for Mickaël, but a callback-based interface is less flexible
+>=20
+> >>=20
+> >> I can't speak for Micka=C3=ABl, but a callback-based interface is less f=
+lexible
 > >> (and _maybe_ less performant?).  Also, probably we will want to fallback
 > >> to a reference-taking walk if the walk fails (rather than, say, retry
 > >> infinitely), and this should probably use Song's proposed iterator.  I'm
@@ -93,72 +87,49 @@ On Thu, Jun 26, 2025 at 05:52:50AM +0000, Song Liu wrote:
 > >> if Landlock wants to reuse the code in the callback it can just call the
 > >> callback function itself when doing the reference walk), but it seems a
 > >> bit "ugly" to me.
-> > 
+> >=20
 > > call-back can have a performance impact (less opportunity for compiler
 > > optimisation and CPU speculation), though less than taking spinlock and
 > > references.  However Al and Christian have drawn a hard line against
 > > making seq numbers visible outside VFS code so I think it is the
 > > approach most likely to be accepted.
-> > 
+> >=20
 > > Certainly vfs_walk_ancestors() would fallback to ref-walk if rcu-walk
 > > resulted in -ECHILD - just like all other path walking code in namei.c.
 > > This would be largely transparent to the caller - the caller would only
 > > see that the callback received a NULL path indicating a restart.  It
 > > wouldn't need to know why.
-
-Given the constraints this looks good to me.  Here is an updated API
-with two extra consts, an updated walk_cb() signature, and a new
-"flags" and without @root:
-
-int vfs_walk_ancestors(struct path *path,
-                       bool (*walk_cb)(const struct path *ancestor, void *data),
-                       void *data, int flags)
-
-The walk continue while walk_cb() returns true.  walk_cb() can then
-check if @ancestor is equal to a @root, or other properties.  The
-walk_cb() return value (if not bool) should not be returned by
-vfs_walk_ancestors() because a walk stop doesn't mean an error.
-
-@path would be updated with latest ancestor path (e.g. @root).
-@flags could contain LOOKUP_RCU or not, which enables us to have
-walk_cb() not-RCU compatible.
-
-When passing LOOKUP_RCU, if the first call to vfs_walk_ancestors()
-failed with -ECHILD, the caller can restart the walk by calling
-vfs_walk_ancestors() again but without LOOKUP_RCU.
-
-> 
-> I guess I misunderstood the proposal of vfs_walk_ancestors() 
+>=20
+> I guess I misunderstood the proposal of vfs_walk_ancestors()=20
 > initially, so some clarification:
-> 
-> I think vfs_walk_ancestors() is good for the rcu-walk, and some 
-> rcu-then-ref-walk. However, I don’t think it fits all use cases. 
-> A reliable step-by-step ref-walk, like this set, works well with 
-> BPF, and we want to keep it. 
+>=20
+> I think vfs_walk_ancestors() is good for the rcu-walk, and some=20
+> rcu-then-ref-walk. However, I don=E2=80=99t think it fits all use cases.=20
+> A reliable step-by-step ref-walk, like this set, works well with=20
+> BPF, and we want to keep it.=20
 
-The above updated API should work for both use cases: if the caller wants
-to walk only one level, walk_cb() can just always return false (and
-potentially save that it was called) and then stop the walk the first
-time it is called.  This makes it possible to write an eBPF helper with
-the same API as path_walk_parent(), while making the kernel API more
-flexible.
+The distinction between rcu-walk and ref-walk is an internal
+implementation detail.  You as a caller shouldn't need to think about
+the difference.  You just want to walk.  Note that LOOKUP_RCU is
+documented in namei.h as "semi-internal".  The only uses outside of
+core-VFS code is in individual filesystem's d_revalidate handler - they
+are checking if they are allowed to sleep or not.  You should never
+expect to pass LOOKUP_RCU to an VFS API - no other code does.
 
-> 
-> Can we ship this set as-is (or after fixing the comment reported
-> by kernel test robot)? I really don’t think we need figure out 
-> all details about the rcu-walk here. 
-> 
-> Once this is landed, we can try implementing the rcu-walk
-> (vfs_walk_ancestors or some variation). If no one volunteers, I
-> can give it a try. 
+It might be reasonable for you as a caller to have some control over
+whether the call can sleep or not.  LOOKUP_CACHED is a bit like that.
+But for dotdot lookup the code will never sleep - so that is not
+relevant.
 
-My understanding is that Christian only wants one helper (that should
-handle both use cases).  I think this updated API should be good enough
-for everyone.  Most of your code should stay the same.  What do you
-think?
+I strongly suggest you stop thinking about rcu-walk vs ref-walk.  Think
+about the needs of your code.  If you need a high-performance API, then
+ask for a high-performance API, don't assume what form it will take or
+what the internal implementation details will be.
 
-> 
-> Thanks,
-> Song
-> 
+I think you already have a clear answer that a step-by-step API will not
+be read-only on the dcache (i.e.  it will adjust refcounts) and so will
+not be high performance.  If you want high performance, you need to
+accept a different style of API.
+
+NeilBrown
 
