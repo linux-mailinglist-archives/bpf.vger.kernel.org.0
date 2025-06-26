@@ -1,65 +1,60 @@
-Return-Path: <bpf+bounces-61695-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61696-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC281AEA48C
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 19:41:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35687AEA491
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 19:42:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7623D4A0345
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 17:41:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFE533B0B95
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 17:41:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 404A82ED859;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDA5B2EE26B;
 	Thu, 26 Jun 2025 17:41:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZAUVqbDU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r6AZy5kk"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF9322ECE8D;
-	Thu, 26 Jun 2025 17:41:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BB172ED842;
+	Thu, 26 Jun 2025 17:41:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750959685; cv=none; b=n4kehmzM+qVDytFAwvko3SDTrQkJ86zgaunpBmG6pZxBGiwquvsH38V8jl9sgYFHSw4wScQW/7zQyXJwfaZ4piRkYKGYzOP8vr7M7/89H76xH6jei05aquEDD3PE/Cy+5fv4TGc2jtgoYYIDswcrgo+fB14jhSNQ9kCqp0hpppg=
+	t=1750959686; cv=none; b=e4tXNaKzUK1vTEOhEjhCB5igk8wP5tzZ0I3tw/U+nb32VkKcmuHTRegy5GPYxU4bT28RIzYB4RGjIckTLpIDvjUiurM0R46jOa7IRX/PpVP4u08tzsTIX4VU2dygNBoRP7LLJ5XqSJ3ERlpwtRpDbbvJtD6ZFA2w8c3Faw0nIAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750959685; c=relaxed/simple;
-	bh=ahu7b8h0/NS1zVvXZWP+eDKOIDBXGlxQOOeuTnPcU5w=;
+	s=arc-20240116; t=1750959686; c=relaxed/simple;
+	bh=HebmZL2Z3HETRCiyspKgxFuTZe15p2NjHFFkia4DbdE=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=WpeLfD+CUKAx73/T9hMyJhuZIlwUppq1wmoI2Va5TMC68929BeRjIGaHRh3uEFNkgMhpkVxhuI/gaiwUccsIeKttON5saJCgW4BV5ZAe3OirW4qTg0JlPem5GeD9ou2tpFjAlizkkPzjc48BbFyDy/a+Ku2q8kKBu9pPu70mCow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZAUVqbDU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11182C4CEEE;
+	 MIME-Version:Content-Type; b=VETraUDSJ9Ke+AJmIypUjMRsSt4Pv0BTyAe4NAX96NW34eZDvXuNKf0ZwHQzabV3rIiV1Oa8rv6lQ9QDJnRqbtDKznAc6P5KpybIA5kBwB0RYVOCtzvIUz6r4s1TnjcJPlQmGt7f5ssoQkFnmKb5VQxCBOpeITPyKba72GfMn8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r6AZy5kk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B672FC4CEEB;
 	Thu, 26 Jun 2025 17:41:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750959685;
-	bh=ahu7b8h0/NS1zVvXZWP+eDKOIDBXGlxQOOeuTnPcU5w=;
+	s=k20201202; t=1750959686;
+	bh=HebmZL2Z3HETRCiyspKgxFuTZe15p2NjHFFkia4DbdE=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=ZAUVqbDUZD+a0kiN0Om7EaZvqcvUG8kOiE6BCVsV6rTd/pHhyhgEfih95vYm3zS7a
-	 /paQaeusn1W+w3mcMoLEqh3lRHmVMgKZVC3n2mtzO/2CjR/D36hUlTQ/CMep4B2w2p
-	 RQ7oZnpgfesHr1bqEG9O0ZU9S9GHrPM324Q6HcYjMkvuK+Sctn+VH6Fn9DAF5dnBW6
-	 fu6goiF6T3Eu322AplhVrjrfnKjqCT+z7pxGsNcsjBJW8lfx9SGrin4Grde/nrlvdv
-	 GQ3eovw7RFjTDpqhbWIIVBuK7ZlOTj9TOKNtcPv1UYXBnY88Wg5si3sUmaX1IOGLYS
-	 7pSleJtyTCh9Q==
+	b=r6AZy5kkRmmObE8sYuKKVMBMMtfV6LzsWTGIdB+Aybv2L0b/OSWJ0qEmmZMFNf629
+	 SfishkJiy/actyvV+lVrSIONrhfxsh+SFHkkwvakcC5zUl45kHLuGnLBEfc7HLEiqH
+	 QwMR7MhLT1c4SP1vL9df0vl5Kgz65dD900TkQSMAEUC9Uv+/AgAh2AqaTfXBJBTKXI
+	 eVCGVIWqHuO0ZILyRAIdvhk5oUtZTZiHhjKxZnRIUL61ZKzUPtyNB4mAtXS/gmwJGw
+	 Qy9FofRvqrVwC5h3wIOtZkAQrMZ895dSkkoAP4Gz5zLpU4OvuGnpfZXWNYGefrtfuU
+	 44/5KVwHUTEpQ==
 From: Namhyung Kim <namhyung@kernel.org>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
- Arnaldo Carvalho de Melo <acme@kernel.org>, 
- Mark Rutland <mark.rutland@arm.com>, 
- Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
- Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
- Adrian Hunter <adrian.hunter@intel.com>, 
- Suzuki K Poulose <suzuki.poulose@arm.com>, 
- Mike Leach <mike.leach@linaro.org>, Nick Terrell <terrelln@fb.com>, 
- David Sterba <dsterba@suse.com>, Collin Funk <collin.funk1@gmail.com>, 
- James Clark <james.clark@linaro.org>
-Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
- coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org, 
- bpf@vger.kernel.org
-In-Reply-To: <20250623-james-perf-bash-tests-v1-1-f572f54d4559@linaro.org>
-References: <20250623-james-perf-bash-tests-v1-1-f572f54d4559@linaro.org>
-Subject: Re: [PATCH] perf test: Change all remaining #!/bin/sh to
- #!/bin/bash
-Message-Id: <175095968503.2045399.16026333437061068793.b4-ty@kernel.org>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>, 
+ Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>, 
+ Namhyung Kim <namhyung@kernel.org>
+Cc: Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, 
+ LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org, 
+ Song Liu <song@kernel.org>, bpf@vger.kernel.org, 
+ Howard Chu <howardchu95@gmail.com>
+In-Reply-To: <20250623225721.21553-1-namhyung@kernel.org>
+References: <20250623225721.21553-1-namhyung@kernel.org>
+Subject: Re: [PATCH v2] perf trace: Split BPF skel code to
+ util/bpf_trace_augment.c
+Message-Id: <175095968570.2045399.17117196657041897009.b4-ty@kernel.org>
 Date: Thu, 26 Jun 2025 10:41:25 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -71,14 +66,16 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-c04d2
 
-On Mon, 23 Jun 2025 10:00:12 +0100, James Clark wrote:
-> There are 43 instances of posix shell tests and 35 instances of bash. To
-> give us a single consistent language for testing in, replace
-> all #!/bin/sh to #!/bin/bash. Common sources that are included in both
-> different shells will now work as expected. And we no longer have to fix
-> up bashisms that appear to work when someone's system has sh symlinked
-> to bash, but don't work on other systems that have both shells
-> installed.
+On Mon, 23 Jun 2025 15:57:21 -0700, Namhyung Kim wrote:
+> And make builtin-trace.c less conditional.  Dummy functions will be
+> called when BUILD_BPF_SKEL=0 is used.  This makes the builtin-trace.c
+> slightly smaller and simpler by removing the skeleton and its helpers.
+> 
+> The conditional guard of trace__init_syscalls_bpf_prog_array_maps() is
+> changed from the HAVE_BPF_SKEL to HAVE_LIBBPF_SUPPORT as it doesn't
+> have a skeleton in the code directly.  And a dummy function is added so
+> that it can be called unconditionally.  The function will succeed only
+> if the both conditions are true.
 > 
 > [...]
 Applied to perf-tools-next, thanks!
