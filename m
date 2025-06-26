@@ -1,256 +1,274 @@
-Return-Path: <bpf+bounces-61632-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61633-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B87BCAE93B3
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 03:26:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A99DAE93C8
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 03:34:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BDEA1C2779E
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 01:26:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA9207AD096
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 01:33:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B83C1A262D;
-	Thu, 26 Jun 2025 01:26:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="BBlUxsPK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B27661B4236;
+	Thu, 26 Jun 2025 01:34:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 428CC13C8FF
-	for <bpf@vger.kernel.org>; Thu, 26 Jun 2025 01:25:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEF6C1494A9;
+	Thu, 26 Jun 2025 01:34:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750901160; cv=none; b=Hr3soG0Lhip76qeOKDAd2puzpmGD3jRz2GUipupS5UqqUNdaaMjZIe8h8EEqG+CEjZQTDR5UVE55EOGVqXEJQKJAvjvXIsErzAFbRvzgjBBJ3N5kyqRl27fuALVCBb0V6FHx1ALjneKAbIc/28+0l3o0gjohGrZlJpL2UOyyxBs=
+	t=1750901673; cv=none; b=N7ePKYoAuRyV/SAWoX0l82+CiMI04PJ0EV3ryItejQjMA7WSPnjbTAzD/Y5dCL03VQkpeQmJfFGnxu7h9yJ9OzMNBeKw0cXLoEi7sYt1d1dTfN8Wp5Ja0GvsVREdXdbJXTsBRUOS/BY3XPwV1BdfD1Mgs6HX6oGLQXMusam0wHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750901160; c=relaxed/simple;
-	bh=Mma+smHy8Bn5YkWAgTrJRXkVdda5HC29vDWL+WVpnhM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UJ8o4DQr4N8Cxptuj0SQzUhETBM+VbuzP0hCvgdVbEXivezrJX2YcmuL+nnty2VHw5AGR5kK65yqKE4KApNdM+VTDfSMxPhKii1DW9dsjVij465vUooT2lTGckp/FpodgllEwbhHjH21engQd6Iej3dYpOPOEmyx17y2Ijq6QfQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=BBlUxsPK; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <a08af28b-e81f-47a8-96b9-94a67d6bd3a7@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1750901155;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=z4OZ8zA7jIIESIfUjfoc872YxAKDYQLaX3efqeg+Rok=;
-	b=BBlUxsPKzGqA/GDV+ghP+uB615XWNJYWVdhEckhE85e/uRZUzAOfFzJu8Q6i9fIynG9NqY
-	2NPrrUfI9/lLaJDlrGi76efvn9AsbnUNDwSBdsZYUQC5+mQZoIN9yQavTp0Ru0VakjOicl
-	wiQrQp/HSo+Q0gWIbl3QTIB6euuvTJM=
-Date: Wed, 25 Jun 2025 18:25:49 -0700
+	s=arc-20240116; t=1750901673; c=relaxed/simple;
+	bh=Sze5LiyiLLQnYq4jp6G/3KXHUq2Jer/dJECFnSftYaE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=VyE2AHmTal3SdLNB3qvA4SmCMpDbYsg9T3lNqw1sRvkbBIRhcqIjOfiSqmoBB8CbFvX+j6zpiDLwLtPLu5ts38ubVlsLwMx2HJ39PkmSBUmDd1ibOpxqTEHQy4C344IQr8wlo2EAs2RXHIUI0+Hv4V5UYLo7np1rUURMQxucHr8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: b1520684522d11f0b29709d653e92f7d-20250626
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.45,REQID:b8690f9c-930e-4fdf-a37f-3d48761e6797,IP:10,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:-5
+X-CID-INFO: VERSION:1.1.45,REQID:b8690f9c-930e-4fdf-a37f-3d48761e6797,IP:10,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-5
+X-CID-META: VersionHash:6493067,CLOUDID:0f9cb000345e11a0c4ca7a113f1f1173,BulkI
+	D:250626092039VEVI8ELM,BulkQuantity:3,Recheck:0,SF:17|19|24|44|64|66|78|80
+	|81|82|83|102|841,TC:nil,Content:0|51,EDM:-3,IP:-2,URL:99|1,File:nil,RT:ni
+	l,Bulk:40,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,B
+	RR:0,BRE:0,ARC:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_ULS,TF_CID_SPAM_SNR,
+	TF_CID_SPAM_FAS
+X-UUID: b1520684522d11f0b29709d653e92f7d-20250626
+X-User: jianghaoran@kylinos.cn
+Received: from [192.168.31.67] [(223.70.159.239)] by mailgw.kylinos.cn
+	(envelope-from <jianghaoran@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 1659417453; Thu, 26 Jun 2025 09:34:25 +0800
+Message-ID: <078ba5da7510db3c7eca281c417cdf49cfa26f07.camel@kylinos.cn>
+Subject: =?gb2312?Q?=BB=D8=B8=B4=A3=BA=5BPATCH=5D?= LoongArch: BPF: Optimize
+ the calculation method of jmp_offset in the emit_bpf_tail_call function
+From: jianghaoran <jianghaoran@kylinos.cn>
+To: Huacai Chen <chenhuacai@kernel.org>
+Cc: Hengqi Chen <hengqi.chen@gmail.com>, loongarch@lists.linux.dev, 
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@xen0n.name, 
+ yangtiezhu@loongson.cn, haoluo@google.com, jolsa@kernel.org,
+ sdf@fomichev.me,  kpsingh@kernel.org, john.fastabend@gmail.com,
+ yonghong.song@linux.dev,  song@kernel.org, eddyz87@gmail.com,
+ martin.lau@linux.dev, andrii@kernel.org,  daniel@iogearbox.net
+Date: Thu, 26 Jun 2025 09:34:11 +0800
+In-Reply-To: <CAAhV-H5NrGb9ofaKdqUQ3Qc6RK3c=Ngy6KsxX2GaOqUb0SQRdw@mail.gmail.com>
+References: <20250528104032.1237415-1-jianghaoran@kylinos.cn>
+	 <CAEyhmHTg3xNMBrSxXQj96pvfD83t6_RHRT_GGtbBzOpAKztDpw@mail.gmail.com>
+	 <68ec5a7f3cc63dc19397b3ce0649716e0fac8d49.camel@kylinos.cn>
+	 <CAAhV-H5NrGb9ofaKdqUQ3Qc6RK3c=Ngy6KsxX2GaOqUb0SQRdw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.1-2kord0k2.4.25.1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: add test cases for
- bpf_dynptr_memset()
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org
-Cc: andrii@kernel.org, ast@kernel.org, eddyz87@gmail.com, mykolal@fb.com,
- kernel-team@meta.com
-References: <20250624205240.1311453-1-isolodrai@meta.com>
- <20250624205240.1311453-3-isolodrai@meta.com>
- <5f00c508-5150-4e69-b006-d15b0e6b2d23@gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-In-Reply-To: <5f00c508-5150-4e69-b006-d15b0e6b2d23@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-
-On 6/25/25 4:45 AM, Mykyta Yatsenko wrote:
-> On 6/24/25 21:52, Ihor Solodrai wrote:
->> Add tests to verify the behavior of bpf_dynptr_memset():
->>    * normal memset 0
->>    * normal memset non-0
->>    * memset with an offset
->>    * memset in dynptr that was adjusted
->>    * error: size overflow
->>    * error: offset+size overflow
->>    * error: readonly dynptr
->>    * memset into non-linear xdp dynptr
->>
->> Signed-off-by: Ihor Solodrai <isolodrai@meta.com>
->> ---
->>   .../testing/selftests/bpf/prog_tests/dynptr.c |   8 +
->>   .../selftests/bpf/progs/dynptr_success.c      | 164 ++++++++++++++++++
->>   2 files changed, 172 insertions(+)
->>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/dynptr.c b/tools/ 
->> testing/selftests/bpf/prog_tests/dynptr.c
->> index 62e7ec775f24..f2b65398afce 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/dynptr.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/dynptr.c
->> @@ -21,6 +21,14 @@ static struct {
->> [...]
->> +
->> +SEC("xdp")
->> +int test_dynptr_memset_xdp_chunks(struct xdp_md *xdp)
->> +{
->> +    const int max_chunks = 200;
->> +    struct bpf_dynptr ptr_xdp;
->> +    u32 data_sz, offset = 0;
-
-A question not directly to Mykyta.
-
-So noalu32 version of this test was failing to verify with this:
-
-     118: (85) call bpf_dynptr_read#201
-     R2 min value is negative, either use unsigned or 'var &= const'
-
-Where R2 refers to `data_sz - offset`
-
-Full log here: 
-https://github.com/kernel-patches/bpf/actions/runs/15861036149/job/44718289284
-
-I tried various conditions unsuccessfully.  But changing u32 to u64
-made it work. If handle_tail part is removed, as Mykyta suggested,
-this doesn't matter, so I will probably leave u32 in v3.
-
-However I am curious if u32->u64 change is an appropriate workaround
-in general for noalu32 problems?  AFAIU verifier might get confused by
-all the added shifts, and "noalu32" is a backward compatibility thing.
 
 
->> +    char expected_buf[32];
-> nit: expected_buf[32] = {DYNPTR_MEMSET_VAL};
-
-I tried that at the beginning. As it turns out, this doesn't work in
-BPF the way you'd expect:
-
-Here is a piece of llvm-objdump with explicit memset:
-
-0000000000000968 <test_dynptr_memset_xdp_chunks>:
-      301:	18 02 00 00 2a 2a 2a 2a 00 00 00 00 2a 2a 2a 2a	r2 = 
-0x2a2a2a2a2a2a2a2a ll
-      303:	7b 2a c8 ff 00 00 00 00	*(u64 *)(r10 - 0x38) = r2
-      304:	7b 2a d0 ff 00 00 00 00	*(u64 *)(r10 - 0x30) = r2
-      305:	7b 2a d8 ff 00 00 00 00	*(u64 *)(r10 - 0x28) = r2
-      306:	7b 2a e0 ff 00 00 00 00	*(u64 *)(r10 - 0x20) = r2
-      307:	bf a7 00 00 00 00 00 00	r7 = r10
-      308:	07 07 00 00 e8 ff ff ff	r7 += -0x18
-      309:	b7 02 00 00 00 00 00 00	r2 = 0x0
-      310:	bf 73 00 00 00 00 00 00	r3 = r7
-      311:	85 10 00 00 ff ff ff ff	call -0x1
-      ...
-
-You can clearly see a piece of stack filling up with 0x2a
-
-After applying this diff:
-
-diff --git a/tools/testing/selftests/bpf/progs/dynptr_success.c 
-b/tools/testing/selftests/bpf/progs/dynptr_success.c
-index 5120acb8b15a..5b351f6fe07c 100644
---- a/tools/testing/selftests/bpf/progs/dynptr_success.c
-+++ b/tools/testing/selftests/bpf/progs/dynptr_success.c
-@@ -809,12 +809,10 @@ int test_dynptr_memset_xdp_chunks(struct xdp_md *xdp)
-         const int max_chunks = 200;
-         struct bpf_dynptr ptr_xdp;
-         u32 data_sz, chunk_sz, offset = 0;
--       char expected_buf[32];
-+       char expected_buf[32] = { DYNPTR_MEMSET_VAL };
-         char buf[32];
-         int i;
-
--       __builtin_memset(expected_buf, DYNPTR_MEMSET_VAL, 
-sizeof(expected_buf));
--
-         /* ptr_xdp is backed by non-contiguous memory */
-         bpf_dynptr_from_xdp(xdp, 0, &ptr_xdp);
-         data_sz = bpf_dynptr_size(&ptr_xdp);
-
-We get the following:
-
-0000000000000968 <test_dynptr_memset_xdp_chunks>:
-      301:	bf a7 00 00 00 00 00 00	r7 = r10
-      302:	07 07 00 00 e8 ff ff ff	r7 += -0x18
-      303:	b7 02 00 00 00 00 00 00	r2 = 0x0
-      304:	bf 73 00 00 00 00 00 00	r3 = r7
-      305:	85 10 00 00 ff ff ff ff	call -0x1
-      ...
-
-The stack allocated array is not initialized.
-Could be an LLVM bug/incompleteness? I used LLVM 19 while developing.
 
 
->> +    char buf[32];
->> +    int i;
->> +
->> +    __builtin_memset(expected_buf, DYNPTR_MEMSET_VAL, 
->> sizeof(expected_buf));
->> +
->> +    /* ptr_xdp is backed by non-contiguous memory */
->> +    bpf_dynptr_from_xdp(xdp, 0, &ptr_xdp);
->> +    data_sz = bpf_dynptr_size(&ptr_xdp);
->> +
->> +    err = bpf_dynptr_memset(&ptr_xdp, 0, data_sz, DYNPTR_MEMSET_VAL);
->> +    if (err)
->> +        goto out;
->> +
-> Maybe we can calculate max_chunks instead of hardcoding, something like:
-> max_chunks = data_sz / sizeof(expected_buf) + (data_sz % 
-> sizeof(expected_buf) ? 1 : 0);
 
-I don't see a point of doing it for this test. max_chunks is just a
-big enough arbitrary constant that works. We do a similar thing in
-other tests.
-
->> +    bpf_for(i, 0, max_chunks) {
->> +        offset = i * sizeof(buf);
->> +        err = bpf_dynptr_read(&buf, sizeof(buf), &ptr_xdp, offset, 0);
+在 2025-06-24星期二的 20:09 +0800，Huacai Chen写道：
+> Hi, Haoran,
 > 
-> handle_tail seems unnecessary, maybe handle tail in the main loop:
-> __u32 sz = min_t(data_sz - offset : sizeof(buf));
-> bpf_dynptr_read(&buf, sz, &ptr_xdp, offset, 0);
+> On Fri, May 30, 2025 at 9:22 AM jianghaoran <
+> jianghaoran@kylinos.cn
+> > wrote:
+> > 
+> > 
+> > 
+> > 
+> > 在 2025-05-29星期四的 10:02 +0800，Hengqi Chen写道：
+> > > Hi Haoran,
+> > > 
+> > > On Wed, May 28, 2025 at 6:40 PM Haoran Jiang <
+> > > jianghaoran@kylinos.cn
+> > > 
+> > > > wrote:
+> > > > For a ebpf subprog JIT，the last call bpf_int_jit_compile
+> > > > function will
+> > > > directly enter the skip_init_ctx process. At this point,
+> > > > out_offset = -1,
+> > > > the jmp_offset in emit_bpf_tail_call is calculated
+> > > > by #define jmp_offset (out_offset - (cur_offset)) is a
+> > > > negative
+> > > > number,
+> > > > which does not meet expectations.The final generated
+> > > > assembly
+> > > > as follow.
+> > > > 
+> > > > 54:     bgeu            $a2, $t1, -8        # 0x0000004c
+> > > > 58:     addi.d          $a6, $s5, -1
+> > > > 5c:     bltz            $a6, -16            # 0x0000004c
+> > > > 60:     alsl.d          $t2, $a2, $a1, 0x3
+> > > > 64:     ld.d            $t2, $t2, 264
+> > > > 68:     beq             $t2, $zero, -28     # 0x0000004c
+> > > > 
+> > > > Before apply this patch, the follow test case will reveal
+> > > > soft
+> > > > lock issues.
+> > > > 
+> > > > cd tools/testing/selftests/bpf/
+> > > > ./test_progs --allow=tailcalls/tailcall_bpf2bpf_1
+> > > > 
+> > > > dmesg:
+> > > > watchdog: BUG: soft lockup - CPU#2 stuck for 26s!
+> > > > [test_progs:25056]
+> > > > 
+> > > 
+> > > This is a known issue. Does this change pass all tailcall
+> > > tests ?
+> > > If not, please refer to the tailcall hierarchy patchset([1]).
+> > > We should address it once and for all. Thanks.
+> 
+> Do you mean you will update this patch?
+> 
+> Huacai
 > 
 
-Yeah, you're right.
-
-It ended up like this because I've been fighting the verifier while
-writing the test, and this version worked eventually. The critical
-piece to uncofuse it was changing:
-     offset += sizeof(buf)
-to
-     offset = i * sizeof(buf)
-
-I will have to add min_t macro locally though.
-
-
->> +        switch (err) {
->> +        case 0:
->> +            break;
->> +        case -E2BIG:
->> +            goto handle_tail;
->> +        default:
->> +            goto out;
->> +        }
->> +        err = bpf_memcmp(buf, expected_buf, sizeof(buf));
->> +        if (err)
->> +            goto out;
->> +    }
->> +
->> +handle_tail:
->> +    if (data_sz - offset < sizeof(buf)) {
->> +        err = bpf_dynptr_read(&buf, data_sz - offset, &ptr_xdp, 
->> offset, 0);
->> +        if (err)
->> +            goto out;
->> +        err = bpf_memcmp(buf, expected_buf, data_sz - offset);
->> +    }
->> +out:
->> +    return XDP_DROP;
->> +}
->> +
->>   void *user_ptr;
->>   /* Contains the copy of the data pointed by user_ptr.
->>    * Size 384 to make it not fit into a single kernel chunk when copying
+yes, I'm making revisions according to the suggestions.
 > 
+> > > 
+> > >   [1]:
+https://lore.kernel.org/bpf/20240714123902.32305-1-hffilwlqm@gmail.com/> > > 
+> > > 
+> > > Thanks,I'll keep looking into these patches.
+> > > > Signed-off-by: Haoran Jiang <
+jianghaoran@kylinos.cn> > > > 
+> > > > > 
+> > > > ---
+> > > >  arch/loongarch/net/bpf_jit.c | 28 +++++++++-------------------
+> > > >  1 file changed, 9 insertions(+), 19 deletions(-)
+> > > > 
+> > > > diff --git a/arch/loongarch/net/bpf_jit.c
+> > > > b/arch/loongarch/net/bpf_jit.c
+> > > > index fa1500d4aa3e..d85490e7de89 100644
+> > > > --- a/arch/loongarch/net/bpf_jit.c
+> > > > +++ b/arch/loongarch/net/bpf_jit.c
+> > > > @@ -208,9 +208,7 @@ bool bpf_jit_supports_far_kfunc_call(void)
+> > > >         return true;
+> > > >  }
+> > > > 
+> > > > -/* initialized on the first pass of build_body() */
+> > > > -static int out_offset = -1;
+> > > > -static int emit_bpf_tail_call(struct jit_ctx *ctx)
+> > > > +static int emit_bpf_tail_call(int insn, struct jit_ctx *ctx)
+> > > >  {
+> > > >         int off;
+> > > >         u8 tcc = tail_call_reg(ctx);
+> > > > @@ -220,9 +218,8 @@ static int emit_bpf_tail_call(struct
+> > > > jit_ctx *ctx)
+> > > >         u8 t2 = LOONGARCH_GPR_T2;
+> > > >         u8 t3 = LOONGARCH_GPR_T3;
+> > > >         const int idx0 = ctx->idx;
+> > > > -
+> > > > -#define cur_offset (ctx->idx - idx0)
+> > > > -#define jmp_offset (out_offset - (cur_offset))
+> > > > +       int tc_ninsn = 0;
+> > > > +       int jmp_offset = 0;
+> > > > 
+> > > >         /*
+> > > >          * a0: &ctx
+> > > > @@ -232,8 +229,11 @@ static int emit_bpf_tail_call(struct
+> > > > jit_ctx *ctx)
+> > > >          * if (index >= array->map.max_entries)
+> > > >          *       goto out;
+> > > >          */
+> > > > +       tc_ninsn = insn ? ctx->offset[insn+1] - ctx-
+> > > > > offset[insn] :
+> > > > +               ctx->offset[0];
+> > > >         off = offsetof(struct bpf_array, map.max_entries);
+> > > >         emit_insn(ctx, ldwu, t1, a1, off);
+> > > > +       jmp_offset = tc_ninsn - (ctx->idx - idx0);
+> > > >         /* bgeu $a2, $t1, jmp_offset */
+> > > >         if (emit_tailcall_jmp(ctx, BPF_JGE, a2, t1, jmp_offset)
+> > > > < 0)
+> > > >                 goto toofar;
+> > > > @@ -243,6 +243,7 @@ static int emit_bpf_tail_call(struct
+> > > > jit_ctx *ctx)
+> > > >          *       goto out;
+> > > >          */
+> > > >         emit_insn(ctx, addid, REG_TCC, tcc, -1);
+> > > > +       jmp_offset = tc_ninsn - (ctx->idx - idx0);
+> > > >         if (emit_tailcall_jmp(ctx, BPF_JSLT, REG_TCC,
+> > > > LOONGARCH_GPR_ZERO, jmp_offset) < 0)
+> > > >                 goto toofar;
+> > > > 
+> > > > @@ -254,6 +255,7 @@ static int emit_bpf_tail_call(struct
+> > > > jit_ctx *ctx)
+> > > >         emit_insn(ctx, alsld, t2, a2, a1, 2);
+> > > >         off = offsetof(struct bpf_array, ptrs);
+> > > >         emit_insn(ctx, ldd, t2, t2, off);
+> > > > +       jmp_offset = tc_ninsn - (ctx->idx - idx0);
+> > > >         /* beq $t2, $zero, jmp_offset */
+> > > >         if (emit_tailcall_jmp(ctx, BPF_JEQ, t2,
+> > > > LOONGARCH_GPR_ZERO, jmp_offset) < 0)
+> > > >                 goto toofar;
+> > > > @@ -263,22 +265,11 @@ static int emit_bpf_tail_call(struct
+> > > > jit_ctx *ctx)
+> > > >         emit_insn(ctx, ldd, t3, t2, off);
+> > > >         __build_epilogue(ctx, true);
+> > > > 
+> > > > -       /* out: */
+> > > > -       if (out_offset == -1)
+> > > > -               out_offset = cur_offset;
+> > > > -       if (cur_offset != out_offset) {
+> > > > -               pr_err_once("tail_call out_offset = %d,
+> > > > expected %d!\n",
+> > > > -                           cur_offset, out_offset);
+> > > > -               return -1;
+> > > > -       }
+> > > > -
+> > > >         return 0;
+> > > > 
+> > > >  toofar:
+> > > >         pr_info_once("tail_call: jump too far\n");
+> > > >         return -1;
+> > > > -#undef cur_offset
+> > > > -#undef jmp_offset
+> > > >  }
+> > > > 
+> > > >  static void emit_atomic(const struct bpf_insn *insn, struct
+> > > > jit_ctx *ctx)
+> > > > @@ -916,7 +907,7 @@ static int build_insn(const struct bpf_insn
+> > > > *insn, struct jit_ctx *ctx, bool ext
+> > > >         /* tail call */
+> > > >         case BPF_JMP | BPF_TAIL_CALL:
+> > > >                 mark_tail_call(ctx);
+> > > > -               if (emit_bpf_tail_call(ctx) < 0)
+> > > > +               if (emit_bpf_tail_call(i, ctx) < 0)
+> > > >                         return -EINVAL;
+> > > >                 break;
+> > > > 
+> > > > @@ -1342,7 +1333,6 @@ struct bpf_prog
+> > > > *bpf_int_jit_compile(struct bpf_prog *prog)
+> > > >         if (tmp_blinded)
+> > > >                 bpf_jit_prog_release_other(prog, prog ==
+> > > > orig_prog ? tmp : orig_prog);
+> > > > 
+> > > > -       out_offset = -1;
+> > > > 
+> > > >         return prog;
+> > > > 
+> > > > --
+> > > > 2.43.0
+> > > > 
+> > 
+> > 
 
 
