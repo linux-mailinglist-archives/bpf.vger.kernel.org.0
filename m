@@ -1,118 +1,144 @@
-Return-Path: <bpf+bounces-61662-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61663-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CE68AE9D46
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 14:13:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 008D5AE9DC2
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 14:45:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 869C74A1F9B
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 12:13:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96E067A7B9E
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 12:44:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD53C216E1B;
-	Thu, 26 Jun 2025 12:13:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A85182E11C0;
+	Thu, 26 Jun 2025 12:45:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="ldwkp6zn"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0012.hostedemail.com [216.40.44.12])
+Received: from mx-rz-1.rrze.uni-erlangen.de (mx-rz-1.rrze.uni-erlangen.de [131.188.11.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73C3FDDD2;
-	Thu, 26 Jun 2025 12:13:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26B9A381AF
+	for <bpf@vger.kernel.org>; Thu, 26 Jun 2025 12:45:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750940020; cv=none; b=ETssuZGI8lilvkJ4Ap5N0eAhn7FERcvgPNuiLt7cUh/Y4xS9TtI6Nuvb2jYt3gq8puao2D1lTRvsIZ13qCT41mZZ0O0WYRmkU2FDkG9iZ3E9fW7uHYCckjyicQcQIWwOVHFkgLZKwBb1s4IcQUfRmYe6pByUNLce8YE+jNbj/Sg=
+	t=1750941941; cv=none; b=POxER2R8fVuvPqhRJH5TAQ7fLBO/L7TtiMHquJgULBqpnMINrlgH8P47Iu1NQ4keW9mDHbvkq/jUJZ9jH+EKkz0pYXMqU4UcUrkaiB4yKzYNAXgmTlZiz0akCK/UQ0JKBynY7XqRr7/I5/nach+H0Pd7ofIwI+n0f/VwPowxLpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750940020; c=relaxed/simple;
-	bh=ZJDkm+ay6O98NiXiGMPkpDGJGpWWhfw+/kn1f31F10Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JGEk36fTRpeJ5yXjl5WYHWWf2Xc9HevGorBFptsvIQ00qcTKoLXgRiosTx3gJktyAAZk2VPt+LCBoAM6VSUgsH/nOS32z6KBXwWNc/Sl0zBqaArvxDeHbDAMqSJpvN1N8uLJQDcWsD9u4+/nj7InEFykVczwNcm0wHURpD9R7qs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf13.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay02.hostedemail.com (Postfix) with ESMTP id D538F1206B7;
-	Thu, 26 Jun 2025 12:13:35 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf13.hostedemail.com (Postfix) with ESMTPA id DE2412000E;
-	Thu, 26 Jun 2025 12:13:31 +0000 (UTC)
-Date: Thu, 26 Jun 2025 08:13:52 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Ingo Molnar <mingo@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org, x86@kernel.org, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Josh Poimboeuf <jpoimboe@kernel.org>, Peter Zijlstra
- <peterz@infradead.org>, Jiri Olsa <jolsa@kernel.org>, Namhyung Kim
- <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Andrii
- Nakryiko <andrii@kernel.org>, Indu Bhagat <indu.bhagat@oracle.com>, "Jose
- E. Marchesi" <jemarch@gnu.org>, Beau Belgrave <beaub@linux.microsoft.com>,
- Jens Remus <jremus@linux.ibm.com>, Linus Torvalds
- <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>,
- Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH v11 13/14] perf/x86: Rename and move get_segment_base()
- and make it global
-Message-ID: <20250626081352.30b360f8@gandalf.local.home>
-In-Reply-To: <aF0IeDBaAfRypu1W@gmail.com>
-References: <20250625225600.555017347@goodmis.org>
-	<20250625225717.016385736@goodmis.org>
-	<aF0IeDBaAfRypu1W@gmail.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1750941941; c=relaxed/simple;
+	bh=7n8+uYe/ceiW2gcaLB+F/kHTPcMCFhbyFOOsnzeulUg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=fGxow4f/Yufcz3ZA8W37sVilr2NCTqtaq2YbMv/nqG7+gIdwbjnN3k8RIpgvoY2rAgMm9ZPmSLZvHe/HKtZw00eQtTr4phP0SSDjo7rdnEohImrBYJi+T6FUNFUWZ9LIAk7jckjmsDNteXKkT2CIzk1+RzGziRzIzlbOibtvkOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=ldwkp6zn; arc=none smtp.client-ip=131.188.11.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fau.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
+	t=1750941929; bh=yBxmstZH2zOZFR9uSZYoAFbaQ1tLOkQyFz9QbROtdiY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From:To:CC:
+	 Subject;
+	b=ldwkp6znaM3O8Dh/Dz6+t4ml+J92J4GV0ANgZxvaCYnM6U85w643fvvDRFIfxbGyT
+	 YkArLlF5Hhy9eLIqF5zW/H2EzLqDUjtcHVLKxF4Q3B0Ga3s5u+WerkMp0O++qtwP+7
+	 CPtQ7wR2pDYDeifA8pm4QO6eC7SIE8FM6U4VuaYEW7VT79stONYyXdV7YCgL19U2Si
+	 fxEzyu1FDBFP5krTshTOaDdAf6tg7LexLdRFBrLMUTkdu8CWVvRmNcU/l/rSrw2iHQ
+	 nF382giviA7xGM4xgoLyQmbOWatCFewKzIaCq7qNc7wPKdIypp0Zoyf3L5p7TvWfkX
+	 pKVBXEigtaWqg==
+Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-rz-1.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4bSdh94K5Rz8vpk;
+	Thu, 26 Jun 2025 14:45:29 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at boeck2.rrze.uni-erlangen.de (RRZE)
+X-RRZE-Flag: Not-Spam
+X-RRZE-Submit-IP: 10.188.34.184
+Received: from localhost (i4laptop33.informatik.uni-erlangen.de [10.188.34.184])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: U2FsdGVkX1+35OPY8lkn57l3OTWP46M8UjaXrubzJME=)
+	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4bSdh657Sdz8vpN;
+	Thu, 26 Jun 2025 14:45:26 +0200 (CEST)
+From: Luis Gerhorst <luis.gerhorst@fau.de>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Paul Chaignon <paul.chaignon@gmail.com>,  bpf@vger.kernel.org,  Alexei
+ Starovoitov <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,
+  Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH bpf-next] bpf: Fix unwarranted warning on speculative path
+In-Reply-To: <4266fd5de04092aa4971cbef14f1b4b96961f432.camel@gmail.com>
+	(Eduard Zingerman's message of "Wed, 25 Jun 2025 15:13:27 -0700")
+References: <aFw5ha9TAf84MUdR@mail.gmail.com>
+	<402ecbeabdd090b81ae35d2187c344779ff926c7.camel@gmail.com>
+	<aFxtazVRQQzhgfmO@mail.gmail.com>
+	<4266fd5de04092aa4971cbef14f1b4b96961f432.camel@gmail.com>
+User-Agent: mu4e 1.12.8; emacs 30.1
+Date: Thu, 26 Jun 2025 14:45:26 +0200
+Message-ID: <8734bmoemx.fsf@fau.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: uys6ttrkumetetsc4q3cpeitdrxnbwkr
-X-Rspamd-Server: rspamout08
-X-Rspamd-Queue-Id: DE2412000E
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX18rv6R1OBR9mcy111QH7t1FM1i8rlVGQg8=
-X-HE-Tag: 1750940011-661499
-X-HE-Meta: U2FsdGVkX1/qz+jyF9/tlZIldOEdrudCEWU5a97Pg8NrdTzggJLyt/G6ust73fl1uM28G8SoLmCp1MzDYLve+kVjCQMOJj1fZ5bFx5TzIIvRIax/WNSS6Nfm8IblnY7U66+aCfrWe3XzUzXayOZVVL60wng38G259CSVpirG52uKnhro+8qgaX9c+Fjc19tJyDhoxyYKezBgefNvhN4YwIQi1vYjdtu/BoEYF3iFiohTbVtHfhisEImvcNuQLkQALapWS2EKq+qRFoZnt4mQVzlO4pg5ugfSByIU32lGeGbpVse+Ni4DJkFaLT7e2OupK/8G4lFgS1tvLuws5tsn+J+YkiY7hrfbmA0mDDGdz4TD6bHN4cyP45lRqX6dWGW9syBoLLebtVuiQtO9E0bpug==
+Content-Type: text/plain
 
-On Thu, 26 Jun 2025 10:44:40 +0200
-Ingo Molnar <mingo@kernel.org> wrote:
+Eduard Zingerman <eddyz87@gmail.com> writes:
 
-> * Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
-> > From: Josh Poimboeuf <jpoimboe@kernel.org>
-> > 
-> > get_segment_base() will be used by the unwind_user code, so make it
-> > global and rename it to segment_base_address() so it doesn't conflict with
-> > a KVM function of the same name.  
-> 
-> So if you make an x86-internal helper function global, please prefix it 
-> with x86_ or so:
-> 
-> 	unsigned long x86_get_segment_base(unsigned int segment)
-> 
-> Keeping the _get name also keeps it within the nomenclature of the 
-> general segment descriptor API family:
-> 
-> 	get_desc_base()
-> 	set_desc_base()
-> 	get_desc_limit()
-> 	set_desc_limit()
->   [x86_]get_segment_base()
+> On Wed, 2025-06-25 at 23:43 +0200, Paul Chaignon wrote:
+>
+> [...]
+>
+>> > So, suppose there is a program:
+>> > 
+>> >      15: (18) r1 = 0x2020200005642020
+>> >      17: (7b) *(u64 *)(r10 -264) = r1
+>> > 
+>> > Insn processing sequence would look like (starting from 15):
+>> > - prev_insn_idx <- 15
+>> > - do_check_insn()
+>> >   - env->insn_idx <- 17
+>> > - prev_insn_idx <- 17
+>> > - do_check_insn():
+>> >   - nospec_result <- true
+>> >   - env->insn_idx <- 18
+>> > - state->speculative && cur_aux(env)->nospec_result == true:
+>> >   - WARN_ON_ONCE(18 != 17 + 1) // no warning
+>> > 
+>> > What do I miss?
+>> 
+>> In the if condition, "cur_aux(env)" points to the aux data of the next
+>> instruction (#17 here) because we incremented "insn_idx" in
+>> do_check_insn(). In my fix, "insn" points to the previous instruction
+>> because we retrieved it before calling do_check_insn().
+>> 
+>> Therefore, the processing sequence would look like:
+>> - prev_insn_idx <- 15
+>> - do_check_insn()
+>>   - env->insn_idx <- 17
+>> - state->speculative && cur_aux(env)->nospec_result == true:
+>>   - WARN_ON_ONCE(17 != 15 + 1) // warning
+>
+> I'm sorry, I'm a bit slow today (well, maybe not only today).
+> Isn't it a slightly different bug in the original check?
+> Suppose current insn is ST/STX that do_check_insn() marked as
+> nospec_result. I think the intent was to stop branch processing right
+> at that point, as nospec instruction would be inserted after this
+> store => no need to speculate further.
+> In other words, cur_aux(env)->nospec_result pointing to instruction
+> after ST/STX was not anticipated. (Luis, wdyt?)
 
-Sounds good.
+That's a very good point, nospec_result should only stop the path
+analysis after the insn that has it set was analyzed. Otherwise, a
+nospec required before the insn may not be added.
 
-> 
-> > Also add a lockdep_assert_irqs_disabled() to make sure it's always 
-> > called with interrupts disabled.  
-> 
-> Please make this a separate patch, this change gets hidden in the noise 
-> of the function movement and renaming otherwise, plus it also makes the 
-> title false and misleading:
-> 
->    perf/x86: Rename and move get_segment_base() and make it global
-> 
+In reply to this you find a RFC fix and test that shows a nospec might
+be missing. If this makes sense I will send a polished version.
 
-I'll break it up.
+The tests fail without the fix [1] (the offset no longer matches because
+the nospec before the stack-write is missing, which is the main point),
+but succeed otherwise [2].
 
-Thanks for the review!
+I manually verified the fix resolves the warning in the reproducer, but
+I can add a test for the polished version.
 
--- Steve
+[1] https://github.com/kernel-patches/bpf/actions/runs/15901586938/job/44846011518?pr=9199#step:5:11308
+[2] https://github.com/kernel-patches/bpf/pull/9198
 
