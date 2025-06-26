@@ -1,149 +1,195 @@
-Return-Path: <bpf+bounces-61629-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61630-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70D5EAE9361
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 02:25:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49072AE9394
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 03:05:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE434170DB8
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 00:25:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2DA71894E67
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 01:06:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C357D15B0EC;
-	Thu, 26 Jun 2025 00:24:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JxYkyVRi"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCC84198E91;
+	Thu, 26 Jun 2025 01:05:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from neil.brown.name (neil.brown.name [103.29.64.221])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAF052F1FEE;
-	Thu, 26 Jun 2025 00:24:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 726492F1FF1;
+	Thu, 26 Jun 2025 01:05:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.29.64.221
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750897495; cv=none; b=OUUIcZJkDqjm4I3tpgfTANZ8ccwRst0ssgLTQJ8ShVCyBNDm1h2LFklKk30efYAMbbzkFdFhdJuQU9Rw071vMFW/3DxZgFxTnJ//YsMqfbqvkxVsxNh9ygPF9a9t23RzC8J5NJWv5SyO1/31YdRiK5vupvO/R3469S7fOVdYQXE=
+	t=1750899933; cv=none; b=aIM/KV0i9ubzeRjRWqTyJa9nCY/JBSyT0whHj+bCz6KiPbZJAey3hI0Z2Ld4cXXzZ8ZFOfO8yPr6BTl0w/Tmgt8Xf7iHAq3VyUUuL44prI9cQyy/OxSAymlE5JJn9K0559MDWDlYWnGWR4zsDbtnahNMlaCKCdwNSDZ5jWHP0hM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750897495; c=relaxed/simple;
-	bh=3RUBDXcCOOdlEWGj394RlJKkuphbNDVZPadUh0UHBNc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EuT+Tk3PFAgqlxEARS4Sj7QMIu6h5IkYeEIV+9Qo+/Bysrsv8EO6WywzHSDGncxy/gdegLL7ctGFvHyBs9ND0Vnr8wagCHeaK/aOKU+DT3+SI6lGuXWZtWkBvmipnE+KzMi0bcXZmFkAWhM9HtMbUE4IaZomVQMF8wI1YJzYe40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JxYkyVRi; arc=none smtp.client-ip=209.85.166.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-3da82c6c5d4so3564005ab.1;
-        Wed, 25 Jun 2025 17:24:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750897493; x=1751502293; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8DpDcu8odICYcSvPG11YgRezz0sdLDRgeHofe1ELDoU=;
-        b=JxYkyVRiWHXBBYCr3SShKWyM29q9FUnRpYjAfchNV2rwRTIbgiSVc2totr5aU6W9cn
-         ngVq6SMGFMkWIO2xIC4spUkvcENFazVtLQxcIep/hmh11RjmaHnMgg7p4nDdfNUl9Fog
-         459fP3gk/QqRPjGSvwavLOo1GbPzXEeb8Mpd5BCkBKWoRRT6LTV/6EaJq/+YVu+V7M8y
-         nYIVEqSpQnc5E4J2ez2soZEvihvzdiTHaBRSFUb92OVy5kBIdteWHOdquIgYD+kKRKYq
-         V+35rdTAxp271BdS3JWGHI1KH4c8tAru0VdJFmXJ9/uOSN2dWVlDvIj5Xf8ZtBjaE0Gv
-         QdEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750897493; x=1751502293;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8DpDcu8odICYcSvPG11YgRezz0sdLDRgeHofe1ELDoU=;
-        b=Uyql8qbdHoBqQI5z62TvJ+3oIwPbl4rCbSqW2fJplH03PWdLrKxbi4vKTDliQI8DWR
-         cAX/XZ1xlGt3OBdoJQmkvGXU8aCh+1idVKHusk1QLc1cECuLC6RiHaLeyGKZpb5367sO
-         2KXkQdkSUZT6rpQpV6xHNZV+jou1M1144Zx/oPReoqCBp9mo8QNSwT9CEL9H4T2l0NIK
-         17rOjBeeq07o01SzJoZOaWlaqJpc0BGkLgHGVYX/3n0LfxWqY3J/5CefcRzpX2DJvbSc
-         I+csxOH4QOVdB+Z6G4JDgHPwDhibyDGBFgUOB4dLr72q8FjGY5KkgiAeP/AO4bNeAk8g
-         cTeg==
-X-Forwarded-Encrypted: i=1; AJvYcCUPnQwQqTBL6Xg2YAo5dH8mw8H3EAMed4CYwhRxfm7XDk6gRDHcV809ZoMFuJ/DoW4ead0=@vger.kernel.org, AJvYcCVyEsoMHXf5bAl2majzblRPxfTa8fxXnEOvUyunZJMduEotkge0j66cacqsAYjvXEhKfXNiHXyf@vger.kernel.org, AJvYcCWFu363SXdHZFDv/gEabQb89+/r/NK6OcH+MLOxDYnbTUOHqqoKy6WfQy4hrY+ZMUCijbRc8BXLVI1yvjpq@vger.kernel.org
-X-Gm-Message-State: AOJu0YxIq4C6veJqSxdA7RRC84zNNteTElk74Rh/oTBUJF2vVIWvjcxN
-	AKl0qmX/10RF30VeMj4xNwb7C8ilHoG4Rmc9mUx2I7Udxd+jcJrEfeeSfv4Z7S+UPoMnSL1Hbfa
-	yYibd3rdle0G5ONvnfn15ImGzmT4Y5mlsdyow+0k=
-X-Gm-Gg: ASbGncuV11xnh7Dg72NjJ/bFXq41/oY3gYHVr0W0x/LgHnqR+QJpl/rvvAErd97bdEX
-	Jevp3CaZKPEic3PjLrbJHW74Nk26/yJQAnIWs6DYa20ItVoXMGByqILnMjvoO4gNQAC1/ml8GFz
-	Zx/aTUSaUQ1aZf4fJkoJmbKdh0SrTOjRzGVWfhyQ/H5g==
-X-Google-Smtp-Source: AGHT+IHtHZaMbuHXKnztiu9cs2xdpESBu0dN6VQeV3lqpz2a3TdX5SwmtdYGOSge9cKK8qiIbygUpjoUG8TS68we2io=
-X-Received: by 2002:a05:6e02:1a82:b0:3df:2cd1:f61b with SMTP id
- e9e14a558f8ab-3df327de62cmr62782435ab.0.1750897492975; Wed, 25 Jun 2025
- 17:24:52 -0700 (PDT)
+	s=arc-20240116; t=1750899933; c=relaxed/simple;
+	bh=Jz1iF/Qoa3fauHETpavSK7hWEM30fCiMy4HqpZj2emY=;
+	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
+	 References:Date:Message-id; b=SCwk0ZZKUjN1NbYwlM5Pd9oKHRfimWW05VHU6fs8FwzElqRsMn1EGstDMH9nMxcTlMyqKXD99g5Fe0AduRn/JBda4qe6AK9DS9jPRA5UMSFFxDd+jUTQGloNWX6SiEl+Brpfisp6nHa8VWvTELwSW/6yE8Z1g2pRI4N1v364TEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brown.name; spf=pass smtp.mailfrom=neil.brown.name; arc=none smtp.client-ip=103.29.64.221
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brown.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=neil.brown.name
+Received: from 196.186.233.220.static.exetel.com.au ([220.233.186.196] helo=home.neil.brown.name)
+	by neil.brown.name with esmtp (Exim 4.95)
+	(envelope-from <mr@neil.brown.name>)
+	id 1uUb3M-00512l-B9;
+	Thu, 26 Jun 2025 01:05:24 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <685af3b1.a00a0220.2e5631.0091.GAE@google.com> <CAL+tcoB0as6+5VOk9nu0M_OH4TqT6NjDZBZmgQgdQcYx0pciCw@mail.gmail.com>
- <aFwQZhpWIxVLJ1Ui@mini-arch> <CAL+tcoCmiT9XXUVGwcT1NB6bLVK69php-oH+9UL+mH6_HYxGhA@mail.gmail.com>
- <aFwZ5WWj835sDGpS@mini-arch> <aFxgg4rCQ8tfM9dw@mini-arch> <20250625140357.6203d0af@kernel.org>
- <aFyIRxuBrpRsB0iF@mini-arch>
-In-Reply-To: <aFyIRxuBrpRsB0iF@mini-arch>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Thu, 26 Jun 2025 08:24:16 +0800
-X-Gm-Features: Ac12FXzGwQs2zmklf2_XcL1cpsjKfoR8Pt8xDZ7LtAzluD81WRF_rGvoLqid8-c
-Message-ID: <CAL+tcoDkgcBfFsHRzjNCm-VYq8-bV+VjPm259+qu548GurZggA@mail.gmail.com>
-Subject: Re: [syzbot] [bpf?] [net?] possible deadlock in xsk_notifier (3)
-To: Stanislav Fomichev <stfomichev@gmail.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, 
-	syzbot <syzbot+e67ea9c235b13b4f0020@syzkaller.appspotmail.com>, andrii@kernel.org, 
-	ast@kernel.org, bjorn@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net, 
-	davem@davemloft.net, edumazet@google.com, horms@kernel.org, 
-	jonathan.lemon@gmail.com, linux-kernel@vger.kernel.org, 
-	maciej.fijalkowski@intel.com, magnus.karlsson@intel.com, 
-	netdev@vger.kernel.org, pabeni@redhat.com, sdf@fomichev.me, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+From: "NeilBrown" <neil@brown.name>
+To: "Tingmao Wang" <m@maowtm.org>
+Cc: =?utf-8?q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+ "Song Liu" <song@kernel.org>, bpf@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-security-module@vger.kernel.org, brauner@kernel.org,
+ kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
+ daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk,
+ jack@suse.cz, kpsingh@kernel.org, mattbobrowski@google.com,
+ =?utf-8?q?G=C3=BCnther?= Noack <gnoack@google.com>
+Subject: Re: [PATCH v5 bpf-next 0/5] bpf path iterator
+In-reply-to: <4577db64-64f2-4102-b00e-2e7921638a7c@maowtm.org>
+References: <>, <4577db64-64f2-4102-b00e-2e7921638a7c@maowtm.org>
+Date: Thu, 26 Jun 2025 11:05:23 +1000
+Message-id: <175089992300.2280845.10831299451925894203@noble.neil.brown.name>
 
-On Thu, Jun 26, 2025 at 7:37=E2=80=AFAM Stanislav Fomichev <stfomichev@gmai=
-l.com> wrote:
->
-> On 06/25, Jakub Kicinski wrote:
-> > On Wed, 25 Jun 2025 13:48:03 -0700 Stanislav Fomichev wrote:
-> > > > > I'm still learning the af_xdp. Sure, I'm interested in it, just a=
- bit
-> > > > > worried if I'm capable of completing it. I will try then.
-> > > >
-> > > > SG, thanks! If you need more details lmk, but basically we need to =
-reorder
-> > > > netdev_lock_ops() and mutex_lock(lock: &xs->mutex)+XSK_READY check.
-> > > > And similarly for cleanup (out_unlock/out_release) path.
-> > >
-> > > Jakub just told me that I'm wrong and it looks similar to commit
-> > > f0433eea4688 ("net: don't mix device locking in dev_close_many()
-> > > calls"). So this is not as easy as flipping the lock ordering :-(
-> >
-> > I don't think registering a netdev from NETDEV_UP even of another
-> > netdev is going to play way with instance locks and lockdep.
-> > This is likely a false positive but if syzbot keeps complaining
-> > we could:
-> >
-> > diff --git a/drivers/net/wan/lapbether.c b/drivers/net/wan/lapbether.c
-> > index 995a7207bdf8..f357a7ac70ac 100644
-> > --- a/drivers/net/wan/lapbether.c
-> > +++ b/drivers/net/wan/lapbether.c
-> > @@ -81,7 +81,7 @@ static struct lapbethdev *lapbeth_get_x25_dev(struct =
-net_device *dev)
-> >
-> >  static __inline__ int dev_is_ethdev(struct net_device *dev)
-> >  {
-> > -       return dev->type =3D=3D ARPHRD_ETHER && strncmp(dev->name, "dum=
-my", 5);
-> > +       return dev->type =3D=3D ARPHRD_ETHER && !netdev_need_ops_lock(d=
-ev);
-> >  }
-> >
-> > IDK what the dummy hack is there for, it's been like that since
-> > git begun..
->
-> Agreed. The driver itlself looks interesting. IIUC, when loaded, it
-> unconditionally creates virtual netdev for any eth device in the init
-> ns. A bit surprised that syzbot enables it, none of my machines have it
-> enabled.
+On Thu, 26 Jun 2025, Tingmao Wang wrote:
+> On 6/26/25 00:04, NeilBrown wrote:
+> > On Wed, 25 Jun 2025, Micka=C3=ABl Sala=C3=BCn wrote:
+> >> On Wed, Jun 25, 2025 at 07:38:53AM +1000, NeilBrown wrote:
+> >>>
+> >>> Can you spell out the minimum that you need?
+> >>
+> >> Sure.  We'd like to call this new helper in a RCU
+> >> read-side critical section and leverage this capability to speed up path
+> >> walk when there is no concurrent hierarchy modification.  This use case
+> >> is similar to handle_dots() with LOOKUP_RCU calling follow_dotdot_rcu().
+> >>
+> >> The main issue with this approach is to keep some state of the path walk
+> >> to know if the next call to "path_walk_parent_rcu()" would be valid
+> >> (i.e. something like a very light version of nameidata, mainly sequence
+> >> integers), and to get back to the non-RCU version otherwise.
+> >>
+> >>>
+> >>> My vague impression is that you want to search up from a given strut pa=
+th,
+> >>> no further then some other given path, looking for a dentry that matches
+> >>> some rule.  Is that correct?
+> >>
+> >> Yes
+> >>
+> >>>
+> >>> In general, the original dentry could be moved away from under the
+> >>> dentry you find moments after the match is reported.  What mechanisms do
+> >>> you have in place to ensure this doesn't happen, or that it doesn't
+> >>> matter?
+> >>
+> >> In the case of Landlock, by default, a set of access rights are denied
+> >> and can only be allowed by an element in the file hierarchy.  The goal
+> >> is to only allow access to files under a specific directory (or directly
+> >> a specific file).  That's why we only care of the file hierarchy at the
+> >> time of access check.  It's not an issue if the file/directory was
+> >> moved or is being moved as long as we can walk its "current" hierarchy.
+> >> Furthermore, a sandboxed process is restricted from doing arbitrary
+> >> mounts (and renames/links are controlled with the
+> >> LANDLOCK_ACCESS_FS_REFER right).
+> >>
+> >> However, we need to get a valid "snapshot" of the set of dentries that
+> >> (could) lead to the evaluated file/directory.
+> >=20
+> > A "snapshot" is an interesting idea - though looking at the landlock
+> > code you one need inodes, not dentries.
+> > I imagine an interface where you give it a starting path, a root, and
+> > and array of inode pointers, and it fills in the pointers with the path
+> > - all under rcu so no references are needed.
+> > But you would need some fallback if the array isn't big enough, so maybe
+> > that isn't a good idea.
+> >=20
+> > Based on the comments by Al and Christian, I think the only viable
+> > approach is to pass a callback to some vfs function that does the
+> > walking.
+> >=20
+> >    vfs_walk_ancestors(struct path *path, struct path *root,
+> > 		      int (*walk_cb)(struct path *ancestor, void *data),
+> > 		      void *data)
+> >=20
+> > where walk_cb() returns a negative number if it wants to abort, and is
+> > given a NULL ancestor if vfs_walk_ancestors() needed to restart.
+> >=20
+> > vfs_walk_ancestors() would initialise a "struct nameidata" and
+> > effectively call handle_dots(&nd, LAST_DOTDOT) repeatedly, calling
+> >     walk_cb(&nd.path, data)
+> > each time.
+>=20
+> handle_dots semantically does more than dget_parent + choose_mountpoint
+> tho (which is what Landlock currently does, and is also what Song's
+> iterator will do).  There is the step_into which will step into
+> mountpoints (there is also code to handle symlinks, although I'm not sure
+> if that's relevant for following ".."), and it will also return ENOENT if
+> the path is disconnected.
 
-Interesting case I find. Thank you both for the detailed explanation :)
+Is any of this a problem for you?
 
-Thanks,
-Jason
+>=20
+> Also I guess we might not need to have an entire nameidata?  In theory it
+> only needs to do what follow_dotdot_rcu does without the path_connected
+> check.  So it seems like given we have path and root as function argument,
+> it would only need nd->{seq,m_seq}.
+
+Those are implementation details internal to namei.c.  Certainly this
+function wouldn't use all of the fields in nameidata, but it doesn't
+hurt to have a few fields in a struct on the stack which don't get used.
+Keeping the code simple and uniform is much more important.  Using
+nameidata would help achieve that.
+
+>=20
+> I might be wrong tho, but certainly the behaviour is different.
+
+Here we get back to the question of "precisely what behaviour do you
+need?".
+"The same as what a previous patch did" is not a reasonable answer.
+
+If, from userspace, you repeatedly did chdir("..") and then examined the
+current directory you would get exactly the sequence of directories
+provided by repeatedly calling handle_dots(..., LAST_DOTDOT).  If there
+is some circumstance where that would be not acceptable for your use
+case, you need to explain (and we need to document) what differences you
+need and why use need it.
+
+>=20
+> >=20
+> > How would you feel about that sort of interface?
+>=20
+> I can't speak for Micka=C3=ABl, but a callback-based interface is less flex=
+ible
+> (and _maybe_ less performant?).  Also, probably we will want to fallback
+> to a reference-taking walk if the walk fails (rather than, say, retry
+> infinitely), and this should probably use Song's proposed iterator.  I'm
+> not sure if Song would be keen to rewrite this iterator patch series in
+> callback style (to be clear, it doesn't necessarily seem like a good idea
+> to me, and I'm not asking him to), which means that we will end up with
+> the reference walk API being a "call this function repeatedly", and the
+> rcu walk API taking a callback.  I think it is still workable (after all,
+> if Landlock wants to reuse the code in the callback it can just call the
+> callback function itself when doing the reference walk), but it seems a
+> bit "ugly" to me.
+
+call-back can have a performance impact (less opportunity for compiler
+optimisation and CPU speculation), though less than taking spinlock and
+references.  However Al and Christian have drawn a hard line against
+making seq numbers visible outside VFS code so I think it is the
+approach most likely to be accepted.
+
+Certainly vfs_walk_ancestors() would fallback to ref-walk if rcu-walk
+resulted in -ECHILD - just like all other path walking code in namei.c.
+This would be largely transparent to the caller - the caller would only
+see that the callback received a NULL path indicating a restart.  It
+wouldn't need to know why.
+
+NeilBrown
 
