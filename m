@@ -1,162 +1,167 @@
-Return-Path: <bpf+bounces-61699-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61700-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D8EDAEA588
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 20:42:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61C51AEA616
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 21:07:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0509177F2E
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 18:41:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCC393B3853
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 19:06:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A70802ED860;
-	Thu, 26 Jun 2025 18:41:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8A1E2EF9D4;
+	Thu, 26 Jun 2025 19:06:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KXjyN1ne"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AcakhpBk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 899451DF739
-	for <bpf@vger.kernel.org>; Thu, 26 Jun 2025 18:41:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16C332EF655
+	for <bpf@vger.kernel.org>; Thu, 26 Jun 2025 19:06:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750963310; cv=none; b=PKUN7rFtU98UqrxyDC7XR4Wy18TgIlYAyTkTgJldZrr5t+3o1KFAqCdLLjYXqn1OaHMX3o/ISgAHbWbNSKSgkWByFWR5a5Rdmjm4/pYqw7N5IDyRu3rxQBbu0Cn4tM8f9nf4BYeipgcQKv/nlu24snABncWB6v5oCtlQl2YOTJ8=
+	t=1750964792; cv=none; b=k3LwcHoRQauuk9E96wE6ad77qqdCLGcyCj2N1UrYUa2u2SPm8Hrmtkbe9Qa0QxApz0yy0UqP7pGU+9WEy8bpVh+7dpi+wUNRixZtIATmalrjCkOtLmI+YDCGjWI2i4LPg1Bl8Z21sHUU58zD/Q1BkzHFqsqqmi/NyvF9+H6qssA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750963310; c=relaxed/simple;
-	bh=s21gCJhFNFViWebXJcWfm72/UVwuH3P4XHmKjmBNDSs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OzgwXudVaUkxGU8Bbj8DQ2ZBghJpEGOnuXIG0i4EVttm4MAO7Gb/7MXiqooQoGI03xXwwV1o5jGLD+w5AKmdJU9I/YkKccQUVH4KKTl08tLItpp2ThWVXk/5hyAwYT8dOrG1sDh6XSIEsS68x9+Y/EPXx1KtRg1/5rlIFFH9iKo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KXjyN1ne; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3a507e88b0aso1024617f8f.1
-        for <bpf@vger.kernel.org>; Thu, 26 Jun 2025 11:41:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750963307; x=1751568107; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7GBiMuAnlPzRtTQ1k4vuvcqOJ9KDgzw/tqRE4o2Co0E=;
-        b=KXjyN1nepTubyXtN9K33mLkco0aw9ou0CDs8PdUX3miYPrK2XP6n35Uuz6Gjh9zC02
-         yiengknKnHxWgNa1ZdxMY6SCjzObx8JO8Tf7RefzzWzEFBnTSeeeGRSpLLPUt9RK+eo9
-         EVz0MtZ27GdTVgzzAd/lM5iqRklkhLMjO8pcCwq8d29UHp1jVtpuiP2E1Lj8JlEjfm7v
-         8Y+Xs2wLwXxZj8kwp2bDdFGeXILSsI9vZk1uPWLAUaaHulUBcJJ72ig5UvrRb9WZyqc5
-         l3aU4YGoVXkXgiFZ6z6sTKHqyJbMcjX5UMElUKnwi2KrT6Inj9kNvZMn2/1wzgbIICUs
-         HqWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750963307; x=1751568107;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7GBiMuAnlPzRtTQ1k4vuvcqOJ9KDgzw/tqRE4o2Co0E=;
-        b=DEPvvhcixFzCNEaRIR1MWM7HXGS1R/pILf3vqi8gYKfOeb7HsNHBpFLKCDDvGfUTdO
-         Jkl4Y+jr4pGQ/C9zKd9srXtcrjsEP7vN39CXRs7BTqupn4JkoAhRB9iyHkU2416XagdB
-         BZcNzcLlvPpnQu12hqICcpGDE7lNkrG5kdkdLOLVOOTtJ7p7Je5cAwOgqSQ2mKGxRfjI
-         nTI+YFVLMmTwqGGJP9xJgKrekuPD6BEewjfnnx5/0LgOOeOW0PV6NxQ06DPxRG7mmvTJ
-         gNmF5pTKq3rhOR3JMhCYzFtNGIRIgmlQ4KctPtC/Gyvx5v6LMqXpA+N9qNwfyjLh11u1
-         2oIw==
-X-Forwarded-Encrypted: i=1; AJvYcCUjgLiwcujAxabGbYK401BI+rEKrSJ9UU7WMyo6GxEAF3ilVfRXExiiQrk+fZDcmm1IKFg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy9PZNT2CR5p2aDsxW56GvjPLKzwAALdZxhRlAQ4V0uoMlrYj+t
-	/NODsb99VsnzaEGdbPPPlm7qNL7ibmM+TUJGyhWhXezGlZnDK3kZ2slxtYrQ3adWmgq2g+fUPC0
-	+XtcuFnhN9FYqnTX2gLmZou9UK95OGYI=
-X-Gm-Gg: ASbGncse1rO3Mf8TXRkdh9UFQ/ZWb6tIXLZHn72gZJfESH+FCF1Qf8GW5PZsSf9Y9A1
-	AhCryO6cU750oRWo5syr9rJiz/AXQ6ffmz7UkBJzawOSkknBRFBS6L7MEbT08615+BBsu2KLX5F
-	W1DXj0GtZzDLNjMJi8VOaeOiQre2BOq62rsicEL5K+RYjmtnIecXvs3BkyfmJKpd010JFAdMpt
-X-Google-Smtp-Source: AGHT+IFxCz3X/NiuL9l3GU69L+ELY65+WyrxMj5UStSNJsNFkzaTv6I66mJ+v8iby9DMJIHXzaHmF5wLxQsI3EPxKaw=
-X-Received: by 2002:a05:6000:440d:b0:3a4:ef33:e60 with SMTP id
- ffacd0b85a97d-3a8ff51fc03mr355996f8f.40.1750963306620; Thu, 26 Jun 2025
- 11:41:46 -0700 (PDT)
+	s=arc-20240116; t=1750964792; c=relaxed/simple;
+	bh=94wujlprhlS029mcra36E0Dntwgq9FBtExTdO7unzTs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AggSvXbEGEtjXqX8AmNfEm3B+fbYSHtsmyITv9bn++iiXtQr0awYp4itVKvv2O7C98QS6V+0CLqBat906Dzf8NoRXGXqIbOaOLep8YlJV3X91Vpyc/L+O8n3fsMULua01RUMsOqztIBkTdGt2QjC+X7OiLv8SgK/qiENwPsIPnQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AcakhpBk; arc=none smtp.client-ip=95.215.58.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1750964776;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=hRYA/eQeT9TuSYBJimjQD+4XXaxvKbVaBpqOU6qP1mI=;
+	b=AcakhpBkj96bUgTOzuoxqLIfIAc9ZQjOnqODJB0v3sF4JcbkR8FrCvNkH9Uz2of8AFDTx5
+	+VR1ghYe3Z1RWI0fzCI4gs3L1ykEp5+Z5qHA40jYNUtFHSehdlhINjCSqv7YLUkDDte/VN
+	IcPoTknOiDN34LvkQ/hDJqUpWu/n2fM=
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Tejun Heo <tj@kernel.org>
+Cc: "Paul E . McKenney" <paulmck@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	JP Kobryn <inwardvessel@gmail.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Ying Huang <huang.ying.caritas@gmail.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	bpf@vger.kernel.org,
+	linux-mm@kvack.org,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Meta kernel team <kernel-team@meta.com>
+Subject: [PATCH] llist: add [READ|WRITE]_ONCE tags for llist_node
+Date: Thu, 26 Jun 2025 12:05:50 -0700
+Message-ID: <20250626190550.4170599-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <8734bmoemx.fsf@fau.de> <20250626124933.13250-1-luis.gerhorst@fau.de>
-In-Reply-To: <20250626124933.13250-1-luis.gerhorst@fau.de>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 26 Jun 2025 11:41:35 -0700
-X-Gm-Features: Ac12FXx82L6ohGAunqifMz-Uc5pWwIrwFxb2RzZhw8B4U-G1-CkTsh6Ji-JdaBI
-Message-ID: <CAADnVQJn5CXOpr6XWUh=8zbaG4u6pAD75xJ6jqHyTD6hx3QTfQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/3] bpf: Fix aux usage after do_check_insn()
-To: Luis Gerhorst <luis.gerhorst@fau.de>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, Paul Chaignon <paul.chaignon@gmail.com>, 
-	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	syzbot+dc27c5fb8388e38d2d37@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Jun 26, 2025 at 5:50=E2=80=AFAM Luis Gerhorst <luis.gerhorst@fau.de=
-> wrote:
->
-> We must terminate the speculative analysis if the just-analyzed insn had
-> nospec_result set. Using cur_aux() here is wrong because insn_idx might
-> have been incremented by do_check_insn().
->
-> Reported-by: Paul Chaignon <paul.chaignon@gmail.com>
-> Reported-by: Eduard Zingerman <eddyz87@gmail.com>
-> Reported-by: syzbot+dc27c5fb8388e38d2d37@syzkaller.appspotmail.com
-> Fixes: d6f1c85f2253 ("bpf: Fall back to nospec for Spectre v1")
-> Signed-off-by: Luis Gerhorst <luis.gerhorst@fau.de>
-> ---
->  kernel/bpf/verifier.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index f403524bd215..88613fb71b16 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -19955,11 +19955,11 @@ static int do_check(struct bpf_verifier_env *en=
-v)
->                         /* Prevent this speculative path from ever reachi=
-ng the
->                          * insn that would have been unsafe to execute.
->                          */
-> -                       cur_aux(env)->nospec =3D true;
-> +                       env->insn_aux_data[prev_insn_idx].nospec =3D true=
-;
+Before the commit 36df6e3dbd7e ("cgroup: make css_rstat_updated nmi
+safe"), the struct llist_node is expected to be private to the one
+inserting the node to the lockless list or the one removing the node
+from the lockless list. After the mentioned commit, the llist_node in
+the rstat code is per-cpu shared between the stacked contexts i.e.
+process, softirq, hardirq & nmi.
 
-May be introduce prev_aux() similar to cur_aux() ?
+KCSAN reported the following race:
 
-In the future don't bother with RFC tag, since CI won't test them.
+ Reported by Kernel Concurrency Sanitizer on:
+ CPU: 60 UID: 0 PID: 5425 ... 6.16.0-rc3-next-20250626 #1 NONE
+ Tainted: [E]=UNSIGNED_MODULE
+ Hardware name: ...
+ ==================================================================
+ ==================================================================
+ BUG: KCSAN: data-race in css_rstat_flush / css_rstat_updated
+ write to 0xffffe8fffe1c85f0 of 8 bytes by task 1061 on cpu 1:
+  css_rstat_flush+0x1b8/0xeb0
+  __mem_cgroup_flush_stats+0x184/0x190
+  flush_memcg_stats_dwork+0x22/0x50
+  process_one_work+0x335/0x630
+  worker_thread+0x5f1/0x8a0
+  kthread+0x197/0x340
+  ret_from_fork+0xd3/0x110
+  ret_from_fork_asm+0x11/0x20
+ read to 0xffffe8fffe1c85f0 of 8 bytes by task 3551 on cpu 15:
+  css_rstat_updated+0x81/0x180
+  mod_memcg_lruvec_state+0x113/0x2d0
+  __mod_lruvec_state+0x3d/0x50
+  lru_add+0x21e/0x3f0
+  folio_batch_move_lru+0x80/0x1b0
+  __folio_batch_add_and_move+0xd7/0x160
+  folio_add_lru_vma+0x42/0x50
+  do_anonymous_page+0x892/0xe90
+  __handle_mm_fault+0xfaa/0x1520
+  handle_mm_fault+0xdc/0x350
+  do_user_addr_fault+0x1dc/0x650
+  exc_page_fault+0x5c/0x110
+  asm_exc_page_fault+0x22/0x30
+ value changed: 0xffffe8fffe18e0d0 -> 0xffffe8fffe1c85f0
 
->                         /* If it was an ADD/SUB insn, potentially remove =
-any
->                          * markings for alu sanitization.
->                          */
-> -                       cur_aux(env)->alu_state =3D 0;
-> +                       env->insn_aux_data[prev_insn_idx].alu_state =3D 0=
-;
->                         goto process_bpf_exit;
->                 } else if (err < 0) {
->                         return err;
-> @@ -19968,7 +19968,7 @@ static int do_check(struct bpf_verifier_env *env)
->                 }
->                 WARN_ON_ONCE(err);
->
-> -               if (state->speculative && cur_aux(env)->nospec_result) {
-> +               if (state->speculative && env->insn_aux_data[prev_insn_id=
-x].nospec_result) {
->                         /* If we are on a path that performed a jump-op, =
-this
->                          * may skip a nospec patched-in after the jump. T=
-his can
->                          * currently never happen because nospec_result i=
-s only
-> @@ -19977,6 +19977,8 @@ static int do_check(struct bpf_verifier_env *env)
->                          * never skip the following insn. Still, add a wa=
-rning
->                          * to document this in case nospec_result is used
->                          * elsewhere in the future.
-> +                        *
-> +                        * Therefore, no special case for ldimm64/call re=
-quired.
->                          */
->                         WARN_ON_ONCE(env->insn_idx !=3D prev_insn_idx + 1=
-);
+$ ./scripts/faddr2line vmlinux css_rstat_flush+0x1b8/0xeb0
+css_rstat_flush+0x1b8/0xeb0:
+init_llist_node at include/linux/llist.h:86
+(inlined by) llist_del_first_init at include/linux/llist.h:308
+(inlined by) css_process_update_tree at kernel/cgroup/rstat.c:148
+(inlined by) css_rstat_updated_list at kernel/cgroup/rstat.c:258
+(inlined by) css_rstat_flush at kernel/cgroup/rstat.c:389
 
-While at it replace with verifier_bug_if().
+$ ./scripts/faddr2line vmlinux css_rstat_updated+0x81/0x180
+css_rstat_updated+0x81/0x180:
+css_rstat_updated at kernel/cgroup/rstat.c:90 (discriminator 1)
+
+These are expected race and a simple READ_ONCE/WRITE_ONCE resolves these
+reports.
+
+Fixes: 36df6e3dbd7e ("cgroup: make css_rstat_updated nmi safe")
+Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+---
+ include/linux/llist.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/llist.h b/include/linux/llist.h
+index 27b17f64bcee..607b2360c938 100644
+--- a/include/linux/llist.h
++++ b/include/linux/llist.h
+@@ -83,7 +83,7 @@ static inline void init_llist_head(struct llist_head *list)
+  */
+ static inline void init_llist_node(struct llist_node *node)
+ {
+-	node->next = node;
++	WRITE_ONCE(node->next, node);
+ }
+ 
+ /**
+@@ -97,7 +97,7 @@ static inline void init_llist_node(struct llist_node *node)
+  */
+ static inline bool llist_on_list(const struct llist_node *node)
+ {
+-	return node->next != node;
++	return READ_ONCE(node->next) != node;
+ }
+ 
+ /**
+@@ -220,7 +220,7 @@ static inline bool llist_empty(const struct llist_head *head)
+ 
+ static inline struct llist_node *llist_next(struct llist_node *node)
+ {
+-	return node->next;
++	return READ_ONCE(node->next);
+ }
+ 
+ /**
+-- 
+2.47.1
+
 
