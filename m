@@ -1,241 +1,229 @@
-Return-Path: <bpf+bounces-61627-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61628-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACB06AE930F
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 01:55:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30979AE9337
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 02:07:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FC264A2594
-	for <lists+bpf@lfdr.de>; Wed, 25 Jun 2025 23:55:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8CBF1C27A8B
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 00:08:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97EAC26E6EB;
-	Wed, 25 Jun 2025 23:55:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 380D54315C;
+	Thu, 26 Jun 2025 00:07:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ig1BzuB3"
+	dkim=pass (2048-bit key) header.d=maowtm.org header.i=@maowtm.org header.b="lyhuNiKt";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="CHaVK/ET"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-b3-smtp.messagingengine.com (fhigh-b3-smtp.messagingengine.com [202.12.124.154])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81ED6189F56;
-	Wed, 25 Jun 2025 23:55:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C55F171C9;
+	Thu, 26 Jun 2025 00:07:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750895744; cv=none; b=Ah0C/iD+UNbNokQjLlsJSbm7RGjtQ9YxU5GDPvWouJ1pBJCVAcg+PC2EUhgHnLh9yD4crxwPIta8+gLFwLfhlFZJeaVWXpcFTyhK2gfkfw0jK0Ub1gvbi+2VTrXSiH2LlLEstVEkepH0Ag5Sd7FnjSm8YUSLn4swp519hsNttu8=
+	t=1750896464; cv=none; b=S4euL8esp0A3p27fI4OjRdQ9te4/nPaY9EeiEfzATAzFm/949sEUdxwtUicAaJOvZXgfTjI+WJFYVflIQqTalMXgiBcwSyebMM3X9naf+jan3yBEusj+LXnZEqbH948H7fVteCyb+A09Yt3VR7FHngYE2t7SOjsHBOosYr4i07s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750895744; c=relaxed/simple;
-	bh=MYd6x/orymx3xvSlhnVj3nFRJLi4WcYAlXUp+eoRQog=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UD38PIL33qQFaoYSAHlwDTmqRIAw/C6BdghzLnGMaR+l5DxHHt9diKPiG5/e9X0Vmix4s/bS38/fLCRBDknGR/WyxU8lRrDSZs8BBNbyaCO0oauEVcRUqvSkLMYXwNveI6myAQZ2/MrqV0Xdayna5X0yvdcdoB1uEh+acYtaMxo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ig1BzuB3; arc=none smtp.client-ip=209.85.166.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-3df2d111fefso3488515ab.1;
-        Wed, 25 Jun 2025 16:55:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750895741; x=1751500541; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VqE7yVyjqOjv8t4ldHQCRA7XDUn4eDEaJbZXqBDghbU=;
-        b=Ig1BzuB3Rhogru1TGplMPEeg7JFdj15iP3U7vzW9kdIW6TLg9+Mm1TIo5RAlFPLVbq
-         5nkipr5xjbeVvyISEX1hIpX4ZkuKRkR5SF3p2d8VVg4oaefYk5SjdJb4N1MyGsAUIpAv
-         CJPD2b8oCbkaul1+DJJvCBEjwIDwGFjpsHT0TFfVp0l9op4heDSdouc3vZJpHUc5yKL7
-         2//3BYzeAXGMMNXWMqUexiZmtWYoJ1CsSU5nDiiD72BNp0UhGnN04+o5OoHADFB2My8A
-         /1j75i85i0YsELGdijWQXXhuADhFToE3UeOT1W0xO3NZ9hr2A/vXw/TCQJywkJvbTajC
-         tjNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750895741; x=1751500541;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VqE7yVyjqOjv8t4ldHQCRA7XDUn4eDEaJbZXqBDghbU=;
-        b=HzOMu1ibQw3qO9yku2i+epmobHARcpayQ7e6RK/JnAEiajhI4Ti7GzZveKdXE2gbNd
-         ktLcdhCAXfhNDCChWdusIdk4qo6tME7xa30WIogGaoMzWQF2DVbu95xIxm8MuBIkc9st
-         eEpKfD4jBfRH17nWkRfJR24Q11F7o0AFEKKJ35FNtlBQQSUEnj+MCNSJBKD/C5BCK6y2
-         8UeyZCn3pxO0k+WdcgVbTR54esaZ0109vGh5tARBkBotiNpobm0SC+c5Yzy1CwkZnUH2
-         izZFhFqvOVQd7D58A6A/i4X4aVgHGvVDG+ec0FfGJUoMHehc4ornY92ZVB6lXt/kwBbb
-         bhFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUOS4NOYj8gNi2MyboMQHF8Rp58UFX6+8FGxVwHnOLR+FCNF6H8gFusae6gljHG+2VCssQ=@vger.kernel.org, AJvYcCWD684S8Q10N/yXzF0LdkMjjmvfBkrCwqEAqOq4F6G4mN53enXkfzwYq3dTcVRd5z0S7j2usBxo@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz+p16ldDR2bnIWp8ka3+8Kpd+IyocO3RNHnCAlNj+yBGjW0Hn5
-	CDkWKiTIPc26xw26kflwjFIuyGxqNGeNtB4RI3M1ZXLeabnKJ6tHrM6MMisUS+SEtMQMtXfFD9x
-	Fu9UWpILzqWWTCTmHm7tHK4wQoQLdvL0=
-X-Gm-Gg: ASbGncvpDFeLBTE8NbIw28BYtV29D1xHK6bjPNJar0A3tJV/Fn0bPBu/BlE+PuBS5fo
-	R2eMuSNmxSPd/40Wo9yUgZYqkH36n0UCPYKBT3nSnr6Fs1sfwVpNPT3PLOYdQJPlx2WJTCWJSlB
-	pu+tn4W3gbMU8PmlGN/sXn1fYGDuBKKr0eqTGwZVmUL5k=
-X-Google-Smtp-Source: AGHT+IHpsYd6S2l9HTk1dMfyi4QiphFWxOk12tAZHe+eDvxymEmmr/KyfsAU4Z52QkyOdRzHcwKmS5v3QhBECakrKZw=
-X-Received: by 2002:a05:6e02:170b:b0:3dd:c40d:787e with SMTP id
- e9e14a558f8ab-3df328503fbmr73283075ab.2.1750895741553; Wed, 25 Jun 2025
- 16:55:41 -0700 (PDT)
+	s=arc-20240116; t=1750896464; c=relaxed/simple;
+	bh=kUnWFnjCaiq9I4fMukWqZx0HnF1nLkWlR58aOt8J6Xs=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=ti8nk7Yalhoc+rzqXIYcPse6X+kCzzCejhijr0sHa0sKv6PWNbZ2tF6FVkv9SzarUoRTUBo9i/GNr4LK81IkjJYh0iM+Xg3R7kCINmtxwQHJkRd+gZXAjrfhP5h9HB5Yw5p2sxYJELdjNDXD+AhEGuNLYoO7TbXuSARussBOiqw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=maowtm.org; spf=pass smtp.mailfrom=maowtm.org; dkim=pass (2048-bit key) header.d=maowtm.org header.i=@maowtm.org header.b=lyhuNiKt; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=CHaVK/ET; arc=none smtp.client-ip=202.12.124.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=maowtm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=maowtm.org
+Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id D94797A00AA;
+	Wed, 25 Jun 2025 20:07:40 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-11.internal (MEProxy); Wed, 25 Jun 2025 20:07:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maowtm.org; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1750896460;
+	 x=1750982860; bh=6iB4j192is+XcHHs5pGOohrQltXRFVd8r1/AZa100HY=; b=
+	lyhuNiKtkWBct2tuJ7nvGabQt1EmOi702ZSkOICY0hr3nvC/mY005tbk0UTTVaPA
+	dIyHC8w4Pz2RKz2IceX/djV4/m+2uncDwSCe3v3EfV3oDiY4reY6v0bBfCxFlWHX
+	N49N0b2SRT6ig8dpkrUqD7EjlnJojmoUJXlw7mp+f0y1l3xU1ItNxSM6DFRQVYFZ
+	6xyjeUqbFP9QDKLtzYlm+71J6B9NjBpLTCWp4SK1VEXYSY6pA2fVjHpwKxjNi+5l
+	40DwH8T2CXy9xt6e3mBmWNQfrlmQnByVvxqP0fsItud35HGdFJPjRZkQKiuvHQki
+	yO0fA0N65ATbdb/6VFKl6w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1750896460; x=
+	1750982860; bh=6iB4j192is+XcHHs5pGOohrQltXRFVd8r1/AZa100HY=; b=C
+	HaVK/ET0I+AUVHSKOQxFuxdtOIAsYb2WWK5DuF9BgQ3ZV0qEeQrnpBQHUhMoKS8r
+	By5IwsQf3/WJ/8hW/FdQUaCOxZI3gfwcpEsCft2bo1pez8cXeCiVdhDhDahrkqJa
+	6Ps3NQn5BABRdBXP0qO9wzoQ5+nZs9Is4+x0Hh8o4xurrJtWi6AjQyVQg5pzyC8n
+	NvNU0lIPeomzc6P9txvn3K3V7YZr7OcpYKJrOGfK3JNjg8fwK43SPKiLPJ85xoZ0
+	fJiIvUFlPBx/2ApMkK5SVOw5D5y9QapzpowQzebfenewWwlSMA1OAHAtDRDnPzU9
+	KowRobPoKQQmrps80+7UA==
+X-ME-Sender: <xms:S49caFLFcrSApcU2jOpUlI00gsCkB2x3A6CoSOBf2-4He9X1ZrmRVg>
+    <xme:S49caBLMsz0Yr_4etyJDA2L45ck-iQb1dWk90rt6j2sPkY54gy9bTqKfoRMPdp1av
+    Ugot86l5hvmQGdNsig>
+X-ME-Received: <xmr:S49caNtn3oJl2C__wU4KcfbaKsxbs6IJpoPuorqG1ROWhEGY5qtsMeYtQW45xYnAwGUsE439iRay-u96370KYt6k>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddvgddvgedujecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpefkffggfgfhuffvvehfjggtgfesthekredttddvjeenucfhrhhomhepvfhinhhgmhgr
+    ohcuhggrnhhguceomhesmhgrohifthhmrdhorhhgqeenucggtffrrghtthgvrhhnpeejfe
+    fggefhjeeuhfehieegvdetteduiedufeevhfehgffgfffhtedufeetveduffenucffohhm
+    rghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
+    hmpehmrghilhhfrhhomhepmhesmhgrohifthhmrdhorhhgpdhnsggprhgtphhtthhopedu
+    ledpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepnhgvihhlsegsrhhofihnrdhnrg
+    hmvgdprhgtphhtthhopehmihgtseguihhgihhkohgurdhnvghtpdhrtghpthhtohepshho
+    nhhgsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegsphhfsehvghgvrhdrkhgvrhhnvg
+    hlrdhorhhgpdhrtghpthhtoheplhhinhhugidqfhhsuggvvhgvlhesvhhgvghrrdhkvghr
+    nhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvg
+    hrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhsvggtuhhrihhthidqmhhoughu
+    lhgvsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepsghrrghunhgvrheskh
+    gvrhhnvghlrdhorhhgpdhrtghpthhtohepkhgvrhhnvghlqdhtvggrmhesmhgvthgrrdgt
+    ohhm
+X-ME-Proxy: <xmx:S49caGZmyHa7KTwgB-YjJh1GahuTe_A09zBNX8Ps1bu4-mDa6sm0yA>
+    <xmx:S49caMYBn7U26qAl9lQNLL8Id6sTzuMtT5DH0nrw3wtcCvwEDWF_ZQ>
+    <xmx:S49caKBBugcSMCDAtCGK5jZSd6CHsziHDZCH7IkQYHNc45qv9ZHshA>
+    <xmx:S49caKZCYVNCEODdnE7P0ZAi-9VA0sl1Y2BZO_AloU2GqG9lgILfMA>
+    <xmx:TI9caJs9aJd61SNdXBl1LFCVQJ7acDQS08ldytdxSP7rPodU9dzpWOaw>
+Feedback-ID: i580e4893:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 25 Jun 2025 20:07:37 -0400 (EDT)
+Message-ID: <4577db64-64f2-4102-b00e-2e7921638a7c@maowtm.org>
+Date: Thu, 26 Jun 2025 01:07:36 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250625101014.45066-1-kerneljasonxing@gmail.com>
- <20250625101014.45066-3-kerneljasonxing@gmail.com> <aFvpNHqvZp0eishZ@boxer>
- <CAL+tcoBOpBxJN=S8FWgz++WxTzFP0rG-d+HRhSfZ6DLQjNuYtQ@mail.gmail.com>
- <aFwPCsSFkLYYoFu9@mini-arch> <CAL+tcoCSkXTJMPA7NQ7yEObmd2+HZ7mmppknq+yUUk=H4qYNow@mail.gmail.com>
- <aFyJHm1yRo3o4X2K@mini-arch>
-In-Reply-To: <aFyJHm1yRo3o4X2K@mini-arch>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Thu, 26 Jun 2025 07:55:05 +0800
-X-Gm-Features: Ac12FXwo86ufZJXJ1jVhvUv4B9MvYtT6RPkwkhk_Ofq1H2gIR_FmnPWc3-vYeIE
-Message-ID: <CAL+tcoB5P=050--pFb4EWPukRCrgTjGkggORxy_eU8sD+giabA@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 2/2] selftests/bpf: check if the global
- consumer of tx queue updates after send call
-To: Stanislav Fomichev <stfomichev@gmail.com>
-Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, pabeni@redhat.com, bjorn@kernel.org, 
-	magnus.karlsson@intel.com, jonathan.lemon@gmail.com, sdf@fomichev.me, 
-	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
-	john.fastabend@gmail.com, joe@dama.to, willemdebruijn.kernel@gmail.com, 
-	bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+From: Tingmao Wang <m@maowtm.org>
+Subject: Re: [PATCH v5 bpf-next 0/5] bpf path iterator
+To: NeilBrown <neil@brown.name>, =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?=
+ <mic@digikod.net>
+Cc: Song Liu <song@kernel.org>, bpf@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-security-module@vger.kernel.org, brauner@kernel.org,
+ kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
+ daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk,
+ jack@suse.cz, kpsingh@kernel.org, mattbobrowski@google.com,
+ =?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>
+References: <> <20250625.Ee2Ci6chae8h@digikod.net>
+ <175089269668.2280845.5681675711269608822@noble.neil.brown.name>
+Content-Language: en-US
+In-Reply-To: <175089269668.2280845.5681675711269608822@noble.neil.brown.name>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jun 26, 2025 at 7:41=E2=80=AFAM Stanislav Fomichev <stfomichev@gmai=
-l.com> wrote:
->
-> On 06/25, Jason Xing wrote:
-> > On Wed, Jun 25, 2025 at 11:00=E2=80=AFPM Stanislav Fomichev
-> > <stfomichev@gmail.com> wrote:
-> > >
-> > > On 06/25, Jason Xing wrote:
-> > > > On Wed, Jun 25, 2025 at 8:19=E2=80=AFPM Maciej Fijalkowski
-> > > > <maciej.fijalkowski@intel.com> wrote:
-> > > > >
-> > > > > On Wed, Jun 25, 2025 at 06:10:14PM +0800, Jason Xing wrote:
-> > > > > > From: Jason Xing <kernelxing@tencent.com>
-> > > > > >
-> > > > > > The subtest sends 33 packets at one time on purpose to see if x=
-sk
-> > > > > > exitting __xsk_generic_xmit() updates the global consumer of tx=
- queue
-> > > > > > when reaching the max loop (max_tx_budget, 32 by default). The =
-number 33
-> > > > > > can avoid xskq_cons_peek_desc() updates the consumer, to accura=
-tely
-> > > > > > check if the issue that the first patch resolves remains.
-> > > > > >
-> > > > > > Speaking of the selftest implementation, it's not possible to u=
-se the
-> > > > > > normal validation_func to check if the issue happens because th=
-e whole
-> > > > > > send packets logic will call the sendto multiple times such tha=
-t we're
-> > > > > > unable to detect in time.
-> > > > > >
-> > > > > > Signed-off-by: Jason Xing <kernelxing@tencent.com>
-> > > > > > ---
-> > > > > >  tools/testing/selftests/bpf/xskxceiver.c | 30 ++++++++++++++++=
-++++++--
-> > > > > >  1 file changed, 28 insertions(+), 2 deletions(-)
-> > > > > >
-> > > > > > diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/t=
-esting/selftests/bpf/xskxceiver.c
-> > > > > > index 0ced4026ee44..f7aa83706bc7 100644
-> > > > > > --- a/tools/testing/selftests/bpf/xskxceiver.c
-> > > > > > +++ b/tools/testing/selftests/bpf/xskxceiver.c
-> > > > > > @@ -109,6 +109,8 @@
-> > > > > >
-> > > > > >  #include <network_helpers.h>
-> > > > > >
-> > > > > > +#define MAX_TX_BUDGET_DEFAULT 32
-> > > > >
-> > > > > and what if in the future you would increase the generic xmit bud=
-get on
-> > > > > the system? it would be better to wait with test addition when yo=
-u
-> > > > > introduce the setsockopt patch.
-> > >
-> > > We can always update it to follow new budget. The purpose of the test
-> > > is to document/verify userspace expectations. Sincle even with the
-> > > setsockopt we are still gonna have the default budget.
-> > >
-> > > > > plus keep in mind that xskxceiver tests ZC drivers as well. so ei=
-ther we
-> > > > > should have a test that serves all modes or keep it for skb mode =
-only.
-> > > > >
-> > > > > > +
-> > > > > >  static bool opt_verbose;
-> > > > > >  static bool opt_print_tests;
-> > > > > >  static enum test_mode opt_mode =3D TEST_MODE_ALL;
-> > > > > > @@ -1323,7 +1325,8 @@ static int receive_pkts(struct test_spec =
-*test)
-> > > > > >       return TEST_PASS;
-> > > > > >  }
-> > > > > >
-> > > > > > -static int __send_pkts(struct ifobject *ifobject, struct xsk_s=
-ocket_info *xsk, bool timeout)
-> > > > > > +static int __send_pkts(struct test_spec *test, struct ifobject=
- *ifobject,
-> > > > > > +                    struct xsk_socket_info *xsk, bool timeout)
-> > > > > >  {
-> > > > > >       u32 i, idx =3D 0, valid_pkts =3D 0, valid_frags =3D 0, bu=
-ffer_len;
-> > > > > >       struct pkt_stream *pkt_stream =3D xsk->pkt_stream;
-> > > > > > @@ -1437,9 +1440,21 @@ static int __send_pkts(struct ifobject *=
-ifobject, struct xsk_socket_info *xsk, b
-> > > > > >       }
-> > > > > >
-> > > > > >       if (!timeout) {
-> > > > > > +             int prev_tx_consumer;
-> > > > > > +
-> > > > > > +             if (!strncmp("TX_QUEUE_CONSUMER", test->name, MAX=
-_TEST_NAME_SIZE))
-> > > > > > +                     prev_tx_consumer =3D *xsk->tx.consumer;
-> > > > > > +
-> > > > > >               if (complete_pkts(xsk, i))
-> > > > > >                       return TEST_FAILURE;
-> > > > > >
-> > > > > > +             if (!strncmp("TX_QUEUE_CONSUMER", test->name, MAX=
-_TEST_NAME_SIZE)) {
-> > > > > > +                     int delta =3D *xsk->tx.consumer - prev_tx=
-_consumer;
-> > > > >
-> > > > > hacking the data path logic for single test purpose is rather not=
- good.
-> > > > > I am also not really sure if this deserves a standalone test case=
- or could
-> > > > > we just introduce a check in data path in appropriate place.
-> > > >
-> > > > The big headache is that if we expect to detect such a case, we hav=
-e
-> > > > to re-invent a similar send packet logic or hack the data path (a b=
-it
-> > > > like this patch). I admit it's ugly as I mentioned yesterday.
-> > > >
-> > > > Sorry, Stanislav, no offense here. If you read this, please don't
-> > > > blame me. I know you wish me to add one related test case. So here =
-we
-> > > > are. Since Maciej brought up the similar thought, I keep wondering =
-if
-> > > > we should give up such a standalone test patch? Honestly it already
-> > > > involved more time than expected. The primary reason for me is that
-> > > > the issue doesn't cause much trouble to the application.
-> > >
-> > > IIUC, Maciej does not suggest to completely drop the test but rather
-> > > to move this check (unconditionally and only for skb mode) somewhere
-> >
-> > I prefer the former: make it suitable for all the cases. Whether it's
-> > zero copy mode or non-zc one, the behaviour of the consumer should be
->
-> But it does not work the same in zc and non-zc modes :-( There are
-> a bunch of (uncodumented) quirks here and there. With a test case we
-> can at least highlight/document them.
+On 6/26/25 00:04, NeilBrown wrote:
+> On Wed, 25 Jun 2025, Mickaël Salaün wrote:
+>> On Wed, Jun 25, 2025 at 07:38:53AM +1000, NeilBrown wrote:
+>>>
+>>> Can you spell out the minimum that you need?
+>>
+>> Sure.  We'd like to call this new helper in a RCU
+>> read-side critical section and leverage this capability to speed up path
+>> walk when there is no concurrent hierarchy modification.  This use case
+>> is similar to handle_dots() with LOOKUP_RCU calling follow_dotdot_rcu().
+>>
+>> The main issue with this approach is to keep some state of the path walk
+>> to know if the next call to "path_walk_parent_rcu()" would be valid
+>> (i.e. something like a very light version of nameidata, mainly sequence
+>> integers), and to get back to the non-RCU version otherwise.
+>>
+>>>
+>>> My vague impression is that you want to search up from a given strut path,
+>>> no further then some other given path, looking for a dentry that matches
+>>> some rule.  Is that correct?
+>>
+>> Yes
+>>
+>>>
+>>> In general, the original dentry could be moved away from under the
+>>> dentry you find moments after the match is reported.  What mechanisms do
+>>> you have in place to ensure this doesn't happen, or that it doesn't
+>>> matter?
+>>
+>> In the case of Landlock, by default, a set of access rights are denied
+>> and can only be allowed by an element in the file hierarchy.  The goal
+>> is to only allow access to files under a specific directory (or directly
+>> a specific file).  That's why we only care of the file hierarchy at the
+>> time of access check.  It's not an issue if the file/directory was
+>> moved or is being moved as long as we can walk its "current" hierarchy.
+>> Furthermore, a sandboxed process is restricted from doing arbitrary
+>> mounts (and renames/links are controlled with the
+>> LANDLOCK_ACCESS_FS_REFER right).
+>>
+>> However, we need to get a valid "snapshot" of the set of dentries that
+>> (could) lead to the evaluated file/directory.
+> 
+> A "snapshot" is an interesting idea - though looking at the landlock
+> code you one need inodes, not dentries.
+> I imagine an interface where you give it a starting path, a root, and
+> and array of inode pointers, and it fills in the pointers with the path
+> - all under rcu so no references are needed.
+> But you would need some fallback if the array isn't big enough, so maybe
+> that isn't a good idea.
+> 
+> Based on the comments by Al and Christian, I think the only viable
+> approach is to pass a callback to some vfs function that does the
+> walking.
+> 
+>    vfs_walk_ancestors(struct path *path, struct path *root,
+> 		      int (*walk_cb)(struct path *ancestor, void *data),
+> 		      void *data)
+> 
+> where walk_cb() returns a negative number if it wants to abort, and is
+> given a NULL ancestor if vfs_walk_ancestors() needed to restart.
+> 
+> vfs_walk_ancestors() would initialise a "struct nameidata" and
+> effectively call handle_dots(&nd, LAST_DOTDOT) repeatedly, calling
+>     walk_cb(&nd.path, data)
+> each time.
 
-Oh, sorry, I didn't explain myself well. I was trying to say I would
-add in the data path so that the new test patch can easily recognize
-the problem for generic xmit path (in either mode just for
-compatibility).
+handle_dots semantically does more than dget_parent + choose_mountpoint
+tho (which is what Landlock currently does, and is also what Song's
+iterator will do).  There is the step_into which will step into
+mountpoints (there is also code to handle symlinks, although I'm not sure
+if that's relevant for following ".."), and it will also return ENOENT if
+the path is disconnected.
 
-Do you have any good advice to continue to do such a thing you mentioned?
+Also I guess we might not need to have an entire nameidata?  In theory it
+only needs to do what follow_dotdot_rcu does without the path_connected
+check.  So it seems like given we have path and root as function argument,
+it would only need nd->{seq,m_seq}.
 
-Thanks,
-Jason
+I might be wrong tho, but certainly the behaviour is different.
+
+> 
+> How would you feel about that sort of interface?
+
+I can't speak for Mickaël, but a callback-based interface is less flexible
+(and _maybe_ less performant?).  Also, probably we will want to fallback
+to a reference-taking walk if the walk fails (rather than, say, retry
+infinitely), and this should probably use Song's proposed iterator.  I'm
+not sure if Song would be keen to rewrite this iterator patch series in
+callback style (to be clear, it doesn't necessarily seem like a good idea
+to me, and I'm not asking him to), which means that we will end up with
+the reference walk API being a "call this function repeatedly", and the
+rcu walk API taking a callback.  I think it is still workable (after all,
+if Landlock wants to reuse the code in the callback it can just call the
+callback function itself when doing the reference walk), but it seems a
+bit "ugly" to me.
+
+But this is just my opinion, and if there is a stronger desire to not
+expose any VFS seqcount integers then maybe we will just need to work with
+a callback.
+
+Quick note in case anyone reading this has not seen it, a while ago I made
+a POC of a non-callback style API for rcu parent walk based on Song's
+series:
+https://lore.kernel.org/all/dbc7ee0f1f483b7bc2ec9757672a38d99015e9ae.1749402769@maowtm.org/#iZ31fs:namei.c
+
+> 
+> NeilBrown
+> 
+
 
