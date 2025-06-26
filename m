@@ -1,87 +1,99 @@
-Return-Path: <bpf+bounces-61696-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61697-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35687AEA491
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 19:42:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E99DAEA4D4
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 20:00:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFE533B0B95
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 17:41:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03AC317B571
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 18:00:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDA5B2EE26B;
-	Thu, 26 Jun 2025 17:41:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCB262ED178;
+	Thu, 26 Jun 2025 17:59:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r6AZy5kk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MiSctyWo"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BB172ED842;
-	Thu, 26 Jun 2025 17:41:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 669052E427A
+	for <bpf@vger.kernel.org>; Thu, 26 Jun 2025 17:59:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750959686; cv=none; b=e4tXNaKzUK1vTEOhEjhCB5igk8wP5tzZ0I3tw/U+nb32VkKcmuHTRegy5GPYxU4bT28RIzYB4RGjIckTLpIDvjUiurM0R46jOa7IRX/PpVP4u08tzsTIX4VU2dygNBoRP7LLJ5XqSJ3ERlpwtRpDbbvJtD6ZFA2w8c3Faw0nIAo=
+	t=1750960784; cv=none; b=C1OaV7aNnRflwE5R0rScCuEfyBvb+icUB2WsK0EogmTlEt0jvWzNK9TbYdtWb6QeG6HT4ZSy3C2rfymKcGk2dYMiBXJp+LOtWP3q7oQINALoDxrNIsAWe7jGG1l+gJnJYSoQMqFFYmkKQ8iD/V2X93lv+6NELY/nvPkHUbuz32o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750959686; c=relaxed/simple;
-	bh=HebmZL2Z3HETRCiyspKgxFuTZe15p2NjHFFkia4DbdE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=VETraUDSJ9Ke+AJmIypUjMRsSt4Pv0BTyAe4NAX96NW34eZDvXuNKf0ZwHQzabV3rIiV1Oa8rv6lQ9QDJnRqbtDKznAc6P5KpybIA5kBwB0RYVOCtzvIUz6r4s1TnjcJPlQmGt7f5ssoQkFnmKb5VQxCBOpeITPyKba72GfMn8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r6AZy5kk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B672FC4CEEB;
-	Thu, 26 Jun 2025 17:41:25 +0000 (UTC)
+	s=arc-20240116; t=1750960784; c=relaxed/simple;
+	bh=qYz8rvsdFyu63qGBEouH9RxEuMTXA5J/m+CoXml4xUE=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=kmR8Ng7Ws3E6ar4jTYoUhPbwbzuZnmdlOuE1/RW1Vp8PfnbMaJ06U0Ca0X9bGoVd5b9DPR3jqw8XyFPv3RAsdHNDDwqk1XdRc1QY4comzrMN5OJyWQVkQqQOEKzHNyh1Wu2H7fsHu6eFfjBAjQ+E32z5w2tooS4UCmv0q/hFuLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MiSctyWo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F97DC4CEEB;
+	Thu, 26 Jun 2025 17:59:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750959686;
-	bh=HebmZL2Z3HETRCiyspKgxFuTZe15p2NjHFFkia4DbdE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=r6AZy5kkRmmObE8sYuKKVMBMMtfV6LzsWTGIdB+Aybv2L0b/OSWJ0qEmmZMFNf629
-	 SfishkJiy/actyvV+lVrSIONrhfxsh+SFHkkwvakcC5zUl45kHLuGnLBEfc7HLEiqH
-	 QwMR7MhLT1c4SP1vL9df0vl5Kgz65dD900TkQSMAEUC9Uv+/AgAh2AqaTfXBJBTKXI
-	 eVCGVIWqHuO0ZILyRAIdvhk5oUtZTZiHhjKxZnRIUL61ZKzUPtyNB4mAtXS/gmwJGw
-	 Qy9FofRvqrVwC5h3wIOtZkAQrMZ895dSkkoAP4Gz5zLpU4OvuGnpfZXWNYGefrtfuU
-	 44/5KVwHUTEpQ==
-From: Namhyung Kim <namhyung@kernel.org>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>, 
- Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>, 
- Namhyung Kim <namhyung@kernel.org>
-Cc: Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, 
- LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org, 
- Song Liu <song@kernel.org>, bpf@vger.kernel.org, 
- Howard Chu <howardchu95@gmail.com>
-In-Reply-To: <20250623225721.21553-1-namhyung@kernel.org>
-References: <20250623225721.21553-1-namhyung@kernel.org>
-Subject: Re: [PATCH v2] perf trace: Split BPF skel code to
- util/bpf_trace_augment.c
-Message-Id: <175095968570.2045399.17117196657041897009.b4-ty@kernel.org>
-Date: Thu, 26 Jun 2025 10:41:25 -0700
+	s=k20201202; t=1750960784;
+	bh=qYz8rvsdFyu63qGBEouH9RxEuMTXA5J/m+CoXml4xUE=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=MiSctyWo+S4f7/5TRKv31FnfvvIWBtlB0EahbZicedH6Coho0rAb3KHR1bFPE8s7/
+	 lw8q2txCO0y+mF5BWbPb2usJMuouf3EdTgzkckv95XBzduyB+/yndYQQ9NcwbeMLJo
+	 To/2U/B3XY6xwbEShQJCHfYwKJbGKElFL+WhCoNdI5Z56k+cGPTDJ473UWfs+hSRoK
+	 FipcjE9bgEv1yd3PlURxHJ1F0IEgAGmdF6BSRlT7Hk9UOpnnRoX9KyeuJxdFmDo0n1
+	 5weE+niyg6QnqU2Yz74MBdJASaB8+c1OfDO1E6dbaY69Zt0y8vP7mKm5mM/TCWKv2p
+	 205ddzFgkx2JQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADFB63A40FCB;
+	Thu, 26 Jun 2025 18:00:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-c04d2
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v5 0/3] Support array presets in veristat
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175096081050.1287156.17968557175673828237.git-patchwork-notify@kernel.org>
+Date: Thu, 26 Jun 2025 18:00:10 +0000
+References: <20250625165904.87820-1-mykyta.yatsenko5@gmail.com>
+In-Reply-To: <20250625165904.87820-1-mykyta.yatsenko5@gmail.com>
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com,
+ eddyz87@gmail.com, yatsenko@meta.com
 
-On Mon, 23 Jun 2025 15:57:21 -0700, Namhyung Kim wrote:
-> And make builtin-trace.c less conditional.  Dummy functions will be
-> called when BUILD_BPF_SKEL=0 is used.  This makes the builtin-trace.c
-> slightly smaller and simpler by removing the skeleton and its helpers.
+Hello:
+
+This series was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
+
+On Wed, 25 Jun 2025 17:59:01 +0100 you wrote:
+> From: Mykyta Yatsenko <yatsenko@meta.com>
 > 
-> The conditional guard of trace__init_syscalls_bpf_prog_array_maps() is
-> changed from the HAVE_BPF_SKEL to HAVE_LIBBPF_SUPPORT as it doesn't
-> have a skeleton in the code directly.  And a dummy function is added so
-> that it can be called unconditionally.  The function will succeed only
-> if the both conditions are true.
+> This patch series implements support for array variable presets in
+> veristat. Currently users can set values to global variables before
+> loading BPF program, but not for arrays. With this change array
+> elements are supported as well, for example:
+> ```
+> sudo ./veristat set_global_vars.bpf.o -G "arr[0] = 1"
+> ```
 > 
 > [...]
-Applied to perf-tools-next, thanks!
 
-Best regards,
-Namhyung
+Here is the summary with links:
+  - [bpf-next,v5,1/3] selftests/bpf: separate var preset parsing in veristat
+    https://git.kernel.org/bpf/bpf-next/c/be898cb5cbf4
+  - [bpf-next,v5,2/3] selftests/bpf: support array presets in veristat
+    https://git.kernel.org/bpf/bpf-next/c/edc99d0b021c
+  - [bpf-next,v5,3/3] selftests/bpf: test array presets in veristat
+    https://git.kernel.org/bpf/bpf-next/c/583588594b24
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
 
