@@ -1,192 +1,103 @@
-Return-Path: <bpf+bounces-61666-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61667-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 161F0AE9E16
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 15:02:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 16149AE9E25
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 15:05:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6AC09189C719
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 13:02:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 873F61C27E4D
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 13:05:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A3E22E4269;
-	Thu, 26 Jun 2025 13:02:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="JrgEnndU"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E7EC2E5405;
+	Thu, 26 Jun 2025 13:05:01 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mx-rz-3.rrze.uni-erlangen.de (mx-rz-3.rrze.uni-erlangen.de [131.188.11.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A59323C4EB
-	for <bpf@vger.kernel.org>; Thu, 26 Jun 2025 13:02:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ED5C1D5CD7;
+	Thu, 26 Jun 2025 13:04:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750942936; cv=none; b=ZhnUPNMm3MueteBxtUDZJB7ESm0/8HXd/qIk0qmyIJlG8tIb4uxF3FQ6ZNDMDH2pYZpUdPRHdqMtQbuwiBOxGXjPC7ERuF38zB1ucOe2FsDZCiJSBuBUKdh9N9gY2jvDPq6K2qYpIp00i4K+JHJbCe8S20js/YSquGA27C0KyJA=
+	t=1750943101; cv=none; b=eQn6847nOtyplNlHUIsNcyb+4jdOvAii4aQntYXnVr9YwN8GOsvmTsTRj/6HZF/l76uKevP/+D3bzc4Dex4nXIcFvQpP0y31kdk80gZvd55zwf4MGFBJdNvnLJqNyNF7/C9IR33mL6iCRr+nWeAl0QSl0TTTiWDqMOcfeNwZe3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750942936; c=relaxed/simple;
-	bh=S1X+cZlqYIS4hscYAXmeQ7UuHyxC6vYHIwNMw5LWid4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GLCrtlUa+ajXuZfpLk5QpbaW2hFqo/5nGF1ongYDhxylQ91TIO3d1LE+Vd+zkAmX5sY3nFzlskR7xV+U4rLI0sue9Banc3GWbakrc/VjNvv8wIlj4FQUYDL+bGm+EfyWhylmXs12Cs4ECpOPWi9h/aHt3UImoUv/7gXPfL+H9G4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=JrgEnndU; arc=none smtp.client-ip=131.188.11.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fau.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
-	t=1750942932; bh=6UGcoEjnt7NirniVSg7tT5FGmb9dl8yrb4KFUoiaPkQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From:To:CC:
-	 Subject;
-	b=JrgEnndUMfQ/TphSPmYxnCwwCSqlnaMFGMV6IYLSOYqu6EZ1ahWEyQtr6nmIhNMRV
-	 iKFwkMp7v3FA1eSHUSvdZEozrSFVlU+zo0OfF6Ix9KErbpVifrLHOeZF0L93zdGByb
-	 vTaIjpzwrobTX1RhbM8U0HOoqd1emH8/N/rdXB1NJ6zL10LN52370hGsPtQcfjbhN8
-	 DpcfG706E7EIXYPHKe14xuEEcQsoIZdIWxEKr2UTDgtBWhtIzSYSm8M8DzZRmzjAJM
-	 WbaXcY3fo8LHbI1qTEncrxrzti6mqau+RFNzbDkW879NkUSLfAEp+K2qwX/y37ESRt
-	 H3XtrpoFS2FCA==
-Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-rz-3.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4bSf3S2z4Hz21Cw;
-	Thu, 26 Jun 2025 15:02:12 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at boeck5.rrze.uni-erlangen.de (RRZE)
-X-RRZE-Flag: Not-Spam
-X-RRZE-Submit-IP: 10.188.34.184
-Received: from luis-tp.pool.uni-erlangen.de (i4laptop33.informatik.uni-erlangen.de [10.188.34.184])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: U2FsdGVkX19nivAzl+5GQpbqOqzJxSKt5AvMdDZCBuk=)
-	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4bSf3P5yGQz21D2;
-	Thu, 26 Jun 2025 15:02:09 +0200 (CEST)
-From: Luis Gerhorst <luis.gerhorst@fau.de>
-To: Eduard Zingerman <eddyz87@gmail.com>,
-	Paul Chaignon <paul.chaignon@gmail.com>,
-	bpf@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: Luis Gerhorst <luis.gerhorst@fau.de>
-Subject: [RFC PATCH 3/3] selftests/bpf: Add nospec_result test
-Date: Thu, 26 Jun 2025 15:01:55 +0200
-Message-ID: <20250626130155.15195-1-luis.gerhorst@fau.de>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <8734bmoemx.fsf@fau.de>
-References: <8734bmoemx.fsf@fau.de>
+	s=arc-20240116; t=1750943101; c=relaxed/simple;
+	bh=+weNGP25j0iT/YTTMWNnT/VBrQmiEdyYjSYQGmhbTgg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=k9cR7Z7Fb6R67An3zJx2E9DclNuRFWWJML6sIv8mqaxXi1b4E5KtIQtWX+at320WhcDnNaUhXB62/hmfWnNTiou8NvPohZkTM9pLjiqXWonOKjSdEI5C6XurqFFoYSMzWlJhvEvNukBLiRBjQhoZD3UKOYgbVyHKJNxf/VhpjZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-ae04d3d63e6so168124966b.2;
+        Thu, 26 Jun 2025 06:04:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750943098; x=1751547898;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M2fxZkpu+g6S2FCWHi7Fk2Zxk55b+c9y9r1cNytFmTg=;
+        b=TUpL0+88RU6rY3kADxb+RbqLq1gFGN1nlqrgz1h5/mLZgDKT6aE8P81H4dF+58Yni6
+         HfEnwWKaxhC9/uRwxD/uxSYp0jFvpx8m03/4IGetDyJRLoHUg2+rKYb2fJzNzMbG/E6I
+         KjCdP3vYNA5W5E0xETakNflP2KCagCAgE6nHWc1iiiYiABVCn6m+EkHu1lEc1aQqMnP1
+         BloDniOWE7tbyvRg7OPhQbNeoUk9X5odGOPMSHhCGAmxwJA7S7ooY64Ix0cSwSvNq3Ls
+         efl5xtOaOfSqT3apfC5HsUQ/CWRkDOMWSLfgteKTTg/BP9Co3olxG7DZRIvkIYSoSg2o
+         q8Nw==
+X-Forwarded-Encrypted: i=1; AJvYcCUp3q0DDs0pvItfJ2WNRDdF8MNe9RO0QjFdq0vssut9YYXG6ksWaUd1hMtRLpy0HgGRd+GkJmjg0yCkMoFmU+RA@vger.kernel.org, AJvYcCUwODCvKs5jeoiwPBOqKVA7OEREtDIJt3KFTgYp+QV0z48s1gGAod7Ne20D2bAZgE6kUS4=@vger.kernel.org, AJvYcCVEhKQ+ZDI9ON2Bi+kgmkKlXk1URaQRhtVlTIzrKEIRFPSsj6V5dSTkKjctCAY4c5LR5Mb1M+94@vger.kernel.org, AJvYcCVqDGLZ30b3pViSCJ1L6W5s/mf4WFMGOaY//qqDIDcAV3oltSW5LHyeIoQ7V9wrpdB3W3Oj5dF0R9ZXrOwS@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyf/kuxUPE306AM8XyvT4z2S+pejtkcytKYA22JMbaBn+4L10qg
+	UDLcs9MlQNTWusYb2mPPHsq61vnrX+9vXLw3+EtipQE1ejffwCj8QK29
+X-Gm-Gg: ASbGncu1pP/tu6tW/qgTTgp3D1RWWQXBaaq7msrJwiqEQVCZlXNsYcnwbJ+19FFg6H9
+	0x95p1eFYS2j9/13mflVvqb1RWYrSDRC0aADtUeQ7/YSTucVm3GEtElec0IpHZ0Ef0adSUNyJVM
+	raWv+5k0PjqRo8xGhhvfDqswY0j/tlgdbU6qrRuup8aB2Qsj/LOWIe/hoK+qVAFksrUg6CCzNqh
+	wEcEYOjLWqxRwzM+7RZMWjvjm6ze+zxQ77C/2zMIXi5hgNlXa29+kY/MZ4xZaRrpLwti7kKo0sw
+	ehqYeC3lE+es3ttwm0mowu+2yZf0VnQO826G3xI5Y9VIHvqlRI2jvMsoerPkZdQ=
+X-Google-Smtp-Source: AGHT+IH4MGOLayR/rn22OHrjTwBgXqcDJuwyeCilYt5OKjYbX6jO+F5h9G77Q+IMrfXKArPgDWoPHQ==
+X-Received: by 2002:a17:907:8997:b0:ade:c108:c5bf with SMTP id a640c23a62f3a-ae0beabb66amr704633866b.43.1750943097533;
+        Thu, 26 Jun 2025 06:04:57 -0700 (PDT)
+Received: from gmail.com ([2a03:2880:30ff:2::])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae0bccb4379sm340009966b.8.2025.06.26.06.04.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Jun 2025 06:04:57 -0700 (PDT)
+Date: Thu, 26 Jun 2025 06:04:53 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Jakub Kicinski <kuba@kernel.org>, ajor@meta.com
+Cc: Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Shuah Khan <shuah@kernel.org>, Simon Horman <horms@kernel.org>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	bpf@vger.kernel.org, gustavold@gmail.com
+Subject: Re: [PATCH net-next v2 3/4] selftests: drv-net: Strip '@' prefix
+ from bpftrace map keys
+Message-ID: <aF1FdfXnqTT3she7@gmail.com>
+References: <20250625-netpoll_test-v2-0-47d27775222c@debian.org>
+ <20250625-netpoll_test-v2-3-47d27775222c@debian.org>
+ <20250625150710.4ee0f729@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250625150710.4ee0f729@kernel.org>
 
-Make sure nospec_result does not prevent a nospec from being added
-before the dangerous insn.
+On Wed, Jun 25, 2025 at 03:07:10PM -0700, Jakub Kicinski wrote:
+> On Wed, 25 Jun 2025 04:39:48 -0700 Breno Leitao wrote:
+> > The '@' prefix in bpftrace map keys is specific to bpftrace and can be
+> > safely removed when processing results. This patch modifies the bpftrace
+> > utility to strip the '@' from map keys before storing them in the result
+> > dictionary, making the keys more consistent with Python conventions.
+> 
+> Make sense, tho, could you double check or ask Alastair if all outputs
+> are prefixed with @? Maybe there's some map type or other thingamajig
+> that doesn't have the prefix? 
 
-Signed-off-by: Luis Gerhorst <luis.gerhorst@fau.de>
----
- .../selftests/bpf/progs/verifier_unpriv.c     | 90 +++++++++++++++++++
- 1 file changed, 90 insertions(+)
+I have a quick chat with Alastair earlier today, and I understood that
+all map symbols start with @.
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_unpriv.c b/tools/testing/selftests/bpf/progs/verifier_unpriv.c
-index 35d2625e97b8..7684b7824f4a 100644
---- a/tools/testing/selftests/bpf/progs/verifier_unpriv.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_unpriv.c
-@@ -820,4 +820,94 @@ __naked void ldimm64_nospec(void)
- "	::: __clobber_all);
- }
- 
-+SEC("socket")
-+__description("spec_v4-induced path termination only after insn check")
-+__success __success_unpriv
-+__retval(0)
-+#ifdef SPEC_V1
-+#ifdef SPEC_V4
-+/* starts with r0 == r8 == r9 == 0 */
-+__xlated_unpriv("if r8 != 0x0 goto pc+1")
-+__xlated_unpriv("goto pc+2")
-+__xlated_unpriv("if r9 == 0x0 goto pc+4")
-+__xlated_unpriv("r2 = r0")
-+/* Following nospec required to prevent following `*(u64 *)(NULL -64) = r1` iff
-+ * `if r9 == 0 goto pc+4` was mispredicted because of Spectre v1
-+ */
-+__xlated_unpriv("nospec") /* Spectre v1 */
-+__xlated_unpriv("*(u64 *)(r2 -64) = r1")
-+__xlated_unpriv("nospec") /* Spectre v4 (nospec_result) */
-+#endif
-+#endif
-+__naked void v4_nospec_result_terminates_v1_path(void)
-+{
-+	asm volatile ("					\
-+	r1 = 0;						\
-+	*(u64*)(r10 - 8) = r1;				\
-+	r2 = r10;					\
-+	r2 += -8;					\
-+	r1 = %[map_hash_8b] ll;				\
-+	call %[bpf_map_lookup_elem];			\
-+	r8 = r0;					\
-+	r2 = r10;					\
-+	r2 += -8;					\
-+	r1 = %[map_hash_8b] ll;				\
-+	call %[bpf_map_lookup_elem];			\
-+	r9 = r0;					\
-+	r0 = r10;					\
-+	r1 = 0;						\
-+	r2 = r10;					\
-+	if r8 != 0 goto l0_%=;				\
-+	if r9 != 0 goto l0_%=;				\
-+	r0 = 0;						\
-+l0_%=:	if r8 != 0 goto l1_%=;				\
-+	goto l2_%=;					\
-+l1_%=:	if r9 == 0 goto l3_%=;				\
-+	r2 = r0;					\
-+l2_%=:	*(u64 *)(r2 -64) = r1;				\
-+l3_%=:	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_map_lookup_elem),
-+	  __imm_addr(map_hash_8b)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("spec_v4-induced path termination only after insn check (simplified, with dead code)")
-+__success __success_unpriv
-+__retval(0)
-+#ifdef SPEC_V1
-+#ifdef SPEC_V4
-+/* starts with r0 == r8 == r9 == 0 */
-+__xlated_unpriv("if r8 != 0x0 goto pc+1") /* if r9 == 0 goto l3_%= */
-+__xlated_unpriv("goto pc+2") /* goto l2_%= */
-+__xlated_unpriv("goto pc-1") /* if r9 == 0 goto l3_%= */
-+__xlated_unpriv("goto pc-1") /* r2 = r0 */
-+__xlated_unpriv("nospec") /* Spectre v1 */
-+__xlated_unpriv("*(u64 *)(r2 -64) = r1")
-+__xlated_unpriv("nospec") /* Spectre v4 (nospec_result) */
-+#endif
-+#endif
-+__naked void v4_nospec_result_terminates_v1_path_simple(void)
-+{
-+	asm volatile ("					\
-+	r8 = 0;						\
-+	r9 = 0;						\
-+	r0 = r10;					\
-+	r1 = 0;						\
-+	r2 = r10;					\
-+	if r8 != 0 goto l0_%=;				\
-+	if r9 != 0 goto l0_%=;				\
-+	r0 = 0;						\
-+l0_%=:	if r8 != 0 goto l1_%=;				\
-+	goto l2_%=;					\
-+l1_%=:	if r9 == 0 goto l3_%=;				\
-+	r2 = r0;					\
-+l2_%=:	*(u64 *)(r2 -64) = r1;				\
-+l3_%=:	r0 = 0;						\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.49.0
-
+CCing him.
 
