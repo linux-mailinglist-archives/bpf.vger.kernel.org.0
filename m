@@ -1,94 +1,93 @@
-Return-Path: <bpf+bounces-61635-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61636-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FBFBAE940C
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 04:34:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC4B4AE9426
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 04:38:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 216C11C236DB
-	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 02:34:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 673847AE734
+	for <lists+bpf@lfdr.de>; Thu, 26 Jun 2025 02:36:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 617341EBA14;
-	Thu, 26 Jun 2025 02:34:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB5251FF1C4;
+	Thu, 26 Jun 2025 02:37:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JLG1K6g+"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="L+0itSvi"
 X-Original-To: bpf@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F8B7224F6
-	for <bpf@vger.kernel.org>; Thu, 26 Jun 2025 02:34:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32F591FAC42
+	for <bpf@vger.kernel.org>; Thu, 26 Jun 2025 02:37:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750905259; cv=none; b=ZFzXGLVblaB04iBciCe5aL4HHyeZ3bOis7TmtqNB+aL6E9Ev3uk7Q8+EY8DsBCMzMGpCq+EdPictPh2372qZN8t0V1zgZGur5rwfYwNidZ6IO5uKAz0GG08/tNBog/y733La9BtRAi6Slcj3ZBthklmpQNVybOr0Ln7o1DmmJgc=
+	t=1750905441; cv=none; b=cnGkmJsbhmTaOFONiOJ1aIBSEE4IxQ1m3wBKXX8/HR7qtJCqIghPwSIMmdBZjSTmBh2uqxQ1np5uzWUe6RLSgX4u8fpFJbMhzHSW4bsYUZW0IC/QMXEqo6sfzHej7cOQrSjLEssaWT84fSDjL3LrtkBQkn6aAmTbW1u9qyUvjKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750905259; c=relaxed/simple;
-	bh=Ywnfk5CtunwDSKI5ePQke6zvKrlORy5MiO0skNTlXoI=;
+	s=arc-20240116; t=1750905441; c=relaxed/simple;
+	bh=e5C9qrU3fsOpfaDgADgkrynMWd5GzhKtqGQzdriNJ3U=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=laiu0Z0eW/1xTVIn3WTX1dmRHen+mvdVP2aKgLRs5M/GgoN/aEbr9hUDl5I92ukbbz7YAWF1ekLUATBVr2K2mA2arIhgkt8CIa3QSzbrCFD7ckJ9kKwj7hPHxvuHX+glb+JSsk4pDt2byPFBndVXp1tV5/zaLMeLDcsez1ymi2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JLG1K6g+; arc=none smtp.client-ip=170.10.129.124
+	 To:Cc:Content-Type; b=J/1lZNyexASpmHWMcFK4ObLjjj8jBqZrQ0nsi3kCAossBHRxuKh7WBldsfXpxGAtWtn7HU54dNEc08hKud4+PlB6UwfWxPYk2uxxx73msuGeLmV1ZhX8AATHT4Igx7wRfUU9o5zKGzew3BUzeYq0JlL2sRpxLJrd94LpH0wjuCU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=L+0itSvi; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1750905257;
+	s=mimecast20190719; t=1750905437;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=YT8CI7GYn/0UQ0nLPl5n5hA5UBnWvrLiTRc8GBQHDvw=;
-	b=JLG1K6g+r2O3+iQYnyichwjSTXIAks7C8XSwkFUNBGQqNDurzHucsJ8cvTX6BHn4MkFblS
-	WAmompLUz2b8jQFODZFRR2yFGJF88J+FRxQ5facSpZfUoyT6LsWyMVed5ozod9Q2UWc4/o
-	vOYF5pfYiQdZQYRfYX+Fqhi2AbcTSfM=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=EW+I1QQIKlTT7W9a4yuMAmimMoHXfs6dlaepoS7uBM4=;
+	b=L+0itSvi7S7RE2UyumHfj9k9c+e6ns43ANlRJb43K9G8m7BWEbPa0KNkk5Mky63WrEfNO6
+	p7hc/i10cJJY3C9hhNAN5qnrA/ftV6J6yBkmw5CUsfwGnjCSP1aitRTFktHpHGWSVXEeTj
+	YsdLNYMAA2yoAWIZyBsAA+cyorm1svU=
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-13-Sinp8lG8O2W8WbTJF0WMVA-1; Wed, 25 Jun 2025 22:34:15 -0400
-X-MC-Unique: Sinp8lG8O2W8WbTJF0WMVA-1
-X-Mimecast-MFC-AGG-ID: Sinp8lG8O2W8WbTJF0WMVA_1750905255
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-313fab41f4bso613659a91.0
-        for <bpf@vger.kernel.org>; Wed, 25 Jun 2025 19:34:15 -0700 (PDT)
+ us-mta-377-x2qcqSXuMFyLQilXysOxEQ-1; Wed, 25 Jun 2025 22:37:15 -0400
+X-MC-Unique: x2qcqSXuMFyLQilXysOxEQ-1
+X-Mimecast-MFC-AGG-ID: x2qcqSXuMFyLQilXysOxEQ_1750905435
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-3138c50d2a0so707811a91.2
+        for <bpf@vger.kernel.org>; Wed, 25 Jun 2025 19:37:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750905255; x=1751510055;
+        d=1e100.net; s=20230601; t=1750905434; x=1751510234;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YT8CI7GYn/0UQ0nLPl5n5hA5UBnWvrLiTRc8GBQHDvw=;
-        b=epRYdwrDFFu2DNkNiZtaYGu7Rm5NEiZTFmK3EiZpURSpPEiI8KhWJOtl7+MtjmUw5f
-         Gffo2Dn0It3/OeTsnuJeZ0kYyAIJ+aX8X+wTMfaSeL+G2mLhUKdHGgRkVFJkdpPapxLu
-         xkRRAlM9WGdehSsoScG5K5g+HB46+H0qoF/nauksWl0dwzSmDvoFFBoob6YXLQBVIFi2
-         ussdjf8jY7w6iEoFcxDbkmg5V0e0mfI91zk3tdJ75waqnq7AC8YlpSL10GdluD0jeZLW
-         xhPtFnCjYyGxEMe6TuqOlxc326HIgw6sUttIYd/zl2uvZTO997TuT505FMcDNzt0w670
-         lP3g==
-X-Forwarded-Encrypted: i=1; AJvYcCWtIO/4kRuaR0fWBlA80/Sr/535FbUjxv4Te5o5lkitTA5A9sRXH4mEL29UDvLb4MbMaXc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzR4XhftQG9LHoQJJjTKc67J8y4r1fmA91h3zt2iXPGK1dY0DbK
-	r7H0H8DQHwyY5+G03d1Syz5blVmfRMtzeTDBea6B9xXHWn2JKBbfznVfHExXz9gWopmWmFugmhx
-	BRVaqefwaPicqXGjirEdYa1RHY8xcH8Zd4o9jA3+8Uwq5rTNWZnAwUb2dSRISNdmtGOcV/Yg4pr
-	bXijuFz4m/XY85o629H87r43RFYZAt
-X-Gm-Gg: ASbGncvt50xrPYa3rAXyK5BNwD1ZQTBRC3EgcYuD6J7N+64Kkuq1/kxsjSw0ffXDyqV
-	sCbOA/ykYBobq552p4KhCxc9qpVXC2sUIRRsDzkM5vrZbSWa2qybWJB0A+Yv7mQ52BZWuhJ4dI2
-	Uj3dTS
-X-Received: by 2002:a17:90b:1d05:b0:311:9c1f:8516 with SMTP id 98e67ed59e1d1-315f26192efmr8661952a91.15.1750905254640;
-        Wed, 25 Jun 2025 19:34:14 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHmWZ20ylBufEuyD8a4snrfN5wLqjOc1AW3vCQs60y21v0vOw3rVlavg03klPFzZsn8v3UuQzPZyDKXt277yE0=
-X-Received: by 2002:a17:90b:1d05:b0:311:9c1f:8516 with SMTP id
- 98e67ed59e1d1-315f26192efmr8661917a91.15.1750905254221; Wed, 25 Jun 2025
- 19:34:14 -0700 (PDT)
+        bh=EW+I1QQIKlTT7W9a4yuMAmimMoHXfs6dlaepoS7uBM4=;
+        b=TdLg2QFoSyQaz4vrj7g9/KgoY0EQdibip62gCYuBei0i9R0SZvZ3J+z+6vfp0ss5GD
+         VeWahppL3ZfqXfneIinrLa84J0rz0ptd6CN8c5VSzUJ8n7/XeNrZJc391Qco/n+t5GQY
+         Hkb39k8bfVtkOZ4qZbxEholCEBu6WjstS6/34//69HvDnL4iXeaYqI6p4T7kSr4XixUH
+         HScjU6OK5vbRgyti6CrQqb1mJFAFZyWLyX5MFHi1FNVXiENbxMMSg0yjNUO+0hpqKSeX
+         y8E/yYvrq9Q64LGI4OTQOzSQOHT1qmgKYoojc00J/+MYDxoMEqzWwUyHC9+0fpWbFy+I
+         dYEA==
+X-Forwarded-Encrypted: i=1; AJvYcCU6o8ieh0gs1PyC5E7OCn7igCbJneuc1M/d8mbDUwzUu75F3VsWuSYr1yrMktoj8Bkwa4E=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyKbhoFQYfCjwtCiH6Ug5RDrLnWh1GxY/yPsWzGJRuYDLFfzeB3
+	cay6cxuS9hpUB9HtoeSFy8TSkLlGeyqnSKxdcRoYfwGuiuko8b4UDLcrF0mPrZAQE1U0u1tnebx
+	f4jAl0wmH+wcLBaVLkfR8VyNvRwEIlQ75E6UTxQsLLNz1sJYYa/ZBScpz2abf1spj2hVZxhKcdz
+	sufEEpss5DtqG8+YyACcdRwSDpMgza1buaXw/h00L/OA==
+X-Gm-Gg: ASbGncskXHXNqDK4izWdM5cdLFJBZw5sA2Yp5vVFgJu4Kn6TdrYmc12pCTh/775OeDA
+	Q0b0X0NFXpBn6Xyj2999BaR7TAEC3v/0JXF2xJeqUwURXvjl8fOvPuKTgbfARTMMnxmyGYuzpaD
+	/Nsz+7
+X-Received: by 2002:a17:90b:2b4c:b0:313:fb08:4261 with SMTP id 98e67ed59e1d1-315f269fa56mr6541981a91.32.1750905434001;
+        Wed, 25 Jun 2025 19:37:14 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGnFq27uptoJBVoGMseNGObxmjNsAzQWtsl9oanE1SD186q54jLA9zURCaRw/XaQvClcZpVeAk2VlfUN6l6Dn8=
+X-Received: by 2002:a17:90b:2b4c:b0:313:fb08:4261 with SMTP id
+ 98e67ed59e1d1-315f269fa56mr6541958a91.32.1750905433553; Wed, 25 Jun 2025
+ 19:37:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250625160849.61344-1-minhquangbui99@gmail.com> <20250625160849.61344-2-minhquangbui99@gmail.com>
-In-Reply-To: <20250625160849.61344-2-minhquangbui99@gmail.com>
+References: <20250625160849.61344-1-minhquangbui99@gmail.com> <20250625160849.61344-3-minhquangbui99@gmail.com>
+In-Reply-To: <20250625160849.61344-3-minhquangbui99@gmail.com>
 From: Jason Wang <jasowang@redhat.com>
-Date: Thu, 26 Jun 2025 10:34:02 +0800
-X-Gm-Features: Ac12FXyruohJ57b6kb7ijE0xoMHh_6UYned9b5xz_RKi13myHBKADRrN7NPxO3A
-Message-ID: <CACGkMEvioXkt3_zB-KijwhoUx5NS5xa0Jvd=w2fhBZFf3un1Ww@mail.gmail.com>
-Subject: Re: [PATCH net 1/4] virtio-net: ensure the received length does not
- exceed allocated size
+Date: Thu, 26 Jun 2025 10:37:01 +0800
+X-Gm-Features: Ac12FXzafcvLIIRlWLmpr_5VBnu8UJoZzPPLlWXuQNGXda7Uc4uun2EikZbgBz8
+Message-ID: <CACGkMEuZTP+xPCWuSGwiApWEj_PuOxb5yOeR3t-Bga1t+svawQ@mail.gmail.com>
+Subject: Re: [PATCH net 2/4] virtio-net: remove redundant truesize check with PAGE_SIZE
 To: Bui Quang Minh <minhquangbui99@gmail.com>
 Cc: netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>, 
 	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
@@ -104,102 +103,59 @@ Content-Transfer-Encoding: quoted-printable
 On Thu, Jun 26, 2025 at 12:10=E2=80=AFAM Bui Quang Minh
 <minhquangbui99@gmail.com> wrote:
 >
-> In xdp_linearize_page, when reading the following buffers from the ring,
-> we forget to check the received length with the true allocate size. This
-> can lead to an out-of-bound read. This commit adds that missing check.
+> The truesize is guaranteed not to exceed PAGE_SIZE in
+> get_mergeable_buf_len(). It is saved in mergeable context, which is not
+> changeable by the host side,
+
+This really depends on the security model.
+
+> so the check in receive path is quite
+> redundant.
 >
-> Fixes: 4941d472bf95 ("virtio-net: do not reset during XDP set")
-
-I think we should cc stable.
-
 > Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
 > ---
->  drivers/net/virtio_net.c | 27 ++++++++++++++++++++++-----
->  1 file changed, 22 insertions(+), 5 deletions(-)
+>  drivers/net/virtio_net.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
 >
 > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index e53ba600605a..2a130a3e50ac 100644
+> index 2a130a3e50ac..6f9fedad4a5e 100644
 > --- a/drivers/net/virtio_net.c
 > +++ b/drivers/net/virtio_net.c
-> @@ -1797,7 +1797,8 @@ static unsigned int virtnet_get_headroom(struct vir=
-tnet_info *vi)
->   * across multiple buffers (num_buf > 1), and we make sure buffers
->   * have enough headroom.
->   */
-> -static struct page *xdp_linearize_page(struct receive_queue *rq,
-> +static struct page *xdp_linearize_page(struct net_device *dev,
-> +                                      struct receive_queue *rq,
->                                        int *num_buf,
->                                        struct page *p,
->                                        int offset,
-> @@ -1818,17 +1819,33 @@ static struct page *xdp_linearize_page(struct rec=
-eive_queue *rq,
->         page_off +=3D *len;
->
->         while (--*num_buf) {
-> -               unsigned int buflen;
-> +               unsigned int headroom, tailroom, room;
-> +               unsigned int truesize, buflen;
->                 void *buf;
-> +               void *ctx;
->                 int off;
->
-> -               buf =3D virtnet_rq_get_buf(rq, &buflen, NULL);
-> +               buf =3D virtnet_rq_get_buf(rq, &buflen, &ctx);
->                 if (unlikely(!buf))
->                         goto err_buf;
->
->                 p =3D virt_to_head_page(buf);
->                 off =3D buf - page_address(p);
->
-> +               truesize =3D mergeable_ctx_to_truesize(ctx);
-
-This won't work for receive_small_xdp().
-
-> +               headroom =3D mergeable_ctx_to_headroom(ctx);
-> +               tailroom =3D headroom ? sizeof(struct skb_shared_info) : =
+> @@ -2144,9 +2144,9 @@ static int virtnet_build_xdp_buff_mrg(struct net_de=
+vice *dev,
+>  {
+>         struct virtio_net_hdr_mrg_rxbuf *hdr =3D buf;
+>         unsigned int headroom, tailroom, room;
+> -       unsigned int truesize, cur_frag_size;
+>         struct skb_shared_info *shinfo;
+>         unsigned int xdp_frags_truesz =3D 0;
+> +       unsigned int truesize;
+>         struct page *page;
+>         skb_frag_t *frag;
+>         int offset;
+> @@ -2194,9 +2194,8 @@ static int virtnet_build_xdp_buff_mrg(struct net_de=
+vice *dev,
+>                 tailroom =3D headroom ? sizeof(struct skb_shared_info) : =
 0;
-> +               room =3D SKB_DATA_ALIGN(headroom + tailroom);
-> +
-> +               if (unlikely(buflen > truesize - room)) {
-> +                       put_page(p);
-> +                       pr_debug("%s: rx error: len %u exceeds truesize %=
+>                 room =3D SKB_DATA_ALIGN(headroom + tailroom);
+>
+> -               cur_frag_size =3D truesize;
+> -               xdp_frags_truesz +=3D cur_frag_size;
+> -               if (unlikely(len > truesize - room || cur_frag_size > PAG=
+E_SIZE)) {
+> +               xdp_frags_truesz +=3D truesize;
+> +               if (unlikely(len > truesize - room)) {
+>                         put_page(page);
+>                         pr_debug("%s: rx error: len %u exceeds truesize %=
 lu\n",
-> +                                dev->name, buflen,
-> +                                (unsigned long)(truesize - room));
-> +                       DEV_STATS_INC(dev, rx_length_errors);
-> +                       goto err_buf;
-> +               }
-
-I wonder if this issue only affect XDP should we check other places?
-
-> +
->                 /* guard against a misconfigured or uncooperative backend=
- that
->                  * is sending packet larger than the MTU.
->                  */
-> @@ -1917,7 +1934,7 @@ static struct sk_buff *receive_small_xdp(struct net=
-_device *dev,
->                 headroom =3D vi->hdr_len + header_offset;
->                 buflen =3D SKB_DATA_ALIGN(GOOD_PACKET_LEN + headroom) +
->                         SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
-> -               xdp_page =3D xdp_linearize_page(rq, &num_buf, page,
-> +               xdp_page =3D xdp_linearize_page(dev, rq, &num_buf, page,
->                                               offset, header_offset,
->                                               &tlen);
->                 if (!xdp_page)
-> @@ -2252,7 +2269,7 @@ static void *mergeable_xdp_get_buf(struct virtnet_i=
-nfo *vi,
->          */
->         if (!xdp_prog->aux->xdp_has_frags) {
->                 /* linearize data for XDP */
-> -               xdp_page =3D xdp_linearize_page(rq, num_buf,
-> +               xdp_page =3D xdp_linearize_page(vi->dev, rq, num_buf,
->                                               *page, offset,
->                                               XDP_PACKET_HEADROOM,
->                                               len);
+>                                  dev->name, len, (unsigned long)(truesize=
+ - room));
 > --
 > 2.43.0
 >
+
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+Thanks
 
 
