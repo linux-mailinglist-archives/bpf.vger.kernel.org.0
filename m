@@ -1,291 +1,646 @@
-Return-Path: <bpf+bounces-61728-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61732-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C720AEAE18
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 06:49:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99DA4AEAE2D
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 06:54:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3847A189C152
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 04:49:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECD9A4E0B52
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 04:54:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F9901DEFE9;
-	Fri, 27 Jun 2025 04:49:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74BB31D9A5D;
+	Fri, 27 Jun 2025 04:54:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ph06clFc";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="ViL0E+9f"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mymVmmFu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8836A1B4F0A;
-	Fri, 27 Jun 2025 04:49:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750999742; cv=fail; b=TYSY3Fxe70F29AzjK65u7RrOv5VGTQtU9bDQH/MlvvPidWQTbF5b8KA6ZfXBgEKjIh2MTE3Emr57rQfwkKwmPA+2DQPDv/kWwJu4sXembk6aeBJv+AJWRI8njRBx5krndcQNW19oy1ZnySkcdR/sPM6xb3+11b3ZoHknra6aUfQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750999742; c=relaxed/simple;
-	bh=b0vk87qeS/NSwSlrsfu+aNEeRXFJZCS/IFc2JLCUAhw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ISrc7b2WMlK9U2Mx3HWBTPe1ak3y8STYVtwZkFzYUsC+8c/U/iou6YWjQGJ6/9VSyvIrmeKJrSCQKkptK+uctQxDRY0/6wKMMwobxiWsVCVvbp6Frr/jgcBIA4k2div485ZQs/35Fc/URZK01m6aYlTzRob4gRaKgabbS09t5n0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=ph06clFc; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=ViL0E+9f; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55R4aX3P002069;
-	Fri, 27 Jun 2025 04:48:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	corp-2025-04-25; bh=m78ypFD2WEH+65K3u5c8P1VM/AZ98VsQWjYqCNYEJ6o=; b=
-	ph06clFcRd1bA8Sgp86fi/x6WMm4ZdwbYlRsvRISCspAsPcdWkhXveRKAIHMUkQx
-	vNhmI7zbc8C8zKAPoXo54jwxMsMuBAbfBnjOPcW0PkaxTXB7Zk7rdLgLdaBlnDzd
-	Md0Q9Xb5K1RXDeM6DQCQst5InRHcvs1arNljD7FjHHu63piuZhYkJdRoWTQrcQKO
-	/kD9DJa7qQQU6bZVvFPqcshSgLyhey5AP0wJjaijgP/AYAggzwRYbAMx9wg4hYy5
-	OLMeSAhrVvsCNkawwjdSvpHYfNwcQMWKIcK/x435wj3Qif382LwabFT+277j/ZFW
-	cvVjNJoUixcqMy10ygXqwA==
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 47ds8836v4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 27 Jun 2025 04:48:24 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 55R3mtnU002627;
-	Fri, 27 Jun 2025 04:48:23 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12on2089.outbound.protection.outlook.com [40.107.243.89])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 47h0gvt59j-3
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 27 Jun 2025 04:48:23 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=cPbrucBZy4Leh9xu6wHGUinOY9+oKTJc9T+GybyUWHyzRbki2/mmSTT7LzscGyLjNCVzjRG3Ji6RxYU0vnQdSkn7Po0H9OGCQFsenr2m4e62KHBl2Woe7aDoBc4ijMw8Vir3f3GoziH9PtgWgg1OXP1tlabAj0OXSedS18cyd6uWRUVG16AQY1AeYr2NdpecQYJY+PBbkiZjNw0f2nb8f4ip874xyr8jwpHuO0mB+PjSmyZdPJ0xUK/knzXJKZdAR3O30S6H+LK9v1OyGNJIuFONTQz+X3OWBiY36HyrwwDDLimMgnc2W0D+EBwGflDC3+7fnJcr/VT2hAsdPWCvZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=m78ypFD2WEH+65K3u5c8P1VM/AZ98VsQWjYqCNYEJ6o=;
- b=amqDffjpmYGj47Ap1YPXHRIzC7oqZrVnIWTk0rcxWKTJbgURNhZsU2ntV4WqCq5M/m9MFHSQo21/Kv1BlQJwM0IPdkmgSX5AuCx1vUlhVrzMvFL7DdHEQhbGYSarL551OqsbXv49lWmKFFLGHfrtXfv6bVN5C1nj5jg1GfiPCbu1A83qN8u+a5nC2qur9J0TJSMrnpY2lc9xHgnOxwaMQk6CaDGOkiTDJkMaeawwb9Npiuww9J5eGp2RW353hZYsy9ehKjpPUPjeWnWx5U+runyHBf9FLZM+Tv4xzrc1POeJjoHf53TbiEMqQYIa2DS8/0aDYGPB7dt5F8Hyr+spWw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A353EAD0
+	for <bpf@vger.kernel.org>; Fri, 27 Jun 2025 04:53:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1751000041; cv=none; b=SMaFKdpPcFtyNdEp4e8ybSxbFRiLgvwJyNk+Clq9fVhVv686iFZOUVCHoHqqXScVbMmtiVaboiIegKrR64LQHRlQ1K/IRn7d+AAvZEW5/VG9/fpjY0QRUiqI7nBtFQmQfteVGU9YhNPeiawwf/8l7pWtMuF29IM+obeXtbB32zQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1751000041; c=relaxed/simple;
+	bh=483uB6UzX2TgzfCyZzzGHymgeL//x7AkYDxxGnp6K6I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZvOZ8EYiqtV/Zw8jM1iCB/5HCJYleSQDDHsHf1i9RN2qRrfAUQkkn2WJv80jCUgf3yUaMQXZhe8prbv0ciIbqo5geNTaCk44ZHnvHh7UD3k0i4ZakLOo8xvH2ViEFoMee4ZE/8amoKUk971WlampBzbZNukmf8x0jUhrLiqHNE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mymVmmFu; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-237f270513bso74655ad.1
+        for <bpf@vger.kernel.org>; Thu, 26 Jun 2025 21:53:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m78ypFD2WEH+65K3u5c8P1VM/AZ98VsQWjYqCNYEJ6o=;
- b=ViL0E+9f97d5uwc2+NzU7o5oPeDsCAQIGGixs4ibrgDiLhqXvzR4fy64GvxEAcJ+TOK8rqggaytzre9NzpPZ5yw/mW6PVT3Vtz9O/GZsziwFLhfEclBwDHBCV2x8qUMH8He0/euvrj3SbxBJtxVbU8qzyk1/zAyx1bl+29O5H9A=
-Received: from CO6PR10MB5409.namprd10.prod.outlook.com (2603:10b6:5:357::14)
- by PH7PR10MB6335.namprd10.prod.outlook.com (2603:10b6:510:1b2::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8857.23; Fri, 27 Jun
- 2025 04:48:17 +0000
-Received: from CO6PR10MB5409.namprd10.prod.outlook.com
- ([fe80::3c92:21f3:96a:b574]) by CO6PR10MB5409.namprd10.prod.outlook.com
- ([fe80::3c92:21f3:96a:b574%4]) with mapi id 15.20.8880.015; Fri, 27 Jun 2025
- 04:48:17 +0000
-From: Ankur Arora <ankur.a.arora@oracle.com>
-To: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
-Cc: arnd@arndb.de, catalin.marinas@arm.com, will@kernel.org,
-        peterz@infradead.org, akpm@linux-foundation.org, mark.rutland@arm.com,
-        harisokn@amazon.com, cl@gentwo.org, ast@kernel.org, memxor@gmail.com,
-        zhenglifeng1@huawei.com, xueshuai@linux.alibaba.com,
-        joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
-        konrad.wilk@oracle.com
-Subject: [PATCH v3 5/5] arm64: barrier: Handle waiting in smp_cond_load_relaxed_timewait()
-Date: Thu, 26 Jun 2025 21:48:05 -0700
-Message-Id: <20250627044805.945491-6-ankur.a.arora@oracle.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20250627044805.945491-1-ankur.a.arora@oracle.com>
-References: <20250627044805.945491-1-ankur.a.arora@oracle.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: MW4PR03CA0206.namprd03.prod.outlook.com
- (2603:10b6:303:b8::31) To CO6PR10MB5409.namprd10.prod.outlook.com
- (2603:10b6:5:357::14)
+        d=google.com; s=20230601; t=1751000038; x=1751604838; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DtGyqXmElvAld4zBVXkgxOmHALsnPQCTadiFmCBdWaw=;
+        b=mymVmmFuNagM1bLnkwA+QbAnjJj+KRJhvyTIKF9bews5RIiU1XZwrk1H3SrXo3Gx6Z
+         ZskB5VCFyx5RZcVZTVlyQeDI4Wi4KoJ6EQ5A9Q9K7SbP2Gdfi+l/IgYbK7xUh3KvIoYE
+         GWuLe7PhTHskq5QVvt5aTE2ymgEnR7FoTHMiDCeiV09lmnur78TQJrZHyPEmU2Mure+s
+         42kaaW4Dmk3cZeTCifLpFK+V9z4+BdaO1qi0KM/sN2m3fm25+xFKDGMZUTctW5eMsp8L
+         6mADiyU+sK02PXFgpecvGc/1OdvUaiHKZ3VrK3BGYdZSS6b8L/wlaqQfuNVFdBw1oPsS
+         +RkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751000038; x=1751604838;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DtGyqXmElvAld4zBVXkgxOmHALsnPQCTadiFmCBdWaw=;
+        b=B1lq8E4WXS9apkqbPXgHPI548fJ+oMvNtpEgyL6zToDOd3l5ozYb8waqhJwUN0//Xb
+         4jXManNgyvx3qmfJPzez9zLRvwbV2i7LwAvxbeR7oOrDzT9X2uR+rzNz2ADX3RRtA736
+         PXiAkadwW3CDgxADqZkqcxun1ZOhCDuayIQPaao+ABfkQ0zrxU70gHY5K1pl6rRq+7K0
+         x8uG0OFeJe//waqqsPBDPYlNkiBLMx4bHaL6+hVaDeFfAj54UrVpyLqbd986QdupKh+V
+         fJfP399pMBCsSwl2N5eqrNKhDliNaZUro+jkWKNafE1DnuKDti+yChm5+5PNko9rEAS3
+         v+UQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWa61Eq9hzMpwnLC7yJiDCYQcE/19trjNMiykXIERQZJHWDrAuL9yF/NfRoP+j49Os7jio=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyxLqJiLfEd/fGTcL+nD2TqlJ1KtSoxdMcsOVaTWIbaneCsE9pO
+	ml73c3sbAz4/bCGH3P+f3Y0PtAgKWI97oxojE7vAAgmlTV4P4rB4m4oy93CAVXLdetmZEHz8T6i
+	HqlYKqc1uNGsN2g18/eTyx7DypiapL6rHtawMPQ2V
+X-Gm-Gg: ASbGncv8jvattpqk+H1hKJSXpdm78XuhZwhOB252oUNMPbI6OaIF8rPViVtkTvmzMVd
+	pM2MroMdH3CpJNo5BSLQ7l/ZPZ3e8ISXWnzIs+6EZmGci0+9ns1hCCU7YYymsBH8CA6pvxPP0VJ
+	fwI7AyoWEiSoRuwWQOlyH2ZkRxRN+pvIEkinVlP0w1z3uT
+X-Google-Smtp-Source: AGHT+IFzJBBQmFYQ7cI3zeLxgkj3kZjv08y1P1BPNH+vs22PKstYf/pcm/7eHWqo/C7HnJCN2nOoS4/62QqjCLEYKY0=
+X-Received: by 2002:a17:903:1b04:b0:22c:3cda:df11 with SMTP id
+ d9443c01a7336-23ac4be08camr1874065ad.10.1751000038176; Thu, 26 Jun 2025
+ 21:53:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR10MB5409:EE_|PH7PR10MB6335:EE_
-X-MS-Office365-Filtering-Correlation-Id: 74059172-cb48-4526-bb4b-08ddb535d564
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014|7416014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?63PfzKZMwc1QpveMPwrH0CB0w492OlxV2DsPVQXvB0OCS2SYhd8Hye6nHtgC?=
- =?us-ascii?Q?xHlteYFuYedw7mVGKTLYvPMK5G9SyeTktXouPVdQq3vJIcXyJAnt9VxQxqK1?=
- =?us-ascii?Q?D3G3Ve449dRc8ypiSsVQAb3qKac4R01BCYYcIe7eH6Zsm45+N/qx3jSsQ0eG?=
- =?us-ascii?Q?fYOwVtAJyP3hUH249/gJcu8k12go9X6FCoz7jPcREyjKNGabYysyDzVS3u7g?=
- =?us-ascii?Q?an/fgk5r1jLXwBCvmzc5wDvOkIUatmEnRwnUS8DWBzzjHLXnatiIEMMNqQID?=
- =?us-ascii?Q?TaphIKEw2/FJ24sjDxuwcv0Y5hGVwWAPYnaX7CDpIaRndHzP4FFUjy/VM4nU?=
- =?us-ascii?Q?VRRKxA5MREpnzvy1/XNyjCkMUvt+GhJrqDfPXFJBzWGHQE4gYJfdL3O+1Znk?=
- =?us-ascii?Q?9yPrqvHNdBfpSWfHGiQAIQcaI6+Q976OEo8nD0fLT2SgxKFZYgV1DvvC43Py?=
- =?us-ascii?Q?PkBY6W16nzwJEpVkEQ1JHFERJlegzv9SHYYGkgrKnLKN2NBLuNl3I12aRZb/?=
- =?us-ascii?Q?7OYQHf/AY3nvnG9ZArJbP7d8uondQW76UAvGg47Gnym9iY2LJFoEvOXcuCxf?=
- =?us-ascii?Q?Hl8En5b+TFJLe6gJB/EADurENZLkjAl0ZZkWtMFrZE/XILRSP0uZYEYoBxSR?=
- =?us-ascii?Q?4Fcf0oSt+NyDU504zlclno37hiIYriOU3GBwH+/S3sBrdvqjujNfdShM4f5G?=
- =?us-ascii?Q?68FiCGsSE/9EGKHXjHXmYU1O7H/6IzSCBuWy23bqRl9A1jSDgWVc3ewqwXvb?=
- =?us-ascii?Q?JJdyjd+BZrLrssDWxH0otN3OsimpBhu+Um3xz8wyBZt7s6XHFO0phdwZu/N2?=
- =?us-ascii?Q?RtL3mmMo3OgrFnyGamT3MJAgjiBzXAmBObftQpCKBAACg96yzyyDBFXSQAjV?=
- =?us-ascii?Q?JDmezVVG4DQX1VXNbfg2ZoMNvPVJxKnWQw/E8rxLIiGgR0Wcgv6/bVmsuUVI?=
- =?us-ascii?Q?DT7o57smtxFHtI+JoL93ejtMB3xrvtyIxYWBBxyPV5CMc+Pn0Bx+Cr+2zUsD?=
- =?us-ascii?Q?0lgB35eT+0rH9yy+QIwioOeKvyu+wM7CL42MYpr618ZJgti9CnjyH01Gm7w1?=
- =?us-ascii?Q?dX8PgObuA5BBq7yQElxlhP2PmwvNqHHfq10MW9QKrZoNdokh6W6p+F+X2Q4G?=
- =?us-ascii?Q?4/2cHq22qcQ2nxtAm65lww2UObLWv5fMFcmNhjiIQv9GKtcdmQe+9nKYMm10?=
- =?us-ascii?Q?/0A6UJA0DQlD2Na4pIser0lEKeX8mxC2cxzDbWjnJrePQhXzxpOmhzRW3hsN?=
- =?us-ascii?Q?XWfMqOK6bSt7Y7f6CN1YJBg4nYpj+WrWyeD3ASI8AvWTErYoX+OYwesSLuR9?=
- =?us-ascii?Q?O2fwbbc2WxuOobFDzjsrEs05PpjSicDtLh7PdnZXA+ifT/Pa/HaR+gcbUErr?=
- =?us-ascii?Q?NkCjRTZL7f6NKwzo4hL9DhtCM8TxVEYnDrO8/MlLVU9ljU/u7Q=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR10MB5409.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?74wWF/YmVGeiArKcNfGmX2H2hhIMtzjcyIxV/nIocYWwqjgd1XC92XPqfJhh?=
- =?us-ascii?Q?ViOVl8yVXR9v4bl8CyJ2+Q1z8GDdmSU76r/7E6LNXkQAyV8cG8fweU/Aya0b?=
- =?us-ascii?Q?Y7nF26hgWItSo6H66s+mvzoIELS/S/UcxebXGiCOHLsNl60HFdm5/BHLUw3u?=
- =?us-ascii?Q?CJCvFJ5KhuFc0yCp3rlA+97ksE4V/NSj/Y93XkGOxHT8xZVj3ywVI7Pr4Ck5?=
- =?us-ascii?Q?M5E2/iXbbyCDZRcEIfl40YrXmkCSnpmw9L/STuCrpnW/7iU92lmjF2Cbdc9T?=
- =?us-ascii?Q?6oojbGd709TcIff50aoBWCXGwqY6aW0hydR/JefP09Nn6b3EUMhPqgbfnA9z?=
- =?us-ascii?Q?RpjgkZy70llZGiV/CyyisPIB26+RNdTZPpdFLOZsLpwu786Ugy1b5rwBhBs6?=
- =?us-ascii?Q?2jVEOteuuaym/41gBMnPRa+luye8Nb/X8RZgVGnSraL4PDsn8fXV5Gqbe7cT?=
- =?us-ascii?Q?dUL3X7PiLzq4C6dQTtZe6H3a2nb5hF4jnQVCduQ1otHaoO63sA+44ytbjNF5?=
- =?us-ascii?Q?skpnYiZJW78NXltvrIYfp7MRAOVxX+xr+cMcym7NR1q0bZdGKPMbm8k4Gc5x?=
- =?us-ascii?Q?6BHVeN8WYa+K8sREodzx7yZe+yMMT8kK7FeK8Qy5GR3eaJHkR6JnW4rV6SCi?=
- =?us-ascii?Q?9+KvaWFWKWqza1fJ922lOJp9gJ5Ah5NcbpxQTMz3rN7T/6Ee2gEBkBn4zkCs?=
- =?us-ascii?Q?Xj0hHwpRepW8PqjnyMR4wz/b9Sotru6H3ExCZ2Zfy0PaBJk7g7iS3x4b1XHj?=
- =?us-ascii?Q?yLYRpXcPM2PhlXbNw7TDyoc5L75YrVO6oSFlLTnmT3qcp3hyWyYP3gFjoMgZ?=
- =?us-ascii?Q?cxEaLj0LukHBgSo5MffhH+HYIZrm2qRJvGC7pFdF5kpmIzwv8mC2nJUM7PWh?=
- =?us-ascii?Q?2l0qrnfnrQB0MVlOq36QYI3MaedHS6GbTQi2tiUzwe0j+BRbRVX47+zEvZkU?=
- =?us-ascii?Q?VEZG/SyKB813EXiP1XyZ9uBuaRjyV9HPHxLVPiMCZyA0/WgWIHaQDjOG3Wgr?=
- =?us-ascii?Q?k/tfSdk6iIR5twhQQ3NulsH3FtomCVvD3hdECoCNiU898mevsgHR5Z0xg9PF?=
- =?us-ascii?Q?uNLHZZvc2cg9mByv1wLgErYWEVpqdPEujSPPtixZzDLe7Fd79XMxRf4sO24D?=
- =?us-ascii?Q?Go6A4iBTCJiHMniu3CVZphvFFzkZ1tktCx8ALQeHZbTn/+yTShGkTAubd5gR?=
- =?us-ascii?Q?ELRfE8FdkOODAsy9B4Uw19UAQfnGElZnes4xg4cOP22pgSgRZNdwJTUzXTZl?=
- =?us-ascii?Q?3XgU3I9JRmR3xoGkbLulzkqjMCQPofjNphQ7U0h1jJT+yFrvf/O8wZ4p5Vta?=
- =?us-ascii?Q?Mhom74SVAqJhwYSOp5lwrqUVAs1NHHXx2evZ8WzTEaNzZ5oNBWZnpQ5exiQH?=
- =?us-ascii?Q?pKNxXBcH9fLjSqNI2wf4dNhc+pLBmbDXurunA9z+tWdYrGk3YjCnm3XpSmyQ?=
- =?us-ascii?Q?gkYH5+vzFZhY5nKRg4/Cp8i4wNtrsY+ugMJuLQbUclg4abyqqMkEBJ9gXbcv?=
- =?us-ascii?Q?NgZi5jPTDHmIXxKqaizojx7Mciy0zukmbickUIW3KDvSqh8zIY+9r4yvBD+C?=
- =?us-ascii?Q?or0Z9EYmRa8fdWzIEqMz1I0iBKh5kfOPvgUj1+JAsxcX8+3jB8baeIbtUtuR?=
- =?us-ascii?Q?cg=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	izD3IfAOsPbOC8GjrOMgrkiqGQ/pC801Vkp7FX3zUcwsDuOHuYGJ8PfL9xBTZhB2XRTaMzl695RQGvo98OihudrBYnYru/bbDnb/8KJmyV0NuYl7R+OrkV0nUjiq9dCi/8lNdMgfDdO8mdx1gLMhysmI6F6SEIZBeZMe66Lg/uOvQCtCwfvJ+ZD5pcGDEV62/JkPAXQMY5KxBOLcrjXoxgwg78d4s6SLMXBsRX1SuSC5/zVtwgI2+l3FDo0AMZx37hpRdf+8FzM/VU6I5YO+B+trk/8L0msoxtwMBupRkPBQTRh+urEWTUNF7VrsBq6FhPMuXBcvJzLh86qFccPVXcG1uIN4XZzwWkOgUlwH/nET8syHFbZuYItbj4jNCidowSZ641j0cajNSklXna7cWDnbCjcgvZOpqIEXshoCk7Uu496QbFd6joIJkdvINckhlBdEUFmb0if8yVebn3XuoEGzeOlky1aky489S30BGjIvnFk4Rp8t7ZpV21fl+zNpUxL7Rtua1UuyIDg9AOcPmK1bvm4LHop1us9vTNifhckGhn4hYMq6up+ZpZ27JA0PMep9dEqLTSIgxOWiptY6zB6BDzicEzgd9X3zxnNvnHs=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 74059172-cb48-4526-bb4b-08ddb535d564
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR10MB5409.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jun 2025 04:48:17.5900
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: q+gMmiRRhb/Y/NcAOCFWtv/NcPApXIqV15+cHvtysNGTJrkKtU/RVeLjT3qfIGxL90rMEQuja38jOYdbJj+Vc1vT/qrDIXnfw9MyaarPUwQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB6335
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
- definitions=2025-06-27_01,2025-06-26_05,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- suspectscore=0 adultscore=0 mlxscore=0 malwarescore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2505160000 definitions=main-2506270036
-X-Authority-Analysis: v=2.4 cv=a8gw9VSF c=1 sm=1 tr=0 ts=685e2298 b=1 cx=c_pps a=WeWmnZmh0fydH62SvGsd2A==:117 a=WeWmnZmh0fydH62SvGsd2A==:17 a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
- a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=6IFa9wvqVegA:10 a=GoEa3M9JfhUA:10 a=VwQbUJbxAAAA:8 a=7CQSdrXTAAAA:8 a=yPCof4ZbAAAA:8 a=ZZK_dPAAUNCPne2FAV8A:9 a=a-qgeE7W1pNrGK8U0ZQC:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjI3MDAzNiBTYWx0ZWRfXy+Z8OGeP2z94 uYaavYoKw63kStIVmWRy3HiDfQFrHWSeD1yHOro4DFUYFjbL963eR6oiDWEgENvUP9aJaBg/YQe aZ/X30+vrD1OKgehtUwXmuiyNl83shINnOGISP90SCgNlPz+EF55GD4R8sdEYdaKLO1mCETp/+/
- vBN6HP7/AacB/r87grLvqg/EiSAMh/ee8H5K8ET3O6za1KmaHexnITVP/0PH755MtCQwjmPuF4/ /czSqbO21gm9tOpedccbN+bkQSANS60XU4wEfqoSuTC6sr3t0yagZHiTqVS+ikokfk1fVVcvpYG fc7AWVEfuzpnirDbiwMZJaIzMlPwcgHXfwUbcVJLx2EyX1H42jmL1e8XfMX1TMNLZsfaha2GrUR
- 5SHK+xFUPuqPLQJ5dJd/LlRcf/DuMqJzzTv1kC1QqdftOmsi+DCES49NJN3KQqhhEMhzyH/4
-X-Proofpoint-GUID: ZF9uy2NbcQX-Pt8qEimPERr6NXW79R2y
-X-Proofpoint-ORIG-GUID: ZF9uy2NbcQX-Pt8qEimPERr6NXW79R2y
+References: <20250417230740.86048-1-irogers@google.com> <20250417230740.86048-7-irogers@google.com>
+ <aF3Vd0C-7jqZwz91@google.com>
+In-Reply-To: <aF3Vd0C-7jqZwz91@google.com>
+From: Ian Rogers <irogers@google.com>
+Date: Thu, 26 Jun 2025 21:53:45 -0700
+X-Gm-Features: Ac12FXx6BrCLeEYICFnuYkeyjAzfSWOJvLC5yE48R4tIzxAMokm7LIFabW4mKME
+Message-ID: <CAP-5=fV4x0q7YdeYJd6GAHXd48Qochpa-+jq5jsRJWK36v7rSA@mail.gmail.com>
+Subject: Re: [PATCH v4 06/19] perf capstone: Support for dlopen-ing libcapstone.so
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, 
+	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Aditya Gupta <adityag@linux.ibm.com>, "Steinar H. Gunderson" <sesse@google.com>, 
+	Charlie Jenkins <charlie@rivosinc.com>, Changbin Du <changbin.du@huawei.com>, 
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>, James Clark <james.clark@linaro.org>, 
+	Kajol Jain <kjain@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
+	Li Huafei <lihuafei1@huawei.com>, Dmitry Vyukov <dvyukov@google.com>, 
+	Andi Kleen <ak@linux.intel.com>, Chaitanya S Prakash <chaitanyas.prakash@arm.com>, 
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	llvm@lists.linux.dev, Song Liu <song@kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-smp_cond_load_{relaxed,acquire}_timewait() wait on a condition variable
-until a timeout expires. This waiting is some mix of spinning while
-dereferencing an address, and waiting in a WFE for a store event or
-periodic events from the event-stream.
+On Thu, Jun 26, 2025 at 4:19=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
+wrote:
+>
+> On Thu, Apr 17, 2025 at 04:07:27PM -0700, Ian Rogers wrote:
+> > If perf wasn't built against libcapstone, no HAVE_LIBCAPSTONE_SUPPORT,
+> > support dlopen-ing libcapstone.so and then calling the necessary
+> > functions by looking them up using dlsym. Reverse engineer the types
+> > in the API using pahole, adding only what's used in the perf code or
+> > necessary for the sake of struct size and alignment.
+>
+> I still think it's simpler to require capstone headers at build time and
+> add LIBCAPSTONE_DYNAMIC=3D1 or something to support dlopen.
 
-Handle the waiting part of the policy in ___smp_cond_timewait() while
-offloading the spinning to the generic ___smp_cond_spinwait().
+I agree, having a header file avoids the need to declare the header
+file values. This is simpler. Can we make the build require
+libcapstone and libLLVM in the same way that libtraceevent is
+required? That is you have to explicitly build with NO_LIBTRACEEVENT=3D1
+to get a no libtraceevent build to succeed. If we don't do this then
+having LIBCAPSTONE_DYNAMIC will most likely be an unused option and
+not worth carrying in the code base, I think that's sad. If we require
+the libraries I don't like the idea of people arguing, "why do I need
+to install libcapstone and libLLVM just to get the kernel/perf to
+build now?" The non-simple, but still not very complex, approach taken
+here was taken as a compromise to get the best result (a perf that
+gets faster, BPF support, .. when libraries are available without
+explicitly depending on them) while trying not to offend kernel
+developers who are often trying to build on minimal systems.
 
-To minimize time spent spinning when the user can tolerate a large
-overshoot, choose SMP_TIMEWAIT_DEFAULT_US to be the event-stream
-period.
+Thanks,
+Ian
 
-This would result in a worst case delay of ARCH_TIMER_EVT_STREAM_PERIOD_US.
-
-Cc: Will Deacon <will@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
----
- arch/arm64/include/asm/barrier.h | 48 ++++++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
-
-diff --git a/arch/arm64/include/asm/barrier.h b/arch/arm64/include/asm/barrier.h
-index 7c56e2621c7d..a1367f2901f0 100644
---- a/arch/arm64/include/asm/barrier.h
-+++ b/arch/arm64/include/asm/barrier.h
-@@ -10,6 +10,7 @@
- #ifndef __ASSEMBLY__
- 
- #include <linux/kasan-checks.h>
-+#include <linux/minmax.h>
- 
- #include <asm/alternative-macros.h>
- 
-@@ -222,6 +223,53 @@ do {									\
- #define __smp_timewait_store(ptr, val)					\
- 		__cmpwait_relaxed(ptr, val)
- 
-+/*
-+ * Redefine ARCH_TIMER_EVT_STREAM_PERIOD_US locally to avoid include hell.
-+ */
-+#define __ARCH_TIMER_EVT_STREAM_PERIOD_US 100UL
-+extern bool arch_timer_evtstrm_available(void);
-+
-+static inline u64 ___smp_cond_spinwait(u64 now, u64 prev, u64 end,
-+				       u32 *spin, bool *wait, u64 slack);
-+/*
-+ * To minimize time spent spinning, we want to allow a large overshoot.
-+ * So, choose a default slack value of the event-stream period.
-+ */
-+#define SMP_TIMEWAIT_DEFAULT_US __ARCH_TIMER_EVT_STREAM_PERIOD_US
-+
-+static inline u64 ___smp_cond_timewait(u64 now, u64 prev, u64 end,
-+				       u32 *spin, bool *wait, u64 slack)
-+{
-+	bool wfet = alternative_has_cap_unlikely(ARM64_HAS_WFXT);
-+	bool wfe, ev = arch_timer_evtstrm_available();
-+	u64 evt_period = __ARCH_TIMER_EVT_STREAM_PERIOD_US;
-+	u64 remaining = end - now;
-+
-+	if (now >= end)
-+		return 0;
-+	/*
-+	 * Use WFE if there's enough slack to get an event-stream wakeup even
-+	 * if we don't come out of the WFE due to natural causes.
-+	 */
-+	wfe = ev && ((remaining + slack) > evt_period);
-+
-+	if (wfe || wfet) {
-+		*wait = true;
-+		*spin = 0;
-+		return now;
-+	}
-+
-+	/*
-+	 * The time remaining is shorter than our wait granularity. Let
-+	 * the generic spinwait policy determine how to spin.
-+	 */
-+	return ___smp_cond_spinwait(now, prev, end, spin, wait, slack);
-+}
-+
-+#ifndef __smp_cond_policy
-+#define __smp_cond_policy ___smp_cond_timewait
-+#endif
-+
- #include <asm-generic/barrier.h>
- 
- #endif	/* __ASSEMBLY__ */
--- 
-2.43.5
-
+> Thanks,
+> Namhyung
+>
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/util/capstone.c | 287 ++++++++++++++++++++++++++++++++-----
+> >  1 file changed, 248 insertions(+), 39 deletions(-)
+> >
+> > diff --git a/tools/perf/util/capstone.c b/tools/perf/util/capstone.c
+> > index c9845e4d8781..8d65c7a55a8b 100644
+> > --- a/tools/perf/util/capstone.c
+> > +++ b/tools/perf/util/capstone.c
+> > @@ -11,19 +11,249 @@
+> >  #include "print_insn.h"
+> >  #include "symbol.h"
+> >  #include "thread.h"
+> > +#include <dlfcn.h>
+> >  #include <fcntl.h>
+> > +#include <inttypes.h>
+> >  #include <string.h>
+> >
+> >  #ifdef HAVE_LIBCAPSTONE_SUPPORT
+> >  #include <capstone/capstone.h>
+> > +#else
+> > +typedef size_t csh;
+> > +enum cs_arch {
+> > +     CS_ARCH_ARM =3D 0,
+> > +     CS_ARCH_ARM64 =3D 1,
+> > +     CS_ARCH_X86 =3D 3,
+> > +     CS_ARCH_SYSZ =3D 6,
+> > +};
+> > +enum cs_mode {
+> > +     CS_MODE_ARM =3D 0,
+> > +     CS_MODE_32 =3D 1 << 2,
+> > +     CS_MODE_64 =3D 1 << 3,
+> > +     CS_MODE_V8 =3D 1 << 6,
+> > +     CS_MODE_BIG_ENDIAN =3D 1 << 31,
+> > +};
+> > +enum cs_opt_type {
+> > +     CS_OPT_SYNTAX =3D 1,
+> > +     CS_OPT_DETAIL =3D 2,
+> > +};
+> > +enum cs_opt_value {
+> > +     CS_OPT_SYNTAX_ATT =3D 2,
+> > +     CS_OPT_ON =3D 3,
+> > +};
+> > +enum cs_err {
+> > +     CS_ERR_OK =3D 0,
+> > +     CS_ERR_HANDLE =3D 3,
+> > +};
+> > +enum x86_op_type {
+> > +     X86_OP_IMM =3D 2,
+> > +     X86_OP_MEM =3D 3,
+> > +};
+> > +enum x86_reg {
+> > +     X86_REG_RIP =3D 41,
+> > +};
+> > +typedef int32_t x86_avx_bcast;
+> > +struct x86_op_mem {
+> > +     enum x86_reg segment;
+> > +     enum x86_reg base;
+> > +     enum x86_reg index;
+> > +     int scale;
+> > +     int64_t disp;
+> > +};
+> > +
+> > +struct cs_x86_op {
+> > +     enum x86_op_type type;
+> > +     union {
+> > +             enum x86_reg  reg;
+> > +             int64_t imm;
+> > +             struct x86_op_mem mem;
+> > +     };
+> > +     uint8_t size;
+> > +     uint8_t access;
+> > +     x86_avx_bcast avx_bcast;
+> > +     bool avx_zero_opmask;
+> > +};
+> > +struct cs_x86_encoding {
+> > +     uint8_t modrm_offset;
+> > +     uint8_t disp_offset;
+> > +     uint8_t disp_size;
+> > +     uint8_t imm_offset;
+> > +     uint8_t imm_size;
+> > +};
+> > +typedef int32_t  x86_xop_cc;
+> > +typedef int32_t  x86_sse_cc;
+> > +typedef int32_t  x86_avx_cc;
+> > +typedef int32_t  x86_avx_rm;
+> > +struct cs_x86 {
+> > +     uint8_t prefix[4];
+> > +     uint8_t opcode[4];
+> > +     uint8_t rex;
+> > +     uint8_t addr_size;
+> > +     uint8_t modrm;
+> > +     uint8_t sib;
+> > +     int64_t disp;
+> > +     enum x86_reg sib_index;
+> > +     int8_t sib_scale;
+> > +     enum x86_reg sib_base;
+> > +     x86_xop_cc xop_cc;
+> > +     x86_sse_cc sse_cc;
+> > +     x86_avx_cc avx_cc;
+> > +     bool avx_sae;
+> > +     x86_avx_rm avx_rm;
+> > +     union {
+> > +             uint64_t eflags;
+> > +             uint64_t fpu_flags;
+> > +     };
+> > +     uint8_t op_count;
+> > +     struct cs_x86_op operands[8];
+> > +     struct cs_x86_encoding encoding;
+> > +};
+> > +struct cs_detail {
+> > +     uint16_t regs_read[12];
+> > +     uint8_t regs_read_count;
+> > +     uint16_t regs_write[20];
+> > +     uint8_t regs_write_count;
+> > +     uint8_t groups[8];
+> > +     uint8_t groups_count;
+> > +
+> > +     union {
+> > +             struct cs_x86 x86;
+> > +     };
+> > +};
+> > +struct cs_insn {
+> > +     unsigned int id;
+> > +     uint64_t address;
+> > +     uint16_t size;
+> > +     uint8_t bytes[16];
+> > +     char mnemonic[32];
+> > +     char op_str[160];
+> > +     struct cs_detail *detail;
+> > +};
+> > +#endif
+> > +
+> > +#ifndef HAVE_LIBCAPSTONE_SUPPORT
+> > +static void *perf_cs_dll_handle(void)
+> > +{
+> > +     static bool dll_handle_init;
+> > +     static void *dll_handle;
+> > +
+> > +     if (!dll_handle_init) {
+> > +             dll_handle_init =3D true;
+> > +             dll_handle =3D dlopen("libcapstone.so", RTLD_LAZY);
+> > +             if (!dll_handle)
+> > +                     pr_debug("dlopen failed for libcapstone.so\n");
+> > +     }
+> > +     return dll_handle;
+> > +}
+> > +#endif
+> > +
+> > +static enum cs_err perf_cs_open(enum cs_arch arch, enum cs_mode mode, =
+csh *handle)
+> > +{
+> > +#ifdef HAVE_LIBCAPSTONE_SUPPORT
+> > +     return cs_open(arch, mode, handle);
+> > +#else
+> > +     static bool fn_init;
+> > +     static enum cs_err (*fn)(enum cs_arch arch, enum cs_mode mode, cs=
+h *handle);
+> > +
+> > +     if (!fn_init) {
+> > +             fn =3D dlsym(perf_cs_dll_handle(), "cs_open");
+> > +             if (!fn)
+> > +                     pr_debug("dlsym failed for cs_open\n");
+> > +             fn_init =3D true;
+> > +     }
+> > +     if (!fn)
+> > +             return CS_ERR_HANDLE;
+> > +     return fn(arch, mode, handle);
+> > +#endif
+> > +}
+> > +
+> > +static enum cs_err perf_cs_option(csh handle, enum cs_opt_type type, s=
+ize_t value)
+> > +{
+> > +#ifdef HAVE_LIBCAPSTONE_SUPPORT
+> > +     return cs_option(handle, type, value);
+> > +#else
+> > +     static bool fn_init;
+> > +     static enum cs_err (*fn)(csh handle, enum cs_opt_type type, size_=
+t value);
+> > +
+> > +     if (!fn_init) {
+> > +             fn =3D dlsym(perf_cs_dll_handle(), "cs_option");
+> > +             if (!fn)
+> > +                     pr_debug("dlsym failed for cs_option\n");
+> > +             fn_init =3D true;
+> > +     }
+> > +     if (!fn)
+> > +             return CS_ERR_HANDLE;
+> > +     return fn(handle, type, value);
+> > +#endif
+> > +}
+> > +
+> > +static size_t perf_cs_disasm(csh handle, const uint8_t *code, size_t c=
+ode_size,
+> > +                     uint64_t address, size_t count, struct cs_insn **=
+insn)
+> > +{
+> > +#ifdef HAVE_LIBCAPSTONE_SUPPORT
+> > +     return cs_disasm(handle, code, code_size, address, count, insn);
+> > +#else
+> > +     static bool fn_init;
+> > +     static enum cs_err (*fn)(csh handle, const uint8_t *code, size_t =
+code_size,
+> > +                              uint64_t address, size_t count, struct c=
+s_insn **insn);
+> > +
+> > +     if (!fn_init) {
+> > +             fn =3D dlsym(perf_cs_dll_handle(), "cs_disasm");
+> > +             if (!fn)
+> > +                     pr_debug("dlsym failed for cs_disasm\n");
+> > +             fn_init =3D true;
+> > +     }
+> > +     if (!fn)
+> > +             return CS_ERR_HANDLE;
+> > +     return fn(handle, code, code_size, address, count, insn);
+> >  #endif
+> > +}
+> >
+> > +static void perf_cs_free(struct cs_insn *insn, size_t count)
+> > +{
+> >  #ifdef HAVE_LIBCAPSTONE_SUPPORT
+> > +     cs_free(insn, count);
+> > +#else
+> > +     static bool fn_init;
+> > +     static void (*fn)(struct cs_insn *insn, size_t count);
+> > +
+> > +     if (!fn_init) {
+> > +             fn =3D dlsym(perf_cs_dll_handle(), "cs_free");
+> > +             if (!fn)
+> > +                     pr_debug("dlsym failed for cs_free\n");
+> > +             fn_init =3D true;
+> > +     }
+> > +     if (!fn)
+> > +             return;
+> > +     fn(insn, count);
+> > +#endif
+> > +}
+> > +
+> > +static enum cs_err perf_cs_close(csh *handle)
+> > +{
+> > +#ifdef HAVE_LIBCAPSTONE_SUPPORT
+> > +     return cs_close(handle);
+> > +#else
+> > +     static bool fn_init;
+> > +     static enum cs_err (*fn)(csh *handle);
+> > +
+> > +     if (!fn_init) {
+> > +             fn =3D dlsym(perf_cs_dll_handle(), "cs_close");
+> > +             if (!fn)
+> > +                     pr_debug("dlsym failed for cs_close\n");
+> > +             fn_init =3D true;
+> > +     }
+> > +     if (!fn)
+> > +             return CS_ERR_HANDLE;
+> > +     return fn(handle);
+> > +#endif
+> > +}
+> > +
+> >  static int capstone_init(struct machine *machine, csh *cs_handle, bool=
+ is64,
+> >                        bool disassembler_style)
+> >  {
+> > -     cs_arch arch;
+> > -     cs_mode mode;
+> > +     enum cs_arch arch;
+> > +     enum cs_mode mode;
+> >
+> >       if (machine__is(machine, "x86_64") && is64) {
+> >               arch =3D CS_ARCH_X86;
+> > @@ -44,7 +274,7 @@ static int capstone_init(struct machine *machine, cs=
+h *cs_handle, bool is64,
+> >               return -1;
+> >       }
+> >
+> > -     if (cs_open(arch, mode, cs_handle) !=3D CS_ERR_OK) {
+> > +     if (perf_cs_open(arch, mode, cs_handle) !=3D CS_ERR_OK) {
+> >               pr_warning_once("cs_open failed\n");
+> >               return -1;
+> >       }
+> > @@ -56,27 +286,25 @@ static int capstone_init(struct machine *machine, =
+csh *cs_handle, bool is64,
+> >                * is set via annotation args
+> >                */
+> >               if (disassembler_style)
+> > -                     cs_option(*cs_handle, CS_OPT_SYNTAX, CS_OPT_SYNTA=
+X_ATT);
+> > +                     perf_cs_option(*cs_handle, CS_OPT_SYNTAX, CS_OPT_=
+SYNTAX_ATT);
+> >               /*
+> >                * Resolving address operands to symbols is implemented
+> >                * on x86 by investigating instruction details.
+> >                */
+> > -             cs_option(*cs_handle, CS_OPT_DETAIL, CS_OPT_ON);
+> > +             perf_cs_option(*cs_handle, CS_OPT_DETAIL, CS_OPT_ON);
+> >       }
+> >
+> >       return 0;
+> >  }
+> > -#endif
+> >
+> > -#ifdef HAVE_LIBCAPSTONE_SUPPORT
+> > -static size_t print_insn_x86(struct thread *thread, u8 cpumode, cs_ins=
+n *insn,
+> > +static size_t print_insn_x86(struct thread *thread, u8 cpumode, struct=
+ cs_insn *insn,
+> >                            int print_opts, FILE *fp)
+> >  {
+> >       struct addr_location al;
+> >       size_t printed =3D 0;
+> >
+> >       if (insn->detail && insn->detail->x86.op_count =3D=3D 1) {
+> > -             cs_x86_op *op =3D &insn->detail->x86.operands[0];
+> > +             struct cs_x86_op *op =3D &insn->detail->x86.operands[0];
+> >
+> >               addr_location__init(&al);
+> >               if (op->type =3D=3D X86_OP_IMM &&
+> > @@ -94,7 +322,6 @@ static size_t print_insn_x86(struct thread *thread, =
+u8 cpumode, cs_insn *insn,
+> >       printed +=3D fprintf(fp, "%s %s", insn[0].mnemonic, insn[0].op_st=
+r);
+> >       return printed;
+> >  }
+> > -#endif
+> >
+> >
+> >  ssize_t capstone__fprintf_insn_asm(struct machine *machine __maybe_unu=
+sed,
+> > @@ -105,9 +332,8 @@ ssize_t capstone__fprintf_insn_asm(struct machine *=
+machine __maybe_unused,
+> >                                  uint64_t ip __maybe_unused, int *lenp =
+__maybe_unused,
+> >                                  int print_opts __maybe_unused, FILE *f=
+p __maybe_unused)
+> >  {
+> > -#ifdef HAVE_LIBCAPSTONE_SUPPORT
+> >       size_t printed;
+> > -     cs_insn *insn;
+> > +     struct cs_insn *insn;
+> >       csh cs_handle;
+> >       size_t count;
+> >       int ret;
+> > @@ -117,7 +343,7 @@ ssize_t capstone__fprintf_insn_asm(struct machine *=
+machine __maybe_unused,
+> >       if (ret < 0)
+> >               return ret;
+> >
+> > -     count =3D cs_disasm(cs_handle, code, code_size, ip, 1, &insn);
+> > +     count =3D perf_cs_disasm(cs_handle, code, code_size, ip, 1, &insn=
+);
+> >       if (count > 0) {
+> >               if (machine__normalized_is(machine, "x86"))
+> >                       printed =3D print_insn_x86(thread, cpumode, &insn=
+[0], print_opts, fp);
+> > @@ -125,20 +351,16 @@ ssize_t capstone__fprintf_insn_asm(struct machine=
+ *machine __maybe_unused,
+> >                       printed =3D fprintf(fp, "%s %s", insn[0].mnemonic=
+, insn[0].op_str);
+> >               if (lenp)
+> >                       *lenp =3D insn->size;
+> > -             cs_free(insn, count);
+> > +             perf_cs_free(insn, count);
+> >       } else {
+> >               printed =3D -1;
+> >       }
+> >
+> > -     cs_close(&cs_handle);
+> > +     perf_cs_close(&cs_handle);
+> >       return printed;
+> > -#else
+> > -     return -1;
+> > -#endif
+> >  }
+> >
+> > -#ifdef HAVE_LIBCAPSTONE_SUPPORT
+> > -static void print_capstone_detail(cs_insn *insn, char *buf, size_t len=
+,
+> > +static void print_capstone_detail(struct cs_insn *insn, char *buf, siz=
+e_t len,
+> >                                 struct annotate_args *args, u64 addr)
+> >  {
+> >       int i;
+> > @@ -153,7 +375,7 @@ static void print_capstone_detail(cs_insn *insn, ch=
+ar *buf, size_t len,
+> >               return;
+> >
+> >       for (i =3D 0; i < insn->detail->x86.op_count; i++) {
+> > -             cs_x86_op *op =3D &insn->detail->x86.operands[i];
+> > +             struct cs_x86_op *op =3D &insn->detail->x86.operands[i];
+> >               u64 orig_addr;
+> >
+> >               if (op->type !=3D X86_OP_MEM)
+> > @@ -194,9 +416,7 @@ static void print_capstone_detail(cs_insn *insn, ch=
+ar *buf, size_t len,
+> >               break;
+> >       }
+> >  }
+> > -#endif
+> >
+> > -#ifdef HAVE_LIBCAPSTONE_SUPPORT
+> >  struct find_file_offset_data {
+> >       u64 ip;
+> >       u64 offset;
+> > @@ -213,9 +433,7 @@ static int find_file_offset(u64 start, u64 len, u64=
+ pgoff, void *arg)
+> >       }
+> >       return 0;
+> >  }
+> > -#endif
+> >
+> > -#ifdef HAVE_LIBCAPSTONE_SUPPORT
+> >  static u8 *
+> >  read_symbol(const char *filename, struct map *map, struct symbol *sym,
+> >           u64 *len, bool *is_64bit)
+> > @@ -262,13 +480,11 @@ read_symbol(const char *filename, struct map *map=
+, struct symbol *sym,
+> >       free(buf);
+> >       return NULL;
+> >  }
+> > -#endif
+> >
+> >  int symbol__disassemble_capstone(const char *filename __maybe_unused,
+> >                                struct symbol *sym __maybe_unused,
+> >                                struct annotate_args *args __maybe_unuse=
+d)
+> >  {
+> > -#ifdef HAVE_LIBCAPSTONE_SUPPORT
+> >       struct annotation *notes =3D symbol__annotation(sym);
+> >       struct map *map =3D args->ms.map;
+> >       u64 start =3D map__rip_2objdump(map, sym->start);
+> > @@ -279,7 +495,7 @@ int symbol__disassemble_capstone(const char *filena=
+me __maybe_unused,
+> >       bool needs_cs_close =3D false;
+> >       u8 *buf =3D NULL;
+> >       csh handle;
+> > -     cs_insn *insn =3D NULL;
+> > +     struct cs_insn *insn =3D NULL;
+> >       char disasm_buf[512];
+> >       struct disasm_line *dl;
+> >       bool disassembler_style =3D false;
+> > @@ -316,7 +532,7 @@ int symbol__disassemble_capstone(const char *filena=
+me __maybe_unused,
+> >
+> >       needs_cs_close =3D true;
+> >
+> > -     free_count =3D count =3D cs_disasm(handle, buf, len, start, len, =
+&insn);
+> > +     free_count =3D count =3D perf_cs_disasm(handle, buf, len, start, =
+len, &insn);
+> >       for (i =3D 0, offset =3D 0; i < count; i++) {
+> >               int printed;
+> >
+> > @@ -355,9 +571,9 @@ int symbol__disassemble_capstone(const char *filena=
+me __maybe_unused,
+> >
+> >  out:
+> >       if (needs_cs_close) {
+> > -             cs_close(&handle);
+> > +             perf_cs_close(&handle);
+> >               if (free_count > 0)
+> > -                     cs_free(insn, free_count);
+> > +                     perf_cs_free(insn, free_count);
+> >       }
+> >       free(buf);
+> >       return count < 0 ? count : 0;
+> > @@ -377,16 +593,12 @@ int symbol__disassemble_capstone(const char *file=
+name __maybe_unused,
+> >       }
+> >       count =3D -1;
+> >       goto out;
+> > -#else
+> > -     return -1;
+> > -#endif
+> >  }
+> >
+> >  int symbol__disassemble_capstone_powerpc(const char *filename __maybe_=
+unused,
+> >                                        struct symbol *sym __maybe_unuse=
+d,
+> >                                        struct annotate_args *args __may=
+be_unused)
+> >  {
+> > -#ifdef HAVE_LIBCAPSTONE_SUPPORT
+> >       struct annotation *notes =3D symbol__annotation(sym);
+> >       struct map *map =3D args->ms.map;
+> >       struct dso *dso =3D map__dso(map);
+> > @@ -499,7 +711,7 @@ int symbol__disassemble_capstone_powerpc(const char=
+ *filename __maybe_unused,
+> >
+> >  out:
+> >       if (needs_cs_close)
+> > -             cs_close(&handle);
+> > +             perf_cs_close(&handle);
+> >       free(buf);
+> >       return count < 0 ? count : 0;
+> >
+> > @@ -508,7 +720,4 @@ int symbol__disassemble_capstone_powerpc(const char=
+ *filename __maybe_unused,
+> >               close(fd);
+> >       count =3D -1;
+> >       goto out;
+> > -#else
+> > -     return -1;
+> > -#endif
+> >  }
+> > --
+> > 2.49.0.805.g082f7c87e0-goog
+> >
 
