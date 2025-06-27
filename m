@@ -1,232 +1,132 @@
-Return-Path: <bpf+bounces-61752-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61753-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76FE4AEBA29
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 16:44:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 359BCAEBB7E
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 17:18:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC4A21C41FC4
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 14:44:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C6043BC9F4
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 15:18:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6007E1632C8;
-	Fri, 27 Jun 2025 14:43:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xec9K+hX"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C3832E8E14;
+	Fri, 27 Jun 2025 15:18:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F4602E8E01
-	for <bpf@vger.kernel.org>; Fri, 27 Jun 2025 14:43:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8464D29CB32;
+	Fri, 27 Jun 2025 15:18:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751035432; cv=none; b=AP+GzcGPtwtTHrL3f142HPsf3CwvwGYt6wdnHjxd2Gwu1MrpAfSg5QoSvLviugBtJ+yUQ4FTC8cmOnJXlpCMSo3y4LYo9vJf00h8DpR8XNcPWJjHPrs6ZorUaVTe26OOBuMthib3kMVn1PjnnkHHjfcPw2MoQKd5ozWOfUEQG7g=
+	t=1751037503; cv=none; b=g1yFq0603L+IQ0iAXLC9Wm7nQCXJyobObDMl5BW1kzOUC74KzQ5fCp4j8esE0wtzJBoON19KkZOOQWMXTTQFKnVs2l2dDXC/WqH/hfrPfAZi2VgRuztcnUKFv/QxS3FsE8x3ljeSR6j00gBNFuNRGMYTWsmVWtX945EKyRhGH9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751035432; c=relaxed/simple;
-	bh=4WlzVJ5UN/XosvzPrcLW3lyRNCmuAfAHIr+ZDYYJCEU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DXsskCrTggIYHMCuyeVkp7ytwDa++msRtnC3cLAoDsmPqTFO3cyIYlTdmfq1jfrm2VShyWoBq58DHUaC8bh1xakkyZ1OKRD2hOvc3FBGVwaWzcG4gcPKAAKPiNRf9RCqVe6u1VxBA42ogQFG5hI9NkfY2DtzM6gLfmR3VpDwLZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xec9K+hX; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1751037503; c=relaxed/simple;
+	bh=Lo6rxtxXikP2AtCNNMfquBOozIf7tym4pcl+50VV7uE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iTXBoMPyxUK3tSAqKnQXsMI4WB6yUYxpc8Po6SPltBMPU9wrTCgSVKR+aCzBViYR6zqmwitNcojCbpBJ8CJeFKIEKJS7g0hbCsHPa6v0x0mCJ44ppoma531kp7xoUEG23vATtnui3RD1wDZw0XvnhvlC9CwszbPFWLGjalrUBME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4537deebb01so11982565e9.0
-        for <bpf@vger.kernel.org>; Fri, 27 Jun 2025 07:43:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751035429; x=1751640229; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HRtgvS49MzaVM25EOBNqiGn1pvPFsyqeI3Wt6Hfupmc=;
-        b=Xec9K+hX1IZTSV3ag+4RXVIIpoLWEw6XJbUOWlRnDsgKqAPcax0JKSQYOjihABSWtb
-         HiZ4tkf+0qrsP1qNVWMCYk1TahHSKCxigP3RYtB7F5DmXkCi48a50gFsSrPAibRR+C6Q
-         sUdyde38TChwrIFM8wvSHQdjj7LeSEU/vbiluxCjKU2/ZIJg27RKNlwV8yvjNTPQtH9j
-         gUcHt3dIPBtQ7gg269L8orH4kZlQq0B9uTSNX6tdW9InZK6onNa9q56hLMOgEu8tWzla
-         N6nLnlIG2zGQOS4sauToa6Ul2hhGkZJ9VT8QxpW8bQfhhBmZ3HqDFpYdzLQMPQQL9+3R
-         aeMg==
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-6088d856c6eso4357260a12.0;
+        Fri, 27 Jun 2025 08:18:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751035429; x=1751640229;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HRtgvS49MzaVM25EOBNqiGn1pvPFsyqeI3Wt6Hfupmc=;
-        b=craNm3qt+a29vPbi490FURQgh8Rw40hnJjd+LCdHDyg1wh5Z+56EM9GBNa9Ht5NP7B
-         UPjUe/sgsnsXV3gBz32GSpAxRV7hBbUYinDtUG+tgW1qWguKBr3efEj2j990KS6/4zgg
-         HxBs6PJjMA4ihxRB/tVH6GJ97GuI+gPW9khkFuKglfe6p6GiU715wfX9RbzWVf2y6Hsx
-         A7ZBAOnMaVVmIVHc/3XyJq9KdpG8gM2YHLmf6J+2az93pHT3Q5ZT8hD1lP8iX+eSt7wL
-         wZcdJGubdJi8II3VBi/GQIoVScrdyVthuASguuz4H2DJqwRwKC6JrH3BWVAbwAfvE3xo
-         uvnw==
-X-Gm-Message-State: AOJu0YxJ8zVGwH6dsn8qqVXMKKV/eQsh+GiBUrkKTCwIVpy9PigphtFB
-	+xj51hQkxafXKqVuR2KCdaWxgY6d8jWBHVvHg/E9sQdpw5jPFw3/HaNfQmiDUA==
-X-Gm-Gg: ASbGncstin2khgZqODSuzJeto8VyQodz1HgQJDpjtIJpc++5D9YDepicb1G9JPXmUm2
-	vHeyawKGboNwsXLXcGAc62Ey2T9cOQDZBOGBU1x+tMMsmOvyl/a4rkj0DtxUryjfX5cNR+eWFq5
-	3Z1MjxWJ5+Mf8ZZF+Mdne9KkzCDuUX6IJ6QO0EBtlNUCgcgUrrrPyXXNdM+P400XVbSxjQo/sFD
-	/gmrlZ4laTr8mI9HF36MLC/lLQH2xfx0+y0Jz+Su+bxEB9SIbpQLWNOjb1kROaB3wf5dgOe2hOK
-	hYg1KvQTCI8wlaZ2K9m88kayYzOM6C0qvMX9ppinOe05C3nn0fhIMsjNH+pk
-X-Google-Smtp-Source: AGHT+IEt6A4M/Ck+vLVuvaZMuQAAGcbvx7x4GFkW0xMyIkSgPFzpm1m6764iqpD0Y7UIh1PYBBXXTg==
-X-Received: by 2002:a05:600c:8b01:b0:450:d30e:ff96 with SMTP id 5b1f17b1804b1-4538ee5dc58mr38977825e9.0.1751035427662;
-        Fri, 27 Jun 2025 07:43:47 -0700 (PDT)
-Received: from localhost ([2a01:4b00:bf28:2e00:106b:a16d:4d49:8ce9])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-453823c57d7sm86760845e9.40.2025.06.27.07.43.46
+        d=1e100.net; s=20230601; t=1751037500; x=1751642300;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U8lRgH1biUhQGTYL+02KD4lPFXqEZlC13nrrma5ZHLc=;
+        b=MGWbKbHVu/OPdUlMDVsoWMQ5RnvIYP7djM8W61FnRndW9WKc6RlQHE1unK3yg8Zz1F
+         kuMJPQpt1nriRZiSGhqHWL+iicetIduUoXDGmkCv0jIxLiXNAmqhTybPe0eP/m2NUmOF
+         cIMWJpFXnKyYUhIx1i/PGuZTezfAIFOLuqAR0w2Rzi5U229SNwD+tbZZ3X6vCjWpLIB3
+         iNhKVeKFbiX2x/7Ud5WbF0kcuKSd5eKHDKOoSVKmNECjzKMH77HWduI+cKUz3hwrHqsl
+         vV5uR2Bslp0jNy1e/ewO1uQD4M6TCXpAX8pueYtKKBkIjVmF+Ut0nXd1/SStpz1OdpwL
+         IwjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUtl8LfujhA+PnqsFQg3CuS1h2AoNWuwvrK7xAS9KnxH0g4LlegZyPTOIyLpWbxDBVUGWrg8GGfi6VphaMLJv4j@vger.kernel.org, AJvYcCVMnFPXeqxfhJcAUJDujS17PEto4iWC+9w6F9v84P/Doe6LxiaoCtQFOeI60kN5zCk9XpZyYUlj@vger.kernel.org, AJvYcCWpImxPT0npn/pxw0ryzfYyLxtbNBLnXDD0AtgxbFRsKKPC3X++IpUkSUnMQ/jrPUocJmg=@vger.kernel.org, AJvYcCWutwK+Qn0o9iquXJeHd/4K1W5LvWxFaLA40bfq+lE+ic/uTnUsvdz4OMvI1ih4SFHNvnkoXJ5iq/WKe/C1@vger.kernel.org
+X-Gm-Message-State: AOJu0YzykG6rylILlWkpC4GKAcLFH8gXwtT30XtuJ/tDa27Zqk894O+G
+	Yv8p+zD8kHE8YuHDs6S0mIe2pFS4JEpeItf6U1t+kF7ngpE2d6i/M6s+P/Rqdw==
+X-Gm-Gg: ASbGnctrnnT7zQ0KA89/TNkasKM/EN7p9eue+kp7qN4P9/2qBsWnQ693BLxYM+kLrqB
+	+gc+fhdt3bXpeJXF98/EBeziSsTT2ASKMbZW9z0xtMvLeMzRxTmYPVJWqR9Eqlt4e5QOyTtoyi8
+	WZpofNdwppcOOKAkg5s9ZbxoxV1S9p+7lv3AofExaWjF+pOvbRBwcxjFp8QRJon5SCeOBgOJF7Z
+	bOQ+OoEU00YPpejOVwfD86Fm2pWnNqyiamPNsu8i+qNnxKxe6wjBmez5rSWsIojXlvbqL43/7i1
+	8AictNBhm/fekxPY1LdLMOJK3XWzgvS+tyjs8Qc2HM7yewycvJIQ
+X-Google-Smtp-Source: AGHT+IFwcvVo44k5qgoS0WsLBiImL5rqTNP/JLUzJdgdqGiCBpCnJx2Csuf9n7nfAII6kn6t9zizsQ==
+X-Received: by 2002:a05:6402:4402:b0:607:20b1:7485 with SMTP id 4fb4d7f45d1cf-60c88b3c1d7mr3078372a12.2.1751037499401;
+        Fri, 27 Jun 2025 08:18:19 -0700 (PDT)
+Received: from gmail.com ([2a03:2880:30ff:4::])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-60c828bb1d8sm1617361a12.6.2025.06.27.08.18.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Jun 2025 07:43:47 -0700 (PDT)
-From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	kafai@meta.com,
-	kernel-team@meta.com,
-	eddyz87@gmail.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next] selftests/bpf: improve error messages in veristat
-Date: Fri, 27 Jun 2025 15:43:42 +0100
-Message-ID: <20250627144342.686896-1-mykyta.yatsenko5@gmail.com>
-X-Mailer: git-send-email 2.50.0
+        Fri, 27 Jun 2025 08:18:18 -0700 (PDT)
+Date: Fri, 27 Jun 2025 08:18:16 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Simon Horman <horms@kernel.org>
+Cc: Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	bpf@vger.kernel.org, gustavold@gmail.com
+Subject: Re: [PATCH net-next v2 4/4] selftests: net: add netpoll basic
+ functionality test
+Message-ID: <aF62OJinqv+FVu1z@gmail.com>
+References: <20250625-netpoll_test-v2-0-47d27775222c@debian.org>
+ <20250625-netpoll_test-v2-4-47d27775222c@debian.org>
+ <20250626082505.GA183673@horms.kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250626082505.GA183673@horms.kernel.org>
 
-From: Mykyta Yatsenko <yatsenko@meta.com>
+On Thu, Jun 26, 2025 at 09:25:05AM +0100, Simon Horman wrote:
+> On Wed, Jun 25, 2025 at 04:39:49AM -0700, Breno Leitao wrote:
+> > Add a basic selftest for the netpoll polling mechanism, specifically
+> > targeting the netpoll poll() side.
+> > 
+> > The test creates a scenario where network transmission is running at
+> > maximum speed, and netpoll needs to poll the NIC. This is achieved by:
+> > 
+> >   1. Configuring a single RX/TX queue to create contention
+> >   2. Generating background traffic to saturate the interface
+> >   3. Sending netconsole messages to trigger netpoll polling
+> >   4. Using dynamic netconsole targets via configfs
+> >   5. Delete and create new netconsole targets after some messages
+> >   6. Start a bpftrace in parallel to make sure netpoll_poll_dev() is
+> >      called
+> >   7. If bpftrace exists and netpoll_poll_dev() was called, stop.
+> > 
+> > The test validates a critical netpoll code path by monitoring traffic
+> > flow and ensuring netpoll_poll_dev() is called when the normal TX path
+> > is blocked.
+> > 
+> > This addresses a gap in netpoll test coverage for a path that is
+> > tricky for the network stack.
+> > 
+> > Signed-off-by: Breno Leitao <leitao@debian.org>
+> 
+> Hi Breno,
+> 
+> As it looks like there will be another version,
+> could you run pylint over this. The NIPA invocation says:
+>
+> 
+>   ************* Module netpoll_basic
+>   .../netpoll_basic.py:323:0: C0301: Line too long (111/100) (line-too-long)
+>   .../netpoll_basic.py:27:0: E0611: No name 'bpftrace' in module 'lib.py' (no-name-in-module)
+>   .../netpoll_basic.py:79:11: E0606: Possibly using variable 'rx_queue' before assignment (possibly-used-before-assignment)
+>   .../netpoll_basic.py:79:21: E0606: Possibly using variable 'tx_queue' before assignment (possibly-used-before-assignment)
+>   .../netpoll_basic.py:253:22: W0613: Unused argument 'netdevnl' (unused-argument)
 
-Return error if preset parsing fails. Avoid proceeding with veristat run
-if preset does not parse.
-Before:
-```
-./veristat set_global_vars.bpf.o -G "arr[999999999999999999999] = 1"
-Failed to parse value '999999999999999999999'
-Processing 'set_global_vars.bpf.o'...
-File                   Program           Verdict  Duration (us)  Insns  States  Program size  Jited size
----------------------  ----------------  -------  -------------  -----  ------  ------------  ----------
-set_global_vars.bpf.o  test_set_globals  success             27     64       0            82           0
----------------------  ----------------  -------  -------------  -----  ------  ------------  ----------
-Done. Processed 1 files, 0 programs. Skipped 1 files, 0 programs.
-```
-After:
-```
-./veristat set_global_vars.bpf.o -G "arr[999999999999999999999] = 1"
-Failed to parse value '999999999999999999999'
-Failed to parse global variable presets: arr[999999999999999999999] = 1
-```
+Thanks for the report. I was able to reproduce them here. The next
+version should be warning free. I hope. :-)
 
-Improve error messages:
- * If preset struct member can't be found.
- * Array index out of bounds
-
-Extract rtrim function.
-
-Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
----
- tools/testing/selftests/bpf/veristat.c | 36 ++++++++++++++++++--------
- 1 file changed, 25 insertions(+), 11 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
-index 1e9f61f9fd0a..09cfbd486f92 100644
---- a/tools/testing/selftests/bpf/veristat.c
-+++ b/tools/testing/selftests/bpf/veristat.c
-@@ -890,6 +890,18 @@ static bool is_desc_sym(char c)
- 	return c == 'v' || c == 'V' || c == '.' || c == '!' || c == '_';
- }
- 
-+static char *rtrim(char *str)
-+{
-+	int i;
-+
-+	for (i = strlen(str) - 1; i > 0; --i) {
-+		if (!isspace(str[i]))
-+			break;
-+		str[i] = '\0';
-+	}
-+	return str;
-+}
-+
- static int parse_stat(const char *stat_name, struct stat_specs *specs)
- {
- 	int id;
-@@ -1666,7 +1678,7 @@ static int append_preset_atom(struct var_preset *preset, char *value, bool is_in
- static int parse_var_atoms(const char *full_var, struct var_preset *preset)
- {
- 	char expr[256], var[256], *name, *saveptr;
--	int n, len, off;
-+	int n, len, off, err;
- 
- 	snprintf(expr, sizeof(expr), "%s", full_var);
- 	preset->atom_count = 0;
-@@ -1677,7 +1689,9 @@ static int parse_var_atoms(const char *full_var, struct var_preset *preset)
- 			fprintf(stderr, "Can't parse %s\n", name);
- 			return -EINVAL;
- 		}
--		append_preset_atom(preset, var, false);
-+		err = append_preset_atom(preset, var, false);
-+		if (err)
-+			return err;
- 
- 		/* parse optional array indexes */
- 		while (off < len) {
-@@ -1685,7 +1699,9 @@ static int parse_var_atoms(const char *full_var, struct var_preset *preset)
- 				fprintf(stderr, "Can't parse %s as index\n", name + off);
- 				return -EINVAL;
- 			}
--			append_preset_atom(preset, var, true);
-+			err = append_preset_atom(preset, var, true);
-+			if (err)
-+				return err;
- 			off += n;
- 		}
- 	}
-@@ -1697,7 +1713,7 @@ static int append_var_preset(struct var_preset **presets, int *cnt, const char *
- 	void *tmp;
- 	struct var_preset *cur;
- 	char var[256], val[256];
--	int n, err, i;
-+	int n, err;
- 
- 	tmp = realloc(*presets, (*cnt + 1) * sizeof(**presets));
- 	if (!tmp)
-@@ -1712,11 +1728,7 @@ static int append_var_preset(struct var_preset **presets, int *cnt, const char *
- 		return -EINVAL;
- 	}
- 	/* Remove trailing spaces from var, as scanf may add those */
--	for (i = strlen(var) - 1; i > 0; --i) {
--		if (!isspace(var[i]))
--			break;
--		var[i] = '\0';
--	}
-+	rtrim(var);
- 
- 	err = parse_rvalue(val, &cur->value);
- 	if (err)
-@@ -1869,7 +1881,7 @@ static int adjust_var_secinfo_array(struct btf *btf, int tid, struct field_acces
- 	if (err)
- 		return err;
- 	if (idx < 0 || idx >= barr->nelems) {
--		fprintf(stderr, "Array index %lld is out of bounds [0, %u]: %s\n",
-+		fprintf(stderr, "Array index %lld is out of bounds [0, %u): %s\n",
- 			idx, barr->nelems, array_name);
- 		return -EINVAL;
- 	}
-@@ -1928,7 +1940,7 @@ static int adjust_var_secinfo_member(const struct btf *btf,
- 		}
- 	}
- 
--	return -EINVAL;
-+	return -ESRCH;
- }
- 
- static int adjust_var_secinfo(struct btf *btf, const struct btf_type *t,
-@@ -1955,6 +1967,8 @@ static int adjust_var_secinfo(struct btf *btf, const struct btf_type *t,
- 			break;
- 		case FIELD_NAME:
- 			err = adjust_var_secinfo_member(btf, base_type, 0, atom->name, sinfo);
-+			if (err == -ESRCH)
-+				fprintf(stderr, "Can't find '%s'\n", atom->name);
- 			prev_name = atom->name;
- 			break;
- 		default:
--- 
-2.50.0
-
+Thanks for the review,
+--breno
 
