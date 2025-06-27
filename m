@@ -1,94 +1,148 @@
-Return-Path: <bpf+bounces-61754-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61755-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 169B6AEBC69
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 17:51:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16194AEBCB7
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 18:00:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D7611C60C00
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 15:50:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B46FB1C41996
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 16:00:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEDB02EA148;
-	Fri, 27 Jun 2025 15:49:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3A642E9ECD;
+	Fri, 27 Jun 2025 15:59:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bM/RQrMy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PGsj/jY5"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77AEE2E9ED6
-	for <bpf@vger.kernel.org>; Fri, 27 Jun 2025 15:49:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E25BB19E990;
+	Fri, 27 Jun 2025 15:59:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751039380; cv=none; b=WbeWe8v3BNy06PR1r6dTsZZWP0YEKd7wo43F0P/yAu7dWNcbV0WmP3L+V6tihDzk5bztfMzDBuaZ2cQchpdi8ZAkGQV716IviFjb8LWJQBxDUYZjhzxrmrWj+8CgbPkj6bHE0BfCAn/QYbhM/NLP0YlyxR7n4X8O/jw8kHbKs6k=
+	t=1751039981; cv=none; b=e/TzdVki8Fz7EktPHKKeN7iAAwC8LVLmupv+zoS3vDcfaV8cW173waxxyhwc/JnEOBAnUZT8NLAu/G6vSLPpXNZBRhmFJ2rNO6j8KvNpIqzABjLgp1uOMjzyiBFLLA66rgQNLAsPyfWTqSgLv/DZHFwT7AsAfEVPrWMHq83hERk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751039380; c=relaxed/simple;
-	bh=mHCvBl0IcBRxOCVZxlmB0IN+ZeUT8cXgmpB9GAf+0bw=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=rUnvPLCp11eMfoVL3Cl2J0yQkureu+SihwpOH+JMT2cA+TbxGhbrz6TIX0S1nsk28VzGTda6uYbqu+IHaaoq18pNesp3f+RBShMKX4aPnjWUv9D3o/x7J+3vFLbcTyi/t4kA2AnC5wVT0qa66/utuv9M+7NHCC4eL9dKzn3VfLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bM/RQrMy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB914C4CEE3;
-	Fri, 27 Jun 2025 15:49:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751039380;
-	bh=mHCvBl0IcBRxOCVZxlmB0IN+ZeUT8cXgmpB9GAf+0bw=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=bM/RQrMyPmypiL1q3xVHZY24nVUhXXacUzsdWyeSNYE65fe3iZ3UXnH3syCQyD9OP
-	 1ildE9sEoyDUMlsHgbjGFFZuCRePN3oiDVmDgkcWiPTYrxHLqy8d4ok6+Gzy2yA7eq
-	 aLtyULH8XFHBJTuf191GHffqJTw7h45KSxIGlTeB/qQLo+UF7Q5p7u4hqsu7djY1pm
-	 55vANz0hFl92K4sCXwzSpq5aiMA7o1n3iMb2BL+EVfByhfaBiaCw8yiYZ+2oNTzIrg
-	 35tv11z0pnrUZfJtlfe/iAQIlGL0J1QLVoJsykEU6H1AWlfNwkpo2VpSjFKcHwrSxe
-	 GTjcYoUIz8ISQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33AA8380DBEE;
-	Fri, 27 Jun 2025 15:50:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1751039981; c=relaxed/simple;
+	bh=UL5P2G8QwWKYeIIOTiUC5tzsMqmjCmX1SN6IgdbYSZc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JD46EK2i8UnwB45DupS1z+yUvOm6fO71P8tBq3g1Zk5zTnvFzg40/DCNsHq4UtwAh8d6wBOpY41g6rgBQj4nNhy9qpC4V9DGIUTCdjgbRPZpcZx9H62+TsDSQgC7Ru6f4ZLC1fZL8rPZdYNZCdApQsEdnRxtILw/xtc9gUzAzv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PGsj/jY5; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3a6f2c6715fso2437632f8f.1;
+        Fri, 27 Jun 2025 08:59:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1751039978; x=1751644778; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UL5P2G8QwWKYeIIOTiUC5tzsMqmjCmX1SN6IgdbYSZc=;
+        b=PGsj/jY5lECkMQTXDIJ66wMwZNWBA5xUKpsiZHOvbEh3Eg3TtOOm069JA1kz+k3gDR
+         EOcrB9GX7iQ1+V8Vq3v7yMAWqk8phoUcTgfnM7YDtQQP9mEdtJD1wg3O7t7rE8tykKtk
+         1NyiFL7n6m48rMCeMNK5BiZwXX9VVDxKoUFA1T9yGkYJgZA0FFPVz+d29TZ1/cS1Ve9A
+         /FBHrB6+KtOsMdtWA14N/eK15xEXnw3YHekuWZNWmYWKlibcBZEOHARJ4XjKQkdAC0Cg
+         ZG+jFRtMRgKd5U4TBYqpdJisZ1PPEEng38lnfb4sEdTZVqPhLQKKKKOwe/qcCTJ9DogK
+         TcPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751039978; x=1751644778;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UL5P2G8QwWKYeIIOTiUC5tzsMqmjCmX1SN6IgdbYSZc=;
+        b=h0McMvDxk1bNMUZyL7u18cbdYJJfQw+rVVwgIkAqt9YLxmgWpc2TEG8k5vCf27zuxc
+         poj9a0E6VCyco1qM16i6u2zpHk41Cgz1/Pj/lOAWk6XjmkZEryLhKJd110T2cmLtS71k
+         0pwiAQbbMj2oegA/l8rJv0NTzIKTzOYl03d5PkdrL/v13qFZyDCp/hPhI/3u0CkF5aio
+         jSL5YhqMxctkDXG6OqifXS9wUXZ5hBopuAZVqZTFN2rnT0W5hL44M/+BsKNvCC9wMj3F
+         f/w6q2Rd2e+ILlSINZ74VsxyFhFcpzMA0yXoY6wmlrnGIK5h0lX0mmSsKNJ/uGW4I9Ls
+         +YAg==
+X-Forwarded-Encrypted: i=1; AJvYcCUBMR/cvCrblVr2vmtMWzRr6ExtSamvhhco4zPw5DpfrbgQag7+vnEwlRHGq0akDTntEKne5vCl9du85uBl@vger.kernel.org, AJvYcCUQ3oUhw/qQjNgH45QpXeB8s0lROIKIWNPGRQGQBWs1uA1gZ1Mr7gry4JI/w66+cgwuXucqqQdQV2E4qafvuJFUuMsZdxQZ@vger.kernel.org, AJvYcCW6yCgRUZp9ptyha1Ps0xL1Ecs4fzfVRN387C8VokquuUEo5lt3wBV8uA9hT7hgk/2U7f7vNSg5mdjLiLMaGA==@vger.kernel.org, AJvYcCXOxRnCpSOp4JXwlk3/Z3KAys8E0ITD2Lo0Zy6DszM9uZzGKqnlTR8zsU1uxkapNHjaU0Y=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxGczBG6PdD6NZFh00iSJV0HshLHLHvF972LKwm1p3qZ87PqtxH
+	V78iYztrlANfNSB2FrmzEkY2uUgQUX4N9CeHbCvKxify9AlP/xupqnJafNLVeMdQpThehcXCedL
+	o/AG19H6sFm5WA4QQ+b4+YOj3M/KiWHQ=
+X-Gm-Gg: ASbGncuFmG5AFab2KoHUvrTvFawgfm1BSnpra+Lf+4Z4Ibzjoi9FjA+k8H5lQEoURFV
+	lKrxuNodhMkPs8Zl91sDRfeEIQmmYSYUriM8MMcodydGpm1Tvkl4AhJvHD92zeRIyJE7vWm+2i6
+	P4ebX6q0ip5PHhcpoiNONiss47flqYbkBucYgDToPPcz9YWxDDJAV5eZI6Ze2Ae95wIVbyxRWk
+X-Google-Smtp-Source: AGHT+IF1U4dcY9xhsGy4rlWEcfGwUP3bOoZNh7p3VrXI1JSMiPPMIzqk94XvixfjE42EY3uQb8qxFRdvlbjNH2ISQ9I=
+X-Received: by 2002:a05:6000:2711:b0:3a4:f7d9:3f56 with SMTP id
+ ffacd0b85a97d-3a8f435e574mr2894930f8f.2.1751039977933; Fri, 27 Jun 2025
+ 08:59:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] bpf: Fix string kfuncs names in doc comments
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <175103940601.1972453.4029054511124149314.git-patchwork-notify@kernel.org>
-Date: Fri, 27 Jun 2025 15:50:06 +0000
-References: <20250627082001.237606-1-vmalik@redhat.com>
-In-Reply-To: <20250627082001.237606-1-vmalik@redhat.com>
-To: Viktor Malik <vmalik@redhat.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, sfr@canb.auug.org.au
+References: <20250623063854.1896364-1-song@kernel.org> <20250623-rebel-verlust-8fcd4cdd9122@brauner>
+ <CAADnVQ+iqMi2HEj_iH7hsx+XJAsqaMWqSDe4tzcGAnehFWA9Sw@mail.gmail.com> <CAPhsuW7JAgXUObzkMAs_B=O09uHfhkgSuFV5nvUJbsv=Fh8JyA@mail.gmail.com>
+In-Reply-To: <CAPhsuW7JAgXUObzkMAs_B=O09uHfhkgSuFV5nvUJbsv=Fh8JyA@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 27 Jun 2025 08:59:26 -0700
+X-Gm-Features: Ac12FXxIczTM5K68rlq_78aPZtKoDWfs-hoiBCYqfl1f8Bf6HdGD3OkhePHxzBk
+Message-ID: <CAADnVQKNR1QES31HPNriYBAzmoxdG=sWyqwvDTtthROgezah3w@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 0/4] Introduce bpf_cgroup_read_xattr
+To: Song Liu <song@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>, Kernel Team <kernel-team@meta.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eduard <eddyz87@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
+	KP Singh <kpsingh@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>, 
+	Amir Goldstein <amir73il@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Tejun Heo <tj@kernel.org>, Daan De Meyer <daan.j.demeyer@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	LSM List <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Fri, 27 Jun 2025 10:20:01 +0200 you wrote:
-> Documentation comments for bpf_strnlen and bpf_strcspn contained
-> incorrect function names.
-> 
-> Fixes: e91370550f1f ("bpf: Add kfuncs for read-only string operations")
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Closes: https://lore.kernel.org/bpf/20250627174759.3a435f86@canb.auug.org.au/T/#u
-> Signed-off-by: Viktor Malik <vmalik@redhat.com>
-> 
+On Thu, Jun 26, 2025 at 9:04=E2=80=AFPM Song Liu <song@kernel.org> wrote:
+>
+> On Thu, Jun 26, 2025 at 7:14=E2=80=AFPM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > [...]
+> > ./test_progs -t lsm_cgroup
+> > Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
+> > ./test_progs -t lsm_cgroup
+> > Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
+> > ./test_progs -t cgroup_xattr
+> > Summary: 1/8 PASSED, 0 SKIPPED, 0 FAILED
+> > ./test_progs -t lsm_cgroup
+> > test_lsm_cgroup_functional:PASS:bind(ETH_P_ALL) 0 nsec
+> > (network_helpers.c:121: errno: Cannot assign requested address) Failed
+> > to bind socket
+> > test_lsm_cgroup_functional:FAIL:start_server unexpected start_server:
+> > actual -1 < expected 0
+> > (network_helpers.c:360: errno: Bad file descriptor) getsockopt(SOL_PROT=
+OCOL)
+> > test_lsm_cgroup_functional:FAIL:connect_to_fd unexpected
+> > connect_to_fd: actual -1 < expected 0
+> > test_lsm_cgroup_functional:FAIL:accept unexpected accept: actual -1 < e=
+xpected 0
+> > test_lsm_cgroup_functional:FAIL:getsockopt unexpected getsockopt:
+> > actual -1 < expected 0
+> > test_lsm_cgroup_functional:FAIL:sk_priority unexpected sk_priority:
+> > actual 0 !=3D expected 234
+> > ...
+> > Summary: 0/1 PASSED, 0 SKIPPED, 1 FAILED
+> >
+> >
+> > Song,
+> > Please follow up with the fix for selftest.
+> > It will be in bpf-next only.
+>
+> The issue is because cgroup_xattr calls "ip link set dev lo up"
+> in setup, and calls "ip link set dev lo down" in cleanup. Most
+> other tests only call "ip link set dev lo up". IOW, it appears to
+> me that cgroup_xattr is doing the cleanup properly. To fix this,
+> we can either remove "dev lo down" from cgroup_xattr, or add
+> "dev lo up" to lsm_cgroups. Do you have any preference one
+> way or another?
 
-Here is the summary with links:
-  - [bpf-next] bpf: Fix string kfuncs names in doc comments
-    https://git.kernel.org/bpf/bpf-next/c/5272b51367ea
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+It messes with "lo" without switching netns? Ouch.
+Not sure what tests you copied that code from,
+but all "ip" commands, ping_group_range, and sockets
+don't need to be in the test. Instead of triggering
+progs through lsm/socket_connect hook can't you use
+a simple hook like lsm/bpf or lsm/file_open that doesn't require
+networking setup ?
 
