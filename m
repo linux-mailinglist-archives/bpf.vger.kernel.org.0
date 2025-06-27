@@ -1,74 +1,327 @@
-Return-Path: <bpf+bounces-61767-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61768-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1D09AEBF25
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 20:39:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F466AEBF7C
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 21:12:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A1441890897
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 18:39:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC1FF64743B
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 19:12:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AAED2ECD01;
-	Fri, 27 Jun 2025 18:38:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33A9120296C;
+	Fri, 27 Jun 2025 19:12:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kEV/8wo2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d635UJ+u"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92AAA1B6CE4;
-	Fri, 27 Jun 2025 18:38:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1AF91B423C
+	for <bpf@vger.kernel.org>; Fri, 27 Jun 2025 19:12:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751049535; cv=none; b=GABJdllIki9LLVH+MjME6BPQ6ARWDEmyAarxzqONitX5KEu8Mfcpn6RXPaEv8QToviPGnJuOcrswAvs3u7uUMugy5j5RQLoKB2lu9bKKMY2FT82T2an+xAu9apE/sxIaDMFxHjPp23lj+h4KNZ9S/htzDKKIt2WZv4oyDKrLXcg=
+	t=1751051551; cv=none; b=VoRwTEnwdiC6gpID+rei3OZLTqAEyKwvp3CoiMmKy38aBWeISeTZA4r1N3QC2GmVeRuVwcmFnUVO8ux1aYfOb5ujdoesfKxAuk97Kreja4wvcMcBxA0L6c+8AYfehqU9g90DgSjFxaxcNk4s/1yYmBQciwCaYXNuPjnmJsNtqCc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751049535; c=relaxed/simple;
-	bh=VnqZelj4Ukr4SaF3OtPT4U3Us1g/zsRN0nXdF3GfeWQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iiNhaC4qrXyg1VHODmpzxv2Q5cf1WhofdJANFj/4LQ535JCpKbIBsnskQNcYJrW13rO8aCmrHCB+PFMUkFlD9coYtwkaE4tDV3rT+Tnqec/1ISSuq+Us75ucG62nJx80TaZaNNyT1dGsqQ56B0NvFwPhdEEVEcwAIxl4DtsCAb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kEV/8wo2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5C1FC4CEE3;
-	Fri, 27 Jun 2025 18:38:54 +0000 (UTC)
+	s=arc-20240116; t=1751051551; c=relaxed/simple;
+	bh=UMD//hMpihKmy1w98tHfSNo8vqpmWjYTXJFEm0Ygo0M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=p4SGYqN6Mw8mgf2rZMN4me2jg9yDeuGSE18Mz2v3A6F7Y98VQAWmo1m/oV+xdxwAummX0XXyJ1TYFKGQSIGY1x2M80LeXXhykDeaWIatWoeX4TlsvcdHneF/nGdudZKIfzobPRq694hmRhsBbpKKZ9Jaxf4lGjtlmBpV1Z3IVQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d635UJ+u; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70EA8C4CEE3;
+	Fri, 27 Jun 2025 19:12:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751049535;
-	bh=VnqZelj4Ukr4SaF3OtPT4U3Us1g/zsRN0nXdF3GfeWQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=kEV/8wo2LdWCdIqRCR2d8AxXs4lQkvVClWJHIxD1YHiYczA2u5CsBWVvFkPBTOKzJ
-	 3CSqhjdTqJ5vHUninKabrD5S8Q9EYk6qZxKsovBZUzZ941KnZycVZkyvOPUzx+zcVC
-	 OwbJBLeCNxqEamSz38gB//rVBT2mUMu0fLXEwD1B7bUQhBO07GLVgefANbzCKBAXU5
-	 55BunHFgz/DW9bhCYvMCJoG1dcHT0Z3vK00e6wphUSZcJ5ubisjdPoUmbQoaZ93K7D
-	 rRb0sqmQKq6Ev/HsulrvaJYqgIerHKy/2+pyGlg+/61r4Bnm+hlkSjXKEWxmzU7sW7
-	 rPC8NvultlBIQ==
-Date: Fri, 27 Jun 2025 11:38:54 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>, Simon Horman
- <horms@kernel.org>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Willem de Bruijn
- <willemdebruijn.kernel@gmail.com>, bpf@vger.kernel.org, ast@kernel.org
-Subject: Re: [PATCH net-next v3 3/3] selftests: net: add netpoll basic
- functionality test
-Message-ID: <20250627113854.04c13ace@kernel.org>
-In-Reply-To: <20250627-netpoll_test-v3-3-575bd200c8a9@debian.org>
-References: <20250627-netpoll_test-v3-0-575bd200c8a9@debian.org>
-	<20250627-netpoll_test-v3-3-575bd200c8a9@debian.org>
+	s=k20201202; t=1751051551;
+	bh=UMD//hMpihKmy1w98tHfSNo8vqpmWjYTXJFEm0Ygo0M=;
+	h=From:To:Cc:Subject:Date:From;
+	b=d635UJ+uunsQ8+/7vscKBKEMlm2crRXOUtBnVmNCOgGalkoKQlymqfm4G7uTiBLni
+	 o7MsuVz5Mo4u8UdcS3ZCILPNolbPec3bXCYKKBl8oKeWD76gkkTqwcGxWAkzi7AvMG
+	 kaoKCWebw1geEEWc+VkhDp3RquyTCLuPmq6a9noOuSGn8ktnlORtBDAn0ngxLgU6wY
+	 q9O76QhEE6pnKv7ZtwWckpbv7TUmfFjn3uVrzmS4PC9cDbX59dOqmwCnXxl8sxGQ1t
+	 1Tf/WSci/P0dAFIV0KniCc4/zJN/6+SND8kHm7GBBekWX3mcZDAH1SIoEEupS5d/y8
+	 OxzGyocvAKDSw==
+From: Song Liu <song@kernel.org>
+To: bpf@vger.kernel.org
+Cc: kernel-team@meta.com,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	Song Liu <song@kernel.org>
+Subject: [PATCH v2 bpf-next] selftests/bpf: Fix cgroup_xattr/read_cgroupfs_xattr
+Date: Fri, 27 Jun 2025 12:12:21 -0700
+Message-ID: <20250627191221.765921-1-song@kernel.org>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Fri, 27 Jun 2025 10:03:11 -0700 Breno Leitao wrote:
-> +    raise KsftSkipEx("netpoll_poll_dev() was not called. Skipping test")
+cgroup_xattr/read_cgroupfs_xattr has two issues:
 
-As discussed offline SKIPing is not an option for SW tests.
+1. cgroup_xattr/read_cgroupfs_xattr messes up lo without creating a netns
+   first. This causes issue with other tests.
+
+   Fix this by using a different hook (lsm.s/file_open) and not messing
+   with lo.
+
+2. cgroup_xattr/read_cgroupfs_xattr sets up cgroups without proper
+   mount namespaces.
+
+   Fix this by using the existing cgroup helpers. A new helper
+   set_cgroup_xattr() is added to set xattr on cgroup files.
+
+Fixes: f4fba2d6d282 ("selftests/bpf: Add tests for bpf_cgroup_read_xattr")
+Reported-by: Alexei Starovoitov <ast@kernel.org>
+Closes: https://lore.kernel.org/bpf/CAADnVQ+iqMi2HEj_iH7hsx+XJAsqaMWqSDe4tzcGAnehFWA9Sw@mail.gmail.com/
+Signed-off-by: Song Liu <song@kernel.org>
+
+---
+Changes v1 => v2:
+1. Add the second fix above.
+
+v1: https://lore.kernel.org/bpf/20250627165831.2979022-1-song@kernel.org/
+---
+ tools/testing/selftests/bpf/cgroup_helpers.c  |  21 ++++
+ tools/testing/selftests/bpf/cgroup_helpers.h  |   4 +
+ .../selftests/bpf/prog_tests/cgroup_xattr.c   | 117 ++++--------------
+ .../selftests/bpf/progs/read_cgroupfs_xattr.c |   4 +-
+ 4 files changed, 49 insertions(+), 97 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/cgroup_helpers.c b/tools/testing/selftests/bpf/cgroup_helpers.c
+index e4535451322e..15f626014872 100644
+--- a/tools/testing/selftests/bpf/cgroup_helpers.c
++++ b/tools/testing/selftests/bpf/cgroup_helpers.c
+@@ -4,6 +4,7 @@
+ #include <sys/mount.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
++#include <sys/xattr.h>
+ #include <linux/limits.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+@@ -318,6 +319,26 @@ int join_parent_cgroup(const char *relative_path)
+ 	return join_cgroup_from_top(cgroup_path);
+ }
+ 
++/**
++ * set_cgroup_xattr() - Set xattr on a cgroup dir
++ * @relative_path: The cgroup path, relative to the workdir, to set xattr
++ * @name: xattr name
++ * @value: xattr value
++ *
++ * This function set xattr on cgroup dir.
++ *
++ * On success, it returns 0, otherwise on failure it returns -1.
++ */
++int set_cgroup_xattr(const char *relative_path,
++		     const char *name,
++		     const char *value)
++{
++	char cgroup_path[PATH_MAX + 1];
++
++	format_cgroup_path(cgroup_path, relative_path);
++	return setxattr(cgroup_path, name, value, strlen(value) + 1, 0);
++}
++
+ /**
+  * __cleanup_cgroup_environment() - Delete temporary cgroups
+  *
+diff --git a/tools/testing/selftests/bpf/cgroup_helpers.h b/tools/testing/selftests/bpf/cgroup_helpers.h
+index 502845160d88..182e1ac36c95 100644
+--- a/tools/testing/selftests/bpf/cgroup_helpers.h
++++ b/tools/testing/selftests/bpf/cgroup_helpers.h
+@@ -26,6 +26,10 @@ int join_cgroup(const char *relative_path);
+ int join_root_cgroup(void);
+ int join_parent_cgroup(const char *relative_path);
+ 
++int set_cgroup_xattr(const char *relative_path,
++		     const char *name,
++		     const char *value);
++
+ int setup_cgroup_environment(void);
+ void cleanup_cgroup_environment(void);
+ 
+diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_xattr.c b/tools/testing/selftests/bpf/prog_tests/cgroup_xattr.c
+index 87978a0f7eb7..e0dd966e4a3e 100644
+--- a/tools/testing/selftests/bpf/prog_tests/cgroup_xattr.c
++++ b/tools/testing/selftests/bpf/prog_tests/cgroup_xattr.c
+@@ -7,133 +7,60 @@
+ #include <string.h>
+ #include <unistd.h>
+ #include <sys/socket.h>
+-#include <sys/xattr.h>
+-
+ #include <test_progs.h>
++#include "cgroup_helpers.h"
+ 
+ #include "read_cgroupfs_xattr.skel.h"
+ #include "cgroup_read_xattr.skel.h"
+ 
+-#define CGROUP_FS_ROOT "/sys/fs/cgroup/"
+-#define CGROUP_FS_PARENT CGROUP_FS_ROOT "foo/"
++#define CGROUP_FS_PARENT "foo/"
+ #define CGROUP_FS_CHILD CGROUP_FS_PARENT "bar/"
+-
+-static int move_pid_to_cgroup(const char *cgroup_folder, pid_t pid)
+-{
+-	char filename[128];
+-	char pid_str[64];
+-	int procs_fd;
+-	int ret;
+-
+-	snprintf(filename, sizeof(filename), "%scgroup.procs", cgroup_folder);
+-	snprintf(pid_str, sizeof(pid_str), "%d", pid);
+-
+-	procs_fd = open(filename, O_WRONLY | O_APPEND);
+-	if (!ASSERT_OK_FD(procs_fd, "open"))
+-		return -1;
+-
+-	ret = write(procs_fd, pid_str, strlen(pid_str));
+-	close(procs_fd);
+-	if (!ASSERT_GT(ret, 0, "write cgroup.procs"))
+-		return -1;
+-	return 0;
+-}
+-
+-static void reset_cgroups_and_lo(void)
+-{
+-	rmdir(CGROUP_FS_CHILD);
+-	rmdir(CGROUP_FS_PARENT);
+-	system("ip addr del 1.1.1.1/32 dev lo");
+-	system("ip link set dev lo down");
+-}
++#define TMP_FILE "/tmp/selftests_cgroup_xattr"
+ 
+ static const char xattr_value_a[] = "bpf_selftest_value_a";
+ static const char xattr_value_b[] = "bpf_selftest_value_b";
+ static const char xattr_name[] = "user.bpf_test";
+ 
+-static int setup_cgroups_and_lo(void)
+-{
+-	int err;
+-
+-	err = mkdir(CGROUP_FS_PARENT, 0755);
+-	if (!ASSERT_OK(err, "mkdir 1"))
+-		goto error;
+-	err = mkdir(CGROUP_FS_CHILD, 0755);
+-	if (!ASSERT_OK(err, "mkdir 2"))
+-		goto error;
+-
+-	err = setxattr(CGROUP_FS_PARENT, xattr_name, xattr_value_a,
+-		       strlen(xattr_value_a) + 1, 0);
+-	if (!ASSERT_OK(err, "setxattr 1"))
+-		goto error;
+-
+-	err = setxattr(CGROUP_FS_CHILD, xattr_name, xattr_value_b,
+-		       strlen(xattr_value_b) + 1, 0);
+-	if (!ASSERT_OK(err, "setxattr 2"))
+-		goto error;
+-
+-	err = system("ip link set dev lo up");
+-	if (!ASSERT_OK(err, "lo up"))
+-		goto error;
+-
+-	err = system("ip addr add 1.1.1.1 dev lo");
+-	if (!ASSERT_OK(err, "lo addr v4"))
+-		goto error;
+-
+-	err = write_sysctl("/proc/sys/net/ipv4/ping_group_range", "0 0");
+-	if (!ASSERT_OK(err, "write_sysctl"))
+-		goto error;
+-
+-	return 0;
+-error:
+-	reset_cgroups_and_lo();
+-	return err;
+-}
+-
+ static void test_read_cgroup_xattr(void)
+ {
+-	struct sockaddr_in sa4 = {
+-		.sin_family = AF_INET,
+-		.sin_addr.s_addr = htonl(INADDR_LOOPBACK),
+-	};
++	int tmp_fd, parent_cgroup_fd = -1, child_cgroup_fd = -1;
+ 	struct read_cgroupfs_xattr *skel = NULL;
+-	pid_t pid = gettid();
+-	int sock_fd = -1;
+-	int connect_fd = -1;
+ 
+-	if (!ASSERT_OK(setup_cgroups_and_lo(), "setup_cgroups_and_lo"))
++	parent_cgroup_fd = test__join_cgroup(CGROUP_FS_PARENT);
++	if (!ASSERT_OK_FD(parent_cgroup_fd, "create parent cgroup"))
+ 		return;
+-	if (!ASSERT_OK(move_pid_to_cgroup(CGROUP_FS_CHILD, pid),
+-		       "move_pid_to_cgroup"))
++	if (!ASSERT_OK(set_cgroup_xattr(CGROUP_FS_PARENT, xattr_name, xattr_value_a),
++		       "set parent xattr"))
++		goto out;
++
++	child_cgroup_fd = test__join_cgroup(CGROUP_FS_CHILD);
++	if (!ASSERT_OK_FD(child_cgroup_fd, "create child cgroup"))
++		goto out;
++	if (!ASSERT_OK(set_cgroup_xattr(CGROUP_FS_CHILD, xattr_name, xattr_value_b),
++		       "set child xattr"))
+ 		goto out;
+ 
+ 	skel = read_cgroupfs_xattr__open_and_load();
+ 	if (!ASSERT_OK_PTR(skel, "read_cgroupfs_xattr__open_and_load"))
+ 		goto out;
+ 
+-	skel->bss->target_pid = pid;
++	skel->bss->target_pid = gettid();
+ 
+ 	if (!ASSERT_OK(read_cgroupfs_xattr__attach(skel), "read_cgroupfs_xattr__attach"))
+ 		goto out;
+ 
+-	sock_fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_ICMP);
+-	if (!ASSERT_OK_FD(sock_fd, "sock create"))
+-		goto out;
+-
+-	connect_fd = connect(sock_fd, &sa4, sizeof(sa4));
+-	if (!ASSERT_OK_FD(connect_fd, "connect 1"))
+-		goto out;
+-	close(connect_fd);
++	tmp_fd = open(TMP_FILE, O_RDONLY | O_CREAT);
++	ASSERT_OK_FD(tmp_fd, "open tmp file");
++	close(tmp_fd);
+ 
+ 	ASSERT_TRUE(skel->bss->found_value_a, "found_value_a");
+ 	ASSERT_TRUE(skel->bss->found_value_b, "found_value_b");
+ 
+ out:
+-	close(connect_fd);
+-	close(sock_fd);
++	close(child_cgroup_fd);
++	close(parent_cgroup_fd);
+ 	read_cgroupfs_xattr__destroy(skel);
+-	move_pid_to_cgroup(CGROUP_FS_ROOT, pid);
+-	reset_cgroups_and_lo();
++	unlink(TMP_FILE);
+ }
+ 
+ void test_cgroup_xattr(void)
+diff --git a/tools/testing/selftests/bpf/progs/read_cgroupfs_xattr.c b/tools/testing/selftests/bpf/progs/read_cgroupfs_xattr.c
+index 855f85fc5522..405adbe5e8b0 100644
+--- a/tools/testing/selftests/bpf/progs/read_cgroupfs_xattr.c
++++ b/tools/testing/selftests/bpf/progs/read_cgroupfs_xattr.c
+@@ -17,8 +17,8 @@ static const char expected_value_b[] = "bpf_selftest_value_b";
+ bool found_value_a;
+ bool found_value_b;
+ 
+-SEC("lsm.s/socket_connect")
+-int BPF_PROG(test_socket_connect)
++SEC("lsm.s/file_open")
++int BPF_PROG(test_file_open)
+ {
+ 	u64 cgrp_id = bpf_get_current_cgroup_id();
+ 	struct cgroup_subsys_state *css, *tmp;
 -- 
-pw-bot: cr
+2.47.1
+
 
