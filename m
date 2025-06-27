@@ -1,148 +1,166 @@
-Return-Path: <bpf+bounces-61758-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61759-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 003C8AEBD23
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 18:24:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9790AEBDBB
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 18:44:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 791806400B8
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 16:24:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B222188D0A5
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 16:44:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39AFC2EA169;
-	Fri, 27 Jun 2025 16:23:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 609332EA17A;
+	Fri, 27 Jun 2025 16:44:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="JR3+BgZo"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jq6rD8SK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A14B12EA166
-	for <bpf@vger.kernel.org>; Fri, 27 Jun 2025 16:23:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D5D72E8E02
+	for <bpf@vger.kernel.org>; Fri, 27 Jun 2025 16:44:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751041415; cv=none; b=nCMPSO+nde6OUY+ma24P8Z9jYPbYLsD7vgvcq8PcGZnNAQih/1kYtKoNWAxe3NDNG28S3JUQdWwTIU4Maa3mc2jkFjU3cBrJPMLs8NAhtr31xejVj7N7jF7Udorc80LczVOc/XCRFovswqfG0DsNdYeXsIMaoiy56Uy3U/PGVuA=
+	t=1751042656; cv=none; b=QW6udsCIzALHZSYp1Dq+oyC2KZYMTg4baUNdfG0kzXymd+RdtKg5Cl62gPHCt6TLHFid+Bza+fWUXzyUo16jng5u8Ht3pBTJ2K6iBV02AP1gaCDz+ZnGjs0yvUR3INS00CkSSXs5u627bJLyB+cC5OWpoM1C/laio3fle9UAdnY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751041415; c=relaxed/simple;
-	bh=1Z5FIvgVxVgOK1v1qVEDoeCNDa+RgVIxtitLI+LQd5g=;
+	s=arc-20240116; t=1751042656; c=relaxed/simple;
+	bh=9s1eA5KwrVKwd9rWss4PkqOIrDE9CSV2z3UbUlBIJKE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=O6zfZmc9E/GMGvtTwVfuxluOMT9zsGGbKAi3tKLL9IDVxtNq/ZNP6M3USOwauHxvhUqooNbqJICb6L+AZA/LZGgnPz/NmKeHI1gKwOwud4h/GpBw+CO/ogJ+4Z9VbRY+Y+JW8P2UMq4SO7TZPr7Iwnp/DCZsl9ayFOouHoULSG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=JR3+BgZo; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-ae0de1c378fso261136866b.3
-        for <bpf@vger.kernel.org>; Fri, 27 Jun 2025 09:23:33 -0700 (PDT)
+	 To:Cc:Content-Type; b=JdXdMe4r2NElW0g+9ZQJWI/fMgkWuIg8so8jyfOFDI1qBsgqYkkWvmuZ4nS6qKJeFTBR5bcfMWrQlCBJ4uvBJI53Jo8CpniiPFqzvl2584R4t6cGYFhmQu3ha77Fm5bEk8UhPASDbx7iIJlrCXl02SGUQ5Jh3NHUCnL0cCMZOUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jq6rD8SK; arc=none smtp.client-ip=209.85.166.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-3ddc99e0b77so11565ab.0
+        for <bpf@vger.kernel.org>; Fri, 27 Jun 2025 09:44:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1751041412; x=1751646212; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=XIBFa7vtiai1aZdrnHbI17B2HX5VyBn+7Wdc06Hzja4=;
-        b=JR3+BgZopOVs7ONSnpX4gIlqjzIgkrIJFm7vJ4IVpcjYPastG603YjJ8g0sMu32oM0
-         FQW8sPvENaGzBXMUki9HLyilZxQDAhFXu1wT6jxtrE5GtQAqbn1vu2ulHN8UFjyF0Oat
-         cIJHr3+CocRyChiB9857rvJl/vRmBvwz+Av+4=
+        d=google.com; s=20230601; t=1751042654; x=1751647454; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9s1eA5KwrVKwd9rWss4PkqOIrDE9CSV2z3UbUlBIJKE=;
+        b=jq6rD8SKGMCuNrME36sTI/KFxTM6BEo9gz10KGTulZJX15CnBpQeqPwEfLgn7UvNM5
+         z5eYtyWDfBRa+paGJaoZrIC0+xhm/fixddafEGda+guF9nWAEK3SqurXBqHh99Fx5XnW
+         h3OuI80idTCaK0tp9DnCEktDZWr8eRJPpa1S+8RX9gtYeXOw7lk9ofRil0r2suRga7Fo
+         JuGNUv5p8OtosmXC/4z0UQ3YZkS3Mmk0ea+XSJnvu20K+8BRtR3hlFxW6QGsTlHzHOUZ
+         qgGlHEVwanPmkQBqpnqpH6vRV3S9M6B3ZfqQGQd+fHUu2qROuwUtF5NpJbpI2/ssibdS
+         y+fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751041412; x=1751646212;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XIBFa7vtiai1aZdrnHbI17B2HX5VyBn+7Wdc06Hzja4=;
-        b=m40KKfCn7nhPK9Oou7UV4W8l8XygbwX9DVPw5X+XIrSQpcyRYL6aq3WvXIwT4dY9yJ
-         iZMBlhIRq+W+HxvEUZMP7hn3kUsoRG9yIu47wxq270H09Xu1++DVNzDSY6c1jTfdGTfg
-         7RnZES9NC5w2vOi2qCFjtYuhVrkMkU1tf83cRt5zBmOkj56DzFJk3WU5ELxMF89wbEfr
-         BOPEli1ItWX/IVSfdx3dn1PLDv/bK9Z3mpWhVOpqijInuoqxtMa3mpbJn/QpQPWtGEGV
-         Cm6UC5ALS6+x8FIaYkE4pmRxtvdS5WJZjs7F460JXfQ2VpQdnmphpeg/d3Dn51h7WPk4
-         iNsQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWP2MefpzrKr3unTbBWGENVCbZ/Ccjyiz9sACJlzi5fm5sXrlWLr4QcvANnfMDUcaJRCjQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwBOFr5JsQZnmwV7B4cVEh5vBx8h2jTQM+OwMYSMNNF8bJsAqZv
-	iU+D7tbALvPVINJP7LhKQXDj9Nz6M8aU92evLBYysqVg9XflkUxymLEyYA6g7fzeY6xpJqC6jqx
-	7uWfV4HM=
-X-Gm-Gg: ASbGncu2+KVqZCJYn90gFg7M7SinsptGv0iW2m5aQt8Yq9+Y+kLyhPftyGEk9ppuICi
-	VLfnveA7/b50FvP6zjnyal/rLpSYQsq8wUGRK+zmXjllEPplAvWPmogI5wbR+LId56lpPZDo245
-	6g7R5tOkQQJNJmo7VT/iMs4EUwKSpZFcnLkIGnP1PK7pr3SAE3bU+H1ZtOwpI/udUwh46in16wt
-	IgsQaxjX5EyaaXlrrz81C0S3xzO35+vunbCraC22BUFZncbIoVRdnr7pQJzKBTHz/edRSzK+bIP
-	b2J/BEubTUxnyPqv06M163VZfUKmxHsIf5w6IYx8DuhC4+xmPj2HxEvwihGfWQIr2Fb/YrgDA7k
-	9yEWwxVU7eFYLkFf68Fiv0+rJWIqgy8JhUYij
-X-Google-Smtp-Source: AGHT+IHa1Z1DEzDxGUjaeriKP/M1ZKDUUXOaR7KjvUUyuoJvfb3aHwWu+YqF0DofT3Yrgwq0Wt/SWw==
-X-Received: by 2002:a17:906:e244:b0:ae0:db23:e3e3 with SMTP id a640c23a62f3a-ae34fd2d638mr381449666b.16.1751041411892;
-        Fri, 27 Jun 2025 09:23:31 -0700 (PDT)
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com. [209.85.208.51])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae353c6bc08sm147443066b.131.2025.06.27.09.23.31
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Jun 2025 09:23:31 -0700 (PDT)
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-60c79bedc19so4781a12.3
-        for <bpf@vger.kernel.org>; Fri, 27 Jun 2025 09:23:31 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWqGZmFOpjMOUmIOzQhDAnFjUpI/5T9TeR4ZXUJq79Qs9jOg9cl+skvciuDyhs4qjXUKMc=@vger.kernel.org
-X-Received: by 2002:a05:6402:34c6:b0:5ff:ef06:1c52 with SMTP id
- 4fb4d7f45d1cf-60c88d65540mr3554120a12.3.1751041411199; Fri, 27 Jun 2025
- 09:23:31 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1751042654; x=1751647454;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9s1eA5KwrVKwd9rWss4PkqOIrDE9CSV2z3UbUlBIJKE=;
+        b=prTWDB7jQG8k9QxL3d3XZ2FUuB2Zk/tP+iVIfJd1nf8N7CXXJHCT9Wz+vs/47hDxAC
+         t704p9SXtL8ZJcJlblP46gvwQaFeuc5DazAEasIYcABLR8nndf2LPTcmgBZOo1jR7JEL
+         yz49bww5sKQ7MLUqO9JdJ2HfdipTv81FKdlyaMPfuQXs/02XGnXlx9rJWpZ1CGcP6+N7
+         s5YMhv91/H5qd8LdE+kKFdiokuFWU+KZa2fq8NUkgVgS2s2nU60ILDLHoEAEuYI7NsPW
+         xxdd736/0BQoC+hewfcPcnDWW5LutFBq8IJEA/CAZN/uK57uorXe+ZMO2Zd5+0pTgWym
+         HuvQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWoc/4B+I2rWcHzFbIJKBgvrDHJBNgosHCWbCW9yM2jAOtt5vzt1oCGrNe6y8dXBN30Zoo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzJeCV86v2gbvL8bwVcdr0xJFeZ0cJnkjCaLIH1ksCD407GhvFk
+	9Edz0sDZV7fN3NGYTC7pYWgz0gJ2SwsuFwNtMMPsUnqrqlyBZVZa09fIHSWeVQRfr1dlYmxLG87
+	s8PqZnf1nqlvAC0aPk12xusTZWByzbD+uom1cDG7Q
+X-Gm-Gg: ASbGnctIzWKVGsPpnZwSsESq3SUiM8ZZxTyQ0H7C0kwwBeSOTVoYfIdXgZEdvHNTV3k
+	3tm9xV1Xf50xf9UYIevW99ISoushoJ/YifdNZnoUzaFECoVlY1AjR2WgtGF4HNEurNQDUJh8z6W
+	HeaiF/X+DTlxnmpOYUtWtiqCC2oZF+243jOY7kXaFS+lcL
+X-Google-Smtp-Source: AGHT+IHvztp7L1kXPm4qHzp2aVdvq9iPLHibmjsOFDZjxgx47/40qOE255pl9PfqbsmBA2gt1yngKEvvPvtuRKfJNak=
+X-Received: by 2002:a05:6e02:1a68:b0:3dc:88ca:5eb5 with SMTP id
+ e9e14a558f8ab-3df53bb8ab1mr524965ab.1.1751042654180; Fri, 27 Jun 2025
+ 09:44:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250625225600.555017347@goodmis.org> <20250625225717.187191105@goodmis.org>
- <aF0FwYq1ECJV5Fdi@gmail.com> <20250626081220.71ac3ab6@gandalf.local.home> <20250627100113.7f9ee77b@gandalf.local.home>
-In-Reply-To: <20250627100113.7f9ee77b@gandalf.local.home>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 27 Jun 2025 09:23:14 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiXsMA3OJ0tnSWFDwqH=H8OAsUwF2hqCuQ6uHaLmpQubg@mail.gmail.com>
-X-Gm-Features: Ac12FXwXn1CGZ5TDseyf0yMPbEJKzZlOp6kLfp771zfoaf5rHgLNIhEIXduSSPA
-Message-ID: <CAHk-=wiXsMA3OJ0tnSWFDwqH=H8OAsUwF2hqCuQ6uHaLmpQubg@mail.gmail.com>
-Subject: Re: [PATCH v11 14/14] unwind_user/x86: Enable compat mode frame
- pointer unwinding on x86
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	Andrii Nakryiko <andrii@kernel.org>, Indu Bhagat <indu.bhagat@oracle.com>, 
-	"Jose E. Marchesi" <jemarch@gnu.org>, Beau Belgrave <beaub@linux.microsoft.com>, 
-	Jens Remus <jremus@linux.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Jens Axboe <axboe@kernel.dk>
+References: <20250417230740.86048-1-irogers@google.com> <20250417230740.86048-7-irogers@google.com>
+ <aF3Vd0C-7jqZwz91@google.com> <CAP-5=fV4x0q7YdeYJd6GAHXd48Qochpa-+jq5jsRJWK36v7rSA@mail.gmail.com>
+In-Reply-To: <CAP-5=fV4x0q7YdeYJd6GAHXd48Qochpa-+jq5jsRJWK36v7rSA@mail.gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Fri, 27 Jun 2025 09:44:02 -0700
+X-Gm-Features: Ac12FXxK697QImT-ty4XbntVKcoV6r674s1RbV5RKCu1qYoOEhu-OUGYgs394-o
+Message-ID: <CAP-5=fXLUO3yvSmM4nSnNV_qQGGLP_XTcfPgOhgOkuaNnr3Hvw@mail.gmail.com>
+Subject: Re: [PATCH v4 06/19] perf capstone: Support for dlopen-ing libcapstone.so
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, 
+	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Aditya Gupta <adityag@linux.ibm.com>, "Steinar H. Gunderson" <sesse@google.com>, 
+	Charlie Jenkins <charlie@rivosinc.com>, Changbin Du <changbin.du@huawei.com>, 
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>, James Clark <james.clark@linaro.org>, 
+	Kajol Jain <kjain@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
+	Li Huafei <lihuafei1@huawei.com>, Dmitry Vyukov <dvyukov@google.com>, 
+	Andi Kleen <ak@linux.intel.com>, Chaitanya S Prakash <chaitanyas.prakash@arm.com>, 
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	llvm@lists.linux.dev, Song Liu <song@kernel.org>, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 27 Jun 2025 at 07:01, Steven Rostedt <rostedt@goodmis.org> wrote:
+On Thu, Jun 26, 2025 at 9:53=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
+te:
 >
-> That's not a function. It's just setting a macro named arch_unwind_user_next to
-> be arch_unwind_user_next. I think adding "()" to the end of that will be
-> confusing.
+> On Thu, Jun 26, 2025 at 4:19=E2=80=AFPM Namhyung Kim <namhyung@kernel.org=
+> wrote:
+> >
+> > On Thu, Apr 17, 2025 at 04:07:27PM -0700, Ian Rogers wrote:
+> > > If perf wasn't built against libcapstone, no HAVE_LIBCAPSTONE_SUPPORT=
+,
+> > > support dlopen-ing libcapstone.so and then calling the necessary
+> > > functions by looking them up using dlsym. Reverse engineer the types
+> > > in the API using pahole, adding only what's used in the perf code or
+> > > necessary for the sake of struct size and alignment.
+> >
+> > I still think it's simpler to require capstone headers at build time an=
+d
+> > add LIBCAPSTONE_DYNAMIC=3D1 or something to support dlopen.
+>
+> I agree, having a header file avoids the need to declare the header
+> file values. This is simpler. Can we make the build require
+> libcapstone and libLLVM in the same way that libtraceevent is
+> required? That is you have to explicitly build with NO_LIBTRACEEVENT=3D1
+> to get a no libtraceevent build to succeed. If we don't do this then
+> having LIBCAPSTONE_DYNAMIC will most likely be an unused option and
+> not worth carrying in the code base, I think that's sad. If we require
+> the libraries I don't like the idea of people arguing, "why do I need
+> to install libcapstone and libLLVM just to get the kernel/perf to
+> build now?" The non-simple, but still not very complex, approach taken
+> here was taken as a compromise to get the best result (a perf that
+> gets faster, BPF support, .. when libraries are available without
+> explicitly depending on them) while trying not to offend kernel
+> developers who are often trying to build on minimal systems.
 
-Yeah, we use the pattern
+Fwiw, a situation that I think is analogous (and was playing on my
+mind while writing the code) is that we don't require python to build
+perf and carry around empty-pmu-events.c:
+https://web.git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.gi=
+t/tree/tools/perf/pmu-events/empty-pmu-events.c?h=3Dperf-tools-next
+It would be simpler (in the code base and in general) to require
+everyone building perf to have python.
+Having python on a system seems less of a stretch than requiring
+libcapstone and libLLVM.
 
-   #define abc abc
+If we keep the existing build approach, optional capstone and libLLVM
+by detecting it as a feature, then just linking against the libraries
+is natural. Someone would need to know they care about optionality and
+enable LIBCAPSTONE_DYNAMIC=3D1. An average build where the libraries
+weren't present would lose the libcapstone and libLLVM support. We
+could warn about this situation but some people are upset about build
+warnings, and if we do warn we could be pushing people into just
+linking against libcapstone and libLLVM which seems like we'll fall
+foul of the, "perf has too many library dependencies," complaint. We
+could warn about linking against libraries when there is a _DYNAMIC
+alternative like this available, but again people don't like build
+warnings and they could legitimately want to link against libcapstone
+or libLLVM.
 
-just to show "I have my own architecture-specific implementation for
-this" without having to make up a *new* name for it.
+Anyway, that's why I ended up with the code in this state, to best try
+to play off all the different compromises and complaints that have
+been dealt with in the past.
 
-[ We used to have things like "#define __arch_has_abc" instead, which
-is just annoying particularly when people didn't even always agree on
-the exact prefix. We still do, but we used to too. These days that
-"this arch has" pattern is _mostly_ confined to config variables, I
-think. ]
-
-Adding parenthesis not only makes that much more complicated - now you
-need to match argument numbers etc - but can actually end up causing
-real issues where you now can't use that 'abc' as a function pointer
-any more.
-
-That said, parenthesis can also actually help catch mis-uses (ie maybe
-you *cannot* use the function as a function pointer, exactly because
-some architectures _only_ implement it as a macro), so it's not like
-parentheses are necessarily always wrong, but in general, I think that
-
-  #define abc abc
-
-pattern is the simplest and best way for an architecture header file
-to say "I have an implementation for this".
-
-And obviously the reason we have to use macros for this is because C
-doesn't have a way to test for symbols existing. Other languages do
-have things like that (various levels of "reflection"), but in C
-you're basically limited to the pre-processor.
-
-             Linus
+Thanks,
+Ian
 
