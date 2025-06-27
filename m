@@ -1,160 +1,140 @@
-Return-Path: <bpf+bounces-61771-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61772-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04196AEBFC0
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 21:27:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3170FAEC00D
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 21:36:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA7094A7AB3
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 19:27:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C54A57AAAEB
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 19:35:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 447371F0E25;
-	Fri, 27 Jun 2025 19:26:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33E6920C001;
+	Fri, 27 Jun 2025 19:36:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fcStCyds"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l2gygZhI"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A702C20AF9C;
-	Fri, 27 Jun 2025 19:26:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16A5513C3CD;
+	Fri, 27 Jun 2025 19:36:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751052413; cv=none; b=OJYThcfCMF58fkI/t196/xnGXaOFIZbRKPuupVFR4bfIoYSMVz/aJmPONHVuPZuvqgG8BxECXHC8+dvAS2izKUoJyQDrlxMzECjVRMAzENfSRMg2REa8zo0sQRuljVG4ehUQ1A3Jt3gDeGlZ+qDHJkAQKC4F1ZwKtdA/fZ0Osqo=
+	t=1751053009; cv=none; b=oWltiRjZHb6WxH30/qVOOHvfTRegPq/QvyhJxKskJan+iPPnxzQlsQCQKZhUclt8NJp71X0JhqjcDMJACDWosfNM6yaenFu9U6onzq5a6Q/TMBY4MUjvx0PYxe3zkIxUVUEdhkhwjqaTZYXyyQpbiDnRbx2IJH5hXEGLzvLpEc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751052413; c=relaxed/simple;
-	bh=kCoAehJoP4d3veWTy0DxemolidReITNQ2YabMYVknDI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R5Oyzhfaz7ewmzkd2UOZKzlV5upoQ+H4miYnK1K9ixtIcTqCFqetmSnbtDaVbrrfAMWtqwxGD28+yn+CPRQaWPwfEBhl1EwtqgTBcsvUuIZ63KPC5cv5E+zvxqhaxSKocuvHeosps3FFYLq9tqBK85tkr7bJHY2MlOq0T8L8i2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fcStCyds; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0140AC4CEE3;
-	Fri, 27 Jun 2025 19:26:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751052413;
-	bh=kCoAehJoP4d3veWTy0DxemolidReITNQ2YabMYVknDI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fcStCydsxKyIDjbz3Tz51AeLrwy5mof6hG1an2zqnuWTNSnQLJUO0VkblIlnYNyzP
-	 4ioTcAoJeHgAWz8nJrR/AoPshag+KCtlDO/ZzklDEDbLyKhP+iZcc2ocHDOhjDK3Av
-	 erBF0XU329gNyQW7lDqBBRv8GrGHvsnR8GzkdxWe1Bvd+6V8PKvsJQkTs6QkZIC+35
-	 WDWaaU0yKbjz8YqGFZFfvUT7Soth1y0BLOfdiAq6TTVPCFwpxt/uFRnzoILet9oizy
-	 O8aWp2JmnMCfOBv4XY2LiWTQGVxE0aM5lo49Tuxe8VH2Dulut2dn15YAEhhxFfXAdE
-	 lW+/7cDWPe8Wg==
-Date: Fri, 27 Jun 2025 12:26:50 -0700
-From: Namhyung Kim <namhyung@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Aditya Gupta <adityag@linux.ibm.com>,
-	"Steinar H. Gunderson" <sesse@google.com>,
-	Charlie Jenkins <charlie@rivosinc.com>,
-	Changbin Du <changbin.du@huawei.com>,
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-	James Clark <james.clark@linaro.org>,
-	Kajol Jain <kjain@linux.ibm.com>,
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-	Li Huafei <lihuafei1@huawei.com>,
-	Dmitry Vyukov <dvyukov@google.com>, Andi Kleen <ak@linux.intel.com>,
-	Chaitanya S Prakash <chaitanyas.prakash@arm.com>,
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-	llvm@lists.linux.dev, Song Liu <song@kernel.org>,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH v4 06/19] perf capstone: Support for dlopen-ing
- libcapstone.so
-Message-ID: <aF7wesWHTv_Wp-8y@google.com>
-References: <20250417230740.86048-1-irogers@google.com>
- <20250417230740.86048-7-irogers@google.com>
- <aF3Vd0C-7jqZwz91@google.com>
- <CAP-5=fV4x0q7YdeYJd6GAHXd48Qochpa-+jq5jsRJWK36v7rSA@mail.gmail.com>
- <CAP-5=fXLUO3yvSmM4nSnNV_qQGGLP_XTcfPgOhgOkuaNnr3Hvw@mail.gmail.com>
+	s=arc-20240116; t=1751053009; c=relaxed/simple;
+	bh=OBlHHv5BRcsAM2/X4ERxjnFddBc06xIgBu7EDmZ7r+A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qIPkkrh3BNb6b4j7XWrA6+2ps3PccGvjYmvg23eUqg+A9s198QPkY+70orUIt5O8VIjT19hEpKJSy44q+G4vvnG2eR65lBwVREHZDiH+qLJ+O8xNOq5QpQmVayc+V2yNszCtqY+psNGb0PI9fVsBlpIi1vMlvFLwn0Ead5H+ikQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l2gygZhI; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-451dbe494d6so2238155e9.1;
+        Fri, 27 Jun 2025 12:36:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1751053006; x=1751657806; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sge9kv+qWhs416U9rXTCWTTRXiONTUBYiDk8dbiU+UA=;
+        b=l2gygZhIfnwDPqwy9UFdxk4wNqdnNagDl8jWmog0KugaXJ1Du9exAwhTj3wv2RMZHK
+         eoKpTDUHZYvTu6bhZLVZMI5NZExEmqXVKVaIH74aaf/xKK/AQ696mAM5HBY50jg+Kr3d
+         GoNZrhvlU5zoYwI2Z8mhEeuRozNkj96bRpTgRguJNhRQEN2jgM/xBgwOxTc+h3eU8aB1
+         EX0uxzB0ry7exq9e/GSWHBLKHnwUnqmytxOp80GdwoOZ9hX+1YhHB1KEcoqU/1IN990Y
+         lWaOTJaKlSd86vRrlhLs/2y4IrDjWkyDQOjOS6E6vdVdP43aua2Qrw7gkhjFWQE26AVU
+         iqNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751053006; x=1751657806;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sge9kv+qWhs416U9rXTCWTTRXiONTUBYiDk8dbiU+UA=;
+        b=KLUKOyztMwfOBpbrthpXUKJkEDXeo2lzeq9xu8qjjvi3h/LgkP8JrmKoSSDo55T+Dq
+         qcuA8kPe+qjEbvl+qs9hj0yIe1nwdOZHoC2vJabdW1/V9MEKCP/qknOOvFlBQUcqyMi4
+         4Qbri8UpDkU6n0AVaunKufJ8CkytVo263gdtAHMF97kHfsQhxFouc8XQhkYp09LGZsna
+         KaPOTTNT7kTyemd5oVQlnF+Ax/0Td6PbvrdI2mmMXmRtVyCT9HBLZ6jJLsibSHODiXo4
+         BuTW3SdBfo/IZQAV+8OgjBoB92FMz4O8XwaQr+G85RlMhLGUlB3Fzc6M62apPeREz72z
+         qTSg==
+X-Forwarded-Encrypted: i=1; AJvYcCVU0rDvZM7uRSy+Jgh26dr8a8soy7/3Gy/yIIbdn7Mr8ELYek0aAgN1pujb/tmkb7ASihc=@vger.kernel.org, AJvYcCWYwdrhASKo+o8gIn9JHBsm4Pfi70kLQycmt7UUv4zuPQT9MjINrMOopRPl0HQ9BhjZmPuqXv8dEHewhxrx@vger.kernel.org
+X-Gm-Message-State: AOJu0YxZtbcWUGOhG1iqwEuaGVDLleT1u0IoY6koeXLfZSonhvV2eBI1
+	1T4iVT2KEhzl07NfGsJk/gcVsRL2evisvKoiE1px5ypF961xvWo675J8MQJOZVrtRk7XJcdYG/N
+	S6GIozNV6Jy+OdDE+lleW8JBdcIiVXtM=
+X-Gm-Gg: ASbGncu6x3iYt+r4VxJ5KONLaVv8YHHKM4De+g622LQAWT1A0PJ94PX1ESVpAVA6o7e
+	MojAEgPy8v/kk1/v+vxEe9Fx+R84ugdoT/4wHuikcgKY4GEV28Q3IHaW163P1D3hPD/ZHxoa7XM
+	/bNDu0g5vYL2mLtrZA2fworDfMJNBteDSxth1jnHB6Kg5/6pqduCgsEsFC6Cs2RCCyzot57VZb
+X-Google-Smtp-Source: AGHT+IFJ6sW9aZlzHYqG6nZQUslfkO9AEHSytfv659QepQEpvvFk963bE9My7AemXeg9KlUdJGrL5HrZ59n6bl/5xEY=
+X-Received: by 2002:a05:600c:4fd6:b0:43c:f63c:babb with SMTP id
+ 5b1f17b1804b1-4538ee4f9c5mr44636075e9.1.1751053006033; Fri, 27 Jun 2025
+ 12:36:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fXLUO3yvSmM4nSnNV_qQGGLP_XTcfPgOhgOkuaNnr3Hvw@mail.gmail.com>
+References: <20250616095532.47020-1-matt@readmodwrite.com> <CAPhsuW4ie=vvDSc97pk5qH+faoKjz+b51MDYGA3shaJwNd677Q@mail.gmail.com>
+ <CAENh_SQPLHC8pswTRoqh0bQR84HHQmnO3bM07UQa1Xu9uY_3WA@mail.gmail.com>
+ <CAADnVQ+QyPqi7XJ2p=S9FVDbOxMXvVPU859n+2ApuRQv5T2S5w@mail.gmail.com>
+ <CAENh_SQgZ5yVpshKRhiezhGMDAMvgV7SmwD_8u++mACE33oNrg@mail.gmail.com>
+ <CAADnVQJgOyBCCySnBkTk-VCsz0dy+ppdGHpggxbtDpBBGhaXVg@mail.gmail.com>
+ <CALrw=nFvUwmpjUMYh5iJqjo6SbAO8fZt8pkys7iDjZHfpF2DxQ@mail.gmail.com>
+ <CAADnVQLC44+D-FAW=k=iw+RQA057_ohTdwTYePm5PVMY-BEyqw@mail.gmail.com> <CAENh_SSduKpUtkW_=L5Gg0PYcgDCpkgX4g+7grm4kxucWmq0Ag@mail.gmail.com>
+In-Reply-To: <CAENh_SSduKpUtkW_=L5Gg0PYcgDCpkgX4g+7grm4kxucWmq0Ag@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 27 Jun 2025 12:36:34 -0700
+X-Gm-Features: Ac12FXyQ4sgWqPMwQr7JA7YNzD6LlQrc0xOw38ZKRBCSk16gbbU4DbSm-TLpMD4
+Message-ID: <CAADnVQ+_UZ2xUaV-=mb63f+Hy2aVcfC+y9ds1X70tbZhV8W9gw@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Call cond_resched() to avoid soft lockup in trie_free()
+To: Matt Fleming <matt@readmodwrite.com>
+Cc: Ignat Korchagin <ignat@cloudflare.com>, Song Liu <song@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	kernel-team <kernel-team@cloudflare.com>, Matt Fleming <mfleming@cloudflare.com>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 27, 2025 at 09:44:02AM -0700, Ian Rogers wrote:
-> On Thu, Jun 26, 2025 at 9:53 PM Ian Rogers <irogers@google.com> wrote:
+On Fri, Jun 27, 2025 at 6:20=E2=80=AFAM Matt Fleming <matt@readmodwrite.com=
+> wrote:
+>
+> On Wed, Jun 18, 2025 at 3:50=E2=80=AFPM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> > On Thu, Jun 26, 2025 at 4:19 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> > >
-> > > On Thu, Apr 17, 2025 at 04:07:27PM -0700, Ian Rogers wrote:
-> > > > If perf wasn't built against libcapstone, no HAVE_LIBCAPSTONE_SUPPORT,
-> > > > support dlopen-ing libcapstone.so and then calling the necessary
-> > > > functions by looking them up using dlsym. Reverse engineer the types
-> > > > in the API using pahole, adding only what's used in the perf code or
-> > > > necessary for the sake of struct size and alignment.
-> > >
-> > > I still think it's simpler to require capstone headers at build time and
-> > > add LIBCAPSTONE_DYNAMIC=1 or something to support dlopen.
-> >
-> > I agree, having a header file avoids the need to declare the header
-> > file values. This is simpler. Can we make the build require
-> > libcapstone and libLLVM in the same way that libtraceevent is
-> > required? That is you have to explicitly build with NO_LIBTRACEEVENT=1
-> > to get a no libtraceevent build to succeed. If we don't do this then
-> > having LIBCAPSTONE_DYNAMIC will most likely be an unused option and
-> > not worth carrying in the code base, I think that's sad. If we require
-> > the libraries I don't like the idea of people arguing, "why do I need
-> > to install libcapstone and libLLVM just to get the kernel/perf to
-> > build now?" The non-simple, but still not very complex, approach taken
-> > here was taken as a compromise to get the best result (a perf that
-> > gets faster, BPF support, .. when libraries are available without
-> > explicitly depending on them) while trying not to offend kernel
-> > developers who are often trying to build on minimal systems.
-> 
-> Fwiw, a situation that I think is analogous (and was playing on my
-> mind while writing the code) is that we don't require python to build
-> perf and carry around empty-pmu-events.c:
-> https://web.git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/pmu-events/empty-pmu-events.c?h=perf-tools-next
-> It would be simpler (in the code base and in general) to require
-> everyone building perf to have python.
-> Having python on a system seems less of a stretch than requiring
-> libcapstone and libLLVM.
-> 
-> If we keep the existing build approach, optional capstone and libLLVM
-> by detecting it as a feature, then just linking against the libraries
-> is natural. Someone would need to know they care about optionality and
-> enable LIBCAPSTONE_DYNAMIC=1. An average build where the libraries
-> weren't present would lose the libcapstone and libLLVM support. We
-> could warn about this situation but some people are upset about build
-> warnings, and if we do warn we could be pushing people into just
-> linking against libcapstone and libLLVM which seems like we'll fall
-> foul of the, "perf has too many library dependencies," complaint. We
-> could warn about linking against libraries when there is a _DYNAMIC
-> alternative like this available, but again people don't like build
-> warnings and they could legitimately want to link against libcapstone
-> or libLLVM.
-> 
-> Anyway, that's why I ended up with the code in this state, to best try
-> to play off all the different compromises and complaints that have
-> been dealt with in the past.
+> > Do your homework pls.
+> > Set max_entries to 100G and report back.
+> > Then set max_entries to 1G _with_ cond_rescehd() hack and report back.
+>
+> Hi,
+>
+> I put together a small reproducer
+> https://github.com/xdp-project/bpf-examples/pull/130 which gives the
+> following results on an AMD EPYC 9684X 96-Core machine:
+>
+> | Num of map entries | Linux 6.12.32 |  KASAN  | cond_resched |
+> |--------------------|---------------|---------|--------------|
+> | 1K                 | 0ms           | 4ms     | 0ms          |
+> | 10K                | 2ms           | 50ms    | 2ms          |
+> | 100K               | 32ms          | 511ms   | 32ms         |
+> | 1M                 | 427ms         | 5478ms  | 420ms        |
+> | 10M                | 5056ms        | 55714ms | 5040ms       |
+> | 100M               | 67253ms       | *       | 62630ms      |
+>
+> * - I gave up waiting after 11.5 hours
+>
+> Enabling KASAN makes the durations an order of magnitude bigger. The
+> cond_resched() patch eliminates the soft lockups with no effect on the
+> times.
 
-I can see your point.  Adding new build flags is likely to be unused and
-forgotten.
-
-But I also think is that this dlopen support is mostly useful to distro
-package managers who want to support more flexible environment and
-regular dynamic linking is preferred to local builds over dlopen.  Then
-adding a note to a pull request and contacting them directly (if needed)
-might work?
-
-Thanks,
-Namhyung
-
+Good. Now you see my point, right?
+The cond_resched() doesn't fix the issue.
+1hr to free a trie of 100M elements is horrible.
+Try 100M kmalloc/kfree to see that slab is not the issue.
+trie_free() algorithm is to blame. It doesn't need to start
+from the root for every element. Fix the root cause.
 
