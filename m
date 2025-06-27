@@ -1,148 +1,182 @@
-Return-Path: <bpf+bounces-61755-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61756-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16194AEBCB7
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 18:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B8705AEBCFD
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 18:19:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B46FB1C41996
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 16:00:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 843C61C271F8
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 16:20:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3A642E9ECD;
-	Fri, 27 Jun 2025 15:59:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B56E1BD9F0;
+	Fri, 27 Jun 2025 16:19:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PGsj/jY5"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="BJFZkKBC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E25BB19E990;
-	Fri, 27 Jun 2025 15:59:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B45281A2387;
+	Fri, 27 Jun 2025 16:19:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751039981; cv=none; b=e/TzdVki8Fz7EktPHKKeN7iAAwC8LVLmupv+zoS3vDcfaV8cW173waxxyhwc/JnEOBAnUZT8NLAu/G6vSLPpXNZBRhmFJ2rNO6j8KvNpIqzABjLgp1uOMjzyiBFLLA66rgQNLAsPyfWTqSgLv/DZHFwT7AsAfEVPrWMHq83hERk=
+	t=1751041181; cv=none; b=o8F3JZZlflWE3yWil9cSR+8OBtWpSu/IjR/LbL+o27kcymtczX5XOfSdvhxtL0nosCcagytOzZ4h1FOXbgJT6RkwH7DDpxQIB7Ifgra+lLfeG1CKnOyfiMsAqrMBKre7H6Vibpwh1aKoDACbnpvA+qF1bvg/iWJBJV6tQpy0VDo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751039981; c=relaxed/simple;
-	bh=UL5P2G8QwWKYeIIOTiUC5tzsMqmjCmX1SN6IgdbYSZc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JD46EK2i8UnwB45DupS1z+yUvOm6fO71P8tBq3g1Zk5zTnvFzg40/DCNsHq4UtwAh8d6wBOpY41g6rgBQj4nNhy9qpC4V9DGIUTCdjgbRPZpcZx9H62+TsDSQgC7Ru6f4ZLC1fZL8rPZdYNZCdApQsEdnRxtILw/xtc9gUzAzv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PGsj/jY5; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3a6f2c6715fso2437632f8f.1;
-        Fri, 27 Jun 2025 08:59:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751039978; x=1751644778; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UL5P2G8QwWKYeIIOTiUC5tzsMqmjCmX1SN6IgdbYSZc=;
-        b=PGsj/jY5lECkMQTXDIJ66wMwZNWBA5xUKpsiZHOvbEh3Eg3TtOOm069JA1kz+k3gDR
-         EOcrB9GX7iQ1+V8Vq3v7yMAWqk8phoUcTgfnM7YDtQQP9mEdtJD1wg3O7t7rE8tykKtk
-         1NyiFL7n6m48rMCeMNK5BiZwXX9VVDxKoUFA1T9yGkYJgZA0FFPVz+d29TZ1/cS1Ve9A
-         /FBHrB6+KtOsMdtWA14N/eK15xEXnw3YHekuWZNWmYWKlibcBZEOHARJ4XjKQkdAC0Cg
-         ZG+jFRtMRgKd5U4TBYqpdJisZ1PPEEng38lnfb4sEdTZVqPhLQKKKKOwe/qcCTJ9DogK
-         TcPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751039978; x=1751644778;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UL5P2G8QwWKYeIIOTiUC5tzsMqmjCmX1SN6IgdbYSZc=;
-        b=h0McMvDxk1bNMUZyL7u18cbdYJJfQw+rVVwgIkAqt9YLxmgWpc2TEG8k5vCf27zuxc
-         poj9a0E6VCyco1qM16i6u2zpHk41Cgz1/Pj/lOAWk6XjmkZEryLhKJd110T2cmLtS71k
-         0pwiAQbbMj2oegA/l8rJv0NTzIKTzOYl03d5PkdrL/v13qFZyDCp/hPhI/3u0CkF5aio
-         jSL5YhqMxctkDXG6OqifXS9wUXZ5hBopuAZVqZTFN2rnT0W5hL44M/+BsKNvCC9wMj3F
-         f/w6q2Rd2e+ILlSINZ74VsxyFhFcpzMA0yXoY6wmlrnGIK5h0lX0mmSsKNJ/uGW4I9Ls
-         +YAg==
-X-Forwarded-Encrypted: i=1; AJvYcCUBMR/cvCrblVr2vmtMWzRr6ExtSamvhhco4zPw5DpfrbgQag7+vnEwlRHGq0akDTntEKne5vCl9du85uBl@vger.kernel.org, AJvYcCUQ3oUhw/qQjNgH45QpXeB8s0lROIKIWNPGRQGQBWs1uA1gZ1Mr7gry4JI/w66+cgwuXucqqQdQV2E4qafvuJFUuMsZdxQZ@vger.kernel.org, AJvYcCW6yCgRUZp9ptyha1Ps0xL1Ecs4fzfVRN387C8VokquuUEo5lt3wBV8uA9hT7hgk/2U7f7vNSg5mdjLiLMaGA==@vger.kernel.org, AJvYcCXOxRnCpSOp4JXwlk3/Z3KAys8E0ITD2Lo0Zy6DszM9uZzGKqnlTR8zsU1uxkapNHjaU0Y=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxGczBG6PdD6NZFh00iSJV0HshLHLHvF972LKwm1p3qZ87PqtxH
-	V78iYztrlANfNSB2FrmzEkY2uUgQUX4N9CeHbCvKxify9AlP/xupqnJafNLVeMdQpThehcXCedL
-	o/AG19H6sFm5WA4QQ+b4+YOj3M/KiWHQ=
-X-Gm-Gg: ASbGncuFmG5AFab2KoHUvrTvFawgfm1BSnpra+Lf+4Z4Ibzjoi9FjA+k8H5lQEoURFV
-	lKrxuNodhMkPs8Zl91sDRfeEIQmmYSYUriM8MMcodydGpm1Tvkl4AhJvHD92zeRIyJE7vWm+2i6
-	P4ebX6q0ip5PHhcpoiNONiss47flqYbkBucYgDToPPcz9YWxDDJAV5eZI6Ze2Ae95wIVbyxRWk
-X-Google-Smtp-Source: AGHT+IF1U4dcY9xhsGy4rlWEcfGwUP3bOoZNh7p3VrXI1JSMiPPMIzqk94XvixfjE42EY3uQb8qxFRdvlbjNH2ISQ9I=
-X-Received: by 2002:a05:6000:2711:b0:3a4:f7d9:3f56 with SMTP id
- ffacd0b85a97d-3a8f435e574mr2894930f8f.2.1751039977933; Fri, 27 Jun 2025
- 08:59:37 -0700 (PDT)
+	s=arc-20240116; t=1751041181; c=relaxed/simple;
+	bh=dojDUaknWsQhUppWGBTY+TtDVjglusnc/IomcJ2SaIQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iQ1iPh4Cd5HGxuY0ypL64b9vXMb3ucjK3sMTY2SfYUE1RnTs+NUggDIUQOm2mWv6gUeWjcONVq1wGDjTZws8K04+Z2RC1zgnEqyQbqV1BKJ3b0hpPUOv6//1pdjuvZCONEn7VK2++WtnXfi27I+nEq1Zqj+H8r8aVPGZIfHFKLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=BJFZkKBC; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55R8JAGo015779;
+	Fri, 27 Jun 2025 16:19:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=AUUGAs
+	jTPjmQje0zk6ojyUek1SCo7u8kOCyALn0F/Qw=; b=BJFZkKBCRZPUNFOUJOnQTk
+	NgIXC236oayhZRazl7BsxP6YfeXqMvcMRb825QsVgk6Uekkdy/58yOHB6dtNdcxY
+	Jxk3O9qwbYGHhJvwDkC/H0iTUiMQj5HbsH+8KRUVbAx/LZvC0HjfGNaH5LJFyRb5
+	jrE7cE3+XrJZ0c0IEvTMG7exDdyt0Gp8qCjh8WtmrAlf6WxoErflk4VSAFMb8/SJ
+	xklccYaoBZhSkN8W7EteIPQcomXYVl7uUnmj7F/67iI9LWhv9E9s7k1Lmm/1J9nN
+	puS3Fsaa0ViDFZgjLS0PfnEzU7MG5WFQ2hiTxc5Yy1LZjPD+O5TOduQKccoFhquA
+	==
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47dm8jxmyy-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 27 Jun 2025 16:19:11 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 55RCb3AG006414;
+	Fri, 27 Jun 2025 16:19:09 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 47e82pn06r-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 27 Jun 2025 16:19:09 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 55RGJ7E342992004
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 27 Jun 2025 16:19:07 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8AA5A20040;
+	Fri, 27 Jun 2025 16:19:07 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9FB992004B;
+	Fri, 27 Jun 2025 16:19:06 +0000 (GMT)
+Received: from [9.111.156.254] (unknown [9.111.156.254])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 27 Jun 2025 16:19:06 +0000 (GMT)
+Message-ID: <75c074f7-ed3c-4302-a962-b62b6ff644f5@linux.ibm.com>
+Date: Fri, 27 Jun 2025 18:19:05 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250623063854.1896364-1-song@kernel.org> <20250623-rebel-verlust-8fcd4cdd9122@brauner>
- <CAADnVQ+iqMi2HEj_iH7hsx+XJAsqaMWqSDe4tzcGAnehFWA9Sw@mail.gmail.com> <CAPhsuW7JAgXUObzkMAs_B=O09uHfhkgSuFV5nvUJbsv=Fh8JyA@mail.gmail.com>
-In-Reply-To: <CAPhsuW7JAgXUObzkMAs_B=O09uHfhkgSuFV5nvUJbsv=Fh8JyA@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 27 Jun 2025 08:59:26 -0700
-X-Gm-Features: Ac12FXxIczTM5K68rlq_78aPZtKoDWfs-hoiBCYqfl1f8Bf6HdGD3OkhePHxzBk
-Message-ID: <CAADnVQKNR1QES31HPNriYBAzmoxdG=sWyqwvDTtthROgezah3w@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 0/4] Introduce bpf_cgroup_read_xattr
-To: Song Liu <song@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>, Kernel Team <kernel-team@meta.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard <eddyz87@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
-	KP Singh <kpsingh@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>, 
-	Amir Goldstein <amir73il@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Tejun Heo <tj@kernel.org>, Daan De Meyer <daan.j.demeyer@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	LSM List <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 07/12] unwind_user/sframe: Wire up unwind_user to
+ sframe
+To: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        x86@kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Indu Bhagat <indu.bhagat@oracle.com>,
+        "Jose E. Marchesi" <jemarch@gnu.org>,
+        Beau Belgrave <beaub@linux.microsoft.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20250617225009.233007152@goodmis.org>
+ <20250617225118.194027083@goodmis.org>
+Content-Language: en-US
+From: Jens Remus <jremus@linux.ibm.com>
+Organization: IBM Deutschland Research & Development GmbH
+In-Reply-To: <20250617225118.194027083@goodmis.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjI3MDEzMiBTYWx0ZWRfX5EOajJCM7rtq tJX1uS3QJ5qywbpBYkqH7VjetMeliH2CFgCFjf/+QkYQzXnoyw8XxjBnCsxfRI/DApJe8o/SVA9 HDxP+jVWMnsmHicIzJoRmcaBqor8aYFZR34Ke7pDrIt19JyZ3rMH0fG9KbHjiGFp+0Gj9LXwjZn
+ 9LNeAMqCSZi5SMo9RG75MIEDwNBw3OyFMaAWkpi3N+ZcNTypyPCyVSa3I/QCETXtnobAhU7zIbm Wk63pvU4qUMqzXnl4UikOoGHflSbdiutp1YAyZ7pr/KxQdbaHN91Ro4T1aiaBPija1nXCguXGGc u5yvMhD2ZZRy9oQj9Ww/y+JvfDbfWesNqFu5HV3Azg64BzXphCgJiaU4pBvCozjX7J/ZAFs+k+I
+ 4W7a2cc5riB9p13Dvl/TMnzGFksjfFdpslZr4c810GYtCTQZOHCW3dy7UDzTrN5gPl/cLv3f
+X-Proofpoint-GUID: 5jdiw-_Y8CleflV2OaRKTJR6UdrRSA12
+X-Proofpoint-ORIG-GUID: 5jdiw-_Y8CleflV2OaRKTJR6UdrRSA12
+X-Authority-Analysis: v=2.4 cv=combk04i c=1 sm=1 tr=0 ts=685ec47f cx=c_pps a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17 a=IkcTkHD0fZMA:10 a=6IFa9wvqVegA:10 a=VnNF1IyMAAAA:8 a=VwQbUJbxAAAA:8 a=meVymXHHAAAA:8 a=mmEVG2U_Ztk9iETfGqQA:9
+ a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=2JgSa4NbpEOStq-L5dxp:22
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
+ definitions=2025-06-27_05,2025-06-26_05,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 spamscore=0 adultscore=0 mlxlogscore=999 clxscore=1011
+ impostorscore=0 suspectscore=0 mlxscore=0 phishscore=0 lowpriorityscore=0
+ bulkscore=0 classifier=spam authscore=0 authtc=n/a authcc= route=outbound
+ adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
+ definitions=main-2506270132
 
-On Thu, Jun 26, 2025 at 9:04=E2=80=AFPM Song Liu <song@kernel.org> wrote:
->
-> On Thu, Jun 26, 2025 at 7:14=E2=80=AFPM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> [...]
-> > ./test_progs -t lsm_cgroup
-> > Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
-> > ./test_progs -t lsm_cgroup
-> > Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
-> > ./test_progs -t cgroup_xattr
-> > Summary: 1/8 PASSED, 0 SKIPPED, 0 FAILED
-> > ./test_progs -t lsm_cgroup
-> > test_lsm_cgroup_functional:PASS:bind(ETH_P_ALL) 0 nsec
-> > (network_helpers.c:121: errno: Cannot assign requested address) Failed
-> > to bind socket
-> > test_lsm_cgroup_functional:FAIL:start_server unexpected start_server:
-> > actual -1 < expected 0
-> > (network_helpers.c:360: errno: Bad file descriptor) getsockopt(SOL_PROT=
-OCOL)
-> > test_lsm_cgroup_functional:FAIL:connect_to_fd unexpected
-> > connect_to_fd: actual -1 < expected 0
-> > test_lsm_cgroup_functional:FAIL:accept unexpected accept: actual -1 < e=
-xpected 0
-> > test_lsm_cgroup_functional:FAIL:getsockopt unexpected getsockopt:
-> > actual -1 < expected 0
-> > test_lsm_cgroup_functional:FAIL:sk_priority unexpected sk_priority:
-> > actual 0 !=3D expected 234
-> > ...
-> > Summary: 0/1 PASSED, 0 SKIPPED, 1 FAILED
-> >
-> >
-> > Song,
-> > Please follow up with the fix for selftest.
-> > It will be in bpf-next only.
->
-> The issue is because cgroup_xattr calls "ip link set dev lo up"
-> in setup, and calls "ip link set dev lo down" in cleanup. Most
-> other tests only call "ip link set dev lo up". IOW, it appears to
-> me that cgroup_xattr is doing the cleanup properly. To fix this,
-> we can either remove "dev lo down" from cgroup_xattr, or add
-> "dev lo up" to lsm_cgroups. Do you have any preference one
-> way or another?
+On 18.06.2025 00:50, Steven Rostedt wrote:
+> From: Josh Poimboeuf <jpoimboe@kernel.org>
+> 
+> Now that the sframe infrastructure is fully in place, make it work by
+> hooking it up to the unwind_user interface.
+> 
+> Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-It messes with "lo" without switching netns? Ouch.
-Not sure what tests you copied that code from,
-but all "ip" commands, ping_group_range, and sockets
-don't need to be in the test. Instead of triggering
-progs through lsm/socket_connect hook can't you use
-a simple hook like lsm/bpf or lsm/file_open that doesn't require
-networking setup ?
+> diff --git a/kernel/unwind/user.c b/kernel/unwind/user.c
+
+> @@ -41,17 +48,27 @@ static inline bool compat_state(struct unwind_user_state *state)
+>  int unwind_user_next(struct unwind_user_state *state)
+>  {
+>  	struct unwind_user_frame *frame;
+> +	struct unwind_user_frame _frame;
+>  	unsigned long cfa = 0, fp, ra = 0;
+>  
+>  	if (state->done)
+>  		return -EINVAL;
+>  
+> -	if (compat_state(state))
+> +	if (compat_state(state)) {
+>  		frame = &compat_fp_frame;
+> -	else if (fp_state(state))
+> +	} else if (sframe_state(state)) {
+> +		/* sframe expects the frame to be local storage */
+> +		frame = &_frame;
+> +		if (sframe_find(state->ip, frame)) {
+> +			if (!IS_ENABLED(CONFIG_HAVE_UNWIND_USER_FP))
+> +				goto the_end;
+
+Nit: s/the_end/done/
+
+> +			frame = &fp_frame;
+> +		}
+> +	} else if (fp_state(state)) {
+>  		frame = &fp_frame;
+> -	else
+> +	} else {
+>  		goto the_end;
+> +	}
+>  
+>  	cfa = (frame->use_fp ? state->fp : state->sp) + frame->cfa_off;
+>  
+
+Regards,
+Jens
+-- 
+Jens Remus
+Linux on Z Development (D3303)
++49-7031-16-1128 Office
+jremus@de.ibm.com
+
+IBM
+
+IBM Deutschland Research & Development GmbH; Vorsitzender des Aufsichtsrats: Wolfgang Wendt; Geschäftsführung: David Faller; Sitz der Gesellschaft: Böblingen; Registergericht: Amtsgericht Stuttgart, HRB 243294
+IBM Data Privacy Statement: https://www.ibm.com/privacy/
+
 
