@@ -1,160 +1,194 @@
-Return-Path: <bpf+bounces-61783-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61784-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39AD8AEC286
-	for <lists+bpf@lfdr.de>; Sat, 28 Jun 2025 00:06:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9188AEC2E8
+	for <lists+bpf@lfdr.de>; Sat, 28 Jun 2025 01:11:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 831734A1252
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 22:06:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C347F1BC2390
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 23:11:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD03128C85C;
-	Fri, 27 Jun 2025 22:06:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E055E290083;
+	Fri, 27 Jun 2025 23:11:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vpOzawR7"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dsk3g/3Q"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1937228C5D3
-	for <bpf@vger.kernel.org>; Fri, 27 Jun 2025 22:06:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B37BC28D82F
+	for <bpf@vger.kernel.org>; Fri, 27 Jun 2025 23:11:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751061969; cv=none; b=ETquyBvX4VE5nQ0xn02SYc3j+kEN1dgbN2UlySJHOQMbMl7pRnY7KCa7UcYCKjMVOBPPv1DNJQshk9fgHfeZ/ccA6OJrAIzCEYjrMXz3Msolfe9fDkhuTTRJtl6mzsCMrNkuBLjLcltXIGAZMpdCw15DhEcs09WNQ7AnRnpDaP0=
+	t=1751065876; cv=none; b=YCzK9ev3NvSeNvh0c1TQJeDJPqgiU7UJk3rTdVo9XmmuhGIPAietDP7CGRN/NALgLGsC/QwAPndwr6nJBKshzrH6MzMmsIGXf1H6Htinw6vSIVy2//AbcxU4F7iSoqDZO3Fsx3mg4RhGssDmUxc4PNHh2Ou3zSRQvLbf7oJyaao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751061969; c=relaxed/simple;
-	bh=xQSQCRDFZJmIak4BkWH5cuMEiXyu43tg7bUI0csBYLA=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=Fzh2zfCkKpTYHoMlG11HBrxARLtZHl5r/BnuUuN/xGwEnGA2LZ7HouK5AnWH53Ce/3vGjgpNBJghnZql/Anu+1WfWP5hoFPw3vvjomRcp0scXgZs039BKAaPzSwJnDeBWPcy1vCzhI2Cb0P5BCCPJbhHjspdss7bvIAb32EydqA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vpOzawR7; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <fbdb8883-cffe-4764-889b-6d00f2058e75@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1751061962;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jLv/fjuH/+8aM7PguWthg7lUMLLbNBHhzk1pss2QXFw=;
-	b=vpOzawR7G54FSCIWr7YRPuPRSMOt72YLulyYLE2dphJOFqLg+TyH+icc2lLNlNpRTXagfd
-	VIdyl18xysxf8YfNrFlsPUGHTADnevfnkX3dxM8cKZobZ2H8lYJRPhfRN8gL+Em7G+1jFG
-	prz1xK8WsAECo7WLkoyLEGElpOUgTek=
-Date: Fri, 27 Jun 2025 15:05:51 -0700
+	s=arc-20240116; t=1751065876; c=relaxed/simple;
+	bh=BAMzKo8cv7ru+aWsN4XS2dPIapPyqPMn5l1eLT4nrvc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qgpMZeeAfrO3ub0tOi5m5wYzUXpSSZ/F5Q3LBbkjLZNG1S9y0fj6pnIuJHXSkaVkXXUpUUZU/+JxcaJJD2oEzlkrPOS+if/19ClX/dMMSC+dTRLmVazUtTjsvM1YVPUgRFY55Fm7OLf0fUWH5jHJ3nknjgYghWSUKmvs7D2kZbg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dsk3g/3Q; arc=none smtp.client-ip=209.85.166.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-3df2fa612c4so55395ab.1
+        for <bpf@vger.kernel.org>; Fri, 27 Jun 2025 16:11:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1751065874; x=1751670674; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+r1k/4QEtOdvaCXklZVZbc3BxCMGTSAo6KfvEM+1WJU=;
+        b=dsk3g/3Qk9BZULFQya3YSOtM+XYDZ+g/BeXxFnHZNpgUl5QthxMy6cQj9g6Jtcs8SS
+         iiOG07mvRp3eVpxupK0VjOq46flaV/wBbdZiL7+XK+IOhMkdyCyDR3S3mVOtRan6IzlK
+         BOcwZ75VzZyJVAh0ekozeV7opO7XFDUGwr1E6gOB8odw/kqzfAjt7rQuLB2Dhc5HgzTL
+         8bPwc32nZZvXo/Jyrfakoq5KpDMGnycW6QnjDCLRTrwlrqd9caLSQadG1un7BuRFZxou
+         0zrsSe82XkAUok7g12MXaLDDJnAsa7H4ZHu8KhIspyeUWmxYDY2EMkqNB4fxaDWljNqD
+         PPFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751065874; x=1751670674;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+r1k/4QEtOdvaCXklZVZbc3BxCMGTSAo6KfvEM+1WJU=;
+        b=Ri+OuezE2qssmVloZHb7tw05Gq9mr+OV0sapK3zdhfU8wCfyfWQREA9iu8sfZG/TzA
+         tMKT+Eav6VZkua3MkppySWuCpF3qKR1yqlH3Ftj8ipHPfBWbTXkXlxMTC4e56ypWq2Em
+         16FGzVB+P41atbOyns6+P4kTeLAxi8gD4+bJ8nBrJabymNRstxoM/a1bxy16hkz8b601
+         sqS40I7dXThriGuH4E7v/hz5Qr57qGkJq1dpFpzFGLLgqdVriFbyNzYPrEHBDhHgDVZZ
+         kZyMD1DpP4uOYefawxoYXaudytQUB9p8EeNj8cIlhHsAuVEV/gbmYjM6kOG/2/bIqfQ/
+         JqEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUJNb0/eZ9C0DlMAucSTGtGcfQ49f8OvcGpfG3EH3Yg7yNpaygrpUa6JtiB6G9OYk4DKDk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzUw7kQbWITTf7oyrdsP1+kX4EbkdHX+Ft1f2JVChrbMJOGGUUh
+	VcDl+tJ46XQMipk3JHARF3LAPSv6ttT3XdBCYFEl22mKvCcYlI+/0nAgwiX81UfKdUO//UT9LTf
+	vRFlj++UNC3Y6H+eecxELWn7qLuuu9hBTIwh2t4uZ
+X-Gm-Gg: ASbGnct1RYBdOope6lYBKO6imDvHCYIV2gyXbrrglTDaRHWGegOt6ipfBkrn6Hy8Kfm
+	kiQ9Ac+SWx/dj7EBlbJN2kTOXhY6i5hiqe7+bhqN8pi97oBlpADOLWcV9r77ROVUpiPxTF1QHwV
+	7YOF/AuCI5baiE3M5HKv9R0hsrjzI042djvVebTwz/AfYA
+X-Google-Smtp-Source: AGHT+IHOrtjjnavLeFmnxRzUKctDiOqRlZqpa3B6VBvWXIZQMbA5CqO1kSxXEHqdcMJotrOKU1tEB580gSfXEF5bIO4=
+X-Received: by 2002:a05:6e02:11:b0:3dd:b59b:8da5 with SMTP id
+ e9e14a558f8ab-3df55381c7amr1542175ab.0.1751065873440; Fri, 27 Jun 2025
+ 16:11:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 bpf-next] selftests/bpf: Fix
- cgroup_xattr/read_cgroupfs_xattr
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>,
- Kernel Team <kernel-team@meta.com>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Jakub Kicinski <kuba@kernel.org>,
- brauner@kernel.org
-References: <20250627191221.765921-1-song@kernel.org>
- <839d4696-fad6-499b-a156-994951ea75c7@linux.dev>
- <CAADnVQL5vQ9e5TMYfUafkzEUU+akgVME=OFtbATeTkL-G8aKLQ@mail.gmail.com>
- <11bd7899-9ffe-48fc-8d0b-94ed3b9532ab@linux.dev>
- <CAADnVQ++H6qOvU7tYvcxh8NW-kshUPhTCuc=4w4JCZCeu_zcdA@mail.gmail.com>
- <c0b17b50-3d8a-4e63-be6e-d4cd2564a49e@linux.dev>
-Content-Language: en-US
-In-Reply-To: <c0b17b50-3d8a-4e63-be6e-d4cd2564a49e@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250417230740.86048-1-irogers@google.com> <20250417230740.86048-7-irogers@google.com>
+ <aF3Vd0C-7jqZwz91@google.com> <CAP-5=fV4x0q7YdeYJd6GAHXd48Qochpa-+jq5jsRJWK36v7rSA@mail.gmail.com>
+ <CAP-5=fXLUO3yvSmM4nSnNV_qQGGLP_XTcfPgOhgOkuaNnr3Hvw@mail.gmail.com> <aF7wesWHTv_Wp-8y@google.com>
+In-Reply-To: <aF7wesWHTv_Wp-8y@google.com>
+From: Ian Rogers <irogers@google.com>
+Date: Fri, 27 Jun 2025 16:11:02 -0700
+X-Gm-Features: Ac12FXyr3ntBENxGcNDQ5WuQEl_ZSKMbc68-z87tHPtttLtfqAEggfiOqd6-r3s
+Message-ID: <CAP-5=fU+t=pB1TmE5DBGphaunZLCdGnRtHdxy3suCQMhxFjOiQ@mail.gmail.com>
+Subject: Re: [PATCH v4 06/19] perf capstone: Support for dlopen-ing libcapstone.so
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, 
+	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Aditya Gupta <adityag@linux.ibm.com>, "Steinar H. Gunderson" <sesse@google.com>, 
+	Charlie Jenkins <charlie@rivosinc.com>, Changbin Du <changbin.du@huawei.com>, 
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>, James Clark <james.clark@linaro.org>, 
+	Kajol Jain <kjain@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
+	Li Huafei <lihuafei1@huawei.com>, Dmitry Vyukov <dvyukov@google.com>, 
+	Andi Kleen <ak@linux.intel.com>, Chaitanya S Prakash <chaitanyas.prakash@arm.com>, 
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	llvm@lists.linux.dev, Song Liu <song@kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 6/27/25 2:56 PM, Ihor Solodrai wrote:
-> On 6/27/25 2:38 PM, Alexei Starovoitov wrote:
->> On Fri, Jun 27, 2025 at 2:36 PM Ihor Solodrai 
->> <ihor.solodrai@linux.dev> wrote:
->>>
->>> On 6/27/25 2:34 PM, Alexei Starovoitov wrote:
->>>> On Fri, Jun 27, 2025 at 2:19 PM Ihor Solodrai 
->>>> <ihor.solodrai@linux.dev> wrote:
->>>>>
->>>>> On 6/27/25 12:12 PM, Song Liu wrote:
->>>>>> cgroup_xattr/read_cgroupfs_xattr has two issues:
->>>>>>
->>>>>> 1. cgroup_xattr/read_cgroupfs_xattr messes up lo without creating 
->>>>>> a netns
->>>>>>       first. This causes issue with other tests.
->>>>>>
->>>>>>       Fix this by using a different hook (lsm.s/file_open) and not 
->>>>>> messing
->>>>>>       with lo.
->>>>>>
->>>>>> 2. cgroup_xattr/read_cgroupfs_xattr sets up cgroups without proper
->>>>>>       mount namespaces.
->>>>>>
->>>>>>       Fix this by using the existing cgroup helpers. A new helper
->>>>>>       set_cgroup_xattr() is added to set xattr on cgroup files.
->>>>>>
->>>>>> Fixes: f4fba2d6d282 ("selftests/bpf: Add tests for 
->>>>>> bpf_cgroup_read_xattr")
->>>>>> Reported-by: Alexei Starovoitov <ast@kernel.org>
->>>>>> Closes: https://lore.kernel.org/bpf/ 
->>>>>> CAADnVQ+iqMi2HEj_iH7hsx+XJAsqaMWqSDe4tzcGAnehFWA9Sw@mail.gmail.com/
->>>>>> Signed-off-by: Song Liu <song@kernel.org>
->>>>>>
->>>>>> ---
->>>>>> Changes v1 => v2:
->>>>>> 1. Add the second fix above.
->>>>>>
->>>>>> v1: https://lore.kernel.org/bpf/20250627165831.2979022-1- 
->>>>>> song@kernel.org/
->>>>>> ---
->>>>>>     tools/testing/selftests/bpf/cgroup_helpers.c  |  21 ++++
->>>>>>     tools/testing/selftests/bpf/cgroup_helpers.h  |   4 +
->>>>>>     .../selftests/bpf/prog_tests/cgroup_xattr.c   | 117 +++ 
->>>>>> +--------------
->>>>>>     .../selftests/bpf/progs/read_cgroupfs_xattr.c |   4 +-
->>>>>>     4 files changed, 49 insertions(+), 97 deletions(-)
->>>>>
->>>>> Hi Song.
->>>>>
->>>>> I tried this patch on BPF CI, and it appears it fixes the hanging
->>>>> failure we've been seeing today on bpf-next and netdev.
->>>>> I am going to add it to ci/diffs.
->>>>
->>>> Applied to bpf-next already.
->>>
->>> CI patches apply to all base branches. My understanding is, it's needed
->>> at least for netdev too.
->>
->> How is that possible?
->>
->> The offending commit is only in /master and in /for-next branches,
->> while /for-next is there for linux-next only.
-> 
-> I am not sure.
-> 
-> I compared CI logs between bpf-next and netdev runs that both were
-> cancelled due to 100min job timeout, and they are very similar.
-> 
-> netdev: https://github.com/kernel-patches/bpf/actions/runs/15932863319/ 
-> job/44946276955
-> bpf-next: https://github.com/kernel-patches/bpf/actions/ 
-> runs/15934258609/job/44950981852
-> 
-> So the root cause is likely the same.
-> 
-> And most recent netdev (with this patch applied) is green:
-> https://github.com/kernel-patches/bpf/actions/runs/15936292169
-> 
-> CC Jakub
-> 
-> 
+On Fri, Jun 27, 2025 at 12:26=E2=80=AFPM Namhyung Kim <namhyung@kernel.org>=
+ wrote:
+>
+> On Fri, Jun 27, 2025 at 09:44:02AM -0700, Ian Rogers wrote:
+> > On Thu, Jun 26, 2025 at 9:53=E2=80=AFPM Ian Rogers <irogers@google.com>=
+ wrote:
+> > >
+> > > On Thu, Jun 26, 2025 at 4:19=E2=80=AFPM Namhyung Kim <namhyung@kernel=
+.org> wrote:
+> > > >
+> > > > On Thu, Apr 17, 2025 at 04:07:27PM -0700, Ian Rogers wrote:
+> > > > > If perf wasn't built against libcapstone, no HAVE_LIBCAPSTONE_SUP=
+PORT,
+> > > > > support dlopen-ing libcapstone.so and then calling the necessary
+> > > > > functions by looking them up using dlsym. Reverse engineer the ty=
+pes
+> > > > > in the API using pahole, adding only what's used in the perf code=
+ or
+> > > > > necessary for the sake of struct size and alignment.
+> > > >
+> > > > I still think it's simpler to require capstone headers at build tim=
+e and
+> > > > add LIBCAPSTONE_DYNAMIC=3D1 or something to support dlopen.
+> > >
+> > > I agree, having a header file avoids the need to declare the header
+> > > file values. This is simpler. Can we make the build require
+> > > libcapstone and libLLVM in the same way that libtraceevent is
+> > > required? That is you have to explicitly build with NO_LIBTRACEEVENT=
+=3D1
+> > > to get a no libtraceevent build to succeed. If we don't do this then
+> > > having LIBCAPSTONE_DYNAMIC will most likely be an unused option and
+> > > not worth carrying in the code base, I think that's sad. If we requir=
+e
+> > > the libraries I don't like the idea of people arguing, "why do I need
+> > > to install libcapstone and libLLVM just to get the kernel/perf to
+> > > build now?" The non-simple, but still not very complex, approach take=
+n
+> > > here was taken as a compromise to get the best result (a perf that
+> > > gets faster, BPF support, .. when libraries are available without
+> > > explicitly depending on them) while trying not to offend kernel
+> > > developers who are often trying to build on minimal systems.
+> >
+> > Fwiw, a situation that I think is analogous (and was playing on my
+> > mind while writing the code) is that we don't require python to build
+> > perf and carry around empty-pmu-events.c:
+> > https://web.git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-nex=
+t.git/tree/tools/perf/pmu-events/empty-pmu-events.c?h=3Dperf-tools-next
+> > It would be simpler (in the code base and in general) to require
+> > everyone building perf to have python.
+> > Having python on a system seems less of a stretch than requiring
+> > libcapstone and libLLVM.
+> >
+> > If we keep the existing build approach, optional capstone and libLLVM
+> > by detecting it as a feature, then just linking against the libraries
+> > is natural. Someone would need to know they care about optionality and
+> > enable LIBCAPSTONE_DYNAMIC=3D1. An average build where the libraries
+> > weren't present would lose the libcapstone and libLLVM support. We
+> > could warn about this situation but some people are upset about build
+> > warnings, and if we do warn we could be pushing people into just
+> > linking against libcapstone and libLLVM which seems like we'll fall
+> > foul of the, "perf has too many library dependencies," complaint. We
+> > could warn about linking against libraries when there is a _DYNAMIC
+> > alternative like this available, but again people don't like build
+> > warnings and they could legitimately want to link against libcapstone
+> > or libLLVM.
+> >
+> > Anyway, that's why I ended up with the code in this state, to best try
+> > to play off all the different compromises and complaints that have
+> > been dealt with in the past.
+>
+> I can see your point.  Adding new build flags is likely to be unused and
+> forgotten.
 
-Apparently offending patches were merged by Christian Brauner:
+There's also more code to support the neither linked or nor dlopened approa=
+ch.
 
-https://github.com/linux-netdev/testing-bpf-ci/commit/13b0cce9e294f8ddf228b9db3e01d76ac29872f2
+> But I also think is that this dlopen support is mostly useful to distro
+> package managers who want to support more flexible environment and
+> regular dynamic linking is preferred to local builds over dlopen.  Then
+> adding a note to a pull request and contacting them directly (if needed)
+> might work?
+
+If you want to run with this then I don't mind.
+
+Thanks,
+Ian
+
+> Thanks,
+> Namhyung
+>
 
