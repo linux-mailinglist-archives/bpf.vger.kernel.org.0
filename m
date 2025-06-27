@@ -1,124 +1,232 @@
-Return-Path: <bpf+bounces-61751-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61752-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FE55AEB965
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 16:01:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76FE4AEBA29
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 16:44:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E01691C45E2C
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 14:01:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC4A21C41FC4
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 14:44:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11105176242;
-	Fri, 27 Jun 2025 14:00:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6007E1632C8;
+	Fri, 27 Jun 2025 14:43:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xec9K+hX"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0012.hostedemail.com [216.40.44.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19A0B2F1FF0;
-	Fri, 27 Jun 2025 14:00:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F4602E8E01
+	for <bpf@vger.kernel.org>; Fri, 27 Jun 2025 14:43:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751032855; cv=none; b=orHUbUXPI3/2fM4xer9iolOaK10iyUy7OJ6nSTF5me9RkjBFD+TdLNfogLxWDm8MI6uKNg2WyLASDxyD+kETaL0V9rmbjZSXWsMCSW0zVHjQC5k/HCi8YB91JUZPTB1Nh+3esa1syOr3MwekB5P8sbycqzqDoWvbQBAGkJuvisI=
+	t=1751035432; cv=none; b=AP+GzcGPtwtTHrL3f142HPsf3CwvwGYt6wdnHjxd2Gwu1MrpAfSg5QoSvLviugBtJ+yUQ4FTC8cmOnJXlpCMSo3y4LYo9vJf00h8DpR8XNcPWJjHPrs6ZorUaVTe26OOBuMthib3kMVn1PjnnkHHjfcPw2MoQKd5ozWOfUEQG7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751032855; c=relaxed/simple;
-	bh=Y0zjR+0lq6F1z+5zhA934yp+N1Q5XifqEik1+HZfEtM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Rg8YSBtHR/bxmOq7aHjapAZ0729Mx7LRWw4uA7vbR2iH9iadc6HpaWzWcLAttUYL6/nuBw4gPQufd90TwSpteuST4iiYOQzPaUAW5VbUr6UAI+udjBzjbLqkRcKaJ1SAMMk9uUfjtPH7go8edi/ntXuT/4AQeZVPhJIF6qRDUoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf12.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay01.hostedemail.com (Postfix) with ESMTP id 93FB01D06DE;
-	Fri, 27 Jun 2025 14:00:49 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf12.hostedemail.com (Postfix) with ESMTPA id 57C1A19;
-	Fri, 27 Jun 2025 14:00:45 +0000 (UTC)
-Date: Fri, 27 Jun 2025 10:01:13 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Ingo Molnar <mingo@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org, x86@kernel.org, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Josh Poimboeuf <jpoimboe@kernel.org>, Peter Zijlstra
- <peterz@infradead.org>, Jiri Olsa <jolsa@kernel.org>, Namhyung Kim
- <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Andrii
- Nakryiko <andrii@kernel.org>, Indu Bhagat <indu.bhagat@oracle.com>, "Jose
- E. Marchesi" <jemarch@gnu.org>, Beau Belgrave <beaub@linux.microsoft.com>,
- Jens Remus <jremus@linux.ibm.com>, Linus Torvalds
- <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>,
- Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH v11 14/14] unwind_user/x86: Enable compat mode frame
- pointer unwinding on x86
-Message-ID: <20250627100113.7f9ee77b@gandalf.local.home>
-In-Reply-To: <20250626081220.71ac3ab6@gandalf.local.home>
-References: <20250625225600.555017347@goodmis.org>
-	<20250625225717.187191105@goodmis.org>
-	<aF0FwYq1ECJV5Fdi@gmail.com>
-	<20250626081220.71ac3ab6@gandalf.local.home>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1751035432; c=relaxed/simple;
+	bh=4WlzVJ5UN/XosvzPrcLW3lyRNCmuAfAHIr+ZDYYJCEU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DXsskCrTggIYHMCuyeVkp7ytwDa++msRtnC3cLAoDsmPqTFO3cyIYlTdmfq1jfrm2VShyWoBq58DHUaC8bh1xakkyZ1OKRD2hOvc3FBGVwaWzcG4gcPKAAKPiNRf9RCqVe6u1VxBA42ogQFG5hI9NkfY2DtzM6gLfmR3VpDwLZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xec9K+hX; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4537deebb01so11982565e9.0
+        for <bpf@vger.kernel.org>; Fri, 27 Jun 2025 07:43:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1751035429; x=1751640229; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HRtgvS49MzaVM25EOBNqiGn1pvPFsyqeI3Wt6Hfupmc=;
+        b=Xec9K+hX1IZTSV3ag+4RXVIIpoLWEw6XJbUOWlRnDsgKqAPcax0JKSQYOjihABSWtb
+         HiZ4tkf+0qrsP1qNVWMCYk1TahHSKCxigP3RYtB7F5DmXkCi48a50gFsSrPAibRR+C6Q
+         sUdyde38TChwrIFM8wvSHQdjj7LeSEU/vbiluxCjKU2/ZIJg27RKNlwV8yvjNTPQtH9j
+         gUcHt3dIPBtQ7gg269L8orH4kZlQq0B9uTSNX6tdW9InZK6onNa9q56hLMOgEu8tWzla
+         N6nLnlIG2zGQOS4sauToa6Ul2hhGkZJ9VT8QxpW8bQfhhBmZ3HqDFpYdzLQMPQQL9+3R
+         aeMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751035429; x=1751640229;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HRtgvS49MzaVM25EOBNqiGn1pvPFsyqeI3Wt6Hfupmc=;
+        b=craNm3qt+a29vPbi490FURQgh8Rw40hnJjd+LCdHDyg1wh5Z+56EM9GBNa9Ht5NP7B
+         UPjUe/sgsnsXV3gBz32GSpAxRV7hBbUYinDtUG+tgW1qWguKBr3efEj2j990KS6/4zgg
+         HxBs6PJjMA4ihxRB/tVH6GJ97GuI+gPW9khkFuKglfe6p6GiU715wfX9RbzWVf2y6Hsx
+         A7ZBAOnMaVVmIVHc/3XyJq9KdpG8gM2YHLmf6J+2az93pHT3Q5ZT8hD1lP8iX+eSt7wL
+         wZcdJGubdJi8II3VBi/GQIoVScrdyVthuASguuz4H2DJqwRwKC6JrH3BWVAbwAfvE3xo
+         uvnw==
+X-Gm-Message-State: AOJu0YxJ8zVGwH6dsn8qqVXMKKV/eQsh+GiBUrkKTCwIVpy9PigphtFB
+	+xj51hQkxafXKqVuR2KCdaWxgY6d8jWBHVvHg/E9sQdpw5jPFw3/HaNfQmiDUA==
+X-Gm-Gg: ASbGncstin2khgZqODSuzJeto8VyQodz1HgQJDpjtIJpc++5D9YDepicb1G9JPXmUm2
+	vHeyawKGboNwsXLXcGAc62Ey2T9cOQDZBOGBU1x+tMMsmOvyl/a4rkj0DtxUryjfX5cNR+eWFq5
+	3Z1MjxWJ5+Mf8ZZF+Mdne9KkzCDuUX6IJ6QO0EBtlNUCgcgUrrrPyXXNdM+P400XVbSxjQo/sFD
+	/gmrlZ4laTr8mI9HF36MLC/lLQH2xfx0+y0Jz+Su+bxEB9SIbpQLWNOjb1kROaB3wf5dgOe2hOK
+	hYg1KvQTCI8wlaZ2K9m88kayYzOM6C0qvMX9ppinOe05C3nn0fhIMsjNH+pk
+X-Google-Smtp-Source: AGHT+IEt6A4M/Ck+vLVuvaZMuQAAGcbvx7x4GFkW0xMyIkSgPFzpm1m6764iqpD0Y7UIh1PYBBXXTg==
+X-Received: by 2002:a05:600c:8b01:b0:450:d30e:ff96 with SMTP id 5b1f17b1804b1-4538ee5dc58mr38977825e9.0.1751035427662;
+        Fri, 27 Jun 2025 07:43:47 -0700 (PDT)
+Received: from localhost ([2a01:4b00:bf28:2e00:106b:a16d:4d49:8ce9])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-453823c57d7sm86760845e9.40.2025.06.27.07.43.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Jun 2025 07:43:47 -0700 (PDT)
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	kafai@meta.com,
+	kernel-team@meta.com,
+	eddyz87@gmail.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+Subject: [PATCH bpf-next] selftests/bpf: improve error messages in veristat
+Date: Fri, 27 Jun 2025 15:43:42 +0100
+Message-ID: <20250627144342.686896-1-mykyta.yatsenko5@gmail.com>
+X-Mailer: git-send-email 2.50.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: hdt6wmr7gywmeefrxeczah87ep1ye9om
-X-Rspamd-Server: rspamout07
-X-Rspamd-Queue-Id: 57C1A19
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX19E746lenE+7SEV7ki2qR+MVKChNG+Z7fk=
-X-HE-Tag: 1751032845-404136
-X-HE-Meta: U2FsdGVkX1/P1YN2KwnQ0FhggpRH6yYU7kVuhVuoheh6IxatY7b07M7xU7cbGn1nBrAWOzahfJC8XSffe/AZawD//UHhhWMagG7OgkM2943jJk2ReX5jjoXhjR+fnJoZhziO6b+gWWNt+Qry0I6ikgX78Vd5rP2vq98dfI4oGLQWMkUKj2kh8NRdqhau8lYidMInfptkL+ssZpCtnNZXJWDfXrbraknillJFqRkiKHXdsHYe9xvKiS65KMpo6V33NxQkDivwbGq2cCSJUhF8+9xWOv/j8bKv8i/Veq59a28Ybgy75X+i4DB0TXpv/vkcvU/d5z7zSqHvyB6xNE9poU91DcHeBbF5nBvvKh3k4ZBDQ5tiWAKzWKE7XjFYTB3F
+Content-Transfer-Encoding: 8bit
 
-On Thu, 26 Jun 2025 08:12:20 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+From: Mykyta Yatsenko <yatsenko@meta.com>
 
-> 
-> 
-> >   
-> > > +/*
-> > > + * If an architecture needs to initialize the state for a specific
-> > > + * reason, for example, it may need to do something different
-> > > + * in compat mode, it can define arch_unwind_user_init to a
-> > > + * function that will perform this initialization.    
-> > 
-> > Please use 'func()' when referring to functions in comments.  
-> 
-> You mean to use "arch_unwind_user_init()"?
-> 
-> >   
-> > > +/*
-> > > + * If an architecture requires some more updates to the state between
-> > > + * stack frames, it can define arch_unwind_user_next to a function
-> > > + * that will update the state between reading stack frames during
-> > > + * the user space stack walk.    
-> > 
-> > Ditto.  
-> 
-> And this to have arch_unwind_user_next()?
+Return error if preset parsing fails. Avoid proceeding with veristat run
+if preset does not parse.
+Before:
+```
+./veristat set_global_vars.bpf.o -G "arr[999999999999999999999] = 1"
+Failed to parse value '999999999999999999999'
+Processing 'set_global_vars.bpf.o'...
+File                   Program           Verdict  Duration (us)  Insns  States  Program size  Jited size
+---------------------  ----------------  -------  -------------  -----  ------  ------------  ----------
+set_global_vars.bpf.o  test_set_globals  success             27     64       0            82           0
+---------------------  ----------------  -------  -------------  -----  ------  ------------  ----------
+Done. Processed 1 files, 0 programs. Skipped 1 files, 0 programs.
+```
+After:
+```
+./veristat set_global_vars.bpf.o -G "arr[999999999999999999999] = 1"
+Failed to parse value '999999999999999999999'
+Failed to parse global variable presets: arr[999999999999999999999] = 1
+```
 
-I went to go update these than realized that the are not functions. As the
-comment says, "it can define arch_unwind_user_next", that means it has to be:
+Improve error messages:
+ * If preset struct member can't be found.
+ * Array index out of bounds
 
-  #define arch_unwind_user_next arch_unwind_user_next
+Extract rtrim function.
 
-That's not a function. It's just setting a macro named arch_unwind_user_next to
-be arch_unwind_user_next. I think adding "()" to the end of that will be
-confusing. I could update it to say:
+Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+---
+ tools/testing/selftests/bpf/veristat.c | 36 ++++++++++++++++++--------
+ 1 file changed, 25 insertions(+), 11 deletions(-)
 
-  ... it can define a macro named arch_unwind_user_next with the name of the
-  function that will update ...
+diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
+index 1e9f61f9fd0a..09cfbd486f92 100644
+--- a/tools/testing/selftests/bpf/veristat.c
++++ b/tools/testing/selftests/bpf/veristat.c
+@@ -890,6 +890,18 @@ static bool is_desc_sym(char c)
+ 	return c == 'v' || c == 'V' || c == '.' || c == '!' || c == '_';
+ }
+ 
++static char *rtrim(char *str)
++{
++	int i;
++
++	for (i = strlen(str) - 1; i > 0; --i) {
++		if (!isspace(str[i]))
++			break;
++		str[i] = '\0';
++	}
++	return str;
++}
++
+ static int parse_stat(const char *stat_name, struct stat_specs *specs)
+ {
+ 	int id;
+@@ -1666,7 +1678,7 @@ static int append_preset_atom(struct var_preset *preset, char *value, bool is_in
+ static int parse_var_atoms(const char *full_var, struct var_preset *preset)
+ {
+ 	char expr[256], var[256], *name, *saveptr;
+-	int n, len, off;
++	int n, len, off, err;
+ 
+ 	snprintf(expr, sizeof(expr), "%s", full_var);
+ 	preset->atom_count = 0;
+@@ -1677,7 +1689,9 @@ static int parse_var_atoms(const char *full_var, struct var_preset *preset)
+ 			fprintf(stderr, "Can't parse %s\n", name);
+ 			return -EINVAL;
+ 		}
+-		append_preset_atom(preset, var, false);
++		err = append_preset_atom(preset, var, false);
++		if (err)
++			return err;
+ 
+ 		/* parse optional array indexes */
+ 		while (off < len) {
+@@ -1685,7 +1699,9 @@ static int parse_var_atoms(const char *full_var, struct var_preset *preset)
+ 				fprintf(stderr, "Can't parse %s as index\n", name + off);
+ 				return -EINVAL;
+ 			}
+-			append_preset_atom(preset, var, true);
++			err = append_preset_atom(preset, var, true);
++			if (err)
++				return err;
+ 			off += n;
+ 		}
+ 	}
+@@ -1697,7 +1713,7 @@ static int append_var_preset(struct var_preset **presets, int *cnt, const char *
+ 	void *tmp;
+ 	struct var_preset *cur;
+ 	char var[256], val[256];
+-	int n, err, i;
++	int n, err;
+ 
+ 	tmp = realloc(*presets, (*cnt + 1) * sizeof(**presets));
+ 	if (!tmp)
+@@ -1712,11 +1728,7 @@ static int append_var_preset(struct var_preset **presets, int *cnt, const char *
+ 		return -EINVAL;
+ 	}
+ 	/* Remove trailing spaces from var, as scanf may add those */
+-	for (i = strlen(var) - 1; i > 0; --i) {
+-		if (!isspace(var[i]))
+-			break;
+-		var[i] = '\0';
+-	}
++	rtrim(var);
+ 
+ 	err = parse_rvalue(val, &cur->value);
+ 	if (err)
+@@ -1869,7 +1881,7 @@ static int adjust_var_secinfo_array(struct btf *btf, int tid, struct field_acces
+ 	if (err)
+ 		return err;
+ 	if (idx < 0 || idx >= barr->nelems) {
+-		fprintf(stderr, "Array index %lld is out of bounds [0, %u]: %s\n",
++		fprintf(stderr, "Array index %lld is out of bounds [0, %u): %s\n",
+ 			idx, barr->nelems, array_name);
+ 		return -EINVAL;
+ 	}
+@@ -1928,7 +1940,7 @@ static int adjust_var_secinfo_member(const struct btf *btf,
+ 		}
+ 	}
+ 
+-	return -EINVAL;
++	return -ESRCH;
+ }
+ 
+ static int adjust_var_secinfo(struct btf *btf, const struct btf_type *t,
+@@ -1955,6 +1967,8 @@ static int adjust_var_secinfo(struct btf *btf, const struct btf_type *t,
+ 			break;
+ 		case FIELD_NAME:
+ 			err = adjust_var_secinfo_member(btf, base_type, 0, atom->name, sinfo);
++			if (err == -ESRCH)
++				fprintf(stderr, "Can't find '%s'\n", atom->name);
+ 			prev_name = atom->name;
+ 			break;
+ 		default:
+-- 
+2.50.0
 
-Would that work?
-
-I may even change the x86 code to be:
-
-#define arch_unwind_user_next x86_unwind_user_next
-
-As the function name doesn't have to be the same as the macro.
-
--- Steve
 
