@@ -1,121 +1,474 @@
-Return-Path: <bpf+bounces-61774-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61775-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D8E4AEC0A6
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 22:07:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D985DAEC0E4
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 22:27:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 935981C45C78
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 20:07:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F4D1188B81E
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 20:27:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCDE02EBDC2;
-	Fri, 27 Jun 2025 20:07:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C616D22331C;
+	Fri, 27 Jun 2025 20:27:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YesoE2tn"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Xh43A8AU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDE8C2D97BF
-	for <bpf@vger.kernel.org>; Fri, 27 Jun 2025 20:07:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93AE6C2FB;
+	Fri, 27 Jun 2025 20:26:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751054841; cv=none; b=c9KrWF4IPr2rEnsYR7h8NEGhulcm3ryq17nqb0zALpO7Kzdc473hr4OKHJ+8Mhbgy6VOzb7wQ0KG4e6D30jwA8Sib2QZbRc6flF3O+vrjftvgmZTiCPnqr0mw/8pdTkQPmTcHfmM0UNUt+VNmbn48nWC1A4+b/zFF6qzvpqYCSI=
+	t=1751056020; cv=none; b=qVZtzNu9cSR3+zzuMsYVgEjjHRqUaR0MHCvYLgR7SnTyzyFDSVpxoWqaHRhdq4l9DupGkkiepP6OR0ftG74IWcjLiCaQBbJXA1eV3p5Plte47IvG0aBe7D9Apu2JukcyJbrmmpan8UM+ZYXfanR1dCAcE0VdvB8ALaIdeEY9Zpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751054841; c=relaxed/simple;
-	bh=iB/bksZD2Sc3BnODiqahWIsiV12hyEHCJLEJS9MNdqc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Xc3neO6NqcrwDjiHtCkQDUyPLBUHAZgmfRp6fo3RUD5J0UXgHAqUscTeQjofD8uSS9TqIRwjN+1n/gEaN/decyHobUIChFC0aD7olGSdxcXkI6g1r0gqHEWU1PTxQXuvG75NEKKeuDXyhiH+3WsbtK9/ahOV/Ol4vD+sQjbHncM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YesoE2tn; arc=none smtp.client-ip=209.85.215.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-b34a78bb6e7so381585a12.3
-        for <bpf@vger.kernel.org>; Fri, 27 Jun 2025 13:07:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751054839; x=1751659639; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=erhWOx76Ah4FS4WCQNnfkttQM/hGtkdth47xrulGB3s=;
-        b=YesoE2tna00BNsD1yV2YQFzcihOkB5gmQLYW0Sn5thcdDMQEnZfBpdBrDTSzXclOuK
-         70n8MoSVrb+hBetzzye050ccyzB1bqoPoRpI5Q2rjeALIGPIPtJnnahe3p81sr8fnfYM
-         FaHxNDpdq1vfB24IYkeFXzgHBIwwJtyP54eC4xzObkoR23TbIpmYfc0HmNFi5yMb52tg
-         okfi6RrGoKCJS5LrCKUfYounAnB2rsKI40rpx0se+ZqW0QHDnk675hjMlf7DuLTrrEB9
-         eHiyHyKqtCgehi0yq5Oogdn7byYaa6aL+c06QGhYWNudf2Mqcw57DcHNkKt0p4XG4Qpx
-         /dnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751054839; x=1751659639;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=erhWOx76Ah4FS4WCQNnfkttQM/hGtkdth47xrulGB3s=;
-        b=Ccf2dj6zM8egllhg/ttgKVTJL+u/8bo4KUEA5p+BZG4fa5BSrvgPH2v24jHLgNAhlb
-         zRtEPlFgAvS41lPfCTBn/NvqKHM2S7RKvyn9iF0Rz7/4KY5iA7C837bJzY8jfoyhiPBm
-         dSd2edupybgXClLXgH8924ysDPdQPFT4MfFZcHMatweZhTWbYte8XlNXgT2CMxFxS98e
-         R5Mwp4sJNlFUuhO5OXSYskxeWQJPdvRHsPux+aA/YLLbw2aUCzOBnVrmP+lgcx8OiLGm
-         IXytHJ2dR1wCOkQ3WFZN3DZ5VU5PogGUggHtYQc214H4q3J/K01TcqI4fLjhQiJUWD4N
-         cCEA==
-X-Forwarded-Encrypted: i=1; AJvYcCU0ecQI2yneTjcHqZr4VTI3kP240HU8xpU6SPsCEdKpXzE7L5k+JRX7JmTmvMvHKhl8r9g=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxxXmIFO6cSmDzHZQeicoSu+DEyVj9EUSicHzCy0qcPfeFhBJsA
-	PUFqy4z7ZdeDHMXPpYa7UzlpNpG6ceVd0wuSOVn/MaAEfhf3uX9J4xpX
-X-Gm-Gg: ASbGncs5oJcnJAx5Z/bJWWizC0Or9yZoRl9f743lPMVekHvrPxCuskLhhprNF0PRf+E
-	Rwmm/uzJJpDevzjnBCkETdXjtH4TsoJbjfOfoHHKG/j72GJjF0vFfcj7C9VT2Z63cl5CdeS26Cw
-	AB3a6GKxuZfVorLN8PIWjgNWju0TU4M3GO+iO5D4DdPoez3xcVJUIeVL02ByY1Ivt+X+IFohOf4
-	yt2Ot5ma34GQlKZhX3woHdZlBX23NFEfWOrg7CLXh1LpzGrwiTbkMt6Ev/OBAfRQ770fbmbiFmf
-	f6pnSNLYESn9XxOq92XTJcv3tHHMYqy+2xFbJNgH/7t0MJgOIMBZs2V+/DE=
-X-Google-Smtp-Source: AGHT+IGEKK3AC9HSO5+qaBraVHlpewjsIpoDrMtlxtgGpHKOVwSFYF4IdLmq7WyrB+VNk9JuiDlixQ==
-X-Received: by 2002:a17:90b:3ccb:b0:312:26d9:d5b2 with SMTP id 98e67ed59e1d1-318c8d35f9cmr7666675a91.0.1751054839198;
-        Fri, 27 Jun 2025 13:07:19 -0700 (PDT)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-315f5382f02sm7385090a91.1.2025.06.27.13.07.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Jun 2025 13:07:18 -0700 (PDT)
-Message-ID: <1105029abe7a7d561a492240b47531f0cc7e93d5.camel@gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: improve error messages in
- veristat
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
-	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
-	kernel-team@meta.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Date: Fri, 27 Jun 2025 13:07:17 -0700
-In-Reply-To: <f6de5879-0984-4de0-af6f-62f091bb0dd0@gmail.com>
-References: <20250627144342.686896-1-mykyta.yatsenko5@gmail.com>
-	 <c49fcfaf3b622b8e71e33a3928c6494f29aa486d.camel@gmail.com>
-	 <f6de5879-0984-4de0-af6f-62f091bb0dd0@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1751056020; c=relaxed/simple;
+	bh=Ly7QHnrYHlj29CgS16fNm7D2VWmARLszS4eebllMQ+4=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=JrKwutrD5U46wnzIVuIIYXmQ9TtdF9IxivPEGmAapI6uoOBJg+GVuvVSM17+IWJ5NQ5ZFdBj4PIO1jVaDWnJbiAnixcnSPQRgrmy3ZfmNq3YhSxmBVzW7qas8vd14FFaHoEGBd5KKvOzy2QvihBVhK/5rmDm++C6b6QQJB/+/ng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Xh43A8AU; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1006)
+	id 222572124E1F; Fri, 27 Jun 2025 13:26:58 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 222572124E1F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1751056018;
+	bh=my06lgKPXwPZ/xB18tm4IOWlQUpbE/MSYOljLFPEQfs=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Xh43A8AUcojnhDBF0uGXR127LWbH1rx91bRl7p1p1zPLoT7hTwL504YMDAfXG/jQB
+	 w89C8AGQ695PtAgSLWxYIaCQc4MPxmPMvIMT1XSJm90U3wLuzp8VQinihx6jnbgFhv
+	 cv0hb7D4DYtfNmhGoHEw/pmJIOtnqmAWoAB5Q6is=
+From: Haiyang Zhang <haiyangz@linux.microsoft.com>
+To: linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: haiyangz@microsoft.com,
+	decui@microsoft.com,
+	stephen@networkplumber.org,
+	kys@microsoft.com,
+	paulros@microsoft.com,
+	olaf@aepfle.de,
+	vkuznets@redhat.com,
+	davem@davemloft.net,
+	wei.liu@kernel.org,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	leon@kernel.org,
+	longli@microsoft.com,
+	ssengar@linux.microsoft.com,
+	linux-rdma@vger.kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	bpf@vger.kernel.org,
+	ast@kernel.org,
+	hawk@kernel.org,
+	tglx@linutronix.de,
+	shradhagupta@linux.microsoft.com,
+	andrew+netdev@lunn.ch,
+	kotaranov@microsoft.com,
+	horms@kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] net: mana: Handle Reset Request from MANA NIC
+Date: Fri, 27 Jun 2025 13:26:23 -0700
+Message-Id: <1751055983-29760-1-git-send-email-haiyangz@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
 
-On Fri, 2025-06-27 at 21:01 +0100, Mykyta Yatsenko wrote:
+From: Haiyang Zhang <haiyangz@microsoft.com>
 
-[...]
+Upon receiving the Reset Request, pause the connection and clean up
+queues, wait for the specified period, then resume the NIC.
+In the cleanup phase, the HWC is no longer responding, so set hwc_timeout
+to zero to skip waiting on the response.
 
-> > > @@ -1955,6 +1967,8 @@ static int adjust_var_secinfo(struct btf *btf, =
-const struct btf_type *t,
-> > >   			break;
-> > >   		case FIELD_NAME:
-> > >   			err =3D adjust_var_secinfo_member(btf, base_type, 0, atom->name,=
- sinfo);
-> > > +			if (err =3D=3D -ESRCH)
-> > > +				fprintf(stderr, "Can't find '%s'\n", atom->name);
-> > Nit: adjust_var_secinfo_member() already reports a few errors,
-> >       maybe report this error there as well?
+Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+---
+ .../net/ethernet/microsoft/mana/gdma_main.c   | 127 ++++++++++++++----
+ .../net/ethernet/microsoft/mana/hw_channel.c  |   4 +-
+ drivers/net/ethernet/microsoft/mana/mana_en.c |  37 +++--
+ include/net/mana/gdma.h                       |  10 ++
+ 4 files changed, 143 insertions(+), 35 deletions(-)
 
-> That was my first attempt, but adjust_var_secinfo_member is called=20
-> recursively for anonymous embedded structures, so this particular error=
-=20
-> will be noisy, as it'll get triggered for every embedded structure.=20
-> Placing error msg here makes sure it's printed just once and only in=20
-> cases when member is not present anywhere.
+diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+index ac2f39853bf4..4e344ff44ac1 100644
+--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
++++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+@@ -10,6 +10,7 @@
+ #include <linux/irqdomain.h>
+ 
+ #include <net/mana/mana.h>
++#include <net/mana/hw_channel.h>
+ 
+ struct dentry *mana_debugfs_root;
+ 
+@@ -65,6 +66,24 @@ static void mana_gd_init_registers(struct pci_dev *pdev)
+ 		mana_gd_init_vf_regs(pdev);
+ }
+ 
++/* Suppress logging when we set timeout to zero */
++bool mana_need_log(struct gdma_context *gc, int err)
++{
++	struct hw_channel_context *hwc;
++
++	if (err != -ETIMEDOUT)
++		return true;
++
++	if (!gc)
++		return true;
++
++	hwc = gc->hwc.driver_data;
++	if (hwc && hwc->hwc_timeout == 0)
++		return false;
++
++	return true;
++}
++
+ static int mana_gd_query_max_resources(struct pci_dev *pdev)
+ {
+ 	struct gdma_context *gc = pci_get_drvdata(pdev);
+@@ -275,8 +294,9 @@ static int mana_gd_disable_queue(struct gdma_queue *queue)
+ 
+ 	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
+ 	if (err || resp.hdr.status) {
+-		dev_err(gc->dev, "Failed to disable queue: %d, 0x%x\n", err,
+-			resp.hdr.status);
++		if (mana_need_log(gc, err))
++			dev_err(gc->dev, "Failed to disable queue: %d, 0x%x\n", err,
++				resp.hdr.status);
+ 		return err ? err : -EPROTO;
+ 	}
+ 
+@@ -363,25 +383,12 @@ EXPORT_SYMBOL_NS(mana_gd_ring_cq, "NET_MANA");
+ 
+ #define MANA_SERVICE_PERIOD 10
+ 
+-struct mana_serv_work {
+-	struct work_struct serv_work;
+-	struct pci_dev *pdev;
+-};
+-
+-static void mana_serv_func(struct work_struct *w)
++static void mana_serv_fpga(struct pci_dev *pdev)
+ {
+-	struct mana_serv_work *mns_wk;
+ 	struct pci_bus *bus, *parent;
+-	struct pci_dev *pdev;
+-
+-	mns_wk = container_of(w, struct mana_serv_work, serv_work);
+-	pdev = mns_wk->pdev;
+ 
+ 	pci_lock_rescan_remove();
+ 
+-	if (!pdev)
+-		goto out;
+-
+ 	bus = pdev->bus;
+ 	if (!bus) {
+ 		dev_err(&pdev->dev, "MANA service: no bus\n");
+@@ -402,7 +409,74 @@ static void mana_serv_func(struct work_struct *w)
+ 
+ out:
+ 	pci_unlock_rescan_remove();
++}
++
++static void mana_serv_reset(struct pci_dev *pdev)
++{
++	struct gdma_context *gc = pci_get_drvdata(pdev);
++	struct hw_channel_context *hwc;
++
++	if (!gc) {
++		dev_err(&pdev->dev, "MANA service: no GC\n");
++		return;
++	}
++
++	hwc = gc->hwc.driver_data;
++	if (!hwc) {
++		dev_err(&pdev->dev, "MANA service: no HWC\n");
++		goto out;
++	}
++
++	/* HWC is not responding in this case, so don't wait */
++	hwc->hwc_timeout = 0;
++
++	dev_info(&pdev->dev, "MANA reset cycle start\n");
+ 
++	mana_gd_suspend(pdev, PMSG_SUSPEND);
++
++	msleep(MANA_SERVICE_PERIOD * 1000);
++
++	mana_gd_resume(pdev);
++
++	dev_info(&pdev->dev, "MANA reset cycle completed\n");
++
++out:
++	gc->in_service = false;
++}
++
++struct mana_serv_work {
++	struct work_struct serv_work;
++	struct pci_dev *pdev;
++	enum gdma_eqe_type type;
++};
++
++static void mana_serv_func(struct work_struct *w)
++{
++	struct mana_serv_work *mns_wk;
++	struct pci_dev *pdev;
++
++	mns_wk = container_of(w, struct mana_serv_work, serv_work);
++	pdev = mns_wk->pdev;
++
++	if (!pdev)
++		goto out;
++
++	switch (mns_wk->type) {
++	case GDMA_EQE_HWC_FPGA_RECONFIG:
++		mana_serv_fpga(pdev);
++		break;
++
++	case GDMA_EQE_HWC_RESET_REQUEST:
++		mana_serv_reset(pdev);
++		break;
++
++	default:
++		dev_err(&pdev->dev, "MANA service: unknown type %d\n",
++			mns_wk->type);
++		break;
++	}
++
++out:
+ 	pci_dev_put(pdev);
+ 	kfree(mns_wk);
+ 	module_put(THIS_MODULE);
+@@ -459,6 +533,7 @@ static void mana_gd_process_eqe(struct gdma_queue *eq)
+ 		break;
+ 
+ 	case GDMA_EQE_HWC_FPGA_RECONFIG:
++	case GDMA_EQE_HWC_RESET_REQUEST:
+ 		dev_info(gc->dev, "Recv MANA service type:%d\n", type);
+ 
+ 		if (gc->in_service) {
+@@ -480,6 +555,7 @@ static void mana_gd_process_eqe(struct gdma_queue *eq)
+ 		dev_info(gc->dev, "Start MANA service type:%d\n", type);
+ 		gc->in_service = true;
+ 		mns_wk->pdev = to_pci_dev(gc->dev);
++		mns_wk->type = type;
+ 		pci_dev_get(mns_wk->pdev);
+ 		INIT_WORK(&mns_wk->serv_work, mana_serv_func);
+ 		schedule_work(&mns_wk->serv_work);
+@@ -631,7 +707,8 @@ int mana_gd_test_eq(struct gdma_context *gc, struct gdma_queue *eq)
+ 
+ 	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
+ 	if (err) {
+-		dev_err(dev, "test_eq failed: %d\n", err);
++		if (mana_need_log(gc, err))
++			dev_err(dev, "test_eq failed: %d\n", err);
+ 		goto out;
+ 	}
+ 
+@@ -666,7 +743,7 @@ static void mana_gd_destroy_eq(struct gdma_context *gc, bool flush_evenets,
+ 
+ 	if (flush_evenets) {
+ 		err = mana_gd_test_eq(gc, queue);
+-		if (err)
++		if (err && mana_need_log(gc, err))
+ 			dev_warn(gc->dev, "Failed to flush EQ: %d\n", err);
+ 	}
+ 
+@@ -812,8 +889,9 @@ int mana_gd_destroy_dma_region(struct gdma_context *gc, u64 dma_region_handle)
+ 
+ 	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
+ 	if (err || resp.hdr.status) {
+-		dev_err(gc->dev, "Failed to destroy DMA region: %d, 0x%x\n",
+-			err, resp.hdr.status);
++		if (mana_need_log(gc, err))
++			dev_err(gc->dev, "Failed to destroy DMA region: %d, 0x%x\n",
++				err, resp.hdr.status);
+ 		return -EPROTO;
+ 	}
+ 
+@@ -1113,8 +1191,9 @@ int mana_gd_deregister_device(struct gdma_dev *gd)
+ 
+ 	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
+ 	if (err || resp.hdr.status) {
+-		dev_err(gc->dev, "Failed to deregister device: %d, 0x%x\n",
+-			err, resp.hdr.status);
++		if (mana_need_log(gc, err))
++			dev_err(gc->dev, "Failed to deregister device: %d, 0x%x\n",
++				err, resp.hdr.status);
+ 		if (!err)
+ 			err = -EPROTO;
+ 	}
+@@ -1912,7 +1991,7 @@ static void mana_gd_remove(struct pci_dev *pdev)
+ }
+ 
+ /* The 'state' parameter is not used. */
+-static int mana_gd_suspend(struct pci_dev *pdev, pm_message_t state)
++int mana_gd_suspend(struct pci_dev *pdev, pm_message_t state)
+ {
+ 	struct gdma_context *gc = pci_get_drvdata(pdev);
+ 
+@@ -1928,7 +2007,7 @@ static int mana_gd_suspend(struct pci_dev *pdev, pm_message_t state)
+  * fail -- if this happens, it's safer to just report an error than try to undo
+  * what has been done.
+  */
+-static int mana_gd_resume(struct pci_dev *pdev)
++int mana_gd_resume(struct pci_dev *pdev)
+ {
+ 	struct gdma_context *gc = pci_get_drvdata(pdev);
+ 	int err;
+diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+index 650d22654d49..ef072e24c46d 100644
+--- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
++++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+@@ -880,7 +880,9 @@ int mana_hwc_send_request(struct hw_channel_context *hwc, u32 req_len,
+ 
+ 	if (!wait_for_completion_timeout(&ctx->comp_event,
+ 					 (msecs_to_jiffies(hwc->hwc_timeout)))) {
+-		dev_err(hwc->dev, "HWC: Request timed out!\n");
++		if (hwc->hwc_timeout != 0)
++			dev_err(hwc->dev, "HWC: Request timed out!\n");
++
+ 		err = -ETIMEDOUT;
+ 		goto out;
+ 	}
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index 016fd808ccad..a7973651ae51 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -47,6 +47,15 @@ static const struct file_operations mana_dbg_q_fops = {
+ 	.read   = mana_dbg_q_read,
+ };
+ 
++static bool mana_en_need_log(struct mana_port_context *apc, int err)
++{
++	if (apc && apc->ac && apc->ac->gdma_dev &&
++	    apc->ac->gdma_dev->gdma_context)
++		return mana_need_log(apc->ac->gdma_dev->gdma_context, err);
++	else
++		return true;
++}
++
+ /* Microsoft Azure Network Adapter (MANA) functions */
+ 
+ static int mana_open(struct net_device *ndev)
+@@ -854,7 +863,8 @@ static int mana_send_request(struct mana_context *ac, void *in_buf,
+ 		if (err == -EOPNOTSUPP)
+ 			return err;
+ 
+-		if (req->req.msg_type != MANA_QUERY_PHY_STAT)
++		if (req->req.msg_type != MANA_QUERY_PHY_STAT &&
++		    mana_need_log(gc, err))
+ 			dev_err(dev, "Failed to send mana message: %d, 0x%x\n",
+ 				err, resp->status);
+ 		return err ? err : -EPROTO;
+@@ -931,8 +941,10 @@ static void mana_pf_deregister_hw_vport(struct mana_port_context *apc)
+ 	err = mana_send_request(apc->ac, &req, sizeof(req), &resp,
+ 				sizeof(resp));
+ 	if (err) {
+-		netdev_err(apc->ndev, "Failed to unregister hw vPort: %d\n",
+-			   err);
++		if (mana_en_need_log(apc, err))
++			netdev_err(apc->ndev, "Failed to unregister hw vPort: %d\n",
++				   err);
++
+ 		return;
+ 	}
+ 
+@@ -987,8 +999,10 @@ static void mana_pf_deregister_filter(struct mana_port_context *apc)
+ 	err = mana_send_request(apc->ac, &req, sizeof(req), &resp,
+ 				sizeof(resp));
+ 	if (err) {
+-		netdev_err(apc->ndev, "Failed to unregister filter: %d\n",
+-			   err);
++		if (mana_en_need_log(apc, err))
++			netdev_err(apc->ndev, "Failed to unregister filter: %d\n",
++				   err);
++
+ 		return;
+ 	}
+ 
+@@ -1218,7 +1232,9 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
+ 	err = mana_send_request(apc->ac, req, req_buf_size, &resp,
+ 				sizeof(resp));
+ 	if (err) {
+-		netdev_err(ndev, "Failed to configure vPort RX: %d\n", err);
++		if (mana_en_need_log(apc, err))
++			netdev_err(ndev, "Failed to configure vPort RX: %d\n", err);
++
+ 		goto out;
+ 	}
+ 
+@@ -1402,7 +1418,9 @@ void mana_destroy_wq_obj(struct mana_port_context *apc, u32 wq_type,
+ 	err = mana_send_request(apc->ac, &req, sizeof(req), &resp,
+ 				sizeof(resp));
+ 	if (err) {
+-		netdev_err(ndev, "Failed to destroy WQ object: %d\n", err);
++		if (mana_en_need_log(apc, err))
++			netdev_err(ndev, "Failed to destroy WQ object: %d\n", err);
++
+ 		return;
+ 	}
+ 
+@@ -3067,11 +3085,10 @@ static int mana_dealloc_queues(struct net_device *ndev)
+ 
+ 	apc->rss_state = TRI_STATE_FALSE;
+ 	err = mana_config_rss(apc, TRI_STATE_FALSE, false, false);
+-	if (err) {
++	if (err && mana_en_need_log(apc, err))
+ 		netdev_err(ndev, "Failed to disable vPort: %d\n", err);
+-		return err;
+-	}
+ 
++	/* Even in err case, still need to cleanup the vPort */
+ 	mana_destroy_vport(apc);
+ 
+ 	return 0;
+diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
+index 92ab85061df0..57df78cfbf82 100644
+--- a/include/net/mana/gdma.h
++++ b/include/net/mana/gdma.h
+@@ -62,6 +62,7 @@ enum gdma_eqe_type {
+ 	GDMA_EQE_HWC_FPGA_RECONFIG	= 132,
+ 	GDMA_EQE_HWC_SOC_RECONFIG_DATA	= 133,
+ 	GDMA_EQE_HWC_SOC_SERVICE	= 134,
++	GDMA_EQE_HWC_RESET_REQUEST	= 135,
+ 	GDMA_EQE_RNIC_QP_FATAL		= 176,
+ };
+ 
+@@ -584,6 +585,9 @@ enum {
+ /* Driver supports dynamic MSI-X vector allocation */
+ #define GDMA_DRV_CAP_FLAG_1_DYNAMIC_IRQ_ALLOC_SUPPORT BIT(13)
+ 
++/* Driver can self reset on EQE notification */
++#define GDMA_DRV_CAP_FLAG_1_SELF_RESET_ON_EQE BIT(14)
++
+ /* Driver can self reset on FPGA Reconfig EQE notification */
+ #define GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE BIT(17)
+ 
+@@ -594,6 +598,7 @@ enum {
+ 	 GDMA_DRV_CAP_FLAG_1_VARIABLE_INDIRECTION_TABLE_SUPPORT | \
+ 	 GDMA_DRV_CAP_FLAG_1_DEV_LIST_HOLES_SUP | \
+ 	 GDMA_DRV_CAP_FLAG_1_DYNAMIC_IRQ_ALLOC_SUPPORT | \
++	 GDMA_DRV_CAP_FLAG_1_SELF_RESET_ON_EQE | \
+ 	 GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE)
+ 
+ #define GDMA_DRV_CAP_FLAGS2 0
+@@ -921,4 +926,9 @@ void mana_unregister_debugfs(void);
+ 
+ int mana_rdma_service_event(struct gdma_context *gc, enum gdma_service_type event);
+ 
++int mana_gd_suspend(struct pci_dev *pdev, pm_message_t state);
++int mana_gd_resume(struct pci_dev *pdev);
++
++bool mana_need_log(struct gdma_context *gc, int err);
++
+ #endif /* _GDMA_H */
+-- 
+2.34.1
 
-Makes sense, thank you for explaining.
 
