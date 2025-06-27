@@ -1,231 +1,162 @@
-Return-Path: <bpf+bounces-61745-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61746-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67330AEB1F1
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 11:04:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35416AEB3FC
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 12:15:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6262C7A8597
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 09:02:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C8CE179DD3
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 10:14:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5216A293C46;
-	Fri, 27 Jun 2025 09:04:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD554298CC6;
+	Fri, 27 Jun 2025 10:13:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QYwzdnyM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BAaw7NcE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 552C929346F;
-	Fri, 27 Jun 2025 09:04:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86115298242
+	for <bpf@vger.kernel.org>; Fri, 27 Jun 2025 10:13:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751015049; cv=none; b=iQmpDt6a7ZyDRgdm4ZZi5tMYwW7aWdffd09fmzOBme0rXvat3SdZEzgdMT2gOUHy3u5jddMyiRpMjqjp7KOz6gaAh55dRKQv9PtevliGqKFRxmN7RCINDmHFJ8juxjtjMnDgsO84iY6GTBplB58jq4bT+szG4ywXmFvBZlgP6U8=
+	t=1751019190; cv=none; b=fs4Zn6U3ddNFo8Nl8TC86s4ku7apj4WdCccPXOUhDcXzT72liwIZq689VvIXSmVPOcYiNi9p+RsHaxK+/8RuLPIRPNXzxCD7UK+7+EUlW18HoXqwYBRGeP+N6qPfAl3XEbS3EDtYphdBwuc6ZpbDtnSoIMmULoF1LgswfpVnbUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751015049; c=relaxed/simple;
-	bh=26Z1MwHnjk2h7wspYJq72P8Nt3nRYsPC+dd6E2tbHiA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Rqzs3OdzEm4mKYb1VkgZpPgKv62tkpIgMdV80GzgH+fBLNfFJGOaTybjn6ehtL+hWoR9bjIgbDZDONiwpe2TUo0lYELKG95wVoy4x82XMpjWSVZovbwMMBZtgRPy7hKrXsPkcPTTx6FEDtbS01aTmpEnBbEykG63mB1m79H6tlE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QYwzdnyM; arc=none smtp.client-ip=209.85.210.172
+	s=arc-20240116; t=1751019190; c=relaxed/simple;
+	bh=Hpd/kW7T6bGjss/Xmqvmbivfhe9ZiiRcHwCSMeZsfQE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=asitaES2EKHtUPM6LwG6Y6PxJj5f4mi4m5gMJW69veXt/rqDEneh/QGbb3NYVbO+gg51i9BxS9rFRhFY2TgPs3vaOiazZRv4hVJbNyVajelwhWJEjK0nO4nElvMLFTHTYp4eSTeUVR6WFYf81HfG5cKRu8UY44myzbUY6ZkjyOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BAaw7NcE; arc=none smtp.client-ip=209.85.221.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-74801bc6dc5so1803855b3a.1;
-        Fri, 27 Jun 2025 02:04:08 -0700 (PDT)
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3a4fd1ba177so1295602f8f.0
+        for <bpf@vger.kernel.org>; Fri, 27 Jun 2025 03:13:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751015047; x=1751619847; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+OPOjWi2p5Z5MHfvR9PBiYVVI5F5wJufIgUU5dhlzxE=;
-        b=QYwzdnyMXyzC/AkjUu+yLzPM4JBPyFuOqerNlmYneVAZoFc6ADqf5+esANONCuLIl4
-         CS8oTCfd0kUw42QtYWVN3ON44t2T1IEb8JCUZPlWzTiQ/a8cgDvP3XVyutFZ6/lcmPCe
-         y06KezVNckEazH9MBDXS4N80TTql4cBrww0xUxt17cbvdLce2hs+3mOuLv8HwpoqgkD7
-         YeTo8leP0KJHhJv4Ljb7AB5fVbBcduq11LKT3UetyeLS3/Hrz2ayYLrZE7sgdXA0DbvL
-         U99kY4OP/hd9vZKzX2c5OSJn4FntClnCODkkr5MwhmTLkcFIEn11+sE24P/+ktWOkOmR
-         asDA==
+        d=gmail.com; s=20230601; t=1751019187; x=1751623987; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=VDPXbRqi/D9iEUw++nlDIYysdezswwHgXTJx1hzdFZ4=;
+        b=BAaw7NcEWydrslPe6jfzsE8DfC4868b+Jj2QBwv61dHJR3kcfVlrkGejcQUAsfWDnS
+         emgkcSQnAvUCd4rg8PBa7B1ciwvNjxXr82QpXleAtvxEe0MaA0t8lqvVoOBGan2iCzbi
+         es5KetRdT2fWuH9lnuzfqT3MoKoci3ro9sQGKIlqIxv3Qtu7XjNkb//qYa78o4d2L9Mn
+         2FZpQKhU3wEXo/urehTtITq2xBRg2V0OjUe5hm0723gcmCdLkcNV3KL+KlEposmbszpU
+         Ji2+G0XL86UUguUlEIZbzescl2VCGt0X0DsL8NlumezSV8SK+QXla2O/A3mAoOJAg5Z4
+         l5LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751015047; x=1751619847;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+OPOjWi2p5Z5MHfvR9PBiYVVI5F5wJufIgUU5dhlzxE=;
-        b=pPha3/yf0x60fMiHwykMyAj41MR/XJDAhaoK+CKDu+P1xLXHkeRxDYLBeUhChxc02+
-         sSpu8+gG/ezo/JH+XwakbW9uA3u0nmUjUsOs0XIpRHp7kP4VByS5KUSX5i1QYB1W3MIE
-         5mjgQOAbHME4HBQQlx3S5AV6t4MpDdK+TJVXuWA2lGQuFfK4W489qbEIr1+AEqwskqQL
-         EatK3fx27OInM05iyXo6fcundPeo1ho2AnmYhG6oT9TpOz1xTHLqSNGnsikdyaWgijok
-         C7U1EXfC2wrTaJaBIwOjEwNvUbaCywxqrYQ6EkYSCkk+GwJOq3SXE2Zw4fL3Dhfxr/pV
-         pxXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU3NbkwiI9v7+tOTkGlk/cNX3uF7Y3FeNnB6FSKmoTBhczhcVT39tLun7CawgNJF6LRPYGwaAXOdXD4NV6o@vger.kernel.org, AJvYcCUaKYHffPD6j2C8T9+sbFOLYr8kOrJXCxi8Xa5yh2nHGuS6zlU6w4wK/zPI92INYWp1Wkk=@vger.kernel.org, AJvYcCVf8xcDBhlopQUz+MVMGSIvMbLQ/GlA+eQTNfI6KV1Nnm60xN1KSaWCoHUNHTrNZoOPvYJTNL25@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy1sMXnb7FuPPVpAFraTkECgPB1QbMNKugwVq7lur/X0AeQ/UZ0
-	RBfxPtuAyv9yvtroO0W+RwqJECx87bb0LRlmeRzZceHBuJLARyvT5otM1qG09Drt
-X-Gm-Gg: ASbGnctsnA0hGUQZcXbhx8cGeALOokG2ZZmE2kc2Mbrqulgi3VpyEKc7QDnbqKjUm+o
-	PLbRgCG3G/0kHj1tm0Ag6DRZKXyr5RIvoKr3yimxrqyXo5rHTOKTcPzvgzoKe829zbpFaE2+dH5
-	wDD7akexEXTnmDEaCQMP1JMmdatV0eHsYnNDeX5EUaTZk40vFL13K0cnzm64F5oU8tosMBkC1++
-	AflXFB3svvFExiGKGs2wZ2EfkVJ575pAr055R+B+Dzlkd6mbQeZaWjgN+Rb3qZPd4iOjMuuFFEp
-	jyy3UBHs/R1JRrP/UfKicpKPkrXDXs6t38GIA/4BGReHWSi9fl0EjoCizXYNputlweVrZD2e/j1
-	3o+JEFLs=
-X-Google-Smtp-Source: AGHT+IFi7uSNU0NXFWo1RpPm1TGTKsqRNAglzlIgdaPSrhHfNLCIMhftBcZcOffl8C56MCw/UDFE6w==
-X-Received: by 2002:a05:6a00:8ca:b0:749:1e60:bdd with SMTP id d2e1a72fcca58-74af7893218mr3329499b3a.2.1751015046910;
-        Fri, 27 Jun 2025 02:04:06 -0700 (PDT)
-Received: from manjaro.domain.name ([2401:4900:1c67:6116:afb5:b6ab:2dc8:4a21])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74af540b389sm1846158b3a.35.2025.06.27.02.04.00
+        d=1e100.net; s=20230601; t=1751019187; x=1751623987;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VDPXbRqi/D9iEUw++nlDIYysdezswwHgXTJx1hzdFZ4=;
+        b=q8If5HtUwFQ3Xb2yzAwJBAoEVWBCMPYcTWD1DH9Z2ByaENXkp1N2SkffDh2rpLKW66
+         Ek6cvgMuE8dNRJVidek+6exp6UBQN0weBd9IDzieNsTgcrvVtGJ+2KJawyLsq4Pl3Itd
+         h5zEIM5lbTdSUkjntmiaSfttD0YtihQUSprq4AzBn09gPkteOS+peUbkcaibIAIk796y
+         Eis4RR0Prn8YbCHrwlrntOMO+VFSXkVALF2GqCScd+HQIMaPgSOKB1QIrxC61QGEeAfu
+         VpYu2gXmNc2lK2AVHV72VuLZ7ZkYDnVrQGpLMVrJ52eaW7Ezucy6mNIiTkV3drMzVWEX
+         nRSQ==
+X-Gm-Message-State: AOJu0YwrjHy9u/7AzypMeJ5jzthP5JoD54yPyro51Tf+sfFp3RNS174T
+	hEnzRU+0iyQy1LLrbTwFjlhMOmIoF5PXy3JPlrkHllmYa5Rz6r4i5mNZ
+X-Gm-Gg: ASbGncs5SXFwCR4VLuF1vYATlDZYOExe4Ka9PdgtPWdZP+J3vnlNyljwgXYknknOjV6
+	3fYOcbIymX0RcniHZyGophtLt1rWNSsj7/ZyQDDwwUeQkMoPPuYyFgx0j1UAsjywsKJLW9ZCzND
+	zEnK1rBLKpAP/OxJtsr8UTqb5k8a6XZJqfrEqjZLAkqFqy6CYVbvUTJGoJevcbuW5xaVYHwgOHE
+	IXVGaO3EDS9cRqSoOXxDozPvLQ3jPmCUdWgg6wZ4TD92GATIQPy4vNCkmsO3Zyw0Q7/QY7y8dIj
+	7m8Pdpard7oS+b5SODkfYeFADcKO+lAJFQpWINvC0YC/rnKvKw+ohBxO+eFtyPPHZj5NnF45Vg=
+	=
+X-Google-Smtp-Source: AGHT+IE0+gKae78S2t+qbSCEGn4Z0DJu3A/Ld8B+alTbzlMGNYTdfHbTkgVZhV7oeb0VViEyduDikQ==
+X-Received: by 2002:a05:6000:2d82:b0:3a4:eb7a:2ccb with SMTP id ffacd0b85a97d-3a6f312dca2mr4127309f8f.16.1751019186701;
+        Fri, 27 Jun 2025 03:13:06 -0700 (PDT)
+Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4538a3b2fd7sm46764125e9.17.2025.06.27.03.13.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Jun 2025 02:04:06 -0700 (PDT)
-From: Pranav Tyagi <pranav.tyagi03@gmail.com>
-To: netdev@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: john.fastabend@gmail.com,
-	daniel@iogearbox.net,
-	jakub@cloudflare.com,
-	lmb@cloudflare.com,
-	davem@davemloft.net,
-	kuba@kernel.org,
-	ast@kernel.org,
-	andrii@kernel.org,
-	kafai@fb.com,
-	songliubraving@fb.com,
-	yhs@fb.com,
-	kpsingh@kernel.org,
-	cong.wang@bytedance.com,
-	skhan@linuxfoundation.org,
-	linux-kernel-mentees@lists.linux.dev,
-	stable@vger.kernel.org,
-	Jiri Olsa <jolsa@kernel.org>,
-	Xu Kuohai <xukuohai@huawei.com>,
-	Pranav Tyagi <pranav.tyagi03@gmail.com>
-Subject: [PATCH 5.15] bpf, sockmap: Fix skb refcnt race after locking changes
-Date: Fri, 27 Jun 2025 14:33:54 +0530
-Message-ID: <20250627090354.10491-1-pranav.tyagi03@gmail.com>
-X-Mailer: git-send-email 2.49.0
+        Fri, 27 Jun 2025 03:13:06 -0700 (PDT)
+Date: Fri, 27 Jun 2025 10:18:25 +0000
+From: Anton Protopopov <a.s.protopopov@gmail.com>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Anton Protopopov <aspsk@isovalent.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Quentin Monnet <qmo@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>
+Subject: Re: [RFC bpf-next 8/9] libbpf: support llvm-generated indirect jumps
+Message-ID: <aF5v8Yw5LUgVDgjB@mail.gmail.com>
+References: <20250615085943.3871208-1-a.s.protopopov@gmail.com>
+ <20250615085943.3871208-9-a.s.protopopov@gmail.com>
+ <1c17cd755a3e8865ad06baad86d42e42e289439a.camel@gmail.com>
+ <f8bc4e5469e73b99943ff7783fbe4a7758bbbe32.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f8bc4e5469e73b99943ff7783fbe4a7758bbbe32.camel@gmail.com>
 
-From: John Fastabend <john.fastabend@gmail.com>
+On 25/06/26 07:28PM, Eduard Zingerman wrote:
+> On Wed, 2025-06-18 at 12:49 -0700, Eduard Zingerman wrote:
+> > On Sun, 2025-06-15 at 08:59 +0000, Anton Protopopov wrote:
+> > 
+> > [...]
+> > 
+> > > @@ -698,6 +712,14 @@ struct bpf_object {
+> > >  	bool has_subcalls;
+> > >  	bool has_rodata;
+> > >  
+> > > +	const void *rodata;
+> > > +	size_t rodata_size;
+> > > +	int rodata_map_fd;
+> > 
+> > This is sort-of strange, that jump table metadata resides in one
+> > section, while jump section itself is in .rodata. Wouldn't it be
+> > simpler make LLVM emit all jump tables info in one section?
+> > Also note that Elf_Sym has name, section index, value and size,
+> > hence symbols defined for jump table section can encode jump tables.
+> > E.g. the following implementation seems more intuitive:
+> > 
+> >   .jumptables
+> >     <subprog-rel-off-0>
+> >     <subprog-rel-off-1> | <--- jump table #1 symbol:
+> >     <subprog-rel-off-2> |        .size = 2   // number of entries in the jump table
+> >     ...                          .value = 1  // offset within .jumptables
+> >     <subprog-rel-off-N>                          ^
+> >                                                  |
+> >   .text                                          |
+> >     ...                                          |
+> >     <insn-N>     <------ relocation referencing -'
+> >     ...                  jump table #1 symbol
+> 
+> Anton, Yonghong,
+> 
+> I talked to Alexei about this yesterday and we agreed that the above
+> arrangement (separate jump tables section, separate symbols for each
+> individual jump table) makes sense on two counts:
+> - there is no need for jump table to occupy space in .rodata at
+>   runtime, actual offsets are read from map object;
+> - it simplifies processing on libbpf side, as there is no need to
+>   visit both .rodata and jump table size sections.
+> 
+> Wdyt?
 
-[ Upstream commit a454d84ee20baf7bd7be90721b9821f73c7d23d9 ]
+Yes, this seems more straightforward. Also this will look ~ the same
+for used-defined (= non-llvm-generated) jump tables.
 
-There is a race where skb's from the sk_psock_backlog can be referenced
-after userspace side has already skb_consumed() the sk_buff and its refcnt
-dropped to zer0 causing use after free.
+Yonghong, what do you think, are there any problems with this?
+Also, how complex this would be to directly link a gotox instruction
+to a particular jump table? (For a switch, for "user-defined" jump
+tables this is obviously easy to do.)
 
-The flow is the following:
-
-  while ((skb = skb_peek(&psock->ingress_skb))
-    sk_psock_handle_Skb(psock, skb, ..., ingress)
-    if (!ingress) ...
-    sk_psock_skb_ingress
-       sk_psock_skb_ingress_enqueue(skb)
-          msg->skb = skb
-          sk_psock_queue_msg(psock, msg)
-    skb_dequeue(&psock->ingress_skb)
-
-The sk_psock_queue_msg() puts the msg on the ingress_msg queue. This is
-what the application reads when recvmsg() is called. An application can
-read this anytime after the msg is placed on the queue. The recvmsg hook
-will also read msg->skb and then after user space reads the msg will call
-consume_skb(skb) on it effectively free'ing it.
-
-But, the race is in above where backlog queue still has a reference to
-the skb and calls skb_dequeue(). If the skb_dequeue happens after the
-user reads and free's the skb we have a use after free.
-
-The !ingress case does not suffer from this problem because it uses
-sendmsg_*(sk, msg) which does not pass the sk_buff further down the
-stack.
-
-The following splat was observed with 'test_progs -t sockmap_listen':
-
-  [ 1022.710250][ T2556] general protection fault, ...
-  [...]
-  [ 1022.712830][ T2556] Workqueue: events sk_psock_backlog
-  [ 1022.713262][ T2556] RIP: 0010:skb_dequeue+0x4c/0x80
-  [ 1022.713653][ T2556] Code: ...
-  [...]
-  [ 1022.720699][ T2556] Call Trace:
-  [ 1022.720984][ T2556]  <TASK>
-  [ 1022.721254][ T2556]  ? die_addr+0x32/0x80^M
-  [ 1022.721589][ T2556]  ? exc_general_protection+0x25a/0x4b0
-  [ 1022.722026][ T2556]  ? asm_exc_general_protection+0x22/0x30
-  [ 1022.722489][ T2556]  ? skb_dequeue+0x4c/0x80
-  [ 1022.722854][ T2556]  sk_psock_backlog+0x27a/0x300
-  [ 1022.723243][ T2556]  process_one_work+0x2a7/0x5b0
-  [ 1022.723633][ T2556]  worker_thread+0x4f/0x3a0
-  [ 1022.723998][ T2556]  ? __pfx_worker_thread+0x10/0x10
-  [ 1022.724386][ T2556]  kthread+0xfd/0x130
-  [ 1022.724709][ T2556]  ? __pfx_kthread+0x10/0x10
-  [ 1022.725066][ T2556]  ret_from_fork+0x2d/0x50
-  [ 1022.725409][ T2556]  ? __pfx_kthread+0x10/0x10
-  [ 1022.725799][ T2556]  ret_from_fork_asm+0x1b/0x30
-  [ 1022.726201][ T2556]  </TASK>
-
-To fix we add an skb_get() before passing the skb to be enqueued in the
-engress queue. This bumps the skb->users refcnt so that consume_skb()
-and kfree_skb will not immediately free the sk_buff. With this we can
-be sure the skb is still around when we do the dequeue. Then we just
-need to decrement the refcnt or free the skb in the backlog case which
-we do by calling kfree_skb() on the ingress case as well as the sendmsg
-case.
-
-Before locking change from fixes tag we had the sock locked so we
-couldn't race with user and there was no issue here.
-
-[ Backport to 5.15: context cleanly applied with no semantic changes.
-Build-tested. ]
-
-Fixes: 799aa7f98d53e ("skmsg: Avoid lock_sock() in sk_psock_backlog()")
-Reported-by: Jiri Olsa  <jolsa@kernel.org>
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Tested-by: Xu Kuohai <xukuohai@huawei.com>
-Tested-by: Jiri Olsa <jolsa@kernel.org>
-Link: https://lore.kernel.org/bpf/20230901202137.214666-1-john.fastabend@gmail.com
-Signed-off-by: Pranav Tyagi <pranav.tyagi03@gmail.com>
----
- net/core/skmsg.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index a5947aa55983..a13ddb9976ad 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -608,12 +608,18 @@ static int sk_psock_skb_ingress_self(struct sk_psock *psock, struct sk_buff *skb
- static int sk_psock_handle_skb(struct sk_psock *psock, struct sk_buff *skb,
- 			       u32 off, u32 len, bool ingress)
- {
-+	int err = 0;
-+
- 	if (!ingress) {
- 		if (!sock_writeable(psock->sk))
- 			return -EAGAIN;
- 		return skb_send_sock(psock->sk, skb, off, len);
- 	}
--	return sk_psock_skb_ingress(psock, skb, off, len);
-+	skb_get(skb);
-+	err = sk_psock_skb_ingress(psock, skb, off, len);
-+	if (err < 0)
-+		kfree_skb(skb);
-+	return err;
- }
- 
- static void sk_psock_skb_state(struct sk_psock *psock,
-@@ -681,9 +687,7 @@ static void sk_psock_backlog(struct work_struct *work)
- 		} while (len);
- 
- 		skb = skb_dequeue(&psock->ingress_skb);
--		if (!ingress) {
--			kfree_skb(skb);
--		}
-+		kfree_skb(skb);
- 	}
- end:
- 	mutex_unlock(&psock->work_mutex);
--- 
-2.49.0
-
+> > > +
+> > > +	/* Jump Tables */
+> > > +	struct jt **jt;
+> > > +	size_t jt_cnt;
+> > > +
+> > >  	struct bpf_gen *gen_loader;
+> > >  
+> > >  	/* Information when doing ELF related work. Only valid if efile.elf is not NULL */
+> > 
+> > [...]
 
