@@ -1,154 +1,272 @@
-Return-Path: <bpf+bounces-61720-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61721-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B4A3AEACD1
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 04:28:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3100AEACE9
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 04:42:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB37A565A45
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 02:28:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3369F7A30FC
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 02:41:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4555F18DB35;
-	Fri, 27 Jun 2025 02:28:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01BC5192B96;
+	Fri, 27 Jun 2025 02:42:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A+bkreYg"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="d0dQb73b"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E5171362
-	for <bpf@vger.kernel.org>; Fri, 27 Jun 2025 02:28:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA8D83C01
+	for <bpf@vger.kernel.org>; Fri, 27 Jun 2025 02:42:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750991322; cv=none; b=g9EJBfIcywhq+GMw7JNCZO+JsbES9VxSd4k7fHQ3IW1KyvZvZSEnsjcsXJZQaFAt/Ml2G5c96lcH6nwL+uDnch4MLThgzTSOXn3qKcdLzrJTUg3pJSkGItjs0u/qwpg9j7GvV4SPDMQEq2FXo3ocMuNz0uRe66sGFtBH45+n4Ds=
+	t=1750992148; cv=none; b=r+SybBKew7pV9DJV6K3iRpaGmA5gYCbP0UbEUx6JbGWsdprsJvEmg0veAFMRs02Q8DoySSZpCI8EIBCyYEiZOGcn8dWbxqs0sWHtmV1nziAWv1otswugKXWPmcYZQAPmRUV2gDe1INQQXOdlolUxpQTeDLT/DKLNd4xKamGajeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750991322; c=relaxed/simple;
-	bh=v2PigAy4qTQhetrQzTYMucimHm0NTWiYPpS6Gyp5wo8=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=deqx5uFRvuGVT0p9+fibLfSmR3nqAlFrF+orZsvZMCrDuVsHlcm4CigJ3WblEM4tU+bD4OLVYQZT5DQIyr0BQ0kBCprGgSshLqazkDqi+mWzEy4CmG0rG69zhH5bfFcrjMxIT0SJs5wNdVECVYZhI3C2JAAh3nzGv1u82JJonUA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A+bkreYg; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-234b440afa7so19491965ad.0
-        for <bpf@vger.kernel.org>; Thu, 26 Jun 2025 19:28:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750991321; x=1751596121; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nav68CwimIl2QY6Y0Km446abdsOFkG5niGRl9qo8wek=;
-        b=A+bkreYg1h36/MmMlA3igWeDC1eeENxwN5TeRsuMEd0s1185EsCrUwMfR/9hyr/Jfd
-         si1ePnWcRfNUt3NSlR8PpPF1/mpOVXn0b4CPHruiDJ8zjnihMwdqthlXbhIDCBJI1etj
-         UqGDpTxuvxAAptyuuqlxN4P1x7wH/T3ccTxlcI0o5/Wj3Sq3jE+CUjvRkn3w46fc1eal
-         ov/AI9SH/JF86AcrpGHaV387KCMqKRf0BTfAVRESex65OaVBTwLQC+wivYoXq5GHEB+W
-         3nPvR8fZZY2rbeD0W3bG94eH58YwQBPc+BArzj5af4s1tboj3usx8zzzdrkfC3sk72UG
-         kQ4Q==
+	s=arc-20240116; t=1750992148; c=relaxed/simple;
+	bh=SdTf8Z6fyK/HZshyR2WSEcVEDgIXDaUI6GJQaYYwApU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EADsvPvouTBIdDO+BPAGTDaWZWlHCbAmYOBA/hUdqC0lQedh+jP1zpMk55C4hk4xkbUQ2Ydj4rrAZZBzVyWo7Fzr8Sa8sXsqB5MMqVLZ6d23WyYTbs6sqKEEmkZpycZ41SXf8xlqE6nnU9xeCrJhbKGB09943YfLMIkbdD7ND+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=d0dQb73b; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1750992145;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0y4ogdWfKUskoLksqSv1cDEXTKy/QANfgQ8Wcutrwa0=;
+	b=d0dQb73bjWmWdwk5GH5MUar6S+GT0Y8xB0TW1AzDh4X8UdngrIU3nRFFfldGhnWvAm6c0O
+	NfcCOke5S8J583T8RTKUmyvLYQ7VilzgdpHm5quQOiEZN0EBJpVPLurqt/wQkApraeFMhW
+	eOz7jxpKRKtl+E/DvULn2e1aN4Z+iKo=
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-528-WdFR40GkO6uanaTaON0OlA-1; Thu, 26 Jun 2025 22:42:24 -0400
+X-MC-Unique: WdFR40GkO6uanaTaON0OlA-1
+X-Mimecast-MFC-AGG-ID: WdFR40GkO6uanaTaON0OlA_1750992143
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-315b60c19d4so1330871a91.0
+        for <bpf@vger.kernel.org>; Thu, 26 Jun 2025 19:42:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750991321; x=1751596121;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=nav68CwimIl2QY6Y0Km446abdsOFkG5niGRl9qo8wek=;
-        b=fMJUIPkwyycCmEQ8HNxzvuFUHZagQZiRmfFeuoCH0ybOVJa3Hx4zQeOvvDPJ0/5tra
-         Zz8fE3Rwxm+Yh54fxGMXP5W8TJ2Kh4t1t9w93iLE+GgvjK233WMH4N63arZbiD1TEJvk
-         mdBcvgWEYHp0SwVltXf0FZ+E6leEWE2wmq0RDa+lQ9DgHpioORThwkhw/y1WTk97pg8N
-         TBViQHX6qUM+yjZ2xBCnYqsXtPtP9bLb25w3bNleTBXA7FgdwQZYiJ7MkyTWivMQoucT
-         VVg0CC+K6tec4rcAuMN2zxyaNGNADgTDbsN3e+FBQl0a+OaxyGpo239LHdgcTaZ49sJS
-         zfhw==
-X-Forwarded-Encrypted: i=1; AJvYcCXzwF6ZVdvYdk7S2oOjQwki7HAJ50XShq88Mq2yJcMHkMhNpSbGSekKoMxR1egKxP2M3Bw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwLjgAHRj1R8u/xkPLpGoeeQ1gEw9wnkWKbcNlxmlAtusKm8t/i
-	Z1kmxftpkQ++hqf0FjNICpPaMTMHRDhYoq81WsqJbL/+pP92YOqV3cYu
-X-Gm-Gg: ASbGncsXd1aCZtJBvsq4iGckI7jzNoPyUSc1gvYAcv8miYsEpwDhar2G8R6q8aaxFAP
-	z6ILoEEpb4saWExwxKjZj3PvlMEX4L5IknLxqfzjvFafm6hUh+W0z6hG08ENSW31QzcHlDZFyux
-	ZPm2j9lDfeaUyrImGdz5hqb+19wU/NVsrjWJsKFjYfKOtScF0aUCxCWrhWCJ3sru2c5K/p9qDr4
-	BOI1YIjuHGyltmsB/AVr1dcp/onzj7BuZSD/6ABwXxh1tjEVSkst4iOb7jZOoG9r48/zQZTNfna
-	Z4nWgNXsf3Jdef+ss4mSCOWOOWyPAH7C4vO8LeVoKlSUWck9Z9m8nVpyE2Q=
-X-Google-Smtp-Source: AGHT+IFwIha81vGvSoLqOSGeQ9KKXkuFTmzR/0DLyO2oxKJFsQYJARLr5r5kMFgDxAGD4zIIX5ORRQ==
-X-Received: by 2002:a17:903:28c:b0:235:f1e4:3383 with SMTP id d9443c01a7336-23ac3bffb88mr22332095ad.7.1750991320644;
-        Thu, 26 Jun 2025 19:28:40 -0700 (PDT)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23acb39bf26sm3893905ad.107.2025.06.26.19.28.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Jun 2025 19:28:40 -0700 (PDT)
-Message-ID: <f8bc4e5469e73b99943ff7783fbe4a7758bbbe32.camel@gmail.com>
-Subject: Re: [RFC bpf-next 8/9] libbpf: support llvm-generated indirect jumps
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Anton Protopopov <a.s.protopopov@gmail.com>, bpf@vger.kernel.org, Alexei
- Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Anton
- Protopopov <aspsk@isovalent.com>,  Daniel Borkmann <daniel@iogearbox.net>,
- Quentin Monnet <qmo@kernel.org>, Yonghong Song <yonghong.song@linux.dev>
-Date: Thu, 26 Jun 2025 19:28:38 -0700
-In-Reply-To: <1c17cd755a3e8865ad06baad86d42e42e289439a.camel@gmail.com>
-References: <20250615085943.3871208-1-a.s.protopopov@gmail.com>
-		 <20250615085943.3871208-9-a.s.protopopov@gmail.com>
-	 <1c17cd755a3e8865ad06baad86d42e42e289439a.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        d=1e100.net; s=20230601; t=1750992143; x=1751596943;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0y4ogdWfKUskoLksqSv1cDEXTKy/QANfgQ8Wcutrwa0=;
+        b=OTzoonTblyaecN78vM1de+2tOQsy8awE3PNKcbB8qv4VUM9wsDO6oOAAj2+ryfGXrT
+         KuussUt+EUIRlsO//AsedvdQrcTWVpK4xD1pOJdglWTXAD95mTuwyPF3OHEoP9kI/SFM
+         z9iMuB67O+1IdpNh0NM+0DCbbmE5XTH6AEjhBTX2UZmp5bA6atG2Uw2nyCoPLpt6LU7f
+         Ex7lDDslYXJeyNmIKbZqjsEpw3BxyKNdrerUp5hPpC36ZH6/p71Q2X3TIrhlZOqVPVew
+         Sr+dRGKs/tgMdhQfko4t5WqnSEsjrzx2PkBjJIBqpdva3iiASdQeWeBGvF8LOLc2G+U9
+         m+NA==
+X-Forwarded-Encrypted: i=1; AJvYcCVaDqbTwLS/EL8rmjR8KX0GlyhPCZ0d7I6MjFUu0+ZzhMTbRXDMr42llVd41DYgg/cYye4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzdSd7UMMqzGciEnipwcG2zZaX+k5tsaqZsNGdToW7QYjZvJnLN
+	76IJeXJ+ScdnOd+IgXOwrUBdoZ9SIIaKGbNP6vzAbOo8S+KmuejTAb+2qlXzTtZ7xtqpqE+DrOJ
+	xRGXcCpuA85BIZwnR3xRXNsNMxcpkcJT2BKOKuIOH/KRXPNxXfLcdwi0Z86TAhlpJqCQWDq96xr
+	bm3dCVC7NCKEtgmGQDmgZWC5cKisB9
+X-Gm-Gg: ASbGnctv/oUR9ITqlNzmESXAV9zhadSbiE2BXT6+hVh/sZS58OJw0C8ZdEpNbHoeLrN
+	h+l619FNNcvKmXzzozFjzFv76TUDIOEY7+1m/EbqZdjx+US8on2J77JQsnhTfg1VsMzNlGouEt+
+	ES
+X-Received: by 2002:a17:90b:1f89:b0:312:1cd7:b337 with SMTP id 98e67ed59e1d1-318c911e00dmr1944390a91.5.1750992143507;
+        Thu, 26 Jun 2025 19:42:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEwGbHlkbt0ZZkXIHkgZ1VmAjcfzX3PaJulYFgYKAEcgaDwZicgMiljALERrT6XFmENjSrOdPALHnOlGHUcwhg=
+X-Received: by 2002:a17:90b:1f89:b0:312:1cd7:b337 with SMTP id
+ 98e67ed59e1d1-318c911e00dmr1944344a91.5.1750992143051; Thu, 26 Jun 2025
+ 19:42:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20250625160849.61344-1-minhquangbui99@gmail.com>
+ <20250625160849.61344-2-minhquangbui99@gmail.com> <CACGkMEvioXkt3_zB-KijwhoUx5NS5xa0Jvd=w2fhBZFf3un1Ww@mail.gmail.com>
+ <0bf0811e-cdb8-4410-9b69-1c38b06bbadf@gmail.com>
+In-Reply-To: <0bf0811e-cdb8-4410-9b69-1c38b06bbadf@gmail.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Fri, 27 Jun 2025 10:42:11 +0800
+X-Gm-Features: Ac12FXxdViEQWWA017DWAwJPntu53W5CWymI2HEGHOwPav-f88RyBtMLMqPNFP0
+Message-ID: <CACGkMEsfU=84EYB_L6vusEbdnCLdQ_ri+izMGr+drC9z75LP_g@mail.gmail.com>
+Subject: Re: [PATCH net 1/4] virtio-net: ensure the received length does not
+ exceed allocated size
+To: Bui Quang Minh <minhquangbui99@gmail.com>
+Cc: netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>, 
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
+	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	Stanislav Fomichev <sdf@fomichev.me>, virtualization@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2025-06-18 at 12:49 -0700, Eduard Zingerman wrote:
-> On Sun, 2025-06-15 at 08:59 +0000, Anton Protopopov wrote:
->=20
-> [...]
->=20
-> > @@ -698,6 +712,14 @@ struct bpf_object {
-> >  	bool has_subcalls;
-> >  	bool has_rodata;
-> > =20
-> > +	const void *rodata;
-> > +	size_t rodata_size;
-> > +	int rodata_map_fd;
->=20
-> This is sort-of strange, that jump table metadata resides in one
-> section, while jump section itself is in .rodata. Wouldn't it be
-> simpler make LLVM emit all jump tables info in one section?
-> Also note that Elf_Sym has name, section index, value and size,
-> hence symbols defined for jump table section can encode jump tables.
-> E.g. the following implementation seems more intuitive:
->=20
->   .jumptables
->     <subprog-rel-off-0>
->     <subprog-rel-off-1> | <--- jump table #1 symbol:
->     <subprog-rel-off-2> |        .size =3D 2   // number of entries in th=
-e jump table
->     ...                          .value =3D 1  // offset within .jumptabl=
-es
->     <subprog-rel-off-N>                          ^
->                                                  |
->   .text                                          |
->     ...                                          |
->     <insn-N>     <------ relocation referencing -'
->     ...                  jump table #1 symbol
+On Thu, Jun 26, 2025 at 11:34=E2=80=AFPM Bui Quang Minh
+<minhquangbui99@gmail.com> wrote:
+>
+> On 6/26/25 09:34, Jason Wang wrote:
+> > On Thu, Jun 26, 2025 at 12:10=E2=80=AFAM Bui Quang Minh
+> > <minhquangbui99@gmail.com> wrote:
+> >> In xdp_linearize_page, when reading the following buffers from the rin=
+g,
+> >> we forget to check the received length with the true allocate size. Th=
+is
+> >> can lead to an out-of-bound read. This commit adds that missing check.
+> >>
+> >> Fixes: 4941d472bf95 ("virtio-net: do not reset during XDP set")
+> > I think we should cc stable.
+>
+> Okay, I'll do that in next version.
+>
+> >
+> >> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+> >> ---
+> >>   drivers/net/virtio_net.c | 27 ++++++++++++++++++++++-----
+> >>   1 file changed, 22 insertions(+), 5 deletions(-)
+> >>
+> >> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> >> index e53ba600605a..2a130a3e50ac 100644
+> >> --- a/drivers/net/virtio_net.c
+> >> +++ b/drivers/net/virtio_net.c
+> >> @@ -1797,7 +1797,8 @@ static unsigned int virtnet_get_headroom(struct =
+virtnet_info *vi)
+> >>    * across multiple buffers (num_buf > 1), and we make sure buffers
+> >>    * have enough headroom.
+> >>    */
+> >> -static struct page *xdp_linearize_page(struct receive_queue *rq,
+> >> +static struct page *xdp_linearize_page(struct net_device *dev,
+> >> +                                      struct receive_queue *rq,
+> >>                                         int *num_buf,
+> >>                                         struct page *p,
+> >>                                         int offset,
+> >> @@ -1818,17 +1819,33 @@ static struct page *xdp_linearize_page(struct =
+receive_queue *rq,
+> >>          page_off +=3D *len;
+> >>
+> >>          while (--*num_buf) {
+> >> -               unsigned int buflen;
+> >> +               unsigned int headroom, tailroom, room;
+> >> +               unsigned int truesize, buflen;
+> >>                  void *buf;
+> >> +               void *ctx;
+> >>                  int off;
+> >>
+> >> -               buf =3D virtnet_rq_get_buf(rq, &buflen, NULL);
+> >> +               buf =3D virtnet_rq_get_buf(rq, &buflen, &ctx);
+> >>                  if (unlikely(!buf))
+> >>                          goto err_buf;
+> >>
+> >>                  p =3D virt_to_head_page(buf);
+> >>                  off =3D buf - page_address(p);
+> >>
+> >> +               truesize =3D mergeable_ctx_to_truesize(ctx);
+> > This won't work for receive_small_xdp().
+>
+> If it is small mode, the num_buf =3D=3D 1 and we don't get into the while=
+ loop.
 
-Anton, Yonghong,
+You are right, it might be worth mentioning this somewhere.
 
-I talked to Alexei about this yesterday and we agreed that the above
-arrangement (separate jump tables section, separate symbols for each
-individual jump table) makes sense on two counts:
-- there is no need for jump table to occupy space in .rodata at
-  runtime, actual offsets are read from map object;
-- it simplifies processing on libbpf side, as there is no need to
-  visit both .rodata and jump table size sections.
+>
+> >
+> >> +               headroom =3D mergeable_ctx_to_headroom(ctx);
+> >> +               tailroom =3D headroom ? sizeof(struct skb_shared_info)=
+ : 0;
+> >> +               room =3D SKB_DATA_ALIGN(headroom + tailroom);
+> >> +
+> >> +               if (unlikely(buflen > truesize - room)) {
+> >> +                       put_page(p);
+> >> +                       pr_debug("%s: rx error: len %u exceeds truesiz=
+e %lu\n",
+> >> +                                dev->name, buflen,
+> >> +                                (unsigned long)(truesize - room));
+> >> +                       DEV_STATS_INC(dev, rx_length_errors);
+> >> +                       goto err_buf;
+> >> +               }
+> > I wonder if this issue only affect XDP should we check other places?
+>
+> In small mode, we check the len with GOOD_PACKET_LEN in receive_small.
+> In mergeable mode, we have some checks over the place and this is the
+> only one I see we miss. In xsk, we check inside buf_to_xdp. However, in
+> the big mode, I feel like there is a bug.
+>
+> In add_recvbuf_big, 1 first page + vi->big_packets_num_skbfrags pages.
+> The pages are managed by a linked list. The vi->big_packets_num_skbfrags
+> is set in virtnet_set_big_packets
+>
+>      vi->big_packets_num_skbfrags =3D guest_gso ? MAX_SKB_FRAGS :
+> DIV_ROUND_UP(mtu, PAGE_SIZE);
+>
+> So the vi->big_packets_num_skbfrags can be fewer than MAX_SKB_FRAGS.
+>
+> In receive_big, we call to page_to_skb, there is a check
+>
+>      if (unlikely(len > MAX_SKB_FRAGS * PAGE_SIZE)) {
+>          /* error case */
+>      }
+>
+> But because the number of allocated buffer is
+> vi->big_packets_num_skbfrags + 1 and vi->big_packets_num_skbfrags can be
+> fewer than MAX_SKB_FRAGS, the check seems not enough
+>
+>      while (len) {
+>          unsigned int frag_size =3D min((unsigned)PAGE_SIZE - offset, len=
+);
+>          skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags, page, offset,
+>                  frag_size, truesize);
+>          len -=3D frag_size;
+>          page =3D (struct page *)page->private;
+>          offset =3D 0;
+>      }
+>
+> In the following while loop, we keep running based on len without NULL
+> check the pages linked list, so it may result into NULL pointer dereferen=
+ce.
+>
+> What do you think?
 
-Wdyt?
+This looks like a bug, let's fix it.
 
-> > +
-> > +	/* Jump Tables */
-> > +	struct jt **jt;
-> > +	size_t jt_cnt;
-> > +
-> >  	struct bpf_gen *gen_loader;
-> > =20
-> >  	/* Information when doing ELF related work. Only valid if efile.elf i=
-s not NULL */
->=20
-> [...]
+Thanks
+
+>
+> Thanks,
+> Quang Minh.
+>
+> >
+> >> +
+> >>                  /* guard against a misconfigured or uncooperative bac=
+kend that
+> >>                   * is sending packet larger than the MTU.
+> >>                   */
+> >> @@ -1917,7 +1934,7 @@ static struct sk_buff *receive_small_xdp(struct =
+net_device *dev,
+> >>                  headroom =3D vi->hdr_len + header_offset;
+> >>                  buflen =3D SKB_DATA_ALIGN(GOOD_PACKET_LEN + headroom)=
+ +
+> >>                          SKB_DATA_ALIGN(sizeof(struct skb_shared_info)=
+);
+> >> -               xdp_page =3D xdp_linearize_page(rq, &num_buf, page,
+> >> +               xdp_page =3D xdp_linearize_page(dev, rq, &num_buf, pag=
+e,
+> >>                                                offset, header_offset,
+> >>                                                &tlen);
+> >>                  if (!xdp_page)
+> >> @@ -2252,7 +2269,7 @@ static void *mergeable_xdp_get_buf(struct virtne=
+t_info *vi,
+> >>           */
+> >>          if (!xdp_prog->aux->xdp_has_frags) {
+> >>                  /* linearize data for XDP */
+> >> -               xdp_page =3D xdp_linearize_page(rq, num_buf,
+> >> +               xdp_page =3D xdp_linearize_page(vi->dev, rq, num_buf,
+> >>                                                *page, offset,
+> >>                                                XDP_PACKET_HEADROOM,
+> >>                                                len);
+> >> --
+> >> 2.43.0
+> >>
+>
+
 
