@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-61711-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61712-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E20F9AEABFA
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 02:50:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18D86AEAC00
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 02:51:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F1EF175C07
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 00:50:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 041483BE61E
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 00:50:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C078342AA6;
-	Fri, 27 Jun 2025 00:49:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAB382BAF9;
+	Fri, 27 Jun 2025 00:50:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cTI9STuF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vsa1MWQx"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DCDC219E8;
-	Fri, 27 Jun 2025 00:49:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45B2012E5D;
+	Fri, 27 Jun 2025 00:50:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750985391; cv=none; b=lGx63vOH+5zbJYAg+3OpqBbLRLwchVGSe+K8ZENfrKrtSNkDhI9Z/1Dnr+2QOYrXqQThpa3jE06xA17G1f+f6Hg2tEKoQGItB6nR6RbavNuzqbGu8A4ItKvCYDWB9AZZEFD9ARiKYmOfnXfBa2dn4qXZKe1wFCmNAjvxuV+Z19o=
+	t=1750985443; cv=none; b=Mu9IePAuYrhN9dztfyVQzGKCRXEITlB0kpVDKXfHNQiyTIyb7HRlqZr/U17EypsN/zNmrD2FCdwP3bEWOq6pVA5eEg6DSX1us0sh7HgLGndGqCQlpoTs4P56J3AciFj3JSxdTfTANvzV/9PmVcYeR1u6AU49JY6pHKrEiWzeyz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750985391; c=relaxed/simple;
-	bh=2mFT3JPm8NqU5vwR61bPE8xlg3A57QqzEU7GhQm5UYI=;
+	s=arc-20240116; t=1750985443; c=relaxed/simple;
+	bh=SCTbdzkuj2fHsB3J8DC5cHHKjk2G20HmWFOE3rkHuRA=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=g4wDkCD6MC2lohuXA+QY/RgvsyVRlXVYL2bbGRaBqyoPM2OEMeekN+kExYTleOU7wbGlThOAeGiJ5+gmhEipa2XrTV3BpXmN7uJq24nmw5uWW6TtBCtvm1hAljEpPUBDlV4PDBcQzi1EqaDtKeT+D+TIRGBBqFr9NDCSv9drZtM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cTI9STuF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FCC2C4CEEB;
-	Fri, 27 Jun 2025 00:49:49 +0000 (UTC)
+	 MIME-Version:Content-Type; b=fd+op+Wx6xHw8voJCt/hsKFA9kdneRH6RRQQl1hDp8T0oHWMni5vQdsiYNiPwnbxXQCIEtDhehA1aHX9zH64O2lafZ3psYJAB1CD1i+OeyZ8pPJZ0jh+Bn1dHYwubxeLhcCyzJZYwlrfSpeIGyQv6U9fGKGg+fWIGnFMfqIDmdo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vsa1MWQx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80F90C4CEEB;
+	Fri, 27 Jun 2025 00:50:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750985390;
-	bh=2mFT3JPm8NqU5vwR61bPE8xlg3A57QqzEU7GhQm5UYI=;
+	s=k20201202; t=1750985442;
+	bh=SCTbdzkuj2fHsB3J8DC5cHHKjk2G20HmWFOE3rkHuRA=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=cTI9STuFEmWrxrUScipw1SpUTxIcKU1+qT6CWh0gVIMz4rOoJkysBarsmb4pT80VR
-	 YGSaurNmFEJJrQD6gwIF32KNfyZR5uRwAA86wUrCQna45hkkDRAjXoq5cWCRqzZ7aC
-	 kBgS7xhraFFzbmFS2+VlE1thlNHsq1aQz2D3PnJ1LpvHRMvxk3akRDHdJo69gg8+wC
-	 ewgNJudm1FuRXo65uUU+IE6DM5kxBhKt8MT7a0gJw0EVfUS9MHVTPwl180rRndQ5c3
-	 GY/PsbOOFb3eyHYV7R33bdeDvC0piMx6ptBcfCOZuDwKIBkz3MxZkUv/T165mQ4FeH
-	 /nTlQjnQrKyJQ==
-Date: Thu, 26 Jun 2025 17:49:48 -0700
+	b=Vsa1MWQxqKAyxE2vASroJIq67pMWozebzG0n3jyy7Wy9e8G+sC8WDhykBzALiwfTQ
+	 SauODA78m48pxnXG1yiAPX5CabsFy4xc3SMqX+Qu9MRDGs3+Xh/5dHWIWnnUPf370e
+	 /xXS36tXayiS2gahkIw93Fr+wJLEEzx6rEDJrXdF+TLXFQniSnzRC9RH5SnHfgZIL5
+	 jRxx4SXX3gHP/P62/ykgd6YIM/ecL9ahZHz1BUP9FXpzIhKulUuqsjI7WGn3Ijjr2I
+	 GFAOxRxmU586XTdx6G/oI5utSIisvPley4D+CzYvD2EzvBKqZ2zvXa6aQYTvp128ls
+	 qv5ZR0ncW9u9w==
+Date: Thu, 26 Jun 2025 17:50:40 -0700
 From: Jakub Kicinski <kuba@kernel.org>
 To: Byungchul Park <byungchul@sk.com>
 Cc: willy@infradead.org, netdev@vger.kernel.org,
@@ -56,12 +56,11 @@ Cc: willy@infradead.org, netdev@vger.kernel.org,
  horms@kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
  vishal.moola@gmail.com, hannes@cmpxchg.org, ziy@nvidia.com,
  jackmanb@google.com
-Subject: Re: [PATCH net-next v7 7/7] netmem: introduce a netmem API,
- virt_to_head_netmem()
-Message-ID: <20250626174948.1fa2ce34@kernel.org>
-In-Reply-To: <20250625043350.7939-8-byungchul@sk.com>
+Subject: Re: [PATCH net-next v7 0/7] Split netmem from struct page
+Message-ID: <20250626175040.585ce57e@kernel.org>
+In-Reply-To: <20250626064119.GB28653@system.software.com>
 References: <20250625043350.7939-1-byungchul@sk.com>
-	<20250625043350.7939-8-byungchul@sk.com>
+	<20250626064119.GB28653@system.software.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -71,13 +70,12 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Wed, 25 Jun 2025 13:33:50 +0900 Byungchul Park wrote:
-> To eliminate the use of struct page in page pool, the page pool code
-> should use netmem descriptor and APIs instead.
+On Thu, 26 Jun 2025 15:41:19 +0900 Byungchul Park wrote:
+> To Jakub and net folks,
 > 
-> As part of the work, introduce a netmem API to convert a virtual address
-> to a head netmem allowing the code to use it rather than the existing
-> API, virt_to_head_page() for struct page.
+> I believe v7 doesn't include any controversial patches.  It'd be
+> appreciated to lemme know if any.
 
-nit: this one needs a caller for the new function to be merged
+I'm still a bit lost. But indeed patches 2-6 look fine.
+If you were to repost those 5 they'll go right in.
 
