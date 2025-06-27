@@ -1,132 +1,184 @@
-Return-Path: <bpf+bounces-61765-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61766-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06759AEBE9F
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 19:53:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 929E8AEBF09
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 20:30:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7E5F64815A
-	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 17:52:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E19773A8224
+	for <lists+bpf@lfdr.de>; Fri, 27 Jun 2025 18:30:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 919DA2EACF4;
-	Fri, 27 Jun 2025 17:53:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C4042EBBBE;
+	Fri, 27 Jun 2025 18:30:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BN0Pte/1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lxx9ikdG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACFE02E9ED4
-	for <bpf@vger.kernel.org>; Fri, 27 Jun 2025 17:53:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7136B1EC01B;
+	Fri, 27 Jun 2025 18:30:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751046794; cv=none; b=FWr5le+gpRwukMf99fEUUHsnsq8fNam6we5wKmBVWjWjFFcTOAEzzkjor02Of4ZRDNO9sHrCVBL00Uvq21kA5LbbzX5YmDt3xGLBiJQsqMeG9cFDIhBTyX4ewVxc92T7A9CQ9c2tnlyTutHlTldN9jAb5r8moeVr6RJksf+rJAc=
+	t=1751049023; cv=none; b=obA5zMzgZqOF3d+9UZK4YvhqS7R+pO4aH4Ya/lm3JV7thv0DRx/CkyY+kXx8kh50lXRTKebacuvuQr2zOwtWVFhaU3MkWRYTGBMh83tetcbibJE9GhXfwRooJwQH/m/16pIFN/kpuYC7m67rHE0wkb727Y2JgKPM3QCjeiyT7Ps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751046794; c=relaxed/simple;
-	bh=pOFItNjSVAIJ/QbSw6nZbIvrMYZhRLcR/JhB3rxk69A=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OtQmfgnJ4bZtFIbB2IdqG6DgY03weMwQb6XrNE6vE3M8eLLQwjfelXIsx6ncwYZzJN4jAKQNp4uoY03GKVOWK4mRi2mCIXL9A+XU0rQbfY5V/Ce8V9V1y1FA8Pl11b4vWkh6duCs6qEMZ5rHVJib6iK9K8RHAt96/lhDtkzPj1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BN0Pte/1; arc=none smtp.client-ip=209.85.128.181
+	s=arc-20240116; t=1751049023; c=relaxed/simple;
+	bh=F2kaZL9psam6yAmb7KA4W+jbABJvGz4+PVh9kvOoHJE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AV5Iyi4IeAHwTrqEy5GhOEs271lIG1o7Ysc5aZf1Wgj1NVAF+0OIyj51qICoeRCjf2Hfv4XgqQZtztdrOOXKqwpWyIJMU8Gh9SCBKe76Dj3MczL9KqmgxYxMKAMW5zkUBuJVZcNPB93sSKXMdDMAt9SyIzkrxA3bbbejfMwSOY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lxx9ikdG; arc=none smtp.client-ip=209.85.128.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-713fba639f3so25508857b3.1
-        for <bpf@vger.kernel.org>; Fri, 27 Jun 2025 10:53:12 -0700 (PDT)
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4537fdec33bso1178725e9.1;
+        Fri, 27 Jun 2025 11:30:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751046791; x=1751651591; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5XUINdEkDy+eJn1FMCOjQweN+7EXFZ6ew6xO7zooVA0=;
-        b=BN0Pte/19JSTqGh6VTKyWuTNfCZu8v8vj68WF6qQ5KtpqW9lDjrkKqgC3p7fJ8ZwBQ
-         /cikyq3zxc7Gx73EpMoY2HLL+zzpFvrypy4xVduvZLnuDb9LicPiYGleSbvxBb5QpdHS
-         LIXHo0z7/NnFw2CjZcmb9bsDkIObcaw2poXQO7zA2dnbBIPiTCduifgkXGuB3vp2Fbv2
-         wVS+TbMCXFxYcaQawP8dk5dArDMUdmzH507jcUyAx7vqYtM/m/vpdLxcCXZxE5EL0sPs
-         He0/WRWvXQIOuNgbOolLniCYBcLjPe0CIrLZ/pCHlynTqMsXZw5g05mAywvwL00Uf+6r
-         2P8g==
+        d=gmail.com; s=20230601; t=1751049019; x=1751653819; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x7mIMUcA8vt8Z3ShV10cEWd0HnSw9ixn5R7nBQ5IiR4=;
+        b=lxx9ikdGkgaolz4Y3DGXqGj6JB+gQeW543+XDeVO2EdQjILI/Sc3dtUkQinebq6t6y
+         TdgTZe891eGQ8H5nDHn+lnwvxLkh1ZWUG757zVUgLNnEWBY7PtrY2YWn79EvwAF7zdXc
+         4r9e0ZTOmGjlaQkyg4Rv9wIPNiALIfNncamLwYWQ/Wwpkyv+O580eQ27IfYCCB11CVkw
+         GM0vnxEvPwCSpGxZ2B46tGVOzQ6TDupLNptRiXWyxtyi6M0KZacVhicmNImMrsb0RmtT
+         EfemvJrvepq4xhq7ZpF0ynovTppckCeFAJnjMCf4pY13ONRFESCk04OdquvBG/eLtltg
+         vnVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751046791; x=1751651591;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5XUINdEkDy+eJn1FMCOjQweN+7EXFZ6ew6xO7zooVA0=;
-        b=WwVL/DgDnRQ6vW5tKHpVK75ik9ip8KbTxlGJM75TtYktNVkIrZx2li+ubsQJLWRXmv
-         f+50lqp4xSOw0Z+7d3UzBCNE4E/rYN1ApsM6swknD0g7TKKrBkg3vusVNFXWtaSSq63C
-         6tPHEBTFfzT/lVVJnVMeigP4KDT4+dUcquchXQlMvngFr1b7S9yEPDxe1gbmrk0Jw609
-         /AMmWd9bdi5Hrh0lXvbaPNdFaZmhEewBkcAfTxisi58EZZxFrMoP7z4gM8PFrL1GM/BA
-         RrULyGblyzqp8xHUUAwW/cGEnB0PPpydA3JKulYNbQzNnRXlj9NbjnkruwxaxEh6nng6
-         I31Q==
-X-Gm-Message-State: AOJu0YxaS/GFQiiBgqA1K5SxR4HgzwoB1JAvNCjT9bcvAxDNT4SGIDv0
-	ykkdUYETLti9AhcWlZUqN6je+4GOW3N948aPb3qD1S9dTz/A7Ha8SMuLWca/5BFk
-X-Gm-Gg: ASbGncs21hJGoycdtFu0yW+PSxXouoyzqaTU2cfhC4F3ghJ9E+ul+fKcfyNtVhat9Ac
-	e3qtypliHnIYLlYnyU81nyU90zWfUcZEtgDWTrAct+a+dnPw72xcuZh1LZtAoSne4bItNKk0fl2
-	4odlvr83Dm7vbTsUj+rDH1mVVkZz27l9Tmr96MmmJhilBeOIoqe32+trlVrNak92f3UGVCPftKk
-	8H8unYeUJarEOl+toXrf/nR+Lh3+9MioY4oze+At+ZitchJfFq/l4HY0myP5KUCEXyWKDTL3utu
-	sXJebCVcBDXH5XjZzJde66sAcS2DZmGJaUpGvQGyj/hRA7zz5LXJjN42V5oDDg+Z
-X-Google-Smtp-Source: AGHT+IF4PduDBefW+GuE964Ok38ujKJ+tTv6weo22DzkBzrElxP3AZB76LxdzDU6tnPKrL3u5CJikQ==
-X-Received: by 2002:a05:690c:4985:b0:70e:143:b822 with SMTP id 00721157ae682-71517150eb9mr64755707b3.7.1751046791401;
-        Fri, 27 Jun 2025 10:53:11 -0700 (PDT)
-Received: from localhost ([2a03:2880:25ff:74::])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-71515bf0aa6sm5203347b3.8.2025.06.27.10.53.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Jun 2025 10:53:10 -0700 (PDT)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	andrii@kernel.org
-Cc: daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	kernel-team@fb.com,
-	yonghong.song@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	Jake Hillion <jakehillion@meta.com>
-Subject: [PATCH bpf-next v1] bpf: guard BTF_ID_FLAGS(bpf_cgroup_read_xattr) with CONFIG_BPF_LSM
-Date: Fri, 27 Jun 2025 10:53:09 -0700
-Message-ID: <20250627175309.2710973-1-eddyz87@gmail.com>
-X-Mailer: git-send-email 2.47.1
+        d=1e100.net; s=20230601; t=1751049019; x=1751653819;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=x7mIMUcA8vt8Z3ShV10cEWd0HnSw9ixn5R7nBQ5IiR4=;
+        b=rmj9UmJIjZALNar8O/wxR147J71jlsc4MQ99CnMlcuKX1q3LeZtuYjgm2iS3yXfZHk
+         GCBBGXp9+cE/+Jp5hC/gpH/a9W10QeR/g+TUkIa/TfDYV5jBN4c1eoeOFQCnguaH3O1n
+         IsscC3X3NEeG5xkvcrhthHMT2B3Jt8QeKKJ0SMi5FOZMg01uNaf+0v7cdQXNc2+hO3HI
+         dW0RMtuRqaBmxLqb9u9Y8iIfJ4rN6EJpcZ0UF26iQWjupV/Gjx8iuEj1daddBhzIgYxk
+         EmCt65Cus1O4EqDbe8M13+F9cauiJWceUIPlp+Scs6B4mtAxE/WJnHDtwntq1imyMhUh
+         ptJA==
+X-Forwarded-Encrypted: i=1; AJvYcCUpAwAGyKahe+bEL9gCVu04Rhh3ONpxiTpMm0OU0qomW6uaSKTPiniBsZU03h3m8cwG1pVx5kKP@vger.kernel.org, AJvYcCWlgCS447Zr4OLzaKUmgV5BaoRhSlRqbXQK07IMu+WsDTq0GwwZtYLwkMsK7mY5rysAT425MPSd71d+6Tg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzLx5r+5IZb5emIPcHhYfYgkyYn16f6CFjT8/b0knR3q4YSsfxP
+	+dXErcu8IfS5DrKWbkHlLzmUkI9Llot9CeBt9PyWADByAkvvRCnwOUECvFmc5UN1F3ZGVnjLQC9
+	8k/Aa7IDfhV0sbA9DBNAYYFQC3VaZpGm10z0y
+X-Gm-Gg: ASbGncsnq7/MJ0LHbnX8nwKS1T/zH76W5U0hnJnuxIsVQnlYJyw5jtkyGYHwZ8xr/il
+	BNZ+qnMUWYXeQBTRavMZLZNOiKISURnYI+fRVd00xJQ/nB6/Z/b65+Ln6GOS+KcaBceyxUhB2JK
+	J0ByNtWyP5ts8KboQWZEvSM+ax18mLOQrVVRdi9DUgd/ykJvLQqpWJWn0ZfJDTQJSToo6+8WfL
+X-Google-Smtp-Source: AGHT+IFi5QtSWxRQLTobs98JpyVNRyqI2s1I9wNiFtZIjauVVuTSgsc9OfjvRILohIVXzIRk5CXnQtZDpFVjhdPXQwU=
+X-Received: by 2002:a05:600c:3152:b0:453:c39:d0c6 with SMTP id
+ 5b1f17b1804b1-4538eea44a4mr44044025e9.32.1751049018559; Fri, 27 Jun 2025
+ 11:30:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1444123482.1827743.1750996347470.JavaMail.zimbra@sjtu.edu.cn>
+In-Reply-To: <1444123482.1827743.1750996347470.JavaMail.zimbra@sjtu.edu.cn>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 27 Jun 2025 11:30:07 -0700
+X-Gm-Features: Ac12FXxwEkxDnRQ8M5fp4bFvaKU9qj0Y_YDaHq7PejEC2_9p-vI4ymrzoYoKo28
+Message-ID: <CAADnVQKwC0OnJMY6ZueA+QnRmmZMB0hDyvX9-gx_0m5TA=o33Q@mail.gmail.com>
+Subject: Re: [BUG][BPF] Kernel Bug Triggered when Ebpf Verifier Check Fails
+To: =?UTF-8?B?6ZmI5LmQ?= <tom2cat@sjtu.edu.cn>, Eduard <eddyz87@gmail.com>, 
+	Daniel Borkmann <daniel@iogearbox.net>
+Cc: bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Function bpf_cgroup_read_xattr is defined in fs/bpf_fs_kfuncs.c,
-which is compiled only when CONFIG_BPF_LSM is set. Add CONFIG_BPF_LSM
-check to bpf_cgroup_read_xattr spec in common_btf_ids in
-kernel/bpf/helpers.c to avoid build failures for configs w/o
-CONFIG_BPF_LSM.
+On Thu, Jun 26, 2025 at 8:58=E2=80=AFPM =E9=99=88=E4=B9=90 <tom2cat@sjtu.ed=
+u.cn> wrote:
+>
+> Hi BPF maintainers,
+>
+> I'm reporting a bug I encountered in the BPF subsystem on Linux kernel ve=
+rsion <<5.19.5>>, <<6.15.0-rc2-00577-g8066e388be48-dirty>>,  <<6.15.3>>.
+>
+> I wrote a BPF program that triggered a verifier rejection, but at the sam=
+e time, the kernel emitted a BUG() warning at <<kernel/bpf/hashtab.c:222>>,=
+ suggesting a potential kernel-side issue rather than just verifier rejecti=
+on. Later on, I discovered that constructing any ebpf Verifier rejection be=
+havior within the specified code snippets would trigger this kernel bug.
+>
+> - Miniest poc code:
+>
+> #include "vmlinux.h"
+> #include <bpf/bpf_helpers.h>
+>
+> struct mac_table_entry
+> {
+>     struct bpf_timer expiration_timer;
+>     __u32 ifindex;
+>     __u64 last_seen_timestamp_ns;
+>     struct in_addr border_ip;
+> };
+>
+> struct
+> {
+>     __uint(type, BPF_MAP_TYPE_HASH);
+>     __type(key, struct mac_address);
+>     __type(value, struct mac_table_entry);
+>     __uint(max_entries, 4 * 1024 * 1024);
+>     __uint(pinning, LIBBPF_PIN_BY_NAME);
+> } mac_table SEC(".maps");
+>
+> SEC("xdp.frags")
+> long mac_xdp_func(struct xdp_md *ctx)
+> {
+>     // Constructing any code segment that does not meet the requirements =
+of BPF Validator
+>     // can trigger a kernel BUG: sleeping function called from invalid co=
+ntext at kernel/bpf/hashtab.c:222:
+>     while(1){
+>         __u32 j;
+>     }
+>     return XDP_PASS;
+> }
+>
+> char LICENSE[] SEC("license") =3D "Dual BSD/GPL";
+>
+> - Kernel version: <<6.15.3...>>
+> - Architecture: <<x86_64>>
+> - dmesg excerpt: <<BUG: sleeping function called from invalid context at =
+kernel/bpf/hashtab.c:222>>
+>
+> Detailed info including reproducible BPF program and kernel logs have bee=
+n filed on Bugzilla:
+>
+>   https://bugzilla.kernel.org/show_bug.cgi?id=3D220278
 
-Build failure example:
+Thanks for the report.
 
-    BTF     .tmp_vmlinux1.btf.o
-  btf_encoder__tag_kfunc: failed to find kfunc 'bpf_cgroup_read_xattr' in BTF
-  ...
-  WARN: resolve_btfids: unresolved symbol bpf_cgroup_read_xattr
-  make[2]: *** [scripts/Makefile.vmlinux:91: vmlinux.unstripped] Error 255
+The stack trace is the following:
 
-Fixes: 535b070f4a80 ("bpf: Introduce bpf_cgroup_read_xattr to read xattr of cgroup's node")
-Reported-by: Jake Hillion <jakehillion@meta.com>
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
----
- kernel/bpf/helpers.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[  280.376885]  __might_resched+0x494/0x610
+[  280.376892]  ? __pfx___might_resched+0x10/0x10
+[  280.376900]  ? __lock_acquire+0xaab/0xd10
+[  280.376909]  htab_map_free_timers_and_wq+0x413/0xaa0
+[  280.376917]  ? __pfx_i_callback+0x10/0x10
+[  280.376922]  ? rcu_core+0xc6b/0x1760
+[  280.376927]  ? __pfx_htab_map_free_timers_and_wq+0x10/0x10
+[  280.376932]  bpf_map_put_with_uref+0x9f/0xc0
+[  280.376939]  bpf_free_inode+0x118/0x170
+[  280.376945]  rcu_core+0xcdf/0x1760
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index b4117681137e..f48fa3fe8dec 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -3779,7 +3779,7 @@ BTF_ID_FLAGS(func, bpf_strspn);
- BTF_ID_FLAGS(func, bpf_strcspn);
- BTF_ID_FLAGS(func, bpf_strstr);
- BTF_ID_FLAGS(func, bpf_strnstr);
--#ifdef CONFIG_CGROUPS
-+#if defined(CONFIG_BPF_LSM) && defined(CONFIG_CGROUPS)
- BTF_ID_FLAGS(func, bpf_cgroup_read_xattr, KF_RCU)
- #endif
- BTF_KFUNCS_END(common_btf_ids)
--- 
-2.47.1
+Here is the issue that the last uref decrement happens in rcu callback
+which is not sleepable, but htab_map_free_timers_and_wq()
+has cond_resched().
 
+The fix might be this:
+
+diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
+index 5c2e96b19392..ed8bff8d4684 100644
+--- a/kernel/bpf/inode.c
++++ b/kernel/bpf/inode.c
+@@ -790,7 +790,7 @@ const struct super_operations bpf_super_ops =3D {
+        .statfs         =3D simple_statfs,
+        .drop_inode     =3D generic_delete_inode,
+        .show_options   =3D bpf_show_options,
+-       .free_inode     =3D bpf_free_inode,
++       .destroy_inode  =3D bpf_free_inode,
+ };
 
