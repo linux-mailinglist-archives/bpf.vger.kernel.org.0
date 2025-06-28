@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-61791-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61792-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 309A0AEC404
-	for <lists+bpf@lfdr.de>; Sat, 28 Jun 2025 03:59:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3632DAEC446
+	for <lists+bpf@lfdr.de>; Sat, 28 Jun 2025 04:49:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34C271892244
-	for <lists+bpf@lfdr.de>; Sat, 28 Jun 2025 02:00:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B14584A4C43
+	for <lists+bpf@lfdr.de>; Sat, 28 Jun 2025 02:49:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 922891D8E10;
-	Sat, 28 Jun 2025 01:59:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A83E1E0DCB;
+	Sat, 28 Jun 2025 02:49:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HzCiUYSe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R1Pz2f0p"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17C4E2F1FF1
-	for <bpf@vger.kernel.org>; Sat, 28 Jun 2025 01:59:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 103B61A2C0B
+	for <bpf@vger.kernel.org>; Sat, 28 Jun 2025 02:49:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751075981; cv=none; b=rJvriY5SU6rZf5bDuzvevINzqqhry0/hicRGiCvlXvzEQJIYObmQrriiv/Y3jkoUy1gDdKDt0WcgTVrNdaoY07YTEKlRox1sz38XnO96ZFiV9qz9Q3L/km+ETIrSI0xYvvi9Pyl8EZNPnUsJLG8v4BckAtqgWk96MzK37/+h8k4=
+	t=1751078980; cv=none; b=O5xvtAkTEisAG/SceczYRNhDjSEWc+7u2VJxH0N7hP2fZ05GtHOsCt8NJR/Agu7zcEzXN2mFRkhdQdw9/HZg5lz4M5aFpC5laoPzFM76BybT67M4PlMJtITeW8LwVG9wFMZ/yhyDXoM9JFpsz3X+GsdTzUDzkVVtd1JdktPQnAw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751075981; c=relaxed/simple;
-	bh=cOUePLHMUjnWBAjUKsnROm0uwT4nepvi0hnD+W0RQPw=;
+	s=arc-20240116; t=1751078980; c=relaxed/simple;
+	bh=oIloyYH1FYgaVIXk2YG8HCsn9ii9uICwTBiZXk7qtDQ=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=AXKtyO3k6u6YuxTgczpZmprKUKjDCoPfn6eQet+vo0BejJLUH1tqaPRHTBFNVp4uWTklWJzvIGTtvshRzyL/s3hZvorNmZT0fLQ41N8qhFfXwQj5kLD3BqWoHhW6hKWjkymeRGmsBflCiPtdgHEDBUIotxF0xd5IZPv6Fsh9l7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HzCiUYSe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8695AC4CEE3;
-	Sat, 28 Jun 2025 01:59:40 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=PaxJN91SBdHbPK2/BKHnDZo8QKWQTW7DONNyX2z9AJPOifk35ROg1zSQPBnP6wyz7XSAYtcrWW2Hltt/fkpERl7cejylrJWy4FXYGJDGgEpalE861auJOGr4DFo3h67G5xG52fFO5hdaUj4E+3svUlq9YXR9fkDyFJJuAJXKngk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R1Pz2f0p; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D374BC4CEE3;
+	Sat, 28 Jun 2025 02:49:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751075980;
-	bh=cOUePLHMUjnWBAjUKsnROm0uwT4nepvi0hnD+W0RQPw=;
+	s=k20201202; t=1751078979;
+	bh=oIloyYH1FYgaVIXk2YG8HCsn9ii9uICwTBiZXk7qtDQ=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=HzCiUYSetJ4EkAPOk02UVgMCgcenIX18jHAO04ShfnStJk8jUOoY279/3iqNyEWuC
-	 D6xydo3p+1hnK5HqU/JzBq8INymVH99AHoKMf7Grd2WTSGdQKqyzbp00KtwUeLUMBv
-	 j0tTo5pyuFhpyY+PZqNkdEcO/Rl/hU5xYrpWFWaquHH9URmLIu7TUgvdSIGVbuZdXv
-	 SfuU0M+my1GJMc9hwErXKlqlAkFPQsPt9K7hF6KdsMwSmLDNkF3yNOPepXXAHFTsB3
-	 oyTQsbxSTWT/LZciBlJCeC/11fI9+kmCkERyhjuHnT8NH/LY4ZLOniSVv1EUwYRTZf
-	 8jlMoKnpu9ABA==
+	b=R1Pz2f0p6nfur9ihZ57d0ZCPHCOb4giMqS8sTAzQ7cN0K3FAjv9l12lBmXfXEwcIk
+	 cT+y+3Nldb8wUTlgoau56qW3sJtro315iU/shIVFQSbVVUZmNVrLo+FZfjqSYFVirA
+	 gv6m13T9uKhxLxgouwZZS5jRj/On7ey0QRTwxU4U82PenxEGlBan7UGmu5F5a+oLsG
+	 DHPMlmHjCi9w+gyuTt2FdiVY1QdFx1otb2ToRjmsNanomcOO2BRr9xJPUd7kMMUYCl
+	 J0a74j2cPkvzP/jiihuRSsfDXUjZN3jXEmGI1Rp16yiIAXUmUrbnqCFxaH9pFp4N3m
+	 bNIxULyO42kzg==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADC8938111CE;
-	Sat, 28 Jun 2025 02:00:07 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EADEC38111CE;
+	Sat, 28 Jun 2025 02:50:06 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,41 +52,37 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: improve error messages in
- veristat
+Subject: Re: [PATCH bpf-next v1] selftests/bpf: bpf_rdonly_cast u{8,16,32,64}
+ access tests
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <175107600652.2110993.2865453274474091751.git-patchwork-notify@kernel.org>
-Date: Sat, 28 Jun 2025 02:00:06 +0000
-References: <20250627144342.686896-1-mykyta.yatsenko5@gmail.com>
-In-Reply-To: <20250627144342.686896-1-mykyta.yatsenko5@gmail.com>
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+ <175107900577.2118971.13642028018339865468.git-patchwork-notify@kernel.org>
+Date: Sat, 28 Jun 2025 02:50:05 +0000
+References: <20250627015539.1439656-1-eddyz87@gmail.com>
+In-Reply-To: <20250627015539.1439656-1-eddyz87@gmail.com>
+To: Eduard Zingerman <eddyz87@gmail.com>
 Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com,
- eddyz87@gmail.com, yatsenko@meta.com
+ daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
+ yonghong.song@linux.dev, andrii.nakryiko@gmail.com
 
 Hello:
 
 This patch was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Fri, 27 Jun 2025 15:43:42 +0100 you wrote:
-> From: Mykyta Yatsenko <yatsenko@meta.com>
+On Thu, 26 Jun 2025 18:55:39 -0700 you wrote:
+> Tests with aligned and misaligned memory access of different sizes via
+> pointer returned by bpf_rdonly_cast().
 > 
-> Return error if preset parsing fails. Avoid proceeding with veristat run
-> if preset does not parse.
-> Before:
-> ```
-> ./veristat set_global_vars.bpf.o -G "arr[999999999999999999999] = 1"
-> Failed to parse value '999999999999999999999'
-> Processing 'set_global_vars.bpf.o'...
-> File                   Program           Verdict  Duration (us)  Insns  States  Program size  Jited size
-> 
-> [...]
+> Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>  .../bpf/progs/mem_rdonly_untrusted.c          | 41 +++++++++++++++++++
+>  1 file changed, 41 insertions(+)
 
 Here is the summary with links:
-  - [bpf-next] selftests/bpf: improve error messages in veristat
-    https://git.kernel.org/bpf/bpf-next/c/ffaff1804e2c
+  - [bpf-next,v1] selftests/bpf: bpf_rdonly_cast u{8,16,32,64} access tests
+    https://git.kernel.org/bpf/bpf-next/c/c4b1be928ea0
 
 You are awesome, thank you!
 -- 
