@@ -1,128 +1,117 @@
-Return-Path: <bpf+bounces-61884-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61885-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77B7FAEE6F7
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 20:48:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 456EDAEE766
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 21:23:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3357A1BC1FEC
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 18:48:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E8023BD1B4
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 19:22:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8DAC2E62AB;
-	Mon, 30 Jun 2025 18:47:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D06D28C2A8;
+	Mon, 30 Jun 2025 19:23:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MA11ONWX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cRJrDj4E"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4F3B286D7C;
-	Mon, 30 Jun 2025 18:47:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAB965227
+	for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 19:22:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751309275; cv=none; b=WlwA7kjZkio00dwfel3zDECKQ52DrXr8gOIX9t7K2t6sJiW9zdik2ulgQq2WZ0Q/Pyo3DT2y1i9jfzwTCe/KrYxP0VcD9KrG/Gdy4i4QLgfsVwS+g61OjNEcdOs5RlXr8RBDnOut3XZ6KnrnQXqz8pY1tKHzhT9M+4rIHW+Y06k=
+	t=1751311381; cv=none; b=poN932ZlilBN5YJqtAfPZ7JeyGaGyQhPJN77kKy7uuByZu9KoKIGltxSTEDwg3gx7+eHX5JFhPbraNvBsVsln22GVaSo4N6+Z/SwmDg8tFrg+6UJEUsWWgC2XaYxMKluiEob4WllheJaTOZwztfxc/puyLzNo6W0V945IOeTHZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751309275; c=relaxed/simple;
-	bh=ZFzT65FWxKa2J63Qje6deVGpZ+AcnaU3MpY7P3kPK/k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=htRQxe6diLhaLMo8ZaFU/zbn7W06V7yM/vNf1BQuCUZuNcPC8FG09vCNJj919NNzp4r559RtYMO6PuK9ugqVG1r8pi0Vh5rtwDpPfNU4D5oiFk6TqbzcgMvsGA9eWdFNdYphx3bvHqaay1YoZI8+ctwB+pPHFmIEjbQv0xbnYjo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MA11ONWX; arc=none smtp.client-ip=209.85.216.51
+	s=arc-20240116; t=1751311381; c=relaxed/simple;
+	bh=/mh1kKLVCICAQfnTxn0a+fEAaQeORF+DsOI4PV/vUXM=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=XeT/CXK0H09wvJ5pQSCsXhtQbkjoo5q3LdzjPSK14xK8sNPVzRsOGr20xkB3dDJ1Nj6WkTR8t/iOLWr3pUe+kNJaEXJr1tQHw/pcmjy+3n+Vu1bTTKzTolsNiAp3HDJ5bAPEOfRW+s0+bue3JYz6J/hYGp+OzZyk7NMf14f4bxc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cRJrDj4E; arc=none smtp.client-ip=209.85.215.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-313910f392dso1739945a91.2;
-        Mon, 30 Jun 2025 11:47:53 -0700 (PDT)
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-b3220c39cffso2790047a12.0
+        for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 12:22:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751309273; x=1751914073; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Xh+upEPAJaXpVzUzxZqLUIW+lz2TINd7A0/KzA6yE4c=;
-        b=MA11ONWXeN66fPWAvKW3OAKk+6tDMXkGbb4+kQFhhlBBGfsDF3/wI5maX0HvlFERmk
-         X0eXkRAPVTQtA0/bdCsVMjU/3IHx0f592ZLXtcQJLoapjnBAF5JeYEIhBaKYMPqxsPlr
-         4ap5EWNMT2UD/zoZxRykea65GJPv0dqEXV7l9eXvbvUquIZxeoDBBDwZMPJzJnU6xgcf
-         9IQNjmbJCh/IIws4BMCjKKt76hc0/VmEBpjcabnixtWe1mH/JlmUPd+QA8qYIp9/5xZh
-         wWGSVojWHkn2ufQ6fZiW7UTXzWnalXTAj7ZbhwAiKcYEJX7ZrU3LCPG1AGd59xO+l3dg
-         7YRg==
+        d=gmail.com; s=20230601; t=1751311379; x=1751916179; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=/mh1kKLVCICAQfnTxn0a+fEAaQeORF+DsOI4PV/vUXM=;
+        b=cRJrDj4EBLP0X7NLGnzlOPlKsROnh3+vOiRAOOSEDxFKGxUOQmvTtVk4wazvh/b121
+         KbuImv1JyFv49YqpRBYji2ojIHDfL/kouub08BtxMrlVjvWpE9HExjjk9/pgdaybU9dY
+         S1gTKCOunye9pYgLXmkt1HfjmntuNwS1WV5X8GAeuNx5zAMq0c2kAwbVCwY/zBCoLoPV
+         gnLhjxSiGSTEGTYGY0+6X8+ZxGPli5mrypbeztdYaNQ3al8qMs3guPXI9Ddjxu8iSaFY
+         lhjMZQB7JGESWBrQwhVGCGqzRyeGGzK3BJQ5cJYeCDr5SCX/lBeOJmroKfK1P+7TCml6
+         Vn2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751309273; x=1751914073;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Xh+upEPAJaXpVzUzxZqLUIW+lz2TINd7A0/KzA6yE4c=;
-        b=E+5g69FvFF7BGQZU+6WBhqYUdv5+7TAQ/L6K0tQvATejTcGbn+1CUgfQTwkfTEd/Ty
-         yJDMJSIX6heVGCXzxDmyX8/bGpWbj0D6AEFE7bwWdmDUJbI5uJWQQjKSch9wc984LdyG
-         OQF6YtaU7O995eymJrtz9PZZmdU+qatt4myfoxILt4C/rpXRVjolgDnfTFGJQIuRp8sZ
-         No05JvP/3TZbZfG5VFwI/fLMF6SWHxL1Cstnzv8off321smz1aFHtBDnpXtZ3CBvN0QQ
-         oMVsIDKfl9Braki9d6Ksun/13HSwWT2vq/lixbV9g+bAj4H9+YIXDy5AsIyq1sMbW0Zz
-         FwSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW0uH+89AeJY1bMF5pluzW9UN68Ktkhxoj+6N3m9e8qTn7WRzHyK8dNRYIw9dlsf6ANR1o=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwzWn4mnXmPsslzkIxNVOR51hPaXNoQwKpP3Qa/yY9SndKsqWrR
-	6uvycf023jyIg16fE2RCwZcinOo5kJRy2V3w7CzanvvVdIPflbSxDrc=
-X-Gm-Gg: ASbGnct2m17PMnGUS1H8Dj/V4/As1vGgHcUgCQZHB1RrHVGoH7oGWh0BXAaks6eP6zG
-	bakRC5YZ63tZCn20bZcIokVtjH8RiVcu+v5GRXVDOzqrTF6Uo4Cdfe6oz2PiPBarvT4BF7GlAzC
-	zkneDc0qS8stzUNHwaHC4dIbrwACaJD27OlFeehXFlUgVKlrDRa0R8yjKkPnFFSlj84QGQO8/9W
-	5BcyNXfbe3Q+i8k4hxQxyQP7WhgVS1jWa7VKjhjv825uFcwfvSNE/Jsh6TIKMbZIlHjtXy8wgT8
-	gaSZ9o4lTfleVwf5NBkhbLGl+FxgvPOH/SDr9EUX8slNgIguOKsU79Bcgz2VdhbSndzVG9uaZeb
-	5bAHtgol3V65tongYwcuuMes=
-X-Google-Smtp-Source: AGHT+IFWhqTRubsuaqa3yAKXn3VbTJLXUGSY+1/XbR1Kv/h3wzx2x7U7W0GHv/UiqleRQfj5lPyI0w==
-X-Received: by 2002:a17:90b:184f:b0:311:ea13:2e63 with SMTP id 98e67ed59e1d1-318c9225ebfmr20321463a91.13.1751309273166;
-        Mon, 30 Jun 2025 11:47:53 -0700 (PDT)
-Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
-        by smtp.gmail.com with UTF8SMTPSA id 98e67ed59e1d1-318c13a15c2sm9414422a91.12.2025.06.30.11.47.52
+        d=1e100.net; s=20230601; t=1751311379; x=1751916179;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/mh1kKLVCICAQfnTxn0a+fEAaQeORF+DsOI4PV/vUXM=;
+        b=ObJZYRIc/wD6XwS57VcqYTSbcV+vXkEK+Z4YVdcd/FLGz/voduwX06q3qPOYXhwGZ5
+         1bPBFQj7Zkp30d/oQseldo7vWq7QPr9rCT1ZiN+MtklnEJzoFrALcjpPbFnws+gqJDXT
+         nsqY2AWg3Bo2nRhbV+TbYAltFc7XjTGUy9DcfNGa3XGhgmrkGqDXPvE1j++HaPHrjiPi
+         lDpwzvY2JBvcYpg5xMRJj8KbEV4XBZx19/5Ile/fqkcoF45mIKjIPPIcu5tUh8l+O23Q
+         eYz1xZLXfmrduBeyA6p1tewt5HuBYLYIJZntDM5rdp/fiDS6vL1APzU95OmfTOzikV5E
+         0w2w==
+X-Forwarded-Encrypted: i=1; AJvYcCUT3ucwGYk6xA2tEx3b4UmdJaEYokUdKGr/DGpI3ZL+Ss6liifjLe0gWsnRfkNU5+9jYTM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwpFTyYv7FgF7ihpcVQiLxY1IAtzkFfptsIBwwkVZ3rfOF4oMQC
+	st7ZjMcsfdfoMUYkv5JQuZsm8iRIo79LTdSM2KPfqdxtx9+aoySnvrIu
+X-Gm-Gg: ASbGncvJGK7kyAntpPOe4+E5/IQQepUk6wKEpprFNPAzG0BX7VusMnBmAmDK+T/Fhva
+	J0LlCiDEPpUvQW/gSUedvpGSwkPU1lZn4cbYHySQY3TYHdFNnb5GlNtm1dzrD10DfWHO7G2ORxQ
+	PFaFZUufXpAA0TzJx1MT5lgjZUs23FlUP4gG8PUn2B3qRtDHVZa0CnB/Q9hOjTNVwWgQ37wHTiV
+	oCQRJb7SoklEExB800V+gj0BxRDLEmvTfmiX/jHfewAc8VQtsALnBXlX4T2kfptwtsfx1CIBFce
+	8DYcou685YO1i4mdHwZ4nIqWVR2WyKv70x0ZoLc5/afOD8sDAkZJQrpAi3Q8xfEgjEUc0A==
+X-Google-Smtp-Source: AGHT+IGmAb6LB94kupysZWiJZ0IKYZZY1m0zn9g83uEGUYk52Quto9rTl4GwWuYfSJrpxqbtW6U9dQ==
+X-Received: by 2002:a17:90b:3c4a:b0:311:c1ec:7d11 with SMTP id 98e67ed59e1d1-318c92a2e8emr23531275a91.18.1751311378992;
+        Mon, 30 Jun 2025 12:22:58 -0700 (PDT)
+Received: from [192.168.0.226] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23acb3ad16fsm92852195ad.141.2025.06.30.12.22.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Jun 2025 11:47:52 -0700 (PDT)
-Date: Mon, 30 Jun 2025 11:47:51 -0700
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Jordan Rife <jordan@jrife.io>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Kuniyuki Iwashima <kuniyu@google.com>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Subject: Re: [PATCH v3 bpf-next 10/12] selftests/bpf: Create established
- sockets in socket iterator tests
-Message-ID: <aGLb1ytEc0vi0ndw@mini-arch>
-References: <20250630171709.113813-1-jordan@jrife.io>
- <20250630171709.113813-11-jordan@jrife.io>
+        Mon, 30 Jun 2025 12:22:58 -0700 (PDT)
+Message-ID: <57f9f58f399dbcb348f0d55cae7b19f38a143bcb.camel@gmail.com>
+Subject: Re: [PATCH bpf] selftests/bpf: Re-add kfunc declarations to qdisc
+ tests
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Viktor Malik <vmalik@redhat.com>, bpf@vger.kernel.org
+Cc: Andrii Nakryiko <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
+ Alexei Starovoitov	 <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Martin KaFai Lau	 <martin.lau@linux.dev>, Song Liu
+ <song@kernel.org>, Yonghong Song	 <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh	 <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@fomichev.me>, Hao Luo	 <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,  Amery Hung
+ <ameryhung@gmail.com>, Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?=
+ <toke@redhat.com>,  Feng Yang <yangfeng@kylinos.cn>
+Date: Mon, 30 Jun 2025 12:22:55 -0700
+In-Reply-To: <20250630133524.364236-1-vmalik@redhat.com>
+References: <20250630133524.364236-1-vmalik@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250630171709.113813-11-jordan@jrife.io>
 
-On 06/30, Jordan Rife wrote:
-> Prepare for bucket resume tests for established TCP sockets by creating
-> established sockets. Collect socket fds from connect() and accept()
-> sides and pass them to test cases.
-> 
-> Signed-off-by: Jordan Rife <jordan@jrife.io>
+On Mon, 2025-06-30 at 15:35 +0200, Viktor Malik wrote:
+> BPF selftests compilation fails on systems with CONFIG_NET_SCH_BPF=3Dn.
+> The reason is that qdisc-related kfuncs are included via vmlinux.h but
+> when qdisc is disabled, they are not defined and do not appear in
+> vmlinux.h.
+>=20
+> Fix the issue by defining the kfunc prototypes explicitly in
+> bpf_qdisc_common.h. They were originally there but were removed by the
+> fixed commit mentioned below.
+>=20
+> Fixes: 2f9838e25790 ("selftests/bpf: Cleanup bpf qdisc selftests")
+> Signed-off-by: Viktor Malik <vmalik@redhat.com>
 > ---
->  .../bpf/prog_tests/sock_iter_batch.c          | 83 ++++++++++++++++++-
->  1 file changed, 79 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/sock_iter_batch.c b/tools/testing/selftests/bpf/prog_tests/sock_iter_batch.c
-> index 4c145c5415f1..2b0504cb127b 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/sock_iter_batch.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/sock_iter_batch.c
-> @@ -153,8 +153,66 @@ static void check_n_were_seen_once(int *fds, int fds_len, int n,
->  	ASSERT_EQ(seen_once, n, "seen_once");
->  }
->  
-> +static int accept_from_one(int *server_fds, int server_fds_len)
-> +{
-> +	int i = 0;
-> +	int fd;
-> +
 
-[..]
-
-> +	for (; i < server_fds_len; i++) {
-
-nit: move i=0 here?
+Tested-by: Eduard Zingerman <eddyz87@gmail.com>
 
