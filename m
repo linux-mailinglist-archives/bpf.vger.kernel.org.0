@@ -1,105 +1,134 @@
-Return-Path: <bpf+bounces-61874-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61875-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38B44AEE5D3
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 19:30:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E95E0AEE5D7
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 19:31:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FD6F17FEDB
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 17:30:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB28E1BC1E83
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 17:31:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D0892E4249;
-	Mon, 30 Jun 2025 17:30:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 159C02E3393;
+	Mon, 30 Jun 2025 17:30:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53F602D320B;
-	Mon, 30 Jun 2025 17:30:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06AD1292B35;
+	Mon, 30 Jun 2025 17:30:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751304622; cv=none; b=uINJg2J44c0sTGmOCRokGvUjPeSfTFFj40tX8k67gBmH6YRjZKW2Unr72Bg71DemSjjNhHwIOJNtjlSqBR1Oywk8lE9T9xPRa9LmEmz3qv5dP1Uey97sLjWMTrRWtAhaMxNqZ1P143lr3wAUAgM+jpVy1ApFdMUljch6YwA5eIg=
+	t=1751304636; cv=none; b=N+f2JI0vmByNeUbQSe1xErESJMgGkVubKqpmtW3/STBamoVJCY2G6ghCIU9WQS1xUsiSv/SXJMbGGNi/JXkJo8k7azThnniZE7fN0VKwY1HUQBDJjgPV8UWHTCqAuGjScZolt7NGsThuD8d42hjgP75b45vr4ZyGm6ooWBrNTWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751304622; c=relaxed/simple;
-	bh=mRaBmnvlcM9HhFflwQ0sq0WRnSWdPwBoSeN4WoeVGec=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JJAsFR5ZJe3VZ4Z5AM4dOYTKdVl4Mui69m7ZYO231pVRr9mXRR8PqcGt3SSM6sJFevXacGVhZfXSUr5YRv2kVOjUEoP3S67p2RjQyHVsJdKtWO4nAgUj6EksWpYtHQ0NS5577g+2P7VsGZuw1w7JvaGplPjjwTElQqiwc7vmVjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-60c4f796446so8110032a12.1;
-        Mon, 30 Jun 2025 10:30:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751304617; x=1751909417;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yYtk+tdJ9WigmCX8UmH7nwOlbF/EiYv5z8fJ4XdRj4A=;
-        b=ZB8ay0FbowQBSdeLgki/bYkMQHwNQ9Q4FsUqBbMVnfmcuawEldXJLc43la3Bk8tHLW
-         kNk8WqyUY5BTn2C90UzwZKBx0HMzVS7vMUlCOh7M0FXTKqXUbZxuAZXKAVmTf+od/7t2
-         8saT8/HmlWO9bck1lUXzmExQN0l7ajHSi1wsI/hWgb/0da15l7f9BkoPdq4uH/IIFevR
-         EzsSkMTGj5QdmZSN236q/b1Pkknrh4XGO6WjoZskHQ/sP3BFPiD3gIMxER0QHWYnBDIY
-         7+sNdiaZvTv7evM4R6wGNy/8A7z6/axGRebhqJy/L++mZj0djt6PNGwp6NhCket2w54b
-         Uv1A==
-X-Forwarded-Encrypted: i=1; AJvYcCVSW+vnXFw2gduEGL/SFkbLKvmezWI69JyS/Q/b3CSLjddDxNCmww79vRsVegWlP/UonZU12WJUU7G84WCQ@vger.kernel.org, AJvYcCWfDclUzNJQT8D7LXj+j4zBUcdeTdc9JUmbLIPg+wkU9FSf0H8pbVz2BRVC6VMY7YaR8fdNpRDNH8OgDFQkT3Qf@vger.kernel.org, AJvYcCWjE317XdTnGhiRM3eMMQuFYzFxAkJg/9iYrAVKBXHRURzq28l2//YaQ34QGGVZx7SzigknfZKL@vger.kernel.org, AJvYcCXMK87R5H6JfxRCWnqmy6TCYGUM6sVQnlQYytBIn0GWzjHgwHkWNxRWIe2UoTI+hibubfg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzu+YgkPTF0UQGaF0+lH4VI+EIvFeyOel5n7ACuQCvVINFMIDRs
-	8mJO/qQ5wGi645uCPUw0en2xJawN1j1GMEOoFMydhiFNMMylGAD9Elc3
-X-Gm-Gg: ASbGncv3S4QUQVMzasa4ZE91+9xHmlKJdExhAoMXx1Yv9nWVV1wHA6msPrSmXFXmNo9
-	vCvnXU/evEqVqBLKAW5kBz8uRM0AOuFalRfnA4dFov0kRneACJU0UPYDjI4V7+afQ4ZK8OeZ7KL
-	WlTwvNaRb00I6I/b6DjQKJBuOZMzsSWvb9PxoATiC4FegdaxwEvPnp+OmXH/vPs+9asdAfHXhH1
-	x5MEdYJ6E4TbHgjchj60QKvAdxD0b3HYJ4+4WWAz1LCLUtpZ3hjhu7zijL+MMs08wjyTTJ5DV3N
-	fOIS+PV47HxBxg79rbpEWgOEr3OCMNnidvje7jgPB9E7PaRoWZckvA==
-X-Google-Smtp-Source: AGHT+IGF+65MB7naW9INIqJ01bu/2rGvf85Aln8gTluXMpbflQC+TqF6pJY7DHbPTg7s06gu5viM2Q==
-X-Received: by 2002:a17:907:3f8a:b0:ad8:9c97:c2e5 with SMTP id a640c23a62f3a-ae34fb22a33mr1389506366b.0.1751304616377;
-        Mon, 30 Jun 2025 10:30:16 -0700 (PDT)
-Received: from gmail.com ([2a03:2880:30ff:71::])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae353c01262sm700489966b.87.2025.06.30.10.30.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Jun 2025 10:30:16 -0700 (PDT)
-Date: Mon, 30 Jun 2025 10:30:13 -0700
-From: Breno Leitao <leitao@debian.org>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Shuah Khan <shuah@kernel.org>, Simon Horman <horms@kernel.org>,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	bpf@vger.kernel.org, ast@kernel.org
-Subject: Re: [PATCH net-next v3 3/3] selftests: net: add netpoll basic
- functionality test
-Message-ID: <aGLJpaNLPYnPwKYV@gmail.com>
-References: <20250627-netpoll_test-v3-0-575bd200c8a9@debian.org>
- <20250627-netpoll_test-v3-3-575bd200c8a9@debian.org>
- <20250627113854.04c13ace@kernel.org>
+	s=arc-20240116; t=1751304636; c=relaxed/simple;
+	bh=ZZk1bTuR+eQdo+aXGtW3YKXo5ceds8+PLoRwsPMSE5Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=kY3KTQWnjiaVV2umTZX/qHNwBHuI1nbVcetBXkFENeGa1GipQ8N1iD4m0RN0KQOv9Z8rbEh86YiLwg15kPBF+i9Nf3hBbsFQEScwpSiI7Px9HpfZ7CK9Ea2/Jc8GNY+E6lC68ZpiVwd3vRPn5QaebBPJh9cZADzma63Spnd1hrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf02.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay03.hostedemail.com (Postfix) with ESMTP id F2A80BA72B;
+	Mon, 30 Jun 2025 17:30:24 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf02.hostedemail.com (Postfix) with ESMTPA id 19EDA8000E;
+	Mon, 30 Jun 2025 17:30:18 +0000 (UTC)
+Date: Mon, 30 Jun 2025 13:30:16 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Florian Weimer <fweimer@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, x86@kernel.org, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Josh Poimboeuf <jpoimboe@kernel.org>, Peter Zijlstra
+ <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, Jiri Olsa
+ <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner
+ <tglx@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, Indu Bhagat
+ <indu.bhagat@oracle.com>, "Jose E. Marchesi" <jemarch@gnu.org>, Beau
+ Belgrave <beaub@linux.microsoft.com>, Jens Remus <jremus@linux.ibm.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton
+ <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH v11 00/14] unwind_user: x86: Deferred unwinding
+ infrastructure
+Message-ID: <20250630133016.0d2ee00d@batman.local.home>
+In-Reply-To: <878ql9mlzn.fsf@oldenburg.str.redhat.com>
+References: <20250625225600.555017347@goodmis.org>
+	<878ql9mlzn.fsf@oldenburg.str.redhat.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250627113854.04c13ace@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Queue-Id: 19EDA8000E
+X-Rspamd-Server: rspamout02
+X-Stat-Signature: r9f65q6e9r51fnods6fc4aqhgd7unowy
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1/ZvsfPP75fXsfwixf2F8ZEisAyCWZ9X7U=
+X-HE-Tag: 1751304618-698338
+X-HE-Meta: U2FsdGVkX18ReyhwQGPDmiXIvcUbTrLh5g+d9tjEYO1dBSURbQFkC6Ort79EfoPKCMbNOX/OqUL0YnpJ50/UbSs1l0XJSYrzPhwZHh/fnD3uCAVAnPzXo49vbBdQcmiMYT3FbqrQUjAK6SKZNR13dcG2QRiwJ30/IRXyUjbQpb14EDuRBimRPWrEAapZtYp8tFV6Hd0x2vrpZJKpvibwtC4vgTYgiNyEnK4ZMxFt1gP8UjiVzOe/ZVuQW5Z/M9TONsOkxgfUtRH7s3TEGMLBporcLjZDnaPdtcL9ofrU12TIm9YyOPI+/XrzdL9jI56OoOIfsoHz8I9PHR35nLVLKMRnSYW7FDO04H4t91brqet6zScSnmMGMVrXktrXl00CMd73JQ9saw/fqasbWn2HNS+m0dQrBDMFsMHx6+84ayc=
 
-On Fri, Jun 27, 2025 at 11:38:54AM -0700, Jakub Kicinski wrote:
-> On Fri, 27 Jun 2025 10:03:11 -0700 Breno Leitao wrote:
-> > +    raise KsftSkipEx("netpoll_poll_dev() was not called. Skipping test")
-> 
-> As discussed offline SKIPing is not an option for SW tests.
+On Mon, 30 Jun 2025 14:50:52 +0200
+Florian Weimer <fweimer@redhat.com> wrote:
 
-Sure, I will move it to failure.
+> * Steven Rostedt:
+>=20
+> > SFrames is now supported in gcc binutils and soon will also be supported
+> > by LLVM. =20
+>=20
+> Is the LLVM support discussed here?
+>=20
+>   [RFC] Adding SFrame support to llvm
+>   <https://discourse.llvm.org/t/rfc-adding-sframe-support-to-llvm/86900>
+>=20
+> Or is there a secone effort?
 
-Unfortunately the expected path didn't hit in vmtest. I am still trying
-to reproduce the failure on my side, but no luck. It hits from 10 to 16
-times per run. 
+Not a second effort, but also discussed here:
 
-Do you want me to send it as a failure, or, wait until we get something
-better that pass 100% of the time?
+ https://github.com/llvm/llvm-project/issues/64449
 
-Thanks
---breno
+I know internally at Google, it's being worked on. One of the
+motivations for getting LLVM to support sframes is to allow live kernel
+patching on arm64. Live kernel patching is currently only supported on
+x86 because it requires the ORC unwinder. Which is Josh's creation (and
+works basically the same way as sframes do) to have reliable stack
+traces in the kernel at run time. It's been stated that porting ORC to
+other archs would be too much, but since sframes do basically the same
+thing, and would support multiple architectures, then it makes sense to
+use sframes instead of ORC.
+
+>=20
+> > I have more patches on top of this series that add perf support, ftrace
+> > support, sframe support and the x86 fix ups (for VDSO). But each of tho=
+se
+> > patch series can be worked on independently, but they all depend on this
+> > series (although the x86 specific patches at the end isn't necessarily
+> > needed, at least for other architectures). =20
+>=20
+> Related to perf support: I'm writing up the SFrame change proposal for
+> Fedora, and I want to include testing instructions.  Any idea yet what a
+> typical =E2=80=9Cperf top=E2=80=9D or =E2=80=9Cperf report=E2=80=9D comma=
+nd line would look like?
+
+I'll be posting updated patches soon and will Cc you. I'll also include
+git branches that contain the patches. You'll need the core patches
+(what this patch set is), the perf updates and the sframe patches.
+
+The perf patches contain both the kernel side and user space side to
+update perf.
+
+Note, to make sure sframes are working properly, I also add
+"trace_printk()" into the code and make sure that the sframes code is
+being executed and used (it falls back to frame pointers if they fail).
+
+I'll post a patch that includes the trace_printk() that I use as well.
+But obviously that wouldn't be something you would add to your
+documentation. It's mostly FYI for you.
+
+Hopefully I'll have them done either tonight or tomorrow.
+
+-- Steve
 
