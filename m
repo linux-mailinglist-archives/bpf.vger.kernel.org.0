@@ -1,188 +1,217 @@
-Return-Path: <bpf+bounces-61808-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61809-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21DE4AED21E
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 03:06:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D9E2AED66F
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 10:00:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60EDF171314
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 01:06:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3529E16F6C2
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 08:00:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CACA7433AD;
-	Mon, 30 Jun 2025 01:05:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EBB7243951;
+	Mon, 30 Jun 2025 07:58:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VgmG6aHK"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="pnOwMpet"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDDBC8479;
-	Mon, 30 Jun 2025 01:05:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C57CA1D88D0;
+	Mon, 30 Jun 2025 07:58:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751245556; cv=none; b=CMtm/SsOL59fFpLkPIhZhQrEhVFxJj8aBv0lichilb9Ctz9IVdiJ9kDb/Z5bVXpUdV+aw6hX9zhEgY9SAD3yf8FivQenCVmrluEYeFZO83vV4gLGTVP3piuXDvQbpEOcjHZYcDcdtXd0BjTz+CtzhCGA3OUv1PVG/XD+Pl4uK2M=
+	t=1751270336; cv=none; b=IVzKGUkM4+zpgt6TG/Kq5blqog887Nsi4BEsxE9oHD8W1f3MiRDaAN8ksqEhOtSJ63+xsOfMbWKkFN/iOwSc7tmXXT6JfsXyAZWQ+4S5YpgtxC91R4N0xJuaRx9DWeM27RoM8XzMVC+mH0mvowF+hsYgMNe4kpfvskPD+2F9Uy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751245556; c=relaxed/simple;
-	bh=V5Wd72GZB031iFqt8kuZQzmYdO2l3n2il+57WOcxn8E=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=APa8NaN5vUT77z5E4MQj+f9iKOBta+X5o4t9k8+EelGixFYbWmVw7A0g0eq/O9ayr3szab1lXPPMen+t1SdHh7r6hHf7ihAwGwsxZNpqen72px1yI6ZACU/h6B3MPzAoWTP72fUmdQzI3PNv3xjEMxcg7QmJBTxLx2fgBDxIFYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VgmG6aHK; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-748fe69a7baso4125000b3a.3;
-        Sun, 29 Jun 2025 18:05:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751245553; x=1751850353; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=tnhen2Rw1k5JsQ/lARRo8Ino0meN+pohOW9LsCInMVM=;
-        b=VgmG6aHK0SI8VcST02LPsPZ94O5bR2yM7EMmt3CeHwOFJnAAfxgKnaVv7MgL8rtJQH
-         6pO6wx+jKCDUXLhhxvqXXCMvuCEJyag+4+TictBeeFFQF8BMa8/G5FQouiCU5SZdCnif
-         kb8hwrcPpdhILgyrZESc2JofULYLBREDrvEFDLIYOV2BQuZLZgnv2T7CSWexWERYxKGC
-         DaUqrVyiRa139/26hlhfGJYUYRQ5lEysnV1beqM0RcoDeKuHE4LK/hggVeWWgH37zMCO
-         xw1oTZ83J150RCPYC5uejJFsmnls5w6ETwrIhFReccseuMDn0ERyaQFPTbSMPHY66t9Q
-         rOIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751245553; x=1751850353;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tnhen2Rw1k5JsQ/lARRo8Ino0meN+pohOW9LsCInMVM=;
-        b=MQBtULLKs1aVUpZEASFlwi75ZUuoaPKtawILmcnxQlXel5jvNAsIZkOFtF5NMGzGS1
-         jijiPDiQjLNFC94Zds4u7Q/+spmKQRjW0/RJ78NZLgEe6BwhtSpWI360a/4+e5wDONwM
-         5+z97P3p1aqfrj1K2vzzJGKFoHOvB57vn4vGTb4Gf2UhT9ObGWJxevyJy31r3TxsbeJQ
-         xJ7Mvrk0DG3k/HkHbY/1lkUFYUGAF/4/VvMlVS4gyzE57ioh64koMgSLlw9QVBw6cVnN
-         h9+61xV2Jy6Aw5OIW9BPosLGSoWutADWulG0QX337Hvsa7dHck5PIiMc07mN8Ps0Z1oY
-         ZgSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU5BC+fhV+GKM3pw8CG5Xw2/6JJBfK0/pvPFeQGsiCMlCqCrj5uZWNiOhq3V3V7Tl7w9iqs8BhhGeV8km8LT+VE@vger.kernel.org, AJvYcCVI0AMri2zdZVq8Py+PkMQ0BWxCYAkKQdYoPkFkJ1110gjrjw6q4ThZa3LKJZvTEXkD8AuiGPitBqZNz9YJ@vger.kernel.org, AJvYcCX9Nc0KECV/N3Kg9/ncqxmTKRC+PxbMx+0C1JYqtOKQzar1SotJYPjWTWycRK/0ipfwd8Q=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy/xsXN5dXi/bIa/M5n9OyKDTR6ICtRzfZ6WCZDmp51oFb60soW
-	q9sfIkrQl3x6jd8/KXS3TAGMwrqVmFGtlw7DlezkqugBkjrUEGlXBMjV
-X-Gm-Gg: ASbGncvCV8Zke8LPm5pDARTVdOlz8krCub5ORrSpImlkq2XsKwdY7W+vvfdsi0f8fmu
-	/PwVE/7hwE6BEeKx3JLn180LyMywZeQ7poAOt4WAvmoXUN3ZZEzyO0CiUxciSmTdezblO4Eftlc
-	3fm53tEkT807HfrFoFrsWmpNKcLngiag1BmZ5uBhqnL+nkV7AzSGcrm+7HRm5/8Dx/Yg5iTTilm
-	LCqT4LI1MNrfm0CAAlK9ZGJmxsyXMb49vTMvlbLi+ynFiLwR46SKEm3DwUezJ/zTHX1+LhZ3hZT
-	pJEBxNYpAbTaCm7+IW4fJojxOkylBbKWmcfbYwCTxGRZB7+KKAcQrDcVDg==
-X-Google-Smtp-Source: AGHT+IHj/+Q0HzChyZILMS4ZuNN2bb9vE1x2v8Syb0cINVrL1gK4PsaIyi5Oe+AltudjhrnZ+KsR8w==
-X-Received: by 2002:a05:6a00:1389:b0:749:9c2:e154 with SMTP id d2e1a72fcca58-74af6e63144mr15581244b3a.4.1751245553134;
-        Sun, 29 Jun 2025 18:05:53 -0700 (PDT)
-Received: from [192.168.0.56] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74af56d0002sm7942287b3a.136.2025.06.29.18.05.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Jun 2025 18:05:52 -0700 (PDT)
-Message-ID: <34cb9cb46df58e118f7fe488ff40fd7a5cf7f224.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/3] bpf: Fix aux usage after do_check_insn()
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Luis Gerhorst <luis.gerhorst@fau.de>, Andrii Nakryiko
- <andrii@kernel.org>,  Mykola Lysenko	 <mykolal@fb.com>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann	 <daniel@iogearbox.net>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu	 <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, John Fastabend	 <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev	 <sdf@fomichev.me>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
- <shuah@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Peilin Ye
- <yepeilin@google.com>,  Jiayuan Chen	 <mrpre@163.com>, Saket Kumar Bhaskar
- <skb99@linux.ibm.com>, Ihor Solodrai	 <isolodrai@meta.com>, Daniel Xu
- <dxu@dxuuu.xyz>, bpf@vger.kernel.org, 	linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, Paul Chaignon	 <paul.chaignon@gmail.com>
-Cc: syzbot+dc27c5fb8388e38d2d37@syzkaller.appspotmail.com
-Date: Sun, 29 Jun 2025 18:05:50 -0700
-In-Reply-To: <20250628145016.784256-3-luis.gerhorst@fau.de>
-References: <20250628145016.784256-1-luis.gerhorst@fau.de>
-	 <20250628145016.784256-3-luis.gerhorst@fau.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1751270336; c=relaxed/simple;
+	bh=c+CfIeR3TNcRMMP6tiiP+MQjARsYgeMn+NkhiW3l6jw=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=EUb4vKRy5z0HZlXjDgNwwkvAEYJIjvjQIm6OJcVnVhK9boQj+GpRHsCDXfrDaYrI4lMAWScipW/3vCVLeG+qHP3BV4CsM++239flIYSse9KX27yXKjPcYhnMs25odTWswT7qI3eKEg1G1mLO/E4EtnQ+Fi5JgQI08O+GsF72+Cs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=pnOwMpet; arc=none smtp.client-ip=213.97.179.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:References:
+	Cc:To:From:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=qd6nlFnG074iKvcvvBFSCkzEyxCQmvambP47KCg+krI=; b=pnOwMpetoLhGQsMp+XPhrwgE4A
+	LkW7SqPS1MN9oE9UZwTFUc3L0SjeNyy9+CULklt/CwDZrQhxI5oGYMxzOmeRZ8F5PVLdDfU+UBpxR
+	7ILkpEWZQoeoXbyfkXKzDoG29JYlJqm6b1ZeIqCqc09xG9X5IdWBCsbM1YhtS20mQLkkN0+IBaQsK
+	b1V8sjvjlyHZI1oE1rzfQDFqhZ4JiVaW+RCln4YWKxTZRm0NUkAZbpAqiWs5jCSIVFt5PRTbJuVNf
+	APwPjXH/HYHykFTwKQBNdsOB6b10jxUiMjeecXJL9jLKEAV26uvuhjD3/vVFHZZ1CdPanEKhbdZ94
+	BD7uWUJg==;
+Received: from [43.224.128.131] (helo=[10.5.50.117])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+	id 1uW9PO-00ANeX-Ob; Mon, 30 Jun 2025 09:58:34 +0200
+Message-ID: <ba4ddf27-91e7-0ecc-95d5-c139f6978812@igalia.com>
+Date: Mon, 30 Jun 2025 13:28:25 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH v4 3/3] exec: Add support for 64 byte 'tsk->comm_ext'
+From: Bhupesh Sharma <bhsharma@igalia.com>
+To: Kees Cook <kees@kernel.org>
+Cc: Bhupesh <bhupesh@igalia.com>, akpm@linux-foundation.org,
+ kernel-dev@igalia.com, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, oliver.sang@intel.com, lkp@intel.com,
+ laoar.shao@gmail.com, pmladek@suse.com, rostedt@goodmis.org,
+ mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
+ alexei.starovoitov@gmail.com, andrii.nakryiko@gmail.com,
+ mirq-linux@rere.qmqm.pl, peterz@infradead.org, willy@infradead.org,
+ david@redhat.com, viro@zeniv.linux.org.uk, ebiederm@xmission.com,
+ brauner@kernel.org, jack@suse.cz, mingo@redhat.com, juri.lelli@redhat.com,
+ bsegall@google.com, mgorman@suse.de, vschneid@redhat.com,
+ linux-trace-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+ akpm@linux-foundation.org
+References: <20250521062337.53262-1-bhupesh@igalia.com>
+ <20250521062337.53262-4-bhupesh@igalia.com>
+ <202505222041.B639D482FB@keescook>
+ <a7c323fe-6d11-4a21-a203-bd60acbfd831@igalia.com>
+ <202505231346.52F291C54@keescook>
+ <1bc43d6c-2650-0670-8c2a-25e8d36cfb7c@igalia.com>
+Content-Language: en-US
+In-Reply-To: <1bc43d6c-2650-0670-8c2a-25e8d36cfb7c@igalia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Sat, 2025-06-28 at 16:50 +0200, Luis Gerhorst wrote:
 
-[...]
+On 5/26/25 4:43 PM, Bhupesh Sharma wrote:
+> Hi Kees,
+>
+> On 5/24/25 2:25 AM, Kees Cook wrote:
+>> On Fri, May 23, 2025 at 06:01:41PM +0530, Bhupesh Sharma wrote:
+>>> 2. %s usage: I checked this at multiple places and can confirm that 
+>>> %s usage
+>>> to print out 'tsk->comm' (as a string), get the longer
+>>>      new "extended comm".
+>> As an example of why I don't like this union is that this is now lying
+>> to the compiler. e.g. a %s of an object with a known size (sizeof(comm))
+>> may now run off the end of comm without finding a %NUL character... this
+>> is "safe" in the sense that the "extended comm" is %NUL terminated, but
+>> it makes the string length ambiguous for the compiler (and any
+>> associated security hardening).
+>
+> Right.
+>
+>>
+>>> 3. users who do 'sizeof(->comm)' will continue to get the old value 
+>>> because
+>>> of the union.
+>> Right -- this is exactly where I think it can get very very wrong,
+>> leaving things unterminated.
+>>
+>>> The problem with having two separate comms: tsk->comm and 
+>>> tsk->ext_comm,
+>>> instead of a union is two fold:
+>>> (a). If we keep two separate statically allocated comms: tsk->comm and
+>>> tsk->ext_comm in struct task_struct, we need to basically keep 
+>>> supporting
+>>> backward compatibility / ABI via tsk->comm and ask new user-land 
+>>> users to
+>>> move to tsk->ext_comm.
+>>>
+>>> (b). If we keep one statically allocated comm: tsk->comm and one 
+>>> dynamically allocated tsk->ext_comm in struct task_struct, then we 
+>>> have the problem of allocating the tsk->ext_comm which _may_ be in 
+>>> the exec()  hot path.
+>>>
+>>> I think the discussion between Linus and Yafang (see [1]), was more 
+>>> towards avoiding the approach in 3(a).
+>>>
+>>> Also we discussed the 3(b) approach, during the review of v2 of this 
+>>> series, where there was a apprehensions around: adding another field 
+>>> to store the task name and allocating tsk->ext_comm dynamically in 
+>>> the exec() hot path (see [2]).
+>> Right -- I agree we need them statically allocated. But I think a union
+>> is going to be really error-prone.
+>>
+>> How about this: rename task->comm to something else (task->comm_str?),
+>> increase its size and then add ABI-keeping wrappers for everything that
+>> _must_ have the old length.
+>>
+>> Doing this guarantees we won't miss anything (since "comm" got renamed),
+>> and during the refactoring all the places where the old length is 
+>> required
+>> will be glaringly obvious. (i.e. it will be harder to make mistakes
+>> about leaving things unterminated.)
+>>
+>
+> Ok, I got your point. Let me explore then how best a ABI-keeping 
+> wrapper can be introduced.
+> I am thinking of something like:
+>
+> abi_wrapper_get_task_comm {
+>
+>     if (requested_comm_length <= 16)
+>         return 16byte comm with NUL terminator; // old comm (16-bytes)
+>     else
+>         return 64byte comm with NUL terminator; // extended comm 
+> (64-bytes)
+>     ....
+> }
+>
+> Please let me know if this looks better. Accordingly I will start with 
+> v5 changes.
 
-> @@ -19955,11 +19960,11 @@ static int do_check(struct bpf_verifier_env *en=
-v)
->  			/* Prevent this speculative path from ever reaching the
->  			 * insn that would have been unsafe to execute.
->  			 */
-> -			cur_aux(env)->nospec =3D true;
-> +			prev_aux(env)->nospec =3D true;
+Hi Everyone, sorry for the delay but I wanted the revive this discussion 
+after the -rc1 and my PTO.
 
-I don't like the prev_aux() call in this position, as one needs to
-understand that after do_check_insn() call what was current became
-previous. This at-least requires a comment. Implementation with a
-temporary variable (as at the bottom of this email), imo, is less
-cognitive load.
+I am looking for suggestions on how to implement v5 for this series. 
+Here is some background of the version (and related discussions so far):
 
->  			/* IF it was an ADD/SUB insn, potentially remove any
->  			 * markings for alu sanitization.
->  			 */
-> -			cur_aux(env)->alu_state =3D 0;
-> +			prev_aux(env)->alu_state =3D 0;
->  			goto process_bpf_exit;
->  		} else if (err < 0) {
->  			return err;
+In the v4, the implementation for tsk->comm handling (for supporting 
+long 64byte task names) looked at handling the possible use-cases as 
+follows:
 
-[...]
+1. memcpy() users: Handled by [PATCH 2/3] of this series, where we 
+identify existing users using the following search
+     pattern:
+        $ git grep 'memcpy.*->comm\>'
 
----
+2. %s usage: I checked this at multiple places and can confirm that %s 
+usage to print out 'tsk->comm' (as a string), get the longer
+     new "extended comm".
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index a136d9b1b25f..a923614b7104 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -19953,6 +19953,7 @@ static int do_check(struct bpf_verifier_env *env)
- 	bool pop_log =3D !(env->log.level & BPF_LOG_LEVEL2);
- 	struct bpf_verifier_state *state =3D env->cur_state;
- 	struct bpf_insn *insns =3D env->prog->insnsi;
-+	struct bpf_insn_aux_data *insn_aux;
- 	int insn_cnt =3D env->prog->len;
- 	bool do_print_state =3D false;
- 	int prev_insn_idx =3D -1;
-@@ -19972,6 +19973,7 @@ static int do_check(struct bpf_verifier_env *env)
- 		}
-=20
- 		insn =3D &insns[env->insn_idx];
-+		insn_aux =3D &env->insn_aux_data[env->insn_idx];
-=20
- 		if (++env->insn_processed > BPF_COMPLEXITY_LIMIT_INSNS) {
- 			verbose(env,
-@@ -20048,7 +20050,7 @@ static int do_check(struct bpf_verifier_env *env)
- 		/* Reduce verification complexity by stopping speculative path
- 		 * verification when a nospec is encountered.
- 		 */
--		if (state->speculative && cur_aux(env)->nospec)
-+		if (state->speculative && insn_aux->nospec)
- 			goto process_bpf_exit;
-=20
- 		err =3D do_check_insn(env, &do_print_state);
-@@ -20056,11 +20058,11 @@ static int do_check(struct bpf_verifier_env *env)
- 			/* Prevent this speculative path from ever reaching the
- 			 * insn that would have been unsafe to execute.
- 			 */
--			cur_aux(env)->nospec =3D true;
-+			insn_aux->nospec =3D true;
- 			/* If it was an ADD/SUB insn, potentially remove any
- 			 * markings for alu sanitization.
- 			 */
--			cur_aux(env)->alu_state =3D 0;
-+			insn_aux->alu_state =3D 0;
- 			goto process_bpf_exit;
- 		} else if (err < 0) {
- 			return err;
-@@ -20069,7 +20071,7 @@ static int do_check(struct bpf_verifier_env *env)
- 		}
- 		WARN_ON_ONCE(err);
-=20
--		if (state->speculative && cur_aux(env)->nospec_result) {
-+		if (state->speculative && insn_aux->nospec_result) {
- 			/* If we are on a path that performed a jump-op, this
- 			 * may skip a nospec patched-in after the jump. This can
- 			 * currently never happen because nospec_result is only
+3. users who do 'sizeof(->comm)' will continue to get the old value 
+because of the union.
+
+The above points were taken to address the points discussed earlier 
+between Linus and Yafang (see [1])
+
+As Kees, suggested in the v4 review (see [2]):
+1. Let's rename task->comm to something else (task->comm_str?) and 
+increase its size, and
+
+2. Then add ABI-keeping wrappers for everything that  _must_ have the 
+old length.
+
+I am thinking of implementing it with something like:
+
+abi_wrapper_get_task_comm {
+
+     if (requested_comm_length <= 16)
+         return 16byte comm with NUL terminator; // old comm (16-bytes)
+     else
+         return 64byte comm with NUL terminator; // extended comm 
+(64-bytes)
+     ....
+}
+
+Kindly let me know your views on the above approach(es).
+
+[1]. 
+https://lore.kernel.org/all/CAHk-=wjAmmHUg6vho1KjzQi2=psR30+CogFd4aXrThr2gsiS4g@mail.gmail.com/
+[2]. https://lore.kernel.org/all/202505231346.52F291C54@keescook/
+
+Thanks.
 
