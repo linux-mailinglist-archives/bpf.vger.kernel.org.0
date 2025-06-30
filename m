@@ -1,80 +1,81 @@
-Return-Path: <bpf+bounces-61842-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61843-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B638AEE199
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 16:56:59 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34544AEE198
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 16:56:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7793016DBCA
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 14:56:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D8FB7A44D5
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 14:55:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 604ED28C5DB;
-	Mon, 30 Jun 2025 14:56:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BD7B28EA53;
+	Mon, 30 Jun 2025 14:56:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="Xx5XbX/j"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="eXPjpdUa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B5AF28DB7A
-	for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 14:56:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02B2A28DF00
+	for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 14:56:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751295362; cv=none; b=ntamAAIurO8M/eZ7in9IwXILmFG3hdAULF3OITE+px6CXnDV1YsGOTPj2zJjnuGIKJ6/yxtAndbBsIFttJL+nmvL/EX42r6gOztyzEPfrgZgsIMT8c8KHKsbZVljFtm5G0JyMLWTtm2gwuefM3giAr4DwgMXL7PcWTue0EMCNag=
+	t=1751295364; cv=none; b=qjEG/5RN8gmWZdllO2jv8ptXYhnsa1VUmiNOPwOJBMeRzZK3FrzwLoyZ4cA6R7y/IkwQVlZT+Ap/2mrX6U3aWN4k7BsVaURrvKSAfwXC9bcT8ONeY0BnbaiD5/CS3fnpb8VRBYTaLiz06sA+hls2Rxz0tETsU+ohgPZYW6Vsp2s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751295362; c=relaxed/simple;
-	bh=7JE3/zTuFsdK18Qj0ytha0rL9JEyz2yJs29Jlr1Oz10=;
+	s=arc-20240116; t=1751295364; c=relaxed/simple;
+	bh=a3ROTLqAavkp4rwfffb8mrqANhf7FzXtyeXu16Yhpac=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=MI6uxFE/CD2rW4Fc5/y5qJooHl0FRgycLiGZ3IywZvooY19faENIV8dap/VD0cHqaGWUWtWrOZcKF01D6ppUCiV4L49b2N+0xXQXPewpEyFzSUFu49c4Rvxh16zTvvyc0Q3Z2ZD0EfSWm+JryfM5S63ImDg0M5eKTNLkau57cCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=Xx5XbX/j; arc=none smtp.client-ip=209.85.218.53
+	 In-Reply-To:To:Cc; b=t7cXbElMkscVa2USazZaOXvVBydWeVfMumo2A5VT/vtT3WZNXKmodm19IRtwJVuNYrui6kmTJueGLkt4ulJ16QbWbfs1yEU+eAerTB9T+FReWwJ4k9pISVyxGw1eRh4WJsZqcqTTVqbrNWJLC8lKBwplFNTOIJHkNeTaWFy2E44=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=eXPjpdUa; arc=none smtp.client-ip=209.85.218.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-ae360b6249fso521064066b.1
-        for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 07:56:00 -0700 (PDT)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-ae223591067so393493066b.3
+        for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 07:56:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1751295359; x=1751900159; darn=vger.kernel.org;
+        d=cloudflare.com; s=google09082023; t=1751295361; x=1751900161; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=U1kpOesSXlO+zwvIVzaNY3+mGeXYR8L4I5ZHqTGx23Q=;
-        b=Xx5XbX/jwNVH2HZTOXsFGX8GWFe8dDK874N7KW2DNrFVKRazdO2PZErR1jRL6YrDag
-         KEOsKEQqw8VAt3RPgfrPzz903k98e5SM1BAKNGta1XUW8IMY28xrShuwZjQxm3ame8ub
-         QMdkJaJm4C0BnF+w0ZP82BEobFvYojFBb7Pe328+cwYkkH2Xa9c9m4Pm7bzK/7xiGM6y
-         biEF6//T0V7XP/XdnlPnOayq5SIMW09PQD2PeZtrgCp5cMGa8Q6LXkja+RwhOZT+fFG0
-         4QBe1YD1W+LYU9vZGimHKmXFC+NQGaHL/YXHpPuB5WUcAUj9SWEHUgMDLinU9fdNJfJ0
-         bu/A==
+        bh=iD26vKIyNfL79HGbpDEINEAFFrRHmSLhjJgTVN9WS8Q=;
+        b=eXPjpdUaQ/Jt3viyMeIsItSLO8b9ayRfwssZTkZ4Gx+ikKV6eBpbxTqdFaVa51f6BO
+         4l2y7nSenGqgawwIsHJKytL0Fb7KE4SM9p/xiNaxjRyNlCZiKQCe2pF+Ilzrx67/trzp
+         6OkGnk0ZaNju8e8QtY38jSRYRtt52uoRf56ugbfnm1JqO7EcXy/+Zet8OZjMW+dBq4wE
+         NijTJH7ue2NiQCJWw1XSyvOAeh2KrMd6Tlu0E6XVV7gBdA6l1ObL6py5zFxhJrQJL1gy
+         3Oo8Q3/ShWLo9kBMmlaVDMBsLqMEt97jGgGqYgjAvu0CyYZb+iY9nZlohrDK//YGSHu5
+         npDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751295359; x=1751900159;
+        d=1e100.net; s=20230601; t=1751295361; x=1751900161;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=U1kpOesSXlO+zwvIVzaNY3+mGeXYR8L4I5ZHqTGx23Q=;
-        b=fLXZfP2g7DJLIKS41TByexl7IrEKzXqSNWgS9Mpo4IHiIg6xeG+2B4Xl2UL6MhyA7X
-         cwXy+iVCF3j3Yu75mo312cWxu6pEn62u1v6O7uYZX8JRx+f2qAxKz4hyLHInhEYY3+4x
-         BSPH/oKSPMQ3Zve2hTTr/HGjnE7lCG99qip7Odel/TksfoHS5LH3uEykv1ZAg1vWDvlM
-         GdUatyqTo6HDo+OvATiTAs0agITUzEMwsItxWV37WujTFWfs18n7jtESPCaLc14riD5O
-         amrS8DrejPKUNwcI9umUwypgmbqDYV2CeMqup3EUNCT8xoAQ8BqjKt86i5IaFF2yPWPQ
-         FNLg==
-X-Gm-Message-State: AOJu0YwhzZE/EwfTuoPFuqw2VOBqPZko804Pxubhi1ZhmehD0KQuHOtj
-	dSE7+r0PYmPY0U730fejnCYLBjOpOhve7pRSOoTLROf5hcMQZTPHc4SH23o8fbe0g58=
-X-Gm-Gg: ASbGncvp0my2aPFT2FTjltM7sVPks1Nv7b4MzKySSSyw0nKGK3tUEPxO4P2lejAmr78
-	olmDRhSoUOvE+Fl9g2+pybqUAdY5MFkgG0Tf29fqSdpU1sH163kvayr+PWHieIrz0CCi0mrIk3D
-	uBvOmcAzClxQUWegoqajWk1/nlH5S89VvAeBJql82ITJ0J/iP5FcY4QVThaC/FRbRjD9M2HynJZ
-	IiTN3wrQX+NyC9/wK63p8/zMRcuhgkJyHgWP4xkU+TvxkPDCVL+RCY7QH66lp3CmuEUKI3sB4o0
-	V4j+z+ORNaRyjlLZfsBD18Bn/49y0CLdHN5h7MIGK4c7ra7Or8yY9Q==
-X-Google-Smtp-Source: AGHT+IHcHR1xY0UZjLvtYNSXxH0/Z467o845yTpPG1RSgcI9vsbWJprfICNKfzAuj22cLyJg1+cqeA==
-X-Received: by 2002:a17:907:7f8f:b0:ae0:a359:a95c with SMTP id a640c23a62f3a-ae3500f6720mr1249738366b.34.1751295359329;
-        Mon, 30 Jun 2025 07:55:59 -0700 (PDT)
+        bh=iD26vKIyNfL79HGbpDEINEAFFrRHmSLhjJgTVN9WS8Q=;
+        b=M+2v3GZ3zTCpIrv1BMVYze2CxJh+y0YXKDTprXYDfBqE7D+KyXWell75rTub8qyaZ/
+         MwX/JhYxRCUQ7hs7w33n0Y/43OTx/HmEcnPb6COflvjB/yABt/wVqKUyWDqSE+K6zJqa
+         7H/e8p/wYtgHV7FZB9HCQYIskUy+B5pBVHItw4zOi8mk7Et+O6Kp1t7FXIHRXm9q0BKs
+         JsnllJBabPkgjMuGcQ9D2SF1AK4zNv2AtMUHbM/ltGpVtnu3TRZNkO75KDrfSzMzRjYx
+         PjWBfw6i2P+EdRW1Sr1P5Z82ed5mGfEopfZaouy4EHZFj5VnPXdA2li2SsKbbFKll9+p
+         EDUQ==
+X-Gm-Message-State: AOJu0Yycn5RnR8gpRB/CllGhD9XWp7msfjvHWnjFbsK3B8WEfL/PYttu
+	8ljuWr9H/yb/LaCkVptIlcuxyGQGiUwQXvspmJbIJssrj2HmP+L8DYeiesTfbCVxXpsjSDhkl4S
+	hg97r
+X-Gm-Gg: ASbGncvb3vD22x/wObVuSZXFwaRBURt5we0ME9ftUyXWme6nNKTLjhQU5tOG9FL6RDs
+	bqKAxIKBfrR1Qg6ExEgsZkZl3IuTFCcgrfZlzr2LEhgSEiLTfOjDh3FPS5y+K6DNyIfKXtljgV+
+	Ne6pFM1yedRHgiRunmzSKRsuv11uUPUuZLgRFuUwXtIfojjZr0cI+b8KhExPWoEvPDmtUMX1uXX
+	9RzcCiTpmEEQd4PWqxKMx5YiC4kgUS+95m2kWsl4gNFV2rV+REVZUmpd9B680anicoJAUKDSvTn
+	kcyTyUbO2Xg8qCytbQFgl5Qt6LIP7ahYObEog1i5gJc20w2/XIpscg==
+X-Google-Smtp-Source: AGHT+IE/Zb4rMlxmPjOzNJkDM1x0qOLrMzF1G2hhd8OLqR9/IZ6Ax0J9kuqbvn21eDwI6nQWBwUXDg==
+X-Received: by 2002:a17:907:968a:b0:ad2:2146:3b89 with SMTP id a640c23a62f3a-ae35019cefbmr1245806366b.47.1751295361273;
+        Mon, 30 Jun 2025 07:56:01 -0700 (PDT)
 Received: from cloudflare.com ([2a09:bac5:5063:2dc::49:10a])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae3a36c4940sm66054266b.79.2025.06.30.07.55.58
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae353659fdesm692689966b.69.2025.06.30.07.56.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Jun 2025 07:55:58 -0700 (PDT)
+        Mon, 30 Jun 2025 07:56:00 -0700 (PDT)
 From: Jakub Sitnicki <jakub@cloudflare.com>
-Date: Mon, 30 Jun 2025 16:55:38 +0200
-Subject: [PATCH bpf-next 05/13] bpf: Enable write access to skb metadata
- with bpf_dynptr_write
+Date: Mon, 30 Jun 2025 16:55:39 +0200
+Subject: [PATCH bpf-next 06/13] bpf: Enable read-write access to skb
+ metadata with dynptr slice
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -83,7 +84,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250630-skb-metadata-thru-dynptr-v1-5-f17da13625d8@cloudflare.com>
+Message-Id: <20250630-skb-metadata-thru-dynptr-v1-6-f17da13625d8@cloudflare.com>
 References: <20250630-skb-metadata-thru-dynptr-v1-0-f17da13625d8@cloudflare.com>
 In-Reply-To: <20250630-skb-metadata-thru-dynptr-v1-0-f17da13625d8@cloudflare.com>
 To: bpf@vger.kernel.org
@@ -98,39 +99,38 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
  kernel-team@cloudflare.com, Stanislav Fomichev <sdf@fomichev.me>
 X-Mailer: b4 0.15-dev-07fe9
 
-Make it possible to write to skb metadata area using the
-bpf_dynptr_write() BPF helper.
+Make it possible to read from or write to skb metadata area using the
+dynptr slices creates with bpf_dynptr_slice() or bpf_dynptr_slice_rdwr().
 
 This prepares ground for access to skb metadata from all BPF hooks
 which operate on __sk_buff context.
 
 Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 ---
- net/core/filter.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ net/core/filter.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/net/core/filter.c b/net/core/filter.c
-index f71b4b6b09fb..ab6599f42bb7 100644
+index ab6599f42bb7..020da46f93a7 100644
 --- a/net/core/filter.c
 +++ b/net/core/filter.c
-@@ -12005,8 +12005,15 @@ int bpf_dynptr_skb_write(const struct bpf_dynptr_kern *dst, u32 offset,
- 	case SKB_DYNPTR_PAYLOAD:
- 		return ____bpf_skb_store_bytes(skb, offset, src, len, flags);
+@@ -12033,9 +12033,14 @@ void *bpf_dynptr_skb_slice(const struct bpf_dynptr_kern *ptr, u32 offset,
+ 		else
+ 			return skb_pointer_if_linear(skb, offset, len);
  
 -	case SKB_DYNPTR_METADATA:
--		return -EOPNOTSUPP; /* not implemented */
+-		return NULL;	/* not implemented */
 +	case SKB_DYNPTR_METADATA: {
 +		u32 meta_len = skb_metadata_len(skb);
-+
-+		if (len > meta_len || offset > meta_len - len)
-+			return -E2BIG; /* out of bounds */
-+
-+		memmove(skb_metadata_end(skb) - meta_len + offset, src, len);
-+		return 0;
-+	}
  
++		if (len > meta_len || offset > meta_len - len)
++			return NULL; /* out of bounds */
++
++		return skb_metadata_end(skb) - meta_len + offset;
++	}
  	default:
- 		WARN_ONCE(true, "%s: unknown skb dynptr offset %d\n", __func__, dst->offset);
+ 		WARN_ONCE(true, "%s: unknown skb dynptr offset %d\n", __func__, ptr->offset);
+ 		return NULL;
 
 -- 
 2.43.0
