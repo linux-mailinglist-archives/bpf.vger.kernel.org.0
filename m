@@ -1,162 +1,134 @@
-Return-Path: <bpf+bounces-61832-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61833-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25D29AEE0C1
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 16:33:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A19BAEE15A
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 16:48:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93A69189305D
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 14:33:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69B5B3B1AEF
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 14:43:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9576828C2D3;
-	Mon, 30 Jun 2025 14:33:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2EB128EA67;
+	Mon, 30 Jun 2025 14:42:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T3+4wMAg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9281DEADC;
-	Mon, 30 Jun 2025 14:33:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AE2128E5F3;
+	Mon, 30 Jun 2025 14:42:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751293986; cv=none; b=K9YRLJBdgpRpYmD1zRQdS+8x8QpqeHgjslzFADNhGga5QKgz79hDM8+vk4G9K4t8NVW7asHH2Z9ijFUmn+ZJunANWon0yb2mIACtktb702Kp1QPO4nIhbDNp88kSu2PELiWgjU9RE0mp98wL2SW95F2IDUaN8UJSW94GhyG897I=
+	t=1751294565; cv=none; b=GH+Mo4iCYuT5DmszuskzecwH1E40Na+RTI4aoxCfXC3/kxA5RZWTDBuJEcUyWmPosf68OJwumuM+xVZurpUE6ZK9inEL4mWbuKw7s5g2xVdRfHATpo6CNEXoVH3rfduPu77t5mkQXk6LiAXHZYQ8ODVtY2qnrVE0Y8qBawzAqpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751293986; c=relaxed/simple;
-	bh=qjTt84KBfEtBg95rqhCzltj23WXxyrqGZt9ItTvbZTc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uu6CyhK3TwteqFhkduqjuT8hEGiEAih7YNt+XpdrHpd8016oK4VdlJi29jFLLHYcIA6cRncB4fv5EABnMedZMZJL3szhYb5wsSAfVzaN0txGfYNAvh0no7zAkC+TeRJWz6/49jbGgpRShkcyCg1ftIMemfB7swNuReTxGtWqaIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+	s=arc-20240116; t=1751294565; c=relaxed/simple;
+	bh=6qMdcAVrzLINFWGhEHKx2bOfsr29+z1VuJLunXEJhWY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BneZ/4pCdU92QHq7RRTtRp+E2Wl8oM0rDBPz39nxP7mgEZF7wL9SURpoYBpQNUAZB+aBt13JGkk+zmDr0cFJh0L+aOU2u7NkDcTGPbhbkEtfsH2dQiYjcUHBsBadyDmYipnl4bLg8uesqyFtyJ74RQ51jPPHlXHd0AJDNvOhvYA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T3+4wMAg; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-607cc1a2bd8so3781940a12.2;
-        Mon, 30 Jun 2025 07:33:04 -0700 (PDT)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-2352400344aso41498375ad.2;
+        Mon, 30 Jun 2025 07:42:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1751294563; x=1751899363; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5aofoMvYrH1y9lMP9RzucrOBhds6qNg3gudKz2Vjufs=;
+        b=T3+4wMAgn8Fn6meJFWEjeKz0hEq6dyWbjL7uxMTj8qz9bEJzPxKzxJXKUNmGDUNl6t
+         Hf7JnD1Dpha4TDwJT7SrQo4PjJyUVjR2ZOlLZdyvwIQKNyh8PA/JulyVLP8MKRKdgXUJ
+         jeJc2IBj8cZrxtWiJM8mbc0JmIAUqX+3is0Yef69x5zI9nzk+Cl8B8coLtftlxY5ovZa
+         fhms6cYG/JxeGQgvabvuJ5cQr252YLcVJhLnHC155HBDDvCmI7fZvEoQ2wNMXU6xZL/2
+         VFo0yuIjTV5/yCHlIY8hHZ/m0fdhoaAuZ2nIAqahtgWi9GZxIOhUJI38ed3NdTtnmpSR
+         CpBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751293983; x=1751898783;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dSg20GDoGMGjYNXdLie7adRbEtdaFM3ql2cFF4814Fk=;
-        b=PoConTs4oyShUdUdbsiuExVpX6EHqS94CLUT4itzIFDIX+sM6+ze7Exbp3KJZonagn
-         3/Y7MaJ2ezILtfj6+sI6P4+txQwW6OeFR9s3LgcF6m7sspzdY3P5HUI6A1m49spakcJE
-         mDOiL4vNT9J2NT5eTyXTzDddkAAVRQvKhYxjMDTfDPVm6N/DyB1G3yEIc8T9mm2Shweh
-         WrggjV5coheRvC9GsZoEkPnVKA3V+j8txjeWBt6ixZCE56XbeZkwG7JdgFnlg84EJc6s
-         3tpAhRKPhqTWEIuUbmvC2bxG2RfwDBBtQ3L3MIBySOZWiBpgN0AHXTzxwFY6uU9Nk+fX
-         pjwg==
-X-Forwarded-Encrypted: i=1; AJvYcCUd/UA35kFZG2QTPKgh0oZmkE/FkxBiwxRw2qLFPLxY7cqwc3sdUSCahkJSG9Kye6vp7WWg/rqO@vger.kernel.org, AJvYcCV3ZYcvwSJ5ScoIL9mHPROK+tEK4xyvh5RAmJG9xkSNGl8xL93czLlQEuXJOhD64/t3UgpRqUd4SyFe/W4y@vger.kernel.org, AJvYcCVmCipOcm9Hwl9F8uPGFZ1vSPU/Vpj0SrcSZUaxFxXHZlIDY1oHMy4J79cXMYtifwhXo3bdiEbTtRFr3AS5zoke@vger.kernel.org, AJvYcCXkLq56VEi9VLlaFFtlCx00HrPTLTQ4aDR1x5qsEoxonkZPAIs2hPyMYvd7lNHdmteDS7o=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzKLsnVFs08Y0hK0s1IEejBbTNto1p8wDxMOjpsgO4rG/X8U8r6
-	k/YhPVCHl1iv7Ymw8ykyd+1f5yvhyFaxVN7dRhLZrSC4SJDgr3ixqHAt
-X-Gm-Gg: ASbGnctF/W3YgBHmJNaZu3IXDPmk8fz3cyolO9OkdvTsVWmGJjg0DdMIIAiqCfVJ4zC
-	djmD9hb3ddJrrp2WCwJj9ixHno40s9K5JFpOV+QCpejfthlAO6viIzEfzf1esTQDRI3mZ1EtBzQ
-	+A6rEpaCmB9HurSGiFvMMfJOEsDilKqxo2naD1kdCZhVVvLY4lk1le2Su7zXJJreKmNWhQisROT
-	lXKd6ayjW1/jeAGBAnwZe9dZ+NCydL/r+6eWiaWlmJQP+QirvhIwVvxUYNlHvkVNSevyG4sIZ2S
-	92qcSalOrbikWCUpSMak+Og2U4Nn9Pn6/hWkap+rN3Bk4++uedP3
-X-Google-Smtp-Source: AGHT+IG5SjwBNYpgtsZ2GrAPYTJ3w1Wwt/wPQJnP1CIFTpzXnOVWiVVkg3kGL9lQcuyRxx5C/zHEOg==
-X-Received: by 2002:a17:906:1446:b0:ad8:9997:aa76 with SMTP id a640c23a62f3a-ae3500e3d11mr1083912566b.37.1751293982547;
-        Mon, 30 Jun 2025 07:33:02 -0700 (PDT)
-Received: from gmail.com ([2a03:2880:30ff:3::])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae35aad8275sm651946666b.23.2025.06.30.07.33.01
+        d=1e100.net; s=20230601; t=1751294563; x=1751899363;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5aofoMvYrH1y9lMP9RzucrOBhds6qNg3gudKz2Vjufs=;
+        b=g+uDx9OGz6RqEOjqEwPrCkaQdPuebIKp00eKHZ5ou+n6m4u7KtLFfRoLfoDZgx8zNf
+         qNiOf9er2JnM3YNADBSYIKPYrakEya5mPNrSkbc+kscLBsPrqyE7i/NvtV6z1SNScO+8
+         rDGfetS3q4+mTgmctLVy95chXHVdUncd/lEM2yyNbKUBpG89Sv8ytoxEbFy7nw8OANes
+         IC4cd3IHvwiJv6fZNH7g6UHxUgsRaPAJOnS7z8N+iulWOa2wophD5NMXiSRXZZt7n43u
+         xtncqZlByxtOQmbG9uEdEcUKTHYOrE8m8jlHHtlnG5w/GvZIvG4YvXfhJtqnojczCCpN
+         hmoA==
+X-Forwarded-Encrypted: i=1; AJvYcCU0zMvROY2J4Z8gXHlKLtyoZY8IzKjRijPNW+7BIQjbULEAZnB0/HL7qUBnaPw76WAZ480=@vger.kernel.org, AJvYcCVPCST7bnjBmTLnrJz9Znax/NutGyLAFho9C92vFGKSeBIhFPZ8irKmpaMajxTHcfqz/Ib/uAffoVSEhyOK@vger.kernel.org
+X-Gm-Message-State: AOJu0YyoTvMr47kJQrZ0pjaJIKa5JqUdM02KlXsLPG76qpTgEwTqwd0r
+	IXN0RdRqlk3163PVpzvKYXv9rio8jes9sbdp/bl6H3Krr9lP/xA1OpSB9PNtqw==
+X-Gm-Gg: ASbGncupr3WFGIcmnN66cvssFWKpUdDDbaprwgN2KyVigZSWUZ9rk1ZVFhKF4K7UadC
+	0vQoaFLeGk8HjPlWzFk5f++Xf6JnywgwZLmV80yKBiNBJnZK/ZsRmEqJX2xsi6474WE5swWInqu
+	eGHVLdX0aMbOEdxemak0PK13/nXmgvLdxk068i40iJ2UdjExQkOH3DSdUtw81d8w2RgND4mdbd+
+	B//pnvm9etq56ddEe2fgi7fo1ZSrbJRL9YzLIWDasc/30abM0bm1uVW1eztBtnreN+FQHkia73x
+	2QwftZLapSiMcf5iulJg+mohEogAf0GMXz6MXpJi9QpB27oRhStvYcgB6/5H85G8IwjlaJYB2Kj
+	H
+X-Google-Smtp-Source: AGHT+IH7KkUfeVZi1PbvFQWZ5RQ3dxQDhFjmunArM3SrATO1+z5mke2EDZHIxwCOZsltxOQabz5ffA==
+X-Received: by 2002:a17:90b:3f0b:b0:301:9f62:a944 with SMTP id 98e67ed59e1d1-318c926ca4emr23469190a91.33.1751294562884;
+        Mon, 30 Jun 2025 07:42:42 -0700 (PDT)
+Received: from minh.192.168.1.1 ([2001:ee0:4f0e:fb30:2f51:de71:60e:eca9])
+        by smtp.googlemail.com with ESMTPSA id 98e67ed59e1d1-318c13a270csm9170017a91.16.2025.06.30.07.42.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Jun 2025 07:33:02 -0700 (PDT)
-Date: Mon, 30 Jun 2025 07:32:59 -0700
-From: Breno Leitao <leitao@debian.org>
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: Andrew Lunn <andrew+netdev@lunn.ch>,
+        Mon, 30 Jun 2025 07:42:42 -0700 (PDT)
+From: Bui Quang Minh <minhquangbui99@gmail.com>
+To: netdev@vger.kernel.org
+Cc: "Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	=?UTF-8?q?Eugenio=20P=C3=A9rez?= <eperezma@redhat.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Shuah Khan <shuah@kernel.org>, Simon Horman <horms@kernel.org>,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-	ast@kernel.org
-Subject: Re: [PATCH net-next v3 3/3] selftests: net: add netpoll basic
- functionality test
-Message-ID: <aGKgG+uE+UXEIIbf@gmail.com>
-References: <20250627-netpoll_test-v3-0-575bd200c8a9@debian.org>
- <20250627-netpoll_test-v3-3-575bd200c8a9@debian.org>
- <686002d028f_a131d29458@willemb.c.googlers.com.notmuch>
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	virtualization@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	Bui Quang Minh <minhquangbui99@gmail.com>
+Subject: [PATCH net v2 0/3] virtio-net: fixes for mergeable XDP receive path
+Date: Mon, 30 Jun 2025 21:42:09 +0700
+Message-ID: <20250630144212.48471-1-minhquangbui99@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <686002d028f_a131d29458@willemb.c.googlers.com.notmuch>
+Content-Transfer-Encoding: 8bit
 
-Hello Willem,
+Hi everyone,
 
-On Sat, Jun 28, 2025 at 10:57:20AM -0400, Willem de Bruijn wrote:
-> Breno Leitao wrote:
-> > +NETCONSOLE_CONFIGFS_PATH: str = "/sys/kernel/config/netconsole"
-> > +NETCONS_REMOTE_PORT: int = 6666
-> > +NETCONS_LOCAL_PORT: int = 1514
-> > +# Max number of netcons messages to send. Each iteration will setup
-> > +# netconsole and send 10 messages
-> > +ITERATIONS: int = 20
-> > +# MAPS contains the information coming from bpftrace
-> > +# it will have only one key: @hits, which tells the number of times
-> > +# netpoll_poll_dev() was called
-> 
-> nit: no longer has ampersand prefix
+This series contains fixes for XDP receive path in virtio-net
+- Patch 1: add a missing check for the received data length with our
+allocated buffer size in mergeable mode.
+- Patch 2: remove a redundant truesize check with PAGE_SIZE in mergeable
+mode
+- Patch 3: make the current repeated code use the check_mergeable_len to
+check for received data length in mergeable mode
 
-Good catch. I will update.
+Version 2 changes:
+- Move the check_mergeable_len helper definition to the patch 1.
+- Remove patch 4.
 
-> > +def ethtool_read_rx_tx_queue(interface_name: str) -> tuple[int, int]:
-> > +    """
-> > +    Read the number of RX and TX queues using ethtool. This will be used
-> > +    to restore it after the test
-> > +    """
-> > +    rx_queue = 0
-> > +    tx_queue = 0
-> > +
-> > +    try:
-> > +        ethtool_result = ethtool(f"-g {interface_name}").stdout
-> > +        for line in ethtool_result.splitlines():
-> > +            if line.startswith("RX:"):
-> > +                rx_queue = int(line.split()[1])
-> > +            if line.startswith("TX:"):
-> > +                tx_queue = int(line.split()[1])
-> 
-> Does this work on devices that use combined?
+Thanks,
+Quang Minh.
 
-Not sure. This is suppossed to work mostly on netdevsim (for now).
+Bui Quang Minh (3):
+  virtio-net: ensure the received length does not exceed allocated size
+  virtio-net: remove redundant truesize check with PAGE_SIZE
+  virtio-net: use the check_mergeable_len helper
 
-Since I am not familiar with combined TX/RX, I've looked at ethtool
-code, and it seems RX and TX wil always be printed?
+ drivers/net/virtio_net.c | 75 ++++++++++++++++++++++------------------
+ 1 file changed, 42 insertions(+), 33 deletions(-)
 
-This is what I found when `-g` is passed to ethtool.
+-- 
+2.43.0
 
-	static int dump_ring(const struct ethtool_ringparam *ering)
-	{
-		fprintf(stdout,
-			"Pre-set maximums:\n"
-			"RX:            %u\n"
-			"RX Mini:       %u\n"
-			"RX Jumbo:      %u\n"
-			"TX:            %u\n",
-			ering->rx_max_pending,
-			ering->rx_mini_max_pending,
-			ering->rx_jumbo_max_pending,
-			ering->tx_max_pending);
-
-		fprintf(stdout,
-			"Current hardware settings:\n"
-			"RX:            %u\n"
-			"RX Mini:       %u\n"
-			"RX Jumbo:      %u\n"
-			"TX:            %u\n",
-			ering->rx_pending,
-			ering->rx_mini_pending,
-			ering->rx_jumbo_pending,
-			ering->tx_pending);
-
-		fprintf(stdout, "\n");
-		return 0;
-	}
-
-
-Thanks for the review,
---breno
 
