@@ -1,87 +1,83 @@
-Return-Path: <bpf+bounces-61829-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61828-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7638EAEDF45
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 15:37:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 193EEAEDF3A
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 15:35:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9543E3A61EB
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 13:35:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30F9D16FA71
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 13:35:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE35428B3F6;
-	Mon, 30 Jun 2025 13:35:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC34628B4E2;
+	Mon, 30 Jun 2025 13:35:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="USchn+mb"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bXRKr1P6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9C6D286D70
-	for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 13:35:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2E1128A73C
+	for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 13:35:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751290552; cv=none; b=ePAm3p/Zrm+fQdilQmYoqT0WmzXvyVFUGVe3keINhIhM8Edu2lLkP1DzFHqC8NN16Z6FqPxd5bvvpBZfHKmZ/VRFnWbWzT5rn7JilPqRVWHpJwvZCEZoi+36dBUeQ6HdHLcZvbuNGUgcBqaqtx9COWjcvfxuGKUM4tf2VHF0R5o=
+	t=1751290547; cv=none; b=oKuVEV1zlx6K1Erc2ylbH8eC2FQNbRoMnYE1W9OAOjHKlOiOmyra2/329Ak3oQYNOCh0J+TRblZH4IoN7XnLaBXnmrHUDJej6crV2poYJN7FSE0XHhpdkHR+fwOCNWTmrfYBn2tt06hV7SokhNz8INkumyorKNhBrtLO9eenDfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751290552; c=relaxed/simple;
-	bh=SlTFOYLn4pEkWyycT0UZ54Pe5TYXxaFCNzMsB8XtArc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mkpzcZ1/DT8kLZxBoYxdXtqxMTbQo8D4lMDa1r2v45tKZvMJ/UMquPa/zLon/S1444LIyldA/5+ktKZRkFIo7RFp274GYchOajAny3z5EdWGoECRtqtAKnmD4ZJsJCE8esemyVTyu8KI+F0XBqujNdW4q0avcjvc8Za2JIB8ZC8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=USchn+mb; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-60c51860bf5so7638529a12.1
-        for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 06:35:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751290549; x=1751895349; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3egW9juECtitYreSCpqCOyjSfS22kJeo55s3QS6PbCc=;
-        b=USchn+mbnRKwEusSFvKy7BnwKvn6wj/Lzo2rqadm4HCLYjFjEUG/y8cj+N/f8FCIsF
-         Na6jlTQgfg+E/bysxnpUHaLl4i5gQjWBD12rtAD0r4L3glzmPyOmIBJDqcRoSgw3mhJW
-         qHKEt56lcumsYU8D+oUBhslYduYle6oz7o3bsvKuhkFpYPIG76uy8W3pNKp2GnBMjuBs
-         Sq7m0KEv2CMxCm5LievdITpSsRH71/trnM7vRQ8/Iee5oYVnKAwqAIFtkeNDUiNjDmvi
-         9EvLPWJUZexBm+wdmpmTw+8U98tewqxbSi0h/xn7Y3MayV7uDuKq+EYS+TvmPe+q8g+k
-         vfEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751290549; x=1751895349;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3egW9juECtitYreSCpqCOyjSfS22kJeo55s3QS6PbCc=;
-        b=KD4D/qiHuR9TJeD3Jw+h7N4xaqeUtecntA3+bn3BiECgOIBzi4WijK+avq0gYSdwHR
-         vtrOrGyhlf8I0fFKUOr05DafVfWX2Qyu5W0JCrRmEcGaIL+ReCDvzyXQhuM/A52fs6Zz
-         Wz28iqlSTtDGpubsvEV+0mHjuzJZTLd7qynzt7pN3L4sEtfdiZxrtN79p49qcGcWSKpc
-         NRf6dM9PA4AReAPTGPi3kz57FRMsMQ7MJ7xNPb/vT0GyAAkBYjByYWxXaZsTc+qcmYUc
-         BJDX3WYV6AmKi0qI1mDZaMK2yLHZeTRhrzKl/ejl7HVnmVla7C9edxPvs3y8IDCkUome
-         E+Jw==
-X-Gm-Message-State: AOJu0YxB9U22XpXMO8Xqx/9uEh1JmANA9VOVWnl+UKdBUD2eM9x1n6Au
-	Gi7IQjtn7hu5dyqzTnWx4uO90ffjr1AY4sZne51XadP89L9Cf9uFVuvHCg5dc/JA
-X-Gm-Gg: ASbGncug7GfAqCmOXqEn6HcvJkVuShZZvkJon1qn5/3rsmeOsZnVzBu/aEHvR5VrZNL
-	RJBzy8V6OTn29n1oE0GTh+Ip4q+Kj8G6xph8fAtn6IIUUXtohAKxxIw0y0cjpYlF40h3G55jM5I
-	FODxjEoU5Wx+ZKQY8Y43fuGRQgACoYwbypqocZTMooOcWcbOJQjLQ1swyK0yTDiy4o1qxSctKY6
-	P7o8lurzQzRhoGxj13oB/p815EJTNVxYVDfMlFrCPvF6ceLXQE4y61Yd6O3rWz4NNXJy2SiE2QF
-	4XMQBPT+S2pX353yxsvFo7pavmyv+k7T6FqI4nFONa18ukBtMgnL
-X-Google-Smtp-Source: AGHT+IFIy5CjRtrORa+zxh6rMTeNGmmw1mRXzzoO9H4vMxb0Pb1YebKlqJGDm4wpFa3yjwoyuTC87w==
-X-Received: by 2002:a17:907:74c:b0:ae0:d7b3:848a with SMTP id a640c23a62f3a-ae34fd336ebmr1252421166b.2.1751290548759;
-        Mon, 30 Jun 2025 06:35:48 -0700 (PDT)
-Received: from localhost ([2620:10d:c092:500::5:a4b7])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae353ca1cc9sm663907666b.168.2025.06.30.06.35.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Jun 2025 06:35:48 -0700 (PDT)
-From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	kafai@meta.com,
-	kernel-team@meta.com,
-	eddyz87@gmail.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next] selftests/bpf: enable dynptr/test_probe_read_user_str_dynptr
-Date: Mon, 30 Jun 2025 14:35:14 +0100
-Message-ID: <20250630133515.1108325-1-mykyta.yatsenko5@gmail.com>
-X-Mailer: git-send-email 2.50.0
+	s=arc-20240116; t=1751290547; c=relaxed/simple;
+	bh=I4BVh2jJgSeCbGxd0AFiSobgYmGM/cPArZgyx8LH2j0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=m7qUzymL8ZtENNXHIM5zPGpWc8QvU+/zAyN3xBGx2pVpw0l+U32mHeRwvb7G3PG065yyMwQMuACeqVKPpN64BOm6LqJQntkTLWeCcDwKhxQFkZOrwp2xhMJnLzIoDHKMQ4QVC12lZ7TekpGXb8MrFo6xChEPBMhPcW4ZJwJusFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bXRKr1P6; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1751290544;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=/3RRoNkOVQN6TpJYq3En+WCVz9JU89wuTAMcgf1kyHE=;
+	b=bXRKr1P6/9ZU+NImV/O844Qxse05+FKLHcid0oWE7ErlM055mRCNX4uyBHEWTSJaOzdW9a
+	rCnoojFUrirB07s/ctKJrYqtCq4gsROOvr6V0mhtLD6H87Sr8G1B2wwGwNM9uYKmSAmhmG
+	o/i7Ky0HtZ7p2SYVL+vBI5g2Y8BrXRE=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-434-w_aTevF0NEiiIOL5zFnoSA-1; Mon,
+ 30 Jun 2025 09:35:39 -0400
+X-MC-Unique: w_aTevF0NEiiIOL5zFnoSA-1
+X-Mimecast-MFC-AGG-ID: w_aTevF0NEiiIOL5zFnoSA_1751290537
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B85A619560BE;
+	Mon, 30 Jun 2025 13:35:36 +0000 (UTC)
+Received: from vmalik-fedora.redhat.com (unknown [10.45.225.53])
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id EE3F418003FC;
+	Mon, 30 Jun 2025 13:35:29 +0000 (UTC)
+From: Viktor Malik <vmalik@redhat.com>
+To: bpf@vger.kernel.org
+Cc: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Amery Hung <ameryhung@gmail.com>,
+	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+	Viktor Malik <vmalik@redhat.com>,
+	Feng Yang <yangfeng@kylinos.cn>
+Subject: [PATCH bpf] selftests/bpf: Re-add kfunc declarations to qdisc tests
+Date: Mon, 30 Jun 2025 15:35:24 +0200
+Message-ID: <20250630133524.364236-1-vmalik@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -89,28 +85,40 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
-From: Mykyta Yatsenko <yatsenko@meta.com>
+BPF selftests compilation fails on systems with CONFIG_NET_SCH_BPF=n.
+The reason is that qdisc-related kfuncs are included via vmlinux.h but
+when qdisc is disabled, they are not defined and do not appear in
+vmlinux.h.
 
-Enable previously disabled dynptr/test_probe_read_user_str_dynptr test,
-after the fix it depended on was merged into bpf-next.
+Fix the issue by defining the kfunc prototypes explicitly in
+bpf_qdisc_common.h. They were originally there but were removed by the
+fixed commit mentioned below.
 
-Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+Fixes: 2f9838e25790 ("selftests/bpf: Cleanup bpf qdisc selftests")
+Signed-off-by: Viktor Malik <vmalik@redhat.com>
 ---
- tools/testing/selftests/bpf/DENYLIST | 1 -
- 1 file changed, 1 deletion(-)
+ tools/testing/selftests/bpf/progs/bpf_qdisc_common.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/DENYLIST b/tools/testing/selftests/bpf/DENYLIST
-index 1789a61d0a9b..f748f2c33b22 100644
---- a/tools/testing/selftests/bpf/DENYLIST
-+++ b/tools/testing/selftests/bpf/DENYLIST
-@@ -1,6 +1,5 @@
- # TEMPORARY
- # Alphabetical order
--dynptr/test_probe_read_user_str_dynptr # disabled until https://patchwork.kernel.org/project/linux-mm/patch/20250422131449.57177-1-mykyta.yatsenko5@gmail.com/ makes it into the bpf-next
- get_stack_raw_tp    # spams with kernel warnings until next bpf -> bpf-next merge
- stacktrace_build_id
- stacktrace_build_id_nmi
+diff --git a/tools/testing/selftests/bpf/progs/bpf_qdisc_common.h b/tools/testing/selftests/bpf/progs/bpf_qdisc_common.h
+index 3754f581b328..7e7f2fe04f22 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_qdisc_common.h
++++ b/tools/testing/selftests/bpf/progs/bpf_qdisc_common.h
+@@ -14,6 +14,12 @@
+ 
+ struct bpf_sk_buff_ptr;
+ 
++u32 bpf_skb_get_hash(struct sk_buff *p) __ksym;
++void bpf_kfree_skb(struct sk_buff *p) __ksym;
++void bpf_qdisc_skb_drop(struct sk_buff *p, struct bpf_sk_buff_ptr *to_free) __ksym;
++void bpf_qdisc_watchdog_schedule(struct Qdisc *sch, u64 expire, u64 delta_ns) __ksym;
++void bpf_qdisc_bstats_update(struct Qdisc *sch, const struct sk_buff *skb) __ksym;
++
+ static struct qdisc_skb_cb *qdisc_skb_cb(const struct sk_buff *skb)
+ {
+ 	return (struct qdisc_skb_cb *)skb->cb;
 -- 
 2.50.0
 
