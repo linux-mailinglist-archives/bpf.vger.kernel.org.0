@@ -1,213 +1,276 @@
-Return-Path: <bpf+bounces-61896-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61897-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99DF6AEE92D
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 23:03:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E443AEE93F
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 23:04:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 866D03E1C70
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 21:02:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CAB461BC3FC7
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 21:03:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D48F2EA149;
-	Mon, 30 Jun 2025 21:02:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96FE02629D;
+	Mon, 30 Jun 2025 21:02:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FATwFEFv"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZZrwuBAS"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B14FC2629D;
-	Mon, 30 Jun 2025 21:02:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D97417BD3
+	for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 21:02:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751317329; cv=none; b=W7zSPwS6yvgi6rPYNDV98ZZUWszQ49z76i0iC3YGYqxR7LmFkyas+B9kAn3wk1KRVMaZc0wujoRNZ59pb/eG/siUSjnCibU9e2Vo6UW5x7SNDmXOAOvk0l8j0HaZsA4eN9GEjpZvh4HX32oy7wNH8SVrBeyoJH675Umi1GhooGs=
+	t=1751317342; cv=none; b=jSC3rEUEGI1+4o9pHyCKVtwsz4Aix5D+DhwCZeeRnKZaW870yLXK8zNAwmALn8OWQgiaxiTL1JoVsi/Uu+eh+vDelPuL3GikaDGJxlHNyd2+XNVPqaL9ttR1nVE57/SGYBK5yz6blzcN9HDlaY9I5fj317A9ucfcQUwVBB4l178=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751317329; c=relaxed/simple;
-	bh=Umzv8skMWurpf2AfydH+g64Fsf5Nlvlhu3kyTJPG6Fc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Ddd5Yq76mGhcfPvs2o0rTpU3bepFtRT6r1Tj8I9LHfEJ4a5LoXX4KYSpRIRjONW6k4NOTIBVFxAQrG3Uh36inFQVVLCZucux+QMoCwVUghwszDa88A/SqIi1vPUj8V+QEhpWyfxV+irQOzfzanzy5pEWQA9LGmoFN2EYhUAE3oQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FATwFEFv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08C25C4CEE3;
-	Mon, 30 Jun 2025 21:02:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751317329;
-	bh=Umzv8skMWurpf2AfydH+g64Fsf5Nlvlhu3kyTJPG6Fc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FATwFEFvViN4sEtAXPo9Wq7eRRW+p7u1n+imwruTSHCVJNz1oEWx9PGsWPc/GJwRG
-	 1RrRA0FXTgrA7My4tdM5Ti2nvMCVzb7Gnp63e89YRd6dXT2qtfCUg74Tbdw8LwkRs1
-	 EtJHekQXVo5y9KXoM0f9UcgLlmwzASvT/Q+OhJT+/mgw1Hu+gn8Za33iaipccPFBnL
-	 iUlpyhs1+XSt5wR/WDxUiJMFSEzWMa3oxMkiHmJ9ALNummfkzdmgj5yHUJHNMmAYBh
-	 pDbArPzO3MTXKVXgbwCcZ7DfEJk7ob0xpLE803VvwArsQPdBWWkw5gjy8/X3luAppa
-	 ep96YDdr44Zjg==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Tiwei Bie <tiwei.btw@antgroup.com>,
-	kernel test robot <lkp@intel.com>,
-	Johannes Berg <johannes.berg@intel.com>,
-	Sasha Levin <sashal@kernel.org>,
-	nathan@kernel.org,
-	richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	guoweikang.kernel@gmail.com,
-	geert@linux-m68k.org,
-	tglx@linutronix.de,
-	bpf@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH AUTOSEL 5.10 2/6] um: vector: Reduce stack usage in vector_eth_configure()
-Date: Mon, 30 Jun 2025 17:01:59 -0400
-Message-Id: <20250630210203.1359628-2-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250630210203.1359628-1-sashal@kernel.org>
-References: <20250630210203.1359628-1-sashal@kernel.org>
+	s=arc-20240116; t=1751317342; c=relaxed/simple;
+	bh=t4qNWA959yN1fodCMYLV5H9x3dpB9oO+sQfxTdjniWU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CE9N9Dvqc4Pp6O2nDmG4K/bqUktfbFkJsfMWcArU0LbDo1TBHfkDqnnNJdhBzzTjZZrLr087GXceQHVqdTn1kQgW5m8z2mWpxaGGGHAzdYenyHN701xM6kRFRZdtKO28TGi4lyxhn4aDxBkFJrRudAO1IK4sAqQLOP0GBpvARYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZZrwuBAS; arc=none smtp.client-ip=95.215.58.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <1f89b5a5-bf47-481a-8b64-ac9072df030a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1751317335;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=U1/5G2wrhNHRIx7dnkcpgGmDKP+n0/BpWgzDLhHcTcc=;
+	b=ZZrwuBASpp8NpJTKm11QsKT0tBsYULs5a+uQ0hrGNZtHyQxiO68zoEiKT6RKbt7chPiP1K
+	jazt4dImt+bMzlRBZGaigT0O/ZL+yGFGvf4dODCP4nzdE9WkszsjCRNrHGJU+gW3FCzBXO
+	enzyuM5MVVgmbrFMLR8ec0cU3ry/5KI=
+Date: Mon, 30 Jun 2025 14:02:05 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.239
+Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: add test cases for
+ bpf_dynptr_memset()
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org
+Cc: andrii@kernel.org, ast@kernel.org, eddyz87@gmail.com, mykolal@fb.com,
+ kernel-team@meta.com
+References: <20250624205240.1311453-1-isolodrai@meta.com>
+ <20250624205240.1311453-3-isolodrai@meta.com>
+ <5f00c508-5150-4e69-b006-d15b0e6b2d23@gmail.com>
+ <a08af28b-e81f-47a8-96b9-94a67d6bd3a7@linux.dev>
+ <7ebb7fa8-f1d2-4db8-9d59-4ae586fdf060@gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+In-Reply-To: <7ebb7fa8-f1d2-4db8-9d59-4ae586fdf060@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-From: Tiwei Bie <tiwei.btw@antgroup.com>
+On 6/26/25 6:34 AM, Mykyta Yatsenko wrote:
+> On 6/26/25 02:25, Ihor Solodrai wrote:
+>> On 6/25/25 4:45 AM, Mykyta Yatsenko wrote:
+>>> On 6/24/25 21:52, Ihor Solodrai wrote:
+>>>> Add tests to verify the behavior of bpf_dynptr_memset():
+>>>>    * normal memset 0
+>>>>    * normal memset non-0
+>>>>    * memset with an offset
+>>>>    * memset in dynptr that was adjusted
+>>>>    * error: size overflow
+>>>>    * error: offset+size overflow
+>>>>    * error: readonly dynptr
+>>>>    * memset into non-linear xdp dynptr
+>>>>
+>>>> Signed-off-by: Ihor Solodrai <isolodrai@meta.com>
+>>>> ---
+>>>>   .../testing/selftests/bpf/prog_tests/dynptr.c |   8 +
+>>>>   .../selftests/bpf/progs/dynptr_success.c      | 164 ++++++++++++++ 
+>>>> ++++
+>>>>   2 files changed, 172 insertions(+)
+>>>>
+>>>> diff --git a/tools/testing/selftests/bpf/prog_tests/dynptr.c b/ 
+>>>> tools/ testing/selftests/bpf/prog_tests/dynptr.c
+>>>> index 62e7ec775f24..f2b65398afce 100644
+>>>> --- a/tools/testing/selftests/bpf/prog_tests/dynptr.c
+>>>> +++ b/tools/testing/selftests/bpf/prog_tests/dynptr.c
+>>>> @@ -21,6 +21,14 @@ static struct {
+>>>> [...]
+>>>> +
+>>>> +SEC("xdp")
+>>>> +int test_dynptr_memset_xdp_chunks(struct xdp_md *xdp)
+>>>> +{
+>>>> +    const int max_chunks = 200;
+>>>> +    struct bpf_dynptr ptr_xdp;
+>>>> +    u32 data_sz, offset = 0;
+>>
+>> A question not directly to Mykyta.
+>>
+>> So noalu32 version of this test was failing to verify with this:
+>>
+>>     118: (85) call bpf_dynptr_read#201
+>>     R2 min value is negative, either use unsigned or 'var &= const'
+>>
+>> Where R2 refers to `data_sz - offset`
+>>
+>> Full log here: https://github.com/kernel-patches/bpf/actions/ 
+>> runs/15861036149/job/44718289284
+>>
+>> I tried various conditions unsuccessfully.  But changing u32 to u64
+>> made it work. If handle_tail part is removed, as Mykyta suggested,
+>> this doesn't matter, so I will probably leave u32 in v3.
+>>
+>> However I am curious if u32->u64 change is an appropriate workaround
+>> in general for noalu32 problems?  AFAIU verifier might get confused by
+>> all the added shifts, and "noalu32" is a backward compatibility thing.
+>>
+>>
+>>>> +    char expected_buf[32];
+>>> nit: expected_buf[32] = {DYNPTR_MEMSET_VAL};
+> My bad, it's actually should be `char expected_buf[32] = {[0 ... 31] = 
+> DYNPTR_MEMSET_VAL}`;
+> Otherwise it initializes just the first element of the expected_buf and 
+> places that array into the .rodata.cst32 section.
 
-[ Upstream commit 2d65fc13be85c336c56af7077f08ccd3a3a15a4a ]
+If I knew C, I'd pointed out that one can only do that with zero,
+instead of objdumping bpf.
 
-When compiling with clang (19.1.7), initializing *vp using a compound
-literal may result in excessive stack usage. Fix it by initializing the
-required fields of *vp individually.
+Anyways I think it's cleaner and more aligned with the style of these
+tests to use memset and not bother with a hairy expression.
 
-Without this patch:
-
-$ objdump -d arch/um/drivers/vector_kern.o | ./scripts/checkstack.pl x86_64 0
-...
-0x0000000000000540 vector_eth_configure [vector_kern.o]:1472
-...
-
-With this patch:
-
-$ objdump -d arch/um/drivers/vector_kern.o | ./scripts/checkstack.pl x86_64 0
-...
-0x0000000000000540 vector_eth_configure [vector_kern.o]:208
-...
-
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202506221017.WtB7Usua-lkp@intel.com/
-Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
-Link: https://patch.msgid.link/20250623110829.314864-1-tiwei.btw@antgroup.com
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
-
-**YES**
-
-This commit should be backported to stable kernel trees for the
-following reasons:
-
-1. **Fixes a real bug**: The commit addresses excessive stack usage
-   (1472 bytes) that can lead to stack overflow, especially problematic
-   on systems with limited kernel stack space. This is a legitimate bug
-   that affects system stability.
-
-2. **Compiler-specific issue with real impact**: While triggered by
-   clang 19.1.7's handling of compound literals, the resulting stack
-   usage of 1472 bytes is genuinely excessive and dangerous regardless
-   of the compiler quirk that exposed it.
-
-3. **Simple and safe fix**: The change is purely mechanical - converting
-   from compound literal initialization to field-by-field
-   initialization:
-  ```c
-  // From:
-  *vp = ((struct vector_private) { .field = value, ... });
-  // To:
-  vp->field = value;
-  ```
-
-4. **Minimal risk**: The fix doesn't change any logic or functionality.
-   It only changes how the structure is initialized, making it extremely
-   unlikely to introduce regressions.
-
-5. **Precedent from similar commits**: Looking at the historical commits
-   marked "YES" for backporting:
-   - Similar Commit #1: Reduced stack frame in qed driver using
-     `noinline_for_stack`
-   - Similar Commit #4: Reduced stack usage in ethtool with clang using
-     `noinline_for_stack`
-
-   Both addressed the same class of problem (excessive stack usage with
-clang) and were considered suitable for stable.
-
-6. **Measurable improvement**: The stack usage reduction from 1472 to
-   208 bytes is dramatic and well-documented by the kernel test robot,
-   providing clear evidence of the fix's effectiveness.
-
-The commit meets the stable kernel criteria of fixing an important bug
-with minimal risk and a contained change. While it doesn't explicitly
-include a "Cc: stable" tag, the nature of the fix (preventing potential
-stack overflow) makes it a good candidate for stable backporting.
-
- arch/um/drivers/vector_kern.c | 42 +++++++++++------------------------
- 1 file changed, 13 insertions(+), 29 deletions(-)
-
-diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-index da05bfdaeb1db..a37007e42265a 100644
---- a/arch/um/drivers/vector_kern.c
-+++ b/arch/um/drivers/vector_kern.c
-@@ -1600,35 +1600,19 @@ static void vector_eth_configure(
- 
- 	device->dev = dev;
- 
--	*vp = ((struct vector_private)
--		{
--		.list			= LIST_HEAD_INIT(vp->list),
--		.dev			= dev,
--		.unit			= n,
--		.options		= get_transport_options(def),
--		.rx_irq			= 0,
--		.tx_irq			= 0,
--		.parsed			= def,
--		.max_packet		= get_mtu(def) + ETH_HEADER_OTHER,
--		/* TODO - we need to calculate headroom so that ip header
--		 * is 16 byte aligned all the time
--		 */
--		.headroom		= get_headroom(def),
--		.form_header		= NULL,
--		.verify_header		= NULL,
--		.header_rxbuffer	= NULL,
--		.header_txbuffer	= NULL,
--		.header_size		= 0,
--		.rx_header_size		= 0,
--		.rexmit_scheduled	= false,
--		.opened			= false,
--		.transport_data		= NULL,
--		.in_write_poll		= false,
--		.coalesce		= 2,
--		.req_size		= get_req_size(def),
--		.in_error		= false,
--		.bpf			= NULL
--	});
-+	INIT_LIST_HEAD(&vp->list);
-+	vp->dev		= dev;
-+	vp->unit	= n;
-+	vp->options	= get_transport_options(def);
-+	vp->parsed	= def;
-+	vp->max_packet	= get_mtu(def) + ETH_HEADER_OTHER;
-+	/*
-+	 * TODO - we need to calculate headroom so that ip header
-+	 * is 16 byte aligned all the time
-+	 */
-+	vp->headroom	= get_headroom(def);
-+	vp->coalesce	= 2;
-+	vp->req_size	= get_req_size(def);
- 
- 	dev->features = dev->hw_features = (NETIF_F_SG | NETIF_F_FRAGLIST);
- 	tasklet_init(&vp->tx_poll, vector_tx_poll, (unsigned long)vp);
--- 
-2.39.5
+>>
+>> I tried that at the beginning. As it turns out, this doesn't work in
+>> BPF the way you'd expect:
+>>
+>> Here is a piece of llvm-objdump with explicit memset:
+>>
+>> 0000000000000968 <test_dynptr_memset_xdp_chunks>:
+>>      301:    18 02 00 00 2a 2a 2a 2a 00 00 00 00 2a 2a 2a 2a r2 = 
+>> 0x2a2a2a2a2a2a2a2a ll
+>>      303:    7b 2a c8 ff 00 00 00 00    *(u64 *)(r10 - 0x38) = r2
+>>      304:    7b 2a d0 ff 00 00 00 00    *(u64 *)(r10 - 0x30) = r2
+>>      305:    7b 2a d8 ff 00 00 00 00    *(u64 *)(r10 - 0x28) = r2
+>>      306:    7b 2a e0 ff 00 00 00 00    *(u64 *)(r10 - 0x20) = r2
+>>      307:    bf a7 00 00 00 00 00 00    r7 = r10
+>>      308:    07 07 00 00 e8 ff ff ff    r7 += -0x18
+>>      309:    b7 02 00 00 00 00 00 00    r2 = 0x0
+>>      310:    bf 73 00 00 00 00 00 00    r3 = r7
+>>      311:    85 10 00 00 ff ff ff ff    call -0x1
+>>      ...
+>>
+>> You can clearly see a piece of stack filling up with 0x2a
+>>
+>> After applying this diff:
+>>
+>> diff --git a/tools/testing/selftests/bpf/progs/dynptr_success.c b/ 
+>> tools/testing/selftests/bpf/progs/dynptr_success.c
+>> index 5120acb8b15a..5b351f6fe07c 100644
+>> --- a/tools/testing/selftests/bpf/progs/dynptr_success.c
+>> +++ b/tools/testing/selftests/bpf/progs/dynptr_success.c
+>> @@ -809,12 +809,10 @@ int test_dynptr_memset_xdp_chunks(struct xdp_md 
+>> *xdp)
+>>         const int max_chunks = 200;
+>>         struct bpf_dynptr ptr_xdp;
+>>         u32 data_sz, chunk_sz, offset = 0;
+>> -       char expected_buf[32];
+>> +       char expected_buf[32] = { DYNPTR_MEMSET_VAL };
+>>         char buf[32];
+>>         int i;
+>>
+>> -       __builtin_memset(expected_buf, DYNPTR_MEMSET_VAL, 
+>> sizeof(expected_buf));
+>> -
+>>         /* ptr_xdp is backed by non-contiguous memory */
+>>         bpf_dynptr_from_xdp(xdp, 0, &ptr_xdp);
+>>         data_sz = bpf_dynptr_size(&ptr_xdp);
+>>
+>> We get the following:
+>>
+>> 0000000000000968 <test_dynptr_memset_xdp_chunks>:
+>>      301:    bf a7 00 00 00 00 00 00    r7 = r10
+>>      302:    07 07 00 00 e8 ff ff ff    r7 += -0x18
+>>      303:    b7 02 00 00 00 00 00 00    r2 = 0x0
+>>      304:    bf 73 00 00 00 00 00 00    r3 = r7
+>>      305:    85 10 00 00 ff ff ff ff    call -0x1
+>>      ...
+>>
+>> The stack allocated array is not initialized.
+>> Could be an LLVM bug/incompleteness? I used LLVM 19 while developing.
+>>
+>>
+>>>> +    char buf[32];
+>>>> +    int i;
+>>>> +
+>>>> +    __builtin_memset(expected_buf, DYNPTR_MEMSET_VAL, 
+>>>> sizeof(expected_buf));
+>>>> +
+>>>> +    /* ptr_xdp is backed by non-contiguous memory */
+>>>> +    bpf_dynptr_from_xdp(xdp, 0, &ptr_xdp);
+>>>> +    data_sz = bpf_dynptr_size(&ptr_xdp);
+>>>> +
+>>>> +    err = bpf_dynptr_memset(&ptr_xdp, 0, data_sz, DYNPTR_MEMSET_VAL);
+>>>> +    if (err)
+>>>> +        goto out;
+>>>> +
+>>> Maybe we can calculate max_chunks instead of hardcoding, something like:
+>>> max_chunks = data_sz / sizeof(expected_buf) + (data_sz % 
+>>> sizeof(expected_buf) ? 1 : 0);
+>>
+>> I don't see a point of doing it for this test. max_chunks is just a
+>> big enough arbitrary constant that works. We do a similar thing in
+>> other tests.
+>>
+>>>> +    bpf_for(i, 0, max_chunks) {
+>>>> +        offset = i * sizeof(buf);
+>>>> +        err = bpf_dynptr_read(&buf, sizeof(buf), &ptr_xdp, offset, 0);
+>>>
+>>> handle_tail seems unnecessary, maybe handle tail in the main loop:
+>>> __u32 sz = min_t(data_sz - offset : sizeof(buf));
+>>> bpf_dynptr_read(&buf, sz, &ptr_xdp, offset, 0);
+>>>
+>>
+>> Yeah, you're right.
+>>
+>> It ended up like this because I've been fighting the verifier while
+>> writing the test, and this version worked eventually. The critical
+>> piece to uncofuse it was changing:
+>>     offset += sizeof(buf)
+>> to
+>>     offset = i * sizeof(buf)
+>>
+>> I will have to add min_t macro locally though.
+>>
+>>
+>>>> +        switch (err) {
+>>>> +        case 0:
+>>>> +            break;
+>>>> +        case -E2BIG:
+>>>> +            goto handle_tail;
+>>>> +        default:
+>>>> +            goto out;
+>>>> +        }
+>>>> +        err = bpf_memcmp(buf, expected_buf, sizeof(buf));
+>>>> +        if (err)
+>>>> +            goto out;
+>>>> +    }
+>>>> +
+>>>> +handle_tail:
+>>>> +    if (data_sz - offset < sizeof(buf)) {
+>>>> +        err = bpf_dynptr_read(&buf, data_sz - offset, &ptr_xdp, 
+>>>> offset, 0);
+>>>> +        if (err)
+>>>> +            goto out;
+>>>> +        err = bpf_memcmp(buf, expected_buf, data_sz - offset);
+>>>> +    }
+>>>> +out:
+>>>> +    return XDP_DROP;
+>>>> +}
+>>>> +
+>>>>   void *user_ptr;
+>>>>   /* Contains the copy of the data pointed by user_ptr.
+>>>>    * Size 384 to make it not fit into a single kernel chunk when 
+>>>> copying
+>>>
+>>
+> 
 
 
