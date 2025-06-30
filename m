@@ -1,65 +1,66 @@
-Return-Path: <bpf+bounces-61893-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61894-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 126DDAEE916
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 23:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FD5EAEE91E
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 23:02:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E237818836ED
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 21:01:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F1063188ED86
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 21:02:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D23EE2E62AF;
-	Mon, 30 Jun 2025 21:01:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B2912E7F31;
+	Mon, 30 Jun 2025 21:01:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RLV2MqaM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N2ZpTKdc"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 534B4233721;
-	Mon, 30 Jun 2025 21:01:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC3B61E1DE5;
+	Mon, 30 Jun 2025 21:01:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751317270; cv=none; b=XqBKkvveiNxvlWIvxr6i/5NcYRdYAmlLhHQ8blYXFPds+A/7vlxflN/Zfuf1dNyECxNml/bTaZs8qy/r7DUetJgXhgOCLcg6Vv5Qyw2EdUhu29PyMTBBrUy2wD4VuDO2DJ4MP4aKOTypqKTDf2fiFX9mAQu7Pfi2S8e0kvQCzRw=
+	t=1751317281; cv=none; b=dru96Tp1plli1jDrXKxbmAyd04yZN8AsY4h5BktBegMc05cZC+S5Hh9GUFykfYgWKG/sLlLfQwei2gojGzg0aC8xjOG6V1sNxx7TrQN9SrABm+giVVOWjfEFkSA8sMxFdETl2C+Q+y4ZU4BeojQphPqt9kboUlLiHmYMIN5gHbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751317270; c=relaxed/simple;
-	bh=DLmpuGv0eHHOipLol2+pTLAaEW3PApGJuhNE13mz1S0=;
+	s=arc-20240116; t=1751317281; c=relaxed/simple;
+	bh=fd5TTcR4xrv7LlfCWv7RjAxXvv5McMMYbPwkZziGVRc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=UfVq6gr/Iko0mhjpuFbgLwSuLW9WmgMlpNFqp01Y76GML7YTBtiOrhVGS7gLdHJ7hNU9yoWBTF+iRPEi+1wFA932IrwDp4sVmW/6RjEx85w1BLWP5vduVdzlR0cQuRSMOcAboyq8D/pkdCJyMhGV+g1AKvpo3+y9vg0ijKPf5PM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RLV2MqaM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2CB1C4CEEB;
-	Mon, 30 Jun 2025 21:01:08 +0000 (UTC)
+	 MIME-Version; b=c3PW6tqnXZ9QFLmqBdlsVqxxGnTZIdm5U5q8afBzRjtyAAj0PhStWj3LRhMyWegMqnU+7ZMwn7QyGgOrI87dIrJu/ZEciuxmw9a9tZMmUHDDMnp9PELydvDmr8ZEHpLInlv2NuoWo9qcBBuUCZaW0+BDyZLzYDvUgWUWXOZQ8tY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N2ZpTKdc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DA8EC4CEEB;
+	Mon, 30 Jun 2025 21:01:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751317270;
-	bh=DLmpuGv0eHHOipLol2+pTLAaEW3PApGJuhNE13mz1S0=;
+	s=k20201202; t=1751317281;
+	bh=fd5TTcR4xrv7LlfCWv7RjAxXvv5McMMYbPwkZziGVRc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RLV2MqaM9+V9SCbUR/kv0nF2Bjgw3LPh2vE5kPBWYgs5arKilUDf7ZMpSkOjkb8nW
-	 DiQBMeHwjBIYPu60a0cZ7gbQVkf96gU4hats0NPWnQIlMlKlhdqWEFnqcLnx1f6AGA
-	 jiwo8ZyDY+1lmF//i2osTjrRL9C/XZfXQ3tIW4Ad+3dx5/YO5EP1kUkALqREqkuNvS
-	 2OBXzaJ+PbsVUlUJeAp189+oA0yDb7LLKrzxX6JVsRcZlhne5BVJmPf13xZdzS3Ynz
-	 xA0uQAYfdoDrEYKz5YuVuqmedSnzLdU07N7XuSMEw0CZXd4Av5SpxCOPhB7joVeIyu
-	 3LFbzBHMvU1YA==
+	b=N2ZpTKdcoY5ukIh+2cgGb3iQbapMMCovM7wC0Pt8F+kyUpVPz6e+hZE5XRl5/6O12
+	 OFgLYyLafvtPmYcoccvNnfdv9dcqTA6qNzcQxw7XAtwUCPnw5j8i/QDtXMb1YTy/Lb
+	 b/I1kXhwGGRDo1wecwOo70iOi/OPYbgogrydpdOhTt+dptB9+i2Q0ejD5bjJl+4de3
+	 D8Mc7993FWGD26oTkCtTWAttuie+lvxtqwGtmemAngdcbqpinKmaL1NQg7krC4uvZt
+	 LSGWp/2pli+ZNkP0uXdG4VPF8EsQ3xkbMfksvnO/2k4hHiwM6P5fl2k1w7vhxuOQUS
+	 TPnlUlTagUZ9w==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
-Cc: Willem de Bruijn <willemb@google.com>,
-	Anton Protopopov <a.s.protopopov@gmail.com>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Alexei Starovoitov <ast@kernel.org>,
+Cc: Tiwei Bie <tiwei.btw@antgroup.com>,
+	kernel test robot <lkp@intel.com>,
+	Johannes Berg <johannes.berg@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 12/14] bpf: Adjust free target to avoid global starvation of LRU map
-Date: Mon, 30 Jun 2025 16:46:37 -0400
-Message-Id: <20250630204639.1358777-12-sashal@kernel.org>
+	nathan@kernel.org,
+	anton.ivanov@cambridgegreys.com,
+	richard@nod.at,
+	tglx@linutronix.de,
+	guoweikang.kernel@gmail.com,
+	bpf@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.1 02/10] um: vector: Reduce stack usage in vector_eth_configure()
+Date: Mon, 30 Jun 2025 16:47:09 -0400
+Message-Id: <20250630204718.1359222-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250630204639.1358777-1-sashal@kernel.org>
-References: <20250630204639.1358777-1-sashal@kernel.org>
+In-Reply-To: <20250630204718.1359222-1-sashal@kernel.org>
+References: <20250630204718.1359222-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -68,383 +69,143 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.95
+X-stable-base: Linux 6.1.142
 Content-Transfer-Encoding: 8bit
 
-From: Willem de Bruijn <willemb@google.com>
+From: Tiwei Bie <tiwei.btw@antgroup.com>
 
-[ Upstream commit d4adf1c9ee7722545450608bcb095fb31512f0c6 ]
+[ Upstream commit 2d65fc13be85c336c56af7077f08ccd3a3a15a4a ]
 
-BPF_MAP_TYPE_LRU_HASH can recycle most recent elements well before the
-map is full, due to percpu reservations and force shrink before
-neighbor stealing. Once a CPU is unable to borrow from the global map,
-it will once steal one elem from a neighbor and after that each time
-flush this one element to the global list and immediately recycle it.
+When compiling with clang (19.1.7), initializing *vp using a compound
+literal may result in excessive stack usage. Fix it by initializing the
+required fields of *vp individually.
 
-Batch value LOCAL_FREE_TARGET (128) will exhaust a 10K element map
-with 79 CPUs. CPU 79 will observe this behavior even while its
-neighbors hold 78 * 127 + 1 * 15 == 9921 free elements (99%).
+Without this patch:
 
-CPUs need not be active concurrently. The issue can appear with
-affinity migration, e.g., irqbalance. Each CPU can reserve and then
-hold onto its 128 elements indefinitely.
+$ objdump -d arch/um/drivers/vector_kern.o | ./scripts/checkstack.pl x86_64 0
+...
+0x0000000000000540 vector_eth_configure [vector_kern.o]:1472
+...
 
-Avoid global list exhaustion by limiting aggregate percpu caches to
-half of map size, by adjusting LOCAL_FREE_TARGET based on cpu count.
-This change has no effect on sufficiently large tables.
+With this patch:
 
-Similar to LOCAL_NR_SCANS and lru->nr_scans, introduce a map variable
-lru->free_target. The extra field fits in a hole in struct bpf_lru.
-The cacheline is already warm where read in the hot path. The field is
-only accessed with the lru lock held.
+$ objdump -d arch/um/drivers/vector_kern.o | ./scripts/checkstack.pl x86_64 0
+...
+0x0000000000000540 vector_eth_configure [vector_kern.o]:208
+...
 
-Tested-by: Anton Protopopov <a.s.protopopov@gmail.com>
-Signed-off-by: Willem de Bruijn <willemb@google.com>
-Acked-by: Stanislav Fomichev <sdf@fomichev.me>
-Link: https://lore.kernel.org/r/20250618215803.3587312-1-willemdebruijn.kernel@gmail.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202506221017.WtB7Usua-lkp@intel.com/
+Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
+Link: https://patch.msgid.link/20250623110829.314864-1-tiwei.btw@antgroup.com
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
 
-Looking at this commit, I need to analyze whether it fixes a bug
-suitable for stable backporting.
-
-**My answer: YES**
+**YES**
 
 This commit should be backported to stable kernel trees for the
 following reasons:
 
-## Bug Fix for Real Production Issue
+1. **Fixes a real bug**: The commit addresses excessive stack usage
+   (1472 bytes) that can lead to stack overflow, especially problematic
+   on systems with limited kernel stack space. This is a legitimate bug
+   that affects system stability.
 
-The commit fixes a significant resource starvation bug in BPF LRU maps
-where CPUs can be unable to allocate elements even when the map is
-largely empty. As described in the commit message:
+2. **Compiler-specific issue with real impact**: While triggered by
+   clang 19.1.7's handling of compound literals, the resulting stack
+   usage of 1472 bytes is genuinely excessive and dangerous regardless
+   of the compiler quirk that exposed it.
 
-```
-CPU 79 will observe this behavior even while its neighbors hold 78 * 127
-+ 1 * 15 == 9921 free elements (99%).
-```
+3. **Simple and safe fix**: The change is purely mechanical - converting
+   from compound literal initialization to field-by-field
+   initialization:
+  ```c
+  // From:
+  *vp = ((struct vector_private) { .field = value, ... });
+  // To:
+  vp->field = value;
+  ```
 
-This is a correctness issue, not just a performance optimization. The
-bug can cause map operations to fail unexpectedly in production systems.
+4. **Minimal risk**: The fix doesn't change any logic or functionality.
+   It only changes how the structure is initialized, making it extremely
+   unlikely to introduce regressions.
 
-## Small and Contained Fix
+5. **Precedent from similar commits**: Looking at the historical commits
+   marked "YES" for backporting:
+   - Similar Commit #1: Reduced stack frame in qed driver using
+     `noinline_for_stack`
+   - Similar Commit #4: Reduced stack usage in ethtool with clang using
+     `noinline_for_stack`
 
-The fix is minimal and well-contained:
+   Both addressed the same class of problem (excessive stack usage with
+clang) and were considered suitable for stable.
 
-1. **Adds one field** to `struct bpf_lru`:
-```c
-unsigned int target_free;
-```
+6. **Measurable improvement**: The stack usage reduction from 1472 to
+   208 bytes is dramatic and well-documented by the kernel test robot,
+   providing clear evidence of the fix's effectiveness.
 
-2. **Dynamic calculation** in `bpf_common_lru_populate()`:
-```c
-lru->target_free = clamp((nr_elems / num_possible_cpus()) / 2,
-                        1, LOCAL_FREE_TARGET);
-```
+The commit meets the stable kernel criteria of fixing an important bug
+with minimal risk and a contained change. While it doesn't explicitly
+include a "Cc: stable" tag, the nature of the fix (preventing potential
+stack overflow) makes it a good candidate for stable backporting.
 
-3. **Simple substitution** of `LOCAL_FREE_TARGET` with
-   `lru->target_free` in `bpf_lru_list_pop_free_to_local()`.
+ arch/um/drivers/vector_kern.c | 42 +++++++++++------------------------
+ 1 file changed, 13 insertions(+), 29 deletions(-)
 
-## No Architectural Changes
-
-The fix doesn't change the LRU algorithm or introduce new features. It
-simply makes the batch size dynamic based on map size and CPU count,
-preventing the aggregate per-CPU reservations from exceeding half the
-map size.
-
-## Production Tested
-
-The commit includes `Tested-by: Anton Protopopov
-<a.s.protopopov@gmail.com>`, indicating it has been validated in real
-environments.
-
-## Similar to Previously Backported Commits
-
-This is similar to "bpf: fix a memory leak in the LRU and LRU_PERCPU
-hash maps" which was backported. Both fix resource management bugs in
-LRU maps that can cause unexpected failures.
-
-## Impact Assessment
-
-The change ensures that LRU maps remain functional on all CPUs in
-systems with high CPU counts. Without this fix, applications using BPF
-LRU maps can experience failures that are difficult to diagnose, as the
-map appears to have plenty of free space globally.
-
-The fix maintains backward compatibility - it only changes internal
-batch sizing behavior, not the user-visible API or semantics of LRU
-maps.
-
- Documentation/bpf/map_hash.rst             |  8 ++-
- Documentation/bpf/map_lru_hash_update.dot  |  6 +-
- kernel/bpf/bpf_lru_list.c                  |  9 ++-
- kernel/bpf/bpf_lru_list.h                  |  1 +
- tools/testing/selftests/bpf/test_lru_map.c | 72 +++++++++++-----------
- 5 files changed, 52 insertions(+), 44 deletions(-)
-
-diff --git a/Documentation/bpf/map_hash.rst b/Documentation/bpf/map_hash.rst
-index d2343952f2cbd..8606bf958a8cf 100644
---- a/Documentation/bpf/map_hash.rst
-+++ b/Documentation/bpf/map_hash.rst
-@@ -233,10 +233,16 @@ attempts in order to enforce the LRU property which have increasing impacts on
- other CPUs involved in the following operation attempts:
+diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+index 2baa8d4a33ed3..1a068859a4185 100644
+--- a/arch/um/drivers/vector_kern.c
++++ b/arch/um/drivers/vector_kern.c
+@@ -1600,35 +1600,19 @@ static void vector_eth_configure(
  
- - Attempt to use CPU-local state to batch operations
--- Attempt to fetch free nodes from global lists
-+- Attempt to fetch ``target_free`` free nodes from global lists
- - Attempt to pull any node from a global list and remove it from the hashmap
- - Attempt to pull any node from any CPU's list and remove it from the hashmap
+ 	device->dev = dev;
  
-+The number of nodes to borrow from the global list in a batch, ``target_free``,
-+depends on the size of the map. Larger batch size reduces lock contention, but
-+may also exhaust the global structure. The value is computed at map init to
-+avoid exhaustion, by limiting aggregate reservation by all CPUs to half the map
-+size. With a minimum of a single element and maximum budget of 128 at a time.
-+
- This algorithm is described visually in the following diagram. See the
- description in commit 3a08c2fd7634 ("bpf: LRU List") for a full explanation of
- the corresponding operations:
-diff --git a/Documentation/bpf/map_lru_hash_update.dot b/Documentation/bpf/map_lru_hash_update.dot
-index a0fee349d29c2..ab10058f5b79f 100644
---- a/Documentation/bpf/map_lru_hash_update.dot
-+++ b/Documentation/bpf/map_lru_hash_update.dot
-@@ -35,18 +35,18 @@ digraph {
-   fn_bpf_lru_list_pop_free_to_local [shape=rectangle,fillcolor=2,
-     label="Flush local pending,
-     Rotate Global list, move
--    LOCAL_FREE_TARGET
-+    target_free
-     from global -> local"]
-   // Also corresponds to:
-   // fn__local_list_flush()
-   // fn_bpf_lru_list_rotate()
-   fn___bpf_lru_node_move_to_free[shape=diamond,fillcolor=2,
--    label="Able to free\nLOCAL_FREE_TARGET\nnodes?"]
-+    label="Able to free\ntarget_free\nnodes?"]
+-	*vp = ((struct vector_private)
+-		{
+-		.list			= LIST_HEAD_INIT(vp->list),
+-		.dev			= dev,
+-		.unit			= n,
+-		.options		= get_transport_options(def),
+-		.rx_irq			= 0,
+-		.tx_irq			= 0,
+-		.parsed			= def,
+-		.max_packet		= get_mtu(def) + ETH_HEADER_OTHER,
+-		/* TODO - we need to calculate headroom so that ip header
+-		 * is 16 byte aligned all the time
+-		 */
+-		.headroom		= get_headroom(def),
+-		.form_header		= NULL,
+-		.verify_header		= NULL,
+-		.header_rxbuffer	= NULL,
+-		.header_txbuffer	= NULL,
+-		.header_size		= 0,
+-		.rx_header_size		= 0,
+-		.rexmit_scheduled	= false,
+-		.opened			= false,
+-		.transport_data		= NULL,
+-		.in_write_poll		= false,
+-		.coalesce		= 2,
+-		.req_size		= get_req_size(def),
+-		.in_error		= false,
+-		.bpf			= NULL
+-	});
++	INIT_LIST_HEAD(&vp->list);
++	vp->dev		= dev;
++	vp->unit	= n;
++	vp->options	= get_transport_options(def);
++	vp->parsed	= def;
++	vp->max_packet	= get_mtu(def) + ETH_HEADER_OTHER;
++	/*
++	 * TODO - we need to calculate headroom so that ip header
++	 * is 16 byte aligned all the time
++	 */
++	vp->headroom	= get_headroom(def);
++	vp->coalesce	= 2;
++	vp->req_size	= get_req_size(def);
  
-   fn___bpf_lru_list_shrink_inactive [shape=rectangle,fillcolor=3,
-     label="Shrink inactive list
-       up to remaining
--      LOCAL_FREE_TARGET
-+      target_free
-       (global LRU -> local)"]
-   fn___bpf_lru_list_shrink [shape=diamond,fillcolor=2,
-     label="> 0 entries in\nlocal free list?"]
-diff --git a/kernel/bpf/bpf_lru_list.c b/kernel/bpf/bpf_lru_list.c
-index 3dabdd137d102..2d6e1c98d8adc 100644
---- a/kernel/bpf/bpf_lru_list.c
-+++ b/kernel/bpf/bpf_lru_list.c
-@@ -337,12 +337,12 @@ static void bpf_lru_list_pop_free_to_local(struct bpf_lru *lru,
- 				 list) {
- 		__bpf_lru_node_move_to_free(l, node, local_free_list(loc_l),
- 					    BPF_LRU_LOCAL_LIST_T_FREE);
--		if (++nfree == LOCAL_FREE_TARGET)
-+		if (++nfree == lru->target_free)
- 			break;
- 	}
- 
--	if (nfree < LOCAL_FREE_TARGET)
--		__bpf_lru_list_shrink(lru, l, LOCAL_FREE_TARGET - nfree,
-+	if (nfree < lru->target_free)
-+		__bpf_lru_list_shrink(lru, l, lru->target_free - nfree,
- 				      local_free_list(loc_l),
- 				      BPF_LRU_LOCAL_LIST_T_FREE);
- 
-@@ -577,6 +577,9 @@ static void bpf_common_lru_populate(struct bpf_lru *lru, void *buf,
- 		list_add(&node->list, &l->lists[BPF_LRU_LIST_T_FREE]);
- 		buf += elem_size;
- 	}
-+
-+	lru->target_free = clamp((nr_elems / num_possible_cpus()) / 2,
-+				 1, LOCAL_FREE_TARGET);
- }
- 
- static void bpf_percpu_lru_populate(struct bpf_lru *lru, void *buf,
-diff --git a/kernel/bpf/bpf_lru_list.h b/kernel/bpf/bpf_lru_list.h
-index cbd8d3720c2bb..fe2661a58ea94 100644
---- a/kernel/bpf/bpf_lru_list.h
-+++ b/kernel/bpf/bpf_lru_list.h
-@@ -58,6 +58,7 @@ struct bpf_lru {
- 	del_from_htab_func del_from_htab;
- 	void *del_arg;
- 	unsigned int hash_offset;
-+	unsigned int target_free;
- 	unsigned int nr_scans;
- 	bool percpu;
- };
-diff --git a/tools/testing/selftests/bpf/test_lru_map.c b/tools/testing/selftests/bpf/test_lru_map.c
-index fda7589c50236..4ae83f4b7fc7e 100644
---- a/tools/testing/selftests/bpf/test_lru_map.c
-+++ b/tools/testing/selftests/bpf/test_lru_map.c
-@@ -138,6 +138,12 @@ static int sched_next_online(int pid, int *next_to_try)
- 	return ret;
- }
- 
-+/* Inverse of how bpf_common_lru_populate derives target_free from map_size. */
-+static unsigned int __map_size(unsigned int tgt_free)
-+{
-+	return tgt_free * nr_cpus * 2;
-+}
-+
- /* Size of the LRU map is 2
-  * Add key=1 (+1 key)
-  * Add key=2 (+1 key)
-@@ -231,11 +237,11 @@ static void test_lru_sanity0(int map_type, int map_flags)
- 	printf("Pass\n");
- }
- 
--/* Size of the LRU map is 1.5*tgt_free
-- * Insert 1 to tgt_free (+tgt_free keys)
-- * Lookup 1 to tgt_free/2
-- * Insert 1+tgt_free to 2*tgt_free (+tgt_free keys)
-- * => 1+tgt_free/2 to LOCALFREE_TARGET will be removed by LRU
-+/* Verify that unreferenced elements are recycled before referenced ones.
-+ * Insert elements.
-+ * Reference a subset of these.
-+ * Insert more, enough to trigger recycling.
-+ * Verify that unreferenced are recycled.
-  */
- static void test_lru_sanity1(int map_type, int map_flags, unsigned int tgt_free)
- {
-@@ -257,7 +263,7 @@ static void test_lru_sanity1(int map_type, int map_flags, unsigned int tgt_free)
- 	batch_size = tgt_free / 2;
- 	assert(batch_size * 2 == tgt_free);
- 
--	map_size = tgt_free + batch_size;
-+	map_size = __map_size(tgt_free) + batch_size;
- 	lru_map_fd = create_map(map_type, map_flags, map_size);
- 	assert(lru_map_fd != -1);
- 
-@@ -266,13 +272,13 @@ static void test_lru_sanity1(int map_type, int map_flags, unsigned int tgt_free)
- 
- 	value[0] = 1234;
- 
--	/* Insert 1 to tgt_free (+tgt_free keys) */
--	end_key = 1 + tgt_free;
-+	/* Insert map_size - batch_size keys */
-+	end_key = 1 + __map_size(tgt_free);
- 	for (key = 1; key < end_key; key++)
- 		assert(!bpf_map_update_elem(lru_map_fd, &key, value,
- 					    BPF_NOEXIST));
- 
--	/* Lookup 1 to tgt_free/2 */
-+	/* Lookup 1 to batch_size */
- 	end_key = 1 + batch_size;
- 	for (key = 1; key < end_key; key++) {
- 		assert(!bpf_map_lookup_elem_with_ref_bit(lru_map_fd, key, value));
-@@ -280,12 +286,13 @@ static void test_lru_sanity1(int map_type, int map_flags, unsigned int tgt_free)
- 					    BPF_NOEXIST));
- 	}
- 
--	/* Insert 1+tgt_free to 2*tgt_free
--	 * => 1+tgt_free/2 to LOCALFREE_TARGET will be
-+	/* Insert another map_size - batch_size keys
-+	 * Map will contain 1 to batch_size plus these latest, i.e.,
-+	 * => previous 1+batch_size to map_size - batch_size will have been
- 	 * removed by LRU
- 	 */
--	key = 1 + tgt_free;
--	end_key = key + tgt_free;
-+	key = 1 + __map_size(tgt_free);
-+	end_key = key + __map_size(tgt_free);
- 	for (; key < end_key; key++) {
- 		assert(!bpf_map_update_elem(lru_map_fd, &key, value,
- 					    BPF_NOEXIST));
-@@ -301,17 +308,8 @@ static void test_lru_sanity1(int map_type, int map_flags, unsigned int tgt_free)
- 	printf("Pass\n");
- }
- 
--/* Size of the LRU map 1.5 * tgt_free
-- * Insert 1 to tgt_free (+tgt_free keys)
-- * Update 1 to tgt_free/2
-- *   => The original 1 to tgt_free/2 will be removed due to
-- *      the LRU shrink process
-- * Re-insert 1 to tgt_free/2 again and do a lookup immeidately
-- * Insert 1+tgt_free to tgt_free*3/2
-- * Insert 1+tgt_free*3/2 to tgt_free*5/2
-- *   => Key 1+tgt_free to tgt_free*3/2
-- *      will be removed from LRU because it has never
-- *      been lookup and ref bit is not set
-+/* Verify that insertions exceeding map size will recycle the oldest.
-+ * Verify that unreferenced elements are recycled before referenced.
-  */
- static void test_lru_sanity2(int map_type, int map_flags, unsigned int tgt_free)
- {
-@@ -334,7 +332,7 @@ static void test_lru_sanity2(int map_type, int map_flags, unsigned int tgt_free)
- 	batch_size = tgt_free / 2;
- 	assert(batch_size * 2 == tgt_free);
- 
--	map_size = tgt_free + batch_size;
-+	map_size = __map_size(tgt_free) + batch_size;
- 	lru_map_fd = create_map(map_type, map_flags, map_size);
- 	assert(lru_map_fd != -1);
- 
-@@ -343,8 +341,8 @@ static void test_lru_sanity2(int map_type, int map_flags, unsigned int tgt_free)
- 
- 	value[0] = 1234;
- 
--	/* Insert 1 to tgt_free (+tgt_free keys) */
--	end_key = 1 + tgt_free;
-+	/* Insert map_size - batch_size keys */
-+	end_key = 1 + __map_size(tgt_free);
- 	for (key = 1; key < end_key; key++)
- 		assert(!bpf_map_update_elem(lru_map_fd, &key, value,
- 					    BPF_NOEXIST));
-@@ -357,8 +355,7 @@ static void test_lru_sanity2(int map_type, int map_flags, unsigned int tgt_free)
- 	 * shrink the inactive list to get tgt_free
- 	 * number of free nodes.
- 	 *
--	 * Hence, the oldest key 1 to tgt_free/2
--	 * are removed from the LRU list.
-+	 * Hence, the oldest key is removed from the LRU list.
- 	 */
- 	key = 1;
- 	if (map_type == BPF_MAP_TYPE_LRU_PERCPU_HASH) {
-@@ -370,8 +367,7 @@ static void test_lru_sanity2(int map_type, int map_flags, unsigned int tgt_free)
- 					   BPF_EXIST));
- 	}
- 
--	/* Re-insert 1 to tgt_free/2 again and do a lookup
--	 * immeidately.
-+	/* Re-insert 1 to batch_size again and do a lookup immediately.
- 	 */
- 	end_key = 1 + batch_size;
- 	value[0] = 4321;
-@@ -387,17 +383,18 @@ static void test_lru_sanity2(int map_type, int map_flags, unsigned int tgt_free)
- 
- 	value[0] = 1234;
- 
--	/* Insert 1+tgt_free to tgt_free*3/2 */
--	end_key = 1 + tgt_free + batch_size;
--	for (key = 1 + tgt_free; key < end_key; key++)
-+	/* Insert batch_size new elements */
-+	key = 1 + __map_size(tgt_free);
-+	end_key = key + batch_size;
-+	for (; key < end_key; key++)
- 		/* These newly added but not referenced keys will be
- 		 * gone during the next LRU shrink.
- 		 */
- 		assert(!bpf_map_update_elem(lru_map_fd, &key, value,
- 					    BPF_NOEXIST));
- 
--	/* Insert 1+tgt_free*3/2 to  tgt_free*5/2 */
--	end_key = key + tgt_free;
-+	/* Insert map_size - batch_size elements */
-+	end_key += __map_size(tgt_free);
- 	for (; key < end_key; key++) {
- 		assert(!bpf_map_update_elem(lru_map_fd, &key, value,
- 					    BPF_NOEXIST));
-@@ -500,7 +497,8 @@ static void test_lru_sanity4(int map_type, int map_flags, unsigned int tgt_free)
- 		lru_map_fd = create_map(map_type, map_flags,
- 					3 * tgt_free * nr_cpus);
- 	else
--		lru_map_fd = create_map(map_type, map_flags, 3 * tgt_free);
-+		lru_map_fd = create_map(map_type, map_flags,
-+					3 * __map_size(tgt_free));
- 	assert(lru_map_fd != -1);
- 
- 	expected_map_fd = create_map(BPF_MAP_TYPE_HASH, 0,
+ 	dev->features = dev->hw_features = (NETIF_F_SG | NETIF_F_FRAGLIST);
+ 	INIT_WORK(&vp->reset_tx, vector_reset_tx);
 -- 
 2.39.5
 
