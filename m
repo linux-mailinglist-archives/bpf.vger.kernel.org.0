@@ -1,257 +1,268 @@
-Return-Path: <bpf+bounces-61821-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61822-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5071AEDD45
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 14:43:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B4EEAEDD3E
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 14:42:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36A0F7AA7B3
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 12:40:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDBCF179C42
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 12:42:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 129B828B3ED;
-	Mon, 30 Jun 2025 12:38:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C8EB28B7D7;
+	Mon, 30 Jun 2025 12:40:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SH/6mGqs"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Tidhfrky"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E599228A1F4;
-	Mon, 30 Jun 2025 12:38:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1B2A286D72
+	for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 12:40:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751287125; cv=none; b=KUJzEbmFxBaocNaMu/bDNJ2lsogqoM5k7RPY1v5xpTW+RrS61bfgiImODMySu44VLxr+fwk+O/FsL+oQY/FnqgVWJrWYfJ0ppVS9t8GfhHSRnkaOG30NQoX/uAakgkDvsvyCDo8k4qgiijKbDuFpmu3kdujNnCo0WFM+2SIpDgA=
+	t=1751287241; cv=none; b=QqDxWqsedmpE0mrqVgRS1V6KndT3QD3RKzmgQRZw/GXEQwVMzbZ8QXWxnhOa3F5/59+bZHRiZrG77wpUmEYPXsoTx9+oKWgEb53Agbl2FpG+IRa6ZQC6G5vlKat/sPfz2PeNS/YVMLp95WjNFnDxojjF/JRE4OiNnwFP7GYZLhE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751287125; c=relaxed/simple;
-	bh=PJZB2LTP+nIg+2ZFOmQb84WtlA1mbm+djr8Gxg2J32Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IYY4Tcki5cp9dkcZ6K/G9h5SSbsY2u9YTG+zhwKpJ7j06Uc3Rz02No0zbIo28RyumRuthsqg/uNndovNT5dwm3PRPqkEQm2LWEQoGc2mIo1IIHEFOMw00x+WZX9+9RS840JQiqdY9c3J9L+EtAHZBEG3X7EtFSFXK+AiZ2B9vfc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SH/6mGqs; arc=none smtp.client-ip=209.85.166.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-3df3ce3ec91so9073545ab.2;
-        Mon, 30 Jun 2025 05:38:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751287123; x=1751891923; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AsnecPbSaP1mu7PRNsZyCzBrVSxK3dq3AH+iKWjWc9I=;
-        b=SH/6mGqs1G3TOB8r/vWJiMegczIEF1Ixj36lYuYr4yZOLPouLCXbcwMqdiz5TD551B
-         uK0PvsDSO+qebIMasHDK2cBMR72fWv6bzWPq/YAlgDaWYOcGiJffPVudn5VeM7XCDAp1
-         MVBWcgmcRg2cU+BfU+8nAh50Ccsr/GENNnxN1+7jrAF9CByPNZVNVyCutw0gdipaeY6G
-         UcOkkjXEGM+0y0BZW5n0KU2ecWwXitBWugFdqipj8yNU4EErno8+pMPeRGS4mY+qklfw
-         ZbX5ryC1xOMyPSO0RIR46dyl/rhkID4EsowUUrbS8YNZlDeM3PRDNRLB+wB8dTzipzoi
-         1o6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751287123; x=1751891923;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AsnecPbSaP1mu7PRNsZyCzBrVSxK3dq3AH+iKWjWc9I=;
-        b=shyZFYcqbm7UzwOA3svlaAs7xaKd70T6J9MCOuw6PymhiJV+5ckwMb6CDJJVNaau62
-         AwFbatZx+AUx7tHpPZzFIRGhx4sfXksrUHWN6lDfc0y+VWJCGC/UiuG8rdnzPsfeK8Gr
-         fXb+shcfvq15AFKy4LoUub0uxVblxf9O9na9Kj34idUYNk8MR6jPYONmjLeGZjYG6a3W
-         Ym7HvCYrDHAvgUr2KjXutRzaPqOLcmWUnmhEbAYG6JB7QrW9IYFDIgBOIWMyEdDvIGXB
-         yVimoebftPprQrP1JtKNwR7GES258j/hN0i7MWcUhc65xhT8uJw8oWGWt/1ye2rB+ga8
-         GBrQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUeU6KGyrIizNz8uoJbm/qs62SfyB5pJU+agpxAjCq83tpOmHlVGfDV9FZMDuNGRZew6M6vONgK@vger.kernel.org, AJvYcCXcNSr+CsCRTxyTcHRRvf5NUpNFw6yZFoJZSBNPtvGaTwQ7qr4GpTYhD7g6zDZaKsmKUtM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyb7d5hv70vzawmTnAxvSz2o2zrGs8RIcp4Z5o209wnUu8nVhiz
-	oqMGdfPdk5dD1osJ4d4V6bUpD53W7xNK9V5PJD8lkgT74wIFTSUenRlQVtTe9srw74l2sdIN9+L
-	35ZVHCRC/lF39OfJ6E64cDe+GZRdsVu8JPSwT
-X-Gm-Gg: ASbGncuf0EPCbz2vF4ciLwTnoFbr2iW9TWM34qK4xG6gfI3qJVSMMksRZQsefBipm2T
-	dcP02+7RU3YkHCdm6jdzVdd+sqgVAl+vgvd7pUFuD2fCYBVXwscEebDid9gLMGpZlIx1JAUv2xx
-	CXX3UVwC4OsD6rNjZcJ+18DurL08HOoGOQOfJL0VAloDk=
-X-Google-Smtp-Source: AGHT+IFo4oYyUnIsIB2rP4eVVmVQIC3hAax545MFgi40GBcBGMjzjIoo2LWzY9lptKu2B9LaNCw2MAI2oQJWIBboEzk=
-X-Received: by 2002:a05:6e02:1486:b0:3dc:7df8:c830 with SMTP id
- e9e14a558f8ab-3df4ab4af1cmr144042655ab.7.1751287122792; Mon, 30 Jun 2025
- 05:38:42 -0700 (PDT)
+	s=arc-20240116; t=1751287241; c=relaxed/simple;
+	bh=QbnVPlHhJJl4RnvS8LwVefyJnUmerxSE/qMUXNZArcY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sl+zrx4P1LHIWWjlSBaJpw4usJa2/1rAaiyJ909rgvq0OgrOv0m9FiB9BJB+Sp1H2GkYKGJsZ2rqnMvejF3CPFDevDWcQObXn55qkkCwqAONqe9KHCTISI7oqY+Z6Z1uZYWQ1b9sjp/ADWyanOCNLMiq9k8jITbPsZlMOaH4aeU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Tidhfrky; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1751287239;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RSER/kKr09Fwp9Z6FAD98av39gXaDcNtylfht9QBtAY=;
+	b=TidhfrkyEnVvgFJWrFUfIwJMWlAdbLcPNUTCV5H88BPC3/PGa6BpNNNrYgAuu0oCc/Hle0
+	R81sPJFg34s9N3O0e2I+KwcJK0fXfhdUuWCObiLa5DCKcylkJXl+dmyt20IwiVfHrdEW7F
+	+ckXfgiMU7tV5DOm9oMmAz4qZtLuanQ=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-520-oTGT0iEhMlqriOp8T1-kGQ-1; Mon,
+ 30 Jun 2025 08:40:34 -0400
+X-MC-Unique: oTGT0iEhMlqriOp8T1-kGQ-1
+X-Mimecast-MFC-AGG-ID: oTGT0iEhMlqriOp8T1-kGQ_1751287232
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 1B0681809CBD;
+	Mon, 30 Jun 2025 12:40:31 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.34])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 71DC91956095;
+	Mon, 30 Jun 2025 12:40:28 +0000 (UTC)
+Date: Mon, 30 Jun 2025 20:40:25 +0800
+From: Pingfan Liu <piliu@redhat.com>
+To: Philipp Rudo <prudo@redhat.com>
+Cc: kexec@lists.infradead.org, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Jeremy Linton <jeremy.linton@arm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Simon Horman <horms@kernel.org>, Gerd Hoffmann <kraxel@redhat.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Viktor Malik <vmalik@redhat.com>,
+	Jan Hendrik Farr <kernel@jfarr.cc>, Baoquan He <bhe@redhat.com>,
+	Dave Young <dyoung@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>, bpf@vger.kernel.org
+Subject: Re: [PATCHv3 8/9] kexec: Integrate bpf light skeleton to load zboot
+ image
+Message-ID: <aGKFuTAS-mBpYngE@fedora>
+References: <20250529041744.16458-1-piliu@redhat.com>
+ <20250529041744.16458-9-piliu@redhat.com>
+ <20250625201011.1eab16a5@rotkaeppchen>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250627110121.73228-1-kerneljasonxing@gmail.com>
- <CAL+tcoCSd_LA8w9ov7+_sOWLt3EU1rcqK8Sa6UF5S-xgfAGPnA@mail.gmail.com>
- <CAL+tcoCCM+m6eJ1VNoeF2UMdFOhMjJ1z2FVUoMJk=js++hk0RQ@mail.gmail.com>
- <aGJ5DDtFAZ/IsE0B@boxer> <CAL+tcoB+_5p4V3WgMmpGnrjj-+axTDkhKoYS=1cMKxTRs68JAA@mail.gmail.com>
- <aGKCM2z1I85AAXFc@boxer>
-In-Reply-To: <aGKCM2z1I85AAXFc@boxer>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Mon, 30 Jun 2025 20:38:06 +0800
-X-Gm-Features: Ac12FXwg78Q2IlQXo2SQulM1oGWVU2F_ntr4LtCbyLYp8hcaRpHG2_CUV4ur0_w
-Message-ID: <CAL+tcoAAVbavbZA8rZLo4ygAyEgPDw7frH6R+rAtJSaTL2XvMw@mail.gmail.com>
-Subject: Re: [PATCH net-next v6] net: xsk: introduce XDP_MAX_TX_BUDGET set/getsockopt
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com, 
-	jonathan.lemon@gmail.com, sdf@fomichev.me, ast@kernel.org, 
-	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com, joe@dama.to, 
-	willemdebruijn.kernel@gmail.com, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250625201011.1eab16a5@rotkaeppchen>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-On Mon, Jun 30, 2025 at 8:25=E2=80=AFPM Maciej Fijalkowski
-<maciej.fijalkowski@intel.com> wrote:
->
-> On Mon, Jun 30, 2025 at 08:07:01PM +0800, Jason Xing wrote:
-> > On Mon, Jun 30, 2025 at 7:47=E2=80=AFPM Maciej Fijalkowski
-> > <maciej.fijalkowski@intel.com> wrote:
-> > >
-> > > On Sun, Jun 29, 2025 at 06:43:05PM +0800, Jason Xing wrote:
-> > > > On Sun, Jun 29, 2025 at 10:51=E2=80=AFAM Jason Xing <kerneljasonxin=
-g@gmail.com> wrote:
-> > > > >
-> > > > > On Fri, Jun 27, 2025 at 7:01=E2=80=AFPM Jason Xing <kerneljasonxi=
-ng@gmail.com> wrote:
-> > > > > >
-> > > > > > From: Jason Xing <kernelxing@tencent.com>
-> > > > > >
-> > > > > > This patch provides a setsockopt method to let applications lev=
-erage to
-> > > > > > adjust how many descs to be handled at most in one send syscall=
-. It
-> > > > > > mitigates the situation where the default value (32) that is to=
-o small
-> > > > > > leads to higher frequency of triggering send syscall.
-> > > > > >
-> > > > > > Considering the prosperity/complexity the applications have, th=
-ere is no
-> > > > > > absolutely ideal suggestion fitting all cases. So keep 32 as it=
-s default
-> > > > > > value like before.
-> > > > > >
-> > > > > > The patch does the following things:
-> > > > > > - Add XDP_MAX_TX_BUDGET socket option.
-> > > > > > - Convert TX_BATCH_SIZE to tx_budget_spent.
-> > > > > > - Set tx_budget_spent to 32 by default in the initialization ph=
-ase as a
-> > > > > >   per-socket granular control. 32 is also the min value for
-> > > > > >   tx_budget_spent.
-> > > > > > - Set the range of tx_budget_spent as [32, xs->tx->nentries].
-> > > > > >
-> > > > > > The idea behind this comes out of real workloads in production.=
- We use a
-> > > > > > user-level stack with xsk support to accelerate sending packets=
- and
-> > > > > > minimize triggering syscalls. When the packets are aggregated, =
-it's not
-> > > > > > hard to hit the upper bound (namely, 32). The moment user-space=
- stack
-> > > > > > fetches the -EAGAIN error number passed from sendto(), it will =
-loop to try
-> > > > > > again until all the expected descs from tx ring are sent out to=
- the driver.
-> > > > > > Enlarging the XDP_MAX_TX_BUDGET value contributes to less frequ=
-ency of
-> > > > > > sendto() and higher throughput/PPS.
-> > > > > >
-> > > > > > Here is what I did in production, along with some numbers as fo=
-llows:
-> > > > > > For one application I saw lately, I suggested using 128 as max_=
-tx_budget
-> > > > > > because I saw two limitations without changing any default conf=
-iguration:
-> > > > > > 1) XDP_MAX_TX_BUDGET, 2) socket sndbuf which is 212992 decided =
-by
-> > > > > > net.core.wmem_default. As to XDP_MAX_TX_BUDGET, the scenario be=
-hind
-> > > > > > this was I counted how many descs are transmitted to the driver=
- at one
-> > > > > > time of sendto() based on [1] patch and then I calculated the
-> > > > > > possibility of hitting the upper bound. Finally I chose 128 as =
-a
-> > > > > > suitable value because 1) it covers most of the cases, 2) a hig=
-her
-> > > > > > number would not bring evident results. After twisting the para=
-meters,
-> > > > > > a stable improvement of around 4% for both PPS and throughput a=
-nd less
-> > > > > > resources consumption were found to be observed by strace -c -p=
- xxx:
-> > > > > > 1) %time was decreased by 7.8%
-> > > > > > 2) error counter was decreased from 18367 to 572
-> > > > >
-> > > > > More interesting numbers are arriving here as I run some benchmar=
-ks
-> > > > > from xdp-project/bpf-examples/AF_XDP-example/ in my VM.
-> > > > >
-> > > > > Running "sudo taskset -c 2 ./xdpsock -i eth0 -q 1 -l -N -t -b 256=
-"
-> > >
-> > > do you have a patch against xdpsock that does setsockopt you're
-> > > introducing here?
-> >
-> > Sure, I added the following code in the apply_setsockopt():
-> > if (setsockopt(xsk_socket__fd(xsk->xsk), SOL_XDP, 9, &a, sizeof(a)) < 0=
-)
-> > ...
-> >
-> > >
-> > > -B -b 256 was for enabling busy polling and giving it 256 budget, whi=
-ch is
-> > > not what you wanted to achieve.
-> >
-> > I checked that I can use getsockopt to get the budget value the same
-> > as what I use setsockopt().
-> >
-> > Sorry, I don't know what you meant here. Could you say more about it?
->
-> I meant that -b is for setting SO_BUSY_POLL_BUDGET. just pick different
-> knob for your use case.
+On Wed, Jun 25, 2025 at 08:10:11PM +0200, Philipp Rudo wrote:
+> Hi Pingfan,
+> 
+> On Thu, 29 May 2025 12:17:43 +0800
+> Pingfan Liu <piliu@redhat.com> wrote:
+> 
+> > All kexec PE bpf prog should align with the interface exposed by the
+> > light skeleton
+> >     four maps:
+> >                     struct bpf_map_desc ringbuf_1;
+> >                     struct bpf_map_desc ringbuf_2;
+> >                     struct bpf_map_desc ringbuf_3;
+> >                     struct bpf_map_desc ringbuf_4;
+> >     four sections:
+> >                     struct bpf_map_desc rodata;
+> >                     struct bpf_map_desc data;
+> >                     struct bpf_map_desc bss;
+> >                     struct bpf_map_desc rodata_str1_1;
+> >     two progs:
+> >             SEC("fentry.s/bpf_handle_pefile")
+> >             SEC("fentry.s/bpf_post_handle_pefile")
+> > 
+> > With the above presumption, the integration consists of two parts:
+> >   -1. Call API exposed by light skeleton from kexec
+> >   -2. The opts_insn[] and opts_data[] are bpf-prog dependent and
+> >       can be extracted and passed in from the user space. In the
+> >       kexec_file_load design, a PE file has a .bpf section, which data
+> >       content is a ELF, and the ELF contains opts_insn[] opts_data[].
+> >       As a bonus, BPF bytecode can be placed under the protection of the
+> >       entire PE signature.
+> >       (Note, since opts_insn[] contains the information of the ringbuf
+> >        size, the bpf-prog writer can change its proper size according to
+> >        the kernel image size without modifying the kernel code)
+> > 
+> > Signed-off-by: Pingfan Liu <piliu@redhat.com>
+> > Cc: Alexei Starovoitov <ast@kernel.org>
+> > Cc: Baoquan He <bhe@redhat.com>
+> > Cc: Dave Young <dyoung@redhat.com>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: Philipp Rudo <prudo@redhat.com>
+> > Cc: bpf@vger.kernel.org
+> > To: kexec@lists.infradead.org
+> > ---
+> >  kernel/Makefile                              |   1 +
+> >  kernel/kexec_bpf/Makefile                    |   8 +
+> >  kernel/kexec_bpf/kexec_pe_parser_bpf.lskel.h | 292 +------------------
+> >  kernel/kexec_pe_image.c                      |  70 +++++
+> >  4 files changed, 83 insertions(+), 288 deletions(-)
+> > 
+> [...]
+> 
+> > diff --git a/kernel/kexec_pe_image.c b/kernel/kexec_pe_image.c
+> > index e49d6db3c329d..f47c1e46dba97 100644
+> > --- a/kernel/kexec_pe_image.c
+> > +++ b/kernel/kexec_pe_image.c
+> > @@ -13,6 +13,7 @@
+> >  #include <linux/kernel.h>
+> >  #include <linux/vmalloc.h>
+> >  #include <linux/kexec.h>
+> > +#include <linux/elf.h>
+> >  #include <linux/pe.h>
+> >  #include <linux/string.h>
+> >  #include <linux/bpf.h>
+> > @@ -21,6 +22,7 @@
+> >  #include <asm/image.h>
+> >  #include <asm/memory.h>
+> >  
+> > +#include "kexec_bpf/kexec_pe_parser_bpf.lskel.h"
+> >  
+> >  static LIST_HEAD(phase_head);
+> >  
+> > @@ -163,14 +165,82 @@ static bool pe_has_bpf_section(char *file_buf, unsigned long pe_sz)
+> >  	return true;
+> >  }
+> >  
+> > +static struct kexec_pe_parser_bpf *pe_parser;
+> > +
+> > +static void *get_symbol_from_elf(const char *elf_data, size_t elf_size,
+> > +		const char *symbol_name, unsigned int *symbol_size)
+> > +{
+> > +	Elf_Ehdr *ehdr = (Elf_Ehdr *)elf_data;
+> > +	Elf_Shdr *shdr, *symtab_shdr, *strtab_shdr, *dst_shdr;
+> > +	Elf64_Sym *sym, *symtab = NULL;
+> > +	char *strtab = NULL;
+> > +	void *symbol_data = NULL;
+> > +	int i;
+> > +
+> > +	symtab_shdr = strtab_shdr = NULL;
+> > +	if (memcmp(ehdr->e_ident, ELFMAG, SELFMAG) != 0) {
+> > +		pr_err("Not a valid ELF file\n");
+> > +		goto out;
+> > +	}
+> > +
+> > +	shdr = (struct elf_shdr *)(elf_data + ehdr->e_shoff);
+> > +	for (i = 0; i < ehdr->e_shnum; i++) {
+> > +		if (shdr[i].sh_type == SHT_SYMTAB)
+> > +			symtab_shdr = &shdr[i];
+> > +		else if (shdr[i].sh_type == SHT_STRTAB && i != ehdr->e_shstrndx)
+> > +			strtab_shdr = &shdr[i];
+> > +	}
+> > +
+> > +	if (!symtab_shdr || !strtab_shdr) {
+> > +		pr_err("Symbol table or string table not found\n");
+> > +		goto out;
+> > +	}
+> > +	symtab = (Elf64_Sym *)(elf_data + symtab_shdr->sh_offset);
+> > +	strtab = (char *)(elf_data + strtab_shdr->sh_offset);
+> > +	for (i = 0; i < symtab_shdr->sh_size / sizeof(Elf64_Sym); i++) {
+> > +		sym = &symtab[i];
+> > +		if (strcmp(&strtab[sym->st_name], symbol_name) == 0) {
+> > +			if (sym->st_shndx >= SHN_LORESERVE)
+> > +				return NULL; // No section data for these
+> > +			dst_shdr = &shdr[sym->st_shndx];
+> > +			symbol_data = (void *)(elf_data + dst_shdr->sh_offset + sym->st_value);
+> > +			*symbol_size = symtab[i].st_size;
+> > +			break;
+> > +		}
+> > +	}
+> > +
+> > +out:
+> > +	return symbol_data;
+> > +}
+> 
+> In kernel/kexec_file.c there is kexec_purgatory_find_symbol which is
+> basically identical to this function. With a little bit of refractoring
+> it should work for both cases. I prefer using
+> kexec_purgatory_find_symbol as your implementation cannot handle elf
+> files with multiple symtab and strtab sections.
+> 
 
-Sorry again. I still don't follow you. Do you mean this patch doesn't
-work as expected in busy polling mode? I tried to use '-B -b 256' and
-I managed to see the correct budget value returned from getsockopt().
+Thanks for your suggestion. I will refractor the code in next version.
 
-How is this max tx budget related to the busy polling mode, I wonder?
+Regards,
 
-Or are you talking about the performance test I mentioned? I probably
-know what happened there (due to some limit on the host side), but I
-still need more time.
+Pingfan 
 
-Thanks,
-Jason
+> Thanks
+> Philipp
+> 
+> > +
+> >  /* Load a ELF */
+> >  static int arm_bpf_prog(char *bpf_elf, unsigned long sz)
+> >  {
+> > +	opts_data = get_symbol_from_elf(bpf_elf, sz, "opts_data", &opts_data_sz);
+> > +	opts_insn = get_symbol_from_elf(bpf_elf, sz, "opts_insn", &opts_insn_sz);
+> > +	if (!opts_data || !opts_insn)
+> > +		return -1;
+> > +	/*
+> > +	 * When light skeleton generates opts_data[] and opts_insn[], it appends a
+> > +	 * NULL terminator at the end of string
+> > +	 */
+> > +	opts_data_sz = opts_data_sz - 1;
+> > +	opts_insn_sz = opts_insn_sz - 1;
+> > +
+> > +	pe_parser = kexec_pe_parser_bpf__open_and_load();
+> > +	if (!pe_parser)
+> > +		return -1;
+> > +	kexec_pe_parser_bpf__attach(pe_parser);
+> > +
+> >  	return 0;
+> >  }
+> >  
+> >  static void disarm_bpf_prog(void)
+> >  {
+> > +	kexec_pe_parser_bpf__destroy(pe_parser);
+> > +	pe_parser = NULL;
+> > +	opts_data = NULL;
+> > +	opts_insn = NULL;
+> >  }
+> >  
+> >  struct kexec_context {
+> 
 
->
-> >
-> > Thanks,
-> > Jason
-> >
-> > >
-> > > > >
-> > > > > Using the default configure 32 as the max budget iteration:
-> > > > >  sock0@eth0:1 txonly xdp-drv
-> > > > >                    pps            pkts           1.01
-> > > > > rx                 0              0
-> > > > > tx                 48,574         49,152
-> > > > >
-> > > > > Enlarging the value to 256:
-> > > > >  sock0@eth0:1 txonly xdp-drv
-> > > > >                    pps            pkts           1.00
-> > > > > rx                 0              0
-> > > > > tx                 148,277        148,736
-> > > > >
-> > > > > Enlarging the value to 512:
-> > > > >  sock0@eth0:1 txonly xdp-drv
-> > > > >                    pps            pkts           1.00
-> > > > > rx                 0              0
-> > > > > tx                 226,306        227,072
-> > > > >
-> > > > > The performance of pps goes up by 365% (with max budget set as 51=
-2)
-> > > > > which is an incredible number :)
-> > > >
-> > > > Weird thing. I purchased another VM and didn't manage to see such a
-> > > > huge improvement.... Good luck is that I own that good machine whic=
-h
-> > > > is still reproducible and I'm still digging in it. So please ignore
-> > > > this noise for now :|
-> > > >
-> > > > Thanks,
-> > > > Jason
 
