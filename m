@@ -1,117 +1,139 @@
-Return-Path: <bpf+bounces-61885-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61886-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 456EDAEE766
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 21:23:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F4027AEE84F
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 22:30:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E8023BD1B4
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 19:22:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 369B31656B9
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 20:30:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D06D28C2A8;
-	Mon, 30 Jun 2025 19:23:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33D9622DFBA;
+	Mon, 30 Jun 2025 20:30:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cRJrDj4E"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="Ow1vygOL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAB965227
-	for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 19:22:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 127EE21A43D
+	for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 20:30:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751311381; cv=none; b=poN932ZlilBN5YJqtAfPZ7JeyGaGyQhPJN77kKy7uuByZu9KoKIGltxSTEDwg3gx7+eHX5JFhPbraNvBsVsln22GVaSo4N6+Z/SwmDg8tFrg+6UJEUsWWgC2XaYxMKluiEob4WllheJaTOZwztfxc/puyLzNo6W0V945IOeTHZk=
+	t=1751315431; cv=none; b=ka41W3GG8lQ6hEfXyNHvNeuIHDYXzBpvgodV+8cTGt9EIo7fein+S794X5A40oTEv0x026pBTwlqIm7fWS2n5JXv6QNRhzhY5ezbDqbxw8r4HZBnSJf6eL3tP9uoO5rWOx9yh6+hIdfzt+bGoyclX/qv1vLy99bnVMyHYO5lcMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751311381; c=relaxed/simple;
-	bh=/mh1kKLVCICAQfnTxn0a+fEAaQeORF+DsOI4PV/vUXM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=XeT/CXK0H09wvJ5pQSCsXhtQbkjoo5q3LdzjPSK14xK8sNPVzRsOGr20xkB3dDJ1Nj6WkTR8t/iOLWr3pUe+kNJaEXJr1tQHw/pcmjy+3n+Vu1bTTKzTolsNiAp3HDJ5bAPEOfRW+s0+bue3JYz6J/hYGp+OzZyk7NMf14f4bxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cRJrDj4E; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-b3220c39cffso2790047a12.0
-        for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 12:22:59 -0700 (PDT)
+	s=arc-20240116; t=1751315431; c=relaxed/simple;
+	bh=h+Mc6pJAi9ivbHwTbXp7FIv58m+7zjdedWczhF69Ah4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=tARqXV+fUs1uqTjpdu8fe2jQygV7N0/yjCYGX0rR4vwRB71pQtmXuUshEvnpegECcjtV0SNXKRwH7vtJcVll9shGkvdziIgteqF2UtyCrx9V/pJxTwz0Kse6YFmLgNYWxFHcS14PtXC/9R1FsLCApZEnWvOpndqDb21LvFbC3QE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=Ow1vygOL; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-6077dea37easo4532550a12.3
+        for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 13:30:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751311379; x=1751916179; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=/mh1kKLVCICAQfnTxn0a+fEAaQeORF+DsOI4PV/vUXM=;
-        b=cRJrDj4EBLP0X7NLGnzlOPlKsROnh3+vOiRAOOSEDxFKGxUOQmvTtVk4wazvh/b121
-         KbuImv1JyFv49YqpRBYji2ojIHDfL/kouub08BtxMrlVjvWpE9HExjjk9/pgdaybU9dY
-         S1gTKCOunye9pYgLXmkt1HfjmntuNwS1WV5X8GAeuNx5zAMq0c2kAwbVCwY/zBCoLoPV
-         gnLhjxSiGSTEGTYGY0+6X8+ZxGPli5mrypbeztdYaNQ3al8qMs3guPXI9Ddjxu8iSaFY
-         lhjMZQB7JGESWBrQwhVGCGqzRyeGGzK3BJQ5cJYeCDr5SCX/lBeOJmroKfK1P+7TCml6
-         Vn2g==
+        d=cloudflare.com; s=google09082023; t=1751315428; x=1751920228; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=elCM+oF9Z0IdOGQ7xKJIbBaSxMaf81dbIGi1GWq89Uw=;
+        b=Ow1vygOLBWZu4XhRdv+2B1RJLa3gb8w2dvpRzcQSTzLIhtqNV2g+RPIUfT4x1pA6zd
+         g8rmkJD6TLFdUSI9ynzh+LsThZN2pz4cKBDFgM9ymQ6qbuVAPfBZzgskjGvKe3attyZ+
+         myGvYmGoi8U6oaacqDtwrHvpUhb+37Mk2rVaqPkMjAzy1JsT3ktnboGgtkloi3syJUgV
+         IaLXLQhVvnGrHi6nTExNz8+GewLl6dzypeCOjYA8ZQfMwGHNvRnIwFMSdV1LToYbMnOe
+         t8LJ6gNyWBykbJFSh+XgBz8wAgmx5U+rPJV7it2OtahrSwjKZCT6sKlXRu1D+v4fnw1p
+         q3Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751311379; x=1751916179;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/mh1kKLVCICAQfnTxn0a+fEAaQeORF+DsOI4PV/vUXM=;
-        b=ObJZYRIc/wD6XwS57VcqYTSbcV+vXkEK+Z4YVdcd/FLGz/voduwX06q3qPOYXhwGZ5
-         1bPBFQj7Zkp30d/oQseldo7vWq7QPr9rCT1ZiN+MtklnEJzoFrALcjpPbFnws+gqJDXT
-         nsqY2AWg3Bo2nRhbV+TbYAltFc7XjTGUy9DcfNGa3XGhgmrkGqDXPvE1j++HaPHrjiPi
-         lDpwzvY2JBvcYpg5xMRJj8KbEV4XBZx19/5Ile/fqkcoF45mIKjIPPIcu5tUh8l+O23Q
-         eYz1xZLXfmrduBeyA6p1tewt5HuBYLYIJZntDM5rdp/fiDS6vL1APzU95OmfTOzikV5E
-         0w2w==
-X-Forwarded-Encrypted: i=1; AJvYcCUT3ucwGYk6xA2tEx3b4UmdJaEYokUdKGr/DGpI3ZL+Ss6liifjLe0gWsnRfkNU5+9jYTM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwpFTyYv7FgF7ihpcVQiLxY1IAtzkFfptsIBwwkVZ3rfOF4oMQC
-	st7ZjMcsfdfoMUYkv5JQuZsm8iRIo79LTdSM2KPfqdxtx9+aoySnvrIu
-X-Gm-Gg: ASbGncvJGK7kyAntpPOe4+E5/IQQepUk6wKEpprFNPAzG0BX7VusMnBmAmDK+T/Fhva
-	J0LlCiDEPpUvQW/gSUedvpGSwkPU1lZn4cbYHySQY3TYHdFNnb5GlNtm1dzrD10DfWHO7G2ORxQ
-	PFaFZUufXpAA0TzJx1MT5lgjZUs23FlUP4gG8PUn2B3qRtDHVZa0CnB/Q9hOjTNVwWgQ37wHTiV
-	oCQRJb7SoklEExB800V+gj0BxRDLEmvTfmiX/jHfewAc8VQtsALnBXlX4T2kfptwtsfx1CIBFce
-	8DYcou685YO1i4mdHwZ4nIqWVR2WyKv70x0ZoLc5/afOD8sDAkZJQrpAi3Q8xfEgjEUc0A==
-X-Google-Smtp-Source: AGHT+IGmAb6LB94kupysZWiJZ0IKYZZY1m0zn9g83uEGUYk52Quto9rTl4GwWuYfSJrpxqbtW6U9dQ==
-X-Received: by 2002:a17:90b:3c4a:b0:311:c1ec:7d11 with SMTP id 98e67ed59e1d1-318c92a2e8emr23531275a91.18.1751311378992;
-        Mon, 30 Jun 2025 12:22:58 -0700 (PDT)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23acb3ad16fsm92852195ad.141.2025.06.30.12.22.57
+        d=1e100.net; s=20230601; t=1751315428; x=1751920228;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=elCM+oF9Z0IdOGQ7xKJIbBaSxMaf81dbIGi1GWq89Uw=;
+        b=o/iFK/Htrmc3A1fKXjByB1TYTrUBD83LoRUY3ILUeDa0kvibZzPzLsw9l6cD60/Mdi
+         9dz7akdJ7IQJRzOVzw3ggEMOaW/M2uOrLxEDwDvnKVUU+ljVr3j4c2J22mk5ypwKT9v2
+         Jq3WMq0Lk7iVRJENPfnqYmhkLty3hO6UTlYiWg0HjYT0UhJLvGb8kCkrYnQRrOtzmWcF
+         tDngZ8cxQu8w7hPMFsHkuFFpAneyw01207sw6kqzxHe0K1XN2qsjBuD9JX2/PNEQ3x55
+         HbBeGasG49YZDT5g7YTQqrEroiBJkclTAQLuKJ95QVFaW3wB9Mu8YOKLKskzH0ReutI8
+         Z+cA==
+X-Gm-Message-State: AOJu0Yy8N3qijxi+BD2eo2wiMjl+KBzNlk3ZjTkWG5Nur1t+QC9xemsZ
+	ugrnpD0bThstYUlQPrpG5JhXt3U5chOk8xzntf0Q1D+IiUzL8vevHYnCRf4i20UBmgU=
+X-Gm-Gg: ASbGncuGMRFwHlmtFvqeBYtTuoo3Hn0Y+uUlilQ6eS8bWqc+75evnruIxnZ3cETcpjc
+	FjKglS52OxpvK4Uvtk01JDuxVgykpxcbj8aDC45+dsHN1pt9uQaJdNZt+ji6fBaJE/suQeFaRT6
+	lot2BOGQsmJ/YWXXM7kX2kUryno8DYfUfmKEjRlbDHQoPrHPJULQABJQUlqoJHlq2tXFuNcc6//
+	AQcwjwU5gwICj0n03fG4SzWxQA7n66nOB4796PccXEncqJNs5G+bxdUjBnlraajJrY21KXaB8EV
+	Zzu5JDpyjIrVgp6EGZa9AST0uMRTSTA9Eavk5XJt89qQEw/xn3SNxw==
+X-Google-Smtp-Source: AGHT+IHXbStwUwhue6mULs4NhRSntv//JjrAdkWxN+/rbT9QEVTAP8vDqK8QfKQta/W83NCjG9XMQw==
+X-Received: by 2002:a17:907:c018:b0:ae3:595f:91a2 with SMTP id a640c23a62f3a-ae3595f9724mr1328108766b.57.1751315428228;
+        Mon, 30 Jun 2025 13:30:28 -0700 (PDT)
+Received: from cloudflare.com ([2a09:bac5:5063:2dc::49:10a])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae35363afdcsm725086066b.29.2025.06.30.13.30.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Jun 2025 12:22:58 -0700 (PDT)
-Message-ID: <57f9f58f399dbcb348f0d55cae7b19f38a143bcb.camel@gmail.com>
-Subject: Re: [PATCH bpf] selftests/bpf: Re-add kfunc declarations to qdisc
- tests
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Viktor Malik <vmalik@redhat.com>, bpf@vger.kernel.org
-Cc: Andrii Nakryiko <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
- Alexei Starovoitov	 <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Martin KaFai Lau	 <martin.lau@linux.dev>, Song Liu
- <song@kernel.org>, Yonghong Song	 <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh	 <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@fomichev.me>, Hao Luo	 <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,  Amery Hung
- <ameryhung@gmail.com>, Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?=
- <toke@redhat.com>,  Feng Yang <yangfeng@kylinos.cn>
-Date: Mon, 30 Jun 2025 12:22:55 -0700
-In-Reply-To: <20250630133524.364236-1-vmalik@redhat.com>
-References: <20250630133524.364236-1-vmalik@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        Mon, 30 Jun 2025 13:30:27 -0700 (PDT)
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: bpf@vger.kernel.org,  Alexei Starovoitov <ast@kernel.org>,  Arthur Fabre
+ <arthur@arthurfabre.com>,  Eric Dumazet <edumazet@google.com>,  Jakub
+ Kicinski <kuba@kernel.org>,  Jesper Dangaard Brouer <hawk@kernel.org>,
+  Jesse Brandeburg <jbrandeburg@cloudflare.com>,  Joanne Koong
+ <joannelkoong@gmail.com>,  Lorenzo Bianconi <lorenzo@kernel.org>,  Toke
+ =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <thoiland@redhat.com>,  Yan Zhai
+ <yan@cloudflare.com>,
+  netdev@vger.kernel.org,  kernel-team@cloudflare.com,  Stanislav Fomichev
+ <sdf@fomichev.me>
+Subject: Re: [PATCH bpf-next 07/13] net: Clear skb metadata on handover from
+ device to protocol
+In-Reply-To: <aGK6hdOwBSC7r4gF@mini-arch> (Stanislav Fomichev's message of
+	"Mon, 30 Jun 2025 09:25:41 -0700")
+References: <20250630-skb-metadata-thru-dynptr-v1-0-f17da13625d8@cloudflare.com>
+	<20250630-skb-metadata-thru-dynptr-v1-7-f17da13625d8@cloudflare.com>
+	<aGK6hdOwBSC7r4gF@mini-arch>
+Date: Mon, 30 Jun 2025 22:30:26 +0200
+Message-ID: <87o6u5nfa5.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain
 
-On Mon, 2025-06-30 at 15:35 +0200, Viktor Malik wrote:
-> BPF selftests compilation fails on systems with CONFIG_NET_SCH_BPF=3Dn.
-> The reason is that qdisc-related kfuncs are included via vmlinux.h but
-> when qdisc is disabled, they are not defined and do not appear in
-> vmlinux.h.
->=20
-> Fix the issue by defining the kfunc prototypes explicitly in
-> bpf_qdisc_common.h. They were originally there but were removed by the
-> fixed commit mentioned below.
->=20
-> Fixes: 2f9838e25790 ("selftests/bpf: Cleanup bpf qdisc selftests")
-> Signed-off-by: Viktor Malik <vmalik@redhat.com>
-> ---
+On Mon, Jun 30, 2025 at 09:25 AM -07, Stanislav Fomichev wrote:
+> On 06/30, Jakub Sitnicki wrote:
+>> With the extension of bpf_dynptr_from_skb(BPF_DYNPTR_F_SKB_METADATA), all
+>> BPF programs authorized to call this kfunc now have access to the skb
+>> metadata area.
+>> 
+>> These programs can read up to skb_shinfo(skb)->meta_len bytes located just
+>> before skb_mac_header(skb), regardless of what data is currently there.
+>> 
+>> However, as the network stack processes the skb, headers may be added or
+>> removed. Hence, we cannot assume that skb_mac_header() always marks the end
+>> of the metadata area.
+>> 
+>> To avoid potential pitfalls, reset the skb metadata length to zero before
+>> passing the skb to the protocol layers. This is a temporary measure until
+>> we can make metadata persist through protocol processing.
+>> 
+>> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+>> ---
+>>  net/core/dev.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>> 
+>> diff --git a/net/core/dev.c b/net/core/dev.c
+>> index be97c440ecd5..4a2389997535 100644
+>> --- a/net/core/dev.c
+>> +++ b/net/core/dev.c
+>> @@ -5839,6 +5839,7 @@ static int __netif_receive_skb_core(struct sk_buff **pskb, bool pfmemalloc,
+>>  	}
+>>  #endif
+>>  	skb_reset_redirect(skb);
+>> +	skb_metadata_clear(skb);
+>
+> And the assumption that it's not gonna break the existing cases is
+> because there is currently no way to read that metadata out afterwards?
 
-Tested-by: Eduard Zingerman <eddyz87@gmail.com>
+Correct, only tc_cls_act_is_valid_access tags the register as
+PTR_TO_PACKET_META when loading __skb->data_meta, which allows access.
+
+Something worth adding to the description. Thanks.
 
