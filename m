@@ -1,151 +1,214 @@
-Return-Path: <bpf+bounces-61887-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61888-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D10EDAEE855
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 22:34:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6F40AEE8AF
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 22:58:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E6C5189E53F
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 20:35:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2C96441F17
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 20:58:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70AEB22DFBA;
-	Mon, 30 Jun 2025 20:34:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A38B28A73C;
+	Mon, 30 Jun 2025 20:58:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="CXGIu1V0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HAM7Qt/q"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46616770FE
-	for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 20:34:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB7011885A5;
+	Mon, 30 Jun 2025 20:58:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751315691; cv=none; b=X3ZmUxcZzJrbG+P6wYHrNMA26OEUHx6pKl24MLeTo6DHwa5u4VDZqZP6AihjlJz3SJAQ1oqJfQvfqYmXLMnee5K6cZcD7CcyCohTpa1c0Hnn+78KRenqzZMWMvUH3Qg8Uier2gvjI0jEyDypDpQnW1Fm0rkUnTP2UxVRMjXz7tw=
+	t=1751317114; cv=none; b=O84087SAyVf06P273R9TsX/aiKB3WNWRluqJWylomTGdOUzzh29CXQhemjoM5CEkD28S2vAyjd+o4uSuupAVHtLxnDBGpEkFUzRdOuECdygvIWbsWyLxOu9xyDgmxs2ATLB7KYIi4L9G/Isi1Indmw4SvxxijUBzhWZoEulS9G4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751315691; c=relaxed/simple;
-	bh=Pk8kkiBE39VcNtpHJXA+ySzpyn5CfQcFwZ1k9zEJxWo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Sjlv39NBAZdcHCDzGP+nXWVx2I6vta1nBPVME4KQNWwkBB5KFTC9ANxNU7Z6Vr5kGykBpDicR5zb5n9Gf3dlF8wDVEc0PenVtsX9avg+oC6OaTtDHhfpLH9ziMA7C0zMuwv8iY4ELe6rX7fA+go6wgqMaJRYTbxaKM8xEa6Bi0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=CXGIu1V0; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-60780d74c85so7717035a12.2
-        for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 13:34:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1751315687; x=1751920487; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cc8wASdbWsQ0099rsQ7fOSRfIkggSfQmz2eC+r1JO7A=;
-        b=CXGIu1V0MWRKPZLwjUdA9m1W1pmPOWSu9J3FTm2DdCAJ1/0S9kshL0NFf23zv6dEQM
-         3VYklBJJzRmsBK60QqpZKNXHijYV2zcGqg1ygFCKATwzEX2yBSxnNOE/QT//EvL77ukY
-         H8B01NCCUTmprXYCb/31PqD8qTGKrImI15BQ67YBb2SyDsdKtwNOMS//jXl6dxLZ/ZgW
-         xE7Inz0z5uCIsqwOqZOmiLvgv0ii2pO8ycjt7CQJnka33pnXkjkY0ydqsW+RabkRSVXi
-         iZiOXXqNRi4YhLYaSLE2db4lYOkIynztBBrUNuczO1k3G2NJO9NAyBakj8rE1W82ORWr
-         YxIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751315687; x=1751920487;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cc8wASdbWsQ0099rsQ7fOSRfIkggSfQmz2eC+r1JO7A=;
-        b=M3hG2Z3xo7d5O0QGCXnxV81/KXoj2AdcLWI+P1bv3ikDFEAueihaIQranFDAAzI1tP
-         peB9cGOTm8R9vWyy3HHdRAQ06s4LUU34Ho4PcBp5LLcNmsIHW1xGU7205/m9uq4s+z8q
-         hVdu73P+/LLu2MBXYLvCYrX5vXTtEIzlMDMowFDTAkI+cgQVP7b1FZAl7RKP9Y+JJ8Dn
-         ezmO0MEkfUYUKrZO5tduuZTlu9278TvcHoMdVL84+RqOs8wFzM7NVOqB6R0KOcqxrbbQ
-         gb1KHl5Vws69qtzvitik3Tt5CkXwCVxTyhcr32D18OGb/J0hhMYErSCSAbGmfjFSmPed
-         kQJw==
-X-Gm-Message-State: AOJu0Yyxrv4uh41YQt7NZgp50/lXOskJE+R6IeCD8zCE1Cf5T79y/gal
-	YTA6JhluNzFEpFhy1BMYAmSBixe66VXikQkCAM6NwC07dK1ol7qLzME6I0IaOlP4DPA=
-X-Gm-Gg: ASbGncvnfUZDnwWH5HS2Chl88AKY5GfUf56kUM6Ekr7CMAbv960OdVFJJQWv2Mtg85a
-	rFGQq1O3ySDtTw3FeJxm2wtEh6iRwMWqu/mCNQj2z4xNK871QpS2LBBYEyfMMXzZ7eMrz6Hq1ux
-	vWHrg34xT6AlLvfcnlzK9mRR/I/kzzdJhsEsgg9cQNfYB1oJ0SzvPGWhGFUK3UaoMPsFlxdCZ2M
-	BeA/GApO4ZcMRopjELqHBcSF3cIDRmJSHyZEV90Coo1WKjd0XtBL5yI5Tyv2swCN9bNfbQa7yTx
-	m7yfdUFhj9QKet+b9RmjnJpJK3DWfMHupNPPkKK0GL9cxpv+s6AUbw==
-X-Google-Smtp-Source: AGHT+IEJxiHy+3+6u/TvSn2ligyBToRNoMl24c27b8vJx5lbaXmBByDK0msWHl62WthTNrll91mdeQ==
-X-Received: by 2002:a05:6402:4302:b0:608:2e97:4399 with SMTP id 4fb4d7f45d1cf-60c88b382b9mr13548847a12.4.1751315687493;
-        Mon, 30 Jun 2025 13:34:47 -0700 (PDT)
-Received: from cloudflare.com ([2a09:bac5:5063:2dc::49:10a])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-60c8320b5aasm6228112a12.76.2025.06.30.13.34.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Jun 2025 13:34:46 -0700 (PDT)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Stanislav Fomichev <stfomichev@gmail.com>
-Cc: bpf@vger.kernel.org,  Alexei Starovoitov <ast@kernel.org>,  Arthur Fabre
- <arthur@arthurfabre.com>,  Eric Dumazet <edumazet@google.com>,  Jakub
- Kicinski <kuba@kernel.org>,  Jesper Dangaard Brouer <hawk@kernel.org>,
-  Jesse Brandeburg <jbrandeburg@cloudflare.com>,  Joanne Koong
- <joannelkoong@gmail.com>,  Lorenzo Bianconi <lorenzo@kernel.org>,  Toke
- =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <thoiland@redhat.com>,  Yan Zhai
- <yan@cloudflare.com>,
-  netdev@vger.kernel.org,  kernel-team@cloudflare.com,  Stanislav Fomichev
- <sdf@fomichev.me>
-Subject: Re: [PATCH bpf-next 03/13] bpf: Add new variant of skb dynptr for
- the metadata area
-In-Reply-To: <aGK69qJ9tLVvarqh@mini-arch> (Stanislav Fomichev's message of
-	"Mon, 30 Jun 2025 09:27:34 -0700")
-References: <20250630-skb-metadata-thru-dynptr-v1-0-f17da13625d8@cloudflare.com>
-	<20250630-skb-metadata-thru-dynptr-v1-3-f17da13625d8@cloudflare.com>
-	<aGK69qJ9tLVvarqh@mini-arch>
-Date: Mon, 30 Jun 2025 22:34:45 +0200
-Message-ID: <87jz4tnf2y.fsf@cloudflare.com>
+	s=arc-20240116; t=1751317114; c=relaxed/simple;
+	bh=Zz1nS+miBXSOVdimTwx8BnW0//1SMhchoE4PdZERmj4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=cS8RpgobBA4kMCprfQMgAtZP0ZmbYMbJpVe3j0ZtWHiahDDVU0H9SonK+PzRPno2VgHbLVJBIFCqUCEMx/ufmIuOKo3u4lErGd0G7L6CF/Z7aFZg5JSalnnjLNlrtj68Qdppva1RLbksAp2mX2ea19/Tw2wkyLrtuX33/D7KaCU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HAM7Qt/q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D632C4CEE3;
+	Mon, 30 Jun 2025 20:58:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1751317114;
+	bh=Zz1nS+miBXSOVdimTwx8BnW0//1SMhchoE4PdZERmj4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=HAM7Qt/qBXtvc03ruid0U2WS2qHHKhlrH2pxLA0qWpuSEPPJyN8v7G8Q1h59YNYdI
+	 yiubN4YBaCnPKSxxkff699MlRy1mVbVRvPHRcD6WWQMsDWCoADOEdYr0qJAF3vIeHp
+	 pk66uxIPX21AbZCvykpWQjB2Lg7MvY+zK3Lz1FJcDocHXMa67PPj2+eP4JqMSExG8V
+	 KlF9nVQe2HsyhxM/hMoydyazKaINW69sQjmfyrkHwmA+YDWhF5RqvgWEIRT8wtrAmE
+	 M3k1+Ocqs0R3ZIwiL+PWpdEV7SHarNMZzrcvKfjhrtwKF/v1xnuHERDCus4vpx54GS
+	 RWhZqX+A1p3Ng==
+From: Sasha Levin <sashal@kernel.org>
+To: patches@lists.linux.dev,
+	stable@vger.kernel.org
+Cc: Tiwei Bie <tiwei.btw@antgroup.com>,
+	kernel test robot <lkp@intel.com>,
+	Johannes Berg <johannes.berg@intel.com>,
+	Sasha Levin <sashal@kernel.org>,
+	nathan@kernel.org,
+	richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	agordeev@linux.ibm.com,
+	akpm@linux-foundation.org,
+	guoweikang.kernel@gmail.com,
+	tglx@linutronix.de,
+	bpf@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.15 03/23] um: vector: Reduce stack usage in vector_eth_configure()
+Date: Mon, 30 Jun 2025 16:44:08 -0400
+Message-Id: <20250630204429.1357695-3-sashal@kernel.org>
+X-Mailer: git-send-email 2.39.5
+In-Reply-To: <20250630204429.1357695-1-sashal@kernel.org>
+References: <20250630204429.1357695-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.15.4
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jun 30, 2025 at 09:27 AM -07, Stanislav Fomichev wrote:
-> On 06/30, Jakub Sitnicki wrote:
->> Add a new flag for the bpf_dynptr_from_skb helper to let users to create
->> dynptrs to skb metadata area. Access paths are stubbed out. Implemented by
->> the following changes.
->> 
->> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
->> ---
->>  include/uapi/linux/bpf.h |  9 ++++++++
->>  net/core/filter.c        | 60 +++++++++++++++++++++++++++++++++++++++++-------
->>  2 files changed, 61 insertions(+), 8 deletions(-)
->> 
->> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->> index 719ba230032f..ab5730d2fb29 100644
->> --- a/include/uapi/linux/bpf.h
->> +++ b/include/uapi/linux/bpf.h
->> @@ -7591,4 +7591,13 @@ enum bpf_kfunc_flags {
->>  	BPF_F_PAD_ZEROS = (1ULL << 0),
->>  };
->>  
->> +/**
->> + * enum bpf_dynptr_from_skb_flags - Flags for bpf_dynptr_from_skb()
->> + *
->> + * @BPF_DYNPTR_F_SKB_METADATA: Create dynptr to the SKB metadata area
->> + */
->> +enum bpf_dynptr_from_skb_flags {
->> +	BPF_DYNPTR_F_SKB_METADATA = (1ULL << 0),
->> +};
->> +
->>  #endif /* _UAPI__LINUX_BPF_H__ */
->> diff --git a/net/core/filter.c b/net/core/filter.c
->> index 1fee51b72220..3c2948517838 100644
->> --- a/net/core/filter.c
->> +++ b/net/core/filter.c
->> @@ -11967,12 +11967,27 @@ bpf_sk_base_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->>  	return func;
->>  }
->>  
->> +enum skb_dynptr_offset {
->> +	SKB_DYNPTR_METADATA	= -1,
->
-> nit: any reason not do make it 1? The offset is u32, so that -1 reads a bit
-> intentional and I don't get the intention :-)
+From: Tiwei Bie <tiwei.btw@antgroup.com>
 
-Since we're abusing the "offset" field to serve as an enum tag, I
-figured seeing 0xffffffff in a memory dump will be an clear indication
-that this is not an offset.
+[ Upstream commit 2d65fc13be85c336c56af7077f08ccd3a3a15a4a ]
 
-Also, metadata comes before payload, like -1 does before 0...
+When compiling with clang (19.1.7), initializing *vp using a compound
+literal may result in excessive stack usage. Fix it by initializing the
+required fields of *vp individually.
 
-JK of course. No preference here. Went with my gut.
+Without this patch:
+
+$ objdump -d arch/um/drivers/vector_kern.o | ./scripts/checkstack.pl x86_64 0
+...
+0x0000000000000540 vector_eth_configure [vector_kern.o]:1472
+...
+
+With this patch:
+
+$ objdump -d arch/um/drivers/vector_kern.o | ./scripts/checkstack.pl x86_64 0
+...
+0x0000000000000540 vector_eth_configure [vector_kern.o]:208
+...
+
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202506221017.WtB7Usua-lkp@intel.com/
+Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
+Link: https://patch.msgid.link/20250623110829.314864-1-tiwei.btw@antgroup.com
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+
+**YES**
+
+This commit should be backported to stable kernel trees for the
+following reasons:
+
+1. **Fixes a real bug**: The commit addresses excessive stack usage
+   (1472 bytes) that can lead to stack overflow, especially problematic
+   on systems with limited kernel stack space. This is a legitimate bug
+   that affects system stability.
+
+2. **Compiler-specific issue with real impact**: While triggered by
+   clang 19.1.7's handling of compound literals, the resulting stack
+   usage of 1472 bytes is genuinely excessive and dangerous regardless
+   of the compiler quirk that exposed it.
+
+3. **Simple and safe fix**: The change is purely mechanical - converting
+   from compound literal initialization to field-by-field
+   initialization:
+  ```c
+  // From:
+  *vp = ((struct vector_private) { .field = value, ... });
+  // To:
+  vp->field = value;
+  ```
+
+4. **Minimal risk**: The fix doesn't change any logic or functionality.
+   It only changes how the structure is initialized, making it extremely
+   unlikely to introduce regressions.
+
+5. **Precedent from similar commits**: Looking at the historical commits
+   marked "YES" for backporting:
+   - Similar Commit #1: Reduced stack frame in qed driver using
+     `noinline_for_stack`
+   - Similar Commit #4: Reduced stack usage in ethtool with clang using
+     `noinline_for_stack`
+
+   Both addressed the same class of problem (excessive stack usage with
+clang) and were considered suitable for stable.
+
+6. **Measurable improvement**: The stack usage reduction from 1472 to
+   208 bytes is dramatic and well-documented by the kernel test robot,
+   providing clear evidence of the fix's effectiveness.
+
+The commit meets the stable kernel criteria of fixing an important bug
+with minimal risk and a contained change. While it doesn't explicitly
+include a "Cc: stable" tag, the nature of the fix (preventing potential
+stack overflow) makes it a good candidate for stable backporting.
+
+ arch/um/drivers/vector_kern.c | 42 +++++++++++------------------------
+ 1 file changed, 13 insertions(+), 29 deletions(-)
+
+diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+index b97bb52dd5626..70f8d7e87fb81 100644
+--- a/arch/um/drivers/vector_kern.c
++++ b/arch/um/drivers/vector_kern.c
+@@ -1592,35 +1592,19 @@ static void vector_eth_configure(
+ 
+ 	device->dev = dev;
+ 
+-	*vp = ((struct vector_private)
+-		{
+-		.list			= LIST_HEAD_INIT(vp->list),
+-		.dev			= dev,
+-		.unit			= n,
+-		.options		= get_transport_options(def),
+-		.rx_irq			= 0,
+-		.tx_irq			= 0,
+-		.parsed			= def,
+-		.max_packet		= get_mtu(def) + ETH_HEADER_OTHER,
+-		/* TODO - we need to calculate headroom so that ip header
+-		 * is 16 byte aligned all the time
+-		 */
+-		.headroom		= get_headroom(def),
+-		.form_header		= NULL,
+-		.verify_header		= NULL,
+-		.header_rxbuffer	= NULL,
+-		.header_txbuffer	= NULL,
+-		.header_size		= 0,
+-		.rx_header_size		= 0,
+-		.rexmit_scheduled	= false,
+-		.opened			= false,
+-		.transport_data		= NULL,
+-		.in_write_poll		= false,
+-		.coalesce		= 2,
+-		.req_size		= get_req_size(def),
+-		.in_error		= false,
+-		.bpf			= NULL
+-	});
++	INIT_LIST_HEAD(&vp->list);
++	vp->dev		= dev;
++	vp->unit	= n;
++	vp->options	= get_transport_options(def);
++	vp->parsed	= def;
++	vp->max_packet	= get_mtu(def) + ETH_HEADER_OTHER;
++	/*
++	 * TODO - we need to calculate headroom so that ip header
++	 * is 16 byte aligned all the time
++	 */
++	vp->headroom	= get_headroom(def);
++	vp->coalesce	= 2;
++	vp->req_size	= get_req_size(def);
+ 
+ 	dev->features = dev->hw_features = (NETIF_F_SG | NETIF_F_FRAGLIST);
+ 	INIT_WORK(&vp->reset_tx, vector_reset_tx);
+-- 
+2.39.5
+
 
