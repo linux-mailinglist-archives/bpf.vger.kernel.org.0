@@ -1,198 +1,225 @@
-Return-Path: <bpf+bounces-61836-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61837-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75FCDAEE164
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 16:49:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9476FAEE192
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 16:56:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 259B13B9727
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 14:44:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 365443A682F
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 14:55:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EAA02918D5;
-	Mon, 30 Jun 2025 14:43:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92D5D28C87B;
+	Mon, 30 Jun 2025 14:55:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k3wsnbxQ"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="eIZaIdyz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F15B28C868;
-	Mon, 30 Jun 2025 14:43:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7223825A32C
+	for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 14:55:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751294585; cv=none; b=D3wwmdacUwSSFsfnnwlghDnowiI5aTxs8SOpTyiFnJlKtIe+hEZzV30kwkZwwh5oatuMwY7a0JaAKG5QFuv7omZ7dOnafLaZKm1xJ2TCF9NFkG39dy//Phl6dyBAQmNjQaFpzqGKdv/E4rVSoKMkMWAU6T/X6c8i3JQxiKICcYc=
+	t=1751295354; cv=none; b=ZC9CkXzBxRzbSm3hbsbsIKEN4zzzN7cBqgJbTcVyu4XHDK8Cmm6A8JWI22RLBD53dM2WfncuJPxHIDf3RENSyARq7k11yFKMhnNM5Dx+AuDU2SLWCH785/1NNd6lLEMSlAF9Wzs4EzfchbuH2VS+tYCJBpb3RHhI8bALojH26dw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751294585; c=relaxed/simple;
-	bh=aJBZLRK2AtKTR7exY7C4jH9FsFz8pTE7CY5s0ADk6xI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dgyggPLmCgZxaK84EGD1Ld3Uro8bun3DozZNN9x6MOCpucBrlmEFI9CsSPynLZMYBA2Fs1JDldqjQh+oekbq3NmONFqFsNmTZKPkZB6n54mXNvOJdAUi7KxXW+5VBnq+nn0quJSej2aGdgD4hx1jnTM/w/cxeQIfRZoJ+emU9XE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k3wsnbxQ; arc=none smtp.client-ip=209.85.216.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-313a188174fso4480921a91.1;
-        Mon, 30 Jun 2025 07:43:03 -0700 (PDT)
+	s=arc-20240116; t=1751295354; c=relaxed/simple;
+	bh=ZJqmvniFMX4XUhe75n9Boxe1iERP6S83FqOmnL+lYyA=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=qzy3mu6YisvNAmxBfF4Euhexc9o53xfswT0SLlZLNP/x0AKM25GubGaos96PTnTVy5P6/3usrfy+daoLox1/lZickctT/8abW8K+Tor3vBcflZOGXiEGFbZ5xbWjp8IzqlFZDxOfromb3HPVWxYqmwU/JQIbgcXmfpF2OQH0sNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=eIZaIdyz; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-60c01f70092so7754902a12.3
+        for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 07:55:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751294582; x=1751899382; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n69gDXxPGfgIU+wPEIeigImTRma77DzYZ7Ve67R5PNg=;
-        b=k3wsnbxQhfH147uPEQ4IpjPytY2Twf66KS3rigfbaodTHKorJ5J55DPj0e+ekgQt+A
-         K7WPClQBMuafpx0PxNHFHGxFT+HmYyhDE5Qd8893VGsDhJKYLNULIWDcNBTAnOndyBSj
-         9g6g8YMFUYs7Nz98FcYW0CdwMFQeGGzPmpQiwfCNk6ZWb9gSd9dIiBVKdzPckHX6a9dT
-         Bxdk7eG+fI9CznJaY0m1NhLUaMeXSW/SThgipnNo9mphh/92Mva/E10ln7d3Zc+Xoo95
-         zGrVuZPLrr3JPNJDaPW+T1YIngr+DxxwcBPufQp5f9jbggqT9fPOsJ3lGeBTTmIj+mCC
-         i9UA==
+        d=cloudflare.com; s=google09082023; t=1751295350; x=1751900150; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=uXMF1bMJVAy/JxAwyg6/YYGwbBD0IUDbCLswPPMo1gg=;
+        b=eIZaIdyzgTdtgqJSCAAlkP+Jsw2+K7c8K8AUkKi0/lcu7rBoH0zwNLQTzipNa3xPDX
+         XsvaqZdO8tjSVdxLaxUlsAMWSK2z6rD9yQtomW624qTZd+wus2vsjoYLFESjX6Wfx9uF
+         GZfy7LL9bcRCFhcNd/4lkrhwIutgFzZ5Vd2Ft8cVbXSmfQmejKSh2iS4JSd/7nqja5r0
+         LEJJX/AC36ILPynXdWOtkEUe+aJjesUM1uJZmTtPLoPQ7aVXfAtNDg/8o2PTcqMxYCWc
+         vuz7dwx2+GMw1JIgwpdwDiglN//eER3mTgQVuyF/sNtEMEjBT6ye/0tdSWZlyTpYFwFv
+         vIvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751294582; x=1751899382;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=n69gDXxPGfgIU+wPEIeigImTRma77DzYZ7Ve67R5PNg=;
-        b=o41L/BiUteQueazmlXqUlPoAoKZ6hgg45OJtMa/irf+9g6D7r5PZL3ZGtr3Oi8Yh+0
-         oPQn7Wexj1xv8O03x1T1pdohCqTwVlgUE3ikzHlsU3l98lxNeg3aJozBl4jL6e5kJ3+F
-         IbqzODWCP8Jm09+Iz1faGvzvgir4+AfZOljfB6z7/ZDAU6DQlUP23x85ttjO96+LlX5f
-         YwGcImDDtnVkBTD99549qqwMUkBPpnQtFLXyxkdJI/KLzXUm+9m63T1obpnsaHi0oKqv
-         jRaCB7KpcV+SV8oDsltzqCVPx0WNuaYPlb8v5BVhMqiNaZ5mYASxHL2GgOjyB6u8oxsS
-         aIFg==
-X-Forwarded-Encrypted: i=1; AJvYcCUMgmlUee0G+nmk51qaudyim6FoDHNPT75t8m3uZ9UTLxdOPu5XAt2d9l8qfaE7vj+Ai3Y=@vger.kernel.org, AJvYcCVHWkbGr8p6wl5Ut8CXMXDUXx2/1Ajft23PYcV9Hdcm97qBiUnrzS6PFM2VJd0YwGkaTUixQ/IT2TMHvkDr@vger.kernel.org
-X-Gm-Message-State: AOJu0YxGHXdJj4IshmJ9Ri2AXqNVwGBha8uxG+t0ksRlSHRYajeEmC3j
-	T2yjAd1iKyzY4A+sQ5PTf4wtME3VrZ5M1OAwTaGsurwUQuekfd9ObOm8tTe/8Q==
-X-Gm-Gg: ASbGncuK53lCazCxAo6wrS7Zb5xEzK7Nb4GG2XuyZutKgcfIs1MjAH7fsd+KSlTCl4P
-	syrW0k/2JbcjWyfSRpeyb0cdZWLJi64nwNBKH/H5qvt0wTt7wFgPIMaQ6SO2cHDWdSw6oj2zGiv
-	yPOwcLpRYGhUy/JDKRWiiyvww1L7w0d4w2kec6+Ts4Evp25R3mvQTwn+T1c4oBHo2o9RUECif5O
-	opuwxBaRpnWSqmhBoVzOah6W6tbRObN4cVgve6D08AWtz3x838lymikNczs00AsBceBdbjp/CHE
-	yh97N+C2+4p7GQwqzyk920VmWHL3bQFU/4zdoK9DkJhRTdS5s8ZbRtIjUP7c1J5ted2vzcwX1hv
-	V
-X-Google-Smtp-Source: AGHT+IEBKjYr3kuohCQjY0CglzvBmQzIq01EIwspNpePjbfFFbP1AgODBoDwnck1jrdGsXqUo51EbA==
-X-Received: by 2002:a17:90b:1b0c:b0:30e:3737:7c87 with SMTP id 98e67ed59e1d1-318c91117a0mr17987244a91.5.1751294582368;
-        Mon, 30 Jun 2025 07:43:02 -0700 (PDT)
-Received: from minh.192.168.1.1 ([2001:ee0:4f0e:fb30:2f51:de71:60e:eca9])
-        by smtp.googlemail.com with ESMTPSA id 98e67ed59e1d1-318c13a270csm9170017a91.16.2025.06.30.07.42.55
+        d=1e100.net; s=20230601; t=1751295350; x=1751900150;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uXMF1bMJVAy/JxAwyg6/YYGwbBD0IUDbCLswPPMo1gg=;
+        b=YoE1CYWptk0NvDiyjn3Xradfd3CGQ42bZn/IhatpkuxQTk6GIPM3cx5NRvaK1xixYA
+         /jzp5/tBw2X5iDCKAYqSQgr4jlB7rDoChwMYfBC2J4ldlN0uki9IWU3RC13ggljb4RPj
+         85scccK4tpgU9hTVpxKbXI1Ff+WtM3reJLarx4bmVJKcW65Xjdqwh02Or02FUKcKI2SJ
+         D0pLjXMMzlOYLRe6rMMgXLYH//AVDfDLzjSFovV7ywqbRmh2+DP0C5gi27xSQ4+QbqIz
+         dz7CHkKeDBh4pJupkkfUjzrwP69UyokeEgVusEUw9354//lEsxbKxqCqnE9+1ZTJf+pe
+         YLVA==
+X-Gm-Message-State: AOJu0YxrSaY61EyqyeLo32tGmQRzaLkoKzntQnwVM5/OMY654Arnlwam
+	mAa1SufmP/CoBP7kl4h8pdqNvdCG9Koaz9cs5itixqITnR/35Bg12ELqVScQUZTDrdo=
+X-Gm-Gg: ASbGncvV/sGppiX8DFD/Qg03yiTCpy7A4Y1aoKdCDREjbhVF0Kx0SpjbTrtIlTz8dn8
+	F4bZzLBma0IntbCQiM2MefQFPfqRgeIWBppZchwV/dsSmM6oy2V+BDtsU4ATgUpUZEn+qV2cuns
+	WBR68XLtWiZcijT6U45Tv23gumauMizzSlMpGRRVBZV8Yui0zqTTQ+RNQ9Jz8Auvo76Bvaxpzko
+	/O8VzFYGs3fxJj3VOTkPls2/WYXnukXHMJNRvoon12t8AsLtQwz0mOp8YBK34MDnwg4urvVa/Xf
+	ivRaPKe+7pvgYPSAICN7aacRU9IC2+bEW5apDDgBrjHtQ64gbBjd9dk2UiErsn0Z
+X-Google-Smtp-Source: AGHT+IHV3ysTdOGShPm0baiE6A6iGQCNOjE79x1nfX2HGrcdah+u108I5dRkwxaYLylF6WTz6veY/w==
+X-Received: by 2002:a17:907:3d8c:b0:ae0:1fdf:ea65 with SMTP id a640c23a62f3a-ae34fd8821fmr1248099166b.17.1751295349536;
+        Mon, 30 Jun 2025 07:55:49 -0700 (PDT)
+Received: from cloudflare.com ([2a09:bac5:5063:2dc::49:10a])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae353c6bc2dsm695731866b.136.2025.06.30.07.55.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Jun 2025 07:43:01 -0700 (PDT)
-From: Bui Quang Minh <minhquangbui99@gmail.com>
-To: netdev@vger.kernel.org
-Cc: "Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	=?UTF-8?q?Eugenio=20P=C3=A9rez?= <eperezma@redhat.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	virtualization@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Bui Quang Minh <minhquangbui99@gmail.com>
-Subject: [PATCH net v2 3/3] virtio-net: use the check_mergeable_len helper
-Date: Mon, 30 Jun 2025 21:42:12 +0700
-Message-ID: <20250630144212.48471-4-minhquangbui99@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250630144212.48471-1-minhquangbui99@gmail.com>
-References: <20250630144212.48471-1-minhquangbui99@gmail.com>
+        Mon, 30 Jun 2025 07:55:48 -0700 (PDT)
+From: Jakub Sitnicki <jakub@cloudflare.com>
+Subject: [PATCH bpf-next 00/13] Extend skb dynptr for metadata access from
+ TC
+Date: Mon, 30 Jun 2025 16:55:33 +0200
+Message-Id: <20250630-skb-metadata-thru-dynptr-v1-0-f17da13625d8@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAGWlYmgC/x3MwQqDMAyA4VeRnBeozirsVcYOqY0zjHUlzYZDf
+ HeLx+/w/xsUVuECt2YD5Z8U+aSK9tLAtFB6Mkqshs513g3tgOUV8M1GkYzQFv1i/Kdsin0gP47
+ TNTrfQ82z8izrub5DyDMmXg0e+34A1AfnBnQAAAA=
+X-Change-ID: 20250616-skb-metadata-thru-dynptr-4ba577c3d054
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, 
+ Arthur Fabre <arthur@arthurfabre.com>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+ Jesse Brandeburg <jbrandeburg@cloudflare.com>, 
+ Joanne Koong <joannelkoong@gmail.com>, 
+ Lorenzo Bianconi <lorenzo@kernel.org>, 
+ =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <thoiland@redhat.com>, 
+ Yan Zhai <yan@cloudflare.com>, netdev@vger.kernel.org, 
+ kernel-team@cloudflare.com, Stanislav Fomichev <sdf@fomichev.me>
+X-Mailer: b4 0.15-dev-07fe9
 
-Replace the current repeated code to check received length in mergeable
-mode with the new check_mergeable_len helper.
+TL;DR
+-----
 
-Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+This is the first step in an effort which aims to enable skb metadata
+access for all BPF programs which operate on an skb context.
+
+By skb metadata we mean the custom metadata area which can be allocated
+from an XDP program with the bpf_xdp_adjust_meta helper. Network stack code
+accesses it using the skb_metadata_* helpers.
+
+Overview
+--------
+
+Today, the skb metadata is accessible only by the BPF TC ingress programs
+through the __sk_buff->data_meta pointer. We propose a three step plan to
+make skb metadata available to all other BPF programs which operate on skb
+objects:
+
+ 1) Extend skb dynptr for metadata access from TC (this patch set)
+
+    This is a preparatory step, but it also stands on its own. Here we
+    enable access to the skb metadata through a bpf_dynptr, the same way we
+    can already access the skb payload today.
+
+    In the next step (2) we plan to relocate the metadata as skb travels
+    through the network stack. That will require a safe way to access the
+    metadata area irrespective of its location.
+
+    The checks relying on pointer arithmetic - __sk_buff->data_meta and
+    ->data - were not built for that. They require the metadata to be
+    located right in front of the payload. Otherwise their guarantees break
+    down.
+
+    This is where the dynptr [1] comes into play. It solves exactly that
+    problem. The dynptr to skb metadata can be backed by a memory area that
+    resides in a different location depending on code path.
+
+ 2) Persist skb metadata past the TC hook (future)
+
+    Keeping the metadata in front of the packet headers as the skb travels
+    through the network stack is problematic - see the discussion of
+    alternative approaches below. Hence, we plan to relocate as necessary
+    after the TC hook.
+
+    Where to? We don't know yet. There are a couple of options: (i) move it
+    to the top of skb headroom, or (ii) allocate dedicated memory for it.
+    They are not mutually exclusive. The right solution might be a mix.
+
+    When? That is also an open question. It could be done on device to
+    protocol handover or lazily when headers get pushed or headroom gets
+    resized.
+
+ 3) skb dynptr for sockops, sk_lookup, etc. (future)
+
+    There are BPF program types which don't get an __sk_buff as a context,
+    but they either have, or could have in some cases, access to the skb
+    itself. As a final touch, we want to provide a way to create an skb
+    dynptr from these special contexts.
+
+TIMTOWDI
+--------
+
+Alternative approaches which we considered:
+
+* Keep the metadata always in front of skb->data
+
+We think it is a bad idea for two reasons, outlined below. Nevertheless we
+are open to it if necessary.
+
+ 1) Performance concerns
+
+    It would require the network stack to move the metadata on each header
+    pull/push (see skb_reorder_vlan_header() for an example). While doable,
+    there is an expected performance overhead.
+
+ 2) Potential for bugs
+
+    In addition to updating skb_push/pull and pskp_expand_head, we would
+    need to audit any code paths which operate on skb->data pointer
+    directly without going through the helper. This creates a "known
+    unknown" risk.
+
+* Design a new custom metadata area from scratch
+
+We have tried that in Arthur's patch set [2]. One of the outcomes of the
+discussion there was that we don't want to have two places to store custom
+metadata. Hence the change of approach.
+
+-jkbs
+
+PS. This series is not as long as it looks. I kept the more granular commit
+split to "show the work". I can squash some together if needed.
+
+[1] https://docs.ebpf.io/linux/concepts/dynptrs/
+[2] https://lore.kernel.org/all/20250422-afabre-traits-010-rfc2-v2-0-92bcc6b146c9@arthurfabre.com/
+
+Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 ---
- drivers/net/virtio_net.c | 34 +++++++---------------------------
- 1 file changed, 7 insertions(+), 27 deletions(-)
+Jakub Sitnicki (13):
+      bpf: Ignore dynptr offset in skb data access
+      bpf: Helpers for skb dynptr read/write/slice
+      bpf: Add new variant of skb dynptr for the metadata area
+      bpf: Enable read access to skb metadata with bpf_dynptr_read
+      bpf: Enable write access to skb metadata with bpf_dynptr_write
+      bpf: Enable read-write access to skb metadata with dynptr slice
+      net: Clear skb metadata on handover from device to protocol
+      selftests/bpf: Pass just bpf_map to xdp_context_test helper
+      selftests/bpf: Parametrize test_xdp_context_tuntap
+      selftests/bpf: Cover read access to skb metadata via dynptr
+      selftests/bpf: Cover write access to skb metadata via dynptr
+      selftests/bpf: Cover lack of access to skb metadata at ip layer
+      selftests/bpf: Count successful bpf program runs
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 535a4534c27f..ecd3f46deb5d 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -2156,7 +2156,6 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
- 				      struct virtnet_rq_stats *stats)
- {
- 	struct virtio_net_hdr_mrg_rxbuf *hdr = buf;
--	unsigned int headroom, tailroom, room;
- 	struct skb_shared_info *shinfo;
- 	unsigned int xdp_frags_truesz = 0;
- 	unsigned int truesize;
-@@ -2202,20 +2201,14 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
- 		page = virt_to_head_page(buf);
- 		offset = buf - page_address(page);
- 
--		truesize = mergeable_ctx_to_truesize(ctx);
--		headroom = mergeable_ctx_to_headroom(ctx);
--		tailroom = headroom ? sizeof(struct skb_shared_info) : 0;
--		room = SKB_DATA_ALIGN(headroom + tailroom);
--
--		xdp_frags_truesz += truesize;
--		if (unlikely(len > truesize - room)) {
-+		if (check_mergeable_len(dev, ctx, len)) {
- 			put_page(page);
--			pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
--				 dev->name, len, (unsigned long)(truesize - room));
--			DEV_STATS_INC(dev, rx_length_errors);
- 			goto err;
- 		}
- 
-+		truesize = mergeable_ctx_to_truesize(ctx);
-+		xdp_frags_truesz += truesize;
-+
- 		frag = &shinfo->frags[shinfo->nr_frags++];
- 		skb_frag_fill_page_desc(frag, page, offset, len);
- 		if (page_is_pfmemalloc(page))
-@@ -2429,18 +2422,12 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- 	struct sk_buff *head_skb, *curr_skb;
- 	unsigned int truesize = mergeable_ctx_to_truesize(ctx);
- 	unsigned int headroom = mergeable_ctx_to_headroom(ctx);
--	unsigned int tailroom = headroom ? sizeof(struct skb_shared_info) : 0;
--	unsigned int room = SKB_DATA_ALIGN(headroom + tailroom);
- 
- 	head_skb = NULL;
- 	u64_stats_add(&stats->bytes, len - vi->hdr_len);
- 
--	if (unlikely(len > truesize - room)) {
--		pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
--			 dev->name, len, (unsigned long)(truesize - room));
--		DEV_STATS_INC(dev, rx_length_errors);
-+	if (check_mergeable_len(dev, ctx, len))
- 		goto err_skb;
--	}
- 
- 	if (unlikely(vi->xdp_enabled)) {
- 		struct bpf_prog *xdp_prog;
-@@ -2475,17 +2462,10 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- 		u64_stats_add(&stats->bytes, len);
- 		page = virt_to_head_page(buf);
- 
--		truesize = mergeable_ctx_to_truesize(ctx);
--		headroom = mergeable_ctx_to_headroom(ctx);
--		tailroom = headroom ? sizeof(struct skb_shared_info) : 0;
--		room = SKB_DATA_ALIGN(headroom + tailroom);
--		if (unlikely(len > truesize - room)) {
--			pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
--				 dev->name, len, (unsigned long)(truesize - room));
--			DEV_STATS_INC(dev, rx_length_errors);
-+		if (check_mergeable_len(dev, ctx, len))
- 			goto err_skb;
--		}
- 
-+		truesize = mergeable_ctx_to_truesize(ctx);
- 		curr_skb  = virtnet_skb_append_frag(head_skb, curr_skb, page,
- 						    buf, len, truesize);
- 		if (!curr_skb)
--- 
-2.43.0
+ include/linux/filter.h                             |  25 ++-
+ include/uapi/linux/bpf.h                           |   9 +
+ kernel/bpf/helpers.c                               |  10 +-
+ net/core/dev.c                                     |   1 +
+ net/core/filter.c                                  | 104 +++++++++--
+ tools/include/uapi/linux/bpf.h                     |   9 +
+ .../bpf/prog_tests/xdp_context_test_run.c          | 194 +++++++++++++++++----
+ tools/testing/selftests/bpf/progs/test_xdp_meta.c  | 171 ++++++++++++++++--
+ tools/testing/selftests/bpf/test_progs.h           |   1 +
+ 9 files changed, 446 insertions(+), 78 deletions(-)
 
 
