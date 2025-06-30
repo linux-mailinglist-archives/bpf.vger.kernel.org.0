@@ -1,219 +1,373 @@
-Return-Path: <bpf+bounces-61815-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61816-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CD68AEDBA7
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 13:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 92F41AEDC3C
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 14:06:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00AE93A5E4D
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 11:51:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B711D3A2C37
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 12:06:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B60C283FD2;
-	Mon, 30 Jun 2025 11:51:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D1B428980D;
+	Mon, 30 Jun 2025 12:06:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EcWiQuLF"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dSqpevnS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82998280338;
-	Mon, 30 Jun 2025 11:51:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751284288; cv=none; b=MZ8pdO/wQmDEL4FZxRmR+ffGrlqvFSNk7dVviiCPuz29VMG4v/MsAXIWstxdWv+gJT+GjivBtgqoinkm1h1l4GMS5lpsuK+t7phoUgtsKSip5hUqmpDq+6EGtoBMMM0zGj8rkbx/z9TNbOWFZL96ftw7UHPuGERjf/SV+BXDkto=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751284288; c=relaxed/simple;
-	bh=HUbdQ19sl514KfajAwJVU7L3W1cY3+nFral3SJF0RbI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pPfjrDdE4Ih8endqPDdB0F3MpXuMNM/Hk4WEQJgaweovLcSdOxawAyJMaTLvwWhC+QdjzP4oDNLNyejouQZQBSCGVFknezQo/Ayr+1en7L+tt6iVAT3jXJx5OmcRiPdXxjDQcFCXjI94vGBqfu6t7s1x86T78tnJGuPJGmegOCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EcWiQuLF; arc=none smtp.client-ip=209.85.166.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-3ddd2710d14so21186175ab.2;
-        Mon, 30 Jun 2025 04:51:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751284285; x=1751889085; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hVoVStbXU6ccjSQ1NePiUp1BW7p4LaA0FGyVw4Z6EYA=;
-        b=EcWiQuLFr7gEeEsSJY/0tM5vdOJ4RY/JuvtjttiBnJlz8YSbbtn1jhfzckLogYe8xq
-         jdP92s3ptt39zc/qNZ7PuFAUNROWk8c2lri48BnxF4V9zOhQuqoo+QZkKWeiq/FfX1jp
-         spwdu0fR+l0nquYkEzwk38mIlyez871S3URIGEvLKqrthyKyCA44XJhJN0DKOCXyAWTW
-         kQXFkhQ26lmzSgpZ7BwqpSZKyRXQfNgzICvGtEwN+Tg/J7n/pF2YXUP4K5QPvRfE6SJR
-         Fy2yg7ltow+aCE3feTbxmwn/KJWxkXFimkFJvY9a3Q5NURZLjq5qCusNfMeg1f37OxX9
-         l3XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751284285; x=1751889085;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hVoVStbXU6ccjSQ1NePiUp1BW7p4LaA0FGyVw4Z6EYA=;
-        b=UMvIEPfuInpg9pW7gMP17HQ8YwYpDry9S/8lphjkLY3RDx1w8zNoWqwWl0zqiOzkHv
-         BDLkSy49attuGdnixoygXSoK9tFM/LITGivuUEnfm8WY2ZtSZfi6CbNCLLgRhEbMLJFy
-         VEVj9g6De5wZnFajIWqSHMebRGNJYfrJgZZKJzq96ahfKYR6zqJCs+D63NjHM51gxmqL
-         yZIKAeYDYT2JBY328drSVCKpLSgpekVsw4R3HN9+GtRmSvysWUjEF7jPvyUo28zIkiN4
-         0nYa63oZGpnMBCwGsRMg2iycX4SLubc1dwMcG5gby98InBYQomNw+gMQNRAXkRoBro39
-         CScQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXp8Ybu03RdVq7QsEwAK2AZHgtWS8Fn+qbVgxGmR0YOyY3MNxGSuYh/di+fn1jv9lxUbXqTKV6q@vger.kernel.org, AJvYcCXqR1lhWaUJhvg3S9au8Oety0h5EguRHPTbPhGj2ecspqH/wRvjE4+XXBYHICs9rMQ/s1Y=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwMnECsyheQ8d1r39jL7Eknc34Rh9C8lScWHItLuIpjuAR2DAyi
-	T2hwLowBWePGXfFLLXvM4vCcVpHSK1GxNJ/6Z2IGA5gTu8UT923t+/yDGZtMC4K2ZRkqWzluUuN
-	Hu5AEPRo99iRpAcFW1NA/OZ4AQU986FI=
-X-Gm-Gg: ASbGncviExDB9cfyA2wNvj+WIRdidebcZCxGwGcSznh3cP6ZQ5Nm2KimXIA3fR3rj75
-	lX8FHJwh+vYOlX8HZjk2WR6kuOasS1yHUQqBdSejwZOCO+phVJ7lEMlpdo3/vyDdMIGbbhBMj0G
-	kbw644/17Ycu1ATBphXWSlsR8HUemH/v0HR1ix+0qf/OE=
-X-Google-Smtp-Source: AGHT+IErVhEJ6O9QU/koTNJ7LOED3GK7DckGsViLXOhiJh57scg13qi7yQVVENlnKQUHtlM+4GytxCJiL9kzu2K5TxM=
-X-Received: by 2002:a05:6e02:3d85:b0:3df:3d4c:be27 with SMTP id
- e9e14a558f8ab-3df4ab2c7dfmr143342265ab.5.1751284285471; Mon, 30 Jun 2025
- 04:51:25 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CDD2257435;
+	Mon, 30 Jun 2025 12:06:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.11
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1751285181; cv=fail; b=QaAGVzz8pnrriR+q8Ve3KTijQEW9gNFJdP1jodv0pPROYJ7oNHe7mKt+RGJqapQafUiAVDgtC62I9D5sAPzjgzPlimNFJej34JVq6e+pdpghpPW6ZERGkJwJUqXNd7NEARV42A5MwuIii/a5tk/tJp41TY9MREStFpw0nfEYIwI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1751285181; c=relaxed/simple;
+	bh=jMxug1GXrSg+1fkKoQS1nrNOTsG2HVvNorvDzdYpPJU=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=Y0WlbVciciKOqVZLiMk15wyNkSq6Rjva/VK3d9BVpDrlUQihDY+mivXN7Af6woNG6f9DZy7aQ/nARL25jneAchAFIIw3V9bSyIHbarBGMhxZb8XSqOz9c35+Ut8q/kAkjndSPeRxhxYlhqCWErJZl7s/whO5c9zR6FqGB0qcfmY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dSqpevnS; arc=fail smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1751285180; x=1782821180;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=jMxug1GXrSg+1fkKoQS1nrNOTsG2HVvNorvDzdYpPJU=;
+  b=dSqpevnS2uL77zxWMUfqJidJF1Mn5n3YiiMIQuy3s3v22wvGgwvAggEZ
+   F7CQsswrytRxtBxLqhf990bN3otEN/V3o1up72Kf6oJ/8CUdbhhzRdoIc
+   JUqtuWuWOJKDAiNoGGNOiA0dB1/FWfMBtiTvV4+9LRt7ir9XSCeNzep0A
+   UHn5zd7auvPgSAs8F+plm6E0jP1qLgrzARiPtxLjLzS0vOO3oxVb7rGrL
+   3pHg361a2u+sSTOHzq7Dpokyo3txYyGslTr7pDl9AkNC2LL8EKds6egPJ
+   qGubLqs98BfDiZ4zBj1m8LO82E78u6FNqDvhUYpJmBiapQDZNzTONI9qO
+   g==;
+X-CSE-ConnectionGUID: OlxvjpgNRDyqNwmhklhVyQ==
+X-CSE-MsgGUID: KeLW4qzWQtCUc1630jgUVQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11479"; a="63763632"
+X-IronPort-AV: E=Sophos;i="6.16,277,1744095600"; 
+   d="scan'208";a="63763632"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2025 05:06:19 -0700
+X-CSE-ConnectionGUID: fzue7+/LS/atYwTabzuNYQ==
+X-CSE-MsgGUID: P7udOnBASg+UODUa6YFW9w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,277,1744095600"; 
+   d="scan'208";a="153532857"
+Received: from orsmsx903.amr.corp.intel.com ([10.22.229.25])
+  by fmviesa006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2025 05:06:18 -0700
+Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.25; Mon, 30 Jun 2025 05:06:17 -0700
+Received: from ORSEDG902.ED.cps.intel.com (10.7.248.12) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.25 via Frontend Transport; Mon, 30 Jun 2025 05:06:17 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (40.107.220.56)
+ by edgegateway.intel.com (134.134.137.112) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.25; Mon, 30 Jun 2025 05:06:17 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=ZFy0LNd8ZLGK4KyM8fQHVcvygGKvpG9PrNHw/2Uv/8tfQDqvARQ68RcAMKRCbBuJVNkbnpZg1GKtsFORdYBXtOrwFiuMwC60HQ7KDiLio/RG8jw1/XNuswTDqUcZzZo1/bZHzXGwhyWHBLmbIFDyNoZZrt6u0J8B5CpISWXbG1GNfwREJzPrfNcCiO1hLEO8Wo9jW0RF3mtde6ilBJ57E2HMHHxTNNoBMwcSmsYJqx/ai1dHv1rOld708FxvrBtaniBv04Dt/fzl0tVQ2NrTHrVLTOsy25Ik4DAb6mxcy0ytki/2186T1GwUpLZ2VZU3zt29sGZ5CJxy+YvayUajPg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ijJYVpMKDUaWNYdEZba4tO2n3NjZgqsuXMdyagPQuxY=;
+ b=JTdFfOGQUwfIvggdhgDf0y06i5W6V5wEbnXbS2oBnWgb7UVSsbf/QPi/+3ZTmEQrUxvidt3FHSv4VyzS7iWhP0DGMhTLbKdMbqcSQWJwUebOoFBCC1lJ/fBghFsBbtLj5B8W3qgnTzuIah6ZMGXHLIxxuoO+qAG7pEIOA2OQ1/h/eb1WL4cx6f8Qu1BXw7KBBMz5mg3S1pICzCJmxunskcM5gVdti9xpRoBd39lM7SMG/I8VKumcMDVWCF6EoPUKepVgHzN/l9OvWX/jYwl+g5Clq13zaHv5WE8o98Lq5LmDTBWHllOYmcSGKCdcrXaJrtS1IMWlfxbtNX9x7BqlAg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
+ BL3PR11MB6507.namprd11.prod.outlook.com (2603:10b6:208:38e::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8880.27; Mon, 30 Jun 2025 12:06:15 +0000
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::d19:56fe:5841:77ca]) by DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::d19:56fe:5841:77ca%2]) with mapi id 15.20.8880.024; Mon, 30 Jun 2025
+ 12:06:15 +0000
+Date: Mon, 30 Jun 2025 14:06:02 +0200
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To: Jason Xing <kerneljasonxing@gmail.com>
+CC: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+	<pabeni@redhat.com>, <bjorn@kernel.org>, <magnus.karlsson@intel.com>,
+	<jonathan.lemon@gmail.com>, <sdf@fomichev.me>, <ast@kernel.org>,
+	<daniel@iogearbox.net>, <hawk@kernel.org>, <john.fastabend@gmail.com>,
+	<joe@dama.to>, <willemdebruijn.kernel@gmail.com>, <bpf@vger.kernel.org>,
+	<netdev@vger.kernel.org>, Jason Xing <kernelxing@tencent.com>
+Subject: Re: [PATCH net-next v4 2/2] selftests/bpf: check if the global
+ consumer updates in time
+Message-ID: <aGJ9qiwNe5HBFxr2@boxer>
+References: <20250627085745.53173-1-kerneljasonxing@gmail.com>
+ <20250627085745.53173-3-kerneljasonxing@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20250627085745.53173-3-kerneljasonxing@gmail.com>
+X-ClientProxiedBy: VI1PR06CA0149.eurprd06.prod.outlook.com
+ (2603:10a6:803:a0::42) To DM4PR11MB6117.namprd11.prod.outlook.com
+ (2603:10b6:8:b3::19)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250628120841.12421-1-kerneljasonxing@gmail.com> <aGJ4ohHA3Cs45wCp@boxer>
-In-Reply-To: <aGJ4ohHA3Cs45wCp@boxer>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Mon, 30 Jun 2025 19:50:48 +0800
-X-Gm-Features: Ac12FXx5tgVmEb0LnF7RrqgCktSLhkoEGze3OOXZPE1n-NGE2XuQW2tLm9Nh9gc
-Message-ID: <CAL+tcoA6if=S3592=V503vo_BFxEJ1FgOdDA+SGOrNWtuAQuTg@mail.gmail.com>
-Subject: Re: [PATCH net-next] Documentation: xsk: correct the obsolete
- references and examples
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com, 
-	jonathan.lemon@gmail.com, sdf@fomichev.me, ast@kernel.org, 
-	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com, joe@dama.to, 
-	willemdebruijn.kernel@gmail.com, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|BL3PR11MB6507:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0dbe0f9e-91ba-4336-ac2a-08ddb7ce838f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|1800799024|366016|376014;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?IOQfWPrNUFgN1WVhv3c5PHGQKQWmN/sVDWuKXr4sHC0bBxDXTimqpKCCpxom?=
+ =?us-ascii?Q?JzoxUINfd860YZ3jtneBo3ZCLt0COMOkWYJInwmlr1IBEHSZNqMnyTD95MrU?=
+ =?us-ascii?Q?ADXwvCvB/I5rF2d/39q/Wt33b1DfBLeEtC5+/1GyGHxzw0zoFLp71H0VpBgd?=
+ =?us-ascii?Q?iFX/CQpygWxnlWn3H6jx7TUIobFFPYRpMgtP2oSHS6ytOX91nqZ7Xw/1MjdR?=
+ =?us-ascii?Q?DnRcntKZga0zDyTomP73fryFDozsUY6nw+oDah+4x0qHdAVdn+50rw1fLF2D?=
+ =?us-ascii?Q?KWeAorRoxFgGgKcCZk7+v3+UDsbjewOVYaCHj56uTD387H5wSs8LFkSSElBZ?=
+ =?us-ascii?Q?NUqAUo+bb8m4QlaVRtV7HLEtbzLgcVt924cB6Eaz7aPPd21KB/bH4/r8VvF4?=
+ =?us-ascii?Q?IgmXTPbkMNdMB3oWunoQFWYVh5sHJSg24Tcg7463tkm1vUuR98qCfcn6v0ak?=
+ =?us-ascii?Q?JezPvJ/tTQy5wCIofT104GupLU7WTHenwmHTH6QOjSRQLjx0TiokeCXg9kj/?=
+ =?us-ascii?Q?Z2NDAaWv7u2F5rRaR7pK1pJnSLiW8duuzE7NuXWS1xj41bIs0dQnO1d/KdFV?=
+ =?us-ascii?Q?g0V9aXUiJ9Lk53PjEnHLlryL5h0tMHwVYw5ibllY9EgPkD1slAGJC4vRw5WZ?=
+ =?us-ascii?Q?kBa+KHsp0MwZbmqS+8QC3lhINSsb8KJaZcK4s/8GIVMmAyyXSbHYpDBDAAG8?=
+ =?us-ascii?Q?OAmgCeM7cHvmgUv1C+JcKXLEhOyI8afIShwkfVkLiy90uUq0CeunqC++YWHA?=
+ =?us-ascii?Q?OEgvaaiHurftFdkrwt/hGlS3FmWVZwETdYilQJ6kksMKiQUMF9uxmHq2TDP2?=
+ =?us-ascii?Q?foTH8RdcHpugCN2t0AQ76lkIHTOhlbsnjZh5Cjyp5HPg9U3wuyeVlmVdc9+T?=
+ =?us-ascii?Q?3g1nSFgVxyswETHAORl9W2ualX1k1Mof3tvHztONoIs8KaKCJ8ElxR1/Nmoz?=
+ =?us-ascii?Q?E4CbFO4VM6yc8hdqUnI35wrNc8LKDI30f2FKmNmM3gb3rgjUlUpi75mxCS7C?=
+ =?us-ascii?Q?We+Hg2fWV655JipQ4MWtHBJUlHbQv+prWdscMYLIDYZciHS6Zqkfz2CfJIoW?=
+ =?us-ascii?Q?y4zzXSTwoaXLpQgxuJ5gnECKn0pz1AalCVq9QhyNsn3ykmbMQhGMA/NiIhor?=
+ =?us-ascii?Q?CxZ1gGoENeheIt1UfVjK1RS36ttR43jtOXZT875R0xS1ExmSJXPPfOqzKlBh?=
+ =?us-ascii?Q?W6q+hcT8QP1HGr6GwFmgOJfZcg6Q1TAwHx3EFtQNSFlfqbKt1YPWs5gHR0MF?=
+ =?us-ascii?Q?ti8ceCZzoZN2a2qb5F7lFXmbmsCr1CotvgLDd2RYX6JsS/3YGqv6hysotlTo?=
+ =?us-ascii?Q?IpqOM7Conj/JiMFce4+kFbA3EoA25w7Ck5431GqVPuHUMK2a2U7P+YYX3bTU?=
+ =?us-ascii?Q?Cq57Cg8mqGohlkau/B9BTmkSoJkRzY9/hjMYCU10xSU+47mFNw=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(1800799024)(366016)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?dmhbQLQupYbwPnHvWBsYFH8jWLxZerPQo4h1HDktN+DDSIJKsMSO9lurVohr?=
+ =?us-ascii?Q?2zrPO5JS9rywtELo7DFASKZOlx2tCszGsLlFuHnod7yey4J/qZgUA1omocnm?=
+ =?us-ascii?Q?JB+K+rdutFcCmOY7n5aYm0lpDzklZN0J9KJN/zZKNH5VX14CNc+2HiUWn2li?=
+ =?us-ascii?Q?r7KcPANR0oKyIYh0u5EyXs7AY2IoXHL7++5f5tc9MQQMWeyjyjN+DNaaLczO?=
+ =?us-ascii?Q?VciQL2QCUm5LvOjP/ZJBEGiDo/driLZGGeSSVi4MGlgZdJOJUDHbZLV/Egnn?=
+ =?us-ascii?Q?SxMPVuMkTLQE4KzJ1/7m5TqEooI9GIG/PdoLMJM07s1RCeGW8vly03PSHufO?=
+ =?us-ascii?Q?XBEmgFsH8h5IcdYsYTyrYxa4S5Gby4mdwzNIfFvoEBLhDqpxpyaWmnV/Rf5E?=
+ =?us-ascii?Q?AXvdZ16D8qKe0E5djHrQtFW9pRU5A5E3fOhmTIEc+HzdyvQAc3ZH3iO0cNFN?=
+ =?us-ascii?Q?Phqi5xHArg5m/P7JhhDw23qfSF87GSN+HqmLZlF9abGbCYLUXwOLCHRWQypP?=
+ =?us-ascii?Q?pLGEIO0IXfco4AbBVcndrPEt8ujYyni1jGpFN2Fv3OTxNp8USngj0J9oSIh2?=
+ =?us-ascii?Q?OjK8uWy1Tis5KyOjsfnLmx8YGYWCANZtrGBfaw2eQsflh0NdAXzGo3YR9jPB?=
+ =?us-ascii?Q?wpLl9qrtq5bnW2GzVf4N8N/DVQSYplnVw5SsGwN8sSlZju43KXaqfwzl5+pU?=
+ =?us-ascii?Q?vUR3xaloTvkdYmNGgBJdS6I5PAicBG2lxAKE7wtMc3H8udO9z58KMd0WcMIi?=
+ =?us-ascii?Q?veBKIguZIKgtQbCyxdZCJYKDaczqfDEqwpO+3UCQG2oFzRZQ6tsB3+IF38lK?=
+ =?us-ascii?Q?e5jARGSFnkuRu1b0Y4ZnE9uMn9sqSC0v4fji1VwlDQvu/vtXYDZHZnRS/LuG?=
+ =?us-ascii?Q?goLYdBKflJT7cj9EPBXMSztbDrjgfmsPavgWonT5P9V0GxeP5GrssSjOt/gA?=
+ =?us-ascii?Q?MHtGogDciz4L0+++Vcmvq2Cc1TQ7EdJk803NVsLMnLqimDKgRGtkRXKVirAb?=
+ =?us-ascii?Q?J2K+OpFcv6W8G0DFVipPxJHtK56SQjK7iAWgWjbihxuQ/TmwQUSLt6yylUub?=
+ =?us-ascii?Q?kZzgtTz3QmcvYNFSs4bracjRDUQ18FpRlYhRbLwKMgaY/cbikhdLfkjZI1Lp?=
+ =?us-ascii?Q?5qnIiucN39kYTDmfZeQe2lY0g0oKUvt0reeQR4MbnYOT2USpWAenYkhUFg+C?=
+ =?us-ascii?Q?Q1fdvvK/llECFnWxBX5l4wy5wgQAHe/5WbZKdVWrTWfrlYjz6582stPni750?=
+ =?us-ascii?Q?w6JPfa4qmqmOWsfVJz+G70OkjMkfXzvw1+3k3Nt+Bpj/7SHi2eFGNj+zGzZ9?=
+ =?us-ascii?Q?b/D9ZdsNN3mpWJ+53JNFeCD548807W/Mb+zCpoCH5Wn2YX6uupu2IugrwF/E?=
+ =?us-ascii?Q?T9+NGravKjbwv0vWobtyVhvyJ8kBXErdTKZZy2n3R2HqWPGLv2NMPU1WY91k?=
+ =?us-ascii?Q?EIphMrzYwmybiqeCyoB/jDJV6NIBYcmAr8BYbXFkOddk3RNEJqfW2vB+rJLs?=
+ =?us-ascii?Q?k/QBN9XIigtDoSN0WFPV3FrvjbRkx1fvRQ+IArrY0HeaSC9r/jn7cejDQGhM?=
+ =?us-ascii?Q?TD3gAz5gXsCCy2+91AQA9WdP3zan8qNMzF+XqhdhxfwVg56dDVARMVUzI0+I?=
+ =?us-ascii?Q?GA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0dbe0f9e-91ba-4336-ac2a-08ddb7ce838f
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jun 2025 12:06:15.5938
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Bk9U8dD25GOwV/QFf2lktm7xhPchaZHiF7hWe78Z2mmB+3+yXdbo4BbuckLmKgE38l42lvkDQmzXIU4/XbD4VpXG/ye4T9mC1qByu0B0IY4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR11MB6507
+X-OriginatorOrg: intel.com
 
-On Mon, Jun 30, 2025 at 7:44=E2=80=AFPM Maciej Fijalkowski
-<maciej.fijalkowski@intel.com> wrote:
->
-> On Sat, Jun 28, 2025 at 08:08:40PM +0800, Jason Xing wrote:
-> > From: Jason Xing <kernelxing@tencent.com>
-> >
-> > The modified lines are mainly related to the following commits[1][2]
-> > which remove those tests and examples. Since samples/bpf has been
-> > deprecated, we can refer to more examples that are easily searched
-> > in the various xdp-projects.
-> >
-> > [1]: https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.gi=
-t/commit/?id=3Df36600634
-> > [2]: https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.gi=
-t/commit/?id=3Dcfb5a2dbf14
-> >
-> > Signed-off-by: Jason Xing <kernelxing@tencent.com>
-> > ---
-> >  Documentation/networking/af_xdp.rst | 45 ++++++++---------------------
-> >  1 file changed, 12 insertions(+), 33 deletions(-)
-> >
-> > diff --git a/Documentation/networking/af_xdp.rst b/Documentation/networ=
-king/af_xdp.rst
-> > index dceeb0d763aa..37711619e89e 100644
-> > --- a/Documentation/networking/af_xdp.rst
-> > +++ b/Documentation/networking/af_xdp.rst
-> > @@ -209,13 +209,10 @@ Libbpf
-> >
-> >  Libbpf is a helper library for eBPF and XDP that makes using these
-> >  technologies a lot simpler. It also contains specific helper functions
-> > -in tools/lib/bpf/xsk.h for facilitating the use of AF_XDP. It
-> > -contains two types of functions: those that can be used to make the
-> > -setup of AF_XDP socket easier and ones that can be used in the data
-> > -plane to access the rings safely and quickly. To see an example on how
-> > -to use this API, please take a look at the sample application in
-> > -samples/bpf/xdpsock_usr.c which uses libbpf for both setup and data
-> > -plane operations.
-> > +in ./tools/testing/selftests/bpf/xsk.h for facilitating the use of
-> > +AF_XDP. It contains two types of functions: those that can be used to
-> > +make the setup of AF_XDP socket easier and ones that can be used in th=
-e
-> > +data plane to access the rings safely and quickly.
-> >
-> >  We recommend that you use this library unless you have become a power
-> >  user. It will make your program a lot simpler.
-> > @@ -372,8 +369,7 @@ needs to explicitly notify the kernel to send any p=
-ackets put on the
-> >  TX ring. This can be accomplished either by a poll() call, as in the
-> >  RX path, or by calling sendto().
-> >
-> > -An example of how to use this flag can be found in
-> > -samples/bpf/xdpsock_user.c. An example with the use of libbpf helpers
-> > +An example with the use of libbpf helpers
-> >  would look like this for the TX path:
-> >
-> >  .. code-block:: c
-> > @@ -551,10 +547,9 @@ Usage
-> >
-> >  In order to use AF_XDP sockets two parts are needed. The
-> >  user-space application and the XDP program. For a complete setup and
-> > -usage example, please refer to the sample application. The user-space
-> > -side is xdpsock_user.c and the XDP side is part of libbpf.
-> > +usage example, please refer to the xdp-project.
-> >
-> > -The XDP code sample included in tools/lib/bpf/xsk.c is the following:
-> > +The XDP code sample is the following:
-> >
-> >  .. code-block:: c
-> >
-> > @@ -753,27 +748,11 @@ to facilitate extending a zero-copy driver with m=
-ulti-buffer support.
-> >  Sample application
-> >  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >
-> > -There is a xdpsock benchmarking/test application included that
-> > -demonstrates how to use AF_XDP sockets with private UMEMs. Say that
-> > -you would like your UDP traffic from port 4242 to end up in queue 16,
-> > -that we will enable AF_XDP on. Here, we use ethtool for this::
-> > -
-> > -      ethtool -N p3p2 rx-flow-hash udp4 fn
-> > -      ethtool -N p3p2 flow-type udp4 src-port 4242 dst-port 4242 \
-> > -          action 16
-> > -
-> > -Running the rxdrop benchmark in XDP_DRV mode can then be done
-> > -using::
-> > -
-> > -      samples/bpf/xdpsock -i p3p2 -q 16 -r -N
-> > -
-> > -For XDP_SKB mode, use the switch "-S" instead of "-N" and all options
-> > -can be displayed with "-h", as usual.
->
-> Hi Jason,
->
-> these commands above should be kept as-is imho and we should point users
-> to new xdpsock's location:
->
-> https://github.com/xdp-project/bpf-examples/tree/main/AF_XDP-example
+On Fri, Jun 27, 2025 at 04:57:45PM +0800, Jason Xing wrote:
+> From: Jason Xing <kernelxing@tencent.com>
+> 
+> This patch only checks non-zc mode and non STAT_TX_INVALID testcase. The
+> conditions are included in check_consumer().
+> 
+> The policy of testing the issue is to recognize the max budget case where
+> the number of descs in the tx queue is larger than the default max budget,
+> namely, 32, to make sure that 1) the max_batch error is triggered in
+> __xsk_generic_xmit(), 2) xskq_cons_peek_desc() doesn't have the chance
+> to update the global state of consumer at last. Hitting max budget case
+> is just one of premature exit cases but has the same result/action in
+> __xsk_generic_xmit().
+> 
+> Signed-off-by: Jason Xing <kernelxing@tencent.com>
+> ---
+>  tools/testing/selftests/bpf/xskxceiver.c | 60 +++++++++++++++++++-----
+>  1 file changed, 48 insertions(+), 12 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
+> index 0ced4026ee44..694b0c0e1217 100644
+> --- a/tools/testing/selftests/bpf/xskxceiver.c
+> +++ b/tools/testing/selftests/bpf/xskxceiver.c
+> @@ -109,6 +109,8 @@
+>  
+>  #include <network_helpers.h>
+>  
+> +#define MAX_TX_BUDGET_DEFAULT 32
+> +
+>  static bool opt_verbose;
+>  static bool opt_print_tests;
+>  static enum test_mode opt_mode = TEST_MODE_ALL;
+> @@ -1091,11 +1093,34 @@ static bool is_pkt_valid(struct pkt *pkt, void *buffer, u64 addr, u32 len)
+>  	return true;
+>  }
+>  
+> -static int kick_tx(struct xsk_socket_info *xsk)
+> +static u32 load_value(u32 *a)
+>  {
+> -	int ret;
+> +	return __atomic_load_n(a, __ATOMIC_ACQUIRE);
+> +}
+> +
+> +static int kick_tx_with_check(struct xsk_socket_info *xsk)
+> +{
+> +	int ret, cons_delta;
+> +	u32 prev_cons;
+>  
+> +	prev_cons = load_value(xsk->tx.consumer);
+>  	ret = sendto(xsk_socket__fd(xsk->xsk), NULL, 0, MSG_DONTWAIT, NULL, 0);
+> +	cons_delta = load_value(xsk->tx.consumer) - prev_cons;
+> +	if (cons_delta != MAX_TX_BUDGET_DEFAULT)
+> +		return TEST_FAILURE;
+> +
+> +	return ret;
+> +}
+> +
+> +static int kick_tx(struct xsk_socket_info *xsk, bool check_cons)
+> +{
+> +	u32 ready_to_send = load_value(xsk->tx.producer) - load_value(xsk->tx.consumer);
+> +	int ret;
+> +
+> +	if (!check_cons || ready_to_send <= MAX_TX_BUDGET_DEFAULT)
+> +		ret = sendto(xsk_socket__fd(xsk->xsk), NULL, 0, MSG_DONTWAIT, NULL, 0);
+> +	else
+> +		ret = kick_tx_with_check(xsk);
+>  	if (ret >= 0)
+>  		return TEST_PASS;
+>  	if (errno == ENOBUFS || errno == EAGAIN || errno == EBUSY || errno == ENETDOWN) {
+> @@ -1116,14 +1141,14 @@ static int kick_rx(struct xsk_socket_info *xsk)
+>  	return TEST_PASS;
+>  }
+>  
+> -static int complete_pkts(struct xsk_socket_info *xsk, int batch_size)
+> +static int complete_pkts(struct xsk_socket_info *xsk, int batch_size, bool check_cons)
 
-I thought we'd better not refer to an external link that might be
-unreliable in the future. It turns out I was wrong.
+instead of sprinkling the booleans around the internals maybe you could
+achieve the same thing via flag added to xsk_socket_info?
 
-No problem. I will revise them because for now it's still working well.
+you could set this new flag to true for standalone test case then? so we
+would be sort of back to initial approach.
 
-Thanks,
-Jason
+now you have nicely narrowed it down to kick_tx() being modified. Just the
+matter of passing the flag down.
 
->
-> > -
-> > -This sample application uses libbpf to make the setup and usage of
-> > -AF_XDP simpler. If you want to know how the raw uapi of AF_XDP is
-> > -really used to make something more advanced, take a look at the libbpf
-> > -code in tools/lib/bpf/xsk.[ch].
-> > +Xdpsock benchmarking/test application can be found through googling
-> > +the various xdp-project repositories connected to libxdp. If you want
-> > +to know how the raw uapi of AF_XDP is really used to make something
-> > +more advanced, take a look at the libbpf code in
-> > +tools/testing/selftests/bpf/xsk.[ch].
-> >
-> >  FAQ
-> >  =3D=3D=3D=3D=3D=3D=3D
-> > --
-> > 2.41.3
-> >
-> >
+>  {
+>  	unsigned int rcvd;
+>  	u32 idx;
+>  	int ret;
+>  
+>  	if (xsk_ring_prod__needs_wakeup(&xsk->tx)) {
+> -		ret = kick_tx(xsk);
+> +		ret = kick_tx(xsk, check_cons);
+>  		if (ret)
+>  			return TEST_FAILURE;
+>  	}
+> @@ -1323,7 +1348,17 @@ static int receive_pkts(struct test_spec *test)
+>  	return TEST_PASS;
+>  }
+>  
+> -static int __send_pkts(struct ifobject *ifobject, struct xsk_socket_info *xsk, bool timeout)
+> +bool check_consumer(struct test_spec *test)
+> +{
+> +	if (test->mode & TEST_MODE_ZC ||
+> +	    !strncmp("STAT_TX_INVALID", test->name, MAX_TEST_NAME_SIZE))
+> +		return false;
+> +
+> +	return true;
+> +}
+> +
+> +static int __send_pkts(struct test_spec *test, struct ifobject *ifobject,
+> +		       struct xsk_socket_info *xsk, bool timeout)
+>  {
+>  	u32 i, idx = 0, valid_pkts = 0, valid_frags = 0, buffer_len;
+>  	struct pkt_stream *pkt_stream = xsk->pkt_stream;
+> @@ -1336,7 +1371,7 @@ static int __send_pkts(struct ifobject *ifobject, struct xsk_socket_info *xsk, b
+>  	/* pkts_in_flight might be negative if many invalid packets are sent */
+>  	if (pkts_in_flight >= (int)((umem_size(umem) - xsk->batch_size * buffer_len) /
+>  	    buffer_len)) {
+> -		ret = kick_tx(xsk);
+> +		ret = kick_tx(xsk, check_consumer(test));
+>  		if (ret)
+>  			return TEST_FAILURE;
+>  		return TEST_CONTINUE;
+> @@ -1365,7 +1400,7 @@ static int __send_pkts(struct ifobject *ifobject, struct xsk_socket_info *xsk, b
+>  			}
+>  		}
+>  
+> -		complete_pkts(xsk, xsk->batch_size);
+> +		complete_pkts(xsk, xsk->batch_size, check_consumer(test));
+>  	}
+>  
+>  	for (i = 0; i < xsk->batch_size; i++) {
+> @@ -1437,7 +1472,7 @@ static int __send_pkts(struct ifobject *ifobject, struct xsk_socket_info *xsk, b
+>  	}
+>  
+>  	if (!timeout) {
+> -		if (complete_pkts(xsk, i))
+> +		if (complete_pkts(xsk, i, check_consumer(test)))
+>  			return TEST_FAILURE;
+>  
+>  		usleep(10);
+> @@ -1447,7 +1482,7 @@ static int __send_pkts(struct ifobject *ifobject, struct xsk_socket_info *xsk, b
+>  	return TEST_CONTINUE;
+>  }
+>  
+> -static int wait_for_tx_completion(struct xsk_socket_info *xsk)
+> +static int wait_for_tx_completion(struct xsk_socket_info *xsk, bool check_cons)
+>  {
+>  	struct timeval tv_end, tv_now, tv_timeout = {THREAD_TMOUT, 0};
+>  	int ret;
+> @@ -1466,7 +1501,7 @@ static int wait_for_tx_completion(struct xsk_socket_info *xsk)
+>  			return TEST_FAILURE;
+>  		}
+>  
+> -		complete_pkts(xsk, xsk->batch_size);
+> +		complete_pkts(xsk, xsk->batch_size, check_cons);
+>  	}
+>  
+>  	return TEST_PASS;
+> @@ -1492,7 +1527,7 @@ static int send_pkts(struct test_spec *test, struct ifobject *ifobject)
+>  				__set_bit(i, bitmap);
+>  				continue;
+>  			}
+> -			ret = __send_pkts(ifobject, &ifobject->xsk_arr[i], timeout);
+> +			ret = __send_pkts(test, ifobject, &ifobject->xsk_arr[i], timeout);
+>  			if (ret == TEST_CONTINUE && !test->fail)
+>  				continue;
+>  
+> @@ -1502,7 +1537,8 @@ static int send_pkts(struct test_spec *test, struct ifobject *ifobject)
+>  			if (ret == TEST_PASS && timeout)
+>  				return ret;
+>  
+> -			ret = wait_for_tx_completion(&ifobject->xsk_arr[i]);
+> +			ret = wait_for_tx_completion(&ifobject->xsk_arr[i],
+> +						     check_consumer(test));
+>  			if (ret)
+>  				return TEST_FAILURE;
+>  		}
+> -- 
+> 2.41.3
+> 
 
