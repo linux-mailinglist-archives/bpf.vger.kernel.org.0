@@ -1,222 +1,602 @@
-Return-Path: <bpf+bounces-61817-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61818-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FDE8AEDC46
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 14:07:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EF1FAEDC7F
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 14:16:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D38F83B724F
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 12:07:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7929316A41F
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 12:16:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8D3D289815;
-	Mon, 30 Jun 2025 12:07:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61000242905;
+	Mon, 30 Jun 2025 12:16:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aP09IVTy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DLJUTNch"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
+Received: from mail-ej1-f66.google.com (mail-ej1-f66.google.com [209.85.218.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABD2A28507C;
-	Mon, 30 Jun 2025 12:07:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D69323ABB4
+	for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 12:16:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751285260; cv=none; b=cyf9issfAYys/BZ1rF9jmz0ZX5t1zPD0C+Frpz0r42wjVJI5XcMRso4/vufpPQbC/727sgExKbN+jc7/c63a1NucvzfVHQtMI1vzebBRL8qu3GXHaIFGQ1K4xW0LS1kbHmnrVWpIvjllDBSmsSZNvLC3543TghFqlmhDbnhaa9o=
+	t=1751285796; cv=none; b=M7P8Ku1byZDv10XKvyf4Z3pP8xTvkwvGoHx1wGX39yZtpg3iKdDKaYH7A6rQXCtRQPHm8hKgOrV0QEvOn/wthyNZKQzpUEtXaADaD/6DB6Lm/wMO2Nz+7tzNrCuuu1xIspmGB0rjh6uJvCMQn0JwDdULQ99DZBaFkUm6DIaHaWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751285260; c=relaxed/simple;
-	bh=oWfahthu4lRpAHyz1PGLTYWZrIT3duCBXXwMTHQ60uQ=;
+	s=arc-20240116; t=1751285796; c=relaxed/simple;
+	bh=6GJhURTl675hgXcb6BDwjuarW6YS7VnKchFgHYO0Ocw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=F56m+m6hhdJg5oMR6vd26o23L0ZGvwpANH/+XICxKO623Cym/uWcUfkcbwtfLTxIeBUWcKEpsaloBXxsVnIBT8vt+m9gtcV0CKyEasLf6Y09Xg0E0ghmWMdgJgbrkLZsdybQRdTlBMVv47N4UXBa/w1tFvzcZrEcFx1+oQjdKYA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aP09IVTy; arc=none smtp.client-ip=209.85.166.177
+	 To:Cc:Content-Type; b=YN+ThNA0nDlrcEC74DCXA000MR3d51D9c3nEY664/0aZfZdOHUr6QehIiQLKvx/uhnYS25YoVX03bdigy1PaXE92vLbC6uhLFi+BTWj0KtYUtG38vn5dTMg/ug0nJmmFCtNaNKwy5C94lHclSXK05M/ZPuYeYk0cCWofkVZRJsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DLJUTNch; arc=none smtp.client-ip=209.85.218.66
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f177.google.com with SMTP id e9e14a558f8ab-3df3ce3ec91so8939845ab.2;
-        Mon, 30 Jun 2025 05:07:38 -0700 (PDT)
+Received: by mail-ej1-f66.google.com with SMTP id a640c23a62f3a-ade76b8356cso414462966b.2
+        for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 05:16:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751285258; x=1751890058; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i1Y2kNk6/RyOPvlbTloRZmjiHTq/yIMIP7qqPNBr/CI=;
-        b=aP09IVTyjdToF69mjIycMrPrHzHHiCPzDRY7s4808KcrhGY/xBpVkZzPqkoP0Ms0Cc
-         EEKH3lul5WkrhWZMTMwVsIvsQeKigaDms7hpFjRm0gg3z3liZmO2z37ooVbzHm7SsJH8
-         fR6jLdWOv5V0Xol6aepkXS5rw0mGYbzkjMrGdAF+Wc79hfjmcN3Er0DCX23JZ8tw3saQ
-         t9qMMBMl6ZPTBSr4s5mMFzSyrO00BX2Af0AVA9GhCZ0L6rM3gIxf5rCJRh+XyxoGg9vF
-         E+/riEwPpbqEAaUU4ffovxfQMXKAAizeBZmwTGkvmr1Z6AG3AZ59Zaw8iiE2R+NaV54v
-         LogA==
+        d=gmail.com; s=20230601; t=1751285793; x=1751890593; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=E8w3julCoROAJHvCsY+b79cM+IGWg6CUnSaaChapd8c=;
+        b=DLJUTNchviZiFoxn6SjeqBMBLurbnlZjl9YIGpqABQ0+Mfgl8OC3QVAIkSnNNOS+dz
+         Lb48k8eSJy7uoMXbb9MjhhIlkgc75QtQ2X07UTQSkHYfeNXfZBoN3uIvHNkVwwkDv0DD
+         yXBFdzx3wT0MxG9W3kF1SLdCWJiIyQl7mp4upSqV2wuZN9ZxNaXaJj+F73jjxFNSATfv
+         5hKSDmBeOYgeGXkWnhqNv3Q6YJW2rNJyJ8s+/HoodwX2PX1zD9RbY26HwwpxrtQ4gHOS
+         Fra/Bf7FweN8mfDQ3OnHjj0Hwe9kgfiBYz6fXCsaXi8fPVRWOIeBqON6FWPBt9qQ/6P8
+         2R8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751285258; x=1751890058;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i1Y2kNk6/RyOPvlbTloRZmjiHTq/yIMIP7qqPNBr/CI=;
-        b=okwTaFzzJjPLUAL7wNV7fU5huc/PpmunBX5k6DB4yQ53pM/1FkeAvrl339oqyAOyIe
-         mhpEqRQ7QQHSLilu2vNSdO2blXeQdk7IDWMmMQMN7nLIw4o880fAAhY1d+VtSWt9tHWq
-         wNjgxrrAEbjeKYogLTkYxo6edzCtdbB/0KG5EBGiYp9lIVxX+w3AtsvzHqAb9z9Rigmc
-         n11rfz6qJSRhB406Vq89QAEo8B6FrpwkskJcL3122zs2gHIhmgXXgesBNYpQ9QXSXG9W
-         +VrjlA6E9moc1lGBhd2PMAb6DmvvBoF9xvYAOwRhxK+LpQJVpB7SZWwBf7QXoV/0us30
-         YeqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU9HkajT+g3K50S+R6ZoP7lgcpi3gAFsjssb0yEugK34ftj2VQ3viL3dPgnBr4h8I7iU38=@vger.kernel.org, AJvYcCWeIT7e2t9VJqW9UgkCM8k/7Zz6nbpaudhXAezXUZ3WODTnj0pIp2+uyuFSg5gCO6F6x0aJ2CxO@vger.kernel.org
-X-Gm-Message-State: AOJu0YwPdIEb1ZX/jBmgCIXb9no+ieHlyFY9YHRdpjN7pEw8xrJqOIp7
-	Q4jaaPmpyKS2BvoKFZXw59gOXKYEC2EoGxx212UzHX+m4WuNkxzYGoadU8MCwvY227ag6VTOpnm
-	C+DNv9xexTrFDQ4gyZEQbJ8Cqf+HgKi4=
-X-Gm-Gg: ASbGncvgZSoTqN+63fHOZksIdE8PydlUETe7R1P5qNN3VDARwS8RE2ek1SVXtvuoOIO
-	hfU9QjsJHHkm1LXh1c4NC0sfFgLhKSdD++QaW+AFsJqhyBc/W1ry0Ntxq1HUk+6SRkNMFOzEpuf
-	g190rr2lGpmdLgibLvKXujMH8p28NZlwtonqulGKIH7KU=
-X-Google-Smtp-Source: AGHT+IGo1bduu0rN+6+rUcnWoL+iSQRZqOf8iwIuZlNSZg1uctReSkP1kGqsNmdk8DmdAtQ7AGPn7Z4EOIZN3u9j0B8=
-X-Received: by 2002:a05:6e02:194e:b0:3dd:f948:8539 with SMTP id
- e9e14a558f8ab-3df4ab2aedamr134911405ab.2.1751285257631; Mon, 30 Jun 2025
- 05:07:37 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1751285793; x=1751890593;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=E8w3julCoROAJHvCsY+b79cM+IGWg6CUnSaaChapd8c=;
+        b=caUvazETQ0hLqDluAjQ70E7CnKej2h0FXYI+5IsLTHuN1DtQNpGpxDiKt3SCVHUEMW
+         ZmMAVMjEQa608f96YxJuq6ubGegO+H4URyO7WC3sIcuWtEwpVEBy7UtCFVujI5xyStBs
+         mDdNKGWMs4XtGCoo4ymq6B21odWQ4JcwINN1tbpSSBuz7yCIHn/5NGYkpqgfAl7hJk2d
+         ucpx0Ak/DYBQzmzXFA+wHc9EQCZOLNLhooNY7JYYTDUib21jpgAZm7Gw08GxdhyY3wMA
+         7sFWwbKlfDu9lcUdgcx3EtFMNcACQX+vGLPm8YGT+/ycGybfc9C6XA3V8PhpqYXVp36A
+         IzoQ==
+X-Gm-Message-State: AOJu0YxK1Q6qRkUXPxehWhufohuVBYzjopjOnsF1isGcWLoXDpMLbxuC
+	+4x6kimAHXzENxKwgtDpo6j1Gxjm0HOUDEQqca5KimpMsHsFXqGxBTXX7KjHWStGqKSnhSnMewo
+	ZaNt7UNQLxhHbQcG/NRsAWwpKPHmAGJI=
+X-Gm-Gg: ASbGncvq7Q2GD/kPa+t6KtaNl/Ik5sny4pXialbziYfj6fxGnPw0WBhwV+jM3IktEeg
+	8NpGgmfG236QshM1pyCiefQoN+lhSSqz6D8PinC3yp0Cl+6I6Nnk0fAP3SAuKcAYR3HXaKty2bA
+	yUfmZG7Lpim10E5Ulw2YfSw8eE5iAeXHFiR1aZ6ejBJo0F/CoNsKdDh4Z314UEwu1FeH2mTS2hg
+	IXl
+X-Google-Smtp-Source: AGHT+IFab+FLhmwZXgqaj/DblWdBY3p+c8kL8Wnfq8nhzkq/Zmp37c4kMSXmdGfmeBtWQppohZavygdZIGpycvNrI7k=
+X-Received: by 2002:a17:907:868b:b0:ad9:db54:ba47 with SMTP id
+ a640c23a62f3a-ae350190c99mr1381304566b.43.1751285792274; Mon, 30 Jun 2025
+ 05:16:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250627110121.73228-1-kerneljasonxing@gmail.com>
- <CAL+tcoCSd_LA8w9ov7+_sOWLt3EU1rcqK8Sa6UF5S-xgfAGPnA@mail.gmail.com>
- <CAL+tcoCCM+m6eJ1VNoeF2UMdFOhMjJ1z2FVUoMJk=js++hk0RQ@mail.gmail.com> <aGJ5DDtFAZ/IsE0B@boxer>
-In-Reply-To: <aGJ5DDtFAZ/IsE0B@boxer>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Mon, 30 Jun 2025 20:07:01 +0800
-X-Gm-Features: Ac12FXz5UilEKYhitYo1b6v4WHc0yw1WRA7jUU_gZXgph0gCGjmUDavA2nf0IEU
-Message-ID: <CAL+tcoB+_5p4V3WgMmpGnrjj-+axTDkhKoYS=1cMKxTRs68JAA@mail.gmail.com>
-Subject: Re: [PATCH net-next v6] net: xsk: introduce XDP_MAX_TX_BUDGET set/getsockopt
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com, 
-	jonathan.lemon@gmail.com, sdf@fomichev.me, ast@kernel.org, 
-	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com, joe@dama.to, 
-	willemdebruijn.kernel@gmail.com, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	Jason Xing <kernelxing@tencent.com>
+References: <20250614064056.237005-1-sidchintamaneni@gmail.com> <20250614064056.237005-4-sidchintamaneni@gmail.com>
+In-Reply-To: <20250614064056.237005-4-sidchintamaneni@gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Mon, 30 Jun 2025 14:15:55 +0200
+X-Gm-Features: Ac12FXzmrStL6LbuoBPZckb1le4CY8WlQ1sxb9Cy61DKV9q0UsTWRE7INOu6hA8
+Message-ID: <CAP01T77TBA3eEVoqGMVTpYsEzvg0f7Q95guH0SDQ3gZK=q+Tag@mail.gmail.com>
+Subject: Re: [RFC bpf-next v2 3/4] bpf: Runtime part of fast-path termination approach
+To: Siddharth Chintamaneni <sidchintamaneni@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, djwillia@vt.edu, 
+	miloc@vt.edu, ericts@vt.edu, rahult@vt.edu, doniaghazy@vt.edu, 
+	quanzhif@vt.edu, jinghao7@illinois.edu, egor@vt.edu, sairoop10@gmail.com, 
+	Raj Sahu <rjsu26@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 30, 2025 at 7:47=E2=80=AFPM Maciej Fijalkowski
-<maciej.fijalkowski@intel.com> wrote:
+On Sat, 14 Jun 2025 at 08:41, Siddharth Chintamaneni
+<sidchintamaneni@gmail.com> wrote:
 >
-> On Sun, Jun 29, 2025 at 06:43:05PM +0800, Jason Xing wrote:
-> > On Sun, Jun 29, 2025 at 10:51=E2=80=AFAM Jason Xing <kerneljasonxing@gm=
-ail.com> wrote:
-> > >
-> > > On Fri, Jun 27, 2025 at 7:01=E2=80=AFPM Jason Xing <kerneljasonxing@g=
-mail.com> wrote:
-> > > >
-> > > > From: Jason Xing <kernelxing@tencent.com>
-> > > >
-> > > > This patch provides a setsockopt method to let applications leverag=
-e to
-> > > > adjust how many descs to be handled at most in one send syscall. It
-> > > > mitigates the situation where the default value (32) that is too sm=
-all
-> > > > leads to higher frequency of triggering send syscall.
-> > > >
-> > > > Considering the prosperity/complexity the applications have, there =
-is no
-> > > > absolutely ideal suggestion fitting all cases. So keep 32 as its de=
-fault
-> > > > value like before.
-> > > >
-> > > > The patch does the following things:
-> > > > - Add XDP_MAX_TX_BUDGET socket option.
-> > > > - Convert TX_BATCH_SIZE to tx_budget_spent.
-> > > > - Set tx_budget_spent to 32 by default in the initialization phase =
-as a
-> > > >   per-socket granular control. 32 is also the min value for
-> > > >   tx_budget_spent.
-> > > > - Set the range of tx_budget_spent as [32, xs->tx->nentries].
-> > > >
-> > > > The idea behind this comes out of real workloads in production. We =
-use a
-> > > > user-level stack with xsk support to accelerate sending packets and
-> > > > minimize triggering syscalls. When the packets are aggregated, it's=
- not
-> > > > hard to hit the upper bound (namely, 32). The moment user-space sta=
-ck
-> > > > fetches the -EAGAIN error number passed from sendto(), it will loop=
- to try
-> > > > again until all the expected descs from tx ring are sent out to the=
- driver.
-> > > > Enlarging the XDP_MAX_TX_BUDGET value contributes to less frequency=
- of
-> > > > sendto() and higher throughput/PPS.
-> > > >
-> > > > Here is what I did in production, along with some numbers as follow=
-s:
-> > > > For one application I saw lately, I suggested using 128 as max_tx_b=
-udget
-> > > > because I saw two limitations without changing any default configur=
-ation:
-> > > > 1) XDP_MAX_TX_BUDGET, 2) socket sndbuf which is 212992 decided by
-> > > > net.core.wmem_default. As to XDP_MAX_TX_BUDGET, the scenario behind
-> > > > this was I counted how many descs are transmitted to the driver at =
-one
-> > > > time of sendto() based on [1] patch and then I calculated the
-> > > > possibility of hitting the upper bound. Finally I chose 128 as a
-> > > > suitable value because 1) it covers most of the cases, 2) a higher
-> > > > number would not bring evident results. After twisting the paramete=
-rs,
-> > > > a stable improvement of around 4% for both PPS and throughput and l=
-ess
-> > > > resources consumption were found to be observed by strace -c -p xxx=
-:
-> > > > 1) %time was decreased by 7.8%
-> > > > 2) error counter was decreased from 18367 to 572
-> > >
-> > > More interesting numbers are arriving here as I run some benchmarks
-> > > from xdp-project/bpf-examples/AF_XDP-example/ in my VM.
-> > >
-> > > Running "sudo taskset -c 2 ./xdpsock -i eth0 -q 1 -l -N -t -b 256"
+> Introduces watchdog based runtime mechanism to terminate
+> a BPF program. When a BPF program is interrupted by
+> an watchdog, its registers are are passed onto the bpf_die.
 >
-> do you have a patch against xdpsock that does setsockopt you're
-> introducing here?
+> Inside bpf_die we perform the text_poke and stack walk
+> to stub helpers/kfunc replace bpf_loop helper if called
+> inside bpf program.
+>
+> Current implementation doesn't handle the termination of
+> tailcall programs.
+>
+> There is a known issue by calling text_poke inside interrupt
+> context - https://elixir.bootlin.com/linux/v6.15.1/source/kernel/smp.c#L815.
 
-Sure, I added the following code in the apply_setsockopt():
-if (setsockopt(xsk_socket__fd(xsk->xsk), SOL_XDP, 9, &a, sizeof(a)) < 0)
-...
+I don't have a good idea so far, maybe by deferring work to wq context?
+Each CPU would need its own context and schedule work there.
+The problem is that it may not be invoked immediately.
+
+Regardless, I think there's more things to fix before we get here. See below.
 
 >
-> -B -b 256 was for enabling busy polling and giving it 256 budget, which i=
-s
-> not what you wanted to achieve.
+> Please let us know if you have any suggestions around this?
+>
+> Signed-off-by: Raj Sahu <rjsu26@gmail.com>
+> Signed-off-by: Siddharth Chintamaneni <sidchintamaneni@gmail.com>
+> ---
+>  include/linux/bpf.h     |   1 +
+>  include/linux/filter.h  |  41 +++++++-
+>  kernel/bpf/core.c       |  15 +++
+>  kernel/bpf/syscall.c    | 206 ++++++++++++++++++++++++++++++++++++++++
+>  kernel/bpf/trampoline.c |   5 +
+>  5 files changed, 267 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 1c534b3e10d8..5dd0f06bbf02 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1547,6 +1547,7 @@ struct cpu_aux {
+>
+>  struct bpf_term_aux_states {
+>         struct bpf_prog *patch_prog;
+> +       struct bpf_prog *prog;
+>         struct cpu_aux *per_cpu_state;
+>         struct hrtimer hrtimer;
+>  };
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index cd9f1c2727ec..921d2318bcf7 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -689,11 +689,40 @@ extern int (*nfct_btf_struct_access)(struct bpf_verifier_log *log,
+>                                      const struct bpf_reg_state *reg,
+>                                      int off, int size);
+>
+> +void bpf_die(void *data);
+> +
+>  typedef unsigned int (*bpf_dispatcher_fn)(const void *ctx,
+>                                           const struct bpf_insn *insnsi,
+>                                           unsigned int (*bpf_func)(const void *,
+>                                                                    const struct bpf_insn *));
+>
+> +static void update_term_per_cpu_flag(const struct bpf_prog *prog, u8 cpu_flag)
+> +{
+> +       unsigned long flags;
+> +       u32 cpu_id = raw_smp_processor_id();
+> +       spin_lock_irqsave(&prog->term_states->per_cpu_state[cpu_id].lock,
+> +                               flags);
+> +       prog->term_states->per_cpu_state[cpu_id].cpu_flag = cpu_flag;
+> +       spin_unlock_irqrestore(&prog->term_states->per_cpu_state[cpu_id].lock,
+> +                               flags);
+> +}
+> +
+> +static void bpf_terminate_timer_init(const struct bpf_prog *prog)
+> +{
+> +       ktime_t timeout = ktime_set(1, 0); // 1s, 0ns
+> +
+> +       /* Initialize timer on Monotonic clock, relative mode */
+> +       hrtimer_setup(&prog->term_states->hrtimer, bpf_termination_wd_callback, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
 
-I checked that I can use getsockopt to get the budget value the same
-as what I use setsockopt().
+Hmm, doesn't this need to be a per-CPU hrtimer? Otherwise all
+concurrent invocations will race to set up and start it?
+Doesn't even look thread safe, unless I'm missing something.
 
-Sorry, I don't know what you meant here. Could you say more about it?
+> +
+> +       /* Start watchdog */
+> +       hrtimer_start(&prog->term_states->hrtimer, timeout, HRTIMER_MODE_REL);
+> +}
+> +
+> +static void bpf_terminate_timer_cancel(const struct bpf_prog *prog)
+> +{
+> +       hrtimer_cancel(&prog->term_states->hrtimer);
+> +}
+> +
+>  static __always_inline u32 __bpf_prog_run(const struct bpf_prog *prog,
+>                                           const void *ctx,
+>                                           bpf_dispatcher_fn dfunc)
+> @@ -706,7 +735,11 @@ static __always_inline u32 __bpf_prog_run(const struct bpf_prog *prog,
+>                 u64 duration, start = sched_clock();
+>                 unsigned long flags;
+>
+> +               update_term_per_cpu_flag(prog, 1);
+> +               bpf_terminate_timer_init(prog);
+>                 ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
+> +               bpf_terminate_timer_cancel(prog);
+> +               update_term_per_cpu_flag(prog, 0);
+>
+>                 duration = sched_clock() - start;
+>                 stats = this_cpu_ptr(prog->stats);
+> @@ -715,8 +748,11 @@ static __always_inline u32 __bpf_prog_run(const struct bpf_prog *prog,
+>                 u64_stats_add(&stats->nsecs, duration);
+>                 u64_stats_update_end_irqrestore(&stats->syncp, flags);
+>         } else {
+> +               update_term_per_cpu_flag(prog, 1);
+> +               bpf_terminate_timer_init(prog);
+>                 ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
+> -       }
+> +               bpf_terminate_timer_cancel(prog);
+> +               update_term_per_cpu_flag(prog, 0);}
+>         return ret;
+>  }
 
-Thanks,
-Jason
+Hmm, did you profile how much overhead this adds? It's not completely
+free, right?
+I guess the per_cpu flag's lock is uncontended, so there wouldn't be
+too much overhead there (though it's still an extra atomic op on the
+fast path).
+hrtimer_setup() won't be that expensive either, but I think
+hrtimer_start() can be.
+Also, what about programs invoked from BPF trampoline? We would need
+such "watchdog" protection for potentially every program, right?
+
+I'm more concerned about the implications of using an hrtimer around
+every program invocation though.
+Imagine that the program gets invoked in task context, the same
+program then runs in interrupt context (let's say it's a tracing
+program).
+Even the simple hrtimer_cancel() when returning from interrupt context
+can potentially deadlock the kernel if the task context program hit
+its limit and was inside the timer callback.
+Let alone the fact that we can have recursion on the same CPU as above
+or by repeatedly invoking the same program, which reprograms the timer
+again.
+
+I think we should piggy back on softlockup / hardlockup checks (that's
+what I did long ago), but for simplicity I would just drop these time
+based enforcement checks from the set for now.
+They're incomplete, and potentially buggy. Instead you can invoke
+bpf_die() when a program hits the loop's max count limit or something
+similar, in order to test this.
+We also need to account for sleepable programs, so a 1 second
+hardcoded limit is probably not appropriate.
+Enforcement is orthogonal to how a program is cleaned up, though as
+important, but it can be revisited once we sort out the first part.
 
 >
-> > >
-> > > Using the default configure 32 as the max budget iteration:
-> > >  sock0@eth0:1 txonly xdp-drv
-> > >                    pps            pkts           1.01
-> > > rx                 0              0
-> > > tx                 48,574         49,152
-> > >
-> > > Enlarging the value to 256:
-> > >  sock0@eth0:1 txonly xdp-drv
-> > >                    pps            pkts           1.00
-> > > rx                 0              0
-> > > tx                 148,277        148,736
-> > >
-> > > Enlarging the value to 512:
-> > >  sock0@eth0:1 txonly xdp-drv
-> > >                    pps            pkts           1.00
-> > > rx                 0              0
-> > > tx                 226,306        227,072
-> > >
-> > > The performance of pps goes up by 365% (with max budget set as 512)
-> > > which is an incredible number :)
-> >
-> > Weird thing. I purchased another VM and didn't manage to see such a
-> > huge improvement.... Good luck is that I own that good machine which
-> > is still reproducible and I'm still digging in it. So please ignore
-> > this noise for now :|
-> >
-> > Thanks,
-> > Jason
+> @@ -1119,6 +1155,9 @@ int sk_get_filter(struct sock *sk, sockptr_t optval, unsigned int len);
+>  bool sk_filter_charge(struct sock *sk, struct sk_filter *fp);
+>  void sk_filter_uncharge(struct sock *sk, struct sk_filter *fp);
+>
+> +#ifdef CONFIG_X86_64
+> +int bpf_loop_termination(u32 nr_loops, void *callback_fn, void *callback_ctx, u64 flags);
+> +#endif
+>  int bpf_loop_term_callback(u64 reg_loop_cnt, u64 *reg_loop_ctx);
+>  void *bpf_termination_null_func(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5);
+>  u64 __bpf_call_base(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5);
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 2a02e9cafd5a..735518735779 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -1583,6 +1583,21 @@ noinline int bpf_loop_term_callback(u64 reg_loop_cnt, u64 *reg_loop_ctx)
+>  }
+>  EXPORT_SYMBOL_GPL(bpf_loop_term_callback);
+>
+> +#ifdef CONFIG_X86_64
+> +noinline int bpf_loop_termination(u32 nr_loops, void *callback_fn, void *callback_ctx, u64 flags)
+> +{
+> +       asm volatile(
+> +               "pop %rbx\n\t"
+> +               "pop %rbp\n\t"
+> +               "pop %r12\n\t"
+> +               "pop %r13\n\t"
+> +       );
+> +       return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(bpf_loop_termination);
+> +STACK_FRAME_NON_STANDARD(bpf_loop_termination);
+
+You can move this into an arch-specific helper, see
+bpf_timed_may_goto.S in arch/x86/net.
+For non-x86, the whole logic should not kick in.
+
+Also this function needs more comments. Why is restoring these 4
+registers correct?
+It is not clear from the code, please point out where they are being saved.
+
+If this is about restoring callee saved registers, then it looks broken to me.
+Only those scratched are saved by the JIT (see callee_regs_used in
+bpf_jit_comp.c), so it would be plain wrong.
+r12 is unused except for arenas. rbx, r13, r14, r15 are used, at max.
+
+It would make more sense to move the logic into the JIT, as I suggested above.
+Even then, you either need to spill all callee regs, or figure out a
+way to conditionally restore.
+
+> +#endif
+> +
+>  /* Base function for offset calculation. Needs to go into .text section,
+>   * therefore keeping it non-static as well; will also be used by JITs
+>   * anyway later on, so do not let the compiler omit it. This also needs
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index cd8e7c47e3fe..065767ae1bd1 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -37,6 +37,10 @@
+>  #include <linux/trace_events.h>
+>  #include <linux/tracepoint.h>
+>  #include <linux/overflow.h>
+> +#include <asm/unwind.h>
+> +#include <asm/insn.h>
+> +#include <asm/text-patching.h>
+> +#include <asm/irq_regs.h>
+>
+>  #include <net/netfilter/nf_bpf_link.h>
+>  #include <net/netkit.h>
+> @@ -2767,6 +2771,207 @@ static int sanity_check_jit_len(struct bpf_prog *prog)
+>         return 0;
+>  }
+>
+> +static bool per_cpu_flag_is_true(struct bpf_term_aux_states *term_states, int cpu_id)
+> +{
+> +       unsigned long flags;
+> +       spin_lock_irqsave(&term_states->per_cpu_state[cpu_id].lock,
+> +                               flags);
+> +       if (term_states->per_cpu_state[cpu_id].cpu_flag == 1) {
+> +               spin_unlock_irqrestore(&term_states->per_cpu_state[cpu_id].lock,
+> +                                       flags);
+> +               return true;
+> +       }
+> +       spin_unlock_irqrestore(&term_states->per_cpu_state[cpu_id].lock,
+> +                               flags);
+> +       return false;
+> +}
+> +
+> +static int is_bpf_address(struct bpf_prog *prog, unsigned long addr)
+
+Use prog == bpf_prog_ksym_find(addr) here.
+Also, rename this function to something like is_bpf_prog_text_address
+(scoped version of is_bpf_text_address).
+
+> +{
+> +
+> +        unsigned long bpf_func_addr = (unsigned long)prog->bpf_func;
+> +        if ((addr > bpf_func_addr) &&
+> +                        (addr < bpf_func_addr + prog->jited_len)){
+> +                return 1;
+> +        }
+> +
+> +        for (int subprog = 1; subprog < prog->aux->func_cnt; subprog++) {
+> +                struct bpf_prog *bpf_subprog = prog->aux->func[subprog];
+> +                unsigned long bpf_subprog_func_addr =
+> +                                        (unsigned long)bpf_subprog->bpf_func;
+> +                if ((addr > bpf_subprog_func_addr) && (addr < bpf_subprog_func_addr +
+> +                                                        bpf_subprog->jited_len)) {
+> +                        return 1;
+> +                }
+> +        }
+> +
+> +        return 0;
+> +}
+> +
+> +/*
+> + * For a call instruction in a BPF program, return the stubbed insn buff.
+> + * Returns new instruction buff if stubbing required,
+> + *        NULL if no change needed.
+> + */
+> +__always_inline char* find_termination_realloc(struct insn orig_insn, unsigned char *orig_addr,
+> +                                              struct insn patch_insn, unsigned char *patch_addr) {
+> +
+> +       unsigned long new_target;
+> +       unsigned long original_call_target = (unsigned long)orig_addr + 5 + orig_insn.immediate.value;
+> +
+> +       unsigned long patch_call_target = (unsigned long)patch_addr + 5 + patch_insn.immediate.value;
+> +
+> +       /* As per patch prog, no stubbing needed. */
+> +       if (patch_call_target == original_call_target)
+> +               return NULL;
+> +
+> +       /* bpf_termination_null_func is the generic stub function unless its either of
+> +       * the bpf_loop helper or the associated callback
+> +       */
+> +       new_target = (unsigned long)bpf_termination_null_func;
+> +       if (patch_call_target == (unsigned long)bpf_loop_term_callback)
+> +               new_target = (unsigned long)bpf_loop_term_callback;
+> +
+> +
+> +       unsigned long new_rel = (unsigned long)(new_target - (unsigned long)(orig_addr + 5));
+> +
+> +       char *new_insn = kmalloc(5, GFP_KERNEL);
+
+This can fail, so you'd have to return NULL even in cases where you
+need to patch the target...
+I'd suggest modifying the contract of the function to not depend on
+returning NULL, can be some out parameter.
+
+> +       new_insn[0] = 0xE8;
+> +       new_insn[1] = (new_rel >> 0) & 0xff;
+> +       new_insn[2] = (new_rel >> 8) & 0xff;
+> +       new_insn[3] = (new_rel >> 16) & 0xff;
+> +       new_insn[4] = (new_rel >> 24) & 0xff;
+> +
+> +       return new_insn;
+> +}
+> +
+> +/*
+> + * Given a bpf program and a corresponding termination patch prog
+> + * (generated during verification), this program will patch all
+> + * call instructions in prog and decide whether to stub them
+> + * based on whether the termination_prog has stubbed or not.
+> + */
+> +static void __maybe_unused in_place_patch_bpf_prog(struct bpf_prog *prog, struct bpf_prog *patch_prog){
+> +
+> +       uint32_t size = 0;
+> +
+> +       while (size < prog->jited_len) {
+> +              unsigned char *addr = (unsigned char*)prog->bpf_func;
+> +              unsigned char *addr_patch = (unsigned char*)patch_prog->bpf_func;
+> +
+> +              struct insn insn;
+> +              struct insn insn_patch;
+> +
+> +              addr += size;
+> +              /* Decode original instruction */
+> +               if (WARN_ON_ONCE(insn_decode_kernel(&insn, addr))) {
+> +                       return;
+> +               }
+> +
+> +               /* Check for call instruction */
+> +               if (insn.opcode.bytes[0] != CALL_INSN_OPCODE) {
+> +                       goto next_insn;
+> +               }
+> +
+> +              addr_patch += size;
+> +              /* Decode patch_prog instruction */
+> +               if (WARN_ON_ONCE(insn_decode_kernel(&insn_patch, addr_patch))) {
+> +                       return ;
+> +               }
+> +
+> +              // Stub the call instruction if needed
+> +              char *buf;
+> +              if ((buf = find_termination_realloc(insn, addr, insn_patch, addr_patch)) != NULL) {
+> +                      smp_text_poke_batch_add(addr, buf, insn.length, NULL);
+> +                      kfree(buf);
+
+I think we should find a way to make this work without allocations.
+What if it fails? Are we going to let the program keep executing
+forever.
+Doesn't seem like a good option.
+
+> +              }
+> +
+> +       next_insn:
+> +               size += insn.length;
+> +       }
+> +}
+> +
+> +
+> +void bpf_die(void *data)
+> +{
+> +       struct bpf_prog *prog, *patch_prog;
+> +       int cpu_id = raw_smp_processor_id();
+
+Assuming you make the hrtimer per-CPU.
+So the hrtimer is not pinned to the CPU (HRTIMER_MODE_PINNED), hence
+it can be fired on any other CPU when the timer expires.
+This means you lose the associativity between the CPU where the
+program invocation did not complete in 1 second.
+Instead I think it might be better to have it in the per-cpu state,
+and stash the CPU number there and use container_of to obtain it.
+
+> +
+> +       prog = (struct bpf_prog *)data;
+> +       patch_prog = prog->term_states->patch_prog;
+> +
+> +       if (!per_cpu_flag_is_true(prog->term_states, cpu_id))
+> +               return;
+
+Unless hrtimer_cancel() provides a write barrier, this can return
+early if the write to 0 in the per-CPU flag gets reordered.
+It would be better to be explicit there.
+
+> +
+> +       unsigned long jmp_offset = prog->jited_len - (4 /*First endbr is 4 bytes*/
+> +                                               + 5 /*5 bytes of noop*/
+> +                                               + 5 /*5 bytes of jmp return_thunk*/);
+
+This is all x86 specific, so at the very least it should be guarded.
+The proper way would be to add a weak stub in core.c and provide an
+implementation in the arch-specific directory.
+
+> +       char new_insn[5];
+> +       new_insn[0] = 0xE9;
+> +       new_insn[1] = (jmp_offset >> 0) & 0xff;
+> +       new_insn[2] = (jmp_offset >> 8) & 0xff;
+> +       new_insn[3] = (jmp_offset >> 16) & 0xff;
+> +       new_insn[4] = (jmp_offset >> 24) & 0xff;
+> +       smp_text_poke_batch_add(prog->bpf_func + 4, new_insn, 5, NULL);
+> +
+> +       /* poke all progs and subprogs */
+> +       if (prog->aux->func_cnt) {
+> +               for(int i=0; i<prog->aux->func_cnt; i++){
+> +                       in_place_patch_bpf_prog(prog->aux->func[i], patch_prog->aux->func[i]);
+> +               }
+> +       } else {
+> +               in_place_patch_bpf_prog(prog, patch_prog);
+> +       }
+> +       /* flush all text poke calls */
+> +       smp_text_poke_batch_finish();
+> +
+> +
+> + #ifdef CONFIG_X86_64
+> +       struct unwind_state state;
+> +       unsigned long addr, bpf_loop_addr, bpf_loop_term_addr;
+> +       struct pt_regs *regs = get_irq_regs();
+> +       char str[KSYM_SYMBOL_LEN];
+> +       bpf_loop_addr = (unsigned long)bpf_loop_proto.func;
+> +       bpf_loop_term_addr = (unsigned long)bpf_loop_termination;
+> +       unwind_start(&state, current, regs, NULL);
+> +
+> +       addr = unwind_get_return_address(&state);
+> +
+> +       unsigned long stack_addr = regs->sp;
+> +       while (addr) {
+> +               if (is_bpf_address(prog, addr)) {
+> +                       break;
+> +               } else {
+> +                       const char *name = kallsyms_lookup(addr, NULL, NULL, NULL, str);
+> +                       if (name) {
+> +                               unsigned long lookup_addr = kallsyms_lookup_name(name);
+> +                               if (lookup_addr && lookup_addr == bpf_loop_addr) {
+> +                                       while (*(unsigned long *)stack_addr != addr) {
+> +                                               stack_addr += 1;
+> +                                       }
+> +                                       *(unsigned long *)stack_addr = bpf_loop_term_addr;
+> +                               }
+> +                       }
+> +               }
+> +               unwind_next_frame(&state);
+> +               addr = unwind_get_return_address(&state);
+> +       }
+
+Instead of doing all this munging by hand, a better way is to figure
+out the frame base pointer using arch_bpf_stack_walk, then figure out
+the return address using that.
+
+> +#endif
+> +
+> +       return;
+> +}
+> +
+> +enum hrtimer_restart bpf_termination_wd_callback(struct hrtimer *hr)
+> +{
+> +
+> +       struct bpf_term_aux_states *term_states = container_of(hr, struct bpf_term_aux_states, hrtimer);
+> +       struct bpf_prog *prog = term_states->prog;
+> +       bpf_die(prog);
+> +       return HRTIMER_NORESTART;
+> +
+> +}
+> +EXPORT_SYMBOL_GPL(bpf_termination_wd_callback);
+> +
+>  static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
+>  {
+>         enum bpf_prog_type type = attr->prog_type;
+> @@ -2995,6 +3200,7 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
+>         err = sanity_check_jit_len(prog);
+>         if (err < 0)
+>                 goto free_used_maps;
+> +       prog->term_states->prog = prog;
+>
+>         err = bpf_prog_alloc_id(prog);
+>         if (err)
+> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> index c4b1a98ff726..16f685c861a3 100644
+> --- a/kernel/bpf/trampoline.c
+> +++ b/kernel/bpf/trampoline.c
+> @@ -908,6 +908,9 @@ static u64 notrace __bpf_prog_enter_recur(struct bpf_prog *prog, struct bpf_tram
+>                         prog->aux->recursion_detected(prog);
+>                 return 0;
+>         }
+> +
+> +       update_term_per_cpu_flag(prog, 1);
+> +       bpf_terminate_timer_init(prog);
+>         return bpf_prog_start_time();
+>  }
+>
+> @@ -941,6 +944,8 @@ static void notrace __bpf_prog_exit_recur(struct bpf_prog *prog, u64 start,
+>         bpf_reset_run_ctx(run_ctx->saved_run_ctx);
+>
+>         update_prog_stats(prog, start);
+> +       bpf_terminate_timer_cancel(prog);
+> +       update_term_per_cpu_flag(prog, 0);
+>         this_cpu_dec(*(prog->active));
+>         migrate_enable();
+>         rcu_read_unlock();
+> --
+> 2.43.0
+>
 
