@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-61867-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61868-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DF30AEE587
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 19:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4992FAEE589
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 19:18:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 144193BEBEF
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 17:17:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C02353BF423
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 17:17:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27DBC2980D4;
-	Mon, 30 Jun 2025 17:17:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E002029CB48;
+	Mon, 30 Jun 2025 17:17:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b="M0MWgoeP"
+	dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b="hAS3WAtw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42B072989A2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 087EA29A32A
 	for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 17:17:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751303856; cv=none; b=Yv2K+/1y7R5wETcI8NDCaf2Ns2f4yY1B82AWaPgDlKwYHQuj5liy+YU+lfYCAZRz62vRHOsacy07Y4PYISTbITAJHS+yWaM3p84FtaFdGnY5slOq5bnXnCTqIvbg0zxynjp3YElJza9lZ/J/0HA2HogC/U5aOdwWQGYUNyOyoQ0=
+	t=1751303858; cv=none; b=LX25MP7b42TeHVJ5tadZg1bmGIWJ1y25llNFjmhHfuwgxnSKuNdBELTN9EjKg9/G/Jt100an64wcLqwug0ClEQtrnLEtsjUIqzBQVkm0gsuciOjXTxt9WSxSe8c/D2xHQvllmT6BgxFCynchnc+2XQ82yoGeZaGoTQKrH3rLfKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751303856; c=relaxed/simple;
-	bh=foepoQWthtqzAO/amSXmA+Ijs1+fWhMG2CBZ9t6Tz18=;
+	s=arc-20240116; t=1751303858; c=relaxed/simple;
+	bh=ii0lhnsuHEZZ21rnkBA0wx5pkbY0pk/4pyArG18nLsA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ie30FLwGUTR5IL/V7/hI9W9dCSqVBmTpgnuB08834DjY/CoHD/rqr48MeCQobBAWazBlv8Q8O18fnjJKd6JUddZ9H0gizlOLz+t9QEM6vtfXwK/6gq0wO73xdSdzByl4YrUB5i7PgQmtPBK5AmZFBtwvaEXZGPaekZs3etaZtok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io; spf=none smtp.mailfrom=jrife.io; dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b=M0MWgoeP; arc=none smtp.client-ip=209.85.215.177
+	 MIME-Version; b=n/OXTDx4yInY5Tu2uoO+5OTnD6QC/CUdV0zVciFR+dQE2dfoWGTJ9u5FSTufYBaUjHUUGEoENMG7OrUjHqkc5Gi9LLjt4mgLh9tABXDSYH4RRKg+ehLa8WgjuOV13pkbQSPajwP2H7GsFpLakf7nKzqyOoxPMmVEVD7bxGkw9zY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io; spf=none smtp.mailfrom=jrife.io; dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b=hAS3WAtw; arc=none smtp.client-ip=209.85.210.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=jrife.io
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-b3510c22173so218679a12.0
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-74b013aefbdso237870b3a.3
         for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 10:17:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jrife-io.20230601.gappssmtp.com; s=20230601; t=1751303854; x=1751908654; darn=vger.kernel.org;
+        d=jrife-io.20230601.gappssmtp.com; s=20230601; t=1751303855; x=1751908655; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vKLGPM6fsUvefIfdoj5d/pH5CeVPkyRVwIbtrb7Q6Tw=;
-        b=M0MWgoePw8FkrFUksq1CQ1Ms3dU+Synq+rlOGEIHzQkad0MLoNg/HzI9j0lkOQoTvQ
-         QnvFh9eTLIJhgkfXhNYgldFOAzgh1Rj76jreMGrMv6XyEkf4I1MEl10E7CVCvXlrkpaE
-         vL1X1tmZyqB5fRJGPvBRlDztx+O+VdeTSFPQTbKL/3pt7QR9oYQLFU2GWKXfvlmZIbf1
-         Vh7BjWiaLGT26LlTIDHVC8LCrbFRcRqutzKmH0W3fe77SUa/AAVuRV04AxRRe1Ddd5Z1
-         oOJL3ZLmE1e8QIuUTdbsW2xhtxn4Zq8deaUamX2e44w8EL8aTNQBZxNsz2dty0R5bcAW
-         1iOA==
+        bh=BZZ0jvcYwhY5yt1MXnZuSSYPelQKSbT2EiEftdDOFWk=;
+        b=hAS3WAtwf2zhzQZBEQPmdTsL6FDdhKmv4oE2GQiDxO61XSLdOOBJBO+PmCPU5dZNEA
+         J7Ku3a9YdBtMwmejtTJQUhZPSLG+t0Q0fri+XYVgpbwP6pnBM4m+EjZqVmUUk/FN2AHN
+         OcvlAJabtf+hfCDJmu9yTLVGHInlMhKbmavyE9n/VXCB1Vrr3ayGLuX29tVpXFLnOrvz
+         Shqwp6loCgOniTarI1L5lTs8k4BmmyIkmU+OEUocTwZXK3dqCIWj1qlFTquX+1NRlVn0
+         ceVtwQS6A766lqSBCta54Eaq5g+WDmA6MUS1qr9YBZ4rXuoIcY38FOgjnzP+d6hR0bCd
+         1pBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751303854; x=1751908654;
+        d=1e100.net; s=20230601; t=1751303855; x=1751908655;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vKLGPM6fsUvefIfdoj5d/pH5CeVPkyRVwIbtrb7Q6Tw=;
-        b=TfZVq5vsaqc8It/dRquRTgnxry9EDJs8cX68hgJoqWBau4Sql6UwJguvlDUUcUwsip
-         EdJ3hy8Lnjv8urTqbWNGp581ysxctgmWevFbaHrutAPdY5IRE3bxW3paWM0BkSch+cfM
-         w9+HM64ixSjUANPZW60khKBNatrH9IdPqYWV9NmMAawEmtZ/ArY9rZN28SoesPAg2wog
-         f6ddXU12gMGSisDcaUMSwNSeDPbhrS+LhHhAf0KQ/8FZW0SByyNIVGQQJAuAXI8DBMSi
-         EBGjRF7si+ctTKjBMpaLYCs3lK0lquq5Je6KW2cC5k4Ey3lsTGOXM+zGgSGqcUWp+UJV
-         q2WA==
-X-Forwarded-Encrypted: i=1; AJvYcCWx4L79MXG+RL3WKYxF4qH6vVoecoC3jgYB0tlztIQloVxeuNb/seKzcV5AJEMnJGPm/84=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzdoMTt6tdpApZdyBr+jlztACz5d37GUkNrFiHhvzIN4qdKeSWS
-	+b/yZFVzadG857+TfrlVOL6EezHj0waim/xCjL97haacGhIcVePUkcyrcZkZGOVy13Q=
-X-Gm-Gg: ASbGncs68WBjAe/fGImD6B5ELZm/e4g5vqrxWGSf3tz7TNN+xotQaaoZwZ3Z4oSJqSW
-	U9IbzwPenEagkIDg6m1CV/93Zq5LdoWicadLfhuMCHOZs3v/P/uNiJ6SPsoyjEFLZUQSTWnbJ8k
-	Se5F++INVeUXNuWjokOfhtzTIh8tH97u62PT9Kd/mPkqVCe9FUKv6XPAofiJ+5Km/WSVlW8vD0I
-	oX3e0LsCSEru9YISvztIDM1bHBJBVqmOEj22PHq+RiznOR/DeUYPytfGBlNSO8Sc9/vGdIxNJjn
-	95/XyYXNygf1e6V22n5OeFGsX/wrdj8cTNjRUQh8CWeVA8rnAQ==
-X-Google-Smtp-Source: AGHT+IFPoOZ7DHExCotaE+9HxKf4rP0cmsuMLpa4XpFjsmFcK+SBuitbW6tTAXGGVyDrRGsbRGDVRg==
-X-Received: by 2002:a05:6a20:3d95:b0:21f:419f:80a9 with SMTP id adf61e73a8af0-220b060ec69mr6913020637.10.1751303853806;
-        Mon, 30 Jun 2025 10:17:33 -0700 (PDT)
+        bh=BZZ0jvcYwhY5yt1MXnZuSSYPelQKSbT2EiEftdDOFWk=;
+        b=WTs/QuZFb3hMqU3TG44qSLJHj8ltTwyWCh8TSf5/GeGFAwkKptfMK04GiAnRbVjvQY
+         laL0FfiQMA6kfFmlSnVUGzpw6CuLZ1lNRwkFXXl99s4rlj9i4Msinz/gU1njTMDMUgOL
+         OGv7Ooqj2RW+G8hD69y7a3N3ye6MppP6cuMfVnt8+vgkU+55VAKVkg1JmJ9LNX2mVHtH
+         AnuGV3FiFOwQMeqEQoRYV/y4KpKyn3ReoxR8quKUl1c+eGnSU1BKwPEUW3eaV7aKK8GV
+         VSXWKRRNeDjXAROGZuZwN35hMpIRGUsDNnYYhU7dg5bZzb+HwQ/NW5WE+XPHsTgOjZkI
+         R9eQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXQ2f0R8PpdnEs2nmwtOnDKBFPkp8M7QedEKK9Vt9S9Kw0NGPX8fq9EQxICbdlni6O/pYM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyDjCerl1oqylf8sJZU6s/wrL0mGLTYYOQf2sd65NyQenQSl2z7
+	McjlXcPAX4JEnoR0STu7r2aqhMUrLYBltsvK/6bF+bLrFrnHXh6E8sN99H26rpw41BY=
+X-Gm-Gg: ASbGnct3xVGmN163ge/3Av4Vm71txLxTwQl6/zHGJWdaFJaarrull9EC1XNqGg86aUA
+	lSkR8btsEFXSvw6GA7iKWTF1rDJn0K8Ok/1WN0LH60uAJvSDl9Yk1iMRxBd7OXlAbU05c47YEDT
+	XdGzSXzMNes4+e+2bQmdU9Mi8OXvRAe5miz9SmSB2fLq/smj5o0c5SRwyPROKZkuM841/BNuKQv
+	DoKkygcmSTiaJbeyLyOBvHXy0QMfKdgR/ykfr3aGaEuhmzoAlcn3B3EOYhokEwVxEDcyCWCGJbZ
+	fSRS9NdipFtQ8TmLQ0xfvMHWuN4JkS7CmIe+UHEgrCfQB3cS5w==
+X-Google-Smtp-Source: AGHT+IEkYRs9Mil95rXqk8ouGDLwzPDeoXogbPbN35EoOeaj+KTPurJHSRcfKcD85qVJFy+i9waSsA==
+X-Received: by 2002:a05:6a00:330b:b0:748:cee2:fa53 with SMTP id d2e1a72fcca58-74b0a39a331mr4692976b3a.0.1751303854780;
+        Mon, 30 Jun 2025 10:17:34 -0700 (PDT)
 Received: from t14.. ([2a00:79e1:abc:133:9ab8:319d:a54b:9f64])
         by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74af540a846sm9229232b3a.31.2025.06.30.10.17.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Jun 2025 10:17:33 -0700 (PDT)
+        Mon, 30 Jun 2025 10:17:34 -0700 (PDT)
 From: Jordan Rife <jordan@jrife.io>
 To: netdev@vger.kernel.org,
 	bpf@vger.kernel.org
@@ -82,9 +82,9 @@ Cc: Jordan Rife <jordan@jrife.io>,
 	Kuniyuki Iwashima <kuniyu@google.com>,
 	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	Stanislav Fomichev <stfomichev@gmail.com>
-Subject: [PATCH v3 bpf-next 06/12] selftests/bpf: Add tests for bucket resume logic in listening sockets
-Date: Mon, 30 Jun 2025 10:16:59 -0700
-Message-ID: <20250630171709.113813-7-jordan@jrife.io>
+Subject: [PATCH v3 bpf-next 07/12] selftests/bpf: Allow for iteration over multiple ports
+Date: Mon, 30 Jun 2025 10:17:00 -0700
+Message-ID: <20250630171709.113813-8-jordan@jrife.io>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250630171709.113813-1-jordan@jrife.io>
 References: <20250630171709.113813-1-jordan@jrife.io>
@@ -96,72 +96,62 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Replicate the set of test cases used for UDP socket iterators to test
-similar scenarios for TCP listening sockets.
+Prepare to test TCP socket iteration over both listening and established
+sockets by allowing the BPF iterator programs to skip the port check.
 
 Signed-off-by: Jordan Rife <jordan@jrife.io>
 ---
- .../bpf/prog_tests/sock_iter_batch.c          | 47 +++++++++++++++++++
- 1 file changed, 47 insertions(+)
+ tools/testing/selftests/bpf/prog_tests/sock_iter_batch.c | 7 ++-----
+ tools/testing/selftests/bpf/progs/sock_iter_batch.c      | 4 ++++
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/sock_iter_batch.c b/tools/testing/selftests/bpf/prog_tests/sock_iter_batch.c
-index a4517bee34d5..2adacd91fdf8 100644
+index 2adacd91fdf8..0d0f1b4debff 100644
 --- a/tools/testing/selftests/bpf/prog_tests/sock_iter_batch.c
 +++ b/tools/testing/selftests/bpf/prog_tests/sock_iter_batch.c
-@@ -358,6 +358,53 @@ static struct test_case resume_tests[] = {
- 		.family = AF_INET6,
- 		.test = force_realloc,
- 	},
-+	{
-+		.description = "tcp: resume after removing a seen socket (listening)",
-+		.init_socks = nr_soreuse,
-+		.max_socks = nr_soreuse,
-+		.sock_type = SOCK_STREAM,
-+		.family = AF_INET6,
-+		.test = remove_seen,
-+	},
-+	{
-+		.description = "tcp: resume after removing one unseen socket (listening)",
-+		.init_socks = nr_soreuse,
-+		.max_socks = nr_soreuse,
-+		.sock_type = SOCK_STREAM,
-+		.family = AF_INET6,
-+		.test = remove_unseen,
-+	},
-+	{
-+		.description = "tcp: resume after removing all unseen sockets (listening)",
-+		.init_socks = nr_soreuse,
-+		.max_socks = nr_soreuse,
-+		.sock_type = SOCK_STREAM,
-+		.family = AF_INET6,
-+		.test = remove_all,
-+	},
-+	{
-+		.description = "tcp: resume after adding a few sockets (listening)",
-+		.init_socks = nr_soreuse,
-+		.max_socks = nr_soreuse,
-+		.sock_type = SOCK_STREAM,
-+		/* Use AF_INET so that new sockets are added to the head of the
-+		 * bucket's list.
-+		 */
-+		.family = AF_INET,
-+		.test = add_some,
-+	},
-+	{
-+		.description = "tcp: force a realloc to occur (listening)",
-+		.init_socks = init_batch_size,
-+		.max_socks = init_batch_size * 2,
-+		.sock_type = SOCK_STREAM,
-+		/* Use AF_INET6 so that new sockets are added to the tail of the
-+		 * bucket's list, needing to be added to the next batch to force
-+		 * a realloc.
-+		 */
-+		.family = AF_INET6,
-+		.test = force_realloc,
-+	},
- };
+@@ -416,7 +416,6 @@ static void do_resume_test(struct test_case *tc)
+ 	int err, iter_fd = -1;
+ 	const char *addr;
+ 	int *fds = NULL;
+-	int local_port;
  
- static void do_resume_test(struct test_case *tc)
+ 	counts = calloc(tc->max_socks, sizeof(*counts));
+ 	if (!ASSERT_OK_PTR(counts, "counts"))
+@@ -431,10 +430,8 @@ static void do_resume_test(struct test_case *tc)
+ 				     tc->init_socks);
+ 	if (!ASSERT_OK_PTR(fds, "start_reuseport_server"))
+ 		goto done;
+-	local_port = get_socket_local_port(*fds);
+-	if (!ASSERT_GE(local_port, 0, "get_socket_local_port"))
+-		goto done;
+-	skel->rodata->ports[0] = ntohs(local_port);
++	skel->rodata->ports[0] = 0;
++	skel->rodata->ports[1] = 0;
+ 	skel->rodata->sf = tc->family;
+ 
+ 	err = sock_iter_batch__load(skel);
+diff --git a/tools/testing/selftests/bpf/progs/sock_iter_batch.c b/tools/testing/selftests/bpf/progs/sock_iter_batch.c
+index 8f483337e103..40dce6a38c30 100644
+--- a/tools/testing/selftests/bpf/progs/sock_iter_batch.c
++++ b/tools/testing/selftests/bpf/progs/sock_iter_batch.c
+@@ -52,6 +52,8 @@ int iter_tcp_soreuse(struct bpf_iter__tcp *ctx)
+ 		idx = 0;
+ 	else if (sk->sk_num == ports[1])
+ 		idx = 1;
++	else if (!ports[0] && !ports[1])
++		idx = 0;
+ 	else
+ 		return 0;
+ 
+@@ -92,6 +94,8 @@ int iter_udp_soreuse(struct bpf_iter__udp *ctx)
+ 		idx = 0;
+ 	else if (sk->sk_num == ports[1])
+ 		idx = 1;
++	else if (!ports[0] && !ports[1])
++		idx = 0;
+ 	else
+ 		return 0;
+ 
 -- 
 2.43.0
 
