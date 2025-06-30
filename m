@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-61894-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61895-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FD5EAEE91E
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 23:02:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30898AEE922
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 23:02:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F1063188ED86
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 21:02:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D097A3E1529
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 21:02:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B2912E7F31;
-	Mon, 30 Jun 2025 21:01:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68AD32E7F1D;
+	Mon, 30 Jun 2025 21:01:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N2ZpTKdc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q+glu4KO"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC3B61E1DE5;
-	Mon, 30 Jun 2025 21:01:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDDC5290DB2;
+	Mon, 30 Jun 2025 21:01:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751317281; cv=none; b=dru96Tp1plli1jDrXKxbmAyd04yZN8AsY4h5BktBegMc05cZC+S5Hh9GUFykfYgWKG/sLlLfQwei2gojGzg0aC8xjOG6V1sNxx7TrQN9SrABm+giVVOWjfEFkSA8sMxFdETl2C+Q+y4ZU4BeojQphPqt9kboUlLiHmYMIN5gHbs=
+	t=1751317311; cv=none; b=WA1q4+jkGLSlHKNj+DnPaDC9s2nTHyp3zlKQaCTRLRfcAyVn+rw1r64mSSLKcDdUZbGk+PLovlZkggDZ0A9IL0yc8NEWgwk1Fz9jkEtMplyA8/xJBrvSKuwMj1kv5z1WBvdHpO+EixUbjjHP2jLUd9PiqvLdvJ1DolIE7ydtDVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751317281; c=relaxed/simple;
-	bh=fd5TTcR4xrv7LlfCWv7RjAxXvv5McMMYbPwkZziGVRc=;
+	s=arc-20240116; t=1751317311; c=relaxed/simple;
+	bh=gbO8Q9MsevLLF5VsQv4jcp6XgaI8hqa4nce5a0JHavc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=c3PW6tqnXZ9QFLmqBdlsVqxxGnTZIdm5U5q8afBzRjtyAAj0PhStWj3LRhMyWegMqnU+7ZMwn7QyGgOrI87dIrJu/ZEciuxmw9a9tZMmUHDDMnp9PELydvDmr8ZEHpLInlv2NuoWo9qcBBuUCZaW0+BDyZLzYDvUgWUWXOZQ8tY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N2ZpTKdc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DA8EC4CEEB;
-	Mon, 30 Jun 2025 21:01:20 +0000 (UTC)
+	 MIME-Version; b=l0ux1EoZAVy/efu+5NbWWHyB0rqj1siCQFhQbd1sQcxYauHdBgXCWhmkD3LarzfXRaSA/OyBCkkKy/TOHKxYIuinCy0AUpjCMStKhC9sBmNNcL2qk5/bcHPE7PXXgAXDdff2KOQSzk269ps03y+mWcmEM5vrtSE6b5kmQW+y3aw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q+glu4KO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF6C1C4CEEB;
+	Mon, 30 Jun 2025 21:01:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751317281;
-	bh=fd5TTcR4xrv7LlfCWv7RjAxXvv5McMMYbPwkZziGVRc=;
+	s=k20201202; t=1751317311;
+	bh=gbO8Q9MsevLLF5VsQv4jcp6XgaI8hqa4nce5a0JHavc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=N2ZpTKdcoY5ukIh+2cgGb3iQbapMMCovM7wC0Pt8F+kyUpVPz6e+hZE5XRl5/6O12
-	 OFgLYyLafvtPmYcoccvNnfdv9dcqTA6qNzcQxw7XAtwUCPnw5j8i/QDtXMb1YTy/Lb
-	 b/I1kXhwGGRDo1wecwOo70iOi/OPYbgogrydpdOhTt+dptB9+i2Q0ejD5bjJl+4de3
-	 D8Mc7993FWGD26oTkCtTWAttuie+lvxtqwGtmemAngdcbqpinKmaL1NQg7krC4uvZt
-	 LSGWp/2pli+ZNkP0uXdG4VPF8EsQ3xkbMfksvnO/2k4hHiwM6P5fl2k1w7vhxuOQUS
-	 TPnlUlTagUZ9w==
+	b=Q+glu4KOGHUaZC+QLCAEDHMtBVJIFzqnIkaWFwc4m9MeTP3XeFZ54JUS9okDMB/St
+	 rrzKg6QlcXxVUByBqXQRXHxmqadobJTXTWSw1fnUDTg/NDjX2KBbn8T/lqQPK46DtM
+	 g9qLfS1w2NT1qfgA6I2fI1Avj6RfLD1Gi29AauxP3JIykS7nM4GS/xdazOwMtLop5W
+	 u2zsnyzn3xEoWsJ8QhnpSpq24VIEfBMaVwOZD+r9J3m7F4TPzikedznP01TND8C8C2
+	 Te3rKwHGD4C2gXqIxAf0EdylcJLtM06yhIv7HHxcHmsT5UGG2OVGoQrJez8+IN45nE
+	 FkZt5LcWNp8Ew==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
@@ -51,16 +51,17 @@ Cc: Tiwei Bie <tiwei.btw@antgroup.com>,
 	nathan@kernel.org,
 	anton.ivanov@cambridgegreys.com,
 	richard@nod.at,
-	tglx@linutronix.de,
+	agordeev@linux.ibm.com,
 	guoweikang.kernel@gmail.com,
+	tglx@linutronix.de,
 	bpf@vger.kernel.org,
 	llvm@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.1 02/10] um: vector: Reduce stack usage in vector_eth_configure()
-Date: Mon, 30 Jun 2025 16:47:09 -0400
-Message-Id: <20250630204718.1359222-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 2/7] um: vector: Reduce stack usage in vector_eth_configure()
+Date: Mon, 30 Jun 2025 17:01:39 -0400
+Message-Id: <20250630210144.1359448-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250630204718.1359222-1-sashal@kernel.org>
-References: <20250630204718.1359222-1-sashal@kernel.org>
+In-Reply-To: <20250630210144.1359448-1-sashal@kernel.org>
+References: <20250630210144.1359448-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -69,7 +70,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.142
+X-stable-base: Linux 5.15.186
 Content-Transfer-Encoding: 8bit
 
 From: Tiwei Bie <tiwei.btw@antgroup.com>
@@ -154,10 +155,10 @@ stack overflow) makes it a good candidate for stable backporting.
  1 file changed, 13 insertions(+), 29 deletions(-)
 
 diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-index 2baa8d4a33ed3..1a068859a4185 100644
+index c63ccf1ab4a20..41fc93ce4d372 100644
 --- a/arch/um/drivers/vector_kern.c
 +++ b/arch/um/drivers/vector_kern.c
-@@ -1600,35 +1600,19 @@ static void vector_eth_configure(
+@@ -1603,35 +1603,19 @@ static void vector_eth_configure(
  
  	device->dev = dev;
  
@@ -205,7 +206,7 @@ index 2baa8d4a33ed3..1a068859a4185 100644
 +	vp->req_size	= get_req_size(def);
  
  	dev->features = dev->hw_features = (NETIF_F_SG | NETIF_F_FRAGLIST);
- 	INIT_WORK(&vp->reset_tx, vector_reset_tx);
+ 	tasklet_setup(&vp->tx_poll, vector_tx_poll);
 -- 
 2.39.5
 
