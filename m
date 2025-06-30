@@ -1,111 +1,126 @@
-Return-Path: <bpf+bounces-61860-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61858-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 142C7AEE4E7
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 18:45:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 772E5AEE4C1
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 18:37:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83C263A7316
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 16:44:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07BFF3A6214
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 16:36:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F19F429293F;
-	Mon, 30 Jun 2025 16:44:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AAF728DF06;
+	Mon, 30 Jun 2025 16:35:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=gentwo.org header.i=@gentwo.org header.b="VoZvzgPS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qtD4F3rz"
 X-Original-To: bpf@vger.kernel.org
-Received: from gentwo.org (gentwo.org [62.72.0.81])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E379C29009A;
-	Mon, 30 Jun 2025 16:44:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.72.0.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC73828C5D9;
+	Mon, 30 Jun 2025 16:35:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751301886; cv=none; b=vA51dUDU9bGGBX9CDSghJ5GPKc6HzLNWQyEG4dzBa9a5csEe8MUcV6MPeeUiuO3pSdgJyJ8Ov1oHFDJQhKFh9G++MBcMs9aAn13WgWpQ7mkAaY4b3Xj95FV94B9u2TrvYPntfPuvXrqDY5pYxAb3vfk84U6JHgdNjiR+ikkVi/I=
+	t=1751301321; cv=none; b=a7KlUb0EC6HvPstlZjn2v73jP6ddUZPmrcwkabbGC/Kg7lvKgBr8Aky90ylG8meGd55d4xjyzi9oK/S/HF7Vmolsmg2SurB9FhXUGs+vomu2gwy9mJYSgOKLON1Q8zJYpyADBfBze8WeKpkNE/8qUuLe+Uuyxrsrpe7vnURABU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751301886; c=relaxed/simple;
-	bh=BfXV8nqJ4EJ9pAm1ijz8SPYTeiXmwHI+9FWI3o9x+xA=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=sm9AzbnzBf+el2HZ738JzlG79iJztnb7vNyvaO9M1AFrjUC7b1ZzplF4e+OWYQDkmw/6OcGP5w7mfIhdAtwuHzpgnzqBtvJZlgtgbM7G8JrBlb861/a1t8d8N79fPQloGKtjH4iCXpal7je7pkv3dhmW0OM9UPw3dipWNBg33mk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gentwo.org; spf=pass smtp.mailfrom=gentwo.org; dkim=pass (1024-bit key) header.d=gentwo.org header.i=@gentwo.org header.b=VoZvzgPS; arc=none smtp.client-ip=62.72.0.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gentwo.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gentwo.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gentwo.org;
-	s=default; t=1751301223;
-	bh=BfXV8nqJ4EJ9pAm1ijz8SPYTeiXmwHI+9FWI3o9x+xA=;
-	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-	b=VoZvzgPSHgQz64AOBA4PTZyz7X7SB6QqJVzFGTBWN9We1UDw27WHcc32a2BX+JIRN
-	 UfnaQgWCo3DgKP0YpEAm67lwobotgv3nGri4FqNmT4TeH22VyWpt7h7FJLLM2i1O6W
-	 vXMpYk2kyO941eYmixOvVjyWGh4ORET2NNPiW2jI=
-Received: by gentwo.org (Postfix, from userid 1003)
-	id 0D18540748; Mon, 30 Jun 2025 09:33:43 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-	by gentwo.org (Postfix) with ESMTP id 0BDDB401E1;
-	Mon, 30 Jun 2025 09:33:43 -0700 (PDT)
-Date: Mon, 30 Jun 2025 09:33:43 -0700 (PDT)
-From: "Christoph Lameter (Ampere)" <cl@gentwo.org>
-To: Ankur Arora <ankur.a.arora@oracle.com>
-cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, 
-    linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org, arnd@arndb.de, 
-    catalin.marinas@arm.com, will@kernel.org, peterz@infradead.org, 
-    akpm@linux-foundation.org, mark.rutland@arm.com, harisokn@amazon.com, 
-    ast@kernel.org, memxor@gmail.com, zhenglifeng1@huawei.com, 
-    xueshuai@linux.alibaba.com, joao.m.martins@oracle.com, 
-    boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
-Subject: Re: [PATCH v3 5/5] arm64: barrier: Handle waiting in
- smp_cond_load_relaxed_timewait()
-In-Reply-To: <20250627044805.945491-6-ankur.a.arora@oracle.com>
-Message-ID: <e2e8788d-86b4-092a-37f5-286b776cc061@gentwo.org>
-References: <20250627044805.945491-1-ankur.a.arora@oracle.com> <20250627044805.945491-6-ankur.a.arora@oracle.com>
+	s=arc-20240116; t=1751301321; c=relaxed/simple;
+	bh=SIsBG0bE6nVpLYGGzrorldUCYalfWsYLdprcRg+JujY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GLNZ6ip1V3sJdJik45ONmYVRUcRFyYjcwoFWEFPUkzncxjLwck7sgTHQnspUGMCrlsdYpWMfTgpTko+RlwlF7Yg0HXY8U8Do0669PkKqjPc+i3RM1qit6GsUeneQM10uU9VXRMrtXkWl9LAvdsT+LrDpY1RIKJLVJKEcEVYBNC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qtD4F3rz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D63AC4CEE3;
+	Mon, 30 Jun 2025 16:35:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1751301321;
+	bh=SIsBG0bE6nVpLYGGzrorldUCYalfWsYLdprcRg+JujY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qtD4F3rz1jSJAySp7brJDviaCYCb1oXFEXYzexxwNzUm777WkleHoLoaCHvPVnJ3U
+	 8ikDP69a8TG5SfA5ZuAH6+jVCuoMs/57eT+rmfgjebWE7eswSvRcLei39T5nCSkr9M
+	 ISgeOsazaBwnjbx2Uyi/NfEONkF0lLRjF9cAV8129aV4VZdvF2u6mRjTIShRd5jLGm
+	 9geP1aoN7pYIE5xc4RszrodEFOt9v6NoV9WcxqKO4bAQ54mo49iMCfPE5bVB5Xa09M
+	 AJJW67Fn/5+7gX5c/N1DQhR5uXc5aLytVWZf7tcq/rYZSCdNRj1Ag36QTJH1AduRav
+	 a23zkXX8prl9g==
+Date: Mon, 30 Jun 2025 09:35:19 -0700
+From: Namhyung Kim <namhyung@kernel.org>
+To: Florian Weimer <fweimer@redhat.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	x86@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Indu Bhagat <indu.bhagat@oracle.com>,
+	"Jose E. Marchesi" <jemarch@gnu.org>,
+	Beau Belgrave <beaub@linux.microsoft.com>,
+	Jens Remus <jremus@linux.ibm.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH v11 00/14] unwind_user: x86: Deferred unwinding
+ infrastructure
+Message-ID: <aGK8x1Oo6Pgl6rGV@google.com>
+References: <20250625225600.555017347@goodmis.org>
+ <878ql9mlzn.fsf@oldenburg.str.redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <878ql9mlzn.fsf@oldenburg.str.redhat.com>
 
-On Thu, 26 Jun 2025, Ankur Arora wrote:
+Hello,
 
-> @@ -222,6 +223,53 @@ do {									\
->  #define __smp_timewait_store(ptr, val)					\
->  		__cmpwait_relaxed(ptr, val)
->
-> +/*
-> + * Redefine ARCH_TIMER_EVT_STREAM_PERIOD_US locally to avoid include hell.
-> + */
-> +#define __ARCH_TIMER_EVT_STREAM_PERIOD_US 100UL
-> +extern bool arch_timer_evtstrm_available(void);
-> +
-> +static inline u64 ___smp_cond_spinwait(u64 now, u64 prev, u64 end,
-> +				       u32 *spin, bool *wait, u64 slack);
-> +/*
-> + * To minimize time spent spinning, we want to allow a large overshoot.
-> + * So, choose a default slack value of the event-stream period.
-> + */
-> +#define SMP_TIMEWAIT_DEFAULT_US __ARCH_TIMER_EVT_STREAM_PERIOD_US
-> +
-> +static inline u64 ___smp_cond_timewait(u64 now, u64 prev, u64 end,
-> +				       u32 *spin, bool *wait, u64 slack)
-> +{
-> +	bool wfet = alternative_has_cap_unlikely(ARM64_HAS_WFXT);
-> +	bool wfe, ev = arch_timer_evtstrm_available();
+On Mon, Jun 30, 2025 at 02:50:52PM +0200, Florian Weimer wrote:
+> * Steven Rostedt:
+> 
+> > SFrames is now supported in gcc binutils and soon will also be supported
+> > by LLVM.
+> 
+> Is the LLVM support discussed here?
+> 
+>   [RFC] Adding SFrame support to llvm
+>   <https://discourse.llvm.org/t/rfc-adding-sframe-support-to-llvm/86900>
+> 
+> Or is there a secone effort?
+> 
+> > I have more patches on top of this series that add perf support, ftrace
+> > support, sframe support and the x86 fix ups (for VDSO). But each of those
+> > patch series can be worked on independently, but they all depend on this
+> > series (although the x86 specific patches at the end isn't necessarily
+> > needed, at least for other architectures).
+> 
+> Related to perf support: I'm writing up the SFrame change proposal for
+> Fedora, and I want to include testing instructions.  Any idea yet what a
+> typical “perf top” or “perf report” command line would look like?
 
-An unitialized and initialized variable on the same line. Maybe separate
-that. Looks confusing and unusual to me.
+I think you can run "perf report -s dso,sym -g none" then it will show
+"Children" and "Self" overheads.  If callchain in userspace works ok,
+you will get non-kernel entries (symbols start with "[.]") having more
+children overhead than the self.
 
-> +	u64 evt_period = __ARCH_TIMER_EVT_STREAM_PERIOD_US;
-> +	u64 remaining = end - now;
-> +
-> +	if (now >= end)
-> +		return 0;
-> +	/*
-> +	 * Use WFE if there's enough slack to get an event-stream wakeup even
-> +	 * if we don't come out of the WFE due to natural causes.
-> +	 */
-> +	wfe = ev && ((remaining + slack) > evt_period);
+  $ perf record -g -- perf bench sched messaging
+  
+  $ perf report -s dso,sym -g none | grep -F -e Children -e '[.]' | head
+  # Children      Self  Shared Object           Symbol
+      63.09%     0.01%  perf                    [.] run_bench
+      63.09%     0.00%  libc.so.6               [.] __libc_start_call_main
+      63.09%     0.00%  perf                    [.] cmd_bench
+      63.09%     0.00%  perf                    [.] handle_internal_command
+      63.09%     0.00%  perf                    [.] main
+      63.09%     0.00%  perf                    [.] run_argv
+      63.09%     0.00%  perf                    [.] run_builtin
+      63.02%     0.00%  perf                    [.] bench_sched_messaging
+      62.79%     0.00%  perf                    [.] group
 
-The line above does not matter for the wfet case and the calculation is
-ignored. We hope that in the future wfet will be the default case.
+Thanks,
+Namhyung
+
 
