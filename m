@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-61856-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61857-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAD73AEE474
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 18:26:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00133AEE481
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 18:27:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 78561164662
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 16:25:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC40A163D96
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 16:27:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A642F28EA67;
-	Mon, 30 Jun 2025 16:25:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DD3228DB5E;
+	Mon, 30 Jun 2025 16:27:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hiax92g0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K5gMlQd8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D15571E5702;
-	Mon, 30 Jun 2025 16:25:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43DFB28D837;
+	Mon, 30 Jun 2025 16:27:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751300745; cv=none; b=iwygodKEA22IdrOv3/fFtTVElKiIr3WDAAXdw6eX+BED0HLCNtLr+LBxTeMqOfqpzdxCiyz2ZRFd5E0QOQ5J3fftDJJngVU8S3yJ74I31aW9jG3LkbGdYL8PrpUAicYZ3xucagW1fwM7nfBGbXY5DIe2lSQQ/KKIcY3K3SVAiWU=
+	t=1751300859; cv=none; b=svjxy1zeGHWUqRtnXxpTRfOrHJga+XWecYcW40MQ1sQaRVauqtt1ZP5OKbma5dbH+ZgSqdB2h3Rga5fMNbkFLFc5HzDDVAEKEcWofmPB1b0CH+OwfTb3ap+kngCcOvTFUj3+G2Fzs2g5A8uvmMiMS/ChaiD8SUhXLG7JV3CTVyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751300745; c=relaxed/simple;
-	bh=XW+WWVck9kz3OMZWPmfOuSuttGjJiXsduO8GKguxcTs=;
+	s=arc-20240116; t=1751300859; c=relaxed/simple;
+	bh=4suzjQpxHT3PHOXdfRe76NrMCd1RF5e1dZLNPBqdE9Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WlqC9b+tqLjORR4kjpKnWoGA+1FGNDGlCF7GFXQ+wMRfPhOIbRTTSuQL+PHs5kMn1Bs5zibdxtEOrGzKaTEWEK4Wa5ge4Ay8MPOI61CQQtIu+jQuLy1IIP4rpicvU+qbFWc9XFqioiGakopsqtj13q0kRMAvREs0hHc/ZNtuANE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Hiax92g0; arc=none smtp.client-ip=209.85.210.177
+	 Content-Type:Content-Disposition:In-Reply-To; b=lNGs0LGfRv5eYgQQXhta3pwpEdnZ8rmHBdWRPTTq1RB8hJemZKf+Vqw1idIF0U6oztYBZY8+d8v4z2prnTJ6UaVfdvkNNsyOnJPxFz9s3Z214L1YKMAtaIgWgaebs7Ii/Oh5ylFuCWx8wDsO6tDe4Ji6HiKZ/tsjGI0U8NrJsT8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K5gMlQd8; arc=none smtp.client-ip=209.85.214.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-749248d06faso4856307b3a.2;
-        Mon, 30 Jun 2025 09:25:43 -0700 (PDT)
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-235f9ea8d08so40487135ad.1;
+        Mon, 30 Jun 2025 09:27:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751300743; x=1751905543; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1751300856; x=1751905656; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4qrA45bUKjRioH7bxqknUl5fWCUoEQgL2jH/yd/+s+A=;
-        b=Hiax92g0rk0uUh7NScR8uW6ZQTz6svsbCbp3jccTpkF71dUtqlWWEEyjM1wv5ln+tY
-         j72cKFUhydadRsY8IrxhOPJXFULdPu55vDNRYnsmqx29xTyuYfu2IIBv5He91vz+56zG
-         Hp3pwHmopcmCPhFdt3g8I+Ne9OE2AOr0mSlO2q1yeT+3n923TxYOUw9RPn11/840N5gt
-         cL4NYvFQ79XEJIzzBMCfQyhLBRCLmC+hkhfWry4VdjRdWVRKUnNgG3QR3CIJPDiVOT7L
-         2OVRUNNILiUDog2MSbst4A/swXn6Jzw3yzmM/bBKCestIiF6h/tWiHwxvd0FyAGXtZ4P
-         mAsw==
+        bh=oLa/qvYyOBfAI+FTEEw6GwL+t3XkwSAkil1P+FfrtYw=;
+        b=K5gMlQd8odKy+bUKqnQzICgNPwboRaXpoxIKXhhI+bU8GSeQ7NDX3N/kH2DRz4ZqwM
+         H0QFQhr3Yh8S4UGNYEJfDT44muFcDVqTz4rQtk6mIYjZh6rQH9jsCx551Nb7l65C3vkX
+         Fd7oL2SVcHidAxCBZp4VY4fTsllQwyXtwk9hzj0CJbUdxFkbUJb0r8HbrwUPN+fNtJF0
+         gPoHJb+Mm+89zfE+JZ7ulL7dHto4PAoXEak4LEjP7yvo+WHamV5tm6C2ryUvPNnW1/6j
+         GH6wgBpD/8MHDaPUPM0B55l0HHmomBGQxbGB6izk7WDjQr8C36JiP3784Viw4UmUX8I7
+         Evdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751300743; x=1751905543;
+        d=1e100.net; s=20230601; t=1751300856; x=1751905656;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4qrA45bUKjRioH7bxqknUl5fWCUoEQgL2jH/yd/+s+A=;
-        b=Q2Qw6m2z7bAt6NnQ7sZCzvjeuHvtIGb1ZLhFLVRR/SmfOuPah6h/weKDZ5kmx/ldyg
-         5N9dVsPVUpd/KxF480XyAhQ11hb+hyMoo7FSrRoBHehlESCtKmgm91NYHMdg3lcmJgDR
-         TS4DjridqDJWMlcDwdErqL9v3xK/2FzxbiIbcABqsNUBeXrztfMGpDlCXHLazFush7Xh
-         IWfRc4HKw2F4A71Ct/ZAzFw3ZqzY575oTSqEpvFNKL6xiEZ8mCQBamoxy9oEBHiqnlc5
-         ePUvxgLfogM2G07R+HRsrxAhk/p4FbkMrkI3/MihxV0/HVuHOomM4Droyw8fCfZpJ09p
-         rDAw==
-X-Forwarded-Encrypted: i=1; AJvYcCVQCl5EacHiiUCr7b9QKGCJAf0HvvDAHZlXWHxKrhM9sbZFn2Pou5dK0OPIjX7wm4Wz6joPkHo=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy45UbFuH9ieZqgVEUMRVZ+hTXuclj07I6Y/V0mbf4VQCKEGt63
-	FIlKdjA3mzSvBCr3xbW/XlMm4fndY+Imn6W+wNqTfAbLs/u1mGAYMQU=
-X-Gm-Gg: ASbGncsUpbQ7/i5KBrwA+UOan1KwPcAJyUAOjPFHRj5eoFsN13BFTc/Rb+wt7gSgsnK
-	oiJcOBu5NxTAtyPWTE4I+B6J0DLqOlf1vu7jnW3RsxR7U/GAacyzAwDcWZcbYhz0VV2aoao2w32
-	JVfN3PQyM2I7ZtPJJDP6rQWrdpuTl8Tnx6XMx51yja/F6KZy3vQlBItgIaGGWFe+rWa5pTLlTvB
-	ONgvY5LH2to8TYtOyWnxkuf/VFH2Bw7a7NSP/Cuu/FCoEC4lNSPantkVE8iu23YLrBOrhDjb0uQ
-	80U0kp30fMno9T9gJXzQTNBFHw62AYkkhXeGmrvBl1+wSKB+ufe2TtI6VakPnkjwKAK9UJryflj
-	CfJ64Kh4wexKTj5YxOthxGHY=
-X-Google-Smtp-Source: AGHT+IG5L1whRSKQfhbJR88m/Xw7nLZnaSQcKDoEd0wHp5ZbXql5acZjhznqaf1nLLZqBFPBTMlzAw==
-X-Received: by 2002:a05:6a00:3d55:b0:740:67aa:94ab with SMTP id d2e1a72fcca58-74af6ccf0a6mr18663882b3a.0.1751300743068;
-        Mon, 30 Jun 2025 09:25:43 -0700 (PDT)
+        bh=oLa/qvYyOBfAI+FTEEw6GwL+t3XkwSAkil1P+FfrtYw=;
+        b=i3UmRPc2VsoeJ7MwHXvsvuDbnSfhN5/Fcl/tw1nf/JD2lrUVeUpepdl4ZMpOu2G+Ag
+         +ikY9J2Fl2pws+yh+Ipbde946/I4cgWeUzd5D40aXVflYBjcIxxsI46Lklr9NXTL6do4
+         5RdrDfZ25o1t7Gle28D6tLuvUtNx5Vbu6YcgmOSizopBL5cEdLEa05qAAJf2IeDJr2Yy
+         n5c6RdPssuLsCEbQjirZEkYBDTfDOi5Z2ypRnDdT6RqhmGM5K0UXUhZUoLZShnvc3uPk
+         bM8Vk0BojAOPNSkKmnxXZfBqu5oCwrCPOM90geHNX6FaqVpuGaUHBpFD3xwktfvmieq/
+         0uxQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXV3E+bfSKD5sbEd8tZ5/RMmVbE1D66VraVHV2iqOhyUKJYkxaMVHIHy/GTPECWphZcQNaz2Ig=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy2tqWQmynlon8+6kXZ/84ZGM9IGIxlbORbRXMVMLvxGim0Dvc6
+	dE2HryQoBM7JSVwcooUP+WLuxSNCw2Gpb+xo1d+zGrIHv9YHR301Jgk=
+X-Gm-Gg: ASbGncv+bQU6KpGG9uUGmkMwv7zJttJwROtfcC+FRDNzJUU8EerNv+TVe4eUdcoj7+k
+	NupDSB+R9iVAKr+z+L4R44Wd8tDyJ+jGrc7dmLP3WPiWviNiqfrZWJd12sJ8kk9lF+Tbe3Dyf0S
+	rN/rDH4ZZwcGiy7jvauU5LwLtUnnOCExTkbkkwxxbNh3pEeEvEEneddGRgya8kyDREOkp11If7u
+	sBKguqZU18DLm2+n3a+MLuqsyIb7r23pa30+pPMV5Qjar1iBOQptX5El43ZGA9gZWyWerJrT4i0
+	5kQRIa982BE3n+/eqhsW8PHMFxKhUHgcLk+DG1+xU4c4LXkwVrELl1xTgK+Wc8W/I/JWzemjz8r
+	40Ey6DnV6W1nqNxEwFLZDjyA=
+X-Google-Smtp-Source: AGHT+IGzt2kaCYOygCwspHQ6+3g9HiUGUjtszZMB44bjvdEEC3v3KqOg9YbQeVXBNhQxuMeafZsIqA==
+X-Received: by 2002:a17:902:ebc7:b0:235:f298:cbbe with SMTP id d9443c01a7336-23ac40e028bmr223360635ad.12.1751300856176;
+        Mon, 30 Jun 2025 09:27:36 -0700 (PDT)
 Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
-        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-74af56cb98asm9499219b3a.126.2025.06.30.09.25.42
+        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-23acb2e21bdsm88692115ad.11.2025.06.30.09.27.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Jun 2025 09:25:42 -0700 (PDT)
-Date: Mon, 30 Jun 2025 09:25:41 -0700
+        Mon, 30 Jun 2025 09:27:35 -0700 (PDT)
+Date: Mon, 30 Jun 2025 09:27:34 -0700
 From: Stanislav Fomichev <stfomichev@gmail.com>
 To: Jakub Sitnicki <jakub@cloudflare.com>
 Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
@@ -86,11 +86,11 @@ Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
 	Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <thoiland@redhat.com>,
 	Yan Zhai <yan@cloudflare.com>, netdev@vger.kernel.org,
 	kernel-team@cloudflare.com, Stanislav Fomichev <sdf@fomichev.me>
-Subject: Re: [PATCH bpf-next 07/13] net: Clear skb metadata on handover from
- device to protocol
-Message-ID: <aGK6hdOwBSC7r4gF@mini-arch>
+Subject: Re: [PATCH bpf-next 03/13] bpf: Add new variant of skb dynptr for
+ the metadata area
+Message-ID: <aGK69qJ9tLVvarqh@mini-arch>
 References: <20250630-skb-metadata-thru-dynptr-v1-0-f17da13625d8@cloudflare.com>
- <20250630-skb-metadata-thru-dynptr-v1-7-f17da13625d8@cloudflare.com>
+ <20250630-skb-metadata-thru-dynptr-v1-3-f17da13625d8@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -99,39 +99,48 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250630-skb-metadata-thru-dynptr-v1-7-f17da13625d8@cloudflare.com>
+In-Reply-To: <20250630-skb-metadata-thru-dynptr-v1-3-f17da13625d8@cloudflare.com>
 
 On 06/30, Jakub Sitnicki wrote:
-> With the extension of bpf_dynptr_from_skb(BPF_DYNPTR_F_SKB_METADATA), all
-> BPF programs authorized to call this kfunc now have access to the skb
-> metadata area.
-> 
-> These programs can read up to skb_shinfo(skb)->meta_len bytes located just
-> before skb_mac_header(skb), regardless of what data is currently there.
-> 
-> However, as the network stack processes the skb, headers may be added or
-> removed. Hence, we cannot assume that skb_mac_header() always marks the end
-> of the metadata area.
-> 
-> To avoid potential pitfalls, reset the skb metadata length to zero before
-> passing the skb to the protocol layers. This is a temporary measure until
-> we can make metadata persist through protocol processing.
+> Add a new flag for the bpf_dynptr_from_skb helper to let users to create
+> dynptrs to skb metadata area. Access paths are stubbed out. Implemented by
+> the following changes.
 > 
 > Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 > ---
->  net/core/dev.c | 1 +
->  1 file changed, 1 insertion(+)
+>  include/uapi/linux/bpf.h |  9 ++++++++
+>  net/core/filter.c        | 60 +++++++++++++++++++++++++++++++++++++++++-------
+>  2 files changed, 61 insertions(+), 8 deletions(-)
 > 
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index be97c440ecd5..4a2389997535 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -5839,6 +5839,7 @@ static int __netif_receive_skb_core(struct sk_buff **pskb, bool pfmemalloc,
->  	}
->  #endif
->  	skb_reset_redirect(skb);
-> +	skb_metadata_clear(skb);
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 719ba230032f..ab5730d2fb29 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -7591,4 +7591,13 @@ enum bpf_kfunc_flags {
+>  	BPF_F_PAD_ZEROS = (1ULL << 0),
+>  };
+>  
+> +/**
+> + * enum bpf_dynptr_from_skb_flags - Flags for bpf_dynptr_from_skb()
+> + *
+> + * @BPF_DYNPTR_F_SKB_METADATA: Create dynptr to the SKB metadata area
+> + */
+> +enum bpf_dynptr_from_skb_flags {
+> +	BPF_DYNPTR_F_SKB_METADATA = (1ULL << 0),
+> +};
+> +
+>  #endif /* _UAPI__LINUX_BPF_H__ */
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 1fee51b72220..3c2948517838 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -11967,12 +11967,27 @@ bpf_sk_base_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>  	return func;
+>  }
+>  
+> +enum skb_dynptr_offset {
+> +	SKB_DYNPTR_METADATA	= -1,
 
-And the assumption that it's not gonna break the existing cases is
-because there is currently no way to read that metadata out afterwards?
+nit: any reason not do make it 1? The offset is u32, so that -1 reads a bit
+intentional and I don't get the intention :-)
 
