@@ -1,171 +1,131 @@
-Return-Path: <bpf+bounces-61826-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61827-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76643AEDE86
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 15:13:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4645DAEDF27
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 15:33:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0B45400500
-	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 13:10:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12A773BFB56
+	for <lists+bpf@lfdr.de>; Mon, 30 Jun 2025 13:29:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB248285049;
-	Mon, 30 Jun 2025 13:04:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 889D828B7E1;
+	Mon, 30 Jun 2025 13:28:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d09pdPHN"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="KHPEZGc+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f67.google.com (mail-ej1-f67.google.com [209.85.218.67])
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A48551CA84
-	for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 13:04:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DA3E28A72B
+	for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 13:28:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751288654; cv=none; b=dA9HKSkPEuqHHVRFIrAUa6P9ZI4aXTm2mps5z5oL1Jj9xwDmhKWWsKKiCFbPnTexvCwxrvSX0DI8uzEK1KV46+oajLReJrycMoUt5cFQiI04ZJxl2iRO1VzLgqg1QM7eJkKnNLJbC5XmgJWuqHigXD5HTgkCwaRAqNDt+IEwxTg=
+	t=1751290101; cv=none; b=S0nBTlYDBSzhjaCvJwD2mYNGsxJ6ooRHd9i86q6Q/0EGq+eVSDrcYUei6aDVyPbWpg72ru+DQ7HzCWz5nDqK98iE2MB9XP1LK/fb5y3AFTWRjbxsnmMhR6QyFNgBNoT7dWpDhM90fmhMlDzJ1+tm0UQT9nbaIP8ZidDurkYzETY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751288654; c=relaxed/simple;
-	bh=ds/u0XttWTgQv5sevZWCbsBAuW/0TKp3tCk6NEWZ8do=;
+	s=arc-20240116; t=1751290101; c=relaxed/simple;
+	bh=JOPlee8+H1wqCZ/ex4u70pd3NWavrS1JM0blGK0HgUI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kLN7OL2HgomoTeVLkHTOPmpnVgZiCqs03GoaVLV+ZKo2zW+7QU5jgiQdNOmj97DlwHxo3TeyNppUvaMTCNd2E2Z+1jKrTY9WNJKNbG6d9GxrfFAAHkG65vVrJMd3h89YN9lmlc2LzoJK9XPqZhvDATsweat8hI1pZQBuveXcnOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d09pdPHN; arc=none smtp.client-ip=209.85.218.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f67.google.com with SMTP id a640c23a62f3a-ae0d7b32322so349249566b.2
-        for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 06:04:12 -0700 (PDT)
+	 To:Cc:Content-Type; b=KdiEhkNsyxabERfeYE9l2xbL5hgn1cl3ThANsJldaBgjJ0d+37wGjpk68Rg5NPxAhN/nXUFVIC8qNp8bt8FZGu3WZVkssZsRA1pO6JPtByr2WDkn1iqx3fwaMTxfRdPbPmK9yLyjBbmvAdEyhSDACUXzgn3YZTJVoN3aDvT1e7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=KHPEZGc+; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-60789b450ceso4184870a12.2
+        for <bpf@vger.kernel.org>; Mon, 30 Jun 2025 06:28:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751288651; x=1751893451; darn=vger.kernel.org;
+        d=cloudflare.com; s=google09082023; t=1751290098; x=1751894898; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=scUh17P9KXky33Nk6z3Pth1Xg70a2cmpEueJL5Je+nQ=;
-        b=d09pdPHNNvVL8WTpqzp8MePeXXlkCx7//OYEQj84kPsPavayakxBAkvPhv2k7Lx1Kj
-         ZGaQdbWH40COT9pBq+oUDw1LvQEcW+/xxmPY6JeyzdH8B+RwAgMwwA/6nb949y2AwsDh
-         dWMnkO/f1S2m0IxiN/Ud7SNCFpaOoHl8uNUKvyWeazmDH3InEgvDISsH9dKU++HhJwA7
-         NZQe2laQJoATXypK3O/J2L0JkcqmBL7fky/aTCEP1aDiKnZ0/PdPvCS9TZfi9crQlGSv
-         esFvaGTAdZDgFtMqI9qBJ9ncBoMf2uxJKi8+M2xTaQi86MHXFr4RLWc9LoieOr8nrfuC
-         EE8w==
+        bh=JOPlee8+H1wqCZ/ex4u70pd3NWavrS1JM0blGK0HgUI=;
+        b=KHPEZGc+l3XTOiNeIK/SH4Vj3ktmjbktN86pSTlJpeSSubVlwrKT3rM2f94lb6sXVq
+         Tb1JJzsbs0v9dK+zkz9ukRyQQnIkKjZxVX430ZovDeihIu47oGVkSJG0qci/lSc/jofj
+         bnSqgi+yatHCXYVBHDKDKdJafTzKCXexyytrGoPANTNPh2iNzbqki71MrQJg7ioalQVt
+         LAO6l3nEYmP0fx4nzSbXdg1kb2P5Q/XW/HXcLxFOiEU/6T+e38B5tF1mdYQZj0ZNOPoq
+         Abj8fpg/yLm1lPTqsrhO9IwE+D8SY+7QJYPZR5R5g1x3XfjjCxLO0etvFvH80YKteyyx
+         w3Qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751288651; x=1751893451;
+        d=1e100.net; s=20230601; t=1751290098; x=1751894898;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=scUh17P9KXky33Nk6z3Pth1Xg70a2cmpEueJL5Je+nQ=;
-        b=EZoupgf/5yxoqko+7cLmW/KCgx0PpkEk8gy9Dw3JGW933xOsYW7nJKtdAgOpUPSr0v
-         XcQeJAVlHgQXum7RUVI+rGdtLAWdEjHPGd9yxPuwRQ9hcvXOjMnBJ22LT8sBh7jFCGbB
-         hVcltrB0xaETfGh7Fh5sMk0AQ+dKGkhRGjGJfzR1uc3dHuZXDzPXqjSoYKHDgTbd4VeQ
-         9iuy8MW0W7dae5JIztX46je04cdlRV6Ex7nLPyEUkrC3R/VdLEYxCJeFHTR9ocgnjjaz
-         6c6jD1SxdbRfgpq/i7SUT2GHjDAnjyMq/VcatwY3CWRNX7qSUUKdohbRs0KCuHaYDWOX
-         8B/g==
-X-Gm-Message-State: AOJu0YwjKGBuosdQNJ+sbIvkwluntUMMLhm9QUfitv/CS1Gzqy2B84wp
-	yv6OvnbmbsLmWipzIl+U7pqbM01p+trN7r4utAVkbi+fmpSV6IBz8G4c46tBzJk+jq8Gq+qP0n5
-	tZvSAop12ILCJ0Klf5yF+KRwnPJlgiwI=
-X-Gm-Gg: ASbGncsUFL/J71s7K057hjLAVDhJMWZIVQRga5+2AGaHIJMj8kcSH0LTtWYFmrKYjBk
-	DRCKrrsJ9V4F2BEiliNoa61RquEgdADNLbiW0RIhhjEzMLIpWX23aoVCc6P7L044V1h3Xt3fZJk
-	QmVS4LsuiPvLXtIvQfA261KXkHFtXj19h2kiLtT4gFQUDIrsbR9ZvHZ0jnUcXRsoPKrTaS7pA/y
-	X+e
-X-Google-Smtp-Source: AGHT+IH2RXKy4Ei+T1gdaRC2N9jVfop8KFowuJF/c375r4ye7Fyfnzcav6KBJKD7g+fQzXA4SmjX85H4lNmpH27XexA=
-X-Received: by 2002:a17:906:aada:b0:ad8:9466:3348 with SMTP id
- a640c23a62f3a-ae3500dfa77mr1037954666b.36.1751288649837; Mon, 30 Jun 2025
- 06:04:09 -0700 (PDT)
+        bh=JOPlee8+H1wqCZ/ex4u70pd3NWavrS1JM0blGK0HgUI=;
+        b=plwXmsFQpgsqcqmsFTVxmI8ZUHNi2C1l+kFDcHR6uWmZxR/3d2ptzYTLxDQUZL5Z2J
+         ydlE20vGa+xt54m4XYG8x+O7eZht/M7R+Lvh8fagEkKu00dJhurROcbio8JyALNigbrQ
+         PNowtRa66WnVchvkl3166OEB7F5paT7cf8J6BlDY11klIJuUn9mNjgef2iYTZLZaqWpz
+         5uGPz5aUnzB0BjztqBptgpL7/YVu3gnvIwA72EwiXRw2742AlwzytpnbqhmJRkBzEVxE
+         st5H0e3l5gtWelp3ywmrQR/m8UixAD8koFFETzJBFLqT6KL9ONi+XniO3iTZtTGbwb0t
+         z+vQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVoubOttQ6VRDPykoBKf1aNLYekofW8gW+lEDoPdWI6YJD7ZOLhMw5igjBuhDJrDV84QkM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzVVMSUuL6uz44/rFpTGJqxiJ1qTVOlXeQfJKB5XX4LrbcHIY+j
+	YCq1+qZt1VERfnLCVLkWzlnp/8qWIvKiHy++fGCvxtfg29v6GnzHlpTleFN1BJDflPyQVTjxBvp
+	ppIRbaQcD9nR2GXvuW9iGkRl/DgqAgjH6bMJUdAqZTQ==
+X-Gm-Gg: ASbGncuHpBeVm/pTXYyj+CP51GgmGecpYRJTlsJFdYyA+pfUtAB2ldOe+j5A10QQ1Vm
+	HIdSpFUEWmZ4cO6hojqbKqN1Q3Hz8zrhiCUuAhG4POy8Z6XIgMc50tz8pEsmVPF/jeQzmEaSNAp
+	ao8rjbhDyG3BhhZR2k9AVC9GDO39PiwIg6eqNkiDIJfyGo0wW+U7G/AcTCnKagfXVlRHykdQ==
+X-Google-Smtp-Source: AGHT+IHCK0fPjZVZy4IAIBdmQg4VEfs7xo5JaePIp6jIQWk4rF8khpEsxLOS+G1AlpruG5EP5fXrkymRLvSpySiCwDQ=
+X-Received: by 2002:a05:6402:5108:b0:5fe:7b09:9e27 with SMTP id
+ 4fb4d7f45d1cf-60c88b55d4dmr9970788a12.12.1751290097533; Mon, 30 Jun 2025
+ 06:28:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250614064056.237005-1-sidchintamaneni@gmail.com>
-In-Reply-To: <20250614064056.237005-1-sidchintamaneni@gmail.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Mon, 30 Jun 2025 15:03:32 +0200
-X-Gm-Features: Ac12FXzTNMmDdVztk4YKthblWC9SSi_VqOy4Tf2H_VHP54Yn9eyCBJaaTE15mYM
-Message-ID: <CAP01T74kVb-Nnxd=en9T3Oab7DnwArzmNRUMdC=_khr9_f0TYQ@mail.gmail.com>
-Subject: Re: [RFC bpf-next v2 0/4] bpf: Fast-Path approach for BPF program
-To: Siddharth Chintamaneni <sidchintamaneni@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, djwillia@vt.edu, 
-	miloc@vt.edu, ericts@vt.edu, rahult@vt.edu, doniaghazy@vt.edu, 
-	quanzhif@vt.edu, jinghao7@illinois.edu, egor@vt.edu, sairoop10@gmail.com
+References: <20250616095532.47020-1-matt@readmodwrite.com> <CAPhsuW4ie=vvDSc97pk5qH+faoKjz+b51MDYGA3shaJwNd677Q@mail.gmail.com>
+ <CAENh_SQPLHC8pswTRoqh0bQR84HHQmnO3bM07UQa1Xu9uY_3WA@mail.gmail.com>
+ <CAADnVQ+QyPqi7XJ2p=S9FVDbOxMXvVPU859n+2ApuRQv5T2S5w@mail.gmail.com>
+ <CAENh_SQgZ5yVpshKRhiezhGMDAMvgV7SmwD_8u++mACE33oNrg@mail.gmail.com>
+ <CAADnVQJgOyBCCySnBkTk-VCsz0dy+ppdGHpggxbtDpBBGhaXVg@mail.gmail.com>
+ <CALrw=nFvUwmpjUMYh5iJqjo6SbAO8fZt8pkys7iDjZHfpF2DxQ@mail.gmail.com>
+ <CAADnVQLC44+D-FAW=k=iw+RQA057_ohTdwTYePm5PVMY-BEyqw@mail.gmail.com>
+ <CAENh_SSduKpUtkW_=L5Gg0PYcgDCpkgX4g+7grm4kxucWmq0Ag@mail.gmail.com> <CAADnVQ+_UZ2xUaV-=mb63f+Hy2aVcfC+y9ds1X70tbZhV8W9gw@mail.gmail.com>
+In-Reply-To: <CAADnVQ+_UZ2xUaV-=mb63f+Hy2aVcfC+y9ds1X70tbZhV8W9gw@mail.gmail.com>
+From: Matt Fleming <mfleming@cloudflare.com>
+Date: Mon, 30 Jun 2025 14:28:06 +0100
+X-Gm-Features: Ac12FXx0fYS0dAUVkSwEgtfKWEJIu58_CB5GnzygkiN6a3f1tL111CFtlrAmvas
+Message-ID: <CAGis_TUNfUOD3+GdbJn1U33W8wW5pWmASxiMa5e5+5-BqJ-PKw@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Call cond_resched() to avoid soft lockup in trie_free()
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Matt Fleming <matt@readmodwrite.com>, Ignat Korchagin <ignat@cloudflare.com>, 
+	Song Liu <song@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	kernel-team <kernel-team@cloudflare.com>, Jesper Dangaard Brouer <hawk@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 
-On Sat, 14 Jun 2025 at 08:41, Siddharth Chintamaneni
-<sidchintamaneni@gmail.com> wrote:
+On Fri, 27 Jun 2025 at 20:36, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> This is RFC v2 of
->         https://lore.kernel.org/bpf/20250420105524.2115690-1-rjsu26@gmail.com/
->
-> Change since v1:
-> - Patch generation has been moved after verification and before JIT.
->         - Now patch generation handles both helpers and kfuncs.
->         - Sanity check on original prog and patch prog after JIT.
-> - Runtime termination handler is now global termination mechanism using
->   text_poke.
-> - Termination is triggered by watchdog timer.
->
-> TODO:
-> - Termination support for tailcall programs.
-> - Fix issue caused by warning in runtime termination handler due to
->   https://elixir.bootlin.com/linux/v6.15.1/source/kernel/smp.c#L815
-> - Free memory for patch progs related fields.
-> - Include selftests covering more cases such as BPF program nesting.
+> Good. Now you see my point, right?
+> The cond_resched() doesn't fix the issue.
+> 1hr to free a trie of 100M elements is horrible.
+> Try 100M kmalloc/kfree to see that slab is not the issue.
+> trie_free() algorithm is to blame. It doesn't need to start
+> from the root for every element. Fix the root cause.
 
-Thanks for sharing the new version. I think there's a few
-implementation issues that need to be sorted out, on a high-level.
-- Move arch-specific bits into arch/x86 and ensure all this is not
-invoked / disabled on other architectures.
-- Drop the hrtimer based termination enforcement.
-- Drop extra prog cloning, since I don't see the need anymore.
-- Add an early-short circuit by padding the entry with nop5 and then
-changing it to return early.
-- Other comments left inline.
+It doesn't take an hour to free 100M entries, the table showed it
+takes about a minute (67 or 62 seconds).
 
-Code patching when not in_task() looks problematic, I will think more
-but I guess deferring work to some wq context is probably the best
-option.
-We can potentially be in an NMI context as well when we stall, so
-either it needs to be made safe such that we can invoke it from any
-context, or we defer work.
-Right now, the invocation happens from a timer callback, but we may
-synchronously invoke fast-execute termination request for cond_break
-timeouts or rqspinlock deadlock.
+I never claimed that kmalloc/kfree was at fault. I said that the loop
+in trie_free() has no preemption, and that's a problem with tries with
+millions of entries.
 
-Otherwise it might be simpler to just swap the return address with a
-copy of a patched/cloned program on the local CPU, and replace
-prog_func globally. But we discarded that approach.
-Doesn't feel right to go back there just because we can't modify text
-from any context.
+Of course, rewriting the algorithm used in the lpm trie code would
+make this less of an issue. But this would require a major rework.
+It's not as simple as improving trie_free() alone. FWIW I tried using
+a recursive algorithm in trie_free() and the results are slightly
+better, but it still takes multiple seconds to free 10M entries (4.3s)
+and under a minute for 100M (56.7s). To fix this properly it's
+necessary to use more than two children per node to reduce the height
+of the trie. And in the meantime, anyone who uses maps with millions
+of entries is gonna have the kthread spin in a loop without
+preemption.
 
-In terms of design we still need to figure out how to handle tail
-calls and extension programs.
-Tail calls are relatively easier, since they can potentially fail.
-Extension programs with the current approach become tricky.
-If you had cloned the program during verification and replaced the
-original with it at runtime, then any extensions attached to the
-program do not get invoked.
-Now, since we patch the original program directly, it's possible that
-we still enter an extension program and end up stalling there again.
-I guess we will end up patching the extension program next, but it
-would be nice to verify that this works as expected.
-Other options are removing the extension program by patching it out
-and replacing with original global function target which would have
-been patched.
-
->
->  include/linux/bpf.h                           |  19 +-
->  include/linux/bpf_verifier.h                  |   4 +
->  include/linux/filter.h                        |  43 ++-
->  kernel/bpf/core.c                             |  64 +++++
->  kernel/bpf/syscall.c                          | 225 ++++++++++++++++
->  kernel/bpf/trampoline.c                       |   5 +
->  kernel/bpf/verifier.c                         | 245 +++++++++++++++++-
->  .../bpf/prog_tests/bpf_termination.c          |  39 +++
->  .../selftests/bpf/progs/bpf_termination.c     |  38 +++
->  9 files changed, 674 insertions(+), 8 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_termination.c
->  create mode 100644 tools/testing/selftests/bpf/progs/bpf_termination.c
->
-> --
-> 2.43.0
->
+Thanks,
+Matt
 
