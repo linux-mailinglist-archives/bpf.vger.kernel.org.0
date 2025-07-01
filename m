@@ -1,218 +1,283 @@
-Return-Path: <bpf+bounces-61907-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61910-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70175AEEB34
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 02:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 06E0DAEEB63
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 02:54:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A15D41BC15C7
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 00:21:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BABD5189F6BA
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 00:54:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 366F872622;
-	Tue,  1 Jul 2025 00:20:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b0T6u+lc"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 986A818C00B;
+	Tue,  1 Jul 2025 00:54:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay.hostedemail.com (smtprelay0010.hostedemail.com [216.40.44.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A712C347D5;
-	Tue,  1 Jul 2025 00:20:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2292C72605;
+	Tue,  1 Jul 2025 00:54:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751329255; cv=none; b=CjvN4q/iX77YJ2AogoE1YiWG7Ab0Q7GxWRhB3EWc/X7PFKog9olPRxLzi5GI/yki91V21WDeE0ffz01um9pFSvaH4RcdFGITeQ+eH+mNein4jlE0ZkQ01zzUee9HYGkaJ58up/peQ9dbysfHpK2CTbduyzBBfuSa9vf2KSLcJOk=
+	t=1751331263; cv=none; b=S63oXQqRWhM0/AFreA+uONma/Rq1nHHd/7StAch26nO4es8XHewHQ6+S048Il34kKATaj/8swHHCQVvDVrFv7q+3KBF8usO8hxtc+K7wXDY1KsjP+LnKP9pR6UHT69pa/IxElV/emVNSblvmznG1dLxpNurq+JM+p4R8nMspmo4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751329255; c=relaxed/simple;
-	bh=1zva/vyvpeqf+VyPVIat7QLdr9isufIskxi8szsQ9e8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mKoleKrJY6Pb28+8gG85ZcNSwQ88o3MXIOi6u0aXEVTzDqgb5yUj2cPrYkRdXa6PutG53Vt3f3O6iFiR2RN6EEsFIncHjONaHZMYQ6PoCJqHnzpbd1QLYyaLwNub1op6oNLCzn9Eh+y5T6ZG5pbWQh0WPs2FBA/ou+I5i6w1dWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b0T6u+lc; arc=none smtp.client-ip=209.85.166.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-3de18fdeab0so44894655ab.3;
-        Mon, 30 Jun 2025 17:20:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751329253; x=1751934053; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DEBCdoj55gHUDc+Kc3khDe1kXAkYl31rGdURJbmNFHs=;
-        b=b0T6u+lcbUFpxflcQ0rw/xwWjX5uKogO7Y+AcRSOGsaIES5bmPjuA09sZHumZteIdZ
-         wz5KIiMSiX9DLF2OFYDow1Mz5qMfpioGlzcIrQpqMcPfs0xCeN156MgKzJ1KqiUir+l8
-         Qus98+LAv3NpucWVwZhw3Wds2lEdekv/lXM5CSJ0NZZksucQTog6aj87lC6pbxwyyR9L
-         z5wPSsHLbMOzfsvRGoG5gKxl599qcK5R37omS00V3kjSZy/tKcx/GqgJcbnTZ3itelGa
-         F0bidi09jO2KWbCK/ZR9I83K8Y/jTyMS+iILFotm61q2OTNhouWvwGswZrkXyDHQGRP8
-         46Zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751329253; x=1751934053;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DEBCdoj55gHUDc+Kc3khDe1kXAkYl31rGdURJbmNFHs=;
-        b=LffvRb3ei8Wn+CZsUNaX8pbfkPnYE3SNzYycx5y9c+l6GdV4XmthpZm+GqrTmG33Ae
-         qRg/hNxHCkXLfadZ5dniepbEKKipxEvzwYTYdjIYsTcgEnrKCRyD1z9KYukd+GP7HZXt
-         vGW00cUuo9k5LhryBmVALF5VEIXCSl+HawiQDXdLSFu79nIFvwquXP5gl/Wz1cnN2q+U
-         AE0p0uBgfEkuK7ad+Blt7b14jZNIWpz02W2nnOiocSCDGfz4MrMVx8IaUTJig2yNBf1V
-         +Sid5yrKTaQ0p+wEu/muCKh4KP6Brm70WUpLBifbQKJJiP9GvuzkImZJs26/9R81OZA4
-         zsZg==
-X-Forwarded-Encrypted: i=1; AJvYcCWR27L6CdhJe25jx/4MnPmq3C2A1IbpkN1RvDNBuGAg3lRcCVrcCA/w4KQzrUdwBBQQ45Um2Klk@vger.kernel.org, AJvYcCXoptvPZWQAabbVA141JINfxYgU0D0cvHskOKTDxAicAkdTrF8c8EdWqKRepxFN/1kaBAM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzLdxNxRZhG9vPu9GKeypLqIq3wRRYAnsgzTWVyJXpm3pTMqYQs
-	y6M4VyNd2am1EVwEV09OHUQhpaO3qeR1xt/BXQYUnZ+vCWpTcIs0r2DIbDB26u/jJPr540p8ojZ
-	EJCNjdeZFd7KN5AG7/Ag5DyJ0enR4+9A=
-X-Gm-Gg: ASbGncu/zaWsi5vEHpnqkmFquyQ6pE0MJK3vh350UUTsqOgF8CQ/BvgFjKgnFr2w2Go
-	EuinQI8BC79X2e7Hw2tBZOknOBWtlWqRWlnNZMHSr9hRaCQmWqfCOYLluWq7x/lqSv6kgRQ2Wuy
-	eZq+1XK6mvkf7v55YCBx6gq+6PpgUmPo2a5Qcb+nSOOg==
-X-Google-Smtp-Source: AGHT+IFOAnKHo4eiJk08bURW/bxpCeR/U7Ix+nvOQBBNU0O4inbT9887YDOiPbmYhq1JoGU15uGzmoXuA9+RKAx+bQE=
-X-Received: by 2002:a05:6e02:370c:b0:3dc:79e5:e696 with SMTP id
- e9e14a558f8ab-3df4aba3be2mr165686535ab.11.1751329252593; Mon, 30 Jun 2025
- 17:20:52 -0700 (PDT)
+	s=arc-20240116; t=1751331263; c=relaxed/simple;
+	bh=QX1soIcg/LGD2MctiUxEihaZNkhWiGRQT8tmBHBQU6c=;
+	h=Message-ID:Date:From:To:Cc:Subject; b=G9gLGg5vAFNEySo3YJf2kV4GzxclhBcBDsphjLVNwDeZArljShi1EA168JwtmWHn4jPZFTmz6Qdjimd0O4UrffhkxKcBc9xHe1XdC9KwkexiMZZSDiexyY0MO1VvNcnptcpgNwYN/mbRNCTsdk2rEf+d0WJxLxjFihafANnwcp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf07.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay06.hostedemail.com (Postfix) with ESMTP id 83711104396;
+	Tue,  1 Jul 2025 00:54:17 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: nevets@goodmis.org) by omf07.hostedemail.com (Postfix) with ESMTPA id 2724420024;
+	Tue,  1 Jul 2025 00:54:14 +0000 (UTC)
+Received: from rostedt by gandalf with local (Exim 4.98.2)
+	(envelope-from <rostedt@goodmis.org>)
+	id 1uWPGs-00000007NeF-2tmC;
+	Mon, 30 Jun 2025 20:54:50 -0400
+Message-ID: <20250701005321.942306427@goodmis.org>
+User-Agent: quilt/0.68
+Date: Mon, 30 Jun 2025 20:53:21 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org,
+ x86@kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Josh Poimboeuf <jpoimboe@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Ingo Molnar <mingo@kernel.org>,
+ Jiri Olsa <jolsa@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Andrii Nakryiko <andrii@kernel.org>,
+ Indu Bhagat <indu.bhagat@oracle.com>,
+ "Jose E. Marchesi" <jemarch@gnu.org>,
+ Beau Belgrave <beaub@linux.microsoft.com>,
+ Jens Remus <jremus@linux.ibm.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Jens Axboe <axboe@kernel.dk>,
+ Florian Weimer <fweimer@redhat.com>
+Subject: [PATCH v12 00/14] unwind_user: x86: Deferred unwinding infrastructure
+X-Stat-Signature: juf5zu1wf4xnx9d3d4pdp8mk9789o38n
+X-Rspamd-Server: rspamout07
+X-Rspamd-Queue-Id: 2724420024
+X-Session-Marker: 6E657665747340676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX19IjSkoIc198HtynZRdggK+Vw34pBg/0Fs=
+X-HE-Tag: 1751331254-847520
+X-HE-Meta: U2FsdGVkX18wcSW/Bc7V/Kzkkc5tnDdPRPs8I0tAn4dcXhuwrL1mxxFUbxcoLWaFhJXHCpHMuWAEluwUREkBWSeCrsWpku/30BpDJ/B/Pc0JvD+I0aY/zLtEXBxwa58eTHB4PJpnxRYBp5NT/py5hYYsEvXZU0jgYkEsmj546Q2Vt2Y8Ay37kzvR5+DaqIvZ0yoEj1yRBf9K5TONHdmYFz6Qb/I8iYzwZvM8jpZQFfhSRQ6GrIIyetxUba7oe0jjP8hcQf/MeOU67RcEHYXAEOXG2o7XtJFjEIct4BwoaK1nyQcPKOErVcNtfpNmNdMeXGFfw8CDJAu0PH4WArkbRpLWqb0ypRWafqEds7fGEmH0fFi78RxJb7n/fWo1xxQ6
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250627110121.73228-1-kerneljasonxing@gmail.com>
- <CAL+tcoCSd_LA8w9ov7+_sOWLt3EU1rcqK8Sa6UF5S-xgfAGPnA@mail.gmail.com>
- <CAL+tcoCCM+m6eJ1VNoeF2UMdFOhMjJ1z2FVUoMJk=js++hk0RQ@mail.gmail.com>
- <aGJ5DDtFAZ/IsE0B@boxer> <CAL+tcoB+_5p4V3WgMmpGnrjj-+axTDkhKoYS=1cMKxTRs68JAA@mail.gmail.com>
- <aGKCM2z1I85AAXFc@boxer>
-In-Reply-To: <aGKCM2z1I85AAXFc@boxer>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Tue, 1 Jul 2025 08:20:16 +0800
-X-Gm-Features: Ac12FXxbXll0iFIoZhuB9QgHAotM7rhT8ycjzj-6aD5iphT-LY7JvuebDcVCFsY
-Message-ID: <CAL+tcoBj_cv761-rair8vgvhgu1+DSFoNd2nZspvjtm3dKKxXw@mail.gmail.com>
-Subject: Re: [PATCH net-next v6] net: xsk: introduce XDP_MAX_TX_BUDGET set/getsockopt
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com, 
-	jonathan.lemon@gmail.com, sdf@fomichev.me, ast@kernel.org, 
-	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com, joe@dama.to, 
-	willemdebruijn.kernel@gmail.com, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 30, 2025 at 8:25=E2=80=AFPM Maciej Fijalkowski
-<maciej.fijalkowski@intel.com> wrote:
->
-> On Mon, Jun 30, 2025 at 08:07:01PM +0800, Jason Xing wrote:
-> > On Mon, Jun 30, 2025 at 7:47=E2=80=AFPM Maciej Fijalkowski
-> > <maciej.fijalkowski@intel.com> wrote:
-> > >
-> > > On Sun, Jun 29, 2025 at 06:43:05PM +0800, Jason Xing wrote:
-> > > > On Sun, Jun 29, 2025 at 10:51=E2=80=AFAM Jason Xing <kerneljasonxin=
-g@gmail.com> wrote:
-> > > > >
-> > > > > On Fri, Jun 27, 2025 at 7:01=E2=80=AFPM Jason Xing <kerneljasonxi=
-ng@gmail.com> wrote:
-> > > > > >
-> > > > > > From: Jason Xing <kernelxing@tencent.com>
-> > > > > >
-> > > > > > This patch provides a setsockopt method to let applications lev=
-erage to
-> > > > > > adjust how many descs to be handled at most in one send syscall=
-. It
-> > > > > > mitigates the situation where the default value (32) that is to=
-o small
-> > > > > > leads to higher frequency of triggering send syscall.
-> > > > > >
-> > > > > > Considering the prosperity/complexity the applications have, th=
-ere is no
-> > > > > > absolutely ideal suggestion fitting all cases. So keep 32 as it=
-s default
-> > > > > > value like before.
-> > > > > >
-> > > > > > The patch does the following things:
-> > > > > > - Add XDP_MAX_TX_BUDGET socket option.
-> > > > > > - Convert TX_BATCH_SIZE to tx_budget_spent.
-> > > > > > - Set tx_budget_spent to 32 by default in the initialization ph=
-ase as a
-> > > > > >   per-socket granular control. 32 is also the min value for
-> > > > > >   tx_budget_spent.
-> > > > > > - Set the range of tx_budget_spent as [32, xs->tx->nentries].
-> > > > > >
-> > > > > > The idea behind this comes out of real workloads in production.=
- We use a
-> > > > > > user-level stack with xsk support to accelerate sending packets=
- and
-> > > > > > minimize triggering syscalls. When the packets are aggregated, =
-it's not
-> > > > > > hard to hit the upper bound (namely, 32). The moment user-space=
- stack
-> > > > > > fetches the -EAGAIN error number passed from sendto(), it will =
-loop to try
-> > > > > > again until all the expected descs from tx ring are sent out to=
- the driver.
-> > > > > > Enlarging the XDP_MAX_TX_BUDGET value contributes to less frequ=
-ency of
-> > > > > > sendto() and higher throughput/PPS.
-> > > > > >
-> > > > > > Here is what I did in production, along with some numbers as fo=
-llows:
-> > > > > > For one application I saw lately, I suggested using 128 as max_=
-tx_budget
-> > > > > > because I saw two limitations without changing any default conf=
-iguration:
-> > > > > > 1) XDP_MAX_TX_BUDGET, 2) socket sndbuf which is 212992 decided =
-by
-> > > > > > net.core.wmem_default. As to XDP_MAX_TX_BUDGET, the scenario be=
-hind
-> > > > > > this was I counted how many descs are transmitted to the driver=
- at one
-> > > > > > time of sendto() based on [1] patch and then I calculated the
-> > > > > > possibility of hitting the upper bound. Finally I chose 128 as =
-a
-> > > > > > suitable value because 1) it covers most of the cases, 2) a hig=
-her
-> > > > > > number would not bring evident results. After twisting the para=
-meters,
-> > > > > > a stable improvement of around 4% for both PPS and throughput a=
-nd less
-> > > > > > resources consumption were found to be observed by strace -c -p=
- xxx:
-> > > > > > 1) %time was decreased by 7.8%
-> > > > > > 2) error counter was decreased from 18367 to 572
-> > > > >
-> > > > > More interesting numbers are arriving here as I run some benchmar=
-ks
-> > > > > from xdp-project/bpf-examples/AF_XDP-example/ in my VM.
-> > > > >
-> > > > > Running "sudo taskset -c 2 ./xdpsock -i eth0 -q 1 -l -N -t -b 256=
-"
-> > >
-> > > do you have a patch against xdpsock that does setsockopt you're
-> > > introducing here?
-> >
-> > Sure, I added the following code in the apply_setsockopt():
-> > if (setsockopt(xsk_socket__fd(xsk->xsk), SOL_XDP, 9, &a, sizeof(a)) < 0=
-)
-> > ...
-> >
-> > >
-> > > -B -b 256 was for enabling busy polling and giving it 256 budget, whi=
-ch is
-> > > not what you wanted to achieve.
-> >
-> > I checked that I can use getsockopt to get the budget value the same
-> > as what I use setsockopt().
-> >
-> > Sorry, I don't know what you meant here. Could you say more about it?
->
-> I meant that -b is for setting SO_BUSY_POLL_BUDGET. just pick different
-> knob for your use case.
 
-After taking a deep sleep, I clearly know what that is... I will try
-to test with other parameters. But for me, the primary factor is the
-security interception on the host side because of a larger number of
-descs containing useless information. Well, I will find a good way to
-avoid this in the future...
+[
+   UPDATE: Florian Weimer is looking to having Fedora built with SFrames
+           so that once this becomes available in the kernel, it will
+           also be usable in Fedora.
+]
 
-And what is your opinion of the current patch? I used [32, nentries]
-as the min/max range as you advised :)
+This is the first patch series of a set that will make it possible to be able
+to use SFrames[1] in the Linux kernel. A quick recap of the motivation for
+doing this.
 
-Thanks,
-Jason
+Currently the only way to get a user space stack trace from a stack
+walk (and not just copying large amount of user stack into the kernel
+ring buffer) is to use frame pointers. This has a few issues. The biggest
+one is that compiling frame pointers into every application and library
+has been shown to cause performance overhead.
+
+Another issue is that the format of the frames may not always be consistent
+between different compilers and some architectures (s390) has no defined
+format to do a reliable stack walk. The only way to perform user space
+profiling on these architectures is to copy the user stack into the kernel
+buffer.
+
+SFrames is now supported in gcc binutils and soon will also be supported
+by LLVM. SFrames acts more like ORC, and lives in the ELF executable
+file as its own section. Like ORC it has two tables where the first table
+is sorted by instruction pointers (IP) and using the current IP and finding
+it's entry in the first table, it will take you to the second table which
+will tell you where the return address of the current function is located
+and then you can use that address to look it up in the first table to find
+the return address of that function, and so on. This performs a user
+space stack walk.
+
+Now because the SFrame section lives in the ELF file it needs to be faulted
+into memory when it is used. This means that walking the user space stack
+requires being in a faultable context. As profilers like perf request a stack
+trace in interrupt or NMI context, it cannot do the walking when it is
+requested. Instead it must be deferred until it is safe to fault in user
+space. One place this is known to be safe is when the task is about to return
+back to user space.
+
+Josh originally wrote the PoC of this code and his last version he posted
+was back in January:
+
+   https://lore.kernel.org/all/cover.1737511963.git.jpoimboe@kernel.org/
+
+That series contained everything from adding a new faultable user space
+stack walking code, deferring the stack walk, implementing sframes,
+fixing up x86 (VDSO), and even added both the kernel and user space side
+of perf to make it work. But Josh also ran out of time to work on it and
+I picked it up. As there's several parts to this series, I also broke
+it out. Especially since there's parts of his series that do not depend
+on each other.
+
+This series contains only the core infrastructure that all the rest needs.
+Of the 14 patches, only 3 are x86 specific. The rest is simply the unwinding
+code that s390 can build against. I moved the 3 x86 specific to the end
+of the series too.
+
+Since multiple tracers (like perf, ftrace, bpf, etc) can attach to the
+deferred unwinder and each of these tracers can attach to some or all
+of the tasks to trace, there is a many to many relationship. This relationship
+needs to be made in interrupt or NMI context so it can not rely on any
+allocation. To handle this, a bitmask is used. There's a global bitmask of
+size long which will allocate a single bit when a tracer registers for
+deferred stack traces. The task struct will also have a bitmask where a
+request comes in from one of the tracers to have a deferred stack trace, it
+will set the corresponding bit for that tracer it its mask. As one of the bits
+represents that a request has been made, this means at most 31 on 32 bit
+systems or 63 on 64 bit systems of tracers may be registered at a given time.
+This should not be an issue as only one perf application, or ftrace instance
+should request a bit. BPF should also use only one bit and handle any
+multiplexing for its users.
+
+When the first request is made for a deferred stack trace from a task, it will
+take a timestamp. This timestamp will be used as the identifier for the user
+space stack trace. As the user space stack trace does not change while the
+task is in the kernel, requests that come in after the first request and
+before the task goes back to user space will get the same timestamp. This
+timestamp also serves the purpose of knowing how far back a given user space
+stack trace goes. If there's dropped events, and the events dropped miss a
+task entering user space and coming back to the kernel, the new stack trace
+taken when it goes back to user space should not be used with the events
+before the drop happened.
+
+When a tracer makes a request, it gets this timestamp, and the tasks bitmask
+sets the bit for the requesting tracer. A task work is used to have the task
+do the callbacks before it goes back to user space. When it does, it will scan
+its bitmask and call all the callbacks for the tracers that have their
+representing bit set. The callback will receive the user space stack trace as
+well as the timestamp that was used.
+
+That's the basic idea. Obviously there's more to it than the above
+explanation, but each patch explains what it is doing, and it is broken up
+step by step.
+
+I run two SFrame meetings once a month (one in Asia friendly timezone and
+the other in Europe friendly). We have developers from Google, Oracle, Red Hat,
+IBM, EfficiOS, Meta, Microsoft, and more that attend. (If anyone is interested
+in attending let me know). I have been running this since December of 2024.
+Last year in GNU Cauldron, a few of us got together to discuss the design
+and such. We are pretty confident that the current design is sound. We have
+working code on top of this and have been testing it.
+
+Since the s390 folks want to start working on this (they have patches to
+sframes already from working on the prototypes), I would like this series
+to be a separate branch based on top of v6.16-rc2. Then all the subsystems
+that want to work on top of this can as there's no real dependency between
+them.
+
+I have more patches on top of this series that add perf support, ftrace
+support, sframe support and the x86 fix ups (for VDSO). But each of those
+patch series can be worked on independently, but they all depend on this
+series (although the x86 specific patches at the end isn't necessarily
+needed, at least for other architectures).
+
+Please review, and if you are happy with them, lets get them in a branch
+that we all can use. I'm happy to take it in my tree if I can get acks on the
+x86 code. Or it can be in the tip tree as a separate branch on top of 6.16-rc4
+and I'll just base my work on top of that. Doesn't matter either way.
+
+This is based on top of v6.16-rc4 and the code is here:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git unwind/core
+
+  Head SHA1: 649fe8a37fbb8bc7eb1d420630523feb4f44d1d7
+
+Changes since v11: https://lore.kernel.org/linux-trace-kernel/20250625225600.555017347@goodmis.org/
+
+- Add USED bit to the task's unwind_mask to know if the faultable user stack
+  function was used or not. This allows for only having to check one value on
+  the way back to user space to know if it has to do more work or not.
+
+- Fix header macro protection name to include X86 (Ingo Molnar)
+
+- Use insn_get_seg_base() to get segment registers instead of using the
+  function perf uses and making it global. Also as that function doesn't
+  look to have a requirement to disable interrupts, the scoped_guard(irqsave)
+  is removed.
+
+- Check return code of insn_get_seg_base() for the unlikely event that it
+  returns invalid (-1).
+
+- Moved arch_unwind_user_init() into stacktrace.c as to use
+  insn_get_seg_base(), it must include insn-eval.h that defines
+  pt_regs_offset(), but that is also used in the perf generic code as an
+  array and if it is included in the header file, it causes a build
+  conflict.
+
+- Update the comments that explain arch_unwind_user_init/next that a macro
+  needs to be defined with those names if they are going to be used.
+
+Josh Poimboeuf (7):
+      unwind_user: Add user space unwinding API
+      unwind_user: Add frame pointer support
+      unwind_user: Add compat mode frame pointer support
+      unwind_user/deferred: Add unwind cache
+      unwind_user/deferred: Add deferred unwinding interface
+      unwind_user/x86: Enable frame pointer unwinding on x86
+      unwind_user/x86: Enable compat mode frame pointer unwinding on x86
+
+Steven Rostedt (7):
+      unwind_user/deferred: Add unwind_user_faultable()
+      unwind_user/deferred: Make unwind deferral requests NMI-safe
+      unwind deferred: Use bitmask to determine which callbacks to call
+      unwind deferred: Use SRCU unwind_deferred_task_work()
+      unwind: Clear unwind_mask on exit back to user space
+      unwind: Add USED bit to only have one conditional on way back to user space
+      unwind: Finish up unwind when a task exits
+
+----
+ MAINTAINERS                              |   8 +
+ arch/Kconfig                             |  11 +
+ arch/x86/Kconfig                         |   2 +
+ arch/x86/include/asm/unwind_user.h       |  42 ++++
+ arch/x86/include/asm/unwind_user_types.h |  17 ++
+ arch/x86/kernel/stacktrace.c             |  28 +++
+ include/asm-generic/Kbuild               |   2 +
+ include/asm-generic/unwind_user.h        |   5 +
+ include/asm-generic/unwind_user_types.h  |   5 +
+ include/linux/entry-common.h             |   2 +
+ include/linux/sched.h                    |   5 +
+ include/linux/unwind_deferred.h          |  79 +++++++
+ include/linux/unwind_deferred_types.h    |  20 ++
+ include/linux/unwind_user.h              |  45 ++++
+ include/linux/unwind_user_types.h        |  39 ++++
+ kernel/Makefile                          |   1 +
+ kernel/exit.c                            |   2 +
+ kernel/fork.c                            |   4 +
+ kernel/unwind/Makefile                   |   1 +
+ kernel/unwind/deferred.c                 | 357 +++++++++++++++++++++++++++++++
+ kernel/unwind/user.c                     | 130 +++++++++++
+ 21 files changed, 805 insertions(+)
+ create mode 100644 arch/x86/include/asm/unwind_user.h
+ create mode 100644 arch/x86/include/asm/unwind_user_types.h
+ create mode 100644 include/asm-generic/unwind_user.h
+ create mode 100644 include/asm-generic/unwind_user_types.h
+ create mode 100644 include/linux/unwind_deferred.h
+ create mode 100644 include/linux/unwind_deferred_types.h
+ create mode 100644 include/linux/unwind_user.h
+ create mode 100644 include/linux/unwind_user_types.h
+ create mode 100644 kernel/unwind/Makefile
+ create mode 100644 kernel/unwind/deferred.c
+ create mode 100644 kernel/unwind/user.c
 
