@@ -1,246 +1,199 @@
-Return-Path: <bpf+bounces-62009-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62010-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18DF9AF051B
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 22:46:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 304D5AF0527
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 22:54:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 010F13A4716
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 20:45:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 721464A5C81
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 20:54:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E59092FE379;
-	Tue,  1 Jul 2025 20:46:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3E1D2FEE3B;
+	Tue,  1 Jul 2025 20:54:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ildLjMwu"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WozWKzXg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF11E246781;
-	Tue,  1 Jul 2025 20:46:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9558728B3FD
+	for <bpf@vger.kernel.org>; Tue,  1 Jul 2025 20:54:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751402767; cv=none; b=dH+XxC6KNubdyufXYdw5jvjMet3oN4NpNFax0E/dfJ/ShHwU6EytFhDdDzQJIHOvwfeSJTsoa8Zek4RnmevdGeEEN9i5y2VJLhJC38GqvA3quAKTT7k79G9/JcEjKQEbioIh26Hd012JMG2wjv0AgP9UCuuOI/Igs+tea+tOois=
+	t=1751403273; cv=none; b=lwlSJnu3+Jt5CkLhR8reTaojKhofWsyZdMRMkWLIYVshYNI8TAIOanirPJcDPNK6GBCxDIbYYdaBsigECFp/2paUbTQKdTF6ihZiwr5accPp2JYk/LY1bhgslDarKrMUHqUXdbYlm3bzYLUqopH1ayej7+s0IIrC72dVplRQqEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751402767; c=relaxed/simple;
-	bh=cgf2UXP07i29I0Sz7Ucz+VMLeoyIB1XYNHnEU1OdDfM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QQR4wiDjE/0cBORpz2Vkpp/VlRKcf9mxgCo46MbxNP+NPCVhjOABb3+vSM7gxSg4vmg/51yyuWhKd4w+CHXIU9HkYv+BUPAm95Q+4Pe22Xq/Sex2uzV7CNx8g+OvBSGN4wXpgNFc6YiFfs8EoDjrRwfk1ram1FZ84WmHP3HyLAY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ildLjMwu; arc=none smtp.client-ip=209.85.215.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-b3226307787so2846444a12.1;
-        Tue, 01 Jul 2025 13:46:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751402765; x=1752007565; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hCgrlLfo9Mns92U/5iXO12KGKM9lhSDCM+Q2c4kfSmE=;
-        b=ildLjMwu8XfJILGEu8lDB/KokcoMaCVPu8ab7XnvASRTMjtYt5uhd0nitARask9NBK
-         edjtW3FcD3iBmLflyj0qkBF9+HAu47lQsgfdXhy8niOIksuurSsp5hmhA++koRVc5I4j
-         +ot6VPnt+k0BAzU+ajgUFzq4mc/nCArsn4J1Bjnd68ugorwNKs4DWUiInpf8rTDaSvO3
-         w5nc9EbgIh5QgoMLlFL/WQ+cqWnAWzeyeojvi785yiYsJQV9vy4fCc0ac2tsasP+WXXz
-         JK8BOc470k9cPee6ihxmnLmoCL50Dz5L6obKzPkbaFSm+A5LbnGcFA+uA1YMQUj1N0dD
-         /TKg==
+	s=arc-20240116; t=1751403273; c=relaxed/simple;
+	bh=or9jl/Ohve/N9Ns+oFhbe97H5vFTlvIMCpvRCGZiT2s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WCQJI1JeSo7N2SJmrqPoasXnpGDKxqh4N4wdl0jkn2m5p2cHqxznY/q2yDaiv52XEBf6IM0BS+2SjiKXjWdtbSXczmACO1KDn+pREUSOyHmMsPCRrVOApr7eJUBIaUweJt7dTVkWO5dKFSBu7FRJCRU9Eim+UO23bDQ3ib+rkd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WozWKzXg; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1751403270;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nkzVSLl4NLtygyXSuRkDZK7ij9PxQA3e+T1LkAFLCR8=;
+	b=WozWKzXgDdazpdGPKCVMng/cTzAkDH0mQvntT5X5srXVhz9YzNduZsCSHzlqE9v0H8t2ka
+	DCAm6+gwspULepO3V6nd0oh1DB4Cpitf/57Z1FEWBvd7wRxPSRjqnifh+1nSkyRWK6bF/E
+	hPYvMT8O6z+q25lo7zIL5sexDyXOXy0=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-501-PyCoQxkLPZKU3iRx9ft4bQ-1; Tue, 01 Jul 2025 16:54:29 -0400
+X-MC-Unique: PyCoQxkLPZKU3iRx9ft4bQ-1
+X-Mimecast-MFC-AGG-ID: PyCoQxkLPZKU3iRx9ft4bQ_1751403268
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-ae0b2bbd8bfso262264166b.2
+        for <bpf@vger.kernel.org>; Tue, 01 Jul 2025 13:54:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751402765; x=1752007565;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hCgrlLfo9Mns92U/5iXO12KGKM9lhSDCM+Q2c4kfSmE=;
-        b=dFb0rpgY34MJSz1AxJFeoFMvBpYLnRvvUmQ2y9gZSvoyqr8fVIw2u0S5Zq9OOoI7e5
-         J1fBqZsCk0Fn+p8Ib/dCFIx7+57hyWK8PaZYPn+9w5f6Pfx+Y3FKk4NR33TQq+EPmYW6
-         6l643QA95r2c1GiSnuzlPOtaojY4MYo6QNklY3Vy04VSvHFY4EAyQaWq+IP/bYVkVtD6
-         ulpEartgA1oYsu6Z3IEQmE+rY34047fDEDkYtpaiyaskbj/jT5Bo0T9XMyj6ttmDZKnc
-         ZKVJwXuwRq4rRCcCFPH0P5/aEXUVL2tAq3TkXuLOSx2y/Ogt4VuhENFZtCQSYj9Tj4pl
-         iRsg==
-X-Forwarded-Encrypted: i=1; AJvYcCVJSgltE6JBfKmKESnypbOuT+VeMOAfHvioSV73Nffjs2x8LxqVFJyqq2J8/wJd5lvDFtE=@vger.kernel.org, AJvYcCVlUMi3FXt5l5sKJMUPWJi1a7AXtLv5QMGzdzZThHi5wxOkLnPsE+NlN/ELrIXWJaicDXRfD7wsrj1sHIXS@vger.kernel.org
-X-Gm-Message-State: AOJu0YyZrJT1D7BWNjbJS2MGXcVYzlMdTvjCse8d9W6tJQ1tyyC9cYdZ
-	ZUA/NUbrVY2/mQsm9Paphb8HFcfFyusE8vFBX7FhwITOKBH9Hyb+Kl7U6FTDJrWo0RUIbgeXwqH
-	QhjGGfompTWqXPoq8lAWNj09b3yTT8iM=
-X-Gm-Gg: ASbGncv93eHdFyIQ247+3BDCX28RkKpFiu9NsWQ/IIV0M0/wdFVhyY6ag2YhQWFVn5C
-	enoyqAKwYlkPYlaO+IuzfW/AvAyV4zgQZwXWgwd4mwZRX9pmK61hqf4hosk/iuoUkswDyKwMSXu
-	cuxXPZHY9IFyWXTfw6gbKDud/pR0MFn3f3UlwaeqwU66dgfTcW2alUxrkkFa4=
-X-Google-Smtp-Source: AGHT+IE0GrZOy0np0jvotiCpIi/pC4GYr+OPKKBtDYVBM8itFJuYyOIpiylRF1p1h/76mb4orDWecoU4sJTxm4EJHfg=
-X-Received: by 2002:a17:90b:2c8d:b0:311:c1ec:7cfb with SMTP id
- 98e67ed59e1d1-31a90bd47aemr511891a91.21.1751402765101; Tue, 01 Jul 2025
- 13:46:05 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1751403268; x=1752008068;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nkzVSLl4NLtygyXSuRkDZK7ij9PxQA3e+T1LkAFLCR8=;
+        b=epk5vIdCEaRSojAfzKpuFPd2tJqqY2VInkyERw6hz+n8L3oK2woQ+V0v1ZQrK/3Wel
+         QOpiQyGce0wSlnGxpwJ4UBpuYpM1nEMTxBw/sVUJfIdQeTnp9W8jbSg1arstVeAdOG35
+         CqktJdIgMivYCja3GEntn4cf2q8IZ8jwx0AN4XKUa8fJHO7DheLwEYcy3J4csgUfC5CF
+         SOyVcQZY86qq7otrOea2hRQhjb0sz5AStzv0g4UGYBh+1+BBf8Y9g72aZ9IdGdrnuEbp
+         E/MG1B+Ei2Vg7+vEPeMV4iQpzpAx5lz33/et/VVtFTXiSDcfqt6UfS8lMg2FqGnGVzxx
+         tc2w==
+X-Gm-Message-State: AOJu0YwWQ5NIcx9g89s7h6ycC7g/WZPCEfn22jcm2sjMnoVCN/OJSrVd
+	309a1NQZFFlf++4XsAGxePSZQAmqm4r2twqiYq/oaLTSKT7w/5yCMdiPlidnMyKb49B/4YFbedr
+	+0RHQlB20TVZP7skbyPG3Vb249YDqBPb3lx7CqHtk49T+z9/K38HS
+X-Gm-Gg: ASbGncuUeVMnknCh/l0oMCMt46IcEfojl6xcZi2Z7SmyO4juBL6i9GAO9jaySTkqydK
+	wDIqa1WHTac9v62xwnbWbG9/EoSAZ8m1t3S4C/lgPaK0AwX/3x+6nt3GBEI+3owEzDx2S96Fmaq
+	2FwLb3udUzhfYsbcggquf8OcNtrBT2hBJuwqNTYA+0WGAJ5sROFQd+MMDgbX55frftkkpGpjqp9
+	RjcaTgttaIjVWm9BiFpBFltsYHBDGiNHWKMwGLspshLUjZSIGXC1JX32lDEfJ7bBB96d+ROV9ki
+	FMIB0ubwRntnoEkCwNpbjaEGEInJaPar06cTysMfA/CWh6bxRxRyREdZ
+X-Received: by 2002:a17:906:d54d:b0:add:f0a2:d5d8 with SMTP id a640c23a62f3a-ae3c2a6c6d1mr27264666b.11.1751403268037;
+        Tue, 01 Jul 2025 13:54:28 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE9pHcvDapvJkHtHElALCVoC7Goh+kJdXnChSWYrw2+rmPmL55N4/Av4SzRkF5hqufXSaOUxw==
+X-Received: by 2002:a17:906:d54d:b0:add:f0a2:d5d8 with SMTP id a640c23a62f3a-ae3c2a6c6d1mr27262366b.11.1751403267584;
+        Tue, 01 Jul 2025 13:54:27 -0700 (PDT)
+Received: from [192.168.0.102] (185-219-167-205-static.vivo.cz. [185.219.167.205])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae353ca201asm942629366b.150.2025.07.01.13.54.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Jul 2025 13:54:27 -0700 (PDT)
+Message-ID: <36400b83-1a6f-4da0-9561-073bd268c58e@redhat.com>
+Date: Tue, 1 Jul 2025 22:54:25 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250620113846.3950478-1-arnd@kernel.org> <CAADnVQKAT3UPzcpzkJ6_-powz4YTiDAku4-a+++hrhYdJUnLiw@mail.gmail.com>
- <361eb614-e145-49dc-aa32-12f313f61b96@linux.dev>
-In-Reply-To: <361eb614-e145-49dc-aa32-12f313f61b96@linux.dev>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 1 Jul 2025 13:45:50 -0700
-X-Gm-Features: Ac12FXyI7Qso7jRBjHBJtEsaXWo4_BsHAlGq7GXcFjjswLG4pAt_g_gsBh58Zpg
-Message-ID: <CAEf4BzahSLGiW_F4LtG1tMAb0O1b6D-kO0AcrU2O+nLKVbkvZA@mail.gmail.com>
-Subject: Re: [PATCH] bpf: turn off sanitizer in do_misc_fixups for old clang
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Arnd Bergmann <arnd@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Nathan Chancellor <nathan@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
-	John Fastabend <john.fastabend@gmail.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
-	Luis Gerhorst <luis.gerhorst@fau.de>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, clang-built-linux <llvm@lists.linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf] selftests/bpf: Re-add kfunc declarations to qdisc
+ tests
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ Amery Hung <ameryhung@gmail.com>, =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgense?=
+ =?UTF-8?Q?n?= <toke@redhat.com>, Feng Yang <yangfeng@kylinos.cn>
+References: <20250630133524.364236-1-vmalik@redhat.com>
+ <CAADnVQJF8-8zHV75Cf7v8XWGVrJwU5JaQjBm0B-Q3JUUMqNmcQ@mail.gmail.com>
+ <49fcc6c3-8075-4134-bdbd-fbd8a40f4202@redhat.com>
+ <CAADnVQKQTLDP1W1ao-mCPfLDbZWykW1TdcouJPSVapNWu=bCBw@mail.gmail.com>
+ <CAEf4BzaM9_RbUfi2Gk-=_2D3OC8GiDS-vT5-9CHOd07r=+wyeg@mail.gmail.com>
+From: Viktor Malik <vmalik@redhat.com>
+Content-Language: en-US
+In-Reply-To: <CAEf4BzaM9_RbUfi2Gk-=_2D3OC8GiDS-vT5-9CHOd07r=+wyeg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jul 1, 2025 at 1:03=E2=80=AFPM Yonghong Song <yonghong.song@linux.d=
-ev> wrote:
->
->
->
-> On 6/23/25 2:32 PM, Alexei Starovoitov wrote:
-> > On Fri, Jun 20, 2025 at 4:38=E2=80=AFAM Arnd Bergmann <arnd@kernel.org>=
- wrote:
-> >> From: Arnd Bergmann <arnd@arndb.de>
-> >>
-> >> clang versions before version 18 manage to badly optimize the bpf
-> >> verifier, with lots of variable spills leading to excessive stack
-> >> usage in addition to likely rather slow code:
-> >>
-> >> kernel/bpf/verifier.c:23936:5: error: stack frame size (2096) exceeds =
-limit (1280) in 'bpf_check' [-Werror,-Wframe-larger-than]
-> >> kernel/bpf/verifier.c:21563:12: error: stack frame size (1984) exceeds=
- limit (1280) in 'do_misc_fixups' [-Werror,-Wframe-larger-than]
-> >>
-> >> Turn off the sanitizer in the two functions that suffer the most from
-> >> this when using one of the affected clang version.
-> >>
-> >> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> >> ---
-> >>   kernel/bpf/verifier.c | 11 +++++++++--
-> >>   1 file changed, 9 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> >> index 2fa797a6d6a2..7724c7a56d79 100644
-> >> --- a/kernel/bpf/verifier.c
-> >> +++ b/kernel/bpf/verifier.c
-> >> @@ -19810,7 +19810,14 @@ static int do_check_insn(struct bpf_verifier_=
-env *env, bool *do_print_state)
-> >>          return 0;
-> >>   }
-> >>
-> >> -static int do_check(struct bpf_verifier_env *env)
-> >> +#if defined(CONFIG_CC_IS_CLANG) && CONFIG_CLANG_VERSION < 180100
-> >> +/* old clang versions cause excessive stack usage here */
-> >> +#define __workaround_kasan  __disable_sanitizer_instrumentation
-> >> +#else
-> >> +#define __workaround_kasan
-> >> +#endif
-> >> +
-> >> +static __workaround_kasan int do_check(struct bpf_verifier_env *env)
-> > This looks too hacky for a workaround.
-> > Let's figure out what's causing such excessive stack usage and fix it.
-> > We did some of this work in
-> > commit 6f606ffd6dd7 ("bpf: Move insn_buf[16] to bpf_verifier_env")
-> > and similar.
-> > Looks like it wasn't enough or more stack usage crept in since then.
-> >
-> > Also make sure you're using the latest bpf-next.
-> > A bunch of code was moved out of do_check().
-> > So I bet the current bpf-next/master doesn't have a problem
-> > with this particular function.
-> > In my kasan build do_check() is now fully inlined.
-> > do_check_common() is not and it's using 512 bytes of stack.
-> >
-> >>   {
-> >>          bool pop_log =3D !(env->log.level & BPF_LOG_LEVEL2);
-> >>          struct bpf_verifier_state *state =3D env->cur_state;
-> >> @@ -21817,7 +21824,7 @@ static int add_hidden_subprog(struct bpf_verif=
-ier_env *env, struct bpf_insn *pat
-> >>   /* Do various post-verification rewrites in a single program pass.
-> >>    * These rewrites simplify JIT and interpreter implementations.
-> >>    */
-> >> -static int do_misc_fixups(struct bpf_verifier_env *env)
-> >> +static __workaround_kasan int do_misc_fixups(struct bpf_verifier_env =
-*env)
-> > This one is using 832 byte of stack with kasan.
-> > Which is indeed high.
-> > Big chunk seems to be coming from chk_and_sdiv[] and chk_and_smod[].
-> >
-> > Yonghong,
-> > looks like you contributed that piece of code.
-> > Pls see how to reduce stack size here.
-> > Daniel used this pattern in earlier commits. Looks like
-> > we took it too far.
->
-> With llvm17, I got the following error:
->
-> /home/yhs/work/bpf-next/kernel/bpf/verifier.c:24491:5: error: stack frame=
- size (2552) exceeds limit (1280) in 'bpf_check' [-
-> Werror,-Wframe-larger-than]
->   24491 | int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpf=
-ptr_t uattr, __u32 uattr_size)
->         |     ^
-> /home/yhs/work/bpf-next/kernel/bpf/verifier.c:19921:12: error: stack fram=
-e size (1368) exceeds limit (1280) in 'do_check' [-
-> Werror,-Wframe-larger-than]
->   19921 | static int do_check(struct bpf_verifier_env *env)
->         |            ^
-> 2 errors generated.
->
-> I checked IR and found the following memory allocations which may contrib=
-ute
-> excessive stack usage:
->
-> attr.coerce1, i32 noundef %uattr_size) local_unnamed_addr #0 align 16 !db=
-g !19800 {
-> entry:
->    %zext_patch.i =3D alloca [2 x %struct.bpf_insn], align 16, !DIAssignID=
- !19854
->    %rnd_hi32_patch.i =3D alloca [4 x %struct.bpf_insn], align 16, !DIAssi=
-gnID !19855
->    %cnt.i =3D alloca i32, align 4, !DIAssignID !19856
->    %patch.i766 =3D alloca [3 x %struct.bpf_insn], align 16, !DIAssignID !=
-19857
->    %chk_and_sdiv.i =3D alloca [1 x %struct.bpf_insn], align 4, !DIAssignI=
-D !19858
->    %chk_and_smod.i =3D alloca [1 x %struct.bpf_insn], align 4, !DIAssignI=
-D !19859
->    %chk_and_div.i =3D alloca [4 x %struct.bpf_insn], align 16, !DIAssignI=
-D !19860
->    %chk_and_mod.i =3D alloca [4 x %struct.bpf_insn], align 16, !DIAssignI=
-D !19861
->    %chk_and_sdiv343.i =3D alloca [8 x %struct.bpf_insn], align 16, !DIAss=
-ignID !19862
->    %chk_and_smod472.i =3D alloca [9 x %struct.bpf_insn], align 16, !DIAss=
-ignID !19863
->    %desc.i =3D alloca %struct.bpf_jit_poke_descriptor, align 8, !DIAssign=
-ID !19864
->    %target_size.i =3D alloca i32, align 4, !DIAssignID !19865
->    %patch.i =3D alloca [2 x %struct.bpf_insn], align 16, !DIAssignID !198=
-66
->    %patch355.i =3D alloca [2 x %struct.bpf_insn], align 16, !DIAssignID !=
-19867
->    %ja.i =3D alloca %struct.bpf_insn, align 8, !DIAssignID !19868
->    %ret_insn.i.i =3D alloca [8 x i32], align 16, !DIAssignID !19869
->    %ret_prog.i.i =3D alloca [8 x i32], align 16, !DIAssignID !19870
->    %fd.i =3D alloca i32, align 4, !DIAssignID !19871
->    %log_true_size =3D alloca i32, align 4, !DIAssignID !19872
-> ...
->
-> So yes, chk_and_{div,mod,sdiv,smod} consumes quite some stack and
-> can be coverted to runtime allocation but that is not enough for 1280
-> stack limit, we need to do more conversion from stack to memory
-> allocation. Will try to have uniform way to convert
-> 'alloca [<num> x %struct.bpf_insn]' to runtime allocation.
->
+On 7/1/25 22:28, Andrii Nakryiko wrote:
+> On Tue, Jul 1, 2025 at 12:50 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>>
+>> On Tue, Jul 1, 2025 at 12:43 PM Viktor Malik <vmalik@redhat.com> wrote:
+>>>
+>>> On 7/1/25 19:46, Alexei Starovoitov wrote:
+>>>> On Mon, Jun 30, 2025 at 6:35 AM Viktor Malik <vmalik@redhat.com> wrote:
+>>>>>
+>>>>> BPF selftests compilation fails on systems with CONFIG_NET_SCH_BPF=n.
+>>>>> The reason is that qdisc-related kfuncs are included via vmlinux.h but
+>>>>> when qdisc is disabled, they are not defined and do not appear in
+>>>>> vmlinux.h.
+>>>>
+>>>> Yes and that's expected behavior. It's not a bug.
+>>>> That's why we have CONFIG_NET_SCH_BPF=y in
+>>>> selftests/bpf/config
+>>>> and CI picks it up automatically.
+>>>>
+>>>> If we add these kfuncs to bpf_qdisc_common.h where would we
+>>>> draw the line when the kfuncs should be added or not ?
+>>>
+>>> I'd say that we should add kfuncs which are only included in vmlinux.h
+>>> under certain configurations. Obviously stuff like CONFIG_BPF=y can be
+>>> presumed but there're tons of configs options which may be disabled on a
+>>> system and it still makes sense to compile and run at least a part of
+>>> test_progs on them.
+>>>
+>>>> Currently we don't add any new kfuncs, since they all
+>>>> should be in vmlinux.h
+>>>
+>>> This way, we're preventing people to build and therefore run *any*
+>>> test_progs on systems which do not have all the configs required in
+>>> selftests/bpf/config. Running selftests on such systems may reveal bugs
+>>> not captured by the CI so I think that it may be eventually beneficial
+>>> for everyone.
+>>
+>> Not quite. What's stopping people to build selftests
+>> with 'make -k' ?
+>> Some bpf progs will not compile, but test_progs binary will be built and
+>> it will run the rest of the tests.
 
-Do we need to go all the way to dynamic allocation? See env->insns_buf
-(which some parts of this function are already using for constructing
-instruction patch), let's just converge on that? It pre-allocates
-space for 32 instructions, should be sufficient for all the use cases,
-no?
+I don't think test_progs will be built if some of the objects from
+progs/ do not build. I just tried to run `make -k` on a kernel with
+CONFIG_NET_SCH_BPF=n. The compilation finished, some test binaries
+exist, but not test_progs.
+
+In addition, we generally don't want to ignore all the errors as some of
+them may be important.
+
+>>
+>> We can take this patch, but let's define the rules for adding
+>> kfuncs explicitly.
+> 
+> Note, we have a VMLINUX_H argument that can be passed into BPF
+> selftests' makefile. We used to use this for libbpf CI to build latest
+> selftests against (very) old kernels, and it worked well.
+> 
+> I don't think we need to make exceptions for a few kfuncs, all it
+> takes is to have vmlinux.h generated from kernel image built from
+> proper configuration.
+> 
+> Also note, that "proper configuration" only applies to *built* kernel,
+> not the actually running host kernel. See how VMLINUX_BTF_PATHS is
+> defined and handled: host kernel is the last thing we use for
+> vmlinux.h generation, only if all other options are unavailable.
+
+This is a good point but the problem here is the extra kernel build. If
+you want to check that BPF in your kernel is working properly, you don't
+want to do another kernel build with a different config just for the
+sake of being able to build selftests.
+
+>> What are you proposing exactly ?
+>> Anything that is gated by some CONFIG_FOO _must_ be added explicitly ?
+>> Assuming we won't be going back and retroactively adding them ?
+
+Yes, exactly like that. Except for this qdisc one, we haven't run into
+any issues for a long time, so I don't think that it's necessary to
+retroactively add the kfuncs.
+
+But if you prefer to have it unified, I can take some time to clean it
+up - add config-gated kfuncs where they are missing and replace
+universally-available kfuncs by vmlinux.h.
+
 
