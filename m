@@ -1,193 +1,317 @@
-Return-Path: <bpf+bounces-62001-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62002-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35D23AF0444
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 22:03:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84454AF04B7
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 22:22:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF717481765
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 20:03:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 384517AC45B
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 20:21:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B6E2260580;
-	Tue,  1 Jul 2025 20:03:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86E2E2EACEE;
+	Tue,  1 Jul 2025 20:22:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hWyHBqNx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c5cbYITD"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F252025F79A
-	for <bpf@vger.kernel.org>; Tue,  1 Jul 2025 20:03:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 861DD2EA72E
+	for <bpf@vger.kernel.org>; Tue,  1 Jul 2025 20:22:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751400213; cv=none; b=PX2cgPiJI3HF/j3Xq0U0DUsjqjXPZcdY6HFvX8J8+H19RHB7UIi1jWxOVReDCLldslZ+lfJ8pgImLwsIw/c8XTtXumC6H5v0AE+hzR6Hemm601iF/iclSaIkbiM/ObDv9eKtpvOgh1hKI1lKyQ9pUU+nV4d3712Zm0ITQagAyUY=
+	t=1751401340; cv=none; b=ROJNJXGFhl06LTJ2r8s7eVKZRyN/Oph/qvV4NUUzdOH6RU/DM2zVLFdwDECStNz4GyQys7yslTsaU1RbrSQCjYQqW5TxPzKx5TSm9SZpMJgSNBnXjIJH3uHw9vY1DlxOPdWFS5At/BYDxNn6+uLdBy9x3DZ02e5r4F9uvfTTUmU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751400213; c=relaxed/simple;
-	bh=eJDesN7BXsMnEhiQ/UJNFd2HLD1QXKP4h1RtXJ+27Mw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QEuSyc3vScVOxWpO0wSgmIyyTuyPt2QmI0kUOxyDfVxuXu160S6S3aNh8QsvRIFtklIhbw786DWf1N/XHBtEXVZU/EMmJU0l4oNIHKhHLoK1K17KX7gu4FyQpLAZ8Jzjh/AuebPX8ooqqp3beVePV8ivEo0MLWeWVANQWH3iDOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hWyHBqNx; arc=none smtp.client-ip=91.218.175.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <361eb614-e145-49dc-aa32-12f313f61b96@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1751400199;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/vR/YEbexwRjW/glmIK3Kpb+5RALRLDf27NEgC4WPeU=;
-	b=hWyHBqNxvk0vFYvd8RU0pwMiJmz/30E7EgsyBnufC4rElScT1PtSpQGYwEeFDma9WtXbye
-	exp0oqtzTrfEa2n/l5B21eGO9OpWSITDFeJ09Q+gMIlnf2FY2cN7/xw7i6c0y6cceY4daM
-	2UAhvfVY4DJjYzgXSgwsNsPLDGn4S2Y=
-Date: Tue, 1 Jul 2025 13:03:11 -0700
+	s=arc-20240116; t=1751401340; c=relaxed/simple;
+	bh=CHjcwgnQpKLxqBkJjyFHKhxKpGDqGrk1POp0KltV/Ic=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LhV59+BPCUc/nZTv+oZgNEMhe+O6OxSRVdbQrXq/FuSjPL8HzndPLekmxmzIuWXHYc/o/99VOe2EJcq0ZKJ/IPTH4dh8+j/cF7pknOQ+JcSJqbXXDIp83Rp/3KAVoj0DMGIqClXH33L3vAoE4Hdsl8qkM9Zv8p7pw+iVicGRVfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c5cbYITD; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-311da0bef4aso3895902a91.3
+        for <bpf@vger.kernel.org>; Tue, 01 Jul 2025 13:22:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1751401338; x=1752006138; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rOPBTUOutkIuIa+kDPweSpx5523Jh1hIzo5JrBlEzbA=;
+        b=c5cbYITDWiqy/B6qUUGVV6sI5Hw6iID2x3bhufQs0ANr5Ko1SaJyGg6c80UPbI7aAu
+         DnsFQQVTU2jfpwD3Gu/65EaTXs/Ta5JaZNdXy6HOvF4nYeVsBolLGwR+45gM6edonxpr
+         2VIo296YQMILpvCLMbag5XjxJfAduxteytFZCbdUPUly0cRmvmJB75Eiv5FfNoxyD48b
+         SHlHKbZhr8JxSJ617pq2/pciv+ug4dge+75w19MFeHdKFzZCwR0EiSioTHaw+dZ3w82j
+         KH/l9/UVbfmaPHFuJg/953qSHSimU9PufH/UyLjB9/GdH/BQzx12As3LFrFo00zCVn27
+         2RmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751401338; x=1752006138;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rOPBTUOutkIuIa+kDPweSpx5523Jh1hIzo5JrBlEzbA=;
+        b=uClANWVb/fHrjL0AEcYjTyqdPltNMSaZ+ijUIY4rz8EuYLAlcYPsf10JGfwVkAPur0
+         4MmatqsCZc2JD3xxDkUjEGmm3TZVRHilFOFJ9St6FEzHZ8Y5ZwFBayAu+5A/XzLmaJqz
+         546UjOwZH+KOe3eHSqBHLBpVnqLxTEtOC4vyw0DaBIFqsQi1fanialtraGa3FGpXIgcT
+         iDD37HemaB4P62Nb4xZiIRYiBUKGesZnpyj2/6Y0A/dauAVglt2sI8mNpqlxWJawv5BG
+         fe4b7llNDMFJjCqiazA58qdDkkfkrQCtQYrnEOGYp5l3z93OCqLU36I9Nq3pZB5l6n0y
+         mPDQ==
+X-Gm-Message-State: AOJu0Yy0s+gSfIiWhq2tpkJ/uUMC4KLPz3bdL/3bgIcG1R+zr1ZSUzzc
+	WAbHcKpBQYllrZnbSk95hydRaZzbkjvL1DKeVAwS2tc5uYXs/MD3k05gz4118hgk0I32jEe9TrT
+	ioXIf9AXmsFO1Om2c0GEJVINoU9aIkoDQMuiH
+X-Gm-Gg: ASbGncvSQQ4THr4p0pdpYBBSIn9+5MQNIk5JNrDqa4eJU6fkgqkDViKpl1iwhpYZ2o8
+	0P/zKtr5uNBEv+qYU+9bl+FQKtxlESNoRNxlq6foRzuYaXT5Cx0v0zUCaLtNNXwOf5jhTg65hGe
+	lZQQgHgpK0xrhRK7bydr8wt5W2ydcR9gpUhuPN1k6dWPUrBh8jMgtu9f47AKvXAWf30aLHbw==
+X-Google-Smtp-Source: AGHT+IEcEiAND7v4TxmzbvxKYMbqhHwfY0D1H+qlEuGhXiu+7M6PKT8AANikJT9u6poZLz0HQ0RY/sy8FW481jqCCIQ=
+X-Received: by 2002:a17:90b:5345:b0:311:c1ec:7d11 with SMTP id
+ 98e67ed59e1d1-31a90bd7750mr613591a91.18.1751401337730; Tue, 01 Jul 2025
+ 13:22:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] bpf: turn off sanitizer in do_misc_fixups for old clang
-Content-Language: en-GB
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Arnd Bergmann <arnd@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Nathan Chancellor <nathan@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- John Fastabend <john.fastabend@gmail.com>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
- Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
- Kumar Kartikeya Dwivedi <memxor@gmail.com>,
- Luis Gerhorst <luis.gerhorst@fau.de>, bpf <bpf@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>, clang-built-linux <llvm@lists.linux.dev>
-References: <20250620113846.3950478-1-arnd@kernel.org>
- <CAADnVQKAT3UPzcpzkJ6_-powz4YTiDAku4-a+++hrhYdJUnLiw@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAADnVQKAT3UPzcpzkJ6_-powz4YTiDAku4-a+++hrhYdJUnLiw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250624165354.27184-1-leon.hwang@linux.dev> <20250624165354.27184-2-leon.hwang@linux.dev>
+In-Reply-To: <20250624165354.27184-2-leon.hwang@linux.dev>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 1 Jul 2025 13:22:02 -0700
+X-Gm-Features: Ac12FXz33b0AmqXACAM1FzvmhNSkqEUFz2eCyzM7zMU4JqhtD9ThgSSRODm2WfY
+Message-ID: <CAEf4BzYFjKEdpf9xHfeW8hs+zzmppvw2-RzJELrRc=QfKfga1A@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 1/3] bpf: Introduce BPF_F_CPU flag for
+ percpu_array map
+To: Leon Hwang <leon.hwang@linux.dev>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-
-On 6/23/25 2:32 PM, Alexei Starovoitov wrote:
-> On Fri, Jun 20, 2025 at 4:38 AM Arnd Bergmann <arnd@kernel.org> wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->>
->> clang versions before version 18 manage to badly optimize the bpf
->> verifier, with lots of variable spills leading to excessive stack
->> usage in addition to likely rather slow code:
->>
->> kernel/bpf/verifier.c:23936:5: error: stack frame size (2096) exceeds limit (1280) in 'bpf_check' [-Werror,-Wframe-larger-than]
->> kernel/bpf/verifier.c:21563:12: error: stack frame size (1984) exceeds limit (1280) in 'do_misc_fixups' [-Werror,-Wframe-larger-than]
->>
->> Turn off the sanitizer in the two functions that suffer the most from
->> this when using one of the affected clang version.
->>
->> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->> ---
->>   kernel/bpf/verifier.c | 11 +++++++++--
->>   1 file changed, 9 insertions(+), 2 deletions(-)
->>
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index 2fa797a6d6a2..7724c7a56d79 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -19810,7 +19810,14 @@ static int do_check_insn(struct bpf_verifier_env *env, bool *do_print_state)
->>          return 0;
->>   }
->>
->> -static int do_check(struct bpf_verifier_env *env)
->> +#if defined(CONFIG_CC_IS_CLANG) && CONFIG_CLANG_VERSION < 180100
->> +/* old clang versions cause excessive stack usage here */
->> +#define __workaround_kasan  __disable_sanitizer_instrumentation
->> +#else
->> +#define __workaround_kasan
->> +#endif
->> +
->> +static __workaround_kasan int do_check(struct bpf_verifier_env *env)
-> This looks too hacky for a workaround.
-> Let's figure out what's causing such excessive stack usage and fix it.
-> We did some of this work in
-> commit 6f606ffd6dd7 ("bpf: Move insn_buf[16] to bpf_verifier_env")
-> and similar.
-> Looks like it wasn't enough or more stack usage crept in since then.
+On Tue, Jun 24, 2025 at 9:54=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> w=
+rote:
 >
-> Also make sure you're using the latest bpf-next.
-> A bunch of code was moved out of do_check().
-> So I bet the current bpf-next/master doesn't have a problem
-> with this particular function.
-> In my kasan build do_check() is now fully inlined.
-> do_check_common() is not and it's using 512 bytes of stack.
+> This patch introduces support for the BPF_F_CPU flag in percpu_array maps
+> to allow updating or looking up values for specific CPUs or for all CPUs
+> with a single value.
 >
->>   {
->>          bool pop_log = !(env->log.level & BPF_LOG_LEVEL2);
->>          struct bpf_verifier_state *state = env->cur_state;
->> @@ -21817,7 +21824,7 @@ static int add_hidden_subprog(struct bpf_verifier_env *env, struct bpf_insn *pat
->>   /* Do various post-verification rewrites in a single program pass.
->>    * These rewrites simplify JIT and interpreter implementations.
->>    */
->> -static int do_misc_fixups(struct bpf_verifier_env *env)
->> +static __workaround_kasan int do_misc_fixups(struct bpf_verifier_env *env)
-> This one is using 832 byte of stack with kasan.
-> Which is indeed high.
-> Big chunk seems to be coming from chk_and_sdiv[] and chk_and_smod[].
+> This enhancement enables:
 >
-> Yonghong,
-> looks like you contributed that piece of code.
-> Pls see how to reduce stack size here.
-> Daniel used this pattern in earlier commits. Looks like
-> we took it too far.
+> * Efficient update of all CPUs using a single value when cpu =3D=3D 0xFFF=
+FFFFF.
+> * Targeted update or lookup for a specific CPU otherwise.
+>
+> The flag is passed via:
+>
+> * map_flags in bpf_percpu_array_update() along with the cpu field.
+> * elem_flags in generic_map_update_batch() along with the cpu field.
+>
+> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+> ---
+>  include/linux/bpf.h            |  5 +--
+>  include/uapi/linux/bpf.h       |  6 ++++
+>  kernel/bpf/arraymap.c          | 46 ++++++++++++++++++++++++----
+>  kernel/bpf/syscall.c           | 56 ++++++++++++++++++++++------------
+>  tools/include/uapi/linux/bpf.h |  6 ++++
+>  5 files changed, 92 insertions(+), 27 deletions(-)
+>
 
-With llvm17, I got the following error:
+[...]
 
-/home/yhs/work/bpf-next/kernel/bpf/verifier.c:24491:5: error: stack frame size (2552) exceeds limit (1280) in 'bpf_check' [-
-Werror,-Wframe-larger-than]
-  24491 | int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u32 uattr_size)
-        |     ^
-/home/yhs/work/bpf-next/kernel/bpf/verifier.c:19921:12: error: stack frame size (1368) exceeds limit (1280) in 'do_check' [-
-Werror,-Wframe-larger-than]
-  19921 | static int do_check(struct bpf_verifier_env *env)
-        |            ^
-2 errors generated.
+> #define BPF_ALL_CPU    0xFFFFFFFF
 
-I checked IR and found the following memory allocations which may contribute
-excessive stack usage:
+at the very least we have to make it an enum, IMO. but I'm in general
+unsure if we need it at all... and in any case, should it be named
+"BPF_ALL_CPUS" (plural)?
 
-attr.coerce1, i32 noundef %uattr_size) local_unnamed_addr #0 align 16 !dbg !19800 {
-entry:
-   %zext_patch.i = alloca [2 x %struct.bpf_insn], align 16, !DIAssignID !19854
-   %rnd_hi32_patch.i = alloca [4 x %struct.bpf_insn], align 16, !DIAssignID !19855
-   %cnt.i = alloca i32, align 4, !DIAssignID !19856
-   %patch.i766 = alloca [3 x %struct.bpf_insn], align 16, !DIAssignID !19857
-   %chk_and_sdiv.i = alloca [1 x %struct.bpf_insn], align 4, !DIAssignID !19858
-   %chk_and_smod.i = alloca [1 x %struct.bpf_insn], align 4, !DIAssignID !19859
-   %chk_and_div.i = alloca [4 x %struct.bpf_insn], align 16, !DIAssignID !19860
-   %chk_and_mod.i = alloca [4 x %struct.bpf_insn], align 16, !DIAssignID !19861
-   %chk_and_sdiv343.i = alloca [8 x %struct.bpf_insn], align 16, !DIAssignID !19862
-   %chk_and_smod472.i = alloca [9 x %struct.bpf_insn], align 16, !DIAssignID !19863
-   %desc.i = alloca %struct.bpf_jit_poke_descriptor, align 8, !DIAssignID !19864
-   %target_size.i = alloca i32, align 4, !DIAssignID !19865
-   %patch.i = alloca [2 x %struct.bpf_insn], align 16, !DIAssignID !19866
-   %patch355.i = alloca [2 x %struct.bpf_insn], align 16, !DIAssignID !19867
-   %ja.i = alloca %struct.bpf_insn, align 8, !DIAssignID !19868
-   %ret_insn.i.i = alloca [8 x i32], align 16, !DIAssignID !19869
-   %ret_prog.i.i = alloca [8 x i32], align 16, !DIAssignID !19870
-   %fd.i = alloca i32, align 4, !DIAssignID !19871
-   %log_true_size = alloca i32, align 4, !DIAssignID !19872
-...
 
-So yes, chk_and_{div,mod,sdiv,smod} consumes quite some stack and
-can be coverted to runtime allocation but that is not enough for 1280
-stack limit, we need to do more conversion from stack to memory
-allocation. Will try to have uniform way to convert
-'alloca [<num> x %struct.bpf_insn]' to runtime allocation.
+> -int bpf_percpu_array_copy(struct bpf_map *map, void *key, void *value)
+> +int bpf_percpu_array_copy(struct bpf_map *map, void *key, void *value,
+> +                         u64 flags, u32 cpu)
+>  {
+>         struct bpf_array *array =3D container_of(map, struct bpf_array, m=
+ap);
+>         u32 index =3D *(u32 *)key;
+>         void __percpu *pptr;
+> -       int cpu, off =3D 0;
+> +       int off =3D 0;
+>         u32 size;
+>
+>         if (unlikely(index >=3D array->map.max_entries))
+>                 return -ENOENT;
+>
+> +       if (unlikely(flags > BPF_F_CPU))
+> +               /* unknown flags */
+> +               return -EINVAL;
+> +
+>         /* per_cpu areas are zero-filled and bpf programs can only
+>          * access 'value_size' of them, so copying rounded areas
+>          * will not leak any kernel data
+>          */
+>         size =3D array->elem_size;
+> +
+> +       if (flags & BPF_F_CPU) {
+> +               if (cpu >=3D num_possible_cpus())
+> +                       return -E2BIG;
+> +
+> +               rcu_read_lock();
+> +               pptr =3D array->pptrs[index & array->index_mask];
+> +               copy_map_value_long(map, value, per_cpu_ptr(pptr, cpu));
+> +               check_and_init_map_value(map, value);
+> +               rcu_read_unlock();
+> +               return 0;
+> +       }
+> +
 
+nit: it seems a bit cleaner to me to not duplicate
+rcu_read_{lock,unlock} and pptr fetching
+
+I'd probably add `if ((flags & BPF_F_CPU) && cpu >=3D
+num_possible_cpus())` check, and then within rcu region
+
+if (flags & BPF_F_CPU) {
+    copy_map_value_long(...);
+    check_and_init_map_value(...);
+} else {
+    for_each_possible_cpu(cpu) {
+       copy_map_value_long(...);
+       check_and_init_map_value(...);
+    }
+}
+
+
+This to me is more explicitly showing that locking/data fetching isn't
+different, and it's only about singular CPU vs all CPUs
+
+(oh, and move int off inside the else branch then as well)
+
+
+>         rcu_read_lock();
+>         pptr =3D array->pptrs[index & array->index_mask];
+>         for_each_possible_cpu(cpu) {
+> @@ -382,15 +400,16 @@ static long array_map_update_elem(struct bpf_map *m=
+ap, void *key, void *value,
+>  }
+>
+>  int bpf_percpu_array_update(struct bpf_map *map, void *key, void *value,
+> -                           u64 map_flags)
+> +                           u64 map_flags, u32 cpu)
+>  {
+>         struct bpf_array *array =3D container_of(map, struct bpf_array, m=
+ap);
+>         u32 index =3D *(u32 *)key;
+>         void __percpu *pptr;
+> -       int cpu, off =3D 0;
+> +       bool reuse_value;
+> +       int off =3D 0;
+>         u32 size;
+>
+> -       if (unlikely(map_flags > BPF_EXIST))
+> +       if (unlikely(map_flags > BPF_F_CPU))
+>                 /* unknown flags */
+>                 return -EINVAL;
+>
+> @@ -409,10 +428,25 @@ int bpf_percpu_array_update(struct bpf_map *map, vo=
+id *key, void *value,
+>          * so no kernel data leaks possible
+>          */
+>         size =3D array->elem_size;
+> +
+> +       if ((map_flags & BPF_F_CPU) && cpu !=3D BPF_ALL_CPU) {
+> +               if (cpu >=3D num_possible_cpus())
+> +                       return -E2BIG;
+> +
+> +               rcu_read_lock();
+> +               pptr =3D array->pptrs[index & array->index_mask];
+> +               copy_map_value_long(map, per_cpu_ptr(pptr, cpu), value);
+> +               bpf_obj_free_fields(array->map.record, per_cpu_ptr(pptr, =
+cpu));
+> +               rcu_read_unlock();
+> +               return 0;
+> +       }
+> +
+> +       reuse_value =3D (map_flags & BPF_F_CPU) && cpu =3D=3D BPF_ALL_CPU=
+;
+>         rcu_read_lock();
+>         pptr =3D array->pptrs[index & array->index_mask];
+>         for_each_possible_cpu(cpu) {
+> -               copy_map_value_long(map, per_cpu_ptr(pptr, cpu), value + =
+off);
+> +               copy_map_value_long(map, per_cpu_ptr(pptr, cpu),
+> +                                   reuse_value ? value : value + off);
+>                 bpf_obj_free_fields(array->map.record, per_cpu_ptr(pptr, =
+cpu));
+>                 off +=3D size;
+
+
+ditto here, I'd not touch rcu locking and bpf_obj_free_fields. The
+difference would be singular vs all CPUs, and then for all CPUs with
+BPF_F_CPU we just don't update off, getting desired behavior without
+extra reuse_value variable?
+
+[...]
+
+> @@ -1941,19 +1941,27 @@ int generic_map_update_batch(struct bpf_map *map,=
+ struct file *map_file,
+>  {
+>         void __user *values =3D u64_to_user_ptr(attr->batch.values);
+>         void __user *keys =3D u64_to_user_ptr(attr->batch.keys);
+> +       u64 elem_flags =3D attr->batch.elem_flags;
+>         u32 value_size, cp, max_count;
+>         void *key, *value;
+>         int err =3D 0;
+>
+> -       if (attr->batch.elem_flags & ~BPF_F_LOCK)
+> +       if (elem_flags & ~(BPF_F_LOCK | BPF_F_CPU))
+>                 return -EINVAL;
+>
+> -       if ((attr->batch.elem_flags & BPF_F_LOCK) &&
+> +       if ((elem_flags & BPF_F_LOCK) &&
+>             !btf_record_has_field(map->record, BPF_SPIN_LOCK)) {
+>                 return -EINVAL;
+>         }
+>
+> -       value_size =3D bpf_map_value_size(map);
+> +       if (elem_flags & BPF_F_CPU) {
+> +               if (map->map_type !=3D BPF_MAP_TYPE_PERCPU_ARRAY)
+> +                       return -EINVAL;
+> +
+> +               value_size =3D round_up(map->value_size, 8);
+> +       } else {
+> +               value_size =3D bpf_map_value_size(map);
+> +       }
+
+why not roll this into bpf_map_value_size() helper? it's internal,
+should be fine
+
+pw-bot: cr
+
+>
+>         max_count =3D attr->batch.count;
+>         if (!max_count)
+> @@ -1980,7 +1988,8 @@ int generic_map_update_batch(struct bpf_map *map, s=
+truct file *map_file,
+>                         break;
+>
+>                 err =3D bpf_map_update_value(map, map_file, key, value,
+> -                                          attr->batch.elem_flags);
+> +                                          attr->batch.elem_flags,
+> +                                          attr->batch.cpu);
+
+So I think we discussed cpu as a separate field vs embedded into flags
+field, right? I don't remember what I argued for, but looking at this
+patch, it seems like it would be more convenient to have cpu come as
+part of flags, no? And I don't mean UAPI-side, there separate cpu
+field I think makes most sense. But internally I'd roll it into flags
+as ((cpu << 32) | flags), instead of dragging it around everywhere. It
+feels unclean to have "cpu" argument to generic
+bpf_map_copy_value()...
+
+(and looking at how much code we add just to pass that extra cpu
+argument through libbpf API, maybe combining cpu and flags is actually
+a way to go?..)
+
+WDYT?
+
+
+[...]
 
