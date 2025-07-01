@@ -1,41 +1,41 @@
-Return-Path: <bpf+bounces-61976-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61989-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18BE4AF0389
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 21:19:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01D28AF03A9
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 21:23:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41BB548612C
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 19:19:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD166442F14
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 19:22:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78387284B5F;
-	Tue,  1 Jul 2025 19:18:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D8C3288C37;
+	Tue,  1 Jul 2025 19:19:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 290EC284B26;
-	Tue,  1 Jul 2025 19:18:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9B72288C17;
+	Tue,  1 Jul 2025 19:19:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751397536; cv=none; b=hRnzEPvJVJyMrUgt+FbF8C02hr/WGZJ3bGam+yi85bcaKMDxl+elV0WC6MuyE8S24Gs7sh4ZgsqvIUdloflPLdxz+M50TBYS7V4JbWKHEkenltlA75wqWtc934O42bXlM2zMYXyuGJYVmZFv8W8d6r1B2JW1dojuttB7n/6oiWc=
+	t=1751397551; cv=none; b=lNVII0oeW74Y6nU4Hl0bMSyADUJlYQmbWNY2z6rLHfe2X1M9b41RMG3bRRxIoIZIefFZprWMQNFOKC7Jbkd889ye/0rRskNj+g36XRRsfflYtd7xbfPJPislB06bwfmQIB+c9o+o9Y2SGsyOKafCDWAjPsMeOzFK+kSn1XE7gHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751397536; c=relaxed/simple;
-	bh=w3zlkwOetCuL4IjiyP6cPFfl8DekoC294wC1K1nFMzE=;
+	s=arc-20240116; t=1751397551; c=relaxed/simple;
+	bh=hU7wh3L/Y6kWz2ZPGTguNkdzYwHWR2713HobCoHObyQ=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=INaqTZWyvqwVKw2l5h40jTuAHysDtx034R70p91+zdsSexXaDKtvpALzr929jziDXEXgir79T326iUdwWv5v8hh9uRPWJURvQGRvTE65tguMLQz30lcrOBFTEenz4D5fCJQLU75182kahu3FEX8zG2aI0hwdAfiz06hKJKPHw/I=
+	 Content-Type; b=pXUvSB4W++cl8pcvZ2TloT032YYPlOEiCfvMTg/l/VF+YvkE2jr5HXBB/JPDy2WLrvX3I5pfrgpZd3g5/gZfl8IpVLPLqu/XCgoji5/G5eiwebkwD/pWZeX34+rCKCQ7N8XMzD71EQyDjts3nuxv8ngapvpeSdjxl3DGFchZK+M=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05C22C4CEF1;
-	Tue,  1 Jul 2025 19:18:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52ED2C4AF09;
+	Tue,  1 Jul 2025 19:19:11 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.98.2)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1uWg3s-00000007gpA-2QrK;
+	id 1uWg3s-00000007gpe-38uG;
 	Tue, 01 Jul 2025 14:50:32 -0400
-Message-ID: <20250701185032.430778420@goodmis.org>
+Message-ID: <20250701185032.600017825@goodmis.org>
 User-Agent: quilt/0.68
-Date: Tue, 01 Jul 2025 14:49:44 -0400
+Date: Tue, 01 Jul 2025 14:49:45 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org,
@@ -58,7 +58,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Andrew Morton <akpm@linux-foundation.org>,
  Jens Axboe <axboe@kernel.dk>,
  Florian Weimer <fweimer@redhat.com>
-Subject: [PATCH v7 05/12] unwind_user/sframe: Detect .sframe sections in executables
+Subject: [PATCH v7 06/12] unwind_user/sframe: Wire up unwind_user to sframe
 References: <20250701184939.026626626@goodmis.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -70,137 +70,106 @@ Content-Type: text/plain; charset=UTF-8
 
 From: Josh Poimboeuf <jpoimboe@kernel.org>
 
-When loading an ELF executable, automatically detect an .sframe section
-and associate it with the mm_struct.
+Now that the sframe infrastructure is fully in place, make it work by
+hooking it up to the unwind_user interface.
 
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- fs/binfmt_elf.c          | 49 +++++++++++++++++++++++++++++++++++++---
- include/uapi/linux/elf.h |  1 +
- 2 files changed, 47 insertions(+), 3 deletions(-)
+ arch/Kconfig                      |  1 +
+ include/linux/unwind_user_types.h |  1 +
+ kernel/unwind/user.c              | 25 ++++++++++++++++++++++---
+ 3 files changed, 24 insertions(+), 3 deletions(-)
 
-diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-index a43363d593e5..e7128d026ec0 100644
---- a/fs/binfmt_elf.c
-+++ b/fs/binfmt_elf.c
-@@ -47,6 +47,7 @@
- #include <linux/dax.h>
- #include <linux/uaccess.h>
- #include <linux/rseq.h>
-+#include <linux/sframe.h>
- #include <asm/param.h>
- #include <asm/page.h>
+diff --git a/arch/Kconfig b/arch/Kconfig
+index c54d35e2f860..0c6056ef13de 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -448,6 +448,7 @@ config HAVE_UNWIND_USER_COMPAT_FP
  
-@@ -622,6 +623,21 @@ static inline int make_prot(u32 p_flags, struct arch_elf_state *arch_state,
- 	return arch_elf_adjust_prot(prot, arch_state, has_interp, is_interp);
+ config HAVE_UNWIND_USER_SFRAME
+ 	bool
++	select UNWIND_USER
+ 
+ config HAVE_PERF_REGS
+ 	bool
+diff --git a/include/linux/unwind_user_types.h b/include/linux/unwind_user_types.h
+index 0b6563951ca4..4d50476e950e 100644
+--- a/include/linux/unwind_user_types.h
++++ b/include/linux/unwind_user_types.h
+@@ -13,6 +13,7 @@ enum unwind_user_type {
+ 	UNWIND_USER_TYPE_NONE,
+ 	UNWIND_USER_TYPE_FP,
+ 	UNWIND_USER_TYPE_COMPAT_FP,
++	UNWIND_USER_TYPE_SFRAME,
+ };
+ 
+ struct unwind_stacktrace {
+diff --git a/kernel/unwind/user.c b/kernel/unwind/user.c
+index 2bb7995c3f23..139ca9740875 100644
+--- a/kernel/unwind/user.c
++++ b/kernel/unwind/user.c
+@@ -7,6 +7,7 @@
+ #include <linux/sched/task_stack.h>
+ #include <linux/unwind_user.h>
+ #include <linux/uaccess.h>
++#include <linux/sframe.h>
+ 
+ static struct unwind_user_frame fp_frame = {
+ 	ARCH_INIT_USER_FP_FRAME
+@@ -28,6 +29,12 @@ static inline bool compat_fp_state(struct unwind_user_state *state)
+ 	       state->type == UNWIND_USER_TYPE_COMPAT_FP;
  }
  
-+static void elf_add_sframe(struct elf_phdr *text, struct elf_phdr *sframe,
-+			   unsigned long base_addr)
++static inline bool sframe_state(struct unwind_user_state *state)
 +{
-+	unsigned long sframe_start, sframe_end, text_start, text_end;
-+
-+	sframe_start = base_addr + sframe->p_vaddr;
-+	sframe_end   = sframe_start + sframe->p_memsz;
-+
-+	text_start   = base_addr + text->p_vaddr;
-+	text_end     = text_start + text->p_memsz;
-+
-+	/* Ignore return value, sframe section isn't critical */
-+	sframe_add_section(sframe_start, sframe_end, text_start, text_end);
++	return IS_ENABLED(CONFIG_HAVE_UNWIND_USER_SFRAME) &&
++	       state->type == UNWIND_USER_TYPE_SFRAME;
 +}
 +
- /* This is much more generalized than the library routine read function,
-    so we keep this separate.  Technically the library read function
-    is only provided so that we can read a.out libraries that have
-@@ -632,7 +648,7 @@ static unsigned long load_elf_interp(struct elfhdr *interp_elf_ex,
- 		unsigned long no_base, struct elf_phdr *interp_elf_phdata,
- 		struct arch_elf_state *arch_state)
+ #define unwind_get_user_long(to, from, state)				\
+ ({									\
+ 	int __ret;							\
+@@ -41,17 +48,27 @@ static inline bool compat_fp_state(struct unwind_user_state *state)
+ int unwind_user_next(struct unwind_user_state *state)
  {
--	struct elf_phdr *eppnt;
-+	struct elf_phdr *eppnt, *sframe_phdr = NULL;
- 	unsigned long load_addr = 0;
- 	int load_addr_set = 0;
- 	unsigned long error = ~0UL;
-@@ -658,7 +674,8 @@ static unsigned long load_elf_interp(struct elfhdr *interp_elf_ex,
+ 	struct unwind_user_frame *frame;
++	struct unwind_user_frame _frame;
+ 	unsigned long cfa = 0, fp, ra = 0;
  
- 	eppnt = interp_elf_phdata;
- 	for (i = 0; i < interp_elf_ex->e_phnum; i++, eppnt++) {
--		if (eppnt->p_type == PT_LOAD) {
-+		switch (eppnt->p_type) {
-+		case PT_LOAD: {
- 			int elf_type = MAP_PRIVATE;
- 			int elf_prot = make_prot(eppnt->p_flags, arch_state,
- 						 true, true);
-@@ -697,6 +714,20 @@ static unsigned long load_elf_interp(struct elfhdr *interp_elf_ex,
- 				error = -ENOMEM;
- 				goto out;
- 			}
-+			break;
+ 	if (state->done)
+ 		return -EINVAL;
+ 
+-	if (compat_fp_state(state))
++	if (compat_fp_state(state)) {
+ 		frame = &compat_fp_frame;
+-	else if (fp_state(state))
++	} else if (sframe_state(state)) {
++		/* sframe expects the frame to be local storage */
++		frame = &_frame;
++		if (sframe_find(state->ip, frame)) {
++			if (!IS_ENABLED(CONFIG_HAVE_UNWIND_USER_FP))
++				goto done;
++			frame = &fp_frame;
 +		}
-+		case PT_GNU_SFRAME:
-+			sframe_phdr = eppnt;
-+			break;
-+		}
++	} else if (fp_state(state)) {
+ 		frame = &fp_frame;
+-	else
++	} else {
+ 		goto done;
 +	}
-+
-+	if (sframe_phdr) {
-+		eppnt = interp_elf_phdata;
-+		for (i = 0; i < interp_elf_ex->e_phnum; i++, eppnt++) {
-+			if (eppnt->p_flags & PF_X) {
-+				elf_add_sframe(eppnt, sframe_phdr, load_addr);
-+			}
- 		}
- 	}
  
-@@ -821,7 +852,7 @@ static int load_elf_binary(struct linux_binprm *bprm)
- 	int first_pt_load = 1;
- 	unsigned long error;
- 	struct elf_phdr *elf_ppnt, *elf_phdata, *interp_elf_phdata = NULL;
--	struct elf_phdr *elf_property_phdata = NULL;
-+	struct elf_phdr *elf_property_phdata = NULL, *sframe_phdr = NULL;
- 	unsigned long elf_brk;
- 	bool brk_moved = false;
- 	int retval, i;
-@@ -930,6 +961,10 @@ static int load_elf_binary(struct linux_binprm *bprm)
- 				executable_stack = EXSTACK_DISABLE_X;
- 			break;
+ 	/* Get the Canonical Frame Address (CFA) */
+ 	cfa = (frame->use_fp ? state->fp : state->sp) + frame->cfa_off;
+@@ -94,6 +111,8 @@ int unwind_user_start(struct unwind_user_state *state)
  
-+		case PT_GNU_SFRAME:
-+			sframe_phdr = elf_ppnt;
-+			break;
-+
- 		case PT_LOPROC ... PT_HIPROC:
- 			retval = arch_elf_pt_proc(elf_ex, elf_ppnt,
- 						  bprm->file, false,
-@@ -1227,6 +1262,14 @@ static int load_elf_binary(struct linux_binprm *bprm)
- 			elf_brk = k;
- 	}
- 
-+	if (sframe_phdr) {
-+		for (i = 0, elf_ppnt = elf_phdata;
-+		     i < elf_ex->e_phnum; i++, elf_ppnt++) {
-+			if ((elf_ppnt->p_flags & PF_X))
-+				elf_add_sframe(elf_ppnt, sframe_phdr, load_bias);
-+		}
-+	}
-+
- 	e_entry = elf_ex->e_entry + load_bias;
- 	phdr_addr += load_bias;
- 	elf_brk += load_bias;
-diff --git a/include/uapi/linux/elf.h b/include/uapi/linux/elf.h
-index 819ded2d39de..92c16c94fca8 100644
---- a/include/uapi/linux/elf.h
-+++ b/include/uapi/linux/elf.h
-@@ -41,6 +41,7 @@ typedef __u16	Elf64_Versym;
- #define PT_GNU_STACK	(PT_LOOS + 0x474e551)
- #define PT_GNU_RELRO	(PT_LOOS + 0x474e552)
- #define PT_GNU_PROPERTY	(PT_LOOS + 0x474e553)
-+#define PT_GNU_SFRAME	(PT_LOOS + 0x474e554)
- 
- 
- /* ARM MTE memory tag segment type */
+ 	if (IS_ENABLED(CONFIG_HAVE_UNWIND_USER_COMPAT_FP) && in_compat_mode(regs))
+ 		state->type = UNWIND_USER_TYPE_COMPAT_FP;
++	else if (current_has_sframe())
++		state->type = UNWIND_USER_TYPE_SFRAME;
+ 	else if (IS_ENABLED(CONFIG_HAVE_UNWIND_USER_FP))
+ 		state->type = UNWIND_USER_TYPE_FP;
+ 	else
 -- 
 2.47.2
 
