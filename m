@@ -1,40 +1,40 @@
-Return-Path: <bpf+bounces-61972-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61993-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49452AF037A
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 21:17:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E63A7AF03B5
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 21:24:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15B91486072
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 19:17:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C62467A5D3D
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 19:23:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0CF328134F;
-	Tue,  1 Jul 2025 19:17:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD37F283FCC;
+	Tue,  1 Jul 2025 19:24:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
+Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C1DE245029;
-	Tue,  1 Jul 2025 19:17:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 731341D07BA;
+	Tue,  1 Jul 2025 19:24:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751397447; cv=none; b=YMAHh6jFPdzxDqnezffNG6EeYkDE58ywKO44ZcInhHSPD5NLvjCbl4W3H4OAbiXvaPUyIXPJVryx6AB79zidVJt4M567fBsC6vtAoOhUDPVUQFTTWnbzZa9R7BchI63+ttuknIRZrnjzwDvatAFcFCH9Tey/RWwiR1i7ZRuRoIk=
+	t=1751397861; cv=none; b=ALP4dV2yMsKINlTttT9gmBYgifJ0Q+qWaup80lW58/c2WCt2iTp+CQ1MzYTqoPVHWDxcZQNLiD1JOTnaApiEtfnEWpBTGTA3ZP67ZZLvAHVZqmp6mXnnN/UnPPvsc8zh3qIBiS503LEQpoKaC9LZqY8cqeiG/oCpf+YIVeq3qew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751397447; c=relaxed/simple;
-	bh=Hma+KxtpRKk/H7egh/thhO7nSPGV5JBWPc+D58RUl80=;
+	s=arc-20240116; t=1751397861; c=relaxed/simple;
+	bh=bbsyQ/dzCNhDdQNt8tsoVa3EfNwDRY37udY0mb8ftvU=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dkiuWbjSEKBtDH3CGbQzgNbt68d5v4dN42vF9w39iygjD+1jyE2k9GVcnjayLJmvpgiia/UNXoZXiADhgwceXzBKcM08Sl1kdbO+kIeu3XD0HLXj5SulotXjBqGhhonIAWBUMvDCM9eezk7BruOdc9LH1xsNiTWJ4yO6HW627tc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.15
+	 MIME-Version:Content-Type; b=oKm56g1oIUWIkytUntJ5bV2iUiUzknGUI6rmBuRRGdBBHDkIdBw8lX3g0SDM0Ya+MczAXwoZvWcJbPhIDZFdlAPJ8FIxELMKr7mEQPL72OfsvIIDn+0hlqgAhLUPezHVcY/eDSkzVYjmCfCGsiX7pWGt2RjKbLhByiGAF9T62KQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf05.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay06.hostedemail.com (Postfix) with ESMTP id 8F36F106D84;
-	Tue,  1 Jul 2025 19:17:22 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf05.hostedemail.com (Postfix) with ESMTPA id 1F9DD2000D;
-	Tue,  1 Jul 2025 19:17:17 +0000 (UTC)
-Date: Tue, 1 Jul 2025 15:17:15 -0400
+Received: from omf13.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay05.hostedemail.com (Postfix) with ESMTP id 82B7059E61;
+	Tue,  1 Jul 2025 19:24:16 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf13.hostedemail.com (Postfix) with ESMTPA id 13F9120013;
+	Tue,  1 Jul 2025 19:24:11 +0000 (UTC)
+Date: Tue, 1 Jul 2025 15:24:49 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
  bpf@vger.kernel.org, x86@kernel.org
@@ -50,10 +50,11 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
  <fweimer@redhat.com>, helpdesk@kernel.org
 Subject: Re: [PATCH v12 00/11] perf: Support the deferred unwinding
  infrastructure
-Message-ID: <20250701151715.5eb5f8b9@batman.local.home>
-In-Reply-To: <20250701180410.755491417@goodmis.org>
+Message-ID: <20250701152449.56c35b8b@gandalf.local.home>
+In-Reply-To: <20250701151715.5eb5f8b9@batman.local.home>
 References: <20250701180410.755491417@goodmis.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	<20250701151715.5eb5f8b9@batman.local.home>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -62,51 +63,24 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Stat-Signature: f9sr99csx4g4j46ztd99gtoqr6qz9n4g
-X-Rspamd-Server: rspamout08
-X-Rspamd-Queue-Id: 1F9DD2000D
+X-Rspamd-Queue-Id: 13F9120013
+X-Rspamd-Server: rspamout02
+X-Stat-Signature: f16epqm7ayjc4nchsiamsnphki9thd7q
 X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1+NzI4bU/Mrds9DY1SbXjrKzE82bFYHyOI=
-X-HE-Tag: 1751397437-805747
-X-HE-Meta: U2FsdGVkX18/xSeZ9LSnPh4AsPTxO3z2zNJrTLjTEVC4jiPUPYKMRlM2nqKAuRM8uWBM0zmlhH/g199odVKWpAHkGaS59w6tDjTi0aitoRbmWhKl+4Nqofr5HI446EBtd/QlcFsmlgRyb1qCJN1/I1zwJ/jWN9U94kzGrdqVTqtE6sS4IIGw26ZsK00wCL2EwX1JQfe7+9kVPuW56FyqA3E7yij7++s1UrIdegs6EOwqKggKZO9UlCbm4XBiqAiEFYId9QEl2Rq9qJNgmNnTrT8kMLkJ/ux500g0Raw9tLr2xzbycB5vO+f9gjBL5C/Wt3YEncIvYwF0CJWJgCc9AJab0T5HOEc3we5vc+P9ffR11lGpdB0HlA6tTD2dp5xChtKtsXCDw3FcHZ21B5453ADkY67eNcylJf7eT31bZNY=
+X-Session-ID: U2FsdGVkX18z9Wt4Xp5tX4kB0WUnKWDnmPRT5fe3b08=
+X-HE-Tag: 1751397851-344992
+X-HE-Meta: U2FsdGVkX1+NwsUdo3DnvQwvY56yivMEdkcFC19wS01JYX5B6+rBXkacYKW9WTD1whQRVQ2rZb6ZpO8e4ajNARyQNGio91RFmLEPhKx7g1yhMaryC03pFv1kCEWlo6tD00syhZewPQaBw5SEhRJ5x4uV3yIjgkSn/Do5+HG0SqDbgl4RL2EtYe14Ndd0ZSqDAUiVjEg15Rqx9C5HW1SHloHkw0Kfo3QqKU8ZJWSazhriFcO2q5/4wxekSOrh5reCFmG5MGAFh2ZLjeMuk7OLFx1IwvXrHp1aafK+noDohwfW6UpXuvjxYTDqRQhHY9hq06ywwBc8r06XbNtd/zlkiLdiMCCUuCEwHzS/5/JSCE8vm2GP8Sd/zIAuBGJyfMTx
 
-On Tue, 01 Jul 2025 14:04:10 -0400
+On Tue, 1 Jul 2025 15:17:15 -0400
 Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> Josh Poimboeuf (5):
->       perf: Remove get_perf_callchain() init_nr argument
->       perf: Have get_perf_callchain() return NULL if crosstask and user are set
->       perf: Simplify get_perf_callchain() user logic
->       perf: Skip user unwind if the task is a kernel thread
->       perf: Support deferred user callchains
-> 
-> Namhyung Kim (4):
->       perf tools: Minimal CALLCHAIN_DEFERRED support
->       perf record: Enable defer_callchain for user callchains
->       perf script: Display PERF_RECORD_CALLCHAIN_DEFERRED
->       perf tools: Merge deferred user callchains
-> 
-> Steven Rostedt (2):
->       perf: Use current->flags & PF_KTHREAD|PF_USER_WORKER instead of current->mm == NULL
->       perf: Support deferred user callchains for per CPU events
+> Hmm, patches 5-11 seemed to be dropped, and I sent out 12 patches of
+> the latest sframe work that I can't find anywhere. I think my ISP is
+> thinking I'm spamming so it dropped the emails. That's all I can figure.
 
-Hmm, patches 5-11 seemed to be dropped, and I sent out 12 patches of
-the latest sframe work that I can't find anywhere. I think my ISP is
-thinking I'm spamming so it dropped the emails. That's all I can figure.
+Hah! After I write this, my patches start showing up! :-p
 
-I originally used kernel.org as my smtp server, but gmail starting
-putting my emails into spam because kernel.org can't validate
-goodmis.org with DKIM (my DNS has kernel.org set for SPF, but that's
-not enough these days :-p).
-
-So I went back to my ISP (hover.com) as my SMTP server, but now I think
-it doesn't like my scripts that sends out a series of patches to a lot
-of people. It likely thinks I'm a spam bot (although maybe I am!).
-
-I guess I'll change my scripts to use rostedt@kernel.org to send and go
-back to using kernel.org as the SMTP server for my scripts. :-/
-
-Expect a resend. Sorry for all the noise.
+OK, no resend.
 
 -- Steve
 
