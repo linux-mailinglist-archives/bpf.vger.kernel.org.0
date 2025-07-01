@@ -1,70 +1,87 @@
-Return-Path: <bpf+bounces-61922-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61923-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67255AEEB80
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 02:58:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCE14AEEBD2
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 03:12:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4DCE6443572
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 00:57:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 294AE17D873
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 01:12:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 130A8245022;
-	Tue,  1 Jul 2025 00:54:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAB7418C322;
+	Tue,  1 Jul 2025 01:12:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OdMLcnAW"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2CA91F4285;
-	Tue,  1 Jul 2025 00:54:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09CDB1CAB3;
+	Tue,  1 Jul 2025 01:12:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751331270; cv=none; b=AKeB+mLcxirAu75Cx7jvoCrrQ3xziyjOc+O3TSRFGE+oJEYMMAXbqT6nch6xptQ599+xHPb53gjXED3PGqEqaEB7evjRhN0jgc1SrsJHKNHR0Spqqq4CLnMtcmcE2Gj1BlotZdso7UEOI7Bii9V++lWGluyk0ZqsUrnRrczYFKw=
+	t=1751332346; cv=none; b=VxDj0k3WHqr8pDOzlUNGXzjk9u6tU7ngbuS/dxNsbC3dE9At/HlBnoqZATKPgk+A611rIQfwbss93t9Kw6NS7Ct3FUuRPEY0q4hpqscrARkKyXFMvFZTb0D287sWa9ZC5DoUTHvury+jvoaVnFbBsx5OfGuJxTqnzxeQdFJtIko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751331270; c=relaxed/simple;
-	bh=op+FuZOzazd2dtQp7uMh4eI4DQXFaxXx36SQU+aaXy0=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=SnrBccTc3X3X/EgBCD+oeQ/BdJZWNdgidsRNz2efAMf9hmHD/Kc9zfLpoLnuBnC5iwnYSswVhBEC1qREDzIcIGcuiEBITp997cdvj9RNTuW+WAN5ir2WuwwMwKjGhbllJHol/r/YIT/U9ImADG52zb3C8QhTWpjSmDJn2X+HNg8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf17.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay04.hostedemail.com (Postfix) with ESMTP id A3E881A0201;
-	Tue,  1 Jul 2025 00:54:19 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: nevets@goodmis.org) by omf17.hostedemail.com (Postfix) with ESMTPA id 4397017;
-	Tue,  1 Jul 2025 00:54:16 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.98.2)
-	(envelope-from <rostedt@goodmis.org>)
-	id 1uWPGv-00000007Nl6-0Kb1;
-	Mon, 30 Jun 2025 20:54:53 -0400
-Message-ID: <20250701005452.929734016@goodmis.org>
-User-Agent: quilt/0.68
-Date: Mon, 30 Jun 2025 20:53:35 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org,
- x86@kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Josh Poimboeuf <jpoimboe@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar <mingo@kernel.org>,
- Jiri Olsa <jolsa@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>,
- Andrii Nakryiko <andrii@kernel.org>,
- Indu Bhagat <indu.bhagat@oracle.com>,
- "Jose E. Marchesi" <jemarch@gnu.org>,
- Beau Belgrave <beaub@linux.microsoft.com>,
- Jens Remus <jremus@linux.ibm.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Jens Axboe <axboe@kernel.dk>,
- Florian Weimer <fweimer@redhat.com>
-Subject: [PATCH v12 14/14] unwind_user/x86: Enable compat mode frame pointer unwinding on x86
-References: <20250701005321.942306427@goodmis.org>
+	s=arc-20240116; t=1751332346; c=relaxed/simple;
+	bh=OnES28WQihJmhS8qmhKIwC2/bLRQ/l2ImwS6wEdOW7k=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=d1z7n9mapcw8PY7Xv2nLsqOTXesfxVfNlgZzawGz+5VTrLaLm7N0C7ZIzd4E2IXCkSgDAWibCW7XLix78C7W4XZTn/CEOt2gv/j/2G5zQIUV0EThmS0cfN6w7vGUfm1vZCBfPtqRnyZcENLnRsB7CgQO3BJc46Pr4EjdvZ/e620=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OdMLcnAW; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-311da0bef4aso2823499a91.3;
+        Mon, 30 Jun 2025 18:12:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1751332344; x=1751937144; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wjtYZ36tAvjB0zry3ZSZH+1/EcQXRIsXI5tMq7yYLHE=;
+        b=OdMLcnAW2L+gDH0jOdICsfDfLcAjCTWX/edZ/1sooMJDn5qBEy2A/m6+i7A5QDhiER
+         GzysgrJvSG77xB/Xy6vhDTi50oC0itd0sqYjD8eM+ICeBccD7rGanVFUyR7mpSSJDtwG
+         0nxUNwZuOXymNVq5OyR/zvyuyO+wFk51LFTf/4eHSvEWTOBWx0CB0vRPOILSiNp8DoLw
+         zWmeoNQoXcOwt0CavtJoocsjwuvqZVnkdXbCvS2Z6BKWgzzKVpPnfEu1TCRtO1o3LSRZ
+         xGSddB4DySIhcsLnHuwo6UVzNUYLm24IBi23xE/X+WuFiEs8wz6jDuhyOGpe0hR0As+T
+         FW2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751332344; x=1751937144;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wjtYZ36tAvjB0zry3ZSZH+1/EcQXRIsXI5tMq7yYLHE=;
+        b=HVRMliN6GqlGxrVKcZEADv1hqESfLhF+bX0+9uohmaz9zUgaDsXGOj5035SVDvojn/
+         +GpHiS9bSc3pEdEl2u9qJRduFF2I7JsPdmg0tswSSXZ1b4i1p9gLdT4vLrCJpQNGyvZY
+         nCAM5M4Qp7Q3PWNEAM8nx58fKXAMDd6XpVZHGxBkP7xYTnfCHWqGLc+5MhQg34pNK/6u
+         lKnA1e3YttlNgTggGseKluyXmycJw26f8rnbKAMaDHAdibzhb2zBPwmx34bGoqgTkuTS
+         o8k+5h8QLaUXAA6czcVuI6BO1DhACWMHgK1ePslx9pCGbLlsPZbnCVd65IXQm61pEt3a
+         q7EQ==
+X-Gm-Message-State: AOJu0YzauY7EZPWxjB71ty+fS6042aLTf3/g4iHbUZ9bMpS8//cJa0KE
+	fSYLosokIcavrh8fVFfw4CkDCY5a7FL4itKJSgbQeMECNfB+mz4lqrsN/nM8VQ==
+X-Gm-Gg: ASbGncv76nD2aTFuGCSY2S3vRH9nHTYKQP9cbTnQkTpqcvR+PX3rSZ2790Yb9aqppU0
+	uocNIqdyvG1tN6jbkH7acECl03wsX5bZf67z0z5ZEr9ucNMqiG2G9IV2xQAG1eYPRRXC6SU9Y4a
+	1fyazYNu4Rkr1KAjeJze9xXK2lXCbpwYmgGKDp4LJwG6ukb0E1R9o2//Oz85IyX0CmCFHBtiWzy
+	koVknN32g3cH9HNmBkPwJyzUczt99oIn36410RVgc7zF7UByOlpCpypjBSrILn5rWoYoF89Mivv
+	mk0VzKeSH1MWKrjXZbUe7b/FpXkJx7Y4cZQ/rVKwqx19aXP+Y2NZm9YoNfEsdmBKzJlVGPv1+rS
+	Lng/mjHs=
+X-Google-Smtp-Source: AGHT+IErhKdws2nEf95XEZjjp1Z2Tu4X6P2O4iAgq9k7oU25Lo27wyBEb8gBjgG1Ne8gu7SKlX2iKA==
+X-Received: by 2002:a17:90b:2550:b0:311:e9ac:f5ce with SMTP id 98e67ed59e1d1-318c92a2e3amr20010372a91.21.1751332343616;
+        Mon, 30 Jun 2025 18:12:23 -0700 (PDT)
+Received: from pop-os.scu.edu ([129.210.115.104])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23acb39bfbesm100007455ad.109.2025.06.30.18.12.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Jun 2025 18:12:23 -0700 (PDT)
+From: Cong Wang <xiyou.wangcong@gmail.com>
+To: netdev@vger.kernel.org
+Cc: bpf@vger.kernel.org,
+	john.fastabend@gmail.com,
+	jakub@cloudflare.com,
+	zijianzhang@bytedance.com,
+	zhoufeng.zf@bytedance.com,
+	Cong Wang <xiyou.wangcong@gmail.com>
+Subject: [Patch bpf-next v4 0/4] tcp_bpf: improve ingress redirection performance with message corking
+Date: Mon, 30 Jun 2025 18:11:57 -0700
+Message-Id: <20250701011201.235392-1-xiyou.wangcong@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -72,234 +89,63 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Rspamd-Queue-Id: 4397017
-X-Stat-Signature: b9jgaho3hjmz3kfbnskcmpzacmze3c33
-X-Rspamd-Server: rspamout06
-X-Session-Marker: 6E657665747340676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX18AXorUSuczDz+HuuRMhJGSPJTxiyn5tq8=
-X-HE-Tag: 1751331256-670172
-X-HE-Meta: U2FsdGVkX1887Dux80qxXj7AM9ibFWbSB2Heg7j56D8F6xHlHUduXfoD0xR0W+1sgaEd60fN9TqzYkb+fJeT6YGFw++fUs2vDNHCVe4Uqwsf7i+TZBQty9rx4lcz++RN40H/AlzxM/lBhGWdQIxrRVrsSyTbCatVMRkkvPXvjwIdlvf6L8SVZe/kq9zjefrknJk0pugzujRl1Vz4j+MNuZVlxg0d1x5JatC0xaRomvr8JxZQCwuNfPScdOo8yXsp4cXk2bTZOe8oMe6QRkCSmx5hj0Dqv5ZdfJ5/ATM6HZ9RR2SIBwUnpkIf0JVaYbd19XA9+220H1EnB8GU6BqOhYhIHI+pGYtHTEtlPkCN6U0xm7EdQiroycjWm0oPz2ho8DElRN5A2tOsV/mTtVEGGapUxsUMcj74qTnWLSAeXp4=
+Content-Transfer-Encoding: 8bit
 
-From: Josh Poimboeuf <jpoimboe@kernel.org>
+This patchset improves skmsg ingress redirection performance by a)
+sophisticated batching with kworker; b) skmsg allocation caching with
+kmem cache.
 
-Use ARCH_INIT_USER_COMPAT_FP_FRAME to describe how frame pointers are
-unwound on x86, and implement the hooks needed to add the segment base
-addresses.  Enable HAVE_UNWIND_USER_COMPAT_FP if the system has compat
-mode compiled in.
+As a result, our patches significantly outperforms the vanilla kernel
+in terms of throughput for almost all packet sizes. The percentage
+improvement in throughput ranges from 3.13% to 160.92%, with smaller
+packets showing the highest improvements.
 
-Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+For latency, it induces slightly higher latency across most packet sizes
+compared to the vanilla, which is also expected since this is a natural
+side effect of batching.
+
+Here are the detailed benchmarks:
+
++-------------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+| Throughput  | 64     | 128    | 256    | 512    | 1k     | 4k     | 16k    | 32k    | 64k    | 128k   | 256k   |
++-------------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+| Vanilla     | 0.17±0.02 | 0.36±0.01 | 0.72±0.02 | 1.37±0.05 | 2.60±0.12 | 8.24±0.44 | 22.38±2.02 | 25.49±1.28 | 43.07±1.36 | 66.87±4.14 | 73.70±7.15 |
+| Patched     | 0.41±0.01 | 0.82±0.02 | 1.62±0.05 | 3.33±0.01 | 6.45±0.02 | 21.50±0.08 | 46.22±0.31 | 50.20±1.12 | 45.39±1.29 | 68.96±1.12 | 78.35±1.49 |
+| Percentage  | 141.18%   | 127.78%   | 125.00%   | 143.07%   | 148.08%   | 160.92%   | 106.52%    | 97.00%     | 5.38%      | 3.13%      | 6.32%      |
++-------------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+
++-------------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
+| Latency     | 64        | 128       | 256       | 512       | 1k        | 4k        | 16k       | 32k       | 63k       |
++-------------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
+| Vanilla     | 5.80±4.02 | 5.83±3.61 | 5.86±4.10 | 5.91±4.19 | 5.98±4.14 | 6.61±4.47 | 8.60±2.59 | 10.96±5.50| 15.02±6.78|
+| Patched     | 6.18±3.03 | 6.23±4.38 | 6.25±4.44 | 6.13±4.35 | 6.32±4.23 | 6.94±4.61 | 8.90±5.49 | 11.12±6.10| 14.88±6.55|
+| Percentage  | 6.55%     | 6.87%     | 6.66%     | 3.72%     | 5.68%     | 4.99%     | 3.49%     | 1.46%     |-0.93%     |
++-------------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
+
 ---
-Changes since v11: https://lore.kernel.org/20250625225717.187191105@goodmis.org
+v4: pass false instead of 'redir_ingress' to tcp_bpf_sendmsg_redir()
 
-- Fix header macro protection name to include X86 (Ingo Molnar)
+v3: no change, just rebase
 
-- Use insn_get_seg_base() to get segment registers instead of using the
-  function perf uses and making it global. Also as that function doesn't
-  look to have a requirement to disable interrupts, the scoped_guard(irqsave)
-  is removed.
+v2: improved commit message of patch 3/4
+    changed to 'u8' for bitfields, as suggested by Jakub
 
-- Check return code of insn_get_seg_base() for the unlikely event that it
-  returns invalid (-1).
+Cong Wang (2):
+  skmsg: rename sk_msg_alloc() to sk_msg_expand()
+  skmsg: save some space in struct sk_psock
 
-- Moved arch_unwind_user_init() into stacktrace.c as to use
-  insn_get_seg_base(), it must include insn-eval.h that defines
-  pt_regs_offset(), but that is also used in the perf generic code as an
-  array and if it is included in the header file, it causes a build
-  conflict.
+Zijian Zhang (2):
+  skmsg: implement slab allocator cache for sk_msg
+  tcp_bpf: improve ingress redirection performance with message corking
 
-- Update the comments that explain arch_unwind_user_init/next that a macro
-  needs to be defined with those names if they are going to be used.
+ include/linux/skmsg.h |  48 +++++++---
+ net/core/skmsg.c      | 173 ++++++++++++++++++++++++++++++++---
+ net/ipv4/tcp_bpf.c    | 204 +++++++++++++++++++++++++++++++++++++++---
+ net/tls/tls_sw.c      |   6 +-
+ net/xfrm/espintcp.c   |   2 +-
+ 5 files changed, 394 insertions(+), 39 deletions(-)
 
- arch/x86/Kconfig                         |  1 +
- arch/x86/include/asm/unwind_user.h       | 31 ++++++++++++++++++++++++
- arch/x86/include/asm/unwind_user_types.h | 17 +++++++++++++
- arch/x86/kernel/stacktrace.c             | 28 +++++++++++++++++++++
- include/linux/unwind_user.h              | 20 +++++++++++++++
- kernel/unwind/user.c                     |  4 +++
- 6 files changed, 101 insertions(+)
- create mode 100644 arch/x86/include/asm/unwind_user_types.h
-
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 5862433c81e1..17d4094c821b 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -302,6 +302,7 @@ config X86
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select HAVE_UACCESS_VALIDATION		if HAVE_OBJTOOL
- 	select HAVE_UNSTABLE_SCHED_CLOCK
-+	select HAVE_UNWIND_USER_COMPAT_FP	if IA32_EMULATION
- 	select HAVE_UNWIND_USER_FP		if X86_64
- 	select HAVE_USER_RETURN_NOTIFIER
- 	select HAVE_GENERIC_VDSO
-diff --git a/arch/x86/include/asm/unwind_user.h b/arch/x86/include/asm/unwind_user.h
-index 8597857bf896..19634a73612d 100644
---- a/arch/x86/include/asm/unwind_user.h
-+++ b/arch/x86/include/asm/unwind_user.h
-@@ -2,10 +2,41 @@
- #ifndef _ASM_X86_UNWIND_USER_H
- #define _ASM_X86_UNWIND_USER_H
- 
-+#include <linux/unwind_user_types.h>
-+
- #define ARCH_INIT_USER_FP_FRAME							\
- 	.cfa_off	= (s32)sizeof(long) *  2,				\
- 	.ra_off		= (s32)sizeof(long) * -1,				\
- 	.fp_off		= (s32)sizeof(long) * -2,				\
- 	.use_fp		= true,
- 
-+#ifdef CONFIG_IA32_EMULATION
-+
-+#define ARCH_INIT_USER_COMPAT_FP_FRAME						\
-+	.cfa_off	= (s32)sizeof(u32)  *  2,				\
-+	.ra_off		= (s32)sizeof(u32)  * -1,				\
-+	.fp_off		= (s32)sizeof(u32)  * -2,				\
-+	.use_fp		= true,
-+
-+#define in_compat_mode(regs) !user_64bit_mode(regs)
-+
-+void arch_unwind_user_init(struct unwind_user_state *state,
-+			   struct pt_regs *regs);
-+
-+static inline void arch_unwind_user_next(struct unwind_user_state *state)
-+{
-+	if (state->type != UNWIND_USER_TYPE_COMPAT_FP)
-+		return;
-+
-+	state->ip += state->arch.cs_base;
-+	state->fp += state->arch.ss_base;
-+}
-+
-+#define arch_unwind_user_init arch_unwind_user_init
-+#define arch_unwind_user_next arch_unwind_user_next
-+
-+#endif /* CONFIG_IA32_EMULATION */
-+
-+#include <asm-generic/unwind_user.h>
-+
- #endif /* _ASM_X86_UNWIND_USER_H */
-diff --git a/arch/x86/include/asm/unwind_user_types.h b/arch/x86/include/asm/unwind_user_types.h
-new file mode 100644
-index 000000000000..f93d535f900e
---- /dev/null
-+++ b/arch/x86/include/asm/unwind_user_types.h
-@@ -0,0 +1,17 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_X86_UNWIND_USER_TYPES_H
-+#define _ASM_X86_UNWIND_USER_TYPES_H
-+
-+#ifdef CONFIG_IA32_EMULATION
-+
-+struct arch_unwind_user_state {
-+	unsigned long ss_base;
-+	unsigned long cs_base;
-+};
-+#define arch_unwind_user_state arch_unwind_user_state
-+
-+#endif /* CONFIG_IA32_EMULATION */
-+
-+#include <asm-generic/unwind_user_types.h>
-+
-+#endif /* _ASM_UNWIND_USER_TYPES_H */
-diff --git a/arch/x86/kernel/stacktrace.c b/arch/x86/kernel/stacktrace.c
-index ee117fcf46ed..8ef9d8c71df9 100644
---- a/arch/x86/kernel/stacktrace.c
-+++ b/arch/x86/kernel/stacktrace.c
-@@ -9,7 +9,10 @@
- #include <linux/stacktrace.h>
- #include <linux/export.h>
- #include <linux/uaccess.h>
-+#include <asm/unwind_user.h>
- #include <asm/stacktrace.h>
-+#include <asm/insn.h>
-+#include <asm/insn-eval.h>
- #include <asm/unwind.h>
- 
- void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
-@@ -128,3 +131,28 @@ void arch_stack_walk_user(stack_trace_consume_fn consume_entry, void *cookie,
- 	}
- }
- 
-+#ifdef CONFIG_IA32_EMULATION
-+void arch_unwind_user_init(struct unwind_user_state *state,
-+			   struct pt_regs *regs)
-+{
-+	unsigned long cs_base, ss_base;
-+
-+	if (state->type != UNWIND_USER_TYPE_COMPAT_FP)
-+		return;
-+
-+	cs_base = insn_get_seg_base(regs, INAT_SEG_REG_CS);
-+	ss_base = insn_get_seg_base(regs, INAT_SEG_REG_SS);
-+
-+	if (cs_base == -1)
-+		cs_base = 0;
-+	if (ss_base == -1)
-+		ss_base = 0;
-+
-+	state->arch.cs_base = cs_base;
-+	state->arch.ss_base = ss_base;
-+
-+	state->ip += cs_base;
-+	state->sp += ss_base;
-+	state->fp += ss_base;
-+}
-+#endif /* CONFIG_IA32_EMULATION */
-diff --git a/include/linux/unwind_user.h b/include/linux/unwind_user.h
-index ac007363820a..b57b68215c6f 100644
---- a/include/linux/unwind_user.h
-+++ b/include/linux/unwind_user.h
-@@ -14,6 +14,26 @@
-  #define in_compat_mode(regs) false
- #endif
- 
-+/*
-+ * If an architecture needs to initialize the state for a specific
-+ * reason, for example, it may need to do something different
-+ * in compat mode, it can define a macro named arch_unwind_user_init
-+ * with the name of the function that will perform this initialization.
-+ */
-+#ifndef arch_unwind_user_init
-+static inline void arch_unwind_user_init(struct unwind_user_state *state, struct pt_regs *reg) {}
-+#endif
-+
-+/*
-+ * If an architecture requires some more updates to the state between
-+ * stack frames, it can define a macro named arch_unwind_user_next
-+ * with the name of the function that will update the state between
-+ * reading stack frames during the user space stack walk.
-+ */
-+#ifndef arch_unwind_user_next
-+static inline void arch_unwind_user_next(struct unwind_user_state *state) {}
-+#endif
-+
- int unwind_user_start(struct unwind_user_state *state);
- int unwind_user_next(struct unwind_user_state *state);
- 
-diff --git a/kernel/unwind/user.c b/kernel/unwind/user.c
-index 3a0ac4346f5b..2bb7995c3f23 100644
---- a/kernel/unwind/user.c
-+++ b/kernel/unwind/user.c
-@@ -72,6 +72,8 @@ int unwind_user_next(struct unwind_user_state *state)
- 	if (frame->fp_off)
- 		state->fp = fp;
- 
-+	arch_unwind_user_next(state);
-+
- 	return 0;
- 
- done:
-@@ -101,6 +103,8 @@ int unwind_user_start(struct unwind_user_state *state)
- 	state->sp = user_stack_pointer(regs);
- 	state->fp = frame_pointer(regs);
- 
-+	arch_unwind_user_init(state, regs);
-+
- 	return 0;
- }
- 
 -- 
-2.47.2
-
+2.34.1
 
 
