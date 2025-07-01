@@ -1,142 +1,193 @@
-Return-Path: <bpf+bounces-62000-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62001-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EC8FAF041C
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 21:50:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35D23AF0444
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 22:03:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61164189BD5C
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 19:51:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF717481765
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 20:03:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BB7A27FD5D;
-	Tue,  1 Jul 2025 19:50:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B6E2260580;
+	Tue,  1 Jul 2025 20:03:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hTejyEKK"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hWyHBqNx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A822272E48
-	for <bpf@vger.kernel.org>; Tue,  1 Jul 2025 19:50:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F252025F79A
+	for <bpf@vger.kernel.org>; Tue,  1 Jul 2025 20:03:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751399442; cv=none; b=Nxqtd5XUgEND5r0yjap6JVP6fusKtH//YpTCM+ww6Ymnh3W2kxt6IUyavisAFpSjP0uUeGglLhNHpis5TkV/vVDEqXBBQQNMRW+WffAPeJgbI+73+SXLhD3+YYK3qFNvdzfmByYUTj+jfCxot4FnRxryDEGSy2nKw1lwj5wKVTg=
+	t=1751400213; cv=none; b=PX2cgPiJI3HF/j3Xq0U0DUsjqjXPZcdY6HFvX8J8+H19RHB7UIi1jWxOVReDCLldslZ+lfJ8pgImLwsIw/c8XTtXumC6H5v0AE+hzR6Hemm601iF/iclSaIkbiM/ObDv9eKtpvOgh1hKI1lKyQ9pUU+nV4d3712Zm0ITQagAyUY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751399442; c=relaxed/simple;
-	bh=Ul+zbXDIDyKSp5sDr7JTq84LKkiCg/K49g+EWPZAYkI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UFqC65bDPsyGKGUVDmrW9tK2ntNWpVVYsagL3BuFj5XE23sF5piIWeU+FDtkKHsr6Vy3KKEdnCguVFzHsD3iqQaNHRQe9cNrMJtX/yHUu7n98ECkUXrroMpHMeO3Bb21sN1s6PdF2yUzz6djYKKTC6X7jtRUh970xjmsuP7Xtbw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hTejyEKK; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-450cb2ddd46so36124505e9.2
-        for <bpf@vger.kernel.org>; Tue, 01 Jul 2025 12:50:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751399439; x=1752004239; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ul+zbXDIDyKSp5sDr7JTq84LKkiCg/K49g+EWPZAYkI=;
-        b=hTejyEKKU4OLyB5n6azx8EhHkS8Ctw9rGDROWsBaEMFoR/sGmVqf0iGjcyaG8qs9mB
-         dMnjHUEyia1kR6FODyUi++UOdyEAae5H9K3nb5CKn20wlYmP+kLtTotLeR+veM4JBpmp
-         DTcXfW5fBhQ3dLzGnT7Geqxe5PF0/7MqGdLzrrL3CDJUshZUCimL1qjmyiVmnquK7LiH
-         X+ZSNVZB3BFo+H6y17ajmDVR0AbIMKxj5MKp9JZ5FRunEpeHnmdU7ZF8yw9xmXm90vit
-         r6e0vFrv7fSCv7K2Ohd3R5gTwKTmNq+7g7WHqxTlQqnUA5AEwYfvI7uMA+O5cBZyxy+/
-         rj6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751399439; x=1752004239;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ul+zbXDIDyKSp5sDr7JTq84LKkiCg/K49g+EWPZAYkI=;
-        b=ZNyswrBjfTEtZohHBnMjGfsrLOcRpnHtnZID0uFPoZgQB1XuW+Z9bqCJ7N5iRSTsAJ
-         3V7TItmjB2NU5TeUwaXJ/jLqcxKyg7Gqsa76iCP+asmcrDUNan47Ix7QC2tGewRKRt/N
-         9dpL+twq1CqepgEZny4dUcoPKHrQ56aJzCxqs5BbpURQTFXaMv6Ad3tEzRRcsY5TpnGZ
-         ASwkau/ueovcOqJHrACfShgCffaE+C2oop/ww+OOXeKFwwnyIQIPiFU74LCAfwHBF3Ee
-         WICzH2BIsJK6JCAOY4XRi1bFoVWbefEDCXLkDvrNoX6c0VlGe+4rZb9fB62URpJ30sf/
-         3uEA==
-X-Gm-Message-State: AOJu0YxFs4NRig4fW6+lkzfGayw25lwG9RRlCg496C3NW5f02vnWogYd
-	9VvPfRWQawNShQX1Zn409qb0LfxvE2B0TG/zW+ktXYXaVqy792pOiUX5A5daErz+sDfs8uAnMTr
-	RFs8hqRLPYCFk6e8r1nywJX0XeMBXxMw=
-X-Gm-Gg: ASbGnctw6aYW3kTDAPRWXDANPTSqlYAYoWAtlw68Vz5liDWkF2wn+QFAlW1A5jFbrIM
-	QoRBIJG02ynqBZ2t+VKm0Af2lntiywKwaa0nYcMPQ/wGrY/w2FyWZfjGIdSwwwkn2UaLhz7hHjO
-	kKi9c1rRcKTJ88UAV8Ym3hYRWtLu7FyG9qLBTix/klusek1xgzHzrlhUXF8zU=
-X-Google-Smtp-Source: AGHT+IEhfhzNCa3B9J67hJOrIFXK8tQNPt/Z9A/ABlqyb1KFB/8iEqS905qxehtmVBVaAQ4VunjseWPT00Ykp7nR2sw=
-X-Received: by 2002:a05:600c:3f05:b0:451:e394:8920 with SMTP id
- 5b1f17b1804b1-454a372e226mr3106575e9.27.1751399438317; Tue, 01 Jul 2025
- 12:50:38 -0700 (PDT)
+	s=arc-20240116; t=1751400213; c=relaxed/simple;
+	bh=eJDesN7BXsMnEhiQ/UJNFd2HLD1QXKP4h1RtXJ+27Mw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QEuSyc3vScVOxWpO0wSgmIyyTuyPt2QmI0kUOxyDfVxuXu160S6S3aNh8QsvRIFtklIhbw786DWf1N/XHBtEXVZU/EMmJU0l4oNIHKhHLoK1K17KX7gu4FyQpLAZ8Jzjh/AuebPX8ooqqp3beVePV8ivEo0MLWeWVANQWH3iDOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hWyHBqNx; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <361eb614-e145-49dc-aa32-12f313f61b96@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1751400199;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/vR/YEbexwRjW/glmIK3Kpb+5RALRLDf27NEgC4WPeU=;
+	b=hWyHBqNxvk0vFYvd8RU0pwMiJmz/30E7EgsyBnufC4rElScT1PtSpQGYwEeFDma9WtXbye
+	exp0oqtzTrfEa2n/l5B21eGO9OpWSITDFeJ09Q+gMIlnf2FY2cN7/xw7i6c0y6cceY4daM
+	2UAhvfVY4DJjYzgXSgwsNsPLDGn4S2Y=
+Date: Tue, 1 Jul 2025 13:03:11 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250630133524.364236-1-vmalik@redhat.com> <CAADnVQJF8-8zHV75Cf7v8XWGVrJwU5JaQjBm0B-Q3JUUMqNmcQ@mail.gmail.com>
- <49fcc6c3-8075-4134-bdbd-fbd8a40f4202@redhat.com>
-In-Reply-To: <49fcc6c3-8075-4134-bdbd-fbd8a40f4202@redhat.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 1 Jul 2025 12:50:24 -0700
-X-Gm-Features: Ac12FXyyJLzCXT_xbExJtHdcCAzTUCO1Ml4YvcOclgxSONQivX2uX6oVlwOT0aI
-Message-ID: <CAADnVQKQTLDP1W1ao-mCPfLDbZWykW1TdcouJPSVapNWu=bCBw@mail.gmail.com>
-Subject: Re: [PATCH bpf] selftests/bpf: Re-add kfunc declarations to qdisc tests
-To: Viktor Malik <vmalik@redhat.com>
-Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, Amery Hung <ameryhung@gmail.com>, 
-	=?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
-	Feng Yang <yangfeng@kylinos.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] bpf: turn off sanitizer in do_misc_fixups for old clang
+Content-Language: en-GB
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Arnd Bergmann <arnd@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Nathan Chancellor <nathan@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+ Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
+ Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+ Luis Gerhorst <luis.gerhorst@fau.de>, bpf <bpf@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>, clang-built-linux <llvm@lists.linux.dev>
+References: <20250620113846.3950478-1-arnd@kernel.org>
+ <CAADnVQKAT3UPzcpzkJ6_-powz4YTiDAku4-a+++hrhYdJUnLiw@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQKAT3UPzcpzkJ6_-powz4YTiDAku4-a+++hrhYdJUnLiw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Jul 1, 2025 at 12:43=E2=80=AFPM Viktor Malik <vmalik@redhat.com> wr=
-ote:
->
-> On 7/1/25 19:46, Alexei Starovoitov wrote:
-> > On Mon, Jun 30, 2025 at 6:35=E2=80=AFAM Viktor Malik <vmalik@redhat.com=
-> wrote:
-> >>
-> >> BPF selftests compilation fails on systems with CONFIG_NET_SCH_BPF=3Dn=
-.
-> >> The reason is that qdisc-related kfuncs are included via vmlinux.h but
-> >> when qdisc is disabled, they are not defined and do not appear in
-> >> vmlinux.h.
-> >
-> > Yes and that's expected behavior. It's not a bug.
-> > That's why we have CONFIG_NET_SCH_BPF=3Dy in
-> > selftests/bpf/config
-> > and CI picks it up automatically.
-> >
-> > If we add these kfuncs to bpf_qdisc_common.h where would we
-> > draw the line when the kfuncs should be added or not ?
->
-> I'd say that we should add kfuncs which are only included in vmlinux.h
-> under certain configurations. Obviously stuff like CONFIG_BPF=3Dy can be
-> presumed but there're tons of configs options which may be disabled on a
-> system and it still makes sense to compile and run at least a part of
-> test_progs on them.
->
-> > Currently we don't add any new kfuncs, since they all
-> > should be in vmlinux.h
->
-> This way, we're preventing people to build and therefore run *any*
-> test_progs on systems which do not have all the configs required in
-> selftests/bpf/config. Running selftests on such systems may reveal bugs
-> not captured by the CI so I think that it may be eventually beneficial
-> for everyone.
 
-Not quite. What's stopping people to build selftests
-with 'make -k' ?
-Some bpf progs will not compile, but test_progs binary will be built and
-it will run the rest of the tests.
 
-We can take this patch, but let's define the rules for adding
-kfuncs explicitly.
-What are you proposing exactly ?
-Anything that is gated by some CONFIG_FOO _must_ be added explicitly ?
-Assuming we won't be going back and retroactively adding them ?
+On 6/23/25 2:32 PM, Alexei Starovoitov wrote:
+> On Fri, Jun 20, 2025 at 4:38 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>>
+>> clang versions before version 18 manage to badly optimize the bpf
+>> verifier, with lots of variable spills leading to excessive stack
+>> usage in addition to likely rather slow code:
+>>
+>> kernel/bpf/verifier.c:23936:5: error: stack frame size (2096) exceeds limit (1280) in 'bpf_check' [-Werror,-Wframe-larger-than]
+>> kernel/bpf/verifier.c:21563:12: error: stack frame size (1984) exceeds limit (1280) in 'do_misc_fixups' [-Werror,-Wframe-larger-than]
+>>
+>> Turn off the sanitizer in the two functions that suffer the most from
+>> this when using one of the affected clang version.
+>>
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>> ---
+>>   kernel/bpf/verifier.c | 11 +++++++++--
+>>   1 file changed, 9 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index 2fa797a6d6a2..7724c7a56d79 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -19810,7 +19810,14 @@ static int do_check_insn(struct bpf_verifier_env *env, bool *do_print_state)
+>>          return 0;
+>>   }
+>>
+>> -static int do_check(struct bpf_verifier_env *env)
+>> +#if defined(CONFIG_CC_IS_CLANG) && CONFIG_CLANG_VERSION < 180100
+>> +/* old clang versions cause excessive stack usage here */
+>> +#define __workaround_kasan  __disable_sanitizer_instrumentation
+>> +#else
+>> +#define __workaround_kasan
+>> +#endif
+>> +
+>> +static __workaround_kasan int do_check(struct bpf_verifier_env *env)
+> This looks too hacky for a workaround.
+> Let's figure out what's causing such excessive stack usage and fix it.
+> We did some of this work in
+> commit 6f606ffd6dd7 ("bpf: Move insn_buf[16] to bpf_verifier_env")
+> and similar.
+> Looks like it wasn't enough or more stack usage crept in since then.
+>
+> Also make sure you're using the latest bpf-next.
+> A bunch of code was moved out of do_check().
+> So I bet the current bpf-next/master doesn't have a problem
+> with this particular function.
+> In my kasan build do_check() is now fully inlined.
+> do_check_common() is not and it's using 512 bytes of stack.
+>
+>>   {
+>>          bool pop_log = !(env->log.level & BPF_LOG_LEVEL2);
+>>          struct bpf_verifier_state *state = env->cur_state;
+>> @@ -21817,7 +21824,7 @@ static int add_hidden_subprog(struct bpf_verifier_env *env, struct bpf_insn *pat
+>>   /* Do various post-verification rewrites in a single program pass.
+>>    * These rewrites simplify JIT and interpreter implementations.
+>>    */
+>> -static int do_misc_fixups(struct bpf_verifier_env *env)
+>> +static __workaround_kasan int do_misc_fixups(struct bpf_verifier_env *env)
+> This one is using 832 byte of stack with kasan.
+> Which is indeed high.
+> Big chunk seems to be coming from chk_and_sdiv[] and chk_and_smod[].
+>
+> Yonghong,
+> looks like you contributed that piece of code.
+> Pls see how to reduce stack size here.
+> Daniel used this pattern in earlier commits. Looks like
+> we took it too far.
+
+With llvm17, I got the following error:
+
+/home/yhs/work/bpf-next/kernel/bpf/verifier.c:24491:5: error: stack frame size (2552) exceeds limit (1280) in 'bpf_check' [-
+Werror,-Wframe-larger-than]
+  24491 | int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u32 uattr_size)
+        |     ^
+/home/yhs/work/bpf-next/kernel/bpf/verifier.c:19921:12: error: stack frame size (1368) exceeds limit (1280) in 'do_check' [-
+Werror,-Wframe-larger-than]
+  19921 | static int do_check(struct bpf_verifier_env *env)
+        |            ^
+2 errors generated.
+
+I checked IR and found the following memory allocations which may contribute
+excessive stack usage:
+
+attr.coerce1, i32 noundef %uattr_size) local_unnamed_addr #0 align 16 !dbg !19800 {
+entry:
+   %zext_patch.i = alloca [2 x %struct.bpf_insn], align 16, !DIAssignID !19854
+   %rnd_hi32_patch.i = alloca [4 x %struct.bpf_insn], align 16, !DIAssignID !19855
+   %cnt.i = alloca i32, align 4, !DIAssignID !19856
+   %patch.i766 = alloca [3 x %struct.bpf_insn], align 16, !DIAssignID !19857
+   %chk_and_sdiv.i = alloca [1 x %struct.bpf_insn], align 4, !DIAssignID !19858
+   %chk_and_smod.i = alloca [1 x %struct.bpf_insn], align 4, !DIAssignID !19859
+   %chk_and_div.i = alloca [4 x %struct.bpf_insn], align 16, !DIAssignID !19860
+   %chk_and_mod.i = alloca [4 x %struct.bpf_insn], align 16, !DIAssignID !19861
+   %chk_and_sdiv343.i = alloca [8 x %struct.bpf_insn], align 16, !DIAssignID !19862
+   %chk_and_smod472.i = alloca [9 x %struct.bpf_insn], align 16, !DIAssignID !19863
+   %desc.i = alloca %struct.bpf_jit_poke_descriptor, align 8, !DIAssignID !19864
+   %target_size.i = alloca i32, align 4, !DIAssignID !19865
+   %patch.i = alloca [2 x %struct.bpf_insn], align 16, !DIAssignID !19866
+   %patch355.i = alloca [2 x %struct.bpf_insn], align 16, !DIAssignID !19867
+   %ja.i = alloca %struct.bpf_insn, align 8, !DIAssignID !19868
+   %ret_insn.i.i = alloca [8 x i32], align 16, !DIAssignID !19869
+   %ret_prog.i.i = alloca [8 x i32], align 16, !DIAssignID !19870
+   %fd.i = alloca i32, align 4, !DIAssignID !19871
+   %log_true_size = alloca i32, align 4, !DIAssignID !19872
+...
+
+So yes, chk_and_{div,mod,sdiv,smod} consumes quite some stack and
+can be coverted to runtime allocation but that is not enough for 1280
+stack limit, we need to do more conversion from stack to memory
+allocation. Will try to have uniform way to convert
+'alloca [<num> x %struct.bpf_insn]' to runtime allocation.
+
 
