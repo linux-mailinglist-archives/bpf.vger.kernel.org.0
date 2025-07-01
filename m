@@ -1,63 +1,71 @@
-Return-Path: <bpf+bounces-62021-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62022-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC6ACAF06ED
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 01:25:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFFEAAF0705
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 01:45:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A545B1BC6BA6
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 23:26:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EEB24E118E
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 23:45:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B835302CA7;
-	Tue,  1 Jul 2025 23:25:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99D5C302CD2;
+	Tue,  1 Jul 2025 23:45:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m4lQxpEO"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 861CD265CC8;
-	Tue,  1 Jul 2025 23:25:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED44A2857FC;
+	Tue,  1 Jul 2025 23:45:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751412351; cv=none; b=mjeNDwcwU8JXr4PPUbX2XbaM1jY3TdSC3fXluZ0Sn+Gwcg1Q4DIlbtDbhsbY24zMfeveqi8omgBE2QDO+z+fAc5kN4WSGieKWDGohxBDFvYnCXMn8WwcGSNx9FrUaWLdVP6vp89bEVWGqC4DSqq0y1SuKb8KbBt8OwN8V3TG47I=
+	t=1751413512; cv=none; b=kMFz0r/AFqn3uTEA7JIUTI7JMhdrBGX0suOaTRP8NEARtaF9GkkKxCWblOlqP6U3hba7rhhXE0uyltmy0kqr/7PAACPbZZuIsRwbeQqsDzy3WsRZnzzErDl2JY/UnXpj/dbX2qHIzVLDx3uiDgiggKJR5yp2fvKfxZurKTWaIDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751412351; c=relaxed/simple;
-	bh=5LAi1AOn7t8Tm+vFBUGNdaWr1EwOHiTYD0dfTqMEO+A=;
+	s=arc-20240116; t=1751413512; c=relaxed/simple;
+	bh=Gi4HgI/fcGLhn4scOdNk/B+Txx51RJ5SF8pfQNLBedw=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HS/PW0oCkqeT1VusB6ZeED8+QoVK6ISxJSrWwhMuJTkK9a2rLOsjPXPpQGtvtA044BrlBZTs5SlXdVGqF2jhD1yJDVv3wrKU5WM0ZmSZ38GR7ImJrUjMem83F20aLHHzgs/+MFUF/V6N1C6/fKqZLNuRJ2n3dUbQezmnNd9tqE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf07.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay08.hostedemail.com (Postfix) with ESMTP id B0854140698;
-	Tue,  1 Jul 2025 23:25:45 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf07.hostedemail.com (Postfix) with ESMTPA id 5611220024;
-	Tue,  1 Jul 2025 23:25:41 +0000 (UTC)
-Date: Tue, 1 Jul 2025 19:26:19 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Kees Cook <kees@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org, x86@kernel.org, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Josh Poimboeuf <jpoimboe@kernel.org>, Peter Zijlstra
- <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, Jiri Olsa
- <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner
- <tglx@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, Indu Bhagat
- <indu.bhagat@oracle.com>, "Jose E. Marchesi" <jemarch@gnu.org>, Beau
- Belgrave <beaub@linux.microsoft.com>, Jens Remus <jremus@linux.ibm.com>,
- Andrew Morton <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>,
- Florian Weimer <fweimer@redhat.com>
-Subject: Re: [PATCH v12 00/14] unwind_user: x86: Deferred unwinding
- infrastructure
-Message-ID: <20250701192619.20eb2a58@gandalf.local.home>
-In-Reply-To: <202507011547.D291476BE1@keescook>
-References: <20250701005321.942306427@goodmis.org>
-	<CAHk-=wijwK_idn0TFvu2NL0vUaQF93xK01_Rru78EMqUHj=b1w@mail.gmail.com>
-	<20250630224539.3ccf38b0@gandalf.local.home>
-	<202507011547.D291476BE1@keescook>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	 MIME-Version:Content-Type; b=O6UYrg3eWuRDDWX4pQMgpcT22PEmDWD1yrwoz0Dua3/v5Ra8An9rgn8QLI4k/zAtPnv3lb8nfoYlHqnmd3XbYwdoiDMQS8FobBRjBCUjNB8f0S3zbB/fjiHZ9whitN932bPjJTBlI9aY+wsYC6l1+CzOMQ+VpqHqAcGRNg9x4IA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m4lQxpEO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74E77C4CEEB;
+	Tue,  1 Jul 2025 23:45:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1751413510;
+	bh=Gi4HgI/fcGLhn4scOdNk/B+Txx51RJ5SF8pfQNLBedw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=m4lQxpEOa6oeH3or8pRm4zhWDl23ESs4tyFmiPZeaDetKINeN+eEk2eHLQdKKrLdl
+	 fHt3OL4c60fYb4talT9acSdKCIoQ7+d5bfrOmrJQRKdbvrDM/vzJUQePmF58cmi3cB
+	 HeEZMjE5iw3bGKUVDNjOQdjO9Cyzyt6wMpIMDj457sttmG6AzAx2+9zZxb8UbHKGzZ
+	 ltLDJYyoIDitJr4JezQ7llkVUWyLR6GMgVOE4ZyTJPPz91aCJHQpE4+ufoE4Zb51G5
+	 nQXIl31TEEH6Y9NQHwbgi1dw0wfnhawjUF5Ls0OMryT1Ld7buBh1ycR2ZnztSPWC7+
+	 gyDok0gSbcVuQ==
+Date: Tue, 1 Jul 2025 16:45:08 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Harry Yoo <harry.yoo@oracle.com>
+Cc: Byungchul Park <byungchul@sk.com>, willy@infradead.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ kernel_team@skhynix.com, almasrymina@google.com,
+ ilias.apalodimas@linaro.org, hawk@kernel.org, akpm@linux-foundation.org,
+ davem@davemloft.net, john.fastabend@gmail.com, andrew+netdev@lunn.ch,
+ asml.silence@gmail.com, toke@redhat.com, tariqt@nvidia.com,
+ edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com, leon@kernel.org,
+ ast@kernel.org, daniel@iogearbox.net, david@redhat.com,
+ lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
+ rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org,
+ linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com,
+ hannes@cmpxchg.org, ziy@nvidia.com, jackmanb@google.com
+Subject: Re: [PATCH net-next v7 1/7] netmem: introduce struct netmem_desc
+ mirroring struct page
+Message-ID: <20250701164508.0738f00f@kernel.org>
+In-Reply-To: <aGHNmKRng9H6kTqz@hyeyoo>
+References: <20250625043350.7939-1-byungchul@sk.com>
+	<20250625043350.7939-2-byungchul@sk.com>
+	<20250626174904.4a6125c9@kernel.org>
+	<20250627035405.GA4276@system.software.com>
+	<20250627173730.15b25a8c@kernel.org>
+	<aGHNmKRng9H6kTqz@hyeyoo>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -66,67 +74,53 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Stat-Signature: tryfq3spsju364iez3ck1zrf7mt7enjs
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 5611220024
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1+Quzu2eU2osAE3RdCKzkTyOA2Ps8IYTmg=
-X-HE-Tag: 1751412341-261051
-X-HE-Meta: U2FsdGVkX1+pOpssR8artnZXR620RStoUESbyBTmV1nqsXqVd+7Cd+0dbSMwBZAlLzhIXluPkWuMp8vrnXp3LYszOvRajvAfz0Q97/lv+SON7IClC5Jsp695rmInoxhUw95MPkUKs62z2nQ/A68+X3hApa63qFHuFL1oYBk/WvGB1zws/FqOI3mnpDnq/4yzFiMIof+xzwQuB/uL6jo9mZU1xBiSZlF88+f1yhv0e5tCwpdKQbkw84W8VYm927Xkm71XdiPrggYXWn0MFfqobVM475TwdaXgjHXh8Z5Pgd47rfQkwu/6wT/+FvSL0nCvtB+XffwFXsxVVTHpjMpLAqzIruUZHg3tV71CWG+neISVTgWokbHm+v2ExpYk98Af+KeX99+gmbG9gj9PcEGRXf+ZwVgH3NjswkOUSksJ4g9zQesrHaNSK7b72AE++39X4cLXnc9kLFpqV5UsHtLXBaMZDJufUogIOY6Ag+9uxdlK2RngOwi5jDn1leQHGMZxckrrW7U9/mk=
 
-On Tue, 1 Jul 2025 15:49:23 -0700
-Kees Cook <kees@kernel.org> wrote:
-
-> On Mon, Jun 30, 2025 at 10:45:39PM -0400, Steven Rostedt wrote:
-> > On Mon, 30 Jun 2025 19:06:12 -0700
-> > Linus Torvalds <torvalds@linux-foundation.org> wrote:
-> >   
-> > > On Mon, 30 Jun 2025 at 17:54, Steven Rostedt <rostedt@goodmis.org> wrote:  
-> > > >
-> > > > This is the first patch series of a set that will make it possible to be able
-> > > > to use SFrames[1] in the Linux kernel. A quick recap of the motivation for
-> > > > doing this.    
-> > > 
-> > > You have a '[1]' to indicate there's a link to what SFrames are.  
-> > [...]
-> >   [1] https://sourceware.org/binutils/wiki/sframe  
+On Mon, 30 Jun 2025 08:34:48 +0900 Harry Yoo wrote:
+> > Ugh, you keep explaining the mechanics to me. Our goal here is not
+> > just to move fields around and make it still compile :/
+> > 
+> > Let me ask you this way: you said "netmem_desc" will be allocated
+> > thru slab "shortly". How will calling the equivalent of page_address()
+> > on netmem_desc work at that stage? Feel free to refer me to the existing
+> > docs if its covered..  
 > 
-> Okay, I've read the cover letter and this wiki page, but I am dense: why
-> does the _kernel_ want to do this? Shouldn't it only be userspace that
-> cares about userspace unwinding? I don't use perf, ftrace, and ebpf
-> enough to make this obvious to me, I guess. ;)
+> https://kernelnewbies.org/MatthewWilcox/Memdescs/Path
+> https://kernelnewbies.org/MatthewWilcox/Memdescs
 > 
+> May not be the exact document you're looking for,
+> but with this article I can imagine:
+> 
+> - The ultimate goal is to shrink struct page to eventually from 64 bytes
+>   to 8 bytes, by allocating only the minimum required metadata per 4k page
+>   statically and moving the rest of metadata to dynamically-allocated
+>   descriptors (netmem_desc, anon, file, ptdesc, zpdesc, etc.) using slab
+>   at page allocation time.
+> 
+> - We can't achieve that goal just yet, because several subsystems
+>   still use struct page fields for their own purposes.
+> 
+>   To achieve that, each of these subsystems needs to define
+>   its own descriptor, which, for now, overlays struct page, and should be
+>   converted to use the new descriptor.
+> 
+>   Eventually, these descriptors will be allocated using slab.
+> 
+> - For CPU-readable buffers, page->memdesc will point to a netmem_desc,
+>   with a lower bit set indicating that it's a netmem_desc rather than
+>   other type. Networking code will need to cast it to (netmem_desc *)
+>   and dereference it to access networking specific fields.
+> 
+> - The struct page array (vmemmap) will still be statically allocated
+>   at boot time (or during memory hotplug time).
+>   So no change in how page_address() works.
+> 
+> net_iovs will continue to be not associated with struct pages,
+> as the buffers don't have corresponding struct pages.
+> net_iovs are already allocated using slab.
 
-It's how perf does profiling. It needs to walk the user space stack to see
-what functions are being called. Ftrace can do the same thing, but is not
-as used because it doesn't have the tooling (yet) to figure out what the
-user space addresses mean (but I'm working on fixing that).
+Thanks a lot, this clarifies things for me.
 
-And BPF has commands that it can do, but I don't know BPF enough to comment.
-
-The big user is perf with profiling. It currently uses frame pointers, but
-because of the way frame pointers are set up, it misses a lot of the leaf
-functions when the interrupt triggers (which sframes does not have that
-problem). Also, if frame pointers is not configured, perf may just copy
-thousands of bytes of the user space stack into the kernel ring buffer and
-then parse it later (this isn't used often due to the overhead).
-
-Then there's s390 that doesn't have frame pointers and only has the copy of
-thousands of bytes to do any meaningful user space profiling.
-
-Note, this has been a long standing issue where in 2022, we had a BOF on
-this, looking for something like ORC in user space as it would solve lots
-of our issues. Then December of that same year, we heard about SFrames.
-
-At Kernel Recipes in 2023, Brendan Gregg during his talk was saying that
-there needs to be a better way to do profiling of user space from the
-kernel without frame pointers. I mentioned SFrames and he was quite excited
-to hear about it. That's also when Josh, who was in the attendance, asked
-if he could do the implementation of it in the kernel!
-
-Anyway, yeah, it's something that has a ton of interest, as it's the way
-for tools like perf to give nice graphs of where user space bottlenecks
-exist.
-
--- Steve
+Unfortunately, I still think that it's hard to judge patches 1 and 7 
+in context limited to this series, so let's proceed to reposting just
+the "middle 5" patches.
 
