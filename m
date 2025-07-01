@@ -1,144 +1,112 @@
-Return-Path: <bpf+bounces-61974-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61972-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91562AF0385
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 21:19:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49452AF037A
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 21:17:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E97E61C07910
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 19:19:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15B91486072
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 19:17:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE1BB283141;
-	Tue,  1 Jul 2025 19:18:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0CF328134F;
+	Tue,  1 Jul 2025 19:17:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C9DC17BD3;
-	Tue,  1 Jul 2025 19:18:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C1DE245029;
+	Tue,  1 Jul 2025 19:17:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751397533; cv=none; b=EkvMmuPrbmVD4gDbh+qcrLYWdSZ6qjxDpU5WJi9FwQDyYwxrHek8kjYa3abRbi+552NssJ7NXVR+FdZaq42bUFeFBIayo2vCQGvcgWhQaoHh8R+jYWqvm/Ye89MXF+y2dKbQCoe+DNIKeebsmdqVZ/RkqinqmbEAGdjidG7Yxd4=
+	t=1751397447; cv=none; b=YMAHh6jFPdzxDqnezffNG6EeYkDE58ywKO44ZcInhHSPD5NLvjCbl4W3H4OAbiXvaPUyIXPJVryx6AB79zidVJt4M567fBsC6vtAoOhUDPVUQFTTWnbzZa9R7BchI63+ttuknIRZrnjzwDvatAFcFCH9Tey/RWwiR1i7ZRuRoIk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751397533; c=relaxed/simple;
-	bh=/FbdkqgsRHQT3grN+rP3vo0JEynwNZBN/vKs+JQRgx0=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=RiCr4Z2jn4hNRVQSYbDW2a/o1OHW/VKi3gZvJ2Leo9Db19npYbi1yGfPBj18Ykdzq/avj7r050xrZVB52PLBRbI2ijRJZz39KZ/9dCXX3w5HslAMkAmUrWgh7idojWE9vUgQAXH3rfPKvcFADMkNI+ASJmQjn51Jz/j+L2wapYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7154BC4CEF4;
-	Tue,  1 Jul 2025 19:18:53 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.98.2)
-	(envelope-from <rostedt@goodmis.org>)
-	id 1uWg3t-00000007gsY-3CIR;
-	Tue, 01 Jul 2025 14:50:33 -0400
-Message-ID: <20250701185033.617068929@goodmis.org>
-User-Agent: quilt/0.68
-Date: Tue, 01 Jul 2025 14:49:51 -0400
+	s=arc-20240116; t=1751397447; c=relaxed/simple;
+	bh=Hma+KxtpRKk/H7egh/thhO7nSPGV5JBWPc+D58RUl80=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=dkiuWbjSEKBtDH3CGbQzgNbt68d5v4dN42vF9w39iygjD+1jyE2k9GVcnjayLJmvpgiia/UNXoZXiADhgwceXzBKcM08Sl1kdbO+kIeu3XD0HLXj5SulotXjBqGhhonIAWBUMvDCM9eezk7BruOdc9LH1xsNiTWJ4yO6HW627tc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf05.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay06.hostedemail.com (Postfix) with ESMTP id 8F36F106D84;
+	Tue,  1 Jul 2025 19:17:22 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf05.hostedemail.com (Postfix) with ESMTPA id 1F9DD2000D;
+	Tue,  1 Jul 2025 19:17:17 +0000 (UTC)
+Date: Tue, 1 Jul 2025 15:17:15 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org,
- x86@kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Josh Poimboeuf <jpoimboe@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar <mingo@kernel.org>,
- Jiri Olsa <jolsa@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>,
- Andrii Nakryiko <andrii@kernel.org>,
- Indu Bhagat <indu.bhagat@oracle.com>,
- "Jose E. Marchesi" <jemarch@gnu.org>,
- Beau Belgrave <beaub@linux.microsoft.com>,
- Jens Remus <jremus@linux.ibm.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Jens Axboe <axboe@kernel.dk>,
- Florian Weimer <fweimer@redhat.com>
-Subject: [PATCH v7 12/12] [DO NOT APPLY] unwind_user/sframe: Add prctl() interface for
- registering .sframe sections
-References: <20250701184939.026626626@goodmis.org>
+To: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, x86@kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, Jiri
+ Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, Indu
+ Bhagat <indu.bhagat@oracle.com>, "Jose E. Marchesi" <jemarch@gnu.org>, Beau
+ Belgrave <beaub@linux.microsoft.com>, Jens Remus <jremus@linux.ibm.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton
+ <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>, Florian Weimer
+ <fweimer@redhat.com>, helpdesk@kernel.org
+Subject: Re: [PATCH v12 00/11] perf: Support the deferred unwinding
+ infrastructure
+Message-ID: <20250701151715.5eb5f8b9@batman.local.home>
+In-Reply-To: <20250701180410.755491417@goodmis.org>
+References: <20250701180410.755491417@goodmis.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: f9sr99csx4g4j46ztd99gtoqr6qz9n4g
+X-Rspamd-Server: rspamout08
+X-Rspamd-Queue-Id: 1F9DD2000D
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1+NzI4bU/Mrds9DY1SbXjrKzE82bFYHyOI=
+X-HE-Tag: 1751397437-805747
+X-HE-Meta: U2FsdGVkX18/xSeZ9LSnPh4AsPTxO3z2zNJrTLjTEVC4jiPUPYKMRlM2nqKAuRM8uWBM0zmlhH/g199odVKWpAHkGaS59w6tDjTi0aitoRbmWhKl+4Nqofr5HI446EBtd/QlcFsmlgRyb1qCJN1/I1zwJ/jWN9U94kzGrdqVTqtE6sS4IIGw26ZsK00wCL2EwX1JQfe7+9kVPuW56FyqA3E7yij7++s1UrIdegs6EOwqKggKZO9UlCbm4XBiqAiEFYId9QEl2Rq9qJNgmNnTrT8kMLkJ/ux500g0Raw9tLr2xzbycB5vO+f9gjBL5C/Wt3YEncIvYwF0CJWJgCc9AJab0T5HOEc3we5vc+P9ffR11lGpdB0HlA6tTD2dp5xChtKtsXCDw3FcHZ21B5453ADkY67eNcylJf7eT31bZNY=
 
-From: Josh Poimboeuf <jpoimboe@kernel.org>
+On Tue, 01 Jul 2025 14:04:10 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-The kernel doesn't have direct visibility to the ELF contents of shared
-libraries.  Add some prctl() interfaces which allow glibc to tell the
-kernel where to find .sframe sections.
+> Josh Poimboeuf (5):
+>       perf: Remove get_perf_callchain() init_nr argument
+>       perf: Have get_perf_callchain() return NULL if crosstask and user are set
+>       perf: Simplify get_perf_callchain() user logic
+>       perf: Skip user unwind if the task is a kernel thread
+>       perf: Support deferred user callchains
+> 
+> Namhyung Kim (4):
+>       perf tools: Minimal CALLCHAIN_DEFERRED support
+>       perf record: Enable defer_callchain for user callchains
+>       perf script: Display PERF_RECORD_CALLCHAIN_DEFERRED
+>       perf tools: Merge deferred user callchains
+> 
+> Steven Rostedt (2):
+>       perf: Use current->flags & PF_KTHREAD|PF_USER_WORKER instead of current->mm == NULL
+>       perf: Support deferred user callchains for per CPU events
 
-[
-  This adds an interface for prctl() for testing loading of sframes for
-  libraries. But this interface should really be a system call. This patch
-  is for testing purposes only and should not be applied to mainline.
-]
+Hmm, patches 5-11 seemed to be dropped, and I sent out 12 patches of
+the latest sframe work that I can't find anywhere. I think my ISP is
+thinking I'm spamming so it dropped the emails. That's all I can figure.
 
-Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- include/uapi/linux/prctl.h | 6 +++++-
- kernel/sys.c               | 9 +++++++++
- 2 files changed, 14 insertions(+), 1 deletion(-)
+I originally used kernel.org as my smtp server, but gmail starting
+putting my emails into spam because kernel.org can't validate
+goodmis.org with DKIM (my DNS has kernel.org set for SPF, but that's
+not enough these days :-p).
 
-diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
-index 43dec6eed559..c575cf7151b1 100644
---- a/include/uapi/linux/prctl.h
-+++ b/include/uapi/linux/prctl.h
-@@ -351,7 +351,7 @@ struct prctl_mm_map {
-  * configuration.  All bits may be locked via this call, including
-  * undefined bits.
-  */
--#define PR_LOCK_SHADOW_STACK_STATUS      76
-+#define PR_LOCK_SHADOW_STACK_STATUS	76
- 
- /*
-  * Controls the mode of timer_create() for CRIU restore operations.
-@@ -371,4 +371,8 @@ struct prctl_mm_map {
- # define PR_FUTEX_HASH_GET_SLOTS	2
- # define PR_FUTEX_HASH_GET_IMMUTABLE	3
- 
-+/* SFRAME management */
-+#define PR_ADD_SFRAME			79
-+#define PR_REMOVE_SFRAME		80
-+
- #endif /* _LINUX_PRCTL_H */
-diff --git a/kernel/sys.c b/kernel/sys.c
-index adc0de0aa364..cf788e66dc86 100644
---- a/kernel/sys.c
-+++ b/kernel/sys.c
-@@ -65,6 +65,7 @@
- #include <linux/rcupdate.h>
- #include <linux/uidgid.h>
- #include <linux/cred.h>
-+#include <linux/sframe.h>
- 
- #include <linux/nospec.h>
- 
-@@ -2824,6 +2825,14 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
- 	case PR_FUTEX_HASH:
- 		error = futex_hash_prctl(arg2, arg3, arg4);
- 		break;
-+	case PR_ADD_SFRAME:
-+		error = sframe_add_section(arg2, arg3, arg4, arg5);
-+		break;
-+	case PR_REMOVE_SFRAME:
-+		if (arg3 || arg4 || arg5)
-+			return -EINVAL;
-+		error = sframe_remove_section(arg2);
-+		break;
- 	default:
- 		trace_task_prctl_unknown(option, arg2, arg3, arg4, arg5);
- 		error = -EINVAL;
--- 
-2.47.2
+So I went back to my ISP (hover.com) as my SMTP server, but now I think
+it doesn't like my scripts that sends out a series of patches to a lot
+of people. It likely thinks I'm a spam bot (although maybe I am!).
 
+I guess I'll change my scripts to use rostedt@kernel.org to send and go
+back to using kernel.org as the SMTP server for my scripts. :-/
 
+Expect a resend. Sorry for all the noise.
+
+-- Steve
 
