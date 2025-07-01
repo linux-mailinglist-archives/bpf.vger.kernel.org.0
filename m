@@ -1,185 +1,160 @@
-Return-Path: <bpf+bounces-61962-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61963-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2ED93AEFFF0
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 18:33:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82A70AF005D
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 18:45:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11DE31C06D75
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 16:32:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7BA25231DF
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 16:44:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5315127CCE0;
-	Tue,  1 Jul 2025 16:31:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CE9D275103;
+	Tue,  1 Jul 2025 16:41:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fKtlXMSc"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="MIFcsZyi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 554931F428F;
-	Tue,  1 Jul 2025 16:31:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4466527E1D0
+	for <bpf@vger.kernel.org>; Tue,  1 Jul 2025 16:41:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751387490; cv=none; b=XDfnDY7RAKN5jSs2+ZtCnHpfM+Renn9TyesYf8nE0N/z+X7dTOO7WJrvwxgBjQJN9lF7mbKBt3oFEWy5nbn8HBtWbxvBoqzyQ2j9c5GL/gEuI6DZfcOil0ahUs5ThV2zJruVgEzSsCgRLUTJ7lC7bobGK9jCiEO858F3JBLDYjs=
+	t=1751388106; cv=none; b=sioEdjNyOXvutOsEwpaOM91qSV9v6530aXCTpqJpKkd9XonvP+JWaSxYKBYQfjFua2/+xTlyzE1TK+p+6dXcvAfSERV0oRVAn8o5MgRy3GYRR20PeJKyAB/Xk2gPovAUdnef6BUJ8mfvI9YkyLyQIwD6b50NOTFTLIlLgmSpAIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751387490; c=relaxed/simple;
-	bh=CcoZ+jyWrjgQXqI90PfN7uvuJcq1zdmr0lpBisf7mWA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WGnb1oJXgcbNxBZa1SPYwovBtT7pHS0XlN38k5e8XizXg4q1hJht+uabA1AxISmUrlbtqolttx1FzhPYWLE7m0iu6M4uMGC2pv4bsf/oG6CyLYR5S7b0snUMcT2d+qXzm25w30eiqtj6bP0ERSpCJ/btXc8yY/QSHMGVBA1gD/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fKtlXMSc; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-235ef62066eso72450465ad.3;
-        Tue, 01 Jul 2025 09:31:29 -0700 (PDT)
+	s=arc-20240116; t=1751388106; c=relaxed/simple;
+	bh=IWPGg61zB1oth4kd/0y/wwEehBXGlVgrzvdrkzTEs5A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NWOA/h3ZdBcTKmEpbO09oAnuqjNOk28tkwaRA0sBxA8WQQgtklJBOQImG+o8xFsui+bVKqUYeQRx73sfLQMJsCL2+5IXBBjcqztSwJDjq501gGm+zRQmzicDuWkzLz7yWOhXZ6tRdt1odWZLUIhZmhT0pXz4e3spP7RhQutl19k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=MIFcsZyi; arc=none smtp.client-ip=209.85.167.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-555024588b1so4075336e87.1
+        for <bpf@vger.kernel.org>; Tue, 01 Jul 2025 09:41:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751387488; x=1751992288; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KGjQHDXTl52XkzXC5aSP4R+Ng9QPOvHno+hnhDfXbCI=;
-        b=fKtlXMScBm/nqHVW99CVzt5otrDA3zUBKuH+TZYIzEvMY6AsFgOjiy6jnm/k6HQTMT
-         NvlPa2U6wdvqErJ3GGfyUQ0JFM44izJ9peLkTE4DCOI7HHKQsqBSHYHdewHP27Xejalp
-         PbebwUFaREgXPxYHF71IIR2EYoWKZMQi80nMJWIl78941LSeT6VTV2/wcTTKxZ7uhTZ2
-         Ild1NEcE+tq1+CUk/+t7v5e7yiiyMFLLav5eit6NV8F6ck/Gyzez6p59frP8IAH5LMqg
-         ZFWtnI4mdyHqsjMe90C7IFgOHus1U9JcrJFWxJTukxJHn9zu8uZAf6468RW118pK0gSL
-         l1rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751387488; x=1751992288;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=cloudflare.com; s=google09082023; t=1751388102; x=1751992902; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KGjQHDXTl52XkzXC5aSP4R+Ng9QPOvHno+hnhDfXbCI=;
-        b=IMFTVpgsMCldNthJVQJOAm/cyRkC2Jij5f5xR3H+1wohvi4u2n40fGOMUOH+A/GFQf
-         awHpupOZuv+A5CBnAXksd3PpKSZr7X5YYB3WB6oqPlQN6bH8vG/6hR8Wq+oNlOUwZs4s
-         z6VS87EmjkTR8EEaDOdau7JI87k8jLyLr/3hfNJI4qsAmOJmQT5pzAnyTHz27xh+UkAD
-         6nG/aITc+1lB9nx2LE9OEYNekTOwtnyN5297/jqG26j4Ts5vaRQtBWJq/mCq2AEE6PXA
-         zdKCBC7hVsfReOnL8MuJajiPiCtaJPeZ4+9v2YsWeYYvUWtkHjCMVyP6xW10cHUl/wZO
-         udtw==
-X-Forwarded-Encrypted: i=1; AJvYcCUBxmHBHdUa2bs0InKSzWaKBeVm21vWrl2mYfdMpZUzwiLeyBsqEeG1uiDZZmJggjxUni6pnj8/UtzlLJZF@vger.kernel.org, AJvYcCV2YOGz3WU67ffw4VZl/qS+iS77ghB4FixaxKEdU3I1aUpkn+vGsFoIhlR0G4huHF78+aufXlYUIonw@vger.kernel.org, AJvYcCWuF+v1rNEt/XLQ89q6rO8dcIjV+9vh3ESpGvMEJ+ScMKurS727NMmv6k+u/7MhxbCw9GHEsphH@vger.kernel.org, AJvYcCX740mU+OKASh/wtjtEIEvP44yOyHyT/k3ftfoTlYq12eof9Ax7sU3/2KxAzINonNSGaYQuURTn2hVC7AR+UIco@vger.kernel.org, AJvYcCXdxQdabllHEznDwTNFtHIWMJpR6Lu+j+rNvqJzRnyL/zojfqlTHG0T34wzNS+EGuVxXDI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzP+Ns4t6QdJVt1IYypqMGQmnyjpS6jmCXHxY0VkHF/BXNjUwxh
-	YHhIPhGYIjSru1FRzmxE5BQ/nov8+1+0xy0paM7xj/2SafjmoZ6MBx8=
-X-Gm-Gg: ASbGncss0ZQ6VrT8CR+iN8yRLbsGMhojlR79W0uCYJgnGmQvhXpk0WbMHIOjrruTJbu
-	iheXZfKnLdL9ihy2UnxJiTop4SEG5GdI+KyqrALTG+mgiqYtdKA8yd2+0p8rfvKqoNBfN9usyhv
-	j9OpBjGA1ievMVG89acIsUO8AkuON26PogRFEMYrt8zknTC3XQ6x6wk9nIhVzmGP38FxffyZeg2
-	h/QHwN688oTOhevj+Foy8HMa+R4C8GPhCsqFoNIWFDeiC2TUCubJR/Xdi8qFCpFS8QdKZnXj7pO
-	Eod36sTSCdtOhPfHJJ4W2afnceMuLp7pkPDR9DgF6i2g85jQ0DqRrA86s/fYLe4GQv1OnK7YsYU
-	1YS9BVnI66s7C0zftbpwD/SY=
-X-Google-Smtp-Source: AGHT+IE42p+bvXcIC/EYegYCnbHHAI3uzv2WW7ETzX20cqGvD5/lHwRMjETv8b5lYWoWaTAuYCqLHg==
-X-Received: by 2002:a17:903:7cb:b0:236:15b7:62e8 with SMTP id d9443c01a7336-23ac46244b8mr180664355ad.25.1751387488444;
-        Tue, 01 Jul 2025 09:31:28 -0700 (PDT)
-Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
-        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-23acb3c54b8sm115331295ad.217.2025.07.01.09.31.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jul 2025 09:31:27 -0700 (PDT)
-Date: Tue, 1 Jul 2025 09:31:21 -0700
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Song Yoong Siang <yoong.siang.song@intel.com>
-Cc: "David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Enhance XDP Rx Metadata
- Handling
-Message-ID: <aGQNWXe6FBks8D3U@mini-arch>
-References: <20250701042940.3272325-1-yoong.siang.song@intel.com>
- <20250701042940.3272325-3-yoong.siang.song@intel.com>
+        bh=IWPGg61zB1oth4kd/0y/wwEehBXGlVgrzvdrkzTEs5A=;
+        b=MIFcsZyiAJebptflBYP0VN2SOUilf8saxuKU4To8S160uqUYfQNF0S3O4Bj10naZHP
+         eS3MGX5sJEJ7xLveyJ1GxDpLQu3q0qZ3S1He1kouTwXAdh8drBB/C8xRKY68C8o+Gx9X
+         E5BiynJ5iuB3gdfeygT7oK+1/2GTz/OyOS0/KuwXI71EIhASm9LbVpxmRe4YjVE2Ur4x
+         DzlE4blBaVOFckGhyuDQfX2/WShn9Rzi3NXqUgEFQxQIDEi4XhlivCKCzj/red5J1w8P
+         RDg8LmoMZMfozgkEE4CPE3BN4Oo3Mp3bdpIFxsXtJhOOoa+GitLhso6fDpdILQhYoVR0
+         qDtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751388102; x=1751992902;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IWPGg61zB1oth4kd/0y/wwEehBXGlVgrzvdrkzTEs5A=;
+        b=f7cVpXsfoBdpNWNUid5eRCDn/b9GqINrFrr7qnJb+OK1QZhOrEEAN+f6NaNhro2Xa2
+         mHQ6Sn26aNeWbxho8OX40dqaBvHCBXFScQHgcqZyMzkJ3QUPdXA3dTd083XHlRfWhBFC
+         lyIbZo3vKPbWlAIB6QVSCdOIr6OJymzGGTNM6LdY4B8oSJ/hNCwktgcJtGWlg52kxjOq
+         qk/1XbniehIfCvDu/LSIQeGKh4WnBgNQV5SugYD21PboM/WZkk1H114359kav+A+Vl4o
+         sxRXETP1Aomy32bfpqqQ+WhoPxeErzw1N6xwIe0Cnf/D2sXYO7rgsUScztFoFxkyYn6r
+         T0HQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWthI6X1fuITme1ovFUuTeN21C6seRyiV6h6CeCfx1OAcGavMGZ7/Z8iqXwlr1KPZAevb4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz2622EAZUK02omxlIzh00zqPZDyN6dzRAHc9128KRj0PAZRD8D
+	ah/mYhIre3yaD2ysG4ARihQRQTraKWZbW26TC76W3SgQc0BuRW3+SETKA224hVBQrZhigEmy86n
+	D6PCBysKzQyBOM0FHVdyqsvvsvMyeumMlTI7/gG0DpQ==
+X-Gm-Gg: ASbGncv4FNlNHwKBeIiJJg7HUmAlqn7usq/f6LsPDMuzqk5OA+mJTOaeBpFLMt3URMM
+	/6Pj/0Zp2FN1M4wsJg0RyuErMP6nLcI3Qx5G0RSYdKDBuS+sQPF1nIzqWjvO2A8V1a3U7plF3ou
+	dWcATTi9tqiMEo5K28FwFXCXBLJ8vFXt2MzRRxqFYXGoUVact8Y2RqaCfzctZGfg==
+X-Google-Smtp-Source: AGHT+IHEq5ypAjgPeGrXgSB+iQb7yMaRQQKfYmf1cOj3A7y4mag1GtbmVbmT4BQ62LbNkTcruSd+EqYyt3TiF72QD1o=
+X-Received: by 2002:a05:6512:4012:b0:553:297b:3d45 with SMTP id
+ 2adb3069b0e04-5550b8dd339mr6809093e87.43.1751388102208; Tue, 01 Jul 2025
+ 09:41:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250701042940.3272325-3-yoong.siang.song@intel.com>
+References: <20250616095532.47020-1-matt@readmodwrite.com> <CAPhsuW4ie=vvDSc97pk5qH+faoKjz+b51MDYGA3shaJwNd677Q@mail.gmail.com>
+ <CAENh_SQPLHC8pswTRoqh0bQR84HHQmnO3bM07UQa1Xu9uY_3WA@mail.gmail.com>
+ <CAADnVQ+QyPqi7XJ2p=S9FVDbOxMXvVPU859n+2ApuRQv5T2S5w@mail.gmail.com>
+ <CAENh_SQgZ5yVpshKRhiezhGMDAMvgV7SmwD_8u++mACE33oNrg@mail.gmail.com>
+ <CAADnVQJgOyBCCySnBkTk-VCsz0dy+ppdGHpggxbtDpBBGhaXVg@mail.gmail.com>
+ <CALrw=nFvUwmpjUMYh5iJqjo6SbAO8fZt8pkys7iDjZHfpF2DxQ@mail.gmail.com>
+ <CAADnVQLC44+D-FAW=k=iw+RQA057_ohTdwTYePm5PVMY-BEyqw@mail.gmail.com>
+ <CAENh_SSduKpUtkW_=L5Gg0PYcgDCpkgX4g+7grm4kxucWmq0Ag@mail.gmail.com>
+ <CAADnVQ+_UZ2xUaV-=mb63f+Hy2aVcfC+y9ds1X70tbZhV8W9gw@mail.gmail.com>
+ <CAGis_TUNfUOD3+GdbJn1U33W8wW5pWmASxiMa5e5+5-BqJ-PKw@mail.gmail.com> <CAADnVQJp-AtrRj_XESbE5TUj6_dGNDwpRWwu2vEHv1HGOb4Fdw@mail.gmail.com>
+In-Reply-To: <CAADnVQJp-AtrRj_XESbE5TUj6_dGNDwpRWwu2vEHv1HGOb4Fdw@mail.gmail.com>
+From: Ignat Korchagin <ignat@cloudflare.com>
+Date: Tue, 1 Jul 2025 18:41:29 +0200
+X-Gm-Features: Ac12FXyOUK2ie89s6D74HJ8lkPkT67UPAFc_lYbeFJHGKWlptLg9cG1ciKg7zYQ
+Message-ID: <CALrw=nEAXCG6-qWBkPudM-c4pLhZ49jdyDKH5CT=hz9YwgBCBQ@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Call cond_resched() to avoid soft lockup in trie_free()
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Matt Fleming <mfleming@cloudflare.com>, Matt Fleming <matt@readmodwrite.com>, 
+	Song Liu <song@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	kernel-team <kernel-team@cloudflare.com>, Jesper Dangaard Brouer <hawk@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 07/01, Song Yoong Siang wrote:
-> Introduce the XDP_METADATA_SIZE macro to ensure that user applications can
-> consistently retrieve the correct location of struct xdp_meta.
-> 
-> Prior to this commit, the XDP program adjusted the data_meta backward by
-> the size of struct xdp_meta, while the user application retrieved the data
-> by calculating backward from the data pointer. This approach only worked if
-> xdp_buff->data_meta was equal to xdp_buff->data before calling
-> bpf_xdp_adjust_meta.
-> 
-> With the introduction of XDP_METADATA_SIZE, both the XDP program and user
-> application now calculate and identify the location of struct xdp_meta from
-> the data pointer. This ensures the implementation remains functional even
-> when there is device-reserved metadata, making the tests more portable
-> across different NICs.
-> 
-> Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
-> ---
->  tools/testing/selftests/bpf/prog_tests/xdp_metadata.c |  2 +-
->  tools/testing/selftests/bpf/progs/xdp_hw_metadata.c   | 10 +++++++++-
->  tools/testing/selftests/bpf/progs/xdp_metadata.c      |  8 +++++++-
->  tools/testing/selftests/bpf/xdp_hw_metadata.c         |  2 +-
->  tools/testing/selftests/bpf/xdp_metadata.h            |  7 +++++++
->  5 files changed, 25 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-> index 19f92affc2da..8d6c2633698b 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-> @@ -302,7 +302,7 @@ static int verify_xsk_metadata(struct xsk *xsk, bool sent_from_af_xdp)
->  
->  	/* custom metadata */
->  
-> -	meta = data - sizeof(struct xdp_meta);
-> +	meta = data - XDP_METADATA_SIZE;
->  
->  	if (!ASSERT_NEQ(meta->rx_timestamp, 0, "rx_timestamp"))
->  		return -1;
-> diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> index 330ece2eabdb..72242ac1cdcd 100644
-> --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> @@ -27,6 +27,7 @@ extern int bpf_xdp_metadata_rx_vlan_tag(const struct xdp_md *ctx,
->  SEC("xdp.frags")
->  int rx(struct xdp_md *ctx)
->  {
-> +	int metalen_used, metalen_to_adjust;
->  	void *data, *data_meta, *data_end;
->  	struct ipv6hdr *ip6h = NULL;
->  	struct udphdr *udp = NULL;
-> @@ -72,7 +73,14 @@ int rx(struct xdp_md *ctx)
->  		return XDP_PASS;
->  	}
->  
-> -	err = bpf_xdp_adjust_meta(ctx, -(int)sizeof(struct xdp_meta));
+On Tue, Jul 1, 2025 at 6:25=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Jun 30, 2025 at 6:28=E2=80=AFAM Matt Fleming <mfleming@cloudflare=
+.com> wrote:
+> >
+> > On Fri, 27 Jun 2025 at 20:36, Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > Good. Now you see my point, right?
+> > > The cond_resched() doesn't fix the issue.
+> > > 1hr to free a trie of 100M elements is horrible.
+> > > Try 100M kmalloc/kfree to see that slab is not the issue.
+> > > trie_free() algorithm is to blame. It doesn't need to start
+> > > from the root for every element. Fix the root cause.
+> >
+> > It doesn't take an hour to free 100M entries, the table showed it
+> > takes about a minute (67 or 62 seconds).
+>
+> yeah. I misread the numbers.
+>
+> > I never claimed that kmalloc/kfree was at fault. I said that the loop
+> > in trie_free() has no preemption, and that's a problem with tries with
+> > millions of entries.
+> >
+> > Of course, rewriting the algorithm used in the lpm trie code would
+> > make this less of an issue. But this would require a major rework.
+> > It's not as simple as improving trie_free() alone. FWIW I tried using
+> > a recursive algorithm in trie_free() and the results are slightly
+> > better, but it still takes multiple seconds to free 10M entries (4.3s)
+> > and under a minute for 100M (56.7s). To fix this properly it's
+> > necessary to use more than two children per node to reduce the height
+> > of the trie.
+>
+> What is the height of 100m tree ?
+>
+> What kind of "recursive algo" you have in mind?
+> Could you try to keep a stack of nodes visited and once leaf is
+> freed pop a node and continue walking.
+> Then total height won't be a factor.
+> The stack would need to be kmalloc-ed, of course,
+> but still should be faster than walking from the root.
+>
+> > And in the meantime, anyone who uses maps with millions
+> > of entries is gonna have the kthread spin in a loop without
+> > preemption.
+>
+> Yes, because judging by this thread I don't believe you'll come
+> back and fix it properly.
+> I'd rather have this acute pain bothering somebody to fix it
+> for good instead of papering over.
 
-[..]
-
-> +	metalen_used = ctx->data - ctx->data_meta;
-
-Is the intent here to query how much metadata has been consumed/reserved
-by the driver? Looking at IGC it has the following code/comment:
-
-	bi->xdp->data += IGC_TS_HDR_LEN;
-
-	/* HW timestamp has been copied into local variable. Metadata
-	 * length when XDP program is called should be 0.
-	 */
-	bi->xdp->data_meta += IGC_TS_HDR_LEN;
-
-Are you sure that metadata size is correctly exposed to the bpf program?
-
-My assumptions was that we should just unconditionally do bpf_xdp_adjust_meta
-with -XDP_METADATA_SIZE and that should be good enough.
+I think we need both anyway just for the reason we need something to
+backport to stable. A full re-implementation of trie might be viewed
+as a new feature, but older kernels need to be "fixed" as well.
 
