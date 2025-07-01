@@ -1,86 +1,95 @@
-Return-Path: <bpf+bounces-61993-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61994-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E63A7AF03B5
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 21:24:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB27DAF03F7
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 21:39:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C62467A5D3D
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 19:23:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 984E24443F6
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 19:39:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD37F283FCC;
-	Tue,  1 Jul 2025 19:24:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D814127EFFF;
+	Tue,  1 Jul 2025 19:39:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PnRxjP8q"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 731341D07BA;
-	Tue,  1 Jul 2025 19:24:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 620B74690
+	for <bpf@vger.kernel.org>; Tue,  1 Jul 2025 19:39:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751397861; cv=none; b=ALP4dV2yMsKINlTttT9gmBYgifJ0Q+qWaup80lW58/c2WCt2iTp+CQ1MzYTqoPVHWDxcZQNLiD1JOTnaApiEtfnEWpBTGTA3ZP67ZZLvAHVZqmp6mXnnN/UnPPvsc8zh3qIBiS503LEQpoKaC9LZqY8cqeiG/oCpf+YIVeq3qew=
+	t=1751398785; cv=none; b=MB7qiIjJkrt7YP7/S9igwOdyAy1oUaTP3XH1ENZVizSTRtHZPUNk5+W95iLrUWnObGHYcWOIgAUiar141Heh9Gb/0q2eT8K0z++9tnL2sfiGGsKS08oPJ/dT+8X+6p8z2n2cxkoyQEr0QZ3tv6z+Jxi6ekBaEPuFt0CgHp2BkUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751397861; c=relaxed/simple;
-	bh=bbsyQ/dzCNhDdQNt8tsoVa3EfNwDRY37udY0mb8ftvU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oKm56g1oIUWIkytUntJ5bV2iUiUzknGUI6rmBuRRGdBBHDkIdBw8lX3g0SDM0Ya+MczAXwoZvWcJbPhIDZFdlAPJ8FIxELMKr7mEQPL72OfsvIIDn+0hlqgAhLUPezHVcY/eDSkzVYjmCfCGsiX7pWGt2RjKbLhByiGAF9T62KQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf13.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay05.hostedemail.com (Postfix) with ESMTP id 82B7059E61;
-	Tue,  1 Jul 2025 19:24:16 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf13.hostedemail.com (Postfix) with ESMTPA id 13F9120013;
-	Tue,  1 Jul 2025 19:24:11 +0000 (UTC)
-Date: Tue, 1 Jul 2025 15:24:49 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org, x86@kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Thomas
- Gleixner <tglx@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, Indu
- Bhagat <indu.bhagat@oracle.com>, "Jose E. Marchesi" <jemarch@gnu.org>, Beau
- Belgrave <beaub@linux.microsoft.com>, Jens Remus <jremus@linux.ibm.com>,
- Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton
- <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>, Florian Weimer
- <fweimer@redhat.com>, helpdesk@kernel.org
-Subject: Re: [PATCH v12 00/11] perf: Support the deferred unwinding
- infrastructure
-Message-ID: <20250701152449.56c35b8b@gandalf.local.home>
-In-Reply-To: <20250701151715.5eb5f8b9@batman.local.home>
-References: <20250701180410.755491417@goodmis.org>
-	<20250701151715.5eb5f8b9@batman.local.home>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1751398785; c=relaxed/simple;
+	bh=36sEzcbgqorMu4VHtS8FICH1sZaknYLwEs83gwqYRNk=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=OQQuVZMMXCyOyjTUFn+H+6QAghtjpOlkdaY+KIgDM+N2hCQ5ZR1YY++O5yJnDXnH61Z2geO6RHcTyV23SL+QNcuBYUWe6FjJr/O5LD2wftRirXirhEbOqGtMNKPRbv9Z/qeKImTbS564cmFqyVEYFQluIHDgtLoQed6edojL3jI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PnRxjP8q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBF12C4CEEB;
+	Tue,  1 Jul 2025 19:39:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1751398784;
+	bh=36sEzcbgqorMu4VHtS8FICH1sZaknYLwEs83gwqYRNk=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=PnRxjP8qoQsIdg06fMbCMhxuqFmKMM57jtMAhOQDS6LqdOAjCkKUs4m3pOYTS52Ov
+	 KjaM17G0Zew+0MJ6asRl0n5uQ+h4WhUwRjvP+CS6zRjjq7bmMkFHkqsBkAncxvnykV
+	 wunnf4XJjPqsLGGoSHSP5inwjKpfiRYyHX/xm5wRVqDTmZH6kgxIEyuLD5Fv2IT71h
+	 +Yurgu81gnX0rL7P6etNcDJFB/t1yydgMAylEMeaSefumFnVlYutDV+5TQyqWO6wh9
+	 9t+1nOVSf9p81eHKmWm/yjjHlIo7m+yIb3lEJQcrgq5PJq35SO2kt0nL71H6ggz17k
+	 c41eQIjcxFa1g==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB22E383B273;
+	Tue,  1 Jul 2025 19:40:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 13F9120013
-X-Rspamd-Server: rspamout02
-X-Stat-Signature: f16epqm7ayjc4nchsiamsnphki9thd7q
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX18z9Wt4Xp5tX4kB0WUnKWDnmPRT5fe3b08=
-X-HE-Tag: 1751397851-344992
-X-HE-Meta: U2FsdGVkX1+NwsUdo3DnvQwvY56yivMEdkcFC19wS01JYX5B6+rBXkacYKW9WTD1whQRVQ2rZb6ZpO8e4ajNARyQNGio91RFmLEPhKx7g1yhMaryC03pFv1kCEWlo6tD00syhZewPQaBw5SEhRJ5x4uV3yIjgkSn/Do5+HG0SqDbgl4RL2EtYe14Ndd0ZSqDAUiVjEg15Rqx9C5HW1SHloHkw0Kfo3QqKU8ZJWSazhriFcO2q5/4wxekSOrh5reCFmG5MGAFh2ZLjeMuk7OLFx1IwvXrHp1aafK+noDohwfW6UpXuvjxYTDqRQhHY9hq06ywwBc8r06XbNtd/zlkiLdiMCCUuCEwHzS/5/JSCE8vm2GP8Sd/zIAuBGJyfMTx
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next 0/2] s390/bpf: Describe the frame using a struct
+ instead of constants
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175139880976.96566.10786130017975344416.git-patchwork-notify@kernel.org>
+Date: Tue, 01 Jul 2025 19:40:09 +0000
+References: <20250624121501.50536-1-iii@linux.ibm.com>
+In-Reply-To: <20250624121501.50536-1-iii@linux.ibm.com>
+To: Ilya Leoshkevich <iii@linux.ibm.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ bpf@vger.kernel.org, hca@linux.ibm.com, gor@linux.ibm.com,
+ agordeev@linux.ibm.com
 
-On Tue, 1 Jul 2025 15:17:15 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Hello:
 
-> Hmm, patches 5-11 seemed to be dropped, and I sent out 12 patches of
-> the latest sframe work that I can't find anywhere. I think my ISP is
-> thinking I'm spamming so it dropped the emails. That's all I can figure.
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Hah! After I write this, my patches start showing up! :-p
+On Tue, 24 Jun 2025 14:04:26 +0200 you wrote:
+> Hi,
+> 
+> This series contains two small refactorings without functional changes.
+> 
+> The first one removes the code duplication around calculating the
+> distance from %r15 to the stack frame.
+> 
+> [...]
 
-OK, no resend.
+Here is the summary with links:
+  - [bpf-next,1/2] s390/bpf: Centralize frame offset calculations
+    https://git.kernel.org/bpf/bpf-next/c/b2268d550d20
+  - [bpf-next,2/2] s390/bpf: Describe the frame using a struct instead of constants
+    https://git.kernel.org/bpf/bpf-next/c/e26d523edf2a
 
--- Steve
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
