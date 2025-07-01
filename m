@@ -1,169 +1,152 @@
-Return-Path: <bpf+bounces-61960-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61961-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D596AEFFAD
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 18:25:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98B3AAEFFAA
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 18:25:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D8D051887A63
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 16:24:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3FB216A778
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 16:25:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8678A2798EF;
-	Tue,  1 Jul 2025 16:23:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18FB527C162;
+	Tue,  1 Jul 2025 16:25:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ERfIN8og"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RGaaHLIs"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED2F01E502;
-	Tue,  1 Jul 2025 16:23:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0021D27935A;
+	Tue,  1 Jul 2025 16:25:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751387024; cv=none; b=YD51Ru6QcU3KDY6rQcMA+OM4+cZssJDgvQdVH1rB/Q4Lj2gDl3+/RPdAT3TVfED546jkXfYG8DTHzOx+RHAe3UnqU4ynqMG6DBOWzcFi9MVaVZ/hcfRK12UEJJX/rggJwOzF9UN+QPKHyNAqGcEPhudaTII0ShE1QMKbgLOYtyc=
+	t=1751387117; cv=none; b=HBzRkv32iYY4zxgaeVOwJRB6kO+l8WjUWCR6lTLkVGOihA3FzomhMjuc0k1uM2VrlPt0cbbm8RjwTvXL3guQL6+sjRrt56TJ2wtjpD1j3ZPKt9CcNKihH81s/mjKmU7jTsUssy80b0/tw1hQo7iesbBpfJwIcoRAKQyI5zFrqPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751387024; c=relaxed/simple;
-	bh=zLFJiUp306D50BbDU6KAinugtteiVzfyb16LXOsRAPg=;
+	s=arc-20240116; t=1751387117; c=relaxed/simple;
+	bh=5wzV07OONkCcGVSYEmRpzbVKPetUPjrh4BiFdFLy65Q=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EipbXtQY5pQWe7RRgUOKbzHNTNi0FDhNvZVf02UecjKXqUBRoXC+xp/xjK6QtiomUoTM3JNZpzUA+Do5JoL+R+tk0lQaiZPUADJFF2DhijSsotCT5nx7BKxCUTb9NldCdAa7IvlgD5gHMjVHs9zp7YXa51Xh+JrtGZbBq/sxDKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ERfIN8og; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F844C4CEF3;
-	Tue,  1 Jul 2025 16:23:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751387022;
-	bh=zLFJiUp306D50BbDU6KAinugtteiVzfyb16LXOsRAPg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=ERfIN8og9ztGMSxGVvuulm+OTF4o6qq9o/NCIiIPn5cAqpTHTb8zSK0rRvuY/7oWi
-	 IDn4/UsOvG3ui7jq/MPU51G3JzJgLyQ/wzMjv1befpZF4RVbzJqD1XzPjT/n/SjeFS
-	 C1foDWkH5CzX9MAMQ3hRok+wlCbzwegP34YjZQzfyGt3fyHKHJeRIAPxOyeW5JuD9x
-	 hT1Y/TEwaKD/dy+Ge9wuyDBKbRibCZZLfEENKmujA4B4xVxK1hAh9o3GDKVaySkYxN
-	 K0aUPwg3sVyH+aaKwg4lE1ltn6LB9BnyhzOPDf9SMcI9rUk28bWodSrw+PwhvWg0PP
-	 9n95qeWsrRL2A==
-Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-701046cfeefso32435276d6.2;
-        Tue, 01 Jul 2025 09:23:42 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWllDMPZPZwd5dzTlQULIr/VFv481vFeySaDRVjJ4+Wwr8RTpxMVNT2CQfgZsd6aaS+/PMpTKqalh+7I03EHc0SPqdKf2Wm@vger.kernel.org, AJvYcCX5v65H6RyfElKC9FJvoIAmH8V1QmwAMd2IYhUGZPnalrpTLDdvNQ7mVLDnlHQxsaZvZiylaRNz9blTsDit6w==@vger.kernel.org, AJvYcCXh3i0pYuqFq1xQ/QaeKVWaaMxq5orhWphqZHSWZOkPJLTAzLE3izoK4IZZiJKSf95WZRrJmYRxR6iUVzxQ@vger.kernel.org, AJvYcCXq8RbhRL9QPMMx24tyjxIJiH/bevS1Fcsjr37MNWTnqQMU0tPlMGALqtHU+Mrf4GscqH8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz4gtDOdJ1ec8lUDtpGMNy21SE0twuAQCjXI7nLM8oRdGD/udoB
-	j/kQKGjA6v3truONuyK34WatPlFgFbo/76SYKPCl7BItYulcP5HPF/+1W1YaZ5PYQKRzA0OXO70
-	dntQgrdEMhrN7RdPahjZvsNRLm9PVg8s=
-X-Google-Smtp-Source: AGHT+IEmOXLvDsXavGbzXpIGcLoe4Fk91A1Xta3xcwv/BTc1hYncD23gPsD76c7Rtk9rCiquNg45T40IBOlQvX3JYbg=
-X-Received: by 2002:a05:6214:4b10:b0:701:894:2b91 with SMTP id
- 6a1803df08f44-70108942c74mr97689136d6.14.1751387021541; Tue, 01 Jul 2025
- 09:23:41 -0700 (PDT)
+	 To:Cc:Content-Type; b=pN0OpyOS48Kj1KGWuHAWXVfye6YrHLw9Aq8ztTiyWSrfUpPbIG+BcST/LHIJM6QZtbNWhEXqkaATnQtw2rW1BVJd8NavKQSKf474LT90grRSYi+/nBX0+E+mzba0lNmtOuqV1z2eZoladzlNoG0eZn2oCNMVs9pGua6MAab69+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RGaaHLIs; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-45363645a8eso41118515e9.1;
+        Tue, 01 Jul 2025 09:25:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1751387114; x=1751991914; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5wzV07OONkCcGVSYEmRpzbVKPetUPjrh4BiFdFLy65Q=;
+        b=RGaaHLIseCOWHPK71dnsnVSEeZPJiUEMFgCX5H/nCRjoFTiYFM3ItTnuPHk5E2vK1Q
+         +KSEMw1ORE8Y3sPnGIegXhodOVzBxtBvo48M/QgGyPT26tM5g5RSMpHIDKI1mdORAv00
+         vWkhPKongMnVqZacWHUufMxEbcQKaXWcbfuPo40Wa1y3hnBbI8essJ3vrBOnPD+vadeq
+         cGS2S5NAoNyc4+nHWJpJjXkcvCzmQFRRZZHtlwBmw2TFS/VjPH5PALJk9R7gaI64Knnb
+         qcDmBXn6g95wPIZ4cbaFBFVsNr0LgN/NwsmbpY32I5FXMpznVB2yN+f0n8ezEEfTJP2T
+         6Awg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751387114; x=1751991914;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5wzV07OONkCcGVSYEmRpzbVKPetUPjrh4BiFdFLy65Q=;
+        b=dZXJwhd/dv1QsnLfu07p1tA8P5RImAe/Y9zrGpanUQfcAyDSUQh0W9dMFzoTKo3hLo
+         5/xYwtx6xspG1LqsRfIVfBHmYU/zao/ki5eOy0PjV0JQSL97iIfSwxfUMNls0s8yRUtQ
+         uQGxl7/2PW4JjxLrwfONfUynGra4GK1b6h1cUrlP48IKhY01+XAIHp72mTH1FclxyA5A
+         QujsIvR12O9BuM6b+TwBcSbtw4qrIPXxuYOpSgLwoXA3aXc7Tr/AX3Jt0vn63XNvmdqD
+         D4UAe2VxHdv16dTXuLDqfU4AVDZqGZkEKQzvZ4X9w8EF21AVdbHMtUZLHRUj6KDkt1zL
+         jeng==
+X-Forwarded-Encrypted: i=1; AJvYcCWQJyZsF+zWzumR0zZciX66dvJyAylHvAudfVgKSnbf7/hIkzWqvUQ/SQElMevyCqndwsOzRlOv09OydZJC@vger.kernel.org, AJvYcCX/v4YelcGDZrfDmoEf9w5h8+JM8hLfNk7f8WmeuVsV60/rYlvu2GfM6YhpvEE33WqjcGY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw5vC+5dj5/hBmow8TRsNX0ACwwD7+QwX34ggkig9csrcDaZz/2
+	SWds+Dcb/cRG5YuZdad/rZrp7KnXSQBQ70pZAQ2cLRcttSdzdk6sl0qCM/C0BNQGc8XP69s6d76
+	SwOZInA3unlT7vrxlWkdg9EfxXAdQ1oA=
+X-Gm-Gg: ASbGncvkWszU5Qi3W2KE8ypeuIGpXWH9pQ23xhix4czgbj2uPhXfxWXNZ90rl73PpGn
+	hiIJyxfkQWHM6duVz+EEIheIDjC1H5g+4xP0oOxj14a2Ch+KyMfijSeN/tsxQhtidI5WO2RqCq8
+	rBxVFUahtiXVRc2cZp3HOe2djVQh1L7yv2848QO9OgABx99EI/X6NPwtH8pUI=
+X-Google-Smtp-Source: AGHT+IGrbRuO8nnh6J7e2fn2C9dp4PIQ8S2KOPjswAGJgv02hKqPZh/BsJ/5lrQamHMIxxw8q9iaIkK1Xqmf/umPzGI=
+X-Received: by 2002:a05:600c:a11b:b0:453:5d8d:d1b8 with SMTP id
+ 5b1f17b1804b1-4538ee712f5mr157779215e9.30.1751387113839; Tue, 01 Jul 2025
+ 09:25:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250623063854.1896364-1-song@kernel.org> <20250623-rebel-verlust-8fcd4cdd9122@brauner>
- <CAADnVQ+iqMi2HEj_iH7hsx+XJAsqaMWqSDe4tzcGAnehFWA9Sw@mail.gmail.com>
- <CAPhsuW7JAgXUObzkMAs_B=O09uHfhkgSuFV5nvUJbsv=Fh8JyA@mail.gmail.com>
- <CAADnVQKNR1QES31HPNriYBAzmoxdG=sWyqwvDTtthROgezah3w@mail.gmail.com>
- <6230B3E5-E6B7-4D79-B3A4-9A250B19B242@meta.com> <20250701-zipfel-sachlage-c494f4e0df91@brauner>
-In-Reply-To: <20250701-zipfel-sachlage-c494f4e0df91@brauner>
-From: Song Liu <song@kernel.org>
-Date: Tue, 1 Jul 2025 09:23:30 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW5Afn7h5W4+ZY-Ly=y55ByXd3TCXej3PXUYkBcj89X7mw@mail.gmail.com>
-X-Gm-Features: Ac12FXwoxUXF1BftxcJoa-MPjmMFWSZnTYLkoVIX0gjJZQj2RBiSmVgBhwZCHbw
-Message-ID: <CAPhsuW5Afn7h5W4+ZY-Ly=y55ByXd3TCXej3PXUYkBcj89X7mw@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 0/4] Introduce bpf_cgroup_read_xattr
-To: Christian Brauner <brauner@kernel.org>
-Cc: Song Liu <songliubraving@meta.com>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Kernel Team <kernel-team@meta.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard <eddyz87@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
-	KP Singh <kpsingh@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>, 
-	Amir Goldstein <amir73il@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Tejun Heo <tj@kernel.org>, Daan De Meyer <daan.j.demeyer@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	LSM List <linux-security-module@vger.kernel.org>
+References: <20250616095532.47020-1-matt@readmodwrite.com> <CAPhsuW4ie=vvDSc97pk5qH+faoKjz+b51MDYGA3shaJwNd677Q@mail.gmail.com>
+ <CAENh_SQPLHC8pswTRoqh0bQR84HHQmnO3bM07UQa1Xu9uY_3WA@mail.gmail.com>
+ <CAADnVQ+QyPqi7XJ2p=S9FVDbOxMXvVPU859n+2ApuRQv5T2S5w@mail.gmail.com>
+ <CAENh_SQgZ5yVpshKRhiezhGMDAMvgV7SmwD_8u++mACE33oNrg@mail.gmail.com>
+ <CAADnVQJgOyBCCySnBkTk-VCsz0dy+ppdGHpggxbtDpBBGhaXVg@mail.gmail.com>
+ <CALrw=nFvUwmpjUMYh5iJqjo6SbAO8fZt8pkys7iDjZHfpF2DxQ@mail.gmail.com>
+ <CAADnVQLC44+D-FAW=k=iw+RQA057_ohTdwTYePm5PVMY-BEyqw@mail.gmail.com>
+ <CAENh_SSduKpUtkW_=L5Gg0PYcgDCpkgX4g+7grm4kxucWmq0Ag@mail.gmail.com>
+ <CAADnVQ+_UZ2xUaV-=mb63f+Hy2aVcfC+y9ds1X70tbZhV8W9gw@mail.gmail.com> <CAGis_TUNfUOD3+GdbJn1U33W8wW5pWmASxiMa5e5+5-BqJ-PKw@mail.gmail.com>
+In-Reply-To: <CAGis_TUNfUOD3+GdbJn1U33W8wW5pWmASxiMa5e5+5-BqJ-PKw@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 1 Jul 2025 09:25:00 -0700
+X-Gm-Features: Ac12FXwru2RjEeaSQs6NLU8YH1f68FRveHhLdYSTc7Dp87lT_tm2nHkVaU2Cv1A
+Message-ID: <CAADnVQJp-AtrRj_XESbE5TUj6_dGNDwpRWwu2vEHv1HGOb4Fdw@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Call cond_resched() to avoid soft lockup in trie_free()
+To: Matt Fleming <mfleming@cloudflare.com>
+Cc: Matt Fleming <matt@readmodwrite.com>, Ignat Korchagin <ignat@cloudflare.com>, 
+	Song Liu <song@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	kernel-team <kernel-team@cloudflare.com>, Jesper Dangaard Brouer <hawk@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 1, 2025 at 1:32=E2=80=AFAM Christian Brauner <brauner@kernel.or=
-g> wrote:
+On Mon, Jun 30, 2025 at 6:28=E2=80=AFAM Matt Fleming <mfleming@cloudflare.c=
+om> wrote:
 >
-> On Fri, Jun 27, 2025 at 04:20:58PM +0000, Song Liu wrote:
+> On Fri, 27 Jun 2025 at 20:36, Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> >
-> > > On Jun 27, 2025, at 8:59=E2=80=AFAM, Alexei Starovoitov <alexei.staro=
-voitov@gmail.com> wrote:
-> > >
-> > > On Thu, Jun 26, 2025 at 9:04=E2=80=AFPM Song Liu <song@kernel.org> wr=
-ote:
-> > >>
-> > >> On Thu, Jun 26, 2025 at 7:14=E2=80=AFPM Alexei Starovoitov
-> > >> <alexei.starovoitov@gmail.com> wrote:
-> > >> [...]
-> > >>> ./test_progs -t lsm_cgroup
-> > >>> Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
-> > >>> ./test_progs -t lsm_cgroup
-> > >>> Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
-> > >>> ./test_progs -t cgroup_xattr
-> > >>> Summary: 1/8 PASSED, 0 SKIPPED, 0 FAILED
-> > >>> ./test_progs -t lsm_cgroup
-> > >>> test_lsm_cgroup_functional:PASS:bind(ETH_P_ALL) 0 nsec
-> > >>> (network_helpers.c:121: errno: Cannot assign requested address) Fai=
-led
-> > >>> to bind socket
-> > >>> test_lsm_cgroup_functional:FAIL:start_server unexpected start_serve=
-r:
-> > >>> actual -1 < expected 0
-> > >>> (network_helpers.c:360: errno: Bad file descriptor) getsockopt(SOL_=
-PROTOCOL)
-> > >>> test_lsm_cgroup_functional:FAIL:connect_to_fd unexpected
-> > >>> connect_to_fd: actual -1 < expected 0
-> > >>> test_lsm_cgroup_functional:FAIL:accept unexpected accept: actual -1=
- < expected 0
-> > >>> test_lsm_cgroup_functional:FAIL:getsockopt unexpected getsockopt:
-> > >>> actual -1 < expected 0
-> > >>> test_lsm_cgroup_functional:FAIL:sk_priority unexpected sk_priority:
-> > >>> actual 0 !=3D expected 234
-> > >>> ...
-> > >>> Summary: 0/1 PASSED, 0 SKIPPED, 1 FAILED
-> > >>>
-> > >>>
-> > >>> Song,
-> > >>> Please follow up with the fix for selftest.
-> > >>> It will be in bpf-next only.
-> > >>
-> > >> The issue is because cgroup_xattr calls "ip link set dev lo up"
-> > >> in setup, and calls "ip link set dev lo down" in cleanup. Most
-> > >> other tests only call "ip link set dev lo up". IOW, it appears to
-> > >> me that cgroup_xattr is doing the cleanup properly. To fix this,
-> > >> we can either remove "dev lo down" from cgroup_xattr, or add
-> > >> "dev lo up" to lsm_cgroups. Do you have any preference one
-> > >> way or another?
-> > >
-> > > It messes with "lo" without switching netns? Ouch.
-> >
-> > Ah, I see the problem now.
-> >
-> > > Not sure what tests you copied that code from,
-> > > but all "ip" commands, ping_group_range, and sockets
-> > > don't need to be in the test. Instead of triggering
-> > > progs through lsm/socket_connect hook can't you use
-> > > a simple hook like lsm/bpf or lsm/file_open that doesn't require
-> > > networking setup ?
-> >
-> > Yeah, let me fix the test with a different hook.
+> > Good. Now you see my point, right?
+> > The cond_resched() doesn't fix the issue.
+> > 1hr to free a trie of 100M elements is horrible.
+> > Try 100M kmalloc/kfree to see that slab is not the issue.
+> > trie_free() algorithm is to blame. It doesn't need to start
+> > from the root for every element. Fix the root cause.
 >
-> Where's the patch?
+> It doesn't take an hour to free 100M entries, the table showed it
+> takes about a minute (67 or 62 seconds).
 
-Here is a fix to kernel/bpf/helprs.c by Eduard:
-https://lore.kernel.org/bpf/20250627175309.2710973-1-eddyz87@gmail.com/
+yeah. I misread the numbers.
 
-This fix addresses build errors with certain config.
+> I never claimed that kmalloc/kfree was at fault. I said that the loop
+> in trie_free() has no preemption, and that's a problem with tries with
+> millions of entries.
+>
+> Of course, rewriting the algorithm used in the lpm trie code would
+> make this less of an issue. But this would require a major rework.
+> It's not as simple as improving trie_free() alone. FWIW I tried using
+> a recursive algorithm in trie_free() and the results are slightly
+> better, but it still takes multiple seconds to free 10M entries (4.3s)
+> and under a minute for 100M (56.7s). To fix this properly it's
+> necessary to use more than two children per node to reduce the height
+> of the trie.
 
-Here is my fix to the selftests:
-https://lore.kernel.org/bpf/20250627191221.765921-1-song@kernel.org/
+What is the height of 100m tree ?
 
-I didn't CC linux-fsdevel because all the changes are in the
-selftests, and the error is independent of the new code.
+What kind of "recursive algo" you have in mind?
+Could you try to keep a stack of nodes visited and once leaf is
+freed pop a node and continue walking.
+Then total height won't be a factor.
+The stack would need to be kmalloc-ed, of course,
+but still should be faster than walking from the root.
 
-Thanks,
-Song
+> And in the meantime, anyone who uses maps with millions
+> of entries is gonna have the kthread spin in a loop without
+> preemption.
+
+Yes, because judging by this thread I don't believe you'll come
+back and fix it properly.
+I'd rather have this acute pain bothering somebody to fix it
+for good instead of papering over.
 
