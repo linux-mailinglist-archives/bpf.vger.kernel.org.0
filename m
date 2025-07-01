@@ -1,206 +1,222 @@
-Return-Path: <bpf+bounces-62016-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62017-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F8CBAF059D
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 23:29:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34068AF0628
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 00:03:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBB89189AA59
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 21:29:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59D9E1682C1
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 22:03:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DC752EBDC7;
-	Tue,  1 Jul 2025 21:28:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E786C283FF6;
+	Tue,  1 Jul 2025 22:02:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EnRfXEjV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QpGoq7zx"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DADDB1C84C5;
-	Tue,  1 Jul 2025 21:28:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA9F32701BF;
+	Tue,  1 Jul 2025 22:02:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751405339; cv=none; b=DLfROeYkZ6kHGXTQUHb9mvZZ0gz/OQO8mkjPCDAk5JRSuxwV8ptnEta4sOVptzTyKM52ZC3TBnvZBUFVLSazL27Vanx26e1KPiXPQVHPEBkpGGz9SbyVrbhpEOP2EPKnYSdklf2GH6FwOzkcTLaHxS/LrK0rwNHzhL5PnpVd8Ts=
+	t=1751407368; cv=none; b=H7ed26CIzrW4ST+ttSWzlDShlDxdp7u3jjUgD2aUuWJU+iffOn+MorliFJy2586OG0t3Pg/r87Zi5kt3Ou+pqC2cFvJzJaGK3bjBwBDJaWYAwqs9D6kx2aDEt2liRdQ3K7jiCNKRQ3e3fNZzyBlOMLLBEEFm3Z6Zp3wAonSRmGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751405339; c=relaxed/simple;
-	bh=/jVcLgbFbY496RecZHjcYFJ5MP92f9ISj2CZ1yQpfCk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bXhbVds9abz95gUsd9SAOiMSKiV4JyqwL1Qh4LKuKAAHEhxcY/NDxorjb2PKyK/P9Jin9a/uzEFRfxiNXwPcRQh1GD3eqa1GzBpAsR5HIA+AkCS2OJaTBKupgjEzwVUo33RM657MS8yVtV+wC8StrYPZAt10I0kaZh34MPzpxzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=EnRfXEjV; arc=none smtp.client-ip=91.218.175.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <646c1c27-b940-4ece-aa0f-dbeea8aa7de3@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1751405324;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sngN7YcO9+y3E2gnnJ9PKRXKEzOYBz6zNjasxjsvxhs=;
-	b=EnRfXEjVSZSFqcEn8DhHCyH84Dc3RopQfQ7PTpE57WL3UpYf+VFli49oUOTqsqiETUvs98
-	UFdgMKr6Gftx/Zm2eMsPjkzAVUGDf5T94ECSQgfokDgutuqkk7JaseJ1V3Ru924Jzl24Tm
-	zbpK5LD7QuKUkJbXn0B+4VOwUxNaZtE=
-Date: Tue, 1 Jul 2025 14:28:35 -0700
+	s=arc-20240116; t=1751407368; c=relaxed/simple;
+	bh=+EWo1IV1Nxghx5uBib2VgI7eqITXvt6I5GC91/msG0Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DGz793uGjBs7h85fwBSdp01BgiGeANDCjxoLBW0/fXRNg9i8JxLiPEtBOqX7OfGVFfH1x9U0aXTYHNQtOOS4skuUp7Vkd51KX9B8QzcCdRzTihO+QBzctIwVtxwFIKy5i6OkxaU7hR49t3cFI3ezcGR9+3sMURXk6zh/l1cZZIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QpGoq7zx; arc=none smtp.client-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-b34a71d9208so2927519a12.3;
+        Tue, 01 Jul 2025 15:02:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1751407366; x=1752012166; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ipqAfj+VImfOizkjeS1uIf3zYEp2I/r368gzeOpHRCQ=;
+        b=QpGoq7zxDTeqz0/ldSIcI0iBWISNbFdo14kvFXN7R8IiSIK6aFfy3iL522S0mLrw0F
+         uXYh+vlANjIpC88BcDn5P2CLUMfitEJ6U+3tBDt9wEL9iizbyF4v0hy7CPx3GCLOJkf/
+         o9jpv8FliehOauKWArY7olYVOyF7wfZicUolj5xfI8rF8efId/C5uYuhSnlpCsWA9fYn
+         r9f/2rb2DEARxrUBAJuVwepqWvUkYYp24AhaYEJkpYvG2Q3HvTP9HuzVrWKv+VCR8lHu
+         pgf9mIBCSECaDP6J6f5c1es882up2mkKC1r/Csra6AUq+N+qQt+wySGUa1PapAd1Cm1X
+         Vsrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751407366; x=1752012166;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ipqAfj+VImfOizkjeS1uIf3zYEp2I/r368gzeOpHRCQ=;
+        b=qcAtqeYpojY7KV4ebWa8TVtztJ0NAshy1PfrURDrALwGTmf3QEMZIXEFtDBMwkFnqV
+         pr6G1hSiYVaxHw3t2RX1pFNjHHc6bwwJ58GozZnMRw4pxxphXl/wQRVPFYEoERFceWJF
+         PSbAPvezjZpQvQVhcyRsL8/UeRpl5oo5ESO4J9QWq7yCUGeUiugJin4pxPZSg3H+KdQt
+         4iisfgZvf2uI3psWQ7m+y2KUbtjSNbBGd9pasjNMGSBCVshOMht0XfpUCIIAzfeknU8y
+         69J/Rb6IambexOVZ4WltnaoEz+T1etZ/mkNlTrWGX2DEnA7WUicwWRGt8JHk6zcSClE8
+         xUsA==
+X-Forwarded-Encrypted: i=1; AJvYcCXfUGEJqIcWvPhiHz9pBRpCCf+OT7rTFzDxmiA/Ls/Fx35ndacYWMky6vcKCJrrZuWfp1FoGDw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx5eAEc4h+T1hluTzaxiSd7Pq96aVfMIRoV2DjvclIO3ZkoADKn
+	ZhTm+Z6LvBqj36iIhozlPbnEdDUFh/x6gzL2b9xtoT4D815Wgh3cI4cwVA6NJ0M4r1XKoGCFXD0
+	bM937NoMvKzMDvkC9B4P0I8YZ0rmO8MIO6kfZ
+X-Gm-Gg: ASbGnctY3OoGIGkyN2zU6VbSKOFS2ZrbOT7slHXsomBkcG6lknmojgstALdNRUfIGEZ
+	s/MgNvzMBAp9P7sQt7AzcEj8L6WPMcbJGYtRzPwFLD7J4fNO6oqlQgOsCkEO0m58bWTy2G9vlhG
+	KsETkzgGl62029wcRhSKLr2CHNAiVnZ6dZZIvccb3vuY8xWBfyQkjQQK8UTWs=
+X-Google-Smtp-Source: AGHT+IHwPffc7qdwnNTGRxJeO4F3cES8PkK8Bn9oH8Y69K5CGEib1I5W1o4b+bq2m29v9YD2rF39P7VKsnrY8OwoMTs=
+X-Received: by 2002:a17:90b:268e:b0:312:29e:9ec9 with SMTP id
+ 98e67ed59e1d1-31a90bed2b5mr780624a91.24.1751407365943; Tue, 01 Jul 2025
+ 15:02:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] bpf: turn off sanitizer in do_misc_fixups for old clang
-Content-Language: en-GB
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Arnd Bergmann <arnd@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Nathan Chancellor <nathan@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- John Fastabend <john.fastabend@gmail.com>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
- Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
- Kumar Kartikeya Dwivedi <memxor@gmail.com>,
- Luis Gerhorst <luis.gerhorst@fau.de>, bpf <bpf@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>, clang-built-linux <llvm@lists.linux.dev>
-References: <20250620113846.3950478-1-arnd@kernel.org>
- <CAADnVQKAT3UPzcpzkJ6_-powz4YTiDAku4-a+++hrhYdJUnLiw@mail.gmail.com>
- <361eb614-e145-49dc-aa32-12f313f61b96@linux.dev>
- <CAEf4BzahSLGiW_F4LtG1tMAb0O1b6D-kO0AcrU2O+nLKVbkvZA@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAEf4BzahSLGiW_F4LtG1tMAb0O1b6D-kO0AcrU2O+nLKVbkvZA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250627233958.2602271-1-ameryhung@gmail.com> <20250627233958.2602271-2-ameryhung@gmail.com>
+In-Reply-To: <20250627233958.2602271-2-ameryhung@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 1 Jul 2025 15:02:31 -0700
+X-Gm-Features: Ac12FXyDrFCeSylAjFka1avw9-wCtzXa9LmACjWQF9zsifZTP4QbOnjua5SsmV8
+Message-ID: <CAEf4BzYFdiQX3gz8Nd2T2cGm6NCZPzTVCRh+eh_C2gYd=cEMpA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 1/3] selftests/bpf: Introduce task local data
+To: Amery Hung <ameryhung@gmail.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
+	andrii@kernel.org, daniel@iogearbox.net, tj@kernel.org, memxor@gmail.com, 
+	martin.lau@kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Jun 27, 2025 at 4:40=E2=80=AFPM Amery Hung <ameryhung@gmail.com> wr=
+ote:
+>
+> Task local data defines an abstract storage type for storing task-
+> specific data (TLD). This patch provides user space and bpf
+> implementation as header-only libraries for accessing task local data.
+>
+> Task local data is a bpf task local storage map with two UPTRs:
+> 1) u_tld_metadata, shared by all tasks of the same process, consists of
+> the total count of TLDs and an array of metadata of TLDs. A metadata of
+> a TLD comprises the size and the name. The name is used to identify a
+> specific TLD in bpf 2) u_tld_data points to a task-specific memory region
+> for storing TLDs.
+>
+> Below are the core task local data API:
+>
+>                      User space                           BPF
+> Define TLD    TLD_DEFINE_KEY(), tld_create_key()           -
+> Get data           tld_get_data()                    tld_get_data()
+>
+> A TLD is first defined by the user space with TLD_DEFINE_KEY() or
+> tld_create_key(). TLD_DEFINE_KEY() defines a TLD statically and allocates
+> just enough memory during initialization. tld_create_key() allows
+> creating TLDs on the fly, but has a fix memory budget, TLD_DYN_DATA_SIZE.
+> Internally, they all go through the metadata array to check if the TLD ca=
+n
+> be added. The total TLD size needs to fit into a page (limited by UPTR),
+> and no two TLDs can have the same name. It also calculates the offset, th=
+e
+> next available space in u_tld_data, by summing sizes of TLDs. If the TLD
+> can be added, it increases the count using cmpxchg as there may be other
+> concurrent tld_create_key(). After a successful cmpxchg, the last
+> metadata slot now belongs to the calling thread and will be updated.
+> tld_create_key() returns the offset encapsulated as a opaque object key
+> to prevent user misuse.
+>
+> Then, user space can pass the key to tld_get_data() to get a pointer
+> to the TLD. The pointer will remain valid for the lifetime of the
+> thread.
+>
+> BPF programs can also locate the TLD by tld_get_data(), but with both
+> name and key. The first time tld_get_data() is called, the name will
+> be used to lookup the metadata. Then, the key will be saved to a
+> task_local_data map, tld_keys_map. Subsequent call to tld_get_data()
+> will use the key to quickly locate the data.
+>
+> User space task local data library uses a light way approach to ensure
+> thread safety (i.e., atomic operation + compiler and memory barriers).
+> While a metadata is being updated, other threads may also try to read it.
+> To prevent them from seeing incomplete data, metadata::size is used to
+> signal the completion of the update, where 0 means the update is still
+> ongoing. Threads will wait until seeing a non-zero size to read a
+> metadata.
+>
+> Signed-off-by: Amery Hung <ameryhung@gmail.com>
+> ---
+>  .../bpf/prog_tests/task_local_data.h          | 397 ++++++++++++++++++
+>  .../selftests/bpf/progs/task_local_data.bpf.h | 232 ++++++++++
+>  2 files changed, 629 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/task_local_dat=
+a.h
+>  create mode 100644 tools/testing/selftests/bpf/progs/task_local_data.bpf=
+.h
+>
 
+[...]
 
-On 7/1/25 1:45 PM, Andrii Nakryiko wrote:
-> On Tue, Jul 1, 2025 at 1:03 PM Yonghong Song <yonghong.song@linux.dev> wrote:
->>
->>
->> On 6/23/25 2:32 PM, Alexei Starovoitov wrote:
->>> On Fri, Jun 20, 2025 at 4:38 AM Arnd Bergmann <arnd@kernel.org> wrote:
->>>> From: Arnd Bergmann <arnd@arndb.de>
->>>>
->>>> clang versions before version 18 manage to badly optimize the bpf
->>>> verifier, with lots of variable spills leading to excessive stack
->>>> usage in addition to likely rather slow code:
->>>>
->>>> kernel/bpf/verifier.c:23936:5: error: stack frame size (2096) exceeds limit (1280) in 'bpf_check' [-Werror,-Wframe-larger-than]
->>>> kernel/bpf/verifier.c:21563:12: error: stack frame size (1984) exceeds limit (1280) in 'do_misc_fixups' [-Werror,-Wframe-larger-than]
->>>>
->>>> Turn off the sanitizer in the two functions that suffer the most from
->>>> this when using one of the affected clang version.
->>>>
->>>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->>>> ---
->>>>    kernel/bpf/verifier.c | 11 +++++++++--
->>>>    1 file changed, 9 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->>>> index 2fa797a6d6a2..7724c7a56d79 100644
->>>> --- a/kernel/bpf/verifier.c
->>>> +++ b/kernel/bpf/verifier.c
->>>> @@ -19810,7 +19810,14 @@ static int do_check_insn(struct bpf_verifier_env *env, bool *do_print_state)
->>>>           return 0;
->>>>    }
->>>>
->>>> -static int do_check(struct bpf_verifier_env *env)
->>>> +#if defined(CONFIG_CC_IS_CLANG) && CONFIG_CLANG_VERSION < 180100
->>>> +/* old clang versions cause excessive stack usage here */
->>>> +#define __workaround_kasan  __disable_sanitizer_instrumentation
->>>> +#else
->>>> +#define __workaround_kasan
->>>> +#endif
->>>> +
->>>> +static __workaround_kasan int do_check(struct bpf_verifier_env *env)
->>> This looks too hacky for a workaround.
->>> Let's figure out what's causing such excessive stack usage and fix it.
->>> We did some of this work in
->>> commit 6f606ffd6dd7 ("bpf: Move insn_buf[16] to bpf_verifier_env")
->>> and similar.
->>> Looks like it wasn't enough or more stack usage crept in since then.
->>>
->>> Also make sure you're using the latest bpf-next.
->>> A bunch of code was moved out of do_check().
->>> So I bet the current bpf-next/master doesn't have a problem
->>> with this particular function.
->>> In my kasan build do_check() is now fully inlined.
->>> do_check_common() is not and it's using 512 bytes of stack.
->>>
->>>>    {
->>>>           bool pop_log = !(env->log.level & BPF_LOG_LEVEL2);
->>>>           struct bpf_verifier_state *state = env->cur_state;
->>>> @@ -21817,7 +21824,7 @@ static int add_hidden_subprog(struct bpf_verifier_env *env, struct bpf_insn *pat
->>>>    /* Do various post-verification rewrites in a single program pass.
->>>>     * These rewrites simplify JIT and interpreter implementations.
->>>>     */
->>>> -static int do_misc_fixups(struct bpf_verifier_env *env)
->>>> +static __workaround_kasan int do_misc_fixups(struct bpf_verifier_env *env)
->>> This one is using 832 byte of stack with kasan.
->>> Which is indeed high.
->>> Big chunk seems to be coming from chk_and_sdiv[] and chk_and_smod[].
->>>
->>> Yonghong,
->>> looks like you contributed that piece of code.
->>> Pls see how to reduce stack size here.
->>> Daniel used this pattern in earlier commits. Looks like
->>> we took it too far.
->> With llvm17, I got the following error:
->>
->> /home/yhs/work/bpf-next/kernel/bpf/verifier.c:24491:5: error: stack frame size (2552) exceeds limit (1280) in 'bpf_check' [-
->> Werror,-Wframe-larger-than]
->>    24491 | int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u32 uattr_size)
->>          |     ^
->> /home/yhs/work/bpf-next/kernel/bpf/verifier.c:19921:12: error: stack frame size (1368) exceeds limit (1280) in 'do_check' [-
->> Werror,-Wframe-larger-than]
->>    19921 | static int do_check(struct bpf_verifier_env *env)
->>          |            ^
->> 2 errors generated.
->>
->> I checked IR and found the following memory allocations which may contribute
->> excessive stack usage:
->>
->> attr.coerce1, i32 noundef %uattr_size) local_unnamed_addr #0 align 16 !dbg !19800 {
->> entry:
->>     %zext_patch.i = alloca [2 x %struct.bpf_insn], align 16, !DIAssignID !19854
->>     %rnd_hi32_patch.i = alloca [4 x %struct.bpf_insn], align 16, !DIAssignID !19855
->>     %cnt.i = alloca i32, align 4, !DIAssignID !19856
->>     %patch.i766 = alloca [3 x %struct.bpf_insn], align 16, !DIAssignID !19857
->>     %chk_and_sdiv.i = alloca [1 x %struct.bpf_insn], align 4, !DIAssignID !19858
->>     %chk_and_smod.i = alloca [1 x %struct.bpf_insn], align 4, !DIAssignID !19859
->>     %chk_and_div.i = alloca [4 x %struct.bpf_insn], align 16, !DIAssignID !19860
->>     %chk_and_mod.i = alloca [4 x %struct.bpf_insn], align 16, !DIAssignID !19861
->>     %chk_and_sdiv343.i = alloca [8 x %struct.bpf_insn], align 16, !DIAssignID !19862
->>     %chk_and_smod472.i = alloca [9 x %struct.bpf_insn], align 16, !DIAssignID !19863
->>     %desc.i = alloca %struct.bpf_jit_poke_descriptor, align 8, !DIAssignID !19864
->>     %target_size.i = alloca i32, align 4, !DIAssignID !19865
->>     %patch.i = alloca [2 x %struct.bpf_insn], align 16, !DIAssignID !19866
->>     %patch355.i = alloca [2 x %struct.bpf_insn], align 16, !DIAssignID !19867
->>     %ja.i = alloca %struct.bpf_insn, align 8, !DIAssignID !19868
->>     %ret_insn.i.i = alloca [8 x i32], align 16, !DIAssignID !19869
->>     %ret_prog.i.i = alloca [8 x i32], align 16, !DIAssignID !19870
->>     %fd.i = alloca i32, align 4, !DIAssignID !19871
->>     %log_true_size = alloca i32, align 4, !DIAssignID !19872
->> ...
->>
->> So yes, chk_and_{div,mod,sdiv,smod} consumes quite some stack and
->> can be coverted to runtime allocation but that is not enough for 1280
->> stack limit, we need to do more conversion from stack to memory
->> allocation. Will try to have uniform way to convert
->> 'alloca [<num> x %struct.bpf_insn]' to runtime allocation.
->>
-> Do we need to go all the way to dynamic allocation? See env->insns_buf
-> (which some parts of this function are already using for constructing
-> instruction patch), let's just converge on that? It pre-allocates
-> space for 32 instructions, should be sufficient for all the use cases,
-> no?
+> +               /*
+> +                * Only one tld_create_key() can increase the current cnt=
+ by one and
+> +                * takes the latest available slot. Other threads will ch=
+eck again if a new
+> +                * TLD can still be added, and then compete for the new s=
+lot after the
+> +                * succeeding thread update the size.
+> +                */
+> +               if (!atomic_compare_exchange_strong(&tld_metadata_p->cnt,=
+ &cnt, cnt + 1))
+> +                       goto retry;
+> +
+> +               strncpy(tld_metadata_p->metadata[i].name, name, TLD_NAME_=
+LEN);
 
-Make sense. This is much better. Thanks!
+from man page:
 
+Warning: If there is no null byte among the first n bytes of src, the
+string placed in dest will not be null-terminated.
+
+is that a concern?
+
+> +               atomic_store(&tld_metadata_p->metadata[i].size, size);
+> +               return (tld_key_t) {.off =3D (__s16)off};
+> +       }
+> +
+> +       return (tld_key_t) {.off =3D -ENOSPC};
+
+I don't know if C++ compiler will like this, but in C just
+`(tld_key_t){-ENOSPC}` should work fine
+
+> +}
+> +
+> +/**
+> + * TLD_DEFINE_KEY() - Defines a TLD and a file-scope key associated with=
+ the TLD.
+> + *
+> + * @name: The name of the TLD
+> + * @size: The size of the TLD
+> + * @key: The variable name of the key. Cannot exceed TLD_NAME_LEN
+> + *
+> + * The macro can only be used in file scope.
+> + *
+> + * A file-scope key of opaque type, tld_key_t, will be declared and init=
+ialized before
+
+what's "file-scope"? it looks like a global (not even static)
+variable, so you can even reference it from other files with extern,
+no?
+
+> + * main() starts. Use tld_key_is_err() or tld_key_err_or_zero() later to=
+ check if the key
+> + * creation succeeded. Pass the key to tld_get_data() to get a pointer t=
+o the TLD.
+> + * bpf programs can also fetch the same key by name.
+> + *
+> + * The total size of TLDs created using TLD_DEFINE_KEY() cannot exceed a=
+ page. Just
+> + * enough memory will be allocated for each thread on the first call to =
+tld_get_data().
+> + */
+
+[...]
 
