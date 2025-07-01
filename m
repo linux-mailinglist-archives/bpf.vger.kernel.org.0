@@ -1,285 +1,1708 @@
-Return-Path: <bpf+bounces-61943-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61944-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79F0DAEEE0A
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 07:56:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1B3AAEEE15
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 08:04:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 86BFD189B441
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 05:56:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64409189BD24
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 06:04:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27FF5235047;
-	Tue,  1 Jul 2025 05:56:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="T2IrUn5V";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="YqMnEJNN"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 565B6218E99;
+	Tue,  1 Jul 2025 06:04:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E34033EC;
-	Tue,  1 Jul 2025 05:56:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751349389; cv=fail; b=Gnxtvmh0dBEWTigYGUtE+n01TJOoaWZI7tYxQyyOfYvmbwVzkuKI/7WHuIfPClfQ8PlCAtwhBbpRN2/8wLEyKCMEFKSsfqyk3HM120I9dRO/m3kIzgG7xEtT0L0DA2McOXjmtUH7hWZfcBmQW+HU69HM4uXu6ceiIp92ATGIpOQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751349389; c=relaxed/simple;
-	bh=BofRDd4EZFzJpaBMoS8JB0xZ7/YptDAhyF65cmw1lWo=;
-	h=References:From:To:Cc:Subject:In-reply-to:Date:Message-ID:
-	 Content-Type:MIME-Version; b=sz6YL3cXEnWueAJ2LQeC7+mO/kU0hr2JfEqMpl9WMLDj600Dn1+EAT6ZvP3L1HR4gvSVl7X07T+aqBpZI23Aot6tUi3Jb6nEPk1xEjIs/uSsJZ2zjaDCcdsv73vtDkMyPTyLbSTX7CfvP73u+V68xTJNrOnlcpq0ur1QFjk/66Q=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=T2IrUn5V; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=YqMnEJNN; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5611MvJn008524;
-	Tue, 1 Jul 2025 05:55:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=corp-2025-04-25; bh=Rn25lDiSkf+7yCsY34
-	lpw0FZilCKIwMC0vinjDVSWcE=; b=T2IrUn5VuVc/UnOJgDHgekmsMOjRimwGgd
-	jefQz02V8k0QQBUPIHHeQnXbqnhwk9+CsfhspdxFhIE041RAOnSsDIXJF9DbrwFJ
-	ZQKATWV9mLJJltDp8FfImMaw0wADJr5xPraNF7CnqT0HgWwU+QCJyIK+SqRL6vGu
-	rxuyBA6euP+i/HKrywmpdwGE7SyGtzNZqj4NQlVB8SCo0gGW+UA5bn86ycVK6vTI
-	Bf9BhZLn1ggxLhRNVkd50cX3DujQECb1JKXVDgro+3/TnY6G1MaYlmRvAlA7mgUa
-	cc+9T3Y93ljTOH1/ogok1MLkToEaUifehxUAujSNZ1iW495NN2Og==
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 47j766byd7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 01 Jul 2025 05:55:54 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5614l1s4009039;
-	Tue, 1 Jul 2025 05:55:54 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10on2048.outbound.protection.outlook.com [40.107.93.48])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 47j6u9af6m-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 01 Jul 2025 05:55:54 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=qJTYp9+o3k/NNi2jNQ+nl01tgacAbceJj1Z+cEVEw8sMCi05o0y4hD+adsTswLCj71ELra02CR7ZzZt03Xr8R/sXx8anZTLQc2rZ9vrnPpW5e0qCVJr67HubvK+8RCD2CzAyFqJBmH5jr/V78nl+CijbW3SQnARIBkt2dSsocpTQCaeVlbl2mjlt+uCMEFXvK/zhKDx3bjLtu/Zl7rluNX4Ixe/WHJOG0w7DiGLk0sK/7y2cjQx/QnNfB6CSP3jpx817Cc0GIZHZvL8F4ut/a8uaOl08i+CaWnzNmizKrxDtXbW1CtkAGZbdk1bDnUdyVrOEviOxha8Ikh0warmmMA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Rn25lDiSkf+7yCsY34lpw0FZilCKIwMC0vinjDVSWcE=;
- b=k0q3SGTQgvBwNHmwDzH6foT7h8kCE6NZS8LaIC1ZDHm6OQQZu5fxsxUD2t8cE4lePvGA9qcueN6Gtxp4pf1v2vb87xhPv43VfatISmVMSHrWt3oHEK8XtAA22aCqeLdK6ejccoWiQOxXEEzIxwBSFUEbhIQzQ8OBZAnp00MExnJxihlVkpUn+eEa1ux/wXXeOV+1VQOk5hpCxknrnei8FztnJ3kLihAd6dXyBNcKlRHoXBvfNg75u/dd/mMDY38RChce1ngtX0xPjaYcEde39YMhl+/eKxuHaQKF4rkohODq/jlc99u3H/3iDOFkA0SBsh47IeLN8iHrrNqLGIWNLQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Rn25lDiSkf+7yCsY34lpw0FZilCKIwMC0vinjDVSWcE=;
- b=YqMnEJNNSOhNGbzyVhkMQtUP75TEyfa9+Ie0+VEFXR5D1S/563O4QGwoZp33lhsEZfCGy3o/7YRuH4oXPFO9/JVOJQoleT7qEjmkkYxJsP3zVPa6BRBqF+yUf5zkyGqsmNJFUUqW6BcRofXuh5J96/GzKxvL8pa/HHvIxD7uFZg=
-Received: from CO6PR10MB5409.namprd10.prod.outlook.com (2603:10b6:5:357::14)
- by DS0PR10MB6895.namprd10.prod.outlook.com (2603:10b6:8:131::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8880.29; Tue, 1 Jul
- 2025 05:55:51 +0000
-Received: from CO6PR10MB5409.namprd10.prod.outlook.com
- ([fe80::3c92:21f3:96a:b574]) by CO6PR10MB5409.namprd10.prod.outlook.com
- ([fe80::3c92:21f3:96a:b574%4]) with mapi id 15.20.8880.015; Tue, 1 Jul 2025
- 05:55:51 +0000
-References: <20250627044805.945491-1-ankur.a.arora@oracle.com>
- <20250627044805.945491-6-ankur.a.arora@oracle.com>
- <e2e8788d-86b4-092a-37f5-286b776cc061@gentwo.org>
- <87h5zxrlce.fsf@oracle.com>
-User-agent: mu4e 1.4.10; emacs 27.2
-From: Ankur Arora <ankur.a.arora@oracle.com>
-To: Ankur Arora <ankur.a.arora@oracle.com>
-Cc: "Christoph Lameter (Ampere)" <cl@gentwo.org>, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        bpf@vger.kernel.org, arnd@arndb.de, catalin.marinas@arm.com,
-        will@kernel.org, peterz@infradead.org, akpm@linux-foundation.org,
-        mark.rutland@arm.com, harisokn@amazon.com, ast@kernel.org,
-        memxor@gmail.com, zhenglifeng1@huawei.com, xueshuai@linux.alibaba.com,
-        joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
-        konrad.wilk@oracle.com
-Subject: Re: [PATCH v3 5/5] arm64: barrier: Handle waiting in
- smp_cond_load_relaxed_timewait()
-In-reply-to: <87h5zxrlce.fsf@oracle.com>
-Date: Mon, 30 Jun 2025 22:55:48 -0700
-Message-ID: <87tt3wqwt7.fsf@oracle.com>
-Content-Type: text/plain
-X-ClientProxiedBy: MW4PR04CA0232.namprd04.prod.outlook.com
- (2603:10b6:303:87::27) To CO6PR10MB5409.namprd10.prod.outlook.com
- (2603:10b6:5:357::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E6EB18D;
+	Tue,  1 Jul 2025 06:03:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1751349843; cv=none; b=UvT7GMMAc/Oc+rf4v1CUuk+nJYInVRhGN/VFMDQtMTMtQLLaHayEkQutBddowzttwJiX3lUeAn8uCYeKV1XPnvw8S32+QheAoRFu9vOHvAwyO2inUK/t7m1ZKH/OZSVeS/TAL4u87v5CWDF5jjxQjrlF7iASSkmsDpxhgwAvYw4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1751349843; c=relaxed/simple;
+	bh=aam3jqa0fO/VRzRpiRG8saL2ppQvVEt3VefmrmsXiTw=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=mXY1kQj//lmcmuH1ldpDIF7KIDZi60KP+kNnMUq2KKLI/r55fCzUTjG/tvQuOKNidSz22fMeWCFjo+ZXuxhDSOSbTrXVmNTmNiNNSrpCHAfKN+CojQtajBqUDWnb3iYSelLeckGEfhK0MWJ1PU4car9OFzdnuVDuyz2bQCMJdTM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3a6e8b1fa37so2489624f8f.2;
+        Mon, 30 Jun 2025 23:03:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751349836; x=1751954636;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IlSY4PfFnZ+QFyRwPRdbpv456tvzDvOamZooLk66mD0=;
+        b=YtDi+VLRkaYignxAgnKI8YqvrB8WLxXS+B5Lwr66nmTfXB9j0rr/i/1t6v01XaIqUw
+         l20UJ4x5avCEnaEX68iwYIigLTPlu0Sfbf0YQzTCy0yVfaFp6pOPHzOZc4NTXP+bgkiF
+         DigUWh3mWZPm0kOO+skk1C1JX2mFqR61mpzCR/s9EEflIbL+1cHqVSXh+b3oLGVkEqfG
+         KiWAt77WeHkuGz6fsCXJnRO14J02R3VffSYDcdBvNLjSHd6nmAXvM65KKO0U8wQPHDvh
+         6Tzayvt0prAmZ8yXIRbQrvf/RHMqOyhheftaXaZhCCguP26lWi9wbNsIFcl2B/JYKvho
+         W8Pg==
+X-Forwarded-Encrypted: i=1; AJvYcCUbHHOFL1A5qf29n+Nt+DlTutsxKqu2jndPMIYpn6Gv+PPwZChJpuSib2krjku5F2c+1O0=@vger.kernel.org, AJvYcCWFogdAP9M479yRCy0uP+JCI3jg7LNWf5t5RO/kBeLo4lWJ3NXPnD98PdI24F9gs6AAtqYFZg79xC9fdgAgr28OFCT7@vger.kernel.org, AJvYcCWivbRpxT4G7+oZ5ajBXl/E5sc+hHRGQUZLRkXJ/JcCCW5y6yRvds0V8nuSUZGIcZaVb20Yh7KS3qpqtl3v@vger.kernel.org
+X-Gm-Message-State: AOJu0YyOIZZgIbm14jlXFzf3KE1CbPoN+5ZkLgiMOn+g5NMPlPtByJPl
+	Ka18GJKU7U2SAHyioJPcIf5ycKvQ4qwoNwH1IOBto3U2/9QsSdePGTZ/
+X-Gm-Gg: ASbGncvwSn6UgerSVxdAJ4CqdlW//GVlSlafdRsGWkCyQ954pMVM+zBv/zv8lQuaCt0
+	7MxMIxnGg53PlEJSCwKQbKN2aqUPKY6VrY7qbaUb1MyaulDIthiyXdjiqYD5xJ2lzd0QTLZ4Egv
+	AKz9EirlT/C4oZUm60RjNSCrBzsLttIiqP/C7W83mpZof7IGt1XmqyP8lxUUgcrsTi7HvVN3j+1
+	yJc9z2z6COawlhuKukPlF7Gt3HYlKs2pZF+0u9hdzvky6i5AmVj/VfpYh8eVVP7UWC3A6yvYP//
+	UAdRYO+RDXyxLJzpqjY14h6Ph9/hI/51Xv8aljYVI/WlxoWXBRMS3TLKOeGzg9ses7fp7xK341n
+	dLeU=
+X-Google-Smtp-Source: AGHT+IEHQyqdwApVbMRtuJMXxBKETvubLza93fiHNs3j/xEoD2BIhF2g9HLON2rqMR9E4/QZYQmgKQ==
+X-Received: by 2002:a05:6000:2083:b0:3a4:dc32:6cbb with SMTP id ffacd0b85a97d-3a8fee64e3amr13908001f8f.31.1751349835114;
+        Mon, 30 Jun 2025 23:03:55 -0700 (PDT)
+Received: from costa-tp.redhat.com ([2a00:a041:e280:5300:9068:704e:a31a:c135])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a88c7e71dfsm11970260f8f.7.2025.06.30.23.03.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Jun 2025 23:03:54 -0700 (PDT)
+From: Costa Shulyupin <costa.shul@redhat.com>
+To: Steven Rostedt <rostedt@goodmis.org>,
+	Tomas Glozar <tglozar@redhat.com>,
+	John Kacur <jkacur@redhat.com>,
+	Costa Shulyupin <costa.shul@redhat.com>,
+	Eder Zulian <ezulian@redhat.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Gabriele Monaco <gmonaco@redhat.com>,
+	Jan Stancek <jstancek@redhat.com>,
+	linux-trace-kernel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH v1] tools/rtla: Consolidate common parameters into shared structure
+Date: Tue,  1 Jul 2025 09:03:14 +0300
+Message-ID: <20250701060337.648475-1-costa.shul@redhat.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR10MB5409:EE_|DS0PR10MB6895:EE_
-X-MS-Office365-Filtering-Correlation-Id: aec66667-fd8f-4a73-9e20-08ddb863ee7e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|366016|376014|7416014|7053199007;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?0AfXNxjPKAPp6DRKpoVAcOPoC2qWfW29VBgcTaANlUcf/K9IAM03lclc53MJ?=
- =?us-ascii?Q?LFfeL57Dffisu8JFfMAyKVDNo6KjcxIFQCtSVMZFmiJIyNJBOS67Ld3iEjz7?=
- =?us-ascii?Q?6sC1pfgS/TmCU2V38lO+sRMl3sk86UO5wXsXMf326e1OEkBP55KXs31RNYxa?=
- =?us-ascii?Q?WYShh/3CN4tC9+NNoTc7fWkr4ww+rmtHIHLlMCmDc5FrSrlrTc88O8GufHRd?=
- =?us-ascii?Q?ww07EVaU1mZsv4nRM838sg+PVoWOlmrPLPNJ/c/VTPoUe9aiBsh/nCEVinDe?=
- =?us-ascii?Q?PKI5HTtUdB9y8nZ7mBNUFj4fbytxZ/5OstenL+zd9UQQ8s6Eo3vgf1Pdpm2q?=
- =?us-ascii?Q?CeNv2VGFWu4SOgjrRm7hXgcsGBc4PiJnELgYrI9KDD2aEsRfoNc1MIKBju3t?=
- =?us-ascii?Q?rb0MpAc1WxuIcdPJjJTewJ+GkxtUWuSMBfp4LgoWAPGhxQatYIFMjvl6slBB?=
- =?us-ascii?Q?0pFu1lHRpJy8OMqdwZ7/szZNxJZNbOFQxClGsenEGKwAYchoqPDyVf3JXstM?=
- =?us-ascii?Q?pZxQiTmijIpTYeeV90LquOyRU6hYdBQ0JlPeL1GQi7cuilKF2jIva2TSXt/1?=
- =?us-ascii?Q?vT4YfZdWdb2Gu38mbxhs0/h9PbZveKMviLRoobLDW1jodYoPUKiLaNFGY0zL?=
- =?us-ascii?Q?D90H/qMd1WgsftzpULHBMSK1VHlYuj/QfoxwNpxme3JDDqikKfWylnevMw5Q?=
- =?us-ascii?Q?Ljs+0IUDNPA95rEoxtHYIHr+YpHjuBqOqWDlCKRq6F5wA3xpzEc3FK5SZG68?=
- =?us-ascii?Q?qXm1zxJYVClQb4faYMNgpz6+NhdUnSBjgCS7YxTYJlfLNW2a55QGv4VsIBAq?=
- =?us-ascii?Q?voy8F6LcDcRnmOnAJ4t3J+KfzVbJHBIN9AnahOZU40vxY0BU66RSynW5pNv7?=
- =?us-ascii?Q?Bmmq1JV9t89OP4XLU7jVzYv8/BSNdviyUqXbpXjbnlvYz6KEdoZ4WT5B5rRb?=
- =?us-ascii?Q?F1qJ2CJxLZpNeQxtWgIfozXpijPu8272TxJZsqDA5jSwhjzYX8jh2tVgwC3w?=
- =?us-ascii?Q?XJvFQEky7HFou6lJMy0Gvlz/3IU+UItsFj8hMRoWXAEsPJdMRMZtMVrYOb7u?=
- =?us-ascii?Q?g5yVKEqnS3TOLEJXBCY3BOQfB9a0MeIeGBQpjSS1zwMhdYScGTvCNYzlnqLB?=
- =?us-ascii?Q?ZjmtTaW9n0olB8QVg7c3q+lmi/xbZdgPF5DmxjMz5fmNtJG1Fir/sLyTbm2C?=
- =?us-ascii?Q?57IOF8z0405s25YrSStkVqYhRDWtr1ifPdjsK46wsq02TEOIdWboTe4fDP1W?=
- =?us-ascii?Q?6QLCXQieg+Bw5fP2xxj0eclaGg3ggYOXBuPGyBFoDZ7f1oClyyXlp3soLVMz?=
- =?us-ascii?Q?uw3ae0bkluWcZkF3dgf5j5mqsQaAIvKoNeB+Ta1QLt/TbKOwqsLQ55uFmz82?=
- =?us-ascii?Q?fRNGFQaeFClS3+hol5jxBiXEt6uCtUPzFxyOTRe9EjoXs5QFCQ=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR10MB5409.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(7416014)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?Hl2jypWP4Zw2zmVcyU1JtspzNIc9u8KmzHb9+OFPAhlc1NviNaLSaUAu8vBU?=
- =?us-ascii?Q?5SLWiDcET96KWpsUAqUDCT5Mq+M/j4N7Yujz0PiJ2Zzj7r/rX92b6Kr5of2X?=
- =?us-ascii?Q?odkGy+DFy2ELWgKlq9qtTFbpiKnp0gSrURdWwMD/Rj9KKnuMro3areBBHumD?=
- =?us-ascii?Q?2Th+9T+V3TFk7AP5h1HvynvCN302nCSOkWKzQfFOP3FCnFEvoO26n3R53oRz?=
- =?us-ascii?Q?bT+MD1gAtUKW/Tl18vPlD5aMX2Z44ZvEaDkCRv7seKP65vMEigWYfK/jj53+?=
- =?us-ascii?Q?rHvfwyoj68hkLiuBVOgXeiyR+/XnswLa6ghCducJQF03yD+YpD84uwhnXL/j?=
- =?us-ascii?Q?MChJuyGZwZ7Ub6yCqjZHPAhrhNHI8i/nGoRw/+7hHsQQ75KbuWwvSA2BkyKV?=
- =?us-ascii?Q?PGHa93J+Ofk5yfRE8HLzOlqNccxbzqdowVkNlWOvgE5WLRC0SPc4o3aKhyEw?=
- =?us-ascii?Q?6WUCFP9+4UpYxBZcszW5tMsr3gkieQ0jHZWUMnSM80ueYpVu3MnZ82WBPvZl?=
- =?us-ascii?Q?+n5oda5i6tEJs/BSMsqQJE8YcbUGwSAmjLa7RPTCSRqwkkPvjxxwCbjoYGvv?=
- =?us-ascii?Q?mU0NjwPVVhnQSSiAxLjIVHdGj0HHvOzOgU3xxuGb3TVBGBMePmDBuT94R4sE?=
- =?us-ascii?Q?arqpMWG54W3y0CLLMlDuWz6MAklaPIh6Py4hzEtQaP02L8uw9zXwwbQjrZj7?=
- =?us-ascii?Q?UzlLHgTJ+nvYJeSCgU0tJhnW54jfhQpmpKiHFm2WDx8iMGyeoZ6Wup3hMb1b?=
- =?us-ascii?Q?KzVnGfgpOzw0xzoB6jYxPFFgwm2sTftjtsgyT31RoWqtDLZnC/90lvjC9OrS?=
- =?us-ascii?Q?A2YFL576u+EBorU5aaCNz70XmpNlWnKONUMQSNP6J0WECssuw5vZy35NTDR/?=
- =?us-ascii?Q?vsorbEbc6jOdl/0GcTfRzffQV7DO18RzCYq0tfE1/968bMME41MXD+JyQyhC?=
- =?us-ascii?Q?lkfaGlOKNbti3fxeLhKzYZt/MQqXpt8pGeMSk0eSZkP/nJ9ymmfLOvSn01p3?=
- =?us-ascii?Q?nSt103ALkChlR6yAa58PAjI2PBFma8Ajf0MTjo9xlHHNFmf8hRqpBZp9fGDZ?=
- =?us-ascii?Q?NfF3oo1CaxJgDEekUpEHEPbPf0qJkbAyYzjfYTFGA/TgSxiFWzjJQbxlqPo/?=
- =?us-ascii?Q?Z5X1Pb3/TnG7rRX4w4rASIKeXSsoJIVTRYADRJXjjnw/bR6cRMYbiLVLlR7F?=
- =?us-ascii?Q?oYtOUOj4hqs2VzAgv3hqXdzRgO56i887LyuzFsNG/2wyAPSlGrtqDI8lCoKL?=
- =?us-ascii?Q?J2nPJMo3hscRUdZAF4uDcGp6gMGQxTzBFbaWRkBImu4xuIwKGNwLMPaFZZKS?=
- =?us-ascii?Q?2WWi5+sbBTDqtvA6Fv8wulVbr1zj4x/IiuPkMvyA4Y3/BxG+lf8MX3Rfnuc6?=
- =?us-ascii?Q?7Efc8IYfFjL5deSqjD95PVZk8DRyfX9P32msnvb2TutyVZ+LEGzuPmpMB9XE?=
- =?us-ascii?Q?o9A6cC3PELbWMOsfaSOAyO0Ql+rDi7YznW3EQmAFrBwsl2pLHnlLVBnrbnbi?=
- =?us-ascii?Q?EL79rIatJv8PVWCkTxM8ikfLUdoSXHZI2+fEhiN8uLGUXtdQrZozeQOU9JtK?=
- =?us-ascii?Q?Ladx0Luab3h5zQalFphAKxIc6Y90rJzP2b5y0YDlbPpn7sCWSrjw9GGozxf+?=
- =?us-ascii?Q?lA=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	QgT2L3y5sGqus4bVv76HQeiVwjm1YwjINbUnCztqyOQ68VtFqN9IVe6s5eiwIwM0RkA3z62qbZrFZ11AwITxnprnjxLFQ8PJspbtLvAHyocOH12iwV31AkqbHPphXUmyt/O9bWIMvbV+5RzXY+SwEgnBBI4ifS/TwbJl7mbBqV+A0ndKyJrMp2dL/zk54XRxT7ZbJWAovDsuS6cPnKrv8EgPWRT4GK/jVoW0FYOqkoPMnip6yZ4OXe3/sDLtdF16++str3U2ZXpE0HkomrL3E/6N94wH2o8Tq15WvS8eaxe3f4k6Fa7Jm6foFnTjjy/zQ0OfjoNiso7xLxHQwcgsoaY7YKSx7pJItnUVenlHjxtcvqFlUb/hyld6Q5NV3ep+gQfCEVyaPHY0TgLhiigDeOhFtfA+yyVU4Xn58bT2WuIZDlK4aITECsoebZ9WA9SatX0J6bUFbDYNAWzMiFAHsxoOIo7CWQjKeX7B438eplH2N2k0ZwlBA9YM2i6pIAR0A4wmAnWPRUAoRBQ8TW+d/mff3x5QmRSha8VbwFLSkhIWN9VilInhJXQOKcwGdpGAJEhyiGvb7GkPwiIugM1DRLmXllwLX4taFJ0zR0mAyTs=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: aec66667-fd8f-4a73-9e20-08ddb863ee7e
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR10MB5409.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jul 2025 05:55:51.7249
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: R3kwWCMOW3/D4lOYChJSj687n4GVrvNqDlNzx8VADIzvWH8w8PuId1n9efD6n4yr9iBGfohti/V9v4eX5XhkK0J99xmPZxUOyEBjNPjYdto=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB6895
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
- definitions=2025-07-01_01,2025-06-27_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 suspectscore=0
- phishscore=0 mlxlogscore=999 mlxscore=0 adultscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2505160000
- definitions=main-2507010030
-X-Proofpoint-GUID: aSmALB7z10WAAjOdI-eSGyUxLnRH64Gt
-X-Proofpoint-ORIG-GUID: aSmALB7z10WAAjOdI-eSGyUxLnRH64Gt
-X-Authority-Analysis: v=2.4 cv=b82y4sGx c=1 sm=1 tr=0 ts=6863786a b=1 cx=c_pps a=e1sVV491RgrpLwSTMOnk8w==:117 a=e1sVV491RgrpLwSTMOnk8w==:17 a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
- a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=Wb1JkmetP80A:10 a=GoEa3M9JfhUA:10 a=yPCof4ZbAAAA:8 a=PuvxfXWCAAAA:8 a=V1Nn0BbxjA9t2MWJghwA:9 a=uAr15Ul7AJ1q7o2wzYQp:22 cc=ntf awl=host:14723
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzAxMDAzMCBTYWx0ZWRfX4KvMgOgVU8ka KFZANvxZMq4NAKsyDNiHjmKn+VOW2+fssto3foOOe9qLIifOTx+dYfvySSzgWS3sZTvRdjYckCO eOaYPv3FZkXSalA51aXnaQr4rM9hpukXjwAlLmYjMU+fAdJjFnGyGj01Tj3lI4SpNvDq2dgRfpW
- AKPllx8rKcDIDh2HQyVsIXja9HVgpbfXqGSuF7Hg0muH7ighcoVqcnfCSV/U0rtgghpcJlq6QUl KXO0qGmmqZ5gMMuo3UqMG0E4w3oFODEPFVFY3NA1Xb7055m0nil6mD51EGdP+kBa0V2MYAJIjqt 3g0lzga3QpUDTYWL5U+BwFcY2FUxAUz/4KKzJd1AFq6xJCpj6vgU8ybdMv5mFi74D7I8LRG7wKe
- BmccQtFtvWiRFtSixOPzhNtrWEJZ99BGO0m7fHfjGcX3J0LnvuwOmJuiGe3KaCsY6PpwZi3r
+Content-Transfer-Encoding: 8bit
 
+timerlat_params and osnoise_params structures contain 17 identical
+fields.
 
-Ankur Arora <ankur.a.arora@oracle.com> writes:
+Introduce a common_params structure and move those fields into it to
+eliminate the code duplication and improve maintainability.
 
-> Christoph Lameter (Ampere) <cl@gentwo.org> writes:
->
->> On Thu, 26 Jun 2025, Ankur Arora wrote:
->>
->>> @@ -222,6 +223,53 @@ do {									\
->>>  #define __smp_timewait_store(ptr, val)					\
->>>  		__cmpwait_relaxed(ptr, val)
->>>
->>> +/*
->>> + * Redefine ARCH_TIMER_EVT_STREAM_PERIOD_US locally to avoid include hell.
->>> + */
->>> +#define __ARCH_TIMER_EVT_STREAM_PERIOD_US 100UL
->>> +extern bool arch_timer_evtstrm_available(void);
->>> +
->>> +static inline u64 ___smp_cond_spinwait(u64 now, u64 prev, u64 end,
->>> +				       u32 *spin, bool *wait, u64 slack);
->>> +/*
->>> + * To minimize time spent spinning, we want to allow a large overshoot.
->>> + * So, choose a default slack value of the event-stream period.
->>> + */
->>> +#define SMP_TIMEWAIT_DEFAULT_US __ARCH_TIMER_EVT_STREAM_PERIOD_US
->>> +
->>> +static inline u64 ___smp_cond_timewait(u64 now, u64 prev, u64 end,
->>> +				       u32 *spin, bool *wait, u64 slack)
->>> +{
->>> +	bool wfet = alternative_has_cap_unlikely(ARM64_HAS_WFXT);
->>> +	bool wfe, ev = arch_timer_evtstrm_available();
->>
->> An unitialized and initialized variable on the same line. Maybe separate
->> that. Looks confusing and unusual to me.
->
-> Yeah, that makes sense. Will fix.
->
->>> +	u64 evt_period = __ARCH_TIMER_EVT_STREAM_PERIOD_US;
->>> +	u64 remaining = end - now;
->>> +
->>> +	if (now >= end)
->>> +		return 0;
->>> +	/*
->>> +	 * Use WFE if there's enough slack to get an event-stream wakeup even
->>> +	 * if we don't come out of the WFE due to natural causes.
->>> +	 */
->>> +	wfe = ev && ((remaining + slack) > evt_period);
->>
->> The line above does not matter for the wfet case and the calculation is
->> ignored. We hope that in the future wfet will be the default case.
->
-> My assumption was that the compiler would only evaluate the evt_period
-> comparison if the wfet check evaluates false and it does need to check
-> if wfe is true or not.
->
-> But let me look at the generated code.
+Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
+---
+ tools/tracing/rtla/src/osnoise.c       |  24 ++---
+ tools/tracing/rtla/src/osnoise.h       |  19 +---
+ tools/tracing/rtla/src/osnoise_hist.c  | 112 ++++++++++-----------
+ tools/tracing/rtla/src/osnoise_top.c   | 102 +++++++++----------
+ tools/tracing/rtla/src/timerlat.c      |  24 ++---
+ tools/tracing/rtla/src/timerlat.h      |  19 +---
+ tools/tracing/rtla/src/timerlat_bpf.c  |   4 +-
+ tools/tracing/rtla/src/timerlat_hist.c | 129 +++++++++++++------------
+ tools/tracing/rtla/src/timerlat_top.c  | 121 +++++++++++------------
+ tools/tracing/rtla/src/utils.h         |  31 ++++++
+ 10 files changed, 292 insertions(+), 293 deletions(-)
 
-So, I was too optimistic. The compiler doesn't do this optimization at
-all. I'm guessing that's because of at least two reasons:
+diff --git a/tools/tracing/rtla/src/osnoise.c b/tools/tracing/rtla/src/osnoise.c
+index 2dc3e4539e99..f8a323a6614e 100644
+--- a/tools/tracing/rtla/src/osnoise.c
++++ b/tools/tracing/rtla/src/osnoise.c
+@@ -1127,18 +1127,18 @@ osnoise_apply_config(struct osnoise_tool *tool, struct osnoise_params *params)
+ {
+ 	int retval;
+ 
+-	if (!params->sleep_time)
+-		params->sleep_time = 1;
++	if (!params->common.sleep_time)
++		params->common.sleep_time = 1;
+ 
+-	retval = osnoise_set_cpus(tool->context, params->cpus ? params->cpus : "all");
++	retval = osnoise_set_cpus(tool->context, params->common.cpus ? params->common.cpus : "all");
+ 	if (retval) {
+ 		err_msg("Failed to apply CPUs config\n");
+ 		goto out_err;
+ 	}
+ 
+-	if (params->runtime || params->period) {
++	if (params->common.runtime || params->period) {
+ 		retval = osnoise_set_runtime_period(tool->context,
+-						    params->runtime,
++						    params->common.runtime,
+ 						    params->period);
+ 	} else {
+ 		retval = osnoise_set_runtime_period(tool->context,
+@@ -1151,13 +1151,13 @@ osnoise_apply_config(struct osnoise_tool *tool, struct osnoise_params *params)
+ 		goto out_err;
+ 	}
+ 
+-	retval = osnoise_set_stop_us(tool->context, params->stop_us);
++	retval = osnoise_set_stop_us(tool->context, params->common.stop_us);
+ 	if (retval) {
+ 		err_msg("Failed to set stop us\n");
+ 		goto out_err;
+ 	}
+ 
+-	retval = osnoise_set_stop_total_us(tool->context, params->stop_total_us);
++	retval = osnoise_set_stop_total_us(tool->context, params->common.stop_total_us);
+ 	if (retval) {
+ 		err_msg("Failed to set stop total us\n");
+ 		goto out_err;
+@@ -1169,14 +1169,14 @@ osnoise_apply_config(struct osnoise_tool *tool, struct osnoise_params *params)
+ 		goto out_err;
+ 	}
+ 
+-	if (params->hk_cpus) {
+-		retval = sched_setaffinity(getpid(), sizeof(params->hk_cpu_set),
+-					   &params->hk_cpu_set);
++	if (params->common.hk_cpus) {
++		retval = sched_setaffinity(getpid(), sizeof(params->common.hk_cpu_set),
++					   &params->common.hk_cpu_set);
+ 		if (retval == -1) {
+ 			err_msg("Failed to set rtla to the house keeping CPUs\n");
+ 			goto out_err;
+ 		}
+-	} else if (params->cpus) {
++	} else if (params->common.cpus) {
+ 		/*
+ 		 * Even if the user do not set a house-keeping CPU, try to
+ 		 * move rtla to a CPU set different to the one where the user
+@@ -1184,7 +1184,7 @@ osnoise_apply_config(struct osnoise_tool *tool, struct osnoise_params *params)
+ 		 *
+ 		 * No need to check results as this is an automatic attempt.
+ 		 */
+-		auto_house_keeping(&params->monitored_cpus);
++		auto_house_keeping(&params->common.monitored_cpus);
+ 	}
+ 
+ 	retval = osnoise_set_workload(tool->context, true);
+diff --git a/tools/tracing/rtla/src/osnoise.h b/tools/tracing/rtla/src/osnoise.h
+index ac1c99910744..a887c95a9809 100644
+--- a/tools/tracing/rtla/src/osnoise.h
++++ b/tools/tracing/rtla/src/osnoise.h
+@@ -10,26 +10,9 @@ enum osnoise_mode {
+ };
+ 
+ struct osnoise_params {
+-	/* Common params */
+-	char			*cpus;
+-	cpu_set_t		monitored_cpus;
+-	char			*trace_output;
+-	char			*cgroup_name;
+-	unsigned long long	runtime;
++	struct common_params	common;
+ 	unsigned long long	period;
+ 	long long		threshold;
+-	long long		stop_us;
+-	long long		stop_total_us;
+-	int			sleep_time;
+-	int			duration;
+-	int			set_sched;
+-	int			cgroup;
+-	int			hk_cpus;
+-	cpu_set_t		hk_cpu_set;
+-	struct sched_attr	sched_param;
+-	struct trace_events	*events;
+-	int			warmup;
+-	int			buffer_size;
+ 	union {
+ 		struct {
+ 			/* top only */
+diff --git a/tools/tracing/rtla/src/osnoise_hist.c b/tools/tracing/rtla/src/osnoise_hist.c
+index 8d579bcee709..9e1277357c96 100644
+--- a/tools/tracing/rtla/src/osnoise_hist.c
++++ b/tools/tracing/rtla/src/osnoise_hist.c
+@@ -243,7 +243,7 @@ static void osnoise_hist_header(struct osnoise_tool *tool)
+ 		trace_seq_printf(s, "Index");
+ 
+ 	for (cpu = 0; cpu < data->nr_cpus; cpu++) {
+-		if (params->cpus && !CPU_ISSET(cpu, &params->monitored_cpus))
++		if (params->common.cpus && !CPU_ISSET(cpu, &params->common.monitored_cpus))
+ 			continue;
+ 
+ 		if (!data->hist[cpu].count)
+@@ -274,7 +274,7 @@ osnoise_print_summary(struct osnoise_params *params,
+ 		trace_seq_printf(trace->seq, "count:");
+ 
+ 	for (cpu = 0; cpu < data->nr_cpus; cpu++) {
+-		if (params->cpus && !CPU_ISSET(cpu, &params->monitored_cpus))
++		if (params->common.cpus && !CPU_ISSET(cpu, &params->common.monitored_cpus))
+ 			continue;
+ 
+ 		if (!data->hist[cpu].count)
+@@ -288,7 +288,7 @@ osnoise_print_summary(struct osnoise_params *params,
+ 		trace_seq_printf(trace->seq, "min:  ");
+ 
+ 	for (cpu = 0; cpu < data->nr_cpus; cpu++) {
+-		if (params->cpus && !CPU_ISSET(cpu, &params->monitored_cpus))
++		if (params->common.cpus && !CPU_ISSET(cpu, &params->common.monitored_cpus))
+ 			continue;
+ 
+ 		if (!data->hist[cpu].count)
+@@ -303,7 +303,7 @@ osnoise_print_summary(struct osnoise_params *params,
+ 		trace_seq_printf(trace->seq, "avg:  ");
+ 
+ 	for (cpu = 0; cpu < data->nr_cpus; cpu++) {
+-		if (params->cpus && !CPU_ISSET(cpu, &params->monitored_cpus))
++		if (params->common.cpus && !CPU_ISSET(cpu, &params->common.monitored_cpus))
+ 			continue;
+ 
+ 		if (!data->hist[cpu].count)
+@@ -321,7 +321,7 @@ osnoise_print_summary(struct osnoise_params *params,
+ 		trace_seq_printf(trace->seq, "max:  ");
+ 
+ 	for (cpu = 0; cpu < data->nr_cpus; cpu++) {
+-		if (params->cpus && !CPU_ISSET(cpu, &params->monitored_cpus))
++		if (params->common.cpus && !CPU_ISSET(cpu, &params->common.monitored_cpus))
+ 			continue;
+ 
+ 		if (!data->hist[cpu].count)
+@@ -357,7 +357,7 @@ osnoise_print_stats(struct osnoise_params *params, struct osnoise_tool *tool)
+ 					 bucket * data->bucket_size);
+ 
+ 		for (cpu = 0; cpu < data->nr_cpus; cpu++) {
+-			if (params->cpus && !CPU_ISSET(cpu, &params->monitored_cpus))
++			if (params->common.cpus && !CPU_ISSET(cpu, &params->common.monitored_cpus))
+ 				continue;
+ 
+ 			if (!data->hist[cpu].count)
+@@ -395,7 +395,7 @@ osnoise_print_stats(struct osnoise_params *params, struct osnoise_tool *tool)
+ 		trace_seq_printf(trace->seq, "over: ");
+ 
+ 	for (cpu = 0; cpu < data->nr_cpus; cpu++) {
+-		if (params->cpus && !CPU_ISSET(cpu, &params->monitored_cpus))
++		if (params->common.cpus && !CPU_ISSET(cpu, &params->common.monitored_cpus))
+ 			continue;
+ 
+ 		if (!data->hist[cpu].count)
+@@ -537,13 +537,13 @@ static struct osnoise_params
+ 		switch (c) {
+ 		case 'a':
+ 			/* set sample stop to auto_thresh */
+-			params->stop_us = get_llong_from_str(optarg);
++			params->common.stop_us = get_llong_from_str(optarg);
+ 
+ 			/* set sample threshold to 1 */
+ 			params->threshold = 1;
+ 
+ 			/* set trace */
+-			params->trace_output = "osnoise_trace.txt";
++			params->common.trace_output = "osnoise_trace.txt";
+ 
+ 			break;
+ 		case 'b':
+@@ -552,27 +552,27 @@ static struct osnoise_params
+ 				osnoise_hist_usage("Bucket size needs to be > 0 and <= 1000000\n");
+ 			break;
+ 		case 'c':
+-			retval = parse_cpu_set(optarg, &params->monitored_cpus);
++			retval = parse_cpu_set(optarg, &params->common.monitored_cpus);
+ 			if (retval)
+ 				osnoise_hist_usage("\nInvalid -c cpu list\n");
+-			params->cpus = optarg;
++			params->common.cpus = optarg;
+ 			break;
+ 		case 'C':
+-			params->cgroup = 1;
++			params->common.cgroup = 1;
+ 			if (!optarg) {
+ 				/* will inherit this cgroup */
+-				params->cgroup_name = NULL;
++				params->common.cgroup_name = NULL;
+ 			} else if (*optarg == '=') {
+ 				/* skip the = */
+-				params->cgroup_name = ++optarg;
++				params->common.cgroup_name = ++optarg;
+ 			}
+ 			break;
+ 		case 'D':
+ 			config_debug = 1;
+ 			break;
+ 		case 'd':
+-			params->duration = parse_seconds_duration(optarg);
+-			if (!params->duration)
++			params->common.duration = parse_seconds_duration(optarg);
++			if (!params->common.duration)
+ 				osnoise_hist_usage("Invalid -D duration\n");
+ 			break;
+ 		case 'e':
+@@ -582,10 +582,10 @@ static struct osnoise_params
+ 				exit(EXIT_FAILURE);
+ 			}
+ 
+-			if (params->events)
+-				tevent->next = params->events;
++			if (params->common.events)
++				tevent->next = params->common.events;
+ 
+-			params->events = tevent;
++			params->common.events = tevent;
+ 			break;
+ 		case 'E':
+ 			params->entries = get_llong_from_str(optarg);
+@@ -597,8 +597,8 @@ static struct osnoise_params
+ 			osnoise_hist_usage(NULL);
+ 			break;
+ 		case 'H':
+-			params->hk_cpus = 1;
+-			retval = parse_cpu_set(optarg, &params->hk_cpu_set);
++			params->common.hk_cpus = 1;
++			retval = parse_cpu_set(optarg, &params->common.hk_cpu_set);
+ 			if (retval) {
+ 				err_msg("Error parsing house keeping CPUs\n");
+ 				exit(EXIT_FAILURE);
+@@ -610,21 +610,21 @@ static struct osnoise_params
+ 				osnoise_hist_usage("Period longer than 10 s\n");
+ 			break;
+ 		case 'P':
+-			retval = parse_prio(optarg, &params->sched_param);
++			retval = parse_prio(optarg, &params->common.sched_param);
+ 			if (retval == -1)
+ 				osnoise_hist_usage("Invalid -P priority");
+-			params->set_sched = 1;
++			params->common.set_sched = 1;
+ 			break;
+ 		case 'r':
+-			params->runtime = get_llong_from_str(optarg);
+-			if (params->runtime < 100)
++			params->common.runtime = get_llong_from_str(optarg);
++			if (params->common.runtime < 100)
+ 				osnoise_hist_usage("Runtime shorter than 100 us\n");
+ 			break;
+ 		case 's':
+-			params->stop_us = get_llong_from_str(optarg);
++			params->common.stop_us = get_llong_from_str(optarg);
+ 			break;
+ 		case 'S':
+-			params->stop_total_us = get_llong_from_str(optarg);
++			params->common.stop_total_us = get_llong_from_str(optarg);
+ 			break;
+ 		case 'T':
+ 			params->threshold = get_llong_from_str(optarg);
+@@ -632,13 +632,13 @@ static struct osnoise_params
+ 		case 't':
+ 			if (optarg) {
+ 				if (optarg[0] == '=')
+-					params->trace_output = &optarg[1];
++					params->common.trace_output = &optarg[1];
+ 				else
+-					params->trace_output = &optarg[0];
++					params->common.trace_output = &optarg[0];
+ 			} else if (optind < argc && argv[optind][0] != '0')
+-				params->trace_output = argv[optind];
++				params->common.trace_output = argv[optind];
+ 			else
+-				params->trace_output = "osnoise_trace.txt";
++				params->common.trace_output = "osnoise_trace.txt";
+ 			break;
+ 		case '0': /* no header */
+ 			params->no_header = 1;
+@@ -653,8 +653,8 @@ static struct osnoise_params
+ 			params->with_zeros = 1;
+ 			break;
+ 		case '4': /* trigger */
+-			if (params->events) {
+-				retval = trace_event_add_trigger(params->events, optarg);
++			if (params->common.events) {
++				retval = trace_event_add_trigger(params->common.events, optarg);
+ 				if (retval) {
+ 					err_msg("Error adding trigger %s\n", optarg);
+ 					exit(EXIT_FAILURE);
+@@ -664,8 +664,8 @@ static struct osnoise_params
+ 			}
+ 			break;
+ 		case '5': /* filter */
+-			if (params->events) {
+-				retval = trace_event_add_filter(params->events, optarg);
++			if (params->common.events) {
++				retval = trace_event_add_filter(params->common.events, optarg);
+ 				if (retval) {
+ 					err_msg("Error adding filter %s\n", optarg);
+ 					exit(EXIT_FAILURE);
+@@ -675,10 +675,10 @@ static struct osnoise_params
+ 			}
+ 			break;
+ 		case '6':
+-			params->warmup = get_llong_from_str(optarg);
++			params->common.warmup = get_llong_from_str(optarg);
+ 			break;
+ 		case '7':
+-			params->buffer_size = get_llong_from_str(optarg);
++			params->common.buffer_size = get_llong_from_str(optarg);
+ 			break;
+ 		default:
+ 			osnoise_hist_usage("Invalid option");
+@@ -755,9 +755,9 @@ static void
+ osnoise_hist_set_signals(struct osnoise_params *params)
+ {
+ 	signal(SIGINT, stop_hist);
+-	if (params->duration) {
++	if (params->common.duration) {
+ 		signal(SIGALRM, stop_hist);
+-		alarm(params->duration);
++		alarm(params->common.duration);
+ 	}
+ }
+ 
+@@ -798,37 +798,37 @@ int osnoise_hist_main(int argc, char *argv[])
+ 	if (retval)
+ 		goto out_destroy;
+ 
+-	if (params->set_sched) {
+-		retval = set_comm_sched_attr("osnoise/", &params->sched_param);
++	if (params->common.set_sched) {
++		retval = set_comm_sched_attr("osnoise/", &params->common.sched_param);
+ 		if (retval) {
+ 			err_msg("Failed to set sched parameters\n");
+ 			goto out_free;
+ 		}
+ 	}
+ 
+-	if (params->cgroup) {
+-		retval = set_comm_cgroup("timerlat/", params->cgroup_name);
++	if (params->common.cgroup) {
++		retval = set_comm_cgroup("timerlat/", params->common.cgroup_name);
+ 		if (!retval) {
+ 			err_msg("Failed to move threads to cgroup\n");
+ 			goto out_free;
+ 		}
+ 	}
+ 
+-	if (params->trace_output) {
++	if (params->common.trace_output) {
+ 		record = osnoise_init_trace_tool("osnoise");
+ 		if (!record) {
+ 			err_msg("Failed to enable the trace instance\n");
+ 			goto out_free;
+ 		}
+ 
+-		if (params->events) {
+-			retval = trace_events_enable(&record->trace, params->events);
++		if (params->common.events) {
++			retval = trace_events_enable(&record->trace, params->common.events);
+ 			if (retval)
+ 				goto out_hist;
+ 		}
+ 
+-		if (params->buffer_size > 0) {
+-			retval = trace_set_buffer_size(&record->trace, params->buffer_size);
++		if (params->common.buffer_size > 0) {
++			retval = trace_set_buffer_size(&record->trace, params->common.buffer_size);
+ 			if (retval)
+ 				goto out_hist;
+ 		}
+@@ -841,13 +841,13 @@ int osnoise_hist_main(int argc, char *argv[])
+ 	 * tracing while enabling other instances. The trace instance is the
+ 	 * one with most valuable information.
+ 	 */
+-	if (params->trace_output)
++	if (params->common.trace_output)
+ 		trace_instance_start(&record->trace);
+ 	trace_instance_start(trace);
+ 
+-	if (params->warmup > 0) {
+-		debug_msg("Warming up for %d seconds\n", params->warmup);
+-		sleep(params->warmup);
++	if (params->common.warmup > 0) {
++		debug_msg("Warming up for %d seconds\n", params->common.warmup);
++		sleep(params->common.warmup);
+ 		if (stop_tracing)
+ 			goto out_hist;
+ 
+@@ -868,7 +868,7 @@ int osnoise_hist_main(int argc, char *argv[])
+ 	osnoise_hist_set_signals(params);
+ 
+ 	while (!stop_tracing) {
+-		sleep(params->sleep_time);
++		sleep(params->common.sleep_time);
+ 
+ 		retval = tracefs_iterate_raw_events(trace->tep,
+ 						    trace->inst,
+@@ -894,13 +894,13 @@ int osnoise_hist_main(int argc, char *argv[])
+ 	if (osnoise_trace_is_off(tool, record)) {
+ 		printf("rtla osnoise hit stop tracing\n");
+ 		save_trace_to_file(record ? record->trace.inst : NULL,
+-				   params->trace_output);
++				   params->common.trace_output);
+ 		return_value = FAILED;
+ 	}
+ 
+ out_hist:
+-	trace_events_destroy(&record->trace, params->events);
+-	params->events = NULL;
++	trace_events_destroy(&record->trace, params->common.events);
++	params->common.events = NULL;
+ out_free:
+ 	osnoise_free_histogram(tool->data);
+ out_destroy:
+diff --git a/tools/tracing/rtla/src/osnoise_top.c b/tools/tracing/rtla/src/osnoise_top.c
+index 2c12780c8aa9..a69e79c6ca02 100644
+--- a/tools/tracing/rtla/src/osnoise_top.c
++++ b/tools/tracing/rtla/src/osnoise_top.c
+@@ -238,7 +238,7 @@ osnoise_print_stats(struct osnoise_params *params, struct osnoise_tool *top)
+ 	osnoise_top_header(top);
+ 
+ 	for (i = 0; i < nr_cpus; i++) {
+-		if (params->cpus && !CPU_ISSET(i, &params->monitored_cpus))
++		if (params->common.cpus && !CPU_ISSET(i, &params->common.monitored_cpus))
+ 			continue;
+ 		osnoise_top_print(top, i);
+ 	}
+@@ -335,7 +335,7 @@ struct osnoise_params *osnoise_top_parse_args(int argc, char **argv)
+ 		/*
+ 		 * Reduce CPU usage for 75% to avoid killing the system.
+ 		 */
+-		params->runtime = 750000;
++		params->common.runtime = 750000;
+ 		params->period = 1000000;
+ 	}
+ 
+@@ -377,37 +377,37 @@ struct osnoise_params *osnoise_top_parse_args(int argc, char **argv)
+ 		switch (c) {
+ 		case 'a':
+ 			/* set sample stop to auto_thresh */
+-			params->stop_us = get_llong_from_str(optarg);
++			params->common.stop_us = get_llong_from_str(optarg);
+ 
+ 			/* set sample threshold to 1 */
+ 			params->threshold = 1;
+ 
+ 			/* set trace */
+-			params->trace_output = "osnoise_trace.txt";
++			params->common.trace_output = "osnoise_trace.txt";
+ 
+ 			break;
+ 		case 'c':
+-			retval = parse_cpu_set(optarg, &params->monitored_cpus);
++			retval = parse_cpu_set(optarg, &params->common.monitored_cpus);
+ 			if (retval)
+ 				osnoise_top_usage(params, "\nInvalid -c cpu list\n");
+-			params->cpus = optarg;
++			params->common.cpus = optarg;
+ 			break;
+ 		case 'C':
+-			params->cgroup = 1;
++			params->common.cgroup = 1;
+ 			if (!optarg) {
+ 				/* will inherit this cgroup */
+-				params->cgroup_name = NULL;
++				params->common.cgroup_name = NULL;
+ 			} else if (*optarg == '=') {
+ 				/* skip the = */
+-				params->cgroup_name = ++optarg;
++				params->common.cgroup_name = ++optarg;
+ 			}
+ 			break;
+ 		case 'D':
+ 			config_debug = 1;
+ 			break;
+ 		case 'd':
+-			params->duration = parse_seconds_duration(optarg);
+-			if (!params->duration)
++			params->common.duration = parse_seconds_duration(optarg);
++			if (!params->common.duration)
+ 				osnoise_top_usage(params, "Invalid -d duration\n");
+ 			break;
+ 		case 'e':
+@@ -417,9 +417,9 @@ struct osnoise_params *osnoise_top_parse_args(int argc, char **argv)
+ 				exit(EXIT_FAILURE);
+ 			}
+ 
+-			if (params->events)
+-				tevent->next = params->events;
+-			params->events = tevent;
++			if (params->common.events)
++				tevent->next = params->common.events;
++			params->common.events = tevent;
+ 
+ 			break;
+ 		case 'h':
+@@ -427,8 +427,8 @@ struct osnoise_params *osnoise_top_parse_args(int argc, char **argv)
+ 			osnoise_top_usage(params, NULL);
+ 			break;
+ 		case 'H':
+-			params->hk_cpus = 1;
+-			retval = parse_cpu_set(optarg, &params->hk_cpu_set);
++			params->common.hk_cpus = 1;
++			retval = parse_cpu_set(optarg, &params->common.hk_cpu_set);
+ 			if (retval) {
+ 				err_msg("Error parsing house keeping CPUs\n");
+ 				exit(EXIT_FAILURE);
+@@ -440,42 +440,42 @@ struct osnoise_params *osnoise_top_parse_args(int argc, char **argv)
+ 				osnoise_top_usage(params, "Period longer than 10 s\n");
+ 			break;
+ 		case 'P':
+-			retval = parse_prio(optarg, &params->sched_param);
++			retval = parse_prio(optarg, &params->common.sched_param);
+ 			if (retval == -1)
+ 				osnoise_top_usage(params, "Invalid -P priority");
+-			params->set_sched = 1;
++			params->common.set_sched = 1;
+ 			break;
+ 		case 'q':
+ 			params->quiet = 1;
+ 			break;
+ 		case 'r':
+-			params->runtime = get_llong_from_str(optarg);
+-			if (params->runtime < 100)
++			params->common.runtime = get_llong_from_str(optarg);
++			if (params->common.runtime < 100)
+ 				osnoise_top_usage(params, "Runtime shorter than 100 us\n");
+ 			break;
+ 		case 's':
+-			params->stop_us = get_llong_from_str(optarg);
++			params->common.stop_us = get_llong_from_str(optarg);
+ 			break;
+ 		case 'S':
+-			params->stop_total_us = get_llong_from_str(optarg);
++			params->common.stop_total_us = get_llong_from_str(optarg);
+ 			break;
+ 		case 't':
+ 			if (optarg) {
+ 				if (optarg[0] == '=')
+-					params->trace_output = &optarg[1];
++					params->common.trace_output = &optarg[1];
+ 				else
+-					params->trace_output = &optarg[0];
++					params->common.trace_output = &optarg[0];
+ 			} else if (optind < argc && argv[optind][0] != '-')
+-				params->trace_output = argv[optind];
++				params->common.trace_output = argv[optind];
+ 			else
+-				params->trace_output = "osnoise_trace.txt";
++				params->common.trace_output = "osnoise_trace.txt";
+ 			break;
+ 		case 'T':
+ 			params->threshold = get_llong_from_str(optarg);
+ 			break;
+ 		case '0': /* trigger */
+-			if (params->events) {
+-				retval = trace_event_add_trigger(params->events, optarg);
++			if (params->common.events) {
++				retval = trace_event_add_trigger(params->common.events, optarg);
+ 				if (retval) {
+ 					err_msg("Error adding trigger %s\n", optarg);
+ 					exit(EXIT_FAILURE);
+@@ -485,8 +485,8 @@ struct osnoise_params *osnoise_top_parse_args(int argc, char **argv)
+ 			}
+ 			break;
+ 		case '1': /* filter */
+-			if (params->events) {
+-				retval = trace_event_add_filter(params->events, optarg);
++			if (params->common.events) {
++				retval = trace_event_add_filter(params->common.events, optarg);
+ 				if (retval) {
+ 					err_msg("Error adding filter %s\n", optarg);
+ 					exit(EXIT_FAILURE);
+@@ -496,10 +496,10 @@ struct osnoise_params *osnoise_top_parse_args(int argc, char **argv)
+ 			}
+ 			break;
+ 		case '2':
+-			params->warmup = get_llong_from_str(optarg);
++			params->common.warmup = get_llong_from_str(optarg);
+ 			break;
+ 		case '3':
+-			params->buffer_size = get_llong_from_str(optarg);
++			params->common.buffer_size = get_llong_from_str(optarg);
+ 			break;
+ 		default:
+ 			osnoise_top_usage(params, "Invalid option");
+@@ -583,9 +583,9 @@ static void stop_top(int sig)
+ static void osnoise_top_set_signals(struct osnoise_params *params)
+ {
+ 	signal(SIGINT, stop_top);
+-	if (params->duration) {
++	if (params->common.duration) {
+ 		signal(SIGALRM, stop_top);
+-		alarm(params->duration);
++		alarm(params->common.duration);
+ 	}
+ }
+ 
+@@ -622,37 +622,37 @@ int osnoise_top_main(int argc, char **argv)
+ 		goto out_free;
+ 	}
+ 
+-	if (params->set_sched) {
+-		retval = set_comm_sched_attr("osnoise/", &params->sched_param);
++	if (params->common.set_sched) {
++		retval = set_comm_sched_attr("osnoise/", &params->common.sched_param);
+ 		if (retval) {
+ 			err_msg("Failed to set sched parameters\n");
+ 			goto out_free;
+ 		}
+ 	}
+ 
+-	if (params->cgroup) {
+-		retval = set_comm_cgroup("osnoise/", params->cgroup_name);
++	if (params->common.cgroup) {
++		retval = set_comm_cgroup("osnoise/", params->common.cgroup_name);
+ 		if (!retval) {
+ 			err_msg("Failed to move threads to cgroup\n");
+ 			goto out_free;
+ 		}
+ 	}
+ 
+-	if (params->trace_output) {
++	if (params->common.trace_output) {
+ 		record = osnoise_init_trace_tool("osnoise");
+ 		if (!record) {
+ 			err_msg("Failed to enable the trace instance\n");
+ 			goto out_free;
+ 		}
+ 
+-		if (params->events) {
+-			retval = trace_events_enable(&record->trace, params->events);
++		if (params->common.events) {
++			retval = trace_events_enable(&record->trace, params->common.events);
+ 			if (retval)
+ 				goto out_top;
+ 		}
+ 
+-		if (params->buffer_size > 0) {
+-			retval = trace_set_buffer_size(&record->trace, params->buffer_size);
++		if (params->common.buffer_size > 0) {
++			retval = trace_set_buffer_size(&record->trace, params->common.buffer_size);
+ 			if (retval)
+ 				goto out_top;
+ 		}
+@@ -665,13 +665,13 @@ int osnoise_top_main(int argc, char **argv)
+ 	 * tracing while enabling other instances. The trace instance is the
+ 	 * one with most valuable information.
+ 	 */
+-	if (params->trace_output)
++	if (params->common.trace_output)
+ 		trace_instance_start(&record->trace);
+ 	trace_instance_start(trace);
+ 
+-	if (params->warmup > 0) {
+-		debug_msg("Warming up for %d seconds\n", params->warmup);
+-		sleep(params->warmup);
++	if (params->common.warmup > 0) {
++		debug_msg("Warming up for %d seconds\n", params->common.warmup);
++		sleep(params->common.warmup);
+ 		if (stop_tracing)
+ 			goto out_top;
+ 
+@@ -692,7 +692,7 @@ int osnoise_top_main(int argc, char **argv)
+ 	osnoise_top_set_signals(params);
+ 
+ 	while (!stop_tracing) {
+-		sleep(params->sleep_time);
++		sleep(params->common.sleep_time);
+ 
+ 		retval = tracefs_iterate_raw_events(trace->tep,
+ 						    trace->inst,
+@@ -720,13 +720,13 @@ int osnoise_top_main(int argc, char **argv)
+ 	if (osnoise_trace_is_off(tool, record)) {
+ 		printf("osnoise hit stop tracing\n");
+ 		save_trace_to_file(record ? record->trace.inst : NULL,
+-				   params->trace_output);
++				   params->common.trace_output);
+ 		return_value = FAILED;
+ 	}
+ 
+ out_top:
+-	trace_events_destroy(&record->trace, params->events);
+-	params->events = NULL;
++	trace_events_destroy(&record->trace, params->common.events);
++	params->common.events = NULL;
+ out_free:
+ 	osnoise_free_top(tool->data);
+ 	osnoise_destroy_tool(record);
+diff --git a/tools/tracing/rtla/src/timerlat.c b/tools/tracing/rtla/src/timerlat.c
+index c29e2ba2d7d8..d1b6f8150781 100644
+--- a/tools/tracing/rtla/src/timerlat.c
++++ b/tools/tracing/rtla/src/timerlat.c
+@@ -26,27 +26,27 @@ timerlat_apply_config(struct osnoise_tool *tool, struct timerlat_params *params)
+ {
+ 	int retval, i;
+ 
+-	if (!params->sleep_time)
+-		params->sleep_time = 1;
++	if (!params->common.sleep_time)
++		params->common.sleep_time = 1;
+ 
+-	retval = osnoise_set_cpus(tool->context, params->cpus ? params->cpus : "all");
++	retval = osnoise_set_cpus(tool->context, params->common.cpus ? params->common.cpus : "all");
+ 	if (retval) {
+ 		err_msg("Failed to apply CPUs config\n");
+ 		goto out_err;
+ 	}
+ 
+-	if (!params->cpus) {
++	if (!params->common.cpus) {
+ 		for (i = 0; i < sysconf(_SC_NPROCESSORS_CONF); i++)
+-			CPU_SET(i, &params->monitored_cpus);
++			CPU_SET(i, &params->common.monitored_cpus);
+ 	}
+ 
+-	retval = osnoise_set_stop_us(tool->context, params->stop_us);
++	retval = osnoise_set_stop_us(tool->context, params->common.stop_us);
+ 	if (retval) {
+ 		err_msg("Failed to set stop us\n");
+ 		goto out_err;
+ 	}
+ 
+-	retval = osnoise_set_stop_total_us(tool->context, params->stop_total_us);
++	retval = osnoise_set_stop_total_us(tool->context, params->common.stop_total_us);
+ 	if (retval) {
+ 		err_msg("Failed to set stop total us\n");
+ 		goto out_err;
+@@ -69,14 +69,14 @@ timerlat_apply_config(struct osnoise_tool *tool, struct timerlat_params *params)
+ 		goto out_err;
+ 	}
+ 
+-	if (params->hk_cpus) {
+-		retval = sched_setaffinity(getpid(), sizeof(params->hk_cpu_set),
+-					   &params->hk_cpu_set);
++	if (params->common.hk_cpus) {
++		retval = sched_setaffinity(getpid(), sizeof(params->common.hk_cpu_set),
++					   &params->common.hk_cpu_set);
+ 		if (retval == -1) {
+ 			err_msg("Failed to set rtla to the house keeping CPUs\n");
+ 			goto out_err;
+ 		}
+-	} else if (params->cpus) {
++	} else if (params->common.cpus) {
+ 		/*
+ 		 * Even if the user do not set a house-keeping CPU, try to
+ 		 * move rtla to a CPU set different to the one where the user
+@@ -84,7 +84,7 @@ timerlat_apply_config(struct osnoise_tool *tool, struct timerlat_params *params)
+ 		 *
+ 		 * No need to check results as this is an automatic attempt.
+ 		 */
+-		auto_house_keeping(&params->monitored_cpus);
++		auto_house_keeping(&params->common.monitored_cpus);
+ 	}
+ 
+ 	/*
+diff --git a/tools/tracing/rtla/src/timerlat.h b/tools/tracing/rtla/src/timerlat.h
+index 73045aef23fa..e9c385a01da3 100644
+--- a/tools/tracing/rtla/src/timerlat.h
++++ b/tools/tracing/rtla/src/timerlat.h
+@@ -2,34 +2,17 @@
+ #include "osnoise.h"
+ 
+ struct timerlat_params {
+-	/* Common params */
+-	char			*cpus;
+-	cpu_set_t		monitored_cpus;
+-	char			*trace_output;
+-	char			*cgroup_name;
+-	unsigned long long	runtime;
+-	long long		stop_us;
+-	long long		stop_total_us;
++	struct common_params	common;
+ 	long long		timerlat_period_us;
+ 	long long		print_stack;
+-	int			sleep_time;
+ 	int			output_divisor;
+-	int			duration;
+-	int			set_sched;
+ 	int			dma_latency;
+ 	int			no_aa;
+ 	int			dump_tasks;
+-	int			cgroup;
+-	int			hk_cpus;
+ 	int			user_workload;
+ 	int			kernel_workload;
+ 	int			user_data;
+-	int			warmup;
+-	int			buffer_size;
+ 	int			deepest_idle_state;
+-	cpu_set_t		hk_cpu_set;
+-	struct sched_attr	sched_param;
+-	struct trace_events	*events;
+ 	union {
+ 		struct {
+ 			/* top only */
+diff --git a/tools/tracing/rtla/src/timerlat_bpf.c b/tools/tracing/rtla/src/timerlat_bpf.c
+index 0bc44ce5d69b..4a78afa9f3b2 100644
+--- a/tools/tracing/rtla/src/timerlat_bpf.c
++++ b/tools/tracing/rtla/src/timerlat_bpf.c
+@@ -23,8 +23,8 @@ int timerlat_bpf_init(struct timerlat_params *params)
+ 	/* Pass common options */
+ 	bpf->rodata->output_divisor = params->output_divisor;
+ 	bpf->rodata->entries = params->entries;
+-	bpf->rodata->irq_threshold = params->stop_us;
+-	bpf->rodata->thread_threshold = params->stop_total_us;
++	bpf->rodata->irq_threshold = params->common.stop_us;
++	bpf->rodata->thread_threshold = params->common.stop_total_us;
+ 	bpf->rodata->aa_only = params->aa_only;
+ 
+ 	if (params->entries != 0) {
+diff --git a/tools/tracing/rtla/src/timerlat_hist.c b/tools/tracing/rtla/src/timerlat_hist.c
+index 36d2294c963d..72fe55592d3d 100644
+--- a/tools/tracing/rtla/src/timerlat_hist.c
++++ b/tools/tracing/rtla/src/timerlat_hist.c
+@@ -303,7 +303,7 @@ static void timerlat_hist_header(struct osnoise_tool *tool)
+ 		trace_seq_printf(s, "Index");
+ 
+ 	for (cpu = 0; cpu < data->nr_cpus; cpu++) {
+-		if (params->cpus && !CPU_ISSET(cpu, &params->monitored_cpus))
++		if (params->common.cpus && !CPU_ISSET(cpu, &params->common.monitored_cpus))
+ 			continue;
+ 
+ 		if (!data->hist[cpu].irq_count && !data->hist[cpu].thread_count)
+@@ -357,7 +357,7 @@ timerlat_print_summary(struct timerlat_params *params,
+ 		trace_seq_printf(trace->seq, "count:");
+ 
+ 	for (cpu = 0; cpu < data->nr_cpus; cpu++) {
+-		if (params->cpus && !CPU_ISSET(cpu, &params->monitored_cpus))
++		if (params->common.cpus && !CPU_ISSET(cpu, &params->common.monitored_cpus))
+ 			continue;
+ 
+ 		if (!data->hist[cpu].irq_count && !data->hist[cpu].thread_count)
+@@ -381,7 +381,7 @@ timerlat_print_summary(struct timerlat_params *params,
+ 		trace_seq_printf(trace->seq, "min:  ");
+ 
+ 	for (cpu = 0; cpu < data->nr_cpus; cpu++) {
+-		if (params->cpus && !CPU_ISSET(cpu, &params->monitored_cpus))
++		if (params->common.cpus && !CPU_ISSET(cpu, &params->common.monitored_cpus))
+ 			continue;
+ 
+ 		if (!data->hist[cpu].irq_count && !data->hist[cpu].thread_count)
+@@ -411,7 +411,7 @@ timerlat_print_summary(struct timerlat_params *params,
+ 		trace_seq_printf(trace->seq, "avg:  ");
+ 
+ 	for (cpu = 0; cpu < data->nr_cpus; cpu++) {
+-		if (params->cpus && !CPU_ISSET(cpu, &params->monitored_cpus))
++		if (params->common.cpus && !CPU_ISSET(cpu, &params->common.monitored_cpus))
+ 			continue;
+ 
+ 		if (!data->hist[cpu].irq_count && !data->hist[cpu].thread_count)
+@@ -441,7 +441,7 @@ timerlat_print_summary(struct timerlat_params *params,
+ 		trace_seq_printf(trace->seq, "max:  ");
+ 
+ 	for (cpu = 0; cpu < data->nr_cpus; cpu++) {
+-		if (params->cpus && !CPU_ISSET(cpu, &params->monitored_cpus))
++		if (params->common.cpus && !CPU_ISSET(cpu, &params->common.monitored_cpus))
+ 			continue;
+ 
+ 		if (!data->hist[cpu].irq_count && !data->hist[cpu].thread_count)
+@@ -488,7 +488,7 @@ timerlat_print_stats_all(struct timerlat_params *params,
+ 	sum.min_user = ~0;
+ 
+ 	for (cpu = 0; cpu < data->nr_cpus; cpu++) {
+-		if (params->cpus && !CPU_ISSET(cpu, &params->monitored_cpus))
++		if (params->common.cpus && !CPU_ISSET(cpu, &params->common.monitored_cpus))
+ 			continue;
+ 
+ 		if (!data->hist[cpu].irq_count && !data->hist[cpu].thread_count)
+@@ -636,7 +636,7 @@ timerlat_print_stats(struct timerlat_params *params, struct osnoise_tool *tool)
+ 					 bucket * data->bucket_size);
+ 
+ 		for (cpu = 0; cpu < data->nr_cpus; cpu++) {
+-			if (params->cpus && !CPU_ISSET(cpu, &params->monitored_cpus))
++			if (params->common.cpus && !CPU_ISSET(cpu, &params->common.monitored_cpus))
+ 				continue;
+ 
+ 			if (!data->hist[cpu].irq_count && !data->hist[cpu].thread_count)
+@@ -676,7 +676,7 @@ timerlat_print_stats(struct timerlat_params *params, struct osnoise_tool *tool)
+ 		trace_seq_printf(trace->seq, "over: ");
+ 
+ 	for (cpu = 0; cpu < data->nr_cpus; cpu++) {
+-		if (params->cpus && !CPU_ISSET(cpu, &params->monitored_cpus))
++		if (params->common.cpus && !CPU_ISSET(cpu, &params->common.monitored_cpus))
+ 			continue;
+ 
+ 		if (!data->hist[cpu].irq_count && !data->hist[cpu].thread_count)
+@@ -856,30 +856,30 @@ static struct timerlat_params
+ 			auto_thresh = get_llong_from_str(optarg);
+ 
+ 			/* set thread stop to auto_thresh */
+-			params->stop_total_us = auto_thresh;
+-			params->stop_us = auto_thresh;
++			params->common.stop_total_us = auto_thresh;
++			params->common.stop_us = auto_thresh;
+ 
+ 			/* get stack trace */
+ 			params->print_stack = auto_thresh;
+ 
+ 			/* set trace */
+-			params->trace_output = "timerlat_trace.txt";
++			params->common.trace_output = "timerlat_trace.txt";
+ 
+ 			break;
+ 		case 'c':
+-			retval = parse_cpu_set(optarg, &params->monitored_cpus);
++			retval = parse_cpu_set(optarg, &params->common.monitored_cpus);
+ 			if (retval)
+ 				timerlat_hist_usage("\nInvalid -c cpu list\n");
+-			params->cpus = optarg;
++			params->common.cpus = optarg;
+ 			break;
+ 		case 'C':
+-			params->cgroup = 1;
++			params->common.cgroup = 1;
+ 			if (!optarg) {
+ 				/* will inherit this cgroup */
+-				params->cgroup_name = NULL;
++				params->common.cgroup_name = NULL;
+ 			} else if (*optarg == '=') {
+ 				/* skip the = */
+-				params->cgroup_name = ++optarg;
++				params->common.cgroup_name = ++optarg;
+ 			}
+ 			break;
+ 		case 'b':
+@@ -891,8 +891,8 @@ static struct timerlat_params
+ 			config_debug = 1;
+ 			break;
+ 		case 'd':
+-			params->duration = parse_seconds_duration(optarg);
+-			if (!params->duration)
++			params->common.duration = parse_seconds_duration(optarg);
++			if (!params->common.duration)
+ 				timerlat_hist_usage("Invalid -D duration\n");
+ 			break;
+ 		case 'e':
+@@ -902,10 +902,10 @@ static struct timerlat_params
+ 				exit(EXIT_FAILURE);
+ 			}
+ 
+-			if (params->events)
+-				tevent->next = params->events;
++			if (params->common.events)
++				tevent->next = params->common.events;
+ 
+-			params->events = tevent;
++			params->common.events = tevent;
+ 			break;
+ 		case 'E':
+ 			params->entries = get_llong_from_str(optarg);
+@@ -917,15 +917,15 @@ static struct timerlat_params
+ 			timerlat_hist_usage(NULL);
+ 			break;
+ 		case 'H':
+-			params->hk_cpus = 1;
+-			retval = parse_cpu_set(optarg, &params->hk_cpu_set);
++			params->common.hk_cpus = 1;
++			retval = parse_cpu_set(optarg, &params->common.hk_cpu_set);
+ 			if (retval) {
+ 				err_msg("Error parsing house keeping CPUs\n");
+ 				exit(EXIT_FAILURE);
+ 			}
+ 			break;
+ 		case 'i':
+-			params->stop_us = get_llong_from_str(optarg);
++			params->common.stop_us = get_llong_from_str(optarg);
+ 			break;
+ 		case 'k':
+ 			params->kernel_workload = 1;
+@@ -939,27 +939,27 @@ static struct timerlat_params
+ 				timerlat_hist_usage("Period longer than 1 s\n");
+ 			break;
+ 		case 'P':
+-			retval = parse_prio(optarg, &params->sched_param);
++			retval = parse_prio(optarg, &params->common.sched_param);
+ 			if (retval == -1)
+ 				timerlat_hist_usage("Invalid -P priority");
+-			params->set_sched = 1;
++			params->common.set_sched = 1;
+ 			break;
+ 		case 's':
+ 			params->print_stack = get_llong_from_str(optarg);
+ 			break;
+ 		case 'T':
+-			params->stop_total_us = get_llong_from_str(optarg);
++			params->common.stop_total_us = get_llong_from_str(optarg);
+ 			break;
+ 		case 't':
+ 			if (optarg) {
+ 				if (optarg[0] == '=')
+-					params->trace_output = &optarg[1];
++					params->common.trace_output = &optarg[1];
+ 				else
+-					params->trace_output = &optarg[0];
++					params->common.trace_output = &optarg[0];
+ 			} else if (optind < argc && argv[optind][0] != '-')
+-				params->trace_output = argv[optind];
++				params->common.trace_output = argv[optind];
+ 			else
+-				params->trace_output = "timerlat_trace.txt";
++				params->common.trace_output = "timerlat_trace.txt";
+ 			break;
+ 		case 'u':
+ 			params->user_workload = 1;
+@@ -986,8 +986,8 @@ static struct timerlat_params
+ 			params->with_zeros = 1;
+ 			break;
+ 		case '6': /* trigger */
+-			if (params->events) {
+-				retval = trace_event_add_trigger(params->events, optarg);
++			if (params->common.events) {
++				retval = trace_event_add_trigger(params->common.events, optarg);
+ 				if (retval) {
+ 					err_msg("Error adding trigger %s\n", optarg);
+ 					exit(EXIT_FAILURE);
+@@ -997,8 +997,8 @@ static struct timerlat_params
+ 			}
+ 			break;
+ 		case '7': /* filter */
+-			if (params->events) {
+-				retval = trace_event_add_filter(params->events, optarg);
++			if (params->common.events) {
++				retval = trace_event_add_filter(params->common.events, optarg);
+ 				if (retval) {
+ 					err_msg("Error adding filter %s\n", optarg);
+ 					exit(EXIT_FAILURE);
+@@ -1021,10 +1021,10 @@ static struct timerlat_params
+ 			params->dump_tasks = 1;
+ 			break;
+ 		case '\2':
+-			params->warmup = get_llong_from_str(optarg);
++			params->common.warmup = get_llong_from_str(optarg);
+ 			break;
+ 		case '\3':
+-			params->buffer_size = get_llong_from_str(optarg);
++			params->common.buffer_size = get_llong_from_str(optarg);
+ 			break;
+ 		case '\4':
+ 			params->deepest_idle_state = get_llong_from_str(optarg);
+@@ -1048,7 +1048,7 @@ static struct timerlat_params
+ 	/*
+ 	 * Auto analysis only happens if stop tracing, thus:
+ 	 */
+-	if (!params->stop_us && !params->stop_total_us)
++	if (!params->common.stop_us && !params->common.stop_total_us)
+ 		params->no_aa = 1;
+ 
+ 	if (params->kernel_workload && params->user_workload)
+@@ -1130,9 +1130,9 @@ static void
+ timerlat_hist_set_signals(struct timerlat_params *params)
+ {
+ 	signal(SIGINT, stop_hist);
+-	if (params->duration) {
++	if (params->common.duration) {
+ 		signal(SIGALRM, stop_hist);
+-		alarm(params->duration);
++		alarm(params->common.duration);
+ 	}
+ }
+ 
+@@ -1199,16 +1199,16 @@ int timerlat_hist_main(int argc, char *argv[])
+ 		goto out_free;
+ 	}
+ 
+-	if (params->set_sched) {
+-		retval = set_comm_sched_attr("timerlat/", &params->sched_param);
++	if (params->common.set_sched) {
++		retval = set_comm_sched_attr("timerlat/", &params->common.sched_param);
+ 		if (retval) {
+ 			err_msg("Failed to set sched parameters\n");
+ 			goto out_free;
+ 		}
+ 	}
+ 
+-	if (params->cgroup && !params->user_workload) {
+-		retval = set_comm_cgroup("timerlat/", params->cgroup_name);
++	if (params->common.cgroup && !params->user_workload) {
++		retval = set_comm_cgroup("timerlat/", params->common.cgroup_name);
+ 		if (!retval) {
+ 			err_msg("Failed to move threads to cgroup\n");
+ 			goto out_free;
+@@ -1232,7 +1232,7 @@ int timerlat_hist_main(int argc, char *argv[])
+ 		nr_cpus = sysconf(_SC_NPROCESSORS_CONF);
+ 
+ 		for (i = 0; i < nr_cpus; i++) {
+-			if (params->cpus && !CPU_ISSET(i, &params->monitored_cpus))
++			if (params->common.cpus && !CPU_ISSET(i, &params->common.monitored_cpus))
+ 				continue;
+ 			if (save_cpu_idle_disable_state(i) < 0) {
+ 				err_msg("Could not save cpu idle state.\n");
+@@ -1245,21 +1245,21 @@ int timerlat_hist_main(int argc, char *argv[])
+ 		}
+ 	}
+ 
+-	if (params->trace_output) {
++	if (params->common.trace_output) {
+ 		record = osnoise_init_trace_tool("timerlat");
+ 		if (!record) {
+ 			err_msg("Failed to enable the trace instance\n");
+ 			goto out_free;
+ 		}
+ 
+-		if (params->events) {
+-			retval = trace_events_enable(&record->trace, params->events);
++		if (params->common.events) {
++			retval = trace_events_enable(&record->trace, params->common.events);
+ 			if (retval)
+ 				goto out_hist;
+ 		}
+ 
+-		if (params->buffer_size > 0) {
+-			retval = trace_set_buffer_size(&record->trace, params->buffer_size);
++		if (params->common.buffer_size > 0) {
++			retval = trace_set_buffer_size(&record->trace, params->common.buffer_size);
+ 			if (retval)
+ 				goto out_hist;
+ 		}
+@@ -1289,22 +1289,22 @@ int timerlat_hist_main(int argc, char *argv[])
+ 		/* all threads left */
+ 		params_u.stopped_running = 0;
+ 
+-		params_u.set = &params->monitored_cpus;
+-		if (params->set_sched)
+-			params_u.sched_param = &params->sched_param;
++		params_u.set = &params->common.monitored_cpus;
++		if (params->common.set_sched)
++			params_u.sched_param = &params->common.sched_param;
+ 		else
+ 			params_u.sched_param = NULL;
+ 
+-		params_u.cgroup_name = params->cgroup_name;
++		params_u.cgroup_name = params->common.cgroup_name;
+ 
+ 		retval = pthread_create(&timerlat_u, NULL, timerlat_u_dispatcher, &params_u);
+ 		if (retval)
+ 			err_msg("Error creating timerlat user-space threads\n");
+ 	}
+ 
+-	if (params->warmup > 0) {
+-		debug_msg("Warming up for %d seconds\n", params->warmup);
+-		sleep(params->warmup);
++	if (params->common.warmup > 0) {
++		debug_msg("Warming up for %d seconds\n", params->common.warmup);
++		sleep(params->common.warmup);
+ 		if (stop_tracing)
+ 			goto out_hist;
+ 	}
+@@ -1316,7 +1316,7 @@ int timerlat_hist_main(int argc, char *argv[])
+ 	 * tracing while enabling other instances. The trace instance is the
+ 	 * one with most valuable information.
+ 	 */
+-	if (params->trace_output)
++	if (params->common.trace_output)
+ 		trace_instance_start(&record->trace);
+ 	if (!params->no_aa)
+ 		trace_instance_start(&aa->trace);
+@@ -1335,7 +1335,7 @@ int timerlat_hist_main(int argc, char *argv[])
+ 
+ 	if (no_bpf) {
+ 		while (!stop_tracing) {
+-			sleep(params->sleep_time);
++			sleep(params->common.sleep_time);
+ 
+ 			retval = tracefs_iterate_raw_events(trace->tep,
+ 							    trace->inst,
+@@ -1384,10 +1384,11 @@ int timerlat_hist_main(int argc, char *argv[])
+ 		printf("rtla timerlat hit stop tracing\n");
+ 
+ 		if (!params->no_aa)
+-			timerlat_auto_analysis(params->stop_us, params->stop_total_us);
++			timerlat_auto_analysis(params->common.stop_us,
++					       params->common.stop_total_us);
+ 
+ 		save_trace_to_file(record ? record->trace.inst : NULL,
+-				   params->trace_output);
++				   params->common.trace_output);
+ 		return_value = FAILED;
+ 	}
+ 
+@@ -1397,13 +1398,13 @@ int timerlat_hist_main(int argc, char *argv[])
+ 		close(dma_latency_fd);
+ 	if (params->deepest_idle_state >= -1) {
+ 		for (i = 0; i < nr_cpus; i++) {
+-			if (params->cpus && !CPU_ISSET(i, &params->monitored_cpus))
++			if (params->common.cpus && !CPU_ISSET(i, &params->common.monitored_cpus))
+ 				continue;
+ 			restore_cpu_idle_disable_state(i);
+ 		}
+ 	}
+-	trace_events_destroy(&record->trace, params->events);
+-	params->events = NULL;
++	trace_events_destroy(&record->trace, params->common.events);
++	params->common.events = NULL;
+ out_free:
+ 	timerlat_free_histogram(tool->data);
+ 	osnoise_destroy_tool(aa);
+diff --git a/tools/tracing/rtla/src/timerlat_top.c b/tools/tracing/rtla/src/timerlat_top.c
+index 7365e08fe986..bd811ff1130f 100644
+--- a/tools/tracing/rtla/src/timerlat_top.c
++++ b/tools/tracing/rtla/src/timerlat_top.c
+@@ -457,7 +457,7 @@ timerlat_print_stats(struct timerlat_params *params, struct osnoise_tool *top)
+ 	timerlat_top_header(params, top);
+ 
+ 	for (i = 0; i < nr_cpus; i++) {
+-		if (params->cpus && !CPU_ISSET(i, &params->monitored_cpus))
++		if (params->common.cpus && !CPU_ISSET(i, &params->common.monitored_cpus))
+ 			continue;
+ 		timerlat_top_print(top, i);
+ 		timerlat_top_update_sum(top, i, &summary);
+@@ -607,22 +607,22 @@ static struct timerlat_params
+ 			auto_thresh = get_llong_from_str(optarg);
+ 
+ 			/* set thread stop to auto_thresh */
+-			params->stop_total_us = auto_thresh;
+-			params->stop_us = auto_thresh;
++			params->common.stop_total_us = auto_thresh;
++			params->common.stop_us = auto_thresh;
+ 
+ 			/* get stack trace */
+ 			params->print_stack = auto_thresh;
+ 
+ 			/* set trace */
+-			params->trace_output = "timerlat_trace.txt";
++			params->common.trace_output = "timerlat_trace.txt";
+ 			break;
+ 		case '5':
+ 			/* it is here because it is similar to -a */
+ 			auto_thresh = get_llong_from_str(optarg);
+ 
+ 			/* set thread stop to auto_thresh */
+-			params->stop_total_us = auto_thresh;
+-			params->stop_us = auto_thresh;
++			params->common.stop_total_us = auto_thresh;
++			params->common.stop_us = auto_thresh;
+ 
+ 			/* get stack trace */
+ 			params->print_stack = auto_thresh;
+@@ -631,27 +631,27 @@ static struct timerlat_params
+ 			params->aa_only = 1;
+ 			break;
+ 		case 'c':
+-			retval = parse_cpu_set(optarg, &params->monitored_cpus);
++			retval = parse_cpu_set(optarg, &params->common.monitored_cpus);
+ 			if (retval)
+ 				timerlat_top_usage("\nInvalid -c cpu list\n");
+-			params->cpus = optarg;
++			params->common.cpus = optarg;
+ 			break;
+ 		case 'C':
+-			params->cgroup = 1;
++			params->common.cgroup = 1;
+ 			if (!optarg) {
+ 				/* will inherit this cgroup */
+-				params->cgroup_name = NULL;
++				params->common.cgroup_name = NULL;
+ 			} else if (*optarg == '=') {
+ 				/* skip the = */
+-				params->cgroup_name = ++optarg;
++				params->common.cgroup_name = ++optarg;
+ 			}
+ 			break;
+ 		case 'D':
+ 			config_debug = 1;
+ 			break;
+ 		case 'd':
+-			params->duration = parse_seconds_duration(optarg);
+-			if (!params->duration)
++			params->common.duration = parse_seconds_duration(optarg);
++			if (!params->common.duration)
+ 				timerlat_top_usage("Invalid -d duration\n");
+ 			break;
+ 		case 'e':
+@@ -661,24 +661,24 @@ static struct timerlat_params
+ 				exit(EXIT_FAILURE);
+ 			}
+ 
+-			if (params->events)
+-				tevent->next = params->events;
+-			params->events = tevent;
++			if (params->common.events)
++				tevent->next = params->common.events;
++			params->common.events = tevent;
+ 			break;
+ 		case 'h':
+ 		case '?':
+ 			timerlat_top_usage(NULL);
+ 			break;
+ 		case 'H':
+-			params->hk_cpus = 1;
+-			retval = parse_cpu_set(optarg, &params->hk_cpu_set);
++			params->common.hk_cpus = 1;
++			retval = parse_cpu_set(optarg, &params->common.hk_cpu_set);
+ 			if (retval) {
+ 				err_msg("Error parsing house keeping CPUs\n");
+ 				exit(EXIT_FAILURE);
+ 			}
+ 			break;
+ 		case 'i':
+-			params->stop_us = get_llong_from_str(optarg);
++			params->common.stop_us = get_llong_from_str(optarg);
+ 			break;
+ 		case 'k':
+ 			params->kernel_workload = true;
+@@ -692,10 +692,10 @@ static struct timerlat_params
+ 				timerlat_top_usage("Period longer than 1 s\n");
+ 			break;
+ 		case 'P':
+-			retval = parse_prio(optarg, &params->sched_param);
++			retval = parse_prio(optarg, &params->common.sched_param);
+ 			if (retval == -1)
+ 				timerlat_top_usage("Invalid -P priority");
+-			params->set_sched = 1;
++			params->common.set_sched = 1;
+ 			break;
+ 		case 'q':
+ 			params->quiet = 1;
+@@ -704,18 +704,18 @@ static struct timerlat_params
+ 			params->print_stack = get_llong_from_str(optarg);
+ 			break;
+ 		case 'T':
+-			params->stop_total_us = get_llong_from_str(optarg);
++			params->common.stop_total_us = get_llong_from_str(optarg);
+ 			break;
+ 		case 't':
+ 			if (optarg) {
+ 				if (optarg[0] == '=')
+-					params->trace_output = &optarg[1];
++					params->common.trace_output = &optarg[1];
+ 				else
+-					params->trace_output = &optarg[0];
++					params->common.trace_output = &optarg[0];
+ 			} else if (optind < argc && argv[optind][0] != '-')
+-				params->trace_output = argv[optind];
++				params->common.trace_output = argv[optind];
+ 			else
+-				params->trace_output = "timerlat_trace.txt";
++				params->common.trace_output = "timerlat_trace.txt";
+ 
+ 			break;
+ 		case 'u':
+@@ -725,8 +725,8 @@ static struct timerlat_params
+ 			params->user_data = true;
+ 			break;
+ 		case '0': /* trigger */
+-			if (params->events) {
+-				retval = trace_event_add_trigger(params->events, optarg);
++			if (params->common.events) {
++				retval = trace_event_add_trigger(params->common.events, optarg);
+ 				if (retval) {
+ 					err_msg("Error adding trigger %s\n", optarg);
+ 					exit(EXIT_FAILURE);
+@@ -736,8 +736,8 @@ static struct timerlat_params
+ 			}
+ 			break;
+ 		case '1': /* filter */
+-			if (params->events) {
+-				retval = trace_event_add_filter(params->events, optarg);
++			if (params->common.events) {
++				retval = trace_event_add_filter(params->common.events, optarg);
+ 				if (retval) {
+ 					err_msg("Error adding filter %s\n", optarg);
+ 					exit(EXIT_FAILURE);
+@@ -760,10 +760,10 @@ static struct timerlat_params
+ 			params->dump_tasks = 1;
+ 			break;
+ 		case '6':
+-			params->warmup = get_llong_from_str(optarg);
++			params->common.warmup = get_llong_from_str(optarg);
+ 			break;
+ 		case '7':
+-			params->buffer_size = get_llong_from_str(optarg);
++			params->common.buffer_size = get_llong_from_str(optarg);
+ 			break;
+ 		case '8':
+ 			params->deepest_idle_state = get_llong_from_str(optarg);
+@@ -781,7 +781,7 @@ static struct timerlat_params
+ 	/*
+ 	 * Auto analysis only happens if stop tracing, thus:
+ 	 */
+-	if (!params->stop_us && !params->stop_total_us)
++	if (!params->common.stop_us && !params->common.stop_total_us)
+ 		params->no_aa = 1;
+ 
+ 	if (params->no_aa && params->aa_only)
+@@ -869,9 +869,9 @@ static void
+ timerlat_top_set_signals(struct timerlat_params *params)
+ {
+ 	signal(SIGINT, stop_top);
+-	if (params->duration) {
++	if (params->common.duration) {
+ 		signal(SIGALRM, stop_top);
+-		alarm(params->duration);
++		alarm(params->common.duration);
+ 	}
+ }
+ 
+@@ -888,7 +888,7 @@ timerlat_top_main_loop(struct osnoise_tool *top,
+ 	int retval;
+ 
+ 	while (!stop_tracing) {
+-		sleep(params->sleep_time);
++		sleep(params->common.sleep_time);
+ 
+ 		if (params->aa_only && !osnoise_trace_is_off(top, record))
+ 			continue;
+@@ -954,7 +954,7 @@ timerlat_top_bpf_main_loop(struct osnoise_tool *top,
+ 
+ 	/* Pull and display data in a loop */
+ 	while (!stop_tracing) {
+-		wait_retval = timerlat_bpf_wait(params->sleep_time);
++		wait_retval = timerlat_bpf_wait(params->common.sleep_time);
+ 
+ 		retval = timerlat_top_bpf_pull_data(top);
+ 		if (retval) {
+@@ -1044,16 +1044,16 @@ int timerlat_top_main(int argc, char *argv[])
+ 		goto out_free;
+ 	}
+ 
+-	if (params->set_sched) {
+-		retval = set_comm_sched_attr("timerlat/", &params->sched_param);
++	if (params->common.set_sched) {
++		retval = set_comm_sched_attr("timerlat/", &params->common.sched_param);
+ 		if (retval) {
+ 			err_msg("Failed to set sched parameters\n");
+ 			goto out_free;
+ 		}
+ 	}
+ 
+-	if (params->cgroup && !params->user_data) {
+-		retval = set_comm_cgroup("timerlat/", params->cgroup_name);
++	if (params->common.cgroup && !params->user_data) {
++		retval = set_comm_cgroup("timerlat/", params->common.cgroup_name);
+ 		if (!retval) {
+ 			err_msg("Failed to move threads to cgroup\n");
+ 			goto out_free;
+@@ -1077,7 +1077,7 @@ int timerlat_top_main(int argc, char *argv[])
+ 		nr_cpus = sysconf(_SC_NPROCESSORS_CONF);
+ 
+ 		for (i = 0; i < nr_cpus; i++) {
+-			if (params->cpus && !CPU_ISSET(i, &params->monitored_cpus))
++			if (params->common.cpus && !CPU_ISSET(i, &params->common.monitored_cpus))
+ 				continue;
+ 			if (save_cpu_idle_disable_state(i) < 0) {
+ 				err_msg("Could not save cpu idle state.\n");
+@@ -1090,21 +1090,21 @@ int timerlat_top_main(int argc, char *argv[])
+ 		}
+ 	}
+ 
+-	if (params->trace_output) {
++	if (params->common.trace_output) {
+ 		record = osnoise_init_trace_tool("timerlat");
+ 		if (!record) {
+ 			err_msg("Failed to enable the trace instance\n");
+ 			goto out_free;
+ 		}
+ 
+-		if (params->events) {
+-			retval = trace_events_enable(&record->trace, params->events);
++		if (params->common.events) {
++			retval = trace_events_enable(&record->trace, params->common.events);
+ 			if (retval)
+ 				goto out_top;
+ 		}
+ 
+-		if (params->buffer_size > 0) {
+-			retval = trace_set_buffer_size(&record->trace, params->buffer_size);
++		if (params->common.buffer_size > 0) {
++			retval = trace_set_buffer_size(&record->trace, params->common.buffer_size);
+ 			if (retval)
+ 				goto out_top;
+ 		}
+@@ -1137,22 +1137,22 @@ int timerlat_top_main(int argc, char *argv[])
+ 		/* all threads left */
+ 		params_u.stopped_running = 0;
+ 
+-		params_u.set = &params->monitored_cpus;
+-		if (params->set_sched)
+-			params_u.sched_param = &params->sched_param;
++		params_u.set = &params->common.monitored_cpus;
++		if (params->common.set_sched)
++			params_u.sched_param = &params->common.sched_param;
+ 		else
+ 			params_u.sched_param = NULL;
+ 
+-		params_u.cgroup_name = params->cgroup_name;
++		params_u.cgroup_name = params->common.cgroup_name;
+ 
+ 		retval = pthread_create(&timerlat_u, NULL, timerlat_u_dispatcher, &params_u);
+ 		if (retval)
+ 			err_msg("Error creating timerlat user-space threads\n");
+ 	}
+ 
+-	if (params->warmup > 0) {
+-		debug_msg("Warming up for %d seconds\n", params->warmup);
+-		sleep(params->warmup);
++	if (params->common.warmup > 0) {
++		debug_msg("Warming up for %d seconds\n", params->common.warmup);
++		sleep(params->common.warmup);
+ 	}
+ 
+ 	/*
+@@ -1162,7 +1162,7 @@ int timerlat_top_main(int argc, char *argv[])
+ 	 * tracing while enabling other instances. The trace instance is the
+ 	 * one with most valuable information.
+ 	 */
+-	if (params->trace_output)
++	if (params->common.trace_output)
+ 		trace_instance_start(&record->trace);
+ 	if (!params->no_aa)
+ 		trace_instance_start(&aa->trace);
+@@ -1203,10 +1203,11 @@ int timerlat_top_main(int argc, char *argv[])
+ 		printf("rtla timerlat hit stop tracing\n");
+ 
+ 		if (!params->no_aa)
+-			timerlat_auto_analysis(params->stop_us, params->stop_total_us);
++			timerlat_auto_analysis(params->common.stop_us,
++					       params->common.stop_total_us);
+ 
+ 		save_trace_to_file(record ? record->trace.inst : NULL,
+-				   params->trace_output);
++				   params->common.trace_output);
+ 		return_value = FAILED;
+ 	} else if (params->aa_only) {
+ 		/*
+@@ -1226,13 +1227,13 @@ int timerlat_top_main(int argc, char *argv[])
+ 		close(dma_latency_fd);
+ 	if (params->deepest_idle_state >= -1) {
+ 		for (i = 0; i < nr_cpus; i++) {
+-			if (params->cpus && !CPU_ISSET(i, &params->monitored_cpus))
++			if (params->common.cpus && !CPU_ISSET(i, &params->common.monitored_cpus))
+ 				continue;
+ 			restore_cpu_idle_disable_state(i);
+ 		}
+ 	}
+-	trace_events_destroy(&record->trace, params->events);
+-	params->events = NULL;
++	trace_events_destroy(&record->trace, params->common.events);
++	params->common.events = NULL;
+ out_free:
+ 	timerlat_free_top(top->data);
+ 	if (aa && aa != top)
+diff --git a/tools/tracing/rtla/src/utils.h b/tools/tracing/rtla/src/utils.h
+index a2a6f89f342d..ea3ce1b59ac5 100644
+--- a/tools/tracing/rtla/src/utils.h
++++ b/tools/tracing/rtla/src/utils.h
+@@ -59,6 +59,37 @@ struct sched_attr {
+ };
+ #endif /* SCHED_ATTR_SIZE_VER0 */
+ 
++/*
++ * common_params - Parameters shared between timerlat_params and osnoise_params
++ *
++ * This structure contains all the fields that are identical in both
++ * timerlat_params and osnoise_params structures, eliminating duplication.
++ */
++struct common_params {
++	/* trace configuration */
++	char			*cpus;
++	cpu_set_t		monitored_cpus;
++	struct trace_events	*events;
++	int			buffer_size;
++	char			*trace_output;
++
++	/* Timing parameters */
++	int			warmup;
++	unsigned long long	runtime;
++	long long		stop_us;
++	long long		stop_total_us;
++	int			sleep_time;
++	int			duration;
++
++	/* Scheduling parameters */
++	int			set_sched;
++	struct sched_attr	sched_param;
++	int			cgroup;
++	char			*cgroup_name;
++	int			hk_cpus;
++	cpu_set_t		hk_cpu_set;
++};
++
+ int parse_prio(char *arg, struct sched_attr *sched_param);
+ int parse_cpu_set(char *cpu_list, cpu_set_t *set);
+ int __set_sched_attr(int pid, struct sched_attr *attr);
+-- 
+2.48.1
 
-The wfet case is unlikely:
-
-   bool wfet = alternative_has_cap_unlikely(ARM64_HAS_WFXT);
-
-And, I'm testing for:
-
-   if (wfe || wfet)
-
-This last check should have been "if (wfet || wfe)"" since the first
-clause is pretty much free.
-
-But even with that fixed, I don't think the compiler will do the right thing.
-
-I could condition the computation on arch_timer_evtstrm_available(), but I
-would prefer to keep this code straightforward since it will only be
-evaluated infrequently.
-
-But, let me see what I can do.
-
---
-ankur
 
