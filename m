@@ -1,41 +1,41 @@
-Return-Path: <bpf+bounces-61990-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61981-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D3A9AF03AD
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 21:23:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E475AF0393
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 21:20:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D114481C29
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 19:22:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AC201C085C2
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 19:20:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A304288C97;
-	Tue,  1 Jul 2025 19:19:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95543286D60;
+	Tue,  1 Jul 2025 19:19:02 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC044288C84;
-	Tue,  1 Jul 2025 19:19:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AC6D2868BA;
+	Tue,  1 Jul 2025 19:19:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751397552; cv=none; b=tDp94ML3iyz3o70YXyf+fvLjzu+kVlbB9DgQSzT9DtJzVbMn3uhqUBytKMkTkn9WC4McbPB7gRtgD1LBZu3h+Zq4WmsI2WifmjnRZdCxc0+K4JlFY3NtogWetBWvVogCeE8+mJ7d5DFIdgOpmnvTPMUfanJTQQ2adqdxu/cRuvM=
+	t=1751397542; cv=none; b=K5k/qAznHPwHdQ0yl7fXUZDy6YkahBncISTPpHlIxx+JaWU5NzGaj8HAhqxVELz7wUMNePh1TY9+J5SIE7jORKtuSr0syLvm9zU12PxEL52ls34DJUsZPP7cvoJp1au/Ld/WdPhI5lvm5kApq1uS5S+/S2rU9MCOwoZOIUPJTYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751397552; c=relaxed/simple;
-	bh=tQh371Xu4aNv634IWnbNpzI8g0gGO4AVuobSDHJ5Ps4=;
+	s=arc-20240116; t=1751397542; c=relaxed/simple;
+	bh=+1dKUkXeGNCMo2SsOx0RVb/skigBKBZOQ6KCmMD4/Gk=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=tq05MMUDcmppoFZe/wJwTkmEKcZBMhETmIUP8WardVGyPmpK84V/P33ize1TghWCHHAGrqpxz+Ffo51kjql171uDAFZNJ6W9NnsZ9aibuaudAe7PWOd4+ztaLRc41Weh+HQg1dC+3jec872dl/zpVgSfc6CtB9StUs+lwT1lHac=
+	 Content-Type; b=gsnHmlzqtTd7KWjP5WamOggSD4PILCzTHsZPAOwRxIwQmZ1faeiH0YLgbjQu155PK16Mi7RJnTkd97FA0ZiJvQZbd7Rx46OW5qGg2b1ypI6zwBcHkf3cJTWY9rd2gRvBmzKKbx15pdB7h3K4wzisQ3VWtvLVvI0VVk7Ul2gN+XY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85424C4CEEB;
-	Tue,  1 Jul 2025 19:19:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F24FC4CEEB;
+	Tue,  1 Jul 2025 19:19:02 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.98.2)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1uWg3t-00000007gqc-0MqE;
+	id 1uWg3t-00000007gr6-14E5;
 	Tue, 01 Jul 2025 14:50:33 -0400
-Message-ID: <20250701185032.940717002@goodmis.org>
+Message-ID: <20250701185033.107691440@goodmis.org>
 User-Agent: quilt/0.68
-Date: Tue, 01 Jul 2025 14:49:47 -0400
+Date: Tue, 01 Jul 2025 14:49:48 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org,
@@ -58,7 +58,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Andrew Morton <akpm@linux-foundation.org>,
  Jens Axboe <axboe@kernel.dk>,
  Florian Weimer <fweimer@redhat.com>
-Subject: [PATCH v7 08/12] unwind_user/sframe: Remove .sframe section on detected corruption
+Subject: [PATCH v7 09/12] unwind_user/sframe: Show file name in debug output
 References: <20250701184939.026626626@goodmis.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -70,30 +70,195 @@ Content-Type: text/plain; charset=UTF-8
 
 From: Josh Poimboeuf <jpoimboe@kernel.org>
 
-To avoid continued attempted use of a bad .sframe section, remove it
-on demand when the first sign of corruption is detected.
+When debugging sframe issues, the error messages aren't all that helpful
+without knowing what file a corresponding .sframe section belongs to.
+Prefix debug output strings with the file name.
 
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- kernel/unwind/sframe.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ include/linux/sframe.h       |  4 +++-
+ kernel/unwind/sframe.c       | 23 ++++++++++--------
+ kernel/unwind/sframe_debug.h | 45 +++++++++++++++++++++++++++++++-----
+ 3 files changed, 56 insertions(+), 16 deletions(-)
 
+diff --git a/include/linux/sframe.h b/include/linux/sframe.h
+index 9a72209696f9..b79c5ec09229 100644
+--- a/include/linux/sframe.h
++++ b/include/linux/sframe.h
+@@ -10,7 +10,9 @@
+ 
+ struct sframe_section {
+ 	struct rcu_head	rcu;
+-
++#ifdef CONFIG_DYNAMIC_DEBUG
++	const char	*filename;
++#endif
+ 	unsigned long	sframe_start;
+ 	unsigned long	sframe_end;
+ 	unsigned long	text_start;
 diff --git a/kernel/unwind/sframe.c b/kernel/unwind/sframe.c
-index b10420d19840..f246ead6c2a0 100644
+index f246ead6c2a0..66d3ba3c8389 100644
 --- a/kernel/unwind/sframe.c
 +++ b/kernel/unwind/sframe.c
-@@ -310,6 +310,10 @@ int sframe_find(unsigned long ip, struct unwind_user_frame *frame)
- 	ret = __find_fre(sec, &fde, ip, frame);
+@@ -311,14 +311,17 @@ int sframe_find(unsigned long ip, struct unwind_user_frame *frame)
  end:
  	user_read_access_end();
-+
-+	if (ret == -EFAULT)
-+		WARN_ON_ONCE(sframe_remove_section(sec->sframe_start));
-+
+ 
+-	if (ret == -EFAULT)
++	if (ret == -EFAULT) {
++		dbg_sec("removing bad .sframe section\n");
+ 		WARN_ON_ONCE(sframe_remove_section(sec->sframe_start));
++	}
+ 
  	return ret;
  }
  
+ static void free_section(struct sframe_section *sec)
+ {
++	dbg_free(sec);
+ 	kfree(sec);
+ }
+ 
+@@ -329,7 +332,7 @@ static int sframe_read_header(struct sframe_section *sec)
+ 	unsigned int num_fdes;
+ 
+ 	if (copy_from_user(&shdr, (void __user *)sec->sframe_start, sizeof(shdr))) {
+-		dbg("header usercopy failed\n");
++		dbg_sec("header usercopy failed\n");
+ 		return -EFAULT;
+ 	}
+ 
+@@ -337,18 +340,18 @@ static int sframe_read_header(struct sframe_section *sec)
+ 	    shdr.preamble.version != SFRAME_VERSION_2 ||
+ 	    !(shdr.preamble.flags & SFRAME_F_FDE_SORTED) ||
+ 	    shdr.auxhdr_len) {
+-		dbg("bad/unsupported sframe header\n");
++		dbg_sec("bad/unsupported sframe header\n");
+ 		return -EINVAL;
+ 	}
+ 
+ 	if (!shdr.num_fdes || !shdr.num_fres) {
+-		dbg("no fde/fre entries\n");
++		dbg_sec("no fde/fre entries\n");
+ 		return -EINVAL;
+ 	}
+ 
+ 	header_end = sec->sframe_start + SFRAME_HEADER_SIZE(shdr);
+ 	if (header_end >= sec->sframe_end) {
+-		dbg("header doesn't fit in section\n");
++		dbg_sec("header doesn't fit in section\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -360,7 +363,7 @@ static int sframe_read_header(struct sframe_section *sec)
+ 	fres_end   = fres_start + shdr.fre_len;
+ 
+ 	if (fres_start < fdes_end || fres_end > sec->sframe_end) {
+-		dbg("inconsistent fde/fre offsets\n");
++		dbg_sec("inconsistent fde/fre offsets\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -416,6 +419,8 @@ int sframe_add_section(unsigned long sframe_start, unsigned long sframe_end,
+ 	sec->text_start		= text_start;
+ 	sec->text_end		= text_end;
+ 
++	dbg_init(sec);
++
+ 	ret = sframe_read_header(sec);
+ 	if (ret) {
+ 		dbg_print_header(sec);
+@@ -424,8 +429,8 @@ int sframe_add_section(unsigned long sframe_start, unsigned long sframe_end,
+ 
+ 	ret = mtree_insert_range(sframe_mt, sec->text_start, sec->text_end, sec, GFP_KERNEL);
+ 	if (ret) {
+-		dbg("mtree_insert_range failed: text=%lx-%lx\n",
+-		    sec->text_start, sec->text_end);
++		dbg_sec("mtree_insert_range failed: text=%lx-%lx\n",
++			sec->text_start, sec->text_end);
+ 		goto err_free;
+ 	}
+ 
+@@ -447,7 +452,7 @@ static int __sframe_remove_section(struct mm_struct *mm,
+ 				   struct sframe_section *sec)
+ {
+ 	if (!mtree_erase(&mm->sframe_mt, sec->text_start)) {
+-		dbg("mtree_erase failed: text=%lx\n", sec->text_start);
++		dbg_sec("mtree_erase failed: text=%lx\n", sec->text_start);
+ 		return -EINVAL;
+ 	}
+ 
+diff --git a/kernel/unwind/sframe_debug.h b/kernel/unwind/sframe_debug.h
+index 055c8c8fae24..7794bf0bd78c 100644
+--- a/kernel/unwind/sframe_debug.h
++++ b/kernel/unwind/sframe_debug.h
+@@ -10,26 +10,59 @@
+ #define dbg(fmt, ...)							\
+ 	pr_debug("%s (%d): " fmt, current->comm, current->pid, ##__VA_ARGS__)
+ 
++#define dbg_sec(fmt, ...)						\
++	dbg("%s: " fmt, sec->filename, ##__VA_ARGS__)
++
+ static __always_inline void dbg_print_header(struct sframe_section *sec)
+ {
+ 	unsigned long fdes_end;
+ 
+ 	fdes_end = sec->fdes_start + (sec->num_fdes * sizeof(struct sframe_fde));
+ 
+-	dbg("SEC: sframe:0x%lx-0x%lx text:0x%lx-0x%lx "
+-	    "fdes:0x%lx-0x%lx fres:0x%lx-0x%lx "
+-	    "ra_off:%d fp_off:%d\n",
+-	    sec->sframe_start, sec->sframe_end, sec->text_start, sec->text_end,
+-	    sec->fdes_start, fdes_end, sec->fres_start, sec->fres_end,
+-	    sec->ra_off, sec->fp_off);
++	dbg_sec("SEC: sframe:0x%lx-0x%lx text:0x%lx-0x%lx "
++		"fdes:0x%lx-0x%lx fres:0x%lx-0x%lx "
++		"ra_off:%d fp_off:%d\n",
++		sec->sframe_start, sec->sframe_end, sec->text_start, sec->text_end,
++		sec->fdes_start, fdes_end, sec->fres_start, sec->fres_end,
++		sec->ra_off, sec->fp_off);
++}
++
++static inline void dbg_init(struct sframe_section *sec)
++{
++	struct mm_struct *mm = current->mm;
++	struct vm_area_struct *vma;
++
++	guard(mmap_read_lock)(mm);
++	vma = vma_lookup(mm, sec->sframe_start);
++	if (!vma)
++		sec->filename = kstrdup("(vma gone???)", GFP_KERNEL);
++	else if (vma->vm_file)
++		sec->filename = kstrdup_quotable_file(vma->vm_file, GFP_KERNEL);
++	else if (vma->vm_ops && vma->vm_ops->name)
++		sec->filename = kstrdup(vma->vm_ops->name(vma), GFP_KERNEL);
++	else if (arch_vma_name(vma))
++		sec->filename = kstrdup(arch_vma_name(vma), GFP_KERNEL);
++	else if (!vma->vm_mm)
++		sec->filename = kstrdup("(vdso)", GFP_KERNEL);
++	else
++		sec->filename = kstrdup("(anonymous)", GFP_KERNEL);
++}
++
++static inline void dbg_free(struct sframe_section *sec)
++{
++	kfree(sec->filename);
+ }
+ 
+ #else /* !CONFIG_DYNAMIC_DEBUG */
+ 
+ #define dbg(args...)			no_printk(args)
++#define dbg_sec(args...	)		no_printk(args)
+ 
+ static inline void dbg_print_header(struct sframe_section *sec) {}
+ 
++static inline void dbg_init(struct sframe_section *sec) {}
++static inline void dbg_free(struct sframe_section *sec) {}
++
+ #endif /* !CONFIG_DYNAMIC_DEBUG */
+ 
+ #endif /* _SFRAME_DEBUG_H */
 -- 
 2.47.2
 
