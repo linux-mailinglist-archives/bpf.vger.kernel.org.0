@@ -1,149 +1,152 @@
-Return-Path: <bpf+bounces-61995-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-61996-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 165F2AF0409
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 21:44:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDABFAF0410
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 21:47:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 939071885E1B
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 19:44:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E8B94E4630
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 19:47:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1308328314E;
-	Tue,  1 Jul 2025 19:44:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D2302749C5;
+	Tue,  1 Jul 2025 19:47:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Gq26tMrR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nW61sTpj"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39A26283C97
-	for <bpf@vger.kernel.org>; Tue,  1 Jul 2025 19:43:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 582771F37C5
+	for <bpf@vger.kernel.org>; Tue,  1 Jul 2025 19:47:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751399043; cv=none; b=tESx2tQFonOD6v50YOG0hKG/CCOxNVtwg6yRzwXdZ/mov4V+BADEvJdenJ5inhHGUl/yr2jPRXA7wHJ7fnFGSM1TWIftLIA8Q/bKNnH0/Gi7Bhw/s93wrDyVczfjmYbj9usisjqrZkhvlUs/9+jStfyw75FlEVV2XPIVxR8W04Y=
+	t=1751399256; cv=none; b=DoQ7AFMGund6xW+2SHoGFIb/hUFLOWVJv0Z3XocnlrIxjR/R2K7BzS5pozczBgIrAuc4569Ogx1v3TYFRvQ2OYevLC1JyrLHxKwPEEgx2yNQoA1ThllUGzM0XUuN8x9o02tJSYMJvd++nxpQZH6lFvJ2GVUapJr1VbhySwyQON0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751399043; c=relaxed/simple;
-	bh=XSrXPyN34ZlW84DZlk3jiD3xY95jDP3wXoBml++kuc8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UHykpQTM5rpLIEIsP14IvcGz0zLS1YfPM6a86YushEK1+upY3Jx44fGrsIU5F5l1eUb1DTqq/+HXDbHIRQ/ZkEGtwudfKvuBgtcYiysUjbgrkQPQj1Fjg/YRY/EguHE9O9HD+7KYVCpKdZoZ2f+Ez14Dt1ZmysxzX/LksK+geyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Gq26tMrR; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1751399036;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vwNfXDXi/HtkILPBNIWMjY7gn8nreoM0WQX+RyiIhr4=;
-	b=Gq26tMrR3InSzy3+vrxFSyFjr4f9eMgOht2Qp5eStJ5Oq7M9qCUrtb6dQ6mbcASWCVZ6lv
-	5hHOi619K10vlEFGya/5DE+L1Yw1StVMTjVMPc23tFJyh6ojOpDwcYfCAXFqmcsHXsNNah
-	ZhTp+VpfQB8GYscLOAg1p4fWsKdsIlg=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-651-Ut-1pXX-PD2r2BePwdwZNA-1; Tue, 01 Jul 2025 15:43:55 -0400
-X-MC-Unique: Ut-1pXX-PD2r2BePwdwZNA-1
-X-Mimecast-MFC-AGG-ID: Ut-1pXX-PD2r2BePwdwZNA_1751399034
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-ae2b7bdc8f6so442922266b.1
-        for <bpf@vger.kernel.org>; Tue, 01 Jul 2025 12:43:55 -0700 (PDT)
+	s=arc-20240116; t=1751399256; c=relaxed/simple;
+	bh=Sl+8Xm3gUfC6mqYAfh66xSsv6GEL517bNqw0jP3i8Bo=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=AHAdTb8sGVpPnWQJfIB7Kwd7qnfaW8L06LCfxg9fnDHWUz9kdf0vHvlJxT6ZtYkudnFyDKBMASyZW3vx0c6UJ/W1H+ujhI1gK2GGWpLXzqXOhp7au9nV6UNH4JP+ZLllNAu13DN61Y4VHRGwFQCTR1cxo3gEAHGVRpRgVDGnd6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nW61sTpj; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-450cfb79177so36354195e9.0
+        for <bpf@vger.kernel.org>; Tue, 01 Jul 2025 12:47:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1751399253; x=1752004053; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ea47hVOoa4/J50lDgOGo9mZqEd5hU+lF+C3KVpzUURM=;
+        b=nW61sTpjQhwH/dqioPeyVMy7oufjqgI7uPx+MvIoeDOH/Xsd5us6nFmOPV+F6B3Byd
+         lvhtAczoRVRrWj7p/mCbZ/0OPeOrcc0O2PR3+d78xsW9uHwg19nfqnOMTFGi63z/ONmE
+         KKD86pBAQ3MqeVG6hc4aXjeyYt6RDfF//HxsMm+ExKReZatvejDrqrhsuPFKTMwvFX5S
+         bVJ0jI7Y/WcmPKaE2Rmx4Tzl2gFWSpAQlJ0WkTGoX7N18oLsvAIROPwWFmtRSZryLRbw
+         /+evpRH/rjSvKedAJ/gm2Q44dBdq9lsmDxA1KKDnKFx/e4aeogvynfGjTmfDPvZP4LTG
+         YK2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751399034; x=1752003834;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1751399253; x=1752004053;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vwNfXDXi/HtkILPBNIWMjY7gn8nreoM0WQX+RyiIhr4=;
-        b=eHSFAcRRYKuK0toioxatRUU/JrgdtqFDrvc8XCIjKAc5BvxNDMtSLU14pkj3KdxY7x
-         a6ooivBeoRtFRQNcOwDyfPJ8ufFUsfPZfmq2WZ0bwXKgHAK8Dtvqp0TPx9Ky6Zqvj6f6
-         a0B6W7KoJZ5VL9b+KSv5nvmXt2RBGju2dDZJFkx6gPjJ+QrBhDn5wJnBFZ0bw7BLhbbJ
-         YRx/nBjW72oczgkH1yX5N2kxhlydjGt6qYudX/GejhXG4m8p5CoXvlAPLlm4pkcaEDRr
-         nBnotApJWnY+CSqy1ZfrodqVNG7HYtOaP4ZbA/ZBnF/XWWnwlQ8qNGDaUEV8pTd8yVmB
-         L3ZA==
-X-Gm-Message-State: AOJu0YzzJLdaiQzql1wraDfmB2qS5xNDJyV7S/qTiivIIPQpWoGB7NOk
-	whWZ0gptP2B4156fgzCauhdRrC/SGLJ9f14RCxX984afwMjYXHI0zhiGzCWjSISw5k40wRn8wND
-	Sd25sU2Q0hQU6e49Bw1QsNhrnZWkOajr20Wg+YA/73VuUAVKiR6RS
-X-Gm-Gg: ASbGncuW6pJKXOpd10nApvFVn0rEVPH1jgZmPg8A0j8SRSdfoQuP4aTA61uV9RNbS/A
-	pe2GjbbfMQL0PXfzH2Vj15YZickaWXMbyhA3e3nxO5oEfzjnD+3+XSAY9i/rrmpLVkMiCxgSvtJ
-	JqPwuaeX/1El31OdXAU/2hD9LXUJpS1viBejnyZr0NaFb0cIxC0KkN2yo1Dg/MTK/Uom3E30V5+
-	bOcBaA9beHgFZoEtVQRCem06WoySjY+lDrXqP4MC8watv9R9hH/ltdhZRl8IdpWSiFaM0KDFJlp
-	xBqv2GmEhan1X3G+PIieqLvlnowJfv8YWLa2+rNPblvbVsOa0S7Ff2dp
-X-Received: by 2002:a17:907:6011:b0:ae3:b22c:2ee9 with SMTP id a640c23a62f3a-ae3b22c31c1mr260118766b.12.1751399034389;
-        Tue, 01 Jul 2025 12:43:54 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEjhRjEcstamngITY33ww829zc9JSyNHxKJl6hi5/MhiXLknub0gTfDRAnyAty0Oh2/kZ5bXQ==
-X-Received: by 2002:a17:907:6011:b0:ae3:b22c:2ee9 with SMTP id a640c23a62f3a-ae3b22c31c1mr260103566b.12.1751399030016;
-        Tue, 01 Jul 2025 12:43:50 -0700 (PDT)
-Received: from [192.168.0.102] (185-219-167-205-static.vivo.cz. [185.219.167.205])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae353659df1sm964469166b.52.2025.07.01.12.43.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Jul 2025 12:43:49 -0700 (PDT)
-Message-ID: <49fcc6c3-8075-4134-bdbd-fbd8a40f4202@redhat.com>
-Date: Tue, 1 Jul 2025 21:43:48 +0200
+        bh=ea47hVOoa4/J50lDgOGo9mZqEd5hU+lF+C3KVpzUURM=;
+        b=tqwq9zwfdvGhZ/ycg5QjZg+QldQrUdZliRo8yA3E0+4hllIzQ5tG/hnUhq1uEdFDKH
+         WxWVWSCpGSQqi6xicfzI/G1byO2cjiy0kWSuANF4M7tob4kdcDNGipICJCeFv2orS4uD
+         Ot984bijcEVzDMnIEfBH/wCB8ayhKnN6ZN04pqLvdfB4zTR+O3oG4dXXZAjqFXou3JRO
+         I0LdFMr38Wxx08V81/miCNcBo7bjeGKlNx8KDXp/CTGH1hOrOabHQ0s8lUgcdNvdTl1y
+         N1Rlk0aZsEtOGB1CBsTiFU4a9JA80p101+BgsJgfjgbvqHv+AdTIBSrNvU8bJIeTKrWk
+         a0Hw==
+X-Gm-Message-State: AOJu0Yz5Yriz0/PMOsV5XOSlyZ9m35zWsFvyNEeBNaq30UlXKHUp/MGI
+	JuJfcHARGWfua2DSzM5cp8vENlVQpqMJwrnYgkL+cP96BcAhK/dT1QEz9EWvLKJx
+X-Gm-Gg: ASbGncstJxnjsj4CXURZ7L+5wbGGKrqcUGGHxEuICwF18zenlEgbvSp8Qx3jpY4OOWA
+	ZzUVhEm7ZxY7C+oPw6h/1b1/2Ydo5M7zkrYp0iIHGNMyDIVTbDxO2myi2ZGIiM1biO+HhkCo9d1
+	RqF1MuIXYfkngG2/3BKA1ca8XniBw9fJ7XhwO03QShA04rOqrVJuEt5j2KQ/2cz58tcLENHamk4
+	/1QCZFAbumxs/emN8zLD8N3uU2+Z0BTrNtAswOhk/RZ7WGEsbJ7eCvQZDtVMpveo7SL1rfcmNQa
+	B9cbVzABGsyP6gEmGIS0Qz1u1lMFmmWDoNVYlgElQdmQeXU+x0eRLe0y/DCjuu7Q/uFulnQ22rE
+	6KjmRPDzXy/5QzuZff1TkYGzgVNn/hv6IJwRaCupemAsevEJOgw==
+X-Google-Smtp-Source: AGHT+IHH0KMP0Yku7xVzCQqj1gOETvRfvbkWISwMcIIBYqqg4wcinQgpdD72LPJvqxmLY7UjYkk40Q==
+X-Received: by 2002:a05:600c:8212:b0:43c:fe15:41dd with SMTP id 5b1f17b1804b1-454a36ddc52mr4282245e9.6.1751399252301;
+        Tue, 01 Jul 2025 12:47:32 -0700 (PDT)
+Received: from Tunnel (2a01cb089436c00024ac52d8fa7f8001.ipv6.abo.wanadoo.fr. [2a01:cb08:9436:c000:24ac:52d8:fa7f:8001])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-453823ad0fesm210718885e9.25.2025.07.01.12.47.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jul 2025 12:47:31 -0700 (PDT)
+Date: Tue, 1 Jul 2025 21:47:30 +0200
+From: Paul Chaignon <paul.chaignon@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Florent Revest <revest@chromium.org>,
+	Yonghong Song <yonghong.song@linux.dev>
+Subject: [PATCH bpf v2 1/2] bpf: Reject %p% format string in bprintf-like
+ helpers
+Message-ID: <a0e06cc479faec9e802ae51ba5d66420523251ee.1751395489.git.paul.chaignon@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf] selftests/bpf: Re-add kfunc declarations to qdisc
- tests
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- Amery Hung <ameryhung@gmail.com>, =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgense?=
- =?UTF-8?Q?n?= <toke@redhat.com>, Feng Yang <yangfeng@kylinos.cn>
-References: <20250630133524.364236-1-vmalik@redhat.com>
- <CAADnVQJF8-8zHV75Cf7v8XWGVrJwU5JaQjBm0B-Q3JUUMqNmcQ@mail.gmail.com>
-From: Viktor Malik <vmalik@redhat.com>
-Content-Language: en-US
-In-Reply-To: <CAADnVQJF8-8zHV75Cf7v8XWGVrJwU5JaQjBm0B-Q3JUUMqNmcQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 7/1/25 19:46, Alexei Starovoitov wrote:
-> On Mon, Jun 30, 2025 at 6:35 AM Viktor Malik <vmalik@redhat.com> wrote:
->>
->> BPF selftests compilation fails on systems with CONFIG_NET_SCH_BPF=n.
->> The reason is that qdisc-related kfuncs are included via vmlinux.h but
->> when qdisc is disabled, they are not defined and do not appear in
->> vmlinux.h.
-> 
-> Yes and that's expected behavior. It's not a bug.
-> That's why we have CONFIG_NET_SCH_BPF=y in
-> selftests/bpf/config
-> and CI picks it up automatically.
-> 
-> If we add these kfuncs to bpf_qdisc_common.h where would we
-> draw the line when the kfuncs should be added or not ?
+    static const char fmt[] = "%p%";
+    bpf_trace_printk(fmt, sizeof(fmt));
 
-I'd say that we should add kfuncs which are only included in vmlinux.h
-under certain configurations. Obviously stuff like CONFIG_BPF=y can be
-presumed but there're tons of configs options which may be disabled on a
-system and it still makes sense to compile and run at least a part of
-test_progs on them.
+The above BPF program isn't rejected and causes a kernel warning at
+runtime:
 
-> Currently we don't add any new kfuncs, since they all
-> should be in vmlinux.h
+    Please remove unsupported %\x00 in format string
+    WARNING: CPU: 1 PID: 7244 at lib/vsprintf.c:2680 format_decode+0x49c/0x5d0
 
-This way, we're preventing people to build and therefore run *any*
-test_progs on systems which do not have all the configs required in
-selftests/bpf/config. Running selftests on such systems may reveal bugs
-not captured by the CI so I think that it may be eventually beneficial
-for everyone.
+This happens because bpf_bprintf_prepare skips over the second %,
+detected as punctuation, while processing %p. This patch fixes it by
+not skipping over punctuation. %\x00 is then processed in the next
+iteration and rejected.
 
-WDYT?
+Reported-by: syzbot+e2c932aec5c8a6e1d31c@syzkaller.appspotmail.com
+Fixes: 48cac3f4a96d ("bpf: Implement formatted output helpers with bstr_printf")
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
+---
+Changes in v2:
+  - Rebased.
 
-> 
-> --
-> pw-bot: cr
-> 
+ kernel/bpf/helpers.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index b71e428ad936..ad6df48b540c 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -884,6 +884,13 @@ int bpf_bprintf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
+ 		if (fmt[i] == 'p') {
+ 			sizeof_cur_arg = sizeof(long);
+ 
++			if (fmt[i + 1] == 0 || isspace(fmt[i + 1]) ||
++			    ispunct(fmt[i + 1])) {
++				if (tmp_buf)
++					cur_arg = raw_args[num_spec];
++				goto nocopy_fmt;
++			}
++
+ 			if ((fmt[i + 1] == 'k' || fmt[i + 1] == 'u') &&
+ 			    fmt[i + 2] == 's') {
+ 				fmt_ptype = fmt[i + 1];
+@@ -891,11 +898,9 @@ int bpf_bprintf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
+ 				goto fmt_str;
+ 			}
+ 
+-			if (fmt[i + 1] == 0 || isspace(fmt[i + 1]) ||
+-			    ispunct(fmt[i + 1]) || fmt[i + 1] == 'K' ||
++			if (fmt[i + 1] == 'K' ||
+ 			    fmt[i + 1] == 'x' || fmt[i + 1] == 's' ||
+ 			    fmt[i + 1] == 'S') {
+-				/* just kernel pointers */
+ 				if (tmp_buf)
+ 					cur_arg = raw_args[num_spec];
+ 				i++;
+-- 
+2.43.0
 
 
