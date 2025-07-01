@@ -1,188 +1,183 @@
-Return-Path: <bpf+bounces-62006-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62008-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51BC2AF0502
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 22:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 969F3AF0508
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 22:40:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7211F17076E
-	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 20:38:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 242C7171A34
+	for <lists+bpf@lfdr.de>; Tue,  1 Jul 2025 20:40:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EA952F19A0;
-	Tue,  1 Jul 2025 20:38:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D9D82FE370;
+	Tue,  1 Jul 2025 20:39:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FMKF/I0q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e/K2hnVN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72D181E1308;
-	Tue,  1 Jul 2025 20:38:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E98172EFDBC;
+	Tue,  1 Jul 2025 20:39:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751402294; cv=none; b=l02KSLbotLteCm67doCWTeLtNPZmAIgMEK1mXCUUzfbrMU4ElEZx08KpCC4DCsd9Qv+CQQ/ThWR9p1QUB+REUsEp3SCfVRjQ7EJwxGqJnGhPgW+9P1C/wyXoyoTp7izEgLl8pP8lgKuptlQH/DGshtaBf0RwG3Xu08g+HAI3meI=
+	t=1751402393; cv=none; b=XDEt4BjWaxcvFHj20VKTzwRaJBPFgepA7Y0Uahpn8Flji9/sDvE070LqyT+4Sx8CYTCBJJWEME/kt5SrLeoDRd+oTmujbOgY0e57PBsqAOripDhfBKt5TxFyMTM9ks7JSe/7NvcKXcZ+CXs2D0e9IA3FWtbG45470CD03cINx/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751402294; c=relaxed/simple;
-	bh=JV/Dv/M3FjyYs2f0qOZrD51SPDgYKMozWjcGHTUMldI=;
+	s=arc-20240116; t=1751402393; c=relaxed/simple;
+	bh=KvEAW9ogBRBHR5i+dsQB56CXTAnYOE98VGUFrR9TpVA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TKVDRk0KvmvhtjDqvflbmpUp7/lsByVeAjb/k3E92aZKm8QrfULFBT54qWacACKssbQLKJN0jSMZ6lkTBW8iQ1HuMSSCOAdyfl0fNXvRlNx5aChVOkTdLFuCugEwI67krag2xSOrcjtz1LCkXHdE1ew//8i38XJheH+k2t1kRK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FMKF/I0q; arc=none smtp.client-ip=209.85.210.177
+	 To:Cc:Content-Type; b=kNlyvuSWXndpx1pVls+9vvJy0JvU5JI9iuItw6QtOwMD5mXsAgfTAD6MSTvv+GEjMAlW4pHHb/EF+ognb748Yj+oomRRU8q90X/ZfwjCJQpzUQrqMd4RbBhpSKc4moQ6JqZVY7YdgB4DrNYK++1r+gdmFDBQmhOfxfyRuuzfcLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e/K2hnVN; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-74801bc6dc5so5642388b3a.1;
-        Tue, 01 Jul 2025 13:38:13 -0700 (PDT)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4538bc1cffdso35793825e9.0;
+        Tue, 01 Jul 2025 13:39:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751402293; x=1752007093; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1751402390; x=1752007190; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QI/FP5BRDRRHesZv1GSJWpfq1mk0uDVdJdgRpG3jdBA=;
-        b=FMKF/I0qaqXT5o8JbSEUegfwWPBy0v7wYQNzwdg4STz7pPWTVDvBq6BxwgvNZzUzdW
-         k8PlicDdgbWwMIhns2a/icbS/cInAmu//Zf2SAeGSNzpn/EqjLAh7vAqeaOt/YFH6IHW
-         X1sP9cj2fNuivZ709lq1OLhqvQxPpf5WeEmE8/9FS81uPOowG1GtXS95tWMTGwhQzdQa
-         il0e6ITYSGuaUJy+OWBwVQSj4io6wTYvpS6Fv4B47dT4JkO8/uULQNUznIXSB9Lqu50B
-         7/uervSyhFm5KZe7I+kJpJpLZBI/yuI3S75Ng8XjoTi2jpoiBj493CTjsBv9Vepmb4jw
-         +p8w==
+        bh=2XOX/9hw+RJEcjJnWmrVCmdr6SZDbQ2g17tUexPr8iU=;
+        b=e/K2hnVNcIF7MNtzZsLhOCPAIDMwZlgZDOGk686mVXQk9pR6blNe90XQcPUJFAU4c7
+         lOzfEnKLhdvXEOo6DxQ/YxAiJh9aeuNAJau+o15rBmdLq5OKzkZx87UrRKvltoTTVF3o
+         HLPUm3M4JLF4XQkdAlG+FmqUWWzPFHB+ocYHCSZ07Gquu1Mw35hHPUJ4vPrRchzv2giX
+         9flmkBxr2FHffi8aK20AtdXKxEWv+Ah7WiNGD7lU0VolTPIx29Des1cHesLQg9EL/CRS
+         z2TYwibqSbYdgL9GldRRReafKAKqHtV/dG/D2po4jV2AoOF3xorw+uxKdpHpKXYB0249
+         Fufw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751402293; x=1752007093;
+        d=1e100.net; s=20230601; t=1751402390; x=1752007190;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QI/FP5BRDRRHesZv1GSJWpfq1mk0uDVdJdgRpG3jdBA=;
-        b=frrGq2OYO+Ja4fn9aJUIzWgozz1yzHgs4wXjOGJxVTwAwlgVvRACA+m+0xEK0DKklg
-         6FSNXD2yiaC46lMBuDmuPZ7XK/K+R0GEBZ53oqaAcfrcwo644vAg9Hlb2zpKTVUrZNdz
-         v9qIJShtUEtbXqXAYE7D43xVvHxcFdR2/a3W6GhEwi8jUud0Fj+TE+N4H0yK35x0LkjH
-         jLz4ct30A+7r+fGmpnv2fkpB8Y+Ie4pnl0/8QC9W6w0lRI0yyfDy1WFtLGjvJyMG//rd
-         XlpXZWvlADJiH9g2g6PJ8kmPM8SrY5TpAOgJfpOZtJUXFXl/4y8s95cchIHLU2D5JZtO
-         3hFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUrq6QkLcmYAsbIgtQxMP20beu2BAn2B7Wz/cfvhe8K9OBxX7+jCWB3XJCL9ocqRIZlY1mE/4At36hsQmij@vger.kernel.org, AJvYcCW1JQeCatDdQ5V6gISld+54K/fsGJw00/Hm3KyDVQJwFU7nfNQZ0KXvRvGW5h0iLecyhVA=@vger.kernel.org, AJvYcCW67eW88eNzicumtsGr6yWQZm/y04OHHIakxQk1EpvDYsQ4RCs6M6v30Fc6lHEkTtMXyDAmFwUvgjoX68Bj12HmKMXs@vger.kernel.org
-X-Gm-Message-State: AOJu0YwOBPxHKUdjz49witTuUfpyuzsoX5NOD+F9bgs+9xCRKNU71923
-	wWyiXSy4Irn08I0kRFolpOgqhXAcOA7/DzxycbOfNNN6cC7UwrdNIR4s8a/+6irxTjBchMxkxUW
-	WswB7VeaRt5MFyoxSBzhTGQR34EJcDZw=
-X-Gm-Gg: ASbGncvWG9VRldpuxEPNxn4bIDTPe/brDpefb/vUzfEemaSkmWkyXSoQl4W1O1IIUtw
-	SpjkMsNh2Vb3M4icOfiui2ktsF+C4S6emD37Fo1FQHuPFCej8wQezcoCWLRHJd9pZYkzio7ufUd
-	MgZUjR+VmiC6eO63D0yK9wGi+b7SxKs1fcrIj/v3jeSnFrRvICov5GDLLuitY=
-X-Google-Smtp-Source: AGHT+IHzVKDcsxHmS4QQ2DyQP5TkotM8rpULR4MR6WM5Bl0k9NHt9OKIMEk82tX7o1Jjm2++PjPkKjwtXHczS2ZK+mk=
-X-Received: by 2002:a05:6a00:8702:b0:74a:cd4d:c0a6 with SMTP id
- d2e1a72fcca58-74b51f9da78mr48537b3a.5.1751402292586; Tue, 01 Jul 2025
- 13:38:12 -0700 (PDT)
+        bh=2XOX/9hw+RJEcjJnWmrVCmdr6SZDbQ2g17tUexPr8iU=;
+        b=N/SUR8FkYjH5R5ZQqvpUTEPJB7eFNCGrRLxKB7QU8NOgtRk73jlOuhWFWI9jiIy6Lr
+         T4FUjJI32ML7Ped7RncEyBD4BMbsXNUmdR4qxg16KzTLYvddofhaRQCPu7eOuKStDAJc
+         ZBeKJdFj8ZWvlVQtVc8WB7cBUC8sTbj4N+20T3qitGB9A3AF7XOnqzegEpXb8ia/9yLB
+         sXeNntMI87ZpF1qPDxtQ2bIsAqLMTU2Jt0HLm5/hj9UQzWj8Z2RUuR9hqU58Z+CwuJBr
+         sBFVHMqIN+oFIMwGyT+BLULOACw5qaPop3KdYttiSRrN32M0IWk9pFaqr/YUQ4IviXrU
+         N6JQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU2GSw26wWfiJ5CaDLaOlV91BaK7dmhdVa2nL/xQVvSaeCEhEzdXYCrdA05CzfLNlGPPBU=@vger.kernel.org, AJvYcCUMNV8t6wTt/7fhh0vL5jOtDhkG7aY0HslDN2aXPykyg7DJQPkADxG7u5uS0nvb8+5ztlm8Fytn0zvZmH6j@vger.kernel.org, AJvYcCXk3fbuJMV/vaicSrVVoybtUt0qB1oGoPbW8/3oIiM9SKFnHScp6avp45zq9w8DqNldX4y0jkxmsqK/hZDoioFBwqJ3@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz8E4jJRu9axxkDyiTfXT3mvfm8MJixrYj4f5rkw3Uytct81grX
+	PqKNbulzI19qXdT8UrSy/b+zps8C8LIePNWEw+fuO877Z3zmNceQj8SvM+7NaRTWb3wlXfydeIb
+	U+W0XFgk2pADHU2xncuhasCZF3QUcnXs=
+X-Gm-Gg: ASbGnctvjw6G2A4F1ADEWDc5VMEeYEpSoxh7LXir0WJ31XEr/gykwoVQGaZAwBt6bfq
+	qc4324fMaH5uBBVPDlSML6S2BegT3z3o3Nlp4vPbiSff426mMuy1Kta7iwH6FSFs7oNxw/nklz1
+	vNJYI7CL6nzeq5G7GiA/IKEk0uKhwwTDrZWfHQmfRjAU0vUGeDXzq6AoFT47A=
+X-Google-Smtp-Source: AGHT+IFkD3VKzjNhJyz1lQhSkSumIJYVNMubG2GpXJQWVqc+L8fe8lkb2VZPKQSY1cwv6eJm5RePzDUyG2wS/o0W3tM=
+X-Received: by 2002:a05:600c:4688:b0:453:81a:2f3f with SMTP id
+ 5b1f17b1804b1-454a372df70mr5999675e9.30.1751402389960; Tue, 01 Jul 2025
+ 13:39:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250627082252.431209-1-chen.dylane@linux.dev> <20250627082252.431209-3-chen.dylane@linux.dev>
-In-Reply-To: <20250627082252.431209-3-chen.dylane@linux.dev>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 1 Jul 2025 13:37:58 -0700
-X-Gm-Features: Ac12FXxRNft9dm42uB6QJHYIc7JiEbkxpBizbmm0SHGZGP06qzPi6SNd1l7zHIg
-Message-ID: <CAEf4BzZYS52gztmLgQtsehNDVwv7NBETh97zMk73ZqLL9uJ50Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 3/3] bpf: Add show_fdinfo for kprobe_multi
+References: <20250627082252.431209-1-chen.dylane@linux.dev>
+In-Reply-To: <20250627082252.431209-1-chen.dylane@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 1 Jul 2025 13:39:36 -0700
+X-Gm-Features: Ac12FXxZHD5m2DWz8uVFdq-SqPDe-6gXNykWOwpyJs2uf2haLluZbHq7yK9bv0M
+Message-ID: <CAADnVQLWZH0sQk6ni-AWb+SRJ+H_sE=Gvwn3wdu+UC=mJiPPrg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 1/3] bpf: Show precise link_type for
+ {uprobe,kprobe}_multi fdinfo
 To: Tao Chen <chen.dylane@linux.dev>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me, 
-	haoluo@google.com, jolsa@kernel.org, mattbobrowski@google.com, 
-	rostedt@goodmis.org, mhiramat@kernel.org, mathieu.desnoyers@efficios.com, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Matt Bobrowski <mattbobrowski@google.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Fri, Jun 27, 2025 at 1:23=E2=80=AFAM Tao Chen <chen.dylane@linux.dev> wr=
 ote:
 >
-> Show kprobe_multi link info with fdinfo, the info as follows:
+> Alexei suggested, 'link_type' can be more precise and differentiate
+> for human in fdinfo. In fact BPF_LINK_TYPE_KPROBE_MULTI includes
+> kretprobe_multi type, the same as BPF_LINK_TYPE_UPROBE_MULTI, so we
+> can show it more concretely.
 >
 > link_type:      kprobe_multi
 > link_id:        1
-> prog_tag:       33be53a4fd673e1d
-> prog_id:        21
-> kprobe_cnt:     8
-> missed: 0
-> cookie           func
-> 1                bpf_fentry_test1+0x0/0x20
-> 7                bpf_fentry_test2+0x0/0x20
-> 2                bpf_fentry_test3+0x0/0x20
-> 3                bpf_fentry_test4+0x0/0x20
-> 4                bpf_fentry_test5+0x0/0x20
-> 5                bpf_fentry_test6+0x0/0x20
-> 6                bpf_fentry_test7+0x0/0x20
-> 8                bpf_fentry_test8+0x0/0x10
-
-two nits:
-
-1) order of cookie. For uprobes you have cookie at the end, here in
-the front. Given variable-sized func name, I'd move cookie to the
-front for uprobes for consistency.
-
-2) field sizing for cookie (16) is a) not sufficient for maximum
-possible u64 (20 digits) and b) very wasteful in common case of small
-numbers. So use tab instead of fixed-sized column? And why 16
-character sizing for the func column? Just to have more spaces
-emitted?
-
-
-Other than that the series looks good to me.
-
-pw-bot: cr
-
-
+> prog_tag:       d2b307e915f0dd37
+> ...
+> link_type:      kretprobe_multi
+> link_id:        2
+> prog_tag:       ab9ea0545870781d
+> ...
+> link_type:      uprobe_multi
+> link_id:        9
+> prog_tag:       e729f789e34a8eca
+> ...
+> link_type:      uretprobe_multi
+> link_id:        10
+> prog_tag:       7db356c03e61a4d4
 >
+> As Andrii suggested attach_type can be recorded in bpf_link, there is
+> still a 6 byte hole in bpf_link, we can fill the hole with attach_type
+> soon.
+>
+> Co-authored-by: Jiri Olsa <jolsa@kernel.org>
 > Signed-off-by: Tao Chen <chen.dylane@linux.dev>
 > ---
->  kernel/trace/bpf_trace.c | 27 +++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
+>  include/linux/bpf.h      |  1 +
+>  kernel/bpf/syscall.c     |  9 ++++++++-
+>  kernel/trace/bpf_trace.c | 10 ++++------
+>  3 files changed, 13 insertions(+), 7 deletions(-)
 >
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 1c75f9c6c66..e8f070504c4 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -2622,10 +2622,37 @@ static int bpf_kprobe_multi_link_fill_link_info(c=
-onst struct bpf_link *link,
->         return err;
->  }
+> Change list:
+>   v5 -> v6:
+>     - Move flags into bpf_link to get retprobe info
+>       directly.(Alexei, Jiri)
+>   v5:
+>   https://lore.kernel.org/bpf/20250623134342.227347-1-chen.dylane@linux.d=
+ev
 >
-> +#ifdef CONFIG_PROC_FS
-> +static void bpf_kprobe_multi_show_fdinfo(const struct bpf_link *link,
-> +                                        struct seq_file *seq)
-> +{
-> +       struct bpf_kprobe_multi_link *kmulti_link;
-> +
-> +       kmulti_link =3D container_of(link, struct bpf_kprobe_multi_link, =
-link);
-> +
-> +       seq_printf(seq,
-> +                  "kprobe_cnt:\t%u\n"
-> +                  "missed:\t%lu\n",
-> +                  kmulti_link->cnt,
-> +                  kmulti_link->fp.nmissed);
-> +
-> +       seq_printf(seq, "%-16s %-16s\n", "cookie", "func");
-> +       for (int i =3D 0; i < kmulti_link->cnt; i++) {
-> +               seq_printf(seq,
-> +                          "%-16llu %-16pS\n",
-> +                          kmulti_link->cookies[i],
-> +                          (void *)kmulti_link->addrs[i]);
-> +       }
-> +}
-> +#endif
-> +
->  static const struct bpf_link_ops bpf_kprobe_multi_link_lops =3D {
->         .release =3D bpf_kprobe_multi_link_release,
->         .dealloc_deferred =3D bpf_kprobe_multi_link_dealloc,
->         .fill_link_info =3D bpf_kprobe_multi_link_fill_link_info,
-> +#ifdef CONFIG_PROC_FS
-> +       .show_fdinfo =3D bpf_kprobe_multi_show_fdinfo,
-> +#endif
->  };
+>   v4 -> v5:
+>     - Add patch1 to show precise link_type for
+>       {uprobe,kprobe}_multi.(Alexei)
+>     - patch2,3 just remove type field, which will be showed in
+>       link_type
+>   v4:
+>   https://lore.kernel.org/bpf/20250619034257.70520-1-chen.dylane@linux.de=
+v
 >
->  static void bpf_kprobe_multi_cookie_swap(void *a, void *b, int size, con=
-st void *priv)
-> --
-> 2.48.1
+>   v3 -> v4:
+>     - use %pS to print func info.(Alexei)
+>   v3:
+>   https://lore.kernel.org/bpf/20250616130233.451439-1-chen.dylane@linux.d=
+ev
 >
+>   v2 -> v3:
+>     - show info in one line for multi events.(Jiri)
+>   v2:
+>   https://lore.kernel.org/bpf/20250615150514.418581-1-chen.dylane@linux.d=
+ev
+>
+>   v1 -> v2:
+>     - replace 'func_cnt' with 'uprobe_cnt'.(Andrii)
+>     - print func name is more readable and security for kprobe_multi.(Ale=
+xei)
+>   v1:
+>   https://lore.kernel.org/bpf/20250612115556.295103-1-chen.dylane@linux.d=
+ev
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 5b25d278409..3d8fecc9b17 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1702,6 +1702,7 @@ struct bpf_link {
+>          * link's semantics is determined by target attach hook
+>          */
+>         bool sleepable;
+> +       u32 flags :8;
+
+There is a 7-byte hole here.
+Let's use 'u32 flags' right now and optimize later if necessary.
 
