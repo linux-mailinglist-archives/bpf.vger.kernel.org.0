@@ -1,48 +1,48 @@
-Return-Path: <bpf+bounces-62123-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62124-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FD7FAF5BEA
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 16:58:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EE4EAF5BF0
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 16:59:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C39E13A5D0E
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 14:58:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 640AB4A58EB
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 14:58:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9003D30B987;
-	Wed,  2 Jul 2025 14:58:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BFAA30B9B7;
+	Wed,  2 Jul 2025 14:58:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mbvlcwKe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g/Jl9jhT"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1019C292B53;
-	Wed,  2 Jul 2025 14:58:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83B4F30B9A6;
+	Wed,  2 Jul 2025 14:58:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751468312; cv=none; b=FOhdEIR7qlqn6nLGwSKigJoK7FlOu7pqHo0L5nxm3pz8dLb8sPi01LHYPCWH48dEJNI0764SS5hHINiGOe6TMG66wosphvPl4NQ1iXyeehGLSkzWoNAbB2i1Ut41WwPSih9o+X3UuUYziN9NK0fcD7BQxYZMybSkWzh75AoJbm4=
+	t=1751468319; cv=none; b=WMJzfjddg+yFVvb2LW2W811BX8IUMXHHjjK9BbwZ+sHcTG4zQJZmWu7cJMJsmv6i7OKemNITVEOH44o4XeCoHUlQ6zbl7JyvgOx86mQj9bgo67rbeYzpOFziHbhiV6mXJJRlMS046P0FygQE2XHLUYEZLBx42x9AnFs4td9f6X4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751468312; c=relaxed/simple;
-	bh=DKc7Er4JVCfvqXu6MwgQwuoZumA/bmws5bxXOs7Jorw=;
+	s=arc-20240116; t=1751468319; c=relaxed/simple;
+	bh=SA9wfILOg4J9V+vuzNFLZxhr/uT3BR9G8K+trCq0n/w=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=H9vFjZK0CA0z8BFXmfeWGOr6+cMnBw/NISpRe8edr3SLYFu3nX17kZ3pZHEw2euznUydqOiHHIk1UXr4+Yjmr9j1J9RLGz2pxzSt1a0q7Iip3lUMWdlR4hfoBrQ2BPq1CmnJ2ShvoMPIUuu1iqPmRJmayjPiyeT42xa2Nb8Lzwo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mbvlcwKe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28394C4CEE7;
-	Wed,  2 Jul 2025 14:58:27 +0000 (UTC)
+	 MIME-Version:Content-Type; b=EiEFB1Ys7/+TLZM0dBAM9p0dzPqyvFSo2Jnr3m2+qtTOREgMGkKpboic/hgFoFrYBqQornW5y45E71S0HdcnTbSm95XB+rDiRTu84LOm6mdIAQTJWoGlI44ho/kyM6ZaXJgbBdFZulu8uyXDjeDjph0miWMhgah+ZB6KhlTHBB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g/Jl9jhT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C254FC4CEE7;
+	Wed,  2 Jul 2025 14:58:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751468311;
-	bh=DKc7Er4JVCfvqXu6MwgQwuoZumA/bmws5bxXOs7Jorw=;
+	s=k20201202; t=1751468318;
+	bh=SA9wfILOg4J9V+vuzNFLZxhr/uT3BR9G8K+trCq0n/w=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=mbvlcwKedXAePme9LGS7rLkE/Ori3B6uwgvMjIzeTb7wObsMAJPoudJFOBUONQhOv
-	 hB/nc2Wdh/CHFEolcAQC8JKmfFWfnadP7HXjLAC856EnKaZ1ah4+G/fQSeER6ThodN
-	 yQUrqfJx6OEv+Wlxm/bNr4mwPne+/Szr2ND/Ie2aB9ekQylHOiKP4j54PdAPm3fn8u
-	 zTNVzcnRvwzYO8IIvyCLwjBteCFTsv3LL5HBTVWZDyavDHhw8/DPSZvns/HgoZQZVP
-	 ik9zHAgLRzONW3wKqGQWPUEQN4zBJCEJ1h1W/WnMurDtygkHgY/76Sdm/5UmQdrRXp
-	 GvyRLTGLCJsgQ==
-Subject: [PATCH bpf-next V2 2/7] selftests/bpf: Adjust test for maximum packet
- size in xdp_do_redirect
+	b=g/Jl9jhTGOEyN0fmp9pk6wE9ndXDC4Oo9AAWjyCI4kUTdaM2qMwpFKQVHStPYF9n9
+	 IXrejOErjlUvsrFvGm4fB2uytmE2tifslwAGh/bdMLwNK2fDszrvU/ByyvMK69Vkzw
+	 X2r+MWTL0QBhe3BQUoffXAlHFDqXiwksuV9oYva9JdBnu3WHN69VKdOmSB92+DjRFa
+	 Iua4ImAIRgr39Z3eIw2qSLFh1dT7dvR1jod+W+Veo3TUYXBUqSA/i5OSiu9M4Qhxab
+	 L6o8mQ7c0cAJIkUFEwBOnesEw5dP2roMrZPyuWYYzOT/fD1ZNSNZLr4w4M6H5xxo8W
+	 3DqeIW3XZ+Tow==
+Subject: [PATCH bpf-next V2 3/7] net: xdp: Add kfuncs to store hw metadata in
+ xdp_buff
 From: Jesper Dangaard Brouer <hawk@kernel.org>
 To: bpf@vger.kernel.org, netdev@vger.kernel.org,
  Jakub Kicinski <kuba@kernel.org>, lorenzo@kernel.org
@@ -53,8 +53,8 @@ Cc: Jesper Dangaard Brouer <hawk@kernel.org>,
  "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
  sdf@fomichev.me, kernel-team@cloudflare.com, arthur@arthurfabre.com,
  jakub@cloudflare.com
-Date: Wed, 02 Jul 2025 16:58:26 +0200
-Message-ID: <175146830610.1421237.2715806824407788172.stgit@firesoul>
+Date: Wed, 02 Jul 2025 16:58:32 +0200
+Message-ID: <175146831297.1421237.17665319427079757435.stgit@firesoul>
 In-Reply-To: <175146824674.1421237.18351246421763677468.stgit@firesoul>
 References: <175146824674.1421237.18351246421763677468.stgit@firesoul>
 User-Agent: StGit/1.5
@@ -67,34 +67,100 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 
-Patchset increased xdp_buff with a pointer 8 bytes, and the bpf/test_run
-struct xdp_page_head have two xdp_buff's.  Thus adjust test with 16 bytes.
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
+Introduce the following kfuncs to store hw metadata provided by the NIC
+into the xdp_buff struct:
+
+- rx-hash: bpf_xdp_store_rx_hash
+- rx-vlan: bpf_xdp_store_rx_vlan
+- rx-hw-ts: bpf_xdp_store_rx_ts
+
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
 ---
- .../selftests/bpf/prog_tests/xdp_do_redirect.c     |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/net/xdp.h |    5 +++++
+ net/core/xdp.c    |   45 +++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 50 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c b/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
-index dd34b0cc4b4e..35c65518f55a 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
-@@ -59,12 +59,12 @@ static int attach_tc_prog(struct bpf_tc_hook *hook, int fd)
+diff --git a/include/net/xdp.h b/include/net/xdp.h
+index f52742a25212..8c7d47e3609b 100644
+--- a/include/net/xdp.h
++++ b/include/net/xdp.h
+@@ -153,6 +153,11 @@ static __always_inline void xdp_buff_set_frag_pfmemalloc(struct xdp_buff *xdp)
+ 	xdp->flags |= XDP_FLAGS_FRAGS_PF_MEMALLOC;
+ }
  
- /* The maximum permissible size is: PAGE_SIZE - sizeof(struct xdp_page_head) -
-  * SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) - XDP_PACKET_HEADROOM =
-- * 3408 bytes for 64-byte cacheline and 3216 for 256-byte one.
-+ * 3392 bytes for 64-byte cacheline and 3200 for 256-byte one.
-  */
- #if defined(__s390x__)
--#define MAX_PKT_SIZE 3216
-+#define MAX_PKT_SIZE 3200
- #else
--#define MAX_PKT_SIZE 3408
-+#define MAX_PKT_SIZE 3392
- #endif
++static __always_inline bool xdp_buff_has_valid_meta_area(struct xdp_buff *xdp)
++{
++	return !!(xdp->flags & XDP_FLAGS_META_AREA);
++}
++
+ static __always_inline void
+ xdp_init_buff(struct xdp_buff *xdp, u32 frame_sz, struct xdp_rxq_info *rxq)
+ {
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index bd3110fc7ef8..1ffba57714ea 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -963,12 +963,57 @@ __bpf_kfunc int bpf_xdp_metadata_rx_vlan_tag(const struct xdp_md *ctx,
+ 	return -EOPNOTSUPP;
+ }
  
- #define PAGE_SIZE_4K  4096
++__bpf_kfunc int bpf_xdp_store_rx_hash(struct xdp_md *ctx, u32 hash,
++				      enum xdp_rss_hash_type rss_type)
++{
++	struct xdp_buff *xdp = (struct xdp_buff *)ctx;
++
++	if (!xdp_buff_has_valid_meta_area(xdp))
++		return -ENOSPC;
++
++	xdp->rx_meta->hash.val = hash;
++	xdp->rx_meta->hash.type = rss_type;
++	xdp->flags |= XDP_FLAGS_META_RX_HASH;
++
++	return 0;
++}
++
++__bpf_kfunc int bpf_xdp_store_rx_vlan(struct xdp_md *ctx, __be16 vlan_proto,
++				      u16 vlan_tci)
++{
++	struct xdp_buff *xdp = (struct xdp_buff *)ctx;
++
++	if (!xdp_buff_has_valid_meta_area(xdp))
++		return -ENOSPC;
++
++	xdp->rx_meta->vlan.proto = vlan_proto;
++	xdp->rx_meta->vlan.tci = vlan_tci;
++	xdp->flags |= XDP_FLAGS_META_RX_VLAN;
++
++	return 0;
++}
++
++__bpf_kfunc int bpf_xdp_store_rx_ts(struct xdp_md *ctx, u64 ts)
++{
++	struct xdp_buff *xdp = (struct xdp_buff *)ctx;
++	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
++	struct skb_shared_hwtstamps *shwt = &sinfo->hwtstamps;
++
++	shwt->hwtstamp = ts;
++	xdp->flags |= XDP_FLAGS_META_RX_TS;
++
++	return 0;
++}
++
+ __bpf_kfunc_end_defs();
+ 
+ BTF_KFUNCS_START(xdp_metadata_kfunc_ids)
+ #define XDP_METADATA_KFUNC(_, __, name, ___) BTF_ID_FLAGS(func, name, KF_TRUSTED_ARGS)
+ XDP_METADATA_KFUNC_xxx
+ #undef XDP_METADATA_KFUNC
++BTF_ID_FLAGS(func, bpf_xdp_store_rx_hash)
++BTF_ID_FLAGS(func, bpf_xdp_store_rx_vlan)
++BTF_ID_FLAGS(func, bpf_xdp_store_rx_ts)
+ BTF_KFUNCS_END(xdp_metadata_kfunc_ids)
+ 
+ static const struct btf_kfunc_id_set xdp_metadata_kfunc_set = {
 
 
 
