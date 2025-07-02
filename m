@@ -1,182 +1,239 @@
-Return-Path: <bpf+bounces-62177-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62178-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9152EAF6104
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 20:22:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 973DCAF61C5
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 20:47:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2CEA1C40A48
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 18:22:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EA2448512E
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 18:47:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B45ED30E858;
-	Wed,  2 Jul 2025 18:21:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCFAC1DDC07;
+	Wed,  2 Jul 2025 18:47:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="ft/YCqpO"
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="ucb4tZJW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from CAN01-YQB-obe.outbound.protection.outlook.com (mail-yqbcan01on2118.outbound.protection.outlook.com [40.107.116.118])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5415A2D77F3
-	for <bpf@vger.kernel.org>; Wed,  2 Jul 2025 18:21:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751480517; cv=none; b=XDcRWuY1GckC0QW5ireHbsOwTZknB8z+seb29+scTGNptb/HW4sSgdwlNEGOVgDw6m5yYYbEKopvqDWLBq/JNPpWi+W9fYTjy+VpptbZrRcvcXwLRyF2L5QUcVSSS1jdtzNNAQmxnD44V59tOD9c9xeC+f0LP+QefHbBs4/kG+Y=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751480517; c=relaxed/simple;
-	bh=8dPL6cewj+QXiDVpMgLbkUYfzccaNgbPuZ9A+ZlbtD8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ayzAm8U9EIcvT+jvl2yghqo+G5818X84zOS4ESdndGaeNlib5ShjMrk0RCimdvXYDDXXSB2OA6j+FNx0pf5kgmqvm5sjK2s5/zJut4+0s6NmbnqC6eU3qPJyvWy91sRe5p1IjKEYQ5tq5qKcTPM7r012AzXz9lAU/+SjlfyI8UQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=ft/YCqpO; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-ae360b6249fso950741866b.1
-        for <bpf@vger.kernel.org>; Wed, 02 Jul 2025 11:21:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1751480513; x=1752085313; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=gAzEH7Ab5cAtbqr3Xp/qBBT6LGjJFnrqCTGw1ULOX9I=;
-        b=ft/YCqpO0FXHmQ+DZb14BXdPk+Yx/t5+rI0YwNA3RvujJAVMwTfI6u+5MQ1o1cX6VT
-         YbpeQ3Dg+XauhGKR1IdzsknmbPBMoCYt20eYyUiVvnupxPFy8hA4hVyHILp0AsPMlJng
-         rhiIFIowUh5zVWZyuMtJ8DSCYa+vTvFhUlNXA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751480513; x=1752085313;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gAzEH7Ab5cAtbqr3Xp/qBBT6LGjJFnrqCTGw1ULOX9I=;
-        b=wFqmBL/qIE0jiFnZ331DQW2zjg3TIR8fHYW89CFa+ZEbR1wwgicfoqMFFzumdBaiHx
-         15mc0+pSJT2HZSj0x5H0P4W+LbMnfj6mICSSqpBBhpQtBFvN8IErAgO1L55YbpA8+PGN
-         k20ufHffWpu/xcxl/E2VCMjEBRO/Rt1r9mTGCgZ/OX2F3fz9rtYe4WLseXKB3cLlKn/F
-         hTI89dTrApKTK1mgaa3hJbSXBa0X6u9UbC5OT8RxNvHdrOyjeFS0RO56vf2Fg3SnfLUm
-         NF0RYAU8TX3MCNbayHBZ6w2f59bnlu+saCravzP90MQPQzib9rX5TYO1fbcTbAlQDKPb
-         qTZA==
-X-Forwarded-Encrypted: i=1; AJvYcCUghSKWJwzp+u+SAZ2calOTbKmDFyLOIIZCo2DwzFyRnC++0KMPTgINvfi4z/FOCcsEPUw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwnO7mH+vmNO9pMiSLLYHNyM0w5ilb0dleUnQoRfr+eOojiaA4k
-	FV4g8j/27LQ3mk2Ut2y9+T6HCz+z7uHheKrdlQa6JArH/Az7C0p6B+4+RIjtc04MnOcdq7ONU9q
-	o+9kd3zEJig==
-X-Gm-Gg: ASbGnctJlYRv1TSVzgq085fKsGoAEyzW8HR54Gjhky0ageFf2n3YCJKEiv5bqCXTpcU
-	QrFNuRP9LLF4YrOzfdk3XUt5IB84xl2AMPsuMoOFiP81Wk6cWTDpWZArMw25oYcsEx+iUpwPHkW
-	h/b/6dghZK94qGHXEYR3OFaiHK0Lw2tXOxjQPOoNLBEuRMLliVE3QsnbUhXDkCB6x+9L1E3NTIL
-	HsnjBh4KdqOQgIj1zRymZ+7/EMnISXjVX7CcsOD71JgI4RuNiB0r+VRNZq/0ARhBN7IAMy3QXZJ
-	TEfiHPiel6d7H9QDs/fOp3lz2pcDaDSRyklCVkmOKMZvRf7OCb287h+X1mSlTWfHtQyJAUiAkf/
-	X16ovnOUmHnQrm7dGDWKjWtaRQ7FiKTQYGg4S
-X-Google-Smtp-Source: AGHT+IHhFuZy0LS2o9A0GcFs2AmO1CkEnzK0DburkxUEdP7ZTz1HbMuLR4p8XoHgUSg1Fy6pwkngIA==
-X-Received: by 2002:a17:907:60c9:b0:ae3:6657:9e73 with SMTP id a640c23a62f3a-ae3c2b5e4e1mr414153266b.20.1751480513213;
-        Wed, 02 Jul 2025 11:21:53 -0700 (PDT)
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com. [209.85.208.51])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae35363a167sm1106271166b.21.2025.07.02.11.21.51
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Jul 2025 11:21:52 -0700 (PDT)
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-60780d74c85so10946343a12.2
-        for <bpf@vger.kernel.org>; Wed, 02 Jul 2025 11:21:51 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXY53YYKyLsVJeIXkZYygsxeRPGxUZfwH5mfyVFvWfyD5xEqdY9P0OxuY/JdRlbWC4uMjM=@vger.kernel.org
-X-Received: by 2002:a05:6402:270d:b0:60c:5268:5587 with SMTP id
- 4fb4d7f45d1cf-60e5362ef3emr2951767a12.29.1751480511414; Wed, 02 Jul 2025
- 11:21:51 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73ABB2F7D07;
+	Wed,  2 Jul 2025 18:47:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.116.118
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1751482041; cv=fail; b=oiTXDdSEnk2uZyGWciZbtYiXPql1RIa+BD1hlFlaZGynAlmLEk6LQb+Et9CRVhRERq12i1Zp5MdkXNr6w/91W+42cvRgXuhgeGr0BOXJ0O9KsrHHa3h/p+NqbQwW0gNFmeC1CHOJLH4OeA7mvE8+tloHB+5sPoXZukavxc9S9J8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1751482041; c=relaxed/simple;
+	bh=OJ/d2fM9d7n0Cc7aolAcX5lIiptmAa0Cmzn2W7aCsgE=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=UhkU3mbaKTsc6Ty8LIM8INKinAQHZ8uK+kytxggcJTBpMO/EAMHY+AEjcKfF53OBerOB0Fz8KMrr0nHQDjFrSkM2DmK0S7NYPjdaSeX87U+JNRu4d9hS8f0ZO1JBGG0trRpfqv3lxyF2EzI36S32tidNhBUbrHKoHA5kny5uURk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=ucb4tZJW; arc=fail smtp.client-ip=40.107.116.118
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=lOyM3/Dx3+xPvdhRwXghVRIYFHA5ex0e4fe2GzyErt6mvjDQfMI5pBsG4gAATkSDxxLh0Mr5OvLySsuAljx1klXrrF0m5FwD1ZqeWnX2VndFaqhpjYgr9toKhS7cNmAq1uVtUDV1rlFI9gFTm4NcVK3P/4+eklJcK2PLtKaxnIQnloYcsQTmtOEvd6DkmRbeDkyvQwmqISpVjlTgxkKxWflbmkwuXX0eL2UvPfABxNKyFL6B/Zj03X2j8xtyyNibezgbDSymRejTdJInrJ+AbRpr1xwmJaeY2K/oqndQG9vmRmJi7GBDQvgqS5Y1IUaiOxxv291ESYlv3B1FpQfbrw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FjKKjye46SpocW9cNeR4isqIwKgrXM5dlxTqtB/QJko=;
+ b=qtHofitIYO1VefZ15hNE1Z+M7v7vDFFjcs6gV3EcOpb8wYj4pMQD35WH2s1Cy6yO5cONm5o8Yfc1EiDz2E9/8oU6wbwDN7ECtUCxq1D6GVev8HG0G7Vo0y2ySin/I93Fp56P6i7WuQtgHE/b24Cf3mMLlElB/v/UN8nIc8dSEq+CYPxO9gY8qQpfWLL8t9/kAzrd8/ckFzJbMvJ7FZc0pNjdPqcl7FLtbF8ftDioU3QcHvI8yX/pTxeiGGCVLYpzJPzUk4gMMw8B2Mp4LMWAyePTsBfotNETEFnF2WHgmpXFlA1BsKql1e6PvIZpexTQWMtCkCsao/kc1SNI6zyQfA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=efficios.com; dmarc=pass action=none header.from=efficios.com;
+ dkim=pass header.d=efficios.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FjKKjye46SpocW9cNeR4isqIwKgrXM5dlxTqtB/QJko=;
+ b=ucb4tZJWJGUJ2pKN+Fj02B79JVQz9Kvzm+cIzyLo/Bj3vFp3S18Q9bl81VhIbxlwPyuVHOHaI3nmAGnCiE5U20mAcG0ckMEf0bEYE2gwLu5O7eUfLKz6x+kDzjyyhHQvIHcnyPTARfcFBXtYwU/PmyCsx+qT1OxNsukxMJub6ILNXZM2WVwCBBP26h+IaRZw5iOWtydhLhbhCmVEJf4AlhpCCJdRLWtBQi6uMbNFLskjUILotNmThBSOAbLzJ+7iX3i5bTj/ZuXw+qVFVs2Ptp9KmUlzooUQFSKxBI23g2sfG4k0zAlHfGUELG+7aSTO7eWVmRiYrnUub4vDD6qD6A==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=efficios.com;
+Received: from YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:be::5)
+ by YT2PR01MB5206.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:51::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8901.20; Wed, 2 Jul
+ 2025 18:47:12 +0000
+Received: from YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
+ ([fe80::50f1:2e3f:a5dd:5b4]) by YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
+ ([fe80::50f1:2e3f:a5dd:5b4%3]) with mapi id 15.20.8901.021; Wed, 2 Jul 2025
+ 18:47:12 +0000
+Message-ID: <482f6b76-6086-47da-a3cf-d57106bdcb39@efficios.com>
+Date: Wed, 2 Jul 2025 14:47:10 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v12 06/14] unwind_user/deferred: Add deferred unwinding
+ interface
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+ Steven Rostedt <rostedt@goodmis.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org,
+ Masami Hiramatsu <mhiramat@kernel.org>, Josh Poimboeuf
+ <jpoimboe@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+ Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>,
+ Indu Bhagat <indu.bhagat@oracle.com>, "Jose E. Marchesi" <jemarch@gnu.org>,
+ Beau Belgrave <beaub@linux.microsoft.com>, Jens Remus
+ <jremus@linux.ibm.com>, Andrew Morton <akpm@linux-foundation.org>,
+ Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>
+References: <20250701005321.942306427@goodmis.org>
+ <20250701005451.571473750@goodmis.org>
+ <20250702163609.GR1613200@noisy.programming.kicks-ass.net>
+ <20250702124216.4668826a@batman.local.home>
+ <CAHk-=wiXjrvif6ZdunRV3OT0YTrY=5Oiw1xU_F1L93iGLGUdhQ@mail.gmail.com>
+ <20250702132605.6c79c1ec@batman.local.home>
+ <20250702134850.254cec76@batman.local.home>
+ <CAHk-=wiU6aox6-QqrUY1AaBq87EsFuFa6q2w40PJkhKMEX213w@mail.gmail.com>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Content-Language: en-US
+In-Reply-To: <CAHk-=wiU6aox6-QqrUY1AaBq87EsFuFa6q2w40PJkhKMEX213w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YQBP288CA0034.CANP288.PROD.OUTLOOK.COM
+ (2603:10b6:c01:9d::21) To YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:be::5)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250701005321.942306427@goodmis.org> <20250701005451.571473750@goodmis.org>
- <20250702163609.GR1613200@noisy.programming.kicks-ass.net>
- <20250702124216.4668826a@batman.local.home> <CAHk-=wiXjrvif6ZdunRV3OT0YTrY=5Oiw1xU_F1L93iGLGUdhQ@mail.gmail.com>
- <20250702132605.6c79c1ec@batman.local.home> <20250702134850.254cec76@batman.local.home>
-In-Reply-To: <20250702134850.254cec76@batman.local.home>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 2 Jul 2025 11:21:34 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiU6aox6-QqrUY1AaBq87EsFuFa6q2w40PJkhKMEX213w@mail.gmail.com>
-X-Gm-Features: Ac12FXxdVtdafV1DjZUKNDDMmbhEtpMMqjKmEMhutyb6_ij-Rv8l7HBE6kdoJJ4
-Message-ID: <CAHk-=wiU6aox6-QqrUY1AaBq87EsFuFa6q2w40PJkhKMEX213w@mail.gmail.com>
-Subject: Re: [PATCH v12 06/14] unwind_user/deferred: Add deferred unwinding interface
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	Andrii Nakryiko <andrii@kernel.org>, Indu Bhagat <indu.bhagat@oracle.com>, 
-	"Jose E. Marchesi" <jemarch@gnu.org>, Beau Belgrave <beaub@linux.microsoft.com>, 
-	Jens Remus <jremus@linux.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: YT2PR01MB9175:EE_|YT2PR01MB5206:EE_
+X-MS-Office365-Filtering-Correlation-Id: d085934c-ea9d-4714-2972-08ddb998db0c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|7416014|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?MS9GQis0dVBtYzc1aDVQUkxUeTRLVHZ5dVRiV3JCbUtBSFk4QkFJUWUyY1dz?=
+ =?utf-8?B?T3IxZHFnaHk4cnhlaUpxZ0h1bHRZZ2ZuZ0t3Zmp6Z3ZxMzNWSW9iSFQ2NUVx?=
+ =?utf-8?B?a21oTVNERXZoWTRnYVpJNmwxMjV0eUFsajc5eFYvR1VzbStGRXYySUtEZ1Bo?=
+ =?utf-8?B?SGN4WFNuYVpYeU1CZmN0TkFyNit0WG5Vd0JJWDNCVTdOanRrbWVoVGNob3Yx?=
+ =?utf-8?B?QmRHSEtUemVsaVlWajROTTQraklHbXg1ay9FS252R3VVaks5SkxoYllwMlRa?=
+ =?utf-8?B?djRZeGtodUV4OENmRStBSXl6Um9HaDAwYUo0ek93Nm9pVDZLcDkzVlBCa0Z3?=
+ =?utf-8?B?cnNJUEw2QWtwYWljZXYvb2lLdVJYRHg2aG9WdWxyTzlSbktoSW5Ec1QwUVp6?=
+ =?utf-8?B?T1R1dEIyVFpWWDAvUmh3TkVVaTJ6Y0lISllVT3lodEpnTkMraDBDUS84R1BF?=
+ =?utf-8?B?OUhDcktlcWJZVTdScTFqc1dJN2FHVFFpS1N0Wm9TRXRJODFEV2Q2SnVwYjl0?=
+ =?utf-8?B?d0FsbjA1b0Q1YU9PQ0pzcjAwR00xU1FNM09VRGRWYjMrYW42eFYvVHlzQ21Y?=
+ =?utf-8?B?Ly9xdTN0RHppSGlTMXl5NDA3TDRkdFBYMksyVkZZZThvdTVDbU9tR0VXdkVI?=
+ =?utf-8?B?WmUycUFKM1lHTkpuMzZ2NVF6Unh0VU1TUDlNWFNsaStuZlk4clJ6NXpXREpp?=
+ =?utf-8?B?d3JFRGFNYmVHZUZnc29sTXpTNjFQWU1PYWl3QnlHSEhFa21tM29tdmFoNkd1?=
+ =?utf-8?B?N08vd3hFWWZEazgyZk1KT3gzMlFaclVRYzRSaCtUVnczZHFuaGxpZzYvY00x?=
+ =?utf-8?B?MEZNUHZiVEdYVWd1RXhmR2VuS3FzTVFPSHBaTngrZEhiaHVZUWJVK2ozVDRH?=
+ =?utf-8?B?Q2VmMzZhNkRDSjVWdTV0b3JLeTRxOGFualZqTDFoM1d1QVNUeWo0T1lvRGNI?=
+ =?utf-8?B?eGFPTXJwVTJNQ1ZLUlpGcDN1ZDN3OHZiM0V1WWdVTE0raXhIUldiRFYvbE82?=
+ =?utf-8?B?L3lrZ256QnFVRi9tMnlQOGM0T0p0a0J5V1o1RzdTbDZNd2tBR3ZpMWlGUzhy?=
+ =?utf-8?B?T2o5RFZoQlZrSkRrSVd2bXNqTWZ3bWFacTUwd2lGMVowWDNVREFCVCtPZlgv?=
+ =?utf-8?B?UXdwOGg5cTNIcUl6ZFJnUEJobTVmTlZnMHFNOFVkalhPQnpUOTU3VlZvWW1w?=
+ =?utf-8?B?TXpBN080R3BvTzhBQndzcGFhQzFKeG1uc2VsQXNGaHJmZmRKMU5jUTRXSGg3?=
+ =?utf-8?B?QXdjbUcwcDVkb0t0NG9xeWpIbTFxNXMvL1pnR1dkUlBLQnVYck10UGc4M2c2?=
+ =?utf-8?B?S2N1Tk8zcVhNMzBLM1RsbUJjZXRNT3Y1cGl6dFdkL2wxa3FFNWpCYUFXbE1n?=
+ =?utf-8?B?cjQ4QUNxa3MvT3NVT1BiVXJMMUQrYkU5d29Ib0NMWU5hVzI4SlQyK2NkWXlS?=
+ =?utf-8?B?QmdEaWx5S0FIQkRXU0RiYTBCWnFBaUdobjVHd05CK3U4ZFpCOEF1ems1NVFi?=
+ =?utf-8?B?RmQ3RVA3aWNJUEszVk9JMWUzQVBhMFVSbmErc3ZPd1dHWjIvNmdhUTVpbDVl?=
+ =?utf-8?B?YVA3RFp2UlVTKzlnRktrd2hUTXhBMlFBMjRLWldyRjArV2Z2WFFLZjN5SVFp?=
+ =?utf-8?B?Ym9zYnNUQjA2Q0xtVXdOV3lKR1lHRGlYeU9HU0hIeVdxQUJFS3JybzAvaGg5?=
+ =?utf-8?B?NWVzME9tWGkzWFBtZkRzcTJaamhSTlQxOFl4ZzFwTnQveG1hVy90OGhsNmVu?=
+ =?utf-8?B?M0E0c0gvOG9mQXFCNzAzL0RYT1JOeWVQWHFHWWsyTW43UlRSYklJaU53RU1V?=
+ =?utf-8?Q?X3pUI1Z1CM54CT3LoNtpyZVrmQJGnz7MawqQ4=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?Tkl0aytCN1ltVHpKbkJyWnE2b1ZiY2VlbEdLL2RVckFYVTF5QUhYeWJpZGtn?=
+ =?utf-8?B?MThxWCtuYWNoWXBWRktRbVlwNDNLNzlqVzBpbkszdUV5YVNoTlRpWXMrbURz?=
+ =?utf-8?B?RmtxUTJnTWtTdkVrdzdJcDRrRTNkaUNPK09lcTNzTWhmZWl6bnA2TWlTSng2?=
+ =?utf-8?B?d3BBRTgwM1BqZEEzMk9xODlacjNSZmJiTGhIMUVnYjVjUmpsanJLeGZxeWQw?=
+ =?utf-8?B?Q3JaMWd0UHdIVGdBSEw1MVlRNWFxNkM3T2F5bzR1clJBcVltcFVwSkwyamZO?=
+ =?utf-8?B?SHBBTHJNVUlKbzJ3RHBJbmduMEIyd054SENRaUxHNFg2QkpwakF0ZlI3MzFC?=
+ =?utf-8?B?YjMzMkV0SmxwZkZqcVMxaDlLTHhlU212M2k4Z3AxUlM2VHRsRGdVUTJWMTFC?=
+ =?utf-8?B?NFNLZzU2STlvdlVpb2hmVGt2QThvT3QyaHNGbzdoejlOdmtqbU45NWs5aC9B?=
+ =?utf-8?B?eVl0bG0zMnNPMmVHZ1Fud3ZRUHQvYy94VEE3NVIrY3huWlNsWU5MdktrdHNZ?=
+ =?utf-8?B?amNaVWpaVWp0V3RPUGFJb3dSRUtJNlRPNnY3MHE2cW1HYUQwM2FNVkJaenpn?=
+ =?utf-8?B?cXRoMzlDV0JGZFJkNDFPcmR2YUFhQUxRSDlxSW5nSFJpZHp5dTBJT1RSN0FK?=
+ =?utf-8?B?V05XOG5SYUE1c2pHMVkzR2lRVXBMcVpFSnZRZlhud1NLYWRlekM3WHc3Ynhu?=
+ =?utf-8?B?N1lhT1dIYysrNjBKWmhYNTJwMlh2bzMxSjlndmtueDFOV1lrNzlwdWlmdjNh?=
+ =?utf-8?B?V1NYWkF2bUNOR3hZeTJxUFdReWNUVkR6TFFGQXI3RjZ4THV6SE1JZ092ZWJK?=
+ =?utf-8?B?bWR1S0lYMFhaUnFqMktwLzJpTkU0QnEyMFgrRkFHM2lhalN1WEdURHAxUXhw?=
+ =?utf-8?B?Q1lTbjlrc252NXBwUG5yY1dyVG1wcGhHdTNTa3dFTTJhcTRMZDU4M2dla3Nx?=
+ =?utf-8?B?R3FWNG1SWjM5V0FQNzFPc1FjL0R2SjZ6VGhSdDd5UmxoL0M3bWpIMTM5UHJI?=
+ =?utf-8?B?em85ZFFKL0ZqNndtL203U3QvSEJQZHo4clRBNEtjL0VUbG9tOU15bk5WT01R?=
+ =?utf-8?B?MFlpQnd3eFVnTTk3Rnk1V0VoNVVNTzY3bFlKWVlDV2x0R2F1MVNlMnloT1J0?=
+ =?utf-8?B?T0J2US9CcjVWaFBNa1pXT0FMTVl2OVMrSXR3cHdqY2lEODQ2R05sK1pub3dl?=
+ =?utf-8?B?Yng1NldRUEJGTmwwTmE1R1hWamkzV093VjFVT0NIZEJsSThiem51bmdSUUxq?=
+ =?utf-8?B?a1RuL2E5VXNaVEFrS2drbmR4dUprazZ1aDk2cXNJZTNSa0pucXJieU5hUUt4?=
+ =?utf-8?B?RjVhRDM0OGwrY3FQUm5nSWFKaGRJZ3dRY2lpdGlYVVp0QUJzUWF4R2hYRloy?=
+ =?utf-8?B?SVB0aE0zTy9xMDRBaGNhZDM1OUlzZ3Fhdjd0enZEZjVBWGsya0ZmNmZMZlhN?=
+ =?utf-8?B?ZlFWNFJlaXBSWE5mUWY1SDRIRzVrQzU5ZlMwdExHOVJxZzEwWHVjRnJFVm5K?=
+ =?utf-8?B?NDhFclkrWndiWmh3ZVpQcEliLzNlOTI1d3U3Z2piTGljNTRoeGJFWFlkaHdR?=
+ =?utf-8?B?V2k3aFpST09zK0xBM2ZRK3BHc0NiTHhneTkrYmVnbXZSVTJab2ZKOEpNbVlP?=
+ =?utf-8?B?b3dvOW1yd28rQnVpZUVDTElpa2NFb0taT2h0QUVEdlVmaVhHcU5CMVZvTFor?=
+ =?utf-8?B?WGtCampRTG5HMEtLT3d4NFNKc0VWcERzWFpjNlhNdjlTNmpzcjZWdkZkNVpU?=
+ =?utf-8?B?aU9uemRUNG5UM3F5andaTGFEQlQyK0g4NG9LY3plZHpRUXljRVVSQlloK1ls?=
+ =?utf-8?B?cWU3WGpiQjdqbVZuSVZzWmZNMXNEZENsZm12c1cybmgzUUhCVjRZbk9vckxG?=
+ =?utf-8?B?U0NXaExtTWpSckxrT3VUWXAvWTZZK2lhc1hKMWFNZEhieDd4bGpaTk5Va05S?=
+ =?utf-8?B?bG8zbE9wREFha2w5MmVSU3F6eUdINFp3dXNya0p5Sk5yR2FIblJMNnBZcFI1?=
+ =?utf-8?B?cHlTVnA5K2g2ampTSkZvN2ltRUY4VEpKbWFTdURaQ3BWZnNOQ0JhM090Wm9D?=
+ =?utf-8?B?bW1uLzFsNFFFTW5BRXVZcmpFeWFKOHhqeEZweVVZbkFtNzduS0xndGxEMVk5?=
+ =?utf-8?B?NDBKay9RSTVjRFlpYTdOTnJ3NTdCcDB0WTZyV0tjR1BqdWFPYmJuSkh0a2xT?=
+ =?utf-8?Q?BWhRvTTfIfT51cy0+9gLLyE=3D?=
+X-OriginatorOrg: efficios.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d085934c-ea9d-4714-2972-08ddb998db0c
+X-MS-Exchange-CrossTenant-AuthSource: YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jul 2025 18:47:11.9664
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4f278736-4ab6-415c-957e-1f55336bd31e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LjOn11oB8lXeC7FsEAIkBiw7MOgKK+jyTvoFZ8fErUNtJ8idPM/IF0GQf68ptBURBbmlI1iYX3c7sL4Y1B4B/+QnPRsw9Nu8cbhURhXYy2g=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: YT2PR01MB5206
 
-On Wed, 2 Jul 2025 at 10:49, Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> To still be able to use a 32 bit cmpxchg (for racing with an NMI), we
-> could break this number up into two 32 bit words. One with the CPU that
-> it was created on, and one with the per_cpu counter:
+On 2025-07-02 14:21, Linus Torvalds wrote:
+> On Wed, 2 Jul 2025 at 10:49, Steven Rostedt <rostedt@goodmis.org> wrote:
+>>
+>> To still be able to use a 32 bit cmpxchg (for racing with an NMI), we
+>> could break this number up into two 32 bit words. One with the CPU that
+>> it was created on, and one with the per_cpu counter:
+> 
+> Do you actually even need a cpu number at all?
+> 
+> If this is per-thread, maybe just a per-thread counter would be good?
+> And you already *have* that per-thread thing, in
+> 'current->unwind_info'.
 
-Do you actually even need a cpu number at all?
+AFAIR, one of the goals here is to save the cookie into the trace
+to allow trace post-processing to link the event triggering the
+unwinding with the deferred unwinding data.
 
-If this is per-thread, maybe just a per-thread counter would be good?
-And you already *have* that per-thread thing, in
-'current->unwind_info'.
+In order to make the trace analysis results reliable, we'd like
+to avoid the following causes of uncertainty, which would
+mistakenly cause the post-processing analysis to associate
+a stack trace with the wrong event:
 
-And the work is using task_work, so the worker callback is also per-thread.
+- Thread ID re-use (exit + clone/fork),
+- Thread migration,
+- Events discarded (e.g. buffer full) causing missing
+   thread lifetime events or missing unwind-related events.
 
-Also, is racing with NMI even a thing for the sequence number? I would
-expect that the only thing that NMI would race with is the 'pending'
-field, not the sequence number.
+Unless I'm missing something, the per-thread counter would have
+issues with thread ID re-use during the trace lifetime.
 
-IOW, I think the logic could be
+One possibility to solve this would be to introduce a thread
+identifier (e.g. 64-bit thread ID value) which is unique
+across the entire kernel lifetime. This approach would actually
+be useful for other use-cases as well, but a 64-bit ID is not
+as compact as the CPU number, so it is somewhat wasteful in
+terms of trace bandwidth.
 
- - check 'pending' non-atomically, just because it's cheap
+Hence the alternative we came up with, which is to combine the
+CPU number and a per-CPU counter to have a cheap way to keep
+track of a globally unique counter using per-CPU partitioning.
 
- - do a try_cmpxchg() on pending to actually deal with nmi races
+Thanks,
 
-Actually, there are no SMP issues, just instruction atomicity - so a
-'local_try_cmpxchg() would be sufficient, but that's a 'long' not a
-'u32' ;^(
+Mathieu
 
- - now you are exclusive for that thread, you're done, no more need
-for any atomic counter or percpu things
-
-And then the next step is to just say "pending is the low bit of the
-id word" and having a separate 31-bit counter that gets incremented by
-"get_cookie()".
-
-So then you end up with something like
-
-  // New name for 'get_timestamp()'
-  get_current_cookie() { return current->unwind_info.cookie; }
-  // New name for 'get_cookie()':
-  // 31-bit counter by just leaving bit #0 alone
-  get_new_cookie() { current->unwind_info.cookie += 2; }
-
-and then unwind_deferred_request() would do something like
-
-  unwind_deferred_request()
-  {
-        int old, new;
-
-        if (current->unwind_info.id)
-                return 1;
-
-        guard(irqsave)();
-        // For NMI, if we race with 'get_new_cookie()'
-        // we don't care if we get the old or the new one
-        old = 0; new = get_current_cookie() | 1;
-        if (!try_cmpxchg(&current->unwind_info.id, &old, new))
-                return 1;
-        .. now schedule the thing with that cookie set.
-
-Hmm?
-
-But I didn't actually look at the users, so maybe I'm missing some
-reason why you want to have a separate per-cpu value.
-
-Or maybe I missed something else entirely, and the above is complete
-garbage and the ramblings of a insane mind.
-
-It happens.
-
-Off to get more coffee.
-
-             Linus
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
