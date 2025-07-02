@@ -1,91 +1,91 @@
-Return-Path: <bpf+bounces-62040-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62041-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D98BEAF091D
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 05:18:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03A29AF091E
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 05:18:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5F181C06D69
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 03:18:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D37C0423164
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 03:17:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 542511D7E41;
-	Wed,  2 Jul 2025 03:17:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A22B1DB34C;
+	Wed,  2 Jul 2025 03:17:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f2LvXIb5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Popehyhe"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f68.google.com (mail-ed1-f68.google.com [209.85.208.68])
+Received: from mail-ed1-f66.google.com (mail-ed1-f66.google.com [209.85.208.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 309FC1C07C3
-	for <bpf@vger.kernel.org>; Wed,  2 Jul 2025 03:17:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4773EAD51
+	for <bpf@vger.kernel.org>; Wed,  2 Jul 2025 03:17:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751426272; cv=none; b=bqMZjf3jKmemGnVjpZVD2nSDyB71QPcMToWoSDwp7KBr0DmCjc42T1gAJYva3w+5pBw5th5YDn0Jh9Kd8Fkq6LZngITSMapLmPbtdN+ewpXO5bVM7Ri8+n6O+t9/q1mvXNCUl7XWCqzxwB02WvMat4ECEML9XXzqtJC5hUVQZis=
+	t=1751426274; cv=none; b=gMHfYfieq6X62Hlj1Q7CfRjFEge4URxlxIdeZo13Yu6Vn3wDE8x+exZDCJe5ifd95wsHB88didLKC5CR4H2ufCrMXNum5SrRumscr6oQRvWUUnsIgLrPTqfjdivvscRrMjLrK4olyaXb4zphFBmd4oauIt/2fl5E0a2vZxdeWQM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751426272; c=relaxed/simple;
-	bh=Cc+9AStwZUHp7zLEiOw5IOxXPdR5R6fgLUJj8NabZBQ=;
+	s=arc-20240116; t=1751426274; c=relaxed/simple;
+	bh=Uj1KcIcCXBIrooFXLrO/d+UGv7pxDoR8Iq0kfschCyo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mRemDGrc+db79kt2EBy4DQ5eJQ1xxSod6DuRF4fADfVMgikrtC+7SqjLxcWI7qhy1fx4bh2M5DLvT/XpIxrkTF2h0TIhIrDm3EauE9VppH0UMi+N7cfS8mNQ29YyO7PMOVOftFhYzOGWsKVjFJD1ik1L8dz2TECq7KyadHCNI3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f2LvXIb5; arc=none smtp.client-ip=209.85.208.68
+	 MIME-Version; b=A0o7WsmA189WOpi6OCmazHJY7UjOyJnfko1JxbGw4Ql2vlg2g1wCo1i4i7pg2kby71syXwCHG5AtxRKNQ+xuYYtiRkmkMZcvGbMIhJHhqA82yRuplcX8847N4lQrI8+8W+IxkUHLAV1MCcwwT87NnrtbD/kqLaZIXkqAhnsSFWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Popehyhe; arc=none smtp.client-ip=209.85.208.66
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f68.google.com with SMTP id 4fb4d7f45d1cf-6070293103cso6898068a12.0
-        for <bpf@vger.kernel.org>; Tue, 01 Jul 2025 20:17:50 -0700 (PDT)
+Received: by mail-ed1-f66.google.com with SMTP id 4fb4d7f45d1cf-60c51860bf5so10698500a12.1
+        for <bpf@vger.kernel.org>; Tue, 01 Jul 2025 20:17:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751426269; x=1752031069; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1751426270; x=1752031070; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kDhbGhn+8m8YffjcW4vwDTzn5bTd6x2IOD+qfNoaBwA=;
-        b=f2LvXIb5yZSEAZcJBtxWyR0fBzB+1bCf1stSG7mCCDJbBiHdtEJrLiRW0Q5Ba7vD/8
-         +z2HZiWRVYk8g2bt7cIWtg9TV5sWyr3xoFT27f6rATRWD8xbgvcTyU0uFrsodSsi2pnK
-         Oci49UwPG/nkdOtUpaH2Ha4xE906eVEL+PokLNT463qGv3LSN85sxVXgcEOEBHONZLlr
-         JL77bDlsvdLg9fryZZjMYHI0nKyVWxcOHhOf86wm6YZsXg93sgOLjQmQCNT9vqDMShyx
-         nNaAqDYWnQSe6llTBrtvVYpt6lvg3G0BrwmBzM23gYBQ1lOit8I0xS2LrbZiHRTrdEfr
-         ztCw==
+        bh=SNrm7aQjBTn5N2R0Bm6YQOm59mWuaR96yAUeb26A5og=;
+        b=PopehyhexvW9W7DwllZy7/0p0t6c7Dufn5F0gLMGe5xEixbQPE6pV3KMvlinTkQGdl
+         JiHjotYy1y8grSBRrvbSgWKqMx9SIrAzJynuW2R8JWbGc7dFu6+jwoZwRmdflU5CVUR4
+         tds1YgIXRNuVRyGtQwJI+aFYW5iQTaEVWbzHmMSUxE6PNyhmyvOg98s4Gx0rQ9xiCzAR
+         almqTUFRaT8pVhQXppRlzmshQgRJP/VcfWaYJ0g7Z0XiaK6HfaEPgiRhKzNVthatu5yJ
+         nLuq2gBrauwUkWWdthxBMnMlGI+fGRwOChc2Eucnr+tmcF/ymyHL5fBTDviPzfNhkrUW
+         ENTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751426269; x=1752031069;
+        d=1e100.net; s=20230601; t=1751426270; x=1752031070;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kDhbGhn+8m8YffjcW4vwDTzn5bTd6x2IOD+qfNoaBwA=;
-        b=FoFWrXsQgE4/zMEcSU0EyaInok3A2/gSpfUGStKBSjid/t0jqbzoiOKMtayFTFhit4
-         7bnNVp2Nd36sBpNxmdIKGoh7Iw5XPHLHQ93N1J8kLqeamsGmAjFrYlJTbNRlrl3QDPUk
-         b51ZoFeBiki9lIqAujxj5HIvtwkDvDLiw3x7JHmdOQ7miRXeQ7T91EVegvLCd/YYNlg+
-         tr9cfvuamus8uMDdBNGK2yMJ4HKugEek7aABNYwNub+f2C17Qj0VpUsnZ0zepYCT9lJy
-         GgjsPuNLKD3ja4FG2JOZ/8NGErlTu6/eAo5Kiwjmu0BoMe12QR6SnnpyKuLyIXUIcNrF
-         o4tg==
-X-Gm-Message-State: AOJu0Yw5cJWBEKPIbGfqFdjhCWq6eF8vus+0kLQVvp3wCg+Gz/xJ971t
-	sSIL4TIlSqwn3c8SRHeISqSke9HH7zFaDWVm3pHueRK858zN8M7dkwPAborkRHlhhbY=
-X-Gm-Gg: ASbGncvsvgJM9B2ZabHQMOhxA0cFFQIVj3tpmDIsKaCpKPsIgt2jlHH26XrqCngVWP2
-	wf7CpkdwFIw+sGnCaD/HN7v3DeqBNiOBR+rp6m9BgcPnEMKXqtuKoXRJWKScSZsPKws7b816Xlh
-	632yqPFQS0xEPoro1pzdSqXmbzuHSYIEqr1Ek3ooq5BCge4OtmvWKKk3hNMO/2To+BUNPc4EdKw
-	c07O/V2G1B7vaC7gGXoLu6DmTDV3f6VN/EoE4nQpnJSPmXHhMqZZbqNw6tt0rPrPJdEVH+Mobq6
-	4k9q35Du3VBmOpyXaGwrS0XECocWHKcrGXC+pLFTFoDqcVFpT0s6MTukD/1sGl4=
-X-Google-Smtp-Source: AGHT+IHLaRVqDLFI1hwHL39tduKCh1RRrM4yd1xHSn4U1Uhh5Sp6U5Rimjfgzi2h4shZdY1Ad9ZQXg==
-X-Received: by 2002:a05:6402:35d3:b0:601:f3f1:f10e with SMTP id 4fb4d7f45d1cf-60e52cb3edamr880089a12.5.1751426268967;
-        Tue, 01 Jul 2025 20:17:48 -0700 (PDT)
-Received: from localhost ([2a03:2880:30ff:70::])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-60c8320b592sm8514975a12.75.2025.07.01.20.17.48
+        bh=SNrm7aQjBTn5N2R0Bm6YQOm59mWuaR96yAUeb26A5og=;
+        b=DHd6z8JwhMxZVHK7N4NI2UNS5gkD/31tV/qBv5xSe4t3twko0SuYg8jUWOw/+665Wp
+         YOM4ZVvGXqwPx3Gp9ZSSf5zC68vBtRK2W8DpqZbNTou6d6ncH8/0+SZUenQOsAhxb3vt
+         6fAzX3CmdOA/XJegI7cdA3WurD086UexlPKyCiVrBAZDI4aG4vpjoWja1cZqWlitm1RG
+         lIdv/JPHYl9vYw0S7NbnFSKrdGnCErz2Kt0rlOSvWQgOyZc29Prpf4Lno44m44HRoZrq
+         vh58yjedlVpqgdw+fRyyg2AXKSnQ2S8Rus8n5q8czl3nMy7xsEGRc+JHrzvEp1pee5K9
+         jpSQ==
+X-Gm-Message-State: AOJu0Yzerf8dzO+MLiCgU/DV1XMxnWxChnilB7c/UZ8gjLG3KBu3s51N
+	PAuOitQd4GPmQQQB02tt7ed9hDlcRRqvzco88rdCasvvEd//jq0ZVRV9lhsn39UWd84=
+X-Gm-Gg: ASbGncvMsS6ZPp61fwh9J/RZ5l49D21NBx4Gj/QU+/uFvkb/HrwZ3cimiwn2PPt/Ui/
+	U+CD1DdRUd+DX/jQrr8URDG5HZxLfEkQI/FZxwnEH1sa8QKrAOXF3hJ5ZU8MQ83UHcs4ou1kbIw
+	hfIqTw8gNS4SKfpIMHjJqnlar/hlNYYkyDycYqFoS4OMWM2nq/Bp7w9LlYcnSQi+/3CnxoUbhPG
+	PlOdX5gXrcNkXQou1KQgbQItBSz25H2/LQII6t/dENGEgqDu6H+OXPSkVFbFMoVNmN/7+bpmmV8
+	1hgHe511Zc9zNhA86WU/jJDQb+1JVSXZ+mTqIfjDpw9F3Ylv54qP
+X-Google-Smtp-Source: AGHT+IEH3ncdGFKEDegRdc1OBj8P3tO0gCQHOWsBQjH589nmQtg6lEUPp3YgXp/GS1/ElAh7YSApBw==
+X-Received: by 2002:a17:907:2d2a:b0:ad5:5b2e:655b with SMTP id a640c23a62f3a-ae3c2b4d9d0mr110234166b.25.1751426270097;
+        Tue, 01 Jul 2025 20:17:50 -0700 (PDT)
+Received: from localhost ([2a03:2880:30ff:73::])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae353c6bd4bsm988847766b.134.2025.07.01.20.17.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jul 2025 20:17:48 -0700 (PDT)
+        Tue, 01 Jul 2025 20:17:49 -0700 (PDT)
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
+Cc: Eduard Zingerman <eddyz87@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Martin KaFai Lau <martin.lau@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
 	Emil Tsalapatis <emil@etsalapatis.com>,
 	Barret Rhoden <brho@google.com>,
 	Matt Bobrowski <mattbobrowski@google.com>,
 	kkd@meta.com,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v4 04/12] bpf: Ensure RCU lock is held around bpf_prog_ksym_find
-Date: Tue,  1 Jul 2025 20:17:29 -0700
-Message-ID: <20250702031737.407548-5-memxor@gmail.com>
+Subject: [PATCH bpf-next v4 05/12] bpf: Add function to find program from stack trace
+Date: Tue,  1 Jul 2025 20:17:30 -0700
+Message-ID: <20250702031737.407548-6-memxor@gmail.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250702031737.407548-1-memxor@gmail.com>
 References: <20250702031737.407548-1-memxor@gmail.com>
@@ -95,61 +95,101 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1814; h=from:subject; bh=Cc+9AStwZUHp7zLEiOw5IOxXPdR5R6fgLUJj8NabZBQ=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBoZKFQJolkkmYHmOF89hf8fpOM6juRGDboevMpXKYg b5diXRWJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCaGShUAAKCRBM4MiGSL8RyhZLD/ 9dYTMQFyxPh/UBMkE0F7EeKxdhgbQQrD4cfmrTCRqY1lZ/kMofGOz9DqRSu2WvzUACTUq+bpOxQOyT YhRFnltUeZVhg3jG9fhpailNVUMq632skBkuVVKM2UEqgs85Hi5e+nABUTUcPKDCmlhj6v4kOr5mAL Kfoz78ywPzOw2s/OjqX7a694WLKbcxQtVP50PXiCRgjBFk15R6eSJq386BMNCbcKc7H+IMnNTYik5F gyClkHB1qDoWPDsk+fLDqo4UYvMJ79GBYJzshALqOjcnVYaIday676+eI0bYqGH3lk3f/A8mj+i/8k ZNKWRUT8wn2JJlCDn1BlpDkKTWyz1ThSDW+9gVatcrP76KhrrSsQOk5e6xgY4ye6t4coJ8d1p47jVN rUFDgBu1M1vUwmXcxvq7AwqW5Q1Cm6PJ3uhbka8RyFQZWMFnRVo5moEajqTNtOorHMTJ5WmFZTxh7L 8iaBbddjjHx8nuU4OMJIej58mzN7lRN1XqFTKBvAqlF1bdaCiA0h28JYpl9r4c2DLDiXfXO4yY4JgN xB8Ia6hKHZven/5tvcgjbsnnBEy2HGTX4Xu90yzbe4Ib+U9Ajsq24G/IwOttaoi0MucdifevX+ncQ+ NYtJ9EX4599VACz9OI4Kh3WVJ7mCo54ww88LMR6KAntsv/LdujBkWO5m/qOg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3142; h=from:subject; bh=Uj1KcIcCXBIrooFXLrO/d+UGv7pxDoR8Iq0kfschCyo=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBoZKFQ8QLRR2qhoHnBXWQ+vgYxm94KAdw2PQYlJfWe k9ThhzeJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCaGShUAAKCRBM4MiGSL8Rymg7D/ 4+e8MnOc3hVHzKmM+RckRfF1oDUIQC6gr96mOIBGAWjMKOfiVBFjT2DIMGCt7tqir6nvmWhmPkjKt8 x+appI0b5AWsnAeJtd41o3LT2qV8UDoKDbo90ABeLZy2bR+izMpY0EHwaG4C3E1F/2WrYeF39AK5ke QkZuRVaKDcrUrSjI8ORA9UZMQje+ir850i3RWLZDsGbQ1w8AUeqGgaoJ2cUmK/1OuKNC4ZEvYxUXSj 83IGnCCGzR6b/3Fs54x+hnh8QCr1qnABE8XivKbW08ICF8GT9wxwQQCp+cQFt/qQ2j6+RODdMbnplu vUTZ5O9bulzRIYNQULipwfvF3SuTcu71iXTES5EU4oP+hAdRv9cXuPXK6AnsU6gcqSuvcK+0FQD4os N+yoarbojL1gonM1ir9vhGt6IjztiRjHutzRLsutN661BJz0U47iepeIIyTXYmc9oUrfdgwiO/ZMVf BQiVQ6oOYly7WPz0ErTXpf7u0gj2o+3iFaa6bbovJ3VLAqWWVQnElphAZPURSPadeFH8YAMRm4XWMC 7cVfARQlBdJYRRO/rwWlr0cZFZMcTgnxvmTrN/WKqZrmZW8+ueMMBqG2gWCt0FtW5SWPaaZSnbSJcJ uu7V3Ny3G9Obq3hzhwNj2RE2ZjO/9KgM8hw62UbvkrAmZawtfdKRepOOrg+A==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 
-Add a warning to ensure RCU lock is held around tree lookup, and then
-fix one of the invocations in bpf_stack_walker. The program has an
-active stack frame and won't disappear. Use the opportunity to remove
-unneeded invocation of is_bpf_text_address.
+In preparation of figuring out the closest program that led to the
+current point in the kernel, implement a function that scans through the
+stack trace and finds out the closest BPF program when walking down the
+stack trace.
 
-Fixes: f18b03fabaa9 ("bpf: Implement BPF exceptions")
+Special care needs to be taken to skip over kernel and BPF subprog
+frames. We basically scan until we find a BPF main prog frame. The
+assumption is that if a program calls into us transitively, we'll
+hit it along the way. If not, we end up returning NULL.
+
+Contextually the function will be used in places where we know the
+program may have called into us.
+
+Due to reliance on arch_bpf_stack_walk(), this function only works on
+x86 with CONFIG_UNWINDER_ORC, arm64, and s390. Remove the warning from
+arch_bpf_stack_walk as well since we call it outside bpf_throw()
+context.
+
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- kernel/bpf/core.c    |  5 ++++-
- kernel/bpf/helpers.c | 11 +++++++++--
- 2 files changed, 13 insertions(+), 3 deletions(-)
+ arch/x86/net/bpf_jit_comp.c |  1 -
+ include/linux/bpf.h         |  1 +
+ kernel/bpf/core.c           | 33 +++++++++++++++++++++++++++++++++
+ 3 files changed, 34 insertions(+), 1 deletion(-)
 
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 15672cb926fc..40e1b3b9634f 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -3845,7 +3845,6 @@ void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp
+ 	}
+ 	return;
+ #endif
+-	WARN(1, "verification of programs using bpf_throw should have failed\n");
+ }
+ 
+ void bpf_arch_poke_desc_update(struct bpf_jit_poke_descriptor *poke,
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 09f06b1ea62e..4d577352f3e6 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -3662,5 +3662,6 @@ static inline bool bpf_is_subprog(const struct bpf_prog *prog)
+ 
+ int bpf_prog_get_file_line(struct bpf_prog *prog, unsigned long ip, const char **filep,
+ 			   const char **linep, int *nump);
++struct bpf_prog *bpf_prog_find_from_stack(void);
+ 
+ #endif /* _LINUX_BPF_H */
 diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 5c6e9fbb5508..b4203f68cf33 100644
+index b4203f68cf33..ab8b3446570c 100644
 --- a/kernel/bpf/core.c
 +++ b/kernel/bpf/core.c
-@@ -782,7 +782,10 @@ bool is_bpf_text_address(unsigned long addr)
+@@ -3262,4 +3262,37 @@ int bpf_prog_get_file_line(struct bpf_prog *prog, unsigned long ip, const char *
+ 	return 0;
+ }
  
- struct bpf_prog *bpf_prog_ksym_find(unsigned long addr)
- {
--	struct bpf_ksym *ksym = bpf_ksym_find(addr);
-+	struct bpf_ksym *ksym;
++struct walk_stack_ctx {
++	struct bpf_prog *prog;
++};
 +
-+	WARN_ON_ONCE(!rcu_read_lock_held());
-+	ksym = bpf_ksym_find(addr);
- 
- 	return ksym && ksym->prog ?
- 	       container_of(ksym, struct bpf_prog_aux, ksym)->prog :
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 61fdd343d6f5..659b5d133f3e 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -2935,9 +2935,16 @@ static bool bpf_stack_walker(void *cookie, u64 ip, u64 sp, u64 bp)
- 	struct bpf_throw_ctx *ctx = cookie;
- 	struct bpf_prog *prog;
- 
--	if (!is_bpf_text_address(ip))
--		return !ctx->cnt;
++static bool find_from_stack_cb(void *cookie, u64 ip, u64 sp, u64 bp)
++{
++	struct walk_stack_ctx *ctxp = cookie;
++	struct bpf_prog *prog;
++
 +	/*
 +	 * The RCU read lock is held to safely traverse the latch tree, but we
 +	 * don't need its protection when accessing the prog, since it has an
 +	 * active stack frame on the current stack trace, and won't disappear.
 +	 */
 +	rcu_read_lock();
- 	prog = bpf_prog_ksym_find(ip);
++	prog = bpf_prog_ksym_find(ip);
 +	rcu_read_unlock();
 +	if (!prog)
-+		return !ctx->cnt;
- 	ctx->cnt++;
- 	if (bpf_is_subprog(prog))
- 		return true;
++		return true;
++	if (bpf_is_subprog(prog))
++		return true;
++	ctxp->prog = prog;
++	return false;
++}
++
++struct bpf_prog *bpf_prog_find_from_stack(void)
++{
++	struct walk_stack_ctx ctx = {};
++
++	arch_bpf_stack_walk(find_from_stack_cb, &ctx);
++	return ctx.prog;
++}
++
+ #endif
 -- 
 2.47.1
 
