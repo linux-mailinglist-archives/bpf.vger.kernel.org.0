@@ -1,74 +1,76 @@
-Return-Path: <bpf+bounces-62075-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62076-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82E5CAF0CAF
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 09:36:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB4CEAF0CB3
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 09:36:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 989BA4E0E1C
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 07:36:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD6913ACCE3
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 07:36:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C987122D795;
-	Wed,  2 Jul 2025 07:36:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B201D22FE0A;
+	Wed,  2 Jul 2025 07:36:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b4N1PL+p"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QRNpeTEM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 070AA219E8C
-	for <bpf@vger.kernel.org>; Wed,  2 Jul 2025 07:36:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBA85223DC1
+	for <bpf@vger.kernel.org>; Wed,  2 Jul 2025 07:36:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751441791; cv=none; b=G3RhWo01H83GEz0ks1v91LmoujLupKaiaNkBPtaHaysFA/L+7+XKpTuukEd2G489gBKe3c3CQCW7KfbsDWef85+ZiiHo+VI2Lv485lQhBNtCh/XizuE7L4BmnWtUFtzEoPZgjoTAvBvZH4/sIoVnuf+G4k2sL80IItCRcpLOEJ8=
+	t=1751441792; cv=none; b=aUo+Pemp4x9FRO4QjhMby1HgjkKoXmXZT8Yea4M+FQEmdhU45jfSXGL6AUK8RqLnLqI1Cbu8wNEd4FWlumrwkQt6Wp3iwHnkja4DIGjIowW5xqLt2LnR6jFkKn6Zldl9cUJRcm9HuiJvrYu8jOPP/R3C//2j2fwSHm0JS5Zmb50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751441791; c=relaxed/simple;
-	bh=t7GENUDKI9GKBt+ib829I09rpfAE18pqQo5gBefc6z8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Fty5BV/5sVl2JPAJCeD9CpvRtatmK/03pqVTeJCTD26tbSrc0FRnrnIml5m5rvAxggizMJIgXPJwddNzCYVQ38qc1g5pQHEJgeDOv1Mf1JmDzOWQWRDyUvRVNNEqE0fSCaO8fDUh6eQBv/QaDWkBt+sCMC7K89RRAADtcqbrrpw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b4N1PL+p; arc=none smtp.client-ip=209.85.210.170
+	s=arc-20240116; t=1751441792; c=relaxed/simple;
+	bh=Fwlj5mG6naih2Ma+h4TJHNoq/Hc9bQmXFJOLINzb5yU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=jHHY+tE6sLQIKsqWfguSlnIQlD1qbxMIZrehK7aU+06l6P00wHm0fkrIoHvkVhBXh8jMhc5LqW0MKEiRY6A2ECr4sOQLbVBCG8ZGZqmqeK7cfCRdGznlyPe09bFomi0AZjWC8vSGfOcWGaRDiyy8qVHZjUmyeFra3Jyn3UEdj88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QRNpeTEM; arc=none smtp.client-ip=209.85.210.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-748d982e92cso4946709b3a.1
-        for <bpf@vger.kernel.org>; Wed, 02 Jul 2025 00:36:29 -0700 (PDT)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-748e63d4b05so2725610b3a.2
+        for <bpf@vger.kernel.org>; Wed, 02 Jul 2025 00:36:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751441789; x=1752046589; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=GSIVK0ZNUoVj2b8BnYNIyZMvvVDF8nRwB0n7Tq4tYMM=;
-        b=b4N1PL+p6i/HewxwxfovXfi6CM4SllaMFQJAZngkDqQn1jovfhAafeEo3nZWLfUSHr
-         rtxjbw+wOhZtTlDTK+j+paSrO/AihQTozMM5G8KweHFymlJPCqGoSgQizMROg2+8xdF+
-         hDr3cEnySEE39XoBbLvQ7yvDSUKzwCX17FhpY8U5NokmuohgX4YdwSfojurN0eQ0tKW3
-         CRxFfFLawtprQMwlQHNxUDxERfroVo4mecT5mVlKBz95Gjno4k0cnUmj/D5HvwUyI9Qv
-         8s82FC0BXB1F8tUWlpgN2zq6aPO/ryY2n8G8ste8lsyoTEQi4l+9vxcpcHsa9OiyHKxZ
-         vTjg==
+        d=gmail.com; s=20230601; t=1751441790; x=1752046590; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KYqE8SEPTKUeDqlit+B7B9IDUfS1daO90I/i4qb5ZzI=;
+        b=QRNpeTEMB2rTBO9e8akfs1O2qq/s4w7dy7t02l1AzY1/UFRStFlX4lbRGG2y9iKoem
+         jFLZQDg5zko3mNr4MYqNgnIMVX1+8fGVTfgbpn9399Gopv7VUtbii1Lf21FkTLYu2IUG
+         QsY8w9g+gULG6MkHH7H4qIBuPmXXbDCw0cJqZENzA25ixhx2fD3k3Pf+EWVj8fhku46w
+         +yKLKs/u3EM9xaT0xkX57Cxh+gj7R2MeA2RVIidTzfIyk0g0I4hEC3+uPQpSlJ+Bs4yo
+         zF5rI/ds6kHIesnl7X4yZVlXrycL1kYlW88rLq9fqjsvbWdWShBiYJ2WFPJKPflKLS9J
+         1PPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751441789; x=1752046589;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GSIVK0ZNUoVj2b8BnYNIyZMvvVDF8nRwB0n7Tq4tYMM=;
-        b=UWMGeddlkG8gAxRFVnzXAKYwNpq0MJOP/HxJ0j306ULH3DZbUexjV2dH/I9WsxWtkc
-         iKQmSslmzo4PGMSRBrSEGiseZF97YNUxy080XULoYtzWWROm+4zlqJqkdqtmlRxLR7MS
-         xQ3vkzPrOvaLfgDETjWpnfQjN3ti+GtLVzZF2W+p4RXX9drSl1C02KRmq0iUl/zQNXmn
-         qYJ00l3plLE+epN42XYSJGXbU1EuxCpM1cauQCgsmKCLlcKREctt8oI4bRoKWKqic3nH
-         nQ8zeX2uMFeybkdyU+XJZx8ihOTL3xdojhDJ/phuZbGVViD/4E6e+x+BAKuXjM6pr6dx
-         0G6A==
-X-Gm-Message-State: AOJu0YzHOwFBFIwEHV9ht0COTkwiVbL3loBwz0/vzWkQa2lynP0oBRSL
-	pc6weUIYWD/zpz6C+y3Ng8uOVw9A0miZvWnYV5vaGKQEro/xh0QjwJsrA37KqQ==
-X-Gm-Gg: ASbGncv4m/mBQ2NGiCbLY4VlhwQGx1sTDnT7tXWTK9dhXD+cKUQE9rYv9cTMqfrnmuy
-	24U3Y6ihqObQ+SohgNvpN+WTxz5lYHX3BwtQSr6SEMLMY0uAfoy2OYSVO9Zv5soQmvY+nqYzXFY
-	ZPmIwVkelHwer8zDpRMJPUvrox6Zs2g4J1eaJCwETExoUP6SuP5qiYnvfn9iUGaPF6eeeoJOrR+
-	YLnwrIWcxGnrehbuYjV7Xrw9mlUWzNNRKABvne0fNzfj2/rCMjuUNkwjtliZyspuydY3A3DiJSG
-	2cN3aMhTseJKYN/1yHMHa7FT6Lrq9OoVCEmfyPMaQKas5pOmFIjjDvR5mw==
-X-Google-Smtp-Source: AGHT+IGbNv7lGy3KICq/C0fFcvV4Ut5zac/mF3h4H4mTILj6ysevL9HhDxtgoRaTqhE4sfqFik2jhg==
-X-Received: by 2002:a05:6a20:7f9e:b0:21f:ed74:7068 with SMTP id adf61e73a8af0-222d7e9bfbcmr3802348637.23.1751441789034;
+        d=1e100.net; s=20230601; t=1751441790; x=1752046590;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KYqE8SEPTKUeDqlit+B7B9IDUfS1daO90I/i4qb5ZzI=;
+        b=XHOPmm2cHEKPfg6LYiBvFsfZqeoGsjOHYWqUHXEP/xJA/JVZnFEoHnViP7JVxEPbdq
+         z8O7w5vGhqKyOnA7dzDPejSVoYSMEUr+HADo1NJPR2eLklHgzvhwG7LzQH2Ukz52xFE0
+         snphnZBiPmilZx7Cc9OXMKp2l6RH5aWrq52m0bnqdazijeEeGQLs9Q6rtR0+CbZn7MUB
+         zbse5uGongODLX7+STjoEkwAYJ5DBoCHIDXGpPZAc622bAsuoQzKd5uolZCSur8p/jds
+         bBS1i7fljEmSe/FbR2+Rt1ebVetXf6L4O8ZryODdUmoqyqZwff5YUHEkS5bOGz8iDTXg
+         e3ig==
+X-Gm-Message-State: AOJu0Yywu1Qt/y12s+kwxlCbo5ZUFBzw7ydK+T2GWaTahaAH0akNrXdZ
+	i6D6V02JfFBh9niqNnC/sR7RLPuIXLD/Q/xPrWVdd+ivya4hE9czs08C9sBaYw==
+X-Gm-Gg: ASbGnct6KIV1PYmQ3u271blM3C2CjBnmVFjpmPhi+RJkyabNg31786QLnPSAc+3enC0
+	D19m+4L64uOFlb7b9qKLsp7JwR99qsOvvJMefWZUk2LORRsyp5j//tb/Gx55iG1WH8r5qzml0od
+	lYU5KmAAtYBhg9QYMO9xTI1HbG3ypk/MeEGNKjG2SGW+MTfhIudT6HEHFfMQBkKHQxk1QvAUPyP
+	kXQb+qdzoIcri68BvTvYzL/odeUcA4cW3Cp+P7vmR2VycVk1U35B/bYkmnbpEBrPyX8E06ZEmwz
+	0TTmcPc9Yl0/JF2cwhL6TmFtXSgo7xVrRuxb/8INrFdHLBLQW3muhjiSLLJoNJ78/MAr
+X-Google-Smtp-Source: AGHT+IGDwYTpykNUHuDbFg4fN5ENKB+YvranIbPUnOGInqN7Ogo9cxNqoHAOIHQNftc5sIZrFBqkvQ==
+X-Received: by 2002:a05:6300:6199:b0:220:a63a:7bb1 with SMTP id adf61e73a8af0-222d7f30a29mr4079619637.37.1751441789977;
         Wed, 02 Jul 2025 00:36:29 -0700 (PDT)
 Received: from honey-badger.. ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74af57e1699sm13122736b3a.149.2025.07.02.00.36.28
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74af57e1699sm13122736b3a.149.2025.07.02.00.36.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jul 2025 00:36:28 -0700 (PDT)
+        Wed, 02 Jul 2025 00:36:29 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -77,12 +79,13 @@ Cc: andrii@kernel.org,
 	martin.lau@linux.dev,
 	kernel-team@fb.com,
 	yonghong.song@linux.dev,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Subject: [PATCH bpf-next v1 1/2] bpf: avoid jump misprediction for PTR_TO_MEM | PTR_UNTRUSTED
-Date: Wed,  2 Jul 2025 00:36:19 -0700
-Message-ID: <20250702073620.897517-1-eddyz87@gmail.com>
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next v1 2/2] selftests/bpf: null checks for rdonly_untrusted_mem should be preserved
+Date: Wed,  2 Jul 2025 00:36:20 -0700
+Message-ID: <20250702073620.897517-2-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.49.0
+In-Reply-To: <20250702073620.897517-1-eddyz87@gmail.com>
+References: <20250702073620.897517-1-eddyz87@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -91,50 +94,44 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Commit f2362a57aeff ("bpf: allow void* cast using bpf_rdonly_cast()")
-added a notion of PTR_TO_MEM | MEM_RDONLY | PTR_UNTRUSTED type.
-This simultaneously introduced a bug in jump prediction logic for
-situations like below:
+Test case checking that verifier does not assume rdonly_untrusted_mem
+values as not null.
 
-  p = bpf_rdonly_cast(..., 0);
-  if (p) a(); else b();
-
-Here verifier would wrongly predict that else branch cannot be taken.
-This happens because:
-- Function reg_not_null() assumes that PTR_TO_MEM w/o PTR_MAYBE_NULL
-  flag cannot be zero.
-- The call to bpf_rdonly_cast() returns a rdonly_untrusted_mem value
-  w/o PTR_MAYBE_NULL flag.
-
-Tracking of PTR_MAYBE_NULL flag for untrusted PTR_TO_MEM does not make
-sense, as the main purpose of the flag is to catch null pointer access
-errors. Such errors are not possible on load of PTR_UNTRUSTED values
-and verifier makes sure that PTR_UNTRUSTED can't be passed to helpers
-or kfuncs.
-
-Hence, modify reg_not_null() to assume that nullness of untrusted
-PTR_TO_MEM is not known.
-
-Fixes: f2362a57aeff ("bpf: allow void* cast using bpf_rdonly_cast()")
-Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- kernel/bpf/verifier.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../bpf/progs/mem_rdonly_untrusted.c          | 21 +++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index a352b35be479..525a21dbcce3 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -410,7 +410,7 @@ static bool reg_not_null(const struct bpf_reg_state *reg)
- 		type == PTR_TO_MAP_KEY ||
- 		type == PTR_TO_SOCK_COMMON ||
- 		(type == PTR_TO_BTF_ID && is_trusted_reg(reg)) ||
--		type == PTR_TO_MEM ||
-+		(type == PTR_TO_MEM && !(reg->type & PTR_UNTRUSTED)) ||
- 		type == CONST_PTR_TO_MAP;
+diff --git a/tools/testing/selftests/bpf/progs/mem_rdonly_untrusted.c b/tools/testing/selftests/bpf/progs/mem_rdonly_untrusted.c
+index b0486af36f55..8185130ede95 100644
+--- a/tools/testing/selftests/bpf/progs/mem_rdonly_untrusted.c
++++ b/tools/testing/selftests/bpf/progs/mem_rdonly_untrusted.c
+@@ -174,4 +174,25 @@ int misaligned_access(void *ctx)
+ 	return combine(bpf_rdonly_cast(&global, 0) + 1);
  }
  
++__weak int return_one(void)
++{
++	return 1;
++}
++
++SEC("socket")
++__success
++__retval(1)
++int null_check(void *ctx)
++{
++	int *p;
++
++	p = bpf_rdonly_cast(0, 0);
++	if (p == 0)
++		/* make this a function call to avoid compiler
++		 * moving r0 assignment before check.
++		 */
++		return return_one();
++	return 0;
++}
++
+ char _license[] SEC("license") = "GPL";
 -- 
 2.49.0
 
