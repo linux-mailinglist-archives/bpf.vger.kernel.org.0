@@ -1,138 +1,288 @@
-Return-Path: <bpf+bounces-62108-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62109-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97361AF156C
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 14:21:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 471D1AF156B
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 14:21:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B35EC4A8204
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 12:19:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3050B189AE28
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 12:20:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB84526E17A;
-	Wed,  2 Jul 2025 12:17:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0EC026FD9D;
+	Wed,  2 Jul 2025 12:18:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="P4epZKvA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fs0XXEz8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D52726F46C
-	for <bpf@vger.kernel.org>; Wed,  2 Jul 2025 12:17:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57944231840;
+	Wed,  2 Jul 2025 12:18:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751458640; cv=none; b=TE6sPzJH6oyLTIAwqLBBT5UDZoN/z1YhwsCAWspLXMxOnAEejjcFIod369yJPqcT9pOShrXivgqkMe5ltb7dN9Wn+cJ+4dHHBGbdvaB1lExwimost3+SVZRgsCzgiak2Fkl+hXTKZuI2fgZlFOrbVN6w4uThJ8mr374Ypk9GW9g=
+	t=1751458686; cv=none; b=WIAlSsc/IPbq5dOUb2aifG0Gwt3jKlfu2OfhiZ/DOXAwCMduo20izSXra8md5MulhcBLwbdIGEGChX9/xmKzVr21TTQjoHQaSADDbmcSwGBykOMdpoRStVACbYsXyLGUFMWQUB7RzeI4EyofbyYRw7p81qJUUBckIfevol6DyjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751458640; c=relaxed/simple;
-	bh=uzbmKudiCVqbCWHjsvWpIONLcOqXoBM4sksfA7jU3N4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=OCl/Dx+3TdpAqPmrd7cqmT2MshHBvCA7MKi81y214CRQKdPnLA/dKrYtO46lrPmptXHK6HRckU3aQ0f3SAEuETG1twNeuIyRacHGCV/dqDn61wngPh+9auTU20xivcV8CABS4JzAoOHOOODB2pdFSlmpYGFsTQ9dsq3jkGzqiQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=P4epZKvA; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-60c4f796446so11407487a12.1
-        for <bpf@vger.kernel.org>; Wed, 02 Jul 2025 05:17:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1751458636; x=1752063436; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=uzbmKudiCVqbCWHjsvWpIONLcOqXoBM4sksfA7jU3N4=;
-        b=P4epZKvA0luTXkjDRr1G4JmggNRPZfOa+42wwyhAgrTIxm2CBjn+vQPOxjT2uFTn7e
-         1HoSwvatZQaWHvH2NrAg9GbeX1fjPqQdTTqrAYDDJlx/p3hAjT3VBsRBxb0rST0yet5t
-         /XOBZGoGtwgOT3Ox6ikhNvVzHGh4y6n7Z77Bu5AO1JgHX5yqWji4qOi6DXv8YQJHZDPm
-         4M/OgvAIzaXX2LwMydQSu9qeZbDWiXg9vaH8yLh4ty1fy/opeTm/+lIyghNi4qU/w+LZ
-         lBhjFQRwVtKhFZa9jqIUEGf9dLMPzBgUGU9Erffhculxj/I04RROb61NSd7I6hNRHsge
-         +kkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751458636; x=1752063436;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uzbmKudiCVqbCWHjsvWpIONLcOqXoBM4sksfA7jU3N4=;
-        b=fWn0/opTdUP4IsxjmjOuIi6b5C8NdLLP9eS2NU/1dFobFKFTTfFMlihxwh6sxGpIfL
-         fhDAEWrZ21+1jbM+D46KHJryb5hudASz3iR8oIs2mqrJ1zJzjh60FSqlWQfdygqe+qJ0
-         ABnatPf/5Ri2ANLWEwE1G8IkEt0rgRY9SoonooIAMBGMLSQzzxSzVi0ZnieT2J8V1qMT
-         89Kwkj981d9upYNs2egK9U9yZl20wG0QcvyxzfJ9AWjgxpXazD9WoQG00UWG89bi7BC6
-         WCbVnzadn7XyUumVY+4VJm+Bxcb541LW2nNMYdNaXkhbN1LQq3oZ+ktE8guWkDNXos+W
-         9G5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWeji5UpeRSSxXM3mmhwLG3HM80U8sjmlekonUw0Nl9Av9tDXKAjHbgQCkWa6ByKc2M2Nc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwW3ymv3G7yTAKpqFP5aIbayP385T/3vw5ENADo6BfdrA6Pecfg
-	gnscIDXRUM2Rz/puC/wkpJ7r5kbWWQMTz3sXdUymgV0Ux33LLL6NhGKxcQ8H0VNcN5E=
-X-Gm-Gg: ASbGncuD736/UVw/MLdN2ln+hFbZ9WjiVyLIuwjUeyoD5bUExObaie/lncVlLa7wNu+
-	hbgdR2W8OdNyzxZaB50+brfxt1Ei/pc+JY+v1ZGmrMtNw/5m/dH30Sv2/AEVBYyP0YiuVC8IgzF
-	rfSPFboV4G+xT+bOsdBG62ivndlM62W4eI8N22rEfi+NTgosrUzvMu0HTvEO5IXW677zAcPc2vo
-	kEvoqChyVtRmrSHwjlkuCbS3JToCebg+zf4RKpHVDzVrW/RzFpbjUtC5hmm2ULCh9cJ7a5eX6Uq
-	0b4/kXGTV99Sve+/BFjLcwrHRfzjR8oq1YWFqT22SBC0LW1iOriAy0c=
-X-Google-Smtp-Source: AGHT+IE1QJ3AjK7fa64xTgB3aheM3DjGwzgHhV3/DYIftQwwZX3WczE3Ty9UlDMRgc+foEdD2NDunw==
-X-Received: by 2002:a17:907:7fa8:b0:ae3:5e27:8e66 with SMTP id a640c23a62f3a-ae3c2bdcc36mr284553666b.27.1751458635631;
-        Wed, 02 Jul 2025 05:17:15 -0700 (PDT)
-Received: from cloudflare.com ([2a09:bac5:5063:2432::39b:e7])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae35365a090sm1075241466b.56.2025.07.02.05.17.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jul 2025 05:17:14 -0700 (PDT)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Cong Wang <xiyou.wangcong@gmail.com>, zijianzhang@bytedance.com
-Cc: netdev@vger.kernel.org,  bpf@vger.kernel.org,  john.fastabend@gmail.com,
-  zhoufeng.zf@bytedance.com,  Amery Hung <amery.hung@bytedance.com>,  Cong
- Wang <cong.wang@bytedance.com>
-Subject: Re: [Patch bpf-next v4 4/4] tcp_bpf: improve ingress redirection
- performance with message corking
-In-Reply-To: <20250701011201.235392-5-xiyou.wangcong@gmail.com> (Cong Wang's
-	message of "Mon, 30 Jun 2025 18:12:01 -0700")
-References: <20250701011201.235392-1-xiyou.wangcong@gmail.com>
-	<20250701011201.235392-5-xiyou.wangcong@gmail.com>
-Date: Wed, 02 Jul 2025 14:17:13 +0200
-Message-ID: <87ecuyn5x2.fsf@cloudflare.com>
+	s=arc-20240116; t=1751458686; c=relaxed/simple;
+	bh=Dc8qX4lpcFmAG+qzkns0uJkrh4zP2tuyNNjsin4sMBU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hv4t5MgY69rId5M1f8YNQCZXoFkbAd+1e/ReESe59lC5sNXNNlBD0FjlmUXY+9DVoCejrhwFbl/4cbKCUGU9Rz8q3MOAOCJEN7WnHswnQc19avTr3tnBS7dzHrrhSAxOUfOWVjNZ/V97qcGH8VQgV5Dm3qRQ5UtMn/nzuJFifNw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fs0XXEz8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86C00C4CEED;
+	Wed,  2 Jul 2025 12:18:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1751458685;
+	bh=Dc8qX4lpcFmAG+qzkns0uJkrh4zP2tuyNNjsin4sMBU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fs0XXEz8ogrLnZqhtBUpDTw3j/T2VtaXdOgebVYJoX4LvJJ4rDA1omlBl6+FykkdA
+	 FpNRhdOR6SbThXPK67EMA7NpXzQ7Ro+shdmSpc82KtObA3bAQ+Cm84ugWau6JNKCdk
+	 KyD485WjF5js71EeubzPouYTvAFhjSE+xMxw9BkzQeRF2/FB6z53/YZngdHoZ1xNaO
+	 8LZE8K0F74zjw5MY/F0onfuLbjgMDm82eD+Ais7VSMJ5cG7E+j53HLUvjt/kOAbVNX
+	 OAuUaJ3JPJ718/TmSj3OodgnW7sRF714t8eyLEf9FDaDMup2r24VBQ56MluUSrho++
+	 5zOpIIXPY9GDg==
+Date: Wed, 2 Jul 2025 14:17:57 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: =?utf-8?B?QW5kcsOp?= Draszik <andre.draszik@linaro.org>
+Cc: Song Liu <song@kernel.org>, bpf@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, 
+	ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
+	viro@zeniv.linux.org.uk, jack@suse.cz, kpsingh@kernel.org, mattbobrowski@google.com, 
+	amir73il@gmail.com, gregkh@linuxfoundation.org, tj@kernel.org, 
+	daan.j.demeyer@gmail.com, Will McVicker <willmcvicker@google.com>, 
+	Peter Griffin <peter.griffin@linaro.org>, Tudor Ambarus <tudor.ambarus@linaro.org>, 
+	kernel-team@android.com
+Subject: Re: [PATCH v3 bpf-next 1/4] kernfs: remove iattr_mutex
+Message-ID: <20250702-hochmoderne-abklatsch-af9c605b57b2@brauner>
+References: <20250623063854.1896364-1-song@kernel.org>
+ <20250623063854.1896364-2-song@kernel.org>
+ <78b13bcdae82ade95e88f315682966051f461dde.camel@linaro.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/mixed; boundary="uofxditqos5rkz6j"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <78b13bcdae82ade95e88f315682966051f461dde.camel@linaro.org>
 
-On Mon, Jun 30, 2025 at 06:12 PM -07, Cong Wang wrote:
-> From: Zijian Zhang <zijianzhang@bytedance.com>
->
-> The TCP_BPF ingress redirection path currently lacks the message corking
-> mechanism found in standard TCP. This causes the sender to wake up the
-> receiver for every message, even when messages are small, resulting in
-> reduced throughput compared to regular TCP in certain scenarios.
 
-I'm curious what scenarios are you referring to? Is it send-to-local or
-ingress-to-local? [1]
+--uofxditqos5rkz6j
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-If the sender is emitting small messages, that's probably intended -
-that is they likely want to get the message across as soon as possible,
-because They must have disabled the Nagle algo (set TCP_NODELAY) to do
-that.
+On Wed, Jul 02, 2025 at 11:47:58AM +0100, André Draszik wrote:
+> Hi,
+> 
+> On Sun, 2025-06-22 at 23:38 -0700, Song Liu wrote:
+> > From: Christian Brauner <brauner@kernel.org>
+> > 
+> > All allocations of struct kernfs_iattrs are serialized through a global
+> > mutex. Simply do a racy allocation and let the first one win. I bet most
+> > callers are under inode->i_rwsem anyway and it wouldn't be needed but
+> > let's not require that.
+> > 
+> > Signed-off-by: Christian Brauner <brauner@kernel.org>
+> > Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Acked-by: Tejun Heo <tj@kernel.org>
+> > Signed-off-by: Song Liu <song@kernel.org>
+> 
+> On next-20250701, ls -lA gives errors on /sys:
+> 
+> $ ls -lA /sys/
+> ls: /sys/: No data available
+> ls: /sys/kernel: No data available
+> ls: /sys/power: No data available
+> ls: /sys/class: No data available
+> ls: /sys/devices: No data available
+> ls: /sys/dev: No data available
+> ls: /sys/hypervisor: No data available
+> ls: /sys/fs: No data available
+> ls: /sys/bus: No data available
+> ls: /sys/firmware: No data available
+> ls: /sys/block: No data available
+> ls: /sys/module: No data available
+> total 0
+> drwxr-xr-x   2 root root 0 Jan  1  1970 block
+> drwxr-xr-x  52 root root 0 Jan  1  1970 bus
+> drwxr-xr-x  88 root root 0 Jan  1  1970 class
+> drwxr-xr-x   4 root root 0 Jan  1  1970 dev
+> drwxr-xr-x  11 root root 0 Jan  1  1970 devices
+> drwxr-xr-x   3 root root 0 Jan  1  1970 firmware
+> drwxr-xr-x  10 root root 0 Jan  1  1970 fs
+> drwxr-xr-x   2 root root 0 Jul  2 09:43 hypervisor
+> drwxr-xr-x  14 root root 0 Jan  1  1970 kernel
+> drwxr-xr-x 251 root root 0 Jan  1  1970 module
+> drwxr-xr-x   3 root root 0 Jul  2 09:43 power
+> 
+> 
+> and my bisect is pointing to this commit. Simply reverting it also fixes
+> the errors.
+> 
+> 
+> Do you have any suggestions?
 
-Otherwise, you get small segment merging on the sender side by default.
-And if MTU is a limiting factor, you should also be getting batching
-from GRO.
+Yes, apparently the xattr selftest don't cover sysfs/kernfs. The issue
+is that the commit changed listxattr() to skip allocation of the xattr
+header and instead just returned ENODATA. We should just allocate like
+before tested just now:
 
-What I'm getting at is that I don't quite follow why you don't see
-sufficient batching before the sockmap redirect today?
+user1@localhost:~$ sudo ls -al /sys/kernel/
+total 0
+drwxr-xr-x  17 root root    0 Jul  2 13:41 .
+dr-xr-xr-x  12 root root    0 Jul  2 13:41 ..
+-r--r--r--   1 root root 4096 Jul  2 13:41 address_bits
+drwxr-xr-x   3 root root    0 Jul  2 13:41 boot_params
+drwxr-xr-x   2 root root    0 Jul  2 13:41 btf
+drwxr-xr-x   2 root root    0 Jul  2 13:41 cgroup
+drwxr-xr-x   2 root root    0 Jul  2 13:41 config
+-r--r--r--   1 root root 4096 Jul  2 13:41 cpu_byteorder
+-r--r--r--   1 root root 4096 Jul  2 13:41 crash_elfcorehdr_size
+drwx------  34 root root    0 Jul  2 13:41 debug
+-r--r--r--   1 root root 4096 Jul  2 13:41 fscaps
+-r--r--r--   1 root root 4096 Jul  2 13:41 hardlockup_count
+drwxr-xr-x   2 root root    0 Jul  2 13:41 iommu_groups
+drwxr-xr-x 344 root root    0 Jul  2 13:41 irq
+-r--r--r--   1 root root 4096 Jul  2 13:41 kexec_crash_loaded
+-rw-r--r--   1 root root 4096 Jul  2 13:41 kexec_crash_size
+-r--r--r--   1 root root 4096 Jul  2 13:41 kexec_loaded
+drwxr-xr-x   9 root root    0 Jul  2 13:41 mm
+-r--r--r--   1 root root   84 Jul  2 13:41 notes
+-r--r--r--   1 root root 4096 Jul  2 13:41 oops_count
+-rw-r--r--   1 root root 4096 Jul  2 13:41 profiling
+-rw-r--r--   1 root root 4096 Jul  2 13:41 rcu_expedited
+-rw-r--r--   1 root root 4096 Jul  2 13:41 rcu_normal
+-r--r--r--   1 root root 4096 Jul  2 13:41 rcu_stall_count
+drwxr-xr-x   2 root root    0 Jul  2 13:41 reboot
+drwxr-xr-x   2 root root    0 Jul  2 13:41 sched_ext
+drwxr-xr-x   4 root root    0 Jul  2 13:41 security
+drwxr-xr-x 190 root root    0 Jul  2 13:41 slab
+-r--r--r--   1 root root 4096 Jul  2 13:41 softlockup_count
+drwxr-xr-x   2 root root    0 Jul  2 13:41 software_nodes
+drwxr-xr-x   4 root root    0 Jul  2 13:41 sunrpc
+drwxr-xr-x   6 root root    0 Jul  2 13:41 tracing
+-r--r--r--   1 root root 4096 Jul  2 13:41 uevent_seqnum
+-r--r--r--   1 root root 4096 Jul  2 13:41 vmcoreinfo
+-r--r--r--   1 root root 4096 Jul  2 13:41 warn_count
 
-> This change introduces a kernel worker-based intermediate layer to provide
-> automatic message corking for TCP_BPF. While this adds a slight latency
-> overhead, it significantly improves overall throughput by reducing
-> unnecessary wake-ups and reducing the sock lock contention.
+I'm folding:
 
-"Slight" for a +5% increase in latency is an understatement :-)
+diff --git a/fs/kernfs/inode.c b/fs/kernfs/inode.c
+index 3c293a5a21b1..457f91c412d4 100644
+--- a/fs/kernfs/inode.c
++++ b/fs/kernfs/inode.c
+@@ -142,9 +142,9 @@ ssize_t kernfs_iop_listxattr(struct dentry *dentry, char *buf, size_t size)
+        struct kernfs_node *kn = kernfs_dentry_node(dentry);
+        struct kernfs_iattrs *attrs;
 
-IDK about this being always on for every socket. For send-to-local
-[1], sk_msg redirs can be viewed as a form of IPC, where latency
-matters.
+-       attrs = kernfs_iattrs_noalloc(kn);
++       attrs = kernfs_iattrs(kn);
+        if (!attrs)
+-               return -ENODATA;
++               return -ENOMEM;
 
-I do understand that you're trying to optimize for bulk-transfer
-workloads, but please consider also request-response workloads.
+        return simple_xattr_list(d_inode(dentry), &attrs->xattrs, buf, size);
+ }
 
-[1] https://github.com/jsitnicki/kubecon-2024-sockmap/blob/main/cheatsheet-sockmap-redirect.png
+which brings it back to the old behavior.
 
-> Reviewed-by: Amery Hung <amery.hung@bytedance.com>
-> Co-developed-by: Cong Wang <cong.wang@bytedance.com>
-> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-> Signed-off-by: Zijian Zhang <zijianzhang@bytedance.com>
-> ---
+I'm also adding a selftest for this behavior. Patch appended.
+
+--uofxditqos5rkz6j
+Content-Type: text/x-diff; charset=utf-8
+Content-Disposition: attachment;
+	filename="0001-selftests-kernfs-test-xattr-retrieval.patch"
+
+From c20804314ae1ca5678e6b135b0ab1bc54fb3e410 Mon Sep 17 00:00:00 2001
+From: Christian Brauner <brauner@kernel.org>
+Date: Wed, 2 Jul 2025 13:53:21 +0200
+Subject: [PATCH] selftests/kernfs: test xattr retrieval
+
+Make sure that listxattr() returns zero and that getxattr() returns
+ENODATA when no extended attributs are set. Use /sys/kernel/warn_count
+as that always exists and is a read-only file.
+
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+---
+ .../testing/selftests/filesystems/.gitignore  |  1 +
+ tools/testing/selftests/filesystems/Makefile  |  2 +-
+ .../selftests/filesystems/kernfs_test.c       | 38 +++++++++++++++++++
+ 3 files changed, 40 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/filesystems/kernfs_test.c
+
+diff --git a/tools/testing/selftests/filesystems/.gitignore b/tools/testing/selftests/filesystems/.gitignore
+index 7afa58e2bb20..fcbdb1297e24 100644
+--- a/tools/testing/selftests/filesystems/.gitignore
++++ b/tools/testing/selftests/filesystems/.gitignore
+@@ -3,3 +3,4 @@ dnotify_test
+ devpts_pts
+ file_stressor
+ anon_inode_test
++kernfs_test
+diff --git a/tools/testing/selftests/filesystems/Makefile b/tools/testing/selftests/filesystems/Makefile
+index b02326193fee..73d4650af1a5 100644
+--- a/tools/testing/selftests/filesystems/Makefile
++++ b/tools/testing/selftests/filesystems/Makefile
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
+ 
+ CFLAGS += $(KHDR_INCLUDES)
+-TEST_GEN_PROGS := devpts_pts file_stressor anon_inode_test
++TEST_GEN_PROGS := devpts_pts file_stressor anon_inode_test kernfs_test
+ TEST_GEN_PROGS_EXTENDED := dnotify_test
+ 
+ include ../lib.mk
+diff --git a/tools/testing/selftests/filesystems/kernfs_test.c b/tools/testing/selftests/filesystems/kernfs_test.c
+new file mode 100644
+index 000000000000..16538b3b318e
+--- /dev/null
++++ b/tools/testing/selftests/filesystems/kernfs_test.c
+@@ -0,0 +1,38 @@
++// SPDX-License-Identifier: GPL-2.0
++#define _GNU_SOURCE
++#define __SANE_USERSPACE_TYPES__
++
++#include <fcntl.h>
++#include <stdio.h>
++#include <sys/stat.h>
++#include <sys/xattr.h>
++
++#include "../kselftest_harness.h"
++#include "wrappers.h"
++
++TEST(kernfs_listxattr)
++{
++	int fd;
++
++	/* Read-only file that can never have any extended attributes set. */
++	fd = open("/sys/kernel/warn_count", O_RDONLY | O_CLOEXEC);
++	ASSERT_GE(fd, 0);
++	ASSERT_EQ(flistxattr(fd, NULL, 0), 0);
++	EXPECT_EQ(close(fd), 0);
++}
++
++TEST(kernfs_getxattr)
++{
++	int fd;
++	char buf[1];
++
++	/* Read-only file that can never have any extended attributes set. */
++	fd = open("/sys/kernel/warn_count", O_RDONLY | O_CLOEXEC);
++	ASSERT_GE(fd, 0);
++	ASSERT_LT(fgetxattr(fd, "user.foo", buf, sizeof(buf)), 0);
++	ASSERT_EQ(errno, ENODATA);
++	EXPECT_EQ(close(fd), 0);
++}
++
++TEST_HARNESS_MAIN
++
+-- 
+2.47.2
+
+
+--uofxditqos5rkz6j--
 
