@@ -1,66 +1,61 @@
-Return-Path: <bpf+bounces-62183-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62184-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1436AF625C
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 21:06:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3CC2AF6275
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 21:11:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D49747B3137
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 19:04:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E61363A6014
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 19:11:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96D0422257E;
-	Wed,  2 Jul 2025 19:05:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7E1128ECE0;
+	Wed,  2 Jul 2025 19:11:24 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0010.hostedemail.com [216.40.44.10])
+Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9A171CFBC;
-	Wed,  2 Jul 2025 19:05:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1787218E9F;
+	Wed,  2 Jul 2025 19:11:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751483151; cv=none; b=urSwMPQ+cxzBvwN+QdfVzF/ZANaHkgrf50oEWuwUYcYr/MToGZreajPSb35igcItikYBfMNWjjSF/YN91KYcODvzaKBh4EWsBr/KbmihkXJbzQE93atRulWRrayArQIFRB1QMPZGGqPD4V/79jYU5i4NvWeL4gH6BYWdGVIKIO4=
+	t=1751483484; cv=none; b=RW6QiwFvkKoi55W5GmV44MrPuaAZqMY2GaG1jAXwyScm6j9GzsRPsobQfDAUUdhIreHVz7sY6Z39ClANEZZ7aunDsCN2pOzP56qmmSUv3dEe/YL7m6qkneLHAHenvbx6RBl2VoHC8zBBbVEmPGEU8bQDBlG9AmMCRa5XmAMhags=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751483151; c=relaxed/simple;
-	bh=c8ok4QMFo7+HEcYyTCRfFIXnQO9UbXOGRRngVgllYuc=;
+	s=arc-20240116; t=1751483484; c=relaxed/simple;
+	bh=YoNaNwUFLT82kv2ptCXYqY4Mgn+cmOc73jVNLs/BO8A=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=sQhvWI/Q6BnsslbeRwP2N/5czmxbPSO04MTIXzsEXS/Mahi7SqnSLPSe+lt03H2VsrguPjIJ1ZIhqYYabeHo3JCHfsnql/n/eMquo4HTGNDpJ6cBBvsK2INlHoRH6WZSwh0YzrdsXp6xoJ19hnZ+RQHkjQBWRJ1T82ABickrK+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.10
+	 MIME-Version:Content-Type; b=Z8F16hsLfXbtmahwKZlmQhxWztO10M/bUG6VcKntRvNWiUNQdqXRPLLs7RwpwQwfwZ4RJPiGKWk4NCts4v6QZHNP/UMGVBs5Knn+pdmfJ3x7eKKvU0td9chyGQdsVnDX4SxJgftHsG2+YlXfjqek2ES3Psl+a7S44X+csCA5lUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf03.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay04.hostedemail.com (Postfix) with ESMTP id 219231A03FE;
-	Wed,  2 Jul 2025 19:05:41 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf03.hostedemail.com (Postfix) with ESMTPA id 657376000F;
-	Wed,  2 Jul 2025 19:05:36 +0000 (UTC)
-Date: Wed, 2 Jul 2025 15:05:35 -0400
+Received: from omf14.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay05.hostedemail.com (Postfix) with ESMTP id 3D44658BFA;
+	Wed,  2 Jul 2025 19:11:19 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf14.hostedemail.com (Postfix) with ESMTPA id 8ECCD2F;
+	Wed,  2 Jul 2025 19:11:14 +0000 (UTC)
+Date: Wed, 2 Jul 2025 15:11:13 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Peter Zijlstra
- <peterz@infradead.org>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org,
- Masami Hiramatsu <mhiramat@kernel.org>, Josh Poimboeuf
- <jpoimboe@kernel.org>, Ingo Molnar <mingo@kernel.org>, Jiri Olsa
+To: Jens Remus <jremus@linux.ibm.com>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, x86@kernel.org, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Josh Poimboeuf <jpoimboe@kernel.org>, Peter Zijlstra
+ <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, Jiri Olsa
  <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner
  <tglx@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, Indu Bhagat
  <indu.bhagat@oracle.com>, "Jose E. Marchesi" <jemarch@gnu.org>, Beau
- Belgrave <beaub@linux.microsoft.com>, Jens Remus <jremus@linux.ibm.com>,
- Andrew Morton <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>,
- Florian Weimer <fweimer@redhat.com>
-Subject: Re: [PATCH v12 06/14] unwind_user/deferred: Add deferred unwinding
- interface
-Message-ID: <20250702150535.7d2596df@batman.local.home>
-In-Reply-To: <482f6b76-6086-47da-a3cf-d57106bdcb39@efficios.com>
+ Belgrave <beaub@linux.microsoft.com>, Linus Torvalds
+ <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>,
+ Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>, Heiko
+ Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>
+Subject: Re: [PATCH v12 07/14] unwind_user/deferred: Make unwind deferral
+ requests NMI-safe
+Message-ID: <20250702151113.25961ecf@batman.local.home>
+In-Reply-To: <d0aa861d-e1bb-4ab4-8ccb-d9fdc39738a9@linux.ibm.com>
 References: <20250701005321.942306427@goodmis.org>
-	<20250701005451.571473750@goodmis.org>
-	<20250702163609.GR1613200@noisy.programming.kicks-ass.net>
-	<20250702124216.4668826a@batman.local.home>
-	<CAHk-=wiXjrvif6ZdunRV3OT0YTrY=5Oiw1xU_F1L93iGLGUdhQ@mail.gmail.com>
-	<20250702132605.6c79c1ec@batman.local.home>
-	<20250702134850.254cec76@batman.local.home>
-	<CAHk-=wiU6aox6-QqrUY1AaBq87EsFuFa6q2w40PJkhKMEX213w@mail.gmail.com>
-	<482f6b76-6086-47da-a3cf-d57106bdcb39@efficios.com>
+	<20250701005451.737614486@goodmis.org>
+	<d0aa861d-e1bb-4ab4-8ccb-d9fdc39738a9@linux.ibm.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -70,44 +65,31 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Stat-Signature: 5mpzyodm5431gmmcpfg86rfgqxrczaqw
+X-Stat-Signature: zbnbhxynbb1bau79zhap459gestpmx4h
 X-Rspamd-Server: rspamout08
-X-Rspamd-Queue-Id: 657376000F
+X-Rspamd-Queue-Id: 8ECCD2F
 X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1/+DRI7nGHYvaDXc4bHmI+irhRtiHvIlS0=
-X-HE-Tag: 1751483136-110189
-X-HE-Meta: U2FsdGVkX18P5Kt6XSMAA0+QuG1ZCGAPnK0nT8CEIBBYVyBEw3fBTeemYEUDHYv2lwZ7I20iXQFQAJsuVVtfAaawqiuJVNsNQGQdvzLeRplwZSn7w01TIv7E6m7rgKrvbVAMpUnYbaIrhXlDLDnmCqXvVB3cGpRgcDLCcWEbFr07cm6G8yikh2hvfY4dLpqx2OIbTmCLkdHeO3o4RUq5ZOjAl/ZA8/1zXvU7pC8fXvVtkufYw7dz1IKIm1QXfGWleOsu7wyqLkdUZBoU0Kztbg0H9oE/7RncmXWkYLIw5tsBvs4myZR3D3TO8pikjPOIL+EpdnhGwFrQfNbjyoPvAkOjb+uUTwQcDxiRWJvPzuHtdNnyzdhqauxqW2pyeSPz
+X-Session-ID: U2FsdGVkX1/jaa49HHu5DgsoSVQxEPOEMrWu+n1e/U4=
+X-HE-Tag: 1751483474-642477
+X-HE-Meta: U2FsdGVkX1+ucqbNdoZQfHmhufbeMK4NTnU6b2a54e1o8jaomukbo8MpsMCicGq5oAvTYcMYb49gYrWeq56kmvojHGy+F5LNJv3/WwM1tdhvyMrhS1B57onjxFKDPddJ7ElFnZ4WVEO+BWadQWThAtzcfWGwdQG3kBv3+krIfNgZrPzy1FzsLnKL50W6t0P4h425vU0TcUeW7zwurqCg6Sk61/q0v+qhZLrRnq27/DO4+Zrw4vvHkuyCdCveqW/odo3Anbtkdia4TD9qKzPDglPkaGFDbG0yO1ptowCJvu1E6URo6KuvAKl1+a2y7CKFG8i8VVJj7YaF/a8kSpLYkkxO/pPiHroO
 
-On Wed, 2 Jul 2025 14:47:10 -0400
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+On Wed, 2 Jul 2025 17:53:05 +0200
+Jens Remus <jremus@linux.ibm.com> wrote:
+
+> > @@ -2,6 +2,9 @@
+> >  #ifndef _LINUX_UNWIND_USER_DEFERRED_TYPES_H
+> >  #define _LINUX_UNWIND_USER_DEFERRED_TYPES_H
+> >  
+> > +#include <asm/local64.h>
+> > +#include <asm/local.h>  
 > 
-> AFAIR, one of the goals here is to save the cookie into the trace
-> to allow trace post-processing to link the event triggering the
-> unwinding with the deferred unwinding data.
-> 
-> In order to make the trace analysis results reliable, we'd like
-> to avoid the following causes of uncertainty, which would
-> mistakenly cause the post-processing analysis to associate
-> a stack trace with the wrong event:
-> 
-> - Thread ID re-use (exit + clone/fork),
-> - Thread migration,
-> - Events discarded (e.g. buffer full) causing missing
->    thread lifetime events or missing unwind-related events.
-> 
-> Unless I'm missing something, the per-thread counter would have
-> issues with thread ID re-use during the trace lifetime.
+> This creates the following circular dependency, that breaks the build on
+> s390 as follows, whenever local64.h is included first, so that local64_t
+> is not yet defined when unwind_deferred_types.h gets included down the
+> line:
 
-But you are missing one more thing that the trace can use, and that's
-the time sequence. As soon as the same thread has a new id you can
-assume all the older user space traces are not applicable for any new
-events for that thread, or any other thread with the same thread ID.
+As per the discussion on patch 6, this may not be an issue in the next
+version. I'm looking to get rid of 64 bit cmpxchg.
 
-Thus the only issue that can truly be a problem is if you have missed
-events where thread id wraps around. I guess that could be possible if
-a long running task finally exits and it's thread id is reused
-immediately. Is that a common occurrence?
-
--- Steve.
-
+-- Steve
 
