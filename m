@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-62102-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62103-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F1F8AF13D8
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 13:28:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DB9AAF13D9
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 13:28:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4334A3B224A
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 11:28:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FF414E3CF7
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 11:28:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A33072620FA;
-	Wed,  2 Jul 2025 11:28:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E83E82528EF;
+	Wed,  2 Jul 2025 11:28:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LOw+tcQh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="msxUOoWv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B926C2367D3;
-	Wed,  2 Jul 2025 11:28:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 074DB264A97;
+	Wed,  2 Jul 2025 11:28:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751455710; cv=none; b=OG8nqjVe3k8P/u81DisW3ai4CcVxIaoMNQP4q9He8shTAtU0J3/z5RJlKcK2m9L/N1Zjkk8CXOyHZ83eWJuT+9mam3ThbAwIuArY409bD8Xwq2V1kQN8aDIm2nFKMtC/kJkdEG43+xr+2ZShibs2aUmeCY/WwfLExB5+RkVlvv0=
+	t=1751455714; cv=none; b=VB4xPpn9Pr60ik/djGFdJddLJ+CTlkloe9RoBCgd81HS9iA+plEu2s7gDgRleCbLRdwrg+G4J0+r4+suHJzPrEuEzft2VwFY03Ry10k9MjfsAQzgoUuqxH4+24QmG/wSIl0wh2F6BIhmP9pMSvTWEOv048qUJWJvkFbfXHWOn6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751455710; c=relaxed/simple;
-	bh=AkCP8cLjfpSwT7G2NNjh4zmpmO3MEoSO6pAYrNiYkyY=;
+	s=arc-20240116; t=1751455714; c=relaxed/simple;
+	bh=kWH382/+ZoJmAT1WqFl/tz5Qqbz2wECQGVuMdCwSWS4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Gy7sSxRr+0olEQq6pg2Sxlqgebg62eLr+TonjtRytTuZGKdXvOABxAhVzZZuv5b57SCjzUgF26LXPEqPjcl5+Sohd5+ZJwRAw4KPbzgCmqWqpS5hTOWJN74wj1seU9BsEoEt1hlRFM+du7JqgCX4fUNHmh0mOMSWBPWG/uSD3HM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LOw+tcQh; arc=none smtp.client-ip=209.85.210.169
+	 MIME-Version; b=MYm19FzDg3svhaOEPBEukmTBVQTsdHUh0EP7PLdfVj3VIXC6RdVRBq52paqIAvwQhO+krncSlSQNtzp95G5yw4+zQxik+57QdA1kFT7uSscS6Qivc4gT34Rdgd/j97W8HKAyMknVok9eEuUDrEWJUHBzWbh6XhTavEC0ib18egE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=msxUOoWv; arc=none smtp.client-ip=209.85.210.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-747e41d5469so4804025b3a.3;
-        Wed, 02 Jul 2025 04:28:28 -0700 (PDT)
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-748e378ba4fso8930732b3a.1;
+        Wed, 02 Jul 2025 04:28:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751455708; x=1752060508; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1751455712; x=1752060512; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mgrpbUm7WZ5EDAK6pL6YzXkQ2H20jKjHUYjS7QmkuEo=;
-        b=LOw+tcQhdplIrGPHcD74i73tvK2EwRKCdGfiao/ajP2xrehGzXvhsVRim8qWKs2iHa
-         jsK0dBTFI61J9ncS74uiPKzjM025feLMwP+PzR0G41WBrbFKSSkNUy9nUQ5/BmQgrfzt
-         1LKe6+22QFZ5iwMayMpYejSZ8haPqT6QHIIScCkDk4IOHvECvVq2tpEsmpE84uFwWeoD
-         6cmp5KInB/t6LCYjlAm8FIsOOsXTz3QwGl7f+MhY5CAQDVXbkw15T9ldQSlTjoPmSHSw
-         uepzU7z/P1iWo0vrWJxN/kAA21PdIP8HXpUlBsLopWZV+r91bOhenXe7yxSf5HdSEMin
-         c7Ew==
+        bh=baQmUrBFVMs6vWAyIr7eEc04gvdQTh7J0L0biqHw2ik=;
+        b=msxUOoWv3Ik2n5poU2CcD08RLGJpCEHMvI5OZXc/Z6gOgQibTAXVJ5fI94ENCE+Nj7
+         VSTIcXKLoBN1dK+AeGVpnONUDHYJugsYqk7Rzg7r8nHPNy73dZGsu5CZPZ458/Kr2Hae
+         tAVSC6D2R4iNmxRf72+vmfHO5hiIuQp0lFpwKC4UKLJfiCg2XWfXjqCS4Odc+DekDpwa
+         5hEHf848Li9ungi8aJFesRuYpj7T0r2KKk+PYncEUsYySEZt4nW4RXYqLr8SeJhSCB0p
+         ekxVjOhLZjWD/TrMueeaAsyHex1XrjZJqPiIaoqiqKv4x+OJX/Xmu9sWJz+A4E5wB+7d
+         gqFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751455708; x=1752060508;
+        d=1e100.net; s=20230601; t=1751455712; x=1752060512;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mgrpbUm7WZ5EDAK6pL6YzXkQ2H20jKjHUYjS7QmkuEo=;
-        b=ix48D/FP0OQBvigv8dG6rrHFJpnU4XS7ED9ntsDKZW3zugLJ3Ot/Aohm5gS7+RGx9Z
-         fnN4yEzZ77SS9g2G6cLzpPbKAI4rgJ/SMJXpjs19FM5cGfZGbx/Ql6tC0mx8zg0w3Ud0
-         gMSNrS3PugIyiEpM0dyr5cn876+cffi9Z1neq3QLmVxr7BpPoSij4ks//M7W+l4SUEw5
-         UP8lhwtQx8pUitB3XsB18Ha3zj0a/I5/okfAmgzN0MRiOaRVFAk7s4xU+o2+xUxt/Ayr
-         +HGsE5vvKFNMbK6W7bpslYB4ov4q7fx/O4i+jAARMagZVi9F4qfGo5KtC017ETtoVE4t
-         3hZw==
-X-Forwarded-Encrypted: i=1; AJvYcCWdd4ey5Gj835SMpALb1HG4SgB1ywct/dJOpotM3W1S7uJNcJEmR6i6METbO06IBfsgR6KfXDg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz/plTzoOtxb8LU+HpTjMYxfcNTmvoTbzv61vAF7x55KrNNi7bC
-	tFyXNqlgzA4izyH3FIkCaJh6p7cWtWlFooiMvhsv2FvQPiI46+gnxVqz
-X-Gm-Gg: ASbGnctVH+VEk9NR/PLbCiKvq1174S1csD7MujKJnj2XQ727896g+6goS8mVOjO3K+d
-	LxQNJxLXb2b/MmGvYoiwmBROlvEnpyyVFsCk3c0l48H+A9zgQgBmwRaeE6RLlbJvxfu05pzymrD
-	wmVreUhpDqc/Vkht5AXGvjhDfDx8xWQG+e53Mx7sq6uz2jqCOa4QbE207MQY3Ndib/Htcim55iK
-	3lLLUX0RSpcH38dSmVoryMku1Tgl5AxANpYpqpMM/Z+ItYFGjE+J333m3LnWHNngkqf93pLJXA9
-	GmXtoFe19/wZVubQy98NZRtXFz7Me7XDbLRASgTA7h4KQA5slevqVM8X185gs/WBpBtGy/7pGr7
-	8EsGAt2wp03DLpr6l3uyKKLnMGS+zHN/elg==
-X-Google-Smtp-Source: AGHT+IG9TfeBrXTLhcfdx7hxD8vWfzGV9PzVMaHEnikGFXjnzT0Deii+9uob/bNa6Z71ZifBYcykyA==
-X-Received: by 2002:aa7:88d1:0:b0:748:f135:4fe6 with SMTP id d2e1a72fcca58-74b513206c3mr3402212b3a.10.1751455707836;
-        Wed, 02 Jul 2025 04:28:27 -0700 (PDT)
+        bh=baQmUrBFVMs6vWAyIr7eEc04gvdQTh7J0L0biqHw2ik=;
+        b=VuCbPp0uVq7NFJS8csS9rpeQU3S2pEN+L7ofD0Dr3KHLi3xOJHyzftrCeUsneaNpZw
+         HnVZNyX1fpgoRPDB+2ev6Ed/+3omPRG/kyelyX6yMKtBNlFzHE2PIsGY0K7+rXWNFt9K
+         +CWTep3zfyzJa1m5CABCMfS9bJpYex5rnjb722tDR/juxJoBkEMz9DKJ0TxZo4TVC0iG
+         eWd9pXUbQDS+1mgtFAhdCZNGrcXyNvx+g0CyARtCHGFNdisCyc9ZQu1yrI1tqhJ7+Gqi
+         LiPZ1IoQqzLE/kij9w0U/NOLKkrc7QvPiQ5kR6RazT9+g5Z23Jeqi4xLPCJtp4nDxb2L
+         bKcQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUlmGMQtObSw8g4ontIFwz4e0UpVUXLj+AfwlQi3MpNiyqLFpn0csExNoeTNL/YJhjaCorcNHM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzbL3/os2dE6/MzNnmMp/QW8fa6j1dwjMQg1A7IYCFARWeK6W+h
+	7yplToJr/3fyDuU8VIr0MwWwkgETcaZiWIYs72+7Hx/gaU1P7BLEZb2F
+X-Gm-Gg: ASbGncsmJp1guFrGKTWDsixINKX6pGk4OPlZjSoQ1tifK3utE45B8UQ7B06W3qCxQyU
+	n+PxYKDzUBmkZlPuxOBMh4ZBB0JSRgAVM3rCQmDfyty4RCpCFm0n7dG+2IOSjuOOuHQK8GrNxBr
+	7LBSoolasZeBaDAeTqsn7S7U5zGqNajUE/VoeALwQ2SkTHd+iDRWE692jsz07fWJD0x3XCfVvH9
+	ibE9Jtn+syxH0qUjYALkvx8DMLi9HLf/bgWCxBfDo9gQpjTnGB91+vBK0upSyMFtc68p4jJJeON
+	p7zKJq958ut506bb5OPc/wG4nl9JXAIIhqn5Z97b5VwTXssKFh7MyuBeOv69IBIfnkJltZo+tpC
+	W82RQ3IoO1s+xwqIjKEKl6QScf40PTmO5lQ==
+X-Google-Smtp-Source: AGHT+IEpeubqCuQRfa+AMQQUbfxg86xPOQtYSrQ7zkHeROnXnPocgF7rPL4h1zSVDxHFbuz23smKVA==
+X-Received: by 2002:a05:6a20:3d07:b0:220:b0dc:24f2 with SMTP id adf61e73a8af0-222d7eee222mr4941385637.34.1751455712251;
+        Wed, 02 Jul 2025 04:28:32 -0700 (PDT)
 Received: from KERNELXING-MB0.tencent.com ([43.132.141.20])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74af57f7e6bsm14437529b3a.179.2025.07.02.04.28.23
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74af57f7e6bsm14437529b3a.179.2025.07.02.04.28.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jul 2025 04:28:27 -0700 (PDT)
+        Wed, 02 Jul 2025 04:28:31 -0700 (PDT)
 From: Jason Xing <kerneljasonxing@gmail.com>
 To: davem@davemloft.net,
 	edumazet@google.com,
@@ -92,9 +92,9 @@ To: davem@davemloft.net,
 Cc: bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	Jason Xing <kernelxing@tencent.com>
-Subject: [PATCH net-next v5 1/2] net: xsk: update tx queue consumer immediately after transmission
-Date: Wed,  2 Jul 2025 19:28:14 +0800
-Message-Id: <20250702112815.50746-2-kerneljasonxing@gmail.com>
+Subject: [PATCH net-next v5 2/2] selftests/bpf: add a new test to check the consumer update case
+Date: Wed,  2 Jul 2025 19:28:15 +0800
+Message-Id: <20250702112815.50746-3-kerneljasonxing@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20250702112815.50746-1-kerneljasonxing@gmail.com>
 References: <20250702112815.50746-1-kerneljasonxing@gmail.com>
@@ -108,107 +108,124 @@ Content-Transfer-Encoding: 8bit
 
 From: Jason Xing <kernelxing@tencent.com>
 
-For afxdp, the return value of sendto() syscall doesn't reflect how many
-descs handled in the kernel. One of use cases is that when user-space
-application tries to know the number of transmitted skbs and then decides
-if it continues to send, say, is it stopped due to max tx budget?
-
-The following formular can be used after sending to learn how many
-skbs/descs the kernel takes care of:
-
-  tx_queue.consumers_before - tx_queue.consumers_after
-
-Prior to the current patch, in non-zc mode, the consumer of tx queue is
-not immediately updated at the end of each sendto syscall when error
-occurs, which leads to the consumer value out-of-dated from the perspective
-of user space. So this patch requires store operation to pass the cached
-value to the shared value to handle the problem.
-
-More than those explicit errors appearing in the while() loop in
-__xsk_generic_xmit(), there are a few possible error cases that might
-be neglected in the following call trace:
-__xsk_generic_xmit()
-    xskq_cons_peek_desc()
-        xskq_cons_read_desc()
-	    xskq_cons_is_valid_desc()
-It will also cause the premature exit in the while() loop even if not
-all the descs are consumed.
-
-Based on the above analysis, using @sent_frame could cover all the possible
-cases where it might lead to out-of-dated global state of consumer after
-finishing __xsk_generic_xmit().
-
-The patch also adds a common helper __xsk_tx_release() to keep align
-with the zc mode usage in xsk_tx_release().
+The subtest sends 33 packets at one time on purpose to see if xsk
+exitting __xsk_generic_xmit() updates the global consumer of tx queue
+when reaching the max loop (max_tx_budget, 32 by default). The number 33
+can avoid xskq_cons_peek_desc() updates the consumer when it's about to
+quit sending, to accurately check if the issue that the first patch
+resolves remains. The new case will not check this issue in zero copy
+mode.
 
 Signed-off-by: Jason Xing <kernelxing@tencent.com>
-Acked-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Acked-by: Stanislav Fomichev <sdf@fomichev.me>
 ---
 v5
 Link: https://lore.kernel.org/all/20250627085745.53173-1-kerneljasonxing@gmail.com/
-1. add acked-by tags
-
-v4
-Link: https://lore.kernel.org/all/20250625101014.45066-1-kerneljasonxing@gmail.com/
-1. use the common helper
-2. keep align with the zc mode usage in xsk_tx_release()
-
-v3
-Link: https://lore.kernel.org/all/20250623073129.23290-1-kerneljasonxing@gmail.com/
-1. use xskq_has_descs helper.
-2. add selftest
-
-V2
-Link: https://lore.kernel.org/all/20250619093641.70700-1-kerneljasonxing@gmail.com/
-1. filter out those good cases because only those that return error need
-updates.
+1. use the initial approach to add a new testcase
+2. add a new flag 'check_consumer' to see if the check is needed
 ---
- net/xdp/xsk.c | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
+ tools/testing/selftests/bpf/xskxceiver.c | 51 +++++++++++++++++++++++-
+ tools/testing/selftests/bpf/xskxceiver.h |  1 +
+ 2 files changed, 51 insertions(+), 1 deletion(-)
 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 72c000c0ae5f..bd61b0bc9c24 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -300,6 +300,13 @@ static bool xsk_tx_writeable(struct xdp_sock *xs)
+diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
+index 0ced4026ee44..ed12a55ecf2a 100644
+--- a/tools/testing/selftests/bpf/xskxceiver.c
++++ b/tools/testing/selftests/bpf/xskxceiver.c
+@@ -109,6 +109,8 @@
+ 
+ #include <network_helpers.h>
+ 
++#define MAX_TX_BUDGET_DEFAULT 32
++
+ static bool opt_verbose;
+ static bool opt_print_tests;
+ static enum test_mode opt_mode = TEST_MODE_ALL;
+@@ -1091,11 +1093,45 @@ static bool is_pkt_valid(struct pkt *pkt, void *buffer, u64 addr, u32 len)
  	return true;
  }
  
-+static void __xsk_tx_release(struct xdp_sock *xs)
++static u32 load_value(u32 *counter)
 +{
-+	__xskq_cons_release(xs->tx);
-+	if (xsk_tx_writeable(xs))
-+		xs->sk.sk_write_space(&xs->sk);
++	return __atomic_load_n(counter, __ATOMIC_ACQUIRE);
 +}
 +
- static bool xsk_is_bound(struct xdp_sock *xs)
++static bool kick_tx_with_check(struct xsk_socket_info *xsk, int *ret)
++{
++	u32 max_budget = MAX_TX_BUDGET_DEFAULT;
++	u32 cons, ready_to_send;
++	int delta;
++
++	cons = load_value(xsk->tx.consumer);
++	ready_to_send = load_value(xsk->tx.producer) - cons;
++	*ret = sendto(xsk_socket__fd(xsk->xsk), NULL, 0, MSG_DONTWAIT, NULL, 0);
++
++	delta = load_value(xsk->tx.consumer) - cons;
++	/* By default, xsk should consume exact @max_budget descs at one
++	 * send in this case where hitting the max budget limit in while
++	 * loop is triggered in __xsk_generic_xmit(). Please make sure that
++	 * the number of descs to be sent is larger than @max_budget, or
++	 * else the tx.consumer will be updated in xskq_cons_peek_desc()
++	 * in time which hides the issue we try to verify.
++	 */
++	if (ready_to_send > max_budget && delta != max_budget)
++		return false;
++
++	return true;
++}
++
+ static int kick_tx(struct xsk_socket_info *xsk)
  {
- 	if (READ_ONCE(xs->state) == XSK_BOUND) {
-@@ -407,11 +414,8 @@ void xsk_tx_release(struct xsk_buff_pool *pool)
- 	struct xdp_sock *xs;
+ 	int ret;
  
- 	rcu_read_lock();
--	list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
--		__xskq_cons_release(xs->tx);
--		if (xsk_tx_writeable(xs))
--			xs->sk.sk_write_space(&xs->sk);
--	}
-+	list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list)
-+		__xsk_tx_release(xs);
- 	rcu_read_unlock();
+-	ret = sendto(xsk_socket__fd(xsk->xsk), NULL, 0, MSG_DONTWAIT, NULL, 0);
++	if (xsk->check_consumer) {
++		if (!kick_tx_with_check(xsk, &ret))
++			return TEST_FAILURE;
++	} else {
++		ret = sendto(xsk_socket__fd(xsk->xsk), NULL, 0, MSG_DONTWAIT, NULL, 0);
++	}
+ 	if (ret >= 0)
+ 		return TEST_PASS;
+ 	if (errno == ENOBUFS || errno == EAGAIN || errno == EBUSY || errno == ENETDOWN) {
+@@ -2613,6 +2649,18 @@ static int testapp_adjust_tail_grow_mb(struct test_spec *test)
+ 				   XSK_UMEM__LARGE_FRAME_SIZE * 2);
  }
- EXPORT_SYMBOL(xsk_tx_release);
-@@ -858,8 +862,7 @@ static int __xsk_generic_xmit(struct sock *sk)
  
- out:
- 	if (sent_frame)
--		if (xsk_tx_writeable(xs))
--			sk->sk_write_space(sk);
-+		__xsk_tx_release(xs);
++static int testapp_tx_queue_consumer(struct test_spec *test)
++{
++	int nr_packets = MAX_TX_BUDGET_DEFAULT + 1;
++
++	pkt_stream_replace(test, nr_packets, MIN_PKT_SIZE);
++	test->ifobj_tx->xsk->batch_size = nr_packets;
++	if (!(test->mode & TEST_MODE_ZC))
++		test->ifobj_tx->xsk->check_consumer = true;
++
++	return testapp_validate_traffic(test);
++}
++
+ static void run_pkt_test(struct test_spec *test)
+ {
+ 	int ret;
+@@ -2723,6 +2771,7 @@ static const struct test_spec tests[] = {
+ 	{.name = "XDP_ADJUST_TAIL_SHRINK_MULTI_BUFF", .test_func = testapp_adjust_tail_shrink_mb},
+ 	{.name = "XDP_ADJUST_TAIL_GROW", .test_func = testapp_adjust_tail_grow},
+ 	{.name = "XDP_ADJUST_TAIL_GROW_MULTI_BUFF", .test_func = testapp_adjust_tail_grow_mb},
++	{.name = "TX_QUEUE_CONSUMER", .test_func = testapp_tx_queue_consumer},
+ 	};
  
- 	mutex_unlock(&xs->mutex);
- 	return err;
+ static void print_tests(void)
+diff --git a/tools/testing/selftests/bpf/xskxceiver.h b/tools/testing/selftests/bpf/xskxceiver.h
+index 67fc44b2813b..4df3a5d329ac 100644
+--- a/tools/testing/selftests/bpf/xskxceiver.h
++++ b/tools/testing/selftests/bpf/xskxceiver.h
+@@ -95,6 +95,7 @@ struct xsk_socket_info {
+ 	u32 batch_size;
+ 	u8 dst_mac[ETH_ALEN];
+ 	u8 src_mac[ETH_ALEN];
++	bool check_consumer;
+ };
+ 
+ struct pkt {
 -- 
 2.41.3
 
