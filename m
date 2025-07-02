@@ -1,169 +1,233 @@
-Return-Path: <bpf+bounces-62083-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62084-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56CDEAF0E2B
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 10:37:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3B1CAF0E6F
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 10:49:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58A2C1894902
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 08:37:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91FCA4881DF
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 08:49:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E848238C1D;
-	Wed,  2 Jul 2025 08:37:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0C7723C4E5;
+	Wed,  2 Jul 2025 08:49:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JnbQj4P+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GixH43Lg"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDF64199FAB;
-	Wed,  2 Jul 2025 08:37:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C12D61DD529
+	for <bpf@vger.kernel.org>; Wed,  2 Jul 2025 08:49:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751445448; cv=none; b=armS+Hiy3L71eBDHTU1JS0PHFwQn0gAKsDmU2jwVuK4+aXHJaXC2rxU/R3m0ou9IMBLYPC4XAdpGsFZD/iqQQLJm4osJiT4YgEQzfmlSJ+BnCNKPSmlx4qpQbYYm4fQk5m9yGbTtA4UaAEJmQv63n9ZjR+AzlhM7cz+gGdp3+hg=
+	t=1751446191; cv=none; b=ufWkXPR0oMAApt1W/uKJes3K2csB5r+BWKnLYG5O8oe5OZsiHfWFNrXUWnDKUtVrfDHm+t0J9lD7BGQ7n41AqB6Qgt/W5GH+oHU5Zil4lkWvTzxIOzg2WXb8WuOzuCDCGPhkUW8GAexC/TtBUN2X7daF14mZro72QudMSW2MIsE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751445448; c=relaxed/simple;
-	bh=7FKJlxsE3jn0DBQjOcrwyHFOhJYRK7izfigAF+uSDSw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=obMa0h7InINWRncBTAPO/D3uePD++XTYnV9YiZdq7Zh0VaPHcZ9M9+4rTBH7LtRojyKB/2HsjkyIGPbIPPeb5Jwr6iuMhPRBTvhGxVJwkzYLwicaTTTfZw1j6nOPQH46DuzU2JUzzXcH75zw5e0xABxTUE2QgU1HtFEVlHRa12M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JnbQj4P+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D89CC4CEED;
-	Wed,  2 Jul 2025 08:37:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751445447;
-	bh=7FKJlxsE3jn0DBQjOcrwyHFOhJYRK7izfigAF+uSDSw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JnbQj4P+3Qk3nuPFka95au2yTsmaM4nbadj3AFA7E2doUoKwlPJFnM9XZqkkqUxtH
-	 h9zolEpQ7MgT8sSL5uSNNOPxOSZ5FehghjL2cXHztZpJ5G4BKycMWImcEa98WUwVaJ
-	 PsxPVx7i1HC6nkfcPbHinKf9AUEYxQTr+HU/Teo7GGiJ0Dd9+VsiJ3LWRc8d3Mu4ov
-	 e0OBp7eRIyv9ks3/H8Rzqz87VLigFw8Jh4O20X/pQWBsrx6iorZQ67/V78PkADkGDj
-	 0sttnQ2RrP06/biqhNfR8xK51U/9vVYd0rdN2ulLaoXaxmMUxr6C94yZBvtmcv0bkD
-	 Ztk1gC1XnJQxg==
-Date: Wed, 2 Jul 2025 10:37:20 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Song Liu <song@kernel.org>, Kernel Team <kernel-team@meta.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, KP Singh <kpsingh@kernel.org>, 
-	Matt Bobrowski <mattbobrowski@google.com>, Amir Goldstein <amir73il@gmail.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Tejun Heo <tj@kernel.org>, 
-	Daan De Meyer <daan.j.demeyer@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	LSM List <linux-security-module@vger.kernel.org>
-Subject: Re: [PATCH v3 bpf-next 0/4] Introduce bpf_cgroup_read_xattr
-Message-ID: <20250702-anhaften-postleitzahl-06a4d4771641@brauner>
-References: <20250623063854.1896364-1-song@kernel.org>
- <20250623-rebel-verlust-8fcd4cdd9122@brauner>
- <CAADnVQ+iqMi2HEj_iH7hsx+XJAsqaMWqSDe4tzcGAnehFWA9Sw@mail.gmail.com>
- <20250701-angebahnt-fortan-6d4804227e87@brauner>
- <CAADnVQ+pPt7Zt8gS0aW75WGrwjmcUcn3s37Ahd9bnLyzOfB=3g@mail.gmail.com>
+	s=arc-20240116; t=1751446191; c=relaxed/simple;
+	bh=5swc5zkL1+Zxa1e/IgIZxFlfbzwx6EKvoatS5A00Kvo=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lal46QaF7epHZoUgaIsNtkYxcB1o2m+9diEQOTkwPW3ZXVyOde9DF4F5axOwW6XNKllpiQJYmJ6xf8jqu/XhtU23TP4TiVz5sIkuRE6JGn+CCKTe5kb/HiQLRfiFcJySlIMq6wXcsVzPjenLXlNMONQpVWTj8nHgKL2xoYUJhZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GixH43Lg; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-60dffae17f3so5812942a12.1
+        for <bpf@vger.kernel.org>; Wed, 02 Jul 2025 01:49:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1751446188; x=1752050988; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=uxCrVunBYaOtXnSZLelqCNL5LvR8oA3vuPHe9gpT37o=;
+        b=GixH43LgTRuAlhsazCjALBd4AyKkbpsXAcP/RbqDIi+V3wMkzp6dAtioPmaQ2ap44k
+         sEcwrXDupKlSo/VCeG8sGndoYiiXLw2ewQ5dbQGTOwfeIabcgnPhB+63XNPxepMMJNWB
+         OfAHkG2ZpKcVRsi3RVs1d579lEFc2vpYBjCCdGrcO8KcvP6jpXdm47EHrA+kDBgmKwXV
+         T/PL17VxULB5CmUIHUDDJMPJWG2TR2G1yN8ezk/m66xAmfUPhvaIMRHwhlfnQvt1xWQO
+         4Ya1Nf6nXDR/xRlp+EH3hm64UWOrvJVyPCH7gyxdq3h+0Rqx85ou1hpaREkuGWuPZ9r6
+         Nkhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751446188; x=1752050988;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uxCrVunBYaOtXnSZLelqCNL5LvR8oA3vuPHe9gpT37o=;
+        b=iGAdCqvLoqW4QAvnZukrpMpZF5Ie7WhXj/hQGfrLja6Mx1chit6to9KyJsM41g0FWS
+         cUYkDXb45gcgRiaqrf4C7VEfEclZDzNXWZDKcdg7eha6Xe2EgtX8GOdZy21sMQfUzK6e
+         qbpW5MYUtKA5S/om3DMOJwXCswqyCfBS2Xt8QOBnBBtLlkpswc2gFKMTzWt9LhApHvjN
+         Z+OCR466RCLddcnxL5NkfXKDfBYZMNtDLTm6o5C55v6wMP1nqE1ofKbr1CvtmgAJe5P4
+         9pSEO5qmC7zwvqcXgVmROg0+BwHGZrmDBU+QVSvduS39IWli2lB6+fNHqFbCXzv4CQ7C
+         YQJw==
+X-Gm-Message-State: AOJu0Yx+wJndCHGptFuQ49lpsqr04h8EOwPvKWshOeqETeYxeacxeS+X
+	3GgbVWBxzcQelABJRAvEuYBX9h0wYS+TEZP6zBflOu7NQIRa1CYZVXb5/yzEGF1P
+X-Gm-Gg: ASbGncsoQP9gxIYIU6MftViSKHI5VC5EFUbqgHK3rOHFGPZzwr75nQ2FizCKKXczbjL
+	G+CiTAAd9cOx0JKT5hFcOny1RtJtKgKceNBIco/TCKbdoatkR9uFUnTcQ2ypvNzNVWh9pA99AbH
+	fuyukhs+iRmO1bOXhjS3kUSn0y7E1zqJXQK4QUeuDwlcalf0CX/TgNBLnpuF/pwaxHyRrnUgF0f
+	eu41odLrlEes4F0Q97GzAwiPp73AtSa3XkX6oaX3PksvqTCKbN+25W8Z/Amg64qw/pX6ds7s4PC
+	aruFxe4VtJGOpjvjj6tM9G+ylFr/5QR6jffPBLVm1I4uDplv
+X-Google-Smtp-Source: AGHT+IF24oxeB7FOXSsMIfEkmmdWhY7jz/okNfNDHheXi5BssANEfYukQh1lA7IXhVolu/YNx/ip+A==
+X-Received: by 2002:a17:907:60d4:b0:ae3:c037:369d with SMTP id a640c23a62f3a-ae3c2a6c73dmr190285866b.6.1751446187621;
+        Wed, 02 Jul 2025 01:49:47 -0700 (PDT)
+Received: from krava ([173.38.220.48])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae3c915bce9sm41455666b.116.2025.07.02.01.49.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jul 2025 01:49:47 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 2 Jul 2025 10:49:45 +0200
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Arnd Bergmann <arnd@kernel.org>
+Subject: Re: [PATCH bpf-next 2/2] bpf: Avoid putting struct bpf_scc_callchain
+ variables on the stack
+Message-ID: <aGTyqbsSOTceHJDi@krava>
+References: <20250702053332.1991516-1-yonghong.song@linux.dev>
+ <20250702053337.1991752-1-yonghong.song@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQ+pPt7Zt8gS0aW75WGrwjmcUcn3s37Ahd9bnLyzOfB=3g@mail.gmail.com>
+In-Reply-To: <20250702053337.1991752-1-yonghong.song@linux.dev>
 
-On Tue, Jul 01, 2025 at 07:51:55AM -0700, Alexei Starovoitov wrote:
-> On Tue, Jul 1, 2025 at 1:32 AM Christian Brauner <brauner@kernel.org> wrote:
-> >
-> > On Thu, Jun 26, 2025 at 07:14:20PM -0700, Alexei Starovoitov wrote:
-> > > On Mon, Jun 23, 2025 at 4:03 AM Christian Brauner <brauner@kernel.org> wrote:
-> > > >
-> > > > On Sun, 22 Jun 2025 23:38:50 -0700, Song Liu wrote:
-> > > > > Introduce a new kfunc bpf_cgroup_read_xattr, which can read xattr from
-> > > > > cgroupfs nodes. The primary users are LSMs, cgroup programs, and sched_ext.
-> > > > >
-> > > >
-> > > > Applied to the vfs-6.17.bpf branch of the vfs/vfs.git tree.
-> > > > Patches in the vfs-6.17.bpf branch should appear in linux-next soon.
-> > >
-> > > Thanks.
-> > > Now merged into bpf-next/master as well.
-> > >
-> > > > Please report any outstanding bugs that were missed during review in a
-> > > > new review to the original patch series allowing us to drop it.
-> > >
-> > > bugs :(
-> > >
-> > > > It's encouraged to provide Acked-bys and Reviewed-bys even though the
-> > > > patch has now been applied. If possible patch trailers will be updated.
-> > >
-> > > Pls don't. Keep it as-is, otherwise there will be merge conflicts
-> > > during the merge window.
-> >
-> > This is just the common blurb. As soon as another part of the tree
-> > relies on something we stabilize the branch and only do fixes on top and
-> > never rebase. We usually recommend just pulling the branch which I think
-> > you did.
-> >
-> > >
-> > > > Note that commit hashes shown below are subject to change due to rebase,
-> > > > trailer updates or similar. If in doubt, please check the listed branch.
-> > > >
-> > > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-> > > > branch: vfs-6.17.bpf
-> > > >
-> > > > [1/4] kernfs: remove iattr_mutex
-> > > >       https://git.kernel.org/vfs/vfs/c/d1f4e9026007
-> > > > [2/4] bpf: Introduce bpf_cgroup_read_xattr to read xattr of cgroup's node
-> > > >       https://git.kernel.org/vfs/vfs/c/535b070f4a80
-> > > > [3/4] bpf: Mark cgroup_subsys_state->cgroup RCU safe
-> > > >       https://git.kernel.org/vfs/vfs/c/1504d8c7c702
-> > > > [4/4] selftests/bpf: Add tests for bpf_cgroup_read_xattr
-> > > >       https://git.kernel.org/vfs/vfs/c/f4fba2d6d282
-> > >
-> > > Something wrong with this selftest.
-> > > Cleanup is not done correctly.
-> > >
-> > > ./test_progs -t lsm_cgroup
-> > > Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
-> > > ./test_progs -t lsm_cgroup
-> > > Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
-> > > ./test_progs -t cgroup_xattr
-> > > Summary: 1/8 PASSED, 0 SKIPPED, 0 FAILED
-> > > ./test_progs -t lsm_cgroup
-> > > test_lsm_cgroup_functional:PASS:bind(ETH_P_ALL) 0 nsec
-> > > (network_helpers.c:121: errno: Cannot assign requested address) Failed
-> > > to bind socket
-> > > test_lsm_cgroup_functional:FAIL:start_server unexpected start_server:
-> > > actual -1 < expected 0
-> > > (network_helpers.c:360: errno: Bad file descriptor) getsockopt(SOL_PROTOCOL)
-> > > test_lsm_cgroup_functional:FAIL:connect_to_fd unexpected
-> > > connect_to_fd: actual -1 < expected 0
-> > > test_lsm_cgroup_functional:FAIL:accept unexpected accept: actual -1 < expected 0
-> > > test_lsm_cgroup_functional:FAIL:getsockopt unexpected getsockopt:
-> > > actual -1 < expected 0
-> > > test_lsm_cgroup_functional:FAIL:sk_priority unexpected sk_priority:
-> > > actual 0 != expected 234
-> > > ...
-> > > Summary: 0/1 PASSED, 0 SKIPPED, 1 FAILED
-> > >
-> > >
-> > > Song,
-> > > Please follow up with the fix for selftest.
-> > > It will be in bpf-next only.
-> >
-> > We should put that commit on the shared vfs-6.17.bpf branch.
+On Tue, Jul 01, 2025 at 10:33:37PM -0700, Yonghong Song wrote:
+> Add a 'struct bpf_scc_callchain callchain' field in bpf_verifier_env.
+> This way, the previous bpf_scc_callchain local variables can be
+> replaced by taking address of env->callchain. This can reduce stack
+> usage and fix the following error:
+>     kernel/bpf/verifier.c:19921:12: error: stack frame size (1368) exceeds limit (1280) in 'do_check'
+>         [-Werror,-Wframe-larger-than]
 > 
-> The branch had a conflict with bpf-next which was resolved
-> in the merge commit. Then _two_ fixes were applied on top.
-> And one fix is right where conflict was.
-> So it's not possible to apply both fixes to vfs-6.17.bpf.
-> imo this shared branch experience wasn't good.
-> We should have applied the series to bpf-next only.
-> It was more bpf material than vfs. I wouldn't do this again.
+> Reported-by: Arnd Bergmann <arnd@kernel.org>
+> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 
-Absolutely not. Anything that touches VFS will go through VFS. Shared
-branches work just fine. We manage to do this with everyone else in the
-kernel so bpf is able to do this as well. If you'd just asked this would
-not have been an issue. Merge conflicts are a fact of kernel
-development, we all deal with it you can too.
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+
+jirka
+
+> ---
+>  include/linux/bpf_verifier.h |  1 +
+>  kernel/bpf/verifier.c        | 36 ++++++++++++++++++------------------
+>  2 files changed, 19 insertions(+), 18 deletions(-)
+> 
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index 7e459e839f8b..e2c175d608bb 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -841,6 +841,7 @@ struct bpf_verifier_env {
+>  	char tmp_str_buf[TMP_STR_BUF_LEN];
+>  	struct bpf_insn insn_buf[INSN_BUF_SIZE];
+>  	struct bpf_insn epilogue_buf[INSN_BUF_SIZE];
+> +	struct bpf_scc_callchain callchain;
+>  	/* array of pointers to bpf_scc_info indexed by SCC id */
+>  	struct bpf_scc_info **scc_info;
+>  	u32 scc_cnt;
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 29faef51065d..b334e6434eb4 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -1913,19 +1913,19 @@ static char *format_callchain(struct bpf_verifier_env *env, struct bpf_scc_callc
+>   */
+>  static int maybe_enter_scc(struct bpf_verifier_env *env, struct bpf_verifier_state *st)
+>  {
+> -	struct bpf_scc_callchain callchain;
+> +	struct bpf_scc_callchain *callchain = &env->callchain;
+>  	struct bpf_scc_visit *visit;
+>  
+> -	if (!compute_scc_callchain(env, st, &callchain))
+> +	if (!compute_scc_callchain(env, st, callchain))
+>  		return 0;
+> -	visit = scc_visit_lookup(env, &callchain);
+> -	visit = visit ?: scc_visit_alloc(env, &callchain);
+> +	visit = scc_visit_lookup(env, callchain);
+> +	visit = visit ?: scc_visit_alloc(env, callchain);
+>  	if (!visit)
+>  		return -ENOMEM;
+>  	if (!visit->entry_state) {
+>  		visit->entry_state = st;
+>  		if (env->log.level & BPF_LOG_LEVEL2)
+> -			verbose(env, "SCC enter %s\n", format_callchain(env, &callchain));
+> +			verbose(env, "SCC enter %s\n", format_callchain(env, callchain));
+>  	}
+>  	return 0;
+>  }
+> @@ -1938,21 +1938,21 @@ static int propagate_backedges(struct bpf_verifier_env *env, struct bpf_scc_visi
+>   */
+>  static int maybe_exit_scc(struct bpf_verifier_env *env, struct bpf_verifier_state *st)
+>  {
+> -	struct bpf_scc_callchain callchain;
+> +	struct bpf_scc_callchain *callchain = &env->callchain;
+>  	struct bpf_scc_visit *visit;
+>  
+> -	if (!compute_scc_callchain(env, st, &callchain))
+> +	if (!compute_scc_callchain(env, st, callchain))
+>  		return 0;
+> -	visit = scc_visit_lookup(env, &callchain);
+> +	visit = scc_visit_lookup(env, callchain);
+>  	if (!visit) {
+>  		verifier_bug(env, "scc exit: no visit info for call chain %s",
+> -			     format_callchain(env, &callchain));
+> +			     format_callchain(env, callchain));
+>  		return -EFAULT;
+>  	}
+>  	if (visit->entry_state != st)
+>  		return 0;
+>  	if (env->log.level & BPF_LOG_LEVEL2)
+> -		verbose(env, "SCC exit %s\n", format_callchain(env, &callchain));
+> +		verbose(env, "SCC exit %s\n", format_callchain(env, callchain));
+>  	visit->entry_state = NULL;
+>  	env->num_backedges -= visit->num_backedges;
+>  	visit->num_backedges = 0;
+> @@ -1967,22 +1967,22 @@ static int add_scc_backedge(struct bpf_verifier_env *env,
+>  			    struct bpf_verifier_state *st,
+>  			    struct bpf_scc_backedge *backedge)
+>  {
+> -	struct bpf_scc_callchain callchain;
+> +	struct bpf_scc_callchain *callchain = &env->callchain;
+>  	struct bpf_scc_visit *visit;
+>  
+> -	if (!compute_scc_callchain(env, st, &callchain)) {
+> +	if (!compute_scc_callchain(env, st, callchain)) {
+>  		verifier_bug(env, "add backedge: no SCC in verification path, insn_idx %d",
+>  			     st->insn_idx);
+>  		return -EFAULT;
+>  	}
+> -	visit = scc_visit_lookup(env, &callchain);
+> +	visit = scc_visit_lookup(env, callchain);
+>  	if (!visit) {
+>  		verifier_bug(env, "add backedge: no visit info for call chain %s",
+> -			     format_callchain(env, &callchain));
+> +			     format_callchain(env, callchain));
+>  		return -EFAULT;
+>  	}
+>  	if (env->log.level & BPF_LOG_LEVEL2)
+> -		verbose(env, "SCC backedge %s\n", format_callchain(env, &callchain));
+> +		verbose(env, "SCC backedge %s\n", format_callchain(env, callchain));
+>  	backedge->next = visit->backedges;
+>  	visit->backedges = backedge;
+>  	visit->num_backedges++;
+> @@ -1998,12 +1998,12 @@ static int add_scc_backedge(struct bpf_verifier_env *env,
+>  static bool incomplete_read_marks(struct bpf_verifier_env *env,
+>  				  struct bpf_verifier_state *st)
+>  {
+> -	struct bpf_scc_callchain callchain;
+> +	struct bpf_scc_callchain *callchain = &env->callchain;
+>  	struct bpf_scc_visit *visit;
+>  
+> -	if (!compute_scc_callchain(env, st, &callchain))
+> +	if (!compute_scc_callchain(env, st, callchain))
+>  		return false;
+> -	visit = scc_visit_lookup(env, &callchain);
+> +	visit = scc_visit_lookup(env, callchain);
+>  	if (!visit)
+>  		return false;
+>  	return !!visit->backedges;
+> -- 
+> 2.47.1
+> 
+> 
 
