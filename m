@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-62203-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62204-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52F05AF6587
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 00:42:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79E8DAF6588
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 00:42:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97E3A176DFA
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 22:42:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 799521C45FDF
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 22:43:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F19A82D63E5;
-	Wed,  2 Jul 2025 22:42:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C121A2D9EE1;
+	Wed,  2 Jul 2025 22:42:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QA46iomW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WI/+aWCr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 183D82652B6
-	for <bpf@vger.kernel.org>; Wed,  2 Jul 2025 22:42:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C78D528A3ED
+	for <bpf@vger.kernel.org>; Wed,  2 Jul 2025 22:42:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751496142; cv=none; b=L1A7nEJzeLRKA6xdM+vZ2ZXnbh/oA94MMCqwVxzWQQDzNCwiRs2RPhpasmN8tAwrftuTl6VVRDymAMdl9k4c9QbvoEGUG/B4PfIEFx2DcEehfefKCNwB898VWVpDEem/G9hZHBEqx7UZCA3Csc6sBNK8xXd30IS7+n2AFtifrTM=
+	t=1751496143; cv=none; b=nQb2zZIh+gE4qaglgipl9rYFl9FmTB3O3A54CG1SGd3yxxreEUn3BuFundjTqRj7SXjorMybNiuELafxSD7asY3CQyc4kiSwbl39lp1dbDVHM2F5gK6I5wqUjs2YUeX8vuXeXGsUeDCqq8fhuA4X5c2vGIqVfH5iXCeoHhHaTHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751496142; c=relaxed/simple;
-	bh=unXQUAxYZatP1XOgKPSMMXM9D6E4JO4tFY5jdSGvONE=;
+	s=arc-20240116; t=1751496143; c=relaxed/simple;
+	bh=bsbkp/45zYy0jY/QyEB6FJcsDLDSomQK/mqt26Ym2vk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XP+bzS7xKaUaayLmFcQGks5sz9+B4qv0n329j5sQf7HEyITPkM9vbkmBbIjdn9K7Uq9z0LL7odt8QifqQMVRkqkWRCAtpk2RLwhpz3KwWFIsCD6KCgAz0LQdeb79oPESNS+cvQcCAh7liD9iQmZnf1yhuInDgX6/vbs0fwnqAb0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QA46iomW; arc=none smtp.client-ip=209.85.219.176
+	 MIME-Version; b=qtDsIwD+2Z66irzX1pHJdWaKpSOL4eEQqdgruTMTzu3yr2bNCc6apcDxTEFG1/Kl34gqBonZmw11g3PORPT2I1OYGb00eaZm2N/hetyE5uxRT2at7WSnq14Uf5jS+IkNYJAOCfaQ5/TimD+WLnay/44izZ5PXbdurN2FO/O42Rc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WI/+aWCr; arc=none smtp.client-ip=209.85.128.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-e81749142b3so5823228276.3
-        for <bpf@vger.kernel.org>; Wed, 02 Jul 2025 15:42:20 -0700 (PDT)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-7111d02c777so47820657b3.3
+        for <bpf@vger.kernel.org>; Wed, 02 Jul 2025 15:42:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751496140; x=1752100940; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1751496141; x=1752100941; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IKLLYSrJuxo8AmLqfMp30wPNjYNVy449XPgv8XSmdeE=;
-        b=QA46iomW1ZulQD4q3Mkaq3nOGUssi/Vk00vlR9cSeO0xBpiC//CYpc9SHtanZhQvjx
-         65VbmQ5hG/dt1mK/oEXGIoVKybHAvVzJEiMXRaC80zq8DhBwnpORC5xCf0tFSTA+Wwzn
-         kgDBBB9bNcAEAJI2mZrGVqBy+wgHIzPdNCrYmoZSPHZVpsuePG5CQAWbp/bLwLRidttH
-         CGHhFEQgbpgv9BMu+0+2DtQWvA+ZXpqtiIc26xL/xO4kP+jiO3fjVp8KdyWJXtCD6YL+
-         8Z+XiiMueWgz/aPjeqYS4qWdey4eb+mPfeDippNW3oeduOFH+oQBESP1QcEZdM5V6B7g
-         LQmg==
+        bh=/Ln/0hKkCf5kgOGZrRXXVB80vk89es0ox+HhKi6k5Es=;
+        b=WI/+aWCrw3rC1u7hzSOY5v/D5DrY3VBYvZRrl4CZt3cTDxBcu99Q/doJR0o4k4srYz
+         qTiUdnguNqtg/Ju8XlAqELKPeu6yWr0HazTd+dEDP4CYnuaJb3L74QKgzccCQeqsTs0s
+         jrnvUS2alILes8IzoLi6MkKpyoBx7f1UW9U9zPNP402NsLXGp6Q+Yq7zm9IDO+/q2sA4
+         Eovy10NR38kYifHw9IlCV8/hz1Ay371EuaTc61hKWVYKVwQ/G41JHfuhwJN/7lwE/N4j
+         9O/bY3yh+7ZzodYGvj+dm3F9b4I1ZbLBmWE7L96JRxrcY0KoLt/KfcNI2WdU2oMFHT6Q
+         B4Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751496140; x=1752100940;
+        d=1e100.net; s=20230601; t=1751496141; x=1752100941;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IKLLYSrJuxo8AmLqfMp30wPNjYNVy449XPgv8XSmdeE=;
-        b=dZRSLGjE52ekktzWOELv0anRkIat0pNPX7vq8GVFvOfyh2yTYtNW0tgdcElk+KyRSk
-         WeBK0k6222ymCE96NVE4K9H7iUuAZyqdG0IILX7J3UvNclIU9pJ2yZx+RQ2mNkEEFlYY
-         91NauGMjk+IXpw9NJ3WaC3ETC5KhCsJDDAyu5hmczlepFZp63UenodEPFqqM6MTfh3wF
-         En/+59cUfQHCeiKknE7Ggw8tyKhFeRuFNGmNP7Naz04dXmQwI/LwCoabJNwJ6CupQ9rs
-         dqscrVcd0KEcos1UmzDeXCGyjGJDOYVovU2d0jtb73ietUBmnseOL1P6o+qNrL7abQa9
-         KB8A==
-X-Gm-Message-State: AOJu0YyPI9AotDqKVL7CU+w7zceTlgMQSZ034m2wheWQvnVkJa3ekiOA
-	+HAITVzz9CZmhcqrI4SflsZkO1TX2oN2lG2sPTAUZ651i0yKE1M8akYhdGht0Yt5
-X-Gm-Gg: ASbGncuBzd0W5OOmr1WOTE0mhcA/Gw2nHwQ8nUOPUa2v5Ff2Lxl/5FVuBa9rP4oY5j1
-	KIgO9w2aLz+7pdFin9HmWyvEtiiXxOrPshBhDMA4HJHycaL+0isrM1bP0Bp2RmUmHoAElba1wQS
-	ZAh2GrvibVgDZ9AGRAwYopmypOZlDjOoq/VKqD5KQiiCRn04npuODKtnnPszmVKQCuVOhePEbHG
-	FJ4guk4h1x/tUorU85jLd1pwETQzc5uP9Q2111zIxA9tNOeWpaGkliQHArUIpi9yi2qZW7iYMQo
-	PtTTSjMPUvqNT8TRyLp2SwpS+2A6HgT+yyONL0DQ+EcH08E2MB1+Tw==
-X-Google-Smtp-Source: AGHT+IHe1vhSmjRxd2+j/f6qLocrhi/dHBOBukXM+Der1OT7TiAZDVXRH1Cm/AXls98LDLwxNcXzrg==
-X-Received: by 2002:a05:6902:260e:b0:e82:4a7:25b4 with SMTP id 3f1490d57ef6-e897e1cf9c4mr5440286276.22.1751496139955;
-        Wed, 02 Jul 2025 15:42:19 -0700 (PDT)
-Received: from localhost ([2a03:2880:25ff:74::])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e87a6be5a6esm3980496276.46.2025.07.02.15.42.19
+        bh=/Ln/0hKkCf5kgOGZrRXXVB80vk89es0ox+HhKi6k5Es=;
+        b=h4Xknuf30xv28qbOOY17yR9nXoUGsBRUvB6WIQ9gGZq8+ht1jjZmwvoIrEvbgLOrka
+         ak6LPHIeqqfRNy0oIJfhmfQxJQMHca0L091K+FBFgerSfrB6s7hx5t1zyuOjNztbodq8
+         ZfF513iD6eh/aouoO0NzRLLuXJae+ClzdEYq0qmgVa/VqJfWBKxmAOPHwtDXg0BelOhw
+         7rWUe3NDGP294l2HRNnC06H/3DemppmIzuKtOAHY31IJIOvEvaH1jh6xMJHIU1BiitN6
+         u66FTH/l8WYbxsiUUE9PSNPxcI+c+Y/x/H3+YBLPfOPMd5lA2qR70IoWMU7AXNJNhBsw
+         Ew2A==
+X-Gm-Message-State: AOJu0YySG0rVV3blIsVazsR4lmd8/xKh4q4fNMOep6S/lBye49965mYp
+	dCyAEnAntLzVks15d8ZtxrniXsPk5le1mjIl7N8MAcfwn1Ii5TooN18iCFAV87ml
+X-Gm-Gg: ASbGnctDpPv0AyEWzxH2ovfPyrSJAz6vDKp7xeqW7zzdF4uTBaHeur4vM+9uL6u1Xzj
+	Jo8gitjXAhtgfWuKqC0LtHFtSwxnv3zxXAdCwdQj6WV/mFbqeDNz617dDfgxmKnd+JLx3CXH9Kt
+	k8xVw1x1GUf26FCrE/z1P7LEvtkThZaesCl1JvdrgSQfCI59GArgzOXwuPF8I2SXK7Wp4mivMR9
+	woh5TY8KjfnM+0tyVulJfladwU/F9NzIv6QkJJKRtXKlNyrDUmm592VFe/g4zcQxYtHUfEquCq2
+	M3Z7nC3UJboraF/wB0AoXseVARiaiSLACKKba0tsvPDrrDBwnJVlvg==
+X-Google-Smtp-Source: AGHT+IFyghlkMyyQib3vgJzBlfIieh1+vde+R3hyzqjqSQFdaVSRfgJf1hgPeROXbtXUynnbraPPDA==
+X-Received: by 2002:a05:690c:3583:b0:714:271:3103 with SMTP id 00721157ae682-7164d4c304bmr64249257b3.38.1751496140746;
+        Wed, 02 Jul 2025 15:42:20 -0700 (PDT)
+Received: from localhost ([2a03:2880:25ff:56::])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-7165810ff93sm2093987b3.39.2025.07.02.15.42.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jul 2025 15:42:19 -0700 (PDT)
+        Wed, 02 Jul 2025 15:42:20 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -80,9 +80,9 @@ Cc: daniel@iogearbox.net,
 	kernel-team@fb.com,
 	yonghong.song@linux.dev,
 	eddyz87@gmail.com
-Subject: [PATCH bpf-next v1 5/8] libbpf: __arg_untrusted in bpf_helpers.h
-Date: Wed,  2 Jul 2025 15:42:06 -0700
-Message-ID: <20250702224209.3300396-6-eddyz87@gmail.com>
+Subject: [PATCH bpf-next v1 6/8] selftests/bpf: test cases for __arg_untrusted
+Date: Wed,  2 Jul 2025 15:42:07 -0700
+Message-ID: <20250702224209.3300396-7-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250702224209.3300396-1-eddyz87@gmail.com>
 References: <20250702224209.3300396-1-eddyz87@gmail.com>
@@ -94,33 +94,93 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Make btf_decl_tag("arg:untrusted") available for libbpf users via
-macro. Makes the following usage possible:
-
-  void foo(struct bar *p __arg_untrusted) { ... }
-  void bar(struct foo *p __arg_trusted) {
-    ...
-    foo(p->buz->bar); // buz derefrence looses __trusted
-    ...
-  }
+Check usage of __arg_untrusted parameters with PTR_TO_BTF_ID:
+- combining __arg_untrusted with other tags is forbidden;
+- passing of {trusted, untrusted, map value, scalar value, values with
+  variable offset} to untrusted is ok;
+- passing of PTR_TO_BTF_ID with a different type to untrusted is ok;
+- passing of untrusted to trusted is forbidden.
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- tools/lib/bpf/bpf_helpers.h | 1 +
- 1 file changed, 1 insertion(+)
+ .../bpf/progs/verifier_global_ptr_args.c      | 66 +++++++++++++++++++
+ 1 file changed, 66 insertions(+)
 
-diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-index a50773d4616e..cd7771951a71 100644
---- a/tools/lib/bpf/bpf_helpers.h
-+++ b/tools/lib/bpf/bpf_helpers.h
-@@ -215,6 +215,7 @@ enum libbpf_tristate {
- #define __arg_nonnull __attribute((btf_decl_tag("arg:nonnull")))
- #define __arg_nullable __attribute((btf_decl_tag("arg:nullable")))
- #define __arg_trusted __attribute((btf_decl_tag("arg:trusted")))
-+#define __arg_untrusted __attribute((btf_decl_tag("arg:untrusted")))
- #define __arg_arena __attribute((btf_decl_tag("arg:arena")))
+diff --git a/tools/testing/selftests/bpf/progs/verifier_global_ptr_args.c b/tools/testing/selftests/bpf/progs/verifier_global_ptr_args.c
+index 4ab0ef18d7eb..772e8dd3e001 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_global_ptr_args.c
++++ b/tools/testing/selftests/bpf/progs/verifier_global_ptr_args.c
+@@ -179,4 +179,70 @@ int BPF_PROG(trusted_acq_rel, struct task_struct *task, u64 clone_flags)
+ 	return subprog_trusted_acq_rel(task);
+ }
  
- #ifndef ___bpf_concat
++__weak int subprog_untrusted_bad_tags(struct task_struct *task __arg_untrusted __arg_nullable)
++{
++	return task->pid;
++}
++
++SEC("tp_btf/sys_enter")
++__failure
++__msg("arg#0 untrusted cannot be combined with any other tags")
++int untrusted_bad_tags(void *ctx)
++{
++	return subprog_untrusted_bad_tags(0);
++}
++
++__weak int subprog_untrusted(struct task_struct *task __arg_untrusted)
++{
++	return task->pid;
++}
++
++SEC("tp_btf/sys_enter")
++__success
++__log_level(2)
++__msg("r1 = {{.*}}; {{.*}}R1_w=trusted_ptr_task_struct()")
++__msg("Func#1 ('subprog_untrusted') is global and assumed valid.")
++__msg("Validating subprog_untrusted() func#1...")
++__msg(": R1=untrusted_ptr_task_struct")
++int trusted_to_untrusted(void *ctx)
++{
++	return subprog_untrusted(bpf_get_current_task_btf());
++}
++
++char mem[16];
++u32 off;
++
++SEC("tp_btf/sys_enter")
++__success
++int anything_to_untrusted(void *ctx)
++{
++	/* untrusted to untrusted */
++	subprog_untrusted(bpf_core_cast(0, struct task_struct));
++	/* wrong type to untrusted */
++	subprog_untrusted((void *)bpf_core_cast(0, struct bpf_verifier_env));
++	/* map value to untrusted */
++	subprog_untrusted((void *)mem);
++	/* scalar to untrusted */
++	subprog_untrusted(0);
++	/* variable offset to untrusted (map) */
++	subprog_untrusted((void *)mem + off);
++	/* variable offset to untrusted (trusted) */
++	subprog_untrusted((void *)bpf_get_current_task_btf() + off);
++	return 0;
++}
++
++__weak int subprog_untrusted2(struct task_struct *task __arg_untrusted)
++{
++	return subprog_trusted_task_nullable(task);
++}
++
++SEC("tp_btf/sys_enter")
++__failure
++__msg("R1 type=untrusted_ptr_ expected=ptr_, trusted_ptr_, rcu_ptr_")
++__msg("Caller passes invalid args into func#{{.*}} ('subprog_trusted_task_nullable')")
++int untrusted_to_trusted(void *ctx)
++{
++	return subprog_untrusted2(bpf_get_current_task_btf());
++}
++
+ char _license[] SEC("license") = "GPL";
 -- 
 2.47.1
 
