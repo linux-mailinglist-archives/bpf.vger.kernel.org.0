@@ -1,352 +1,164 @@
-Return-Path: <bpf+bounces-62025-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62026-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0FDCAF074C
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 02:34:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C904EAF0828
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 03:55:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E4AC4A696D
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 00:34:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B973B4221B5
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 01:55:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DC78BE4E;
-	Wed,  2 Jul 2025 00:34:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="bZqW7q3+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 959CE194C86;
+	Wed,  2 Jul 2025 01:55:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7881912B73
-	for <bpf@vger.kernel.org>; Wed,  2 Jul 2025 00:34:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAB966F2F2
+	for <bpf@vger.kernel.org>; Wed,  2 Jul 2025 01:55:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751416449; cv=none; b=ovJHvTzFwcD7jHcA7/RXbDfA97ZuuOM1ssZU83H8/g5L/CVzo4uYs13Bc+g/NekHEC4VdYXxAbaCoMT7LlrLE/PKeBm0k9rMrxpsj7LgS8v0oL0vlzWiv0+vZXr1sKfzSpnTJoJwq1D7WzJxfboBBFgg5XzU3savgqXgfwaUmN8=
+	t=1751421331; cv=none; b=o+8SReu6/YxixpQdAxEjLYZz+c2KCycyJ89KlnbwbjB1NEExeN7B3A7KEI0wM+lxpmLCMI5/a1gpv//puK+QALDLVKWHPnz0elidtR04YfVe2P29xRVNKHQaQwXqUDHhjdojeClKsbFtWRCv2FZqKowaAkX8F4nZCjKHW4UTT8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751416449; c=relaxed/simple;
-	bh=gU1AXUlDELXv/hbfgrd3BPGgqlpaRT5+yxlq6/OSa0s=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mVmxGMCI47DKV/WJuP3zMTVRVFQNXEVZpyffDwtDUH4GZQFW3I48vmeV7N7aoU6NBpsE8X306Qw4ULMdIZlL3/eouxo1+a0+Pp7FuPexE3rMNbonm79x85nuN1IpVK8T9CF/d3+V82tyFknPMyHSnD85fdWzuuY18kfwfNZyZQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=bZqW7q3+; arc=none smtp.client-ip=209.85.222.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-7d425fc4e5fso518298885a.0
-        for <bpf@vger.kernel.org>; Tue, 01 Jul 2025 17:34:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1751416446; x=1752021246; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TNECXvQgpOLzLcZ+rsxXUFyCSMiCiwHW2NUcAce+Q3s=;
-        b=bZqW7q3+uSJEpIed27In6n9h51jdYLsCzYKH6of8fqG7IEgapBIduEwXNZ0sAaoT7L
-         hVRyEuP9+28Rbjs8MPsSxHPQl1owQ+1eeidgHZR0bRNW5qklWiWAroWN4M4E1vvJsf4h
-         GNc77RC6BUZdy1gkuoUPoDOzG1BNeMsMzXDToQ4M7WSMKOo+sq4W86Jfy4cfb8xxmRb4
-         4GFumsTNvE6BDxpyEQPlXG+FZXdhiL69c9K8vpAjOD+aEIGaLc0ZgeUeWZJe+viauYFO
-         di5KAYkOjJbuIT+MO6pR4ZDcJFlRSJ9coGBOkKYI4y9tQfZFmBi2Jn+rDo0UvAkiCjYo
-         sslA==
+	s=arc-20240116; t=1751421331; c=relaxed/simple;
+	bh=wU0uAqSERWaULjgXjCPjSAo+g9aZqdrRoNycpKfVcFg=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ikYxre9iFspVMDhnJSrOmJrrLj2RPKvptlb5t2K+wm+WirWytyD3bmMXWJjZmabY/OEuDCqD3qcHswwE7671WO5zJxz3Oo+7MOK4pThOUnqFn6qCY+jAQW3v3OxerDF+HtwJiuA0IAPNQtEdTqQohNfwFAuTFVS7xKrZXQaF2ok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-3df2e89fc8aso51715405ab.2
+        for <bpf@vger.kernel.org>; Tue, 01 Jul 2025 18:55:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751416446; x=1752021246;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TNECXvQgpOLzLcZ+rsxXUFyCSMiCiwHW2NUcAce+Q3s=;
-        b=SGBwdZsIFEq+E2QqYLmWaVliQFRBW1lbk19PXDiSoRnwL3VDUkNaoeCE9cHsnKy7L1
-         tkPb8zJYUSoGJIP6VA3ru0bR1p8+PfVT3gaBnHuSUR777Fs64WxyTUBqOPmib4gAtu6m
-         JGLIYNCnXiu9K2m1ZIT8mV1ICtOrm8cw8qEE7FyUh1+iT7wwCANwRD28ts1vNZb9+bz5
-         iK4/x0qUKm/gftuPGhuBO5FqxNAS56nYEAsoPVnwg8ns8JQ8qNGJue4sl7ZkPZJhpm3P
-         PcgYjLKkb44dHO7x2AmLYNhsMYe82d2yDEjRRTsB/ZQsm4VU4q1LXmE/zVvAsrbWr88H
-         Y3Sg==
-X-Gm-Message-State: AOJu0Yy4ouk+pQbvwIV1Fs37IsMbjiaqlsTmugAHBeDoNxQ/PLXJiUzz
-	qfde5lJMA77F3opk7i7qTYfGFXUF8SFIKrSe/nsFlkv4JksMSe+OW9qfzzj4yMThhTpyiPaX9UJ
-	W6nI0shy38A==
-X-Gm-Gg: ASbGncvdWmoRtx4T8YPe0KnoizvFX2rb+eyVj+9iQA2vDbVdrTMRFx2de2x6H6iHYXL
-	dxWjELcaDtScNw0xSD1oI6kNk7MQru1V8CUeXMM8MaDNw5R3xhL1ywetl0k6cY092aqE6UhaQ22
-	xgD0xMuJuU34rZGIyLr2H7heq8LK0Xo9eJM1Ri/iL0TbL7XgroFlXZDkOszb3KRp/7xKbwawH44
-	itYLB5OV+ZQV8JY3mo/4sSfSkezR8Urm4OS49YqHQF1mFUbAXRX+FlSNELNn5p1qBfR6/se5L7K
-	oElWW91jrlp6NRwxkMyzKp+H8spaR9uFD60Ku3Q8HFET1HcSdTzCudS2ihA=
-X-Google-Smtp-Source: AGHT+IHFpziS7IyvwjpPeAQ/cnlv4ypqV9u0Nz0Hh4cFz7HkMUpIeoxTbySR8ypBBfPvJXB803mlMQ==
-X-Received: by 2002:a05:620a:410c:b0:7d0:9782:9b05 with SMTP id af79cd13be357-7d5c46a9beemr169427785a.25.1751416446240;
-        Tue, 01 Jul 2025 17:34:06 -0700 (PDT)
-Received: from boreas.. ([140.174.215.70])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7d44317cc43sm853106285a.46.2025.07.01.17.34.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jul 2025 17:34:05 -0700 (PDT)
-From: Emil Tsalapatis <emil@etsalapatis.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	memxor@gmail.com,
-	yonghong.song@linux.dev,
-	sched-ext@meta.com,
-	Emil Tsalapatis <emil@etsalapatis.com>
-Subject: [PATCH v2 2/2] selftests/bpf: add selftests for bpf_arena_reserve_pages
-Date: Tue,  1 Jul 2025 20:33:51 -0400
-Message-ID: <20250702003351.197234-3-emil@etsalapatis.com>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250702003351.197234-1-emil@etsalapatis.com>
-References: <20250702003351.197234-1-emil@etsalapatis.com>
+        d=1e100.net; s=20230601; t=1751421329; x=1752026129;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Onkd7o2/cbYDMjrYISpEERTdApVmoTNyGmJeUEY8dmQ=;
+        b=sv+z2XJPQ1bBtb/i8xPWU75/up9egPc7RV7olW5BMk7n/k3g2FNWUhWsvGIsXoyqtD
+         wBZsFG7ZZc1FFclPMXqt3b7zwDDkVPAs+Atzj2v5W4lq9y48Cis7/DGob4K0kXLjVKCa
+         akeFfqgDYiuxxE8RLITsx/VWQIXltUzZsX2svordavNEoFSzkqYiJTcupnbhEMuNI0Jb
+         lWYGd9UzOEoISIR8o6cYLYsULvIZKmaedEbh5HobIg4eurkY4ZmGrjYiFxbKPWjkhfGM
+         lIUWVefzQBN9UaxTjBZ/3xdnz6CtHDyfKGnkd7INaKsfPwW4JQAlWfXefU3ym7Oq0PUo
+         lf2A==
+X-Forwarded-Encrypted: i=1; AJvYcCWdAhna3NEpK1EPCkC93+QJEHRL/uGKpJCWD6zekjZFEwz36EZfPcdp+HR6Wapvc7fnMxw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwB8Z4neVKS7ReF1YRlFW3DuQVyp7TlsvF0Pv4X4sATV0XxdYbH
+	fL5IG7Cdz5FMNA48i/6Z+1XzHxj9/G5aaKNAsCOMm4YesxQlaXmYN4TQ27WYvcRJaBYKdrC/w3P
+	I1Ay5Kbrh2KyVLEazzlPtTT19OLcR1brQN+QZGmRBU2enSJ19okLHdaMqyyY=
+X-Google-Smtp-Source: AGHT+IFa3zsLyTqW3kgAZxNJiDIQLEEbhCgdLAPhixNbMJut/f3gvntmA0vV6ufE60CJpZSMtIh/M46gkrgUX93m6f/fgdjUqFtT
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:cd84:0:b0:3df:3ad6:bfb2 with SMTP id
+ e9e14a558f8ab-3e0549c756amr14437125ab.17.1751421328864; Tue, 01 Jul 2025
+ 18:55:28 -0700 (PDT)
+Date: Tue, 01 Jul 2025 18:55:28 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68649190.a70a0220.3b7e22.20e8.GAE@google.com>
+Subject: [syzbot] [bpf?] WARNING in reg_bounds_sanity_check
+From: syzbot <syzbot+c711ce17dd78e5d4fdcf@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
+	sdf@fomichev.me, song@kernel.org, syzkaller-bugs@googlegroups.com, 
+	yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-Add selftests for the new bpf_arena_reserve_pages kfunc.
+Hello,
 
-Signed-off-by: Emil Tsalapatis <emil@etsalapatis.com>
+syzbot found the following issue on:
+
+HEAD commit:    cce3fee729ee selftests/bpf: Enable dynptr/test_probe_read_..
+git tree:       bpf-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=147793d4580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=79da270cec5ffd65
+dashboard link: https://syzkaller.appspot.com/bug?extid=c711ce17dd78e5d4fdcf
+compiler:       Debian clang version 20.1.6 (++20250514063057+1e4d39e07757-1~exp1~20250514183223.118), Debian LLD 20.1.6
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1594e48c580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1159388c580000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/f286a7ef4940/disk-cce3fee7.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/e2f2ebe1fdc3/vmlinux-cce3fee7.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/6e3070663778/bzImage-cce3fee7.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c711ce17dd78e5d4fdcf@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+verifier bug: REG INVARIANTS VIOLATION (false_reg1): range bounds violation u64=[0x0, 0x0] s64=[0x0, 0x0] u32=[0x1, 0x0] s32=[0x0, 0x0] var_off=(0x0, 0x0)(1)
+WARNING: CPU: 1 PID: 5833 at kernel/bpf/verifier.c:2688 reg_bounds_sanity_check+0x6e6/0xc20 kernel/bpf/verifier.c:2682
+Modules linked in:
+CPU: 1 UID: 0 PID: 5833 Comm: syz-executor346 Not tainted 6.16.0-rc3-syzkaller-gcce3fee729ee #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
+RIP: 0010:reg_bounds_sanity_check+0x6e6/0xc20 kernel/bpf/verifier.c:2682
+Code: 24 20 4c 8b 44 24 60 4c 8b 4c 24 58 41 ff 75 00 53 41 57 55 ff 74 24 38 ff 74 24 70 ff 74 24 40 e8 8f 86 aa ff 48 83 c4 38 90 <0f> 0b 90 90 48 bb 00 00 00 00 00 fc ff df 4d 89 f7 4c 8b 74 24 08
+RSP: 0018:ffffc90003f6ec08 EFLAGS: 00010282
+RAX: 2c2acf8a45b1bf00 RBX: 0000000000000000 RCX: ffff888029235a00
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000002
+RBP: 0000000000000000 R08: 0000000000000003 R09: 0000000000000004
+R10: dffffc0000000000 R11: fffffbfff1bfaa04 R12: ffff888025056000
+R13: ffff888025056020 R14: ffff888025056038 R15: 0000000000000000
+FS:  00005555860e1380(0000) GS:ffff888125d4d000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00002000002a1000 CR3: 00000000749a0000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ reg_set_min_max+0x264/0x300 kernel/bpf/verifier.c:16262
+ check_cond_jmp_op+0x159b/0x2910 kernel/bpf/verifier.c:16705
+ do_check_insn kernel/bpf/verifier.c:19882 [inline]
+ do_check+0x665b/0xe080 kernel/bpf/verifier.c:20017
+ do_check_common+0x188f/0x23f0 kernel/bpf/verifier.c:23180
+ do_check_main kernel/bpf/verifier.c:23263 [inline]
+ bpf_check+0x10252/0x1a5d0 kernel/bpf/verifier.c:24619
+ bpf_prog_load+0x1318/0x1930 kernel/bpf/syscall.c:2972
+ __sys_bpf+0x5f1/0x860 kernel/bpf/syscall.c:5978
+ __do_sys_bpf kernel/bpf/syscall.c:6085 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:6083 [inline]
+ __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:6083
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f37dffe23a9
+Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff6bb80468 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007fff6bb80648 RCX: 00007f37dffe23a9
+RDX: 0000000000000045 RSI: 00002000002a0fb8 RDI: 0000000000000005
+RBP: 00007f37e0055610 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffffffffffff R11: 0000000000000246 R12: 0000000000000001
+R13: 00007fff6bb80638 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+
+
 ---
- .../testing/selftests/bpf/bpf_arena_common.h  |   3 +
- .../selftests/bpf/progs/verifier_arena.c      | 106 ++++++++++++++++++
- .../bpf/progs/verifier_arena_large.c          |  95 ++++++++++++++++
- 3 files changed, 204 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/tools/testing/selftests/bpf/bpf_arena_common.h b/tools/testing/selftests/bpf/bpf_arena_common.h
-index 68a51dcc0669..16f8ce832004 100644
---- a/tools/testing/selftests/bpf/bpf_arena_common.h
-+++ b/tools/testing/selftests/bpf/bpf_arena_common.h
-@@ -46,8 +46,11 @@
- 
- void __arena* bpf_arena_alloc_pages(void *map, void __arena *addr, __u32 page_cnt,
- 				    int node_id, __u64 flags) __ksym __weak;
-+int bpf_arena_reserve_pages(void *map, void __arena *addr, __u32 page_cnt) __ksym __weak;
- void bpf_arena_free_pages(void *map, void __arena *ptr, __u32 page_cnt) __ksym __weak;
- 
-+#define arena_base(map) ((void __arena *)((struct bpf_arena *)(map))->user_vm_start)
-+
- #else /* when compiled as user space code */
- 
- #define __arena
-diff --git a/tools/testing/selftests/bpf/progs/verifier_arena.c b/tools/testing/selftests/bpf/progs/verifier_arena.c
-index 67509c5d3982..aded43ecbc27 100644
---- a/tools/testing/selftests/bpf/progs/verifier_arena.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_arena.c
-@@ -114,6 +114,112 @@ int basic_alloc3(void *ctx)
- 	return 0;
- }
- 
-+SEC("syscall")
-+__success __retval(0)
-+int basic_reserve1(void *ctx)
-+{
-+#if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
-+	char __arena *page;
-+	int ret;
-+
-+	page = bpf_arena_alloc_pages(&arena, NULL, 1, NUMA_NO_NODE, 0);
-+	if (!page)
-+		return 1;
-+
-+	page += __PAGE_SIZE;
-+
-+	/* Reserve the second page */
-+	ret = bpf_arena_reserve_pages(&arena, page, 1);
-+	if (ret)
-+		return 2;
-+
-+	/* Try to explicitly allocate the reserved page. */
-+	page = bpf_arena_alloc_pages(&arena, page, 1, NUMA_NO_NODE, 0);
-+	if (page)
-+		return 3;
-+
-+	/* Try to implicitly allocate the page (since there's only 2 of them). */
-+	page = bpf_arena_alloc_pages(&arena, NULL, 1, NUMA_NO_NODE, 0);
-+	if (page)
-+		return 4;
-+#endif
-+	return 0;
-+}
-+
-+SEC("syscall")
-+__success __retval(0)
-+int basic_reserve2(void *ctx)
-+{
-+#if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
-+	char __arena *page;
-+	int ret;
-+
-+	page = arena_base(&arena);
-+	ret = bpf_arena_reserve_pages(&arena, page, 1);
-+	if (ret)
-+		return 1;
-+
-+	page = bpf_arena_alloc_pages(&arena, page, 1, NUMA_NO_NODE, 0);
-+	if ((u64)page)
-+		return 2;
-+#endif
-+	return 0;
-+}
-+
-+/* Reserve the same page twice, should return -EALREADY. */
-+SEC("syscall")
-+__success __retval(0)
-+int reserve_twice(void *ctx)
-+{
-+#if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
-+	char __arena *page;
-+	int ret;
-+
-+	page = arena_base(&arena);
-+
-+	ret = bpf_arena_reserve_pages(&arena, page, 1);
-+	if (ret)
-+		return 1;
-+
-+	/* Should be -EALREADY. */
-+	ret = bpf_arena_reserve_pages(&arena, page, 1);
-+	if (ret != -114)
-+		return 2;
-+#endif
-+	return 0;
-+}
-+
-+/* Try to reserve past the end of the arena. */
-+SEC("syscall")
-+__success __retval(0)
-+int reserve_invalid_region(void *ctx)
-+{
-+#if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
-+	char __arena *page;
-+	int ret;
-+
-+	/* Try a NULL pointer. */
-+	ret = bpf_arena_reserve_pages(&arena, NULL, 3);
-+	if (ret != -22)
-+		return 1;
-+
-+	page = arena_base(&arena);
-+
-+	ret = bpf_arena_reserve_pages(&arena, page, 3);
-+	if (ret != -22)
-+		return 2;
-+
-+	ret = bpf_arena_reserve_pages(&arena, page, 4096);
-+	if (ret != -22)
-+		return 3;
-+
-+	ret = bpf_arena_reserve_pages(&arena, page, (1ULL << 32) - 1);
-+	if (ret != -22)
-+		return 4;
-+#endif
-+	return 0;
-+}
-+
- SEC("iter.s/bpf_map")
- __success __log_level(2)
- int iter_maps1(struct bpf_iter__bpf_map *ctx)
-diff --git a/tools/testing/selftests/bpf/progs/verifier_arena_large.c b/tools/testing/selftests/bpf/progs/verifier_arena_large.c
-index f94f30cf1bb8..9eee51912280 100644
---- a/tools/testing/selftests/bpf/progs/verifier_arena_large.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_arena_large.c
-@@ -67,6 +67,101 @@ int big_alloc1(void *ctx)
- 	return 0;
- }
- 
-+/* Try to access a reserved page. Behavior should be identical with accessing unallocated pages. */
-+SEC("syscall")
-+__success __retval(0)
-+int access_reserved(void *ctx)
-+{
-+#if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
-+	volatile char __arena *page;
-+	char __arena *base;
-+	const size_t len = 4;
-+	int ret, i;
-+
-+	/* Get a separate region of the arena. */
-+	page = base = arena_base(&arena) + 16384 * PAGE_SIZE;
-+
-+	ret = bpf_arena_reserve_pages(&arena, base, len);
-+	if (ret)
-+		return 1;
-+
-+	/* Try to dirty reserved memory. */
-+	for (i = 0; i < len && can_loop; i++)
-+		*page = 0x5a;
-+
-+	for (i = 0; i < len && can_loop; i++) {
-+		page = (volatile char __arena *)(base + i * PAGE_SIZE);
-+
-+		/*
-+		 * Error out in case either the write went through,
-+		 * or the address has random garbage.
-+		 */
-+		if (*page == 0x5a)
-+			return 2 + 2 * i;
-+
-+		if (*page)
-+			return 2 + 2 * i + 1;
-+	}
-+#endif
-+	return 0;
-+}
-+
-+/* Try to allocate a region overlapping with a reservation. */
-+SEC("syscall")
-+__success __retval(0)
-+int request_partially_reserved(void *ctx)
-+{
-+#if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
-+	volatile char __arena *page;
-+	char __arena *base;
-+	int ret;
-+
-+	/* Add an arbitrary page offset. */
-+	page = base = arena_base(&arena) + 4096 * __PAGE_SIZE;
-+
-+	ret = bpf_arena_reserve_pages(&arena, base + 3 * __PAGE_SIZE, 4);
-+	if (ret)
-+		return 1;
-+
-+	page = bpf_arena_alloc_pages(&arena, base, 5, NUMA_NO_NODE, 0);
-+	if ((u64)page != 0ULL)
-+		return 2;
-+#endif
-+	return 0;
-+}
-+
-+SEC("syscall")
-+__success __retval(0)
-+int free_reserved(void *ctx)
-+{
-+#if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
-+	char __arena *addr;
-+	char __arena *page;
-+	int ret;
-+
-+	/* Add an arbitrary page offset. */
-+	addr = arena_base(&arena) + 32768 * __PAGE_SIZE;
-+
-+	page = bpf_arena_alloc_pages(&arena, addr, 4, NUMA_NO_NODE, 0);
-+	if (!page)
-+		return 1;
-+
-+	ret = bpf_arena_reserve_pages(&arena, addr + 4 * __PAGE_SIZE, 4);
-+	if (ret)
-+		return 2;
-+
-+	/* Freeing a reserved area, fully or partially, should succeed. */
-+	bpf_arena_free_pages(&arena, addr, 2);
-+	bpf_arena_free_pages(&arena, addr + 2 * __PAGE_SIZE, 2);
-+
-+	/* The free pages call above should have succeeded, so this allocation should too. */
-+	page = bpf_arena_alloc_pages(&arena, addr + 3 * __PAGE_SIZE, 1, NUMA_NO_NODE, 0);
-+	if (!page)
-+		return 3;
-+#endif
-+	return 0;
-+}
-+
- #if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
- #define PAGE_CNT 100
- __u8 __arena * __arena page[PAGE_CNT]; /* occupies the first page */
--- 
-2.49.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
