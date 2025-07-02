@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-62202-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62203-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8C9FAF6586
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 00:42:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52F05AF6587
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 00:42:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6081A1C45E93
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 22:43:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97E3A176DFA
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 22:42:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6289C2BE62B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F19A82D63E5;
 	Wed,  2 Jul 2025 22:42:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DPQxNpFs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QA46iomW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6109B2571BC
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 183D82652B6
 	for <bpf@vger.kernel.org>; Wed,  2 Jul 2025 22:42:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751496141; cv=none; b=j/DtVspab+LLwoVoyuUu1oEOpRvlYXI+6vRdnSZ7fnpU1l15bF56m9M5WrTJ3Ja2o/644C9br+5mFLSIKc25xwAORFQNyC00DxhOev0sCQkbmRM42fKP0N4+E6y1xG04Q3X9Rq+T1RL2ZkfMmgJPO/RhyOOB/H+HntzWJEU20t0=
+	t=1751496142; cv=none; b=L1A7nEJzeLRKA6xdM+vZ2ZXnbh/oA94MMCqwVxzWQQDzNCwiRs2RPhpasmN8tAwrftuTl6VVRDymAMdl9k4c9QbvoEGUG/B4PfIEFx2DcEehfefKCNwB898VWVpDEem/G9hZHBEqx7UZCA3Csc6sBNK8xXd30IS7+n2AFtifrTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751496141; c=relaxed/simple;
-	bh=avSUx8UlN147BvXenYn2Je2FwHI0Fk2YS8m/zwzrmUM=;
+	s=arc-20240116; t=1751496142; c=relaxed/simple;
+	bh=unXQUAxYZatP1XOgKPSMMXM9D6E4JO4tFY5jdSGvONE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WUIEm5ZO/EzHoTgbmT1zATGHdfKXjylBzuchLgbh/bAkWA4yxzHWBW6nN3dIOzIEy4qDn8hoPtUu8IYLV+BQnKYhwUfLQB//vuOL+b0QISqRBYdpc/YvNMz2UESxZPdpmFetPWPtrffoS5jz9L3uYLkJlA++urxGOadLgIZyOJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DPQxNpFs; arc=none smtp.client-ip=209.85.219.170
+	 MIME-Version; b=XP+bzS7xKaUaayLmFcQGks5sz9+B4qv0n329j5sQf7HEyITPkM9vbkmBbIjdn9K7Uq9z0LL7odt8QifqQMVRkqkWRCAtpk2RLwhpz3KwWFIsCD6KCgAz0LQdeb79oPESNS+cvQcCAh7liD9iQmZnf1yhuInDgX6/vbs0fwnqAb0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QA46iomW; arc=none smtp.client-ip=209.85.219.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-e740a09eae0so6945116276.1
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-e81749142b3so5823228276.3
         for <bpf@vger.kernel.org>; Wed, 02 Jul 2025 15:42:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751496139; x=1752100939; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1751496140; x=1752100940; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iKQ2XrSLoFAFcEly1mH85ry2pyFnJgKFWey2sH8IiYI=;
-        b=DPQxNpFswWpyBJT1Nmzu+a8kS/bd1vwrDQxTCFrtN+gBxiYAl9/d3lZtqmXwdEBY1R
-         VZJQ0YowUdFEhb32DEeLGLc3JaX+A0PoesEWi9CygOQCIpy8PlXtHa2/kgAv8P5HDwPB
-         6a857fkscG9cEJlKeLQ6iKTzXX5vp2Whmyy3phGdosHqjczinjLyNl7egabME1wITPlE
-         3FaGMP4XeC3SDILPJtcU4CBv7XtLrFT3TqolPRmbfjEcgZq1SLl5LaNER61Td7dxnGXD
-         By3veCVkOpGQZPPtP3WoIYaiEQuHP8KRoTPXJG96gWLZKmLwqXDczprXqkNSFCMJOHBq
-         4stQ==
+        bh=IKLLYSrJuxo8AmLqfMp30wPNjYNVy449XPgv8XSmdeE=;
+        b=QA46iomW1ZulQD4q3Mkaq3nOGUssi/Vk00vlR9cSeO0xBpiC//CYpc9SHtanZhQvjx
+         65VbmQ5hG/dt1mK/oEXGIoVKybHAvVzJEiMXRaC80zq8DhBwnpORC5xCf0tFSTA+Wwzn
+         kgDBBB9bNcAEAJI2mZrGVqBy+wgHIzPdNCrYmoZSPHZVpsuePG5CQAWbp/bLwLRidttH
+         CGHhFEQgbpgv9BMu+0+2DtQWvA+ZXpqtiIc26xL/xO4kP+jiO3fjVp8KdyWJXtCD6YL+
+         8Z+XiiMueWgz/aPjeqYS4qWdey4eb+mPfeDippNW3oeduOFH+oQBESP1QcEZdM5V6B7g
+         LQmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751496139; x=1752100939;
+        d=1e100.net; s=20230601; t=1751496140; x=1752100940;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iKQ2XrSLoFAFcEly1mH85ry2pyFnJgKFWey2sH8IiYI=;
-        b=rJndvr8zIhreirYzvyF5zZsiZ4gYaQ2ZnMFLACSkMcUemBaR/bplqBmWW7vf7r4ZDI
-         MiVnYECS6urHZj7R7b2j79bgEIktx0uU2slkBQ8Pgfzal/UTUmryVB5DidoD4y5x8h4W
-         KVCgF8AMQCTeyl7mYKq39uIX5GjbOC7/FWhasKjusmyw+PqxgsR4v+JYIXgx8Y/chiSH
-         SHjIH3krgY1RCwKc+rFduaoImk2dFzW7c79EAyej4ZN187YcezecLxVjVeMIJtM6FY0p
-         08Te9ZxMELDk5Xl7ylRkTG2UCZx1bxmpQM2tRIn1HJPgw1IHyEB60XpVOY/PA1j8H1ta
-         6sgQ==
-X-Gm-Message-State: AOJu0YxvFCTW2mcMT8nhNoZQYemC70zUl0ghiM08rKKfuifAYpgZAWEN
-	PtJc07dKiP6nsM0oRuc/lD5p7vQCN++RyQj///uZ3yA4k5yOb+P1swmjHAQwk2gH
-X-Gm-Gg: ASbGncuwQOzMdYU6AKgdR2kQeTDw6XOtpCK6m4w18leYq5iKYBq55vHVJERgcXxtGQ9
-	YVoK1j8DyX2pQfiDITB/2Zz2xQJuVFlFMh6uX0ktssZWZ8IIcf+Gp8IXT7fx9w9yXRH4hd0zBGH
-	YSS4e4V2S24D49p66ub7cWLOdlikDwQbYp0WcIZyEbt3jqpbW29iZftk1mlciR9DzNZ5lGJ1pi1
-	QUadvpPB88Dz7JkAaM31gzr4sDhqSRk+EpZdM9VO4QvI5rQCKSp9TsmDkrHsPd2n8qWfVv0wdy9
-	IpZl53z1dTXbPC13rpxk8x87M+bnBNpB+JFpod7EploVP7sAWZgCsA==
-X-Google-Smtp-Source: AGHT+IEGpEAyG5QVQd4976HiE8AQKzuH5HmvBcEjrg5Kd9/Ynvy10mKhMw3Ec/UYKxEEBee0SS0RKg==
-X-Received: by 2002:a05:6902:490b:b0:e81:9a82:fcda with SMTP id 3f1490d57ef6-e897e3e6837mr5690968276.36.1751496139115;
+        bh=IKLLYSrJuxo8AmLqfMp30wPNjYNVy449XPgv8XSmdeE=;
+        b=dZRSLGjE52ekktzWOELv0anRkIat0pNPX7vq8GVFvOfyh2yTYtNW0tgdcElk+KyRSk
+         WeBK0k6222ymCE96NVE4K9H7iUuAZyqdG0IILX7J3UvNclIU9pJ2yZx+RQ2mNkEEFlYY
+         91NauGMjk+IXpw9NJ3WaC3ETC5KhCsJDDAyu5hmczlepFZp63UenodEPFqqM6MTfh3wF
+         En/+59cUfQHCeiKknE7Ggw8tyKhFeRuFNGmNP7Naz04dXmQwI/LwCoabJNwJ6CupQ9rs
+         dqscrVcd0KEcos1UmzDeXCGyjGJDOYVovU2d0jtb73ietUBmnseOL1P6o+qNrL7abQa9
+         KB8A==
+X-Gm-Message-State: AOJu0YyPI9AotDqKVL7CU+w7zceTlgMQSZ034m2wheWQvnVkJa3ekiOA
+	+HAITVzz9CZmhcqrI4SflsZkO1TX2oN2lG2sPTAUZ651i0yKE1M8akYhdGht0Yt5
+X-Gm-Gg: ASbGncuBzd0W5OOmr1WOTE0mhcA/Gw2nHwQ8nUOPUa2v5Ff2Lxl/5FVuBa9rP4oY5j1
+	KIgO9w2aLz+7pdFin9HmWyvEtiiXxOrPshBhDMA4HJHycaL+0isrM1bP0Bp2RmUmHoAElba1wQS
+	ZAh2GrvibVgDZ9AGRAwYopmypOZlDjOoq/VKqD5KQiiCRn04npuODKtnnPszmVKQCuVOhePEbHG
+	FJ4guk4h1x/tUorU85jLd1pwETQzc5uP9Q2111zIxA9tNOeWpaGkliQHArUIpi9yi2qZW7iYMQo
+	PtTTSjMPUvqNT8TRyLp2SwpS+2A6HgT+yyONL0DQ+EcH08E2MB1+Tw==
+X-Google-Smtp-Source: AGHT+IHe1vhSmjRxd2+j/f6qLocrhi/dHBOBukXM+Der1OT7TiAZDVXRH1Cm/AXls98LDLwxNcXzrg==
+X-Received: by 2002:a05:6902:260e:b0:e82:4a7:25b4 with SMTP id 3f1490d57ef6-e897e1cf9c4mr5440286276.22.1751496139955;
         Wed, 02 Jul 2025 15:42:19 -0700 (PDT)
-Received: from localhost ([2a03:2880:25ff:54::])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e87a6bd23bbsm3968300276.26.2025.07.02.15.42.18
+Received: from localhost ([2a03:2880:25ff:74::])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e87a6be5a6esm3980496276.46.2025.07.02.15.42.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jul 2025 15:42:18 -0700 (PDT)
+        Wed, 02 Jul 2025 15:42:19 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -79,11 +79,10 @@ Cc: daniel@iogearbox.net,
 	martin.lau@linux.dev,
 	kernel-team@fb.com,
 	yonghong.song@linux.dev,
-	eddyz87@gmail.com,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Subject: [PATCH bpf-next v1 4/8] bpf: attribute __arg_untrusted for global function parameters
-Date: Wed,  2 Jul 2025 15:42:05 -0700
-Message-ID: <20250702224209.3300396-5-eddyz87@gmail.com>
+	eddyz87@gmail.com
+Subject: [PATCH bpf-next v1 5/8] libbpf: __arg_untrusted in bpf_helpers.h
+Date: Wed,  2 Jul 2025 15:42:06 -0700
+Message-ID: <20250702224209.3300396-6-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250702224209.3300396-1-eddyz87@gmail.com>
 References: <20250702224209.3300396-1-eddyz87@gmail.com>
@@ -95,90 +94,33 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add support for PTR_TO_BTF_ID | PTR_UNTRUSTED global function
-parameters. Anything is allowed to pass to such parameters, as these
-are read-only and probe read instructions would protect against
-invalid memory access.
+Make btf_decl_tag("arg:untrusted") available for libbpf users via
+macro. Makes the following usage possible:
 
-Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+  void foo(struct bar *p __arg_untrusted) { ... }
+  void bar(struct foo *p __arg_trusted) {
+    ...
+    foo(p->buz->bar); // buz derefrence looses __trusted
+    ...
+  }
+
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- kernel/bpf/btf.c      | 29 ++++++++++++++++++++++++-----
- kernel/bpf/verifier.c |  7 +++++++
- 2 files changed, 31 insertions(+), 5 deletions(-)
+ tools/lib/bpf/bpf_helpers.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index b3c8a95d38fb..28cb0a2a5402 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -7646,11 +7646,12 @@ static int btf_get_ptr_to_btf_id(struct bpf_verifier_log *log, int arg_idx,
- }
+diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+index a50773d4616e..cd7771951a71 100644
+--- a/tools/lib/bpf/bpf_helpers.h
++++ b/tools/lib/bpf/bpf_helpers.h
+@@ -215,6 +215,7 @@ enum libbpf_tristate {
+ #define __arg_nonnull __attribute((btf_decl_tag("arg:nonnull")))
+ #define __arg_nullable __attribute((btf_decl_tag("arg:nullable")))
+ #define __arg_trusted __attribute((btf_decl_tag("arg:trusted")))
++#define __arg_untrusted __attribute((btf_decl_tag("arg:untrusted")))
+ #define __arg_arena __attribute((btf_decl_tag("arg:arena")))
  
- enum btf_arg_tag {
--	ARG_TAG_CTX	 = BIT_ULL(0),
--	ARG_TAG_NONNULL  = BIT_ULL(1),
--	ARG_TAG_TRUSTED  = BIT_ULL(2),
--	ARG_TAG_NULLABLE = BIT_ULL(3),
--	ARG_TAG_ARENA	 = BIT_ULL(4),
-+	ARG_TAG_CTX	  = BIT_ULL(0),
-+	ARG_TAG_NONNULL   = BIT_ULL(1),
-+	ARG_TAG_TRUSTED   = BIT_ULL(2),
-+	ARG_TAG_UNTRUSTED = BIT_ULL(3),
-+	ARG_TAG_NULLABLE  = BIT_ULL(4),
-+	ARG_TAG_ARENA	  = BIT_ULL(5),
- };
- 
- /* Process BTF of a function to produce high-level expectation of function
-@@ -7758,6 +7759,8 @@ int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog)
- 				tags |= ARG_TAG_CTX;
- 			} else if (strcmp(tag, "trusted") == 0) {
- 				tags |= ARG_TAG_TRUSTED;
-+			} else if (strcmp(tag, "untrusted") == 0) {
-+				tags |= ARG_TAG_UNTRUSTED;
- 			} else if (strcmp(tag, "nonnull") == 0) {
- 				tags |= ARG_TAG_NONNULL;
- 			} else if (strcmp(tag, "nullable") == 0) {
-@@ -7818,6 +7821,22 @@ int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog)
- 			sub->args[i].btf_id = kern_type_id;
- 			continue;
- 		}
-+		if (tags & ARG_TAG_UNTRUSTED) {
-+			int kern_type_id;
-+
-+			if (tags & ~ARG_TAG_UNTRUSTED) {
-+				bpf_log(log, "arg#%d untrusted cannot be combined with any other tags\n", i);
-+				return -EINVAL;
-+			}
-+
-+			kern_type_id = btf_get_ptr_to_btf_id(log, i, btf, t);
-+			if (kern_type_id < 0)
-+				return kern_type_id;
-+
-+			sub->args[i].arg_type = ARG_PTR_TO_BTF_ID | PTR_UNTRUSTED;
-+			sub->args[i].btf_id = kern_type_id;
-+			continue;
-+		}
- 		if (tags & ARG_TAG_ARENA) {
- 			if (tags & ~ARG_TAG_ARENA) {
- 				bpf_log(log, "arg#%d arena cannot be combined with any other tags\n", i);
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index cd2344e50db8..dfb5a2f8e58f 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -10436,6 +10436,13 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env, int subprog,
- 				bpf_log(log, "R%d is not a scalar\n", regno);
- 				return -EINVAL;
- 			}
-+		} else if (arg->arg_type & PTR_UNTRUSTED) {
-+			/*
-+			 * Anything is allowed for untrusted arguments, as these are
-+			 * read-only and probe read instructions would protect against
-+			 * invalid memory access.
-+			 */
-+			continue;
- 		} else if (arg->arg_type == ARG_PTR_TO_CTX) {
- 			ret = check_func_arg_reg_off(env, reg, regno, ARG_DONTCARE);
- 			if (ret < 0)
+ #ifndef ___bpf_concat
 -- 
 2.47.1
 
