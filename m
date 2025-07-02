@@ -1,111 +1,93 @@
-Return-Path: <bpf+bounces-62143-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62144-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9465AF5DFD
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 18:04:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC1A9AF5E0A
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 18:05:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A00C1C4203D
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 16:04:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E29124A2607
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 16:05:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FAA22D46BE;
-	Wed,  2 Jul 2025 16:04:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D1B52E0401;
+	Wed,  2 Jul 2025 16:05:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A+CWOYPG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jyYj9RBM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85B6D3196C7;
-	Wed,  2 Jul 2025 16:04:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 215D7265CCF;
+	Wed,  2 Jul 2025 16:05:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751472251; cv=none; b=qQ5SKBct4kdKx83BQ5v0a2TCNQklQOItdO3sEGJUzAjhTQ6KEH04MqHlCaj/q7Yka7UNnJ1CBmUfjN9Pz1zeBdV3p7UvsY/fxRU39qVdFQoYrt2U1GNqHkOVrGpntRZcahaUFGExRj8eo0HnRBnenNQfsB/DoGTt6dlZTx5RrGs=
+	t=1751472348; cv=none; b=QXJJhHAhdcfs36YnDrE320mYgjW4bnkMn1QzHCwX7akntauyG8sSOzNwrtrDeRUo9k3IJqVXLpBIZXzE+MjrbE+oncksvg5uCczLK7H823aOw803LEh33Boyv7256mIDjyZ+HrOxJnzupFvbuQFanGbmIb+xWrMj2DOl1JiNLtc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751472251; c=relaxed/simple;
-	bh=V7ocvZ1MzRTMgmZ5TCXNgMiB58Py13evA/lkbx68+ys=;
+	s=arc-20240116; t=1751472348; c=relaxed/simple;
+	bh=XHSaZUqWFpPf32cofuoMkUOCMLvBHui8u1a32CHiVHo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bUiT+3DBZxgKqAlhaO3b9PkKwyBNcToie+gIwYKnG48VGfgJCbgamchLCIqjHjS8ZOckHplI0BpqtgH7pNJEnBsdxy2H9iS+pwObxrMS1qVY334KpEZG+eyxtn6PQnwBtJItWZBaKi9gjIeOVH2MKJalXDt2ECQHwMWqhEiLAEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A+CWOYPG; arc=none smtp.client-ip=209.85.210.181
+	 Content-Type:Content-Disposition:In-Reply-To; b=eMDbkjk+EU8EmMH1lhePlauvsCKwh+eXuxO0dlEfH9oyLCayUzJzBOtWUM/6k/aK89+h3hpQ/JFIrIXuSYtukeC2SexS+ZagDKvNaqbSD3zJ9B9KzMg3dxFeFrJOT3D7+twoDC5iRAnsnH03j1d1ip1VJdrsBleRcpBs2t9lskg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jyYj9RBM; arc=none smtp.client-ip=209.85.215.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-74b50c71b0aso636846b3a.0;
-        Wed, 02 Jul 2025 09:04:09 -0700 (PDT)
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-b321bd36a41so4136350a12.2;
+        Wed, 02 Jul 2025 09:05:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751472249; x=1752077049; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1751472346; x=1752077146; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=u2nzxIAHzM2zCpkXYgT63kjyxekr2mJ2gHQXxs6/nCg=;
-        b=A+CWOYPGlQ/EgOBwLFiS6R6YTjSYDKPAUc5o30pqlS6X38Qqncgt2G6hoV66I0n0A7
-         WtwSiETjpjQypKyj2w9McUTtibV78fTcGHxw5YWmvH08u+244PSgqGW3+BllPTwttYQb
-         Q5ZOIG/KiOZn+PLNCovnX46fHyOlnrLZIWsU+CWryOOkoy5PPC9/Vl8R9kBL9U1C2gXG
-         URwfS6iAVDvF55oMJKzcmqdLEw+o8BkQAPCwBErAnAtU1A6MG2t2ovSRa7qmDcxt18RS
-         UqjVNs6KAIVGOFNZOySYAPCMvfkZF9c8iVgFH5uX7VpWRvNoQxkEjnxqKoCUKTjQx8tw
-         DUTQ==
+        bh=ypLI1VXmvZ1gRCtrJ2LYYmyjsx3eV6bzTaZRpkQ9E/0=;
+        b=jyYj9RBMQh5S/mBwm4InoajQGDPbYb5Gpp6Ix9aySejuqZVdnlQyP3rWlCoy/dAhkv
+         VeDFoF/SiXPVdSegxbmop04s7tJpNwnCH1c2wd2iUCxd1qHyBobBYLDCL9a0Ej6zd+aV
+         JfisPPYDM9iDXciw5Q1Op4E9Vsr8ZsAvEooayer85OuQN1ZmuuviRlelUzI8Q1Eaiweh
+         LTH9Ycf5+hykBq3SJlSFg03lQFHqiJAZ/orqaNIt8/4RPh60XAibtgV/v6eKQyeo18ke
+         3GbFJs6S/810mKnPimZdfQJ5UOTHP/o8UKTznjw0TKqlz+iE5Ps5hz2oSPrqrWfRCnkZ
+         yfWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751472249; x=1752077049;
+        d=1e100.net; s=20230601; t=1751472346; x=1752077146;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=u2nzxIAHzM2zCpkXYgT63kjyxekr2mJ2gHQXxs6/nCg=;
-        b=h9kgT4zOeVClI0C8voMimID55onGXULeSNZBUHaA2znXF2uvx8AdWYYDFFPjfxnmqZ
-         QChjqPgvNabIelGoAmewIMiDqjD4avuDcFW9eyvRCoJjk0UjrnUgdBYn36c8CGIFXzj8
-         CTssfcvvv7tzTQyCcr5ENipLsydLvK/MJrZDzvKEVlWUOehF4y7uxt226m7nPXIi5Bi6
-         BvCyracsHEGok8JJwKj2BfBUUEnJo6t4xYgdasOrvTlkq8B0hSrNYjNri1BQxw49fjIq
-         ba8E/c25gq3MNCF2rmgP8qD3nbHAy0aXigWdzKUiHFFpzfKnAjGXQzYwiqMRl3d3Pabz
-         18sQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUgbt6cqFPU+NJmUANeUsJ9fYK2PD4Z0H5s4QgHuPdg1GLA3AyVujybm9ytpkBKj5Jwlah6oh1F@vger.kernel.org, AJvYcCV4HKOPlt7ud/9KV3eQPwoKXB/wW1eiVn1ySuaEDYTBj6Cte/A/+MaNc5G3yDXIzCoesVp5CLX7c4dm4Qgc@vger.kernel.org, AJvYcCVcfWOAmqMQ1C7jQCkuttZAlexe/l8p2tBDwKIGWzeaFlNmWHf2EN2sJbwXtxfS68tKFk4=@vger.kernel.org, AJvYcCX1rtvY35lKT8qO2pXoYO8v+gbNq84qa/C7biwpt5aP9JW9PuPZoYrtJ75SYJC/v7GpwlPkS+iQhkCa9K4mZ1E+@vger.kernel.org, AJvYcCXcXhPeB/4c7yW5aiQKWv+OhUGxKrO5aiDdBUrTlmPurgS5omQ6ObkprWngme1dseYG8N0TB7kucq+w@vger.kernel.org
-X-Gm-Message-State: AOJu0YyLcCnLC8/27Nwsg4iHQiAB7MBgsN3oFgDc0ea/li/AqwCYKuQF
-	OE2PWndCjGgF3zbiqqmO5plQRREMrdCDLPa+Tp1xK2TkThnOGNgNAeU=
-X-Gm-Gg: ASbGncuCXNSf4UEno5/Pr1ZhtlKuvSc5z0x9BGZvj+QX2Q7I+9BlEn/vFje28BUAkuX
-	6MpfNV8e7Lz6Y6Fwr4Zc/jdBQanmvM3iMKDUEkBaSL5LleJxOyeliKWn5Su+fbOYNwMFANbv51h
-	9ogDuADCCYltVbVW/zCeeQwIuAIRkTQQY1rybtFtYkiF3q5hM8i4Bt7nLAyocRaLiVL3GBf60UQ
-	XyilHAvAVjnwAj22oiQHsWJBYJrDCchQJDxjTcG9wHSZ47XQQJItE8czcwOkaFr7RkmVH9LXYgA
-	VDDujf5ZAK7XXLXjDbHXQTTPVpFf5xUq6z8i4j46c7wgd3q4ucCJTsIBA5nl8zsJZviPWiXF8CR
-	4gM6jCeWqxdEU3BdHdV6XeKE=
-X-Google-Smtp-Source: AGHT+IECN/3euiEQr+MyKhdKeZaMnO25R8NGOtZzSFB4uCv1hJ23ZUZo4MgpnbG8A79ErgQtwmmAow==
-X-Received: by 2002:a05:6a00:4b0f:b0:749:14b5:921f with SMTP id d2e1a72fcca58-74b50f6847emr5230413b3a.18.1751472248385;
-        Wed, 02 Jul 2025 09:04:08 -0700 (PDT)
+        bh=ypLI1VXmvZ1gRCtrJ2LYYmyjsx3eV6bzTaZRpkQ9E/0=;
+        b=IXQV3ZW+BPyn6J92EHpqeVgo3jgJWsCCjNF0Hyp/0YheTFw6iE/UPS/ZRRUCh6+K6x
+         HzUgQWoDhtpPdOtc5pzxQauSnu29haYdDo9oCg0iWxAXnGrmbeQnKNnfgQ1xVhlnW7jO
+         wMhmFw0OkhJBJFghO4ipzNPnpWO+gbtEWBp+Y6KMRSKwMVO0pZlwNoIzCTVXbWG/rw3r
+         Yaa+iHuQwov/WEvtyx5c+DkPjxQKqIu1SwlJsAP7w8g6Iv1ykTdZRvtzkrVhk2gbebDI
+         vXTQgt07aJuqAJ5QpfpBktAaxLbt4QO2ABTVm1cHMtCEJ1yjgqq3UqBRMtW/MHGY02FH
+         0nag==
+X-Forwarded-Encrypted: i=1; AJvYcCU8ja0m40Bsm9oLk/PLvLkFxWpDG7Ei07CJ/qU8x3gnILzM0CxcxgmvPr1kyFBF+9EjkXg99iw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxHD0oX2uzT0w7GUtsCw9zXz9sPAOqwtri7W2jvm6L/nyyJPitw
+	HXCOA+UCg3t6U5rV7bH/r03+k9IgdMQAktzUi4eDwzurR8S4MpbUxqE=
+X-Gm-Gg: ASbGncsbno6zP+RF43Dc23IKB4xd0JWD9AvL4K3R+rE0ShB2BzC9Xy14YUAYnoI7Zyc
+	9Sey90X/qSCKDsDVi5a7xjDb6tqys9GAZZQ+aG+NLFKNC9Se+kahMCltzjqkp2nj4MQn9ZO9u5i
+	fTXlgqAGEexpoUmC5YQcqMTm24ph7+0SYJUo4jxGJbHXRSTPXAdPUlTbVnqRWbjwBF+CS9h6Gd7
+	IXqLx/S0Teu53rGRbn31moiYX4Med3YnYvYBw0YMEh2H1ZuLwyePqq+418GGtjKkwPd6+YPwiGi
+	i26thf7VrEEU3JXrrXC82uH3TBQCgv5cVOizUxxMRDb3A1KAiwXQqZyA/1ZiHuMfEWAeretrK/w
+	hgbqXfPbgaKrJNfWX7KlVgO0=
+X-Google-Smtp-Source: AGHT+IEJfovoW+dOOcSbSLwvCJk918wOrDCRfRL2iAOfFFVqg9aZ7yBdTlMf/LXTJwdvBVghW8guKg==
+X-Received: by 2002:a17:90b:288a:b0:311:a561:86f3 with SMTP id 98e67ed59e1d1-31a90b178aemr4214789a91.6.1751472346300;
+        Wed, 02 Jul 2025 09:05:46 -0700 (PDT)
 Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
-        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-74af55786e3sm14463411b3a.72.2025.07.02.09.04.06
+        by smtp.gmail.com with UTF8SMTPSA id 98e67ed59e1d1-31a9cc6dd44sm156756a91.21.2025.07.02.09.05.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jul 2025 09:04:07 -0700 (PDT)
-Date: Wed, 2 Jul 2025 09:04:06 -0700
+        Wed, 02 Jul 2025 09:05:45 -0700 (PDT)
+Date: Wed, 2 Jul 2025 09:05:44 -0700
 From: Stanislav Fomichev <stfomichev@gmail.com>
-To: "Song, Yoong Siang" <yoong.siang.song@intel.com>
-Cc: "David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
+	Jakub Kicinski <kuba@kernel.org>, lorenzo@kernel.org,
 	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Enhance XDP Rx Metadata
- Handling
-Message-ID: <aGVYdjDKNBdWdrQ8@mini-arch>
-References: <20250701042940.3272325-1-yoong.siang.song@intel.com>
- <20250701042940.3272325-3-yoong.siang.song@intel.com>
- <aGQNWXe6FBks8D3U@mini-arch>
- <IA3PR11MB925416396633E361F37E819DD840A@IA3PR11MB9254.namprd11.prod.outlook.com>
- <IA3PR11MB9254C961FD048793FD0013EAD840A@IA3PR11MB9254.namprd11.prod.outlook.com>
- <aGVN01flIJzvCo6S@mini-arch>
- <IA3PR11MB92541178AAF28F03639A9435D840A@IA3PR11MB9254.namprd11.prod.outlook.com>
+	Daniel Borkmann <borkmann@iogearbox.net>,
+	Eric Dumazet <eric.dumazet@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Paolo Abeni <pabeni@redhat.com>, sdf@fomichev.me,
+	kernel-team@cloudflare.com, arthur@arthurfabre.com,
+	jakub@cloudflare.com
+Subject: Re: [PATCH bpf-next V2 0/7] xdp: Allow BPF to set RX hints for
+ XDP_REDIRECTed packets
+Message-ID: <aGVY2MQ18BWOisWa@mini-arch>
+References: <175146824674.1421237.18351246421763677468.stgit@firesoul>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -114,135 +96,63 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <IA3PR11MB92541178AAF28F03639A9435D840A@IA3PR11MB9254.namprd11.prod.outlook.com>
+In-Reply-To: <175146824674.1421237.18351246421763677468.stgit@firesoul>
 
-On 07/02, Song, Yoong Siang wrote:
-> On Wednesday, July 2, 2025 11:19 PM, Stanislav Fomichev <stfomichev@gmail.com> wrote:
-> >On 07/02, Song, Yoong Siang wrote:
-> >> On Wednesday, July 2, 2025 10:23 AM, Song, Yoong Siang
-> ><yoong.siang.song@intel.com> wrote:
-> >> >On Wednesday, July 2, 2025 12:31 AM, Stanislav Fomichev
-> ><stfomichev@gmail.com>
-> >> >wrote:
-> >> >>On 07/01, Song Yoong Siang wrote:
-> >> >>> Introduce the XDP_METADATA_SIZE macro to ensure that user applications can
-> >> >>> consistently retrieve the correct location of struct xdp_meta.
-> >> >>>
-> >> >>> Prior to this commit, the XDP program adjusted the data_meta backward by
-> >> >>> the size of struct xdp_meta, while the user application retrieved the data
-> >> >>> by calculating backward from the data pointer. This approach only worked if
-> >> >>> xdp_buff->data_meta was equal to xdp_buff->data before calling
-> >> >>> bpf_xdp_adjust_meta.
-> >> >>>
-> >> >>> With the introduction of XDP_METADATA_SIZE, both the XDP program and user
-> >> >>> application now calculate and identify the location of struct xdp_meta from
-> >> >>> the data pointer. This ensures the implementation remains functional even
-> >> >>> when there is device-reserved metadata, making the tests more portable
-> >> >>> across different NICs.
-> >> >>>
-> >> >>> Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
-> >> >>> ---
-> >> >>>  tools/testing/selftests/bpf/prog_tests/xdp_metadata.c |  2 +-
-> >> >>>  tools/testing/selftests/bpf/progs/xdp_hw_metadata.c   | 10 +++++++++-
-> >> >>>  tools/testing/selftests/bpf/progs/xdp_metadata.c      |  8 +++++++-
-> >> >>>  tools/testing/selftests/bpf/xdp_hw_metadata.c         |  2 +-
-> >> >>>  tools/testing/selftests/bpf/xdp_metadata.h            |  7 +++++++
-> >> >>>  5 files changed, 25 insertions(+), 4 deletions(-)
-> >> >>>
-> >> >>> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-> >> >>b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-> >> >>> index 19f92affc2da..8d6c2633698b 100644
-> >> >>> --- a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-> >> >>> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-> >> >>> @@ -302,7 +302,7 @@ static int verify_xsk_metadata(struct xsk *xsk, bool
-> >> >>sent_from_af_xdp)
-> >> >>>
-> >> >>>  	/* custom metadata */
-> >> >>>
-> >> >>> -	meta = data - sizeof(struct xdp_meta);
-> >> >>> +	meta = data - XDP_METADATA_SIZE;
-> >> >>>
-> >> >>>  	if (!ASSERT_NEQ(meta->rx_timestamp, 0, "rx_timestamp"))
-> >> >>>  		return -1;
-> >> >>> diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> >> >>b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> >> >>> index 330ece2eabdb..72242ac1cdcd 100644
-> >> >>> --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> >> >>> +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> >> >>> @@ -27,6 +27,7 @@ extern int bpf_xdp_metadata_rx_vlan_tag(const struct
-> >> >>xdp_md *ctx,
-> >> >>>  SEC("xdp.frags")
-> >> >>>  int rx(struct xdp_md *ctx)
-> >> >>>  {
-> >> >>> +	int metalen_used, metalen_to_adjust;
-> >> >>>  	void *data, *data_meta, *data_end;
-> >> >>>  	struct ipv6hdr *ip6h = NULL;
-> >> >>>  	struct udphdr *udp = NULL;
-> >> >>> @@ -72,7 +73,14 @@ int rx(struct xdp_md *ctx)
-> >> >>>  		return XDP_PASS;
-> >> >>>  	}
-> >> >>>
-> >> >>> -	err = bpf_xdp_adjust_meta(ctx, -(int)sizeof(struct xdp_meta));
-> >> >>
-> >> >>[..]
-> >> >>
-> >> >>> +	metalen_used = ctx->data - ctx->data_meta;
-> >> >>
-> >> >>Is the intent here to query how much metadata has been consumed/reserved
-> >> >>by the driver?
-> >> >Yes.
-> >> >
-> >> >>Looking at IGC it has the following code/comment:
-> >> >>
-> >> >>	bi->xdp->data += IGC_TS_HDR_LEN;
-> >> >>
-> >> >>	/* HW timestamp has been copied into local variable. Metadata
-> >> >>	 * length when XDP program is called should be 0.
-> >> >>	 */
-> >> >>	bi->xdp->data_meta += IGC_TS_HDR_LEN;
-> >> >>
-> >> >>Are you sure that metadata size is correctly exposed to the bpf program?
-> >> >You are right, the current igc driver didn't expose the metadata size correctly.
-> >> >I submitted [1] to fix it.
-> >> >
-> >> >[1] https://patchwork.ozlabs.org/project/intel-wired-
-> >> >lan/patch/20250701080955.3273137-1-yoong.siang.song@intel.com/
-> >> >
-> >> >>
-> >> >>My assumptions was that we should just unconditionally do
-> >bpf_xdp_adjust_meta
-> >> >>with -XDP_METADATA_SIZE and that should be good enough.
-> >> >
-> >> >The checking is just for precautions. No problem if directly adjust the meta
-> >> >unconditionally.
-> >> >That will save processing time for each packet as well.
-> >> >I will remove the checking and submit v2.
-> >> >
-> >> >Thanks & Regards
-> >> >Siang
-> >> >
-> >>
-> >> Hi Stanislav Fomichev,
-> >>
-> >> I submitted v2. But after that, I think twice. IMHO,
-> >> err = bpf_xdp_adjust_meta(ctx, (int)(ctx->data - ctx->data_meta -
-> >XDP_METADATA_SIZE));
-> >> is better than
-> >> err = bpf_xdp_adjust_meta(ctx, -(int)XDP_METADATA_SIZE);
-> >> because it is more robust.
-> >>
-> >> Any thoughts?
-> >
-> >My preference is on keeping everything as is and converting to
-> >-(int)XDP_METADATA_SIZE. Making IGC properly expose (temporary) metadata len
-> >is a user visible change, not sure we have a good justification?
+On 07/02, Jesper Dangaard Brouer wrote:
+> This patch series introduces a mechanism for an XDP program to store RX
+> metadata hints - specifically rx_hash, rx_vlan_tag, and rx_timestamp -
+> into the xdp_frame. These stored hints are then used to populate the
+> corresponding fields in the SKB that is created from the xdp_frame
+> following an XDP_REDIRECT.
 > 
-> Thank you for your feedback. I agree that we don't have a strong justification
-> for making the metadata length user-visible at this time. I concur with your
-> preference to keep everything as is and proceed with -(int)XDP_METADATA_SIZE.
+> The chosen RX metadata hints intentionally map to the existing NIC
+> hardware metadata that can be read via kfuncs [1]. While this design
+> allows a BPF program to read and propagate existing hardware hints, our
+> primary motivation is to enable setting custom values. This is important
+> for use cases where the hardware-provided information is insufficient or
+> needs to be calculated based on packet contents unavailable to the
+> hardware.
 > 
-> Btw, do you think whether my first patch which changes the documentation is
-> still needed or not?
+> The primary motivation for this feature is to enable scalable load
+> balancing of encapsulated tunnel traffic at the XDP layer. When tunnelled
+> packets (e.g., IPsec, GRE) are redirected via cpumap or to a veth device,
+> the networking stack later calculates a software hash based on the outer
+> headers. For a single tunnel, these outer headers are often identical,
+> causing all packets to be assigned the same hash. This collapses all
+> traffic onto a single RX queue, creating a performance bottleneck and
+> defeating receive-side scaling (RSS).
+> 
+> Our immediate use case involves load balancing IPsec traffic. For such
+> tunnelled traffic, any hardware-provided RX hash is calculated on the
+> outer headers and is therefore incorrect for distributing inner flows.
+> There is no reason to read the existing value, as it must be recalculated.
+> In our XDP program, we perform a partial decryption to access the inner
+> headers and calculate a new load-balancing hash, which provides better
+> flow distribution. However, without this patch set, there is no way to
+> persist this new hash for the network stack to use post-redirect.
+> 
+> This series solves the problem by introducing new BPF kfuncs that allow an
+> XDP program to write e.g. the hash value into the xdp_frame. The
+> __xdp_build_skb_from_frame() function is modified to use this stored value
+> to set skb->hash on the newly created SKB. As a result, the veth driver's
+> queue selection logic uses the BPF-supplied hash, achieving proper
+> traffic distribution across multiple CPU cores. This also ensures that
+> consumers, like the GRO engine, can operate effectively.
+> 
+> We considered XDP traits as an alternative to adding static members to
+> struct xdp_frame. Given the immediate need for this functionality and the
+> current development status of traits, we believe this approach is a
+> pragmatic solution. We are open to migrating to a traits-based
+> implementation if and when they become a generally accepted mechanism for
+> such extensions.
+> 
+> [1] https://docs.kernel.org/networking/xdp-rx-metadata.html
+> ---
+> V1: https://lore.kernel.org/all/174897271826.1677018.9096866882347745168.stgit@firesoul/
 
-Yes, the documentation is super useful, let's keep it!
+No change log?
+
+Btw, any feedback on the following from v1?
+- https://lore.kernel.org/netdev/aFHUd98juIU4Rr9J@mini-arch/
+- https://lore.kernel.org/netdev/20250616145523.63bd2577@kernel.org/
 
