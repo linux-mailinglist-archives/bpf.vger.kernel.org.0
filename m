@@ -1,178 +1,147 @@
-Return-Path: <bpf+bounces-62113-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62114-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AD0EAF1641
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 14:59:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C2E7AF5A32
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 15:53:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F46A7AF23F
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 12:56:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A1F7517C468
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 13:53:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FD662750F2;
-	Wed,  2 Jul 2025 12:57:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50D97275846;
+	Wed,  2 Jul 2025 13:53:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="n+US6jnL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mdJT2zp+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2685A275112;
-	Wed,  2 Jul 2025 12:57:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45E83253934
+	for <bpf@vger.kernel.org>; Wed,  2 Jul 2025 13:53:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751461072; cv=none; b=ViOWbUkf4bXcVncBrLf7KtMCeGHoYIWakftUSNTcBWnKujmuI0ql4pMbyAI9sD01Ng8i602TE0qWi0GGmuLlerlVURDejWtd3ZOGMMMJh8JWi9LNhhnqcjWJw83axNTC1EquvICNSRIP55c43qpMwg5fbqOjZhrFfcUwFGhiXP0=
+	t=1751464409; cv=none; b=JJ6oUX9eWG1axpBLTHromWYHZI5BZihiH6nsFvTyJ/W3l16FbdaCH0dQ1I2ZMG6B9H4uo3TKX6amK6EDoRucWpJhWAW4FGKccxZw6fr3mwOJlITVQqQB4TGFDEfzEl3Kox5VcFafUFhG0B5YlT3qK+hJVi+QN158Bm506EajhGc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751461072; c=relaxed/simple;
-	bh=0fV3N+hhZTmP3CQyJcJtFrhr7wGpoiGzXrO2T7RbqXI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Jh5aNqj+Wyy9KouJzZgJOBqfgFATjQfORIx/8GIz1rwXxut4FgVBfbMoHM+JKwPI2FXgpcSFybQomuRWK99mQd5snEE2v4u9TnLk2VGpICAmkIeRi9PNXyx0WLUdkp+OIWIYBrs/+xzECNaC6gDBDJmsfhOZPpc9M7mdywOATqw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=n+US6jnL; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 562CeI0O013209;
-	Wed, 2 Jul 2025 12:57:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=SLo8ad
-	wDyZ2a+aEcqiFtRAlQqRjdUifFA/wDj5U+6E8=; b=n+US6jnLLdYL7kglYNbjuT
-	mu+7W7oKznhnLHXcTZ+yxYXJhXecORrkuKs0qK4PQKG2kznZxiy5O6rbM6ly4yPy
-	WUI+nGbpnTED/nxw+fIr2Le7LJ7Ycvku6SoYeLDiy/hnPkUkueJcI4UBcaujseX5
-	whjyWjwmSMkBW/9BV4ziW4Ws8mf6Jt+BnbZojZPxniB2vHbWffzeS5O0AD6jsHL4
-	1lH7E+KY1kYqFw9vh5K5ZQg73srEDMgnuvT8z68OYLyaicfXMs7op0ikbSQCYwki
-	xqbO44kiA5h7/uH51Fa8Vmf+hYPyQlY08VgPLxpoGa0424clmAws8xWHv80ZTL/A
-	==
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47j6u1w93x-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 02 Jul 2025 12:57:28 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5629VnOB032148;
-	Wed, 2 Jul 2025 12:57:27 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 47ju40qq2n-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 02 Jul 2025 12:57:27 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 562CvNfS39846152
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 2 Jul 2025 12:57:23 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5CF4120043;
-	Wed,  2 Jul 2025 12:57:23 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 08BEC20040;
-	Wed,  2 Jul 2025 12:57:23 +0000 (GMT)
-Received: from [9.152.222.224] (unknown [9.152.222.224])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed,  2 Jul 2025 12:57:22 +0000 (GMT)
-Message-ID: <7eea50a5-e1b0-4319-9a25-cb8b327a836d@linux.ibm.com>
-Date: Wed, 2 Jul 2025 14:57:22 +0200
+	s=arc-20240116; t=1751464409; c=relaxed/simple;
+	bh=KA5NtdIcSFcAO9ncyk7PSDbj6bbeRBww8Kirc1UAVDs=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=h7AQnaUVqkztTwZ9o/lyvbdMiAZobrnXOU9CkWzgtVd1tqTN5czpTy9xqdtIhYJw/r2fvvXXtS6kz7QoWb7HYgb21B+hDtIYixlxa6qpDqrIR1yQWNf4z4THztUilLLKNK9BkOfDlGjowmH7Kbx2wpII6FDEBAJW7NcPZzSwxhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mdJT2zp+; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-453647147c6so73400215e9.2
+        for <bpf@vger.kernel.org>; Wed, 02 Jul 2025 06:53:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1751464406; x=1752069206; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=v7yHhlPoIMabzewVRqD2Y6dYidGZrlrN63HdEaADeVA=;
+        b=mdJT2zp+xU6mj+eMyM6uIglIWNuu3klgjlrcu0MYmvcSbdu5T6fShfbMXFAkSO+vwF
+         5crxrJ/JQ5Z9TpSsITnPD9jiEEA2P22MBkbiWm3O9sjpdtuOatG7MtuWpXSHZnRDm8Jx
+         +9KC4mxUM8a0cKPcnkJR4tZLG3ylr1TsHhVxtoTdA/9kfB7PHUcbeP7A/ZveZXL4J/Ut
+         r57Zq5rTu6ICsgMlohML1uvae971otTKrYttpKWh+eEyW4AtWD8WVHWNuGGa50DaPYqV
+         IsrOVQL5xh00JLyGgZwB/6GI+9fXiMfGLSTkhC7vLcGjROYqhVM1n1JavwL5n4jOobUU
+         83PA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751464406; x=1752069206;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=v7yHhlPoIMabzewVRqD2Y6dYidGZrlrN63HdEaADeVA=;
+        b=XFUcHaPRJ6xkKxQToySe/L8WfEFtCMbP/WWdCP/rylGdwdpOcmkTZBj3E4CbDwaKsM
+         KaAQdbiDVNUR/FXWecj+Xq0+BTDFxpIXQlVsiEF/W+Y2ZiQKba4X55bmPvX+noEkCTrG
+         NDZR4SK1TRHCeNOnH+mdCttepXM2gyt0KYCZF0bdYjDi+SZZJyDLdNmYyw78hlKgLVbv
+         ITLWe16i27hupJ6lU91w05bxkx2p+XodMXtJqic5vrafjQI/Zd/Mmk12z7aLSKF/TyL1
+         H61L5H++yVAGEX8w+Voh7E3xC9nQRg8d0biOLRSKWQApSfqEgicg3rm159O7JAysUbZI
+         h0EQ==
+X-Gm-Message-State: AOJu0YyZpdlCoelMAVhVNxyKLqG05MS92wiQ9cmiBVjqV+067t3Q4leK
+	kK+tTJc0rYAjLTKtSysBfiXT5wiS/ael5LI999g1JiTEi+tFlN2EM8vYKFjwACMW
+X-Gm-Gg: ASbGncuXvLnTx1xdG9L4OFGwN5ZuZSMepk2pPqr+bOpXYxWgBGf+LSYftp8JbMbMRmr
+	MbVdTtyo9XA6Qxly4Xl0cYobG0Zd64pOdUjY1DlT91ouAnJIxgb9/1tbnL7n3E5/yizscKvl9fl
+	nGCFYNzIFRzF7fY33tfoF1eSG5Z70SpowwxY/gj+ieK6TKeFV4xqUJJK6agmag8K8r4+/MFXuGP
+	QdobVcq3vIBKsp/31WdtCuetoC3OTzWaxhj+Nbk7odx1qn5Z71j+mFh73qcW5wSXw2TooX9gxT7
+	7ydrNDG3IbHEaPuQJlOPPms9BbdSr/EsjAZ9Cl11D/gqCU/dAf8155BT5TddFmp5jYXNe9EyEDK
+	tUV7+UOnZhSUsnIS+E+cN7MqufVGbRibs7HRIaVeRFvCvuOm/2ckjM/B0xrYL
+X-Google-Smtp-Source: AGHT+IERwROyeWcgOK7442R8i6RM5E7q437U50tzVR+bSm5Hmo+5amfBBP85eHiYWOmbdM8FP//u6w==
+X-Received: by 2002:a5d:5f8a:0:b0:3a4:f439:e715 with SMTP id ffacd0b85a97d-3b1fd74c424mr2416459f8f.9.1751464406224;
+        Wed, 02 Jul 2025 06:53:26 -0700 (PDT)
+Received: from Tunnel (2a01cb089436c000d0fa69457aba7254.ipv6.abo.wanadoo.fr. [2a01:cb08:9436:c000:d0fa:6945:7aba:7254])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-453b3542838sm33703985e9.1.2025.07.02.06.53.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jul 2025 06:53:25 -0700 (PDT)
+Date: Wed, 2 Jul 2025 15:53:23 +0200
+From: Paul Chaignon <paul.chaignon@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH bpf-next 1/2] selftests/bpf: Negative test case for
+ ref_obj_id in args
+Message-ID: <3ba78e6cda47ccafd6ea70dadbc718d020154664.1751463262.git.paul.chaignon@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 00/12] unwind_deferred: Implement sframe handling
-To: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        x86@kernel.org, Indu Bhagat <indu.bhagat@oracle.com>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "Jose E. Marchesi" <jemarch@gnu.org>,
-        Beau Belgrave <beaub@linux.microsoft.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>
-References: <20250701184939.026626626@goodmis.org>
-Content-Language: en-US
-From: Jens Remus <jremus@linux.ibm.com>
-Organization: IBM Deutschland Research & Development GmbH
-In-Reply-To: <20250701184939.026626626@goodmis.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: j3dTyobZwAYIbBORySSJbo7qt5Esgp4q
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzAyMDEwMCBTYWx0ZWRfX6AqeVuxaFy6R L7a8jktW83LvqDP1UBtNsl/c9tmm4ywmoxtAlag09SVF5pmKLG+qU2mwlWZfkuxUDA4phdzqWv1 rJv2JBhXSryQOSPVKpQwheusTbYWUFDH1UOGdS0jEP4Gb8zzSU2wmog5bUYnOyd9YKM/4uByhim
- oN9cQRKfsE85f9fo3quLNyTBupVI8C6fgNkCoXOWRh/4G6u2GULg/XiXxnYGEkS/y/hjX4IVxFE Pm72SvUfXi5M+BlmcN6Sy9/3bcl26hdQkLDu0WW/HdNDU08MSZIKLCSS8VKN+95P9fGjs2UvKWp PQXQKJKjqSyLUWt6kG6rSCe3NiwtfVpGU8n6j6rWpm6Dghn4A85S9mH01PdznUhdY8mO/2T6eQp
- DmpgOI44g4xcFd25TVk1CiT+zZg0FkHQsRzlUGDK2xUlxD1fA5bO1wNAgx940zL3Ep0wz7KP
-X-Proofpoint-GUID: j3dTyobZwAYIbBORySSJbo7qt5Esgp4q
-X-Authority-Analysis: v=2.4 cv=GrRC+l1C c=1 sm=1 tr=0 ts=68652cb8 cx=c_pps a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17 a=IkcTkHD0fZMA:10 a=Wb1JkmetP80A:10 a=VwQbUJbxAAAA:8 a=meVymXHHAAAA:8 a=VnNF1IyMAAAA:8 a=GcyzOjIWAAAA:8
- a=gqIrRWIkWWbV9rJkhgAA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=-476f2AVtAYA:10 a=2JgSa4NbpEOStq-L5dxp:22 a=hQL3dl6oAZ8NdCsdz28n:22
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
- definitions=2025-07-02_01,2025-06-27_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 adultscore=0 mlxlogscore=999 mlxscore=0 impostorscore=0
- phishscore=0 spamscore=0 suspectscore=0 bulkscore=0 malwarescore=0
- lowpriorityscore=0 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
- definitions=main-2507020100
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hello Steve!
+This patch adds a test case, as shown below, for the verifier error
+"more than one arg with ref_obj_id".
 
-On 01.07.2025 20:49, Steven Rostedt wrote:
-> This code is based on top of:
-> 
->  https://lore.kernel.org/linux-trace-kernel/20250701005321.942306427@goodmis.org/
->  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git unwind/core
-> 
-> This is the implementation of parsing the SFrame section in an ELF file.
+    0: (b7) r2 = 20
+    1: (b7) r3 = 0
+    2: (18) r1 = 0xffff92cee3cbc600
+    4: (85) call bpf_ringbuf_reserve#131
+    5: (55) if r0 == 0x0 goto pc+3
+    6: (bf) r1 = r0
+    7: (bf) r2 = r0
+    8: (85) call bpf_tcp_raw_gen_syncookie_ipv4#204
+    9: (95) exit
 
-...
+This error is currently incorrectly reported as a verifier bug, with a
+warning. The next patch in this series will address that.
 
-> The code for this patch series can be found here:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git unwind/sframe
+Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
+---
+ tools/testing/selftests/bpf/verifier/calls.c | 24 ++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-Wouldn't it make sense to include your related perf (tools) series [1]
-in that branch to ease testing?  Provided you also include the minor
-fix [2] to make perf tools work. :-)
-
-Additionally it would make sense to include the patches from Josh that
-add SFrame information to the vDSO on x86 [3].
-
-[1]: [PATCH v12 00/11] perf: Support the deferred unwinding infrastructure,
-https://lore.kernel.org/linux-trace-kernel/20250701180410.755491417@goodmis.org/
-
-[2]: https://lore.kernel.org/linux-trace-kernel/51903e66-56bc-42a4-b80c-9c3223e2a48a@linux.ibm.com/
-
-[3]: [PATCH v6 0/6] x86/vdso: VDSO updates and fixes for sframes,
-https://lore.kernel.org/all/20250425023750.669174660@goodmis.org/
-
-> Changes since v6: https://lore.kernel.org/linux-trace-kernel/20250617225009.233007152@goodmis.org/
-
-> - Moved the addition of the prctl(), that allows libraries to add the elf
->   sections to the kernel, to the last patch and labeled it as "DO NOT APPLY".
->   This should instead be a proper system call and work to make it robust and
->   flexible still needs to be done. The prctl() patch is added for debugging
->   purposes only.
-
-Does PR_SET_VMA [4] create a precedent case for the SFrame prctls?
-
-[4]: https://man7.org/linux/man-pages/man2/pr_set_vma.2const.html
-
-Thanks and regards,
-Jens
+diff --git a/tools/testing/selftests/bpf/verifier/calls.c b/tools/testing/selftests/bpf/verifier/calls.c
+index 18596ae0b0c1..f3492efc8834 100644
+--- a/tools/testing/selftests/bpf/verifier/calls.c
++++ b/tools/testing/selftests/bpf/verifier/calls.c
+@@ -2409,3 +2409,27 @@
+ 	.errstr_unpriv = "",
+ 	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
+ },
++{
++	"calls: several args with ref_obj_id",
++	.insns = {
++	/* Reserve at least sizeof(struct iphdr) bytes in the ring buffer.
++	 * With a smaller size, the verifier would reject the call to
++	 * bpf_tcp_raw_gen_syncookie_ipv4 before we can reach the
++	 * ref_obj_id error.
++	 */
++	BPF_MOV64_IMM(BPF_REG_2, 20),
++	BPF_MOV64_IMM(BPF_REG_3, 0),
++	BPF_LD_MAP_FD(BPF_REG_1, 0),
++	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_ringbuf_reserve),
++	/* if r0 == 0 goto <exit> */
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 3),
++	BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_0),
++	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_tcp_raw_gen_syncookie_ipv4),
++	BPF_EXIT_INSN(),
++	},
++	.fixup_map_ringbuf = { 2 },
++	.result = REJECT,
++	.errstr = "more than one arg with ref_obj_id",
++	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
++},
 -- 
-Jens Remus
-Linux on Z Development (D3303)
-+49-7031-16-1128 Office
-jremus@de.ibm.com
-
-IBM
-
-IBM Deutschland Research & Development GmbH; Vorsitzender des Aufsichtsrats: Wolfgang Wendt; Geschäftsführung: David Faller; Sitz der Gesellschaft: Böblingen; Registergericht: Amtsgericht Stuttgart, HRB 243294
-IBM Data Privacy Statement: https://www.ibm.com/privacy/
+2.43.0
 
 
