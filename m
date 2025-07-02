@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-62199-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62200-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1CF0AF6581
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 00:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E3FD1AF6583
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 00:42:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37EA1172E42
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 22:42:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3985176A57
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 22:42:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0DB52566DD;
-	Wed,  2 Jul 2025 22:42:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93ED624C06A;
+	Wed,  2 Jul 2025 22:42:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SsiZ37XM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TaNWKfm2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E877B1EFFB2
-	for <bpf@vger.kernel.org>; Wed,  2 Jul 2025 22:42:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 821262522A1
+	for <bpf@vger.kernel.org>; Wed,  2 Jul 2025 22:42:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751496139; cv=none; b=cyZkq5vLZ4LFhxQasNBWOC+rTs7BqG1dROx0xdHhIhX/HoWDEE9mv7h+VcxaeIjqw/k8oNjYWc2BzLMW2THE6sM9OjbxDZOvxv8hBO8QRBekwJcyGlN7+KGqsgBfztB5g86a7QMvmFPTwu6smNQoQMyVFOr3TkIeW86CyvmptzY=
+	t=1751496140; cv=none; b=eAJsI1GqphRwceWCuPn8nBt2J5krC2vPVqJjjtOQyBcZlgCqiqSx7nnn5e1M4MSLE+WV0BjlKUZB9D8GrtNNXFzCAK1eyk/5LWzo+Yxm7ZiDaVrN8Vu5gnThyciQsXCu3nkIjOpjPbPXDpULb71VtIX/a/Olutym2YQCwSorTdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751496139; c=relaxed/simple;
-	bh=sCDk/2IUmXhw6JTxpUKyumEcEOpWzBxA33YmjANIQiA=;
+	s=arc-20240116; t=1751496140; c=relaxed/simple;
+	bh=rfrI/GZzQPOVlt6ywJBHUn5d0kuwUSm43+EGqTf6Z2s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZzAW+0pZBl2g+hqtnRz/xuIRUje7Rm8gQDqBDU0l8UJxDNkPia8wUVKNqAbVeAM5vEQr/7XJz+rr0Su6oRlO8I6/VYZRzHR+R8ZUnphY/OrFIHIo7zjPpRuqgXvz9VU+raGS6CVPbf2rFWNm+IL27MkWyC76MGTbBBntgTChkrs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SsiZ37XM; arc=none smtp.client-ip=209.85.219.175
+	 MIME-Version; b=YlEi/MEZLu1gR6b9pS73I56qebJZROksN9fhCaVif4ozV+TSAVc50kGlytz3zVrFUvPgCGWW4JxHf4TkYFNgM5rzy9uWxsayCprR6O7efPn09KDNhbt0++GaHiP3ir8LzWIrv6ewaqDDVQtoCR7QSD3FHK7ObJr+Q3ZUUe5QlQM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TaNWKfm2; arc=none smtp.client-ip=209.85.219.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-e75668006b9so4913003276.3
-        for <bpf@vger.kernel.org>; Wed, 02 Jul 2025 15:42:17 -0700 (PDT)
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-e85e06a7f63so4311432276.1
+        for <bpf@vger.kernel.org>; Wed, 02 Jul 2025 15:42:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1751496137; x=1752100937; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wXnaMqOI/icLjh8IXVFEa0JDjgr+IXaoTGrHpYJODI0=;
-        b=SsiZ37XM8yUpxy34ktNNoqC7u1Wwi+m9/Nl/E6Mzh/HWwGkzgYH4Rw39321ETstrbN
-         c5KMvhWxBQGtAzAy0UiIm22uUK1qEhSzJDILI7tLHUY5U8IgyQ4lQghscategrNqWnEb
-         0W/IFZlyaqzpqY55NoOMMMeFbz3UPhsacI7rQ4UR22FpqnAwflr0L2mDenRpIm1RyWMW
-         TN7N514/JHk82VT8zOS2ib5TcVE/eD2q2xhX+cPwvb/rrroQzz1QAreAYeG9Y81TCnx+
-         qt+cQPbepX6aWkeAHpwQ87pyyF5EeJnkLJYapxmqTpD1tP4JuOUL9yIub+F/d5Qp/81H
-         6T7g==
+        bh=GkUXTfsXfjiXyE7smshxJhZmsgbhG01Grik48hop/44=;
+        b=TaNWKfm2mDBoJ00gFlQLvV2aHgCjulSRk2GhTtT6Wrz3OXLMiFYAIXsXZXXTWQkL07
+         sgaTy+3l81mOOkrgQ8vYyMknbno8vZh+lUpfQTGATqJAnzFF8cg5b+mgI0eL8Rh/uz2b
+         IcbOWGGLeL9wTJ+qAcxS2bsZjYcFA5zrX3v5HzsiT4tqBDhhjtmdAlCiqqJIfLSNibCz
+         pF+XQQS2+FGiis3YZXNNWKLHfdxZr7u/Sxng4jd2ecBQ/7Ael12/cpyb69nJ63K8ubcB
+         rlv8HNUGRvqEI2Kkp7T1EW57QzeVRAzu6foxN777+N8BUwlJJYKF9OnYvTlSj1JtmAO7
+         ViOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1751496137; x=1752100937;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wXnaMqOI/icLjh8IXVFEa0JDjgr+IXaoTGrHpYJODI0=;
-        b=nKQhe/aNDtQx/C0hmw8oU8AkwQDrbI9GDjcWJLwlTpzdn5+LmokgdM5vtFywX5xPhl
-         QKs3b9OnmKI1GsipV2cW2/uBRmNV7q+KFGrlnuLBCFrjzs4S1ZUAgi2LaHI8oEExLdl6
-         4i061K1q3H8AWdSBovNXdBfy0eQd5VUhl3zpK4GuYZhpd+azbmpDYm1mKZBAYQiBERNX
-         A/WMWHZiaeEwg+qt1cPk/VU5X+UommubeUie8HIKhPkBtNKddK6B+Thndh/hj75mnkus
-         UkYfUIXcHCEhzzKPGlczey1RfBHOsILlEhZmcQPiom5kd9rsLO6Gv4aoPfO4nnb6qC/P
-         DOAA==
-X-Gm-Message-State: AOJu0YzamgMp2lHLk6/dvLad02PPG0MmqzMYDw8b5WYWvJyMd2L6JXkb
-	RmauGfranVbWRYbxtDj1RF/iggP7CsuDCmQ2w0Z9SVzrdqzy3Za/AJiCNI2my8Wh
-X-Gm-Gg: ASbGnctxJQWmYxVzQazXWoJA8UTelKq6MA9/RTrRuWCBywUd0WUigEsI+3kuEpSKugx
-	aytW3VO81cnyaEv9kglfgnr0vebA7gCWeHyjQZWLgvt5Rtvbi7WF6rzJ9p3/JCf3pw5becRnLdl
-	WzJ9iMMfjwR6qwRkht5pNS5cfqznhfZl6yj8lecn0tmHO91RpufpyUngaLXsyvWuFH1TvplfSZw
-	QKSPcP5eIkhXPWMN7L4qP/30AVbsX7R551bun9USsyvvN3B/3IrzvWCxnr9gzM6EH+raZi7CosC
-	9OcK1zxbacBHgJmeDvrYFPOZpAxMSe9jMryubKJCxOrf2eNP9CtVsQ==
-X-Google-Smtp-Source: AGHT+IHQ6E2tbeVBNf+qKeMHI1L5JWswVdOXojGUFzrtcnXHhTBPAUP0ip5lLVOFwgATGQxzsPU2sQ==
-X-Received: by 2002:a05:690c:4905:b0:710:edf9:d93b with SMTP id 00721157ae682-7164d2c9984mr80199377b3.11.1751496136502;
-        Wed, 02 Jul 2025 15:42:16 -0700 (PDT)
-Received: from localhost ([2a03:2880:25ff:43::])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-7164de8d62fsm4923167b3.101.2025.07.02.15.42.16
+        bh=GkUXTfsXfjiXyE7smshxJhZmsgbhG01Grik48hop/44=;
+        b=GEmKxw1jbzsz9ouySqfueEO2qW5q5Mwmc5WWLeBwbkJg8HkBovY4+K6sxuETJsbxhW
+         BPcC0DyeMGQxp6PJDRLX+EOT5K4AEiwPDxC5zANljbOW9/qvT/Q9aBrgZzwGNtOgAsAv
+         /F0O3k3aeuIuKbe6Hl1hmBWb1i0R+65D/+axA56vSPVAc3YXXIq1Xs6BXVHg/4Lblp+X
+         XDw/VO8gQbNt1EXdp1si54OOFLIpQM8vt53l+ryO4FpiMxogecwXDuoWrAIV9N57TiQ1
+         GPane73J/62nnSG8mZrvDWayVV4EA4+WEgbIUXnZ24+SsvrAdBFNEmM/OqTlBbgCkTh7
+         q3yg==
+X-Gm-Message-State: AOJu0YzODKhaPJwBLMk9XFjZN0oGfDfoF3rsOYk3s6UcIUylBzhDrn6J
+	gQDjRqStTodVgBpFWMydADpPE0a0cNzgDf92aRCXwe+0HkvxbLFNOQRsDQenaqhN
+X-Gm-Gg: ASbGncvO56fDSFUxR2htdBYft1mGnVim44kcsOPgwTRxXSKE1tExM68BcwhsbOPwp8K
+	NH3H35yJH8rTDKejUYrZ825MIJNYT4eUQSfR23MvI5LlvRvkVooaAtLgBBLvaSJr+TokZ0p0R9q
+	1XKjv7CFIoEwOKnm2rVXZgVsGCAAN5vCDRqRvCJWwUlsrPyUKhn/EKruivCp661F8/Od9xeqFHe
+	tdBsTjeLq9fs49HD2+hhg0RESVhMbHoIx5xnZDSmh6tIr4nXuyFJTDeIPDYILViUb2xghGWMULW
+	GKISqGbGZaoZv1ZHyIBtbbU3V4QiAyXJoZkFyS2bsIUtC2ZI6PcThw==
+X-Google-Smtp-Source: AGHT+IFz0Hncp/egYWN7ZC8L5UIpD7dYieMAwBdsxUG08GR3Yt49cJJNKWbgRTqpBWBGRRrMD68ziw==
+X-Received: by 2002:a05:690c:3704:b0:716:4da5:a01c with SMTP id 00721157ae682-71658ff8fe7mr25303657b3.11.1751496137391;
+        Wed, 02 Jul 2025 15:42:17 -0700 (PDT)
+Received: from localhost ([2a03:2880:25ff:5a::])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-71515bf1659sm26620747b3.18.2025.07.02.15.42.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jul 2025 15:42:16 -0700 (PDT)
+        Wed, 02 Jul 2025 15:42:17 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -79,10 +79,11 @@ Cc: daniel@iogearbox.net,
 	martin.lau@linux.dev,
 	kernel-team@fb.com,
 	yonghong.song@linux.dev,
-	eddyz87@gmail.com
-Subject: [PATCH bpf-next v1 1/8] bpf: make makr_btf_ld_reg return error for unexpected reg types
-Date: Wed,  2 Jul 2025 15:42:02 -0700
-Message-ID: <20250702224209.3300396-2-eddyz87@gmail.com>
+	eddyz87@gmail.com,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Subject: [PATCH bpf-next v1 2/8] bpf: rdonly_untrusted_mem for btf id walk pointer leafs
+Date: Wed,  2 Jul 2025 15:42:03 -0700
+Message-ID: <20250702224209.3300396-3-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250702224209.3300396-1-eddyz87@gmail.com>
 References: <20250702224209.3300396-1-eddyz87@gmail.com>
@@ -94,122 +95,92 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Non-functional change:
-mark_btf_ld_reg() expects 'reg_type' parameter to be either
-SCALAR_VALUE or PTR_TO_BTF_ID. Next commit expands this set, so update
-this function to fail if unexpected type is passed. Also update
-callers to propagate the error.
+When processing a load from a PTR_TO_BTF_ID, the verifier calculates
+the type of the loaded structure field based on the load offset.
+For example, given the following types:
 
+  struct foo {
+    struct foo *a;
+    int *b;
+  } *p;
+
+The verifier would calculate the type of `p->a` as a pointer to
+`struct foo`. However, the type of `p->b` is currently calculated as a
+SCALAR_VALUE.
+
+This commit updates the logic for processing PTR_TO_BTF_ID to instead
+calculate the type of p->b as PTR_TO_MEM|MEM_RDONLY|PTR_UNTRUSTED.
+This change allows further dereferencing of such pointers (using probe
+memory instructions).
+
+Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- kernel/bpf/verifier.c | 59 ++++++++++++++++++++++++++++---------------
- 1 file changed, 39 insertions(+), 20 deletions(-)
+ kernel/bpf/btf.c                                     | 6 ++++++
+ kernel/bpf/verifier.c                                | 5 +++++
+ tools/testing/selftests/bpf/prog_tests/linked_list.c | 2 +-
+ 3 files changed, 12 insertions(+), 1 deletion(-)
 
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 05fd64a371af..b3c8a95d38fb 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -6915,6 +6915,7 @@ enum bpf_struct_walk_result {
+ 	/* < 0 error */
+ 	WALK_SCALAR = 0,
+ 	WALK_PTR,
++	WALK_PTR_UNTRUSTED,
+ 	WALK_STRUCT,
+ };
+ 
+@@ -7156,6 +7157,8 @@ static int btf_struct_walk(struct bpf_verifier_log *log, const struct btf *btf,
+ 					*field_name = mname;
+ 				return WALK_PTR;
+ 			}
++
++			return WALK_PTR_UNTRUSTED;
+ 		}
+ 
+ 		/* Allow more flexible access within an int as long as
+@@ -7228,6 +7231,9 @@ int btf_struct_access(struct bpf_verifier_log *log,
+ 			*next_btf_id = id;
+ 			*flag = tmp_flag;
+ 			return PTR_TO_BTF_ID;
++		case WALK_PTR_UNTRUSTED:
++			*flag = MEM_RDONLY | PTR_UNTRUSTED;
++			return PTR_TO_MEM;
+ 		case WALK_SCALAR:
+ 			return SCALAR_VALUE;
+ 		case WALK_STRUCT:
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 52e36fd23f40..b6d26e8bd767 100644
+index b6d26e8bd767..cd2344e50db8 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -2795,22 +2795,28 @@ static void mark_reg_not_init(struct bpf_verifier_env *env,
- 	__mark_reg_not_init(env, regs + regno);
- }
- 
--static void mark_btf_ld_reg(struct bpf_verifier_env *env,
--			    struct bpf_reg_state *regs, u32 regno,
--			    enum bpf_reg_type reg_type,
--			    struct btf *btf, u32 btf_id,
--			    enum bpf_type_flag flag)
-+static int mark_btf_ld_reg(struct bpf_verifier_env *env,
-+			   struct bpf_reg_state *regs, u32 regno,
-+			   enum bpf_reg_type reg_type,
-+			   struct btf *btf, u32 btf_id,
-+			   enum bpf_type_flag flag)
- {
--	if (reg_type == SCALAR_VALUE) {
-+	switch (reg_type) {
-+	case SCALAR_VALUE:
- 		mark_reg_unknown(env, regs, regno);
--		return;
-+		return 0;
-+	case PTR_TO_BTF_ID:
+@@ -2813,6 +2813,11 @@ static int mark_btf_ld_reg(struct bpf_verifier_env *env,
+ 		if (type_may_be_null(flag))
+ 			regs[regno].id = ++env->id_gen;
+ 		return 0;
++	case PTR_TO_MEM:
 +		mark_reg_known_zero(env, regs, regno);
-+		regs[regno].type = PTR_TO_BTF_ID | flag;
-+		regs[regno].btf = btf;
-+		regs[regno].btf_id = btf_id;
-+		if (type_may_be_null(flag))
-+			regs[regno].id = ++env->id_gen;
++		regs[regno].type = PTR_TO_MEM | flag;
++		regs[regno].mem_size = 0;
 +		return 0;
-+	default:
-+		verifier_bug(env, "unexpected reg_type %d in %s\n", reg_type, __func__);
-+		return -EFAULT;
- 	}
--	mark_reg_known_zero(env, regs, regno);
--	regs[regno].type = PTR_TO_BTF_ID | flag;
--	regs[regno].btf = btf;
--	regs[regno].btf_id = btf_id;
--	if (type_may_be_null(flag))
--		regs[regno].id = ++env->id_gen;
- }
- 
- #define DEF_NOT_SUBREG	(0)
-@@ -5964,6 +5970,7 @@ static int check_map_kptr_access(struct bpf_verifier_env *env, u32 regno,
- 	struct bpf_insn *insn = &env->prog->insnsi[insn_idx];
- 	int class = BPF_CLASS(insn->code);
- 	struct bpf_reg_state *val_reg;
-+	int ret;
- 
- 	/* Things we already checked for in check_map_access and caller:
- 	 *  - Reject cases where variable offset may touch kptr
-@@ -5997,8 +6004,11 @@ static int check_map_kptr_access(struct bpf_verifier_env *env, u32 regno,
- 		/* We can simply mark the value_regno receiving the pointer
- 		 * value from map as PTR_TO_BTF_ID, with the correct type.
- 		 */
--		mark_btf_ld_reg(env, cur_regs(env), value_regno, PTR_TO_BTF_ID, kptr_field->kptr.btf,
--				kptr_field->kptr.btf_id, btf_ld_kptr_type(env, kptr_field));
-+		ret = mark_btf_ld_reg(env, cur_regs(env), value_regno, PTR_TO_BTF_ID,
-+				      kptr_field->kptr.btf, kptr_field->kptr.btf_id,
-+				      btf_ld_kptr_type(env, kptr_field));
-+		if (ret < 0)
-+			return ret;
- 	} else if (class == BPF_STX) {
- 		val_reg = reg_state(env, value_regno);
- 		if (!register_is_null(val_reg) &&
-@@ -7297,8 +7307,11 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
- 		clear_trusted_flags(&flag);
- 	}
- 
--	if (atype == BPF_READ && value_regno >= 0)
--		mark_btf_ld_reg(env, regs, value_regno, ret, reg->btf, btf_id, flag);
-+	if (atype == BPF_READ && value_regno >= 0) {
-+		ret = mark_btf_ld_reg(env, regs, value_regno, ret, reg->btf, btf_id, flag);
-+		if (ret < 0)
-+			return ret;
-+	}
- 
- 	return 0;
- }
-@@ -7352,13 +7365,19 @@ static int check_ptr_to_map_access(struct bpf_verifier_env *env,
- 
- 	/* Simulate access to a PTR_TO_BTF_ID */
- 	memset(&map_reg, 0, sizeof(map_reg));
--	mark_btf_ld_reg(env, &map_reg, 0, PTR_TO_BTF_ID, btf_vmlinux, *map->ops->map_btf_id, 0);
-+	ret = mark_btf_ld_reg(env, &map_reg, 0, PTR_TO_BTF_ID,
-+			      btf_vmlinux, *map->ops->map_btf_id, 0);
-+	if (ret < 0)
-+		return ret;
- 	ret = btf_struct_access(&env->log, &map_reg, off, size, atype, &btf_id, &flag, NULL);
- 	if (ret < 0)
- 		return ret;
- 
--	if (value_regno >= 0)
--		mark_btf_ld_reg(env, regs, value_regno, ret, btf_vmlinux, btf_id, flag);
-+	if (value_regno >= 0) {
-+		ret = mark_btf_ld_reg(env, regs, value_regno, ret, btf_vmlinux, btf_id, flag);
-+		if (ret < 0)
-+			return ret;
-+	}
- 
- 	return 0;
- }
+ 	default:
+ 		verifier_bug(env, "unexpected reg_type %d in %s\n", reg_type, __func__);
+ 		return -EFAULT;
+diff --git a/tools/testing/selftests/bpf/prog_tests/linked_list.c b/tools/testing/selftests/bpf/prog_tests/linked_list.c
+index 5266c7022863..14c5a7ef0e87 100644
+--- a/tools/testing/selftests/bpf/prog_tests/linked_list.c
++++ b/tools/testing/selftests/bpf/prog_tests/linked_list.c
+@@ -72,7 +72,7 @@ static struct {
+ 	{ "new_null_ret", "R0 invalid mem access 'ptr_or_null_'" },
+ 	{ "obj_new_acq", "Unreleased reference id=" },
+ 	{ "use_after_drop", "invalid mem access 'scalar'" },
+-	{ "ptr_walk_scalar", "type=scalar expected=percpu_ptr_" },
++	{ "ptr_walk_scalar", "type=rdonly_untrusted_mem expected=percpu_ptr_" },
+ 	{ "direct_read_lock", "direct access to bpf_spin_lock is disallowed" },
+ 	{ "direct_write_lock", "direct access to bpf_spin_lock is disallowed" },
+ 	{ "direct_read_head", "direct access to bpf_list_head is disallowed" },
 -- 
 2.47.1
 
