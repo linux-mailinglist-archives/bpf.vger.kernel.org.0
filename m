@@ -1,87 +1,88 @@
-Return-Path: <bpf+bounces-62107-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62108-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 625C5AF146B
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 13:47:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97361AF156C
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 14:21:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF9A63B4274
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 11:46:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B35EC4A8204
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 12:19:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CE3B2676E2;
-	Wed,  2 Jul 2025 11:46:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB84526E17A;
+	Wed,  2 Jul 2025 12:17:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="SyqiSTPh"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="P4epZKvA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EBC31E520C
-	for <bpf@vger.kernel.org>; Wed,  2 Jul 2025 11:46:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D52726F46C
+	for <bpf@vger.kernel.org>; Wed,  2 Jul 2025 12:17:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751456813; cv=none; b=DXz8NRrhnO73xs4M+rIh1QBn2TdAf+86LA44zl0bduJ6hJhkhw6QWxYRQsgJbRot7Wig5UA21u+oYkbl1FR+9vpv9iPmsHgNL0B1my+vpUf9qbgD5+NVe19oTOzFedzyNOauGoGlNZD88on+fsTfKyXwMle+3ok2fd6IKkCq1D0=
+	t=1751458640; cv=none; b=TE6sPzJH6oyLTIAwqLBBT5UDZoN/z1YhwsCAWspLXMxOnAEejjcFIod369yJPqcT9pOShrXivgqkMe5ltb7dN9Wn+cJ+4dHHBGbdvaB1lExwimost3+SVZRgsCzgiak2Fkl+hXTKZuI2fgZlFOrbVN6w4uThJ8mr374Ypk9GW9g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751456813; c=relaxed/simple;
-	bh=B+ckTwhERKNBb1gQw1U8u0g+Bc8f/814LWyhbI7jr8Y=;
+	s=arc-20240116; t=1751458640; c=relaxed/simple;
+	bh=uzbmKudiCVqbCWHjsvWpIONLcOqXoBM4sksfA7jU3N4=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ICU7C6dpkikmZJVdclWtBOt+33ERkHKy3JapvFcqoD/gHwGa6nQcjBGt1pW2UJFTLTWZW/YMvawV3jUdLo+rXpieKw93R+NM7YlfYDYulqIJL1fNZI2G1C3N+jMm9Fx3kuuitPTIYhhxMYG13nvdFftJjYJ2fUobE3xXX2CYoD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=SyqiSTPh; arc=none smtp.client-ip=209.85.218.41
+	 MIME-Version:Content-Type; b=OCl/Dx+3TdpAqPmrd7cqmT2MshHBvCA7MKi81y214CRQKdPnLA/dKrYtO46lrPmptXHK6HRckU3aQ0f3SAEuETG1twNeuIyRacHGCV/dqDn61wngPh+9auTU20xivcV8CABS4JzAoOHOOODB2pdFSlmpYGFsTQ9dsq3jkGzqiQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=P4epZKvA; arc=none smtp.client-ip=209.85.208.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-ae0b6532345so1479104066b.1
-        for <bpf@vger.kernel.org>; Wed, 02 Jul 2025 04:46:51 -0700 (PDT)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-60c4f796446so11407487a12.1
+        for <bpf@vger.kernel.org>; Wed, 02 Jul 2025 05:17:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1751456810; x=1752061610; darn=vger.kernel.org;
+        d=cloudflare.com; s=google09082023; t=1751458636; x=1752063436; darn=vger.kernel.org;
         h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
          :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=B+ckTwhERKNBb1gQw1U8u0g+Bc8f/814LWyhbI7jr8Y=;
-        b=SyqiSTPhhIys5zaHLq6k61MH5pjvQFvzQwjMnE6mm2ds65agR+c6FkHWDCYk7JH3aC
-         MYh4wzsRIRShF3PVpdNYuSITR3R40cW5u9D1YDtQ7fIvmQREHbqrS1whhKij2DQYNK50
-         gD1lFUVz51D5Gk+mCT9GvUuExmDlO9A+9AflC6PS9VNmj13VYxzi5gcDhXZJ6Sb4n2gD
-         8pjzhIvSMpvLUQDd2C8rpZTLmmNIWFf7khQgpTqpd0dewsqvPn/lwl9Pk8AatBGJU9k8
-         6tmCDhNBv/GojB7ojr7f7b+3D0N4S7Y3ISPIeFxNZhxlF5u4oEmrJPLGJGAlaMo7hvYF
-         0NXA==
+        bh=uzbmKudiCVqbCWHjsvWpIONLcOqXoBM4sksfA7jU3N4=;
+        b=P4epZKvA0luTXkjDRr1G4JmggNRPZfOa+42wwyhAgrTIxm2CBjn+vQPOxjT2uFTn7e
+         1HoSwvatZQaWHvH2NrAg9GbeX1fjPqQdTTqrAYDDJlx/p3hAjT3VBsRBxb0rST0yet5t
+         /XOBZGoGtwgOT3Ox6ikhNvVzHGh4y6n7Z77Bu5AO1JgHX5yqWji4qOi6DXv8YQJHZDPm
+         4M/OgvAIzaXX2LwMydQSu9qeZbDWiXg9vaH8yLh4ty1fy/opeTm/+lIyghNi4qU/w+LZ
+         lBhjFQRwVtKhFZa9jqIUEGf9dLMPzBgUGU9Erffhculxj/I04RROb61NSd7I6hNRHsge
+         +kkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751456810; x=1752061610;
+        d=1e100.net; s=20230601; t=1751458636; x=1752063436;
         h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=B+ckTwhERKNBb1gQw1U8u0g+Bc8f/814LWyhbI7jr8Y=;
-        b=dw8iOaKsKlO5qYevuHmyLHFJ5VtkZ4VM7Zy4enxLF3n+ZCSFxq6PVVMD5ieQUUlCta
-         h2E8zHnOoh73YNhTERcO+hKZohI25/PLkYc3WQSDIADIkUtRrU0bxp7L9rZ5KBzLAeA6
-         i/HK9DttLuDRYPHGNQ4FkWUKy/6RwQHhSH2ceGG7DyEVVlYt8f0A4mP0gw9yPs4VQG8n
-         iwE3XHujePbXYURW9lc0/EXnK8NYWEvHp0ddHoLIWtcdK4V6FGaCENQxS3VYPswIWsuk
-         3yiIzUg+ckUJuufyuBgL/5BWT4Mv9E0/jF2gMidomdTinvwbhyYZ++4mkEgHlHxKrX0F
-         WwwA==
-X-Forwarded-Encrypted: i=1; AJvYcCWtzV6EkibKjH3dBMist+rkRLwgFCHrnENeOtzlLlZH81HLqsxP7UYl2rGbSllnXN5duas=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx+jL7+NwTK8Z2J/vaEVl+GznLvl8ALidOR4QJO2zX1/BZyqmss
-	+T5GWpcvH9cvRz9hIr545Iq7SvGToc1hr8R1Zw4OasNpdu3A9HbJC+jeivYT+l+/bUE=
-X-Gm-Gg: ASbGncuX9RESuXKmqVheLHa1MkbLSYr3pyzMUfNc/5/8WOc8Sq7g2pLZ96Oz9bqMIDV
-	M/epiiCohvzja9pKj3Rgg86RFQRvW9sILQf8kHD4k21B8YMbCA5QZQUK1Q6CT4uZezzw65B7l3n
-	zCvi+UH8CSoZLZyKHtKjhUkjKqnRlW4AhrNaz01rUhsNpwQiDrX93p7My2hx7QdI7uSLy/BFJIo
-	0hMn+luKiJ497IntJ/nMhfkezK+zA5qIbb2ymOSBwmfgOScHc+VMe2TptOP23liCHUOoNK3U7ff
-	nd1dFETEjVKGiybdctCAZh1RDmE6vFPDzOh3dy9vX45CL9i3Awk2aBI=
-X-Google-Smtp-Source: AGHT+IHn9IHAQjBFlntquHq7U7auo8n8gfpvyxwY1QPzU89J2geG4r9cCc7SijhW0jMSezFMElSy9A==
-X-Received: by 2002:a17:906:c14c:b0:ae0:7e95:fb with SMTP id a640c23a62f3a-ae3c3843a2fmr207138766b.5.1751456810074;
-        Wed, 02 Jul 2025 04:46:50 -0700 (PDT)
+        bh=uzbmKudiCVqbCWHjsvWpIONLcOqXoBM4sksfA7jU3N4=;
+        b=fWn0/opTdUP4IsxjmjOuIi6b5C8NdLLP9eS2NU/1dFobFKFTTfFMlihxwh6sxGpIfL
+         fhDAEWrZ21+1jbM+D46KHJryb5hudASz3iR8oIs2mqrJ1zJzjh60FSqlWQfdygqe+qJ0
+         ABnatPf/5Ri2ANLWEwE1G8IkEt0rgRY9SoonooIAMBGMLSQzzxSzVi0ZnieT2J8V1qMT
+         89Kwkj981d9upYNs2egK9U9yZl20wG0QcvyxzfJ9AWjgxpXazD9WoQG00UWG89bi7BC6
+         WCbVnzadn7XyUumVY+4VJm+Bxcb541LW2nNMYdNaXkhbN1LQq3oZ+ktE8guWkDNXos+W
+         9G5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWeji5UpeRSSxXM3mmhwLG3HM80U8sjmlekonUw0Nl9Av9tDXKAjHbgQCkWa6ByKc2M2Nc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwW3ymv3G7yTAKpqFP5aIbayP385T/3vw5ENADo6BfdrA6Pecfg
+	gnscIDXRUM2Rz/puC/wkpJ7r5kbWWQMTz3sXdUymgV0Ux33LLL6NhGKxcQ8H0VNcN5E=
+X-Gm-Gg: ASbGncuD736/UVw/MLdN2ln+hFbZ9WjiVyLIuwjUeyoD5bUExObaie/lncVlLa7wNu+
+	hbgdR2W8OdNyzxZaB50+brfxt1Ei/pc+JY+v1ZGmrMtNw/5m/dH30Sv2/AEVBYyP0YiuVC8IgzF
+	rfSPFboV4G+xT+bOsdBG62ivndlM62W4eI8N22rEfi+NTgosrUzvMu0HTvEO5IXW677zAcPc2vo
+	kEvoqChyVtRmrSHwjlkuCbS3JToCebg+zf4RKpHVDzVrW/RzFpbjUtC5hmm2ULCh9cJ7a5eX6Uq
+	0b4/kXGTV99Sve+/BFjLcwrHRfzjR8oq1YWFqT22SBC0LW1iOriAy0c=
+X-Google-Smtp-Source: AGHT+IE1QJ3AjK7fa64xTgB3aheM3DjGwzgHhV3/DYIftQwwZX3WczE3Ty9UlDMRgc+foEdD2NDunw==
+X-Received: by 2002:a17:907:7fa8:b0:ae3:5e27:8e66 with SMTP id a640c23a62f3a-ae3c2bdcc36mr284553666b.27.1751458635631;
+        Wed, 02 Jul 2025 05:17:15 -0700 (PDT)
 Received: from cloudflare.com ([2a09:bac5:5063:2432::39b:e7])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae35365a02csm1061393766b.70.2025.07.02.04.46.49
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae35365a090sm1075241466b.56.2025.07.02.05.17.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jul 2025 04:46:49 -0700 (PDT)
+        Wed, 02 Jul 2025 05:17:14 -0700 (PDT)
 From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Cong Wang <xiyou.wangcong@gmail.com>
+To: Cong Wang <xiyou.wangcong@gmail.com>, zijianzhang@bytedance.com
 Cc: netdev@vger.kernel.org,  bpf@vger.kernel.org,  john.fastabend@gmail.com,
-  zijianzhang@bytedance.com,  zhoufeng.zf@bytedance.com,  Cong Wang
- <cong.wang@bytedance.com>
-Subject: Re: [Patch bpf-next v4 3/4] skmsg: save some space in struct sk_psock
-In-Reply-To: <20250701011201.235392-4-xiyou.wangcong@gmail.com> (Cong Wang's
-	message of "Mon, 30 Jun 2025 18:12:00 -0700")
+  zhoufeng.zf@bytedance.com,  Amery Hung <amery.hung@bytedance.com>,  Cong
+ Wang <cong.wang@bytedance.com>
+Subject: Re: [Patch bpf-next v4 4/4] tcp_bpf: improve ingress redirection
+ performance with message corking
+In-Reply-To: <20250701011201.235392-5-xiyou.wangcong@gmail.com> (Cong Wang's
+	message of "Mon, 30 Jun 2025 18:12:01 -0700")
 References: <20250701011201.235392-1-xiyou.wangcong@gmail.com>
-	<20250701011201.235392-4-xiyou.wangcong@gmail.com>
-Date: Wed, 02 Jul 2025 13:46:48 +0200
-Message-ID: <87ikkan7br.fsf@cloudflare.com>
+	<20250701011201.235392-5-xiyou.wangcong@gmail.com>
+Date: Wed, 02 Jul 2025 14:17:13 +0200
+Message-ID: <87ecuyn5x2.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -91,23 +92,47 @@ MIME-Version: 1.0
 Content-Type: text/plain
 
 On Mon, Jun 30, 2025 at 06:12 PM -07, Cong Wang wrote:
-> From: Cong Wang <cong.wang@bytedance.com>
+> From: Zijian Zhang <zijianzhang@bytedance.com>
 >
-> This patch aims to save some space in struct sk_psock and prepares for
-> the next patch which will add more fields.
->
-> psock->eval can only have 4 possible values, make it 8-bit is
-> sufficient.
->
-> psock->redir_ingress is just a boolean, using 1 bit is enough.
->
-> Reviewed-by: John Fastabend <john.fastabend@gmail.com>
+> The TCP_BPF ingress redirection path currently lacks the message corking
+> mechanism found in standard TCP. This causes the sender to wake up the
+> receiver for every message, even when messages are small, resulting in
+> reduced throughput compared to regular TCP in certain scenarios.
+
+I'm curious what scenarios are you referring to? Is it send-to-local or
+ingress-to-local? [1]
+
+If the sender is emitting small messages, that's probably intended -
+that is they likely want to get the message across as soon as possible,
+because They must have disabled the Nagle algo (set TCP_NODELAY) to do
+that.
+
+Otherwise, you get small segment merging on the sender side by default.
+And if MTU is a limiting factor, you should also be getting batching
+from GRO.
+
+What I'm getting at is that I don't quite follow why you don't see
+sufficient batching before the sockmap redirect today?
+
+> This change introduces a kernel worker-based intermediate layer to provide
+> automatic message corking for TCP_BPF. While this adds a slight latency
+> overhead, it significantly improves overall throughput by reducing
+> unnecessary wake-ups and reducing the sock lock contention.
+
+"Slight" for a +5% increase in latency is an understatement :-)
+
+IDK about this being always on for every socket. For send-to-local
+[1], sk_msg redirs can be viewed as a form of IPC, where latency
+matters.
+
+I do understand that you're trying to optimize for bulk-transfer
+workloads, but please consider also request-response workloads.
+
+[1] https://github.com/jsitnicki/kubecon-2024-sockmap/blob/main/cheatsheet-sockmap-redirect.png
+
+> Reviewed-by: Amery Hung <amery.hung@bytedance.com>
+> Co-developed-by: Cong Wang <cong.wang@bytedance.com>
 > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> Signed-off-by: Zijian Zhang <zijianzhang@bytedance.com>
 > ---
-
-We could probably tweak sk_psock_map_verd to map (SK_PASS, redir=true,
-ingress=true) in to something like __SK_REDIR_INGRESS in the future, and
-do away with psock->redir_ingress field completely.
-
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
 
