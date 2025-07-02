@@ -1,174 +1,291 @@
-Return-Path: <bpf+bounces-62066-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62069-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04EBCAF0ABF
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 07:32:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC2F9AF0ADD
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 07:48:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BAF8C4464ED
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 05:32:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C67BF7AE6E2
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 05:47:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B6F91E8348;
-	Wed,  2 Jul 2025 05:32:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PbrL4bE6"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7622B1F4C92;
+	Wed,  2 Jul 2025 05:48:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D507F60B8A
-	for <bpf@vger.kernel.org>; Wed,  2 Jul 2025 05:32:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35ED7199FAB;
+	Wed,  2 Jul 2025 05:48:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751434348; cv=none; b=qWfibI9S4BlyWecAoBAf6wt/jOVOkA9xiq8SPTdqsQIBkIz4/rhMs9LMn9J+mAvBCjp5BLvizafrifct/V9jvfEf416X9wJNyl+75d/q0xzVwuo5M2Fkrrn9bPuRCpLA0UzSqPwd1yk2iCQlYsqpDfIKKJ+/zkIjfPhRepkyFSo=
+	t=1751435297; cv=none; b=l0M1fK20M9AtvbPzKIV3uJ9kVMNDK0/DomV/ME8gQEvLXeIZv5AIS0Iay5eF4S0t/oBvAh/j/oagJqymg3ZTmvXjNTxHD1jw/U6/KBjLXmVgFb2nHCDzoiU0CIKGmR8QUYe6wwFJYXLhIhM3DRyR/UuUUmCbr6hLmmrpCpaBfaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751434348; c=relaxed/simple;
-	bh=bNKFqQx5BA4F1gcMkOC05yyFEMhQLatxj+2XyRPztec=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WhVFRUC+jUWHU8FuHJW3GYolTpOTOOlDmUzzfymRM5JDaz/1ZuUKCllultcNGqj4yWPwfOj3c+zq6sdk9R0WueL/3/BBrQ+ZR+9BeDtL2UED8bnURUWlrVAC/tFjVlggUZJAO0GCclz9nn+3ZOXAAsFjTH/326DOiACX24/xo84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PbrL4bE6; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1751434345;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QwDYL2eazjrtz/Jxwq3mONSkZ5R616EwPNg/QCuqgDU=;
-	b=PbrL4bE6T1ESHdbZdzD1BsdGvWYajLGx2cIT0Z4wuc9L7zfoopQNI4KB/6LIZcmpet9XAx
-	lHokNLmdVkez4Ih6SCfw01glgY3MYFqb1xKHBd9itD38Jym7859LlrsKje/bGrV0pfskUp
-	HMzZHzwIA6JUBtGAygYVOAi1VYF55D8=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-138-Nt8la4HEPeKmhdve54PGBg-1; Wed, 02 Jul 2025 01:32:24 -0400
-X-MC-Unique: Nt8la4HEPeKmhdve54PGBg-1
-X-Mimecast-MFC-AGG-ID: Nt8la4HEPeKmhdve54PGBg_1751434343
-Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-6095fc6bc40so3245992a12.1
-        for <bpf@vger.kernel.org>; Tue, 01 Jul 2025 22:32:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751434343; x=1752039143;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QwDYL2eazjrtz/Jxwq3mONSkZ5R616EwPNg/QCuqgDU=;
-        b=MVSfqdD+RjFoj/bCUFDe9ZjBkQfalYjgrYjos2XGlfMjzqmaGulOFyGSoDmbP2bxiR
-         zYuhcww56ml0Z5AyVaWxjqM82374uBif6wNTetXvW8sviS026Nv62jjYzUk9mkfK3rl1
-         diWdWGHoiDgHbm+8vpwCxYpcVBTt17VR7tiUU2/nG/2kf2lpyszaEU3QWOdWqzKO87aB
-         dnLwWXZMxN9PVSFf/ojp/RQ10tH6f98jR+74avTOd53BctKEpLOUJOLIVwLmG7Q/rrgI
-         IOXsfH67mFrmN4AziHCX5FKgs33t71tCfaWEVa063iYSk5XWA783K0SlxNDUP9M06u1l
-         rb/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUZed6TMkXW3UvlBRFlpVt/YzrzxiRV5s/5dGMc8OZYpWVn4bLopRjlmCKeCTOhKr4Ltv8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwsjjIlVTDcgOTvEmCppR279aAsZvDSx8N43ki8lJQ4wY0MSw3e
-	48J9z2KEc23FXaqDC7hJmxWJTDxNl09bE+VpeTPThd6vhCJJt1ToSmgpoxgQ9RxqMjE2yakEpz8
-	XxsNmVs4tFNRPWS6V0BnxZS0XwTivlFXvKOKB06cyLJ7dauTr7gFt
-X-Gm-Gg: ASbGncuOvCYzmGPC/jbLZPZfuR6Fk93XGqgXJx2BzWMqabSW08PRUy3KiLLhfrUf7+G
-	TGAh+BnXaHPwZ+/R1OkcbBfKK1HxcUSZJcDnlv6Hns8OyMcPSzC0oDgLPLjSeKlcmpEJ7Ef2b5w
-	7V+gKVopkI02K9aD/Ay4ctrd+fbTuLPgGMwS0qC6pxLFLoDK9H5VB7mgFsiGFCN+/s3RSuysEnW
-	Lct1dXsKJjoSruWP58VzvYO3E97WzkQ/l2SJ+cJfFgd1riuVOTXZXRTIzv2KvSiDwC2uvHHFsa3
-	CtGoURGGZgGjOgqGqJc5HF76wH4kULu/9YTzgXU/b58J9BswGIxm9nVs
-X-Received: by 2002:a05:6402:b7a:b0:608:f399:d73b with SMTP id 4fb4d7f45d1cf-60e52ceab4fmr827411a12.15.1751434343295;
-        Tue, 01 Jul 2025 22:32:23 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEmpn8ScV+Ib7lvO+v0YduI5T6VWOi/DXSafgr5XZrw0UsMz4RzmrI/bDQSeIDcoFz4FC0uow==
-X-Received: by 2002:a05:6402:b7a:b0:608:f399:d73b with SMTP id 4fb4d7f45d1cf-60e52ceab4fmr827388a12.15.1751434342852;
-        Tue, 01 Jul 2025 22:32:22 -0700 (PDT)
-Received: from [192.168.0.102] (185-219-167-205-static.vivo.cz. [185.219.167.205])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-60c831d8be2sm8530890a12.65.2025.07.01.22.32.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Jul 2025 22:32:21 -0700 (PDT)
-Message-ID: <3941f0b0-c7a8-4ca3-8893-791749ce250f@redhat.com>
-Date: Wed, 2 Jul 2025 07:32:20 +0200
+	s=arc-20240116; t=1751435297; c=relaxed/simple;
+	bh=4hD4MOimnEYWCD4hSnlRjGStBdpJEfn2L1ZQnbN4BHY=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=t5kH1dl+FDfcKy0hjKevXxNH0kYnAWKlrlLSx7MgKjxHBSJiUw8/JWNksvT2vge4yDyTU3YidBIYzdXh15B0kczDffQC3bRlysOSwDj6uWFGh0J2CKvLLeOT9TEwFTv8plJ5NYBsfC6yHS33Ud5K74aj29ynuDz2iB64FYxLOwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-669ff7000002311f-fd-6864c492d922
+From: Byungchul Park <byungchul@sk.com>
+To: willy@infradead.org,
+	netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	kernel_team@skhynix.com,
+	kuba@kernel.org,
+	almasrymina@google.com,
+	ilias.apalodimas@linaro.org,
+	harry.yoo@oracle.com,
+	hawk@kernel.org,
+	akpm@linux-foundation.org,
+	davem@davemloft.net,
+	john.fastabend@gmail.com,
+	andrew+netdev@lunn.ch,
+	asml.silence@gmail.com,
+	toke@redhat.com,
+	tariqt@nvidia.com,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	saeedm@nvidia.com,
+	leon@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	david@redhat.com,
+	lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com,
+	vbabka@suse.cz,
+	rppt@kernel.org,
+	surenb@google.com,
+	mhocko@suse.com,
+	horms@kernel.org,
+	linux-rdma@vger.kernel.org,
+	bpf@vger.kernel.org,
+	vishal.moola@gmail.com,
+	hannes@cmpxchg.org,
+	ziy@nvidia.com,
+	jackmanb@google.com
+Subject: [PATCH net-next v8 0/5] Split netmem from struct page
+Date: Wed,  2 Jul 2025 14:32:51 +0900
+Message-Id: <20250702053256.4594-1-byungchul@sk.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAAzXRW0hTcRwHcP87Z+ccl4s1xU6OMpYhSa60GT9DzB6C40MQ6kv5oMMd3Eg3
+	mXfpYjmShi7TCtMZs8jbrMW8TTGrudTQSixr5WWy0oK8kNrw1sV1efvw/cL35Uthwi48gFKq
+	sliNSpYmJng4b87nTmi5Xa44WFwfAgZzMwGmlTyon7JywdDUjmB5dYyEJXs/AXdr3RgYXmlx
+	+G5ew2C6z0WCyXICnHUzOHQXd2DgujpAQKl2HYNHq/MkXLI2cGC4Xc+F62v3MOgonCLhdZeB
+	gMnmX1yYsZXi8LyqEQenPgb6jP7gHpxFYDd3cMBdUkNAxYiRgI9aJ4KRXhcO1Rf1CMw9Di6s
+	r2xuVD+bJGOCmN7ZBYxpbXzPYTqrJkjGaMlmWhpCGJ1jBGMsTVcIxrJYTjLjb7sJZqByHWc6
+	rUscprRonmC+TX/AmYWeUYIxt47izJDRTp7cdpoXJWfTlDms5kB0Mk9hqGjnZBRBnsN6CytE
+	s/t1yJuiBVJ6ftJM6BD1xz9WhZ6YEATTDscq5rGfIIxecvXjOsSjMMF9grY3j5GewlcQTbeM
+	rxEe44K9dH1zPfKYv7kzMfwT+7sfSJsePvnnOZKuqYv/6x300wYHXoa2GJFXExIqVTnpMmWa
+	VKLIVynzJCnqdAvafLTu3EaiFS0Ox9uQgEJiH/7AmxSFkCvLycxPtyGawsR+/K07NyO+XJZf
+	wGrUSZrsNDbThkQULt7OD3fnyoWCVFkWe4ZlM1jN/5ZDeQcUIto4P1CmP/pZGnEqcGUpLoLS
+	T+VmqKWlgZ8GbyepbMHvEo7vERVdiNq3K9IZ8UXygJ96rS3ucLTqpXmjIPx80Vl1kr9FgSWl
+	y2PnDEEBQy+IY6HhIqMmeVkbENs27qt5PJRrK5dc3jANiqjIyhKp68gNV8LX2puHvHY75LQx
+	UYxnKmRhIZgmU/Ybuabfrs0CAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAAzWRa0hTcRyG+++cnR2Hi8M0O2kWjCSw1IyCH6VD6UOnQJEKor7k1IMbblM2
+	NTUEb91Ep+kC0wkLSd2cTKboDBOZ84ZU4o2VVxZKgqmpTTcz24K+Pbwv7/PlJTFhIx5MypTZ
+	rEopkYsIPs5PvF4aUWNPk14yHZ0CndlEQNt+HrQsW7mgM3Yj2HXP8WDHPkJA01sXBrrPZTj8
+	MnswWBl28qDNkgBLzas49D3vwcBZNUpAZdkBBh/cGzwosbZyYLBxjAsT3RouaD3vMOgpWubB
+	1HsdAYumIy6s2ipxGKs34LCkiYNhfRC4xtcR2M09HHBVNBJQO6kn4FvZEoLJQScODcUaBOZ+
+	BxcO9r2OhqFFXlwYM7i+iTFdhi8cprd+gcfoLTlMZ2s4U+6YxBiL8SXBWLZreMz8bB/BjNYd
+	4EyvdYfDVJZuEMzPla84s9k/QzBN37c4jLlrBk8SPuTHpLFyWS6rihIn86W62m5OVinkOaxv
+	sCK0frEckSRNXaEP3cJy5EcS1Hna4XBjPg6koukd5whejvgkRrUTtN00x/MVAZSY7pz3ED7G
+	qTC6xdSCfCzwehYm/vwb09RZuq1jAKtGpB4dM6JAmTJXIZHJr0aqM6T5SlleZGqmwoK8pzUX
+	/n5lRbtTN22IIpHIXzDwMVUq5Epy1fkKG6JJTBQoOB7qjQRpkvwCVpX5SJUjZ9U2FELiopOC
+	2/fZZCGVLslmM1g2i1X9bzmkX3ARyiI1a9IfFxRhuo5707sljwPaP7WaomOnE18DfQKT9hvO
+	nD7X/1SVnrK8528UxnfHxKQUJBmGiPHRJzvXDivsjllbQry2ulNYl5ozv7aoFWv3CiOCjC2u
+	8X1P8VZghPRBX6ygK/yZcPuFouIWGRpyeauq3T+q4cZd8ZbrjsYgwtVSSXQ4plJL/gLMc8aZ
+	sAIAAA==
+X-CFilter-Loop: Reflected
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf] selftests/bpf: Re-add kfunc declarations to qdisc
- tests
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- Amery Hung <ameryhung@gmail.com>, =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgense?=
- =?UTF-8?Q?n?= <toke@redhat.com>, Feng Yang <yangfeng@kylinos.cn>
-References: <20250630133524.364236-1-vmalik@redhat.com>
- <CAADnVQJF8-8zHV75Cf7v8XWGVrJwU5JaQjBm0B-Q3JUUMqNmcQ@mail.gmail.com>
- <49fcc6c3-8075-4134-bdbd-fbd8a40f4202@redhat.com>
- <CAADnVQKQTLDP1W1ao-mCPfLDbZWykW1TdcouJPSVapNWu=bCBw@mail.gmail.com>
- <CAEf4BzaM9_RbUfi2Gk-=_2D3OC8GiDS-vT5-9CHOd07r=+wyeg@mail.gmail.com>
- <36400b83-1a6f-4da0-9561-073bd268c58e@redhat.com>
- <CAEf4BzZZ2f1cP8zDDsqME5wcOYUECh6UKwxtTWbDfSjmdJD60Q@mail.gmail.com>
-Content-Language: en-US
-From: Viktor Malik <vmalik@redhat.com>
-In-Reply-To: <CAEf4BzZZ2f1cP8zDDsqME5wcOYUECh6UKwxtTWbDfSjmdJD60Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 
-On 7/1/25 23:07, Andrii Nakryiko wrote:
-> On Tue, Jul 1, 2025 at 1:54 PM Viktor Malik <vmalik@redhat.com> wrote:
->>
->> On 7/1/25 22:28, Andrii Nakryiko wrote:
+Hi all,
 
-[...]
+In this version, I'm posting non-controversial patches first since there
+are pending works that should be based on this series so that those can
+be started shortly.  I will post the rest later.
 
->>> Note, we have a VMLINUX_H argument that can be passed into BPF
->>> selftests' makefile. We used to use this for libbpf CI to build latest
->>> selftests against (very) old kernels, and it worked well.
->>>
->>> I don't think we need to make exceptions for a few kfuncs, all it
->>> takes is to have vmlinux.h generated from kernel image built from
->>> proper configuration.
->>>
->>> Also note, that "proper configuration" only applies to *built* kernel,
->>> not the actually running host kernel. See how VMLINUX_BTF_PATHS is
->>> defined and handled: host kernel is the last thing we use for
->>> vmlinux.h generation, only if all other options are unavailable.
->>
->> This is a good point but the problem here is the extra kernel build. If
->> you want to check that BPF in your kernel is working properly, you don't
->> want to do another kernel build with a different config just for the
->> sake of being able to build selftests.
-> 
-> What exactly is problematic? That's what I and others do all the time.
-> If kernel build time is a concern, then pre-generate/pre-package
-> vmlinux.h separately and use it to avoid building the kernel. (but BPF
-> selftest *expects* kernel to be built first, we also build bpf_testmod
-> against that kernel). Or just build/package test_progs itself, if
-> that's what works better.
+The MM subsystem is trying to reduce struct page to a single pointer.
+The first step towards that is splitting struct page by its individual
+users, as has already been done with folio and slab.  This patchset does
+that for netmem which is used for page pools.
 
-Yes, we need to have a kernel built before building selftests but your
-solution would require to build it twice - once with the desired
-configuration and once with added selftests/bpf/config to generate
-vmlinux.h that can be used for selftests build.
+Matthew Wilcox tried and stopped the same work, you can see in:
 
-Pre-building vmlinux.h is not really an option for automated builds as
-every kernel change may introduce some new kfuncs which will be needed
-for selftests build. So, we'd need to build vmlinux.h every time.
+   https://lore.kernel.org/linux-mm/20230111042214.907030-1-willy@infradead.org/
 
-> Basically, we have that selftest/bpf/config file for a reason: so that
-> we don't guard every single thing that might not build or work
-> properly if some of the Kconfig value is not set.
+Mina Almasry already has done a lot fo prerequisite works by luck.  I
+stacked my patches on the top of his work e.i. netmem.
 
-[...]
+I focused on removing the page pool members in struct page this time,
+not moving the allocation code of page pool from net to mm.  It can be
+done later if needed.
 
-> we should be getting rid of all those __ksym __weak kfunc
-> redefinitions because they now should come from vmlinux.h, not add
-> more of that, IMO.
+The final patch removing the page pool fields will be submitted once
+all the converting work of page to netmem are done:
 
-I understand that having those kfunc definitions in selftests is
-cumbersome and has maintenence cost. While vmlinux.h works for upstream
-use-cases, it has its problems for distro packagers, so I'll try to
-think about some solution that would be acceptable for both sides.
+   1. converting of libeth_fqe by Tony Nguyen.
+   2. converting of mlx5 by Tariq Toukan.
+   3. converting of prueth_swdata.
+   4. converting of freescale driver.
+
+For our discussion, I'm sharing what the final patch looks like the
+following.
+
+	Byungchul
+--8<--
+commit 1847d9890f798456b21ccb27aac7545303048492
+Author: Byungchul Park <byungchul@sk.com>
+Date:   Wed May 28 20:44:55 2025 +0900
+
+    mm, netmem: remove the page pool members in struct page
+    
+    Now that all the users of the page pool members in struct page have been
+    gone, the members can be removed from struct page.
+    
+    However, since struct netmem_desc still uses the space in struct page,
+    the important offsets should be checked properly, until struct
+    netmem_desc has its own instance from slab.
+    
+    Remove the page pool members in struct page and modify static checkers
+    for the offsets.
+    
+    Signed-off-by: Byungchul Park <byungchul@sk.com>
+
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 32ba5126e221..db2fe0d0ebbf 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -120,17 +120,6 @@ struct page {
+ 			 */
+ 			unsigned long private;
+ 		};
+-		struct {	/* page_pool used by netstack */
+-			/**
+-			 * @pp_magic: magic value to avoid recycling non
+-			 * page_pool allocated pages.
+-			 */
+-			unsigned long pp_magic;
+-			struct page_pool *pp;
+-			unsigned long _pp_mapping_pad;
+-			unsigned long dma_addr;
+-			atomic_long_t pp_ref_count;
+-		};
+ 		struct {	/* Tail pages of compound page */
+ 			unsigned long compound_head;	/* Bit zero is set */
+ 		};
+diff --git a/include/net/netmem.h b/include/net/netmem.h
+index 8f354ae7d5c3..3414f184d018 100644
+--- a/include/net/netmem.h
++++ b/include/net/netmem.h
+@@ -42,11 +42,8 @@ struct netmem_desc {
+ 	static_assert(offsetof(struct page, pg) == \
+ 		      offsetof(struct netmem_desc, desc))
+ NETMEM_DESC_ASSERT_OFFSET(flags, _flags);
+-NETMEM_DESC_ASSERT_OFFSET(pp_magic, pp_magic);
+-NETMEM_DESC_ASSERT_OFFSET(pp, pp);
+-NETMEM_DESC_ASSERT_OFFSET(_pp_mapping_pad, _pp_mapping_pad);
+-NETMEM_DESC_ASSERT_OFFSET(dma_addr, dma_addr);
+-NETMEM_DESC_ASSERT_OFFSET(pp_ref_count, pp_ref_count);
++NETMEM_DESC_ASSERT_OFFSET(lru, pp_magic);
++NETMEM_DESC_ASSERT_OFFSET(mapping, _pp_mapping_pad);
+ #undef NETMEM_DESC_ASSERT_OFFSET
+ 
+ /*
+---
+Changes from v7 (no actual updates):
+	1. Exclude "netmem: introduce struct netmem_desc mirroring
+	   struct page" that might be controversial.
+	2. Exclude "netmem: introduce a netmem API,
+	   virt_to_head_netmem()" since there are no users.
+
+Changes from v6 (no actual updates):
+	1. Rebase on net-next/main as of Jun 25.
+	2. Supplement a comment describing struct net_iov.
+	3. Exclude a controversial patch, "page_pool: access ->pp_magic
+	   through struct netmem_desc in page_pool_page_is_pp()".
+	4. Exclude "netmem: remove __netmem_get_pp()" since the API
+	   started to be used again by libeth.
+
+Changes from v5 (no actual updates):
+	1. Rebase on net-next/main as of Jun 20.
+	2. Add given 'Reviewed-by's and 'Acked-by's, thanks to all.
+	3. Add missing cc's.
+
+Changes from v4:
+	1. Add given 'Reviewed-by's, thanks to all.
+	2. Exclude potentially controversial patches.
+
+Changes from v3:
+	1. Relocates ->owner and ->type of net_iov out of netmem_desc
+	   and make them be net_iov specific.
+	2. Remove __force when casting struct page to struct netmem_desc.
+
+Changes from v2:
+	1. Introduce a netmem API, virt_to_head_netmem(), and use it
+	   when it's needed.
+	2. Introduce struct netmem_desc as a new struct and union'ed
+	   with the existing fields in struct net_iov.
+	3. Make page_pool_page_is_pp() access ->pp_magic through struct
+	   netmem_desc instead of struct page.
+	4. Move netmem alloc APIs from include/net/netmem.h to
+	   net/core/netmem_priv.h.
+	5. Apply trivial feedbacks, thanks to Mina, Pavel, and Toke.
+	6. Add given 'Reviewed-by's, thanks to Mina.
+
+Changes from v1:
+	1. Rebase on net-next's main as of May 26.
+	2. Check checkpatch.pl, feedbacked by SJ Park.
+	3. Add converting of page to netmem in mt76.
+	4. Revert 'mlx5: use netmem descriptor and APIs for page pool'
+	   since it's on-going by Tariq Toukan.  I will wait for his
+	   work to be done.
+	5. Revert 'page_pool: use netmem APIs to access page->pp_magic
+	   in page_pool_page_is_pp()' since we need more discussion.
+	6. Revert 'mm, netmem: remove the page pool members in struct
+	   page' since there are some prerequisite works to remove the
+	   page pool fields from struct page.  I can submit this patch
+	   separatedly later.
+	7. Cancel relocating a page pool member in struct page.
+	8. Modify static assert for offests and size of struct
+	   netmem_desc.
+
+Changes from rfc:
+	1. Rebase on net-next's main branch.
+	   https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/
+	2. Fix a build error reported by kernel test robot.
+	   https://lore.kernel.org/all/202505100932.uzAMBW1y-lkp@intel.com/
+	3. Add given 'Reviewed-by's, thanks to Mina and Ilias.
+	4. Do static_assert() on the size of struct netmem_desc instead
+	   of placing place-holder in struct page, feedbacked by
+	   Matthew.
+	5. Do struct_group_tagged(netmem_desc) on struct net_iov instead
+	   of wholly renaming it to strcut netmem_desc, feedbacked by
+	   Mina and Pavel.
+
+Byungchul Park (5):
+  page_pool: rename page_pool_return_page() to page_pool_return_netmem()
+  page_pool: rename __page_pool_release_page_dma() to
+    __page_pool_release_netmem_dma()
+  page_pool: rename __page_pool_alloc_pages_slow() to
+    __page_pool_alloc_netmems_slow()
+  netmem: use _Generic to cover const casting for page_to_netmem()
+  page_pool: make page_pool_get_dma_addr() just wrap
+    page_pool_get_dma_addr_netmem()
+
+ include/net/netmem.h            |  7 +++----
+ include/net/page_pool/helpers.h |  7 +------
+ net/core/page_pool.c            | 36 ++++++++++++++++-----------------
+ 3 files changed, 22 insertions(+), 28 deletions(-)
+
+
+base-commit: 8dacfd92dbefee829ca555a860e86108fdd1d55b
+-- 
+2.17.1
 
 
