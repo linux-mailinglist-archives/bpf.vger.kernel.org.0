@@ -1,852 +1,254 @@
-Return-Path: <bpf+bounces-62159-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62158-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E484BAF5F80
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 19:08:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39851AF5F78
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 19:07:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3E3F16A5E5
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 17:08:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 763E8174A41
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 17:07:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A15430112D;
-	Wed,  2 Jul 2025 17:07:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B3E02F50A6;
+	Wed,  2 Jul 2025 17:07:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A/XTLl+e"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gbKsIBt+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f65.google.com (mail-ed1-f65.google.com [209.85.208.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAF4F2DCF7A
-	for <bpf@vger.kernel.org>; Wed,  2 Jul 2025 17:07:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.65
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751476070; cv=none; b=EH60DmdaXS5p4ULNX73rrGMo+QzS7OlfwrO8r8ZOw/DmbbclxcNnCsyjnOl9xVJrsEzvr4Z++OAqFSJMtJ7Lvf2N96VjFq4XLe9Y3MMe0PSZ/byEXAa3tTQ9UF3SEjdW43uBKC1xcluykeXrE1KapTSH5Al/7Bk0iUWDDMhxl14=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751476070; c=relaxed/simple;
-	bh=Eu/XKa9ivIcgTj3HeIiAKi2GxiIPOjIWh7aO8DkhnQk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ENq4fRrwOwjL3ckxIkguu6jMzIDfSwn1JP/BaZuEJRYUZFDi2Q+50CRRymoz4n3LiVEBV0cBRXd+47fL/yqaOhuEjoVUxUh8t1+SHTYhVo4FQKcyikWa7pCQHl0Evq1bp18C1CkUYbUPs6HhgQKApXD9WjogkbcCJCr2K7OafZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A/XTLl+e; arc=none smtp.client-ip=209.85.208.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f65.google.com with SMTP id 4fb4d7f45d1cf-60780d74c85so10845340a12.2
-        for <bpf@vger.kernel.org>; Wed, 02 Jul 2025 10:07:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751476066; x=1752080866; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pXULGc10U70PNJwHfhUqUPl1Fuah4Qck+M+hTReGHcA=;
-        b=A/XTLl+eluhZ+fle3WbviGozPWzOvQ+BdyW4V1SjeB5qZ5MyqAdz339oXmnHmyv0L8
-         /jAdIYqczSRRkmobuDIS52PEKIVYl6x51lrWGzUww6mAsMEo/MYLbIiU0WNAOoXwQIbf
-         dP/uF2piwNVhqsG11a2AbdRoM9iouU7by4Zl2wcyDQJvcZgVNB3osLkLS65VWiU7SsTG
-         C8vIkwJ+JD0V/016SOEM6cF9wJLCVfsXx9dxXZtG8TSSOIqV31ygv9nm2i8WKxKpbdE5
-         Nyq3twbd4ncrXU8mdsf7cSpFr4mIengw5vD3JmsCmWxT43IRm6GsTyV+4uwE4im5hpfm
-         CrqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751476066; x=1752080866;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pXULGc10U70PNJwHfhUqUPl1Fuah4Qck+M+hTReGHcA=;
-        b=IEXFz1Bbsd/hgBrb2sLorsDGNQxjhl6HxShEXAtVewGU4Owitlim2osGp9LvAH8MND
-         zXEtObOVNg+WHo83K9vD6QMZ+zrlOXqzk1UkPB5vsIB3jQOAWZthsT6Nq8WRfNB92kzT
-         mRqdVSAIOW8a19ZGv2fq5AXunE4Hy91JlS/Ns6AfOCHqzVLqCkZqIy8pEf0lrTtZP/wt
-         FEu49x1mdJhnDg8THhMzj4xBNFuKdzhHgqVUMQ6KhVO3hZcpKp2S0aVZWrDYs/kGbRjj
-         Xk8kYFLUIJwKeMz2/0m+Tip9p4YE6w/yW1V4clDyonpSQ1c83pNRs9Kt/lN0D/SJB10j
-         Ujrg==
-X-Gm-Message-State: AOJu0YzR9rD93ce+Bh7rMPiCDaifkTTJ2GB/OzduJwqvDcbrDZY3lXfP
-	poM+G+LuaBlzqJsYU4Ksjyl+ooidDNA0NCMoGbkGl2gJ2aztDPvpx/6U7SRx/aE5zfB2wraotSn
-	JwzzbSFVHg+AWsLBZmmciMER14voUxZk=
-X-Gm-Gg: ASbGncvxd/goHPEZnIGE9efl3tyu2fXRK8pEu3JaTFmKXGPemv/mHxDRDxlmrBthQuc
-	DDS/ODglNH5ZgYb4V5CXnHAAqb4gGsTRz0gT/FQg4oOfTmY1emFlzClgElLc27cpjeua+Tb+pWD
-	TOzOHdpwWCdbE6KUjxoyyqhsfmzlFCH1SBGkNUMERYmGn3XOkDi/fCKlf8EXux0ypclHbn1ZodX
-	8sR
-X-Google-Smtp-Source: AGHT+IGWqxDNYR9oSDmUBQBKu8JxGDTzikNo0f3buFryIMFFSgP0EbxNS+SBDmbnio6gwEvH6yNV5LRHDwWl82chn6Q=
-X-Received: by 2002:a17:907:e90c:b0:ae3:cc60:8d01 with SMTP id
- a640c23a62f3a-ae3cc6092a8mr193214866b.11.1751476065373; Wed, 02 Jul 2025
- 10:07:45 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5B422D94BB;
+	Wed,  2 Jul 2025 17:07:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.11
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1751476069; cv=fail; b=Ig1+I2c6SeDXgqkrVahaGAQVnAYcXuXO6nAADNQoRFWspjDPSBg7uXf62wnY4ND7diO0ztyYJv/tE5OSmEtEfCncQjwDkrxLKwjqrofhwL6QTA5BBGwMuuwzm+qSBIQ3f5acOxRTNMXvMxHwPTuPu+dyVbv/96l8+7ExDsvlF34=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1751476069; c=relaxed/simple;
+	bh=0CFdTsEGLLT6R3OjlQLfQthXr1VuRhbH2KHOUj5Pi+4=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=lZFY0mPsfo/ORFtPH3H/1bND1DilNghlgngy43iTRxyE/WAMit3MqtiaqV9/cph3jlZ0Wy3Hu8fQb3cLoMOlqdQq3Rcqphr+mJ2xwggh+MCuO0Pe+WoLd1aoPfOry6cbgy/gyKHejqMwVFsMeMMVuY57vlGb4XBkUoDCGXGLZ5M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gbKsIBt+; arc=fail smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1751476067; x=1783012067;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=0CFdTsEGLLT6R3OjlQLfQthXr1VuRhbH2KHOUj5Pi+4=;
+  b=gbKsIBt+1EmkrPVWNtySkv/eegF3OwkoCzysxLZxMrcRqqcVRGCm3vEp
+   b/EH2LlTYNNAmWZSMcqp2FpY79Q3XAxI6HUtw5XL777YnnLycNgOwmWG1
+   lCH+KI1ECvESry8Av+GUDecCoIClfTwaCUU+MjU66a1TmDMwgQAZIqBPS
+   6hFPbrVb+R3mb4MWiu9uG9mUpl9/7dfdpDUpq5Nz8gmgSXErexm6TU4S4
+   CZhH9XtkEIr+mOfzUj4sEmOJ+10ayE0HBHBHK539d0rniKDgZD3zn1WOw
+   a36CBAbqQfyW1gNNppJyfbgzXOr1yp+u+JHN6zc7a+9QFb8nL9g1B16Uq
+   Q==;
+X-CSE-ConnectionGUID: m687KT63Rt2pDWTqummUoQ==
+X-CSE-MsgGUID: uUKh0quSSy2TFt5GKq4JMA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11482"; a="64383828"
+X-IronPort-AV: E=Sophos;i="6.16,281,1744095600"; 
+   d="scan'208";a="64383828"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2025 10:07:46 -0700
+X-CSE-ConnectionGUID: dltjO+kRR5m/t6Sq2Zj22A==
+X-CSE-MsgGUID: VdfP3eUBS7mPvKnRPpV9+w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,281,1744095600"; 
+   d="scan'208";a="153904215"
+Received: from orsmsx902.amr.corp.intel.com ([10.22.229.24])
+  by orviesa009.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2025 10:07:46 -0700
+Received: from ORSMSX902.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.25; Wed, 2 Jul 2025 10:07:45 -0700
+Received: from ORSEDG902.ED.cps.intel.com (10.7.248.12) by
+ ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.25 via Frontend Transport; Wed, 2 Jul 2025 10:07:45 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (40.107.92.46) by
+ edgegateway.intel.com (134.134.137.112) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.25; Wed, 2 Jul 2025 10:07:45 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=d5V0pYhwd1jj+xNEnc5Uey8grpFE68itqKhvucNrrCPqj2TPHPWPbMD28xnHwXIxWSiT9Ln7/w54SZ5N0WoMFyOyq117ZFGpvvaqy1t4LuTa5w0yf8DU/pEHx1gYKBb3Yn43e6A0/pBeVSgHbtcUW77990C/p/aNngadHZ6ttqvV5jSpC8DoOBLtOLEeLBwjIvj9GaHeQ0gdBMfyqQYjERFgzqzGOSrtqlYUx2fd/MyhqdfxcMWaOaLQHBd9zVwAD1r1XDH7efQ/FNiO2VAPlPII6HXHFbqNFeGCj8Op0mBGRNayZS7UH7aI+jPCAFYTBksJGOuSVy9V/afVApMKmg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Nl/dDEzvKmfdW1phRqdJv3F2jlE4H+EuiXxfmWg6aHg=;
+ b=DbcLDtktzxakTOF+OQSY3yX/l5fffqBc18wezsTLq59w3rSSjowe1qFIg8+2SDVTaQXxzeF7ixLp6HCyQkYUZ7d2hZEblAwXZKHs6K9EU+IwjsuPCR1sJl1+6zgmcj06B+jpiE43lD9Pq2i/EJhsM6ApYCBVqsibYJ3Vdgb6f4CMDJ4yVFXluj7AVXKciEZjZJfE+TRxMmoJjIuOf/sML2VtFFzPmM38KrnJV8rvNPGBjvL3ii0PZOTgHA9+fGyTspukbhALbmIeEMqQTPH2XGe1e4rlAJ1hKh+U20G5ymYO9OawhHs+D0zzp2/RZ1UsukRzssCoeAjnxua78MTBvg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from IA3PR11MB9254.namprd11.prod.outlook.com (2603:10b6:208:573::10)
+ by CY5PR11MB6461.namprd11.prod.outlook.com (2603:10b6:930:33::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8901.20; Wed, 2 Jul
+ 2025 17:07:40 +0000
+Received: from IA3PR11MB9254.namprd11.prod.outlook.com
+ ([fe80::8547:f00:c13c:8fc7]) by IA3PR11MB9254.namprd11.prod.outlook.com
+ ([fe80::8547:f00:c13c:8fc7%5]) with mapi id 15.20.8857.016; Wed, 2 Jul 2025
+ 17:07:40 +0000
+From: "Song, Yoong Siang" <yoong.siang.song@intel.com>
+To: "Song, Yoong Siang" <yoong.siang.song@intel.com>, "Nguyen, Anthony L"
+	<anthony.l.nguyen@intel.com>, "David S . Miller" <davem@davemloft.net>, "Eric
+ Dumazet" <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+	<daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, "John
+ Fastabend" <john.fastabend@gmail.com>, "Gomes, Vinicius"
+	<vinicius.gomes@intel.com>, "Kitszel, Przemyslaw"
+	<przemyslaw.kitszel@intel.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+	Stanislav Fomichev <sdf@fomichev.me>, "Bouska, Zdenek"
+	<zdenek.bouska@siemens.com>, "Bezdeka, Florian" <florian.bezdeka@siemens.com>
+CC: "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: RE: [PATCH iwl-net v1 1/1] igc: Fix data_meta pointer adjustment for
+ XDP zero-copy
+Thread-Topic: [PATCH iwl-net v1 1/1] igc: Fix data_meta pointer adjustment for
+ XDP zero-copy
+Thread-Index: AQHb6l+pd7Rag6D2PUe8jLa9jltfBLQfEU7A
+Date: Wed, 2 Jul 2025 17:07:40 +0000
+Message-ID: <IA3PR11MB9254F2273FF0D0280AF049FED840A@IA3PR11MB9254.namprd11.prod.outlook.com>
+References: <20250701080955.3273137-1-yoong.siang.song@intel.com>
+In-Reply-To: <20250701080955.3273137-1-yoong.siang.song@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: IA3PR11MB9254:EE_|CY5PR11MB6461:EE_
+x-ms-office365-filtering-correlation-id: 7499ffcc-55c3-4bb7-5c0f-08ddb98af40d
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|376014|7416014|1800799024|366016|38070700018|921020;
+x-microsoft-antispam-message-info: =?us-ascii?Q?5eFmsgkGOVr7ZXmqazBDZAvlckkrYL7rWgnZh0cwtAsqO9AlBVTlusvPDyEe?=
+ =?us-ascii?Q?Kn5qVM2vQUla1vKswF5LmkTcW/2FVNMtfWNsOmejShlo1MT7SHIQRKkotQ3b?=
+ =?us-ascii?Q?hXUuAocEWJLhmzP1jJf5ALFT9+9Ll5EYHQHjxOXpV8nZOl5CeL3GiF8cvHws?=
+ =?us-ascii?Q?ykKtfjrbUWfoHmk9liNV3sZu4DsK3SJb+/9lObStcuQzYvyuLedvpRfmFPpm?=
+ =?us-ascii?Q?b3kQD95C9nQKGfQZSMYEBdmZmmfgQCSRyyZN+9Z6xN5of815H5plmEoRrOvO?=
+ =?us-ascii?Q?DOqv1pBY5pj5fgiJPkRAZembogLmy7WbFzRKH65h3jUGqg0yLWmelXmzE0Hz?=
+ =?us-ascii?Q?TIGXnb1lpv8frK1rxxqoL7QSZskzGY0KuxD6z9s8MHmqTr8QlE50CaWD1FNL?=
+ =?us-ascii?Q?ZdnGipZOInTn2VLsg6w+JipN0Rj5hUsJs3gYegQZ/cUzjGI8OhNQa9jJttv9?=
+ =?us-ascii?Q?wue5sKgk7BKzEX0X8YotSvUSWM2jPh2KE4CRjzfim/Gbz/EUQ5FaD1kkBv6V?=
+ =?us-ascii?Q?k3kRitshpkTsp5d42x4pDy10T7HEomSglZQvAcm3Awk1T3fRbxJ9XLnogvVH?=
+ =?us-ascii?Q?UjYU/f2QbwuNLfw1p2R/xI0GnPM/JDtpMkXm3MIVv+QKu/xRQpsq6EyWBCHv?=
+ =?us-ascii?Q?Dxmp0al84OJq9aEGtOCegwHmvaWm/1Zv4mow42UFusTeYbBB5aJQZ4jMFzYj?=
+ =?us-ascii?Q?yvKMHCkAkZUCddIwZzB0YcZ5aUkWttVLVWYlHhd5cGnAuvDS208DDZARO4Eb?=
+ =?us-ascii?Q?VkF5SPQaI1MutWdeGKpbKcA1JZ//vI9YncIo8pw5MxBaFx5tUIs+sLvzgEQQ?=
+ =?us-ascii?Q?ERz24tKgbIijyIDULENQReYRDzXMf+ZzL7rxTxS26Xv5dFOkX9Pmjb/tYewZ?=
+ =?us-ascii?Q?zqPRTJZc4QGxHXb9RA1Ub9Jv1WNZ02lNnNynul1leoWboopekUw/4y1uHqeq?=
+ =?us-ascii?Q?43rHZAvi/JFTTpcclwZo3pR78D0wrAD6ojKk58kl+C9MzZPcAS+lc7X2xKWN?=
+ =?us-ascii?Q?K/oglRnPcmZV5/WleY1U0zhK8mAanqc9qYwUC4okvqKYu2k1FMxovfbwnGpE?=
+ =?us-ascii?Q?pGEx5YA+Jb8KYRsxmbo+DOk2h+JViucNghhASj1wIaq/4Uvm7dAU0yjI90+U?=
+ =?us-ascii?Q?z7vDPlvREMlidbHOYOQK7LoU44V49ejVn53vOGBrYSdDzpejZPoRzqyJAUeL?=
+ =?us-ascii?Q?JzUTcp67UsHTzS0vVQQ60LRSBRd4Hmustmq6UayJ+Q9YOo6cg4Hx7XuCYhR5?=
+ =?us-ascii?Q?7/A2OB2SGhkjxX1NtZF37K+iuFO+5K4hOgOL/GrJNm1sTsBHONQWW/pO+QiM?=
+ =?us-ascii?Q?zuWyOmUTfSVNzA17NPNnbKkSf1fvFUAffPEK9FSi+t5zYumcTL/Z+uIaDaaz?=
+ =?us-ascii?Q?T98fW77+ggzApczrZydA7j2MoHhBHQkFb3vyb3h1OeAWDPoyD1PTBB3ibyJl?=
+ =?us-ascii?Q?/K+ySsu37NRJE0Q+NNGczsBlxzMLBRHVr55ULrVz0FHBbGF4lu4W4Kv0BMaS?=
+ =?us-ascii?Q?BFPIJLg9DIIXkAKjuHSS7OMKbyy453Z2MCHK?=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA3PR11MB9254.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016)(38070700018)(921020);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?q4fAPPIaw5DkgRUwlb39uqleUyw7J3HmWZOeGgjsz0Gk3d8otvMEaYFtoKVV?=
+ =?us-ascii?Q?9qszmIU4yqmJeiNhKC2afbtxrtkXNn0p3Gsk070Dn4bkrHWslwyZ8QN3TqQ3?=
+ =?us-ascii?Q?6xRDKESwfby+MYtlKBDfwCsRjw23TYV2lE6VJ4G2uWDah77KowN7P5Ujckth?=
+ =?us-ascii?Q?02k55k0QmX4+K4AClly94sBsmEsE6Heu166VP0EKysfyOgQtXRZRKmegvt+a?=
+ =?us-ascii?Q?Ea+Zvx8MLR4SvClSVZfCjaD8DvPMaPpas/AEFs0NaxNU1jwbjyy9+hmqs+0Q?=
+ =?us-ascii?Q?f+tsnM0fXP5QXYU+rSpNANwvou2+mpdNCU8GgI9Pc2fFxw1TR96teyIHJJwG?=
+ =?us-ascii?Q?CUpj3tB4yVPmEJ3jYLeQqTkhx3XqKkNA6SwRU7QuXHotoUHrq9R48/F1YhqH?=
+ =?us-ascii?Q?5aNJusQT2WtIfiWYpHXBeMrbg36TqPulUkHC0Hbp2KNDjKic84e4AX6zBtx7?=
+ =?us-ascii?Q?9ZUJ1iaan6r4FEvCfpWyZTXtvN2LEL1aR4TeE4kfOHRunFbbzq2DT64rcmGH?=
+ =?us-ascii?Q?cMo+SAhpV6AZxOkLsXM9WpVT7//QaKPNvUhpD9gz5tvV21u1mF74OHLviihf?=
+ =?us-ascii?Q?RbkntwJrU7OsYGPvoFuvopPLRi/NhHM67rn+SZR//l5OyR5JfzwfFtP5OvBf?=
+ =?us-ascii?Q?m2NWkmOg2xjmDXY2p07tCaGOtftwnHeYe7OeKVoqFDnF3Afth55TW/3j3I3Z?=
+ =?us-ascii?Q?rSKjsKanvNquuH098jRMaagNROVZPU6zTEbtLKRI2Viecy6nOcpNkJQWF1nT?=
+ =?us-ascii?Q?uRxLWcMj9KvDYMtX2BzrQpfb5R2GJVEA22/AwlXcMK4V7mi0rTOW4leLEr26?=
+ =?us-ascii?Q?JejLfyXXZI+dA6KqHOxdVxVjoHXkNSev5uzoFmFyOkT+Ei7aOhess/+QMFmu?=
+ =?us-ascii?Q?k15AhpJwk2hPM+J5xq0psjereXond4xnWeF+IhrgGN/Lv0u0a0w79BJS0VSw?=
+ =?us-ascii?Q?19xdCljlrMn8/36N2YYK57m5sECSBJNqm3w1S3PKjs9kXQzI8PtIishhNFH7?=
+ =?us-ascii?Q?FfHE8REpPeVNOACI1vkCVweYFxRw80xZKEe/pmOvEuj3aFHXk79jkvXqDf+N?=
+ =?us-ascii?Q?DxbgtF4TFV91LylShloccmP6W4o7kjL1suBKsE+oXl8DYCPqob3snEejzpa0?=
+ =?us-ascii?Q?cqNVe4djRMeEabpOk3J7be5SzqSZpCOqRQQPOl9s6z1fMGpU8vWABK6CK3vj?=
+ =?us-ascii?Q?/qMuXlTGEkcFJ5IVEAHKPvGS9+okIv8ZUwBwezv2epsOhtQyFdOcVK7aUygR?=
+ =?us-ascii?Q?1MJs33HNV2gnZkEU+qTAT2ByR2BlPHr90CuHMxfIPXDAFYnhLvR0OQOb+XqJ?=
+ =?us-ascii?Q?sKQ6BxEsx1/4HVvPLZTXK+45mvkTwtdIhQmO7UmTeFMn+mDe7UvWTpWSvZrD?=
+ =?us-ascii?Q?eEuiTxSIFNeyxASLAmBDYJ5a3pV/hVWkRp3YjxBD4s1QLT1xXvuKhvXYjkxu?=
+ =?us-ascii?Q?VW5F2fSc6Erm/8m5TMfPyjaeMKYEW1J45PlexSHfTUl7+v3W3F9Fvweimpf7?=
+ =?us-ascii?Q?tiijlUZa2JiiObgQnfbVAX3XgO34hkeTqfNSCuOI0RWGNsy39dCTddb9F2p4?=
+ =?us-ascii?Q?VpzPaVZC7oQ3KJvsDXZpUNwPfVZcnEQanurAsA8JWyeTDTnltT/TQAfnOIgV?=
+ =?us-ascii?Q?Vg=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250702031737.407548-1-memxor@gmail.com> <20250702031737.407548-3-memxor@gmail.com>
- <CABFh=a7c_nWhsCiST62q-gLbYyNiOtWgzXyjjhbZLccfZwXA5g@mail.gmail.com>
-In-Reply-To: <CABFh=a7c_nWhsCiST62q-gLbYyNiOtWgzXyjjhbZLccfZwXA5g@mail.gmail.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Wed, 2 Jul 2025 19:07:09 +0200
-X-Gm-Features: Ac12FXwjaFl0l9Bt5bmX-w-rtzHKhpCGumA6jRWyGahyTy94_sdx1axJ2C6olYA
-Message-ID: <CAP01T77gkpSKzx56Vd_k0BD7PYtqLuNY=+TFtnyO6TpmtyO=hw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 02/12] bpf: Introduce BPF standard streams
-To: Emil Tsalapatis <emil@etsalapatis.com>
-Cc: bpf@vger.kernel.org, Eduard Zingerman <eddyz87@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Barret Rhoden <brho@google.com>, Matt Bobrowski <mattbobrowski@google.com>, kkd@meta.com, 
-	kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: IA3PR11MB9254.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7499ffcc-55c3-4bb7-5c0f-08ddb98af40d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Jul 2025 17:07:40.7114
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: TU8s79obz/FQf75nqNG+8EuZHNhWWT2o+64ygZlIv83s1JBcwbpsXezJAKYhZ5d4Qauq8fqr5mPS8kxkujL2T2f+x6Sb+PBr2kTiXawmfB8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6461
+X-OriginatorOrg: intel.com
 
-On Wed, 2 Jul 2025 at 18:10, Emil Tsalapatis <emil@etsalapatis.com> wrote:
+On Tuesday, July 1, 2025 4:10 PM, Song Yoong Siang <yoong.siang.song@intel.=
+com> wrote:
+>Remove the unnecessary increment of the data_meta pointer to ensure the
+>metadata area is correctly presented to XDP program and to avoid accidenta=
+l
+>overwriting of device-reserved metadata by XDP programs.
 >
-> Looks good overall, some nits:
+>Previously, the data_meta pointer was incorrectly advanced when handling
+>hardware timestamps for XDP zero-copy frames. Since the HW timestamp is no
+>longer copied into a local variable, there is no need to adjust data_meta.
 >
-> On Tue, Jul 1, 2025 at 11:17=E2=80=AFPM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
-> >
-> > Add support for a stream API to the kernel and expose related kfuncs to
-> > BPF programs. Two streams are exposed, BPF_STDOUT and BPF_STDERR. These
-> > can be used for printing messages that can be consumed from user space,
-> > thus it's similar in spirit to existing trace_pipe interface.
-> >
-> > The kernel will use the BPF_STDERR stream to notify the program of any
-> > errors encountered at runtime. BPF programs themselves may use both
-> > streams for writing debug messages. BPF library-like code may use
-> > BPF_STDERR to print warnings or errors on misuse at runtime.
-> >
-> > The implementation of a stream is as follows. Everytime a message is
-> > emitted from the kernel (directly, or through a BPF program), a record
-> > is allocated by bump allocating from per-cpu region backed by a page
-> > obtained using alloc_pages_nolock(). This ensures that we can allocate
-> > memory from any context. The eventual plan is to discard this scheme in
-> > favor of Alexei's kmalloc_nolock() [0].
-> >
-> > This record is then locklessly inserted into a list (llist_add()) so
-> > that the printing side doesn't require holding any locks, and works in
-> > any context. Each stream has a maximum capacity of 4MB of text, and eac=
-h
-> > printed message is accounted against this limit.
-> >
-> > Messages from a program are emitted using the bpf_stream_vprintk kfunc,
-> > which takes a stream_id argument in addition to working otherwise
-> > similar to bpf_trace_vprintk.
-> >
-> > The bprintf buffer helpers are extracted out to be reused for printing
-> > the string into them before copying it into the stream, so that we can
-> > (with the defined max limit) format a string and know its true length
-> > before performing allocations of the stream element.
-> >
-> > For consuming elements from a stream, we expose a bpf(2) syscall comman=
-d
-> > named BPF_PROG_STREAM_READ_BY_FD, which allows reading data from the
-> > stream of a given prog_fd into a user space buffer. The main logic is
-> > implemented in bpf_stream_read(). The log messages are queued in
-> > bpf_stream::log by the bpf_stream_vprintk kfunc, and then pulled and
-> > ordered correctly in the stream backlog.
-> >
-> > For this purpose, we hold a lock around bpf_stream_backlog_peek(), as
-> > llist_del_first() (if we maintained a second lockless list for the
-> > backlog) wouldn't be safe from multiple threads anyway. Then, if we
-> > fail to find something in the backlog log, we splice out everything fro=
-m
-> > the lockless log, and place it in the backlog log, and then return the
-> > head of the backlog. Once the full length of the element is consumed, w=
-e
-> > will pop it and free it.
-> >
-> > The lockless list bpf_stream::log is a LIFO stack. Elements obtained
-> > using a llist_del_all() operation are in LIFO order, thus would break
-> > the chronological ordering if printed directly. Hence, this batch of
-> > messages is first reversed. Then, it is stashed into a separate list in
-> > the stream, i.e. the backlog_log. The head of this list is the actual
-> > message that should always be returned to the caller. All of this is
-> > done in bpf_stream_backlog_fill().
-> >
-> > From the kernel side, the writing into the stream will be a bit more
-> > involved than the typical printk. First, the kernel typically may print
-> > a collection of messages into the stream, and parallel writers into the
-> > stream may suffer from interleaving of messages. To ensure each group o=
-f
-> > messages is visible atomically, we can lift the advantage of using a
-> > lockless list for pushing in messages.
-> >
-> > To enable this, we add a bpf_stream_stage() macro, and require kernel
-> > users to use bpf_stream_printk statements for the passed expression to
-> > write into the stream. Underneath the macro, we have a message staging
-> > API, where a bpf_stream_stage object on the stack accumulates the
-> > messages being printed into a local llist_head, and then a commit
-> > operation splices the whole batch into the stream's lockless log list.
-> >
-> > This is especially pertinent for rqspinlock deadlock messages printed t=
-o
-> > program streams. After this change, we see each deadlock invocation as =
-a
-> > non-interleaving contiguous message without any confusion on the
-> > reader's part, improving their user experience in debugging the fault.
-> >
-> > While programs cannot benefit from this staged stream writing API, they
-> > could just as well hold an rqspinlock around their print statements to
-> > serialize messages, hence this is kept kernel-internal for now.
-> >
-> > Overall, this infrastructure provides NMI-safe any context printing of
-> > messages to two dedicated streams.
-> >
-> > Later patches will add support for printing splats in case of BPF arena
-> > page faults, rqspinlock deadlocks, and cond_break timeouts, and
-> > integration of this facility into bpftool for dumping messages to user
-> > space.
-> >
-> >   [0]: https://lore.kernel.org/bpf/20250501032718.65476-1-alexei.starov=
-oitov@gmail.com
-> >
-> > Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
-> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > ---
-> >  include/linux/bpf.h            |  52 ++++
-> >  include/uapi/linux/bpf.h       |  24 ++
-> >  kernel/bpf/Makefile            |   2 +-
-> >  kernel/bpf/core.c              |   5 +
-> >  kernel/bpf/helpers.c           |   1 +
-> >  kernel/bpf/stream.c            | 478 +++++++++++++++++++++++++++++++++
-> >  kernel/bpf/syscall.c           |  25 ++
-> >  kernel/bpf/verifier.c          |   1 +
-> >  tools/include/uapi/linux/bpf.h |  24 ++
-> >  9 files changed, 611 insertions(+), 1 deletion(-)
-> >  create mode 100644 kernel/bpf/stream.c
-> >
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index 4fff0cee8622..85b1cbe494f5 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -1538,6 +1538,37 @@ struct btf_mod_pair {
-> >
-> >  struct bpf_kfunc_desc_tab;
-> >
-> > +enum bpf_stream_id {
-> > +       BPF_STDOUT =3D 1,
-> > +       BPF_STDERR =3D 2,
-> > +};
-> > +
-> > +struct bpf_stream_elem {
-> > +       struct llist_node node;
-> > +       int total_len;
-> > +       int consumed_len;
-> > +       char str[];
-> > +};
-> > +
-> > +enum {
-> > +       /* 100k bytes */
-> > +       BPF_STREAM_MAX_CAPACITY =3D 100000ULL,
-> > +};
-> > +
-> > +struct bpf_stream {
-> > +       atomic_t capacity;
-> > +       struct llist_head log;  /* list of in-flight stream elements in=
- LIFO order */
-> > +
-> > +       struct mutex lock;  /* lock protecting backlog_{head,tail} */
-> > +       struct llist_node *backlog_head; /* list of in-flight stream el=
-ements in FIFO order */
-> > +       struct llist_node *backlog_tail; /* tail of the list above */
-> > +};
-> > +
-> > +struct bpf_stream_stage {
-> > +       struct llist_head log;
-> > +       int len;
-> > +};
-> > +
-> >  struct bpf_prog_aux {
-> >         atomic64_t refcnt;
-> >         u32 used_map_cnt;
-> > @@ -1646,6 +1677,7 @@ struct bpf_prog_aux {
-> >                 struct work_struct work;
-> >                 struct rcu_head rcu;
-> >         };
-> > +       struct bpf_stream stream[2];
-> >  };
-> >
-> >  struct bpf_prog {
-> > @@ -2408,6 +2440,7 @@ int  generic_map_delete_batch(struct bpf_map *map=
-,
-> >  struct bpf_map *bpf_map_get_curr_or_next(u32 *id);
-> >  struct bpf_prog *bpf_prog_get_curr_or_next(u32 *id);
-> >
-> > +
-> >  int bpf_map_alloc_pages(const struct bpf_map *map, int nid,
-> >                         unsigned long nr_pages, struct page **page_arra=
-y);
-> >  #ifdef CONFIG_MEMCG
-> > @@ -3573,6 +3606,25 @@ void bpf_bprintf_cleanup(struct bpf_bprintf_data=
- *data);
-> >  int bpf_try_get_buffers(struct bpf_bprintf_buffers **bufs);
-> >  void bpf_put_buffers(void);
-> >
-> > +void bpf_prog_stream_init(struct bpf_prog *prog);
-> > +void bpf_prog_stream_free(struct bpf_prog *prog);
-> > +int bpf_prog_stream_read(struct bpf_prog *prog, enum bpf_stream_id str=
-eam_id, void __user *buf, int len);
-> > +void bpf_stream_stage_init(struct bpf_stream_stage *ss);
-> > +void bpf_stream_stage_free(struct bpf_stream_stage *ss);
-> > +__printf(2, 3)
-> > +int bpf_stream_stage_printk(struct bpf_stream_stage *ss, const char *f=
-mt, ...);
-> > +int bpf_stream_stage_commit(struct bpf_stream_stage *ss, struct bpf_pr=
-og *prog,
-> > +                           enum bpf_stream_id stream_id);
-> > +
-> > +#define bpf_stream_printk(ss, ...) bpf_stream_stage_printk(&ss, __VA_A=
-RGS__)
-> > +
-> > +#define bpf_stream_stage(ss, prog, stream_id, expr)            \
-> > +       ({                                                     \
-> > +               bpf_stream_stage_init(&ss);                    \
-> > +               (expr);                                        \
-> > +               bpf_stream_stage_commit(&ss, prog, stream_id); \
-> > +               bpf_stream_stage_free(&ss);                    \
-> > +       })
-> >
-> >  #ifdef CONFIG_BPF_LSM
-> >  void bpf_cgroup_atype_get(u32 attach_btf_id, int cgroup_atype);
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 719ba230032f..0670e15a6100 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -906,6 +906,17 @@ union bpf_iter_link_info {
-> >   *             A new file descriptor (a nonnegative integer), or -1 if=
- an
-> >   *             error occurred (in which case, *errno* is set appropria=
-tely).
-> >   *
-> > + * BPF_PROG_STREAM_READ_BY_FD
-> > + *     Description
-> > + *             Read data of a program's BPF stream. The program is ide=
-ntified
-> > + *             by *prog_fd*, and the stream is identified by the *stre=
-am_id*.
-> > + *             The data is copied to a buffer pointed to by *stream_bu=
-f*, and
-> > + *             filled less than or equal to *stream_buf_len* bytes.
-> > + *
-> > + *     Return
-> > + *             Number of bytes read from the stream on success, or -1 =
-if an
-> > + *             error occurred (in which case, *errno* is set appropria=
-tely).
-> > + *
-> >   * NOTES
-> >   *     eBPF objects (maps and programs) can be shared between processe=
-s.
-> >   *
-> > @@ -961,6 +972,7 @@ enum bpf_cmd {
-> >         BPF_LINK_DETACH,
-> >         BPF_PROG_BIND_MAP,
-> >         BPF_TOKEN_CREATE,
-> > +       BPF_PROG_STREAM_READ_BY_FD,
-> >         __MAX_BPF_CMD,
-> >  };
-> >
-> > @@ -1463,6 +1475,11 @@ struct bpf_stack_build_id {
-> >
-> >  #define BPF_OBJ_NAME_LEN 16U
-> >
-> > +enum {
-> > +       BPF_STREAM_STDOUT =3D 1,
-> > +       BPF_STREAM_STDERR =3D 2,
-> > +};
-> > +
-> >  union bpf_attr {
-> >         struct { /* anonymous struct used by BPF_MAP_CREATE command */
-> >                 __u32   map_type;       /* one of enum bpf_map_type */
-> > @@ -1849,6 +1866,13 @@ union bpf_attr {
-> >                 __u32           bpffs_fd;
-> >         } token_create;
-> >
-> > +       struct {
-> > +               __aligned_u64   stream_buf;
-> > +               __u32           stream_buf_len;
-> > +               __u32           stream_id;
-> > +               __u32           prog_fd;
-> > +       } prog_stream_read;
-> > +
-> >  } __attribute__((aligned(8)));
-> >
-> >  /* The description below is an attempt at providing documentation to e=
-BPF
-> > diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-> > index 3a335c50e6e3..269c04a24664 100644
-> > --- a/kernel/bpf/Makefile
-> > +++ b/kernel/bpf/Makefile
-> > @@ -14,7 +14,7 @@ obj-$(CONFIG_BPF_SYSCALL) +=3D bpf_local_storage.o bp=
-f_task_storage.o
-> >  obj-${CONFIG_BPF_LSM}    +=3D bpf_inode_storage.o
-> >  obj-$(CONFIG_BPF_SYSCALL) +=3D disasm.o mprog.o
-> >  obj-$(CONFIG_BPF_JIT) +=3D trampoline.o
-> > -obj-$(CONFIG_BPF_SYSCALL) +=3D btf.o memalloc.o rqspinlock.o
-> > +obj-$(CONFIG_BPF_SYSCALL) +=3D btf.o memalloc.o rqspinlock.o stream.o
-> >  ifeq ($(CONFIG_MMU)$(CONFIG_64BIT),yy)
-> >  obj-$(CONFIG_BPF_SYSCALL) +=3D arena.o range_tree.o
-> >  endif
-> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> > index e536a34a32c8..f0def24573ae 100644
-> > --- a/kernel/bpf/core.c
-> > +++ b/kernel/bpf/core.c
-> > @@ -134,6 +134,10 @@ struct bpf_prog *bpf_prog_alloc_no_stats(unsigned =
-int size, gfp_t gfp_extra_flag
-> >         mutex_init(&fp->aux->ext_mutex);
-> >         mutex_init(&fp->aux->dst_mutex);
-> >
-> > +#ifdef CONFIG_BPF_SYSCALL
-> > +       bpf_prog_stream_init(fp);
-> > +#endif
-> > +
-> >         return fp;
-> >  }
-> >
-> > @@ -2862,6 +2866,7 @@ static void bpf_prog_free_deferred(struct work_st=
-ruct *work)
-> >         aux =3D container_of(work, struct bpf_prog_aux, work);
-> >  #ifdef CONFIG_BPF_SYSCALL
-> >         bpf_free_kfunc_btf_tab(aux->kfunc_btf_tab);
-> > +       bpf_prog_stream_free(aux->prog);
-> >  #endif
-> >  #ifdef CONFIG_CGROUP_BPF
-> >         if (aux->cgroup_atype !=3D CGROUP_BPF_ATTACH_TYPE_INVALID)
-> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> > index 8f1cc1d525db..61fdd343d6f5 100644
-> > --- a/kernel/bpf/helpers.c
-> > +++ b/kernel/bpf/helpers.c
-> > @@ -3778,6 +3778,7 @@ BTF_ID_FLAGS(func, bpf_strnstr);
-> >  #if defined(CONFIG_BPF_LSM) && defined(CONFIG_CGROUPS)
-> >  BTF_ID_FLAGS(func, bpf_cgroup_read_xattr, KF_RCU)
-> >  #endif
-> > +BTF_ID_FLAGS(func, bpf_stream_vprintk, KF_TRUSTED_ARGS)
-> >  BTF_KFUNCS_END(common_btf_ids)
-> >
-> >  static const struct btf_kfunc_id_set common_kfunc_set =3D {
-> > diff --git a/kernel/bpf/stream.c b/kernel/bpf/stream.c
-> > new file mode 100644
-> > index 000000000000..c4925f8d275f
-> > --- /dev/null
-> > +++ b/kernel/bpf/stream.c
-> > @@ -0,0 +1,478 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-> > +
-> > +#include <linux/bpf.h>
-> > +#include <linux/bpf_mem_alloc.h>
-> > +#include <linux/percpu.h>
-> > +#include <linux/refcount.h>
-> > +#include <linux/gfp.h>
-> > +#include <linux/memory.h>
-> > +#include <linux/local_lock.h>
-> > +#include <linux/mutex.h>
-> > +
-> > +/*
-> > + * Simple per-CPU NMI-safe bump allocation mechanism, backed by the NM=
-I-safe
-> > + * try_alloc_pages()/free_pages_nolock() primitives. We allocate a pag=
-e and
-> > + * stash it in a local per-CPU variable, and bump allocate from the pa=
-ge
-> > + * whenever items need to be printed to a stream. Each page holds a gl=
-obal
-> > + * atomic refcount in its first 4 bytes, and then records of variable =
-length
-> > + * that describe the printed messages. Once the global refcount has dr=
-opped to
-> > + * zero, it is a signal to free the page back to the kernel's page all=
-ocator,
-> > + * given all the individual records in it have been consumed.
-> > + *
-> > + * It is possible the same page is used to serve allocations across di=
-fferent
-> > + * programs, which may be consumed at different times individually, he=
-nce
-> > + * maintaining a reference count per-page is critical for correct life=
-time
-> > + * tracking.
-> > + *
-> > + * The bpf_stream_page code will be replaced to use kmalloc_nolock() o=
-nce it
-> > + * lands.
-> > + */
-> > +struct bpf_stream_page {
-> > +       refcount_t ref;
-> > +       u32 consumed;
-> > +       char buf[];
-> > +};
-> > +
-> > +/* Available room to add data to a refcounted page. */
-> > +#define BPF_STREAM_PAGE_SZ (PAGE_SIZE - offsetofend(struct bpf_stream_=
-page, consumed))
-> > +
-> > +static DEFINE_PER_CPU(local_trylock_t, stream_local_lock) =3D INIT_LOC=
-AL_TRYLOCK(stream_local_lock);
-> > +static DEFINE_PER_CPU(struct bpf_stream_page *, stream_pcpu_page);
-> > +
-> > +static bool bpf_stream_page_local_lock(unsigned long *flags)
-> > +{
-> > +       return local_trylock_irqsave(&stream_local_lock, *flags);
-> > +}
-> > +
-> > +static void bpf_stream_page_local_unlock(unsigned long *flags)
-> > +{
-> > +       local_unlock_irqrestore(&stream_local_lock, *flags);
-> > +}
-> > +
-> > +static void bpf_stream_page_free(struct bpf_stream_page *stream_page)
-> > +{
-> > +       struct page *p;
-> > +
-> > +       if (!stream_page)
-> > +               return;
-> > +       p =3D virt_to_page(stream_page);
-> > +       free_pages_nolock(p, 0);
-> > +}
-> > +
-> > +static void bpf_stream_page_get(struct bpf_stream_page *stream_page)
-> > +{
-> > +       refcount_inc(&stream_page->ref);
-> > +}
-> > +
-> > +static void bpf_stream_page_put(struct bpf_stream_page *stream_page)
-> > +{
-> > +       if (refcount_dec_and_test(&stream_page->ref))
-> > +               bpf_stream_page_free(stream_page);
-> > +}
-> > +
-> > +static void bpf_stream_page_init(struct bpf_stream_page *stream_page)
-> > +{
-> > +       refcount_set(&stream_page->ref, 1);
-> > +       stream_page->consumed =3D 0;
-> > +}
-> > +
-> > +static struct bpf_stream_page *bpf_stream_page_replace(void)
-> > +{
-> > +       struct bpf_stream_page *stream_page, *old_stream_page;
-> > +       struct page *page;
-> > +
-> > +       page =3D alloc_pages_nolock(NUMA_NO_NODE, 0);
-> > +       if (!page)
-> > +               return NULL;
-> > +       stream_page =3D page_address(page);
-> > +       bpf_stream_page_init(stream_page);
-> > +
-> > +       old_stream_page =3D this_cpu_read(stream_pcpu_page);
-> > +       if (old_stream_page)
-> > +               bpf_stream_page_put(old_stream_page);
-> > +       this_cpu_write(stream_pcpu_page, stream_page);
-> > +       return stream_page;
-> > +}
-> > +
-> > +static int bpf_stream_page_check_room(struct bpf_stream_page *stream_p=
-age, int len)
-> > +{
-> > +       int min =3D offsetof(struct bpf_stream_elem, str[0]);
-> > +       int consumed =3D stream_page->consumed;
-> > +       int total =3D BPF_STREAM_PAGE_SZ;
-> > +       int rem =3D max(0, total - consumed - min);
-> > +
-> > +       /* Let's give room of at least 8 bytes. */
-> > +       WARN_ON_ONCE(rem % 8 !=3D 0);
-> > +       rem =3D rem < 8 ? 0 : rem;
-> > +       return min(len, rem);
-> > +}
-> > +
-> > +static void bpf_stream_elem_init(struct bpf_stream_elem *elem, int len=
-)
-> > +{
-> > +       init_llist_node(&elem->node);
-> > +       elem->total_len =3D len;
-> > +       elem->consumed_len =3D 0;
-> > +}
-> > +
-> > +static struct bpf_stream_page *bpf_stream_page_from_elem(struct bpf_st=
-ream_elem *elem)
-> > +{
-> > +       unsigned long addr =3D (unsigned long)elem;
-> > +
-> > +       return (struct bpf_stream_page *)PAGE_ALIGN_DOWN(addr);
-> > +}
-> > +
-> > +static struct bpf_stream_elem *bpf_stream_page_push_elem(struct bpf_st=
-ream_page *stream_page, int len)
-> > +{
-> > +       u32 consumed =3D stream_page->consumed;
-> > +
-> > +       stream_page->consumed +=3D round_up(offsetof(struct bpf_stream_=
-elem, str[len]), 8);
-> > +       return (struct bpf_stream_elem *)&stream_page->buf[consumed];
-> > +}
-> > +
-> > +static noinline struct bpf_stream_elem *bpf_stream_page_reserve_elem(i=
-nt len)
+>Fixes: 069b142f5819 ("igc: Add support for PTP .getcyclesx64()")
+>Reported-by: Zdenek Bouska <zdenek.bouska@siemens.com>
+>Closes: https://lore.kernel.org/netdev/AS1PR10MB5675499EE0ED3A579151D3D3EB=
+E02@AS1PR10MB5675.EURPRD10.PROD.OUTLOOK.COM/
+>Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
+>---
+> drivers/net/ethernet/intel/igc/igc_main.c | 5 -----
+> 1 file changed, 5 deletions(-)
 >
-> Why noinline?
-
-Ack, should be dropped.
-
+>diff --git a/drivers/net/ethernet/intel/igc/igc_main.c
+>b/drivers/net/ethernet/intel/igc/igc_main.c
+>index 686793c539f2..8362e789777e 100644
+>--- a/drivers/net/ethernet/intel/igc/igc_main.c
+>+++ b/drivers/net/ethernet/intel/igc/igc_main.c
+>@@ -2829,11 +2829,6 @@ static int igc_clean_rx_irq_zc(struct igc_q_vector
+>*q_vector, const int budget)
+> 			ctx->rx_ts =3D bi->xdp->data;
 >
-> > +{
-> > +       struct bpf_stream_elem *elem =3D NULL;
-> > +       struct bpf_stream_page *page;
-> > +       int room =3D 0;
-> > +
-> > +       page =3D this_cpu_read(stream_pcpu_page);
-> > +       if (!page)
-> > +               page =3D bpf_stream_page_replace();
-> > +       if (!page)
-> > +               return NULL;
-> > +
-> > +       room =3D bpf_stream_page_check_room(page, len);
-> > +       if (room !=3D len)
-> > +               page =3D bpf_stream_page_replace();
-> > +       if (!page)
-> > +               return NULL;
-> > +       bpf_stream_page_get(page);
-> > +       room =3D bpf_stream_page_check_room(page, len);
-> > +       WARN_ON_ONCE(room !=3D len);
-> > +
-> > +       elem =3D bpf_stream_page_push_elem(page, room);
-> > +       bpf_stream_elem_init(elem, room);
-> > +       return elem;
-> > +}
-> > +
-> > +static struct bpf_stream_elem *bpf_stream_elem_alloc(int len)
-> > +{
-> > +       const int max_len =3D ARRAY_SIZE((struct bpf_bprintf_buffers){}=
-.buf);
-> > +       struct bpf_stream_elem *elem;
-> > +       unsigned long flags;
-> > +
-> > +       BUILD_BUG_ON(max_len > BPF_STREAM_PAGE_SZ);
-> > +       /*
-> > +        * Length denotes the amount of data to be written as part of s=
-tream element,
-> > +        * thus includes '\0' byte. We're capped by how much bpf_bprint=
-f_buffers can
-> > +        * accomodate, therefore deny allocations that won't fit into t=
-hem.
-> > +        */
-> > +       if (len < 0 || len > max_len)
-> > +               return NULL;
-> > +
-> > +       if (!bpf_stream_page_local_lock(&flags))
-> > +               return NULL;
-> > +       elem =3D bpf_stream_page_reserve_elem(len);
-> > +       bpf_stream_page_local_unlock(&flags);
-> > +       return elem;
-> > +}
-> > +
-> > +static int __bpf_stream_push_str(struct llist_head *log, const char *s=
-tr, int len)
-> > +{
-> > +       struct bpf_stream_elem *elem =3D NULL;
-> > +
-> > +       /*
-> > +        * Allocate a bpf_prog_stream_elem and push it to the bpf_prog_=
-stream
-> > +        * log, elements will be popped at once and reversed to print t=
-he log.
-> > +        */
-> > +       elem =3D bpf_stream_elem_alloc(len);
-> > +       if (!elem)
-> > +               return -ENOMEM;
-> > +
-> > +       memcpy(elem->str, str, len);
-> > +       llist_add(&elem->node, log);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int bpf_stream_consume_capacity(struct bpf_stream *stream, int =
-len)
-> > +{
-> > +       if (atomic_read(&stream->capacity) >=3D BPF_STREAM_MAX_CAPACITY=
-)
-> > +               return -ENOSPC;
-> > +       if (atomic_add_return(len, &stream->capacity) >=3D BPF_STREAM_M=
-AX_CAPACITY) {
-> > +               atomic_sub(len, &stream->capacity);
-> > +               return -ENOSPC;
-> > +       }
-> > +       return 0;
-> > +}
-> > +
-> > +static void bpf_stream_release_capacity(struct bpf_stream *stream, str=
-uct bpf_stream_elem *elem)
-> > +{
-> > +       int len =3D elem->total_len;
-> > +
-> > +       atomic_sub(len, &stream->capacity);
-> > +}
-> > +
-> > +static int bpf_stream_push_str(struct bpf_stream *stream, const char *=
-str, int len)
-> > +{
-> > +       int ret =3D bpf_stream_consume_capacity(stream, len);
-> > +
-> > +       return ret ?: __bpf_stream_push_str(&stream->log, str, len);
-> > +}
-> > +
-> > +static struct bpf_stream *bpf_stream_get(enum bpf_stream_id stream_id,=
- struct bpf_prog_aux *aux)
-> > +{
-> > +       if (stream_id !=3D BPF_STDOUT && stream_id !=3D BPF_STDERR)
-> > +               return NULL;
-> > +       return &aux->stream[stream_id - 1];
-> > +}
-> > +
-> > +static void bpf_stream_free_elem(struct bpf_stream_elem *elem)
-> > +{
-> > +       struct bpf_stream_page *p;
-> > +
-> > +       p =3D bpf_stream_page_from_elem(elem);
-> > +       bpf_stream_page_put(p);
-> > +}
-> > +
-> > +static void bpf_stream_free_list(struct llist_node *list)
-> > +{
-> > +       struct bpf_stream_elem *elem, *tmp;
-> > +
-> > +       llist_for_each_entry_safe(elem, tmp, list, node)
-> > +               bpf_stream_free_elem(elem);
-> > +}
-> > +
-> > +static struct llist_node *bpf_stream_backlog_peek(struct bpf_stream *s=
-tream)
-> > +{
-> > +       return stream->backlog_head;
-> > +}
-> > +
-> > +static struct llist_node *bpf_stream_backlog_pop(struct bpf_stream *st=
-ream)
-> > +{
-> > +       struct llist_node *node;
-> > +
-> > +       node =3D stream->backlog_head;
-> > +       if (stream->backlog_head =3D=3D stream->backlog_tail)
-> > +               stream->backlog_head =3D stream->backlog_tail =3D NULL;
-> > +       else
-> > +               stream->backlog_head =3D node->next;
-> > +       return node;
-> > +}
-> > +
-> > +static void bpf_stream_backlog_fill(struct bpf_stream *stream)
-> > +{
-> > +       struct llist_node *head, *tail;
-> > +
-> > +       if (llist_empty(&stream->log))
-> > +               return;
-> > +       tail =3D llist_del_all(&stream->log);
-> > +       if (!tail)
-> > +               return;
-> > +       head =3D llist_reverse_order(tail);
-> > +
-> > +       if (!stream->backlog_head) {
-> > +               stream->backlog_head =3D head;
-> > +               stream->backlog_tail =3D tail;
-> > +       } else {
-> > +               stream->backlog_tail->next =3D head;
-> > +               stream->backlog_tail =3D tail;
-> > +       }
-> > +
-> > +       return;
-> > +}
-> > +
-> > +static bool bpf_stream_consume_elem(struct bpf_stream_elem *elem, int =
-*len)
-> > +{
-> > +       int rem =3D elem->total_len - elem->consumed_len;
-> > +       int used =3D min(rem, *len);
-> > +
-> > +       elem->consumed_len +=3D used;
-> > +       *len -=3D used;
-> > +
-> > +       return elem->consumed_len =3D=3D elem->total_len;
-> > +}
-> > +
-> > +static int bpf_stream_read(struct bpf_stream *stream, void __user *buf=
-, int len)
-> > +{
-> > +       int rem_len =3D len, cons_len, ret =3D 0;
-> > +       struct bpf_stream_elem *elem =3D NULL;
-> > +       struct llist_node *node;
-> > +
-> > +       mutex_lock(&stream->lock);
-> > +
-> > +       while (rem_len) {
-> > +               int pos =3D len - rem_len;
-> > +               bool cont;
-> > +
-> > +               node =3D bpf_stream_backlog_peek(stream);
-> > +               if (!node) {
-> > +                       bpf_stream_backlog_fill(stream);
-> > +                       node =3D bpf_stream_backlog_peek(stream);
-> > +               }
-> > +               if (!node)
-> > +                       break;
-> > +               elem =3D container_of(node, typeof(*elem), node);
-> > +
-> > +               cons_len =3D elem->consumed_len;
-> > +               cont =3D bpf_stream_consume_elem(elem, &rem_len) =3D=3D=
- false;
-> > +
-> > +               ret =3D copy_to_user(buf + pos, elem->str + cons_len,
-> > +                                  elem->consumed_len - cons_len);
-> > +               /* Restore in case of error. */
-> > +               if (ret) {
-> > +                       ret =3D -EFAULT;
-> > +                       elem->consumed_len =3D cons_len;
-> > +                       break;
-> > +               }
-> > +
-> > +               if (cont)
-> > +                       continue;
-> > +               bpf_stream_backlog_pop(stream);
-> > +               bpf_stream_release_capacity(stream, elem);
-> > +               bpf_stream_free_elem(elem);
-> > +       }
-> > +
-> > +       mutex_unlock(&stream->lock);
-> > +       return ret ? ret : len - rem_len;
-> > +}
-> > +
-> > +int bpf_prog_stream_read(struct bpf_prog *prog, enum bpf_stream_id str=
-eam_id, void __user *buf, int len)
-> > +{
-> > +       struct bpf_stream *stream;
-> > +
-> > +       stream =3D bpf_stream_get(stream_id, prog->aux);
-> > +       if (!stream)
-> > +               return -ENOENT;
-> > +       return bpf_stream_read(stream, buf, len);
-> > +}
-> > +
-> > +__bpf_kfunc_start_defs();
-> > +
-> > +/*
-> > + * Avoid using enum bpf_stream_id so that kfunc users don't have to pu=
-ll in the
-> > + * enum in headers.
-> > + */
-> > +__bpf_kfunc int bpf_stream_vprintk(int stream_id, const char *fmt__str=
-, const void *args, u32 len__sz, void *aux__prog)
-> > +{
-> > +       struct bpf_bprintf_data data =3D {
-> > +               .get_bin_args   =3D true,
-> > +               .get_buf        =3D true,
-> > +       };
-> > +       struct bpf_prog_aux *aux =3D aux__prog;
-> > +       u32 fmt_size =3D strlen(fmt__str) + 1;
-> > +       struct bpf_stream *stream;
-> > +       u32 data_len =3D len__sz;
-> > +       int ret, num_args;
-> > +
-> > +       stream =3D bpf_stream_get(stream_id, aux);
-> > +       if (!stream)
-> > +               return -ENOENT;
-> > +
-> > +       if (data_len & 7 || data_len > MAX_BPRINTF_VARARGS * 8 ||
->
-> Maybe rename data_len to vararg/argarr_len or something else? Right
-> now  looks like it's the length of the actual data instead
-> of the vararg array.
+> 			bi->xdp->data +=3D IGC_TS_HDR_LEN;
+>-
+>-			/* HW timestamp has been copied into local variable. Metadata
+>-			 * length when XDP program is called should be 0.
+>-			 */
+>-			bi->xdp->data_meta +=3D IGC_TS_HDR_LEN;
+> 			size -=3D IGC_TS_HDR_LEN;
+> 		} else {
+> 			ctx->rx_ts =3D NULL;
+>--
+>2.34.1
 >
 
-Kept it the same as trace_printk for consistency.
+Following the discussion in [1], since there is no strong justification for=
+ making
+the metadata length user-visible at this time, we have opted to retain the
+current implementation of the data_meta pointer.
+
+[1] https://lore.kernel.org/netdev/IA3PR11MB92541178AAF28F03639A9435D840A@I=
+A3PR11MB9254.namprd11.prod.outlook.com/
 
