@@ -1,99 +1,174 @@
-Return-Path: <bpf+bounces-62031-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62032-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 362D1AF0893
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 04:40:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB751AF08AD
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 04:49:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4589916E282
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 02:40:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1386B188BA74
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 02:49:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DD5C1DC075;
-	Wed,  2 Jul 2025 02:40:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ED1315A848;
+	Wed,  2 Jul 2025 02:49:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C6rFgR/U"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gFXwASPE"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E5621D5ADC;
-	Wed,  2 Jul 2025 02:40:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57056B663
+	for <bpf@vger.kernel.org>; Wed,  2 Jul 2025 02:48:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751424002; cv=none; b=MH/Ge+uXwj5LPiI6cp/dSbmPgHtzNXh/6pf9Rrdz4BidD/KrnJT65Fz2uqvVkhsWHFHMOoapBl+OWj+kJi1nTGeB0jhZ2QODETfGceXCTCff0JNETRcTf+kzPPZp6yGT2kP5J4Y4gLpinRnFTd1uwJVQcG3LEPQZLhMLBsl7d64=
+	t=1751424540; cv=none; b=h6qTl6ZHQD8SO9jr0F+cm+Q8iiHTOvQAr0Fx/r5cP7wnvlTknbRDpqWPyt20LyyMLKU9KIcIRZeFzd5dkeG6ZwVrIRy//7axk1CwcoVLB3ja4x3Q8//rc9fPgsVr1UDXBx5F9r3MQG4oA1CgnlIu2aPEELgPLjNAPlnGAXzSGwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751424002; c=relaxed/simple;
-	bh=BgqoyH7BZAdjNzSV8UuKTMppKfENt1BfB4wMrIRE850=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=E0yZcHceAWOht2nfePb1ERffEPqkaLZVC/JOUtWXAyj1z5WU8DAB6PoiCLtYbVT40akQPsHMyHnFTCP0suaLq3B0tpEaDulIVNe86QS2ml+UhGcv/hbKwRcuT77WLN2JyoOkSuSGLBXSmhY4JOOOVaIXru8j4GfrpD7EWebN+iM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C6rFgR/U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76D83C4CEEF;
-	Wed,  2 Jul 2025 02:40:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751424002;
-	bh=BgqoyH7BZAdjNzSV8UuKTMppKfENt1BfB4wMrIRE850=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=C6rFgR/UGjtdTidwgGKyZXamMpf13xxwc4hqQbUeb59RuKSpw3puMxppVDXyqEpTN
-	 zPI6QNtetzxZMFZ6EOGceVp6GwXgk0jAmnqbhQiX+PsvVENK+zj1q68R5pRdiyquKT
-	 KAzefG9sSn07mXu6WThKWjM1lStf2UEWsR4uRuJCPvL42b6duw5S7uJSZe0b5kUjTm
-	 XYKMzGx7DxqB8FQZuO9XsuY7DUDEgRpiMGovsATR8HlxkczWxy1HbNrEjESsFNOEZH
-	 yp00P7Pn8+k6mw+02UfNMVGx32WXZGIGHbfGRwzGyMwiigJ/EmiTPFXF/nk5fbzkBa
-	 ZyeDBn4ThsFDA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70FC6383BA06;
-	Wed,  2 Jul 2025 02:40:28 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1751424540; c=relaxed/simple;
+	bh=pnfX6anJGFD1XiQodS6OaxmSewMRk6zzePVS6bqvuXY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XM/wdHMOXeK50Nt0nvMHZxP+xy2986hIaDgqrFb1on2WoNi7hwKNb3eBGApBpOcYpGtgaL8ZdzMTZMHiZYryU1ZGPUNnoOekNnywNU55uWMVMphRlZKYjsx7Gu+ILqXrdHAJckgqOG/5U91/cBq/jGQ8UoPoY68Ce1YWfwMUik8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gFXwASPE; arc=none smtp.client-ip=95.215.58.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <0a303984-e316-413e-a3d0-54912b19b7b7@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1751424533;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=C6Yg7AoSiOWbjjxodSNEoCGX7aXQA2GLA/3rDJ469cE=;
+	b=gFXwASPEKxIRGAkpuJhcCtwIHCNuBt8b7q6ZTNstzgkfMfJKFaKlUQyBkjn/3zRLuGa8td
+	Vu+vnEk4O4vCh9Cs34Zrf3TJU/Md/lmhM/W7l2DvAQ+87vH+fSNesty7rkZb8zy6o4Jyfz
+	s/ofw4xyXMoEcUIBkYdzutAhGFtuR18=
+Date: Wed, 2 Jul 2025 10:48:23 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v6 3/3] bpf: Add show_fdinfo for kprobe_multi
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, mattbobrowski@google.com,
+ rostedt@goodmis.org, mhiramat@kernel.org, mathieu.desnoyers@efficios.com,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org
+References: <20250627082252.431209-1-chen.dylane@linux.dev>
+ <20250627082252.431209-3-chen.dylane@linux.dev>
+ <CAEf4BzZYS52gztmLgQtsehNDVwv7NBETh97zMk73ZqLL9uJ50Q@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Tao Chen <chen.dylane@linux.dev>
+In-Reply-To: <CAEf4BzZYS52gztmLgQtsehNDVwv7NBETh97zMk73ZqLL9uJ50Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: mana: Handle Reset Request from MANA NIC
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <175142402700.183540.8619749523804992864.git-patchwork-notify@kernel.org>
-Date: Wed, 02 Jul 2025 02:40:27 +0000
-References: <1751055983-29760-1-git-send-email-haiyangz@linux.microsoft.com>
-In-Reply-To: <1751055983-29760-1-git-send-email-haiyangz@linux.microsoft.com>
-To: Haiyang Zhang <haiyangz@linux.microsoft.com>
-Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
- haiyangz@microsoft.com, decui@microsoft.com, stephen@networkplumber.org,
- kys@microsoft.com, paulros@microsoft.com, olaf@aepfle.de,
- vkuznets@redhat.com, davem@davemloft.net, wei.liu@kernel.org,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
- longli@microsoft.com, ssengar@linux.microsoft.com,
- linux-rdma@vger.kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- bpf@vger.kernel.org, ast@kernel.org, hawk@kernel.org, tglx@linutronix.de,
- shradhagupta@linux.microsoft.com, andrew+netdev@lunn.ch,
- kotaranov@microsoft.com, horms@kernel.org, linux-kernel@vger.kernel.org
+X-Migadu-Flow: FLOW_OUT
 
-Hello:
-
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Fri, 27 Jun 2025 13:26:23 -0700 you wrote:
-> From: Haiyang Zhang <haiyangz@microsoft.com>
+在 2025/7/2 04:37, Andrii Nakryiko 写道:
+> On Fri, Jun 27, 2025 at 1:23 AM Tao Chen <chen.dylane@linux.dev> wrote:
+>>
+>> Show kprobe_multi link info with fdinfo, the info as follows:
+>>
+>> link_type:      kprobe_multi
+>> link_id:        1
+>> prog_tag:       33be53a4fd673e1d
+>> prog_id:        21
+>> kprobe_cnt:     8
+>> missed: 0
+>> cookie           func
+>> 1                bpf_fentry_test1+0x0/0x20
+>> 7                bpf_fentry_test2+0x0/0x20
+>> 2                bpf_fentry_test3+0x0/0x20
+>> 3                bpf_fentry_test4+0x0/0x20
+>> 4                bpf_fentry_test5+0x0/0x20
+>> 5                bpf_fentry_test6+0x0/0x20
+>> 6                bpf_fentry_test7+0x0/0x20
+>> 8                bpf_fentry_test8+0x0/0x10
 > 
-> Upon receiving the Reset Request, pause the connection and clean up
-> queues, wait for the specified period, then resume the NIC.
-> In the cleanup phase, the HWC is no longer responding, so set hwc_timeout
-> to zero to skip waiting on the response.
+> two nits:
 > 
-> [...]
+> 1) order of cookie. For uprobes you have cookie at the end, here in
+> the front. Given variable-sized func name, I'd move cookie to the
+> front for uprobes for consistency.
+> 
 
-Here is the summary with links:
-  - [net-next] net: mana: Handle Reset Request from MANA NIC
-    https://git.kernel.org/netdev/net-next/c/fbe346ce9d62
+Ok, will change it in v7.
 
-You are awesome, thank you!
+> 2) field sizing for cookie (16) is a) not sufficient for maximum
+> possible u64 (20 digits) and b) very wasteful in common case of small
+> numbers. So use tab instead of fixed-sized column? And why 16
+> character sizing for the func column? Just to have more spaces
+> emitted?
+> 
+
+I just referred to the implementation in bpftool/link.c, i will use tab 
+format in v7. "16 character sizing for the func" just keeps consistency 
+with cookie, " %s" for func name maybe better.
+
+> 
+> Other than that the series looks good to me.
+> 
+> pw-bot: cr
+> 
+> 
+>>
+>> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+>> ---
+>>   kernel/trace/bpf_trace.c | 27 +++++++++++++++++++++++++++
+>>   1 file changed, 27 insertions(+)
+>>
+>> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+>> index 1c75f9c6c66..e8f070504c4 100644
+>> --- a/kernel/trace/bpf_trace.c
+>> +++ b/kernel/trace/bpf_trace.c
+>> @@ -2622,10 +2622,37 @@ static int bpf_kprobe_multi_link_fill_link_info(const struct bpf_link *link,
+>>          return err;
+>>   }
+>>
+>> +#ifdef CONFIG_PROC_FS
+>> +static void bpf_kprobe_multi_show_fdinfo(const struct bpf_link *link,
+>> +                                        struct seq_file *seq)
+>> +{
+>> +       struct bpf_kprobe_multi_link *kmulti_link;
+>> +
+>> +       kmulti_link = container_of(link, struct bpf_kprobe_multi_link, link);
+>> +
+>> +       seq_printf(seq,
+>> +                  "kprobe_cnt:\t%u\n"
+>> +                  "missed:\t%lu\n",
+>> +                  kmulti_link->cnt,
+>> +                  kmulti_link->fp.nmissed);
+>> +
+>> +       seq_printf(seq, "%-16s %-16s\n", "cookie", "func");
+>> +       for (int i = 0; i < kmulti_link->cnt; i++) {
+>> +               seq_printf(seq,
+>> +                          "%-16llu %-16pS\n",
+>> +                          kmulti_link->cookies[i],
+>> +                          (void *)kmulti_link->addrs[i]);
+>> +       }
+>> +}
+>> +#endif
+>> +
+>>   static const struct bpf_link_ops bpf_kprobe_multi_link_lops = {
+>>          .release = bpf_kprobe_multi_link_release,
+>>          .dealloc_deferred = bpf_kprobe_multi_link_dealloc,
+>>          .fill_link_info = bpf_kprobe_multi_link_fill_link_info,
+>> +#ifdef CONFIG_PROC_FS
+>> +       .show_fdinfo = bpf_kprobe_multi_show_fdinfo,
+>> +#endif
+>>   };
+>>
+>>   static void bpf_kprobe_multi_cookie_swap(void *a, void *b, int size, const void *priv)
+>> --
+>> 2.48.1
+>>
+
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Best Regards
+Tao Chen
 
