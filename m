@@ -1,152 +1,113 @@
-Return-Path: <bpf+bounces-62104-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62105-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A03CAF13F7
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 13:34:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49627AF13FD
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 13:37:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5CEA27A4130
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 11:33:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44C413ACEEB
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 11:36:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B0E826560D;
-	Wed,  2 Jul 2025 11:34:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAEC9265CB6;
+	Wed,  2 Jul 2025 11:36:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HHAi5kVB"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="fIanRNpS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CBC423371F;
-	Wed,  2 Jul 2025 11:34:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33A2B1D516A
+	for <bpf@vger.kernel.org>; Wed,  2 Jul 2025 11:36:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751456057; cv=none; b=HvLONWrQMdHRSLtjBP/jDQ/Bx/QKhHmN23OaGIZ2ToNFPcA5ebqeNysEUT/dRCcA0QXR9Nm93e7FAdV2ajHNAAvSoQhSWM2f6PenY3Kw4PpKRD+riYtOtzggSMQj+7pSOrcbMhGLh/aH4e7C6ClnGfHi00Fw2cBIg7glP6bxp+U=
+	t=1751456213; cv=none; b=oNFyHXHQUqQwODtVxz8ljVEgNAwvMX9m7TsddZK+Kt5NbgnTgnYUyoTBrsMoQ5oClncWU6gdGTL2IcvSexj7yLXj6fVeA3aPJlK5m6kn9mfEJZTrp69cd5ucFDuqIbFZkhBSlc2Y08embuQ+8jLkX7x4B1I9z4RvR1qS8hRMu0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751456057; c=relaxed/simple;
-	bh=Nq3rXKAUHavmOWHdiAxOlIxS5cCFcHFUGxZmUDclhSM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Y0A7yikLIJEWOkZL3PZsOIWArn3xk9pXYwjDHXxEmsjLzAsOfEmjAxqOf5caPDzr1jj9gzFP0NPffvEdQAMzTIebLMTEDBK0E/ZeKi8bilCkRucqb1cU+ZXj5uMew/AkqyQuHDCMZRPSFtiL0jdOfiY5RcMqrMK4uJ/rCEMoY/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HHAi5kVB; arc=none smtp.client-ip=209.85.166.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-8723a232750so379843439f.1;
-        Wed, 02 Jul 2025 04:34:15 -0700 (PDT)
+	s=arc-20240116; t=1751456213; c=relaxed/simple;
+	bh=KGNep1+RUx9vozt8bjGWN3hHR3Jz1TATF1bPV+kzZg8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ojvWB43HN3VcB78Vchwg460ZMzy858ZzbSInuy/C/D/D5HDQLPgbtnVUDpPdIHnXUdIlV7b31JRa4G9aj+e4GMd2yiT7RlxgWw/U+odzKCd777KFH82U7DwhwwlWRxYN6/XXSiS7un0ayZ9CVEanUQtjAvQYszXJJOEJmMSqPig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=fIanRNpS; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-607cc1a2bd8so7280682a12.2
+        for <bpf@vger.kernel.org>; Wed, 02 Jul 2025 04:36:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751456054; x=1752060854; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Tj/QHuZV4QOpSEKs+oYRbdM+glo559vKGz/A6OFJUSU=;
-        b=HHAi5kVBj5UyOSN4LEfY+SGrKNk0hZ7xfVKbi6Tk0ao6rh1efO3Mmrs3UJvTNzIiio
-         yhLtA3CvQA69KvIq707I2YBiLy+qXG2yYb/Lu1+hZkq2rIBepeY7pKpEwsJTore/b6Jq
-         LldgcyXNfeXM5dCzUaYDeLFQxPZxGwKblmOJddiqe6vdBjEPkwA9X3LexE4fn2uZ/fcV
-         ueOOnRo0y/+pLJlkExJqSeuBKWeOON85SK0UEktvF481ThF4QOY30/L2gFmUli9yZd7r
-         ja7DVc8HyDtMDcFfQ/NYnGy0RSeLLxgm5FHKgUw9Si99GNahJc+5BGjlthSpPlAbh6Ib
-         JdTw==
+        d=cloudflare.com; s=google09082023; t=1751456209; x=1752061009; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KGNep1+RUx9vozt8bjGWN3hHR3Jz1TATF1bPV+kzZg8=;
+        b=fIanRNpSo/FRmvqNYN5xYispHy2kSBGXDr+juqav8h3ABwKglbxBfERtIS0ztLq48O
+         3Wqm/pT41QCtz1yR+Dui3mybwNanND639bdvtIzvBGMBdZBS9hq1daP3rUh78t9745SS
+         b/VGlgTfPIFa8aauN0sBi/0h09xM9SRtRKcLUi/WoDty6/tFOOxwh+BPIEAYFpqx/geQ
+         53Y6gZRqXIyFf8oydo2nDdTAad9M6pT3sxUadYYPlFgWpwtKv0N+cbair0GVoTbi3LqS
+         QhQVMTD57OoReKyKyhl6FmCYpWH9YKCs0+nZ50qTBnd9rZm7fcaQs+Q4K+NHqqUsludx
+         Cq/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751456054; x=1752060854;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Tj/QHuZV4QOpSEKs+oYRbdM+glo559vKGz/A6OFJUSU=;
-        b=qCAs3h3vMZvJJPgHZ6laurBDaQR4LfksqNLctRmml/cjdJiyI6GI4sXTPW7XUpAbEg
-         WYw/fCy83S4oh1M30A5Fm4fKeK/3XhIT0Ikail/hnTdsXaxp1Po+ASl81td4XeknHw6Z
-         o/tOmhkqc18fObGU7hhhJ0ww/YAejqlkxYRJ9FcIwnpA3Rq5IM9cC27bWhzYs7ihKRwS
-         QQBapc9RbDLf18K6PYhlfv5wxJXEn7oLaL0ouz1TCjPrlWH/9x1eyDIAGF04vwo5YWlc
-         c0OCTBJDoocYP1McK+DTzX5arasVWGXeAYvpaky3VeOnJAj1jsYr3tCaD/9pSmZ9Ubk+
-         DlJA==
-X-Forwarded-Encrypted: i=1; AJvYcCULgUjbTXqnSuvvhLgOzseskKygDtycCUjkwQq9p0v+r4a5qF9/2fYFRP9cmMWF9P/DxrkGJSE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwCzrNqfnybqPE5ZD3r78FHcYgqF+Hjeh0uUGv+ISZdPytcq3Nx
-	tcQBAG2Cg2q8KWNwalzgYtiq3NJDE3aI1qe+GqyU3hEGJ7EWHJf5x3UOyZ/zniwHS/yDbhK0znD
-	S54jRVI52VqzXW68q4B4EqoldeK3zVbw=
-X-Gm-Gg: ASbGnctHp7bfu59MHQIiMMhbK/mV/wGcFlgWNy+1pVt4FK+rAqBiipOa7DrYfVolAtr
-	Zf2bmcn445PQ0IHetUrRCY4doNsiEVUTGIb8qYCdTpTQyslPWhQ14d6NLaWNR7Y/OvPMOJn1FO1
-	dtqqrPsWbWKcYgeQfGynRYE2RUWWv6l2DFRJTICJG0QA==
-X-Google-Smtp-Source: AGHT+IEof+wvSreCEhz+hqGy3sJk0udMWHJqJUpmffqFzM1zUhy/ADa6+A9Lkbk5BSnxWb2BsPwcv70cf+Cx7qZyJ4I=
-X-Received: by 2002:a05:6e02:1988:b0:3df:1505:1d43 with SMTP id
- e9e14a558f8ab-3e054adbb28mr23658665ab.13.1751456054544; Wed, 02 Jul 2025
- 04:34:14 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1751456209; x=1752061009;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KGNep1+RUx9vozt8bjGWN3hHR3Jz1TATF1bPV+kzZg8=;
+        b=fpi1gzeofl5WfLdx/z1qZnJjNg2cQGfPQmLb15WMAb8diigfUaLX6+W51MZRBm0GWR
+         1iovuz9NXY9cvRpF5yuqgSOl1gIJVhHnsh+XO/ckazlqF3Br9GpEzJ362wVHVccIDaqc
+         Gfou1Lzdg9C+2q9hsry/mfDGxnWVrgAloikiVD7d5TpMLrHxir6DbeZ/T8dktHpH/SMx
+         V7gSla1mTimDlGYZjZ+LQzCfK1eUmAq2ARldIX/31ZIZ8Hp3FnUSHu6XTmhE+8N19tkF
+         0HX4fvvnCIDP5UZAC2E6V/519QUbjux4JBXiYcR/mlvEww7D4z4USoOF96SLj/MB+4VD
+         J6CA==
+X-Forwarded-Encrypted: i=1; AJvYcCVhapgLoK/TdYBhhe2rNznllBBUR9I5rQdxnk5Igy8Sit8Y0FeBZ9O8TQUaMAuCI5lqD8w=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzJsnx7kL2OEoFj88m/geWs2kXOjHb31uDY+TsETx1JEb1tE4KT
+	YOVS7ltLj543pFfYVDkFcww5KAc7bnoBF2D/XYa6VgssIzOKbvRqrPnf/LtQlo/XaTA=
+X-Gm-Gg: ASbGncuNNfNZNDewOfyJPXNJhBFV0DsqiVxZRntYtQjVb1zpxmdeXRnw6JiObKPMDnY
+	EFB0TucSY1sNbDsjrJOPpUjTcPhavtC01qCLyvOoyJzGwfZnLnGA0YkzmQPYBTCmramUkPO1e7b
+	ZaxoBSHf/1XnyiCAe0jHWgL8ABe15uLiVXoXo/j0M11ueUff44AGvAfErSa5inApDrjfo9SEzOJ
+	blAmD28pPmQrv01FsZ9m89aVLG6YOqrXFx1AQ5lSztw0nHBWTs544dZc1HnxCaSyqyEMRBA0pxJ
+	Vw0qN8mMEkM5XbgnbYeC52EYJ56JdNfecH640QQd9//lPn1zwRDhviXvpD2UpfxrzA==
+X-Google-Smtp-Source: AGHT+IHha9b9xQ/A0ZcnIav5AFmtDOwh7taBOwBfjUd88sadR4tukByoygPXpa/pAA2HMb1DNgXPSg==
+X-Received: by 2002:a17:907:2d2a:b0:ae0:afb7:6060 with SMTP id a640c23a62f3a-ae3c2a960aamr279933266b.19.1751456209508;
+        Wed, 02 Jul 2025 04:36:49 -0700 (PDT)
+Received: from cloudflare.com ([2a09:bac5:5063:2432::39b:e7])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae353c01375sm1072556466b.107.2025.07.02.04.36.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jul 2025 04:36:48 -0700 (PDT)
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: Cong Wang <xiyou.wangcong@gmail.com>
+Cc: netdev@vger.kernel.org,  bpf@vger.kernel.org,  john.fastabend@gmail.com,
+  zijianzhang@bytedance.com,  zhoufeng.zf@bytedance.com,  Cong Wang
+ <cong.wang@bytedance.com>
+Subject: Re: [Patch bpf-next v4 2/4] skmsg: implement slab allocator cache
+ for sk_msg
+In-Reply-To: <20250701011201.235392-3-xiyou.wangcong@gmail.com> (Cong Wang's
+	message of "Mon, 30 Jun 2025 18:11:59 -0700")
+References: <20250701011201.235392-1-xiyou.wangcong@gmail.com>
+	<20250701011201.235392-3-xiyou.wangcong@gmail.com>
+Date: Wed, 02 Jul 2025 13:36:47 +0200
+Message-ID: <87ms9mn7sg.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250627110121.73228-1-kerneljasonxing@gmail.com>
-In-Reply-To: <20250627110121.73228-1-kerneljasonxing@gmail.com>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Wed, 2 Jul 2025 19:33:36 +0800
-X-Gm-Features: Ac12FXzJvIQM7r7aIFq1ouNa3mwmFUqZNAjO2JDb1aDRaAESKrZwpEGXUSS05fY
-Message-ID: <CAL+tcoA=-igx3KPG4dY=9a6Ahd6kSSLsHz-AicTzShuDosa-1w@mail.gmail.com>
-Subject: Re: [PATCH net-next v6] net: xsk: introduce XDP_MAX_TX_BUDGET set/getsockopt
-To: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com, 
-	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com, sdf@fomichev.me, 
-	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
-	john.fastabend@gmail.com, joe@dama.to, willemdebruijn.kernel@gmail.com
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Fri, Jun 27, 2025 at 7:01=E2=80=AFPM Jason Xing <kerneljasonxing@gmail.c=
-om> wrote:
+On Mon, Jun 30, 2025 at 06:11 PM -07, Cong Wang wrote:
+> From: Zijian Zhang <zijianzhang@bytedance.com>
 >
-> From: Jason Xing <kernelxing@tencent.com>
+> Optimizing redirect ingress performance requires frequent allocation and
+> deallocation of sk_msg structures. Introduce a dedicated kmem_cache for
+> sk_msg to reduce memory allocation overhead and improve performance.
 >
-> This patch provides a setsockopt method to let applications leverage to
-> adjust how many descs to be handled at most in one send syscall. It
-> mitigates the situation where the default value (32) that is too small
-> leads to higher frequency of triggering send syscall.
->
-> Considering the prosperity/complexity the applications have, there is no
-> absolutely ideal suggestion fitting all cases. So keep 32 as its default
-> value like before.
->
-> The patch does the following things:
-> - Add XDP_MAX_TX_BUDGET socket option.
-> - Convert TX_BATCH_SIZE to tx_budget_spent.
-> - Set tx_budget_spent to 32 by default in the initialization phase as a
->   per-socket granular control. 32 is also the min value for
->   tx_budget_spent.
-> - Set the range of tx_budget_spent as [32, xs->tx->nentries].
->
-> The idea behind this comes out of real workloads in production. We use a
-> user-level stack with xsk support to accelerate sending packets and
-> minimize triggering syscalls. When the packets are aggregated, it's not
-> hard to hit the upper bound (namely, 32). The moment user-space stack
-> fetches the -EAGAIN error number passed from sendto(), it will loop to tr=
-y
-> again until all the expected descs from tx ring are sent out to the drive=
-r.
-> Enlarging the XDP_MAX_TX_BUDGET value contributes to less frequency of
-> sendto() and higher throughput/PPS.
->
-> Here is what I did in production, along with some numbers as follows:
-> For one application I saw lately, I suggested using 128 as max_tx_budget
-> because I saw two limitations without changing any default configuration:
-> 1) XDP_MAX_TX_BUDGET, 2) socket sndbuf which is 212992 decided by
-> net.core.wmem_default. As to XDP_MAX_TX_BUDGET, the scenario behind
-> this was I counted how many descs are transmitted to the driver at one
-> time of sendto() based on [1] patch and then I calculated the
-> possibility of hitting the upper bound. Finally I chose 128 as a
-> suitable value because 1) it covers most of the cases, 2) a higher
-> number would not bring evident results. After twisting the parameters,
-> a stable improvement of around 4% for both PPS and throughput and less
-> resources consumption were found to be observed by strace -c -p xxx:
-> 1) %time was decreased by 7.8%
-> 2) error counter was decreased from 18367 to 572
->
-> [1]: https://lore.kernel.org/all/20250619093641.70700-1-kerneljasonxing@g=
-mail.com/
->
-> Signed-off-by: Jason Xing <kernelxing@tencent.com>
+> Acked-by: John Fastabend <john.fastabend@gmail.com>
+> Reviewed-by: Cong Wang <cong.wang@bytedance.com>
+> Signed-off-by: Zijian Zhang <zijianzhang@bytedance.com>
+> ---
 
-Hi Maciej, Stan, Willem, and other maintainers,
+skb ref management looks all right. Meaning I see no double release.
 
-I wonder if you have further suggestions on the current patch?
+sk_msg_free clears the msg->skb field.
 
-Thanks in advance!
+While sk_psock_skb_ingress_enqueue sets msg->skb only when it succeeds.
+
+Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
 
