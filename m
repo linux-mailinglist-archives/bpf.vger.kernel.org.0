@@ -1,100 +1,92 @@
-Return-Path: <bpf+bounces-62160-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62162-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9AD0AF5F8B
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 19:10:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 314BAAF5F92
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 19:11:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ECEFA1C40F4B
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 17:10:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AAB167B4EF5
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 17:10:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10B2E301123;
-	Wed,  2 Jul 2025 17:10:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f3stI/pz"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83E702FF498;
+	Wed,  2 Jul 2025 17:11:49 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from 66-220-144-178.mail-mxout.facebook.com (66-220-144-178.mail-mxout.facebook.com [66.220.144.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80F552FF47B;
-	Wed,  2 Jul 2025 17:10:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD7B923C4E9
+	for <bpf@vger.kernel.org>; Wed,  2 Jul 2025 17:11:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.144.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751476229; cv=none; b=GgDBDEiTmpz7/yrkb69WCyizIBdZxGYtffHrZbVoMfDnVz47YbfNwHBgYAXs53NUHuPyFFgSbMXGOki3Ytqij2WiQDBnhaiN3SNocNMkeHH1QC6a/yTRgGOioerwubioMjwX83Xm5rZGg9XfFYOhsZil/2hTSyww969H08ZaP3I=
+	t=1751476309; cv=none; b=jaX35GRUnzU5uu1vBFPVyIErDtCmHf+ZjzgvJCI/rNdS4H5GznY3VMjwR01UFP3CgsmLUW0ol8BsX7/bmbWVURl/Y1neFZ/gA6wjhJ4Ah2qZWd4uRgnreteFOgR1JLJpSAYND9Qms67Lno8zl6AsfKzFJhqYk0Elh0N/Af7/eQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751476229; c=relaxed/simple;
-	bh=+kwbqJ0NQ6+/Ia1UxvkxCi/+QKYvGzcps3yND1R8ih8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hUmBpNiWoaSF5kOPoiV4kwr+3hBkwITZXHowX/Bbpf3AfQSI1j5X2h/XAdz7EnM04UlXyACXu7Gzkhfa0ViDKkfJCTR92xxnPuSrTEivpDzaXAbNgmrM80nTfnIOxUWxKEbYjYvwz/cUNJ87+imaP4WxM6VKvTmkpoPUCogGaAU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f3stI/pz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61D0BC4CEE7;
-	Wed,  2 Jul 2025 17:10:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751476229;
-	bh=+kwbqJ0NQ6+/Ia1UxvkxCi/+QKYvGzcps3yND1R8ih8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=f3stI/pzfWwQFAil0f1V55CQJXgC8m7OG1upghb9IwksQeG0e4wu6KcPSgaF4L3JO
-	 spXlloArOmnq7DM/UYhlGCKtwVqWTRAFygjbZwPt5iZVZMuVOgoBpSjiEdTZC0rfbe
-	 1FIGyekhJgdNlhlN8JSm9Xk93hFPv7fJKZbaiei+tzSUibZ+IXgf5Q3gNfqJxyl5VN
-	 HFAg8+xAinGTxbs6jRKnuJ+3fjRZaYXbJIbwUCYBBO8UflhhZIWxIK4h/dnS3SrtIp
-	 meIsrxR3mT1IQ5zS+soZy/RHGuDoUztFRG2tFpC/jtNrwm2JFNGE2T0lycsnZJ+nbu
-	 o3xP2WhNks51Q==
-Date: Wed, 2 Jul 2025 10:10:25 -0700
-From: Namhyung Kim <namhyung@kernel.org>
-To: Sam James <sam@gentoo.org>
-Cc: fweimer@redhat.com, akpm@linux-foundation.org, andrii@kernel.org,
-	axboe@kernel.dk, beaub@linux.microsoft.com, bpf@vger.kernel.org,
-	indu.bhagat@oracle.com, jemarch@gnu.org, jolsa@kernel.org,
-	jpoimboe@kernel.org, jremus@linux.ibm.com,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	mathieu.desnoyers@efficios.com, mhiramat@kernel.org,
-	mingo@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
-	tglx@linutronix.de, torvalds@linux-foundation.org, x86@kernel.org
-Subject: Re: [PATCH v11 00/14] unwind_user: x86: Deferred unwinding
- infrastructure
-Message-ID: <aGVoAT6asYLUx4He@google.com>
-References: <878ql9mlzn.fsf@oldenburg.str.redhat.com>
- <87wm8qlsuk.fsf@gentoo.org>
+	s=arc-20240116; t=1751476309; c=relaxed/simple;
+	bh=Gbfj/Ygy8gxAkOlPOX+on12+0edxE050wxcpf9RxrG0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BoJRg5ZYme0P6RStg5tpl61+E50QLnBA9MkJ9Xm/deFCGYoABWqolCQXWhYGeK5osmJY5Hd2ov+agf/BzogBYXM5Vf1mLPnnBJVZp1jSzTHeJdeYOrPrX2Q07QAt//nBKh1HdISnGH3ZJHAN1LnN5EBCCZ5qBCJPmJjGm7jEurQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.144.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devvm16039.vll0.facebook.com (Postfix, from userid 128203)
+	id 4B1E0ABB2E38; Wed,  2 Jul 2025 10:11:34 -0700 (PDT)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next v2 0/3] bpf: Reduce verifier stack frame size
+Date: Wed,  2 Jul 2025 10:11:34 -0700
+Message-ID: <20250702171134.2370432-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87wm8qlsuk.fsf@gentoo.org>
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+Arnd Bergmann reported an issue ([1]) where clang compiler (less than
+llvm18) may trigger an error where the stack frame size exceeds the limit=
+.
+I can reproduce the error like below:
+  kernel/bpf/verifier.c:24491:5: error: stack frame size (2552) exceeds l=
+imit (1280) in 'bpf_check'
+      [-Werror,-Wframe-larger-than]
+  kernel/bpf/verifier.c:19921:12: error: stack frame size (1368) exceeds =
+limit (1280) in 'do_check'
+      [-Werror,-Wframe-larger-than]
 
-On Wed, Jul 02, 2025 at 12:44:51PM +0100, Sam James wrote:
-> I started to play around with this properly last night and it was
-> straightforward, fortunately.
-> 
-> Did initially attempt to backport to 6.15 but it was a victim of some
-> mm refactoring and didn't seem worth to carry on w/ that route.
-> 
-> Started a rough page with notes for myself (but corrections & such
-> welcome) at https://wiki.gentoo.org/wiki/Project:Toolchain/SFrame but
-> honestly, it's immediately obvious (and beautiful) when it's working
-> correctly. I've used Namhyung Kim's example from this thread but you can
-> see it easily with `perf top -g` too.
+This patch series fixed the above two errors by reducing stack size.
+See each individual patches for details.
 
-I've looked at the page but it doesn't seem to work well unfortunately.
-The working case has the symbols correct but the overheads are same.
-It should have more 'Children' overhead than 'Self' like in the broken
-case because 'children = self + callchain'.
+  [1] https://lore.kernel.org/bpf/20250620113846.3950478-1-arnd@kernel.or=
+g/
 
-Thanks,
-Namhyung
+Changelogs:
+  v1 -> v2:
+    - v1: https://lore.kernel.org/bpf/20250702053332.1991516-1-yonghong.s=
+ong@linux.dev/
+    - Simplify assignment to struct bpf_insn pointer in do_misc_fixups().
+    - Restore original implementation in opt_hard_wire_dead_code_branches=
+()
+      as only one insn on the stack.
+    - Avoid unnecessary insns for 64bit modulo (mod 0/-1) operations.
 
-> 
-> In one of the commit messages in the perf series, Steven also gave `perf
-> record -g -vv true` which was convenient for making sure it's correctly
-> discovered deferred unwinding support.
-> 
-> I plan on doing measurements next and doing some more playing once I've
-> built more userland with it.
+Yonghong Song (3):
+  bpf: Simplify assignment to struct bpf_insn pointer in
+    do_misc_fixups()
+  bpf: Reduce stack frame size by using env->insn_buf for bpf insns
+  bpf: Avoid putting struct bpf_scc_callchain variables on the stack
+
+ include/linux/bpf_verifier.h |   1 +
+ kernel/bpf/verifier.c        | 229 +++++++++++++++++------------------
+ 2 files changed, 112 insertions(+), 118 deletions(-)
+
+--=20
+2.47.1
+
 
