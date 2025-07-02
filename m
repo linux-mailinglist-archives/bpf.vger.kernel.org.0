@@ -1,174 +1,144 @@
-Return-Path: <bpf+bounces-62032-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62033-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB751AF08AD
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 04:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 78FDCAF08E0
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 05:04:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1386B188BA74
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 02:49:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33DFB1C03E9E
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 03:04:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ED1315A848;
-	Wed,  2 Jul 2025 02:49:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB7301BFE00;
+	Wed,  2 Jul 2025 03:04:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gFXwASPE"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hg+FzbO2"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57056B663
-	for <bpf@vger.kernel.org>; Wed,  2 Jul 2025 02:48:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4EFF2770B;
+	Wed,  2 Jul 2025 03:04:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751424540; cv=none; b=h6qTl6ZHQD8SO9jr0F+cm+Q8iiHTOvQAr0Fx/r5cP7wnvlTknbRDpqWPyt20LyyMLKU9KIcIRZeFzd5dkeG6ZwVrIRy//7axk1CwcoVLB3ja4x3Q8//rc9fPgsVr1UDXBx5F9r3MQG4oA1CgnlIu2aPEELgPLjNAPlnGAXzSGwM=
+	t=1751425470; cv=none; b=H3Ca4+u6sCBkuDwvrbOpxq9HmY3f3Cx3XlyixS5EllFCgpZ6LGZ0xL2ujHTT7cbuNYn6raPrelc4c0ZuEbnbSL6QhdC54GRfdqeVPrWJZavonS/8qRNNtAZKqiMYU8jlOtr9GIOPZ0xfPnNsdizprAVz/jolaaeWx7Wr0yf3MXo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751424540; c=relaxed/simple;
-	bh=pnfX6anJGFD1XiQodS6OaxmSewMRk6zzePVS6bqvuXY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XM/wdHMOXeK50Nt0nvMHZxP+xy2986hIaDgqrFb1on2WoNi7hwKNb3eBGApBpOcYpGtgaL8ZdzMTZMHiZYryU1ZGPUNnoOekNnywNU55uWMVMphRlZKYjsx7Gu+ILqXrdHAJckgqOG/5U91/cBq/jGQ8UoPoY68Ce1YWfwMUik8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gFXwASPE; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <0a303984-e316-413e-a3d0-54912b19b7b7@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1751424533;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C6Yg7AoSiOWbjjxodSNEoCGX7aXQA2GLA/3rDJ469cE=;
-	b=gFXwASPEKxIRGAkpuJhcCtwIHCNuBt8b7q6ZTNstzgkfMfJKFaKlUQyBkjn/3zRLuGa8td
-	Vu+vnEk4O4vCh9Cs34Zrf3TJU/Md/lmhM/W7l2DvAQ+87vH+fSNesty7rkZb8zy6o4Jyfz
-	s/ofw4xyXMoEcUIBkYdzutAhGFtuR18=
-Date: Wed, 2 Jul 2025 10:48:23 +0800
+	s=arc-20240116; t=1751425470; c=relaxed/simple;
+	bh=O3rfVKsvccI6uQyYh//4AFptB8tUAcJndLZh8J0HwjY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=EQ4X5WMBwp26VWji8soYIlM/hmXptcu1HdaXXNeayxh7SaYr1hricYCMNOTHeZmKZ6RbpOEUMyq1ut7jrXd7VYYkXjvHrhJ60RmXfjJyq203jrO02nbFuLSyJ2T2Vlo6kixk9dezQ5p47eOpus13gVOTDl1B98/r66NqgF1Kpv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hg+FzbO2; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1751425468; x=1782961468;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=O3rfVKsvccI6uQyYh//4AFptB8tUAcJndLZh8J0HwjY=;
+  b=hg+FzbO24c8Wn3AX/i9YRuLI8YPtOR+sGle1VEvdUqLSkivpIhRSH1G6
+   //N+SI+zgN2NbaTAwmsQSGSp2l/hWcsERvzJ5Lx2DL2sAOamGZk863+tD
+   J+rSLZQOu+EtQVCXcloOKJRhe1OQ5N/O0Hsyq7wfzuE05roxWHkNmAx/7
+   VvfV/8L+AY04nb2N7L8WycYntKT5GV9vqxVT0EmDcURyrm0NId4q9wJ2Y
+   nJZPHz5muua+lQCMYj3CjUnZmxMfgDUgXqgJMfewgC5zu4Y46F1w38vrS
+   ZgfuPVbcMoKVTsI13X4eVvuNyT78Fx2Pt507zqEKvmqr2o0xxM8dxwZyG
+   Q==;
+X-CSE-ConnectionGUID: XeuMerBHQQOWjbzVzpAK/A==
+X-CSE-MsgGUID: gBudwoqbTO2il3t7x8E84Q==
+X-IronPort-AV: E=McAfee;i="6800,10657,11481"; a="71132790"
+X-IronPort-AV: E=Sophos;i="6.16,280,1744095600"; 
+   d="scan'208";a="71132790"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2025 20:04:27 -0700
+X-CSE-ConnectionGUID: /fSFODvNS+GsdXXvubXrFw==
+X-CSE-MsgGUID: WsPOGeWLTgmJt3NnWhl64Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,280,1744095600"; 
+   d="scan'208";a="153407624"
+Received: from p12ill20yoongsia.png.intel.com ([10.88.227.38])
+  by orviesa006.jf.intel.com with ESMTP; 01 Jul 2025 20:04:19 -0700
+From: Song Yoong Siang <yoong.siang.song@intel.com>
+To: "David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>
+Cc: netdev@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next,v2 0/2] Clarify and Enhance XDP Rx Metadata Handling
+Date: Wed,  2 Jul 2025 11:03:47 +0800
+Message-Id: <20250702030349.3275368-1-yoong.siang.song@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v6 3/3] bpf: Add show_fdinfo for kprobe_multi
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, mattbobrowski@google.com,
- rostedt@goodmis.org, mhiramat@kernel.org, mathieu.desnoyers@efficios.com,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-References: <20250627082252.431209-1-chen.dylane@linux.dev>
- <20250627082252.431209-3-chen.dylane@linux.dev>
- <CAEf4BzZYS52gztmLgQtsehNDVwv7NBETh97zMk73ZqLL9uJ50Q@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Tao Chen <chen.dylane@linux.dev>
-In-Reply-To: <CAEf4BzZYS52gztmLgQtsehNDVwv7NBETh97zMk73ZqLL9uJ50Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-在 2025/7/2 04:37, Andrii Nakryiko 写道:
-> On Fri, Jun 27, 2025 at 1:23 AM Tao Chen <chen.dylane@linux.dev> wrote:
->>
->> Show kprobe_multi link info with fdinfo, the info as follows:
->>
->> link_type:      kprobe_multi
->> link_id:        1
->> prog_tag:       33be53a4fd673e1d
->> prog_id:        21
->> kprobe_cnt:     8
->> missed: 0
->> cookie           func
->> 1                bpf_fentry_test1+0x0/0x20
->> 7                bpf_fentry_test2+0x0/0x20
->> 2                bpf_fentry_test3+0x0/0x20
->> 3                bpf_fentry_test4+0x0/0x20
->> 4                bpf_fentry_test5+0x0/0x20
->> 5                bpf_fentry_test6+0x0/0x20
->> 6                bpf_fentry_test7+0x0/0x20
->> 8                bpf_fentry_test8+0x0/0x10
-> 
-> two nits:
-> 
-> 1) order of cookie. For uprobes you have cookie at the end, here in
-> the front. Given variable-sized func name, I'd move cookie to the
-> front for uprobes for consistency.
-> 
+This patch set improves the documentation and selftests for XDP Rx metadata
+handling. The first patch clarifies the documentation around XDP metadata
+layout and the use of bpf_xdp_adjust_meta. The second patch enhances the
+BPF selftests to make XDP metadata handling more robust and portable across
+different NICs.
 
-Ok, will change it in v7.
+Prior to this patch set, the user application retrieved the xdp_meta by
+calculating backward from the data pointer, while the XDP program fill in
+the xdp_meta by calculating backward from data_meta. This approach will
+cause mismatch if there is device-reserved metadata.
 
-> 2) field sizing for cookie (16) is a) not sufficient for maximum
-> possible u64 (20 digits) and b) very wasteful in common case of small
-> numbers. So use tab instead of fixed-sized column? And why 16
-> character sizing for the func column? Just to have more spaces
-> emitted?
-> 
+                        |<---sizeof(xdp_meta)--|
+                        |                      |
+                 struct xdp_meta               rx_desc->address
+                        ^                      ^
+                        |                      |
++----------+----------------------+------------+------+
+| headroom |    custom metadata   |  reserved  | data |
++----------+----------------------+------------+------+
+           ^                      ^            ^
+           |                      |            |
+    struct xdp_meta     xdp_buff->data_meta    xdp_buff->data
+           |                      |
+           |<---sizeof(xdp_meta)--|
 
-I just referred to the implementation in bpftool/link.c, i will use tab 
-format in v7. "16 character sizing for the func" just keeps consistency 
-with cookie, " %s" for func name maybe better.
+V2:
+  - unconditionally do bpf_xdp_adjust_meta with -XDP_METADATA_SIZE (Stanislav)
 
-> 
-> Other than that the series looks good to me.
-> 
-> pw-bot: cr
-> 
-> 
->>
->> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
->> ---
->>   kernel/trace/bpf_trace.c | 27 +++++++++++++++++++++++++++
->>   1 file changed, 27 insertions(+)
->>
->> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
->> index 1c75f9c6c66..e8f070504c4 100644
->> --- a/kernel/trace/bpf_trace.c
->> +++ b/kernel/trace/bpf_trace.c
->> @@ -2622,10 +2622,37 @@ static int bpf_kprobe_multi_link_fill_link_info(const struct bpf_link *link,
->>          return err;
->>   }
->>
->> +#ifdef CONFIG_PROC_FS
->> +static void bpf_kprobe_multi_show_fdinfo(const struct bpf_link *link,
->> +                                        struct seq_file *seq)
->> +{
->> +       struct bpf_kprobe_multi_link *kmulti_link;
->> +
->> +       kmulti_link = container_of(link, struct bpf_kprobe_multi_link, link);
->> +
->> +       seq_printf(seq,
->> +                  "kprobe_cnt:\t%u\n"
->> +                  "missed:\t%lu\n",
->> +                  kmulti_link->cnt,
->> +                  kmulti_link->fp.nmissed);
->> +
->> +       seq_printf(seq, "%-16s %-16s\n", "cookie", "func");
->> +       for (int i = 0; i < kmulti_link->cnt; i++) {
->> +               seq_printf(seq,
->> +                          "%-16llu %-16pS\n",
->> +                          kmulti_link->cookies[i],
->> +                          (void *)kmulti_link->addrs[i]);
->> +       }
->> +}
->> +#endif
->> +
->>   static const struct bpf_link_ops bpf_kprobe_multi_link_lops = {
->>          .release = bpf_kprobe_multi_link_release,
->>          .dealloc_deferred = bpf_kprobe_multi_link_dealloc,
->>          .fill_link_info = bpf_kprobe_multi_link_fill_link_info,
->> +#ifdef CONFIG_PROC_FS
->> +       .show_fdinfo = bpf_kprobe_multi_show_fdinfo,
->> +#endif
->>   };
->>
->>   static void bpf_kprobe_multi_cookie_swap(void *a, void *b, int size, const void *priv)
->> --
->> 2.48.1
->>
+V1: https://lore.kernel.org/netdev/20250701042940.3272325-1-yoong.siang.song@intel.com/
 
+Song Yoong Siang (2):
+  doc: clarify XDP Rx metadata layout and bpf_xdp_adjust_meta usage
+  selftests/bpf: Enhance XDP Rx Metadata Handling
+
+ Documentation/networking/xdp-rx-metadata.rst  | 38 +++++++++++++++++++
+ .../selftests/bpf/prog_tests/xdp_metadata.c   |  2 +-
+ .../selftests/bpf/progs/xdp_hw_metadata.c     |  2 +-
+ .../selftests/bpf/progs/xdp_metadata.c        |  2 +-
+ tools/testing/selftests/bpf/xdp_hw_metadata.c |  2 +-
+ tools/testing/selftests/bpf/xdp_metadata.h    |  7 ++++
+ 6 files changed, 49 insertions(+), 4 deletions(-)
 
 -- 
-Best Regards
-Tao Chen
+2.34.1
+
 
