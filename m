@@ -1,92 +1,111 @@
-Return-Path: <bpf+bounces-62142-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62143-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8D15AF5DF8
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 18:03:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9465AF5DFD
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 18:04:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C3431C41273
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 16:03:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A00C1C4203D
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 16:04:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 813D43596F;
-	Wed,  2 Jul 2025 16:03:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FAA22D46BE;
+	Wed,  2 Jul 2025 16:04:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ousopu3Y"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A+CWOYPG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70FB0248886;
-	Wed,  2 Jul 2025 16:03:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85B6D3196C7;
+	Wed,  2 Jul 2025 16:04:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751472186; cv=none; b=pYE8X7pa7sz+XSgmcAwEGT7ReS0qGovE+1woe1xEta+1ajhUa9iEDLe7bSKvbkR8NksHO5onPNdCUN/BTwpnxzb00vsYO21oHxXdOndVbqy0Mv4Ih3MIJxKua+OmgLtbcOEUouPXC8ynH8jv+MIP+E6asi9UcoSBFUW6F0T799M=
+	t=1751472251; cv=none; b=qQ5SKBct4kdKx83BQ5v0a2TCNQklQOItdO3sEGJUzAjhTQ6KEH04MqHlCaj/q7Yka7UNnJ1CBmUfjN9Pz1zeBdV3p7UvsY/fxRU39qVdFQoYrt2U1GNqHkOVrGpntRZcahaUFGExRj8eo0HnRBnenNQfsB/DoGTt6dlZTx5RrGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751472186; c=relaxed/simple;
-	bh=Zi8Z++KLh4kL+UMMKoA+zinKpsd+b3nC1ZGt2R1rFNY=;
+	s=arc-20240116; t=1751472251; c=relaxed/simple;
+	bh=V7ocvZ1MzRTMgmZ5TCXNgMiB58Py13evA/lkbx68+ys=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pJOe1APJPBL6uUziTSGofol6LOmfpWIPMklhSuAGNv8y70uYJU8ttJ+sJ06TlZQyX/shL8tjRUwME2vIOEYDt29Shg2WMuWGRsPOF9n623NiMq9F/7hwOkx5RpzlA8fSOj7WLovgzdkSm9Ep2UgUhBsNgAP1xoLpVawjbnOtxYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ousopu3Y; arc=none smtp.client-ip=209.85.214.169
+	 Content-Type:Content-Disposition:In-Reply-To; b=bUiT+3DBZxgKqAlhaO3b9PkKwyBNcToie+gIwYKnG48VGfgJCbgamchLCIqjHjS8ZOckHplI0BpqtgH7pNJEnBsdxy2H9iS+pwObxrMS1qVY334KpEZG+eyxtn6PQnwBtJItWZBaKi9gjIeOVH2MKJalXDt2ECQHwMWqhEiLAEI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A+CWOYPG; arc=none smtp.client-ip=209.85.210.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-234f17910d8so69156665ad.3;
-        Wed, 02 Jul 2025 09:03:04 -0700 (PDT)
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-74b50c71b0aso636846b3a.0;
+        Wed, 02 Jul 2025 09:04:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751472183; x=1752076983; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1751472249; x=1752077049; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EFEBFp97Sfl6k7pz3Xu7cvhoxL+fH0WrE6fJ29qUrd0=;
-        b=Ousopu3YU1H35kbOwGHRcSwi4YA1sxqeTZHMilysuRJUILoAUiohubCZCC6lDAfcz5
-         aJtEj6HXXCGlzIJ5L4AcnM8gbk9XJASFU/YS1umCChWs0SOAdaADiHf4oU+E+AUuUqtA
-         4Hh1kZLVl+EI1LRSBq3D0WklFp7e33cx9CG7FoviaOSVHxDE16jTaunrGKRcxXJ7dYfn
-         G61mv3qlJnBQ+eJccNVuKz7uICa5awcENYAqmMYm6/waFXeSKTDCgrrBOwQpEMijFy0z
-         mX5beq0eOSVaGm809n9IkMeZHFdGVawUpYYvF2ndcmPcryicUG8Y6YsRrLsLZKRJalHm
-         1m5g==
+        bh=u2nzxIAHzM2zCpkXYgT63kjyxekr2mJ2gHQXxs6/nCg=;
+        b=A+CWOYPGlQ/EgOBwLFiS6R6YTjSYDKPAUc5o30pqlS6X38Qqncgt2G6hoV66I0n0A7
+         WtwSiETjpjQypKyj2w9McUTtibV78fTcGHxw5YWmvH08u+244PSgqGW3+BllPTwttYQb
+         Q5ZOIG/KiOZn+PLNCovnX46fHyOlnrLZIWsU+CWryOOkoy5PPC9/Vl8R9kBL9U1C2gXG
+         URwfS6iAVDvF55oMJKzcmqdLEw+o8BkQAPCwBErAnAtU1A6MG2t2ovSRa7qmDcxt18RS
+         UqjVNs6KAIVGOFNZOySYAPCMvfkZF9c8iVgFH5uX7VpWRvNoQxkEjnxqKoCUKTjQx8tw
+         DUTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751472183; x=1752076983;
+        d=1e100.net; s=20230601; t=1751472249; x=1752077049;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EFEBFp97Sfl6k7pz3Xu7cvhoxL+fH0WrE6fJ29qUrd0=;
-        b=G3lkLUze+KjNjTDqOx1t+rekjBYrZa3EyDbOiVD+yBsfWGL9Y8kDZPqPUe7x1j5qAS
-         CwoEqQ5xNMAMaxP10JgssghKLqxgv2o2Czhc9MytQdBUmhCN9FQu37cutHHvpuaoOUxu
-         IIPwC1iUwjxKDXH7jM/RjQX5jvluOF+ypPXOMNP6iC+U0Fo3iY+Y16Wzhvg5JEthNWDr
-         NsbJnKlaRWD8kym7yfkiNLkbZBZWo0aexkXnQwWxAZfag8AKzD1MfW8FhEOOiWnvPNgx
-         VleavLdDC0YjrWnYDEjaomqIeSo1XJeP5sLbRZ7KEkrgJFTmlsRKHokpnvG3+8S60c1A
-         9bQg==
-X-Forwarded-Encrypted: i=1; AJvYcCUZq3kwXkRyGAasQMwF5ryyrIFareq8z6egv4TPuslT0SJXE+Dwt8cU6xA3d5Y8oILTt9c=@vger.kernel.org, AJvYcCWjghaS+oUzwn7zTCK03798EV7UxlEC0jrRlVn+yfLED2G7g7oiQ8xLAwzienPijxY0oY0Rawl+@vger.kernel.org
-X-Gm-Message-State: AOJu0YwkJeOZUh2rjTL8K3z2aKRH4iHx2xxoVZO3EJdFNUVujAGZK2YI
-	wevhxSuJXN6Q/6Ke/l+T2oqgFLC99GIR3yYqBQG4ntM5+adna08kuPQ=
-X-Gm-Gg: ASbGncsi4qFjCVp66YPGy/gnrVSIFZzIr4y+M5p2q+TpU19Tj2oLgSAQCH5sTVekypd
-	/JgBzo2gKSdW3LkFVoBgkIrOHy8Q2HkUkScA/8/ti4qDc/Zde1o1vGlsyLfmal04oql7XucfSaB
-	+nbaiEXeJDB0lkUHFyrMli5UdwhPrgsmsIU6yjDnbYTO5V3LqEL5Ju6VYREfuqbVAAzqdRQR62q
-	CImYjkO4CbrK22eFk2c5WFXf04dcvaj0ZuTC+dXSlYeKqjc6D6/1xlDQ0NNoVDRQdVuGbg4LEg/
-	/LJUTcw++JzksF1dCNZ5SCgGEjKNsbSxU+KCDOXBMQP2dvOB5Qe54i7WVTxxRu65OBZGMyxqRj5
-	h7GXrBWWF6WnB6SyhexCDGAg=
-X-Google-Smtp-Source: AGHT+IEogCgd8FoNuhehrmrLcBURhOw6hs6ezKGGZkA1MsAWZwwHetkX2Dq5hYL5OBgu2e9LBxo/Zg==
-X-Received: by 2002:a17:903:1510:b0:234:986c:66f9 with SMTP id d9443c01a7336-23c6e587745mr50795035ad.22.1751472183256;
-        Wed, 02 Jul 2025 09:03:03 -0700 (PDT)
+        bh=u2nzxIAHzM2zCpkXYgT63kjyxekr2mJ2gHQXxs6/nCg=;
+        b=h9kgT4zOeVClI0C8voMimID55onGXULeSNZBUHaA2znXF2uvx8AdWYYDFFPjfxnmqZ
+         QChjqPgvNabIelGoAmewIMiDqjD4avuDcFW9eyvRCoJjk0UjrnUgdBYn36c8CGIFXzj8
+         CTssfcvvv7tzTQyCcr5ENipLsydLvK/MJrZDzvKEVlWUOehF4y7uxt226m7nPXIi5Bi6
+         BvCyracsHEGok8JJwKj2BfBUUEnJo6t4xYgdasOrvTlkq8B0hSrNYjNri1BQxw49fjIq
+         ba8E/c25gq3MNCF2rmgP8qD3nbHAy0aXigWdzKUiHFFpzfKnAjGXQzYwiqMRl3d3Pabz
+         18sQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUgbt6cqFPU+NJmUANeUsJ9fYK2PD4Z0H5s4QgHuPdg1GLA3AyVujybm9ytpkBKj5Jwlah6oh1F@vger.kernel.org, AJvYcCV4HKOPlt7ud/9KV3eQPwoKXB/wW1eiVn1ySuaEDYTBj6Cte/A/+MaNc5G3yDXIzCoesVp5CLX7c4dm4Qgc@vger.kernel.org, AJvYcCVcfWOAmqMQ1C7jQCkuttZAlexe/l8p2tBDwKIGWzeaFlNmWHf2EN2sJbwXtxfS68tKFk4=@vger.kernel.org, AJvYcCX1rtvY35lKT8qO2pXoYO8v+gbNq84qa/C7biwpt5aP9JW9PuPZoYrtJ75SYJC/v7GpwlPkS+iQhkCa9K4mZ1E+@vger.kernel.org, AJvYcCXcXhPeB/4c7yW5aiQKWv+OhUGxKrO5aiDdBUrTlmPurgS5omQ6ObkprWngme1dseYG8N0TB7kucq+w@vger.kernel.org
+X-Gm-Message-State: AOJu0YyLcCnLC8/27Nwsg4iHQiAB7MBgsN3oFgDc0ea/li/AqwCYKuQF
+	OE2PWndCjGgF3zbiqqmO5plQRREMrdCDLPa+Tp1xK2TkThnOGNgNAeU=
+X-Gm-Gg: ASbGncuCXNSf4UEno5/Pr1ZhtlKuvSc5z0x9BGZvj+QX2Q7I+9BlEn/vFje28BUAkuX
+	6MpfNV8e7Lz6Y6Fwr4Zc/jdBQanmvM3iMKDUEkBaSL5LleJxOyeliKWn5Su+fbOYNwMFANbv51h
+	9ogDuADCCYltVbVW/zCeeQwIuAIRkTQQY1rybtFtYkiF3q5hM8i4Bt7nLAyocRaLiVL3GBf60UQ
+	XyilHAvAVjnwAj22oiQHsWJBYJrDCchQJDxjTcG9wHSZ47XQQJItE8czcwOkaFr7RkmVH9LXYgA
+	VDDujf5ZAK7XXLXjDbHXQTTPVpFf5xUq6z8i4j46c7wgd3q4ucCJTsIBA5nl8zsJZviPWiXF8CR
+	4gM6jCeWqxdEU3BdHdV6XeKE=
+X-Google-Smtp-Source: AGHT+IECN/3euiEQr+MyKhdKeZaMnO25R8NGOtZzSFB4uCv1hJ23ZUZo4MgpnbG8A79ErgQtwmmAow==
+X-Received: by 2002:a05:6a00:4b0f:b0:749:14b5:921f with SMTP id d2e1a72fcca58-74b50f6847emr5230413b3a.18.1751472248385;
+        Wed, 02 Jul 2025 09:04:08 -0700 (PDT)
 Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
-        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-23acb3b8409sm139504355ad.184.2025.07.02.09.03.00
+        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-74af55786e3sm14463411b3a.72.2025.07.02.09.04.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jul 2025 09:03:01 -0700 (PDT)
-Date: Wed, 2 Jul 2025 09:03:00 -0700
+        Wed, 02 Jul 2025 09:04:07 -0700 (PDT)
+Date: Wed, 2 Jul 2025 09:04:06 -0700
 From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Jason Xing <kerneljasonxing@gmail.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com,
-	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
-	sdf@fomichev.me, ast@kernel.org, daniel@iogearbox.net,
-	hawk@kernel.org, john.fastabend@gmail.com, joe@dama.to,
-	willemdebruijn.kernel@gmail.com, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
-Subject: Re: [PATCH net-next v5 2/2] selftests/bpf: add a new test to check
- the consumer update case
-Message-ID: <aGVYNMZEZQV1SetF@mini-arch>
-References: <20250702112815.50746-1-kerneljasonxing@gmail.com>
- <20250702112815.50746-3-kerneljasonxing@gmail.com>
+To: "Song, Yoong Siang" <yoong.siang.song@intel.com>
+Cc: "David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Enhance XDP Rx Metadata
+ Handling
+Message-ID: <aGVYdjDKNBdWdrQ8@mini-arch>
+References: <20250701042940.3272325-1-yoong.siang.song@intel.com>
+ <20250701042940.3272325-3-yoong.siang.song@intel.com>
+ <aGQNWXe6FBks8D3U@mini-arch>
+ <IA3PR11MB925416396633E361F37E819DD840A@IA3PR11MB9254.namprd11.prod.outlook.com>
+ <IA3PR11MB9254C961FD048793FD0013EAD840A@IA3PR11MB9254.namprd11.prod.outlook.com>
+ <aGVN01flIJzvCo6S@mini-arch>
+ <IA3PR11MB92541178AAF28F03639A9435D840A@IA3PR11MB9254.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -95,105 +114,135 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250702112815.50746-3-kerneljasonxing@gmail.com>
+In-Reply-To: <IA3PR11MB92541178AAF28F03639A9435D840A@IA3PR11MB9254.namprd11.prod.outlook.com>
 
-On 07/02, Jason Xing wrote:
-> From: Jason Xing <kernelxing@tencent.com>
+On 07/02, Song, Yoong Siang wrote:
+> On Wednesday, July 2, 2025 11:19 PM, Stanislav Fomichev <stfomichev@gmail.com> wrote:
+> >On 07/02, Song, Yoong Siang wrote:
+> >> On Wednesday, July 2, 2025 10:23 AM, Song, Yoong Siang
+> ><yoong.siang.song@intel.com> wrote:
+> >> >On Wednesday, July 2, 2025 12:31 AM, Stanislav Fomichev
+> ><stfomichev@gmail.com>
+> >> >wrote:
+> >> >>On 07/01, Song Yoong Siang wrote:
+> >> >>> Introduce the XDP_METADATA_SIZE macro to ensure that user applications can
+> >> >>> consistently retrieve the correct location of struct xdp_meta.
+> >> >>>
+> >> >>> Prior to this commit, the XDP program adjusted the data_meta backward by
+> >> >>> the size of struct xdp_meta, while the user application retrieved the data
+> >> >>> by calculating backward from the data pointer. This approach only worked if
+> >> >>> xdp_buff->data_meta was equal to xdp_buff->data before calling
+> >> >>> bpf_xdp_adjust_meta.
+> >> >>>
+> >> >>> With the introduction of XDP_METADATA_SIZE, both the XDP program and user
+> >> >>> application now calculate and identify the location of struct xdp_meta from
+> >> >>> the data pointer. This ensures the implementation remains functional even
+> >> >>> when there is device-reserved metadata, making the tests more portable
+> >> >>> across different NICs.
+> >> >>>
+> >> >>> Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
+> >> >>> ---
+> >> >>>  tools/testing/selftests/bpf/prog_tests/xdp_metadata.c |  2 +-
+> >> >>>  tools/testing/selftests/bpf/progs/xdp_hw_metadata.c   | 10 +++++++++-
+> >> >>>  tools/testing/selftests/bpf/progs/xdp_metadata.c      |  8 +++++++-
+> >> >>>  tools/testing/selftests/bpf/xdp_hw_metadata.c         |  2 +-
+> >> >>>  tools/testing/selftests/bpf/xdp_metadata.h            |  7 +++++++
+> >> >>>  5 files changed, 25 insertions(+), 4 deletions(-)
+> >> >>>
+> >> >>> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
+> >> >>b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
+> >> >>> index 19f92affc2da..8d6c2633698b 100644
+> >> >>> --- a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
+> >> >>> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
+> >> >>> @@ -302,7 +302,7 @@ static int verify_xsk_metadata(struct xsk *xsk, bool
+> >> >>sent_from_af_xdp)
+> >> >>>
+> >> >>>  	/* custom metadata */
+> >> >>>
+> >> >>> -	meta = data - sizeof(struct xdp_meta);
+> >> >>> +	meta = data - XDP_METADATA_SIZE;
+> >> >>>
+> >> >>>  	if (!ASSERT_NEQ(meta->rx_timestamp, 0, "rx_timestamp"))
+> >> >>>  		return -1;
+> >> >>> diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> >> >>b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> >> >>> index 330ece2eabdb..72242ac1cdcd 100644
+> >> >>> --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> >> >>> +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> >> >>> @@ -27,6 +27,7 @@ extern int bpf_xdp_metadata_rx_vlan_tag(const struct
+> >> >>xdp_md *ctx,
+> >> >>>  SEC("xdp.frags")
+> >> >>>  int rx(struct xdp_md *ctx)
+> >> >>>  {
+> >> >>> +	int metalen_used, metalen_to_adjust;
+> >> >>>  	void *data, *data_meta, *data_end;
+> >> >>>  	struct ipv6hdr *ip6h = NULL;
+> >> >>>  	struct udphdr *udp = NULL;
+> >> >>> @@ -72,7 +73,14 @@ int rx(struct xdp_md *ctx)
+> >> >>>  		return XDP_PASS;
+> >> >>>  	}
+> >> >>>
+> >> >>> -	err = bpf_xdp_adjust_meta(ctx, -(int)sizeof(struct xdp_meta));
+> >> >>
+> >> >>[..]
+> >> >>
+> >> >>> +	metalen_used = ctx->data - ctx->data_meta;
+> >> >>
+> >> >>Is the intent here to query how much metadata has been consumed/reserved
+> >> >>by the driver?
+> >> >Yes.
+> >> >
+> >> >>Looking at IGC it has the following code/comment:
+> >> >>
+> >> >>	bi->xdp->data += IGC_TS_HDR_LEN;
+> >> >>
+> >> >>	/* HW timestamp has been copied into local variable. Metadata
+> >> >>	 * length when XDP program is called should be 0.
+> >> >>	 */
+> >> >>	bi->xdp->data_meta += IGC_TS_HDR_LEN;
+> >> >>
+> >> >>Are you sure that metadata size is correctly exposed to the bpf program?
+> >> >You are right, the current igc driver didn't expose the metadata size correctly.
+> >> >I submitted [1] to fix it.
+> >> >
+> >> >[1] https://patchwork.ozlabs.org/project/intel-wired-
+> >> >lan/patch/20250701080955.3273137-1-yoong.siang.song@intel.com/
+> >> >
+> >> >>
+> >> >>My assumptions was that we should just unconditionally do
+> >bpf_xdp_adjust_meta
+> >> >>with -XDP_METADATA_SIZE and that should be good enough.
+> >> >
+> >> >The checking is just for precautions. No problem if directly adjust the meta
+> >> >unconditionally.
+> >> >That will save processing time for each packet as well.
+> >> >I will remove the checking and submit v2.
+> >> >
+> >> >Thanks & Regards
+> >> >Siang
+> >> >
+> >>
+> >> Hi Stanislav Fomichev,
+> >>
+> >> I submitted v2. But after that, I think twice. IMHO,
+> >> err = bpf_xdp_adjust_meta(ctx, (int)(ctx->data - ctx->data_meta -
+> >XDP_METADATA_SIZE));
+> >> is better than
+> >> err = bpf_xdp_adjust_meta(ctx, -(int)XDP_METADATA_SIZE);
+> >> because it is more robust.
+> >>
+> >> Any thoughts?
+> >
+> >My preference is on keeping everything as is and converting to
+> >-(int)XDP_METADATA_SIZE. Making IGC properly expose (temporary) metadata len
+> >is a user visible change, not sure we have a good justification?
 > 
-> The subtest sends 33 packets at one time on purpose to see if xsk
-> exitting __xsk_generic_xmit() updates the global consumer of tx queue
-> when reaching the max loop (max_tx_budget, 32 by default). The number 33
-> can avoid xskq_cons_peek_desc() updates the consumer when it's about to
-> quit sending, to accurately check if the issue that the first patch
-> resolves remains. The new case will not check this issue in zero copy
-> mode.
+> Thank you for your feedback. I agree that we don't have a strong justification
+> for making the metadata length user-visible at this time. I concur with your
+> preference to keep everything as is and proceed with -(int)XDP_METADATA_SIZE.
 > 
-> Signed-off-by: Jason Xing <kernelxing@tencent.com>
-> ---
-> v5
-> Link: https://lore.kernel.org/all/20250627085745.53173-1-kerneljasonxing@gmail.com/
-> 1. use the initial approach to add a new testcase
-> 2. add a new flag 'check_consumer' to see if the check is needed
-> ---
->  tools/testing/selftests/bpf/xskxceiver.c | 51 +++++++++++++++++++++++-
->  tools/testing/selftests/bpf/xskxceiver.h |  1 +
->  2 files changed, 51 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
-> index 0ced4026ee44..ed12a55ecf2a 100644
-> --- a/tools/testing/selftests/bpf/xskxceiver.c
-> +++ b/tools/testing/selftests/bpf/xskxceiver.c
-> @@ -109,6 +109,8 @@
->  
->  #include <network_helpers.h>
->  
-> +#define MAX_TX_BUDGET_DEFAULT 32
-> +
->  static bool opt_verbose;
->  static bool opt_print_tests;
->  static enum test_mode opt_mode = TEST_MODE_ALL;
-> @@ -1091,11 +1093,45 @@ static bool is_pkt_valid(struct pkt *pkt, void *buffer, u64 addr, u32 len)
->  	return true;
->  }
->  
-> +static u32 load_value(u32 *counter)
-> +{
-> +	return __atomic_load_n(counter, __ATOMIC_ACQUIRE);
-> +}
-> +
-> +static bool kick_tx_with_check(struct xsk_socket_info *xsk, int *ret)
-> +{
-> +	u32 max_budget = MAX_TX_BUDGET_DEFAULT;
-> +	u32 cons, ready_to_send;
-> +	int delta;
-> +
-> +	cons = load_value(xsk->tx.consumer);
-> +	ready_to_send = load_value(xsk->tx.producer) - cons;
-> +	*ret = sendto(xsk_socket__fd(xsk->xsk), NULL, 0, MSG_DONTWAIT, NULL, 0);
-> +
-> +	delta = load_value(xsk->tx.consumer) - cons;
-> +	/* By default, xsk should consume exact @max_budget descs at one
-> +	 * send in this case where hitting the max budget limit in while
-> +	 * loop is triggered in __xsk_generic_xmit(). Please make sure that
-> +	 * the number of descs to be sent is larger than @max_budget, or
-> +	 * else the tx.consumer will be updated in xskq_cons_peek_desc()
-> +	 * in time which hides the issue we try to verify.
-> +	 */
-> +	if (ready_to_send > max_budget && delta != max_budget)
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
->  static int kick_tx(struct xsk_socket_info *xsk)
->  {
->  	int ret;
->  
-> -	ret = sendto(xsk_socket__fd(xsk->xsk), NULL, 0, MSG_DONTWAIT, NULL, 0);
-> +	if (xsk->check_consumer) {
-> +		if (!kick_tx_with_check(xsk, &ret))
-> +			return TEST_FAILURE;
-> +	} else {
-> +		ret = sendto(xsk_socket__fd(xsk->xsk), NULL, 0, MSG_DONTWAIT, NULL, 0);
-> +	}
->  	if (ret >= 0)
->  		return TEST_PASS;
->  	if (errno == ENOBUFS || errno == EAGAIN || errno == EBUSY || errno == ENETDOWN) {
-> @@ -2613,6 +2649,18 @@ static int testapp_adjust_tail_grow_mb(struct test_spec *test)
->  				   XSK_UMEM__LARGE_FRAME_SIZE * 2);
->  }
->  
-> +static int testapp_tx_queue_consumer(struct test_spec *test)
-> +{
-> +	int nr_packets = MAX_TX_BUDGET_DEFAULT + 1;
-> +
-> +	pkt_stream_replace(test, nr_packets, MIN_PKT_SIZE);
-> +	test->ifobj_tx->xsk->batch_size = nr_packets;
-> +	if (!(test->mode & TEST_MODE_ZC))
-> +		test->ifobj_tx->xsk->check_consumer = true;
+> Btw, do you think whether my first patch which changes the documentation is
+> still needed or not?
 
-The test looks good to me, thank you!
-
-One question here: why not exit/return for TEST_MODE_ZC instead
-of conditionally setting check_consumer?
+Yes, the documentation is super useful, let's keep it!
 
