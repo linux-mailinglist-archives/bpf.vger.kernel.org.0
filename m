@@ -1,74 +1,74 @@
-Return-Path: <bpf+bounces-62200-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62201-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3FD1AF6583
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 00:42:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A08EAF6585
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 00:42:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3985176A57
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 22:42:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C2EE1C45FA5
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 22:43:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93ED624C06A;
-	Wed,  2 Jul 2025 22:42:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DA3C275103;
+	Wed,  2 Jul 2025 22:42:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TaNWKfm2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a2iglX8I"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 821262522A1
-	for <bpf@vger.kernel.org>; Wed,  2 Jul 2025 22:42:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85E1B24BD03
+	for <bpf@vger.kernel.org>; Wed,  2 Jul 2025 22:42:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751496140; cv=none; b=eAJsI1GqphRwceWCuPn8nBt2J5krC2vPVqJjjtOQyBcZlgCqiqSx7nnn5e1M4MSLE+WV0BjlKUZB9D8GrtNNXFzCAK1eyk/5LWzo+Yxm7ZiDaVrN8Vu5gnThyciQsXCu3nkIjOpjPbPXDpULb71VtIX/a/Olutym2YQCwSorTdE=
+	t=1751496141; cv=none; b=tJjLaRcsYQ4czHrMf5wgGr/R5qzHzJtk2Kcj8CKadv/yoHs7GE3DbVEVDjUfoz6GE7GBrbCupfoa4LvFPpXv9Ku+zb1fwYJyLJcOJiNHUW5MiOh4bTzVNV+TrYNLu+wtTKHpvMQDlG46cYVVvIQxtd/QXmvqIIuLz5UaNvM3i9g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751496140; c=relaxed/simple;
-	bh=rfrI/GZzQPOVlt6ywJBHUn5d0kuwUSm43+EGqTf6Z2s=;
+	s=arc-20240116; t=1751496141; c=relaxed/simple;
+	bh=21v6hgPX3CLOb/LmbfwTDDoDNiaPN4pWj56V7gP91LQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YlEi/MEZLu1gR6b9pS73I56qebJZROksN9fhCaVif4ozV+TSAVc50kGlytz3zVrFUvPgCGWW4JxHf4TkYFNgM5rzy9uWxsayCprR6O7efPn09KDNhbt0++GaHiP3ir8LzWIrv6ewaqDDVQtoCR7QSD3FHK7ObJr+Q3ZUUe5QlQM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TaNWKfm2; arc=none smtp.client-ip=209.85.219.173
+	 MIME-Version; b=rv6racGR9tCOxoIrPeR0SHBqdsuZN4f1VWb4jKxGi+JFH9+uNkjWnhUnWm4U0feYhP9dLpzM6mT9xQavhBxJLLtwGFcef/GkeD9MlJXKxXP2UNaGJn9xfih+rnCdzmuSc2UApf1McBWhnUf+wGdFLmGBNI0BoaPUPMN6VbDu0Vo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a2iglX8I; arc=none smtp.client-ip=209.85.219.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-e85e06a7f63so4311432276.1
-        for <bpf@vger.kernel.org>; Wed, 02 Jul 2025 15:42:18 -0700 (PDT)
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-e7387d4a336so6664624276.2
+        for <bpf@vger.kernel.org>; Wed, 02 Jul 2025 15:42:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751496137; x=1752100937; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1751496138; x=1752100938; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GkUXTfsXfjiXyE7smshxJhZmsgbhG01Grik48hop/44=;
-        b=TaNWKfm2mDBoJ00gFlQLvV2aHgCjulSRk2GhTtT6Wrz3OXLMiFYAIXsXZXXTWQkL07
-         sgaTy+3l81mOOkrgQ8vYyMknbno8vZh+lUpfQTGATqJAnzFF8cg5b+mgI0eL8Rh/uz2b
-         IcbOWGGLeL9wTJ+qAcxS2bsZjYcFA5zrX3v5HzsiT4tqBDhhjtmdAlCiqqJIfLSNibCz
-         pF+XQQS2+FGiis3YZXNNWKLHfdxZr7u/Sxng4jd2ecBQ/7Ael12/cpyb69nJ63K8ubcB
-         rlv8HNUGRvqEI2Kkp7T1EW57QzeVRAzu6foxN777+N8BUwlJJYKF9OnYvTlSj1JtmAO7
-         ViOg==
+        bh=OtwOq7y6McTn9Gl7xaPihbt7NnFbsIqxGC2mVuLtEj8=;
+        b=a2iglX8IAwBfsAHkIuNHp9CE9dZwOI4vseyHFHj2t+pJ4+BEb5LdrWfDjE93qnVsCg
+         mwhTVSVSKkxajd+jTsNYdup1Yq99XCFhGABovxwxwc7rTXDCqLcfScUKw4vCtxLdx8Ks
+         3PjH7Vz6erLgMXN/9a0+YgpwdyBhqdhfXGT8XH+0ipRMVNwpnqKquC2LY7J/8rKSfs7n
+         l69Sbb3ltUarkh0ddw4BrFRhqY+cd4f8jzXlwylCwwLrHk4owq8MWM2L4DeRr3jfRLxb
+         ebHEwLIPEFq+p3yGDs4LpvH9zxeBveICcjj8JIDtFHVbUbczkXrz64o84A9Ekkx0/TJP
+         +Nfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751496137; x=1752100937;
+        d=1e100.net; s=20230601; t=1751496138; x=1752100938;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GkUXTfsXfjiXyE7smshxJhZmsgbhG01Grik48hop/44=;
-        b=GEmKxw1jbzsz9ouySqfueEO2qW5q5Mwmc5WWLeBwbkJg8HkBovY4+K6sxuETJsbxhW
-         BPcC0DyeMGQxp6PJDRLX+EOT5K4AEiwPDxC5zANljbOW9/qvT/Q9aBrgZzwGNtOgAsAv
-         /F0O3k3aeuIuKbe6Hl1hmBWb1i0R+65D/+axA56vSPVAc3YXXIq1Xs6BXVHg/4Lblp+X
-         XDw/VO8gQbNt1EXdp1si54OOFLIpQM8vt53l+ryO4FpiMxogecwXDuoWrAIV9N57TiQ1
-         GPane73J/62nnSG8mZrvDWayVV4EA4+WEgbIUXnZ24+SsvrAdBFNEmM/OqTlBbgCkTh7
-         q3yg==
-X-Gm-Message-State: AOJu0YzODKhaPJwBLMk9XFjZN0oGfDfoF3rsOYk3s6UcIUylBzhDrn6J
-	gQDjRqStTodVgBpFWMydADpPE0a0cNzgDf92aRCXwe+0HkvxbLFNOQRsDQenaqhN
-X-Gm-Gg: ASbGncvO56fDSFUxR2htdBYft1mGnVim44kcsOPgwTRxXSKE1tExM68BcwhsbOPwp8K
-	NH3H35yJH8rTDKejUYrZ825MIJNYT4eUQSfR23MvI5LlvRvkVooaAtLgBBLvaSJr+TokZ0p0R9q
-	1XKjv7CFIoEwOKnm2rVXZgVsGCAAN5vCDRqRvCJWwUlsrPyUKhn/EKruivCp661F8/Od9xeqFHe
-	tdBsTjeLq9fs49HD2+hhg0RESVhMbHoIx5xnZDSmh6tIr4nXuyFJTDeIPDYILViUb2xghGWMULW
-	GKISqGbGZaoZv1ZHyIBtbbU3V4QiAyXJoZkFyS2bsIUtC2ZI6PcThw==
-X-Google-Smtp-Source: AGHT+IFz0Hncp/egYWN7ZC8L5UIpD7dYieMAwBdsxUG08GR3Yt49cJJNKWbgRTqpBWBGRRrMD68ziw==
-X-Received: by 2002:a05:690c:3704:b0:716:4da5:a01c with SMTP id 00721157ae682-71658ff8fe7mr25303657b3.11.1751496137391;
-        Wed, 02 Jul 2025 15:42:17 -0700 (PDT)
-Received: from localhost ([2a03:2880:25ff:5a::])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-71515bf1659sm26620747b3.18.2025.07.02.15.42.17
+        bh=OtwOq7y6McTn9Gl7xaPihbt7NnFbsIqxGC2mVuLtEj8=;
+        b=Ur7/x9esd9Yb2siSw+dQnQu6510PD1WaSuq2RcgRfXH5h0WCoCtY4UHVhLL2tHcG86
+         gwTutknF/5l0rO/+jNf92PU/sB8/3nxitpRVDdWtdOsCWePuFm8R4vxuDnGmTlqT8UGb
+         S1fjdJWsteQxIDM71svXitrTuEgqttUQKCotGV3i80qR8rfR1V23DaYqK2NrxzMS81/Y
+         s+5tNRt0CNo5MOxfhe6ASG1ZUClRu7y5LCrO5bSVDfoJBiT+CN7SRDg/vgatcjs7AjdO
+         ktX82GcXvAdTNCDOfqsXagS7pdcxH3mM+vBOgjStWXb8OcBTpYqhkpVis27/SIVzhK5V
+         WVjw==
+X-Gm-Message-State: AOJu0YwfBm3X4zNUwOldDYfzPK8DvhlNJLemZjEJVuXHeyNpEnX5HRZ/
+	SribOyeVYU/47hOBwlFIrnDHrK2u2PWV9FUZ2UOBpC1Hp8OjSmh7GcgV0QLbd8eZ
+X-Gm-Gg: ASbGnctYj6l6Vv7WJPBFqS503yw0Yjw3oeylV7YdhFeXRQztf7HJwpvv15k7R7eiWNS
+	D1wepvc8WsH7hKQhE7YE/gg2QD+p5xv804CAO9kYEkdUKQUCwvGb6fuLeIqhA4TkUugvRMLZJ+C
+	xj8scCgsiR0hhiBPXkCAIgoDAmoGkmlN9llfMjisPRn6BNFaoT5rGGpmI1Nam4PQ9+o80shwiHu
+	R42iWA3lPHiHuFJgn8ui7d1yjwCjWbCIcmD1CQukJEKQc1yY55fvDk1J6c/2SE0JHhuCb4edRb5
+	3LsrGImzLK3NkNZ4fbYiFbrQXpYuueKO3M3gmrVpNCn1AN0PsfgDgJoah/HdySu4
+X-Google-Smtp-Source: AGHT+IFlHIvUR9sNyFs0rVWyFFBpUl9TKN0mGib01/bBwdLrnMa/ercONfzra/MhTT80ueBbuXj6hw==
+X-Received: by 2002:a05:690c:6809:b0:70c:a854:8384 with SMTP id 00721157ae682-71658fe391dmr24595627b3.11.1751496138324;
+        Wed, 02 Jul 2025 15:42:18 -0700 (PDT)
+Received: from localhost ([2a03:2880:25ff:5d::])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-71515cb4db4sm26702457b3.93.2025.07.02.15.42.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 02 Jul 2025 15:42:17 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
@@ -79,11 +79,10 @@ Cc: daniel@iogearbox.net,
 	martin.lau@linux.dev,
 	kernel-team@fb.com,
 	yonghong.song@linux.dev,
-	eddyz87@gmail.com,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Subject: [PATCH bpf-next v1 2/8] bpf: rdonly_untrusted_mem for btf id walk pointer leafs
-Date: Wed,  2 Jul 2025 15:42:03 -0700
-Message-ID: <20250702224209.3300396-3-eddyz87@gmail.com>
+	eddyz87@gmail.com
+Subject: [PATCH bpf-next v1 3/8] selftests/bpf: ptr_to_btf_id struct walk ending with primitive pointer
+Date: Wed,  2 Jul 2025 15:42:04 -0700
+Message-ID: <20250702224209.3300396-4-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250702224209.3300396-1-eddyz87@gmail.com>
 References: <20250702224209.3300396-1-eddyz87@gmail.com>
@@ -95,92 +94,57 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When processing a load from a PTR_TO_BTF_ID, the verifier calculates
-the type of the loaded structure field based on the load offset.
-For example, given the following types:
+Validate that reading a PTR_TO_BTF_ID field produces a value of type
+PTR_TO_MEM|MEM_RDONLY|PTR_UNTRUSTED, if field is a pointer to a
+primitive type.
 
-  struct foo {
-    struct foo *a;
-    int *b;
-  } *p;
-
-The verifier would calculate the type of `p->a` as a pointer to
-`struct foo`. However, the type of `p->b` is currently calculated as a
-SCALAR_VALUE.
-
-This commit updates the logic for processing PTR_TO_BTF_ID to instead
-calculate the type of p->b as PTR_TO_MEM|MEM_RDONLY|PTR_UNTRUSTED.
-This change allows further dereferencing of such pointers (using probe
-memory instructions).
-
-Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- kernel/bpf/btf.c                                     | 6 ++++++
- kernel/bpf/verifier.c                                | 5 +++++
- tools/testing/selftests/bpf/prog_tests/linked_list.c | 2 +-
- 3 files changed, 12 insertions(+), 1 deletion(-)
+ .../bpf/progs/mem_rdonly_untrusted.c          | 31 +++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 05fd64a371af..b3c8a95d38fb 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -6915,6 +6915,7 @@ enum bpf_struct_walk_result {
- 	/* < 0 error */
- 	WALK_SCALAR = 0,
- 	WALK_PTR,
-+	WALK_PTR_UNTRUSTED,
- 	WALK_STRUCT,
- };
+diff --git a/tools/testing/selftests/bpf/progs/mem_rdonly_untrusted.c b/tools/testing/selftests/bpf/progs/mem_rdonly_untrusted.c
+index 8185130ede95..4f94c971ae86 100644
+--- a/tools/testing/selftests/bpf/progs/mem_rdonly_untrusted.c
++++ b/tools/testing/selftests/bpf/progs/mem_rdonly_untrusted.c
+@@ -5,6 +5,37 @@
+ #include "bpf_misc.h"
+ #include "../test_kmods/bpf_testmod_kfunc.h"
  
-@@ -7156,6 +7157,8 @@ static int btf_struct_walk(struct bpf_verifier_log *log, const struct btf *btf,
- 					*field_name = mname;
- 				return WALK_PTR;
- 			}
++SEC("tp_btf/sys_enter")
++__success
++__log_level(2)
++__msg("r8 = *(u64 *)(r7 +0)          ; R7_w=ptr_nameidata(off={{[0-9]+}}) R8_w=rdonly_untrusted_mem(sz=0)")
++__msg("r9 = *(u8 *)(r8 +0)           ; R8_w=rdonly_untrusted_mem(sz=0) R9_w=scalar")
++int btf_id_to_ptr_mem(void *ctx)
++{
++	struct task_struct *task;
++	struct nameidata *idata;
++	u64 ret, off;
 +
-+			return WALK_PTR_UNTRUSTED;
- 		}
- 
- 		/* Allow more flexible access within an int as long as
-@@ -7228,6 +7231,9 @@ int btf_struct_access(struct bpf_verifier_log *log,
- 			*next_btf_id = id;
- 			*flag = tmp_flag;
- 			return PTR_TO_BTF_ID;
-+		case WALK_PTR_UNTRUSTED:
-+			*flag = MEM_RDONLY | PTR_UNTRUSTED;
-+			return PTR_TO_MEM;
- 		case WALK_SCALAR:
- 			return SCALAR_VALUE;
- 		case WALK_STRUCT:
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index b6d26e8bd767..cd2344e50db8 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2813,6 +2813,11 @@ static int mark_btf_ld_reg(struct bpf_verifier_env *env,
- 		if (type_may_be_null(flag))
- 			regs[regno].id = ++env->id_gen;
- 		return 0;
-+	case PTR_TO_MEM:
-+		mark_reg_known_zero(env, regs, regno);
-+		regs[regno].type = PTR_TO_MEM | flag;
-+		regs[regno].mem_size = 0;
-+		return 0;
- 	default:
- 		verifier_bug(env, "unexpected reg_type %d in %s\n", reg_type, __func__);
- 		return -EFAULT;
-diff --git a/tools/testing/selftests/bpf/prog_tests/linked_list.c b/tools/testing/selftests/bpf/prog_tests/linked_list.c
-index 5266c7022863..14c5a7ef0e87 100644
---- a/tools/testing/selftests/bpf/prog_tests/linked_list.c
-+++ b/tools/testing/selftests/bpf/prog_tests/linked_list.c
-@@ -72,7 +72,7 @@ static struct {
- 	{ "new_null_ret", "R0 invalid mem access 'ptr_or_null_'" },
- 	{ "obj_new_acq", "Unreleased reference id=" },
- 	{ "use_after_drop", "invalid mem access 'scalar'" },
--	{ "ptr_walk_scalar", "type=scalar expected=percpu_ptr_" },
-+	{ "ptr_walk_scalar", "type=rdonly_untrusted_mem expected=percpu_ptr_" },
- 	{ "direct_read_lock", "direct access to bpf_spin_lock is disallowed" },
- 	{ "direct_write_lock", "direct access to bpf_spin_lock is disallowed" },
- 	{ "direct_read_head", "direct access to bpf_list_head is disallowed" },
++	task = bpf_get_current_task_btf();
++	idata = task->nameidata;
++	off = bpf_core_field_offset(struct nameidata, pathname);
++	/*
++	 * asm block to have reliable match target for __msg, equivalent of:
++	 *   ret = task->nameidata->pathname[0];
++	 */
++	asm volatile (
++	"r7 = %[idata];"
++	"r7 += %[off];"
++	"r8 = *(u64 *)(r7 + 0);"
++	"r9 = *(u8 *)(r8 + 0);"
++	"%[ret] = r9;"
++	: [ret]"=r"(ret)
++	: [idata]"r"(idata),
++	  [off]"r"(off)
++	: "r7", "r8", "r9");
++	return ret;
++}
++
+ SEC("socket")
+ __success
+ __retval(0)
 -- 
 2.47.1
 
