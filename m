@@ -1,178 +1,133 @@
-Return-Path: <bpf+bounces-62086-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62087-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3724AF0E88
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 10:56:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46F19AF0EB2
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 11:02:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F17CB4E4DB3
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 08:56:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B6051C24C69
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 09:02:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0838D23D284;
-	Wed,  2 Jul 2025 08:56:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 679FB2405F9;
+	Wed,  2 Jul 2025 09:01:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="rwmvd/Gr"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="b6fk/H7g"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx-rz-1.rrze.uni-erlangen.de (mx-rz-1.rrze.uni-erlangen.de [131.188.11.20])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 151FF238D32;
-	Wed,  2 Jul 2025 08:56:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F5CE6AA7
+	for <bpf@vger.kernel.org>; Wed,  2 Jul 2025 09:01:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751446602; cv=none; b=twTy2pPm9hdoA04uSdgOVbP6NrojwvLO2/nfljDpxC2ZopeSX4CfRl2hO6wnehtmdndJ7/BwMd0usenDjs4NdosGTUhVpjoE1wJeQYG9LxiyiK+mYCdxwcQ/9bAFOb1BrU0Ic6GqER8jAYnDQf12hIIj3YhT8CmdO6Talz2e5yU=
+	t=1751446906; cv=none; b=Mtqyl/VcHViRS4eDPRpyKqJaVSEYy/BTEgbBNxp1VFsz4V3F0gFjEE39LffGb3Om7kh1HU2RqVpvTvW+kaiGcx32QmO+Fk5AFM37CHGl8urX1xBHwW5g/M4npoBGEV8NVytTPWuz+rcPvhwCEyIJswgM1bNlrq82LViYjmw1tR0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751446602; c=relaxed/simple;
-	bh=vjaZgPGHhQCUFi8kYGwclSOLMTA/Fx882MzioHTvYr0=;
+	s=arc-20240116; t=1751446906; c=relaxed/simple;
+	bh=rT/1yTCUYgsKJSyTh5ACsF+g/jBCPapT4DPjXtyBeC8=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Q0juImYvy/OPNcI1bU6vVrF52dStHn2AbbcTiZQL45b7Ewo/Owl7Hikj6JdM0avVPIqZKjmJ/H1XmVn1prWfSYa/3YQqU6r8f6xj/kwkPtNdFo4/DBE5EEJLlt+gmiSXsp1WiydrbmYT4oreLJWY8T5GFWPTLr66tzthw+kX4j4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=rwmvd/Gr; arc=none smtp.client-ip=131.188.11.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fau.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
-	t=1751446590; bh=ERByeJCe1cWWNS3vP9KS5ms0EJRSp6XZFQRU53DFAZ8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From:To:CC:
-	 Subject;
-	b=rwmvd/GrM5+fy9sPDtVUE6VIS8OP+tdd8lk4e81LxGWsQrbI4GqIXt59d/yb5Ke+C
-	 TBRgT6DsRTMPzSYW/jTpO/bRiKIFgoA4On+Jfeqrm5y0ZmhocqbHH1hbgBVAoDz6Xb
-	 5DJPGCqJafwHpbdL0QSyHijizC2so+NX7T+rX9h3U3cZUUnsrKMG/ITamKuEkdUsPt
-	 nL58RnEFHDo+EcLJWH24O/s3/I/lhs9SpWpICvinQY6qEVS0t48ZhhZPDOpKX2KTal
-	 VSpF9Q4xq52tH/T8u13yTVIQcZWQ1kVfM5EO8Gmp29oXsHkOH3UaRYFK6aj3djxy+F
-	 VMtrc6Fgoch9g==
-Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-rz-1.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4bXDKB0H6lz8ssF;
-	Wed,  2 Jul 2025 10:56:30 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at boeck2.rrze.uni-erlangen.de (RRZE)
-X-RRZE-Flag: Not-Spam
-X-RRZE-Submit-IP: 2001:9e8:3619:9e00:5b01:5faa:2b6e:b31e
-Received: from localhost (unknown [IPv6:2001:9e8:3619:9e00:5b01:5faa:2b6e:b31e])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: U2FsdGVkX1987lk1V9WunFiGUOuBlWS8JL9VHDWIwPY=)
-	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4bXDK66gKqz8sj0;
-	Wed,  2 Jul 2025 10:56:26 +0200 (CEST)
-From: Luis Gerhorst <luis.gerhorst@fau.de>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>,  Mykola Lysenko <mykolal@fb.com>,
-  Alexei Starovoitov <ast@kernel.org>,  Daniel Borkmann
- <daniel@iogearbox.net>,  Martin KaFai Lau <martin.lau@linux.dev>,  Song
- Liu <song@kernel.org>,  Yonghong Song <yonghong.song@linux.dev>,  John
- Fastabend <john.fastabend@gmail.com>,  KP Singh <kpsingh@kernel.org>,
-  Stanislav Fomichev <sdf@fomichev.me>,  Hao Luo <haoluo@google.com>,  Jiri
- Olsa <jolsa@kernel.org>,  Shuah Khan <shuah@kernel.org>,  Kumar Kartikeya
- Dwivedi <memxor@gmail.com>,  Peilin Ye <yepeilin@google.com>,  Jiayuan
- Chen <mrpre@163.com>,  Saket Kumar Bhaskar <skb99@linux.ibm.com>,  Ihor
- Solodrai <isolodrai@meta.com>,  Daniel Xu <dxu@dxuuu.xyz>,
-  bpf@vger.kernel.org,  linux-kselftest@vger.kernel.org,
-  linux-kernel@vger.kernel.org,  Paul Chaignon <paul.chaignon@gmail.com>,
-  syzbot+dc27c5fb8388e38d2d37@syzkaller.appspotmail.com
-Subject: Re: [PATCH bpf-next v2 2/3] bpf: Fix aux usage after do_check_insn()
-In-Reply-To: <34cb9cb46df58e118f7fe488ff40fd7a5cf7f224.camel@gmail.com>
-	(Eduard Zingerman's message of "Sun, 29 Jun 2025 18:05:50 -0700")
-References: <20250628145016.784256-1-luis.gerhorst@fau.de>
-	<20250628145016.784256-3-luis.gerhorst@fau.de>
-	<34cb9cb46df58e118f7fe488ff40fd7a5cf7f224.camel@gmail.com>
-User-Agent: mu4e 1.12.8; emacs 30.1
-Date: Wed, 02 Jul 2025 10:56:25 +0200
-Message-ID: <877c0rdl8m.fsf@fau.de>
+	 MIME-Version:Content-Type; b=OF7zUbldyTz/SaXHbkEazXicy5GDOByiETLKLrZxIVOTPQorxs3TXIpd4Byhz1geDC8cZ+E9cBycKZYAUS80zigYVXm+Q26QKfj8dAIRhXLOTWcFBio3skndSgBrlMaMz3A005FNixdsBiOtr7SsIWneKa3XFiK88HiumxwLyDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=b6fk/H7g; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1751446903;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rT/1yTCUYgsKJSyTh5ACsF+g/jBCPapT4DPjXtyBeC8=;
+	b=b6fk/H7gtm8IyYp9H6svKea+cpFQ1Sk7G44ya6qv1MaM6TQLOp/DJec4d+yCZMKftAl6Lk
+	XX/ZKvvRQtJYdNpH4EUokdx0YNNNTsqf/LRyPhSjs7F6WCDcBZww7IlKUBXlSSy5l2G+QQ
+	Vgxbivo6EVdM5U0qzzzRuTtkIPmqR+E=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-671-DQk5e6UsOAOi0M634JN78Q-1; Wed, 02 Jul 2025 05:01:42 -0400
+X-MC-Unique: DQk5e6UsOAOi0M634JN78Q-1
+X-Mimecast-MFC-AGG-ID: DQk5e6UsOAOi0M634JN78Q_1751446901
+Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-553acdcd539so3777695e87.0
+        for <bpf@vger.kernel.org>; Wed, 02 Jul 2025 02:01:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751446901; x=1752051701;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rT/1yTCUYgsKJSyTh5ACsF+g/jBCPapT4DPjXtyBeC8=;
+        b=aTVzj900v7e2YmXw0bYAIT2vaQPf0HdXORyYtAHq49AdE5x5RHBuzzIRZ6CG74Xte/
+         1Z4/BGCy5VFgal9r7s44M740GYkKkRHLZ3YO7Uq3yX3toaTRUPC6KJ0UgNh+THDTb2NA
+         qwldA/+UyEA3BzJPH+S35rOS7OKepL0emESY8PikSa6Fx/bvcE3j0PIZ4freDGjd3cPs
+         tl6IiqQx2pn17590d1n+vFLNkh7E0Utc0bZuNuL7bw7TvyFzwPuv/b+EeXbQJfNhpaP2
+         fARolMVSnua1e8qDDXGPjX8auqf15gfp394BYaJZKV68+Jq7pybVeSA3TGI1MEJsv36H
+         Sqfw==
+X-Gm-Message-State: AOJu0YznBfpTSq4T/zMp7Vwx9QMLJwMzTeVBCVIJYtHDN9Y3gvxZnO0E
+	EN5e8U+4OhaveU3znBwlkicW9Uwolu4b0cS/2XLTenTVf1NTven/CouafOfeSjhdqU68mHkVVKY
+	gAn/cmyjpnWmjl3gDdkVpHoaow6TAvK+C9oB9gv56I+Jv31SQzlDT6w==
+X-Gm-Gg: ASbGncu/qanSnx7jQvaezZwGbjcmBuCeJoQc4hoD+CGCUBk6hPG2+/3ON+qF1c7fth8
+	9zGxBWD2QVLrygkeY6ExhpPxn3dSTSLbmuen9C8wUrcE/RIAgGE22yEGqvOpVBIQIp+JhZ/tlKB
+	JGk5zUHGwEOB52OaZk3VcRV8UBqukbo9U03Lqu9e5RdbFeEJI62xKSRmYn16cvy5sQw96mX3pPc
+	9duEeqE5zAtvy+3ZeMKpSOS2giRwIKBK2fBTugxvAbeqpOHS5RzaGwIuKolKn09REkjV+Aybx5B
+	PH+kSxv7vcO49IcHJmU=
+X-Received: by 2002:a05:6512:2245:b0:553:addb:ef5c with SMTP id 2adb3069b0e04-55628372cfamr635071e87.54.1751446900605;
+        Wed, 02 Jul 2025 02:01:40 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG4L3Lr7zlS5Q7UNzNUPT3l26X2dNCoG8GtYzZzEmFsARCZIaKREcNHDzAIVt/eK0EazCxBZw==
+X-Received: by 2002:a05:6512:2245:b0:553:addb:ef5c with SMTP id 2adb3069b0e04-55628372cfamr635048e87.54.1751446900110;
+        Wed, 02 Jul 2025 02:01:40 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5550b24046csm2071324e87.20.2025.07.02.02.01.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jul 2025 02:01:39 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id C45C61B3803C; Wed, 02 Jul 2025 11:01:37 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Jason Xing <kerneljasonxing@gmail.com>, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, bjorn@kernel.org,
+ magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
+ jonathan.lemon@gmail.com, sdf@fomichev.me, ast@kernel.org,
+ daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+ joe@dama.to, willemdebruijn.kernel@gmail.com
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, Jason Xing
+ <kernelxing@tencent.com>
+Subject: Re: [PATCH net-next v2] Documentation: xsk: correct the obsolete
+ references and examples
+In-Reply-To: <20250702075811.15048-1-kerneljasonxing@gmail.com>
+References: <20250702075811.15048-1-kerneljasonxing@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Wed, 02 Jul 2025 11:01:37 +0200
+Message-ID: <87plejezke.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Eduard Zingerman <eddyz87@gmail.com> writes:
+Jason Xing <kerneljasonxing@gmail.com> writes:
 
-> On Sat, 2025-06-28 at 16:50 +0200, Luis Gerhorst wrote:
+> From: Jason Xing <kernelxing@tencent.com>
 >
-> [...]
+> The modified lines are mainly related to the following commits[1][2]
+> which remove those tests and examples. Since samples/bpf has been
+> deprecated, we can refer to more examples that are easily searched
+> in the various xdp-projects, like the following link:
+> https://github.com/xdp-project/bpf-examples/tree/main/AF_XDP-example
 >
->> @@ -19955,11 +19960,11 @@ static int do_check(struct bpf_verifier_env *env)
->>  			/* Prevent this speculative path from ever reaching the
->>  			 * insn that would have been unsafe to execute.
->>  			 */
->> -			cur_aux(env)->nospec = true;
->> +			prev_aux(env)->nospec = true;
+> [1]
+> commit f36600634282 ("libbpf: move xsk.{c,h} into selftests/bpf")
+> [2]
+> commit cfb5a2dbf141 ("bpf, samples: Remove AF_XDP samples")
 >
-> I don't like the prev_aux() call in this position, as one needs to
-> understand that after do_check_insn() call what was current became
-> previous. This at-least requires a comment. Implementation with a
-> temporary variable (as at the bottom of this email), imo, is less
-> cognitive load.
+> Signed-off-by: Jason Xing <kernelxing@tencent.com>
 
-I think I agree. I will send a v3 with the variable.
+Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
->>  			/* IF it was an ADD/SUB insn, potentially remove any
->>  			 * markings for alu sanitization.
->>  			 */
->> -			cur_aux(env)->alu_state = 0;
->> +			prev_aux(env)->alu_state = 0;
->>  			goto process_bpf_exit;
->>  		} else if (err < 0) {
->>  			return err;
->
-> [...]
->
-> ---
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index a136d9b1b25f..a923614b7104 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -19953,6 +19953,7 @@ static int do_check(struct bpf_verifier_env *env)
->  	bool pop_log = !(env->log.level & BPF_LOG_LEVEL2);
->  	struct bpf_verifier_state *state = env->cur_state;
->  	struct bpf_insn *insns = env->prog->insnsi;
-> +	struct bpf_insn_aux_data *insn_aux;
->  	int insn_cnt = env->prog->len;
->  	bool do_print_state = false;
->  	int prev_insn_idx = -1;
-> @@ -19972,6 +19973,7 @@ static int do_check(struct bpf_verifier_env *env)
->  		}
->  
->  		insn = &insns[env->insn_idx];
-> +		insn_aux = &env->insn_aux_data[env->insn_idx];
->  
->  		if (++env->insn_processed > BPF_COMPLEXITY_LIMIT_INSNS) {
->  			verbose(env,
-> @@ -20048,7 +20050,7 @@ static int do_check(struct bpf_verifier_env *env)
->  		/* Reduce verification complexity by stopping speculative path
->  		 * verification when a nospec is encountered.
->  		 */
-> -		if (state->speculative && cur_aux(env)->nospec)
-> +		if (state->speculative && insn_aux->nospec)
->  			goto process_bpf_exit;
->  
->  		err = do_check_insn(env, &do_print_state);
-> @@ -20056,11 +20058,11 @@ static int do_check(struct bpf_verifier_env *env)
->  			/* Prevent this speculative path from ever reaching the
->  			 * insn that would have been unsafe to execute.
->  			 */
-> -			cur_aux(env)->nospec = true;
-> +			insn_aux->nospec = true;
->  			/* If it was an ADD/SUB insn, potentially remove any
->  			 * markings for alu sanitization.
->  			 */
-> -			cur_aux(env)->alu_state = 0;
-> +			insn_aux->alu_state = 0;
->  			goto process_bpf_exit;
->  		} else if (err < 0) {
->  			return err;
-> @@ -20069,7 +20071,7 @@ static int do_check(struct bpf_verifier_env *env)
->  		}
->  		WARN_ON_ONCE(err);
->  
-> -		if (state->speculative && cur_aux(env)->nospec_result) {
-> +		if (state->speculative && insn_aux->nospec_result) {
->  			/* If we are on a path that performed a jump-op, this
->  			 * may skip a nospec patched-in after the jump. This can
->  			 * currently never happen because nospec_result is only
+
+I'll make sure to update the document should we ever decide to move the
+example code :)
+
+-Toke
+
 
