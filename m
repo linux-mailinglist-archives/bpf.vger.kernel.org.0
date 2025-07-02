@@ -1,56 +1,65 @@
-Return-Path: <bpf+bounces-62082-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62083-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 623DEAF0E1D
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 10:33:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56CDEAF0E2B
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 10:37:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84A551C2559D
-	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 08:33:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58A2C1894902
+	for <lists+bpf@lfdr.de>; Wed,  2 Jul 2025 08:37:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABCF82367A2;
-	Wed,  2 Jul 2025 08:32:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E848238C1D;
+	Wed,  2 Jul 2025 08:37:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ss6ekJwH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JnbQj4P+"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ABDE38F91;
-	Wed,  2 Jul 2025 08:32:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDF64199FAB;
+	Wed,  2 Jul 2025 08:37:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751445172; cv=none; b=hv1nacZa8sgX8hqrracLQtZ447pVIQ5SAfHUnUAba8U66UF+iMFUlSN2rJN2/8Ho6V2UH7sQ1wJJDIugelooRyANIg90TR7aabAzK29kzGwZZ+KTXN3ajs2usZMU+fpDzUYQR85piYI0Yah9SsQc3Qo9HPiOQtade8o2jTUAixc=
+	t=1751445448; cv=none; b=armS+Hiy3L71eBDHTU1JS0PHFwQn0gAKsDmU2jwVuK4+aXHJaXC2rxU/R3m0ou9IMBLYPC4XAdpGsFZD/iqQQLJm4osJiT4YgEQzfmlSJ+BnCNKPSmlx4qpQbYYm4fQk5m9yGbTtA4UaAEJmQv63n9ZjR+AzlhM7cz+gGdp3+hg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751445172; c=relaxed/simple;
-	bh=4RTJx4587n6+0xLYAkHUooLJMs4vKlzr++2BIgNKOl4=;
+	s=arc-20240116; t=1751445448; c=relaxed/simple;
+	bh=7FKJlxsE3jn0DBQjOcrwyHFOhJYRK7izfigAF+uSDSw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mp7HhdkeLXA71v8ga2R5o5jC/hKRln30d10oPSavaJa8BjzmJKrhpVaKvfTAIDdNdZ7dyYaa9Tmev+aydqcYUfOLrwjx7Xc1u4Cc+IcraIGDhymENvvwjzVgef0E31P4g/ph/wCsDH8gB7xdyRVEUNN1QH3qkDqByXbrbVcXTvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ss6ekJwH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D8F6C4CEED;
-	Wed,  2 Jul 2025 08:32:49 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=obMa0h7InINWRncBTAPO/D3uePD++XTYnV9YiZdq7Zh0VaPHcZ9M9+4rTBH7LtRojyKB/2HsjkyIGPbIPPeb5Jwr6iuMhPRBTvhGxVJwkzYLwicaTTTfZw1j6nOPQH46DuzU2JUzzXcH75zw5e0xABxTUE2QgU1HtFEVlHRa12M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JnbQj4P+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D89CC4CEED;
+	Wed,  2 Jul 2025 08:37:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751445171;
-	bh=4RTJx4587n6+0xLYAkHUooLJMs4vKlzr++2BIgNKOl4=;
+	s=k20201202; t=1751445447;
+	bh=7FKJlxsE3jn0DBQjOcrwyHFOhJYRK7izfigAF+uSDSw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ss6ekJwH+Y4T70/Txa7py3K8953c3mAOe55N+1t6N9NGb1ql+7yxiElA7p2ZTorNN
-	 ADBVFbMEYlpwzvcJ+b48CqGbxaC+5JaZQGl+pi1mcnsgFWniOOIesgKD8gpBqXJVY4
-	 l8LTeh4nJignbcewIP4pWLXBHNp7hG9I8H3wUgwpXZAtf9UVErBIHUhQVlF1h1AW/T
-	 OCcyw7wwjM1VtbI0T6AzySstzUn2R7lzNtAIDMOfkz4VKnPtU7ki6BGKOiNx1238mP
-	 v5Sr3rY6aZepjDXoQUfoISpszeKnQtSiw4CdMF9bw1R/xBBXtKi9U6E/1JB5mMSmN1
-	 dBt7sv+kog9Kg==
-Date: Wed, 2 Jul 2025 10:32:47 +0200
+	b=JnbQj4P+3Qk3nuPFka95au2yTsmaM4nbadj3AFA7E2doUoKwlPJFnM9XZqkkqUxtH
+	 h9zolEpQ7MgT8sSL5uSNNOPxOSZ5FehghjL2cXHztZpJ5G4BKycMWImcEa98WUwVaJ
+	 PsxPVx7i1HC6nkfcPbHinKf9AUEYxQTr+HU/Teo7GGiJ0Dd9+VsiJ3LWRc8d3Mu4ov
+	 e0OBp7eRIyv9ks3/H8Rzqz87VLigFw8Jh4O20X/pQWBsrx6iorZQ67/V78PkADkGDj
+	 0sttnQ2RrP06/biqhNfR8xK51U/9vVYd0rdN2ulLaoXaxmMUxr6C94yZBvtmcv0bkD
+	 Ztk1gC1XnJQxg==
+Date: Wed, 2 Jul 2025 10:37:20 +0200
 From: Christian Brauner <brauner@kernel.org>
-To: Matteo Croce <technoboy85@gmail.com>
-Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, linux-kernel@vger.kernel.org, 
-	Matteo Croce <teknoraver@meta.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: don't call fsopen() as
- privileged user
-Message-ID: <20250702-liberal-leerung-f2a973398c3e@brauner>
-References: <20250701183123.31781-1-technoboy85@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Song Liu <song@kernel.org>, Kernel Team <kernel-team@meta.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eduard <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, KP Singh <kpsingh@kernel.org>, 
+	Matt Bobrowski <mattbobrowski@google.com>, Amir Goldstein <amir73il@gmail.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Tejun Heo <tj@kernel.org>, 
+	Daan De Meyer <daan.j.demeyer@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	LSM List <linux-security-module@vger.kernel.org>
+Subject: Re: [PATCH v3 bpf-next 0/4] Introduce bpf_cgroup_read_xattr
+Message-ID: <20250702-anhaften-postleitzahl-06a4d4771641@brauner>
+References: <20250623063854.1896364-1-song@kernel.org>
+ <20250623-rebel-verlust-8fcd4cdd9122@brauner>
+ <CAADnVQ+iqMi2HEj_iH7hsx+XJAsqaMWqSDe4tzcGAnehFWA9Sw@mail.gmail.com>
+ <20250701-angebahnt-fortan-6d4804227e87@brauner>
+ <CAADnVQ+pPt7Zt8gS0aW75WGrwjmcUcn3s37Ahd9bnLyzOfB=3g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -59,22 +68,102 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250701183123.31781-1-technoboy85@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQ+pPt7Zt8gS0aW75WGrwjmcUcn3s37Ahd9bnLyzOfB=3g@mail.gmail.com>
 
-On Tue, Jul 01, 2025 at 08:31:23PM +0200, Matteo Croce wrote:
-> From: Matteo Croce <teknoraver@meta.com>
+On Tue, Jul 01, 2025 at 07:51:55AM -0700, Alexei Starovoitov wrote:
+> On Tue, Jul 1, 2025 at 1:32 AM Christian Brauner <brauner@kernel.org> wrote:
+> >
+> > On Thu, Jun 26, 2025 at 07:14:20PM -0700, Alexei Starovoitov wrote:
+> > > On Mon, Jun 23, 2025 at 4:03 AM Christian Brauner <brauner@kernel.org> wrote:
+> > > >
+> > > > On Sun, 22 Jun 2025 23:38:50 -0700, Song Liu wrote:
+> > > > > Introduce a new kfunc bpf_cgroup_read_xattr, which can read xattr from
+> > > > > cgroupfs nodes. The primary users are LSMs, cgroup programs, and sched_ext.
+> > > > >
+> > > >
+> > > > Applied to the vfs-6.17.bpf branch of the vfs/vfs.git tree.
+> > > > Patches in the vfs-6.17.bpf branch should appear in linux-next soon.
+> > >
+> > > Thanks.
+> > > Now merged into bpf-next/master as well.
+> > >
+> > > > Please report any outstanding bugs that were missed during review in a
+> > > > new review to the original patch series allowing us to drop it.
+> > >
+> > > bugs :(
+> > >
+> > > > It's encouraged to provide Acked-bys and Reviewed-bys even though the
+> > > > patch has now been applied. If possible patch trailers will be updated.
+> > >
+> > > Pls don't. Keep it as-is, otherwise there will be merge conflicts
+> > > during the merge window.
+> >
+> > This is just the common blurb. As soon as another part of the tree
+> > relies on something we stabilize the branch and only do fixes on top and
+> > never rebase. We usually recommend just pulling the branch which I think
+> > you did.
+> >
+> > >
+> > > > Note that commit hashes shown below are subject to change due to rebase,
+> > > > trailer updates or similar. If in doubt, please check the listed branch.
+> > > >
+> > > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+> > > > branch: vfs-6.17.bpf
+> > > >
+> > > > [1/4] kernfs: remove iattr_mutex
+> > > >       https://git.kernel.org/vfs/vfs/c/d1f4e9026007
+> > > > [2/4] bpf: Introduce bpf_cgroup_read_xattr to read xattr of cgroup's node
+> > > >       https://git.kernel.org/vfs/vfs/c/535b070f4a80
+> > > > [3/4] bpf: Mark cgroup_subsys_state->cgroup RCU safe
+> > > >       https://git.kernel.org/vfs/vfs/c/1504d8c7c702
+> > > > [4/4] selftests/bpf: Add tests for bpf_cgroup_read_xattr
+> > > >       https://git.kernel.org/vfs/vfs/c/f4fba2d6d282
+> > >
+> > > Something wrong with this selftest.
+> > > Cleanup is not done correctly.
+> > >
+> > > ./test_progs -t lsm_cgroup
+> > > Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
+> > > ./test_progs -t lsm_cgroup
+> > > Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
+> > > ./test_progs -t cgroup_xattr
+> > > Summary: 1/8 PASSED, 0 SKIPPED, 0 FAILED
+> > > ./test_progs -t lsm_cgroup
+> > > test_lsm_cgroup_functional:PASS:bind(ETH_P_ALL) 0 nsec
+> > > (network_helpers.c:121: errno: Cannot assign requested address) Failed
+> > > to bind socket
+> > > test_lsm_cgroup_functional:FAIL:start_server unexpected start_server:
+> > > actual -1 < expected 0
+> > > (network_helpers.c:360: errno: Bad file descriptor) getsockopt(SOL_PROTOCOL)
+> > > test_lsm_cgroup_functional:FAIL:connect_to_fd unexpected
+> > > connect_to_fd: actual -1 < expected 0
+> > > test_lsm_cgroup_functional:FAIL:accept unexpected accept: actual -1 < expected 0
+> > > test_lsm_cgroup_functional:FAIL:getsockopt unexpected getsockopt:
+> > > actual -1 < expected 0
+> > > test_lsm_cgroup_functional:FAIL:sk_priority unexpected sk_priority:
+> > > actual 0 != expected 234
+> > > ...
+> > > Summary: 0/1 PASSED, 0 SKIPPED, 1 FAILED
+> > >
+> > >
+> > > Song,
+> > > Please follow up with the fix for selftest.
+> > > It will be in bpf-next only.
+> >
+> > We should put that commit on the shared vfs-6.17.bpf branch.
 > 
-> In the BPF token example, the fsopen() syscall is called as privileged
-> user. This is unneeded because fsopen() can be called also as
-> unprivileged user from the user namespace.
-> As the `fs_fd` file descriptor which was sent back and fort is still the
-> same, keep it open instead of cloning and closing it twice via SCM_RIGHTS.
-> 
-> cfr. https://github.com/systemd/systemd/pull/36134
-> 
-> Signed-off-by: Matteo Croce <teknoraver@meta.com>
-> ---
+> The branch had a conflict with bpf-next which was resolved
+> in the merge commit. Then _two_ fixes were applied on top.
+> And one fix is right where conflict was.
+> So it's not possible to apply both fixes to vfs-6.17.bpf.
+> imo this shared branch experience wasn't good.
+> We should have applied the series to bpf-next only.
+> It was more bpf material than vfs. I wouldn't do this again.
 
-Thanks!
-Acked-by: Christian Brauner <brauner@kernel.org>
+Absolutely not. Anything that touches VFS will go through VFS. Shared
+branches work just fine. We manage to do this with everyone else in the
+kernel so bpf is able to do this as well. If you'd just asked this would
+not have been an issue. Merge conflicts are a fact of kernel
+development, we all deal with it you can too.
 
