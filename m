@@ -1,90 +1,89 @@
-Return-Path: <bpf+bounces-62306-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62307-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A358AF7D8C
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 18:16:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37111AF7D53
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 18:08:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCAAA1C86DFD
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 16:06:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0845582CED
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 16:06:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 178A02F199C;
-	Thu,  3 Jul 2025 16:04:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBAA6236A70;
+	Thu,  3 Jul 2025 16:05:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="pukhBq/r"
+	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="x0t8sl77"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D1AA2F198A
-	for <bpf@vger.kernel.org>; Thu,  3 Jul 2025 16:04:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 697071AF0C1
+	for <bpf@vger.kernel.org>; Thu,  3 Jul 2025 16:05:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751558681; cv=none; b=sC3C1KALsCPrO+sCMyUVBoipTvR49Fe+wiDnKU40eQ+Z17kuOV0sT130B2LF7gOJppJIfW/RnlcA2jUnWjC90hvWa0tSA04ZCyr+AK4I/+CM9Wj87ecMYehVqKMwnlqZVKqLxRUE9NDLzqqaJgfrcdMNI+Nu4qvc4kk/L3FH2cI=
+	t=1751558725; cv=none; b=S77UOUMaCQ76ebCMnPKG7ChJyMjMBaGkAd5XoqzKaxa2x6iK5d6JhOsqG/WLb3K7s4rkiUOkjMJUzINO2Gw768A9npLuDoSXYBKRAVd8PrNiQosNAjsBYopKxJaya+lPVsBw31t1dBJdEIAcWztfElSQcjHDbX3WxIqYner3Djg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751558681; c=relaxed/simple;
-	bh=w8ouu/T7wQTVDwrWc5iBTatWT0bz2dvI79plv7yF9VY=;
+	s=arc-20240116; t=1751558725; c=relaxed/simple;
+	bh=vHx1o5RhH6LRzCVKg+3Cuo4hjm+9NRT3R8a3a/haBC0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Gnuv1OkmLvl7cXfJOhcFxrUHbf0mrpk6+b9jri3iPotj53oeZEIJobMcFSjg/RWENy9Ow2qxrNBfJcZJeWKPqYvFz/FqOOTWlmwy6RT4Lhf6X4Vq8vVGuZ1Hv88Fqun3uN8zpn/J7ktoyU1GsMSy+oCIk0K/xKpXilHtHaOGUWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=pukhBq/r; arc=none smtp.client-ip=209.85.219.177
+	 To:Cc:Content-Type; b=VapLYj/PT+uqnoUaH6LoexfnPIpGlJDcClA3dzLkUN/UmND+N03BfVCCtlup17k8pGEEW0GHrT4mHiqCQUXanwjqw9eY1QI6AGKfm2eW7vwmvDGTfXadz5Vt81vc9bleAjfwi4MURver+fqo9rhYG4tvZBIcT6aqfB/DCCLyFrw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=x0t8sl77; arc=none smtp.client-ip=209.85.128.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-e81826d5b72so6804275276.3
-        for <bpf@vger.kernel.org>; Thu, 03 Jul 2025 09:04:37 -0700 (PDT)
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-70e1d8c2dc2so58510257b3.3
+        for <bpf@vger.kernel.org>; Thu, 03 Jul 2025 09:05:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1751558676; x=1752163476; darn=vger.kernel.org;
+        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1751558722; x=1752163522; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MPWAKnXKrQ9v5zWCAveL5FeKmZp+rhBnWBfvO6oCoPg=;
-        b=pukhBq/rL9qHtL39QtSUvynbPzp0eVk7rRFJEB34MvZYj/FMALNukWJ92OGojS4y+I
-         EJKRhKLG4Qq9duemEjy/+Ux3C6t19twW1YZ5BpM/O8qXUy031Ibgtu/l3nnkfBe5mpE+
-         lH01ddl7ifTWZw6iRlW2HaJSo9j6bUOVwT2CEuVNCEfTQMOX8REBLT3V4n42x0jcLvHq
-         r4Zq7HkUTNsNSJyQNh7IM/U6iE8zAkZPGHlTQZ7UunfpAX2LahLJFbzsrQ6jRyb7voGk
-         f6WhYPG0Sm8hqPVFdacEfd9f8ZM7vwE3harADpCnWD6i2I1L/U1PMUHY1rIRTGfekbF3
-         +yCg==
+        bh=lPqtuahNrv69D20FaiWaHuCBWUzgU+KM0mTLCb+Uth4=;
+        b=x0t8sl77zzkc2EDPUdw00Y0O0QGTQahdVh1c8GyM7I5pnFYeoXDzVMLKB6L/xuabAa
+         1rMlNxK8snbiTPztSBVnvevizn+87Wy6Lbw2ohM/uiKtG/vSG7xhbhdj+kg+41grSskd
+         1eeoOFotJkRCeP5p/RIRWTtb0S6k4rDOx3DE23A3Famh0BGx02cdK3xz4HQfQjevqdbk
+         iQ/GlM7dEnT37028uyu98LGrBVsE9hI3ye5ySkUuQ6wDE0nYoCv/Ptu1jQjYmIiMGOFz
+         APMF7CxuKXkyej3cpqaJr9cSVOh0LV3scvMpPlGMCA91Y6Cz47CqRa2VG4LhfHyj/oqc
+         Jo1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751558676; x=1752163476;
+        d=1e100.net; s=20230601; t=1751558722; x=1752163522;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MPWAKnXKrQ9v5zWCAveL5FeKmZp+rhBnWBfvO6oCoPg=;
-        b=Fcwm6YR7JIWa+jwUwiCb+FOt5NpGlYT0m7in9JWf7DIa/V3i11pBBE9y7UEecfNV7W
-         gfeRG2JmzOclWmL+PowMhH0B7megEyFiQtAZXOr0Ku1sUe1ZxNCOzGStd3AUjZ4oDZ9J
-         2arYnIUwGMujgtgMHpCt4bZUePjortzJ8hu/Z9QP9xIdkNAWIM3wPlVpwfEwUWTeeAjC
-         0bjH+8zUW2103GYTff8WbNuiRRnbxyQzT/I6kSyQsZ88QfToJQCZXa7KaKxrvZJtCzBf
-         oDw+5HHU/uWJlW7fiEm4k3ale0Av8AqMCIAd3XbkNYfQg0MzwnkxOFS1kqV5LGfX4DML
-         Jq4g==
-X-Gm-Message-State: AOJu0Yzh6h5RxCjlMUqx8XvJg29Lnw9QoB1BMo6fpF8pfFcxS/AXTQWl
-	TyYBJWowBFwe3pDAo7N0oC6KrkeGJPgZHswQLWu7aAg/lIVq4HXyhVPkMW2FOiWaFe/x+NMdJIo
-	DrMRHtrWxYDj/kR/iobM390C2K528mDMfDEA92UFTDA==
-X-Gm-Gg: ASbGncsZO9UPwWleDutpdbpnp9y0iB3Wd66ZbRGe3B611lY3gM+xEMmOL+6bXuONc2w
-	pcfNpiSkkmmrrO+8mZ/Xg8D1Gw00egj8C5IW9r7lgJU01NBfQexkL1nAY9L6qaZdtgq+Vn9VUFq
-	WLnEM8BK/HpmutOojx7DQp2x+40EwIR3LkacV7tqDacd15
-X-Google-Smtp-Source: AGHT+IFmtVdEMhqVC3ilzJUWHKFnKEZDMxAC01UGVuEneat16sKcvyhWR0ER6EM67y5H1y3hnJlLIuwMFrmG1EZ6cLM=
-X-Received: by 2002:a05:690c:4c05:b0:711:6419:5ce1 with SMTP id
- 00721157ae682-716590cbfd7mr62307947b3.31.1751558676045; Thu, 03 Jul 2025
- 09:04:36 -0700 (PDT)
+        bh=lPqtuahNrv69D20FaiWaHuCBWUzgU+KM0mTLCb+Uth4=;
+        b=UcDb0KiJB1cArXc+koXQhe7p98GwFnNps5FM+Kd5ccCyfP6GLYEKheGgzX+P5AFZTT
+         6SBfuMKCJy5zA8mHmcysr2jvfwjQP9Z/O9l+4suSYVDI07uq+MY5gGY+89v4CJ/KcrGP
+         AIkRDfobLEta9goTmBu9xrNb9OtSEvalC09N5JvkJP/OF3gJQfOy2czuFHZ9Q6sJZgC/
+         FtOU2SOWscGgeAGXe8Y6AWaOPu2JfoPF0GWUd5Yugjj0btOHSaFNQUNynKEsBCEwHm9K
+         oFe3EFj8DDP0xcyS5EKNl2SZaYLx+iRiHD9p6AJaJe3Owf8frvTLkdRMaRADJ5R1qEuD
+         QbBg==
+X-Gm-Message-State: AOJu0YxnR94FR3KhYJ7QK9WjUIdufRxV+gTAY6y+l0NS2STavdB0EQ9V
+	nt4MRL50Q/1rywe0btZNbWccZRE+AB8VUnkzYjY9aO+dRlii0ohxZatoKliPJmFQ4JrsZWCs3be
+	96aDrwUVTIJ9nj5s/Zth2CbvHP5csL9SrVstZmdvPQw==
+X-Gm-Gg: ASbGncu0P5/5QYCeeoRfPkUgeCoOABN4gkPNxo+ftWH9HCxG1KyhyiBWNClGP/bozh1
+	ur0Se0zxexgLthzigVr1M6xrA5Wc2IGhPOqzlKazVKIaEwyjTK5ojn0ib95+sZ3k21x16tsNpa6
+	7J3g4x61jr3yUhptjrzgdfaP/+OHkvCRBFeXBF9kOg3bBB
+X-Google-Smtp-Source: AGHT+IFtijseeaC8eESe1IMMDOf12pwhi3NTBdBrNFTJ7WgqzTOVmjnwbAAgUcBBpT3eDfmx3vc1+yK/w2UdnRdSf0Y=
+X-Received: by 2002:a05:690c:4a0a:b0:711:4fbe:e475 with SMTP id
+ 00721157ae682-7164d2c9fabmr101489797b3.12.1751558722362; Thu, 03 Jul 2025
+ 09:05:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250702031737.407548-1-memxor@gmail.com> <20250702031737.407548-6-memxor@gmail.com>
-In-Reply-To: <20250702031737.407548-6-memxor@gmail.com>
+References: <20250702031737.407548-1-memxor@gmail.com> <20250702031737.407548-5-memxor@gmail.com>
+In-Reply-To: <20250702031737.407548-5-memxor@gmail.com>
 From: Emil Tsalapatis <emil@etsalapatis.com>
-Date: Thu, 3 Jul 2025 12:04:25 -0400
-X-Gm-Features: Ac12FXzHLaT4hFsV7lj9FSqVSk5FWneQaGSCuicjRjd6ZM4dYU42XkAI74-Ld88
-Message-ID: <CABFh=a5TgSXV5DXHo7aD_J=k3iqN29KCRU-KBHiG7yhWw-qX0g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 05/12] bpf: Add function to find program from
- stack trace
+Date: Thu, 3 Jul 2025 12:05:11 -0400
+X-Gm-Features: Ac12FXw33lCVvMH68e_gBRNKFAPewjf9yKneQIyQfITO6AuG1eQLLI_6NwxNZm8
+Message-ID: <CABFh=a48pnuwOcNNy=13E50SD016G5+P=PGZC0vTLKFJ7X0cZg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 04/12] bpf: Ensure RCU lock is held around bpf_prog_ksym_find
 To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org, Eduard Zingerman <eddyz87@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
 	Barret Rhoden <brho@google.com>, Matt Bobrowski <mattbobrowski@google.com>, kkd@meta.com, 
 	kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
@@ -93,80 +92,48 @@ Content-Transfer-Encoding: quoted-printable
 On Tue, Jul 1, 2025 at 11:17=E2=80=AFPM Kumar Kartikeya Dwivedi
 <memxor@gmail.com> wrote:
 >
-> In preparation of figuring out the closest program that led to the
-> current point in the kernel, implement a function that scans through the
-> stack trace and finds out the closest BPF program when walking down the
-> stack trace.
+> Add a warning to ensure RCU lock is held around tree lookup, and then
+> fix one of the invocations in bpf_stack_walker. The program has an
+> active stack frame and won't disappear. Use the opportunity to remove
+> unneeded invocation of is_bpf_text_address.
 >
-> Special care needs to be taken to skip over kernel and BPF subprog
-> frames. We basically scan until we find a BPF main prog frame. The
-> assumption is that if a program calls into us transitively, we'll
-> hit it along the way. If not, we end up returning NULL.
->
-> Contextually the function will be used in places where we know the
-> program may have called into us.
->
-> Due to reliance on arch_bpf_stack_walk(), this function only works on
-> x86 with CONFIG_UNWINDER_ORC, arm64, and s390. Remove the warning from
-> arch_bpf_stack_walk as well since we call it outside bpf_throw()
-> context.
->
-> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> Fixes: f18b03fabaa9 ("bpf: Implement BPF exceptions")
 > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 > ---
->  arch/x86/net/bpf_jit_comp.c |  1 -
->  include/linux/bpf.h         |  1 +
->  kernel/bpf/core.c           | 33 +++++++++++++++++++++++++++++++++
->  3 files changed, 34 insertions(+), 1 deletion(-)
+>  kernel/bpf/core.c    |  5 ++++-
+>  kernel/bpf/helpers.c | 11 +++++++++--
+>  2 files changed, 13 insertions(+), 3 deletions(-)
 >
 
 Reviewed-by: Emil Tsalapatis <emil@etsalapatis.com>
 
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index 15672cb926fc..40e1b3b9634f 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -3845,7 +3845,6 @@ void arch_bpf_stack_walk(bool (*consume_fn)(void *c=
-ookie, u64 ip, u64 sp, u64 bp
->         }
->         return;
->  #endif
-> -       WARN(1, "verification of programs using bpf_throw should have fai=
-led\n");
->  }
->
->  void bpf_arch_poke_desc_update(struct bpf_jit_poke_descriptor *poke,
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 09f06b1ea62e..4d577352f3e6 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -3662,5 +3662,6 @@ static inline bool bpf_is_subprog(const struct bpf_=
-prog *prog)
->
->  int bpf_prog_get_file_line(struct bpf_prog *prog, unsigned long ip, cons=
-t char **filep,
->                            const char **linep, int *nump);
-> +struct bpf_prog *bpf_prog_find_from_stack(void);
->
->  #endif /* _LINUX_BPF_H */
 > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index b4203f68cf33..ab8b3446570c 100644
+> index 5c6e9fbb5508..b4203f68cf33 100644
 > --- a/kernel/bpf/core.c
 > +++ b/kernel/bpf/core.c
-> @@ -3262,4 +3262,37 @@ int bpf_prog_get_file_line(struct bpf_prog *prog, =
-unsigned long ip, const char *
->         return 0;
->  }
+> @@ -782,7 +782,10 @@ bool is_bpf_text_address(unsigned long addr)
 >
-> +struct walk_stack_ctx {
-> +       struct bpf_prog *prog;
-> +};
+>  struct bpf_prog *bpf_prog_ksym_find(unsigned long addr)
+>  {
+> -       struct bpf_ksym *ksym =3D bpf_ksym_find(addr);
+> +       struct bpf_ksym *ksym;
 > +
-> +static bool find_from_stack_cb(void *cookie, u64 ip, u64 sp, u64 bp)
-> +{
-> +       struct walk_stack_ctx *ctxp =3D cookie;
-> +       struct bpf_prog *prog;
-> +
+> +       WARN_ON_ONCE(!rcu_read_lock_held());
+> +       ksym =3D bpf_ksym_find(addr);
+>
+>         return ksym && ksym->prog ?
+>                container_of(ksym, struct bpf_prog_aux, ksym)->prog :
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 61fdd343d6f5..659b5d133f3e 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -2935,9 +2935,16 @@ static bool bpf_stack_walker(void *cookie, u64 ip,=
+ u64 sp, u64 bp)
+>         struct bpf_throw_ctx *ctx =3D cookie;
+>         struct bpf_prog *prog;
+>
+> -       if (!is_bpf_text_address(ip))
+> -               return !ctx->cnt;
 > +       /*
 > +        * The RCU read lock is held to safely traverse the latch tree, b=
 ut we
@@ -176,25 +143,13 @@ s an
 pear.
 > +        */
 > +       rcu_read_lock();
-> +       prog =3D bpf_prog_ksym_find(ip);
+>         prog =3D bpf_prog_ksym_find(ip);
 > +       rcu_read_unlock();
 > +       if (!prog)
-> +               return true;
-> +       if (bpf_is_subprog(prog))
-> +               return true;
-> +       ctxp->prog =3D prog;
-> +       return false;
-> +}
-> +
-> +struct bpf_prog *bpf_prog_find_from_stack(void)
-> +{
-> +       struct walk_stack_ctx ctx =3D {};
-> +
-> +       arch_bpf_stack_walk(find_from_stack_cb, &ctx);
-> +       return ctx.prog;
-> +}
-> +
->  #endif
+> +               return !ctx->cnt;
+>         ctx->cnt++;
+>         if (bpf_is_subprog(prog))
+>                 return true;
 > --
 > 2.47.1
 >
