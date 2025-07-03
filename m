@@ -1,211 +1,182 @@
-Return-Path: <bpf+bounces-62322-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62323-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45EE7AF80D5
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 20:57:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FDB4AF810E
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 21:03:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FC795861AC
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 18:57:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C227954724D
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 19:02:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AAD42F549E;
-	Thu,  3 Jul 2025 18:54:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F0882F236B;
+	Thu,  3 Jul 2025 18:58:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A2aLfLHg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jl8OG6di"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 019D42F3643;
-	Thu,  3 Jul 2025 18:54:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C79BCBE5E
+	for <bpf@vger.kernel.org>; Thu,  3 Jul 2025 18:58:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751568872; cv=none; b=EPJtS3wnrHeVFz54y3krgfwujyeuyJ3JSEO1c0RdBA9Q8FVAjrtSw3FcdmzMF1SMNGUH37IkdrpYM3MP5Mq1JVsU5nkEsGJHAZkmsyBlXllE2MlPiFZc7balniTgk1iuAlL0YnTGH6hbjKzz4/i+oq6io5AwxEaUtKjZAtX9leA=
+	t=1751569092; cv=none; b=Czx14zQ5eVhpEBZ3HT5yRTnhy6GFlyA8X+I8HjVS8bM8El927kJ3eL7I+PWiC/NFK71yEGtFW+H/wfkMQeyo8JTcWm2E1UbyHq6uUk1YQHM6Sqr7U+sWoHJWVqyfT/TtlHBP6Qn+fnYpibFdB4GvZclbs8h9dJanpZy0A8J+Eew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751568872; c=relaxed/simple;
-	bh=MHLgyIAAlaHzAt1ozfFRMbW86yKnRGFobTpOPBAiBTs=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=OiifTV0w4CQ0fJEAzVU65WV1cp2tTMdRnpWONl9nOIcb3fdzYs5WwN1EAFOt9oF86XpB0j/pXUNJgS++LRxfr0DCTzxM5Mj6u9hYfti0pJCC/RlMbTgPn0TTlXca6pf4hfS1jFW4ynwIcOQmROhKbV+XNzvFrToKOV97R6g5mxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A2aLfLHg; arc=none smtp.client-ip=209.85.215.180
+	s=arc-20240116; t=1751569092; c=relaxed/simple;
+	bh=J8DivPb9+tinMn3/Rk5hzCuZd8RTSM7w9vllsMrucZ4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Yn31upI0Q8Mq0+svR/rqtsSv+K22v98szK0nXPaVpAeqTMHxzPzFhPE/GJgKy945OXw8Q/2UpPSuLVxxu1no5688awNun0nxVX2sbSDVw31l9C4kOfipfshrULVnhJv0hmpgte/4xUXgJ/x6QheHvuWN/bbySAsWnqjRv62Mo5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jl8OG6di; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-af51596da56so201841a12.0;
-        Thu, 03 Jul 2025 11:54:30 -0700 (PDT)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-451d6ade159so1837925e9.1
+        for <bpf@vger.kernel.org>; Thu, 03 Jul 2025 11:58:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751568870; x=1752173670; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Je+Kvo1raeo0nO8HQUrtQYmsvZLPldduNj3ulNNfC0w=;
-        b=A2aLfLHgRXRn+SITqCY3okeX01qHwnSx7YLVY6hkCwHMdgqNdBAaC0piP+Ew94c6Rd
-         H4bJww2K8UGnHm3ybCZ9kvjg2Aw3iXE5kIkyavmDa9elKFUSlXc5KGl3Tea2+jN3vEpE
-         nosRfToshY6VSa2vI3fmojpSFqOOkaVTrzJ/DvPDq55Opx8BUlpPmYbrceCePEamUMDa
-         isCE/Wyg0MihfFuylI0EJP5sXijvB+SP6S64oQhoU6FGwSThufFIqbc/8cCsF63RWun4
-         NjeDNF1QISbGma9YxlPm07GelOmCe7QGT8p+E3GnXRp14ouyOSbTkQzsNKKsVltiff9m
-         elFw==
+        d=gmail.com; s=20230601; t=1751569089; x=1752173889; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=eDzNsvrMQlVg0hFOiWPuvKro4LC7wPqPAshN0O1HGHE=;
+        b=Jl8OG6diHt/Dm5yKJOLsd12H2isO4JIqoTWb+7bbVjdmgwlqbuSykDH2/uMCgmpZUs
+         TIR4klOSH1evxa18AcY1MVUSRM17j4GibecrrTKhDoIF5zuiHnbtlVHWKK69gLuF5sv7
+         5N/GAQ0pQJjCub6Xl1KuSBgrHib2VyfiUKUla/pY7/9TRUEqc+Aa/DfnPvVMZM96U+kB
+         KPXzfz47QOtHFx+JuoF7fQKKOZ3xGsOXrlikuC0vSi87M4lY5mKipZdF2guPCNYxL8v/
+         2G5emJrEA1Re6Ah2rYgidZFyqksUkeQboFgXXkeDJ4cHB3/iEqNhJXhmCOM/TP5b2Scv
+         7gQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751568870; x=1752173670;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Je+Kvo1raeo0nO8HQUrtQYmsvZLPldduNj3ulNNfC0w=;
-        b=Y8iTOou6apzYCCym1jL7zzc5t9GE7YDmqusCgCfeV5ppSmjBIyfTaP1j8iRWQDXRec
-         y1iFJpipybOabTLn3AWEgm38D5ksySgDl9d2/TBIvZH/sgHT6wg3wvJ2UbOwzVeoJd+R
-         LoWe8LQvcJKGih4IkjCiT1c3jpjEzNLxBSkiTaOoA5VJ+owfOQH5O2sRpq4W4m1IUauG
-         u2fX0wb2DWGHJkQ7JLP63LAHbM9lwIgr4jU3aosO7BmU67E9/qrv/F7Im9VJVss7T5ZG
-         uWN7s4gkr/bYaQbVjO3HntJMvGwaskil4TekZ8ywhoo4Hd8SRI/oSQOZPSB3o0z5GVjn
-         gnVA==
-X-Forwarded-Encrypted: i=1; AJvYcCU7ehZ6ivR+Gqx22fooDnRIdvQrCE007MeIzBvxNZqpQ3Nf4E+j+rw+TaWym1j4EI8wBVs=@vger.kernel.org, AJvYcCXNphH7VxywH8rAEKo78h5zs0T7uQ1OVZefoGVzHzkSp8tdG88JPl6V7IKtJJonEd4wRiaUHMsM9NhyDtDS@vger.kernel.org, AJvYcCXwW+VGgmynV6AxDPl1iVgo7etriwi/Hxg794Nv+mTX91VhxWpk5LZxXAmyF74hA84hd9oMBJl7@vger.kernel.org
-X-Gm-Message-State: AOJu0YyeN+H4GDYZ9nH9d6kdm2rAVChBM1IURDbhRy1sXz5Oip9xf5BK
-	bEngwjS2zRFhkCvfZ4MQhDslZqA2opXBn6oDAMnhgaDzmcQAk8i1C4ot
-X-Gm-Gg: ASbGncvUXfht8pj7kgsDhHP1qLZEtzFrN1MnZJiHWSZ6mfZBKUJuF0Q1SxwAt3UzSe3
-	Bx6oGRz3wsnUFoIUCH2H70OIV8UNIzBlrCroAl4tPrvnSbY5YknHMU4CSVj0GsOTHSrkCae8PW1
-	3tfyqjdiSfqgMqwsH+l/b0BcyCYjPbLpf9xu8jTcCyHHF6LLZcrPQK5vVQWoSZ5Pzs0h7itXcOH
-	G62WaxDYnTaz/X/di7X1ozuKF+VzIh1FhkGcj5jipQX43/p7LUQAIJNrQQFC458Ijt4tNnmJZoR
-	VGo5ezBb4h3aPXlQpG7OPa/DAFe2aUxmMiK1KMa4XpqnHRJ2LHj1g9Wu0CDKTLdy7Mmn
-X-Google-Smtp-Source: AGHT+IGdpHZrdmFyyiymuGdUZOuLjASFow+k09ajyETWvV3/A/VXWNWTSJ+XGvKBWAd2HCh+h8NetQ==
-X-Received: by 2002:a17:90b:1c12:b0:31a:947d:6ca1 with SMTP id 98e67ed59e1d1-31a947d71e7mr7816486a91.22.1751568870000;
-        Thu, 03 Jul 2025 11:54:30 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c096:14a::647? ([2620:10d:c090:600::1:90c4])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31aaae80ae0sm160787a91.21.2025.07.03.11.54.28
+        d=1e100.net; s=20230601; t=1751569089; x=1752173889;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eDzNsvrMQlVg0hFOiWPuvKro4LC7wPqPAshN0O1HGHE=;
+        b=Onr29AZRE5E2Vb6bYvPFH+6yYKj8sT4VklpZ8byGTkATDqZLmbEEwT3D5AILgLPtqU
+         OkxaDorETHB0od4dhjsHkxwMOMauZQPGbUb7q7TlLDflMSfBiPVpY05cfsdoy1YqV7oc
+         Ha0PZJGM98Boci6GFvnmTnj9E2AeGyETshppWh56g1Mel95cWZLHOriAuIz881pB/TRJ
+         hyqWfUHCS2hD+udZ0jrj7i07pHxTN0t9tVPuARZbeb3n/gE9U1aaAE93d6by0Vei9PBG
+         F+ySFFbvdjH9+ZYBxWm1JSsTX0Mg3xrvfa3gt8MrF5l7Vg7mm1gvmeUCPoWT5OiTkU5w
+         +QxQ==
+X-Gm-Message-State: AOJu0YzpMYl/nBbGur5RM2K0TDb5EZqPW3gpLo2WRdZ33n61YhyTEewc
+	VUH3x/xXVWp0i9LRSJRHo+fwJ+v2vbdctfRtrIALw55fadWr1DNcbpWw
+X-Gm-Gg: ASbGncsvWAo7KvMlQCRcsvxCnvtrsg4FnzS3b97MO+sRRDGfg0pmOFLhJIV+c03/6NT
+	msHci5IFq0WNCfvxBvaA/2diQXw3+ICTQDuE89WsiROr6Lw4T6TqQuvW4pgP7XKOJNoW/VRegT/
+	vOIvF+4jcWh5LT7r10A2Uan4c7DS9Ter3nMAntxu7TvctE0+yiZk9eNS2I5UMXJCJIbr9zIvcah
+	Xgq8VAYkA3YeYStMrRgX9DMBkvBzmqbh7JDuvs7d31AwZNd8vlOSFpt2/MsTqg/kRHwa8qbBNY2
+	03X7YI6sT+qSHclsQmOLAKaGWiEcTA7v7Nuua0rB7iHeuwyy5S0jHkB2X9OIsnYLUbGRWl7gOw=
+	=
+X-Google-Smtp-Source: AGHT+IEMFNREqgBkmG9kbVJMoS9yoSJ/jAiVXdU1RBE3W3qat+SI6QZ2v870HKOhK/tebYBGthmx+Q==
+X-Received: by 2002:a05:600c:871a:b0:445:1984:247d with SMTP id 5b1f17b1804b1-454b26b3446mr121005e9.7.1751569088694;
+        Thu, 03 Jul 2025 11:58:08 -0700 (PDT)
+Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b47225a720sm468896f8f.77.2025.07.03.11.58.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jul 2025 11:54:29 -0700 (PDT)
-Message-ID: <865f2345eaa61afbd26d9de0917e3b1d887c647d.camel@gmail.com>
-Subject: Re: [syzbot] [bpf?] WARNING in reg_bounds_sanity_check
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Paul Chaignon <paul.chaignon@gmail.com>, syzbot
-	 <syzbot+c711ce17dd78e5d4fdcf@syzkaller.appspotmail.com>
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, 	haoluo@google.com, john.fastabend@gmail.com,
- jolsa@kernel.org, kpsingh@kernel.org, 	linux-kernel@vger.kernel.org,
- martin.lau@linux.dev, netdev@vger.kernel.org, 	sdf@fomichev.me,
- song@kernel.org, syzkaller-bugs@googlegroups.com, 	yonghong.song@linux.dev
-Date: Thu, 03 Jul 2025 11:54:27 -0700
-In-Reply-To: <aGa3iOI1IgGuPDYV@Tunnel>
-References: <68649190.a70a0220.3b7e22.20e8.GAE@google.com>
-	 <aGa3iOI1IgGuPDYV@Tunnel>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        Thu, 03 Jul 2025 11:58:08 -0700 (PDT)
+Date: Thu, 3 Jul 2025 19:03:57 +0000
+From: Anton Protopopov <a.s.protopopov@gmail.com>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Anton Protopopov <aspsk@isovalent.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Quentin Monnet <qmo@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>
+Subject: Re: [RFC bpf-next 8/9] libbpf: support llvm-generated indirect jumps
+Message-ID: <aGbUHfcggEa/hHZj@mail.gmail.com>
+References: <20250615085943.3871208-1-a.s.protopopov@gmail.com>
+ <20250615085943.3871208-9-a.s.protopopov@gmail.com>
+ <1c17cd755a3e8865ad06baad86d42e42e289439a.camel@gmail.com>
+ <f8bc4e5469e73b99943ff7783fbe4a7758bbbe32.camel@gmail.com>
+ <aF5v8Yw5LUgVDgjB@mail.gmail.com>
+ <454128db01c0a01f3459783cd5a0ea37af01c34e.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <454128db01c0a01f3459783cd5a0ea37af01c34e.camel@gmail.com>
 
-On Thu, 2025-07-03 at 19:02 +0200, Paul Chaignon wrote:
-> On Tue, Jul 01, 2025 at 06:55:28PM -0700, syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    cce3fee729ee selftests/bpf: Enable dynptr/test_probe_re=
-ad_..
-> > git tree:       bpf-next
-> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D147793d4580=
-000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D79da270cec5=
-ffd65
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3Dc711ce17dd78e=
-5d4fdcf
-> > compiler:       Debian clang version 20.1.6 (++20250514063057+1e4d39e07=
-757-1~exp1~20250514183223.118), Debian LLD 20.1.6
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1594e48c5=
-80000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1159388c580=
-000
-> >
-> > Downloadable assets:
-> > disk image: https://storage.googleapis.com/syzbot-assets/f286a7ef4940/d=
-isk-cce3fee7.raw.xz
-> > vmlinux: https://storage.googleapis.com/syzbot-assets/e2f2ebe1fdc3/vmli=
-nux-cce3fee7.xz
-> > kernel image: https://storage.googleapis.com/syzbot-assets/6e3070663778=
-/bzImage-cce3fee7.xz
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the co=
-mmit:
-> > Reported-by: syzbot+c711ce17dd78e5d4fdcf@syzkaller.appspotmail.com
-> >
-> > ------------[ cut here ]------------
-> > verifier bug: REG INVARIANTS VIOLATION (false_reg1): range bounds viola=
-tion u64=3D[0x0, 0x0] s64=3D[0x0, 0x0] u32=3D[0x1, 0x0] s32=3D[0x0, 0x0] va=
-r_off=3D(0x0, 0x0)(1)
-> > WARNING: CPU: 1 PID: 5833 at kernel/bpf/verifier.c:2688 reg_bounds_sani=
-ty_check+0x6e6/0xc20 kernel/bpf/verifier.c:2682
->
-> I'm unsure how to handle this one.
->
-> One example repro is as follows.
->
->   0: call bpf_get_netns_cookie
->   1: if r0 =3D=3D 0 goto <exit>
->   2: if r0 & Oxffffffff goto <exit>
->
-> The issue is on the path where we fall through both jumps.
->
-> That path is unreachable at runtime: after insn 1, we know r0 !=3D 0, but
-> with the sign extension on the jset, we would only fallthrough insn 2
-> if r0 =3D=3D 0. Unfortunately, is_branch_taken() isn't currently able to
-> figure this out, so the verifier walks all branches. As a result, we end
-> up with inconsistent register ranges on this unreachable path:
->
->   0: if r0 =3D=3D 0 goto <exit>
->     r0: u64=3D[0x1, 0xffffffffffffffff] var_off=3D(0, 0xffffffffffffffff)
->   1: if r0 & 0xffffffff goto <exit>
->     r0 before reg_bounds_sync: u64=3D[0x1, 0xffffffffffffffff] var_off=3D=
-(0, 0)
->     r0 after reg_bounds_sync:  u64=3D[0x1, 0] var_off=3D(0, 0)
->
-> I suspect there isn't anything specific to these two conditions, and
-> anytime we start walking an unreachable path, we may end up with
-> inconsistent register ranges. The number of times syzkaller is currently
-> hitting this (180 in 1.5 days) suggests there are many different ways to
-> reproduce.
->
-> We could teach is_branch_taken() about this case, but we probably won't
-> be able to cover all cases. We could stop warning on this, but then we
-> may also miss legitimate cases (i.e., invariants violations on reachable
-> paths). We could also teach reg_bounds_sync() to stop refining the
-> bounds before it gets inconsistent, but I'm unsure how useful that'd be.
+On 25/07/03 11:21AM, Eduard Zingerman wrote:
+> On Fri, 2025-06-27 at 10:18 +0000, Anton Protopopov wrote:
+> > On 25/06/26 07:28PM, Eduard Zingerman wrote:
+> > > On Wed, 2025-06-18 at 12:49 -0700, Eduard Zingerman wrote:
+> > > > On Sun, 2025-06-15 at 08:59 +0000, Anton Protopopov wrote:
+> > > > 
+> > > > [...]
+> > > > 
+> > > > > @@ -698,6 +712,14 @@ struct bpf_object {
+> > > > >  	bool has_subcalls;
+> > > > >  	bool has_rodata;
+> > > > >  
+> > > > > +	const void *rodata;
+> > > > > +	size_t rodata_size;
+> > > > > +	int rodata_map_fd;
+> > > > 
+> > > > This is sort-of strange, that jump table metadata resides in one
+> > > > section, while jump section itself is in .rodata. Wouldn't it be
+> > > > simpler make LLVM emit all jump tables info in one section?
+> > > > Also note that Elf_Sym has name, section index, value and size,
+> > > > hence symbols defined for jump table section can encode jump tables.
+> > > > E.g. the following implementation seems more intuitive:
+> > > > 
+> > > >   .jumptables
+> > > >     <subprog-rel-off-0>
+> > > >     <subprog-rel-off-1> | <--- jump table #1 symbol:
+> > > >     <subprog-rel-off-2> |        .size = 2   // number of entries in the jump table
+> > > >     ...                          .value = 1  // offset within .jumptables
+> > > >     <subprog-rel-off-N>                          ^
+> > > >                                                  |
+> > > >   .text                                          |
+> > > >     ...                                          |
+> > > >     <insn-N>     <------ relocation referencing -'
+> > > >     ...                  jump table #1 symbol
+> > > 
+> > > Anton, Yonghong,
+> > > 
+> > > I talked to Alexei about this yesterday and we agreed that the above
+> > > arrangement (separate jump tables section, separate symbols for each
+> > > individual jump table) makes sense on two counts:
+> > > - there is no need for jump table to occupy space in .rodata at
+> > >   runtime, actual offsets are read from map object;
+> > > - it simplifies processing on libbpf side, as there is no need to
+> > >   visit both .rodata and jump table size sections.
+> > > 
+> > > Wdyt?
+> > 
+> > Yes, this seems more straightforward. Also this will look ~ the same
+> > for used-defined (= non-llvm-generated) jump tables.
+> > 
+> > Yonghong, what do you think, are there any problems with this?
+> > Also, how complex this would be to directly link a gotox instruction
+> > to a particular jump table? (For a switch, for "user-defined" jump
+> > tables this is obviously easy to do.)
+> 
+> I think I know how to hack this:
+> - in BPFAsmPrinter add a function generating a global symbol for jump
+>   table (same as MachineFunction::getJTISymbol(), but that one always
+>   produces a private symbol (one starting with "L"));
+> - override TargetLowering::getPICJumpTableRelocBaseExpr to use the
+>   above function;
+> - modify BPFMCInstLower::Lower to use the above function;
+> - override AsmPrinter::emitJumpTableInfo, a simplified version of the
+>   original one:
+>   - a loop over all jump tables:
+> 	- before each jump table emit start global symbol
+> 	- after each jump table emit temporary symbol to mark jt end
+> 	- set jump table symbol size to
+> 		OutStreamer->emitELFSize(StartSym,
+> 		                         MCBinaryExpr::createSub(MCSymbolRefExpr::create(EndSym, OutContext),
+> 								 MCSymbolRefExpr::create(StartSym, OutContext),
+> 								 OutContext)
+> 	- use AsmPrinter::emitJumpTableEntry to emit individual jump table
+>       entries;
+> - plus the code to create jump tables section.
+> 
+> I should be able to share the code for this tomorrow or on the weekend.
 
-Hi Paul,
-
-In general, I think that reg_bounds_sync() can be used as a substitute
-for is_branch_taken() -> whenever an impossible range is produced,
-the branch should be deemed impossible at runtime and abandoned.
-If I recall correctly Andrii considered this too risky some time ago,
-so this warning is in place to catch bugs.
-
-Which leaves only the option to refine is_branch_taken().
-
-I think is_branch_taken() modification should not be too complicated.
-For JSET it only checks tnum, but does not take ranges into account.
-Reasoning about ranges is something along the lines:
-- for unsigned range a =3D b & CONST -> a is in [b_min & CONST, b_max & CON=
-ST];
-- for signed ranged same thing, but consider two unsigned sub-ranges;
-- for non CONST cases, I think same reasoning can apply, but more
-  min/max combinations need to be explored.
-- then check if zero is a member or 'a' range.
-
-Wdyt?
-
-> The number of times syzkaller is currently hitting this (180 in 1.5
-> days) suggests there are many different ways to reproduce.
-
-It is a bit inconvenient to read syzbot BPF reports at the moment,
-because it us hard to figure out how the program looks like.
-Do you happen to know how complicated would it be to modify syzbot
-output to:
-- produce a comment with BPF program
-- generating reproducer with a flag, allowing to print level 2
-  verifier log
-?
-
-Thanks,
-Eduard
+Would be great, thanks a lot for looking into this! I will
+try to address other comments by about the same time. (I am
+now in the middle of the list or so.)
 
