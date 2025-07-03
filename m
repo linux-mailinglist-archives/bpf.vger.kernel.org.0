@@ -1,48 +1,48 @@
-Return-Path: <bpf+bounces-62283-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62284-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77DA9AF7592
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 15:27:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C156FAF75A3
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 15:29:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40085189F7E4
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 13:28:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1976D1C82183
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 13:30:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E3D42E2EE0;
-	Thu,  3 Jul 2025 13:27:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C21582E11C8;
+	Thu,  3 Jul 2025 13:29:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cCmmqMiS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dqrVxygz"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0286FC148;
-	Thu,  3 Jul 2025 13:27:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EEC718DB1A;
+	Thu,  3 Jul 2025 13:29:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751549247; cv=none; b=UwD+4dz+hnFQkVz/1qG+dtDy/Li4FiZztbzDLrMAXOtIsb72JoxgIM9evl2VN9g+pLcdZix/8GCwN09EwTvQLhSKiy849sLZB1tn6q0Se2mVdXGlEhUk3ATZxDTK2LN6pI8ECQqerGQ2ZN9Zg41Q8IZrWXXArt+2869vTiF4Rqs=
+	t=1751549370; cv=none; b=BUPPfC4vL/LUrnGD4CLsOjtu/ibtTlU9P3ufGf3rhV+g07cPBbiOYvO/HAL7A+gIF0Nht2N1tZlmOWT/eWuk1KLiOjH5P/V0QlTz5aIrjTw9RqAkbn+lB4K8n+CaP4ASSnKZaavLBdK5VhIBAVrMNn0XyI/AWjcSOGDoDDu4lw8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751549247; c=relaxed/simple;
-	bh=02Jt1Cymbs57OvvyqASB9yCoi82LcJgdykJmqeCnv8Y=;
+	s=arc-20240116; t=1751549370; c=relaxed/simple;
+	bh=mE7KxLntyokwKS18EvuW2I0xC9Lqd58vJ5T1ZYoF/Gg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mMkGZ4bLIybJdAc/rE7cFAOt1+viRYOvjhsZHVerbkf+0kBR4epz2h2HHE1i4xdb7LsWN9PJKBP3jioP9NXyByroOREV8SW1YLPqcI1PTrJjwcGbUEX5czJNGkNplOO1+SXsHc3bYYczv0SZ3GW3jZM3qiCalPD9ZlTFxmal0hk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cCmmqMiS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D7ECC4CEE3;
-	Thu,  3 Jul 2025 13:27:16 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=L6pK6MjBJ5OR6hUBglhLaDh8TJx53giCGz3kLP4UcA7dX+D34+UewuPBZFCfPmbyLdJnPVgdrfSoLQCkihoz/QMpXAZ4lvKux5T3oWpilmK3HqdV7cyeEscUQwfLQpkCHZmYg1e2mWj05i06XMfQfp88pCU32SIqYR0FdEPB8qM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dqrVxygz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4601C4CEE3;
+	Thu,  3 Jul 2025 13:29:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751549246;
-	bh=02Jt1Cymbs57OvvyqASB9yCoi82LcJgdykJmqeCnv8Y=;
+	s=k20201202; t=1751549369;
+	bh=mE7KxLntyokwKS18EvuW2I0xC9Lqd58vJ5T1ZYoF/Gg=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=cCmmqMiSMdW95nEPe1HJViQllZgFpmCY4isMnJBc6miFP3aSlDhfQg5wjWCPHBjUO
-	 jHIeWhmx8m/x5oTMYwK0pov1zIDGKIMVDEnEtNxEXKtts1KZ2e+bU816zmaE07OmaY
-	 vsGJqNigVBrmny+x/6apIvX4eGvR6RjhALEZ6hvMDFB4gVoeUWGD3HDIDGVEkoDAC0
-	 Fg1ZBJkg7bp+v9NK8JyV2aTfdU6REn1Ex58+/5nr3A6gL2RPe1L6saJxdppQTUV8LE
-	 qk0RP9lsJzodZ4eLLvskzTzyRiXaqlBfL/8EMYRLQDZ2cgzGfZLwYoSk4cD4S5ia8M
-	 dKDsCjqTRS9qQ==
-Message-ID: <720df841-8300-490a-af77-8d20f833c042@kernel.org>
-Date: Thu, 3 Jul 2025 15:27:13 +0200
+	b=dqrVxygzJn9L13hv02/ZfP+LcmYFGietL2GWQ3HobiiKUzzGrIC6Yp7g8wzbTCLZ7
+	 Kt1D9W8NX+EFwtyCARdizDjCQk+CMRqA6xQCudmWzEwraA+IfCEIZdL8NEkPL03QlY
+	 VV2QVhqYiwvadcPT7EZPqtFG5CXr2rww2zL00V9hxbq4Ca2GKILgeJ6/mABoJ7o1uC
+	 9elBCeiSi0WlBfacIUn4+ztPTQTW4c3BxsFxlr5oHiphUiJBeZug+0hyC22D6mQufZ
+	 2qJpGV39IgB189+jkIx9bC3yjuUDkhAidwIxn9SS1QZH2TaEJwYf1ZiuD32/IvM4OB
+	 pQV9hv5gd+wgQ==
+Message-ID: <27363482-efa5-49bf-94e4-6d93a662ecaa@kernel.org>
+Date: Thu, 3 Jul 2025 15:29:19 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -50,8 +50,7 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v8 5/5] page_pool: make page_pool_get_dma_addr()
- just wrap page_pool_get_dma_addr_netmem()
+Subject: Re: [PATCH net-next v8 0/5] Split netmem from struct page
 To: Byungchul Park <byungchul@sk.com>, willy@infradead.org,
  netdev@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
@@ -67,59 +66,41 @@ Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
  vishal.moola@gmail.com, hannes@cmpxchg.org, ziy@nvidia.com,
  jackmanb@google.com
 References: <20250702053256.4594-1-byungchul@sk.com>
- <20250702053256.4594-6-byungchul@sk.com>
 Content-Language: en-US
 From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <20250702053256.4594-6-byungchul@sk.com>
+In-Reply-To: <20250702053256.4594-1-byungchul@sk.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-
+Content-Transfer-Encoding: 7bit
 
 
 On 02/07/2025 07.32, Byungchul Park wrote:
-> The page pool members in struct page cannot be removed unless it's not
-> allowed to access any of them via struct page.
+> Hi all,
 > 
-> Do not access 'page->dma_addr' directly in page_pool_get_dma_addr() but
-> just wrap page_pool_get_dma_addr_netmem() safely.
+> In this version, I'm posting non-controversial patches first since there
+> are pending works that should be based on this series so that those can
+> be started shortly.  I will post the rest later.
 > 
-> Signed-off-by: Byungchul Park <byungchul@sk.com>
-> Reviewed-by: Mina Almasry <almasrymina@google.com>
-> Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-> Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
-> Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
-> ---
->   include/net/page_pool/helpers.h | 7 +------
->   1 file changed, 1 insertion(+), 6 deletions(-)
+> The MM subsystem is trying to reduce struct page to a single pointer.
+> The first step towards that is splitting struct page by its individual
+> users, as has already been done with folio and slab.  This patchset does
+> that for netmem which is used for page pools.
 > 
-> diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
-> index 773fc65780b5..db180626be06 100644
-> --- a/include/net/page_pool/helpers.h
-> +++ b/include/net/page_pool/helpers.h
-> @@ -444,12 +444,7 @@ static inline dma_addr_t page_pool_get_dma_addr_netmem(netmem_ref netmem)
->    */
->   static inline dma_addr_t page_pool_get_dma_addr(const struct page *page)
->   {
-> -	dma_addr_t ret = page->dma_addr;
-> -
-> -	if (PAGE_POOL_32BIT_ARCH_WITH_64BIT_DMA)
-> -		ret <<= PAGE_SHIFT;
-> -
-> -	return ret;
-> +	return page_pool_get_dma_addr_netmem(page_to_netmem(page));
-
-Wow - the amount of type casting shenanigans going on here make the code
-hard to follow.
-
-This code changes adds an extra "AND" operation, but we don't have a
-micro-benchmark that tests the performance of a DMA enabled page_pool,
-so I cannot tell if this add any overhead.  My experience tells me that
-this extra AND-operation will not be measurable.
-
-I see a lot of reviewed-by from people I trust, so you also get my 
-page_pool maintainer ack.
+[...]
+> 
+> Byungchul Park (5):
+>    page_pool: rename page_pool_return_page() to page_pool_return_netmem()
+>    page_pool: rename __page_pool_release_page_dma() to
+>      __page_pool_release_netmem_dma()
+>    page_pool: rename __page_pool_alloc_pages_slow() to
+>      __page_pool_alloc_netmems_slow()
+>    netmem: use _Generic to cover const casting for page_to_netmem()
+>    page_pool: make page_pool_get_dma_addr() just wrap
+>      page_pool_get_dma_addr_netmem()
+> 
+>   include/net/netmem.h            |  7 +++----
+>   include/net/page_pool/helpers.h |  7 +------
+>   net/core/page_pool.c            | 36 ++++++++++++++++-----------------
+>   3 files changed, 22 insertions(+), 28 deletions(-)
 
 Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
-
---Jesper
 
