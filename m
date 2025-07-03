@@ -1,91 +1,91 @@
-Return-Path: <bpf+bounces-62332-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62333-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF88AAF8215
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 22:48:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CE2AAF8214
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 22:48:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 850C17AF9EB
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 20:47:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17D051C858B5
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 20:49:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B63B2BE62F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A934F2BE63F;
 	Thu,  3 Jul 2025 20:48:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e0HWEBw3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jozLiUli"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f67.google.com (mail-ej1-f67.google.com [209.85.218.67])
+Received: from mail-ej1-f65.google.com (mail-ej1-f65.google.com [209.85.218.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C91A298CB6
-	for <bpf@vger.kernel.org>; Thu,  3 Jul 2025 20:48:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 813022BDC2B
+	for <bpf@vger.kernel.org>; Thu,  3 Jul 2025 20:48:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751575711; cv=none; b=kEpk9se8P3mfwpYKSq3wcBh14VbEXOCmCZrDFxiMgwNXTFgBovm7U05OWMRJ6mJZQodXt3A96EKzVxW+tMi64Wla8GREx+q8S6zHpjyFRVsGzKnZSh14IXRQBEOoJ6hsYDGK5Ru6YcKdaNd0edSUqWgTIkhMzguvNjgCMguUHLM=
+	t=1751575712; cv=none; b=ZkqU8HbiBMWs6Htgsuk5cvKUdCERJ1Vm4wXTuyRokbuVAyd84kFpHHC69D3FZXpni6QgKtUAkUJ+qPSef2EPRkllKJEc/G14ixRa+RNTbPcHZ4TzULMxDKKtFpfiFi4fd2wpyOepAKnlYhFYaZdlwF5mG6qwMeaG1q/kmK2jdOs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751575711; c=relaxed/simple;
-	bh=ocwVH1HbT7c9DeqexSrJ1VOKnK+bYRj2kMeWspbovJo=;
+	s=arc-20240116; t=1751575712; c=relaxed/simple;
+	bh=8QsJvL+XZO1boQ+m9nucIomIAlvQ6D+XhhJ4KcAPcCg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kmHfJFsVSO1NAtGqf0ie2FqPGZGSUJm5SXJ7mecclt6XPWmIyKaSiRz53s7r6m71azRQNVCbOnuy+VmuZw9vYv5KdukatGnT+iLEl9b84huTwb0/DKubzlo/GSp3wSdaI8piM6lv3o9Z9inkB/mSe89i8Doi2PvgsfN2mP8vsrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e0HWEBw3; arc=none smtp.client-ip=209.85.218.67
+	 MIME-Version; b=ZMQcHZp/rX/hF2bOHv8LyYLiLZHqsvkntlVDu0h9cFjlonwh+9e8NxSla5mYoW2Q3VBmh5VA68DEWys1gL+xmXoVWCpv75mh3IZdcnMmKatRRavIxMAiiktuSaAhx+EBFcWqocLVih7HXSsWiYJHOxbzjrdOhKtpb2iC2czc5tc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jozLiUli; arc=none smtp.client-ip=209.85.218.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f67.google.com with SMTP id a640c23a62f3a-ae04d3d63e6so46591566b.2
-        for <bpf@vger.kernel.org>; Thu, 03 Jul 2025 13:48:28 -0700 (PDT)
+Received: by mail-ej1-f65.google.com with SMTP id a640c23a62f3a-ae3b336e936so54589366b.3
+        for <bpf@vger.kernel.org>; Thu, 03 Jul 2025 13:48:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751575707; x=1752180507; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1751575708; x=1752180508; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DTdVQxDUyIhRDxlN7L4m03OPEAAL3UMv3E/fGX9GL8Y=;
-        b=e0HWEBw3V27uyaHlrEHxBIU6yN0VuCS2qNwRW4a0smJ68+ksIM0v/KB66GTEyV2Kxa
-         oGWkIG299P+KeWLF/3SCmJDUVc2p56hBJiG4RmL2UM9c4GBTiAjmRufC0GJSt1lC6/Bz
-         f23UnT4dlBM171CSxbWVUIMLQruCx1OVZqSONKMIl9kHLYJhYj0s5KGm1vN/HxzKwQt0
-         ewyfYqjeOlaGgYPIkLt6oQc2rbKcxnjvrm55DNWptXpZ0BCGLXQh8cHoxmjrsleMUNJh
-         wToPEhIZGwZZ2z6Vjml89OwegXiK9HhYLnhdends4HxflRbUCXnYAUqsRPuwwQ7TwL+K
-         0YjQ==
+        bh=gQnQFp/jTrLJVxvqFvSspFMxGiRhWHM9PL7zWoyaZoY=;
+        b=jozLiUli2DW8roHS/6K2z12WlZai53TxXmoa16+vYJVpeMy0qbW/8YgSs9gJWDFJVo
+         ex3nDeHUV8kzD38cfiVWiGeKnDG8SE8saJdqVarsgSzw4SKr2jlKx39yTebHHrNxO+Jv
+         Kk3jNhXcKLw+3dP5ZxwxQ/Ce4OW654rYd1xkFFeG/fkVDLepK2mpkacODP6P5626QaIp
+         f4yUNFf7qBd/ptqUsIyp9dS4hSo0HOlrKpHbOfDhxLDwjtm6ggU4hqVQsYMT0H2BO0hj
+         v1VImmA4YrQK7jg9+byU0JJylSo7YuXeBuJOIiM0Qs39uPmhPFvWZRtbFFt1cHo7wLYl
+         Hk+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751575707; x=1752180507;
+        d=1e100.net; s=20230601; t=1751575708; x=1752180508;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DTdVQxDUyIhRDxlN7L4m03OPEAAL3UMv3E/fGX9GL8Y=;
-        b=JbUEdthSc4PetrtQEwtSe/k/i0eahIGKl832ahmmqVd5Ls8A4f4CF1aCpj9vbX72H/
-         K1/KUDFfiZcgpyEY9Cv34FRJjHz4wQIBT28PL/SVwx5UIfeAgYvvBHu2R2CnGjHk99k4
-         AlzrP2yDm2LzHouLCjvhvDbR9/Rzc1Jms+LjZ45sM1PxXaxqjKyvdM3JHN4iyYRSnGlS
-         RvIXqZ2iMB9bqDsll9ZvvBA3nQ8HbqXVOG0YD2CLAiiABb4TnRPkaBS34vJgPHlcsiG+
-         QuxFiFaV9EeZFoMaB+pqN+kwoQ6OSXmhaa4EJ3nuo06A9MBpRjsT4cbIIldbyCgpm+n/
-         3Y0w==
-X-Gm-Message-State: AOJu0Yyh243+BoIhq0oFV2sulMTDT83SbAxSGrDsffJtuYMcCX9G5KNT
-	usetQliZl6mCJe/Gga2TABZlJfKcRkVQ3yOzV9TJY6AGc9SRXPNzaC1myfw4fgCjBBA=
-X-Gm-Gg: ASbGncvQCSYS2Pa3LbGsWNC/7AEmYlLL2wLxCVAybmGUCn0ei9dxRvxJL6vRLcMJuUu
-	KQIOqFwdMNHRHSTY0UFZHFVzQMAm8q08L/TQ8+2VQe1BBgFOg/XPa3aUMMjWzwFevtcBdCxvbOk
-	UYLsquheFWkF6nKmPkMRlSRcSS57HhCvTZFgTOcUGIgQ01M8jSTk3neC1b/+D6CTCJJ5Z6ng/bA
-	3CVGiepb/5GY2i4b8wRC4jl75lY3Yj2uGOm92n+NNgXOu8OAbEIQy7BBfQpjb5T3rUXJTMMne/g
-	Xj3Pu/+3/PnRil/NR+TBmiMLnzSvsFzBa13h0JtTKpveRogD/ac=
-X-Google-Smtp-Source: AGHT+IE1TYK8VwfjHSBxLcvwxWhcFpc6E0Vk5KvRMNxYIVR6DGr1FdeaMh5fW3FdWVnS7ehoBjSvWg==
-X-Received: by 2002:a17:906:ef06:b0:ad8:9257:573d with SMTP id a640c23a62f3a-ae3d848109amr387333866b.24.1751575706645;
-        Thu, 03 Jul 2025 13:48:26 -0700 (PDT)
-Received: from localhost ([2a03:2880:30ff:9::])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae3f6ac547fsm37049566b.89.2025.07.03.13.48.25
+        bh=gQnQFp/jTrLJVxvqFvSspFMxGiRhWHM9PL7zWoyaZoY=;
+        b=pwCkiGOXQoWkltO92m5wVsATw3aqgWM5xzSDDZtSD89wVkjPDmeGGwKwrDROC56P+s
+         SfUnns30AM9vnm7LPnyUus5nUdDEKF3GDEVtObyZttxOv4GB8AD6Qc0BftAHw5aHstNT
+         YSGaSg7qX8Iq02fEyP6vZyHyZbHdH57zNQNKD0ISuqC1CvlaMSdMUwIDdvu2UyGvHtyV
+         zOvkS48eA50/hArtIKBeAj+3tIIYRDEtgiiZ3DVEBXHyH5Qplm0to0WfhQwfF5GY2TLf
+         Nyb6IBLkvdvd9dtXIbl4Tbd1DCS/UK2zv7ixbGO6rJiCshf0o7uKbnhW1+dGML12D2kd
+         FQow==
+X-Gm-Message-State: AOJu0YzYca1pvAA6R6WLQZZv3UbSylPHFjcsUbEujKxoYToCQd/NinGV
+	YwjHpBLnLOyrL82XL3/VZquFgNeNGGHzo88Rj+wvim18gTscdJD4BSiorWCrSvPi4EA=
+X-Gm-Gg: ASbGncu9WjtRP9plEiXmKW4IUfuomS50k23xf15EGjfnD7kNzbj+BMcPjMl4d0Hmdvo
+	RjFWqzn5qrfKQug2qRNU8kgzh4IrCEYu/NpJn/Ap7/EbSSqnKG2UyImuE7rWp8oHRvnhD3Rq7N9
+	SsTJiKMqkVNF1lP00VfQk/4jJzvRnemQDzzHxNMMh9Bcz7EPgC9BnLrdaI85DAgsduE4xDlUUrz
+	hnqDyV1kyRZR4pDxuPJYtSS+BDMyv6+IE2t/eM/vyulfDBovQVlrHOvjYBKbUP3AqQ7h8hUSYn+
+	oo+stsbEos1cLJNG5bMS6++lKj9/F4aN7pN56R2oGlT3acAtqmc=
+X-Google-Smtp-Source: AGHT+IEcKEUb0BD8ayD2uG/6ZILInuemHCzJtobPqTcZU3jTQGNXIJjL6IjOTI50NepicIHlgydAAA==
+X-Received: by 2002:a17:907:3e94:b0:ae3:74e1:81a3 with SMTP id a640c23a62f3a-ae3c2a8f5a3mr675038566b.8.1751575708141;
+        Thu, 03 Jul 2025 13:48:28 -0700 (PDT)
+Received: from localhost ([2a03:2880:30ff:8::])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae3f66e7d4asm38642966b.23.2025.07.03.13.48.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jul 2025 13:48:26 -0700 (PDT)
+        Thu, 03 Jul 2025 13:48:27 -0700 (PDT)
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To: bpf@vger.kernel.org
-Cc: Eduard Zingerman <eddyz87@gmail.com>,
-	Emil Tsalapatis <emil@etsalapatis.com>,
+Cc: Emil Tsalapatis <emil@etsalapatis.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
 	Barret Rhoden <brho@google.com>,
 	Matt Bobrowski <mattbobrowski@google.com>,
 	kkd@meta.com,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v5 02/12] bpf: Introduce BPF standard streams
-Date: Thu,  3 Jul 2025 13:48:08 -0700
-Message-ID: <20250703204818.925464-3-memxor@gmail.com>
+Subject: [PATCH bpf-next v5 03/12] bpf: Add function to extract program source info
+Date: Thu,  3 Jul 2025 13:48:09 -0700
+Message-ID: <20250703204818.925464-4-memxor@gmail.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250703204818.925464-1-memxor@gmail.com>
 References: <20250703204818.925464-1-memxor@gmail.com>
@@ -95,896 +95,94 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=28358; h=from:subject; bh=ocwVH1HbT7c9DeqexSrJ1VOKnK+bYRj2kMeWspbovJo=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBoZudLYEkdxhFDl5eRsiCBWpTxQc0Xh4AEca3vNbK9 I5pUXSWJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCaGbnSwAKCRBM4MiGSL8RyrXUEA C7rLFB6NFn88x5A9A7jibmhH+Dzo5ijdDQXRsefo+F7nafPnIMrWWV3X5ChBwLnEZWRGWu9qxf6j4+ YKtDOajEkSf2h9X1li1U+Cj/rNG3KuZIq5i1kfZlJ0daY7pjAiZDOG0tPuWU0K0eFmODKLeFwXlXSM GtKul1l85uUUEtNT7bn4o7Dp06RcvgoNze6EPGl3/ks+Dnj/vhnEedYsam2BaCMGwM3TDIBMBLrj9h +CMy1zYaOKXlSNsw+CFnB+S2RA8eTDRYy5uAeaeYqDJrfiIYdnTroxkDyxuU4b9yUAOI/jE3T9EdkZ N4z8z7Mepia42Kw7v6rN3LKd9VCPsZ27fEYh/byVAm3FoKiOq11ih2DmLTEdWM1zmDu0ds3zf0ITd7 JSCnfFMNR7cb/UPrYUjd12nZ28NGfWdPI3TxOdmGVfgRkycQ0aXlCrqqwaKGr/AWh9wjR5gHZxsZTa tUGqh6oAHIn4XXov0suOqr10ktLT+dIo9nDzrC5B/hYKB+wYhU8vjbMkNz9hOXGhOpx0kaKmpAA6zr sh97RvzLw3BfUjGifOAE3xA95qfr0VGTp4/yFRbXYbA6zba6pcrFJVbtEJp5vxeI8jFZY/gqKAwOAc y0Usw80QVd77dOm1ndtdQSSm66mkoU7AZXqMunzwJkQdb4EHf4TcZ1NYUpOg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2718; h=from:subject; bh=8QsJvL+XZO1boQ+m9nucIomIAlvQ6D+XhhJ4KcAPcCg=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBoZudLSEwYgmRctlEspltsenzZ9XRgTdjYGxvEiE+x wawrgUOJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCaGbnSwAKCRBM4MiGSL8RyhWWD/ 43VrZaWp6R/a1k78TzAT7G1w0izlTig0iRHJsD4wbuVPrwUYogqe3Q8fzq7TITb5T1KON/cJzRA96d 2+rVEDCD86awFtYb8M5itLus/kJkecPwvINTB42f6BxPLGfgZ6P2jUS/cBPBLqX5wkagpRMj2xd2Uv GOuNAlpKxMGFUGtzb3yehBwa2rmL1DKKcGSX5mAdJG9qjiX40C3ToA/mvjB1THrTZ8QG/q83R6xXnE Dsmv3uQv9NK8CZtKeDqomXmA9WlQAo/zTxX/wrYT/5zlP7JOqCus9aWWj0n7ZbCE/fMY+Oi3TMB4S4 L6eCUowtRUBlNVZVSmAkqK4qutMJViS4MxadXws5FoHdtbrNYfbjFb+zh//dugkpTxIhVL5iQuSV4T ffJdBI9GP67409ysP2wjF5udH3L2buhq1fhDIFx0ak7SQ4inFXT9pK0XBK3Ddct2GcF/1CHdMMMgq7 B4+exjRZLjRYos9wRq/S6o/ACdzOGQwU0wnJrMfSptUzVGAWoFmspfPjxMkXYtPa+NvhFVvdV04aWA 2s8mN73G/G/LPesbXe4KTBWnkiVud85PYNhghp/IkZmZGSM+NiP+ywcY4vtIBeVihLejyE6O6gEj7o /IrZR/5WQMIWXRdjMhkn2kwCaonG5aPQhDfyMAufK9hKcrnSwLCevnRh5ORg==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 
-Add support for a stream API to the kernel and expose related kfuncs to
-BPF programs. Two streams are exposed, BPF_STDOUT and BPF_STDERR. These
-can be used for printing messages that can be consumed from user space,
-thus it's similar in spirit to existing trace_pipe interface.
+Prepare a function for use in future patches that can extract the file
+info, line info, and the source line number for a given BPF program
+provided it's program counter.
 
-The kernel will use the BPF_STDERR stream to notify the program of any
-errors encountered at runtime. BPF programs themselves may use both
-streams for writing debug messages. BPF library-like code may use
-BPF_STDERR to print warnings or errors on misuse at runtime.
+Only the basename of the file path is provided, given it can be
+excessively long in some cases.
 
-The implementation of a stream is as follows. Everytime a message is
-emitted from the kernel (directly, or through a BPF program), a record
-is allocated by bump allocating from per-cpu region backed by a page
-obtained using alloc_pages_nolock(). This ensures that we can allocate
-memory from any context. The eventual plan is to discard this scheme in
-favor of Alexei's kmalloc_nolock() [0].
+This will be used in later patches to print source info to the BPF
+stream.
 
-This record is then locklessly inserted into a list (llist_add()) so
-that the printing side doesn't require holding any locks, and works in
-any context. Each stream has a maximum capacity of 4MB of text, and each
-printed message is accounted against this limit.
-
-Messages from a program are emitted using the bpf_stream_vprintk kfunc,
-which takes a stream_id argument in addition to working otherwise
-similar to bpf_trace_vprintk.
-
-The bprintf buffer helpers are extracted out to be reused for printing
-the string into them before copying it into the stream, so that we can
-(with the defined max limit) format a string and know its true length
-before performing allocations of the stream element.
-
-For consuming elements from a stream, we expose a bpf(2) syscall command
-named BPF_PROG_STREAM_READ_BY_FD, which allows reading data from the
-stream of a given prog_fd into a user space buffer. The main logic is
-implemented in bpf_stream_read(). The log messages are queued in
-bpf_stream::log by the bpf_stream_vprintk kfunc, and then pulled and
-ordered correctly in the stream backlog.
-
-For this purpose, we hold a lock around bpf_stream_backlog_peek(), as
-llist_del_first() (if we maintained a second lockless list for the
-backlog) wouldn't be safe from multiple threads anyway. Then, if we
-fail to find something in the backlog log, we splice out everything from
-the lockless log, and place it in the backlog log, and then return the
-head of the backlog. Once the full length of the element is consumed, we
-will pop it and free it.
-
-The lockless list bpf_stream::log is a LIFO stack. Elements obtained
-using a llist_del_all() operation are in LIFO order, thus would break
-the chronological ordering if printed directly. Hence, this batch of
-messages is first reversed. Then, it is stashed into a separate list in
-the stream, i.e. the backlog_log. The head of this list is the actual
-message that should always be returned to the caller. All of this is
-done in bpf_stream_backlog_fill().
-
-From the kernel side, the writing into the stream will be a bit more
-involved than the typical printk. First, the kernel typically may print
-a collection of messages into the stream, and parallel writers into the
-stream may suffer from interleaving of messages. To ensure each group of
-messages is visible atomically, we can lift the advantage of using a
-lockless list for pushing in messages.
-
-To enable this, we add a bpf_stream_stage() macro, and require kernel
-users to use bpf_stream_printk statements for the passed expression to
-write into the stream. Underneath the macro, we have a message staging
-API, where a bpf_stream_stage object on the stack accumulates the
-messages being printed into a local llist_head, and then a commit
-operation splices the whole batch into the stream's lockless log list.
-
-This is especially pertinent for rqspinlock deadlock messages printed to
-program streams. After this change, we see each deadlock invocation as a
-non-interleaving contiguous message without any confusion on the
-reader's part, improving their user experience in debugging the fault.
-
-While programs cannot benefit from this staged stream writing API, they
-could just as well hold an rqspinlock around their print statements to
-serialize messages, hence this is kept kernel-internal for now.
-
-Overall, this infrastructure provides NMI-safe any context printing of
-messages to two dedicated streams.
-
-Later patches will add support for printing splats in case of BPF arena
-page faults, rqspinlock deadlocks, and cond_break timeouts, and
-integration of this facility into bpftool for dumping messages to user
-space.
-
-  [0]: https://lore.kernel.org/bpf/20250501032718.65476-1-alexei.starovoitov@gmail.com
-
-Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
 Reviewed-by: Emil Tsalapatis <emil@etsalapatis.com>
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- include/linux/bpf.h            |  52 ++++
- include/uapi/linux/bpf.h       |  24 ++
- kernel/bpf/Makefile            |   2 +-
- kernel/bpf/core.c              |   5 +
- kernel/bpf/helpers.c           |   1 +
- kernel/bpf/stream.c            | 478 +++++++++++++++++++++++++++++++++
- kernel/bpf/syscall.c           |  25 ++
- kernel/bpf/verifier.c          |   1 +
- tools/include/uapi/linux/bpf.h |  24 ++
- 9 files changed, 611 insertions(+), 1 deletion(-)
- create mode 100644 kernel/bpf/stream.c
+ include/linux/bpf.h |  3 +++
+ kernel/bpf/core.c   | 47 +++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 50 insertions(+)
 
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 4fff0cee8622..85b1cbe494f5 100644
+index 85b1cbe494f5..09f06b1ea62e 100644
 --- a/include/linux/bpf.h
 +++ b/include/linux/bpf.h
-@@ -1538,6 +1538,37 @@ struct btf_mod_pair {
+@@ -3660,4 +3660,7 @@ static inline bool bpf_is_subprog(const struct bpf_prog *prog)
+ 	return prog->aux->func_idx != 0;
+ }
  
- struct bpf_kfunc_desc_tab;
- 
-+enum bpf_stream_id {
-+	BPF_STDOUT = 1,
-+	BPF_STDERR = 2,
-+};
++int bpf_prog_get_file_line(struct bpf_prog *prog, unsigned long ip, const char **filep,
++			   const char **linep, int *nump);
 +
-+struct bpf_stream_elem {
-+	struct llist_node node;
-+	int total_len;
-+	int consumed_len;
-+	char str[];
-+};
-+
-+enum {
-+	/* 100k bytes */
-+	BPF_STREAM_MAX_CAPACITY = 100000ULL,
-+};
-+
-+struct bpf_stream {
-+	atomic_t capacity;
-+	struct llist_head log;	/* list of in-flight stream elements in LIFO order */
-+
-+	struct mutex lock;  /* lock protecting backlog_{head,tail} */
-+	struct llist_node *backlog_head; /* list of in-flight stream elements in FIFO order */
-+	struct llist_node *backlog_tail; /* tail of the list above */
-+};
-+
-+struct bpf_stream_stage {
-+	struct llist_head log;
-+	int len;
-+};
-+
- struct bpf_prog_aux {
- 	atomic64_t refcnt;
- 	u32 used_map_cnt;
-@@ -1646,6 +1677,7 @@ struct bpf_prog_aux {
- 		struct work_struct work;
- 		struct rcu_head	rcu;
- 	};
-+	struct bpf_stream stream[2];
- };
- 
- struct bpf_prog {
-@@ -2408,6 +2440,7 @@ int  generic_map_delete_batch(struct bpf_map *map,
- struct bpf_map *bpf_map_get_curr_or_next(u32 *id);
- struct bpf_prog *bpf_prog_get_curr_or_next(u32 *id);
- 
-+
- int bpf_map_alloc_pages(const struct bpf_map *map, int nid,
- 			unsigned long nr_pages, struct page **page_array);
- #ifdef CONFIG_MEMCG
-@@ -3573,6 +3606,25 @@ void bpf_bprintf_cleanup(struct bpf_bprintf_data *data);
- int bpf_try_get_buffers(struct bpf_bprintf_buffers **bufs);
- void bpf_put_buffers(void);
- 
-+void bpf_prog_stream_init(struct bpf_prog *prog);
-+void bpf_prog_stream_free(struct bpf_prog *prog);
-+int bpf_prog_stream_read(struct bpf_prog *prog, enum bpf_stream_id stream_id, void __user *buf, int len);
-+void bpf_stream_stage_init(struct bpf_stream_stage *ss);
-+void bpf_stream_stage_free(struct bpf_stream_stage *ss);
-+__printf(2, 3)
-+int bpf_stream_stage_printk(struct bpf_stream_stage *ss, const char *fmt, ...);
-+int bpf_stream_stage_commit(struct bpf_stream_stage *ss, struct bpf_prog *prog,
-+			    enum bpf_stream_id stream_id);
-+
-+#define bpf_stream_printk(ss, ...) bpf_stream_stage_printk(&ss, __VA_ARGS__)
-+
-+#define bpf_stream_stage(ss, prog, stream_id, expr)            \
-+	({                                                     \
-+		bpf_stream_stage_init(&ss);                    \
-+		(expr);                                        \
-+		bpf_stream_stage_commit(&ss, prog, stream_id); \
-+		bpf_stream_stage_free(&ss);                    \
-+	})
- 
- #ifdef CONFIG_BPF_LSM
- void bpf_cgroup_atype_get(u32 attach_btf_id, int cgroup_atype);
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 719ba230032f..0670e15a6100 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -906,6 +906,17 @@ union bpf_iter_link_info {
-  *		A new file descriptor (a nonnegative integer), or -1 if an
-  *		error occurred (in which case, *errno* is set appropriately).
-  *
-+ * BPF_PROG_STREAM_READ_BY_FD
-+ *	Description
-+ *		Read data of a program's BPF stream. The program is identified
-+ *		by *prog_fd*, and the stream is identified by the *stream_id*.
-+ *		The data is copied to a buffer pointed to by *stream_buf*, and
-+ *		filled less than or equal to *stream_buf_len* bytes.
-+ *
-+ *	Return
-+ *		Number of bytes read from the stream on success, or -1 if an
-+ *		error occurred (in which case, *errno* is set appropriately).
-+ *
-  * NOTES
-  *	eBPF objects (maps and programs) can be shared between processes.
-  *
-@@ -961,6 +972,7 @@ enum bpf_cmd {
- 	BPF_LINK_DETACH,
- 	BPF_PROG_BIND_MAP,
- 	BPF_TOKEN_CREATE,
-+	BPF_PROG_STREAM_READ_BY_FD,
- 	__MAX_BPF_CMD,
- };
- 
-@@ -1463,6 +1475,11 @@ struct bpf_stack_build_id {
- 
- #define BPF_OBJ_NAME_LEN 16U
- 
-+enum {
-+	BPF_STREAM_STDOUT = 1,
-+	BPF_STREAM_STDERR = 2,
-+};
-+
- union bpf_attr {
- 	struct { /* anonymous struct used by BPF_MAP_CREATE command */
- 		__u32	map_type;	/* one of enum bpf_map_type */
-@@ -1849,6 +1866,13 @@ union bpf_attr {
- 		__u32		bpffs_fd;
- 	} token_create;
- 
-+	struct {
-+		__aligned_u64	stream_buf;
-+		__u32		stream_buf_len;
-+		__u32		stream_id;
-+		__u32		prog_fd;
-+	} prog_stream_read;
-+
- } __attribute__((aligned(8)));
- 
- /* The description below is an attempt at providing documentation to eBPF
-diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-index 3a335c50e6e3..269c04a24664 100644
---- a/kernel/bpf/Makefile
-+++ b/kernel/bpf/Makefile
-@@ -14,7 +14,7 @@ obj-$(CONFIG_BPF_SYSCALL) += bpf_local_storage.o bpf_task_storage.o
- obj-${CONFIG_BPF_LSM}	  += bpf_inode_storage.o
- obj-$(CONFIG_BPF_SYSCALL) += disasm.o mprog.o
- obj-$(CONFIG_BPF_JIT) += trampoline.o
--obj-$(CONFIG_BPF_SYSCALL) += btf.o memalloc.o rqspinlock.o
-+obj-$(CONFIG_BPF_SYSCALL) += btf.o memalloc.o rqspinlock.o stream.o
- ifeq ($(CONFIG_MMU)$(CONFIG_64BIT),yy)
- obj-$(CONFIG_BPF_SYSCALL) += arena.o range_tree.o
- endif
+ #endif /* _LINUX_BPF_H */
 diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index e536a34a32c8..f0def24573ae 100644
+index f0def24573ae..2dc5b846ae50 100644
 --- a/kernel/bpf/core.c
 +++ b/kernel/bpf/core.c
-@@ -134,6 +134,10 @@ struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flag
- 	mutex_init(&fp->aux->ext_mutex);
- 	mutex_init(&fp->aux->dst_mutex);
+@@ -3213,3 +3213,50 @@ EXPORT_SYMBOL(bpf_stats_enabled_key);
  
+ EXPORT_TRACEPOINT_SYMBOL_GPL(xdp_exception);
+ EXPORT_TRACEPOINT_SYMBOL_GPL(xdp_bulk_tx);
++
 +#ifdef CONFIG_BPF_SYSCALL
-+	bpf_prog_stream_init(fp);
++
++int bpf_prog_get_file_line(struct bpf_prog *prog, unsigned long ip, const char **filep,
++			   const char **linep, int *nump)
++{
++	int idx = -1, insn_start, insn_end, len;
++	struct bpf_line_info *linfo;
++	void **jited_linfo;
++	struct btf *btf;
++
++	btf = prog->aux->btf;
++	linfo = prog->aux->linfo;
++	jited_linfo = prog->aux->jited_linfo;
++
++	if (!btf || !linfo || !jited_linfo)
++		return -EINVAL;
++	len = prog->aux->func ? prog->aux->func[prog->aux->func_idx]->len : prog->len;
++
++	linfo = &prog->aux->linfo[prog->aux->linfo_idx];
++	jited_linfo = &prog->aux->jited_linfo[prog->aux->linfo_idx];
++
++	insn_start = linfo[0].insn_off;
++	insn_end = insn_start + len;
++
++	for (int i = 0; i < prog->aux->nr_linfo &&
++	     linfo[i].insn_off >= insn_start && linfo[i].insn_off < insn_end; i++) {
++		if (jited_linfo[i] >= (void *)ip)
++			break;
++		idx = i;
++	}
++
++	if (idx == -1)
++		return -ENOENT;
++
++	/* Get base component of the file path. */
++	*filep = btf_name_by_offset(btf, linfo[idx].file_name_off);
++	*filep = kbasename(*filep);
++	/* Obtain the source line, and strip whitespace in prefix. */
++	*linep = btf_name_by_offset(btf, linfo[idx].line_off);
++	while (isspace(**linep))
++		*linep += 1;
++	*nump = BPF_LINE_INFO_LINE_NUM(linfo[idx].line_col);
++	return 0;
++}
++
 +#endif
-+
- 	return fp;
- }
- 
-@@ -2862,6 +2866,7 @@ static void bpf_prog_free_deferred(struct work_struct *work)
- 	aux = container_of(work, struct bpf_prog_aux, work);
- #ifdef CONFIG_BPF_SYSCALL
- 	bpf_free_kfunc_btf_tab(aux->kfunc_btf_tab);
-+	bpf_prog_stream_free(aux->prog);
- #endif
- #ifdef CONFIG_CGROUP_BPF
- 	if (aux->cgroup_atype != CGROUP_BPF_ATTACH_TYPE_INVALID)
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 8f1cc1d525db..61fdd343d6f5 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -3778,6 +3778,7 @@ BTF_ID_FLAGS(func, bpf_strnstr);
- #if defined(CONFIG_BPF_LSM) && defined(CONFIG_CGROUPS)
- BTF_ID_FLAGS(func, bpf_cgroup_read_xattr, KF_RCU)
- #endif
-+BTF_ID_FLAGS(func, bpf_stream_vprintk, KF_TRUSTED_ARGS)
- BTF_KFUNCS_END(common_btf_ids)
- 
- static const struct btf_kfunc_id_set common_kfunc_set = {
-diff --git a/kernel/bpf/stream.c b/kernel/bpf/stream.c
-new file mode 100644
-index 000000000000..e434541358db
---- /dev/null
-+++ b/kernel/bpf/stream.c
-@@ -0,0 +1,478 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+
-+#include <linux/bpf.h>
-+#include <linux/bpf_mem_alloc.h>
-+#include <linux/percpu.h>
-+#include <linux/refcount.h>
-+#include <linux/gfp.h>
-+#include <linux/memory.h>
-+#include <linux/local_lock.h>
-+#include <linux/mutex.h>
-+
-+/*
-+ * Simple per-CPU NMI-safe bump allocation mechanism, backed by the NMI-safe
-+ * try_alloc_pages()/free_pages_nolock() primitives. We allocate a page and
-+ * stash it in a local per-CPU variable, and bump allocate from the page
-+ * whenever items need to be printed to a stream. Each page holds a global
-+ * atomic refcount in its first 4 bytes, and then records of variable length
-+ * that describe the printed messages. Once the global refcount has dropped to
-+ * zero, it is a signal to free the page back to the kernel's page allocator,
-+ * given all the individual records in it have been consumed.
-+ *
-+ * It is possible the same page is used to serve allocations across different
-+ * programs, which may be consumed at different times individually, hence
-+ * maintaining a reference count per-page is critical for correct lifetime
-+ * tracking.
-+ *
-+ * The bpf_stream_page code will be replaced to use kmalloc_nolock() once it
-+ * lands.
-+ */
-+struct bpf_stream_page {
-+	refcount_t ref;
-+	u32 consumed;
-+	char buf[];
-+};
-+
-+/* Available room to add data to a refcounted page. */
-+#define BPF_STREAM_PAGE_SZ (PAGE_SIZE - offsetofend(struct bpf_stream_page, consumed))
-+
-+static DEFINE_PER_CPU(local_trylock_t, stream_local_lock) = INIT_LOCAL_TRYLOCK(stream_local_lock);
-+static DEFINE_PER_CPU(struct bpf_stream_page *, stream_pcpu_page);
-+
-+static bool bpf_stream_page_local_lock(unsigned long *flags)
-+{
-+	return local_trylock_irqsave(&stream_local_lock, *flags);
-+}
-+
-+static void bpf_stream_page_local_unlock(unsigned long *flags)
-+{
-+	local_unlock_irqrestore(&stream_local_lock, *flags);
-+}
-+
-+static void bpf_stream_page_free(struct bpf_stream_page *stream_page)
-+{
-+	struct page *p;
-+
-+	if (!stream_page)
-+		return;
-+	p = virt_to_page(stream_page);
-+	free_pages_nolock(p, 0);
-+}
-+
-+static void bpf_stream_page_get(struct bpf_stream_page *stream_page)
-+{
-+	refcount_inc(&stream_page->ref);
-+}
-+
-+static void bpf_stream_page_put(struct bpf_stream_page *stream_page)
-+{
-+	if (refcount_dec_and_test(&stream_page->ref))
-+		bpf_stream_page_free(stream_page);
-+}
-+
-+static void bpf_stream_page_init(struct bpf_stream_page *stream_page)
-+{
-+	refcount_set(&stream_page->ref, 1);
-+	stream_page->consumed = 0;
-+}
-+
-+static struct bpf_stream_page *bpf_stream_page_replace(void)
-+{
-+	struct bpf_stream_page *stream_page, *old_stream_page;
-+	struct page *page;
-+
-+	page = alloc_pages_nolock(NUMA_NO_NODE, 0);
-+	if (!page)
-+		return NULL;
-+	stream_page = page_address(page);
-+	bpf_stream_page_init(stream_page);
-+
-+	old_stream_page = this_cpu_read(stream_pcpu_page);
-+	if (old_stream_page)
-+		bpf_stream_page_put(old_stream_page);
-+	this_cpu_write(stream_pcpu_page, stream_page);
-+	return stream_page;
-+}
-+
-+static int bpf_stream_page_check_room(struct bpf_stream_page *stream_page, int len)
-+{
-+	int min = offsetof(struct bpf_stream_elem, str[0]);
-+	int consumed = stream_page->consumed;
-+	int total = BPF_STREAM_PAGE_SZ;
-+	int rem = max(0, total - consumed - min);
-+
-+	/* Let's give room of at least 8 bytes. */
-+	WARN_ON_ONCE(rem % 8 != 0);
-+	rem = rem < 8 ? 0 : rem;
-+	return min(len, rem);
-+}
-+
-+static void bpf_stream_elem_init(struct bpf_stream_elem *elem, int len)
-+{
-+	init_llist_node(&elem->node);
-+	elem->total_len = len;
-+	elem->consumed_len = 0;
-+}
-+
-+static struct bpf_stream_page *bpf_stream_page_from_elem(struct bpf_stream_elem *elem)
-+{
-+	unsigned long addr = (unsigned long)elem;
-+
-+	return (struct bpf_stream_page *)PAGE_ALIGN_DOWN(addr);
-+}
-+
-+static struct bpf_stream_elem *bpf_stream_page_push_elem(struct bpf_stream_page *stream_page, int len)
-+{
-+	u32 consumed = stream_page->consumed;
-+
-+	stream_page->consumed += round_up(offsetof(struct bpf_stream_elem, str[len]), 8);
-+	return (struct bpf_stream_elem *)&stream_page->buf[consumed];
-+}
-+
-+static struct bpf_stream_elem *bpf_stream_page_reserve_elem(int len)
-+{
-+	struct bpf_stream_elem *elem = NULL;
-+	struct bpf_stream_page *page;
-+	int room = 0;
-+
-+	page = this_cpu_read(stream_pcpu_page);
-+	if (!page)
-+		page = bpf_stream_page_replace();
-+	if (!page)
-+		return NULL;
-+
-+	room = bpf_stream_page_check_room(page, len);
-+	if (room != len)
-+		page = bpf_stream_page_replace();
-+	if (!page)
-+		return NULL;
-+	bpf_stream_page_get(page);
-+	room = bpf_stream_page_check_room(page, len);
-+	WARN_ON_ONCE(room != len);
-+
-+	elem = bpf_stream_page_push_elem(page, room);
-+	bpf_stream_elem_init(elem, room);
-+	return elem;
-+}
-+
-+static struct bpf_stream_elem *bpf_stream_elem_alloc(int len)
-+{
-+	const int max_len = ARRAY_SIZE((struct bpf_bprintf_buffers){}.buf);
-+	struct bpf_stream_elem *elem;
-+	unsigned long flags;
-+
-+	BUILD_BUG_ON(max_len > BPF_STREAM_PAGE_SZ);
-+	/*
-+	 * Length denotes the amount of data to be written as part of stream element,
-+	 * thus includes '\0' byte. We're capped by how much bpf_bprintf_buffers can
-+	 * accomodate, therefore deny allocations that won't fit into them.
-+	 */
-+	if (len < 0 || len > max_len)
-+		return NULL;
-+
-+	if (!bpf_stream_page_local_lock(&flags))
-+		return NULL;
-+	elem = bpf_stream_page_reserve_elem(len);
-+	bpf_stream_page_local_unlock(&flags);
-+	return elem;
-+}
-+
-+static int __bpf_stream_push_str(struct llist_head *log, const char *str, int len)
-+{
-+	struct bpf_stream_elem *elem = NULL;
-+
-+	/*
-+	 * Allocate a bpf_prog_stream_elem and push it to the bpf_prog_stream
-+	 * log, elements will be popped at once and reversed to print the log.
-+	 */
-+	elem = bpf_stream_elem_alloc(len);
-+	if (!elem)
-+		return -ENOMEM;
-+
-+	memcpy(elem->str, str, len);
-+	llist_add(&elem->node, log);
-+
-+	return 0;
-+}
-+
-+static int bpf_stream_consume_capacity(struct bpf_stream *stream, int len)
-+{
-+	if (atomic_read(&stream->capacity) >= BPF_STREAM_MAX_CAPACITY)
-+		return -ENOSPC;
-+	if (atomic_add_return(len, &stream->capacity) >= BPF_STREAM_MAX_CAPACITY) {
-+		atomic_sub(len, &stream->capacity);
-+		return -ENOSPC;
-+	}
-+	return 0;
-+}
-+
-+static void bpf_stream_release_capacity(struct bpf_stream *stream, struct bpf_stream_elem *elem)
-+{
-+	int len = elem->total_len;
-+
-+	atomic_sub(len, &stream->capacity);
-+}
-+
-+static int bpf_stream_push_str(struct bpf_stream *stream, const char *str, int len)
-+{
-+	int ret = bpf_stream_consume_capacity(stream, len);
-+
-+	return ret ?: __bpf_stream_push_str(&stream->log, str, len);
-+}
-+
-+static struct bpf_stream *bpf_stream_get(enum bpf_stream_id stream_id, struct bpf_prog_aux *aux)
-+{
-+	if (stream_id != BPF_STDOUT && stream_id != BPF_STDERR)
-+		return NULL;
-+	return &aux->stream[stream_id - 1];
-+}
-+
-+static void bpf_stream_free_elem(struct bpf_stream_elem *elem)
-+{
-+	struct bpf_stream_page *p;
-+
-+	p = bpf_stream_page_from_elem(elem);
-+	bpf_stream_page_put(p);
-+}
-+
-+static void bpf_stream_free_list(struct llist_node *list)
-+{
-+	struct bpf_stream_elem *elem, *tmp;
-+
-+	llist_for_each_entry_safe(elem, tmp, list, node)
-+		bpf_stream_free_elem(elem);
-+}
-+
-+static struct llist_node *bpf_stream_backlog_peek(struct bpf_stream *stream)
-+{
-+	return stream->backlog_head;
-+}
-+
-+static struct llist_node *bpf_stream_backlog_pop(struct bpf_stream *stream)
-+{
-+	struct llist_node *node;
-+
-+	node = stream->backlog_head;
-+	if (stream->backlog_head == stream->backlog_tail)
-+		stream->backlog_head = stream->backlog_tail = NULL;
-+	else
-+		stream->backlog_head = node->next;
-+	return node;
-+}
-+
-+static void bpf_stream_backlog_fill(struct bpf_stream *stream)
-+{
-+	struct llist_node *head, *tail;
-+
-+	if (llist_empty(&stream->log))
-+		return;
-+	tail = llist_del_all(&stream->log);
-+	if (!tail)
-+		return;
-+	head = llist_reverse_order(tail);
-+
-+	if (!stream->backlog_head) {
-+		stream->backlog_head = head;
-+		stream->backlog_tail = tail;
-+	} else {
-+		stream->backlog_tail->next = head;
-+		stream->backlog_tail = tail;
-+	}
-+
-+	return;
-+}
-+
-+static bool bpf_stream_consume_elem(struct bpf_stream_elem *elem, int *len)
-+{
-+	int rem = elem->total_len - elem->consumed_len;
-+	int used = min(rem, *len);
-+
-+	elem->consumed_len += used;
-+	*len -= used;
-+
-+	return elem->consumed_len == elem->total_len;
-+}
-+
-+static int bpf_stream_read(struct bpf_stream *stream, void __user *buf, int len)
-+{
-+	int rem_len = len, cons_len, ret = 0;
-+	struct bpf_stream_elem *elem = NULL;
-+	struct llist_node *node;
-+
-+	mutex_lock(&stream->lock);
-+
-+	while (rem_len) {
-+		int pos = len - rem_len;
-+		bool cont;
-+
-+		node = bpf_stream_backlog_peek(stream);
-+		if (!node) {
-+			bpf_stream_backlog_fill(stream);
-+			node = bpf_stream_backlog_peek(stream);
-+		}
-+		if (!node)
-+			break;
-+		elem = container_of(node, typeof(*elem), node);
-+
-+		cons_len = elem->consumed_len;
-+		cont = bpf_stream_consume_elem(elem, &rem_len) == false;
-+
-+		ret = copy_to_user(buf + pos, elem->str + cons_len,
-+				   elem->consumed_len - cons_len);
-+		/* Restore in case of error. */
-+		if (ret) {
-+			ret = -EFAULT;
-+			elem->consumed_len = cons_len;
-+			break;
-+		}
-+
-+		if (cont)
-+			continue;
-+		bpf_stream_backlog_pop(stream);
-+		bpf_stream_release_capacity(stream, elem);
-+		bpf_stream_free_elem(elem);
-+	}
-+
-+	mutex_unlock(&stream->lock);
-+	return ret ? ret : len - rem_len;
-+}
-+
-+int bpf_prog_stream_read(struct bpf_prog *prog, enum bpf_stream_id stream_id, void __user *buf, int len)
-+{
-+	struct bpf_stream *stream;
-+
-+	stream = bpf_stream_get(stream_id, prog->aux);
-+	if (!stream)
-+		return -ENOENT;
-+	return bpf_stream_read(stream, buf, len);
-+}
-+
-+__bpf_kfunc_start_defs();
-+
-+/*
-+ * Avoid using enum bpf_stream_id so that kfunc users don't have to pull in the
-+ * enum in headers.
-+ */
-+__bpf_kfunc int bpf_stream_vprintk(int stream_id, const char *fmt__str, const void *args, u32 len__sz, void *aux__prog)
-+{
-+	struct bpf_bprintf_data data = {
-+		.get_bin_args	= true,
-+		.get_buf	= true,
-+	};
-+	struct bpf_prog_aux *aux = aux__prog;
-+	u32 fmt_size = strlen(fmt__str) + 1;
-+	struct bpf_stream *stream;
-+	u32 data_len = len__sz;
-+	int ret, num_args;
-+
-+	stream = bpf_stream_get(stream_id, aux);
-+	if (!stream)
-+		return -ENOENT;
-+
-+	if (data_len & 7 || data_len > MAX_BPRINTF_VARARGS * 8 ||
-+	    (data_len && !args))
-+		return -EINVAL;
-+	num_args = data_len / 8;
-+
-+	ret = bpf_bprintf_prepare(fmt__str, fmt_size, args, num_args, &data);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = bstr_printf(data.buf, MAX_BPRINTF_BUF, fmt__str, data.bin_args);
-+	/* Exclude NULL byte during push. */
-+	ret = bpf_stream_push_str(stream, data.buf, ret);
-+	bpf_bprintf_cleanup(&data);
-+
-+	return ret;
-+}
-+
-+__bpf_kfunc_end_defs();
-+
-+/* Added kfunc to common_btf_ids */
-+
-+void bpf_prog_stream_init(struct bpf_prog *prog)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(prog->aux->stream); i++) {
-+		atomic_set(&prog->aux->stream[i].capacity, 0);
-+		init_llist_head(&prog->aux->stream[i].log);
-+		mutex_init(&prog->aux->stream[i].lock);
-+		prog->aux->stream[i].backlog_head = NULL;
-+		prog->aux->stream[i].backlog_tail = NULL;
-+	}
-+}
-+
-+void bpf_prog_stream_free(struct bpf_prog *prog)
-+{
-+	struct llist_node *list;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(prog->aux->stream); i++) {
-+		list = llist_del_all(&prog->aux->stream[i].log);
-+		bpf_stream_free_list(list);
-+		bpf_stream_free_list(prog->aux->stream[i].backlog_head);
-+	}
-+}
-+
-+void bpf_stream_stage_init(struct bpf_stream_stage *ss)
-+{
-+	init_llist_head(&ss->log);
-+	ss->len = 0;
-+}
-+
-+void bpf_stream_stage_free(struct bpf_stream_stage *ss)
-+{
-+	struct llist_node *node;
-+
-+	node = llist_del_all(&ss->log);
-+	bpf_stream_free_list(node);
-+}
-+
-+int bpf_stream_stage_printk(struct bpf_stream_stage *ss, const char *fmt, ...)
-+{
-+	struct bpf_bprintf_buffers *buf;
-+	va_list args;
-+	int ret;
-+
-+	if (bpf_try_get_buffers(&buf))
-+		return -EBUSY;
-+
-+	va_start(args, fmt);
-+	ret = vsnprintf(buf->buf, ARRAY_SIZE(buf->buf), fmt, args);
-+	va_end(args);
-+	ss->len += ret;
-+	/* Exclude NULL byte during push. */
-+	ret = __bpf_stream_push_str(&ss->log, buf->buf, ret);
-+	bpf_put_buffers();
-+	return ret;
-+}
-+
-+int bpf_stream_stage_commit(struct bpf_stream_stage *ss, struct bpf_prog *prog,
-+			    enum bpf_stream_id stream_id)
-+{
-+	struct llist_node *list, *head, *tail;
-+	struct bpf_stream *stream;
-+	int ret;
-+
-+	stream = bpf_stream_get(stream_id, prog->aux);
-+	if (!stream)
-+		return -EINVAL;
-+
-+	ret = bpf_stream_consume_capacity(stream, ss->len);
-+	if (ret)
-+		return ret;
-+
-+	list = llist_del_all(&ss->log);
-+	head = tail = list;
-+
-+	if (!list)
-+		return 0;
-+	while (llist_next(list)) {
-+		tail = llist_next(list);
-+		list = tail;
-+	}
-+	llist_add_batch(head, tail, &stream->log);
-+	return 0;
-+}
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 56500381c28a..8d947c510577 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -5936,6 +5936,28 @@ static int token_create(union bpf_attr *attr)
- 	return bpf_token_create(attr);
- }
- 
-+#define BPF_PROG_STREAM_READ_BY_FD_LAST_FIELD prog_stream_read.prog_fd
-+
-+static int prog_stream_read(union bpf_attr *attr)
-+{
-+	char __user *buf = u64_to_user_ptr(attr->prog_stream_read.stream_buf);
-+	u32 len = attr->prog_stream_read.stream_buf_len;
-+	struct bpf_prog *prog;
-+	int ret;
-+
-+	if (CHECK_ATTR(BPF_PROG_STREAM_READ_BY_FD))
-+		return -EINVAL;
-+
-+	prog = bpf_prog_get(attr->prog_stream_read.prog_fd);
-+	if (IS_ERR(prog))
-+		return PTR_ERR(prog);
-+
-+	ret = bpf_prog_stream_read(prog, attr->prog_stream_read.stream_id, buf, len);
-+	bpf_prog_put(prog);
-+
-+	return ret;
-+}
-+
- static int __sys_bpf(enum bpf_cmd cmd, bpfptr_t uattr, unsigned int size)
- {
- 	union bpf_attr attr;
-@@ -6072,6 +6094,9 @@ static int __sys_bpf(enum bpf_cmd cmd, bpfptr_t uattr, unsigned int size)
- 	case BPF_TOKEN_CREATE:
- 		err = token_create(&attr);
- 		break;
-+	case BPF_PROG_STREAM_READ_BY_FD:
-+		err = prog_stream_read(&attr);
-+		break;
- 	default:
- 		err = -EINVAL;
- 		break;
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 52e36fd23f40..9f09dcd2eabb 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -46,6 +46,7 @@ static const struct bpf_verifier_ops * const bpf_verifier_ops[] = {
- 
- enum bpf_features {
- 	BPF_FEAT_RDONLY_CAST_TO_VOID = 0,
-+	BPF_FEAT_STREAMS	     = 1,
- 	__MAX_BPF_FEAT,
- };
- 
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 719ba230032f..0670e15a6100 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -906,6 +906,17 @@ union bpf_iter_link_info {
-  *		A new file descriptor (a nonnegative integer), or -1 if an
-  *		error occurred (in which case, *errno* is set appropriately).
-  *
-+ * BPF_PROG_STREAM_READ_BY_FD
-+ *	Description
-+ *		Read data of a program's BPF stream. The program is identified
-+ *		by *prog_fd*, and the stream is identified by the *stream_id*.
-+ *		The data is copied to a buffer pointed to by *stream_buf*, and
-+ *		filled less than or equal to *stream_buf_len* bytes.
-+ *
-+ *	Return
-+ *		Number of bytes read from the stream on success, or -1 if an
-+ *		error occurred (in which case, *errno* is set appropriately).
-+ *
-  * NOTES
-  *	eBPF objects (maps and programs) can be shared between processes.
-  *
-@@ -961,6 +972,7 @@ enum bpf_cmd {
- 	BPF_LINK_DETACH,
- 	BPF_PROG_BIND_MAP,
- 	BPF_TOKEN_CREATE,
-+	BPF_PROG_STREAM_READ_BY_FD,
- 	__MAX_BPF_CMD,
- };
- 
-@@ -1463,6 +1475,11 @@ struct bpf_stack_build_id {
- 
- #define BPF_OBJ_NAME_LEN 16U
- 
-+enum {
-+	BPF_STREAM_STDOUT = 1,
-+	BPF_STREAM_STDERR = 2,
-+};
-+
- union bpf_attr {
- 	struct { /* anonymous struct used by BPF_MAP_CREATE command */
- 		__u32	map_type;	/* one of enum bpf_map_type */
-@@ -1849,6 +1866,13 @@ union bpf_attr {
- 		__u32		bpffs_fd;
- 	} token_create;
- 
-+	struct {
-+		__aligned_u64	stream_buf;
-+		__u32		stream_buf_len;
-+		__u32		stream_id;
-+		__u32		prog_fd;
-+	} prog_stream_read;
-+
- } __attribute__((aligned(8)));
- 
- /* The description below is an attempt at providing documentation to eBPF
 -- 
 2.47.1
 
