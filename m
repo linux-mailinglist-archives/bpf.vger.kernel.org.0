@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-62264-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62265-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB2F6AF73B9
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 14:20:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EBA0AF73B8
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 14:20:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25C4A7B5FA1
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 12:19:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D711E4E4604
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 12:20:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AEC62EAB98;
-	Thu,  3 Jul 2025 12:17:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 205C52EB5D1;
+	Thu,  3 Jul 2025 12:17:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WljxVFVO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iDuslK0u"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f193.google.com (mail-pf1-f193.google.com [209.85.210.193])
+Received: from mail-pf1-f194.google.com (mail-pf1-f194.google.com [209.85.210.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95D962EA758;
-	Thu,  3 Jul 2025 12:17:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35D172EAD06;
+	Thu,  3 Jul 2025 12:17:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751545064; cv=none; b=l8ILzXuVb9fkos+xTlv+u4ZDGL88RjWVjkjunf2OSJEe0tJd2T6UNmO/Ww0KmiD3XfsdVQzCIqQ8ZSuJnoogTi2GCO9aEdoUyiyIyPloGXis39AKC04pcI6v0HFGsPdZ1pGaajDZtmRiL0e4ZkQPgArzIwrgF9mQQNZl2cZMg9w=
+	t=1751545067; cv=none; b=H2LDFNIwUB8ZcbeFP7LbsIZMD0NLDptgUgI+5Ho5xHzfMSKKJPFldz1klCt0tyOW+iFCAH2az3Zv+WuOhBUDgTWU1x6FG90R4SDybuSrkLnadVODllmLq7qyk82ciF+CZMJ1zoruq7EEBQzw7ZgzZZ178Bob4EbtaSyKH5qHRIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751545064; c=relaxed/simple;
-	bh=jxmQMYMo/g8j9c3m8/zYT3iwQ1cFh+0i13oC0PDn6tI=;
+	s=arc-20240116; t=1751545067; c=relaxed/simple;
+	bh=pTP3A3udzpqP7idQ6yfAvXRvXy8d4QhQ8MKaOULTNUk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=KZnDm4ZvOlYXliyIftIcQEOtmj0ZSGsnJH/tkH3aqRFMeHqeQw6rCAFLWuA0jPNjbSDoX7GjyoislNwp015HovUkV9ootaaOK5Apxr/wh7hIqRTznP8XObl5irSuYmvnQhZFXLsvhM7bYjn6N7vsA/x/Wmm5sdznPaisHO+zah0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WljxVFVO; arc=none smtp.client-ip=209.85.210.193
+	 MIME-Version; b=py3ce+yVtF/dh1NXUxNlWFxgmVtk5Ep9b6GLGTh78VwVlzhpbpIvTjWzUoAwFby6wUR6hCp+rLuJ6Mv+rX6xpxG4wa1a3tEr6uW5vV7r/KrccD0PwPLCzdG9BXPXfpHH00zg/xcWk4We8B/s99Xk7CGVzIZQgDY8BOxDw5yKtZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iDuslK0u; arc=none smtp.client-ip=209.85.210.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f193.google.com with SMTP id d2e1a72fcca58-748e63d4b05so3582147b3a.2;
-        Thu, 03 Jul 2025 05:17:42 -0700 (PDT)
+Received: by mail-pf1-f194.google.com with SMTP id d2e1a72fcca58-748e378ba4fso10384170b3a.1;
+        Thu, 03 Jul 2025 05:17:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751545062; x=1752149862; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1751545065; x=1752149865; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mheM0L5EqXLP+X642z1gm3rwVe94tlJM79DUk5IyCfo=;
-        b=WljxVFVObSftaIvIF/QrkgovMJXpQBALKQx2N2jyHzU8iGeNikTv/WIz1fVr5HIPT0
-         9H9kxJcfMIQLpQUu1vylgUq1I1RqvZwURyJb3PSpEbBkBs3dYYrfY7OWgv/04nz9EItF
-         nUF2FGxSY42LPiA44PXh1iy3Cq8dzHjpzEZdBgZiLhDqaYiNknR4NdIANCkwbvcUJZJ1
-         ehXa5286W6CifNEYPXcbQsmCJiTRohoEYaL7BWyj/3STQ7mBWlPA72eL5VITghz3Xrns
-         vt5bR23OjsYxrtLjTfrBL4pmZC73WAbdVnYs2EM6xj7HhMSelKmF56HuJbcMESHgN1gH
-         bTKg==
+        bh=tTJ5AcJp6NNlMzGq4x270cqfrcd7ussd7QF3anZ6zjo=;
+        b=iDuslK0uutEU934ij4u9s3QrHsWsJvJWpkPEQGmjuLmsfGh/IFH27lm04Ncl8LIx70
+         x06gkAoJWxFBVohE/LYHzfvg6RLqN2jRqTvnqG4rac2YvcD2FRH8ubRBmIFXOS0HEbsA
+         Sv6UUFg+uJrXTqgP8Q4yIlKUdMOMSpcaI9kFmd+FBLVD3zt9MCdVj1m/OqpoHsWJEqfV
+         wJWMo/0G6MUc/Lp8E+I33Ufj4YKbM8MBwlLPf6Hp+cO6eim87SLb8SeCNKtGT+Q9HxBI
+         2BkNU6CYoVsTxKxCO94OgoBbOAUvGfsGo30hfy+w3IOszA/aHF5RV8ZNlbeGGbfh5PsI
+         TQzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751545062; x=1752149862;
+        d=1e100.net; s=20230601; t=1751545065; x=1752149865;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mheM0L5EqXLP+X642z1gm3rwVe94tlJM79DUk5IyCfo=;
-        b=efZWSHvhWE5FBcfM4z51BMaFkNBWxJTnOJvC7Vtu+qu2feFXV+RHlkaHg2CLuU1iin
-         lb+mVXqBOVIaRZ5OWSl4m+WLJYHEEQOc3iA8p2q5TQUZ9ItBp46SRo4yahw8/jbXbzAw
-         u+5Pb35YeuHvlLXNn0VbQVXmWdicWR2oRiSioeiyOevfNL2jcqWvsCc0dpzQSD5WmKIL
-         g264B/IKoEYBO8Iu7Tn36wcDJbrWM6Xf2nAu/cjnJD8cMu/gmpGKkY77XvzthoYxfioZ
-         HrMpJvwoM5JPEtbdfn9wcKj3oBQG3jTN9vMLEKjl0QrYTXFLV4uuYFJgcxfZqWqG3Aum
-         9Rog==
-X-Forwarded-Encrypted: i=1; AJvYcCWAmApNfr7otSFsJmQ5W9FMGR3gv5HzWONXLV9UDqcAFqK+k9pBC2qbrmFIWkYNfI2RtObjH8D6iJEv0kM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyQHJyHLwg2QqgPBR0LSbDGaq+av3dV55vqIKCF/VE4dJwHH3zf
-	rKTRALm0GwbQprlaeWCPTqa+dZnu0jRF0GCuIzvftEzt9Oo4fmeE0S8Q
-X-Gm-Gg: ASbGncss/Hcq1BBjkFMPvL0WQVe2bb55LB3iIgLk64/hVyo2W3yPLddUH1TsoNuJRf8
-	MKqDodAPEI40EWigm+dO0/eBG2nTD0RO9N8N5MgfTFVg0EmHCqVe15ldSLqpICb+QhB5cV85uxA
-	ccjMorfcBomc68cQ810O4Zf/G0qS1iLL9aj304qO4seC5lcNrkZDl5fnwvZVunJ6J2NDQoZoyKs
-	jbx78AfVWzU+eBz/MUHaIqR6xTFlRqPl24r03vs7aW/9dfH4PUVnN+bsOCO9AofBL9gvQyBJnGR
-	BoJHLcDhAUGOsUgOgrc89dOs1SWjLDKUnN4hbHTAW6ifaWgsgcaM58RILp9fh/P+k0MM1aNdexH
-	aDcg=
-X-Google-Smtp-Source: AGHT+IF4++fkMfJVjcYVYeaFsdsWRBD+ukE3CyKZEWkV3PMmDeeYoFVTBSyfMptMHZapLNGsCKDb5A==
-X-Received: by 2002:a05:6a00:1a8e:b0:740:afda:a742 with SMTP id d2e1a72fcca58-74b50da219amr9455538b3a.0.1751545061663;
-        Thu, 03 Jul 2025 05:17:41 -0700 (PDT)
+        bh=tTJ5AcJp6NNlMzGq4x270cqfrcd7ussd7QF3anZ6zjo=;
+        b=EWOaQXugIGt1QcD++/0eMu/TuNHv52LCMlbjaTAxl5MqOfmk4j4xIZLhwN/LIneXWp
+         GSbLy8uGItIHS6MPkyyIvBfJheh0/6s8YHnrmhVj8oaHR29ksewc9VgHstXNTGT4Toa0
+         vZ6jEwxCywuIunBwPivnrX14DGXGaClE0txDsNMxgXLYKpW9/Su3OeQNo8MwEX1i6++f
+         wH+75qGl93s5mC8LoBPzqjAtHunjQRSMMSMOJWXb6R6TrNIvwdtTc9feoXDtAuk9YlJM
+         lotCSqAHWDTkkhw3B60GHJc64Qg/2O5Iyd7XmzXYvd0YY+q0yEbcZxCrEQHqww6m1Ihc
+         pHnw==
+X-Forwarded-Encrypted: i=1; AJvYcCUXrTimG3uB9oHBK7uppw+YawKrXRowE2tT6E5Iig0mGGkvWvE9wX8LeMflz7OHaqaXY71VXenfb3XB0ao=@vger.kernel.org, AJvYcCXw/ZUIjlM/1D4MpXoBvZMQLB1sID9IPzOe8223GIg4HqPB8SNnVmffkiAvSKJ3jHDG3QvIkLFU@vger.kernel.org
+X-Gm-Message-State: AOJu0YyGDtCbH9cAV/7Uot7o7wsvTznO7Mv2IVDHrX2XEcCTLceRm/0a
+	9sz9pC/bVUHvou/8ZNfiXovpadIiUc4+BmXGW8GazCUmShbQgG3olEI+
+X-Gm-Gg: ASbGncuYyL5fRt7PrJpD8yhHWn9ckDV3RmJNISCBduoaCU4+izgqLOBE03ROb4770/f
+	gkx39EIJbCxQbbhJsxAOFv2YuNn7tM9Nwv+Ep+ndvtJwDKHQTo3+h8v5N3+9/2TxUcQHDSJbHxA
+	/CEXom1tQ+vAP1MYHVvpTB20D4ZMkGSyOMSpqi+aBCRf3WXQ9XNZ5/U/uOWVcdha+zYzze3oXHO
+	0VIlQcXMjYd/BzxfaAVoa1EU67EOsdA+10rwexYBKYW6Nl4Dh18vlOZ1HrRMtMC9titzWlNyMhE
+	vswksQlt5jkFUKJEnLK/TukHEVObi6EDpjEI3/R5nqVgyxiN5PRI7G7dsH7Vp6WUYR1uiVsCeMm
+	04lxewxhrhNCvVw==
+X-Google-Smtp-Source: AGHT+IE5J9rg2JiGcm8zZgpSCqAB1SulBnM4AJphFwGhTQ8H4Bu3le9DoyEpJT0xTDGVeumPLIFxOw==
+X-Received: by 2002:a05:6a00:10c8:b0:749:ad1:ac8a with SMTP id d2e1a72fcca58-74b5104baebmr7621967b3a.11.1751545065403;
+        Thu, 03 Jul 2025 05:17:45 -0700 (PDT)
 Received: from localhost.localdomain ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74af5575895sm18591081b3a.94.2025.07.03.05.17.38
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74af5575895sm18591081b3a.94.2025.07.03.05.17.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jul 2025 05:17:41 -0700 (PDT)
+        Thu, 03 Jul 2025 05:17:45 -0700 (PDT)
 From: Menglong Dong <menglong8.dong@gmail.com>
 X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
 To: alexei.starovoitov@gmail.com,
@@ -80,18 +80,20 @@ To: alexei.starovoitov@gmail.com,
 	jolsa@kernel.org
 Cc: bpf@vger.kernel.org,
 	Menglong Dong <dongml2@chinatelecom.cn>,
-	John Fastabend <john.fastabend@gmail.com>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
 	Eduard Zingerman <eddyz87@gmail.com>,
 	Song Liu <song@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
 	KP Singh <kpsingh@kernel.org>,
 	Stanislav Fomichev <sdf@fomichev.me>,
 	Hao Luo <haoluo@google.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2 09/18] bpf: verifier: move btf_id_deny to bpf_check_attach_target
-Date: Thu,  3 Jul 2025 20:15:12 +0800
-Message-Id: <20250703121521.1874196-10-dongml2@chinatelecom.cn>
+Subject: [PATCH bpf-next v2 10/18] x86,bpf: factor out arch_bpf_get_regs_nr
+Date: Thu,  3 Jul 2025 20:15:13 +0800
+Message-Id: <20250703121521.1874196-11-dongml2@chinatelecom.cn>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250703121521.1874196-1-dongml2@chinatelecom.cn>
 References: <20250703121521.1874196-1-dongml2@chinatelecom.cn>
@@ -103,173 +105,94 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Move the checking of btf_id_deny and noreturn_deny from
-check_attach_btf_id() to bpf_check_attach_target(). Therefore, we can do
-such checking during attaching for tracing multi-link in the later
-patches.
+Factor the function arch_bpf_get_regs_nr() to get the regs count that used
+by the function args.
 
 Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
 ---
- kernel/bpf/verifier.c | 125 ++++++++++++++++++++++--------------------
- 1 file changed, 65 insertions(+), 60 deletions(-)
+ arch/x86/net/bpf_jit_comp.c | 22 +++++++++++++++-------
+ include/linux/bpf.h         |  1 +
+ kernel/bpf/verifier.c       |  5 +++++
+ 3 files changed, 21 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 8e5c4280745f..d6311be5a63a 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -23448,6 +23448,52 @@ static int check_non_sleepable_error_inject(u32 btf_id)
- 	return btf_id_set_contains(&btf_non_sleepable_error_inject, btf_id);
- }
- 
-+BTF_SET_START(btf_id_deny)
-+BTF_ID_UNUSED
-+#ifdef CONFIG_SMP
-+BTF_ID(func, migrate_disable)
-+BTF_ID(func, migrate_enable)
-+#endif
-+#if !defined CONFIG_PREEMPT_RCU && !defined CONFIG_TINY_RCU
-+BTF_ID(func, rcu_read_unlock_strict)
-+#endif
-+#if defined(CONFIG_DEBUG_PREEMPT) || defined(CONFIG_TRACE_PREEMPT_TOGGLE)
-+BTF_ID(func, preempt_count_add)
-+BTF_ID(func, preempt_count_sub)
-+#endif
-+#ifdef CONFIG_PREEMPT_RCU
-+BTF_ID(func, __rcu_read_lock)
-+BTF_ID(func, __rcu_read_unlock)
-+#endif
-+BTF_SET_END(btf_id_deny)
-+
-+/* fexit and fmod_ret can't be used to attach to __noreturn functions.
-+ * Currently, we must manually list all __noreturn functions here. Once a more
-+ * robust solution is implemented, this workaround can be removed.
-+ */
-+BTF_SET_START(noreturn_deny)
-+#ifdef CONFIG_IA32_EMULATION
-+BTF_ID(func, __ia32_sys_exit)
-+BTF_ID(func, __ia32_sys_exit_group)
-+#endif
-+#ifdef CONFIG_KUNIT
-+BTF_ID(func, __kunit_abort)
-+BTF_ID(func, kunit_try_catch_throw)
-+#endif
-+#ifdef CONFIG_MODULES
-+BTF_ID(func, __module_put_and_kthread_exit)
-+#endif
-+#ifdef CONFIG_X86_64
-+BTF_ID(func, __x64_sys_exit)
-+BTF_ID(func, __x64_sys_exit_group)
-+#endif
-+BTF_ID(func, do_exit)
-+BTF_ID(func, do_group_exit)
-+BTF_ID(func, kthread_complete_and_exit)
-+BTF_ID(func, kthread_exit)
-+BTF_ID(func, make_task_dead)
-+BTF_SET_END(noreturn_deny)
-+
- int bpf_check_attach_target(struct bpf_verifier_log *log,
- 			    const struct bpf_prog *prog,
- 			    const struct bpf_prog *tgt_prog,
-@@ -23771,6 +23817,25 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
- 
- 		break;
- 	}
-+
-+	if (prog->type == BPF_PROG_TYPE_LSM) {
-+		ret = bpf_lsm_verify_prog(log, prog);
-+		if (ret < 0) {
-+			module_put(mod);
-+			return ret;
-+		}
-+	} else if (prog->type == BPF_PROG_TYPE_TRACING &&
-+		   btf_id_set_contains(&btf_id_deny, btf_id)) {
-+		module_put(mod);
-+		return -EINVAL;
-+	} else if ((prog->expected_attach_type == BPF_TRACE_FEXIT ||
-+		   prog->expected_attach_type == BPF_MODIFY_RETURN) &&
-+		   btf_id_set_contains(&noreturn_deny, btf_id)) {
-+		module_put(mod);
-+		bpf_log(log, "Attaching fexit/fmod_ret to __noreturn functions is rejected.\n");
-+		return -EINVAL;
-+	}
-+
- 	tgt_info->tgt_addr = addr;
- 	tgt_info->tgt_name = tname;
- 	tgt_info->tgt_type = t;
-@@ -23778,52 +23843,6 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 8d2fc436a748..7795917efc41 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -3001,6 +3001,19 @@ static int invoke_bpf_mod_ret(const struct btf_func_model *m, u8 **pprog,
  	return 0;
  }
  
--BTF_SET_START(btf_id_deny)
--BTF_ID_UNUSED
--#ifdef CONFIG_SMP
--BTF_ID(func, migrate_disable)
--BTF_ID(func, migrate_enable)
--#endif
--#if !defined CONFIG_PREEMPT_RCU && !defined CONFIG_TINY_RCU
--BTF_ID(func, rcu_read_unlock_strict)
--#endif
--#if defined(CONFIG_DEBUG_PREEMPT) || defined(CONFIG_TRACE_PREEMPT_TOGGLE)
--BTF_ID(func, preempt_count_add)
--BTF_ID(func, preempt_count_sub)
--#endif
--#ifdef CONFIG_PREEMPT_RCU
--BTF_ID(func, __rcu_read_lock)
--BTF_ID(func, __rcu_read_unlock)
--#endif
--BTF_SET_END(btf_id_deny)
--
--/* fexit and fmod_ret can't be used to attach to __noreturn functions.
-- * Currently, we must manually list all __noreturn functions here. Once a more
-- * robust solution is implemented, this workaround can be removed.
-- */
--BTF_SET_START(noreturn_deny)
--#ifdef CONFIG_IA32_EMULATION
--BTF_ID(func, __ia32_sys_exit)
--BTF_ID(func, __ia32_sys_exit_group)
--#endif
--#ifdef CONFIG_KUNIT
--BTF_ID(func, __kunit_abort)
--BTF_ID(func, kunit_try_catch_throw)
--#endif
--#ifdef CONFIG_MODULES
--BTF_ID(func, __module_put_and_kthread_exit)
--#endif
--#ifdef CONFIG_X86_64
--BTF_ID(func, __x64_sys_exit)
--BTF_ID(func, __x64_sys_exit_group)
--#endif
--BTF_ID(func, do_exit)
--BTF_ID(func, do_group_exit)
--BTF_ID(func, kthread_complete_and_exit)
--BTF_ID(func, kthread_exit)
--BTF_ID(func, make_task_dead)
--BTF_SET_END(noreturn_deny)
--
- static bool can_be_sleepable(struct bpf_prog *prog)
++int arch_bpf_get_regs_nr(const struct btf_func_model *m)
++{
++	int nr_regs = m->nr_args;
++
++	/* extra registers for struct arguments */
++	for (int i = 0; i < m->nr_args; i++) {
++		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG)
++			nr_regs += (m->arg_size[i] + 7) / 8 - 1;
++	}
++
++	return nr_regs;
++}
++
+ /* mov rax, qword ptr [rbp - rounded_stack_depth - 8] */
+ #define LOAD_TRAMP_TAIL_CALL_CNT_PTR(stack)	\
+ 	__LOAD_TCC_PTR(-round_up(stack, 8) - 8)
+@@ -3071,7 +3084,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
+ 					 struct bpf_tramp_links *tlinks,
+ 					 void *func_addr)
  {
- 	if (prog->type == BPF_PROG_TYPE_TRACING) {
-@@ -23906,20 +23925,6 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
- 		return bpf_iter_prog_supported(prog);
- 	}
+-	int i, ret, nr_regs = m->nr_args, stack_size = 0;
++	int i, ret, nr_regs, stack_size = 0;
+ 	int regs_off, nregs_off, ip_off, run_ctx_off, arg_stack_off, rbx_off;
+ 	struct bpf_tramp_links *fentry = &tlinks[BPF_TRAMP_FENTRY];
+ 	struct bpf_tramp_links *fexit = &tlinks[BPF_TRAMP_FEXIT];
+@@ -3089,15 +3102,10 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
+ 	WARN_ON_ONCE((flags & BPF_TRAMP_F_INDIRECT) &&
+ 		     (flags & ~(BPF_TRAMP_F_INDIRECT | BPF_TRAMP_F_RET_FENTRY_RET)));
  
--	if (prog->type == BPF_PROG_TYPE_LSM) {
--		ret = bpf_lsm_verify_prog(&env->log, prog);
--		if (ret < 0)
--			return ret;
--	} else if (prog->type == BPF_PROG_TYPE_TRACING &&
--		   btf_id_set_contains(&btf_id_deny, btf_id)) {
--		return -EINVAL;
--	} else if ((prog->expected_attach_type == BPF_TRACE_FEXIT ||
--		   prog->expected_attach_type == BPF_MODIFY_RETURN) &&
--		   btf_id_set_contains(&noreturn_deny, btf_id)) {
--		verbose(env, "Attaching fexit/fmod_ret to __noreturn functions is rejected.\n");
--		return -EINVAL;
+-	/* extra registers for struct arguments */
+-	for (i = 0; i < m->nr_args; i++) {
+-		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG)
+-			nr_regs += (m->arg_size[i] + 7) / 8 - 1;
 -	}
 -
- 	key = bpf_trampoline_compute_key(tgt_prog, prog->aux->attach_btf, btf_id);
- 	tr = bpf_trampoline_get(key, &tgt_info);
- 	if (!tr)
+ 	/* x86-64 supports up to MAX_BPF_FUNC_ARGS arguments. 1-6
+ 	 * are passed through regs, the remains are through stack.
+ 	 */
++	nr_regs = arch_bpf_get_regs_nr(m);
+ 	if (nr_regs > MAX_BPF_FUNC_ARGS)
+ 		return -ENOTSUPP;
+ 
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index bb3ab1aa3a9d..da5951b0335b 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1220,6 +1220,7 @@ void arch_free_bpf_trampoline(void *image, unsigned int size);
+ int __must_check arch_protect_bpf_trampoline(void *image, unsigned int size);
+ int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
+ 			     struct bpf_tramp_links *tlinks, void *func_addr);
++int arch_bpf_get_regs_nr(const struct btf_func_model *m);
+ 
+ u64 notrace __bpf_prog_enter_sleepable_recur(struct bpf_prog *prog,
+ 					     struct bpf_tramp_run_ctx *run_ctx);
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index d6311be5a63a..86a64d843465 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -23274,6 +23274,11 @@ static int do_check_main(struct bpf_verifier_env *env)
+ }
+ 
+ 
++int __weak arch_bpf_get_regs_nr(const struct btf_func_model *m)
++{
++	return -ENODEV;
++}
++
+ static void print_verification_stats(struct bpf_verifier_env *env)
+ {
+ 	int i;
 -- 
 2.39.5
 
