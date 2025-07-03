@@ -1,241 +1,419 @@
-Return-Path: <bpf+bounces-62291-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62292-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B399AAF7715
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 16:19:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EFF8AF7769
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 16:28:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84C60167DC4
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 14:17:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F3223B9732
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 14:27:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F8F92E9EDA;
-	Thu,  3 Jul 2025 14:17:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0911E2EA75C;
+	Thu,  3 Jul 2025 14:26:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JUWHZ1SK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CW2d+f+B"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B7142E8E0B;
-	Thu,  3 Jul 2025 14:17:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DAA92E9729;
+	Thu,  3 Jul 2025 14:26:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751552250; cv=none; b=RFlCkg8pApvOCXomOlGoBqHYB6MJzxEOKg5qQFQtlBkD4ctBO8IP1UIOUclPvC1HBCW0bEOLQJ1ImcV/EVsUX4sP8erVr/I/yAfXR+Fql8AbA8KrTSZS8OFWcnvzx5M33MWxXmjpJIXpTIBOJuRj+JazDOVBCYrNxAoV0FW6bG8=
+	t=1751552792; cv=none; b=oT754BS58cCsYYlVDlaLyyNl1k8aMqGIlePIQnieNgbhkoPlkvMYtuAHZM02D7QS/adwTXudEE/kI1Q/aju9L5Ocp74CVpla65kpehbAocRiIAAUwctq0Rt77Du3/uXsMQ/zhCVjZGYjtSjhEipjsIZ2joAdHTpiqIYe6pbzroY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751552250; c=relaxed/simple;
-	bh=r+D/dl/k/UTq/AIOuM/9Y3jD7sTZ4+BC+L1TGUByhD8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=c49SRWwVK7Um7lhEDmopGf9KceTYPafA6HW4qgiSXaw1NnL7DxBtEDPbW3l6jpaGslUO5jVmibD4wIRb/9nPo30ud2cJgYP8xJ3i6+JdAWFsgtZM4+TpwjVS3cY0sFGxW+bR2qVFNQIsOpbyH2Ho/Jr+/cwqI/+YlMdH2BzcWt4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JUWHZ1SK; arc=none smtp.client-ip=209.85.210.173
+	s=arc-20240116; t=1751552792; c=relaxed/simple;
+	bh=t/lzYAScSYcowAD4kORVO31oj0LWoDd6SmabJ4ZAZ1w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MyZd/W3lkhb34YlXcHwpogVOapEbF3c1ilYHmK9lMkJDP6WuEWR4X08tt4FtMCBfq3pDOTqmB4NXZABpY9CU576XV60M+Nl1mdlIOx4AG3QMfqoHa84LH0Eb1+R+X28uqlVv72FiI8IOYyM1o4ooz7xpYYJIETGP7XcOMoTHxrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CW2d+f+B; arc=none smtp.client-ip=209.85.166.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-747e41d5469so6299837b3a.3;
-        Thu, 03 Jul 2025 07:17:28 -0700 (PDT)
+Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-3e058c64a76so10837165ab.0;
+        Thu, 03 Jul 2025 07:26:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751552248; x=1752157048; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1751552789; x=1752157589; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WW+XZo4iC+tV8YHIg8uTa/P2x4K5W/XO4BwZmsp7CVU=;
-        b=JUWHZ1SKg6g83HXCYXwY3CkUzlC+S9ceyL16t3BXhfQCJJoQNv1XN36SeAqku5fWnU
-         OWN2jWOUGEOiu0YOLL1JvRjSqMhIse6EpPsP8EWytoUTNHpGNHKQrjyDZyFt2EwXmMjN
-         uNuRpSXXTTz5py1OCgXCQHOUugTchLqkgtFBBuXy0naTpm/XveL7hz+fpZlG/hj8cmXR
-         LRp2xLlAViPuzgVBQO3sVcCSNo4tsboub9fa++CSrEV/Tto1Sw7jFD1djAyCmFAWaS8x
-         xvpWewHkonrZ6WhW8zOBGghe5G8L3Dpjq4dxgD/KP6lHZ6r2I5fa0bABMdQFYuSJ5En1
-         0E7g==
+        bh=n1+e6JEcSQ9wA61myKIMjOe/DNpFYs5m8+tLYA1VUWM=;
+        b=CW2d+f+BporozjwSooG7wxjZ4u2C1W1NUcf8oUXrvqkhj01X6vZWcNLtuarfX7xcnL
+         BNPjxIZueP/T+mFOED0BIBopdtbo7EK31H+Ao39V5EznxCR8zMVit5ujOhbo4YCQQgsz
+         eZawooffmGqzxs0E7xcSCNomQFuU9Cat62TYFNTM0t0DCSOUwndvhuPFjcsCPRwei1js
+         J3xzNNbtyH4UNdpha7W+UwmwP0zS8ae7cW+TOZfMns1amHeODdwYNzMKL6KNbSfoj5Fm
+         fsflRZWquPF7e038rviuXh4ImbZBLDpCD0W1uOHn1uSHFTugSJp1qHRvUAS78SNp9PhT
+         BsXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751552248; x=1752157048;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1751552789; x=1752157589;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WW+XZo4iC+tV8YHIg8uTa/P2x4K5W/XO4BwZmsp7CVU=;
-        b=m16zJx3fWE3l8ZH2W/qkEnHp9tIB/5nfJ0oA99jJoXhSL4BywIr7YODDLF6HYTZGu+
-         pq3EmoeVJNzh8NOlRGDh4PmDU0A6+fXUBLlKHMzwB78qIEKuxOy9L8AjfeLYj1jjspSo
-         sa+RfmJmuiO8q1my77Nv9L+gCI6dqaFnj1qUW7OdmATgankyUGS+v+yJxMmD9LY8j4q0
-         Fr7XrPylyHFiQF5iFEzlOXC4aKi9F0xLRB5Ln2O9tB6lLal/HbGW7YxkxtWcCijf3dEr
-         N5exye5BO/znI5PgwuQc65V6UqujbroDbJA/h/nKnNzUIzGlJDQz/PmV/KZB7VVyMIE2
-         /Nfg==
-X-Forwarded-Encrypted: i=1; AJvYcCVR10upnSX+KWrF5kmaFbMQKzY0SoTqgwTF5ooogpBZN5wOELFXerwKW0SgMpC/LGzQs5osHFw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzlhA6gtVQOzqpG/KGAxeQD4J/+s/Sewbpq5e3i5aakKNWJ6FIZ
-	52qyftRGZlJwvLW4mId6RMAyaockAyjCjguW9O+F+U+EvbVH8loBB8nCM09+w5azc8k=
-X-Gm-Gg: ASbGncvjeYtmT5B8V4qgxn5YpJxZ8QdpamrRiMAkdZrIHVOk2LJnCie2+VejlNMQGz4
-	y/P1X/4Ugs4yjS4IFMAooyFn0E7l132owfVgAbO8ftgrOUB6ycSfg457YEz2TgML5ejJhyzHdbn
-	sdkjrhHPm8JzKiOLaxrNdoEPPEWx286NDaX4DCZseqslsp8QdTC4ocqLkKopWT/ezon+PKDEz1K
-	sZELi4SkYmv9A6fr7pdJtq28jHMvnolR+ArxS3Wc/8glIYkv0Q2RzmjAUennaDNZcbGuABuNEMg
-	9uKIkEL/H+xo2m2H6tVNEsLVdgnPcKvUVRuhrNNAausUFrwWv6ge5CQKDxkjipta+qo2mkNPmF5
-	PwXD5YBCzATTkRhjfUXjVWg==
-X-Google-Smtp-Source: AGHT+IFj2C+YaYW/pNHy3MMqQWVNtNjVNwHAjvHoqnzHPYy1GUZ8tJ2qkqvfYUeicEDMMaHG9RRL1g==
-X-Received: by 2002:a05:6a20:7344:b0:21a:da01:e0cf with SMTP id adf61e73a8af0-222d7e8294cmr12109325637.22.1751552248408;
-        Thu, 03 Jul 2025 07:17:28 -0700 (PDT)
-Received: from KERNELXING-MC1.tencent.com ([111.201.26.0])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b34e31da818sm13800150a12.61.2025.07.03.07.17.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jul 2025 07:17:28 -0700 (PDT)
-From: Jason Xing <kerneljasonxing@gmail.com>
-To: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	bjorn@kernel.org,
-	magnus.karlsson@intel.com,
-	maciej.fijalkowski@intel.com,
-	jonathan.lemon@gmail.com,
-	sdf@fomichev.me,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	joe@dama.to,
-	willemdebruijn.kernel@gmail.com
-Cc: bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	Jason Xing <kernelxing@tencent.com>
-Subject: [PATCH net-next v6 2/2] selftests/bpf: add a new test to check the consumer update case
-Date: Thu,  3 Jul 2025 22:17:12 +0800
-Message-Id: <20250703141712.33190-3-kerneljasonxing@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20250703141712.33190-1-kerneljasonxing@gmail.com>
-References: <20250703141712.33190-1-kerneljasonxing@gmail.com>
+        bh=n1+e6JEcSQ9wA61myKIMjOe/DNpFYs5m8+tLYA1VUWM=;
+        b=XO116xO7BP33nQrrW5Ak3uuKWuTxwa+PZJVemGnR28ruFF3+CNxhgmsEutpstDr/K2
+         iljH2gMn00i5Qid06FZpXxW/gaDkozZVFt4Rsch96LHbYsQt1jxUaUDQEhWhH/gIX9bA
+         RXCIUQZ+hMYbXQqVrYthVBndVUIqFTKZeZOS9H/rIGfARvNd4vtQaYdMuZoav8r0edyR
+         C3RQvtQdixRFSKlWg2//uk/AcHnZLW+aC64EW2kkHjIRmyCF/irlBEjlLRMoeQkMfzAw
+         PrRG1CWPjGu/ckTdPyRnxNnWJksiKq9zApzrjM6PNEtMZsFGK1FY9M4HlpJyhrasc/01
+         xjvg==
+X-Forwarded-Encrypted: i=1; AJvYcCX+JILSKV1ZV0NeVks7M7UQpV6Zmdsgghxg8xANyRhEEqbzg/cazhdEV0uVHFXebJSN2ulyzPP3@vger.kernel.org, AJvYcCXQVZzTqrlTPmpsVZsiZoXytSqceUeyrKavCfO8Jlrlqq9R0GW4ZWupHRlp6t3OpZnKdZk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwPmGj7f99qEHcqW/5POkwJGzdEw4208rW9p4CYQGAYTFpbjxcN
+	4p9z5LmDKqNU0YXMwYZHI9CHCLqtHpWKMST30o+lmKnisOlUc7iFn7C9P3/4D2dnHsLDn/nfhga
+	qGuP7f39LPGk0vwh0MjB1mrnR55ggnYXSlz3dBxR4fA==
+X-Gm-Gg: ASbGncsD4Dp0i7JVEgMD+B3j6ug64nAZUSSh9saVqdaUM3CT1sL0YbMXBSmOAoLCYLC
+	R9OVZCWqPJZhLX3ydJlQNma2hIdUn6MzYGhYG1f4QKVLWPPvNpRNDG3/jZedRyvXl5rk/iXHd44
+	SDG+9QXN7cd4xNBBJOxd5YDYPZAZbgIo2wA3FtHa0vX0g=
+X-Google-Smtp-Source: AGHT+IEGNwqVphVnWzBbQh42Ll2oq3KA7XCQZvW4HLGy1/mVx9t4+7oMoZb5Wx90sHTg0dk/aO7JcO9rjP3Von5TnuU=
+X-Received: by 2002:a05:6e02:b47:b0:3de:119f:5261 with SMTP id
+ e9e14a558f8ab-3e054934c6fmr85781735ab.3.1751552789161; Thu, 03 Jul 2025
+ 07:26:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250627110121.73228-1-kerneljasonxing@gmail.com>
+ <aGZ2vcgz/sqFWWHN@boxer> <CAL+tcoDVwpoNws5QeJwB67JmjzQkpbVXvd5Nb9dv_9CHS_rbzQ@mail.gmail.com>
+In-Reply-To: <CAL+tcoDVwpoNws5QeJwB67JmjzQkpbVXvd5Nb9dv_9CHS_rbzQ@mail.gmail.com>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Thu, 3 Jul 2025 22:25:51 +0800
+X-Gm-Features: Ac12FXyC5vglZI1tQT3owB5L8yYjfPnLrDlG84mTbPAvuMCbc6wRXUZdWyJYziY
+Message-ID: <CAL+tcoD90Vrx__82uMYM2oAX_-kXqR6bi4U0=aXG8PpwPFJ1cg@mail.gmail.com>
+Subject: Re: [PATCH net-next v6] net: xsk: introduce XDP_MAX_TX_BUDGET set/getsockopt
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com, 
+	jonathan.lemon@gmail.com, sdf@fomichev.me, ast@kernel.org, 
+	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com, joe@dama.to, 
+	willemdebruijn.kernel@gmail.com, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	Jason Xing <kernelxing@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Jason Xing <kernelxing@tencent.com>
+On Thu, Jul 3, 2025 at 9:09=E2=80=AFPM Jason Xing <kerneljasonxing@gmail.co=
+m> wrote:
+>
+> Hi Maciej,
+>
+> Thanks for the review.
+>
+> On Thu, Jul 3, 2025 at 8:26=E2=80=AFPM Maciej Fijalkowski
+> <maciej.fijalkowski@intel.com> wrote:
+> >
+> > On Fri, Jun 27, 2025 at 07:01:21PM +0800, Jason Xing wrote:
+> > > From: Jason Xing <kernelxing@tencent.com>
+> > >
+> > > This patch provides a setsockopt method to let applications leverage =
+to
+> > > adjust how many descs to be handled at most in one send syscall. It
+> > > mitigates the situation where the default value (32) that is too smal=
+l
+> > > leads to higher frequency of triggering send syscall.
+> > >
+> > > Considering the prosperity/complexity the applications have, there is=
+ no
+> > > absolutely ideal suggestion fitting all cases. So keep 32 as its defa=
+ult
+> > > value like before.
+> > >
+> > > The patch does the following things:
+> > > - Add XDP_MAX_TX_BUDGET socket option.
+> > > - Convert TX_BATCH_SIZE to tx_budget_spent.
+> > > - Set tx_budget_spent to 32 by default in the initialization phase as=
+ a
+> > >   per-socket granular control. 32 is also the min value for
+> > >   tx_budget_spent.
+> > > - Set the range of tx_budget_spent as [32, xs->tx->nentries].
+> > >
+> > > The idea behind this comes out of real workloads in production. We us=
+e a
+> > > user-level stack with xsk support to accelerate sending packets and
+> > > minimize triggering syscalls. When the packets are aggregated, it's n=
+ot
+> > > hard to hit the upper bound (namely, 32). The moment user-space stack
+> > > fetches the -EAGAIN error number passed from sendto(), it will loop t=
+o try
+> > > again until all the expected descs from tx ring are sent out to the d=
+river.
+> > > Enlarging the XDP_MAX_TX_BUDGET value contributes to less frequency o=
+f
+> > > sendto() and higher throughput/PPS.
+> > >
+> > > Here is what I did in production, along with some numbers as follows:
+> > > For one application I saw lately, I suggested using 128 as max_tx_bud=
+get
+> > > because I saw two limitations without changing any default configurat=
+ion:
+> > > 1) XDP_MAX_TX_BUDGET, 2) socket sndbuf which is 212992 decided by
+> > > net.core.wmem_default. As to XDP_MAX_TX_BUDGET, the scenario behind
+> > > this was I counted how many descs are transmitted to the driver at on=
+e
+> > > time of sendto() based on [1] patch and then I calculated the
+> > > possibility of hitting the upper bound. Finally I chose 128 as a
+> > > suitable value because 1) it covers most of the cases, 2) a higher
+> > > number would not bring evident results. After twisting the parameters=
+,
+> > > a stable improvement of around 4% for both PPS and throughput and les=
+s
+> > > resources consumption were found to be observed by strace -c -p xxx:
+> > > 1) %time was decreased by 7.8%
+> > > 2) error counter was decreased from 18367 to 572
+> > >
+> > > [1]: https://lore.kernel.org/all/20250619093641.70700-1-kerneljasonxi=
+ng@gmail.com/
+> > >
+> > > Signed-off-by: Jason Xing <kernelxing@tencent.com>
+> > > ---
+> > > v6
+> > > Link: https://lore.kernel.org/all/20250625123527.98209-1-kerneljasonx=
+ing@gmail.com/
+> > > 1. use [32, xs->tx->nentries] range
+> > > 2. Since setsockopt may generate a different value, add getsockopt to=
+ help
+> > >    application know what value takes effect finally.
+> > >
+> > > v5
+> > > Link: https://lore.kernel.org/all/20250623021345.69211-1-kerneljasonx=
+ing@gmail.com/
+> > > 1. remove changes around zc mode
+> > >
+> > > v4
+> > > Link: https://lore.kernel.org/all/20250619090440.65509-1-kerneljasonx=
+ing@gmail.com/
+> > > 1. remove getsockopt as it seems no real use case.
+> > > 2. adjust the position of max_tx_budget to make sure it stays with ot=
+her
+> > > read-most fields in one cacheline.
+> > > 3. set one as the lower bound of max_tx_budget
+> > > 4. add more descriptions/performance data in Doucmentation and commit=
+ message.
+> > >
+> > > V3
+> > > Link: https://lore.kernel.org/all/20250618065553.96822-1-kerneljasonx=
+ing@gmail.com/
+> > > 1. use a per-socket control (suggested by Stanislav)
+> > > 2. unify both definitions into one
+> > > 3. support setsockopt and getsockopt
+> > > 4. add more description in commit message
+> > >
+> > > V2
+> > > Link: https://lore.kernel.org/all/20250617002236.30557-1-kerneljasonx=
+ing@gmail.com/
+> > > 1. use a per-netns sysctl knob
+> > > 2. use sysctl_xsk_max_tx_budget to unify both definitions.
+> > > ---
+> > >  Documentation/networking/af_xdp.rst |  9 +++++++
+> > >  include/net/xdp_sock.h              |  1 +
+> > >  include/uapi/linux/if_xdp.h         |  1 +
+> > >  net/xdp/xsk.c                       | 39 ++++++++++++++++++++++++++-=
+--
+> > >  tools/include/uapi/linux/if_xdp.h   |  1 +
+> > >  5 files changed, 47 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/Documentation/networking/af_xdp.rst b/Documentation/netw=
+orking/af_xdp.rst
+> > > index dceeb0d763aa..253afee00162 100644
+> > > --- a/Documentation/networking/af_xdp.rst
+> > > +++ b/Documentation/networking/af_xdp.rst
+> > > @@ -442,6 +442,15 @@ is created by a privileged process and passed to=
+ a non-privileged one.
+> > >  Once the option is set, kernel will refuse attempts to bind that soc=
+ket
+> > >  to a different interface.  Updating the value requires CAP_NET_RAW.
+> > >
+> > > +XDP_MAX_TX_BUDGET setsockopt
+> > > +----------------------------
+> > > +
+> > > +This setsockopt sets the maximum number of descriptors that can be h=
+andled
+> > > +and passed to the driver at one send syscall. It is applied in the n=
+on-zero
+> >
+> > just 'copy mode' would be enough IMHO.
+>
+> Okay.
+>
+> >
+> > > +copy mode to allow application to tune the per-socket maximum iterat=
+ion for
+> > > +better throughput and less frequency of send syscall.
+> > > +Allowed range is [32, xs->tx->nentries].
+> > > +
+> > >  XDP_STATISTICS getsockopt
+> > >  -------------------------
+> > >
+> > > diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+> > > index e8bd6ddb7b12..ce587a225661 100644
+> > > --- a/include/net/xdp_sock.h
+> > > +++ b/include/net/xdp_sock.h
+> > > @@ -84,6 +84,7 @@ struct xdp_sock {
+> > >       struct list_head map_list;
+> > >       /* Protects map_list */
+> > >       spinlock_t map_list_lock;
+> > > +     u32 max_tx_budget;
+> > >       /* Protects multiple processes in the control path */
+> > >       struct mutex mutex;
+> > >       struct xsk_queue *fq_tmp; /* Only as tmp storage before bind */
+> > > diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.=
+h
+> > > index 44f2bb93e7e6..07c6d21c2f1c 100644
+> > > --- a/include/uapi/linux/if_xdp.h
+> > > +++ b/include/uapi/linux/if_xdp.h
+> > > @@ -79,6 +79,7 @@ struct xdp_mmap_offsets {
+> > >  #define XDP_UMEM_COMPLETION_RING     6
+> > >  #define XDP_STATISTICS                       7
+> > >  #define XDP_OPTIONS                  8
+> > > +#define XDP_MAX_TX_BUDGET            9
+> > >
+> > >  struct xdp_umem_reg {
+> > >       __u64 addr; /* Start of packet data area */
+> > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> > > index 72c000c0ae5f..41efe7b27b0e 100644
+> > > --- a/net/xdp/xsk.c
+> > > +++ b/net/xdp/xsk.c
+> > > @@ -33,8 +33,8 @@
+> > >  #include "xdp_umem.h"
+> > >  #include "xsk.h"
+> > >
+> > > -#define TX_BATCH_SIZE 32
+> > > -#define MAX_PER_SOCKET_BUDGET (TX_BATCH_SIZE)
+> > > +#define TX_BUDGET_SIZE 32
+> > > +#define MAX_PER_SOCKET_BUDGET 32
+> >
+> > that could have stayed as it was before?
+>
+> Sorry, I don't think so because one definition has nothing to do with
+> the other one. Why do we need to bind them together?
+>
+> >
+> > >
+> > >  void xsk_set_rx_need_wakeup(struct xsk_buff_pool *pool)
+> > >  {
+> > > @@ -779,7 +779,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_s=
+ock *xs,
+> > >  static int __xsk_generic_xmit(struct sock *sk)
+> > >  {
+> > >       struct xdp_sock *xs =3D xdp_sk(sk);
+> > > -     u32 max_batch =3D TX_BATCH_SIZE;
+> > > +     u32 max_budget =3D READ_ONCE(xs->max_tx_budget);
+> >
+> > you're breaking RCT here...
+>
+> What's the RCT? Never heard of this abbreviation.
+>
+> > maybe you could READ_ONCE() the budget right
+> > before the while() loop and keep the declaration only at the top of fun=
+c?
+> >
+> > also nothing wrong with keeping @max_batch as a name for this budget.
+> >
+> > >       bool sent_frame =3D false;
+> > >       struct xdp_desc desc;
+> > >       struct sk_buff *skb;
+> > > @@ -797,7 +797,7 @@ static int __xsk_generic_xmit(struct sock *sk)
+> > >               goto out;
+> > >
+> > >       while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
+> > > -             if (max_batch-- =3D=3D 0) {
+> > > +             if (max_budget-- =3D=3D 0) {
+> > >                       err =3D -EAGAIN;
+> > >                       goto out;
+> > >               }
+> > > @@ -1437,6 +1437,21 @@ static int xsk_setsockopt(struct socket *sock,=
+ int level, int optname,
+> > >               mutex_unlock(&xs->mutex);
+> > >               return err;
+> > >       }
+> > > +     case XDP_MAX_TX_BUDGET:
+> > > +     {
+> > > +             unsigned int budget;
+> > > +
+> > > +             if (optlen !=3D sizeof(budget))
+> > > +                     return -EINVAL;
+> > > +             if (copy_from_sockptr(&budget, optval, sizeof(budget)))
+> > > +                     return -EFAULT;
+> > > +             if (!xs->tx || xs->tx->nentries < TX_BUDGET_SIZE)
+> > > +                     return -EACCES;
+> > > +
+> > > +             WRITE_ONCE(xs->max_tx_budget,
+> > > +                        clamp(budget, TX_BUDGET_SIZE, xs->tx->nentri=
+es));
+> >
+> > I think it would be better to throw errno when budget set by user is
+> > bigger than nentries. you do it for min case, let's do it for max case =
+as
+> > well and skip the clamp() altogether?
+>
+> Okay.
+>
+> After this, do you think it's necessary to keep the getsockopt()?
+>
+> >
+> > this is rather speculative that someone would ever set such a big budge=
+t
+> > but silently setting a lower value than provided might be confusing to =
+me.
+> > i'd rather get an error thrown at my face and find out the valid range.
+>
+> On point.
+>
+> >
+> > > +             return 0;
+> > > +     }
+> > >       default:
+> > >               break;
+> > >       }
+> > > @@ -1588,6 +1603,21 @@ static int xsk_getsockopt(struct socket *sock,=
+ int level, int optname,
+> > >
+> > >               return 0;
+> > >       }
+> > > +     case XDP_MAX_TX_BUDGET:
+> > > +     {
+> > > +             unsigned int budget;
+> > > +
+> > > +             if (len < sizeof(budget))
+> > > +                     return -EINVAL;
+> > > +
+> > > +             budget =3D READ_ONCE(xs->max_tx_budget);
+> > > +             if (copy_to_user(optval, &budget, sizeof(budget)))
+> > > +                     return -EFAULT;
+> > > +             if (put_user(sizeof(budget), optlen))
+> > > +                     return -EFAULT;
+> > > +
+> > > +             return 0;
+> > > +     }
+> > >       default:
+> > >               break;
+> > >       }
+> > > @@ -1734,6 +1764,7 @@ static int xsk_create(struct net *net, struct s=
+ocket *sock, int protocol,
+> > >
+> > >       xs =3D xdp_sk(sk);
+> > >       xs->state =3D XSK_READY;
+> > > +     xs->max_tx_budget =3D TX_BUDGET_SIZE;
+> > >       mutex_init(&xs->mutex);
+> > >
+> > >       INIT_LIST_HEAD(&xs->map_list);
+> > > diff --git a/tools/include/uapi/linux/if_xdp.h b/tools/include/uapi/l=
+inux/if_xdp.h
+> > > index 44f2bb93e7e6..07c6d21c2f1c 100644
+> > > --- a/tools/include/uapi/linux/if_xdp.h
+> > > +++ b/tools/include/uapi/linux/if_xdp.h
+> > > @@ -79,6 +79,7 @@ struct xdp_mmap_offsets {
+> > >  #define XDP_UMEM_COMPLETION_RING     6
+> > >  #define XDP_STATISTICS                       7
+> > >  #define XDP_OPTIONS                  8
+> > > +#define XDP_MAX_TX_BUDGET            9
+> >
+> > could we have 'SKB' in name?
+>
+> Like XDP_MAX_TX_BUDGET_SKB ?
 
-The subtest sends 33 packets at one time on purpose to see if xsk
-exitting __xsk_generic_xmit() updates the global consumer of tx queue
-when reaching the max loop (max_tx_budget, 32 by default). The number 33
-can avoid xskq_cons_peek_desc() updates the consumer when it's about to
-quit sending, to accurately check if the issue that the first patch
-resolves remains. The new case will not check this issue in zero copy
-mode.
+XDP_MAX_TX_SKB_BUDGET sounds better, I assume.
 
-Signed-off-by: Jason Xing <kernelxing@tencent.com>
----
-v6
-Link: https://lore.kernel.org/all/20250702112815.50746-1-kerneljasonxing@gmail.com/
-1. filter out and skip TEST_MODE_ZC test.
-
-v5
-Link: https://lore.kernel.org/all/20250627085745.53173-1-kerneljasonxing@gmail.com/
-1. use the initial approach to add a new testcase
-2. add a new flag 'check_consumer' to see if the check is needed
----
- tools/testing/selftests/bpf/xskxceiver.c | 56 +++++++++++++++++++++++-
- tools/testing/selftests/bpf/xskxceiver.h |  1 +
- 2 files changed, 56 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
-index 0ced4026ee44..a29de0713f19 100644
---- a/tools/testing/selftests/bpf/xskxceiver.c
-+++ b/tools/testing/selftests/bpf/xskxceiver.c
-@@ -109,6 +109,8 @@
- 
- #include <network_helpers.h>
- 
-+#define MAX_TX_BUDGET_DEFAULT 32
-+
- static bool opt_verbose;
- static bool opt_print_tests;
- static enum test_mode opt_mode = TEST_MODE_ALL;
-@@ -1091,11 +1093,45 @@ static bool is_pkt_valid(struct pkt *pkt, void *buffer, u64 addr, u32 len)
- 	return true;
- }
- 
-+static u32 load_value(u32 *counter)
-+{
-+	return __atomic_load_n(counter, __ATOMIC_ACQUIRE);
-+}
-+
-+static bool kick_tx_with_check(struct xsk_socket_info *xsk, int *ret)
-+{
-+	u32 max_budget = MAX_TX_BUDGET_DEFAULT;
-+	u32 cons, ready_to_send;
-+	int delta;
-+
-+	cons = load_value(xsk->tx.consumer);
-+	ready_to_send = load_value(xsk->tx.producer) - cons;
-+	*ret = sendto(xsk_socket__fd(xsk->xsk), NULL, 0, MSG_DONTWAIT, NULL, 0);
-+
-+	delta = load_value(xsk->tx.consumer) - cons;
-+	/* By default, xsk should consume exact @max_budget descs at one
-+	 * send in this case where hitting the max budget limit in while
-+	 * loop is triggered in __xsk_generic_xmit(). Please make sure that
-+	 * the number of descs to be sent is larger than @max_budget, or
-+	 * else the tx.consumer will be updated in xskq_cons_peek_desc()
-+	 * in time which hides the issue we try to verify.
-+	 */
-+	if (ready_to_send > max_budget && delta != max_budget)
-+		return false;
-+
-+	return true;
-+}
-+
- static int kick_tx(struct xsk_socket_info *xsk)
- {
- 	int ret;
- 
--	ret = sendto(xsk_socket__fd(xsk->xsk), NULL, 0, MSG_DONTWAIT, NULL, 0);
-+	if (xsk->check_consumer) {
-+		if (!kick_tx_with_check(xsk, &ret))
-+			return TEST_FAILURE;
-+	} else {
-+		ret = sendto(xsk_socket__fd(xsk->xsk), NULL, 0, MSG_DONTWAIT, NULL, 0);
-+	}
- 	if (ret >= 0)
- 		return TEST_PASS;
- 	if (errno == ENOBUFS || errno == EAGAIN || errno == EBUSY || errno == ENETDOWN) {
-@@ -2613,6 +2649,23 @@ static int testapp_adjust_tail_grow_mb(struct test_spec *test)
- 				   XSK_UMEM__LARGE_FRAME_SIZE * 2);
- }
- 
-+static int testapp_tx_queue_consumer(struct test_spec *test)
-+{
-+	int nr_packets;
-+
-+	if (test->mode == TEST_MODE_ZC) {
-+		ksft_test_result_skip("Can not run TX_QUEUE_CONSUMER test for ZC mode\n");
-+		return TEST_SKIP;
-+	}
-+
-+	nr_packets = MAX_TX_BUDGET_DEFAULT + 1;
-+	pkt_stream_replace(test, nr_packets, MIN_PKT_SIZE);
-+	test->ifobj_tx->xsk->batch_size = nr_packets;
-+	test->ifobj_tx->xsk->check_consumer = true;
-+
-+	return testapp_validate_traffic(test);
-+}
-+
- static void run_pkt_test(struct test_spec *test)
- {
- 	int ret;
-@@ -2723,6 +2776,7 @@ static const struct test_spec tests[] = {
- 	{.name = "XDP_ADJUST_TAIL_SHRINK_MULTI_BUFF", .test_func = testapp_adjust_tail_shrink_mb},
- 	{.name = "XDP_ADJUST_TAIL_GROW", .test_func = testapp_adjust_tail_grow},
- 	{.name = "XDP_ADJUST_TAIL_GROW_MULTI_BUFF", .test_func = testapp_adjust_tail_grow_mb},
-+	{.name = "TX_QUEUE_CONSUMER", .test_func = testapp_tx_queue_consumer},
- 	};
- 
- static void print_tests(void)
-diff --git a/tools/testing/selftests/bpf/xskxceiver.h b/tools/testing/selftests/bpf/xskxceiver.h
-index 67fc44b2813b..4df3a5d329ac 100644
---- a/tools/testing/selftests/bpf/xskxceiver.h
-+++ b/tools/testing/selftests/bpf/xskxceiver.h
-@@ -95,6 +95,7 @@ struct xsk_socket_info {
- 	u32 batch_size;
- 	u8 dst_mac[ETH_ALEN];
- 	u8 src_mac[ETH_ALEN];
-+	bool check_consumer;
- };
- 
- struct pkt {
--- 
-2.41.3
-
+Thanks,
+Jason
 
