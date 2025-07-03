@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-62263-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62264-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6033AF73B3
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 14:20:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB2F6AF73B9
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 14:20:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C22AD7B595F
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 12:18:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25C4A7B5FA1
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 12:19:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9805B2EA75C;
-	Thu,  3 Jul 2025 12:17:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AEC62EAB98;
+	Thu,  3 Jul 2025 12:17:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fijr9jpB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WljxVFVO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f196.google.com (mail-pf1-f196.google.com [209.85.210.196])
+Received: from mail-pf1-f193.google.com (mail-pf1-f193.google.com [209.85.210.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E8562EA48E;
-	Thu,  3 Jul 2025 12:17:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95D962EA758;
+	Thu,  3 Jul 2025 12:17:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751545062; cv=none; b=efVwhoMuSTk99sjPIyQWeVASQsFdpHSyGuaB8lUaKf87/FVsp21WKMQMuqG+TLVhpEfO8dT6xbeMZEzPvyG4Z9cWl0FIYYQ25nUJKEqqh3j7t6hnWIRUEN/sncUQMzyayRmij8yuIyT96nvrEO9KTJT7BgN4luC4MSowZ8IXyFY=
+	t=1751545064; cv=none; b=l8ILzXuVb9fkos+xTlv+u4ZDGL88RjWVjkjunf2OSJEe0tJd2T6UNmO/Ww0KmiD3XfsdVQzCIqQ8ZSuJnoogTi2GCO9aEdoUyiyIyPloGXis39AKC04pcI6v0HFGsPdZ1pGaajDZtmRiL0e4ZkQPgArzIwrgF9mQQNZl2cZMg9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751545062; c=relaxed/simple;
-	bh=cvBV+pKTyC93m/WaEwCydISLTC4GlVcikW6mPugS4YA=;
+	s=arc-20240116; t=1751545064; c=relaxed/simple;
+	bh=jxmQMYMo/g8j9c3m8/zYT3iwQ1cFh+0i13oC0PDn6tI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=qe67WJycY07rhkb72RazoT1RPe87Ig7F7PBEGfxE951YfC0zxN5RHaciPNlSILfDHFnRQ2dxXTd/3LJg3KFJ4jr6/HDgg/jVCLOe8oq1KsEEUZJWxHyK8Wf7QA2tYtx2neTJc3CyJ/DLmWZu+EEzNgWueEbtG/XThhXVheenwSs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fijr9jpB; arc=none smtp.client-ip=209.85.210.196
+	 MIME-Version; b=KZnDm4ZvOlYXliyIftIcQEOtmj0ZSGsnJH/tkH3aqRFMeHqeQw6rCAFLWuA0jPNjbSDoX7GjyoislNwp015HovUkV9ootaaOK5Apxr/wh7hIqRTznP8XObl5irSuYmvnQhZFXLsvhM7bYjn6N7vsA/x/Wmm5sdznPaisHO+zah0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WljxVFVO; arc=none smtp.client-ip=209.85.210.193
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f196.google.com with SMTP id d2e1a72fcca58-747fc77bb2aso5164095b3a.3;
-        Thu, 03 Jul 2025 05:17:38 -0700 (PDT)
+Received: by mail-pf1-f193.google.com with SMTP id d2e1a72fcca58-748e63d4b05so3582147b3a.2;
+        Thu, 03 Jul 2025 05:17:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751545058; x=1752149858; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1751545062; x=1752149862; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gaGiUNl1iBRx9vZSl1UOtUK69jC923eAmmhplXJdGDQ=;
-        b=fijr9jpBDmVnR09LyNbNYIWAgMhRF1vx9ajpQfqVTkBRRUBaGM6SwGUjZuDTHwrAYT
-         ZucVaKSL07ZYyMMRYFgpQ9sVDdsomSliGx8N67FJP51faXtKE93mxIHwbupx7y1rzwd5
-         dZpHmdLFZlRTemMU1PisZvaBQkmoFu8AbsI+8twvDsI6JvunBJwjNpZ1KGRvCEb631FK
-         QD5mBsBloCOJK7Wm7OGPjG7EunZg+wKwXqfFGErHrdOLnOc+ghjz8FsAx4Uu11aKd0wC
-         UIwEG1vbaWsKmeR38eG0Ua6V+xSIBowW7kDLKA02yf6Y6aQu962Sx4WMya+Sx2BbulFY
-         UHCg==
+        bh=mheM0L5EqXLP+X642z1gm3rwVe94tlJM79DUk5IyCfo=;
+        b=WljxVFVObSftaIvIF/QrkgovMJXpQBALKQx2N2jyHzU8iGeNikTv/WIz1fVr5HIPT0
+         9H9kxJcfMIQLpQUu1vylgUq1I1RqvZwURyJb3PSpEbBkBs3dYYrfY7OWgv/04nz9EItF
+         nUF2FGxSY42LPiA44PXh1iy3Cq8dzHjpzEZdBgZiLhDqaYiNknR4NdIANCkwbvcUJZJ1
+         ehXa5286W6CifNEYPXcbQsmCJiTRohoEYaL7BWyj/3STQ7mBWlPA72eL5VITghz3Xrns
+         vt5bR23OjsYxrtLjTfrBL4pmZC73WAbdVnYs2EM6xj7HhMSelKmF56HuJbcMESHgN1gH
+         bTKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751545058; x=1752149858;
+        d=1e100.net; s=20230601; t=1751545062; x=1752149862;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gaGiUNl1iBRx9vZSl1UOtUK69jC923eAmmhplXJdGDQ=;
-        b=RDyDvtoRfaYE3B33ANvfuv00zw9dPXR+OrjbL2u2XWBodBuDtF3pahg1mU2SvCc/mE
-         KksP4om/JLK6NG8AlG01bEfosujABX+1wtzL1rCz1rsc8k+lArseElYx97teDHyD4LOe
-         vjmlbb1r4apAYGiVe4vm+XSRgOhxkPTIbP7IJ7BLkc6VukimsFp3AbExj1O6ro5Vgqd7
-         lO6I2IvQ+jBa2xdvdzDJep/Rak6StyLYPcuheXe4kthtHyJXqOmaEndE6IuujmjNMR0A
-         M3pUR4iT6YyDNOCtpk1p3qxSOBWkj59iJ0QOizSNAdsDQ278jaGSibURX39wGmcOtgyF
-         C5LQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWTphJ9Lgv5pmul3fEOGDoKCIpPPac5wmt4JNAkbCP84zFg/nXKYSV2hwvilBjozFg807Ujq/XEbQ1h51g=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwZRNXiMLeOJ7BEMj85Dxym3nwdB4apKesrD+a91cQ3mrzc4yTk
-	kbFSm10EMof+oz/PbdmSYqiXFH5z3931xBWEOsaJ8Us/y5Lvi3ECI0GBB2tux0LPqSQgQA==
-X-Gm-Gg: ASbGncvFAABI1/u/fKPSiYdcAG6vAZmbTJsuzt3jBDnDu2G+pnuPHJKSWIrCShAp7K9
-	pqYu2UKirEzZOiWiHzwE3r+nGNvkmy1JEbakCaYYypWqFgu0Zbkh3E+7jS0A0nRJ8RIrl3lwBwH
-	8g49vtHBFHbbxKxVHEGujZPBzbMpy9ZnuqVuWgV5N9dI+lKBwczsnU1h4dkJajCIoTdNYJSWtXi
-	gKHM1bG2Ne3tpdgwmkEOnyoV5Ix2/0OuxWmxI30FfsxX+2I1AEtD+QykRuJC1x5UO338eqas8ap
-	8PIH8c0JULXKTvMzg2x7Ii7TiSkh21Tc3K+P/CO6sBsXcZkY69lIl92Lpc3uUh8X4uUXD92IVAe
-	t124=
-X-Google-Smtp-Source: AGHT+IFd33+5uoBPSOYpZb90uEONHRbfm+KECGD2FG/1p+5d/6e0Qq5VXpLhER0kVpb4D/msj0eE8Q==
-X-Received: by 2002:a05:6a20:7284:b0:21e:eb3a:dc04 with SMTP id adf61e73a8af0-224096f8744mr5591971637.3.1751545058316;
-        Thu, 03 Jul 2025 05:17:38 -0700 (PDT)
+        bh=mheM0L5EqXLP+X642z1gm3rwVe94tlJM79DUk5IyCfo=;
+        b=efZWSHvhWE5FBcfM4z51BMaFkNBWxJTnOJvC7Vtu+qu2feFXV+RHlkaHg2CLuU1iin
+         lb+mVXqBOVIaRZ5OWSl4m+WLJYHEEQOc3iA8p2q5TQUZ9ItBp46SRo4yahw8/jbXbzAw
+         u+5Pb35YeuHvlLXNn0VbQVXmWdicWR2oRiSioeiyOevfNL2jcqWvsCc0dpzQSD5WmKIL
+         g264B/IKoEYBO8Iu7Tn36wcDJbrWM6Xf2nAu/cjnJD8cMu/gmpGKkY77XvzthoYxfioZ
+         HrMpJvwoM5JPEtbdfn9wcKj3oBQG3jTN9vMLEKjl0QrYTXFLV4uuYFJgcxfZqWqG3Aum
+         9Rog==
+X-Forwarded-Encrypted: i=1; AJvYcCWAmApNfr7otSFsJmQ5W9FMGR3gv5HzWONXLV9UDqcAFqK+k9pBC2qbrmFIWkYNfI2RtObjH8D6iJEv0kM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyQHJyHLwg2QqgPBR0LSbDGaq+av3dV55vqIKCF/VE4dJwHH3zf
+	rKTRALm0GwbQprlaeWCPTqa+dZnu0jRF0GCuIzvftEzt9Oo4fmeE0S8Q
+X-Gm-Gg: ASbGncss/Hcq1BBjkFMPvL0WQVe2bb55LB3iIgLk64/hVyo2W3yPLddUH1TsoNuJRf8
+	MKqDodAPEI40EWigm+dO0/eBG2nTD0RO9N8N5MgfTFVg0EmHCqVe15ldSLqpICb+QhB5cV85uxA
+	ccjMorfcBomc68cQ810O4Zf/G0qS1iLL9aj304qO4seC5lcNrkZDl5fnwvZVunJ6J2NDQoZoyKs
+	jbx78AfVWzU+eBz/MUHaIqR6xTFlRqPl24r03vs7aW/9dfH4PUVnN+bsOCO9AofBL9gvQyBJnGR
+	BoJHLcDhAUGOsUgOgrc89dOs1SWjLDKUnN4hbHTAW6ifaWgsgcaM58RILp9fh/P+k0MM1aNdexH
+	aDcg=
+X-Google-Smtp-Source: AGHT+IF4++fkMfJVjcYVYeaFsdsWRBD+ukE3CyKZEWkV3PMmDeeYoFVTBSyfMptMHZapLNGsCKDb5A==
+X-Received: by 2002:a05:6a00:1a8e:b0:740:afda:a742 with SMTP id d2e1a72fcca58-74b50da219amr9455538b3a.0.1751545061663;
+        Thu, 03 Jul 2025 05:17:41 -0700 (PDT)
 Received: from localhost.localdomain ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74af5575895sm18591081b3a.94.2025.07.03.05.17.35
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74af5575895sm18591081b3a.94.2025.07.03.05.17.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jul 2025 05:17:38 -0700 (PDT)
+        Thu, 03 Jul 2025 05:17:41 -0700 (PDT)
 From: Menglong Dong <menglong8.dong@gmail.com>
 X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
 To: alexei.starovoitov@gmail.com,
@@ -80,18 +80,18 @@ To: alexei.starovoitov@gmail.com,
 	jolsa@kernel.org
 Cc: bpf@vger.kernel.org,
 	Menglong Dong <dongml2@chinatelecom.cn>,
+	John Fastabend <john.fastabend@gmail.com>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
 	Eduard Zingerman <eddyz87@gmail.com>,
 	Song Liu <song@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
 	KP Singh <kpsingh@kernel.org>,
 	Stanislav Fomichev <sdf@fomichev.me>,
 	Hao Luo <haoluo@google.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2 08/18] bpf: verifier: add btf to the function args of bpf_check_attach_target
-Date: Thu,  3 Jul 2025 20:15:11 +0800
-Message-Id: <20250703121521.1874196-9-dongml2@chinatelecom.cn>
+Subject: [PATCH bpf-next v2 09/18] bpf: verifier: move btf_id_deny to bpf_check_attach_target
+Date: Thu,  3 Jul 2025 20:15:12 +0800
+Message-Id: <20250703121521.1874196-10-dongml2@chinatelecom.cn>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250703121521.1874196-1-dongml2@chinatelecom.cn>
 References: <20250703121521.1874196-1-dongml2@chinatelecom.cn>
@@ -103,106 +103,173 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add target btf to the function args of bpf_check_attach_target(), then
-the caller can specify the btf to check.
+Move the checking of btf_id_deny and noreturn_deny from
+check_attach_btf_id() to bpf_check_attach_target(). Therefore, we can do
+such checking during attaching for tracing multi-link in the later
+patches.
 
 Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
 ---
- include/linux/bpf_verifier.h | 1 +
- kernel/bpf/syscall.c         | 6 ++++--
- kernel/bpf/trampoline.c      | 1 +
- kernel/bpf/verifier.c        | 8 +++++---
- 4 files changed, 11 insertions(+), 5 deletions(-)
+ kernel/bpf/verifier.c | 125 ++++++++++++++++++++++--------------------
+ 1 file changed, 65 insertions(+), 60 deletions(-)
 
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 7e459e839f8b..5db2e006d5ac 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -926,6 +926,7 @@ static inline void bpf_trampoline_unpack_key(u64 key, u32 *obj_id, u32 *btf_id)
- int bpf_check_attach_target(struct bpf_verifier_log *log,
- 			    const struct bpf_prog *prog,
- 			    const struct bpf_prog *tgt_prog,
-+			    struct btf *btf,
- 			    u32 btf_id,
- 			    struct bpf_attach_target_info *tgt_info);
- void bpf_free_kfunc_btf_tab(struct bpf_kfunc_btf_tab *tab);
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 8ce061b079ec..b21bbbc4263d 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -3596,9 +3596,11 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
- 		 * need a new trampoline and a check for compatibility
- 		 */
- 		struct bpf_attach_target_info tgt_info = {};
-+		struct btf *btf;
- 
--		err = bpf_check_attach_target(NULL, prog, tgt_prog, btf_id,
--					      &tgt_info);
-+		btf = tgt_prog ? tgt_prog->aux->btf : prog->aux->attach_btf;
-+		err = bpf_check_attach_target(NULL, prog, tgt_prog, btf,
-+					      btf_id, &tgt_info);
- 		if (err)
- 			goto out_unlock;
- 
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index f70921ce4e97..8fcb0352f36e 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -908,6 +908,7 @@ int bpf_trampoline_link_cgroup_shim(struct bpf_prog *prog,
- 	int err;
- 
- 	err = bpf_check_attach_target(NULL, prog, NULL,
-+				      prog->aux->attach_btf,
- 				      prog->aux->attach_btf_id,
- 				      &tgt_info);
- 	if (err)
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 90e688f81a48..8e5c4280745f 100644
+index 8e5c4280745f..d6311be5a63a 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -23451,6 +23451,7 @@ static int check_non_sleepable_error_inject(u32 btf_id)
+@@ -23448,6 +23448,52 @@ static int check_non_sleepable_error_inject(u32 btf_id)
+ 	return btf_id_set_contains(&btf_non_sleepable_error_inject, btf_id);
+ }
+ 
++BTF_SET_START(btf_id_deny)
++BTF_ID_UNUSED
++#ifdef CONFIG_SMP
++BTF_ID(func, migrate_disable)
++BTF_ID(func, migrate_enable)
++#endif
++#if !defined CONFIG_PREEMPT_RCU && !defined CONFIG_TINY_RCU
++BTF_ID(func, rcu_read_unlock_strict)
++#endif
++#if defined(CONFIG_DEBUG_PREEMPT) || defined(CONFIG_TRACE_PREEMPT_TOGGLE)
++BTF_ID(func, preempt_count_add)
++BTF_ID(func, preempt_count_sub)
++#endif
++#ifdef CONFIG_PREEMPT_RCU
++BTF_ID(func, __rcu_read_lock)
++BTF_ID(func, __rcu_read_unlock)
++#endif
++BTF_SET_END(btf_id_deny)
++
++/* fexit and fmod_ret can't be used to attach to __noreturn functions.
++ * Currently, we must manually list all __noreturn functions here. Once a more
++ * robust solution is implemented, this workaround can be removed.
++ */
++BTF_SET_START(noreturn_deny)
++#ifdef CONFIG_IA32_EMULATION
++BTF_ID(func, __ia32_sys_exit)
++BTF_ID(func, __ia32_sys_exit_group)
++#endif
++#ifdef CONFIG_KUNIT
++BTF_ID(func, __kunit_abort)
++BTF_ID(func, kunit_try_catch_throw)
++#endif
++#ifdef CONFIG_MODULES
++BTF_ID(func, __module_put_and_kthread_exit)
++#endif
++#ifdef CONFIG_X86_64
++BTF_ID(func, __x64_sys_exit)
++BTF_ID(func, __x64_sys_exit_group)
++#endif
++BTF_ID(func, do_exit)
++BTF_ID(func, do_group_exit)
++BTF_ID(func, kthread_complete_and_exit)
++BTF_ID(func, kthread_exit)
++BTF_ID(func, make_task_dead)
++BTF_SET_END(noreturn_deny)
++
  int bpf_check_attach_target(struct bpf_verifier_log *log,
  			    const struct bpf_prog *prog,
  			    const struct bpf_prog *tgt_prog,
-+			    struct btf *btf,
- 			    u32 btf_id,
- 			    struct bpf_attach_target_info *tgt_info)
- {
-@@ -23463,7 +23464,6 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
- 	const struct btf_type *t;
- 	bool conservative = true;
- 	const char *tname, *fname;
--	struct btf *btf;
- 	long addr = 0;
- 	struct module *mod = NULL;
+@@ -23771,6 +23817,25 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
  
-@@ -23471,7 +23471,6 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
- 		bpf_log(log, "Tracing programs must provide btf_id\n");
- 		return -EINVAL;
+ 		break;
  	}
--	btf = tgt_prog ? tgt_prog->aux->btf : prog->aux->attach_btf;
- 	if (!btf) {
- 		bpf_log(log,
- 			"FENTRY/FEXIT program can only be attached to another program annotated with BTF\n");
-@@ -23850,6 +23849,7 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
- 	struct bpf_attach_target_info tgt_info = {};
- 	u32 btf_id = prog->aux->attach_btf_id;
- 	struct bpf_trampoline *tr;
-+	struct btf *btf;
- 	int ret;
- 	u64 key;
++
++	if (prog->type == BPF_PROG_TYPE_LSM) {
++		ret = bpf_lsm_verify_prog(log, prog);
++		if (ret < 0) {
++			module_put(mod);
++			return ret;
++		}
++	} else if (prog->type == BPF_PROG_TYPE_TRACING &&
++		   btf_id_set_contains(&btf_id_deny, btf_id)) {
++		module_put(mod);
++		return -EINVAL;
++	} else if ((prog->expected_attach_type == BPF_TRACE_FEXIT ||
++		   prog->expected_attach_type == BPF_MODIFY_RETURN) &&
++		   btf_id_set_contains(&noreturn_deny, btf_id)) {
++		module_put(mod);
++		bpf_log(log, "Attaching fexit/fmod_ret to __noreturn functions is rejected.\n");
++		return -EINVAL;
++	}
++
+ 	tgt_info->tgt_addr = addr;
+ 	tgt_info->tgt_name = tname;
+ 	tgt_info->tgt_type = t;
+@@ -23778,52 +23843,6 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+ 	return 0;
+ }
  
-@@ -23874,7 +23874,9 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
- 	    prog->type != BPF_PROG_TYPE_EXT)
- 		return 0;
+-BTF_SET_START(btf_id_deny)
+-BTF_ID_UNUSED
+-#ifdef CONFIG_SMP
+-BTF_ID(func, migrate_disable)
+-BTF_ID(func, migrate_enable)
+-#endif
+-#if !defined CONFIG_PREEMPT_RCU && !defined CONFIG_TINY_RCU
+-BTF_ID(func, rcu_read_unlock_strict)
+-#endif
+-#if defined(CONFIG_DEBUG_PREEMPT) || defined(CONFIG_TRACE_PREEMPT_TOGGLE)
+-BTF_ID(func, preempt_count_add)
+-BTF_ID(func, preempt_count_sub)
+-#endif
+-#ifdef CONFIG_PREEMPT_RCU
+-BTF_ID(func, __rcu_read_lock)
+-BTF_ID(func, __rcu_read_unlock)
+-#endif
+-BTF_SET_END(btf_id_deny)
+-
+-/* fexit and fmod_ret can't be used to attach to __noreturn functions.
+- * Currently, we must manually list all __noreturn functions here. Once a more
+- * robust solution is implemented, this workaround can be removed.
+- */
+-BTF_SET_START(noreturn_deny)
+-#ifdef CONFIG_IA32_EMULATION
+-BTF_ID(func, __ia32_sys_exit)
+-BTF_ID(func, __ia32_sys_exit_group)
+-#endif
+-#ifdef CONFIG_KUNIT
+-BTF_ID(func, __kunit_abort)
+-BTF_ID(func, kunit_try_catch_throw)
+-#endif
+-#ifdef CONFIG_MODULES
+-BTF_ID(func, __module_put_and_kthread_exit)
+-#endif
+-#ifdef CONFIG_X86_64
+-BTF_ID(func, __x64_sys_exit)
+-BTF_ID(func, __x64_sys_exit_group)
+-#endif
+-BTF_ID(func, do_exit)
+-BTF_ID(func, do_group_exit)
+-BTF_ID(func, kthread_complete_and_exit)
+-BTF_ID(func, kthread_exit)
+-BTF_ID(func, make_task_dead)
+-BTF_SET_END(noreturn_deny)
+-
+ static bool can_be_sleepable(struct bpf_prog *prog)
+ {
+ 	if (prog->type == BPF_PROG_TYPE_TRACING) {
+@@ -23906,20 +23925,6 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+ 		return bpf_iter_prog_supported(prog);
+ 	}
  
--	ret = bpf_check_attach_target(&env->log, prog, tgt_prog, btf_id, &tgt_info);
-+	btf = tgt_prog ? tgt_prog->aux->btf : prog->aux->attach_btf;
-+	ret = bpf_check_attach_target(&env->log, prog, tgt_prog, btf,
-+				      btf_id, &tgt_info);
- 	if (ret)
- 		return ret;
- 
+-	if (prog->type == BPF_PROG_TYPE_LSM) {
+-		ret = bpf_lsm_verify_prog(&env->log, prog);
+-		if (ret < 0)
+-			return ret;
+-	} else if (prog->type == BPF_PROG_TYPE_TRACING &&
+-		   btf_id_set_contains(&btf_id_deny, btf_id)) {
+-		return -EINVAL;
+-	} else if ((prog->expected_attach_type == BPF_TRACE_FEXIT ||
+-		   prog->expected_attach_type == BPF_MODIFY_RETURN) &&
+-		   btf_id_set_contains(&noreturn_deny, btf_id)) {
+-		verbose(env, "Attaching fexit/fmod_ret to __noreturn functions is rejected.\n");
+-		return -EINVAL;
+-	}
+-
+ 	key = bpf_trampoline_compute_key(tgt_prog, prog->aux->attach_btf, btf_id);
+ 	tr = bpf_trampoline_get(key, &tgt_info);
+ 	if (!tr)
 -- 
 2.39.5
 
