@@ -1,414 +1,616 @@
-Return-Path: <bpf+bounces-62255-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62256-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39809AF739A
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 14:17:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A40C4AF739B
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 14:17:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42003564774
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 12:17:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F8C9540809
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 12:17:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C20426528C;
-	Thu,  3 Jul 2025 12:17:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AA6A2E5417;
+	Thu,  3 Jul 2025 12:17:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Uk3CSXCD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LUAgMN9n"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-pf1-f194.google.com (mail-pf1-f194.google.com [209.85.210.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C79A2AE6A
-	for <bpf@vger.kernel.org>; Thu,  3 Jul 2025 12:17:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A083E2E424E;
+	Thu,  3 Jul 2025 12:17:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751545033; cv=none; b=GfQdk6CaioGoTDEyZwPbXvvyNCtdCvm3H0tbE+8rDMLY2Ob8h3BrGg2nIvNT82W2qP2EbiLU4t7bCnWQuWiXotinFli2CXLrHdlBf8NuGLOI6dsmKiC8E3jJZT0mjp8bL87tIhuTOH1Sk0T3u44BYC+nw1U37+at18VFhNEtcaY=
+	t=1751545037; cv=none; b=i3kPF4BykSpoxABCd+Hm6H1cBqGNAKYumNXSAEvyDB9SD7WQDcknU0rhKcm6qkcg4X01kjUf+nu8VhPLh1hP7rIk6zMIN08khDNDqvUV7Vi5Vauo34HgQiRnxESHC8w/vDbO0NEP/jSPvJ07DVoCCwQAVpMUBlKprPVkpLsNzIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751545033; c=relaxed/simple;
-	bh=ncCT5hY0UfCPLbNR+AZcSJuDSx2QxXTOO6U0j2odtWE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=bO0GtvT13IuoeYAEjeH7Hc+qAU6Istx6LVeOeLHHI0TH5oOF3mr4ouM4WVOQRAWNZZqPF6lFO1jTy6bCI3ikYAZm3SUtUhl+hDKsswCE6niRMql9u4C44Vg0YST1C88S2gruIn38e8ijYUoe5nUr+6vGnIrpV5Cm/RnTtAx2cfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Uk3CSXCD; arc=none smtp.client-ip=209.85.210.194
+	s=arc-20240116; t=1751545037; c=relaxed/simple;
+	bh=vnnqUf5qv6Tzr2Px9Bg0tFIjBBXXU7CSOQUU3YHbmWQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Tn32EVE1u5rqxdRQK1O8Oxr6El3H5srueopINFJx+GWrd7JV2zLQ4XB5h6z2AzUW7VUEa0eQEl7Ks6Fz5djeknJCRikcDmjxfgExyLUXTfsDoNkMZc64HiMMamjgPw9O/Xd1ZqoTGefTpTNuLGm5/Hy/qiTuhSfcGhQoUuVHC2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LUAgMN9n; arc=none smtp.client-ip=209.85.210.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f194.google.com with SMTP id d2e1a72fcca58-747fba9f962so785020b3a.0
-        for <bpf@vger.kernel.org>; Thu, 03 Jul 2025 05:17:11 -0700 (PDT)
+Received: by mail-pf1-f194.google.com with SMTP id d2e1a72fcca58-748e81d37a7so5532281b3a.1;
+        Thu, 03 Jul 2025 05:17:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751545031; x=1752149831; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=TUnTy4sFapyvA+zhtXgi7f/jypcLFKz2YHUQQO9vLgw=;
-        b=Uk3CSXCDix989xU0udDtowkO7ta1q/AA30Wa3gxQuwQ69CGdQyDzN5+CDzC8KKJhJP
-         Jp9atFwyc3HITPiq+HeCzjgCTNQoWFG9WlHzY6vmwmZ/MPZge+URQm5a1gjx4zTkrjhz
-         5zFuuKzc1OoHZvgS0qc/GCEHjDMdkV9d8qB4+IW7l7UzGFWWC8s5pcvrklZ08BZBqcFU
-         6Bjps/nqmZjHS43mE3f3R6w1gk9QmOmDDeON3BHDnEEd/BTSF7Gy8hZAZe90DXJpiqo3
-         uTST03lU1rgQBcER3i9ajicjs21EVYe33D5wEvCqB6ZwlGDB8k8cO9L/qG9HVgYJp75l
-         XhqQ==
+        d=gmail.com; s=20230601; t=1751545035; x=1752149835; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BWuHfC4u73RCpQlHsFKd/gTTGs8e+ph3vwAME8lxRN0=;
+        b=LUAgMN9nVA4lBkiBh03KUsw+ounSFm8DUB+WEV73cpQSv0shQiiLUhoyRGP4KyCMsa
+         QZhaJZanSjV1m5TRb/jbixMBu8s6HOF5xg6KxtmV4JcdInt7katdHbhcXRYXHZY3JnmJ
+         Q1hSs9SRKMfgIjI26MdTAzKTyzTUbKm3rXPdo2LywKqf78PFXqNJienDzSH9uqivXMkp
+         yVqOyll8aFxvyHOw/NuEOiBascT1i7AktpP1FKNxiUaJLB8eaK6j7bEOqd7zFlDi5+YT
+         6eKqsQ6S3Yj8MOplR8RA4Baa8O836xoD6shRxBne8P34xlSUEbhNrdRa0cZJxAcSn0uP
+         2s6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751545031; x=1752149831;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TUnTy4sFapyvA+zhtXgi7f/jypcLFKz2YHUQQO9vLgw=;
-        b=Mpkhd4L3ms4itmq5HqqtLlm7QjHfQy4EhhS3B0mwBSzTe2IMCb9w4r30MqkWmx3krb
-         VpK3yD3166BGk6WXGwJnPtsv8vnkR1HqbRRTJJHHsbnDL4TQBPYiJpKUiZarGSXcAMrG
-         WEXeVDrpwSEJ5b1/+OwsMRW2Y/hKJadzr+MhvG0z3JqlKN9Od/xqV0VouDjlCgLxPoTi
-         sKD9nUMlvpOPqlFwvTdg38KtcquMXbq2VLy6jPKb9aD3q7PZskvlMHZXDHqNhDwD72lF
-         IhJoeakNeLPzvGgKv7fY3IOXubDtxik5CHAn3ZegoYUYJkByOZaXHdn5QVT+5pbS4QN5
-         n+Tg==
-X-Gm-Message-State: AOJu0Yy78sheTCZl29ehzca4acSWr3Rx/WK1+Vq8B40lJMAMdYhpLQPE
-	ImjX6tm8zGiXWTs2Ni85ijd6P1Hrdpc0uPrRot5CBWFI60DUgzASRO5y
-X-Gm-Gg: ASbGncuSAPtp89sP/s6BRyd+CJgePMfVYddSrIq66bJ1cfQA6Fa8tQY77OKOl5I1NiP
-	67nh7q7kLAsOP3FZbAgHm8LPrlWHl6hCIiNCLFRJrOoWb0wiJwoPf+iCTJQ1sUC+zYzInbPHTBG
-	NvM9Wgj7wb/qHdte5vUN2eKFmJgaKu6mbDkEcX0AWnUSTufcgLAqBItIsEs/NgDcZ5HZDNDIB6O
-	TTfAmoi6JLKgV+nX/27l7e90l1D8s0gwNNCTG2wBwgg8y/urB8k7xIoZkj2zKEe72vuyV9rLurX
-	2CP1T5bRIzEoamedrbg6u7Tm8O3lLAtcwtdAdq9oOPIwFv39tvkrFUkpboHCJPP2cSIcwoODMhW
-	POZM=
-X-Google-Smtp-Source: AGHT+IGqotgBBvyfKwZH7TFW6fU16podhhB6k5dlT7sjT0ORw9Ao65XKVNtsmLha01jrcLCU+xhmbw==
-X-Received: by 2002:a05:6a00:4c14:b0:74a:d2a3:80dd with SMTP id d2e1a72fcca58-74cd519b64cmr2290753b3a.3.1751545031026;
-        Thu, 03 Jul 2025 05:17:11 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1751545035; x=1752149835;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BWuHfC4u73RCpQlHsFKd/gTTGs8e+ph3vwAME8lxRN0=;
+        b=UIAK4a/LZEdQoWiCgqzn8HWe8liZorE5xNF/2ggsIh/eXuVIqOKpUuq9oWFH11MpGG
+         3W2NIfT3bkq0UqBIOov/+KDCLUhMnI3AKE43TpYHtB9KL25qeu31if3J7cIfDnYNL24u
+         cx9sp4T4mhQOhy00FCUGg86W6Mquyzj1mPp8xICOTjpnvxrnsIFchRvJ2rl8WKZeDY4U
+         9mVsZqtwF+K9p6cDvo15ieLSL5IE3xZil7ZU8fV2oDmyPFLzQKqNMDlD0Q4gnWrx6mRV
+         MzGATyH1ppU9d3aluCOYtVrxSN/ZWWz+wCTSa3MFmCSRZFKXUABslxFKQsCsZ02YCDBg
+         PzgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVNhrNFzO5I7jJUuWksMteev6QfpUMuMylfOfPOj3I59ylSuIMdxA1VbcBppwIrJZglN5Np6aTdsidqG3A=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyy3h0SVDdl7t+pnKcGwDmaeG6trtuYCBcOyHtIXHaYM0J5afjQ
+	qsk029ZyntQkq/R8YOjapAWBHnnw10yvkdkXPm1n/iVMCIgUfXL6hMYk
+X-Gm-Gg: ASbGncveJaqN9d4738a+zqw2hM0j5iRizJrfGr+JAgw7rtBXx5xiCYvksMykCNHN9Ji
+	d+KTOPQRojIlyKc/+Y/HxJ6qIcnP9J+4TT7IMxWWw2n2KUNbtB+cs9iGKFMuVAwmXlXgNnA0qRO
+	v1WD7qFnDLVlTq+OZtQdiPvMOXwIRxiF+O9opYEn0mvaqCnTJPynV4bqXnqUeWKTYC2NuxDka5g
+	Rx7SRH0Ij6U+LSckfPFxNR7VyMZ63ANtBYHBYjdFiAk+cci2vNfQTmW26ojpHjRhrKZEp1DYx5A
+	C6ICKMHPqVN2GJrlOtZyEOvm7VK0+qauepJM8qHwWDmkStNrsUjpPv7OdrDbzzK+we4oT2nHBWw
+	HfPkIWTkKJ07RFg==
+X-Google-Smtp-Source: AGHT+IEKoCZ7oVsEmEszHUFJm490W+S5p0y5tPhOJuYfPbMMBy5D0dqOAxNuy2+bGklv70UWmUC2QA==
+X-Received: by 2002:a05:6a00:84d:b0:749:4fd7:3513 with SMTP id d2e1a72fcca58-74ca8494c91mr3782235b3a.16.1751545034628;
+        Thu, 03 Jul 2025 05:17:14 -0700 (PDT)
 Received: from localhost.localdomain ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74af5575895sm18591081b3a.94.2025.07.03.05.17.09
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74af5575895sm18591081b3a.94.2025.07.03.05.17.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jul 2025 05:17:10 -0700 (PDT)
+        Thu, 03 Jul 2025 05:17:14 -0700 (PDT)
 From: Menglong Dong <menglong8.dong@gmail.com>
 X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
 To: alexei.starovoitov@gmail.com,
 	rostedt@goodmis.org,
 	jolsa@kernel.org
 Cc: bpf@vger.kernel.org,
-	Menglong Dong <dongml2@chinatelecom.cn>
-Subject: [PATCH bpf-next v2 00/18] bpf: tracing multi-link support
-Date: Thu,  3 Jul 2025 20:15:03 +0800
-Message-Id: <20250703121521.1874196-1-dongml2@chinatelecom.cn>
+	Menglong Dong <dongml2@chinatelecom.cn>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v2 01/18] bpf: add function hash table for tracing-multi
+Date: Thu,  3 Jul 2025 20:15:04 +0800
+Message-Id: <20250703121521.1874196-2-dongml2@chinatelecom.cn>
 X-Mailer: git-send-email 2.39.5
+In-Reply-To: <20250703121521.1874196-1-dongml2@chinatelecom.cn>
+References: <20250703121521.1874196-1-dongml2@chinatelecom.cn>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-(Thanks for Alexei's advice to implement the bpf global trampoline with C
-instead of asm, the performance of tracing-multi has been significantly
-improved. And the function metadata that implemented with hash table is
-also fast enough to satisfy our needs.)
+Implement a hash table to store the BPF progs and the function metadata.
+The key of this hash table is the kernel function address, and following
+data is stored in the hash value:
 
-For now, the BPF program of type BPF_PROG_TYPE_TRACING is not allowed to
-be attached to multiple hooks, and we have to create a BPF program for
-each kernel function, for which we want to trace, even through all the
-program have the same (or similar) logic. This can consume extra memory,
-and make the program loading slow if we have plenty of kernel function to
-trace.
-
-In this series, we add the support to allow attaching a tracing BPF
-program to multi hooks, which is similar to BPF_TRACE_KPROBE_MULTI.
-Generally speaking, this series can be divided into 5 parts:
-
-1. Add per-function metadata storage support.
-2. Add bpf global trampoline support for x86_64.
-3. Add bpf global trampoline link support.
-4. Add tracing multi-link support.
-
-per-function metadata storage
------------------------------
-The per-function metadata storage is the basic of the bpf global
-trampoline. In short, it's a hash table and store some information of the
-kernel functions. The key of this hash table is the kernel function
-address, and following data is stored in the hash value:
-
-* The BPF progs, whose type is FENTRY, FEXIT or MODIFY_RETURN. The struct
+- The BPF progs, whose type is FENTRY, FEXIT or MODIFY_RETURN. The struct
   kfunc_md_tramp_prog is introduced to store the BPF prog and the cookie,
   and makes the BPF progs of the same type a list with the "next" field.
-* The kernel function address
-* The kernel function arguments count
-* If origin call needed
+- The kernel function address
+- The kernel function arguments count
+- If origin call needed
 
-The budgets of the hash table can grow and shrink when necessary. Alexei
-advised to use rhashtable. However, the compiler is not clever enough and
-it refused to inline the hash lookup for me, which bring in addition
-overhead in the following BPF global trampoline. I have to replace the
-"inline" with "__always_inline" for rhashtable_lookup_fast,
-rhashtable_lookup, __rhashtable_lookup, rht_key_get_hash to force it
-inline the hash lookup for me. Then, I just implement a hash table myself
-instead.
+The hlist is used, and we will grow the budgets when the entries count
+greater than 90% of the budget count by making it double. Meanwhile, we
+will shrink the budget when the entries count less than 30% of the budget
+length.
 
-bpf global trampoline
----------------------
-The bpf global trampoline is similar to the general bpf trampoline. The
-bpf trampoline store the bpf progs and some metadata in the trampoline
-instructions directly. However, the bpf global trampoline store and get
-the metadata from the function metadata with kfunc_md_get_rcu(). This
-makes the bpf global trampoline more flexible and can be used for all the
-kernel functions.
+We don't use rhashtable here, as the compiler is not clever enough and it
+refused to inline the hash lookup for me, which bring in addition overhead
+in the following BPF global trampoline.
 
-The bpf global trampoline is designed to implement the tracing multi-link
-for FENTRY, FEXIT and MODIFY_RETURN.
+The release of the metadata is controlled by the percpu ref and RCU
+together, and have similar logic to the release of bpf trampoline image in
+bpf_tramp_image_put().
 
-The global trampoline is implemented in C mostly. We implement the entry
-of the trampoline with a "__naked" function, who will save the regs to
-an array on the stack and call bpf_global_caller_run(). The entry will
-pass the address of the array and the address of the rip to
-bpf_global_caller_run().
+The whole function will be used in the next patch.
 
-The whole idea to implement the trampoline with C is inspired by Alexei
-in [3]. It do have advantage to implement in C. Some function call, such
-as __bpf_prog_enter_recur, __bpf_prog_exit_recur, __bpf_tramp_enter
-and __bpf_tramp_exit, are inlined, which reduces some overhead. The
-performance of the global trampoline can be see below.
-
-bpf global trampoline link
---------------------------
-We reuse part of the code in [2] to implement the tracing multi-link. The
-struct bpf_gtramp_link is introduced for the bpf global trampoline link.
-Similar to the bpf trampoline link, the bpf global trampoline link has
-bpf_gtrampoline_link_prog() and bpf_gtrampoline_unlink_prog() to link and
-unlink the bpf progs.
-
-The "entries" in the bpf_gtramp_link is a array of struct
-bpf_gtramp_link_entry, which contain all the information of the functions
-that we trace, such as the address, the number of args, the cookie and so
-on.
-
-The bpf global trampoline is much simpler than the bpf trampoline, and we
-introduce then new struct bpf_global_trampoline for it. The "image" field
-is a pointer to bpf_global_caller_x. We introduce the global trampoline
-array and kernel function with arguments count "x" can be handled by the
-global trampoline global_tr_array[x]. We implement the global trampoline
-based on the direct ftrace, and the "fops" field for this propose. This
-means bpf2bpf is not supported by the tracing multi-link.
-
-When we link the bpf prog, we will add it to all the target functions'
-kfunc_md. Then, we get all the function addresses that have bpf progs with
-kfunc_md_bpf_ips(), and reset the ftrace filter of the fops to it. The
-direct ftrace don't support to reset the filter functions yet, so we
-introduce the reset_ftrace_direct_ips() to do this work.
-
-tracing multi-link
-------------------
-Most of the code of this part comes from the series [2].
-
-In the 6th patch, we add the support to record index of the accessed
-function args of the target for tracing program. Meanwhile, we add the
-function btf_check_func_part_match() to compare the accessed function args
-of two function prototype. This function will be used in the next commit.
-
-In the 7th patch, we refactor the struct modules_array to ptr_array, as
-we need similar function to hold the target btf, target program and kernel
-modules that we reference to in the following commit.
-
-In the 11th patch, we implement the multi-link support for tracing, and
-following new attach types are added:
-
-  BPF_TRACE_FENTRY_MULTI
-  BPF_TRACE_FEXIT_MULTI
-  BPF_MODIFY_RETURN_MULTI
-
-We introduce the struct bpf_tracing_multi_link for this purpose, which
-can hold all the kernel modules, target bpf program (for attaching to bpf
-program) or target btf (for attaching to kernel function) that we
-referenced.
-
-During loading, the first target is used for verification by the verifier.
-And during attaching, we check the consistency of all the targets with
-the first target.
-
-performance comparison
-----------------------
-We have implemented the following performance testings in the selftests in
-bench_trigger.c:
-
-- trig-fentry-multi
-- trig-fentry-multi-all
-- trig-fexit-multi
-- trig-fmodret-multi
-
-The "fentry_multi_all" is used to test the performance of the function
-metadata hash table and all the kernel function is hooked during testings.
-
-The mitigations is disabled during the testings. It is enabled by default
-in the kernel, and we can disable it with the "mitigations=off" cmdline
-to do the testing.
-
-The testings is done with the command:
-  ./run_bench_trigger.sh fentry fentry-multi fentry-multi-all fexit \
-                         fexit-multi fmodret fmodret-multi
-
-Following is the testings results, and the unit is "M/s":
-
-fentry  | fm     | fm_all | fexit  | fexit-multi | fmodret | fmodret-multi
-103.303 | 94.532 | 98.009 | 55.155 | 55.448      | 58.632  | 56.379 
-107.564 | 98.007 | 97.857 | 55.278 | 53.997      | 59.485  | 55.855 
-106.841 | 97.483 | 95.064 | 55.715 | 55.502      | 59.442  | 56.126 
-109.852 | 97.486 | 93.161 | 56.432 | 55.494      | 59.454  | 56.178 
-109.791 | 97.973 | 96.728 | 55.729 | 55.363      | 59.445  | 56.228
-
-* fm: fentry-multi, fm_all: fentry-multi-all
-
-Following is the results to run all the bench testings:
-
-  usermode-count :  746.907 ± 0.323M/s
-  kernel-count   :  313.423 ± 0.031M/s 
-  syscall-count  :   18.179 ± 0.013M/s 
-  fentry         :  107.149 ± 0.051M/s 
-  fexit          :   56.565 ± 0.019M/s 
-  fmodret        :   59.495 ± 0.024M/s 
-  fentry-multi   :   99.073 ± 0.087M/s 
-  fentry-multi-all:   97.920 ± 0.095M/s 
-  fexit-multi    :   55.426 ± 0.045M/s 
-  fmodret-multi  :   56.589 ± 0.163M/s 
-  rawtp          :  166.774 ± 0.137M/s 
-  tp             :   61.947 ± 0.035M/s 
-  kprobe         :   43.719 ± 0.018M/s 
-  kprobe-multi   :   47.451 ± 0.087M/s 
-  kretprobe      :   18.358 ± 0.026M/s 
-  kretprobe-multi:   24.523 ± 0.016M/s
-
-From the above test data, it can be seen that the performance of fentry-multi
-is approximately 10% worse than that of fentry, and fmodret-multi is ~5%
-worse then fmodret, fexit-multi is almost the same to fexit.
-
-The bpf global trampoline has addition overhead in comparison with the bpf
-trampoline:
-1. We do more checks. We check if origin call is need, if the prog is
-   sleepable, etc, in the global trampoline.
-2. We do more memory read and write. We need to load the bpf progs from
-   memory, and save addition regs to stack.
-3. The function metadata lookup.
-
-However, we also have some optimization:
-1. For fentry, we avoid 2 function call: __bpf_prog_enter_recur and
-   __bpf_prog_exit_recur, as we make them inline in our case.
-2. For fexit/fmodret, we avoid another 2 function call: __bpf_tramp_enter
-   and __bpf_tramp_exit by inline them.
-
-The performance of fentry-multi is closer to fentry-multi-all, which means
-the hash table is O(1) and fast enough.
-
-Further work
-------------
-The performance of the global trampoline can be optimized further.
-
-First, we can avoid some checks by generate more bpf_global_caller, such
-as:
-
-static __always_inline notrace int
-bpf_global_caller_run(unsigned long *args, unsigned long *ip, int nr_args,
-                      bool sleepable, bool do_origin)
-{
-    xxxxxx
-}
-
-static __always_used __no_stack_protector notrace int
-bpf_global_caller_2_sleep_origin(unsigned long *args, unsigned long *ip)
-{
-    return bpf_global_caller_run(args, ip, nr_args, 2, 1, 1);
-}
-
-And the bpf global caller "bpf_global_caller_2_sleep_origin" can be used
-for the functions who have 2 function args, and have sleepable bpf progs,
-and have fexit or modify_return. The check of sleepable and origin call
-will be optimized by the compiler, as they are const.
-
-Second, we can implement the function metadata with the function padding.
-The hash table lookup for metadata consume ~15 instructions. With
-function padding, it needs only 5 instructions, and will be faster.
-
-Besides the performance, we also need to make the global trampoline
-collaborate with bpf trampoline. For now, FENTRY_MULTI will be attached
-to the target who already have FENTRY on it, and -EEXIST will be returned.
-So we need another series to make them work together.
-
-Changes since V1:
-
-* remove the function metadata that bases on function padding, and
-  implement it with a resizable hash table.
-* rewrite the bpf global trampoline with C.
-* use the existing bpf bench frame for bench testings.
-* remove the part that make tracing-multi compatible with tracing.
-
-Link: https://lore.kernel.org/all/20250303132837.498938-1-dongml2@chinatelecom.cn/ [1]
-Link: https://lore.kernel.org/bpf/20240311093526.1010158-1-dongmenglong.8@bytedance.com/ [2]
-Link: https://lore.kernel.org/bpf/CAADnVQ+G+mQPJ+O1Oc9+UW=J17CGNC5B=usCmUDxBA-ze+gZGw@mail.gmail.com/ [3]
-Menglong Dong (18):
-  bpf: add function hash table for tracing-multi
-  x86,bpf: add bpf_global_caller for global trampoline
-  ftrace: factor out ftrace_direct_update from register_ftrace_direct
-  ftrace: add reset_ftrace_direct_ips
-  bpf: introduce bpf_gtramp_link
-  bpf: tracing: add support to record and check the accessed args
-  bpf: refactor the modules_array to ptr_array
-  bpf: verifier: add btf to the function args of bpf_check_attach_target
-  bpf: verifier: move btf_id_deny to bpf_check_attach_target
-  x86,bpf: factor out arch_bpf_get_regs_nr
-  bpf: tracing: add multi-link support
-  libbpf: don't free btf if tracing_multi progs existing
-  libbpf: support tracing_multi
-  libbpf: add btf type hash lookup support
-  libbpf: add skip_invalid and attach_tracing for tracing_multi
-  selftests/bpf: move get_ksyms and get_addrs to trace_helpers.c
-  selftests/bpf: add basic testcases for tracing_multi
-  selftests/bpf: add bench tests for tracing_multi
-
- arch/x86/Kconfig                              |   4 +
- arch/x86/net/bpf_jit_comp.c                   | 290 ++++++++++++-
- include/linux/bpf.h                           |  59 +++
- include/linux/bpf_tramp.h                     |  72 ++++
- include/linux/bpf_types.h                     |   1 +
- include/linux/bpf_verifier.h                  |   1 +
- include/linux/btf.h                           |   3 +-
- include/linux/ftrace.h                        |   7 +
- include/linux/kfunc_md.h                      |  91 ++++
- include/uapi/linux/bpf.h                      |  10 +
- kernel/bpf/Makefile                           |   1 +
- kernel/bpf/btf.c                              | 113 ++++-
- kernel/bpf/kfunc_md.c                         | 352 ++++++++++++++++
- kernel/bpf/syscall.c                          | 395 +++++++++++++++++-
- kernel/bpf/trampoline.c                       | 220 +++++++++-
- kernel/bpf/verifier.c                         | 161 ++++---
- kernel/trace/bpf_trace.c                      |  48 +--
- kernel/trace/ftrace.c                         | 183 +++++---
- net/bpf/test_run.c                            |   3 +
- net/core/bpf_sk_storage.c                     |   2 +
- net/sched/bpf_qdisc.c                         |   2 +-
- tools/bpf/bpftool/common.c                    |   3 +
- tools/include/uapi/linux/bpf.h                |  10 +
- tools/lib/bpf/bpf.c                           |  10 +
- tools/lib/bpf/bpf.h                           |   6 +
- tools/lib/bpf/btf.c                           | 102 +++++
- tools/lib/bpf/btf.h                           |   6 +
- tools/lib/bpf/libbpf.c                        | 296 ++++++++++++-
- tools/lib/bpf/libbpf.h                        |  25 ++
- tools/lib/bpf/libbpf.map                      |   5 +
- tools/testing/selftests/bpf/Makefile          |   2 +-
- tools/testing/selftests/bpf/bench.c           |   8 +
- .../selftests/bpf/benchs/bench_trigger.c      |  72 ++++
- .../selftests/bpf/benchs/run_bench_trigger.sh |   1 +
- .../selftests/bpf/prog_tests/fentry_fexit.c   |  22 +-
- .../selftests/bpf/prog_tests/fentry_test.c    |  79 +++-
- .../selftests/bpf/prog_tests/fexit_test.c     |  79 +++-
- .../bpf/prog_tests/kprobe_multi_test.c        | 220 +---------
- .../selftests/bpf/prog_tests/modify_return.c  |  60 +++
- .../bpf/prog_tests/tracing_multi_link.c       | 210 ++++++++++
- .../selftests/bpf/progs/fentry_multi_empty.c  |  13 +
- .../selftests/bpf/progs/tracing_multi_test.c  | 181 ++++++++
- .../selftests/bpf/progs/trigger_bench.c       |  22 +
- .../selftests/bpf/test_kmods/bpf_testmod.c    |  24 ++
- tools/testing/selftests/bpf/test_progs.c      |  50 +++
- tools/testing/selftests/bpf/test_progs.h      |   3 +
- tools/testing/selftests/bpf/trace_helpers.c   | 283 +++++++++++++
- tools/testing/selftests/bpf/trace_helpers.h   |   3 +
- 48 files changed, 3349 insertions(+), 464 deletions(-)
- create mode 100644 include/linux/bpf_tramp.h
+Link: https://lore.kernel.org/bpf/CADxym3anLzM6cAkn_z71GDd_VeKiqqk1ts=xuiP7pr4PO6USPA@mail.gmail.com/
+Link: https://lore.kernel.org/bpf/CAADnVQ+G+mQPJ+O1Oc9+UW=J17CGNC5B=usCmUDxBA-ze+gZGw@mail.gmail.com/
+Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+---
+v2:
+- implement the function metadata with hash table, as Alexei advised
+---
+ include/linux/kfunc_md.h |  91 ++++++++++
+ kernel/bpf/Makefile      |   1 +
+ kernel/bpf/kfunc_md.c    | 352 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 444 insertions(+)
  create mode 100644 include/linux/kfunc_md.h
  create mode 100644 kernel/bpf/kfunc_md.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/tracing_multi_link.c
- create mode 100644 tools/testing/selftests/bpf/progs/fentry_multi_empty.c
- create mode 100644 tools/testing/selftests/bpf/progs/tracing_multi_test.c
 
+diff --git a/include/linux/kfunc_md.h b/include/linux/kfunc_md.h
+new file mode 100644
+index 000000000000..1a766aa160f5
+--- /dev/null
++++ b/include/linux/kfunc_md.h
+@@ -0,0 +1,91 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_KFUNC_MD_H
++#define _LINUX_KFUNC_MD_H
++
++#include <linux/kernel.h>
++#include <linux/bpf.h>
++#include <linux/rhashtable.h>
++
++struct kfunc_md_tramp_prog {
++	struct kfunc_md_tramp_prog *next;
++	struct bpf_prog *prog;
++	u64 cookie;
++	struct rcu_head rcu;
++};
++
++struct kfunc_md {
++	struct hlist_node hash;
++	struct rcu_head rcu;
++	unsigned long func;
++	struct kfunc_md_tramp_prog *bpf_progs[BPF_TRAMP_MAX];
++	struct percpu_ref pcref;
++	u16 users;
++	bool bpf_origin_call;
++	u8 bpf_prog_cnt;
++	u8 nr_args;
++};
++
++struct kfunc_md_array {
++	atomic_t used;
++	struct rcu_head rcu;
++	int hash_bits;
++	struct hlist_head mds[];
++};
++
++extern struct kfunc_md_array __rcu *kfunc_mds;
++
++struct kfunc_md *kfunc_md_create(unsigned long ip, int nr_args);
++struct kfunc_md *kfunc_md_get(unsigned long ip);
++void kfunc_md_put(struct kfunc_md *meta);
++bool kfunc_md_arch_support(int *insn, int *data);
++
++int kfunc_md_bpf_ips(void ***ips, int nr_args);
++int kfunc_md_bpf_unlink(struct kfunc_md *md, struct bpf_prog *prog, int type);
++int kfunc_md_bpf_link(struct kfunc_md *md, struct bpf_prog *prog, int type,
++		      u64 cookie);
++
++static __always_inline notrace struct hlist_head *
++kfunc_md_hash_head(struct kfunc_md_array *mds, unsigned long ip)
++{
++	return &mds->mds[hash_ptr((void *)ip, mds->hash_bits)];
++}
++
++static __always_inline notrace struct kfunc_md *
++__kfunc_md_get(struct kfunc_md_array *mds, unsigned long ip)
++{
++	struct hlist_head *head;
++	struct kfunc_md *md;
++
++	head = kfunc_md_hash_head(mds, ip);
++	hlist_for_each_entry_rcu_notrace(md, head, hash) {
++		if (md->func == ip)
++			return md;
++	}
++
++	return NULL;
++}
++
++/* This function will be called in the bpf global trampoline, so it can't
++ * be traced, and the "notrace" is necessary.
++ */
++static __always_inline notrace struct kfunc_md *kfunc_md_get_rcu(unsigned long ip)
++{
++	return __kfunc_md_get(rcu_dereference_raw(kfunc_mds), ip);
++}
++
++static __always_inline notrace void kfunc_md_enter(struct kfunc_md *md)
++{
++	percpu_ref_get(&md->pcref);
++}
++
++static __always_inline notrace void kfunc_md_exit(struct kfunc_md *md)
++{
++	percpu_ref_put(&md->pcref);
++}
++
++static inline void kfunc_md_put_ip(unsigned long ip)
++{
++	kfunc_md_put(kfunc_md_get(ip));
++}
++
++#endif
+diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+index 3a335c50e6e3..a8a404e82e3d 100644
+--- a/kernel/bpf/Makefile
++++ b/kernel/bpf/Makefile
+@@ -14,6 +14,7 @@ obj-$(CONFIG_BPF_SYSCALL) += bpf_local_storage.o bpf_task_storage.o
+ obj-${CONFIG_BPF_LSM}	  += bpf_inode_storage.o
+ obj-$(CONFIG_BPF_SYSCALL) += disasm.o mprog.o
+ obj-$(CONFIG_BPF_JIT) += trampoline.o
++obj-$(CONFIG_BPF_JIT) += kfunc_md.o
+ obj-$(CONFIG_BPF_SYSCALL) += btf.o memalloc.o rqspinlock.o
+ ifeq ($(CONFIG_MMU)$(CONFIG_64BIT),yy)
+ obj-$(CONFIG_BPF_SYSCALL) += arena.o range_tree.o
+diff --git a/kernel/bpf/kfunc_md.c b/kernel/bpf/kfunc_md.c
+new file mode 100644
+index 000000000000..152d6741d06d
+--- /dev/null
++++ b/kernel/bpf/kfunc_md.c
+@@ -0,0 +1,352 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2025 ChinaTelecom */
++
++#include <linux/slab.h>
++#include <linux/memory.h>
++#include <linux/rcupdate.h>
++#include <linux/ftrace.h>
++#include <linux/rhashtable.h>
++#include <linux/kfunc_md.h>
++
++#include <uapi/linux/bpf.h>
++
++#define MIN_KFUNC_MD_ARRAY_BITS 4
++struct kfunc_md_array default_mds = {
++	.used = ATOMIC_INIT(0),
++	.hash_bits = MIN_KFUNC_MD_ARRAY_BITS,
++	.mds = {
++		[0 ... ((1 << MIN_KFUNC_MD_ARRAY_BITS) - 1)] = HLIST_HEAD_INIT,
++	},
++};
++struct kfunc_md_array __rcu *kfunc_mds = &default_mds;
++EXPORT_SYMBOL_GPL(kfunc_mds);
++
++static DEFINE_MUTEX(kfunc_md_mutex);
++
++static int kfunc_md_array_inc(void);
++
++static void kfunc_md_release_rcu(struct rcu_head *rcu)
++{
++	struct kfunc_md *md;
++
++	md = container_of(rcu, struct kfunc_md, rcu);
++	/* Step 4, free the md */
++	kfree(md);
++}
++
++static void kfunc_md_release_rcu_tasks(struct rcu_head *rcu)
++{
++	struct kfunc_md *md;
++
++	md = container_of(rcu, struct kfunc_md, rcu);
++	/* Step 3, wait for the nornal progs and bfp_global_caller to finish */
++	call_rcu_tasks(&md->rcu, kfunc_md_release_rcu);
++}
++
++static void kfunc_md_release(struct percpu_ref *pcref)
++{
++	struct kfunc_md *md;
++
++	md = container_of(pcref, struct kfunc_md, pcref);
++	percpu_ref_exit(&md->pcref);
++
++	/* Step 2, wait for sleepable progs to finish. */
++	call_rcu_tasks_trace(&md->rcu, kfunc_md_release_rcu_tasks);
++}
++
++struct kfunc_md *kfunc_md_get(unsigned long ip)
++{
++	struct kfunc_md_array *mds;
++	struct kfunc_md *md;
++
++	rcu_read_lock();
++	mds = rcu_dereference(kfunc_mds);
++	md = __kfunc_md_get(mds, ip);
++	rcu_read_unlock();
++
++	return md;
++}
++EXPORT_SYMBOL_GPL(kfunc_md_get);
++
++static struct kfunc_md *__kfunc_md_create(struct kfunc_md_array *mds, unsigned long ip,
++					  int nr_args)
++{
++	struct kfunc_md *md = __kfunc_md_get(mds, ip);
++	int err;
++
++	if (md) {
++		md->users++;
++		return md;
++	}
++
++	md = kzalloc(sizeof(*md), GFP_KERNEL);
++	if (!md)
++		return NULL;
++
++	md->users = 1;
++	md->func = ip;
++	md->nr_args = nr_args;
++
++	err = percpu_ref_init(&md->pcref, kfunc_md_release, 0, GFP_KERNEL);
++	if (err) {
++		kfree(md);
++		return NULL;
++	}
++
++	hlist_add_head_rcu(&md->hash, kfunc_md_hash_head(mds, ip));
++	atomic_inc(&mds->used);
++
++	return md;
++}
++
++struct kfunc_md *kfunc_md_create(unsigned long ip, int nr_args)
++{
++	struct kfunc_md *md = NULL;
++
++	mutex_lock(&kfunc_md_mutex);
++
++	if (kfunc_md_array_inc())
++		goto out;
++
++	md = __kfunc_md_create(kfunc_mds, ip, nr_args);
++out:
++	mutex_unlock(&kfunc_md_mutex);
++
++	return md;
++}
++EXPORT_SYMBOL_GPL(kfunc_md_create);
++
++static int kfunc_md_array_adjust(bool inc)
++{
++	struct kfunc_md_array *new_mds, *old_mds;
++	struct kfunc_md *md, *new_md;
++	struct hlist_node *n;
++	int size, hash_bits, i;
++
++	hash_bits = kfunc_mds->hash_bits;
++	hash_bits += inc ? 1 : -1;
++
++	size = sizeof(*new_mds) + sizeof(struct hlist_head) * (1 << hash_bits);
++	new_mds = kmalloc(size, GFP_KERNEL | __GFP_ZERO);
++	if (!new_mds)
++		return -ENOMEM;
++
++	new_mds->hash_bits = hash_bits;
++	for (i = 0; i < (1 << new_mds->hash_bits); i++)
++		INIT_HLIST_HEAD(&new_mds->mds[i]);
++
++	/* copy all the mds from kfunc_mds to new_mds */
++	for (i = 0; i < (1 << kfunc_mds->hash_bits); i++) {
++		hlist_for_each_entry(md, &kfunc_mds->mds[i], hash) {
++			new_md = __kfunc_md_create(new_mds, md->func, md->nr_args);
++			if (!new_md)
++				goto err_out;
++
++			new_md->bpf_prog_cnt = md->bpf_prog_cnt;
++			new_md->bpf_origin_call = md->bpf_origin_call;
++			new_md->users = md->users;
++
++			memcpy(new_md->bpf_progs, md->bpf_progs, sizeof(md->bpf_progs));
++		}
++	}
++
++	old_mds = kfunc_mds;
++	rcu_assign_pointer(kfunc_mds, new_mds);
++	synchronize_rcu();
++
++	/* free all the mds in the old_mds. See kfunc_md_put() for the
++	 * complete release process.
++	 */
++	for (i = 0; i < (1 << old_mds->hash_bits); i++) {
++		hlist_for_each_entry_safe(md, n, &old_mds->mds[i], hash) {
++			percpu_ref_kill(&md->pcref);
++			hlist_del(&md->hash);
++		}
++	}
++
++	if (old_mds != &default_mds)
++		kfree_rcu(old_mds, rcu);
++
++	return 0;
++
++err_out:
++	for (i = 0; i < (1 << new_mds->hash_bits); i++) {
++		hlist_for_each_entry_safe(md, n, &new_mds->mds[i], hash) {
++			percpu_ref_exit(&md->pcref);
++			hlist_del(&md->hash);
++			kfree(md);
++		}
++	}
++	return -ENOMEM;
++}
++
++static int kfunc_md_array_inc(void)
++{
++	/* increase the hash table if greater than 90% */
++	if (atomic_read(&kfunc_mds->used) * 10 < (1 << (kfunc_mds->hash_bits)) * 9)
++		return 0;
++	return kfunc_md_array_adjust(true);
++}
++
++static int kfunc_md_array_dec(void)
++{
++	/* decrease the hash table if less than 30%. */
++	if (atomic_read(&kfunc_mds->used) * 10 > (1 << (kfunc_mds->hash_bits)) * 3)
++		return 0;
++
++	if (kfunc_mds->hash_bits <= MIN_KFUNC_MD_ARRAY_BITS)
++		return 0;
++
++	return kfunc_md_array_adjust(false);
++}
++
++void kfunc_md_put(struct kfunc_md *md)
++{
++	if (!md || WARN_ON_ONCE(md->users <= 0))
++		return;
++
++	mutex_lock(&kfunc_md_mutex);
++	md->users--;
++	if (md->users > 0)
++		goto out_unlock;
++
++	hlist_del_rcu(&md->hash);
++	atomic_dec(&kfunc_mds->used);
++	/* Step 1, use percpu_ref_kill to wait for the origin function to
++	 * finish. See kfunc_md_release for step 2.
++	 */
++	percpu_ref_kill(&md->pcref);
++	kfunc_md_array_dec();
++
++out_unlock:
++	mutex_unlock(&kfunc_md_mutex);
++}
++EXPORT_SYMBOL_GPL(kfunc_md_put);
++
++static bool kfunc_md_bpf_check(struct kfunc_md *md, int nr_args)
++{
++	return md->bpf_prog_cnt && md->nr_args == nr_args;
++}
++
++int kfunc_md_bpf_ips(void ***ips_ptr, int nr_args)
++{
++	struct kfunc_md *md;
++	int count, res = 0;
++	void **ips;
++
++	mutex_lock(&kfunc_md_mutex);
++	count = atomic_read(&kfunc_mds->used);
++	if (count <= 0)
++		goto out_unlock;
++
++	ips = kmalloc_array(count, sizeof(*ips), GFP_KERNEL);
++	if (!ips) {
++		res = -ENOMEM;
++		goto out_unlock;
++	}
++
++	for (int j = 0; j < (1 << kfunc_mds->hash_bits); j++) {
++		hlist_for_each_entry(md, &kfunc_mds->mds[j], hash) {
++			if (kfunc_md_bpf_check(md, nr_args))
++				ips[res++] = (void *)md->func;
++		}
++	}
++	*ips_ptr = ips;
++
++out_unlock:
++	mutex_unlock(&kfunc_md_mutex);
++
++	return res;
++}
++
++int kfunc_md_bpf_link(struct kfunc_md *md, struct bpf_prog *prog, int type,
++		      u64 cookie)
++{
++	struct kfunc_md_tramp_prog *tramp_prog, **last;
++	int err = 0;
++
++	mutex_lock(&kfunc_md_mutex);
++	tramp_prog = md->bpf_progs[type];
++	/* check if the prog is already linked */
++	while (tramp_prog) {
++		if (tramp_prog->prog == prog) {
++			err = -EEXIST;
++			goto out_unlock;
++		}
++		tramp_prog = tramp_prog->next;
++	}
++
++	tramp_prog = kmalloc(sizeof(*tramp_prog), GFP_KERNEL);
++	if (!tramp_prog) {
++		err = -ENOMEM;
++		goto out_unlock;
++	}
++
++	WRITE_ONCE(tramp_prog->prog, prog);
++	WRITE_ONCE(tramp_prog->cookie, cookie);
++	WRITE_ONCE(tramp_prog->next, NULL);
++
++	/* add the new prog to the list tail */
++	last = &md->bpf_progs[type];
++	while (*last)
++		last = &(*last)->next;
++
++	WRITE_ONCE(*last, tramp_prog);
++
++	md->bpf_prog_cnt++;
++	if (type == BPF_TRAMP_FEXIT || type == BPF_TRAMP_MODIFY_RETURN)
++		md->bpf_origin_call = true;
++
++out_unlock:
++	mutex_unlock(&kfunc_md_mutex);
++	return err;
++}
++
++static void link_free_rcu(struct rcu_head *rcu)
++{
++	struct kfunc_md_tramp_prog *tramp_prog;
++
++	tramp_prog = container_of(rcu, struct kfunc_md_tramp_prog, rcu);
++	/* Step 3, free the tramp_prog */
++	kfree(tramp_prog);
++}
++
++static void link_free_rcu_tasks(struct rcu_head *rcu)
++{
++	struct kfunc_md_tramp_prog *tramp_prog;
++
++	tramp_prog = container_of(rcu, struct kfunc_md_tramp_prog, rcu);
++	/* Step 2, wait for normal progs finish, which means all the progs
++	 * in the list finished.
++	 */
++	call_rcu_tasks(&tramp_prog->rcu, link_free_rcu);
++}
++
++int kfunc_md_bpf_unlink(struct kfunc_md *md, struct bpf_prog *prog, int type)
++{
++	struct kfunc_md_tramp_prog *cur, **prev, **progs;
++
++	mutex_lock(&kfunc_md_mutex);
++	progs = md->bpf_progs;
++	prev = progs + type;
++	while (*prev && (*prev)->prog != prog)
++		prev = &(*prev)->next;
++
++	cur = *prev;
++	if (!cur) {
++		mutex_unlock(&kfunc_md_mutex);
++		return -EINVAL;
++	}
++
++	WRITE_ONCE(*prev, cur->next);
++	WRITE_ONCE(md->bpf_origin_call, progs[BPF_TRAMP_MODIFY_RETURN] ||
++					progs[BPF_TRAMP_FEXIT]);
++
++	md->bpf_prog_cnt--;
++
++	/* Step 1, wait for sleepable progs to finish. */
++	call_rcu_tasks_trace(&cur->rcu, link_free_rcu_tasks);
++	mutex_unlock(&kfunc_md_mutex);
++
++	return 0;
++}
 -- 
 2.39.5
-
 
 
