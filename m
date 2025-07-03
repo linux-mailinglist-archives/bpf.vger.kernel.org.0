@@ -1,173 +1,214 @@
-Return-Path: <bpf+bounces-62310-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62311-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B6B4AF7DBB
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 18:26:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 724F4AF7DE5
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 18:30:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A1FB189A551
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 16:22:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7445F188290D
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 16:27:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C88324C07F;
-	Thu,  3 Jul 2025 16:22:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FA9F24DCEC;
+	Thu,  3 Jul 2025 16:26:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="nPjVjOhH"
+	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="0kWIyVfY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B383157E99;
-	Thu,  3 Jul 2025 16:22:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDBB723BF83
+	for <bpf@vger.kernel.org>; Thu,  3 Jul 2025 16:26:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751559722; cv=none; b=MOgwN9AvWCQtJJmipMhPUK57HGeMlQCpwXFBE4sUanMWcpRqAbUUsbElFYVk5z0MVAdijW8TYRmFtOu5D8PBcnMkY1tqm048p0+t4k1Jn/AeG7X4/keSPlL2X1dLQcOPK07u3OlyPodr6BAmssY1qq7h8bVkXeKU030uEOvIGHg=
+	t=1751560000; cv=none; b=qAK5jArJ1Adv9PBGioLQ/119PFW4rRzPmIarhrRrOaNjAzQtpAA/Qe6rTNuqjUQk8UxDgJ+3J5p/KMX5+0hB8I8p2Z1dw+Tuf2JCrmwu7mPpB1E4HelsR9BAvo+rvHa6VwIcSFnB8hd02fFXQSm3VFZAC+eFtwxtlD4DtuLBmNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751559722; c=relaxed/simple;
-	bh=qsElSjws3oA4dpN+ZkpRfZW49vQ5t5xw1uuPlsuVDnQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RxZSr1a06y2dTuv2EynDD75NOrEhb4f9k+WRpJQmxrS41QPEYARgHpuV8/uvL6+kzw0KZNLMVJDgPqStIIIt9DoAXCiqA7paXqrAuLDFFOVv+SA3h5jomVZfdOwZMXWrd2M/BTt+Vm3f9K8C+XzWE1ea9qolBkbjFlfkmUyo6lM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=nPjVjOhH; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 563BMSVt001883;
-	Thu, 3 Jul 2025 16:21:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=i8NkVe
-	LpEBDLuD6THW1Trv/bMVVo2C2v0DHjwQo3bG8=; b=nPjVjOhH5nq/W9IrKkYFwE
-	yFP0QDNtTxXvm0SbaV+ruC9KKFuXRmsUQjZgM3XIljJMTig51wjj9HGddeV9urDg
-	MvLcOHE/yQHBEvm7FGyeU3qu5YGtdd7FKC8cIGTim87eQsBRWI2pEnalw6h8pr8C
-	9lJuMhSO3KLP2Kia3b67Kq07PSpTcir+F9HlPkkQ0+VivUv7/OMX1xk/TRltepGm
-	C2nfj2kDzcDkHh/gE58CVD66eZPRmVyCp/QJxd3csmEOWqW1cnk7uqtvAraZEwln
-	C0pzjf1KtO+ZPrLncSFrgs1Y3KjEnqxw1qL6SbIxw211yeiTQyOPaBwZMidA19rQ
-	==
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47j84dn1d9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 03 Jul 2025 16:21:15 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 563EQ8r2012027;
-	Thu, 3 Jul 2025 16:21:14 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 47jv7n5qsu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 03 Jul 2025 16:21:14 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 563GLCAi34800222
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 3 Jul 2025 16:21:12 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0E9EB2004D;
-	Thu,  3 Jul 2025 16:21:12 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A78D72004B;
-	Thu,  3 Jul 2025 16:21:11 +0000 (GMT)
-Received: from [9.152.222.224] (unknown [9.152.222.224])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Thu,  3 Jul 2025 16:21:11 +0000 (GMT)
-Message-ID: <d4fb9d4c-13d6-41fc-8c17-dee6cc0a77eb@linux.ibm.com>
-Date: Thu, 3 Jul 2025 18:21:10 +0200
+	s=arc-20240116; t=1751560000; c=relaxed/simple;
+	bh=IOj0FsLZikNMNQLaCUMu93W14tJqlKBAAAP1HBCQ/qc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ONT6HDyfRaC+PwFOTKjSglwiEdugxIkKYxkl3LcVf85uIrLspDggHdHrzBP5IRJ01UhX8vLu/NMpXUDu0TgxFIu6J/6wp4kf3A2es7joybedBefWMjD2EK1rAGQCh3N7VPG74vTyls6kCySj03I9CMWd5dOHusxlZF0AnhEKT98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=0kWIyVfY; arc=none smtp.client-ip=209.85.128.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-70e40e3f316so51798277b3.0
+        for <bpf@vger.kernel.org>; Thu, 03 Jul 2025 09:26:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1751559997; x=1752164797; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+w0JYSYhFUj0uDiLtml2uNZm9CcWCCOpkN8WVXcPQb4=;
+        b=0kWIyVfYLoJ0Rn1P3mBro8CODdu331Je7eAQxu4glPur9NssvL2ytgj7SdziebLERe
+         8fmbwfUEJosIeaD+8X3KnqvGWwFXkOClGWDEBAmhFPkqV1nNPUaNdKjVUegzjGGjOB3u
+         O5FzKZFU/IZM9/ysncxlNWK72uJHrsqPJPesAAADZOQnntAWjpLie17/4aegKgf6mQCx
+         Rh59IjuC+PRnbKij8JviZlxTbHhfmFUEJPW1dUCx8WyjSnWmoFLvwsPOK+g5fntcqMMy
+         JkLKupuBxzYk3jmiLUtpgjRXDi5Q7eeeqrvSoHjyBcVRuqAC/BFQUKb/9uW0aR5beuQb
+         75Bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751559997; x=1752164797;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+w0JYSYhFUj0uDiLtml2uNZm9CcWCCOpkN8WVXcPQb4=;
+        b=rVhLd7RzY33CXIbeChC+f/ndVPGQJHdhB/tteBIXuoDtQlZ+BoIAWpwMhGijTNGpNZ
+         KJYeZL2KYFvv3ddd+sFEG3YeQGfiK14l6ZgmywAuEd9p5itbCQ5ZWjuKbc9fqYxDvXvq
+         KGpREWB+ACMWR4YclHt/dI8r/mRGKdMzBf0jNdiC3sVi/6cC8fYvASE1OsUaodTi73cK
+         75pt0T6cgJC+1cHI2x7bu82ckaquQMkJ7jJWAx9gaQVDEx0uweTrPr4V0caAn9ykQXsl
+         JDkfpYHyOFKiKC1AIgIxeNNJSoh8y9tdFcdEPSJMDh8WTWTnlHPvBbIQ5At9GDL4Lizl
+         3ozg==
+X-Gm-Message-State: AOJu0Yyg8/E0yp4ifqOCllSkFNpyPU8P3OQY5Ie55WZM8SUCBW3xgHSp
+	oYRHY4VoW++yPhoJOvAMeR+EJ4KGn3WSFuZM89YuzwWIr1J7wSD5rfx5n5Y2Fporn5xXMnSAsH/
+	otUr29BPJ1T0/aWI58vEPKMjL5MmGkNeEz69EfPgD4A==
+X-Gm-Gg: ASbGncsbFEKeeGEAqRtoTIUxvIugatEnbQnqKnGYwRn1TYDr+ongL13E91ok5m1BQRp
+	HCfFcr9r6z6Wv0qr3IejWO0VkMQaXAqtz1hTgExWK5NJiTCYm6a93/6HUb9OrW2tXQvCuO5GYLc
+	/EK6fjuG7zzyEJjVBpBHMcQxH6Xb5U7a4K280lfQlhxFmH
+X-Google-Smtp-Source: AGHT+IFa7t9xJ6I+owubgGo/3seVwOYnViO1leJxDQ8hR1dMVWScI1GeIzHoYQRvQS9E+u+W6UPl3nJPkG2hdJPm7Sg=
+X-Received: by 2002:a05:690c:38d:b0:710:e8a8:771d with SMTP id
+ 00721157ae682-7164d3f1d52mr102010557b3.24.1751559996742; Thu, 03 Jul 2025
+ 09:26:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 02/14] unwind_user: Add frame pointer support
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, x86@kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Indu Bhagat <indu.bhagat@oracle.com>,
-        "Jose E. Marchesi" <jemarch@gnu.org>,
-        Beau Belgrave <beaub@linux.microsoft.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>
-References: <20250701005321.942306427@goodmis.org>
- <20250701005450.888492528@goodmis.org>
- <CAHk-=wiWOYB4c3E-Cc=D89j0txbN4AGqm0j1dojqHq3uzJ+LqQ@mail.gmail.com>
- <20250630225603.72c84e67@gandalf.local.home>
- <a6a460e6-8cff-4353-a9e1-2e071d28e993@linux.ibm.com>
- <20250702195058.7ebb026d@gandalf.local.home>
-Content-Language: en-US
-From: Jens Remus <jremus@linux.ibm.com>
-Organization: IBM Deutschland Research & Development GmbH
-In-Reply-To: <20250702195058.7ebb026d@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: vzwp24uTChfZOwCfiOSdmh2MJX-g-FDG
-X-Proofpoint-GUID: vzwp24uTChfZOwCfiOSdmh2MJX-g-FDG
-X-Authority-Analysis: v=2.4 cv=Ib6HWXqa c=1 sm=1 tr=0 ts=6866adfb cx=c_pps a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17 a=IkcTkHD0fZMA:10 a=Wb1JkmetP80A:10 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=0MvmVg10__VCTnNSAJcA:9 a=3ZKOabzyN94A:10
- a=QEXdDO2ut3YA:10
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzAzMDEzNCBTYWx0ZWRfX4i3gZy03aGTn +UyaW6pjuXxS9HBDjaXxdAFGU2vVeZTksbcysv33oK/sWDQiXVcfPLUmrHJ4m69D+GZQp/TQGAl L9+GhDLjrIf41Wf8l5R2ONu7t+KnAs+ozcDvq/JU5vtji49/+InHQdseR7XeJRxgVsVtNtFV++n
- ZkeJMIg6Kv7Ay9NJUIoGxlQOVi9VHpJcEFSm5DmPKBN/b6RZHFUs58w/eva3KqFPaveo0JNcRfA zVNoWYABKaDb+7MSOPgCRSgzbWW15BkLouqf6ZGH5oyX67uUgWM9ib5vqlnuBXcumVgNPxbgTfv 8GUUHRsvaF4Ep1gxGTv5DLl3aPKwTSEWupRD4rVB3HRppt/dTgeZTcJ/FiWtZVgNSKVeZTbA6Xp
- lidc9L96tzI29OyW8iKor/pKr2quVuuhpdWeU/V3Stzrl7VPzuoqvL1ubSs9uymwtbMgZZLP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
- definitions=2025-07-03_04,2025-07-02_04,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
- clxscore=1015 mlxlogscore=999 lowpriorityscore=0 impostorscore=0
- mlxscore=0 malwarescore=0 spamscore=0 priorityscore=1501 adultscore=0
- bulkscore=0 classifier=spam authscore=0 authtc=n/a authcc= route=outbound
- adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
- definitions=main-2507030134
+References: <20250702031737.407548-1-memxor@gmail.com> <20250702031737.407548-7-memxor@gmail.com>
+In-Reply-To: <20250702031737.407548-7-memxor@gmail.com>
+From: Emil Tsalapatis <emil@etsalapatis.com>
+Date: Thu, 3 Jul 2025 12:26:24 -0400
+X-Gm-Features: Ac12FXxJtCK-i7uRkwHgKfX03UgSsy_U2q_rbMDRSOpyjq4nr0F_pgFPW4Xt9ks
+Message-ID: <CABFh=a6iWx9wjxYARijv=Vd5UeU=Qiy1DKf93Gs+J+izE35dsQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 06/12] bpf: Add dump_stack() analogue to print
+ to BPF stderr
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Barret Rhoden <brho@google.com>, Matt Bobrowski <mattbobrowski@google.com>, kkd@meta.com, 
+	kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 03.07.2025 01:50, Steven Rostedt wrote:
-> On Tue, 1 Jul 2025 17:36:55 +0200
-> Jens Remus <jremus@linux.ibm.com> wrote:
-> 
->> On s390 the prev_frame_sp may be equal to curr_frame_sp for the topmost
->> frame, as long as the topmost function did not allocate any stack.  For
->> instance when early in the prologue or when in a leaf function that does
->> not require any stack space.  My s390 sframe support patches would
->> therefore currently change above check to:
->>
->> 	/* stack going in wrong direction? */
->> 	if (sp <= state->sp - topmost)
->> 		goto done;
-> 
-> How do you calculate "topmost" then?
-> 
-> Is it another field you add to "state"?
+On Tue, Jul 1, 2025 at 11:17=E2=80=AFPM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> Introduce a kernel function which is the analogue of dump_stack()
+> printing some useful information and the stack trace. This is not
+> exposed to BPF programs yet, but can be made available in the future.
+>
+> When we have a program counter for a BPF program in the stack trace,
+> also additionally output the filename and line number to make the trace
+> helpful. The rest of the trace can be passed into ./decode_stacktrace.sh
+> to obtain the line numbers for kernel symbols.
+>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  include/linux/bpf.h |  2 ++
+>  kernel/bpf/stream.c | 44 ++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 46 insertions(+)
+>
 
-Correct.  It is a boolean set to true in unwind_user_start() and set to
-false in unwind_user_next() when updating the state.
+Reviewed-by: Emil Tsalapatis <emil@etsalapatis.com>
 
-I assume most architectures need above change, as their SP at function
-entry should be equal to the SP at call site (unlike x86-64 due to CALL).
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 4d577352f3e6..18f8e4066e20 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -3615,8 +3615,10 @@ __printf(2, 3)
+>  int bpf_stream_stage_printk(struct bpf_stream_stage *ss, const char *fmt=
+, ...);
+>  int bpf_stream_stage_commit(struct bpf_stream_stage *ss, struct bpf_prog=
+ *prog,
+>                             enum bpf_stream_id stream_id);
+> +int bpf_stream_stage_dump_stack(struct bpf_stream_stage *ss);
+>
+>  #define bpf_stream_printk(ss, ...) bpf_stream_stage_printk(&ss, __VA_ARG=
+S__)
+> +#define bpf_stream_dump_stack(ss) bpf_stream_stage_dump_stack(&ss)
+>
+>  #define bpf_stream_stage(ss, prog, stream_id, expr)            \
+>         ({                                                     \
+> diff --git a/kernel/bpf/stream.c b/kernel/bpf/stream.c
+> index c4925f8d275f..370eae669300 100644
+> --- a/kernel/bpf/stream.c
+> +++ b/kernel/bpf/stream.c
+> @@ -2,6 +2,7 @@
+>  /* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
+>
+>  #include <linux/bpf.h>
+> +#include <linux/filter.h>
+>  #include <linux/bpf_mem_alloc.h>
+>  #include <linux/percpu.h>
+>  #include <linux/refcount.h>
+> @@ -476,3 +477,46 @@ int bpf_stream_stage_commit(struct bpf_stream_stage =
+*ss, struct bpf_prog *prog,
+>         llist_add_batch(head, tail, &stream->log);
+>         return 0;
+>  }
+> +
+> +struct dump_stack_ctx {
+> +       struct bpf_stream_stage *ss;
+> +       int err;
+> +};
+> +
+> +static bool dump_stack_cb(void *cookie, u64 ip, u64 sp, u64 bp)
+> +{
+> +       struct dump_stack_ctx *ctxp =3D cookie;
+> +       const char *file =3D "", *line =3D "";
+> +       struct bpf_prog *prog;
+> +       int num, ret;
+> +
+> +       rcu_read_lock();
+> +       prog =3D bpf_prog_ksym_find(ip);
+> +       rcu_read_unlock();
+> +       if (prog) {
+> +               ret =3D bpf_prog_get_file_line(prog, ip, &file, &line, &n=
+um);
+> +               if (ret < 0)
+> +                       goto end;
 
-s390 also needs this information to allow restoring of FP/RA saved in
-other registers (instead of on the stack) only for the topmost frame.
-For any other frame arbitrary register contents would not be available,
-as user unwind only unwinds SP, FP, and RA.
+I assume that this is by design that if we cannot resolve the IP to a
+source line
+we just dump the IP and continue the stack walk.
 
-I would post my s390 sframe support patches as RFC once you have
-provided a merged sframe branch as discussed in:
-https://lore.kernel.org/all/20250702124737.565934b5@batman.local.home/
+> +               ctxp->err =3D bpf_stream_stage_printk(ctxp->ss, "%pS\n  %=
+s @ %s:%d\n",
+> +                                                   (void *)ip, line, fil=
+e, num);
+> +               return !ctxp->err;
+> +       }
+> +end:
+> +       ctxp->err =3D bpf_stream_stage_printk(ctxp->ss, "%pS\n", (void *)=
+ip);
+> +       return !ctxp->err;
+> +}
+> +
+> +int bpf_stream_stage_dump_stack(struct bpf_stream_stage *ss)
+> +{
+> +       struct dump_stack_ctx ctx =3D { .ss =3D ss };
+> +       int ret;
+> +
+> +       ret =3D bpf_stream_stage_printk(ss, "CPU: %d UID: %d PID: %d Comm=
+: %s\n",
+> +                                     raw_smp_processor_id(), __kuid_val(=
+current_real_cred()->euid),
+> +                                     current->pid, current->comm);
+> +       ret =3D ret ?: bpf_stream_stage_printk(ss, "Call trace:\n");
+> +       if (!ret)
 
-Regards,
-Jens
--- 
-Jens Remus
-Linux on Z Development (D3303)
-+49-7031-16-1128 Office
-jremus@de.ibm.com
+Nit: Can we flip this and just do
+    if (ret)
+        return ret;
+? I get using ?: for brevity but it makes the code less obvious, and
+this specific check
+isn't even shorter than the more straightforward alternative.
 
-IBM
-
-IBM Deutschland Research & Development GmbH; Vorsitzender des Aufsichtsrats: Wolfgang Wendt; Geschäftsführung: David Faller; Sitz der Gesellschaft: Böblingen; Registergericht: Amtsgericht Stuttgart, HRB 243294
-IBM Data Privacy Statement: https://www.ibm.com/privacy/
-
+> +               arch_bpf_stack_walk(dump_stack_cb, &ctx);
+> +       ret =3D ret ?: ctx.err;
+> +       return ret ?: bpf_stream_stage_printk(ss, "\n");
+> +}
+> --
+> 2.47.1
+>
 
