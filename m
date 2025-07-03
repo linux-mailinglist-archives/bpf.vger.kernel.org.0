@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-62256-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62257-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A40C4AF739B
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 14:17:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25E69AF73A0
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 14:18:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F8C9540809
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 12:17:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D63B1C48ADC
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 12:18:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AA6A2E5417;
-	Thu,  3 Jul 2025 12:17:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B0E12E717D;
+	Thu,  3 Jul 2025 12:17:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LUAgMN9n"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YXe0la/V"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f194.google.com (mail-pf1-f194.google.com [209.85.210.194])
+Received: from mail-pf1-f195.google.com (mail-pf1-f195.google.com [209.85.210.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A083E2E424E;
-	Thu,  3 Jul 2025 12:17:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F8C72E3AFF;
+	Thu,  3 Jul 2025 12:17:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751545037; cv=none; b=i3kPF4BykSpoxABCd+Hm6H1cBqGNAKYumNXSAEvyDB9SD7WQDcknU0rhKcm6qkcg4X01kjUf+nu8VhPLh1hP7rIk6zMIN08khDNDqvUV7Vi5Vauo34HgQiRnxESHC8w/vDbO0NEP/jSPvJ07DVoCCwQAVpMUBlKprPVkpLsNzIw=
+	t=1751545041; cv=none; b=gyvjKQWxjH/PRV1sXYjPDBg6GR+z2JQLJhbTJpDg7kVRdliHddNmmoxrHadtyVkV7Ic6eMCeaupkeQIGGkQjl8sWmYH97hVi99GbAz+IQdiyVd7lU7Dz+owfgLNZz7X0Qw0S/G9ms/XJju3CL8/YzuKsxXyqFbM0dWLh0kkyLnk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751545037; c=relaxed/simple;
-	bh=vnnqUf5qv6Tzr2Px9Bg0tFIjBBXXU7CSOQUU3YHbmWQ=;
+	s=arc-20240116; t=1751545041; c=relaxed/simple;
+	bh=5/8PnfxeHN/Mmaku5UOh8UnVY98f3fyy4BvkmGsOquo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Tn32EVE1u5rqxdRQK1O8Oxr6El3H5srueopINFJx+GWrd7JV2zLQ4XB5h6z2AzUW7VUEa0eQEl7Ks6Fz5djeknJCRikcDmjxfgExyLUXTfsDoNkMZc64HiMMamjgPw9O/Xd1ZqoTGefTpTNuLGm5/Hy/qiTuhSfcGhQoUuVHC2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LUAgMN9n; arc=none smtp.client-ip=209.85.210.194
+	 MIME-Version; b=B27PIGbP9rLgomspKR3af0sYme2gzvkyaLVAov+ocDMcbWLZia5QtjTkAUlauTJ2tyAMtKQuJsRaOEJEco+7Kn0LRK6PcJmbn4+flVL5cijwF0fj21zOIufvbcsWUuYoAc32tjrqqt5Eg7CTvhkB6dR5gp5owWq7hWII/myaJSc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YXe0la/V; arc=none smtp.client-ip=209.85.210.195
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f194.google.com with SMTP id d2e1a72fcca58-748e81d37a7so5532281b3a.1;
-        Thu, 03 Jul 2025 05:17:15 -0700 (PDT)
+Received: by mail-pf1-f195.google.com with SMTP id d2e1a72fcca58-748e81d37a7so5532309b3a.1;
+        Thu, 03 Jul 2025 05:17:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751545035; x=1752149835; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1751545039; x=1752149839; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BWuHfC4u73RCpQlHsFKd/gTTGs8e+ph3vwAME8lxRN0=;
-        b=LUAgMN9nVA4lBkiBh03KUsw+ounSFm8DUB+WEV73cpQSv0shQiiLUhoyRGP4KyCMsa
-         QZhaJZanSjV1m5TRb/jbixMBu8s6HOF5xg6KxtmV4JcdInt7katdHbhcXRYXHZY3JnmJ
-         Q1hSs9SRKMfgIjI26MdTAzKTyzTUbKm3rXPdo2LywKqf78PFXqNJienDzSH9uqivXMkp
-         yVqOyll8aFxvyHOw/NuEOiBascT1i7AktpP1FKNxiUaJLB8eaK6j7bEOqd7zFlDi5+YT
-         6eKqsQ6S3Yj8MOplR8RA4Baa8O836xoD6shRxBne8P34xlSUEbhNrdRa0cZJxAcSn0uP
-         2s6A==
+        bh=28Fo6CyXq4yc2GWt9/Vp97XENzHrxY10ICTZm8f38CM=;
+        b=YXe0la/VqV21oPWxWwhmn40LadLFp3UA8nTceptbslLdF9HG+LTihwQAxFTyxKjCGT
+         UAzu1CHqXG9uaDc6yxQCJfojIR+QwP1gZTqEuVpbE/7iQp2rG3Sajy0KFgE4+cfAAecl
+         z5Nm15wOpCERLfaKW40R/m6qI9wQ0ZTzMMzQyLMujbDCnFr275EYXVhG0HSYUQKVlF07
+         /2BwcbHGj2Zffa/xMbPr+x6jIg22kNvkoEDUkeuDWBon1LBnvWQvqDHyVtr4Wt/TdgZ/
+         1ceE/Pzg+4raBGHxQzJ4rEmFF27TTgopIhJQN4EocoaL5yd4tUPx/5BXnRJ0ws2Uuakj
+         b2UA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751545035; x=1752149835;
+        d=1e100.net; s=20230601; t=1751545039; x=1752149839;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BWuHfC4u73RCpQlHsFKd/gTTGs8e+ph3vwAME8lxRN0=;
-        b=UIAK4a/LZEdQoWiCgqzn8HWe8liZorE5xNF/2ggsIh/eXuVIqOKpUuq9oWFH11MpGG
-         3W2NIfT3bkq0UqBIOov/+KDCLUhMnI3AKE43TpYHtB9KL25qeu31if3J7cIfDnYNL24u
-         cx9sp4T4mhQOhy00FCUGg86W6Mquyzj1mPp8xICOTjpnvxrnsIFchRvJ2rl8WKZeDY4U
-         9mVsZqtwF+K9p6cDvo15ieLSL5IE3xZil7ZU8fV2oDmyPFLzQKqNMDlD0Q4gnWrx6mRV
-         MzGATyH1ppU9d3aluCOYtVrxSN/ZWWz+wCTSa3MFmCSRZFKXUABslxFKQsCsZ02YCDBg
-         PzgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVNhrNFzO5I7jJUuWksMteev6QfpUMuMylfOfPOj3I59ylSuIMdxA1VbcBppwIrJZglN5Np6aTdsidqG3A=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyy3h0SVDdl7t+pnKcGwDmaeG6trtuYCBcOyHtIXHaYM0J5afjQ
-	qsk029ZyntQkq/R8YOjapAWBHnnw10yvkdkXPm1n/iVMCIgUfXL6hMYk
-X-Gm-Gg: ASbGncveJaqN9d4738a+zqw2hM0j5iRizJrfGr+JAgw7rtBXx5xiCYvksMykCNHN9Ji
-	d+KTOPQRojIlyKc/+Y/HxJ6qIcnP9J+4TT7IMxWWw2n2KUNbtB+cs9iGKFMuVAwmXlXgNnA0qRO
-	v1WD7qFnDLVlTq+OZtQdiPvMOXwIRxiF+O9opYEn0mvaqCnTJPynV4bqXnqUeWKTYC2NuxDka5g
-	Rx7SRH0Ij6U+LSckfPFxNR7VyMZ63ANtBYHBYjdFiAk+cci2vNfQTmW26ojpHjRhrKZEp1DYx5A
-	C6ICKMHPqVN2GJrlOtZyEOvm7VK0+qauepJM8qHwWDmkStNrsUjpPv7OdrDbzzK+we4oT2nHBWw
-	HfPkIWTkKJ07RFg==
-X-Google-Smtp-Source: AGHT+IEKoCZ7oVsEmEszHUFJm490W+S5p0y5tPhOJuYfPbMMBy5D0dqOAxNuy2+bGklv70UWmUC2QA==
-X-Received: by 2002:a05:6a00:84d:b0:749:4fd7:3513 with SMTP id d2e1a72fcca58-74ca8494c91mr3782235b3a.16.1751545034628;
-        Thu, 03 Jul 2025 05:17:14 -0700 (PDT)
+        bh=28Fo6CyXq4yc2GWt9/Vp97XENzHrxY10ICTZm8f38CM=;
+        b=W8Q60+P67JU6CbxChT3wolzDzEmhebTINVVOUyT0zfH7/WaV0YE4Cx0z76REkvWSs0
+         zSmduMXyWjZvLF63VK9JG/ve7v/bzH/xdzbRNJ8e2iIb6uNsyB1Rz7dB+Ryqi+qvalGh
+         ymOjOejjPcR1SBu42hS9a4TBk42lysrl4aej+1sEH676eSOkHEq2zAwkgIcFkuW4ozsS
+         wGFsuqLd5XnOVJbowwo59O+iwX71jI7RQehj+icaaYgYX3Oao5XOtXcYrBFLaup51PdA
+         04h6aSeAzyv7B04avE+h9Wl38WtG045zaJr62SG9M4C7hC7ncLNZQC4bOtcbYpu3yb9h
+         HqSw==
+X-Forwarded-Encrypted: i=1; AJvYcCX1fOW12KFgCppd7ETAWwm9MpuFNIwmHSIqconpJrOUZGMYWQByV1t9HMGgOyKS7H91JPFiYkNq@vger.kernel.org, AJvYcCXccVEldhAgFZR6p6U8uhH0qmQ2ViBWlyiJQ6Gq0Cwz2Sg2RIuKGjk4eO2q8GzbIbLPFRmV/uxZjyAnYks=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzE4QBMH4kiQL0cG/gzd0jtLBk9Aq5s7p9erDGtGUpZabjHo7zb
+	pLSdnbDmnkoim2yLitZYPaIeev+tMkuiEhDumcghFC4M5L03pXJTkMMM
+X-Gm-Gg: ASbGncsn4AX7agpqWW61NkKv+fUC2+SxpnkUH8+msHjNYLd4MmOAnkwLARr7aGz1yqJ
+	GBxVUB+BgLW/FB9aVzOy4LybULRrgSGacHv4ockJQN20zKuXQ7dmFeeZjFT3U+rVigJdq3wpnpq
+	DeVg2rLdwIODbJm8qUOmvbnUucRLf+nEYLtAtUKln8+QP2S4rno3SlEoGvicNiGZh8q7vaLLyb6
+	elLEUnyPoJU3vA5O0mAusjihpl+QOI0ezc61pKZmOllvxa+5zNzy2ZY7Bfua+zJnyu0IkGFQ2gy
+	wXubbQgLOwoHTgQBmmgrkeXGgy9zkeHFxAq9cAiQO9ecYJplxS/BDAfYE6Yq3Yv/UzAZ7gRX/5/
+	/vTE=
+X-Google-Smtp-Source: AGHT+IEM5eV3fRj5yi8hIC5vT84TLtxQ3pa+WK0idFVGhsfh72X37ILc/+Pfo0jc6s2BRG6nQs2fjw==
+X-Received: by 2002:a05:6a00:1911:b0:736:3ea8:4805 with SMTP id d2e1a72fcca58-74c99821e39mr3892571b3a.7.1751545038589;
+        Thu, 03 Jul 2025 05:17:18 -0700 (PDT)
 Received: from localhost.localdomain ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74af5575895sm18591081b3a.94.2025.07.03.05.17.11
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74af5575895sm18591081b3a.94.2025.07.03.05.17.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jul 2025 05:17:14 -0700 (PDT)
+        Thu, 03 Jul 2025 05:17:18 -0700 (PDT)
 From: Menglong Dong <menglong8.dong@gmail.com>
 X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
 To: alexei.starovoitov@gmail.com,
@@ -80,6 +80,7 @@ To: alexei.starovoitov@gmail.com,
 	jolsa@kernel.org
 Cc: bpf@vger.kernel.org,
 	Menglong Dong <dongml2@chinatelecom.cn>,
+	"H. Peter Anvin" <hpa@zytor.com>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
 	Eduard Zingerman <eddyz87@gmail.com>,
 	Song Liu <song@kernel.org>,
@@ -88,10 +89,11 @@ Cc: bpf@vger.kernel.org,
 	KP Singh <kpsingh@kernel.org>,
 	Stanislav Fomichev <sdf@fomichev.me>,
 	Hao Luo <haoluo@google.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2 01/18] bpf: add function hash table for tracing-multi
-Date: Thu,  3 Jul 2025 20:15:04 +0800
-Message-Id: <20250703121521.1874196-2-dongml2@chinatelecom.cn>
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH bpf-next v2 02/18] x86,bpf: add bpf_global_caller for global trampoline
+Date: Thu,  3 Jul 2025 20:15:05 +0800
+Message-Id: <20250703121521.1874196-3-dongml2@chinatelecom.cn>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250703121521.1874196-1-dongml2@chinatelecom.cn>
 References: <20250703121521.1874196-1-dongml2@chinatelecom.cn>
@@ -103,513 +105,495 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Implement a hash table to store the BPF progs and the function metadata.
-The key of this hash table is the kernel function address, and following
-data is stored in the hash value:
+Implement the bpf global trampoline "bpf_global_caller" for x86_64. Thanks
+to Alexei's advice, we implement most of the global trampoline with C
+instead of asm.
 
-- The BPF progs, whose type is FENTRY, FEXIT or MODIFY_RETURN. The struct
-  kfunc_md_tramp_prog is introduced to store the BPF prog and the cookie,
-  and makes the BPF progs of the same type a list with the "next" field.
-- The kernel function address
-- The kernel function arguments count
-- If origin call needed
+We implement the entry of the trampoline with a "__naked" function, who
+will save the regs to an array on the stack and call
+bpf_global_caller_run(). The entry will pass the address of the array and
+the address of the rip to bpf_global_caller_run().
 
-The hlist is used, and we will grow the budgets when the entries count
-greater than 90% of the budget count by making it double. Meanwhile, we
-will shrink the budget when the entries count less than 30% of the budget
-length.
+In bpf_global_caller_run(), we will find the metadata by the function ip.
+For origin call case, we call kfunc_md_enter() to protect the metadata,
+which is similar to __bpf_tramp_enter(). Then we will call all the BPF
+progs, just like what BPF trampoline do.
 
-We don't use rhashtable here, as the compiler is not clever enough and it
-refused to inline the hash lookup for me, which bring in addition overhead
-in the following BPF global trampoline.
+Without origin call, the bpf_global_caller_run() will return 0, and the
+entry will restore the regs and return; In origin call case, it will
+return 1, and the entry will make the RSP skip the rip before return.
 
-The release of the metadata is controlled by the percpu ref and RCU
-together, and have similar logic to the release of bpf trampoline image in
-bpf_tramp_image_put().
+In the FENTRY case, the performance of global trampoline is ~10% slower
+than BPF trampoline. The global trampoline is optimized by inline some
+function call, such as __bpf_prog_enter_recur and __bpf_prog_exit_recur.
+However, more condition, branch and memory read is used in the
+bpf_global_caller.
 
-The whole function will be used in the next patch.
+In the FEXIT and MODIFY_RETURN cases, the performance of the global
+trampoline is the same(or even better) than BPF trampoline. It make sense,
+as we also make the function call to __bpf_tramp_enter and
+__bpf_tramp_exit inlined in the bpf_global_caller.
 
-Link: https://lore.kernel.org/bpf/CADxym3anLzM6cAkn_z71GDd_VeKiqqk1ts=xuiP7pr4PO6USPA@mail.gmail.com/
-Link: https://lore.kernel.org/bpf/CAADnVQ+G+mQPJ+O1Oc9+UW=J17CGNC5B=usCmUDxBA-ze+gZGw@mail.gmail.com/
+In fact, we can do more optimization to the bpf_global_caller. For
+example, we can define more bpf_global_caller_xx_run() function and make
+the "if (prog->sleepable)" and "if (do_origin_call)" fixed. It can be done
+in a next series. After such optimization, I believe the performance of
+FENTRY_MULTI can be closer or the same to FENTRY. And for the
+FEXIT/MODIFY_RETURN cases, the performance can be better.
+
 Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
 ---
 v2:
-- implement the function metadata with hash table, as Alexei advised
+- rewrite the global trampoline with C instead of asm
 ---
- include/linux/kfunc_md.h |  91 ++++++++++
- kernel/bpf/Makefile      |   1 +
- kernel/bpf/kfunc_md.c    | 352 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 444 insertions(+)
- create mode 100644 include/linux/kfunc_md.h
- create mode 100644 kernel/bpf/kfunc_md.c
+ arch/x86/Kconfig            |   4 +
+ arch/x86/net/bpf_jit_comp.c | 268 ++++++++++++++++++++++++++++++++++++
+ include/linux/bpf_tramp.h   |  72 ++++++++++
+ kernel/bpf/trampoline.c     |  23 +---
+ 4 files changed, 346 insertions(+), 21 deletions(-)
+ create mode 100644 include/linux/bpf_tramp.h
 
-diff --git a/include/linux/kfunc_md.h b/include/linux/kfunc_md.h
-new file mode 100644
-index 000000000000..1a766aa160f5
---- /dev/null
-+++ b/include/linux/kfunc_md.h
-@@ -0,0 +1,91 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_KFUNC_MD_H
-+#define _LINUX_KFUNC_MD_H
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 71019b3b54ea..96962c61419a 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -155,6 +155,7 @@ config X86
+ 	select ARCH_WANTS_THP_SWAP		if X86_64
+ 	select ARCH_HAS_PARANOID_L1D_FLUSH
+ 	select ARCH_WANT_IRQS_OFF_ACTIVATE_MM
++	select ARCH_HAS_BPF_GLOBAL_CALLER	if X86_64
+ 	select BUILDTIME_TABLE_SORT
+ 	select CLKEVT_I8253
+ 	select CLOCKSOURCE_WATCHDOG
+@@ -432,6 +433,9 @@ config PGTABLE_LEVELS
+ 	default 3 if X86_PAE
+ 	default 2
+ 
++config ARCH_HAS_BPF_GLOBAL_CALLER
++	bool
 +
-+#include <linux/kernel.h>
-+#include <linux/bpf.h>
-+#include <linux/rhashtable.h>
-+
-+struct kfunc_md_tramp_prog {
-+	struct kfunc_md_tramp_prog *next;
-+	struct bpf_prog *prog;
-+	u64 cookie;
-+	struct rcu_head rcu;
-+};
-+
-+struct kfunc_md {
-+	struct hlist_node hash;
-+	struct rcu_head rcu;
-+	unsigned long func;
-+	struct kfunc_md_tramp_prog *bpf_progs[BPF_TRAMP_MAX];
-+	struct percpu_ref pcref;
-+	u16 users;
-+	bool bpf_origin_call;
-+	u8 bpf_prog_cnt;
-+	u8 nr_args;
-+};
-+
-+struct kfunc_md_array {
-+	atomic_t used;
-+	struct rcu_head rcu;
-+	int hash_bits;
-+	struct hlist_head mds[];
-+};
-+
-+extern struct kfunc_md_array __rcu *kfunc_mds;
-+
-+struct kfunc_md *kfunc_md_create(unsigned long ip, int nr_args);
-+struct kfunc_md *kfunc_md_get(unsigned long ip);
-+void kfunc_md_put(struct kfunc_md *meta);
-+bool kfunc_md_arch_support(int *insn, int *data);
-+
-+int kfunc_md_bpf_ips(void ***ips, int nr_args);
-+int kfunc_md_bpf_unlink(struct kfunc_md *md, struct bpf_prog *prog, int type);
-+int kfunc_md_bpf_link(struct kfunc_md *md, struct bpf_prog *prog, int type,
-+		      u64 cookie);
-+
-+static __always_inline notrace struct hlist_head *
-+kfunc_md_hash_head(struct kfunc_md_array *mds, unsigned long ip)
-+{
-+	return &mds->mds[hash_ptr((void *)ip, mds->hash_bits)];
-+}
-+
-+static __always_inline notrace struct kfunc_md *
-+__kfunc_md_get(struct kfunc_md_array *mds, unsigned long ip)
-+{
-+	struct hlist_head *head;
-+	struct kfunc_md *md;
-+
-+	head = kfunc_md_hash_head(mds, ip);
-+	hlist_for_each_entry_rcu_notrace(md, head, hash) {
-+		if (md->func == ip)
-+			return md;
-+	}
-+
-+	return NULL;
-+}
-+
-+/* This function will be called in the bpf global trampoline, so it can't
-+ * be traced, and the "notrace" is necessary.
-+ */
-+static __always_inline notrace struct kfunc_md *kfunc_md_get_rcu(unsigned long ip)
-+{
-+	return __kfunc_md_get(rcu_dereference_raw(kfunc_mds), ip);
-+}
-+
-+static __always_inline notrace void kfunc_md_enter(struct kfunc_md *md)
-+{
-+	percpu_ref_get(&md->pcref);
-+}
-+
-+static __always_inline notrace void kfunc_md_exit(struct kfunc_md *md)
-+{
-+	percpu_ref_put(&md->pcref);
-+}
-+
-+static inline void kfunc_md_put_ip(unsigned long ip)
-+{
-+	kfunc_md_put(kfunc_md_get(ip));
-+}
-+
-+#endif
-diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-index 3a335c50e6e3..a8a404e82e3d 100644
---- a/kernel/bpf/Makefile
-+++ b/kernel/bpf/Makefile
-@@ -14,6 +14,7 @@ obj-$(CONFIG_BPF_SYSCALL) += bpf_local_storage.o bpf_task_storage.o
- obj-${CONFIG_BPF_LSM}	  += bpf_inode_storage.o
- obj-$(CONFIG_BPF_SYSCALL) += disasm.o mprog.o
- obj-$(CONFIG_BPF_JIT) += trampoline.o
-+obj-$(CONFIG_BPF_JIT) += kfunc_md.o
- obj-$(CONFIG_BPF_SYSCALL) += btf.o memalloc.o rqspinlock.o
- ifeq ($(CONFIG_MMU)$(CONFIG_64BIT),yy)
- obj-$(CONFIG_BPF_SYSCALL) += arena.o range_tree.o
-diff --git a/kernel/bpf/kfunc_md.c b/kernel/bpf/kfunc_md.c
-new file mode 100644
-index 000000000000..152d6741d06d
---- /dev/null
-+++ b/kernel/bpf/kfunc_md.c
-@@ -0,0 +1,352 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 ChinaTelecom */
-+
-+#include <linux/slab.h>
-+#include <linux/memory.h>
-+#include <linux/rcupdate.h>
-+#include <linux/ftrace.h>
-+#include <linux/rhashtable.h>
+ menu "Processor type and features"
+ 
+ config SMP
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 15672cb926fc..8d2fc436a748 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -11,6 +11,8 @@
+ #include <linux/bpf.h>
+ #include <linux/memory.h>
+ #include <linux/sort.h>
++#include <linux/bpf_tramp.h>
 +#include <linux/kfunc_md.h>
+ #include <asm/extable.h>
+ #include <asm/ftrace.h>
+ #include <asm/set_memory.h>
+@@ -3413,6 +3415,272 @@ int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
+ 	return ret;
+ }
+ 
++#define FUNC_ARGS_0		((2 - 1) * 8)
++#define FUNC_ARGS_1		((2 + 0) * 8)
++#define FUNC_ARGS_2		((2 + 1) * 8)
++#define FUNC_ARGS_3		((2 + 2) * 8)
++#define FUNC_ARGS_4		((2 + 3) * 8)
++#define FUNC_ARGS_5		((2 + 4) * 8)
++#define FUNC_ARGS_6		((2 + 5) * 8)
 +
-+#include <uapi/linux/bpf.h>
++#define SAVE_ARGS_0
++#define SAVE_ARGS_1						\
++	"movq %rdi, " __stringify(FUNC_ARGS_1) "(%rsp)\n"
++#define SAVE_ARGS_2 SAVE_ARGS_1					\
++	"movq %rsi, " __stringify(FUNC_ARGS_2) "(%rsp)\n"
++#define SAVE_ARGS_3 SAVE_ARGS_2					\
++	"movq %rdx, " __stringify(FUNC_ARGS_3) "(%rsp)\n"
++#define SAVE_ARGS_4 SAVE_ARGS_3					\
++	"movq %rcx, " __stringify(FUNC_ARGS_4) "(%rsp)\n"
++#define SAVE_ARGS_5 SAVE_ARGS_4					\
++	"movq %r8, " __stringify(FUNC_ARGS_5) "(%rsp)\n"
++#define SAVE_ARGS_6 SAVE_ARGS_5					\
++	"movq %r9, " __stringify(FUNC_ARGS_6) "(%rsp)\n"	\
 +
-+#define MIN_KFUNC_MD_ARRAY_BITS 4
-+struct kfunc_md_array default_mds = {
-+	.used = ATOMIC_INIT(0),
-+	.hash_bits = MIN_KFUNC_MD_ARRAY_BITS,
-+	.mds = {
-+		[0 ... ((1 << MIN_KFUNC_MD_ARRAY_BITS) - 1)] = HLIST_HEAD_INIT,
-+	},
-+};
-+struct kfunc_md_array __rcu *kfunc_mds = &default_mds;
-+EXPORT_SYMBOL_GPL(kfunc_mds);
++#define RESTORE_ARGS_0
++#define RESTORE_ARGS_1						\
++	"movq " __stringify(FUNC_ARGS_1) "(%rsp), %rdi\n"
++#define RESTORE_ARGS_2 RESTORE_ARGS_1				\
++	"movq " __stringify(FUNC_ARGS_2) "(%rsp), %rsi\n"
++#define RESTORE_ARGS_3 RESTORE_ARGS_2				\
++	"movq " __stringify(FUNC_ARGS_3) "(%rsp), %rdx\n"
++#define RESTORE_ARGS_4 RESTORE_ARGS_3				\
++	"movq " __stringify(FUNC_ARGS_4) "(%rsp), %rcx\n"
++#define RESTORE_ARGS_5 RESTORE_ARGS_4				\
++	"movq " __stringify(FUNC_ARGS_5) "(%rsp), %r8\n"
++#define RESTORE_ARGS_6 RESTORE_ARGS_5				\
++	"movq " __stringify(FUNC_ARGS_6) "(%rsp), %r9\n"
 +
-+static DEFINE_MUTEX(kfunc_md_mutex);
++#define RESTORE_ORIGIN_0
++#define RESTORE_ORIGIN_1						\
++	"movq " __stringify(FUNC_ARGS_1 - FUNC_ARGS_1) "(%[args]), %%rdi\n"
++#define RESTORE_ORIGIN_2 RESTORE_ORIGIN_1				\
++	"movq " __stringify(FUNC_ARGS_2 - FUNC_ARGS_1) "(%[args]), %%rsi\n"
++#define RESTORE_ORIGIN_3 RESTORE_ORIGIN_2				\
++	"movq " __stringify(FUNC_ARGS_3 - FUNC_ARGS_1) "(%[args]), %%rdx\n"
++#define RESTORE_ORIGIN_4 RESTORE_ORIGIN_3				\
++	"movq " __stringify(FUNC_ARGS_4 - FUNC_ARGS_1) "(%[args]), %%rcx\n"
++#define RESTORE_ORIGIN_5 RESTORE_ORIGIN_4				\
++	"movq " __stringify(FUNC_ARGS_5 - FUNC_ARGS_1) "(%[args]), %%r8\n"
++#define RESTORE_ORIGIN_6 RESTORE_ORIGIN_5				\
++	"movq " __stringify(FUNC_ARGS_6 - FUNC_ARGS_1) "(%[args]), %%r9\n"
 +
-+static int kfunc_md_array_inc(void);
-+
-+static void kfunc_md_release_rcu(struct rcu_head *rcu)
++static __always_inline void
++do_origin_call(unsigned long *args, unsigned long *ip, int nr_args)
 +{
-+	struct kfunc_md *md;
-+
-+	md = container_of(rcu, struct kfunc_md, rcu);
-+	/* Step 4, free the md */
-+	kfree(md);
++	/* Following code will be optimized by the compiler, as nr_args
++	 * is a const, and there will be no condition here.
++	 */
++	if (nr_args == 0) {
++		asm volatile(
++			RESTORE_ORIGIN_0 CALL_NOSPEC "\n"
++			"movq %%rax, %0\n"
++			: "=m"(args[nr_args]), ASM_CALL_CONSTRAINT
++			: [args]"r"(args), [thunk_target]"r"(*ip)
++			:
++		);
++	} else if (nr_args == 1) {
++		asm volatile(
++			RESTORE_ORIGIN_1 CALL_NOSPEC "\n"
++			"movq %%rax, %0\n"
++			: "=m"(args[nr_args]), ASM_CALL_CONSTRAINT
++			: [args]"r"(args), [thunk_target]"r"(*ip)
++			: "rdi"
++		);
++	} else if (nr_args == 2) {
++		asm volatile(
++			RESTORE_ORIGIN_2 CALL_NOSPEC "\n"
++			"movq %%rax, %0\n"
++			: "=m"(args[nr_args]), ASM_CALL_CONSTRAINT
++			: [args]"r"(args), [thunk_target]"r"(*ip)
++			: "rdi", "rsi"
++		);
++	} else if (nr_args == 3) {
++		asm volatile(
++			RESTORE_ORIGIN_3 CALL_NOSPEC "\n"
++			"movq %%rax, %0\n"
++			: "=m"(args[nr_args]), ASM_CALL_CONSTRAINT
++			: [args]"r"(args), [thunk_target]"r"(*ip)
++			: "rdi", "rsi", "rdx"
++		);
++	} else if (nr_args == 4) {
++		asm volatile(
++			RESTORE_ORIGIN_4 CALL_NOSPEC "\n"
++			"movq %%rax, %0\n"
++			: "=m"(args[nr_args]), ASM_CALL_CONSTRAINT
++			: [args]"r"(args), [thunk_target]"r"(*ip)
++			: "rdi", "rsi", "rdx", "rcx"
++		);
++	} else if (nr_args == 5) {
++		asm volatile(
++			RESTORE_ORIGIN_5 CALL_NOSPEC "\n"
++			"movq %%rax, %0\n"
++			: "=m"(args[nr_args]), ASM_CALL_CONSTRAINT
++			: [args]"r"(args), [thunk_target]"r"(*ip)
++			: "rdi", "rsi", "rdx", "rcx", "r8"
++		);
++	} else if (nr_args == 6) {
++		asm volatile(
++			RESTORE_ORIGIN_6 CALL_NOSPEC "\n"
++			"movq %%rax, %0\n"
++			: "=m"(args[nr_args]), ASM_CALL_CONSTRAINT
++			: [args]"r"(args), [thunk_target]"r"(*ip)
++			: "rdi", "rsi", "rdx", "rcx", "r8", "r9"
++		);
++	}
 +}
 +
-+static void kfunc_md_release_rcu_tasks(struct rcu_head *rcu)
++static __always_inline notrace void
++run_tramp_prog(struct kfunc_md_tramp_prog *tramp_prog,
++	       struct bpf_tramp_run_ctx *run_ctx, unsigned long *args)
 +{
-+	struct kfunc_md *md;
++	struct bpf_prog *prog;
++	u64 start_time;
 +
-+	md = container_of(rcu, struct kfunc_md, rcu);
-+	/* Step 3, wait for the nornal progs and bfp_global_caller to finish */
-+	call_rcu_tasks(&md->rcu, kfunc_md_release_rcu);
++	while (tramp_prog) {
++		prog = tramp_prog->prog;
++		run_ctx->bpf_cookie = tramp_prog->cookie;
++		start_time = bpf_gtramp_enter(prog, run_ctx);
++
++		if (likely(start_time)) {
++			asm volatile(
++				CALL_NOSPEC "\n"
++				: : [thunk_target]"r"(prog->bpf_func), [args]"D"(args)
++			);
++		}
++
++		bpf_gtramp_exit(prog, start_time, run_ctx);
++		tramp_prog = tramp_prog->next;
++	}
 +}
 +
-+static void kfunc_md_release(struct percpu_ref *pcref)
++static __always_inline notrace int
++bpf_global_caller_run(unsigned long *args, unsigned long *ip, int nr_args)
 +{
++	unsigned long origin_ip = (*ip) & 0xfffffffffffffff0; // Align to 16 bytes
++	struct kfunc_md_tramp_prog *tramp_prog;
++	struct bpf_tramp_run_ctx run_ctx;
 +	struct kfunc_md *md;
-+
-+	md = container_of(pcref, struct kfunc_md, pcref);
-+	percpu_ref_exit(&md->pcref);
-+
-+	/* Step 2, wait for sleepable progs to finish. */
-+	call_rcu_tasks_trace(&md->rcu, kfunc_md_release_rcu_tasks);
-+}
-+
-+struct kfunc_md *kfunc_md_get(unsigned long ip)
-+{
-+	struct kfunc_md_array *mds;
-+	struct kfunc_md *md;
++	bool do_orgin;
 +
 +	rcu_read_lock();
-+	mds = rcu_dereference(kfunc_mds);
-+	md = __kfunc_md_get(mds, ip);
++	md = kfunc_md_get_rcu(origin_ip);
++	do_orgin = md->bpf_origin_call;
++	if (do_orgin)
++		kfunc_md_enter(md);
 +	rcu_read_unlock();
 +
-+	return md;
-+}
-+EXPORT_SYMBOL_GPL(kfunc_md_get);
++	/* save the origin function ip for bpf_get_func_ip() */
++	*(args - 2) = origin_ip;
++	*(args - 1) = nr_args;
 +
-+static struct kfunc_md *__kfunc_md_create(struct kfunc_md_array *mds, unsigned long ip,
-+					  int nr_args)
-+{
-+	struct kfunc_md *md = __kfunc_md_get(mds, ip);
-+	int err;
++	run_tramp_prog(md->bpf_progs[BPF_TRAMP_FENTRY], &run_ctx, args);
 +
-+	if (md) {
-+		md->users++;
-+		return md;
-+	}
-+
-+	md = kzalloc(sizeof(*md), GFP_KERNEL);
-+	if (!md)
-+		return NULL;
-+
-+	md->users = 1;
-+	md->func = ip;
-+	md->nr_args = nr_args;
-+
-+	err = percpu_ref_init(&md->pcref, kfunc_md_release, 0, GFP_KERNEL);
-+	if (err) {
-+		kfree(md);
-+		return NULL;
-+	}
-+
-+	hlist_add_head_rcu(&md->hash, kfunc_md_hash_head(mds, ip));
-+	atomic_inc(&mds->used);
-+
-+	return md;
-+}
-+
-+struct kfunc_md *kfunc_md_create(unsigned long ip, int nr_args)
-+{
-+	struct kfunc_md *md = NULL;
-+
-+	mutex_lock(&kfunc_md_mutex);
-+
-+	if (kfunc_md_array_inc())
-+		goto out;
-+
-+	md = __kfunc_md_create(kfunc_mds, ip, nr_args);
-+out:
-+	mutex_unlock(&kfunc_md_mutex);
-+
-+	return md;
-+}
-+EXPORT_SYMBOL_GPL(kfunc_md_create);
-+
-+static int kfunc_md_array_adjust(bool inc)
-+{
-+	struct kfunc_md_array *new_mds, *old_mds;
-+	struct kfunc_md *md, *new_md;
-+	struct hlist_node *n;
-+	int size, hash_bits, i;
-+
-+	hash_bits = kfunc_mds->hash_bits;
-+	hash_bits += inc ? 1 : -1;
-+
-+	size = sizeof(*new_mds) + sizeof(struct hlist_head) * (1 << hash_bits);
-+	new_mds = kmalloc(size, GFP_KERNEL | __GFP_ZERO);
-+	if (!new_mds)
-+		return -ENOMEM;
-+
-+	new_mds->hash_bits = hash_bits;
-+	for (i = 0; i < (1 << new_mds->hash_bits); i++)
-+		INIT_HLIST_HEAD(&new_mds->mds[i]);
-+
-+	/* copy all the mds from kfunc_mds to new_mds */
-+	for (i = 0; i < (1 << kfunc_mds->hash_bits); i++) {
-+		hlist_for_each_entry(md, &kfunc_mds->mds[i], hash) {
-+			new_md = __kfunc_md_create(new_mds, md->func, md->nr_args);
-+			if (!new_md)
-+				goto err_out;
-+
-+			new_md->bpf_prog_cnt = md->bpf_prog_cnt;
-+			new_md->bpf_origin_call = md->bpf_origin_call;
-+			new_md->users = md->users;
-+
-+			memcpy(new_md->bpf_progs, md->bpf_progs, sizeof(md->bpf_progs));
-+		}
-+	}
-+
-+	old_mds = kfunc_mds;
-+	rcu_assign_pointer(kfunc_mds, new_mds);
-+	synchronize_rcu();
-+
-+	/* free all the mds in the old_mds. See kfunc_md_put() for the
-+	 * complete release process.
-+	 */
-+	for (i = 0; i < (1 << old_mds->hash_bits); i++) {
-+		hlist_for_each_entry_safe(md, n, &old_mds->mds[i], hash) {
-+			percpu_ref_kill(&md->pcref);
-+			hlist_del(&md->hash);
-+		}
-+	}
-+
-+	if (old_mds != &default_mds)
-+		kfree_rcu(old_mds, rcu);
-+
-+	return 0;
-+
-+err_out:
-+	for (i = 0; i < (1 << new_mds->hash_bits); i++) {
-+		hlist_for_each_entry_safe(md, n, &new_mds->mds[i], hash) {
-+			percpu_ref_exit(&md->pcref);
-+			hlist_del(&md->hash);
-+			kfree(md);
-+		}
-+	}
-+	return -ENOMEM;
-+}
-+
-+static int kfunc_md_array_inc(void)
-+{
-+	/* increase the hash table if greater than 90% */
-+	if (atomic_read(&kfunc_mds->used) * 10 < (1 << (kfunc_mds->hash_bits)) * 9)
-+		return 0;
-+	return kfunc_md_array_adjust(true);
-+}
-+
-+static int kfunc_md_array_dec(void)
-+{
-+	/* decrease the hash table if less than 30%. */
-+	if (atomic_read(&kfunc_mds->used) * 10 > (1 << (kfunc_mds->hash_bits)) * 3)
++	/* no fexit and modify_return, return directly */
++	if (!do_orgin)
 +		return 0;
 +
-+	if (kfunc_mds->hash_bits <= MIN_KFUNC_MD_ARRAY_BITS)
-+		return 0;
-+
-+	return kfunc_md_array_adjust(false);
-+}
-+
-+void kfunc_md_put(struct kfunc_md *md)
-+{
-+	if (!md || WARN_ON_ONCE(md->users <= 0))
-+		return;
-+
-+	mutex_lock(&kfunc_md_mutex);
-+	md->users--;
-+	if (md->users > 0)
-+		goto out_unlock;
-+
-+	hlist_del_rcu(&md->hash);
-+	atomic_dec(&kfunc_mds->used);
-+	/* Step 1, use percpu_ref_kill to wait for the origin function to
-+	 * finish. See kfunc_md_release for step 2.
-+	 */
-+	percpu_ref_kill(&md->pcref);
-+	kfunc_md_array_dec();
-+
-+out_unlock:
-+	mutex_unlock(&kfunc_md_mutex);
-+}
-+EXPORT_SYMBOL_GPL(kfunc_md_put);
-+
-+static bool kfunc_md_bpf_check(struct kfunc_md *md, int nr_args)
-+{
-+	return md->bpf_prog_cnt && md->nr_args == nr_args;
-+}
-+
-+int kfunc_md_bpf_ips(void ***ips_ptr, int nr_args)
-+{
-+	struct kfunc_md *md;
-+	int count, res = 0;
-+	void **ips;
-+
-+	mutex_lock(&kfunc_md_mutex);
-+	count = atomic_read(&kfunc_mds->used);
-+	if (count <= 0)
-+		goto out_unlock;
-+
-+	ips = kmalloc_array(count, sizeof(*ips), GFP_KERNEL);
-+	if (!ips) {
-+		res = -ENOMEM;
-+		goto out_unlock;
-+	}
-+
-+	for (int j = 0; j < (1 << kfunc_mds->hash_bits); j++) {
-+		hlist_for_each_entry(md, &kfunc_mds->mds[j], hash) {
-+			if (kfunc_md_bpf_check(md, nr_args))
-+				ips[res++] = (void *)md->func;
-+		}
-+	}
-+	*ips_ptr = ips;
-+
-+out_unlock:
-+	mutex_unlock(&kfunc_md_mutex);
-+
-+	return res;
-+}
-+
-+int kfunc_md_bpf_link(struct kfunc_md *md, struct bpf_prog *prog, int type,
-+		      u64 cookie)
-+{
-+	struct kfunc_md_tramp_prog *tramp_prog, **last;
-+	int err = 0;
-+
-+	mutex_lock(&kfunc_md_mutex);
-+	tramp_prog = md->bpf_progs[type];
-+	/* check if the prog is already linked */
++	/* modify return case */
++	tramp_prog = md->bpf_progs[BPF_TRAMP_MODIFY_RETURN];
++	/* initialize return value */
++	args[nr_args] = 0;
 +	while (tramp_prog) {
-+		if (tramp_prog->prog == prog) {
-+			err = -EEXIST;
-+			goto out_unlock;
++		struct bpf_prog *prog;
++		u64 start_time, ret;
++
++		prog = tramp_prog->prog;
++		run_ctx.bpf_cookie = tramp_prog->cookie;
++		start_time = bpf_gtramp_enter(prog, &run_ctx);
++
++		if (likely(start_time)) {
++			asm volatile(
++				CALL_NOSPEC "\n"
++				: "=a"(ret), ASM_CALL_CONSTRAINT
++				: [thunk_target]"r"(prog->bpf_func),
++				  [args]"D"(args)
++			);
++			args[nr_args] = ret;
++		} else {
++			ret = 0;
 +		}
++
++		bpf_gtramp_exit(prog, start_time, &run_ctx);
++		if (ret)
++			goto do_fexit;
 +		tramp_prog = tramp_prog->next;
 +	}
 +
-+	tramp_prog = kmalloc(sizeof(*tramp_prog), GFP_KERNEL);
-+	if (!tramp_prog) {
-+		err = -ENOMEM;
-+		goto out_unlock;
++	/* restore the function arguments and call the origin function */
++	do_origin_call(args, ip, nr_args);
++do_fexit:
++	run_tramp_prog(md->bpf_progs[BPF_TRAMP_FEXIT], &run_ctx, args);
++	kfunc_md_exit(md);
++	return 1;
++}
++
++/* Layout of the stack frame:
++ *   rip		----> 8 bytes
++ *   return value	----> 8 bytes
++ *   args		----> 8 * 6 bytes
++ *   arg count		----> 8 bytes
++ *   origin ip		----> 8 bytes
++ */
++#define stack_size __stringify(8 + 8 + 6 * 8 + 8)
++
++#define CALLER_DEFINE(name, nr_args)					\
++static __always_used __no_stack_protector notrace int			\
++name##_run(unsigned long *args, unsigned long *ip)			\
++{									\
++	return bpf_global_caller_run(args, ip, nr_args);		\
++}									\
++static __naked void name(void)						\
++{									\
++	asm volatile(							\
++		"subq $" stack_size ", %rsp\n"				\
++		SAVE_ARGS_##nr_args					\
++	);								\
++									\
++	asm volatile(							\
++		"leaq " __stringify(FUNC_ARGS_1) "(%rsp), %rdi\n"	\
++		"leaq " stack_size "(%rsp), %rsi\n"			\
++		"call " #name "_run\n"					\
++		"test %rax, %rax\n"					\
++		"jne 1f\n"						\
++	);								\
++									\
++	asm volatile(							\
++		RESTORE_ARGS_##nr_args					\
++		"addq $" stack_size ", %rsp\n"				\
++		ASM_RET							\
++	);								\
++									\
++	asm volatile(							\
++		"1:\n"							\
++		"movq " __stringify(FUNC_ARGS_##nr_args + 8)		\
++		"(%rsp), %rax\n"					\
++		"addq $(" stack_size " + 8), %rsp\n"			\
++		ASM_RET);						\
++}									\
++STACK_FRAME_NON_STANDARD(name)
++
++CALLER_DEFINE(bpf_global_caller_0, 0);
++CALLER_DEFINE(bpf_global_caller_1, 1);
++CALLER_DEFINE(bpf_global_caller_2, 2);
++CALLER_DEFINE(bpf_global_caller_3, 3);
++CALLER_DEFINE(bpf_global_caller_4, 4);
++CALLER_DEFINE(bpf_global_caller_5, 5);
++CALLER_DEFINE(bpf_global_caller_6, 6);
++
++void *bpf_gloabl_caller_array[MAX_BPF_FUNC_ARGS + 1] = {
++	bpf_global_caller_0,
++	bpf_global_caller_1,
++	bpf_global_caller_2,
++	bpf_global_caller_3,
++	bpf_global_caller_4,
++	bpf_global_caller_5,
++	bpf_global_caller_6,
++};
++
+ static int emit_bpf_dispatcher(u8 **pprog, int a, int b, s64 *progs, u8 *image, u8 *buf)
+ {
+ 	u8 *jg_reloc, *prog = *pprog;
+diff --git a/include/linux/bpf_tramp.h b/include/linux/bpf_tramp.h
+new file mode 100644
+index 000000000000..32447fcfc017
+--- /dev/null
++++ b/include/linux/bpf_tramp.h
+@@ -0,0 +1,72 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++#ifndef __LINUX_BPF_TRAMP_H__
++#define __LINUX_BPF_TRAMP_H__
++#ifdef CONFIG_BPF_JIT
++#include <linux/filter.h>
++
++#ifdef CONFIG_ARCH_HAS_BPF_GLOBAL_CALLER
++extern void *bpf_gloabl_caller_array[MAX_BPF_FUNC_ARGS + 1];
++#endif
++
++void notrace __update_prog_stats(struct bpf_prog *prog, u64 start);
++
++#define NO_START_TIME 1
++static __always_inline u64 notrace bpf_prog_start_time(void)
++{
++	u64 start = NO_START_TIME;
++
++	if (static_branch_unlikely(&bpf_stats_enabled_key)) {
++		start = sched_clock();
++		if (unlikely(!start))
++			start = NO_START_TIME;
 +	}
-+
-+	WRITE_ONCE(tramp_prog->prog, prog);
-+	WRITE_ONCE(tramp_prog->cookie, cookie);
-+	WRITE_ONCE(tramp_prog->next, NULL);
-+
-+	/* add the new prog to the list tail */
-+	last = &md->bpf_progs[type];
-+	while (*last)
-+		last = &(*last)->next;
-+
-+	WRITE_ONCE(*last, tramp_prog);
-+
-+	md->bpf_prog_cnt++;
-+	if (type == BPF_TRAMP_FEXIT || type == BPF_TRAMP_MODIFY_RETURN)
-+		md->bpf_origin_call = true;
-+
-+out_unlock:
-+	mutex_unlock(&kfunc_md_mutex);
-+	return err;
++	return start;
 +}
 +
-+static void link_free_rcu(struct rcu_head *rcu)
++static __always_inline void notrace update_prog_stats(struct bpf_prog *prog,
++						      u64 start)
 +{
-+	struct kfunc_md_tramp_prog *tramp_prog;
-+
-+	tramp_prog = container_of(rcu, struct kfunc_md_tramp_prog, rcu);
-+	/* Step 3, free the tramp_prog */
-+	kfree(tramp_prog);
++	if (static_branch_unlikely(&bpf_stats_enabled_key))
++		__update_prog_stats(prog, start);
 +}
 +
-+static void link_free_rcu_tasks(struct rcu_head *rcu)
++static __always_inline u64 notrace
++bpf_gtramp_enter(struct bpf_prog *prog, struct bpf_tramp_run_ctx *run_ctx)
++	__acquires(RCU)
 +{
-+	struct kfunc_md_tramp_prog *tramp_prog;
-+
-+	tramp_prog = container_of(rcu, struct kfunc_md_tramp_prog, rcu);
-+	/* Step 2, wait for normal progs finish, which means all the progs
-+	 * in the list finished.
-+	 */
-+	call_rcu_tasks(&tramp_prog->rcu, link_free_rcu);
-+}
-+
-+int kfunc_md_bpf_unlink(struct kfunc_md *md, struct bpf_prog *prog, int type)
-+{
-+	struct kfunc_md_tramp_prog *cur, **prev, **progs;
-+
-+	mutex_lock(&kfunc_md_mutex);
-+	progs = md->bpf_progs;
-+	prev = progs + type;
-+	while (*prev && (*prev)->prog != prog)
-+		prev = &(*prev)->next;
-+
-+	cur = *prev;
-+	if (!cur) {
-+		mutex_unlock(&kfunc_md_mutex);
-+		return -EINVAL;
++	if (unlikely(prog->sleepable)) {
++		rcu_read_lock_trace();
++		might_fault();
++	} else {
++		rcu_read_lock();
 +	}
++	migrate_disable();
 +
-+	WRITE_ONCE(*prev, cur->next);
-+	WRITE_ONCE(md->bpf_origin_call, progs[BPF_TRAMP_MODIFY_RETURN] ||
-+					progs[BPF_TRAMP_FEXIT]);
++	run_ctx->saved_run_ctx = bpf_set_run_ctx(&run_ctx->run_ctx);
 +
-+	md->bpf_prog_cnt--;
-+
-+	/* Step 1, wait for sleepable progs to finish. */
-+	call_rcu_tasks_trace(&cur->rcu, link_free_rcu_tasks);
-+	mutex_unlock(&kfunc_md_mutex);
-+
-+	return 0;
++	if (unlikely(this_cpu_inc_return(*(prog->active)) != 1)) {
++		bpf_prog_inc_misses_counter(prog);
++		if (prog->aux->recursion_detected)
++			prog->aux->recursion_detected(prog);
++		return 0;
++	}
++	return bpf_prog_start_time();
 +}
++
++static __always_inline void notrace
++bpf_gtramp_exit(struct bpf_prog *prog, u64 start, struct bpf_tramp_run_ctx *run_ctx)
++	__releases(RCU)
++{
++	bpf_reset_run_ctx(run_ctx->saved_run_ctx);
++
++	update_prog_stats(prog, start);
++	this_cpu_dec(*(prog->active));
++	migrate_enable();
++	if (unlikely(prog->sleepable))
++		rcu_read_unlock_trace();
++	else
++		rcu_read_unlock();
++}
++
++#endif
++#endif
+diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+index b1e358c16eeb..fa90c225c93b 100644
+--- a/kernel/bpf/trampoline.c
++++ b/kernel/bpf/trampoline.c
+@@ -13,6 +13,7 @@
+ #include <linux/bpf_verifier.h>
+ #include <linux/bpf_lsm.h>
+ #include <linux/delay.h>
++#include <linux/bpf_tramp.h>
+ 
+ /* dummy _ops. The verifier will operate on target program's ops. */
+ const struct bpf_verifier_ops bpf_extension_verifier_ops = {
+@@ -868,19 +869,6 @@ void bpf_trampoline_put(struct bpf_trampoline *tr)
+ 	mutex_unlock(&trampoline_mutex);
+ }
+ 
+-#define NO_START_TIME 1
+-static __always_inline u64 notrace bpf_prog_start_time(void)
+-{
+-	u64 start = NO_START_TIME;
+-
+-	if (static_branch_unlikely(&bpf_stats_enabled_key)) {
+-		start = sched_clock();
+-		if (unlikely(!start))
+-			start = NO_START_TIME;
+-	}
+-	return start;
+-}
+-
+ /* The logic is similar to bpf_prog_run(), but with an explicit
+  * rcu_read_lock() and migrate_disable() which are required
+  * for the trampoline. The macro is split into
+@@ -911,7 +899,7 @@ static u64 notrace __bpf_prog_enter_recur(struct bpf_prog *prog, struct bpf_tram
+ 	return bpf_prog_start_time();
+ }
+ 
+-static void notrace __update_prog_stats(struct bpf_prog *prog, u64 start)
++void notrace __update_prog_stats(struct bpf_prog *prog, u64 start)
+ {
+ 	struct bpf_prog_stats *stats;
+ 	unsigned long flags;
+@@ -932,13 +920,6 @@ static void notrace __update_prog_stats(struct bpf_prog *prog, u64 start)
+ 	u64_stats_update_end_irqrestore(&stats->syncp, flags);
+ }
+ 
+-static __always_inline void notrace update_prog_stats(struct bpf_prog *prog,
+-						      u64 start)
+-{
+-	if (static_branch_unlikely(&bpf_stats_enabled_key))
+-		__update_prog_stats(prog, start);
+-}
+-
+ static void notrace __bpf_prog_exit_recur(struct bpf_prog *prog, u64 start,
+ 					  struct bpf_tramp_run_ctx *run_ctx)
+ 	__releases(RCU)
 -- 
 2.39.5
 
