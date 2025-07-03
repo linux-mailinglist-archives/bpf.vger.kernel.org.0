@@ -1,101 +1,103 @@
-Return-Path: <bpf+bounces-62244-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62245-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E47A8AF6E1A
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 11:04:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 613B5AF6E37
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 11:10:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49161167B0E
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 09:03:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA0951C27126
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 09:10:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE8DA2D4B75;
-	Thu,  3 Jul 2025 09:02:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D78B2D4B79;
+	Thu,  3 Jul 2025 09:09:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="AOvwN/C8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bSweQX75"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A75B2D0292;
-	Thu,  3 Jul 2025 09:02:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2DBA2D4B57;
+	Thu,  3 Jul 2025 09:09:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751533377; cv=none; b=Iryr7f6pTcnCdaBi/Ob/vrhjfvqnOlvt3cDnReJRRZGpfQQFjU/v90hSBO9PUCKtAI0DCnpvWz0LeThjTXViLuzQwovSvMqw6+KnTyc/xIpOVTv1AsJhYFv5LF+oiRMx5aapx6071yQULwfJuSUy7aglkNAZsshflDlxVlCcPL0=
+	t=1751533786; cv=none; b=dkD/svZFEOXkD3YWsgowr3bE/v+Fjg95D54zXBvMrezIGpIWXVZGfA+zUK3uc6lY6u3RMmyPvnm8G5C0lbODgPHEI3IbqfQ9pZvsIR12b9b08zrtg+p+Doy30MlhE6W4tudsS0iaEi1r3zcaqIoUliaUkFmP2uPwlglRRzcbzAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751533377; c=relaxed/simple;
-	bh=EOrZnYUy6WTOIt2vP6q9T9T8LYeYmLQzYHtHeFXEbiY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=QHHOnhpG2dB1IMmBARMvUBADPz3GE2n9MzSLJqCZPpYzoCA42SqtwaOjjc9m/AUMlgcgGR3lajnGgKA9xEK6OOyCib/t1QK60YQU2y0JoM9l0fqkimZX4S0eA461QQLAxtWVaBIQo0luggL4fMF344FeujjPZj6V7FvK01eVBSQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=AOvwN/C8; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 07D9B4330F;
-	Thu,  3 Jul 2025 09:02:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1751533367;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=y/oun4zUAh+IdTnEFJSGV6HxMB1qCD2B/FYd0k9Cxtw=;
-	b=AOvwN/C8T/Sp6LO4i4hAwE0B8qRUY92dvPbYqv2Tdnc/GjipytsMENzn9SKfgbbDGNIw4j
-	qRthGQLFwtXlMwrNuve/ezCJDr/IhxPy6Y8tjDI+xqqWMQMTngO1CBeitqvfrOYAmouxzu
-	eS75g5uy7TfBqhsYtkM4DPPbVj3KpBBeSFmKJlXfPRbppcaO1n8ZaKnt3IHHjDBrF4tJ5A
-	tmKQ/xnpecbProfcvpA8W0wDlIRWRxzz9WGwXHpo7LSRtHiOIw4mBj87CuiUfRlNZh+Ooj
-	okaE9vAleAWEkeqKEuRmTiZnBhSv3qE0ToEo5n7ikr5SvARJ0DaCVOhjt7sY3Q==
-From: =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Date: Thu, 03 Jul 2025 11:02:34 +0200
-Subject: [PATCH v2 3/3] gitignore: ignore all the test kmod build-related
- files
+	s=arc-20240116; t=1751533786; c=relaxed/simple;
+	bh=Pg/UwjFOcZzuqyjOTqG0yIOy7JK3IesDORgQKCAf2ZQ=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=AN3yaDeJyoygRLRg4pw2V8jBiLPLP5skpEmn7DfT3GKeXdDc3K/t3KyZFUBiqKDVShtbGTKU5VXeW3At4E5lnAAu6skQha5I04UN8EBpT0V21b56BSunstF4PiWcXc5MI71C9IgpdkuPqJeGeBRKPdb9zF7e8s7GxpVFHROg0Y0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bSweQX75; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 245BBC4CEE3;
+	Thu,  3 Jul 2025 09:09:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1751533786;
+	bh=Pg/UwjFOcZzuqyjOTqG0yIOy7JK3IesDORgQKCAf2ZQ=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=bSweQX75kAK9tCjdGOTMlv6rGVagwP2XSnsw0lGHOoPFAjo3pcmuA1hgooocTHAt5
+	 6LVqV9vCdR5yJ52Wy4wLk3EjralBAFl1Dmy0OviFMrqMehIGa91ND41yThVJsgUzZW
+	 DdoZUzq+iE9y6QmlUqyeRvw1VbDF2tx7nqaBuXidJ5/o9eY4/s81GkhOlVbdaNYIb7
+	 CG1SNAirLUSKNRHbHCMOSSHNguiEWwtel5eBlVpLB5K8N21JhcdzWOhD9VaxRYnLsJ
+	 Qc+rpzC50AWonr9gmsdRqZnKZPNie6VhMpXVLUg+EXrWntP22NLhXOjlziA66eAzlM
+	 qjS+NCAGgDTdQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AE269383B273;
+	Thu,  3 Jul 2025 09:10:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20250703-btf_skip_structs_on_stack-v2-3-4767e3ba10c9@bootlin.com>
-References: <20250703-btf_skip_structs_on_stack-v2-0-4767e3ba10c9@bootlin.com>
-In-Reply-To: <20250703-btf_skip_structs_on_stack-v2-0-4767e3ba10c9@bootlin.com>
-To: dwarves@vger.kernel.org
-Cc: bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>, 
- Arnaldo Carvalho de Melo <acme@kernel.org>, Alexei Starovoitov <ast@fb.com>, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- Bastien Curutchet <bastien.curutchet@bootlin.com>, ebpf@linuxfoundation.org, 
- =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-X-Mailer: b4 0.14.2
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdduleekjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephfffufggtgfgkfhfjgfvvefosehtkeertdertdejnecuhfhrohhmpeetlhgvgihishcunfhothhhohhrroculdgvuefrhfcuhfhouhhnuggrthhiohhnmdcuoegrlhgvgihishdrlhhothhhohhrvgessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepleejkeetffefveelgeeklefhtefhgfeigeduveffjeehleeifeefjedtudejgeeunecukfhppeeltddrkeelrdduieefrdduvdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepledtrdekledrudeifedruddvjedphhgvlhhopegludelvddrudeikedrtddrvddungdpmhgrihhlfhhrohhmpegrlhgvgihishdrlhhothhhohhrvgessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepledprhgtphhtthhopegvsghpfheslhhinhhugihfohhunhgurghtihhonhdrohhrghdprhgtphhtthhopegsphhfsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepugifrghrvhgvshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegrtghmvgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghsthesf
- hgsrdgtohhmpdhrtghpthhtohepsggrshhtihgvnhdrtghurhhuthgthhgvthessghoohhtlhhinhdrtghomhdprhgtphhtthhopehthhhomhgrshdrphgvthgriiiiohhnihessghoohhtlhhinhdrtghomhdprhgtphhtthhopegrlhgrnhdrmhgrghhuihhrvgesohhrrggtlhgvrdgtohhm
-X-GND-Sasl: alexis.lothore@bootlin.com
+Subject: Re: [PATCH net v2 0/3] virtio-net: fixes for mergeable XDP receive
+ path
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175153381052.1020232.17030043875291925197.git-patchwork-notify@kernel.org>
+Date: Thu, 03 Jul 2025 09:10:10 +0000
+References: <20250630144212.48471-1-minhquangbui99@gmail.com>
+In-Reply-To: <20250630144212.48471-1-minhquangbui99@gmail.com>
+To: Bui Quang Minh <minhquangbui99@gmail.com>
+Cc: netdev@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
+ xuanzhuo@linux.alibaba.com, eperezma@redhat.com, andrew+netdev@lunn.ch,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+ john.fastabend@gmail.com, sdf@fomichev.me, virtualization@lists.linux.dev,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org
 
-The kmod module generates quite a lot of intermediate build files, so
-ignore those in git.
+Hello:
 
-Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
----
-Changes in v2:
-- new patch
----
- .gitignore | 3 +++
- 1 file changed, 3 insertions(+)
+This series was applied to netdev/net.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-diff --git a/.gitignore b/.gitignore
-index 96e05c7842624067ed5571bccbaae76122a66567..b82205d4ee2d0a83ac736c3c879d46d44e0212d6 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -1,2 +1,5 @@
- /build
- /config.h
-+tests/kmod/*
-+!tests/kmod/kmod.c
-+!tests/kmod/Makefile
+On Mon, 30 Jun 2025 21:42:09 +0700 you wrote:
+> Hi everyone,
+> 
+> This series contains fixes for XDP receive path in virtio-net
+> - Patch 1: add a missing check for the received data length with our
+> allocated buffer size in mergeable mode.
+> - Patch 2: remove a redundant truesize check with PAGE_SIZE in mergeable
+> mode
+> - Patch 3: make the current repeated code use the check_mergeable_len to
+> check for received data length in mergeable mode
+> 
+> [...]
 
+Here is the summary with links:
+  - [net,v2,1/3] virtio-net: ensure the received length does not exceed allocated size
+    https://git.kernel.org/netdev/net/c/315dbdd7cdf6
+  - [net,v2,2/3] virtio-net: remove redundant truesize check with PAGE_SIZE
+    https://git.kernel.org/netdev/net/c/4be2193b3393
+  - [net,v2,3/3] virtio-net: use the check_mergeable_len helper
+    https://git.kernel.org/netdev/net/c/7d4a119e4582
+
+You are awesome, thank you!
 -- 
-2.50.0
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
