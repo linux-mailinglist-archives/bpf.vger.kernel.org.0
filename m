@@ -1,228 +1,179 @@
-Return-Path: <bpf+bounces-62318-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62319-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 884E8AF7FAB
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 20:18:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65672AF7FD2
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 20:22:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C35A7163020
-	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 18:18:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7CC141C868A7
+	for <lists+bpf@lfdr.de>; Thu,  3 Jul 2025 18:22:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57B5A25A2C0;
-	Thu,  3 Jul 2025 18:17:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC98E2F49F2;
+	Thu,  3 Jul 2025 18:21:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MfeZpb+A"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cHGROzht"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82CEF223715
-	for <bpf@vger.kernel.org>; Thu,  3 Jul 2025 18:17:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B60E42F4335
+	for <bpf@vger.kernel.org>; Thu,  3 Jul 2025 18:21:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751566678; cv=none; b=HT0IYTb30RmVwkmWU8q172ZzIUE+O7RrKxxLW6MAKCOEhl48SGs3ujw5Vz7Uysd2134evHkcViJtSIkHgb8CKTU6xxEljVfJiomV33mSCoG+7+gfuQmkKZflUS3hy3lvMq6QomZIsY3xkVEwl8MQ46UBSGX7oapr43BIQa9Pll0=
+	t=1751566875; cv=none; b=uKWSrO/VUsFduxmaW29I4JhqEGIBItU9vdGCEjjF/pJ3ZZ4j9v/AfZWym+81L4vxgZKwl2hiVJhD3mew1H0TpEaHJuuJ48TXGF6dsSZ3ODBo9yqjoqe+gUrLWkKc0hh0ehsuinZttLl8tDrmA2Veif6vf2IZGO+tTFPjFXST5Z0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751566678; c=relaxed/simple;
-	bh=ldYKss+oN3iLOu22adLNUkny792ZWWGzAjOy1P4SzAk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AtcFM6N8H5U2BdBLYp7gNDkwKgR1gABXoUk9KbNzKZPdCblTbqUD5q+1dW5f2RmqsGfFnUf+DqvsdXEAVxMyYXdKaLikxmiVth6hPVwPYPISPHOA9I9RkwIoayA+lBhCrahjllbShZlvbjr4gkWddp2APxvcPj12IyHBLibu6Wg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MfeZpb+A; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <8923cd39-a242-4f61-b99e-b5fe5678ee84@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1751566673;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PzYOX+cRCf4jSg8iA91rzOOhCH3MjcvLbUiv4tW4608=;
-	b=MfeZpb+AAyhv5KmLt6ao3qdCjaQIPlkIvCw8sHjE22UsIjpwifwJtAYkhjuk9pbmVszcdA
-	TJTHGY08drNXcPKGz7hLrV15D673FLv2v9ZyLmnMJ7JgTzH1m908DmYpcHYtb/D4mJ37Bs
-	Gym9Iy0g+cyb/IokY+/IgT5YAMsFJ5M=
-Date: Thu, 3 Jul 2025 11:17:47 -0700
+	s=arc-20240116; t=1751566875; c=relaxed/simple;
+	bh=DXTsZp2vvJuBwWFvXI1tDCnV+Hg7uoja8wErEZUV7UA=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=d1brj+1azPNXPcRujIaNKqvMj62C0Y/2P/sJqOmOrrhdFH1QvRw19MosUOrI38t3m0fq+wXzTcRbonMDrFvPoVNb33XUk+eh5p0ogNhPfWNkjz8jmStP+UbnJAF6aWrWtxUS2Llr89h17AkYvN8gMLv1aC+Xj7fVlw/FHETzNWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cHGROzht; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-2350b1b9129so2285575ad.0
+        for <bpf@vger.kernel.org>; Thu, 03 Jul 2025 11:21:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1751566873; x=1752171673; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=xMZVMuakD1u/pPXToXIHPbwwu3Op/ngWKnu/eVrwCCA=;
+        b=cHGROzhtX44unGniEzUwiAM59PjUQ2iOSds40OHDstLuAGmyauXW89VDOX7iX5inux
+         xLgnXSvSaalrrVDRNlNFsHG1KiUUS7Yo117Lhyq+fsv4QWBBbq+944f6LCwIOsBnv9ie
+         MCBcwAPwrTUvmJGrhmrYtLPq4cXRIHBiAsF6v+BzrSSQAHdidoxVxMNWbOgL8Hu4Q1Pz
+         AWQLl2alMD8QiDEvYa5mPoN5ZnWHNB4WLtCyr26Lo7iTp4BV/+sbo93RbwVKyCLHb2+v
+         PBvya8VBXzNv0rIctwN6F90wciVrWAvjpI6dIhcj3lb6uBn5XH9AfQlwlPfIHcANl8Ha
+         xw+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751566873; x=1752171673;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xMZVMuakD1u/pPXToXIHPbwwu3Op/ngWKnu/eVrwCCA=;
+        b=XszHsRzimU7GjpWh2+BZNgPgX7pRRzyZr6t8aKGQ3L/iLMsfqQdwWQrL8mu740m8jE
+         QxsFf+hPvgKqjT+DdLIkBsD1cHZXlsaRaA+YX++3QkWG3HhWPiedIunMHlGc4unad2MM
+         7gu5yChmt5Miei+/FZXu2X01vppjp3sNG+dHhR7SsiAL8aRiYOQuF68/kaWhVVDVyXZU
+         jiA+ueX3aw34KBjLR5voNFzek5fLh8pkZe9zzxOHkn0knjhjt+UVTGM+ziCFkodf5wOK
+         5G6PyH/c5FRHouRjkZophNdAw2RxSBfdxR/ewzOgfkKcE7vtyy55PymrUAW5Sp0dD10B
+         cPHw==
+X-Gm-Message-State: AOJu0YyPN9viB9BQe9GF5oyyi+Sd6wTrn2sqK9TANisgO0w9eFkjiAch
+	zY/ZohcdVrxWdGDp8+xKVHW2nahzM71UMwaZq1v9RNl1t5o1dVvtXQkM
+X-Gm-Gg: ASbGncssGNw/khAY6QrOkbHJx1HsjsbdjarxxT/eHaqC1gijp9bU+Ixq7qOcbMtMjGq
+	qTs/hXB0gyzacnTBrkX39LkOHiC/meH+bNI9M2ihjAnB6rprCVSpKgtSzaXk3/Nxu9GaObY5vY8
+	S+G7Vxc492JgF4HZeM+hSjmHfQRwI2j9pcZxXofpetfrYyzhvyYI7pRaA12JsRJJUznJszCtL+t
+	FcTD1eOq8+/WjuntADaZzX3zbo6avuVUI5/kec08q8WMGvwCwef8tIY3nSgTmoVSehT3SUKYq5i
+	Udp2l8o4jYtj8XEoRsODV98wcSF7Zo5go4jm7BGDemY7m3SCKNt9Fs8noc+DK73dZZSrL+vu1uZ
+	MAvc=
+X-Google-Smtp-Source: AGHT+IGDCtOQJMqmUalirn5z/96gxtd/Vrq3+1h7GeDSpDlLlDPkNzdTZ4UUQdMwECIaZvhHLVPZPw==
+X-Received: by 2002:a17:902:ec81:b0:235:81c7:3c45 with SMTP id d9443c01a7336-23c797cdb44mr54743195ad.46.1751566872925;
+        Thu, 03 Jul 2025 11:21:12 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c096:14a::647? ([2620:10d:c090:600::1:90c4])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23c845bccbbsm1337975ad.238.2025.07.03.11.21.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jul 2025 11:21:12 -0700 (PDT)
+Message-ID: <454128db01c0a01f3459783cd5a0ea37af01c34e.camel@gmail.com>
+Subject: Re: [RFC bpf-next 8/9] libbpf: support llvm-generated indirect jumps
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Anton Protopopov <a.s.protopopov@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Andrii
+ Nakryiko	 <andrii@kernel.org>, Anton Protopopov <aspsk@isovalent.com>,
+ Daniel Borkmann	 <daniel@iogearbox.net>, Quentin Monnet <qmo@kernel.org>,
+ Yonghong Song	 <yonghong.song@linux.dev>
+Date: Thu, 03 Jul 2025 11:21:11 -0700
+In-Reply-To: <aF5v8Yw5LUgVDgjB@mail.gmail.com>
+References: <20250615085943.3871208-1-a.s.protopopov@gmail.com>
+	 <20250615085943.3871208-9-a.s.protopopov@gmail.com>
+	 <1c17cd755a3e8865ad06baad86d42e42e289439a.camel@gmail.com>
+	 <f8bc4e5469e73b99943ff7783fbe4a7758bbbe32.camel@gmail.com>
+	 <aF5v8Yw5LUgVDgjB@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 1/3] btf_encoder: skip functions consuming packed
- structs passed by value on stack
-To: =?UTF-8?Q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?=
- <alexis.lothore@bootlin.com>, dwarves@vger.kernel.org
-Cc: bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>, Alexei Starovoitov <ast@fb.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Bastien Curutchet <bastien.curutchet@bootlin.com>, ebpf@linuxfoundation.org
-References: <20250703-btf_skip_structs_on_stack-v2-0-4767e3ba10c9@bootlin.com>
- <20250703-btf_skip_structs_on_stack-v2-1-4767e3ba10c9@bootlin.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-In-Reply-To: <20250703-btf_skip_structs_on_stack-v2-1-4767e3ba10c9@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-On 7/3/25 2:02 AM, Alexis LothorÃ© (eBPF Foundation) wrote:
-> Most ABIs allow functions to receive structs passed by value, if they
-> fit in a register or a pair of registers, depending on the exact ABI.
-> However, when there is a struct passed by value but all registers are
-> already used for parameters passing, the struct is still passed by value
-> but on the stack. This becomes an issue if the passed struct is defined
-> with some attributes like __attribute__((packed)) or
-> __attribute__((aligned(X)), as its location on the stack is altered, but
-> this change is not reflected in dwarf information. The corresponding BTF
-> data generated from this can lead to incorrect BPF trampolines
-> generation (eg to attach bpf tracing programs to kernel functions) in
-> the Linux kernel.
-> 
-> Prevent those wrong cases by not encoding functions consuming structs
-> passed by value on stack, when those structs do not have the expected
-> alignment due to some attribute usage.
-> 
-> Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
-> ---
-> Changes in v2:
-> - do not deny any struct passed by value, only those passed on stack AND
->    with some attribute alteration
-> - use the existing class__infer_packed_attributes to deduce is a struct
->    is "altered". As a consequence, move the function filtering from
->    parameter__new to btf_encoder__encode_cu, to make sure that all the
->    needed data has been parsed from debug info
-> ---
->   btf_encoder.c | 50 ++++++++++++++++++++++++++++++++++++++++++++++++--
->   dwarves.h     |  1 +
->   2 files changed, 49 insertions(+), 2 deletions(-)
-> 
+On Fri, 2025-06-27 at 10:18 +0000, Anton Protopopov wrote:
+> On 25/06/26 07:28PM, Eduard Zingerman wrote:
+> > On Wed, 2025-06-18 at 12:49 -0700, Eduard Zingerman wrote:
+> > > On Sun, 2025-06-15 at 08:59 +0000, Anton Protopopov wrote:
+> > >=20
+> > > [...]
+> > >=20
+> > > > @@ -698,6 +712,14 @@ struct bpf_object {
+> > > >  	bool has_subcalls;
+> > > >  	bool has_rodata;
+> > > > =20
+> > > > +	const void *rodata;
+> > > > +	size_t rodata_size;
+> > > > +	int rodata_map_fd;
+> > >=20
+> > > This is sort-of strange, that jump table metadata resides in one
+> > > section, while jump section itself is in .rodata. Wouldn't it be
+> > > simpler make LLVM emit all jump tables info in one section?
+> > > Also note that Elf_Sym has name, section index, value and size,
+> > > hence symbols defined for jump table section can encode jump tables.
+> > > E.g. the following implementation seems more intuitive:
+> > >=20
+> > >   .jumptables
+> > >     <subprog-rel-off-0>
+> > >     <subprog-rel-off-1> | <--- jump table #1 symbol:
+> > >     <subprog-rel-off-2> |        .size =3D 2   // number of entries i=
+n the jump table
+> > >     ...                          .value =3D 1  // offset within .jump=
+tables
+> > >     <subprog-rel-off-N>                          ^
+> > >                                                  |
+> > >   .text                                          |
+> > >     ...                                          |
+> > >     <insn-N>     <------ relocation referencing -'
+> > >     ...                  jump table #1 symbol
+> >=20
+> > Anton, Yonghong,
+> >=20
+> > I talked to Alexei about this yesterday and we agreed that the above
+> > arrangement (separate jump tables section, separate symbols for each
+> > individual jump table) makes sense on two counts:
+> > - there is no need for jump table to occupy space in .rodata at
+> >   runtime, actual offsets are read from map object;
+> > - it simplifies processing on libbpf side, as there is no need to
+> >   visit both .rodata and jump table size sections.
+> >=20
+> > Wdyt?
+>=20
+> Yes, this seems more straightforward. Also this will look ~ the same
+> for used-defined (=3D non-llvm-generated) jump tables.
+>=20
+> Yonghong, what do you think, are there any problems with this?
+> Also, how complex this would be to directly link a gotox instruction
+> to a particular jump table? (For a switch, for "user-defined" jump
+> tables this is obviously easy to do.)
 
-Hi Alexis. A couple of comments below.
+I think I know how to hack this:
+- in BPFAsmPrinter add a function generating a global symbol for jump
+  table (same as MachineFunction::getJTISymbol(), but that one always
+  produces a private symbol (one starting with "L"));
+- override TargetLowering::getPICJumpTableRelocBaseExpr to use the
+  above function;
+- modify BPFMCInstLower::Lower to use the above function;
+- override AsmPrinter::emitJumpTableInfo, a simplified version of the
+  original one:
+  - a loop over all jump tables:
+	- before each jump table emit start global symbol
+	- after each jump table emit temporary symbol to mark jt end
+	- set jump table symbol size to
+		OutStreamer->emitELFSize(StartSym,
+		                         MCBinaryExpr::createSub(MCSymbolRefExpr::create(=
+EndSym, OutContext),
+								 MCSymbolRefExpr::create(StartSym, OutContext),
+								 OutContext)
+	- use AsmPrinter::emitJumpTableEntry to emit individual jump table
+      entries;
+- plus the code to create jump tables section.
 
-
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index 0bc23349b5d740c3ddab8208b2e15cdbdd139b9d..16739066caae808aea77175e6c221afbe37b7c70 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -87,6 +87,7 @@ struct btf_encoder_func_state {
->   	uint8_t optimized_parms:1;
->   	uint8_t unexpected_reg:1;
->   	uint8_t inconsistent_proto:1;
-> +	uint8_t uncertain_parm_loc:1;
->   	int ret_type_id;
->   	struct btf_encoder_func_parm *parms;
->   	struct btf_encoder_func_annot *annots;
-> @@ -1203,6 +1204,7 @@ static int32_t btf_encoder__save_func(struct btf_encoder *encoder, struct functi
->   	state->inconsistent_proto = ftype->inconsistent_proto;
->   	state->unexpected_reg = ftype->unexpected_reg;
->   	state->optimized_parms = ftype->optimized_parms;
-> +	state->uncertain_parm_loc = ftype->uncertain_parm_loc;
->   	ftype__for_each_parameter(ftype, param) {
->   		const char *name = parameter__name(param) ?: "";
->   
-> @@ -1430,9 +1432,15 @@ static int btf_encoder__add_saved_funcs(struct btf_encoder *encoder, bool skip_e
->   		/* do not exclude functions with optimized-out parameters; they
->   		 * may still be _called_ with the right parameter values, they
->   		 * just do not _use_ them.  Only exclude functions with
-> -		 * unexpected register use or multiple inconsistent prototypes.
-> +		 * unexpected register use, multiple inconsistent prototypes or
-> +		 * uncertain parameters location
->   		 */
-> -		add_to_btf |= !state->unexpected_reg && !state->inconsistent_proto;
-> +		add_to_btf |= !state->unexpected_reg && !state->inconsistent_proto && !state->uncertain_parm_loc;
-
-
-Is it possible for a function to have uncertain_parm_loc in one CU,
-but not in another?
-
-If yes, we still don't want the function in BTF, right?
-
-> +
-> +		if (state->uncertain_parm_loc)
-> +			btf_encoder__log_func_skip(encoder, saved_fns[i].elf,
-> +					"uncertain parameter location\n",
-> +					0, 0);
->   
->   		if (add_to_btf) {
->   			err = btf_encoder__add_func(state->encoder, state);
-> @@ -2553,6 +2561,39 @@ void btf_encoder__delete(struct btf_encoder *encoder)
->   	free(encoder);
->   }
->   
-> +static bool ftype__has_uncertain_arg_loc(struct cu *cu, struct ftype *ftype)
-> +{
-> +	struct parameter *param;
-> +	int param_idx = 0;
-> +
-> +	if (ftype->nr_parms < cu->nr_register_params)
-> +		return false;
-> +
-> +	ftype__for_each_parameter(ftype, param) {
-> +		if (param_idx++ < cu->nr_register_params)
-> +			continue;
-> +
-> +		struct tag *type = cu__type(cu, param->tag.type);
-> +
-> +		if (type == NULL || !tag__is_struct(type))
-> +			continue;
-> +
-> +		struct type *ctype = tag__type(type);
-> +		if (ctype->namespace.name == 0)
-> +			continue;
-> +
-> +		struct class *class = tag__class(type);
-> +
-> +		class__find_holes(class);
-> +		class__infer_packed_attributes(class, cu);
-> +
-> +		if (class->is_packed)
-> +			return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +
->   int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct conf_load *conf_load)
->   {
->   	struct llvm_annotation *annot;
-> @@ -2647,6 +2688,8 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
->   		 * Skip functions that:
->   		 *   - are marked as declarations
->   		 *   - do not have full argument names
-> +		 *   - have arguments with uncertain locations, e.g packed
-> +		 *   structs passed by value on stack
->   		 *   - are not in ftrace list (if it's available)
->   		 *   - are not external (in case ftrace filter is not available)
->   		 */
-> @@ -2693,6 +2736,9 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
->   		if (!func)
->   			continue;
->   
-> +		if (ftype__has_uncertain_arg_loc(cu, &fn->proto))
-> +			fn->proto.uncertain_parm_loc = 1;
-> +
->   		err = btf_encoder__save_func(encoder, fn, func);
-
-I think checking and setting uncertain_parm_loc flag should be done
-inside btf_encoder__save_func(), because that's where we inspect DWARF
-function prototype and add a new btf_encoder_func_state.
-
->   		if (err)
->   			goto out;
-> diff --git a/dwarves.h b/dwarves.h
-> index 36c689847ebf29a1ab9936f9d0f928dd46514547..d689aee5910f4b40dc13b3e9dc596dfbe6a2c3d0 100644
-> --- a/dwarves.h
-> +++ b/dwarves.h
-> @@ -1021,6 +1021,7 @@ struct ftype {
->   	uint8_t		 unexpected_reg:1;
->   	uint8_t		 processed:1;
->   	uint8_t		 inconsistent_proto:1;
-> +	uint8_t		 uncertain_parm_loc:1;
->   	struct list_head template_type_params;
->   	struct list_head template_value_params;
->   	struct template_parameter_pack *template_parameter_pack;
-> 
-
+I should be able to share the code for this tomorrow or on the weekend.
 
