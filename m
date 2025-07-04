@@ -1,151 +1,166 @@
-Return-Path: <bpf+bounces-62432-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62433-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEA48AF9AD4
-	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 20:37:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FFD5AF9AEA
+	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 20:51:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A77E5A3C08
-	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 18:37:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC1603ABD26
+	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 18:51:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E8902C2AA5;
-	Fri,  4 Jul 2025 18:37:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CC061DE4DC;
+	Fri,  4 Jul 2025 18:51:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZA3mESDS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZLoAtK/x"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f66.google.com (mail-ej1-f66.google.com [209.85.218.66])
+Received: from mail-ej1-f67.google.com (mail-ej1-f67.google.com [209.85.218.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 296B12BE04F
-	for <bpf@vger.kernel.org>; Fri,  4 Jul 2025 18:37:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F24182E36EB
+	for <bpf@vger.kernel.org>; Fri,  4 Jul 2025 18:51:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751654262; cv=none; b=P31zwlvmYLubNCs6r/p5nWjWnnJ/gE46ZOzrOemZeO1N0JErGPWDCbTLp/s1NdaL1r/cm7oKjHUFLzBdmxXZr7IuBNqZXGACZJ3wqChB0eB4K1Rre29nQ+08KUkkCK7tn2hp1H5oN9dN3OKiniIW+fCLgF8TTZJNZ1BXe+6rfHc=
+	t=1751655094; cv=none; b=ndu9OcmqBo6v4rcAqrZKVl4tI/v8CCkBKU2zCYrjejDN4bAkTXDN++exFTzw+Ay/SUqcliksJ4cXrquI5ReWXE6KLMzfDA2ocOaqt5ugENtTDJXYjUpq2UXlTp8uAdierc7Y9p/632m6QKbnsPzFUSwTMtCg0i1NQH1ksuKouYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751654262; c=relaxed/simple;
-	bh=wgluX2fvCS07Uc5BrVATn4+QIhDs6jabNqDeb2CEsUA=;
+	s=arc-20240116; t=1751655094; c=relaxed/simple;
+	bh=zLQu8Prscr7G4/CtcRY6/lolFG92GGZcNkS7gxgHl4g=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ium3UFZKUbayabUKCHctSLLML0sfHBHLRfVvlVjBwR+YJXpd2OI4yMbNa5fExi47W+0ndv59rWuRS+M09rpzdsAmZ8n2ostHG5IzSEAiesfS+blCbpcZKT13ufNKR5rZ4GrFOYwzWDC/h0S2zzwGUaQpyMaIb067h8H32o1wN44=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZA3mESDS; arc=none smtp.client-ip=209.85.218.66
+	 To:Cc:Content-Type; b=AL29oSl2Okxayb4obxopmbjVO6Y28o1M7gFvcTOvwiXk1BMDbzDhmgNIhEh/yxxHgWbViTt7vUMtNPkqTTndiLReqn28znjagBNlU5AM2tGeAXV+AKKWF+F7bRYC8t6MthncjteXUNzHBEwbLahjp4G70yNG+lnvrpwXqn4EJ04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZLoAtK/x; arc=none smtp.client-ip=209.85.218.67
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f66.google.com with SMTP id a640c23a62f3a-ae3be3eabd8so245063566b.1
-        for <bpf@vger.kernel.org>; Fri, 04 Jul 2025 11:37:41 -0700 (PDT)
+Received: by mail-ej1-f67.google.com with SMTP id a640c23a62f3a-ade5b8aab41so241742466b.0
+        for <bpf@vger.kernel.org>; Fri, 04 Jul 2025 11:51:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751654259; x=1752259059; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1751655090; x=1752259890; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=wgluX2fvCS07Uc5BrVATn4+QIhDs6jabNqDeb2CEsUA=;
-        b=ZA3mESDST3ev5CHyoqCQFNhEkwwOIRvniIi/gVPr28Abt0thn7KY7aHg8lngbFoa3d
-         i1ZzGmAN8PmmAZv800Mao/3CRxrg4xbbBzou5BPtQuFI+Yqhy/vVDsrZOidkNux813+X
-         x1kpFS3OX1pOSZkmTsEnUVgXxCNfC9SeHjBBzJNXKFQEj/aBEMosBRDHP3BTqs6wqQ2Q
-         mcIBxltbzilWWPlV4Y6NqhLb6k9QotYI2RtR7EyrFAMMM0eDlT2O+Mn1exLSeVZAqCnv
-         lgkaiPU6ZoaZp/MO/IF7HZT2pdiCvnFGU/+bRvJ4jxXszg/BTTCJUX9eX9E5eqH3F1FR
-         C+nQ==
+        bh=/8e7VJX4tlXOJseCzZHPXBNtcAJmKE/D4m/ZHXHma1g=;
+        b=ZLoAtK/xzcWvzkKTrcYPl+R3sQu0oKaVc5Lg5EK/YUXCgGxBn5LhzsmksFPysQZDd0
+         7kryzCaFrbywc24C9GBDx5Ynrts4xEhayKzlRhwFKRqJB48Fz6EVhXNIeBnFJJRWv8d1
+         pD0FPLTPH6GnOtK/WW3tMoQgUVQOj15Z0HEBXbk0ijgMgUO5oG4rfjHbBGBnBUdJHAZD
+         ARc0RvfhnSfoFoLX8i9zCWwkQrY6/fc9FSb0Q0wBlqHr91aWXJXPODOywo4ZK4SHsCkI
+         C+ZJmRo5nqBwfp31NfIeNSejoaJEJl2d4qIDqUvAbabkYhXMq6SC0Dr1j/4qDX/9JJRW
+         /qqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751654259; x=1752259059;
+        d=1e100.net; s=20230601; t=1751655090; x=1752259890;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=wgluX2fvCS07Uc5BrVATn4+QIhDs6jabNqDeb2CEsUA=;
-        b=dR0x/JYVe6O4LB+jar6FxIM7dM71VM/q7K3+t+g5l2RllOwhG+gKEw+wsYyIDDJXuO
-         gyvYD6G7cEo/m4FnkZOMuAXOJn1suEY5/nI9CLVMAbA1NQlbIjwvpJAxM+r1CaNLwW3O
-         LyY1vqybplamr8OQW/r+pgRTjrWwXVV7jU3jjOgzUC3Nd1QvPtas8u1/RnEhHoByKyWz
-         h+q/xLQreJ6A4NCtoLRLhpOrkvyI1dO403otciEVuVoR4KYAqfLS4c7GHnKJfsiw8IsO
-         iMmBrgkTWFsQltmVCx7VlnzxX9nEtNPVBlW96PWSKDskOygS0mK0aO0Fw1xIIQMq58fc
-         yzLA==
-X-Forwarded-Encrypted: i=1; AJvYcCWsuEpGdornRjK9tPDnJsPFsSMqXIt8Aq/hi+778GkaOTwUgfROMD4WxXuKFsuM52ozgtQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxGHyiJYOCWdGUkV9d7DuBaskfcGW60DEkwABsiDllonwIA1AL9
-	B//Yhwsf+TZuJMZViHWE9ukdkZN4491g/K0CBY3d83oGY8AA60IGvONqkJp86gKngB+v8dsf67G
-	uZ3+04MH9sYg7aiPTJQTitcbbsmRIUYE=
-X-Gm-Gg: ASbGncsRq9ATM8zigwzRO6Js7gsO6J7PWvOM3qE5y1ENo10+jvM1+RMqroQyUdqTNNf
-	bUzJWWduNdExMV1RrhfEpCWpWGLC0wI9OAXcN7G2/7BhojW7fzCUhQ5xK8pAJpqG0Dp+SUG07nj
-	D+RC7sPD3m2IIYAZrvQjhqh/jYCiLLc/5sWh0JFIKOnIHC6LoEpq+W3n1ExtcIClebKbRThv9Ys
-	E9NW+lR9nrRKQ==
-X-Google-Smtp-Source: AGHT+IERsWgs/BNiznFRaPF93Ndv/mPcQORLL2pFU92wbigAdlu6Cg6Q2nOd9PdmopTj1P16zBcrz2DrHMEbfX3m+LI=
-X-Received: by 2002:a17:907:2d0e:b0:ae0:e1ed:d1a0 with SMTP id
- a640c23a62f3a-ae3f9c05985mr474734066b.8.1751654259299; Fri, 04 Jul 2025
- 11:37:39 -0700 (PDT)
+        bh=/8e7VJX4tlXOJseCzZHPXBNtcAJmKE/D4m/ZHXHma1g=;
+        b=uprwdjLSoBLlxnRuACD/0wHTk5auXgIaYEozZ0z8kJ6Jud5WxbMrX3v8zxhZmSZLFA
+         sRVqKuMOsRCGHjgLqLZOsN5My71ajPQDBmYNPNtXIgrr+57LLIhrimlE/6QnAcdiIInc
+         54xsjBll59UCNmjEktUH2+mhA4OlqZ58XHcjTYSzsfLA9DEQqsrMfr+Tm6LL3LiImZC3
+         YYctUXViXF08djTp9XbSLD3wqApgCN2vDi2uNfFV5RH4UxJlRZj6wL7KChQEhhR/E2H0
+         QLXE58zW2jzkAowPUFVXYmtPQEQxX33ZhyIAGSUi4E8OWdRCW8/PG2tTu/bweyKxlRCt
+         zLuQ==
+X-Gm-Message-State: AOJu0Yzh1hrkADg6GvfbYVoP/seEkBUy73bVSrijNSVM5Y1HnM84W6Uz
+	E7vOV2v32WzcNUPNnMMOx3/g9tdZN3l+xDF5NueWM8tbw6UmMeKeVfQWTriUFIDxTtOuR3L6lFo
+	Upn59pdH8V9ecQlAcTZg9oe66L/IvZQg=
+X-Gm-Gg: ASbGnctyHnypf4zQG69nOb/+3keYvp9UZNdaXw/q9EmPwbSl9adYvDdHKDlQ/clOK48
+	9Ww3KlvHS+GdK10tO+4vvpcbgD91AuFF3sWUN7rhpWlrSVIHVRFgSDqgJUhhN/y1NHivynuz8iV
+	sdEP3ECBL6qeo7z4QVQf1VPHAfITJorSze5WCSg1EUjAiIWlId9HTmZZ38mEGGgNgME8QVW71dZ
+	wg=
+X-Google-Smtp-Source: AGHT+IEoQl9zzO79cWGlLC25LgiwTgtmXitmFBjcoM/BJ2W3zURreLTsCo+PFGuvf17nMzVTFo9htyqnGnk22LsBpUI=
+X-Received: by 2002:a17:906:4789:b0:ae3:4f57:2110 with SMTP id
+ a640c23a62f3a-ae3fe78f9b8mr339731566b.54.1751655090097; Fri, 04 Jul 2025
+ 11:51:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250614064056.237005-1-sidchintamaneni@gmail.com>
- <20250614064056.237005-3-sidchintamaneni@gmail.com> <CAP01T74u=EJqDEyB-gEsmRGqMF=TRPY+cb_eUHNVY3hr3OWYvg@mail.gmail.com>
- <CAM6KYsvaPFHqdb-ZW+Bc_-N_VhJix8cQEvBbRo+pE_cBs++PPg@mail.gmail.com>
-In-Reply-To: <CAM6KYsvaPFHqdb-ZW+Bc_-N_VhJix8cQEvBbRo+pE_cBs++PPg@mail.gmail.com>
+References: <20250702224209.3300396-1-eddyz87@gmail.com> <20250702224209.3300396-5-eddyz87@gmail.com>
+ <CAP01T74AYNX5ARJ5YXryUyKvn5o0Dv0JBoq3CCKcD8rh==uKQA@mail.gmail.com>
+ <fb5b8613584dbce72359e44ef3974e4cb7c8298e.camel@gmail.com> <de7f3a2c5bc521c1111b0ed1870291c0889e4757.camel@gmail.com>
+In-Reply-To: <de7f3a2c5bc521c1111b0ed1870291c0889e4757.camel@gmail.com>
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Fri, 4 Jul 2025 20:37:03 +0200
-X-Gm-Features: Ac12FXzIjvvpC8ddpXDxjg90RAwyvvIRQpuzpUgIPK9HZNpTTsNEvgdKtxEY7sM
-Message-ID: <CAP01T74b7NsWicbTZSS7s9aky0TNP=JYCwCCY=xBjS_ay_y7og@mail.gmail.com>
-Subject: Re: [RFC bpf-next v2 2/4] bpf: Generating a stubbed version of BPF
- program for termination
-To: Raj Sahu <rjsu26@gmail.com>
-Cc: Siddharth Chintamaneni <sidchintamaneni@gmail.com>, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	haoluo@google.com, jolsa@kernel.org, djwillia@vt.edu, miloc@vt.edu, 
-	ericts@vt.edu, rahult@vt.edu, doniaghazy@vt.edu, quanzhif@vt.edu, 
-	jinghao7@illinois.edu, egor@vt.edu, sairoop10@gmail.com
+Date: Fri, 4 Jul 2025 20:50:53 +0200
+X-Gm-Features: Ac12FXxvs6diSbGhzKIowljN0TBK7kLNEiKzaMaVbuVORJet-U8Pu0CMWL1BL2M
+Message-ID: <CAP01T75+cXUv4Je+bYQNb-Us_MF1s1Zc9fL0wmowLExKUQ8KNg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 4/8] bpf: attribute __arg_untrusted for global
+ function parameters
+To: Eduard Zingerman <eddyz87@gmail.com>, Matt Bobrowski <mattbobrowski@google.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
+	yonghong.song@linux.dev, Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 4 Jul 2025 at 19:32, Raj Sahu <rjsu26@gmail.com> wrote:
+On Fri, 4 Jul 2025 at 20:33, Eduard Zingerman <eddyz87@gmail.com> wrote:
 >
-> > The parts above this function makes sense, but I don't understand why
-> > we need programs to be cloned separately anymore.
-> > Instead, can't we simply have a table of patch targets for the original program?
-> > They'd need adjustment after jit to reflect the exact correct offset,
-> > but that shouldn't be difficult to compute.
-> If we understand correctly you advocate for storing the state of call
-> instruction offset of helpers/ kfuncs/ callback functions (incase of
-> bpf_loop inlining) and adjust the offset during JIT?
+> On Fri, 2025-07-04 at 11:28 -0700, Eduard Zingerman wrote:
+> > On Fri, 2025-07-04 at 20:03 +0200, Kumar Kartikeya Dwivedi wrote:
+> >
+> > [...]
+> >
+> > > > @@ -7818,6 +7821,22 @@ int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog)
+> > > >                         sub->args[i].btf_id = kern_type_id;
+> > > >                         continue;
+> > > >                 }
+> > > > +               if (tags & ARG_TAG_UNTRUSTED) {
+> > > > +                       int kern_type_id;
+> > > > +
+> > > > +                       if (tags & ~ARG_TAG_UNTRUSTED) {
+> > > > +                               bpf_log(log, "arg#%d untrusted cannot be combined with any other tags\n", i);
+> > > > +                               return -EINVAL;
+> > > > +                       }
+> > > > +
+> > > > +                       kern_type_id = btf_get_ptr_to_btf_id(log, i, btf, t);
+> > >
+> > > So while this makes sense for trusted, I think for untrusted, we
+> > > should allow types in program BTF as well.
+> > > This is one of the things I think lacks in bpf_rdonly_cast as well, to
+> > > be able to cast to types in program BTF.
+> > > Say you want to reinterpret some kernel memory into your own type and
+> > > access it using a struct in the program which is a different type.
+> > > I think it makes sense to make this work.
+> >
+> > Hi Kumar,
+> >
+> > Thank you for the review.
+> > Allowing local program BTF makes sense to me.
+> > I assume we should first search in kernel BTF and fallback to program
+> > BTF if nothing found. This way verifier might catch a program
+> > accessing kernel data structure but having wrong assumptions about
+> > field offsets (not using CO-RE). On the other hand, this might get
+> > confusing if there is an accidental conflict between kernel data
+> > structure name and program local data structure name.
 >
-> While we did think about following this approach, we are worried of
-> accidentally introducing bugs while implementing offset handling
-> either now or in future when some new JIT optimization is being added
-> by someone else.
+> Maybe just add __arg_untrusted_local and avoid ambiguity?
 
-That won't be as big a problem, the JIT keeps a mapping. As an
-example, see how I did it here:
-https://lore.kernel.org/bpf/20240201042109.1150490-10-memxor@gmail.com
-
-You can keep the table of instruction indices until JIT, then do a
-pass to convert.
-
->
-> We also thought of decoding JIT instructions (right after JIT) similar
-> to the runtime handler but there is an additional burden of figuring
-> out the helper/ kfunc's from the call instruction.
-> Currently, the cloned program is simplifying the whole task of going
-> through the weeds of JIT.
-
-I think the above should work, so all this won't be necessary.
+That might be less ambiguous, sure. But I don't see why the fallback
+would be confusing.
+It might be nice if we can support it without asking users to learn
+about the difference between the two tags, but if it's too ugly we can
+go with explicit local tag.
+A user can have a struct without preserve_access_index now and having
+the same name as the kernel struct, and the program will load things
+at potentially wrong offsets.
+If the same type exists, the program would fail compilation in C due
+to duplicate types.
+Are there any other cases where it might be a footgun that you anticipate?
 
 >
-> > IIUC you're comparing instructions in the patched program and original
-> > program to find out if you need to patch out the original one.
-> > That seems like a very expensive way of tracking which call targets
-> > need to be modified.
-> We can avoid this overhead still (by creating an offset table right
-> after JIT) so that the termination handler becomes faster. However,
-> since termination was itself a rare-case end-of-the-world situation,
-> we didn't consider having great performance as one of the requirements
-> for the handler.
+> > Supporting bpf_core_cast for both prog BTF and kernel BTF types is not
+> > trivial because we cannot disambiguate local vs kernel types.
+> > IIRC module BTF types probably don't work either but that's a different story.
 
-It's not really about performance, but rather about extra memory
-overhead per program.
-These days we have 200 or so programs at any given time on production machines.
-Can be more or less for other users, and the footprint is only growing
-with every year.
-They are loaded on every server in the fleet since bpf is "always on".
-That's millions of machines.
-This would mean we double the current memory footprint of program
-.text (not just bpf_prog struct) if we kept the current approach, just
-to match patch targets.
-I think it's not a good tradeoff.
+> I can add bpf_rdonly_cast_local() as a followup, do you remember
+> context in which you needed this?
+
+Adding Matt.
+
+Not long ago we were discussing iterating over the bpf linked list
+since support doesn't exist in the kernel and it was safe in the
+specific context to iterate over the list.
+Ofcourse, we could add iteration support in the kernel, but another
+approach would be the ability to subtract offset from node to arrive
+at an untrusted pointer to type in prog BTF (that was allocated using
+bpf_obj_new).
+But bpf_core_cast didn't work there, so we ended up discarding that approach.
+Not to get hung up on this specific example, but I think it would be
+useful in general.
 
