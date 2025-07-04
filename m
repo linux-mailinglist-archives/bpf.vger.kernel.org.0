@@ -1,102 +1,184 @@
-Return-Path: <bpf+bounces-62413-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62414-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9B81AF99B9
-	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 19:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E5D49AF99E9
+	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 19:40:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 440345A7554
-	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 17:34:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 690955C045C
+	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 17:40:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 277FA20B7F9;
-	Fri,  4 Jul 2025 17:34:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B911C2DEA71;
+	Fri,  4 Jul 2025 17:37:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZlnoQtu8"
+	dkim=pass (2048-bit key) header.d=dubeyko-com.20230601.gappssmtp.com header.i=@dubeyko-com.20230601.gappssmtp.com header.b="IEoZN18k"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f67.google.com (mail-ej1-f67.google.com [209.85.218.67])
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23C382E36ED
-	for <bpf@vger.kernel.org>; Fri,  4 Jul 2025 17:34:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F41B42D8366
+	for <bpf@vger.kernel.org>; Fri,  4 Jul 2025 17:37:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751650489; cv=none; b=RjvaWwKSn0550A55Tk9jyaqivpjkT//1m/pTYODtPMVt6o6Ic4/qf4UhOz3lkx6XLO+ivWPvGzRDWkZdHX6m341+UjR8osuRxde7rCFfO92kvV31EIYlcyd0TdCnLBKVGydMASBw3oY59OGYz+jWI1nw584t+jdHmtjm/Uciups=
+	t=1751650679; cv=none; b=YXExo47CsRAa5aPau0TgtWYXC44fB5FSVSor57bMzyWhHJD0DZNgHbJgXsQMpiGXjBe8mwMYbr6gm3P/XLF16ZUiNcdN/ti3O8m8gR1GSRxwKLSmB6uv9cFmXYa1LImOHhnaEvbpL1j/8IdMud1hCFCu/WOwJBnBDdtg6CVx4Ks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751650489; c=relaxed/simple;
-	bh=lZzoMefMJQEHWWMw+S5C81vYcQ4VbPzb+0y4T/3TRUQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fKybz8YcjWr+1eWLY5fYU45IVhKBYcwSLt7bB7LJED0NLFT2/cX9vWLnuDLAACHmNkn2eykLaL7Df+4sKpmkE4d0iFri/cuCPhD0jS696kKXPUsLY8kQ5E766M4NeKaWEw/jLHq+k0rHVcugbiXNIP3/9rG/fvOhNUQwQfQ7t8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZlnoQtu8; arc=none smtp.client-ip=209.85.218.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f67.google.com with SMTP id a640c23a62f3a-ae0dad3a179so178749666b.1
-        for <bpf@vger.kernel.org>; Fri, 04 Jul 2025 10:34:47 -0700 (PDT)
+	s=arc-20240116; t=1751650679; c=relaxed/simple;
+	bh=9EALfSFFBRNxRqRk7VUICyoOrPWaEk2Bqic5Nq+c1QU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Z29L7htXc4J8SlFJjK2p8fTc1KC7NIu627gROzNpyxwKcQMEjG11x8PSsP6HLNjLpkBdBThO3gAN3OYEprNjZJ7uI761xlF+s+uBVVGw5y+CWX5+EOdbi8J2aPlAUn4lWPx9UfxDWSeJ2xnZj/P2PN7IOWwblaDva6NzD50jvhE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dubeyko.com; spf=pass smtp.mailfrom=dubeyko.com; dkim=pass (2048-bit key) header.d=dubeyko-com.20230601.gappssmtp.com header.i=@dubeyko-com.20230601.gappssmtp.com header.b=IEoZN18k; arc=none smtp.client-ip=209.85.219.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dubeyko.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dubeyko.com
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-e81cf6103a6so1069489276.3
+        for <bpf@vger.kernel.org>; Fri, 04 Jul 2025 10:37:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751650486; x=1752255286; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=lZzoMefMJQEHWWMw+S5C81vYcQ4VbPzb+0y4T/3TRUQ=;
-        b=ZlnoQtu8hsKq7rGYd6p0FKl6//RacYLCGjZK97bYk/p+Q5YcKoyVnp0xGH39Vwo3lW
-         4KaSpjYtShDDIjbIOeUYWtST+lrDf5zY3TURAwcmuzI9AYVFRVJJ6+gXPbZCaJyX6ECk
-         A4qmHSrEnK8Fze6JuOxtzp6JI2d8kO/dEaMRWC+VjgTbiFL4zawmWOqBgx9lK7SXSQ4R
-         7yci5w8rFGNNDwbNt0b8Gfw8B/KFUcRMdT5jU1kf4RaMcR7lIcCObMZ4uNTKoQRY8Cmw
-         aXPd50oBcXeytfYyxsoFr6ETGxYeHX34pDf+PMUWETuYBPf/RPc83seu/BtMelzvndZo
-         ljig==
+        d=dubeyko-com.20230601.gappssmtp.com; s=20230601; t=1751650676; x=1752255476; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=lLUj9yr52QgRuAClbNBOdP/RkbfnWsisubBXRJYh1fQ=;
+        b=IEoZN18kzQIDka8i89xchVuT9VJi5TSDgmA7iajf9iCpKJMdLU/FME99+PaRpUf1/4
+         qc7CsT4GxkO/hGTtDdUPGGNKS4qpG2egKULafSUTVvPUcgooIJHIGchgA20rgyFEvLkW
+         LMohtkvYAdOPNTRoUyxYxOQf/AXi633E4PfqiCHDa2rmOVZvim3U7Z6S2TVRp+WaynWO
+         +/xsSdARGxzVyti2okmY0NBhy1z4jas5mxFbIBrw1kl5sCVK0TltKHA8KmltkZtac+zh
+         VSnXvkt8hdoxeuv/ug7FSpRQL8lyVWNlLnZdqe/4E1DVTG2/EDfWYogE4aytjx/yt7mY
+         fwjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751650486; x=1752255286;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lZzoMefMJQEHWWMw+S5C81vYcQ4VbPzb+0y4T/3TRUQ=;
-        b=TWodqraouf81FAkzpsXrwKU9omfN1XiUGkZ0iTERRaCpo3OK35FOK5XJnZSsTQAR2B
-         QHfz9zVwvPbGscB4zvz0lOQh0tGf87CTS3CI4Zo5yeyBcJUFe7in07s+KbJUHjDT2nBC
-         zTi0bNNfWY+57Ovr5JZ9RewgQLai09TTv9OivQdafrfxsIt7yZ3H7hZ9b09q99IcmP04
-         z+99dBPZhDcSK4rbCFG/0HqASw8dcZkW4Q3Pt0ie8DWnmrXGI1k8EiUYskOD6jEJxtjj
-         xvHP2bP3zrpObKoUE5addIquICOq4ugq1QXFkJ8eE36mvL7gwic9SB7kJA0C7hIKsbQT
-         o+gQ==
-X-Gm-Message-State: AOJu0YxABfh3dlrN5UyabRTD2/EIo/C4uAqQI0E5uKPqXBg66Y5VTB0C
-	pvxosmt+adfN2af2vq8RYafHQOF0ntj4DJe/5fPhpi8MfIKdnEo5B5+KO6UJk6JQAWW99xuO7He
-	uRLSdqs4DyZTaL4hCSSfT5cCvTifCfXk=
-X-Gm-Gg: ASbGnctTSYqwZae54bL7sydn4e2lzKfRDk6c371ORpRKUR1u/b+Mma33B4TAXnEDFgu
-	XKEZbp7ERSZzDXCHjpTjUC66dMj24qj2s+jHS16CWm/bBs6CZLR7EE69iN7VNafkyZYXPABvyhF
-	EbhNrrkUa9V+LV17GDWb+ZSQJ7bZ6h8bcDL23bz3uDwB+UOyXjSofjn3aW/UH0r+Av1XkzWgryJ
-	2s=
-X-Google-Smtp-Source: AGHT+IHsLyfIa0E336VnA7wLrv3PVyV6BTC4lkjAUj0hB1qRGB0VS1AGGvY7UGU/vODpPUeIVTJslUhxph/hOz4YMOA=
-X-Received: by 2002:a17:907:971a:b0:ae0:9363:4d5d with SMTP id
- a640c23a62f3a-ae3fbc405c7mr331635066b.2.1751650486211; Fri, 04 Jul 2025
- 10:34:46 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1751650676; x=1752255476;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lLUj9yr52QgRuAClbNBOdP/RkbfnWsisubBXRJYh1fQ=;
+        b=xGG0OyDaLFhU4clDcH2S6bEZCTwC7WKmEBL8/I1IFviVNASYMRby26rkX2ZNEt3+Ki
+         7ELcT1qtnXCYONZsCA7Lfpw7F5ZWZKSA7cI0acCBrTWJv8C4DJ5AICufpPX5gvwOZd4r
+         Rq7cD49pNsW2qwmcHIGlDwsDVrz4FlLJSV6nN9I7hb6Dr1FWP8hbESWTzjGS3qg9FfGD
+         iz+sd4kjQpFwNhCM1OAseotxeDkgWGncs51BNBLMEsOoaZK47URi26XEYhRkj+WwV6zk
+         sY6HMhMeaGFWDwog8OoTfkgIGbL5Hz19lcrK4HG9pRIRJ2q1GyEISxOCOzYZanUKQfgE
+         bvTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWK9+KLv4RbtH/dK6qHwCC6BVTajkEAKFivan61UTsk9x5KSBzmj5zgbFq16rkgjoyRa3M=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxOBi7r/VdAMguR4e+qX6ZwKO35YLrz1z2//u/ABcopWpmJzGlP
+	pSjYezbN2IQCWnjzAf4w9CC34sceomeyxoEPa4LKQ+Aiw60P+9pkWmF9+7J+mknIV4U=
+X-Gm-Gg: ASbGncv9O67dCzjWlHgyJqHQpBsn1Yxt0DDMjm0jos7sc1TwHvtKgnv7f4hrQqwKeBY
+	QHesLhL2r/OnZGE3In1MSIho+RCq+d3G/+vt5QJ3YJ6Toilu/FkVwe44P4kb2qGToKqucwwjhpN
+	aGXchYhZCUfI49jKhN9ZWSQg5kFVYXCyCuzf6wEghNzP2FNfThdnBrwl2/xieng+iR7bdy8xPXi
+	YWgbfGNscwHS0Fhke1RM/cv16Ib0aPkBk/x1AXOYcAfpJL2C8y1NAxKLg/Rt4Wp+GeRXTR1Oki3
+	8Fm7x8g0ryfhRNjUnZpcLQx71u/u/043Atcmm6mgr9wZxKO69M42rWKTpe0eQEWbFagaeaUUKUD
+	eFARRpnn7vLqXJKLpYYf2yzrApji1ot4=
+X-Google-Smtp-Source: AGHT+IG/aHreLeb27PwZvmI50YVh3KULg7kve7WZz2i4AoC208Quitrbot6B7W1w0/7tBwFUvl1n9g==
+X-Received: by 2002:a05:690c:b84:b0:70f:84c8:3105 with SMTP id 00721157ae682-71668d73139mr47948477b3.37.1751650675940;
+        Fri, 04 Jul 2025 10:37:55 -0700 (PDT)
+Received: from ?IPv6:2600:1700:6476:1430:f030:281a:9e2c:722? ([2600:1700:6476:1430:f030:281a:9e2c:722])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-7166599fc22sm4941937b3.28.2025.07.04.10.37.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jul 2025 10:37:55 -0700 (PDT)
+Message-ID: <9d9d7bbab5443bd1c3dfd7d81d9bc91debecf4ef.camel@dubeyko.com>
+Subject: Re: [PATCH 4/4] hfs: enable uncached buffer io support
+From: Viacheslav Dubeyko <slava@dubeyko.com>
+To: Yangtao Li <frank.li@vivo.com>, axboe@kernel.dk,
+ aivazian.tigran@gmail.com, 	viro@zeniv.linux.org.uk, brauner@kernel.org,
+ jack@suse.cz, linkinjeon@kernel.org, 	sj1557.seo@samsung.com,
+ yuezhang.mo@sony.com, glaubitz@physik.fu-berlin.de, 	shaggy@kernel.org,
+ konishi.ryusuke@gmail.com, 	almaz.alexandrovich@paragon-software.com,
+ me@bobcopeland.com, 	willy@infradead.org, josef@toxicpanda.com,
+ kovalev@altlinux.org, dave@stgolabs.net, 	mhocko@suse.com,
+ chentaotao@didiglobal.com
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, 
+	ntfs3@lists.linux.dev, linux-karma-devel@lists.sourceforge.net, 
+	bpf@vger.kernel.org
+Date: Fri, 04 Jul 2025 10:37:52 -0700
+In-Reply-To: <20250626173023.2702554-5-frank.li@vivo.com>
+References: <20250626173023.2702554-1-frank.li@vivo.com>
+	 <20250626173023.2702554-5-frank.li@vivo.com>
+Autocrypt: addr=slava@dubeyko.com; prefer-encrypt=mutual;
+ keydata=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
+ fAMjjkInIPg7RLGs8FiwxfcpkILP0YbVWHiNAaQ==
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.1 (by Flathub.org) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250702224209.3300396-1-eddyz87@gmail.com> <20250702224209.3300396-4-eddyz87@gmail.com>
-In-Reply-To: <20250702224209.3300396-4-eddyz87@gmail.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Fri, 4 Jul 2025 19:34:09 +0200
-X-Gm-Features: Ac12FXzfWu8djl6ngDY0EafenOjlULAYCL6SsxGeohCMVw3icgxk37ffel8xhRw
-Message-ID: <CAP01T74PRV_0tH5GndHtZoySOid8yuPF7xZWA9QoHBh4=-8DAg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 3/8] selftests/bpf: ptr_to_btf_id struct walk
- ending with primitive pointer
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
-	yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 3 Jul 2025 at 00:42, Eduard Zingerman <eddyz87@gmail.com> wrote:
->
-> Validate that reading a PTR_TO_BTF_ID field produces a value of type
-> PTR_TO_MEM|MEM_RDONLY|PTR_UNTRUSTED, if field is a pointer to a
-> primitive type.
->
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+On Thu, 2025-06-26 at 11:30 -0600, Yangtao Li wrote:
+> Now cont_write_begin() support DONTCACHE mode, let's set
+> FOP_DONTCACHE
+> flag to enable uncached buffer io support for hfs.
+>=20
+> Signed-off-by: Yangtao Li <frank.li@vivo.com>
 > ---
+> =C2=A0fs/hfs/inode.c | 1 +
+> =C2=A01 file changed, 1 insertion(+)
+>=20
+> diff --git a/fs/hfs/inode.c b/fs/hfs/inode.c
+> index 8409e4412366..a62f45e9745d 100644
+> --- a/fs/hfs/inode.c
+> +++ b/fs/hfs/inode.c
+> @@ -695,6 +695,7 @@ static const struct file_operations
+> hfs_file_operations =3D {
+> =C2=A0	.fsync		=3D hfs_file_fsync,
+> =C2=A0	.open		=3D hfs_file_open,
+> =C2=A0	.release	=3D hfs_file_release,
+> +	.fop_flags	=3D FOP_DONTCACHE,
+> =C2=A0};
+> =C2=A0
+> =C2=A0static const struct inode_operations hfs_file_inode_operations =3D =
+{
 
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Frankly speaking, I am not convinced that HFS really need to support
+this feature. It is old and pretty obsolete file system. The main use-
+case is simply support the capability to mount HFS volume is created
+under Mac OS X, for example, and to access the data there. Of course,
+we can support this feature, but what is the point of this?
 
-> [...]
+As far as I can see, the goal of RWF_DONTCACHE feature is:
+
+"Common for both reads and writes with RWF_DONTCACHE is that they use
+the page cache for IO. Reads work just like a normal buffered read
+would, with the only exception being that the touched ranges will get
+pruned after data has been copied. For writes, the ranges will get
+writeback kicked off before the syscall returns, and then writeback
+completion will prune the range."
+
+So, who would like to see such efficiency in HFS? Do we really need to
+support it in HFS? I think that it is not.
+
+Thanks,
+Slava. =20
 
