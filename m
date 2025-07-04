@@ -1,210 +1,203 @@
-Return-Path: <bpf+bounces-62419-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62420-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1999AF9A3E
-	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 19:59:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CDCAAF9A49
+	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 20:04:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88F8D178CE0
-	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 17:58:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BABBA6E335F
+	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 18:03:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DA912DEA74;
-	Fri,  4 Jul 2025 17:58:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5D291F418D;
+	Fri,  4 Jul 2025 18:04:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="du4caeYs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EeIyfFIr"
 X-Original-To: bpf@vger.kernel.org
-Received: from CAN01-YQB-obe.outbound.protection.outlook.com (mail-yqbcan01on2131.outbound.protection.outlook.com [40.107.116.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f67.google.com (mail-ej1-f67.google.com [209.85.218.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DF652DEA6F;
-	Fri,  4 Jul 2025 17:58:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.116.131
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751651909; cv=fail; b=YYr+fW+YPXJ5WYZx4TgX1umtNXnURPzlRRz4ZKIGYt1EaCsMjjuLa+0N12Lt2fz/zCpHTsVrpoRTMJufsVCYnmWfLAoHgaubyGiyOzLs7pqt6e2uwIxmq0VwhrY9SKR8HmSWA0m2S9db46wIjgGR1DIP6y8zrWrDgemDxTsieco=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751651909; c=relaxed/simple;
-	bh=TtcG0R5hH90rsq6Nrof3IpymhcmCLxfRh9UgQbiqtP8=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Q+4WbJ/wjntb3IlWnFFR+3W89PskgXXDZQHkOnr/e9oFHCCcKcOdgvy+ihucarz+A8GT2EXLpI4SnN2h5X/simJuhUY6yJ+6c9+/UhV91RMSf65iPX21cdidsGaB2CQKNmEM/FO8c3gdjtFY716fYLzA43svdaiAcUXjxqFnpuY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=du4caeYs; arc=fail smtp.client-ip=40.107.116.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=oNPqy7QM0GuQAPqWzG1pgpM82VpBb+NtcUkzBevLUfIamz+IxsUPniHD69/AwYZ0Aggbrl3s06DhLHx4uByIbccMa1zj2s2TK+SXweO5ZFGU2aP/LAgb2pg7ASCtSt+glDgBTWMQeSJraLYe7ur9jd/Z4klAnt3Zwr/Y75r1rTIUGBrWFYaeF+Qv5a+xAho6BWRAoEe3Rhr7n/H65xj5OOi+LM3h2tC/bnkjRMZsOT3U5eQsttwBl/YCD5o/oZ8GLXKdW/TaOKGhMMlScat+QGaPkdMI7LLqCLn+gTEkIsXQOHhl7TmCsY+vVD+XnAkOJ6At9Kh8WvoPh3w0+vz1WQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rPGSxM2Z6FL3uYcR1xGYYd92+pg+Q4ArzQnxBZG2bqs=;
- b=Gpzb7qspbul+m+6rmAIvkzmiXPPxwutPO6c4o0d9p9K0VORqgd45Psldtrc0HBftFaAPtNOTnqTAJWP7OH5jkGefmudzaW1NrWKVfhDmfXyjPbq+pohhi3oaS82JvpjLtgXoMJxu1FX6rMUFp8aELyDfxeO5vK34RhRvSaHEiuciauEtqNiMSHPDDycX2JskZG8CxFRDXDWnjlYeSwhD/fDr6+IYVQ7WfJhGNFl6QfwVocsvQhv1+Kc8sPkyA4CaJapGonwfZTXqRBxc6pWdshLBKvQwbGbuNp6k59ZgloGiMabmMrJCiuHHj9DHqTdki98udqH/Jp9kzlvGl1QFMA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=efficios.com; dmarc=pass action=none header.from=efficios.com;
- dkim=pass header.d=efficios.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rPGSxM2Z6FL3uYcR1xGYYd92+pg+Q4ArzQnxBZG2bqs=;
- b=du4caeYsHIgzCTphGvtRbGGHGNDyEYUDkCKDCkUHBlH1OoKP+mPXh2HS2xrdd/MPl5F8kLILK/ne1B+igmpQJwkhP1aOpqdbmeOGlrAL384sarGGObppSzHokqJwaRvqff10WLt0MY3hW7Lkg5OXyA+Xbkqd7ZDWPnStQ7zNVfH8WU0uVMtUi2P+f6PSFsJ/1/HcfJdsAirRnRBjtiEsK207ye/QI4aQ39Jq+8/0f6BE3RBhtGujKgrgVg5dhDbHRjjuRQ0M9SRq5z4p/7115C/pC0ONq9qfBQvk2eLldhhnPgFqJjSUqL7WSogTuwcTSmtl3PTO7Zb16oy8D//T1Q==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=efficios.com;
-Received: from YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:be::5)
- by YQBPR01MB11038.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c01:94::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8901.23; Fri, 4 Jul
- 2025 17:58:22 +0000
-Received: from YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
- ([fe80::50f1:2e3f:a5dd:5b4]) by YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
- ([fe80::50f1:2e3f:a5dd:5b4%3]) with mapi id 15.20.8901.021; Fri, 4 Jul 2025
- 17:58:22 +0000
-Message-ID: <45ac3409-81e1-488e-91b1-167e5dfbe1d0@efficios.com>
-Date: Fri, 4 Jul 2025 13:58:20 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 01/14] unwind_user: Add user space unwinding API
-To: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- Josh Poimboeuf <jpoimboe@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Andrii Nakryiko <andrii@kernel.org>, Indu Bhagat <indu.bhagat@oracle.com>,
- "Jose E. Marchesi" <jemarch@gnu.org>,
- Beau Belgrave <beaub@linux.microsoft.com>, Jens Remus
- <jremus@linux.ibm.com>, Linus Torvalds <torvalds@linux-foundation.org>,
- Andrew Morton <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>,
- Florian Weimer <fweimer@redhat.com>
-References: <20250701005321.942306427@goodmis.org>
- <20250701005450.721228270@goodmis.org>
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Content-Language: en-US
-In-Reply-To: <20250701005450.721228270@goodmis.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: YQBPR01CA0135.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:1::35) To YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:be::5)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A59D22E3713
+	for <bpf@vger.kernel.org>; Fri,  4 Jul 2025 18:04:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.67
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1751652250; cv=none; b=hHgNYenLkM/hI57NQjk4bvUKrO91NTVtWjn8nQ+a+87FWdFCp0iUgt68KzL27SoD6XX2zG6TQUQfYDYlA8x2siJAk0ZK10TnvWGOeCYWqKHec1xXDNxdhLezgnmrpLAYpR/DrQF13HJV4CVqSpp2pMXjJHvbqF/SAz+nLK8mQPw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1751652250; c=relaxed/simple;
+	bh=nrL5/9FRehqnC9Iape9Q3MlBD3yh9/hpBNqnRHqtM64=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PAX0U+Rd/ybLex06cD/cUOsQo+EHqQG1AnuCDJt1i06JYAXtiJhQqEDIEztHJu14Sv2q2Q0wPN530gcWN+Rpnt7PmV1SPqT/5kXvEp4pitPdt57LfupAyuIs7z/des4dm2CC9ceP9LjT890cNIpK9LA8Jaf0X/nzKH91c1DUOmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EeIyfFIr; arc=none smtp.client-ip=209.85.218.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f67.google.com with SMTP id a640c23a62f3a-ae0de1c378fso174170466b.3
+        for <bpf@vger.kernel.org>; Fri, 04 Jul 2025 11:04:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1751652247; x=1752257047; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=sUQFziBynd3mQMzNcuByCzHuLdrPpCwL3hAlHbQGvdU=;
+        b=EeIyfFIrwZ1aBATdWs9Tqp0o733FnIPjIQ8Xo8OWXtKP+EWZcsaaNh4nNn6x04U9s8
+         QoH5eTj80P6poOafddImnv6OX60DV8pEgaBkxxGzAPEnbwgjushzAXxBWgHVA/R6R3Fy
+         3IjKRZtsywbCgdJPkXknBe3a2Eo+UKrFV/GfBrAP1ZZN1by4hk3mCRUcweQPoVL3zA9W
+         LBFYPf7d892FmYGrm2QkvmRTxPWywj62jOawaIaeeMex0GIApP1ABTcm1inykKSWCq4i
+         oPcbgrMKT0GrzAa/APOBZc+O+eOEKFPvNorbPOBcjLF8iMPFajnkXE9+KZLYIq/tNL3I
+         VpxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751652247; x=1752257047;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sUQFziBynd3mQMzNcuByCzHuLdrPpCwL3hAlHbQGvdU=;
+        b=ZZo5OdY9WuPSGAV+PuRId1JjHofL/7rPLJzZMB70gmTSxG1L3ccwEI4AFnuHpvjAQ8
+         QWDxTXZjt/C4pNEhfxF0AfvWS34P7L9QeG7woSbnYNnWGW73k+POjjRdzhOjIVsOAmNw
+         z/TuzcBEyh8l+I77QAyklrv1OA0/i8DuYUe//xu3bilu2fGcNHo1zBR2A9PzkZt2dpSa
+         FjxQPnke6SfvYudF2qYIdxGiooTGZVE6rUzIQg9YzWcOD8c+CvafYn7lfX/OERjZVpfN
+         mriHETdbNiPoJHszxL4xp4GmgXNuQ4lf+HNYgcMb2A8TgRSoft0mkjLr7UUN1en7QXA7
+         ViWQ==
+X-Gm-Message-State: AOJu0YxbgmCQ/5TAyf44ab8PpbF1IBEUuMRmaAVL7qwSvBDUDD7JNUEr
+	UuES3MwlHrt3WwPAfGU+TgTyf3m7Ds3sJvQbKB8QNNticCGwGtmIiG/XJqqYBymPBzky4Ci3xGU
+	nUi1utc4gQgIf0IzK1DUPh3RuAp9zcT4=
+X-Gm-Gg: ASbGncsysEhpdOPNHZEXuVg9txMpKqsIQcAcqBc2wQbgdnkwGoyDLQdYkAAHB2IpUA/
+	FwzTFfV630tvDfCpscIUA8ka2d4MWmKDK++gnNVZs3Fxke5m5zIOWJAG5voRQHddPGdAXmB9ATq
+	jbElJBapyJoiwemUgFcyVjSdjc8YneEE5SkllmR2Bo+3oA8FFut3uFFQnqAeFQY7kK2GbI0qx0I
+	48=
+X-Google-Smtp-Source: AGHT+IGZQGwM+x4LHc7uRxLoGFwBvEr0ZB4wiMW1VmXM6x95293b5OBRCUS6NFZWO3awukhdeCLROPBTM3UdvvX49/A=
+X-Received: by 2002:a17:907:60cb:b0:ad8:87a0:62aa with SMTP id
+ a640c23a62f3a-ae3fbc826a9mr397487466b.27.1751652246545; Fri, 04 Jul 2025
+ 11:04:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: YT2PR01MB9175:EE_|YQBPR01MB11038:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1d825112-6953-4623-3244-08ddbb245d7c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|7416014|1800799024|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?eThUTFJTaWl1UEFINE5sVVRwK0dOSU00WkxCdFNueTUwQVhQa3NPdGZXb1VZ?=
- =?utf-8?B?MEt1Y1k5SG1PVStqb3VFNVNHd1lhUkRFeXFDUkcweGNHcW44S1JLek1jOVhT?=
- =?utf-8?B?ZjJlV0xjOXhZWk1zczdWQjlSbmRmWTIzU2JnY0krYURuRmt4K281Y3hxaUo5?=
- =?utf-8?B?V00yOEUvWnRMejliNjZVNXdMRTZKWlNNR1JRTXR1RHcxQ3lWeTFZYlVhWlp5?=
- =?utf-8?B?N3IzVDRVRUcxMWQ1OVBQUi95eUp6RUdqRFNnRGxCSml5NFQvUFBDWjlIZnNN?=
- =?utf-8?B?Mms2N0RLQ1pHdUxnS0FaOXFObGhQdktuQ0VKeUoyckVhWEhoRVh1RThydkJu?=
- =?utf-8?B?ODMzVFd5WGNZRzFFVS81N2hNTXl2bVI0eVBkSkhmWVFJdTVFOCtaR3JBNGtG?=
- =?utf-8?B?VDR6dldkZXB1b2dISFlHSVF1YVVWZzBXWitzTjM3MmxYTXFEd0l0bldCNEJI?=
- =?utf-8?B?V05SRHhzUGUySUowU3BXZDZhaTIvcExaRG5PeVA0VG1WT2p6Y3ZuN3pYeWRB?=
- =?utf-8?B?L2UwcHJ3L2gzem0wYStZaVdNdjBXR1NnSUhDcWkzeXdPNllycVZxd1dMb0VY?=
- =?utf-8?B?Njl1K29VUjRiMXlRbnp0cWVzMHlPT1pEcjAxZXRmWTdpZDQ3WEs0b00vUUVR?=
- =?utf-8?B?L3EyTVArOTE1clRIQXVUVTdtSnp6blJ2dy9jOTQ4UWFYbVluZkR3Z2VnV2g1?=
- =?utf-8?B?QUVkazh0dFo1UnFXOFNOcjl6bjd0UEluQWJKaG1vRTNjYlM4SDlZb3dsOTQ4?=
- =?utf-8?B?dWNFa1BiZmlIVkVkN1FvdlBtaTFiVTAzZzFRNEx6V3Zwcy9hd0M4ZWZLaTV3?=
- =?utf-8?B?RXFzaFEyaHBHRUw1SEU1SXF1NFFPSmNiL2ZqdHE1dE5TSGx3eEFnVC9xK3Vj?=
- =?utf-8?B?OW9lU1RHU0lOMk1jaVd6TmJRZmRmSndqZzE0Vk5pSjlQMjhDK0h4WGgzeGVj?=
- =?utf-8?B?Q0dnV3ZldklNU20xRVc3aGxQVTRyVWNiQUcxRTkyVnRiSDNxK2E3WHBVMGdO?=
- =?utf-8?B?TXcvRzdqWkxrdTJnOEszVFZJT3VueS84d3NBQjV5SkplcllTV3JNZ3o5ZUU5?=
- =?utf-8?B?dUhTYmhBVHVEanhySm1veWNON2x1RVl1cHNlVXNxaDkwRGlGZGRJWWlDSGhv?=
- =?utf-8?B?RXZrWDBUWk9qNEdoNnFYWFBRSUVZYUlhMVBIL2ozNGRobzRKeXp4eXBsL29k?=
- =?utf-8?B?dFN2WVZWaGpVQkNkcUJYWmt0aWh1WjVBSFVWTFFXaklnSEVFU3o0bUlUZGVO?=
- =?utf-8?B?M0Jldzd1TER5MWMxV29FZ29KTkVVOW1oVXhKaFp1YzdJbUU2OGlSTVR4Y1Fw?=
- =?utf-8?B?djcrMnRSRG5HVnZvRmVLUHlKVzlhVy94YmhHQVR0dTczQ1VzTGs1OURudEYw?=
- =?utf-8?B?cjA4T3lXbjh6S1JEQU9EL3J4QXJSMVh5aFEveEtiY2hhcjNaeTlpTS9wazdO?=
- =?utf-8?B?bWdKMmxrbXluWTdQU2pEam5MamhMSkhGc0VLYkdvTk83UnRFeVRoT3dwWVVl?=
- =?utf-8?B?OHRTeFJLUm43VWNoZENHcGs5MU9qMFg0T0tnaHVJZnppWlJTR0liNm9RNG9F?=
- =?utf-8?B?cU8yVzVNUVF3M1RFZTNnUlNoVTJ3SHZwMUI1OG00cEJiQjFJNTE3MmRONDhZ?=
- =?utf-8?B?TmsrY0JJMlREZHZNZjE1MVFCT1NiZHI3NEgrdlhPeExkRXV2NTIwTGw0emVN?=
- =?utf-8?B?WGM2MWhQVG5zK1BqeTRnQ3ZzQ0pMVEdwVndUbzZFN1BGVnBraVdrMjR0bFFR?=
- =?utf-8?B?b0NjZTN6N1gyTVMycEExdVAwWUFLRWcvSVhHM3lGZnVzNUZCVENBanJ0eHJ2?=
- =?utf-8?Q?eqzc42XsZKZwHSkCO2S3lAw25Id1cbQ/jIsH0=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(1800799024)(376014);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?RjltOFcybmFCOGxYaUUycUZINVRxcFJtcFRsVSsreS9XZkhRSnFKZm55eGdX?=
- =?utf-8?B?Wm92dUpudGNJSDRndVFjTzVNMjdHRjRKVGppTmIyL0l0MXhsMTMwZGlHQk5N?=
- =?utf-8?B?U2dLdkFlU2c4Q3F0Q0pqZ0pUckN6bVM3S29MOGhoKy9JTU9VYlE2aU9YNjJH?=
- =?utf-8?B?RmF5MmtlQ1VVMEVrM0tMWmtEQWlzVEZGSldsQU05ZXliS0xvVk9XZzRndjVs?=
- =?utf-8?B?Y1JWYW9vakJtRUZyOVBDam5QRzl0K0ZMRmtqelRCUk04a200WS94TEpwdXd6?=
- =?utf-8?B?M3JPM0ZYcS9Nb04wbzdnNllsalQzRXFROXlicjFzcTZmY0t0eUhvMFNKV3BR?=
- =?utf-8?B?bCtOSFd2MW1GTWZsWVdKenlqUXo5YXlkOXFxTzBTL1V5QVZGMHNHRktUdUhV?=
- =?utf-8?B?bnVCY2U5RFFUWUk4ZW02Wm5rclJFOFZqd0hqUjlZZlZuWnMwUVRvazZRd0ZY?=
- =?utf-8?B?cGRYZVlnazBqNUp2UWQ2ZTh6VnBhL2JNNkl1TUkzMVlETUFjS0lYd0J4WlJV?=
- =?utf-8?B?Qlp0Z2Q4VTU0cUpvdnBPbXVLUkVDc0Vsb3BUVmd1SnpVek9UVEhMWFFtSGJk?=
- =?utf-8?B?eVVSWUx4MFQ1QzZyaW9pc25Ka050Q0NrQ1Y2Smg5U2tXd3JqbzhiVVg0NkMz?=
- =?utf-8?B?ZmNMRTZEWjV3UzdzdkdRRDgwSktKWXltelg4cEtwNldOZ1ZCbTl4K3RZRjRJ?=
- =?utf-8?B?NGRzK2pLWitYU2cxMzAxcTBLWkpadUsxMFBsWXRxWXlMSGdzOU1Nb0szUm9B?=
- =?utf-8?B?UEJvZC9DbWVWOWo2Ri9sWDVHcnZnbmxVaThQRWZROVRRaFE3SnZ2TjRqTUMr?=
- =?utf-8?B?dHpLY3NZQ1hyam9RTzROZnVUYUF5b0p2TUNsZVhJcDRMeEpGWW14WGdGcE5C?=
- =?utf-8?B?QTNhblRpUEhOVGtYV1pVMGVZdlZUL0QzNzI5bk9kdGRNT3lMcXhIVEpRWFYw?=
- =?utf-8?B?UU01ZmlmQkp1aGVnenJDVkFycGY4dE1YNDFVUzBkVDgzZWRpKzJ4VHJGalVy?=
- =?utf-8?B?ekFxN1czTWdnaGgwQjhadFVCUUNTNTNpMlo4SGJvOGlld204SnY4N2VQeUx3?=
- =?utf-8?B?WWhCVnVvQWpyRGR2MHVMWXhJSVNSOXJTbExlKzgwU1R1KzJwR1E2UVI3ZFQ5?=
- =?utf-8?B?UDhHbmlYUzBaZUYvZC83M2lnVlcvVFZGUUtEaGREVjNGd2JKaVA5ZVpGaWxL?=
- =?utf-8?B?MEp1Y2I0NGlCWWVNQXR6bURpRzRMNHhkWGxYc1VmREJ4dGdRTmYzYytmYVZy?=
- =?utf-8?B?NzVpOE0yOUZLVkdrZVd3NlhWaTNZWGFFVzRZcWJiU1VzQW1iNHRaY3VBYkcw?=
- =?utf-8?B?SE1PUXpYTU12ZVR5Z2JvU2pDTzhTNjJGZU1iQlA0M1phbmJ6VnllTjdoVytE?=
- =?utf-8?B?aHZaVVFFN3Q1aDNCRllGeko3UWsySXZLcWd1VGF6TlJXb3NoN0JkMy8zWnBG?=
- =?utf-8?B?enQ0WUlYaFVxV1pVN1hWWS8zdEphOTJ6TGs5b0E3bmpBTGUrUDI5ZTNCS1FC?=
- =?utf-8?B?QUFoN0NING5VTkZYNUxXbC9Xc2pXYzBaUC9IZnBBQVRxSXUzNXM4VWF0NUhT?=
- =?utf-8?B?cGZCNHNTUVNBRUJCMjRYMVVOZWhsM2Urb2E4M0ljZHhYbHJWL2gwTmlFaE5p?=
- =?utf-8?B?b092eEZSM25GazgxVHdQblVsNURudjNtVXFyUExRTzI5TThkdS9xWUl6S2tn?=
- =?utf-8?B?SlVvTWN4emYzekRJcEVVVkllYW03b0phTFdwL041cDdreWZDMHdPV3JSSjNL?=
- =?utf-8?B?Q0lMQm1ORTRCcEY2RU5JV2tobVlZci9GbEtpWm52QkFmSE54Mys1VjZsQmt5?=
- =?utf-8?B?VmMvc0s5WVk2MUZYRysrU2g5RkJ5emUyc2xZY1B5U1p2akRsS0N3NjhidzVZ?=
- =?utf-8?B?eFBCbEdhaFZVbFptZE9ZRTFQd1FXa0psNmNrMkhUZi9rZ2JpMVo4WlY0WTNI?=
- =?utf-8?B?aGk5K2tBOERYdU1DT0FyZDRydk1QTVAvTTZ5a01FQ1QvRzA2UXF6ZXNxaTZE?=
- =?utf-8?B?S1JTeXFtVDRRdnJNRHNGdERmSFdlZ3V4aUkycTlrUXl3QkVaTEZ3bkh5YUFl?=
- =?utf-8?B?Mm9PMFlCTDNwWHptMXdxQ1d1N05OK3JMMkZJY0R5NmhiTUZCaUYybW1idGg2?=
- =?utf-8?B?T2VZemY4YURaNThTcDhyTVR1cy80aWJJT3BGTXJFUHVqRzVzYjduTE9GUVZ5?=
- =?utf-8?Q?ICvqbAjwWpZTPioKoFinH74=3D?=
-X-OriginatorOrg: efficios.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1d825112-6953-4623-3244-08ddbb245d7c
-X-MS-Exchange-CrossTenant-AuthSource: YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jul 2025 17:58:21.9800
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4f278736-4ab6-415c-957e-1f55336bd31e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CbzjIIWfbIQ3db1AWcFGS1K5u6RN5h85yHaIIShY4Pb57Cq787OndFcCLjXVDqdFMo0GZVANFhT/lYfrE6xM2Q0KOkvIQ4FdKs69QXAEHHg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: YQBPR01MB11038
+References: <20250702224209.3300396-1-eddyz87@gmail.com> <20250702224209.3300396-5-eddyz87@gmail.com>
+In-Reply-To: <20250702224209.3300396-5-eddyz87@gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Fri, 4 Jul 2025 20:03:30 +0200
+X-Gm-Features: Ac12FXy1S9rd0ztFgpYzqX_Yz_sVMuLWyqL5NioJZPt9Fgnm8l2It0lgZbpbzxw
+Message-ID: <CAP01T74AYNX5ARJ5YXryUyKvn5o0Dv0JBoq3CCKcD8rh==uKQA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 4/8] bpf: attribute __arg_untrusted for global
+ function parameters
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
+	yonghong.song@linux.dev, Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 2025-06-30 20:53, Steven Rostedt wrote:
-[...]
-> diff --git a/include/linux/unwind_user.h b/include/linux/unwind_user.h
-> new file mode 100644
-> index 000000000000..aa7923c1384f
-> --- /dev/null
-> +++ b/include/linux/unwind_user.h
-[...]
+On Thu, 3 Jul 2025 at 00:42, Eduard Zingerman <eddyz87@gmail.com> wrote:
+>
+> Add support for PTR_TO_BTF_ID | PTR_UNTRUSTED global function
+> parameters. Anything is allowed to pass to such parameters, as these
+> are read-only and probe read instructions would protect against
+> invalid memory access.
+>
+> Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+
+Some comments below, but logic looks correct.
+
+Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+
+>  kernel/bpf/btf.c      | 29 ++++++++++++++++++++++++-----
+>  kernel/bpf/verifier.c |  7 +++++++
+>  2 files changed, 31 insertions(+), 5 deletions(-)
+>
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index b3c8a95d38fb..28cb0a2a5402 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -7646,11 +7646,12 @@ static int btf_get_ptr_to_btf_id(struct bpf_verifier_log *log, int arg_idx,
+>  }
+>
+>  enum btf_arg_tag {
+> -       ARG_TAG_CTX      = BIT_ULL(0),
+> -       ARG_TAG_NONNULL  = BIT_ULL(1),
+> -       ARG_TAG_TRUSTED  = BIT_ULL(2),
+> -       ARG_TAG_NULLABLE = BIT_ULL(3),
+> -       ARG_TAG_ARENA    = BIT_ULL(4),
+> +       ARG_TAG_CTX       = BIT_ULL(0),
+> +       ARG_TAG_NONNULL   = BIT_ULL(1),
+> +       ARG_TAG_TRUSTED   = BIT_ULL(2),
+> +       ARG_TAG_UNTRUSTED = BIT_ULL(3),
+> +       ARG_TAG_NULLABLE  = BIT_ULL(4),
+> +       ARG_TAG_ARENA     = BIT_ULL(5),
+>  };
+>
+>  /* Process BTF of a function to produce high-level expectation of function
+> @@ -7758,6 +7759,8 @@ int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog)
+>                                 tags |= ARG_TAG_CTX;
+>                         } else if (strcmp(tag, "trusted") == 0) {
+>                                 tags |= ARG_TAG_TRUSTED;
+> +                       } else if (strcmp(tag, "untrusted") == 0) {
+> +                               tags |= ARG_TAG_UNTRUSTED;
+>                         } else if (strcmp(tag, "nonnull") == 0) {
+>                                 tags |= ARG_TAG_NONNULL;
+>                         } else if (strcmp(tag, "nullable") == 0) {
+> @@ -7818,6 +7821,22 @@ int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog)
+>                         sub->args[i].btf_id = kern_type_id;
+>                         continue;
+>                 }
+> +               if (tags & ARG_TAG_UNTRUSTED) {
+> +                       int kern_type_id;
 > +
-> +int unwind_user(struct unwind_stacktrace *trace, unsigned int max_entries);
+> +                       if (tags & ~ARG_TAG_UNTRUSTED) {
+> +                               bpf_log(log, "arg#%d untrusted cannot be combined with any other tags\n", i);
+> +                               return -EINVAL;
+> +                       }
 > +
-> +#define for_each_user_frame(state) \
-> +	for (unwind_user_start((state)); !(state)->done; unwind_user_next((state)))
+> +                       kern_type_id = btf_get_ptr_to_btf_id(log, i, btf, t);
 
-You can remove the () around "state" when it's already surrounded by parentheses:
+So while this makes sense for trusted, I think for untrusted, we
+should allow types in program BTF as well.
+This is one of the things I think lacks in bpf_rdonly_cast as well, to
+be able to cast to types in program BTF.
+Say you want to reinterpret some kernel memory into your own type and
+access it using a struct in the program which is a different type.
+I think it makes sense to make this work.
 
-+#define for_each_user_frame(state) \
-+	for (unwind_user_start(state); !(state)->done; unwind_user_next(state))
+When I needed it in the past I just added a local new
+bpf_rdonly_cast_local variant that uses prog->btf for btf_id and moved
+on.
 
-Thanks,
+Supporting bpf_core_cast for both prog BTF and kernel BTF types is not
+trivial because we cannot disambiguate local vs kernel types.
+IIRC module BTF types probably don't work either but that's a different story.
 
-Mathieu
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+> +                       if (kern_type_id < 0)
+> +                               return kern_type_id;
+> +
+> +                       sub->args[i].arg_type = ARG_PTR_TO_BTF_ID | PTR_UNTRUSTED;
+> +                       sub->args[i].btf_id = kern_type_id;
+> +                       continue;
+> +               }
+>                 if (tags & ARG_TAG_ARENA) {
+>                         if (tags & ~ARG_TAG_ARENA) {
+>                                 bpf_log(log, "arg#%d arena cannot be combined with any other tags\n", i);
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index cd2344e50db8..dfb5a2f8e58f 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -10436,6 +10436,13 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env, int subprog,
+>                                 bpf_log(log, "R%d is not a scalar\n", regno);
+>                                 return -EINVAL;
+>                         }
+> +               } else if (arg->arg_type & PTR_UNTRUSTED) {
+> +                       /*
+> +                        * Anything is allowed for untrusted arguments, as these are
+> +                        * read-only and probe read instructions would protect against
+> +                        * invalid memory access.
+> +                        */
+> +                       continue;
+>                 } else if (arg->arg_type == ARG_PTR_TO_CTX) {
+>                         ret = check_func_arg_reg_off(env, reg, regno, ARG_DONTCARE);
+>                         if (ret < 0)
+> --
+> 2.47.1
+>
+>
 
