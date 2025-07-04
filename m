@@ -1,114 +1,191 @@
-Return-Path: <bpf+bounces-62446-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62447-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB1B6AF9BDE
-	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 23:12:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DB4DAF9BE1
+	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 23:13:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01DA354531E
-	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 21:11:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B364D3B083C
+	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 21:13:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F5C221930A;
-	Fri,  4 Jul 2025 21:12:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7671228CA3;
+	Fri,  4 Jul 2025 21:13:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="FiDB4SCo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B74npjwp"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay16.mail.gandi.net (relay16.mail.gandi.net [217.70.178.236])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D27FE57C9F;
-	Fri,  4 Jul 2025 21:12:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.178.236
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10AF02E36F6;
+	Fri,  4 Jul 2025 21:13:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751663539; cv=none; b=Fgs9KRiY45qbr2CQ2o1Mewjn4fbpIJWmUjmvm/U7UWNGAA5fpQciwICFEE3QyOxnayrlNz+yaX74JOy7X9RWFLGH6h53sUQTdRgWGvL65GZ5z/y1jvxb058+3HmOq9QIaEkDZ/8l53oCof6S4uKA3NYiLVm0qw4i3TD2WUlIpaM=
+	t=1751663600; cv=none; b=BL+b8DMj4A2+clVDSXpDaakutrtySU5d69wkDDBjYydY/SOiU6MtemgF09u/MpOP8G2Z0bUXkL3HX0dubU+rTzOCe+lvTvt15xI6hyykMdEf6v36/IUSye02ZS9nSNE45XPLq918xwdLxU5bUIFWsRMvY+NZUeO22K0s2qaYTf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751663539; c=relaxed/simple;
-	bh=MgYC9qqAZAQNZkFf1BLgkNZGVA4HumXB4KjV5wQd2F0=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=OHr8PwQs1dK3tt4sTn6LHnbi4n5fGcxYicbyIt1+bIR9Vw6IGWflbNoJSY0m3cUM10J7fnowvr/m2HY8YoPI4wElga1DFRVJfOFD49o2Nt3nEfP2ivkhcly2xaxNuhtdAVrsVpbJ3rjO70USMZ4QwuBPD08ZlOrL97++8n4ui2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=FiDB4SCo; arc=none smtp.client-ip=217.70.178.236
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 0C13543890;
-	Fri,  4 Jul 2025 21:12:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1751663529;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ijcP2GejPAnbC48qS7uXsUWPEErxeSz+oaH5ShNVXPo=;
-	b=FiDB4SCoU8EW9FIcXUE5S98e4lhMP+4VH6BossI9wrs0uPEd78NImv2V5TJC+ITBbCpcgs
-	SX1SuWeIvs5493W2an+gcGCDfESZj+qo3LYbazKQilA1OgSIhAQ2/FNLOeKQUG4y2IR3c6
-	EJ+4Kyn9EuXkjfWaNVSGJOQ9t11aoLeNZk8+8POaABOAgWkZhD+dOHUJ1hU1N4AC8z7a6b
-	hzcTtiDLziOmzEnXc04kNVf5Alj8YzE7VKBCulPpypvEBeEFtSH8lCcW9JRt5QSNbxRkNL
-	yZF14EkAZNbt/X8KGf33+9g55I7N/cumNnUB/MZOww1uxvktkIZzdttgxOq38w==
+	s=arc-20240116; t=1751663600; c=relaxed/simple;
+	bh=zT57kjzSuc2YjOZ/13Q1WCxljHbZ3simyydCTfUXuoc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=S+vh8oj/AK0cIyVabkCcxdbBkU3HQrAinwCOg+Zqe3iUoegbGHcbwyxd9O/T+iexpRd9SBeHAbnwvp2B9pV5RVlcOs3zpKfnlaP/4Pzv3d9lQiAEHxJNCnBLrZeD0RxQIba1QBN2fB1SDJxLjwmsJhW+P/BjLdXVtz/A/rg9cg4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B74npjwp; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-23602481460so13414675ad.0;
+        Fri, 04 Jul 2025 14:13:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1751663598; x=1752268398; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Eged04V15WcYZIT4EIvtaTKSNXjWorwpdzN3lCt28So=;
+        b=B74npjwpMTeRc93hhau2GFuy0QnJ/qnVTXmb76GSAJFEI73faxjiWZhS52RY7YFrm+
+         CW3oDdpSDrKCP65wHiPNENizb1Ajin78F5c5ZeFzQZpWCz5VirL6vBNw5seUf4tp4nJF
+         MhSlYKi4eYB+FgCqhsBLQcyY1j68ME0Ap2LBZf1LvPChDM1c/2vXuvFLHx5ZzW+Ai2i8
+         DrFxFM96R/L+ys8JRUlo9U340/M3REFrX+F+j4Y4GBjKmFR95HZYkGHCF+ytheKBpHGF
+         Yyy2eu/1CMKsniSzmUYrAYSjivorh90ZkO7zFISEaLyIhW7B2wFaVQdzWhriXziDkL2b
+         XUxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751663598; x=1752268398;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Eged04V15WcYZIT4EIvtaTKSNXjWorwpdzN3lCt28So=;
+        b=F3IYILu77xgpxTPvInZGn13+HYGhUKyd8mYlLjGH+baE1assqzsfqabB5BIcaS4H7B
+         Z79TbxYkfBfL1GWbLepMUN5GsXxoeqKUW4aoUDvYcWqJ98ndaqjyFj2Hxlk8Lg2fNzkB
+         z/6JXB9cnFBk+XubAf1eW9LK+qxbDtoL7CCDE5Pn6aKnldeBCkOS7BZidxSIgDcCzvCS
+         NNi5FHA67ZM9PAwx9IVZm3WgLzBCwpa9NG83NayCOzgoSALFUI2zcrnr8erIqauGO7dd
+         Zocp1zuIyf3Wicd0jK70VfYBmJnQoGlVuMhPu0DMTv9AUVvP+XH1TZsJjVhs3o26s0c9
+         Wunw==
+X-Forwarded-Encrypted: i=1; AJvYcCVn8BymwuOVT1eSjaroG+ghY6Nt4KypbY0NMSfVA5nsCuHMZWEDmjQ3lS3meChholTcRsxLuNyIfIPTQe+R@vger.kernel.org, AJvYcCWSRQyWWtfV2mEtW3awOQjBVgzg6j4aXrR7Jhjh0NVLmkogVt54OyMeeukzCJvPMz3qv6AJewp4@vger.kernel.org, AJvYcCXnDLDbc7zs8wuG30HA1RkHGjPQkcQxnIy/WdvAlXgV6ib4CJmJ2DwJn8bMNwaqCp6g8/Y=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz5aUAfRxjmEVs3Z1/r28TsSJRne3zHWX4dSg6/nDQLxe54Zvjb
+	ZfsX9bICZz6wQCVAMR//RkhQ2pOi3jGPCEKxcnoYK4vptRsCkSdfBXuH
+X-Gm-Gg: ASbGncs4T30CjzP5DJWCLt0bYSekiylHZW3+6mK7zFLgH13IzM4jAFI21zCUJhCj7/d
+	7cfVdNVpOAdl2Hi99P6eV87BFW3eudno2CU6gbMsqDUx2voHJ4grv32/c1K8k3RmApjWFkPL2Pp
+	JYvpBiF6hfvNYVwqJNhBQRAH5YaaeEThe4Pn0TImZKNgosab/0t6kBpD1rem7WNDXsG0klAHZzT
+	EcBcin44kCdn8wVp2o2f4pFbEQwjQOCAWGFbPFWYKoksCdXhuZZEVphMR9nIn8kGUDU1wnd+8N0
+	E4nNh5Qhqw9YBWOFhh02DXds9AlsmVTeW890Muq44B0OvHK4XREf75e/uzWJAJkY3cuP
+X-Google-Smtp-Source: AGHT+IFjFDPJlayCrRfWc9DvJXqh3dkzjLFvxTRqPgCdZj4Esjh95caHOKAZO16V6xVZyk1IxO0I0g==
+X-Received: by 2002:a17:903:984:b0:234:9497:69e3 with SMTP id d9443c01a7336-23c9105c63amr1095985ad.25.1751663598333;
+        Fri, 04 Jul 2025 14:13:18 -0700 (PDT)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23c8457b2cesm26689035ad.157.2025.07.04.14.13.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jul 2025 14:13:17 -0700 (PDT)
+Message-ID: <e43c25b451395edff0886201ad3358acd9670eda.camel@gmail.com>
+Subject: Re: [syzbot] [bpf?] WARNING in reg_bounds_sanity_check
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Paul Chaignon <paul.chaignon@gmail.com>
+Cc: syzbot <syzbot+c711ce17dd78e5d4fdcf@syzkaller.appspotmail.com>, 
+	andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, 	haoluo@google.com, john.fastabend@gmail.com,
+ jolsa@kernel.org, kpsingh@kernel.org, 	linux-kernel@vger.kernel.org,
+ martin.lau@linux.dev, netdev@vger.kernel.org, 	sdf@fomichev.me,
+ song@kernel.org, syzkaller-bugs@googlegroups.com, 	yonghong.song@linux.dev
+Date: Fri, 04 Jul 2025 14:13:15 -0700
+In-Reply-To: <df2cdc5f4fa16a4e3e08e6a997af3722f3673d38.camel@gmail.com>
+References: <68649190.a70a0220.3b7e22.20e8.GAE@google.com>
+		 <aGa3iOI1IgGuPDYV@Tunnel>
+		 <865f2345eaa61afbd26d9de0917e3b1d887c647d.camel@gmail.com>
+		 <aGgL_g3wA2w3yRrG@mail.gmail.com>
+	 <df2cdc5f4fa16a4e3e08e6a997af3722f3673d38.camel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 04 Jul 2025 23:12:08 +0200
-Message-Id: <DB3KWBZ9BGN3.2DLBD6KHJ6ZZC@bootlin.com>
-Cc: <bpf@vger.kernel.org>, "Alan Maguire" <alan.maguire@oracle.com>,
- "Arnaldo Carvalho de Melo" <acme@kernel.org>, "Alexei Starovoitov"
- <ast@fb.com>, "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>, "Bastien
- Curutchet" <bastien.curutchet@bootlin.com>, <ebpf@linuxfoundation.org>
-Subject: Re: [PATCH v2 1/3] btf_encoder: skip functions consuming packed
- structs passed by value on stack
-From: =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-To: "Ihor Solodrai" <ihor.solodrai@linux.dev>, <dwarves@vger.kernel.org>
-X-Mailer: aerc 0.20.1-0-g2ecb8770224a
-References: <20250703-btf_skip_structs_on_stack-v2-0-4767e3ba10c9@bootlin.com> <20250703-btf_skip_structs_on_stack-v2-1-4767e3ba10c9@bootlin.com> <5aadf682-3b1f-4769-a2c1-523085026ac8@linux.dev>
-In-Reply-To: <5aadf682-3b1f-4769-a2c1-523085026ac8@linux.dev>
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgddvgedvtdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepggfgtgffkfevuffhvffofhgjsehtqhertdertdejnecuhfhrohhmpeetlhgvgihishcunfhothhhohhrrocuoegrlhgvgihishdrlhhothhhohhrvgessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnheptedtvdfggfetuedvueeuhfdvleetvdffudelveffiefggedvkedutddtffduhfdunecuffhomhgrihhnpehgihhthhhusgdrtghomhenucfkphepvdgrtddvmeekgedvkeemfhelgegtmegvtddtmeemsgehvgenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvrgdtvdemkeegvdekmehfleegtgemvgdttdemmegshegvpdhhvghloheplhhotggrlhhhohhsthdpmhgrihhlfhhrohhmpegrlhgvgihishdrlhhothhhohhrvgessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepledprhgtphhtthhopehihhhorhdrshholhhoughrrghisehlihhnuhigrdguvghvpdhrtghpthhtohepugifrghrvhgvshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegsphhfsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghlrghnrdhmrghguhhirhgvs
- ehorhgrtghlvgdrtghomhdprhgtphhtthhopegrtghmvgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghsthesfhgsrdgtohhmpdhrtghpthhtohepthhhohhmrghsrdhpvghtrgiiiihonhhisegsohhothhlihhnrdgtohhmpdhrtghpthhtohepsggrshhtihgvnhdrtghurhhuthgthhgvthessghoohhtlhhinhdrtghomh
+MIME-Version: 1.0
 
-On Fri Jul 4, 2025 at 10:05 PM CEST, Ihor Solodrai wrote:
-> On 7/3/25 2:02 AM, Alexis Lothor=C3=83=C2=A9 (eBPF Foundation) wrote:
+On Fri, 2025-07-04 at 10:26 -0700, Eduard Zingerman wrote:
+> On Fri, 2025-07-04 at 19:14 +0200, Paul Chaignon wrote:
+> > On Thu, Jul 03, 2025 at 11:54:27AM -0700, Eduard Zingerman wrote:
 
 [...]
 
->> +static bool ftype__has_uncertain_arg_loc(struct cu *cu, struct ftype *f=
-type)
->> +{
->> +	struct parameter *param;
->> +	int param_idx =3D 0;
->> +
->> +	if (ftype->nr_parms < cu->nr_register_params)
->> +		return false;
->> +
->> +	ftype__for_each_parameter(ftype, param) {
->> +		if (param_idx++ < cu->nr_register_params)
->> +			continue;
->> +
->> +		struct tag *type =3D cu__type(cu, param->tag.type);
->> +
->> +		if (type =3D=3D NULL || !tag__is_struct(type))
->> +			continue;
->> +
->> +		struct type *ctype =3D tag__type(type);
->> +		if (ctype->namespace.name =3D=3D 0)
->> +			continue;
->> +
->> +		struct class *class =3D tag__class(type);
->> +
->> +		class__find_holes(class);
->> +		class__infer_packed_attributes(class, cu);
->
-> I just noticed that class__infer_packed_attributes() already does call
-> class__find_holes() [1], so calling it here is unnecessary. Although
-> there is already a flag to detect repeated calls [2].
->
-> [1] https://github.com/acmel/dwarves/blob/master/dwarves.c#L1859
-> [2] https://github.com/acmel/dwarves/blob/master/dwarves.c#L1604-L1605
+> > > I think is_branch_taken() modification should not be too complicated.
+> > > For JSET it only checks tnum, but does not take ranges into account.
+> > > Reasoning about ranges is something along the lines:
+> > > - for unsigned range a =3D b & CONST -> a is in [b_min & CONST, b_max=
+ & CONST];
+> > > - for signed ranged same thing, but consider two unsigned sub-ranges;
+> > > - for non CONST cases, I think same reasoning can apply, but more
+> > >   min/max combinations need to be explored.
+> > > - then check if zero is a member or 'a' range.
+> > >=20
+> > > Wdyt?
+> >=20
+> > I might be missing something, but I'm not sure that works. For the
+> > unsigned range, if we have b & 0x2 with b in [2; 10], then we'd end up
+> > with a in [2; 2] and would conclude that the jump is never taken. But
+> > b=3D8 proves us wrong.
+>=20
+> I see, what is really needed is an 'or' joined mask of all 'b' values.
+> I need to think how that can be obtained (or approximated).
 
-ACK, I'll remove the duplicate class__find_holes then.
+I think the mask can be computed as in or_range() function at the
+bottom of the email. This gives the following algorithm, if only
+unsigned range is considered:
+
+- assume prediction is needed for "if a & b goto ..."
+- bits that may be set in 'a' are or_range(a_min, a_max)
+- bits that may be set in 'b' are or_range(b_min, b_max)
+- if computed bit masks intersect: both branches are possible
+- otherwise only false branch is possible.
+
+Wdyt?
+
+[...]
+
+---
+
+#include <stdint.h>
+#include <stdio.h>
+
+static uint64_t or_range(uint64_t lo, uint64_t hi)
+{
+  uint64_t m;
+  uint32_t i;
+
+  m =3D hi;
+  i =3D 0;
+  while (lo !=3D hi) {
+    m |=3D 1lu << i;
+    lo >>=3D 1;
+    hi >>=3D 1;
+    i++;
+  }
+  return m;
+}
+
+static uint64_t or_range_simple(uint64_t lo, uint64_t hi)
+{
+  uint64_t m =3D 0;
+  uint64_t v =3D 0;
+
+  for (v =3D lo; v <=3D hi; v++)
+    m |=3D v;
+  return m;
+}
+
+int main(int argc, char *argv[])
+{
+  int max =3D 0x1000;
+  for (int lo =3D 0; lo < max; lo++) {
+    for (int hi =3D lo; hi < max; hi++) {
+      uint64_t expected =3D or_range_simple(lo, hi);
+      uint64_t result =3D or_range(lo, hi);
+
+      if (expected !=3D result) {
+        printf("mismatch: %x..%x -> expecting %lx, result %lx\n",
+               lo, hi, expected, result);
+        return 1;
+      }
+    }
+  }
+  printf("all ok\n");
+  return 0;
+}
 
