@@ -1,266 +1,89 @@
-Return-Path: <bpf+bounces-62415-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62417-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24559AF99F1
-	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 19:42:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8735AF9A0E
+	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 19:47:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FDA05C1BF3
-	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 17:41:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6AF25A7E44
+	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 17:47:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E92652D8383;
-	Fri,  4 Jul 2025 17:40:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CF8429E0E7;
+	Fri,  4 Jul 2025 17:45:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pKspoYDT"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IZC9S11P"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31D5D2D8381
-	for <bpf@vger.kernel.org>; Fri,  4 Jul 2025 17:40:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49D49202997
+	for <bpf@vger.kernel.org>; Fri,  4 Jul 2025 17:45:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751650856; cv=none; b=GepwPS6KaAKuyzl26vS690/4l8U3z7F+0uvOA1OyEirsusFgKHM6SYAwlEJxxRwq0xwe9pJLre/Isz7UHAlj/qKcLOQ0XCWDCaQZuDVDZz0eh0rSyemIfT93D3OlNarSV+xZC5583e2uywZb5crZdWkXUX/ev8/T3ZnFkcsAmb4=
+	t=1751651145; cv=none; b=CWNZuwpmQlgw9IXLHgpIyVhsJwbh5bYKCLZ3ymY0+0UtOZruv8FLjLMQvVnsNn+o7cMXa461dXOLcCbaRCNGDRHs2j+/2iHacUvhFG3WmAlzofaxwgfnuAypGgOmG3xIrRC5ZwXJ24Jkgf+EtsWQEy5y2hqMHL7Exvs/yBEHkDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751650856; c=relaxed/simple;
-	bh=j1y5fK2pSIFjeIzluaoTZB7LiubY9SK90IFdNX+JcVI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jQORxX/vBADa3af/AS4cRkUtDk9M+dcITYmeFUcl50RkMsTrI97imz+VnHhd+oEvPcGPyueGES+uq6DqL4LlAUzbywl+kg7BZGbf7m0ofT9jImhUFSrcyZf3EumoC0SQ5l5KI8A/PxbqFIl/XdWp6Uf+K9j/0JFMZj281EGF5GI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pKspoYDT; arc=none smtp.client-ip=95.215.58.182
+	s=arc-20240116; t=1751651145; c=relaxed/simple;
+	bh=8vPUhSXPelKn26TK9gtb7UrYo8Gk0tjL+OPwnLrRbI0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iE8jPl/EsZSpN+hsoeDlN544ywFicyC1shxvAnvyKnVqqQC4NgBAzrN+eFdL96M5T31i/Vwn/uhpFuRkYDqJWOsZ3aZRL5DWao/ICGuG2tQX0Uvidthg7dlL5q7bnXsTru5d2TR234ykANwUHeLposXUc5kbujyAJ8P9DwyQF9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IZC9S11P; arc=none smtp.client-ip=91.218.175.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <2459c10e-d74c-4118-9b6d-c37d05ecec02@linux.dev>
+Date: Fri, 4 Jul 2025 10:45:25 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1751650841;
+	t=1751651132;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=xIRcNmmy2VbVp7gJQIkaTFfPIXvag7FLLr7FrIV0lQo=;
-	b=pKspoYDT8P7/dYSLFT3Wcf6V3S1xlnly+2wS8ALTKH+MecAV9raqgDtRFHb0+N2lny17mW
-	Urcm4546PBB3ywrgOhyT2lNXU6S1ODfdsqWVsxtfy8Ky7lG6s44qnb6dsS029GqH9Obmh5
-	BPBmV3Y+sZ0PNlQN6O1PuI38XaEGhZU=
-Date: Fri, 4 Jul 2025 10:40:18 -0700
+	bh=MaDn6SelIXcOlzjJrgBEMydXIUt+Gwx/T0S+5DVJELc=;
+	b=IZC9S11P2XdARLncSFnnb/REFrgQMKWLolXvqM87bpMZzsUPgw7lPqRk16eQsCHXnwwNb8
+	I//dmFRKUx0PDAEUtxMbeL6rY+gHadt3bQK7G3UKLkyOdaTHnxPlNF+SirVNPYYvuyPyxp
+	k8qoqDz/Z82+B+dz7tr+XKApM+0gkqg=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Tejun Heo <tj@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	JP Kobryn <inwardvessel@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Ying Huang <huang.ying.caritas@gmail.com>, Vlastimil Babka <vbabka@suse.cz>, 
+	Alexei Starovoitov <ast@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
+	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, bpf@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH 2/2] cgroup: explain the race between updater and flusher
+Message-ID: <edyai2zhaommoe6bqj6tggpp3eu5c6b4trv77vqmktjczkzcrd@ad55qjptzkd6>
+References: <20250703200012.3734798-1-shakeel.butt@linux.dev>
+ <20250703200012.3734798-2-shakeel.butt@linux.dev>
+ <ae928815-d3ba-4ae4-aa8a-67e1dee899ec@paulmck-laptop>
+ <l3ta543lv3fn3qhcbokmt2ihmkynkfsv3wz2hmrgsfxu4epwgg@udpv5a4aai7t>
+ <f6900de7-bfab-47da-b29d-138c75c172fd@paulmck-laptop>
+ <CAGj-7pUdbtumOmfmW52F3aHJfkd5F+nGeH5LAf5muKqYR+xV-w@mail.gmail.com>
+ <da934450-db48-4ef9-ac1b-6b3fbb412862@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v5 bpf-next 1/5] namei: Introduce new helper function
- path_walk_parent()
-Content-Language: en-GB
-To: Song Liu <song@kernel.org>, bpf@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-security-module@vger.kernel.org
-Cc: kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com,
- ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
- viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
- kpsingh@kernel.org, mattbobrowski@google.com, m@maowtm.org, neil@brown.name
-References: <20250617061116.3681325-1-song@kernel.org>
- <20250617061116.3681325-2-song@kernel.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20250617061116.3681325-2-song@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <da934450-db48-4ef9-ac1b-6b3fbb412862@paulmck-laptop>
 X-Migadu-Flow: FLOW_OUT
 
-
-
-On 6/16/25 11:11 PM, Song Liu wrote:
-> This helper walks an input path to its parent. Logic are added to handle
-> walking across mount tree.
->
-> This will be used by landlock, and BPF LSM.
->
-> Suggested-by: Neil Brown <neil@brown.name>
-> Signed-off-by: Song Liu <song@kernel.org>
-> ---
->   fs/namei.c            | 95 +++++++++++++++++++++++++++++++++++--------
->   include/linux/namei.h |  2 +
->   2 files changed, 79 insertions(+), 18 deletions(-)
->
-> diff --git a/fs/namei.c b/fs/namei.c
-> index 4bb889fc980b..d0557c0b5cc8 100644
-> --- a/fs/namei.c
-> +++ b/fs/namei.c
-> @@ -2048,36 +2048,95 @@ static struct dentry *follow_dotdot_rcu(struct nameidata *nd)
->   	return nd->path.dentry;
->   }
->   
-> -static struct dentry *follow_dotdot(struct nameidata *nd)
-> +/**
-> + * __path_walk_parent - Find the parent of the given struct path
-> + * @path  - The struct path to start from
-> + * @root  - A struct path which serves as a boundary not to be crosses.
-> + *        - If @root is zero'ed, walk all the way to global root.
-> + * @flags - Some LOOKUP_ flags.
-> + *
-> + * Find and return the dentry for the parent of the given path
-> + * (mount/dentry). If the given path is the root of a mounted tree, it
-> + * is first updated to the mount point on which that tree is mounted.
-> + *
-> + * If %LOOKUP_NO_XDEV is given, then *after* the path is updated to a new
-> + * mount, the error EXDEV is returned.
-> + *
-> + * If no parent can be found, either because the tree is not mounted or
-> + * because the @path matches the @root, then @path->dentry is returned
-> + * unless @flags contains %LOOKUP_BENEATH, in which case -EXDEV is returned.
-> + *
-> + * Returns: either an ERR_PTR() or the chosen parent which will have had
-> + * the refcount incremented.
-> + */
-> +static struct dentry *__path_walk_parent(struct path *path, const struct path *root, int flags)
->   {
-> -	struct dentry *parent;
-> -
-> -	if (path_equal(&nd->path, &nd->root))
-> +	if (path_equal(path, root))
->   		goto in_root;
-> -	if (unlikely(nd->path.dentry == nd->path.mnt->mnt_root)) {
-> -		struct path path;
-> +	if (unlikely(path->dentry == path->mnt->mnt_root)) {
-> +		struct path new_path;
->   
-> -		if (!choose_mountpoint(real_mount(nd->path.mnt),
-> -				       &nd->root, &path))
-> +		if (!choose_mountpoint(real_mount(path->mnt),
-> +				       root, &new_path))
->   			goto in_root;
-> -		path_put(&nd->path);
-> -		nd->path = path;
-> -		nd->inode = path.dentry->d_inode;
-> -		if (unlikely(nd->flags & LOOKUP_NO_XDEV))
-> +		path_put(path);
-> +		*path = new_path;
-> +		if (unlikely(flags & LOOKUP_NO_XDEV))
->   			return ERR_PTR(-EXDEV);
->   	}
->   	/* rare case of legitimate dget_parent()... */
-> -	parent = dget_parent(nd->path.dentry);
-> +	return dget_parent(path->dentry);
-
-I have some confusion with this patch when crossing mount boundary.
-
-In d_path.c, we have
-
-static int __prepend_path(const struct dentry *dentry, const struct mount *mnt,
-                           const struct path *root, struct prepend_buffer *p)
-{
-         while (dentry != root->dentry || &mnt->mnt != root->mnt) {
-                 const struct dentry *parent = READ_ONCE(dentry->d_parent);
-
-                 if (dentry == mnt->mnt.mnt_root) {
-                         struct mount *m = READ_ONCE(mnt->mnt_parent);
-                         struct mnt_namespace *mnt_ns;
-
-                         if (likely(mnt != m)) {
-                                 dentry = READ_ONCE(mnt->mnt_mountpoint);
-                                 mnt = m;
-                                 continue;
-                         }
-                         /* Global root */
-                         mnt_ns = READ_ONCE(mnt->mnt_ns);
-                         /* open-coded is_mounted() to use local mnt_ns */
-                         if (!IS_ERR_OR_NULL(mnt_ns) && !is_anon_ns(mnt_ns))
-                                 return 1;       // absolute root
-                         else
-                                 return 2;       // detached or not attached yet
-                 }
-
-                 if (unlikely(dentry == parent))
-                         /* Escaped? */
-                         return 3;
-
-                 prefetch(parent);
-                 if (!prepend_name(p, &dentry->d_name))
-                         break;
-                 dentry = parent;
-         }
-         return 0;
-}
-
-At the mount boundary and not at root mount, the code has
-	dentry = READ_ONCE(mnt->mnt_mountpoint);
-	mnt = m; /* 'mnt' will be parent mount */
-	continue;
-
-After that, we have
-	const struct dentry *parent = READ_ONCE(dentry->d_parent);
-	if (dentry == mnt->mnt.mnt_root) {
-		/* assume this is false */
-	}
-	...
-	prefetch(parent);
-         if (!prepend_name(p, &dentry->d_name))
-                 break;
-         dentry = parent;
-
-So the prepend_name(p, &dentry->d_name) is actually from mnt->mnt_mountpoint.
-
-In your above code, maybe we should return path->dentry in the below if statement?
-
-         if (unlikely(path->dentry == path->mnt->mnt_root)) {
-                 struct path new_path;
-
-                 if (!choose_mountpoint(real_mount(path->mnt),
-                                        root, &new_path))
-                         goto in_root;
-                 path_put(path);
-                 *path = new_path;
-                 if (unlikely(flags & LOOKUP_NO_XDEV))
-                         return ERR_PTR(-EXDEV);
-+		return path->dentry;
-         }
-         /* rare case of legitimate dget_parent()... */
-         return dget_parent(path->dentry);
-
-Also, could you add some selftests cross mount points? This will
-have more coverages with __path_walk_parent().
-
-> +
-> +in_root:
-> +	if (unlikely(flags & LOOKUP_BENEATH))
-> +		return ERR_PTR(-EXDEV);
-> +	return dget(path->dentry);
-> +}
-> +
-> +/**
-> + * path_walk_parent - Walk to the parent of path
-> + * @path: input and output path.
-> + * @root: root of the path walk, do not go beyond this root. If @root is
-> + *        zero'ed, walk all the way to real root.
-> + *
-> + * Given a path, find the parent path. Replace @path with the parent path.
-> + * If we were already at the real root or a disconnected root, @path is
-> + * not changed.
-> + *
-> + * Returns:
-> + *  0  - if @path is updated to its parent.
-> + *  <0 - if @path is already the root (real root or @root).
-> + */
-> +int path_walk_parent(struct path *path, const struct path *root)
-> +{
-> +	struct dentry *parent;
-> +
-> +	parent = __path_walk_parent(path, root, LOOKUP_BENEATH);
-> +
-> +	if (IS_ERR(parent))
-> +		return PTR_ERR(parent);
-> +
-> +	if (parent == path->dentry) {
-> +		dput(parent);
-> +		return -ENOENT;
-> +	}
-> +	dput(path->dentry);
-> +	path->dentry = parent;
-> +	return 0;
-> +}
-> +
-
+On Thu, Jul 03, 2025 at 09:44:58PM -0700, Paul E. McKenney wrote:
 [...]
+> > 
+> > Thanks a lot Paul for the awesome explanation. Do you think keeping
+> > data_race() here would be harmful in a sense that it might cause
+> > confusion in future?
+> 
+> Yes, plus it might incorrectly suppress a KCSAN warning for a very
+> real bug.  So I strongly recommend removing the data_race() in this case.
+> 
 
+I will remove data_race() tags but keep the comments and squash into the
+first one. I will keep your reviewed-by tag unless you disagree.
+
+thanks,
+Shakeel
 
