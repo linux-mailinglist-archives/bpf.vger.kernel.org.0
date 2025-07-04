@@ -1,153 +1,153 @@
-Return-Path: <bpf+bounces-62367-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62368-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48DFDAF86DA
-	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 06:45:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA8D6AF8777
+	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 07:53:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D86827A8638
-	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 04:43:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3792B1C46A3F
+	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 05:53:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69E6D1EF0A6;
-	Fri,  4 Jul 2025 04:45:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QNT2sAA9"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B478020E314;
+	Fri,  4 Jul 2025 05:53:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAEAA2AE96;
-	Fri,  4 Jul 2025 04:44:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E038320E31C
+	for <bpf@vger.kernel.org>; Fri,  4 Jul 2025 05:53:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751604300; cv=none; b=g4LtH81r2jEN6sH4aLSoH5l56EXMTU1bhn0MJjDO8H4kJRbHOW60WtW4oSBobWQ4yrcL08NRI6WvDwaGSrspp+gIDpg0/fkOKYbrEw+G9lgbCb6Nu035yvFxvuDEfh1iv//F3MlV/S6+GnSIZ345pwVmqUD4TShjh6+ap17Sld0=
+	t=1751608403; cv=none; b=SUoM+YXcBgGIl3gfqekMS13VYTMxuQClO1Dvv6+y9Ug8Itu5lPT6DYMGfFxbHHV3FKipb3IiHudrIGcKP+M2MgJyWTWmJRl6oM50btgx+ZL9y/DrRMu3QZwEJPaQ7EcdgaWFX+7Wg5T/vPaqJv6si1zA/5aiy9buyO/mpKtKW9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751604300; c=relaxed/simple;
-	bh=8LL5dfM4+fApXtGjqf/V6JOtfextTXNNY3ao2nJLhgI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YeGI1zR0lpMjrCrp0Wlw+3s8xFIOIhXqwDtZpike4ZO5jwZBQC6myyTNImn9aniXR1wNvskPG8W2Dd0ahzUfy83/eUsEJDIKf7lcl7tj1qIHyitMMpYgjOAVjWYRgTxIMo2zD8KmY2+Whx6pNO2gvQC6nNCNJzmA3d91sms19B4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QNT2sAA9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 520A6C4CEE3;
-	Fri,  4 Jul 2025 04:44:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751604299;
-	bh=8LL5dfM4+fApXtGjqf/V6JOtfextTXNNY3ao2nJLhgI=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=QNT2sAA9S6skXbsMPwoX70+PnJmgNecblMkkgk7iB9K5OUglNMjplv+Sjd5JGKGtZ
-	 MBnP9FcS1HflpNA2loUWJZszkknB7LUlYJ4YpPasZL1piFHrZSdm2qzwijxFeBOQTD
-	 BxqAbmx5eCaRkIn41Jw6Je3dh96dPZwV2VTQxYAAE9lQ4wFct3iB5DLmo5TkPzxOYM
-	 JokDdLbmWKiQYvklkPVK4+5RfIvl07RnDQlp5e0sIGVQi249xXB8O1n8EZGvMsNpdN
-	 z14Yx542Xq01u+jKKrbTqDVU7QVNYc4fyXc6rAdhj/nkzz+tXM0WhfipDW2YUGN33L
-	 LMMTHNVAsBfBA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id DAFEFCE0D3B; Thu,  3 Jul 2025 21:44:58 -0700 (PDT)
-Date: Thu, 3 Jul 2025 21:44:58 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Tejun Heo <tj@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
-	JP Kobryn <inwardvessel@gmail.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Ying Huang <huang.ying.caritas@gmail.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	bpf@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH 2/2] cgroup: explain the race between updater and flusher
-Message-ID: <da934450-db48-4ef9-ac1b-6b3fbb412862@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20250703200012.3734798-1-shakeel.butt@linux.dev>
- <20250703200012.3734798-2-shakeel.butt@linux.dev>
- <ae928815-d3ba-4ae4-aa8a-67e1dee899ec@paulmck-laptop>
- <l3ta543lv3fn3qhcbokmt2ihmkynkfsv3wz2hmrgsfxu4epwgg@udpv5a4aai7t>
- <f6900de7-bfab-47da-b29d-138c75c172fd@paulmck-laptop>
- <CAGj-7pUdbtumOmfmW52F3aHJfkd5F+nGeH5LAf5muKqYR+xV-w@mail.gmail.com>
+	s=arc-20240116; t=1751608403; c=relaxed/simple;
+	bh=jgEXT8fYe2Y2QTug74CbjKJ3+y9lQkj+xtT41ZFnaW8=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=LSDIMO1etjHhob7iSvQl8TdI4fY08XPAkgFgiDEoeYxSg4uhPSoY6z0iQD8BC2ePSKPBRulCknTUD/Ngb0XnlmAG66ppvhmK3yDrwQTkJU4toQekbzrJUtCT+e3dVzwhHaOv+Da6DA+dKjyaRIVdXINNTYGlqZCi1VoBgiBs9CM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 2c07e45c589b11f0b29709d653e92f7d-20250704
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.45,REQID:6dcc7f53-85e6-4411-ac67-9789e5393235,IP:15,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:0
+X-CID-INFO: VERSION:1.1.45,REQID:6dcc7f53-85e6-4411-ac67-9789e5393235,IP:15,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:0
+X-CID-META: VersionHash:6493067,CLOUDID:976dd741281dd8707e4a238e7fffc18a,BulkI
+	D:250704135314VXWHIXIU,BulkQuantity:0,Recheck:0,SF:17|19|24|44|64|66|78|80
+	|81|82|83|102|841,TC:nil,Content:0|51,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,B
+	ulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR
+	:0,BRE:0,ARC:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 2c07e45c589b11f0b29709d653e92f7d-20250704
+X-User: jianghaoran@kylinos.cn
+Received: from [172.30.70.211] [(39.156.73.13)] by mailgw.kylinos.cn
+	(envelope-from <jianghaoran@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 2026487818; Fri, 04 Jul 2025 13:53:13 +0800
+Message-ID: <d61697244565d2c423fdd965decc4fcd0a3a8f74.camel@kylinos.cn>
+Subject: =?gb2312?Q?=BB=D8=B8=B4=A3=BA=5BPATCH?= 0/2] Fix two
+ tailcall-related issues
+From: jianghaoran <jianghaoran@kylinos.cn>
+To: Hengqi Chen <hengqi.chen@gmail.com>
+Cc: loongarch@lists.linux.dev, bpf@vger.kernel.org, kernel@xen0n.name, 
+ chenhuacai@kernel.org, yangtiezhu@loongson.cn, jolsa@kernel.org,
+ haoluo@google.com,  sdf@fomichev.me, kpsingh@kernel.org,
+ john.fastabend@gmail.com,  yonghong.song@linux.dev, song@kernel.org,
+ eddyz87@gmail.com, martin.lau@linux.dev,  andrii@kernel.org,
+ daniel@iogearbox.net, ast@kernel.org
+Date: Fri, 04 Jul 2025 13:52:47 +0800
+In-Reply-To: <CAEyhmHSzfMr0J4t7v7cC7roTfybJRqHF_iumFMCYm_iqzJkGOQ@mail.gmail.com>
+References: <20250701074110.525363-1-jianghaoran@kylinos.cn>
+	 <CAEyhmHSzfMr0J4t7v7cC7roTfybJRqHF_iumFMCYm_iqzJkGOQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.1-2kord0k2.4.25.1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGj-7pUdbtumOmfmW52F3aHJfkd5F+nGeH5LAf5muKqYR+xV-w@mail.gmail.com>
 
-On Thu, Jul 03, 2025 at 06:54:02PM -0700, Shakeel Butt wrote:
-> On Thu, Jul 3, 2025 at 4:53 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Thu, Jul 03, 2025 at 03:46:07PM -0700, Shakeel Butt wrote:
-> [...]
-> > > Let me answer this one first. The previous patch actually made
-> > > init_llist_node() do WRITE_ONCE().
-> > >
-> > > So the actual question is why do we need
-> > > data_race([READ|WRITE]_ONCE()) instead of just [READ|WRITE]_ONCE()?
-> >
-> > You should *almost* always use [READ|WRITE]_ONCE() instead of data_race().
-> >
-> > > Actually I had the similar question myself and found the following
-> > > comment in include/linux/compiler.h:
-> > >
-> > > /**
-> > >  * data_race - mark an expression as containing intentional data races
-> > >  *
-> > >  * This data_race() macro is useful for situations in which data races
-> > >  * should be forgiven.  One example is diagnostic code that accesses
-> > >  * shared variables but is not a part of the core synchronization design.
-> > >  * For example, if accesses to a given variable are protected by a lock,
-> > >  * except for diagnostic code, then the accesses under the lock should
-> > >  * be plain C-language accesses and those in the diagnostic code should
-> > >  * use data_race().  This way, KCSAN will complain if buggy lockless
-> > >  * accesses to that variable are introduced, even if the buggy accesses
-> > >  * are protected by READ_ONCE() or WRITE_ONCE().
-> > >  *
-> > >  * This macro *does not* affect normal code generation, but is a hint
-> > >  * to tooling that data races here are to be ignored.  If the access must
-> > >  * be atomic *and* KCSAN should ignore the access, use both data_race()
-> > >  * and READ_ONCE(), for example, data_race(READ_ONCE(x)).
-> > >  */
-> > >
-> > > IIUC correctly, I need to protect llist_node against tearing and as well
-> > > as tell KCSAN to ignore the access for race then I should use both.
-> > > Though I think KCSAN treat [READ|WRITE]_ONCE similar to data_race(), so
-> > > it kind of seem redundant but I think at least I want to convey that we
-> > > need protection against tearing and ignore KCSAN and using both conveys
-> > > that. Let me know if you think otherwise.
-> > >
-> > > thanks a lot for taking a look.
-> >
-> > The thing to remember is that data_race() does not affect the
-> > generated code (except of course when running KCSAN), and thus does
-> > absolutely nothing to prevent load/store tearing.  You need things like
-> > [READ|WRITE]_ONCE() to prevent tearing.
-> >
-> > So if it does not affect the generated code, what is the point of
-> > data_race()?
-> >
-> > One answer to this question is for diagnostics where you want KCSAN
-> > to check the main algorithm, but you don't want KCSAN to be confused
-> > by the diagnostic accesses.  For example, you might use something like
-> > ASSERT_EXCLUSIVE_ACCESS() as in __list_splice_init_rcu(), and not want
-> > your diagnostic accesses to result in false-positive KCSAN reports
-> > due to interactions with ASSERT_EXCLUSIVE_ACCESS() on some particular
-> > memory location.  And if you were to use READ_ONCE() to access that same
-> > memory location in your diagnostics, KCSAN would complain if they ran
-> > concurrently with that ASSERT_EXCLUSIVE_ACCESS().  So you would instead
-> > use data_race() to suppress such complaints.
-> >
-> > Does that make sense?
+
+
+
+
+在 2025-07-03星期四的 20:31 +0800，Hengqi Chen写道：
+> On Tue, Jul 1, 2025 at 3:41 PM Haoran Jiang <
+> jianghaoran@kylinos.cn
+> > wrote:
+> > 1,Fix the jmp_offset calculation error in the
+> > emit_bpf_tail_call function.
+> > 2,Fix the issue that MAX_TAIL_CALL_CNT limit bypass in hybrid
+> > tailcall and BPF-to-BPF call
+> > 
+> > After applying this patch, testing results are as follows:
+> > 
+> > ./test_progs --allow=tailcalls/tailcall_bpf2bpf_hierarchy_1
+> > 413/18  tailcalls/tailcall_bpf2bpf_hierarchy_1:OK
+> > 413     tailcalls:OK
+> > Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
+> > 
+> > ./test_progs --allow=tailcalls/tailcall_bpf2bpf_hierarchy_2
+> > 413/23  tailcalls/tailcall_bpf2bpf_hierarchy_2:OK
+> > 413     tailcalls:OK
+> > Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
+> > 
+> > ./test_progs --allow=tailcalls/tailcall_bpf2bpf_hierarchy_3
+> > 413/24  tailcalls/tailcall_bpf2bpf_hierarchy_3:OK
+> > 413     tailcalls:OK
+> > Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
+> > 
 > 
-> Thanks a lot Paul for the awesome explanation. Do you think keeping
-> data_race() here would be harmful in a sense that it might cause
-> confusion in future?
+> Thanks for the fixes. Will review this series soon.
+> BTW, do you test other tailcall test cases ?
+> 
+> Cheers,
+> ---
+> Hengqi
+> 
 
-Yes, plus it might incorrectly suppress a KCSAN warning for a very
-real bug.  So I strongly recommend removing the data_race() in this case.
+tailcall_1/tailcall_2/tailcall_3/tailcall_4/tailcall_5/tailcall_6/t
+ailcall_bpf2bpf_1/tailcall_bpf2bpf_2/tailcall_bpf2bpf_3/tailcall_bp
+f2bpf_4/tailcall_bpf2bpf_5/tailcall_bpf2bpf_6
+/tailcall_bpf2bpf_hierarchy_1/tailcall_bpf2bpf_hierarchy_2/tailcall
+_bpf2bpf_hierarchy_3/tailcall_failure
+These test cases passed
 
-							Thanx, Paul
+tailcall_bpf2bpf_fentry/tailcall_bpf2bpf_fexit/tailcall_bpf2bpf_fen
+try_fexit/tailcall_bpf2bpf_fentry_entry/tailcall_bpf2bpf_hierarchy_
+fentry/tailcall_bpf2bpf_hierarchy_fexit
+/tailcall_bpf2bpf_hierarchy_fentry_fexit/tailcall_bpf2bpf_hierarchy
+_fentry_entry/tailcall_freplace/tailcall_bpf2bpf_freplace
+These test cases depend on the trampoline capability, which is
+currently under review in the Linux kernel.
+
+These two patches are relatively independent. Could we prioritize
+reviewing the fixes above first? 
+Trampoline-dependent changes will be implemented after
+trampoline  is merged.
+
+thanks
+
+> 
+> > Haoran Jiang (2):
+> >   LoongArch: BPF: Optimize the calculation method of jmp_offset in the
+> >     emit_bpf_tail_call function
+> >   LoongArch: BPF: Fix tailcall hierarchy
+> > 
+> >  arch/loongarch/net/bpf_jit.c | 140 ++++++++++++++++++++---------------
+> >  1 file changed, 80 insertions(+), 60 deletions(-)
+> > 
+> > --
+> > 2.43.0
+> > 
+
 
