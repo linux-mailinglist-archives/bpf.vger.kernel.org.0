@@ -1,185 +1,125 @@
-Return-Path: <bpf+bounces-62411-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62412-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D12DAF99AB
-	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 19:29:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C8ABAF99B4
+	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 19:32:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6CA5A7A879C
-	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 17:28:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A40F5414E2
+	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 17:32:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF9CC288C08;
-	Fri,  4 Jul 2025 17:29:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58EFE1494C3;
+	Fri,  4 Jul 2025 17:32:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dubeyko-com.20230601.gappssmtp.com header.i=@dubeyko-com.20230601.gappssmtp.com header.b="qKY65Tke"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="htffF4Yc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26C4F208961
-	for <bpf@vger.kernel.org>; Fri,  4 Jul 2025 17:29:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B37142AA3
+	for <bpf@vger.kernel.org>; Fri,  4 Jul 2025 17:32:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751650174; cv=none; b=NuG3/p6kTdYqVfkavJQCIuC0qT3+OQc7JmARX7eVaNq7VPwGG0Qtt34P5rzROoXGpwa2Y10tCa16ylh5HvKj8G2QySMMfoLUIBbu6K53hSG1G3bG44I0x2UQxqdJtB3nT7rxhEcpp6G6/wAwLIGq7kMvxOZl2pf7FxBPmpuHOrc=
+	t=1751650366; cv=none; b=KqerGnKDMNqnID5ul2Mjq6HM2vumwM1Stxp69/DUtAjRtDZLdjQq9JycBZseS9OC/0SSmmmJgP2HOE3U6ZZxTsf1Q/0DamUSOgYptKL3945QwNosZdK42wWrP9A6s7rdQXjYrXlLaM/74Mw5b1UZziTqwDGwBw5XtqYlzwZqwgM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751650174; c=relaxed/simple;
-	bh=iDbM20iQNedl8N2hzi1Pep7gBZiDuMA5oe8q7lPmVJk=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=PbjQlvqf9GZAefX8ALadu7JyiNbpsEppd5hfnl5K1mq7oqUI6FoEUMDYStM+x0rj5HwDatJqauTjPP50mLe7XE1IP5opJ/2SFf1kmpC4tyj7XJz6rb6YjbQugM1Cs/HNMmf80p+0A/qqLSC8X+JGmip6YWwd+uUhyfJb0MsInII=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dubeyko.com; spf=pass smtp.mailfrom=dubeyko.com; dkim=pass (2048-bit key) header.d=dubeyko-com.20230601.gappssmtp.com header.i=@dubeyko-com.20230601.gappssmtp.com header.b=qKY65Tke; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dubeyko.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dubeyko.com
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-e84207a8aa3so753528276.3
-        for <bpf@vger.kernel.org>; Fri, 04 Jul 2025 10:29:31 -0700 (PDT)
+	s=arc-20240116; t=1751650366; c=relaxed/simple;
+	bh=hezTlVd45Sle/FDeP9Dw6ZYb5dvRsVSxQnU3/PWGwFc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sY9CBhsPkHMANAUIRQv3+P93isjDm+OFTA03+MX1m1mncov1rB0uDqF3tYn587Q16wmYrDr36MdnqJaa1YrG+OB+GCCvd7VMW7hjJ4ZvjZxlv7OyKR/+qRlvaQ7mgDmS393yb/okVu43Skak8/Fn9Tj4df0TtTemkMPKXbIG7UA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=htffF4Yc; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-7111d02c777so9165457b3.3
+        for <bpf@vger.kernel.org>; Fri, 04 Jul 2025 10:32:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dubeyko-com.20230601.gappssmtp.com; s=20230601; t=1751650171; x=1752254971; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=NKZOXif4dY8WW9PJKNKuGFpmuROoWR4AN0EGiAV7vcE=;
-        b=qKY65Tke4HoGO3XCKHNaT9zzKkoNLIJV7K9Ab34K9ZY4HcSnXQ6LpH03X5oR0nKz66
-         U87ye6WBxhZgaOc8oWef9WLLyIvmGZb+UTyPT40hiHBam/+vZRdB+ZJF0x9HU5gbbDaX
-         mFEyhedoLpZo8bkDs9Bz2Kir2Gu3pnkuyX4DjIwMA7SUYJ1C5I9eDP0QZico19gCu558
-         y9WcDhz2SXUSbBbVB3KBSTOel0AtfUmQPfqGzsR86Fb40D8EQKNIxOaOqdyn4/+10T4p
-         0k8W5HZE1f/uZ441oY9CtduPBvn2uZ4xVlNQRF86gExdEm72KlJyfJGW5JmTi+NHY79Y
-         aXKw==
+        d=gmail.com; s=20230601; t=1751650364; x=1752255164; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=hezTlVd45Sle/FDeP9Dw6ZYb5dvRsVSxQnU3/PWGwFc=;
+        b=htffF4YciJ1I+myD1o8HBmXUzy+pmT0coDYCotPQigGEZqk9BWoerlpPZJ/lFuSvLF
+         Hib62zSc3TJgcDLTRwlew6iAX1I1AYlPeqh+/RJNyTx8nic9uhthpjsT8SQDDrXQZpX9
+         ey+yYYZVUKSPy5RIRtl9iJUS9X7o79a5ydF0ih6rklwIG73FTF7EL5+I2YNgvPczzW9x
+         vE7f971l7AqvoByOT7AhpE+XAQTU5PfH0l/r+rQUII239P+UyM875B7EI+LRN/DT6qxO
+         NVgGjKWhQGJLgZq3fK3TAMlzcb3C2CBhA78DMO5RsqQG0c37nLBPjAy+Tl/H+kSIK1K+
+         Z4QA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751650171; x=1752254971;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NKZOXif4dY8WW9PJKNKuGFpmuROoWR4AN0EGiAV7vcE=;
-        b=GP4TAwiKHUo7q5vRALqzg66USaMM3DNGR3wEJPN5FxqUxcYDxXSCX9P/T1y6Mo1eBF
-         ghh2fEcODgxoQXp5lYEFVHZj+Z5BlU/xyF34MgXPXdolFnxE9NiHWGbJiLWd4ismso3j
-         w8LdU727/D44yEAXskhgl9mveTAjkc2PYlXRGW2vwuEoniwJkaK7VFnTTIg1n2GcC8G4
-         LX2AL/lpdY+ocPQM/2TZ0jLHRbRbJWPI00ugqLXCXV0HRYZhqQ/dat5ESe5mxxYcNraa
-         z7O2P5anSoscnX+pUNCn1sXg7qsSwEUWYMdPw2KKIOSSI6weFe31D0XSjfXWunlRtcVJ
-         0y4g==
-X-Forwarded-Encrypted: i=1; AJvYcCVjeXVdGWW/nyiUgoUXzm21di4lcPPPcILASiVFbb92fmKgOUUEr9h7NKoYKPH+gSPH2S0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YziEALbbIvcsv+5UQ/AAGBj0+jwG4PYxyNZ+jcA6nz/zYsdVIuS
-	jFPWp8TIs5mt97gaV1ZhEyOlGIvr9kc2VdgCPeC/JWSdm/J5uouVxqU3QeJIgWF+b4c=
-X-Gm-Gg: ASbGncv8OzSLI7XucBIhYit/P3v5whhFJP6QSo2u7UTXtOHCphfGErGHFFwNIS744Jk
-	eoM4sWCmIo8SuzV+4wQf2hRWoHBzng8p0+nKILFFxP03RzUClmKgkIPktY8lGulYWorDn487OYV
-	M00px/9wxS7ZHValgiDmmx7zBJNTpYvFzDWVVyEdzHvN/RyFbBP3qcOiU5GUHcZMoGtj+4aBesQ
-	ayGoXcM6rP5mENchot1aiKhXUy/IURlPr0OzbwPQVTbJuz4jwDH/XlTaHJdwkwkO8ouhK0JIWms
-	m6QIV9eL4x0mv4Mvcefc00NbTWnr0RZKSE2Z9FzeZuiXFOZh5fPwbjvOFShGAwRmp/jOYv1gkKs
-	KXCE1+LSUSFWvMxU8z5C6/vzyRI4uB5M=
-X-Google-Smtp-Source: AGHT+IH90uXGHA1KLkxMwBoLjKzi40wo5WwD8z6pePkSFDnX+wBofTNDe+oRgHEM+GBC/SzPv5geJw==
-X-Received: by 2002:a05:6902:2808:b0:e81:b6b1:153d with SMTP id 3f1490d57ef6-e89a0c1fb0emr3480402276.21.1751650171096;
-        Fri, 04 Jul 2025 10:29:31 -0700 (PDT)
-Received: from ?IPv6:2600:1700:6476:1430:f030:281a:9e2c:722? ([2600:1700:6476:1430:f030:281a:9e2c:722])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e899c48b086sm742656276.42.2025.07.04.10.29.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jul 2025 10:29:30 -0700 (PDT)
-Message-ID: <d698490f3ee35889d8922f392079846b647cd47e.camel@dubeyko.com>
-Subject: Re: [PATCH 2/4] fs/buffer: parse IOCB_DONTCACHE flag in
- block_write_begin()
-From: Viacheslav Dubeyko <slava@dubeyko.com>
-To: Yangtao Li <frank.li@vivo.com>, axboe@kernel.dk,
- aivazian.tigran@gmail.com, 	viro@zeniv.linux.org.uk, brauner@kernel.org,
- jack@suse.cz, linkinjeon@kernel.org, 	sj1557.seo@samsung.com,
- yuezhang.mo@sony.com, glaubitz@physik.fu-berlin.de, 	shaggy@kernel.org,
- konishi.ryusuke@gmail.com, 	almaz.alexandrovich@paragon-software.com,
- me@bobcopeland.com, 	willy@infradead.org, josef@toxicpanda.com,
- kovalev@altlinux.org, dave@stgolabs.net, 	mhocko@suse.com,
- chentaotao@didiglobal.com
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, 
-	ntfs3@lists.linux.dev, linux-karma-devel@lists.sourceforge.net, 
-	bpf@vger.kernel.org
-Date: Fri, 04 Jul 2025 10:29:27 -0700
-In-Reply-To: <20250626173023.2702554-3-frank.li@vivo.com>
-References: <20250626173023.2702554-1-frank.li@vivo.com>
-	 <20250626173023.2702554-3-frank.li@vivo.com>
-Autocrypt: addr=slava@dubeyko.com; prefer-encrypt=mutual;
- keydata=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
- fAMjjkInIPg7RLGs8FiwxfcpkILP0YbVWHiNAaQ==
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.1 (by Flathub.org) 
+        d=1e100.net; s=20230601; t=1751650364; x=1752255164;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hezTlVd45Sle/FDeP9Dw6ZYb5dvRsVSxQnU3/PWGwFc=;
+        b=hoTMiRCnYwG70ofjcRU/L+yr5U1nCebxB1htN4owKK8tr+yiAB7wQj11M/pikmgls1
+         OQ06Ah2/5M6cNZtyGUbit6IRsWgcy9g16B8D2r0Jz7SCnccFWmh1MiRHKfggrDnqY8T5
+         O3khG8SLAy2Xk/6a2DboobYXGY7a9MaggQdhSB9kKGcSlznvBOkDKBSB0QTOx5cjYn63
+         oW8FU1kaIxrukdq6FYbLEknhXdlP0XjIV/iAbZ1Yu5h7FZ4Z0Z5GoI7lTeJ0cwLZCL6/
+         6DJbjSHntfbOApoluijgXuu9BViXCrTwHRoOVrYSCfJhiar+Vh6mVAtGai8y3DrBiFrV
+         Rqew==
+X-Forwarded-Encrypted: i=1; AJvYcCWNCpwEKE/nUcK+mKCM6XpZ7rVjp/0/zItQFBt7llod7UeanRq18RFFBNWzuSvD0Eqhl6w=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx6pt33Z6ZSH/uJMZotwI53WIm2FhuBKQq8q5vNsw5lpMBTTfi4
+	9cyLe72NeuJqNmmrYJIWCs+IhnTX52FqdMSOOx5wkM8UYpGeF54NFlBdAIiDEUA27FeuyG6ED8U
+	TuNujy7L8L9JDKXcbSATJdnj/O53e8+8=
+X-Gm-Gg: ASbGncsQtnUJz1CUEC2w3412WNABQ0tkb6/tFRAa2db7FKf6WnWetGhcAhI71/+aNp/
+	hvEFJfj5MIyF6+y/b5T9WGaYw8+foE9pJ5ZHDl9PcL6/F7u8exQy8dxu39etixaHJxRaNEp6d5d
+	Sk5mrtaH8u7ONBNGdyjkGxb3txpqQm9C5sJJAYfi1oA7MOHCNc8RTxU2JohR9Edp6SWMrLX5FOI
+	W4x
+X-Google-Smtp-Source: AGHT+IHNB2BkITg4AG/F8Yj7L2t/j4vh/2yLdEjAqXUd7hlrxuVVTDXhLqa+5Wm5F/PvpPYrIUN/xqq40RD89KCicNA=
+X-Received: by 2002:a05:690c:6285:b0:710:e6b0:1688 with SMTP id
+ 00721157ae682-7166b5bd0d0mr38850097b3.14.1751650364338; Fri, 04 Jul 2025
+ 10:32:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20250614064056.237005-1-sidchintamaneni@gmail.com>
+ <20250614064056.237005-3-sidchintamaneni@gmail.com> <CAP01T74u=EJqDEyB-gEsmRGqMF=TRPY+cb_eUHNVY3hr3OWYvg@mail.gmail.com>
+In-Reply-To: <CAP01T74u=EJqDEyB-gEsmRGqMF=TRPY+cb_eUHNVY3hr3OWYvg@mail.gmail.com>
+From: Raj Sahu <rjsu26@gmail.com>
+Date: Fri, 4 Jul 2025 10:32:28 -0700
+X-Gm-Features: Ac12FXzKeT93H_3qazdwZZIyT-aH5iSskgcsknsr5uLZw3C1b24_t_135QCfC9k
+Message-ID: <CAM6KYsvaPFHqdb-ZW+Bc_-N_VhJix8cQEvBbRo+pE_cBs++PPg@mail.gmail.com>
+Subject: Re: [RFC bpf-next v2 2/4] bpf: Generating a stubbed version of BPF
+ program for termination
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: Siddharth Chintamaneni <sidchintamaneni@gmail.com>, bpf@vger.kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, djwillia@vt.edu, miloc@vt.edu, 
+	ericts@vt.edu, rahult@vt.edu, doniaghazy@vt.edu, quanzhif@vt.edu, 
+	jinghao7@illinois.edu, egor@vt.edu, sairoop10@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 2025-06-26 at 11:30 -0600, Yangtao Li wrote:
-> When iocb flags passes IOCB_DONTCACHE, use FGP_DONTCACHE mode to get
-> folio.
->=20
-> Signed-off-by: Yangtao Li <frank.li@vivo.com>
-> ---
-> =C2=A0fs/buffer.c | 7 +++++--
-> =C2=A01 file changed, 5 insertions(+), 2 deletions(-)
->=20
-> diff --git a/fs/buffer.c b/fs/buffer.c
-> index f2b7b30a76ca..0ed80b62feea 100644
-> --- a/fs/buffer.c
-> +++ b/fs/buffer.c
-> @@ -2251,11 +2251,14 @@ int block_write_begin(struct kiocb *iocb,
-> struct address_space *mapping, loff_t
-> =C2=A0		unsigned len, struct folio **foliop, get_block_t
-> *get_block)
-> =C2=A0{
-> =C2=A0	pgoff_t index =3D pos >> PAGE_SHIFT;
-> +	fgf_t fgp =3D FGP_WRITEBEGIN;
-> =C2=A0	struct folio *folio;
-> =C2=A0	int status;
-> =C2=A0
-> -	folio =3D __filemap_get_folio(mapping, index, FGP_WRITEBEGIN,
-> -			mapping_gfp_mask(mapping));
-> +	if (iocb->ki_flags & IOCB_DONTCACHE)
-> +		fgp |=3D FGP_DONTCACHE;
-> +
-> +	folio =3D __filemap_get_folio(mapping, index, fgp,
-> mapping_gfp_mask(mapping));
-> =C2=A0	if (IS_ERR(folio))
-> =C2=A0		return PTR_ERR(folio);
-> =C2=A0
+> The parts above this function makes sense, but I don't understand why
+> we need programs to be cloned separately anymore.
+> Instead, can't we simply have a table of patch targets for the original program?
+> They'd need adjustment after jit to reflect the exact correct offset,
+> but that shouldn't be difficult to compute.
+If we understand correctly you advocate for storing the state of call
+instruction offset of helpers/ kfuncs/ callback functions (incase of
+bpf_loop inlining) and adjust the offset during JIT?
 
-Correct me if I am wrong. As far as I can see, the first patch depends
-from  second one. It means that if somebody applies the first patch
-but, somehow, don't apply the second one, then nobody will be able to
-compile the kernel code. Am I correct?
+While we did think about following this approach, we are worried of
+accidentally introducing bugs while implementing offset handling
+either now or in future when some new JIT optimization is being added
+by someone else.
 
-Why do we need to make this modification and, then, touch other file
-systems? What the justification of this? Why do we need to make this
-modification at the first place?
+We also thought of decoding JIT instructions (right after JIT) similar
+to the runtime handler but there is an additional burden of figuring
+out the helper/ kfunc's from the call instruction.
+Currently, the cloned program is simplifying the whole task of going
+through the weeds of JIT.
 
-Thanks,
-Slava.
+> IIUC you're comparing instructions in the patched program and original
+> program to find out if you need to patch out the original one.
+> That seems like a very expensive way of tracking which call targets
+> need to be modified.
+We can avoid this overhead still (by creating an offset table right
+after JIT) so that the termination handler becomes faster. However,
+since termination was itself a rare-case end-of-the-world situation,
+we didn't consider having great performance as one of the requirements
+for the handler.
 
