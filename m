@@ -1,125 +1,102 @@
-Return-Path: <bpf+bounces-62412-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62413-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C8ABAF99B4
-	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 19:32:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9B81AF99B9
+	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 19:34:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A40F5414E2
-	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 17:32:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 440345A7554
+	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 17:34:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58EFE1494C3;
-	Fri,  4 Jul 2025 17:32:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 277FA20B7F9;
+	Fri,  4 Jul 2025 17:34:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="htffF4Yc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZlnoQtu8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+Received: from mail-ej1-f67.google.com (mail-ej1-f67.google.com [209.85.218.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B37142AA3
-	for <bpf@vger.kernel.org>; Fri,  4 Jul 2025 17:32:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23C382E36ED
+	for <bpf@vger.kernel.org>; Fri,  4 Jul 2025 17:34:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751650366; cv=none; b=KqerGnKDMNqnID5ul2Mjq6HM2vumwM1Stxp69/DUtAjRtDZLdjQq9JycBZseS9OC/0SSmmmJgP2HOE3U6ZZxTsf1Q/0DamUSOgYptKL3945QwNosZdK42wWrP9A6s7rdQXjYrXlLaM/74Mw5b1UZziTqwDGwBw5XtqYlzwZqwgM=
+	t=1751650489; cv=none; b=RjvaWwKSn0550A55Tk9jyaqivpjkT//1m/pTYODtPMVt6o6Ic4/qf4UhOz3lkx6XLO+ivWPvGzRDWkZdHX6m341+UjR8osuRxde7rCFfO92kvV31EIYlcyd0TdCnLBKVGydMASBw3oY59OGYz+jWI1nw584t+jdHmtjm/Uciups=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751650366; c=relaxed/simple;
-	bh=hezTlVd45Sle/FDeP9Dw6ZYb5dvRsVSxQnU3/PWGwFc=;
+	s=arc-20240116; t=1751650489; c=relaxed/simple;
+	bh=lZzoMefMJQEHWWMw+S5C81vYcQ4VbPzb+0y4T/3TRUQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sY9CBhsPkHMANAUIRQv3+P93isjDm+OFTA03+MX1m1mncov1rB0uDqF3tYn587Q16wmYrDr36MdnqJaa1YrG+OB+GCCvd7VMW7hjJ4ZvjZxlv7OyKR/+qRlvaQ7mgDmS393yb/okVu43Skak8/Fn9Tj4df0TtTemkMPKXbIG7UA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=htffF4Yc; arc=none smtp.client-ip=209.85.128.176
+	 To:Cc:Content-Type; b=fKybz8YcjWr+1eWLY5fYU45IVhKBYcwSLt7bB7LJED0NLFT2/cX9vWLnuDLAACHmNkn2eykLaL7Df+4sKpmkE4d0iFri/cuCPhD0jS696kKXPUsLY8kQ5E766M4NeKaWEw/jLHq+k0rHVcugbiXNIP3/9rG/fvOhNUQwQfQ7t8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZlnoQtu8; arc=none smtp.client-ip=209.85.218.67
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-7111d02c777so9165457b3.3
-        for <bpf@vger.kernel.org>; Fri, 04 Jul 2025 10:32:45 -0700 (PDT)
+Received: by mail-ej1-f67.google.com with SMTP id a640c23a62f3a-ae0dad3a179so178749666b.1
+        for <bpf@vger.kernel.org>; Fri, 04 Jul 2025 10:34:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751650364; x=1752255164; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1751650486; x=1752255286; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=hezTlVd45Sle/FDeP9Dw6ZYb5dvRsVSxQnU3/PWGwFc=;
-        b=htffF4YciJ1I+myD1o8HBmXUzy+pmT0coDYCotPQigGEZqk9BWoerlpPZJ/lFuSvLF
-         Hib62zSc3TJgcDLTRwlew6iAX1I1AYlPeqh+/RJNyTx8nic9uhthpjsT8SQDDrXQZpX9
-         ey+yYYZVUKSPy5RIRtl9iJUS9X7o79a5ydF0ih6rklwIG73FTF7EL5+I2YNgvPczzW9x
-         vE7f971l7AqvoByOT7AhpE+XAQTU5PfH0l/r+rQUII239P+UyM875B7EI+LRN/DT6qxO
-         NVgGjKWhQGJLgZq3fK3TAMlzcb3C2CBhA78DMO5RsqQG0c37nLBPjAy+Tl/H+kSIK1K+
-         Z4QA==
+        bh=lZzoMefMJQEHWWMw+S5C81vYcQ4VbPzb+0y4T/3TRUQ=;
+        b=ZlnoQtu8hsKq7rGYd6p0FKl6//RacYLCGjZK97bYk/p+Q5YcKoyVnp0xGH39Vwo3lW
+         4KaSpjYtShDDIjbIOeUYWtST+lrDf5zY3TURAwcmuzI9AYVFRVJJ6+gXPbZCaJyX6ECk
+         A4qmHSrEnK8Fze6JuOxtzp6JI2d8kO/dEaMRWC+VjgTbiFL4zawmWOqBgx9lK7SXSQ4R
+         7yci5w8rFGNNDwbNt0b8Gfw8B/KFUcRMdT5jU1kf4RaMcR7lIcCObMZ4uNTKoQRY8Cmw
+         aXPd50oBcXeytfYyxsoFr6ETGxYeHX34pDf+PMUWETuYBPf/RPc83seu/BtMelzvndZo
+         ljig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751650364; x=1752255164;
+        d=1e100.net; s=20230601; t=1751650486; x=1752255286;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=hezTlVd45Sle/FDeP9Dw6ZYb5dvRsVSxQnU3/PWGwFc=;
-        b=hoTMiRCnYwG70ofjcRU/L+yr5U1nCebxB1htN4owKK8tr+yiAB7wQj11M/pikmgls1
-         OQ06Ah2/5M6cNZtyGUbit6IRsWgcy9g16B8D2r0Jz7SCnccFWmh1MiRHKfggrDnqY8T5
-         O3khG8SLAy2Xk/6a2DboobYXGY7a9MaggQdhSB9kKGcSlznvBOkDKBSB0QTOx5cjYn63
-         oW8FU1kaIxrukdq6FYbLEknhXdlP0XjIV/iAbZ1Yu5h7FZ4Z0Z5GoI7lTeJ0cwLZCL6/
-         6DJbjSHntfbOApoluijgXuu9BViXCrTwHRoOVrYSCfJhiar+Vh6mVAtGai8y3DrBiFrV
-         Rqew==
-X-Forwarded-Encrypted: i=1; AJvYcCWNCpwEKE/nUcK+mKCM6XpZ7rVjp/0/zItQFBt7llod7UeanRq18RFFBNWzuSvD0Eqhl6w=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx6pt33Z6ZSH/uJMZotwI53WIm2FhuBKQq8q5vNsw5lpMBTTfi4
-	9cyLe72NeuJqNmmrYJIWCs+IhnTX52FqdMSOOx5wkM8UYpGeF54NFlBdAIiDEUA27FeuyG6ED8U
-	TuNujy7L8L9JDKXcbSATJdnj/O53e8+8=
-X-Gm-Gg: ASbGncsQtnUJz1CUEC2w3412WNABQ0tkb6/tFRAa2db7FKf6WnWetGhcAhI71/+aNp/
-	hvEFJfj5MIyF6+y/b5T9WGaYw8+foE9pJ5ZHDl9PcL6/F7u8exQy8dxu39etixaHJxRaNEp6d5d
-	Sk5mrtaH8u7ONBNGdyjkGxb3txpqQm9C5sJJAYfi1oA7MOHCNc8RTxU2JohR9Edp6SWMrLX5FOI
-	W4x
-X-Google-Smtp-Source: AGHT+IHNB2BkITg4AG/F8Yj7L2t/j4vh/2yLdEjAqXUd7hlrxuVVTDXhLqa+5Wm5F/PvpPYrIUN/xqq40RD89KCicNA=
-X-Received: by 2002:a05:690c:6285:b0:710:e6b0:1688 with SMTP id
- 00721157ae682-7166b5bd0d0mr38850097b3.14.1751650364338; Fri, 04 Jul 2025
- 10:32:44 -0700 (PDT)
+        bh=lZzoMefMJQEHWWMw+S5C81vYcQ4VbPzb+0y4T/3TRUQ=;
+        b=TWodqraouf81FAkzpsXrwKU9omfN1XiUGkZ0iTERRaCpo3OK35FOK5XJnZSsTQAR2B
+         QHfz9zVwvPbGscB4zvz0lOQh0tGf87CTS3CI4Zo5yeyBcJUFe7in07s+KbJUHjDT2nBC
+         zTi0bNNfWY+57Ovr5JZ9RewgQLai09TTv9OivQdafrfxsIt7yZ3H7hZ9b09q99IcmP04
+         z+99dBPZhDcSK4rbCFG/0HqASw8dcZkW4Q3Pt0ie8DWnmrXGI1k8EiUYskOD6jEJxtjj
+         xvHP2bP3zrpObKoUE5addIquICOq4ugq1QXFkJ8eE36mvL7gwic9SB7kJA0C7hIKsbQT
+         o+gQ==
+X-Gm-Message-State: AOJu0YxABfh3dlrN5UyabRTD2/EIo/C4uAqQI0E5uKPqXBg66Y5VTB0C
+	pvxosmt+adfN2af2vq8RYafHQOF0ntj4DJe/5fPhpi8MfIKdnEo5B5+KO6UJk6JQAWW99xuO7He
+	uRLSdqs4DyZTaL4hCSSfT5cCvTifCfXk=
+X-Gm-Gg: ASbGnctTSYqwZae54bL7sydn4e2lzKfRDk6c371ORpRKUR1u/b+Mma33B4TAXnEDFgu
+	XKEZbp7ERSZzDXCHjpTjUC66dMj24qj2s+jHS16CWm/bBs6CZLR7EE69iN7VNafkyZYXPABvyhF
+	EbhNrrkUa9V+LV17GDWb+ZSQJ7bZ6h8bcDL23bz3uDwB+UOyXjSofjn3aW/UH0r+Av1XkzWgryJ
+	2s=
+X-Google-Smtp-Source: AGHT+IHsLyfIa0E336VnA7wLrv3PVyV6BTC4lkjAUj0hB1qRGB0VS1AGGvY7UGU/vODpPUeIVTJslUhxph/hOz4YMOA=
+X-Received: by 2002:a17:907:971a:b0:ae0:9363:4d5d with SMTP id
+ a640c23a62f3a-ae3fbc405c7mr331635066b.2.1751650486211; Fri, 04 Jul 2025
+ 10:34:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250614064056.237005-1-sidchintamaneni@gmail.com>
- <20250614064056.237005-3-sidchintamaneni@gmail.com> <CAP01T74u=EJqDEyB-gEsmRGqMF=TRPY+cb_eUHNVY3hr3OWYvg@mail.gmail.com>
-In-Reply-To: <CAP01T74u=EJqDEyB-gEsmRGqMF=TRPY+cb_eUHNVY3hr3OWYvg@mail.gmail.com>
-From: Raj Sahu <rjsu26@gmail.com>
-Date: Fri, 4 Jul 2025 10:32:28 -0700
-X-Gm-Features: Ac12FXzKeT93H_3qazdwZZIyT-aH5iSskgcsknsr5uLZw3C1b24_t_135QCfC9k
-Message-ID: <CAM6KYsvaPFHqdb-ZW+Bc_-N_VhJix8cQEvBbRo+pE_cBs++PPg@mail.gmail.com>
-Subject: Re: [RFC bpf-next v2 2/4] bpf: Generating a stubbed version of BPF
- program for termination
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: Siddharth Chintamaneni <sidchintamaneni@gmail.com>, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	haoluo@google.com, jolsa@kernel.org, djwillia@vt.edu, miloc@vt.edu, 
-	ericts@vt.edu, rahult@vt.edu, doniaghazy@vt.edu, quanzhif@vt.edu, 
-	jinghao7@illinois.edu, egor@vt.edu, sairoop10@gmail.com
+References: <20250702224209.3300396-1-eddyz87@gmail.com> <20250702224209.3300396-4-eddyz87@gmail.com>
+In-Reply-To: <20250702224209.3300396-4-eddyz87@gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Fri, 4 Jul 2025 19:34:09 +0200
+X-Gm-Features: Ac12FXzfWu8djl6ngDY0EafenOjlULAYCL6SsxGeohCMVw3icgxk37ffel8xhRw
+Message-ID: <CAP01T74PRV_0tH5GndHtZoySOid8yuPF7xZWA9QoHBh4=-8DAg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 3/8] selftests/bpf: ptr_to_btf_id struct walk
+ ending with primitive pointer
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
+	yonghong.song@linux.dev
 Content-Type: text/plain; charset="UTF-8"
 
-> The parts above this function makes sense, but I don't understand why
-> we need programs to be cloned separately anymore.
-> Instead, can't we simply have a table of patch targets for the original program?
-> They'd need adjustment after jit to reflect the exact correct offset,
-> but that shouldn't be difficult to compute.
-If we understand correctly you advocate for storing the state of call
-instruction offset of helpers/ kfuncs/ callback functions (incase of
-bpf_loop inlining) and adjust the offset during JIT?
+On Thu, 3 Jul 2025 at 00:42, Eduard Zingerman <eddyz87@gmail.com> wrote:
+>
+> Validate that reading a PTR_TO_BTF_ID field produces a value of type
+> PTR_TO_MEM|MEM_RDONLY|PTR_UNTRUSTED, if field is a pointer to a
+> primitive type.
+>
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
 
-While we did think about following this approach, we are worried of
-accidentally introducing bugs while implementing offset handling
-either now or in future when some new JIT optimization is being added
-by someone else.
+Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
-We also thought of decoding JIT instructions (right after JIT) similar
-to the runtime handler but there is an additional burden of figuring
-out the helper/ kfunc's from the call instruction.
-Currently, the cloned program is simplifying the whole task of going
-through the weeds of JIT.
-
-> IIUC you're comparing instructions in the patched program and original
-> program to find out if you need to patch out the original one.
-> That seems like a very expensive way of tracking which call targets
-> need to be modified.
-We can avoid this overhead still (by creating an offset table right
-after JIT) so that the termination handler becomes faster. However,
-since termination was itself a rare-case end-of-the-world situation,
-we didn't consider having great performance as one of the requirements
-for the handler.
+> [...]
 
