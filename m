@@ -1,224 +1,118 @@
-Return-Path: <bpf+bounces-62436-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62437-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA4DEAF9B16
-	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 21:16:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89A07AF9B1E
+	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 21:23:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CB573A3510
-	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 19:16:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E6FE11676C1
+	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 19:23:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00BC51D90DF;
-	Fri,  4 Jul 2025 19:16:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85238214A79;
+	Fri,  4 Jul 2025 19:23:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F7JR74Ek"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RsS+uwoM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f68.google.com (mail-ed1-f68.google.com [209.85.208.68])
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A880C2E36F8
-	for <bpf@vger.kernel.org>; Fri,  4 Jul 2025 19:16:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC33A2E3706
+	for <bpf@vger.kernel.org>; Fri,  4 Jul 2025 19:23:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751656585; cv=none; b=sUngV2in1hOO5bOaEZzgvl1sV/Yetxh1Do2Ld8jFvWQHQIykJQwf9psGMEaqelfioU+uoEZTkqEoa4vxvG/KETrfrrGI8QZKfh5/DgHPVFClXCJ1amkeWIvrAgX8TdO/7EZHtQy9p4k7Oz/aLM91MO2vbTfg7IoLkSW6bwHnRP8=
+	t=1751657027; cv=none; b=ou6tIddGuUshDAYJTXyTqCUMZHbwi2Ai5/JKQoguQQXFuatt1gTVEsuPdijyNF8sNtPJKZKjnPA2bjN2Me/EHtpBv2kfmwIdoPQXG83cnefDvFm6UTGjKE9JChrY+wa9F8mWd2dwYaY26916oGwRy/4CnjmFDn3usAyxujWig3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751656585; c=relaxed/simple;
-	bh=SwQp2pWMOq/coF8eI+So7XhQVrkrIA2TK9nv5rq/HTc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hPmU/PkF0nnjXs05EP/ot3YPytUQL6wsdNQjr0BgPk+Y4FXimMJA9zqz/Nre2lEuLMINagEBhdoa78IHyU82N44AtmN4TzzixuxDwntD1caQzKuqSKUzu4IBwQnzzEj4JKMbCHCTtC13IPiWwUCGfOBROVxzG1RRZCQjXNGe0cQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F7JR74Ek; arc=none smtp.client-ip=209.85.208.68
+	s=arc-20240116; t=1751657027; c=relaxed/simple;
+	bh=9HAt1gdnN40gggIHOghbRpT3fhWn/xVVcU2WwPXYlr4=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=VAxXry/0LU3woE/HIZJytUt++jdfbUBIZmjaLUBIxYXDFm7mduelKzi/h6UhxgS5I1LXsBmojrrFqaLGkWnOp6zknAI5FJV1/ps8Z2CZ20pkOtwc+R2No//AakkpnL7ApvH8S9KDr/JnhfYmkhcMaxe/fAxWT0xRDDtLlYcjfzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RsS+uwoM; arc=none smtp.client-ip=209.85.215.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f68.google.com with SMTP id 4fb4d7f45d1cf-60c3aafae23so5134001a12.1
-        for <bpf@vger.kernel.org>; Fri, 04 Jul 2025 12:16:23 -0700 (PDT)
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-b31d578e774so1967525a12.1
+        for <bpf@vger.kernel.org>; Fri, 04 Jul 2025 12:23:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751656582; x=1752261382; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=qR1RRKm34BVBvGVKloc6c5+oxu8ACtA9thh2zmKFVfE=;
-        b=F7JR74Ek7sFYg/Zn74W/MfJelbRO60j7RYNSDPMzpRazfrvKdyy7HouXI7LePuFXnY
-         uOxgE4RbqDp/ekJvzO+IO4q/qVYFGVtkqYoyQWLZRlSWU5AR67DYnBwcYiRrh1px2aKn
-         oHITrKYEExd1e+oKpR0pXyjxT1AObIE2ywvuuBuvlWyYvgcJXfMwsgAgJjiQ3G0CbGse
-         LFpYBmtm5WrgUpFWnxvfthDLuieuSVqrjd0jt7BXVAWZu1+ruMx4SPmg3WT8OLncKdbf
-         ocJZkUOO2YJlhh8szh5G1mB12+GekBGoZt3qQMNi2WbjebTg4iiLMx4dfaGfMju0Fj+W
-         UAWw==
+        d=gmail.com; s=20230601; t=1751657025; x=1752261825; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=9HAt1gdnN40gggIHOghbRpT3fhWn/xVVcU2WwPXYlr4=;
+        b=RsS+uwoM6LWkcYzowB2ZJ3KYfQeDPihxgaDdsG6pazi+7FrfsvS06d3DIcQuF8M2rK
+         T4Mrn4Io6qk5JlKrxl7e1eF9Nmp62zhgVSxDEQTzk811t7n8WiqJTzN6bvrUxQ7Yg7t1
+         Muy9HhixtLgcR0QIYTLo0nO9hZGVSp84QP/C8EXXlwaypiZoBpxeClDQvfUBqe/Y5Xtt
+         HPsjDfYJ5yUfKzdwO0WNNv8sBGwuEXNYBJbUP2zpUepfzy3npfh62offwACrJaSH8zhf
+         uumiLgQh/OViV71EdX28tdmEuNZxJ2xt8UXbchkYam91LC61MhuKDZUOc6wGkHgj+5bo
+         nqgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751656582; x=1752261382;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qR1RRKm34BVBvGVKloc6c5+oxu8ACtA9thh2zmKFVfE=;
-        b=Ja06Ko2YfsbNedrUxHN62gT73W63ax5+JGZyfzpuRY4OuVqXDyyUVHkqevvmkVv97P
-         XGngGEj86yGBe5+vjq9O4tgqWbvgpArY9O1zRIG1zw+gbUvXxjla9EwFU5XgMnzSIeUJ
-         UASwg3XEnDZSI1UTsAjDOMqhKw+lL/edWRt0+J11arSYeQOB6XlBceSVoORIXOI7AtNA
-         nLrjQdZLIac7npUhGhTAznckyUAdWHtt45ba+Hch45fpgG0kL9RYtZn0hqMFMVDHS8Gt
-         /5sfwHOSvLql8DC4OO45vvyD7XduFgjajC3fKWRYxEh+/dK0UkLilXMF37nCUNc3p3AK
-         bdyA==
-X-Forwarded-Encrypted: i=1; AJvYcCXMSB2sm97w33RKmyIXSYw5ev7DtL3TIMnrQZJ2eg5VLaO9Wou2m8On3Utv9XbJQgY4/J0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxjGSChBtrAqaE9lA+bbTJt3itBNbpcJyhYJXPvGW7nKqgIDueG
-	Wu23lNHC4fadMQ9srP3h/aJPRLqLl7M9OKS35FUWOoL79x+3EjOec2jbcZd6yjcxd4g09yKFw3A
-	VXQdJ8klYYZpaiWdxM4tSbHhx4y1zTc7sZqZ1A+0=
-X-Gm-Gg: ASbGncvUivjuZ5p5Pu2fIyeYSWDamRigCWWkLSqPWQl+0bMwZulmdrDZnDb6AObrHrM
-	I0ZbZUAxizlYp73MTkvetcqm3z1RSqOz1MmGHI2OLsN9lXw1I5SnQJotv+dKel0xtdOjn6B16NJ
-	XdlyFyqog+1hFej1sgw3fAySHTz3jCFOY3TheJc+PhVnAUTQzQ5WEDST9vGn+6eCIvgeHfF1fWu
-	CA=
-X-Google-Smtp-Source: AGHT+IGowc+TLisxP8IubKZ3p2Wc+XHeCxeNvN3hlEnVMWbvi++ncg+V8gMVB3KMmiHCsLTtG2p0YqWEO16g7zW26JA=
-X-Received: by 2002:a17:907:9487:b0:acb:37ae:619c with SMTP id
- a640c23a62f3a-ae3f9ccc41bmr441157766b.15.1751656581790; Fri, 04 Jul 2025
- 12:16:21 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1751657025; x=1752261825;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9HAt1gdnN40gggIHOghbRpT3fhWn/xVVcU2WwPXYlr4=;
+        b=eZ94BIuSMCrRR04P0jJR0zNLGZGnyCSiXttXMruYsbuoNY778jMq62D48hBYuZm4CI
+         vBuWWsurV6oIFxZppztIqc77gd9aMICVWk2GqAA45nNmdDv4jyy5WAX81N3pcDHWH90z
+         rZPUxMtmBF76bTc/ACquY6PdNfdJU6WfN2mvu55Qgzb7imf51fjRaqvSJk09Im7Nvanr
+         C+g2uIACW3HkJlBPcu2GVCagDApfEmF8Fd1EPExHgLiNhRqxBYHPut0mhYVLa1VC25bN
+         88MWe3IVfelIulhtbiK+D0c3eUjERrGLJOn1dEBXW+jDNCd4dFXtw+MDQY5OYZ/4SoSW
+         IYkg==
+X-Forwarded-Encrypted: i=1; AJvYcCVJXS113iElBEzOTR0v0GKROPv8uQF7oM7rvSqrEzStHjYKba+WIaVXXZNOGEQPj4fU7WM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzMg+92ELAjYjz6Gq+3DwMjgCtLzdReVggqICFdFOqmkE1fdymE
+	+5Fgt9TACU4JMiA5cTv9IZQcAFjsvElaYQ6GjaTTaJhq6S5s1BodZxXV
+X-Gm-Gg: ASbGnctKoJdwKQV6E+4nE2QhFZGkDtzZirZGb3zzu57NClD3tmdK7f5w21KncfeSTOP
+	k2jqh/1wF5PwOWC68HDhAfED29QR7gFt7cQ1vLBIvYoro2L5JNBnnxwQNgwqVmIWLOddSNtx4Tz
+	/ESurcX+ZCSqHyYYB0mStam4xICeDsGU8mZmW/r3kDfc3UY+E0PxKZMYjTj7q/zgENe6ZGAAt1T
+	2WGj+SUNw2R/T2ee0yG8MGj8gMkAXd3l4oR06nuJ+U9HWZtHn4GwyIOj69GbvSyvfZLqDxOtOFG
+	Rm/8NWRa8iDBYEpay6+YaxGZ6RRZ6Qbfenhar+24OnU5rJGfapb6UJaRoQ==
+X-Google-Smtp-Source: AGHT+IEKS3w2visBzJG/GyvTKdb9OG7nuizuaQ9ZUzEu0TpWqjaJIBfvPSCQVv3U4RY2P8ao16liBQ==
+X-Received: by 2002:a17:90b:33d1:b0:30e:3737:7c87 with SMTP id 98e67ed59e1d1-31aab854dadmr6022155a91.5.1751657025072;
+        Fri, 04 Jul 2025 12:23:45 -0700 (PDT)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23c8431a1f0sm27567315ad.32.2025.07.04.12.23.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jul 2025 12:23:44 -0700 (PDT)
+Message-ID: <e5acf74c70f6aa01ca7be4c0afce9dd6a20a910e.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v1 4/8] bpf: attribute __arg_untrusted for
+ global function parameters
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: Matt Bobrowski <mattbobrowski@google.com>, bpf@vger.kernel.org, 
+	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+ martin.lau@linux.dev, 	kernel-team@fb.com, yonghong.song@linux.dev, Alexei
+ Starovoitov	 <alexei.starovoitov@gmail.com>
+Date: Fri, 04 Jul 2025 12:23:43 -0700
+In-Reply-To: <CAP01T74_diwrEB0D=LOqVGQTGjiETm65cqh3zZEL5S5EkTYaZQ@mail.gmail.com>
+References: <20250702224209.3300396-1-eddyz87@gmail.com>
+	 <20250702224209.3300396-5-eddyz87@gmail.com>
+	 <CAP01T74AYNX5ARJ5YXryUyKvn5o0Dv0JBoq3CCKcD8rh==uKQA@mail.gmail.com>
+	 <fb5b8613584dbce72359e44ef3974e4cb7c8298e.camel@gmail.com>
+	 <de7f3a2c5bc521c1111b0ed1870291c0889e4757.camel@gmail.com>
+	 <CAP01T75+cXUv4Je+bYQNb-Us_MF1s1Zc9fL0wmowLExKUQ8KNg@mail.gmail.com>
+	 <a8f522a0e9eaf060727b7782d700f998efaa757c.camel@gmail.com>
+	 <CAP01T74_diwrEB0D=LOqVGQTGjiETm65cqh3zZEL5S5EkTYaZQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250702224209.3300396-1-eddyz87@gmail.com> <20250702224209.3300396-5-eddyz87@gmail.com>
- <CAP01T74AYNX5ARJ5YXryUyKvn5o0Dv0JBoq3CCKcD8rh==uKQA@mail.gmail.com>
- <fb5b8613584dbce72359e44ef3974e4cb7c8298e.camel@gmail.com>
- <de7f3a2c5bc521c1111b0ed1870291c0889e4757.camel@gmail.com>
- <CAP01T75+cXUv4Je+bYQNb-Us_MF1s1Zc9fL0wmowLExKUQ8KNg@mail.gmail.com> <a8f522a0e9eaf060727b7782d700f998efaa757c.camel@gmail.com>
-In-Reply-To: <a8f522a0e9eaf060727b7782d700f998efaa757c.camel@gmail.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Fri, 4 Jul 2025 21:15:45 +0200
-X-Gm-Features: Ac12FXwfccf3lgS-HMYq3s6L70ozkvRrYNPzd7GyM5YLjVzuLdxF6BuUk-9Xo-g
-Message-ID: <CAP01T74_diwrEB0D=LOqVGQTGjiETm65cqh3zZEL5S5EkTYaZQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 4/8] bpf: attribute __arg_untrusted for global
- function parameters
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Matt Bobrowski <mattbobrowski@google.com>, bpf@vger.kernel.org, ast@kernel.org, 
-	andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
-	kernel-team@fb.com, yonghong.song@linux.dev, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 4 Jul 2025 at 21:07, Eduard Zingerman <eddyz87@gmail.com> wrote:
->
-> On Fri, 2025-07-04 at 20:50 +0200, Kumar Kartikeya Dwivedi wrote:
-> > On Fri, 4 Jul 2025 at 20:33, Eduard Zingerman <eddyz87@gmail.com> wrote:
-> > >
-> > > On Fri, 2025-07-04 at 11:28 -0700, Eduard Zingerman wrote:
-> > > > On Fri, 2025-07-04 at 20:03 +0200, Kumar Kartikeya Dwivedi wrote:
-> > > >
-> > > > [...]
-> > > >
-> > > > > > @@ -7818,6 +7821,22 @@ int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog)
-> > > > > >                         sub->args[i].btf_id = kern_type_id;
-> > > > > >                         continue;
-> > > > > >                 }
-> > > > > > +               if (tags & ARG_TAG_UNTRUSTED) {
-> > > > > > +                       int kern_type_id;
-> > > > > > +
-> > > > > > +                       if (tags & ~ARG_TAG_UNTRUSTED) {
-> > > > > > +                               bpf_log(log, "arg#%d untrusted cannot be combined with any other tags\n", i);
-> > > > > > +                               return -EINVAL;
-> > > > > > +                       }
-> > > > > > +
-> > > > > > +                       kern_type_id = btf_get_ptr_to_btf_id(log, i, btf, t);
-> > > > >
-> > > > > So while this makes sense for trusted, I think for untrusted, we
-> > > > > should allow types in program BTF as well.
-> > > > > This is one of the things I think lacks in bpf_rdonly_cast as well, to
-> > > > > be able to cast to types in program BTF.
-> > > > > Say you want to reinterpret some kernel memory into your own type and
-> > > > > access it using a struct in the program which is a different type.
-> > > > > I think it makes sense to make this work.
-> > > >
-> > > > Hi Kumar,
-> > > >
-> > > > Thank you for the review.
-> > > > Allowing local program BTF makes sense to me.
-> > > > I assume we should first search in kernel BTF and fallback to program
-> > > > BTF if nothing found. This way verifier might catch a program
-> > > > accessing kernel data structure but having wrong assumptions about
-> > > > field offsets (not using CO-RE). On the other hand, this might get
-> > > > confusing if there is an accidental conflict between kernel data
-> > > > structure name and program local data structure name.
-> > >
-> > > Maybe just add __arg_untrusted_local and avoid ambiguity?
-> >
-> > That might be less ambiguous, sure. But I don't see why the fallback
-> > would be confusing.
-> > It might be nice if we can support it without asking users to learn
-> > about the difference between the two tags, but if it's too ugly we can
-> > go with explicit local tag.
-> > A user can have a struct without preserve_access_index now and having
-> > the same name as the kernel struct, and the program will load things
-> > at potentially wrong offsets.
-> > If the same type exists, the program would fail compilation in C due
-> > to duplicate types.
-> > Are there any other cases where it might be a footgun that you anticipate?
->
-> Well, basically two cases assuming that program does not use vmlinux.h:
->
->   struct kernel_type { // assume kernel type has 'i' at another offset
->     int *i;
->   };
->
->   __weak int global(struct kernel_type *p __arg_untrusted) {
->     return p->i[7]; // assume no CO-RE relocation for &p->i
->   }
->
-> In this case, if kernel BTF is searched first verifier can catch that
-> access to 'i' is bogus. However, that is not necessary if one assumes
-> that verifier should only check for errors that can bring down the
-> kernel.
+On Fri, 2025-07-04 at 21:15 +0200, Kumar Kartikeya Dwivedi wrote:
 
-Right, but it's also possible that loading p->i[7] is ok in the actual
-kernel type, so the kernel will just load the program but mark the
-register as potentially unexpected type.
+[...]
 
->
-> Another case:
->
->   // assume there is kernel type with the same name, but program
->   // author does not know about that and does not use vmlinux.h,
->   // thus avoiding compilation error.
->   struct accidental_kernel_type {
->     int *i;
->   };
->
->   __weak int global(struct accidental_kernel_type *p __arg_untrusted) {
->     return p->i[7];
->   }
->
-> In this case user would not expect any errors at load time.
->
-> Hm.
-> Maybe just always use program BTF?
+> Yeah, so if the user specifies a type and has co-re enabled, they're
+> accessing a kernel struct.
+> If they're doing it without co-re, it's broken today already, or they
+> know the struct is fixed in layout somehow so it's ok.
+> If not, they want to access things at fixed offsets. So we can just
+> use the type they're using to model untrusted derefs.
+>=20
+> So always using prog BTF makes sense to me.
 
-Yeah, so if the user specifies a type and has co-re enabled, they're
-accessing a kernel struct.
-If they're doing it without co-re, it's broken today already, or they
-know the struct is fixed in layout somehow so it's ok.
-If not, they want to access things at fixed offsets. So we can just
-use the type they're using to model untrusted derefs.
-
-So always using prog BTF makes sense to me.
-
->
-> > > > Supporting bpf_core_cast for both prog BTF and kernel BTF types is not
-> > > > trivial because we cannot disambiguate local vs kernel types.
-> > > > IIRC module BTF types probably don't work either but that's a different story.
-> >
-> > > I can add bpf_rdonly_cast_local() as a followup, do you remember
-> > > context in which you needed this?
-> >
-> > Adding Matt.
-> >
-> > Not long ago we were discussing iterating over the bpf linked list
-> > since support doesn't exist in the kernel and it was safe in the
-> > specific context to iterate over the list.
-> > Ofcourse, we could add iteration support in the kernel, but another
-> > approach would be the ability to subtract offset from node to arrive
-> > at an untrusted pointer to type in prog BTF (that was allocated using
-> > bpf_obj_new).
-> > But bpf_core_cast didn't work there, so we ended up discarding that approach.
-> > Not to get hung up on this specific example, but I think it would be
-> > useful in general.
->
-> I see, makes sense.
-> That should be possible now using bpf_rdonly_cast(..., 0) but one
-> would need to explicitly cast each pointer in this way.
+Ok, I'm switching to always using prog BTF.
 
