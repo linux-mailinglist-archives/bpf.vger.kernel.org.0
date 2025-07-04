@@ -1,220 +1,127 @@
-Return-Path: <bpf+bounces-62439-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62440-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 114E5AF9B79
-	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 22:05:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7551AF9B7A
+	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 22:06:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 741E61CA2390
-	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 20:06:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 067164A8499
+	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 20:06:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E10F422A7F9;
-	Fri,  4 Jul 2025 20:05:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD76422A7F9;
+	Fri,  4 Jul 2025 20:06:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XetEQWeR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HNRbkpYZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1882199FBA;
-	Fri,  4 Jul 2025 20:05:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1B26199FBA
+	for <bpf@vger.kernel.org>; Fri,  4 Jul 2025 20:06:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751659545; cv=none; b=sA3132uoO4xh7N7Ogsj68qLuQAvnpMXfk0YpN8QUwkRdoOJ2vwjIU+M1Lf1fS3XJPJ5AYbhfOr2VMe1MYKuOrTH+ZhnlEUjVnqxEGnLTngdNRnOEZXu5/fm1+dJFrHalz/yVuuAoXDa1+0aOQB7F3HNnLXJc99ZPrYujBkaStf8=
+	t=1751659564; cv=none; b=XGoUYPpoSHaxuwEdGrBgN7drlXqsTg0cIu5Tsi3PR1GInn09DMHKIfjPHeYRmSS40m6EycqJsVPqQbwCK0+GEtdS/+6y750MObWmasmCkLt6ZmqCJzrkYLDF/FCk06pvEOilrQN18Hs7r7yWiHnUiOBmgNfxLZYhg4C31gr5zuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751659545; c=relaxed/simple;
-	bh=MRu18Rt/dtKGs3D7BpURKXIOsMC6qMC+qDN+Rgq4GUU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nzhA0BP6TGBTYZgcIxq/g60mHSwHRSP3hRdcnioSgdEbhND0tg+ENiezujSsJc3tQhIBPeDbKCsbBenKLZTT4JPb2VZ9RqLtvFYiKx7hDdzsHYD5hMW+I0qJuxSgHo/LHVowc6CTnB8mCdqXPSB8A5YSaZW4QLAcShsNJ2O3uQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XetEQWeR; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <5aadf682-3b1f-4769-a2c1-523085026ac8@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1751659539;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4TGkPheEZ0633TsdxcuJRJiU7E9UMND4K1dgjzrkuso=;
-	b=XetEQWeRDV2bpGb3QP2Sfu1ZkfqA4UyEA/GWnBwNa9TSRfmx+UHxudsDnwsS/aIyLy0po+
-	j2zDqv4x4R5nY4cTSUz9k5x83+I+T5Cv8zuwTdIzYDSE66vsvaO4uA66PpmU7G18heYfVL
-	/Y7zxkGVGg/DX+yPyGCJuqYJOtljHk8=
-Date: Fri, 4 Jul 2025 13:05:28 -0700
+	s=arc-20240116; t=1751659564; c=relaxed/simple;
+	bh=mUjiw2O1e0MTzRD7QD2Scm/bQP8nRAYaPirPpJoH4aw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PxlZJtMdn+WMNo+mRn+mMkRgxoxjGJvVzhFqByajWMzuXwWDpPAH34NTrfl6HDl7V7c4JC/hroo6RHHWwWjQbyoFlZC4zPnFzWJ8Kd9lbrnsq4Mbxl47rc3P1ewgT4s8Jbux44yz2VQ3EsZK6h5LXxk5w8KQA2KZbMxHQDtCT9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HNRbkpYZ; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3a4e742dc97so1529947f8f.0
+        for <bpf@vger.kernel.org>; Fri, 04 Jul 2025 13:06:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1751659561; x=1752264361; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mUjiw2O1e0MTzRD7QD2Scm/bQP8nRAYaPirPpJoH4aw=;
+        b=HNRbkpYZc6x/Y78tK2EaMSVG2L8EmhPdqCaZtdwgKp/PYD9b+jYnptBvuhsRB+0i3X
+         NCB7LKyd4dF1QcCl2EN33pnPmc3CIkHtx3fiTCbvfEMXWk0nQE3f+8A1/pFflSdUfbcE
+         yy70jt3hPUwRC3gtDcatHVeZVt8vjLdLkbCEPtDxix64iHLMA6RMTQNhQpRUj7Rv8Etc
+         SH0gHk4MSm1CcOgGiYPGUbVOfqMccwDjIS973aH0rdagz9WWvbFxKleVm0cUVsDuSnR2
+         91A+4QeXI30/BcvycGWvL94TGH8R1nGAYJMAEQ+FGoWvcQHqu6m6AuKpG/op81cMv0RE
+         HsFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751659561; x=1752264361;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mUjiw2O1e0MTzRD7QD2Scm/bQP8nRAYaPirPpJoH4aw=;
+        b=LMLfXWKqD7cfncALfRUxi/4KYiQ5hH2R3h+5OI+jcOAbuPr0De5PAWbqnO42P7m5v2
+         SzrmMC7rD3oigY8YXQZWBvsnZFV7LjfCXIsa+EXkURls53x0aoICgneLXEkVGiC0QRbt
+         mQZLFPo7zQnNj4JA2FnZZRJ3a9qc63emOjBXAtHqkW6XFi5qy0rhAReoFMjrHneZ+J03
+         ZhsekiWBu5NMBtxho/CJViY6RYE5HnzoUicOlmHKZt+rDcbtdXE6wNYD0RnSqGsH+WrR
+         TBvnX5M60jJpCjw75NWfPqlYCQioFo2oYY1CWlkc5/3SPXmvMJ4wbCmBCfXO2HoxoFix
+         0BBw==
+X-Forwarded-Encrypted: i=1; AJvYcCUK2ZHDKdwo4iiHJo9QZP2cSmaYyFN9yFnWKorKQ5D7saQ0CZoEXnazbpGIvkPv1xNILrc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxjiJ8IjdunUBeyIe/m61fc9aBR7aJ1OPat+qEcb/6FZcZ12JRS
+	N/jDS7RTVDuO0zm43PX8vnSaT1gKDYYNreJpLc/bR87yHZgjxqm/1mXMU1JJXEuOulsNcNpS2Ov
+	rndHlnYfvDZw46rCcjtbu2qgTN7Gmd3Q=
+X-Gm-Gg: ASbGncsYp4HSf+TAuJoM9yDlo5kQ54fCNhmjuWJ4OGTwMh9UPgiaJAWk19Gn7kXz8Tb
+	tEVj4ORkBrEVkcCwtszZp8RZLPV21FBSKvfgleJFS1H3x/V3MF/n8c5YbPFlIfxYBnC6JcAaezu
+	iIF0eeeoYAMpj/1i3AsgMoZRtEn0gMX0kVHOA1MqAaXvZBLELJJMYQUbVTdKiq6HuTaovy0yy0
+X-Google-Smtp-Source: AGHT+IE6BooeFHAutk4w5RR9q3wvDps0xEC4RdKuQnnrTTjbFWxObgck/qPIleH+efBfhcSlZBqLG2dY3eWlb2YVe8Q=
+X-Received: by 2002:a05:6000:2913:b0:3a5:2b1e:c49b with SMTP id
+ ffacd0b85a97d-3b4955971d5mr3620825f8f.29.1751659560793; Fri, 04 Jul 2025
+ 13:06:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 1/3] btf_encoder: skip functions consuming packed
- structs passed by value on stack
-To: =?UTF-8?Q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?=
- <alexis.lothore@bootlin.com>, dwarves@vger.kernel.org
-Cc: bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>, Alexei Starovoitov <ast@fb.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Bastien Curutchet <bastien.curutchet@bootlin.com>, ebpf@linuxfoundation.org
-References: <20250703-btf_skip_structs_on_stack-v2-0-4767e3ba10c9@bootlin.com>
- <20250703-btf_skip_structs_on_stack-v2-1-4767e3ba10c9@bootlin.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-In-Reply-To: <20250703-btf_skip_structs_on_stack-v2-1-4767e3ba10c9@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250702224209.3300396-1-eddyz87@gmail.com> <20250702224209.3300396-5-eddyz87@gmail.com>
+ <CAP01T74AYNX5ARJ5YXryUyKvn5o0Dv0JBoq3CCKcD8rh==uKQA@mail.gmail.com>
+ <fb5b8613584dbce72359e44ef3974e4cb7c8298e.camel@gmail.com>
+ <de7f3a2c5bc521c1111b0ed1870291c0889e4757.camel@gmail.com>
+ <CAP01T75+cXUv4Je+bYQNb-Us_MF1s1Zc9fL0wmowLExKUQ8KNg@mail.gmail.com>
+ <a8f522a0e9eaf060727b7782d700f998efaa757c.camel@gmail.com>
+ <CAP01T74_diwrEB0D=LOqVGQTGjiETm65cqh3zZEL5S5EkTYaZQ@mail.gmail.com> <e5acf74c70f6aa01ca7be4c0afce9dd6a20a910e.camel@gmail.com>
+In-Reply-To: <e5acf74c70f6aa01ca7be4c0afce9dd6a20a910e.camel@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 4 Jul 2025 13:05:49 -0700
+X-Gm-Features: Ac12FXwgqvgSOkizx3qD5bLS7q15zwgEIYXF6dNSdTbVAUVW1A1G8WnVyUJSngg
+Message-ID: <CAADnVQKh9pAaAcJp_bSFjz5=K-6XPgb_Jdo8yhv3VYQhb-6=xA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 4/8] bpf: attribute __arg_untrusted for global
+ function parameters
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, Matt Bobrowski <mattbobrowski@google.com>, 
+	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Kernel Team <kernel-team@fb.com>, 
+	Yonghong Song <yonghong.song@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 7/3/25 2:02 AM, Alexis LothorÃ© (eBPF Foundation) wrote:
-> Most ABIs allow functions to receive structs passed by value, if they
-> fit in a register or a pair of registers, depending on the exact ABI.
-> However, when there is a struct passed by value but all registers are
-> already used for parameters passing, the struct is still passed by value
-> but on the stack. This becomes an issue if the passed struct is defined
-> with some attributes like __attribute__((packed)) or
-> __attribute__((aligned(X)), as its location on the stack is altered, but
-> this change is not reflected in dwarf information. The corresponding BTF
-> data generated from this can lead to incorrect BPF trampolines
-> generation (eg to attach bpf tracing programs to kernel functions) in
-> the Linux kernel.
-> 
-> Prevent those wrong cases by not encoding functions consuming structs
-> passed by value on stack, when those structs do not have the expected
-> alignment due to some attribute usage.
-> 
-> Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
-> ---
-> Changes in v2:
-> - do not deny any struct passed by value, only those passed on stack AND
->    with some attribute alteration
-> - use the existing class__infer_packed_attributes to deduce is a struct
->    is "altered". As a consequence, move the function filtering from
->    parameter__new to btf_encoder__encode_cu, to make sure that all the
->    needed data has been parsed from debug info
-> ---
->   btf_encoder.c | 50 ++++++++++++++++++++++++++++++++++++++++++++++++--
->   dwarves.h     |  1 +
->   2 files changed, 49 insertions(+), 2 deletions(-)
-> 
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index 0bc23349b5d740c3ddab8208b2e15cdbdd139b9d..16739066caae808aea77175e6c221afbe37b7c70 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -87,6 +87,7 @@ struct btf_encoder_func_state {
->   	uint8_t optimized_parms:1;
->   	uint8_t unexpected_reg:1;
->   	uint8_t inconsistent_proto:1;
-> +	uint8_t uncertain_parm_loc:1;
->   	int ret_type_id;
->   	struct btf_encoder_func_parm *parms;
->   	struct btf_encoder_func_annot *annots;
-> @@ -1203,6 +1204,7 @@ static int32_t btf_encoder__save_func(struct btf_encoder *encoder, struct functi
->   	state->inconsistent_proto = ftype->inconsistent_proto;
->   	state->unexpected_reg = ftype->unexpected_reg;
->   	state->optimized_parms = ftype->optimized_parms;
-> +	state->uncertain_parm_loc = ftype->uncertain_parm_loc;
->   	ftype__for_each_parameter(ftype, param) {
->   		const char *name = parameter__name(param) ?: "";
->   
-> @@ -1430,9 +1432,15 @@ static int btf_encoder__add_saved_funcs(struct btf_encoder *encoder, bool skip_e
->   		/* do not exclude functions with optimized-out parameters; they
->   		 * may still be _called_ with the right parameter values, they
->   		 * just do not _use_ them.  Only exclude functions with
-> -		 * unexpected register use or multiple inconsistent prototypes.
-> +		 * unexpected register use, multiple inconsistent prototypes or
-> +		 * uncertain parameters location
->   		 */
-> -		add_to_btf |= !state->unexpected_reg && !state->inconsistent_proto;
-> +		add_to_btf |= !state->unexpected_reg && !state->inconsistent_proto && !state->uncertain_parm_loc;
-> +
-> +		if (state->uncertain_parm_loc)
-> +			btf_encoder__log_func_skip(encoder, saved_fns[i].elf,
-> +					"uncertain parameter location\n",
-> +					0, 0);
->   
->   		if (add_to_btf) {
->   			err = btf_encoder__add_func(state->encoder, state);
-> @@ -2553,6 +2561,39 @@ void btf_encoder__delete(struct btf_encoder *encoder)
->   	free(encoder);
->   }
->   
-> +static bool ftype__has_uncertain_arg_loc(struct cu *cu, struct ftype *ftype)
-> +{
-> +	struct parameter *param;
-> +	int param_idx = 0;
-> +
-> +	if (ftype->nr_parms < cu->nr_register_params)
-> +		return false;
-> +
-> +	ftype__for_each_parameter(ftype, param) {
-> +		if (param_idx++ < cu->nr_register_params)
-> +			continue;
-> +
-> +		struct tag *type = cu__type(cu, param->tag.type);
-> +
-> +		if (type == NULL || !tag__is_struct(type))
-> +			continue;
-> +
-> +		struct type *ctype = tag__type(type);
-> +		if (ctype->namespace.name == 0)
-> +			continue;
-> +
-> +		struct class *class = tag__class(type);
-> +
-> +		class__find_holes(class);
-> +		class__infer_packed_attributes(class, cu);
+On Fri, Jul 4, 2025 at 12:23=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> On Fri, 2025-07-04 at 21:15 +0200, Kumar Kartikeya Dwivedi wrote:
+>
+> [...]
+>
+> > Yeah, so if the user specifies a type and has co-re enabled, they're
+> > accessing a kernel struct.
+> > If they're doing it without co-re, it's broken today already, or they
+> > know the struct is fixed in layout somehow so it's ok.
+> > If not, they want to access things at fixed offsets. So we can just
+> > use the type they're using to model untrusted derefs.
+> >
+> > So always using prog BTF makes sense to me.
+>
+> Ok, I'm switching to always using prog BTF.
 
-I just noticed that class__infer_packed_attributes() already does call
-class__find_holes() [1], so calling it here is unnecessary. Although
-there is already a flag to detect repeated calls [2].
-
-[1] https://github.com/acmel/dwarves/blob/master/dwarves.c#L1859
-[2] https://github.com/acmel/dwarves/blob/master/dwarves.c#L1604-L1605
-
-> +
-> +		if (class->is_packed)
-> +			return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +
->   int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct conf_load *conf_load)
->   {
->   	struct llvm_annotation *annot;
-> @@ -2647,6 +2688,8 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
->   		 * Skip functions that:
->   		 *   - are marked as declarations
->   		 *   - do not have full argument names
-> +		 *   - have arguments with uncertain locations, e.g packed
-> +		 *   structs passed by value on stack
->   		 *   - are not in ftrace list (if it's available)
->   		 *   - are not external (in case ftrace filter is not available)
->   		 */
-> @@ -2693,6 +2736,9 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
->   		if (!func)
->   			continue;
->   
-> +		if (ftype__has_uncertain_arg_loc(cu, &fn->proto))
-> +			fn->proto.uncertain_parm_loc = 1;
-> +
->   		err = btf_encoder__save_func(encoder, fn, func);
->   		if (err)
->   			goto out;
-> diff --git a/dwarves.h b/dwarves.h
-> index 36c689847ebf29a1ab9936f9d0f928dd46514547..d689aee5910f4b40dc13b3e9dc596dfbe6a2c3d0 100644
-> --- a/dwarves.h
-> +++ b/dwarves.h
-> @@ -1021,6 +1021,7 @@ struct ftype {
->   	uint8_t		 unexpected_reg:1;
->   	uint8_t		 processed:1;
->   	uint8_t		 inconsistent_proto:1;
-> +	uint8_t		 uncertain_parm_loc:1;
->   	struct list_head template_type_params;
->   	struct list_head template_value_params;
->   	struct template_parameter_pack *template_parameter_pack;
-> 
-
+Hold on. The concept of ptr_to_btf_id|untrusted that points to
+prog type doesn't exist today. We should be careful when introducing
+such things.
+I prefer to keep btf_get_ptr_to_btf_id() in this patch
+and think through untrusted|ptr_to prog type later,
+since the use case of untrusted local type doesn't quite resonate with me.
+Currently we only have mem_alloc|ptr_to prog type which is
+read/write and came from obj_new, rbtree, link lists.
+Untrusted =3D=3D readonly for prog type is quite odd.
 
