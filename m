@@ -1,140 +1,153 @@
-Return-Path: <bpf+bounces-62366-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62367-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FE6CAF8657
-	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 06:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 48DFDAF86DA
+	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 06:45:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F42367AA0CD
-	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 04:19:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D86827A8638
+	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 04:43:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8404B189902;
-	Fri,  4 Jul 2025 04:20:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69E6D1EF0A6;
+	Fri,  4 Jul 2025 04:45:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M5J2JWAO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QNT2sAA9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B81CC7F9;
-	Fri,  4 Jul 2025 04:20:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAEAA2AE96;
+	Fri,  4 Jul 2025 04:44:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751602825; cv=none; b=GuhSH50eVLorxsm4cYkVPRK3MB5fl53vnddtc9xFJFD7fzj+FU0yyRQE9W3OWvUXoqrTi+Ck71qV4uSxG2QJBBjAKEMYOTgdKRbAIHwjxiKuFWkyMnUQoEGa16CdrWHgkqI2NAaOXjjeOqsGIiQwrKJMQ+bl8rHW4XYkWxfUvyQ=
+	t=1751604300; cv=none; b=g4LtH81r2jEN6sH4aLSoH5l56EXMTU1bhn0MJjDO8H4kJRbHOW60WtW4oSBobWQ4yrcL08NRI6WvDwaGSrspp+gIDpg0/fkOKYbrEw+G9lgbCb6Nu035yvFxvuDEfh1iv//F3MlV/S6+GnSIZ345pwVmqUD4TShjh6+ap17Sld0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751602825; c=relaxed/simple;
-	bh=x7SM63b8KQmpbjCmYSiUefEKaW16JcGJwkBkoU0SLnM=;
+	s=arc-20240116; t=1751604300; c=relaxed/simple;
+	bh=8LL5dfM4+fApXtGjqf/V6JOtfextTXNNY3ao2nJLhgI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YlycGcRc0xPNKf4UQ9BcUvsGfauMX/yFdPeqDazAycij+hwILVMLYAPqWL40RG0pNLX8TA2H12rr/5NUwIM97lX+6OhQ/adpU5sNXYeKsasic9JjYGunKtAsFEpC9DS3PsxiZU5LmTtTIHZYqFzFh9J27s42Q0BJLbocW9mXSUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M5J2JWAO; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-234b440afa7so6690675ad.0;
-        Thu, 03 Jul 2025 21:20:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751602823; x=1752207623; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hhOHwcSI7KKOfLUHNfwEZ43vAqqpPQEYrNXVZKjCAZ8=;
-        b=M5J2JWAOXvKy9b86KqPH9sbupbRXtYdNNTWIOvzTf+khuCdSUOqb9kL0yyMQLslFrx
-         bohkT2t5slTbUHUfBIYCIIg9ZCqpXwJE5ZQwtwWZ7cFC2c5X5L6+dhgMQZV+gBNLWQlo
-         /bYHIyc+/ocHn3hWF75xu9REw0/REUMxKtL35g+hOznX1lbAAL/o4ypuH51BJD7963Ea
-         opDOQK52eV9RMSsojtQdDsu6Emiad5EfScOvrsvlrgMNbzLg4byGEltqkZuE6A9FF+uL
-         a+pyImEPUCczS4jsIFbOa+gLyHh923LQ+tP+fclhvK99oRP8ffhY7dHTiQOQzc7dURCp
-         NdrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751602823; x=1752207623;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hhOHwcSI7KKOfLUHNfwEZ43vAqqpPQEYrNXVZKjCAZ8=;
-        b=sdVlOuT5GEfK7+1HhLCmdlfuxRHgRIEVpE3LzUkmw4gpnOUYggJMBLe3ZE0I53URO3
-         +MtH+LvNmG+O4sxw92LkbEdh4Bozji2YlaAy2fIl5TfsAwlOrGBQBvnYrC+A82yjhT97
-         53hMb8kiDWMNPaigshXoBQQUgwfumckOqkh7BQfAd0i0T0OMjQKFed62UHVIhaRvyUfn
-         28Yr5T34F8Q178Kwy4acVyQcCNKXcPvo2BpCizbc3ot6l6SQc5eVrjjkcNi7jidGfxPP
-         ef0jky4pRVsPxSfJrk8rUCs2J/0K6nBzM4y37T+ITI0t2lrcBsNPxmOzbKutN7G5EvSh
-         JpXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV9IDfrUmttHk7JV1xF80mi+BiTBpjWvb2uflvOCnbypuhl+L1n11qo4jdu5RQnRUvq09g=@vger.kernel.org, AJvYcCVDz9A8Pw8SDIF9B3fNELdaHG/EmhT5EBzmFeRr6ASGCiKkubCfKj8hJ9nulLQdxk3T+5kN4L2s@vger.kernel.org
-X-Gm-Message-State: AOJu0YyG/zhBCeD26M/P5t/5gYQF5Cv/xJQeVLT62j5ESVCGSWvuyPVU
-	mjvCWT9P9XVEPR8nVVA+nOV4Img+Iy/fPiWrseHhjJeMTWvyKp5iu3T4
-X-Gm-Gg: ASbGncumFzqQqAegAFyeTzntaGAFhrpldUkuYpUUuyGkQDpriYOaIhNl6wnwx+RUmMJ
-	e4H/Ri28pTuBvFV+0jlZ3/TAzvK+iFZC7/zunJ0gR1eq0ECQojt70C+PJufL2pynnHy7rHDod5P
-	MeHT0yKJclujtxbjC734zeT+kh6xu+sN8BtTh5sKtG5htpYpchevW11eum6SvKa0ga6CkV8wOEH
-	BAIW1jD5WqLup6fjVih5CMNSPR/Pph/jt20dpCzacyt7mlNTY/0TP3KSf2m9z1nougoZEh0d3MX
-	DSLFjbZYKdhpg7jj6eqJJTiAUhYZZwVIqWvmrllTraiSbqcsBWWaKoxwC3TgwZpMnx/t
-X-Google-Smtp-Source: AGHT+IFspVM9gU7mkEm2eO0bOg31pGQHZiZrUt5OWxCj/JvEQnijuIy5rByG18YeGPiL51qGfnBiYw==
-X-Received: by 2002:a17:903:291:b0:234:cb4a:bc48 with SMTP id d9443c01a7336-23c860d4fbfmr16355235ad.31.1751602822863;
-        Thu, 03 Jul 2025 21:20:22 -0700 (PDT)
-Received: from localhost ([2601:647:6881:9060:1aeb:7d0c:33d1:51f4])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23c8431e15dsm9182205ad.36.2025.07.03.21.20.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jul 2025 21:20:22 -0700 (PDT)
-Date: Thu, 3 Jul 2025 21:20:21 -0700
-From: Cong Wang <xiyou.wangcong@gmail.com>
-To: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: Zijian Zhang <zijianzhang@bytedance.com>, netdev@vger.kernel.org,
-	bpf@vger.kernel.org, john.fastabend@gmail.com,
-	zhoufeng.zf@bytedance.com, Amery Hung <amery.hung@bytedance.com>,
-	Cong Wang <cong.wang@bytedance.com>
-Subject: Re: [Patch bpf-next v4 4/4] tcp_bpf: improve ingress redirection
- performance with message corking
-Message-ID: <aGdWhRi/0KLTFL8k@pop-os.localdomain>
-References: <20250701011201.235392-1-xiyou.wangcong@gmail.com>
- <20250701011201.235392-5-xiyou.wangcong@gmail.com>
- <87ecuyn5x2.fsf@cloudflare.com>
- <509939c4-2e3e-41a6-888f-cbbf6d4c93cb@bytedance.com>
- <87a55lmrwn.fsf@cloudflare.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=YeGI1zR0lpMjrCrp0Wlw+3s8xFIOIhXqwDtZpike4ZO5jwZBQC6myyTNImn9aniXR1wNvskPG8W2Dd0ahzUfy83/eUsEJDIKf7lcl7tj1qIHyitMMpYgjOAVjWYRgTxIMo2zD8KmY2+Whx6pNO2gvQC6nNCNJzmA3d91sms19B4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QNT2sAA9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 520A6C4CEE3;
+	Fri,  4 Jul 2025 04:44:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1751604299;
+	bh=8LL5dfM4+fApXtGjqf/V6JOtfextTXNNY3ao2nJLhgI=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=QNT2sAA9S6skXbsMPwoX70+PnJmgNecblMkkgk7iB9K5OUglNMjplv+Sjd5JGKGtZ
+	 MBnP9FcS1HflpNA2loUWJZszkknB7LUlYJ4YpPasZL1piFHrZSdm2qzwijxFeBOQTD
+	 BxqAbmx5eCaRkIn41Jw6Je3dh96dPZwV2VTQxYAAE9lQ4wFct3iB5DLmo5TkPzxOYM
+	 JokDdLbmWKiQYvklkPVK4+5RfIvl07RnDQlp5e0sIGVQi249xXB8O1n8EZGvMsNpdN
+	 z14Yx542Xq01u+jKKrbTqDVU7QVNYc4fyXc6rAdhj/nkzz+tXM0WhfipDW2YUGN33L
+	 LMMTHNVAsBfBA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id DAFEFCE0D3B; Thu,  3 Jul 2025 21:44:58 -0700 (PDT)
+Date: Thu, 3 Jul 2025 21:44:58 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Tejun Heo <tj@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
+	JP Kobryn <inwardvessel@gmail.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Ying Huang <huang.ying.caritas@gmail.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	bpf@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH 2/2] cgroup: explain the race between updater and flusher
+Message-ID: <da934450-db48-4ef9-ac1b-6b3fbb412862@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20250703200012.3734798-1-shakeel.butt@linux.dev>
+ <20250703200012.3734798-2-shakeel.butt@linux.dev>
+ <ae928815-d3ba-4ae4-aa8a-67e1dee899ec@paulmck-laptop>
+ <l3ta543lv3fn3qhcbokmt2ihmkynkfsv3wz2hmrgsfxu4epwgg@udpv5a4aai7t>
+ <f6900de7-bfab-47da-b29d-138c75c172fd@paulmck-laptop>
+ <CAGj-7pUdbtumOmfmW52F3aHJfkd5F+nGeH5LAf5muKqYR+xV-w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <87a55lmrwn.fsf@cloudflare.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAGj-7pUdbtumOmfmW52F3aHJfkd5F+nGeH5LAf5muKqYR+xV-w@mail.gmail.com>
 
-On Thu, Jul 03, 2025 at 01:32:08PM +0200, Jakub Sitnicki wrote:
-> I'm all for reaping the benefits of batching, but I'm not thrilled about
-> having a backlog worker on the path. The one we have on the sk_skb path
-> has been a bottleneck:
-
-It depends on what you compare with. If you compare it with vanilla
-TCP_BPF, we did see is 5% latency increase. If you compare it with
-regular TCP, it is still much better. Our goal is to make Cillium's
-sockops-enable competitive with regular TCP, hence we compare it with
-regular TCP.
-
-I hope this makes sense to you. Sorry if this was not clear in our cover
-letter.
-
+On Thu, Jul 03, 2025 at 06:54:02PM -0700, Shakeel Butt wrote:
+> On Thu, Jul 3, 2025 at 4:53 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Thu, Jul 03, 2025 at 03:46:07PM -0700, Shakeel Butt wrote:
+> [...]
+> > > Let me answer this one first. The previous patch actually made
+> > > init_llist_node() do WRITE_ONCE().
+> > >
+> > > So the actual question is why do we need
+> > > data_race([READ|WRITE]_ONCE()) instead of just [READ|WRITE]_ONCE()?
+> >
+> > You should *almost* always use [READ|WRITE]_ONCE() instead of data_race().
+> >
+> > > Actually I had the similar question myself and found the following
+> > > comment in include/linux/compiler.h:
+> > >
+> > > /**
+> > >  * data_race - mark an expression as containing intentional data races
+> > >  *
+> > >  * This data_race() macro is useful for situations in which data races
+> > >  * should be forgiven.  One example is diagnostic code that accesses
+> > >  * shared variables but is not a part of the core synchronization design.
+> > >  * For example, if accesses to a given variable are protected by a lock,
+> > >  * except for diagnostic code, then the accesses under the lock should
+> > >  * be plain C-language accesses and those in the diagnostic code should
+> > >  * use data_race().  This way, KCSAN will complain if buggy lockless
+> > >  * accesses to that variable are introduced, even if the buggy accesses
+> > >  * are protected by READ_ONCE() or WRITE_ONCE().
+> > >  *
+> > >  * This macro *does not* affect normal code generation, but is a hint
+> > >  * to tooling that data races here are to be ignored.  If the access must
+> > >  * be atomic *and* KCSAN should ignore the access, use both data_race()
+> > >  * and READ_ONCE(), for example, data_race(READ_ONCE(x)).
+> > >  */
+> > >
+> > > IIUC correctly, I need to protect llist_node against tearing and as well
+> > > as tell KCSAN to ignore the access for race then I should use both.
+> > > Though I think KCSAN treat [READ|WRITE]_ONCE similar to data_race(), so
+> > > it kind of seem redundant but I think at least I want to convey that we
+> > > need protection against tearing and ignore KCSAN and using both conveys
+> > > that. Let me know if you think otherwise.
+> > >
+> > > thanks a lot for taking a look.
+> >
+> > The thing to remember is that data_race() does not affect the
+> > generated code (except of course when running KCSAN), and thus does
+> > absolutely nothing to prevent load/store tearing.  You need things like
+> > [READ|WRITE]_ONCE() to prevent tearing.
+> >
+> > So if it does not affect the generated code, what is the point of
+> > data_race()?
+> >
+> > One answer to this question is for diagnostics where you want KCSAN
+> > to check the main algorithm, but you don't want KCSAN to be confused
+> > by the diagnostic accesses.  For example, you might use something like
+> > ASSERT_EXCLUSIVE_ACCESS() as in __list_splice_init_rcu(), and not want
+> > your diagnostic accesses to result in false-positive KCSAN reports
+> > due to interactions with ASSERT_EXCLUSIVE_ACCESS() on some particular
+> > memory location.  And if you were to use READ_ONCE() to access that same
+> > memory location in your diagnostics, KCSAN would complain if they ran
+> > concurrently with that ASSERT_EXCLUSIVE_ACCESS().  So you would instead
+> > use data_race() to suppress such complaints.
+> >
+> > Does that make sense?
 > 
-> 1) There's no backpressure propagation so you can have a backlog
-> build-up. One thing to check is what happens if the receiver closes its
-> window.
+> Thanks a lot Paul for the awesome explanation. Do you think keeping
+> data_race() here would be harmful in a sense that it might cause
+> confusion in future?
 
-Right, I am sure there are still a lot of optimizations we can further
-improve. The only question is how much we need for now. How about
-optimizing it one step each time? :)
+Yes, plus it might incorrectly suppress a KCSAN warning for a very
+real bug.  So I strongly recommend removing the data_race() in this case.
 
-> 
-> 2) There's a scheduling latency. That's why the performance of splicing
-> sockets with sockmap (ingress-to-egress) looks bleak [1].
-
-Same for regular TCP, we have to wakeup the receiver/worker. But I may
-misunderstand this point?
-
-> 
-> So I have to dig deeper...
-> 
-> Have you considered and/or evaluated any alternative designs? For
-> instance, what stops us from having an auto-corking / coalescing
-> strategy on the sender side?
-
-Auto corking _may_ be not as easy as TCP, since essentially we have no
-protocol here, just a pure socket layer.
-
-Thanks for your review!
+							Thanx, Paul
 
