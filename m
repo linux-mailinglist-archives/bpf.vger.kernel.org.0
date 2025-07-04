@@ -1,201 +1,123 @@
-Return-Path: <bpf+bounces-62420-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62421-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CDCAAF9A49
-	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 20:04:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 124F7AF9A4D
+	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 20:05:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BABBA6E335F
-	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 18:03:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7191D1792A2
+	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 18:05:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5D291F418D;
-	Fri,  4 Jul 2025 18:04:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA8771FECCD;
+	Fri,  4 Jul 2025 18:05:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EeIyfFIr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WaobvnE8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f67.google.com (mail-ej1-f67.google.com [209.85.218.67])
+Received: from mail-ej1-f65.google.com (mail-ej1-f65.google.com [209.85.218.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A59D22E3713
-	for <bpf@vger.kernel.org>; Fri,  4 Jul 2025 18:04:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFCDE2E3714
+	for <bpf@vger.kernel.org>; Fri,  4 Jul 2025 18:05:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751652250; cv=none; b=hHgNYenLkM/hI57NQjk4bvUKrO91NTVtWjn8nQ+a+87FWdFCp0iUgt68KzL27SoD6XX2zG6TQUQfYDYlA8x2siJAk0ZK10TnvWGOeCYWqKHec1xXDNxdhLezgnmrpLAYpR/DrQF13HJV4CVqSpp2pMXjJHvbqF/SAz+nLK8mQPw=
+	t=1751652321; cv=none; b=BjcJ4f4ezQ8Pqyk7Ep250MPDqgL/aT2Iu+qdYpUuZQINncFnxX9BW7gyIVipn/Dy5DdteCn3c9s0LQys3lGbMHCY1sLvDomVowoqGCvsKdgesueL/sIgftKtOmr6cXtusVXh2eBESaLQ3n1cOi1MC/WBm2rnCGO9o7KHRqGji74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751652250; c=relaxed/simple;
-	bh=nrL5/9FRehqnC9Iape9Q3MlBD3yh9/hpBNqnRHqtM64=;
+	s=arc-20240116; t=1751652321; c=relaxed/simple;
+	bh=qZeAmbh4L0V0p4cXEh/wt7a9CGxM+kvochafMRovsXU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PAX0U+Rd/ybLex06cD/cUOsQo+EHqQG1AnuCDJt1i06JYAXtiJhQqEDIEztHJu14Sv2q2Q0wPN530gcWN+Rpnt7PmV1SPqT/5kXvEp4pitPdt57LfupAyuIs7z/des4dm2CC9ceP9LjT890cNIpK9LA8Jaf0X/nzKH91c1DUOmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EeIyfFIr; arc=none smtp.client-ip=209.85.218.67
+	 To:Cc:Content-Type; b=DT3lFn8UB5c5psOsFbcgvzbUPgrjKDsdhigmOzWjO4K4mjtD5QW96fsa/QBE84XuUy+Nk0V5IEZsAyIonyQIP8siH+tFRFq0+E6zRa0MnteZ5iXMRPYR1s6Wvvjls5II2Uo6/oTukbmQrw7H+na5l2yFsNj3lM4dThF33UN+aQ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WaobvnE8; arc=none smtp.client-ip=209.85.218.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f67.google.com with SMTP id a640c23a62f3a-ae0de1c378fso174170466b.3
-        for <bpf@vger.kernel.org>; Fri, 04 Jul 2025 11:04:08 -0700 (PDT)
+Received: by mail-ej1-f65.google.com with SMTP id a640c23a62f3a-ae3703c2a8bso230974766b.0
+        for <bpf@vger.kernel.org>; Fri, 04 Jul 2025 11:05:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751652247; x=1752257047; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1751652317; x=1752257117; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=sUQFziBynd3mQMzNcuByCzHuLdrPpCwL3hAlHbQGvdU=;
-        b=EeIyfFIrwZ1aBATdWs9Tqp0o733FnIPjIQ8Xo8OWXtKP+EWZcsaaNh4nNn6x04U9s8
-         QoH5eTj80P6poOafddImnv6OX60DV8pEgaBkxxGzAPEnbwgjushzAXxBWgHVA/R6R3Fy
-         3IjKRZtsywbCgdJPkXknBe3a2Eo+UKrFV/GfBrAP1ZZN1by4hk3mCRUcweQPoVL3zA9W
-         LBFYPf7d892FmYGrm2QkvmRTxPWywj62jOawaIaeeMex0GIApP1ABTcm1inykKSWCq4i
-         oPcbgrMKT0GrzAa/APOBZc+O+eOEKFPvNorbPOBcjLF8iMPFajnkXE9+KZLYIq/tNL3I
-         VpxQ==
+        bh=EMSw4GuOSoUhON3IWKaib2ZxaADIP46flTMypCPo2No=;
+        b=WaobvnE8nj+5tqzh/Q+OhSPky/+HnpR2zDw+vmM12evSiJR6d1UVpD0SQcxRx+JWHw
+         E0XOY2eakPn0uaqq/8/qgfeAuw1TpqMKXz62RxGAPn8VbJEBkIdYvlyDnlKnXJm6hl+a
+         58a0cW7BQzrA5eSpUHrWq/eK5sLWTqk/ITxW3tQGOhaJgrfFDVLe7PvpXZ5GSnCQaowF
+         N0P3Zn9752A1KjjqaqnyIRlgxuPtWEm7q3fsVrKOsD+mWTMfUfbwx9gXnyKuZSZDTpk/
+         NetIxwwxV3n/SoS8r4+Ht6b8ok68b3CnGABlnqB+3NupGSEab3kRj1szjLby/hJ0yF8a
+         9M1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751652247; x=1752257047;
+        d=1e100.net; s=20230601; t=1751652317; x=1752257117;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=sUQFziBynd3mQMzNcuByCzHuLdrPpCwL3hAlHbQGvdU=;
-        b=ZZo5OdY9WuPSGAV+PuRId1JjHofL/7rPLJzZMB70gmTSxG1L3ccwEI4AFnuHpvjAQ8
-         QWDxTXZjt/C4pNEhfxF0AfvWS34P7L9QeG7woSbnYNnWGW73k+POjjRdzhOjIVsOAmNw
-         z/TuzcBEyh8l+I77QAyklrv1OA0/i8DuYUe//xu3bilu2fGcNHo1zBR2A9PzkZt2dpSa
-         FjxQPnke6SfvYudF2qYIdxGiooTGZVE6rUzIQg9YzWcOD8c+CvafYn7lfX/OERjZVpfN
-         mriHETdbNiPoJHszxL4xp4GmgXNuQ4lf+HNYgcMb2A8TgRSoft0mkjLr7UUN1en7QXA7
-         ViWQ==
-X-Gm-Message-State: AOJu0YxbgmCQ/5TAyf44ab8PpbF1IBEUuMRmaAVL7qwSvBDUDD7JNUEr
-	UuES3MwlHrt3WwPAfGU+TgTyf3m7Ds3sJvQbKB8QNNticCGwGtmIiG/XJqqYBymPBzky4Ci3xGU
-	nUi1utc4gQgIf0IzK1DUPh3RuAp9zcT4=
-X-Gm-Gg: ASbGncsysEhpdOPNHZEXuVg9txMpKqsIQcAcqBc2wQbgdnkwGoyDLQdYkAAHB2IpUA/
-	FwzTFfV630tvDfCpscIUA8ka2d4MWmKDK++gnNVZs3Fxke5m5zIOWJAG5voRQHddPGdAXmB9ATq
-	jbElJBapyJoiwemUgFcyVjSdjc8YneEE5SkllmR2Bo+3oA8FFut3uFFQnqAeFQY7kK2GbI0qx0I
-	48=
-X-Google-Smtp-Source: AGHT+IGZQGwM+x4LHc7uRxLoGFwBvEr0ZB4wiMW1VmXM6x95293b5OBRCUS6NFZWO3awukhdeCLROPBTM3UdvvX49/A=
-X-Received: by 2002:a17:907:60cb:b0:ad8:87a0:62aa with SMTP id
- a640c23a62f3a-ae3fbc826a9mr397487466b.27.1751652246545; Fri, 04 Jul 2025
- 11:04:06 -0700 (PDT)
+        bh=EMSw4GuOSoUhON3IWKaib2ZxaADIP46flTMypCPo2No=;
+        b=m74Oq6mkwwL2g+V0UyZ2S2ORHtPRFWaNuAMynP3SKcSF5UYRelviCxJ9G/1HyS1hxG
+         q9ieGuyfibJ+qaAa/kE9TJto+IO2A1D/1N4gMsDdDR2K72G0oYiwrURTqLxwCGCEUBRB
+         poK/OmgWrdfmMzm4jT3NoR8XNINAbOk9CQBu6qf9O4SkJQIH6xOB17HzbIvGpt6mprMO
+         S1i52SHLL8kYrbX/mMPbkxFPrR/+CtwkNJFB5KM9UcYH4a8DMRfdRI6kagax+O/Rqrw3
+         CK7EafYLhJ+w+gkl9ubjMiWm9sHUz71r6tOWfu2Hyvx1jR1cjXoT3ZusNHd4EwNmWbft
+         rtVg==
+X-Gm-Message-State: AOJu0YwBEcvWnbNSyKxp1D0e7KLiFB4g4QnvwvgCmzRZ8EPj+j4Z3QRV
+	1oqNDFkX3vV/Hk+T4/q12OzELAr94JJkJlx15miShOHeAMUlTuLEDNZIr6+/KuQ54UF7PhTkqQE
+	1avrmtq/BfmboBZhxeBhtFKLSRDb35b0=
+X-Gm-Gg: ASbGncuRVr7lyZsXX9yUakyQb6EK0D1k2UTmz7194mgm4CdyEsGDVkYfPZwrHvu7wQV
+	QxGBs6DhenNn59yAQJwzRyK8yA4y2n1HhEyRb73M1DkBRWXTvCR7G7qx6FxEB6WHx7Z9Bg3Da6r
+	1DYLj9qQBP+NVMaLWmbgjAfJ6ILVDB098xXD+p+OBi+Ve//ammyluuCXNT93sYrG3WQDtQK18D6
+	MI=
+X-Google-Smtp-Source: AGHT+IFfwLuFwiyXgXERXmZX9t8UyBlYiq0EWGe72k65qKIV0mry/oG5C2ZaO89PDrt5f8OCrN7i7ruj3eTGoCHqNvA=
+X-Received: by 2002:a17:907:3e06:b0:ad8:9257:5727 with SMTP id
+ a640c23a62f3a-ae3fbd6b304mr356094466b.51.1751652317240; Fri, 04 Jul 2025
+ 11:05:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250702224209.3300396-1-eddyz87@gmail.com> <20250702224209.3300396-5-eddyz87@gmail.com>
-In-Reply-To: <20250702224209.3300396-5-eddyz87@gmail.com>
+References: <20250702224209.3300396-1-eddyz87@gmail.com> <20250702224209.3300396-6-eddyz87@gmail.com>
+In-Reply-To: <20250702224209.3300396-6-eddyz87@gmail.com>
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Fri, 4 Jul 2025 20:03:30 +0200
-X-Gm-Features: Ac12FXy1S9rd0ztFgpYzqX_Yz_sVMuLWyqL5NioJZPt9Fgnm8l2It0lgZbpbzxw
-Message-ID: <CAP01T74AYNX5ARJ5YXryUyKvn5o0Dv0JBoq3CCKcD8rh==uKQA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 4/8] bpf: attribute __arg_untrusted for global
- function parameters
+Date: Fri, 4 Jul 2025 20:04:40 +0200
+X-Gm-Features: Ac12FXz2xA5l7S3euqB2sbI5yoZH2Pl5qHw5MOrIxtdLonZClJfRaCVY2o7Z3W4
+Message-ID: <CAP01T77vZLLDKzv13Mz8GVErArPbxvLYJiV-nWNbzLPv5UJnAg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 5/8] libbpf: __arg_untrusted in bpf_helpers.h
 To: Eduard Zingerman <eddyz87@gmail.com>
 Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
 	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
-	yonghong.song@linux.dev, Alexei Starovoitov <alexei.starovoitov@gmail.com>
+	yonghong.song@linux.dev
 Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 3 Jul 2025 at 00:42, Eduard Zingerman <eddyz87@gmail.com> wrote:
+On Thu, 3 Jul 2025 at 00:47, Eduard Zingerman <eddyz87@gmail.com> wrote:
 >
-> Add support for PTR_TO_BTF_ID | PTR_UNTRUSTED global function
-> parameters. Anything is allowed to pass to such parameters, as these
-> are read-only and probe read instructions would protect against
-> invalid memory access.
+> Make btf_decl_tag("arg:untrusted") available for libbpf users via
+> macro. Makes the following usage possible:
 >
-> Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+>   void foo(struct bar *p __arg_untrusted) { ... }
+>   void bar(struct foo *p __arg_trusted) {
+>     ...
+>     foo(p->buz->bar); // buz derefrence looses __trusted
+>     ...
+>   }
+>
 > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 > ---
 
-Some comments below, but logic looks correct.
-
 Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
->  kernel/bpf/btf.c      | 29 ++++++++++++++++++++++++-----
->  kernel/bpf/verifier.c |  7 +++++++
->  2 files changed, 31 insertions(+), 5 deletions(-)
+>  tools/lib/bpf/bpf_helpers.h | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index b3c8a95d38fb..28cb0a2a5402 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -7646,11 +7646,12 @@ static int btf_get_ptr_to_btf_id(struct bpf_verifier_log *log, int arg_idx,
->  }
+> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+> index a50773d4616e..cd7771951a71 100644
+> --- a/tools/lib/bpf/bpf_helpers.h
+> +++ b/tools/lib/bpf/bpf_helpers.h
+> @@ -215,6 +215,7 @@ enum libbpf_tristate {
+>  #define __arg_nonnull __attribute((btf_decl_tag("arg:nonnull")))
+>  #define __arg_nullable __attribute((btf_decl_tag("arg:nullable")))
+>  #define __arg_trusted __attribute((btf_decl_tag("arg:trusted")))
+> +#define __arg_untrusted __attribute((btf_decl_tag("arg:untrusted")))
+>  #define __arg_arena __attribute((btf_decl_tag("arg:arena")))
 >
->  enum btf_arg_tag {
-> -       ARG_TAG_CTX      = BIT_ULL(0),
-> -       ARG_TAG_NONNULL  = BIT_ULL(1),
-> -       ARG_TAG_TRUSTED  = BIT_ULL(2),
-> -       ARG_TAG_NULLABLE = BIT_ULL(3),
-> -       ARG_TAG_ARENA    = BIT_ULL(4),
-> +       ARG_TAG_CTX       = BIT_ULL(0),
-> +       ARG_TAG_NONNULL   = BIT_ULL(1),
-> +       ARG_TAG_TRUSTED   = BIT_ULL(2),
-> +       ARG_TAG_UNTRUSTED = BIT_ULL(3),
-> +       ARG_TAG_NULLABLE  = BIT_ULL(4),
-> +       ARG_TAG_ARENA     = BIT_ULL(5),
->  };
->
->  /* Process BTF of a function to produce high-level expectation of function
-> @@ -7758,6 +7759,8 @@ int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog)
->                                 tags |= ARG_TAG_CTX;
->                         } else if (strcmp(tag, "trusted") == 0) {
->                                 tags |= ARG_TAG_TRUSTED;
-> +                       } else if (strcmp(tag, "untrusted") == 0) {
-> +                               tags |= ARG_TAG_UNTRUSTED;
->                         } else if (strcmp(tag, "nonnull") == 0) {
->                                 tags |= ARG_TAG_NONNULL;
->                         } else if (strcmp(tag, "nullable") == 0) {
-> @@ -7818,6 +7821,22 @@ int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog)
->                         sub->args[i].btf_id = kern_type_id;
->                         continue;
->                 }
-> +               if (tags & ARG_TAG_UNTRUSTED) {
-> +                       int kern_type_id;
-> +
-> +                       if (tags & ~ARG_TAG_UNTRUSTED) {
-> +                               bpf_log(log, "arg#%d untrusted cannot be combined with any other tags\n", i);
-> +                               return -EINVAL;
-> +                       }
-> +
-> +                       kern_type_id = btf_get_ptr_to_btf_id(log, i, btf, t);
-
-So while this makes sense for trusted, I think for untrusted, we
-should allow types in program BTF as well.
-This is one of the things I think lacks in bpf_rdonly_cast as well, to
-be able to cast to types in program BTF.
-Say you want to reinterpret some kernel memory into your own type and
-access it using a struct in the program which is a different type.
-I think it makes sense to make this work.
-
-When I needed it in the past I just added a local new
-bpf_rdonly_cast_local variant that uses prog->btf for btf_id and moved
-on.
-
-Supporting bpf_core_cast for both prog BTF and kernel BTF types is not
-trivial because we cannot disambiguate local vs kernel types.
-IIRC module BTF types probably don't work either but that's a different story.
-
-
-> +                       if (kern_type_id < 0)
-> +                               return kern_type_id;
-> +
-> +                       sub->args[i].arg_type = ARG_PTR_TO_BTF_ID | PTR_UNTRUSTED;
-> +                       sub->args[i].btf_id = kern_type_id;
-> +                       continue;
-> +               }
->                 if (tags & ARG_TAG_ARENA) {
->                         if (tags & ~ARG_TAG_ARENA) {
->                                 bpf_log(log, "arg#%d arena cannot be combined with any other tags\n", i);
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index cd2344e50db8..dfb5a2f8e58f 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -10436,6 +10436,13 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env, int subprog,
->                                 bpf_log(log, "R%d is not a scalar\n", regno);
->                                 return -EINVAL;
->                         }
-> +               } else if (arg->arg_type & PTR_UNTRUSTED) {
-> +                       /*
-> +                        * Anything is allowed for untrusted arguments, as these are
-> +                        * read-only and probe read instructions would protect against
-> +                        * invalid memory access.
-> +                        */
-> +                       continue;
->                 } else if (arg->arg_type == ARG_PTR_TO_CTX) {
->                         ret = check_func_arg_reg_off(env, reg, regno, ARG_DONTCARE);
->                         if (ret < 0)
+>  #ifndef ___bpf_concat
 > --
 > 2.47.1
 >
