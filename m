@@ -1,451 +1,147 @@
-Return-Path: <bpf+bounces-62396-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62397-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B26BDAF8E57
-	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 11:22:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35A1CAF8F4F
+	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 11:58:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B7BA6E2D84
-	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 09:16:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA61C1CA0EC7
+	for <lists+bpf@lfdr.de>; Fri,  4 Jul 2025 09:59:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 737062D3EE3;
-	Fri,  4 Jul 2025 09:12:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC7842EE99A;
+	Fri,  4 Jul 2025 09:58:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UXsT46v6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vFRIQo4h"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E4DF28B7D4
-	for <bpf@vger.kernel.org>; Fri,  4 Jul 2025 09:12:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B22A28D821;
+	Fri,  4 Jul 2025 09:58:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751620373; cv=none; b=IhkH6L+g+erDB1N7sf44l78/Z/sh3ubYdiirWqGNRTo5iGJgTutX+YiXkBZLW3yQfxk5n4/5m67y3E333cdvW3LOnir0VFrKf8KWXsbUpqKaUHlGOZ9IczabTpnm7Sr+XX+I5gh65F2HHOVXnaS+YrApiOByV25ETDB27ewVFJE=
+	t=1751623126; cv=none; b=LtDznqagZlXo1O4TKLOcfCLBKU5fgnZgf7hv3dIRClVQKHAo8wSeSpitZ6JOmPu2loXAcBDf8+H747AvfgMBpLqTFS2/hbtRhB3cAXBYodTwGQpVW7Q6Cewhkgt3v/SDusn2M7OayfvSnEMO+BrYhGOCMAIt8ZiT8PYULerD/7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751620373; c=relaxed/simple;
-	bh=RPtEFw6ZUqe8YvTb3hVWTHph8o0jP38Q7NePCZjdRfY=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c7SNL0rj/mUrId1DBiCg5hCurcIymv8nZtKCjfKoEKo0S3mizjE4nEwLKtby6JQePed2Raw7dH/ZbUzB4cnUw120aMxMtBqlzlHUuSpkQelu+xtcJtWjl4kMtwqUTY6CBtmz3aP44yjSHRXfFlYMfuy1DfGXj9rpK+5f+HoZc7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UXsT46v6; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-ae0b2ead33cso136386166b.0
-        for <bpf@vger.kernel.org>; Fri, 04 Jul 2025 02:12:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751620369; x=1752225169; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=3aSEKZkOckArt5TXUiwOnu3ow4WafPl70Rfj90zCYYI=;
-        b=UXsT46v6VTAL4eBXCw8ZlHUurRlM/Bykh+845/tgxhEYoASWTlQxiiHDtZXgSLx0CJ
-         b63vvT25R/Et06w32et9+vKENjhDDkC9d3Wcy2bT5Y7eUFGQQd43zoZ5TGm3c9XlEMJ8
-         ONTteRAwoP7jdKavC23wDWeQVUuhANUnNYcrhVqOwbqSP/X2LpCYcw8HSsbjC6DmrATW
-         4mpeK5zEYPg67jloBt6tcw++z5luN2aivlbUhQIyib1ARjD7mv0DarTV4NVuqGnu98Vw
-         arfaYFmFiOtPOEVHgUsbf+sG4aa1tqbGQSVWS/8IzN+J126Y46ii8QgMgDtjX3d+WCja
-         j0ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751620369; x=1752225169;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3aSEKZkOckArt5TXUiwOnu3ow4WafPl70Rfj90zCYYI=;
-        b=vhaB1drdx6xhAki4PMqsje721BNGtgvhFKQBrdQewC719d5HuCLLfeYzl9LbZ4Zfqq
-         GPEWgWOW0ERH3ucoVqMN1zJLv0kryCEX7PH2PIUSpj30/SpNAzv703Z1fx51R8CG2zS7
-         YjQWhyNFtVbIQHMczkKy38+QHk9NkHwIZiQvPlAY6QIy2N7Vn5GRBG1+fuZLYx85W9eT
-         HMn+Qda5v5+XJxLSlHZigmoOW6382/vmtRm3Ux8fNria7o0d+nLXztTmd/x4kjupu/mw
-         YU1CMjnlFyipHemPGcBUiQ43qqUqgfb/g4+1jNltpT0+nIgdkPvBwTJH10nSHcTL+uS2
-         MtFg==
-X-Forwarded-Encrypted: i=1; AJvYcCWDy3dWr6ZBC+ZogkzgYONJhtG3y39ECciYgkyzdCR9dwH1UrASYEhQN14bLamSP3U4WQ4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzhRSfsN36wwtYFPrr+N1PI5BAQmt+zBXeDwCTy56Tpz4GjtPR6
-	1DBTdiTTeEZ0m4VL3wOCZneLUVbqFrIcjzOj1iCJhY89bjrIPLiPzfRq
-X-Gm-Gg: ASbGnct9V+0tTQ/T+K1xFLx5pAguCYqrm78ftfE1qmi+GvfQc8LK7zADpiSzQk6Hk4Y
-	oYb/uovDglh79z2FmXzDA9f1+PMa/mFWxUJQvmKgaqva1yp73Je6Pru7Ii6pZ2tKod48bdinxtZ
-	en4TXynOA4+XigzGBvOGgUCvbCCj5uffu2beqBJN4wGF6We3cobGMgYnrhXZ0Rtp6Tx5R/NI6Xk
-	breaJaVk8OOdFkdL1qdbqM0o+TXg1svh2Xlwg7nseb6WfgvC9rMvv8jlHyFTN79uUWkjRYwjtVq
-	zrjAR+2Kz5AVWfir38JMtYAATR2MWkYee+LFawMuUGX08Y43PA==
-X-Google-Smtp-Source: AGHT+IGnq7cbUVphbfM/tAKFMccVM36odjGBsPPmnr/6dCBe4AIkNQYWQ5m/qpdzzNqycKU9CbL3jQ==
-X-Received: by 2002:a17:907:d1c:b0:ae0:c1c4:645 with SMTP id a640c23a62f3a-ae3f830b8c0mr196508666b.21.1751620368063;
-        Fri, 04 Jul 2025 02:12:48 -0700 (PDT)
-Received: from krava ([176.74.159.170])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae3f6baaaedsm137995866b.173.2025.07.04.02.12.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jul 2025 02:12:47 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 4 Jul 2025 11:12:46 +0200
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, alexei.starovoitov@gmail.com,
-	rostedt@goodmis.org, bpf@vger.kernel.org,
-	Menglong Dong <dongml2@chinatelecom.cn>
-Subject: Re: [PATCH bpf-next v2 00/18] bpf: tracing multi-link support
-Message-ID: <aGebDnk-b_WKnZNz@krava>
-References: <20250703121521.1874196-1-dongml2@chinatelecom.cn>
- <aGeVH0VV_PRfOeZ9@krava>
- <CADxym3aj5WYUfP8jSFYAntpgjAbJuZ=z=BDT1AuZx5jZ3-PBbw@mail.gmail.com>
- <CADxym3ZqGDB4YsiYXk7Qy9wy2GC_JetH+YKWvhDiz50vTWAXzg@mail.gmail.com>
+	s=arc-20240116; t=1751623126; c=relaxed/simple;
+	bh=6y/QrROAdpMG0KepOi2ABSvBSikwo1+w0ZScUptNNMA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XmCFw1IwAHV0AQySD5PpT0X8vDGZyV7tA/iZJ1RMVw5DtwyRunZV2hojTGIwU8xFoMSGJGVxWiEGu87g07kxMCls1UuGsXw+NxyILtITr9WSh47VP/RqcUuEVojP/AiMcQ5zvRcDLDdtHx9bgsZSX3PgSrwNDNhNksPFj0h1+aU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vFRIQo4h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45E78C4CEE3;
+	Fri,  4 Jul 2025 09:58:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1751623125;
+	bh=6y/QrROAdpMG0KepOi2ABSvBSikwo1+w0ZScUptNNMA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=vFRIQo4haEeX4z5G3jGKdot+Ekt3XkyErGwHdiSf82A1pio97j4o+a5RUViuC0Rq4
+	 5J2iAyDuCnCcHJHG9aAHo22icN2sNwSBPXudpAOpPY4u0d+5MWluuZVUjaXso3iyMj
+	 EahQZNxNrzn+p8Yj3maagbM2KJADYIyh3mAQthEbWNC1hOpocQsHNnib2DRz/GOqzR
+	 /sqoSfdiSs13t6LPG7HxRvr/WGdSfVaQhsQgm8qM9unLa1ofbUCuxo/qzyyQTJVM7V
+	 lpaGIUtoJae4pJ9Xd5dHwaKmZ9ZEq8Z1Lo25wjRFfXp2XVD1aetV/OqzFYSpvhpbgO
+	 wdjOWFkU7/CHQ==
+Message-ID: <88a64a65-bd8c-4b73-af19-6764054d4572@kernel.org>
+Date: Fri, 4 Jul 2025 11:58:37 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CADxym3ZqGDB4YsiYXk7Qy9wy2GC_JetH+YKWvhDiz50vTWAXzg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next,v3 2/2] selftests/bpf: Enhance XDP Rx metadata
+ handling
+To: "Song, Yoong Siang" <yoong.siang.song@intel.com>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+ Jonathan Corbet <corbet@lwn.net>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@fomichev.me>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+ Magnus Karlsson <magnus.karlsson@gmail.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@kernel.org>, Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Jonathan Lemon <jonathan.lemon@gmail.com>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
+References: <20250702165757.3278625-1-yoong.siang.song@intel.com>
+ <20250702165757.3278625-3-yoong.siang.song@intel.com>
+ <77463344-1b1a-443a-97be-a7ef8a88b8af@kernel.org>
+ <IA3PR11MB92546301B67FB3A9FDCD716DD842A@IA3PR11MB9254.namprd11.prod.outlook.com>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <IA3PR11MB92546301B67FB3A9FDCD716DD842A@IA3PR11MB9254.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jul 04, 2025 at 04:58:34PM +0800, Menglong Dong wrote:
-> On Fri, Jul 4, 2025 at 4:52 PM Menglong Dong <menglong8.dong@gmail.com> wrote:
-> >
-> > On Fri, Jul 4, 2025 at 4:47 PM Jiri Olsa <olsajiri@gmail.com> wrote:
-> > >
-> > > On Thu, Jul 03, 2025 at 08:15:03PM +0800, Menglong Dong wrote:
-> > > > (Thanks for Alexei's advice to implement the bpf global trampoline with C
-> > > > instead of asm, the performance of tracing-multi has been significantly
-> > > > improved. And the function metadata that implemented with hash table is
-> > > > also fast enough to satisfy our needs.)
-> > > >
-> > > > For now, the BPF program of type BPF_PROG_TYPE_TRACING is not allowed to
-> > > > be attached to multiple hooks, and we have to create a BPF program for
-> > > > each kernel function, for which we want to trace, even through all the
-> > > > program have the same (or similar) logic. This can consume extra memory,
-> > > > and make the program loading slow if we have plenty of kernel function to
-> > > > trace.
-> > >
-> > > hi,
-> > > what tree did you base your patchset on? I can't apply it on
-> > > bpf-next/master and I tried several other trees
-> >
-> > Sorry that I forgot to rebase to the latest bpf-next/master, and
-> > this patchset is based on this commit: c4b1be928ea0,
-> > which means I have not updated my tree for a week :/
+
+
+On 04/07/2025 03.17, Song, Yoong Siang wrote:
+> On Friday, July 4, 2025 1:05 AM, Jesper Dangaard Brouer <hawk@kernel.org> wrote:
+>> On 02/07/2025 18.57, Song Yoong Siang wrote:
+>>> Introduce the XDP_METADATA_SIZE macro as a conservative measure to
+>>> accommodate any metadata areas reserved by Ethernet devices.
+>>>
+>>
+>> This seems like a sloppy workaround :-(
+>>
+>> To me, the problem arise because AF_XDP is lacking the ability to
+>> communicate the size of the data_meta area.  If we had this capability,
+>> then we could allow the IGC driver to take some of the space, have the
+>> BPF-prog expand it futher (bpf_xdp_adjust_meta) and then userspace
+>> AF_XDP would simply be able to see the size of the data_meta area, and
+>> apply the struct xdp_meta at right offset.
+>>
+> Thanks for your input.
 > 
-> Oh, it's not my fault. I conflict with the commit
-> 5ab154f1463a ("bpf: Introduce BPF standard streams"), which was
-> applied 12h ago. That's why the CI didn't report the problem :/
-
-no worries, applied now ;-) thanks
-
-jirka
-
+> I agree with you that the implementation will be simple if user application
+> able to get the size of data_meta area. The intention of this patch set is to let
+> developer aware of such limitations before we have a perfect solution.
 > 
-> >
-> > Thanks!
-> > Menglong Dong
-> > >
-> > > thanks,
-> > > jirka
-> > >
-> > > >
-> > > > In this series, we add the support to allow attaching a tracing BPF
-> > > > program to multi hooks, which is similar to BPF_TRACE_KPROBE_MULTI.
-> > > > Generally speaking, this series can be divided into 5 parts:
-> > > >
-> > > > 1. Add per-function metadata storage support.
-> > > > 2. Add bpf global trampoline support for x86_64.
-> > > > 3. Add bpf global trampoline link support.
-> > > > 4. Add tracing multi-link support.
-> > > >
-> > > > per-function metadata storage
-> > > > -----------------------------
-> > > > The per-function metadata storage is the basic of the bpf global
-> > > > trampoline. In short, it's a hash table and store some information of the
-> > > > kernel functions. The key of this hash table is the kernel function
-> > > > address, and following data is stored in the hash value:
-> > > >
-> > > > * The BPF progs, whose type is FENTRY, FEXIT or MODIFY_RETURN. The struct
-> > > >   kfunc_md_tramp_prog is introduced to store the BPF prog and the cookie,
-> > > >   and makes the BPF progs of the same type a list with the "next" field.
-> > > > * The kernel function address
-> > > > * The kernel function arguments count
-> > > > * If origin call needed
-> > > >
-> > > > The budgets of the hash table can grow and shrink when necessary. Alexei
-> > > > advised to use rhashtable. However, the compiler is not clever enough and
-> > > > it refused to inline the hash lookup for me, which bring in addition
-> > > > overhead in the following BPF global trampoline. I have to replace the
-> > > > "inline" with "__always_inline" for rhashtable_lookup_fast,
-> > > > rhashtable_lookup, __rhashtable_lookup, rht_key_get_hash to force it
-> > > > inline the hash lookup for me. Then, I just implement a hash table myself
-> > > > instead.
-> > > >
-> > > > bpf global trampoline
-> > > > ---------------------
-> > > > The bpf global trampoline is similar to the general bpf trampoline. The
-> > > > bpf trampoline store the bpf progs and some metadata in the trampoline
-> > > > instructions directly. However, the bpf global trampoline store and get
-> > > > the metadata from the function metadata with kfunc_md_get_rcu(). This
-> > > > makes the bpf global trampoline more flexible and can be used for all the
-> > > > kernel functions.
-> > > >
-> > > > The bpf global trampoline is designed to implement the tracing multi-link
-> > > > for FENTRY, FEXIT and MODIFY_RETURN.
-> > > >
-> > > > The global trampoline is implemented in C mostly. We implement the entry
-> > > > of the trampoline with a "__naked" function, who will save the regs to
-> > > > an array on the stack and call bpf_global_caller_run(). The entry will
-> > > > pass the address of the array and the address of the rip to
-> > > > bpf_global_caller_run().
-> > > >
-> > > > The whole idea to implement the trampoline with C is inspired by Alexei
-> > > > in [3]. It do have advantage to implement in C. Some function call, such
-> > > > as __bpf_prog_enter_recur, __bpf_prog_exit_recur, __bpf_tramp_enter
-> > > > and __bpf_tramp_exit, are inlined, which reduces some overhead. The
-> > > > performance of the global trampoline can be see below.
-> > > >
-> > > > bpf global trampoline link
-> > > > --------------------------
-> > > > We reuse part of the code in [2] to implement the tracing multi-link. The
-> > > > struct bpf_gtramp_link is introduced for the bpf global trampoline link.
-> > > > Similar to the bpf trampoline link, the bpf global trampoline link has
-> > > > bpf_gtrampoline_link_prog() and bpf_gtrampoline_unlink_prog() to link and
-> > > > unlink the bpf progs.
-> > > >
-> > > > The "entries" in the bpf_gtramp_link is a array of struct
-> > > > bpf_gtramp_link_entry, which contain all the information of the functions
-> > > > that we trace, such as the address, the number of args, the cookie and so
-> > > > on.
-> > > >
-> > > > The bpf global trampoline is much simpler than the bpf trampoline, and we
-> > > > introduce then new struct bpf_global_trampoline for it. The "image" field
-> > > > is a pointer to bpf_global_caller_x. We introduce the global trampoline
-> > > > array and kernel function with arguments count "x" can be handled by the
-> > > > global trampoline global_tr_array[x]. We implement the global trampoline
-> > > > based on the direct ftrace, and the "fops" field for this propose. This
-> > > > means bpf2bpf is not supported by the tracing multi-link.
-> > > >
-> > > > When we link the bpf prog, we will add it to all the target functions'
-> > > > kfunc_md. Then, we get all the function addresses that have bpf progs with
-> > > > kfunc_md_bpf_ips(), and reset the ftrace filter of the fops to it. The
-> > > > direct ftrace don't support to reset the filter functions yet, so we
-> > > > introduce the reset_ftrace_direct_ips() to do this work.
-> > > >
-> > > > tracing multi-link
-> > > > ------------------
-> > > > Most of the code of this part comes from the series [2].
-> > > >
-> > > > In the 6th patch, we add the support to record index of the accessed
-> > > > function args of the target for tracing program. Meanwhile, we add the
-> > > > function btf_check_func_part_match() to compare the accessed function args
-> > > > of two function prototype. This function will be used in the next commit.
-> > > >
-> > > > In the 7th patch, we refactor the struct modules_array to ptr_array, as
-> > > > we need similar function to hold the target btf, target program and kernel
-> > > > modules that we reference to in the following commit.
-> > > >
-> > > > In the 11th patch, we implement the multi-link support for tracing, and
-> > > > following new attach types are added:
-> > > >
-> > > >   BPF_TRACE_FENTRY_MULTI
-> > > >   BPF_TRACE_FEXIT_MULTI
-> > > >   BPF_MODIFY_RETURN_MULTI
-> > > >
-> > > > We introduce the struct bpf_tracing_multi_link for this purpose, which
-> > > > can hold all the kernel modules, target bpf program (for attaching to bpf
-> > > > program) or target btf (for attaching to kernel function) that we
-> > > > referenced.
-> > > >
-> > > > During loading, the first target is used for verification by the verifier.
-> > > > And during attaching, we check the consistency of all the targets with
-> > > > the first target.
-> > > >
-> > > > performance comparison
-> > > > ----------------------
-> > > > We have implemented the following performance testings in the selftests in
-> > > > bench_trigger.c:
-> > > >
-> > > > - trig-fentry-multi
-> > > > - trig-fentry-multi-all
-> > > > - trig-fexit-multi
-> > > > - trig-fmodret-multi
-> > > >
-> > > > The "fentry_multi_all" is used to test the performance of the function
-> > > > metadata hash table and all the kernel function is hooked during testings.
-> > > >
-> > > > The mitigations is disabled during the testings. It is enabled by default
-> > > > in the kernel, and we can disable it with the "mitigations=off" cmdline
-> > > > to do the testing.
-> > > >
-> > > > The testings is done with the command:
-> > > >   ./run_bench_trigger.sh fentry fentry-multi fentry-multi-all fexit \
-> > > >                          fexit-multi fmodret fmodret-multi
-> > > >
-> > > > Following is the testings results, and the unit is "M/s":
-> > > >
-> > > > fentry  | fm     | fm_all | fexit  | fexit-multi | fmodret | fmodret-multi
-> > > > 103.303 | 94.532 | 98.009 | 55.155 | 55.448      | 58.632  | 56.379
-> > > > 107.564 | 98.007 | 97.857 | 55.278 | 53.997      | 59.485  | 55.855
-> > > > 106.841 | 97.483 | 95.064 | 55.715 | 55.502      | 59.442  | 56.126
-> > > > 109.852 | 97.486 | 93.161 | 56.432 | 55.494      | 59.454  | 56.178
-> > > > 109.791 | 97.973 | 96.728 | 55.729 | 55.363      | 59.445  | 56.228
-> > > >
-> > > > * fm: fentry-multi, fm_all: fentry-multi-all
-> > > >
-> > > > Following is the results to run all the bench testings:
-> > > >
-> > > >   usermode-count :  746.907 ± 0.323M/s
-> > > >   kernel-count   :  313.423 ± 0.031M/s
-> > > >   syscall-count  :   18.179 ± 0.013M/s
-> > > >   fentry         :  107.149 ± 0.051M/s
-> > > >   fexit          :   56.565 ± 0.019M/s
-> > > >   fmodret        :   59.495 ± 0.024M/s
-> > > >   fentry-multi   :   99.073 ± 0.087M/s
-> > > >   fentry-multi-all:   97.920 ± 0.095M/s
-> > > >   fexit-multi    :   55.426 ± 0.045M/s
-> > > >   fmodret-multi  :   56.589 ± 0.163M/s
-> > > >   rawtp          :  166.774 ± 0.137M/s
-> > > >   tp             :   61.947 ± 0.035M/s
-> > > >   kprobe         :   43.719 ± 0.018M/s
-> > > >   kprobe-multi   :   47.451 ± 0.087M/s
-> > > >   kretprobe      :   18.358 ± 0.026M/s
-> > > >   kretprobe-multi:   24.523 ± 0.016M/s
-> > > >
-> > > > From the above test data, it can be seen that the performance of fentry-multi
-> > > > is approximately 10% worse than that of fentry, and fmodret-multi is ~5%
-> > > > worse then fmodret, fexit-multi is almost the same to fexit.
-> > > >
-> > > > The bpf global trampoline has addition overhead in comparison with the bpf
-> > > > trampoline:
-> > > > 1. We do more checks. We check if origin call is need, if the prog is
-> > > >    sleepable, etc, in the global trampoline.
-> > > > 2. We do more memory read and write. We need to load the bpf progs from
-> > > >    memory, and save addition regs to stack.
-> > > > 3. The function metadata lookup.
-> > > >
-> > > > However, we also have some optimization:
-> > > > 1. For fentry, we avoid 2 function call: __bpf_prog_enter_recur and
-> > > >    __bpf_prog_exit_recur, as we make them inline in our case.
-> > > > 2. For fexit/fmodret, we avoid another 2 function call: __bpf_tramp_enter
-> > > >    and __bpf_tramp_exit by inline them.
-> > > >
-> > > > The performance of fentry-multi is closer to fentry-multi-all, which means
-> > > > the hash table is O(1) and fast enough.
-> > > >
-> > > > Further work
-> > > > ------------
-> > > > The performance of the global trampoline can be optimized further.
-> > > >
-> > > > First, we can avoid some checks by generate more bpf_global_caller, such
-> > > > as:
-> > > >
-> > > > static __always_inline notrace int
-> > > > bpf_global_caller_run(unsigned long *args, unsigned long *ip, int nr_args,
-> > > >                       bool sleepable, bool do_origin)
-> > > > {
-> > > >     xxxxxx
-> > > > }
-> > > >
-> > > > static __always_used __no_stack_protector notrace int
-> > > > bpf_global_caller_2_sleep_origin(unsigned long *args, unsigned long *ip)
-> > > > {
-> > > >     return bpf_global_caller_run(args, ip, nr_args, 2, 1, 1);
-> > > > }
-> > > >
-> > > > And the bpf global caller "bpf_global_caller_2_sleep_origin" can be used
-> > > > for the functions who have 2 function args, and have sleepable bpf progs,
-> > > > and have fexit or modify_return. The check of sleepable and origin call
-> > > > will be optimized by the compiler, as they are const.
-> > > >
-> > > > Second, we can implement the function metadata with the function padding.
-> > > > The hash table lookup for metadata consume ~15 instructions. With
-> > > > function padding, it needs only 5 instructions, and will be faster.
-> > > >
-> > > > Besides the performance, we also need to make the global trampoline
-> > > > collaborate with bpf trampoline. For now, FENTRY_MULTI will be attached
-> > > > to the target who already have FENTRY on it, and -EEXIST will be returned.
-> > > > So we need another series to make them work together.
-> > > >
-> > > > Changes since V1:
-> > > >
-> > > > * remove the function metadata that bases on function padding, and
-> > > >   implement it with a resizable hash table.
-> > > > * rewrite the bpf global trampoline with C.
-> > > > * use the existing bpf bench frame for bench testings.
-> > > > * remove the part that make tracing-multi compatible with tracing.
-> > > >
-> > > > Link: https://lore.kernel.org/all/20250303132837.498938-1-dongml2@chinatelecom.cn/ [1]
-> > > > Link: https://lore.kernel.org/bpf/20240311093526.1010158-1-dongmenglong.8@bytedance.com/ [2]
-> > > > Link: https://lore.kernel.org/bpf/CAADnVQ+G+mQPJ+O1Oc9+UW=J17CGNC5B=usCmUDxBA-ze+gZGw@mail.gmail.com/ [3]
-> > > > Menglong Dong (18):
-> > > >   bpf: add function hash table for tracing-multi
-> > > >   x86,bpf: add bpf_global_caller for global trampoline
-> > > >   ftrace: factor out ftrace_direct_update from register_ftrace_direct
-> > > >   ftrace: add reset_ftrace_direct_ips
-> > > >   bpf: introduce bpf_gtramp_link
-> > > >   bpf: tracing: add support to record and check the accessed args
-> > > >   bpf: refactor the modules_array to ptr_array
-> > > >   bpf: verifier: add btf to the function args of bpf_check_attach_target
-> > > >   bpf: verifier: move btf_id_deny to bpf_check_attach_target
-> > > >   x86,bpf: factor out arch_bpf_get_regs_nr
-> > > >   bpf: tracing: add multi-link support
-> > > >   libbpf: don't free btf if tracing_multi progs existing
-> > > >   libbpf: support tracing_multi
-> > > >   libbpf: add btf type hash lookup support
-> > > >   libbpf: add skip_invalid and attach_tracing for tracing_multi
-> > > >   selftests/bpf: move get_ksyms and get_addrs to trace_helpers.c
-> > > >   selftests/bpf: add basic testcases for tracing_multi
-> > > >   selftests/bpf: add bench tests for tracing_multi
-> > > >
-> > > >  arch/x86/Kconfig                              |   4 +
-> > > >  arch/x86/net/bpf_jit_comp.c                   | 290 ++++++++++++-
-> > > >  include/linux/bpf.h                           |  59 +++
-> > > >  include/linux/bpf_tramp.h                     |  72 ++++
-> > > >  include/linux/bpf_types.h                     |   1 +
-> > > >  include/linux/bpf_verifier.h                  |   1 +
-> > > >  include/linux/btf.h                           |   3 +-
-> > > >  include/linux/ftrace.h                        |   7 +
-> > > >  include/linux/kfunc_md.h                      |  91 ++++
-> > > >  include/uapi/linux/bpf.h                      |  10 +
-> > > >  kernel/bpf/Makefile                           |   1 +
-> > > >  kernel/bpf/btf.c                              | 113 ++++-
-> > > >  kernel/bpf/kfunc_md.c                         | 352 ++++++++++++++++
-> > > >  kernel/bpf/syscall.c                          | 395 +++++++++++++++++-
-> > > >  kernel/bpf/trampoline.c                       | 220 +++++++++-
-> > > >  kernel/bpf/verifier.c                         | 161 ++++---
-> > > >  kernel/trace/bpf_trace.c                      |  48 +--
-> > > >  kernel/trace/ftrace.c                         | 183 +++++---
-> > > >  net/bpf/test_run.c                            |   3 +
-> > > >  net/core/bpf_sk_storage.c                     |   2 +
-> > > >  net/sched/bpf_qdisc.c                         |   2 +-
-> > > >  tools/bpf/bpftool/common.c                    |   3 +
-> > > >  tools/include/uapi/linux/bpf.h                |  10 +
-> > > >  tools/lib/bpf/bpf.c                           |  10 +
-> > > >  tools/lib/bpf/bpf.h                           |   6 +
-> > > >  tools/lib/bpf/btf.c                           | 102 +++++
-> > > >  tools/lib/bpf/btf.h                           |   6 +
-> > > >  tools/lib/bpf/libbpf.c                        | 296 ++++++++++++-
-> > > >  tools/lib/bpf/libbpf.h                        |  25 ++
-> > > >  tools/lib/bpf/libbpf.map                      |   5 +
-> > > >  tools/testing/selftests/bpf/Makefile          |   2 +-
-> > > >  tools/testing/selftests/bpf/bench.c           |   8 +
-> > > >  .../selftests/bpf/benchs/bench_trigger.c      |  72 ++++
-> > > >  .../selftests/bpf/benchs/run_bench_trigger.sh |   1 +
-> > > >  .../selftests/bpf/prog_tests/fentry_fexit.c   |  22 +-
-> > > >  .../selftests/bpf/prog_tests/fentry_test.c    |  79 +++-
-> > > >  .../selftests/bpf/prog_tests/fexit_test.c     |  79 +++-
-> > > >  .../bpf/prog_tests/kprobe_multi_test.c        | 220 +---------
-> > > >  .../selftests/bpf/prog_tests/modify_return.c  |  60 +++
-> > > >  .../bpf/prog_tests/tracing_multi_link.c       | 210 ++++++++++
-> > > >  .../selftests/bpf/progs/fentry_multi_empty.c  |  13 +
-> > > >  .../selftests/bpf/progs/tracing_multi_test.c  | 181 ++++++++
-> > > >  .../selftests/bpf/progs/trigger_bench.c       |  22 +
-> > > >  .../selftests/bpf/test_kmods/bpf_testmod.c    |  24 ++
-> > > >  tools/testing/selftests/bpf/test_progs.c      |  50 +++
-> > > >  tools/testing/selftests/bpf/test_progs.h      |   3 +
-> > > >  tools/testing/selftests/bpf/trace_helpers.c   | 283 +++++++++++++
-> > > >  tools/testing/selftests/bpf/trace_helpers.h   |   3 +
-> > > >  48 files changed, 3349 insertions(+), 464 deletions(-)
-> > > >  create mode 100644 include/linux/bpf_tramp.h
-> > > >  create mode 100644 include/linux/kfunc_md.h
-> > > >  create mode 100644 kernel/bpf/kfunc_md.c
-> > > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/tracing_multi_link.c
-> > > >  create mode 100644 tools/testing/selftests/bpf/progs/fentry_multi_empty.c
-> > > >  create mode 100644 tools/testing/selftests/bpf/progs/tracing_multi_test.c
-> > > >
-> > > > --
-> > > > 2.39.5
-> > > >
-> > > >
+> Btw, do you got any suggestion on how to expose the metadata length?
+> I not sure whether xdp_desc.options is a simple and good idea or not?
+
+That is a question to the AF_XDP maintainers... added them to this email.
+
+/* Rx/Tx descriptor */
+struct xdp_desc {
+	__u64 addr;
+	__u32 len;
+	__u32 options;
+};
+
+As far as I know, the xdp_desc.options field isn't used, right?
+
+
+(Please AF_XDP experts, please verify below statements:)
+Something else we likely want to document: The available headroom in the
+AF_XDP frame.  When accessing the metadata in userspace AF_XDP we do a
+negative offset from the UMEM packet pointer.  IIRC on RX the available
+headroom will be either 255 or 192 bytes (depending on NIC drivers).
+
+Slightly confusing when AF_XDP transmitting from userspace the UMEM
+headroom is default zero (XSK_UMEM__DEFAULT_FRAME_HEADROOM is zero).
+This is configurable via xsk_umem_config.frame_headroom, like I did in
+this example[1].
+
+Maybe I did something wrong in[1], because I see that the new method is
+setting xsk_umem_config.tx_metadata_len + flag XDP_UMEM_TX_METADATA_LEN.
+This is nicely documented in [2]. How does this interact with setting
+xsk_umem_config.frame_headroom ?
+
+
+[1] 
+https://github.com/xdp-project/bpf-examples/blob/3f365af4be1fe6a0ef77e751ff9b12c912810453/AF_XDP-interaction/af_xdp_user.c#L423-L424
+[2] https://www.kernel.org/doc/html/v6.12/networking/xsk-tx-metadata.html
+
+--Jesper
 
