@@ -1,314 +1,153 @@
-Return-Path: <bpf+bounces-62539-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62540-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 791D1AFB83F
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 18:05:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 887D0AFB9A2
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 19:08:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3DEB31888F59
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 16:04:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4E431AA8304
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 17:06:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 532B222577E;
-	Mon,  7 Jul 2025 16:04:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C78F62E8DE5;
+	Mon,  7 Jul 2025 17:05:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mcUX4jq7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NN2pHR61"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 044E5209F45
-	for <bpf@vger.kernel.org>; Mon,  7 Jul 2025 16:04:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64CA82E88B0;
+	Mon,  7 Jul 2025 17:05:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751904273; cv=none; b=UQJJyDemy1XXU/xNboacGUyHl4t4e6M89n95tENcuKn7S9yWliCTZofeAEag9ITsaJXVJ9mZsDG3AAw/qEQTW8T37M4G0UOYGm3wikp96r00Hj7bD4YD2mP+AFFoIJEXU0c3ttP8Yx3QQe+FEhei9kiK1S+4iqQ3aLZ3czAXEKk=
+	t=1751907930; cv=none; b=GQMb3llHxo3Wle46ttmzLj57P9qS4l0s0SyXUBu/ympEMNRAy5Z4CBuMGbpsqRlDHYRGw/HHRKJRNKVblbbEPZ75CJM3v/FclZALlDQ05eowVXV5yZ6Om1Nxl4pa5DeKuHFRndiW1eq3dqs9e6ACcBhMdHjyQoDwZshuHvGzvhY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751904273; c=relaxed/simple;
-	bh=8W2AF453l0RDmRUaaGEyrt2wEVm9irqpmIf7PCUDsDo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CiP/Uq+HwmEBk1eq4TSbxyQaBZo0K+zCgQszOkuduDJuW5MkM+oo4PFbnbFNQ5X/bGrWANjE2e+aOZ39Wsz+XgfSJrV3yvRlM7q4c68GRmmB+GRt8FH/7RLRr7HlilITllOPpu/7ywrANm4q10yNTQgKCUIVz7cgrlwDQJBEKI4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mcUX4jq7; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1751904268;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=om1rKIs/r0QiaOcPXOv0e1W2GAT6TDx3jaw2edjFVCc=;
-	b=mcUX4jq79JM/N8sfsJaq6N4IK1/GPxmvjU60Qa4/BUU4Q6WzXuY/lhA6+4sCEPM98AFnLY
-	85JUbbYO/LExc4t3AlclOt+leiYRdATWQcs0UWtGUnKmH163jAdvEuPvcTJwGUOITJfAEk
-	GIOSWThHo0Xiv0h214GeLzNWYtGE/2k=
-From: Leon Hwang <leon.hwang@linux.dev>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	Leon Hwang <leon.hwang@linux.dev>
-Subject: [RFC PATCH bpf-next v2 3/3] selftests/bpf: Add case to test BPF_F_CPU
-Date: Tue,  8 Jul 2025 00:04:04 +0800
-Message-ID: <20250707160404.64933-4-leon.hwang@linux.dev>
-In-Reply-To: <20250707160404.64933-1-leon.hwang@linux.dev>
-References: <20250707160404.64933-1-leon.hwang@linux.dev>
+	s=arc-20240116; t=1751907930; c=relaxed/simple;
+	bh=cGcng1B5uYbpvwTXbTYW+kCGrhRXMUcNW6KCHqQ9f38=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Fb0BpnhRtEiUbOjEpweL0j9nQ0s+LxGmfSiAyakzj4P1R4SilD0dUdm2SerjD5qBl7Dl1jA6TII79XZMh0Hs6WcqOvCNyrjghx5xUwTMEr/zwlLiVxh1GrcDEfcpuraCBs9e/N9OhbcGAklBZ8LsGN4d1UqjfrQetKyrVBU3oHQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NN2pHR61; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3a57ae5cb17so2108915f8f.0;
+        Mon, 07 Jul 2025 10:05:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1751907927; x=1752512727; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sFj0ww0Wgt6avL1qowBSB8Jckrv7U2t3qC7ziVbRCB8=;
+        b=NN2pHR61K9OH1oCtUyPCbtrCbaNMi/Hn9W1DayU0nq9JOljHP4khqEMb5wX/xiEv61
+         qsLEGDs5ssbr0WoztYdvlRn8wW327sVf+z5dcaPU0aEX54moLMc+O9rsbcVK3e1qDsOs
+         lR3ub2ztyCzvXPTNzEAWEu5yL+RW6bJElSh+9NvoNoqGjowfUm989JOr08nqGC+zBxrr
+         Ibh78sBAQ6T6AJRQnS2s7L2XCz9TwAHn5aADrUyx5Nl48apT/2U3Gb+G3e1GPodrb6rK
+         KyC4qz2J5xl5iRSzbK4Smb+DM7r8pZqHTDK/bSrNfEjvEoEDYc/UKRuACPiGDuUmnNLW
+         lZWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751907927; x=1752512727;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sFj0ww0Wgt6avL1qowBSB8Jckrv7U2t3qC7ziVbRCB8=;
+        b=omG00ZBS4I1Zgp4uIjrdDtpC3QhYXmnPLCO8pcG19x67MSIGNZtzLU1EBj4Kp3sMmD
+         MfcVWQ+v9OinJ2Mu1EZxHUdRgbSxAlz5zjzbshPh/wS0gOEbmdE71FJCEEe8NyFYNlZf
+         RsJg45r9IE9hWoMYkg4Ti15vrP3nzEdd2HkwzK/Pelcb8NazUasOpmHy3/QXfGt2l2Q3
+         v6pJSk9DcC5KC5RHoZcQ5S0fORk4Rx8TCWBFLw6/ZhsvObcbkYlKe9u9jk91OGjEaaYG
+         O4GtFf+lbbC8ynxjeqWS55X6+eLOZrHrRhsHW1pwcjapE4STkCUS+qYYtV8lwtZY8U+U
+         QbkA==
+X-Forwarded-Encrypted: i=1; AJvYcCXCm7SKdFsq6ilnts+qqgWswoXUNJbnntcB69OQGqgnuRCzanLMAKq6QFccfTZ+SCSvbps=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyfqTxvGQyWQ6kmEqqBawqbOlrOCZP7C1vTCPmzYiBq+1qREfJi
+	IE6Ew2yQyGsuQ0T3oSVJZM2a4YuVgpwvLz6Y+ccNqn9ZW8CVCoNss5nXWJmNKtAJYe8eb+5KZaQ
+	b1461MbY7+iBD3g0xUfX5jSR3VmjBdYE=
+X-Gm-Gg: ASbGncsGyUPmIXxGzl30uY1UumaNFlgCB0eaK0LGcWkX6YUd3x0YDrwpmlTjEhDvF6V
+	XgEr5Y4AGa05LI18WwY6TKT+e8WrxP41VOTA3C1fOxNZAT9O0XFrvNi+pMimCX+sX0UJEMnmi77
+	UDJv5R1XtC2G4Ysu3wW5FNaARC4hVJSoi5bdcH5BnqV+/UA5ODPSI73tmwMDk=
+X-Google-Smtp-Source: AGHT+IHz2yoSbu5F1c7gf7YVIBdBJrvR6ihySIA4UhhduXBs4OCAVk9N2ZHYJPwx5NEqpAUUa+vHtUo14dczfcnEros=
+X-Received: by 2002:a05:6000:18a5:b0:3a5:2182:bce2 with SMTP id
+ ffacd0b85a97d-3b4964c0a9fmr12354928f8f.17.1751907926458; Mon, 07 Jul 2025
+ 10:05:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250707-btf_skip_structs_on_stack-v3-0-29569e086c12@bootlin.com> <20250707-btf_skip_structs_on_stack-v3-1-29569e086c12@bootlin.com>
+In-Reply-To: <20250707-btf_skip_structs_on_stack-v3-1-29569e086c12@bootlin.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 7 Jul 2025 10:05:12 -0700
+X-Gm-Features: Ac12FXyO37GQhp3x3YjuWJgNAw6X7RtoaXNm7Hlox3eYREQtBT6gF427Cz_F1BU
+Message-ID: <CAADnVQJUYNBJVOA532Zkwa1ggVdvv4nay5jU7GEtt6gNjNG0uw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] btf_encoder: skip functions consuming packed
+ structs passed by value on stack
+To: =?UTF-8?Q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
+Cc: dwarves <dwarves@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Alan Maguire <alan.maguire@oracle.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Alexei Starovoitov <ast@fb.com>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+	Bastien Curutchet <bastien.curutchet@bootlin.com>, ebpf@linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This patch adds test coverage for the new BPF_F_CPU flag support in
-percpu_array maps. The following APIs are exercised:
+On Mon, Jul 7, 2025 at 7:02=E2=80=AFAM Alexis Lothor=C3=A9 (eBPF Foundation=
+)
+<alexis.lothore@bootlin.com> wrote:
+>
+> Most ABIs allow functions to receive structs passed by value, if they
+> fit in a register or a pair of registers, depending on the exact ABI.
+> However, when there is a struct passed by value but all registers are
+> already used for parameters passing, the struct is still passed by value
+> but on the stack. This becomes an issue if the passed struct is defined
+> with some attributes like __attribute__((packed)) or
+> __attribute__((aligned(X)), as its location on the stack is altered, but
+> this change is not reflected in dwarf information. The corresponding BTF
+> data generated from this can lead to incorrect BPF trampolines
+> generation (eg to attach bpf tracing programs to kernel functions) in
+> the Linux kernel.
+>
+> Prevent those wrong cases by not encoding functions consuming structs
+> passed by value on stack, when those structs do not have the expected
+> alignment due to some attribute usage.
+>
+> Signed-off-by: Alexis Lothor=C3=A9 (eBPF Foundation) <alexis.lothore@boot=
+lin.com>
 
-* bpf_map_update_batch()
-* bpf_map_lookup_batch()
-* bpf_map_update_elem_opts()
-* bpf_map__update_elem_opts()
-* bpf_map_lookup_elem_opts()
-* bpf_map__lookup_elem_opts()
+...
 
-cd tools/testing/selftests/bpf/
-./test_progs -t percpu_alloc/cpu_flag_tests
-253/13  percpu_alloc/cpu_flag_tests:OK
-253     percpu_alloc:OK
-Summary: 1/13 PASSED, 0 SKIPPED, 0 FAILED
+> +static bool ftype__has_uncertain_arg_loc(struct cu *cu, struct ftype *ft=
+ype)
+> +{
+> +       struct parameter *param;
+> +       int param_idx =3D 0;
+> +
+> +       if (ftype->nr_parms < cu->nr_register_params)
+> +               return false;
+> +
+> +       ftype__for_each_parameter(ftype, param) {
+> +               if (param_idx++ < cu->nr_register_params)
+> +                       continue;
+> +
+> +               struct tag *type =3D cu__type(cu, param->tag.type);
+> +
+> +               if (type =3D=3D NULL || !tag__is_struct(type))
+> +                       continue;
+> +
+> +               struct type *ctype =3D tag__type(type);
+> +               if (ctype->namespace.name =3D=3D 0)
+> +                       continue;
+> +
+> +               struct class *class =3D tag__class(type);
+> +
+> +               class__infer_packed_attributes(class, cu);
+> +
+> +               if (class->is_packed)
+> +                       return true;
+> +       }
+> +
+> +       return false;
+> +}
+> +
 
-Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
----
- .../selftests/bpf/prog_tests/percpu_alloc.c   | 170 ++++++++++++++++++
- .../selftests/bpf/progs/percpu_array_flag.c   |  24 +++
- 2 files changed, 194 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/percpu_array_flag.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c b/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c
-index 343da65864d6..6f0d0e6dc76a 100644
---- a/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c
-+++ b/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c
-@@ -3,6 +3,7 @@
- #include "percpu_alloc_array.skel.h"
- #include "percpu_alloc_cgrp_local_storage.skel.h"
- #include "percpu_alloc_fail.skel.h"
-+#include "percpu_array_flag.skel.h"
- 
- static void test_array(void)
- {
-@@ -115,6 +116,173 @@ static void test_failure(void) {
- 	RUN_TESTS(percpu_alloc_fail);
- }
- 
-+static void test_cpu_flag(void)
-+{
-+	int map_fd, *keys = NULL, value_size, cpu, i, j, nr_cpus, err;
-+	size_t key_sz = sizeof(int), value_sz = sizeof(u64);
-+	struct percpu_array_flag *skel;
-+	u64 batch = 0, *values = NULL;
-+	const u64 value = 0xDEADC0DE;
-+	u32 count, max_entries;
-+	struct bpf_map *map;
-+	LIBBPF_OPTS(bpf_map_lookup_elem_opts, lookup_opts,
-+		    .flags = BPF_F_CPU,
-+		    .cpu = 0,
-+	);
-+	LIBBPF_OPTS(bpf_map_update_elem_opts, update_opts,
-+		    .flags = BPF_F_CPU,
-+		    .cpu = 0,
-+	);
-+	LIBBPF_OPTS(bpf_map_batch_opts, batch_opts,
-+		    .elem_flags = BPF_F_CPU,
-+		    .flags = 0,
-+	);
-+
-+	nr_cpus = libbpf_num_possible_cpus();
-+	if (!ASSERT_GT(nr_cpus, 0, "libbpf_num_possible_cpus"))
-+		return;
-+
-+	skel = percpu_array_flag__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "percpu_array_flag__open_and_load"))
-+		return;
-+
-+	map = skel->maps.percpu;
-+	map_fd = bpf_map__fd(map);
-+	max_entries = bpf_map__max_entries(map);
-+
-+	value_size = value_sz * nr_cpus;
-+	values = calloc(max_entries, value_size);
-+	keys = calloc(max_entries, key_sz);
-+	if (!ASSERT_FALSE(!keys || !values, "calloc keys and values"))
-+		goto out;
-+
-+	for (i = 0; i < max_entries; i++)
-+		keys[i] = i;
-+	memset(values, 0, max_entries * value_size);
-+
-+	batch_opts.cpu = nr_cpus;
-+	err = bpf_map_update_batch(map_fd, keys, values, &max_entries, &batch_opts);
-+	if (!ASSERT_EQ(err, -E2BIG, "bpf_map_update_batch -E2BIG"))
-+		goto out;
-+
-+	for (cpu = 0; cpu < nr_cpus; cpu++) {
-+		memset(values, 0, max_entries * value_size);
-+
-+		/* clear values on all CPUs */
-+		batch_opts.cpu = BPF_ALL_CPUS;
-+		batch_opts.elem_flags = BPF_F_CPU;
-+		err = bpf_map_update_batch(map_fd, keys, values, &max_entries, &batch_opts);
-+		if (!ASSERT_OK(err, "bpf_map_update_batch all cpus"))
-+			goto out;
-+
-+		/* update values on current CPU */
-+		for (i = 0; i < max_entries; i++)
-+			values[i] = value;
-+
-+		batch_opts.cpu = cpu;
-+		err = bpf_map_update_batch(map_fd, keys, values, &max_entries, &batch_opts);
-+		if (!ASSERT_OK(err, "bpf_map_update_batch current cpu"))
-+			goto out;
-+
-+		/* lookup values on current CPU */
-+		batch_opts.cpu = cpu;
-+		batch_opts.elem_flags = BPF_F_CPU;
-+		memset(values, 0, max_entries * value_sz);
-+		err = bpf_map_lookup_batch(map_fd, NULL, &batch, keys, values, &count, &batch_opts);
-+		if (!ASSERT_TRUE(!err || err == -ENOENT, "bpf_map_lookup_batch current cpu"))
-+			goto out;
-+
-+		for (i = 0; i < max_entries; i++)
-+			if (!ASSERT_EQ(values[i], value, "value on current cpu"))
-+				goto out;
-+
-+		/* lookup values on all CPUs */
-+		batch_opts.cpu = 0;
-+		batch_opts.elem_flags = 0;
-+		memset(values, 0, max_entries * value_size);
-+		err = bpf_map_lookup_batch(map_fd, NULL, &batch, keys, values, &count, &batch_opts);
-+		if (!ASSERT_TRUE(!err || err == -ENOENT, "bpf_map_lookup_batch all cpus"))
-+			goto out;
-+
-+		for (i = 0; i < max_entries; i++) {
-+			for (j = 0; j < nr_cpus; j++) {
-+				if (!ASSERT_EQ(values[i*nr_cpus + j], j != cpu ? 0 : value,
-+					       "value on cpu"))
-+					goto out;
-+			}
-+		}
-+	}
-+
-+	update_opts.cpu = nr_cpus;
-+	err = bpf_map_update_elem_opts(map_fd, keys, values, &update_opts);
-+	if (!ASSERT_EQ(err, -E2BIG, "bpf_map_update_elem_opts -E2BIG"))
-+		goto out;
-+
-+	err = bpf_map__update_elem_opts(map, keys, key_sz, values, value_sz,
-+					&update_opts);
-+	if (!ASSERT_EQ(err, -E2BIG, "bpf_map__update_elem_opts -E2BIG"))
-+		goto out;
-+
-+	lookup_opts.cpu = nr_cpus;
-+	err = bpf_map_lookup_elem_opts(map_fd, keys, values, &lookup_opts);
-+	if (!ASSERT_EQ(err, -E2BIG, "bpf_map_lookup_elem_opts -E2BIG"))
-+		goto out;
-+
-+	err = bpf_map__lookup_elem_opts(map, keys, key_sz, values, value_sz,
-+					&lookup_opts);
-+	if (!ASSERT_EQ(err, -E2BIG, "bpf_map__lookup_elem_opts -E2BIG"))
-+		goto out;
-+
-+	/* clear value on all cpus */
-+	batch_opts.cpu = BPF_ALL_CPUS;
-+	batch_opts.elem_flags = BPF_F_CPU;
-+	memset(values, 0, max_entries * value_sz);
-+	err = bpf_map_update_batch(map_fd, keys, values, &max_entries, &batch_opts);
-+	if (!ASSERT_OK(err, "bpf_map_update_batch all cpus"))
-+		goto out;
-+
-+	for (cpu = 0; cpu < nr_cpus; cpu++) {
-+		/* update value on current cpu */
-+		values[0] = value;
-+		update_opts.cpu = cpu;
-+		for (i = 0; i < max_entries; i++) {
-+			err = bpf_map__update_elem_opts(map, keys + i,
-+							key_sz, values,
-+							value_sz, &update_opts);
-+			if (!ASSERT_OK(err, "bpf_map__update_elem_opts current cpu"))
-+				goto out;
-+
-+			for (j = 0; j < nr_cpus; j++) {
-+				/* lookup then check value on CPUs */
-+				lookup_opts.cpu = j;
-+				err = bpf_map__lookup_elem_opts(map, keys + i,
-+								key_sz, values,
-+								value_sz,
-+								&lookup_opts);
-+				if (!ASSERT_OK(err, "bpf_map__lookup_elem_opts current cpu"))
-+					goto out;
-+				if (!ASSERT_EQ(values[0], j != cpu ? 0 : value,
-+					       "bpf_map__lookup_elem_opts value on current cpu"))
-+					goto out;
-+			}
-+		}
-+
-+		/* clear value on current cpu */
-+		values[0] = 0;
-+		err = bpf_map__update_elem_opts(map, keys, key_sz, values,
-+						value_sz, &update_opts);
-+		if (!ASSERT_OK(err, "bpf_map__update_elem_opts current cpu"))
-+			goto out;
-+	}
-+
-+out:
-+	if (keys)
-+		free(keys);
-+	if (values)
-+		free(values);
-+	percpu_array_flag__destroy(skel);
-+}
-+
- void test_percpu_alloc(void)
- {
- 	if (test__start_subtest("array"))
-@@ -125,4 +293,6 @@ void test_percpu_alloc(void)
- 		test_cgrp_local_storage();
- 	if (test__start_subtest("failure_tests"))
- 		test_failure();
-+	if (test__start_subtest("cpu_flag_tests"))
-+		test_cpu_flag();
- }
-diff --git a/tools/testing/selftests/bpf/progs/percpu_array_flag.c b/tools/testing/selftests/bpf/progs/percpu_array_flag.c
-new file mode 100644
-index 000000000000..4d92e121958e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/percpu_array_flag.c
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(max_entries, 2);
-+	__type(key, int);
-+	__type(value, u64);
-+} percpu SEC(".maps");
-+
-+SEC("fentry/bpf_fentry_test1")
-+int BPF_PROG(test_percpu_array, int x)
-+{
-+	u64 value = 0xDEADC0DE;
-+	int key = 0;
-+
-+	bpf_map_update_elem(&percpu, &key, &value, BPF_ANY);
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-+
--- 
-2.50.0
-
+The logic looks good to me.
 
