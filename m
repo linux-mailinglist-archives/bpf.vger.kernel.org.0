@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-62494-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62495-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C083AFB366
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 14:37:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC499AFB3EE
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 15:09:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C66FC4A31F4
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 12:37:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B9D6188F50E
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 13:09:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 816C529ACEC;
-	Mon,  7 Jul 2025 12:37:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3F0A29B792;
+	Mon,  7 Jul 2025 13:09:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="AHboONjB"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="leCL277o"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1AC1E22FC
-	for <bpf@vger.kernel.org>; Mon,  7 Jul 2025 12:37:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A53F1FFC48;
+	Mon,  7 Jul 2025 13:09:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751891870; cv=none; b=PFV2y+RwF0ITEf5Tm9aNm0LfdEwBq65FUaQfQ/VUpPaTUv1CecGpnCzRTm5QPXybg7zzq3ks/D1t6033yrptbhPi6pZYigyBIMSzG76WGRglFdcBADvjxQLUe3dNMr2XqyLA3xyTwLtwFeDITfGcESXXJavxGzLW6a1rFbne1G0=
+	t=1751893757; cv=none; b=afFiJnJ37nRn5sr3WEMBGeV64fRVt5WT0rrf/mRGXJtPko1BMmbsE4zerG8ujgUef9Zw7GbuFmzOFYktKQ9ILC99/a620R2xJ5WUjuRk/dRkUy/D9clpyio6LJ02f6diXw2SCKQTg44qw7p4hgyMlKNpzUwIS0/TvPiSJ2YxLeI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751891870; c=relaxed/simple;
-	bh=bvVmmU+hVq1TGP6LyndzHe4yXo1fYKuarvxptpyzQ6M=;
+	s=arc-20240116; t=1751893757; c=relaxed/simple;
+	bh=YeMOVCglBU8p164rswsGlI71AdJFCu0J+zIZHooKAUo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fnP8EeR24hanIEg85p6tmm6gxA9r6fNfu430PH0uKwCp/pZYEVmS4UXca3W6pulK0e8uBYA/5AFACi5KP/PBbg7Q0r4QcfIKBu7dEOheSRQS6MjeA/pQ8GxKWYbjtEQznx5uQzZjhdkU1dAkJwWt67CjBCYjx3hOFM0fufiJicc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=AHboONjB; arc=none smtp.client-ip=213.133.104.62
+	 In-Reply-To:Content-Type; b=STEP0OQFbAVxyF0gvIBWluyz/TWgP3B3zU0PlqdMXic16XChoNhFBTAoSEToR1uNu2Kr0lsNvOtJ0EVEopx31TG76hNMtCJ9k1AjSW5+epLqcmDJtNeiZeC9r7VaUc0meR2MWWgJy0LPjkQyc5A78lccat66vdYz+aRLd2Lx6JM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=leCL277o; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,26 +36,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=iNRz0JMgF5AWu0p93oS8PC9LQcDyuiP2orhw+iwrxl0=; b=AHboONjBu9UOI3yNU38su+3eW1
-	oxhL7+q9BEJzSbBCKdv89igUlx927kfADs56XP4YaPNNdAjOwGLWDGRD5mSFdkdjhaX4NBL4+nn1k
-	cqoEtOsAcpuePE4h/RkCo+ahDYJJJJ8gH4SUMM9eSMt6ZDn/vvgoMZ5Su5aC2mF4MjmkW2MMsm4OH
-	FQxmVESVytd6iYgcI5Azgombp8OloCTImDXKSzTSkcXFQxLLE99ZyRX0HGm/J2UYeXP4gJTaF/9wJ
-	0u9ybBvbrEiJF/tMR8tBOG0/dSuF8p7kN0f2ErGJ2DtqcvBHC5J2br6rZCWLjFDP1iHFmGSLKlbXP
-	1PX6pT1Q==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
+	bh=aYWQg/UvnmCmXtVe8KM5L6hltd/YwWA4VEQIY1VMyHI=; b=leCL277oy7Tss29U5TzSSnKppN
+	nMVoBAqlEy2uBPr4koxnqDWHqANIaLmxz4hfr45k6RCxRsuZCrGh8b8vynOyJhIQaFHUoLvu3CIao
+	fElvV8XElTMiLSze01B/QuWxEVb6d655KEh2soKuT/FAm8jHXTQPb4QPs1gPhze6TAIE2oylfaVmb
+	40meVabdff3yP1t48ObR0RJ22XQwj4PhB6toW42jvJRxKQXn8I9UedrxT8UowYitPdAg98ImL3j6t
+	Pp7iEZ4CWdCxE3jR57ddF7hM6Zmq7sI9R1g5vagShwUch2MpCvvONfbitv5sZJP/qImqqhLsGF+5H
+	nJxd1W8A==;
+Received: from sslproxy07.your-server.de ([78.47.199.104])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1uYl6L-000FoR-2u;
-	Mon, 07 Jul 2025 14:37:41 +0200
+	id 1uYlai-000Iwg-0k;
+	Mon, 07 Jul 2025 15:09:04 +0200
 Received: from localhost ([127.0.0.1])
-	by sslproxy06.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1uYl6L-0007zT-1Z;
-	Mon, 07 Jul 2025 14:37:41 +0200
-Message-ID: <2e0d3918-3c00-4bac-82c6-2cdd33891b0c@iogearbox.net>
-Date: Mon, 7 Jul 2025 14:37:41 +0200
+	id 1uYlah-0008Pz-0R;
+	Mon, 07 Jul 2025 15:09:03 +0200
+Message-ID: <dd816dfa-bb67-4544-b9fc-8de16af03fac@iogearbox.net>
+Date: Mon, 7 Jul 2025 15:09:02 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,12 +63,14 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v4] selftests/bpf: Negative test case for tail
- call map
-To: Paul Chaignon <paul.chaignon@gmail.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>
-References: <aGu0i1X_jII-3aFa@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: make the attach target more accurate
+To: Menglong Dong <menglong8.dong@gmail.com>, ast@kernel.org
+Cc: john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Menglong Dong <dongml2@chinatelecom.cn>, alan.maguire@oracle.com
+References: <20250707113528.378303-1-dongml2@chinatelecom.cn>
 Content-Language: en-US
 From: Daniel Borkmann <daniel@iogearbox.net>
 Autocrypt: addr=daniel@iogearbox.net; keydata=
@@ -114,18 +116,165 @@ Autocrypt: addr=daniel@iogearbox.net; keydata=
  rUD9YI1Je/WifL/HbIubHCCdK8/N7rblgUrZJMG3W+7vAvZsOh/6VTZeP4wCe7Gs/cJhE2gI
  DmGcR+7rQvbFQC4zQxEjo8fNaTwjpzLM9NIp4vG9SDIqAm20MXzLBAeVkofixCsosUWUODxP
  owLbpg7pFRJGL9YyEHpS7MGPb3jSLzucMAFXgoI8rVqoq6si2sxr2l0VsNH5o3NgoAgJNIg=
-In-Reply-To: <aGu0i1X_jII-3aFa@mail.gmail.com>
+In-Reply-To: <20250707113528.378303-1-dongml2@chinatelecom.cn>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Virus-Scanned: Clear (ClamAV 1.0.7/27692/Mon Jul  7 10:35:53 2025)
 
-On 7/7/25 1:50 PM, Paul Chaignon wrote:
-> This patch adds a negative test case for the following verifier error.
+On 7/7/25 1:35 PM, Menglong Dong wrote:
+> For now, we lookup the address of the attach target in
+> bpf_check_attach_target() with find_kallsyms_symbol_value or
+> kallsyms_lookup_name, which is not accurate in some cases.
 > 
->      expected prog array map for tail call
+> For example, we want to attach to the target "t_next", but there are
+> multiple symbols with the name "t_next" exist in the kallsyms. The one
+> that kallsyms_lookup_name() returned may have no ftrace record, which
+> makes the attach target not available. So we want the one that has ftrace
+> record to be returned.
 > 
-> Acked-by: Yonghong Song <yonghong.song@linux.dev>
-> Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
+> Meanwhile, there may be multiple symbols with the name "t_next" in ftrace
+> record. In this case, the attach target is ambiguous, so the attach should
+> fail.
+> 
+> Introduce the function bpf_lookup_attach_addr() to do the address lookup,
+> which is able to solve this problem.
+> 
+> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
 
-Acked-by: Daniel Borkmann <daniel@iogearbox.net>
+Breaks CI, see also:
+
+First test_progs failure (test_progs-aarch64-gcc-14):
+#467/1 tracing_failure/bpf_spin_lock
+test_bpf_spin_lock:PASS:tracing_failure__open 0 nsec
+libbpf: prog 'test_spin_lock': BPF program load failed: -ENOENT
+libbpf: prog 'test_spin_lock': -- BEGIN PROG LOAD LOG --
+The address of function bpf_spin_lock cannot be found
+processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
+-- END PROG LOAD LOG --
+libbpf: prog 'test_spin_lock': failed to load: -ENOENT
+libbpf: failed to load object 'tracing_failure'
+libbpf: failed to load BPF skeleton 'tracing_failure': -ENOENT
+test_bpf_spin_lock:FAIL:tracing_failure__load unexpected error: -2 (errno 2)
+#467/2 tracing_failure/bpf_spin_unlock
+test_bpf_spin_lock:PASS:tracing_failure__open 0 nsec
+libbpf: prog 'test_spin_unlock': BPF program load failed: -ENOENT
+libbpf: prog 'test_spin_unlock': -- BEGIN PROG LOAD LOG --
+The address of function bpf_spin_unlock cannot be found
+processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
+-- END PROG LOAD LOG --
+libbpf: prog 'test_spin_unlock': failed to load: -ENOENT
+libbpf: failed to load object 'tracing_failure'
+libbpf: failed to load BPF skeleton 'tracing_failure': -ENOENT
+test_bpf_spin_lock:FAIL:tracing_failure__load unexpected error: -2 (errno 2)
+
+>   kernel/bpf/verifier.c | 76 ++++++++++++++++++++++++++++++++++++++++---
+>   1 file changed, 71 insertions(+), 5 deletions(-)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 0f6cc2275695..9a7128da6d13 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -23436,6 +23436,72 @@ static int check_non_sleepable_error_inject(u32 btf_id)
+>   	return btf_id_set_contains(&btf_non_sleepable_error_inject, btf_id);
+>   }
+>   
+> +struct symbol_lookup_ctx {
+> +	const char *name;
+> +	unsigned long addr;
+> +};
+> +
+> +static int symbol_callback(void *data, unsigned long addr)
+> +{
+> +	struct symbol_lookup_ctx *ctx = data;
+> +
+> +	if (!ftrace_location(addr))
+> +		return 0;
+> +
+> +	if (ctx->addr)
+> +		return -EADDRNOTAVAIL;
+> +
+> +	ctx->addr = addr;
+> +
+> +	return 0;
+> +}
+> +
+> +static int symbol_mod_callback(void *data, const char *name, unsigned long addr)
+> +{
+> +	if (strcmp(((struct symbol_lookup_ctx *)data)->name, name) != 0)
+> +		return 0;
+> +
+> +	return symbol_callback(data, addr);
+> +}
+> +
+> +/**
+> + * bpf_lookup_attach_addr: Lookup address for a symbol
+> + *
+> + * @mod: kernel module to lookup the symbol, NULL means to lookup the kernel
+> + * symbols
+> + * @sym: the symbol to resolve
+> + * @addr: pointer to store the result
+> + *
+> + * Lookup the address of the symbol @sym, and the address should has
+> + * corresponding ftrace location. If multiple symbols with the name @sym
+> + * exist, the one that has ftrace location will be returned. If more than
+> + * 1 has ftrace location, -EADDRNOTAVAIL will be returned.
+> + *
+> + * Returns: 0 on success, -errno otherwise.
+> + */
+> +static int bpf_lookup_attach_addr(const struct module *mod, const char *sym,
+> +				  unsigned long *addr)
+> +{
+> +	struct symbol_lookup_ctx ctx = { .addr = 0, .name = sym };
+> +	int err;
+> +
+> +	if (!mod)
+> +		err = kallsyms_on_each_match_symbol(symbol_callback, sym, &ctx);
+
+This is also not really equivalent to kallsyms_lookup_name(). kallsyms_on_each_match_symbol()
+only iterates over all symbols in vmlinux whereas kallsyms_lookup_name() looks up both vmlinux
+and modules.
+
+> +	else
+> +		err = module_kallsyms_on_each_symbol(mod->name, symbol_mod_callback,
+> +						     &ctx);
+> +
+> +	if (!ctx.addr)
+> +		return -ENOENT;
+> +
+> +	if (err)
+> +		return err;
+> +
+> +	*addr = ctx.addr;
+> +
+> +	return 0;
+> +}
+> +
+>   int bpf_check_attach_target(struct bpf_verifier_log *log,
+>   			    const struct bpf_prog *prog,
+>   			    const struct bpf_prog *tgt_prog,
+> @@ -23689,18 +23755,18 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+>   			if (btf_is_module(btf)) {
+>   				mod = btf_try_get_module(btf);
+>   				if (mod)
+> -					addr = find_kallsyms_symbol_value(mod, tname);
+> +					ret = bpf_lookup_attach_addr(mod, tname, &addr);
+>   				else
+> -					addr = 0;
+> +					ret = -ENOENT;
+>   			} else {
+> -				addr = kallsyms_lookup_name(tname);
+> +				ret = bpf_lookup_attach_addr(NULL, tname, &addr);
+>   			}
+> -			if (!addr) {
+> +			if (ret) {
+>   				module_put(mod);
+>   				bpf_log(log,
+>   					"The address of function %s cannot be found\n",
+>   					tname);
+> -				return -ENOENT;
+> +				return ret;
+>   			}
+>   		}
+>   
+
 
