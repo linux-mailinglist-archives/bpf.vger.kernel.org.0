@@ -1,54 +1,54 @@
-Return-Path: <bpf+bounces-62500-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62502-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16E31AFB586
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 16:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F187AFB587
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 16:02:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FFAB3B0449
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 14:01:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10B2F3B0C97
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 14:02:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9BD02BE04A;
-	Mon,  7 Jul 2025 14:02:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 261862BE027;
+	Mon,  7 Jul 2025 14:02:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="KXgG02KN"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Xp1Ks6o5"
 X-Original-To: bpf@vger.kernel.org
 Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3978B1A3164;
-	Mon,  7 Jul 2025 14:02:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 691BF1FCF41;
+	Mon,  7 Jul 2025 14:02:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751896934; cv=none; b=OwVWpbXHhwqOks0P41jAWKVcnJtGond1tMASFTyRg1mYiWcTdiErPKApQaizraY5T+xihco/qaDbGXiGk2PGNOryH/WUPC7fdBO5OfnaecOV0Hvu96LTSTcRUyAg4EppjYEVcEmPVCGZpghiQPahIJ8N/V3UB7aMe4dY4MhrY+4=
+	t=1751896934; cv=none; b=Ke2gwpyrvw8fosIPakHYx/SNIVyCqU7WNWuEiFBTA/EGrhn6N8RgdiYDGjwi+dGvgdRTB2apDJZ2bAZbPAKY3HeT4iTr8AXDSjjT06rKpotYyvbIi4wRPrkomPw+QjttMW67sfruytGMJo8yv36dZXjnLXxmglRgSgq4Zwt2tKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1751896934; c=relaxed/simple;
-	bh=SwLfP1VsnZ2aW/bPI3dmLXLNoN9SqeAhAadVyZYSBe0=;
+	bh=Ui0SVBAF9ZOOCGT2pgDGK3fz7RgnUEizMhpIhHdPW6Q=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Ny/thf7c4qW37O7IffI5WLmQuexnRrUZ5ouS3XVyT9nTbhdsaoNjobteBCsnnEn7wmJESNqXdnEP+wkqqSKDN6IWBaJ8nJZu5Z/EznTDe2W9xO5kcyHBQ/aGH/4nGG3II5ABC36pMT+z6/otB9ClKHX4QWFfVwoqa8wB8s9Q9BQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=KXgG02KN; arc=none smtp.client-ip=217.70.183.196
+	 In-Reply-To:To:Cc; b=gMF5iGj7EKGEC7i08iDxnJqkbBImuDw1QfGhPJOv4zpAWsvwD8khShQyv5N+jHBW5Q/DG7MogUUGpWr0k3oKH8WoIBHFf1byIzfJryiOJ4eqxTVP+wxuoAUtAAA3yf4I0CI0s/ZdrtydN10pfMy8JdOqPKVDjix7A90WMgQPS4c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Xp1Ks6o5; arc=none smtp.client-ip=217.70.183.196
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id AAA12443D7;
-	Mon,  7 Jul 2025 14:02:09 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3A676443B1;
+	Mon,  7 Jul 2025 14:02:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
 	t=1751896930;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=j5pXsJdZOvkkjJgFmP3zvNZIEqglZ+MGqgFvCqg8Qn4=;
-	b=KXgG02KNnRbV8TAlENLJAOusz9jIgf0se4HOmjq9xaqzH2kEc3utVl4C7+Bgf7L0lNn1pM
-	9vNv1kM/BjqhMi7t24qBKjniTUYAtLpgr3j0KPKFVlXyrOuWMWE+vQT2nADIw8hWQwh07S
-	tk+mvbhoBJrNVEhhNESu6bgyIYZEpoarsQ6FY614IZOpCczjjVlTWZDCx1psxvt8PsUR3O
-	3MArT4GRZGAAWlfI2wsY79ooku+LyuykRwxMempQyajkv4MaREN0NjGrzxgFTL47s0BVzb
-	pE77TQwLPIC2LQs2VcgehwZorU+wcJCqYJsDGGTq66NyP9zT6HytSoo8TPXUZA==
+	bh=40NAIMtjpvdSKHdzmcfQA9UKomJZG7cKSHLRYBGNLJQ=;
+	b=Xp1Ks6o5Uf1BiOawub/QE6BZfAS7mKmzFXNAi882ft4mrYHreEPyq64uT+7vQHhgquNvTS
+	2PQ4/APoSJmRWDE0QbPYXyUzWCEHo9ckQd6ojbZgpNlGhnAnZ6H7pCMec3Wa0lveSTrhk8
+	mCc8jmXvRAUpmn+aOWa9asj29/V1tL4A0TG0vQS5BJ8MWvJjb5g125xNtkQBuEsND96h5m
+	+pJMLwuDLa7OopCpHdEcQJwZK4OS2qfAZErwpbqVkzTRGnCMOPF30chzed/QoCRzeq3B05
+	fzUNM0y5AHiKiLkVfbcF0pHojI8X3lGLi9qvrktLVp3tFpZlrY4wIQFveIwXPw==
 From: =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Date: Mon, 07 Jul 2025 16:02:03 +0200
-Subject: [PATCH v3 1/3] btf_encoder: skip functions consuming packed
- structs passed by value on stack
+Date: Mon, 07 Jul 2025 16:02:04 +0200
+Subject: [PATCH v3 2/3] tests: add some tests validating skipped functions
+ due to uncertain arg location
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -57,7 +57,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20250707-btf_skip_structs_on_stack-v3-1-29569e086c12@bootlin.com>
+Message-Id: <20250707-btf_skip_structs_on_stack-v3-2-29569e086c12@bootlin.com>
 References: <20250707-btf_skip_structs_on_stack-v3-0-29569e086c12@bootlin.com>
 In-Reply-To: <20250707-btf_skip_structs_on_stack-v3-0-29569e086c12@bootlin.com>
 To: dwarves@vger.kernel.org
@@ -73,171 +73,242 @@ X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdefudellecutefuodetggdotef
  hhtthhopegrtghmvgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepvggsphhfsehlihhnuhigfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpthhtohepugifrghrvhgvshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegsrghsthhivghnrdgtuhhruhhttghhvghtsegsohhothhlihhnrdgtohhmpdhrtghpthhtoheprghsthesfhgsrdgtohhm
 X-GND-Sasl: alexis.lothore@bootlin.com
 
-Most ABIs allow functions to receive structs passed by value, if they
-fit in a register or a pair of registers, depending on the exact ABI.
-However, when there is a struct passed by value but all registers are
-already used for parameters passing, the struct is still passed by value
-but on the stack. This becomes an issue if the passed struct is defined
-with some attributes like __attribute__((packed)) or
-__attribute__((aligned(X)), as its location on the stack is altered, but
-this change is not reflected in dwarf information. The corresponding BTF
-data generated from this can lead to incorrect BPF trampolines
-generation (eg to attach bpf tracing programs to kernel functions) in
-the Linux kernel.
+Add a small binary representing specific cases likely absent from
+standard vmlinux or kernel modules files. As a starter, the introduced
+binary exposes a few functions consuming structs passed by value, some
+passed by register, some passed on the stack:
 
-Prevent those wrong cases by not encoding functions consuming structs
-passed by value on stack, when those structs do not have the expected
-alignment due to some attribute usage.
+  int main(void);
+  int test_bin_func_struct_on_stack_ko(int, void *, char, short int, int, \
+    void *, char, short int, struct test_bin_struct_packed);
+  int test_bin_func_struct_on_stack_ok(int, void *, char, short int, int, \
+    void *, char, short int, struct test_bin_struct);
+  int test_bin_func_struct_ok(int, void *, char, struct test_bin_struct);
+  int test_bin_func_ok(int, void *, char, short int);
+
+Then enrich btf_functions.sh to make it perform the following steps:
+- build the binary
+- generate BTF info and pfunct listing, both with dwarf and the
+  generated BTF
+- check that any function encoded in BTF is found in DWARF
+- check that any function announced as skipped is indeed absent from BTF
+- check that any skipped function has been skipped due to uncertain
+  parameter location
+
+Example of the new test execution:
+  Encoding...Matched 4 functions exactly.
+  Ok
+  Validation of skipped function logic...
+  Skipped encoding 1 functions in BTF.
+  Ok
+  Validating skipped functions have uncertain parameter location...
+  pahole: /home/alexis/src/pahole/tests/bin/test_bin: Invalid argument
+  Found 1 legitimately skipped function due to uncertain loc
+  Ok
 
 Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
 ---
 Changes in v3:
-- remove unneeded class__find_holes (already done by
-  class__infer_packed_attributes)
-- add uncertain parm loc in saved_functions_combine
-Changes in v2:
-- do not deny any struct passed by value, only those passed on stack AND
-  with some attribute alteration
-- use the existing class__infer_packed_attributes to deduce is a struct
-  is "altered". As a consequence, move the function filtering from
-  parameter__new to btf_encoder__encode_cu, to make sure that all the
-  needed data has been parsed from debug info
----
- btf_encoder.c | 53 ++++++++++++++++++++++++++++++++++++++++++++++++++---
- dwarves.h     |  1 +
- 2 files changed, 51 insertions(+), 3 deletions(-)
+- bring a userspace binary instead of an OoT kernel module
+- remove test dependency to a kernel directory being provided
+- improve test dir detection
 
-diff --git a/btf_encoder.c b/btf_encoder.c
-index 0bc23349b5d740c3ddab8208b2e15cdbdd139b9d..3f040fe03d7a208aa742914513bacde9782aabcf 100644
---- a/btf_encoder.c
-+++ b/btf_encoder.c
-@@ -87,6 +87,7 @@ struct btf_encoder_func_state {
- 	uint8_t optimized_parms:1;
- 	uint8_t unexpected_reg:1;
- 	uint8_t inconsistent_proto:1;
-+	uint8_t uncertain_parm_loc:1;
- 	int ret_type_id;
- 	struct btf_encoder_func_parm *parms;
- 	struct btf_encoder_func_annot *annots;
-@@ -1203,6 +1204,7 @@ static int32_t btf_encoder__save_func(struct btf_encoder *encoder, struct functi
- 	state->inconsistent_proto = ftype->inconsistent_proto;
- 	state->unexpected_reg = ftype->unexpected_reg;
- 	state->optimized_parms = ftype->optimized_parms;
-+	state->uncertain_parm_loc = ftype->uncertain_parm_loc;
- 	ftype__for_each_parameter(ftype, param) {
- 		const char *name = parameter__name(param) ?: "";
- 
-@@ -1365,7 +1367,7 @@ static int saved_functions_cmp(const void *_a, const void *_b)
- 
- static int saved_functions_combine(struct btf_encoder_func_state *a, struct btf_encoder_func_state *b)
- {
--	uint8_t optimized, unexpected, inconsistent;
-+	uint8_t optimized, unexpected, inconsistent, uncertain_parm_loc;
- 	int ret;
- 
- 	ret = strncmp(a->elf->name, b->elf->name,
-@@ -1375,11 +1377,13 @@ static int saved_functions_combine(struct btf_encoder_func_state *a, struct btf_
- 	optimized = a->optimized_parms | b->optimized_parms;
- 	unexpected = a->unexpected_reg | b->unexpected_reg;
- 	inconsistent = a->inconsistent_proto | b->inconsistent_proto;
-+	uncertain_parm_loc = a->uncertain_parm_loc | b->uncertain_parm_loc;
- 	if (!unexpected && !inconsistent && !funcs__match(a, b))
- 		inconsistent = 1;
- 	a->optimized_parms = b->optimized_parms = optimized;
- 	a->unexpected_reg = b->unexpected_reg = unexpected;
- 	a->inconsistent_proto = b->inconsistent_proto = inconsistent;
-+	a->uncertain_parm_loc = b->uncertain_parm_loc = uncertain_parm_loc;
- 
- 	return 0;
- }
-@@ -1430,9 +1434,15 @@ static int btf_encoder__add_saved_funcs(struct btf_encoder *encoder, bool skip_e
- 		/* do not exclude functions with optimized-out parameters; they
- 		 * may still be _called_ with the right parameter values, they
- 		 * just do not _use_ them.  Only exclude functions with
--		 * unexpected register use or multiple inconsistent prototypes.
-+		 * unexpected register use, multiple inconsistent prototypes or
-+		 * uncertain parameters location
- 		 */
--		add_to_btf |= !state->unexpected_reg && !state->inconsistent_proto;
-+		add_to_btf |= !state->unexpected_reg && !state->inconsistent_proto && !state->uncertain_parm_loc;
+Changes in v2:
+- new patch
+---
+ tests/bin/Makefile     | 10 ++++++
+ tests/bin/test_bin.c   | 66 ++++++++++++++++++++++++++++++++++++
+ tests/btf_functions.sh | 91 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 167 insertions(+)
+
+diff --git a/tests/bin/Makefile b/tests/bin/Makefile
+new file mode 100644
+index 0000000000000000000000000000000000000000..70bcf57ac4744f30fe03ea12908e42c69390f14a
+--- /dev/null
++++ b/tests/bin/Makefile
+@@ -0,0 +1,10 @@
++CC=${CROSS_COMPILE}gcc
 +
-+		if (state->uncertain_parm_loc)
-+			btf_encoder__log_func_skip(encoder, saved_fns[i].elf,
-+					"uncertain parameter location\n",
-+					0, 0);
- 
- 		if (add_to_btf) {
- 			err = btf_encoder__add_func(state->encoder, state);
-@@ -2553,6 +2563,38 @@ void btf_encoder__delete(struct btf_encoder *encoder)
- 	free(encoder);
- }
- 
-+static bool ftype__has_uncertain_arg_loc(struct cu *cu, struct ftype *ftype)
++test_bin: test_bin.c
++	${CC} $^ -Wall -Wextra -Werror -g -o $@
++
++clean:
++	rm -rf test_bin
++
++.PHONY: clean
++
+diff --git a/tests/bin/test_bin.c b/tests/bin/test_bin.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..ca6a4852cc511243925db905e55e040519af9cfd
+--- /dev/null
++++ b/tests/bin/test_bin.c
+@@ -0,0 +1,66 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <stdio.h>
++
++#define noinline __attribute__((noinline))
++#define __packed __attribute__((__packed__))
++
++struct test_bin_struct {
++	char a;
++	short b;
++	int c;
++	unsigned long long d;
++};
++
++struct test_bin_struct_packed {
++	char a;
++	short b;
++	int c;
++	unsigned long long d;
++}__packed;
++
++int test_bin_func_ok(int a, void *b, char c, short d);
++int test_bin_func_struct_ok(int a, void *b, char c, struct test_bin_struct d);
++int test_bin_func_struct_on_stack_ok(int a, void *b, char c, short d, int e,
++                                      void *f, char g, short h,
++                                      struct test_bin_struct i);
++int test_bin_func_struct_on_stack_ko(int a, void *b, char c, short d, int e,
++                                      void *f, char g, short h,
++                                      struct test_bin_struct_packed i);
++
++noinline int test_bin_func_ok(int a, void *b, char c, short d)
 +{
-+	struct parameter *param;
-+	int param_idx = 0;
-+
-+	if (ftype->nr_parms < cu->nr_register_params)
-+		return false;
-+
-+	ftype__for_each_parameter(ftype, param) {
-+		if (param_idx++ < cu->nr_register_params)
-+			continue;
-+
-+		struct tag *type = cu__type(cu, param->tag.type);
-+
-+		if (type == NULL || !tag__is_struct(type))
-+			continue;
-+
-+		struct type *ctype = tag__type(type);
-+		if (ctype->namespace.name == 0)
-+			continue;
-+
-+		struct class *class = tag__class(type);
-+
-+		class__infer_packed_attributes(class, cu);
-+
-+		if (class->is_packed)
-+			return true;
-+	}
-+
-+	return false;
++	return a + (long)b + c + d;
 +}
 +
- int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct conf_load *conf_load)
- {
- 	struct llvm_annotation *annot;
-@@ -2647,6 +2689,8 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
- 		 * Skip functions that:
- 		 *   - are marked as declarations
- 		 *   - do not have full argument names
-+		 *   - have arguments with uncertain locations, e.g packed
-+		 *   structs passed by value on stack
- 		 *   - are not in ftrace list (if it's available)
- 		 *   - are not external (in case ftrace filter is not available)
- 		 */
-@@ -2693,6 +2737,9 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
- 		if (!func)
- 			continue;
- 
-+		if (ftype__has_uncertain_arg_loc(cu, &fn->proto))
-+			fn->proto.uncertain_parm_loc = 1;
++noinline int test_bin_func_struct_ok(int a, void *b, char c,
++                                      struct test_bin_struct d)
++{
++	return a + (long)b + c + d.a + d.b + d.c + d.d;
++}
 +
- 		err = btf_encoder__save_func(encoder, fn, func);
- 		if (err)
- 			goto out;
-diff --git a/dwarves.h b/dwarves.h
-index 36c689847ebf29a1ab9936f9d0f928dd46514547..d689aee5910f4b40dc13b3e9dc596dfbe6a2c3d0 100644
---- a/dwarves.h
-+++ b/dwarves.h
-@@ -1021,6 +1021,7 @@ struct ftype {
- 	uint8_t		 unexpected_reg:1;
- 	uint8_t		 processed:1;
- 	uint8_t		 inconsistent_proto:1;
-+	uint8_t		 uncertain_parm_loc:1;
- 	struct list_head template_type_params;
- 	struct list_head template_value_params;
- 	struct template_parameter_pack *template_parameter_pack;
++noinline int test_bin_func_struct_on_stack_ok(int a, void *b, char c, short d,
++                                               int e, void *f, char g, short h,
++                                               struct test_bin_struct i)
++{
++	return a + (long)b + c + d + e + (long)f + g + h + i.a + i.b + i.c + i.d;
++}
++
++noinline int test_bin_func_struct_on_stack_ko(int a, void *b, char c, short d,
++                                               int e, void *f, char g, short h,
++                                               struct test_bin_struct_packed i)
++{
++	return a + (long)b + c + d + e + (long)f + g + h + i.a + i.b + i.c + i.d;
++}
++
++int main()
++{
++	struct test_bin_struct test;
++	struct test_bin_struct_packed test_bis;
++
++	test_bin_func_ok(0, NULL, 0, 0);
++	test_bin_func_struct_ok(0, NULL, 0, test);
++	test_bin_func_struct_on_stack_ok(0, NULL, 0, 0, 0, NULL, 0, 0, test);
++	test_bin_func_struct_on_stack_ko(0, NULL, 0, 0, 0, NULL, 0, 0, test_bis);
++	return 0;
++}
++
+diff --git a/tests/btf_functions.sh b/tests/btf_functions.sh
+index c92e5ae906f90badfede86eb530108894fbc8c93..fb62b0b56662bb2ae58f7adc0a022c400cba5e0f 100755
+--- a/tests/btf_functions.sh
++++ b/tests/btf_functions.sh
+@@ -193,4 +193,95 @@ if [[ -n "$VERBOSE" ]]; then
+ fi
+ echo "Ok"
+ 
++# Some specific cases can not  be tested directly with a standard kernel.
++# We can use the small binary in bin/ to test those cases, like packed
++# structs passed on the stack. 
++
++echo -n "Validation of BTF encoding corner cases with test_bin functions; this may take some time: "
++
++test -n "$VERBOSE" && printf "\nBuilding test_bin..."
++tests_dir=$(realpath $(dirname $0))
++make -C ${tests_dir}/bin
++
++test -n "$VERBOSE" && printf "\nEncoding..."
++pahole --btf_features=default --lang_exclude=rust --btf_encode_detached=$outdir/test_bin.btf \
++	--verbose ${tests_dir}/bin/test_bin | grep "skipping BTF encoding of function" \
++	> ${outdir}/test_bin_skipped_fns
++
++funcs=$(pfunct --format_path=btf $outdir/test_bin.btd 2>/dev/null|sort)
++pfunct --all --no_parm_names --format_path=dwarf bin/test_bin | \
++	sort|uniq > $outdir/test_bin_dwarf.funcs
++pfunct --all --no_parm_names --format_path=btf $outdir/test_bin.btf 2>/dev/null|\
++	awk '{ gsub("^(bpf_kfunc |bpf_fastcall )+",""); print $0}'|sort|uniq > $outdir/test_bin_btf.funcs
++
++exact=0
++while IFS= read -r btf ; do
++	# Matching process can be kept simpler as the tested binary is
++	# specifically tailored for tests
++	dwarf=$(grep -F "$btf" $outdir/test_bin_dwarf.funcs)
++	if [[ "$btf" != "$dwarf" ]]; then
++		echo "ERROR: mismatch : BTF '$btf' not found; DWARF '$dwarf'"
++		fail
++	else
++		exact=$((exact+1))
++	fi
++done < $outdir/test_bin_btf.funcs
++
++if [[ -n "$VERBOSE" ]]; then
++	echo "Matched $exact functions exactly."
++	echo "Ok"
++	echo "Validation of skipped function logic..."
++fi
++
++skipped_cnt=$(wc -l ${outdir}/test_bin_skipped_fns | awk '{ print $1}')
++if [[ "$skipped_cnt" == "0" ]]; then
++	echo "No skipped functions.  Done."
++	exit 0
++fi
++
++skipped_fns=$(awk '{print $1}' $outdir/test_bin_skipped_fns)
++for s in $skipped_fns ; do
++	# Ensure the skipped function are not in BTF
++	inbtf=$(grep " $s(" $outdir/test_bin_btf.funcs)
++	if [[ -n "$inbtf" ]]; then
++		echo "ERROR: '${s}()' was added incorrectly to BTF: '$inbtf'"
++		fail
++	fi
++done
++
++if [[ -n "$VERBOSE" ]]; then
++	echo "Skipped encoding $skipped_cnt functions in BTF."
++	echo "Ok"
++	echo "Validating skipped functions have uncertain parameter location..."
++fi
++
++uncertain_loc=$(awk '/due to uncertain parameter location/ { print $1 }' $outdir/test_bin_skipped_fns)
++legitimate_skip=0
++
++for f in $uncertain_loc ; do
++	# Extract parameters types
++	raw_params=$(grep ${f} $outdir/test_bin_dwarf.funcs|sed -n 's/^[^(]*(\([^)]*\)).*/\1/p')
++	IFS=',' read -ra params <<< "${raw_params}"
++	for param in "${params[@]}"
++	do
++		# Search any param that could be a struct
++		struct_type=$(echo ${param}|grep -E '^struct [^*]' | sed -E 's/^struct //')
++		if [ -n "${struct_type}" ]; then
++			# Check with pahole if the struct is detected as
++			# packed
++			if pahole -F dwarf -C "${struct_type}" ${tests_dir}/bin/test_bin|tail -n 2|grep -q __packed__
++			then
++				legitimate_skip=$((legitimate_skip+1))
++				continue 2
++			fi
++		fi
++	done
++	echo "ERROR: '${f}()' should not have been skipped; it has no parameter with uncertain location"
++	fail
++done
++
++if [[ -n "$VERBOSE" ]]; then
++	echo "Found ${legitimate_skip} legitimately skipped function due to uncertain loc"
++fi
++echo "Ok"
+ exit 0
 
 -- 
 2.50.0
