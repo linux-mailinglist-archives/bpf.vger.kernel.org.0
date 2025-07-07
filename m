@@ -1,326 +1,370 @@
-Return-Path: <bpf+bounces-62552-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62553-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92226AFBBB0
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 21:29:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 236D5AFBBC8
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 21:36:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DD09188DF93
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 19:29:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 091A03A6DD8
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 19:36:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B9092673AF;
-	Mon,  7 Jul 2025 19:29:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0D95264F9C;
+	Mon,  7 Jul 2025 19:36:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jWqFKVFh"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oFD9RQxo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AEAF262FFF
-	for <bpf@vger.kernel.org>; Mon,  7 Jul 2025 19:28:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5278B13D503
+	for <bpf@vger.kernel.org>; Mon,  7 Jul 2025 19:36:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751916539; cv=none; b=IRmji3+o702l4ZGdbkcn0jBeOWXZcRWTwMbeVCX8U7OY7WdHUrgzMJ4OVAgVKMIAfK90qi6RuedGyG1ajhQeFe33RZd/EO9VbppdyJDTXF/3BIygwjhl/1lAa/1DCEEBx3Rp+hr8dm7oNi+tnuP0xS8sQ36Eq4q0V71u+4k+Cqg=
+	t=1751916999; cv=none; b=kceYhscI563e1wcxFBerPBuHA/ZAZJjHJ9CWxQcmeOyER0XcTcAoWaKKV3/lqI3WfyBMYS7jc989VIc+ddd7aksfihm84T2meoU02fOJcYJCxHxiYUGvA502cgu2cqXkIGUPu4nfOscVvZBZdLZBidj2TRuCM9MM/aAKSi0ye/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751916539; c=relaxed/simple;
-	bh=GBxCBChzXJvvanBimODP1t6LT1KMBlbyvjWEuegwfrM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FFR7/gOPcHfDzgwYeXG3yWFbtzkZLGd76aN5yk4gFYLmpz1K6ldTe19OuBxEH04cvGaK+6uFkAyUBUrPPDNbMSTiEVePJX/x5SQaAMVDJjgtFVZi5V4XCLia99phVnz0nXKg1IdZXCqWaPpkU+Yw8LTwOeb/S1lVbuco/UUvFeM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jWqFKVFh; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-453066fad06so25043225e9.2
-        for <bpf@vger.kernel.org>; Mon, 07 Jul 2025 12:28:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751916536; x=1752521336; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7ncS2DP+t4Fe3zDlzbKFIkjdyw7uZudBFeNfmawDeyQ=;
-        b=jWqFKVFhOyc6fCoQH7mRoCROwTNpZh5qYNOkvZisyTULii0+cNo80UHIHE5447zTn0
-         qQplpTNfZDv4bjFYD/EoHHIgHIYeiTYfPU7Wp98FBcuAeC3326Ikh1V98WCjEc3LmqZZ
-         CTi5Tjy/KIRU8RPy1b/ANi+EfZsbX0fk/lYkbm9nsuZ0i/tXcQatCj1zsJSw+gJMz56v
-         cc9nqqy22h78aQy2rw/XcyaXfm5s7FrdIEbfPC6zWsfx4FH852hiGcZhimRjF9BcXqSm
-         4tqmmmCGobLkc1Vq6FwaeP+NcMK7+0V4DpmUw+QDULca/AS4GA8DykIXrQsYbx05kEBr
-         zeDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751916536; x=1752521336;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7ncS2DP+t4Fe3zDlzbKFIkjdyw7uZudBFeNfmawDeyQ=;
-        b=SjukKHGMTqjCfAirTDoSC7Qmftk6zmkyycFrIjiQqrjaX+1CUAhSEyZN9f/k/cHPUM
-         bvGcTUhL/SvJxWxst9Qf3uEeVMSpvFKAUFp+OJB21IWOEb/+C4E31OjWIROl5vQFzlKZ
-         3eoglUu2MiAcCtG/5r8vFR9enuyxgDYzieKR56XFSL98Mv27e2zGbk1TbUfyobnme8/Z
-         m9kI3Ak/wZtn98iVVdZSFQ8b5ND3zERe8ONuhUKojOu//nMBWX21B5EotGTa5J0cA3YF
-         zisswyYnJMCQYrSqMLabIM9rEwOu17ITXPY+Jic1xhtmhfIYVau8FcKQ7ZgtD/1RqpSB
-         PNVw==
-X-Forwarded-Encrypted: i=1; AJvYcCWfNMdJZ7d3TYjyiez7SDg2kufJeJRa8cIJDtCSqAZGU8d7424GzXX/wg0pIK9UzLdl9wM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyA8TiGiz8CK9KpDeVGI5l0k6Qr1JmF06Mx7Wlo09SHICbSlCHQ
-	zbZK6aFsyYv1S/WyrBRaNWVlj0R75taxu4j1b90sgSTQ1FROCvr4Ug/h
-X-Gm-Gg: ASbGncvNwnK4+tI2MhGNOV3D5MiW5Q7m/bef1dg1anVoCqQ5O2RNap1YUw4592XWTeg
-	RsnXgHeHz+ADDN+NUPe3/r1rbcW2k+zpagA5kIkW8UzNxW6F9tY/Hq2oIIUc7yylPCyEvLUNrmu
-	wrRoS+fGVGeT5CcREEmK/J50dOOh6VczqlnXHhm2QgcobySPQV9OtK7SoSZxF95s4LFtBpkRPKg
-	w2UOlgkh/O6z5uaNi+9mGHfuo8SKrm6F9xFQB6O8hVw9yNyAxxDlKSeyBOh2qPorZ9wHZ0rMcrK
-	1g1XEGoItXHLkbJ6l1YVkM5QLcG+IGEKQuWdJe275aqKol2izA9igBWOO48kDjsNUjtLG15rdpp
-	3elHqztJ7
-X-Google-Smtp-Source: AGHT+IH1cO5YltZdV6eQkln+Q7DfW9lTgWlx639NmwB5L/1L1q9gHfpwAx/lii0iIwLMvo/Z8Vn9Jg==
-X-Received: by 2002:a05:600c:8b27:b0:453:b44:eb71 with SMTP id 5b1f17b1804b1-454cd51868fmr167945e9.19.1751916536147;
-        Mon, 07 Jul 2025 12:28:56 -0700 (PDT)
-Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-454cd4a68ebsm388105e9.39.2025.07.07.12.28.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jul 2025 12:28:55 -0700 (PDT)
-Date: Mon, 7 Jul 2025 19:34:47 +0000
-From: Anton Protopopov <a.s.protopopov@gmail.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Anton Protopopov <aspsk@isovalent.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Quentin Monnet <qmo@kernel.org>
-Subject: Re: [RFC bpf-next 8/9] libbpf: support llvm-generated indirect jumps
-Message-ID: <aGwhV6erIeV9Eowg@mail.gmail.com>
-References: <20250615085943.3871208-1-a.s.protopopov@gmail.com>
- <20250615085943.3871208-9-a.s.protopopov@gmail.com>
- <1c17cd755a3e8865ad06baad86d42e42e289439a.camel@gmail.com>
- <f8bc4e5469e73b99943ff7783fbe4a7758bbbe32.camel@gmail.com>
- <aF5v8Yw5LUgVDgjB@mail.gmail.com>
- <454128db01c0a01f3459783cd5a0ea37af01c34e.camel@gmail.com>
- <e8a7a143ad1ebb087ff06032068201023aa893f4.camel@gmail.com>
+	s=arc-20240116; t=1751916999; c=relaxed/simple;
+	bh=TrLTiwlF0Wf07e2lz86PEpXxOC8UWVgE1D/eE9Kpggg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hOAXW6nNCfMqhxFNTvuc2OjUEj9R/k9McblmDOq2JO2JLF0eXvSDMMaUrqrsml+Q7unLIKyX1ASiAK1V00lfCxgWJz+iR1JhrBxOBY6Pux+syXVV7K9cBmqqIKVOBct3nXhCk1zv2TJgY/kZ2pbNyV8m12Ny2PN+WthWn3FY7jk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oFD9RQxo; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <d26bb031-e88c-4d4b-8ce2-439aedc7a4a8@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1751916994;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/sFmXTIjjAia35F8WO4yUmRUuNa3ruhUnQVqpCKns9w=;
+	b=oFD9RQxoBIITcN48qot81LamWT87VmRieqfXSMI2EOkEse+5NWG7LQkKKuFfI01SLoHFD4
+	LbHHKiOFjckKvGgl5na3ZetBKnJn9OId3A8Am5sm9gUvS8Rs1QPmzV8AYUPYIssdHBTzLw
+	C31npqu0LBF4X5LqVn6odmpIWh39JeM=
+Date: Mon, 7 Jul 2025 12:36:26 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e8a7a143ad1ebb087ff06032068201023aa893f4.camel@gmail.com>
+Subject: Re: [PATCH v3 2/3] tests: add some tests validating skipped functions
+ due to uncertain arg location
+To: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>,
+ dwarves@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@fb.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Bastien Curutchet <bastien.curutchet@bootlin.com>, ebpf@linuxfoundation.org
+References: <20250707-btf_skip_structs_on_stack-v3-0-29569e086c12@bootlin.com>
+ <20250707-btf_skip_structs_on_stack-v3-2-29569e086c12@bootlin.com>
+ <DB5VWHU0N27I.3ETC4G47KB9Q@bootlin.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+In-Reply-To: <DB5VWHU0N27I.3ETC4G47KB9Q@bootlin.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 25/07/07 12:07PM, Eduard Zingerman wrote:
-> On Thu, 2025-07-03 at 11:21 -0700, Eduard Zingerman wrote:
+On 7/7/25 7:14 AM, Alexis LothorÃ© wrote:
+> On Mon Jul 7, 2025 at 4:02 PM CEST, Alexis Lothoré (eBPF Foundation) wrote:
+>> Add a small binary representing specific cases likely absent from
+>> standard vmlinux or kernel modules files. As a starter, the introduced
+>> binary exposes a few functions consuming structs passed by value, some
+>> passed by register, some passed on the stack:
+>>
+>>    int main(void);
+>>    int test_bin_func_struct_on_stack_ko(int, void *, char, short int, int, \
+>>      void *, char, short int, struct test_bin_struct_packed);
+>>    int test_bin_func_struct_on_stack_ok(int, void *, char, short int, int, \
+>>      void *, char, short int, struct test_bin_struct);
+>>    int test_bin_func_struct_ok(int, void *, char, struct test_bin_struct);
+>>    int test_bin_func_ok(int, void *, char, short int);
+>>
+>> Then enrich btf_functions.sh to make it perform the following steps:
+>> - build the binary
+>> - generate BTF info and pfunct listing, both with dwarf and the
+>>    generated BTF
+>> - check that any function encoded in BTF is found in DWARF
+>> - check that any function announced as skipped is indeed absent from BTF
+>> - check that any skipped function has been skipped due to uncertain
+>>    parameter location
+>>
+>> Example of the new test execution:
+>>    Encoding...Matched 4 functions exactly.
+>>    Ok
+>>    Validation of skipped function logic...
+>>    Skipped encoding 1 functions in BTF.
+>>    Ok
+>>    Validating skipped functions have uncertain parameter location...
+>>    pahole: /home/alexis/src/pahole/tests/bin/test_bin: Invalid argument
 > 
-> [...]
+> A word about this specific error: I may have missed it in the previous
+> iteration, but I systematically get this error when running the following
+> command:
+>    $ pahole -C test_bin_struct_packed tests/bin/test_bin
 > 
-> > > > >   .jumptables
-> > > > >     <subprog-rel-off-0>
-> > > > >     <subprog-rel-off-1> | <--- jump table #1 symbol:
-> > > > >     <subprog-rel-off-2> |        .size = 2   // number of entries in the jump table
-> > > > >     ...                          .value = 1  // offset within .jumptables
-> > > > >     <subprog-rel-off-N>                          ^
-> > > > >                                                  |
-> > > > >   .text                                          |
-> > > > >     ...                                          |
-> > > > >     <insn-N>     <------ relocation referencing -'
-> > > > >     ...                  jump table #1 symbol
+> I initially thought that it would be something related to the binary being
+> a userspace program and not a kernel module, but I observe the following:
+> - the issue is observed even on a .ko file (tested on the previous series
+>    iteration with kmod.ko)
+> - the issue does not appear if there is no class filtering (ie the `-C`
+>    arg) provided to pahole
+> - the issue occurs as well with the packaged pahole version on my host (v1.30)
+> - the struct layout is still displayed correctly despite the error
 > 
-> [...]
-> 
-> I think I got it working in:
-> https://github.com/eddyz87/llvm-project/tree/separate-jumptables-section
+> A quick bisect shows that the error log has started appearing with
+> 59f5409f1357 ("dwarf_loader: Fix termination on BTF encoding error"). This
+> commit has "enforced" error propagation if dwfl_getmodules returns
+> something different than 0 (before, it was propagating an error only if the
+> error code was negative, but dwfl_getmodules seems to be able to return
+> values > 0 as well). As is sound unrelated to this series, I pushed this
+> new revision anyway. [1] seems to hint that the issue is known, but in my
+> case I don't get any additional log about unhandled DWARF operation. The
+> issue is pretty repeatable on my side, feel free to ask for any additional
+> detail or manipulation that could help.
 
-Awesome! I will try to use it tomorrow.
+I looked into this...
 
-> Changes on top of Yonghong's work.
-> An example is in the attachment the gist is:
-> 
-> -------------------------------
-> 
-> $ clang --target=bpf -c -o jump-table-test.o jump-table-test.c
-> There are 8 section headers, starting at offset 0xaa0:
-> 
-> Section Headers:
->   [Nr] Name              Type            Address          Off    Size   ES Flg Lk Inf Al
->   ...
->   [ 4] .jumptables       PROGBITS        0000000000000000 000220 000260 00      0   0  1
->   ...
-> 
-> Symbol table '.symtab' contains 8 entries:
->    Num:    Value          Size Type    Bind   Vis       Ndx Name
->      ...
->      3: 0000000000000000   256 NOTYPE  LOCAL  DEFAULT     4 .BPF.JT.0.0
->      4: 0000000000000100   352 NOTYPE  LOCAL  DEFAULT     4 .BPF.JT.0.1
->      ...
-> 
-> $ llvm-objdump --no-show-raw-insn -Sdr jump-table-test.o
-> jump-table-test.o:      file format elf64-bpf
-> 
-> Disassembly of section .text:
-> 
-> 0000000000000000 <foo>:
->        ...
->        6:       r2 <<= 0x3
->        7:       r1 = 0x0 ll
->                 0000000000000038:  R_BPF_64_64  .jumptables
->        9:       r1 += r2
->       10:       r1 = *(u64 *)(r1 + 0x0)
->       11:       gotox r1
->       ...
->       34:       r2 <<= 0x3
->       35:       r1 = 0x100 ll
->                 0000000000000118:  R_BPF_64_64  .jumptables
->       37:       r1 += r2
->       38:       r1 = *(u64 *)(r1 + 0x0)
->       39:       gotox r1
->       ...
-> 
-> -------------------------------
-> 
-> The changes only touch BPF backend. Can be simplified a bit if I move
-> MachineFunction::getJTISymbol to TargetLowering in the shared LLVM
-> parts.
+pahole_stealer may return LSK__STOP_LOADING in normal case, for example
+when a class filter is provided [1]:
 
-> $ cat jump-table-test.c
-> struct simple_ctx { int x; };
+	if (list_empty(&class_names)) {
+dump_and_stop:
+		ret = LSK__STOP_LOADING;
+	}
+
+And in the dwarf_loader we abort (as with error) in case of 
+LSK__STOP_LOADING [2]:
+
+	if (cus__steal_now(dcus->cus, job->cu, dcus->conf) == LSK__STOP_LOADING)
+		goto out_abort;
+
+This was not an issue before 59f5409f1357 because of how errors were
+propagated to dwfl_getmodules(), as mentioned in the other thread.
+
+I think a proper fix for this is differentiating two variants of 
+LSK__STOP_LOADING: stop because of an error, and stop because there is
+nothing else to do. That would require a bit of refactoring.
+
+Alan, Arnaldo, what do you think?
+
+[1] https://github.com/acmel/dwarves/blob/master/pahole.c#L3390-L3392
+[2] https://github.com/acmel/dwarves/blob/master/dwarf_loader.c#L3678-L3679
+
 > 
-> int bar(int v);
+> [1] https://lore.kernel.org/dwarves/933e199997949c0ac8a71551830f1e6c98d8bff0@linux.dev/
+>>    Found 1 legitimately skipped function due to uncertain loc
+>>    Ok
+>>
+>> Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
+>> ---
+>> Changes in v3:
+>> - bring a userspace binary instead of an OoT kernel module
+>> - remove test dependency to a kernel directory being provided
+>> - improve test dir detection
+>>
+>> Changes in v2:
+>> - new patch
+>> ---
+>>   tests/bin/Makefile     | 10 ++++++
+>>   tests/bin/test_bin.c   | 66 ++++++++++++++++++++++++++++++++++++
+>>   tests/btf_functions.sh | 91 ++++++++++++++++++++++++++++++++++++++++++++++++++
+>>   3 files changed, 167 insertions(+)
+>>
+>> diff --git a/tests/bin/Makefile b/tests/bin/Makefile
+>> new file mode 100644
+>> index 0000000000000000000000000000000000000000..70bcf57ac4744f30fe03ea12908e42c69390f14a
+>> --- /dev/null
+>> +++ b/tests/bin/Makefile
+>> @@ -0,0 +1,10 @@
+>> +CC=${CROSS_COMPILE}gcc
+>> +
+>> +test_bin: test_bin.c
+>> +	${CC} $^ -Wall -Wextra -Werror -g -o $@
+>> +
+>> +clean:
+>> +	rm -rf test_bin
+>> +
+>> +.PHONY: clean
+>> +
+>> diff --git a/tests/bin/test_bin.c b/tests/bin/test_bin.c
+>> new file mode 100644
+>> index 0000000000000000000000000000000000000000..ca6a4852cc511243925db905e55e040519af9cfd
+>> --- /dev/null
+>> +++ b/tests/bin/test_bin.c
+>> @@ -0,0 +1,66 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +#include <stdio.h>
+>> +
+>> +#define noinline __attribute__((noinline))
+>> +#define __packed __attribute__((__packed__))
+>> +
+>> +struct test_bin_struct {
+>> +	char a;
+>> +	short b;
+>> +	int c;
+>> +	unsigned long long d;
+>> +};
+>> +
+>> +struct test_bin_struct_packed {
+>> +	char a;
+>> +	short b;
+>> +	int c;
+>> +	unsigned long long d;
+>> +}__packed;
+>> +
+>> +int test_bin_func_ok(int a, void *b, char c, short d);
+>> +int test_bin_func_struct_ok(int a, void *b, char c, struct test_bin_struct d);
+>> +int test_bin_func_struct_on_stack_ok(int a, void *b, char c, short d, int e,
+>> +                                      void *f, char g, short h,
+>> +                                      struct test_bin_struct i);
+>> +int test_bin_func_struct_on_stack_ko(int a, void *b, char c, short d, int e,
+>> +                                      void *f, char g, short h,
+>> +                                      struct test_bin_struct_packed i);
+>> +
+>> +noinline int test_bin_func_ok(int a, void *b, char c, short d)
+>> +{
+>> +	return a + (long)b + c + d;
+>> +}
+>> +
+>> +noinline int test_bin_func_struct_ok(int a, void *b, char c,
+>> +                                      struct test_bin_struct d)
+>> +{
+>> +	return a + (long)b + c + d.a + d.b + d.c + d.d;
+>> +}
+>> +
+>> +noinline int test_bin_func_struct_on_stack_ok(int a, void *b, char c, short d,
+>> +                                               int e, void *f, char g, short h,
+>> +                                               struct test_bin_struct i)
+>> +{
+>> +	return a + (long)b + c + d + e + (long)f + g + h + i.a + i.b + i.c + i.d;
+>> +}
+>> +
+>> +noinline int test_bin_func_struct_on_stack_ko(int a, void *b, char c, short d,
+>> +                                               int e, void *f, char g, short h,
+>> +                                               struct test_bin_struct_packed i)
+>> +{
+>> +	return a + (long)b + c + d + e + (long)f + g + h + i.a + i.b + i.c + i.d;
+>> +}
+>> +
+>> +int main()
+>> +{
+>> +	struct test_bin_struct test;
+>> +	struct test_bin_struct_packed test_bis;
+>> +
+>> +	test_bin_func_ok(0, NULL, 0, 0);
+>> +	test_bin_func_struct_ok(0, NULL, 0, test);
+>> +	test_bin_func_struct_on_stack_ok(0, NULL, 0, 0, 0, NULL, 0, 0, test);
+>> +	test_bin_func_struct_on_stack_ko(0, NULL, 0, 0, 0, NULL, 0, 0, test_bis);
+>> +	return 0;
+>> +}
+>> +
+>> diff --git a/tests/btf_functions.sh b/tests/btf_functions.sh
+>> index c92e5ae906f90badfede86eb530108894fbc8c93..fb62b0b56662bb2ae58f7adc0a022c400cba5e0f 100755
+>> --- a/tests/btf_functions.sh
+>> +++ b/tests/btf_functions.sh
+>> @@ -193,4 +193,95 @@ if [[ -n "$VERBOSE" ]]; then
+>>   fi
+>>   echo "Ok"
+>>   
+>> +# Some specific cases can not  be tested directly with a standard kernel.
+>> +# We can use the small binary in bin/ to test those cases, like packed
+>> +# structs passed on the stack.
+>> +
+>> +echo -n "Validation of BTF encoding corner cases with test_bin functions; this may take some time: "
+>> +
+>> +test -n "$VERBOSE" && printf "\nBuilding test_bin..."
+>> +tests_dir=$(realpath $(dirname $0))
+>> +make -C ${tests_dir}/bin
+>> +
+>> +test -n "$VERBOSE" && printf "\nEncoding..."
+>> +pahole --btf_features=default --lang_exclude=rust --btf_encode_detached=$outdir/test_bin.btf \
+>> +	--verbose ${tests_dir}/bin/test_bin | grep "skipping BTF encoding of function" \
+>> +	> ${outdir}/test_bin_skipped_fns
+>> +
+>> +funcs=$(pfunct --format_path=btf $outdir/test_bin.btd 2>/dev/null|sort)
+>> +pfunct --all --no_parm_names --format_path=dwarf bin/test_bin | \
+>> +	sort|uniq > $outdir/test_bin_dwarf.funcs
+>> +pfunct --all --no_parm_names --format_path=btf $outdir/test_bin.btf 2>/dev/null|\
+>> +	awk '{ gsub("^(bpf_kfunc |bpf_fastcall )+",""); print $0}'|sort|uniq > $outdir/test_bin_btf.funcs
+>> +
+>> +exact=0
+>> +while IFS= read -r btf ; do
+>> +	# Matching process can be kept simpler as the tested binary is
+>> +	# specifically tailored for tests
+>> +	dwarf=$(grep -F "$btf" $outdir/test_bin_dwarf.funcs)
+>> +	if [[ "$btf" != "$dwarf" ]]; then
+>> +		echo "ERROR: mismatch : BTF '$btf' not found; DWARF '$dwarf'"
+>> +		fail
+>> +	else
+>> +		exact=$((exact+1))
+>> +	fi
+>> +done < $outdir/test_bin_btf.funcs
+>> +
+>> +if [[ -n "$VERBOSE" ]]; then
+>> +	echo "Matched $exact functions exactly."
+>> +	echo "Ok"
+>> +	echo "Validation of skipped function logic..."
+>> +fi
+>> +
+>> +skipped_cnt=$(wc -l ${outdir}/test_bin_skipped_fns | awk '{ print $1}')
+>> +if [[ "$skipped_cnt" == "0" ]]; then
+>> +	echo "No skipped functions.  Done."
+>> +	exit 0
+>> +fi
+>> +
+>> +skipped_fns=$(awk '{print $1}' $outdir/test_bin_skipped_fns)
+>> +for s in $skipped_fns ; do
+>> +	# Ensure the skipped function are not in BTF
+>> +	inbtf=$(grep " $s(" $outdir/test_bin_btf.funcs)
+>> +	if [[ -n "$inbtf" ]]; then
+>> +		echo "ERROR: '${s}()' was added incorrectly to BTF: '$inbtf'"
+>> +		fail
+>> +	fi
+>> +done
+>> +
+>> +if [[ -n "$VERBOSE" ]]; then
+>> +	echo "Skipped encoding $skipped_cnt functions in BTF."
+>> +	echo "Ok"
+>> +	echo "Validating skipped functions have uncertain parameter location..."
+>> +fi
+>> +
+>> +uncertain_loc=$(awk '/due to uncertain parameter location/ { print $1 }' $outdir/test_bin_skipped_fns)
+>> +legitimate_skip=0
+>> +
+>> +for f in $uncertain_loc ; do
+>> +	# Extract parameters types
+>> +	raw_params=$(grep ${f} $outdir/test_bin_dwarf.funcs|sed -n 's/^[^(]*(\([^)]*\)).*/\1/p')
+>> +	IFS=',' read -ra params <<< "${raw_params}"
+>> +	for param in "${params[@]}"
+>> +	do
+>> +		# Search any param that could be a struct
+>> +		struct_type=$(echo ${param}|grep -E '^struct [^*]' | sed -E 's/^struct //')
+>> +		if [ -n "${struct_type}" ]; then
+>> +			# Check with pahole if the struct is detected as
+>> +			# packed
+>> +			if pahole -F dwarf -C "${struct_type}" ${tests_dir}/bin/test_bin|tail -n 2|grep -q __packed__
+>> +			then
+>> +				legitimate_skip=$((legitimate_skip+1))
+>> +				continue 2
+>> +			fi
+>> +		fi
+>> +	done
+>> +	echo "ERROR: '${f}()' should not have been skipped; it has no parameter with uncertain location"
+>> +	fail
+>> +done
+>> +
+>> +if [[ -n "$VERBOSE" ]]; then
+>> +	echo "Found ${legitimate_skip} legitimately skipped function due to uncertain loc"
+>> +fi
+>> +echo "Ok"
+>>   exit 0
 > 
-> int foo(struct simple_ctx *ctx)
-> {
-> 	int ret_user;
 > 
->         switch (ctx->x) {
->         case 0:
->                 ret_user = 2;
->                 break;
->         case 11:
->                 ret_user = 3;
->                 break;
->         case 27:
->                 ret_user = 4;
->                 break;
->         case 31:
->                 ret_user = 5;
->                 break;
->         default:
->                 ret_user = 19;
->                 break;
->         }
 > 
->         switch (bar(ret_user)) {
->         case 1:
->                 ret_user = 5;
->                 break;
->         case 12:
->                 ret_user = 7;
->                 break;
->         case 27:
->                 ret_user = 23;
->                 break;
->         case 32:
->                 ret_user = 37;
->                 break;
->         case 44:
->                 ret_user = 77;
->                 break;
->         default:
->                 ret_user = 11;
->                 break;
->         }
-> 
->         return ret_user;
-> }
-> 
-> $ clang --target=bpf -c -o jump-table-test.o jump-table-test.c
-> There are 8 section headers, starting at offset 0xaa0:
-> 
-> Section Headers:
->   [Nr] Name              Type            Address          Off    Size   ES Flg Lk Inf Al
->   [ 0]                   NULL            0000000000000000 000000 000000 00      0   0  0
->   [ 1] .strtab           STRTAB          0000000000000000 000a31 00006b 00      0   0  1
->   [ 2] .text             PROGBITS        0000000000000000 000040 0001e0 00  AX  0   0  8
->   [ 3] .rel.text         REL             0000000000000000 000540 000030 10   I  7   2  8
->   [ 4] .jumptables       PROGBITS        0000000000000000 000220 000260 00      0   0  1
->   [ 5] .rel.jumptables   REL             0000000000000000 000570 0004c0 10   I  7   4  8
->   [ 6] .llvm_addrsig     LLVM_ADDRSIG    0000000000000000 000a30 000001 00   E  7   0  1
->   [ 7] .symtab           SYMTAB          0000000000000000 000480 0000c0 18      1   6  8
-> Key to Flags:
->   W (write), A (alloc), X (execute), M (merge), S (strings), I (info),
->   L (link order), O (extra OS processing required), G (group), T (TLS),
->   C (compressed), x (unknown), o (OS specific), E (exclude),
->   R (retain), p (processor specific)
-> 
-> Symbol table '.symtab' contains 8 entries:
->    Num:    Value          Size Type    Bind   Vis       Ndx Name
->      0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT   UND 
->      1: 0000000000000000     0 FILE    LOCAL  DEFAULT   ABS jump-table-test.c
->      2: 0000000000000000     0 SECTION LOCAL  DEFAULT     2 .text
->      3: 0000000000000000   256 NOTYPE  LOCAL  DEFAULT     4 .BPF.JT.0.0
->      4: 0000000000000100   352 NOTYPE  LOCAL  DEFAULT     4 .BPF.JT.0.1
->      5: 0000000000000000     0 SECTION LOCAL  DEFAULT     4 .jumptables
->      6: 0000000000000000   480 FUNC    GLOBAL DEFAULT     2 foo
->      7: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT   UND bar
-> 
-> $ llvm-objdump --no-show-raw-insn -Sdr jump-table-test.o
-> jump-table-test.o:	file format elf64-bpf
-> 
-> Disassembly of section .text:
-> 
-> 0000000000000000 <foo>:
->        0:	*(u64 *)(r10 - 0x8) = r1
->        1:	r1 = *(u64 *)(r10 - 0x8)
->        2:	w1 = *(u32 *)(r1 + 0x0)
->        3:	*(u64 *)(r10 - 0x18) = r1
->        4:	if w1 > 0x1f goto +0x13 <foo+0xc0>
->        5:	r2 = *(u64 *)(r10 - 0x18)
->        6:	r2 <<= 0x3
->        7:	r1 = 0x0 ll
-> 		0000000000000038:  R_BPF_64_64	.jumptables
->        9:	r1 += r2
->       10:	r1 = *(u64 *)(r1 + 0x0)
->       11:	gotox r1
->       12:	w1 = 0x2
->       13:	*(u32 *)(r10 - 0xc) = w1
->       14:	goto +0xc <foo+0xd8>
->       15:	w1 = 0x3
->       16:	*(u32 *)(r10 - 0xc) = w1
->       17:	goto +0x9 <foo+0xd8>
->       18:	w1 = 0x4
->       19:	*(u32 *)(r10 - 0xc) = w1
->       20:	goto +0x6 <foo+0xd8>
->       21:	w1 = 0x5
->       22:	*(u32 *)(r10 - 0xc) = w1
->       23:	goto +0x3 <foo+0xd8>
->       24:	w1 = 0x13
->       25:	*(u32 *)(r10 - 0xc) = w1
->       26:	goto +0x0 <foo+0xd8>
->       27:	w1 = *(u32 *)(r10 - 0xc)
->       28:	call -0x1
-> 		00000000000000e0:  R_BPF_64_32	bar
->       29:	w0 += -0x1
->       30:	w1 = w0
->       31:	*(u64 *)(r10 - 0x20) = r1
->       32:	if w0 > 0x2b goto +0x16 <foo+0x1b8>
->       33:	r2 = *(u64 *)(r10 - 0x20)
->       34:	r2 <<= 0x3
->       35:	r1 = 0x100 ll
-> 		0000000000000118:  R_BPF_64_64	.jumptables
->       37:	r1 += r2
->       38:	r1 = *(u64 *)(r1 + 0x0)
->       39:	gotox r1
->       40:	w1 = 0x5
->       41:	*(u32 *)(r10 - 0xc) = w1
->       42:	goto +0xf <foo+0x1d0>
->       43:	w1 = 0x7
->       44:	*(u32 *)(r10 - 0xc) = w1
->       45:	goto +0xc <foo+0x1d0>
->       46:	w1 = 0x17
->       47:	*(u32 *)(r10 - 0xc) = w1
->       48:	goto +0x9 <foo+0x1d0>
->       49:	w1 = 0x25
->       50:	*(u32 *)(r10 - 0xc) = w1
->       51:	goto +0x6 <foo+0x1d0>
->       52:	w1 = 0x4d
->       53:	*(u32 *)(r10 - 0xc) = w1
->       54:	goto +0x3 <foo+0x1d0>
->       55:	w1 = 0xb
->       56:	*(u32 *)(r10 - 0xc) = w1
->       57:	goto +0x0 <foo+0x1d0>
->       58:	w0 = *(u32 *)(r10 - 0xc)
->       59:	exit
 > 
 
 
