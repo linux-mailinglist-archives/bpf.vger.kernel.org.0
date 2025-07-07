@@ -1,168 +1,228 @@
-Return-Path: <bpf+bounces-62543-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62544-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1196AFBA1F
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 19:51:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17D6AAFBA27
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 19:53:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D49743B35F5
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 17:50:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 641671676D2
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 17:53:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C44D262D27;
-	Mon,  7 Jul 2025 17:51:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB9B9262FFF;
+	Mon,  7 Jul 2025 17:53:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="divXgdqM"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sa/y7kEq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06ED722A7E5
-	for <bpf@vger.kernel.org>; Mon,  7 Jul 2025 17:51:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABFCA26057A
+	for <bpf@vger.kernel.org>; Mon,  7 Jul 2025 17:53:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751910677; cv=none; b=YBrBkSc3IBrkCYvaAJn5+5XuTauEXR7voD4OWBsZ93vr+Nzhkr6iuPIPxYdP0QzBVzGIAhGWRAUsLGmLWTLLSTDCNH3Uxb34flmV++RBxgz7upA2V7mNqn1q/3NKFlk9ih/0zyY+jsSyi/IBtFampnnNyhxa3+ipz5YvbOwnV/s=
+	t=1751910816; cv=none; b=HIkL8roMt4p0n+xdo9Eay6pOy7MjN49HssdOv0EAmkb0/Xnh6Jw4KobQcvYqnjsF6LfkNy6aWtqvYX70ktHUqbynx2gZAnKjQhlVba1/w/PtJpu3KJZIwAlgskbD5OHCw98WvkMNOvpVVIp0xEQ1G7a786IzxEUDsPEa0HaQmMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751910677; c=relaxed/simple;
-	bh=F+JhJDxpwPRwb3AqPuIfoAmEkRG3+2v7psK5Sz3fQtQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=cGyHvx+HdgbyQs7bjwnEcuslZv7K2LhrHW3xQVgbgHTBaue7bizU4y+ctPkLkUOBgGHX7MgPg3JyAXuovx5TIorT2bfUlXmhtqAeWAVo7PxgBXP5o6lCbBaIF7NLgMdyNQIYMesg/l4YMBSw4sO0VgIleQ1wrkdFs6Y5/aADFrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=divXgdqM; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-60867565fb5so5702562a12.3
-        for <bpf@vger.kernel.org>; Mon, 07 Jul 2025 10:51:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1751910674; x=1752515474; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=sAn8TiUso0gO9RetRg400m8uB5tG55kojEKoa6j8nuQ=;
-        b=divXgdqMCYAD89ccasze23KPBr4ER1WSBazVrHBLvQXgG5vnurU65dXgPuFI9CK+3J
-         BpVCnzbNA40QzaP6XsdbANM29bRw8am2SDmin5Fpj/hv3NCU4joSxzuvam5P8Ws2Kxyn
-         yicbrt9e4yJWlIXT8rlPCcuxE0R3xuL5o7Lc98XbD6DRHFDa38ldtvr88ClcNjXXCoGt
-         OHazWOuGwVQJb0ntdi/1Trxv4wV1EkFUdSjiR5niJGpYQs9tY4zCCriKYFCjRgSzKH3j
-         Q2yUJ94CHtpfHR3rmr8EQEzHj3Y1msXfFsMLEa9/ziRI8YlGrFHTzT1/z6m/iSorP1y6
-         UnAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751910674; x=1752515474;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sAn8TiUso0gO9RetRg400m8uB5tG55kojEKoa6j8nuQ=;
-        b=D16LdFrfuXiAKLmqtG/z8RqAU57tZ/d+U4IpxI798d+MNk8ErASVdK7BpqJwKrwX2s
-         Wrhl/+aJosuvoEGUKulCvr45HU/XT+ysPf0PZ+Z3zpPtEo1kgj+YCco5BDvkHeevYgfo
-         O2/4uuPaNmyL7WFL4N7ANwttdC8eHrZgkh11s0j84Y8qMQOJhukMyKD6c6rzghKzQd/G
-         1gHdv/TLHRUb1YWmk0UkRJZz2P7mgt9q/gQn35Unj4xiP5Z1hHOczLknoIb/CdLMMMkN
-         Xv7mH8qjjqMA8LNywJdKlcmJ9YrxczcYKtJdgqYlWAayC0WdVs1a0R2czUnE0DLPh6mx
-         ZStA==
-X-Forwarded-Encrypted: i=1; AJvYcCVtHpkkmjlsgKr5mW1N8NoMnS19fX43ZDJZGdQGsRn9matdXmblqgyxqOno7RCddSj1Xf4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YweSo3gyhVA/szt7xyMCZBnisOZ2qufyEPciVUDoFcRZkBEVzF+
-	Gn0JLdDkQv61rov08K37dmrX097+JP7nl+oC7MR3dQRO8nlOLBdDyrmfNnTJoAeSr6VXCyQwLbC
-	wjvW0
-X-Gm-Gg: ASbGnctzMe6Oms4OMo991nNIyvxoC+oqPiRLiJaPy6pCXy432SQRQS2jeElC8zc0FIF
-	7fQdQumJfhdJk4/4Z5aPDxd6RjdklCLWPjD3i/vqAX1x0oUEPavO3+Ikj+2Wq+Sitr4IGpU62G0
-	c7sJhPy+gjrT3+hbfemHXzlWtaQ/LL1cGLOx3tPkzbVJgFL4onoUyFq5lNtaICIuhc7khOkx/rj
-	/WnmOX1Nuuua9kHZ8dX4Py36mUCwZTlAB0SMkrCNehCSMi4DjLjFmyRZPHy6i6WGJr12qtxec5e
-	zHMrofnNoAg2jT1U56uLXrPKvcyLFVPXE+Sn11BXmw3KCFjLFaf8cuA=
-X-Google-Smtp-Source: AGHT+IG1tNP4StDCMG4g6g7LF2lggkO7mUVU2/MdB6rvjG5teWxlng0i59YEXn+a5vSaoIJ65mAtUQ==
-X-Received: by 2002:a17:907:3d05:b0:ae3:a604:b1fe with SMTP id a640c23a62f3a-ae6b069f406mr4937666b.38.1751910674228;
-        Mon, 07 Jul 2025 10:51:14 -0700 (PDT)
-Received: from cloudflare.com ([2a09:bac5:5063:2387::38a:7a])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae3f6b02f23sm750799766b.118.2025.07.07.10.51.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jul 2025 10:51:13 -0700 (PDT)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Cong Wang <xiyou.wangcong@gmail.com>
-Cc: Zijian Zhang <zijianzhang@bytedance.com>,  netdev@vger.kernel.org,
-  bpf@vger.kernel.org,  john.fastabend@gmail.com,
-  zhoufeng.zf@bytedance.com,  Amery Hung <amery.hung@bytedance.com>,  Cong
- Wang <cong.wang@bytedance.com>
-Subject: Re: [Patch bpf-next v4 4/4] tcp_bpf: improve ingress redirection
- performance with message corking
-In-Reply-To: <aGdWhRi/0KLTFL8k@pop-os.localdomain> (Cong Wang's message of
-	"Thu, 3 Jul 2025 21:20:21 -0700")
-References: <20250701011201.235392-1-xiyou.wangcong@gmail.com>
-	<20250701011201.235392-5-xiyou.wangcong@gmail.com>
-	<87ecuyn5x2.fsf@cloudflare.com>
-	<509939c4-2e3e-41a6-888f-cbbf6d4c93cb@bytedance.com>
-	<87a55lmrwn.fsf@cloudflare.com> <aGdWhRi/0KLTFL8k@pop-os.localdomain>
-Date: Mon, 07 Jul 2025 19:51:12 +0200
-Message-ID: <87cyabhotr.fsf@cloudflare.com>
+	s=arc-20240116; t=1751910816; c=relaxed/simple;
+	bh=PJCUxndDyy9aKoL7TqeI0FjfwhSH8f/NYHniHwJOEvQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HnY5izk+srmoMEmU3LplSNwHL67K8QJKLGO/rYDZ+NxHofeqh4pHNJLTfBG8+v1jeLizRZk1EEJczv1FjQjsCWLMXNmq4LkRPhKXPVWWjQTyYjhkDqvfKB0o/fC+nEBHtM4T5SBbQTCVfffroi21GWO2K0x1HWheEbzoWKM5A0I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sa/y7kEq; arc=none smtp.client-ip=91.218.175.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <74ae6eb2-cea7-4e3e-82eb-72978dd0f101@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1751910812;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AQHayfYIL+d6HS8rf76iOroTc9ml4KgNSGNH0xgeoG4=;
+	b=sa/y7kEq3NvAVMCZWcAKa8HALGKl+Ftu6Y9Le6CVHE2UAFzNqMkOaw3FJDpPYTfvRTZzV6
+	NQbTd7RS/k/2lIMK5rIeu8b8VQZjq87jud6HPv7Z6uL8hpftsT0Vuxj3lAG0ewOurVToDl
+	QINEbvKN4Tnwr0RgYmfV/P9vHIcP000=
+Date: Mon, 7 Jul 2025 10:53:24 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Subject: Re: [PATCH v5 bpf-next 1/5] namei: Introduce new helper function
+ path_walk_parent()
+Content-Language: en-GB
+To: Song Liu <songliubraving@meta.com>
+Cc: Song Liu <song@kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-security-module@vger.kernel.org"
+ <linux-security-module@vger.kernel.org>, Kernel Team <kernel-team@meta.com>,
+ "andrii@kernel.org" <andrii@kernel.org>,
+ "eddyz87@gmail.com" <eddyz87@gmail.com>, "ast@kernel.org" <ast@kernel.org>,
+ "daniel@iogearbox.net" <daniel@iogearbox.net>,
+ "martin.lau@linux.dev" <martin.lau@linux.dev>,
+ "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+ "brauner@kernel.org" <brauner@kernel.org>, "jack@suse.cz" <jack@suse.cz>,
+ "kpsingh@kernel.org" <kpsingh@kernel.org>,
+ "mattbobrowski@google.com" <mattbobrowski@google.com>,
+ "m@maowtm.org" <m@maowtm.org>, "neil@brown.name" <neil@brown.name>
+References: <20250617061116.3681325-1-song@kernel.org>
+ <20250617061116.3681325-2-song@kernel.org>
+ <2459c10e-d74c-4118-9b6d-c37d05ecec02@linux.dev>
+ <58FB95C4-1499-4865-8FA7-3E1F64EB5EDE@meta.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <58FB95C4-1499-4865-8FA7-3E1F64EB5EDE@meta.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Jul 03, 2025 at 09:20 PM -07, Cong Wang wrote:
-> On Thu, Jul 03, 2025 at 01:32:08PM +0200, Jakub Sitnicki wrote:
->> I'm all for reaping the benefits of batching, but I'm not thrilled about
->> having a backlog worker on the path. The one we have on the sk_skb path
->> has been a bottleneck:
+
+
+On 7/6/25 4:54 PM, Song Liu wrote:
 >
-> It depends on what you compare with. If you compare it with vanilla
-> TCP_BPF, we did see is 5% latency increase. If you compare it with
-> regular TCP, it is still much better. Our goal is to make Cillium's
-> sockops-enable competitive with regular TCP, hence we compare it with
-> regular TCP.
+>> On Jul 4, 2025, at 10:40 AM, Yonghong Song <yonghong.song@linux.dev> wrote:
+> [...]
+>>> +static struct dentry *__path_walk_parent(struct path *path, const struct path *root, int flags)
+>>>   {
+>>> - struct dentry *parent;
+>>> -
+>>> - if (path_equal(&nd->path, &nd->root))
+>>> + if (path_equal(path, root))
+>>>    goto in_root;
+>>> - if (unlikely(nd->path.dentry == nd->path.mnt->mnt_root)) {
+>>> - struct path path;
+>>> + if (unlikely(path->dentry == path->mnt->mnt_root)) {
+>>> + struct path new_path;
+>>>   - if (!choose_mountpoint(real_mount(nd->path.mnt),
+>>> -       &nd->root, &path))
+>>> + if (!choose_mountpoint(real_mount(path->mnt),
+>>> +       root, &new_path))
+>>>    goto in_root;
+>>> - path_put(&nd->path);
+>>> - nd->path = path;
+>>> - nd->inode = path.dentry->d_inode;
+>>> - if (unlikely(nd->flags & LOOKUP_NO_XDEV))
+>>> + path_put(path);
+>>> + *path = new_path;
+>>> + if (unlikely(flags & LOOKUP_NO_XDEV))
+>>>    return ERR_PTR(-EXDEV);
+>>>    }
+>>>    /* rare case of legitimate dget_parent()... */
+>>> - parent = dget_parent(nd->path.dentry);
+>>> + return dget_parent(path->dentry);
+>> I have some confusion with this patch when crossing mount boundary.
+>>
+>> In d_path.c, we have
+>>
+>> static int __prepend_path(const struct dentry *dentry, const struct mount *mnt,
+>>                           const struct path *root, struct prepend_buffer *p)
+>> {
+>>         while (dentry != root->dentry || &mnt->mnt != root->mnt) {
+>>                 const struct dentry *parent = READ_ONCE(dentry->d_parent);
+>>
+>>                 if (dentry == mnt->mnt.mnt_root) {
+>>                         struct mount *m = READ_ONCE(mnt->mnt_parent);
+>>                         struct mnt_namespace *mnt_ns;
+>>
+>>                         if (likely(mnt != m)) {
+>>                                 dentry = READ_ONCE(mnt->mnt_mountpoint);
+>>                                 mnt = m;
+>>                                 continue;
+>>                         }
+>>                         /* Global root */
+>>                         mnt_ns = READ_ONCE(mnt->mnt_ns);
+>>                         /* open-coded is_mounted() to use local mnt_ns */
+>>                         if (!IS_ERR_OR_NULL(mnt_ns) && !is_anon_ns(mnt_ns))
+>>                                 return 1;       // absolute root
+>>                         else
+>>                                 return 2;       // detached or not attached yet
+>>                 }
+>>
+>>                 if (unlikely(dentry == parent))
+>>                         /* Escaped? */
+>>                         return 3;
+>>
+>>                 prefetch(parent);
+>>                 if (!prepend_name(p, &dentry->d_name))
+>>                         break;
+>>                 dentry = parent;
+>>         }
+>>         return 0;
+>> }
+>>
+>> At the mount boundary and not at root mount, the code has
+>> dentry = READ_ONCE(mnt->mnt_mountpoint);
+>> mnt = m; /* 'mnt' will be parent mount */
+>> continue;
+>>
+>> After that, we have
+>> const struct dentry *parent = READ_ONCE(dentry->d_parent);
+>> if (dentry == mnt->mnt.mnt_root) {
+>> /* assume this is false */
+>> }
+>> ...
+>> prefetch(parent);
+>>         if (!prepend_name(p, &dentry->d_name))
+>>                 break;
+>>         dentry = parent;
+>>
+>> So the prepend_name(p, &dentry->d_name) is actually from mnt->mnt_mountpoint.
+> I am not quite following the question. In the code below:
 >
-> I hope this makes sense to you. Sorry if this was not clear in our cover
-> letter.
-
-Latency-wise I think we should be comparing sk_msg send-to-local against
-UDS rather than full-stack TCP.
-
-There is quite a bit of guessing on my side as to what you're looking
-for because the cover letter doesn't say much about the use case.
-
-For instance, do you control the sender?  Why not do big writes on the
-sender side if raw throughput is what you care about?
-
->> 1) There's no backpressure propagation so you can have a backlog
->> build-up. One thing to check is what happens if the receiver closes its
->> window.
+>                 if (dentry == mnt->mnt.mnt_root) {
+>                         struct mount *m = READ_ONCE(mnt->mnt_parent);
+>                         struct mnt_namespace *mnt_ns;
 >
-> Right, I am sure there are still a lot of optimizations we can further
-> improve. The only question is how much we need for now. How about
-> optimizing it one step each time? :)
-
-This is introducing a quite a bit complexity from the start. I'd like to
-least explore if it can be done in a simpler fashion before committing to
-it.
-
-You point at wake-ups as being the throughput killer. As an alternative,
-can we wake up the receiver conditionally? That is only if the receiver
-has made progress since on the queue since the last notification. This
-could also be a form of wakeup moderation.
-
->> 2) There's a scheduling latency. That's why the performance of splicing
->> sockets with sockmap (ingress-to-egress) looks bleak [1].
+>                         if (likely(mnt != m)) {
+>                                 dentry = READ_ONCE(mnt->mnt_mountpoint);
+>                                 mnt = m;
+>                                 continue;
+> /* We either continue, here */
 >
-> Same for regular TCP, we have to wakeup the receiver/worker. But I may
-> misunderstand this point?
-
-What I meant is that, in the pessimistic case, to deliver a message we
-now have to go through two wakeups:
-
-sender -wakeup-> kworker -wakeup-> receiver
-
->> So I have to dig deeper...
->> 
->> Have you considered and/or evaluated any alternative designs? For
->> instance, what stops us from having an auto-corking / coalescing
->> strategy on the sender side?
+>                         }
+>                         /* Global root */
+>                         mnt_ns = READ_ONCE(mnt->mnt_ns);
+>                         /* open-coded is_mounted() to use local mnt_ns */
+>                         if (!IS_ERR_OR_NULL(mnt_ns) && !is_anon_ns(mnt_ns))
+>                                 return 1;       // absolute root
+>                         else
+>                                 return 2;       // detached or not attached yet
+> /* Or return here */
+>                 }
 >
-> Auto corking _may_ be not as easy as TCP, since essentially we have no
-> protocol here, just a pure socket layer.
+> So we will not hit prepend_name(). Does this answer the
+> question?
+>
+>> In your above code, maybe we should return path->dentry in the below if statement?
+>>
+>>         if (unlikely(path->dentry == path->mnt->mnt_root)) {
+>>                 struct path new_path;
+>>
+>>                 if (!choose_mountpoint(real_mount(path->mnt),
+>>                                        root, &new_path))
+>>                         goto in_root;
+>>                 path_put(path);
+>>                 *path = new_path;
+>>                 if (unlikely(flags & LOOKUP_NO_XDEV))
+>>                         return ERR_PTR(-EXDEV);
+>> + return path->dentry;
+>>         }
+>>         /* rare case of legitimate dget_parent()... */
+>>         return dget_parent(path->dentry);
+>>
+>> Also, could you add some selftests cross mount points? This will
+>> have more coverages with __path_walk_parent().
 
-You're right. We don't have a flush signal for auto-corking on the
-sender side with sk_msg's.
+Looks like __path_walk_parent() works for the root of mounted fs.
+If this is the case, the implementation is correct. It could be
+good to add some comments to clarify.
 
-What about what I mentioned above - can we moderate the wakeups based on
-receiver making progress? Does that sound feasible to you?
+> Yeah, I will try to add more tests in the next revision.
+>
+> Thanks,
+> Song
+>
 
-Thanks,
--jkbs
 
