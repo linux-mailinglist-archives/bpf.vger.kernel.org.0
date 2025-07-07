@@ -1,174 +1,254 @@
-Return-Path: <bpf+bounces-62491-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62492-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CF7BAFB297
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 13:50:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 925EEAFB347
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 14:29:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 676553AEA74
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 11:50:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 236441AA1657
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 12:29:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 148CD29A301;
-	Mon,  7 Jul 2025 11:50:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D05A29ACC6;
+	Mon,  7 Jul 2025 12:29:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ifcCbl9w"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I7CVL/tG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6B75298CD5
-	for <bpf@vger.kernel.org>; Mon,  7 Jul 2025 11:50:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3C01292B22
+	for <bpf@vger.kernel.org>; Mon,  7 Jul 2025 12:29:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751889041; cv=none; b=LFh7WmO9fWm2ob4OcL0raVQVQKimcyeJgL/Qyhn8MMs1aQNjaMUZj7la1j6F4iDhiSBVvqr9F9WOEZ0gz0P28p8dJdqEOhALJESN9sTI+FKtKNvViFRAipqMqs9FkzfrVmI2+fNJ67rcIgK/TZsSNXod0Z4XaaGgLYKnW3t+NVk=
+	t=1751891368; cv=none; b=mPFN2vYmvAfvnvzcXc2vH7r7zKCpYU9t4otB/QWvlkc3r+06sdSR3zuVx1KnyMMzTfEZl+aMY2a6SOE0cOqrlAvxiwJ6Dj+bP/H8+NcV0Yj8tIOYEqOoK6Yz0clTvNLC8Kpcx6qvx3gOWS4bGgOEpbUSxTsYf0vUtom0SFKaUOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751889041; c=relaxed/simple;
-	bh=aXcuWfmyWeS6ESuHwrCffE7KuKPL+CTZNaqyvh7eOhI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=kKilgmnW71jx6pZGf8PrKmE6buoFArhGAHpj0OKWEXnNoyLHEpxjH4gAhl9ls7UB3qyXxpRsFl2AnpPHX3vXb15xKn6uKjc6yre0WEZd73AJ9aB+ne4MHcVJvbm82ot7c2weNPXWHesTqWTLaEgPsWis2suFtYozD8Kdj1sJvKw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ifcCbl9w; arc=none smtp.client-ip=209.85.128.43
+	s=arc-20240116; t=1751891368; c=relaxed/simple;
+	bh=WYSDGwcHg8OIX9RqBrjunz46B6TPjO4W/Djpib6fDDk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=avwT9OvCyZL0hqMBJsef/BQuMS0hAVu/4BL+4S1tq1VDHNXIyxCOenSQpp5iDY4FVgNfCKeXb3/xIVND8fflhNnoXzmp3BqaUFwVuN09Am12xr3XvP1F1przjB75PRgOz2TkL1vsX/HbcekQWTmpRqZ9jdgKiv+iwORfPgCV9z4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I7CVL/tG; arc=none smtp.client-ip=209.85.160.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-454aaade1fbso33994675e9.3
-        for <bpf@vger.kernel.org>; Mon, 07 Jul 2025 04:50:39 -0700 (PDT)
+Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-2edec6c5511so802332fac.2
+        for <bpf@vger.kernel.org>; Mon, 07 Jul 2025 05:29:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751889038; x=1752493838; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qmydaeLXrKCNGXEWvR1wprnnquitueyo6lhbAwb1b+o=;
-        b=ifcCbl9wyRAGRMy8x5oLG6OCyTfvk6k1pji9P0tqJ+j4xACIIOT9ZBPW6c40q0N/Kj
-         FsKrHtBDo8JExrxT7GHPmYUkxTqTJaHgwW/kWDLuucECb7g5wta/YaECfLvEGG7uljZr
-         56huBc3bMjVjunjuQ2S8PazbFr5LP8nECPgwqnhGtzMBAxG8bAQeKK1kp8Jvio5nc6tv
-         xStMZRYEZJ8WDjkEadZn7IlG8MKSNmi/0HWfuBWOQJiUjjmekvAuF8wLtDyexifu8u0h
-         8sCJsqphj/wpx7USGSnSTQyZJ4oK6T0s1B+Un2U7BQbn6XPUO2DJ1joxUHHD8m8BsdTp
-         7zSw==
+        d=gmail.com; s=20230601; t=1751891365; x=1752496165; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ig/s/402eBoi7g31vR2xi+h6kTIDzXfOUp6ly6hWS6k=;
+        b=I7CVL/tGYculjYbkLC3/c/1ZF8MdyMzNZpcEEnq+WpMylmYpi4TTk89mSFbeF7+nv6
+         w80NTnGUFz0meg3CaQ0yMwCVnmMsBtRj5KhLyZYUWgyVCEHJ9w+xhcw7AC91D7YdqsxO
+         Qw4+q6U/rSqRcWC+3k6oN4+nQdUneul5znLUGDuJxr/ONTDPCNMN2nCeIOiS7b/JVlki
+         3LF5n3D5rQxQ9Ssq3L7WD+48FCQ073V2Ar+xmN9mzQOo1OvBDlx6Cu+tzMnNcDyIpX6K
+         lWPLuwoWQ95Rdfbo7eQdZ1wg4lGw8xEe7HEb9E/3bebu02HHqKXF47nnQWr6NSemse61
+         3nxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751889038; x=1752493838;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qmydaeLXrKCNGXEWvR1wprnnquitueyo6lhbAwb1b+o=;
-        b=iB/KU0qk0nPA2LmEMwVcNrB8KaK4QITJsw3kD54WisD3bF+gG9cAe3upFJZCqrE18e
-         xtc8AjqJDwReh0mPHLYD8cSSVvyIdg3oe0aYdxQjIEndICeuHX+UBxKbvHBHl0qZUqXY
-         I+K8VCPmxEmEXwuWRwER8grDeRF7Ke8SG2BZVVTFVX/lFSBJbyLdLCt1QWzRbvICXLu3
-         wOuNmnRohZXje93Y0ysSiYTyx1LmzxchbvVV8oeNEud06M1PSsaST+lI7TqZHOZlEoMN
-         j8wRxDkGjDDHZMiiRhZZDZGZ06AcpRjAK9Slf5BwjEvBA7r6QoqawOtBl8aBYWXRt6bS
-         AlAQ==
-X-Gm-Message-State: AOJu0Ywj8BLaCFxlbjrqmGgK7cvfJ1MLL27Y5PSL+MJMpECUqdwljvik
-	DbGrxkNpIG6d/vI85ysCkot9teRY40yxlz5UTJVfzTslNRDcGIvIWl9FI7KcWEGX
-X-Gm-Gg: ASbGnct9PbKcG1CwSFv1bbSgUvJPOQiAhQBXxIhnZj7yDm7ArQWZg3uMrDHROkcY0nq
-	9Eg0Pm+Ok0ZK2LbHAZk/AX6khQ2A9TcUPVSommbroAHtT64+HKjxN0t/EDM+6gNt33jlZ/7YT0O
-	uF0mm7pSQWpJvK8zTG5IpE+7U86O8uEi6/mWJQZl6luFgE4wWkHT/8GXrfEbWnHVPiP/yJYa4A+
-	QaKWiMU4OcW3d12mU8YQ6FGk6XTG9V7Ndc0hY+YlgNx+BpeTZAUtlvlh/bgg+ynksjJ+Ojj57Yy
-	8qXDoHWENpblLt9f13CGYDTSux8fRtFShQGIocoWx9ffe+kX0Oh2RaAkbJln850OQis6fATCIs1
-	qq/jzhWEfWExp+EnepT5UQd40iWTAYA+oixz21q/KPhhiX2JESRkrKV97wxEEldtyA8sY40c=
-X-Google-Smtp-Source: AGHT+IEASk5Pep1X8+dbSUtVyRqA7HnIO9XqYCh8G2KGnRAGYV72Cqh4n8EzEa2+uiywriEPonDkGw==
-X-Received: by 2002:a05:600c:8b2f:b0:43c:fe5e:f03b with SMTP id 5b1f17b1804b1-454b4ec3e6fmr125148045e9.30.1751889037654;
-        Mon, 07 Jul 2025 04:50:37 -0700 (PDT)
-Received: from mail.gmail.com (2a01cb0889497e00f536999e2663c8dd.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:f536:999e:2663:c8dd])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-453a85b3016sm149912615e9.0.2025.07.07.04.50.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jul 2025 04:50:37 -0700 (PDT)
-Date: Mon, 7 Jul 2025 13:50:35 +0200
-From: Paul Chaignon <paul.chaignon@gmail.com>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Yonghong Song <yonghong.song@linux.dev>
-Subject: [PATCH bpf-next v4] selftests/bpf: Negative test case for tail call
- map
-Message-ID: <aGu0i1X_jII-3aFa@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1751891365; x=1752496165;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ig/s/402eBoi7g31vR2xi+h6kTIDzXfOUp6ly6hWS6k=;
+        b=Y8EkJELja8h89FI1s5gaRGmkSGN/7BI/WWRgD+37azD/WQZod2JfHiZWl+Nn0D6E4v
+         GEEs7L3hQ1vn7gf3Cgq6nqfDYBZD39jmiNrdxBjhWY2vMvafPep48IQv/UMqB/tXtYxq
+         aydxBVR5y+ut0jo2gCWNNjcviyzTxIteCz+ntawb5UkC+BuQYgecAB0veKc2Q2fD909g
+         fTd4A0HJrzHBIu25RU8Qhn/v/c7DaH+mPLpdNlhzwoxKEvTLpe9ZmMmaBG06p+CS1+Rn
+         T6DLELeNutJBDZW+0tfKNjgt026KL+TFcw5H5z0vVlyYJBhCB3uZurmuUqhLX2amOjPO
+         zoBA==
+X-Forwarded-Encrypted: i=1; AJvYcCXXElR+GJunJ6akhgO6TraKPXfYze8W2ijQAtl1HMYx+eMCQO5Qqm0eOc9SlATVQerWkPA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwSxzu29NIxlUPwwk6hxrgPT1hIHeVh0zqIfTZGOEXxJUy/0kJb
+	PZHzQcdjYLYyiTnmeBUPaxk7XB3uTqQe7WnWz3c8UjSkORc7c/WWai7jmT+GVlwigfhBMFxuu4E
+	mLfQkZ4fxRBaUjrrZEgBGfZpRjy8aXPY=
+X-Gm-Gg: ASbGncuv/ywTyP9WQ772SjEUWtj37/ZjaByUXZKcwsGwEUQ/129VisWc6jyPV/0kX1d
+	NIxUmAT/+aDCpxWjnYX49ILX2UJ4LWxlWqbuKo6g+wvvSdHuZxdo6/LFuqNwdMLIHqHOgs3TLkG
+	SpmQMCjzJbAheF9zxQyc6sKJiiHXu/EoUU76lgWeZZSD4ZC9LuUscWjw==
+X-Google-Smtp-Source: AGHT+IGjfbQXlcJdq6AfiTlJ2NtKQiElCO5wah47zgCs/xYCdc0Zw/03owgiiwuBoYblryFIg18K7zcqobSt34X01/Q=
+X-Received: by 2002:a05:6808:6f88:b0:3fa:daa:dd8e with SMTP id
+ 5614622812f47-40d2da09d3dmr7539597b6e.35.1751891364669; Mon, 07 Jul 2025
+ 05:29:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20250701074110.525363-1-jianghaoran@kylinos.cn> <20250701074110.525363-2-jianghaoran@kylinos.cn>
+In-Reply-To: <20250701074110.525363-2-jianghaoran@kylinos.cn>
+From: Hengqi Chen <hengqi.chen@gmail.com>
+Date: Mon, 7 Jul 2025 20:29:13 +0800
+X-Gm-Features: Ac12FXwPd8kVr1FDuARL12nl8c9dis4nb2dsaGqxOiCMrdxxHqaLk974QGA6lb0
+Message-ID: <CAEyhmHSambz-UR8Aa1jRz+EuF8kH6=46HW18b56pAZTB7MoZVw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] LoongArch: BPF: Optimize the calculation method of
+ jmp_offset in the emit_bpf_tail_call function
+To: Haoran Jiang <jianghaoran@kylinos.cn>
+Cc: loongarch@lists.linux.dev, bpf@vger.kernel.org, kernel@xen0n.name, 
+	chenhuacai@kernel.org, yangtiezhu@loongson.cn, jolsa@kernel.org, 
+	haoluo@google.com, sdf@fomichev.me, kpsingh@kernel.org, 
+	john.fastabend@gmail.com, yonghong.song@linux.dev, song@kernel.org, 
+	eddyz87@gmail.com, martin.lau@linux.dev, andrii@kernel.org, 
+	daniel@iogearbox.net, ast@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This patch adds a negative test case for the following verifier error.
+Hi Haoran,
 
-    expected prog array map for tail call
+On Tue, Jul 1, 2025 at 3:41=E2=80=AFPM Haoran Jiang <jianghaoran@kylinos.cn=
+> wrote:
+>
+> For a ebpf subprog JIT=EF=BC=8Cthe last call bpf_int_jit_compile function=
+ will
+> directly enter the skip_init_ctx process. At this point, out_offset =3D -=
+1,
+> the jmp_offset in emit_bpf_tail_call is calculated
+> by #define jmp_offset (out_offset - (cur_offset)) is a negative number,
+> which does not meet expectations.The final generated assembly as follow.
+>
 
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
-Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
+OK, so this can be rephrased as:
+The extra pass of bpf_int_jit_compile() skips JIT context initialization wh=
+ich
+essentially skips offset calculation leaving out_offset =3D -1 ...
+
+> 54:     bgeu            $a2, $t1, -8        # 0x0000004c
+> 58:     addi.d          $a6, $s5, -1
+> 5c:     bltz            $a6, -16            # 0x0000004c
+> 60:     alsl.d          $t2, $a2, $a1, 0x3
+> 64:     ld.d            $t2, $t2, 264
+> 68:     beq             $t2, $zero, -28     # 0x0000004c
+>
+> Before apply this patch, the follow test case will reveal soft lock issue=
+s.
+>
+> cd tools/testing/selftests/bpf/
+> ./test_progs --allow=3Dtailcalls/tailcall_bpf2bpf_1
+>
+> dmesg:
+> watchdog: BUG: soft lockup - CPU#2 stuck for 26s! [test_progs:25056]
+>
+
+Add a Fixes tag.
+
+> Signed-off-by: Haoran Jiang <jianghaoran@kylinos.cn>
+> ---
+>  arch/loongarch/net/bpf_jit.c | 28 +++++++++-------------------
+>  1 file changed, 9 insertions(+), 19 deletions(-)
+>
+> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
+> index fa1500d4aa3e..d85490e7de89 100644
+> --- a/arch/loongarch/net/bpf_jit.c
+> +++ b/arch/loongarch/net/bpf_jit.c
+> @@ -208,9 +208,7 @@ bool bpf_jit_supports_far_kfunc_call(void)
+>         return true;
+>  }
+>
+> -/* initialized on the first pass of build_body() */
+> -static int out_offset =3D -1;
+> -static int emit_bpf_tail_call(struct jit_ctx *ctx)
+> +static int emit_bpf_tail_call(int insn, struct jit_ctx *ctx)
+>  {
+
+Make ctx the first argument ?
+
+>         int off;
+>         u8 tcc =3D tail_call_reg(ctx);
+> @@ -220,9 +218,8 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
+>         u8 t2 =3D LOONGARCH_GPR_T2;
+>         u8 t3 =3D LOONGARCH_GPR_T3;
+>         const int idx0 =3D ctx->idx;
+> -
+> -#define cur_offset (ctx->idx - idx0)
+> -#define jmp_offset (out_offset - (cur_offset))
+
+Reuse this jmp_offset macro, so that you don't have to repeat it 3
+times below, WDYT ?
+
+> +       int tc_ninsn =3D 0;
+> +       int jmp_offset =3D 0;
+>
+>         /*
+>          * a0: &ctx
+> @@ -232,8 +229,11 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
+>          * if (index >=3D array->map.max_entries)
+>          *       goto out;
+>          */
+> +       tc_ninsn =3D insn ? ctx->offset[insn+1] - ctx->offset[insn] :
+> +               ctx->offset[0];
+>         off =3D offsetof(struct bpf_array, map.max_entries);
+>         emit_insn(ctx, ldwu, t1, a1, off);
+> +       jmp_offset =3D tc_ninsn - (ctx->idx - idx0);
+>         /* bgeu $a2, $t1, jmp_offset */
+>         if (emit_tailcall_jmp(ctx, BPF_JGE, a2, t1, jmp_offset) < 0)
+>                 goto toofar;
+> @@ -243,6 +243,7 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
+>          *       goto out;
+>          */
+>         emit_insn(ctx, addid, REG_TCC, tcc, -1);
+> +       jmp_offset =3D tc_ninsn - (ctx->idx - idx0);
+>         if (emit_tailcall_jmp(ctx, BPF_JSLT, REG_TCC, LOONGARCH_GPR_ZERO,=
+ jmp_offset) < 0)
+>                 goto toofar;
+>
+> @@ -254,6 +255,7 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
+>         emit_insn(ctx, alsld, t2, a2, a1, 2);
+>         off =3D offsetof(struct bpf_array, ptrs);
+>         emit_insn(ctx, ldd, t2, t2, off);
+> +       jmp_offset =3D tc_ninsn - (ctx->idx - idx0);
+>         /* beq $t2, $zero, jmp_offset */
+>         if (emit_tailcall_jmp(ctx, BPF_JEQ, t2, LOONGARCH_GPR_ZERO, jmp_o=
+ffset) < 0)
+>                 goto toofar;
+> @@ -263,22 +265,11 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
+>         emit_insn(ctx, ldd, t3, t2, off);
+>         __build_epilogue(ctx, true);
+>
+> -       /* out: */
+> -       if (out_offset =3D=3D -1)
+> -               out_offset =3D cur_offset;
+> -       if (cur_offset !=3D out_offset) {
+> -               pr_err_once("tail_call out_offset =3D %d, expected %d!\n"=
+,
+> -                           cur_offset, out_offset);
+> -               return -1;
+> -       }
+> -
+>         return 0;
+>
+>  toofar:
+>         pr_info_once("tail_call: jump too far\n");
+>         return -1;
+> -#undef cur_offset
+> -#undef jmp_offset
+>  }
+>
+>  static void emit_atomic(const struct bpf_insn *insn, struct jit_ctx *ctx=
+)
+> @@ -916,7 +907,7 @@ static int build_insn(const struct bpf_insn *insn, st=
+ruct jit_ctx *ctx, bool ext
+>         /* tail call */
+>         case BPF_JMP | BPF_TAIL_CALL:
+>                 mark_tail_call(ctx);
+> -               if (emit_bpf_tail_call(ctx) < 0)
+> +               if (emit_bpf_tail_call(i, ctx) < 0)
+>                         return -EINVAL;
+>                 break;
+>
+> @@ -1342,7 +1333,6 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_pro=
+g *prog)
+>         if (tmp_blinded)
+>                 bpf_jit_prog_release_other(prog, prog =3D=3D orig_prog ? =
+tmp : orig_prog);
+>
+> -       out_offset =3D -1;
+>
+>         return prog;
+>
+> --
+> 2.43.0
+>
+
+Cheers,
 ---
-Changes in v4:
-  - Sent an earlier version as v3 by mistake. Monday is hard...
-Changes in v3:
-  - Removed BPF_F_ANY_ALIGNMENT flag as suggested by Yonghong.
-Changes in v2:
-  - Moved the test to prog_tests format as suggested by Eduard.
-  - Rebased.
-  - v1: https://lore.kernel.org/bpf/7cec754c8d4cc2d93a50e9091d7ccc7f33d454d4.1751578055.git.paul.chaignon@gmail.com/
-
- .../selftests/bpf/prog_tests/verifier.c       |  2 ++
- .../selftests/bpf/progs/verifier_tailcall.c   | 31 +++++++++++++++++++
- 2 files changed, 33 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_tailcall.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
-index c9da06741104..77ec95d4ffaa 100644
---- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -85,6 +85,7 @@
- #include "verifier_store_release.skel.h"
- #include "verifier_subprog_precision.skel.h"
- #include "verifier_subreg.skel.h"
-+#include "verifier_tailcall.skel.h"
- #include "verifier_tailcall_jit.skel.h"
- #include "verifier_typedef.skel.h"
- #include "verifier_uninit.skel.h"
-@@ -219,6 +220,7 @@ void test_verifier_stack_ptr(void)            { RUN(verifier_stack_ptr); }
- void test_verifier_store_release(void)        { RUN(verifier_store_release); }
- void test_verifier_subprog_precision(void)    { RUN(verifier_subprog_precision); }
- void test_verifier_subreg(void)               { RUN(verifier_subreg); }
-+void test_verifier_tailcall(void)             { RUN(verifier_tailcall); }
- void test_verifier_tailcall_jit(void)         { RUN(verifier_tailcall_jit); }
- void test_verifier_typedef(void)              { RUN(verifier_typedef); }
- void test_verifier_uninit(void)               { RUN(verifier_uninit); }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_tailcall.c b/tools/testing/selftests/bpf/progs/verifier_tailcall.c
-new file mode 100644
-index 000000000000..b4acce60fb9b
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_tailcall.c
-@@ -0,0 +1,31 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} map_array SEC(".maps");
-+
-+SEC("socket")
-+__description("invalid map type for tail call")
-+__failure __msg("expected prog array map for tail call")
-+__failure_unpriv
-+__naked void invalid_map_for_tail_call(void)
-+{
-+	asm volatile ("			\
-+	r2 = %[map_array] ll;	\
-+	r3 = 0;				\
-+	call %[bpf_tail_call];		\
-+	exit;				\
-+"	:
-+	: __imm(bpf_tail_call),
-+	  __imm_addr(map_array)
-+	: __clobber_all);
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.43.0
-
+Hengqi
 
