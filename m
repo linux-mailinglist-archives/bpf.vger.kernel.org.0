@@ -1,243 +1,168 @@
-Return-Path: <bpf+bounces-62542-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62543-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBAE9AFBA14
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 19:46:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1196AFBA1F
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 19:51:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0187E3BA7A2
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 17:45:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D49743B35F5
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 17:50:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C77B18BBAE;
-	Mon,  7 Jul 2025 17:45:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C44D262D27;
+	Mon,  7 Jul 2025 17:51:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HnRhYoGo"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="divXgdqM"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 557D1219EB
-	for <bpf@vger.kernel.org>; Mon,  7 Jul 2025 17:45:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06ED722A7E5
+	for <bpf@vger.kernel.org>; Mon,  7 Jul 2025 17:51:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751910358; cv=none; b=LD0WmaU1z9WmaVQ1c/6OmBbcdnYn7ra3Dd5Vzd5V05c3SNg92jLrEzGf0Xp5i2I80gt5l3Vj/iyJS1uLo4pKH2Z92LOagIUy3hX7/HOTFvlw6gSiGGuy74AOqYA/2qRvbA1crRRP2jIJyxPAiDV/oQZ/vQI5orsBr/NcGt527Rs=
+	t=1751910677; cv=none; b=YBrBkSc3IBrkCYvaAJn5+5XuTauEXR7voD4OWBsZ93vr+Nzhkr6iuPIPxYdP0QzBVzGIAhGWRAUsLGmLWTLLSTDCNH3Uxb34flmV++RBxgz7upA2V7mNqn1q/3NKFlk9ih/0zyY+jsSyi/IBtFampnnNyhxa3+ipz5YvbOwnV/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751910358; c=relaxed/simple;
-	bh=XL/L5BqyMAPcoVY/4Vxv2KfmmgF09PyG7gtrsVlrSsA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZDyVvzA9RpqIKw4eH/Mqty72GJwjm1r6ZmELFWCYLkOJjgxMr1FGpQbABkX9k8VnPG5Wl2X8CntIN2/mTK4e48xK+Gz8MTJ95Lm/OCbufJrr3Mmpy7pgkfHhiTPnXCPZmp7YwP5NHK/5xgH38Uu003lwUXU6kg6Z/iE+v1HMrwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HnRhYoGo; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <dfd55b14-95f6-403f-9d67-9d0a16e5b303@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1751910354;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=o/I7b4ObseyNUkhPmIqIc+OoZ+dFxFq1PXe/5W4ZG5A=;
-	b=HnRhYoGo29nNqwEKLsr6bRRGHBDYJ6QCDMOYC1AUKtfx3QCXEIrCupPo+eWvO4uBzltsWz
-	MFB+XPxo4JiTkUbSW/icUL4d3ndSjeoio/YBxIDy19T+zylR9YmSzH8nFYuN+otqvhst6Y
-	+OaGQd/cHlviHvZmHyqXF6+dlTa/QNU=
-Date: Mon, 7 Jul 2025 10:45:41 -0700
+	s=arc-20240116; t=1751910677; c=relaxed/simple;
+	bh=F+JhJDxpwPRwb3AqPuIfoAmEkRG3+2v7psK5Sz3fQtQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=cGyHvx+HdgbyQs7bjwnEcuslZv7K2LhrHW3xQVgbgHTBaue7bizU4y+ctPkLkUOBgGHX7MgPg3JyAXuovx5TIorT2bfUlXmhtqAeWAVo7PxgBXP5o6lCbBaIF7NLgMdyNQIYMesg/l4YMBSw4sO0VgIleQ1wrkdFs6Y5/aADFrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=divXgdqM; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-60867565fb5so5702562a12.3
+        for <bpf@vger.kernel.org>; Mon, 07 Jul 2025 10:51:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1751910674; x=1752515474; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sAn8TiUso0gO9RetRg400m8uB5tG55kojEKoa6j8nuQ=;
+        b=divXgdqMCYAD89ccasze23KPBr4ER1WSBazVrHBLvQXgG5vnurU65dXgPuFI9CK+3J
+         BpVCnzbNA40QzaP6XsdbANM29bRw8am2SDmin5Fpj/hv3NCU4joSxzuvam5P8Ws2Kxyn
+         yicbrt9e4yJWlIXT8rlPCcuxE0R3xuL5o7Lc98XbD6DRHFDa38ldtvr88ClcNjXXCoGt
+         OHazWOuGwVQJb0ntdi/1Trxv4wV1EkFUdSjiR5niJGpYQs9tY4zCCriKYFCjRgSzKH3j
+         Q2yUJ94CHtpfHR3rmr8EQEzHj3Y1msXfFsMLEa9/ziRI8YlGrFHTzT1/z6m/iSorP1y6
+         UnAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751910674; x=1752515474;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sAn8TiUso0gO9RetRg400m8uB5tG55kojEKoa6j8nuQ=;
+        b=D16LdFrfuXiAKLmqtG/z8RqAU57tZ/d+U4IpxI798d+MNk8ErASVdK7BpqJwKrwX2s
+         Wrhl/+aJosuvoEGUKulCvr45HU/XT+ysPf0PZ+Z3zpPtEo1kgj+YCco5BDvkHeevYgfo
+         O2/4uuPaNmyL7WFL4N7ANwttdC8eHrZgkh11s0j84Y8qMQOJhukMyKD6c6rzghKzQd/G
+         1gHdv/TLHRUb1YWmk0UkRJZz2P7mgt9q/gQn35Unj4xiP5Z1hHOczLknoIb/CdLMMMkN
+         Xv7mH8qjjqMA8LNywJdKlcmJ9YrxczcYKtJdgqYlWAayC0WdVs1a0R2czUnE0DLPh6mx
+         ZStA==
+X-Forwarded-Encrypted: i=1; AJvYcCVtHpkkmjlsgKr5mW1N8NoMnS19fX43ZDJZGdQGsRn9matdXmblqgyxqOno7RCddSj1Xf4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YweSo3gyhVA/szt7xyMCZBnisOZ2qufyEPciVUDoFcRZkBEVzF+
+	Gn0JLdDkQv61rov08K37dmrX097+JP7nl+oC7MR3dQRO8nlOLBdDyrmfNnTJoAeSr6VXCyQwLbC
+	wjvW0
+X-Gm-Gg: ASbGnctzMe6Oms4OMo991nNIyvxoC+oqPiRLiJaPy6pCXy432SQRQS2jeElC8zc0FIF
+	7fQdQumJfhdJk4/4Z5aPDxd6RjdklCLWPjD3i/vqAX1x0oUEPavO3+Ikj+2Wq+Sitr4IGpU62G0
+	c7sJhPy+gjrT3+hbfemHXzlWtaQ/LL1cGLOx3tPkzbVJgFL4onoUyFq5lNtaICIuhc7khOkx/rj
+	/WnmOX1Nuuua9kHZ8dX4Py36mUCwZTlAB0SMkrCNehCSMi4DjLjFmyRZPHy6i6WGJr12qtxec5e
+	zHMrofnNoAg2jT1U56uLXrPKvcyLFVPXE+Sn11BXmw3KCFjLFaf8cuA=
+X-Google-Smtp-Source: AGHT+IG1tNP4StDCMG4g6g7LF2lggkO7mUVU2/MdB6rvjG5teWxlng0i59YEXn+a5vSaoIJ65mAtUQ==
+X-Received: by 2002:a17:907:3d05:b0:ae3:a604:b1fe with SMTP id a640c23a62f3a-ae6b069f406mr4937666b.38.1751910674228;
+        Mon, 07 Jul 2025 10:51:14 -0700 (PDT)
+Received: from cloudflare.com ([2a09:bac5:5063:2387::38a:7a])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae3f6b02f23sm750799766b.118.2025.07.07.10.51.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jul 2025 10:51:13 -0700 (PDT)
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: Cong Wang <xiyou.wangcong@gmail.com>
+Cc: Zijian Zhang <zijianzhang@bytedance.com>,  netdev@vger.kernel.org,
+  bpf@vger.kernel.org,  john.fastabend@gmail.com,
+  zhoufeng.zf@bytedance.com,  Amery Hung <amery.hung@bytedance.com>,  Cong
+ Wang <cong.wang@bytedance.com>
+Subject: Re: [Patch bpf-next v4 4/4] tcp_bpf: improve ingress redirection
+ performance with message corking
+In-Reply-To: <aGdWhRi/0KLTFL8k@pop-os.localdomain> (Cong Wang's message of
+	"Thu, 3 Jul 2025 21:20:21 -0700")
+References: <20250701011201.235392-1-xiyou.wangcong@gmail.com>
+	<20250701011201.235392-5-xiyou.wangcong@gmail.com>
+	<87ecuyn5x2.fsf@cloudflare.com>
+	<509939c4-2e3e-41a6-888f-cbbf6d4c93cb@bytedance.com>
+	<87a55lmrwn.fsf@cloudflare.com> <aGdWhRi/0KLTFL8k@pop-os.localdomain>
+Date: Mon, 07 Jul 2025 19:51:12 +0200
+Message-ID: <87cyabhotr.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 1/3] btf_encoder: skip functions consuming packed
- structs passed by value on stack
-To: =?UTF-8?Q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?=
- <alexis.lothore@bootlin.com>, dwarves@vger.kernel.org
-Cc: bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>, Alexei Starovoitov <ast@fb.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Bastien Curutchet <bastien.curutchet@bootlin.com>, ebpf@linuxfoundation.org
-References: <20250707-btf_skip_structs_on_stack-v3-0-29569e086c12@bootlin.com>
- <20250707-btf_skip_structs_on_stack-v3-1-29569e086c12@bootlin.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-In-Reply-To: <20250707-btf_skip_structs_on_stack-v3-1-29569e086c12@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain
 
-On 7/7/25 7:02 AM, Alexis LothorÃ© (eBPF Foundation) wrote:
-> Most ABIs allow functions to receive structs passed by value, if they
-> fit in a register or a pair of registers, depending on the exact ABI.
-> However, when there is a struct passed by value but all registers are
-> already used for parameters passing, the struct is still passed by value
-> but on the stack. This becomes an issue if the passed struct is defined
-> with some attributes like __attribute__((packed)) or
-> __attribute__((aligned(X)), as its location on the stack is altered, but
-> this change is not reflected in dwarf information. The corresponding BTF
-> data generated from this can lead to incorrect BPF trampolines
-> generation (eg to attach bpf tracing programs to kernel functions) in
-> the Linux kernel.
-> 
-> Prevent those wrong cases by not encoding functions consuming structs
-> passed by value on stack, when those structs do not have the expected
-> alignment due to some attribute usage.
-> 
-> Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
-> ---
-> Changes in v3:
-> - remove unneeded class__find_holes (already done by
->    class__infer_packed_attributes)
-> - add uncertain parm loc in saved_functions_combine
+On Thu, Jul 03, 2025 at 09:20 PM -07, Cong Wang wrote:
+> On Thu, Jul 03, 2025 at 01:32:08PM +0200, Jakub Sitnicki wrote:
+>> I'm all for reaping the benefits of batching, but I'm not thrilled about
+>> having a backlog worker on the path. The one we have on the sk_skb path
+>> has been a bottleneck:
+>
+> It depends on what you compare with. If you compare it with vanilla
+> TCP_BPF, we did see is 5% latency increase. If you compare it with
+> regular TCP, it is still much better. Our goal is to make Cillium's
+> sockops-enable competitive with regular TCP, hence we compare it with
+> regular TCP.
+>
+> I hope this makes sense to you. Sorry if this was not clear in our cover
+> letter.
 
-Acked-by: Ihor Solodrai <ihor.solodrai@linux.dev>
+Latency-wise I think we should be comparing sk_msg send-to-local against
+UDS rather than full-stack TCP.
 
-Thank you!
+There is quite a bit of guessing on my side as to what you're looking
+for because the cover letter doesn't say much about the use case.
 
-> Changes in v2:
-> - do not deny any struct passed by value, only those passed on stack AND
->    with some attribute alteration
-> - use the existing class__infer_packed_attributes to deduce is a struct
->    is "altered". As a consequence, move the function filtering from
->    parameter__new to btf_encoder__encode_cu, to make sure that all the
->    needed data has been parsed from debug info
-> ---
->   btf_encoder.c | 53 ++++++++++++++++++++++++++++++++++++++++++++++++++---
->   dwarves.h     |  1 +
->   2 files changed, 51 insertions(+), 3 deletions(-)
-> 
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index 0bc23349b5d740c3ddab8208b2e15cdbdd139b9d..3f040fe03d7a208aa742914513bacde9782aabcf 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -87,6 +87,7 @@ struct btf_encoder_func_state {
->   	uint8_t optimized_parms:1;
->   	uint8_t unexpected_reg:1;
->   	uint8_t inconsistent_proto:1;
-> +	uint8_t uncertain_parm_loc:1;
->   	int ret_type_id;
->   	struct btf_encoder_func_parm *parms;
->   	struct btf_encoder_func_annot *annots;
-> @@ -1203,6 +1204,7 @@ static int32_t btf_encoder__save_func(struct btf_encoder *encoder, struct functi
->   	state->inconsistent_proto = ftype->inconsistent_proto;
->   	state->unexpected_reg = ftype->unexpected_reg;
->   	state->optimized_parms = ftype->optimized_parms;
-> +	state->uncertain_parm_loc = ftype->uncertain_parm_loc;
->   	ftype__for_each_parameter(ftype, param) {
->   		const char *name = parameter__name(param) ?: "";
->   
-> @@ -1365,7 +1367,7 @@ static int saved_functions_cmp(const void *_a, const void *_b)
->   
->   static int saved_functions_combine(struct btf_encoder_func_state *a, struct btf_encoder_func_state *b)
->   {
-> -	uint8_t optimized, unexpected, inconsistent;
-> +	uint8_t optimized, unexpected, inconsistent, uncertain_parm_loc;
->   	int ret;
->   
->   	ret = strncmp(a->elf->name, b->elf->name,
-> @@ -1375,11 +1377,13 @@ static int saved_functions_combine(struct btf_encoder_func_state *a, struct btf_
->   	optimized = a->optimized_parms | b->optimized_parms;
->   	unexpected = a->unexpected_reg | b->unexpected_reg;
->   	inconsistent = a->inconsistent_proto | b->inconsistent_proto;
-> +	uncertain_parm_loc = a->uncertain_parm_loc | b->uncertain_parm_loc;
->   	if (!unexpected && !inconsistent && !funcs__match(a, b))
->   		inconsistent = 1;
->   	a->optimized_parms = b->optimized_parms = optimized;
->   	a->unexpected_reg = b->unexpected_reg = unexpected;
->   	a->inconsistent_proto = b->inconsistent_proto = inconsistent;
-> +	a->uncertain_parm_loc = b->uncertain_parm_loc = uncertain_parm_loc;
->   
->   	return 0;
->   }
-> @@ -1430,9 +1434,15 @@ static int btf_encoder__add_saved_funcs(struct btf_encoder *encoder, bool skip_e
->   		/* do not exclude functions with optimized-out parameters; they
->   		 * may still be _called_ with the right parameter values, they
->   		 * just do not _use_ them.  Only exclude functions with
-> -		 * unexpected register use or multiple inconsistent prototypes.
-> +		 * unexpected register use, multiple inconsistent prototypes or
-> +		 * uncertain parameters location
->   		 */
-> -		add_to_btf |= !state->unexpected_reg && !state->inconsistent_proto;
-> +		add_to_btf |= !state->unexpected_reg && !state->inconsistent_proto && !state->uncertain_parm_loc;
-> +
-> +		if (state->uncertain_parm_loc)
-> +			btf_encoder__log_func_skip(encoder, saved_fns[i].elf,
-> +					"uncertain parameter location\n",
-> +					0, 0);
->   
->   		if (add_to_btf) {
->   			err = btf_encoder__add_func(state->encoder, state);
-> @@ -2553,6 +2563,38 @@ void btf_encoder__delete(struct btf_encoder *encoder)
->   	free(encoder);
->   }
->   
-> +static bool ftype__has_uncertain_arg_loc(struct cu *cu, struct ftype *ftype)
-> +{
-> +	struct parameter *param;
-> +	int param_idx = 0;
-> +
-> +	if (ftype->nr_parms < cu->nr_register_params)
-> +		return false;
-> +
-> +	ftype__for_each_parameter(ftype, param) {
-> +		if (param_idx++ < cu->nr_register_params)
-> +			continue;
-> +
-> +		struct tag *type = cu__type(cu, param->tag.type);
-> +
-> +		if (type == NULL || !tag__is_struct(type))
-> +			continue;
-> +
-> +		struct type *ctype = tag__type(type);
-> +		if (ctype->namespace.name == 0)
-> +			continue;
-> +
-> +		struct class *class = tag__class(type);
-> +
-> +		class__infer_packed_attributes(class, cu);
-> +
-> +		if (class->is_packed)
-> +			return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +
->   int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct conf_load *conf_load)
->   {
->   	struct llvm_annotation *annot;
-> @@ -2647,6 +2689,8 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
->   		 * Skip functions that:
->   		 *   - are marked as declarations
->   		 *   - do not have full argument names
-> +		 *   - have arguments with uncertain locations, e.g packed
-> +		 *   structs passed by value on stack
->   		 *   - are not in ftrace list (if it's available)
->   		 *   - are not external (in case ftrace filter is not available)
->   		 */
-> @@ -2693,6 +2737,9 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
->   		if (!func)
->   			continue;
->   
-> +		if (ftype__has_uncertain_arg_loc(cu, &fn->proto))
-> +			fn->proto.uncertain_parm_loc = 1;
-> +
->   		err = btf_encoder__save_func(encoder, fn, func);
->   		if (err)
->   			goto out;
-> diff --git a/dwarves.h b/dwarves.h
-> index 36c689847ebf29a1ab9936f9d0f928dd46514547..d689aee5910f4b40dc13b3e9dc596dfbe6a2c3d0 100644
-> --- a/dwarves.h
-> +++ b/dwarves.h
-> @@ -1021,6 +1021,7 @@ struct ftype {
->   	uint8_t		 unexpected_reg:1;
->   	uint8_t		 processed:1;
->   	uint8_t		 inconsistent_proto:1;
-> +	uint8_t		 uncertain_parm_loc:1;
->   	struct list_head template_type_params;
->   	struct list_head template_value_params;
->   	struct template_parameter_pack *template_parameter_pack;
-> 
+For instance, do you control the sender?  Why not do big writes on the
+sender side if raw throughput is what you care about?
 
+>> 1) There's no backpressure propagation so you can have a backlog
+>> build-up. One thing to check is what happens if the receiver closes its
+>> window.
+>
+> Right, I am sure there are still a lot of optimizations we can further
+> improve. The only question is how much we need for now. How about
+> optimizing it one step each time? :)
+
+This is introducing a quite a bit complexity from the start. I'd like to
+least explore if it can be done in a simpler fashion before committing to
+it.
+
+You point at wake-ups as being the throughput killer. As an alternative,
+can we wake up the receiver conditionally? That is only if the receiver
+has made progress since on the queue since the last notification. This
+could also be a form of wakeup moderation.
+
+>> 2) There's a scheduling latency. That's why the performance of splicing
+>> sockets with sockmap (ingress-to-egress) looks bleak [1].
+>
+> Same for regular TCP, we have to wakeup the receiver/worker. But I may
+> misunderstand this point?
+
+What I meant is that, in the pessimistic case, to deliver a message we
+now have to go through two wakeups:
+
+sender -wakeup-> kworker -wakeup-> receiver
+
+>> So I have to dig deeper...
+>> 
+>> Have you considered and/or evaluated any alternative designs? For
+>> instance, what stops us from having an auto-corking / coalescing
+>> strategy on the sender side?
+>
+> Auto corking _may_ be not as easy as TCP, since essentially we have no
+> protocol here, just a pure socket layer.
+
+You're right. We don't have a flush signal for auto-corking on the
+sender side with sk_msg's.
+
+What about what I mentioned above - can we moderate the wakeups based on
+receiver making progress? Does that sound feasible to you?
+
+Thanks,
+-jkbs
 
