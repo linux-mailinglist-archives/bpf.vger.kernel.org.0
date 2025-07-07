@@ -1,137 +1,150 @@
-Return-Path: <bpf+bounces-62482-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62483-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4148EAFA988
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 04:14:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED7C7AFACE3
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 09:18:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CF7D1896567
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 02:14:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4174F3A3887
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 07:17:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 755011A5B96;
-	Mon,  7 Jul 2025 02:14:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97AE727F011;
+	Mon,  7 Jul 2025 07:18:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VOtskHLm"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="RTFu88jY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 612A2635;
-	Mon,  7 Jul 2025 02:14:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7970219DF48;
+	Mon,  7 Jul 2025 07:18:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751854469; cv=none; b=qe8BxHDb1kT55Py/ZtbyGr93rXollSEdem8phaPM6FnIE0/+TTnOH1Ib5aSmIbun6qzHSWw6CwTm+QjGVxGTHcaLMnSnCYt1WOi7g4yNNagLzTeFr8IHkLBBnLBhKZG7b1py9/jDtnCHRzMlYJJk9fOcEqbbXrY/XWnM9h26uRc=
+	t=1751872690; cv=none; b=USqPLtr5O+OAsUfEmLaWwlJIDXwnpy3M8nXGtqKmOXLNSbWDG9S3wCe2qkskqT6rldoROH53a6yMvNnpOAYgD1GtMnMZvYLJHsuwzn1rel/7RPWl8BUUOrNkD+yvaoVgq0UKK0mjR9Ts/2tP9n8XU23qqLpYHf2IhpEA0DFLpPg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751854469; c=relaxed/simple;
-	bh=OJoh95gbE4LdK3oGqwH/Vcru0MsY8JuqxIR9GBqp780=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=YUougx6HPpJ1ZTfnc8DiTq8rKc3Mhw8BDESTJP5bFE+xpwU0biAqYkrM73LNpLl6+jhai2szqFCPJNdm4vGp9CSTE5bkketi30in8lPlWX7VgYHfIXkwOO3H5jGHz4jwUsDTKCXf80ZnKPmq2gbYvMpz8vM7++P9mKDlWYln37c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VOtskHLm; arc=none smtp.client-ip=209.85.216.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-311a6236effso1837761a91.2;
-        Sun, 06 Jul 2025 19:14:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751854467; x=1752459267; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=OJoh95gbE4LdK3oGqwH/Vcru0MsY8JuqxIR9GBqp780=;
-        b=VOtskHLmWVdt4VsNzWoMNC/E0+EyKzrfR/vR4cC8DGJd/8+3kc1O/9DjRDCE9DPL5j
-         kIzg0gcchfqG69Zg3OhQhnLqwIfHLrsh24NIBezxyknej0FoLjf9fuoGQvixVfHlL6DR
-         jmti/y5rIf2Fy5Gi3jwPbPKHHawv8MTz4he8MB3gLQMLzi5wT0ghb9sDIrHiW3rSIqHI
-         Klc1n8Jk0J6+tFO+fzb5kXFnIuT5f95meZO/REobDQgNZ5N/8NVtphAXlDk54HLFrlw3
-         OXki5Fi+z1n5a7hpnAa0VymRmZiQDtcVeKIiA3ej7Si/hQc/F0nQkk0pgB6PfxxttVPH
-         I1Vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751854467; x=1752459267;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OJoh95gbE4LdK3oGqwH/Vcru0MsY8JuqxIR9GBqp780=;
-        b=dgNO3Hk/Rx3mhFegGJGmMTcy2yOGibZmGELyaVK8TWAxSiIvfnVdjvHfd4dbKJ55MF
-         5ReSoyurARwsvNZLdiB2BQZbQvq2WjCtIK/JplGO4W1xWclqP2yRr7JFUy94OfzUhpDE
-         IP6Y1eWD8WRBTvXfIyTVIAn8Avp1vHIMG4SAYhWYmQsDWod1m6G+pAJIIEVE67LvnsJb
-         JnNtEYjvFL5HvWpJWQV5Q/00j5LX8iqXoiu2Km0No1vXYu7Cpau655jP2MEEvpMGr+RI
-         vX4EiRjBZ80jY0iG5HCCFXi1/sd++cB1BpUf1U67cSXq5QIHqJmqF8SCEsbGvDQER87V
-         OH0w==
-X-Forwarded-Encrypted: i=1; AJvYcCWx73Hs4jb5I5N+ZUvl768eqQphDshJLC01/kGsO7m8QNtaTDqOt3JLa244kPTthyEbxEU=@vger.kernel.org, AJvYcCXKpO2mNFGcbD+C+0m+neaChk1LAacw4EDxcCK2pQI8CW8jsYJLeTY3Et0d/IqFUtBBEZXwOaHFblPxbVR9rtkr@vger.kernel.org, AJvYcCXwsFc0bpHo/4NsfYbUyVtuEoS1p0FN249/Cg8+9ONyCdeIbfy0YblEd8ewVcqxFl7uKuLz9ybSvTv6yuPm@vger.kernel.org
-X-Gm-Message-State: AOJu0YzXOmm1plceICs+dYe6nOUyKFrtIB3lpg83bE2wdnWVZYAHy6Oj
-	+q/YGsOPIEgGy0sDvZ1EqubY573+i/ZyZjhDFLQoVxZQq248oINIuyt9
-X-Gm-Gg: ASbGncvfKLOwk7C/7t6qLQtzfeBOfLZ4Avgs+zKpGOg178amKu4bg3I06KQPRPn5mrU
-	gNAvgO8V5zW2bhNc6sDDX8cEFP9MEfYX4O0P3yau/5PHalqeBGMtXvo1hV7LcrCG7glMrl/fYdO
-	YjaBCnwXSyeCGgG57mMBpTCc3ewu1z1XQvk5hQvcNWVcwPnu2T2JZaWf+5w0cgJnk4ZPjvYebD2
-	j5v+Hr0ZotuuMj7TcCweTmEucuqEbZgB4sKw9f/wVidjSd8jKfv2YvzW5zJG2Wi41C84EMljlM6
-	qbX3bGIqnlEZmBBS7998LP6k+dqKMyegBqvgJlQ+wySJzpmmxhvvuUP9Jw==
-X-Google-Smtp-Source: AGHT+IFbRq1ASueuRtnzGQgbE+s+nwFqcOJFs6lnbWyRdkWwFRPAmHCLOCUE3sYOyOgLbFuWRpcMRg==
-X-Received: by 2002:a17:90b:2d0e:b0:314:2892:b1e0 with SMTP id 98e67ed59e1d1-31aac5416a4mr11373751a91.34.1751854466565;
-        Sun, 06 Jul 2025 19:14:26 -0700 (PDT)
-Received: from [192.168.0.56] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31a9cc67367sm10742360a91.18.2025.07.06.19.14.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Jul 2025 19:14:25 -0700 (PDT)
-Message-ID: <a0b112301f51e4ea2ff31c0e9c6e28b2b6535db2.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: Fix aux usage after do_check_insn()
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Luis Gerhorst <luis.gerhorst@fau.de>, Alexei Starovoitov
- <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,  Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend	
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev	 <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>,  Mykola Lysenko	 <mykolal@fb.com>, Shuah Khan
- <shuah@kernel.org>, Kumar Kartikeya Dwivedi	 <memxor@gmail.com>, Peilin Ye
- <yepeilin@google.com>, Saket Kumar Bhaskar	 <skb99@linux.ibm.com>, Viktor
- Malik <vmalik@redhat.com>, Ihor Solodrai	 <isolodrai@meta.com>, Daniel Xu
- <dxu@dxuuu.xyz>, bpf@vger.kernel.org, 	linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, Paul Chaignon	 <paul.chaignon@gmail.com>
-Cc: syzbot+dc27c5fb8388e38d2d37@syzkaller.appspotmail.com
-Date: Sun, 06 Jul 2025 19:14:22 -0700
-In-Reply-To: <20250705190908.1756862-2-luis.gerhorst@fau.de>
-References: <20250705190908.1756862-1-luis.gerhorst@fau.de>
-	 <20250705190908.1756862-2-luis.gerhorst@fau.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1751872690; c=relaxed/simple;
+	bh=QSGl4K4f2MNV/fdE1EOY0GdLB5rrl8evP70DAea8sTo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fnxLD56no6tqobZQ7fjjTeYvuwDKv6RL1erYzBWcI3xIwz6/otJ+Z8jQDUsDS/+Op75cq0bUIMAQfmF9EDXbtTz6y3516UR/lndY+y9aT07aDlJ3tEgVfPlvMd/dScLTMEL2VDLykM/o1F0x/RU0S+P8PX1Hz6EoqFKKSlaQZk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=RTFu88jY; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 566FRg3p002175;
+	Mon, 7 Jul 2025 07:17:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=jIepRk6DVAebh6PEsLNjSpb6du02Gr5YnB3tOZopq
+	qc=; b=RTFu88jYvpX7Y8m8tnWsSHI6nhlzKlob6KT8YSmL+hbgLhzYVrEeTg1xf
+	SO7jTcWOHL6VCB4DZ6UMCZ/BLxl4jsv17CH9Q/msCPAr3F7WaHTxLSG9dNpeyeV/
+	h0VXQVmmOZwk/ViYpwcuEcgm2g1nN/hzcXZhnE/krEHMkTPQKcNi2S9MeToOpQ9m
+	Im1VYzoKY56ekeSvmC0MyYTm2CDtAWET7znu2fxkKIv+ktbLdQRh/Jj9wObtpLiT
+	bteAyeT+8nknQbxOp/TXchAI3m6j+ztgmF7U4Lq4AfMInNQcFVqbtTwklJ6F9iib
+	dRz+tyLB/mXDGHtlFJLEDuRtUA+0w==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47ptfyfsfn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 07 Jul 2025 07:17:45 +0000 (GMT)
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 5677Hil5011374;
+	Mon, 7 Jul 2025 07:17:44 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47ptfyfsfh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 07 Jul 2025 07:17:44 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5675R9CG013582;
+	Mon, 7 Jul 2025 07:17:43 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 47qgkkmr00-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 07 Jul 2025 07:17:43 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5677Hdd223200230
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 7 Jul 2025 07:17:39 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 86D362004D;
+	Mon,  7 Jul 2025 07:17:39 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4C02C20043;
+	Mon,  7 Jul 2025 07:17:36 +0000 (GMT)
+Received: from li-621bac4c-27c7-11b2-a85c-c2bf7c4b3c07.in.ibm.com (unknown [9.109.219.153])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon,  7 Jul 2025 07:17:36 +0000 (GMT)
+From: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+To: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc: hbathini@linux.ibm.com, sachinpb@linux.ibm.com, andrii@kernel.org,
+        eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+        yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org
+Subject: [PATCH] selftests/bpf: Set CONFIG_PACKET=y for selftests
+Date: Mon,  7 Jul 2025 12:47:35 +0530
+Message-ID: <20250707071735.705137-1-skb99@linux.ibm.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=crubk04i c=1 sm=1 tr=0 ts=686b7499 cx=c_pps a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17 a=Wb1JkmetP80A:10 a=VnNF1IyMAAAA:8 a=PmTHI85cWLbkpOWelngA:9
+X-Proofpoint-ORIG-GUID: 2Mm_RrxbAbON0QE-fcdfu8EiPAjOOCEF
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzA3MDA0MSBTYWx0ZWRfX4hyEHs9Gu1VF 59dRfRfk8fRfKfE9LdlSr2I9457vYFDvj2Oe9Vks4yX2gM7LNSzkeoRfizaPGxCL6MhgdIjQibj cdSsZtgcteq/PvUT267uMxuEUybPaMfkeU45M5ZnixxMaG2th26NmzloY+YI3LWkjauwKMZTLDM
+ Yns/bWBe54c79z+G0IiSNATXD+WCK/qU8vhosiNJSHLXU2iyWbtfFR9xDAsb3Kne5LdV6maGBWM btAP0j4/CmKGH4ER9vVNiYIRL/eYBJDfXxEGxDaCE3byntVZUJaNppodJfWtrR5lfWUrgM27IiI UfQZ+4zB4BWEBnIyo7qzfinMIyeHPQBXSOzF/StqcLp8KyuDXhu2bd5xaJyFpviAAKrgVLHIE9R
+ DCcho4vruxNwPQwIZnzLeC3plaawsUmacYYjOE/7sqKG16WJhaft/HvoR9Mql7dUAy/AmbNN
+X-Proofpoint-GUID: eEAtjYMO7P97frU--vvMkJu3f2-QJ8jF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
+ definitions=2025-07-07_01,2025-07-06_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=948
+ priorityscore=1501 adultscore=0 suspectscore=0 lowpriorityscore=0
+ clxscore=1011 impostorscore=0 malwarescore=0 spamscore=0 bulkscore=0
+ phishscore=0 classifier=spam authscore=0 authtc=n/a authcc= route=outbound
+ adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
+ definitions=main-2507070041
 
-On Sat, 2025-07-05 at 21:09 +0200, Luis Gerhorst wrote:
-> We must terminate the speculative analysis if the just-analyzed insn had
-> nospec_result set. Using cur_aux() here is wrong because insn_idx might
-> have been incremented by do_check_insn(). Therefore, introduce and use
-> insn_aux variable.
->=20
-> Also change cur_aux(env)->nospec in case do_check_insn() ever manages to
-> increment insn_idx but still fail.
->=20
-> Change the warning to check the insn class (which prevents it from
-> triggering for ldimm64, for which nospec_result would not be
-> problematic) and use verifier_bug_if().
->=20
-> In line with Eduard's suggestion, do not introduce prev_aux() because
-> that requires one to understand that after do_check_insn() call what was
-> current became previous. This would at-least require a comment.
->=20
-> Fixes: d6f1c85f2253 ("bpf: Fall back to nospec for Spectre v1")
-> Reported-by: Paul Chaignon <paul.chaignon@gmail.com>
-> Reported-by: Eduard Zingerman <eddyz87@gmail.com>
-> Reported-by: syzbot+dc27c5fb8388e38d2d37@syzkaller.appspotmail.com
-> Link: https://lore.kernel.org/bpf/685b3c1b.050a0220.2303ee.0010.GAE@googl=
-e.com/
-> Link: https://lore.kernel.org/bpf/4266fd5de04092aa4971cbef14f1b4b96961f43=
-2.camel@gmail.com/
-> Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
-> Signed-off-by: Luis Gerhorst <luis.gerhorst@fau.de>
-> ---
+BPF selftest fails to build with below error:
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+  CLNG-BPF [test_progs] lsm_cgroup.bpf.o
+progs/lsm_cgroup.c:105:21: error: variable has incomplete type 'struct sockaddr_ll'
+  105 |         struct sockaddr_ll sa = {};
+      |                            ^
+progs/lsm_cgroup.c:105:9: note: forward declaration of 'struct sockaddr_ll'
+  105 |         struct sockaddr_ll sa = {};
+      |                ^
+1 error generated.
 
-[...]
+lsm_cgroup selftest requires sockaddr_ll structure which is not there
+in vmlinux.h when the kernel is built with CONFIG_PACKET=m.
+
+Enabling CONFIG_PACKET=y ensures that sockaddr_ll is available in vmlinux,
+allowing it to be captured in the generated vmlinux.h for bpf selftests.
+
+Reported-by: Sachin P Bappalige <sachinpb@linux.ibm.com>
+Signed-off-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+---
+ tools/testing/selftests/bpf/config | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
+index f74e1ea0ad3b..7247833fe623 100644
+--- a/tools/testing/selftests/bpf/config
++++ b/tools/testing/selftests/bpf/config
+@@ -105,6 +105,7 @@ CONFIG_IP_NF_IPTABLES=y
+ CONFIG_IP6_NF_IPTABLES=y
+ CONFIG_IP6_NF_FILTER=y
+ CONFIG_NF_NAT=y
++CONFIG_PACKET=y
+ CONFIG_RC_CORE=y
+ CONFIG_SECURITY=y
+ CONFIG_SECURITYFS=y
+-- 
+2.43.5
+
 
