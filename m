@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-62495-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62496-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC499AFB3EE
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 15:09:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39930AFB443
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 15:19:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B9D6188F50E
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 13:09:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3CE5169054
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 13:18:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3F0A29B792;
-	Mon,  7 Jul 2025 13:09:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3970A29DB77;
+	Mon,  7 Jul 2025 13:18:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="leCL277o"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="i2L34cYS"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A53F1FFC48;
-	Mon,  7 Jul 2025 13:09:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C599429DB6C;
+	Mon,  7 Jul 2025 13:18:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751893757; cv=none; b=afFiJnJ37nRn5sr3WEMBGeV64fRVt5WT0rrf/mRGXJtPko1BMmbsE4zerG8ujgUef9Zw7GbuFmzOFYktKQ9ILC99/a620R2xJ5WUjuRk/dRkUy/D9clpyio6LJ02f6diXw2SCKQTg44qw7p4hgyMlKNpzUwIS0/TvPiSJ2YxLeI=
+	t=1751894291; cv=none; b=qwk1Qym6ueSmLECCl2iCX8Knq/zrZLWxW1RSLubypCOImttjotoGxbP/xZjbjmsdHPLaG05Hb6xGq7Q/ZJFVpZV51eHT8H0dkWyQz49DY7Dau4rojJVGfoanpZ24oB35Ot+UmGw3eEQ9XuchB1zLkKRxOn77RW75FQMbaY1af+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751893757; c=relaxed/simple;
-	bh=YeMOVCglBU8p164rswsGlI71AdJFCu0J+zIZHooKAUo=;
+	s=arc-20240116; t=1751894291; c=relaxed/simple;
+	bh=8y8QpZtJTFNp8o0QUnini93q/Vu/FSNfMkKtriiY5zs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=STEP0OQFbAVxyF0gvIBWluyz/TWgP3B3zU0PlqdMXic16XChoNhFBTAoSEToR1uNu2Kr0lsNvOtJ0EVEopx31TG76hNMtCJ9k1AjSW5+epLqcmDJtNeiZeC9r7VaUc0meR2MWWgJy0LPjkQyc5A78lccat66vdYz+aRLd2Lx6JM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=leCL277o; arc=none smtp.client-ip=213.133.104.62
+	 In-Reply-To:Content-Type; b=qFV/HxE7g4dgpJYfMYiK2Z3Ju/s9NOH2ZIF8ixbxm/P/FtFZgbaX8oAkdXGdW83k39+NhSVTToTlG9jGew1Ytq1dsSWO62ih/D4ZcHtvZ8rWXzF0+P+S9iAa+0/DOCVT/0/Fyn/6DVQRsDrzpk884pzqlG28sdBrxZQIWduuX2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=i2L34cYS; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,26 +36,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=aYWQg/UvnmCmXtVe8KM5L6hltd/YwWA4VEQIY1VMyHI=; b=leCL277oy7Tss29U5TzSSnKppN
-	nMVoBAqlEy2uBPr4koxnqDWHqANIaLmxz4hfr45k6RCxRsuZCrGh8b8vynOyJhIQaFHUoLvu3CIao
-	fElvV8XElTMiLSze01B/QuWxEVb6d655KEh2soKuT/FAm8jHXTQPb4QPs1gPhze6TAIE2oylfaVmb
-	40meVabdff3yP1t48ObR0RJ22XQwj4PhB6toW42jvJRxKQXn8I9UedrxT8UowYitPdAg98ImL3j6t
-	Pp7iEZ4CWdCxE3jR57ddF7hM6Zmq7sI9R1g5vagShwUch2MpCvvONfbitv5sZJP/qImqqhLsGF+5H
-	nJxd1W8A==;
-Received: from sslproxy07.your-server.de ([78.47.199.104])
+	bh=zQASOhd0uZfQPjpQCiM/quTJ21C6rqW24eheUrCsOao=; b=i2L34cYSflNzgpHuw65V1hcoNJ
+	rm08nlqIfhEwfg+yMzgy8PcxLZdwYP4vVh1+LwA8qtFvpB5sxSzIRuiiINs9dNoNs1wOOYvJs3//E
+	JAwF8o/xHHgj5xrC/luckim34/bH9YjqHn+DO3ln3N1hYHIfHNqIdnGP5VA1N3mUULnrLOITwGJH4
+	rDbBIk70656+znmXE1fdQe00YSkDuAAh0WOOmDCnV8Sd5dHGwcs3qHIUVXQnNFXPWRCHl3n5tNvMT
+	sBSvM+oX0FRaePnAFG9TtAx6C3lrkWiJ9zb1wXNcRmW+2W2R26+apxRKokOjMjdr2SFIcuYMvEI8d
+	lHQPcOtg==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1uYlai-000Iwg-0k;
-	Mon, 07 Jul 2025 15:09:04 +0200
+	id 1uYljT-000KzP-02;
+	Mon, 07 Jul 2025 15:18:07 +0200
 Received: from localhost ([127.0.0.1])
-	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	by sslproxy02.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1uYlah-0008Pz-0R;
-	Mon, 07 Jul 2025 15:09:03 +0200
-Message-ID: <dd816dfa-bb67-4544-b9fc-8de16af03fac@iogearbox.net>
-Date: Mon, 7 Jul 2025 15:09:02 +0200
+	id 1uYljR-0007T1-1r;
+	Mon, 07 Jul 2025 15:18:06 +0200
+Message-ID: <c883e328-9d08-4a6c-b02a-f33e0e287555@iogearbox.net>
+Date: Mon, 7 Jul 2025 15:18:05 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,14 +63,17 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next] bpf: make the attach target more accurate
-To: Menglong Dong <menglong8.dong@gmail.com>, ast@kernel.org
-Cc: john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
- eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
- kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- Menglong Dong <dongml2@chinatelecom.cn>, alan.maguire@oracle.com
-References: <20250707113528.378303-1-dongml2@chinatelecom.cn>
+Subject: Re: [PATCH] tools/libbpf: add WERROR option
+To: Sam James <sam@gentoo.org>, bpf@vger.kernel.org,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Alexei Starovoitov <ast@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Quentin Monnet <qmo@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+References: <7e6c41e47c6a8ab73945e6aac319e0dd53337e1b.1751712192.git.sam@gentoo.org>
 Content-Language: en-US
 From: Daniel Borkmann <daniel@iogearbox.net>
 Autocrypt: addr=daniel@iogearbox.net; keydata=
@@ -116,165 +119,48 @@ Autocrypt: addr=daniel@iogearbox.net; keydata=
  rUD9YI1Je/WifL/HbIubHCCdK8/N7rblgUrZJMG3W+7vAvZsOh/6VTZeP4wCe7Gs/cJhE2gI
  DmGcR+7rQvbFQC4zQxEjo8fNaTwjpzLM9NIp4vG9SDIqAm20MXzLBAeVkofixCsosUWUODxP
  owLbpg7pFRJGL9YyEHpS7MGPb3jSLzucMAFXgoI8rVqoq6si2sxr2l0VsNH5o3NgoAgJNIg=
-In-Reply-To: <20250707113528.378303-1-dongml2@chinatelecom.cn>
+In-Reply-To: <7e6c41e47c6a8ab73945e6aac319e0dd53337e1b.1751712192.git.sam@gentoo.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Virus-Scanned: Clear (ClamAV 1.0.7/27692/Mon Jul  7 10:35:53 2025)
 
-On 7/7/25 1:35 PM, Menglong Dong wrote:
-> For now, we lookup the address of the attach target in
-> bpf_check_attach_target() with find_kallsyms_symbol_value or
-> kallsyms_lookup_name, which is not accurate in some cases.
+On 7/5/25 12:43 PM, Sam James wrote:
+> Check the 'WERROR' variable and suppress adding '-Werror' if WERROR=0.
 > 
-> For example, we want to attach to the target "t_next", but there are
-> multiple symbols with the name "t_next" exist in the kallsyms. The one
-> that kallsyms_lookup_name() returned may have no ftrace record, which
-> makes the attach target not available. So we want the one that has ftrace
-> record to be returned.
-> 
-> Meanwhile, there may be multiple symbols with the name "t_next" in ftrace
-> record. In this case, the attach target is ambiguous, so the attach should
-> fail.
-> 
-> Introduce the function bpf_lookup_attach_addr() to do the address lookup,
-> which is able to solve this problem.
-> 
-> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+> This mirrors what tools/perf and other directories in tools do to handle
+> -Werror rather than adding it unconditionally.
 
-Breaks CI, see also:
+Could you also add to the commit desc why you need it? Are there particular
+warnings you specifically need to suppress when building under gentoo?
 
-First test_progs failure (test_progs-aarch64-gcc-14):
-#467/1 tracing_failure/bpf_spin_lock
-test_bpf_spin_lock:PASS:tracing_failure__open 0 nsec
-libbpf: prog 'test_spin_lock': BPF program load failed: -ENOENT
-libbpf: prog 'test_spin_lock': -- BEGIN PROG LOAD LOG --
-The address of function bpf_spin_lock cannot be found
-processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
--- END PROG LOAD LOG --
-libbpf: prog 'test_spin_lock': failed to load: -ENOENT
-libbpf: failed to load object 'tracing_failure'
-libbpf: failed to load BPF skeleton 'tracing_failure': -ENOENT
-test_bpf_spin_lock:FAIL:tracing_failure__load unexpected error: -2 (errno 2)
-#467/2 tracing_failure/bpf_spin_unlock
-test_bpf_spin_lock:PASS:tracing_failure__open 0 nsec
-libbpf: prog 'test_spin_unlock': BPF program load failed: -ENOENT
-libbpf: prog 'test_spin_unlock': -- BEGIN PROG LOAD LOG --
-The address of function bpf_spin_unlock cannot be found
-processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
--- END PROG LOAD LOG --
-libbpf: prog 'test_spin_unlock': failed to load: -ENOENT
-libbpf: failed to load object 'tracing_failure'
-libbpf: failed to load BPF skeleton 'tracing_failure': -ENOENT
-test_bpf_spin_lock:FAIL:tracing_failure__load unexpected error: -2 (errno 2)
-
->   kernel/bpf/verifier.c | 76 ++++++++++++++++++++++++++++++++++++++++---
->   1 file changed, 71 insertions(+), 5 deletions(-)
+> Signed-off-by: Sam James <sam@gentoo.org>
+> ---
+>   tools/lib/bpf/Makefile | 7 ++++++-
+>   1 file changed, 6 insertions(+), 1 deletion(-)
 > 
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 0f6cc2275695..9a7128da6d13 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -23436,6 +23436,72 @@ static int check_non_sleepable_error_inject(u32 btf_id)
->   	return btf_id_set_contains(&btf_non_sleepable_error_inject, btf_id);
->   }
+> diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+> index 168140f8e646..9563d37265da 100644
+> --- a/tools/lib/bpf/Makefile
+> +++ b/tools/lib/bpf/Makefile
+> @@ -77,10 +77,15 @@ else
+>     CFLAGS := -g -O2
+>   endif
 >   
-> +struct symbol_lookup_ctx {
-> +	const char *name;
-> +	unsigned long addr;
-> +};
-> +
-> +static int symbol_callback(void *data, unsigned long addr)
-> +{
-> +	struct symbol_lookup_ctx *ctx = data;
-> +
-> +	if (!ftrace_location(addr))
-> +		return 0;
-> +
-> +	if (ctx->addr)
-> +		return -EADDRNOTAVAIL;
-> +
-> +	ctx->addr = addr;
-> +
-> +	return 0;
-> +}
-> +
-> +static int symbol_mod_callback(void *data, const char *name, unsigned long addr)
-> +{
-> +	if (strcmp(((struct symbol_lookup_ctx *)data)->name, name) != 0)
-> +		return 0;
-> +
-> +	return symbol_callback(data, addr);
-> +}
-> +
-> +/**
-> + * bpf_lookup_attach_addr: Lookup address for a symbol
-> + *
-> + * @mod: kernel module to lookup the symbol, NULL means to lookup the kernel
-> + * symbols
-> + * @sym: the symbol to resolve
-> + * @addr: pointer to store the result
-> + *
-> + * Lookup the address of the symbol @sym, and the address should has
-> + * corresponding ftrace location. If multiple symbols with the name @sym
-> + * exist, the one that has ftrace location will be returned. If more than
-> + * 1 has ftrace location, -EADDRNOTAVAIL will be returned.
-> + *
-> + * Returns: 0 on success, -errno otherwise.
-> + */
-> +static int bpf_lookup_attach_addr(const struct module *mod, const char *sym,
-> +				  unsigned long *addr)
-> +{
-> +	struct symbol_lookup_ctx ctx = { .addr = 0, .name = sym };
-> +	int err;
-> +
-> +	if (!mod)
-> +		err = kallsyms_on_each_match_symbol(symbol_callback, sym, &ctx);
+> +# Treat warnings as errors unless directed not to
+> +ifneq ($(WERROR),0)
+> +  CFLAGS += -Werror
+> +endif
 
-This is also not really equivalent to kallsyms_lookup_name(). kallsyms_on_each_match_symbol()
-only iterates over all symbols in vmlinux whereas kallsyms_lookup_name() looks up both vmlinux
-and modules.
+Should we also add sth similar to tools/bpf/bpftool/Makefile and by default
+enforce with -Werror with the option to disable?
 
-> +	else
-> +		err = module_kallsyms_on_each_symbol(mod->name, symbol_mod_callback,
-> +						     &ctx);
-> +
-> +	if (!ctx.addr)
-> +		return -ENOENT;
-> +
-> +	if (err)
-> +		return err;
-> +
-> +	*addr = ctx.addr;
-> +
-> +	return 0;
-> +}
-> +
->   int bpf_check_attach_target(struct bpf_verifier_log *log,
->   			    const struct bpf_prog *prog,
->   			    const struct bpf_prog *tgt_prog,
-> @@ -23689,18 +23755,18 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
->   			if (btf_is_module(btf)) {
->   				mod = btf_try_get_module(btf);
->   				if (mod)
-> -					addr = find_kallsyms_symbol_value(mod, tname);
-> +					ret = bpf_lookup_attach_addr(mod, tname, &addr);
->   				else
-> -					addr = 0;
-> +					ret = -ENOENT;
->   			} else {
-> -				addr = kallsyms_lookup_name(tname);
-> +				ret = bpf_lookup_attach_addr(NULL, tname, &addr);
->   			}
-> -			if (!addr) {
-> +			if (ret) {
->   				module_put(mod);
->   				bpf_log(log,
->   					"The address of function %s cannot be found\n",
->   					tname);
-> -				return -ENOENT;
-> +				return ret;
->   			}
->   		}
->   
+>   # Append required CFLAGS
+>   override CFLAGS += -std=gnu89
+>   override CFLAGS += $(EXTRA_WARNINGS) -Wno-switch-enum
+> -override CFLAGS += -Werror -Wall
+> +override CFLAGS += -Wall
+>   override CFLAGS += $(INCLUDES)
+>   override CFLAGS += -fvisibility=hidden
+>   override CFLAGS += -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 
 
