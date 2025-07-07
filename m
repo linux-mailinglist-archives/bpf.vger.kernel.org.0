@@ -1,95 +1,91 @@
-Return-Path: <bpf+bounces-62572-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62573-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD011AFBEAD
-	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 01:36:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5432EAFBEB9
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 01:45:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12E98560C07
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 23:36:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97F0F560B92
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 23:45:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B59E28DF3E;
-	Mon,  7 Jul 2025 23:36:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9FAE1D5150;
+	Mon,  7 Jul 2025 23:45:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nAqEMyjP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iomgy742"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35B5123505E;
-	Mon,  7 Jul 2025 23:36:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0007F17555
+	for <bpf@vger.kernel.org>; Mon,  7 Jul 2025 23:45:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751931376; cv=none; b=khjMcLuBH1DIQhx7jJATCN7LUgHlRp5RbMgIAWJLrfUEhI0D37gsThr5Ihk8WdxWgym5oKsmZCpgZwya8zzNkhXEMe1e21IQWO9AnM3MqLFjZ8bO5BD+N3xqJbTFG8H1U+W+vDCU28qpXGVVeiBpQEEXAbJzSJrayvZY5ci1xWw=
+	t=1751931928; cv=none; b=LKzvPTOxBYvxZirBIG1c0d8riTBB6e1Zdf0C85kxT9MURXZ2PVKSB3WZThK39sALDBqAGiErzsS5YadEyHewcoRUseqZl5xIO4quhO97k+7P6owosgqgv+kOnD+18KHQxEqq9gFzA1YtqA8DUM3BeWXK+jCaXYsfDdPdnvtjl4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751931376; c=relaxed/simple;
-	bh=Pr3sALqF+N5aZ2sdsYGVJSxhPgZ5e9unSJK0ZIOajjw=;
+	s=arc-20240116; t=1751931928; c=relaxed/simple;
+	bh=f3ZqPaoD0lspwOR8X1kvIxBd+yqgGJU6hGVSHXVdHNA=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=DLuTPINuFUHsDD4UOL51hUWRR1WEQLm5KGACMVHTWxPAdV814OQ4xN/Jh1xlWl+ogN5RgxcN+tK9LSW9kr9XhqpvFuOJuRLhD4xjZCUYnx4cC0DcREEDYIs9ZENsRerfGQ01Z2ufZc7V8Jzg6SeI7a7jDF/LdmFqypFcfRyUm+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nAqEMyjP; arc=none smtp.client-ip=209.85.215.169
+	 Content-Type:MIME-Version; b=UvsttvOfzkDROemTUi+Sc4JRiJsN/GptjR9YnFcqZk6xzL3aiukpLmZto7oJG+WDTNIdmWk8y1vRwekzggnBNJ6ct4IeRV+HSUDCbjgkWW92HloUqvHcVaHtDDa8V8O3yTmPvDtI8Oke1NAlq3p+Jifbd4gjw53zMy/u3zaldTE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iomgy742; arc=none smtp.client-ip=209.85.210.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-b2c4e46a89fso3087184a12.2;
-        Mon, 07 Jul 2025 16:36:14 -0700 (PDT)
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-7425bd5a83aso3282988b3a.0
+        for <bpf@vger.kernel.org>; Mon, 07 Jul 2025 16:45:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751931374; x=1752536174; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1751931926; x=1752536726; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=zTRXpQFCBuVvy0UuWiZ+iB36926nB5IuVGmBeZ3do+I=;
-        b=nAqEMyjPJafQ6UwLdmdamvjj9c9JWX1uJsnYsCV5UFrgsuisqqhOHPLp2EnJ54xXSd
-         4nINR2J0OzlFia8Mc5FO6brocTdoQtEzqyAC25pzePKmIZ2V0BtR8bRsBkFOizXboW0g
-         ZxfOPcnSKBGq0LLG8lBUwj/2Y0eMYv6km/IaHsfCUOUPXQWdZwBojgEZ9NT6Pu7uyVTc
-         pciPxbxRlNv++zLeLD3rVy1P+mMHmluX/s9eg+VmTx+b/3rBWUaqJqwvk5yIEtflNe9a
-         I3W7JqC0pgS20B1cUY8PrxSLPJmVcnjqgPU6FUvxTsqCFBHa3qxe2xuzG3fRNNMk8/g+
-         Agvw==
+        bh=5Y1jPEXVVVG/Bl1tAgRJ/XNXXhhkQQuJmwDeax/wuT0=;
+        b=iomgy742F/YJb+6YDs5qPaT8wxxn5Yw3m+sbQrOacCLTONLsXxaqMBo9+waXhr3JY1
+         8fks0xA4Dc7j/YHnokerpuk4PAJoQ8YUQZ0YBaZuVjnn+g2DsKSIDVpxdjGuPPaFtAkD
+         Lrgu+JA0MfjU6zjuCmqtPr3AYyoqoM2QWjmjm5do2BR9gnmep5ixtdk8pzYGYE545fqt
+         MHRWAomtL/6t+rk4h8y91KuKfeee59w1ycVDO9MEGi00yJeKRJ1Kw3Feg9LJhGY2OzGy
+         zl/IT7FT7/pwH0rW2U8t3rQtXyqa+bMAXyxHAeB7BVjrdN5xblydwIfBLCHirdc6GKgo
+         hSNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751931374; x=1752536174;
+        d=1e100.net; s=20230601; t=1751931926; x=1752536726;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=zTRXpQFCBuVvy0UuWiZ+iB36926nB5IuVGmBeZ3do+I=;
-        b=MYTvIPgKjx11dZ3Tn6Mf5Z/A0pyCPwjAm8bSdF0Hl/9gtbvdQ7VucjkZdPjjaB6hPb
-         K/mU9b3vhgd4boMmqWjjZ2aSCIYbvxZUnYD4NFgVnsv2w+zQDiVj/oRAycZ6Yh4oZ3VZ
-         SzMoDgytlc7SLzFMkToI9jZFz9A051O8xKw7P1Lg4otTZAKe1FmM4YsGLpPHDLCs9KC/
-         al+rPMTvQws+U5Y+imx1XLTlck4aSRYhv909Jbdp2rtIxR0xQHEy+R1d3q6WS3bIqFik
-         BXeL8u458qIuOGAM2ly68nioxzhn72eGLrNOKg5kWwIY0DA96j6onVjvjqH8wer4tDcz
-         bT1w==
-X-Forwarded-Encrypted: i=1; AJvYcCUOTwoenCQx2Zp/M7h3+dGXL64j9MWrl4h2QP5K89tFk9qGuxfa9BSda2qMfrikY9S7MzyUb5VtLe2NNl46@vger.kernel.org, AJvYcCVtIBo7j733aG0RLlVSARldeO+9me8+XWj2PSwywp881WeH9p2TxKAKt+6xVGo1RVpiL00=@vger.kernel.org, AJvYcCWUVXK7XSg6RJ8UfxVqbKtfTS6Ae7mZO/Hz9mM/4VvjygSbhj07Wf34qzYFZlEG+gplwbj8jPDr@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy5uXm9b6hHud/RNjvGrgICawl6GXoYQU9eONGPOxLZGKMJebZm
-	2eMOAaMa5RdiOM7YngRoewvP1jT7V9YcbK8doafkR93PCHoC1G2PXStJdc71euAsTPI=
-X-Gm-Gg: ASbGncs4pc/C+rXNUcOv7Ndl6nXBNWLhE7NMFIEjXus5WRL+z5+yllvG8y7okzATU8O
-	mGbWibrOyPaktsgMWomfvTW3JIuMhM7TyoLhWuhfNcvsGQ4mXyfjbEueII0H2N8GSpcDdINbWn0
-	mc5bPcGk7G2A84XK2ypEj/YBvDDLjPJltDgzR48cSfsbMz/imZTWzH3Ap8qn87G72/Q+h+OAx3d
-	c8Ltmu6dvLp2ZzTviE4iz2QN5MzF3mZca4mQPVr5HPuyBIrLNKFOA1obIADbHpJqMiy8LKO3wN8
-	Pr19OEhsIlPWi2fA892Ae9WQQ2RdPBzR/cVPN3eJKfCE+OcAyzTzO/QuQipBHTL5c90=
-X-Google-Smtp-Source: AGHT+IGe4r893RPo+gSzaNrS8d38CyVFf73Yz3sz5+lyrWbCm2Pk60sAswkCLGUoxBcrxxss0JD8iQ==
-X-Received: by 2002:a17:90b:4f4a:b0:313:15fe:4c13 with SMTP id 98e67ed59e1d1-31aac4dfe46mr20039017a91.27.1751931374416;
-        Mon, 07 Jul 2025 16:36:14 -0700 (PDT)
+        bh=5Y1jPEXVVVG/Bl1tAgRJ/XNXXhhkQQuJmwDeax/wuT0=;
+        b=v2fQn0lfREV3ED9IctF1ZanGXXoEzUYgB6cooskcwXnZkzN7AGR+hrcSGCpskFOCOr
+         iYTNeqViNWYOvt0FeXk/Q8VePhwghZbT9tD1iYo5s/unOJUVrRuu1rWHuTYhVJxhYo5G
+         kn3/qcp8FqWok/jnYMFgRmfYbDiCVGWcZ8G9WnCpR2B3Mn4KlZ1E4YJZZrJtSmWs3Xsj
+         c7wl830iW4ETOWZor2OZkvUrGyrkqzVH7DL1tSpSOY2PL3fBgJTr5cFap2piqQUhQHBV
+         LXZaI9FoIUGNVXwiNUiVbd/osTZAYzSufvbeBJ1E4ql90Yy59WzRk4kXweI+7i20spCH
+         G1Vw==
+X-Gm-Message-State: AOJu0Yys1uilSjant8H1nHS3sIit8Dpuv4atQQPjEV9k9MaiVvTzf6R4
+	PoGCPLRAQ9C6p4wzBQ7ykk0PV+HgGHiWT1X71OtMxmFPUe4bCBRY/N8j
+X-Gm-Gg: ASbGncufmv66fxJZft9DsOr9g98EtRVyyd29e5/CkaDsyFiNOBAzS08VcS7A4k/LgjA
+	+WS538If7/mz66vhUqifmtSbqwTWcuJvuoe2jA9CLx2gy6WWptgFgBf5DMWdxF/03l2PCrEAuMK
+	3G1VRMYe0fcLoV/mJPtS1xtpc2zAU8VRZnj/ngUehkZ7d5Z1WVzH8hibEtFQVEIErK1iOZGWEj9
+	VaDt5jQoVxanilvX9phWPxnKa7UzZIlHOdFiKnhOpOkerHmji2cdztNIki8xDeJtdC7DL5Z7QmW
+	kmzRLMhykaAfUPmNJehYVPP0oNDa1nkA3EWrE+DrObbP2MpbiYuZUJ30vZiRxB+66hY=
+X-Google-Smtp-Source: AGHT+IG4z2n3IVa8d1FASjAQ956FIsqPaMWPC+LhIb1IEnXw1oTzV3I25kBUovTQn+M5y5sqdjstwQ==
+X-Received: by 2002:a05:6300:8a07:b0:22b:3da9:fb33 with SMTP id adf61e73a8af0-22b3daa01d9mr997679637.12.1751931926120;
+        Mon, 07 Jul 2025 16:45:26 -0700 (PDT)
 Received: from ?IPv6:2620:10d:c096:14a::647? ([2620:10d:c090:600::1:6ad])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31c21e75e6dsm467430a91.32.2025.07.07.16.36.12
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74ce43d4de1sm10052935b3a.171.2025.07.07.16.45.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jul 2025 16:36:13 -0700 (PDT)
-Message-ID: <7cc3cb3de4335b8da8396f08bdc6a7148bfcbbbb.camel@gmail.com>
-Subject: Re: [syzbot] [bpf?] WARNING in reg_bounds_sanity_check
+        Mon, 07 Jul 2025 16:45:25 -0700 (PDT)
+Message-ID: <e726d778a3cf75e3ceec54f5f43b9d5d66ba5e97.camel@gmail.com>
+Subject: Re: [RFC bpf-next 8/9] libbpf: support llvm-generated indirect jumps
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: Paul Chaignon <paul.chaignon@gmail.com>
-Cc: syzbot <syzbot+c711ce17dd78e5d4fdcf@syzkaller.appspotmail.com>, 
-	andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, 	haoluo@google.com, john.fastabend@gmail.com,
- jolsa@kernel.org, kpsingh@kernel.org, 	linux-kernel@vger.kernel.org,
- martin.lau@linux.dev, netdev@vger.kernel.org, 	sdf@fomichev.me,
- song@kernel.org, syzkaller-bugs@googlegroups.com, 	yonghong.song@linux.dev
-Date: Mon, 07 Jul 2025 16:36:12 -0700
-In-Reply-To: <aGxC2aVjAm4m7oTU@mail.gmail.com>
-References: <68649190.a70a0220.3b7e22.20e8.GAE@google.com>
-	 <aGa3iOI1IgGuPDYV@Tunnel>
-	 <865f2345eaa61afbd26d9de0917e3b1d887c647d.camel@gmail.com>
-	 <aGgL_g3wA2w3yRrG@mail.gmail.com>
-	 <df2cdc5f4fa16a4e3e08e6a997af3722f3673d38.camel@gmail.com>
-	 <aGxC2aVjAm4m7oTU@mail.gmail.com>
+To: Anton Protopopov <a.s.protopopov@gmail.com>, Alexei Starovoitov
+	 <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Andrii
+ Nakryiko <andrii@kernel.org>, Anton Protopopov <aspsk@isovalent.com>,
+ Daniel Borkmann	 <daniel@iogearbox.net>, Quentin Monnet <qmo@kernel.org>,
+ Yonghong Song	 <yonghong.song@linux.dev>
+Date: Mon, 07 Jul 2025 16:45:24 -0700
+In-Reply-To: <aFLWaNSsV7M2gV98@mail.gmail.com>
+References: <20250615085943.3871208-1-a.s.protopopov@gmail.com>
+	 <20250615085943.3871208-9-a.s.protopopov@gmail.com>
+	 <CAADnVQKhVyh4WqjUgxYLZwn5VMY6hSMWyLoQPxt4TJG1812DcA@mail.gmail.com>
+	 <aFLWaNSsV7M2gV98@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
@@ -100,46 +96,89 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Mon, 2025-07-07 at 23:57 +0200, Paul Chaignon wrote:
-> On Fri, Jul 04, 2025 at 10:26:14AM -0700, Eduard Zingerman wrote:
-> > On Fri, 2025-07-04 at 19:14 +0200, Paul Chaignon wrote:
-> > > On Thu, Jul 03, 2025 at 11:54:27AM -0700, Eduard Zingerman wrote:
-> > > > On Thu, 2025-07-03 at 19:02 +0200, Paul Chaignon wrote:
-> > > > > The number of times syzkaller is currently hitting this (180 in 1=
-.5
-> > > > > days) suggests there are many different ways to reproduce.
-> > > >=20
-> > > > It is a bit inconvenient to read syzbot BPF reports at the moment,
-> > > > because it us hard to figure out how the program looks like.
-> > > > Do you happen to know how complicated would it be to modify syzbot
-> > > > output to:
-> > > > - produce a comment with BPF program
-> > > > - generating reproducer with a flag, allowing to print level 2
-> > > >   verifier log
-> > > > ?
+On Wed, 2025-06-18 at 15:08 +0000, Anton Protopopov wrote:
+> On 25/06/17 08:22PM, Alexei Starovoitov wrote:
+> > On Sun, Jun 15, 2025 at 1:55=E2=80=AFAM Anton Protopopov
+> > <a.s.protopopov@gmail.com> wrote:
 > > >=20
-> > > I have the same thought sometimes. Right now, I add verifier logs to =
-a
-> > > syz or C reproducer to see the program. Producing the BPF program in =
-a
-> > > comment would likely be tricky as we'd need to maintain a disassemble=
-r
-> > > in syzkaller.
+> > > The final line generates an indirect jump. The
+> > > format of the indirect jump instruction supported by BPF is
+> > >=20
+> > >     BPF_JMP|BPF_X|BPF_JA, SRC=3D0, DST=3DRx, off=3D0, imm=3Dfd(M)
+> > >=20
+> > > and, obviously, the map M must be the same map which was used to
+> > > init the register rX. This patch implements this in the following,
+> > > hacky, but so far suitable for all existing use-cases, way. On
+> > > encountering a `gotox` instruction libbpf tracks back to the
+> > > previous direct load from map and stores this map file descriptor
+> > > in the gotox instruction.
 > >=20
-> > So, it operates on raw bytes, not on logical instructions?
+> > ...
+> >=20
+> > > +/*
+> > > + * This one is too dumb, of course. TBD to make it smarter.
+> > > + */
+> > > +static int find_jt_map_fd(struct bpf_program *prog, int insn_idx)
+> > > +{
+> > > +       struct bpf_insn *insn =3D &prog->insns[insn_idx];
+> > > +       __u8 dst_reg =3D insn->dst_reg;
+> > > +
+> > > +       /* TBD: this function is such smart for now that it even igno=
+res this
+> > > +        * register. Instead, it should backtrack the load more caref=
+ully.
+> > > +        * (So far even this dumb version works with all selftests.)
+> > > +        */
+> > > +       pr_debug("searching for a load instruction which populated ds=
+t_reg=3Dr%u\n", dst_reg);
+> > > +
+> > > +       while (--insn >=3D prog->insns) {
+> > > +               if (insn->code =3D=3D (BPF_LD|BPF_DW|BPF_IMM))
+> > > +                       return insn[0].imm;
+> > > +       }
+> > > +
+> > > +       return -ENOENT;
+> > > +}
+> > > +
+> > > +static int bpf_object__patch_gotox(struct bpf_object *obj, struct bp=
+f_program *prog)
+> > > +{
+> > > +       struct bpf_insn *insn =3D prog->insns;
+> > > +       int map_fd;
+> > > +       int i;
+> > > +
+> > > +       for (i =3D 0; i < prog->insns_cnt; i++, insn++) {
+> > > +               if (!insn_is_gotox(insn))
+> > > +                       continue;
+> > > +
+> > > +               if (obj->gen_loader)
+> > > +                       return -EFAULT;
+> > > +
+> > > +               map_fd =3D find_jt_map_fd(prog, i);
+> > > +               if (map_fd < 0)
+> > > +                       return map_fd;
+> > > +
+> > > +               insn->imm =3D map_fd;
+> > > +       }
+> >=20
+> > This is obviously broken and cannot be made smarter in libbpf.
+> > It won't be doing data flow analysis.
+> >=20
+> > The only option I see is to teach llvm to tag jmp_table in gotox.
+> > Probably the simplest way is to add the same relo to gotox insn
+> > as for ld_imm64. Then libbpf has a direct way to assign
+> > the same map_fd into both ld_imm64 and gotox.
 >=20
-> Both I would say. The syzkaller descriptions for BPF are structured
-> around instructions [1], though they may not always match 1:1 with
-> upstream instructions. Syzkaller then mutates raw bytes, taking some
-> information from the descriptions into account (ex. known flag values).
->=20
-> 1 - https://github.com/google/syzkaller/blob/master/sys/linux/bpf_prog.tx=
-t
+> This would be nice.
 
-I actually took a brief look at syzkaller over the weekend but got
-lost tbh.  BPF disassembler is small (~400Loc in kernel/bpf/disasm.c).
-I can teach myself some golang and make a copy of it in syzkaller,
-but having some guidance on where to put/call this code would be of
-much help. (I think that having program code in the report would be
-of great help in triaging).
+I did not implement this is a change for jt section + jt symbols.
+It can be added, but thinking about it again, are you sure it is
+necessary to have map fd in the gotox?
+
+Verifier should be smart enough already to track what map the rX in
+the `gotox rX` is a derivative of. It can make use of
+bpf_insn_aux_data->map_index to enforce that only one map is used with
+a particular gotox instruction.
+
+[...]
 
