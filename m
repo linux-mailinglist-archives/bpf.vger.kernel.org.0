@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-62528-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62529-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 079BCAFB7F9
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 17:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 25FD4AFB7FD
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 17:52:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 632BD18999D6
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 15:52:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C89C21AA48F1
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 15:52:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B88DB218851;
-	Mon,  7 Jul 2025 15:51:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30E6E219A6B;
+	Mon,  7 Jul 2025 15:51:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b="giFO+u88"
+	dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b="giUqaJDt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02238217733
-	for <bpf@vger.kernel.org>; Mon,  7 Jul 2025 15:51:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56CBD2135CE
+	for <bpf@vger.kernel.org>; Mon,  7 Jul 2025 15:51:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751903477; cv=none; b=KTU0+W3T05jlxMidkW8N9g2VbvVLt1VziMxjunuWMf3fwp5hJmdHsqRZvvszO6KSMrKZXdSnODT6WyKOet2xKt+dYo98qJdstMoRGK3CAy5GsvojaMTVR8uDb/X3jxBvlROdz00hTTpseHjshpzqY+shg7qqIifoBQryGfBJZV0=
+	t=1751903479; cv=none; b=o2QdVNE0T82wdDhgTRqttC7h+NFVQSvc1jKmWQnjvKQs8MhtQ/f0dQMIChiZUuaY1hciVkAnx+SL6/1oPjeE4DhW0IhvdYqzeR0cAZ7CSpoGxWoFcRk5wknhZkIoom8y+TME1eQSGOmhfK3nIDbACzeHvUft+pk6542mv8ExVh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751903477; c=relaxed/simple;
-	bh=foepoQWthtqzAO/amSXmA+Ijs1+fWhMG2CBZ9t6Tz18=;
+	s=arc-20240116; t=1751903479; c=relaxed/simple;
+	bh=ii0lhnsuHEZZ21rnkBA0wx5pkbY0pk/4pyArG18nLsA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ngDgELR256gE+HdEdzzzwLt8+I86pZnbO+6JNh4dJQbHb/+8sSlKG9lQfe1vFHcoPzgwnm9kooGHh9gnkv8tIF+A3ctty0IE/Zfwvn7fBQS5hSLThLmVBevoaDy+82vYzv1I6NtVvN/AAztzmTHX05M04wcB3Uz4xNRbSesQ+mw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io; spf=none smtp.mailfrom=jrife.io; dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b=giFO+u88; arc=none smtp.client-ip=209.85.214.179
+	 MIME-Version; b=AyO1nL1Lxv5KFc+Ry4UOQPUDH8G50aCPbAVekYKaTS1NoBBSkpcHgsI0zfpdcDqu5EIx1/6ZbYDHwJAgJOrRVB6gqSRBhsp5kooAqOKxSyKbQ0wlUwaHFWTnC13YraILbSNGXfCrsr7npF2qnRhrg87e4WBYO98Geu3/zOwdU2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io; spf=none smtp.mailfrom=jrife.io; dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b=giUqaJDt; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=jrife.io
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-237d849253fso3864455ad.1
-        for <bpf@vger.kernel.org>; Mon, 07 Jul 2025 08:51:15 -0700 (PDT)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-235db423abdso2537245ad.1
+        for <bpf@vger.kernel.org>; Mon, 07 Jul 2025 08:51:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jrife-io.20230601.gappssmtp.com; s=20230601; t=1751903475; x=1752508275; darn=vger.kernel.org;
+        d=jrife-io.20230601.gappssmtp.com; s=20230601; t=1751903476; x=1752508276; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vKLGPM6fsUvefIfdoj5d/pH5CeVPkyRVwIbtrb7Q6Tw=;
-        b=giFO+u88Y7Hf7GXjkK0JY3IVOVYnSDUcL9U3AX8srcEiL/fvJ4YOM+z37eZ3/IxWSd
-         y2ofPe0j+QfzGjr+fgj4zKAhpjftbhtuDnRLdEvdSjc46ERApY0eusDaGsn1CTxLk6td
-         ElxqDWgAy6lZR04W87+m3ieqvs+X0vLCphmtDJAVcUoGpfZlIGFa4tD2diZNkDPPpfT+
-         KNguFHb3jqAUCeEcwVhhC6Mer2yZ4CfmamzU1GZ7AUebVjrGYKPcfNc8lzn34RomROTv
-         WhSpg6CFP3DVjFJC7iack+GBAoc1I9ZWzsYVrL1Ry503dYb+k/9TAk3FvLq2wfo+y6kK
-         JBpA==
+        bh=BZZ0jvcYwhY5yt1MXnZuSSYPelQKSbT2EiEftdDOFWk=;
+        b=giUqaJDt+D6558aGL2nRTNr4tS3EKEcvnjMhWua3Erm24TAYAA/OBI/HEtsHD+E3No
+         ClvegUGyB7rCeydyPXopSME6Q1NCZH4oj+S9J09kGOJXuvyqPBEbvxHBE34Yc362zQl0
+         2X2EtiZtXVczSgFobwklq6RQg6S79NAgdYSqkQiT0KR6N0OKV6FY/MJcHax6DspPPu+P
+         liOtVDs3ajry1/mgTCf3qa5pARUH3LlkioCaKcChcKk7UdAq1Kc9c+h/r0cZyuG0cj/3
+         UJtsLqb6hgBi4GSejPjc9QtQzOVRXgocXH8I5DqRqVvPL+Y8n7zT2tE+Rizay5TIcLfb
+         a8yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751903475; x=1752508275;
+        d=1e100.net; s=20230601; t=1751903476; x=1752508276;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vKLGPM6fsUvefIfdoj5d/pH5CeVPkyRVwIbtrb7Q6Tw=;
-        b=QOQnEiOWnIex7lcydNL8yioztrVlx8oWrPKkZ6491XYW1B3AJTD0qHtzN80pSoK8xq
-         OFJFiRJdwqE7k6qOFPLluwqA00SfJCHQ4uCD3QT8UOkDBe4bkUJiJgWnw2kkOyo0QdoB
-         7YKLLFrBwRSr/Dhzj07tHznXQKxGSM54yQyxpuCQTjbulJOkcnz9X7x+z/OMyghovFEq
-         qN/gbzhT7yUrWS5erhqCCHG9bWCmup8O1mJUqF2rOYsbzyvZ7+INsnlao1xTeDJ4I85H
-         zizFqVtDk8YZL3IDXj0DIGeysmpeQFpmgL5hRvBGP1KYwzEI/M4+JvnWOjzE8sX38pRD
-         QCVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWm97wO0OUGFGoHLpDwiVjoIYXm+dk103sT3Y27374OPp6AGuyJePjSen+8XE7x98ISqDU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwIwshy1FG4N3rviQzThJezDNekZGGjhQtq61FamRr055CCACx7
-	AK57OsKzShppRI0bI2BlywG6vFkRVczrAnIrmBaq1m8seFQhiPymvDAEpbufBv2kJTs=
-X-Gm-Gg: ASbGncvKqXZmp0zpfeyGYC+1d4b9be24glsV6jvU33Dr13pT28ryNDHxFyeBl2ZyWtX
-	K73QyKxWwYAdp/vyjllxrcL4BusInAx/DmncNa6tpYzkTDNIUSG2nwLVdox9bwCbkt2hJc0R45F
-	6uS8OGVsyBIVpxPgL5s31ILYU2hppUNq5yIXRXMcw0JxdEg4qhPpMdeehombe5qJHFHTzJJeVFJ
-	w5oeydHhtOsdhqu9AcfaSTLwM2ShilTOr9woqhMlneNJVUuKh71QdOMHBLtF8zSpVzkRJTeyjVH
-	Hr8BUQ5r4bxMLR4N7oLSrK3jT2dvLIfYplCWWEEFV8ESjgjn1QI=
-X-Google-Smtp-Source: AGHT+IGhaVoioRrlut1mESqPdvOatp22KS6ApbAHvedQjoF0tvtLxJzI8k+NZUmMGjcsyzU+ev1FaQ==
-X-Received: by 2002:a17:903:1c4:b0:234:a734:4abe with SMTP id d9443c01a7336-23c8722f4fbmr73864625ad.1.1751903475242;
-        Mon, 07 Jul 2025 08:51:15 -0700 (PDT)
+        bh=BZZ0jvcYwhY5yt1MXnZuSSYPelQKSbT2EiEftdDOFWk=;
+        b=dKTjtlYTz660btxJg60JRYU3brYDnLDfgtCZ7iv6ZyOr1s3bH817m05stdcDVAGhZn
+         8miTlm39omHaAONZS5/gajfePuf2ag/06MaI5oAP71vuO8/57hxy3yp5mYzGTMjv8Fwu
+         NcnXEc51B9NtmsXwDh4DFz+wxiUt7FSzNvgZPCFdi7qbprFeEZu+01mhmFGevnOgl3il
+         y6xWHDyrdKIsADI1dfu4rS3xd2hv8BuXoND0Nene9A0W4E5X0Y1VMZTeIFgwr6z74Pw4
+         t8haLyDN0jWq2vhzYzhyt08Qt3hX3R8C5nIFsAYvwtihjPDtGwIwbBIZ5vY/83hlJgFW
+         9wpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXDUK4O+eQBFC8jBtJcQArSHSey6uES6MV//qWNMu98En9i2TBTFXkbLxm+FvW5E41IpUo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YysvMG+YAtPtqjsq8UVW+FWkff4Ogj4llKYp6r3VnizzIPVBL53
+	mEckDAMgWZYh+GK4BL+nxH96d2SgSljCWcOZii99q9PD4B4gI+04WlvRcOT7ItT9i4w=
+X-Gm-Gg: ASbGnctyOhsDOmf+vR/7dopUijAN6SgrkXqDw5mFKkk2PFOMKtqzZRzeVQJztZXb1x1
+	yZgq3vdJ1N+WkTFqwbzNf+/9u9jvtYdjNENYXbupyBw89o9cYXOtvYaV/zm38K8HIYjlmjT0krO
+	nZoWcbndpPexxyfgLyhDjt5lOlYjqGDwv6njQeZ0pLkm83CMTtNcTIUzcVO+2Xtra3RRJcYSHF6
+	F0I5wyQIlEqUSpcSNhfZUFWd9XiSuxDzkFEoQtU/gKYzzdTCmbYgGgv2X9zv58NtX6xFxdzFzzr
+	JrEntBh/BQvL1I2YLKQyHxaeeWYXgTFNAJ2ixfmJbbwJhchnCbo=
+X-Google-Smtp-Source: AGHT+IHw6vqyjMErnWgTqW8VuB0mANsxbhhqZLqj4ip88jNAthOzZgeqLmVWUDX6ixTcy4HMwZvDoA==
+X-Received: by 2002:a17:903:2f8a:b0:236:71f1:d345 with SMTP id d9443c01a7336-23c85eb06femr73942495ad.1.1751903476665;
+        Mon, 07 Jul 2025 08:51:16 -0700 (PDT)
 Received: from t14.. ([2001:5a8:4528:b100:e505:eb21:1277:21f5])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23c8455eb3bsm95772065ad.115.2025.07.07.08.51.14
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23c8455eb3bsm95772065ad.115.2025.07.07.08.51.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jul 2025 08:51:14 -0700 (PDT)
+        Mon, 07 Jul 2025 08:51:16 -0700 (PDT)
 From: Jordan Rife <jordan@jrife.io>
 To: netdev@vger.kernel.org,
 	bpf@vger.kernel.org
@@ -82,9 +82,9 @@ Cc: Jordan Rife <jordan@jrife.io>,
 	Kuniyuki Iwashima <kuniyu@google.com>,
 	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	Stanislav Fomichev <stfomichev@gmail.com>
-Subject: [PATCH v4 bpf-next 06/12] selftests/bpf: Add tests for bucket resume logic in listening sockets
-Date: Mon,  7 Jul 2025 08:50:54 -0700
-Message-ID: <20250707155102.672692-7-jordan@jrife.io>
+Subject: [PATCH v4 bpf-next 07/12] selftests/bpf: Allow for iteration over multiple ports
+Date: Mon,  7 Jul 2025 08:50:55 -0700
+Message-ID: <20250707155102.672692-8-jordan@jrife.io>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250707155102.672692-1-jordan@jrife.io>
 References: <20250707155102.672692-1-jordan@jrife.io>
@@ -96,72 +96,62 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Replicate the set of test cases used for UDP socket iterators to test
-similar scenarios for TCP listening sockets.
+Prepare to test TCP socket iteration over both listening and established
+sockets by allowing the BPF iterator programs to skip the port check.
 
 Signed-off-by: Jordan Rife <jordan@jrife.io>
 ---
- .../bpf/prog_tests/sock_iter_batch.c          | 47 +++++++++++++++++++
- 1 file changed, 47 insertions(+)
+ tools/testing/selftests/bpf/prog_tests/sock_iter_batch.c | 7 ++-----
+ tools/testing/selftests/bpf/progs/sock_iter_batch.c      | 4 ++++
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/sock_iter_batch.c b/tools/testing/selftests/bpf/prog_tests/sock_iter_batch.c
-index a4517bee34d5..2adacd91fdf8 100644
+index 2adacd91fdf8..0d0f1b4debff 100644
 --- a/tools/testing/selftests/bpf/prog_tests/sock_iter_batch.c
 +++ b/tools/testing/selftests/bpf/prog_tests/sock_iter_batch.c
-@@ -358,6 +358,53 @@ static struct test_case resume_tests[] = {
- 		.family = AF_INET6,
- 		.test = force_realloc,
- 	},
-+	{
-+		.description = "tcp: resume after removing a seen socket (listening)",
-+		.init_socks = nr_soreuse,
-+		.max_socks = nr_soreuse,
-+		.sock_type = SOCK_STREAM,
-+		.family = AF_INET6,
-+		.test = remove_seen,
-+	},
-+	{
-+		.description = "tcp: resume after removing one unseen socket (listening)",
-+		.init_socks = nr_soreuse,
-+		.max_socks = nr_soreuse,
-+		.sock_type = SOCK_STREAM,
-+		.family = AF_INET6,
-+		.test = remove_unseen,
-+	},
-+	{
-+		.description = "tcp: resume after removing all unseen sockets (listening)",
-+		.init_socks = nr_soreuse,
-+		.max_socks = nr_soreuse,
-+		.sock_type = SOCK_STREAM,
-+		.family = AF_INET6,
-+		.test = remove_all,
-+	},
-+	{
-+		.description = "tcp: resume after adding a few sockets (listening)",
-+		.init_socks = nr_soreuse,
-+		.max_socks = nr_soreuse,
-+		.sock_type = SOCK_STREAM,
-+		/* Use AF_INET so that new sockets are added to the head of the
-+		 * bucket's list.
-+		 */
-+		.family = AF_INET,
-+		.test = add_some,
-+	},
-+	{
-+		.description = "tcp: force a realloc to occur (listening)",
-+		.init_socks = init_batch_size,
-+		.max_socks = init_batch_size * 2,
-+		.sock_type = SOCK_STREAM,
-+		/* Use AF_INET6 so that new sockets are added to the tail of the
-+		 * bucket's list, needing to be added to the next batch to force
-+		 * a realloc.
-+		 */
-+		.family = AF_INET6,
-+		.test = force_realloc,
-+	},
- };
+@@ -416,7 +416,6 @@ static void do_resume_test(struct test_case *tc)
+ 	int err, iter_fd = -1;
+ 	const char *addr;
+ 	int *fds = NULL;
+-	int local_port;
  
- static void do_resume_test(struct test_case *tc)
+ 	counts = calloc(tc->max_socks, sizeof(*counts));
+ 	if (!ASSERT_OK_PTR(counts, "counts"))
+@@ -431,10 +430,8 @@ static void do_resume_test(struct test_case *tc)
+ 				     tc->init_socks);
+ 	if (!ASSERT_OK_PTR(fds, "start_reuseport_server"))
+ 		goto done;
+-	local_port = get_socket_local_port(*fds);
+-	if (!ASSERT_GE(local_port, 0, "get_socket_local_port"))
+-		goto done;
+-	skel->rodata->ports[0] = ntohs(local_port);
++	skel->rodata->ports[0] = 0;
++	skel->rodata->ports[1] = 0;
+ 	skel->rodata->sf = tc->family;
+ 
+ 	err = sock_iter_batch__load(skel);
+diff --git a/tools/testing/selftests/bpf/progs/sock_iter_batch.c b/tools/testing/selftests/bpf/progs/sock_iter_batch.c
+index 8f483337e103..40dce6a38c30 100644
+--- a/tools/testing/selftests/bpf/progs/sock_iter_batch.c
++++ b/tools/testing/selftests/bpf/progs/sock_iter_batch.c
+@@ -52,6 +52,8 @@ int iter_tcp_soreuse(struct bpf_iter__tcp *ctx)
+ 		idx = 0;
+ 	else if (sk->sk_num == ports[1])
+ 		idx = 1;
++	else if (!ports[0] && !ports[1])
++		idx = 0;
+ 	else
+ 		return 0;
+ 
+@@ -92,6 +94,8 @@ int iter_udp_soreuse(struct bpf_iter__udp *ctx)
+ 		idx = 0;
+ 	else if (sk->sk_num == ports[1])
+ 		idx = 1;
++	else if (!ports[0] && !ports[1])
++		idx = 0;
+ 	else
+ 		return 0;
+ 
 -- 
 2.43.0
 
