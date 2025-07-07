@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-62493-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62494-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1A8FAFB353
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 14:32:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C083AFB366
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 14:37:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA3283A3146
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 12:31:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C66FC4A31F4
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 12:37:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3D9A29B201;
-	Mon,  7 Jul 2025 12:31:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 816C529ACEC;
+	Mon,  7 Jul 2025 12:37:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="B5yWjzj0"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="AHboONjB"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4FF413635C;
-	Mon,  7 Jul 2025 12:31:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1AC1E22FC
+	for <bpf@vger.kernel.org>; Mon,  7 Jul 2025 12:37:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751891518; cv=none; b=IzLz0iAXcw6tHJxWGhOVUULDotrYKhdLvrf7ZUmBjqjF1qUbaM+LH25S/d5CA0wkCZLn4OiKkvODTeR4wu59rF32SNeX1wZoKfZPe5znQmf9bXhgwdz8h5G57JZStxHagipwMFwE5QHPGyoeGwmg/uZCvEWm9AR2OY+jpIsDCCM=
+	t=1751891870; cv=none; b=PFV2y+RwF0ITEf5Tm9aNm0LfdEwBq65FUaQfQ/VUpPaTUv1CecGpnCzRTm5QPXybg7zzq3ks/D1t6033yrptbhPi6pZYigyBIMSzG76WGRglFdcBADvjxQLUe3dNMr2XqyLA3xyTwLtwFeDITfGcESXXJavxGzLW6a1rFbne1G0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751891518; c=relaxed/simple;
-	bh=wvly/6V0VhTLw5qhV1M0kl22++EJC0qJq/oWdAgapQY=;
+	s=arc-20240116; t=1751891870; c=relaxed/simple;
+	bh=bvVmmU+hVq1TGP6LyndzHe4yXo1fYKuarvxptpyzQ6M=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Pt+Nyuv0scFaDXFlIGRieLMqGOUCGDY7C0ivVYBj7EV2oqB0NAzOJK9Y8ecbJ+KoPPT2Cs3sK2M3rRDeoFLkNOTIPz3GiMHsxJfWG3m0N6+FXNlz9RNj/0hizzcjTavc1jTZTCAAmFk6GssJMLid/94+yvkklwSMl1xSkdD8kh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=B5yWjzj0; arc=none smtp.client-ip=213.133.104.62
+	 In-Reply-To:Content-Type; b=fnP8EeR24hanIEg85p6tmm6gxA9r6fNfu430PH0uKwCp/pZYEVmS4UXca3W6pulK0e8uBYA/5AFACi5KP/PBbg7Q0r4QcfIKBu7dEOheSRQS6MjeA/pQ8GxKWYbjtEQznx5uQzZjhdkU1dAkJwWt67CjBCYjx3hOFM0fufiJicc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=AHboONjB; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,26 +36,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=u+p92K+WF5x52aje9i/LpkCJfE+P3HIQKZfRO6Uc4pc=; b=B5yWjzj0u62lJ8SIrqAQ3ddPkL
-	IXQJN0FgsdkRkgKMXgQxNWl5DXdybQG+LJ+ONxnTY4LxFWD+aNw5LmV7/9tCLbxI4HogN7M/HrfrT
-	5KdtGKU3udFZ41m3tIBWb3Xi5m3ZS9+Hjha2M2/B4G49UT0oyfBPHfv4pKlH/1kL+M7EGLcUl15bb
-	QE00i5MVhZrI4l8fyr8OICjoJ81fpZ764LSPwHrXgu3JoRC6IWeanTWuYcfxX/WjxW3lqMXTjIfwE
-	H7hkMX4v/BA3yA3eYzkMdxGJiRwnU7VMFE8pw8PHUbDaHySKtmUW0pUWbkmQB8bT7SGhsPRojn6wu
-	foHxYxrw==;
+	bh=iNRz0JMgF5AWu0p93oS8PC9LQcDyuiP2orhw+iwrxl0=; b=AHboONjBu9UOI3yNU38su+3eW1
+	oxhL7+q9BEJzSbBCKdv89igUlx927kfADs56XP4YaPNNdAjOwGLWDGRD5mSFdkdjhaX4NBL4+nn1k
+	cqoEtOsAcpuePE4h/RkCo+ahDYJJJJ8gH4SUMM9eSMt6ZDn/vvgoMZ5Su5aC2mF4MjmkW2MMsm4OH
+	FQxmVESVytd6iYgcI5Azgombp8OloCTImDXKSzTSkcXFQxLLE99ZyRX0HGm/J2UYeXP4gJTaF/9wJ
+	0u9ybBvbrEiJF/tMR8tBOG0/dSuF8p7kN0f2ErGJ2DtqcvBHC5J2br6rZCWLjFDP1iHFmGSLKlbXP
+	1PX6pT1Q==;
 Received: from sslproxy06.your-server.de ([78.46.172.3])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1uYl0Q-000FEO-2A;
-	Mon, 07 Jul 2025 14:31:36 +0200
+	id 1uYl6L-000FoR-2u;
+	Mon, 07 Jul 2025 14:37:41 +0200
 Received: from localhost ([127.0.0.1])
 	by sslproxy06.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1uYl0P-0004Qg-2E;
-	Mon, 07 Jul 2025 14:31:33 +0200
-Message-ID: <98f27ecc-a69f-4bcb-a2d7-6fff91383225@iogearbox.net>
-Date: Mon, 7 Jul 2025 14:31:32 +0200
+	id 1uYl6L-0007zT-1Z;
+	Mon, 07 Jul 2025 14:37:41 +0200
+Message-ID: <2e0d3918-3c00-4bac-82c6-2cdd33891b0c@iogearbox.net>
+Date: Mon, 7 Jul 2025 14:37:41 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,15 +63,12 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] selftests/bpf: Set CONFIG_PACKET=y for selftests
-To: Saket Kumar Bhaskar <skb99@linux.ibm.com>, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: hbathini@linux.ibm.com, sachinpb@linux.ibm.com, andrii@kernel.org,
- eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org, martin.lau@linux.dev,
- song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
- kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
- shuah@kernel.org
-References: <20250707071735.705137-1-skb99@linux.ibm.com>
+Subject: Re: [PATCH bpf-next v4] selftests/bpf: Negative test case for tail
+ call map
+To: Paul Chaignon <paul.chaignon@gmail.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>
+References: <aGu0i1X_jII-3aFa@mail.gmail.com>
 Content-Language: en-US
 From: Daniel Borkmann <daniel@iogearbox.net>
 Autocrypt: addr=daniel@iogearbox.net; keydata=
@@ -117,31 +114,18 @@ Autocrypt: addr=daniel@iogearbox.net; keydata=
  rUD9YI1Je/WifL/HbIubHCCdK8/N7rblgUrZJMG3W+7vAvZsOh/6VTZeP4wCe7Gs/cJhE2gI
  DmGcR+7rQvbFQC4zQxEjo8fNaTwjpzLM9NIp4vG9SDIqAm20MXzLBAeVkofixCsosUWUODxP
  owLbpg7pFRJGL9YyEHpS7MGPb3jSLzucMAFXgoI8rVqoq6si2sxr2l0VsNH5o3NgoAgJNIg=
-In-Reply-To: <20250707071735.705137-1-skb99@linux.ibm.com>
+In-Reply-To: <aGu0i1X_jII-3aFa@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Virus-Scanned: Clear (ClamAV 1.0.7/27692/Mon Jul  7 10:35:53 2025)
 
-On 7/7/25 9:17 AM, Saket Kumar Bhaskar wrote:
-> BPF selftest fails to build with below error:
+On 7/7/25 1:50 PM, Paul Chaignon wrote:
+> This patch adds a negative test case for the following verifier error.
 > 
->    CLNG-BPF [test_progs] lsm_cgroup.bpf.o
-> progs/lsm_cgroup.c:105:21: error: variable has incomplete type 'struct sockaddr_ll'
->    105 |         struct sockaddr_ll sa = {};
->        |                            ^
-> progs/lsm_cgroup.c:105:9: note: forward declaration of 'struct sockaddr_ll'
->    105 |         struct sockaddr_ll sa = {};
->        |                ^
-> 1 error generated.
+>      expected prog array map for tail call
 > 
-> lsm_cgroup selftest requires sockaddr_ll structure which is not there
-> in vmlinux.h when the kernel is built with CONFIG_PACKET=m.
-> 
-> Enabling CONFIG_PACKET=y ensures that sockaddr_ll is available in vmlinux,
-> allowing it to be captured in the generated vmlinux.h for bpf selftests.
-> 
-> Reported-by: Sachin P Bappalige <sachinpb@linux.ibm.com>
-> Signed-off-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+> Acked-by: Yonghong Song <yonghong.song@linux.dev>
+> Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
 
 Acked-by: Daniel Borkmann <daniel@iogearbox.net>
 
