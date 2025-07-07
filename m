@@ -1,194 +1,245 @@
-Return-Path: <bpf+bounces-62566-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62567-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09A8AAFBE20
-	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 00:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 96A5BAFBE22
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 00:09:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA509188BF71
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 22:07:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B89CE188FDA9
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 22:09:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FCB028B7DA;
-	Mon,  7 Jul 2025 22:07:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D24028A719;
+	Mon,  7 Jul 2025 22:09:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="Dxcj3pOC"
+	dkim=pass (1024-bit key) header.d=riotgames.com header.i=@riotgames.com header.b="Nstn7uIQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FC951F1302
-	for <bpf@vger.kernel.org>; Mon,  7 Jul 2025 22:07:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2304323D282
+	for <bpf@vger.kernel.org>; Mon,  7 Jul 2025 22:09:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751926027; cv=none; b=fgPYTtqP3hpd80SKp3Dzzsbmy2Ydipj/KPfvYk3ck/QPG8mZQBKF5v8bax8TX+fSdGZBIoxURZMl1n4KPu/scquJe1lILD/5oVTjl1mJ5lXCAsu8PenyAod8nH439Sz8OvdvRPHuT6r6neVAHWbX0QX0g4/PtTHjvcQwWmvHafw=
+	t=1751926152; cv=none; b=e+iPeczwBJHZd+SsHLuqIlyYiYl1KOkKFrZJMN6tO6F55UnKJLzB7yR5z8zNgpSP2jqvO7cytUShzQs4sFYpwfgb9GBE4Y8fwlFGoWKF8VOgj8984BRtQDsDVUcOWdILry9eJjuPYIMl9pCaqJK3QeYRuSJB8deWnGs234i97xo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751926027; c=relaxed/simple;
-	bh=2CePHKqoGmwfYfDlHzvg06c1YcP12ndsDwRMN9J337g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TW5AYRolP4caAiZPTwiB3nViV1NSZwOJjETnhkfDtqTNVGRkThtzB/0p8QEx7oJj2dvWSRhZTlkaiDQoorolWfleF0Gg0Mm5wPD6qMuHNOsUgw//kTRd7gQeymzUWnTLxg7Wh8OxhNs6lbNeVaFkaGFfqYXeOGJA+4EiUkEHSk0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=Dxcj3pOC; arc=none smtp.client-ip=209.85.210.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-73af5dc0066so940586a34.1
-        for <bpf@vger.kernel.org>; Mon, 07 Jul 2025 15:07:05 -0700 (PDT)
+	s=arc-20240116; t=1751926152; c=relaxed/simple;
+	bh=Asm9EyM9ac3hP8pkwgyZumzz8aAxUfmJlAbNRMWcDFo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=a4q7G36pYc/jMimRfC/rZPnvpa5l7IiMymb+9VOcAWWjYXo8llHlPoYH9AJ2qxHiH6qwqnBDY/S3tD8xEGjFzQEGmnZqxmcBS+aO2YrDiT+NBqziqHw2zKRrt8M92WrTMObpmvIIpm4u4upZIzAWoXqYy5pEXceqMMo/a38Q9DY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=riotgames.com; spf=pass smtp.mailfrom=riotgames.com; dkim=pass (1024-bit key) header.d=riotgames.com header.i=@riotgames.com header.b=Nstn7uIQ; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=riotgames.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riotgames.com
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-311da0bef4aso3949311a91.3
+        for <bpf@vger.kernel.org>; Mon, 07 Jul 2025 15:09:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1751926025; x=1752530825; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=cwKWUSnF0lzwVdGs0An+rVvS0EXVok8+0wgY2PEYFg4=;
-        b=Dxcj3pOC2byEnQRPbMaq3ENIoVkIttnZOpgKPLQdADgZqec7ZFK6HBNzHqsOYKUBZV
-         ErrrVEcCgzY8+YBbeBXeRb2oPj32A/OU/8VVo2ofGFNLDRf4RbJ4sD/nzuMlBirBw0cr
-         7ni8Ic8ua0ISw7FUQF5qOd/EgjKfSsaikCBM6RoLTB7pkTKxQBuTduwO9pkEeSTkRpIs
-         gEyaPvbwnDn8p413slkSTUl607u30bLkdmeDTyH6/kyA5vYHLqvMlW7ilu0+jng0vDGx
-         bVUFOkN3ept1kqXxA5EFazC3A8+jcSVA54YuYVQDM+d0QOo0J7GPvNDwUWEP/v6R0AsQ
-         XRWA==
+        d=riotgames.com; s=riotgames; t=1751926150; x=1752530950; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Asm9EyM9ac3hP8pkwgyZumzz8aAxUfmJlAbNRMWcDFo=;
+        b=Nstn7uIQRwoQi10V7vIvl4mK2dErm7xJ62HhW9WjSw7SAKHX6CN6tsZqPpG181i6vR
+         voHYkCCkROGVEJMUbSrtWdFHvNae5rywiMT3omzO2r5+UhxWDp5BTs/HqLqAsv4nzRpQ
+         HnKTY/svP0GL9dTDZRp76NFIJPcGhGkmfJXyg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751926025; x=1752530825;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cwKWUSnF0lzwVdGs0An+rVvS0EXVok8+0wgY2PEYFg4=;
-        b=J55FKb9ReIe+y22fEhODcMEhWCd7TfqhM7eQu+RAh66ouqk5hcL0WHpuML+T/jwj8n
-         qNi8r0QnfgfneYe+B2tNosGvvQAa+Y13rpfx9nvcLedWZBsiojqOgOw+1sUewgOORQuc
-         C9uFavEoskepFnIrsVwOmcr4sqxtgafQmtNbuIokoTMCYb5UUAAwdV4UXrKWZmJnsPn+
-         P9JueQFQ21jdMbbKmxBCWQGPRP3fim+bKN7Xt8jk7jeWjFnGN8WGiny63E39LGkMvBzq
-         4SFRoS5/gKkRfucEBxWMC0Yv/c+vAsguB5I8U7Lok//ek2J5z95yEmZyxG8+zb9lqxQb
-         jFTw==
-X-Forwarded-Encrypted: i=1; AJvYcCXgKbnK05tkwmrhgAQEYtYfuYwhRE3tUsXsFjtGcHWoj3Uk3YxSl6JBJ11VKYFjqpvXy/A=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywh4MDLuzNmaco9yMPqh8O0Qguy1ugxbqQyvNkvPGsZ3SjEKWnC
-	jWDeYZQLm17NHEfkvCl9qcvR/NWaQoWPfyB9OnpqMRXQcpfOMsHhRpXwkOXyt1VdsYs=
-X-Gm-Gg: ASbGncuo49ADz3r+MpIV1U2fzx7O9M440a4EiJg4tIUD/vTHpJnzjrYF2zNIDRGV0qW
-	UQ/gWKEshZkpySUAXJUB3BP2nB2Zqve2D5apxkpAEbW59YjsHaXjBWAxZj+nzvyTpHVDEsxclBn
-	6beuMkFCRlErT4MiZdi3+TolU/Jq0Ln09nfuc5B17qWVtTJ9tT2Jxo70LiwG6cuCjkdscKRK1O1
-	ogYjUIfy/K6yxPJYhbi+1gS2bifwzGldQ21/c8IT5VmNGykhX4qLkb+tBG4+C9890B5q09AHIn1
-	5c4Mw4m0z1UICP0+a3/QJlurF0FLfR4ghSn1s6lzqEtIXQ==
-X-Google-Smtp-Source: AGHT+IEqx803zdcRO6xOM0Bcpmkx8P7kV+CaRWkmkuUcqwXwJgab4Kj1w88FgT4Jm4rpb7I0vp3cAg==
-X-Received: by 2002:a05:6830:6b0c:b0:72b:992b:e41 with SMTP id 46e09a7af769-73cd66621a9mr693561a34.23.1751926025157;
-        Mon, 07 Jul 2025 15:07:05 -0700 (PDT)
-Received: from 861G6M3 ([2a09:bac1:76a0:540::22e:3a])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-73c9f90e8adsm1708279a34.41.2025.07.07.15.07.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jul 2025 15:07:04 -0700 (PDT)
-Date: Mon, 7 Jul 2025 17:07:02 -0500
-From: Chris Arges <carges@cloudflare.com>
-To: Dragos Tatulea <dtatulea@nvidia.com>, netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
-	kernel-team <kernel-team@cloudflare.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>, tariqt@nvidia.com,
-	saeedm@nvidia.com, Leon Romanovsky <leon@kernel.org>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Simon Horman <horms@kernel.org>,
-	Andrew Rzeznik <arzeznik@cloudflare.com>,
-	Yan Zhai <yan@cloudflare.com>
-Subject: Re: [BUG] mlx5_core memory management issue
-Message-ID: <aGw-2geTw7Y0UXg2@861G6M3>
-References: <CAFzkdvi4BTXb5zrjpwae2dF5--d2qwVDCKDCFnGyeV40S_6o3Q@mail.gmail.com>
- <dhqeshvesjhyxeimyh6nttlkrrhoxwpmjpn65tesani3tmne5v@msusvzdhuuin>
- <md46ky57c74xrw2l2y5biwnw4vzgn6juiovqkx7tzdwks6smab@vpfd5hmclioa>
+        d=1e100.net; s=20230601; t=1751926150; x=1752530950;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Asm9EyM9ac3hP8pkwgyZumzz8aAxUfmJlAbNRMWcDFo=;
+        b=hN5D/ACQj/u+fzq7lXeRRGhnjmJKu+jgkTqZlhqKyge1H3ogceTSMGTc7/4UsLzCoL
+         ziu6ZmUpGX0psm7bAv1z4zKXN3PO4olVWCZmMfiFfyXrTk/1KYqODHLIL3G87y/Codhp
+         kY2asDes0NMz+aRfbVCtWornbE+1cPb7wFBpXWJZDhv/I45nIyQZYQ54YXGdMZRO9EX3
+         vIxBs65u3Wgxtb2V9Tz/q2QCjYenDGpO8E8jVLFHgVIDbrwNL3SBxzzBSPqksYKgrZA+
+         mxr3wi1B3z/wxhT6PsJC17UA5pXMQzb4L5LtqTvxRhXkbwtqIB3aoreyNSj+OzpygllO
+         ki0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWeD/B9QDPogppyjRdt9mJsuodltPa+lVCafDLFnCjJA987HTDFaJ59h2efJCD8XXT8Hno=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzHqhtux4NGLaM+NfXdSfG70CurbJpnM9cvHKOL1OwvPER0qaf/
+	U3uEODzkDs+RExm8xlex1jZPZ2Jou5+an6xbU4XzzMSTE9GdBMyqVlqix6kbKj1m86SzhHV0Hzr
+	s4nACxBf1aeRZ9yWOqgMO3ZiUGtz19LqoGJU4QtyrlQ==
+X-Gm-Gg: ASbGncvfka/uTMKbQy2U2TwvX67blgqJGx1H/24ReocUu7DvkR/8ylXWSZMAYwOQtPA
+	yUji2hdivwUM+kJzcwoMXD1PlB8q4q1qIeXz9U49GH1C+iSjxRickZfdsmCbPLWXNIg7IS4+/+O
+	3+07PE151NHQE7QTOAsHOn9o9zfZe7YFt43ZrvbaWloA==
+X-Google-Smtp-Source: AGHT+IGTZrVEqrq2Bcsb6TLw54MZ00TtJDpqPDEmaTh6ATHUkR7Ni+5DfUwQCmNOuqe+Ox4adShsuszVdVXACZYCQ8o=
+X-Received: by 2002:a17:90b:33d1:b0:312:639:a064 with SMTP id
+ 98e67ed59e1d1-31aaddb4ac6mr19643954a91.28.1751926150364; Mon, 07 Jul 2025
+ 15:09:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <md46ky57c74xrw2l2y5biwnw4vzgn6juiovqkx7tzdwks6smab@vpfd5hmclioa>
+References: <20250614064056.237005-1-sidchintamaneni@gmail.com>
+ <20250614064056.237005-4-sidchintamaneni@gmail.com> <CAP01T77TBA3eEVoqGMVTpYsEzvg0f7Q95guH0SDQ3gZK=q+Tag@mail.gmail.com>
+ <CAM6KYssFT35L5HN_Fes-2BdhEO6EmhF9Qa+WSWLML4qnZ0z1tA@mail.gmail.com>
+ <CAP01T76S4X4f=owz9D7dXfv15=vD8HB8dO_Ni2TmKfqTKCtuhA@mail.gmail.com>
+ <CAADnVQ+EiaoWUVcN9=Nm=RWJ6XE=Kcm8Q2FYQqWGJ_NsCtyJ=A@mail.gmail.com> <CAP01T74i8a4daQ1Cca5Eysy==hTKox-ovpc1Y==64M1LacATEQ@mail.gmail.com>
+In-Reply-To: <CAP01T74i8a4daQ1Cca5Eysy==hTKox-ovpc1Y==64M1LacATEQ@mail.gmail.com>
+From: Zvi Effron <zeffron@riotgames.com>
+Date: Mon, 7 Jul 2025 15:08:58 -0700
+X-Gm-Features: Ac12FXzBHhmEMISC6l_g4oz4OPwXolrcEuFp4ekxNbEWo5ho0PJEeRABNvtZ4JE
+Message-ID: <CAC1LvL2LkakWTBfqb40sL0S9u9HCqJWsGJiLNO8m-XwCL-fcXA@mail.gmail.com>
+Subject: Re: [RFC bpf-next v2 3/4] bpf: Runtime part of fast-path termination approach
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Raj Sahu <rjsu26@gmail.com>, 
+	Siddharth Chintamaneni <sidchintamaneni@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Dan Williams <djwillia@vt.edu>, miloc@vt.edu, ericts@vt.edu, rahult@vt.edu, 
+	doniaghazy@vt.edu, quanzhif@vt.edu, Jinghao Jia <jinghao7@illinois.edu>, egor@vt.edu, 
+	Sai Roop Somaraju <sairoop10@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 04, 2025 at 08:14:20PM +0000, Dragos Tatulea wrote:
-> On Fri, Jul 04, 2025 at 12:37:36PM +0000, Dragos Tatulea wrote:
-> > On Thu, Jul 03, 2025 at 10:49:20AM -0500, Chris Arges wrote:
-> > > When running iperf through a set of XDP programs we were able to crash
-> > > machines with NICs using the mlx5_core driver. We were able to confirm
-> > > that other NICs/drivers did not exhibit the same problem, and suspect
-> > > this could be a memory management issue in the driver code.
-> > > Specifically we found a WARNING at include/net/page_pool/helpers.h:277
-> > > mlx5e_page_release_fragmented.isra. We are able to demonstrate this
-> > > issue in production using hardware, but cannot easily bisect because
-> > > we don’t have a simple reproducer.
-> > >
-> > Thanks for the report! We will investigate.
-> > 
-> > > I wanted to share stack traces in
-> > > order to help us further debug and understand if anyone else has run
-> > > into this issue. We are currently working on getting more crashdumps
-> > > and doing further analysis.
-> > > 
-> > > 
-> > > The test setup looks like the following:
-> > >   ┌─────┐
-> > >   │mlx5 │
-> > >   │NIC  │
-> > >   └──┬──┘
-> > >      │xdp ebpf program (does encap and XDP_TX)
-> > >      │
-> > >      ▼
-> > >   ┌──────────────────────┐
-> > >   │xdp.frags             │
-> > >   │                      │
-> > >   └──┬───────────────────┘
-> > >      │tailcall
-> > >      │BPF_REDIRECT_MAP (using CPUMAP bpf type)
-> > >      ▼
-> > >   ┌──────────────────────┐
-> > >   │xdp.frags/cpumap      │
-> > >   │                      │
-> > >   └──┬───────────────────┘
-> > >      │BPF_REDIRECT to veth (*potential trigger for issue)
-> > >      │
-> > >      ▼
-> > >   ┌──────┐
-> > >   │veth  │
-> > >   │      │
-> > >   └──┬───┘
-> > >      │
-> > >      │
-> > >      ▼
-> > > 
-> > > Here an mlx5 NIC has an xdp.frags program attached which tailcalls via
-> > > BPF_REDIRECT_MAP into an xdp.frags/cpumap. For our reproducer we can
-> > > choose a random valid CPU to reproduce the issue. Once that packet
-> > > reaches the xdp.frags/cpumap program we then do another BPF_REDIRECT
-> > > to a veth device which has an XDP program which redirects to an
-> > > XSKMAP. It wasn’t until we added the additional BPF_REDIRECT to the
-> > > veth device that we noticed this issue.
-> > > 
-> > Would it be possible to try to use a single program that redirects to
-> > the XSKMAP and check that the issue reproduces?
+On Mon, Jul 7, 2025 at 12:17=E2=80=AFPM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> On Mon, 7 Jul 2025 at 19:41, Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> I forgot to ask: what is the MTU size?
-> Also, are you setting any other special config on the device?
->  
-> Thanks,
-> Dragos
+> > On Fri, Jul 4, 2025 at 12:11=E2=80=AFPM Kumar Kartikeya Dwivedi
+> > <memxor@gmail.com> wrote:
+> > >
+> > > On Fri, 4 Jul 2025 at 19:29, Raj Sahu <rjsu26@gmail.com> wrote:
+> > > >
+> > > > > > Introduces watchdog based runtime mechanism to terminate
+> > > > > > a BPF program. When a BPF program is interrupted by
+> > > > > > an watchdog, its registers are are passed onto the bpf_die.
+> > > > > >
+> > > > > > Inside bpf_die we perform the text_poke and stack walk
+> > > > > > to stub helpers/kfunc replace bpf_loop helper if called
+> > > > > > inside bpf program.
+> > > > > >
+> > > > > > Current implementation doesn't handle the termination of
+> > > > > > tailcall programs.
+> > > > > >
+> > > > > > There is a known issue by calling text_poke inside interrupt
+> > > > > > context - https://elixir.bootlin.com/linux/v6.15.1/source/kerne=
+l/smp.c#L815.
+> > > > >
+> > > > > I don't have a good idea so far, maybe by deferring work to wq co=
+ntext?
+> > > > > Each CPU would need its own context and schedule work there.
+> > > > > The problem is that it may not be invoked immediately.
+> > > > We will give it a try using wq. We were a bit hesitant in pursuing =
+wq
+> > > > earlier because to modify the return address on the stack we would
+> > > > want to interrupt the running BPF program and access its stack sinc=
+e
+> > > > that's a key part of the design.
+> > > >
+> > > > Will need some suggestions here on how to achieve that.
+> > >
+> > > Yeah, this is not trivial, now that I think more about it.
+> > > So keep the stack state untouched so you could synchronize with the
+> > > callback (spin until it signals us that it's done touching the stack)=
+.
+> > > I guess we can do it from another CPU, not too bad.
+> > >
+> > > There's another problem though, wq execution not happening instantly
+> > > in time is not a big deal, but it getting interrupted by yet another
+> > > program that stalls can set up a cascading chain that leads to lock u=
+p
+> > > of the machine.
+> > > So let's say we have a program that stalls in NMI/IRQ. It might happe=
+n
+> > > that all CPUs that can service the wq enter this stall. The kthread i=
+s
+> > > ready to run the wq callback (or in the middle of it) but it may be
+> > > indefinitely interrupted.
+> > > It seems like this is a more fundamental problem with the non-cloning
+> > > approach. We can prevent program execution on the CPU where the wq
+> > > callback will be run, but we can also have a case where all CPUs lock
+> > > up simultaneously.
+> >
+> > If we have such bugs that prog in NMI can stall CPU indefinitely
+> > they need to be fixed independently of fast-execute.
+> > timed may_goto, tailcalls or whatever may need to have different
+> > limits when it detects that the prog is running in NMI or with hard irq=
+s
+> > disabled.
+>
+> I think a lot of programs end up running with hard IRQs disabled. Most
+> scheduler programs (which would use all these runtime checked
+> facilities) can fall into this category.
+> I don't think we can come up with appropriate limits without proper
+> WCET analysis.
+>
+> > Fast-execute doesn't have to be a universal kill-bpf-prog
+> > mechanism that can work in any context. I think fast-execute
+> > is for progs that deadlocked in res_spin_lock, faulted arena,
+> > or were slow for wrong reasons, but not fatal for the kernel reasons.
+> > imo we can rely on schedule_work() and bpf_arch_text_poke() from there.
+> > The alternative of clone of all progs and memory waste for a rare case
+> > is not appealing. Unless we can detect "dangerous" progs and
+> > clone with fast execute only for them, so that the majority of bpf prog=
+s
+> > stay as single copy.
+>
+> Right, I sympathize with the memory overhead argument. But I think
+> just ignoring NMI programs as broken is not sufficient.
+> You can have some tracing program that gets stuck while tracing parts
+> of the kernel such that it prevents wq from making progress in
+> patching it out.
+> I think we will discover more edge cases. All this effort to then have
+> something working incompletely is sort of a bummer.
+>
+> Most of the syzbot reports triggering deadlocks were also not "real"
+> use cases, but we still decided to close the gap with rqspinlock.
+> When leaving the door open, it's hard to anticipate how the failure
+> mode in case fast-execute is not triggered will be.
+> I think let's try to see how bad cloning can be, if done
+> conditionally, before giving up completely on it.
+>
+> I think most programs won't use these facilities that end up extending
+> the total runtime beyond acceptable bounds.
+> Most legacy programs are not using cond_break, rqspinlock, or arenas.
+> Most network function programs and tracing programs probably don't use
+> these facilities as well.
 
-Dragos,
+I can't speak to _most_, but doesn't BPF_MAP_TYPE_LPM_TRIE use rqspinlock? =
+And
+isn't that map type frequently used by network programs (especially XDP
+filters) to do IP prefix lookups?
 
-The device has the following settings:
-2: ext0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1600 xdp qdisc mq state UP mode DEFAULT group default qlen 1000
-    link/ether 1c:34:da:48:7f:e8 brd ff:ff:ff:ff:ff:ff promiscuity 0 allmulti 0 minmtu 68 maxmtu 9978 addrgenmode eui64 numtxqueues 520 numrxqueues 65 gso_max_size 65536 gso_max_segs 65535 tso_max_size 524280 tso_max_segs 65535 gro_max_size 65536 gso_ipv4_max_size 65536 gro_ipv4_max_size 65536 portname p0 switchid e87f480003da341c parentbus pci parentdev 0000:c1:00.0
-    prog/xdp id 173
+So it wouldn't be uncommon for network programs (including "legacy" ones) t=
+o
+use rqspinlock because they use a BPF map type that uses rqspinlock?
 
-As far as testing other packet paths to help narrow down the problem we tested:
-
-1) Fails: XDP (mlx5 nic) -> CPU MAP -> DEV MAP (to veth) -> XSK
-2) Works: XDP (mlx5 nic) -> CPU MAP -> Linux routing (to veth) -> XSK
-3) Works: XDP (mlx5 nic) -> Linux routing (to veth) -> XSK
-
-Given those cases, I would think a single program that redirects just to XSKMAP
-would also work fine.
-
-Thanks,
---chris
+> This can certainly change in the future, but I think unless pressing
+> use cases come up people would stick to how things are.
+> Schedulers are a different category and they will definitely make use
+> of all this.
+> So only triggering cloning when these are used sounds better to me,
+> even if not ideal.
+>
+> We can have some simple WCET heuristic that assigns fixed weights to
+> certain instructions/helpers, and compute an approximate cost which
+> when breached triggers cloning of the prog.
+> We can obviously disable cloning when we see things like bpf_for(i, 0, 10=
+00).
+> We can restrict it to specific subprogs where we notice specific
+> patterns requiring it, so we may be able to avoid the entire prog.
+> But for simplicity we can also just trigger cloning when one of
+> rqspinlock/cond_break/arenas/iterators/bpf_loop are used.
+>
+> The other option of course is to do run time checks of
+> prog->aux->terminate bit and start failing things that way.
+> Most of the time, the branch will be untaken. It can be set to 1 when
+> a prog detects a fatal condition or from a watchdog (later).
+> cond_break, rqspinlock, iterators, bpf_loop can all be adjusted to check =
+it.
+>
+> When I was playing with all this, this is basically what I did
+> (amortized or not) and I think the overhead was negligible/in range of
+> noise.
+> If a prog is hot, the line with terminate bit is almost always in
+> cache, and it's not a load dependency for other accesses.
+> If it's not hot, the cost of every other state access dominates anyway.
+>
 
