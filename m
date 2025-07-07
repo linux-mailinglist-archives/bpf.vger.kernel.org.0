@@ -1,131 +1,194 @@
-Return-Path: <bpf+bounces-62565-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62566-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AC9EAFBDE7
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 23:58:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09A8AAFBE20
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 00:07:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31C743BB506
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 21:57:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA509188BF71
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 22:07:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7289728A1DC;
-	Mon,  7 Jul 2025 21:57:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FCB028B7DA;
+	Mon,  7 Jul 2025 22:07:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jz1yy+7e"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="Dxcj3pOC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59DFB16DEB3;
-	Mon,  7 Jul 2025 21:57:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FC951F1302
+	for <bpf@vger.kernel.org>; Mon,  7 Jul 2025 22:07:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751925473; cv=none; b=pzu+Q6d5H/HJTS6xLLsLp/4QUsrHv1Le8GErPKHsfCobz6o3HJM2nHLdQNW76APwxLAKFq/GmzGCohAd7jeDlZdvNux/Mdk7LiSmCqzJVWOR9/giepr5/M89SoSqIKYDCZy4mFCFk3pDOAK1zEGq9CG/FtJ7mIpyJS3LrMesPdA=
+	t=1751926027; cv=none; b=fgPYTtqP3hpd80SKp3Dzzsbmy2Ydipj/KPfvYk3ck/QPG8mZQBKF5v8bax8TX+fSdGZBIoxURZMl1n4KPu/scquJe1lILD/5oVTjl1mJ5lXCAsu8PenyAod8nH439Sz8OvdvRPHuT6r6neVAHWbX0QX0g4/PtTHjvcQwWmvHafw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751925473; c=relaxed/simple;
-	bh=wn4KLgMQi0FkygQy/dhVswDwIcW8jJc1HjU5vZfPamo=;
+	s=arc-20240116; t=1751926027; c=relaxed/simple;
+	bh=2CePHKqoGmwfYfDlHzvg06c1YcP12ndsDwRMN9J337g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oN/lSab2r+yU/U44KEAgCwa2FJzFdEp5K7Ai8FQ+qnWbxUBwsVAhP0xERDI1VPzGEMlgqBo8Cq47R4fMt29y2Zrra/6gRRiqDGigOIwvz6CaKKOcypHz7Bs5OFyfUgmOAGqXGauLSDWBy/DpgAhiEbLrguNsFSOVwg2c/w3dS1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jz1yy+7e; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-450cb2ddd46so18895595e9.2;
-        Mon, 07 Jul 2025 14:57:49 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=TW5AYRolP4caAiZPTwiB3nViV1NSZwOJjETnhkfDtqTNVGRkThtzB/0p8QEx7oJj2dvWSRhZTlkaiDQoorolWfleF0Gg0Mm5wPD6qMuHNOsUgw//kTRd7gQeymzUWnTLxg7Wh8OxhNs6lbNeVaFkaGFfqYXeOGJA+4EiUkEHSk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=Dxcj3pOC; arc=none smtp.client-ip=209.85.210.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-73af5dc0066so940586a34.1
+        for <bpf@vger.kernel.org>; Mon, 07 Jul 2025 15:07:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751925468; x=1752530268; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jmbxv3PdqFKnk2A9UCW4ls9PEGqEY+FhX8JmesHWPR8=;
-        b=jz1yy+7el4Mr1r7g24xjbx1LmrwfAFnFvKzaYqjNWg9Nf1IoYT+kLpzU8xu6NYKGEK
-         qslW2YIOrcdJBovhPlqXZJzCFvrqPM+joTMRNHBkjD2lqHjpNAA1APkOvyS2kpqL+rYw
-         tsNIgoFV8GL1HhhzSXd2vjTvexz/JK961wCYuU5ng0pAbq+C5QV7Igo7/JwgB3AGGc7e
-         kq4tVyI6ndfpXdu6xxPoTZpEXYalSYtdvIPcYcjoDaLTmCprs6XFPs62h3u9SiFOUf7M
-         qRtxsWCuxYe+UzA9RWquS05082ndqKf568uIInC4GC73YdoKZNfaBcsuvLmC9wJuiFEX
-         q0tA==
+        d=cloudflare.com; s=google09082023; t=1751926025; x=1752530825; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=cwKWUSnF0lzwVdGs0An+rVvS0EXVok8+0wgY2PEYFg4=;
+        b=Dxcj3pOC2byEnQRPbMaq3ENIoVkIttnZOpgKPLQdADgZqec7ZFK6HBNzHqsOYKUBZV
+         ErrrVEcCgzY8+YBbeBXeRb2oPj32A/OU/8VVo2ofGFNLDRf4RbJ4sD/nzuMlBirBw0cr
+         7ni8Ic8ua0ISw7FUQF5qOd/EgjKfSsaikCBM6RoLTB7pkTKxQBuTduwO9pkEeSTkRpIs
+         gEyaPvbwnDn8p413slkSTUl607u30bLkdmeDTyH6/kyA5vYHLqvMlW7ilu0+jng0vDGx
+         bVUFOkN3ept1kqXxA5EFazC3A8+jcSVA54YuYVQDM+d0QOo0J7GPvNDwUWEP/v6R0AsQ
+         XRWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751925468; x=1752530268;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jmbxv3PdqFKnk2A9UCW4ls9PEGqEY+FhX8JmesHWPR8=;
-        b=XQoWAzagi65Xkg/PbECAZ3KhBZAdrYlo5nQ6nIwDaiAXKgS0h17Pe+cCfRcrQErT8X
-         2qwiqRMuan59DZtY2q1Kua7Nz6vGp4IQ4kRkKEgCvEOPZB+tMtHYyne/zVLbpEZyNfVE
-         y9/QcDsHn09F2k2K80HvPsaKBsI8xFZd9NB/X9Mh4V+TG3P3WhrJTODtr0Dy+gMQPFLd
-         1n220Vbm1gFxHXU74B7ycjTF6pfV4QscNm1JH35mIgkIUR9S5khgLFmJbkr02m3plEb3
-         NFmOT/H4bM6oCCLAU+urWDFgz6ag8wyHU+Y1hjbc+3mySAwixXwn/WJG9fAfa58roNh5
-         sZmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUe7t9OTwiqeeZQiQY2L8kHExKS7Qv3nCfrGG8DTrdOwizdHl9wij3imqy8sDres/9HE6byfhzdMe1hPHoM@vger.kernel.org, AJvYcCWQFahxHjwOn4mA6i45XHRgVqpZh6nhH3e7B80beaqIHwUn1hLc7ZIBb71XPcYShg6zCwQ=@vger.kernel.org, AJvYcCWupgBuRYODU/NCfYG3z/0pYKr9fpcTEy9/y5FEbRnd//54LBDjonvs7WngzPxLnoGj+UzGHlVZ@vger.kernel.org
-X-Gm-Message-State: AOJu0YzCpVMQmF2wdQJ6Q3yrbXT2lVQULF6dyPKRVOLHjbqJVIt0ppDU
-	sK9xK9BDGJuE0s1ebn5XTK9BaLcR1s3ysjJQYA2CqDHzU70c6WqnQTyx
-X-Gm-Gg: ASbGncuqhVq35NRi2yPhav4UjBgnyiYPhSpcJWX7K08M1E3TEAtlQXmeIT/JxIT5JU0
-	cIAwHwETFEdl+RqnK2uUOPpGajeFQQaRniImFbKl08wJnSsBHl5GhohSkeioGWYPcqbgOhzR5kN
-	yddBItJuhsp4Gp7avOEkHCiDCJGxQyDK17BSlyZCW6DnRLBETGq8dwT2rRLmGLXnui1Dr9pWMnN
-	W9YrPAd6GqMXuEoesjJSqeohvLdAyfWRZ87ZYcASa3res8BeM7mqBe8vnc/MLheu3UGXouUHnDB
-	3F4Mw1/s+C2Rt71O9rHE5xts7OVwExKavxvw/a1D+hWfLSD2MUIBvp6k0ulqr41kJIsBSthhACV
-	CuQHDIMax8Soot5XGtMoC3IIkKtV5hNv3iKCZ6A3N3ilcXKvBYV7Lg/gEKbvlxodPlVbxoU0=
-X-Google-Smtp-Source: AGHT+IEhIg4l6YStNvu65lWOa+vurZo381w6ywFHfdsoVupncE1hKIfHVv61bQAlipenXd9yoVNn3Q==
-X-Received: by 2002:a05:600c:a20f:b0:453:c39:d0c2 with SMTP id 5b1f17b1804b1-454cdab07cemr604855e9.24.1751925468311;
-        Mon, 07 Jul 2025 14:57:48 -0700 (PDT)
-Received: from mail.gmail.com (2a01cb0889497e00f536999e2663c8dd.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:f536:999e:2663:c8dd])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-454cd4943bdsm3303855e9.20.2025.07.07.14.57.47
+        d=1e100.net; s=20230601; t=1751926025; x=1752530825;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cwKWUSnF0lzwVdGs0An+rVvS0EXVok8+0wgY2PEYFg4=;
+        b=J55FKb9ReIe+y22fEhODcMEhWCd7TfqhM7eQu+RAh66ouqk5hcL0WHpuML+T/jwj8n
+         qNi8r0QnfgfneYe+B2tNosGvvQAa+Y13rpfx9nvcLedWZBsiojqOgOw+1sUewgOORQuc
+         C9uFavEoskepFnIrsVwOmcr4sqxtgafQmtNbuIokoTMCYb5UUAAwdV4UXrKWZmJnsPn+
+         P9JueQFQ21jdMbbKmxBCWQGPRP3fim+bKN7Xt8jk7jeWjFnGN8WGiny63E39LGkMvBzq
+         4SFRoS5/gKkRfucEBxWMC0Yv/c+vAsguB5I8U7Lok//ek2J5z95yEmZyxG8+zb9lqxQb
+         jFTw==
+X-Forwarded-Encrypted: i=1; AJvYcCXgKbnK05tkwmrhgAQEYtYfuYwhRE3tUsXsFjtGcHWoj3Uk3YxSl6JBJ11VKYFjqpvXy/A=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywh4MDLuzNmaco9yMPqh8O0Qguy1ugxbqQyvNkvPGsZ3SjEKWnC
+	jWDeYZQLm17NHEfkvCl9qcvR/NWaQoWPfyB9OnpqMRXQcpfOMsHhRpXwkOXyt1VdsYs=
+X-Gm-Gg: ASbGncuo49ADz3r+MpIV1U2fzx7O9M440a4EiJg4tIUD/vTHpJnzjrYF2zNIDRGV0qW
+	UQ/gWKEshZkpySUAXJUB3BP2nB2Zqve2D5apxkpAEbW59YjsHaXjBWAxZj+nzvyTpHVDEsxclBn
+	6beuMkFCRlErT4MiZdi3+TolU/Jq0Ln09nfuc5B17qWVtTJ9tT2Jxo70LiwG6cuCjkdscKRK1O1
+	ogYjUIfy/K6yxPJYhbi+1gS2bifwzGldQ21/c8IT5VmNGykhX4qLkb+tBG4+C9890B5q09AHIn1
+	5c4Mw4m0z1UICP0+a3/QJlurF0FLfR4ghSn1s6lzqEtIXQ==
+X-Google-Smtp-Source: AGHT+IEqx803zdcRO6xOM0Bcpmkx8P7kV+CaRWkmkuUcqwXwJgab4Kj1w88FgT4Jm4rpb7I0vp3cAg==
+X-Received: by 2002:a05:6830:6b0c:b0:72b:992b:e41 with SMTP id 46e09a7af769-73cd66621a9mr693561a34.23.1751926025157;
+        Mon, 07 Jul 2025 15:07:05 -0700 (PDT)
+Received: from 861G6M3 ([2a09:bac1:76a0:540::22e:3a])
+        by smtp.gmail.com with ESMTPSA id 46e09a7af769-73c9f90e8adsm1708279a34.41.2025.07.07.15.07.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jul 2025 14:57:47 -0700 (PDT)
-Date: Mon, 7 Jul 2025 23:57:45 +0200
-From: Paul Chaignon <paul.chaignon@gmail.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: syzbot <syzbot+c711ce17dd78e5d4fdcf@syzkaller.appspotmail.com>,
-	andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-	daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
-	jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-	martin.lau@linux.dev, netdev@vger.kernel.org, sdf@fomichev.me,
-	song@kernel.org, syzkaller-bugs@googlegroups.com,
-	yonghong.song@linux.dev
-Subject: Re: [syzbot] [bpf?] WARNING in reg_bounds_sanity_check
-Message-ID: <aGxC2aVjAm4m7oTU@mail.gmail.com>
-References: <68649190.a70a0220.3b7e22.20e8.GAE@google.com>
- <aGa3iOI1IgGuPDYV@Tunnel>
- <865f2345eaa61afbd26d9de0917e3b1d887c647d.camel@gmail.com>
- <aGgL_g3wA2w3yRrG@mail.gmail.com>
- <df2cdc5f4fa16a4e3e08e6a997af3722f3673d38.camel@gmail.com>
+        Mon, 07 Jul 2025 15:07:04 -0700 (PDT)
+Date: Mon, 7 Jul 2025 17:07:02 -0500
+From: Chris Arges <carges@cloudflare.com>
+To: Dragos Tatulea <dtatulea@nvidia.com>, netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
+	kernel-team <kernel-team@cloudflare.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>, tariqt@nvidia.com,
+	saeedm@nvidia.com, Leon Romanovsky <leon@kernel.org>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Simon Horman <horms@kernel.org>,
+	Andrew Rzeznik <arzeznik@cloudflare.com>,
+	Yan Zhai <yan@cloudflare.com>
+Subject: Re: [BUG] mlx5_core memory management issue
+Message-ID: <aGw-2geTw7Y0UXg2@861G6M3>
+References: <CAFzkdvi4BTXb5zrjpwae2dF5--d2qwVDCKDCFnGyeV40S_6o3Q@mail.gmail.com>
+ <dhqeshvesjhyxeimyh6nttlkrrhoxwpmjpn65tesani3tmne5v@msusvzdhuuin>
+ <md46ky57c74xrw2l2y5biwnw4vzgn6juiovqkx7tzdwks6smab@vpfd5hmclioa>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <df2cdc5f4fa16a4e3e08e6a997af3722f3673d38.camel@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <md46ky57c74xrw2l2y5biwnw4vzgn6juiovqkx7tzdwks6smab@vpfd5hmclioa>
 
-On Fri, Jul 04, 2025 at 10:26:14AM -0700, Eduard Zingerman wrote:
-> On Fri, 2025-07-04 at 19:14 +0200, Paul Chaignon wrote:
-> > On Thu, Jul 03, 2025 at 11:54:27AM -0700, Eduard Zingerman wrote:
-> > > On Thu, 2025-07-03 at 19:02 +0200, Paul Chaignon wrote:
-> > > > The number of times syzkaller is currently hitting this (180 in 1.5
-> > > > days) suggests there are many different ways to reproduce.
-> > > 
-> > > It is a bit inconvenient to read syzbot BPF reports at the moment,
-> > > because it us hard to figure out how the program looks like.
-> > > Do you happen to know how complicated would it be to modify syzbot
-> > > output to:
-> > > - produce a comment with BPF program
-> > > - generating reproducer with a flag, allowing to print level 2
-> > >   verifier log
-> > > ?
+On Fri, Jul 04, 2025 at 08:14:20PM +0000, Dragos Tatulea wrote:
+> On Fri, Jul 04, 2025 at 12:37:36PM +0000, Dragos Tatulea wrote:
+> > On Thu, Jul 03, 2025 at 10:49:20AM -0500, Chris Arges wrote:
+> > > When running iperf through a set of XDP programs we were able to crash
+> > > machines with NICs using the mlx5_core driver. We were able to confirm
+> > > that other NICs/drivers did not exhibit the same problem, and suspect
+> > > this could be a memory management issue in the driver code.
+> > > Specifically we found a WARNING at include/net/page_pool/helpers.h:277
+> > > mlx5e_page_release_fragmented.isra. We are able to demonstrate this
+> > > issue in production using hardware, but cannot easily bisect because
+> > > we don’t have a simple reproducer.
+> > >
+> > Thanks for the report! We will investigate.
 > > 
-> > I have the same thought sometimes. Right now, I add verifier logs to a
-> > syz or C reproducer to see the program. Producing the BPF program in a
-> > comment would likely be tricky as we'd need to maintain a disassembler
-> > in syzkaller.
-> 
-> So, it operates on raw bytes, not on logical instructions?
+> > > I wanted to share stack traces in
+> > > order to help us further debug and understand if anyone else has run
+> > > into this issue. We are currently working on getting more crashdumps
+> > > and doing further analysis.
+> > > 
+> > > 
+> > > The test setup looks like the following:
+> > >   ┌─────┐
+> > >   │mlx5 │
+> > >   │NIC  │
+> > >   └──┬──┘
+> > >      │xdp ebpf program (does encap and XDP_TX)
+> > >      │
+> > >      ▼
+> > >   ┌──────────────────────┐
+> > >   │xdp.frags             │
+> > >   │                      │
+> > >   └──┬───────────────────┘
+> > >      │tailcall
+> > >      │BPF_REDIRECT_MAP (using CPUMAP bpf type)
+> > >      ▼
+> > >   ┌──────────────────────┐
+> > >   │xdp.frags/cpumap      │
+> > >   │                      │
+> > >   └──┬───────────────────┘
+> > >      │BPF_REDIRECT to veth (*potential trigger for issue)
+> > >      │
+> > >      ▼
+> > >   ┌──────┐
+> > >   │veth  │
+> > >   │      │
+> > >   └──┬───┘
+> > >      │
+> > >      │
+> > >      ▼
+> > > 
+> > > Here an mlx5 NIC has an xdp.frags program attached which tailcalls via
+> > > BPF_REDIRECT_MAP into an xdp.frags/cpumap. For our reproducer we can
+> > > choose a random valid CPU to reproduce the issue. Once that packet
+> > > reaches the xdp.frags/cpumap program we then do another BPF_REDIRECT
+> > > to a veth device which has an XDP program which redirects to an
+> > > XSKMAP. It wasn’t until we added the additional BPF_REDIRECT to the
+> > > veth device that we noticed this issue.
+> > > 
+> > Would it be possible to try to use a single program that redirects to
+> > the XSKMAP and check that the issue reproduces?
+> >
+> I forgot to ask: what is the MTU size?
+> Also, are you setting any other special config on the device?
+>  
+> Thanks,
+> Dragos
 
-Both I would say. The syzkaller descriptions for BPF are structured
-around instructions [1], though they may not always match 1:1 with
-upstream instructions. Syzkaller then mutates raw bytes, taking some
-information from the descriptions into account (ex. known flag values).
+Dragos,
 
-1 - https://github.com/google/syzkaller/blob/master/sys/linux/bpf_prog.txt
+The device has the following settings:
+2: ext0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1600 xdp qdisc mq state UP mode DEFAULT group default qlen 1000
+    link/ether 1c:34:da:48:7f:e8 brd ff:ff:ff:ff:ff:ff promiscuity 0 allmulti 0 minmtu 68 maxmtu 9978 addrgenmode eui64 numtxqueues 520 numrxqueues 65 gso_max_size 65536 gso_max_segs 65535 tso_max_size 524280 tso_max_segs 65535 gro_max_size 65536 gso_ipv4_max_size 65536 gro_ipv4_max_size 65536 portname p0 switchid e87f480003da341c parentbus pci parentdev 0000:c1:00.0
+    prog/xdp id 173
+
+As far as testing other packet paths to help narrow down the problem we tested:
+
+1) Fails: XDP (mlx5 nic) -> CPU MAP -> DEV MAP (to veth) -> XSK
+2) Works: XDP (mlx5 nic) -> CPU MAP -> Linux routing (to veth) -> XSK
+3) Works: XDP (mlx5 nic) -> Linux routing (to veth) -> XSK
+
+Given those cases, I would think a single program that redirects just to XSKMAP
+would also work fine.
+
+Thanks,
+--chris
 
