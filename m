@@ -1,50 +1,83 @@
-Return-Path: <bpf+bounces-62509-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62512-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39894AFB763
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 17:30:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 436A7AFB7A6
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 17:41:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 119BE1AA49AE
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 15:30:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F007E7B19A6
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 15:40:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 948032E3360;
-	Mon,  7 Jul 2025 15:29:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10624202983;
+	Mon,  7 Jul 2025 15:41:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lufOoArN"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Yr0XVWux"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E7271F09A5
-	for <bpf@vger.kernel.org>; Mon,  7 Jul 2025 15:29:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78AFC1E2614
+	for <bpf@vger.kernel.org>; Mon,  7 Jul 2025 15:41:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751902194; cv=none; b=kRIoX6PgTv0C9bGk7UqPgW9XBwSykZ4jd4zaL0f7kTU1892Cm8in+3FFdOXjrraOw9C2IyxhR6nmiwFN1NcsniP8ayMzwS+9jcyNazsrYOSL/z4aOyfeudIxMOrVz1AAtZ+OqxiVD7lPvUVk7aLqFvoKKngqtGHdGVea3Poy1wI=
+	t=1751902883; cv=none; b=KsZpVD4hc3U3iGbfJCk2d7Yu0qhYdKC572fd1n8z/zDbyI8lvBELIayqVv+qsCoZx3AuFqc5hGD9ehVpxQHu2/YdrAd8NsT98VjwJMtJ6CcgYFmWRvd3es+RQ2q3XAFoGTg58ZH542Au+2fBGoNEEyJlnrY2U2kbWHfBzRffF0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751902194; c=relaxed/simple;
-	bh=94BO1CWyWxpelOAZsyYbPkEaL8q/K70trjQq/VXM5ps=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=lyqCz57l2D28H4tPhg/u1sXspfF/EVFnHuU/576ovBU6nEFeil6yg/Y16WV1eVILbr8R/hgSdPfGMV9g/4Or4VXdvr1NfDk42fsepBL8ZY4Yuz9yVrJx+X86nVnE4tgGjEqlSaTBPLsWB0oA1c/V0a2RvYaZ7RF7dy5qEWHJ9hE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lufOoArN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D017C4CEF1;
-	Mon,  7 Jul 2025 15:29:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751902193;
-	bh=94BO1CWyWxpelOAZsyYbPkEaL8q/K70trjQq/VXM5ps=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=lufOoArNBVNZaNIwSGGQRolMbgEtFKnpQo17NKaQgNCGaq0awOHT73nJfZbpjn+xh
-	 PAK+XvonZ+S/1gQEPPFEeqefbQkW8vqDzlosN5uK+t4v+yGR3vYXior2bMDDzAat8J
-	 KtDVim8ZvWpxHqeQOKfgrjigLhoqVGDiBH3Wfa9wCLtcAwvmrNLy9XbnmGDUcRgHOf
-	 EH5fJvWDnx/KQwqxU5MlSTXAiXp23f85H/waQZjs9xkeaKyaqMu3ssPqDX5wUgGfJm
-	 XXU/7jceOuR1bJS41rpyKG3yFbO5EN5HwoSGl6D5bAwrHSzOrilllEXvOuHMryrsLc
-	 fLQOjJLMX/Xsg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAD66383BA25;
-	Mon,  7 Jul 2025 15:30:17 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1751902883; c=relaxed/simple;
+	bh=ePOPubuWj17eRi0sYt5gn5zhUwG2cej8IddcFeCTXXM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ce9AiQp+jjdTafVksCjumUAAdVCKGh9iCbkpm/1EfqumfUsAOYIhTBo5DLK5GI9FzE8u5fIsnHRoVmblNyxXPlnZeV0N6ccocrw/12dxPmLscW56xlWuOHDSQybhh46RL6a5j7s1f/jXd7mps2b+OZqUV0E1uLnoy3DmwR+e31A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Yr0XVWux; arc=none smtp.client-ip=91.218.175.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1751902869;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=q3RrQWA0hl2m0Jg5mJm6780LOhvTRsObdRFSzyTIGtE=;
+	b=Yr0XVWuxfD334RtnfP0rxbc+BWxrdqSYqtRltclNSQJe/WG7/ZAUAZLPOgQonXSIf4O+zi
+	wPVs1mBAUazhpSsbztZiS7Vy3GfvHYgBMk2/BCsd/u0L258ep/8V8if24dVPYCtugI+bqE
+	7JRo1lDd8eyvUhNFvmxoanDff6hGxyk=
+From: Tao Chen <chen.dylane@linux.dev>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	mattbobrowski@google.com,
+	rostedt@goodmis.org,
+	mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	kuniyu@amazon.com,
+	willemb@google.com,
+	jakub@cloudflare.com,
+	pablo@netfilter.org,
+	kadlec@netfilter.org,
+	hawk@kernel.org
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
+	Tao Chen <chen.dylane@linux.dev>
+Subject: [PATCH bpf-next 0/6] Move attach_type into bpf_link
+Date: Mon,  7 Jul 2025 23:39:10 +0800
+Message-ID: <20250707153916.802802-1-chen.dylane@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -52,63 +85,54 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2 0/8] bpf: additional use-cases for untrusted
- PTR_TO_MEM
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <175190221676.3332981.13346618944357682704.git-patchwork-notify@kernel.org>
-Date: Mon, 07 Jul 2025 15:30:16 +0000
-References: <20250704230354.1323244-1-eddyz87@gmail.com>
-In-Reply-To: <20250704230354.1323244-1-eddyz87@gmail.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
- yonghong.song@linux.dev
+X-Migadu-Flow: FLOW_OUT
 
-Hello:
+Andrii suggested moving the attach_type into bpf_link, the previous discussion
+is as follows:
+https://lore.kernel.org/bpf/CAEf4BzY7TZRjxpCJM-+LYgEqe23YFj5Uv3isb7gat2-HU4OSng@mail.gmail.com
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+patch1 add attach_type in bpf_link, and pass it to bpf_link_init, which
+will init the attach_type field.
 
-On Fri,  4 Jul 2025 16:03:46 -0700 you wrote:
-> This patch set introduces two usability enhancements leveraging
-> untrusted pointers to mem:
-> - When reading a pointer field from a PTR_TO_BTF_ID, the resulting
->   value is now assumed to be PTR_TO_MEM|MEM_RDONLY|PTR_UNTRUSTED
->   instead of SCALAR_VALUE, provided the pointer points to a primitive
->   type.
-> - __arg_untrusted attribute for global function parameters,
->   allowed for pointer arguments of both structural and primitive
->   types:
->   - For structural types, the attribute produces
->     PTR_TO_BTF_ID|PTR_UNTRUSTED.
->   - For primitive types, it yields
->     PTR_TO_MEM|MEM_RDONLY|PTR_UNTRUSTED.
-> 
-> [...]
+patch2-6 remove the attach_type in struct bpf_xx_link, update the info
+with bpf_link attach_type.
 
-Here is the summary with links:
-  - [bpf-next,v2,1/8] bpf: make makr_btf_ld_reg return error for unexpected reg types
-    https://git.kernel.org/bpf/bpf-next/c/b9d44bc9fd30
-  - [bpf-next,v2,2/8] bpf: rdonly_untrusted_mem for btf id walk pointer leafs
-    https://git.kernel.org/bpf/bpf-next/c/2d5c91e1cc14
-  - [bpf-next,v2,3/8] selftests/bpf: ptr_to_btf_id struct walk ending with primitive pointer
-    https://git.kernel.org/bpf/bpf-next/c/f1f5d6f25d09
-  - [bpf-next,v2,4/8] bpf: attribute __arg_untrusted for global function parameters
-    https://git.kernel.org/bpf/bpf-next/c/182f7df70419
-  - [bpf-next,v2,5/8] libbpf: __arg_untrusted in bpf_helpers.h
-    https://git.kernel.org/bpf/bpf-next/c/aaa0e57e6930
-  - [bpf-next,v2,6/8] selftests/bpf: test cases for __arg_untrusted
-    https://git.kernel.org/bpf/bpf-next/c/54ac2c9418af
-  - [bpf-next,v2,7/8] bpf: support for void/primitive __arg_untrusted global func params
-    https://git.kernel.org/bpf/bpf-next/c/c4aa454c64ae
-  - [bpf-next,v2,8/8] selftests/bpf: tests for __arg_untrusted void * global func params
-    https://git.kernel.org/bpf/bpf-next/c/68cca81fd57f
+There are some functions finally call bpf_link_init but do not have bpf_attr
+from user or do not need to init attach_type from user like bpf_raw_tracepoint_open,
+now use prog->expected_attach_type to init attach_type.
 
-You are awesome, thank you!
+bpf_struct_ops_map_update_elem
+bpf_raw_tracepoint_open
+bpf_struct_ops_test_run
+
+Feedback of any kind is welcome, thanks.
+
+Tao Chen (6):
+  bpf: Add attach_type in bpf_link
+  bpf: Remove attach_type in bpf_cgroup_link
+  bpf: Remove attach_type in bpf_sockmap_link
+  bpf: Remove location field in tcx_link
+  bpf: Remove attach_type in bpf_netns_link
+  bpf: Remove attach_type in bpf_tracing_link
+
+ include/linux/bpf-cgroup.h     |  1 -
+ include/linux/bpf.h            | 18 +++++++++------
+ include/net/tcx.h              |  1 -
+ kernel/bpf/bpf_iter.c          |  3 ++-
+ kernel/bpf/bpf_struct_ops.c    |  5 +++--
+ kernel/bpf/cgroup.c            | 17 +++++++--------
+ kernel/bpf/net_namespace.c     |  8 +++----
+ kernel/bpf/syscall.c           | 40 ++++++++++++++++++++--------------
+ kernel/bpf/tcx.c               | 16 +++++++-------
+ kernel/bpf/trampoline.c        | 10 +++++----
+ kernel/trace/bpf_trace.c       |  4 ++--
+ net/bpf/bpf_dummy_struct_ops.c |  3 ++-
+ net/core/dev.c                 |  3 ++-
+ net/core/sock_map.c            | 13 +++++------
+ net/netfilter/nf_bpf_link.c    |  3 ++-
+ 15 files changed, 79 insertions(+), 66 deletions(-)
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.48.1
 
 
