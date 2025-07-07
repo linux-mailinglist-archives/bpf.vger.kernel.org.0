@@ -1,126 +1,163 @@
-Return-Path: <bpf+bounces-62555-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62556-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26A17AFBC4D
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 22:09:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35FC1AFBC7C
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 22:25:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 868723B8B71
-	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 20:09:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6ACFC4A645A
+	for <lists+bpf@lfdr.de>; Mon,  7 Jul 2025 20:25:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59EA221A445;
-	Mon,  7 Jul 2025 20:09:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 985C721D00D;
+	Mon,  7 Jul 2025 20:25:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KLWDOTfE"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PFSMiyjW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DC2B13D51E
-	for <bpf@vger.kernel.org>; Mon,  7 Jul 2025 20:09:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9820A214A6A;
+	Mon,  7 Jul 2025 20:25:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751918981; cv=none; b=UFnMMJtVz1aNIon1KFS4dCZXxSaBV7ai00/XeUewIJWw+BH572h/hWFYRInA+NcjMrpYrRJeG8rwHbvTeHBYfjBan30zEhlsDaxsI4rE6fy3NWN7lbBPf2zn5ZPgL5GAW0F8w6oQRH/KHNKdm684Do2kArOxz0URuZi7xvIsM+k=
+	t=1751919931; cv=none; b=FTEkW8OeDHJ46dwaIOox74akeLV2NHqKHgqf+kmK7jo8pq3AqdZxl9pBatz1XCkvXxUVo8gCGohgXpdER44acgyrR5TEttzQMQ04viG7KTesoHbN49+zeEmPUTCAwRsEb7ZSqTsia60ZfmaI+nmEhJCqeCJb6JbpW496MnK1qTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751918981; c=relaxed/simple;
-	bh=7TPl0Fn0mG0GAMSzskGy3Gl5yJBJtLjWxScgeR9vfrw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=riK59gqSR0C/PURU7XOE8lhBj5zD9WJO+lm5Mudgs1bK4DzZIf6GlbQxKeg3SGQaMR7x/8Q0htf8Pd914MIpk5MkYrFz7oenJD2snfc3axy/y6TtNGe0aGNnEfQIWH/3d/HD5lbx/zHYIcnQEKCSpssY0VymCFOxWMuX3xkVReE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KLWDOTfE; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3a510432236so2446642f8f.0
-        for <bpf@vger.kernel.org>; Mon, 07 Jul 2025 13:09:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751918978; x=1752523778; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7TPl0Fn0mG0GAMSzskGy3Gl5yJBJtLjWxScgeR9vfrw=;
-        b=KLWDOTfE0gtotWPMnAT/TYI4Prmc85nl+/uleno1V7TjuJOKUlOCZSW/YvwGmFA+iM
-         hUu0ENnNG7LRITdKLFfIt/3dteT3PfW2B39eB8h/hs6v7YAPWmHIWSFdB/EcHFXmcutU
-         PbNqTBSLixpiqbT/UMVYk+27pLFCohbOs9WYSWPHtHQvC1DxJ7r6kV2thOEUErD5D3ky
-         SqWBpfpm1pGQqHdFvmHyfr8zdB37i3qEV6/8zpaZMWmI+mOyzkGZFBEHaNCRhVC1ICtG
-         DQZJ/gflSD2+00CTOzLo1q1ahZXHpwR6/Z3+SMbPSvlGNwqJUW1vQxKZyKxLD9cntHty
-         3rPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751918978; x=1752523778;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7TPl0Fn0mG0GAMSzskGy3Gl5yJBJtLjWxScgeR9vfrw=;
-        b=C+lDU6HMqToy+E+b4M49lN18D2d7UO560FTH5drBz045lRnfDluXtzkT0KWBRhX1c0
-         4To/HVAjmBIqJAJPiSa+V2Q9g81jvjxxGR7w2V0xSs7KF+zTf5581JB54w5ELt9+o1W6
-         UGWGN1Zzcx2EVwOCDWWtOFT1pfwSdXMdNmHVe730sIFM03e0UPgAbRaKoXCfs6sVxZO0
-         lU75bEzB99PxmfdHNT0sP8gLAv+mpOebhaXfUPwAe2aWE7COpqOY6h/lVtUsKBxeQFRm
-         eYLvdYLwM/JF0Itk82GaMsSwOjdRo6RCVxuOAYz51vBj3tVYKODvBtL5m0q3FYSN4u+G
-         VLnA==
-X-Forwarded-Encrypted: i=1; AJvYcCUQSeicB28lyLyTdPSzGLjUowT2+S9aFMyQ7EeZC/p/Yg1J3cWiMgDRko04JV7dQIpdoHQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzQ+mwq5axqDBWkmc6XQRVJZVgy1lcCRzpsUybkU8vGGoIqLiLE
-	dZ255q6t1aAfUbzInjzUw9C6R0RrmOALTVA8TM2zlbJ6cHQmjkDYgnovqGwSEST5I1QW8k4ElO5
-	IOmocDRtonZMopztYqCEcAnuXICC0IkDCKfx/
-X-Gm-Gg: ASbGncuIGH9zPGHdmg9xG/NXYFCLUMxkbC9QFY6YV/XPZTkyYKj0w6Kh+3ejwzyo7WL
-	Odu6WY9w4VGAJ+HFKiMqSiqdZGWJS0Y5grrDYoQseDCvPLTZuP9+PviiQG4+xQK8ofAE8mGJD4K
-	EQNhWH2Q9XvJw2SvKp7azRL8lLKlRGhbrF24I0LK7TCtIWX+avUauTTmhUjUw=
-X-Google-Smtp-Source: AGHT+IGMKnkM4FHj0W0Mom8recoXPZzEGX/VuidGNmnXk5eeH1GlOn8z9dF2IadGh8qrXXAP3IuRIMpCW5Un6FLoLMo=
-X-Received: by 2002:a5d:64cc:0:b0:3a4:e6e6:a026 with SMTP id
- ffacd0b85a97d-3b49703162fmr10282735f8f.28.1751918978036; Mon, 07 Jul 2025
- 13:09:38 -0700 (PDT)
+	s=arc-20240116; t=1751919931; c=relaxed/simple;
+	bh=EskchuAk3wqYLaXr8x1fF4HhW/cyWSRnnGTXvtWRQDk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ltgskE3pEP7QA+wLOga8313ATJ8caoNi5/Q6m68Hk+vx3RTeDENsyMzXx01jWY8yEitokoUziXXec1DCHHqCLg2eFcNl1yjjfP76DSpuFFKcUIpd9W/LPvWCBUIMO8Glf6hv5FbqYBa0l0c/8jwM61EnYQb/j6Wgijv0j716QO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PFSMiyjW; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1751919930; x=1783455930;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=EskchuAk3wqYLaXr8x1fF4HhW/cyWSRnnGTXvtWRQDk=;
+  b=PFSMiyjWxSENYTsXW7yK27IvUOBPlM/K6TjAR8PKDCExpKrEOS3hXnkb
+   V/tLnq5bnOgyCom0y7aHCy4HHqvbenw+hLd51xvtOceje5nE7wExHUCsp
+   c2q86ydUzVZ/EOr+NGbMKOmkjL8v6wqemctSSKyNlnkC9QqBQNucSYvfJ
+   HOWBtPX8N6IG0XYnbdTMI68YUZsDm5ZmBpoPjz/Y5b5+bGfagEDNaIYNg
+   OD5oCqNz9TPpCrEHsQsIUdKE7d00rZXNw1i6f9E1AadMfys3gPrXGkBuc
+   qGTFxMkJVusmyekwRI2SgAzEJaUG3GjPKyS7mbSKZd6/BdoYpq4HN6efk
+   A==;
+X-CSE-ConnectionGUID: JgTTlzHETPKM9/VM2GWBLQ==
+X-CSE-MsgGUID: mSWLWoqaTraxcIIarE6xGQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11487"; a="53362603"
+X-IronPort-AV: E=Sophos;i="6.16,295,1744095600"; 
+   d="scan'208";a="53362603"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2025 13:25:29 -0700
+X-CSE-ConnectionGUID: AVK4PUxOTGWdv6LR1Tocbw==
+X-CSE-MsgGUID: wULjMUCrS7qxIoDnvtRdGQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,295,1744095600"; 
+   d="scan'208";a="159344412"
+Received: from lkp-server01.sh.intel.com (HELO 9ee84586c615) ([10.239.97.150])
+  by fmviesa003.fm.intel.com with ESMTP; 07 Jul 2025 13:25:25 -0700
+Received: from kbuild by 9ee84586c615 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1uYsOw-0000iv-2p;
+	Mon, 07 Jul 2025 20:25:22 +0000
+Date: Tue, 8 Jul 2025 04:25:09 +0800
+From: kernel test robot <lkp@intel.com>
+To: Menglong Dong <menglong8.dong@gmail.com>, ast@kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
+	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
+	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Menglong Dong <dongml2@chinatelecom.cn>
+Subject: Re: [PATCH bpf-next] bpf: make the attach target more accurate
+Message-ID: <202507080452.fCL471ap-lkp@intel.com>
+References: <20250707113528.378303-1-dongml2@chinatelecom.cn>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250614064056.237005-1-sidchintamaneni@gmail.com>
- <20250614064056.237005-4-sidchintamaneni@gmail.com> <CAP01T77TBA3eEVoqGMVTpYsEzvg0f7Q95guH0SDQ3gZK=q+Tag@mail.gmail.com>
- <CAM6KYssFT35L5HN_Fes-2BdhEO6EmhF9Qa+WSWLML4qnZ0z1tA@mail.gmail.com>
- <CAP01T76S4X4f=owz9D7dXfv15=vD8HB8dO_Ni2TmKfqTKCtuhA@mail.gmail.com>
- <CAADnVQ+EiaoWUVcN9=Nm=RWJ6XE=Kcm8Q2FYQqWGJ_NsCtyJ=A@mail.gmail.com> <CAP01T74i8a4daQ1Cca5Eysy==hTKox-ovpc1Y==64M1LacATEQ@mail.gmail.com>
-In-Reply-To: <CAP01T74i8a4daQ1Cca5Eysy==hTKox-ovpc1Y==64M1LacATEQ@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 7 Jul 2025 13:09:25 -0700
-X-Gm-Features: Ac12FXx47uSB2uz0aiEEG2A5n5ZpkgRK7XgYLMEDfcgT4ll_V6AcPZu_A6c8n40
-Message-ID: <CAADnVQKiek12fUz6LDJUz_yy2EJQdXCYNg_ixE3PYROSWOrSbQ@mail.gmail.com>
-Subject: Re: [RFC bpf-next v2 3/4] bpf: Runtime part of fast-path termination approach
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: Raj Sahu <rjsu26@gmail.com>, Siddharth Chintamaneni <sidchintamaneni@gmail.com>, 
-	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Dan Williams <djwillia@vt.edu>, miloc@vt.edu, ericts@vt.edu, 
-	rahult@vt.edu, doniaghazy@vt.edu, quanzhif@vt.edu, 
-	Jinghao Jia <jinghao7@illinois.edu>, egor@vt.edu, 
-	Sai Roop Somaraju <sairoop10@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250707113528.378303-1-dongml2@chinatelecom.cn>
 
-On Mon, Jul 7, 2025 at 12:16=E2=80=AFPM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> The other option of course is to do run time checks of
-> prog->aux->terminate bit and start failing things that way.
-> Most of the time, the branch will be untaken. It can be set to 1 when
-> a prog detects a fatal condition or from a watchdog (later).
-> cond_break, rqspinlock, iterators, bpf_loop can all be adjusted to check =
-it.
->
-> When I was playing with all this, this is basically what I did
-> (amortized or not) and I think the overhead was negligible/in range of
-> noise.
-> If a prog is hot, the line with terminate bit is almost always in
-> cache, and it's not a load dependency for other accesses.
-> If it's not hot, the cost of every other state access dominates anyway.
+Hi Menglong,
 
-bpf_check_timed_may_goto() can certainly check prog->aux->must_terminate.
-bpf_loop() can gain aux__prog and check the flag as well.
-if we add it in more places then we won't need fast-execute.
-Everything that can take a long time will be required to check that flag.
-I was hoping fast-execute can avoid this run-time penalty,
-but if it comes with extra clone (even if optional for some progs)
-then the amortized flag check looks much simpler.
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Menglong-Dong/bpf-make-the-attach-target-more-accurate/20250707-194159
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20250707113528.378303-1-dongml2%40chinatelecom.cn
+patch subject: [PATCH bpf-next] bpf: make the attach target more accurate
+config: i386-buildonly-randconfig-003-20250708 (https://download.01.org/0day-ci/archive/20250708/202507080452.fCL471ap-lkp@intel.com/config)
+compiler: clang version 20.1.7 (https://github.com/llvm/llvm-project 6146a88f60492b520a36f8f8f3231e15f3cc6082)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250708/202507080452.fCL471ap-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202507080452.fCL471ap-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> kernel/bpf/verifier.c:23491:43: error: incomplete definition of type 'const struct module'
+    23491 |                 err = module_kallsyms_on_each_symbol(mod->name, symbol_mod_callback,
+          |                                                      ~~~^
+   include/linux/printk.h:400:8: note: forward declaration of 'struct module'
+     400 | struct module;
+         |        ^
+   1 error generated.
+
+
+vim +23491 kernel/bpf/verifier.c
+
+ 23466	
+ 23467	/**
+ 23468	 * bpf_lookup_attach_addr: Lookup address for a symbol
+ 23469	 *
+ 23470	 * @mod: kernel module to lookup the symbol, NULL means to lookup the kernel
+ 23471	 * symbols
+ 23472	 * @sym: the symbol to resolve
+ 23473	 * @addr: pointer to store the result
+ 23474	 *
+ 23475	 * Lookup the address of the symbol @sym, and the address should has
+ 23476	 * corresponding ftrace location. If multiple symbols with the name @sym
+ 23477	 * exist, the one that has ftrace location will be returned. If more than
+ 23478	 * 1 has ftrace location, -EADDRNOTAVAIL will be returned.
+ 23479	 *
+ 23480	 * Returns: 0 on success, -errno otherwise.
+ 23481	 */
+ 23482	static int bpf_lookup_attach_addr(const struct module *mod, const char *sym,
+ 23483					  unsigned long *addr)
+ 23484	{
+ 23485		struct symbol_lookup_ctx ctx = { .addr = 0, .name = sym };
+ 23486		int err;
+ 23487	
+ 23488		if (!mod)
+ 23489			err = kallsyms_on_each_match_symbol(symbol_callback, sym, &ctx);
+ 23490		else
+ 23491			err = module_kallsyms_on_each_symbol(mod->name, symbol_mod_callback,
+ 23492							     &ctx);
+ 23493	
+ 23494		if (!ctx.addr)
+ 23495			return -ENOENT;
+ 23496	
+ 23497		if (err)
+ 23498			return err;
+ 23499	
+ 23500		*addr = ctx.addr;
+ 23501	
+ 23502		return 0;
+ 23503	}
+ 23504	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
