@@ -1,226 +1,210 @@
-Return-Path: <bpf+bounces-62718-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62719-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C0BAAFDB92
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 01:08:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61FB3AFDBC5
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 01:16:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 297FF1AA2518
-	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 23:09:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6239C17808D
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 23:16:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D8A2235067;
-	Tue,  8 Jul 2025 23:08:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98F3522FDEC;
+	Tue,  8 Jul 2025 23:16:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="brT8FknJ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="K2KfR0uF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1601323314B
-	for <bpf@vger.kernel.org>; Tue,  8 Jul 2025 23:08:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B85933993
+	for <bpf@vger.kernel.org>; Tue,  8 Jul 2025 23:16:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752016113; cv=none; b=PkMGLBMXKE1QmShgQbNhWnuux7wVoyfht3806ADmV5trGUolVAB6MWGFOUWBfunfQ1Hd7nQcsRboHEUhsfz34b1NoA+XWzirZfk9BJycwEjN8qBfMxYC18Pe2y9M4zQlvEPNjM8ePTqmY7xmNT+Mn3spjSNoHgaRjHL76b6HEt4=
+	t=1752016598; cv=none; b=SaveqRrR7ueHMgBv1VrY3CAq6Mmaoxze5CXSMsC//F4PHXUofUBpSLyzct3UC4SPqsVuf1FRovYXZZDb53eC84VFJhfK3gcg+emaHXdX3Ic/BwrHuzfkPqz9imPDXIMHMVrs3xUOEJPfqB1uHbVwaTp3jRbdx3FpPTtoXu/T0oU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752016113; c=relaxed/simple;
-	bh=AO06kzeTNMgu6T/23hDVIqI1VVkQZyeC4PdcOAxDgj8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KTQc97a6h1nfnUzOV4hD9z9qw+VzsuMk30VMmtdEoPfvpJbqWatCWaux3yHDrP4Xty9xJt9YDJsVbWTzR7fH3YUe2eD1JFeO+mVKVeSxM75hSKG+Fdz60nM6FIF+Ja9VWWEYfdmjDeYv/6mY8FSlqscIab+HuclkemalfLLQKK8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=brT8FknJ; arc=none smtp.client-ip=209.85.215.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-b2c2c762a89so4084411a12.0
-        for <bpf@vger.kernel.org>; Tue, 08 Jul 2025 16:08:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752016111; x=1752620911; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zrGVV0CDvOIgnRq78G+ReRLH2fbSRM60n635mX5Wf7g=;
-        b=brT8FknJzvtFjD5ObtHKpH14FKftTP5Jf1m2fQp8QNa2jkgaMkAn96ZUUBiTLnO8yQ
-         MH14zw6dSOfufW9SyLZ0ySDO+6hUa7uP4ZREmmFipvohJjr+QbyMT2pZ7nImj2dJmYlR
-         1LtZk+ZSitB1vk/mt98CL/EEp91361Ur7+Mg5POGAyP+E8jHgqKn3Um0CayiZNlAVG9T
-         97oW2h1RGn7/7Ly+trqMnWkT3+MEvwpnAl1QnB4zIdEq8ZMivYsincqb+IQBZ1tH7aTD
-         muQ1u24byRwCVnDxYKEJtMlaIEpDyPIeRRSyjSWG0eEY4KuY2owyxAtXWyu4nsj2rZMC
-         v9vQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752016111; x=1752620911;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zrGVV0CDvOIgnRq78G+ReRLH2fbSRM60n635mX5Wf7g=;
-        b=WFDS+nDByNC2lL5IpyCnO3R7hoMVFpbCW60BflGl2xegGShAHtpwyngnUix+unPG7s
-         4LRlhxk3Yk0KAYxqwnZrRt+GfMS9sfNxdKgMCQJ0cd99XHu3qS04MgFZ66BNFu5cAweI
-         xeix39uj73sAquVsCHAzeH9P1JgP9g0qXytIyCnjPg9Li0QuVoH2513s8xcWbqgHuJbE
-         4oNbDICariACH+bzTzK4z9ItIBmVvvGJrC3glL9wDaiPQbg4HgM3dtrcLQJjkKp3OZhm
-         gWxRKit1517g+VQSIJ/3sS2QHprAmYiPcSGcfL6XmQIQNjzwC+uZ01r1qvTWwfOgRC0U
-         fRdg==
-X-Gm-Message-State: AOJu0Yz5a+uz0jK68SzbK7MELBS2XlDp5K6mWIsiL+rKtCykp2CJPJpu
-	v9Pvi1Qmr5kH/52OmPrUhO+mGjxyxSqV7lAlBEQF8qRNWEuCzlnSvd1L8BDGGQ==
-X-Gm-Gg: ASbGncsFVjtWnx5lXwjzAZArF9OasC6C+GidNXoSfM641B6ixDdUJEB7SHfgdh/nxaL
-	eipfKrJNXBgEz/mX0hq2y5iH4hb0tDuvo+mHgkTNDj5G+uswVi4l85gVIK3NbbJShfvbIiyXHpt
-	6EDWtusd8qD4C/HpMaFkio+Q0nz3XtEHZkZFneyKjI+1XuC7Elpfu6gXJAmS2SmdWvBzyiEdgxb
-	F+GAx6z8+Bmv/U/adk+qnSUxOyFE43cZiTXReFLzn9WcackvzphHU0I7VNBLLls6SiiOzocJOc1
-	zzyeW0QfZcFuapqrNq3z1GfZnTlzmOe9GEk8x6W7GAgdF2nmdiFx
-X-Google-Smtp-Source: AGHT+IHORMUvpDlJ8yRQndFce/HdBvzK7ngsk9L5n8dNk9zl4nwc0nD2Vpo4GKUT9bHBLwiLPwMR8Q==
-X-Received: by 2002:a17:90b:5830:b0:30a:4874:5397 with SMTP id 98e67ed59e1d1-31c2fcf4328mr481158a91.9.1752016111055;
-        Tue, 08 Jul 2025 16:08:31 -0700 (PDT)
-Received: from localhost ([2a03:2880:ff:5::])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b3ba9c99bb8sm28854a12.63.2025.07.08.16.08.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jul 2025 16:08:30 -0700 (PDT)
-From: Amery Hung <ameryhung@gmail.com>
-To: bpf@vger.kernel.org
-Cc: alexei.starovoitov@gmail.com,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	tj@kernel.org,
-	martin.lau@kernel.org,
-	ameryhung@gmail.com,
-	kernel-team@meta.com
-Subject: [RFC bpf-next v1 4/4] selftests/bpf: Test bpf_get_attach_cookie() in struct_ops program
-Date: Tue,  8 Jul 2025 16:08:25 -0700
-Message-ID: <20250708230825.4159486-5-ameryhung@gmail.com>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20250708230825.4159486-1-ameryhung@gmail.com>
-References: <20250708230825.4159486-1-ameryhung@gmail.com>
+	s=arc-20240116; t=1752016598; c=relaxed/simple;
+	bh=81XBgthguk7KPUOGdMRA1riD7Wwb5bo1f0NySYWsfBs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rHPpKICMWrJJdy0JJBcitI2yUCveUMFsDLqG+9euCL7lApxUDJz36vo4tRMzNJHEJ8YobvNYrlTaBr5Si1j9MtatsFyblH9HiGa5LL1u0cBrhCcxvqdgnlFJjDy7x4UljByjCh+s8Q0u6RLL1Hcz7zSO7JzHFSr+Vw0qr/32p2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=K2KfR0uF; arc=none smtp.client-ip=91.218.175.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <88507f09-b422-4991-90a8-1b8cedc07d86@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1752016584;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oVimyiAtXL5+/IMzzh5RgQWOCFeSz63JM21NoY0yOgE=;
+	b=K2KfR0uFYToEQV9P3TjuXtBV6BoUFGKviix0lhhEyNy61hdYr0zIszeulEPjk7QKKSIQvE
+	EU21xM/MIm3DmBvqJq/i/wloBKcdNi2JnXJxuBH09fA/69OXWUfx7xaIFJxzfbgfX7DQ+k
+	CFfredtC1RVLh8Uvp5Lvgblx1AdMteU=
+Date: Tue, 8 Jul 2025 16:16:20 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v4 bpf-next 02/12] bpf: tcp: Make sure iter->batch always
+ contains a full bucket snapshot
+To: Jordan Rife <jordan@jrife.io>
+Cc: Daniel Borkmann <daniel@iogearbox.net>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Kuniyuki Iwashima <kuniyu@google.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Stanislav Fomichev <stfomichev@gmail.com>, netdev@vger.kernel.org,
+ bpf@vger.kernel.org
+References: <20250707155102.672692-1-jordan@jrife.io>
+ <20250707155102.672692-3-jordan@jrife.io>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20250707155102.672692-3-jordan@jrife.io>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Attach a struct_ops map with a cookie and test that struct_ops programs
-can read the cookie using bpf_get_attach_cookie().
+On 7/7/25 8:50 AM, Jordan Rife wrote:
+>   static unsigned int bpf_iter_tcp_listening_batch(struct seq_file *seq,
+> -						 struct sock *start_sk)
+> +						 struct sock **start_sk)
+>   {
+> -	struct inet_hashinfo *hinfo = seq_file_net(seq)->ipv4.tcp_death_row.hashinfo;
+>   	struct bpf_tcp_iter_state *iter = seq->private;
+> -	struct tcp_iter_state *st = &iter->state;
+>   	struct hlist_nulls_node *node;
+>   	unsigned int expected = 1;
+>   	struct sock *sk;
+>   
+> -	sock_hold(start_sk);
+> -	iter->batch[iter->end_sk++] = start_sk;
+> +	sock_hold(*start_sk);
+> +	iter->batch[iter->end_sk++] = *start_sk;
+>   
+> -	sk = sk_nulls_next(start_sk);
+> +	sk = sk_nulls_next(*start_sk);
+> +	*start_sk = NULL;
+>   	sk_nulls_for_each_from(sk, node) {
+>   		if (seq_sk_match(seq, sk)) {
+>   			if (iter->end_sk < iter->max_sk) {
+>   				sock_hold(sk);
+>   				iter->batch[iter->end_sk++] = sk;
+> +			} else if (!*start_sk) {
+> +				/* Remember where we left off. */
+> +				*start_sk = sk;
+>   			}
+>   			expected++;
+>   		}
+>   	}
+> -	spin_unlock(&hinfo->lhash2[st->bucket].lock);
+>   
+>   	return expected;
+>   }
+>   
 
-Signed-off-by: Amery Hung <ameryhung@gmail.com>
----
- .../bpf/prog_tests/test_struct_ops_cookie.c   | 42 ++++++++++++++++
- .../selftests/bpf/progs/struct_ops_cookie.c   | 48 +++++++++++++++++++
- .../selftests/bpf/test_kmods/bpf_testmod.c    |  1 +
- 3 files changed, 91 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_cookie.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_cookie.c
+[ ... ]
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_cookie.c b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_cookie.c
-new file mode 100644
-index 000000000000..36179785b173
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_cookie.c
-@@ -0,0 +1,42 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+
-+#include "struct_ops_cookie.skel.h"
-+
-+static void test_struct_ops_cookie_basic(void)
-+{
-+	LIBBPF_OPTS(bpf_struct_ops_opts, attach_opts);
-+	LIBBPF_OPTS(bpf_test_run_opts, run_opts);
-+	struct struct_ops_cookie *skel;
-+	struct bpf_link *link;
-+	int err, prog_fd;
-+
-+	skel = struct_ops_cookie__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "struct_ops_cookie__open_and_load"))
-+		return;
-+
-+	attach_opts.cookie = 0x12345678;
-+	link = bpf_map__attach_struct_ops_opts(skel->maps.testmod_cookie, &attach_opts);
-+	if (!ASSERT_OK_PTR(link, "bpf_map__attach_struct_ops_opts"))
-+		goto out;
-+
-+	prog_fd = bpf_program__fd(skel->progs.trigger_test_1);
-+	err = bpf_prog_test_run_opts(prog_fd, &run_opts);
-+	ASSERT_OK(err, "bpf_prog_test_run_opts");
-+	ASSERT_EQ(skel->bss->cookie_test_1, 0x12345678, "cookie_1_value");
-+
-+	prog_fd = bpf_program__fd(skel->progs.trigger_test_2);
-+	err = bpf_prog_test_run_opts(prog_fd, &run_opts);
-+	ASSERT_OK(err, "bpf_prog_test_run_opts");
-+	ASSERT_EQ(skel->bss->cookie_test_2, 0x12345678, "cookie_2_value");
-+
-+out:
-+	bpf_link__destroy(link);
-+	struct_ops_cookie__destroy(skel);
-+}
-+
-+void serial_test_struct_ops_cookie(void)
-+{
-+	if (test__start_subtest("struct_ops_cookie_basic"))
-+		test_struct_ops_cookie_basic();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/struct_ops_cookie.c b/tools/testing/selftests/bpf/progs/struct_ops_cookie.c
-new file mode 100644
-index 000000000000..1033939fbc1e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/struct_ops_cookie.c
-@@ -0,0 +1,48 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "../test_kmods/bpf_testmod.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+__u64 cookie_test_1 = 0;
-+__u64 cookie_test_2 = 0;
-+
-+void bpf_testmod_ops3_call_test_1(void) __ksym;
-+void bpf_testmod_ops3_call_test_2(void) __ksym;
-+
-+SEC("struct_ops/test_cookie_1")
-+int BPF_PROG(test_cookie_1)
-+{
-+	cookie_test_1 = bpf_get_attach_cookie(ctx);
-+	return 0;
-+}
-+
-+SEC("struct_ops/test_cookie_2")
-+int BPF_PROG(test_cookie_2)
-+{
-+	cookie_test_2 = bpf_get_attach_cookie(ctx);
-+	return 0;
-+}
-+
-+SEC("syscall")
-+int trigger_test_1(void *ctx)
-+{
-+	bpf_testmod_ops3_call_test_1();
-+	return 0;
-+}
-+
-+SEC("syscall")
-+int trigger_test_2(void *ctx)
-+{
-+	bpf_testmod_ops3_call_test_2();
-+	return 0;
-+}
-+
-+/* Struct ops map that will be attached with a cookie */
-+SEC(".struct_ops.link")
-+struct bpf_testmod_ops3 testmod_cookie = {
-+	.test_1 = (void *)test_cookie_1,
-+	.test_2 = (void *)test_cookie_2,
-+};
-diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-index e9e918cdf31f..d273b327a1c0 100644
---- a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-@@ -1139,6 +1139,7 @@ static const struct bpf_verifier_ops bpf_testmod_verifier_ops = {
- };
- 
- static const struct bpf_verifier_ops bpf_testmod_verifier_ops3 = {
-+	.get_func_proto	 = bpf_base_func_proto,
- 	.is_valid_access = bpf_testmod_ops_is_valid_access,
- };
- 
--- 
-2.47.1
+>   static struct sock *bpf_iter_tcp_batch(struct seq_file *seq)
+>   {
+>   	struct inet_hashinfo *hinfo = seq_file_net(seq)->ipv4.tcp_death_row.hashinfo;
+>   	struct bpf_tcp_iter_state *iter = seq->private;
+>   	struct tcp_iter_state *st = &iter->state;
+>   	unsigned int expected;
+> -	bool resized = false;
+>   	struct sock *sk;
+> +	int err;
+>   
+>   	/* The st->bucket is done.  Directly advance to the next
+>   	 * bucket instead of having the tcp_seek_last_pos() to skip
+> @@ -3145,33 +3171,52 @@ static struct sock *bpf_iter_tcp_batch(struct seq_file *seq)
+>   		}
+>   	}
+>   
+> -again:
+> -	/* Get a new batch */
+>   	iter->cur_sk = 0;
+>   	iter->end_sk = 0;
+> -	iter->st_bucket_done = false;
+> +	iter->st_bucket_done = true;
+>   
+>   	sk = tcp_seek_last_pos(seq);
+>   	if (!sk)
+>   		return NULL; /* Done */
+>   
+> -	if (st->state == TCP_SEQ_STATE_LISTENING)
+> -		expected = bpf_iter_tcp_listening_batch(seq, sk);
+> -	else
+> -		expected = bpf_iter_tcp_established_batch(seq, sk);
+> +	expected = bpf_iter_fill_batch(seq, &sk);
+> +	if (likely(iter->end_sk == expected))
+> +		goto done;
+>   
+> -	if (iter->end_sk == expected) {
+> -		iter->st_bucket_done = true;
+> -		return sk;
+> -	}
+> +	/* Batch size was too small. */
+> +	bpf_iter_tcp_unlock_bucket(seq);
+> +	bpf_iter_tcp_put_batch(iter);
+> +	err = bpf_iter_tcp_realloc_batch(iter, expected * 3 / 2,
+> +					 GFP_USER);
+> +	if (err)
+> +		return ERR_PTR(err);
+> +
+> +	iter->cur_sk = 0;
+> +	iter->end_sk = 0;
+> +
+> +	sk = tcp_seek_last_pos(seq);
+> +	if (!sk)
+> +		return NULL; /* Done */
+> +
+> +	expected = bpf_iter_fill_batch(seq, &sk);
+
+A nit.
+
+The next start_sk is stored in &sk. It took me a while to see through how it is 
+useful such that it needs the new "struct sock **start_sk" argument.
+
+> +	if (likely(iter->end_sk == expected))
+> +		goto done;
+>   
+> -	if (!resized && !bpf_iter_tcp_realloc_batch(iter, expected * 3 / 2,
+> -						    GFP_USER)) {
+> -		resized = true;
+> -		goto again;
+> +	/* Batch size was still too small. Hold onto the lock while we try
+> +	 * again with a larger batch to make sure the current bucket's size
+> +	 * does not change in the meantime.
+> +	 */
+> +	err = bpf_iter_tcp_realloc_batch(iter, expected, GFP_NOWAIT);
+> +	if (err) {
+> +		bpf_iter_tcp_unlock_bucket(seq);
+> +		return ERR_PTR(err);
+>   	}
+>   
+> -	return sk;
+> +	expected = bpf_iter_fill_batch(seq, &sk);
+
+iiuc, the stored "&sk" is only useful in this special GFP_NOWAIT case.
+
+How about directly figuring out the next start_sk here?
+The next start_sk should be the sk_nulls_next() of the
+iter->batch[iter->end_sk - 1]?
+
+> +done:
+> +	WARN_ON_ONCE(iter->end_sk != expected);
+
+nit. I would move this WARN_ON_ONCE before the "done:" label. It seems to make 
+sense only for the GFP_NOWAIT case.
+
+> +	bpf_iter_tcp_unlock_bucket(seq);
+> +	return iter->batch[0];
+>   }
+>   
+>   static void *bpf_iter_tcp_seq_start(struct seq_file *seq, loff_t *pos)
 
 
