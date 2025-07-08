@@ -1,165 +1,128 @@
-Return-Path: <bpf+bounces-62636-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62637-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA050AFC112
-	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 04:56:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B463AFC187
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 05:39:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 933241AA6C76
-	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 02:57:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDCFC1AA494E
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 03:39:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5649A22AE75;
-	Tue,  8 Jul 2025 02:56:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27068233707;
+	Tue,  8 Jul 2025 03:38:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LM5vCsSP"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="b+r6Ekcb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59C0A225A32;
-	Tue,  8 Jul 2025 02:56:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77E742B9B7
+	for <bpf@vger.kernel.org>; Tue,  8 Jul 2025 03:38:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751943395; cv=none; b=IXhdAN4ZVc6lsFfne2GhNyBB8EI90LFTsO/BsIj+hppc9HnnZi0BZiBMLEefIkwEx6U/gt66bsp9ivKEfpgR2JLhaGGBzMDjw3xjvO6KnGzMS9l5LkyJF2g/x6Oy2/NXpEeMxUEM/lPDsWZlBPpTSevGNyaL18jctBBijoQSMqg=
+	t=1751945936; cv=none; b=J5eCIzQnjQPS0Z7leGk3QI5mbWKR/UG+Mg85QJdtqu7us+7GTVq9LvFB4g+wkKVUuuSd2FGfJavhJRmfBG3N8GKodV0+vuUmhykj/DKFNKNDs1lUwWhbn1hm24n4eARdpHRGe6LeMI4jjdPjOuoXV3Vz8gLzv6DA70LgWUEN1zg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751943395; c=relaxed/simple;
-	bh=9ZTeoXsYlOG2Lm0VDPZA1m20VzIMr7P1sL3fBI04xvc=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=KL+ktN130lKiBOGpWmpoV9dgfSqm11PobqisXG3X28hbnMCqVzAOW8CcIBkfrKVp8rBO+BqlH+o3p+stX4yddFasHEGfJr9xslaFPFXCPAA/mIGw/6X8RBB8l+Wa7YVo0M08ddybzWwvrNJ4ih7q0lMJrqHePPiJnqSkfhg6gwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LM5vCsSP; arc=none smtp.client-ip=209.85.128.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-71173646662so34141137b3.2;
-        Mon, 07 Jul 2025 19:56:34 -0700 (PDT)
+	s=arc-20240116; t=1751945936; c=relaxed/simple;
+	bh=ngQvRTDNb77/II45kf0Htc4COiMKkjz3h+Tg9M3hNoc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Pyv0hypkrcpwW7+srsdXhI5O6dVCUJAWlSa/UinLsBmfJ4K7negq7FREmzyqg3+P1VseoxIOrXmTFjIHu7mDN9f10RVUiAz8TPJBTZ6R+EpQEZLW6X/u6bWnjsN8t7bNerwBQNzWRSp8LvcLol39Nb701N7autKsvqV8bJFVc4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=b+r6Ekcb; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-6088d856c6eso7546066a12.0
+        for <bpf@vger.kernel.org>; Mon, 07 Jul 2025 20:38:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751943393; x=1752548193; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JxMX/xJxzy2hJc4qqxOWGP0PpMg37pMea6Q0wamjJr4=;
-        b=LM5vCsSPmnyZHrq4BZZ/luJ2EnIijsk0T9o1NxuEkDs6ux+THXDsf+t/0JnaX4Qvdu
-         0Qlih3bCUqrOk4ojA57Ll7szbuL1s9qXhju106dMYhAxrzOe6TZWpiJWWdbrEnm7vWjp
-         yWBIOX/W12VwgZ1ZyrfliHFWiMeqLww0Ac4VWcOmWDqOy+e3khQyG0YCcTOvblhnCvXa
-         bXvk5LVILh3PQD9VL9Bq2J7ZJAmGx7bvAVuQENV5mvnZp9UeKwMurkMxjRzPd3561ANM
-         1oxcvrLEXKDKxHCSpe9wcd2IGToaNLHb+miRRpqhupcF7Lr4rQaynrl5ljbt3QjR/dAb
-         e9cA==
+        d=linux-foundation.org; s=google; t=1751945932; x=1752550732; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=OvkINbyTdUcHfBHAuLeuJlwUIwFpUBssPFgUpHXAs88=;
+        b=b+r6Ekcbd0b5u9yiyrq2UD17CKjgpp/DHNnt/KTXgFlOP3oew1mzn/itHgLgN8LNZU
+         qmoM4PqV+g+QMRvMHLOA2V3suPQbCM1jiK/7cBqSyoyPMxvyJRXSBluKB6KaBkp8wHWx
+         SiS3/GIyBRkYyNnN7SQLxN3IepYKtwL7x9RR0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751943393; x=1752548193;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=JxMX/xJxzy2hJc4qqxOWGP0PpMg37pMea6Q0wamjJr4=;
-        b=Ll0bEANr+sWq1NAhRUI7iYpZH0zmM1vABs/xvR2yvEztKVTtkSRBLmcqP+TS5rdv2r
-         9z2k3KPJ6K17WA8w//FdtJ+8d5JqOCsnaAK6GFjgL+ytcLy5ldrfz/I3W3FHCiU7EBld
-         kYBe/1GkBPKzVowBGi3mfjzZ/iUrU92tDU93YZn0n5BtrIv5D7I8aQtDjExscWnVMEwc
-         VrjDFbFgzP8HKyPKSmEWjg2Mn2dBAiXyOud7BJM0AKNDRJ982fYwxIGDrSYHnDBEPRy6
-         i1lhWiTlWeQw91JQ+oBljYhBOkCgdGksq+X/PkcxSVPAj0vae5s95VFvMxRqE0nPV0PZ
-         FTYg==
-X-Forwarded-Encrypted: i=1; AJvYcCUBkzGt3quxaFMlVYC89rFAmDZxDk9eULhvHUnvotAIqjl0RE/Vztjql8oBHMrS7BujUAOL31SL4PUWCfyuc+aY@vger.kernel.org, AJvYcCUjSfR9UibUF3dne5mHvgoQejmgW+5A2zhoLBPByJsXv+IK/0YB7iJ+7bJ37T+VMgFhxq0=@vger.kernel.org, AJvYcCXmiIxTlZGp/PbaKxshKhZFzLnQM4eqLspZ7xkmXVVJz39gIdD643P/dqueLNRPmTcA5BnNyuT5@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx75w5sG3YVdAY98MslUcaF4nUb3pZEeC+zqCD1B8jmyG7x8F9z
-	Rz5N4078VzjGTS0XGgA90W6FkHtpgy5Cm/Dv5gjTk7S7+iRbGiJT9wUm
-X-Gm-Gg: ASbGncvZ/SZprGWOxYITDxIz2VTQMezaZwc3iM6S0h1mMW6uo5lnvNAet+KijjQrIgW
-	aA5+JlnYM05D4Zrx30zGa9ycIi9K0PlNQRaoxfecga8kwhhXWdcTUBcfIjGqqCRwmX0KeGYCiun
-	sQbPVq5PJbIxTj4oAnQ8ZPWYWamqTg+iiDOOFIMmsmoSONWHMfDam9JFf6Ozxfsl1dbLIOPAlTq
-	97RJR8PHUHFV749I6jcUPIoVDK5H3qN/tmgIn+15qpOWGab1C5VD05I2uGR20CYp/nrMQo3ieui
-	eUkvzUeQSmSBfYRMDv1XNaEvutDR7Ksn48Zmj3yWoZnPdjfxaFMJ/QRo20zOJqHIpZVnLOXp2Ds
-	KH32vGmbLjuTZL9DlrxSCOCV+ml6rKZ7SzvXVQkE=
-X-Google-Smtp-Source: AGHT+IGbyc1ivKnu4Md1jd3PRtXFprZzrt10RDAYU25UxhegDOAebXcSzzdd+a4hHyIKQsluIr5PFw==
-X-Received: by 2002:a05:690c:7012:b0:714:268:a9f8 with SMTP id 00721157ae682-71668e22b3fmr206639087b3.27.1751943393255;
-        Mon, 07 Jul 2025 19:56:33 -0700 (PDT)
-Received: from localhost (234.207.85.34.bc.googleusercontent.com. [34.85.207.234])
-        by smtp.gmail.com with UTF8SMTPSA id 00721157ae682-716659a1440sm19459037b3.35.2025.07.07.19.56.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jul 2025 19:56:32 -0700 (PDT)
-Date: Mon, 07 Jul 2025 22:56:32 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Breno Leitao <leitao@debian.org>, 
- Andrew Lunn <andrew+netdev@lunn.ch>, 
- "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- Shuah Khan <shuah@kernel.org>, 
- Simon Horman <horms@kernel.org>
-Cc: linux-kernel@vger.kernel.org, 
- netdev@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- bpf@vger.kernel.org, 
- kernel-team@meta.com, 
- Breno Leitao <leitao@debian.org>
-Message-ID: <686c88e0283_29b0d29422@willemb.c.googlers.com.notmuch>
-In-Reply-To: <20250702-netpoll_test-v4-3-cec227e85639@debian.org>
-References: <20250702-netpoll_test-v4-0-cec227e85639@debian.org>
- <20250702-netpoll_test-v4-3-cec227e85639@debian.org>
-Subject: Re: [PATCH net-next v4 3/3] selftests: net: add netpoll basic
- functionality test
+        d=1e100.net; s=20230601; t=1751945932; x=1752550732;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OvkINbyTdUcHfBHAuLeuJlwUIwFpUBssPFgUpHXAs88=;
+        b=JyIVyLaO6aJQ1l98Ro7auX8rB7G0t3N7vHVWe2yloR+92+sllCE9opHTYtF6NCshMX
+         fN69awLmWWOXCUXcAyr/R+CdrQkB9SRydpRoBVc122W7V5YYsDkIRtlEMiecTGjp/4FX
+         GbPKT5FA+3EyKajSyDluHmAydvla1qeO3QtS6ZpIZOPlPWG/lqPcPeVLstT9K9/pEhx7
+         shTjFHkHGn3+LqG344k2cgBgVzsQeHiJ+MIlLCwDq0vAK0MXYB7G5+8oig71TZv1Rre1
+         wiSxE1byiEU/FWdaGl/15VxWA4G/N17fPG8adftbv/DATUQ1fYzPDKJAGHEBO99g7dzM
+         HU9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUWtSigXQGgZrWuM3NOu9xhT9cY19QIDI4E3qSJylG3e82m8jYL0kUOb+9SbdozQr+3S8A=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwJ+d53j7Zhfo1jLOqsygncxB/jXn/nlg42usai8y8I4WeLn/Vt
+	9W0JG2Rxb9FlLgd7rNQm0WOBeFRE+Ls+LVpDROsrYdebJeVXEKC4Hx1EhJIxJKhzrk0rN/Z9QzJ
+	4AGURhuBYqw==
+X-Gm-Gg: ASbGncs8jhtgb7p+biRwYo8YT8XVm0ZO46F0BnpJOVosalnt3XMeCYcgTRaEGVJ/hD3
+	Dl9XZSCodh/qvSUpduWtzHaOmbIyMLU9WkOS4K/kJOpc+1gKnWCuEDiVLWLhdo0GWYvLaj2MWCN
+	IipIujNt12oahrF30s8/0B8argeQ40orUkSAB7MHjhwUbk74DAWC77Ljl4ZyNokMU56IYsC6gzk
+	wLHLhAuBgBeST4x26GNpJCUUlpEeXgmf0PsaQlH/8vnAcKt1Jy39/GwcoAhjTvg2ZpHbjYInEP6
+	h3fK2JjJwCFSmpHnrHLdKEIHh0ZJwqzzKNgkUGpoABO6mnBjrOftj9vvXQmRNH+p41G2t1IbZsa
+	TEN+mwqfvawCjqvypW0m0fiktQdHoOCx8xdvK
+X-Google-Smtp-Source: AGHT+IF7/yRPppC6jOFj4bQ+2ipvS7S33dgdV2IWZhWPkBXDtuJD5SbCVkVGuX/R0E4VFvS7AjUkQA==
+X-Received: by 2002:a17:907:6d04:b0:add:ede0:b9d4 with SMTP id a640c23a62f3a-ae6b087336amr130726566b.0.1751945932474;
+        Mon, 07 Jul 2025 20:38:52 -0700 (PDT)
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com. [209.85.218.41])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae3f6b71784sm801498366b.164.2025.07.07.20.38.51
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Jul 2025 20:38:51 -0700 (PDT)
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-ae0c571f137so743066266b.0
+        for <bpf@vger.kernel.org>; Mon, 07 Jul 2025 20:38:51 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCX7hHZ54VPXe+i6y4bv9jDIH++DiCAPRuJ+LoiMVea/H2bp7GmHQtMQM6CRBw8aK1DbeVE=@vger.kernel.org
+X-Received: by 2002:a17:907:c89f:b0:ae0:a483:7b29 with SMTP id
+ a640c23a62f3a-ae6b0e7e526mr127666166b.49.1751945931447; Mon, 07 Jul 2025
+ 20:38:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20250708021115.894007410@kernel.org> <20250708021200.058879671@kernel.org>
+In-Reply-To: <20250708021200.058879671@kernel.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Mon, 7 Jul 2025 20:38:35 -0700
+X-Gmail-Original-Message-ID: <CAHk-=widGT2M=kJJr6TwWsMjfYSghL9k3LgxJvRard0wtiP62A@mail.gmail.com>
+X-Gm-Features: Ac12FXw7XrtMv7eiXSoEnutRZCfRzsH4c97ToPOt-fI15G3BOCR69VhCXEriwaQ
+Message-ID: <CAHk-=widGT2M=kJJr6TwWsMjfYSghL9k3LgxJvRard0wtiP62A@mail.gmail.com>
+Subject: Re: [PATCH v8 10/12] unwind_user/sframe: Enable debugging in uaccess regions
+To: Steven Rostedt <rostedt@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, x86@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Josh Poimboeuf <jpoimboe@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Andrii Nakryiko <andrii@kernel.org>, Indu Bhagat <indu.bhagat@oracle.com>, 
+	"Jose E. Marchesi" <jemarch@gnu.org>, Beau Belgrave <beaub@linux.microsoft.com>, 
+	Jens Remus <jremus@linux.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>, Sam James <sam@gentoo.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Breno Leitao wrote:
-> Add a basic selftest for the netpoll polling mechanism, specifically
-> targeting the netpoll poll() side.
-> 
-> The test creates a scenario where network transmission is running at
-> maximum speed, and netpoll needs to poll the NIC. This is achieved by:
-> 
->   1. Configuring a single RX/TX queue to create contention
->   2. Generating background traffic to saturate the interface
->   3. Sending netconsole messages to trigger netpoll polling
->   4. Using dynamic netconsole targets via configfs
->   5. Delete and create new netconsole targets after some messages
->   6. Start a bpftrace in parallel to make sure netpoll_poll_dev() is
->      called
->   7. If bpftrace exists and netpoll_poll_dev() was called, stop.
-> 
-> The test validates a critical netpoll code path by monitoring traffic
-> flow and ensuring netpoll_poll_dev() is called when the normal TX path
-> is blocked.
-> 
-> This addresses a gap in netpoll test coverage for a path that is
-> tricky for the network stack.
-> 
-> Signed-off-by: Breno Leitao <leitao@debian.org>
+On Mon, 7 Jul 2025 at 19:12, Steven Rostedt <rostedt@kernel.org> wrote:
+>
+> From: Josh Poimboeuf <jpoimboe@kernel.org>
+>
+> Objtool warns about calling pr_debug() from uaccess-enabled regions, and
+> rightfully so.  Add a dbg_sec_uaccess() macro which temporarily disables
+> uaccess before doing the dynamic printk, and use that to add debug
+> messages throughout the uaccess-enabled regions.
 
-Reviewed-by: Willem de Bruijn <willemb@google.com>
+Please kill this patch, and stop doing stupid things.
 
-> +def test_netpoll(cfg: NetDrvEpEnv) -> None:
-> +    """
-> +    Test netpoll by sending traffic to the interface and then sending
-> +    netconsole messages to trigger a poll
-> +    """
-> +
-> +    target_name = netcons_generate_random_target_name()
-> +    ifname = cfg.dev["ifname"]
-> +    traffic = None
-> +    original_queues = ethtool_read_rx_tx_queue(ifname)
-> +
-> +    try:
-> +        # Set RX/TX queues to 1 to force congestion
-> +        ethtool_set_rx_tx_queue(ifname, 1, 1)
-> +
-> +        traffic = GenerateTraffic(cfg)
-> +        do_netpoll_flush_monitored(cfg, ifname, target_name)
-> +    finally:
-> +        if traffic:
-> +            traffic.stop()
-> +
-> +        # Revert RX/TX queues
-> +        ethtool_set_rx_tx_queue(ifname, original_queues[0], original_queues[1])
-> +        netcons_delete_target(target_name)
-> +        bpftrace_stop()
+The whole AND ONLY point of using the unsafe user access macros is
+performance. You are now actively breaking the whole point of them.
 
-One risk with stateful tests is that the state is not reset if the
-test exists (or crashes) before reaching the cleanup logic. There
-are ways around it. Jakub added defer for this purpose, for one.
+If you need to add debug printouts to user accesses, just don't use
+the 'unsafe' ones.
+
+Or add the debug to after the unsafe region has finished. Not this way.
+
+This patch is disgusting, in other words. It's wrong. STOP IT.
+
+              Linus
 
