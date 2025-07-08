@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-62669-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62670-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6416AFCC0D
-	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 15:29:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCE37AFCC00
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 15:27:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FFA43AA064
-	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 13:26:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54C13189FB87
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 13:28:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2350D2E041C;
-	Tue,  8 Jul 2025 13:25:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58E082E0932;
+	Tue,  8 Jul 2025 13:25:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HISCbdlZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T9PJvBKX"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AD652DFA2E;
-	Tue,  8 Jul 2025 13:25:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC0292DEA9A;
+	Tue,  8 Jul 2025 13:25:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751981142; cv=none; b=CDQI69u+8Zr8C5YJO7OJYEov33SX9cl3TtPUgHDVE6RjEgymhYMbzzJ4Ra9hayXm7jYh8cuDN+YIqSjdkryii/2eYWCG8eVU74My65cGNsLr8xIOjrjLRktyXJUztjms+W5VthhR7LWJO8cseaALxvDSflNxLUGS1bT3v9rSePo=
+	t=1751981154; cv=none; b=Z8+3/CljN2Cbdnzme/WLv2VhX0XL+x2SckrtCn0TqN7x6I1RRJs2o5AmE8eH5KDfOBs4IJTH/nhs1eiJ81RYnnrKbTeu8HJ5ANrCtx4gebvdU1RT80etiDWNiqYnY0RDLLZHiJvsU6vzOXSgeISqw+SCzzGckQBy8F9JLK5EmEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751981142; c=relaxed/simple;
-	bh=aTw5XZQXG2Ug3HJjtZlRZMAz6PT4ih7UtHRo6YaYkvY=;
+	s=arc-20240116; t=1751981154; c=relaxed/simple;
+	bh=ZiokIgnVW7zcMecstwAKcawvPhKOHvvSAMUdVOqHGKA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=YnUaZepZSxEspaQN6bYBavYVh3c2UhROesNYT75yE3Iv9rumKaleSkoZjl/WZdc2Fk6QmUQoKD+uJ3MPhGKLaMySgTsER/nzmSNVQgqnf4aYD4S4i2wUajuQfIPB/7Qexi6bgl7QyCv5rGtEguloqL3vccP+IUEFTZzeKQ6MBYQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HISCbdlZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16420C4CEF6;
-	Tue,  8 Jul 2025 13:25:37 +0000 (UTC)
+	 MIME-Version; b=re3rNhRFNBnp4ZTKxc62MvdFlrxn6DyZBVqJTtd62sXu1oX28IYGs6O26KGghu6BJ+KA1khp1sMGO+FnatgZXISjikWWAb164l/F0fMrZGFVEq70ADXV38M4y3hJD8StfLtg0SkrogWdY56t/wLTJqTsSaO69IVK8MYqO9j3TTM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T9PJvBKX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56BDAC4CEED;
+	Tue,  8 Jul 2025 13:25:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751981142;
-	bh=aTw5XZQXG2Ug3HJjtZlRZMAz6PT4ih7UtHRo6YaYkvY=;
+	s=k20201202; t=1751981153;
+	bh=ZiokIgnVW7zcMecstwAKcawvPhKOHvvSAMUdVOqHGKA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HISCbdlZcl25dfeBgdWJ7fR6g1lgj1twqd7gWTmaHxpCUh+rGk5AjNN8Cz/NCMrk7
-	 HJg5hrD4W3/u5+ZqqGYdoouRyKsiVplPVrdqVuJBbdlGyelCUFj7qk7E8WOUJZVts8
-	 CN5gRjMQLiEwgslsesDCeAHY6nxen/LcwAuXu9CjpfHTO9sLFdhoGb862+t3eXQah0
-	 S6eefMakzeQb7YPbH0AAruoPToZx3jbzEYKHLVyBuD3F4cVYpV2GuOr0+nwV3YcFKh
-	 f/fFS7+53LxMRPoy7NuDZIp3cy2madnOucNMSNQI7oDSenPks3o13TZw5LOdYUel/g
-	 C+hI1oTmWrxyQ==
+	b=T9PJvBKXqTP6iwbTupw5IaNB+hF5FQbT/BSp7xnIfOSqfzbvDlN3upru3FH53T9P3
+	 Jzp9drJ0ZiHtmUZHHC6yqkzuiV5hoFQ44DE349Nhr57eAke0ODuj0OvGt7/HP1hzWA
+	 dvXp+/WElP2gvURHT/xgn8gwYa4+7NDuhM5e919b9YOr7ZTATXbzRuRNriwcqCUb5R
+	 aBkPYzmzwKHlgjOzinhQdFlgxC22w42HcoidSY0PY1zbX6indoBsNAPri+f54D+eil
+	 EnU9h5hebVkeHwnZbGIhFMzkYeYtHTZ0yvE65db5Kh0inNIGLeFamolSpTrzafGXDx
+	 B6h+G2+BY/NSw==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -59,9 +59,9 @@ Cc: bpf@vger.kernel.org,
 	David Laight <David.Laight@ACULAB.COM>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas@t-8ch.de>,
 	Ingo Molnar <mingo@kernel.org>
-Subject: [PATCHv4 perf/core 10/22] uprobes/x86: Add support to optimize uprobes
-Date: Tue,  8 Jul 2025 15:23:19 +0200
-Message-ID: <20250708132333.2739553-11-jolsa@kernel.org>
+Subject: [PATCHv4 perf/core 11/22] selftests/bpf: Import usdt.h from libbpf/usdt project
+Date: Tue,  8 Jul 2025 15:23:20 +0200
+Message-ID: <20250708132333.2739553-12-jolsa@kernel.org>
 X-Mailer: git-send-email 2.50.0
 In-Reply-To: <20250708132333.2739553-1-jolsa@kernel.org>
 References: <20250708132333.2739553-1-jolsa@kernel.org>
@@ -71,553 +71,569 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Putting together all the previously added pieces to support optimized
-uprobes on top of 5-byte nop instruction.
+Importing usdt.h from libbpf/usdt project.
 
-The current uprobe execution goes through following:
-
-  - installs breakpoint instruction over original instruction
-  - exception handler hit and calls related uprobe consumers
-  - and either simulates original instruction or does out of line single step
-    execution of it
-  - returns to user space
-
-The optimized uprobe path does following:
-
-  - checks the original instruction is 5-byte nop (plus other checks)
-  - adds (or uses existing) user space trampoline with uprobe syscall
-  - overwrites original instruction (5-byte nop) with call to user space
-    trampoline
-  - the user space trampoline executes uprobe syscall that calls related uprobe
-    consumers
-  - trampoline returns back to next instruction
-
-This approach won't speed up all uprobes as it's limited to using nop5 as
-original instruction, but we plan to use nop5 as USDT probe instruction
-(which currently uses single byte nop) and speed up the USDT probes.
-
-The arch_uprobe_optimize triggers the uprobe optimization and is called after
-first uprobe hit. I originally had it called on uprobe installation but then
-it clashed with elf loader, because the user space trampoline was added in a
-place where loader might need to put elf segments, so I decided to do it after
-first uprobe hit when loading is done.
-
-The uprobe is un-optimized in arch specific set_orig_insn call.
-
-The instruction overwrite is x86 arch specific and needs to go through 3 updates:
-(on top of nop5 instruction)
-
-  - write int3 into 1st byte
-  - write last 4 bytes of the call instruction
-  - update the call instruction opcode
-
-And cleanup goes though similar reverse stages:
-
-  - overwrite call opcode with breakpoint (int3)
-  - write last 4 bytes of the nop5 instruction
-  - write the nop5 first instruction byte
-
-We do not unmap and release uprobe trampoline when it's no longer needed,
-because there's no easy way to make sure none of the threads is still
-inside the trampoline. But we do not waste memory, because there's just
-single page for all the uprobe trampoline mappings.
-
-We do waste frame on page mapping for every 4GB by keeping the uprobe
-trampoline page mapped, but that seems ok.
-
-We take the benefit from the fact that set_swbp and set_orig_insn are
-called under mmap_write_lock(mm), so we can use the current instruction
-as the state the uprobe is in - nop5/breakpoint/call trampoline -
-and decide the needed action (optimize/un-optimize) based on that.
-
-Attaching the speed up from benchs/run_bench_uprobes.sh script:
-
-current:
-        usermode-count :  152.604 ± 0.044M/s
-        syscall-count  :   13.359 ± 0.042M/s
--->     uprobe-nop     :    3.229 ± 0.002M/s
-        uprobe-push    :    3.086 ± 0.004M/s
-        uprobe-ret     :    1.114 ± 0.004M/s
-        uprobe-nop5    :    1.121 ± 0.005M/s
-        uretprobe-nop  :    2.145 ± 0.002M/s
-        uretprobe-push :    2.070 ± 0.001M/s
-        uretprobe-ret  :    0.931 ± 0.001M/s
-        uretprobe-nop5 :    0.957 ± 0.001M/s
-
-after the change:
-        usermode-count :  152.448 ± 0.244M/s
-        syscall-count  :   14.321 ± 0.059M/s
-        uprobe-nop     :    3.148 ± 0.007M/s
-        uprobe-push    :    2.976 ± 0.004M/s
-        uprobe-ret     :    1.068 ± 0.003M/s
--->     uprobe-nop5    :    7.038 ± 0.007M/s
-        uretprobe-nop  :    2.109 ± 0.004M/s
-        uretprobe-push :    2.035 ± 0.001M/s
-        uretprobe-ret  :    0.908 ± 0.001M/s
-        uretprobe-nop5 :    3.377 ± 0.009M/s
-
-I see bit more speed up on Intel (above) compared to AMD. The big nop5
-speed up is partly due to emulating nop5 and partly due to optimization.
-
-The key speed up we do this for is the USDT switch from nop to nop5:
-        uprobe-nop     :    3.148 ± 0.007M/s
-        uprobe-nop5    :    7.038 ± 0.007M/s
-
+Suggested-by: Andrii Nakryiko <andrii@kernel.org>
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Oleg Nesterov <oleg@redhat.com>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- arch/x86/include/asm/uprobes.h |   7 +
- arch/x86/kernel/uprobes.c      | 288 ++++++++++++++++++++++++++++++++-
- include/linux/uprobes.h        |   6 +-
- kernel/events/uprobes.c        |  16 +-
- 4 files changed, 310 insertions(+), 7 deletions(-)
+ tools/testing/selftests/bpf/usdt.h | 545 +++++++++++++++++++++++++++++
+ 1 file changed, 545 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/usdt.h
 
-diff --git a/arch/x86/include/asm/uprobes.h b/arch/x86/include/asm/uprobes.h
-index 678fb546f0a7..1ee2e5115955 100644
---- a/arch/x86/include/asm/uprobes.h
-+++ b/arch/x86/include/asm/uprobes.h
-@@ -20,6 +20,11 @@ typedef u8 uprobe_opcode_t;
- #define UPROBE_SWBP_INSN		0xcc
- #define UPROBE_SWBP_INSN_SIZE		   1
- 
-+enum {
-+	ARCH_UPROBE_FLAG_CAN_OPTIMIZE   = 0,
-+	ARCH_UPROBE_FLAG_OPTIMIZE_FAIL  = 1,
-+};
+diff --git a/tools/testing/selftests/bpf/usdt.h b/tools/testing/selftests/bpf/usdt.h
+new file mode 100644
+index 000000000000..549d1f774810
+--- /dev/null
++++ b/tools/testing/selftests/bpf/usdt.h
+@@ -0,0 +1,545 @@
++// SPDX-License-Identifier: BSD-2-Clause
++/*
++ *  This single-header library defines a collection of variadic macros for
++ *  defining and triggering USDTs (User Statically-Defined Tracepoints):
++ *
++ *      - For USDTs without associated semaphore:
++ *          USDT(group, name, args...)
++ *
++ *      - For USDTs with implicit (transparent to the user) semaphore:
++ *          USDT_WITH_SEMA(group, name, args...)
++ *          USDT_IS_ACTIVE(group, name)
++ *
++ *      - For USDTs with explicit (user-defined and provided) semaphore:
++ *          USDT_WITH_EXPLICIT_SEMA(sema, group, name, args...)
++ *          USDT_SEMA_IS_ACTIVE(sema)
++ *
++ *  all of which emit a NOP instruction into the instruction stream, and so
++ *  have *zero* overhead for the surrounding code. USDTs are identified by
++ *  a combination of `group` and `name` identifiers, which is used by external
++ *  tracing tooling (tracers) for identifying exact USDTs of interest.
++ *
++ *  USDTs can have an associated (2-byte) activity counter (USDT semaphore),
++ *  automatically maintained by Linux kernel whenever any correctly written
++ *  BPF-based tracer is attached to the USDT. This USDT semaphore can be used
++ *  to check whether there is a need to do any extra data collection and
++ *  processing for a given USDT (if necessary), and otherwise avoid extra work
++ *  for a common case of USDT not being traced ("active").
++ *
++ *  See documentation for USDT_WITH_SEMA()/USDT_IS_ACTIVE() or
++ *  USDT_WITH_EXPLICIT_SEMA()/USDT_SEMA_IS_ACTIVE() APIs below for details on
++ *  working with USDTs with implicitly or explicitly associated
++ *  USDT semaphores, respectively.
++ *
++ *  There is also some additional data recorded into an auxiliary note
++ *  section. The data in the note section describes the operands, in terms of
++ *  size and location, used by tracing tooling to know where to find USDT
++ *  arguments. Each location is encoded as an assembler operand string.
++ *  Tracing tools (bpftrace and BPF-based tracers, systemtap, etc) insert
++ *  breakpoints on top of the nop, and decode the location operand-strings,
++ *  like an assembler, to find the values being passed.
++ *
++ *  The operand strings are selected by the compiler for each operand.
++ *  They are constrained by inline-assembler codes.The default is:
++ *
++ *  #define USDT_ARG_CONSTRAINT nor
++ *
++ *  This is a good default if the operands tend to be integral and
++ *  moderate in number (smaller than number of registers). In other
++ *  cases, the compiler may report "'asm' requires impossible reload" or
++ *  similar. In this case, consider simplifying the macro call (fewer
++ *  and simpler operands), reduce optimization, or override the default
++ *  constraints string via:
++ *
++ *  #define USDT_ARG_CONSTRAINT g
++ *  #include <usdt.h>
++ *
++ * For some historical description of USDT v3 format (the one used by this
++ * library and generally recognized and assumed by BPF-based tracing tools)
++ * see [0]. The more formal specification can be found at [1]. Additional
++ * argument constraints information can be found at [2].
++ *
++ * Original SystemTap's sys/sdt.h implementation ([3]) was used as a base for
++ * this USDT library implementation. Current implementation differs *a lot* in
++ * terms of exposed user API and general usability, which was the main goal
++ * and focus of the reimplementation work. Nevertheless, underlying recorded
++ * USDT definitions are fully binary compatible and any USDT-based tooling
++ * should work equally well with USDTs defined by either SystemTap's or this
++ * library's USDT implementation.
++ *
++ *   [0] https://ecos.sourceware.org/ml/systemtap/2010-q3/msg00145.html
++ *   [1] https://sourceware.org/systemtap/wiki/UserSpaceProbeImplementation
++ *   [2] https://gcc.gnu.org/onlinedocs/gcc/Constraints.html
++ *   [3] https://sourceware.org/git/?p=systemtap.git;a=blob;f=includes/sys/sdt.h
++ */
++#ifndef __USDT_H
++#define __USDT_H
 +
- struct uprobe_xol_ops;
- 
- struct arch_uprobe {
-@@ -45,6 +50,8 @@ struct arch_uprobe {
- 			u8	ilen;
- 		}			push;
- 	};
++/*
++ * Changelog:
++ *
++ * 0.1.0
++ * -----
++ * - Initial release
++ */
++#define USDT_MAJOR_VERSION 0
++#define USDT_MINOR_VERSION 1
++#define USDT_PATCH_VERSION 0
 +
-+	unsigned long flags;
- };
- 
- struct arch_uprobe_task {
-diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
-index 9b0dcef04cbe..7180d763ba39 100644
---- a/arch/x86/kernel/uprobes.c
-+++ b/arch/x86/kernel/uprobes.c
-@@ -18,6 +18,7 @@
- #include <asm/processor.h>
- #include <asm/insn.h>
- #include <asm/mmu_context.h>
-+#include <asm/nops.h>
- 
- /* Post-execution fixups. */
- 
-@@ -727,7 +728,6 @@ static struct uprobe_trampoline *create_uprobe_trampoline(unsigned long vaddr)
- 	return tramp;
- }
- 
--__maybe_unused
- static struct uprobe_trampoline *get_uprobe_trampoline(unsigned long vaddr, bool *new)
- {
- 	struct uprobes_state *state = &current->mm->uprobes_state;
-@@ -899,6 +899,285 @@ static int __init arch_uprobes_init(void)
- 
- late_initcall(arch_uprobes_init);
- 
-+enum {
-+	OPT_PART,
-+	OPT_INSN,
-+	UNOPT_INT3,
-+	UNOPT_PART,
-+};
++/* C++20 and C23 added __VA_OPT__ as a standard replacement for non-standard `##__VA_ARGS__` extension */
++#if (defined(__STDC_VERSION__) && __STDC_VERSION__ > 201710L) || (defined(__cplusplus) && __cplusplus > 201703L)
++#define __usdt_va_opt 1
++#define __usdt_va_args(...) __VA_OPT__(,) __VA_ARGS__
++#else
++#define __usdt_va_args(...) , ##__VA_ARGS__
++#endif
 +
-+struct write_opcode_ctx {
-+	unsigned long base;
-+	int update;
-+};
++/*
++ * Trigger USDT with `group`:`name` identifier and pass through `args` as its
++ * arguments. Zero arguments are acceptable as well. No USDT semaphore is
++ * associated with this USDT.
++ *
++ * Such "semaphoreless" USDTs are commonly used when there is no extra data
++ * collection or processing needed to collect and prepare USDT arguments and
++ * they are just available in the surrounding code. USDT() macro will just
++ * record their locations in CPU registers or in memory for tracing tooling to
++ * be able to access them, if necessary.
++ */
++#ifdef __usdt_va_opt
++#define USDT(group, name, ...)							\
++	__usdt_probe(group, name, __usdt_sema_none, 0 __VA_OPT__(,) __VA_ARGS__)
++#else
++#define USDT(group, name, ...)							\
++	__usdt_probe(group, name, __usdt_sema_none, 0, ##__VA_ARGS__)
++#endif
 +
-+static int is_call_insn(uprobe_opcode_t *insn)
-+{
-+	return *insn == CALL_INSN_OPCODE;
-+}
++/*
++ * Trigger USDT with `group`:`name` identifier and pass through `args` as its
++ * arguments. Zero arguments are acceptable as well. USDT also get an
++ * implicitly-defined associated USDT semaphore, which will be "activated" by
++ * tracing tooling and can be used to check whether USDT is being actively
++ * observed.
++ *
++ * USDTs with semaphore are commonly used when there is a need to perform
++ * additional data collection and processing to prepare USDT arguments, which
++ * otherwise might not be necessary for the rest of application logic. In such
++ * case, USDT semaphore can be used to avoid unnecessary extra work. If USDT
++ * is not traced (which is presumed to be a common situation), the associated
++ * USDT semaphore is "inactive", and so there is no need to waste resources to
++ * prepare USDT arguments. Use USDT_IS_ACTIVE(group, name) to check whether
++ * USDT is "active".
++ *
++ * N.B. There is an inherent (albeit short) gap between checking whether USDT
++ * is active and triggering corresponding USDT, in which external tracer can
++ * be attached to an USDT and activate USDT semaphore after the activity check.
++ * If such a race occurs, tracers might miss one USDT execution. Tracers are
++ * expected to accommodate such possibility and this is expected to not be
++ * a problem for applications and tracers.
++ *
++ * N.B. Implicit USDT semaphore defined by USDT_WITH_SEMA() is contained
++ * within a single executable or shared library and is not shared outside
++ * them. I.e., if you use USDT_WITH_SEMA() with the same USDT group and name
++ * identifier across executable and shared library, it will work and won't
++ * conflict, per se, but will define independent USDT semaphores, one for each
++ * shared library/executable in which USDT_WITH_SEMA(group, name) is used.
++ * That is, if you attach to this USDT in one shared library (or executable),
++ * then only USDT semaphore within that shared library (or executable) will be
++ * updated by the kernel, while other libraries (or executable) will not see
++ * activated USDT semaphore. In short, it's best to use unique USDT group:name
++ * identifiers across different shared libraries (and, equivalently, between
++ * executable and shared library). This is advanced consideration and is
++ * rarely (if ever) seen in practice, but just to avoid surprises this is
++ * called out here. (Static libraries become a part of final executable, once
++ * linked by linker, so the above considerations don't apply to them.)
++ */
++#ifdef __usdt_va_opt
++#define USDT_WITH_SEMA(group, name, ...)					\
++	__usdt_probe(group, name,						\
++		     __usdt_sema_implicit, __usdt_sema_name(group, name)	\
++		     __VA_OPT__(,) __VA_ARGS__)
++#else
++#define USDT_WITH_SEMA(group, name, ...)					\
++	__usdt_probe(group, name,						\
++		     __usdt_sema_implicit, __usdt_sema_name(group, name),	\
++		     ##__VA_ARGS__)
++#endif
 +
-+static int verify_insn(struct page *page, unsigned long vaddr, uprobe_opcode_t *new_opcode,
-+		       int nbytes, void *data)
-+{
-+	struct write_opcode_ctx *ctx = data;
-+	uprobe_opcode_t old_opcode[5];
++struct usdt_sema { volatile unsigned short active; };
 +
-+	uprobe_copy_from_page(page, ctx->base, (uprobe_opcode_t *) &old_opcode, 5);
++/*
++ * Check if USDT with `group`:`name` identifier is "active" (i.e., whether it
++ * is attached to by external tracing tooling and is actively observed).
++ *
++ * This macro can be used to decide whether any additional and potentially
++ * expensive data collection or processing should be done to pass extra
++ * information into the given USDT. It is assumed that USDT is triggered with
++ * USDT_WITH_SEMA() macro which will implicitly define associated USDT
++ * semaphore. (If one needs more control over USDT semaphore, see
++ * USDT_DEFINE_SEMA() and USDT_WITH_EXPLICIT_SEMA() macros below.)
++ *
++ * N.B. Such checks are necessarily racy and speculative. Between checking
++ * whether USDT is active and triggering the USDT itself, tracer can be
++ * detached with no notification. This race should be extremely rare and worst
++ * case should result in one-time wasted extra data collection and processing.
++ */
++#define USDT_IS_ACTIVE(group, name) ({						\
++	extern struct usdt_sema __usdt_sema_name(group, name)			\
++		__usdt_asm_name(__usdt_sema_name(group, name));			\
++	__usdt_sema_implicit(__usdt_sema_name(group, name));			\
++	__usdt_sema_name(group, name).active > 0;				\
++})
 +
-+	switch (ctx->update) {
-+	case OPT_PART:
-+	case OPT_INSN:
-+		if (is_swbp_insn(&old_opcode[0]))
-+			return 1;
-+		break;
-+	case UNOPT_INT3:
-+		if (is_call_insn(&old_opcode[0]))
-+			return 1;
-+		break;
-+	case UNOPT_PART:
-+		if (is_swbp_insn(&old_opcode[0]))
-+			return 1;
-+		break;
-+	}
++/*
++ * APIs for working with user-defined explicit USDT semaphores.
++ *
++ * This is a less commonly used advanced API for use cases in which user needs
++ * an explicit control over (potentially shared across multiple USDTs) USDT
++ * semaphore instance. This can be used when there is a group of logically
++ * related USDTs that all need extra data collection and processing whenever
++ * any of a family of related USDTs are "activated" (i.e., traced). In such
++ * a case, all such related USDTs will be associated with the same shared USDT
++ * semaphore defined with USDT_DEFINE_SEMA() and the USDTs themselves will be
++ * triggered with USDT_WITH_EXPLICIT_SEMA() macros, taking an explicit extra
++ * USDT semaphore identifier as an extra parameter.
++ */
 +
-+	return -1;
-+}
++/**
++ * Underlying C global variable name for user-defined USDT semaphore with
++ * `sema` identifier. Could be useful for debugging, but normally shouldn't be
++ * used explicitly.
++ */
++#define USDT_SEMA(sema) __usdt_sema_##sema
 +
-+static int write_insn(struct arch_uprobe *auprobe, struct vm_area_struct *vma, unsigned long vaddr,
-+		      uprobe_opcode_t *insn, int nbytes, void *ctx)
-+{
-+	return uprobe_write(auprobe, vma, vaddr, insn, nbytes, verify_insn,
-+			    true /* is_register */, false /* do_update_ref_ctr */, ctx);
-+}
++/*
++ * Define storage for user-defined USDT semaphore `sema`.
++ *
++ * Should be used only once in non-header source file to let compiler allocate
++ * space for the semaphore variable. Just like with any other global variable.
++ *
++ * This macro can be used anywhere where global variable declaration is
++ * allowed. Just like with global variable definitions, there should be only
++ * one definition of user-defined USDT semaphore with given `sema` identifier,
++ * otherwise compiler or linker will complain about duplicate variable
++ * definition.
++ *
++ * For C++, it is allowed to use USDT_DEFINE_SEMA() both in global namespace
++ * and inside namespaces (including nested namespaces). Just make sure that
++ * USDT_DECLARE_SEMA() is placed within the namespace where this semaphore is
++ * referenced, or any of its parent namespaces, so the C++ language-level
++ * identifier is visible to the code that needs to reference the semaphore.
++ * At the lowest layer, USDT semaphores have global naming and visibility
++ * (they have a corresponding `__usdt_sema_<name>` symbol, which can be linked
++ * against from C or C++ code, if necessary). To keep it simple, putting
++ * USDT_DECLARE_SEMA() declarations into global namespaces is the simplest
++ * no-brainer solution. All these aspects are irrelevant for plain C, because
++ * C doesn't have namespaces and everything is always in the global namespace.
++ *
++ * N.B. Due to USDT metadata being recorded in non-allocatable ELF note
++ * section, it has limitations when it comes to relocations, which, in
++ * practice, means that it's not possible to correctly share USDT semaphores
++ * between main executable and shared libraries, or even between multiple
++ * shared libraries. USDT semaphore has to be contained to individual shared
++ * library or executable to avoid unpleasant surprises with half-working USDT
++ * semaphores. We enforce this by marking semaphore ELF symbols as having
++ * a hidden visibility. This is quite an advanced use case and consideration
++ * and for most users this should have no consequences whatsoever.
++ */
++#define USDT_DEFINE_SEMA(sema)							\
++	struct usdt_sema __usdt_sema_sec USDT_SEMA(sema)			\
++		__usdt_asm_name(USDT_SEMA(sema))				\
++		__attribute__((visibility("hidden"))) = { 0 }
 +
-+static void relative_call(void *dest, long from, long to)
-+{
-+	struct __packed __arch_relative_insn {
-+		u8 op;
-+		s32 raddr;
-+	} *insn;
++/*
++ * Declare extern reference to user-defined USDT semaphore `sema`.
++ *
++ * Refers to a variable defined in another compilation unit by
++ * USDT_DEFINE_SEMA() and allows to use the same USDT semaphore across
++ * multiple compilation units (i.e., .c and .cpp files).
++ *
++ * See USDT_DEFINE_SEMA() notes above for C++ language usage peculiarities.
++ */
++#define USDT_DECLARE_SEMA(sema)							\
++	extern struct usdt_sema USDT_SEMA(sema) __usdt_asm_name(USDT_SEMA(sema))
 +
-+	insn = (struct __arch_relative_insn *)dest;
-+	insn->raddr = (s32)(to - (from + 5));
-+	insn->op = CALL_INSN_OPCODE;
-+}
++/*
++ * Check if user-defined USDT semaphore `sema` is "active" (i.e., whether it
++ * is attached to by external tracing tooling and is actively observed).
++ *
++ * This macro can be used to decide whether any additional and potentially
++ * expensive data collection or processing should be done to pass extra
++ * information into USDT(s) associated with USDT semaphore `sema`.
++ *
++ * N.B. Such checks are necessarily racy. Between checking the state of USDT
++ * semaphore and triggering associated USDT(s), the active tracer might attach
++ * or detach. This race should be extremely rare and worst case should result
++ * in one-time missed USDT event or wasted extra data collection and
++ * processing. USDT-using tracers should be written with this in mind and is
++ * not a concern of the application defining USDTs with associated semaphore.
++ */
++#define USDT_SEMA_IS_ACTIVE(sema) (USDT_SEMA(sema).active > 0)
 +
-+static int swbp_optimize(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
-+			 unsigned long vaddr, unsigned long tramp)
-+{
-+	struct write_opcode_ctx ctx = {
-+		.base = vaddr,
-+	};
-+	char call[5];
-+	int err;
++/*
++ * Invoke USDT specified by `group` and `name` identifiers and associate
++ * explicitly user-defined semaphore `sema` with it. Pass through `args` as
++ * USDT arguments. `args` are optional and zero arguments are acceptable.
++ *
++ * Semaphore is defined with the help of USDT_DEFINE_SEMA() macro and can be
++ * checked whether active with USDT_SEMA_IS_ACTIVE().
++ */
++#ifdef __usdt_va_opt
++#define USDT_WITH_EXPLICIT_SEMA(sema, group, name, ...)				\
++	__usdt_probe(group, name, __usdt_sema_explicit, USDT_SEMA(sema), ##__VA_ARGS__)
++#else
++#define USDT_WITH_EXPLICIT_SEMA(sema, group, name, ...)				\
++	__usdt_probe(group, name, __usdt_sema_explicit, USDT_SEMA(sema) __VA_OPT__(,) __VA_ARGS__)
++#endif
 +
-+	relative_call(call, vaddr, tramp);
++/*
++ * Adjustable implementation aspects
++ */
++#ifndef USDT_ARG_CONSTRAINT
++#if defined __powerpc__
++#define USDT_ARG_CONSTRAINT		nZr
++#elif defined __arm__
++#define USDT_ARG_CONSTRAINT		g
++#elif defined __loongarch__
++#define USDT_ARG_CONSTRAINT		nmr
++#else
++#define USDT_ARG_CONSTRAINT		nor
++#endif
++#endif /* USDT_ARG_CONSTRAINT */
 +
-+	/*
-+	 * We are in state where breakpoint (int3) is installed on top of first
-+	 * byte of the nop5 instruction. We will do following steps to overwrite
-+	 * this to call instruction:
-+	 *
-+	 * - sync cores
-+	 * - write last 4 bytes of the call instruction
-+	 * - sync cores
-+	 * - update the call instruction opcode
-+	 */
++#ifndef USDT_NOP
++#if defined(__ia64__) || defined(__s390__) || defined(__s390x__)
++#define USDT_NOP			nop 0
++#else
++#define USDT_NOP			nop
++#endif
++#endif /* USDT_NOP */
 +
-+	smp_text_poke_sync_each_cpu();
++/*
++ * Implementation details
++ */
++/* USDT name for implicitly-defined USDT semaphore, derived from group:name */
++#define __usdt_sema_name(group, name)	__usdt_sema_##group##__##name
++/* ELF section into which USDT semaphores are put */
++#define __usdt_sema_sec			__attribute__((section(".probes")))
 +
-+	ctx.update = OPT_PART;
-+	err = write_insn(auprobe, vma, vaddr + 1, call + 1, 4, &ctx);
-+	if (err)
-+		return err;
++#define __usdt_concat(a, b)		a ## b
++#define __usdt_apply(fn, n)		__usdt_concat(fn, n)
 +
-+	smp_text_poke_sync_each_cpu();
++#ifndef __usdt_nth
++#define __usdt_nth(_, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, N, ...) N
++#endif
 +
-+	ctx.update = OPT_INSN;
-+	return write_insn(auprobe, vma, vaddr, call, 1, &ctx);
-+}
++#ifndef __usdt_narg
++#ifdef __usdt_va_opt
++#define __usdt_narg(...) __usdt_nth(_ __VA_OPT__(,) __VA_ARGS__, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
++#else
++#define __usdt_narg(...) __usdt_nth(_, ##__VA_ARGS__, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
++#endif
++#endif /* __usdt_narg */
 +
-+static int swbp_unoptimize(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
-+			   unsigned long vaddr)
-+{
-+	uprobe_opcode_t int3 = UPROBE_SWBP_INSN;
-+	struct write_opcode_ctx ctx = {
-+		.base = vaddr,
-+	};
-+	int err;
++#define __usdt_hash			#
++#define __usdt_str_(x)			#x
++#define __usdt_str(x)			__usdt_str_(x)
 +
-+	/*
-+	 * We need to overwrite call instruction into nop5 instruction with
-+	 * breakpoint (int3) installed on top of its first byte. We will:
-+	 *
-+	 * - overwrite call opcode with breakpoint (int3)
-+	 * - sync cores
-+	 * - write last 4 bytes of the nop5 instruction
-+	 * - sync cores
-+	 */
++#ifndef __usdt_asm_name
++#define __usdt_asm_name(name)		__asm__(__usdt_str(name))
++#endif
 +
-+	ctx.update = UNOPT_INT3;
-+	err = write_insn(auprobe, vma, vaddr, &int3, 1, &ctx);
-+	if (err)
-+		return err;
++#define __usdt_asm0()		"\n"
++#define __usdt_asm1(x)		__usdt_str(x) "\n"
++#define __usdt_asm2(x, ...)	__usdt_str(x) "," __usdt_asm1(__VA_ARGS__)
++#define __usdt_asm3(x, ...)	__usdt_str(x) "," __usdt_asm2(__VA_ARGS__)
++#define __usdt_asm4(x, ...)	__usdt_str(x) "," __usdt_asm3(__VA_ARGS__)
++#define __usdt_asm5(x, ...)	__usdt_str(x) "," __usdt_asm4(__VA_ARGS__)
++#define __usdt_asm6(x, ...)	__usdt_str(x) "," __usdt_asm5(__VA_ARGS__)
++#define __usdt_asm7(x, ...)	__usdt_str(x) "," __usdt_asm6(__VA_ARGS__)
++#define __usdt_asm8(x, ...)	__usdt_str(x) "," __usdt_asm7(__VA_ARGS__)
++#define __usdt_asm9(x, ...)	__usdt_str(x) "," __usdt_asm8(__VA_ARGS__)
++#define __usdt_asm10(x, ...)	__usdt_str(x) "," __usdt_asm9(__VA_ARGS__)
++#define __usdt_asm11(x, ...)	__usdt_str(x) "," __usdt_asm10(__VA_ARGS__)
++#define __usdt_asm12(x, ...)	__usdt_str(x) "," __usdt_asm11(__VA_ARGS__)
++#define __usdt_asm(...)		__usdt_apply(__usdt_asm, __usdt_narg(__VA_ARGS__))(__VA_ARGS__)
 +
-+	smp_text_poke_sync_each_cpu();
++#ifdef __LP64__
++#define __usdt_asm_addr		.8byte
++#else
++#define __usdt_asm_addr		.4byte
++#endif
 +
-+	ctx.update = UNOPT_PART;
-+	err = write_insn(auprobe, vma, vaddr + 1, (uprobe_opcode_t *) auprobe->insn + 1, 4, &ctx);
++#define __usdt_asm_strz_(x)	__usdt_asm1(.asciz #x)
++#define __usdt_asm_strz(x)	__usdt_asm_strz_(x)
++#define __usdt_asm_str_(x)	__usdt_asm1(.ascii #x)
++#define __usdt_asm_str(x)	__usdt_asm_str_(x)
 +
-+	smp_text_poke_sync_each_cpu();
-+	return err;
-+}
++/* "semaphoreless" USDT case */
++#ifndef __usdt_sema_none
++#define __usdt_sema_none(sema)
++#endif
 +
-+static int copy_from_vaddr(struct mm_struct *mm, unsigned long vaddr, void *dst, int len)
-+{
-+	unsigned int gup_flags = FOLL_FORCE|FOLL_SPLIT_PMD;
-+	struct vm_area_struct *vma;
-+	struct page *page;
++/* implicitly defined __usdt_sema__group__name semaphore (using weak symbols) */
++#ifndef __usdt_sema_implicit
++#define __usdt_sema_implicit(sema)								\
++	__asm__ __volatile__ (									\
++	__usdt_asm1(.ifndef sema)								\
++	__usdt_asm3(		.pushsection .probes, "aw", "progbits")				\
++	__usdt_asm1(		.weak sema)							\
++	__usdt_asm1(		.hidden sema)							\
++	__usdt_asm1(		.align 2)							\
++	__usdt_asm1(sema:)									\
++	__usdt_asm1(		.zero 2)							\
++	__usdt_asm2(		.type sema, @object)						\
++	__usdt_asm2(		.size sema, 2)							\
++	__usdt_asm1(		.popsection)							\
++	__usdt_asm1(.endif)									\
++	);
++#endif
 +
-+	page = get_user_page_vma_remote(mm, vaddr, gup_flags, &vma);
-+	if (IS_ERR(page))
-+		return PTR_ERR(page);
-+	uprobe_copy_from_page(page, vaddr, dst, len);
-+	put_page(page);
-+	return 0;
-+}
++/* externally defined semaphore using USDT_DEFINE_SEMA() and passed explicitly by user */
++#ifndef __usdt_sema_explicit
++#define __usdt_sema_explicit(sema)								\
++	__asm__ __volatile__ ("" :: "m" (sema));
++#endif
 +
-+static bool __is_optimized(uprobe_opcode_t *insn, unsigned long vaddr)
-+{
-+	struct __packed __arch_relative_insn {
-+		u8 op;
-+		s32 raddr;
-+	} *call = (struct __arch_relative_insn *) insn;
++/* main USDT definition (nop and .note.stapsdt metadata) */
++#define __usdt_probe(group, name, sema_def, sema, ...) do {					\
++	sema_def(sema)										\
++	__asm__ __volatile__ (									\
++	__usdt_asm( 990:	USDT_NOP)							\
++	__usdt_asm3(		.pushsection .note.stapsdt, "", "note")				\
++	__usdt_asm1(		.balign 4)							\
++	__usdt_asm3(		.4byte 992f-991f,994f-993f,3)					\
++	__usdt_asm1(991:	.asciz "stapsdt")						\
++	__usdt_asm1(992:	.balign 4)							\
++	__usdt_asm1(993:	__usdt_asm_addr 990b)						\
++	__usdt_asm1(		__usdt_asm_addr _.stapsdt.base)					\
++	__usdt_asm1(		__usdt_asm_addr sema)						\
++	__usdt_asm_strz(group)									\
++	__usdt_asm_strz(name)									\
++	__usdt_asm_args(__VA_ARGS__)								\
++	__usdt_asm1(		.ascii "\0")							\
++	__usdt_asm1(994:	.balign 4)							\
++	__usdt_asm1(		.popsection)							\
++	__usdt_asm1(.ifndef _.stapsdt.base)							\
++	__usdt_asm5(		.pushsection .stapsdt.base,"aG","progbits",.stapsdt.base,comdat)\
++	__usdt_asm1(		.weak _.stapsdt.base)						\
++	__usdt_asm1(		.hidden _.stapsdt.base)						\
++	__usdt_asm1(_.stapsdt.base:)								\
++	__usdt_asm1(		.space 1)							\
++	__usdt_asm2(		.size _.stapsdt.base, 1)					\
++	__usdt_asm1(		.popsection)							\
++	__usdt_asm1(.endif)									\
++	:: __usdt_asm_ops(__VA_ARGS__)								\
++	);											\
++} while (0)
 +
-+	if (!is_call_insn(insn))
-+		return false;
-+	return __in_uprobe_trampoline(vaddr + 5 + call->raddr);
-+}
++/*
++ * NB: gdb PR24541 highlighted an unspecified corner of the sdt.h
++ * operand note format.
++ *
++ * The named register may be a longer or shorter (!) alias for the
++ * storage where the value in question is found. For example, on
++ * i386, 64-bit value may be put in register pairs, and a register
++ * name stored would identify just one of them. Previously, gcc was
++ * asked to emit the %w[id] (16-bit alias of some registers holding
++ * operands), even when a wider 32-bit value was used.
++ *
++ * Bottom line: the byte-width given before the @ sign governs. If
++ * there is a mismatch between that width and that of the named
++ * register, then a sys/sdt.h note consumer may need to employ
++ * architecture-specific heuristics to figure out where the compiler
++ * has actually put the complete value.
++ */
++#if defined(__powerpc__) || defined(__powerpc64__)
++#define __usdt_argref(id)	%I[id]%[id]
++#elif defined(__i386__)
++#define __usdt_argref(id)	%k[id]		/* gcc.gnu.org/PR80115 sourceware.org/PR24541 */
++#else
++#define __usdt_argref(id)	%[id]
++#endif
 +
-+static int is_optimized(struct mm_struct *mm, unsigned long vaddr, bool *optimized)
-+{
-+	uprobe_opcode_t insn[5];
-+	int err;
++#define __usdt_asm_arg(n)	__usdt_asm_str(%c[__usdt_asz##n])				\
++				__usdt_asm1(.ascii "@")						\
++				__usdt_asm_str(__usdt_argref(__usdt_aval##n))
 +
-+	err = copy_from_vaddr(mm, vaddr, &insn, 5);
-+	if (err)
-+		return err;
-+	*optimized = __is_optimized((uprobe_opcode_t *)&insn, vaddr);
-+	return 0;
-+}
++#define __usdt_asm_args0	/* no arguments */
++#define __usdt_asm_args1	__usdt_asm_arg(1)
++#define __usdt_asm_args2	__usdt_asm_args1 __usdt_asm1(.ascii " ") __usdt_asm_arg(2)
++#define __usdt_asm_args3	__usdt_asm_args2 __usdt_asm1(.ascii " ") __usdt_asm_arg(3)
++#define __usdt_asm_args4	__usdt_asm_args3 __usdt_asm1(.ascii " ") __usdt_asm_arg(4)
++#define __usdt_asm_args5	__usdt_asm_args4 __usdt_asm1(.ascii " ") __usdt_asm_arg(5)
++#define __usdt_asm_args6	__usdt_asm_args5 __usdt_asm1(.ascii " ") __usdt_asm_arg(6)
++#define __usdt_asm_args7	__usdt_asm_args6 __usdt_asm1(.ascii " ") __usdt_asm_arg(7)
++#define __usdt_asm_args8	__usdt_asm_args7 __usdt_asm1(.ascii " ") __usdt_asm_arg(8)
++#define __usdt_asm_args9	__usdt_asm_args8 __usdt_asm1(.ascii " ") __usdt_asm_arg(9)
++#define __usdt_asm_args10	__usdt_asm_args9 __usdt_asm1(.ascii " ") __usdt_asm_arg(10)
++#define __usdt_asm_args11	__usdt_asm_args10 __usdt_asm1(.ascii " ") __usdt_asm_arg(11)
++#define __usdt_asm_args12	__usdt_asm_args11 __usdt_asm1(.ascii " ") __usdt_asm_arg(12)
++#define __usdt_asm_args(...)	__usdt_apply(__usdt_asm_args, __usdt_narg(__VA_ARGS__))
 +
-+static bool should_optimize(struct arch_uprobe *auprobe)
-+{
-+	return !test_bit(ARCH_UPROBE_FLAG_OPTIMIZE_FAIL, &auprobe->flags) &&
-+		test_bit(ARCH_UPROBE_FLAG_CAN_OPTIMIZE, &auprobe->flags);
-+}
++#define __usdt_is_arr(x)	(__builtin_classify_type(x) == 14 || __builtin_classify_type(x) == 5)
++#define __usdt_arg_size(x)	(__usdt_is_arr(x) ? sizeof(void *) : sizeof(x))
 +
-+int set_swbp(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
-+	     unsigned long vaddr)
-+{
-+	if (should_optimize(auprobe)) {
-+		bool optimized = false;
-+		int err;
++/*
++ * We can't use __builtin_choose_expr() in C++, so fall back to table-based
++ * signedness determination for known types, utilizing templates magic.
++ */
++#ifdef __cplusplus
 +
-+		/*
-+		 * We could race with another thread that already optimized the probe,
-+		 * so let's not overwrite it with int3 again in this case.
-+		 */
-+		err = is_optimized(vma->vm_mm, vaddr, &optimized);
-+		if (err)
-+			return err;
-+		if (optimized)
-+			return 0;
-+	}
-+	return uprobe_write_opcode(auprobe, vma, vaddr, UPROBE_SWBP_INSN,
-+				   true /* is_register */);
-+}
++#define __usdt_is_signed(x)	(!__usdt_is_arr(x) && __usdt_t<__typeof(x)>::is_signed)
 +
-+int set_orig_insn(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
-+		  unsigned long vaddr)
-+{
-+	if (test_bit(ARCH_UPROBE_FLAG_CAN_OPTIMIZE, &auprobe->flags)) {
-+		struct mm_struct *mm = vma->vm_mm;
-+		bool optimized = false;
-+		int err;
++#include <cstddef>
 +
-+		err = is_optimized(mm, vaddr, &optimized);
-+		if (err)
-+			return err;
-+		if (optimized)
-+			WARN_ON_ONCE(swbp_unoptimize(auprobe, vma, vaddr));
-+	}
-+	return uprobe_write_opcode(auprobe, vma, vaddr, *(uprobe_opcode_t *)&auprobe->insn,
-+				   false /* is_register */);
-+}
++template<typename T> struct __usdt_t { static const bool is_signed = false; };
++template<typename A> struct __usdt_t<A[]> : public __usdt_t<A *> {};
++template<typename A, size_t N> struct __usdt_t<A[N]> : public __usdt_t<A *> {};
 +
-+static int __arch_uprobe_optimize(struct arch_uprobe *auprobe, struct mm_struct *mm,
-+				  unsigned long vaddr)
-+{
-+	struct uprobe_trampoline *tramp;
-+	struct vm_area_struct *vma;
-+	bool new = false;
-+	int err = 0;
++#define __usdt_def_signed(T)									\
++template<> struct __usdt_t<T>		     { static const bool is_signed = true; };		\
++template<> struct __usdt_t<const T>	     { static const bool is_signed = true; };		\
++template<> struct __usdt_t<volatile T>	     { static const bool is_signed = true; };		\
++template<> struct __usdt_t<const volatile T> { static const bool is_signed = true; }
++#define __usdt_maybe_signed(T)									\
++template<> struct __usdt_t<T>		     { static const bool is_signed = (T)-1 < (T)1; };	\
++template<> struct __usdt_t<const T>	     { static const bool is_signed = (T)-1 < (T)1; };	\
++template<> struct __usdt_t<volatile T>	     { static const bool is_signed = (T)-1 < (T)1; };	\
++template<> struct __usdt_t<const volatile T> { static const bool is_signed = (T)-1 < (T)1; }
 +
-+	vma = find_vma(mm, vaddr);
-+	if (!vma)
-+		return -EINVAL;
-+	tramp = get_uprobe_trampoline(vaddr, &new);
-+	if (!tramp)
-+		return -EINVAL;
-+	err = swbp_optimize(auprobe, vma, vaddr, tramp->vaddr);
-+	if (WARN_ON_ONCE(err) && new)
-+		destroy_uprobe_trampoline(tramp);
-+	return err;
-+}
++__usdt_def_signed(signed char);
++__usdt_def_signed(short);
++__usdt_def_signed(int);
++__usdt_def_signed(long);
++__usdt_def_signed(long long);
++__usdt_maybe_signed(char);
++__usdt_maybe_signed(wchar_t);
 +
-+void arch_uprobe_optimize(struct arch_uprobe *auprobe, unsigned long vaddr)
-+{
-+	struct mm_struct *mm = current->mm;
-+	uprobe_opcode_t insn[5];
++#else /* !__cplusplus */
 +
-+	/*
-+	 * Do not optimize if shadow stack is enabled, the return address hijack
-+	 * code in arch_uretprobe_hijack_return_addr updates wrong frame when
-+	 * the entry uprobe is optimized and the shadow stack crashes the app.
-+	 */
-+	if (shstk_is_enabled())
-+		return;
++#define __usdt_is_inttype(x)	(__builtin_classify_type(x) >= 1 && __builtin_classify_type(x) <= 4)
++#define __usdt_inttype(x)	__typeof(__builtin_choose_expr(__usdt_is_inttype(x), (x), 0U))
++#define __usdt_is_signed(x)	((__usdt_inttype(x))-1 < (__usdt_inttype(x))1)
 +
-+	if (!should_optimize(auprobe))
-+		return;
++#endif /* __cplusplus */
 +
-+	mmap_write_lock(mm);
++#define __usdt_asm_op(n, x)									\
++	[__usdt_asz##n] "n" ((__usdt_is_signed(x) ? (int)-1 : 1) * (int)__usdt_arg_size(x)),	\
++	[__usdt_aval##n] __usdt_str(USDT_ARG_CONSTRAINT)(x)
 +
-+	/*
-+	 * Check if some other thread already optimized the uprobe for us,
-+	 * if it's the case just go away silently.
-+	 */
-+	if (copy_from_vaddr(mm, vaddr, &insn, 5))
-+		goto unlock;
-+	if (!is_swbp_insn((uprobe_opcode_t*) &insn))
-+		goto unlock;
++#define __usdt_asm_ops0()				[__usdt_dummy] "g" (0)
++#define __usdt_asm_ops1(x)				__usdt_asm_op(1, x)
++#define __usdt_asm_ops2(a,x)				__usdt_asm_ops1(a), __usdt_asm_op(2, x)
++#define __usdt_asm_ops3(a,b,x)				__usdt_asm_ops2(a,b), __usdt_asm_op(3, x)
++#define __usdt_asm_ops4(a,b,c,x)			__usdt_asm_ops3(a,b,c), __usdt_asm_op(4, x)
++#define __usdt_asm_ops5(a,b,c,d,x)			__usdt_asm_ops4(a,b,c,d), __usdt_asm_op(5, x)
++#define __usdt_asm_ops6(a,b,c,d,e,x)			__usdt_asm_ops5(a,b,c,d,e), __usdt_asm_op(6, x)
++#define __usdt_asm_ops7(a,b,c,d,e,f,x)			__usdt_asm_ops6(a,b,c,d,e,f), __usdt_asm_op(7, x)
++#define __usdt_asm_ops8(a,b,c,d,e,f,g,x)		__usdt_asm_ops7(a,b,c,d,e,f,g), __usdt_asm_op(8, x)
++#define __usdt_asm_ops9(a,b,c,d,e,f,g,h,x)		__usdt_asm_ops8(a,b,c,d,e,f,g,h), __usdt_asm_op(9, x)
++#define __usdt_asm_ops10(a,b,c,d,e,f,g,h,i,x)		__usdt_asm_ops9(a,b,c,d,e,f,g,h,i), __usdt_asm_op(10, x)
++#define __usdt_asm_ops11(a,b,c,d,e,f,g,h,i,j,x)		__usdt_asm_ops10(a,b,c,d,e,f,g,h,i,j), __usdt_asm_op(11, x)
++#define __usdt_asm_ops12(a,b,c,d,e,f,g,h,i,j,k,x)	__usdt_asm_ops11(a,b,c,d,e,f,g,h,i,j,k), __usdt_asm_op(12, x)
++#define __usdt_asm_ops(...)				__usdt_apply(__usdt_asm_ops, __usdt_narg(__VA_ARGS__))(__VA_ARGS__)
 +
-+	/*
-+	 * If we fail to optimize the uprobe we set the fail bit so the
-+	 * above should_optimize will fail from now on.
-+	 */
-+	if (__arch_uprobe_optimize(auprobe, mm, vaddr))
-+		set_bit(ARCH_UPROBE_FLAG_OPTIMIZE_FAIL, &auprobe->flags);
-+
-+unlock:
-+	mmap_write_unlock(mm);
-+}
-+
-+static bool can_optimize(struct arch_uprobe *auprobe, unsigned long vaddr)
-+{
-+	if (memcmp(&auprobe->insn, x86_nops[5], 5))
-+		return false;
-+	/* We can't do cross page atomic writes yet. */
-+	return PAGE_SIZE - (vaddr & ~PAGE_MASK) >= 5;
-+}
- #else /* 32-bit: */
- /*
-  * No RIP-relative addressing on 32-bit
-@@ -912,6 +1191,10 @@ static void riprel_pre_xol(struct arch_uprobe *auprobe, struct pt_regs *regs)
- static void riprel_post_xol(struct arch_uprobe *auprobe, struct pt_regs *regs)
- {
- }
-+static bool can_optimize(struct arch_uprobe *auprobe, unsigned long vaddr)
-+{
-+	return false;
-+}
- #endif /* CONFIG_X86_64 */
- 
- struct uprobe_xol_ops {
-@@ -1278,6 +1561,9 @@ int arch_uprobe_analyze_insn(struct arch_uprobe *auprobe, struct mm_struct *mm,
- 	if (ret)
- 		return ret;
- 
-+	if (can_optimize(auprobe, addr))
-+		set_bit(ARCH_UPROBE_FLAG_CAN_OPTIMIZE, &auprobe->flags);
-+
- 	ret = branch_setup_xol_ops(auprobe, &insn);
- 	if (ret != -ENOSYS)
- 		return ret;
-diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-index b6b077cc7d0f..08ef78439d0d 100644
---- a/include/linux/uprobes.h
-+++ b/include/linux/uprobes.h
-@@ -192,7 +192,7 @@ struct uprobes_state {
- };
- 
- typedef int (*uprobe_write_verify_t)(struct page *page, unsigned long vaddr,
--				     uprobe_opcode_t *insn, int nbytes);
-+				     uprobe_opcode_t *insn, int nbytes, void *data);
- 
- extern void __init uprobes_init(void);
- extern int set_swbp(struct arch_uprobe *aup, struct vm_area_struct *vma, unsigned long vaddr);
-@@ -204,7 +204,8 @@ extern unsigned long uprobe_get_trap_addr(struct pt_regs *regs);
- extern int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma, unsigned long vaddr, uprobe_opcode_t,
- 			       bool is_register);
- extern int uprobe_write(struct arch_uprobe *auprobe, struct vm_area_struct *vma, const unsigned long opcode_vaddr,
--			uprobe_opcode_t *insn, int nbytes, uprobe_write_verify_t verify, bool is_register, bool do_update_ref_ctr);
-+			uprobe_opcode_t *insn, int nbytes, uprobe_write_verify_t verify, bool is_register, bool do_update_ref_ctr,
-+			void *data);
- extern struct uprobe *uprobe_register(struct inode *inode, loff_t offset, loff_t ref_ctr_offset, struct uprobe_consumer *uc);
- extern int uprobe_apply(struct uprobe *uprobe, struct uprobe_consumer *uc, bool);
- extern void uprobe_unregister_nosync(struct uprobe *uprobe, struct uprobe_consumer *uc);
-@@ -240,6 +241,7 @@ extern void uprobe_copy_from_page(struct page *page, unsigned long vaddr, void *
- extern void arch_uprobe_clear_state(struct mm_struct *mm);
- extern void arch_uprobe_init_state(struct mm_struct *mm);
- extern void handle_syscall_uprobe(struct pt_regs *regs, unsigned long bp_vaddr);
-+extern void arch_uprobe_optimize(struct arch_uprobe *auprobe, unsigned long vaddr);
- #else /* !CONFIG_UPROBES */
- struct uprobes_state {
- };
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index cbba31c0495f..e54081beeab9 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -192,7 +192,7 @@ static void copy_to_page(struct page *page, unsigned long vaddr, const void *src
- }
- 
- static int verify_opcode(struct page *page, unsigned long vaddr, uprobe_opcode_t *insn,
--			 int nbytes)
-+			 int nbytes, void *data)
- {
- 	uprobe_opcode_t old_opcode;
- 	bool is_swbp;
-@@ -492,12 +492,13 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
- 		bool is_register)
- {
- 	return uprobe_write(auprobe, vma, opcode_vaddr, &opcode, UPROBE_SWBP_INSN_SIZE,
--			    verify_opcode, is_register, true /* do_update_ref_ctr */);
-+			    verify_opcode, is_register, true /* do_update_ref_ctr */, NULL);
- }
- 
- int uprobe_write(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
- 		 const unsigned long insn_vaddr, uprobe_opcode_t *insn, int nbytes,
--		 uprobe_write_verify_t verify, bool is_register, bool do_update_ref_ctr)
-+		 uprobe_write_verify_t verify, bool is_register, bool do_update_ref_ctr,
-+		 void *data)
- {
- 	const unsigned long vaddr = insn_vaddr & PAGE_MASK;
- 	struct mm_struct *mm = vma->vm_mm;
-@@ -531,7 +532,7 @@ int uprobe_write(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
- 		goto out;
- 	folio = page_folio(page);
- 
--	ret = verify(page, insn_vaddr, insn, nbytes);
-+	ret = verify(page, insn_vaddr, insn, nbytes, data);
- 	if (ret <= 0) {
- 		folio_put(folio);
- 		goto out;
-@@ -2697,6 +2698,10 @@ bool __weak arch_uretprobe_is_alive(struct return_instance *ret, enum rp_check c
- 	return true;
- }
- 
-+void __weak arch_uprobe_optimize(struct arch_uprobe *auprobe, unsigned long vaddr)
-+{
-+}
-+
- /*
-  * Run handler and ask thread to singlestep.
-  * Ensure all non-fatal signals cannot interrupt thread while it singlesteps.
-@@ -2761,6 +2766,9 @@ static void handle_swbp(struct pt_regs *regs)
- 
- 	handler_chain(uprobe, regs);
- 
-+	/* Try to optimize after first hit. */
-+	arch_uprobe_optimize(&uprobe->arch, bp_vaddr);
-+
- 	if (arch_uprobe_skip_sstep(&uprobe->arch, regs))
- 		goto out;
- 
++#endif /* __USDT_H */
 -- 
 2.50.0
 
