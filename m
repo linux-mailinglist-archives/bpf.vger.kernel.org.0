@@ -1,123 +1,155 @@
-Return-Path: <bpf+bounces-62702-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62703-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAD42AFD6DC
-	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 21:07:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24AC7AFD7A8
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 21:53:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13400564059
-	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 19:07:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AF29176BE0
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 19:53:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 271172E5B10;
-	Tue,  8 Jul 2025 19:07:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA1DB239E70;
+	Tue,  8 Jul 2025 19:53:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hqdISj2D"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qXznxuwy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62F2517C21E;
-	Tue,  8 Jul 2025 19:07:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 322142192FC
+	for <bpf@vger.kernel.org>; Tue,  8 Jul 2025 19:53:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752001660; cv=none; b=ufPYAu3c3gXIU/ZsDAnyXlfCKXs0xEzUhMNGvk82ZjtTG909Xu5IZtzIoorBW6kECTYAQjPnxFD85B2VoBKmzpnD2PgDVwp9ZhjZawId4Q0v3hupz46lMguQWzpCj/YsYkM4u5npXgFCMn5t8mgdGgnJ6ZX79fkZCRhTC0vMiUE=
+	t=1752004405; cv=none; b=W+UL3YKx0nNbDTdsVrij/UtPFSoTBcc2a4A9yVaOTXipLlViFWUFzwCaVbQSDsyVRN0yqxDTTFjUIqKxW8Ku3/709Kn+ghzBClm9AEyitN0V3LiRE2qzVpZpz3HvUgODhBFCVMlZHNiJl3dQzZ0RHaCc0qhoWyLrYCoN9NsHLo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752001660; c=relaxed/simple;
-	bh=2f3RZiFeofFcvc61Ms/b+cnETdj7G3/8UcEa1Ka+/Uk=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Twu5G0ZJ99hySM+wDjT5UtTdxYRXT/CMEmCQelcNtTuG/UUUztDcXgfTehCD7PCVnRawbbdCfULNIlaKOJZ5/jrYJ6atzILz20otat4Tam3hiYyPf+CqZnc1lDND/p1kgG7NkbWIjmMtc6kMQNe86/KGmVd2ratf8+YwnLYKK+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hqdISj2D; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-748e63d4b05so2579192b3a.2;
-        Tue, 08 Jul 2025 12:07:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752001659; x=1752606459; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ESYp8LNJOnczrMrDpM7UABHIa+moUPbT/fUz8S8n/kU=;
-        b=hqdISj2DFsMjqhTczXubt/tesrA5x5nM3Lc0Y5bAEwmxZGBIkTTtm+ZlZcj6JTexFn
-         ypioITfZQV1D6dHMGr9oqgKttPs0lPEVVj4oE1QNf0l++jn6eru8DgmllXZyBVEJyDxo
-         ++v0HQBIS3640aBQ1eH/Cg6UunZ9FDqQ5uXKexBLUmdGqWS1xzmv/aeDalAHAAppQpjt
-         sx+vn+08CYGQnIpyludDcUOd69l9hr3YzlhACwXKgD8qFT+9HNHAC0hGquQTkvNPdRzO
-         +BfaX3D6YNzgtRlYogumVSw0zlvWZu4sPTLNJjEYXEgV3l5RLKbe58pTyc6j2Gk6iVz8
-         OQ6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752001659; x=1752606459;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ESYp8LNJOnczrMrDpM7UABHIa+moUPbT/fUz8S8n/kU=;
-        b=BPY4plrozmhGlvnefQ/fKSRJFgX4Bi3wt9C4OI6hHEuL66WlNw7KVHUl0J5o1BRbe0
-         zcB8THOP9Qn85ZywvZEFPpx8/dMBmYJMduyag3oSCLiLiH8kdWvs0ysqM15yLoDu5TaE
-         DXRwgQk15OHIRP28t6oW57tJ+8QIHNo//kXBGQt7yP7tQuUc2OI7awVPTshYlx0TQ0TT
-         TEzscAqsCNR+KQ1d+PJ0cRhcUR7AGX3+qGLblVuJrvRqPGuAR7ijc7lpKvOAUzziiMRn
-         2l6bJAHUIziuweBtlyzf7LIsYZrfWoWbC7McsvSdJE8gVN6NLaWXE7y1R5PnxuAshzbJ
-         eA/A==
-X-Forwarded-Encrypted: i=1; AJvYcCVVUjrv/Y0ZtFj+E0+p69wikTCRGPaezfQaAMfih6pgR2AVl0OJk53bhyLgChr1/kI6HNI=@vger.kernel.org, AJvYcCVsGtNf8MnfOg1SfsoZcT7pYIzMMavLCJoN9crdnLVhCYfZw5FdRcqrjLdN9zQlqCyqV9AhxGxNbSj0udPS@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxfvf1XK53ddt3lGJ9cE4+O2BnHOMgzJZpgDA1lMQDuLyjAw0Y9
-	JQnrkjh/HdLFyxdwz6xiaelUBrmYH08Qpf4YeJ+QL6RQTkUgp/JwR8FF
-X-Gm-Gg: ASbGncscjDFhWhJNDtile5IbJTB8Me7wULFTlRcEh//IpGILOYyZFDh3/RXxLiLzokZ
-	YoOxlkGB8NkKcJD7BXpOtw+dUXcpQP89csroBQjR27VKK92SE7vBhrpYLiIv6rN9uOzeOjsU/l4
-	2lnh651VtBoBNz/ku7DE75ubgYuVY28W7LhaHx8300LUIj5Ngc1SLXfT6P/HDYD1MQoL5+m4jm4
-	N1J5+qgx9KAo41rwlDCJBpFN9MoZpyQEhLMx3XTy16cTmfeonpNN+wdO9vbZYHQHm75yC34wtpI
-	picuUb4LM/Bc10Cl9NlOVKLzUFyHSe/BoZAARGt8j17h3VL78FtVxhW/q80BI08B6fcV
-X-Google-Smtp-Source: AGHT+IEd9LPMOcrkmUZ2OGsapCQihiFIJ5vHNPE4vKdRUICVetias+kwjZrumjusXZRRxW+PCTKJ7w==
-X-Received: by 2002:a05:6a20:7343:b0:220:4750:133a with SMTP id adf61e73a8af0-2260b29d7e2mr27933240637.25.1752001658586;
-        Tue, 08 Jul 2025 12:07:38 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c096:14a::647? ([2620:10d:c090:600::1:2404])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b38ee748913sm11977492a12.72.2025.07.08.12.07.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jul 2025 12:07:38 -0700 (PDT)
-Message-ID: <4ba5fd7e81438037189a89697b1ba6c8a67f4818.camel@gmail.com>
-Subject: Re: [PATCH] bpf: fix dump_stack() type cast
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Arnd Bergmann <arnd@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>, Kumar Kartikeya Dwivedi	 <memxor@gmail.com>, Emil
- Tsalapatis <emil@etsalapatis.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Martin KaFai Lau <martin.lau@linux.dev>, 
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John
- Fastabend	 <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev	 <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri
- Olsa <jolsa@kernel.org>, 	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Tue, 08 Jul 2025 12:07:36 -0700
-In-Reply-To: <20250708160737.1834080-1-arnd@kernel.org>
-References: <20250708160737.1834080-1-arnd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1752004405; c=relaxed/simple;
+	bh=mSQ/Ni4fcj7/F3qfKzUHOgQQwwytlPeKEwZ6qXRz+ZY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZVBEN1G8XVs/uLUPsR0noyUh5b0pNHQY6obHRDgTFQOP9N+8tpIWJ7PhL0ArWr+tIrmBv2TY3Uiqze09u/lUcnWu/vJFCIrpmwl0mskUx9Yun44+yBJ5YuR6GCxRSiE91kgdJUkAAjA/R2/y/GzI11W9+evXVYzEH7ydOEdn8Ds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qXznxuwy; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <d243e84a-8ca6-4f32-854f-8d4e709277f5@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1752004400;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Jb0+aVir9jcmWG2wTOVR08P1huBO3MZRan5P4q8+1gc=;
+	b=qXznxuwykgDwLstogxhtYex8nXpMNFto6bFT9OayN2EcizYJzqGQhTyPJrSrApqJfoeKG0
+	A+LaEzsWLNFM1wJGfrMQATdlN+1gu0xdFv2qOqnrw3Z3bAHmLE11I/79TXW1nCiRoac7+o
+	J2ZA52EMMayPcue4KXoQONAksH0A1Hk=
+Date: Tue, 8 Jul 2025 12:53:14 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [External] : Re: Potential BPF Arena Security Vulnerability,
+ Possible Memory Access and Overflow Issues
+Content-Language: en-GB
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Yifei Liu <yifei.l.liu@oracle.com>
+Cc: "ast@kernel.org" <ast@kernel.org>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ "daniel@iogearbox.net" <daniel@iogearbox.net>
+References: <1A9DA34D-7AC9-4A77-A07D-46B4DD0E3136@oracle.com>
+ <CAADnVQKDeKmz95rHT4sRX9JhrRiBR06wngVck_cVzmGtDMiK7w@mail.gmail.com>
+ <5B89E759-2B80-433F-92AD-9B0CB16C2308@oracle.com>
+ <CAADnVQ+NOs9hJW=hFeAtOmtNdQ_CT6zdMu1FnhM3xKD-oYiKZA@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQ+NOs9hJW=hFeAtOmtNdQ_CT6zdMu1FnhM3xKD-oYiKZA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, 2025-07-08 at 18:07 +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->=20
-> Passing a pointer as a 'u64' variable requires a double cast when
-> converting it back to a pointer:
->=20
-> kernel/bpf/stream.c: In function 'dump_stack_cb':
-> kernel/bpf/stream.c:505:64: error: cast to pointer from integer of differ=
-ent size [-Werror=3Dint-to-pointer-cast]
->   505 |         ctxp->err =3D bpf_stream_stage_printk(ctxp->ss, "%pS\n", =
-(void *)ip);
->       |                                                                ^
->=20
-> Fixes: d7c431cafcb4 ("bpf: Add dump_stack() analogue to print to BPF stde=
-rr")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
 
-This warning is already fixed in
-bfa2bb9abd99be ("bpf: Fix improper int-to-ptr cast in dump_stack_cb"),
-which landed in bpf-next yesterday.
 
-[...]
+On 7/7/25 4:06 PM, Alexei Starovoitov wrote:
+> On Mon, Jul 7, 2025 at 2:43 PM Yifei Liu <yifei.l.liu@oracle.com> wrote:
+>>
+>>
+>>> On Jul 7, 2025, at 2:19 PM, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+>>>
+>>> On Mon, Jul 7, 2025 at 1:44 PM Yifei Liu <yifei.l.liu@oracle.com> wrote:
+>>>> Hi Alexei,
+>>>>
+>>>> I recently noticed that the verifier_arena_large selftest would fail on the overflow and underflow section for 64k page size kernels. After a deeper investigation, the similar issue is also reproducible on 4k page size over both x86 and aarch64 platforms.
+>>>>
+>>>> The root reason of this failure looks to be a failed or missing check of the pointer upper 32-bit from the user space. User space could access the arena space value even the pointer is not in the assigned user space pointer range. For example, if the user_vm_start is 7f7d26200000 and arena size is 4G (end upper bound is 7f7e26200000), when I set *(7f7e26200000 - 65536) = 20, I could also get the value of (7f7d26200000 - 65536) as 20. It should be 0 if that is out of the range.
+>>>>
+>>>> Could you please take a look at this issue? Or could you please point me where is the place doing the address translation and I could try to provide a patch for this?
+>>>>
+>>>> Thank you very much.
+>>>> Yifei
+>>>>
+>>>> Methods on reproduce:
+>>>> 1. Use a 64k page size arm based kernel and run verifier_arena_large selftest, it would failed on return 12 and 13. Or
+>>> Are you sure you're running the latest kernel ?
+>>> This sounds like issue fixed in commit 517e8a7835e8 ("bpf: Fix
+>>> softlockup in arena_map_free on 64k page kernel”)
+>> Thanks for the reply. I do check this fix and it is not related to the one I mentioned above. It just fix the guard
+>> range so that it would not set the start address without page alignment.
+>>
+>>> In general this is not a security vulnerability in any way.
+>>> 32-bit wraparound is there by design.
+>> If we do not check the upper 32-bit value, it would be wide open for user-space to access the arena space.
+>> And maybe even the user-space process cannot access the memory outside the 4G area because it would
+>> try to translate all the pointers to that area.
+> No idea what you're trying to say.
+>
+>> Plus, it would consistently fail the verifier_arena_large selftest for 64k page size kernels. Maybe we want to
+>> skip some of the overflow/underflow tests if the page size is 64k?
+
+I tried on my aarch64 machine which has 64K page size. The verifier_arena_large works fine for
+me with either gcc11 or clang21. Could you give more details (traces) about the failure you observed?
+
+> Skip without full understanding is not a good idea.
+> This test does:
+>          if (*(page1 + PAGE_SIZE) != 0)
+>                  return 11;
+>          if (*(page1 - PAGE_SIZE) != 0)
+>                  return 12;
+>          if (*(page2 + PAGE_SIZE) != 0)
+>                  return 13;
+>          if (*(page2 - PAGE_SIZE) != 0)
+>
+> which gets compiled into bpf insns with positive and negative 16-bit offsets.
+> When PAGE_SIZE is 64k the code is compiled into some other form,
+> since constant doesn't fit into 'off' field.
+> So the code is not checking what it is supposed to.
+> One way is to use inline asm. Another is to replace PAGE_SIZE
+> with an actual 4k constant in big_alloc1() test.
+
+We are fine here. The selection dag knows the imm range and can
+generate correct registers. Below is the actually generated code:
+
+;       if (*(page1 + PAGE_SIZE) != 0)
+       75:       bf 81 00 00 00 00 00 00 r1 = r8
+       76:       07 01 00 00 00 00 01 00 r1 += 0x10000
+       77:       71 11 00 00 00 00 00 00 w1 = *(u8 *)(r1 + 0x0)
+       78:       56 01 0e 00 00 00 00 00 if w1 != 0x0 goto +0xe <big_alloc1+0x2e8>
+       79:       b4 07 00 00 0c 00 00 00 w7 = 0xc
+;       if (*(page1 - PAGE_SIZE) != 0)
+       80:       07 08 00 00 00 00 ff ff r8 += -0x10000
+       81:       71 81 00 00 00 00 00 00 w1 = *(u8 *)(r8 + 0x0)
+       82:       56 01 0a 00 00 00 00 00 if w1 != 0x0 goto +0xa <big_alloc1+0x2e8>
+       83:       b4 07 00 00 0d 00 00 00 w7 = 0xd
+;       if (*(page2 + PAGE_SIZE) != 0)
+       84:       bf 91 00 00 00 00 00 00 r1 = r9
+       85:       07 01 00 00 00 00 01 00 r1 += 0x10000
+       86:       71 11 00 00 00 00 00 00 w1 = *(u8 *)(r1 + 0x0)
+       87:       56 01 05 00 00 00 00 00 if w1 != 0x0 goto +0x5 <big_alloc1+0x2e8>
+;       if (*(page2 - PAGE_SIZE) != 0)
+       88:       07 09 00 00 00 00 ff ff r9 += -0x10000
+       89:       71 91 00 00 00 00 00 00 w1 = *(u8 *)(r9 + 0x0)
+       90:       b4 07 00 00 00 00 00 00 w7 = 0x0
+       91:       16 01 01 00 00 00 00 00 if w1 == 0x0 goto +0x1 <big_alloc1+0x2e8>
+       92:       b4 07 00 00 0e 00 00 00 w7 = 0xe
+
 
