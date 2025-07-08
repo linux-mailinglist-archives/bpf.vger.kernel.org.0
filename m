@@ -1,97 +1,97 @@
-Return-Path: <bpf+bounces-62577-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62578-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44408AFBF2D
-	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 02:18:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A3DD0AFBF43
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 02:37:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FF8317B032
-	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 00:18:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC9C54A6643
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 00:37:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C07D414A4E0;
-	Tue,  8 Jul 2025 00:18:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66099185920;
+	Tue,  8 Jul 2025 00:37:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qn0H8d5u"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LMMEuwaF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 095254086A
-	for <bpf@vger.kernel.org>; Tue,  8 Jul 2025 00:18:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 844A72AE6F;
+	Tue,  8 Jul 2025 00:37:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751933904; cv=none; b=b9ZBwpAdiv5LXi8ej6XIA8g6ZyIsXjakSoTLvqaY/gADZuZhQ7R0D0wDradJc4+O/Aozd/lQN7xmtfK7RRYsRDKJ/5jOVGmdnp83SuZUwI8nF9E6H8Gi1ebliZWyjo/KbSuuXkYsJuA5+q7n5Hb6Y8Xk1RlCQCgJb0t/4fyKUKQ=
+	t=1751935035; cv=none; b=es7YXeSnqvMJQg6tIxURL7WMJfcEwMb8wUM4AsZ3JPBH/OqtrgJWYaqSNoVSEARpMqTgtl0GuFfvDWCuBPSXo+AvyH3Me6feL4oSvB6/YkllcMSBY7AfVB2PG6ofPvmYY4idGPjHzPmTRJBdGtEfmbbn9KFzz8r/0Ve3o6LD2vo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751933904; c=relaxed/simple;
-	bh=9R09jtiwjshPpnfmFTxaPOe3gARHiVfXPj1zqTA+Ro8=;
+	s=arc-20240116; t=1751935035; c=relaxed/simple;
+	bh=ljsl2Z5VY5LDR3C5S9CzYzXKO+MT1Tzi6VlGcajsgxU=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Lde7rUYszoEkeGW6iLR2T7ddMR1agKPfAjFYxJmoQx2ZHMOGyL9nirTteje6kMyRQ3/Pf24ChIv6yvahGhrUEhlABTzSVpQ41os6oiFNGDMPsLhGSOnodMJG2Otcj5QGTZjT8/c9ESRKF82Yv33JWfved5jQmajcz+7o8djTUSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qn0H8d5u; arc=none smtp.client-ip=209.85.215.178
+	 Content-Type:MIME-Version; b=gcRKxm3h4kqSZSFNn8pwsdR5e4pnmQGVBN1i9mA9HNG9LznXAQkX3+xGrksea91MnWxEWOlTjbzB40R4zRXbuftz2D3LBR4Q2U4UFoL80iHwjNoYyNb3io9NcqDn5icCO63K3qpGHjm7ze3OMOL+rkgUETblH42Qo/CIl3wlnOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LMMEuwaF; arc=none smtp.client-ip=209.85.210.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-b34c068faf8so4112104a12.2
-        for <bpf@vger.kernel.org>; Mon, 07 Jul 2025 17:18:22 -0700 (PDT)
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-74af4af04fdso3691715b3a.1;
+        Mon, 07 Jul 2025 17:37:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751933902; x=1752538702; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1751935033; x=1752539833; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=uU4x2uZIufF5oSN9ILt4FnX21GXOoxKG2bCNLztJZUk=;
-        b=Qn0H8d5uKe2Tg9c38yrggt6AYZ+EFQcYj9KDPNNzObHdCZhmFbE+FhSS90WfrFPRdk
-         0ZzMz0NXvCwP3N5GKCAza3S9gjamTwgd0nIWJLFXQVUBG41ONABb5mjDa/I9v/QD1kqr
-         2Q4OhwI2EADMNqUDWeIdXlK+g61SaeKMBDGbLCh+YFScw82HU5S2lOh/bOq0eeC1P+UR
-         4XWsbZtF8H5xWDPP3dFeFheJsyu4cYTmzuURZY/9ZYPgS9Gffb/ef7Ey568PTmO29LxL
-         4Pn7saBtxuJCeGZIh6zZr62kHtyVJIdW/kYkYG3RbF5l86IwXxzgVsQ9Ww9RszrJzfVe
-         a6pg==
+        bh=OorcVwknaSDvxF+3M7/rvx8hjWtBqy73MQxzqWLBaAI=;
+        b=LMMEuwaFgYMSSzkQPOUWH9NNt5ND6euv8IQ1sHTAJ173GDyKwXF/O0bhWEAcluUCfj
+         vtQC2HeK78f53FNJpROG3Xnle7LhsjX7t0QjNNIO3+UW1CjaKS9yYOFWL/tmIjFqw2IS
+         DVigJlAmOJ+KTAaqMUPHIQF9P2eLGn8cvRaN4tJV6//T35srU7Y4RkUBL5aIb5eJOYGC
+         iFhB0QJ6PeF/RfoVXZke9XdzQ+HbGRLCE4l9+eBydyLSpjWjUqo6DCzE8Smzl+6ystET
+         CTt7U36hOlM6kixctNmYqjaNssLU3drFlIevIgXwib5kVyf9sWTShPnbczVGQOaxfaAv
+         h2tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751933902; x=1752538702;
+        d=1e100.net; s=20230601; t=1751935033; x=1752539833;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=uU4x2uZIufF5oSN9ILt4FnX21GXOoxKG2bCNLztJZUk=;
-        b=f+qaPtYl2bdYjATqfL95EHLjQXMOuN3DA/+3I1QYBdjuTJKyji58CP93O95/Mi1a0d
-         +HIIGUVF+SdtF75hgYkevxfyaRuR6quQBEXNVzNG4YEiSQHZksQO6h3Ds0MYWfFtAuTP
-         QtWcJ1YdMoQeQSgVn0niUyfnwijR4pLS687DI4HAXOVB+0NTR14wDNOhtfnJ7JAxhrVg
-         Re2iaSpOo9FXvwJfskDtP0dAojLXqzqve0abjAWDy/qO0PHaAQlYevQDacXHqr5AK8Im
-         qNV4ocycyZCjpY+u9eQp6/RvzME4TZcUvj0W3BtFytDI8ZL+4cdtOKXTUuUUdNEyov3a
-         /YHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUzzFK8izNJB/mggGmK6MuKz7a1YS+1IzlokC813prV8B6N2ULFW/ht6Ib01pMsK7ZJR7Q=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxgzjVSF20X7zc1CQXcvQMohriRyb/Fhwmiyhdn/pIFFWVqI2sY
-	UgCW/qx0oC9l5CbDZeKlYTNbBRLOgPRuO/dEsWSk5pYoKnngOBwcsB32
-X-Gm-Gg: ASbGnctfV+572aewAGJui8d1TQc4iV3msQdZvZtyoDHecZ0w/JDMVpu5WZwskd9i8an
-	sB6Y1KcEHNQnGLQW/HCCyhn1xva6qHPhfw3SLnZHr15gsjGBVLeJjt6CM87XSnQAvrsJYzwliL0
-	+5+e0QDp/dzjZ+qfQJwxZeQ32zrc7AYwhFnaB92Cj2ixUSO484prcV6wFjrBOzCQjYDKmHEw33g
-	WtGiUZ0Um7toAER2aj4mVkVoGxblSFyFv8sOswhZkW4em8Ki4LEmOUoB0SodA6HTzXZ2+tJaPPf
-	P5HhnuzmVSrIw6lSuMgmGv2p6txbfzXZkraNUuxiuVxmALVsK3h030KFYOoNydweyWXwYDJnQI5
-	jBw==
-X-Google-Smtp-Source: AGHT+IEWz91qS7zRQT43P4VZDTQQWOnkkpWVgBOo0I4g8IwvtBaDW9sj75KeRRXFMt45sTWjrwZhzQ==
-X-Received: by 2002:a05:6a20:3943:b0:220:193b:90d with SMTP id adf61e73a8af0-22b439d1747mr1650419637.26.1751933902193;
-        Mon, 07 Jul 2025 17:18:22 -0700 (PDT)
+        bh=OorcVwknaSDvxF+3M7/rvx8hjWtBqy73MQxzqWLBaAI=;
+        b=Y3yeKwZBWQgbOZdNbfTC4oemoW4utOX5FbJ4bl2/LP7WFP/pkGxF64VUBI27QYC4Fv
+         ovaztVhCuXfDfs4TJ3PsmrF5FA9ssSTPoMI0Q8CE8ng0lxGk2pE6jdeZY2IaadUhf2u6
+         hguVGvcLZP+PXPb4Vp6Q3TQzs12cOiqLEazQwrfKNtEibaxVlTHDR3P3lzNYNnG1WQXZ
+         T1Wtfd8HFmz/7ude/jSNXXZQvQTLfruwbphgzyjC6crn1aE+VgqTw3a9SV/qy5Js3hqp
+         U6UCMm4UJpQ/SLGiSu3GDkIR+WeSixh0ngrvs+mHpCpI02RmcZX6moA8wSFkg6IQFX59
+         Tn+w==
+X-Forwarded-Encrypted: i=1; AJvYcCVisBiDxO4Xp/8uOtg/nTbmuZP+BPvV4GvWZcD3w++qzK1LDbB4uqmfpK6UZKRnNV1VeN5VKzvO@vger.kernel.org, AJvYcCW9L6nJaCVt5PQHs9mTf0O+jRmtKCOZ7IceR5TxLCI6LS5E8U315QbB1Wc+v38QOjv6FWU=@vger.kernel.org, AJvYcCX7gxalSyrqCdOvXJFCv84QRFR+uSq6oPuyN4u5vsQ1wKXcpULLUR/wPtf5s51y4DicF1m9t8FjN7y/iKGn@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx8BqtCYKmhlf6XJHA37boDeu/0E6M8BPegbLOtKvVq1UZT3hON
+	DJGPShEkUWHl1nhD/HryJtmJhKCBI9CdeQM+FSO0BwjEgo/oRbDhcIMb
+X-Gm-Gg: ASbGnct8Lf47GCpjafg42ahFDZ0mzje8gQA1T4uSQk+M6n5Q8E6PvZ/lep6SYjGu6pj
+	WqydWAZUi2U1gnvVN5fTpLnwYHB/b4+LNkie45LLpZNAz45Kwl0b9L/M0BkDs7Q9YjV5xVVHuxQ
+	TC8vBLoZ4IuoorCujGkGc+6R62WNe5GN1c1dyLkLlRHL5idPKDKT3euUDUxZOkcowgU427smkIh
+	sTHdDNzcsXt+BTKwma4YHDUSFn7flhEthwk+r5FcAKoO3f4V/mfnzOlMGsb1xADpawiWMZWme/c
+	sD/rX1AIbkgd648UUh92H6hWL57Q2tQd57QZHQD8uLfrsjNCXVhJQIehe0S7ASjTIq4=
+X-Google-Smtp-Source: AGHT+IF1Br8HS7wsPZoPtrPYtrum3FOq3cVJgd2tLBiZmhUC6H7UzoTtf7UA/ohLv8w0iSVGMsIuAA==
+X-Received: by 2002:a05:6a00:1403:b0:748:a0b9:f873 with SMTP id d2e1a72fcca58-74d267dc857mr785208b3a.9.1751935032705;
+        Mon, 07 Jul 2025 17:37:12 -0700 (PDT)
 Received: from ?IPv6:2620:10d:c096:14a::647? ([2620:10d:c090:600::1:6ad])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74ce429b34dsm9204840b3a.120.2025.07.07.17.18.20
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74ce42a1ca0sm10490375b3a.138.2025.07.07.17.37.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jul 2025 17:18:21 -0700 (PDT)
-Message-ID: <2dd335c0c9152a9941f42a4e70a95846f7d6de49.camel@gmail.com>
-Subject: Re: [RFC bpf-next 8/9] libbpf: support llvm-generated indirect jumps
+        Mon, 07 Jul 2025 17:37:12 -0700 (PDT)
+Message-ID: <c35d5392b961a4d5b54bdb4b92c4e104bd7857cc.camel@gmail.com>
+Subject: Re: [syzbot] [bpf?] WARNING in reg_bounds_sanity_check
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Anton Protopopov <a.s.protopopov@gmail.com>, bpf <bpf@vger.kernel.org>, 
- Alexei Starovoitov	 <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Anton Protopopov	 <aspsk@isovalent.com>, Daniel Borkmann
- <daniel@iogearbox.net>, Quentin Monnet	 <qmo@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>
-Date: Mon, 07 Jul 2025 17:18:20 -0700
-In-Reply-To: <CAADnVQLp=ED2XAVhgO5jgSt6Cptkw6-H19Qr+s63m+jjCDwXRg@mail.gmail.com>
-References: <20250615085943.3871208-1-a.s.protopopov@gmail.com>
-	 <20250615085943.3871208-9-a.s.protopopov@gmail.com>
-	 <CAADnVQKhVyh4WqjUgxYLZwn5VMY6hSMWyLoQPxt4TJG1812DcA@mail.gmail.com>
-	 <aFLWaNSsV7M2gV98@mail.gmail.com>
-	 <e726d778a3cf75e3ceec54f5f43b9d5d66ba5e97.camel@gmail.com>
-	 <CAADnVQLaBuDYBoQvVtug63MJO+2=oqb9PYap8Jv+U8HB4ETe9Q@mail.gmail.com>
-	 <88c63c574dfd7d3845ac4e558643ab52e77f81dc.camel@gmail.com>
-	 <CAADnVQLp=ED2XAVhgO5jgSt6Cptkw6-H19Qr+s63m+jjCDwXRg@mail.gmail.com>
+To: Paul Chaignon <paul.chaignon@gmail.com>
+Cc: syzbot <syzbot+c711ce17dd78e5d4fdcf@syzkaller.appspotmail.com>, 
+	andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, 	haoluo@google.com, john.fastabend@gmail.com,
+ jolsa@kernel.org, kpsingh@kernel.org, 	linux-kernel@vger.kernel.org,
+ martin.lau@linux.dev, netdev@vger.kernel.org, 	sdf@fomichev.me,
+ song@kernel.org, syzkaller-bugs@googlegroups.com, 	yonghong.song@linux.dev
+Date: Mon, 07 Jul 2025 17:37:09 -0700
+In-Reply-To: <2fb0a354ec117d36a24fe37a3184c1d40849ef1a.camel@gmail.com>
+References: <68649190.a70a0220.3b7e22.20e8.GAE@google.com>
+		 <aGa3iOI1IgGuPDYV@Tunnel>
+		 <865f2345eaa61afbd26d9de0917e3b1d887c647d.camel@gmail.com>
+		 <aGgL_g3wA2w3yRrG@mail.gmail.com>
+		 <df2cdc5f4fa16a4e3e08e6a997af3722f3673d38.camel@gmail.com>
+		 <e43c25b451395edff0886201ad3358acd9670eda.camel@gmail.com>
+		 <aGxKcF2Ceany8q7W@mail.gmail.com>
+	 <2fb0a354ec117d36a24fe37a3184c1d40849ef1a.camel@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
@@ -102,23 +102,82 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Mon, 2025-07-07 at 17:12 -0700, Alexei Starovoitov wrote:
+On Mon, 2025-07-07 at 16:29 -0700, Eduard Zingerman wrote:
+> On Tue, 2025-07-08 at 00:30 +0200, Paul Chaignon wrote:
+>
+> [...]
+>
+> > This is really nice! I think we can extend it to detect some
+> > always-true branches as well, and thus handle the initial case reported
+> > by syzbot.
+> >
+> > - if a_min =3D=3D 0: we don't deduce anything
+> > - bits that may be set in 'a' are: possible_a =3D or_range(a_min, a_max=
+)
+> > - bits that are always set in 'b' are: always_b =3D b_value & ~b_mask
+> > - if possible_a & always_b =3D=3D possible_a: only true branch is possi=
+ble
+> > - otherwise, we can't deduce anything
+> >
+> > For BPF_X case, we probably want to also check the reverse with
+> > possible_b & always_a.
+>
+> So, this would extend existing predictions:
+> - [old] always_a & always_b -> infer always true
+> - [old] !(possible_a & possible_b) -> infer always false
+> - [new] if possible_a & always_b =3D=3D possible_a -> infer true
+>         (but make sure 0 is not in possible_a)
+>
+> And it so happens, that it covers example at hand.
+> Note that or_range(1, (u64)-1) =3D=3D (u64)-1, so maybe tnum would be
+> sufficient, w/o the need for or_range().
+>
+> The part of the verifier that narrows the range after prediction:
+>
+>   regs_refine_cond_op:
+>
+>          case BPF_JSET | BPF_X: /* reverse of BPF_JSET, see rev_opcode() =
+*/
+>                  if (!is_reg_const(reg: reg2, subreg32: is_jmp32))
+>                          swap(reg1, reg2);
+>                  if (!is_reg_const(reg: reg2, subreg32: is_jmp32))
+>                          break;
+>                  val =3D reg_const_value(reg: reg2, subreg32: is_jmp32);
+> 		 ...
+>                          reg1->var_off =3D tnum_and(a: reg1->var_off, b: =
+tnum_const(value: ~val));
+> 		 ...
+>                  break;
+>
+> And after suggested change this part would be executed only if tnum
+> bounds can be changed by jset. So, this eliminates at-least a
+> sub-class of a problem.
 
-[...]
+But I think the program below would still be problematic:
 
-> > check_cfg(), right, thank you.
-> > But still, this feels like an artificial limitation.
-> > Just because we have a check_cfg() pass as a separate thing we need
-> > this hint.
->=20
-> and insn_successors().
-> All of them have to work before the main verifier analysis.
+SEC("socket")
+__success
+__retval(0)
+__naked void jset_bug1(void)
+{
+        asm volatile ("                                 \
+        call %[bpf_get_prandom_u32];                    \
+        if r0 < 2 goto 1f;                              \
+        r0 |=3D 1;                                        \
+        if r0 & -2 goto 1f;                             \
+1:      r0 =3D 0;                                         \
+        exit;                                           \
+"       :
+        : __imm(bpf_get_prandom_u32)
+        : __clobber_all);
+}
 
-Yeah, I see.
-In theory, it shouldn't be hard to write a reaching definitions
-analysis and make it do an additional pass once a connection between
-gotox and a map is established.  And have this run before main
-verification pass.
-
-I'll modify llvm branch to emit the label.
+The possible_r0 would be changed by `if r0 & -2`, so new rule will not hit.
+And the problem remains unsolved. I think we need to reset min/max
+bounds in regs_refine_cond_op for JSET:
+- in some cases range is more precise than tnum
+- in these cases range cannot be compressed to a tnum
+- predictions in jset are done for a tnum
+- to avoid issues when narrowing tnum after prediction, forget the
+  range.
 
