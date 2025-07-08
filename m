@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-62649-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62650-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD946AFC57C
-	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 10:26:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 967FCAFC572
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 10:25:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 441E156292D
-	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 08:25:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B63743AC57A
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 08:25:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 926BB2BF3EB;
-	Tue,  8 Jul 2025 08:23:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51D8E2BDC36;
+	Tue,  8 Jul 2025 08:24:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Kds35jWk"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DmPl5xSJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46EF772623
-	for <bpf@vger.kernel.org>; Tue,  8 Jul 2025 08:23:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05D9429DB77
+	for <bpf@vger.kernel.org>; Tue,  8 Jul 2025 08:24:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751963032; cv=none; b=lGdDXF0asyD/mqSpm9+U10XEieTj09IE5Roc5qlqKHw6WfoFyfpQp7KZv8m17HqC1Xdhnye+j1kSVNVCNZgYfLD/6tNh7OyQJDKxYbBmZAs+Xv0LXsxKz1610TPyQG3ToRo2+3I4K9i+NGtx3aiEf0vURbN7mojDDSzS/DwYOlY=
+	t=1751963053; cv=none; b=ZTiaoOReLt+KB4k0gRfxdeIFRnSWgrx162u4YnPFCvB03VBS8R6Py1+Be500DXHahow9yJdt8OQ92+Dg1oX5PDM3QTtla6zWRWNmLIAhLge5baVRA1rj7N1kTo4v8rNfKDOVbsuLQH9XbscqpLDFAl2mNw57SEik2r5pOxG9uBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751963032; c=relaxed/simple;
-	bh=IfzLpa9ofM5D3fXmX67qb3ZMbp8UBmv38FQ5oGdQiRY=;
+	s=arc-20240116; t=1751963053; c=relaxed/simple;
+	bh=SqfaLR8/C5jzJtwP4LoXDHtISetJup6uWVH5ey3lMaw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=atJuM7zFT4bQIfsMClJJVBT0cITQ5ekO1kGNc5/15o+KrY565QHd+ckEkFh3mJlPrR6swZK4LYRr29KrrlI52ja5kb2cSqBoDWPkqFRtCZRoxKxYbCUW2wAJVyLmoCso9DvAKGOOrceoIxXjOq1U1kWsGFemW3NPUyWQf/0TNZ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Kds35jWk; arc=none smtp.client-ip=95.215.58.186
+	 MIME-Version; b=MyUcv3vIXPz3Qb1lDTsBp1Cd+ziFllT2HD8wd8L90Lzj2m/slET8wYb8iz8H5CNFifuW+HN4XxlnH5D2f94gjdSfP/Ua0k32kONvU4l7NQIzBpp0b73ojlDkZ58VSzuuGJ2QTQMTJPF/GWzExiHq8bgL8UAfrIt4rbQJjs0etFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DmPl5xSJ; arc=none smtp.client-ip=91.218.175.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1751963028;
+	t=1751963049;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ri0kPDDK6KMLWcWYPPkrrtf19kFhVkAh3t65eq9med4=;
-	b=Kds35jWk/E3efhCVF6+tNydCIutbg6HxLEznpEdX0GU1LB6y88bVRJ+waQV8E0vQu8vQLF
-	SYbTVuCFB3PCZT0y2KcatFt1T2o05KJUQRLnVcZHjSCc2hVi759mTpNS82d2GaIhoC+Hwj
-	MlQvNoklAQuU800fyFB22aumo/xhg70=
+	bh=iCW68eGUYsLpHCGaD0r9aeEIjmFEKVXrBCPoykv6/AU=;
+	b=DmPl5xSJ7weZXo9JRp9dAi4d2vWpQypoh4HhzC9fiVQGYMBZvEQltZOgyqijRl0ki/Vize
+	HQlqrR3i84nE7F9nkGjYdJjZDTn/MSnA87TsdaYHUcvYCDzB7IkJaqxWLZlQrdmpWSEtcz
+	Pi+Yq1LYE0XPvQ8QXHeCO9UypMziu6Q=
 From: Tao Chen <chen.dylane@linux.dev>
 To: daniel@iogearbox.net,
 	razor@blackwall.org,
@@ -78,9 +78,9 @@ Cc: bpf@vger.kernel.org,
 	netfilter-devel@vger.kernel.org,
 	coreteam@netfilter.org,
 	Tao Chen <chen.dylane@linux.dev>
-Subject: [PATCH bpf-next v2 3/7] bpf: Remove attach_type in sockmap_link
-Date: Tue,  8 Jul 2025 16:22:24 +0800
-Message-ID: <20250708082228.824766-4-chen.dylane@linux.dev>
+Subject: [PATCH bpf-next v2 4/7] bpf: Remove location field in tcx_link
+Date: Tue,  8 Jul 2025 16:22:25 +0800
+Message-ID: <20250708082228.824766-5-chen.dylane@linux.dev>
 In-Reply-To: <20250708082228.824766-1-chen.dylane@linux.dev>
 References: <20250708082228.824766-1-chen.dylane@linux.dev>
 Precedence: bulk
@@ -92,69 +92,86 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Use attach_type in bpf_link, and remove it in sockmap_link.
+Use attach_type in bpf_link to replace the location filed, and
+remove location field in tcx_link.
 
 Signed-off-by: Tao Chen <chen.dylane@linux.dev>
 ---
- net/core/sock_map.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ include/net/tcx.h |  1 -
+ kernel/bpf/tcx.c  | 13 ++++++-------
+ 2 files changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index fbe9a33ddf1..5947b38e4f8 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -1709,7 +1709,6 @@ EXPORT_SYMBOL_GPL(sock_map_close);
- struct sockmap_link {
+diff --git a/include/net/tcx.h b/include/net/tcx.h
+index 5ce0ce9e0c0..23a61af1354 100644
+--- a/include/net/tcx.h
++++ b/include/net/tcx.h
+@@ -20,7 +20,6 @@ struct tcx_entry {
+ struct tcx_link {
  	struct bpf_link link;
- 	struct bpf_map *map;
--	enum bpf_attach_type attach_type;
+ 	struct net_device *dev;
+-	u32 location;
  };
  
- static void sock_map_link_release(struct bpf_link *link)
-@@ -1721,7 +1720,7 @@ static void sock_map_link_release(struct bpf_link *link)
- 		goto out;
+ static inline void tcx_set_ingress(struct sk_buff *skb, bool ingress)
+diff --git a/kernel/bpf/tcx.c b/kernel/bpf/tcx.c
+index e6a14f408d9..efd987ea687 100644
+--- a/kernel/bpf/tcx.c
++++ b/kernel/bpf/tcx.c
+@@ -142,7 +142,7 @@ static int tcx_link_prog_attach(struct bpf_link *link, u32 flags, u32 id_or_fd,
+ 				u64 revision)
+ {
+ 	struct tcx_link *tcx = tcx_link(link);
+-	bool created, ingress = tcx->location == BPF_TCX_INGRESS;
++	bool created, ingress = link->attach_type == BPF_TCX_INGRESS;
+ 	struct bpf_mprog_entry *entry, *entry_new;
+ 	struct net_device *dev = tcx->dev;
+ 	int ret;
+@@ -169,7 +169,7 @@ static int tcx_link_prog_attach(struct bpf_link *link, u32 flags, u32 id_or_fd,
+ static void tcx_link_release(struct bpf_link *link)
+ {
+ 	struct tcx_link *tcx = tcx_link(link);
+-	bool ingress = tcx->location == BPF_TCX_INGRESS;
++	bool ingress = link->attach_type == BPF_TCX_INGRESS;
+ 	struct bpf_mprog_entry *entry, *entry_new;
+ 	struct net_device *dev;
+ 	int ret = 0;
+@@ -204,7 +204,7 @@ static int tcx_link_update(struct bpf_link *link, struct bpf_prog *nprog,
+ 			   struct bpf_prog *oprog)
+ {
+ 	struct tcx_link *tcx = tcx_link(link);
+-	bool ingress = tcx->location == BPF_TCX_INGRESS;
++	bool ingress = link->attach_type == BPF_TCX_INGRESS;
+ 	struct bpf_mprog_entry *entry, *entry_new;
+ 	struct net_device *dev;
+ 	int ret = 0;
+@@ -260,8 +260,8 @@ static void tcx_link_fdinfo(const struct bpf_link *link, struct seq_file *seq)
  
- 	WARN_ON_ONCE(sock_map_prog_update(sockmap_link->map, NULL, link->prog, link,
--					  sockmap_link->attach_type));
-+					  link->attach_type));
+ 	seq_printf(seq, "ifindex:\t%u\n", ifindex);
+ 	seq_printf(seq, "attach_type:\t%u (%s)\n",
+-		   tcx->location,
+-		   tcx->location == BPF_TCX_INGRESS ? "ingress" : "egress");
++		   link->attach_type,
++		   link->attach_type == BPF_TCX_INGRESS ? "ingress" : "egress");
+ }
  
- 	bpf_map_put_with_uref(sockmap_link->map);
- 	sockmap_link->map = NULL;
-@@ -1772,7 +1771,7 @@ static int sock_map_link_update_prog(struct bpf_link *link,
- 	}
+ static int tcx_link_fill_info(const struct bpf_link *link,
+@@ -276,7 +276,7 @@ static int tcx_link_fill_info(const struct bpf_link *link,
+ 	rtnl_unlock();
  
- 	ret = sock_map_prog_link_lookup(sockmap_link->map, &pprog, &plink,
--					sockmap_link->attach_type);
-+					link->attach_type);
- 	if (ret)
- 		goto out;
- 
-@@ -1817,7 +1816,7 @@ static int sock_map_link_fill_info(const struct bpf_link *link,
- 	u32 map_id = sock_map_link_get_map_id(sockmap_link);
- 
- 	info->sockmap.map_id = map_id;
--	info->sockmap.attach_type = sockmap_link->attach_type;
-+	info->sockmap.attach_type = link->attach_type;
+ 	info->tcx.ifindex = ifindex;
+-	info->tcx.attach_type = tcx->location;
++	info->tcx.attach_type = link->attach_type;
  	return 0;
  }
  
-@@ -1828,7 +1827,7 @@ static void sock_map_link_show_fdinfo(const struct bpf_link *link,
- 	u32 map_id = sock_map_link_get_map_id(sockmap_link);
- 
- 	seq_printf(seq, "map_id:\t%u\n", map_id);
--	seq_printf(seq, "attach_type:\t%u\n", sockmap_link->attach_type);
-+	seq_printf(seq, "attach_type:\t%u\n", link->attach_type);
+@@ -303,7 +303,6 @@ static int tcx_link_init(struct tcx_link *tcx,
+ {
+ 	bpf_link_init(&tcx->link, BPF_LINK_TYPE_TCX, &tcx_link_lops, prog,
+ 		      attr->link_create.attach_type);
+-	tcx->location = attr->link_create.attach_type;
+ 	tcx->dev = dev;
+ 	return bpf_link_prime(&tcx->link, link_primer);
  }
- 
- static const struct bpf_link_ops sock_map_link_ops = {
-@@ -1869,7 +1868,6 @@ int sock_map_link_create(const union bpf_attr *attr, struct bpf_prog *prog)
- 	bpf_link_init(&sockmap_link->link, BPF_LINK_TYPE_SOCKMAP, &sock_map_link_ops, prog,
- 		      attach_type);
- 	sockmap_link->map = map;
--	sockmap_link->attach_type = attach_type;
- 
- 	ret = bpf_link_prime(&sockmap_link->link, &link_primer);
- 	if (ret) {
 -- 
 2.48.1
 
