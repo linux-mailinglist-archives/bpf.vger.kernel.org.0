@@ -1,265 +1,175 @@
-Return-Path: <bpf+bounces-62618-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62620-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D907AFC081
-	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 04:10:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCA5CAFC097
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 04:12:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 677224A3949
-	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 02:10:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF5553AE406
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 02:11:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B695218EA1;
-	Tue,  8 Jul 2025 02:10:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77F1E220F59;
+	Tue,  8 Jul 2025 02:11:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UA+CrwH3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FEFE217705
-	for <bpf@vger.kernel.org>; Tue,  8 Jul 2025 02:10:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D91F8217719;
+	Tue,  8 Jul 2025 02:11:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751940605; cv=none; b=iQikG+N1qofbCwQS7We/7o0GN/lhZfhcaatvTJJ/pWKcjQ/+3VBrMcPyuJ4PBusUJU68yF91XBl5VBtiAzdCVT9zkh9DmmhhEadVVlM3pXRBpESJM5/D4Pzu1LBg2BmL/BR2+NyLz6XxWHAe3OTU/2vuiGwGm8kEYdBMS5R2t9g=
+	t=1751940718; cv=none; b=EQG1lBmyAzA6LEJyQSQSZmZ3lZf/hbJrOHwZAlE2UL+nezc9WcOHNA/RZXDyJ9pNoP/leMlBM7mOU5XO7B76i3Q7jnKqbznxRWWEGUZZ18kDLBuAuyo4uAyOuwhzvgFiHh7DvArEmMflbpjj2re5Tcpizg85dZPubkNUNvWNn1s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751940605; c=relaxed/simple;
-	bh=nPoa9g7lnOgTge57uXZ4/r1PgsjYwR866xWBWXFJoZ0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=i3fGbspE1Yx/8tV2BHgaV6Prclhumpb97gcV9ip0CpBSef18dam2we3yKJH9RDj2rRjNoEfQWrDONNh2F9tSWh+uisPKS0x3ZOzeqdmfpsz4IIcU0EFAiJOlG/ygJLh3rEZaa+FSDsNbaJ9wKrppTJxzcsvSIuuiZDVxuxy5GBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: a14ecf705ba011f0b29709d653e92f7d-20250708
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.45,REQID:f64999b8-c26a-4fda-b729-4c565092a006,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:-5
-X-CID-INFO: VERSION:1.1.45,REQID:f64999b8-c26a-4fda-b729-4c565092a006,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-5
-X-CID-META: VersionHash:6493067,CLOUDID:6aafdfa688ab3768ca8d19706e0c831e,BulkI
-	D:2507081009517YHUL4CD,BulkQuantity:0,Recheck:0,SF:17|19|24|44|64|66|78|80
-	|81|82|83|102|841,TC:nil,Content:0|51,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,B
-	ulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR
-	:0,BRE:0,ARC:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: a14ecf705ba011f0b29709d653e92f7d-20250708
-X-User: jianghaoran@kylinos.cn
-Received: from [192.168.31.67] [(223.70.159.239)] by mailgw.kylinos.cn
-	(envelope-from <jianghaoran@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 1372483969; Tue, 08 Jul 2025 10:09:50 +0800
-Message-ID: <714d8ac3f0706376c76632e007b9e61d664fa9eb.camel@kylinos.cn>
-Subject: =?gb2312?Q?=BB=D8=B8=B4=A3=BA=5BPATCH?= 1/2] LoongArch: BPF:
- Optimize the calculation method of jmp_offset in the emit_bpf_tail_call
- function
-From: jianghaoran <jianghaoran@kylinos.cn>
-To: Hengqi Chen <hengqi.chen@gmail.com>
-Cc: loongarch@lists.linux.dev, bpf@vger.kernel.org, kernel@xen0n.name, 
- chenhuacai@kernel.org, yangtiezhu@loongson.cn, jolsa@kernel.org,
- haoluo@google.com,  sdf@fomichev.me, kpsingh@kernel.org,
- john.fastabend@gmail.com,  yonghong.song@linux.dev, song@kernel.org,
- eddyz87@gmail.com, martin.lau@linux.dev,  andrii@kernel.org,
- daniel@iogearbox.net, ast@kernel.org
-Date: Tue, 08 Jul 2025 10:09:46 +0800
-In-Reply-To: <CAEyhmHSambz-UR8Aa1jRz+EuF8kH6=46HW18b56pAZTB7MoZVw@mail.gmail.com>
-References: <20250701074110.525363-1-jianghaoran@kylinos.cn>
-	 <20250701074110.525363-2-jianghaoran@kylinos.cn>
-	 <CAEyhmHSambz-UR8Aa1jRz+EuF8kH6=46HW18b56pAZTB7MoZVw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.1-2kord0k2.4.25.1 
+	s=arc-20240116; t=1751940718; c=relaxed/simple;
+	bh=HUAMBVlHDy1ZZzedd5ag1omB8qFZjUS0QyoIpq9v38I=;
+	h=Message-ID:Date:From:To:Cc:Subject; b=WRylJ/EmG1mEwlEuhyXApPZDNxLK7kcG14MaUJqshpAjSIaOb+QV9jZ41vI0PE1xWtH5k/trs8oQJDHzp4DHIMdKo7qJ1sGoVyozXp2hyMSMxR6AmqCYs7AzvvuuL3H47DdqVe7cVeHQSwl/Rpq6Yi4mC4ypMABzwhMtQE0No68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UA+CrwH3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60560C4CEF5;
+	Tue,  8 Jul 2025 02:11:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1751940718;
+	bh=HUAMBVlHDy1ZZzedd5ag1omB8qFZjUS0QyoIpq9v38I=;
+	h=Date:From:To:Cc:Subject:From;
+	b=UA+CrwH33vbHJ5WsV3jEQD9MJAUCtMna90WFO7Xk52c6yzQ3wtcNLFhbudxJi4nsy
+	 NfmloDP/X9tbc712OZHILt6wC1FbnWHRindi0RAge89oaxHMKMAAkINeUrRw01bEXW
+	 6qQIMCBEHbqdVyO/OSRDUrGDezpAig2YAPrym+tdglimM7MWtOuV/5MUGqGqZ5gX4+
+	 FTe/ryqGq/PFcUQzrSWNUhoEPfB3yLXzvMgHzMuFqs9b/GY4fCdrtWxA3QSwkAnRk4
+	 NFfc5zVQyx9TpuOB4/+BTKmw5hkzdI+ic46l1QjllZ8XJIUCMpT9Xz+mmyXESRANIl
+	 0pxG3EgweO2iQ==
+Received: from rostedt by gandalf with local (Exim 4.98.2)
+	(envelope-from <rostedt@kernel.org>)
+	id 1uYxoM-00000000DaZ-26iW;
+	Mon, 07 Jul 2025 22:11:58 -0400
+Message-ID: <20250708021115.894007410@kernel.org>
+User-Agent: quilt/0.68
+Date: Mon, 07 Jul 2025 22:11:15 -0400
+From: Steven Rostedt <rostedt@kernel.org>
+To: linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org,
+ x86@kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Josh Poimboeuf <jpoimboe@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Ingo Molnar <mingo@kernel.org>,
+ Jiri Olsa <jolsa@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Andrii Nakryiko <andrii@kernel.org>,
+ Indu Bhagat <indu.bhagat@oracle.com>,
+ "Jose E. Marchesi" <jemarch@gnu.org>,
+ Beau Belgrave <beaub@linux.microsoft.com>,
+ Jens Remus <jremus@linux.ibm.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Jens Axboe <axboe@kernel.dk>,
+ Florian Weimer <fweimer@redhat.com>,
+ Sam James <sam@gentoo.org>
+Subject: [PATCH v8 00/12] unwind_deferred: Implement sframe handling
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
 
+This code is based on top of:
 
+ https://lore.kernel.org/linux-trace-kernel/20250708012239.268642741@kernel.org/ 
+  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
+   unwind/core
 
+This is the implementation of parsing the SFrame section in an ELF file.
+It's a continuation of Josh's last work that can be found here:
 
-在 2025-07-07星期一的 20:29 +0800，Hengqi Chen写道：
-> Hi Haoran,
-> 
-> On Tue, Jul 1, 2025 at 3:41 PM Haoran Jiang <
-> jianghaoran@kylinos.cn
-> > wrote:
-> > For a ebpf subprog JIT，the last call bpf_int_jit_compile
-> > function will
-> > directly enter the skip_init_ctx process. At this point,
-> > out_offset = -1,
-> > the jmp_offset in emit_bpf_tail_call is calculated
-> > by #define jmp_offset (out_offset - (cur_offset)) is a negative
-> > number,
-> > which does not meet expectations.The final generated assembly
-> > as follow.
-> > 
-> 
-> OK, so this can be rephrased as:
-> The extra pass of bpf_int_jit_compile() skips JIT context
-> initialization which
-> essentially skips offset calculation leaving out_offset = -1 ...
-> 
-> > 54:     bgeu            $a2, $t1, -8        # 0x0000004c
-> > 58:     addi.d          $a6, $s5, -1
-> > 5c:     bltz            $a6, -16            # 0x0000004c
-> > 60:     alsl.d          $t2, $a2, $a1, 0x3
-> > 64:     ld.d            $t2, $t2, 264
-> > 68:     beq             $t2, $zero, -28     # 0x0000004c
-> > 
-> > Before apply this patch, the follow test case will reveal soft
-> > lock issues.
-> > 
-> > cd tools/testing/selftests/bpf/
-> > ./test_progs --allow=tailcalls/tailcall_bpf2bpf_1
-> > 
-> > dmesg:
-> > watchdog: BUG: soft lockup - CPU#2 stuck for 26s!
-> > [test_progs:25056]
-> > 
-> 
-> Add a Fixes tag.
-> 
-> > Signed-off-by: Haoran Jiang <
-> > jianghaoran@kylinos.cn
-> > >
-> > ---
-> >  arch/loongarch/net/bpf_jit.c | 28 +++++++++-------------------
-> >  1 file changed, 9 insertions(+), 19 deletions(-)
-> > 
-> > diff --git a/arch/loongarch/net/bpf_jit.c
-> > b/arch/loongarch/net/bpf_jit.c
-> > index fa1500d4aa3e..d85490e7de89 100644
-> > --- a/arch/loongarch/net/bpf_jit.c
-> > +++ b/arch/loongarch/net/bpf_jit.c
-> > @@ -208,9 +208,7 @@ bool bpf_jit_supports_far_kfunc_call(void)
-> >         return true;
-> >  }
-> > 
-> > -/* initialized on the first pass of build_body() */
-> > -static int out_offset = -1;
-> > -static int emit_bpf_tail_call(struct jit_ctx *ctx)
-> > +static int emit_bpf_tail_call(int insn, struct jit_ctx *ctx)
-> >  {
-> 
-> Make ctx the first argument ?
-> 
-> >         int off;
-> >         u8 tcc = tail_call_reg(ctx);
-> > @@ -220,9 +218,8 @@ static int emit_bpf_tail_call(struct
-> > jit_ctx *ctx)
-> >         u8 t2 = LOONGARCH_GPR_T2;
-> >         u8 t3 = LOONGARCH_GPR_T3;
-> >         const int idx0 = ctx->idx;
-> > -
-> > -#define cur_offset (ctx->idx - idx0)
-> > -#define jmp_offset (out_offset - (cur_offset))
-> 
-> Reuse this jmp_offset macro, so that you don't have to repeat it
-> 3
-> times below, WDYT ?
-> 
-> > +       int tc_ninsn = 0;
-> > +       int jmp_offset = 0;
-> > 
-> >         /*
-> >          * a0: &ctx
-> > @@ -232,8 +229,11 @@ static int emit_bpf_tail_call(struct
-> > jit_ctx *ctx)
-> >          * if (index >= array->map.max_entries)
-> >          *       goto out;
-> >          */
-> > +       tc_ninsn = insn ? ctx->offset[insn+1] - ctx-
-> > >offset[insn] :
-> > +               ctx->offset[0];
-> >         off = offsetof(struct bpf_array, map.max_entries);
-> >         emit_insn(ctx, ldwu, t1, a1, off);
-> > +       jmp_offset = tc_ninsn - (ctx->idx - idx0);
-> >         /* bgeu $a2, $t1, jmp_offset */
-> >         if (emit_tailcall_jmp(ctx, BPF_JGE, a2, t1, jmp_offset)
-> > < 0)
-> >                 goto toofar;
-> > @@ -243,6 +243,7 @@ static int emit_bpf_tail_call(struct
-> > jit_ctx *ctx)
-> >          *       goto out;
-> >          */
-> >         emit_insn(ctx, addid, REG_TCC, tcc, -1);
-> > +       jmp_offset = tc_ninsn - (ctx->idx - idx0);
-> >         if (emit_tailcall_jmp(ctx, BPF_JSLT, REG_TCC,
-> > LOONGARCH_GPR_ZERO, jmp_offset) < 0)
-> >                 goto toofar;
-> > 
-> > @@ -254,6 +255,7 @@ static int emit_bpf_tail_call(struct
-> > jit_ctx *ctx)
-> >         emit_insn(ctx, alsld, t2, a2, a1, 2);
-> >         off = offsetof(struct bpf_array, ptrs);
-> >         emit_insn(ctx, ldd, t2, t2, off);
-> > +       jmp_offset = tc_ninsn - (ctx->idx - idx0);
-> >         /* beq $t2, $zero, jmp_offset */
-> >         if (emit_tailcall_jmp(ctx, BPF_JEQ, t2,
-> > LOONGARCH_GPR_ZERO, jmp_offset) < 0)
-> >                 goto toofar;
-> > @@ -263,22 +265,11 @@ static int emit_bpf_tail_call(struct
-> > jit_ctx *ctx)
-> >         emit_insn(ctx, ldd, t3, t2, off);
-> >         __build_epilogue(ctx, true);
-> > 
-> > -       /* out: */
-> > -       if (out_offset == -1)
-> > -               out_offset = cur_offset;
-> > -       if (cur_offset != out_offset) {
-> > -               pr_err_once("tail_call out_offset = %d,
-> > expected %d!\n",
-> > -                           cur_offset, out_offset);
-> > -               return -1;
-> > -       }
-> > -
-> >         return 0;
-> > 
-> >  toofar:
-> >         pr_info_once("tail_call: jump too far\n");
-> >         return -1;
-> > -#undef cur_offset
-> > -#undef jmp_offset
-> >  }
-> > 
-> >  static void emit_atomic(const struct bpf_insn *insn, struct
-> > jit_ctx *ctx)
-> > @@ -916,7 +907,7 @@ static int build_insn(const struct bpf_insn
-> > *insn, struct jit_ctx *ctx, bool ext
-> >         /* tail call */
-> >         case BPF_JMP | BPF_TAIL_CALL:
-> >                 mark_tail_call(ctx);
-> > -               if (emit_bpf_tail_call(ctx) < 0)
-> > +               if (emit_bpf_tail_call(i, ctx) < 0)
-> >                         return -EINVAL;
-> >                 break;
-> > 
-> > @@ -1342,7 +1333,6 @@ struct bpf_prog
-> > *bpf_int_jit_compile(struct bpf_prog *prog)
-> >         if (tmp_blinded)
-> >                 bpf_jit_prog_release_other(prog, prog ==
-> > orig_prog ? tmp : orig_prog);
-> > 
-> > -       out_offset = -1;
-> > 
-> >         return prog;
-> > 
-> > --
-> > 2.43.0
-> > 
-> 
-> Cheers,
-> ---
-> Hengqi
+   https://lore.kernel.org/all/cover.1737511963.git.jpoimboe@kernel.org/
 
-Hi  Hengqi, 
+Currently the only way to get a user space stack trace from a stack
+walk (and not just copying large amount of user stack into the kernel
+ring buffer) is to use frame pointers. This has a few issues. The biggest
+one is that compiling frame pointers into every application and library
+has been shown to cause performance overhead.
 
-Thank you for the review. I will make revisions according to your
-comments.
+Another issue is that the format of the frames may not always be consistent
+between different compilers and some architectures (s390) has no defined
+format to do a reliable stack walk. The only way to perform user space
+profiling on these architectures is to copy the user stack into the kernel
+buffer.
 
+SFrames[1] is now supported in gcc binutils and soon will also be supported
+by LLVM. SFrames acts more like ORC, and lives in the ELF executable
+file as its own section. Like ORC it has two tables where the first table
+is sorted by instruction pointers (IP) and using the current IP and finding
+it's entry in the first table, it will take you to the second table which
+will tell you where the return address of the current function is located
+and then you can use that address to look it up in the first table to find
+the return address of that function, and so on. This performs a user
+space stack walk.
+
+Now because the SFrame section lives in the ELF file it needs to be faulted
+into memory when it is used. This means that walking the user space stack
+requires being in a faultable context. As profilers like perf request a stack
+trace in interrupt or NMI context, it cannot do the walking when it is
+requested. Instead it must be deferred until it is safe to fault in user
+space. One place this is known to be safe is when the task is about to return
+back to user space.
+
+This series makes the deferred unwind code implement SFrames.
+
+[1] https://sourceware.org/binutils/wiki/sframe
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
+unwind/sframe
+
+The unwind/main branch is just unwind/sframe merged into unwind/perf
+and can be used for testing with perf.
+
+Changes since v7: https://lore.kernel.org/linux-trace-kernel/20250701184939.026626626@goodmis.org/
+
+- Simply rebased on top of the latest unwind/core
+
+Josh Poimboeuf (12):
+      unwind_user/sframe: Add support for reading .sframe headers
+      unwind_user/sframe: Store sframe section data in per-mm maple tree
+      x86/uaccess: Add unsafe_copy_from_user() implementation
+      unwind_user/sframe: Add support for reading .sframe contents
+      unwind_user/sframe: Detect .sframe sections in executables
+      unwind_user/sframe: Wire up unwind_user to sframe
+      unwind_user/sframe/x86: Enable sframe unwinding on x86
+      unwind_user/sframe: Remove .sframe section on detected corruption
+      unwind_user/sframe: Show file name in debug output
+      unwind_user/sframe: Enable debugging in uaccess regions
+      unwind_user/sframe: Add .sframe validation option
+      unwind_user/sframe: Add prctl() interface for registering .sframe sections
+
+----
+ MAINTAINERS                       |   1 +
+ arch/Kconfig                      |  23 ++
+ arch/x86/Kconfig                  |   1 +
+ arch/x86/include/asm/mmu.h        |   2 +-
+ arch/x86/include/asm/uaccess.h    |  39 ++-
+ fs/binfmt_elf.c                   |  49 ++-
+ include/linux/mm_types.h          |   3 +
+ include/linux/sframe.h            |  60 ++++
+ include/linux/unwind_user_types.h |   1 +
+ include/uapi/linux/elf.h          |   1 +
+ include/uapi/linux/prctl.h        |   6 +-
+ kernel/fork.c                     |  10 +
+ kernel/sys.c                      |   9 +
+ kernel/unwind/Makefile            |   3 +-
+ kernel/unwind/sframe.c            | 612 ++++++++++++++++++++++++++++++++++++++
+ kernel/unwind/sframe.h            |  71 +++++
+ kernel/unwind/sframe_debug.h      |  99 ++++++
+ kernel/unwind/user.c              |  25 +-
+ mm/init-mm.c                      |   2 +
+ 19 files changed, 998 insertions(+), 19 deletions(-)
+ create mode 100644 include/linux/sframe.h
+ create mode 100644 kernel/unwind/sframe.c
+ create mode 100644 kernel/unwind/sframe.h
+ create mode 100644 kernel/unwind/sframe_debug.h
 
