@@ -1,53 +1,53 @@
-Return-Path: <bpf+bounces-62610-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62609-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7083AFC055
-	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 04:01:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BBCDAFC053
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 04:01:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9A34172F7A
-	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 02:01:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BCD9425EAE
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 02:00:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BB3B223DE7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63DBE220F59;
 	Tue,  8 Jul 2025 02:00:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C6tplq2U"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RJEQJi3v"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCA54214A94;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC09B21322F;
 	Tue,  8 Jul 2025 02:00:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751940050; cv=none; b=M3w0zf4PjfZnpSwZ036anxUMr/kFxs53TDhxrON56+tf5AxUE2U5PCfbmfaOgB/FSEqQlX39J4Vds/gYhj66hSs7nrBrXijvaEJivg1xxR7VVWezS8OrEYGr7Aww5LVzQY37tvmf3JGNeRIMjqCspeprdu3Oopy3Ss3GmVIVZLI=
+	t=1751940050; cv=none; b=Oy5vxvNQIcAWlchFpkh4w56xDfQozgjhrliEOjpMN0utZ3Sdu2uVweZFgPfK0B2IbZIleCT4Osb51mfU/aAOr46gu2CXryLYBT1G4C8AnynRuQ9oI+Z5v/FCyRUHXWxv+PbbJzGTs3M6ijSdo5pp5EZQ9cD8fmhQMfNTNnwF/Ys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1751940050; c=relaxed/simple;
-	bh=mI3D1M5ZCCJZqFgS/KQwGydDItxmqMt6XzVMmgcg8Qs=;
+	bh=EDFYhtIoHL2t5VxVx/btjvGxq6ZgeYcUC021YO47Sok=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=YifBzLWLljO5jvPAs5PpoAE0wQBoFnJFzUN8hCQTCgEUtz/ymIQcHGR+BY+0tNZ4+K0oD6szOBAN2BepCXS6bifMxe8GLHwnRA3lkWCLhzen2TpflOIBML/B0VYMM9VANnjZYd5OiyyE+ufGoV1A4oXeCBuZaUkF3XgGgb0xCVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C6tplq2U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71FA6C4CEF6;
+	 Content-Type; b=KAZ5QKdHgY/etFOLTzg+7yYZHjfFw8cHbXsPPZo8DlbYfs2ArNtYfm5CcsuWCWlo6Rc+CSOaPsVecCFKkNyGcimOdNzZLXaI4S+97zeIV5Q2nIo36Im8kIE28Ar23YynzuAEoE9ETmfpdWFDSkd29QXgBWMCn8sOfGKidDe52F4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RJEQJi3v; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A05F2C4CEE3;
 	Tue,  8 Jul 2025 02:00:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1751940050;
-	bh=mI3D1M5ZCCJZqFgS/KQwGydDItxmqMt6XzVMmgcg8Qs=;
+	bh=EDFYhtIoHL2t5VxVx/btjvGxq6ZgeYcUC021YO47Sok=;
 	h=Date:From:To:Cc:Subject:References:From;
-	b=C6tplq2U5kkKv9ogIRuQJzouarUUYG3mTTwf6aCFKm/cSQdXLyx5ZjATHTubL9oBS
-	 WB8woCLn5rdzKJwPOUZGxUwjbf5iZnI8jsw8imh3tsjN5bSty1MCCYWxNEHWWNOFYc
-	 qBYbkvlPkxNr7LYHi/pHqTts7isQJu2x1tU9HKIFqPBeB8kwbdKru9pzempYQZqJQ/
-	 l8OJndA8eeuWuNtrKTt/Uemck0sfz3y3W8b6orCJom8eThm/+klm/bOjMi/ABj0NBy
-	 mrpl2CHteKet5/lSRVkAJdT777bsT26FCn7CI3lHvEZD6pQh01kUkj3f/cnA2wyV2L
-	 ty8GKntwnsUOw==
+	b=RJEQJi3vo0kyt8p4l/HveockeAFsAUqmlhZDXUL/wMs7PfsW1R7n9VVm7EkTl5oWV
+	 aikAfwPVnah0cSahGNcEbuzy1jzMvjx2+VqrG5T6Fpqjlema0GnL420BXUTYDSUySl
+	 8lOAOQXuBgpXggXpJDWD5YpM1m6OCcSEQ2S+n6AXBtzzCMczF/RtbqBYEQuv9i54iL
+	 DZDpBTTcEfj/WbD1A83sKK1+UKPHZ+z1+OIrLm+YBe/C+ssXlYfRZjhGn/tVPDz2+G
+	 /ueTs1fauPSu5SZ5wZ3WrV5bmitNHmjsx5cMsLVzARvNzVaL0AsoiueFzRBwj5kyZ3
+	 rbAPd9FECsXoQ==
 Received: from rostedt by gandalf with local (Exim 4.98.2)
 	(envelope-from <rostedt@kernel.org>)
-	id 1uYxda-00000000D5d-35OC;
+	id 1uYxda-00000000D67-3nc9;
 	Mon, 07 Jul 2025 22:00:50 -0400
-Message-ID: <20250708020050.582912128@kernel.org>
+Message-ID: <20250708020050.757867061@kernel.org>
 User-Agent: quilt/0.68
-Date: Mon, 07 Jul 2025 22:00:07 -0400
+Date: Mon, 07 Jul 2025 22:00:08 -0400
 From: Steven Rostedt <rostedt@kernel.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org,
@@ -71,7 +71,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Jens Axboe <axboe@kernel.dk>,
  Florian Weimer <fweimer@redhat.com>,
  Sam James <sam@gentoo.org>
-Subject: [PATCH v13 04/11] perf: Simplify get_perf_callchain() user logic
+Subject: [PATCH v13 05/11] perf: Skip user unwind if the task is a kernel thread
 References: <20250708020003.565862284@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -83,50 +83,32 @@ Content-Type: text/plain; charset=UTF-8
 
 From: Josh Poimboeuf <jpoimboe@kernel.org>
 
-Simplify the get_perf_callchain() user logic a bit.  task_pt_regs()
-should never be NULL.
+If the task is not a user thread, there's no user stack to unwind.
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- kernel/events/callchain.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+Changes since v11: https://lore.kernel.org/20250625231622.509379386@goodmis.org
 
-diff --git a/kernel/events/callchain.c b/kernel/events/callchain.c
-index 5982d18f169b..808c0d7a31fa 100644
---- a/kernel/events/callchain.c
-+++ b/kernel/events/callchain.c
-@@ -247,21 +247,19 @@ get_perf_callchain(struct pt_regs *regs, bool kernel, bool user,
- 	if (user && !crosstask) {
- 		if (!user_mode(regs)) {
- 			if (current->flags & (PF_KTHREAD | PF_USER_WORKER))
--				regs = NULL;
--			else
--				regs = task_pt_regs(current);
-+				goto exit_put;
-+			regs = task_pt_regs(current);
- 		}
- 
--		if (regs) {
--			if (add_mark)
--				perf_callchain_store_context(&ctx, PERF_CONTEXT_USER);
-+		if (add_mark)
-+			perf_callchain_store_context(&ctx, PERF_CONTEXT_USER);
- 
--			start_entry_idx = entry->nr;
--			perf_callchain_user(&ctx, regs);
--			fixup_uretprobe_trampoline_entries(entry, start_entry_idx);
--		}
-+		start_entry_idx = entry->nr;
-+		perf_callchain_user(&ctx, regs);
-+		fixup_uretprobe_trampoline_entries(entry, start_entry_idx);
- 	}
- 
-+exit_put:
- 	put_callchain_entry(rctx);
- 
- 	return entry;
+- Added test against PF_USER_WORKER as well as PF_KTHREAD
+
+ kernel/events/core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index cf35dc707ad5..a594bd01d5bc 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -8166,7 +8166,8 @@ struct perf_callchain_entry *
+ perf_callchain(struct perf_event *event, struct pt_regs *regs)
+ {
+ 	bool kernel = !event->attr.exclude_callchain_kernel;
+-	bool user   = !event->attr.exclude_callchain_user;
++	bool user   = !event->attr.exclude_callchain_user &&
++		!(current->flags & (PF_KTHREAD | PF_USER_WORKER));
+ 	/* Disallow cross-task user callchains. */
+ 	bool crosstask = event->ctx->task && event->ctx->task != current;
+ 	const u32 max_stack = event->attr.sample_max_stack;
 -- 
 2.47.2
 
