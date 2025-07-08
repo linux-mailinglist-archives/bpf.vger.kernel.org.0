@@ -1,99 +1,136 @@
-Return-Path: <bpf+bounces-62579-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62580-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E854BAFBF48
-	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 02:43:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 134D4AFBF62
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 02:45:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D77D1AA8477
-	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 00:43:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29DC14271DC
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 00:44:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1C7B1C8610;
-	Tue,  8 Jul 2025 00:43:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62BFE21B199;
+	Tue,  8 Jul 2025 00:43:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PQjfNYQH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tPAZdu6T"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 224DC1F949;
-	Tue,  8 Jul 2025 00:43:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D85C4218EA1;
+	Tue,  8 Jul 2025 00:43:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751935385; cv=none; b=tpveMR32KG7+nNfw+t4tMDKk2LAjsB7TMAnbUM5Vt1pj4t2WPxsbPridLuoFBoTAAAWi5AWR2W4nDdWZ26bxcXCran3iXMoAy12y4aVTS62SNNmkOAXXH1fPebjNt66OmZWGzQfjZGzIDqqCXcji37C2eS+4rP2IMlIIfG/K0vU=
+	t=1751935427; cv=none; b=RRXeyyfNpNvrjuy4TeCLb9a8Z9dxA7o7vD06ry1jxS30Gm7MpO2uD0NgKIml5HkUm2mpcYFvOoCY0IXo2tuPNWNtTBD32lW6Lra+niXO/DUCxkDEjnZQZ9BTT2jR5Sf6YNiyYeNIwwfK+vLGgmkzTV9JfAT2NXV7tZuiK+matZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751935385; c=relaxed/simple;
-	bh=rvRgTtkAbJ5UjetFFgsS85EbuGZzKRardxpRtim0slA=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=r4pX9LOFHNXCdLfhIDxRJZdLTROtisgMnYgOm91pBCiVYTjfjsDwZUdrO26ine8e5vtZWsWSt23t0tPQyCzw1t2Ur7XN1r3Rmiup9KrhVmQb39OG8TrbeaZHL+QQgu6fKmVvFEQ7N0P263b47d5pl/rgzxJrEmT+JxgEx1Wiy3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PQjfNYQH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB1EAC4CEF5;
-	Tue,  8 Jul 2025 00:43:04 +0000 (UTC)
+	s=arc-20240116; t=1751935427; c=relaxed/simple;
+	bh=OsxdDXKXe0QU2a4EA/UCYuWDTxhCuFMDmvt3V9Kv+BM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=GXIsO/Km+v7aESwqpOkCWEdDUjlet+nbe28RTpa6NmZnvwj+ER8bGupzXLR3VTn6ycKROczlqAcS4L1GRbwC8VWJMhJQvMU2k6usxA5i5iX8nEDJYoqEMrapI8u0jigrTAJBpya29/BsgrBhfdw737xaYJvBa1FksPpU29vD5MM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tPAZdu6T; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A4ECC4CEE3;
+	Tue,  8 Jul 2025 00:43:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751935385;
-	bh=rvRgTtkAbJ5UjetFFgsS85EbuGZzKRardxpRtim0slA=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=PQjfNYQHNErd2rqBlt4MVVNjPk7wMPMkVKp1BuBT85rsX0CMqcgxQ+cpPdZbdWahK
-	 N8hxQc4YxZpC0K9m+svR0zxoM3GgP/onSQI6ONxpGRuNq7fOh8Z4hVqg7W4NUZ/Tme
-	 Z8R62IUDx8pOWngQ5p96neKaIYlfHVtfbJEztbZe2v39WvlN1kI50fDkjNhUlKIN9z
-	 uD4hJVdmalvvGVnwwkIpbg0Wx+5dZcOX7ni8aNxvnQ7c4KrQ0hqz7KINZ+4KnqCAxs
-	 WxU+FghN9bfblv4lJIkQ/z9+/VAzjPyHf4g2OM+3dauz0Ds4FMbe2BRXtr3kl3Tt0s
-	 KeY4jFZHtOILg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33D32383BA04;
-	Tue,  8 Jul 2025 00:43:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1751935427;
+	bh=OsxdDXKXe0QU2a4EA/UCYuWDTxhCuFMDmvt3V9Kv+BM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=tPAZdu6TM33rYJ3PCvQbBIkRonbpfZONC5pyTLd9LsWQGVFJCf5XU4/WXDQDPujLC
+	 NLw1OS+GnQgwJp9EVUOoNavfeqxtX8djAQQT8bQl0zD/rZaJi2Zvd3T/BZhTlbao7c
+	 RCK5GVyIhF2mXWrT3LjxNwMMefTf+cegBwkieE0Eh/OKs+deFlBbk7f/i+l2QSE0Gt
+	 Ltf5X3GdwH+56HTypfzZGJUBbnS5DLlraYXhhx/YoqRZX/yWrO4gB6sv1Q+8B4mHBj
+	 HwQEhG26D9ArycFxI5zaATGK+ZqZTChF8F+Yp5jGPGoBscq5+rIwsuGYZlRXuxBMQ0
+	 Vk6EH5o2O6XIg==
+Date: Mon, 7 Jul 2025 17:43:46 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, Eric Dumazet
+ <eric.dumazet@gmail.com>, "David S. Miller" <davem@davemloft.net>, Paolo
+ Abeni <pabeni@redhat.com>, Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?=
+ <toke@toke.dk>, kernel-team@cloudflare.com, mfleming@cloudflare.com
+Subject: Re: [PATCH net-next V4] net: track pfmemalloc drops via
+ SKB_DROP_REASON_PFMEMALLOC
+Message-ID: <20250707174346.2211c46a@kernel.org>
+In-Reply-To: <175146472829.1363787.9293177520571232738.stgit@firesoul>
+References: <175146472829.1363787.9293177520571232738.stgit@firesoul>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] vsock: fix `vsock_proto` declaration
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <175193540775.3455828.16493006355772974081.git-patchwork-notify@kernel.org>
-Date: Tue, 08 Jul 2025 00:43:27 +0000
-References: <20250703112329.28365-1-sgarzare@redhat.com>
-In-Reply-To: <20250703112329.28365-1-sgarzare@redhat.com>
-To: Stefano Garzarella <sgarzare@redhat.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- bobby.eshleman@bytedance.com, kuba@kernel.org, horms@kernel.org,
- pabeni@redhat.com, mst@redhat.com, virtualization@lists.linux.dev,
- bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello:
-
-This patch was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Thu,  3 Jul 2025 13:23:29 +0200 you wrote:
-> From: Stefano Garzarella <sgarzare@redhat.com>
+On Wed, 02 Jul 2025 15:59:19 +0200 Jesper Dangaard Brouer wrote:
+> Add a new SKB drop reason (SKB_DROP_REASON_PFMEMALLOC) to track packets
+> dropped due to memory pressure. In production environments, we've observed
+> memory exhaustion reported by memory layer stack traces, but these drops
+> were not properly tracked in the SKB drop reason infrastructure.
 > 
-> From commit 634f1a7110b4 ("vsock: support sockmap"), `struct proto
-> vsock_proto`, defined in af_vsock.c, is not static anymore, since it's
-> used by vsock_bpf.c.
-> 
-> If CONFIG_BPF_SYSCALL is not defined, `make C=2` will print a warning:
->     $ make O=build C=2 W=1 net/vmw_vsock/
->       ...
->       CC [M]  net/vmw_vsock/af_vsock.o
->       CHECK   ../net/vmw_vsock/af_vsock.c
->     ../net/vmw_vsock/af_vsock.c:123:14: warning: symbol 'vsock_proto' was not declared. Should it be static?
-> 
-> [...]
+> While most network code paths now properly report pfmemalloc drops, some
+> protocol-specific socket implementations still use sk_filter() without
+> drop reason tracking:
+> - Bluetooth L2CAP sockets
+> - CAIF sockets
+> - IUCV sockets
+> - Netlink sockets
+> - SCTP sockets
+> - Unix domain sockets
 
-Here is the summary with links:
-  - [net] vsock: fix `vsock_proto` declaration
-    https://git.kernel.org/netdev/net/c/1e3b66e32601
+> @@ -1030,10 +1030,8 @@ static netdev_tx_t tun_net_xmit(struct sk_buff *skb, struct net_device *dev)
+>  	}
+>  
+>  	if (tfile->socket.sk->sk_filter &&
+> -	    sk_filter(tfile->socket.sk, skb)) {
+> -		drop_reason = SKB_DROP_REASON_SOCKET_FILTER;
+> +	    (sk_filter_reason(tfile->socket.sk, skb, &drop_reason)))
 
-You are awesome, thank you!
+why the outside brackets?
+
+> @@ -591,6 +592,10 @@ enum skb_drop_reason {
+>  	 * non conform CAN-XL frame (or device is unable to receive CAN frames)
+>  	 */
+>  	SKB_DROP_REASON_CANXL_RX_INVALID_FRAME,
+> +	/**
+> +	 * @SKB_DROP_REASON_PFMEMALLOC: dropped when under memory pressure
+
+I guess kinda, but in practice not very precise?
+
+How about: packet allocated from memory reserve reached a path or
+socket not eligible for use of memory reserves.
+
+I could be misremembering the meaning of "memory reserve" TBH.
+
+> +	 */
+> +	SKB_DROP_REASON_PFMEMALLOC,
+>  	/**
+>  	 * @SKB_DROP_REASON_MAX: the maximum of core drop reasons, which
+>  	 * shouldn't be used as a real 'reason' - only for tracing code gen
+
+> -	if (unlikely(sk_add_backlog(sk, skb, limit))) {
+> +	if (unlikely((err = sk_add_backlog(sk, skb, limit)))) {
+
+I understand the else if () case but here you can simply:
+
+	err = sk_add_backlog(sk, skb, limit);
+	if (unlikely(err))
+
+no need to make checkpatch upset.
+
+> @@ -162,7 +163,7 @@ static int rose_state3_machine(struct sock *sk, struct sk_buff *skb, int framety
+>  		rose_frames_acked(sk, nr);
+>  		if (ns == rose->vr) {
+>  			rose_start_idletimer(sk);
+> -			if (sk_filter_trim_cap(sk, skb, ROSE_MIN_LEN) == 0 &&
+> +			if (sk_filter_trim_cap(sk, skb, ROSE_MIN_LEN, &dr) == 0 &&
+
+let's switch to negation rather than comparing to 0 while at it?
+otherwise we run over 80 chars
+
+>  			    __sock_queue_rcv_skb(sk, skb) == 0) {
+>  				rose->vr = (rose->vr + 1) % ROSE_MODULUS;
+>  				queued = 1;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+pw-bot: cr
 
