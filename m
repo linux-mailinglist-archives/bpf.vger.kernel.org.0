@@ -1,199 +1,218 @@
-Return-Path: <bpf+bounces-62697-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62698-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07326AFD075
-	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 18:19:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28FBFAFD12C
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 18:32:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19D973AC71E
-	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 16:19:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1D521C22305
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 16:32:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 661CA2E49A8;
-	Tue,  8 Jul 2025 16:19:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mEci7oaz"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ECD92E54C8;
+	Tue,  8 Jul 2025 16:31:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 384272E2F0D;
-	Tue,  8 Jul 2025 16:19:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E21701CD1E4;
+	Tue,  8 Jul 2025 16:31:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751991571; cv=none; b=UErmYkh0dnDv7LATkpGwaUVC2nOcXUonaoExImWo0nRHt3rkU3qIMpSgvpMRBdyjCa7WmIMH1VJL183Hmhg65vmYLWMnD3RJsXQ25h/+fhRoXYsIlFnfAIrVkCDNby0xsDcXUlgt+iO114yiGrktB0damgg9x1u9k1otplADsPk=
+	t=1751992296; cv=none; b=dXlhShIv+hiMD0TPA+LiCiSCqxZsVO6jPwnjDLGpOF/BsY5KWRniBOGEMHlEVzcarTnF+wGZTN174uNRIWkEzWSlPk/C5eidOLPpomiXR0ROaeb6Jy/YxTzhQyQFKh7/huClugqi4nOF2ZFx3ivsLkjYjdc8H62yq9CYhDrNHps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751991571; c=relaxed/simple;
-	bh=FbQxrH/Dw119DQzHrfQwKTJr58MGjxzzu5kNV6dVSq8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X5IH2QvlLBjMW+IJVNFZOHs5YFdHbqspYcWPpFdZwhOLeGcnpe21xwlvoNeJyTWxzvJpa+PeTx1qaPsRa5aR/z3pvjB04RtjrirHSwcb3Lv6zaDtzHAsZCvDRG6YQM0areejebJEwL8U+3J82Hw7I8TNCBLIqmqAKWO8q9FSsAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mEci7oaz; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4530921461aso32877835e9.0;
-        Tue, 08 Jul 2025 09:19:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751991567; x=1752596367; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=mNlEKzyKmg+bvMIMD915056OhPGCfIEZ5L+VPCiMkuY=;
-        b=mEci7oazFnCGV/FkS4Qux2DDCXa7HtY++0BMKBavKHBYvjOrIZYOg2jNwtT7qfXYdg
-         jrrX2A1Ha0WPNyGTPAhORs/R5jpeaksdekBY511kO/0EjgovnpoPevJUk4xArki2x7rW
-         FTdJyaOMh0gMnuddxgW6tR/4mZMaWt3hbKJrx+NgLipJbFJ0auC1BXRCuT3r02p0Z1+5
-         mk79UzM/5HIS2uDxlLe90rFXGtHY5zZa9wMSCHNVCchRSJsX1HzaIoPzzuT8reOe012s
-         3E38qcWLTn9kaVqrA6b2B7LeqmnUVvcBX54YX3mRrfOZImVcB1TrCeRLSlCJ7tl5moaY
-         XIBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751991567; x=1752596367;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mNlEKzyKmg+bvMIMD915056OhPGCfIEZ5L+VPCiMkuY=;
-        b=fI4kzNY2t1J3TJyjLVOWabSyjvwBRrF7fzHnIwrW6k4Xkz6UcxQkqD07rRyymmHkBW
-         D53ZOkCSRl6cjT0ofmdXiv53ei+htPdrDUtgOMWamsehExdnoga21vx6zDlqN9EIM/O8
-         srZtSY52SN3Vrh02NARftK9OONUxwDfWyAtUt5Ba3KbUhhpWqU1hQKW52MNz8Rmil1kB
-         v/mh9hX+M6JwsvoNQTk26eA5hwQP4XGfopcZN4zyKL2SoGf4oL6h/jrVrRzFrCoowuSE
-         76x25EWC1uXDeVbKSC+4f786Vbs8bx755nWRjcoRaESx5Wh0QSzq0FxQ8T9bQ+z/+nEV
-         QqXw==
-X-Forwarded-Encrypted: i=1; AJvYcCVafXZohcQbTap6i4B4vBVNXLFxHxlc+gM9Z0/+PvKwa3wq6rYebkQMz8puwCKiq0ESMFMJtSSkXqo8lDn6@vger.kernel.org, AJvYcCWO3Fb/WYk6NJD4l9FPj5I2FZHuULEulLk9Q8Fz/LQPJmpjCKphOJhoXWT4dBhj2zLZa9eaDYgb@vger.kernel.org, AJvYcCWybD2fDsS9dFG0GXdxWdT3KL53WCQmmA8ihsmkodvadbRVlL/Nft4yHvXmVQirTRYwg4o=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwJo15gLqXvviiqS2517LZIqPlC7dBT2V3DkJkh3/ANNyV52DJ1
-	2GMZgJvImv0rnu8wavcSSgd3sdpUiH0OsTrgRsNp+cbe3ms95o3hpdJO
-X-Gm-Gg: ASbGncthZT46PzroKcvHX5gHGZJ2rsJyWfevHPdeO1lkmPCVnEroeKHVD4BJjRmYwvO
-	Ml393PknUI7Sm9BVu9N4cQQaTBGsit+GoleaGuoOmCRbJUe6u9ir3uorJqGr0hVyr+m+F7bG3sT
-	8Yj3AXSx8dcliPy9znpC6veEW3TpNuTc6Cbz4DlIGmteltxgEs8b3eAKzli7DkKlPF3iVni1Yii
-	OAJwdj8+Dh2g6Vt50CpaPLj5YyZCyMuNKDgJBas+79juycfcNxfb2aiU0WVEnsHrS8/dVimwIAp
-	WGrW9wNQqXh4NZZq1650jFWiJJuRlHrZCR/ASDOjZ/T1iMzuYTS1kjEsmA23XhsTZxvAyK96WUL
-	hiIWTNAEJglWntPQgMepN3tOP/UQLIyTD/pQJgFEzoVRUpExWRFW4Exw8/wo=
-X-Google-Smtp-Source: AGHT+IGFIuClLgsY3lb0dQaW9I9uaZLJqJRGUpTACufcAPdItHQEZq95+4sZp2nCEUmrqM7FEfhZcQ==
-X-Received: by 2002:a05:600c:4e56:b0:442:f482:c432 with SMTP id 5b1f17b1804b1-454cd518095mr42881425e9.18.1751991566889;
-        Tue, 08 Jul 2025 09:19:26 -0700 (PDT)
-Received: from mail.gmail.com (2a01cb0889497e003c0e09e1a0a8eb8f.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:3c0e:9e1:a0a8:eb8f])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-454cd3dcf35sm26426625e9.36.2025.07.08.09.19.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jul 2025 09:19:26 -0700 (PDT)
-Date: Tue, 8 Jul 2025 18:19:24 +0200
-From: Paul Chaignon <paul.chaignon@gmail.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	syzbot <syzbot+c711ce17dd78e5d4fdcf@syzkaller.appspotmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>, Hao Luo <haoluo@google.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Jiri Olsa <jolsa@kernel.org>, KP Singh <kpsingh@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Network Development <netdev@vger.kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>, Song Liu <song@kernel.org>,
-	syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-	Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [syzbot] [bpf?] WARNING in reg_bounds_sanity_check
-Message-ID: <aG1FDHAu-H2oH4DY@mail.gmail.com>
-References: <aGa3iOI1IgGuPDYV@Tunnel>
- <865f2345eaa61afbd26d9de0917e3b1d887c647d.camel@gmail.com>
- <aGgL_g3wA2w3yRrG@mail.gmail.com>
- <df2cdc5f4fa16a4e3e08e6a997af3722f3673d38.camel@gmail.com>
- <e43c25b451395edff0886201ad3358acd9670eda.camel@gmail.com>
- <aGxKcF2Ceany8q7W@mail.gmail.com>
- <2fb0a354ec117d36a24fe37a3184c1d40849ef1a.camel@gmail.com>
- <c35d5392b961a4d5b54bdb4b92c4e104bd7857cc.camel@gmail.com>
- <CAADnVQKKdpj-0wXKoKJC4uGhMivdr9FMYvMxZ6jLdPMdva0Vvw@mail.gmail.com>
- <4ae6fd0d54ff2650d0f6724fb44b33723e26ea49.camel@gmail.com>
+	s=arc-20240116; t=1751992296; c=relaxed/simple;
+	bh=kKFfVsjjQy3Sye5RAKQyCnZiAtZH86+HYBvB16fyzoI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=H7EV2fRc8eTNdHX7uHJurqFeJ16oRd4nu0DVDhD746bQhz3p/0EyYMUmoT58IYPIUPeEWcnu9M2oi6263KwYpHShOnTNjdyuKVy8U0lri5nnrNOaFy8cT+bi0iHJe/6d4/c1qpbYCJXkIGAciBr4TuSxO5woQ32yBB5Kuv6/MbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf16.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay06.hostedemail.com (Postfix) with ESMTP id A04AB10B198;
+	Tue,  8 Jul 2025 16:31:24 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf16.hostedemail.com (Postfix) with ESMTPA id 04DFD2000E;
+	Tue,  8 Jul 2025 16:31:19 +0000 (UTC)
+Date: Tue, 8 Jul 2025 12:31:20 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Josh Poimboeuf <jpoimboe@kernel.org>, Steven Rostedt
+ <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org,
+ Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Peter Zijlstra <peterz@infradead.org>,
+ Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Namhyung Kim
+ <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Andrii
+ Nakryiko <andrii@kernel.org>, Indu Bhagat <indu.bhagat@oracle.com>, "Jose
+ E. Marchesi" <jemarch@gnu.org>, Beau Belgrave <beaub@linux.microsoft.com>,
+ Jens Remus <jremus@linux.ibm.com>, Andrew Morton
+ <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>, Florian Weimer
+ <fweimer@redhat.com>, Sam James <sam@gentoo.org>
+Subject: Re: [PATCH v8 10/12] unwind_user/sframe: Enable debugging in
+ uaccess regions
+Message-ID: <20250708123120.7862c458@gandalf.local.home>
+In-Reply-To: <CAHk-=wgXcc99EXKfK++FEQzMQc8S16WOwvn=1DcP_ns1jCCYeA@mail.gmail.com>
+References: <20250708021115.894007410@kernel.org>
+	<20250708021200.058879671@kernel.org>
+	<CAHk-=widGT2M=kJJr6TwWsMjfYSghL9k3LgxJvRard0wtiP62A@mail.gmail.com>
+	<20250708092351.4548c613@gandalf.local.home>
+	<orpxec72lzxzkwhcu3gateqbcw6cdlojxvxmvopa2jxr67d4az@rvgfflvrbzk5>
+	<20250708104130.25b76df9@gandalf.local.home>
+	<CAHk-=wgXcc99EXKfK++FEQzMQc8S16WOwvn=1DcP_ns1jCCYeA@mail.gmail.com>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4ae6fd0d54ff2650d0f6724fb44b33723e26ea49.camel@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: bb3hnktb3dp9a9m7owwr4xcq4fdujnkx
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: 04DFD2000E
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX19Y0fUepPxaRcfNYrcIABvux8APfNuf2IY=
+X-HE-Tag: 1751992279-762972
+X-HE-Meta: U2FsdGVkX1+CMuUGypXL1y73IoeNSQJkVrDtzFJSFsYtnPyrjYDQzSR06KYhMnOrpl4Lx/0EQbc7AAqZnPhyKPxXa7LC4/yAbqexMWif3OPVCK16R9a1OF/BJDHp0yNzqkR8J8DPHFolf0Ub7avQHNpfq8NVp/hVZARN9i+lMO5yBn/X9x+BagzI2sp3C87zrNi9XCZJHUnWsWtsDJ6B3QVOWlh37MD62LAKuZsLe+Ck6jECrDxvCgyCblw1LaFpP7K24I8tFo1/AAq6oaPG46VTqMrzxVFQE8FT65YIBX6+eiwFfvI7ATf4iDMYLufw+MzgQMCOmpwB6TXuakm++cl/zFjtNfl5wr1pSUOG3pNkYhO1PYEQ7MeM8lVQfWc8VxLfR/zTkKJarEaTvB9r/YLpcs38622Ue65Z1gzXqcRUBGhJBkPvDqDRO0SV95s21xe+dPHNSs1dQVAwDyuigYcncWln1OuGlkYTjNGR7iaO+8sNYSHqvA==
 
-On Mon, Jul 07, 2025 at 05:57:32PM -0700, Eduard Zingerman wrote:
-> On Mon, 2025-07-07 at 17:51 -0700, Alexei Starovoitov wrote:
-> > On Mon, Jul 7, 2025 at 5:37 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
-> > >
-> > > On Mon, 2025-07-07 at 16:29 -0700, Eduard Zingerman wrote:
-> > > > On Tue, 2025-07-08 at 00:30 +0200, Paul Chaignon wrote:
+On Tue, 8 Jul 2025 08:53:56 -0700
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-[...]
-
-> > > But I think the program below would still be problematic:
-> > >
-> > > SEC("socket")
-> > > __success
-> > > __retval(0)
-> > > __naked void jset_bug1(void)
-> > > {
-> > >         asm volatile ("                                 \
-> > >         call %[bpf_get_prandom_u32];                    \
-> > >         if r0 < 2 goto 1f;                              \
-> > >         r0 |= 1;                                        \
-> > >         if r0 & -2 goto 1f;                             \
-> > > 1:      r0 = 0;                                         \
-> > >         exit;                                           \
-> > > "       :
-> > >         : __imm(bpf_get_prandom_u32)
-> > >         : __clobber_all);
-> > > }
-> > >
-> > > The possible_r0 would be changed by `if r0 & -2`, so new rule will not hit.
-> > > And the problem remains unsolved. I think we need to reset min/max
-> > > bounds in regs_refine_cond_op for JSET:
-> > > - in some cases range is more precise than tnum
-> > > - in these cases range cannot be compressed to a tnum
-> > > - predictions in jset are done for a tnum
-> > > - to avoid issues when narrowing tnum after prediction, forget the
-> > >   range.
+> On Tue, 8 Jul 2025 at 07:41, Steven Rostedt <rostedt@goodmis.org> wrote:
 > >
-> > You're digging too deep. llvm doesn't generate JSET insn,
-> > so this is syzbot only issue. Let's address it with minimal changes.
-> > Do not introduce fancy branch taken analysis.
-> > I would be fine with reverting this particular verifier_bug() hunk.
-
-Ok, if LLVM doesn't generate JSETs, I agree there's not much point
-trying to reduce false positives. I like Eduard's solution below
-because it handles the JSET case without removing the warning. Given
-the number of crashes syzkaller is generating, I suspect this isn't
-only about JSET, so it'd be good to keep some visibility into invariant
-violations.
-
+> > Would something like this work? If someone enables the config to enable the
+> > validation, I don't think we need dynamic printk to do it (as that requires
+> > passing in the format directly and not via a pointer).  
 > 
-> My point is that the fix should look as below (but extract it as a
-> utility function):
+> I really think you should just not use 'user_access_begin()" AT ALL if
+> you need to play these kinds of games.
 > 
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 53007182b46b..b2fe665901b7 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -16207,6 +16207,14 @@ static void regs_refine_cond_op(struct bpf_reg_state *reg1, struct bpf_reg_state
->                         swap(reg1, reg2);
->                 if (!is_reg_const(reg2, is_jmp32))
->                         break;
-> +               reg1->u32_max_value = U32_MAX;
-> +               reg1->u32_min_value = 0;
-> +               reg1->s32_max_value = S32_MAX;
-> +               reg1->s32_min_value = S32_MIN;
-> +               reg1->umax_value = U64_MAX;
-> +               reg1->umin_value = 0;
-> +               reg1->smax_value = S64_MAX;
-> +               reg1->smin_value = S32_MIN;
 
-Looks like __mark_reg_unbounded :)
+Looking at the code a bit deeper, I don't think we need to play these games
+and still keep the user_read_access_begin().
 
-I can send a test case + __mark_reg_unbounded for BPF_JSET | BPF_X in
-regs_refine_cond_op. I suspect we may need the same for the BPF_JSET
-case as well, but I'm unable to build a repro for that so far.
+The places that are more performance critical (where it reads the sframe
+during normal stack walking during profiling) has no debug output, and
+there's nothing there that needs to take it out of the user_read_access
+area.
 
->                 val = reg_const_value(reg2, is_jmp32);
->                 if (is_jmp32) {
->                         t = tnum_and(tnum_subreg(reg1->var_off), tnum_const(~val));
-> 
-> ----
-> 
-> Because of irreconcilable differences in what can be represented as a
-> tnum and what can be represented as a range.
+It's the validator that adds these hacks. I don't think it needs to. It can
+just wrap the calls to the code that requires user_read_access and then
+check the return value. The validator is just a debugging feature and
+performance should not be an issue.
+
+But I do think performance is something to care about during normal
+operations where the one big user_read_access_begin() can help.
+
+What about something like this? It adds "safe" versions of the user space
+access functions and uses them only in the slow (we don't care about
+performance) validator:
+
+-- Steve
+
+diff --git a/kernel/unwind/sframe.c b/kernel/unwind/sframe.c
+index 0060cc576776..79ff3c0fc11f 100644
+--- a/kernel/unwind/sframe.c
++++ b/kernel/unwind/sframe.c
+@@ -321,7 +321,34 @@ int sframe_find(unsigned long ip, struct unwind_user_frame *frame)
+ 
+ #ifdef CONFIG_SFRAME_VALIDATION
+ 
+-static __always_inline int __sframe_validate_section(struct sframe_section *sec)
++static int safe_read_fde(struct sframe_section *sec,
++			 unsigned int fde_num, struct sframe_fde *fde)
++{
++	int ret;
++
++	if (!user_read_access_begin((void __user *)sec->sframe_start,
++				    sec->sframe_end - sec->sframe_start))
++		return -EFAULT;
++	ret = __read_fde(sec, fde_num, fde);
++	user_read_access_end();
++	return ret;
++}
++
++static int safe_read_fre(struct sframe_section *sec,
++			 struct sframe_fde *fde, unsigned long fre_addr,
++			 struct sframe_fre *fre)
++{
++	int ret;
++
++	if (!user_read_access_begin((void __user *)sec->sframe_start,
++				    sec->sframe_end - sec->sframe_start))
++		return -EFAULT;
++	ret = __read_fre(sec, fde, fre_addr, fre);
++	user_read_access_end();
++	return ret;
++}
++
++static int sframe_validate_section(struct sframe_section *sec)
+ {
+ 	unsigned long prev_ip = 0;
+ 	unsigned int i;
+@@ -335,13 +362,13 @@ static __always_inline int __sframe_validate_section(struct sframe_section *sec)
+ 		unsigned int j;
+ 		int ret;
+ 
+-		ret = __read_fde(sec, i, &fde);
++		ret = safe_read_fde(sec, i, &fde);
+ 		if (ret)
+ 			return ret;
+ 
+ 		ip = sec->sframe_start + fde.start_addr;
+ 		if (ip <= prev_ip) {
+-			dbg_sec_uaccess("fde %u not sorted\n", i);
++			dbg_sec("fde %u not sorted\n", i);
+ 			return -EFAULT;
+ 		}
+ 		prev_ip = ip;
+@@ -353,17 +380,20 @@ static __always_inline int __sframe_validate_section(struct sframe_section *sec)
+ 			fre = which ? fres : fres + 1;
+ 			which = !which;
+ 
+-			ret = __read_fre(sec, &fde, fre_addr, fre);
++			ret = safe_read_fre(sec, &fde, fre_addr, fre);
+ 			if (ret) {
+-				dbg_sec_uaccess("fde %u: __read_fre(%u) failed\n", i, j);
+-				dbg_print_fde_uaccess(sec, &fde);
++				dbg_sec("fde %u: __read_fre(%u) failed\n", i, j);
++				dbg_sec("FDE: start_addr:0x%x func_size:0x%x fres_off:0x%x fres_num:%d info:%u rep_size:%u\n",
++					fde.start_addr, fde.func_size,
++					fde.fres_off, fde.fres_num,
++					fde.info, fde.rep_size);
+ 				return ret;
+ 			}
+ 
+ 			fre_addr += fre->size;
+ 
+ 			if (prev_fre && fre->ip_off <= prev_fre->ip_off) {
+-				dbg_sec_uaccess("fde %u: fre %u not sorted\n", i, j);
++				dbg_sec("fde %u: fre %u not sorted\n", i, j);
+ 				return -EFAULT;
+ 			}
+ 
+@@ -374,21 +404,6 @@ static __always_inline int __sframe_validate_section(struct sframe_section *sec)
+ 	return 0;
+ }
+ 
+-static int sframe_validate_section(struct sframe_section *sec)
+-{
+-	int ret;
+-
+-	if (!user_read_access_begin((void __user *)sec->sframe_start,
+-				    sec->sframe_end - sec->sframe_start)) {
+-		dbg_sec("section usercopy failed\n");
+-		return -EFAULT;
+-	}
+-
+-	ret = __sframe_validate_section(sec);
+-	user_read_access_end();
+-	return ret;
+-}
+-
+ #else /*  !CONFIG_SFRAME_VALIDATION */
+ 
+ static int sframe_validate_section(struct sframe_section *sec) { return 0; }
 
