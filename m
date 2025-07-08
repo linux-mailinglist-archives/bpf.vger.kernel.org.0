@@ -1,91 +1,151 @@
-Return-Path: <bpf+bounces-62603-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62607-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC6E1AFC033
-	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 03:45:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4BAFAFC04E
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 04:01:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B32017536D
-	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 01:45:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDE70425D0E
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 02:00:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8E441FE45A;
-	Tue,  8 Jul 2025 01:44:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E60F21B908;
+	Tue,  8 Jul 2025 02:00:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XrVPM4bJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T6Z1voif"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 581D7BE6C;
-	Tue,  8 Jul 2025 01:44:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79EDA1C8606;
+	Tue,  8 Jul 2025 02:00:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751939092; cv=none; b=rFpDCq1S1ZGrOf/cb2Q8JQTjsdb8KadWvYcLjO4qQZMvaPqg3X2o1v1vSvN2xtGbjZr2ZL5AGsxwA0S6Wv1hDriojK/OpXTyCCOVybcWxebympptXsEKQoUl4IjGKJX/ISjUREf0TcNENbW1xXDqVc9GaVXoRdJrsHKNRjTegnA=
+	t=1751940050; cv=none; b=rbqn4Bv7YhYgneHv8op/Tx1sNJCrRw6sP+uTqFt6wstZ4KqpzsGvL6lz/UyhdzqCeAVHO3ezzQ2ijDDaClQYf/7QazRoBZqvgnD8lJtABZJCOAvqTodu2SNd8iqplNiJf4XXBiEePCgD4Qte3wlrKPp9XVOmPTQDI+ynm5qwL3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751939092; c=relaxed/simple;
-	bh=6m1lzxS6q2RHVwpfjunpRF/H7GBK31qlq/09C2C2JuU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=K5HgqH2veMCpAewD6jGnV/uC9jH5Am4W09gBCpjW2qMqtD3AFZIUorMrkE/H0ojjdLim7IzVu9cjDfhGiHr+rAA5CfoUgusqR090CSPo/HzqdG45q623N1vQvzKip+ORIqdpXUwG/WpCpv0bztb1OwmtIZcUXGKcDndRzCOodZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XrVPM4bJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BE80C4CEE3;
-	Tue,  8 Jul 2025 01:44:51 +0000 (UTC)
+	s=arc-20240116; t=1751940050; c=relaxed/simple;
+	bh=AIE1bYpSQl2sDdlrLBEu7VHTjeRI0UsChEr6022uLng=;
+	h=Message-ID:Date:From:To:Cc:Subject; b=XjQmhicYV8exeQ+PCWEBmsT+VAQZJY7txF1gzisrnPz/ZNgol5TwJVl9S/BaYzMvZvTjNcpkuXBvtLvI6u64fEJ+k6bz5zYs6365uVdlISBq0hHDA3s7WtDWr1SVM/egr8DKxQvw6NDp5MLF90xjkA8J99+KSqp5nksc4r1t1Wg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T6Z1voif; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE06CC4CEE3;
+	Tue,  8 Jul 2025 02:00:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751939091;
-	bh=6m1lzxS6q2RHVwpfjunpRF/H7GBK31qlq/09C2C2JuU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=XrVPM4bJNNe419JvqzI7qLZr3/wbwqIF+y8BR4guOS/jTnVYlVlZI96S74q/3MXOs
-	 2EVVejkaL3ljsAINLrY2MgCZ/alac+fnzz7e1vvETqdRfquwb+t4xMQW1QgkClGIpn
-	 3oBVnGAQciecwyUhkuAiNsvqWIvrGA96tFtrfRhqiztMj143COvUv/pvNXWv6QDWwn
-	 7VFLLqe+Bj9X/1aGngKxCmyx0VJr9LM7/bHlhDichAFXjnHGqztM2A9kyMyVYpkgdj
-	 vaFDm+HWHIC0wsb7dHHPhXXa0Hl8nkF9Oob8VGlDco65IwKHrwqIRKq0cmQEv12sVe
-	 oQAlHI+EQy4nQ==
-Date: Mon, 7 Jul 2025 18:44:49 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: "Song, Yoong Siang" <yoong.siang.song@intel.com>
-Cc: "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Simon Horman
- <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, "Jesper Dangaard
- Brouer" <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
- Stanislav Fomichev <sdf@fomichev.me>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko
- <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, "netdev@vger.kernel.org"
- <netdev@vger.kernel.org>, "linux-doc@vger.kernel.org"
- <linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "bpf@vger.kernel.org"
- <bpf@vger.kernel.org>, "linux-kselftest@vger.kernel.org"
- <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 0/2] Clarify and Enhance XDP Rx Metadata
- Handling
-Message-ID: <20250707184449.42736a0a@kernel.org>
-In-Reply-To: <IA3PR11MB9254DC4B7984E014206A1FBFD84EA@IA3PR11MB9254.namprd11.prod.outlook.com>
-References: <20250701042940.3272325-1-yoong.siang.song@intel.com>
-	<20250707135507.29cb55be@kernel.org>
-	<IA3PR11MB9254DC4B7984E014206A1FBFD84EA@IA3PR11MB9254.namprd11.prod.outlook.com>
+	s=k20201202; t=1751940050;
+	bh=AIE1bYpSQl2sDdlrLBEu7VHTjeRI0UsChEr6022uLng=;
+	h=Date:From:To:Cc:Subject:From;
+	b=T6Z1voifSAnMTSG+iRKH3UQAe2bqZ0/pU4pxDBYSVOu7Gs7biMqUKPypYXZ+/dRtp
+	 Msn5/HceB6wYqaNTJKH+pEvrxTkrZh/OnGFbmVKL8xJ7/owi8OoCcDofDWpL4GMyic
+	 hoYJPh6Tp/2+KMDQggogauuV9/wLzQ45dwrk6xqFeDiD4Z5SphJE3AZGElqsaTpp+/
+	 0MqpX68tLwJVAsJuFS3ukMeZ9yutNEvHtxGrKoLrYjkMnemTPQESG1MandHTjur/4n
+	 h0PXbIlDkILEx2k6HoB9GbtzZwcyTGDSVMBghuP09ge/8HJoubLnu03CV1DTQcnvRF
+	 xIkZec/bX1F8A==
+Received: from rostedt by gandalf with local (Exim 4.98.2)
+	(envelope-from <rostedt@kernel.org>)
+	id 1uYxda-00000000D3f-0CsA;
+	Mon, 07 Jul 2025 22:00:50 -0400
+Message-ID: <20250708020003.565862284@kernel.org>
+User-Agent: quilt/0.68
+Date: Mon, 07 Jul 2025 22:00:03 -0400
+From: Steven Rostedt <rostedt@kernel.org>
+To: linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org,
+ x86@kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Josh Poimboeuf <jpoimboe@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Ingo Molnar <mingo@kernel.org>,
+ Jiri Olsa <jolsa@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Andrii Nakryiko <andrii@kernel.org>,
+ Indu Bhagat <indu.bhagat@oracle.com>,
+ "Jose E. Marchesi" <jemarch@gnu.org>,
+ Beau Belgrave <beaub@linux.microsoft.com>,
+ Jens Remus <jremus@linux.ibm.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Jens Axboe <axboe@kernel.dk>,
+ Florian Weimer <fweimer@redhat.com>,
+ Sam James <sam@gentoo.org>
+Subject: [PATCH v13 00/11] perf: Support the deferred unwinding infrastructure
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 
-On Tue, 8 Jul 2025 01:34:13 +0000 Song, Yoong Siang wrote:
-> >For normal XDP my understanding is that its the driver's responsibility
-> >to move the "reserved" stuff out of place before presenting the frame to
-> >program.  
-> 
-> Is it means that driver needs to move out the "reserved" stuff before XDP program
-> and then move back the stuff after XDP program for certain situation, like XDP_PASS?
+This is based on top of the deferred unwind core patch series:
 
-Why would the driver need to move it back?
-On XDP_PASS an skb is constructed, so the metadata should 
-be transferred to the skb. There is no need to copy it back
-as a prepend.
+ https://lore.kernel.org/linux-trace-kernel/20250708012239.268642741@kernel.org/
+   git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
+     unwind/core
+
+This series implements the perf interface to use deferred user space stack
+tracing.
+
+The code for this series is located here:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
+unwind/perf
+
+Changes since v12: https://lore.kernel.org/linux-trace-kernel/20250701180410.755491417@goodmis.org/
+
+- Also check against PF_USER_WORKER as io workers do not have PF_KTHREAD
+  set.
+
+- Removed deferred_request_nmi() and have NMIs just use the normal
+  deferred_request() function. As Peter Zijlstra has stated, in_nmi() can
+  nest because some exceptions set in_nmi() and another NMI could come in.
+
+- Removed use of timestamp. The deferred unwind has gone back to using
+  cookies, and perf doesn't use the cookie. This means the
+  struct perf_callchain_deferred_event is not modified.
+
+Head SHA1: 3d88d03d533ede8d2d513942e768607aa9279c4b
+
+
+Josh Poimboeuf (5):
+      perf: Remove get_perf_callchain() init_nr argument
+      perf: Have get_perf_callchain() return NULL if crosstask and user are set
+      perf: Simplify get_perf_callchain() user logic
+      perf: Skip user unwind if the task is a kernel thread
+      perf: Support deferred user callchains
+
+Namhyung Kim (4):
+      perf tools: Minimal CALLCHAIN_DEFERRED support
+      perf record: Enable defer_callchain for user callchains
+      perf script: Display PERF_RECORD_CALLCHAIN_DEFERRED
+      perf tools: Merge deferred user callchains
+
+Steven Rostedt (2):
+      perf: Use current->flags & PF_KTHREAD|PF_USER_WORKER instead of current->mm == NULL
+      perf: Support deferred user callchains for per CPU events
+
+----
+ include/linux/perf_event.h                |  13 +-
+ include/uapi/linux/perf_event.h           |  19 +-
+ kernel/bpf/stackmap.c                     |   8 +-
+ kernel/events/callchain.c                 |  49 ++--
+ kernel/events/core.c                      | 407 +++++++++++++++++++++++++++++-
+ tools/include/uapi/linux/perf_event.h     |  19 +-
+ tools/lib/perf/include/perf/event.h       |   7 +
+ tools/perf/Documentation/perf-script.txt  |   5 +
+ tools/perf/builtin-script.c               |  92 +++++++
+ tools/perf/util/callchain.c               |  24 ++
+ tools/perf/util/callchain.h               |   3 +
+ tools/perf/util/event.c                   |   1 +
+ tools/perf/util/evlist.c                  |   1 +
+ tools/perf/util/evlist.h                  |   1 +
+ tools/perf/util/evsel.c                   |  39 +++
+ tools/perf/util/evsel.h                   |   1 +
+ tools/perf/util/machine.c                 |   1 +
+ tools/perf/util/perf_event_attr_fprintf.c |   1 +
+ tools/perf/util/sample.h                  |   3 +-
+ tools/perf/util/session.c                 |  78 ++++++
+ tools/perf/util/tool.c                    |   2 +
+ tools/perf/util/tool.h                    |   4 +-
+ 22 files changed, 742 insertions(+), 36 deletions(-)
 
