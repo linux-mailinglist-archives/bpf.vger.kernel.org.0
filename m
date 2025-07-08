@@ -1,126 +1,366 @@
-Return-Path: <bpf+bounces-62641-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62644-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2255AFC395
-	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 09:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FB53AFC3DA
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 09:19:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF0223BBCB8
-	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 07:07:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E60513A84AF
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 07:18:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B020E255F25;
-	Tue,  8 Jul 2025 07:07:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TYZJrIZX"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B54029898B;
+	Tue,  8 Jul 2025 07:19:11 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C25D41FCFF1
-	for <bpf@vger.kernel.org>; Tue,  8 Jul 2025 07:07:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD8E02951BA
+	for <bpf@vger.kernel.org>; Tue,  8 Jul 2025 07:19:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751958478; cv=none; b=ORZNvuLDQuSH1+kyi/hvVdtANeMKXd5eIjNXwWdZ3dzF939iRaUKo3ILnvJPGR0LoNPYzQHFEDsktWsoCIdvyAgbE4aDVBMIJKz4l+/gfJoi39I3fPXejpuzFE5BMSZGzreQ+TRx9VTh7Us8jsA9V9aXVb2bLOy2iy1eI1BY9As=
+	t=1751959150; cv=none; b=Xgk0PV8yneGGAP+s/Qxz7LUwsDcEfV6ypaDZ8w+Kt0kZ8JJV4VZRj+OhV5cN/khwlmx2AxucZMKlmSNlwwE1iwwx1mG361EWo/ZBC5Dy5Rwf2Y/7K7krQoNSazMSh668/6D7W4IHOFRgEK8gs1fPME15mTWvhlyAz+AHmm7qCYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751958478; c=relaxed/simple;
-	bh=PxiuBnlaQWCV2qC7qhMbMTXAx21l3lCEHkSC1WI7ZOE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rKhARC02ns3Ktv2lBvbabMZooi/r3LfBwnGZCMptb5iVkEB15wfgmo7AsWJwWRZGm6T5pTsXUUdjyZ+03UaFqmAuUYF56sZ7wtViwQW9Dr1dDG2tpjxI8T2HOFlXPza6spKj9WyX/aqCyYmaQKpTp7aTTAVN3/kSxcsXzjtiW84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TYZJrIZX; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-70f147b5a52so26818357b3.3
-        for <bpf@vger.kernel.org>; Tue, 08 Jul 2025 00:07:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751958475; x=1752563275; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=PxiuBnlaQWCV2qC7qhMbMTXAx21l3lCEHkSC1WI7ZOE=;
-        b=TYZJrIZX6OWvhjGbW4HQ85pN4pOU4BR155rXuYeWPXKrx3K8GRKNy++1tJGNrF5zTR
-         SKxOZAa48IlNZTEdKXz0xCsc+CqEV0r946BqFOmthE/5f2GZvJAh7BKC7Sxl6qqONbm1
-         xAF/+vQvS4UFPTCMSYNm94boTTMeWied/GARlcynByqmbeV2wek+ILDcRZRcuSAdaZSa
-         XrGk5TQzdRYRPlLWfGeihC89Vumm75rdtGrw8RmGFA3IAd1s+3Wirw5OfPmAzZ78Wtl8
-         Rd7jkfaHe3P21tTWZjOqtyyuVfkACFN27QddJiiEfG841geZ8WDsCFuCVECRGyhl/8/f
-         F6aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751958475; x=1752563275;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PxiuBnlaQWCV2qC7qhMbMTXAx21l3lCEHkSC1WI7ZOE=;
-        b=OAaqEx0eo+ZYvlmixqzxFBLgs0kpiG1FmHSV76iXAedpiRLwSZdvJ70Fdy99UayR1T
-         GPWbWGO9WPYZEP12Rcoahsx6+paMfzT56OWceGU8acXtBqUwodYsaMV7KMwUO2YgYqkH
-         LiFhKRfs/irETbhRNMpTsE+eemw+eZmUURnQYfWCKVXpWA1Ogy+BbeeDQBBaq/7HkEea
-         ZjrIcoeDrGaVehQQrbaPfJfkihVZQrpHsnaZvU4rluFg1wRPG9lsfUe1qYDA3a4F7Hv3
-         MRDlQtrpjx09gYi1t6TY0WyBZOqA8lbZxXoUruKUuX32q4gxlkftdHbGQZs+DFWpMMos
-         qzKA==
-X-Forwarded-Encrypted: i=1; AJvYcCWxa4kiLBcs/KsjS2MgOyTEkNZQWXW+gM3fGxQdt4DYuBlOOc1u2KmpXrdEymJhEcXt3nU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YytduY4e2FeSy60EEV4SEwK/RaAMywZ0gx5Km2dM45rMnqiE5XG
-	XXP2cj8Uka4Pqif3UD7wI6ywRC3XNLAPs9+tZLqN08uPV+NR3E4p9uojBQ/cbqGEsCALTwk/q+S
-	s3sEYs8byM5KtOa6LLLCKZxY18CrXG8I=
-X-Gm-Gg: ASbGncuZ36zqmtmZYTd72BtqYRMAglP/BjCzSOrX6DdDJrWeEBCQQLeAMB96nFRGpRo
-	hdrNJGxGUVTMCBolt78AINlg7guJP1Od5/7EKaIFr2CFfZxTbqz9B9Z68IpBMYY7pEVxt3KII47
-	+/348EAktYGTwJ/oGarHNwlxvK5K3P8U5VVwGu7ZVtvS3xFkAhsJcOysjfdRSzIG4eGb1wnrnwV
-	Uma
-X-Google-Smtp-Source: AGHT+IEot22LrWQETUjksszdErExHmIVBfIhP8zMylsJPQd6QCJQfikP494HNZP2MHwiVupb1lTD1TzVykymp6Maed0=
-X-Received: by 2002:a05:690c:fc9:b0:70c:d256:e7fc with SMTP id
- 00721157ae682-71668d1967dmr203961527b3.21.1751958475429; Tue, 08 Jul 2025
- 00:07:55 -0700 (PDT)
+	s=arc-20240116; t=1751959150; c=relaxed/simple;
+	bh=syPhFezLm1T4ChGPvnxWtcVy+icHq8Z++aIUoTsfcRs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=Bdkel3z5twIyg4GoTfL9lPO+8faPGa4a7DpygkRBWMSlrrwAaQ1I8iTk//gkcffmcAgqvkDyR3/3NzdDUsup0iy/IErVWzRfzz5+RRpMVTGnsIRanql/J056PagSW1A3IITSw6jxuTEgPU0tr9aC/Bqa9dP2t0ylkUBS9n1XvOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: d0dd66365bcb11f0b29709d653e92f7d-20250708
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.45,REQID:a9740e31-d811-4bd8-b3c8-07158bd08b50,IP:15,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:0
+X-CID-INFO: VERSION:1.1.45,REQID:a9740e31-d811-4bd8-b3c8-07158bd08b50,IP:15,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:0
+X-CID-META: VersionHash:6493067,CLOUDID:9323fc299a1e913a4b5c8c7a4bf71ad4,BulkI
+	D:250708151902BI3MNZAO,BulkQuantity:0,Recheck:0,SF:17|19|24|44|66|78|102,T
+	C:nil,Content:0|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:
+	nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,1,J
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: d0dd66365bcb11f0b29709d653e92f7d-20250708
+X-User: jianghaoran@kylinos.cn
+Received: from localhost.localdomain [(39.156.73.13)] by mailgw.kylinos.cn
+	(envelope-from <jianghaoran@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 961650076; Tue, 08 Jul 2025 15:18:58 +0800
+From: Haoran Jiang <jianghaoran@kylinos.cn>
+To: loongarch@lists.linux.dev
+Cc: bpf@vger.kernel.org,
+	kernel@xen0n.name,
+	chenhuacai@kernel.org,
+	hengqi.chen@gmail.com,
+	yangtiezhu@loongson.cn,
+	jolsa@kernel.org,
+	haoluo@google.com,
+	sdf@fomichev.me,
+	kpsingh@kernel.org,
+	john.fastabend@gmail.com,
+	yonghong.song@linux.dev,
+	song@kernel.org,
+	eddyz87@gmail.com,
+	martin.lau@linux.dev,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	ast@kernel.org
+Subject: [PATCH v2 0/2] Fix two tailcall-related issues
+Date: Tue,  8 Jul 2025 15:18:38 +0800
+Message-Id: <20250708071840.556686-1-jianghaoran@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250614064056.237005-1-sidchintamaneni@gmail.com>
- <20250614064056.237005-4-sidchintamaneni@gmail.com> <CAP01T77TBA3eEVoqGMVTpYsEzvg0f7Q95guH0SDQ3gZK=q+Tag@mail.gmail.com>
- <CAM6KYssFT35L5HN_Fes-2BdhEO6EmhF9Qa+WSWLML4qnZ0z1tA@mail.gmail.com>
- <CAP01T76S4X4f=owz9D7dXfv15=vD8HB8dO_Ni2TmKfqTKCtuhA@mail.gmail.com> <CAADnVQ+EiaoWUVcN9=Nm=RWJ6XE=Kcm8Q2FYQqWGJ_NsCtyJ=A@mail.gmail.com>
-In-Reply-To: <CAADnVQ+EiaoWUVcN9=Nm=RWJ6XE=Kcm8Q2FYQqWGJ_NsCtyJ=A@mail.gmail.com>
-From: Raj Sahu <rjsu26@gmail.com>
-Date: Tue, 8 Jul 2025 00:07:39 -0700
-X-Gm-Features: Ac12FXzJJB4AffMhlRIFVbatj74HgfcaLx2o6lWzVMN9wFcROy3i3jpGCS2u_r0
-Message-ID: <CAM6KYssLVB+Wqw5ptQQufjmV3279AX7ZKhXtkG6OWaM3vWde-Q@mail.gmail.com>
-Subject: Re: [RFC bpf-next v2 3/4] bpf: Runtime part of fast-path termination approach
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, Siddharth Chintamaneni <sidchintamaneni@gmail.com>, 
-	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Dan Williams <djwillia@vt.edu>, miloc@vt.edu, ericts@vt.edu, 
-	rahult@vt.edu, doniaghazy@vt.edu, quanzhif@vt.edu, 
-	Jinghao Jia <jinghao7@illinois.edu>, egor@vt.edu, 
-	Sai Roop Somaraju <sairoop10@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-> If we have such bugs that prog in NMI can stall CPU indefinitely
-> they need to be fixed independently of fast-execute.
-> timed may_goto, tailcalls or whatever may need to have different
-> limits when it detects that the prog is running in NMI or with hard irqs
-> disabled. Fast-execute doesn't have to be a universal kill-bpf-prog
-> mechanism that can work in any context. I think fast-execute
-> is for progs that deadlocked in res_spin_lock, faulted arena,
-> or were slow for wrong reasons, but not fatal for the kernel reasons.
-> imo we can rely on schedule_work() and bpf_arch_text_poke() from there.
-> The alternative of clone of all progs and memory waste for a rare case
-> is not appealing. Unless we can detect "dangerous" progs and
-> clone with fast execute only for them, so that the majority of bpf progs
-> stay as single copy.
+v2:
+1,Add a Fixes tag.
+2,Ctx as the first parameter of emit_bpf_tail_call.
+3,Define jmp_offset as a macro in emit_bpf_tail_call.
 
-I just want to confirm that we are on the same page here:
-While the RFC we sent was using prog cloning, Kumar's earlier
-suggestion of implementing offset tables can avoid the complete
-cloning process and the associated memory footprint. Is there
-something else which is concerning here in terms of memory overhead?
+After merging these two patches, the test results are as follows:
 
-Regarding the NMI issue, the fast-execute design was meant to take
-care of stalling in tracing and other task-context based programs
-running slow for some reason. While I do agree with your point that
-deadlocks in NMIs should be solved independently, kumar's point of
-having several BPF programs needing termination, running in hardIRQ,
-puts us in a fix. What should be the way forward here?
+./test_progs --allow=tailcalls
+tester_init:PASS:tester_log_buf 0 nsec
+process_subtest:PASS:obj_open_mem 0 nsec
+process_subtest:PASS:specs_alloc 0 nsec
+#413/1   tailcalls/tailcall_1:OK
+#413/2   tailcalls/tailcall_2:OK
+#413/3   tailcalls/tailcall_3:OK
+#413/4   tailcalls/tailcall_4:OK
+#413/5   tailcalls/tailcall_5:OK
+#413/6   tailcalls/tailcall_6:OK
+#413/7   tailcalls/tailcall_bpf2bpf_1:OK
+#413/8   tailcalls/tailcall_bpf2bpf_2:OK
+#413/9   tailcalls/tailcall_bpf2bpf_3:OK
+#413/10  tailcalls/tailcall_bpf2bpf_4:OK
+#413/11  tailcalls/tailcall_bpf2bpf_5:OK
+#413/12  tailcalls/tailcall_bpf2bpf_6:OK
+test_tailcall_count:PASS:open fentry_obj file 0 nsec
+test_tailcall_count:PASS:find fentry prog 0 nsec
+test_tailcall_count:PASS:set_attach_target subprog_tail 0 nsec
+test_tailcall_count:PASS:load fentry_obj 0 nsec
+libbpf: prog 'fentry': failed to attach: -ENOTSUPP
+test_tailcall_count:FAIL:attach_trace unexpected error: -524
+#413/13  tailcalls/tailcall_bpf2bpf_fentry:FAIL
+test_tailcall_count:PASS:open fexit_obj file 0 nsec
+test_tailcall_count:PASS:find fexit prog 0 nsec
+test_tailcall_count:PASS:set_attach_target subprog_tail 0 nsec
+test_tailcall_count:PASS:load fexit_obj 0 nsec
+libbpf: prog 'fexit': failed to attach: -ENOTSUPP
+test_tailcall_count:FAIL:attach_trace unexpected error: -524
+#413/14  tailcalls/tailcall_bpf2bpf_fexit:FAIL
+test_tailcall_count:PASS:open fentry_obj file 0 nsec
+test_tailcall_count:PASS:find fentry prog 0 nsec
+test_tailcall_count:PASS:set_attach_target subprog_tail 0 nsec
+test_tailcall_count:PASS:load fentry_obj 0 nsec
+libbpf: prog 'fentry': failed to attach: -ENOTSUPP
+test_tailcall_count:FAIL:attach_trace unexpected error: -524
+#413/15  tailcalls/tailcall_bpf2bpf_fentry_fexit:FAIL
+test_tailcall_bpf2bpf_fentry_entry:PASS:load tgt_obj 0 nsec
+test_tailcall_bpf2bpf_fentry_entry:PASS:find jmp_table map 0 nsec
+test_tailcall_bpf2bpf_fentry_entry:PASS:find jmp_table map fd 0 nsec
+test_tailcall_bpf2bpf_fentry_entry:PASS:find classifier_0 prog 0 nsec
+test_tailcall_bpf2bpf_fentry_entry:PASS:find classifier_0 prog fd 0 nsec
+test_tailcall_bpf2bpf_fentry_entry:PASS:update jmp_table 0 nsec
+test_tailcall_bpf2bpf_fentry_entry:PASS:open fentry_obj file 0 nsec
+test_tailcall_bpf2bpf_fentry_entry:PASS:find fentry prog 0 nsec
+test_tailcall_bpf2bpf_fentry_entry:PASS:set_attach_target classifier_0 0 nsec
+test_tailcall_bpf2bpf_fentry_entry:PASS:load fentry_obj 0 nsec
+libbpf: prog 'fentry': failed to attach: -ENOTSUPP
+test_tailcall_bpf2bpf_fentry_entry:FAIL:attach_trace unexpected error: -524
+#413/16  tailcalls/tailcall_bpf2bpf_fentry_entry:FAIL
+#413/17  tailcalls/tailcall_poke:OK
+#413/18  tailcalls/tailcall_bpf2bpf_hierarchy_1:OK
+test_tailcall_hierarchy_count:PASS:load obj 0 nsec
+test_tailcall_hierarchy_count:PASS:find entry prog 0 nsec
+test_tailcall_hierarchy_count:PASS:prog_fd 0 nsec
+test_tailcall_hierarchy_count:PASS:find jmp_table 0 nsec
+test_tailcall_hierarchy_count:PASS:map_fd 0 nsec
+test_tailcall_hierarchy_count:PASS:update jmp_table 0 nsec
+test_tailcall_hierarchy_count:PASS:find data_map 0 nsec
+test_tailcall_hierarchy_count:PASS:open fentry_obj file 0 nsec
+test_tailcall_hierarchy_count:PASS:find fentry prog 0 nsec
+test_tailcall_hierarchy_count:PASS:set_attach_target subprog_tail 0 nsec
+test_tailcall_hierarchy_count:PASS:load fentry_obj 0 nsec
+libbpf: prog 'fentry': failed to attach: -ENOTSUPP
+test_tailcall_hierarchy_count:FAIL:attach_trace unexpected error: -524
+#413/19  tailcalls/tailcall_bpf2bpf_hierarchy_fentry:FAIL
+test_tailcall_hierarchy_count:PASS:load obj 0 nsec
+test_tailcall_hierarchy_count:PASS:find entry prog 0 nsec
+test_tailcall_hierarchy_count:PASS:prog_fd 0 nsec
+test_tailcall_hierarchy_count:PASS:find jmp_table 0 nsec
+test_tailcall_hierarchy_count:PASS:map_fd 0 nsec
+test_tailcall_hierarchy_count:PASS:update jmp_table 0 nsec
+test_tailcall_hierarchy_count:PASS:find data_map 0 nsec
+test_tailcall_hierarchy_count:PASS:open fexit_obj file 0 nsec
+test_tailcall_hierarchy_count:PASS:find fexit prog 0 nsec
+test_tailcall_hierarchy_count:PASS:set_attach_target subprog_tail 0 nsec
+test_tailcall_hierarchy_count:PASS:load fexit_obj 0 nsec
+libbpf: prog 'fexit': failed to attach: -ENOTSUPP
+test_tailcall_hierarchy_count:FAIL:attach_trace unexpected error: -524
+#413/20  tailcalls/tailcall_bpf2bpf_hierarchy_fexit:FAIL
+test_tailcall_hierarchy_count:PASS:load obj 0 nsec
+test_tailcall_hierarchy_count:PASS:find entry prog 0 nsec
+test_tailcall_hierarchy_count:PASS:prog_fd 0 nsec
+test_tailcall_hierarchy_count:PASS:find jmp_table 0 nsec
+test_tailcall_hierarchy_count:PASS:map_fd 0 nsec
+test_tailcall_hierarchy_count:PASS:update jmp_table 0 nsec
+test_tailcall_hierarchy_count:PASS:find data_map 0 nsec
+test_tailcall_hierarchy_count:PASS:open fentry_obj file 0 nsec
+test_tailcall_hierarchy_count:PASS:find fentry prog 0 nsec
+test_tailcall_hierarchy_count:PASS:set_attach_target subprog_tail 0 nsec
+test_tailcall_hierarchy_count:PASS:load fentry_obj 0 nsec
+libbpf: prog 'fentry': failed to attach: -ENOTSUPP
+test_tailcall_hierarchy_count:FAIL:attach_trace unexpected error: -524
+#413/21  tailcalls/tailcall_bpf2bpf_hierarchy_fentry_fexit:FAIL
+test_tailcall_hierarchy_count:PASS:load obj 0 nsec
+test_tailcall_hierarchy_count:PASS:find entry prog 0 nsec
+test_tailcall_hierarchy_count:PASS:prog_fd 0 nsec
+test_tailcall_hierarchy_count:PASS:open fentry_obj file 0 nsec
+test_tailcall_hierarchy_count:PASS:find fentry prog 0 nsec
+test_tailcall_hierarchy_count:PASS:set_attach_target entry 0 nsec
+test_tailcall_hierarchy_count:PASS:load fentry_obj 0 nsec
+libbpf: prog 'fentry': failed to attach: -ENOTSUPP
+test_tailcall_hierarchy_count:FAIL:attach_trace unexpected error: -524
+tester_init:PASS:tester_log_buf 0 nsec
+process_subtest:PASS:obj_open_mem 0 nsec
+process_subtest:PASS:specs_alloc 0 nsec
+#413/22  tailcalls/tailcall_bpf2bpf_hierarchy_fentry_entry:FAIL
+#413/23  tailcalls/tailcall_bpf2bpf_hierarchy_2:OK
+#413/24  tailcalls/tailcall_bpf2bpf_hierarchy_3:OK
+test_tailcall_freplace:PASS:tailcall_freplace__open 0 nsec
+test_tailcall_freplace:PASS:tc_bpf2bpf__open_and_load 0 nsec
+test_tailcall_freplace:PASS:set_attach_target 0 nsec
+test_tailcall_freplace:PASS:tailcall_freplace__load 0 nsec
+test_tailcall_freplace:PASS:update jmp_table failure 0 nsec
+libbpf: prog 'entry_freplace': failed to attach to freplace: -ENOTSUPP
+test_tailcall_freplace:FAIL:attach_freplace unexpected error: -524
+#413/25  tailcalls/tailcall_freplace:FAIL
+test_tailcall_bpf2bpf_freplace:PASS:tc_bpf2bpf__open_and_load 0 nsec
+test_tailcall_bpf2bpf_freplace:PASS:tailcall_freplace__open 0 nsec
+test_tailcall_bpf2bpf_freplace:PASS:set_attach_target 0 nsec
+test_tailcall_bpf2bpf_freplace:PASS:tailcall_freplace__load 0 nsec
+libbpf: prog 'entry_freplace': failed to attach to freplace: -ENOTSUPP
+test_tailcall_bpf2bpf_freplace:FAIL:attach_freplace unexpected error: -524
+#413/26  tailcalls/tailcall_bpf2bpf_freplace:FAIL
+#413/27  tailcalls/tailcall_failure:OK
+#413/28  tailcalls/reject_tail_call_spin_lock:OK
+#413/29  tailcalls/reject_tail_call_rcu_lock:OK
+#413/30  tailcalls/reject_tail_call_preempt_lock:OK
+#413/31  tailcalls/reject_tail_call_ref:OK
+#413     tailcalls:FAIL
+
+All error logs:
+tester_init:PASS:tester_log_buf 0 nsec
+process_subtest:PASS:obj_open_mem 0 nsec
+process_subtest:PASS:specs_alloc 0 nsec
+test_tailcall_count:PASS:open fentry_obj file 0 nsec
+test_tailcall_count:PASS:find fentry prog 0 nsec
+test_tailcall_count:PASS:set_attach_target subprog_tail 0 nsec
+test_tailcall_count:PASS:load fentry_obj 0 nsec
+libbpf: prog 'fentry': failed to attach: -ENOTSUPP
+test_tailcall_count:FAIL:attach_trace unexpected error: -524
+#413/13  tailcalls/tailcall_bpf2bpf_fentry:FAIL
+test_tailcall_count:PASS:open fexit_obj file 0 nsec
+test_tailcall_count:PASS:find fexit prog 0 nsec
+test_tailcall_count:PASS:set_attach_target subprog_tail 0 nsec
+test_tailcall_count:PASS:load fexit_obj 0 nsec
+libbpf: prog 'fexit': failed to attach: -ENOTSUPP
+test_tailcall_count:FAIL:attach_trace unexpected error: -524
+#413/14  tailcalls/tailcall_bpf2bpf_fexit:FAIL
+test_tailcall_count:PASS:open fentry_obj file 0 nsec
+test_tailcall_count:PASS:find fentry prog 0 nsec
+test_tailcall_count:PASS:set_attach_target subprog_tail 0 nsec
+test_tailcall_count:PASS:load fentry_obj 0 nsec
+libbpf: prog 'fentry': failed to attach: -ENOTSUPP
+test_tailcall_count:FAIL:attach_trace unexpected error: -524
+#413/15  tailcalls/tailcall_bpf2bpf_fentry_fexit:FAIL
+test_tailcall_bpf2bpf_fentry_entry:PASS:load tgt_obj 0 nsec
+test_tailcall_bpf2bpf_fentry_entry:PASS:find jmp_table map 0 nsec
+test_tailcall_bpf2bpf_fentry_entry:PASS:find jmp_table map fd 0 nsec
+test_tailcall_bpf2bpf_fentry_entry:PASS:find classifier_0 prog 0 nsec
+test_tailcall_bpf2bpf_fentry_entry:PASS:find classifier_0 prog fd 0 nsec
+test_tailcall_bpf2bpf_fentry_entry:PASS:update jmp_table 0 nsec
+test_tailcall_bpf2bpf_fentry_entry:PASS:open fentry_obj file 0 nsec
+test_tailcall_bpf2bpf_fentry_entry:PASS:find fentry prog 0 nsec
+test_tailcall_bpf2bpf_fentry_entry:PASS:set_attach_target classifier_0 0 nsec
+test_tailcall_bpf2bpf_fentry_entry:PASS:load fentry_obj 0 nsec
+libbpf: prog 'fentry': failed to attach: -ENOTSUPP
+test_tailcall_bpf2bpf_fentry_entry:FAIL:attach_trace unexpected error: -524
+#413/16  tailcalls/tailcall_bpf2bpf_fentry_entry:FAIL
+test_tailcall_hierarchy_count:PASS:load obj 0 nsec
+test_tailcall_hierarchy_count:PASS:find entry prog 0 nsec
+test_tailcall_hierarchy_count:PASS:prog_fd 0 nsec
+test_tailcall_hierarchy_count:PASS:find jmp_table 0 nsec
+test_tailcall_hierarchy_count:PASS:map_fd 0 nsec
+test_tailcall_hierarchy_count:PASS:update jmp_table 0 nsec
+test_tailcall_hierarchy_count:PASS:find data_map 0 nsec
+test_tailcall_hierarchy_count:PASS:open fentry_obj file 0 nsec
+test_tailcall_hierarchy_count:PASS:find fentry prog 0 nsec
+test_tailcall_hierarchy_count:PASS:set_attach_target subprog_tail 0 nsec
+test_tailcall_hierarchy_count:PASS:load fentry_obj 0 nsec
+libbpf: prog 'fentry': failed to attach: -ENOTSUPP
+test_tailcall_hierarchy_count:FAIL:attach_trace unexpected error: -524
+#413/19  tailcalls/tailcall_bpf2bpf_hierarchy_fentry:FAIL
+test_tailcall_hierarchy_count:PASS:load obj 0 nsec
+test_tailcall_hierarchy_count:PASS:find entry prog 0 nsec
+test_tailcall_hierarchy_count:PASS:prog_fd 0 nsec
+test_tailcall_hierarchy_count:PASS:find jmp_table 0 nsec
+test_tailcall_hierarchy_count:PASS:map_fd 0 nsec
+test_tailcall_hierarchy_count:PASS:update jmp_table 0 nsec
+test_tailcall_hierarchy_count:PASS:find data_map 0 nsec
+test_tailcall_hierarchy_count:PASS:open fexit_obj file 0 nsec
+test_tailcall_hierarchy_count:PASS:find fexit prog 0 nsec
+test_tailcall_hierarchy_count:PASS:set_attach_target subprog_tail 0 nsec
+test_tailcall_hierarchy_count:PASS:load fexit_obj 0 nsec
+libbpf: prog 'fexit': failed to attach: -ENOTSUPP
+test_tailcall_hierarchy_count:FAIL:attach_trace unexpected error: -524
+#413/20  tailcalls/tailcall_bpf2bpf_hierarchy_fexit:FAIL
+test_tailcall_hierarchy_count:PASS:load obj 0 nsec
+test_tailcall_hierarchy_count:PASS:find entry prog 0 nsec
+test_tailcall_hierarchy_count:PASS:prog_fd 0 nsec
+test_tailcall_hierarchy_count:PASS:find jmp_table 0 nsec
+test_tailcall_hierarchy_count:PASS:map_fd 0 nsec
+test_tailcall_hierarchy_count:PASS:update jmp_table 0 nsec
+test_tailcall_hierarchy_count:PASS:find data_map 0 nsec
+test_tailcall_hierarchy_count:PASS:open fentry_obj file 0 nsec
+test_tailcall_hierarchy_count:PASS:find fentry prog 0 nsec
+test_tailcall_hierarchy_count:PASS:set_attach_target subprog_tail 0 nsec
+test_tailcall_hierarchy_count:PASS:load fentry_obj 0 nsec
+libbpf: prog 'fentry': failed to attach: -ENOTSUPP
+test_tailcall_hierarchy_count:FAIL:attach_trace unexpected error: -524
+#413/21  tailcalls/tailcall_bpf2bpf_hierarchy_fentry_fexit:FAIL
+test_tailcall_hierarchy_count:PASS:load obj 0 nsec
+test_tailcall_hierarchy_count:PASS:find entry prog 0 nsec
+test_tailcall_hierarchy_count:PASS:prog_fd 0 nsec
+test_tailcall_hierarchy_count:PASS:open fentry_obj file 0 nsec
+test_tailcall_hierarchy_count:PASS:find fentry prog 0 nsec
+test_tailcall_hierarchy_count:PASS:set_attach_target entry 0 nsec
+test_tailcall_hierarchy_count:PASS:load fentry_obj 0 nsec
+libbpf: prog 'fentry': failed to attach: -ENOTSUPP
+test_tailcall_hierarchy_count:FAIL:attach_trace unexpected error: -524
+tester_init:PASS:tester_log_buf 0 nsec
+process_subtest:PASS:obj_open_mem 0 nsec
+process_subtest:PASS:specs_alloc 0 nsec
+#413/22  tailcalls/tailcall_bpf2bpf_hierarchy_fentry_entry:FAIL
+test_tailcall_freplace:PASS:tailcall_freplace__open 0 nsec
+test_tailcall_freplace:PASS:tc_bpf2bpf__open_and_load 0 nsec
+test_tailcall_freplace:PASS:set_attach_target 0 nsec
+test_tailcall_freplace:PASS:tailcall_freplace__load 0 nsec
+test_tailcall_freplace:PASS:update jmp_table failure 0 nsec
+libbpf: prog 'entry_freplace': failed to attach to freplace: -ENOTSUPP
+test_tailcall_freplace:FAIL:attach_freplace unexpected error: -524
+#413/25  tailcalls/tailcall_freplace:FAIL
+test_tailcall_bpf2bpf_freplace:PASS:tc_bpf2bpf__open_and_load 0 nsec
+test_tailcall_bpf2bpf_freplace:PASS:tailcall_freplace__open 0 nsec
+test_tailcall_bpf2bpf_freplace:PASS:set_attach_target 0 nsec
+test_tailcall_bpf2bpf_freplace:PASS:tailcall_freplace__load 0 nsec
+libbpf: prog 'entry_freplace': failed to attach to freplace: -ENOTSUPP
+test_tailcall_bpf2bpf_freplace:FAIL:attach_freplace unexpected error: -524
+#413/26  tailcalls/tailcall_bpf2bpf_freplace:FAIL
+#413     tailcalls:FAIL
+Summary: 0/21 PASSED, 0 SKIPPED, 1 FAILED
+----------------------------------------------------------------------
+
+v1:
+1,Fix the jmp_offset calculation error in the emit_bpf_tail_call function.
+2,Fix the issue that MAX_TAIL_CALL_CNT limit bypass in hybrid tailcall and BPF-to-BPF call
+
+After applying this patch, testing results are as follows:
+
+./test_progs --allow=tailcalls/tailcall_bpf2bpf_hierarchy_1
+413/18  tailcalls/tailcall_bpf2bpf_hierarchy_1:OK
+413     tailcalls:OK
+Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
+
+./test_progs --allow=tailcalls/tailcall_bpf2bpf_hierarchy_2
+413/23  tailcalls/tailcall_bpf2bpf_hierarchy_2:OK
+413     tailcalls:OK
+Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
+
+./test_progs --allow=tailcalls/tailcall_bpf2bpf_hierarchy_3
+413/24  tailcalls/tailcall_bpf2bpf_hierarchy_3:OK
+413     tailcalls:OK
+Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
+
+Haoran Jiang (2):
+  LoongArch: BPF: Optimize the calculation method of jmp_offset in the
+    emit_bpf_tail_call function
+  LoongArch: BPF: Fix tailcall hierarchy
+
+ arch/loongarch/net/bpf_jit.c | 133 +++++++++++++++++++----------------
+ 1 file changed, 74 insertions(+), 59 deletions(-)
+
+-- 
+2.43.0
+
 
