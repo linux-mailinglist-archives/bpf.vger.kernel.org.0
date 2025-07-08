@@ -1,74 +1,76 @@
-Return-Path: <bpf+bounces-62714-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62715-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EA34AFDB8E
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 01:08:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22F75AFDB8F
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 01:08:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE511171653
-	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 23:08:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1BB21AA1F9C
+	for <lists+bpf@lfdr.de>; Tue,  8 Jul 2025 23:08:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7D3D22E3E8;
-	Tue,  8 Jul 2025 23:08:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 032CB23182B;
+	Tue,  8 Jul 2025 23:08:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lTGPQW5U"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fSJpgmvj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA73E22D79F
-	for <bpf@vger.kernel.org>; Tue,  8 Jul 2025 23:08:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E641C22A4D8
+	for <bpf@vger.kernel.org>; Tue,  8 Jul 2025 23:08:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752016109; cv=none; b=DPUii0DDv7PTPQIQfzJ4+MDQmOBFSNog4N4UZhQkOaLjRz8NjQzolZLd3Jibe73+1mAf4lQIaJQ/KJwETbj4ykBkTIE0Otk1H54w9zDjvFCHZsokEXByYVNMYRP1VbhvAYNuoSsG4L/h9ghyyqDsJl7+kG1eiQ7XCJa1UpvWSwU=
+	t=1752016110; cv=none; b=aDdDz/ZwcY9egDU3rxlWWEXbY2A34oVjmL2DXKlbn1rZMCdjpIC7ITe1g+reVwWCEJRlfWX9IvehGUQs/U+fxvYMyG2B4RdELHbLBptsim0M9RrVMPj3kndGSpCKs4Un9a2OZlZ4KVHkroXcW1bcn6P4TZOs7jhhXvpcAiAJXJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752016109; c=relaxed/simple;
-	bh=4/znmI8FLtMOu7vjCVfRQk5IhgrnluW72ZPJRNl3VJM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=djYqssfJDYV+C2ZeF0gcAK7JPMSazWijdKsmvnWGODx2ysvWu20t3qWq6L4BsLhbToahtMzPGZ3BC7MSmI5fnvkC/WQB8Q4hgmqbY3jKHtt/shuueD7cPqHomEvf4fKeyzR+gWU81yaMRurXbVZSUIdNy3DWNkYU4HVnjQtHuP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lTGPQW5U; arc=none smtp.client-ip=209.85.214.178
+	s=arc-20240116; t=1752016110; c=relaxed/simple;
+	bh=FxkwUY/WVirElTMxhME7Bi7BBml2L7mJjlgtdEeICt4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=u39aGQ0EFSw/T9R3pJ/qwuhdM7+nmE0dwrxmKL10sp3hkenwWfA2K9ZDfQorfJDU/HTQpixPKjsTTcEryyDfmFwPW8jG21BwDnuEcNUu89Q+TYkZrzJtOgMFdKBAXvIbIgLWcpXZfeSbPkvbPehoM01IIUW88urNLIP3+ByQYDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fSJpgmvj; arc=none smtp.client-ip=209.85.215.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-23636167b30so50371425ad.1
-        for <bpf@vger.kernel.org>; Tue, 08 Jul 2025 16:08:27 -0700 (PDT)
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-b26f7d2c1f1so6839309a12.0
+        for <bpf@vger.kernel.org>; Tue, 08 Jul 2025 16:08:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752016107; x=1752620907; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=kBxrE3IV5L6oyVIgfChCBaOrLr/BUH7aFqUV6jKt8DM=;
-        b=lTGPQW5UxmCM+19gQq5fvzHz9OvWj666zWO5rmXOPY0xIreHLIrTqPJ04hG1htpy3Q
-         TwIoRpcv727+mOiNMk2NcFewP5KmTXgdLcdP7l1z6DsUxgd5BC1Glmh069auWg/YUM7B
-         oJ7yIeMs/hK2hy5cjw/YQYmVOmj1SjUlLrE2XwLKBa7yxSKnqEl5pO1q26+33rS97h6L
-         aktYhX3b4gWGVOG8VQ0I258Kgvnb05x6hxfMeLmLuJlg8qPWC2Ez1EknNeoY0pNvfY3x
-         /rdr/wtQmMo0rkTKbgaj92bn8GkulUuMHJn8ySEdAI+b5uxl4ALLqtVnWkTZwpfTB7ZH
-         efkA==
+        d=gmail.com; s=20230601; t=1752016108; x=1752620908; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YXp+5yC/eIwHET1oj+oWwLqHQhUfkw9KqCwSfhv8wt0=;
+        b=fSJpgmvjWWK47NwM7BUEEq8Fisg+sYN8iw6a9S4C+oC3fyG4Ps/8SaoJGfivf0J9fy
+         DHQREkFP3xyTdR2Cqq8Oiojg5frVe87ZrYNxIJ5BZjCUbbrL5X+7CiQV/vM4bXQvDnSj
+         kpuOUI0wZCOKnICsR8jALgjUsqdOB9AiANH2b2r63jdGmSSrte5RF1nUtbRi1bo1H5b2
+         L0TX+gzrSPsMbgJQAph4hG+kFxYVfF/mmtyY3ZTYTcLfA08UYjzaCxdmiOd3zbiZlhuZ
+         Htd4jNaQtJK32Irsw8XWUmtPxUbI+F4TsUWATrA6nbPpLvzoDZ9ejODr7NyIlrzLZyE4
+         HMhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752016107; x=1752620907;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kBxrE3IV5L6oyVIgfChCBaOrLr/BUH7aFqUV6jKt8DM=;
-        b=oqnJstxO9WeBshgD0tUq5hPgWa63p1hltIcOsAKkPTk6y3iCGmhTxOcGiggKftqqGh
-         q1UDf0on1G7+TGVePUNXRX7fA9hVstbOlaXHhpd1Vj8pUFZYKcaPe1c90QoUwlOHJrAg
-         7ydtlpQMzgejnJxunQyNyM10Jb9vsCvwPTVapwUofoQJy7gjDj9Xb3ImCwI4jJLKTrPn
-         NcK1ejhQg/4g1anXV5eHOeK1Ny92Mtww+5kCeiwSx0GACVM/hEi3eh6pE0r9YxOgTU0h
-         xwmj/3M83wLy8vFI9l+yeCCSbRKks0a13RVwI3iFneaMy3amobSmCpjGPs0MF7MzQiZR
-         eLKw==
-X-Gm-Message-State: AOJu0YzKUmxzkuzk6G/DhRu0fTuLE4AGxXOXFmQROez3FhGyrbyWwFdB
-	TM8DmbwR6TEYrEwCVpVRs7B0QoJbFfp32dVUzHmxUmXARcuSt9WwnKhRyf5G9g==
-X-Gm-Gg: ASbGncvPLBZgUd05Zf/tUc49DFcMVX7rZvAtS8eqRuHqNivzqa4UaK5S4nyPYaIEulM
-	vlwxvKBpcr5+8tgkyZk3T7uVaBqlkK0FurNG89nNDi30YCPxNpbhsq7kmUIVfj0F53EctOy3ZVu
-	hMLI9Wd+BcQPoDVsBjDzrq2CTikakIVGqVeMTWIoDMjZYUfOdSbkCOZKTks99SIUTpHjCXok6PW
-	NPefeW1aYh8MkiIjGhkT9Upau6AgdyI5Gz11BYL0F/Sn9Q1kBuAQoBcqFZKl8NdGiTsV5qENecA
-	k+jpmrVyYac5klfLZKfbIvZ8gy5X0ooGgHmVz5Pfx69XK4DdzsFFnA==
-X-Google-Smtp-Source: AGHT+IEB7dLM5TenngmRjM4ynS1CnOOryfYB3o4s5cJfnY2eObt5G3Fnuc4EGLw493NvvFXQhFQTow==
-X-Received: by 2002:a17:903:22c5:b0:234:8f5d:e3a4 with SMTP id d9443c01a7336-23ddb18ff20mr4720475ad.2.1752016106583;
-        Tue, 08 Jul 2025 16:08:26 -0700 (PDT)
-Received: from localhost ([2a03:2880:ff:44::])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23c8434ed23sm120186825ad.54.2025.07.08.16.08.25
+        d=1e100.net; s=20230601; t=1752016108; x=1752620908;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YXp+5yC/eIwHET1oj+oWwLqHQhUfkw9KqCwSfhv8wt0=;
+        b=F+BjZ/8J8/vTmbGH5RsdBvqvyC3Ly7J3dClJ2qZ+QXdmrlUjxtZDc7AmwpwnJA9UTj
+         liL3Il0/6/uhWbNKrU6HFmHBj8dQfHZ1lUjIyYSZp3B6CBito9mfsY4iEsuQelx8Cgk5
+         OWsr2rkdzUkI9MnXgffvH+DVhMyxvu9d+7Ek5ap+QvgD4X51j/fRJSacU2Qb5zWfK5cg
+         394CrgYqzGBryowdVIRMizuhVcndew23yxxZ2VuwQHOT2t1Fw6tPH1exQPSdfrUTSBNP
+         flNfdMzaTYWv10PgyaoLDZUrMoAb0hlw8aELXRrLSBbUzN4iLeVbMIJwLUEr6mPJ0GKL
+         0j9w==
+X-Gm-Message-State: AOJu0YxUWxyaxmsyD5gsSgDQDyi8iAMhUDT65uuDj3yTbui211QAnrLP
+	yB75eNBoPBdWKN+z3uat+aBYaC0KHG36IIfvo8khn4FlBroowLq22g7Ndii+fg==
+X-Gm-Gg: ASbGnctoOY7Z7IWZIIMxmVMYkjgGW0zcV2NbxLE0qdcWJFQ+mZTJ1u4PgsWxeJdcoM3
+	H6eJ7IJbN0RzkIbBRmN2yyg0h+Q8XRc71bxX0MU2oQ0VvhyA8Ux3IePz51Oa4oWMgw4HWhFbF4N
+	AdItv+m3zCEmqUqH+PHpveTXran7aTrCYmaoQFaUk8vMA/cZZmY0gr6BgGq9XZJfywaiWFesdB4
+	2p6PNxnsKBljQXlvPaxAFlrQMgGSRCDKK07EdSCPthYoD5+PDq0C0fhVFea6gHnh+v5v8SJsL01
+	zv7nAI9vdwn8KojnET6tK9OZLFQAVrgKkcG4wF0PAbir7lx3qegJHUkEa7kUzYo=
+X-Google-Smtp-Source: AGHT+IGsIjTyiHoCHpzpaSQYvvPjrL3H0f6ikIJrvrG3HBnmFJGCOKSjfC9bUqlHfq/7Pau3n1U+gw==
+X-Received: by 2002:a17:90b:56ce:b0:311:baa0:89ce with SMTP id 98e67ed59e1d1-31c2fce6a50mr678208a91.12.1752016107668;
+        Tue, 08 Jul 2025 16:08:27 -0700 (PDT)
+Received: from localhost ([2a03:2880:ff:5::])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23c8455e720sm119013665ad.118.2025.07.08.16.08.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jul 2025 16:08:26 -0700 (PDT)
+        Tue, 08 Jul 2025 16:08:27 -0700 (PDT)
 From: Amery Hung <ameryhung@gmail.com>
 To: bpf@vger.kernel.org
 Cc: alexei.starovoitov@gmail.com,
@@ -78,10 +80,12 @@ Cc: alexei.starovoitov@gmail.com,
 	martin.lau@kernel.org,
 	ameryhung@gmail.com,
 	kernel-team@meta.com
-Subject: [RFC bpf-next v1 0/4] Support cookie for link-based struct_ops attachment
-Date: Tue,  8 Jul 2025 16:08:21 -0700
-Message-ID: <20250708230825.4159486-1-ameryhung@gmail.com>
+Subject: [RFC bpf-next v1 1/4] bpf: Factor out bpf_struct_ops_prepare_attach()
+Date: Tue,  8 Jul 2025 16:08:22 -0700
+Message-ID: <20250708230825.4159486-2-ameryhung@gmail.com>
 X-Mailer: git-send-email 2.47.1
+In-Reply-To: <20250708230825.4159486-1-ameryhung@gmail.com>
+References: <20250708230825.4159486-1-ameryhung@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -90,98 +94,224 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-* Motivation *
+To support cookie for struct_ops attachment, the trampoline needs be
+created during link_create. To prepare for it, factor out the creation
+of trampoline and ksym from struct_ops map update. No functional change.
 
-Currently, sched_ext only supports a single scheduler. scx kfuncs can
-reference the calling scheduler simply with a global pointer, scx_root,
-whether being called in struct_ops, tracing, syscall or async callback.
-However, when sched_ext moves to support multiple scx schedulers,
-scx kfunc without task_struct argument won't be able to easily refer
-to the calling scheduler without passing additional information.
+Signed-off-by: Amery Hung <ameryhung@gmail.com>
+---
+ kernel/bpf/bpf_struct_ops.c | 148 ++++++++++++++++++++++--------------
+ 1 file changed, 93 insertions(+), 55 deletions(-)
 
-The vision is to be able to view struct_ops, tracing, syscall programs
-and async callbacks in a file as part of a scheduler, and have the
-ability to refer to the scheduler in kfuncs called from any of the
-programs.
-
-However, right now there is not a notion that connects bpf programs in a
-file in the kernel. Until it is clear what that should be, as a
-stopgap, we would like to reuse cookie to associate bpf programs
-belonging to the same scheduler.
-
-* Design *
-
-The interim solution is to use bpf cookie as the scheduler id, and add
-the cookie as an argument to scx kfuncs without task_struct. By
-maintaining the cookie to scheduler mapping in sched_ext, kfuncs will be
-able to refer to the calling scheduler internally using cookie.
-
-For the user space loader, it should use the same cookie when attaching
-bpf programs. In bpf programs, they will call bpf_get_attach_cookie()
-to get the cookie and pass it to scx kfuncs.
-
-The following patches are the first part of the kernel-side plumbing: to
-support cookie for link-based struct_ops attachment. struct_ops already
-uses bpf trampoline. The only problem is the trampoline is being populated
-during map_update when the cookie is not known yet. This patchset moves
-the trampoline preparation from map_update to link_create for link-based
-struct_ops attachment. Then, we extend the UAPI to take the cookie and
-propagate it all the way to the struct_ops link_create. Finally,
-bpf_get_attach_cookie() is allowed to struct_ops programs. 
-
-A problem that has not been addressed in this RFC is that by moving
-trampoline preparation to link_create, creating multiple links
-using the same struct_ops map becomes problematic. A simple solution
-may be just disable if there is no obvious use case for it.
-
-* Alternative *
-
-Martin has suggested a way that involves less kernel changes: Using
-struct_ops map id as the sched_ext scheduler id. Instead of further
-complicating struct_ops, sched_ext can create the struct_ops map id
-to scheduler mapping in reg(). The id will also be stored in a global
-variable in the file referenced by different types of programs. The
-rest is similar to the cookie approach: kfuncs without task_struct
-will need to add an argument, and they will lookup the scheduler by
-the id.
-
-* Previous approach *
-
-The previous solution was to set a "this pointer" pointing to the
-struct_ops struct during struct_ops map_update. Then, kfuncs can get
-a pointer to the scheduler with a __prog argument. However, this
-approach is broken as it would only work for struct_ops programs.
-
-
-Some thought after Martin brought up the idea
-
-I think we should use the map id instead of cookie. Especially if we are
-going to disable creating multiple links per map, the cookie effectively
-becomes the same as the map id.
-
-
-Amery Hung (4):
-  bpf: Factor out bpf_struct_ops_prepare_attach()
-  bpf: Support cookie for linked-based struct_ops attachment
-  libbpf: Support link-based struct_ops attach with options
-  selftests/bpf: Test bpf_get_attach_cookie() in struct_ops program
-
- include/uapi/linux/bpf.h                      |   3 +
- kernel/bpf/bpf_struct_ops.c                   | 199 ++++++++++++------
- kernel/bpf/helpers.c                          |  18 ++
- tools/include/uapi/linux/bpf.h                |   3 +
- tools/lib/bpf/bpf.c                           |   5 +
- tools/lib/bpf/bpf.h                           |   3 +
- tools/lib/bpf/libbpf.c                        |  14 +-
- tools/lib/bpf/libbpf.h                        |  10 +
- tools/lib/bpf/libbpf.map                      |   1 +
- .../bpf/prog_tests/test_struct_ops_cookie.c   |  42 ++++
- .../selftests/bpf/progs/struct_ops_cookie.c   |  48 +++++
- .../selftests/bpf/test_kmods/bpf_testmod.c    |   1 +
- 12 files changed, 280 insertions(+), 67 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_cookie.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_cookie.c
-
+diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+index 96113633e391..4d150e99a86c 100644
+--- a/kernel/bpf/bpf_struct_ops.c
++++ b/kernel/bpf/bpf_struct_ops.c
+@@ -673,6 +673,95 @@ static void bpf_struct_ops_map_free_ksyms(struct bpf_struct_ops_map *st_map)
+ 	}
+ }
+ 
++static int bpf_struct_ops_prepare_attach(struct bpf_struct_ops_map *st_map)
++{
++	const struct bpf_struct_ops *st_ops = st_map->st_ops_desc->st_ops;
++	const struct btf_type *t = st_map->st_ops_desc->type;
++	struct bpf_link **plink = st_map->links;
++	struct bpf_ksym **pksym = st_map->ksyms;
++	const struct btf_member *member;
++	struct bpf_tramp_links *tlinks;
++	void *udata, *kdata;
++	int i, err = 0;
++	u32 trampoline_start, image_off = 0;
++	void *cur_image = NULL, *image = NULL;
++	const char *tname, *mname;
++
++	tlinks = kcalloc(BPF_TRAMP_MAX, sizeof(*tlinks), GFP_KERNEL);
++	if (!tlinks)
++		return -ENOMEM;
++
++	udata = &st_map->uvalue->data;
++	kdata = &st_map->kvalue.data;
++
++	tname = btf_name_by_offset(st_map->btf, t->name_off);
++
++	for_each_member(i, t, member) {
++		const struct btf_type *ptype;
++		struct bpf_tramp_link *link;
++		struct bpf_ksym *ksym;
++		u32 moff, id;
++
++		ptype = btf_type_resolve_ptr(st_map->btf, member->type, NULL);
++		if (!ptype || !btf_type_is_func_proto(ptype))
++			continue;
++
++		moff = __btf_member_bit_offset(t, member) / 8;
++
++		id = *(unsigned long *)(udata + moff);
++		if (!id)
++			continue;
++
++		mname = btf_name_by_offset(st_map->btf, member->name_off);
++		link = container_of(*plink++, struct bpf_tramp_link, link);
++
++		ksym = kzalloc(sizeof(*ksym), GFP_USER);
++		if (!ksym) {
++			err = -ENOMEM;
++			goto out;
++		}
++		*pksym++ = ksym;
++
++		trampoline_start = image_off;
++		err = bpf_struct_ops_prepare_trampoline(tlinks, link,
++						&st_ops->func_models[i],
++						*(void **)(st_ops->cfi_stubs + moff),
++						&image, &image_off,
++						st_map->image_pages_cnt < MAX_TRAMP_IMAGE_PAGES);
++		if (err)
++			goto out;
++
++		if (cur_image != image) {
++			st_map->image_pages[st_map->image_pages_cnt++] = image;
++			cur_image = image;
++			trampoline_start = 0;
++		}
++
++		*(void **)(kdata + moff) = image + trampoline_start + cfi_get_offset();
++
++		/* init ksym for this trampoline */
++		bpf_struct_ops_ksym_init(tname, mname,
++					 image + trampoline_start,
++					 image_off - trampoline_start,
++					 ksym);
++	}
++
++	if (st_ops->validate) {
++		err = st_ops->validate(kdata);
++		if (err)
++			goto out;
++	}
++	for (i = 0; i < st_map->image_pages_cnt; i++) {
++		err = arch_protect_bpf_trampoline(st_map->image_pages[i],
++						  PAGE_SIZE);
++		if (err)
++			goto out;
++	}
++out:
++	kfree(tlinks);
++	return err;
++}
++
+ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+ 					   void *value, u64 flags)
+ {
+@@ -683,14 +772,10 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+ 	const struct btf_type *module_type;
+ 	const struct btf_member *member;
+ 	const struct btf_type *t = st_ops_desc->type;
+-	struct bpf_tramp_links *tlinks;
+ 	void *udata, *kdata;
+ 	int prog_fd, err;
+-	u32 i, trampoline_start, image_off = 0;
+-	void *cur_image = NULL, *image = NULL;
++	u32 i;
+ 	struct bpf_link **plink;
+-	struct bpf_ksym **pksym;
+-	const char *tname, *mname;
+ 
+ 	if (flags)
+ 		return -EINVAL;
+@@ -710,10 +795,6 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+ 	if (uvalue->common.state || refcount_read(&uvalue->common.refcnt))
+ 		return -EINVAL;
+ 
+-	tlinks = kcalloc(BPF_TRAMP_MAX, sizeof(*tlinks), GFP_KERNEL);
+-	if (!tlinks)
+-		return -ENOMEM;
+-
+ 	uvalue = (struct bpf_struct_ops_value *)st_map->uvalue;
+ 	kvalue = (struct bpf_struct_ops_value *)&st_map->kvalue;
+ 
+@@ -730,18 +811,14 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+ 	kdata = &kvalue->data;
+ 
+ 	plink = st_map->links;
+-	pksym = st_map->ksyms;
+-	tname = btf_name_by_offset(st_map->btf, t->name_off);
+ 	module_type = btf_type_by_id(btf_vmlinux, st_ops_ids[IDX_MODULE_ID]);
+ 	for_each_member(i, t, member) {
+ 		const struct btf_type *mtype, *ptype;
+ 		struct bpf_prog *prog;
+ 		struct bpf_tramp_link *link;
+-		struct bpf_ksym *ksym;
+ 		u32 moff;
+ 
+ 		moff = __btf_member_bit_offset(t, member) / 8;
+-		mname = btf_name_by_offset(st_map->btf, member->name_off);
+ 		ptype = btf_type_resolve_ptr(st_map->btf, member->type, NULL);
+ 		if (ptype == module_type) {
+ 			if (*(void **)(udata + moff))
+@@ -811,51 +888,13 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+ 			      &bpf_struct_ops_link_lops, prog);
+ 		*plink++ = &link->link;
+ 
+-		ksym = kzalloc(sizeof(*ksym), GFP_USER);
+-		if (!ksym) {
+-			err = -ENOMEM;
+-			goto reset_unlock;
+-		}
+-		*pksym++ = ksym;
+-
+-		trampoline_start = image_off;
+-		err = bpf_struct_ops_prepare_trampoline(tlinks, link,
+-						&st_ops->func_models[i],
+-						*(void **)(st_ops->cfi_stubs + moff),
+-						&image, &image_off,
+-						st_map->image_pages_cnt < MAX_TRAMP_IMAGE_PAGES);
+-		if (err)
+-			goto reset_unlock;
+-
+-		if (cur_image != image) {
+-			st_map->image_pages[st_map->image_pages_cnt++] = image;
+-			cur_image = image;
+-			trampoline_start = 0;
+-		}
+-
+-		*(void **)(kdata + moff) = image + trampoline_start + cfi_get_offset();
+-
+ 		/* put prog_id to udata */
+ 		*(unsigned long *)(udata + moff) = prog->aux->id;
+-
+-		/* init ksym for this trampoline */
+-		bpf_struct_ops_ksym_init(tname, mname,
+-					 image + trampoline_start,
+-					 image_off - trampoline_start,
+-					 ksym);
+ 	}
+ 
+-	if (st_ops->validate) {
+-		err = st_ops->validate(kdata);
+-		if (err)
+-			goto reset_unlock;
+-	}
+-	for (i = 0; i < st_map->image_pages_cnt; i++) {
+-		err = arch_protect_bpf_trampoline(st_map->image_pages[i],
+-						  PAGE_SIZE);
+-		if (err)
+-			goto reset_unlock;
+-	}
++	err = bpf_struct_ops_prepare_attach(st_map);
++	if (err)
++		goto reset_unlock;
+ 
+ 	if (st_map->map.map_flags & BPF_F_LINK) {
+ 		err = 0;
+@@ -897,7 +936,6 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+ 	memset(uvalue, 0, map->value_size);
+ 	memset(kvalue, 0, map->value_size);
+ unlock:
+-	kfree(tlinks);
+ 	mutex_unlock(&st_map->lock);
+ 	if (!err)
+ 		bpf_struct_ops_map_add_ksyms(st_map);
 -- 
 2.47.1
 
