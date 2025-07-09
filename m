@@ -1,93 +1,549 @@
-Return-Path: <bpf+bounces-62740-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62741-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E464AFDD2F
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 03:59:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A3AFAFDD7B
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 04:32:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AC0E3BBA7C
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 01:59:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD3341C2429C
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 02:32:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F04B5199931;
-	Wed,  9 Jul 2025 01:59:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE83C1D88D0;
+	Wed,  9 Jul 2025 02:31:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ckv6fG6h"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="o/wFxuP3"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76FA449625
-	for <bpf@vger.kernel.org>; Wed,  9 Jul 2025 01:59:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87ABD1C84C0
+	for <bpf@vger.kernel.org>; Wed,  9 Jul 2025 02:31:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752026385; cv=none; b=Xw+9OS1XhweQ+/b8tLAyn0BdEkHgWtB2DS/B4m1I92h0cbgEQTK1lgVk77ujuQaWZEvlwpkl0Ti7gzpI4ZiBtUpvm7baly20zaeKxX7mA737SEAHkrDC7JDHo5dddJbm4AuJKYY3AfhyVEZOT2MEQOIgUefdrUeRPYuZQTL6QVk=
+	t=1752028309; cv=none; b=XpuMumEL19EERuPSSRDSGYRX/ouJjGDpzkJs/1CofK2GeDXWtOoMV7GxRd7p8zTLkrlPldC5yeZxmG2eL55EhcBsNhzRUu3N643f+rflwsP8n62uQjwYv30vRD7Et3PrDJh2Gq7tK3Emaa6BnJtPO61IINTIFGZOKwZCn3J9x4k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752026385; c=relaxed/simple;
-	bh=U2l2PPYMBpCzq7nFfiwb4RIOQP2ps2QvuHWk8EFNd3k=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=lXdXWqssxg/upRcbBjaMW4dLvOoH/FHS8jfg0N/dOauX1fFUlXHq++diZ2xzokjyYUiCvGVgxamZD+3cyLg417GuJmrotoCsMbc+5jxlBqxT7fweGbulRJv4HF35dSad8PAj1JF/R9h/uiBsB9orpSaLKuOmpz7rPA6Vw/cw670=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ckv6fG6h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02491C4CEED;
-	Wed,  9 Jul 2025 01:59:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752026384;
-	bh=U2l2PPYMBpCzq7nFfiwb4RIOQP2ps2QvuHWk8EFNd3k=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=ckv6fG6hW1J2QLF0JdPedBATsdWXVRtWA4X8Dykc7rETEBD5PZ3TXcuWfrzVb+Tu2
-	 bqbEabgHd4e1VxwAoERNUr8hrrjxvt1mfM2HNAF/hoWwvFIeNF7KVb5+nlogvB4BCS
-	 TRA7ZeFdjoFGrT9d0FGqA0oqsAtF/wI8gsOT3vIA4N9tf0lH4PCndBVbnLzDEKN43I
-	 4OQtWoowq0GuLjTJakxLQ3xA4tMw9ZO735xwxcryjgjGlf50eQnQDGLGl980IhKcgw
-	 B864gG0qgYKjYzQTk54OcOyhh9ZaY87hm6NdllARtzpFlQqIWz7qYN8Nwl5mAbGTSh
-	 QBMbRus89ONKg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EC224380DBEE;
-	Wed,  9 Jul 2025 02:00:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1752028309; c=relaxed/simple;
+	bh=CT+RzrHpCoNqpCSOLaNVhhh9hHRr6hoeskdFl03vFbA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jCyONEh+e360WGhiY3knq2usvseXIxM9p0j/NX9kcfiQyew76QYmttvbwJhaDzsWQN3Wk6/fYONcd3i4L8T99v4vPMISxHgg2hA1bMI3twZyXmBlcTiwaLw9kThqglSoz5980unfJjmPwoeG663dNinoECcGezdr1QE/BosMTLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=o/wFxuP3; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <4b401ad3-49bb-4a7a-96d4-80af63083f31@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1752028294;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MfdxiOncpwatWIEftprsUoQYdjJNkZ3tlMFyYmSuFn8=;
+	b=o/wFxuP3h/3B2sRTZRTHx1KQi9fKkhxwP1MclT2oyXmOmVS0l2TbbKiAUePWPbhyq9S/Vk
+	roSJSUKGpUamXHwDtpksXLo2q/3jqmlIKxM7t8w2eASbetLuC49PQpxRvxBDQ+vkCwUm5z
+	9M2jFuk2r633tL+V4CvyZccajKARGg0=
+Date: Wed, 9 Jul 2025 10:31:18 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v2 1/7] bpf: Add attach_type in bpf_link
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: daniel@iogearbox.net, razor@blackwall.org, andrew+netdev@lunn.ch,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, mattbobrowski@google.com, rostedt@goodmis.org,
+ mhiramat@kernel.org, mathieu.desnoyers@efficios.com, horms@kernel.org,
+ willemb@google.com, jakub@cloudflare.com, pablo@netfilter.org,
+ kadlec@netfilter.org, hawk@kernel.org, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+ coreteam@netfilter.org
+References: <20250708082228.824766-1-chen.dylane@linux.dev>
+ <20250708082228.824766-2-chen.dylane@linux.dev> <aG0l8tXpPDMrakUe@krava>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Tao Chen <chen.dylane@linux.dev>
+In-Reply-To: <aG0l8tXpPDMrakUe@krava>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v1] selftests/bpf: remove enum64 case from
- __arg_untrusted test suite
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <175202640668.192708.8030248051047101744.git-patchwork-notify@kernel.org>
-Date: Wed, 09 Jul 2025 02:00:06 +0000
-References: <20250708220856.3059578-1-eddyz87@gmail.com>
-In-Reply-To: <20250708220856.3059578-1-eddyz87@gmail.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
- yonghong.song@linux.dev, ameryhung@gmail.com
+X-Migadu-Flow: FLOW_OUT
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Tue,  8 Jul 2025 15:08:56 -0700 you wrote:
-> The enum64 type used by verifier_global_ptr_args test case requires
-> CONFIG_SCHED_CLASS_EXT. At the moment selftets do not depend on this
-> option. There are just a few enum64 types in the kernel. Instead of
-> tying selftests to implementation details of unrelated sub-systems,
-> just remove enum64 test case. Simple enums are covered and that should
-> be sufficient.
+在 2025/7/8 22:06, Jiri Olsa 写道:
+> On Tue, Jul 08, 2025 at 04:22:22PM +0800, Tao Chen wrote:
+>> Attach_type will be set when link created from user, it is better
+>> to record attach_type in bpf_link directly suggested by Andrii.
+>>
+>> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+>> ---
+>>   drivers/net/netkit.c           |  2 +-
+>>   include/linux/bpf.h            | 17 +++++++++++------
+>>   kernel/bpf/bpf_iter.c          |  3 ++-
+>>   kernel/bpf/bpf_struct_ops.c    |  5 +++--
+>>   kernel/bpf/cgroup.c            |  4 ++--
+>>   kernel/bpf/net_namespace.c     |  2 +-
+>>   kernel/bpf/syscall.c           | 35 +++++++++++++++++++++-------------
+>>   kernel/bpf/tcx.c               |  3 ++-
+>>   kernel/bpf/trampoline.c        | 10 ++++++----
+>>   kernel/trace/bpf_trace.c       |  4 ++--
+>>   net/bpf/bpf_dummy_struct_ops.c |  3 ++-
+>>   net/core/dev.c                 |  3 ++-
+>>   net/core/sock_map.c            |  3 ++-
+>>   net/netfilter/nf_bpf_link.c    |  3 ++-
+>>   14 files changed, 60 insertions(+), 37 deletions(-)
+>>
+>> diff --git a/drivers/net/netkit.c b/drivers/net/netkit.c
+>> index d072a7968f5..5928c99eac7 100644
+>> --- a/drivers/net/netkit.c
+>> +++ b/drivers/net/netkit.c
+>> @@ -775,7 +775,7 @@ static int netkit_link_init(struct netkit_link *nkl,
+>>   			    struct bpf_prog *prog)
+>>   {
+>>   	bpf_link_init(&nkl->link, BPF_LINK_TYPE_NETKIT,
+>> -		      &netkit_link_lops, prog);
+>> +		      &netkit_link_lops, prog, attr->link_create.attach_type);
+>>   	nkl->location = attr->link_create.attach_type;
+>>   	nkl->dev = dev;
+>>   	return bpf_link_prime(&nkl->link, link_primer);
+>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>> index 34dd90ec7fa..12a965362de 100644
+>> --- a/include/linux/bpf.h
+>> +++ b/include/linux/bpf.h
+>> @@ -1735,6 +1735,8 @@ struct bpf_link {
+>>   	 */
+>>   	bool sleepable;
+>>   	u32 flags;
+>> +	enum bpf_attach_type attach_type;
+>> +
 > 
-> [...]
+> 
+> there's now 4 byte hole:
+> 
+> 	jolsa@krava:~/kernel/linux-qemu-1$ pahole -C bpf_link ./vmlinux
+> 	struct bpf_link {
+> 		atomic64_t                 refcnt;               /*     0     8 */
+> 		u32                        id;                   /*     8     4 */
+> 		enum bpf_link_type         type;                 /*    12     4 */
+> 		const struct bpf_link_ops  * ops;                /*    16     8 */
+> 		struct bpf_prog *          prog;                 /*    24     8 */
+> 		bool                       sleepable;            /*    32     1 */
+> 
+> 		/* XXX 3 bytes hole, try to pack */
+> 
+> 		u32                        flags;                /*    36     4 */
+> 		enum bpf_attach_type       attach_type;          /*    40     4 */
+> 
+> 		/* XXX 4 bytes hole, try to pack */
+> 
+> 		union {
+> 			struct callback_head rcu __attribute__((__aligned__(8))); /*    48    16 */
+> 			struct work_struct work;                 /*    48    80 */
+> 		} __attribute__((__aligned__(8)));               /*    48    80 */
+> 
+> 		/* size: 128, cachelines: 2, members: 9 */
+> 		/* sum members: 121, holes: 2, sum holes: 7 */
+> 		/* forced alignments: 1, forced holes: 1, sum forced holes: 4 */
+> 	} __attribute__((__aligned__(8)));
+> 
+> I wonder we could just move sleepable bool to the end to have all aligned
+> 
 
-Here is the summary with links:
-  - [bpf-next,v1] selftests/bpf: remove enum64 case from __arg_untrusted test suite
-    https://git.kernel.org/bpf/bpf-next/c/ad97cb2ed06a
+sounds good, i will change it in v3, thanks.
 
-You are awesome, thank you!
+> jirka
+> 
+> 
+>>   	/* rcu is used before freeing, work can be used to schedule that
+>>   	 * RCU-based freeing before that, so they never overlap
+>>   	 */
+>> @@ -2034,11 +2036,13 @@ int bpf_prog_ctx_arg_info_init(struct bpf_prog *prog,
+>>   
+>>   #if defined(CONFIG_CGROUP_BPF) && defined(CONFIG_BPF_LSM)
+>>   int bpf_trampoline_link_cgroup_shim(struct bpf_prog *prog,
+>> -				    int cgroup_atype);
+>> +				    int cgroup_atype,
+>> +				    enum bpf_attach_type attach_type);
+>>   void bpf_trampoline_unlink_cgroup_shim(struct bpf_prog *prog);
+>>   #else
+>>   static inline int bpf_trampoline_link_cgroup_shim(struct bpf_prog *prog,
+>> -						  int cgroup_atype)
+>> +						  int cgroup_atype,
+>> +						  enum bpf_attach_type attach_type)
+>>   {
+>>   	return -EOPNOTSUPP;
+>>   }
+>> @@ -2528,10 +2532,11 @@ int bpf_map_new_fd(struct bpf_map *map, int flags);
+>>   int bpf_prog_new_fd(struct bpf_prog *prog);
+>>   
+>>   void bpf_link_init(struct bpf_link *link, enum bpf_link_type type,
+>> -		   const struct bpf_link_ops *ops, struct bpf_prog *prog);
+>> +		   const struct bpf_link_ops *ops, struct bpf_prog *prog,
+>> +		   enum bpf_attach_type attach_type);
+>>   void bpf_link_init_sleepable(struct bpf_link *link, enum bpf_link_type type,
+>>   			     const struct bpf_link_ops *ops, struct bpf_prog *prog,
+>> -			     bool sleepable);
+>> +			     bool sleepable, enum bpf_attach_type attach_type);
+>>   int bpf_link_prime(struct bpf_link *link, struct bpf_link_primer *primer);
+>>   int bpf_link_settle(struct bpf_link_primer *primer);
+>>   void bpf_link_cleanup(struct bpf_link_primer *primer);
+>> @@ -2883,13 +2888,13 @@ bpf_prog_inc_not_zero(struct bpf_prog *prog)
+>>   
+>>   static inline void bpf_link_init(struct bpf_link *link, enum bpf_link_type type,
+>>   				 const struct bpf_link_ops *ops,
+>> -				 struct bpf_prog *prog)
+>> +				 struct bpf_prog *prog, enum bpf_attach_type attach_type)
+>>   {
+>>   }
+>>   
+>>   static inline void bpf_link_init_sleepable(struct bpf_link *link, enum bpf_link_type type,
+>>   					   const struct bpf_link_ops *ops, struct bpf_prog *prog,
+>> -					   bool sleepable)
+>> +					   bool sleepable, enum bpf_attach_type attach_type)
+>>   {
+>>   }
+>>   
+>> diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
+>> index 303ab1f42d3..0cbcae72707 100644
+>> --- a/kernel/bpf/bpf_iter.c
+>> +++ b/kernel/bpf/bpf_iter.c
+>> @@ -552,7 +552,8 @@ int bpf_iter_link_attach(const union bpf_attr *attr, bpfptr_t uattr,
+>>   	if (!link)
+>>   		return -ENOMEM;
+>>   
+>> -	bpf_link_init(&link->link, BPF_LINK_TYPE_ITER, &bpf_iter_link_lops, prog);
+>> +	bpf_link_init(&link->link, BPF_LINK_TYPE_ITER, &bpf_iter_link_lops, prog,
+>> +		      attr->link_create.attach_type);
+>>   	link->tinfo = tinfo;
+>>   
+>>   	err = bpf_link_prime(&link->link, &link_primer);
+>> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+>> index 96113633e39..687a3e9c76f 100644
+>> --- a/kernel/bpf/bpf_struct_ops.c
+>> +++ b/kernel/bpf/bpf_struct_ops.c
+>> @@ -808,7 +808,7 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+>>   			goto reset_unlock;
+>>   		}
+>>   		bpf_link_init(&link->link, BPF_LINK_TYPE_STRUCT_OPS,
+>> -			      &bpf_struct_ops_link_lops, prog);
+>> +			      &bpf_struct_ops_link_lops, prog, prog->expected_attach_type);
+>>   		*plink++ = &link->link;
+>>   
+>>   		ksym = kzalloc(sizeof(*ksym), GFP_USER);
+>> @@ -1351,7 +1351,8 @@ int bpf_struct_ops_link_create(union bpf_attr *attr)
+>>   		err = -ENOMEM;
+>>   		goto err_out;
+>>   	}
+>> -	bpf_link_init(&link->link, BPF_LINK_TYPE_STRUCT_OPS, &bpf_struct_ops_map_lops, NULL);
+>> +	bpf_link_init(&link->link, BPF_LINK_TYPE_STRUCT_OPS, &bpf_struct_ops_map_lops, NULL,
+>> +		      attr->link_create.attach_type);
+>>   
+>>   	err = bpf_link_prime(&link->link, &link_primer);
+>>   	if (err)
+>> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+>> index cd220e861d6..bacdd0ca741 100644
+>> --- a/kernel/bpf/cgroup.c
+>> +++ b/kernel/bpf/cgroup.c
+>> @@ -867,7 +867,7 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
+>>   	cgrp->bpf.flags[atype] = saved_flags;
+>>   
+>>   	if (type == BPF_LSM_CGROUP) {
+>> -		err = bpf_trampoline_link_cgroup_shim(new_prog, atype);
+>> +		err = bpf_trampoline_link_cgroup_shim(new_prog, atype, type);
+>>   		if (err)
+>>   			goto cleanup;
+>>   	}
+>> @@ -1495,7 +1495,7 @@ int cgroup_bpf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+>>   		goto out_put_cgroup;
+>>   	}
+>>   	bpf_link_init(&link->link, BPF_LINK_TYPE_CGROUP, &bpf_cgroup_link_lops,
+>> -		      prog);
+>> +		      prog, attr->link_create.attach_type);
+>>   	link->cgroup = cgrp;
+>>   	link->type = attr->link_create.attach_type;
+>>   
+>> diff --git a/kernel/bpf/net_namespace.c b/kernel/bpf/net_namespace.c
+>> index 868cc2c4389..63702c86275 100644
+>> --- a/kernel/bpf/net_namespace.c
+>> +++ b/kernel/bpf/net_namespace.c
+>> @@ -501,7 +501,7 @@ int netns_bpf_link_create(const union bpf_attr *attr, struct bpf_prog *prog)
+>>   		goto out_put_net;
+>>   	}
+>>   	bpf_link_init(&net_link->link, BPF_LINK_TYPE_NETNS,
+>> -		      &bpf_netns_link_ops, prog);
+>> +		      &bpf_netns_link_ops, prog, type);
+>>   	net_link->net = net;
+>>   	net_link->type = type;
+>>   	net_link->netns_type = netns_type;
+>> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+>> index 7db7182a305..14883b3040a 100644
+>> --- a/kernel/bpf/syscall.c
+>> +++ b/kernel/bpf/syscall.c
+>> @@ -3069,7 +3069,7 @@ static int bpf_obj_get(const union bpf_attr *attr)
+>>    */
+>>   void bpf_link_init_sleepable(struct bpf_link *link, enum bpf_link_type type,
+>>   			     const struct bpf_link_ops *ops, struct bpf_prog *prog,
+>> -			     bool sleepable)
+>> +			     bool sleepable, enum bpf_attach_type attach_type)
+>>   {
+>>   	WARN_ON(ops->dealloc && ops->dealloc_deferred);
+>>   	atomic64_set(&link->refcnt, 1);
+>> @@ -3078,12 +3078,14 @@ void bpf_link_init_sleepable(struct bpf_link *link, enum bpf_link_type type,
+>>   	link->id = 0;
+>>   	link->ops = ops;
+>>   	link->prog = prog;
+>> +	link->attach_type = attach_type;
+>>   }
+>>   
+>>   void bpf_link_init(struct bpf_link *link, enum bpf_link_type type,
+>> -		   const struct bpf_link_ops *ops, struct bpf_prog *prog)
+>> +		   const struct bpf_link_ops *ops, struct bpf_prog *prog,
+>> +		   enum bpf_attach_type attach_type)
+>>   {
+>> -	bpf_link_init_sleepable(link, type, ops, prog, false);
+>> +	bpf_link_init_sleepable(link, type, ops, prog, false, attach_type);
+>>   }
+>>   
+>>   static void bpf_link_free_id(int id)
+>> @@ -3443,7 +3445,8 @@ static const struct bpf_link_ops bpf_tracing_link_lops = {
+>>   static int bpf_tracing_prog_attach(struct bpf_prog *prog,
+>>   				   int tgt_prog_fd,
+>>   				   u32 btf_id,
+>> -				   u64 bpf_cookie)
+>> +				   u64 bpf_cookie,
+>> +				   enum bpf_attach_type attach_type)
+>>   {
+>>   	struct bpf_link_primer link_primer;
+>>   	struct bpf_prog *tgt_prog = NULL;
+>> @@ -3511,7 +3514,8 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
+>>   		goto out_put_prog;
+>>   	}
+>>   	bpf_link_init(&link->link.link, BPF_LINK_TYPE_TRACING,
+>> -		      &bpf_tracing_link_lops, prog);
+>> +		      &bpf_tracing_link_lops, prog, attach_type);
+>> +
+>>   	link->attach_type = prog->expected_attach_type;
+>>   	link->link.cookie = bpf_cookie;
+>>   
+>> @@ -4049,7 +4053,8 @@ static int bpf_perf_link_attach(const union bpf_attr *attr, struct bpf_prog *pro
+>>   		err = -ENOMEM;
+>>   		goto out_put_file;
+>>   	}
+>> -	bpf_link_init(&link->link, BPF_LINK_TYPE_PERF_EVENT, &bpf_perf_link_lops, prog);
+>> +	bpf_link_init(&link->link, BPF_LINK_TYPE_PERF_EVENT, &bpf_perf_link_lops, prog,
+>> +		      attr->link_create.attach_type);
+>>   	link->perf_file = perf_file;
+>>   
+>>   	err = bpf_link_prime(&link->link, &link_primer);
+>> @@ -4081,7 +4086,8 @@ static int bpf_perf_link_attach(const union bpf_attr *attr, struct bpf_prog *pro
+>>   #endif /* CONFIG_PERF_EVENTS */
+>>   
+>>   static int bpf_raw_tp_link_attach(struct bpf_prog *prog,
+>> -				  const char __user *user_tp_name, u64 cookie)
+>> +				  const char __user *user_tp_name, u64 cookie,
+>> +				  enum bpf_attach_type attach_type)
+>>   {
+>>   	struct bpf_link_primer link_primer;
+>>   	struct bpf_raw_tp_link *link;
+>> @@ -4104,7 +4110,7 @@ static int bpf_raw_tp_link_attach(struct bpf_prog *prog,
+>>   			tp_name = prog->aux->attach_func_name;
+>>   			break;
+>>   		}
+>> -		return bpf_tracing_prog_attach(prog, 0, 0, 0);
+>> +		return bpf_tracing_prog_attach(prog, 0, 0, 0, attach_type);
+>>   	case BPF_PROG_TYPE_RAW_TRACEPOINT:
+>>   	case BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE:
+>>   		if (strncpy_from_user(buf, user_tp_name, sizeof(buf) - 1) < 0)
+>> @@ -4127,7 +4133,7 @@ static int bpf_raw_tp_link_attach(struct bpf_prog *prog,
+>>   	}
+>>   	bpf_link_init_sleepable(&link->link, BPF_LINK_TYPE_RAW_TRACEPOINT,
+>>   				&bpf_raw_tp_link_lops, prog,
+>> -				tracepoint_is_faultable(btp->tp));
+>> +				tracepoint_is_faultable(btp->tp), attach_type);
+>>   	link->btp = btp;
+>>   	link->cookie = cookie;
+>>   
+>> @@ -4168,7 +4174,7 @@ static int bpf_raw_tracepoint_open(const union bpf_attr *attr)
+>>   
+>>   	tp_name = u64_to_user_ptr(attr->raw_tracepoint.name);
+>>   	cookie = attr->raw_tracepoint.cookie;
+>> -	fd = bpf_raw_tp_link_attach(prog, tp_name, cookie);
+>> +	fd = bpf_raw_tp_link_attach(prog, tp_name, cookie, prog->expected_attach_type);
+>>   	if (fd < 0)
+>>   		bpf_prog_put(prog);
+>>   	return fd;
+>> @@ -5536,7 +5542,8 @@ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
+>>   		ret = bpf_tracing_prog_attach(prog,
+>>   					      attr->link_create.target_fd,
+>>   					      attr->link_create.target_btf_id,
+>> -					      attr->link_create.tracing.cookie);
+>> +					      attr->link_create.tracing.cookie,
+>> +					      attr->link_create.attach_type);
+>>   		break;
+>>   	case BPF_PROG_TYPE_LSM:
+>>   	case BPF_PROG_TYPE_TRACING:
+>> @@ -5545,7 +5552,8 @@ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
+>>   			goto out;
+>>   		}
+>>   		if (prog->expected_attach_type == BPF_TRACE_RAW_TP)
+>> -			ret = bpf_raw_tp_link_attach(prog, NULL, attr->link_create.tracing.cookie);
+>> +			ret = bpf_raw_tp_link_attach(prog, NULL, attr->link_create.tracing.cookie,
+>> +						     attr->link_create.attach_type);
+>>   		else if (prog->expected_attach_type == BPF_TRACE_ITER)
+>>   			ret = bpf_iter_link_attach(attr, uattr, prog);
+>>   		else if (prog->expected_attach_type == BPF_LSM_CGROUP)
+>> @@ -5554,7 +5562,8 @@ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
+>>   			ret = bpf_tracing_prog_attach(prog,
+>>   						      attr->link_create.target_fd,
+>>   						      attr->link_create.target_btf_id,
+>> -						      attr->link_create.tracing.cookie);
+>> +						      attr->link_create.tracing.cookie,
+>> +						      attr->link_create.attach_type);
+>>   		break;
+>>   	case BPF_PROG_TYPE_FLOW_DISSECTOR:
+>>   	case BPF_PROG_TYPE_SK_LOOKUP:
+>> diff --git a/kernel/bpf/tcx.c b/kernel/bpf/tcx.c
+>> index 2e4885e7781..e6a14f408d9 100644
+>> --- a/kernel/bpf/tcx.c
+>> +++ b/kernel/bpf/tcx.c
+>> @@ -301,7 +301,8 @@ static int tcx_link_init(struct tcx_link *tcx,
+>>   			 struct net_device *dev,
+>>   			 struct bpf_prog *prog)
+>>   {
+>> -	bpf_link_init(&tcx->link, BPF_LINK_TYPE_TCX, &tcx_link_lops, prog);
+>> +	bpf_link_init(&tcx->link, BPF_LINK_TYPE_TCX, &tcx_link_lops, prog,
+>> +		      attr->link_create.attach_type);
+>>   	tcx->location = attr->link_create.attach_type;
+>>   	tcx->dev = dev;
+>>   	return bpf_link_prime(&tcx->link, link_primer);
+>> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+>> index b1e358c16ee..0e364614c3a 100644
+>> --- a/kernel/bpf/trampoline.c
+>> +++ b/kernel/bpf/trampoline.c
+>> @@ -674,7 +674,8 @@ static const struct bpf_link_ops bpf_shim_tramp_link_lops = {
+>>   
+>>   static struct bpf_shim_tramp_link *cgroup_shim_alloc(const struct bpf_prog *prog,
+>>   						     bpf_func_t bpf_func,
+>> -						     int cgroup_atype)
+>> +						     int cgroup_atype,
+>> +						     enum bpf_attach_type attach_type)
+>>   {
+>>   	struct bpf_shim_tramp_link *shim_link = NULL;
+>>   	struct bpf_prog *p;
+>> @@ -701,7 +702,7 @@ static struct bpf_shim_tramp_link *cgroup_shim_alloc(const struct bpf_prog *prog
+>>   	p->expected_attach_type = BPF_LSM_MAC;
+>>   	bpf_prog_inc(p);
+>>   	bpf_link_init(&shim_link->link.link, BPF_LINK_TYPE_UNSPEC,
+>> -		      &bpf_shim_tramp_link_lops, p);
+>> +		      &bpf_shim_tramp_link_lops, p, attach_type);
+>>   	bpf_cgroup_atype_get(p->aux->attach_btf_id, cgroup_atype);
+>>   
+>>   	return shim_link;
+>> @@ -726,7 +727,8 @@ static struct bpf_shim_tramp_link *cgroup_shim_find(struct bpf_trampoline *tr,
+>>   }
+>>   
+>>   int bpf_trampoline_link_cgroup_shim(struct bpf_prog *prog,
+>> -				    int cgroup_atype)
+>> +				    int cgroup_atype,
+>> +				    enum bpf_attach_type attach_type)
+>>   {
+>>   	struct bpf_shim_tramp_link *shim_link = NULL;
+>>   	struct bpf_attach_target_info tgt_info = {};
+>> @@ -763,7 +765,7 @@ int bpf_trampoline_link_cgroup_shim(struct bpf_prog *prog,
+>>   
+>>   	/* Allocate and install new shim. */
+>>   
+>> -	shim_link = cgroup_shim_alloc(prog, bpf_func, cgroup_atype);
+>> +	shim_link = cgroup_shim_alloc(prog, bpf_func, cgroup_atype, attach_type);
+>>   	if (!shim_link) {
+>>   		err = -ENOMEM;
+>>   		goto err;
+>> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+>> index e7f97a9a8bb..ffdde840abb 100644
+>> --- a/kernel/trace/bpf_trace.c
+>> +++ b/kernel/trace/bpf_trace.c
+>> @@ -2986,7 +2986,7 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+>>   	}
+>>   
+>>   	bpf_link_init(&link->link, BPF_LINK_TYPE_KPROBE_MULTI,
+>> -		      &bpf_kprobe_multi_link_lops, prog);
+>> +		      &bpf_kprobe_multi_link_lops, prog, attr->link_create.attach_type);
+>>   
+>>   	err = bpf_link_prime(&link->link, &link_primer);
+>>   	if (err)
+>> @@ -3441,7 +3441,7 @@ int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+>>   	link->link.flags = flags;
+>>   
+>>   	bpf_link_init(&link->link, BPF_LINK_TYPE_UPROBE_MULTI,
+>> -		      &bpf_uprobe_multi_link_lops, prog);
+>> +		      &bpf_uprobe_multi_link_lops, prog, attr->link_create.attach_type);
+>>   
+>>   	for (i = 0; i < cnt; i++) {
+>>   		uprobes[i].uprobe = uprobe_register(d_real_inode(link->path.dentry),
+>> diff --git a/net/bpf/bpf_dummy_struct_ops.c b/net/bpf/bpf_dummy_struct_ops.c
+>> index f71f67c6896..812457819b5 100644
+>> --- a/net/bpf/bpf_dummy_struct_ops.c
+>> +++ b/net/bpf/bpf_dummy_struct_ops.c
+>> @@ -171,7 +171,8 @@ int bpf_struct_ops_test_run(struct bpf_prog *prog, const union bpf_attr *kattr,
+>>   	}
+>>   	/* prog doesn't take the ownership of the reference from caller */
+>>   	bpf_prog_inc(prog);
+>> -	bpf_link_init(&link->link, BPF_LINK_TYPE_STRUCT_OPS, &bpf_struct_ops_link_lops, prog);
+>> +	bpf_link_init(&link->link, BPF_LINK_TYPE_STRUCT_OPS, &bpf_struct_ops_link_lops, prog,
+>> +		      prog->expected_attach_type);
+>>   
+>>   	op_idx = prog->expected_attach_type;
+>>   	err = bpf_struct_ops_prepare_trampoline(tlinks, link,
+>> diff --git a/net/core/dev.c b/net/core/dev.c
+>> index be97c440ecd..7969fddc94e 100644
+>> --- a/net/core/dev.c
+>> +++ b/net/core/dev.c
+>> @@ -10364,7 +10364,8 @@ int bpf_xdp_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+>>   		goto unlock;
+>>   	}
+>>   
+>> -	bpf_link_init(&link->link, BPF_LINK_TYPE_XDP, &bpf_xdp_link_lops, prog);
+>> +	bpf_link_init(&link->link, BPF_LINK_TYPE_XDP, &bpf_xdp_link_lops, prog,
+>> +		      attr->link_create.attach_type);
+>>   	link->dev = dev;
+>>   	link->flags = attr->link_create.flags;
+>>   
+>> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+>> index 82a14f131d0..fbe9a33ddf1 100644
+>> --- a/net/core/sock_map.c
+>> +++ b/net/core/sock_map.c
+>> @@ -1866,7 +1866,8 @@ int sock_map_link_create(const union bpf_attr *attr, struct bpf_prog *prog)
+>>   	}
+>>   
+>>   	attach_type = attr->link_create.attach_type;
+>> -	bpf_link_init(&sockmap_link->link, BPF_LINK_TYPE_SOCKMAP, &sock_map_link_ops, prog);
+>> +	bpf_link_init(&sockmap_link->link, BPF_LINK_TYPE_SOCKMAP, &sock_map_link_ops, prog,
+>> +		      attach_type);
+>>   	sockmap_link->map = map;
+>>   	sockmap_link->attach_type = attach_type;
+>>   
+>> diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
+>> index 06b08484470..a054d3b216d 100644
+>> --- a/net/netfilter/nf_bpf_link.c
+>> +++ b/net/netfilter/nf_bpf_link.c
+>> @@ -225,7 +225,8 @@ int bpf_nf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+>>   	if (!link)
+>>   		return -ENOMEM;
+>>   
+>> -	bpf_link_init(&link->link, BPF_LINK_TYPE_NETFILTER, &bpf_nf_link_lops, prog);
+>> +	bpf_link_init(&link->link, BPF_LINK_TYPE_NETFILTER, &bpf_nf_link_lops, prog,
+>> +		      attr->link_create.attach_type);
+>>   
+>>   	link->hook_ops.hook = nf_hook_run_bpf;
+>>   	link->hook_ops.hook_ops_type = NF_HOOK_OP_BPF;
+>> -- 
+>> 2.48.1
+>>
+
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Best Regards
+Tao Chen
 
