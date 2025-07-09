@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-62747-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62748-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45CDFAFDDF3
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 05:10:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED572AFDDF7
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 05:11:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C4825406B2
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 03:09:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B76AC54115F
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 03:10:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E8AF1F09BF;
-	Wed,  9 Jul 2025 03:10:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 866331F8EFF;
+	Wed,  9 Jul 2025 03:10:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VE/WhMjR"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="r23C4DNP"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC6941E9B19
-	for <bpf@vger.kernel.org>; Wed,  9 Jul 2025 03:10:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 635041E8333
+	for <bpf@vger.kernel.org>; Wed,  9 Jul 2025 03:10:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752030615; cv=none; b=h8A2ujGm/vaKN1czwyC76ez3XylfTddKRjBnFHNsse6kuwob41RR6IDdQ1C1M6gaKlL/fAQvBq9GP8PpOX7HR+kDuzQGjlooPrverAbC3cGtwwWJVNjURm3L14h9YFR4rMHuw4nz2fAnSOLtMXzvGYPcklpzRkUV9bcruv3/kCg=
+	t=1752030637; cv=none; b=uMOLNH3zQwAig3CIXmlNtrWcINj0hFxBqVUF/0yDLda6Qpj0HVqGVvNFv1fIFHrFYF5FJC7i+OY/Hro3PY3aXFm+Q6eDZntxm63hTN07jSc92y9/eI/+IXAKuXLmgmc5ibuqBE8b9mK0pRmbaJEufxXPraXwLqexOmeu5/bGv3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752030615; c=relaxed/simple;
-	bh=UdIgkYyOOa7hCxMjPOwfAkzf8A+cA2dmARHAg+FBH5s=;
+	s=arc-20240116; t=1752030637; c=relaxed/simple;
+	bh=3SJ11EoLNZfgpfhqvh0bcCy4KQwZ0bipx++KsobFXIc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QtOxVy6CDdCjhZJNFbv+tBoA4Cea9y83QFLn7B2DCxWqVxTULfeA/MjeOn1IyNQcUqrj0SmmvJ/7kKlRJ077D55gZukY5BEeM0RcuvJe36O92gC+gGEtL7xC40aEnBQ6SYmOouv9V1u5ksaU0wntkfWxLcB9mIO5u0zbL08S3Dc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VE/WhMjR; arc=none smtp.client-ip=95.215.58.181
+	 MIME-Version; b=S5d03icMDeRFN2yAASMtZl1rs4vje6hVqC7z7vads1MVRuo1KBjSvjgjb+eieX42Ikjbb1j6Jjx+Ug77fYY/PP4IrLdArX2CEaqouIOwFiEfyi8dG4EfwYnUdiD4TPfkD9IJQq8ZCbSzcwfKgCiPCNhBNiiqs1ln0au0b8vOxFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=r23C4DNP; arc=none smtp.client-ip=91.218.175.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1752030611;
+	t=1752030632;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=dD8eyIMRPg4u1jgNvJQ/ElVilPMWhJf81CmtaFeXe3k=;
-	b=VE/WhMjRYUoSEBsl05KdPQXbMq+ZS8rr0sk2TbD+WzUpikn6+nifvDapuEvbIk2w3DbGY6
-	fsxDltr+0bSuJCbKT5SA/VRPkgqkhr6qAhaMxm4KbbK6hxUBGXZ3UkFsJ7++jPgJaizrn5
-	0c+uz866yZrqhbDTI/GAXGQTbqRnqcU=
+	bh=rRDolkXDl9qd7+NlOBPbIynIXwkkXnjKkdrFLoT5QXo=;
+	b=r23C4DNPT4slgoAhKVmGCtoHINUyLMhCXKcex5R8B5/WZlKsr9sBjt9FyukoaaUYiDFuAp
+	lpBiQf0eANJkDArcHjILm86JmQYHg08QBFUmlZ1vova8opdoNu36Fa746fGZD1N97eowxX
+	DZgjO/m+6TxEUUn9BcUeY/mgTV4fYz8=
 From: Tao Chen <chen.dylane@linux.dev>
 To: daniel@iogearbox.net,
 	razor@blackwall.org,
@@ -78,9 +78,9 @@ Cc: bpf@vger.kernel.org,
 	netfilter-devel@vger.kernel.org,
 	coreteam@netfilter.org,
 	Tao Chen <chen.dylane@linux.dev>
-Subject: [PATCH bpf-next v3 5/7] bpf: Remove attach_type in bpf_netns_link
-Date: Wed,  9 Jul 2025 11:08:00 +0800
-Message-ID: <20250709030802.850175-6-chen.dylane@linux.dev>
+Subject: [PATCH bpf-next v3 6/7] bpf: Remove attach_type in bpf_tracing_link
+Date: Wed,  9 Jul 2025 11:08:01 +0800
+Message-ID: <20250709030802.850175-7-chen.dylane@linux.dev>
 In-Reply-To: <20250709030802.850175-1-chen.dylane@linux.dev>
 References: <20250709030802.850175-1-chen.dylane@linux.dev>
 Precedence: bulk
@@ -92,52 +92,57 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Use attach_type in bpf_link, and remove it in bpf_netns_link.
+Use attach_type in bpf_link, and remove it in bpf_tracing_link.
 
 Acked-by: Jiri Olsa <jolsa@kernel.org>
 Signed-off-by: Tao Chen <chen.dylane@linux.dev>
 ---
- kernel/bpf/net_namespace.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ include/linux/bpf.h  | 1 -
+ kernel/bpf/syscall.c | 5 ++---
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/bpf/net_namespace.c b/kernel/bpf/net_namespace.c
-index 63702c86275..6d27bd97c95 100644
---- a/kernel/bpf/net_namespace.c
-+++ b/kernel/bpf/net_namespace.c
-@@ -11,7 +11,6 @@
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index dd5070039de..976ae571522 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1784,7 +1784,6 @@ struct bpf_shim_tramp_link {
  
- struct bpf_netns_link {
- 	struct bpf_link	link;
--	enum bpf_attach_type type;
- 	enum netns_bpf_attach_type netns_type;
+ struct bpf_tracing_link {
+ 	struct bpf_tramp_link link;
+-	enum bpf_attach_type attach_type;
+ 	struct bpf_trampoline *trampoline;
+ 	struct bpf_prog *tgt_prog;
+ };
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 14883b3040a..bed523bf92c 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3414,7 +3414,7 @@ static void bpf_tracing_link_show_fdinfo(const struct bpf_link *link,
+ 		   "target_obj_id:\t%u\n"
+ 		   "target_btf_id:\t%u\n"
+ 		   "cookie:\t%llu\n",
+-		   tr_link->attach_type,
++		   link->attach_type,
+ 		   target_obj_id,
+ 		   target_btf_id,
+ 		   tr_link->link.cookie);
+@@ -3426,7 +3426,7 @@ static int bpf_tracing_link_fill_link_info(const struct bpf_link *link,
+ 	struct bpf_tracing_link *tr_link =
+ 		container_of(link, struct bpf_tracing_link, link.link);
  
- 	/* We don't hold a ref to net in order to auto-detach the link
-@@ -216,7 +215,7 @@ static int bpf_netns_link_fill_info(const struct bpf_link *link,
- 	mutex_unlock(&netns_bpf_mutex);
+-	info->tracing.attach_type = tr_link->attach_type;
++	info->tracing.attach_type = link->attach_type;
+ 	info->tracing.cookie = tr_link->link.cookie;
+ 	bpf_trampoline_unpack_key(tr_link->trampoline->key,
+ 				  &info->tracing.target_obj_id,
+@@ -3516,7 +3516,6 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
+ 	bpf_link_init(&link->link.link, BPF_LINK_TYPE_TRACING,
+ 		      &bpf_tracing_link_lops, prog, attach_type);
  
- 	info->netns.netns_ino = inum;
--	info->netns.attach_type = net_link->type;
-+	info->netns.attach_type = link->attach_type;
- 	return 0;
- }
+-	link->attach_type = prog->expected_attach_type;
+ 	link->link.cookie = bpf_cookie;
  
-@@ -230,7 +229,7 @@ static void bpf_netns_link_show_fdinfo(const struct bpf_link *link,
- 		   "netns_ino:\t%u\n"
- 		   "attach_type:\t%u\n",
- 		   info.netns.netns_ino,
--		   info.netns.attach_type);
-+		   link->attach_type);
- }
- 
- static const struct bpf_link_ops bpf_netns_link_ops = {
-@@ -503,7 +502,6 @@ int netns_bpf_link_create(const union bpf_attr *attr, struct bpf_prog *prog)
- 	bpf_link_init(&net_link->link, BPF_LINK_TYPE_NETNS,
- 		      &bpf_netns_link_ops, prog, type);
- 	net_link->net = net;
--	net_link->type = type;
- 	net_link->netns_type = netns_type;
- 
- 	err = bpf_link_prime(&net_link->link, &link_primer);
+ 	mutex_lock(&prog->aux->dst_mutex);
 -- 
 2.48.1
 
