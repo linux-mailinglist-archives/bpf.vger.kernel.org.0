@@ -1,75 +1,77 @@
-Return-Path: <bpf+bounces-62828-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62829-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BADD6AFF18B
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 21:13:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F1CEAFF18A
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 21:13:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13A3A4A078A
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 19:13:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2627189A38D
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 19:13:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CAC423E334;
-	Wed,  9 Jul 2025 19:13:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B770623ED6F;
+	Wed,  9 Jul 2025 19:13:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="z8OQ09AE"
+	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="jyi3uyEM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5B40239E66
-	for <bpf@vger.kernel.org>; Wed,  9 Jul 2025 19:13:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E11723B63C
+	for <bpf@vger.kernel.org>; Wed,  9 Jul 2025 19:13:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752088398; cv=none; b=jQYiNYvov4AicW1f+PWvJMH4aE2n455Nv2oaBfBIdEJLLZNd94i95oxFmMVym6JJ2SeXe9RbZVt6HQrpgnDNv98+w4FZz762hUzRUn4LrTU0zWx4XFxlQFjzCBpc8OBwhhAfZHmsFZwRWeLAdJp+nxvjIdL8I8DARs24DMns51k=
+	t=1752088400; cv=none; b=XiviwzLbRTtSoFXE3h8pv6JwAVpYzjTRnWt6tUoSBKosAmgL675kLZ1UxMdD7My2JBhCxhit7V4m8C+x2VdchbDbNJHH2VZ+A2AUV6UVL5NdNe1XxjL1Cm2QsYgKZZ4lAHf05e875UYKviNIaPgCFEbeprZetq1sPtx6C1/vIYY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752088398; c=relaxed/simple;
-	bh=O+GEKrt5CQTz69YCt5vd/B3yDeSoUxEI9nwCLelXIm8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=L7dhtETpfzHcfdGbqs6KQTmYChEb11199xLUTWmZOCdlrwtZK7lH0yuYhdt2K3CT6GpGFsIo7FE/vJVCAwfD/BHk3xtz8t74LDoYwq9Hods9ncA2PzarGHyHVVIYlXyNlc1Jo7CjC+R9jreJEzPC62fWqeD3otRdhu7+Onkj2+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=z8OQ09AE; arc=none smtp.client-ip=209.85.222.182
+	s=arc-20240116; t=1752088400; c=relaxed/simple;
+	bh=HqvOwhG2gUNrV14wyzpC0PoPx3XpzEPhhGfyiXjtim8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=l5xdA8koPvz/vPQMhVhTxoCtbHBcYQSjQogl1zFjfWM6sWJ7PDfH/XWEuPh/y4PmS/aah/KzO4pvRpoh+8so046A8DegY4BOrBa8KP2bKLrw/pQ4K60amzvN0UWINebQ7N9i6j8F0p3TWAh13sr0Zg8+sfMk+cWDZKq++MHtHjI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=jyi3uyEM; arc=none smtp.client-ip=209.85.222.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
-Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-7d5df741f71so20338885a.3
-        for <bpf@vger.kernel.org>; Wed, 09 Jul 2025 12:13:15 -0700 (PDT)
+Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-7d9e2f85b51so23672685a.1
+        for <bpf@vger.kernel.org>; Wed, 09 Jul 2025 12:13:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1752088395; x=1752693195; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zQO7ZjQBO5xR2dug8RhFlvrzUcYp9Y5JboWbqZ1zBBg=;
-        b=z8OQ09AEKq58eNlI5JHKq2T9RZqMDsaV48CMwnuEsiGNUfpelqyEKWjxHJGTswKmDs
-         UF3NSIUBMEucDe0AlRX7FSgExT9dl2e/m7bP8VZVq0Zxcfzb0abmuz6cLEsWvqfmUzoH
-         b87FN7iex1S2O1AkNkceIlZr/aORTsqrNiFga/yp7E8SSglhClqA/wcEnE4vOysp0ein
-         pRMCIujGFTQt54d3kotJAz4UeBiYHSGYpWhRuqiPCvgjj7XdPhDk/GCUXtozMFEyrxuj
-         BQ/FpXRXdg0xNNFa7ylcrd9y7DaZ7/V4hPv+0oHZDTuJF3cIBhXfNZZnHJoNlUmXgMJA
-         JF3w==
+        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1752088396; x=1752693196; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oQUR3MKa4qjlkUx/cM5YCByHAe9k0nfoMOJurJpKgRs=;
+        b=jyi3uyEMBhTVWLv5/qpjj9xrnxXrs56aJJ4LyM5J6IOlxvVy09cC0t5FHhxZStd4BX
+         zNutq/MrlZyTgAH43n/Bd/QT+NkTCG1l99yTpj90vmY7yxNJiZH8z9pWjL61CVsHjrDR
+         +94m2u82FzYQVgAsKmHzyyGc9KGC9NZD2asjon8srrIrbckTbyjhs12Ppl4VRCGhd9o4
+         Q/8ckg9Br2RwK10ldLOiwRCq0dRgtdMOcfGyxI0BU3ldFIN8chh5VVMz3DjfvXPJ895a
+         RDr9B7A0NVUhRMjmZvO+NH+5tq5SY0G3Y6MtJuN7EmZ9iGKL3sl4KgtVeY8y76r3dlfK
+         sgTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752088395; x=1752693195;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zQO7ZjQBO5xR2dug8RhFlvrzUcYp9Y5JboWbqZ1zBBg=;
-        b=qFTa3+ARGJyOfIEU5sp6y3hhcuTHGm37FOfxUECrCNfcAQkqxgWKKqVFjxcJl0S1BR
-         OkwNnRTfYtiJQ/1RDmg7/2uNj3PefnI9ycAdDtB8DpNt3MTAS1TMqFmRoXUb7CVXT/ID
-         dM1LxcTt5mSrEZZrMee7R2kw96jtV/WpujPhczGOWBskZNJlRF9SE6KzAe18STNCdu6R
-         tanAiTHaQ/pgteP06BtO53EKmZWhLYNGj70jVkWiCtX5J5w5yoZgVWVky0HriG6l3Qri
-         aDkq9Slcl6Wlw87TM+so4tGI5VM/+EesaADtOFCZdfy8GoqstBJRtPGdeomhVHRXympl
-         Nwvg==
-X-Gm-Message-State: AOJu0YxJJnMp1iqkjlbeMqCZHQalaNARX/99hBIBoUEh3NrIcyls+ib6
-	fd17TMm1RTA2IiJXVoKV6MdsrurkcJhIN/84TbQ+F7dwVVWOu4cFuN4pad6LrRqaS8akzyHkMDb
-	QGdJ7+CQ=
-X-Gm-Gg: ASbGncuGU6Mttd7ORK4Lu5fQv2kUoCkS5A0S9Pim7+FuaLJvQEbqMQ40Ff2x6QZ1Nfz
-	CvoEjlNXW5bF3Fx3yNpnX3VODzsai9SQ8HFepP6J4AC5Pg4X5DgWkhgbT/r1KLxQJlehQYVd0P5
-	58ZJw+JDjhqhfr+RmDfy7jVprWHGJKIMC4tbx//VREBS/lA+K19QSk4xUDUKFQ7dL6q1WKH6H+l
-	lKURzkahfBnnMYj53K+IDq7dIWYzrPcNvLarQ/px0DGyeRbDnoJJS0mRscT1EcCjxbpCbNDUc80
-	XUlk/r0R3hpPrdgNIraU1owy8alSxcT4i0QQgAb0RXv7IOFRApS18ai6CuU=
-X-Google-Smtp-Source: AGHT+IGid5xA8QqgX7tSdmZmPkBiwVHm9PDG6Gm612Ale2Wv24VZVKyJpuyF22EDe8M1BaN436W/uA==
-X-Received: by 2002:a05:620a:3193:b0:7d5:e3d5:1e73 with SMTP id af79cd13be357-7dc925c4fc0mr102255785a.3.1752088394650;
-        Wed, 09 Jul 2025 12:13:14 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1752088396; x=1752693196;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oQUR3MKa4qjlkUx/cM5YCByHAe9k0nfoMOJurJpKgRs=;
+        b=wv4dwnf2lI6Mgvc19FunHiqhFtyOUnp9bCwcT9Zsy5tzvY3Z5NH6S0A8kaq4/n8ppZ
+         IxOv7VMGbhQSUbtMqQwpfGcn14nB6jEZkp/uQMxEcO1TjeKxH+e7BYYd1gqZJeQhc02h
+         gPQuVbczfBMerRL0j1h4oq09vEJhImPySuEGz8rhwquYmV8FgoS5G3bVAkHVenbzlhkl
+         0A1yKTjE25Ktfh3HR+NDfROJngiOAl1lbSVW7vEBpqARqg8uaVN6SqWzQq7/H2er/MvA
+         xo9jjNsrPT/8ijKV13t9Z7jG9HxS5mTj2kjXtcxjVIp8jbhwA4jR5Vs6ZhEHkxoCKa4B
+         16ew==
+X-Gm-Message-State: AOJu0YzdDrSZhtmqPzlO5p3m/AyHaBxmd2C2kjLRDND1jv+XZu2HJg87
+	ijTi0RtfAcUwiqjS1ioH9VrSmD4wtgaY1MiqvhrulfGxQlOew2HDknAOhZSafhn7iIhhYC9TKc1
+	sb33UNd8=
+X-Gm-Gg: ASbGncsXwvk/lgmBh0DQQHjCue8VmoJTUNePdh63+SnX9/1C9i4mMRX0EdJyMh2OhMB
+	w0M3afZlx7/srugaJT5KFVUOMLlYqATAuJNvHyNZ8P6yQ7BfAOLJLJZr94yVx5jttXpENNs4/kV
+	9/d1rLl27XW4J3BX+HcnCjj3Wu6qrBJXNCZQiT5FkM+PN+0FI7L81XjDMjk4DW+/LEhYtSqCPXp
+	eaUMwxy3FYmTSok8Lo13toBU3a2CsB3BVS1VAv3z/5+kosaz2HwyjGB9CIujzmFgKEfmvzqOWD8
+	WMLgqXMvylewrmNnQuIUzUpAWqQXujGOQYCnsDOLJvUuq+LBm69b+ceF4gM=
+X-Google-Smtp-Source: AGHT+IEojJMYyoYZ5yOIHVcuumg8mhpF7oevQplfexTAWdPnLDHYJ8nbxLAKOJAhdZNVfv6rxqjr4Q==
+X-Received: by 2002:a05:620a:4885:b0:7d3:b28d:9aeb with SMTP id af79cd13be357-7db7db7847amr618417285a.48.1752088396040;
+        Wed, 09 Jul 2025 12:13:16 -0700 (PDT)
 Received: from boreas.. ([140.174.215.70])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7d5dbe92c9bsm977186985a.91.2025.07.09.12.13.14
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7d5dbe92c9bsm977186985a.91.2025.07.09.12.13.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jul 2025 12:13:14 -0700 (PDT)
+        Wed, 09 Jul 2025 12:13:15 -0700 (PDT)
 From: Emil Tsalapatis <emil@etsalapatis.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -82,10 +84,12 @@ Cc: ast@kernel.org,
 	yonghong.song@linux.dev,
 	sched-ext@meta.com,
 	Emil Tsalapatis <emil@etsalapatis.com>
-Subject: [PATCH v4 0/2] bpf/arena: Add kfunc for reserving arena memory
-Date: Wed,  9 Jul 2025 15:13:10 -0400
-Message-ID: <20250709191312.29840-1-emil@etsalapatis.com>
+Subject: [PATCH v4 1/2] bpf/arena: add bpf_arena_reserve_pages kfunc
+Date: Wed,  9 Jul 2025 15:13:11 -0400
+Message-ID: <20250709191312.29840-2-emil@etsalapatis.com>
 X-Mailer: git-send-email 2.49.0
+In-Reply-To: <20250709191312.29840-1-emil@etsalapatis.com>
+References: <20250709191312.29840-1-emil@etsalapatis.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -94,50 +98,82 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a new kfunc for BPF arenas that reserves a region of the mapping
-to prevent it from being mapped. These regions serve as guards against
-out-of-bounds accesses and are useful for debugging arena-related code.
+Add a new BPF arena kfunc for reserving a range of arena virtual
+addresses without backing them with pages. This prevents the range from
+being populated using bpf_arena_alloc_pages().
 
-CHANGELOG
-=========
-
->From v3 (20250709015712.97099-1-emil@etsalapatis.com)
-------------------------------------------------------
-
-- Added Acked-by tags by Yonghong.
-- Replace hardcoded error numbers in selftests (Yonghong).
-- Fixed selftest for partially freeing a reserved region (Yonghong).
-
->From v2 (20250702003351.197234-1-emil@etsalapatis.com)
-------------------------------------------------------
-
-- Removed -EALREADY and replaced with -EINVAL to bring error handling in
-  line with the rest of the BPF code (Alexei).
-
->From v1 (20250620031118.245601-1-emil@etsalapatis.com)
-------------------------------------------------------
-
-- Removed the additional guard range tree. Adjusted tests accordingly. 
-  Reserved regions now behave like allocated regions, and can be 
-  unreserved using bpf_arena_free_pages(). They can also be allocated 
-  from userspace through minor faults. It is up to the user to prevent 
-  erroneous frees and/or use the BPF_F_SEGV_ON_FAULT flag to catch 
-  stray userspace accesses (Alexei).
-- Changed terminology from guard pages to reserved pages (Alexei,
-  Kartikeya).
-
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
 Signed-off-by: Emil Tsalapatis <emil@etsalapatis.com>
+---
+ kernel/bpf/arena.c | 43 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
 
-Emil Tsalapatis (2):
-  bpf/arena: add bpf_arena_reserve_pages kfunc
-  selftests/bpf: add selftests for bpf_arena_reserve_pages
-
- kernel/bpf/arena.c                            |  43 +++++++
- .../testing/selftests/bpf/bpf_arena_common.h  |   3 +
- .../selftests/bpf/progs/verifier_arena.c      | 106 ++++++++++++++++++
- .../bpf/progs/verifier_arena_large.c          |  98 ++++++++++++++++
- 4 files changed, 250 insertions(+)
-
+diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
+index 0d56cea71602..5b37753799d2 100644
+--- a/kernel/bpf/arena.c
++++ b/kernel/bpf/arena.c
+@@ -550,6 +550,34 @@ static void arena_free_pages(struct bpf_arena *arena, long uaddr, long page_cnt)
+ 	}
+ }
+ 
++/*
++ * Reserve an arena virtual address range without populating it. This call stops
++ * bpf_arena_alloc_pages from adding pages to this range.
++ */
++static int arena_reserve_pages(struct bpf_arena *arena, long uaddr, u32 page_cnt)
++{
++	long page_cnt_max = (arena->user_vm_end - arena->user_vm_start) >> PAGE_SHIFT;
++	long pgoff;
++	int ret;
++
++	if (uaddr & ~PAGE_MASK)
++		return 0;
++
++	pgoff = compute_pgoff(arena, uaddr);
++	if (pgoff + page_cnt > page_cnt_max)
++		return -EINVAL;
++
++	guard(mutex)(&arena->lock);
++
++	/* Cannot guard already allocated pages. */
++	ret = is_range_tree_set(&arena->rt, pgoff, page_cnt);
++	if (ret)
++		return -EBUSY;
++
++	/* "Allocate" the region to prevent it from being allocated. */
++	return range_tree_clear(&arena->rt, pgoff, page_cnt);
++}
++
+ __bpf_kfunc_start_defs();
+ 
+ __bpf_kfunc void *bpf_arena_alloc_pages(void *p__map, void *addr__ign, u32 page_cnt,
+@@ -573,11 +601,26 @@ __bpf_kfunc void bpf_arena_free_pages(void *p__map, void *ptr__ign, u32 page_cnt
+ 		return;
+ 	arena_free_pages(arena, (long)ptr__ign, page_cnt);
+ }
++
++__bpf_kfunc int bpf_arena_reserve_pages(void *p__map, void *ptr__ign, u32 page_cnt)
++{
++	struct bpf_map *map = p__map;
++	struct bpf_arena *arena = container_of(map, struct bpf_arena, map);
++
++	if (map->map_type != BPF_MAP_TYPE_ARENA)
++		return -EINVAL;
++
++	if (!page_cnt)
++		return 0;
++
++	return arena_reserve_pages(arena, (long)ptr__ign, page_cnt);
++}
+ __bpf_kfunc_end_defs();
+ 
+ BTF_KFUNCS_START(arena_kfuncs)
+ BTF_ID_FLAGS(func, bpf_arena_alloc_pages, KF_TRUSTED_ARGS | KF_SLEEPABLE | KF_ARENA_RET | KF_ARENA_ARG2)
+ BTF_ID_FLAGS(func, bpf_arena_free_pages, KF_TRUSTED_ARGS | KF_SLEEPABLE | KF_ARENA_ARG2)
++BTF_ID_FLAGS(func, bpf_arena_reserve_pages, KF_TRUSTED_ARGS | KF_SLEEPABLE | KF_ARENA_ARG2)
+ BTF_KFUNCS_END(arena_kfuncs)
+ 
+ static const struct btf_kfunc_id_set common_kfunc_set = {
 -- 
 2.49.0
 
