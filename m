@@ -1,220 +1,144 @@
-Return-Path: <bpf+bounces-62791-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62792-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFEFEAFE95E
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 14:49:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0C15AFE9A4
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 15:07:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86A6A3BAB82
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 12:48:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4F817AE7EC
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 13:06:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20EF92DFA22;
-	Wed,  9 Jul 2025 12:48:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B80A62DCC08;
+	Wed,  9 Jul 2025 13:07:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZLBRyMG+"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="RFQ1d7gk"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E56628F93E;
-	Wed,  9 Jul 2025 12:48:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0B151E492;
+	Wed,  9 Jul 2025 13:07:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752065286; cv=none; b=O7u4AW4kJJn308RoSEmYxvm8VB4LYJRfVfywtraKNGCki3IF8jM1YjC1/GF1HTOGja2s3S/YGEnMWsNv05lxEW3G+R48hReYI4G6GGr2NRI+GRE+53DcYHgoaTpEs7bX6SA4Ik8cyBmp9ZOdxTZFxcMrxwevLHRCH6JhW3bt2cY=
+	t=1752066446; cv=none; b=OdJmmWxIKcmwUwUvRwMFnSr3MEjq/PmXCmh+JZu9tXn3sPlLoYAI4ALhRew+Ln4IOTWb0GybfC0LW1Olu7MG8D5c46mtrUcY+STdMs15wV7kjB0XjnOrkwawpAt4bdHZLLQlSFy75hIlZKncQ8EQio5/ktzgVY+aCVBmYl83wls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752065286; c=relaxed/simple;
-	bh=xZml02WCQ994/V4RlPqFg4+yIuwCYDka9Oaz38kEodM=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=oyOUH7Bw5n/4y3ncMdLLCSj4TuQzqnup+IgrOAsiNXP/NQQsqKVgLQ7rhh47Ue8rWJxJ8+X/AYa/ti0IkYNztw6A3MNK3RvRs3nUmH0vNKaMgJFwo9AdQMpx36iOl1o6RcByGgYMZX0vR4MuMSilm3trnPue2l4XvfTkg9pOScU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZLBRyMG+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D3194C4CEFB;
-	Wed,  9 Jul 2025 12:48:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752065285;
-	bh=xZml02WCQ994/V4RlPqFg4+yIuwCYDka9Oaz38kEodM=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=ZLBRyMG+R54FZ9dKTfIPQT9yPYiTSlA4bUwMRqEFu6PwIqGxqGsee7WwPs56hdzxT
-	 Jz/w7DrpFJAFjnu02IcY6tkdVPoiGdWhNDseE3uk3ypLm0uo/iSMOsuyJOwWmKUOvW
-	 pX5v1SHFbMuheY9pMoDY4ouG4FAkpfMCcaQhi9h0TpvoUsr+dfBAIZIcQjJCvTlFg1
-	 H6isgEoK0XrEWnAHbjP3A/UZgTh9oc6X2jiEX/NbZUmqu0bK4WwDyi9SwhXngmFx3r
-	 EGl0lh/jeM1aANXqek/shnF5jEHQKauriozyZEpdIll3PiN9V8ZzVTj6lj9uHmHrbP
-	 luty/iwIF2f6A==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C97A4C83F14;
-	Wed,  9 Jul 2025 12:48:05 +0000 (UTC)
-From: Vincent Whitchurch via B4 Relay <devnull+vincent.whitchurch.datadoghq.com@kernel.org>
-Date: Wed, 09 Jul 2025 14:48:01 +0200
-Subject: [PATCH bpf-next v3 5/5] selftests/bpf: sockmap: Add splice +
- SK_PASS regression test
+	s=arc-20240116; t=1752066446; c=relaxed/simple;
+	bh=D91T75s3C6q5S0S4jVQgUrPeo7vwWCgHiwb/lCDPOME=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VQWiA9dCfWUY488gml9Rko/VD75W2EZyujR4vBE5+O1gidcARnNf237Htu81S5AmD5Ycn5/7PRIxJcfB+B2zqCXWhE1IyOeRCYZvkiBlz9VqiCCztX5S//xvw7CGDkb5VnbfN8CH13ZBYIrOXmcFTH7z3bCSEFgRtTjmNxrmpx4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=RFQ1d7gk; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=WcFnJNFmc72P6FMbVAYUefu3w5ToKuzFq9Q2EvMFCp4=; b=RFQ1d7gkmzmi7kqwvn1sLPpO0L
+	aNi0sGI+ASNB21pDouDf+ptrOh3suv4U6f5zI07zBCqqoa1EoUe48CbvJjxiPyVB5ernZ+U6mNkru
+	TuHyXeyQLzl7OrOJwzcuKaqAP2l8rnPQ3T1WXPJbRh4ox7BdMvILWcMI7sVUeCHmHHA6i1qBp51hQ
+	6Ammpt6AcWXesT1dh+IUBIO3R/816gT9tQag5XvNrSWcRoMOP7dL1m9Gd8dLUT5t+pWFu312SF7UO
+	apgsRp7nQGdB7tKkt9gItiAL+uEIngCCjp4h7db30EwQC2lx5gWE7ddAphQxt2M9c/Y2AE3iyIz/5
+	Jgtk4b9g==;
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1uZUW5-0009Cn-07;
+	Wed, 09 Jul 2025 15:07:17 +0200
+Received: from localhost ([127.0.0.1])
+	by sslproxy06.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1uZUW3-0003y1-1E;
+	Wed, 09 Jul 2025 15:07:15 +0200
+Message-ID: <5bff2c39-887e-469b-aff9-43af85a1e890@iogearbox.net>
+Date: Wed, 9 Jul 2025 15:07:14 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v3 2/7] bpf: Remove attach_type in
+ bpf_cgroup_link
+To: Tao Chen <chen.dylane@linux.dev>, razor@blackwall.org,
+ andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, ast@kernel.org, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+ mattbobrowski@google.com, rostedt@goodmis.org, mhiramat@kernel.org,
+ mathieu.desnoyers@efficios.com, horms@kernel.org, willemb@google.com,
+ jakub@cloudflare.com, pablo@netfilter.org, kadlec@netfilter.org,
+ hawk@kernel.org
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ netfilter-devel@vger.kernel.org, coreteam@netfilter.org
+References: <20250709030802.850175-1-chen.dylane@linux.dev>
+ <20250709030802.850175-3-chen.dylane@linux.dev>
+Content-Language: en-US
+From: Daniel Borkmann <daniel@iogearbox.net>
+Autocrypt: addr=daniel@iogearbox.net; keydata=
+ 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
+In-Reply-To: <20250709030802.850175-3-chen.dylane@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250709-sockmap-splice-v3-5-b23f345a67fc@datadoghq.com>
-References: <20250709-sockmap-splice-v3-0-b23f345a67fc@datadoghq.com>
-In-Reply-To: <20250709-sockmap-splice-v3-0-b23f345a67fc@datadoghq.com>
-To: John Fastabend <john.fastabend@gmail.com>, 
- Jakub Sitnicki <jakub@cloudflare.com>
-Cc: Kuniyuki Iwashima <kuniyu@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- netdev@vger.kernel.org, bpf@vger.kernel.org, 
- Vincent Whitchurch <vincent.whitchurch@datadoghq.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1752065284; l=3614;
- i=vincent.whitchurch@datadoghq.com; s=20240606; h=from:subject:message-id;
- bh=2akB6neBnN7soD9RxBYPWNSQma3x6Mu7ppi7sqIUp90=;
- b=wIP7SIYe/ar4+KSJGEWtKiJIECPxVbOSndOyiJ10hhvCxfUuSlWl9nutxjojbXt+bbwCtNJ5I
- MBadEyZVb/KDs/VmUwRsO4+HZgFtXwtAQn8wazb0YBXg81fUaZofkbV
-X-Developer-Key: i=vincent.whitchurch@datadoghq.com; a=ed25519;
- pk=GwUiPK96WuxbUAD4UjapyK7TOt+aX0EqABOZ/BOj+/M=
-X-Endpoint-Received: by B4 Relay for
- vincent.whitchurch@datadoghq.com/20240606 with auth_id=170
-X-Original-From: Vincent Whitchurch <vincent.whitchurch@datadoghq.com>
-Reply-To: vincent.whitchurch@datadoghq.com
+X-Virus-Scanned: Clear (ClamAV 1.0.7/27694/Wed Jul  9 10:42:34 2025)
 
-From: Vincent Whitchurch <vincent.whitchurch@datadoghq.com>
+On 7/9/25 5:07 AM, Tao Chen wrote:
+> Use attach_type in bpf_link, and remove it in bpf_cgroup_link.
+> 
+> Acked-by: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+> ---
+>   include/linux/bpf-cgroup.h |  1 -
+>   kernel/bpf/cgroup.c        | 13 ++++++-------
+>   2 files changed, 6 insertions(+), 8 deletions(-)
 
-Add a test which checks that splice(2) is still able to read data from
-the socket if it is added to a verdict program which returns SK_PASS.
-
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@datadoghq.com>
----
- tools/testing/selftests/bpf/test_sockmap.c | 73 ++++++++++++++++++++++++++++++
- 1 file changed, 73 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
-index 8be2714dd573..b4102161db62 100644
---- a/tools/testing/selftests/bpf/test_sockmap.c
-+++ b/tools/testing/selftests/bpf/test_sockmap.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- // Copyright (c) 2017-2018 Covalent IO, Inc. http://covalent.io
-+#define _GNU_SOURCE
- #include <stdio.h>
- #include <stdlib.h>
- #include <sys/socket.h>
-@@ -965,6 +966,61 @@ static int sendmsg_test(struct sockmap_options *opt)
- 	return err;
- }
- 
-+static int splice_test(struct sockmap_options *opt)
-+{
-+	int pipefds[2];
-+	char buf[1024] = {0};
-+	ssize_t bytes;
-+	int ret;
-+
-+	ret = pipe(pipefds);
-+	if (ret < 0) {
-+		perror("pipe");
-+		return ret;
-+	}
-+
-+	bytes = send(c1, buf, sizeof(buf), 0);
-+	if (bytes < 0) {
-+		perror("send failed");
-+		return bytes;
-+	}
-+	if (bytes == 0) {
-+		fprintf(stderr, "send wrote zero bytes\n");
-+		return -1;
-+	}
-+
-+	bytes = write(pipefds[1], buf, sizeof(buf));
-+	if (bytes < 0) {
-+		perror("pipe write failed");
-+		return bytes;
-+	}
-+
-+	bytes = splice(p1, NULL, pipefds[1], NULL, sizeof(buf), 0);
-+	if (bytes < 0) {
-+		perror("splice failed");
-+		return bytes;
-+	}
-+	if (bytes == 0) {
-+		fprintf(stderr, "spliced zero bytes\n");
-+		return -1;
-+	}
-+
-+	bytes = read(pipefds[0], buf, sizeof(buf));
-+	if (bytes < 0) {
-+		perror("pipe read failed");
-+		return bytes;
-+	}
-+	if (bytes == 0) {
-+		fprintf(stderr, "EOF from pipe\n");
-+		return -1;
-+	}
-+
-+	close(pipefds[1]);
-+	close(pipefds[0]);
-+
-+	return 0;
-+}
-+
- static int forever_ping_pong(int rate, struct sockmap_options *opt)
- {
- 	struct timeval timeout;
-@@ -1047,6 +1103,7 @@ enum {
- 	BASE,
- 	BASE_SENDPAGE,
- 	SENDPAGE,
-+	SPLICE,
- };
- 
- static int run_options(struct sockmap_options *options, int cg_fd,  int test)
-@@ -1378,6 +1435,8 @@ static int run_options(struct sockmap_options *options, int cg_fd,  int test)
- 		options->base = true;
- 		options->sendpage = true;
- 		err = sendmsg_test(options);
-+	} else if (test == SPLICE) {
-+		err = splice_test(options);
- 	} else
- 		fprintf(stderr, "unknown test\n");
- out:
-@@ -1993,6 +2052,17 @@ static int populate_progs(char *bpf_file)
- 	return 0;
- }
- 
-+static void test_txmsg_splice_pass(int cgrp, struct sockmap_options *opt)
-+{
-+	txmsg_omit_skb_parser = 1;
-+	txmsg_pass_skb = 1;
-+
-+	__test_exec(cgrp, SPLICE, opt);
-+
-+	txmsg_omit_skb_parser = 0;
-+	txmsg_pass_skb = 0;
-+}
-+
- struct _test test[] = {
- 	{"txmsg test passthrough", test_txmsg_pass},
- 	{"txmsg test redirect", test_txmsg_redir},
-@@ -2009,6 +2079,7 @@ struct _test test[] = {
- 	{"txmsg test push/pop data", test_txmsg_push_pop},
- 	{"txmsg test ingress parser", test_txmsg_ingress_parser},
- 	{"txmsg test ingress parser2", test_txmsg_ingress_parser2},
-+	{"txmsg test splice pass", test_txmsg_splice_pass},
- };
- 
- static int check_whitelist(struct _test *t, struct sockmap_options *opt)
-@@ -2187,6 +2258,8 @@ int main(int argc, char **argv)
- 				test = BASE_SENDPAGE;
- 			} else if (strcmp(optarg, "sendpage") == 0) {
- 				test = SENDPAGE;
-+			} else if (strcmp(optarg, "splice") == 0) {
-+				test = SPLICE;
- 			} else {
- 				usage(argv);
- 				return -1;
-
--- 
-2.34.1
-
-
+Acked-by: Daniel Borkmann <daniel@iogearbox.net>
 
