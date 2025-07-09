@@ -1,182 +1,190 @@
-Return-Path: <bpf+bounces-62770-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62772-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6C94AFE35D
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 10:58:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE6B0AFE394
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 11:08:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 595993B49E1
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 08:58:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F924582C27
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 09:08:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4057283151;
-	Wed,  9 Jul 2025 08:58:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XOClkRZd"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A307F283FD5;
+	Wed,  9 Jul 2025 09:08:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 864D55383;
-	Wed,  9 Jul 2025 08:58:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67B9878F36;
+	Wed,  9 Jul 2025 09:08:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752051515; cv=none; b=AXT2eOh1RxtNy1eKin3bRqJpJa8mMdjQlo1yDURv6P3wlKnDht1KBczU7u/kHPB4AVw545JoXcrWTpIex+tSe+BQm4rSKltZgrw0MOTfrAOVKGUa7cg8ezTz3mU4TzKdwiybfGkmg3H/3R5NdKb5khwiUejG/WTzCcJFsvErzMo=
+	t=1752052113; cv=none; b=D73BcvKzn0SquRFSpjJ3be6eTyaYEi31ScfYth24hK/N2jQMXx1Hn4QvkktHRQScaUg1pPGUFVH6ijrcj3Vbd0b1bGMxrO1+CuBkp52Tc+scvb+Fj0TiFGJSm50cOdOKAHGf++5eJpEjIa83iqHdElEX1HDLMxsi+dC51jafDqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752051515; c=relaxed/simple;
-	bh=Y0o0ryo0AoD3mTpRJuuHPuBO5t3sO486uzuJTcp1iEM=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=au8f7u0CgiheGhjXGspwRiv8AnlWD4Y2R+tBerTMS3FehsAQDi0cdwVtULj8vQEri3WP9jRb1myJWI0Ni3N3UsDgmYjpIAkewGQ0q6Jp9+smyFIrmJGQKvPA5sPrioNbpDnGHWkgWUaxYMKyoEYwfbhohb5BviVNMYu5SeS3N24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XOClkRZd; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1752052113; c=relaxed/simple;
+	bh=4oP/BxQ13aamcUJCA30PvuCdZJb618zDuY0b6VNikI0=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=R3BLYBNXSEqUt+s7OUCEt4WYrKC7ar2AszMfoL8s/98Cs8DVbNlXoqy7IGWIAs2FOB1OSo8/xIjfqgYQxWXH8N/R4C0VhoufthAysho9GfxCWBlGy9vcwprWMD4w6tp7Nv1XtuFWhJGIW9j8yBVd7htxUlAcpXkKOYo5GHGM2CI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-ae0a0cd709bso157722466b.0;
-        Wed, 09 Jul 2025 01:58:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752051511; x=1752656311; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6ZU7PLU9etK740VjrgTZnaTTwZRId0YkGwhFbRJaUiw=;
-        b=XOClkRZdmXFoete18uk/9aEzr7JDDKV9tQPzR4CPH6bgOri1TA0tuKLfxbJ1auonev
-         J2s6pUl8NFSVVGqo44GtySvB8SgoaWiN+W0scoVe1pbtZKwgWoopQI0g2saJRQJQQQ/P
-         vw+YvL+JreeRqG/dqz4XoCCW4HhxHSqbSHhjmFNB13H/1+Xa99CXIksCRpuLU2/o95MI
-         vbJiGA/Pf3dfxKnr4ghzBlyloE18TTHuv4VTqiWQPJvYvXpYUzD2lyWB95LvdJ2R9tAx
-         XRBAdN+PQG7PrOT9JIAvlqY84lYKr2Iqwy5r/GeKaT3ac79nxhzM2zaVuM1ME/Y/6oUa
-         qK4w==
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-60bfcada295so8618190a12.1;
+        Wed, 09 Jul 2025 02:08:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752051511; x=1752656311;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6ZU7PLU9etK740VjrgTZnaTTwZRId0YkGwhFbRJaUiw=;
-        b=Oymu1q8gknlJ7LOmC000dikkzZ1Qmy5Z3O9wnMo7+TyWHphowmfwydaMsQNE0rvAsm
-         +iFFtJ4xdVofSxwiSQZISioamFvjN54lmVXoItgcZ3iiReI5f4K0E9zy21WPet24qHeL
-         5uvpUcPd59DgVxU+uTFh5tJQy6NbyyaDKkPNbdEmgj2LZLQaxkRKiYgKPl0hBCKgFN4v
-         YNyWFPBqqnhtLUgKVtsdYxUrrmFaNfI4iLwC1QfmH7yz5Y1u3t63Wy2ZHSeR/7DA5TYL
-         0fJ9afa7hT89WBD0NIR0xX9566FYYAcxI/lZFTVOH+tM43zIlEMHmi0cRbVb+zs5VcNe
-         c70Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUAh3mQ8tCXxHkdqgXJRxteSucfQKeMqbh0Y7YegxL0daIPnsuigVXEBPdSqG7oBDzYHaIUTt7xXeTETGe8@vger.kernel.org, AJvYcCWk/zAA1lkv1uzyUwmZrJF+ci/6Ksy/Q/DMTpM1J//3t8ti2RYUB6FlLSPdArjjX6dc9ICcXU7c2sQt/QLTqO53vYVU@vger.kernel.org, AJvYcCWuM/kiklun1CAA01k/v0SaoCwtn6vmQ04MetLR6s2SXBb6ox6tUuXmxEjECiJRARww4nk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyfFXSl9zfyDSEAu+A7XBoq+PU/3EfGe51ZLaQ7SQN5ruXCXsgu
-	1sj0EWh5CEMjEEUAU8vMSXaXO7w70U1vwQ6tHs1D1gn2kkbySAkiKWIJ
-X-Gm-Gg: ASbGnctkjRE5rQrB8qNFI1uVVIIw7L+RaaTEBrua6SZ3HAlIR8GCCFFDpcpJe2YqP+p
-	HM4DzP2vUfY5b9TW/k8rVl9niX2nkX1wqQjuD0Utx/IcJMR2jvtM/zTu8674JdyNRy9iUB0PSJK
-	PXJt/rH5gRB37m3DARrh5CfQyWt3qryPwFFoUbpPUHK8k7R1LIEqqRcfhyISMrAtPdydpxNnNzY
-	B2j6FM9kO2dh/DJaCL/0GS/frS1iEhHpl8W2PRq7GdovzN9AvzKcUlJ/ET+YZv8ib4EJFn8GTs1
-	QSEatOsqgp+pT7kA9fdTKNCVNWAcD2reKZMNdYN8TFMdG6FV
-X-Google-Smtp-Source: AGHT+IGMs8mKBfncdPVlgcuDOMHk/B1ZdoW3Ur23b6Nt5GbyAgyTzAx9ZOUVxdidKzOlFDPJNz3BFQ==
-X-Received: by 2002:a17:907:6ea2:b0:ae0:7e95:fb with SMTP id a640c23a62f3a-ae6b2363d94mr578100066b.5.1752051510223;
-        Wed, 09 Jul 2025 01:58:30 -0700 (PDT)
-Received: from krava ([173.38.220.54])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae3f6abfd8bsm1061632866b.81.2025.07.09.01.58.29
+        d=1e100.net; s=20230601; t=1752052110; x=1752656910;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WSsTwFQE4LJ67DmF/fgc6P+/sHFKlTuTrdiV4mhoHyE=;
+        b=MkJ27OeTUYH1/oEjNWotgHzKm2qaib7zA5jIsKNDX8wv/+dO8msBSSsLKDkIqmbfAP
+         EcSYBzO/P29nV7E15460ySPlSVus7L2gKORhUXKhQdWxmNmNaM8fcgBR9Zwl7D+KtMFo
+         /qaRTJm0JIN7MqRWPi+uz6bfpL80wg9AqjQeayqOoPxUYht3SpqxtMS2fh2gvOiYXmok
+         6iCG1fdPB6t6EiLF8/qNQ6Csji176ojxpeechSSqnzH5P6PHQIEU7ttdxdbABtpmifEM
+         +YRy3mLJS8LtW63RK+z/xzv7/V15zUc3PfjXFgmUQ9xSVAbKMK+j1K8sHa+y5Cge9snC
+         gSMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUZ/pZx4ZgGkNSz6gL2VOcUCTYTm4II2wHK366YEtRS/+laNQmjrkw/fepKB28WaigvZ+shsn/o29GDyi205H96@vger.kernel.org, AJvYcCWXDs0hZE+m4iV4MpK0ukhRlwMgfmoTnoq4HdOvoHF/Lbz9qB7ART5FqA41PlA1nshdjS0=@vger.kernel.org, AJvYcCWoGsJ9oUg9cWfcw3NLx6I+Hv8zzI9xoeiHnx2sQ+YH0qFJxShUiycLOH4s7J6kvjvziAcc9LaV@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxw8bLbu4Ou3CMJ/QZOxDhbjiWk4R6EcLqXRaYOlEOhDnbnOi++
+	3xfzzqk0upqPtKezGNlTFuRXb/KbIaTYVFCj3PiwRxkkVsvtc+Ubu1jQ9tAnxg==
+X-Gm-Gg: ASbGncsxjl5XTfFwRsR1OP0BJg7lACHAgdFumMfMYpSwPyJphc+4D8eknnLPRXeqOao
+	V+b6x/7zQ9baRL3vxlME9wrF9AjLUAa4Sp/tMAJCkcTB14bC2tN+Fm4J6+jYuCv6kufKtTetWbr
+	1nLwz8CsrvUvwp8QCqhn5LkjDuq4B7KHxQXygOuPHZlIOMaKmQDH3mNEV5KNLX2tZwx+edrLeXM
+	C2qYYuqVb74SKwl1jlj89s2wl59TrHqTP0RrVY/KFYoXsCZlX9vRrn7lUpAbe9ALBvxcVAfxz6j
+	VbMgR8wAtIJ6XliwvwIH7vfLFdOMTAnLFkZx7yK8mqENPn3p+kiCnQ==
+X-Google-Smtp-Source: AGHT+IFVKDXRSM/7QlhW8X/iY/vWLuI93QWpeJcbvGgdIWUfRuFXIxogGi5q4e81CMsYHkVbjNqP/Q==
+X-Received: by 2002:a05:6402:40c5:b0:606:df70:7aa2 with SMTP id 4fb4d7f45d1cf-611a6f3ef46mr1239856a12.31.1752052109427;
+        Wed, 09 Jul 2025 02:08:29 -0700 (PDT)
+Received: from localhost ([2a03:2880:30ff:70::])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-60fcb0c790dsm8538029a12.37.2025.07.09.02.08.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jul 2025 01:58:29 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 9 Jul 2025 10:58:28 +0200
-To: Feng Yang <yangfeng59949@163.com>
-Cc: martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
-	yonghong.song@linux.dev, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
-	mattbobrowski@google.com, rostedt@goodmis.org, mhiramat@kernel.org,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next] bpf: Clean up individual BTF_ID code
-Message-ID: <aG4vNLiusia14f4Z@krava>
-References: <20250709082038.103249-1-yangfeng59949@163.com>
+        Wed, 09 Jul 2025 02:08:28 -0700 (PDT)
+From: Breno Leitao <leitao@debian.org>
+Subject: [PATCH net-next v5 0/3] selftest: net: Add selftest for netpoll
+Date: Wed, 09 Jul 2025 02:08:14 -0700
+Message-Id: <20250709-netpoll_test-v5-0-b3737895affe@debian.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250709082038.103249-1-yangfeng59949@163.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAH4xbmgC/23PwYqDMBDG8VcJc3aWOEkc9bTvsSzFJmMbKLFok
+ C7Fdy91D+vanoff92fuMMkYZYJW3WGUOU5xSNAqVyjw5y6dBGOAVgFpcroqCZPk63C5HLJMGbv
+ SkA2kHfsaCgXXUfp4W+e+IEnGJLcM34WCc5zyMP6snblc7+8n5xJLtMy2D41rjOk/gxxjlz6G8
+ fRM/CrSb5TTVV0b6pl6v1XP/kybJrmdJtRoORAzOyJ61WareacNanTsjoG09nXXvGj7p1nv/7W
+ o0YsnYqldZf7rZVke7/8wVKMBAAA=
+X-Change-ID: 20250612-netpoll_test-a1324d2057c8
+To: Andrew Lunn <andrew+netdev@lunn.ch>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Shuah Khan <shuah@kernel.org>, Simon Horman <horms@kernel.org>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, bpf@vger.kernel.org, 
+ kernel-team@meta.com, Breno Leitao <leitao@debian.org>, 
+ Willem de Bruijn <willemb@google.com>
+X-Mailer: b4 0.15-dev-dd21f
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3426; i=leitao@debian.org;
+ h=from:subject:message-id; bh=4oP/BxQ13aamcUJCA30PvuCdZJb618zDuY0b6VNikI0=;
+ b=owEBbQKS/ZANAwAIATWjk5/8eHdtAcsmYgBobjGLCka0PhRapUGcKAOYG1LziuVAG+bSZzBNR
+ vK/d940zuKJAjMEAAEIAB0WIQSshTmm6PRnAspKQ5s1o5Of/Hh3bQUCaG4xiwAKCRA1o5Of/Hh3
+ bUuOD/46pfHqzsum11VFl4bHz3EmIf5Dwg8DsZPZsAuqvip1bLcVfgSH4wpZ07vLUdZRZLLdZ/K
+ NIh1jMAGzcHv9n0GAFmYT3jwVcrRtg2xNtoNE2Mx3YGub0sgz5ZXhVkWRA3hE5AGfLKx2H4BYbw
+ yhWeduw2rKPc3Yhe0Z7KooV1qD1phFlKSKREIRYGFmOsHScDNupY09uvSST1qRQIDIv1z4Eh+d8
+ xo7o1dk2JU9zEA1VxWiYTisRL6NVlvtd5uqnCPShchCsp777rCZobe0CLVY2zL1IF0ytwsYqs85
+ JZldcuzYgOBX1cUd2lBAEfHtd03S4YEli4WnnSJwGkNhPA/YRIaAlkkEoTkcPduzVQyllwCd4Iz
+ Y+35U7+HMspMDI0KC89BlWnke+OcrtURmNdU4Ek1pe1T8VWbNVMZFuhRvruYj/uIm9d1GosGEK3
+ okIZhv0yIHRGQZxk3crKWAM9Bydhtg/UiyzDKqDQt4b5n/MHf4s35wN8EYLG09ybn4yhESTXNXP
+ RraYAXU2WJ1objji3zIsmGdKuWMQ/FIsQo8QnYeejv3p7jIt4KG+S2kAPsjmmYsTewHicwiROdm
+ CuFhbjdbZcahKGDdRycem9Jt7VfzkLEfgXoDJIpmq6WV3pcqVfmMz7LaE0h6f6qUr2LYlaT24GH
+ vAWWBTXY2+bpOWA==
+X-Developer-Key: i=leitao@debian.org; a=openpgp;
+ fpr=AC8539A6E8F46702CA4A439B35A3939FFC78776D
 
-On Wed, Jul 09, 2025 at 04:20:38PM +0800, Feng Yang wrote:
-> From: Feng Yang <yangfeng@kylinos.cn>
-> 
-> Use BTF_ID_LIST_SINGLE(a, b, c) instead of
-> BTF_ID_LIST(a)
-> BTF_ID(b, c)
+I am submitting a new selftest for the netpoll subsystem specifically
+targeting the case where the RX is polling in the TX path, which is
+a case that we don't have any test in the tree today. This is done when
+netpoll_poll_dev() called, and this test creates a scenario when that is
+probably.
 
-there's couple more in:
+The test does the following:
 
-net/ipv6/route.c
-net/netlink/af_netlink.c
-net/sched/bpf_qdisc.c
+ 1) Configuring a single RX/TX queue to increase contention on the
+    interface.
+ 2) Generating background traffic to saturate the network, mimicking
+    real-world congestion.
+ 3) Sending netconsole messages to trigger netpoll polling and monitor
+    its behavior.
+ 4) Using dynamic netconsole targets via configfs, with the ability to
+    delete and recreate targets during the test.
+ 5) Running bpftrace in parallel to verify that netpoll_poll_dev() is
+    called when expected. If it is called, then the test passes,
+    otherwise the test is marked as skipped.
 
-jirka
+In order to achieve it, I stole Jakub's bpftrace helper from [1], and
+did some small changes that I found useful to use the helper.
 
+So, this patchset basically contains:
 
-> 
-> Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
-> ---
->  kernel/bpf/btf.c         | 3 +--
->  kernel/bpf/link_iter.c   | 3 +--
->  kernel/bpf/prog_iter.c   | 3 +--
->  kernel/trace/bpf_trace.c | 3 +--
->  4 files changed, 4 insertions(+), 8 deletions(-)
-> 
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 2dd13eea7b0e..0aff814cb53a 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -6200,8 +6200,7 @@ int get_kern_ctx_btf_id(struct bpf_verifier_log *log, enum bpf_prog_type prog_ty
->  	return kctx_type_id;
->  }
->  
-> -BTF_ID_LIST(bpf_ctx_convert_btf_id)
-> -BTF_ID(struct, bpf_ctx_convert)
-> +BTF_ID_LIST_SINGLE(bpf_ctx_convert_btf_id, struct, bpf_ctx_convert)
->  
->  static struct btf *btf_parse_base(struct btf_verifier_env *env, const char *name,
->  				  void *data, unsigned int data_size)
-> diff --git a/kernel/bpf/link_iter.c b/kernel/bpf/link_iter.c
-> index fec8005a121c..8158e9c1af7b 100644
-> --- a/kernel/bpf/link_iter.c
-> +++ b/kernel/bpf/link_iter.c
-> @@ -78,8 +78,7 @@ static const struct seq_operations bpf_link_seq_ops = {
->  	.show	= bpf_link_seq_show,
->  };
->  
-> -BTF_ID_LIST(btf_bpf_link_id)
-> -BTF_ID(struct, bpf_link)
-> +BTF_ID_LIST_SINGLE(btf_bpf_link_id, struct, bpf_link)
->  
->  static const struct bpf_iter_seq_info bpf_link_seq_info = {
->  	.seq_ops		= &bpf_link_seq_ops,
-> diff --git a/kernel/bpf/prog_iter.c b/kernel/bpf/prog_iter.c
-> index 53a73c841c13..85d8fcb56fb7 100644
-> --- a/kernel/bpf/prog_iter.c
-> +++ b/kernel/bpf/prog_iter.c
-> @@ -78,8 +78,7 @@ static const struct seq_operations bpf_prog_seq_ops = {
->  	.show	= bpf_prog_seq_show,
->  };
->  
-> -BTF_ID_LIST(btf_bpf_prog_id)
-> -BTF_ID(struct, bpf_prog)
-> +BTF_ID_LIST_SINGLE(btf_bpf_prog_id, struct, bpf_prog)
->  
->  static const struct bpf_iter_seq_info bpf_prog_seq_info = {
->  	.seq_ops		= &bpf_prog_seq_ops,
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index e7f97a9a8bbd..c8162dc89dc3 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -781,8 +781,7 @@ BPF_CALL_1(bpf_task_pt_regs, struct task_struct *, task)
->  	return (unsigned long) task_pt_regs(task);
->  }
->  
-> -BTF_ID_LIST(bpf_task_pt_regs_ids)
-> -BTF_ID(struct, pt_regs)
-> +BTF_ID_LIST_SINGLE(bpf_task_pt_regs_ids, struct, pt_regs)
->  
->  const struct bpf_func_proto bpf_task_pt_regs_proto = {
->  	.func		= bpf_task_pt_regs,
-> -- 
-> 2.43.0
-> 
+ 1) The code stolen from Jakub
+ 2) Improvements on bpftrace() helper
+ 3) The selftest itself
+
+Link: https://lore.kernel.org/all/20250421222827.283737-22-kuba@kernel.org/ [1]
+
+---
+Changes in v5:
+- Rebased on top of net-next.
+- Calling bpftrace_stop using the defer helper. (Willem)
+- Link to v4: https://lore.kernel.org/r/20250702-netpoll_test-v4-0-cec227e85639@debian.org
+
+Changes in v4:
+- Make the test XFail if it doesn't hit the function we are looking for
+- Toggle the interface while the traffic is flowing.
+- Bumped the number of messages from 10 to 40 per iterations.
+   * This is hitting ~15 times per run on my vng test.
+- Decreased the time from 15 seconds to 10 seconds, given that if
+  it didn't hit the function in 10 seconds, 5 seconds extra will not
+  help.
+- Link to v3: https://lore.kernel.org/r/20250627-netpoll_test-v3-0-575bd200c8a9@debian.org
+
+Changes in v3:
+- Make pylint happy (Simon)
+- Remove the unnecessary patch in bpftrace to raise an exception when it
+  fails. (Jakub)
+- Improved the bpftrace code (Willem)
+- Stop sending messages if bpftrace is not alive anymore.
+- Link to v2: https://lore.kernel.org/r/20250625-netpoll_test-v2-0-47d27775222c@debian.org
+
+Changes in v2:
+- Stole Jakub's helper to run bpftrace
+- Removed the DEBUG option and moved logs to logging
+- Change the code to have a higher chance of calling netpoll_poll_dev().
+  In my current configuration, it is hitting multiple times during the
+  test.
+- Save and restore TX/RX queue size (Jakub)
+- Link to v1: https://lore.kernel.org/r/20250620-netpoll_test-v1-1-5068832f72fc@debian.org
+
+---
+Breno Leitao (2):
+      selftests: drv-net: Strip '@' prefix from bpftrace map keys
+      selftests: net: add netpoll basic functionality test
+
+Jakub Kicinski (1):
+      selftests: drv-net: add helper/wrapper for bpftrace
+
+ tools/testing/selftests/drivers/net/Makefile       |   1 +
+ .../selftests/drivers/net/lib/py/__init__.py       |   3 +-
+ .../testing/selftests/drivers/net/netpoll_basic.py | 366 +++++++++++++++++++++
+ tools/testing/selftests/net/lib/py/utils.py        |  35 ++
+ 4 files changed, 404 insertions(+), 1 deletion(-)
+---
+base-commit: 0234362d0af4649bc2ff745e94d06d0c6f0a46ce
+change-id: 20250612-netpoll_test-a1324d2057c8
+
+Best regards,
+--  
+Breno Leitao <leitao@debian.org>
+
 
