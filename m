@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-62792-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62793-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0C15AFE9A4
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 15:07:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A682AFEA94
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 15:45:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4F817AE7EC
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 13:06:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D834F3B4D6F
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 13:44:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B80A62DCC08;
-	Wed,  9 Jul 2025 13:07:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DEB32E0B74;
+	Wed,  9 Jul 2025 13:44:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="RFQ1d7gk"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="OQFNT69U"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0B151E492;
-	Wed,  9 Jul 2025 13:07:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E74022154D;
+	Wed,  9 Jul 2025 13:44:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752066446; cv=none; b=OdJmmWxIKcmwUwUvRwMFnSr3MEjq/PmXCmh+JZu9tXn3sPlLoYAI4ALhRew+Ln4IOTWb0GybfC0LW1Olu7MG8D5c46mtrUcY+STdMs15wV7kjB0XjnOrkwawpAt4bdHZLLQlSFy75hIlZKncQ8EQio5/ktzgVY+aCVBmYl83wls=
+	t=1752068694; cv=none; b=Ev1zS6f7dxU6TIYyDjgtEFAPRvvjqmTXZmTxTALxtUtsaVVeNd+EkT8LPlgK7BpHSz3SO7z9vXWwYtR3Rgp30nD/UjYz5mx79d7RC3IsOl9cNn7iutY7bYf8clYMbbHyNV6ZaXLHz+Cyi8JJUwQh6m9yoBXyedf7Mz+vd1mJZmY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752066446; c=relaxed/simple;
-	bh=D91T75s3C6q5S0S4jVQgUrPeo7vwWCgHiwb/lCDPOME=;
+	s=arc-20240116; t=1752068694; c=relaxed/simple;
+	bh=Qiz8jkzFdjFvWHzOg/eNcBaD6xh8Qe49GngRQWMhwqk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VQWiA9dCfWUY488gml9Rko/VD75W2EZyujR4vBE5+O1gidcARnNf237Htu81S5AmD5Ycn5/7PRIxJcfB+B2zqCXWhE1IyOeRCYZvkiBlz9VqiCCztX5S//xvw7CGDkb5VnbfN8CH13ZBYIrOXmcFTH7z3bCSEFgRtTjmNxrmpx4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=RFQ1d7gk; arc=none smtp.client-ip=213.133.104.62
+	 In-Reply-To:Content-Type; b=VyH4Vvib8y/8lo3ZU0CFTBbmUwqjOjdn/s/oz93G6EfviDi8TYns7ANWyb1kO4LT3lRH9AGDGDdBu+8S8sMZH37NRGxTQEIOYs3d+TZgRO0gX3nkI8wyi+d5DmJC1+k8wfPe+a1pvQPNLr1ltHgpBX11POL+NwjqjekGGc7JUrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=OQFNT69U; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,26 +36,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=WcFnJNFmc72P6FMbVAYUefu3w5ToKuzFq9Q2EvMFCp4=; b=RFQ1d7gkmzmi7kqwvn1sLPpO0L
-	aNi0sGI+ASNB21pDouDf+ptrOh3suv4U6f5zI07zBCqqoa1EoUe48CbvJjxiPyVB5ernZ+U6mNkru
-	TuHyXeyQLzl7OrOJwzcuKaqAP2l8rnPQ3T1WXPJbRh4ox7BdMvILWcMI7sVUeCHmHHA6i1qBp51hQ
-	6Ammpt6AcWXesT1dh+IUBIO3R/816gT9tQag5XvNrSWcRoMOP7dL1m9Gd8dLUT5t+pWFu312SF7UO
-	apgsRp7nQGdB7tKkt9gItiAL+uEIngCCjp4h7db30EwQC2lx5gWE7ddAphQxt2M9c/Y2AE3iyIz/5
-	Jgtk4b9g==;
+	bh=+DuSs7+HO6S55eYdw8ekha/jUpWcL3QX9dXbppxNaiE=; b=OQFNT69U0IO1VYWJLFnULtg9B/
+	8dhlrS4bPMG5lXjnKz/6aS4LYXz2IKOKFqIinzH4fY5kbQ4gxgNQm/M6rFVeTiE9Ju5Kq8PGDbOCf
+	GMHdUTkjCn6MkB3XC66kqprEvYD+87hbXKA71udI8PrkQS37t/EDEg24ADL5Y6wOGQs8zOnAh4X3e
+	FT8Z8WQ6ltcRXcFQyfaZVN+8HFO53R7/d/82R1/rmuR/Xdd72Dj2553jkEFiYriDirDJXZUFm0i2d
+	cUi/ksbA/IuVc/rwfRoQMAAg+WDYKnkrRgdtbGocseVlW0kn5m4lz9R9vBQFAh7SP+l5FYU7ZiadN
+	dkcwchsQ==;
 Received: from sslproxy06.your-server.de ([78.46.172.3])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1uZUW5-0009Cn-07;
-	Wed, 09 Jul 2025 15:07:17 +0200
+	id 1uZUWU-0009EY-2o;
+	Wed, 09 Jul 2025 15:07:42 +0200
 Received: from localhost ([127.0.0.1])
 	by sslproxy06.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1uZUW3-0003y1-1E;
-	Wed, 09 Jul 2025 15:07:15 +0200
-Message-ID: <5bff2c39-887e-469b-aff9-43af85a1e890@iogearbox.net>
-Date: Wed, 9 Jul 2025 15:07:14 +0200
+	id 1uZUWT-0007WK-0e;
+	Wed, 09 Jul 2025 15:07:41 +0200
+Message-ID: <eb27adb1-8d43-4e65-b0b9-cffd9bd831b0@iogearbox.net>
+Date: Wed, 9 Jul 2025 15:07:40 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,8 +63,7 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 2/7] bpf: Remove attach_type in
- bpf_cgroup_link
+Subject: Re: [PATCH bpf-next v3 3/7] bpf: Remove attach_type in sockmap_link
 To: Tao Chen <chen.dylane@linux.dev>, razor@blackwall.org,
  andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
  kuba@kernel.org, pabeni@redhat.com, ast@kernel.org, andrii@kernel.org,
@@ -79,7 +78,7 @@ Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
  netfilter-devel@vger.kernel.org, coreteam@netfilter.org
 References: <20250709030802.850175-1-chen.dylane@linux.dev>
- <20250709030802.850175-3-chen.dylane@linux.dev>
+ <20250709030802.850175-4-chen.dylane@linux.dev>
 Content-Language: en-US
 From: Daniel Borkmann <daniel@iogearbox.net>
 Autocrypt: addr=daniel@iogearbox.net; keydata=
@@ -125,20 +124,16 @@ Autocrypt: addr=daniel@iogearbox.net; keydata=
  rUD9YI1Je/WifL/HbIubHCCdK8/N7rblgUrZJMG3W+7vAvZsOh/6VTZeP4wCe7Gs/cJhE2gI
  DmGcR+7rQvbFQC4zQxEjo8fNaTwjpzLM9NIp4vG9SDIqAm20MXzLBAeVkofixCsosUWUODxP
  owLbpg7pFRJGL9YyEHpS7MGPb3jSLzucMAFXgoI8rVqoq6si2sxr2l0VsNH5o3NgoAgJNIg=
-In-Reply-To: <20250709030802.850175-3-chen.dylane@linux.dev>
+In-Reply-To: <20250709030802.850175-4-chen.dylane@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Virus-Scanned: Clear (ClamAV 1.0.7/27694/Wed Jul  9 10:42:34 2025)
 
 On 7/9/25 5:07 AM, Tao Chen wrote:
-> Use attach_type in bpf_link, and remove it in bpf_cgroup_link.
+> Use attach_type in bpf_link, and remove it in sockmap_link.
 > 
 > Acked-by: Jiri Olsa <jolsa@kernel.org>
 > Signed-off-by: Tao Chen <chen.dylane@linux.dev>
-> ---
->   include/linux/bpf-cgroup.h |  1 -
->   kernel/bpf/cgroup.c        | 13 ++++++-------
->   2 files changed, 6 insertions(+), 8 deletions(-)
 
 Acked-by: Daniel Borkmann <daniel@iogearbox.net>
 
