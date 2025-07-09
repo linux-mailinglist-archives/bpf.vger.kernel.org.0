@@ -1,77 +1,78 @@
-Return-Path: <bpf+bounces-62857-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62858-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0059AFF534
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 01:05:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D06FAFF530
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 01:05:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7038F1C41FDC
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 23:05:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FCEF7A55F1
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 23:03:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8DCE243367;
-	Wed,  9 Jul 2025 23:03:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D58D2255E34;
+	Wed,  9 Jul 2025 23:03:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b="3KEPYDmZ"
+	dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b="K8UioUWt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A389A253355
-	for <bpf@vger.kernel.org>; Wed,  9 Jul 2025 23:03:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08DA5253F3D
+	for <bpf@vger.kernel.org>; Wed,  9 Jul 2025 23:03:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752102232; cv=none; b=N/IhUKvJEks8z6Fgj63FJRmElgjuxtBjVssg9MmtomJ77QdnM0lzAZ8VVXh+hs+mGvDhdC9KsvsloZKG7KZocgQF5pi0/1L8MV4ff+4MG426r0ZBFvuwSp2qFUt2EvllZhNuA1yTrR/eMt6ifARAcDQVt71FqOI3Epf1N84knTo=
+	t=1752102233; cv=none; b=rhRq1D20dP8jKw4sYpJs0EbaunVNgHReEp5EkS7jc6i3URJ6bDKio0Sxre2dCL2PiUJYCmNVaOgkVLDBGBvYvaR9eQfWKYWQScc9n0nCshZqa5kjq556IFsyA5efRGGs9xRcHWsZCX0i5CFJFtmJB4wEGz/TqEp5tO2h9ocnN/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752102232; c=relaxed/simple;
-	bh=Qfz5W+kBzk0ALQvaktO0O8WJb1rvJHyV51fTo3LPPXo=;
+	s=arc-20240116; t=1752102233; c=relaxed/simple;
+	bh=JYYfuH+lTwaumMcaKIm1Mjx5EJTwz+NEYIR8eCVU6l4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=n3YcnEJPSy9+D/0B4Hh4j69ufqxhuiWZ5RLLNwrTMfg8wqtG6qHBZcU73Mk6VDzuLbqv/xTLk8Drkm+dpmFkelSk2S04tftSPMfKEwHGVkPvH87g7xK5aLcZS9seI8aNg2V+8Yc4toueJP+Jg7rVy4kxq8VA/LmDGGWSAH2AgeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io; spf=none smtp.mailfrom=jrife.io; dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b=3KEPYDmZ; arc=none smtp.client-ip=209.85.215.178
+	 MIME-Version; b=mcrGrOiFznlt06w3pdcd2p2V3niYH5+0F6CkTGjS4JqTWOhKmRrHILICztWcLqgAyVqDh7FMFv1VSaC8k3Mkjc7GQNh0VlAT0uUsJtMsNarK45g9iYxVT84p8/ZWNtkSFGIqtAsd51SY1K5GITH3Wgss5MLLFXknUaTo8qNONIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io; spf=none smtp.mailfrom=jrife.io; dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b=K8UioUWt; arc=none smtp.client-ip=209.85.214.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=jrife.io
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-b38fdac002bso64981a12.0
-        for <bpf@vger.kernel.org>; Wed, 09 Jul 2025 16:03:50 -0700 (PDT)
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-2355360ea88so594555ad.2
+        for <bpf@vger.kernel.org>; Wed, 09 Jul 2025 16:03:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jrife-io.20230601.gappssmtp.com; s=20230601; t=1752102230; x=1752707030; darn=vger.kernel.org;
+        d=jrife-io.20230601.gappssmtp.com; s=20230601; t=1752102231; x=1752707031; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=05ov+T5n9BEKTxmfOYn08NF2ipokkSRnsb3r66QuKro=;
-        b=3KEPYDmZTxpAktrwjF8K+4XdOYdKBZCO7fgu8UpvwDBt90oC/ALDM44elwICS7CDyr
-         kkS0PdJGckUKLX5fQMNw+8Fq3pdm7tbkU5r+qLCLm8TxaztY1m6C6Fg6qKBtWoEs+j+s
-         1jZtLJz1qtIOk7bdG5KpgbzgFusc3Wh+NcgwC6W4pbHeo2I/tPDw90OIZbyca9hLLK3i
-         BxbDXOpV9OHWOzotCltK8/yTLwRupAyeJFH7Xr7/Pea6dMFslrYoiwmu8/d8t7Bn3G+c
-         18FXYYbGNAIc5U6uxSBky84riEQiLNMJXf3ili6JpWK1JXbzgnGJH5uV/FlMLuTLWRfi
-         oZ8w==
+        bh=sZHS/Z25KEWrT/i7QYhSLdG7UbyfdoDPHvTom044B/E=;
+        b=K8UioUWtZVJ39PKN7fq7ieqBqGM6ZP4gRXOfeVUqWE2+Kj1fzvNms+QrXBZV94zOEB
+         CnbpYp5cMObzgyUow4+3RwKde56E8WkNL12BfkpfBftu0Zi4KgIXBWGOJ5mHBCi3rB3v
+         mQzim7RYGVp8kQiW36f4TXE12ieaOANQotEUt2e1octDz22z3aVz6vKMFN9TNgOmysut
+         kGTzYCy+EhOD4i2WaGcrXtaUqT366HsZoCy1gaXB6iDPEBymHbPCS3G6ApIGZ/r0JOUE
+         ZLobzZlWaxaHbHzYrsZ9wDgh9uoLI6wGWs9DPz7q+w2Kr4zviEuJtxZKxUcVKnf7XNBw
+         9Ahw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752102230; x=1752707030;
+        d=1e100.net; s=20230601; t=1752102231; x=1752707031;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=05ov+T5n9BEKTxmfOYn08NF2ipokkSRnsb3r66QuKro=;
-        b=TqTshpEyt9lamvQS8A7Auc5xvKXitMA+s+xyg5rPSd3REyV6MYwI9fBxtR2a8zuY2q
-         5N7Y9PbCG+s0u/v63itAmd8Hu5l5CZzlH6fsm3HHACaWdvB5X1Q1lvm0CbWn20komrVj
-         7IDgrg3l0FhES/QZEy5McR+F0PGuJLhpjy4CUMhUn2xzHe3vobjd/NNx86crsS4UveLq
-         VsacyeMIG2IqWWL5F3iBixwiThno3Wn6xf2HMrP9cKngXZb1Bxvk4hy6kTXJaAXUi1Ni
-         kpCy1Wcc9wWdH694Jot3WQ/SeSPh20IpWuS/pehoqq8UMP28KG8b1DTdLbRABrOBMu4L
-         nL3w==
-X-Forwarded-Encrypted: i=1; AJvYcCV52sPjpLVeF2FVj/Z0oleXNrGri2B4/f4ToRGg+/W0zI2w/nyPl43r9r/svCoWEz3gsHc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwGLwjKFGpW9n0FpHiSV7Xh5z7w6fGjMazMe3xZIz3CWFJSGUmV
-	BkPQz8UzMOvFuumphx1hBktSb/SjmYIDkm4CjuLWqnMjUq4GyS6TvKExByh7mJW/VOw=
-X-Gm-Gg: ASbGncuFtwakuQ9byotpHYz6ZqQemW5lo6CO0K1YcZKUU6RxjpgI3XTgPgAZ/v+CiHs
-	lZ3hs5lf8Aj+a+CGpXGhmq+Kl+T9cVIK5v6kKrcxh7tARK9RetnVcVz53BSWuip7rAuL8PB0xVN
-	n880M8zRaS9l+RV4vXCjtFzUc94t7T/Z1Caz7WlEnXgHln/F/qpNRnGpJWht2pBOpDFgOAj4rfn
-	iyKlonJkNs0roehpY3dR8IV2ldl4TDiZv1jPCxrxDTOmbwHdLDUggmG2jFq0J/3ViNHEhkB0VKx
-	GY/VYavv4LnNCEvgFJQURNrp34FUXKy3Frdbhwisdv9w2D/63Q0=
-X-Google-Smtp-Source: AGHT+IH0jSVoxgP4BnDJOtMH4COsezREsKPLsXCyGGf9EhAp6rgxT4hP6WCEv2x3Tqy7RQUdwzPIfg==
-X-Received: by 2002:a17:902:e5cd:b0:234:ba37:87a3 with SMTP id d9443c01a7336-23ddb19b4e4mr26912815ad.3.1752102229919;
-        Wed, 09 Jul 2025 16:03:49 -0700 (PDT)
+        bh=sZHS/Z25KEWrT/i7QYhSLdG7UbyfdoDPHvTom044B/E=;
+        b=fvBbLt+hs38GAAMf0CAzMzkH9TZRlWIGB6O277OpGTBrOllPKCSBKZFmM37s54hs6R
+         gsSS5dh0RTUOZ34MOXQiwqSYEZ5kUO5pYczePLXJzY2Yb2fUIZtTkH6hlyAq4Kh7NgXn
+         jaACXfI+E99VGv+Mr0F2j0EkTSUm/yOf4ZA3H+2sSKZIUaVTMhFXJNJ/JF0HO/HgDyhq
+         1OtiOQ38/fRjnZuUter6IHu3jjBHGuA7eXlVZsmdKdJaLgHbfeS0evMr9eFlnbgadfhL
+         pk+JOymqflcJhTnWE0BrEwJ2QwTE8/ZxUUGZTlIC20nsSDlnRNSjqOzXUPTtIQMfWl0j
+         JXJw==
+X-Forwarded-Encrypted: i=1; AJvYcCWgrW8nADppus0TQUY9KdqklBx/IMShc2Cywsk/ATWadDGLcoWdngFEbUFEqAcpL3IMz2k=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyLFQfuPOqv0NCk717C8YZWoMPAOUyBVGTYiIOBS/Hu/kVhCECa
+	h8Pak4ZyzZsLFkWPeZ1JpC08MXfbLHjFQncAEYo1NTQ8C70kuRlt3Y0wz5cVpMX/n8VKvkpB22P
+	1q60A
+X-Gm-Gg: ASbGncuWa/nrjG8oWb12aY8eg5SEdKKGrW1zjpPQv/45whshOaH8ntDDj3DS9iwQAZ+
+	pZ+WJnT7mnSd1PBm9fA9qaG7/2QRg/HI6z8yjoH/DALCQ061xxpy0akSMXh9mcGGG3IgdK8G2Wk
+	hyKVjJllJr3qgMTwoGStV9Hbs5Dy8E390ljK9ExIjpBXU93knp7CA3DOFZ5eb9+IEfMSxtsFT4l
+	zzS3VWv7PFyRzpofqZmjmeXowNn1msra2ByvXFH1XUe+Yh04OjrFlWY7PMG/PsPayxymYaFu67m
+	z2CgF/lepUlEgSWsip6cB2gLGTr/BopSkVoe8tds46nDLK2svIg=
+X-Google-Smtp-Source: AGHT+IHOiSjm84qj2GrVnLMMgJpFqnEWUaEvssOaWn174ZtElkUYs791Bz+7vIJ9pifxxhix7y4dPA==
+X-Received: by 2002:a17:902:d2ca:b0:234:cb4a:bc1c with SMTP id d9443c01a7336-23ddb1a5cbemr23582025ad.6.1752102231194;
+        Wed, 09 Jul 2025 16:03:51 -0700 (PDT)
 Received: from t14.. ([2001:5a8:4528:b100:d121:1d56:91c1:bbff])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23de42ad212sm2679015ad.80.2025.07.09.16.03.48
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23de42ad212sm2679015ad.80.2025.07.09.16.03.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jul 2025 16:03:49 -0700 (PDT)
+        Wed, 09 Jul 2025 16:03:50 -0700 (PDT)
 From: Jordan Rife <jordan@jrife.io>
 To: netdev@vger.kernel.org,
 	bpf@vger.kernel.org
@@ -82,9 +83,9 @@ Cc: Jordan Rife <jordan@jrife.io>,
 	Kuniyuki Iwashima <kuniyu@google.com>,
 	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	Stanislav Fomichev <stfomichev@gmail.com>
-Subject: [PATCH v5 bpf-next 10/12] selftests/bpf: Create established sockets in socket iterator tests
-Date: Wed,  9 Jul 2025 16:03:30 -0700
-Message-ID: <20250709230333.926222-11-jordan@jrife.io>
+Subject: [PATCH v5 bpf-next 11/12] selftests/bpf: Create iter_tcp_destroy test program
+Date: Wed,  9 Jul 2025 16:03:31 -0700
+Message-ID: <20250709230333.926222-12-jordan@jrife.io>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250709230333.926222-1-jordan@jrife.io>
 References: <20250709230333.926222-1-jordan@jrife.io>
@@ -97,174 +98,46 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 Prepare for bucket resume tests for established TCP sockets by creating
-established sockets. Collect socket fds from connect() and accept()
-sides and pass them to test cases.
+a program to immediately destroy and remove sockets from the TCP ehash
+table, since close() is not deterministic.
 
 Signed-off-by: Jordan Rife <jordan@jrife.io>
 ---
- .../bpf/prog_tests/sock_iter_batch.c          | 83 ++++++++++++++++++-
- 1 file changed, 79 insertions(+), 4 deletions(-)
+ .../selftests/bpf/progs/sock_iter_batch.c     | 21 +++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sock_iter_batch.c b/tools/testing/selftests/bpf/prog_tests/sock_iter_batch.c
-index 18da2d901af7..d21b7a918700 100644
---- a/tools/testing/selftests/bpf/prog_tests/sock_iter_batch.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sock_iter_batch.c
-@@ -153,8 +153,66 @@ static void check_n_were_seen_once(int *fds, int fds_len, int n,
- 	ASSERT_EQ(seen_once, n, "seen_once");
+diff --git a/tools/testing/selftests/bpf/progs/sock_iter_batch.c b/tools/testing/selftests/bpf/progs/sock_iter_batch.c
+index a36361e4a5de..77966ded5467 100644
+--- a/tools/testing/selftests/bpf/progs/sock_iter_batch.c
++++ b/tools/testing/selftests/bpf/progs/sock_iter_batch.c
+@@ -70,6 +70,27 @@ int iter_tcp_soreuse(struct bpf_iter__tcp *ctx)
+ 	return 0;
  }
  
-+static int accept_from_one(int *server_fds, int server_fds_len)
++volatile const __u64 destroy_cookie;
++
++SEC("iter/tcp")
++int iter_tcp_destroy(struct bpf_iter__tcp *ctx)
 +{
-+	int fd;
-+	int i;
++	struct sock_common *sk_common = (struct sock_common *)ctx->sk_common;
++	__u64 sock_cookie;
 +
-+	for (i = 0; i < server_fds_len; i++) {
-+		fd = accept(server_fds[i], NULL, NULL);
-+		if (fd >= 0)
-+			return fd;
-+		if (!ASSERT_EQ(errno, EWOULDBLOCK, "EWOULDBLOCK"))
-+			return -1;
-+	}
++	if (!sk_common)
++		return 0;
 +
-+	return -1;
++	sock_cookie = bpf_get_socket_cookie(sk_common);
++	if (sock_cookie != destroy_cookie)
++		return 0;
++
++	bpf_sock_destroy(sk_common);
++	bpf_seq_write(ctx->meta->seq, &sock_cookie, sizeof(sock_cookie));
++
++	return 0;
 +}
 +
-+static int *connect_to_server(int family, int sock_type, const char *addr,
-+			      __u16 port, int nr_connects, int *server_fds,
-+			      int server_fds_len)
-+{
-+	struct network_helper_opts opts = {
-+		.timeout_ms = 0,
-+	};
-+	int *established_socks;
-+	int i;
-+
-+	/* Make sure accept() doesn't block. */
-+	for (i = 0; i < server_fds_len; i++)
-+		if (!ASSERT_OK(fcntl(server_fds[i], F_SETFL, O_NONBLOCK),
-+			       "fcntl(O_NONBLOCK)"))
-+			return NULL;
-+
-+	established_socks = malloc(sizeof(int) * nr_connects*2);
-+	if (!ASSERT_OK_PTR(established_socks, "established_socks"))
-+		return NULL;
-+
-+	i = 0;
-+
-+	while (nr_connects--) {
-+		established_socks[i] = connect_to_addr_str(family, sock_type,
-+							   addr, port, &opts);
-+		if (!ASSERT_OK_FD(established_socks[i], "connect_to_addr_str"))
-+			goto error;
-+		i++;
-+		established_socks[i] = accept_from_one(server_fds,
-+						       server_fds_len);
-+		if (!ASSERT_OK_FD(established_socks[i], "accept_from_one"))
-+			goto error;
-+		i++;
-+	}
-+
-+	return established_socks;
-+error:
-+	free_fds(established_socks, i);
-+	return NULL;
-+}
-+
- static void remove_seen(int family, int sock_type, const char *addr, __u16 port,
--			int *socks, int socks_len, struct sock_count *counts,
-+			int *socks, int socks_len, int *established_socks,
-+			int established_socks_len, struct sock_count *counts,
- 			int counts_len, struct bpf_link *link, int iter_fd)
- {
- 	int close_idx;
-@@ -185,6 +243,7 @@ static void remove_seen(int family, int sock_type, const char *addr, __u16 port,
+ #define udp_sk(ptr) container_of(ptr, struct udp_sock, inet.sk)
  
- static void remove_unseen(int family, int sock_type, const char *addr,
- 			  __u16 port, int *socks, int socks_len,
-+			  int *established_socks, int established_socks_len,
- 			  struct sock_count *counts, int counts_len,
- 			  struct bpf_link *link, int iter_fd)
- {
-@@ -217,6 +276,7 @@ static void remove_unseen(int family, int sock_type, const char *addr,
- 
- static void remove_all(int family, int sock_type, const char *addr,
- 		       __u16 port, int *socks, int socks_len,
-+		       int *established_socks, int established_socks_len,
- 		       struct sock_count *counts, int counts_len,
- 		       struct bpf_link *link, int iter_fd)
- {
-@@ -244,7 +304,8 @@ static void remove_all(int family, int sock_type, const char *addr,
- }
- 
- static void add_some(int family, int sock_type, const char *addr, __u16 port,
--		     int *socks, int socks_len, struct sock_count *counts,
-+		     int *socks, int socks_len, int *established_socks,
-+		     int established_socks_len, struct sock_count *counts,
- 		     int counts_len, struct bpf_link *link, int iter_fd)
- {
- 	int *new_socks = NULL;
-@@ -274,6 +335,7 @@ static void add_some(int family, int sock_type, const char *addr, __u16 port,
- 
- static void force_realloc(int family, int sock_type, const char *addr,
- 			  __u16 port, int *socks, int socks_len,
-+			  int *established_socks, int established_socks_len,
- 			  struct sock_count *counts, int counts_len,
- 			  struct bpf_link *link, int iter_fd)
- {
-@@ -302,10 +364,12 @@ static void force_realloc(int family, int sock_type, const char *addr,
- 
- struct test_case {
- 	void (*test)(int family, int sock_type, const char *addr, __u16 port,
--		     int *socks, int socks_len, struct sock_count *counts,
-+		     int *socks, int socks_len, int *established_socks,
-+		     int established_socks_len, struct sock_count *counts,
- 		     int counts_len, struct bpf_link *link, int iter_fd);
- 	const char *description;
- 	int ehash_buckets;
-+	int connections;
- 	int init_socks;
- 	int max_socks;
- 	int sock_type;
-@@ -416,6 +480,7 @@ static void do_resume_test(struct test_case *tc)
- 	static const __u16 port = 10001;
- 	struct nstoken *nstoken = NULL;
- 	struct bpf_link *link = NULL;
-+	int *established_fds = NULL;
- 	int err, iter_fd = -1;
- 	const char *addr;
- 	int *fds = NULL;
-@@ -444,6 +509,14 @@ static void do_resume_test(struct test_case *tc)
- 				     tc->init_socks);
- 	if (!ASSERT_OK_PTR(fds, "start_reuseport_server"))
- 		goto done;
-+	if (tc->connections) {
-+		established_fds = connect_to_server(tc->family, tc->sock_type,
-+						    addr, port,
-+						    tc->connections, fds,
-+						    tc->init_socks);
-+		if (!ASSERT_OK_PTR(established_fds, "connect_to_server"))
-+			goto done;
-+	}
- 	skel->rodata->ports[0] = 0;
- 	skel->rodata->ports[1] = 0;
- 	skel->rodata->sf = tc->family;
-@@ -465,13 +538,15 @@ static void do_resume_test(struct test_case *tc)
- 		goto done;
- 
- 	tc->test(tc->family, tc->sock_type, addr, port, fds, tc->init_socks,
--		 counts, tc->max_socks, link, iter_fd);
-+		 established_fds, tc->connections*2, counts, tc->max_socks,
-+		 link, iter_fd);
- done:
- 	close_netns(nstoken);
- 	SYS_NOFAIL("ip netns del " TEST_CHILD_NS);
- 	SYS_NOFAIL("sysctl -w net.ipv4.tcp_child_ehash_entries=0");
- 	free(counts);
- 	free_fds(fds, tc->init_socks);
-+	free_fds(established_fds, tc->connections*2);
- 	if (iter_fd >= 0)
- 		close(iter_fd);
- 	bpf_link__destroy(link);
+ SEC("iter/udp")
 -- 
 2.43.0
 
