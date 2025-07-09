@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-62731-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62733-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4E53AFDD1C
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 03:53:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9580DAFDD1E
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 03:53:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A25CA540CB1
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 01:52:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 296D81BC8254
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 01:53:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DD46191F72;
-	Wed,  9 Jul 2025 01:53:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21692199947;
+	Wed,  9 Jul 2025 01:53:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JfQw6mq1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YztZzglr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A3E683A14
-	for <bpf@vger.kernel.org>; Wed,  9 Jul 2025 01:53:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31BD118B464
+	for <bpf@vger.kernel.org>; Wed,  9 Jul 2025 01:53:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752025997; cv=none; b=IwP1bZfe6o2FZPoho+aTSmbyAOIWmOPDZttd2ow8FpL+EBxKXcJAg1n5oC8AlLG9GJPhWCemTIBPU+ewDZFlD57lqqmv5ktV9Hmm5ekqIt69CI53M3C4GPtF1jviiCXPdZdPrVw/RmTyXptyQc0w8TN+J8g9i6cHhI9V5gl6kO4=
+	t=1752026001; cv=none; b=SQo237B+y5b+d0xh3KxceNC97mzvs4ygRZ42Rh9KCdfmwr/cS/9Fwvuo4BLj2tRSgWydu45sSmVCvJjodVXN4TUKQkRqfa+Zd0OFJBrkYpB/tGUj7Ycs0BcDluZlKzGWqe9ICVjrdP7OFTL4KtmWxp56RgcDEdROyFKLSWpa2Us=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752025997; c=relaxed/simple;
-	bh=LWLgOcns2oZX00zNapupXxQb4i1suI8mR1q9wNFCecM=;
+	s=arc-20240116; t=1752026001; c=relaxed/simple;
+	bh=P2XZGdSkkAFyODSPdEwiiNaBKxYB2nyNakMRZNrm7lI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=d/JkFCVoyYNnyBQDDjn4XsXGJoc9eoF42/6k/Itr1NF9jLDIQRZxpypXlz2iDAYHPm0NwDWdwC1LLXTFMKQucKKCg/XWiTq91AkL98JfammU6F+nxM3hWET1CkCsWLCvLae1+kTzc7u0IfqrQ3wMP3Abq0OpfPxI7k/WZpbUdoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JfQw6mq1; arc=none smtp.client-ip=209.85.216.47
+	 MIME-Version; b=rIwiIiks0ujqTLquB2zFPa4+2bBBY3SXBd7HtqRP8Mg0LVuSXwFDGzx/671DtELlFQ4VXwzPZ8cs9LO0JqIm1fGpr0m87bZDrO7k3PTrci4W2eDSdZ7ulzVZP8cftG4j+pHrVYXggIh5uhiamjG8Gd7CitHGEJ/eipL4fMLohhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YztZzglr; arc=none smtp.client-ip=209.85.216.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-3135f3511bcso4523803a91.0
-        for <bpf@vger.kernel.org>; Tue, 08 Jul 2025 18:53:15 -0700 (PDT)
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-311e2cc157bso4240959a91.2
+        for <bpf@vger.kernel.org>; Tue, 08 Jul 2025 18:53:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752025994; x=1752630794; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1752025997; x=1752630797; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=U/Ua5sKnsrIyRqKFLekLDDfmQREWYUJcYc6+mMsIips=;
-        b=JfQw6mq1Th8gWb2pnvC9Vob/nP96NPyf9/C8jow3PhC8jRfayFlSBQ/1IXXYFNsiZh
-         eNyFdW+gTE0QTJuq2neNE5qQl81yQu+KS7Gsym1/Wl0B/RheKHcGqvOKKbTPCaG7QyZe
-         MPm+OkEvevJC6v2i6J6qXNBSqIW3r347XiiNz+ugLHzXlg1+QUgLl9ZstlkNOF10MBWW
-         lw8FMvmb/DSuJEmIl4oDt6B6DDXTevHUjxDhJPHs6JEcto2qJFegAMBns4rwzRFENI+6
-         /lbWxKWCWt3ioMITrPjSz61deUDnJxPwq7X+Ms6KUorIqeFNdog+l0dVRw6dyocJdtUb
-         S4fQ==
+        bh=oGJ5phVBe26AHffUjtQ0C5chQhrjMeWzPyV2gXCSEws=;
+        b=YztZzglrNyMnMnnheX9iy3YmT7wTsIuACiynSUWrLEeiKo1hrRvcqIcpMnk/iMXcsm
+         m5LwKbwiuhKsVGIUaPj261otMOzOvTZkG/qAz7P2TCwg92ZRG1BJDjRGxMk2vSYORf9i
+         6ROcysaRF7YKNH1c+EzmMDII7Epipyb72xDGRgYLKPiKbaTGoB6N4JzHAG03bWmJd9JK
+         qKMhcInNHWHVZmhz5ZAdz30O9xCjHV1n3KyOgF9GFqq2DALV/seK3Wc3YKBbNtR8DmpS
+         eUkRitmzyrB8EVQGVE9zjjOGl85hzwLxO1lgcdk4DQmC/MjvzP2EA+BdOQpTFrGWu6tm
+         S+nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752025994; x=1752630794;
+        d=1e100.net; s=20230601; t=1752025997; x=1752630797;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=U/Ua5sKnsrIyRqKFLekLDDfmQREWYUJcYc6+mMsIips=;
-        b=aroeGBe4f/9aDJvV5wgZBWbyPONpPWzZRObpCydSk0mXUvcdlNtMvknOQy90BXnlpK
-         KnbqQTiFOIlsQf0UdO+7o6gapwMfHqETbsqyW7XIJsPjFE6Vcqg1fFD7xhSCU+n7BvLb
-         qJsfKnogp9NYmLl/9r+PM/DI7L6eIp4Pjqx3K7kWCiZAeZIWoQVCcUj7H8GuL9r0c9hB
-         OU57OZCYowzmBX1PuH4Vdn2+fBKqxR0XCMdFm46NgxPQJdJo7ImjX6rn6WFx7Wnujh3d
-         9srI+Jp/gG0+F07e4rDTR48fk4HOZPZl5rlMBSTmk35usOhhT/6Na2CKtGyxi2CqsE5j
-         AO8A==
-X-Gm-Message-State: AOJu0YwLdIQg/wtzs5yLkC2Z6arJ1nQQFnjOtUwir+zXCEocLf7hshWc
-	JOs4FwabwFAfuHRAi9EOeilIPKsGVQhC4WeRSXp01EhlVbOerv1UmImfeO59Ig==
-X-Gm-Gg: ASbGnctOng3pLKlT3pfakypnh3EVt2Uqj9nszjjYguEPgnDcanR0XSVOhzNg5QJTv8Q
-	7w8S20J42XaDquXSJ45CBOUszI+/Gn0019VVIeFi+PgFdHUYAi9qSUpXk8BchKTpQNZDFvcjeuz
-	TGj43mwB4Fmt/1C5yD5DEeODwemUDe1qDBHVkDpmq+iWY7DYhnBWhnOcI+j1u9AAkh1irCOvDu2
-	X3weBAIs6CLydkVimpdMJpc+ScLiBxFCvQF12PYBKQ9lRaQfJFx0ggBpobkBDY7pW81WxPurYux
-	xo8bdLz30lQgc2EpM9QnWidRSin96SSPxHCxBlSZFlg7w7d06pzOs3+yCzyuNVmUq4RE8K7chxC
-	kKyRZwEXo/FLVjpHh6XDLaq0y154=
-X-Google-Smtp-Source: AGHT+IEn9bm8Gu9IwAgDOMIlYpQ4UCQB5S6UKhK7vqUV6G2PUzb1SmtZ/06k2i9CXCRL3vcfqpDstQ==
-X-Received: by 2002:a17:90b:1b0f:b0:310:cea4:e3b9 with SMTP id 98e67ed59e1d1-31c2fdfb963mr886368a91.34.1752025994358;
-        Tue, 08 Jul 2025 18:53:14 -0700 (PDT)
+        bh=oGJ5phVBe26AHffUjtQ0C5chQhrjMeWzPyV2gXCSEws=;
+        b=tlJrwOwmWj1XB4dxMRGX3FJcJY390EjDu4R7dSD7vQ6ilTCU57wY65NX/BdA8SVVck
+         Ag9Y6oSdeGyeuGjcWrs55UMQd6ZFQsDQXVpyDSrv/8clKNIV8jDYBHobJ9egqU+3vSB4
+         el9GsSUFPRmKU6a7nJZ3fRd99+pyCEEqfef+4crBdh+r2DG50DfV+zJ4AAbCNxBE6Of/
+         Fhu1mwv0+ZfBysBAnnMQjzd4MlLZhxv+DdnNHPH300RbzFaF2sXTvwn4XH4lYIuh1Oin
+         LBr7fu6E8W0ma1Q7M9j7etg2s9ZnMZV+8WsCIBReMjSBAUOesDkMO9dEgT7m5DGEBzjI
+         Y0Bw==
+X-Gm-Message-State: AOJu0Yxk7mMYAdFwsS838RHebo7hl0U/lZ+nxEm+iUHucF5Dk0MIrN37
+	yKZYhNjt+fIsGl+9a+fkcG3umgSErbHe38Mq2udweNrenVm1dvbZlrY7e8wurQ==
+X-Gm-Gg: ASbGncueKwndoP86JciI2gaWi/QrOKVGwpRCGxtrA8C8MqzkuYmlNGBxr7DGv7nxskS
+	21DpDQYJSE/+zsIIiRxhxtNJWIFGtodWPz5HgFXoNWZ/DamEL/K5MQfCp23m/2be1yVDJbZ5LJ+
+	PmmocVs82S0AnReAQzUlI1xttz0x/4AxE6u/4Bt4j5xhDw5hDb7CO71Rn33vtVJtcWJCiTc5YjJ
+	6GcAnbqQ4h/vy3d9D3hgG1xI7S1qpvZgYxuY794Nm3FJy+Awl/DfGR6W8eteO3QDI4KHaEoEsJL
+	riWj2cJAeSjOc24GXFmZ7xFTkMRfTNDJOO//BN1gvGIysmGDngoUsYTZ4CQtcZSzJ1zJn/Rdh+u
+	ozGeb6rGxnm73RynrFF04wS0gq1s=
+X-Google-Smtp-Source: AGHT+IHGHvw2R/ZLy4YM57AnOJL7xjem1ShfJH6FuzBAF2fTOGwIMvfNS2UPCGKW+uTTJb4HLFOW6w==
+X-Received: by 2002:a17:90b:1cc3:b0:311:b0d3:865 with SMTP id 98e67ed59e1d1-31c2fe04666mr916648a91.32.1752025996974;
+        Tue, 08 Jul 2025 18:53:16 -0700 (PDT)
 Received: from localhost.localdomain ([2001:558:600a:7:a83d:600f:32cc:235a])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31c3017cc30sm440282a91.32.2025.07.08.18.53.13
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31c300f7177sm453103a91.45.2025.07.08.18.53.16
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 08 Jul 2025 18:53:14 -0700 (PDT)
+        Tue, 08 Jul 2025 18:53:16 -0700 (PDT)
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: bpf@vger.kernel.org,
 	linux-mm@kvack.org
@@ -86,9 +86,9 @@ Cc: vbabka@suse.cz,
 	peterz@infradead.org,
 	rostedt@goodmis.org,
 	hannes@cmpxchg.org
-Subject: [PATCH v2 3/6] locking/local_lock: Introduce local_lock_lockdep_start/end()
-Date: Tue,  8 Jul 2025 18:53:00 -0700
-Message-Id: <20250709015303.8107-4-alexei.starovoitov@gmail.com>
+Subject: [PATCH v2 4/6] mm: Allow GFP_ACCOUNT to be used in alloc_pages_nolock().
+Date: Tue,  8 Jul 2025 18:53:01 -0700
+Message-Id: <20250709015303.8107-5-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 In-Reply-To: <20250709015303.8107-1-alexei.starovoitov@gmail.com>
 References: <20250709015303.8107-1-alexei.starovoitov@gmail.com>
@@ -102,133 +102,90 @@ Content-Transfer-Encoding: 8bit
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Introduce local_lock_lockdep_start/end() pair to teach lockdep
-about a region of execution where per-cpu local_lock is not taken
-and lockdep should consider such local_lock() as "trylock" to
-avoid multiple false-positives:
-- lockdep doesn't like when the same lock is taken in normal and
-  in NMI context
-- lockdep cannot recognize that local_locks that protect kmalloc
-  buckets are different local_locks and not taken together
-
-This pair of lockdep aid is used by slab in the following way:
-
-if (local_lock_is_locked(&s->cpu_slab->lock))
-	goto out;
-local_lock_lockdep_start(&s->cpu_slab->lock);
-p = ___slab_alloc(s, gfpflags, node, addr, c, orig_size);
-local_lock_lockdep_end(&s->cpu_slab->lock);
-
-Where ___slab_alloc() is calling
-local_lock_irqsave(&s->cpu_slab->lock, ...) many times,
-and all of them will not deadlock since this lock is not taken.
-
-In other words this lockdep-aid avoids the following false positives:
-
-    page_alloc_kthr/1965 is trying to acquire lock:
-    ffff8881f6ebe0f0 ((local_lock_t *)&c->lock){-.-.}-{3:3}, at: ___slab_alloc+0x9a9/0x1ab0
-
-    but task is already holding lock:
-    ffff8881f6ebd490 ((local_lock_t *)&c->lock){-.-.}-{3:3}, at: ___slab_alloc+0xc7/0x1ab0
-
-    other info that might help us debug this:
-     Possible unsafe locking scenario:
-
-           CPU0
-           ----
-      lock((local_lock_t *)&c->lock);
-      lock((local_lock_t *)&c->lock);
-
-and
-
-    inconsistent {INITIAL USE} -> {IN-NMI} usage.
-           CPU0
-           ----
-    lock(per_cpu_ptr(&lock));
-    <Interrupt>
-      lock(per_cpu_ptr(&lock));
-
-Note that this lockdep-aid does _not_ reduce lockdep coverage for local_locks.
-If the code guarded by local_lock_lockdep_start/end() will
-attempt to deadlock via local_lock(&lockA); local_lock(&lockA);
-__local_lock_acquire() logic will yell with lockdep_assert().
+Change alloc_pages_nolock() to default to __GFP_COMP when allocating
+pages, since upcoming reentrant alloc_slab_page() needs __GFP_COMP.
+Also allow __GFP_ACCOUNT flag to be specified,
+since BPF infra needs __GFP_ACCOUNT.
 
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- include/linux/local_lock.h    | 15 +++++++++++++++
- include/linux/lockdep_types.h |  4 +++-
- kernel/locking/lockdep.c      |  4 ++++
- 3 files changed, 22 insertions(+), 1 deletion(-)
+ include/linux/gfp.h  |  2 +-
+ kernel/bpf/syscall.c |  2 +-
+ mm/page_alloc.c      | 10 ++++++----
+ 3 files changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/local_lock.h b/include/linux/local_lock.h
-index 092ce89b162a..04de6ae9e5f0 100644
---- a/include/linux/local_lock.h
-+++ b/include/linux/local_lock.h
-@@ -81,6 +81,21 @@
- #define local_trylock_irqsave(lock, flags)			\
- 	__local_trylock_irqsave(lock, flags)
+diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+index 5ebf26fcdcfa..0ceb4e09306c 100644
+--- a/include/linux/gfp.h
++++ b/include/linux/gfp.h
+@@ -354,7 +354,7 @@ static inline struct page *alloc_page_vma_noprof(gfp_t gfp,
+ }
+ #define alloc_page_vma(...)			alloc_hooks(alloc_page_vma_noprof(__VA_ARGS__))
  
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+#define local_lock_lockdep_start(lock)					\
-+	do {								\
-+		lockdep_assert(!__local_lock_is_locked(lock));		\
-+		this_cpu_ptr(lock)->dep_map.flags = LOCAL_LOCK_UNLOCKED;\
-+	} while (0)
-+
-+#define local_lock_lockdep_end(lock)					\
-+	do { this_cpu_ptr(lock)->dep_map.flags = 0; } while (0)
-+
-+#else
-+#define local_lock_lockdep_start(lock) /**/
-+#define local_lock_lockdep_end(lock) /**/
-+#endif
-+
- DEFINE_GUARD(local_lock, local_lock_t __percpu*,
- 	     local_lock(_T),
- 	     local_unlock(_T))
-diff --git a/include/linux/lockdep_types.h b/include/linux/lockdep_types.h
-index 9f361d3ab9d9..6c580081ace3 100644
---- a/include/linux/lockdep_types.h
-+++ b/include/linux/lockdep_types.h
-@@ -190,13 +190,15 @@ struct lockdep_map {
- 	u8				wait_type_outer; /* can be taken in this context */
- 	u8				wait_type_inner; /* presents this context */
- 	u8				lock_type;
--	/* u8				hole; */
-+	u8				flags;
- #ifdef CONFIG_LOCK_STAT
- 	int				cpu;
- 	unsigned long			ip;
- #endif
- };
+-struct page *alloc_pages_nolock_noprof(int nid, unsigned int order);
++struct page *alloc_pages_nolock_noprof(gfp_t gfp_flags, int nid, unsigned int order);
+ #define alloc_pages_nolock(...)			alloc_hooks(alloc_pages_nolock_noprof(__VA_ARGS__))
  
-+#define LOCAL_LOCK_UNLOCKED		1
-+
- struct pin_cookie { unsigned int val; };
+ extern unsigned long get_free_pages_noprof(gfp_t gfp_mask, unsigned int order);
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index dd5304c6ac3c..eb9b6c4c10e9 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -579,7 +579,7 @@ static bool can_alloc_pages(void)
+ static struct page *__bpf_alloc_page(int nid)
+ {
+ 	if (!can_alloc_pages())
+-		return alloc_pages_nolock(nid, 0);
++		return alloc_pages_nolock(__GFP_ACCOUNT, nid, 0);
  
- #define MAX_LOCKDEP_KEYS_BITS		13
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index dd2bbf73718b..461f70f4ca28 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -4963,6 +4963,7 @@ void lockdep_init_map_type(struct lockdep_map *lock, const char *name,
- 	lock->wait_type_outer = outer;
- 	lock->wait_type_inner = inner;
- 	lock->lock_type = lock_type;
-+	lock->flags = 0;
+ 	return alloc_pages_node(nid,
+ 				GFP_KERNEL | __GFP_ZERO | __GFP_ACCOUNT
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 78ddf1d43c6c..148945f0b667 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -7506,6 +7506,7 @@ static bool __free_unaccepted(struct page *page)
  
+ /**
+  * alloc_pages_nolock - opportunistic reentrant allocation from any context
++ * @gfp_flags: GFP flags. Only __GFP_ACCOUNT allowed.
+  * @nid: node to allocate from
+  * @order: allocation order size
+  *
+@@ -7519,7 +7520,7 @@ static bool __free_unaccepted(struct page *page)
+  * Return: allocated page or NULL on failure. NULL does not mean EBUSY or EAGAIN.
+  * It means ENOMEM. There is no reason to call it again and expect !NULL.
+  */
+-struct page *alloc_pages_nolock_noprof(int nid, unsigned int order)
++struct page *alloc_pages_nolock_noprof(gfp_t gfp_flags, int nid, unsigned int order)
+ {
  	/*
- 	 * No key, no joy, we need to hash something.
-@@ -5844,6 +5845,9 @@ void lock_acquire(struct lockdep_map *lock, unsigned int subclass,
+ 	 * Do not specify __GFP_DIRECT_RECLAIM, since direct claim is not allowed.
+@@ -7541,12 +7542,13 @@ struct page *alloc_pages_nolock_noprof(int nid, unsigned int order)
+ 	 * specify it here to highlight that alloc_pages_nolock()
+ 	 * doesn't want to deplete reserves.
  	 */
- 	kasan_check_byte(lock);
+-	gfp_t alloc_gfp = __GFP_NOWARN | __GFP_ZERO | __GFP_NOMEMALLOC
+-			| __GFP_ACCOUNT;
++	gfp_t alloc_gfp = __GFP_NOWARN | __GFP_ZERO | __GFP_NOMEMALLOC | __GFP_COMP
++			| gfp_flags;
+ 	unsigned int alloc_flags = ALLOC_TRYLOCK;
+ 	struct alloc_context ac = { };
+ 	struct page *page;
  
-+	if (unlikely(lock->flags == LOCAL_LOCK_UNLOCKED))
-+		trylock = 1;
-+
- 	if (unlikely(!lockdep_enabled())) {
- 		/* XXX allow trylock from NMI ?!? */
- 		if (lockdep_nmi() && !trylock) {
++	VM_WARN_ON_ONCE(gfp_flags & ~__GFP_ACCOUNT);
+ 	/*
+ 	 * In PREEMPT_RT spin_trylock() will call raw_spin_lock() which is
+ 	 * unsafe in NMI. If spin_trylock() is called from hard IRQ the current
+@@ -7584,7 +7586,7 @@ struct page *alloc_pages_nolock_noprof(int nid, unsigned int order)
+ 	if (page)
+ 		set_page_refcounted(page);
+ 
+-	if (memcg_kmem_online() && page &&
++	if (memcg_kmem_online() && page && (gfp_flags & __GFP_ACCOUNT) &&
+ 	    unlikely(__memcg_kmem_charge_page(page, alloc_gfp, order) != 0)) {
+ 		free_pages_nolock(page, order);
+ 		page = NULL;
 -- 
 2.47.1
 
