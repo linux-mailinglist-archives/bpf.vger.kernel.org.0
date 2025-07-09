@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-62793-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62794-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A682AFEA94
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 15:45:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0B81AFEA99
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 15:45:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D834F3B4D6F
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 13:44:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FC103AE86F
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 13:45:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DEB32E0B74;
-	Wed,  9 Jul 2025 13:44:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 004182E3B17;
+	Wed,  9 Jul 2025 13:45:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="OQFNT69U"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="MXB+x5qv"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E74022154D;
-	Wed,  9 Jul 2025 13:44:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A498A28C2D6;
+	Wed,  9 Jul 2025 13:45:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752068694; cv=none; b=Ev1zS6f7dxU6TIYyDjgtEFAPRvvjqmTXZmTxTALxtUtsaVVeNd+EkT8LPlgK7BpHSz3SO7z9vXWwYtR3Rgp30nD/UjYz5mx79d7RC3IsOl9cNn7iutY7bYf8clYMbbHyNV6ZaXLHz+Cyi8JJUwQh6m9yoBXyedf7Mz+vd1mJZmY=
+	t=1752068711; cv=none; b=X00hs9ijKHjR7QJi967ILTR3pib6dc7Huul0wdTKRdQGK3bhnVwIaCENgnkEg3IhP3QB1ZrxhW0Hqa9qI2bUAMCmxECljFjph/YZE6yKrt0CFWfPkwUg0cCuiAhkEZk59s47DqGc9hgSfP3XM5T+chiuPMm9nc3GoISR8KuXfak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752068694; c=relaxed/simple;
-	bh=Qiz8jkzFdjFvWHzOg/eNcBaD6xh8Qe49GngRQWMhwqk=;
+	s=arc-20240116; t=1752068711; c=relaxed/simple;
+	bh=aPHsDSBdtEEptbtmIwoK6MNqu46gsm8gDMnyidk10rk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VyH4Vvib8y/8lo3ZU0CFTBbmUwqjOjdn/s/oz93G6EfviDi8TYns7ANWyb1kO4LT3lRH9AGDGDdBu+8S8sMZH37NRGxTQEIOYs3d+TZgRO0gX3nkI8wyi+d5DmJC1+k8wfPe+a1pvQPNLr1ltHgpBX11POL+NwjqjekGGc7JUrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=OQFNT69U; arc=none smtp.client-ip=213.133.104.62
+	 In-Reply-To:Content-Type; b=RoFatNvH+EQHASj9Udtm7hvb2FceB7QL5icN3jgBtcHaVa4DdbNIAfujzvqYsDX7pKEy01fAC4Gy3oO3JtjF1xJ9W2An0eJ8GIhNlXAFCBpuTpOXraz8avvlEf7T8Paq6Vdt/6Pp4ojHwOehDQxUTO8bfX/BCZHATpW9P0sR9gM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=MXB+x5qv; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,26 +36,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=+DuSs7+HO6S55eYdw8ekha/jUpWcL3QX9dXbppxNaiE=; b=OQFNT69U0IO1VYWJLFnULtg9B/
-	8dhlrS4bPMG5lXjnKz/6aS4LYXz2IKOKFqIinzH4fY5kbQ4gxgNQm/M6rFVeTiE9Ju5Kq8PGDbOCf
-	GMHdUTkjCn6MkB3XC66kqprEvYD+87hbXKA71udI8PrkQS37t/EDEg24ADL5Y6wOGQs8zOnAh4X3e
-	FT8Z8WQ6ltcRXcFQyfaZVN+8HFO53R7/d/82R1/rmuR/Xdd72Dj2553jkEFiYriDirDJXZUFm0i2d
-	cUi/ksbA/IuVc/rwfRoQMAAg+WDYKnkrRgdtbGocseVlW0kn5m4lz9R9vBQFAh7SP+l5FYU7ZiadN
-	dkcwchsQ==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
+	bh=H/uqrPFxDiQ80xovGsc1jjlvo/n5Lc6EIccoR88PfBo=; b=MXB+x5qvtF/CtdbY8lu+q4wOqG
+	rqm6ohGnlPOqs+dmX2cid6ovz0mQtqA9EIbRHUL3tkyR8q9zijOMp6tNPYm2zqh0YwUli9/lZPLAP
+	b75OrEAwGWPQHEH8CqEtIPozrqrS3Cr/rJAhmCOx5pAploGziWbWsn29pbOj97I4H2wbYSuSx7XUd
+	qrQ8Gu5TRsv+wUhZtAMIaDq44SqKCl9MtqVX7aZXMWd2aNtQnVvmonVkdxhRlSWrSLpE1RjCR7PCv
+	cmBwDVA8slCNqkAqZekKhE0HVulkUKa0kq/6WcSK+jE+z3azLs6W0GovpdtJi5TvlaxyqTEWMrBZa
+	5yiadZCw==;
+Received: from sslproxy04.your-server.de ([78.46.152.42])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1uZUWU-0009EY-2o;
-	Wed, 09 Jul 2025 15:07:42 +0200
+	id 1uZUeE-000AUS-3B;
+	Wed, 09 Jul 2025 15:15:43 +0200
 Received: from localhost ([127.0.0.1])
-	by sslproxy06.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	by sslproxy04.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1uZUWT-0007WK-0e;
-	Wed, 09 Jul 2025 15:07:41 +0200
-Message-ID: <eb27adb1-8d43-4e65-b0b9-cffd9bd831b0@iogearbox.net>
-Date: Wed, 9 Jul 2025 15:07:40 +0200
+	id 1uZUeC-0003Lj-2A;
+	Wed, 09 Jul 2025 15:15:41 +0200
+Message-ID: <9393fab5-2b8a-4e56-aa5a-5f601d570b47@iogearbox.net>
+Date: Wed, 9 Jul 2025 15:15:40 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,7 +63,7 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 3/7] bpf: Remove attach_type in sockmap_link
+Subject: Re: [PATCH bpf-next v3 1/7] bpf: Add attach_type in bpf_link
 To: Tao Chen <chen.dylane@linux.dev>, razor@blackwall.org,
  andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
  kuba@kernel.org, pabeni@redhat.com, ast@kernel.org, andrii@kernel.org,
@@ -78,7 +78,7 @@ Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
  netfilter-devel@vger.kernel.org, coreteam@netfilter.org
 References: <20250709030802.850175-1-chen.dylane@linux.dev>
- <20250709030802.850175-4-chen.dylane@linux.dev>
+ <20250709030802.850175-2-chen.dylane@linux.dev>
 Content-Language: en-US
 From: Daniel Borkmann <daniel@iogearbox.net>
 Autocrypt: addr=daniel@iogearbox.net; keydata=
@@ -124,16 +124,71 @@ Autocrypt: addr=daniel@iogearbox.net; keydata=
  rUD9YI1Je/WifL/HbIubHCCdK8/N7rblgUrZJMG3W+7vAvZsOh/6VTZeP4wCe7Gs/cJhE2gI
  DmGcR+7rQvbFQC4zQxEjo8fNaTwjpzLM9NIp4vG9SDIqAm20MXzLBAeVkofixCsosUWUODxP
  owLbpg7pFRJGL9YyEHpS7MGPb3jSLzucMAFXgoI8rVqoq6si2sxr2l0VsNH5o3NgoAgJNIg=
-In-Reply-To: <20250709030802.850175-4-chen.dylane@linux.dev>
+In-Reply-To: <20250709030802.850175-2-chen.dylane@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Virus-Scanned: Clear (ClamAV 1.0.7/27694/Wed Jul  9 10:42:34 2025)
 
 On 7/9/25 5:07 AM, Tao Chen wrote:
-> Use attach_type in bpf_link, and remove it in sockmap_link.
+> Attach_type will be set when link created from user, it is better
+> to record attach_type in bpf_link directly suggested by Andrii. So
+> add the attach_type field in bpf_link and move the sleepable field to
+> the end just to fill the byte hole.
 > 
 > Acked-by: Jiri Olsa <jolsa@kernel.org>
 > Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+> ---
+>   drivers/net/netkit.c           |  2 +-
+>   include/linux/bpf.h            | 28 ++++++++++++++++-----------
+>   kernel/bpf/bpf_iter.c          |  3 ++-
+>   kernel/bpf/bpf_struct_ops.c    |  5 +++--
+>   kernel/bpf/cgroup.c            |  4 ++--
+>   kernel/bpf/net_namespace.c     |  2 +-
+>   kernel/bpf/syscall.c           | 35 +++++++++++++++++++++-------------
+>   kernel/bpf/tcx.c               |  3 ++-
+>   kernel/bpf/trampoline.c        | 10 ++++++----
+>   kernel/trace/bpf_trace.c       |  4 ++--
+>   net/bpf/bpf_dummy_struct_ops.c |  3 ++-
+>   net/core/dev.c                 |  3 ++-
+>   net/core/sock_map.c            |  3 ++-
+>   net/netfilter/nf_bpf_link.c    |  3 ++-
+>   14 files changed, 66 insertions(+), 42 deletions(-)
+[...]
+
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 34dd90ec7fa..dd5070039de 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1729,12 +1729,10 @@ struct bpf_link {
+>   	enum bpf_link_type type;
+>   	const struct bpf_link_ops *ops;
+>   	struct bpf_prog *prog;
+> -	/* whether BPF link itself has "sleepable" semantics, which can differ
+> -	 * from underlying BPF program having a "sleepable" semantics, as BPF
+> -	 * link's semantics is determined by target attach hook
+> -	 */
+> -	bool sleepable;
+> +
+>   	u32 flags;
+> +	enum bpf_attach_type attach_type;
+> +
+>   	/* rcu is used before freeing, work can be used to schedule that
+>   	 * RCU-based freeing before that, so they never overlap
+>   	 */
+> @@ -1742,6 +1740,11 @@ struct bpf_link {
+>   		struct rcu_head rcu;
+>   		struct work_struct work;
+>   	};
+> +	/* whether BPF link itself has "sleepable" semantics, which can differ
+> +	 * from underlying BPF program having a "sleepable" semantics, as BPF
+> +	 * link's semantics is determined by target attach hook
+> +	 */
+> +	bool sleepable;
+>   };
+
+lgtm, it looks a bit weird at the end here after rcu/work but in future if other
+attributes get added to the link obj and a new hole frees up we can move it up
+again. Definitely good the rationale for the move is documented in the commit msg.
 
 Acked-by: Daniel Borkmann <daniel@iogearbox.net>
 
