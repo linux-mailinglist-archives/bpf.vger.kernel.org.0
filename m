@@ -1,141 +1,126 @@
-Return-Path: <bpf+bounces-62805-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62806-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1539EAFED8F
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 17:20:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8ACDAFED9E
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 17:23:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30E0964180B
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 15:19:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46BA73BF0A9
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 15:23:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 005C42E5B08;
-	Wed,  9 Jul 2025 15:19:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 260AC2E7648;
+	Wed,  9 Jul 2025 15:23:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="PReXMYE9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Uf1yeEHi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBD5D2D3ECD
-	for <bpf@vger.kernel.org>; Wed,  9 Jul 2025 15:19:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D1C028FFDB;
+	Wed,  9 Jul 2025 15:23:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752074384; cv=none; b=MZuoXOxMYgYxjwZo6IeyvgU84Bty7Y5h8yJD3cdu62fifOG7RDda08ys7ggUQPkT9VKU8GBrvMskQ4yfwb6WKty8PUoCs4YvHF6YEN01ryQJie2clOxgjtf7eidAxI3kL9WpvdmQrkW4Zf+d5V2zwDl/EMXeDTzacuD/U2CIGx8=
+	t=1752074610; cv=none; b=Uja3Kqimy8jCRUCcCyAd8sNEsS84WAzhbY2cjfQyf+6a9gLtNTuykd6ksKMdjd1kcCsBP0XKfE6ShmchKTuxtM+/jQ9DZOhf4vHLKx8Ost/80yrf04ki+Hv/Jm9BqtSYOcp8uynwskq2t9O3a6gaQl5e2DvIpyCZjKplwR7t+2s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752074384; c=relaxed/simple;
-	bh=jX5tGhwQ7UlQseFYx0r6Xq1z1pSzCZuykZeE/E6aZLw=;
+	s=arc-20240116; t=1752074610; c=relaxed/simple;
+	bh=zF7zUZo4oyIfGlJULyHtOWF7n/UOTmrSOecmFDx0BoE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=em1m2pJC+wx2QYplSccbnEQzMTYL5hNwTr6GQO9zdNfO7fXpENQgS7r20VM3PFfavHjiLoJVlCCELTFRtcZlp7T/BlmyRZPw1NcNX/mzCZJhRvHX246y3YBuasHFo49CHBPOa9vQaG64qhn5KCwi1YJ8GPzKhwNjH0cIYR8AgPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=PReXMYE9; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-e897c8ca777so5536874276.2
-        for <bpf@vger.kernel.org>; Wed, 09 Jul 2025 08:19:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1752074382; x=1752679182; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YzEGonVmXproAomin5eIhv7ocY+0CXz52Ye0JGlwwtY=;
-        b=PReXMYE9vxDaCblE0ryYjn329fImJCE4IW1XDWhk+ctbfYYeukIAD+qQDBPrQyV8fb
-         mgGell5vdkvPLhx2roO83HBztkglI5Y1rOjxeEuwjX2HRHQi6L4GvfJD/95sba+VPg/U
-         hMdnUlrGjNu7ov7hP+Gjrz7LZTDdThNIPEmhLPd/8vX0wwUrRvnfQxkmftAu1ZoduwuV
-         5rM0qigpQhZzgH3EnBR0gKuV/NlKVfvxiodqgXjIVZLU5lJGm+9uxtdMXebLAL689M7Y
-         ng1xu910hSOHK2S4c3L10Vb/X8Y2fxb4vis3B7Fve/ZY3mi+cpdx8vTovJA/ZypvxBmF
-         7diQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752074382; x=1752679182;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YzEGonVmXproAomin5eIhv7ocY+0CXz52Ye0JGlwwtY=;
-        b=vK1CCZ8Q8jDuaNa3iLc1PNxRmO8ysYygBKnEZL2bMxHxQ/8llgDMpYfbTpV3EOYnm6
-         HZldhlIDIiRT6kewT1HuyyTSZTGnRUdsoi2uJUIGclhQrVJbElKUzuJBdYnqIbbS1pkL
-         1tkBdbrRvaVGKSDijzJoxVCwrULBBrMOd50u+SI+KSwl8PBb07l/Mf2XI3gph5iRQ8Xs
-         XOCHHu2m/J9HqoreFPyaVdAI3dzd1VX58TEIc+zHac7nMwYMB+AitfAIKnor4PN4nm6A
-         rStLWpL692BgrAQdqznClfEP0WimTWmQkMhP4JY4fSP3NRAeRc0B2fVq9udQ8JncgkLs
-         JrAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX8zJLERLjBta9WqJ3hpgdH8NB5a55VriFiddJAMGh/fZ0UKPuerIVKK6YdAJLjvPXTZlY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yznga84BkPiStbadpG5kNbwQNiJzxcad2r+MYzjDUA7FCICAkUp
-	qtb5tnyfnzdOQQJKRQ99nCwQRU1jDYFf0U3omQEosXcTGyFcNqk1nl6Xt57zncOvGXkww4Lok1j
-	QFPxq26SNncTFyzn4m11S6Pvq41FfnS3H43irNHSJ
-X-Gm-Gg: ASbGncusmWgxC+LRVippcdTbIWFKfX/gp/ASi1E4vYcmuU+XYVPKDpq0BmJ8wVm7o/n
-	4hXIz3UTKovURoM6qTlGhsHaTQRZ3RYE+IL6SzsSUx70ZAc/1w2+6ZKMP/iwHkQSvLr/fWziwZ3
-	8INWuR34yZDWSA2USysWEC7cm5w/J645EceDmPeQlntNQ=
-X-Google-Smtp-Source: AGHT+IFjdm/SLcamSWISUQ66DrdwMnktjlqu7nOrNWg4Q3frFotVmkLuYoFvM0O8pXxaPwSx2wsTZlYITGZbRbzkEHs=
-X-Received: by 2002:a05:690c:62c5:b0:70e:7706:8250 with SMTP id
- 00721157ae682-717b17ace8cmr45883167b3.16.1752074381801; Wed, 09 Jul 2025
- 08:19:41 -0700 (PDT)
+	 To:Cc:Content-Type; b=onNsZwZn5LLN2y+PCWx8ib7arc92vGYu6XrGv9ltS+0L8kevpRlcjRY/cHX82G/moqUQyAPF6I66BRdLQjdBt+KXcWPCvQN4mRXfPvC/VtGckQRsqlz/xA1+h0ZCByXUZEMzWCPddSuk3RqTDnSIfYQeHjhoeHXqPfN5mYDKScc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Uf1yeEHi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47BB8C4CEF8;
+	Wed,  9 Jul 2025 15:23:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752074610;
+	bh=zF7zUZo4oyIfGlJULyHtOWF7n/UOTmrSOecmFDx0BoE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Uf1yeEHik2aWc0YkbhH+tQVzi2oQhfbsEKbDGyDLHT0DSfZCrl3AhlRxUcZmSEgO8
+	 KSOOkEFSd6yLgybq7PZBFbujX3/cjab/3vwNDGTJPQ2JtQSE/cKBLog0Bp70Q31bO0
+	 RSx8cXCnAIQ86lXNCyuRd9mIFxexYC749BCECjpEb9i9Dq8JOj2IlKLgzuY6t28H1L
+	 uUWf8zgGxy1SCXaDQXjkPOel5mfF7JG174ERyhWjZsV/2t/qGYROTKkz0LZTGBxdcG
+	 emgVIgnmTXnCdwMnvZipm1gJdQukJGrVB/jMQwhvZkf239dmb9Z1naI8fyBygSR/PT
+	 8mciu9+Yh+JIw==
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-60780d74c85so8050369a12.2;
+        Wed, 09 Jul 2025 08:23:30 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXCrXMwoWrBx9tpb3K5M9PMwIfqQPuEXevLy2Z4q3GLAVcBA0aAoUzU0Bf/mEx06PfGEvvmzpNhUlPnx+7I@vger.kernel.org, AJvYcCXngvyP+maHuw2nqMwuJR0/YlPHkC6z1qU+VqnzvHcGXiuQp+3DM8GmP2PjXe1nr2zd+g0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxJRcPg5QQW0XajPrVSgRsbTJiCJl3h0WEA/v4aCOVUtrI6QB8C
+	fXP9IR8yzbQRFkjlSIJH2VX+1NEZfaW0eonmk3SKNkaolOhoFjoGmvuUn+iBDpjKpTUI8mMMfRJ
+	fea4HqS2kMXMcoa/zVzOcJJTvaNY+hpw=
+X-Google-Smtp-Source: AGHT+IFRc6KIPeIaTMgPSKSHBeOiMQSXV6QtwyTjMyRju61upfaitdwA2JeGkExFRNlEYZnT+5a44EPyZtE1No/SoLc=
+X-Received: by 2002:a05:6402:1d51:b0:607:32e8:652 with SMTP id
+ 4fb4d7f45d1cf-611a6e20969mr2685377a12.19.1752074608783; Wed, 09 Jul 2025
+ 08:23:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250708230504.3994335-1-song@kernel.org> <20250709102410.GU1880847@ZenIV>
-In-Reply-To: <20250709102410.GU1880847@ZenIV>
-From: Paul Moore <paul@paul-moore.com>
-Date: Wed, 9 Jul 2025 11:19:30 -0400
-X-Gm-Features: Ac12FXxwFg_uAGld7AFSlsXAxl6RXBEAoPyYFqRJUVoeSEfIzHaujAQ4qrD1sLk
-Message-ID: <CAHC9VhSS1O+Cp7UJoJnWNbv-Towia72DitOPH0zmKCa4PBttkw@mail.gmail.com>
-Subject: Re: [RFC] vfs: security: Parse dev_name before calling security_sb_mount
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Song Liu <song@kernel.org>, bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	apparmor@lists.ubuntu.com, selinux@vger.kernel.org, 
-	tomoyo-users_en@lists.sourceforge.net, tomoyo-users_ja@lists.sourceforge.net, 
-	kernel-team@meta.com, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, brauner@kernel.org, jack@suse.cz, 
-	kpsingh@kernel.org, mattbobrowski@google.com, amir73il@gmail.com, 
-	repnop@google.com, jlayton@kernel.org, josef@toxicpanda.com, mic@digikod.net, 
-	gnoack@google.com, m@maowtm.org, john.johansen@canonical.com, 
-	john@apparmor.net, stephen.smalley.work@gmail.com, omosnace@redhat.com, 
-	takedakn@nttdata.co.jp, penguin-kernel@i-love.sakura.ne.jp, 
-	enlightened@chromium.org
+References: <20250709055029.723243-1-duanchenghao@kylinos.cn> <20250709055029.723243-4-duanchenghao@kylinos.cn>
+In-Reply-To: <20250709055029.723243-4-duanchenghao@kylinos.cn>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Wed, 9 Jul 2025 23:23:12 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H6bKrnDpVouriAoMUN5i26G6a+UuOGMyEj5h9kJGd6qnQ@mail.gmail.com>
+X-Gm-Features: Ac12FXyKw1YlQ-8ZaRt610FTtjuYkLfHQZ0sgZr9IxwIob4HevdQCXQrASehvIY
+Message-ID: <CAAhV-H6bKrnDpVouriAoMUN5i26G6a+UuOGMyEj5h9kJGd6qnQ@mail.gmail.com>
+Subject: Re: [PATCH v3 3/5] LoongArch: BPF: Add EXECMEM_BPF memory to execmem subsystem
+To: Chenghao Duan <duanchenghao@kylinos.cn>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	yangtiezhu@loongson.cn, hengqi.chen@gmail.com, martin.lau@linux.dev, 
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, kernel@xen0n.name, 
+	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, bpf@vger.kernel.org, 
+	guodongtai@kylinos.cn, youling.tang@linux.dev, jianghaoran@kylinos.cn
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 9, 2025 at 6:24=E2=80=AFAM Al Viro <viro@zeniv.linux.org.uk> wr=
-ote:
-> On Tue, Jul 08, 2025 at 04:05:04PM -0700, Song Liu wrote:
-> > security_sb_mount handles multiple types of mounts: new mount, bind
-> > mount, etc. When parameter dev_name is a path, it need to be parsed
-> > with kern_path.
+Hi, Chenghao,
 
-...
-
-> security_sb_mount() is and had always been a mind-boggling trash of an AP=
-I.
+On Wed, Jul 9, 2025 at 1:50=E2=80=AFPM Chenghao Duan <duanchenghao@kylinos.=
+cn> wrote:
 >
-> It makes no sense in terms of operations being requested.  And any questi=
-ons
-> regarding its semantics had been consistently met with blanket "piss off,
-> LSM gets to do whatever it wants to do, you are not to question the sanit=
-y
-> and you are not to request any kind of rules - give us the fucking syscal=
-l
-> arguments and let us at it".
+> The bpf_jit_alloc_exec function serves as the core mechanism for BPF
+> memory allocation, invoking execmem_alloc(EXECMEM_BPF, size) to
+> allocate memory. This change explicitly designates the allocation space
+> for EXECMEM_BPF.
+Without this patch, BPF JIT is allocated from MODULES region; with
+this patch, BPF JIT will be allocated from VMALLOC region. However,
+BPF JIT is similar to modules that the target of direct branch
+instruction is limited, so it should also be allocated from the
+MODULES region.
 
-I'm not going to comment on past remarks made by other devs, but I do
-want to make it clear that I am interested in making sure we have LSM
-hooks which satisfy both the needs of the existing in-tree LSMs while
-also presenting a sane API to the kernel subsystems in which they are
-placed.  I'm happy to revisit any of our existing LSM hooks to
-restructure them to better fit these goals; simply send some patches
-and let's discuss them.
+So, it is better to drop this patch.
 
-> Come up with a saner API.  We are done accomodating that idiocy.  The onl=
-y
-> changes you get to make in fs/namespace.c are "here's our better-defined
-> hooks, please call <this hook> when you do <that>".
 
-I don't have the cycles to revisit the security_sb_mount() hook
-myself, but perhaps Song Liu does with some suggestions/guidance from
-you or Christian on what an improved LSM hook would look like from a
-VFS perspective.
+Huacai
 
---=20
-paul-moore.com
+>
+> Signed-off-by: Chenghao Duan <duanchenghao@kylinos.cn>
+> ---
+>  arch/loongarch/mm/init.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/arch/loongarch/mm/init.c b/arch/loongarch/mm/init.c
+> index c3e4586a7..07cedd9ee 100644
+> --- a/arch/loongarch/mm/init.c
+> +++ b/arch/loongarch/mm/init.c
+> @@ -239,6 +239,12 @@ struct execmem_info __init *execmem_arch_setup(void)
+>                                 .pgprot =3D PAGE_KERNEL,
+>                                 .alignment =3D 1,
+>                         },
+> +                       [EXECMEM_BPF] =3D {
+> +                               .start  =3D VMALLOC_START,
+> +                               .end    =3D VMALLOC_END,
+> +                               .pgprot =3D PAGE_KERNEL,
+> +                               .alignment =3D PAGE_SIZE,
+> +                       },
+>                 },
+>         };
+>
+> --
+> 2.43.0
+>
+>
 
