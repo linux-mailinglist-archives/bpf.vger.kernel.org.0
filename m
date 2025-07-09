@@ -1,214 +1,141 @@
-Return-Path: <bpf+bounces-62724-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62725-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 279EAAFDC02
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 02:00:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 715D3AFDCF8
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 03:34:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB8211C24BFE
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 00:00:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F4664A5E8C
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 01:34:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B45015479B;
-	Wed,  9 Jul 2025 00:00:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93A53186284;
+	Wed,  9 Jul 2025 01:34:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AjQMEAoU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Prr048Fu"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f193.google.com (mail-yb1-f193.google.com [209.85.219.193])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B2A7A935;
-	Wed,  9 Jul 2025 00:00:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A988980C1C
+	for <bpf@vger.kernel.org>; Wed,  9 Jul 2025 01:34:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752019214; cv=none; b=L0KrnreMQkiOtsrBRtG8kOScUMoSG8rs5hdvWq5K5o0ovJDVtXJm/8tAzBOVuSScVFyhEObDYcgwx4Hc1UV1hqP48uPxwu9gp+tQKOX4coQrCNy+Qv1JRMbQe1v1otrI0GhyqWlE3VFH2FUlthFne74/H8+R0PRP5sGSGqjQc3U=
+	t=1752024849; cv=none; b=aIfwIWNmV7GZS/fFShT3YmX79oepPGzrOBg9OhR8MpAA7046F4FoSoZ2hxqK8QBpNhckA/JpWBSfXJZZtPyQWr0nWIiTntHKdWFb6mvMXf0oCd87OQZOy8PzXeQj8ZbW7r93hVGEST6bfSZihnWFyrPWAvcgkqeG9WMPZR8BF7I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752019214; c=relaxed/simple;
-	bh=Xy5KeN75QHkTJnYMZ5EZGWzwYX/bPTaVG0HvZyXkrOU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L3ao4EYeBg00/Oyy/ePOZ65Hgeb+xRhtApXmArReJEWQ27jJGNGpksBG3ZZjSeFcaJHZBm0HBnz8IAmmuU6cBxIuJf8eI+BHflQeVgii+0UChUDRdLYczi+IMBFh1vpC3mQ2yXzm2CyntaIdwIz1u9mxXFgBEdoEsSiXLdKKLRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AjQMEAoU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD0E3C4CEED;
-	Wed,  9 Jul 2025 00:00:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752019213;
-	bh=Xy5KeN75QHkTJnYMZ5EZGWzwYX/bPTaVG0HvZyXkrOU=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=AjQMEAoUmEMA23Th0ARij+U9s42LFbjk+/rd+cz8+/hG0Eb/k+U4+q69N33gV1JHa
-	 eB1OAOi4tXAjxhqgQuLzXr7tYv4R9s5fe5ZagQe7FuRBix6tSshbxP2rDcxB3FHyZO
-	 ptyIiAAbE2UH/qb04BekBQe7sZIhSLqqhYpgtzaTR6mkCC+CPaT3ui2K+XihOztRGc
-	 FVyT+t/yAC7NVtVg+dkN10esH3ZoJRA6+kGxUdP22hsgA+1GzOr1fCO5rLJYMrLjU0
-	 mt6DiokZNMy6El+ZRtC61PLJ1psZfFT85xl4XCis5fsuoZg8uuZw8jNT9W4hMO0fDr
-	 8d60jbPFHLQ2g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 54593CE08A1; Tue,  8 Jul 2025 17:00:13 -0700 (PDT)
-Date: Tue, 8 Jul 2025 17:00:13 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: linux-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-	Qi Xi <xiqi2@huawei.com>, rcu@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH -rcu -next 2/7] rcu: Fix rcu_read_unlock() deadloop due
- to IRQ work
-Message-ID: <4249c87e-7ff4-4c09-b4da-ad64ddd38995@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20250708142224.3940851-1-joelagnelf@nvidia.com>
- <20250708142224.3940851-2-joelagnelf@nvidia.com>
+	s=arc-20240116; t=1752024849; c=relaxed/simple;
+	bh=8kIiOPnjB3NCGDqGy+ztW1OQg1uVd47vgX2bH3uQptc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nkvrviZ8yjYUVebd7WQumFG9JSargb0enGayh6u63GPm4usWYPk61mOvGuvdKFSfyGBV5osBMo9SOLW0G6iEwJj+fF+Co28aAOlEMUiSg6wBus2jscPLWoO07pybTjoP5fevyjWJ8WeoCt2zkRHB9FZlwJT1wy8oBO00boZ5bZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Prr048Fu; arc=none smtp.client-ip=209.85.219.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f193.google.com with SMTP id 3f1490d57ef6-e81cf6103a6so4665377276.3
+        for <bpf@vger.kernel.org>; Tue, 08 Jul 2025 18:34:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752024846; x=1752629646; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sHJWNNaWVn0wFc4/E6eZpiRedu5jY4vi3a6M/QE/ONU=;
+        b=Prr048FuE0UhRFAYDTs7CxE7cBt/1a0rJH0lc3j+V1MyT3DYVZdOF67i26RjSSEV+E
+         ZSqwktgdP/sQOe3UXpXwBvE2qbEeq4R+naEhQy6H/BaNfEWTXmrDQ88F8g5dxll+mu6h
+         PI/Cd1qs17+XMXPo5ISQEMh80zUGixtD3pU5zjG4Dm11ecfbAc2UmlcxJuo3ZCe0MSgX
+         QI8WrVgU7HT+QelI0m0gHadEGqn7bo5j73CjpwO5cBGiOCuNPypsuVX9vQDoykhe+Vme
+         KEB6qKf4d1e/hmcXIggHteGGB3jNvlWutIAk5fvSxg3mH0vZ6q2Ni0dyjdu9S+adItYr
+         AkIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752024846; x=1752629646;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sHJWNNaWVn0wFc4/E6eZpiRedu5jY4vi3a6M/QE/ONU=;
+        b=frIHILAObOwF/41DIOKRa1MFRczFbJHNaW+GpItSHFBm3mH5RNZsUmSJ2EIzXK0icO
+         SIi45CRYChRwRDhpaiilIAL6myU+aq/sYrPLf5YDSPU7JyH7FDDc+CeENZaQ1DRu28Eg
+         +CqWevI81i+h2zmnLpy1FfglcKBgq9je1x6ViCvsRdLxtSB+MfRlQBM03fgH++dtIZYu
+         +/DgauE17P06pJp36gYkAHGZf3SO7agqymEbW7M3hf99olkEGhmpERxXEddXWHzLSuFj
+         Mo2/feKuUHC89w09GUAIvcKVZOIPQqObUY9GJI2U2N3A0vfb27Hqq/iJhFCwnWg6UFVb
+         1WIA==
+X-Forwarded-Encrypted: i=1; AJvYcCUZ+ZfoF35xaumENzoXcMJt32B4eNF3XG2W+1heFS9GEFmt8P7vtAH4QRNWacG6gwmWvc4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzjS9KGt9aIDH7l55w3tzdSQ+twvb3/5H8d+C1ELY1Qb6jSjttB
+	YpLzlUd/x4QpS1+uIzd/Sy3wetxiK7OHdCz+bmyxBlDFG2OGlWFN6wDVnN9jhPPoYL+fngPTrk4
+	ejPz2JE9FNRfB+I+WP5Dg/EweGfsxY8WQ4aNc5VvOEA==
+X-Gm-Gg: ASbGncu58ZuOrzvb69e/c5vIWbH5spwepcmXuM7NcQXHOEk/C34oDhJfCa5LxY+lQF+
+	UpajxZIp0yRwXN6nH8k9+XBPv6cSN1vb1avFi9TykGdO0ue0lIVog2zk/BiA39dIQWxC3c/NYMR
+	aHF5IelDTTacmkG6ukHFNLBxGPFD7A+YphxjNbR1+MwYk=
+X-Google-Smtp-Source: AGHT+IFX4hGi0YHehQOMokctzm31eqGejm9TDow+vPZyQ3ZUmveX6Yl5fBPIG076vTBiVVRSYtx6MlbukdyIY3SCZnY=
+X-Received: by 2002:a05:690c:4991:b0:716:59a6:2dc5 with SMTP id
+ 00721157ae682-717b1b7520fmr13226507b3.15.1752024846443; Tue, 08 Jul 2025
+ 18:34:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250708142224.3940851-2-joelagnelf@nvidia.com>
+References: <20250703121521.1874196-1-dongml2@chinatelecom.cn>
+ <20250703121521.1874196-18-dongml2@chinatelecom.cn> <CAADnVQKxgrXZ3ATO4rdC9GcTtXvURpKR8XcGCdCa_qPh4RGFrQ@mail.gmail.com>
+In-Reply-To: <CAADnVQKxgrXZ3ATO4rdC9GcTtXvURpKR8XcGCdCa_qPh4RGFrQ@mail.gmail.com>
+From: Menglong Dong <menglong8.dong@gmail.com>
+Date: Wed, 9 Jul 2025 09:33:06 +0800
+X-Gm-Features: Ac12FXwmo8JYsvx_afItxIGJW13x6KZnDBWV8rpcQL02a2r_uKQK-ltGmeh3vQE
+Message-ID: <CADxym3Y-Jbzp0FupUgBDJB99GhsbDHyuV71Q6m9xyTpFze4ESg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 17/18] selftests/bpf: add basic testcases for tracing_multi
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Alan Maguire <alan.maguire@oracle.com>, 
+	Ihor Solodrai <ihor.solodrai@linux.dev>, Andrii Nakryiko <andrii@kernel.org>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 08, 2025 at 10:22:19AM -0400, Joel Fernandes wrote:
-> During rcu_read_unlock_special(), if this happens during irq_exit(), we
-> can lockup if an IPI is issued. This is because the IPI itself triggers
-> the irq_exit() path causing a recursive lock up.
-> 
-> This is precisely what Xiongfeng found when invoking a BPF program on
-> the trace_tick_stop() tracepoint As shown in the trace below. Fix by
-> managing the irq_work state correctly.
-> 
-> irq_exit()
->   __irq_exit_rcu()
->     /* in_hardirq() returns false after this */
->     preempt_count_sub(HARDIRQ_OFFSET)
->     tick_irq_exit()
->       tick_nohz_irq_exit()
-> 	    tick_nohz_stop_sched_tick()
-> 	      trace_tick_stop()  /* a bpf prog is hooked on this trace point */
-> 		   __bpf_trace_tick_stop()
-> 		      bpf_trace_run2()
-> 			    rcu_read_unlock_special()
->                               /* will send a IPI to itself */
-> 			      irq_work_queue_on(&rdp->defer_qs_iw, rdp->cpu);
-> 
-> A simple reproducer can also be obtained by doing the following in
-> tick_irq_exit(). It will hang on boot without the patch:
-> 
->   static inline void tick_irq_exit(void)
->   {
->  +	rcu_read_lock();
->  +	WRITE_ONCE(current->rcu_read_unlock_special.b.need_qs, true);
->  +	rcu_read_unlock();
->  +
-> 
-> Reported-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
-> Closes: https://lore.kernel.org/all/9acd5f9f-6732-7701-6880-4b51190aa070@huawei.com/
-> Tested-by: Qi Xi <xiqi2@huawei.com>
-> Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+On Wed, Jul 9, 2025 at 4:08=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Thu, Jul 3, 2025 at 5:18=E2=80=AFAM Menglong Dong <menglong8.dong@gmai=
+l.com> wrote:
+> >
+> > +               return true;
+> > +
+> > +       /* Following symbols have multi definition in kallsyms, take
+> > +        * "t_next" for example:
+> > +        *
+> > +        *     ffffffff813c10d0 t t_next
+> > +        *     ffffffff813d31b0 t t_next
+> > +        *     ffffffff813e06b0 t t_next
+> > +        *     ffffffff813eb360 t t_next
+> > +        *     ffffffff81613360 t t_next
+> > +        *
+> > +        * but only one of them have corresponding mrecord:
+> > +        *     ffffffff81613364 t_next
+> > +        *
+> > +        * The kernel search the target function address by the symbol
+> > +        * name "t_next" with kallsyms_lookup_name() during attaching
+> > +        * and the function "0xffffffff813c10d0" can be matched, which
+> > +        * doesn't have a corresponding mrecord. And this will make
+> > +        * the attach failing. Skip the functions like this.
+> > +        *
+> > +        * The list maybe not whole, so we still can fail......We need =
+a
+> > +        * way to make the whole things right. Yes, we need fix it :/
+> > +        */
+> > +       if (!strcmp(name, "kill_pid_usb_asyncio"))
+> > +               return true;
+> > +       if (!strcmp(name, "t_next"))
+> > +               return true;
+> > +       if (!strcmp(name, "t_stop"))
+> > +               return true;
+>
+> This looks like pahole bug. It shouldn't emit BTF for static
+> functions with the same name in different files.
+> I recall we discussed it in the past and I thought the fix had landed.
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+I have tested the latest pahole, and it seems it hasn't been fixed yet.
 
-> ---
->  kernel/rcu/tree.h        | 11 ++++++++++-
->  kernel/rcu/tree_plugin.h | 23 +++++++++++++++++++----
->  2 files changed, 29 insertions(+), 5 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-> index 3830c19cf2f6..f8f612269e6e 100644
-> --- a/kernel/rcu/tree.h
-> +++ b/kernel/rcu/tree.h
-> @@ -174,6 +174,15 @@ struct rcu_snap_record {
->  	unsigned long   jiffies;	/* Track jiffies value */
->  };
->  
-> +/*
-> + * The IRQ work (deferred_qs_iw) is used by RCU to get scheduler's attention.
-> + * It can be in one of the following states:
-> + * - DEFER_QS_IDLE: An IRQ work was never scheduled.
-> + * - DEFER_QS_PENDING: An IRQ work was scheduler but never run.
-> + */
-> +#define DEFER_QS_IDLE		0
-> +#define DEFER_QS_PENDING	1
-> +
->  /* Per-CPU data for read-copy update. */
->  struct rcu_data {
->  	/* 1) quiescent-state and grace-period handling : */
-> @@ -192,7 +201,7 @@ struct rcu_data {
->  					/*  during and after the last grace */
->  					/* period it is aware of. */
->  	struct irq_work defer_qs_iw;	/* Obtain later scheduler attention. */
-> -	bool defer_qs_iw_pending;	/* Scheduler attention pending? */
-> +	int defer_qs_iw_pending;	/* Scheduler attention pending? */
->  	struct work_struct strict_work;	/* Schedule readers for strict GPs. */
->  
->  	/* 2) batch handling */
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index dd1c156c1759..fa7b0d854833 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -486,13 +486,16 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
->  	struct rcu_node *rnp;
->  	union rcu_special special;
->  
-> +	rdp = this_cpu_ptr(&rcu_data);
-> +	if (rdp->defer_qs_iw_pending == DEFER_QS_PENDING)
-> +		rdp->defer_qs_iw_pending = DEFER_QS_IDLE;
-> +
->  	/*
->  	 * If RCU core is waiting for this CPU to exit its critical section,
->  	 * report the fact that it has exited.  Because irqs are disabled,
->  	 * t->rcu_read_unlock_special cannot change.
->  	 */
->  	special = t->rcu_read_unlock_special;
-> -	rdp = this_cpu_ptr(&rcu_data);
->  	if (!special.s && !rdp->cpu_no_qs.b.exp) {
->  		local_irq_restore(flags);
->  		return;
-> @@ -628,7 +631,18 @@ static void rcu_preempt_deferred_qs_handler(struct irq_work *iwp)
->  
->  	rdp = container_of(iwp, struct rcu_data, defer_qs_iw);
->  	local_irq_save(flags);
-> -	rdp->defer_qs_iw_pending = false;
-> +
-> +	/*
-> +	 * Requeue the IRQ work on next unlock in following situation:
-> +	 * 1. rcu_read_unlock() queues IRQ work (state -> DEFER_QS_PENDING)
-> +	 * 2. CPU enters new rcu_read_lock()
-> +	 * 3. IRQ work runs but cannot report QS due to rcu_preempt_depth() > 0
-> +	 * 4. rcu_read_unlock() does not re-queue work (state still PENDING)
-> +	 * 5. Deferred QS reporting does not happen.
-> +	 */
-> +	if (rcu_preempt_depth() > 0)
-> +		WRITE_ONCE(rdp->defer_qs_iw_pending, DEFER_QS_IDLE);
-> +
->  	local_irq_restore(flags);
->  }
->  
-> @@ -675,7 +689,8 @@ static void rcu_read_unlock_special(struct task_struct *t)
->  			set_tsk_need_resched(current);
->  			set_preempt_need_resched();
->  			if (IS_ENABLED(CONFIG_IRQ_WORK) && irqs_were_disabled &&
-> -			    expboost && !rdp->defer_qs_iw_pending && cpu_online(rdp->cpu)) {
-> +			    expboost && rdp->defer_qs_iw_pending != DEFER_QS_PENDING &&
-> +			    cpu_online(rdp->cpu)) {
->  				// Get scheduler to re-evaluate and call hooks.
->  				// If !IRQ_WORK, FQS scan will eventually IPI.
->  				if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) &&
-> @@ -685,7 +700,7 @@ static void rcu_read_unlock_special(struct task_struct *t)
->  				else
->  					init_irq_work(&rdp->defer_qs_iw,
->  						      rcu_preempt_deferred_qs_handler);
-> -				rdp->defer_qs_iw_pending = true;
-> +				rdp->defer_qs_iw_pending = DEFER_QS_PENDING;
->  				irq_work_queue_on(&rdp->defer_qs_iw, rdp->cpu);
->  			}
->  		}
-> -- 
-> 2.34.1
-> 
+I sent a patch to relieve this problem in the kernel side:
+https://lore.kernel.org/bpf/20250708072140.945296-1-dongml2@chinatelecom.cn=
+/
+
+It's not perfect, but it can still be of some use in this problem.
 
