@@ -1,165 +1,144 @@
-Return-Path: <bpf+bounces-62838-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62839-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70CC7AFF4A6
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 00:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EBC3CAFF4AD
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 00:26:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C88385A63AA
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 22:24:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CC915C19E6
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 22:26:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C27C52459E0;
-	Wed,  9 Jul 2025 22:24:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B9D6243951;
+	Wed,  9 Jul 2025 22:26:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eu5DiILW"
 X-Original-To: bpf@vger.kernel.org
-Received: from neil.brown.name (neil.brown.name [103.29.64.221])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45C04242D76;
-	Wed,  9 Jul 2025 22:24:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.29.64.221
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4065421B9F1
+	for <bpf@vger.kernel.org>; Wed,  9 Jul 2025 22:26:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752099860; cv=none; b=tDS/CysrFgGLqjG5HiSN5WBtC9eZrHnYfK7Ax6OeTi0smK0to4OltcR9YKywYITP0aePVqfijLLnt63GNV1+yEMrMej6+GRvVBlajiTXOpcnkBNDhe0E2qpnggj74bfN9XtjDp1izKo4J1poFxborvk7UY1bjnP02ultVIeHg9E=
+	t=1752099975; cv=none; b=jTAURMvP1mrFI76euOXnq2KmvjRT6fx2LgV3MjKKMtVsC2s/Bi5OsX3Ab3zeP7iD0yFNOg4Z2ZLeRHwmZwALUMu5J8Ltl65XbnK88tR9ipZJgbovIH0loR0npC0LmZ/Mou9m2ehk9p/wCEKXN5ePWwROa9UAv1PgB1qMi4GmgFc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752099860; c=relaxed/simple;
-	bh=CbHFJShFE8DpTC/MzdtDKAEYS5cu2PsOLLa0V3B56V4=;
-	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
-	 References:Date:Message-id; b=JBGDSquBvGiOmtEPrVuzDpdZ1fFH1Aar2bEvipFA9Lf2ZRpuwHgstHQKACmd/YGhA0885J4+7zSe71f62Hz1+Rw+XxxC+RgsYt37CDasVvAcBIxl8lce0c7MpNzPcbQMKxbIxUEPW1p99mlKPGfSbjOpwpbONioDKPGcgSxUMeo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brown.name; spf=pass smtp.mailfrom=neil.brown.name; arc=none smtp.client-ip=103.29.64.221
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brown.name
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=neil.brown.name
-Received: from 196.186.233.220.static.exetel.com.au ([220.233.186.196] helo=home.neil.brown.name)
-	by neil.brown.name with esmtp (Exim 4.95)
-	(envelope-from <mr@neil.brown.name>)
-	id 1uZdD3-001GGv-Iu;
-	Wed, 09 Jul 2025 22:24:15 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1752099975; c=relaxed/simple;
+	bh=/dHkRZkput1bVSHKMdHk7tpzrTTNE+NVtMfagcDYmVo=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=ZfY0elslrOZhJ+wSaLROgeWBf8EX/HxdrSkqdtA6CRvyx5uYMeks/usECiQSKCkfGvq2EfDC0YeSf5VsWGdPDCpr35b8bsTRj9G1S9gfqLYX71qtVVn3PtLibe/Wa3yxWlMu9G3zikIAl1rVE34IWQKO3Jy1vp/R7xRhUrNM3SQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eu5DiILW; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-450ccda1a6eso2910445e9.2
+        for <bpf@vger.kernel.org>; Wed, 09 Jul 2025 15:26:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752099972; x=1752704772; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=i71hOiXgbL84B1rlMk74ywEskAXmKSHVn4fki+TbdpM=;
+        b=eu5DiILW6LR03gtMYkPkO93HHG3bEqJm4J9l++krzX/ETw32TZ6iBwLRYVgQ2YGjZd
+         rlYuGqrrstDqyGhI4AZ79RWxy2EfpyU5MHjo1WYKJuSkO79fXVc/JEtNXwC2198RGNWQ
+         +WFBcAUyBcWy2UX4Dyz/ujg0YjpS5xg+sBMSxZgae1xalIJRgeFV2EkHj+2+8jEuNmov
+         1fycW6KxlqJxMs0e11bOf8+ClM3yW2+fN035rnQg7LR7L4RbQ9Zq5RsMUR9GOSVz1dOf
+         Jzgw4XgzFwRGOC0/zb2CpxI+xqtXQKH/snttVkKyRAVqyYBZ9pDqZ4VbHa4YFX5SayI4
+         jt2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752099972; x=1752704772;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=i71hOiXgbL84B1rlMk74ywEskAXmKSHVn4fki+TbdpM=;
+        b=sopy34tY/yt9IlLZ0YW09cLSs94xy5Fa8H1fnPLqWfMA8PiMdruZzz4P1YVYeXzesT
+         Y//1iHTtXbcdW1d4Z6LKoTa5MNoP3qs+Cf86xD4A5c/P4o+A/ZofABfK0GriAHjKdNoo
+         TJ+ak9aSQ+AYkvzZxdlIbsHdXNEG+GkjUab5XauortWn4azJ/2noeTjrIpiVYU3qSRMN
+         hcpgrDtUcYkTKDj4l2yLjs839bYOtEoj+FE3noPtpIEeav1Ug6nIfR33DTdbhRElRtQY
+         ta9Akx7RdbPEQdXe9QC6mM518+/m09lPsOudP4X0HtGJ+oMXZEd4Wu7mPq1CdDLXuDaZ
+         ooFw==
+X-Gm-Message-State: AOJu0YwGgA36jBakir7wR0Bv8knpV0r/bprwNdxwXzoNVveNS3ATFZA1
+	y1vcQwiqdthi3hthXib9dKLNLzoOzdNjSYfXQnK9O94zh1mK46HYTO3SzgW59A==
+X-Gm-Gg: ASbGncuBSVd/ZrAxZ3cLPeRNu2dlChkPX1sD6BR8duepzt5EU3Wnq9EMbUt1lK5z5nB
+	RCEAMxxa3TFyKlDfu2+jyVeUg/EstEVu+ymxlhDpxDnVs5XafanVnMWFxSelc1lX2YO/nTsrYmS
+	bJoWe9y4zqG7Y8vCBpTAliCcGcYJbfiZ9j4nDOSyHCMHiZGwwXzjzuLPS3VgftcNn0WqH+jBH/u
+	cwujZYTGh7AdQlm5uN5gDOY60r7dVVuoeua8PGFrL4JE/QU3kBKkESZwMqzmwUBB5m8GWVgmO2l
+	STGXDmNGJkex8u6mCvEZrLpxyMPu1M+ifRgkeIUKZsfAVLTFGe089UaO/zwdsj47rT1j4E33gwg
+	1j62mjKGqTno3HodCHiF4+ijahJYHPNauTC8shPiClwWiwaAZmt5hsSEMqmo=
+X-Google-Smtp-Source: AGHT+IH4DP7vm6zB8zbbKf7DVt2sTtPFVV/zLxeX5SfaKUv53jiG0vrm5lVn0PvD1ED5LjwUsyuOLw==
+X-Received: by 2002:a05:600c:8b55:b0:453:a88:d509 with SMTP id 5b1f17b1804b1-454db7eafa0mr14874835e9.10.1752099972318;
+        Wed, 09 Jul 2025 15:26:12 -0700 (PDT)
+Received: from mail.gmail.com (2a01cb0889497e00f9b02e2208aa1971.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:f9b0:2e22:8aa:1971])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b5e8e0d719sm94560f8f.54.2025.07.09.15.26.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jul 2025 15:26:11 -0700 (PDT)
+Date: Thu, 10 Jul 2025 00:26:09 +0200
+From: Paul Chaignon <paul.chaignon@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next 1/2] bpf: Forget ranges when refining tnum after JSET
+Message-ID: <75b3af3d315d60c1c5bfc8e3929ac69bb57d5cea.1752099022.git.paul.chaignon@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: "NeilBrown" <neil@brown.name>
-To: "Song Liu" <songliubraving@meta.com>
-Cc: =?utf-8?q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
- "Christian Brauner" <brauner@kernel.org>, "Tingmao Wang" <m@maowtm.org>,
- "Song Liu" <song@kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-security-module@vger.kernel.org"
- <linux-security-module@vger.kernel.org>, "Kernel Team" <kernel-team@meta.com>,
- "andrii@kernel.org" <andrii@kernel.org>,
- "eddyz87@gmail.com" <eddyz87@gmail.com>, "ast@kernel.org" <ast@kernel.org>,
- "daniel@iogearbox.net" <daniel@iogearbox.net>,
- "martin.lau@linux.dev" <martin.lau@linux.dev>,
- "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
- "jack@suse.cz" <jack@suse.cz>, "kpsingh@kernel.org" <kpsingh@kernel.org>,
- "mattbobrowski@google.com" <mattbobrowski@google.com>,
- =?utf-8?q?G=C3=BCnther?= Noack <gnoack@google.com>,
- "Jann Horn" <jannh@google.com>
-Subject: Re: [PATCH v5 bpf-next 0/5] bpf path iterator
-In-reply-to: <C8FA6AFF-704B-4F8D-AE88-68E6046FBE01@meta.com>
-References: <>, <C8FA6AFF-704B-4F8D-AE88-68E6046FBE01@meta.com>
-Date: Thu, 10 Jul 2025 08:24:14 +1000
-Message-id: <175209985487.2234665.6008354090530669455@noble.neil.brown.name>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Thu, 10 Jul 2025, Song Liu wrote:
-> 
-> 
-> > On Jul 9, 2025, at 9:06 AM, Mickaël Salaün <mic@digikod.net> wrote:\
-> 
-> [...]
-> 
-> >> If necessary, we hide “root" inside @data. This is good. 
-> >> 
-> >>> @path would be updated with latest ancestor path (e.g. @root).
-> >> 
-> >> Update @path to the last ancestor and hold proper references. 
-> >> I missed this part earlier. With this feature, vfs_walk_ancestors 
-> >> should work usable with open-codeed bpf path iterator. 
-> >> 
-> >> I have a question about this behavior with RCU walk. IIUC, RCU 
-> >> walk does not hold reference to @ancestor when calling walk_cb().
-> > 
-> > I think a reference to the mount should be held, but not necessarily to
-> > the dentry if we are still in the same mount as the original path.
-> 
-> If we update @path and do path_put() after the walk, we have to hold 
-> reference to both the mnt and the dentry, no? 
-> 
-> > 
-> >> If walk_cb() returns false, shall vfs_walk_ancestors() then
-> >> grab a reference on @ancestor? This feels a bit weird to me.
-> > 
-> > If walk_cb() checks for a root, it will return false when the path will
-> > match, and the caller would expect to get this root path, right?
-> 
-> If the user want to walk to the global root, walk_cb() may not 
-> return false at all, IIUC. walk_cb() may also return false on 
-> other conditions. 
-> 
-> > 
-> > In general, it's safer to always have the same behavior when holding or
-> > releasing a reference.  I think the caller should then always call
-> > path_put() after vfs_walk_ancestors() whatever the return code is.
-> > 
-> >> Maybe “updating @path to the last ancestor” should only apply to
-> >> LOOKUP_RCU==false case? 
-> >> 
-> >>> @flags could contain LOOKUP_RCU or not, which enables us to have
-> >>> walk_cb() not-RCU compatible.
-> >>> 
-> >>> When passing LOOKUP_RCU, if the first call to vfs_walk_ancestors()
-> >>> failed with -ECHILD, the caller can restart the walk by calling
-> >>> vfs_walk_ancestors() again but without LOOKUP_RCU.
-> >> 
-> >> 
-> >> Given we want callers to handle -ECHILD and call vfs_walk_ancestors
-> >> again without LOOKUP_RCU, I think we should keep @path not changed
-> >> With LOOKUP_RCU==true, and only update it to the last ancestor 
-> >> when LOOKUP_RCU==false.
-> > 
-> > As Neil said, we don't want to explicitly pass LOOKUP_RCU as a public
-> > flag.  Instead, walk_cb() should never sleep (and then potentially be
-> > called under RCU by the vfs_walk_ancestors() implementation).
-> 
-> How should the user handle -ECHILD without LOOKUP_RCU flag? Say the
-> following code in landlocked:
-> 
-> /* Try RCU walk first */
-> err = vfs_walk_ancestors(path, ll_cb, data, LOOKUP_RCU);
-> 
-> if (err == -ECHILD) {
-> 	struct path walk_path = *path;
-> 
-> 	/* reset any data changed by the walk */
-> 	reset_data(data);
-> 	
-> 	/* now do ref-walk */
-> 	err = vfs_walk_ancestors(&walk_path, ll_cb, data, 0);
-> }
-> 
-> Or do you mean vfs_walk_ancestors will never return -ECHILD?
-> Then we need vfs_walk_ancestors to call reset_data logic, right?
+Syzbot reported a kernel warning due to a range invariant violation on
+the following BPF program.
 
-It isn't clear to me that vfs_walk_ancestors() needs to return anything.
-All the communication happens through walk_cb()
+  0: call bpf_get_netns_cookie
+  1: if r0 == 0 goto <exit>
+  2: if r0 & Oxffffffff goto <exit>
 
-walk_cb() is called with a path, the data, and a "may_sleep" flag.
-If it needs to sleep but may_sleep is not set, it returns "-ECHILD"
-which causes the walk to restart and use refcounts.
-If it wants to stop, it returns 0.
-If it wants to continue, it returns 1.
-If it wants a reference to the path then it can use (new)
-vfs_legitimize_path() which might fail.
-If it wants a reference to the path and may_sleep is true, it can use
-path_get() which won't fail.
+The issue is on the path where we fall through both jumps.
 
-When returning -ECHILD (either because of a need to sleep or because
-vfs_legitimize_path() fails), walk_cb() would reset_data().
+That path is unreachable at runtime: after insn 1, we know r0 != 0, but
+with the sign extension on the jset, we would only fallthrough insn 2
+if r0 == 0. Unfortunately, is_branch_taken() isn't currently able to
+figure this out, so the verifier walks all branches. The verifier then
+refines the register bounds using the second condition and we end
+up with inconsistent bounds on this unreachable path:
 
-NeilBrown
+  1: if r0 == 0 goto <exit>
+    r0: u64=[0x1, 0xffffffffffffffff] var_off=(0, 0xffffffffffffffff)
+  2: if r0 & 0xffffffff goto <exit>
+    r0 before reg_bounds_sync: u64=[0x1, 0xffffffffffffffff] var_off=(0, 0)
+    r0 after reg_bounds_sync:  u64=[0x1, 0] var_off=(0, 0)
+
+Improving the range refinement for JSET to cover all cases is tricky. We
+also don't expect many users to rely on JSET given LLVM doesn't generate
+those instructions. So instead of reducing false positives due to JSETs,
+Eduard suggested we forget the ranges whenever we're narrowing tnums
+after a JSET. This patch implements that approach.
+
+Reported-by: syzbot+c711ce17dd78e5d4fdcf@syzkaller.appspotmail.com
+Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
+Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
+---
+ kernel/bpf/verifier.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 53007182b46b..e2fcea860755 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -16208,6 +16208,10 @@ static void regs_refine_cond_op(struct bpf_reg_state *reg1, struct bpf_reg_state
+ 		if (!is_reg_const(reg2, is_jmp32))
+ 			break;
+ 		val = reg_const_value(reg2, is_jmp32);
++		/* Forget the ranges before narrowing tnums, to avoid invariant
++		 * violations if we're on a dead branch.
++		 */
++		__mark_reg_unbounded(reg1);
+ 		if (is_jmp32) {
+ 			t = tnum_and(tnum_subreg(reg1->var_off), tnum_const(~val));
+ 			reg1->var_off = tnum_with_subreg(reg1->var_off, t);
+-- 
+2.43.0
+
 
