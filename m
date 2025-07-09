@@ -1,95 +1,95 @@
-Return-Path: <bpf+bounces-62799-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62800-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 731CEAFEBD3
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 16:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6070EAFEBE2
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 16:27:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 57D221C40992
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 14:20:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC53B188CB91
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 14:22:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEBA82E54B3;
-	Wed,  9 Jul 2025 14:20:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E33F12E1C58;
+	Wed,  9 Jul 2025 14:21:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="d8cREAhR";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Qzp/Tgrh";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="d8cREAhR";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Qzp/Tgrh"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="WKglmDLV";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="00f/CaWw";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="WKglmDLV";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="00f/CaWw"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B51642E0B7C
-	for <bpf@vger.kernel.org>; Wed,  9 Jul 2025 14:20:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37F3A2DE216
+	for <bpf@vger.kernel.org>; Wed,  9 Jul 2025 14:21:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752070806; cv=none; b=JFRDKcQVKpQuRy/D0CEKdLCHIngw68mRiz4kTsJcOpo2crKtrMd2e6gkaQ7vInbyrchrQarr4hMLBmsJ3yEnWswkVziDlVxZeZ7NAUCrLhR5ojvwk3yZon1cfWPrwKbiqrijBvAWxDxnfVODx2cxCO94Rrik0P92u5GXdMpR8SY=
+	t=1752070914; cv=none; b=IQLCYNDLIIvDd2vz3ZxqO9OUCp0M4TZIKvV4moaWGzAsEhsB/pJ8+xtl/J+vckuk6z4k08K3n6L1if+t/HUjFGWn+MDCCCzGzkW/ym7N0iJWU1g5bVRj5/XnWfATdzJisVauWkDVXnJo424lcG+LcXU2Q1JSN37aN+3vYVG39fM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752070806; c=relaxed/simple;
-	bh=UAoOomBI9vKz/e5RsA7YuVQEFPMvEst7CdFtrNHrDno=;
+	s=arc-20240116; t=1752070914; c=relaxed/simple;
+	bh=Ifs9fskamnIICGlZugHsJf2qRMX4C9veDM2k26pgTng=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qnij2nAnjADtqKjP0b2+HdXH1d5LjYEx+MD17I+hxjLXzeWT8bHbHlfWhfLyFbl48DTrwgMFpA9sFVgNcRjZrBx4ZzDm+zNFgsARkkiRvUHrjcT/ciN1s+tYf3k0hsdCJAPZiTO5srLeQ+M4bN3Jab1PyovbbLvIwN5Ei44jryg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=d8cREAhR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Qzp/Tgrh; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=d8cREAhR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Qzp/Tgrh; arc=none smtp.client-ip=195.135.223.130
+	 In-Reply-To:Content-Type; b=f9Q0TV2VHsbl6xXUkCBbkWpm5WGZ5SkglXLex3y+0Kno8OMf45okP9aWmCdedhGxiZ78REa3FWIFlHjX+uRFTFn6F7g880G5wl6CDKVjP0aDEF3rhy+EUrw5Gs+UaniX2kqOQB/m2emGO6vJVly7DSt6lcCSKX4+vF62TZbA0CE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=WKglmDLV; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=00f/CaWw; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=WKglmDLV; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=00f/CaWw; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id CAAB021185;
-	Wed,  9 Jul 2025 14:20:02 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 5CF511F44F;
+	Wed,  9 Jul 2025 14:21:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1752070802; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1752070910; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=YyKk/wknwiIn/7SfR1BkyzFtcnbP2NnwtIKNAuJ17aQ=;
-	b=d8cREAhRDvMCZaK3zQR3YEBTYPF7PLL7qWzxpGtAlITL0REOPUykbIJ++irRAb+a7mWx9h
-	ToPeS2HNRd8JGMhzBVHVmMx6f5T2Zb2F80knJjS/B0/NY/XjYzbydoBn8noh2GLNCyr85W
-	FDc+sYH/Op6CDllV+Dkp+CgDUBQQTdU=
+	bh=9xpL8IfyGRdrvSYd6Zk27Us3/2p9paoEcte2r0N+yGY=;
+	b=WKglmDLVy4ztiZdywOy2nlRCL0C16G8yXWkiNM4GT/BthsJTsB+LC0fIJWxpq+gpd5vSDg
+	ZLEksl1gRtXa8r34z5WL+F+a3KFtL+qMSTqIjEst9crBdenLnLRmQsjPGcAnFjiBe9xV87
+	usIo7txj+bLFXoBS2Pxrxx9kAbloiNE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1752070802;
+	s=susede2_ed25519; t=1752070910;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=YyKk/wknwiIn/7SfR1BkyzFtcnbP2NnwtIKNAuJ17aQ=;
-	b=Qzp/Tgrheoey+5STTe+8/KLoKxG3r4OCXh+xiFfcg5SsITJ5fcGsKlMgecxY37gu3xRl7I
-	tH9269ivai8JhgCg==
-Authentication-Results: smtp-out1.suse.de;
+	bh=9xpL8IfyGRdrvSYd6Zk27Us3/2p9paoEcte2r0N+yGY=;
+	b=00f/CaWwwOpuaP2luY0HnKyXTP26hOW/74hft0fszg02fGseQtp6lh9dFnwBcmeYYxtovv
+	0o0zswIpMShcNIAw==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1752070802; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1752070910; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=YyKk/wknwiIn/7SfR1BkyzFtcnbP2NnwtIKNAuJ17aQ=;
-	b=d8cREAhRDvMCZaK3zQR3YEBTYPF7PLL7qWzxpGtAlITL0REOPUykbIJ++irRAb+a7mWx9h
-	ToPeS2HNRd8JGMhzBVHVmMx6f5T2Zb2F80knJjS/B0/NY/XjYzbydoBn8noh2GLNCyr85W
-	FDc+sYH/Op6CDllV+Dkp+CgDUBQQTdU=
+	bh=9xpL8IfyGRdrvSYd6Zk27Us3/2p9paoEcte2r0N+yGY=;
+	b=WKglmDLVy4ztiZdywOy2nlRCL0C16G8yXWkiNM4GT/BthsJTsB+LC0fIJWxpq+gpd5vSDg
+	ZLEksl1gRtXa8r34z5WL+F+a3KFtL+qMSTqIjEst9crBdenLnLRmQsjPGcAnFjiBe9xV87
+	usIo7txj+bLFXoBS2Pxrxx9kAbloiNE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1752070802;
+	s=susede2_ed25519; t=1752070910;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=YyKk/wknwiIn/7SfR1BkyzFtcnbP2NnwtIKNAuJ17aQ=;
-	b=Qzp/Tgrheoey+5STTe+8/KLoKxG3r4OCXh+xiFfcg5SsITJ5fcGsKlMgecxY37gu3xRl7I
-	tH9269ivai8JhgCg==
+	bh=9xpL8IfyGRdrvSYd6Zk27Us3/2p9paoEcte2r0N+yGY=;
+	b=00f/CaWwwOpuaP2luY0HnKyXTP26hOW/74hft0fszg02fGseQtp6lh9dFnwBcmeYYxtovv
+	0o0zswIpMShcNIAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AE311136DC;
-	Wed,  9 Jul 2025 14:20:02 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3F40C136DC;
+	Wed,  9 Jul 2025 14:21:50 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Q/ITKZJ6bmjiawAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 09 Jul 2025 14:20:02 +0000
-Message-ID: <1f4c5895-badb-43c6-b138-e5039f4fd0d2@suse.cz>
-Date: Wed, 9 Jul 2025 16:20:02 +0200
+	id WdAlD/56bmiXbAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 09 Jul 2025 14:21:50 +0000
+Message-ID: <57a5f508-9e4a-4b89-8ca2-c461c7e67a72@suse.cz>
+Date: Wed, 9 Jul 2025 16:21:49 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -97,8 +97,7 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/6] mm: Allow GFP_ACCOUNT to be used in
- alloc_pages_nolock().
+Subject: Re: [PATCH v2 5/6] mm: Introduce alloc_frozen_pages_nolock()
 Content-Language: en-US
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org,
  linux-mm@kvack.org
@@ -107,7 +106,7 @@ Cc: harry.yoo@oracle.com, shakeel.butt@linux.dev, mhocko@suse.com,
  akpm@linux-foundation.org, peterz@infradead.org, rostedt@goodmis.org,
  hannes@cmpxchg.org
 References: <20250709015303.8107-1-alexei.starovoitov@gmail.com>
- <20250709015303.8107-5-alexei.starovoitov@gmail.com>
+ <20250709015303.8107-6-alexei.starovoitov@gmail.com>
 From: Vlastimil Babka <vbabka@suse.cz>
 Autocrypt: addr=vbabka@suse.cz; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
@@ -148,7 +147,7 @@ Autocrypt: addr=vbabka@suse.cz; keydata=
  rywqgzTUhHFKKF6/9L/lYtrNcHU8Z6Y4Ju/MLUiNYkmtrGIMnkjKCiRqlRrZE/v5YFHbayRD
  dJKXobXTtCBYpLJM4ZYRpGZXne/FAtWNe4KbNJJqxMvrTOrnIatPj8NhBVI0RSJRsbilh6TE
  m6M14QORSWTLRg==
-In-Reply-To: <20250709015303.8107-5-alexei.starovoitov@gmail.com>
+In-Reply-To: <20250709015303.8107-6-alexei.starovoitov@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spamd-Result: default: False [-2.80 / 50.00];
@@ -174,7 +173,7 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 	RCVD_COUNT_TWO(0.00)[2];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid,suse.cz:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo]
 X-Spam-Flag: NO
 X-Spam-Level: 
 X-Spam-Score: -2.80
@@ -182,10 +181,8 @@ X-Spam-Score: -2.80
 On 7/9/25 03:53, Alexei Starovoitov wrote:
 > From: Alexei Starovoitov <ast@kernel.org>
 > 
-> Change alloc_pages_nolock() to default to __GFP_COMP when allocating
-> pages, since upcoming reentrant alloc_slab_page() needs __GFP_COMP.
-> Also allow __GFP_ACCOUNT flag to be specified,
-> since BPF infra needs __GFP_ACCOUNT.
+> Split alloc_pages_nolock() and introduce alloc_frozen_pages_nolock()
+> to be used by alloc_slab_page().
 > 
 > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 
