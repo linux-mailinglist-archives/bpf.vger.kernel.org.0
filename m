@@ -1,281 +1,245 @@
-Return-Path: <bpf+bounces-62778-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62779-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B49B8AFE4CD
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 12:01:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 865EBAFE4D9
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 12:02:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 385F0188B8EA
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 10:00:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2F2D3A75F4
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 10:01:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC4DD288512;
-	Wed,  9 Jul 2025 10:00:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2BDE28853D;
+	Wed,  9 Jul 2025 10:02:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="oHRj03mV"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Vs+hFX9e"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DC1B283CBE;
-	Wed,  9 Jul 2025 10:00:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.20
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752055227; cv=fail; b=q1WXnUFlN2N/tsW9kNIJRud86lzpjakMTAcGPuNwe8I25EICKcZiVKBRSq0U2f55knrX2z15M0LZG52kU1Bz/noB0zmVVtLGNoHnxgfXB96TpQ0nnsy3MraRvxdQdkt4ahk9tBv+Ee4WyhYIhWV9RjHQPQrJZW+GcpCn01/NHDE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752055227; c=relaxed/simple;
-	bh=jbmwlAN4PxVMBAZc3MslrQPL/Jkh6fXOu86QNND/7Do=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=lTdAYgoYdWIYt7zOYYv24QHjJvBbT/q9zW8hGhGcnsU+FDoL4XdKg70qYbVY+aezS/GRC+nMCgrfzDYaosL5LKsScw11It4Vvyf+af7nfLfGjfBYSHSCjwrDx6gwnmN++ICKX5qFBJY7R+zSITHhSpzVx7+XJzFMrUr3p74BHvI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=oHRj03mV; arc=fail smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1752055225; x=1783591225;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=jbmwlAN4PxVMBAZc3MslrQPL/Jkh6fXOu86QNND/7Do=;
-  b=oHRj03mVvBDIStOgqQtdUsL+od6Vz+pcY5OMabM94b+y25q2EpFZyn+8
-   R+dxiPZ8Ak96Vd5lV1NutxQinQ/sSv1bBHFv54LkSjRW4lUnHZ9mPCLca
-   iUVUIoUJ5rxQ6RKHJXY8q6QefrebrWz3t2C1FcIKOF4GTA03rcH9daC6p
-   qMrLjdSzqVoRBJqZG20rqkNh32+Gl1uqj0mt43/LQNNAJTEZC0xV+5BMw
-   NI3iNmBrt0YA3R9Mg95gG9/1UjKkkw7QTEAg9C7rpZy8ygHz6CO4RFhhs
-   dS3uotZBX+UzK9BDFgUjmkKlvGSeAhKurlkXkRFGxujpwTiSiSTjETm70
-   Q==;
-X-CSE-ConnectionGUID: +wVEPcN7Q3KCU/1Elw9YaA==
-X-CSE-MsgGUID: qxjLNiDVQSevKcUv+h36Vg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11487"; a="54029110"
-X-IronPort-AV: E=Sophos;i="6.16,298,1744095600"; 
-   d="scan'208";a="54029110"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2025 03:00:25 -0700
-X-CSE-ConnectionGUID: cEbzcle6QjyZKl6BTWdJeg==
-X-CSE-MsgGUID: ItjNuvKoTwOh655siZeFBQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,298,1744095600"; 
-   d="scan'208";a="179419175"
-Received: from orsmsx902.amr.corp.intel.com ([10.22.229.24])
-  by fmviesa002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2025 03:00:24 -0700
-Received: from ORSMSX903.amr.corp.intel.com (10.22.229.25) by
- ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.25; Wed, 9 Jul 2025 03:00:23 -0700
-Received: from ORSEDG902.ED.cps.intel.com (10.7.248.12) by
- ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.25 via Frontend Transport; Wed, 9 Jul 2025 03:00:23 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (40.107.93.78) by
- edgegateway.intel.com (134.134.137.112) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.25; Wed, 9 Jul 2025 03:00:23 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=UAPl7eeZwLDQ+QrcZWATFJ2R7K9yA17fU3XyPKX0sjqFGEDqtcrJ7ARr3uCW7KbTKeqCrZO3eLb6QpjShayDX2vD1An4A3HzG0DShHZBOROex3h7SHUbAl7vLEXSWl8OMCfHJxfj/P9aXFrZuQ37RTYRSamRhH4CiZCc3sVPBaBcTYK5DJ25kpd351nDXj0ccIsr4uFecx50rZ5Y+a8BCmd0A125mnYVKXORZxBdnr3f8sA1UjeWdDWT/Q3Lv2uV83t5WC3UsUiR/X9GnhC1PqN/ZcktcitFJIqDTRl9LtERq02FJ9kyDf87iofUuj3c2PJ8IpwBMmofIaVFa1gsyg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=B/5GvGXP4LA6jal5yTYlgy6xfQy2dtmvZeIeWH9c6yA=;
- b=jJ69QDFWxDnnjPNEe0kU6AsiQO/v4yVewmvr7zQ+ca73PtFcvqze2EIT61CaWD0s3zL1gu+D1kuy97eXhaY8tEFtIN6Qxu7tnu8UH3sonMqhLM7JvaMc52XH1rHRBprmykCvAzFQ/HU6hoKNDaH/3ikAc3JRnaxxE/i7265zvYj/yjeLINCHCTtzlM9bXI7EzqolHqHCMxFcXVojPTltnaIDF882fZeMOJXWnniuvf5CDkUSX43Kah0T0gIyp0hf56xghX0nDWdR+uWI7KpCSMFxkCuc8YVOU5Ev68qPaM+j07ZMWjJs1oiV0+e4PQ8QaofOrJ22+K5L1FAKT8M9yA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
- DM4PR11MB7759.namprd11.prod.outlook.com (2603:10b6:8:10e::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8901.27; Wed, 9 Jul 2025 10:00:22 +0000
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::d19:56fe:5841:77ca]) by DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::d19:56fe:5841:77ca%7]) with mapi id 15.20.8901.024; Wed, 9 Jul 2025
- 10:00:22 +0000
-Date: Wed, 9 Jul 2025 12:00:10 +0200
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To: Stanislav Fomichev <stfomichev@gmail.com>
-CC: Alexander Lobakin <aleksander.lobakin@intel.com>, <bpf@vger.kernel.org>,
-	<ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-	<netdev@vger.kernel.org>, <magnus.karlsson@intel.com>, Eryk Kubanski
-	<e.kubanski@partner.samsung.com>
-Subject: Re: [PATCH v2 bpf] xsk: fix immature cq descriptor production
-Message-ID: <aG49qrcYiapvMFFV@boxer>
-References: <20250705135512.1963216-1-maciej.fijalkowski@intel.com>
- <d0e7fe46-1b9d-4228-bb0f-358e8360ee7b@intel.com>
- <aGvibV5TkUBEmdWV@mini-arch>
- <a113fe79-fa76-4952-81e4-f011147de8a3@intel.com>
- <aGwUsDK0u3vegaYq@mini-arch>
- <aG0nz2W/rBIbB7Bl@boxer>
- <beaab8ec-d11a-4147-b7f4-487a4c3fe45b@intel.com>
- <aG1aMOmnb-6K7syY@mini-arch>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <aG1aMOmnb-6K7syY@mini-arch>
-X-ClientProxiedBy: DU7P251CA0002.EURP251.PROD.OUTLOOK.COM
- (2603:10a6:10:551::26) To DM4PR11MB6117.namprd11.prod.outlook.com
- (2603:10b6:8:b3::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C352D2874F3;
+	Wed,  9 Jul 2025 10:02:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1752055327; cv=none; b=rKDEZcTcyfODUVZAbRjK5ANaP1nn1ljy/xOIRoTCdeU+rmGB0hy/UOM0HZ7aluLg852fdaa3mF2l9+hscVWcL38BCGh0rD/PAaZvw0y+raZrtkU5ewPKQ8m/UIGfiMpeWrXtxd60Ywx+LdRFxdhE+P31rVpj1BxeRcpGR0QW+a0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1752055327; c=relaxed/simple;
+	bh=mFf2lXciUCUy0DWeK8EaWfhZiWoiX1K1u9dq8jPS26Y=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=BnaiU/XAQA1trN/w1vTQJH76R0r41oKqwNRACRIh9wWwDLWTHDN+oHQZyQ7v8maxVksKDKjSZC6ia0WMBjeaze/KHL5dHjueVAj+288aR/NXbefaqR+eB0ehix9JSJb914AneM5R22R91yiOYihmdqu3DYYelZ4QpvgSFOE3V88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Vs+hFX9e; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5699tBrZ025920;
+	Wed, 9 Jul 2025 10:01:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=dPEJWo
+	wSApW3ihOeZAzPSmPZW963DAdzR9LVDUMg73w=; b=Vs+hFX9exPiNGKbU50lWyn
+	/4G5HJQabRgvG/45timEAl/TJB1PAONKQ+Muxis2rVrb7D7LuqS2gi2dw1L9vL3I
+	OAG8iA5NBvFjbwBL2ER+YJGH7BNg0vFeIom5Nglvo+EVs6J9eTf5vBnC+NHYsNjd
+	qE2+dkygUgeTjobtPfQ62q+bUzSdwiJ+Fjku9tMH1VkUd6t1ogVgUXVboVC+SJi1
+	XkzzMeDUzHR0SMjZBiFQNO8cZdzxxWrbcXSYSqNLVsl9xD0ZXd5xD0CnjS5w6B0q
+	eaa0s7nJlTy0bJYBfdUudwky5dQDH2R7xm+kdiiJ9KtjWKQgWt4gR7koIP6mhd9g
+	==
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47puss5h40-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 09 Jul 2025 10:01:20 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5698U7XC024678;
+	Wed, 9 Jul 2025 10:01:19 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 47qh32f9gt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 09 Jul 2025 10:01:19 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 569A1FIr35324652
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 9 Jul 2025 10:01:15 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id AC0772004D;
+	Wed,  9 Jul 2025 10:01:15 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5BE8120049;
+	Wed,  9 Jul 2025 10:01:15 +0000 (GMT)
+Received: from [9.152.222.224] (unknown [9.152.222.224])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed,  9 Jul 2025 10:01:15 +0000 (GMT)
+Message-ID: <d3279556-9bb6-429d-a037-fe279c5e3c67@linux.ibm.com>
+Date: Wed, 9 Jul 2025 12:01:14 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|DM4PR11MB7759:EE_
-X-MS-Office365-Filtering-Correlation-Id: 69b2c805-90bd-41e7-40cb-08ddbecf6af4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?lsm0OWkVFn3tfF97FRbeeYoNgvF0nA0iZDXhDY3T4E0lnmMTUD1m9RQUOwrv?=
- =?us-ascii?Q?JH4QRXjXq+BeDhc6u+uIdHeK+Kgvp/piepIS29CDHX8C+yWvMUyK0QMHPCB3?=
- =?us-ascii?Q?8SyoCJPs8WoWeFemKXnFP/nCA+YQhYCr10W2oB+tBGQx128FMXGXqctKKmN5?=
- =?us-ascii?Q?zrmG2chp6IS20HKkdYKibEtD9+TLPmWGXmc9Ux2hT6f71IvRPyNjoFd9wgeC?=
- =?us-ascii?Q?zyaCy2JHr/cGYYYFy/Z7xK09/BYTgsrQYH8YVCiyuvZIvVfo4vJRKn1YHcjf?=
- =?us-ascii?Q?QF/2iDdkoBQY+uy5EK1DcdMYP0/fADj4tAL739fMd8yMrqLT6yDQCT7gIPiZ?=
- =?us-ascii?Q?+pKqx1y/jkYm3bwqFrJY2XIT/YiOQsAPM6pArAveQm6i0O+BQ2dqlb5eSlZL?=
- =?us-ascii?Q?LCwls/1kxHhxp1lKrM5le2p8Khv5GCarnCYmciZb94cv+7v8PitOW408bvOF?=
- =?us-ascii?Q?7+q32mHg18Bk8K6Zm3aXU5RC18iZDAs9YeH/wwtYz2EF3KFWReSiy8dMv7eP?=
- =?us-ascii?Q?Q3CSt5/7fCoGmgAxf2PZJyuNsK4+PC+u2CqHBGNot776kJgYK3jK6hArKdys?=
- =?us-ascii?Q?nf6EA7cGIUJho3zXOHZ7cLOS7fY91x47hArHE6gOrCB5WA66SeNNwmHCh6bl?=
- =?us-ascii?Q?fAM6MUVZGNfwznOC+SM/9g8nsfNCRwxiMs1XHimY1DwdCCTJWchQUxsUxhCt?=
- =?us-ascii?Q?lE+FMXYtqD1od426dvfJmKLKsi5vOHHWBw3gqBb8WtU+X4dMihjPMzaIR2d/?=
- =?us-ascii?Q?v1AOUj6kbMuUgqtHpj6O5IQiW85zzoSpoDB0vHSXxXPK4BmRiYHXocTRIFDh?=
- =?us-ascii?Q?bm1s/F71NIS2Zf+i2/dZB1PB8HUo7eQAFPn1TFR3G76uiunz4Sk2KG7Srtag?=
- =?us-ascii?Q?JE0tHjUdw5NAOC1xYl5MdMD2Q8twTI0pxRMOi5I2QznnbS7kKME3/ew4NUtY?=
- =?us-ascii?Q?CqLn0mY5aCj1K7VY1Ie2+8C5nsOo8yCae2u3lOgevRGdEgBePXwm7AmS/fpX?=
- =?us-ascii?Q?VA5ZXatMZ/x7Q6B+jup7KJQ2TmrITCz8cOSksVeyJbDfiwx4+WLngRgMj8Tt?=
- =?us-ascii?Q?nduBqIkG3/jujhm3IrfbLoWEX2d1uuBMonrNkw2Bg22QQUlWgGSdgAUb9v7k?=
- =?us-ascii?Q?8q8Ha+7Aq821EHeQxU1+0d27fIPlQiHKeIG8qvlPgCMH5LFJaIrGWnVCas+k?=
- =?us-ascii?Q?KTv7Lx7Dxb64KQ2Y0JyH7kTbR9sI5sT2DHl55rw525qNVrVeT4m9AdWE1rOp?=
- =?us-ascii?Q?4ijfi7k5/yOAYgvNjmLaerp5kUlqcXt2T0EfZIMUwcQ/HKrjZ0O2x7VOQh9d?=
- =?us-ascii?Q?uff5MEcnPIG3M+QobIKDSODseEvyrqstiKoRjzFibeve0c1T1DTDx8MKaQWX?=
- =?us-ascii?Q?AKUFplc=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?DDbxzN2e+1Q312B0s24ApqcWpO25QKepjSD4GPbFqFyIhthKR+6I0X8klwNR?=
- =?us-ascii?Q?103xtRWPyVNSeyWrRzDisv7xNwWIl+h0qw2P8LzzEkmwxBGZR0nZWh+QVdg8?=
- =?us-ascii?Q?9FI9BkI3Pat3nxtLxQxziBYYP/RdmPKsJbRCjPKH6Pcriu5xajv6jSaZugvJ?=
- =?us-ascii?Q?CwuRSo/M2FitPdQAInjJAc4xYcdN06WB+bK+c65jMDorcbUwOrmKizrPrQkM?=
- =?us-ascii?Q?Ovz0LTFnkkVFVd64GqWgA0oJOD6pabTAauvVmBwtIsh9sxbDsYyLYYEWEGra?=
- =?us-ascii?Q?Ncm1OhI0DhZhguBNCkBjX1TZQ6SmepE7wJzOLCdZZxOHMp3MmQyiDukf312N?=
- =?us-ascii?Q?ghzPWLiwS+ECbBgmQdWSOaekHi/4cj51P0QgEpzSsyjdVG0et/luj7syyIrJ?=
- =?us-ascii?Q?SnVzZMAJX+eZ7XS837gS362vUucfHodCANDx956aNsLkT1fnwaeclT87g1mY?=
- =?us-ascii?Q?piUBCpIa29Iekhl7yQTN4n6AU79QAByQ2dnfWcEJeSF0w7A2bb/q+Fppa7Rm?=
- =?us-ascii?Q?gM1Xm1Uf1krug7P/nuydtxv7vYlG8qFumGu3AuDC219GE12Lkp/TVoGS1veI?=
- =?us-ascii?Q?2UyDSVIwGy7Vf7r1wheq3uws3xf5m9m65ZuoxtdsCLJBIacDrRjaC6lqNiN8?=
- =?us-ascii?Q?iyP3lwx230zykYNMlMGahh/VvKMNPXTwFJAG77FXp0JVXIpVorHsKqWEv+yT?=
- =?us-ascii?Q?t9RMZ6stsjTy1qkdqWp4NmzZCUWjm1KiFBJfoRZAXa0sQLEbCvsGSsGLLzQA?=
- =?us-ascii?Q?OHtKJboEkYiwLApf7TuHb0drwySRyOPu0PscoKgmQx2a9zQzu4Qe0llSk0Bw?=
- =?us-ascii?Q?anVNXVc02xylzbmuKjzmiaN3Plvan4v2Asjf7cZDIYHR207xcenJD6vjGwzG?=
- =?us-ascii?Q?lkrZTgn42GtyihTfHdNf9ZlW7EJERXb64CmWL0auxLLI+eOqrmEltHN6bGuE?=
- =?us-ascii?Q?LwvCEuT4Kz00cFcVnkoDDjsGRNz3Jji40GPErn7hovmRaaDnn9MbDtycpb8w?=
- =?us-ascii?Q?YzIGpatLs2r7BJtFng5Dp2IazEBca4cY5wd6AT2BlSilEq5OG3UlXF/wI0Gw?=
- =?us-ascii?Q?84rl38rhR1FdNL/nf/8nzw2h7SJNOaKIOGZhDK9xSQ1+CZnu1y2JTITIh1YH?=
- =?us-ascii?Q?int0+rGgg30FNA737fjPofziXrdczv/v1iM0mkcjzXPyqGJbjOCJWkhNjZ4+?=
- =?us-ascii?Q?NHAkbyC7xeI4FSRWdH7BslAbiv2b8UDGwT1NMg6svzDu9nkcGC37EGTdn7d9?=
- =?us-ascii?Q?thO92cvJEP4HvZX0cedu+r/ZP/qVLmG6pgpw5geMu719WWeU1a/qRIIdZ+nr?=
- =?us-ascii?Q?l8gf9LcbvNVhNzAtoiUQ4gz164eHnhG+5uPAT0tKJlqKo7TLIWsaDXPCYISG?=
- =?us-ascii?Q?jSn5SvdPeYY7gpInOuyYTM+lOJTSVgEt1m1NLGHOhiIqd0PAEfs5JtBlDkg4?=
- =?us-ascii?Q?YJ4/gs2H2pg4IIiBbQwJRWp+I2he1ma6qHC4mxs15OzBKVk/8S2UtfpXP3/v?=
- =?us-ascii?Q?BBLa4eFLRaRcEJvZ6+39K5UwXLIR++WhbM25NipmRLAmiEXVQmlVlL5DuuqB?=
- =?us-ascii?Q?K6QjiKRms9Cz3CdPG24SCufis8Ff3aXur4G9FJeXi9BO56neAx3aOgSg8MO4?=
- =?us-ascii?Q?Tw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 69b2c805-90bd-41e7-40cb-08ddbecf6af4
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jul 2025 10:00:21.9754
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FiAhCG0OilfXdSkUnBBJvFrHFqUbhPkK87iSZqueqjlPQCw8hv5KRHysOhk0w6H1RsXRp7DKf1VDwhckwUTy1lEhIV4XUI0bczos2Xe4OTY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB7759
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+From: Jens Remus <jremus@linux.ibm.com>
+Subject: Re: [PATCH v13 02/14] unwind_user: Add frame pointer support
+To: Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        x86@kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Indu Bhagat <indu.bhagat@oracle.com>,
+        "Jose E. Marchesi" <jemarch@gnu.org>,
+        Beau Belgrave <beaub@linux.microsoft.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>,
+        Sam James <sam@gentoo.org>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+References: <20250708012239.268642741@kernel.org>
+ <20250708012357.982692711@kernel.org>
+Content-Language: en-US
+Organization: IBM Deutschland Research & Development GmbH
+In-Reply-To: <20250708012357.982692711@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=Vaj3PEp9 c=1 sm=1 tr=0 ts=686e3df0 cx=c_pps a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17 a=IkcTkHD0fZMA:10 a=Wb1JkmetP80A:10 a=VnNF1IyMAAAA:8 a=VwQbUJbxAAAA:8 a=meVymXHHAAAA:8 a=_CACeNGGoOMxVHxd7LAA:9
+ a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=2JgSa4NbpEOStq-L5dxp:22
+X-Proofpoint-GUID: Gmo4rqtPTAQXrEYEpkkFAP_k6cwoLgOD
+X-Proofpoint-ORIG-GUID: Gmo4rqtPTAQXrEYEpkkFAP_k6cwoLgOD
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzA5MDA4NyBTYWx0ZWRfX2P9D659LQTcK WKxc+m3p7CZdR6XikHfTqXjxBviNPfD1Dtf3cWdkRB2h+6GejEBru+1KoSO7JLGWmjcd7VQpd2c r70cVWkv7z8hLB/Toef9nszBxTD0eSOqbLoDNIAypS7UgVGwaGQMMFf9GCNJXEvt73u+XMZY7fc
+ /OIqPNLqT4/lleOVwzMMTYo9YdB4OOR6wStuo3PyOV0SbLv4cW2ONnD4MfqEcVFafpWhH2unRlr 365MELt2IQ9apjY26Z8gllYE0Q5Y20s8tEFQzTf2ZAkWRznnACBQ6AVR3RpXOyepAjK4/YUJ2OJ VjQFDppaDCGOl9OfjiqZshxbapNT85ScJabDsBcsdt5UvYyMnVWAM/L/WIpTepDmTqcfXdPkPza
+ NcW8GjUsmTVjhpN3mWe95XSfKAqdor6ONOvyHQh77xwxSD4SJumNkf7SFfwMhoAEvlWZOBj+
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
+ definitions=2025-07-09_02,2025-07-08_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=999 suspectscore=0 clxscore=1015 adultscore=0
+ lowpriorityscore=0 impostorscore=0 malwarescore=0 bulkscore=0 mlxscore=0
+ spamscore=0 phishscore=0 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
+ definitions=main-2507090087
 
-On Tue, Jul 08, 2025 at 10:49:36AM -0700, Stanislav Fomichev wrote:
-> On 07/08, Alexander Lobakin wrote:
-> > From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> > Date: Tue, 8 Jul 2025 16:14:39 +0200
-> > 
-> > > On Mon, Jul 07, 2025 at 11:40:48AM -0700, Stanislav Fomichev wrote:
-> > >> On 07/07, Alexander Lobakin wrote:
-> > 
-> > [...]
-> > 
-> > >>> BTW isn't num_descs from that new structure would be the same as
-> > >>> shinfo->nr_frags + 1 (or just nr_frags for xsk_build_skb_zerocopy())?
-> > >>
-> > >> So you're saying we don't need to store it? Agreed. But storing the rest
-> > >> in cb still might be problematic with kconfig-configurable MAX_SKB_FRAGS?
-> > 
-> > For sure skb->cb is too small for 17+ u64s.
-> > 
-> > > 
-> > > Hi Stan & Olek,
-> > > 
-> > > no, as said in v1 drivers might linearize the skb and all frags will be
-> > > lost. This storage is needed unfortunately.
-> > 
-> > Aaah sorry. In this case yeah, you need this separate frag count.
-> > 
-> > > 
-> > >>
-> > >>>> Can we pre-allocate an array of xsk_addrs during xsk_bind (the number of
-> > >>>> xsk_addrs is bound by the tx ring size)? Then we can remove the alloc on tx
-> > >>>> and replace it with some code to manage that pool of xsk_addrs..
-> > > 
-> > > That would be pool-bound which makes it a shared resource so I believe
-> > > that we would repeat the problem being fixed here ;)
-> > 
-> > Except the system Page Pool idea right below maybe :>
+On 08.07.2025 03:22, Steven Rostedt wrote:
+> From: Josh Poimboeuf <jpoimboe@kernel.org>
+> 
+> Add optional support for user space frame pointer unwinding.  If
+> supported, the arch needs to enable CONFIG_HAVE_UNWIND_USER_FP and
+> define ARCH_INIT_USER_FP_FRAME.
+> 
+> By encoding the frame offsets in struct unwind_user_frame, much of this
+> code can also be reused for future unwinder implementations like sframe.
+> 
+> Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
+> Co-developed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+
+> diff --git a/kernel/unwind/user.c b/kernel/unwind/user.c
+
+> @@ -6,13 +6,71 @@
+>  #include <linux/sched.h>
+>  #include <linux/sched/task_stack.h>
+>  #include <linux/unwind_user.h>
+> +#include <linux/uaccess.h>
+> +
+> +static struct unwind_user_frame fp_frame = {
+> +	ARCH_INIT_USER_FP_FRAME
+> +};
+> +
+> +static inline bool fp_state(struct unwind_user_state *state)
+> +{
+> +	return IS_ENABLED(CONFIG_HAVE_UNWIND_USER_FP) &&
+> +	       state->type == UNWIND_USER_TYPE_FP;
+> +}
 >  
->  It doesn't have to be a shared resource, the pool (in whatever form) can be
->  per xsk. (unless I'm missing something)
+>  #define for_each_user_frame(state) \
+>  	for (unwind_user_start(state); !(state)->done; unwind_user_next(state))
+>  
+>  static int unwind_user_next(struct unwind_user_state *state)
+>  {
+> -	/* no implementation yet */
+> +	struct unwind_user_frame *frame;
+> +	unsigned long cfa = 0, fp, ra = 0;
+> +	unsigned int shift;
+> +
+> +	if (state->done)
+> +		return -EINVAL;
+> +
+> +	if (fp_state(state))
+> +		frame = &fp_frame;
+> +	else
+> +		goto done;
+> +
+> +	if (frame->use_fp) {
+> +		if (state->fp < state->sp)
 
-It can not. when you attach multiple xsks to same {dev,qid} tuple pool is
-shared.
-https://elixir.bootlin.com/linux/v6.16-rc5/source/net/xdp/xsk.c#L1249
+		if (state->fp <= state->sp)
 
-Not sure right now if we could store the pointer to xsk_addrs in
-xdp_sock maybe. Let me get back to this after my time off.
+I meanwhile came to the conclusion that for architectures, such as s390,
+where SP at function entry == SP at call site, the FP may be equal to
+the SP.  At least for the brief period where the FP has been setup and
+stack allocation did not yet take place.  For most architectures this
+can probably only occur in the topmost frame.  For s390 the FP is setup
+after static stack allocation, so --fno-omit-frame-pointer would enforce
+FP==SP in any frame that does not perform dynamic stack allocation.
 
-BTW I didn't realize you added yourself as xsk reviewer. Would be nice to
-have CCed Magnus or me when doing so :P
+> +			goto done;
+> +		cfa = state->fp;
+> +	} else {
+> +		cfa = state->sp;
+> +	}
+> +
+> +	/* Get the Canonical Frame Address (CFA) */
+> +	cfa += frame->cfa_off;
+> +
+> +	/* stack going in wrong direction? */
+> +	if (cfa <= state->sp)
+> +		goto done;
+> +
+> +	/* Make sure that the address is word aligned */
+> +	shift = sizeof(long) == 4 ? 2 : 3;
+> +	if ((cfa + frame->ra_off) & ((1 << shift) - 1))
+> +		goto done;
 
-> 
-> > >>> Nice idea BTW.
-> > >>>
-> > >>> We could even use system per-cpu Page Pools to allocate these structs*
-> > >>> :D It wouldn't waste 1 page per one struct as PP is frag-aware and has
-> > >>> API for allocating only a small frag.
-> > >>>
-> > >>> Headroom stuff was also ok to me: we either way allocate a new skb, so
-> > >>> we could allocate it with a bit bigger headroom and put that table there
-> > >>> being sure that nobody will overwrite it (some drivers insert special
-> > >>> headers or descriptors in front of the actual skb->data).
-> > > 
-> > > headroom approach was causing one of bpf selftests to fail, but I didn't
-> > > check in-depth the reason. I didn't really like the check in destructor if
-> > > addr array was corrupted in v1 and I came up with v2 which seems to me a
-> > > cleaner fix.
-> > > 
-> > >>>
-> > >>> [*] Offtop: we could also use system PP to allocate skbs in
-> > >>> xsk_build_skb() just like it's done in xdp_build_skb_from_zc() +
-> > >>> xdp_copy_frags_from_zc() -- no way to avoid memcpy(), but the payload
-> > >>> buffers would be recycled then.
-> > >>
-> > >> Or maybe kmem_cache_alloc_node with a custom cache is good enough?
-> > >> Headroom also feels ok if we store the whole xsk_addrs struct in it.
-> > > 
-> > > Yep both of these approaches was something I considered, but keep in mind
-> > > it's a bugfix so I didn't want to go with something flashy. I have not
-> > > observed big performance impact but I checked only MAX_SKB_FRAGS being set
-> > > to standard value.
-> > > 
-> > > Would you guys be ok if I do the follow-up with possible optimization
-> > > after my vacation which would be a -next candidate?
-> > 
-> > As a fix, it's totally fine for me to go in the current form, sure.
-> 
-> +1
+Do all architectures/ABI mandate register stack save slots to be aligned?
+s390 does.
+
+> +
+> +	/* Find the Return Address (RA) */
+> +	if (get_user(ra, (unsigned long *)(cfa + frame->ra_off)))
+> +		goto done;
+> +
+
+Why not validate the FP stack save slot address as well?
+
+> +	if (frame->fp_off && get_user(fp, (unsigned long __user *)(cfa + frame->fp_off)))
+> +		goto done;
+> +
+> +	state->ip = ra;
+> +	state->sp = cfa;
+> +	if (frame->fp_off)
+> +		state->fp = fp;
+> +
+> +	return 0;
+> +
+> +done:
+> +	state->done = true;
+>  	return -EINVAL;
+>  }
+
+Thanks and regards,
+Jens
+-- 
+Jens Remus
+Linux on Z Development (D3303)
++49-7031-16-1128 Office
+jremus@de.ibm.com
+
+IBM
+
+IBM Deutschland Research & Development GmbH; Vorsitzender des Aufsichtsrats: Wolfgang Wendt; Geschäftsführung: David Faller; Sitz der Gesellschaft: Böblingen; Registergericht: Amtsgericht Stuttgart, HRB 243294
+IBM Data Privacy Statement: https://www.ibm.com/privacy/
+
 
