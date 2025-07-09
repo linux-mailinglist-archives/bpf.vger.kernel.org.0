@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-62823-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62824-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B37F9AFEFFE
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 19:38:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2828AFEFFB
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 19:38:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B19216E912
-	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 17:38:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 825B44E0D2E
+	for <lists+bpf@lfdr.de>; Wed,  9 Jul 2025 17:37:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 261B12367AF;
-	Wed,  9 Jul 2025 17:37:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50E49236A79;
+	Wed,  9 Jul 2025 17:37:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MimFIXsK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZQBbz+N8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD83B22D9E6;
-	Wed,  9 Jul 2025 17:37:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2C3B2367C5;
+	Wed,  9 Jul 2025 17:37:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752082671; cv=none; b=fOvGJXqFuuZlsgrk8HXNm0uotx9dkq0JY3CG3Ap1JItThJQ6wbjYERtFCzlqQ2Lb4dDgWHZVzfmlByuacPrc6N5aWOVf+5cuNy3R5bv8TQHdmIl9wXJ7/ggNznjjPxcFTD8J70XWL9i+j8QaFjsUjiaKT+QV0IOxd7nG2mjCN9Y=
+	t=1752082674; cv=none; b=kWcsoCHGRJ5uRVcfUFz8EpmVjWaH+Tdr+rFECOYpBpKG0jwS45iyXAdKrm2UNJfdf4lNkyZHTEiFt2prO0HOK79cyTcZpAr+WMlu5oQNXvaZsQw6O2s9ESajEdgRrKOfVEWOOPrXK29q5FMdvWKezCNIYsqsWnNo5XYnxq0FsTo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752082671; c=relaxed/simple;
-	bh=6IJB0cFsbw1rnDfnTFI3/4jatidakLkeiu015dsx3Xk=;
+	s=arc-20240116; t=1752082674; c=relaxed/simple;
+	bh=oSLItgLSF3tmhxrnhK+2SDWg+Moxv4jDrZ3gRNM2eT4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VEfTJ83rnB6Im3q+YvO87/TVq5dV9mdnKYvL+ValKmw1UY1YDRCg8rRsHYwkLZkX7Pccslh6Ot/RVKNJkVrooDRj+JHjbSSWdibXeqR9rd/mRTDrzziD+E7Jp7YdWsGSJpckK0rRhboMWH0oQ4ksdP6GZAIZ+xosIwRCt/M9e4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MimFIXsK; arc=none smtp.client-ip=209.85.221.54
+	 MIME-Version; b=JwJeTZZr7xJhao9EMe8u80JDdqalFq58HddfYQcUL4papC+8x0KZS+NGBd3CxCuH10fNuUZYvx6AvmTyXoYVlFTv+YCs4/LClPa3/CyJxv7+RXvYpINMK84SVs2lc8hEjqx+38h2QIWsV15DPADZKtZzVHnZ+Se/UmHkaPUNFqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZQBbz+N8; arc=none smtp.client-ip=209.85.128.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3a528243636so147115f8f.3;
-        Wed, 09 Jul 2025 10:37:49 -0700 (PDT)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4538a2fc7ffso9601805e9.0;
+        Wed, 09 Jul 2025 10:37:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752082668; x=1752687468; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1752082671; x=1752687471; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1xgz3nF3TelMB8mvuSUREfbUAebPUbqtl3fsYp1+DdQ=;
-        b=MimFIXsKKtFhbJBq5q6cdkdK6TD7ojM4rZ8susaDVCVUlB6jIRSlhNRxrxailcqb1e
-         ew13hPcRuMD3UqzLuyI6YVKelSdBlWQUNQTA22LG0MJ+8DM8Ynh2ggW+oIEWIBkmG3Ao
-         J14SQ+0SvFVu+HALq01/3QYgtF/6aSGS3iQD7u73PE5sMaFuckkuM8epfpQyk7SFMLZm
-         DKrkeW01HOww3/0/IIQlWxfFUth3BQdguUwr7+kT7QXRaxNO1iJpYG8dohR9zevLTdpD
-         8Unxn/Q6Ny/6OALuC2pgeRrkA3znR++yHw7igu3OzAmGW4fYoGvPbACdaq3pgwE9lnmp
-         xxbQ==
+        bh=kfCFeA7T3V2nky07JDQX6cbAXsZ3qF+/ZenH2CKX5qA=;
+        b=ZQBbz+N8ROpknbuClz47Ni0fv9pIf43VlURrGLv08qPdWkm1tS9vzPALQ2qrbI/axZ
+         r8b4+BXR3DMHM2VC2sqnW4n05a1M6p2FeBI52y9d/iOO2iejAODUgAn7rtPfjB7Uu4q7
+         WZ+fl83+mEOioJlkOeP79dDNTRlr0cXfgN3GpPkGe8TIUQhvGcX45Dg1V2Aa0A0M6TyF
+         nHyEr4D02xvG2MZthRuEObiSSKytIXSAh0SuPB4unnCXzQBYiYCqJ0JDAC5XWD4jrONL
+         1bFpWq4QUOCqabGlV9dJgxAB6HOzV4qUT+Frfo2S9iGLu+oozF1K8J7B9coOPe6xA2Zy
+         ynJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752082668; x=1752687468;
+        d=1e100.net; s=20230601; t=1752082671; x=1752687471;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1xgz3nF3TelMB8mvuSUREfbUAebPUbqtl3fsYp1+DdQ=;
-        b=fLMsRcOKkdvCK4fu9U0sTzRsrv8uQhmF9N76RopJUzZAnH4dO5qWxpQhda+DfYXk2Y
-         wvWFzHXvwjVjLT07xIr2NpyGtgj6aVW1omY9FZmKI1ijQgXCm/we3ZZc5mUSYvpWlVML
-         R0fmGQybfSmYODwfyTTJpyoftBrEvryUnvRPNmYnfb7Lg1lCulRMAJa7ESxxu6MDwSgd
-         Nyfi5tBx5EPvb1NdsFsNgf0bV509xQhuRQ6dMERCf3JxNX51rGKz8H2KiTpxPRXxdBrQ
-         qj0LkcUwarQr2B2P/Su5MsVxsnbCyVv5SgU12dj3MVWdqvlXHrKS9HTVh5P6ZtjwTiUW
-         v33Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVbDYaqKTmOU3dyIH3zU8L7FYGRk/vY2gnClH8rcOa89JNqX1dS4ma3xQRTDkiegxxViXw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwqaBuUXeH2I2XFUb6f3Vs1+cIM33ULrYpK17ub30tzDwU2Uw03
-	ig6MztCgdRVpmwWIGWGeVtVRbPEEXdb1mKplFqMNz1fXPOj2nKH9vqYfnf+wwnE9
-X-Gm-Gg: ASbGncuxf6Uv+KnTUkLoVfujrf4nrBdNVqNEqjFzTPKeMoRasS8YRD8NJ9Dy8yEfKbV
-	YTxvYDPUWY23xxh4Lr+qAtip3ll3eaw3RgcwSMpbTZs7Je3dwvtt5iMmNzCKW2eKVyaK/TOHFBx
-	JHG64/GvBNZ563PJb1SyXRHU5kJXcIbK315jWGqqX2zHBLZs0FJ2LCChWvTuThZ0kSCYzcLZ7R+
-	4+2EA/EzJPtsZDq9m0B6sbYBq5AflAHJ4PKVq0g0+lq12E9GzcvrHtR5JbdFdkeiCOlPXZtvj90
-	AoUqMru3xw61orwA3Ob3ULlj/bJBSWnHbjXKE36V7Aeob6af5khiQw5xZPGC
-X-Google-Smtp-Source: AGHT+IG/IyUnlpvZ+JCzJ9/sbfNlcTreiNT9s1Vq50pfMQXhhFv8JKmMyUR7A/KNvo5bRv8U9E1KcQ==
-X-Received: by 2002:a05:6000:2482:b0:3a4:f663:acb9 with SMTP id ffacd0b85a97d-3b5e7880fc8mr837123f8f.9.1752082667541;
-        Wed, 09 Jul 2025 10:37:47 -0700 (PDT)
-Received: from localhost ([2a03:2880:31ff:43::])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b47030ba54sm16493161f8f.8.2025.07.09.10.37.46
+        bh=kfCFeA7T3V2nky07JDQX6cbAXsZ3qF+/ZenH2CKX5qA=;
+        b=aONfedZzVhh1Da3ir9uvpA/qGrSfi6eILx2Zx+UAZNaZi/DdwFdz3oZ1IQ+f5FKaqV
+         cCEp/g/GDfUMUzHNrrrhIyebjMWZDK82t5ves8DlQUGx/dnl85TaI+3juFCE2Wvqt79q
+         uzDtTl9anprrV3XyuO3gOK0jSWOqonHSXOtOZHW+r93w0Vz8Xi82llDiTBIuGtYP2/pX
+         BoAHMU8j2ylsyGIWjUeXZPy2ndjMjgCIzQYyD9Lu7hF6Yjxn7DIU7UsLaerjR9ooKAzp
+         w1rIG1tWnZcdopkpnP9Hip5WtvOEy8spt8yYiPZ4/ENxOMGJgsbAKHqmWaTk/02ndhEh
+         mc2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVuxWPulQYh0Xbq0Qs2jYAnkRUWx1tTUcEZJBM5mhv2tjnvkhQqCJ8C9yGZKqppv910zWE=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywyee2/9TmltNeB1ra1pw5gdmkizXZf2PiT+Rk5B/e4xRyz6+5I
+	rpAiFxoJdrqVs1FIhQdejI3OpVQzMrIIQhlRISJ433IaDaYa3DrhaQ1PDxTwcA8+
+X-Gm-Gg: ASbGncsLLdPxP1uRreGdCe9ZEsKYjh9aYuja5KWg+XAbnbdfnParAHFvJOO6XT6VmZo
+	lmBpPvdr3lD/qgXEQ33pRcoCj8Zi50dlXnGovgido7LTSW/abMvk3+2fx6kYdJOluoOYySOwviJ
+	8frhlr42QVvaVkI60Rl0ujbFH3ZaeM2zWJjg28t/16uCxF+xL0OGmI6egEHfaK+B6wfE6bwZXYk
+	fcdVG4g/x9UfsYn4gp1ZMkW0vZZ0jQb4entzapOEoFQSVAx25yuDxDhi5ct1g3pCl0tvyCXk7Dt
+	HWefc3T8nRE35b87VrtpqviXiLU86vjrmAk00N1k17rcgyJCT7coIDbO3RU=
+X-Google-Smtp-Source: AGHT+IHIxgVusVJGIJ95hEwQdvDBxfp9Cx5gDBRkkCg8KPNPsFWqOpmx+TN5Wkb++R5waoAEa6MoLA==
+X-Received: by 2002:a05:600c:c097:b0:43c:ed33:a500 with SMTP id 5b1f17b1804b1-454db8b7aa9mr3163655e9.10.1752082670238;
+        Wed, 09 Jul 2025 10:37:50 -0700 (PDT)
+Received: from localhost ([2a03:2880:31ff:4::])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-454d5050970sm34286225e9.14.2025.07.09.10.37.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jul 2025 10:37:46 -0700 (PDT)
+        Wed, 09 Jul 2025 10:37:49 -0700 (PDT)
 From: Mohsin Bashir <mohsin.bashr@gmail.com>
 To: netdev@vger.kernel.org
 Cc: kuba@kernel.org,
@@ -90,9 +90,9 @@ Cc: kuba@kernel.org,
 	gal@nvidia.com,
 	sdf@fomichev.me,
 	bpf@vger.kernel.org
-Subject: [PATCH net-next 3/5] selftests: drv-net: Test XDP_TX support
-Date: Wed,  9 Jul 2025 10:37:05 -0700
-Message-ID: <20250709173707.3177206-4-mohsin.bashr@gmail.com>
+Subject: [PATCH net-next 4/5] selftests: drv-net: Test tail-adjustment support
+Date: Wed,  9 Jul 2025 10:37:06 -0700
+Message-ID: <20250709173707.3177206-5-mohsin.bashr@gmail.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250709173707.3177206-1-mohsin.bashr@gmail.com>
 References: <20250709173707.3177206-1-mohsin.bashr@gmail.com>
@@ -104,205 +104,467 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add test to verify the XDP_TX functionality by generating traffic from a
-remote node on a specific UDP port and redirecting it back to the sender.
+Add test to validate support for the two cases of tail adjustment: 1)
+tail extension, and 2) tail shrinking across different frame sizes and
+offset values. For each of the two cases, test both the single and
+multi-buffer cases by choosing appropriate packet size.
+
+Since tail adjustment support varies across drivers, classify the test as
+pass if at least one combination of packet size and offset from a
+pre-selected list results in a successful run. In case of an unsuccessful
+run, report the failure and highlight the packet size and offset values
+that caused the test to fail, as well as the values that resulted in the
+last successful run.
+
+Note: The growing part of this test appears flaky for netdevsim, with
+inconsistent results depending on the availability of tailroom. Since
+tailroom is not explicitly reserved, in general, the test should fail
+due to insufficient tailroom. However, when truesize is expanded to
+include any remaining space on the page, enough tailroom becomes available,
+resulting in occasional test passes. On multiple real NICs including fbnic
+the test results are deterministic and repeatable.
 
 ./drivers/net/xdp.py
 TAP version 13
-1..5
+1..7
 ok 1 xdp.test_xdp_native_pass_sb
 ok 2 xdp.test_xdp_native_pass_mb
 ok 3 xdp.test_xdp_native_drop_sb
 ok 4 xdp.test_xdp_native_drop_mb
 ok 5 xdp.test_xdp_native_tx_mb
+\# Failed run: pkt_sz 2048, .... offset -256. Reason: Adjustment failed
+ok 6 xdp.test_xdp_native_adjst_tail_grow_data
+ok 7 xdp.test_xdp_native_adjst_tail_shrnk_data
 
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Mohsin Bashir <mohsin.bashr@gmail.com>
 ---
- tools/testing/selftests/drivers/net/xdp.py    | 34 ++++++++
- .../selftests/net/lib/xdp_native.bpf.c        | 79 +++++++++++++++++++
- 2 files changed, 113 insertions(+)
+ tools/testing/selftests/drivers/net/xdp.py    | 178 +++++++++++++++++-
+ .../selftests/net/lib/xdp_native.bpf.c        | 136 ++++++++++++-
+ 2 files changed, 310 insertions(+), 4 deletions(-)
 
 diff --git a/tools/testing/selftests/drivers/net/xdp.py b/tools/testing/selftests/drivers/net/xdp.py
-index ac7eaaecef14..e05b78592989 100755
+index e05b78592989..b62e41c0e708 100755
 --- a/tools/testing/selftests/drivers/net/xdp.py
 +++ b/tools/testing/selftests/drivers/net/xdp.py
-@@ -27,6 +27,7 @@ class XDPAction(Enum):
-     """Enum for XDP actions."""
+@@ -11,7 +11,7 @@ import string
+ from dataclasses import dataclass
+ from enum import Enum
+ 
+-from lib.py import ksft_run, ksft_exit, ksft_eq, ksft_ne
++from lib.py import ksft_run, ksft_exit, ksft_eq, ksft_ne, ksft_pr
+ from lib.py import KsftFailEx, KsftSkipEx, NetDrvEpEnv
+ from lib.py import bkg, cmd, rand_port
+ from lib.py import ip, bpftool, defer
+@@ -21,6 +21,8 @@ class TestConfig(Enum):
+     """Enum for XDP configuration options."""
+     MODE = 0  # Configures the BPF program for a specific test
+     PORT = 1  # Port configuration to communicate with the remote host
++    ADJST_OFFSET = 2  # Tail/Head adjustment offset for extension/shrinking
++    ADJST_TAG = 3  # Adjustment tag to annotate the start and end of extension
+ 
+ 
+ class XDPAction(Enum):
+@@ -28,6 +30,7 @@ class XDPAction(Enum):
      PASS = 0  # Pass the packet up to the stack
      DROP = 1  # Drop the packet
-+    TX = 2    # Route the packet to the remote host
+     TX = 2    # Route the packet to the remote host
++    TAIL_ADJST = 3  # Adjust the tail of the packet
  
  
  class XDPStats(Enum):
-@@ -34,6 +35,7 @@ class XDPStats(Enum):
-     RX = 0    # Count of valid packets received for testing
+@@ -36,6 +39,7 @@ class XDPStats(Enum):
      PASS = 1  # Count of packets passed up to the stack
      DROP = 2  # Count of packets dropped
-+    TX = 3    # Count of incoming packets routed to the remote host
+     TX = 3    # Count of incoming packets routed to the remote host
++    ABORT = 4 # Count of packets that were aborted
  
  
  @dataclass
-@@ -187,6 +189,8 @@ def _get_stats(xdp_map_id):
-             stats_formatted[XDPStats.PASS.value] = val
-         elif stats_dump[key]["formatted"]["key"] == XDPStats.DROP.value:
+@@ -181,7 +185,7 @@ def _get_stats(xdp_map_id):
+         raise KsftFailEx(f"Failed to get stats for map {xdp_map_id}")
+ 
+     stats_formatted = {}
+-    for key in range(0, 4):
++    for key in range(0, 5):
+         val = stats_dump[key]["formatted"]["value"]
+         if stats_dump[key]["formatted"]["key"] == XDPStats.RX.value:
+             stats_formatted[XDPStats.RX.value] = val
+@@ -191,6 +195,8 @@ def _get_stats(xdp_map_id):
              stats_formatted[XDPStats.DROP.value] = val
-+        elif stats_dump[key]["formatted"]["key"] == XDPStats.TX.value:
-+            stats_formatted[XDPStats.TX.value] = val
+         elif stats_dump[key]["formatted"]["key"] == XDPStats.TX.value:
+             stats_formatted[XDPStats.TX.value] = val
++        elif stats_dump[key]["formatted"]["key"] == XDPStats.ABORT.value:
++            stats_formatted[XDPStats.ABORT.value] = val
  
      return stats_formatted
  
-@@ -285,6 +289,35 @@ def test_xdp_native_drop_mb(cfg):
-     _test_drop(cfg, bpf_info, 8000)
+@@ -318,6 +324,172 @@ def test_xdp_native_tx_mb(cfg):
+     ksft_eq(stats[XDPStats.TX.value], 1, "TX stats mismatch")
  
  
-+def test_xdp_native_tx_mb(cfg):
++def _validate_res(res, offset_lst, pkt_sz_lst):
 +    """
-+    Tests the XDP_TX action for a multi-buff case.
++    Validates the result of a test.
++
++    Args:
++        res: The result of the test, which should be a dictionary with a "status" key.
++
++    Raises:
++        KsftFailEx: If the test fails to pass any combination of offset and packet size.
++    """
++    if "status" not in res:
++        raise KsftFailEx("Missing 'status' key in result dictionary")
++
++    # Validate that not a single case was successful
++    if res["status"] == "fail":
++        if res["offset"] == offset_lst[0] and res["pkt_sz"] == pkt_sz_lst[0]:
++            raise KsftFailEx(f"{res['reason']}")
++
++        # Get the previous offset and packet size to report the successful run
++        tmp_idx = offset_lst.index(res["offset"])
++        prev_offset = offset_lst[tmp_idx - 1]
++        if tmp_idx == 0:
++            tmp_idx = pkt_sz_lst.index(res["pkt_sz"])
++            prev_pkt_sz = pkt_sz_lst[tmp_idx - 1]
++        else:
++            prev_pkt_sz = res["pkt_sz"]
++
++        # Use these values for error reporting
++        ksft_pr(
++        f"Failed run: pkt_sz {res['pkt_sz']}, offset {res['offset']}. "
++        f"Last successful run: pkt_sz {prev_pkt_sz}, offset {prev_offset}. "
++        f"Reason: {res['reason']}"
++        )
++
++
++def _check_for_failures(recvd_str, stats):
++    """
++    Checks for common failures while adjusting headroom or tailroom.
++
++    Args:
++        recvd_str: The string received from the remote host after sending a test string.
++        stats: A dictionary containing formatted packet statistics for various XDP actions.
++
++    Returns:
++        str: A string describing the failure reason if a failure is detected, otherwise None.
++    """
++
++    # Any adjustment failure result in an abort hence, we track this counter
++    if stats[XDPStats.ABORT.value] != 0:
++        return "Adjustment failed"
++
++    # Since we are using aggregate stats for a single test across all offsets and packet sizes
++    # we can't use RX stats only to track data exchange failure without taking a previous
++    # snapshot. An easier way is to simply check for non-zero length of received string.
++    if len(recvd_str) == 0:
++        return "Data exchange failed"
++
++    # Check for RX and PASS stats mismatch. Ideally, they should be equal for a successful run
++    if stats[XDPStats.RX.value] != stats[XDPStats.PASS.value]:
++        return "RX stats mismatch"
++
++    return None
++
++
++def _test_xdp_native_tail_adjst(cfg, pkt_sz_lst, offset_lst):
++    """
++    Tests the XDP tail adjustment functionality.
++
++    This function loads the appropriate XDP program based on the provided
++    program name and configures the XDP map for tail adjustment. It then
++    validates the tail adjustment by sending and receiving UDP packets
++    with specified packet sizes and offsets.
++
++    Args:
++        cfg: Configuration object containing network settings.
++        prog: Name of the XDP program to load.
++        pkt_sz_lst: List of packet sizes to test.
++        offset_lst: List of offsets to validate support for tail adjustment.
++
++    Returns:
++        dict: A dictionary with test status and failure details if applicable.
++    """
++    port = rand_port()
++    bpf_info = BPFProgInfo("xdp_prog_frags", "xdp_native.bpf.o", "xdp.frags", 9000)
++
++    prog_info = _load_xdp_prog(cfg, bpf_info)
++
++    # Configure the XDP map for tail adjustment
++    _set_xdp_map("map_xdp_setup", TestConfig.MODE.value, XDPAction.TAIL_ADJST.value)
++    _set_xdp_map("map_xdp_setup", TestConfig.PORT.value, port)
++
++    for offset in offset_lst:
++        tag = format(random.randint(65, 90), "02x")
++
++        _set_xdp_map("map_xdp_setup", TestConfig.ADJST_OFFSET.value, offset)
++        if offset < 0:
++            _set_xdp_map("map_xdp_setup", TestConfig.ADJST_TAG.value, int(tag, 16))
++
++        for pkt_sz in pkt_sz_lst:
++            test_str = "".join(random.choice(string.ascii_lowercase) for _ in range(pkt_sz))
++            recvd_str = _exchg_udp(cfg, port, test_str)
++            stats = _get_stats(prog_info["maps"]["map_xdp_stats"])
++
++            failure = _check_for_failures(recvd_str, stats)
++            if failure is not None:
++                return {
++                    "status": "fail",
++                    "reason": failure,
++                    "offset": offset,
++                    "pkt_sz": pkt_sz,
++                }
++
++            # Validate data content based on offset direction
++            expected_data = None
++            if offset < 0:
++                expected_data = test_str + '\n' + (0 - offset) * chr(int(tag, 16))
++            else:
++                expected_data = test_str[0:pkt_sz - offset + 1]
++
++            if recvd_str != expected_data:
++                return {
++                    "status": "fail",
++                    "reason": "Data mismatch",
++                    "offset": offset,
++                    "pkt_sz": pkt_sz,
++                }
++
++    return {"status": "pass"}
++
++
++def test_xdp_native_adjst_tail_grow_data(cfg):
++    """
++    Tests the XDP tail adjustment by growing packet data.
 +
 +    Args:
 +        cfg: Configuration object containing network settings.
 +    """
-+    cfg.require_cmd("socat", remote=True)
++    pkt_sz_lst = [512, 1024, 2048]
++    offset_lst = [-16, -32, -64, -128, -256]
++    res = _test_xdp_native_tail_adjst(
++        cfg,
++        pkt_sz_lst,
++        offset_lst,
++    )
 +
-+    bpf_info = BPFProgInfo("xdp_prog_frags", "xdp_native.bpf.o", "xdp.frags", 9000)
-+    prog_info = _load_xdp_prog(cfg, bpf_info)
-+    port = rand_port()
++    _validate_res(res, offset_lst, pkt_sz_lst)
 +
-+    _set_xdp_map("map_xdp_setup", TestConfig.MODE.value, XDPAction.TX.value)
-+    _set_xdp_map("map_xdp_setup", TestConfig.PORT.value, port)
 +
-+    test_string = ''.join(random.choice(string.ascii_lowercase) for _ in range(8000))
-+    rx_udp = f"socat -{cfg.addr_ipver} -T 2 -u UDP-RECV:{port},reuseport STDOUT"
-+    tx_udp = f"echo {test_string} | socat -t 2 -u STDIN UDP:{cfg.baddr}:{port}"
++def test_xdp_native_adjst_tail_shrnk_data(cfg):
++    """
++    Tests the XDP tail adjustment by shrinking packet data.
 +
-+    with bkg(rx_udp, host=cfg.remote, exit_wait=True) as rnc:
-+        cmd(tx_udp, host=cfg.remote, shell=True)
++    Args:
++        cfg: Configuration object containing network settings.
++    """
++    pkt_sz_lst = [512, 1024, 2048]
++    offset_lst = [16, 32, 64, 128, 256]
++    res = _test_xdp_native_tail_adjst(
++        cfg,
++        pkt_sz_lst,
++        offset_lst,
++    )
 +
-+    stats = _get_stats(prog_info['maps']['map_xdp_stats'])
-+
-+    ksft_eq(rnc.stdout.strip(), test_string, "UDP packet exchange failed")
-+    ksft_eq(stats[XDPStats.TX.value], 1, "TX stats mismatch")
++    _validate_res(res, offset_lst, pkt_sz_lst)
 +
 +
  def main():
      """
      Main function to execute the XDP tests.
-@@ -301,6 +334,7 @@ def main():
-                 test_xdp_native_pass_mb,
+@@ -335,6 +507,8 @@ def main():
                  test_xdp_native_drop_sb,
                  test_xdp_native_drop_mb,
-+                test_xdp_native_tx_mb,
+                 test_xdp_native_tx_mb,
++                test_xdp_native_adjst_tail_grow_data,
++                test_xdp_native_adjst_tail_shrnk_data,
              ],
              args=(cfg,))
      ksft_exit()
 diff --git a/tools/testing/selftests/net/lib/xdp_native.bpf.c b/tools/testing/selftests/net/lib/xdp_native.bpf.c
-index b52561be9e9a..1abf22def604 100644
+index 1abf22def604..a974d1869385 100644
 --- a/tools/testing/selftests/net/lib/xdp_native.bpf.c
 +++ b/tools/testing/selftests/net/lib/xdp_native.bpf.c
-@@ -22,12 +22,14 @@ enum {
+@@ -14,15 +14,23 @@
+ #include <xdp/xdp_helpers.h>
+ #include <xdp/prog_dispatcher.h>
+ 
++#define min(a, b) ((a) < (b) ? (a) : (b))
++
++#define MAX_ADJST_OFFSET 256
++#define MAX_PAYLOAD_LEN 9000
++
+ enum {
+ 	XDP_MODE = 0,
+ 	XDP_PORT = 1,
++	XDP_ADJST_OFFSET = 2,
++	XDP_ADJST_TAG = 3,
+ } xdp_map_setup_keys;
+ 
  enum {
  	XDP_MODE_PASS = 0,
  	XDP_MODE_DROP = 1,
-+	XDP_MODE_TX = 2,
+ 	XDP_MODE_TX = 2,
++	XDP_MODE_TAIL_ADJST = 3,
  } xdp_map_modes;
  
  enum {
- 	STATS_RX = 0,
+@@ -30,18 +38,19 @@ enum {
  	STATS_PASS = 1,
  	STATS_DROP = 2,
-+	STATS_TX = 3,
+ 	STATS_TX = 3,
++	STATS_ABORT = 4,
  } xdp_stats;
  
  struct {
-@@ -121,6 +123,81 @@ static int xdp_mode_drop_handler(struct xdp_md *ctx, __u16 port)
- 	return XDP_DROP;
+ 	__uint(type, BPF_MAP_TYPE_ARRAY);
+-	__uint(max_entries, 2);
++	__uint(max_entries, 5);
+ 	__type(key, __u32);
+ 	__type(value, __s32);
+ } map_xdp_setup SEC(".maps");
+ 
+ struct {
+ 	__uint(type, BPF_MAP_TYPE_ARRAY);
+-	__uint(max_entries, 4);
++	__uint(max_entries, 5);
+ 	__type(key, __u32);
+ 	__type(value, __u64);
+ } map_xdp_stats SEC(".maps");
+@@ -198,6 +207,127 @@ static int xdp_mode_tx_handler(struct xdp_md *ctx, __u16 port)
+ 	return XDP_PASS;
  }
  
-+static void swap_machdr(void *data)
++static void *update_pkt(void *data, void *data_end, __s16 offset)
 +{
-+	struct ethhdr *eth = data;
-+	__u8 tmp_mac[ETH_ALEN];
-+
-+	__builtin_memcpy(tmp_mac, eth->h_source, ETH_ALEN);
-+	__builtin_memcpy(eth->h_source, eth->h_dest, ETH_ALEN);
-+	__builtin_memcpy(eth->h_dest, tmp_mac, ETH_ALEN);
-+}
-+
-+static int xdp_mode_tx_handler(struct xdp_md *ctx, __u16 port)
-+{
-+	void *data_end = (void *)(long)ctx->data_end;
-+	void *data = (void *)(long)ctx->data;
 +	struct ethhdr *eth = data;
 +	struct udphdr *udph = NULL;
++	__u16 udp_len = 0;
 +
 +	if (data + sizeof(*eth) > data_end)
-+		return XDP_PASS;
++		return NULL;
 +
 +	if (eth->h_proto == bpf_htons(ETH_P_IP)) {
 +		struct iphdr *iph = data + sizeof(*eth);
-+		__be32 tmp_ip = iph->saddr;
++		__u16 total_len;
 +
-+		if (iph + 1 > (struct iphdr *)data_end ||
-+		     iph->protocol != IPPROTO_UDP)
-+			return XDP_PASS;
++		if (iph + 1 > (struct iphdr *)data_end)
++			return NULL;
 +
-+		udph = data + sizeof(*iph) + sizeof(*eth);
++		total_len = bpf_ntohs(iph->tot_len) + offset;
++		iph->tot_len = bpf_htons(total_len);
 +
-+		if (udph + 1 > (struct udphdr *)data_end)
-+			return XDP_PASS;
-+		if (udph->dest != bpf_htons(port))
-+			return XDP_PASS;
-+
-+		record_stats(ctx, STATS_RX);
-+		swap_machdr((void *)eth);
-+
-+		iph->saddr = iph->daddr;
-+		iph->daddr = tmp_ip;
-+
-+		record_stats(ctx, STATS_TX);
-+
-+		return XDP_TX;
-+
++		udph = (void *)eth + sizeof(*iph) + sizeof(*eth);
 +	} else if (eth->h_proto  == bpf_htons(ETH_P_IPV6)) {
 +		struct ipv6hdr *ipv6h = data + sizeof(*eth);
-+		struct in6_addr tmp_ipv6;
++		__u16 payload_len;
 +
-+		if (ipv6h + 1 > (struct ipv6hdr *)data_end ||
-+			ipv6h->nexthdr != IPPROTO_UDP)
-+			return XDP_PASS;
++		if (ipv6h + 1 > (struct ipv6hdr *)data_end)
++			return NULL;
 +
-+		udph = data + sizeof(*ipv6h) + sizeof(*eth);
++		payload_len = bpf_ntohs(ipv6h->payload_len) + offset;
++		ipv6h->payload_len = bpf_htons(payload_len);
 +
-+		if (udph + 1 > (struct udphdr *)data_end)
-+			return XDP_PASS;
-+		if (udph->dest != bpf_htons(port))
-+			return XDP_PASS;
-+
-+		record_stats(ctx, STATS_RX);
-+		swap_machdr((void *)eth);
-+
-+		__builtin_memcpy(&tmp_ipv6, &ipv6h->saddr, sizeof(tmp_ipv6));
-+		__builtin_memcpy(&ipv6h->saddr, &ipv6h->daddr, sizeof(tmp_ipv6));
-+		__builtin_memcpy(&ipv6h->daddr, &tmp_ipv6, sizeof(tmp_ipv6));
-+
-+		record_stats(ctx, STATS_TX);
-+
-+		return XDP_TX;
++		udph = (void *)eth + sizeof(*ipv6h) + sizeof(*eth);
++	} else {
++		return NULL;
 +	}
 +
++	if (udph == NULL || udph + 1 > (struct udphdr *)data_end)
++		return NULL;
++
++	udp_len = bpf_ntohs(udph->len) + offset;
++	udph->len = bpf_htons(udp_len);
++
++	return udph;
++}
++
++static int xdp_tail_ext(struct xdp_md *ctx, __u16 port)
++{
++	void *data_end = (void *)(long)ctx->data_end;
++	void *data = (void *)(long)ctx->data;
++	struct udphdr *udph = NULL;
++	__s32 *adjust_offset, *val;
++	void *offset_ptr;
++	__u32 key;
++	__u8 tag;
++
++	udph = filter_udphdr(ctx, port);
++	if (udph == NULL)
++		return XDP_PASS;
++
++	key = XDP_ADJST_OFFSET;
++	adjust_offset = bpf_map_lookup_elem(&map_xdp_setup, &key);
++	if (!adjust_offset)
++		return XDP_PASS;
++
++	/* Only attempt to shrink the data part */
++	if (*adjust_offset > bpf_ntohs(udph->len))
++		goto abort_pkt;
++
++	if (bpf_xdp_adjust_tail(ctx, 0 - *adjust_offset) < 0)
++		goto abort_pkt;
++
++	key = XDP_ADJST_TAG;
++	val = bpf_map_lookup_elem(&map_xdp_setup, &key);
++	if (!val)
++		goto abort_pkt;
++	tag = (__u8)(*val);
++
++	data = (void *)(long)ctx->data;
++	data_end = (void *)(long)ctx->data_end;
++
++	udph = update_pkt(data, data_end, (__s16)(0 - *adjust_offset));
++	if (!udph)
++		goto abort_pkt;
++
++	/* For the tail-shrink case, we can simply proceed to passing
++	 * the packet up to the stack. For the tail-growth case, we
++	 * insert appropriate tags at the start and end of the newly
++	 * created space and then validate these tags in the BPF program
++	 */
++	if (*adjust_offset > 0)
++		goto pass_pkt;
++
++	__u32 pkt_offset = bpf_ntohs(udph->len) - (__u32)(0 - *adjust_offset);
++
++	/* The min operations here set the upper bound on the adjustment
++	 * offset and offset_ptr allowing us to pass the BPF verifier check
++	 */
++	offset_ptr = (void *)udph + min(MAX_PAYLOAD_LEN, pkt_offset);
++	for (int i = 0; i < MAX_ADJST_OFFSET; i++) {
++		if (offset_ptr == (void *)udph + min(MAX_PAYLOAD_LEN,
++						     bpf_ntohs(udph->len)))
++			break;
++
++		if ((void *)(offset_ptr + 1) > data_end)
++			goto abort_pkt;
++
++		__builtin_memcpy(offset_ptr, &tag, 1);
++
++		offset_ptr++;
++	}
++
++pass_pkt:
++	record_stats(ctx, STATS_PASS);
++
 +	return XDP_PASS;
++
++abort_pkt:
++	record_stats(ctx, STATS_ABORT);
++
++	return XDP_ABORTED;
 +}
 +
  static int xdp_prog_common(struct xdp_md *ctx)
  {
  	__u32 key, *port;
-@@ -141,6 +218,8 @@ static int xdp_prog_common(struct xdp_md *ctx)
- 		return xdp_mode_pass(ctx, (__u16)(*port));
- 	case XDP_MODE_DROP:
+@@ -220,6 +350,8 @@ static int xdp_prog_common(struct xdp_md *ctx)
  		return xdp_mode_drop_handler(ctx, (__u16)(*port));
-+	case XDP_MODE_TX:
-+		return xdp_mode_tx_handler(ctx, (__u16)(*port));
+ 	case XDP_MODE_TX:
+ 		return xdp_mode_tx_handler(ctx, (__u16)(*port));
++	case XDP_MODE_TAIL_ADJST:
++		return xdp_tail_ext(ctx, (__u16)(*port));
  	}
  
  	/* Default action is to simple pass */
