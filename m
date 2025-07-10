@@ -1,97 +1,159 @@
-Return-Path: <bpf+bounces-62953-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62954-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02AEAB00992
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 19:09:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D45F2B00994
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 19:10:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1DAA1C86679
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 17:09:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38D6C5645A7
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 17:10:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EF532F0C4B;
-	Thu, 10 Jul 2025 17:09:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B92D2F005D;
+	Thu, 10 Jul 2025 17:09:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="F1X1NSnR"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49C4642A9D;
-	Thu, 10 Jul 2025 17:09:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E9B92797A0
+	for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 17:09:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752167351; cv=none; b=JB+fOlXWzCA8I51/3qES+lJT9tZPrElVns1Y9XI1a18TxJl4MHyBGs0pWFKt5ImLTav/AC1Hr07ebOJAdoae9F/LwFQCfK7HD8asA3kJTUCNgjP+8Vx+c/OOMHkXEMGpQWt4IgnMBQZO79e7HGoJLsAZqxoqc8imhLXba8B3O4w=
+	t=1752167397; cv=none; b=arzgEj8qKQtyOBgknqhiCk6lUjnMgaD1dtGq9JEJqWKaX8/VpN3nuVTkAXu41+8LWUFu5CL3xJJoJZSv/wVpHtgxajjPCu77hTvIzJJWE8h5CsmEoDtOFMUmIAxxHTIfOVKIfdInZWs1z7Q2ZuC5S2SNiWHxRC4KXcWnGwF7Oqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752167351; c=relaxed/simple;
-	bh=fnSrmvINOTQCBaTJNNf92+lWkybHVGjaYPdxfM+hCjc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qJ0auJqoPDW7jv2k8sPVwI6qYNmeBxX3/enCi49tnZEkO12vVPtEHh8ada3BaKeRoWXK0uw20u4koUNJwNGCsBgg5g3o3bfxIBXdEzSg4wUmjlgtQfComTlLi2T9Ny0i0b5lWyXVADE4WVudD7koHZYkW4f/SWLqzB7rxuX+p9Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf06.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay04.hostedemail.com (Postfix) with ESMTP id 01A4B1A0374;
-	Thu, 10 Jul 2025 17:09:05 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf06.hostedemail.com (Postfix) with ESMTPA id C0FA92000F;
-	Thu, 10 Jul 2025 17:09:00 +0000 (UTC)
-Date: Thu, 10 Jul 2025 13:08:59 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Jens Remus <jremus@linux.ibm.com>
-Cc: Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org,
- Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Thomas
- Gleixner <tglx@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, Indu
- Bhagat <indu.bhagat@oracle.com>, "Jose E. Marchesi" <jemarch@gnu.org>, Beau
- Belgrave <beaub@linux.microsoft.com>, Linus Torvalds
- <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>,
- Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>, Sam
- James <sam@gentoo.org>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik
- <gor@linux.ibm.com>
-Subject: Re: [PATCH v13 02/14] unwind_user: Add frame pointer support
-Message-ID: <20250710130859.41f3d5d0@batman.local.home>
-In-Reply-To: <155f22cb-b986-4d22-a853-6de49a1c2e03@linux.ibm.com>
-References: <20250708012239.268642741@kernel.org>
-	<20250708012357.982692711@kernel.org>
-	<d3279556-9bb6-429d-a037-fe279c5e3c67@linux.ibm.com>
-	<20250710112147.41585f6a@batman.local.home>
-	<155f22cb-b986-4d22-a853-6de49a1c2e03@linux.ibm.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1752167397; c=relaxed/simple;
+	bh=WgE2cZzN0xPCT9vqzj9SJXFb9agGHPoQL1sV7H+6xhk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fwmfeFI8DL/8qLDG+FFwXHLuO6klN8809nRJXJor4w0aRgeQF12BG1OxSsmZTrAGzSjf79fL9Tf9UX4HL7iQpFS3U/k3qgwc/v/sfIsolUBdO7B9GzeOfi7dIHD+TJFkGheHwEf2SmCzSun38dlwcdx5yvscbdRYg4OxVkQLChM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=F1X1NSnR; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <6eb938a8-e6ab-4510-b5c4-839e20c65d80@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1752167392;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=G/dWIC99J27FO+X5qJDOcUzUeVBmoeL/jVc5pCEgdws=;
+	b=F1X1NSnRfv9ohjg+ssCjBfaxFeyLfPdmCaAMmSwcJFWNYpHmI9SkGR8S+4o4GjXyEDrkR/
+	EXeFsgGKun5nhXQ/KyT/WuDeC+qvLWc+gNQT/lihjS8cI1RIyuhmN1xxRWBTZxn2GYNFQw
+	50d9cIBbgEC75F2XE44pT8fAVc2E27g=
+Date: Thu, 10 Jul 2025 10:09:47 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: [PATCH bpf-next 1/2] bpf: Forget ranges when refining tnum after
+ JSET
+Content-Language: en-GB
+To: Paul Chaignon <paul.chaignon@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>
+References: <75b3af3d315d60c1c5bfc8e3929ac69bb57d5cea.1752099022.git.paul.chaignon@gmail.com>
+ <ba1b52e3-a938-4ead-943c-267e4c06b1ae@linux.dev>
+ <aG_Tg6rfexLf3qOl@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <aG_Tg6rfexLf3qOl@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Stat-Signature: depqztwu8wiqfietk8fu8n7763s51ws5
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: C0FA92000F
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1+01n35r8VXAY4UbJG9hSOyN+nC70zKvas=
-X-HE-Tag: 1752167340-156481
-X-HE-Meta: U2FsdGVkX1/tlcw3ZQtrsCXf5B3curUZeKn1VNU/to0VOeOauQxGd7Ve6hk7iq3DF8ewqmO7sODtFQ5ZuXg6O4v3iz/2FcMy2S94Q4hRg5Gtcn4ls6WHO6ovHxSi015cjB18I0oDgln5oKHSm4zpRu5Jiiusb6hlzrWJFcvnUna7+zW4uqbulKgPd9VBCbx0V/H/57o8NMWGQYCt7glbYmmvLSL6HNDO8jD5HmRFbP5LKDXYfN2y2LSVe9GPv60jJ7AZxAma5JlegirY/AVxAsHZCIJld95RxpTxpH9C2jG9opLBFqbRftwzaHzzQd2YI5VgRVOuh3c4a+ahCEkV8iTM+vQd6rEY
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, 10 Jul 2025 17:41:36 +0200
-Jens Remus <jremus@linux.ibm.com> wrote:
 
-> cfa + frame->ra_off could be aligned by chance.  So could
-> cfa + frame->fp_off be as well of course.
-> 
-> On s390 the CFA must be aligned (as the SP must be aligned) and the
-> FP and RA offsets from CFA must be aligned, as pointer / 64-bit integers
-> (such as 64-bit register values) must be aligned as well.
-> 
-> So the CFA (and/or offset), FP offset, and RA offset could be validated
-> individually.  Not sure if that would be over engineering though.
 
-I wonder if we should just validate that cfa is aligned? Would that work?
+On 7/10/25 7:51 AM, Paul Chaignon wrote:
+> On Wed, Jul 09, 2025 at 04:57:28PM -0700, Yonghong Song wrote:
+>>
+>> On 7/9/25 3:26 PM, Paul Chaignon wrote:
+>>> Syzbot reported a kernel warning due to a range invariant violation on
+>>> the following BPF program.
+>>>
+>>>     0: call bpf_get_netns_cookie
+>>>     1: if r0 == 0 goto <exit>
+>>>     2: if r0 & Oxffffffff goto <exit>
+>>>
+>>> The issue is on the path where we fall through both jumps.
+>>>
+>>> That path is unreachable at runtime: after insn 1, we know r0 != 0, but
+>>> with the sign extension on the jset, we would only fallthrough insn 2
+>>> if r0 == 0. Unfortunately, is_branch_taken() isn't currently able to
+>>> figure this out, so the verifier walks all branches. The verifier then
+>>> refines the register bounds using the second condition and we end
+>>> up with inconsistent bounds on this unreachable path:
+>>>
+>>>     1: if r0 == 0 goto <exit>
+>>>       r0: u64=[0x1, 0xffffffffffffffff] var_off=(0, 0xffffffffffffffff)
+>>>     2: if r0 & 0xffffffff goto <exit>
+>>>       r0 before reg_bounds_sync: u64=[0x1, 0xffffffffffffffff] var_off=(0, 0)
+>>>       r0 after reg_bounds_sync:  u64=[0x1, 0] var_off=(0, 0)
+>>>
+>>> Improving the range refinement for JSET to cover all cases is tricky. We
+>>> also don't expect many users to rely on JSET given LLVM doesn't generate
+>>> those instructions. So instead of reducing false positives due to JSETs,
+>>> Eduard suggested we forget the ranges whenever we're narrowing tnums
+>>> after a JSET. This patch implements that approach.
+>>>
+>>> Reported-by: syzbot+c711ce17dd78e5d4fdcf@syzkaller.appspotmail.com
+>>> Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
+>>> Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
+>>> ---
+>>>    kernel/bpf/verifier.c | 4 ++++
+>>>    1 file changed, 4 insertions(+)
+>>>
+>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>>> index 53007182b46b..e2fcea860755 100644
+>>> --- a/kernel/bpf/verifier.c
+>>> +++ b/kernel/bpf/verifier.c
+>>> @@ -16208,6 +16208,10 @@ static void regs_refine_cond_op(struct bpf_reg_state *reg1, struct bpf_reg_state
+>>>    		if (!is_reg_const(reg2, is_jmp32))
+>>>    			break;
+>>>    		val = reg_const_value(reg2, is_jmp32);
+>>> +		/* Forget the ranges before narrowing tnums, to avoid invariant
+>>> +		 * violations if we're on a dead branch.
+>>> +		 */
+>>> +		__mark_reg_unbounded(reg1);
+>>>    		if (is_jmp32) {
+>>>    			t = tnum_and(tnum_subreg(reg1->var_off), tnum_const(~val));
+>>>    			reg1->var_off = tnum_with_subreg(reg1->var_off, t);
+>> The CI reports some invariant violation:
+>>    https://github.com/kernel-patches/bpf/actions/runs/16182458904/job/45681940946?pr=9283
+> AFAICS, these invariant violations predate this change. They seem to be
+> expected and caused by selftests crossing_64_bit_signed_boundary_2 and
+> crossing_32_bit_signed_boundary_2 which are both marked as "known
+> invariants violation". They look like fairly different violations as
+> they are not caused by JSET instructions.
 
-I would think that ra_off and fp_off should be aligned as well and if
-cfa is aligned then it would still be aligned when adding those offsets.
+I double checked and that 'REG INVARIANTS VIOLATION' warning is indeed
+not related to your patch so your change looks good to me. You can add
+my ack like
 
--- Steve
+   Acked-by: Yonghong Song <yonghong.song@linux.dev>
+
+>
+> I think it's still worth having the above change for JSET because we
+> lose only the ranges and not the tnums, whereas with an invariant
+> violation, we lose all info on the register. I'm looking into the two
+> other invariant violations to see if there's anything we can improve
+> there.
+
+Thanks for looking at this!
+
+>
+>> [ 283.030177] ------------[ cut here ]------------ [ 283.030517] verifier
+>> bug: REG INVARIANTS VIOLATION (false_reg2): range bounds violation
+>> u64=[0x8000000000000010, 0x800000000000000f] s64=[0x8000000000000010,
+>> 0x800000000000000f] u32=[0x10, 0xf] s32=[0x10, 0xf]
+>> var_off=(0x8000000000000000, 0x1f)(1)
+>> [ 283.032139] WARNING: CPU: 0 PID: 103 at kernel/bpf/verifier.c:2689
+>> reg_bounds_sanity_check+0x1dd/0x1f0 ... Probably this change triggered some
+>> other violations. Please take a look.
+>>
+
 
