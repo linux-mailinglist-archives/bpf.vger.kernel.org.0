@@ -1,73 +1,73 @@
-Return-Path: <bpf+bounces-62977-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62978-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 718ACB00BE2
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 21:13:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86102B00C1A
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 21:21:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DE96764B73
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 19:13:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7DF65C491F
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 19:21:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E10D2FD5B5;
-	Thu, 10 Jul 2025 19:13:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90D902F0C55;
+	Thu, 10 Jul 2025 19:21:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LiLgLxFe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AUidWjpH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31BD92FD581
-	for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 19:13:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 634882882DE
+	for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 19:21:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752174816; cv=none; b=rmBAM/unkj3U7XFjies+kOUlKFrZSacc9W6b0r5GeaxT6sq2plnstlFMJOtNZYOnLKrSK5kZVFad8FxLEnqPPyBpx/r9/4nFC6TRZDW8reD8AAitZz5uFWzlFkGmbJ/9j2+eXWgqvqk54QHa8zcZ4KWAtMffTm9iFGASW3Q/JgY=
+	t=1752175313; cv=none; b=LeKVUvpHfrvW1hTGsZ2+RgctXYc3PYQwYCaZaUr5urLoYd9JWgI8Wiv+48fIfnQgNL1hd3RkBGwbmpRFaTPn/YpQcb58Xxlys6CWNM6ZnmMqOecwAnGaNUrcI/evXtKR0F8XK85AnZ8xn20QvdrrtpZvax4x5EQtD9b7SA1FLgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752174816; c=relaxed/simple;
-	bh=CFGrmKZ8DZFd3SI2Y2wbGbPZazEyJrzASjGG9KbPiT0=;
+	s=arc-20240116; t=1752175313; c=relaxed/simple;
+	bh=bQbqIVyKo54GQHp5JhwriCNzpr7sUHtbq/wIwT+8r4k=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=J6Qyd4F4CnmSh/cUJLAeJ/MezrXXRDt8J+kYJZCSS+tI4QAqAMiSLw2SJJkx1UJeHAL4PHqib3M06STU7kXQulhds+z+NCXkNQm1Hw7pHIXm+/X3ug1zncu4Ak078pTqzjkY45k1okgr0yOSSYSxPy5ywhbFliy538zVd36quIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LiLgLxFe; arc=none smtp.client-ip=209.85.221.43
+	 To:Cc:Content-Type; b=QRefFW3e5p52N/7kzAv7pb/gEooyzBABhsgeDlFenxSHg8upJ0/a709McinZRfy4o8YMatLI8vY6+HG9SqcoZBlHHLVEVBbPV4Xov0mauZRBtTm79cqXCkDA80cIL5c/Dy8WKG70xE3Bc/Nzc9tK3iCJvPBcpmQS5H17fEH5lts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AUidWjpH; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3a4fd1ba177so978930f8f.0
-        for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 12:13:34 -0700 (PDT)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-453066fad06so8619185e9.2
+        for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 12:21:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752174813; x=1752779613; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1752175309; x=1752780109; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jSDipaTmyknuW2BzZpjf/e/oOZz6aMCp5qK19qTSz6M=;
-        b=LiLgLxFeL0gYLCESMGqtAhu1M/2Rg+2Pn813HboxcUsIh+DGQwDkNIhqGtYi0KFMr5
-         ThN64IjhRQFZ8FkWskl5yHos1GxNr0LbvvjTIB21DzRzhNjpquh6xg+EBQBrYo4w0ANZ
-         5XEjlZjU8TBsXXNZrTcR1/gZ7OiJ2iCDU6Hr9CeYb3bDHd2XUiXrAKxIH3wYBIOQ2fsn
-         +RoSn5aW50SXws0quuADYs/a5x+n6KrPPHyWKUGVFwl6f3Omtj6LfA1GZ13XZHCYLjtZ
-         0ek2R4gPjQJoC1H0QksC0Mc6TtTHfS7bELfxm7YLXXPS875/HDXbUj1jsG4qW0/5r9dR
-         Nd6Q==
+        bh=qUiBFyM0Yn00R3t8T16IwBYSTuDffC72F3UZOtwQCEE=;
+        b=AUidWjpHEGDk8jUnEBR2E8Pb8Em9p7klm+6yNe8DoowsIVEWpqvfmb3zk2fbUoLb08
+         w1EPQus4h0lkXLjhastE4lA3OpcfaWz1AtQsmXIr+H5P54czN9SHoLiLF+yeh9ouDRnj
+         6HpySw8bLSmPlKuKNRPurGxsZVFEC89UDPvMOJckaLuuRuddfFRbSUfpyXAnPODet2h3
+         g4DujP1ThS2yDkO7j/hgGjisZhYnPSM/vDH2WyjvFZ31Zzmj76aXb3EUp/TqT9vxPlEz
+         w/kUqQabZyeixADlGpX0RFd5k4pEEJN+AIxJyyTcPTr/WCxZGjYFEHC8p0fR+9IOfLXS
+         G+QQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752174813; x=1752779613;
+        d=1e100.net; s=20230601; t=1752175309; x=1752780109;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jSDipaTmyknuW2BzZpjf/e/oOZz6aMCp5qK19qTSz6M=;
-        b=skNsMpaKw7KA1drB0/byK1dgzh4VPxNw/Jdl/6XyTKDqQ74TJBRyjRsnhioNxQcizA
-         shdhPRNvGhyFcWMOfw2dxZ8rtGssK4TBP6/H2vC04vYIT2F0gvZodzwu+LqSn3Z4tOBI
-         3q3pRgkAq1qtSIU812/6om3B8v3eaLnNV7qxfabcUJqlggj5bFAZBosGm24WW4prKc+2
-         WR9zP916+/gOQKQbXHEHMCDvOg4dTl+UZBkm3XBK940mniuqaxOHBUDxN44KnSpfEkmV
-         7ZZgRcQw7ZgAhIw830a2wDa9wlDMUVFHrbw73hdKx90LaUX6Di00m/yiZW0QxWqvoZaO
-         RDUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW+4c8DWT0fPHHXQK1RQQvpQK4H9tyWnJ2l3DoAlvzgfOIcWSG9PExp6WJt0cKnfnfKNV0=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywwcz0I1PCCB4LgoymsyFUlfP4uQFELNCcwtbrQ8BbqUtEa7Hvi
-	TnaDPdhTlCUb2JT1REutfsxHkgXXr63Eg42OKUFImFEbmMLnE4cRHTGWGc3iQJhQPsr9Y/2/v7F
-	jz/0mi0h/Z5anksIc6geQrtoiggt00A8=
-X-Gm-Gg: ASbGncu+uzHQcSB1+zk7LHs9WaC7fSaFHRYQGTBsWONVWHF4PDkarul1LK8UWQ0GwKI
-	FUbfy4Szg7SEq3F47Hohn6YQdlGYyRJJ1Ynw+daUtAbYj527Wq4XnnZWtGe/03cxBMh6sVhCX10
-	dpEUXDQTfXc59MVuI/M8pNxuGkmN0h4Pn5lsv5lPs0ml3ujdT+89Le364kr71T7cXAquIkOjq8
-X-Google-Smtp-Source: AGHT+IGKE5Z771xbAvcCin6dH8cGHgjDHQcZF4e1IpfkK6WQQFkYdH1IJv69raJtJDWm7Ml9hcjqfz/jV8pohpsh7ao=
-X-Received: by 2002:a05:6000:2b07:b0:3b4:9909:6fbd with SMTP id
- ffacd0b85a97d-3b5f1eb13a9mr242203f8f.29.1752174813061; Thu, 10 Jul 2025
- 12:13:33 -0700 (PDT)
+        bh=qUiBFyM0Yn00R3t8T16IwBYSTuDffC72F3UZOtwQCEE=;
+        b=Y4svAYAUPPkMCqgWQ42gDelVF3K5nkgIXHSFdBNzRo1mOBcaGf/jIIursZJynMovfp
+         mVG370j/kVIa79BkdsxnLtWwbp52fr6UVWZwE0WA9OGRlb8BKt4t5S6vIkWRiuO/8UPg
+         7A3LD0ZD83v85Z2LwPO2rX2eUja905MeggHToq0xZ3rpYsjplQHxdYG/1cOkYdOxLNom
+         XbzrepoIpqOxWDWg6++2sVa8mCE4O9qhxFM/O5MNYFCCSTQEusPge7B+RM5tyW8iQv8p
+         U0opaC/Sb1tF9vOevYF3kewRnx1DaKvi89gB2YKRxLJRE3kaCScZsmFc+f94HwmTFPbR
+         syLw==
+X-Gm-Message-State: AOJu0Ywp7jTjX8pYGfuXf+txIBzTKtiXno4u21tHZK27vapGpLPEYugo
+	ZgGaWCEAKXecmrGBoLeHbD3OIFf22gM/vldl2hjZdab6u6/Eb2FFxHdoQHsxL/LHBjYsNcvAyEj
+	j8Anw4kix7y1OLeYKduEdFf8+berN78Y=
+X-Gm-Gg: ASbGncvO2KhHBS7Yn7enOdXt81a1Tc3RoH1XHwA2uTbM7nyneWGE3BsyGumj6gM78sc
+	B+pUWDgsMXuWsjwIAzIW+Pg+qPErKnZicrZHFPrvFDl21jVTpJcRc8pOIc4T1cJP+LXbQHDmiBs
+	VKwUZpHLJ2HASF4y+9BiMINK08gkbFNz7dTMR/E2th1dLIN4Z2lVliCSqntfZsCD2oK4mP/zyZ3
+	dsr/CWsa80=
+X-Google-Smtp-Source: AGHT+IE8J4fA8ruUMSURSR3iBDBJ6W96CyD0YH06p+VMUk8sYNYqP6QxPlwCGMKXkjHfQ0nc4Oo18etF+PbrbO1oViw=
+X-Received: by 2002:a05:600c:3b82:b0:43c:ec4c:25b4 with SMTP id
+ 5b1f17b1804b1-454ec131ce1mr1027385e9.10.1752175309353; Thu, 10 Jul 2025
+ 12:21:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,16 +76,15 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20250709015303.8107-1-alexei.starovoitov@gmail.com>
  <20250709015303.8107-7-alexei.starovoitov@gmail.com> <683189c3-934e-4398-b970-34584ac70a69@suse.cz>
- <aG-UMkt-AQpu8mKq@hyeyoo> <e9bab147-5b36-4f9a-85b0-64740b84e826@suse.cz>
-In-Reply-To: <e9bab147-5b36-4f9a-85b0-64740b84e826@suse.cz>
+In-Reply-To: <683189c3-934e-4398-b970-34584ac70a69@suse.cz>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 10 Jul 2025 12:13:20 -0700
-X-Gm-Features: Ac12FXxmDklC5eyMf7HqxCceF1R9DFZLy2SVv-PFIEAVwNax10vLZ23Y2MZ3YFQ
-Message-ID: <CAADnVQ+G340va8h2B7nNO00mWxbP_chx3oHW2PYrKt2AfOZS8w@mail.gmail.com>
+Date: Thu, 10 Jul 2025 12:21:38 -0700
+X-Gm-Features: Ac12FXxYKFCHpSKbbo5umlXWioHW1RzkGHfC30HxTA9RgRLit_mjyvQAYY3z4dY
+Message-ID: <CAADnVQKGfRQV=93=NcKb--R_40kWwmn-u75BRmOX6bEiMVAx5A@mail.gmail.com>
 Subject: Re: [PATCH v2 6/6] slab: Introduce kmalloc_nolock() and kfree_nolock().
 To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Harry Yoo <harry.yoo@oracle.com>, bpf <bpf@vger.kernel.org>, 
-	linux-mm <linux-mm@kvack.org>, Shakeel Butt <shakeel.butt@linux.dev>, 
+Cc: bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	Harry Yoo <harry.yoo@oracle.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
 	Michal Hocko <mhocko@suse.com>, Sebastian Sewior <bigeasy@linutronix.de>, 
 	Andrii Nakryiko <andrii@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
 	Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, 
@@ -93,89 +92,117 @@ Cc: Harry Yoo <harry.yoo@oracle.com>, bpf <bpf@vger.kernel.org>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 10, 2025 at 8:05=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+On Thu, Jul 10, 2025 at 2:36=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
 ote:
+> > +     if (unlikely(!allow_spin)) {
+> > +             folio =3D (struct folio *)alloc_frozen_pages_nolock(0/* _=
+_GFP_COMP is implied */,
+> > +                                                               node, o=
+rder);
+> > +     } else if (node =3D=3D NUMA_NO_NODE)
+> >               folio =3D (struct folio *)alloc_frozen_pages(flags, order=
+);
+> >       else
+> >               folio =3D (struct folio *)__alloc_frozen_pages(flags, ord=
+er, node, NULL);
 >
-> On 7/10/25 12:21, Harry Yoo wrote:
-> > On Thu, Jul 10, 2025 at 11:36:02AM +0200, Vlastimil Babka wrote:
-> >> On 7/9/25 03:53, Alexei Starovoitov wrote:
-> >>
-> >> Hm but this is leaking the slab we allocated and have in the "slab"
-> >> variable, we need to free it back in that case.
+> Nit: should use { } either for everything or nothing (seems your new bran=
+ch
+> would work without them)
 
-ohh. sorry for the silly mistake.
-Re-reading the diff again I realized that I made a similar mistake in
-alloc_single_from_new_slab().
-It has this bit:
-if (!alloc_debug_processing(...))
-  return NULL;
+leftover from v1. will fix.
 
-so I assumed that doing:
-if (!spin_trylock_irqsave(&n->list_lock,..))
-   return NULL;
-
-is ok too. Now I see that !alloc_debug is purposefully leaking memory.
-
-Should we add:
-@@ -2841,6 +2841,7 @@ static void *alloc_single_from_new_slab(struct
-kmem_cache *s, struct slab *slab,
-                 * It's not really expected that this would fail on a
-                 * freshly allocated slab, but a concurrent memory
-                 * corruption in theory could cause that.
-+                * Leak newly allocated slab.
-                 */
-                return NULL;
-
-so the next person doesn't make the same mistake?
-
-Also help me understand...
-slab->objects is never equal to 1, right?
-/proc/slabinfo agrees, but I cannot decipher it through slab init code.
-Logically it makes sense.
-If that's the case why alloc_single_from_new_slab()
-has this part:
-        if (slab->inuse =3D=3D slab->objects)
-                add_full(s, n, slab);
-        else
-                add_partial(n, slab, DEACTIVATE_TO_HEAD);
-
-Shouldn't it call add_partial() only ?
-since slab->inuse =3D=3D 1 and slab->objects !=3D 1
-
+> >                       stat(s, ALLOC_NODE_MISMATCH);
+> > @@ -3730,7 +3762,7 @@ static void *___slab_alloc(struct kmem_cache *s, =
+gfp_t gfpflags, int node,
+> >        * PFMEMALLOC but right now, we are losing the pfmemalloc
+> >        * information when the page leaves the per-cpu allocator
+> >        */
+> > -     if (unlikely(!pfmemalloc_match(slab, gfpflags)))
+> > +     if (unlikely(!pfmemalloc_match(slab, gfpflags) && allow_spin))
+> >               goto deactivate_slab;
 > >
-> > But it might be a partial slab taken from the list?
+> >       /* must check again c->slab in case we got preempted and it chang=
+ed */
+> > @@ -3803,7 +3835,12 @@ static void *___slab_alloc(struct kmem_cache *s,=
+ gfp_t gfpflags, int node,
+> >               slub_set_percpu_partial(c, slab);
+> >
+> >               if (likely(node_match(slab, node) &&
+> > -                        pfmemalloc_match(slab, gfpflags))) {
+> > +                        pfmemalloc_match(slab, gfpflags)) ||
+> > +                 /*
+> > +                  * Reentrant slub cannot take locks necessary
+> > +                  * for __put_partials(), hence downgrade to any node
+> > +                  */
+> > +                 !allow_spin) {
 >
-> True.
+> Uh this seems rather ugly, I'd move the comment above everything. Also it=
+'s
+> not "downgrade" as when you assign NUMA_NO_NODE earlier, I'd say "ignore =
+the
+> preference".
+> Note that it would be bad to ignore with __GFP_THISNODE but then it's not
+> allowed for kmalloc_nolock() so that's fine.
+
+Yes. All correct. Will reword.
+
+> > @@ -3911,6 +3953,12 @@ static void *___slab_alloc(struct kmem_cache *s,=
+ gfp_t gfpflags, int node,
+> >               void *flush_freelist =3D c->freelist;
+> >               struct slab *flush_slab =3D c->slab;
+> >
+> > +             if (unlikely(!allow_spin))
+> > +                     /*
+> > +                      * Reentrant slub cannot take locks
+> > +                      * necessary for deactivate_slab()
+> > +                      */
+> > +                     return NULL;
 >
-> > Then we need to trylock n->list_lock and if that fails, oh...
+> Hm but this is leaking the slab we allocated and have in the "slab"
+> variable, we need to free it back in that case.
 >
-> So... since we succeeded taking it from the list and thus the spin_tryloc=
-k,
-> it means it's safe to spinlock n->list_lock again - we might be waiting o=
-n
-> other cpu to unlock it but we know we didn't NMI on our own cpu having th=
-e
-> lock, right? But we'd probably need to convince lockdep about this someho=
-w,
-> and also remember if we allocated a new slab or taken on from the partial
-> list... or just deal with this unlikely situation in another irq work :/
+> >               c->slab =3D NULL;
+> >               c->freelist =3D NULL;
+> >               c->tid =3D next_tid(c->tid);
+>
+> > @@ -4593,10 +4792,31 @@ static __always_inline void do_slab_free(struct=
+ kmem_cache *s,
+> >       barrier();
+> >
+> >       if (unlikely(slab !=3D c->slab)) {
+> > -             __slab_free(s, slab, head, tail, cnt, addr);
+> > +             /* cnt =3D=3D 0 signals that it's called from kfree_noloc=
+k() */
+> > +             if (unlikely(!cnt)) {
+> > +                     /*
+> > +                      * __slab_free() can locklessly cmpxchg16 into a =
+slab,
+> > +                      * but then it might need to take spin_lock or lo=
+cal_lock
+> > +                      * in put_cpu_partial() for further processing.
+> > +                      * Avoid the complexity and simply add to a defer=
+red list.
+> > +                      */
+> > +                     defer_free(head);
+> > +             } else {
+> > +                     __slab_free(s, slab, head, tail, cnt, addr);
+> > +             }
+> >               return;
+> >       }
+> >
+> > +     if (unlikely(!cnt)) {
+> > +             if ((in_nmi() || !USE_LOCKLESS_FAST_PATH()) &&
+> > +                 local_lock_is_locked(&s->cpu_slab->lock)) {
+> > +                     defer_free(head);
+> > +                     return;
+> > +             }
+> > +             cnt =3D 1;
+>
+> Hmm we might end up doing a "goto redo" later and then do the wrong thing=
+ above?
 
-irq_work might be the least mind bending.
-Good point about partial vs new slab.
-For partial we can indeed proceed with deactivate_slab() and if
-I'm reading the code correctly, it won't have new.inuse =3D=3D 0,
-so it won't go to discard_slab() (which won't be safe in this path)
-But teaching lockdep that below bit in deactivate_slab() is safe:
-        } else if (new.freelist) {
-                spin_lock_irqsave(&n->list_lock, flags);
-                add_partial(n, slab, tail);
-is a challenge.
-
-Since defer_free_work is there, I'm leaning to reuse it for
-deactive_slab too. It will process
-static DEFINE_PER_CPU(struct llist_head, defer_free_objects);
-and
-static DEFINE_PER_CPU(struct llist_head, defer_deactivate_slabs);
-
-Shouldn't be too ugly. Better ideas?
+Great catch. Will fix. That's two serious bugs.
+That's my penalty for reviewing other people code 99% of the time
+and little time to code myself.
 
