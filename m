@@ -1,87 +1,86 @@
-Return-Path: <bpf+bounces-62967-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62968-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D89A3B00B6D
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 20:30:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FCFEB00B7D
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 20:35:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 834E93B4916
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 18:29:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D7B481CA5A79
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 18:36:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2E3D2FCFD2;
-	Thu, 10 Jul 2025 18:29:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B02232FCFC5;
+	Thu, 10 Jul 2025 18:35:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="h6TBkXCj"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="V5VgZnHB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED9762FCE1A
-	for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 18:29:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B86EC2FCE13
+	for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 18:35:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752172190; cv=none; b=Ufh7+nwwh3X+BMbllsHMLMsg/nlEBnXxlaFI/DlzC4Z3ct5Hvf1JCP+rbrEJEr4NojvhZYJWm+6JM9Nmm+HyhfPBEnKOs2dKJy+O5NLgIs68W+yLeSQBpRtxeGVk8X2FiWGNzF0p6P+ajlbYpulrzETLZ5PSzGcRiU/lWeyBOgs=
+	t=1752172549; cv=none; b=t5YknRP1Fh/jhmymC0XMculP11rx15fAF6rWix+dN7E6itJwLlA3vl+xFRnv8LT1yxx7T+lw3I4UVk8xynjKJazm6HEy6W0zl/yF2aN5buRSwEc9LAIegQNFcn9x20PaS/rzUtIuhanP2XUSaMnEnMigXSpxuQTk4YzPAO58u2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752172190; c=relaxed/simple;
-	bh=XhzeOVnGG90EuOKlpcIA49U19NvJeJfXJnX6bYAZwwY=;
+	s=arc-20240116; t=1752172549; c=relaxed/simple;
+	bh=BQi/oAxmvttoMCkmYmgHMY9tc5kt6YdUCM6RxGff5II=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DOmwRDKm/QkN/niKmyamXtdG31Jit+0bdpmXIE84AXNln50lScs14BE8cB6BtqEpe7tmtpf1azYPTDivuzyHjdEOgiDU/B2pYOWVBr4oZ9zdCgwSM04L4pe35XcIgUnvsGf1ucPMY8vnR690eSRNZqJDhf9cS8B0578U8RGnfKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=h6TBkXCj; arc=none smtp.client-ip=209.85.214.182
+	 To:Cc:Content-Type; b=MKSnW30g8Ep+Xjzpy63tVMAsVDnn5CIyde5WiQyMfhYvKAAMnbSqVdwQ5HgG/PDINamjDcFwgPinQ53YOfjHl6xKcH8ow2aNzmzRf11jk++/SBn71OYnVCHteLi1ZqA3JTWHGcQeURTmJPzahu6Uxh/pmF0+D8U4Py8GHvDz114=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=V5VgZnHB; arc=none smtp.client-ip=209.85.214.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-235e389599fso32365ad.0
-        for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 11:29:48 -0700 (PDT)
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-23dd9ae5aacso25965ad.1
+        for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 11:35:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1752172188; x=1752776988; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1752172547; x=1752777347; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ro/pNusaSjsWEAeWpTTGWyr6dzux21WEDh0Yp0DuJJc=;
-        b=h6TBkXCjIsIV5dQNID5gQEOPO0lCDvYKZbhkTuLlDQx0Zooy3DR4x9Erf3DpUOV4MJ
-         K+uMuJOnrIQqVyfBpAQKzzuqYH70sJFs7znUg0ApjSN79Gw0vorG3ghvE6TBYl4I8pw+
-         goDouEajQBH1lBPeOqAdRpHlIJ9aKc120R1fmb2eWIoech8A8nes8DBBXWeh6TOA/cPb
-         i5CuA9oG27Rtd/dWQlCBopV9+XsigaDwScnP2oh08ia2/kSrQRA4Y7BZFS6b0YCGGObC
-         UsDtAh0nscLBEPwgD6E1/IoFfoE02Xu1k+TwpkkHDtD/4X7YQYWIxW+FpbfFsiIsRksA
-         4iDw==
+        bh=sUFyFG64jchMDy9nJZhwnx6mFvVO2+1zDBN4KcsNtGQ=;
+        b=V5VgZnHBUAwpIKTq3Kone9pNEIxn1KsfehINSGQXDEJfYnBfLnPl21en0eF6+49Qfs
+         IPEJOc8dP9hY6i4PbXLFaSWPpd4u/BMAuR8BV3qOcZuLxkYayCSzAwwTQX4zu9nf5vBp
+         r1kGNnpX6l1kYIdXy9XwnzsZvOrOMSuK1VNBw6KJbTceShJ1ZD/VRlIyTrsVYcw0R5eJ
+         a5xbvLIeqGPZs3bORCV26MrxNxkd/QG2JikR04f4cA66sAmjo0xfQxvVduEcfrGgaq9m
+         a8wbPnuILhBPwzAg+1iqeYBopGM5PoqkBRdJ41S1Ybp7lD6+mFpxx5MI7QLb3FBLVv4t
+         03tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752172188; x=1752776988;
+        d=1e100.net; s=20230601; t=1752172547; x=1752777347;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ro/pNusaSjsWEAeWpTTGWyr6dzux21WEDh0Yp0DuJJc=;
-        b=Kec0oRQn9BeG7vHrHYN607Wn4M44vB+yXPO6LMuZ7CTtVfRYy2Xt0ar2J3FEN2/KVT
-         aNFQtgnqYSYEBiSYKBAUXpC/9I4ThXXHFwBMeESYsoTaONjrOvE9pvPuRiQxW92KqGO7
-         VZm6OGWPloAk1/7ZjLVsjPmQgxPRlKlkXt5ZawTC0oKpVMFmWTk1s+GlhGQ68PkhtC79
-         jTN+p6LTknvF7qlZ5mCWRUtLvMbpzNoq+FTcBvSGr9sKG/rNqOWc5MLm4U8rwzZmq2C/
-         Kl3g5Bh1dfWsIioArYhKnwdRu+KGSqB4FsLHYE4k9bggC7/+kpPzYoh0CyWamkyEHOo8
-         1zMw==
-X-Forwarded-Encrypted: i=1; AJvYcCVxULwAgpYOU3bn2yH6CkUdwucuRASx4efy6aBxTOQG8UTEgbmA4zFFSi1eNqCVbjk23Gg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzuwMq7oWvDPUcAPVA9I/OgBjGWJDkp5ZB8OqdtzFA/AdAAjiqA
-	oeXP6UWfuSSkQzfjY65hMVft2IZk4dcYObbJXhZx/fWIOqUSQ8I2EEccEV4OWbWjjyfhzz0Wo94
-	UVhrniypN95ZPE8MDWG+wlNKaMv9zNo4wT88KQ79k
-X-Gm-Gg: ASbGncu/DGUIy084bby8r/bw1XU/u20JkJhpRzVwkVorZYADpkONanrrnaIJwLcnH0P
-	BMkSeP4DmG+JWxiQek8SliQvZklKzRQXVLarQEf0u/n3/t4RxdyjRzo2u9E0Z1pEyC6j/aqvs5P
-	CHuPo/dEXVHnP4+kko53l7qDFeYy+7Mpf8nygPPS4UgMyBYg4V1rjCeZpQMLLLxkNN0G1+Np8=
-X-Google-Smtp-Source: AGHT+IGDUh9i2QR+OkMh4fD77Cn7MdjzQa4MMPj+bj7Pxco//T5atBLGYHjMI7EeJmWwYCLX+z0Vvq1jG9YvLKt6WQc=
-X-Received: by 2002:a17:902:e846:b0:235:e8da:8e1 with SMTP id
- d9443c01a7336-23dee27d5famr281145ad.18.1752172187759; Thu, 10 Jul 2025
- 11:29:47 -0700 (PDT)
+        bh=sUFyFG64jchMDy9nJZhwnx6mFvVO2+1zDBN4KcsNtGQ=;
+        b=ShtDY4/gFr6sG+XRLVOj3s1y3kkTcsHgXURezQMsTkXNMhz4ttwiiiq4efLh6fZCDt
+         uIPppES4s6cRFrdblg2rwioghYPQnanxrnAY/1S44AK4y7VuXvq3an771AUnQSKeW55X
+         YH6cv4eV2X5iCYGOUUsjZiXGU4bLOVNe9ECiD1sEPecWOVMbQEURWYGeSM1urlYaklip
+         LZVQna7lDemsFT23iHbXTsZaNX/zb746O51x4XzlLp6YW0XhQK4CwQYow5pW7arK5Kon
+         yWFkZ4H/AQ+nZ2DxdVzdJXv6t2ITXQ58uXXmH0G9yTB/EnawBOTjkHp3O4jyP6rQXFa7
+         oAkA==
+X-Forwarded-Encrypted: i=1; AJvYcCV0ufMGg6rLH79AA1J16PzDhvytebS1oYQ7Fl2Fmto0CO0KPfs0Um4rfwbI/goMkMUMh2I=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxMy99HgJ2kwDkA+0+V3c5KVcmC/CkL+yRKUh/KQ909V/qNuwgm
+	cvHxVQRKf+NveVp5SYS4AaCeyJr70vyCwtPvBOAOkE6lnWl1gw/xPXlTEcXyWwkrbLVnITUfy6/
+	Ri/TiTEtVVy/quEBdi4aNHOCUx4rBDGBuSf8r8Sas
+X-Gm-Gg: ASbGncu5Lsg4M6OyTFfAlWIqWhqF0RctcsfTS1/oNBXk1D/QHAjzMPofVotQuAD5oLe
+	hXtA6daKFX78fPSkbiVGptxLozWaxyPK3+jukHn4c1W0gza54uhfmv2H9nGD3pcHd3KeKpus77Z
+	PM9jkTS8qY6AFG/KFSHmpOY+4WHoE6N0vjTuWq1nNOkvwE9OGLPMsmD98RQAOJoxW6+GmAwas=
+X-Google-Smtp-Source: AGHT+IEzZmw78/OSXjJWOTZycozUs1vUEUMKIB/o/lKBX8kmUgnw2fbBaI4EEfFVqfugsZvpbjLQdKz5IhYTiVxWNgo=
+X-Received: by 2002:a17:902:b095:b0:231:f6bc:5c84 with SMTP id
+ d9443c01a7336-23dee18a914mr236695ad.8.1752172546684; Thu, 10 Jul 2025
+ 11:35:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250710082807.27402-1-byungchul@sk.com> <20250710082807.27402-7-byungchul@sk.com>
-In-Reply-To: <20250710082807.27402-7-byungchul@sk.com>
+References: <20250710082807.27402-1-byungchul@sk.com>
+In-Reply-To: <20250710082807.27402-1-byungchul@sk.com>
 From: Mina Almasry <almasrymina@google.com>
-Date: Thu, 10 Jul 2025 11:29:35 -0700
-X-Gm-Features: Ac12FXzeYcyI9Q9DAscC8V1bkRMOGnCRm09FJHP9wMGxc_EiuS0WSo5wKouz6uY
-Message-ID: <CAHS8izM9FO01kTxFhM8VUOqDFdtA80BbY=5xpKDM=S9fMcd3YA@mail.gmail.com>
-Subject: Re: [PATCH net-next v9 6/8] mlx4: use netmem descriptor and APIs for
- page pool
+Date: Thu, 10 Jul 2025 11:35:33 -0700
+X-Gm-Features: Ac12FXzCBZV3mzo5-D0lWEghMlDgKwI9NFBNKAUpNVy6DriBk8SQ-mKMDpELnTI
+Message-ID: <CAHS8izMie=XQcVUhW9CmydTqYEscp5soeOT4nwvFj2T+8X1ypA@mail.gmail.com>
+Subject: Re: [PATCH net-next v9 0/8] Split netmem from struct page
 To: Byungchul Park <byungchul@sk.com>
 Cc: willy@infradead.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	linux-mm@kvack.org, kernel_team@skhynix.com, kuba@kernel.org, 
@@ -100,104 +99,102 @@ Content-Transfer-Encoding: quoted-printable
 On Thu, Jul 10, 2025 at 1:28=E2=80=AFAM Byungchul Park <byungchul@sk.com> w=
 rote:
 >
-> To simplify struct page, the effort to separate its own descriptor from
-> struct page is required and the work for page pool is on going.
+> Hi all,
 >
-> Use netmem descriptor and APIs for page pool in mlx4 code.
+> The MM subsystem is trying to reduce struct page to a single pointer.
+> See the following link for your information:
 >
-> Signed-off-by: Byungchul Park <byungchul@sk.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx4/en_rx.c   | 48 +++++++++++---------
->  drivers/net/ethernet/mellanox/mlx4/en_tx.c   |  8 ++--
->  drivers/net/ethernet/mellanox/mlx4/mlx4_en.h |  4 +-
->  3 files changed, 32 insertions(+), 28 deletions(-)
+>    https://kernelnewbies.org/MatthewWilcox/Memdescs/Path
 >
-> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/eth=
-ernet/mellanox/mlx4/en_rx.c
-> index b33285d755b9..7cf0d2dc5011 100644
-> --- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-> +++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-> @@ -62,18 +62,18 @@ static int mlx4_en_alloc_frags(struct mlx4_en_priv *p=
-riv,
->         int i;
+> The first step towards that is splitting struct page by its individual
+> users, as has already been done with folio and slab.  This patchset does
+> that for page pool.
 >
->         for (i =3D 0; i < priv->num_frags; i++, frags++) {
-> -               if (!frags->page) {
-> -                       frags->page =3D page_pool_alloc_pages(ring->pp, g=
-fp);
-> -                       if (!frags->page) {
-> +               if (!frags->netmem) {
-> +                       frags->netmem =3D page_pool_alloc_netmems(ring->p=
-p, gfp);
-> +                       if (!frags->netmem) {
->                                 ring->alloc_fail++;
->                                 return -ENOMEM;
->                         }
-> -                       page_pool_fragment_page(frags->page, 1);
-> +                       page_pool_fragment_netmem(frags->netmem, 1);
->                         frags->page_offset =3D priv->rx_headroom;
+> Matthew Wilcox tried and stopped the same work, you can see in:
 >
->                         ring->rx_alloc_pages++;
->                 }
-> -               dma =3D page_pool_get_dma_addr(frags->page);
-> +               dma =3D page_pool_get_dma_addr_netmem(frags->netmem);
->                 rx_desc->data[i].addr =3D cpu_to_be64(dma + frags->page_o=
-ffset);
->         }
->         return 0;
-> @@ -83,10 +83,10 @@ static void mlx4_en_free_frag(const struct mlx4_en_pr=
-iv *priv,
->                               struct mlx4_en_rx_ring *ring,
->                               struct mlx4_en_rx_alloc *frag)
->  {
-> -       if (frag->page)
-> -               page_pool_put_full_page(ring->pp, frag->page, false);
-> +       if (frag->netmem)
-> +               page_pool_put_full_netmem(ring->pp, frag->netmem, false);
->         /* We need to clear all fields, otherwise a change of priv->log_r=
-x_info
-> -        * could lead to see garbage later in frag->page.
-> +        * could lead to see garbage later in frag->netmem.
->          */
->         memset(frag, 0, sizeof(*frag));
->  }
-> @@ -440,29 +440,33 @@ static int mlx4_en_complete_rx_desc(struct mlx4_en_=
-priv *priv,
->         unsigned int truesize =3D 0;
->         bool release =3D true;
->         int nr, frag_size;
-> -       struct page *page;
-> +       netmem_ref netmem;
->         dma_addr_t dma;
+>    https://lore.kernel.org/linux-mm/20230111042214.907030-1-willy@infrade=
+ad.org/
 >
->         /* Collect used fragments while replacing them in the HW descript=
-ors */
->         for (nr =3D 0;; frags++) {
->                 frag_size =3D min_t(int, length, frag_info->frag_size);
+> I focused on removing the page pool members in struct page this time,
+> not moving the allocation code of page pool from net to mm.  It can be
+> done later if needed.
 >
-> -               page =3D frags->page;
-> -               if (unlikely(!page))
-> +               netmem =3D frags->netmem;
-> +               if (unlikely(!netmem))
->                         goto fail;
+> The final patch removing the page pool fields will be posted once all
+> the converting of page to netmem are done:
 >
-> -               dma =3D page_pool_get_dma_addr(page);
-> +               dma =3D page_pool_get_dma_addr_netmem(netmem);
->                 dma_sync_single_range_for_cpu(priv->ddev, dma, frags->pag=
-e_offset,
->                                               frag_size, priv->dma_dir);
+>    1. converting use of the pp fields in struct page in prueth_swdata.
+>    2. converting use of the pp fields in struct page in freescale driver.
 >
-> -               __skb_fill_page_desc(skb, nr, page, frags->page_offset,
-> -                                    frag_size);
-> +               __skb_fill_netmem_desc(skb, nr, netmem, frags->page_offse=
-t,
-> +                                      frag_size);
+> For our discussion, I'm sharing what the final patch looks like, in this
+> cover letter.
 >
->                 truesize +=3D frag_info->frag_stride;
->                 if (frag_info->frag_stride =3D=3D PAGE_SIZE / 2) {
-> +                       struct page *page =3D netmem_to_page(netmem);
+>         Byungchul
+> --8<--
+> commit 1847d9890f798456b21ccb27aac7545303048492
+> Author: Byungchul Park <byungchul@sk.com>
+> Date:   Wed May 28 20:44:55 2025 +0900
+>
+>     mm, netmem: remove the page pool members in struct page
+>
+>     Now that all the users of the page pool members in struct page have b=
+een
+>     gone, the members can be removed from struct page.
+>
+>     However, since struct netmem_desc still uses the space in struct page=
+,
+>     the important offsets should be checked properly, until struct
+>     netmem_desc has its own instance from slab.
+>
+>     Remove the page pool members in struct page and modify static checker=
+s
+>     for the offsets.
+>
+>     Signed-off-by: Byungchul Park <byungchul@sk.com>
+>
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index 32ba5126e221..db2fe0d0ebbf 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -120,17 +120,6 @@ struct page {
+>                          */
+>                         unsigned long private;
+>                 };
+> -               struct {        /* page_pool used by netstack */
+> -                       /**
+> -                        * @pp_magic: magic value to avoid recycling non
+> -                        * page_pool allocated pages.
+> -                        */
+> -                       unsigned long pp_magic;
+> -                       struct page_pool *pp;
+> -                       unsigned long _pp_mapping_pad;
+> -                       unsigned long dma_addr;
+> -                       atomic_long_t pp_ref_count;
+> -               };
+>                 struct {        /* Tail pages of compound page */
+>                         unsigned long compound_head;    /* Bit zero is se=
+t */
+>                 };
+> diff --git a/include/net/netmem.h b/include/net/netmem.h
+> index 8f354ae7d5c3..3414f184d018 100644
+> --- a/include/net/netmem.h
+> +++ b/include/net/netmem.h
+> @@ -42,11 +42,8 @@ struct netmem_desc {
+>         static_assert(offsetof(struct page, pg) =3D=3D \
+>                       offsetof(struct netmem_desc, desc))
+>  NETMEM_DESC_ASSERT_OFFSET(flags, _flags);
+> -NETMEM_DESC_ASSERT_OFFSET(pp_magic, pp_magic);
+> -NETMEM_DESC_ASSERT_OFFSET(pp, pp);
+> -NETMEM_DESC_ASSERT_OFFSET(_pp_mapping_pad, _pp_mapping_pad);
+> -NETMEM_DESC_ASSERT_OFFSET(dma_addr, dma_addr);
+> -NETMEM_DESC_ASSERT_OFFSET(pp_ref_count, pp_ref_count);
+> +NETMEM_DESC_ASSERT_OFFSET(lru, pp_magic);
+> +NETMEM_DESC_ASSERT_OFFSET(mapping, _pp_mapping_pad);
+>  #undef NETMEM_DESC_ASSERT_OFFSET
+>
+>  /*
 
-This cast is not safe, try to use the netmem type directly.
+
+Can you remove the above patch/diff from the cover letter?
 
 --=20
 Thanks,
