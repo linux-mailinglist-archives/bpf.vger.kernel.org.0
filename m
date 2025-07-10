@@ -1,149 +1,133 @@
-Return-Path: <bpf+bounces-62912-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62913-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BF1EB000C0
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 13:47:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1BACB00111
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 14:01:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55658561279
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 11:47:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B41E31C80AE5
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 12:01:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 630962494F0;
-	Thu, 10 Jul 2025 11:46:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29FEB258CE2;
+	Thu, 10 Jul 2025 11:59:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kmy2T+mx"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="fyZ5EV88"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA9A1946F;
-	Thu, 10 Jul 2025 11:46:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32D71230D1E;
+	Thu, 10 Jul 2025 11:59:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752148012; cv=none; b=ji8mdKpBBG0aJtQ+7iUEJq3yK9oVhz2+0g1KJT7TDXDbcByiaIjZogJP6480tiRgV0JkprbJLJPbjLG9G0CSrBeO7oMAhtML7JFEICeQSbBCmpuKEdpmYrFVGcjsciwf1SkeiGE1AeVUXJO64g4vEO6rTGVZIaOIVHplenxpzr8=
+	t=1752148788; cv=none; b=OS0SoQcUoLyx6eD1/G4HNP4D3cCzI/tO2nn2POeNr0jXKKSvosh3ctW9iPh5lvgWLcSS8ucIn55tRdmdZQMU9FUvaYubeEb/YswN+cUBwaXmrk4Vw8iRvLDfHXf0UUkdtgVdOoz7jngAxh1BKGVs/X7AIZ+LTx1V/qGrD0onCeI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752148012; c=relaxed/simple;
-	bh=t/OeAvIh8DyOgjIIocAvYTIOO6EsHiE6fqTQPT+2lQY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BeA+5v6uDYHW/GYQ7pIRaTJ0vy7J27tgju/GkAa6w+SVjhpDZPAdmGRXtorH19xgKuFAvjDVJqq5fYbSrD9LN9SJTZnkYNDjQs41AlMi+oA8c3j/X4NbAdBJrpgM6vGtljLitwUDpFNGSuMPPb0SjwEN6IRAVOtDYASwjy8FFLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kmy2T+mx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C78A4C4CEE3;
-	Thu, 10 Jul 2025 11:46:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752148012;
-	bh=t/OeAvIh8DyOgjIIocAvYTIOO6EsHiE6fqTQPT+2lQY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kmy2T+mxE+7xOOMDTL8TRFHexoTeE0G4VAikvj3fcRgN4jfOqsJtdyjMyzE46/SXt
-	 u3fVlUmIO/B6hi2vHg9m8YC8Bqyvilj+TJVzLDeK7wFYDMBo5MtFtW/EvXYZAF8tn3
-	 w2b6s3ETa3JNlIUg2Wk74516+WI08ZvVDCQVnBxTUg+o/zokk4qZDp7dL2G480vhX9
-	 nZY+InRMFy3JgfTByCWsPrSdorvtM+3Jzy35IC5jLmWWtjSenXTHNTzjNL0UoPJCNW
-	 nBDBboyVOf0dPPH4SRBEmKwamyu1YjdIWZQlzEuZQrxfDxcsVspPgnKBs2rpsxE0k4
-	 m6Mao47ynwhDQ==
-Date: Thu, 10 Jul 2025 13:46:42 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Song Liu <songliubraving@meta.com>
-Cc: Paul Moore <paul@paul-moore.com>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Song Liu <song@kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>, "apparmor@lists.ubuntu.com" <apparmor@lists.ubuntu.com>, 
-	"selinux@vger.kernel.org" <selinux@vger.kernel.org>, 
-	"tomoyo-users_en@lists.sourceforge.net" <tomoyo-users_en@lists.sourceforge.net>, 
-	"tomoyo-users_ja@lists.sourceforge.net" <tomoyo-users_ja@lists.sourceforge.net>, Kernel Team <kernel-team@meta.com>, 
-	"andrii@kernel.org" <andrii@kernel.org>, "eddyz87@gmail.com" <eddyz87@gmail.com>, 
-	"ast@kernel.org" <ast@kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>, 
-	"martin.lau@linux.dev" <martin.lau@linux.dev>, "jack@suse.cz" <jack@suse.cz>, 
-	"kpsingh@kernel.org" <kpsingh@kernel.org>, "mattbobrowski@google.com" <mattbobrowski@google.com>, 
-	"amir73il@gmail.com" <amir73il@gmail.com>, "repnop@google.com" <repnop@google.com>, 
-	"jlayton@kernel.org" <jlayton@kernel.org>, "josef@toxicpanda.com" <josef@toxicpanda.com>, 
-	"mic@digikod.net" <mic@digikod.net>, "gnoack@google.com" <gnoack@google.com>, 
-	"m@maowtm.org" <m@maowtm.org>, "john.johansen@canonical.com" <john.johansen@canonical.com>, 
-	"john@apparmor.net" <john@apparmor.net>, 
-	"stephen.smalley.work@gmail.com" <stephen.smalley.work@gmail.com>, "omosnace@redhat.com" <omosnace@redhat.com>, 
-	"takedakn@nttdata.co.jp" <takedakn@nttdata.co.jp>, 
-	"penguin-kernel@i-love.sakura.ne.jp" <penguin-kernel@i-love.sakura.ne.jp>, "enlightened@chromium.org" <enlightened@chromium.org>
-Subject: Re: [RFC] vfs: security: Parse dev_name before calling
- security_sb_mount
-Message-ID: <20250710-roden-hosen-ba7f215706bb@brauner>
-References: <20250708230504.3994335-1-song@kernel.org>
- <20250709102410.GU1880847@ZenIV>
- <CAHC9VhSS1O+Cp7UJoJnWNbv-Towia72DitOPH0zmKCa4PBttkw@mail.gmail.com>
- <1959367A-15AB-4332-B1BC-7BBCCA646636@meta.com>
+	s=arc-20240116; t=1752148788; c=relaxed/simple;
+	bh=gNCxzJsDn9gdEyJo3Z7t2p8WEEmiQ2LS5kDUpkWb5nk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MsozmpUO/v4z/jiNXoh3KOcUChtBtw85BXR2geUm5aBEe9VBrCKzBmeeeE4djeXDPB/DUvFUJmdruVw4qg5aZy4PWWwDXkZG12WaCtC58cNUPGYgjtgYefojwRk5XzWhYZHwj6/Y1UlHReDGw7RzC1o1uvQSK/6flk2GvdbCgJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=fyZ5EV88; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56A7YlIE010973;
+	Thu, 10 Jul 2025 11:59:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=OpCNIQJBz886dEMbI2Ec3w9pVflL1kz7l1b1KeRf/
+	vE=; b=fyZ5EV883tAhyxDnybYgZYPvXQQvYQ0lDElNIx2UjaCTU9+FJFXkIjOa4
+	MUxBH2Xlx9HtFPUzhc8wKSa2LHIi1DRhaa5gNMgZK19smlSBqxDgH1C5Nl191Uvc
+	C7HPJvFhAYhl4bFUNfXwW02+LeIQ1Yq77qNiKi0rhLSxMzwPN9y/8qtty5frE+IE
+	e2boqwV/6FqKHXBPfB6X7DEE3+lDWSGzovtvUO6iza23A1dSMRMRSSH0S15KkHIo
+	VSO4qIuov2QGYDtz9PYWjVeTGfQT2+3p0K2rR7g2de8EIrdcm4OONHOARyjQcCga
+	fEQ7Gyga1D2QlRdood+h5gDGepNxg==
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47puqnkj47-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 10 Jul 2025 11:59:31 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56A9HFKF021522;
+	Thu, 10 Jul 2025 11:59:31 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 47qectwp9q-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 10 Jul 2025 11:59:31 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 56ABxRBU32702836
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 10 Jul 2025 11:59:27 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5D6032004B;
+	Thu, 10 Jul 2025 11:59:27 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9AC5920043;
+	Thu, 10 Jul 2025 11:59:26 +0000 (GMT)
+Received: from heavy.ibm.com (unknown [9.87.154.34])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 10 Jul 2025 11:59:26 +0000 (GMT)
+From: Ilya Leoshkevich <iii@linux.ibm.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Kieran Bingham <kbingham@kernel.org>
+Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH 0/2] scripts/gdb/symbols: make BPF debug info available to GDB
+Date: Thu, 10 Jul 2025 13:53:18 +0200
+Message-ID: <20250710115920.47740-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.50.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1959367A-15AB-4332-B1BC-7BBCCA646636@meta.com>
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=FZ43xI+6 c=1 sm=1 tr=0 ts=686fab23 cx=c_pps a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17 a=Wb1JkmetP80A:10 a=IYNAWcdd8jllPgNNEL8A:9
+X-Proofpoint-GUID: KbXdV9Z0tZv8HI9n-VMQeVRT5dOucmdt
+X-Proofpoint-ORIG-GUID: KbXdV9Z0tZv8HI9n-VMQeVRT5dOucmdt
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzEwMDEwMSBTYWx0ZWRfX9aXX2knXaKx0 +vVUWje1KN6zPgQ5Mwta8qI7u9WFdZi538Kw2QfDFVKdPQdsUIeEOjLl5pZJIsaGT6KdB4Etise yQKbHEmQUyX1sJnLadyW0PgocnAU+X57fLtJuYzXUGbeimGqdzkQ5Tp0TyuyQOmJTEvhw4Id1fv
+ MekgrVg9EDkmT1HPp57+MYD3zEgySfu1XPGKURFYlH/xE2Ib6tzCACm2KKYQydzxcmnL90AzWvc 6n/pvcH4/ohk7DIr/UsCNnE+fl1u6TmDKFZK3l5yej5Vnll5gp68De6nZyKQx8iMNQhlk6Cg40X Cxt70Lq6CkyUoNBUvOnXEHDh4g3XgUXneyqTw0E1zwF8k2XkB02CQr2PGXNFqyW8pF9OhnM1ONE
+ KBRI5RkM4kkS6oOdXZnhaL/BLntcdVi2jvT/H7RrbSh+8aT3/kSzhF+hwELGxL70mZ9Itsro
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
+ definitions=2025-07-10_02,2025-07-09_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
+ priorityscore=1501 malwarescore=0 mlxlogscore=534 clxscore=1015
+ spamscore=0 bulkscore=0 phishscore=0 lowpriorityscore=0 impostorscore=0
+ adultscore=0 classifier=spam authscore=0 authtc=n/a authcc= route=outbound
+ adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
+ definitions=main-2507100101
 
-On Wed, Jul 09, 2025 at 05:06:36PM +0000, Song Liu wrote:
-> Hi Al and Paul, 
-> 
-> Thanks for your comments!
-> 
-> > On Jul 9, 2025, at 8:19 AM, Paul Moore <paul@paul-moore.com> wrote:
-> > 
-> > On Wed, Jul 9, 2025 at 6:24 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
-> >> On Tue, Jul 08, 2025 at 04:05:04PM -0700, Song Liu wrote:
-> >>> security_sb_mount handles multiple types of mounts: new mount, bind
-> >>> mount, etc. When parameter dev_name is a path, it need to be parsed
-> >>> with kern_path.
-> > 
-> > ...
-> > 
-> >> security_sb_mount() is and had always been a mind-boggling trash of an API.
-> >> 
-> >> It makes no sense in terms of operations being requested.  And any questions
-> >> regarding its semantics had been consistently met with blanket "piss off,
-> >> LSM gets to do whatever it wants to do, you are not to question the sanity
-> >> and you are not to request any kind of rules - give us the fucking syscall
-> >> arguments and let us at it".
-> > 
-> > I'm not going to comment on past remarks made by other devs, but I do
-> > want to make it clear that I am interested in making sure we have LSM
-> > hooks which satisfy both the needs of the existing in-tree LSMs while
-> > also presenting a sane API to the kernel subsystems in which they are
-> > placed.  I'm happy to revisit any of our existing LSM hooks to
-> > restructure them to better fit these goals; simply send some patches
-> > and let's discuss them.
-> > 
-> >> Come up with a saner API.  We are done accomodating that idiocy.  The only
-> >> changes you get to make in fs/namespace.c are "here's our better-defined
-> >> hooks, please call <this hook> when you do <that>".
-> 
-> Right now, we have security_sb_mount and security_move_mount, for 
-> syscall “mount” and “move_mount” respectively. This is confusing 
-> because we can also do move mount with syscall “mount”. How about 
-> we create 5 different security hooks:
-> 
-> security_bind_mount
-> security_new_mount
-> security_reconfigure_mount
-> security_remount
-> security_change_type_mount
-> 
-> and remove security_sb_mount. After this, we will have 6 hooks for
-> each type of mount (the 5 above plus security_move_mount).
+Hi,
 
-I've multiple times pointed out that the current mount security hooks
-aren't working and basically everything in the new mount api is
-unsupervised from an LSM perspective.
+This series greatly simplifies debugging BPF progs when using QEMU
+gdbstub by providing symbol names, sizes, and line numbers to GDB.
 
-My recommendation is make a list of all the currently supported
-security_*() hooks in the mount code (I certainly don't have them in my
-head). Figure out what each of them allow to mediate effectively and how
-the callchains are related.
+Patch 1 adds radix tree iteration, which is necessary for parsing
+prog_idr. Patch 2 is the actual implementation; its description
+contains some details on how to use this.
 
-Then make a proposal how to replace them with something that a) doesn't
-cause regressions which is probably something that the LSMs care about
-and b) that covers the new mount API sufficiently to be properly
-mediated.
+Best regards,
+Ilya
 
-I'll happily review proposals. Fwiw, I'm pretty sure that this is
-something that Mickael is interested in as well.
+Ilya Leoshkevich (2):
+  scripts/gdb/radix-tree: add lx-radix-tree-command
+  scripts/gdb/symbols: make BPF debug info available to GDB
+
+ scripts/gdb/linux/bpf.py          | 253 ++++++++++++++++++++++++++++++
+ scripts/gdb/linux/constants.py.in |   3 +
+ scripts/gdb/linux/radixtree.py    | 139 +++++++++++++++-
+ scripts/gdb/linux/symbols.py      |  77 ++++++++-
+ 4 files changed, 462 insertions(+), 10 deletions(-)
+ create mode 100644 scripts/gdb/linux/bpf.py
+
+-- 
+2.50.0
+
 
