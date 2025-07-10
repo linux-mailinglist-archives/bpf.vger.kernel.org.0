@@ -1,68 +1,68 @@
-Return-Path: <bpf+bounces-62942-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62941-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E93D6B008F1
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 18:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 80E15B008EE
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 18:37:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06047188D1FB
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 16:37:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F0B4A188D9E2
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 16:37:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC3812F1FDC;
-	Thu, 10 Jul 2025 16:35:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBFBF2F1996;
+	Thu, 10 Jul 2025 16:35:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="kbUC6low"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="sWICare4"
 X-Original-To: bpf@vger.kernel.org
 Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE4782F1989;
-	Thu, 10 Jul 2025 16:35:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B06292F0C62;
+	Thu, 10 Jul 2025 16:35:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752165359; cv=none; b=sJuvOAXU4nP2uPeu0yLqEcKHkZsdMZaeiLwIyFzfw0R9i7CmSxCLxQiV4d6t4lbtzem17Jbut8o8xibAdi47QMgcrn2e7cWMi/qOh3ifSeiboo1KogWwyOXN/ZpL4OrHNQVjzOMgPXXCuFWXohUoEajOZM3KLLE1VBMHjwPk8sw=
+	t=1752165357; cv=none; b=VY+Xbid3+Fofil+Wt96I8KYSq+mjTmH0fIXAJxIRasPWf+Tx5mqeCxUYZjyYNq+swyY5xinJbZM9vJVjRcOV+03LXulRTLxFy5xErFiAChl8gEj0c399/4baf7iOwiuc6gKhkTkJlThS7e5IGX/S8Lk6SAfcBTKcLHZONIenA4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752165359; c=relaxed/simple;
-	bh=v2hOjtlwbj3g1hX2d26zeY4TfESRrouASt/PND3A8MY=;
+	s=arc-20240116; t=1752165357; c=relaxed/simple;
+	bh=tCCMdkDak8azEkCoj0uFghu2c8I0OJT7NBUep4hLlwM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mm/WKxKNFmCmBvlX6ey5uZ/is1aUbWIqOvXhIGKZIASd5N/AN5o0Tr4W3xFgucwLkfMHqoATqsGWqPb1v1HpZCQVrIArf8F8D2Zg6RB067BA0uFl34gKVzqed9PtyAsgnTytuGPjRHTZ+oF1YRSL0npd++pVZ9aFbUCKDbVVsCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=kbUC6low; arc=none smtp.client-ip=148.163.158.5
+	 MIME-Version; b=K8WOqoRFIo4x7H/HFDGT/rY2S2hwSyxfr0xabU6wmPuYYwIbPuOrvfeVDOnRWlhyGTrHyAxVdBjkSDU0QyAtgTxBmkdxMLCkGb8IjdAnBbV1K7zRZ9j8Wv9XMeuWKY6nfUZuxx9Ip3FZsthTpSZ3bSV/79gmpViMt1ZnHHoK7jo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=sWICare4; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56AB7Akr023830;
-	Thu, 10 Jul 2025 16:35:32 GMT
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56ADjWJR010569;
+	Thu, 10 Jul 2025 16:35:31 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=pp1; bh=6gDEz5N4zauu273L0
-	4Rm/AckpJgUD1W4BKQOI5obf84=; b=kbUC6lowLPgt64V5myDQcnNPGgZ+53Y2M
-	shBCiq92mVC5UVlCr/cUcgRf1DbvS+j+2YrS94eOa0zazYoUaSFCT40MesTdgno0
-	pXcvR5YSsApJzKFtZ1hm7fDZq0n08Vj78VODS4jEL8A9DXG8BMFoKGhvk4w4G6WU
-	zPukF9I+QIzervtkcs3LtfKcM57sb+dYWnwcLF+0U6699GbItF1NyDm1aCmi/kCq
-	gSTNRUmoKSUdElBh+DJ1SYyrYWCFPfPnOHW7nH2OIOnXB64w6w+Rs1yo9vcbKST6
-	Fw5HfIMjgS6LCiiNrnbOh3bpOkdqEhVRiNJpqJZqZ0Yuj39upe9zw==
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47ptjrd3ba-1
+	:mime-version:references:subject:to; s=pp1; bh=PB0WTAltW+KHElMPJ
+	xVOA/EfdsSdDGp+uN+1+3ZTOrs=; b=sWICare4JL42xnPgo16mE5QLDKq4lJPRG
+	kTUZMGBbOuekVKul3NEmWZXaE0Y9Oy//h0HzxwWNxBq/E0HmhpTixXAUjq3ummV5
+	ye6ylTyzPLShOEeqpNHPct7nSW45s6irSpqIwP+osEIDTZ27/Sa9P6hnmmGavgwY
+	0141JDNlj8WoauOOCkbkmGd7XBcEKc7W1rgDlO6h3c3WXQjAMQiI4kJx/LPeFAwq
+	mIUyNIl+RBUCVy0VneWMDW294cUnhGtCTS8EoSHQkd5tfhW1bPO+U7ZMafRN+FJd
+	DBeEmmCNSKKStS0TEBvgE4oNBB7KDBGiwP8AIjk/j69cTdpSXZhow==
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47svb26atf-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Thu, 10 Jul 2025 16:35:31 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56ADhsCM010851;
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56ADeR2d021561;
 	Thu, 10 Jul 2025 16:35:30 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 47qes0eqtf-1
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 47qectxrn3-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Thu, 10 Jul 2025 16:35:30 +0000
 Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 56AGZQ9829622826
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 56AGZRAu35062184
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 10 Jul 2025 16:35:26 GMT
+	Thu, 10 Jul 2025 16:35:27 GMT
 Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C38D020040;
-	Thu, 10 Jul 2025 16:35:26 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 0EEAF20040;
+	Thu, 10 Jul 2025 16:35:27 +0000 (GMT)
 Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8848F2004B;
+	by IMSVA (Postfix) with ESMTP id C804620043;
 	Thu, 10 Jul 2025 16:35:26 +0000 (GMT)
 Received: from tuxmaker.lnxne.boe (unknown [9.152.85.9])
 	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
@@ -88,9 +88,9 @@ Cc: Jens Remus <jremus@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>,
         Sam James <sam@gentoo.org>
-Subject: [RFC PATCH v1 09/16] unwind_user/sframe: Enable archs with encoded SFrame CFA offsets
-Date: Thu, 10 Jul 2025 18:35:15 +0200
-Message-ID: <20250710163522.3195293-10-jremus@linux.ibm.com>
+Subject: [RFC PATCH v1 10/16] s390/ptrace: Enable HAVE_USER_RA_REG
+Date: Thu, 10 Jul 2025 18:35:16 +0200
+Message-ID: <20250710163522.3195293-11-jremus@linux.ibm.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250710163522.3195293-1-jremus@linux.ibm.com>
 References: <20250710163522.3195293-1-jremus@linux.ibm.com>
@@ -102,72 +102,96 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=GL8IEvNK c=1 sm=1 tr=0 ts=686febd3 cx=c_pps a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17 a=Wb1JkmetP80A:10 a=VnNF1IyMAAAA:8 a=Og4hOgGxDI197znzLmcA:9
-X-Proofpoint-ORIG-GUID: eIOvg8Wub475XZyy23-eoHTnvFKsHL4r
-X-Proofpoint-GUID: eIOvg8Wub475XZyy23-eoHTnvFKsHL4r
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzEwMDEzOSBTYWx0ZWRfX5HZjNHwLj/gH 9xIzYquVxSacjVxI9K5pMvOcTDYwxkZ96PYItwu+TV91D6xvF0x6WsGW+c1sKfNm2Xz6nnoBMuK sYUPRkyYzgBvadYXY1v3ypFya0H8On2d1irUt5I/PJA+1lVDTtDvmiPfwKGEGWmqABq8Z6E2D/c
- AJ/vhywwZiApok8R6g/RbuWnaiCE4QVbxC6NXIY8P5cIE5402LnchihDMEMwTMXRB33VUafdURc E+cbRhvtFUfSCN62fHIcZOZvyBI7zpo0k7Z4RRlwcMgrbqszQSITqhBoZF9aSGKqnaYGt8ecBRC 6MQz+fRqgzD5rT5E+8CDqkFcfUEGQJQ99/oyS86PGewF32oyJYvPHe4z3mRQnHPhWgboz3w5Nhf
- jiT4wQ4G01odhthsbAwHdwbWMwURgca4AGar2pFDgmvMdgqYCIx5XMi1740dC25qWzTb+4TP
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzEwMDEzOSBTYWx0ZWRfX5SP91U9/IjWP STby5G9VsC4J3JET7d6kaMfjtFmt1bJ1vLqcbh5bM+oNfv4ADYxJQyqPRwIVDWB7YmjxNyzbxUj qJuO+dPbN0s37LjSD7BAzmwuc9suo68tildYiFjBUgxIB7p08DBpEKD0jIK67knTbn0Ok/FzXsi
+ jAnXF/kPmMJOMqwlKJ3nKIC9wm5N0IpSng7y86IBGwEOYffuMyF2c8fJOJYZVTRM9vxGetZXfjn AY62jUxO5cj3oavEahGs9Nflz3rmbLhQieI2FIyNR8+ZspixfN5FFGvAjbGT1ulFbv2mpCeVKM2 oAgg5cyx3gUACM9Z6B+Dwcw/xU21rjdqFXtH3Ko7cjMGjLvk09NjsY7ykuF/zSibKhi/M35tr1A
+ OHQrY1CBG5Gji3s2Uf0QAj0DbcqAUDQdcTqelCPgw+iSobidD6bziUlJ11QZhd4GwHJzsWwe
+X-Authority-Analysis: v=2.4 cv=Y774sgeN c=1 sm=1 tr=0 ts=686febd3 cx=c_pps a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17 a=Wb1JkmetP80A:10 a=VnNF1IyMAAAA:8 a=pHnkZ9Rrd0NqFIkZcxAA:9
+X-Proofpoint-ORIG-GUID: 9XpdvCNjV8cvLI7n4flAvGPCGeyCQTkG
+X-Proofpoint-GUID: 9XpdvCNjV8cvLI7n4flAvGPCGeyCQTkG
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
  definitions=2025-07-10_04,2025-07-09_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- clxscore=1015 impostorscore=0 suspectscore=0 bulkscore=0 adultscore=0
- priorityscore=1501 mlxscore=0 spamscore=0 mlxlogscore=918
- lowpriorityscore=0 classifier=spam authscore=0 authtc=n/a authcc=
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=7
+ priorityscore=1501 malwarescore=0 bulkscore=0 impostorscore=0
+ lowpriorityscore=0 phishscore=0 suspectscore=0 mlxlogscore=531 mlxscore=0
+ clxscore=1015 classifier=spam authscore=0 authtc=n/a authcc=
  route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
  definitions=main-2507100139
 
-Enable architectures, such as s390, which store SFrame CFA offset values
-encoded, to e.g. make (better) use of unsigned 8-bit SFrame offsets.
+Provide user_return_address().  Additionally provide frame_pointer().
+
+On s390 register 11 is the preferred frame pointer (FP) register
+and register 14 is the return address (RA) register in user space.
+
+While at it convert instruction_pointer() and user_stack_pointer()
+from macros to inline functions, to align their definition with
+x86-64 and AArch64.
 
 Signed-off-by: Jens Remus <jremus@linux.ibm.com>
 ---
- include/asm-generic/unwind_user_sframe.h | 11 +++++++++++
- kernel/unwind/sframe.c                   |  1 +
- 2 files changed, 12 insertions(+)
+ arch/s390/Kconfig              |  1 +
+ arch/s390/include/asm/ptrace.h | 25 ++++++++++++++++++++++---
+ 2 files changed, 23 insertions(+), 3 deletions(-)
 
-diff --git a/include/asm-generic/unwind_user_sframe.h b/include/asm-generic/unwind_user_sframe.h
-index 8cef3e0857b6..cea0410a259a 100644
---- a/include/asm-generic/unwind_user_sframe.h
-+++ b/include/asm-generic/unwind_user_sframe.h
-@@ -5,6 +5,16 @@
- #include <linux/unwind_user_types.h>
- #include <linux/types.h>
+diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+index 0c16dc443e2f..f4ea52c1f0ba 100644
+--- a/arch/s390/Kconfig
++++ b/arch/s390/Kconfig
+@@ -239,6 +239,7 @@ config S390
+ 	select HAVE_SETUP_PER_CPU_AREA
+ 	select HAVE_SOFTIRQ_ON_OWN_STACK
+ 	select HAVE_SYSCALL_TRACEPOINTS
++	select HAVE_USER_RA_REG
+ 	select HAVE_VIRT_CPU_ACCOUNTING
+ 	select HAVE_VIRT_CPU_ACCOUNTING_IDLE
+ 	select HOTPLUG_SMT
+diff --git a/arch/s390/include/asm/ptrace.h b/arch/s390/include/asm/ptrace.h
+index 0905fa99a31e..71d81280e5eb 100644
+--- a/arch/s390/include/asm/ptrace.h
++++ b/arch/s390/include/asm/ptrace.h
+@@ -212,8 +212,6 @@ void update_cr_regs(struct task_struct *task);
+ #define arch_has_block_step()	(1)
  
-+/**
-+ * generic_sframe_cfa_offset_decode - Decode SFrame CFA offset.
-+ *
-+ * Returns the decoded SFrame CFA offset value.
-+ */
-+static inline s32 generic_sframe_cfa_offset_decode(s32 offset)
-+{
-+	return offset;
-+}
-+
- /**
-  * generic_sframe_set_frame_reginfo - Populate info to unwind FP/RA register
-  * from SFrame offset.
-@@ -48,6 +58,7 @@ static inline s32 generic_sframe_sp_val_off(void)
- 	return 0;
+ #define user_mode(regs) (((regs)->psw.mask & PSW_MASK_PSTATE) != 0)
+-#define instruction_pointer(regs) ((regs)->psw.addr)
+-#define user_stack_pointer(regs)((regs)->gprs[15])
+ #define profile_pc(regs) instruction_pointer(regs)
+ 
+ static inline long regs_return_value(struct pt_regs *regs)
+@@ -230,11 +228,32 @@ static inline void instruction_pointer_set(struct pt_regs *regs,
+ int regs_query_register_offset(const char *name);
+ const char *regs_query_register_name(unsigned int offset);
+ 
+-static __always_inline unsigned long kernel_stack_pointer(struct pt_regs *regs)
++static __always_inline unsigned long kernel_stack_pointer(const struct pt_regs *regs)
+ {
+ 	return regs->gprs[15];
  }
  
-+#define sframe_cfa_offset_decode generic_sframe_cfa_offset_decode
- #define sframe_set_frame_reginfo generic_sframe_set_frame_reginfo
- #define sframe_sp_val_off generic_sframe_sp_val_off
- 
-diff --git a/kernel/unwind/sframe.c b/kernel/unwind/sframe.c
-index 43ef3a8c4c26..e8658401a286 100644
---- a/kernel/unwind/sframe.c
-+++ b/kernel/unwind/sframe.c
-@@ -220,6 +220,7 @@ static __always_inline int __read_fre(struct sframe_section *sec,
- 
- 	UNSAFE_GET_USER_INC(cfa_off, cur, offset_size, Efault);
- 	offset_count--;
-+	cfa_off = sframe_cfa_offset_decode(cfa_off);
- 
- 	ra_off = sec->ra_off;
- 	if (!ra_off && offset_count) {
++static __always_inline unsigned long instruction_pointer(const struct pt_regs *regs)
++{
++	return regs->psw.addr;
++}
++
++static __always_inline unsigned long frame_pointer(const struct pt_regs *regs)
++{
++	return regs->gprs[11];
++}
++
++static __always_inline unsigned long user_stack_pointer(const struct pt_regs *regs)
++{
++	return regs->gprs[15];
++}
++
++static __always_inline unsigned long user_return_address(const struct pt_regs *regs)
++{
++	return regs->gprs[14];
++}
++#define user_return_address user_return_address
++
+ static __always_inline unsigned long regs_get_register(struct pt_regs *regs, unsigned int offset)
+ {
+ 	if (offset >= NUM_GPRS)
 -- 
 2.48.1
 
