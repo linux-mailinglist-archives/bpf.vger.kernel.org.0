@@ -1,140 +1,97 @@
-Return-Path: <bpf+bounces-62868-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62869-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5055AFF635
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 02:58:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57EA4AFF695
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 03:59:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCF5D1C45225
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 00:59:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41AF57B40AC
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 01:58:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5867148832;
-	Thu, 10 Jul 2025 00:58:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A32E27EFEB;
+	Thu, 10 Jul 2025 01:59:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nr0CpFpE"
 X-Original-To: bpf@vger.kernel.org
-Received: from neil.brown.name (neil.brown.name [103.29.64.221])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C72F72636;
-	Thu, 10 Jul 2025 00:58:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.29.64.221
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA80542AB4;
+	Thu, 10 Jul 2025 01:59:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752109119; cv=none; b=WDKopYji/7mW1InflJHpEkTp4a4xkzTT7Phxd2M38fORi3qMPie75U5fAgWbbvWboOZ5ev0UDZwFfnFSp/FGASW5Ozc82T0cV0pe+DL1kwcbWLFLofqKwi3+EmOCIj6l8RmBBmXAsfhI3ZMhZKxwAFXaEqc+vsThpC6wCOhMy7Q=
+	t=1752112784; cv=none; b=GtBI5cmcxZkK6+rVFGHIuVln5zQibIysRLKXfhAzS+h6Dq0M+2nf3MB12sxpkoUiEZ5ayqhMOyu9RbKpq/H6C8E/13trPiFLSYxjSYx9JJfBkoba+NSI/mOHZRwdnxfCXShH0wQtlmBXioOIJzuJPpbldwgPnvXyl44tLDEiwkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752109119; c=relaxed/simple;
-	bh=XZbKtfqPPiCgKWUAMA7ouwhZLt7x2jDpVVWpB+SmN5A=;
-	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
-	 References:Date:Message-id; b=W8TJ5CFubTiR/l3KmHo3EFuQOBpBeE7EmP0H6/uXJLddJghT9Mh/XvxdzZzRIKR/qWk3MQxxrTPOBxIZzbSf/VBET9H9mrEsCxODoaxQw8uGSJWVbn2y4NMXbp2R22vC6wbcSRQBAF0EosAjvldQlnMXzpKAYYAyU6cr/chuLGs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brown.name; spf=pass smtp.mailfrom=neil.brown.name; arc=none smtp.client-ip=103.29.64.221
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brown.name
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=neil.brown.name
-Received: from 196.186.233.220.static.exetel.com.au ([220.233.186.196] helo=home.neil.brown.name)
-	by neil.brown.name with esmtp (Exim 4.95)
-	(envelope-from <mr@neil.brown.name>)
-	id 1uZfcO-001H9r-LD;
-	Thu, 10 Jul 2025 00:58:34 +0000
+	s=arc-20240116; t=1752112784; c=relaxed/simple;
+	bh=O1GCpSX4Cy7TfdvPuHa0WAkHsRBKX3c4B8Ue3NoFr0A=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=RvlFoLq9iID4GSyayxUG+eBhaRIVLabiFWZrId46pEbbCN3E0scvEl9cyWC383ngMKrBoSOb/sDRAt/l04TdjqJ4CiygIiHZlVweJlHR6/itnfXW8DLqOAfM1u30S73ELXOkNdL/+82yn62QR8RCXsdCXyyb174/S1Q+Y4lbqeo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nr0CpFpE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 487C2C4CEEF;
+	Thu, 10 Jul 2025 01:59:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752112784;
+	bh=O1GCpSX4Cy7TfdvPuHa0WAkHsRBKX3c4B8Ue3NoFr0A=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=Nr0CpFpE8GCvAnhxFtSjNe3bTavh40kVkR48wpHR/4H5OtN2opcLyzC8VnqlZ1jpo
+	 Gz55DJyDS6oESF7vZiO2UIE7ytMKPNw5k5lf/oeqRqTChHaE2zYmj3vEhcMh3jpczV
+	 swNwK9KRgG8Dc/wska3rxMlwJIXbWQb9qXHi8bKT7816PvMNHNPm/hTSxZco1kDaxw
+	 PrK5/dfqkxiwGImCNPs8BKNNu7U25eISF7awQg7ckKOYpkrVeWScHD5IOtmiVSek3S
+	 uRo6PsBAYa6nSdlALWKd0HATCyID2ECs3LUafwt0OPKFvu1OBHB+kUgHgo8VayAAfM
+	 50X5TU1zQat8Q==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id DEC94383B261;
+	Thu, 10 Jul 2025 02:00:07 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: "NeilBrown" <neil@brown.name>
-To: "Song Liu" <songliubraving@meta.com>
-Cc: =?utf-8?q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
- "Christian Brauner" <brauner@kernel.org>, "Tingmao Wang" <m@maowtm.org>,
- "Song Liu" <song@kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-security-module@vger.kernel.org"
- <linux-security-module@vger.kernel.org>, "Kernel Team" <kernel-team@meta.com>,
- "andrii@kernel.org" <andrii@kernel.org>,
- "eddyz87@gmail.com" <eddyz87@gmail.com>, "ast@kernel.org" <ast@kernel.org>,
- "daniel@iogearbox.net" <daniel@iogearbox.net>,
- "martin.lau@linux.dev" <martin.lau@linux.dev>,
- "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
- "jack@suse.cz" <jack@suse.cz>, "kpsingh@kernel.org" <kpsingh@kernel.org>,
- "mattbobrowski@google.com" <mattbobrowski@google.com>,
- =?utf-8?q?G=C3=BCnther?= Noack <gnoack@google.com>,
- "Jann Horn" <jannh@google.com>
-Subject: Re: [PATCH v5 bpf-next 0/5] bpf path iterator
-In-reply-to: <474C8D99-6946-4CFF-A925-157329879DA9@meta.com>
-References: <>, <474C8D99-6946-4CFF-A925-157329879DA9@meta.com>
-Date: Thu, 10 Jul 2025 10:58:33 +1000
-Message-id: <175210911389.2234665.8053137657588792026@noble.neil.brown.name>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] virtio-net: xsk: rx: move the xdp->data
+ adjustment
+ to buf_to_xdp()
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175211280676.957497.383613725548170335.git-patchwork-notify@kernel.org>
+Date: Thu, 10 Jul 2025 02:00:06 +0000
+References: <20250705075515.34260-1-minhquangbui99@gmail.com>
+In-Reply-To: <20250705075515.34260-1-minhquangbui99@gmail.com>
+To: Bui Quang Minh <minhquangbui99@gmail.com>
+Cc: netdev@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
+ xuanzhuo@linux.alibaba.com, eperezma@redhat.com, andrew+netdev@lunn.ch,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+ john.fastabend@gmail.com, sdf@fomichev.me, virtualization@lists.linux.dev,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org
 
-On Thu, 10 Jul 2025, Song Liu wrote:
-> 
-> 
-> > On Jul 9, 2025, at 3:24 PM, NeilBrown <neil@brown.name> wrote:
-> [...]
-> >> 
-> >> How should the user handle -ECHILD without LOOKUP_RCU flag? Say the
-> >> following code in landlocked:
-> >> 
-> >> /* Try RCU walk first */
-> >> err = vfs_walk_ancestors(path, ll_cb, data, LOOKUP_RCU);
-> >> 
-> >> if (err == -ECHILD) {
-> >> struct path walk_path = *path;
-> >> 
-> >> /* reset any data changed by the walk */
-> >> reset_data(data);
-> >> 
-> >> /* now do ref-walk */
-> >> err = vfs_walk_ancestors(&walk_path, ll_cb, data, 0);
-> >> }
-> >> 
-> >> Or do you mean vfs_walk_ancestors will never return -ECHILD?
-> >> Then we need vfs_walk_ancestors to call reset_data logic, right?
-> > 
-> > It isn't clear to me that vfs_walk_ancestors() needs to return anything.
-> > All the communication happens through walk_cb()
-> > 
-> > walk_cb() is called with a path, the data, and a "may_sleep" flag.
-> > If it needs to sleep but may_sleep is not set, it returns "-ECHILD"
-> > which causes the walk to restart and use refcounts.
-> > If it wants to stop, it returns 0.
-> > If it wants to continue, it returns 1.
-> > If it wants a reference to the path then it can use (new)
-> > vfs_legitimize_path() which might fail.
-> > If it wants a reference to the path and may_sleep is true, it can use
-> > path_get() which won't fail.
-> > 
-> > When returning -ECHILD (either because of a need to sleep or because
-> > vfs_legitimize_path() fails), walk_cb() would reset_data().
-> 
-> This might actually work. 
-> 
-> My only concern is with vfs_legitimize_path. It is probably safer if 
-> we only allow taking references with may_sleep==true, so that path_get
-> won’t fail. In this case, we will not need walk_cb() to call 
-> vfs_legitimize_path. If the user want a reference, the walk_cb will 
-> first return -ECHILD, and call path_get when may_sleep is true. 
+Hello:
 
-What is your concern with vfs_legitimize_path() ??
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-I've since realised that always restarting in response to -ECHILD isn't
-necessary and isn't how normal path-walk works.  Restarting might be
-needed, but the first response to -ECHILD is to try legitimize_path().
-If that succeeds, then it is safe to sleep.
-So returning -ECHILD might just result in vfs_walk_ancestors() calling
-legitimize_path() and then calling walk_cb() again.  Why not have
-walk_cb() do the vfs_legitimize_path() call (which will almost always
-succeed in practice).
+On Sat,  5 Jul 2025 14:55:14 +0700 you wrote:
+> This commit does not do any functional changes. It moves xdp->data
+> adjustment for buffer other than first buffer to buf_to_xdp() helper so
+> that the xdp_buff adjustment does not scatter over different functions.
+> 
+> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+> ---
+>  drivers/net/virtio_net.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
 
-NeilBrown
+Here is the summary with links:
+  - [net-next] virtio-net: xsk: rx: move the xdp->data adjustment to buf_to_xdp()
+    https://git.kernel.org/netdev/net-next/c/f47e8f618c7d
 
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-> 
-> Does this make sense? Did I miss any cases? 
-> 
-> Thanks,
-> Song
-> 
-> 
 
 
