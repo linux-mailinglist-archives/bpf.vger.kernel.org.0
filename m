@@ -1,201 +1,231 @@
-Return-Path: <bpf+bounces-62929-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62930-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 314F4B00782
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 17:48:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20B53B00820
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 18:08:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D185E4A1B4D
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 15:44:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D3BB4804B0
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 16:07:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F32A6274B3F;
-	Thu, 10 Jul 2025 15:42:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F8F62EF9C0;
+	Thu, 10 Jul 2025 16:08:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="W2jihqNv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MhMsCO8N"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E22682737FD;
-	Thu, 10 Jul 2025 15:42:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42DEF2857FF
+	for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 16:08:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752162135; cv=none; b=Eu6vDqyvn2HSbUXcGNX+xN1EbL2C4BXTn+JhqJdyZ0A2Q+yLtz4ysXYVkuzNKhF/YassuE6CsVD6E3iwRsjfFXzXwHf/zSB8lwzuEI5+QDchu/RCNmqJomvWZEEZVoPiisFBge3maUcgItHyusDZyVq0YWGbHx9G144pcaspuRI=
+	t=1752163695; cv=none; b=WRFcnAl/B8sriIGrT7ZXA7m/SzDIBN4AaQHqsx/S1l/179Ht0Wh+toaoEVyDx4O+ZH8Hjnf2NDPfeM/MgZvc2gcQTz19XN4eUtB8PtdXOmCAFH09ybco45lBXZZSpJ3OV6V3Gzu8wU9LqNvbmSrwJNKzIn7Lt5OE+8kKCArvxLI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752162135; c=relaxed/simple;
-	bh=Q84wSa4gEiDFfH5yarasNKbMrTnTs8J/rs21cprCxRI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mhtmmph4Pi6ZfbXGD3/GTm2UGu7+6wGxfPKVGrwT2MsPgvGkp37irZRflChXOTIgdJVyJHgsJq8Vs+k1k8xLt9VWHLMdy4mpP+bS4NIwNrTAdo+yetqx2iKrXqz/KwvLTv17+8SYU1+uGuZIq6XmBnKezNlVuXuvbrHGhc3M3cc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=W2jihqNv; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56AD02oc015626;
-	Thu, 10 Jul 2025 15:41:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=n8/DCH
-	MtAXp3jd5yExP8Ei4NE6gz/N3w4heWlrqsi10=; b=W2jihqNvVWwlsNr7axABBr
-	XoNj8uYk41n3fiZU5SakE73Ff2ek7MFAzEycYgaOZ+sVi79ZEiycaMp/iaN8Nzv3
-	sRpsXA/qjBRIJPY6s7yB5Djvvz2SZg0QxdIIo6Z9bObnddVY3OGq9N3o98LgKb8E
-	ML+fO4TzQekHh/48mxF/PPgMtaNQrKLawfJN5PcrUpaIBM5/4GDVJ7mXCnDLubaE
-	9i5qThpcqPOKtCRS/AsBK7tKvEIaGa03I9LgQDQ39A6DIRrPc2YtRtBdXDfZpu/5
-	81dhoAbnqml6KEWV2lH5dPjQgAT+z2BTsupbl8/uB4IqDeJVOyZSrPZjfSKnBGew
-	==
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47ptjrcsas-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 10 Jul 2025 15:41:43 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56ADaNt8021525;
-	Thu, 10 Jul 2025 15:41:41 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 47qectxgwx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 10 Jul 2025 15:41:41 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 56AFfcoi9765272
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 10 Jul 2025 15:41:38 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1E66E2004B;
-	Thu, 10 Jul 2025 15:41:38 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id ED8F420040;
-	Thu, 10 Jul 2025 15:41:36 +0000 (GMT)
-Received: from [9.111.128.203] (unknown [9.111.128.203])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 10 Jul 2025 15:41:36 +0000 (GMT)
-Message-ID: <155f22cb-b986-4d22-a853-6de49a1c2e03@linux.ibm.com>
-Date: Thu, 10 Jul 2025 17:41:36 +0200
+	s=arc-20240116; t=1752163695; c=relaxed/simple;
+	bh=m2M/XwpZi2Yz6FNNs1Tc/QI7BozHa1CEyrbKy+r3CBM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PoZrl5INCrQjMJQz3MDGqsKrJ77bL4P6TpBO9osapI33gOR7NDXUOq2JZa4xfyGu/d1q2nENWOV9AhT5xASSDgT6NGFzD/colgEBK4HEO5ETDArlPa/3T/B/iyuiuZPEOBxG6rJHRAG2dw4czX9fMTlKjR8R1+aSLcIVUUD3/gI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MhMsCO8N; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4530921461aso8119515e9.0
+        for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 09:08:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752163691; x=1752768491; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lJunfVMJkRJMZMLMlD+/Jnr7eiOBylGQJnru8pPRdcU=;
+        b=MhMsCO8NZX+kmXweKIn0jx/k5XZvYkGmgrDVbNX4cuD7LJ1h4ewb7rUoxycF2k+05x
+         zaUBtePYEqnT3UFrUuFgNy1mOGMqfKSu2OF0kqo0QHwRjo3OPcoou2ttLQ5aCHq8r5Ji
+         LOtkxsITX8hJzQU0Su6jOUhNtf4ZFfapKtOMS+hCbgetGn0sbIiIPnF44CcMdOt+ngDr
+         PF+e4TdYyr7/oK/f2JAiPld2XA9kNAjT9OwT0XmG85l7cbI+csAiZC5uz8Gn3iDV7Gyt
+         S/rPpRRMBF/GyZbjrU477zqIWDovI7Na+hiX1atErzDa2wEj59btn+Ha99cKmBcJxJUK
+         fNsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752163691; x=1752768491;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lJunfVMJkRJMZMLMlD+/Jnr7eiOBylGQJnru8pPRdcU=;
+        b=LM9tf+Snor/Hd1zrmYkg82/xJjNx3f+Yt6D/Y8kKcle7p9SzHWma0G7W84j4SOO7UY
+         GmVK6VwWYUCLhqihkYF9ObzizEALX4sanZlWAMj6Ps+CVoPZ3wCAzpzaELLzs0dbqMUA
+         Wm2HnC7i2zyy3HAkqGhYxkJDzlhjlcUlDYpwfIs7q06JPTb7GYf7XvF4PBfjxAOWQjwB
+         YWVw/AjEeJrVFezmPJGsVp49EhvelH/oeDyi+GSC9erNUcfZm/0IjJuLZDl6SlhaNc5P
+         +Aobw9UfFHMcz1FEfjSbQ6zljPag2hc1nzJGiMyPSqInMxtXzIn/zDQpco2bdnHrezAi
+         jRAA==
+X-Gm-Message-State: AOJu0Ywz1KTAl8t+h8XhDyCxHQpkVdPV13cq/jlfYfuWJ5RiXfuxURhC
+	vrsodoJVa8x68jonn1mSe3XUU0Y1m2YHDVbn76ci7TQ/ojwwmMpfq7cmPS4MjpQ1B5N/h8aJNLi
+	NX6q20oAg3RB82lVyUQBzrbXlvZ9i4cU+iZX9
+X-Gm-Gg: ASbGncsk2tdwze2Y7muO1bTfoeYmocNh7FosDfCr27ewAp55A8/lzyXsEkW4bB4QtGT
+	c6HqJAhPs2uxL6MjJmsNBSHGcCKjceySMlVDeQgYPl8dLNhpi1U0NurtMQ9PQMPAKmLXrmkKXR8
+	guGe1DrSXFq/tRE7aE4P3nrhMzDgTPGFE6TmY0nnaqlDM0EBJw9UzdREy9Ub9JSgypCpwm7Z3W
+X-Google-Smtp-Source: AGHT+IFCQnGfLXvf4VQDd8CGLo2O1uIObN12fZ+IDbpqGo94Vsoi5iOn1U2zApUCLI8bLOXMuMIvLiYT0eutAKjOzUU=
+X-Received: by 2002:a05:600c:a08:b0:450:d3b9:a5fc with SMTP id
+ 5b1f17b1804b1-454d538f778mr68656125e9.27.1752163690824; Thu, 10 Jul 2025
+ 09:08:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 02/14] unwind_user: Add frame pointer support
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        x86@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Indu Bhagat <indu.bhagat@oracle.com>,
-        "Jose E. Marchesi" <jemarch@gnu.org>,
-        Beau Belgrave <beaub@linux.microsoft.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>,
-        Sam James <sam@gentoo.org>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-References: <20250708012239.268642741@kernel.org>
- <20250708012357.982692711@kernel.org>
- <d3279556-9bb6-429d-a037-fe279c5e3c67@linux.ibm.com>
- <20250710112147.41585f6a@batman.local.home>
-Content-Language: en-US
-From: Jens Remus <jremus@linux.ibm.com>
-Organization: IBM Deutschland Research & Development GmbH
-In-Reply-To: <20250710112147.41585f6a@batman.local.home>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=GL8IEvNK c=1 sm=1 tr=0 ts=686fdf37 cx=c_pps a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17 a=IkcTkHD0fZMA:10 a=Wb1JkmetP80A:10 a=VnNF1IyMAAAA:8 a=Ezl6U-oBbhCAbrAPatEA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-ORIG-GUID: FStG2Q_hrPMgrV8gJgqFEHt6JVvS2wm5
-X-Proofpoint-GUID: FStG2Q_hrPMgrV8gJgqFEHt6JVvS2wm5
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzEwMDEzMSBTYWx0ZWRfX/4n5NhYYMKhz 1+763M4hf6Hs2QXAAgoE8F9Jcf5jgsbsyJS2hhqoW6SVZvTGvfNdTHk4JR4BU8QaZhLPaOmJ8DR SSGMn4P2jydvFLuzXrhCW1mzroBYwEYBixa7czLCdNL0R6bDjKrXVgVbaYathXNO4vzXkYxMneR
- n2PXutd93IpZvn392VBOtYZGv9sFzWCreb4YbfBBCzts4wlhA/EXa3/i1Bhn3N3nZTPGFkUmjX2 lLz4eJJnEajUinA4HYbI7cXF0fj3J3C0C1ymeMGZlL7k7oiD64AxH9fJy2Pe6SU3qnaWJsRAp64 86ljQU9deCDyX52tjFnurSGDgR7qA7vxfp+/jt2cqHxIDg9FPTbuSeZJWTCCPqIkP5WrOP4mJuQ
- 6MDeae/MWbyAL+5jmB6GHPBYSn9o3DysrjXveSn8si6o5Rx9Yb1Atl9OTo/bEAJaMICrm61d
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
- definitions=2025-07-10_03,2025-07-09_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- clxscore=1015 impostorscore=0 suspectscore=0 bulkscore=0 adultscore=0
- priorityscore=1501 mlxscore=0 spamscore=0 mlxlogscore=999
- lowpriorityscore=0 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
- definitions=main-2507100131
+References: <20250710102607.12413-1-mahe.tardy@gmail.com> <20250710102607.12413-4-mahe.tardy@gmail.com>
+In-Reply-To: <20250710102607.12413-4-mahe.tardy@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 10 Jul 2025 09:07:59 -0700
+X-Gm-Features: Ac12FXxT9lUriIPwZBe5r0qDR1MqAKwzjBqx63hcoAIllIc_h64BsTFCwSO2nMU
+Message-ID: <CAADnVQKq_-=N7eJoup6AqFngoocT+D02NF0md_3mi2Vcrw09nQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 3/4] bpf: add bpf_icmp_send_unreach cgroup_skb kfunc
+To: Mahe Tardy <mahe.tardy@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 10.07.2025 17:21, Steven Rostedt wrote:
-> On Wed, 9 Jul 2025 12:01:14 +0200
-> Jens Remus <jremus@linux.ibm.com> wrote:
+On Thu, Jul 10, 2025 at 3:26=E2=80=AFAM Mahe Tardy <mahe.tardy@gmail.com> w=
+rote:
+>
+> This is needed in the context of Tetragon to provide improved feedback
+> (in contrast to just dropping packets) to east-west traffic when blocked
+> by policies using cgroup_skb programs.
+>
+> This reuse concepts from netfilter reject target codepath with the
+> differences that:
+> * Packets are cloned since the BPF user can still return SK_PASS from
+>   the cgroup_skb progs and the current skb need to stay untouched
+>   (cgroup_skb hooks only allow read-only skb payload).
+> * Since cgroup_skb programs are called late in the stack, checksums do
+>   not need to be computed or verified, and IPv4 fragmentation does not
+>   need to be checked (ip_local_deliver should take care of that
+>   earlier).
+>
+> Signed-off-by: Mahe Tardy <mahe.tardy@gmail.com>
+> ---
+>  net/core/filter.c | 61 ++++++++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 60 insertions(+), 1 deletion(-)
+>
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index ab456bf1056e..9215f79e7690 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -85,6 +85,8 @@
+>  #include <linux/un.h>
+>  #include <net/xdp_sock_drv.h>
+>  #include <net/inet_dscp.h>
+> +#include <linux/icmp.h>
+> +#include <net/icmp.h>
+>
+>  #include "dev.h"
+>
+> @@ -12140,6 +12142,53 @@ __bpf_kfunc int bpf_sock_ops_enable_tx_tstamp(st=
+ruct bpf_sock_ops_kern *skops,
+>         return 0;
+>  }
+>
+> +__bpf_kfunc int bpf_icmp_send_unreach(struct __sk_buff *__skb, int code)
+> +{
+> +       struct sk_buff *skb =3D (struct sk_buff *)__skb;
+> +       struct sk_buff *nskb;
+> +
+> +       switch (skb->protocol) {
+> +       case htons(ETH_P_IP):
+> +               if (code < 0 || code > NR_ICMP_UNREACH)
+> +                       return -EINVAL;
+> +
+> +               nskb =3D skb_clone(skb, GFP_ATOMIC);
+> +               if (!nskb)
+> +                       return -ENOMEM;
+> +
+> +               if (ip_route_reply_fetch_dst(nskb) < 0) {
+> +                       kfree_skb(nskb);
+> +                       return -EHOSTUNREACH;
+> +               }
+> +
+> +               icmp_send(nskb, ICMP_DEST_UNREACH, code, 0);
+> +               kfree_skb(nskb);
+> +               break;
+> +#if IS_ENABLED(CONFIG_IPV6)
+> +       case htons(ETH_P_IPV6):
+> +               if (code < 0 || code > ICMPV6_REJECT_ROUTE)
+> +                       return -EINVAL;
+> +
+> +               nskb =3D skb_clone(skb, GFP_ATOMIC);
+> +               if (!nskb)
+> +                       return -ENOMEM;
+> +
+> +               if (ip6_route_reply_fetch_dst(nskb) < 0) {
+> +                       kfree_skb(nskb);
+> +                       return -EHOSTUNREACH;
+> +               }
+> +
+> +               icmpv6_send(nskb, ICMPV6_DEST_UNREACH, code, 0);
+> +               kfree_skb(nskb);
+> +               break;
+> +#endif
+> +       default:
+> +               return -EPROTONOSUPPORT;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  __bpf_kfunc_end_defs();
+>
+>  int bpf_dynptr_from_skb_rdonly(struct __sk_buff *skb, u64 flags,
+> @@ -12177,6 +12226,10 @@ BTF_KFUNCS_START(bpf_kfunc_check_set_sock_ops)
+>  BTF_ID_FLAGS(func, bpf_sock_ops_enable_tx_tstamp, KF_TRUSTED_ARGS)
+>  BTF_KFUNCS_END(bpf_kfunc_check_set_sock_ops)
+>
+> +BTF_KFUNCS_START(bpf_kfunc_check_set_icmp_send_unreach)
+> +BTF_ID_FLAGS(func, bpf_icmp_send_unreach, KF_TRUSTED_ARGS)
+> +BTF_KFUNCS_END(bpf_kfunc_check_set_icmp_send_unreach)
+> +
+>  static const struct btf_kfunc_id_set bpf_kfunc_set_skb =3D {
+>         .owner =3D THIS_MODULE,
+>         .set =3D &bpf_kfunc_check_set_skb,
+> @@ -12202,6 +12255,11 @@ static const struct btf_kfunc_id_set bpf_kfunc_s=
+et_sock_ops =3D {
+>         .set =3D &bpf_kfunc_check_set_sock_ops,
+>  };
+>
+> +static const struct btf_kfunc_id_set bpf_kfunc_set_icmp_send_unreach =3D=
+ {
+> +       .owner =3D THIS_MODULE,
+> +       .set =3D &bpf_kfunc_check_set_icmp_send_unreach,
+> +};
+> +
+>  static int __init bpf_kfunc_init(void)
+>  {
+>         int ret;
+> @@ -12221,7 +12279,8 @@ static int __init bpf_kfunc_init(void)
+>         ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP_SOC=
+K_ADDR,
+>                                                &bpf_kfunc_set_sock_addr);
+>         ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS,=
+ &bpf_kfunc_set_tcp_reqsk);
+> -       return ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SOCK_OPS, &=
+bpf_kfunc_set_sock_ops);
+> +       ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SOCK_OPS, =
+&bpf_kfunc_set_sock_ops);
+> +       return ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP_SKB,=
+ &bpf_kfunc_set_icmp_send_unreach);
 
->>> +	if (frame->use_fp) {
->>> +		if (state->fp < state->sp)  
->>
->> 		if (state->fp <= state->sp)
->>
->> I meanwhile came to the conclusion that for architectures, such as s390,
->> where SP at function entry == SP at call site, the FP may be equal to
->> the SP.  At least for the brief period where the FP has been setup and
->> stack allocation did not yet take place.  For most architectures this
->> can probably only occur in the topmost frame.  For s390 the FP is setup
->> after static stack allocation, so --fno-omit-frame-pointer would enforce
->> FP==SP in any frame that does not perform dynamic stack allocation.
-> 
-> From your latest email, I take it I can ignore the above?
+Does it have to be restricted to BPF_PROG_TYPE_CGROUP_SKB ?
+Can it be a part of bpf_kfunc_set_skb[] and used more generally ?
 
-Correct.
+If restriction is necessary then I guess we can live with extra
+bpf_kfunc_set_icmp_send_unreach, though it's odd to create a set
+just for one kfunc.
+Either way don't change the last 'return ...' line in this file.
+Add 'ret =3D ret ?: register...' instead to reduce churn.
 
->>> +	/* Make sure that the address is word aligned */
->>> +	shift = sizeof(long) == 4 ? 2 : 3;
->>> +	if ((cfa + frame->ra_off) & ((1 << shift) - 1))
->>> +		goto done;  
->>
->> Do all architectures/ABI mandate register stack save slots to be aligned?
->> s390 does.
-> 
-> I believe so.
-> 
->>
->>> +
->>> +	/* Find the Return Address (RA) */
->>> +	if (get_user(ra, (unsigned long *)(cfa + frame->ra_off)))
->>> +		goto done;
->>> +  
->>
->> Why not validate the FP stack save slot address as well?
-> 
-> You mean to validate cfa + frame->fp_off?
+Also cc netdev and netfilter maintainers in v2.
 
-Yes.
-
-> Isn't cfa the only real variable here? That is, if cfa + frame->ra_off
-> works, wouldn't the same go for frame->fp_off, as both frame->ra_off
-> and frame->fp_off are constants set by the architecture, and should be
-> word aligned.
-
-cfa + frame->ra_off could be aligned by chance.  So could
-cfa + frame->fp_off be as well of course.
-
-On s390 the CFA must be aligned (as the SP must be aligned) and the
-FP and RA offsets from CFA must be aligned, as pointer / 64-bit integers
-(such as 64-bit register values) must be aligned as well.
-
-So the CFA (and/or offset), FP offset, and RA offset could be validated
-individually.  Not sure if that would be over engineering though.
-
->>> +	if (frame->fp_off && get_user(fp, (unsigned long __user *)(cfa + frame->fp_off)))
->>> +		goto done;
-
-Regards,
-Jens
--- 
-Jens Remus
-Linux on Z Development (D3303)
-+49-7031-16-1128 Office
-jremus@de.ibm.com
-
-IBM
-
-IBM Deutschland Research & Development GmbH; Vorsitzender des Aufsichtsrats: Wolfgang Wendt; Geschäftsführung: David Faller; Sitz der Gesellschaft: Böblingen; Registergericht: Amtsgericht Stuttgart, HRB 243294
-IBM Data Privacy Statement: https://www.ibm.com/privacy/
-
+--
+pw-bot: cr
 
