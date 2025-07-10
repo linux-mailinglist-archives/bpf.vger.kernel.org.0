@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-62875-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62876-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23870AFF772
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 05:23:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BFDDAFF776
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 05:24:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7374D562FB3
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 03:23:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D99C1560B87
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 03:23:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA0C2281538;
-	Thu, 10 Jul 2025 03:23:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6405E28151C;
+	Thu, 10 Jul 2025 03:23:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SjDub+yO"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NWvosv3s"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F1C528134D;
-	Thu, 10 Jul 2025 03:23:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3142D25BF14
+	for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 03:23:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752117797; cv=none; b=CS+++NtAtLjI8+ijaltvPszywASyk2a4yV4XsYO9x5hD2FLPdLly0c+AhhH7fimWM5VggzPdj83q8U9g/QtBadH7Cm9lxWPT/Uu6dFYNhySqr7lAt/5AQemPJ4IX0scO+tiDbEvppWYO8pJFrETmFBWYHBTSouCctkkmuxYub5k=
+	t=1752117817; cv=none; b=bQQqE+NN79IK66+kUL3101SPBRg774DylVeIzUv0FYm9McNDv+6RYwxaLtGRztXngks9Mx3aURxwwTCDTm7Ac4w73K4yedFZR5Y04IpyhZrWrv3Kisr+XAqLp1mXUu1z/hQcfs4P7mXrmDye8AN7zbuc63AblKUC84TNJPjZHZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752117797; c=relaxed/simple;
-	bh=K40JiKMEM5JVQbO08FpthAfv5P9HZPaho2S73xkTR08=;
+	s=arc-20240116; t=1752117817; c=relaxed/simple;
+	bh=apSh/o37yEgCevje0h84Lu7bmpVlRSODBMboMBAeFHo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PxaDILN5lvQ4n18yGC/gbsL0CuDFovcGn9DV5faNzs6xDvfMlxe8+n339sLQiIMsMChTk0/CLY1rSmlGbKsRGH9uhtPJvf6+qsuISZ3MzdwzkJS+MJK9A1r4KGer0YXdW9BPLCFvNuSkS8KkO9FYiJ/KYFiJNJd403SQmDN1ua8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SjDub+yO; arc=none smtp.client-ip=95.215.58.183
+	 MIME-Version; b=oB3eLsF3T2NnCco5gYYUafw9aNhjXkAQ/w/YdR+qLXEiw58HXIpHGA5VcferiwBtib/ezQeahp3AwHH28huli3353GbB81nD+KP8saqGUsyIbnv2puEIMwbkpkUkA889gB+ERimf9fLFK4wASYLln3G077+BMdl2LJVzvexECi0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NWvosv3s; arc=none smtp.client-ip=91.218.175.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1752117793;
+	t=1752117813;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=HSsty5Psi3jvX4zJfFavFS2YXUbWro8hN5jZSdRxRfU=;
-	b=SjDub+yO0wKbnFLeYEn2/FUD7Yln1lBU0MiBNKalJaPExiIGI+w86BTfLMFwcfXOLiGdcX
-	1NHqswnHpMnUZLXTh/mc7AzF27ZRYha3HWMAjFIBdkVL5ajtZhuTB3lG+JrqO3CNya0uIs
-	7LN39LJgycgRtmhj4UdxijUNTLJi8Ko=
+	bh=eSa1mkuyGKRufMORD6oFZCGpS3yYSkz7m6qJ45kDYMM=;
+	b=NWvosv3s7G5piOuU6QDNpW40R0p5UiJOrNuP52L62CPnHFoDVzdqj76anrth2YKYTW56tx
+	DfsU+3FmeucHydLBMwSkwL/088W1tiJBD8BEs30RnA1tOqfTq9Y3PMIUJeOSsmXlfxefsH
+	cnE3ILmQJawYBDGPRN1NEfVdrW3bvvw=
 From: Tao Chen <chen.dylane@linux.dev>
 To: daniel@iogearbox.net,
 	razor@blackwall.org,
@@ -78,9 +78,9 @@ Cc: bpf@vger.kernel.org,
 	netfilter-devel@vger.kernel.org,
 	coreteam@netfilter.org,
 	Tao Chen <chen.dylane@linux.dev>
-Subject: [PATCH bpf-next v4 4/7] bpf: Remove location field in tcx_link
-Date: Thu, 10 Jul 2025 11:20:35 +0800
-Message-ID: <20250710032038.888700-5-chen.dylane@linux.dev>
+Subject: [PATCH bpf-next v4 5/7] bpf: Remove attach_type in bpf_netns_link
+Date: Thu, 10 Jul 2025 11:20:36 +0800
+Message-ID: <20250710032038.888700-6-chen.dylane@linux.dev>
 In-Reply-To: <20250710032038.888700-1-chen.dylane@linux.dev>
 References: <20250710032038.888700-1-chen.dylane@linux.dev>
 Precedence: bulk
@@ -92,88 +92,63 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Use attach_type in bpf_link to replace the location filed, and
-remove location field in tcx_link.
+Use attach_type in bpf_link, and remove it in bpf_netns_link.
+And move netns_type field to the end to fill the byte hole.
 
-Acked-by: Daniel Borkmann <daniel@iogearbox.net>
+Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
 Acked-by: Jiri Olsa <jolsa@kernel.org>
 Signed-off-by: Tao Chen <chen.dylane@linux.dev>
 ---
- include/net/tcx.h |  1 -
- kernel/bpf/tcx.c  | 13 ++++++-------
- 2 files changed, 6 insertions(+), 8 deletions(-)
+ kernel/bpf/net_namespace.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/include/net/tcx.h b/include/net/tcx.h
-index 5ce0ce9e0c0..23a61af1354 100644
---- a/include/net/tcx.h
-+++ b/include/net/tcx.h
-@@ -20,7 +20,6 @@ struct tcx_entry {
- struct tcx_link {
- 	struct bpf_link link;
- 	struct net_device *dev;
--	u32 location;
+diff --git a/kernel/bpf/net_namespace.c b/kernel/bpf/net_namespace.c
+index 63702c86275..8e88201c98b 100644
+--- a/kernel/bpf/net_namespace.c
++++ b/kernel/bpf/net_namespace.c
+@@ -11,8 +11,6 @@
+ 
+ struct bpf_netns_link {
+ 	struct bpf_link	link;
+-	enum bpf_attach_type type;
+-	enum netns_bpf_attach_type netns_type;
+ 
+ 	/* We don't hold a ref to net in order to auto-detach the link
+ 	 * when netns is going away. Instead we rely on pernet
+@@ -21,6 +19,7 @@ struct bpf_netns_link {
+ 	 */
+ 	struct net *net;
+ 	struct list_head node; /* node in list of links attached to net */
++	enum netns_bpf_attach_type netns_type;
  };
  
- static inline void tcx_set_ingress(struct sk_buff *skb, bool ingress)
-diff --git a/kernel/bpf/tcx.c b/kernel/bpf/tcx.c
-index e6a14f408d9..efd987ea687 100644
---- a/kernel/bpf/tcx.c
-+++ b/kernel/bpf/tcx.c
-@@ -142,7 +142,7 @@ static int tcx_link_prog_attach(struct bpf_link *link, u32 flags, u32 id_or_fd,
- 				u64 revision)
- {
- 	struct tcx_link *tcx = tcx_link(link);
--	bool created, ingress = tcx->location == BPF_TCX_INGRESS;
-+	bool created, ingress = link->attach_type == BPF_TCX_INGRESS;
- 	struct bpf_mprog_entry *entry, *entry_new;
- 	struct net_device *dev = tcx->dev;
- 	int ret;
-@@ -169,7 +169,7 @@ static int tcx_link_prog_attach(struct bpf_link *link, u32 flags, u32 id_or_fd,
- static void tcx_link_release(struct bpf_link *link)
- {
- 	struct tcx_link *tcx = tcx_link(link);
--	bool ingress = tcx->location == BPF_TCX_INGRESS;
-+	bool ingress = link->attach_type == BPF_TCX_INGRESS;
- 	struct bpf_mprog_entry *entry, *entry_new;
- 	struct net_device *dev;
- 	int ret = 0;
-@@ -204,7 +204,7 @@ static int tcx_link_update(struct bpf_link *link, struct bpf_prog *nprog,
- 			   struct bpf_prog *oprog)
- {
- 	struct tcx_link *tcx = tcx_link(link);
--	bool ingress = tcx->location == BPF_TCX_INGRESS;
-+	bool ingress = link->attach_type == BPF_TCX_INGRESS;
- 	struct bpf_mprog_entry *entry, *entry_new;
- 	struct net_device *dev;
- 	int ret = 0;
-@@ -260,8 +260,8 @@ static void tcx_link_fdinfo(const struct bpf_link *link, struct seq_file *seq)
+ /* Protects updates to netns_bpf */
+@@ -216,7 +215,7 @@ static int bpf_netns_link_fill_info(const struct bpf_link *link,
+ 	mutex_unlock(&netns_bpf_mutex);
  
- 	seq_printf(seq, "ifindex:\t%u\n", ifindex);
- 	seq_printf(seq, "attach_type:\t%u (%s)\n",
--		   tcx->location,
--		   tcx->location == BPF_TCX_INGRESS ? "ingress" : "egress");
-+		   link->attach_type,
-+		   link->attach_type == BPF_TCX_INGRESS ? "ingress" : "egress");
- }
- 
- static int tcx_link_fill_info(const struct bpf_link *link,
-@@ -276,7 +276,7 @@ static int tcx_link_fill_info(const struct bpf_link *link,
- 	rtnl_unlock();
- 
- 	info->tcx.ifindex = ifindex;
--	info->tcx.attach_type = tcx->location;
-+	info->tcx.attach_type = link->attach_type;
+ 	info->netns.netns_ino = inum;
+-	info->netns.attach_type = net_link->type;
++	info->netns.attach_type = link->attach_type;
  	return 0;
  }
  
-@@ -303,7 +303,6 @@ static int tcx_link_init(struct tcx_link *tcx,
- {
- 	bpf_link_init(&tcx->link, BPF_LINK_TYPE_TCX, &tcx_link_lops, prog,
- 		      attr->link_create.attach_type);
--	tcx->location = attr->link_create.attach_type;
- 	tcx->dev = dev;
- 	return bpf_link_prime(&tcx->link, link_primer);
+@@ -230,7 +229,7 @@ static void bpf_netns_link_show_fdinfo(const struct bpf_link *link,
+ 		   "netns_ino:\t%u\n"
+ 		   "attach_type:\t%u\n",
+ 		   info.netns.netns_ino,
+-		   info.netns.attach_type);
++		   link->attach_type);
  }
+ 
+ static const struct bpf_link_ops bpf_netns_link_ops = {
+@@ -503,7 +502,6 @@ int netns_bpf_link_create(const union bpf_attr *attr, struct bpf_prog *prog)
+ 	bpf_link_init(&net_link->link, BPF_LINK_TYPE_NETNS,
+ 		      &bpf_netns_link_ops, prog, type);
+ 	net_link->net = net;
+-	net_link->type = type;
+ 	net_link->netns_type = netns_type;
+ 
+ 	err = bpf_link_prime(&net_link->link, &link_primer);
 -- 
 2.48.1
 
