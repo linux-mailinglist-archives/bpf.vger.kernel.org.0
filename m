@@ -1,320 +1,173 @@
-Return-Path: <bpf+bounces-62903-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62904-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA471AFFE42
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 11:36:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25EF9AFFE97
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 11:58:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21DFE17E4C8
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 09:36:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 921E41BC5A91
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 09:58:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A93982D3ED0;
-	Thu, 10 Jul 2025 09:36:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AFF82D59F2;
+	Thu, 10 Jul 2025 09:57:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="3HtqvJiN";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="zvj8PJKv";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="3HtqvJiN";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="zvj8PJKv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vNulD8l8"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F5D720B80A
-	for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 09:36:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AB9A1E505;
+	Thu, 10 Jul 2025 09:57:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752140172; cv=none; b=IDDI1JgRq1vlA/cCiuxm05ASIo3xhcxrCCTlyskiAv4ncdJ1CI1J5tPU8ZPdr1FsrTk1em30I+JZ5aSisoeyIFtFHgme992Pepr1o4u7kaeUST4cKp9ZCGP+RmFI+PGLtEiY2Lt7geYpASkHQEBKuIBK84xsDeZtUpzwGUtzAdo=
+	t=1752141475; cv=none; b=Nmunq82PgMraQgWRvrN4NAEK/69BSEnJPniIbGpFVpRbdkV6obWbdPqe96Cz7Lb40pWq5o/OB8xalr7slq0LVu5niCJnnPDKytWqKNkcY7N9Bv0JH7IcqEDmVHHTX1ZnJ8nJre5j2K7369KFszgS/stRC/iS1CZXEXhDPA8K5As=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752140172; c=relaxed/simple;
-	bh=6SZNizaL3I4WJZ8Se2ri22OE98lYH9tqo9ReUXi0as8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ru4ie6TZRpYUrrTpEU0+kgMtyIKiLnYwXFPtZgcIScfvdsA/QU0IVHPnOpruh24nCmgen/T9+iShH4nuGoZpllvYK+tHwVLlg/9JcdIyBg6ns/MksgtJRfGaJhZ36c0yvbjDc8QZqbvYWQLaSLvvFclc4x+A6lnrQOH5dmMpMt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=3HtqvJiN; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=zvj8PJKv; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=3HtqvJiN; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=zvj8PJKv; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 73C341F385;
-	Thu, 10 Jul 2025 09:36:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1752140162; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=lHlXzHrcGn58ullX7mpSkYhYsJW7eBCgiba+w6ctkC0=;
-	b=3HtqvJiN+Z3PjcIgUkzb38HqmsQ43S0ycLfcMBcpziZVjnB2YsD4KjogmxtPYqMxqq+gmj
-	KH44cPNJGYXwIspY8+lCIeIrLERkG5RBRRLLHR2zc+QNr08xrBmiPMankfLDGd2J4zF49q
-	QIcj1NiO9iMY/14BlSjuLk74Ek1eHJ4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1752140162;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=lHlXzHrcGn58ullX7mpSkYhYsJW7eBCgiba+w6ctkC0=;
-	b=zvj8PJKvVGtETVhwaFIe3bz8w9YOlMakWB7VRO1wEDQ9knm+UNaK2G3QxTpVmvddGhWdrB
-	8i6f/GpfvAOfa8Dg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1752140162; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=lHlXzHrcGn58ullX7mpSkYhYsJW7eBCgiba+w6ctkC0=;
-	b=3HtqvJiN+Z3PjcIgUkzb38HqmsQ43S0ycLfcMBcpziZVjnB2YsD4KjogmxtPYqMxqq+gmj
-	KH44cPNJGYXwIspY8+lCIeIrLERkG5RBRRLLHR2zc+QNr08xrBmiPMankfLDGd2J4zF49q
-	QIcj1NiO9iMY/14BlSjuLk74Ek1eHJ4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1752140162;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=lHlXzHrcGn58ullX7mpSkYhYsJW7eBCgiba+w6ctkC0=;
-	b=zvj8PJKvVGtETVhwaFIe3bz8w9YOlMakWB7VRO1wEDQ9knm+UNaK2G3QxTpVmvddGhWdrB
-	8i6f/GpfvAOfa8Dg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4D358136CB;
-	Thu, 10 Jul 2025 09:36:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id EOifEYKJb2g2TwAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Thu, 10 Jul 2025 09:36:02 +0000
-Message-ID: <683189c3-934e-4398-b970-34584ac70a69@suse.cz>
-Date: Thu, 10 Jul 2025 11:36:02 +0200
+	s=arc-20240116; t=1752141475; c=relaxed/simple;
+	bh=B5Te1MOfraVVrSpjVQqFSGNLCQuc3hLW//SrxwQmFCI=;
+	h=Mime-Version:Content-Type:Date:Message-Id:From:Subject:Cc:To:
+	 References:In-Reply-To; b=cAIHhW2y63JaOf304BAbwwSE9iQhn9jgC/DvAW7qbdJ3/8lw3yW7NIBcqmsoEz5xheD9vO5wdF5VNT9jaUwYW43nQIsUeKzJld97YWjvCXWm0bKi3is60g3NynUyADQbCnekCBfSSxBKQEDN59YKqkoc//ZPZ3unSfYPPHKLyHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vNulD8l8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D741BC4CEE3;
+	Thu, 10 Jul 2025 09:57:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752141475;
+	bh=B5Te1MOfraVVrSpjVQqFSGNLCQuc3hLW//SrxwQmFCI=;
+	h=Date:From:Subject:Cc:To:References:In-Reply-To:From;
+	b=vNulD8l8X0acklVEmHYF6S8BVnK+45pS2sUQfSezAQwOQ7uZUtMKG0RIvwIuOwqVN
+	 CiszKPKYAXRasB/EQD8VLrBkthqNMWby/2oKdjxD5gv3C2g97D/FDWbfFXA+cOmhsv
+	 V9CdxRiVg110RYC6k55Kue7ZF7Jw8UKm5vV1eYgg6YOUTzYpAz86ImrNbywCl5VUkx
+	 JybQaalrWBLrVRURMZpZn74AZEnRHX61sNITP9ygx/c6s3btRxcqBOBFQCx72C0eHG
+	 AkJQlrzblaVCzMwsY0KqRuc1wbybmnyeB4ESYj/5yyiQJ+PB5XKQdGH7qHIS9aWhv9
+	 XRKR6B3glJhWA==
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 6/6] slab: Introduce kmalloc_nolock() and
- kfree_nolock().
-Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org,
- linux-mm@kvack.org
-Cc: harry.yoo@oracle.com, shakeel.butt@linux.dev, mhocko@suse.com,
- bigeasy@linutronix.de, andrii@kernel.org, memxor@gmail.com,
- akpm@linux-foundation.org, peterz@infradead.org, rostedt@goodmis.org,
- hannes@cmpxchg.org
-References: <20250709015303.8107-1-alexei.starovoitov@gmail.com>
- <20250709015303.8107-7-alexei.starovoitov@gmail.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- m6M14QORSWTLRg==
-In-Reply-To: <20250709015303.8107-7-alexei.starovoitov@gmail.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_TLS_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_RCPT(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	FREEMAIL_TO(0.00)[gmail.com,vger.kernel.org,kvack.org];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[oracle.com,linux.dev,suse.com,linutronix.de,kernel.org,gmail.com,linux-foundation.org,infradead.org,goodmis.org,cmpxchg.org];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid];
-	RCVD_COUNT_TWO(0.00)[2];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Spam-Score: -2.80
+Date: Thu, 10 Jul 2025 11:57:50 +0200
+Message-Id: <DB8ABBBNMMVB.1QWW942P0MRJP@kernel.org>
+From: "Danilo Krummrich" <dakr@kernel.org>
+Subject: Re: [PATCH v12 1/4] mm/vmalloc: allow to set node and align in
+ vrealloc
+Cc: "Vitaly Wool" <vitaly.wool@konsulko.se>, "linux-mm"
+ <linux-mm@kvack.org>, "Andrew Morton" <akpm@linux-foundation.org>, "LKML"
+ <linux-kernel@vger.kernel.org>, "Uladzislau Rezki" <urezki@gmail.com>,
+ "Alice Ryhl" <aliceryhl@google.com>, "Vlastimil Babka" <vbabka@suse.cz>,
+ "rust-for-linux" <rust-for-linux@vger.kernel.org>, "Lorenzo Stoakes"
+ <lorenzo.stoakes@oracle.com>, "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+ "Kent Overstreet" <kent.overstreet@linux.dev>,
+ <linux-bcachefs@vger.kernel.org>, "bpf" <bpf@vger.kernel.org>, "Herbert Xu"
+ <herbert@gondor.apana.org.au>, "Jann Horn" <jannh@google.com>, "Pedro
+ Falcato" <pfalcato@suse.de>
+To: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
+References: <20250709172345.1031907-1-vitaly.wool@konsulko.se>
+ <20250709172416.1031970-1-vitaly.wool@konsulko.se>
+ <CAADnVQ+bikqCO7D+5_rAtiJXv3F6xn=0_hgGH5CkoTPpdi8j6Q@mail.gmail.com>
+ <14b08e7c-c2e8-435c-a1dd-bd51cfb42060@kernel.org>
+ <CAADnVQ+qCNfm3aucBrkXRXrUjjYeYQb09Oobx+pgOXNDny4s8w@mail.gmail.com>
+ <DB7WW886UVAJ.I58517CYL8G7@kernel.org>
+ <CAADnVQ+iZbKzx8bje=CLO=OnpmGHmQHpDNC=UjWYfN59bWoN3A@mail.gmail.com>
+In-Reply-To: <CAADnVQ+iZbKzx8bje=CLO=OnpmGHmQHpDNC=UjWYfN59bWoN3A@mail.gmail.com>
 
-On 7/9/25 03:53, Alexei Starovoitov wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
-> 
-> kmalloc_nolock() relies on ability of local_lock to detect the situation
-> when it's locked.
-> In !PREEMPT_RT local_lock_is_locked() is true only when NMI happened in
-> irq saved region that protects _that specific_ per-cpu kmem_cache_cpu.
-> In that case retry the operation in a different kmalloc bucket.
-> The second attempt will likely succeed, since this cpu locked
-> different kmem_cache_cpu.
-> 
-> Similarly, in PREEMPT_RT local_lock_is_locked() returns true when
-> per-cpu rt_spin_lock is locked by current task. In this case re-entrance
-> into the same kmalloc bucket is unsafe, and kmalloc_nolock() tries
-> a different bucket that is most likely is not locked by the current
-> task. Though it may be locked by a different task it's safe to
-> rt_spin_lock() on it.
-> 
-> Similar to alloc_pages_nolock() the kmalloc_nolock() returns NULL
-> immediately if called from hard irq or NMI in PREEMPT_RT.
-> 
-> kfree_nolock() defers freeing to irq_work when local_lock_is_locked()
-> and in_nmi() or in PREEMPT_RT.
-> 
-> SLUB_TINY config doesn't use local_lock_is_locked() and relies on
-> spin_trylock_irqsave(&n->list_lock) to allocate while kfree_nolock()
-> always defers to irq_work.
-> 
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+On Thu Jul 10, 2025 at 2:39 AM CEST, Alexei Starovoitov wrote:
+> On Wed, Jul 9, 2025 at 4:26=E2=80=AFPM Danilo Krummrich <dakr@kernel.org>=
+ wrote:
+>>
+>> On Thu Jul 10, 2025 at 1:14 AM CEST, Alexei Starovoitov wrote:
+>> > On Wed, Jul 9, 2025 at 3:57=E2=80=AFPM Danilo Krummrich <dakr@kernel.o=
+rg> wrote:
+>> >>
+>> >> On 7/10/25 12:53 AM, Alexei Starovoitov wrote:
+>> >> > On Wed, Jul 9, 2025 at 10:25=E2=80=AFAM Vitaly Wool <vitaly.wool@ko=
+nsulko.se> wrote:
+>> >> >>
+>> >> >>
+>> >> >> -void *vrealloc_noprof(const void *p, size_t size, gfp_t flags)
+>> >> >> +void *vrealloc_node_align_noprof(const void *p, size_t size, unsi=
+gned long align,
+>> >> >> +                                gfp_t flags, int node)
+>> >> >>   {
+>> >> >
+>> >> > imo this is a silly pattern to rename functions because they
+>> >> > got new arguments.
+>> >> > The names of the args are clear enough "align" and "node".
+>> >> > I see no point in adding the same suffixes to a function name.
+>> >> > In the future this function will receive another argument and
+>> >> > the function would be renamed again?!
+>> >> > "_noprof" suffix makes sense, since it's there for alloc_hooks,
+>> >> > but "_node_align_" is unnecessary.
+>> >>
+>> >> Do you have an alternative proposal given that we also have vrealloc(=
+) and
+>> >> vrealloc_node()?
+>> >
+>> > vrealloc_node()?! There is no such thing in the tree.
+>> > There are various k[zm]alloc_node() which are artifacts of the past
+>> > when NUMA just appeared and people cared about CONFIG_NUMA vs not.
+>> > Nowadays NUMA is everywhere and any new code must support NUMA
+>> > from the start. Hence no point in carrying old baggage and obsolete na=
+mes.
+>>
+>> This patch adds it; do you suggest to redefine vrealloc_noprof() to take=
+ align
+>> and nid? If we don't mind being inconsistent with krealloc_noprof() and
+>> kvrealloc_noprof() that's fine I guess.
+>>
+>> FWIW, I prefer consistency.
+>
+> What inconsistency are you talking about? That
+> krealloc_noprof(const void *p, size_t new_size, gfp_t flags)
+> and
+> vrealloc_noprof(const void *p, size_t size, unsigned long align,
+>                 gfp_t flags, int node)
+> have different number of arguments?!
+>
+> See:
+> alloc_pages_noprof(gfp_t gfp, unsigned int order);
+> __alloc_pages_noprof(gfp_t gfp, unsigned int order, int preferred_nid,
+>                 nodemask_t *nodemask);
+>
+> Adding double underscore to keep all existing callers of
+> vrealloc_noprof() without changes and do:
+>
+> vrealloc_noprof(const void *p, size_t size, gfp_t flags);
+> __vrealloc_noprof(const void *p, size_t size, unsigned long align,
+> gfp_t flags, int node);
+>
+> is fine and consistent with how things were done in the past,
+> but adding "_node_align_" to the function name and code churn to all
+> callsites is a cargo cult.
 
->  static __fastpath_inline
-> @@ -2442,13 +2453,17 @@ static void *setup_object(struct kmem_cache *s, void *object)
->   * Slab allocation and freeing
->   */
->  static inline struct slab *alloc_slab_page(gfp_t flags, int node,
-> -		struct kmem_cache_order_objects oo)
-> +					   struct kmem_cache_order_objects oo,
-> +					   bool allow_spin)
->  {
->  	struct folio *folio;
->  	struct slab *slab;
->  	unsigned int order = oo_order(oo);
->  
-> -	if (node == NUMA_NO_NODE)
-> +	if (unlikely(!allow_spin)) {
-> +		folio = (struct folio *)alloc_frozen_pages_nolock(0/* __GFP_COMP is implied */,
-> +								  node, order);
-> +	} else if (node == NUMA_NO_NODE)
->  		folio = (struct folio *)alloc_frozen_pages(flags, order);
->  	else
->  		folio = (struct folio *)__alloc_frozen_pages(flags, order, node, NULL);
+As Vitaly mentioned in a different reply, this would be inconsistent with t=
+he
+'k' and 'kv' variants, which have the suffix '_node'.
 
-Nit: should use { } either for everything or nothing (seems your new branch
-would work without them)
+Anyways, in general I don't think that adding underscores for functions tha=
+t
+basically do the same thing but are getting more specialized is a great pat=
+tern
+for things that are not strictly limited to a narrow context.
 
->  			stat(s, ALLOC_NODE_MISMATCH);
-> @@ -3730,7 +3762,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
->  	 * PFMEMALLOC but right now, we are losing the pfmemalloc
->  	 * information when the page leaves the per-cpu allocator
->  	 */
-> -	if (unlikely(!pfmemalloc_match(slab, gfpflags)))
-> +	if (unlikely(!pfmemalloc_match(slab, gfpflags) && allow_spin))
->  		goto deactivate_slab;
->  
->  	/* must check again c->slab in case we got preempted and it changed */
-> @@ -3803,7 +3835,12 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
->  		slub_set_percpu_partial(c, slab);
->  
->  		if (likely(node_match(slab, node) &&
-> -			   pfmemalloc_match(slab, gfpflags))) {
-> +			   pfmemalloc_match(slab, gfpflags)) ||
-> +		    /*
-> +		     * Reentrant slub cannot take locks necessary
-> +		     * for __put_partials(), hence downgrade to any node
-> +		     */
-> +		    !allow_spin) {
+Please note, I'm not saying we should encode additional arguments in the na=
+me
+either. I think it really depends on the actual case.
 
-Uh this seems rather ugly, I'd move the comment above everything. Also it's
-not "downgrade" as when you assign NUMA_NO_NODE earlier, I'd say "ignore the
-preference".
-Note that it would be bad to ignore with __GFP_THISNODE but then it's not
-allowed for kmalloc_nolock() so that's fine.
+In this case, it seems to make sense to me that there is e.g. kmalloc() and
+kmalloc_node().
 
-> @@ -3911,6 +3953,12 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
->  		void *flush_freelist = c->freelist;
->  		struct slab *flush_slab = c->slab;
->  
-> +		if (unlikely(!allow_spin))
-> +			/*
-> +			 * Reentrant slub cannot take locks
-> +			 * necessary for deactivate_slab()
-> +			 */
-> +			return NULL;
+For a caller that's much more useful, i.e. I want classic kmalloc(), but wa=
+nt to
+set the node, hence kmalloc_node(). Calling it __kmalloc() instead seems a =
+bit
+random.
 
-Hm but this is leaking the slab we allocated and have in the "slab"
-variable, we need to free it back in that case.
+Or do you only refer to the *_noprof() variants, which are not exported to
+users? But even then, underscores still don't seem very expressive.
 
->  		c->slab = NULL;
->  		c->freelist = NULL;
->  		c->tid = next_tid(c->tid);
-
-> @@ -4593,10 +4792,31 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
->  	barrier();
->  
->  	if (unlikely(slab != c->slab)) {
-> -		__slab_free(s, slab, head, tail, cnt, addr);
-> +		/* cnt == 0 signals that it's called from kfree_nolock() */
-> +		if (unlikely(!cnt)) {
-> +			/*
-> +			 * __slab_free() can locklessly cmpxchg16 into a slab,
-> +			 * but then it might need to take spin_lock or local_lock
-> +			 * in put_cpu_partial() for further processing.
-> +			 * Avoid the complexity and simply add to a deferred list.
-> +			 */
-> +			defer_free(head);
-> +		} else {
-> +			__slab_free(s, slab, head, tail, cnt, addr);
-> +		}
->  		return;
->  	}
->  
-> +	if (unlikely(!cnt)) {
-> +		if ((in_nmi() || !USE_LOCKLESS_FAST_PATH()) &&
-> +		    local_lock_is_locked(&s->cpu_slab->lock)) {
-> +			defer_free(head);
-> +			return;
-> +		}
-> +		cnt = 1;
-
-Hmm we might end up doing a "goto redo" later and then do the wrong thing above?
-
-> +		kasan_slab_free(s, head, false, false, /* skip quarantine */true);
-> +	}
-> +
->  	if (USE_LOCKLESS_FAST_PATH()) {
->  		freelist = READ_ONCE(c->freelist);
->  
+I'm not maintaining this code though, so just take it FWIW. :)
 
