@@ -1,166 +1,140 @@
-Return-Path: <bpf+bounces-62865-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62866-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40757AFF60F
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 02:40:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 545CEAFF62D
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 02:54:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCB7D1C4259B
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 00:40:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2046B1C45020
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 00:55:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F256049620;
-	Thu, 10 Jul 2025 00:40:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E9D672636;
+	Thu, 10 Jul 2025 00:54:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I6eke5UL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NPvkFl09"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-ej1-f68.google.com (mail-ej1-f68.google.com [209.85.218.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0B088F54;
-	Thu, 10 Jul 2025 00:40:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C53E539A
+	for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 00:54:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752108002; cv=none; b=VFkgZornRT9xh9AeajeeqBaMzxI//xDEOCYaFXF47qgGZCIdl9BZtTb+kyLOmE8WTfnrBeZfvfvXprKHLtz4X64K5FoPoF27A0yib/Mb1MWY7TXqKuieeITFLS2iRSz+7tbAXCIyYSO6kit3wzEHvnLtZlncIbT652ffMCft1Cg=
+	t=1752108890; cv=none; b=Nupw49d0hSdHbZro17LMOH+NTR0fOM2+1BOdYoNEnuiAJrnhmZD2u3JWC55ZHVghQ0BpBqiro/9JfzolltdFU+4rFEPzVtyNftDgjFq9xZQ7QXgdlKzJb4YBfEoiE7+u+wq6vGhPz2PooKoN1IX2lermeNLIBD9TPjkan5sbM5M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752108002; c=relaxed/simple;
-	bh=5xrWVx1C9s45tbIV36ojtnaAGXS4aJVjxBP/Z8QyPxE=;
+	s=arc-20240116; t=1752108890; c=relaxed/simple;
+	bh=AO25ryHk2I0XA7aU+gTnKwqKXD8DSb4Kxr+qAtasj20=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dXoU83nDfAHgeSlWcYnZ0c3RbOJBG4jWIEpBnTOLGXHZ3i12e6jpo5C94NjnPCcdwA9NU0qLhxRzQcBsRayHFHiX840p2CuEhv6Tc3sZDqWTSBMaVVmlctMISzsdUm3FCTU2jHjJrAZdxATebTYpA41HySDOClSQ2DqTZ5feUB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I6eke5UL; arc=none smtp.client-ip=209.85.221.47
+	 To:Cc:Content-Type; b=WPIEs0UrMLMPd/eBH2sVUTvnosGXcTwPWjLLzYtNAkE/wPgppw3UXWT2EOsoOkMeLj0YfV7NFDCOFJhNVp+dj04uCgQINgJSR3Q8b0OwrnBFuabwutaxLy+uwkIq7oiTGV+YWLfDbsfN6L9TG72Fe3/tTAnrNaUw3B6ogUDuc4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NPvkFl09; arc=none smtp.client-ip=209.85.218.68
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3a4fb9c2436so300015f8f.1;
-        Wed, 09 Jul 2025 17:40:00 -0700 (PDT)
+Received: by mail-ej1-f68.google.com with SMTP id a640c23a62f3a-ae0dad3a179so64498866b.1
+        for <bpf@vger.kernel.org>; Wed, 09 Jul 2025 17:54:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752107999; x=1752712799; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8+EH9We4Q8uZNtUfBicIKlMK3P33lcOOMogm1wF7Hgw=;
-        b=I6eke5ULShzQt77sqJZ5FK65QkG9AkFy2SFVQUDDoU+5875HLhiVnlkRfjbJYq25eH
-         O3feeB7uDUniT0tYu3xrpTkB8hkDDupEx59mT+K8Swn607apk/ncj65Fo8YaaHbf6wTc
-         FL9t4lxBcGei+mufz7K/yk98LrsLo4bsH7YfZhJPVu9LdxXG6xpWK0AF6X4704bnb6Ar
-         5zBosYqJ3gPof1K28sTIAEN302ZP3pCXp0nr0eMF1AJgRcucXQ89CEqI1JK9Uht93+/p
-         /Ga4bV+L//dP1j2BUYvJYPf4MDMKcgL8h6BGAb9vwI2bnYwjrRd4GQzr0hUA9WW0PzgM
-         g+oQ==
+        d=gmail.com; s=20230601; t=1752108886; x=1752713686; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=AO25ryHk2I0XA7aU+gTnKwqKXD8DSb4Kxr+qAtasj20=;
+        b=NPvkFl09aXKfE3M/iyGxbxCQdXydTlti4B5kmXQhBzVRJ3ZrmBT9KeEYSs7xg6iyZ8
+         cRrYHhre3yH+VUMTkyMsHMdtOr/1r5NDj25LQxMRNqFK1z2btm6tCHPG+NTxaJ1E8cE/
+         z2QxrKsz6xU31LShsr99efUIZbbH3JHZV1/WJl32nOXorekOUPt+8RClTKHVOvuvfX3i
+         0xkvskXyv3YHfwHSyN82sSvS7tZAZDaZDQvC9d14d0WJ6pzR4Zz3ct42Jjommw1Qd6Qj
+         VeiU3Ki8N1HEYpxIAmuUsPU7OdSH0WI7CMv3FMNPcErMrV4dVgfEiePWOstnBFmYZgS1
+         nZYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752107999; x=1752712799;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8+EH9We4Q8uZNtUfBicIKlMK3P33lcOOMogm1wF7Hgw=;
-        b=jrbAJxmyVR58tI5SOk3P9KwezecqjNz+tVYZC0yx/oLOCB3Sz5EXXp3fVmUgw55Y33
-         Kpi/glcngPPHCSxGjapdcC6JtLTV/9bzzjuEDFis2wF4iFhDHO3IF1bDpuEBBH2eGoBV
-         r2HgS1tN7KvJmHyMfI/OG9pUh4wm8BKHgYJdtbMknAZjaujYl+4xQRhyGXyTWI4nDDfh
-         +5z73wQ/wr1QEvHSkqEiCcB9Xhh5MiSKdG3j96cLC2BOauvF+MMA3HPYJGZDlC/MnqcC
-         lrABx9/mz2zPyJm1MJAL279/zCN4m1OHI7mq6Z/OjanlkW5TNF9muS1vpqA6rtX1Bj2g
-         SIsA==
-X-Forwarded-Encrypted: i=1; AJvYcCV9BZoZ3k2amguNw31gkIY+G2dVgk1wnejNEYMPxp2Czo5tSvjuHbc505SZXkCEqitpMe0=@vger.kernel.org, AJvYcCW4mI0EQ8MgIrhHUkKcHkHrWNhWCnp2TKSTsZO8nZbcOD70Ve7PpIXp7w5kJEqsV+jt4kDmd7cj6whjmUtD@vger.kernel.org, AJvYcCWHQJ1c2Gq+iBYHtMWTPAUend3Tg+LAoW2r+BryMLnltYhYddQC3z3Q2n/fokupnPSgtjrbF10PW7nkL2Nexyk=@vger.kernel.org, AJvYcCWi6VSvNfHAF7rW23noc3xLfXC+9IMqKm/or/QukRIhIo12F7W5ComVlFEOwE+r+gSFi04jtGtywqdvinr+lH8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwqLL80JkVQ09XRkM/FUSletnBIrfYlmi2E9GCIsWT9J0e5GRn7
-	Y0e+Ejory48jyV3ZiYGEBw3aLDg7Ibz9T0QsagplRTNx0caD4qvWBm9drHMNi6EK45khhknxnGx
-	EC8UvA6azQak7LjDtblSe8pE3sb24O2I=
-X-Gm-Gg: ASbGnct4IgfPbofnYGrenc0Bq9PTqQMa5vrG/qmqOyB2i6BVVdWsXDqv2M22Bew4oxV
-	niIwG4en2kYrRgEtY+vP2l5MvVq92GcL1WiLgKqLet8Pl+zMHRGqZ8pU9SN8Ks3yz+hUPsnvmJz
-	eroZlf+FAwIE1MBV3vGm8PlMYpjmqVDTcvRNVlcoi3FxQtaKLNpUZBenOEkwgUsmFoKUFk/fLE
-X-Google-Smtp-Source: AGHT+IGl307g/Cb4M8ys7xRkMqsB4P7qgaJ2qzazbro0cQv4i2hb8605y1TULKlRw0ArBOPaqrTdi/ue/nQVGUiy4P4=
-X-Received: by 2002:a5d:64ef:0:b0:3a4:f7e6:284b with SMTP id
- ffacd0b85a97d-3b5e788110cmr2130070f8f.10.1752107998781; Wed, 09 Jul 2025
- 17:39:58 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1752108886; x=1752713686;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AO25ryHk2I0XA7aU+gTnKwqKXD8DSb4Kxr+qAtasj20=;
+        b=qMe9Eng+PlPlGTH3z/Omeyj3qYLWfTZasTgBI3Nqn0D03N5zk1zuW4ZRR4lrZoNAPr
+         AyU2z0fvsbes0B9GznHfLlCjwyVPgRPRA/n+VgrZ4WRRacJcm8sPixlyNmXboEd3Y09d
+         SHUD6Ey94cBvtEgNlPqn/Cv83VTZVqFBQyWCFxLZEZNPiAyoN7mdNP8iWWOgQk80tvkS
+         dOhnZ10laRPmTIG/nQUNF0GmxYWgN6gKfb612vF1W2DCOLWGRC3kS+7o3kV/ntmCyP4B
+         K9QixCI21SNYc8X4nX00anY9TZjgoDKcVD3LwtRcxGBM9lDG61L6/FLKsi8icq3Jyb2O
+         swZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU8DvkXMDqfxkRFQWCzl6mM6d/Jh2SSDb9E/4z0+/TFh/gXJ0KFYoW38FRVZMad0rvAdDQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxzv7lynAHjliJ9Ll5+8FdowJmXbIHKQwAPZxodWHXFf7JkHgz4
+	xrxMgqnzlu63QQGAqyRLc7TfsDuDRl4bXB3P+e5/bUxDDhbabnnpoxIyaU9+zJPelxZwfmveRYk
+	1k1HjRBfULwFbTwTLTE7+IaZyHHfrP7k=
+X-Gm-Gg: ASbGncurn4vJH/iMp7fwWZW1lMJwwi7dG9E+ngli91L3d1h+60DeSqhL0IKxFXajH2T
+	ZIMLopVDDKau7XxJVlXyBgMi8F/FgwjH6ZVzAGMYHuPDguPTswZGzBJT6EjH0MkjUz85bQjcteM
+	/KemXUQqGF9WHYsXlDth2/H9OvC6N7/rGELlQ7XSrbfINblg==
+X-Google-Smtp-Source: AGHT+IF7SRgPK9T2y4tbI5jAxjSVAaquLXgNLKMVoB440qWjC542SojUBmNmwRHvuD1At+AUYyFMcOFSFoUqRZR27LQ=
+X-Received: by 2002:a17:907:d28:b0:ad5:78ca:2126 with SMTP id
+ a640c23a62f3a-ae6cfba40a1mr456095466b.59.1752108886164; Wed, 09 Jul 2025
+ 17:54:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250709172345.1031907-1-vitaly.wool@konsulko.se>
- <20250709172416.1031970-1-vitaly.wool@konsulko.se> <CAADnVQ+bikqCO7D+5_rAtiJXv3F6xn=0_hgGH5CkoTPpdi8j6Q@mail.gmail.com>
- <14b08e7c-c2e8-435c-a1dd-bd51cfb42060@kernel.org> <CAADnVQ+qCNfm3aucBrkXRXrUjjYeYQb09Oobx+pgOXNDny4s8w@mail.gmail.com>
- <DB7WW886UVAJ.I58517CYL8G7@kernel.org>
-In-Reply-To: <DB7WW886UVAJ.I58517CYL8G7@kernel.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 9 Jul 2025 17:39:47 -0700
-X-Gm-Features: Ac12FXyQfyO3szxMDVVNHvlOhNb_Gbvf_td5xMFONVF3fAKwKJRT2QZYiRmaY0s
-Message-ID: <CAADnVQ+iZbKzx8bje=CLO=OnpmGHmQHpDNC=UjWYfN59bWoN3A@mail.gmail.com>
-Subject: Re: [PATCH v12 1/4] mm/vmalloc: allow to set node and align in vrealloc
-To: Danilo Krummrich <dakr@kernel.org>
-Cc: Vitaly Wool <vitaly.wool@konsulko.se>, linux-mm <linux-mm@kvack.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Uladzislau Rezki <urezki@gmail.com>, Alice Ryhl <aliceryhl@google.com>, 
-	Vlastimil Babka <vbabka@suse.cz>, rust-for-linux <rust-for-linux@vger.kernel.org>, 
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, "Liam R . Howlett" <Liam.Howlett@oracle.com>, 
-	Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org, 
-	bpf <bpf@vger.kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>, 
-	Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>
+References: <20250614064056.237005-1-sidchintamaneni@gmail.com>
+ <20250614064056.237005-4-sidchintamaneni@gmail.com> <CAP01T77TBA3eEVoqGMVTpYsEzvg0f7Q95guH0SDQ3gZK=q+Tag@mail.gmail.com>
+ <CAM6KYssFT35L5HN_Fes-2BdhEO6EmhF9Qa+WSWLML4qnZ0z1tA@mail.gmail.com>
+ <CAP01T76S4X4f=owz9D7dXfv15=vD8HB8dO_Ni2TmKfqTKCtuhA@mail.gmail.com>
+ <CAADnVQ+EiaoWUVcN9=Nm=RWJ6XE=Kcm8Q2FYQqWGJ_NsCtyJ=A@mail.gmail.com> <CAM6KYssLVB+Wqw5ptQQufjmV3279AX7ZKhXtkG6OWaM3vWde-Q@mail.gmail.com>
+In-Reply-To: <CAM6KYssLVB+Wqw5ptQQufjmV3279AX7ZKhXtkG6OWaM3vWde-Q@mail.gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Thu, 10 Jul 2025 02:54:09 +0200
+X-Gm-Features: Ac12FXzKzutP-zFYpE_6p0Lca8wkDKMg36Sv0rY6yq99aCyqkOGh0rO59Vm0OZ0
+Message-ID: <CAP01T760JcsZ0o5BfKZ7pi0viseocTQCUW6KjqbxzTW7TwXF9g@mail.gmail.com>
+Subject: Re: [RFC bpf-next v2 3/4] bpf: Runtime part of fast-path termination approach
+To: Raj Sahu <rjsu26@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+	Siddharth Chintamaneni <sidchintamaneni@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Dan Williams <djwillia@vt.edu>, miloc@vt.edu, ericts@vt.edu, rahult@vt.edu, 
+	doniaghazy@vt.edu, quanzhif@vt.edu, Jinghao Jia <jinghao7@illinois.edu>, egor@vt.edu, 
+	Sai Roop Somaraju <sairoop10@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 9, 2025 at 4:26=E2=80=AFPM Danilo Krummrich <dakr@kernel.org> w=
-rote:
+On Tue, 8 Jul 2025 at 09:07, Raj Sahu <rjsu26@gmail.com> wrote:
 >
-> On Thu Jul 10, 2025 at 1:14 AM CEST, Alexei Starovoitov wrote:
-> > On Wed, Jul 9, 2025 at 3:57=E2=80=AFPM Danilo Krummrich <dakr@kernel.or=
-g> wrote:
-> >>
-> >> On 7/10/25 12:53 AM, Alexei Starovoitov wrote:
-> >> > On Wed, Jul 9, 2025 at 10:25=E2=80=AFAM Vitaly Wool <vitaly.wool@kon=
-sulko.se> wrote:
-> >> >>
-> >> >>
-> >> >> -void *vrealloc_noprof(const void *p, size_t size, gfp_t flags)
-> >> >> +void *vrealloc_node_align_noprof(const void *p, size_t size, unsig=
-ned long align,
-> >> >> +                                gfp_t flags, int node)
-> >> >>   {
-> >> >
-> >> > imo this is a silly pattern to rename functions because they
-> >> > got new arguments.
-> >> > The names of the args are clear enough "align" and "node".
-> >> > I see no point in adding the same suffixes to a function name.
-> >> > In the future this function will receive another argument and
-> >> > the function would be renamed again?!
-> >> > "_noprof" suffix makes sense, since it's there for alloc_hooks,
-> >> > but "_node_align_" is unnecessary.
-> >>
-> >> Do you have an alternative proposal given that we also have vrealloc()=
- and
-> >> vrealloc_node()?
-> >
-> > vrealloc_node()?! There is no such thing in the tree.
-> > There are various k[zm]alloc_node() which are artifacts of the past
-> > when NUMA just appeared and people cared about CONFIG_NUMA vs not.
-> > Nowadays NUMA is everywhere and any new code must support NUMA
-> > from the start. Hence no point in carrying old baggage and obsolete nam=
-es.
+> > If we have such bugs that prog in NMI can stall CPU indefinitely
+> > they need to be fixed independently of fast-execute.
+> > timed may_goto, tailcalls or whatever may need to have different
+> > limits when it detects that the prog is running in NMI or with hard irqs
+> > disabled. Fast-execute doesn't have to be a universal kill-bpf-prog
+> > mechanism that can work in any context. I think fast-execute
+> > is for progs that deadlocked in res_spin_lock, faulted arena,
+> > or were slow for wrong reasons, but not fatal for the kernel reasons.
+> > imo we can rely on schedule_work() and bpf_arch_text_poke() from there.
+> > The alternative of clone of all progs and memory waste for a rare case
+> > is not appealing. Unless we can detect "dangerous" progs and
+> > clone with fast execute only for them, so that the majority of bpf progs
+> > stay as single copy.
 >
-> This patch adds it; do you suggest to redefine vrealloc_noprof() to take =
-align
-> and nid? If we don't mind being inconsistent with krealloc_noprof() and
-> kvrealloc_noprof() that's fine I guess.
+> I just want to confirm that we are on the same page here:
+> While the RFC we sent was using prog cloning, Kumar's earlier
+> suggestion of implementing offset tables can avoid the complete
+> cloning process and the associated memory footprint. Is there
+> something else which is concerning here in terms of memory overhead?
 >
-> FWIW, I prefer consistency.
+> Regarding the NMI issue, the fast-execute design was meant to take
+> care of stalling in tracing and other task-context based programs
+> running slow for some reason. While I do agree with your point that
+> deadlocks in NMIs should be solved independently, kumar's point of
+> having several BPF programs needing termination, running in hardIRQ,
+> puts us in a fix. What should be the way forward here?
 
-What inconsistency are you talking about? That
-krealloc_noprof(const void *p, size_t new_size, gfp_t flags)
-and
-vrealloc_noprof(const void *p, size_t size, unsigned long align,
-                gfp_t flags, int node)
-have different number of arguments?!
-
-See:
-alloc_pages_noprof(gfp_t gfp, unsigned int order);
-__alloc_pages_noprof(gfp_t gfp, unsigned int order, int preferred_nid,
-                nodemask_t *nodemask);
-
-Adding double underscore to keep all existing callers of
-vrealloc_noprof() without changes and do:
-
-vrealloc_noprof(const void *p, size_t size, gfp_t flags);
-__vrealloc_noprof(const void *p, size_t size, unsigned long align,
-gfp_t flags, int node);
-
-is fine and consistent with how things were done in the past,
-but adding "_node_align_" to the function name and code churn to all
-callsites is a cargo cult.
+I would give the prog->aux->terminate bit idea we discussed in the
+other thread a try.
+If we can can know that it has acceptable overhead (see example
+microbenchmarking I did here:
+https://lore.kernel.org/bpf/20250304003239.2390751-1-memxor@gmail.com/)
+then I think it seems the best option to go with.
+You can also try loops with costs for the body, since it's more
+appropriate as the % of cost of the loop body.
+We can sample this bit and later on hook up enforcement to set it when
+it detects a timeout, but let's keep both separate for the next
+iteration.
 
