@@ -1,68 +1,68 @@
-Return-Path: <bpf+bounces-62948-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62935-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81DCEB008FA
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 18:39:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79C0BB008DF
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 18:36:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15A901CA2B2B
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 16:38:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B664B16BE7B
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 16:36:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB70B2F3650;
-	Thu, 10 Jul 2025 16:36:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB7972EFDA2;
+	Thu, 10 Jul 2025 16:35:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="FwszoUsv"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="YLHh1Chu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D047E2EFDB6;
-	Thu, 10 Jul 2025 16:36:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B2D1271441;
+	Thu, 10 Jul 2025 16:35:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752165375; cv=none; b=J7MWv1mCCQ5aVPC81S7+rDPZwiz8R4qaFHtxr/H9UaXIEZb5DwcIRPkrLnSsNK5OPWKjbv5SSQrYhUTabsy9CT8Tb4gvaeNhc48niIff5ETJ17bv+5E4jFeSWGZhH/an76ERM2fUp8uTqj0gbiVHvzVttICKh+SrUfeF/GHRBaM=
+	t=1752165353; cv=none; b=m8srOcf273jIrgth3nZVIdTTg3mlXzHs1XzeA47oer4QMxwAtB1YQ8Sny+2W2bUhDGEWEBSatYcQgl0mr8Ml+S5tIx1w8MvjPCm7rKwmhoqu58HP2FVr8z8Vmo57YQ04b9NM6ysnKzvpCbGNhKz4faxTQG1oXkKQjIPPufqHrQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752165375; c=relaxed/simple;
-	bh=tlHRS/3dt5vPHNG7TOjoA/M9EqsgRoiFmsUModFlv+A=;
+	s=arc-20240116; t=1752165353; c=relaxed/simple;
+	bh=WeMe4aAFoj8CCDszqd7zTqOwo34LjyucoBCk9E/sNAg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZIKm4uoy3aCKzS36VqXo9X5iicXrulg5B6KQp0YoGNK/UI8yN66HkTqnlI1dX9BtLqYeA82pWANkTZFMEndyrowprRHkjbJmwxUCWobt4olFzFoONmeiYxWKzjZA8GsCWpwnIllJg4jX3d4IreBWGBdj832mgHj0jR6Z8DxIAuQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=FwszoUsv; arc=none smtp.client-ip=148.163.156.1
+	 MIME-Version; b=YDRxU1NGvmDP3sLvkoto9T/Ki/F0EnptVq8RqoG3AcenY4CyL05fsNBJ3+r6vHntoDlOAmsl7w35AEjLtvawwq1o8yc+zloZdomB7vZrhT1rAudwKgU/h2YewDIghg5x5XxkCb+etkZuzfmEM1/hK+V4mTSFTEIxWEWoOCFURg4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=YLHh1Chu; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56AC0FgV001435;
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56ACJJav010221;
 	Thu, 10 Jul 2025 16:35:31 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=pp1; bh=QAhNw+3PmjnJqXWn4
-	rXxvRrX6iP/uIyWxAm1aAO/TlI=; b=FwszoUsv0OZayXeLnPgXkTy0k3N6VlDqd
-	CgsEo7HSysyowbkTH/Qx1qRsPqB72mAdQbpm1m+PQACbMG1ioXo86DD+Xu8GitNM
-	Qz9NowIKahs3viwakfJqa3+Yu1HHlTKO1XJinrf8K8vx3ZXdFxcHsNQynCf+LQX2
-	mldTqNoR/KgYOq1nwr7cPUeG3q7VZLRDqO7K7RSobrxhN+JtMAst7SPPudbve5zE
-	aI4xscvZ1Zk6BqGd+ha06e5X+8DNtB7AoAPuDHKKMsooeOoXLVdn/YoVb8zSKe+A
-	3IRCuVJ1a03pgopoq4wzggq/KXL5IDkhpnRS69T/TB4PbZoKuhczg==
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47pusse6a7-1
+	:mime-version:references:subject:to; s=pp1; bh=a2QnHXfSjqiJcYDdg
+	SLbDeTmwAq43ZDRI3vvdFCTwp8=; b=YLHh1ChufYeacNR0LblxBCU/PThYOBH8u
+	imhtso02uTaZA8Mpeh9k355DJe76tMqMTgwcAUDLEtCsVsJ4rEECUXzo5UVkF3E3
+	RC741d2bALqf5232cXqw2hefs7FAJy/DxpG/ieMUC8hHcT2KyX61NICNFujYwcLG
+	PQMvfBwsuYEDX0olG4rUgwmSyTKa3W91EhlmmKPxiYzBTmRmIHbk4xw+54Le8EM+
+	kiZDlnkVHEN3H+1IYc0ccZ0RaBe6cSeSFGFimprTO4bulr/Bg0kX0O/JqlS7Bjcs
+	H/E0Ej3IG8m9NDvT3ZJZRA7WFYLwOZqbG+nJET6umdjS2FPhvaVvw==
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47svb26ate-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 10 Jul 2025 16:35:31 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56ADuSbL010799;
+	Thu, 10 Jul 2025 16:35:30 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56AEdWPo003123;
 	Thu, 10 Jul 2025 16:35:30 GMT
 Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 47qes0eqta-1
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 47qfvmpenb-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 10 Jul 2025 16:35:29 +0000
+	Thu, 10 Jul 2025 16:35:30 +0000
 Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 56AGZQG726935998
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 56AGZQSN13304230
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
 	Thu, 10 Jul 2025 16:35:26 GMT
 Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E503A20043;
-	Thu, 10 Jul 2025 16:35:25 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 3B65020040;
+	Thu, 10 Jul 2025 16:35:26 +0000 (GMT)
 Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id AA7D12004B;
+	by IMSVA (Postfix) with ESMTP id E9F5E2004E;
 	Thu, 10 Jul 2025 16:35:25 +0000 (GMT)
 Received: from tuxmaker.lnxne.boe (unknown [9.152.85.9])
 	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
@@ -88,9 +88,9 @@ Cc: Jens Remus <jremus@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>,
         Sam James <sam@gentoo.org>
-Subject: [RFC PATCH v1 06/16] unwind_user: Enable archs that define CFA = SP_callsite + offset
-Date: Thu, 10 Jul 2025 18:35:12 +0200
-Message-ID: <20250710163522.3195293-7-jremus@linux.ibm.com>
+Subject: [RFC PATCH v1 07/16] unwind_user: Enable archs that do not necessarily save RA
+Date: Thu, 10 Jul 2025 18:35:13 +0200
+Message-ID: <20250710163522.3195293-8-jremus@linux.ibm.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250710163522.3195293-1-jremus@linux.ibm.com>
 References: <20250710163522.3195293-1-jremus@linux.ibm.com>
@@ -102,183 +102,261 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=Vaj3PEp9 c=1 sm=1 tr=0 ts=686febd3 cx=c_pps a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17 a=Wb1JkmetP80A:10 a=VnNF1IyMAAAA:8 a=D-3WH5monn3MMgO2UeQA:9
-X-Proofpoint-GUID: u41CYhcIwMbRZ4l0KPS3Lv9yXfOHmsHn
-X-Proofpoint-ORIG-GUID: u41CYhcIwMbRZ4l0KPS3Lv9yXfOHmsHn
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzEwMDEzOSBTYWx0ZWRfXxpR7Ce40CS1q qjSY9skIuztPq21MiiMpV4NPDQ9rCQ6O8juCBFwUdHhoFvHglGZBxT0tVqP3veFgCWAKp8KNE0V LlWBB/VoVJhkmAuq5hjWWPvHhqEDKEceaX2Zh/zGiH72rJpBU/uElJ/5jRW/VoH3y0CbgQwVMDr
- myRfX240ZqcjedMZRnsf6Woz5I9HPPGr9kUqdI5WJatUekD8ii0hRGtxJhRdJd6UCwZAeiHxqOL a+NIGlDL9c7beW8OyQMHIaxK7uD4TmD4NYLzbZvVx09I+AU/u5dlsInEjGHRFVogCkJ9rd2Ah27 zgnOA8Yx4KD1t2ghHj2BCgx8vg2HhHkB8jJFzvV/yqresPjaVK2kf/bvKCv1Hejbe+X5ddqJjcl
- ofl6MWN0yPsJj/1UyInAWEoSL1CZwbVwZY9Zm6ovauu7zv2gexu+pp/BN8Yuo/5qkXPMcm4L
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzEwMDEzOSBTYWx0ZWRfX1fZS5HfnoCKn covDhxdqgyesad77GoNAbsLf1DclPuRfgEHTX/rMgCd3FMzzYBKqlAItLiFmtU/50q3h9UgiK30 E8SWutf3k4txyxRNer1l38dJLamaB0kiKnddvJiQE0/Z1fgZDD0llZ8cpuOE/FykWh852HFIYH3
+ 3aGHC2LXmEKlUQz4o7Es5KITLWz4g5qVhKmq3ArnY3WmrYpYtsiGmDvio6ckhxAoumjHrQHtYl5 HVn9NfFYtI65vvfAfSP0/U0ZHu56xqrg8JhEAruTvDS9VU11EazxLQOjRViFXLRqgxAOY1bcnRF IC+g46pN2iJzoU6VtFegUeZgfGdjsApzcI0ku4z0tteKAvIG5YHjy4qriOJ4YSZgnSWJfOpjDgE
+ mbf0pRFujsE9YXRmngshM5O9Ah85Z6XQxIygK24AR3w3E09vWByl6DtSLVexzos2SLmz81kH
+X-Authority-Analysis: v=2.4 cv=Y774sgeN c=1 sm=1 tr=0 ts=686febd3 cx=c_pps a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17 a=Wb1JkmetP80A:10 a=VnNF1IyMAAAA:8 a=-JoFLTHXnnuQBJsBKZgA:9
+X-Proofpoint-ORIG-GUID: FzkgWJBakICnhs7gazxtaS3x9RVSQtcu
+X-Proofpoint-GUID: FzkgWJBakICnhs7gazxtaS3x9RVSQtcu
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
  definitions=2025-07-10_04,2025-07-09_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- mlxlogscore=812 suspectscore=0 clxscore=1015 adultscore=0
- lowpriorityscore=0 impostorscore=0 malwarescore=0 bulkscore=0 mlxscore=0
- spamscore=0 phishscore=0 classifier=spam authscore=0 authtc=n/a authcc=
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
+ priorityscore=1501 malwarescore=0 bulkscore=0 impostorscore=0
+ lowpriorityscore=0 phishscore=0 suspectscore=0 mlxlogscore=999 mlxscore=0
+ clxscore=1015 classifier=spam authscore=0 authtc=n/a authcc=
  route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
  definitions=main-2507100139
 
-Most architectures define their CFA as the value of the stack pointer
-(SP) at the call site in the previous frame, as suggested by the DWARF
-standard:
+Not all architectures have the return address (RA) in user space saved
+on the stack on function entry, as x86-64 does due to its CALL
+instruction pushing the RA onto the stack.  Architectures/ABIs, such as
+s390, also do not necessarily enforce to save the RA in user space on
+the stack in the function prologue or even at all, for instance in leaf
+functions.
 
-  CFA = <SP at call site>
+Treat a RA offset from CFA of zero as indication that the RA is not
+saved on the stack.  In that case obtain the RA from the RA register.
+Allow the SP to be unchanged in the topmost frame, for architectures
+where SP at function entry == SP at call site.
 
-Enable unwinding of user space for architectures, such as s390, which
-define their CFA as the value of the SP at the call site in the previous
-frame with an offset:
-
-  CFA = <SP at call site> + offset
+Note that treating a RA offset from CFA of zero as indication that
+the RA is not saved on the stack additionally allows for architectures,
+such as s390, where the frame pointer (FP) may be saved without the RA
+being saved as well.  Provided that such architectures represent this
+in SFrame by encoding the "missing" RA offset using a padding RA offset
+with a value of zero.
 
 Signed-off-by: Jens Remus <jremus@linux.ibm.com>
 ---
+ arch/Kconfig                      |  5 +++++
+ include/linux/ptrace.h            |  8 ++++++++
+ include/linux/sframe.h            |  4 ++--
+ include/linux/unwind_user_types.h |  1 +
+ kernel/unwind/sframe.c            | 21 +++++++++++---------
+ kernel/unwind/user.c              | 32 ++++++++++++++++++++++---------
+ 6 files changed, 51 insertions(+), 20 deletions(-)
 
-Notes (jremus):
-    Alternatively the conditional definition of generic_sframe_sp_val_off()
-    could be moved into kernel/unwind/sframe.c.
-
- arch/x86/include/asm/unwind_user.h       |  2 ++
- include/asm-generic/Kbuild               |  1 +
- include/asm-generic/unwind_user_sframe.h | 30 ++++++++++++++++++++++++
- include/linux/unwind_user_types.h        |  1 +
- kernel/unwind/sframe.c                   |  2 ++
- kernel/unwind/user.c                     |  8 ++++---
- 6 files changed, 41 insertions(+), 3 deletions(-)
- create mode 100644 include/asm-generic/unwind_user_sframe.h
-
-diff --git a/arch/x86/include/asm/unwind_user.h b/arch/x86/include/asm/unwind_user.h
-index 19634a73612d..c2881840adf4 100644
---- a/arch/x86/include/asm/unwind_user.h
-+++ b/arch/x86/include/asm/unwind_user.h
-@@ -8,6 +8,7 @@
- 	.cfa_off	= (s32)sizeof(long) *  2,				\
- 	.ra_off		= (s32)sizeof(long) * -1,				\
- 	.fp_off		= (s32)sizeof(long) * -2,				\
-+	.sp_val_off	= (s32)0,						\
- 	.use_fp		= true,
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 86eec85cb898..367eaf7e62e0 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -450,6 +450,11 @@ config HAVE_UNWIND_USER_SFRAME
+ 	bool
+ 	select UNWIND_USER
  
- #ifdef CONFIG_IA32_EMULATION
-@@ -16,6 +17,7 @@
- 	.cfa_off	= (s32)sizeof(u32)  *  2,				\
- 	.ra_off		= (s32)sizeof(u32)  * -1,				\
- 	.fp_off		= (s32)sizeof(u32)  * -2,				\
-+	.sp_val_off	= (s32)0,						\
- 	.use_fp		= true,
++config HAVE_USER_RA_REG
++	bool
++	help
++	  The arch passes the return address (RA) in user space in a register.
++
+ config SFRAME_VALIDATION
+ 	bool "Enable .sframe section debugging"
+ 	depends on HAVE_UNWIND_USER_SFRAME
+diff --git a/include/linux/ptrace.h b/include/linux/ptrace.h
+index 90507d4afcd6..a245c8586673 100644
+--- a/include/linux/ptrace.h
++++ b/include/linux/ptrace.h
+@@ -397,6 +397,14 @@ static inline void user_single_step_report(struct pt_regs *regs)
+ #define exception_ip(x) instruction_pointer(x)
+ #endif
  
- #define in_compat_mode(regs) !user_64bit_mode(regs)
-diff --git a/include/asm-generic/Kbuild b/include/asm-generic/Kbuild
-index b797a2434396..64a15cde776c 100644
---- a/include/asm-generic/Kbuild
-+++ b/include/asm-generic/Kbuild
-@@ -60,6 +60,7 @@ mandatory-y += topology.h
- mandatory-y += trace_clock.h
- mandatory-y += uaccess.h
- mandatory-y += unwind_user.h
-+mandatory-y += unwind_user_sframe.h
- mandatory-y += unwind_user_types.h
- mandatory-y += vermagic.h
- mandatory-y += vga.h
-diff --git a/include/asm-generic/unwind_user_sframe.h b/include/asm-generic/unwind_user_sframe.h
-new file mode 100644
-index 000000000000..6c87a7f29861
---- /dev/null
-+++ b/include/asm-generic/unwind_user_sframe.h
-@@ -0,0 +1,30 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_GENERIC_UNWIND_USER_SFRAME_H
-+#define _ASM_GENERIC_UNWIND_USER_SFRAME_H
-+
-+#include <linux/types.h>
-+
-+/**
-+ * generic_sframe_sp_val_off - Get generic SP value offset from CFA.
-+ *
-+ * During unwinding the stack pointer (SP) at call site can be derived
-+ * from the Canonical Frame Address (CFA) as follows:
-+ *
-+ *   SP = CFA + SP_val_off
-+ *
-+ * Most architectures define the CFA as value of SP at call site, as
-+ * suggested by DWARF. For those architectures the SP value offset
-+ * from CFA is 0, so that the SP at call site computes as:
-+ *
-+ *   SP = CFA
-+ *
-+ * Returns the generic SP value offset from CFA of 0.
-+ */
-+static inline s32 generic_sframe_sp_val_off(void)
++#ifndef user_return_address
++static inline unsigned long user_return_address(const struct pt_regs *regs)
 +{
++	WARN_ON_ONCE(1);
 +	return 0;
 +}
++#endif
 +
-+#define sframe_sp_val_off generic_sframe_sp_val_off
-+
-+#endif /* _ASM_GENERIC_UNWIND_USER_SFRAME_H */
+ extern int task_current_syscall(struct task_struct *target, struct syscall_info *info);
+ 
+ extern void sigaction_compat_abi(struct k_sigaction *act, struct k_sigaction *oact);
+diff --git a/include/linux/sframe.h b/include/linux/sframe.h
+index b79c5ec09229..e3c6414f1a17 100644
+--- a/include/linux/sframe.h
++++ b/include/linux/sframe.h
+@@ -33,7 +33,7 @@ extern void sframe_free_mm(struct mm_struct *mm);
+ extern int sframe_add_section(unsigned long sframe_start, unsigned long sframe_end,
+ 			      unsigned long text_start, unsigned long text_end);
+ extern int sframe_remove_section(unsigned long sframe_addr);
+-extern int sframe_find(unsigned long ip, struct unwind_user_frame *frame);
++extern int sframe_find(unsigned long ip, struct unwind_user_frame *frame, bool topmost);
+ 
+ static inline bool current_has_sframe(void)
+ {
+@@ -52,7 +52,7 @@ static inline int sframe_add_section(unsigned long sframe_start, unsigned long s
+ 	return -ENOSYS;
+ }
+ static inline int sframe_remove_section(unsigned long sframe_addr) { return -ENOSYS; }
+-static inline int sframe_find(unsigned long ip, struct unwind_user_frame *frame) { return -ENOSYS; }
++static inline int sframe_find(unsigned long ip, struct unwind_user_frame *frame, bool topmost) { return -ENOSYS; }
+ static inline bool current_has_sframe(void) { return false; }
+ 
+ #endif /* CONFIG_HAVE_UNWIND_USER_SFRAME */
 diff --git a/include/linux/unwind_user_types.h b/include/linux/unwind_user_types.h
-index 4d50476e950e..8050a3237a03 100644
+index 8050a3237a03..adef01698bb3 100644
 --- a/include/linux/unwind_user_types.h
 +++ b/include/linux/unwind_user_types.h
-@@ -25,6 +25,7 @@ struct unwind_user_frame {
- 	s32 cfa_off;
- 	s32 ra_off;
- 	s32 fp_off;
-+	s32 sp_val_off;
- 	bool use_fp;
+@@ -35,6 +35,7 @@ struct unwind_user_state {
+ 	unsigned long fp;
+ 	struct arch_unwind_user_state arch;
+ 	enum unwind_user_type type;
++	bool topmost;
+ 	bool done;
  };
  
 diff --git a/kernel/unwind/sframe.c b/kernel/unwind/sframe.c
-index 6159f072bdb6..acbf791e713b 100644
+index acbf791e713b..5bfaf06e6cd2 100644
 --- a/kernel/unwind/sframe.c
 +++ b/kernel/unwind/sframe.c
-@@ -12,6 +12,7 @@
- #include <linux/mm.h>
- #include <linux/string_helpers.h>
- #include <linux/sframe.h>
-+#include <asm/unwind_user_sframe.h>
- #include <linux/unwind_user_types.h>
+@@ -222,12 +222,8 @@ static __always_inline int __read_fre(struct sframe_section *sec,
+ 	offset_count--;
  
- #include "sframe.h"
-@@ -313,6 +314,7 @@ static __always_inline int __find_fre(struct sframe_section *sec,
+ 	ra_off = sec->ra_off;
+-	if (!ra_off) {
+-		if (!offset_count--) {
+-			dbg_sec_uaccess("zero offset_count, can't find ra_off\n");
+-			return -EFAULT;
+-		}
+-
++	if (!ra_off && offset_count) {
++		offset_count--;
+ 		UNSAFE_GET_USER_INC(ra_off, cur, offset_size, Efault);
+ 	}
+ 
+@@ -257,7 +253,8 @@ static __always_inline int __read_fre(struct sframe_section *sec,
+ 
+ static __always_inline int __find_fre(struct sframe_section *sec,
+ 				      struct sframe_fde *fde, unsigned long ip,
+-				      struct unwind_user_frame *frame)
++				      struct unwind_user_frame *frame,
++				      bool topmost)
+ {
+ 	unsigned char fde_type = SFRAME_FUNC_FDE_TYPE(fde->info);
+ 	struct sframe_fre *fre, *prev_fre = NULL;
+@@ -310,6 +307,12 @@ static __always_inline int __find_fre(struct sframe_section *sec,
+ 		return -EINVAL;
+ 	fre = prev_fre;
+ 
++	if ((!IS_ENABLED(CONFIG_HAVE_USER_RA_REG) || !topmost) && !fre->ra_off) {
++		dbg_sec_uaccess("fde addr 0x%x: zero ra_off\n",
++				fde->start_addr);
++		return -EINVAL;
++	}
++
+ 	frame->cfa_off = fre->cfa_off;
  	frame->ra_off  = fre->ra_off;
  	frame->fp_off  = fre->fp_off;
- 	frame->use_fp  = SFRAME_FRE_CFA_BASE_REG_ID(fre->info) == SFRAME_BASE_REG_FP;
-+	frame->sp_val_off = sframe_sp_val_off();
- 
+@@ -319,7 +322,7 @@ static __always_inline int __find_fre(struct sframe_section *sec,
  	return 0;
  }
+ 
+-int sframe_find(unsigned long ip, struct unwind_user_frame *frame)
++int sframe_find(unsigned long ip, struct unwind_user_frame *frame, bool topmost)
+ {
+ 	struct mm_struct *mm = current->mm;
+ 	struct sframe_section *sec;
+@@ -343,7 +346,7 @@ int sframe_find(unsigned long ip, struct unwind_user_frame *frame)
+ 	if (ret)
+ 		goto end;
+ 
+-	ret = __find_fre(sec, &fde, ip, frame);
++	ret = __find_fre(sec, &fde, ip, frame, topmost);
+ end:
+ 	user_read_access_end();
+ 
 diff --git a/kernel/unwind/user.c b/kernel/unwind/user.c
-index d0181c636c6b..45c8c6932ba6 100644
+index 45c8c6932ba6..03a6da36192f 100644
 --- a/kernel/unwind/user.c
 +++ b/kernel/unwind/user.c
-@@ -52,7 +52,7 @@ static int unwind_user_next(struct unwind_user_state *state)
- {
+@@ -3,6 +3,7 @@
+ * Generic interfaces for unwinding user space
+ */
+ #include <linux/kernel.h>
++#include <linux/ptrace.h>
+ #include <linux/sched.h>
+ #include <linux/sched/task_stack.h>
+ #include <linux/unwind_user.h>
+@@ -53,6 +54,7 @@ static int unwind_user_next(struct unwind_user_state *state)
  	struct unwind_user_frame *frame;
  	struct unwind_user_frame _frame;
--	unsigned long cfa = 0, fp, ra = 0;
-+	unsigned long cfa = 0, sp, fp, ra = 0;
+ 	unsigned long cfa = 0, sp, fp, ra = 0;
++	bool topmost = state->topmost;
  	unsigned int shift;
  
  	if (state->done)
-@@ -84,8 +84,10 @@ static int unwind_user_next(struct unwind_user_state *state)
- 	}
- 	cfa += frame->cfa_off;
+@@ -63,7 +65,7 @@ static int unwind_user_next(struct unwind_user_state *state)
+ 	} else if (sframe_state(state)) {
+ 		/* sframe expects the frame to be local storage */
+ 		frame = &_frame;
+-		if (sframe_find(state->ip, frame)) {
++		if (sframe_find(state->ip, frame, topmost)) {
+ 			if (!IS_ENABLED(CONFIG_HAVE_UNWIND_USER_FP))
+ 				goto done;
+ 			frame = &fp_frame;
+@@ -86,18 +88,28 @@ static int unwind_user_next(struct unwind_user_state *state)
  
-+	/* Get the Stack Pointer (SP) */
-+	sp = cfa + frame->sp_val_off;
- 	/* Make sure that stack is not going in wrong direction */
--	if (cfa <= state->sp)
-+	if (sp <= state->sp)
+ 	/* Get the Stack Pointer (SP) */
+ 	sp = cfa + frame->sp_val_off;
+-	/* Make sure that stack is not going in wrong direction */
+-	if (sp <= state->sp)
++	/*
++	 * Make sure that stack is not going in wrong direction.  Allow SP
++	 * to be unchanged for the topmost frame, by subtracting topmost,
++	 * which is either 0 or 1.
++	 */
++	if (sp <= state->sp - topmost)
  		goto done;
  
- 	/* Make sure that the address is word aligned */
-@@ -102,7 +104,7 @@ static int unwind_user_next(struct unwind_user_state *state)
- 		goto done;
+-	/* Make sure that the address is word aligned */
+-	shift = sizeof(long) == 4 || compat_fp_state(state) ? 2 : 3;
+-	if ((cfa + frame->ra_off) & ((1 << shift) - 1))
+-		goto done;
  
- 	state->ip = ra;
--	state->sp = cfa;
-+	state->sp = sp;
- 	if (frame->fp_off)
- 		state->fp = fp;
+ 	/* Get the Return Address (RA) */
+-	if (unwind_get_user_long(ra, cfa + frame->ra_off, state))
+-		goto done;
++	if (frame->ra_off) {
++		/* Make sure that the address is word aligned */
++		shift = sizeof(long) == 4 || compat_fp_state(state) ? 2 : 3;
++		if ((cfa + frame->ra_off) & ((1 << shift) - 1))
++			goto done;
++		if (unwind_get_user_long(ra, cfa + frame->ra_off, state))
++			goto done;
++	} else {
++		if (!IS_ENABLED(CONFIG_HAVE_USER_RA_REG) || !topmost)
++			goto done;
++		ra = user_return_address(task_pt_regs(current));
++	}
+ 
+ 	/* Get the Frame Pointer (FP) */
+ 	if (frame->fp_off && unwind_get_user_long(fp, cfa + frame->fp_off, state))
+@@ -110,6 +122,7 @@ static int unwind_user_next(struct unwind_user_state *state)
+ 
+ 	arch_unwind_user_next(state);
+ 
++	state->topmost = false;
+ 	return 0;
+ 
+ done:
+@@ -140,6 +153,7 @@ static int unwind_user_start(struct unwind_user_state *state)
+ 	state->ip = instruction_pointer(regs);
+ 	state->sp = user_stack_pointer(regs);
+ 	state->fp = frame_pointer(regs);
++	state->topmost = true;
+ 
+ 	arch_unwind_user_init(state, regs);
  
 -- 
 2.48.1
