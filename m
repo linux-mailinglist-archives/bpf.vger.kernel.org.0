@@ -1,652 +1,254 @@
-Return-Path: <bpf+bounces-62905-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62906-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0BF3AFFEC2
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 12:09:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 603E3AFFF19
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 12:22:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F2D6717DF41
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 10:09:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A1BDA5A2D6C
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 10:22:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A7542D5A19;
-	Thu, 10 Jul 2025 10:09:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 202242D6618;
+	Thu, 10 Jul 2025 10:22:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="nNd8nfvq"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="aqVxGK7S";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="YCBo7D9n"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7E612D5A10
-	for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 10:09:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752142176; cv=none; b=co0604eTJrav27ztqsHm0N7BMttaDt8Ta+roNCZ79s6trZzOAPo26hGh0CRZJI/2oHHZ+sUN3KcUxP5tViLCVeUuJlEg9/8grmjpKNOqZA5lwRxBytojJ9YLFo+5GC9SAeVxRjLW0UfKCLry1sNPnFInTqoJh84S499/qyoZ+vM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752142176; c=relaxed/simple;
-	bh=kQF3YHIK/jXiT4U6ULqGf3vcCdO3vmudDjiaRFSNyEQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LuZvtCSTBIrQKmb3yGJADsgtVU7IkNy7gUgbkLDuhFAVNZiTpE3W+dsaoGy57mmuQYVdWgYEpx3TNiC3Tf0DgVVYDUDt7cusTrC4iALqmQ7FthJi20/hx10DSumI/mcHXYjFVxVvMDRJQbmtqVdGBb6jOobnO6eRWj3PO7gOKVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=nNd8nfvq; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56A9snSO010721;
-	Thu, 10 Jul 2025 10:09:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=pp1; bh=vgw75BbmQTmetRFBtYI/nxKmaJ/vr6TSzuc2kuv9h
-	pw=; b=nNd8nfvqo9uI2MrN2GHYuT9Of13tTR33B4CTYYD97RrAmyEENsPKgQCDi
-	rntAEi1w/rJba4qJUPv93mBDXPXyOd0fxgzQAscEdE2sr0ZPb2+vsy65M2fhFUyd
-	t0v6j2QUT95tH74jbCk29c1PR0484QGwnd6kT2AYZ7w5SfJbRUTa9/GeV5wzqo67
-	AhZ+MBA0DW5w4/ustr3FcUd4L4AUkpThBqNshxbtzl3oYTLmTEOUSqPtJ2SmMj0L
-	AVr1EPeHPx4YANOG84gObq3J8TPGknvMPIQwG/0r/R9gjDq3LwuvFCMr7Xve1Wd/
-	0zUpKLBQfu78/xR+/CE+OSY0M9Otw==
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47puk4c6b6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 10 Jul 2025 10:09:17 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56A6mnm2003123;
-	Thu, 10 Jul 2025 10:09:16 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 47qfvmn0aw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 10 Jul 2025 10:09:16 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 56AA9C3t44433888
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 10 Jul 2025 10:09:12 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 221022004E;
-	Thu, 10 Jul 2025 10:09:12 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8AFF42004D;
-	Thu, 10 Jul 2025 10:09:11 +0000 (GMT)
-Received: from heavy.ibm.com (unknown [9.87.154.34])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 10 Jul 2025 10:09:11 +0000 (GMT)
-From: Ilya Leoshkevich <iii@linux.ibm.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf-next] bpf: Update iterators.lskel-big-endian.h
-Date: Thu, 10 Jul 2025 12:08:50 +0200
-Message-ID: <20250710100907.45880-1-iii@linux.ibm.com>
-X-Mailer: git-send-email 2.50.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D0EB2D63E7
+	for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 10:22:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1752142935; cv=fail; b=rPXIBuRzUh81sAjK/wlbvI1/987ChyKOmPXOQsl6exeyIsH+vqJd3A5N8dclU3pt+BRJgtzmVkS/L/9QdKSpEcFrxBumk0zLpaqZJUYp2kkJwWBhMXtfDs17k0mS0yrAvbI+eTjlMXsTnJWG7GA9M5nAtW9GrHBDc02UKOWsRSQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1752142935; c=relaxed/simple;
+	bh=wxkFdLgiW8hp6TvfGukCq/o3tCKcL2I+XTxaLsxaeXU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=CHVzzcs+CEVsnNUk8gqAoJ6ZNvkDo/+HvU3Bgfoty6IA9g9/1k2OBct3EbMswen/zQiwioWbNXQOhTZN3cRe2Hz+bHWa87GIOOc7/YE5ISqI0Zl7loB2t0rVVVC2yCNzG0Owwjn36r5uVPUJxFF//Z9DUSC5JbSlkZd/pmu0LDo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=aqVxGK7S; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=YCBo7D9n; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56AADBSR016987;
+	Thu, 10 Jul 2025 10:21:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=corp-2025-04-25; bh=Tv30tLCCQ0FUMtXel9
+	hParUHsfqDOkFzrrjh+eq54eQ=; b=aqVxGK7SLB2rnQwPZR2vKTml6DkDrR++tO
+	zz2i41fJ9mxJiMDQJ57WlTSnF9UlUjKCAFpAnp8wjKtpNL7hwcci6G482m8gz/N+
+	BSCBrT/OAs70Msl+Ql3fGCj20s6G2D8JXLlCmMw358ei2Lpt7n6ta6l7+lSLytUo
+	/RpMKT/H9WAHffRHl/XL5SCBfV5+sxWRhKCYLWHO9u71nEs+CC6aQnWuuvLQs5yF
+	C5qzmvm6++OFTgyyPCbBZoR9BI0wKwIH0PPPOBuYNbnmA2puKgLE1K0dCO62v0Si
+	t30+qlBvcb7VoDvgQaIpdJ0yXog5P97jmu0i6trfHZcDAkzOVj4Q==
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 47tbj7g0h7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 10 Jul 2025 10:21:50 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 56A9tnew040481;
+	Thu, 10 Jul 2025 10:21:49 GMT
+Received: from dm5pr21cu001.outbound.protection.outlook.com (mail-centralusazon11011054.outbound.protection.outlook.com [52.101.62.54])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 47ptgcawtk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 10 Jul 2025 10:21:49 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=jbBUJQtkv2C1JePg1qIiEceJzkTR+ryxMJhZRAwzI7Onuv5/ysX6kqF7PBfmvB2k9crlNtr8ylnyAKY0WCXmisqcEQ0RQjELSnZQY/Yhf/5EKMX4zrQ+/uHW3cqp2H28AxHq0jbujOlzvfqQHASGS/u/gtlnrCFZdfwZjBPw1OUsC+tUj+BfXXAvS2qCjNGtwHnc+4WVzsb/6eQBOLtlRrdb/jzMpUzsiEpFt4GU6bHC8+Fbjcs3b03NHoD2ERjlu7sNJn+yej2eEU4c7K5p431bgOKMj2nudoHKIMmoFP+i7sureBCxoRgcjx+d3vJp0k6Ldc0Sl8gGdZRq+2znqg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Tv30tLCCQ0FUMtXel9hParUHsfqDOkFzrrjh+eq54eQ=;
+ b=FJ6XbcTxfWsvd8QlnVzJhWV/Jxy7ekn+25d6/B43VXqQsZZaer1+93lF90HdPSnZsjuvWTU5gCrRYu3NOENVp7nXS89GbO0saTI75fAo6WmiRtgXIoRJ9ziYrjr6w4WmZhLCKR9tOdGBnD+Q7Ij0CxDuT6z9vRz6hlYh3i35UuA+Cqo/WkFC1Kf8VgRgwY1YnB1d/PCmNECo29HGO9ubWMjlEbP1+xY6Pn2Af7O/eZvtDrnlxTYjMcAFTH3bc8LmVgNmCANA4YfUqQbVlGh4w2lIvcT/tEO42ErMVknk2DbQ0p8fFQDxbBhzyVA5v8OgwP0atvMzcnkjjs0gHZztwA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Tv30tLCCQ0FUMtXel9hParUHsfqDOkFzrrjh+eq54eQ=;
+ b=YCBo7D9neMN4iMnROUjjP7QXTMSOlqOiJ5BPT2vmJToyRS0iryXgYelDSOQpOcc3/PsbeWXAiofkWpo4IEm3ef9MtpF5ueD1gVyzwq8GmAfA5X7leq/Z0kMPqSF1dATTnOQU3Fq/TtllfIuNMZRFpMxDfuiRDzrDvmALv5azRJA=
+Received: from CH3PR10MB7329.namprd10.prod.outlook.com (2603:10b6:610:12c::16)
+ by MW6PR10MB7637.namprd10.prod.outlook.com (2603:10b6:303:246::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8901.28; Thu, 10 Jul
+ 2025 10:21:45 +0000
+Received: from CH3PR10MB7329.namprd10.prod.outlook.com
+ ([fe80::c2a4:fdda:f0c2:6f71]) by CH3PR10MB7329.namprd10.prod.outlook.com
+ ([fe80::c2a4:fdda:f0c2:6f71%4]) with mapi id 15.20.8901.028; Thu, 10 Jul 2025
+ 10:21:45 +0000
+Date: Thu, 10 Jul 2025 19:21:38 +0900
+From: Harry Yoo <harry.yoo@oracle.com>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org,
+        linux-mm@kvack.org, shakeel.butt@linux.dev, mhocko@suse.com,
+        bigeasy@linutronix.de, andrii@kernel.org, memxor@gmail.com,
+        akpm@linux-foundation.org, peterz@infradead.org, rostedt@goodmis.org,
+        hannes@cmpxchg.org
+Subject: Re: [PATCH v2 6/6] slab: Introduce kmalloc_nolock() and
+ kfree_nolock().
+Message-ID: <aG-UMkt-AQpu8mKq@hyeyoo>
+References: <20250709015303.8107-1-alexei.starovoitov@gmail.com>
+ <20250709015303.8107-7-alexei.starovoitov@gmail.com>
+ <683189c3-934e-4398-b970-34584ac70a69@suse.cz>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <683189c3-934e-4398-b970-34584ac70a69@suse.cz>
+X-ClientProxiedBy: SL2P216CA0085.KORP216.PROD.OUTLOOK.COM
+ (2603:1096:101:2::18) To CH3PR10MB7329.namprd10.prod.outlook.com
+ (2603:10b6:610:12c::16)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzEwMDA4MyBTYWx0ZWRfX2b/qX9ihXPdB WK1NCE/SxiIOZp/kI+gJkISEP0vF+h5Ep43NY1CvQ+0HSa8F6zh83RTUPq1PpWBVYYxLmzojbKW YF1ypPiDp9rURfSgwvvXn51vf9dneXTdzk4dVOxG3TL+DbQ6Gih2MVodkVdwuAVg6RhPHzYm44C
- DP77q3X+JkZ7JCxTk8EBdlo8BIYHw/9gtMXLeYZaK7pJ6p90SNTQoqyrw5tBvkUF1YkVhkIAGYR 1pdqhyce7yNWOzvls5a5K8CBhny/KVaI67YMWvX/kDIHV6Xh3hI02XLTFPb5CZKntEq/hiqVvV4 hQHF5zdlPEs0J/tL9OXRBxhstig2oszKk0GQlbLOwfOAOoPXOgAQ8MvZhcHxPOByX+QuSRued6C
- pKQgNS+0zBSEBraChybSNrK5MuCgEpZ+ovQnk1R4tQTMMSAEoqbRA9ULW1H/mngSlDrARv7C
-X-Authority-Analysis: v=2.4 cv=XYeJzJ55 c=1 sm=1 tr=0 ts=686f914d cx=c_pps a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17 a=Wb1JkmetP80A:10 a=VnNF1IyMAAAA:8 a=r897V7ZSX5DLFb47qigA:9
-X-Proofpoint-ORIG-GUID: o4PD4kWoSIGBw4DGV_7adsx4U0EFr7un
-X-Proofpoint-GUID: o4PD4kWoSIGBw4DGV_7adsx4U0EFr7un
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR10MB7329:EE_|MW6PR10MB7637:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9ce2779b-04ba-487c-0938-08ddbf9b921a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014|7416014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?4J+e4JuTu5kiXqfVt3dTnpUlbmcIj9h3A5JMcvyhR0QEJ0lbcEmXU1jbtwie?=
+ =?us-ascii?Q?B5+eWN/CvT8cyxyc/VMRIL42cJWVeppNqZgKGts7On03dzWKbVEvhMnDp5vZ?=
+ =?us-ascii?Q?dAH0A7tSbn6wPiRRTHEByMwp0dxFPwK/N5lGDZPUp1dikDno2Xmt8n7ENjvu?=
+ =?us-ascii?Q?jZONuGtXe2MAeJo3WjjTSHBrfE013uD+Tu5nkH0uS/j1S7YEimciyhKSLnl+?=
+ =?us-ascii?Q?DoxY5i4Ay1bddSSf9Ha9rAScgm+YauG6v+8ADiqHc7rwRT95TJZLFtkoblay?=
+ =?us-ascii?Q?SUGamFokrTuJtD6c+OcO0ruQkvpvjvwfq7co8dlECiYcnN6I+iVKq3qbJe6R?=
+ =?us-ascii?Q?p2mTCN7DU7EB6V2hMov9c4GMAiEj+eZSvMh2RwIL9giv/oGIndGzLK+wNL4c?=
+ =?us-ascii?Q?M4wRb+Z94qz1qq7hVZ+3WgP2aRD8wOMQvKwPN74HcVae1TtLF2kKSiTUTj3n?=
+ =?us-ascii?Q?FPB/q098XN/SEu42zBcSSKYx3w3JEwOpPNu7Zw7tS/saeYxMcC9A8XV43RmI?=
+ =?us-ascii?Q?sSdW57BT5siC48Dh71rYLleyBJUrj+48G5voQ4rsmuUjkQu7alF5qDTKSBPu?=
+ =?us-ascii?Q?9MU/wOze33qiRHeb87cSvR9gZNq44E5+/xJT5JxPj3xqlL5tFJBP6TB2tCnl?=
+ =?us-ascii?Q?j+YJRlB1WHEh1iNUkMSVBS+6jyQ05vYNswkdSOrVhIFsLEm7C0Xx99s6NcnR?=
+ =?us-ascii?Q?u8NhHgr0MtvnjINFQBP3tcA+psNSICoVjrbL8sYWJdMmZX8jpmmC32XLe/Ki?=
+ =?us-ascii?Q?tJ3FOJXxjivXl99kUvme9o8D1wIH4XnmNKPTEoRDzGSwaVy9XwVbNnhWUDnc?=
+ =?us-ascii?Q?U+gFw8okDhtMlxmaCHN13Vo8SVqxOxA7dRLbesaSlThKGXeZamefkUL/60d9?=
+ =?us-ascii?Q?OCCTaQPX+yeKD2ogVWD7VjaSgcmf04msraEda0mw5sK7BqcQ1gECR7iO/xXF?=
+ =?us-ascii?Q?aRaSC7MBo+iFZvRtz1Tj1PusGRWqHntWJk0jXMle/lqp9zwgeXsN1vVfeVa7?=
+ =?us-ascii?Q?diMBMffFehZRkoxJfLc3d5ZaK+k+GRBdhkEftb+8cC0+HBhnkNYr5piUqVAU?=
+ =?us-ascii?Q?52LwnMCw5MJjfa6fl02uWT5sqaX5iuuuK5W0p51pJDJg3ETyF+JiQMenWLx0?=
+ =?us-ascii?Q?ba29uxlek5m9JNbl7HQE7NFDiGAu8vwZYY2GnTdX5u+wPUTP5lZ7WB6PLU79?=
+ =?us-ascii?Q?sUQ3UKC+vfmNK3IJ9QQzexQKD6lzmi+HqrJwjob0ePuWJsB1ubTbo8ghOojt?=
+ =?us-ascii?Q?8J+lK5wqCASXRH94ozQMoMlwlr1/InkWxC5bSB2ofPlzw+WLGzL18QycdUEG?=
+ =?us-ascii?Q?eirXxx4FAPKWcHz+//h3tHhPVSCcpgcVoaK912aOtxAOzM7A/IVqcvnmUQkE?=
+ =?us-ascii?Q?8CVU0EQng1p7fMaVvYpTh8PPI/beMqdmOGgrDMyHtYiPAnp3jfUoCNyEiVpN?=
+ =?us-ascii?Q?+IaeS3axbCk=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR10MB7329.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?qCeRYzo/oIGJGPih7YNBsvimemTIZUO8iFd9CwNFdJi5SQwKMf4EENEENTLl?=
+ =?us-ascii?Q?AHASSdVAksG3TKEIMHYR84Nbo6sE1ra1YRaVR+6tF2TBe8CgEuHnVtZjnFL1?=
+ =?us-ascii?Q?Prlr+IIHoyamGT7oKzems0l4jxMw1RM5EfMVFYuq8Avy8zexeYwOOe6tQZ4R?=
+ =?us-ascii?Q?PCo55gHR2UUgKomJCeezHc+zXqQyaQ/fgDXrC41QEeMBa/PJesvLwyQn4eTN?=
+ =?us-ascii?Q?9kjISQlR2ViLofcN474+Loi08OCn97DnrNOPcmCokd5OLdFJH/7UF0ZJUcJL?=
+ =?us-ascii?Q?H57vM/9z6ENqaytxzkHJcweAvjKoJf25IjAAVNkmn5OD9qpOElTPpZwNIlMj?=
+ =?us-ascii?Q?4HMb0RYDrsMfIL4X4R2z/ZwYf6pPGUsLFqzYFU2UOxOjVhuGuITIHIrPQNcm?=
+ =?us-ascii?Q?yNST1c4DAp2/FkaoqjP6jXQC5sjTnA9kTVJOJZWtuJdltU/oqWzN1BV9Wl1H?=
+ =?us-ascii?Q?F+5HrY6cgYurFKK+y5Wz+3Tr9yOvrP/CaLzD7oGM1zOjvXnhbsTgnD9moIOm?=
+ =?us-ascii?Q?E9RVdvvZoe16EWhs5F0OJ9md+BDkgnYAF7KT5g03rW9lqS+ivD1HPSJOAn9w?=
+ =?us-ascii?Q?t0GDVTO9EZnpT2QMGiMsy2gI0uFbYfouzJu/fN+5uxt3ruCi+fH4befcIHeR?=
+ =?us-ascii?Q?EhqLOU6MZ20QUQXzLVnVQAhCg8dcl70bbKoyxK4lKG5QoEzHkXtdadND/sMF?=
+ =?us-ascii?Q?aaAKd10J1b35cXbEndrFnCXwegvUyGzl1sPPR9JfVFDdLKobFI88HVVGb0Nz?=
+ =?us-ascii?Q?z4pmdJGdBX039/dx21+W3wIjpXU5rmvPNdOyxgj7XsTT989YugxnpIUl2bRW?=
+ =?us-ascii?Q?tFyKWR7PJ5EweO5hRjFl3T12f6CxPdW5lfpT4IkJ/KTup8XzttH2Gvqc6gRC?=
+ =?us-ascii?Q?nXl2Y6jW1xoQ7SN+AtnrvwscfrOjcMXQzyCaV/oYsc11Ct2IRiMV3+lfEddP?=
+ =?us-ascii?Q?kgX6i/U32No6JNzLxqXxtcvFsn4CluKQ+oBV2fvHIbdpVHCfN4pWL2AHX293?=
+ =?us-ascii?Q?BuWyWnCq8UIy3SdasgG5RJKIyn2dh9yM3uyy1w/cRrtv6s5DfNLUd54BnTbA?=
+ =?us-ascii?Q?p3/fbdQD65PM38Pq+NBJ43VXjQoI3Bf+Zn+1RdK245bUf49vy2pSqpuPwVdT?=
+ =?us-ascii?Q?a4Sza1w/3qjFnAvhJsWdfiRxVbhrsF+0cRmye2ZgKyfAP/pQqN2i+KD+HhTU?=
+ =?us-ascii?Q?+Du47jZYWFdEapS1e6h4Pu+bUvKotXRQ6HhecauB6IXtx5PxscVwzf6TlDw8?=
+ =?us-ascii?Q?TWXPbOsGmnuyiHoa/NhHhUI8qR2biFe9wtsJtWMCb/VLiFvap7+Ai8iD/xqk?=
+ =?us-ascii?Q?PHIk1qbCRu3vc5JkL/i/AnLn/3zirCZdJHKfT+SPwr2RXrsT4wg6HkjAs4el?=
+ =?us-ascii?Q?QVr7yHAAARuEd6g86vxS0t0gTayJLxa8fGX6zjPeAaQAeV5rdEYVnXnN+RQK?=
+ =?us-ascii?Q?tDP/eApO5NRxhuzPGi2QztuOV+9JtoidKBvjNdl3SObqhUV/nhM37zWFyj3C?=
+ =?us-ascii?Q?69lvUKWIVuhGEn3/aEouFsrhXDFxvEW2wM4MNdzYh0GCuFJQKZRTnIA5CpQw?=
+ =?us-ascii?Q?t+/wq0ra5aJMQXZi9sQs1XhSXnmen4itsBtVqlMY?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	s76ZPskdAC224iIldB8SaI0yZEgaGd/mHoRXZZBcDcS39FJty8sklIVJ2sa7vI3Y03KLysjjEQ6xgU2gdJWYrmcliBO30iRVAyKwgGkKFqzHspcw1XJzaHsKWcXn2dBniQuG5Qj2o+S5onXndZkrtpaflK/tjCdRRmD86y6XzG3e0XlrVYBR/8ljM6PuhX1QuIG13+drbXtdk+mO2jEVhd/UETnodg5ViQ/h8p131Ou4TVScUoZ7kFr9BSmy0O0/5kqNzsRj7kEc0pxxX67/P4lCWYWAhx06PDd1Uyqck7U6ZenemKGh8sOy7sIN2j9yUrnXtL/CA4bCct56ElcuPsiEKxKTv0KA9nHiJD2VHH+80FsCoO9i92xiBn7Ei1wCEKV58HB8gdlx8GEP6pJunfRrsnFcDZobXUn8pQ1XfRUn3Fyw/oVPKcTW1/wfTjX0/coEMnSCnsrb+zwv72LN1iC/mSmzrkXVPxxfdX5J3OX/JPQM2p1I8IGK17JQrfvI4dQzAKBgjLJbHwoovqdQlU2zcQiYLAmF1k9rwSticoefTu3MTWpzpYJq2PtKGUejQ2TturllgJhrZjOWZpIKHAsoqzyroe2w/vgFU7BhM1I=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9ce2779b-04ba-487c-0938-08ddbf9b921a
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR10MB7329.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jul 2025 10:21:45.0618
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: uMGedGPdwFuSmYbV/YH1U853fxECLRHueyf1a1x04uw/uZM0u0KaVW54U5+ylWGXp22zTTmivCtzeHzVsC50eA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR10MB7637
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
  definitions=2025-07-10_01,2025-07-09_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- lowpriorityscore=0 adultscore=0 priorityscore=1501 suspectscore=0
- mlxscore=0 impostorscore=0 phishscore=0 bulkscore=0 clxscore=1015
- spamscore=0 mlxlogscore=999 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
- definitions=main-2507100083
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 malwarescore=0
+ mlxlogscore=999 spamscore=0 phishscore=0 mlxscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2505160000
+ definitions=main-2507100088
+X-Proofpoint-GUID: EPZEBQfQORECp7o9gYCphb5RV6ebuqSC
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzEwMDA4OCBTYWx0ZWRfX3+OxS0N3X61k gDQ4479hBIcccdNYughdVIep3GHsw3evz+nuN843iI9DrmjfdTQoxMYemVf0y6yEMQdm3e+YD/i lyk3WF2lOaujDGaghwpG9BfOZrJEcBuKB32tywqUmYOw4z2NvFbumgeYicPI93yLEadF5r1AXmf
+ crwIEhjEhHgf+uyTf4WzfO/c9KzkwF5upPBOEnPvi+9BBJj8K2ay/5opWVlPXA+pCJF6OtQYdXF vqSqQz1X5BZFC1ZKTaTW2GKbRJGaMWScJP4TDr4yH79SWUs4kQlfN5JcB8e2qoWp9LhdIkANIcY zoxDHR0ZPl9TnfT/luLmm++8qjkdLAjLZapinnu1iztyl1BOD7MwZ9N0P/ouv/yxIaoUJ83Ozkg
+ 6HhdM5iGROBZQc25lbvBtanNrlqARz+6zPFKF6EDy9baQoNZjz4Q/a/hd75uqjQEtyWOHzY9
+X-Authority-Analysis: v=2.4 cv=SrmQ6OO0 c=1 sm=1 tr=0 ts=686f943e cx=c_pps a=XiAAW1AwiKB2Y8Wsi+sD2Q==:117 a=XiAAW1AwiKB2Y8Wsi+sD2Q==:17 a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
+ a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10 a=Wb1JkmetP80A:10 a=GoEa3M9JfhUA:10 a=VwQbUJbxAAAA:8 a=wO4Sz9BzVJhQODiX1xoA:9 a=CjuIK1q_8ugA:10
+X-Proofpoint-ORIG-GUID: EPZEBQfQORECp7o9gYCphb5RV6ebuqSC
 
-The last iterators update (commit 515ee52b2224 ("bpf: make preloaded
-map iterators to display map elements count")) missed the big-endian
-skeleton. Update it by running "make big" with Debian clang version
-21.0.0 (++20250706105601+01c97b4953e8-1~exp1~20250706225612.1558).
+On Thu, Jul 10, 2025 at 11:36:02AM +0200, Vlastimil Babka wrote:
+> On 7/9/25 03:53, Alexei Starovoitov wrote:
+> > From: Alexei Starovoitov <ast@kernel.org>
+> > 
+> > kmalloc_nolock() relies on ability of local_lock to detect the situation
+> > when it's locked.
+> > In !PREEMPT_RT local_lock_is_locked() is true only when NMI happened in
+> > irq saved region that protects _that specific_ per-cpu kmem_cache_cpu.
+> > In that case retry the operation in a different kmalloc bucket.
+> > The second attempt will likely succeed, since this cpu locked
+> > different kmem_cache_cpu.
+> > 
+> > Similarly, in PREEMPT_RT local_lock_is_locked() returns true when
+> > per-cpu rt_spin_lock is locked by current task. In this case re-entrance
+> > into the same kmalloc bucket is unsafe, and kmalloc_nolock() tries
+> > a different bucket that is most likely is not locked by the current
+> > task. Though it may be locked by a different task it's safe to
+> > rt_spin_lock() on it.
+> > 
+> > Similar to alloc_pages_nolock() the kmalloc_nolock() returns NULL
+> > immediately if called from hard irq or NMI in PREEMPT_RT.
+> > 
+> > kfree_nolock() defers freeing to irq_work when local_lock_is_locked()
+> > and in_nmi() or in PREEMPT_RT.
+> > 
+> > SLUB_TINY config doesn't use local_lock_is_locked() and relies on
+> > spin_trylock_irqsave(&n->list_lock) to allocate while kfree_nolock()
+> > always defers to irq_work.
+> > 
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > @@ -3911,6 +3953,12 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+> >  		void *flush_freelist = c->freelist;
+> >  		struct slab *flush_slab = c->slab;
+> >  
+> > +		if (unlikely(!allow_spin))
+> > +			/*
+> > +			 * Reentrant slub cannot take locks
+> > +			 * necessary for deactivate_slab()
+> > +			 */
+> > +			return NULL;
+> 
+> Hm but this is leaking the slab we allocated and have in the "slab"
+> variable, we need to free it back in that case.
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- .../iterators/iterators.lskel-big-endian.h    | 492 +++++++++---------
- 1 file changed, 255 insertions(+), 237 deletions(-)
+But it might be a partial slab taken from the list?
+Then we need to trylock n->list_lock and if that fails, oh...
 
-diff --git a/kernel/bpf/preload/iterators/iterators.lskel-big-endian.h b/kernel/bpf/preload/iterators/iterators.lskel-big-endian.h
-index ebdc6c0cdb70..49b1d515a847 100644
---- a/kernel/bpf/preload/iterators/iterators.lskel-big-endian.h
-+++ b/kernel/bpf/preload/iterators/iterators.lskel-big-endian.h
-@@ -89,10 +89,7 @@ iterators_bpf__load(struct iterators_bpf *skel)
- {
- 	struct bpf_load_and_run_opts opts = {};
- 	int err;
--
--	opts.ctx = (struct bpf_loader_ctx *)skel;
--	opts.data_sz = 6008;
--	opts.data = (void *)"\
-+	static const char opts_data[] __attribute__((__aligned__(8))) = "\
- \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
- \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
- \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-@@ -126,190 +123,196 @@ iterators_bpf__load(struct iterators_bpf *skel)
- \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
- \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
- \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xeb\x9f\x01\0\
--\0\0\0\x18\0\0\0\0\0\0\x04\x1c\0\0\x04\x1c\0\0\x05\x18\0\0\0\0\x02\0\0\0\0\0\0\
-+\0\0\0\x18\0\0\0\0\0\0\x04\x80\0\0\x04\x80\0\0\x05\x44\0\0\0\0\x02\0\0\0\0\0\0\
- \x02\0\0\0\x01\x04\0\0\x02\0\0\0\x10\0\0\0\x13\0\0\0\x03\0\0\0\0\0\0\0\x18\0\0\
- \0\x04\0\0\0\x40\0\0\0\0\x02\0\0\0\0\0\0\x08\0\0\0\0\x02\0\0\0\0\0\0\x0d\0\0\0\
- \0\x0d\0\0\x01\0\0\0\x06\0\0\0\x1c\0\0\0\x01\0\0\0\x20\x01\0\0\0\0\0\0\x04\x01\
--\0\0\x20\0\0\0\x24\x0c\0\0\x01\0\0\0\x05\0\0\0\xc2\x04\0\0\x03\0\0\0\x18\0\0\0\
--\xd0\0\0\0\x09\0\0\0\0\0\0\0\xd4\0\0\0\x0b\0\0\0\x40\0\0\0\xdf\0\0\0\x0b\0\0\0\
--\x80\0\0\0\0\x02\0\0\0\0\0\0\x0a\0\0\0\xe7\x07\0\0\0\0\0\0\0\0\0\0\xf0\x08\0\0\
--\0\0\0\0\x0c\0\0\0\xf6\x01\0\0\0\0\0\0\x08\0\0\0\x40\0\0\x01\xb3\x04\0\0\x03\0\
--\0\0\x18\0\0\x01\xbb\0\0\0\x0e\0\0\0\0\0\0\x01\xbe\0\0\0\x11\0\0\0\x20\0\0\x01\
--\xc3\0\0\0\x0e\0\0\0\xa0\0\0\x01\xcf\x08\0\0\0\0\0\0\x0f\0\0\x01\xd5\x01\0\0\0\
--\0\0\0\x04\0\0\0\x20\0\0\x01\xe2\x01\0\0\0\0\0\0\x01\x01\0\0\x08\0\0\0\0\x03\0\
--\0\0\0\0\0\0\0\0\0\x10\0\0\0\x12\0\0\0\x10\0\0\x01\xe7\x01\0\0\0\0\0\0\x04\0\0\
--\0\x20\0\0\0\0\x02\0\0\0\0\0\0\x14\0\0\x02\x4b\x04\0\0\x02\0\0\0\x10\0\0\0\x13\
--\0\0\0\x03\0\0\0\0\0\0\x02\x5e\0\0\0\x15\0\0\0\x40\0\0\0\0\x02\0\0\0\0\0\0\x18\
--\0\0\0\0\x0d\0\0\x01\0\0\0\x06\0\0\0\x1c\0\0\0\x13\0\0\x02\x63\x0c\0\0\x01\0\0\
--\0\x16\0\0\x02\xaf\x04\0\0\x01\0\0\0\x08\0\0\x02\xb8\0\0\0\x19\0\0\0\0\0\0\0\0\
--\x02\0\0\0\0\0\0\x1a\0\0\x03\x09\x04\0\0\x06\0\0\0\x38\0\0\x01\xbb\0\0\0\x0e\0\
--\0\0\0\0\0\x01\xbe\0\0\0\x11\0\0\0\x20\0\0\x03\x16\0\0\0\x1b\0\0\0\xc0\0\0\x03\
--\x27\0\0\0\x15\0\0\x01\0\0\0\x03\x30\0\0\0\x1d\0\0\x01\x40\0\0\x03\x3a\0\0\0\
--\x1e\0\0\x01\x80\0\0\0\0\x02\0\0\0\0\0\0\x1c\0\0\0\0\x0a\0\0\0\0\0\0\x10\0\0\0\
--\0\x02\0\0\0\0\0\0\x1f\0\0\0\0\x02\0\0\0\0\0\0\x20\0\0\x03\x84\x04\0\0\x02\0\0\
--\0\x08\0\0\x03\x92\0\0\0\x0e\0\0\0\0\0\0\x03\x9b\0\0\0\x0e\0\0\0\x20\0\0\x03\
--\x3a\x04\0\0\x03\0\0\0\x18\0\0\x03\xa5\0\0\0\x1b\0\0\0\0\0\0\x03\xad\0\0\0\x21\
--\0\0\0\x40\0\0\x03\xb3\0\0\0\x23\0\0\0\x80\0\0\0\0\x02\0\0\0\0\0\0\x22\0\0\0\0\
--\x02\0\0\0\0\0\0\x24\0\0\x03\xb7\x04\0\0\x01\0\0\0\x04\0\0\x03\xc2\0\0\0\x0e\0\
--\0\0\0\0\0\x04\x2b\x04\0\0\x01\0\0\0\x04\0\0\x04\x34\0\0\0\x0e\0\0\0\0\0\0\0\0\
--\x03\0\0\0\0\0\0\0\0\0\0\x1c\0\0\0\x12\0\0\0\x23\0\0\x04\xaa\x0e\0\0\0\0\0\0\
--\x25\0\0\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\x1c\0\0\0\x12\0\0\0\x0e\0\0\x04\
--\xbe\x0e\0\0\0\0\0\0\x27\0\0\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\x1c\0\0\0\x12\
--\0\0\0\x20\0\0\x04\xd4\x0e\0\0\0\0\0\0\x29\0\0\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\
--\0\0\x1c\0\0\0\x12\0\0\0\x11\0\0\x04\xe9\x0e\0\0\0\0\0\0\x2b\0\0\0\0\0\0\0\0\
--\x03\0\0\0\0\0\0\0\0\0\0\x10\0\0\0\x12\0\0\0\x04\0\0\x05\0\x0e\0\0\0\0\0\0\x2d\
--\0\0\0\x01\0\0\x05\x08\x0f\0\0\x04\0\0\0\x62\0\0\0\x26\0\0\0\0\0\0\0\x23\0\0\0\
--\x28\0\0\0\x23\0\0\0\x0e\0\0\0\x2a\0\0\0\x31\0\0\0\x20\0\0\0\x2c\0\0\0\x51\0\0\
--\0\x11\0\0\x05\x10\x0f\0\0\x01\0\0\0\x04\0\0\0\x2e\0\0\0\0\0\0\0\x04\0\x62\x70\
--\x66\x5f\x69\x74\x65\x72\x5f\x5f\x62\x70\x66\x5f\x6d\x61\x70\0\x6d\x65\x74\x61\
--\0\x6d\x61\x70\0\x63\x74\x78\0\x69\x6e\x74\0\x64\x75\x6d\x70\x5f\x62\x70\x66\
--\x5f\x6d\x61\x70\0\x69\x74\x65\x72\x2f\x62\x70\x66\x5f\x6d\x61\x70\0\x30\x3a\
--\x30\0\x2f\x68\x6f\x6d\x65\x2f\x69\x69\x69\x2f\x6c\x69\x6e\x75\x78\x2d\x6b\x65\
--\x72\x6e\x65\x6c\x2d\x74\x6f\x6f\x6c\x63\x68\x61\x69\x6e\x2f\x73\x72\x63\x2f\
--\x6c\x69\x6e\x75\x78\x2f\x6b\x65\x72\x6e\x65\x6c\x2f\x62\x70\x66\x2f\x70\x72\
--\x65\x6c\x6f\x61\x64\x2f\x69\x74\x65\x72\x61\x74\x6f\x72\x73\x2f\x69\x74\x65\
--\x72\x61\x74\x6f\x72\x73\x2e\x62\x70\x66\x2e\x63\0\x09\x73\x74\x72\x75\x63\x74\
--\x20\x73\x65\x71\x5f\x66\x69\x6c\x65\x20\x2a\x73\x65\x71\x20\x3d\x20\x63\x74\
--\x78\x2d\x3e\x6d\x65\x74\x61\x2d\x3e\x73\x65\x71\x3b\0\x62\x70\x66\x5f\x69\x74\
--\x65\x72\x5f\x6d\x65\x74\x61\0\x73\x65\x71\0\x73\x65\x73\x73\x69\x6f\x6e\x5f\
--\x69\x64\0\x73\x65\x71\x5f\x6e\x75\x6d\0\x73\x65\x71\x5f\x66\x69\x6c\x65\0\x5f\
--\x5f\x75\x36\x34\0\x75\x6e\x73\x69\x67\x6e\x65\x64\x20\x6c\x6f\x6e\x67\x20\x6c\
--\x6f\x6e\x67\0\x30\x3a\x31\0\x09\x73\x74\x72\x75\x63\x74\x20\x62\x70\x66\x5f\
--\x6d\x61\x70\x20\x2a\x6d\x61\x70\x20\x3d\x20\x63\x74\x78\x2d\x3e\x6d\x61\x70\
--\x3b\0\x09\x69\x66\x20\x28\x21\x6d\x61\x70\x29\0\x30\x3a\x32\0\x09\x5f\x5f\x75\
--\x36\x34\x20\x73\x65\x71\x5f\x6e\x75\x6d\x20\x3d\x20\x63\x74\x78\x2d\x3e\x6d\
--\x65\x74\x61\x2d\x3e\x73\x65\x71\x5f\x6e\x75\x6d\x3b\0\x09\x69\x66\x20\x28\x73\
--\x65\x71\x5f\x6e\x75\x6d\x20\x3d\x3d\x20\x30\x29\0\x09\x09\x42\x50\x46\x5f\x53\
--\x45\x51\x5f\x50\x52\x49\x4e\x54\x46\x28\x73\x65\x71\x2c\x20\x22\x20\x20\x69\
--\x64\x20\x6e\x61\x6d\x65\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\
--\x6d\x61\x78\x5f\x65\x6e\x74\x72\x69\x65\x73\x5c\x6e\x22\x29\x3b\0\x62\x70\x66\
--\x5f\x6d\x61\x70\0\x69\x64\0\x6e\x61\x6d\x65\0\x6d\x61\x78\x5f\x65\x6e\x74\x72\
--\x69\x65\x73\0\x5f\x5f\x75\x33\x32\0\x75\x6e\x73\x69\x67\x6e\x65\x64\x20\x69\
--\x6e\x74\0\x63\x68\x61\x72\0\x5f\x5f\x41\x52\x52\x41\x59\x5f\x53\x49\x5a\x45\
--\x5f\x54\x59\x50\x45\x5f\x5f\0\x09\x42\x50\x46\x5f\x53\x45\x51\x5f\x50\x52\x49\
--\x4e\x54\x46\x28\x73\x65\x71\x2c\x20\x22\x25\x34\x75\x20\x25\x2d\x31\x36\x73\
--\x25\x36\x64\x5c\x6e\x22\x2c\x20\x6d\x61\x70\x2d\x3e\x69\x64\x2c\x20\x6d\x61\
--\x70\x2d\x3e\x6e\x61\x6d\x65\x2c\x20\x6d\x61\x70\x2d\x3e\x6d\x61\x78\x5f\x65\
--\x6e\x74\x72\x69\x65\x73\x29\x3b\0\x7d\0\x62\x70\x66\x5f\x69\x74\x65\x72\x5f\
--\x5f\x62\x70\x66\x5f\x70\x72\x6f\x67\0\x70\x72\x6f\x67\0\x64\x75\x6d\x70\x5f\
--\x62\x70\x66\x5f\x70\x72\x6f\x67\0\x69\x74\x65\x72\x2f\x62\x70\x66\x5f\x70\x72\
--\x6f\x67\0\x09\x73\x74\x72\x75\x63\x74\x20\x62\x70\x66\x5f\x70\x72\x6f\x67\x20\
--\x2a\x70\x72\x6f\x67\x20\x3d\x20\x63\x74\x78\x2d\x3e\x70\x72\x6f\x67\x3b\0\x09\
--\x69\x66\x20\x28\x21\x70\x72\x6f\x67\x29\0\x62\x70\x66\x5f\x70\x72\x6f\x67\0\
--\x61\x75\x78\0\x09\x61\x75\x78\x20\x3d\x20\x70\x72\x6f\x67\x2d\x3e\x61\x75\x78\
--\x3b\0\x09\x09\x42\x50\x46\x5f\x53\x45\x51\x5f\x50\x52\x49\x4e\x54\x46\x28\x73\
--\x65\x71\x2c\x20\x22\x20\x20\x69\x64\x20\x6e\x61\x6d\x65\x20\x20\x20\x20\x20\
--\x20\x20\x20\x20\x20\x20\x20\x20\x61\x74\x74\x61\x63\x68\x65\x64\x5c\x6e\x22\
--\x29\x3b\0\x62\x70\x66\x5f\x70\x72\x6f\x67\x5f\x61\x75\x78\0\x61\x74\x74\x61\
--\x63\x68\x5f\x66\x75\x6e\x63\x5f\x6e\x61\x6d\x65\0\x64\x73\x74\x5f\x70\x72\x6f\
--\x67\0\x66\x75\x6e\x63\x5f\x69\x6e\x66\x6f\0\x62\x74\x66\0\x09\x42\x50\x46\x5f\
--\x53\x45\x51\x5f\x50\x52\x49\x4e\x54\x46\x28\x73\x65\x71\x2c\x20\x22\x25\x34\
--\x75\x20\x25\x2d\x31\x36\x73\x20\x25\x73\x20\x25\x73\x5c\x6e\x22\x2c\x20\x61\
--\x75\x78\x2d\x3e\x69\x64\x2c\0\x30\x3a\x34\0\x30\x3a\x35\0\x09\x69\x66\x20\x28\
--\x21\x62\x74\x66\x29\0\x62\x70\x66\x5f\x66\x75\x6e\x63\x5f\x69\x6e\x66\x6f\0\
--\x69\x6e\x73\x6e\x5f\x6f\x66\x66\0\x74\x79\x70\x65\x5f\x69\x64\0\x30\0\x73\x74\
--\x72\x69\x6e\x67\x73\0\x74\x79\x70\x65\x73\0\x68\x64\x72\0\x62\x74\x66\x5f\x68\
--\x65\x61\x64\x65\x72\0\x73\x74\x72\x5f\x6c\x65\x6e\0\x09\x74\x79\x70\x65\x73\
--\x20\x3d\x20\x62\x74\x66\x2d\x3e\x74\x79\x70\x65\x73\x3b\0\x09\x62\x70\x66\x5f\
--\x70\x72\x6f\x62\x65\x5f\x72\x65\x61\x64\x5f\x6b\x65\x72\x6e\x65\x6c\x28\x26\
--\x74\x2c\x20\x73\x69\x7a\x65\x6f\x66\x28\x74\x29\x2c\x20\x74\x79\x70\x65\x73\
--\x20\x2b\x20\x62\x74\x66\x5f\x69\x64\x29\x3b\0\x09\x73\x74\x72\x20\x3d\x20\x62\
--\x74\x66\x2d\x3e\x73\x74\x72\x69\x6e\x67\x73\x3b\0\x62\x74\x66\x5f\x74\x79\x70\
--\x65\0\x6e\x61\x6d\x65\x5f\x6f\x66\x66\0\x09\x6e\x61\x6d\x65\x5f\x6f\x66\x66\
--\x20\x3d\x20\x42\x50\x46\x5f\x43\x4f\x52\x45\x5f\x52\x45\x41\x44\x28\x74\x2c\
--\x20\x6e\x61\x6d\x65\x5f\x6f\x66\x66\x29\x3b\0\x30\x3a\x32\x3a\x30\0\x09\x69\
--\x66\x20\x28\x6e\x61\x6d\x65\x5f\x6f\x66\x66\x20\x3e\x3d\x20\x62\x74\x66\x2d\
--\x3e\x68\x64\x72\x2e\x73\x74\x72\x5f\x6c\x65\x6e\x29\0\x09\x72\x65\x74\x75\x72\
--\x6e\x20\x73\x74\x72\x20\x2b\x20\x6e\x61\x6d\x65\x5f\x6f\x66\x66\x3b\0\x30\x3a\
--\x33\0\x64\x75\x6d\x70\x5f\x62\x70\x66\x5f\x6d\x61\x70\x2e\x5f\x5f\x5f\x66\x6d\
--\x74\0\x64\x75\x6d\x70\x5f\x62\x70\x66\x5f\x6d\x61\x70\x2e\x5f\x5f\x5f\x66\x6d\
--\x74\x2e\x31\0\x64\x75\x6d\x70\x5f\x62\x70\x66\x5f\x70\x72\x6f\x67\x2e\x5f\x5f\
--\x5f\x66\x6d\x74\0\x64\x75\x6d\x70\x5f\x62\x70\x66\x5f\x70\x72\x6f\x67\x2e\x5f\
--\x5f\x5f\x66\x6d\x74\x2e\x32\0\x4c\x49\x43\x45\x4e\x53\x45\0\x2e\x72\x6f\x64\
--\x61\x74\x61\0\x6c\x69\x63\x65\x6e\x73\x65\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
--\0\0\0\0\0\x09\x4c\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x02\0\0\0\x04\0\0\0\x62\0\0\0\
--\x01\0\0\0\x80\0\0\0\0\0\0\0\0\x69\x74\x65\x72\x61\x74\x6f\x72\x2e\x72\x6f\x64\
--\x61\x74\x61\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x2f\0\0\0\0\0\0\0\0\0\0\0\0\x20\
--\x20\x69\x64\x20\x6e\x61\x6d\x65\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\
--\x20\x20\x6d\x61\x78\x5f\x65\x6e\x74\x72\x69\x65\x73\x0a\0\x25\x34\x75\x20\x25\
--\x2d\x31\x36\x73\x25\x36\x64\x0a\0\x20\x20\x69\x64\x20\x6e\x61\x6d\x65\x20\x20\
-+\0\0\x20\0\0\0\x24\x0c\0\0\x01\0\0\0\x05\0\0\0\xc3\x04\0\0\x03\0\0\0\x18\0\0\0\
-+\xd1\0\0\0\x09\0\0\0\0\0\0\0\xd5\0\0\0\x0b\0\0\0\x40\0\0\0\xe0\0\0\0\x0b\0\0\0\
-+\x80\0\0\0\0\x02\0\0\0\0\0\0\x0a\0\0\0\xe8\x07\0\0\0\0\0\0\0\0\0\0\xf1\x08\0\0\
-+\0\0\0\0\x0c\0\0\0\xf7\x01\0\0\0\0\0\0\x08\0\0\0\x40\0\0\x01\xc1\x04\0\0\x03\0\
-+\0\0\x18\0\0\x01\xc9\0\0\0\x0e\0\0\0\0\0\0\x01\xcc\0\0\0\x11\0\0\0\x20\0\0\x01\
-+\xd1\0\0\0\x0e\0\0\0\xa0\0\0\x01\xdd\x08\0\0\0\0\0\0\x0f\0\0\x01\xe3\x01\0\0\0\
-+\0\0\0\x04\0\0\0\x20\0\0\x01\xf0\x01\0\0\0\0\0\0\x01\x01\0\0\x08\0\0\0\0\x03\0\
-+\0\0\0\0\0\0\0\0\0\x10\0\0\0\x12\0\0\0\x10\0\0\x01\xf5\x01\0\0\0\0\0\0\x04\0\0\
-+\0\x20\0\0\0\0\x0d\0\0\x01\0\0\0\x14\0\0\x05\x39\0\0\0\x04\0\0\x02\x3e\x08\0\0\
-+\0\0\0\0\x15\0\0\x02\x44\x01\0\0\0\0\0\0\x08\x01\0\0\x40\0\0\x02\x4e\x0c\0\0\
-+\x01\0\0\0\x13\0\0\0\0\x02\0\0\0\0\0\0\x18\0\0\x02\x65\x04\0\0\x02\0\0\0\x10\0\
-+\0\0\x13\0\0\0\x03\0\0\0\0\0\0\x02\x78\0\0\0\x19\0\0\0\x40\0\0\0\0\x02\0\0\0\0\
-+\0\0\x1c\0\0\0\0\x0d\0\0\x01\0\0\0\x06\0\0\0\x1c\0\0\0\x17\0\0\x02\x7d\x0c\0\0\
-+\x01\0\0\0\x1a\0\0\x02\xc9\x04\0\0\x01\0\0\0\x08\0\0\x02\xd2\0\0\0\x1d\0\0\0\0\
-+\0\0\0\0\x02\0\0\0\0\0\0\x1e\0\0\x03\x23\x04\0\0\x06\0\0\0\x38\0\0\x01\xc9\0\0\
-+\0\x0e\0\0\0\0\0\0\x01\xcc\0\0\0\x11\0\0\0\x20\0\0\x03\x30\0\0\0\x1f\0\0\0\xc0\
-+\0\0\x03\x41\0\0\0\x19\0\0\x01\0\0\0\x03\x4a\0\0\0\x21\0\0\x01\x40\0\0\x03\x54\
-+\0\0\0\x22\0\0\x01\x80\0\0\0\0\x02\0\0\0\0\0\0\x20\0\0\0\0\x0a\0\0\0\0\0\0\x10\
-+\0\0\0\0\x02\0\0\0\0\0\0\x23\0\0\0\0\x02\0\0\0\0\0\0\x24\0\0\x03\x9e\x04\0\0\
-+\x02\0\0\0\x08\0\0\x03\xac\0\0\0\x0e\0\0\0\0\0\0\x03\xb5\0\0\0\x0e\0\0\0\x20\0\
-+\0\x03\x54\x04\0\0\x03\0\0\0\x18\0\0\x03\xbf\0\0\0\x1f\0\0\0\0\0\0\x03\xc7\0\0\
-+\0\x25\0\0\0\x40\0\0\x03\xcd\0\0\0\x27\0\0\0\x80\0\0\0\0\x02\0\0\0\0\0\0\x26\0\
-+\0\0\0\x02\0\0\0\0\0\0\x28\0\0\x03\xd1\x04\0\0\x01\0\0\0\x04\0\0\x03\xdc\0\0\0\
-+\x0e\0\0\0\0\0\0\x04\x45\x04\0\0\x01\0\0\0\x04\0\0\x04\x4e\0\0\0\x0e\0\0\0\0\0\
-+\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\x20\0\0\0\x12\0\0\0\x30\0\0\x04\xc4\x0e\0\0\0\0\
-+\0\0\x29\0\0\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\x20\0\0\0\x12\0\0\0\x1a\0\0\
-+\x04\xd8\x0e\0\0\0\0\0\0\x2b\0\0\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\x20\0\0\0\
-+\x12\0\0\0\x20\0\0\x04\xee\x0e\0\0\0\0\0\0\x2d\0\0\0\0\0\0\0\0\x03\0\0\0\0\0\0\
-+\0\0\0\0\x20\0\0\0\x12\0\0\0\x11\0\0\x05\x03\x0e\0\0\0\0\0\0\x2f\0\0\0\0\0\0\0\
-+\0\x03\0\0\0\0\0\0\0\0\0\0\x10\0\0\0\x12\0\0\0\x04\0\0\x05\x1a\x0e\0\0\0\0\0\0\
-+\x31\0\0\0\x01\0\0\x05\x22\x0f\0\0\x01\0\0\0\x04\0\0\0\x36\0\0\0\0\0\0\0\x04\0\
-+\0\x05\x29\x0f\0\0\x04\0\0\0\x7b\0\0\0\x2a\0\0\0\0\0\0\0\x30\0\0\0\x2c\0\0\0\
-+\x30\0\0\0\x1a\0\0\0\x2e\0\0\0\x4a\0\0\0\x20\0\0\0\x30\0\0\0\x6a\0\0\0\x11\0\0\
-+\x05\x31\x0f\0\0\x01\0\0\0\x04\0\0\0\x32\0\0\0\0\0\0\0\x04\0\0\x05\x39\x0e\0\0\
-+\0\0\0\0\x06\0\0\0\x01\0\x62\x70\x66\x5f\x69\x74\x65\x72\x5f\x5f\x62\x70\x66\
-+\x5f\x6d\x61\x70\0\x6d\x65\x74\x61\0\x6d\x61\x70\0\x63\x74\x78\0\x69\x6e\x74\0\
-+\x64\x75\x6d\x70\x5f\x62\x70\x66\x5f\x6d\x61\x70\0\x69\x74\x65\x72\x2f\x62\x70\
-+\x66\x5f\x6d\x61\x70\0\x30\x3a\x30\0\x2f\x68\x6f\x6d\x65\x32\x2f\x69\x69\x69\
-+\x2f\x6c\x69\x6e\x75\x78\x2d\x6b\x65\x72\x6e\x65\x6c\x2d\x74\x6f\x6f\x6c\x63\
-+\x68\x61\x69\x6e\x2f\x73\x72\x63\x2f\x6c\x69\x6e\x75\x78\x2f\x6b\x65\x72\x6e\
-+\x65\x6c\x2f\x62\x70\x66\x2f\x70\x72\x65\x6c\x6f\x61\x64\x2f\x69\x74\x65\x72\
-+\x61\x74\x6f\x72\x73\x2f\x69\x74\x65\x72\x61\x74\x6f\x72\x73\x2e\x62\x70\x66\
-+\x2e\x63\0\x09\x73\x74\x72\x75\x63\x74\x20\x73\x65\x71\x5f\x66\x69\x6c\x65\x20\
-+\x2a\x73\x65\x71\x20\x3d\x20\x63\x74\x78\x2d\x3e\x6d\x65\x74\x61\x2d\x3e\x73\
-+\x65\x71\x3b\0\x62\x70\x66\x5f\x69\x74\x65\x72\x5f\x6d\x65\x74\x61\0\x73\x65\
-+\x71\0\x73\x65\x73\x73\x69\x6f\x6e\x5f\x69\x64\0\x73\x65\x71\x5f\x6e\x75\x6d\0\
-+\x73\x65\x71\x5f\x66\x69\x6c\x65\0\x5f\x5f\x75\x36\x34\0\x75\x6e\x73\x69\x67\
-+\x6e\x65\x64\x20\x6c\x6f\x6e\x67\x20\x6c\x6f\x6e\x67\0\x30\x3a\x31\0\x09\x73\
-+\x74\x72\x75\x63\x74\x20\x62\x70\x66\x5f\x6d\x61\x70\x20\x2a\x6d\x61\x70\x20\
-+\x3d\x20\x63\x74\x78\x2d\x3e\x6d\x61\x70\x3b\0\x09\x69\x66\x20\x28\x21\x6d\x61\
-+\x70\x29\0\x30\x3a\x32\0\x09\x5f\x5f\x75\x36\x34\x20\x73\x65\x71\x5f\x6e\x75\
-+\x6d\x20\x3d\x20\x63\x74\x78\x2d\x3e\x6d\x65\x74\x61\x2d\x3e\x73\x65\x71\x5f\
-+\x6e\x75\x6d\x3b\0\x09\x69\x66\x20\x28\x73\x65\x71\x5f\x6e\x75\x6d\x20\x3d\x3d\
-+\x20\x30\x29\0\x09\x09\x42\x50\x46\x5f\x53\x45\x51\x5f\x50\x52\x49\x4e\x54\x46\
-+\x28\x73\x65\x71\x2c\x20\x22\x20\x20\x69\x64\x20\x6e\x61\x6d\x65\x20\x20\x20\
-+\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x6d\x61\x78\x5f\x65\x6e\x74\x72\x69\
-+\x65\x73\x20\x20\x63\x75\x72\x5f\x65\x6e\x74\x72\x69\x65\x73\x5c\x6e\x22\x29\
-+\x3b\0\x62\x70\x66\x5f\x6d\x61\x70\0\x69\x64\0\x6e\x61\x6d\x65\0\x6d\x61\x78\
-+\x5f\x65\x6e\x74\x72\x69\x65\x73\0\x5f\x5f\x75\x33\x32\0\x75\x6e\x73\x69\x67\
-+\x6e\x65\x64\x20\x69\x6e\x74\0\x63\x68\x61\x72\0\x5f\x5f\x41\x52\x52\x41\x59\
-+\x5f\x53\x49\x5a\x45\x5f\x54\x59\x50\x45\x5f\x5f\0\x09\x42\x50\x46\x5f\x53\x45\
-+\x51\x5f\x50\x52\x49\x4e\x54\x46\x28\x73\x65\x71\x2c\x20\x22\x25\x34\x75\x20\
-+\x25\x2d\x31\x36\x73\x20\x20\x25\x31\x30\x64\x20\x20\x20\x25\x31\x30\x6c\x6c\
-+\x64\x5c\x6e\x22\x2c\0\x7d\0\x5f\x5f\x73\x36\x34\0\x6c\x6f\x6e\x67\x20\x6c\x6f\
-+\x6e\x67\0\x62\x70\x66\x5f\x6d\x61\x70\x5f\x73\x75\x6d\x5f\x65\x6c\x65\x6d\x5f\
-+\x63\x6f\x75\x6e\x74\0\x62\x70\x66\x5f\x69\x74\x65\x72\x5f\x5f\x62\x70\x66\x5f\
-+\x70\x72\x6f\x67\0\x70\x72\x6f\x67\0\x64\x75\x6d\x70\x5f\x62\x70\x66\x5f\x70\
-+\x72\x6f\x67\0\x69\x74\x65\x72\x2f\x62\x70\x66\x5f\x70\x72\x6f\x67\0\x09\x73\
-+\x74\x72\x75\x63\x74\x20\x62\x70\x66\x5f\x70\x72\x6f\x67\x20\x2a\x70\x72\x6f\
-+\x67\x20\x3d\x20\x63\x74\x78\x2d\x3e\x70\x72\x6f\x67\x3b\0\x09\x69\x66\x20\x28\
-+\x21\x70\x72\x6f\x67\x29\0\x62\x70\x66\x5f\x70\x72\x6f\x67\0\x61\x75\x78\0\x09\
-+\x61\x75\x78\x20\x3d\x20\x70\x72\x6f\x67\x2d\x3e\x61\x75\x78\x3b\0\x09\x09\x42\
-+\x50\x46\x5f\x53\x45\x51\x5f\x50\x52\x49\x4e\x54\x46\x28\x73\x65\x71\x2c\x20\
-+\x22\x20\x20\x69\x64\x20\x6e\x61\x6d\x65\x20\x20\x20\x20\x20\x20\x20\x20\x20\
-+\x20\x20\x20\x20\x61\x74\x74\x61\x63\x68\x65\x64\x5c\x6e\x22\x29\x3b\0\x62\x70\
-+\x66\x5f\x70\x72\x6f\x67\x5f\x61\x75\x78\0\x61\x74\x74\x61\x63\x68\x5f\x66\x75\
-+\x6e\x63\x5f\x6e\x61\x6d\x65\0\x64\x73\x74\x5f\x70\x72\x6f\x67\0\x66\x75\x6e\
-+\x63\x5f\x69\x6e\x66\x6f\0\x62\x74\x66\0\x09\x42\x50\x46\x5f\x53\x45\x51\x5f\
-+\x50\x52\x49\x4e\x54\x46\x28\x73\x65\x71\x2c\x20\x22\x25\x34\x75\x20\x25\x2d\
-+\x31\x36\x73\x20\x25\x73\x20\x25\x73\x5c\x6e\x22\x2c\x20\x61\x75\x78\x2d\x3e\
-+\x69\x64\x2c\0\x30\x3a\x34\0\x30\x3a\x35\0\x09\x69\x66\x20\x28\x21\x62\x74\x66\
-+\x29\0\x62\x70\x66\x5f\x66\x75\x6e\x63\x5f\x69\x6e\x66\x6f\0\x69\x6e\x73\x6e\
-+\x5f\x6f\x66\x66\0\x74\x79\x70\x65\x5f\x69\x64\0\x30\0\x73\x74\x72\x69\x6e\x67\
-+\x73\0\x74\x79\x70\x65\x73\0\x68\x64\x72\0\x62\x74\x66\x5f\x68\x65\x61\x64\x65\
-+\x72\0\x73\x74\x72\x5f\x6c\x65\x6e\0\x09\x74\x79\x70\x65\x73\x20\x3d\x20\x62\
-+\x74\x66\x2d\x3e\x74\x79\x70\x65\x73\x3b\0\x09\x62\x70\x66\x5f\x70\x72\x6f\x62\
-+\x65\x5f\x72\x65\x61\x64\x5f\x6b\x65\x72\x6e\x65\x6c\x28\x26\x74\x2c\x20\x73\
-+\x69\x7a\x65\x6f\x66\x28\x74\x29\x2c\x20\x74\x79\x70\x65\x73\x20\x2b\x20\x62\
-+\x74\x66\x5f\x69\x64\x29\x3b\0\x09\x73\x74\x72\x20\x3d\x20\x62\x74\x66\x2d\x3e\
-+\x73\x74\x72\x69\x6e\x67\x73\x3b\0\x62\x74\x66\x5f\x74\x79\x70\x65\0\x6e\x61\
-+\x6d\x65\x5f\x6f\x66\x66\0\x09\x6e\x61\x6d\x65\x5f\x6f\x66\x66\x20\x3d\x20\x42\
-+\x50\x46\x5f\x43\x4f\x52\x45\x5f\x52\x45\x41\x44\x28\x74\x2c\x20\x6e\x61\x6d\
-+\x65\x5f\x6f\x66\x66\x29\x3b\0\x30\x3a\x32\x3a\x30\0\x09\x69\x66\x20\x28\x6e\
-+\x61\x6d\x65\x5f\x6f\x66\x66\x20\x3e\x3d\x20\x62\x74\x66\x2d\x3e\x68\x64\x72\
-+\x2e\x73\x74\x72\x5f\x6c\x65\x6e\x29\0\x09\x72\x65\x74\x75\x72\x6e\x20\x73\x74\
-+\x72\x20\x2b\x20\x6e\x61\x6d\x65\x5f\x6f\x66\x66\x3b\0\x30\x3a\x33\0\x64\x75\
-+\x6d\x70\x5f\x62\x70\x66\x5f\x6d\x61\x70\x2e\x5f\x5f\x5f\x66\x6d\x74\0\x64\x75\
-+\x6d\x70\x5f\x62\x70\x66\x5f\x6d\x61\x70\x2e\x5f\x5f\x5f\x66\x6d\x74\x2e\x31\0\
-+\x64\x75\x6d\x70\x5f\x62\x70\x66\x5f\x70\x72\x6f\x67\x2e\x5f\x5f\x5f\x66\x6d\
-+\x74\0\x64\x75\x6d\x70\x5f\x62\x70\x66\x5f\x70\x72\x6f\x67\x2e\x5f\x5f\x5f\x66\
-+\x6d\x74\x2e\x32\0\x4c\x49\x43\x45\x4e\x53\x45\0\x2e\x6b\x73\x79\x6d\x73\0\x2e\
-+\x72\x6f\x64\x61\x74\x61\0\x6c\x69\x63\x65\x6e\x73\x65\0\x64\x75\x6d\x6d\x79\
-+\x5f\x6b\x73\x79\x6d\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x09\xdc\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\x02\0\0\0\x04\0\0\0\x7b\0\0\0\x01\0\0\0\x80\0\0\0\0\
-+\0\0\0\0\x69\x74\x65\x72\x61\x74\x6f\x72\x2e\x72\x6f\x64\x61\x74\x61\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\x34\0\0\0\0\0\0\0\0\0\0\0\0\x20\x20\x69\x64\x20\x6e\x61\
-+\x6d\x65\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x6d\x61\x78\x5f\
-+\x65\x6e\x74\x72\x69\x65\x73\x20\x20\x63\x75\x72\x5f\x65\x6e\x74\x72\x69\x65\
-+\x73\x0a\0\x25\x34\x75\x20\x25\x2d\x31\x36\x73\x20\x20\x25\x31\x30\x64\x20\x20\
-+\x20\x25\x31\x30\x6c\x6c\x64\x0a\0\x20\x20\x69\x64\x20\x6e\x61\x6d\x65\x20\x20\
- \x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x61\x74\x74\x61\x63\x68\x65\x64\
- \x0a\0\x25\x34\x75\x20\x25\x2d\x31\x36\x73\x20\x25\x73\x20\x25\x73\x0a\0\0\0\0\
- \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
--\0\0\0\0\0\0\0\0\0\0\0\0\x47\x50\x4c\0\0\0\0\0\x79\x21\0\0\0\0\0\0\x79\x62\0\0\
--\0\0\0\0\x79\x71\0\x08\0\0\0\0\x15\x70\0\x1a\0\0\0\0\x79\x12\0\x10\0\0\0\0\x55\
--\x10\0\x08\0\0\0\0\xbf\x4a\0\0\0\0\0\0\x07\x40\0\0\xff\xff\xff\xe8\xbf\x16\0\0\
--\0\0\0\0\x18\x26\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xb7\x30\0\0\0\0\0\x23\xb7\x50\0\0\
--\0\0\0\0\x85\0\0\0\0\0\0\x7e\x61\x17\0\0\0\0\0\0\x7b\xa1\xff\xe8\0\0\0\0\xb7\
--\x10\0\0\0\0\0\x04\xbf\x27\0\0\0\0\0\0\x0f\x21\0\0\0\0\0\0\x7b\xa2\xff\xf0\0\0\
--\0\0\x61\x17\0\x14\0\0\0\0\x7b\xa1\xff\xf8\0\0\0\0\xbf\x4a\0\0\0\0\0\0\x07\x40\
--\0\0\xff\xff\xff\xe8\xbf\x16\0\0\0\0\0\0\x18\x26\0\0\0\0\0\0\0\0\0\0\0\0\0\x23\
--\xb7\x30\0\0\0\0\0\x0e\xb7\x50\0\0\0\0\0\x18\x85\0\0\0\0\0\0\x7e\xb7\0\0\0\0\0\
--\0\0\x95\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x42\0\0\0\x9a\0\x01\x3c\
--\x1e\0\0\0\x01\0\0\0\x42\0\0\0\x9a\0\x01\x3c\x24\0\0\0\x02\0\0\0\x42\0\0\x01\
--\x0d\0\x01\x44\x1d\0\0\0\x03\0\0\0\x42\0\0\x01\x2e\0\x01\x4c\x06\0\0\0\x04\0\0\
--\0\x42\0\0\x01\x3d\0\x01\x40\x1d\0\0\0\x05\0\0\0\x42\0\0\x01\x62\0\x01\x58\x06\
--\0\0\0\x07\0\0\0\x42\0\0\x01\x75\0\x01\x5c\x03\0\0\0\x0e\0\0\0\x42\0\0\x01\xfb\
--\0\x01\x64\x02\0\0\0\x1e\0\0\0\x42\0\0\x02\x49\0\x01\x6c\x01\0\0\0\0\0\0\0\x02\
--\0\0\0\x3e\0\0\0\0\0\0\0\x08\0\0\0\x08\0\0\0\x3e\0\0\0\0\0\0\0\x10\0\0\0\x02\0\
--\0\x01\x09\0\0\0\0\0\0\0\x20\0\0\0\x08\0\0\x01\x39\0\0\0\0\0\0\0\x70\0\0\0\x0d\
--\0\0\0\x3e\0\0\0\0\0\0\0\x80\0\0\0\x0d\0\0\x01\x09\0\0\0\0\0\0\0\xa0\0\0\0\x0d\
--\0\0\x01\x39\0\0\0\0\0\0\0\x1a\0\0\0\x20\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
--\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x64\x75\x6d\x70\x5f\x62\x70\x66\x5f\
--\x6d\x61\x70\0\0\0\0\0\0\0\0\0\0\0\x1c\0\0\0\0\0\0\0\x08\0\0\0\0\0\0\0\0\0\0\0\
--\x01\0\0\0\x10\0\0\0\0\0\0\0\0\0\0\0\x09\0\0\0\x01\0\0\0\0\0\0\0\x07\0\0\0\0\0\
--\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x10\0\0\0\0\x62\x70\x66\x5f\x69\x74\x65\x72\x5f\
--\x62\x70\x66\x5f\x6d\x61\x70\0\0\0\0\0\0\0\0\x47\x50\x4c\0\0\0\0\0\x79\x21\0\0\
--\0\0\0\0\x79\x62\0\0\0\0\0\0\x79\x11\0\x08\0\0\0\0\x15\x10\0\x3b\0\0\0\0\x79\
--\x71\0\0\0\0\0\0\x79\x12\0\x10\0\0\0\0\x55\x10\0\x08\0\0\0\0\xbf\x4a\0\0\0\0\0\
--\0\x07\x40\0\0\xff\xff\xff\xd0\xbf\x16\0\0\0\0\0\0\x18\x26\0\0\0\0\0\0\0\0\0\0\
--\0\0\0\x31\xb7\x30\0\0\0\0\0\x20\xb7\x50\0\0\0\0\0\0\x85\0\0\0\0\0\0\x7e\x7b\
--\xa6\xff\xc8\0\0\0\0\x61\x17\0\0\0\0\0\0\x7b\xa1\xff\xd0\0\0\0\0\xb7\x30\0\0\0\
--\0\0\x04\xbf\x97\0\0\0\0\0\0\x0f\x93\0\0\0\0\0\0\x79\x17\0\x28\0\0\0\0\x79\x87\
--\0\x30\0\0\0\0\x15\x80\0\x18\0\0\0\0\xb7\x20\0\0\0\0\0\0\x0f\x12\0\0\0\0\0\0\
--\x61\x11\0\x04\0\0\0\0\x79\x38\0\x08\0\0\0\0\x67\x10\0\0\0\0\0\x03\x0f\x31\0\0\
--\0\0\0\0\x79\x68\0\0\0\0\0\0\xbf\x1a\0\0\0\0\0\0\x07\x10\0\0\xff\xff\xff\xf8\
--\xb7\x20\0\0\0\0\0\x08\x85\0\0\0\0\0\0\x71\xb7\x10\0\0\0\0\0\0\x79\x3a\xff\xf8\
-+\0\0\0\0\0\0\0\0\0\0\0\x47\x50\x4c\0\0\0\0\0\x79\x21\0\0\0\0\0\0\x79\x62\0\0\0\
-+\0\0\0\x79\x71\0\x08\0\0\0\0\x15\x70\0\x1d\0\0\0\0\x79\x12\0\x10\0\0\0\0\x55\
-+\x10\0\x08\0\0\0\0\xbf\x4a\0\0\0\0\0\0\x07\x40\0\0\xff\xff\xff\xe0\xbf\x16\0\0\
-+\0\0\0\0\x18\x26\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xb4\x30\0\0\0\0\0\x30\xb4\x50\0\0\
-+\0\0\0\0\x85\0\0\0\0\0\0\x7e\x61\x17\0\0\0\0\0\0\x7b\xa1\xff\xe0\0\0\0\0\xb7\
-+\x10\0\0\0\0\0\x04\xbf\x27\0\0\0\0\0\0\x0f\x21\0\0\0\0\0\0\x7b\xa2\xff\xe8\0\0\
-+\0\0\x61\x17\0\x14\0\0\0\0\x7b\xa1\xff\xf0\0\0\0\0\xbf\x17\0\0\0\0\0\0\x85\x02\
-+\0\0\0\0\0\0\x7b\xa0\xff\xf8\0\0\0\0\xbf\x4a\0\0\0\0\0\0\x07\x40\0\0\xff\xff\
-+\xff\xe0\xbf\x16\0\0\0\0\0\0\x18\x26\0\0\0\0\0\0\0\0\0\0\0\0\0\x30\xb4\x30\0\0\
-+\0\0\0\x1a\xb4\x50\0\0\0\0\0\x20\x85\0\0\0\0\0\0\x7e\xb4\0\0\0\0\0\0\0\x95\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x42\0\0\0\x9b\0\x01\x44\x1e\0\0\0\
-+\x01\0\0\0\x42\0\0\0\x9b\0\x01\x44\x24\0\0\0\x02\0\0\0\x42\0\0\x01\x0e\0\x01\
-+\x4c\x1d\0\0\0\x03\0\0\0\x42\0\0\x01\x2f\0\x01\x54\x06\0\0\0\x04\0\0\0\x42\0\0\
-+\x01\x3e\0\x01\x48\x1d\0\0\0\x05\0\0\0\x42\0\0\x01\x63\0\x01\x60\x0e\0\0\0\x08\
-+\0\0\0\x42\0\0\x01\x76\0\x01\x64\x03\0\0\0\x0e\0\0\0\x42\0\0\x02\x09\0\x01\x6c\
-+\x02\0\0\0\x21\0\0\0\x42\0\0\x02\x3c\0\x01\x80\x01\0\0\0\0\0\0\0\x02\0\0\0\x3e\
-+\0\0\0\0\0\0\0\x08\0\0\0\x08\0\0\0\x3e\0\0\0\0\0\0\0\x10\0\0\0\x02\0\0\x01\x0a\
-+\0\0\0\0\0\0\0\x20\0\0\0\x08\0\0\x01\x3a\0\0\0\0\0\0\0\x70\0\0\0\x0d\0\0\0\x3e\
-+\0\0\0\0\0\0\0\x80\0\0\0\x0d\0\0\x01\x0a\0\0\0\0\0\0\0\xa0\0\0\0\x0d\0\0\x01\
-+\x3a\0\0\0\0\0\0\0\x1a\0\0\0\x23\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x64\x75\x6d\x70\x5f\x62\x70\x66\x5f\x6d\x61\
-+\x70\0\0\0\0\0\0\0\0\0\0\0\x1c\0\0\0\0\0\0\0\x08\0\0\0\0\0\0\0\0\0\0\0\x01\0\0\
-+\0\x10\0\0\0\0\0\0\0\0\0\0\0\x09\0\0\0\x01\0\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\x10\0\0\0\0\x62\x70\x66\x5f\x69\x74\x65\x72\x5f\x62\x70\
-+\x66\x5f\x6d\x61\x70\0\0\0\0\0\0\0\0\x62\x70\x66\x5f\x6d\x61\x70\x5f\x73\x75\
-+\x6d\x5f\x65\x6c\x65\x6d\x5f\x63\x6f\x75\x6e\x74\0\0\x47\x50\x4c\0\0\0\0\0\x79\
-+\x21\0\0\0\0\0\0\x79\x62\0\0\0\0\0\0\x79\x11\0\x08\0\0\0\0\x15\x10\0\x3b\0\0\0\
-+\0\x79\x71\0\0\0\0\0\0\x79\x12\0\x10\0\0\0\0\x55\x10\0\x08\0\0\0\0\xbf\x4a\0\0\
-+\0\0\0\0\x07\x40\0\0\xff\xff\xff\xd0\xbf\x16\0\0\0\0\0\0\x18\x26\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\x4a\xb4\x30\0\0\0\0\0\x20\xb4\x50\0\0\0\0\0\0\x85\0\0\0\0\0\0\x7e\
-+\x7b\xa6\xff\xc8\0\0\0\0\x61\x17\0\0\0\0\0\0\x7b\xa1\xff\xd0\0\0\0\0\xb7\x30\0\
-+\0\0\0\0\x04\xbf\x97\0\0\0\0\0\0\x0f\x93\0\0\0\0\0\0\x79\x17\0\x28\0\0\0\0\x79\
-+\x87\0\x30\0\0\0\0\x15\x80\0\x18\0\0\0\0\xb7\x20\0\0\0\0\0\0\x0f\x12\0\0\0\0\0\
-+\0\x61\x11\0\x04\0\0\0\0\x79\x38\0\x08\0\0\0\0\x67\x10\0\0\0\0\0\x03\x0f\x31\0\
-+\0\0\0\0\0\x79\x68\0\0\0\0\0\0\xbf\x1a\0\0\0\0\0\0\x07\x10\0\0\xff\xff\xff\xf8\
-+\xb4\x20\0\0\0\0\0\x08\x85\0\0\0\0\0\0\x71\xb7\x10\0\0\0\0\0\0\x79\x3a\xff\xf8\
- \0\0\0\0\x0f\x31\0\0\0\0\0\0\xbf\x1a\0\0\0\0\0\0\x07\x10\0\0\xff\xff\xff\xf4\
--\xb7\x20\0\0\0\0\0\x04\x85\0\0\0\0\0\0\x71\xb7\x30\0\0\0\0\0\x04\x61\x1a\xff\
--\xf4\0\0\0\0\x61\x28\0\x10\0\0\0\0\x3d\x12\0\x02\0\0\0\0\x0f\x61\0\0\0\0\0\0\
-+\xb4\x20\0\0\0\0\0\x04\x85\0\0\0\0\0\0\x71\xb7\x30\0\0\0\0\0\x04\x61\x1a\xff\
-+\xf4\0\0\0\0\x61\x28\0\x10\0\0\0\0\x3e\x12\0\x02\0\0\0\0\x0f\x61\0\0\0\0\0\0\
- \xbf\x96\0\0\0\0\0\0\x7b\xa9\xff\xd8\0\0\0\0\x79\x17\0\x18\0\0\0\0\x7b\xa1\xff\
- \xe0\0\0\0\0\x79\x17\0\x20\0\0\0\0\x79\x11\0\0\0\0\0\0\x0f\x13\0\0\0\0\0\0\x7b\
- \xa1\xff\xe8\0\0\0\0\xbf\x4a\0\0\0\0\0\0\x07\x40\0\0\xff\xff\xff\xd0\x79\x1a\
--\xff\xc8\0\0\0\0\x18\x26\0\0\0\0\0\0\0\0\0\0\0\0\0\x51\xb7\x30\0\0\0\0\0\x11\
--\xb7\x50\0\0\0\0\0\x20\x85\0\0\0\0\0\0\x7e\xb7\0\0\0\0\0\0\0\x95\0\0\0\0\0\0\0\
--\0\0\0\0\0\0\0\x17\0\0\0\0\0\0\0\x42\0\0\0\x9a\0\x01\x80\x1e\0\0\0\x01\0\0\0\
--\x42\0\0\0\x9a\0\x01\x80\x24\0\0\0\x02\0\0\0\x42\0\0\x02\x7f\0\x01\x88\x1f\0\0\
--\0\x03\0\0\0\x42\0\0\x02\xa3\0\x01\x94\x06\0\0\0\x04\0\0\0\x42\0\0\x02\xbc\0\
--\x01\xa0\x0e\0\0\0\x05\0\0\0\x42\0\0\x01\x3d\0\x01\x84\x1d\0\0\0\x06\0\0\0\x42\
--\0\0\x01\x62\0\x01\xa4\x06\0\0\0\x08\0\0\0\x42\0\0\x02\xce\0\x01\xa8\x03\0\0\0\
--\x10\0\0\0\x42\0\0\x03\x3e\0\x01\xb0\x02\0\0\0\x17\0\0\0\x42\0\0\x03\x79\0\x01\
--\x04\x06\0\0\0\x1a\0\0\0\x42\0\0\x03\x3e\0\x01\xb0\x02\0\0\0\x1b\0\0\0\x42\0\0\
--\x03\xca\0\x01\x10\x0f\0\0\0\x1c\0\0\0\x42\0\0\x03\xdf\0\x01\x14\x2d\0\0\0\x1e\
--\0\0\0\x42\0\0\x04\x16\0\x01\x0c\x0d\0\0\0\x20\0\0\0\x42\0\0\x03\x3e\0\x01\xb0\
--\x02\0\0\0\x21\0\0\0\x42\0\0\x03\xdf\0\x01\x14\x02\0\0\0\x24\0\0\0\x42\0\0\x04\
--\x3d\0\x01\x18\x0d\0\0\0\x27\0\0\0\x42\0\0\x03\x3e\0\x01\xb0\x02\0\0\0\x28\0\0\
--\0\x42\0\0\x04\x3d\0\x01\x18\x0d\0\0\0\x2b\0\0\0\x42\0\0\x04\x3d\0\x01\x18\x0d\
--\0\0\0\x2c\0\0\0\x42\0\0\x04\x6b\0\x01\x1c\x1b\0\0\0\x2d\0\0\0\x42\0\0\x04\x6b\
--\0\x01\x1c\x06\0\0\0\x2e\0\0\0\x42\0\0\x04\x8e\0\x01\x24\x0d\0\0\0\x30\0\0\0\
--\x42\0\0\x03\x3e\0\x01\xb0\x02\0\0\0\x3f\0\0\0\x42\0\0\x02\x49\0\x01\xc0\x01\0\
--\0\0\0\0\0\0\x14\0\0\0\x3e\0\0\0\0\0\0\0\x08\0\0\0\x08\0\0\0\x3e\0\0\0\0\0\0\0\
--\x10\0\0\0\x14\0\0\x01\x09\0\0\0\0\0\0\0\x20\0\0\0\x18\0\0\0\x3e\0\0\0\0\0\0\0\
--\x28\0\0\0\x08\0\0\x01\x39\0\0\0\0\0\0\0\x80\0\0\0\x1a\0\0\0\x3e\0\0\0\0\0\0\0\
--\x90\0\0\0\x1a\0\0\x01\x09\0\0\0\0\0\0\0\xa8\0\0\0\x1a\0\0\x03\x71\0\0\0\0\0\0\
--\0\xb0\0\0\0\x1a\0\0\x03\x75\0\0\0\0\0\0\0\xc0\0\0\0\x1f\0\0\x03\xa3\0\0\0\0\0\
--\0\0\xd8\0\0\0\x20\0\0\x01\x09\0\0\0\0\0\0\0\xf0\0\0\0\x20\0\0\0\x3e\0\0\0\0\0\
--\0\x01\x18\0\0\0\x24\0\0\0\x3e\0\0\0\0\0\0\x01\x50\0\0\0\x1a\0\0\x01\x09\0\0\0\
--\0\0\0\x01\x60\0\0\0\x20\0\0\x04\x65\0\0\0\0\0\0\x01\x88\0\0\0\x1a\0\0\x01\x39\
--\0\0\0\0\0\0\x01\x98\0\0\0\x1a\0\0\x04\xa6\0\0\0\0\0\0\x01\xa0\0\0\0\x18\0\0\0\
--\x3e\0\0\0\0\0\0\0\x1a\0\0\0\x41\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
--\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x64\x75\x6d\x70\x5f\x62\x70\x66\x5f\x70\x72\
--\x6f\x67\0\0\0\0\0\0\0\0\0\0\x1c\0\0\0\0\0\0\0\x08\0\0\0\0\0\0\0\0\0\0\0\x01\0\
--\0\0\x10\0\0\0\0\0\0\0\0\0\0\0\x19\0\0\0\x01\0\0\0\0\0\0\0\x12\0\0\0\0\0\0\0\0\
--\0\0\0\0\0\0\0\0\0\0\0\x10\0\0\0\0\x62\x70\x66\x5f\x69\x74\x65\x72\x5f\x62\x70\
--\x66\x5f\x70\x72\x6f\x67\0\0\0\0\0\0\0";
--	opts.insns_sz = 2216;
--	opts.insns = (void *)"\
-+\xff\xc8\0\0\0\0\x18\x26\0\0\0\0\0\0\0\0\0\0\0\0\0\x6a\xb4\x30\0\0\0\0\0\x11\
-+\xb4\x50\0\0\0\0\0\x20\x85\0\0\0\0\0\0\x7e\xb4\0\0\0\0\0\0\0\x95\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\x1b\0\0\0\0\0\0\0\x42\0\0\0\x9b\0\x01\x94\x1e\0\0\0\x01\0\0\0\
-+\x42\0\0\0\x9b\0\x01\x94\x24\0\0\0\x02\0\0\0\x42\0\0\x02\x99\0\x01\x9c\x1f\0\0\
-+\0\x03\0\0\0\x42\0\0\x02\xbd\0\x01\xa8\x06\0\0\0\x04\0\0\0\x42\0\0\x02\xd6\0\
-+\x01\xb4\x0e\0\0\0\x05\0\0\0\x42\0\0\x01\x3e\0\x01\x98\x1d\0\0\0\x06\0\0\0\x42\
-+\0\0\x01\x63\0\x01\xb8\x0e\0\0\0\x09\0\0\0\x42\0\0\x02\xe8\0\x01\xbc\x03\0\0\0\
-+\x10\0\0\0\x42\0\0\x03\x58\0\x01\xc4\x02\0\0\0\x17\0\0\0\x42\0\0\x03\x93\0\x01\
-+\x04\x06\0\0\0\x1a\0\0\0\x42\0\0\x03\x58\0\x01\xc4\x02\0\0\0\x1b\0\0\0\x42\0\0\
-+\x03\xe4\0\x01\x10\x0f\0\0\0\x1c\0\0\0\x42\0\0\x03\xf9\0\x01\x14\x2d\0\0\0\x1e\
-+\0\0\0\x42\0\0\x04\x30\0\x01\x0c\x0d\0\0\0\x21\0\0\0\x42\0\0\x03\xf9\0\x01\x14\
-+\x02\0\0\0\x24\0\0\0\x42\0\0\x04\x57\0\x01\x18\x0d\0\0\0\x2b\0\0\0\x42\0\0\x04\
-+\x57\0\x01\x18\x0d\0\0\0\x2c\0\0\0\x42\0\0\x04\x85\0\x01\x1c\x1b\0\0\0\x2d\0\0\
-+\0\x42\0\0\x04\x85\0\x01\x1c\x0f\0\0\0\x2e\0\0\0\x42\0\0\x04\xa8\0\x01\x24\x0d\
-+\0\0\0\x30\0\0\0\x42\0\0\x03\x58\0\x01\xc4\x02\0\0\0\x3f\0\0\0\x42\0\0\x02\x3c\
-+\0\x01\xd4\x01\0\0\0\0\0\0\0\x18\0\0\0\x3e\0\0\0\0\0\0\0\x08\0\0\0\x08\0\0\0\
-+\x3e\0\0\0\0\0\0\0\x10\0\0\0\x18\0\0\x01\x0a\0\0\0\0\0\0\0\x20\0\0\0\x1c\0\0\0\
-+\x3e\0\0\0\0\0\0\0\x28\0\0\0\x08\0\0\x01\x3a\0\0\0\0\0\0\0\x80\0\0\0\x1e\0\0\0\
-+\x3e\0\0\0\0\0\0\0\x90\0\0\0\x1e\0\0\x01\x0a\0\0\0\0\0\0\0\xa8\0\0\0\x1e\0\0\
-+\x03\x8b\0\0\0\0\0\0\0\xb0\0\0\0\x1e\0\0\x03\x8f\0\0\0\0\0\0\0\xc0\0\0\0\x23\0\
-+\0\x03\xbd\0\0\0\0\0\0\0\xd8\0\0\0\x24\0\0\x01\x0a\0\0\0\0\0\0\0\xf0\0\0\0\x24\
-+\0\0\0\x3e\0\0\0\0\0\0\x01\x18\0\0\0\x28\0\0\0\x3e\0\0\0\0\0\0\x01\x50\0\0\0\
-+\x1e\0\0\x01\x0a\0\0\0\0\0\0\x01\x60\0\0\0\x24\0\0\x04\x7f\0\0\0\0\0\0\x01\x88\
-+\0\0\0\x1e\0\0\x01\x3a\0\0\0\0\0\0\x01\x98\0\0\0\x1e\0\0\x04\xc0\0\0\0\0\0\0\
-+\x01\xa0\0\0\0\x1c\0\0\0\x3e\0\0\0\0\0\0\0\x1a\0\0\0\x41\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x64\x75\x6d\x70\x5f\
-+\x62\x70\x66\x5f\x70\x72\x6f\x67\0\0\0\0\0\0\0\0\0\0\x1c\0\0\0\0\0\0\0\x08\0\0\
-+\0\0\0\0\0\0\0\0\0\x01\0\0\0\x10\0\0\0\0\0\0\0\0\0\0\0\x16\0\0\0\x01\0\0\0\0\0\
-+\0\0\x12\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x10\0\0\0\0\x62\x70\x66\x5f\x69\
-+\x74\x65\x72\x5f\x62\x70\x66\x5f\x70\x72\x6f\x67\0\0\0\0\0\0\0";
-+	static const char opts_insn[] __attribute__((__aligned__(8))) = "\
- \xbf\x61\0\0\0\0\0\0\xbf\x1a\0\0\0\0\0\0\x07\x10\0\0\xff\xff\xff\x78\xb7\x20\0\
- \0\0\0\0\x88\xb7\x30\0\0\0\0\0\0\x85\0\0\0\0\0\0\x71\x05\0\0\x14\0\0\0\0\x61\
- \x1a\xff\x78\0\0\0\0\xd5\x10\0\x01\0\0\0\0\x85\0\0\0\0\0\0\xa8\x61\x1a\xff\x7c\
-@@ -318,72 +321,87 @@ iterators_bpf__load(struct iterators_bpf *skel)
- \0\0\0\x85\0\0\0\0\0\0\xa8\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x61\x10\0\0\0\0\
- \0\0\xd5\x10\0\x02\0\0\0\0\xbf\x91\0\0\0\0\0\0\x85\0\0\0\0\0\0\xa8\xbf\x07\0\0\
- \0\0\0\0\x95\0\0\0\0\0\0\0\x61\x06\0\x08\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\
--\0\x0e\x68\x63\x10\0\0\0\0\0\0\x61\x06\0\x0c\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\
--\0\0\0\x0e\x64\x63\x10\0\0\0\0\0\0\x79\x06\0\x10\0\0\0\0\x18\x16\0\0\0\0\0\0\0\
--\0\0\0\0\0\x0e\x58\x7b\x10\0\0\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x05\0\
--\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x0e\x50\x7b\x10\0\0\0\0\0\0\xb7\x10\0\0\0\0\0\
--\x12\x18\x26\0\0\0\0\0\0\0\0\0\0\0\0\x0e\x50\xb7\x30\0\0\0\0\0\x1c\x85\0\0\0\0\
-+\0\x0e\xf8\x63\x10\0\0\0\0\0\0\x61\x06\0\x0c\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\
-+\0\0\0\x0e\xf4\x63\x10\0\0\0\0\0\0\x79\x06\0\x10\0\0\0\0\x18\x16\0\0\0\0\0\0\0\
-+\0\0\0\0\0\x0e\xe8\x7b\x10\0\0\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x05\0\
-+\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x0e\xe0\x7b\x10\0\0\0\0\0\0\xb7\x10\0\0\0\0\0\
-+\x12\x18\x26\0\0\0\0\0\0\0\0\0\0\0\0\x0e\xe0\xb7\x30\0\0\0\0\0\x1c\x85\0\0\0\0\
- \0\0\xa6\xbf\x70\0\0\0\0\0\0\xc5\x70\xff\xd4\0\0\0\0\x63\xa7\xff\x78\0\0\0\0\
--\x61\x0a\xff\x78\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x0e\xa0\x63\x10\0\0\0\
-+\x61\x0a\xff\x78\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x0f\x30\x63\x10\0\0\0\
- \0\0\0\x61\x06\0\x1c\0\0\0\0\x15\0\0\x03\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\
--\0\x0e\x7c\x63\x10\0\0\0\0\0\0\xb7\x10\0\0\0\0\0\0\x18\x26\0\0\0\0\0\0\0\0\0\0\
--\0\0\x0e\x70\xb7\x30\0\0\0\0\0\x48\x85\0\0\0\0\0\0\xa6\xbf\x70\0\0\0\0\0\0\xc5\
-+\0\x0f\x0c\x63\x10\0\0\0\0\0\0\xb7\x10\0\0\0\0\0\0\x18\x26\0\0\0\0\0\0\0\0\0\0\
-+\0\0\x0f\0\xb7\x30\0\0\0\0\0\x48\x85\0\0\0\0\0\0\xa6\xbf\x70\0\0\0\0\0\0\xc5\
- \x70\xff\xc3\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x63\x17\0\0\0\0\0\0\
- \x79\x36\0\x20\0\0\0\0\x15\x30\0\x08\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\
--\x0e\xb8\xb7\x20\0\0\0\0\0\x62\x61\x06\0\x04\0\0\0\0\x45\0\0\x02\0\0\0\x01\x85\
-+\x0f\x48\xb7\x20\0\0\0\0\0\x7b\x61\x06\0\x04\0\0\0\0\x45\0\0\x02\0\0\0\x01\x85\
- \0\0\0\0\0\0\x94\x05\0\0\x01\0\0\0\0\x85\0\0\0\0\0\0\x71\x18\x26\0\0\0\0\0\0\0\
--\0\0\0\0\0\0\0\x61\x02\0\0\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x0f\x28\x63\
--\x10\0\0\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x0f\x20\x18\x16\0\0\0\0\0\0\0\
--\0\0\0\0\0\x0f\x30\x7b\x10\0\0\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x0e\xb8\
--\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x0f\x38\x7b\x10\0\0\0\0\0\0\xb7\x10\0\0\0\0\0\
--\x02\x18\x26\0\0\0\0\0\0\0\0\0\0\0\0\x0f\x28\xb7\x30\0\0\0\0\0\x20\x85\0\0\0\0\
-+\0\0\0\0\0\0\0\x61\x02\0\0\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x0f\xd0\x63\
-+\x10\0\0\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x0f\xc8\x18\x16\0\0\0\0\0\0\0\
-+\0\0\0\0\0\x0f\xd8\x7b\x10\0\0\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x0f\x48\
-+\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x0f\xe0\x7b\x10\0\0\0\0\0\0\xb7\x10\0\0\0\0\0\
-+\x02\x18\x26\0\0\0\0\0\0\0\0\0\0\0\0\x0f\xd0\xb7\x30\0\0\0\0\0\x20\x85\0\0\0\0\
- \0\0\xa6\xbf\x70\0\0\0\0\0\0\xc5\x70\xff\x9f\0\0\0\0\x18\x26\0\0\0\0\0\0\0\0\0\
--\0\0\0\0\0\x61\x02\0\0\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x0f\x48\x63\x10\
--\0\0\0\0\0\0\xb7\x10\0\0\0\0\0\x16\x18\x26\0\0\0\0\0\0\0\0\0\0\0\0\x0f\x48\xb7\
-+\0\0\0\0\0\x61\x02\0\0\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x0f\xf0\x63\x10\
-+\0\0\0\0\0\0\xb7\x10\0\0\0\0\0\x16\x18\x26\0\0\0\0\0\0\0\0\0\0\0\0\x0f\xf0\xb7\
- \x30\0\0\0\0\0\x04\x85\0\0\0\0\0\0\xa6\xbf\x70\0\0\0\0\0\0\xc5\x70\xff\x92\0\0\
--\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x0f\x50\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\
--\x11\x70\x7b\x10\0\0\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x0f\x58\x18\x16\0\
--\0\0\0\0\0\0\0\0\0\0\0\x11\x68\x7b\x10\0\0\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\
--\0\0\x10\x58\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x11\xb0\x7b\x10\0\0\0\0\0\0\x18\
--\x06\0\0\0\0\0\0\0\0\0\0\0\0\x10\x60\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x11\xc0\
--\x7b\x10\0\0\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x10\xf0\x18\x16\0\0\0\0\0\
--\0\0\0\0\0\0\0\x11\xe0\x7b\x10\0\0\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
--\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x11\xd8\x7b\x10\0\0\0\0\0\0\x61\x06\0\x08\0\0\
--\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x11\x78\x63\x10\0\0\0\0\0\0\x61\x06\0\x0c\
--\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x11\x7c\x63\x10\0\0\0\0\0\0\x79\x06\0\
--\x10\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x11\x80\x7b\x10\0\0\0\0\0\0\x61\
--\x0a\xff\x78\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x11\xa8\x63\x10\0\0\0\0\0\
--\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x11\xf0\xb7\x20\0\0\0\0\0\x11\xb7\x30\0\0\0\
--\0\0\x0c\xb7\x40\0\0\0\0\0\0\x85\0\0\0\0\0\0\xa7\xbf\x70\0\0\0\0\0\0\xc5\x70\
--\xff\x5c\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x11\x60\x63\x07\0\x6c\0\0\0\0\
--\x77\x70\0\0\0\0\0\x20\x63\x07\0\x70\0\0\0\0\xb7\x10\0\0\0\0\0\x05\x18\x26\0\0\
--\0\0\0\0\0\0\0\0\0\0\x11\x60\xb7\x30\0\0\0\0\0\x8c\x85\0\0\0\0\0\0\xa6\xbf\x70\
--\0\0\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x11\xd0\x61\x10\0\0\0\0\0\0\xd5\
--\x10\0\x02\0\0\0\0\xbf\x91\0\0\0\0\0\0\x85\0\0\0\0\0\0\xa8\xc5\x70\xff\x4a\0\0\
--\0\0\x63\xa7\xff\x80\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x12\x08\x18\x16\0\
--\0\0\0\0\0\0\0\0\0\0\0\x16\xe0\x7b\x10\0\0\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\
--\0\0\x12\x10\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x16\xd8\x7b\x10\0\0\0\0\0\0\x18\
--\x06\0\0\0\0\0\0\0\0\0\0\0\0\x14\x18\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x17\x20\
--\x7b\x10\0\0\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x14\x20\x18\x16\0\0\0\0\0\
--\0\0\0\0\0\0\0\x17\x30\x7b\x10\0\0\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x15\
--\xb0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x17\x50\x7b\x10\0\0\0\0\0\0\x18\x06\0\0\0\
--\0\0\0\0\0\0\0\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x17\x48\x7b\x10\0\0\0\0\
--\0\0\x61\x06\0\x08\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x16\xe8\x63\x10\0\0\
--\0\0\0\0\x61\x06\0\x0c\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x16\xec\x63\x10\
--\0\0\0\0\0\0\x79\x06\0\x10\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x16\xf0\x7b\
--\x10\0\0\0\0\0\0\x61\x0a\xff\x78\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x17\
--\x18\x63\x10\0\0\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x17\x60\xb7\x20\0\0\0\
--\0\0\x12\xb7\x30\0\0\0\0\0\x0c\xb7\x40\0\0\0\0\0\0\x85\0\0\0\0\0\0\xa7\xbf\x70\
--\0\0\0\0\0\0\xc5\x70\xff\x13\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x16\xd0\
--\x63\x07\0\x6c\0\0\0\0\x77\x70\0\0\0\0\0\x20\x63\x07\0\x70\0\0\0\0\xb7\x10\0\0\
--\0\0\0\x05\x18\x26\0\0\0\0\0\0\0\0\0\0\0\0\x16\xd0\xb7\x30\0\0\0\0\0\x8c\x85\0\
--\0\0\0\0\0\xa6\xbf\x70\0\0\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x17\x40\x61\
--\x10\0\0\0\0\0\0\xd5\x10\0\x02\0\0\0\0\xbf\x91\0\0\0\0\0\0\x85\0\0\0\0\0\0\xa8\
--\xc5\x70\xff\x01\0\0\0\0\x63\xa7\xff\x84\0\0\0\0\x61\x1a\xff\x78\0\0\0\0\xd5\
--\x10\0\x02\0\0\0\0\xbf\x91\0\0\0\0\0\0\x85\0\0\0\0\0\0\xa8\x61\x0a\xff\x80\0\0\
--\0\0\x63\x60\0\x28\0\0\0\0\x61\x0a\xff\x84\0\0\0\0\x63\x60\0\x2c\0\0\0\0\x18\
--\x16\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x61\x01\0\0\0\0\0\0\x63\x60\0\x18\0\0\0\0\xb7\
--\0\0\0\0\0\0\0\x95\0\0\0\0\0\0\0";
-+\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x0f\xf8\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\
-+\x12\x30\x7b\x10\0\0\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x10\0\x18\x16\0\0\
-+\0\0\0\0\0\0\0\0\0\0\x12\x28\x7b\x10\0\0\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\
-+\0\x11\x18\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x12\x70\x7b\x10\0\0\0\0\0\0\x18\x06\
-+\0\0\0\0\0\0\0\0\0\0\0\0\x11\x20\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x12\x80\x7b\
-+\x10\0\0\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x11\xb0\x18\x16\0\0\0\0\0\0\0\
-+\0\0\0\0\0\x12\xa0\x7b\x10\0\0\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x18\
-+\x16\0\0\0\0\0\0\0\0\0\0\0\0\x12\x98\x7b\x10\0\0\0\0\0\0\x61\x06\0\x08\0\0\0\0\
-+\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x12\x38\x63\x10\0\0\0\0\0\0\x61\x06\0\x0c\0\0\
-+\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x12\x3c\x63\x10\0\0\0\0\0\0\x79\x06\0\x10\
-+\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x12\x40\x7b\x10\0\0\0\0\0\0\x61\x0a\
-+\xff\x78\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x12\x68\x63\x10\0\0\0\0\0\0\
-+\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x12\xb0\xb7\x20\0\0\0\0\0\x11\xb7\x30\0\0\0\0\
-+\0\x0c\xb7\x40\0\0\0\0\0\0\x85\0\0\0\0\0\0\xa7\xbf\x70\0\0\0\0\0\0\xc5\x70\xff\
-+\x5c\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x12\x20\x63\x07\0\x6c\0\0\0\0\x77\
-+\x70\0\0\0\0\0\x20\x63\x07\0\x70\0\0\0\0\x18\x86\0\0\0\0\0\0\0\0\0\0\0\0\x10\
-+\xb8\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x12\xc8\xb7\x20\0\0\0\0\0\x17\xb7\x30\0\0\
-+\0\0\0\x0c\xb7\x40\0\0\0\0\0\0\x85\0\0\0\0\0\0\xa7\xbf\x70\0\0\0\0\0\0\xc5\x70\
-+\xff\x4d\0\0\0\0\x75\x70\0\x03\0\0\0\0\x62\x80\0\x04\0\0\0\0\x6a\x80\0\x02\0\0\
-+\0\0\x05\0\0\x0a\0\0\0\0\x63\x87\0\x04\0\0\0\0\xbf\x97\0\0\0\0\0\0\x77\x90\0\0\
-+\0\0\0\x20\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x01\0\x63\x09\0\0\0\0\0\0\x55\x90\0\
-+\x02\0\0\0\0\x6a\x80\0\x02\0\0\0\0\x05\0\0\x01\0\0\0\0\x6a\x80\0\x02\0\0\0\x40\
-+\xb7\x10\0\0\0\0\0\x05\x18\x26\0\0\0\0\0\0\0\0\0\0\0\0\x12\x20\xb7\x30\0\0\0\0\
-+\0\x8c\x85\0\0\0\0\0\0\xa6\xbf\x70\0\0\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\
-+\x01\0\x61\x10\0\0\0\0\0\0\xd5\x10\0\x02\0\0\0\0\xbf\x91\0\0\0\0\0\0\x85\0\0\0\
-+\0\0\0\xa8\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x12\x90\x61\x10\0\0\0\0\0\0\xd5\x10\
-+\0\x02\0\0\0\0\xbf\x91\0\0\0\0\0\0\x85\0\0\0\0\0\0\xa8\xc5\x70\xff\x2c\0\0\0\0\
-+\x63\xa7\xff\x80\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x12\xe0\x18\x16\0\0\0\
-+\0\0\0\0\0\0\0\0\0\x17\x88\x7b\x10\0\0\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\
-+\x12\xe8\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x17\x80\x7b\x10\0\0\0\0\0\0\x18\x06\0\
-+\0\0\0\0\0\0\0\0\0\0\0\x14\xf0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x17\xc8\x7b\x10\
-+\0\0\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x14\xf8\x18\x16\0\0\0\0\0\0\0\0\0\
-+\0\0\0\x17\xd8\x7b\x10\0\0\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x16\x58\x18\
-+\x16\0\0\0\0\0\0\0\0\0\0\0\0\x17\xf8\x7b\x10\0\0\0\0\0\0\x18\x06\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x17\xf0\x7b\x10\0\0\0\0\0\0\x61\
-+\x06\0\x08\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x17\x90\x63\x10\0\0\0\0\0\0\
-+\x61\x06\0\x0c\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x17\x94\x63\x10\0\0\0\0\
-+\0\0\x79\x06\0\x10\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x17\x98\x7b\x10\0\0\
-+\0\0\0\0\x61\x0a\xff\x78\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x17\xc0\x63\
-+\x10\0\0\0\0\0\0\x18\x16\0\0\0\0\0\0\0\0\0\0\0\0\x18\x08\xb7\x20\0\0\0\0\0\x12\
-+\xb7\x30\0\0\0\0\0\x0c\xb7\x40\0\0\0\0\0\0\x85\0\0\0\0\0\0\xa7\xbf\x70\0\0\0\0\
-+\0\0\xc5\x70\xfe\xf5\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x17\x78\x63\x07\0\
-+\x6c\0\0\0\0\x77\x70\0\0\0\0\0\x20\x63\x07\0\x70\0\0\0\0\xb7\x10\0\0\0\0\0\x05\
-+\x18\x26\0\0\0\0\0\0\0\0\0\0\0\0\x17\x78\xb7\x30\0\0\0\0\0\x8c\x85\0\0\0\0\0\0\
-+\xa6\xbf\x70\0\0\0\0\0\0\x18\x06\0\0\0\0\0\0\0\0\0\0\0\0\x17\xe8\x61\x10\0\0\0\
-+\0\0\0\xd5\x10\0\x02\0\0\0\0\xbf\x91\0\0\0\0\0\0\x85\0\0\0\0\0\0\xa8\xc5\x70\
-+\xfe\xe3\0\0\0\0\x63\xa7\xff\x84\0\0\0\0\x61\x1a\xff\x78\0\0\0\0\xd5\x10\0\x02\
-+\0\0\0\0\xbf\x91\0\0\0\0\0\0\x85\0\0\0\0\0\0\xa8\x61\x0a\xff\x80\0\0\0\0\x63\
-+\x60\0\x28\0\0\0\0\x61\x0a\xff\x84\0\0\0\0\x63\x60\0\x2c\0\0\0\0\x18\x16\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\x61\x01\0\0\0\0\0\0\x63\x60\0\x18\0\0\0\0\xb7\0\0\0\0\0\
-+\0\0\x95\0\0\0\0\0\0\0";
-+
-+	opts.ctx = (struct bpf_loader_ctx *)skel;
-+	opts.data_sz = sizeof(opts_data) - 1;
-+	opts.data = (void *)opts_data;
-+	opts.insns_sz = sizeof(opts_insn) - 1;
-+	opts.insns = (void *)opts_insn;
-+
- 	err = bpf_load_and_run(&opts);
- 	if (err < 0)
- 		return err;
+> >  		c->slab = NULL;
+> >  		c->freelist = NULL;
+> >  		c->tid = next_tid(c->tid);
+
 -- 
-2.50.0
-
+Cheers,
+Harry / Hyeonggon
 
