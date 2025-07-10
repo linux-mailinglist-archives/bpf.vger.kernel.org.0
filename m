@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-62873-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62874-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2B37AFF76A
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 05:22:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A828AAFF76D
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 05:23:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D98E8189CABF
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 03:22:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A8AE544F4A
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 03:22:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2150828152B;
-	Thu, 10 Jul 2025 03:22:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C839281503;
+	Thu, 10 Jul 2025 03:22:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="f9lsMGY8"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MkLbufA0"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0B9A28136B
-	for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 03:22:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29B67280CFA
+	for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 03:22:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752117754; cv=none; b=PqYBSHdTntcrILGZbw1cuBLmZ7JgQkqMus3D/LxOViW2UcJGksuyA7ySothg3nW8A63IO/JaBiJUWWga7nSVugl6QrS5etotRrsJKrk6yMSms6D6fmOcDM/tEI2eqxLECX3+kfYh71UQajmBYdCwR+xCoxXT/K6Bo9uVC+tBjBU=
+	t=1752117774; cv=none; b=Mx2FuF7BZPYmFGH9WcluXz31Z0ZQODYmAvCrEnKjxQA5/WgY3ZZuwdDkizeoHj5rk4z62S2Q1guZFALuTOUMMEuItJJnGBd5DHD/CLzCtMNSr6sU/TcY9iMF7RLfBfxOjaHpUniS4OVajKhixncybi+2FHix0Bl42jqPlsH/FmY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752117754; c=relaxed/simple;
-	bh=I7fQ5uD822jodcXBwgkxZ+NPn0hjsw7BdgvKE9+3y2A=;
+	s=arc-20240116; t=1752117774; c=relaxed/simple;
+	bh=CQ8vjEjDD0uwQT3exfZofUrNYwBjM/CnaOn7WW5pOSk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QuMOPjzqk7paYA8f9Q4+JVlpZHzNa/Sbq/COIqiFdouae9M+e8HvaBSFIpR5gtWvHCfhaHiTin+q9XbpIoSV2ox2UeuHwwqObIXWGPy0zsV0zUgwqUGnmzj6OxVG4bgHOO7VskQqdR4q9ShJu9OIT0WIApvuFM/dkMrlQQVL/BQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=f9lsMGY8; arc=none smtp.client-ip=95.215.58.183
+	 MIME-Version; b=lLzT2ehPQMedtEzAvXK0820ReQVkkMv4MqbXaU6f8JTQXz33O2N1Ffp54dova8L6V5nnb26sBNuaTCypDhyFUbxzLcL7DqP2skOtdB0uUNDa1Jf1kKke/s/378mD9a55vAJy/261ZsKfBHadcPUuLVYt48m0skRlB+lQDwoE57A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MkLbufA0; arc=none smtp.client-ip=91.218.175.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1752117750;
+	t=1752117771;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=7WjOFulYTruqRi1qvvm5j+4u4+BBF5+SQoPHvBQ/zn0=;
-	b=f9lsMGY8HYF8RFCAfn/bDc1CeGxqDxr0RSV4aNm0PkRB2dVx+fqx9BkqlnegMbv8Dx9StD
-	6l769IDsmYS2egE4yKQjekk+GMRq+2kCAa+Tl71nmBwCJzZFGf9YtEgJDC1aYoHUueIly+
-	qj4pJ9QTxTHmcCkM2J0KDXZrmSctk84=
+	bh=YM07Fcya19W3fzWxTt2G5+PxuhYqLe8OGckrmvK6sig=;
+	b=MkLbufA0rmYJNvXUiOUWnijTPPGJXmgxSLXW3v9Cy0G1d2IkrWx77ybrpfTlYjjuK2sd7h
+	9ZKlGtu7jsk6csGGEKbgCSr+DSkw8cUygcnhtrkjwDJfmwPsfxGhTPv3B9EKRsP5HdGpOV
+	sey6qJAWSweQ0/3A9YuAyAla/V3Cf2M=
 From: Tao Chen <chen.dylane@linux.dev>
 To: daniel@iogearbox.net,
 	razor@blackwall.org,
@@ -78,9 +78,9 @@ Cc: bpf@vger.kernel.org,
 	netfilter-devel@vger.kernel.org,
 	coreteam@netfilter.org,
 	Tao Chen <chen.dylane@linux.dev>
-Subject: [PATCH bpf-next v4 2/7] bpf: Remove attach_type in bpf_cgroup_link
-Date: Thu, 10 Jul 2025 11:20:33 +0800
-Message-ID: <20250710032038.888700-3-chen.dylane@linux.dev>
+Subject: [PATCH bpf-next v4 3/7] bpf: Remove attach_type in sockmap_link
+Date: Thu, 10 Jul 2025 11:20:34 +0800
+Message-ID: <20250710032038.888700-4-chen.dylane@linux.dev>
 In-Reply-To: <20250710032038.888700-1-chen.dylane@linux.dev>
 References: <20250710032038.888700-1-chen.dylane@linux.dev>
 Precedence: bulk
@@ -92,87 +92,71 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Use attach_type in bpf_link, and remove it in bpf_cgroup_link.
+Use attach_type in bpf_link, and remove it in sockmap_link.
 
 Acked-by: Daniel Borkmann <daniel@iogearbox.net>
 Acked-by: Jiri Olsa <jolsa@kernel.org>
 Signed-off-by: Tao Chen <chen.dylane@linux.dev>
 ---
- include/linux/bpf-cgroup.h |  1 -
- kernel/bpf/cgroup.c        | 13 ++++++-------
- 2 files changed, 6 insertions(+), 8 deletions(-)
+ net/core/sock_map.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-index 70c8b94e797..082ccd8ad96 100644
---- a/include/linux/bpf-cgroup.h
-+++ b/include/linux/bpf-cgroup.h
-@@ -103,7 +103,6 @@ struct bpf_cgroup_storage {
- struct bpf_cgroup_link {
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index fbe9a33ddf1..5947b38e4f8 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -1709,7 +1709,6 @@ EXPORT_SYMBOL_GPL(sock_map_close);
+ struct sockmap_link {
  	struct bpf_link link;
- 	struct cgroup *cgroup;
--	enum bpf_attach_type type;
+ 	struct bpf_map *map;
+-	enum bpf_attach_type attach_type;
  };
  
- struct bpf_prog_list {
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index bacdd0ca741..72c8b50dca0 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -984,7 +984,7 @@ static int __cgroup_bpf_replace(struct cgroup *cgrp,
- 	struct hlist_head *progs;
- 	bool found = false;
+ static void sock_map_link_release(struct bpf_link *link)
+@@ -1721,7 +1720,7 @@ static void sock_map_link_release(struct bpf_link *link)
+ 		goto out;
  
--	atype = bpf_cgroup_atype_find(link->type, new_prog->aux->attach_btf_id);
-+	atype = bpf_cgroup_atype_find(link->link.attach_type, new_prog->aux->attach_btf_id);
- 	if (atype < 0)
- 		return -EINVAL;
+ 	WARN_ON_ONCE(sock_map_prog_update(sockmap_link->map, NULL, link->prog, link,
+-					  sockmap_link->attach_type));
++					  link->attach_type));
  
-@@ -1396,8 +1396,8 @@ static void bpf_cgroup_link_release(struct bpf_link *link)
+ 	bpf_map_put_with_uref(sockmap_link->map);
+ 	sockmap_link->map = NULL;
+@@ -1772,7 +1771,7 @@ static int sock_map_link_update_prog(struct bpf_link *link,
  	}
  
- 	WARN_ON(__cgroup_bpf_detach(cg_link->cgroup, NULL, cg_link,
--				    cg_link->type, 0));
--	if (cg_link->type == BPF_LSM_CGROUP)
-+				    link->attach_type, 0));
-+	if (link->attach_type == BPF_LSM_CGROUP)
- 		bpf_trampoline_unlink_cgroup_shim(cg_link->link.prog);
+ 	ret = sock_map_prog_link_lookup(sockmap_link->map, &pprog, &plink,
+-					sockmap_link->attach_type);
++					link->attach_type);
+ 	if (ret)
+ 		goto out;
  
- 	cg = cg_link->cgroup;
-@@ -1439,7 +1439,7 @@ static void bpf_cgroup_link_show_fdinfo(const struct bpf_link *link,
- 		   "cgroup_id:\t%llu\n"
- 		   "attach_type:\t%d\n",
- 		   cg_id,
--		   cg_link->type);
-+		   link->attach_type);
- }
+@@ -1817,7 +1816,7 @@ static int sock_map_link_fill_info(const struct bpf_link *link,
+ 	u32 map_id = sock_map_link_get_map_id(sockmap_link);
  
- static int bpf_cgroup_link_fill_link_info(const struct bpf_link *link,
-@@ -1455,7 +1455,7 @@ static int bpf_cgroup_link_fill_link_info(const struct bpf_link *link,
- 	cgroup_unlock();
- 
- 	info->cgroup.cgroup_id = cg_id;
--	info->cgroup.attach_type = cg_link->type;
-+	info->cgroup.attach_type = link->attach_type;
+ 	info->sockmap.map_id = map_id;
+-	info->sockmap.attach_type = sockmap_link->attach_type;
++	info->sockmap.attach_type = link->attach_type;
  	return 0;
  }
  
-@@ -1497,7 +1497,6 @@ int cgroup_bpf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
- 	bpf_link_init(&link->link, BPF_LINK_TYPE_CGROUP, &bpf_cgroup_link_lops,
- 		      prog, attr->link_create.attach_type);
- 	link->cgroup = cgrp;
--	link->type = attr->link_create.attach_type;
+@@ -1828,7 +1827,7 @@ static void sock_map_link_show_fdinfo(const struct bpf_link *link,
+ 	u32 map_id = sock_map_link_get_map_id(sockmap_link);
  
- 	err = bpf_link_prime(&link->link, &link_primer);
- 	if (err) {
-@@ -1506,7 +1505,7 @@ int cgroup_bpf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
- 	}
+ 	seq_printf(seq, "map_id:\t%u\n", map_id);
+-	seq_printf(seq, "attach_type:\t%u\n", sockmap_link->attach_type);
++	seq_printf(seq, "attach_type:\t%u\n", link->attach_type);
+ }
  
- 	err = cgroup_bpf_attach(cgrp, NULL, NULL, link,
--				link->type, BPF_F_ALLOW_MULTI | attr->link_create.flags,
-+				link->link.attach_type, BPF_F_ALLOW_MULTI | attr->link_create.flags,
- 				attr->link_create.cgroup.relative_fd,
- 				attr->link_create.cgroup.expected_revision);
- 	if (err) {
+ static const struct bpf_link_ops sock_map_link_ops = {
+@@ -1869,7 +1868,6 @@ int sock_map_link_create(const union bpf_attr *attr, struct bpf_prog *prog)
+ 	bpf_link_init(&sockmap_link->link, BPF_LINK_TYPE_SOCKMAP, &sock_map_link_ops, prog,
+ 		      attach_type);
+ 	sockmap_link->map = map;
+-	sockmap_link->attach_type = attach_type;
+ 
+ 	ret = bpf_link_prime(&sockmap_link->link, &link_primer);
+ 	if (ret) {
 -- 
 2.48.1
 
