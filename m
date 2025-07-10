@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-62869-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62870-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57EA4AFF695
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 03:59:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF199AFF6EC
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 04:41:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41AF57B40AC
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 01:58:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 595CB1C83E89
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 02:40:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A32E27EFEB;
-	Thu, 10 Jul 2025 01:59:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0879925BF14;
+	Thu, 10 Jul 2025 02:39:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nr0CpFpE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PQ+kH7jw"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA80542AB4;
-	Thu, 10 Jul 2025 01:59:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D4D4280A5C;
+	Thu, 10 Jul 2025 02:39:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752112784; cv=none; b=GtBI5cmcxZkK6+rVFGHIuVln5zQibIysRLKXfhAzS+h6Dq0M+2nf3MB12sxpkoUiEZ5ayqhMOyu9RbKpq/H6C8E/13trPiFLSYxjSYx9JJfBkoba+NSI/mOHZRwdnxfCXShH0wQtlmBXioOIJzuJPpbldwgPnvXyl44tLDEiwkY=
+	t=1752115195; cv=none; b=UC2rCoT3/WuRdaQ4DayQ9RIxYIptnA7xpoJm0gAFYb14x8OrENF09BVncM/gXi+S5HbJVQqeS7THsIFXD22EBbDhYDS1FzYGQbM6V7RKHbyHgtKLUEuBkHIf0+3JxB5qTDItytU77gvVMhWpDvHLeOEoGp/R3lHdqGKLlI9Kobg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752112784; c=relaxed/simple;
-	bh=O1GCpSX4Cy7TfdvPuHa0WAkHsRBKX3c4B8Ue3NoFr0A=;
+	s=arc-20240116; t=1752115195; c=relaxed/simple;
+	bh=qn1sjrm3ZnvSOCku/UBWq/N0j8fm02+rgViX9WfUvHU=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=RvlFoLq9iID4GSyayxUG+eBhaRIVLabiFWZrId46pEbbCN3E0scvEl9cyWC383ngMKrBoSOb/sDRAt/l04TdjqJ4CiygIiHZlVweJlHR6/itnfXW8DLqOAfM1u30S73ELXOkNdL/+82yn62QR8RCXsdCXyyb174/S1Q+Y4lbqeo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nr0CpFpE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 487C2C4CEEF;
-	Thu, 10 Jul 2025 01:59:44 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=H+vsYOcHfQyFR9LwYYZo4YkohYlFUggyF9p1b1mmEQPH6v38W9vr/R5/GYbmiYeoUp7V/lbYkStHb59BwMsaECPnqencZmnOC0LlyQm1m2bKSuL6tyVhY+Lauyv3gUQl+I6xcvUNK9JtJ3YFLTl0uDswxRqhsHS6t7Se2VahJ2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PQ+kH7jw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A570C4CEF5;
+	Thu, 10 Jul 2025 02:39:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752112784;
-	bh=O1GCpSX4Cy7TfdvPuHa0WAkHsRBKX3c4B8Ue3NoFr0A=;
+	s=k20201202; t=1752115195;
+	bh=qn1sjrm3ZnvSOCku/UBWq/N0j8fm02+rgViX9WfUvHU=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Nr0CpFpE8GCvAnhxFtSjNe3bTavh40kVkR48wpHR/4H5OtN2opcLyzC8VnqlZ1jpo
-	 Gz55DJyDS6oESF7vZiO2UIE7ytMKPNw5k5lf/oeqRqTChHaE2zYmj3vEhcMh3jpczV
-	 swNwK9KRgG8Dc/wska3rxMlwJIXbWQb9qXHi8bKT7816PvMNHNPm/hTSxZco1kDaxw
-	 PrK5/dfqkxiwGImCNPs8BKNNu7U25eISF7awQg7ckKOYpkrVeWScHD5IOtmiVSek3S
-	 uRo6PsBAYa6nSdlALWKd0HATCyID2ECs3LUafwt0OPKFvu1OBHB+kUgHgo8VayAAfM
-	 50X5TU1zQat8Q==
+	b=PQ+kH7jw/i7RLeZjFNC3Uyf1fRr9sE+nCxwyTEM1Mp3LPxnfXv0q/YQLy1wQSfrb+
+	 yoOL4TYrXu46nX35URZ6lblPwnICAQB9J9IN6gLDJlF3guC1CbCXzLBEUa4lx+oQKe
+	 ayMScDnWVm2z3sLvonKL25J7OOc0S0/6UB0lU385LPHcR559KMqPbul2hcCqu5LfV9
+	 6DW8kdil3WYtuUNqsUWV+GytMYn7tnkcsgVXLzXHY0NHskPcRqMwxsKX7zIXpdovj2
+	 c9WfD+3JjnBkjs9tmzuVwKn9Nv20ZGw7+lbFRiGRtsLLslAsRCTKfzq2G5X+K/nRjc
+	 2hDsBXUMOO4Lg==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id DEC94383B261;
-	Thu, 10 Jul 2025 02:00:07 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADC1B383B261;
+	Thu, 10 Jul 2025 02:40:18 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,41 +52,42 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] virtio-net: xsk: rx: move the xdp->data
- adjustment
- to buf_to_xdp()
+Subject: Re: [PATCH net-next v3] Documentation: xsk: correct the obsolete
+ references and examples
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <175211280676.957497.383613725548170335.git-patchwork-notify@kernel.org>
-Date: Thu, 10 Jul 2025 02:00:06 +0000
-References: <20250705075515.34260-1-minhquangbui99@gmail.com>
-In-Reply-To: <20250705075515.34260-1-minhquangbui99@gmail.com>
-To: Bui Quang Minh <minhquangbui99@gmail.com>
-Cc: netdev@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
- xuanzhuo@linux.alibaba.com, eperezma@redhat.com, andrew+netdev@lunn.ch,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ <175211521725.965283.3026383577930214041.git-patchwork-notify@kernel.org>
+Date: Thu, 10 Jul 2025 02:40:17 +0000
+References: <20250708062907.11557-1-kerneljasonxing@gmail.com>
+In-Reply-To: <20250708062907.11557-1-kerneljasonxing@gmail.com>
+To: Jason Xing <kerneljasonxing@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com,
+ maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com, sdf@fomichev.me,
  ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
- john.fastabend@gmail.com, sdf@fomichev.me, virtualization@lists.linux.dev,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+ john.fastabend@gmail.com, joe@dama.to, willemdebruijn.kernel@gmail.com,
+ bpf@vger.kernel.org, netdev@vger.kernel.org, kernelxing@tencent.com,
+ toke@redhat.com
 
 Hello:
 
 This patch was applied to netdev/net-next.git (main)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Sat,  5 Jul 2025 14:55:14 +0700 you wrote:
-> This commit does not do any functional changes. It moves xdp->data
-> adjustment for buffer other than first buffer to buf_to_xdp() helper so
-> that the xdp_buff adjustment does not scatter over different functions.
+On Tue,  8 Jul 2025 14:29:07 +0800 you wrote:
+> From: Jason Xing <kernelxing@tencent.com>
 > 
-> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
-> ---
->  drivers/net/virtio_net.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
+> The modified lines are mainly related to the following commits[1][2]
+> which remove those tests and examples. Since samples/bpf has been
+> deprecated, we can refer to more examples that are easily searched
+> in the various xdp-projects, like the following link:
+> https://github.com/xdp-project/bpf-examples/tree/main/AF_XDP-example
+> 
+> [...]
 
 Here is the summary with links:
-  - [net-next] virtio-net: xsk: rx: move the xdp->data adjustment to buf_to_xdp()
-    https://git.kernel.org/netdev/net-next/c/f47e8f618c7d
+  - [net-next,v3] Documentation: xsk: correct the obsolete references and examples
+    https://git.kernel.org/netdev/net-next/c/819802e25a09
 
 You are awesome, thank you!
 -- 
