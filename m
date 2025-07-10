@@ -1,159 +1,131 @@
-Return-Path: <bpf+bounces-62954-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62955-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D45F2B00994
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 19:10:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97554B009D2
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 19:20:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38D6C5645A7
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 17:10:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 850831895704
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 17:20:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B92D2F005D;
-	Thu, 10 Jul 2025 17:09:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6035A2F0031;
+	Thu, 10 Jul 2025 17:19:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="F1X1NSnR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bHGRQ1Qk"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E9B92797A0
-	for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 17:09:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B6AD1D7E54;
+	Thu, 10 Jul 2025 17:19:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752167397; cv=none; b=arzgEj8qKQtyOBgknqhiCk6lUjnMgaD1dtGq9JEJqWKaX8/VpN3nuVTkAXu41+8LWUFu5CL3xJJoJZSv/wVpHtgxajjPCu77hTvIzJJWE8h5CsmEoDtOFMUmIAxxHTIfOVKIfdInZWs1z7Q2ZuC5S2SNiWHxRC4KXcWnGwF7Oqw=
+	t=1752167997; cv=none; b=PjMIXA7FSM2J2vWSu72waGgKSDgT9ya0+rUYiIzCO+skF8uDB3jJteq7+7vbRrVsuEJgEddt5wsG4OY4C/0eU//oAslB2xti8Bq/N1BmQqiYYX6Pf9fga7Yqve85qcQoHa4rDFV5dqkaBjRZIZfWkDuAfTGMoZv9Juf/njMhtgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752167397; c=relaxed/simple;
-	bh=WgE2cZzN0xPCT9vqzj9SJXFb9agGHPoQL1sV7H+6xhk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fwmfeFI8DL/8qLDG+FFwXHLuO6klN8809nRJXJor4w0aRgeQF12BG1OxSsmZTrAGzSjf79fL9Tf9UX4HL7iQpFS3U/k3qgwc/v/sfIsolUBdO7B9GzeOfi7dIHD+TJFkGheHwEf2SmCzSun38dlwcdx5yvscbdRYg4OxVkQLChM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=F1X1NSnR; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <6eb938a8-e6ab-4510-b5c4-839e20c65d80@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1752167392;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=G/dWIC99J27FO+X5qJDOcUzUeVBmoeL/jVc5pCEgdws=;
-	b=F1X1NSnRfv9ohjg+ssCjBfaxFeyLfPdmCaAMmSwcJFWNYpHmI9SkGR8S+4o4GjXyEDrkR/
-	EXeFsgGKun5nhXQ/KyT/WuDeC+qvLWc+gNQT/lihjS8cI1RIyuhmN1xxRWBTZxn2GYNFQw
-	50d9cIBbgEC75F2XE44pT8fAVc2E27g=
-Date: Thu, 10 Jul 2025 10:09:47 -0700
+	s=arc-20240116; t=1752167997; c=relaxed/simple;
+	bh=aJ1R+ThPl6yWYasI4dM29057RnOusK9AB4v0zjmXaRk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PKqvkGb/U1qekWFXms5Qn977qpDkSR6iDGr8RyqN4TUz9AYpPGLy4QyXXgepBMbG1sgUmbzgDrkjiKfYdKFgRrqOJe+3J5e8O1187Hmujdc3dqm8Fm3jZFzYcRZc2INkGIFYVCZ4EIEXp1RsoNHgbHql3G3F0vX4kDGX1aXtcnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bHGRQ1Qk; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-450ccda1a6eso10413995e9.2;
+        Thu, 10 Jul 2025 10:19:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752167993; x=1752772793; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GRPJLDoWBhiLb7llPs80OjmH1aS+eqHUURkjeZ7jDRE=;
+        b=bHGRQ1Qk2arMoPiU5q58fs3rhQMeCU+58qAiE64w+V3Q8aBPioW5usvfL+v9tDEuOB
+         yd5Fqp+zfJI9U4TDn6MKYH43uLGH6Gk/OC4BeZDcRkBMyLvz28lRpKgXIcjl6vpjL+7W
+         iAvIzKczU0aASvjPhhHCmrALknjoOrLr5FrfrcYTJNyvMfDxvYpCAiyqBIXPXY58J2Qx
+         X4mq4T64ZokLC2GaUFnxB+QJgzF8rH5o032utgd0Yt/JAsfQr7+SYmwWQU4ofPjMYfOr
+         d1lthwAj/fcaoEqgv/MPSfS43frCEgU9ZDDyLLRrWr6N+XOldNz1qy9OSf8L3dkTnYI7
+         uVxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752167993; x=1752772793;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GRPJLDoWBhiLb7llPs80OjmH1aS+eqHUURkjeZ7jDRE=;
+        b=edSDlGI/O2R/DWUPrSDd5woKRYsExIclFP7a5Wjn9FiwxShJW7ZDhPps1GaSR9oA4E
+         phL/G1gFWajgbv8h9+XNqkbBTBYzwOk4Ffo3ytly78PS6mAIRjz5KWLNzG776HoxmXuV
+         YvVldfa+jnjcduu9M9NoI3Q6r+Q2B6jrjNvpxBjsYN6XinrmuNV+D/2UEsDjdrh9EJnF
+         7Tr9ypdLKcmfTVTmht+c4JY3T97pXK2Pj9HKTaFFBkCIiovQlyO31iCJzYiUihFqsQ82
+         HZsPFKmpdZWl+JgRYXF4sqMf7BnyOTPXqU0T+0TJEfsTrzkqWMd2fLpwjovLXQo3zenz
+         5MMw==
+X-Forwarded-Encrypted: i=1; AJvYcCUh3LG/n6nIMY0oCxnmfbjJNKZ0hwBnqEWrTvXVA+LotAHf343A6JBboZp3UVnZUrwUYW0SfixqESq75lEp@vger.kernel.org, AJvYcCV82AeeqvmzNrHQokCeze7BQ00Q48J2WF0/R79SCT8IKyoClxWX4yOaAKsQsU59blYEvq08DbiImxNRdnXs3/zT@vger.kernel.org, AJvYcCVALiIWEeX2FNeZJr3c9a4G6DKCUzxuBF04qPcGnt4kDUpToqKSMrinPWst1tWcLwX5Gt8=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzog2Yh1qxKGn0xuJitRaYT7MLH486h9502mr9dxQA1ZfhsKWMV
+	yTP4G9xQxnnW8rKCSH4qFTq7iO6LG/9tN2+bhHA2BkbEg7BksQzWoAZ4jiFKvumdg4lIJa2Sdsr
+	eoVLznLJng9vAW08G1cq0pxUuDdmBCuM=
+X-Gm-Gg: ASbGnct9f5Kt4yTgzBU44KOjNIfKfO70BWHGW47joBzsiTeBiunVWD4KD/fPiaYXfbx
+	alQ93saBNz2abaoXZcQGSLA6gYNVA7+BOYKhsMwoviw31CcEuJE8YORSsTTzTwQYpkLnMF03cYc
+	YzHHEY+Rz9WQAjzVkb+S/kgEOtrTFYRMC+onipzF3cbNVrvIvXAtmSC6m5u+KGrUL7OhEfGKEv
+X-Google-Smtp-Source: AGHT+IHicCdhXSND842PNCSKst0w0I40xbbdg59cM4x5MFHHe4BGrN1DFhU1upnqg2ahkDIeFC/slIKTlYCdX1KiTK4=
+X-Received: by 2002:a05:600c:35c9:b0:442:f8e7:25ef with SMTP id
+ 5b1f17b1804b1-454db7eaf93mr50058415e9.11.1752167993179; Thu, 10 Jul 2025
+ 10:19:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 1/2] bpf: Forget ranges when refining tnum after
- JSET
-Content-Language: en-GB
-To: Paul Chaignon <paul.chaignon@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>
-References: <75b3af3d315d60c1c5bfc8e3929ac69bb57d5cea.1752099022.git.paul.chaignon@gmail.com>
- <ba1b52e3-a938-4ead-943c-267e4c06b1ae@linux.dev>
- <aG_Tg6rfexLf3qOl@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <aG_Tg6rfexLf3qOl@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250710162717.3808020-1-mannkafai@gmail.com> <20250710162717.3808020-3-mannkafai@gmail.com>
+In-Reply-To: <20250710162717.3808020-3-mannkafai@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 10 Jul 2025 10:19:41 -0700
+X-Gm-Features: Ac12FXx7talNdm6Q2bYZAmnib7hzklBF3riC9ofaJVZRMxb0Bb8KpD_ZSPAySOw
+Message-ID: <CAADnVQ+Ca43c757zaT80B+4RJesRozx39mLoz3hOdKXEaXLBLg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: Show precise rejected function when
+ attaching to __btf_id functions
+To: KaFai Wan <mannkafai@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, Yafang Shao <laoar.shao@gmail.com>, 
+	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-
-On 7/10/25 7:51 AM, Paul Chaignon wrote:
-> On Wed, Jul 09, 2025 at 04:57:28PM -0700, Yonghong Song wrote:
->>
->> On 7/9/25 3:26 PM, Paul Chaignon wrote:
->>> Syzbot reported a kernel warning due to a range invariant violation on
->>> the following BPF program.
->>>
->>>     0: call bpf_get_netns_cookie
->>>     1: if r0 == 0 goto <exit>
->>>     2: if r0 & Oxffffffff goto <exit>
->>>
->>> The issue is on the path where we fall through both jumps.
->>>
->>> That path is unreachable at runtime: after insn 1, we know r0 != 0, but
->>> with the sign extension on the jset, we would only fallthrough insn 2
->>> if r0 == 0. Unfortunately, is_branch_taken() isn't currently able to
->>> figure this out, so the verifier walks all branches. The verifier then
->>> refines the register bounds using the second condition and we end
->>> up with inconsistent bounds on this unreachable path:
->>>
->>>     1: if r0 == 0 goto <exit>
->>>       r0: u64=[0x1, 0xffffffffffffffff] var_off=(0, 0xffffffffffffffff)
->>>     2: if r0 & 0xffffffff goto <exit>
->>>       r0 before reg_bounds_sync: u64=[0x1, 0xffffffffffffffff] var_off=(0, 0)
->>>       r0 after reg_bounds_sync:  u64=[0x1, 0] var_off=(0, 0)
->>>
->>> Improving the range refinement for JSET to cover all cases is tricky. We
->>> also don't expect many users to rely on JSET given LLVM doesn't generate
->>> those instructions. So instead of reducing false positives due to JSETs,
->>> Eduard suggested we forget the ranges whenever we're narrowing tnums
->>> after a JSET. This patch implements that approach.
->>>
->>> Reported-by: syzbot+c711ce17dd78e5d4fdcf@syzkaller.appspotmail.com
->>> Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
->>> Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
->>> ---
->>>    kernel/bpf/verifier.c | 4 ++++
->>>    1 file changed, 4 insertions(+)
->>>
->>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->>> index 53007182b46b..e2fcea860755 100644
->>> --- a/kernel/bpf/verifier.c
->>> +++ b/kernel/bpf/verifier.c
->>> @@ -16208,6 +16208,10 @@ static void regs_refine_cond_op(struct bpf_reg_state *reg1, struct bpf_reg_state
->>>    		if (!is_reg_const(reg2, is_jmp32))
->>>    			break;
->>>    		val = reg_const_value(reg2, is_jmp32);
->>> +		/* Forget the ranges before narrowing tnums, to avoid invariant
->>> +		 * violations if we're on a dead branch.
->>> +		 */
->>> +		__mark_reg_unbounded(reg1);
->>>    		if (is_jmp32) {
->>>    			t = tnum_and(tnum_subreg(reg1->var_off), tnum_const(~val));
->>>    			reg1->var_off = tnum_with_subreg(reg1->var_off, t);
->> The CI reports some invariant violation:
->>    https://github.com/kernel-patches/bpf/actions/runs/16182458904/job/45681940946?pr=9283
-> AFAICS, these invariant violations predate this change. They seem to be
-> expected and caused by selftests crossing_64_bit_signed_boundary_2 and
-> crossing_32_bit_signed_boundary_2 which are both marked as "known
-> invariants violation". They look like fairly different violations as
-> they are not caused by JSET instructions.
-
-I double checked and that 'REG INVARIANTS VIOLATION' warning is indeed
-not related to your patch so your change looks good to me. You can add
-my ack like
-
-   Acked-by: Yonghong Song <yonghong.song@linux.dev>
-
+On Thu, Jul 10, 2025 at 9:27=E2=80=AFAM KaFai Wan <mannkafai@gmail.com> wro=
+te:
 >
-> I think it's still worth having the above change for JSET because we
-> lose only the ranges and not the tnums, whereas with an invariant
-> violation, we lose all info on the register. I'm looking into the two
-> other invariant violations to see if there's anything we can improve
-> there.
-
-Thanks for looking at this!
-
+> Show the precise rejected function name when attaching tracing to
+> __btf_id functions.
 >
->> [ 283.030177] ------------[ cut here ]------------ [ 283.030517] verifier
->> bug: REG INVARIANTS VIOLATION (false_reg2): range bounds violation
->> u64=[0x8000000000000010, 0x800000000000000f] s64=[0x8000000000000010,
->> 0x800000000000000f] u32=[0x10, 0xf] s32=[0x10, 0xf]
->> var_off=(0x8000000000000000, 0x1f)(1)
->> [ 283.032139] WARNING: CPU: 0 PID: 103 at kernel/bpf/verifier.c:2689
->> reg_bounds_sanity_check+0x1dd/0x1f0 ... Probably this change triggered some
->> other violations. Please take a look.
->>
+> $ ./fentry
+> libbpf: prog 'migrate_disable': BPF program load failed: -EINVAL
+> libbpf: prog 'migrate_disable': -- BEGIN PROG LOAD LOG --
+> Attaching tracing to __btf_id function 'migrate_disable' is rejected.
+>
+> Signed-off-by: KaFai Wan <mannkafai@gmail.com>
+> ---
+>  kernel/bpf/verifier.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 275d82fb1a1a..2779d63e1f8b 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -23938,6 +23938,8 @@ static int check_attach_btf_id(struct bpf_verifie=
+r_env *env)
+>                         return ret;
+>         } else if (prog->type =3D=3D BPF_PROG_TYPE_TRACING &&
+>                    btf_id_set_contains(&btf_id_deny, btf_id)) {
+> +               verbose(env, "Attaching tracing to __btf_id function '%s'=
+ is rejected.\n",
+> +                       tgt_info.tgt_name);
 
+"Attaching tracing to __btf_id" ?! What does it mean?
+Drop "__btf_id" and "tracing" bits.
+
+--
+pw-bot: cr
 
