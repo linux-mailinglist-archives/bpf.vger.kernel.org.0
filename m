@@ -1,263 +1,149 @@
-Return-Path: <bpf+bounces-62911-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62912-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EC45AFFF3A
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 12:27:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BF1EB000C0
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 13:47:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B80975A507E
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 10:27:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55658561279
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 11:47:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE72F2DFA48;
-	Thu, 10 Jul 2025 10:26:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 630962494F0;
+	Thu, 10 Jul 2025 11:46:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gzN+2O23"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kmy2T+mx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 711922D9485
-	for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 10:26:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA9A1946F;
+	Thu, 10 Jul 2025 11:46:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752143204; cv=none; b=fEgYW/Sc7GNZ7m2/PVSnz4bNNv0akk2pOTKZbSrFLdmmS2UkO/zfV2bjAM224OFxv3Zm3idaskUHk7QSQI5/98ZfPlEFlDLo3SNXuk9qmIR3Jxbn98R95bz8a4CCsTtXAjDAVUuGDNJPFCsBsf/Hgqswb84RrvsVoJ1OWdv1CMw=
+	t=1752148012; cv=none; b=ji8mdKpBBG0aJtQ+7iUEJq3yK9oVhz2+0g1KJT7TDXDbcByiaIjZogJP6480tiRgV0JkprbJLJPbjLG9G0CSrBeO7oMAhtML7JFEICeQSbBCmpuKEdpmYrFVGcjsciwf1SkeiGE1AeVUXJO64g4vEO6rTGVZIaOIVHplenxpzr8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752143204; c=relaxed/simple;
-	bh=BoRKRH4ntN5MyIUTlCakkAAazcoHSxL1G1+DD7sc3OA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=VdyS0KBVEFt8MXx7xzt3eyXBePDyBHkKCfz0sxCJfiR8mC5sktrkefRiRLTUpC6eL5Wi78P8TftA+2XUHg68CslU8sjivyGbYPQCKctaU/O4d5GtJWsynnYEq2BgZO3tZ9ICitKBcEQVBxddSyoTZEIxIaSiXCMvK3ByhQA1HRw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gzN+2O23; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3a6cd1a6fecso831591f8f.3
-        for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 03:26:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752143201; x=1752748001; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aowrnU3KLJ+CLPW+L5+BNqloQpmKeTIz87NtSThMIa8=;
-        b=gzN+2O23plK3iLDOtGbSJCTI+zccUlRMWO7NsWzVjz+WPObZLyw3cIxGWolP2uGdyX
-         W448l7ZaxsLLpCHN0zJPzvDxhdlquMIUamHelBTW+5mwt7fgHgqzMsQ6PHJ3zpEzGb1y
-         ZIHs39J31Qxr4joTzIt4AaGIHGWC5I24V9xWY1tbJuCI2RhvFeUkCHTcIhSEMpzVfbX7
-         LJ9Gt571n59d72q+x62yf1b32rYzlsyPOMjrM4VYohYCgeQsjb9zjgnzIy6FJcVM/QaC
-         EA3AH89lM3cl3AA6n1d3S/LplOV55P8IAArz3f35BSThtLi5ecnBpEHgCG7IqiK/349j
-         cD4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752143201; x=1752748001;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aowrnU3KLJ+CLPW+L5+BNqloQpmKeTIz87NtSThMIa8=;
-        b=f45QubcN1JAH+NM9nhpUdRktxUx7YhTpkpSOsm9S9Kesym5sEaG5L+HrWVRtKmZ8Mb
-         FbwwuSsYav3YpIUlza89YbcHhfodNFEGcxwSJUrcfVDzun9fmfcIDWpXFQoaxCHIOQe7
-         Gbx+uciO0YCp+2aDRg4CT8J3L1E3K5pqs5bqFYszKG8IzhN+ofKtWoOrzOviWzB3MIMq
-         9PomnYgiQxeNNsKNoWw4oGkwjhv76+0K0fo5ougB9MkLXvlXV5qe0LNO1mslHBDWl7zE
-         lPK8Ez/4VwyszzRJ7c5gpsxpp5CadskOX3MzwGlPsF5zF3lzQa5vfZvjVmF2AXY/uoyd
-         zYiA==
-X-Gm-Message-State: AOJu0YxhuAwqAxefg6HWEtdOr/ETggQfaw0pkFOMII2/3bcaSmmT640r
-	k0AZSfPSEAV6joTzUSiZYTqtIMA866B0fR2yLcT3SGuuNH7TGSyfcPikhtaKND8gWAWiZw==
-X-Gm-Gg: ASbGncsOWWzD+N2+g6no3xsbkSLLHru6eORS0MHOBDiOFHWyQh4isOIqQgKFxEPiYHd
-	8k6rmZyD/lMO1B/LxiMFkgfTh+aHZo4rNJA3hP+D42EtiHGfJhP6vqli7y9QxUVfOzJ5OmGL8BU
-	qnCI7Nb/Fa3KSD5f0jNoQfuXZqjvZGrhQNnUT+KDs0YY8zwqy180a+LxPFx1iEvVBeKVg1ZwA+Y
-	q3L11ArBp6WmyPQmmRr3NonMqJtWmov1CP8UXV0pvAq6iB7xXHNOGZc5zibb8INgZTcCJok0Mjv
-	5IpNFGXlX/yUw9INVHW6QU0Hfhke0qQ6IVhXsvz+ZTMPSKLx4SCPvcqck4s1DRJZrOn1w1qUJoL
-	5rmjTt/wrB6cl
-X-Google-Smtp-Source: AGHT+IG2HLq8l9p2WRFkH92BCX33l6skfWoF+Y18r8Qzod0kTX2cY8z4iwatSgjxh4Wbg5h7DrEebw==
-X-Received: by 2002:a05:6000:2484:b0:3a5:39d5:d962 with SMTP id ffacd0b85a97d-3b5e452a772mr5117368f8f.41.1752143200502;
-        Thu, 10 Jul 2025 03:26:40 -0700 (PDT)
-Received: from mtardy-friendly-lvh-runner.c.cilium-dev.internal ([2600:1900:4010:1a8::])
-        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-454d511cb48sm52639745e9.36.2025.07.10.03.26.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jul 2025 03:26:40 -0700 (PDT)
-From: Mahe Tardy <mahe.tardy@gmail.com>
-To: bpf@vger.kernel.org
-Cc: martin.lau@linux.dev,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	ast@kernel.org,
-	andrii@kernel.org,
-	Mahe Tardy <mahe.tardy@gmail.com>
-Subject: [PATCH bpf-next v1 4/4] selftests/bpf: add icmp_send_unreach kfunc tests
-Date: Thu, 10 Jul 2025 10:26:07 +0000
-Message-Id: <20250710102607.12413-5-mahe.tardy@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250710102607.12413-1-mahe.tardy@gmail.com>
-References: <20250710102607.12413-1-mahe.tardy@gmail.com>
+	s=arc-20240116; t=1752148012; c=relaxed/simple;
+	bh=t/OeAvIh8DyOgjIIocAvYTIOO6EsHiE6fqTQPT+2lQY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BeA+5v6uDYHW/GYQ7pIRaTJ0vy7J27tgju/GkAa6w+SVjhpDZPAdmGRXtorH19xgKuFAvjDVJqq5fYbSrD9LN9SJTZnkYNDjQs41AlMi+oA8c3j/X4NbAdBJrpgM6vGtljLitwUDpFNGSuMPPb0SjwEN6IRAVOtDYASwjy8FFLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kmy2T+mx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C78A4C4CEE3;
+	Thu, 10 Jul 2025 11:46:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752148012;
+	bh=t/OeAvIh8DyOgjIIocAvYTIOO6EsHiE6fqTQPT+2lQY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kmy2T+mxE+7xOOMDTL8TRFHexoTeE0G4VAikvj3fcRgN4jfOqsJtdyjMyzE46/SXt
+	 u3fVlUmIO/B6hi2vHg9m8YC8Bqyvilj+TJVzLDeK7wFYDMBo5MtFtW/EvXYZAF8tn3
+	 w2b6s3ETa3JNlIUg2Wk74516+WI08ZvVDCQVnBxTUg+o/zokk4qZDp7dL2G480vhX9
+	 nZY+InRMFy3JgfTByCWsPrSdorvtM+3Jzy35IC5jLmWWtjSenXTHNTzjNL0UoPJCNW
+	 nBDBboyVOf0dPPH4SRBEmKwamyu1YjdIWZQlzEuZQrxfDxcsVspPgnKBs2rpsxE0k4
+	 m6Mao47ynwhDQ==
+Date: Thu, 10 Jul 2025 13:46:42 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Song Liu <songliubraving@meta.com>
+Cc: Paul Moore <paul@paul-moore.com>, Al Viro <viro@zeniv.linux.org.uk>, 
+	Song Liu <song@kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>, "apparmor@lists.ubuntu.com" <apparmor@lists.ubuntu.com>, 
+	"selinux@vger.kernel.org" <selinux@vger.kernel.org>, 
+	"tomoyo-users_en@lists.sourceforge.net" <tomoyo-users_en@lists.sourceforge.net>, 
+	"tomoyo-users_ja@lists.sourceforge.net" <tomoyo-users_ja@lists.sourceforge.net>, Kernel Team <kernel-team@meta.com>, 
+	"andrii@kernel.org" <andrii@kernel.org>, "eddyz87@gmail.com" <eddyz87@gmail.com>, 
+	"ast@kernel.org" <ast@kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>, 
+	"martin.lau@linux.dev" <martin.lau@linux.dev>, "jack@suse.cz" <jack@suse.cz>, 
+	"kpsingh@kernel.org" <kpsingh@kernel.org>, "mattbobrowski@google.com" <mattbobrowski@google.com>, 
+	"amir73il@gmail.com" <amir73il@gmail.com>, "repnop@google.com" <repnop@google.com>, 
+	"jlayton@kernel.org" <jlayton@kernel.org>, "josef@toxicpanda.com" <josef@toxicpanda.com>, 
+	"mic@digikod.net" <mic@digikod.net>, "gnoack@google.com" <gnoack@google.com>, 
+	"m@maowtm.org" <m@maowtm.org>, "john.johansen@canonical.com" <john.johansen@canonical.com>, 
+	"john@apparmor.net" <john@apparmor.net>, 
+	"stephen.smalley.work@gmail.com" <stephen.smalley.work@gmail.com>, "omosnace@redhat.com" <omosnace@redhat.com>, 
+	"takedakn@nttdata.co.jp" <takedakn@nttdata.co.jp>, 
+	"penguin-kernel@i-love.sakura.ne.jp" <penguin-kernel@i-love.sakura.ne.jp>, "enlightened@chromium.org" <enlightened@chromium.org>
+Subject: Re: [RFC] vfs: security: Parse dev_name before calling
+ security_sb_mount
+Message-ID: <20250710-roden-hosen-ba7f215706bb@brauner>
+References: <20250708230504.3994335-1-song@kernel.org>
+ <20250709102410.GU1880847@ZenIV>
+ <CAHC9VhSS1O+Cp7UJoJnWNbv-Towia72DitOPH0zmKCa4PBttkw@mail.gmail.com>
+ <1959367A-15AB-4332-B1BC-7BBCCA646636@meta.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1959367A-15AB-4332-B1BC-7BBCCA646636@meta.com>
 
-This test opens a server and client, attach a cgroup_skb program on
-egress and calls the icmp_send_unreach function from the client egress
-so that an ICMP unreach control message is sent back to the client.
-It then fetches the message from the error queue to confirm the correct
-ICMP unreach code has been sent.
+On Wed, Jul 09, 2025 at 05:06:36PM +0000, Song Liu wrote:
+> Hi Al and Paul, 
+> 
+> Thanks for your comments!
+> 
+> > On Jul 9, 2025, at 8:19 AM, Paul Moore <paul@paul-moore.com> wrote:
+> > 
+> > On Wed, Jul 9, 2025 at 6:24 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> >> On Tue, Jul 08, 2025 at 04:05:04PM -0700, Song Liu wrote:
+> >>> security_sb_mount handles multiple types of mounts: new mount, bind
+> >>> mount, etc. When parameter dev_name is a path, it need to be parsed
+> >>> with kern_path.
+> > 
+> > ...
+> > 
+> >> security_sb_mount() is and had always been a mind-boggling trash of an API.
+> >> 
+> >> It makes no sense in terms of operations being requested.  And any questions
+> >> regarding its semantics had been consistently met with blanket "piss off,
+> >> LSM gets to do whatever it wants to do, you are not to question the sanity
+> >> and you are not to request any kind of rules - give us the fucking syscall
+> >> arguments and let us at it".
+> > 
+> > I'm not going to comment on past remarks made by other devs, but I do
+> > want to make it clear that I am interested in making sure we have LSM
+> > hooks which satisfy both the needs of the existing in-tree LSMs while
+> > also presenting a sane API to the kernel subsystems in which they are
+> > placed.  I'm happy to revisit any of our existing LSM hooks to
+> > restructure them to better fit these goals; simply send some patches
+> > and let's discuss them.
+> > 
+> >> Come up with a saner API.  We are done accomodating that idiocy.  The only
+> >> changes you get to make in fs/namespace.c are "here's our better-defined
+> >> hooks, please call <this hook> when you do <that>".
+> 
+> Right now, we have security_sb_mount and security_move_mount, for 
+> syscall “mount” and “move_mount” respectively. This is confusing 
+> because we can also do move mount with syscall “mount”. How about 
+> we create 5 different security hooks:
+> 
+> security_bind_mount
+> security_new_mount
+> security_reconfigure_mount
+> security_remount
+> security_change_type_mount
+> 
+> and remove security_sb_mount. After this, we will have 6 hooks for
+> each type of mount (the 5 above plus security_move_mount).
 
-Note that the BPF program returns SK_PASS to let the connection being
-established to finish the test cases quicker. Otherwise, you have to
-wait for the TCP three-way handshake to timeout in the kernel and
-retrieve the errno translated from the unreach code set by the ICMP
-control message.
+I've multiple times pointed out that the current mount security hooks
+aren't working and basically everything in the new mount api is
+unsupervised from an LSM perspective.
 
-Signed-off-by: Mahe Tardy <mahe.tardy@gmail.com>
----
- .../bpf/prog_tests/icmp_send_unreach_kfunc.c  | 96 +++++++++++++++++++
- .../selftests/bpf/progs/icmp_send_unreach.c   | 35 +++++++
- 2 files changed, 131 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/icmp_send_unreach_kfunc.c
- create mode 100644 tools/testing/selftests/bpf/progs/icmp_send_unreach.c
+My recommendation is make a list of all the currently supported
+security_*() hooks in the mount code (I certainly don't have them in my
+head). Figure out what each of them allow to mediate effectively and how
+the callchains are related.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/icmp_send_unreach_kfunc.c b/tools/testing/selftests/bpf/prog_tests/icmp_send_unreach_kfunc.c
-new file mode 100644
-index 000000000000..2896d0619358
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/icmp_send_unreach_kfunc.c
-@@ -0,0 +1,96 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include <network_helpers.h>
-+#include <linux/errqueue.h>
-+#include "icmp_send_unreach.skel.h"
-+
-+#define TIMEOUT_MS 1000
-+#define SRV_PORT 54321
-+
-+#define ICMP_DEST_UNREACH 3
-+
-+#define ICMP_FRAG_NEEDED 4
-+#define NR_ICMP_UNREACH 15
-+
-+static void read_icmp_errqueue(int sockfd, int expected_code)
-+{
-+	ssize_t n;
-+	struct sock_extended_err *sock_err;
-+	struct cmsghdr *cm;
-+	char ctrl_buf[512];
-+	struct msghdr msg = {
-+		.msg_control = ctrl_buf,
-+		.msg_controllen = sizeof(ctrl_buf),
-+	};
-+
-+	n = recvmsg(sockfd, &msg, MSG_ERRQUEUE);
-+	if (!ASSERT_GE(n, 0, "recvmsg_errqueue"))
-+		return;
-+
-+	for (cm = CMSG_FIRSTHDR(&msg); cm; cm = CMSG_NXTHDR(&msg, cm)) {
-+		if (!ASSERT_EQ(cm->cmsg_level, IPPROTO_IP, "cmsg_type") ||
-+		    !ASSERT_EQ(cm->cmsg_type, IP_RECVERR, "cmsg_level"))
-+			continue;
-+
-+		sock_err = (struct sock_extended_err *)CMSG_DATA(cm);
-+
-+		if (!ASSERT_EQ(sock_err->ee_origin, SO_EE_ORIGIN_ICMP,
-+			       "sock_err_origin_icmp"))
-+			return;
-+		if (!ASSERT_EQ(sock_err->ee_type, ICMP_DEST_UNREACH,
-+			       "sock_err_type_dest_unreach"))
-+			return;
-+		ASSERT_EQ(sock_err->ee_code, expected_code, "sock_err_code");
-+	}
-+}
-+
-+void test_icmp_send_unreach_kfunc(void)
-+{
-+	struct icmp_send_unreach *skel;
-+	int cgroup_fd = -1, client_fd = 1, srv_fd = -1;
-+	int *code;
-+
-+	skel = icmp_send_unreach__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		goto cleanup;
-+
-+	cgroup_fd = test__join_cgroup("/icmp_send_unreach_cgroup");
-+	if (!ASSERT_GE(cgroup_fd, 0, "join_cgroup"))
-+		goto cleanup;
-+
-+	skel->links.egress =
-+		bpf_program__attach_cgroup(skel->progs.egress, cgroup_fd);
-+	if (!ASSERT_OK_PTR(skel->links.egress, "prog_attach_cgroup"))
-+		goto cleanup;
-+
-+	code = &skel->bss->unreach_code;
-+
-+	for (*code = 0; *code <= NR_ICMP_UNREACH; (*code)++) {
-+		// The TCP stack reacts differently when asking for
-+		// fragmentation, let's ignore it for now
-+		if (*code == ICMP_FRAG_NEEDED)
-+			continue;
-+
-+		srv_fd = start_server(AF_INET, SOCK_STREAM, "127.0.0.1",
-+				      SRV_PORT, TIMEOUT_MS);
-+		if (!ASSERT_GE(srv_fd, 0, "start_server"))
-+			goto for_cleanup;
-+
-+		client_fd = socket(AF_INET, SOCK_STREAM, 0);
-+		ASSERT_GE(client_fd, 0, "client_socket");
-+
-+		client_fd = connect_to_fd(srv_fd, 0);
-+		if (!ASSERT_GE(client_fd, 0, "client_connect"))
-+			goto for_cleanup;
-+
-+		read_icmp_errqueue(client_fd, *code);
-+
-+for_cleanup:
-+		close(client_fd);
-+		close(srv_fd);
-+	}
-+
-+cleanup:
-+	icmp_send_unreach__destroy(skel);
-+	close(cgroup_fd);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/icmp_send_unreach.c b/tools/testing/selftests/bpf/progs/icmp_send_unreach.c
-new file mode 100644
-index 000000000000..ec406028be5f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/icmp_send_unreach.c
-@@ -0,0 +1,35 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
-+
-+char LICENSE[] SEC("license") = "Dual BSD/GPL";
-+
-+int unreach_code = 0;
-+
-+#define SERVER_PORT 54321
-+#define SERVER_IP 0x7F000001
-+
-+SEC("cgroup_skb/egress")
-+int egress(struct __sk_buff *skb)
-+{
-+	void *data = (void *)(long)skb->data;
-+	void *data_end = (void *)(long)skb->data_end;
-+	struct iphdr *iph;
-+	struct tcphdr *tcph;
-+
-+	iph = data;
-+	if ((void *)(iph + 1) > data_end || iph->version != 4 ||
-+	    iph->protocol != IPPROTO_TCP || iph->daddr != bpf_htonl(SERVER_IP))
-+		return SK_PASS;
-+
-+	tcph = (void *)iph + iph->ihl * 4;
-+	if ((void *)(tcph + 1) > data_end ||
-+	    tcph->dest != bpf_htons(SERVER_PORT))
-+		return SK_PASS;
-+
-+	bpf_icmp_send_unreach(skb, unreach_code);
-+
-+	/* returns SK_PASS to execute the test case quicker */
-+	return SK_PASS;
-+}
---
-2.34.1
+Then make a proposal how to replace them with something that a) doesn't
+cause regressions which is probably something that the LSMs care about
+and b) that covers the new mount API sufficiently to be properly
+mediated.
 
+I'll happily review proposals. Fwiw, I'm pretty sure that this is
+something that Mickael is interested in as well.
 
