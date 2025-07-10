@@ -1,87 +1,87 @@
-Return-Path: <bpf+bounces-62959-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62960-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78054B00B29
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 20:12:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C4F4B00B3B
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 20:20:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5A331CA0001
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 18:12:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5725F544391
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 18:19:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B8D22741BC;
-	Thu, 10 Jul 2025 18:12:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 256992FCE15;
+	Thu, 10 Jul 2025 18:20:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4TOwDzQO"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="aVTsrauV"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB4B92FC3C0
-	for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 18:12:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C3D925C80E
+	for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 18:20:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752171126; cv=none; b=qThOmLI1YRFn62k1XSyWlUs8oVk+FzK6Tp8ct5UfPVuqz1gCRAyFO2xr2/h0b6zkGfzXRQ9RYTTmt7UTbbqCflyQHKtKM9+eGtgToDvH0D9Ai2yvI3FjPihN7lGYCE7mkUZdCvdwF5iPBXCg5SOnCC/By+omIYylW5eSPz2nYx0=
+	t=1752171608; cv=none; b=jatZyFr3DBusC9uroo43e/mkCTJmsgNgTyB2gRASq6Ef+2dN+q9OLbV+M44455VlYl+vuChRps0LedSIpChBKdxIreojoaCO3M8lWVD1v1sKuzvcj3mNoK4bS9xPMtOzORCn3iQPGVDhc4MHjfOigyL4FGKUfpqSS+muaotAzSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752171126; c=relaxed/simple;
-	bh=NsIibMpgdUN/yNMbmmDbm0dvimOJR7mqvk074U7Gs8g=;
+	s=arc-20240116; t=1752171608; c=relaxed/simple;
+	bh=EPb99Ej9S7eTJEfY1Nzk/x3khOnYOd7XdYVqfG7FoJg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DMPdeFnUJVs2W7RvpDm2LfNMuy/RfJRMxqOJmJqPqJmjGYhd4nz/qychGZwooZFcCEtis12GNXs+oWqFt/hzsrfBu3Ud/XJSXzSt/m5jSeQOMJTd/ZKQhK5SAhW4bNbN7MF52+677lG84gKVzijVT1y205FiQSp8ZSsiECBQ6T0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4TOwDzQO; arc=none smtp.client-ip=209.85.214.169
+	 To:Cc:Content-Type; b=pf3l/DMh5ylqXiaLtd/P17FbDUSQFVIT+3M8WwJDR1/nrmOK2slW0CBkGPNbLcr3bH+t/Zx8spolCwleb15JNGqHrN/RpCihYla5BPhji9TfnfkMlZgo25SIdtaQs9IPyHxL/9RdgFQgTlZs3T3+HkUj6U1x2FaukDq4wOl3dws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=aVTsrauV; arc=none smtp.client-ip=209.85.214.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-2357c61cda7so20965ad.1
-        for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 11:12:04 -0700 (PDT)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-235e389599fso29835ad.0
+        for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 11:20:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1752171124; x=1752775924; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1752171606; x=1752776406; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=V19aqiboGpdwFSVORlEjus6nArpZ/d5eCyXiiM9x078=;
-        b=4TOwDzQOq1VFdnRRMcAzz6wv6QmBIJ69gWAcJoEJXPx94BIcF5gLWHNAbxkxVhg6MI
-         4PDL/6srqbJJGP5zxVAsKiCzHbhtPmTrkECmVpcm6gddpQ2/6SKivbIAamiS9Gn3UYQG
-         j949T5OmuYoAD4ut4lkw8BgTWfTJHefaimbn3sE1QXDhULsGGCzVpgHAAc5HheIS/tYh
-         oRi4mqFnRycbx8/jzaOhX1N0M9OcSFDsexJB4eQAW9ZrCDLTD4sraEiZ+Yv3dYEuNXL0
-         IkPnbCh7fMyS2ZcNCUZ8th4x/lAuHJui0dGdikPaBKw0Rw7DI9tihBEM60UUGyJRPiAA
-         1TwA==
+        bh=Vj46vkefhs4SRIRS/QU5g/lyrMXzFbGQlucGo0/msd8=;
+        b=aVTsrauVNuKpK9aafet69r3jPNTQoC2Xc0YUgkx/B35Jxv8F0Fy4jS1RiJp9dK/3j6
+         CbfDww2dCKMRktYkMSRpLfVDUTJbQu0BKAfK+PPbsHD74oERvK6ZG2gtOmgga5bm6T8H
+         ruoSDy1aV6Q34ohrHP1GOD0H/8NChnHJOC1bCIhchiRT4Dg5TkSnYU/DM7nf4CMuQZ9i
+         vrNPoFwc/6+EkdcycRocjHzQIQ0rK2fzm6bz4ymjllZWaxyDP6EDImQIoHQV/5yaMxvS
+         KBK2n8chtEhCKJidQpPIQazll1I6andpOc9PZkZlS3EUgag365LQjV57tPqdjGarFE0/
+         Jy5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752171124; x=1752775924;
+        d=1e100.net; s=20230601; t=1752171606; x=1752776406;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=V19aqiboGpdwFSVORlEjus6nArpZ/d5eCyXiiM9x078=;
-        b=IGvIIYK1gR2WGoxi4tXji9wMOmg5IjOya+L9Uk/KqymcpwhtKI+wuJ3TtrkKNsP9Da
-         a7mZfoOTAnBi/vrftKRFSp1exzXMSL253OyWGF1K2z/5OCiOntL0oB/7NJwmP0ogADej
-         Ul0Wf5gAtwNC/9sCxn3GnNeqWiN3NL8PAB4ieQzNegYjvfvdEDxbnBBzI6umdftqjroW
-         nhZmLWKFJV7Rz7pUmJHSUXae7QHacXfYFDIq/3L21aphZ90AuIVe/v6aLl1aqM/QW/jr
-         eWOHZ9fU9V/LvL7LJh68Gom926v/PgKWQ2JAMxseISj+O90Mukhx9hcC61QeSZUTFoik
-         FJRg==
-X-Forwarded-Encrypted: i=1; AJvYcCUY9bIFkeXv/Da84i7nBoXb5ci6cyiKYXOgFNjWBsz9RzXm3X4A1L9hfcdPFaeigKnExzw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxP1S6P69u3IMRvvmGWCnwS3YQ2uFy9VnmTjmBaex1WkxLNEZEJ
-	t0sV6KH1eXy6LWnN71v07f5ReG478C3u4pwvHvCf1cqcycq/2sNbyRP+2u8zfpqFPkqxhkIBips
-	ajjpb2GQglC2MbQ7+v+TXRPrCUgoRU4JC7kSBGcC1
-X-Gm-Gg: ASbGncsNGwf7v9TO5xpwB1mMUnuRpKIDQrwzlHa2ZPWZtPHVOrxlJIYuqEIyVWPpfo5
-	IeYX9shs6mNfTW2uGFj0uk7DTIF3sdgKWXB5T4gDhgWb/a4sDs+q4N9Jy4NBEjYSWL3nBJY6OCu
-	aJndYwTjiLOhQY6qKQeCQm/WXkgmbUCf2hVBZbRpRzJXvbu3xpLk6IBs6lsYkr3n4gIku1nXQ=
-X-Google-Smtp-Source: AGHT+IG5ZbAwY31DrTqPKHnuAy3Jprfz+D7kIoMw6GvkmY8szHlEwG6tCQR4HIE6AdRqx8Df7hZn3pf+KBbD+xSG9cQ=
-X-Received: by 2002:a17:902:ce84:b0:234:a469:62ef with SMTP id
- d9443c01a7336-23dee4c2b01mr119975ad.3.1752171123623; Thu, 10 Jul 2025
- 11:12:03 -0700 (PDT)
+        bh=Vj46vkefhs4SRIRS/QU5g/lyrMXzFbGQlucGo0/msd8=;
+        b=Wozt4m/ot69bf2RTtCkdNI2/ubAFiAzCqcpageCRXgVXvqRN1qeShOYKXulKCUTAa7
+         foAoa1IdNvXZO+QTn9jl0EnxC6TB8fmxQe3KoLvgGTIOlR1V2gZ+4z0Q+mE7LVcEmkC5
+         IxEafgwHoEa02WaeJV6Yat4MqQNOYKFIEMm3xQPSS7ZoUNUCCHi+/tnzLK8eT1VZ6m5q
+         ROHswvEqNBJSvfnQwwyLOcO1TA5meaNXgdkvjlnFCXrfnuHP8c6BEajRFcbpMQ70momi
+         3/xtPSXVIQwMAHsgLbLsFkFAbbOi3c9pAp9URPbXeisE4Fn3S+0UI8Vbh0Q+TSqr7ez9
+         QmNA==
+X-Forwarded-Encrypted: i=1; AJvYcCWwUf6NC0oXVn8e3xGMhJLr3uuNjngMXC3p6nhx5oC+m/xsgWdtwgH+3IRbNfQX+cifLtQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzyCUuoJxAKSauQ90ppeKPmFUGtYAM9gAm7nqwPKbj8H0mWGEZ6
+	JOei0jla7o87Sm5fC4lm/WL5SP+f5/U7nnFIHuImTh9R0teIdlW1jV4oBCFEztXKA0hKYB8li7a
+	h6BkBDWQlxHjw5vFa+vJy8Aj3iJ82B7rH8d1+muiE
+X-Gm-Gg: ASbGncu15fcyVZzq+E+lLr9kBE51xAD0ZOKQ9t1YTCiDoLzm95fK+z+tJnJYruYO3Bk
+	Xkbu2WKH9a0Ao5YPMzFHNsvrrV0Pfwieyte9wnvQWrPHhPdr+tSdjVMmDs+aqYw22BU/Rrd+3kl
+	W2RwP9aeScW+6UeZGgFn0ZRD1vJn5zAQTnU62oGwzjdbvq23mgNTvPPGWniWrFmv3U1SkZpZM=
+X-Google-Smtp-Source: AGHT+IEnsQr2vt1xRK9+Gg05s9Ioj58hP/Frug0vVmNYyI/waR29AKDxjbFsuLIHKriJNaWLDKD8Qv90dKQTUZAuhEc=
+X-Received: by 2002:a17:902:d4c1:b0:234:bfa1:da3e with SMTP id
+ d9443c01a7336-23dee4c480fmr119455ad.5.1752171605810; Thu, 10 Jul 2025
+ 11:20:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250710082807.27402-1-byungchul@sk.com> <20250710082807.27402-3-byungchul@sk.com>
-In-Reply-To: <20250710082807.27402-3-byungchul@sk.com>
+References: <20250710082807.27402-1-byungchul@sk.com> <20250710082807.27402-4-byungchul@sk.com>
+In-Reply-To: <20250710082807.27402-4-byungchul@sk.com>
 From: Mina Almasry <almasrymina@google.com>
-Date: Thu, 10 Jul 2025 11:11:51 -0700
-X-Gm-Features: Ac12FXwouZPPpjT9QSjhfrgvcsGvhkuRBlZmuIVXl9fEL0h9kvK2OFLOD8o7JwM
-Message-ID: <CAHS8izO0mgDBde57fxuN3ko38906F_C=pxxrSEnFA=_9ECO8oQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v9 2/8] netmem: introduce utility APIs to use
- struct netmem_desc
+Date: Thu, 10 Jul 2025 11:19:53 -0700
+X-Gm-Features: Ac12FXw53iJ9LLYfmK6k3qWagqoxpTOfsxU_34s2pmiydSWa2zOUfuaE-4Qlaes
+Message-ID: <CAHS8izMXkyGvYmf1u6r_kMY_QGSOoSCECkF0QJC4pdKx+DOq0A@mail.gmail.com>
+Subject: Re: [PATCH net-next v9 3/8] page_pool: access ->pp_magic through
+ struct netmem_desc in page_pool_page_is_pp()
 To: Byungchul Park <byungchul@sk.com>
 Cc: willy@infradead.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	linux-mm@kvack.org, kernel_team@skhynix.com, kuba@kernel.org, 
@@ -100,121 +100,80 @@ Content-Transfer-Encoding: quoted-printable
 On Thu, Jul 10, 2025 at 1:28=E2=80=AFAM Byungchul Park <byungchul@sk.com> w=
 rote:
 >
-> To eliminate the use of the page pool fields in struct page, the page
-> pool code should use netmem descriptor and APIs instead.
+> To simplify struct page, the effort to separate its own descriptor from
+> struct page is required and the work for page pool is on going.
 >
-> However, some code e.g. __netmem_to_page() is still used to access the
-> page pool fields e.g. ->pp via struct page, which should be changed so
-> as to access them via netmem descriptor, struct netmem_desc instead,
-> since the fields no longer will be available in struct page.
+> To achieve that, all the code should avoid directly accessing page pool
+> members of struct page.
 >
-> Introduce utility APIs to make them easy to use struct netmem_desc as
-> descriptor.  The APIs are:
->
->    1. __netmem_to_nmdesc(), to convert netmem_ref to struct netmem_desc,
->       but unsafely without checking if it's net_iov or system memory.
->
->    2. netmem_to_nmdesc(), to convert netmem_ref to struct netmem_desc,
->       safely with checking if it's net_iov or system memory.
->
->    3. nmdesc_to_page(), to convert struct netmem_desc to struct page,
->       assuming struct netmem_desc overlays on struct page.
->
->    4. page_to_nmdesc(), to convert struct page to struct netmem_desc,
->       assuming struct netmem_desc overlays on struct page, allowing only
->       head page to be converted.
->
->    5. nmdesc_adress(), to get its virtual address corresponding to the
->       struct netmem_desc.
+> Access ->pp_magic through struct netmem_desc instead of directly
+> accessing it through struct page in page_pool_page_is_pp().  Plus, move
+> page_pool_page_is_pp() from mm.h to netmem.h to use struct netmem_desc
+> without header dependency issue.
 >
 > Signed-off-by: Byungchul Park <byungchul@sk.com>
+> Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> Reviewed-by: Mina Almasry <almasrymina@google.com>
+> Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
+> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+> Acked-by: Harry Yoo <harry.yoo@oracle.com>
 > ---
->  include/net/netmem.h | 41 +++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 41 insertions(+)
+>  include/linux/mm.h   | 12 ------------
+>  include/net/netmem.h | 17 +++++++++++++++++
+>  mm/page_alloc.c      |  1 +
+>  3 files changed, 18 insertions(+), 12 deletions(-)
 >
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 0ef2ba0c667a..0b7f7f998085 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -4172,16 +4172,4 @@ int arch_lock_shadow_stack_status(struct task_stru=
+ct *t, unsigned long status);
+>   */
+>  #define PP_MAGIC_MASK ~(PP_DMA_INDEX_MASK | 0x3UL)
+>
+> -#ifdef CONFIG_PAGE_POOL
+> -static inline bool page_pool_page_is_pp(struct page *page)
+> -{
+> -       return (page->pp_magic & PP_MAGIC_MASK) =3D=3D PP_SIGNATURE;
+> -}
+> -#else
+> -static inline bool page_pool_page_is_pp(struct page *page)
+> -{
+> -       return false;
+> -}
+> -#endif
+> -
+>  #endif /* _LINUX_MM_H */
 > diff --git a/include/net/netmem.h b/include/net/netmem.h
-> index 535cf17b9134..ad9444be229a 100644
+> index ad9444be229a..11e9de45efcb 100644
 > --- a/include/net/netmem.h
 > +++ b/include/net/netmem.h
-> @@ -198,6 +198,32 @@ static inline struct page *netmem_to_page(netmem_ref=
- netmem)
->         return __netmem_to_page(netmem);
+> @@ -355,6 +355,23 @@ static inline void *nmdesc_address(struct netmem_des=
+c *nmdesc)
+>         return page_address(nmdesc_to_page(nmdesc));
 >  }
 >
-> +/**
-> + * __netmem_to_nmdesc - unsafely get pointer to the &netmem_desc backing
-> + * @netmem
-> + * @netmem: netmem reference to convert
-> + *
-> + * Unsafe version of netmem_to_nmdesc(). When @netmem is always backed
-> + * by system memory, performs faster and generates smaller object code
-> + * (no check for the LSB, no WARN). When @netmem points to IOV, provokes
-> + * undefined behaviour.
-> + *
-> + * Return: pointer to the &netmem_desc (garbage if @netmem is not backed
-> + * by system memory).
+> +#ifdef CONFIG_PAGE_POOL
+> +/* XXX: This would better be moved to mm, once mm gets its way to
+> + * identify the type of page for page pool.
 > + */
-> +static inline struct netmem_desc *__netmem_to_nmdesc(netmem_ref netmem)
+> +static inline bool page_pool_page_is_pp(struct page *page)
 > +{
-> +       return (__force struct netmem_desc *)netmem;
+> +       struct netmem_desc *desc =3D page_to_nmdesc(page);
+> +
+> +       return (desc->pp_magic & PP_MAGIC_MASK) =3D=3D PP_SIGNATURE;
 > +}
-> +
 
-Does a netmem_desc represent the pp fields shared between struct page
-and struct net_iov, or does netmem_desc represent paged kernel memory?
-If the former, I don't think we need a safe and unsafe version of this
-helper, since netmem_ref always has netmem_desc fields underneath. If
-the latter, then this helper should not exist at all. We should not
-allow casting netmem_ref to a netmem_desc without first checking if
-it's a net_iov.
+pages can be pp pages (where they have pp fields inside of them) or
+non-pp pages (where they don't have pp fields inside them, because
+they were never allocated from the page_pool).
 
-To be honest the cover letter should come up with a detailed
-explanation of (a) what are the current types (b) what are the new
-types (c) what are the relationships between the types, so these
-questions stop coming up.
-
-> +static inline struct netmem_desc *netmem_to_nmdesc(netmem_ref netmem)
-> +{
-> +       if (WARN_ON_ONCE(netmem_is_net_iov(netmem)))
-> +               return NULL;
-> +
-> +       return __netmem_to_nmdesc(netmem);
-> +}
-> +
->  static inline struct net_iov *netmem_to_net_iov(netmem_ref netmem)
->  {
->         if (netmem_is_net_iov(netmem))
-> @@ -314,6 +340,21 @@ static inline netmem_ref netmem_compound_head(netmem=
-_ref netmem)
->         return page_to_netmem(compound_head(netmem_to_page(netmem)));
->  }
->
-> +#define nmdesc_to_page(nmdesc)         (_Generic((nmdesc),             \
-> +       const struct netmem_desc * :    (const struct page *)(nmdesc),  \
-> +       struct netmem_desc * :          (struct page *)(nmdesc)))
-> +
-> +static inline struct netmem_desc *page_to_nmdesc(struct page *page)
-> +{
-> +       VM_BUG_ON_PAGE(PageTail(page), page);
-> +       return (struct netmem_desc *)page;
-> +}
-> +
-
-It's not safe to cast a page to netmem_desc, without first checking if
-it's a pp page or not, otherwise you may be casting random non-pp
-pages to netmem_desc...
-
-> +static inline void *nmdesc_address(struct netmem_desc *nmdesc)
-> +{
-> +       return page_address(nmdesc_to_page(nmdesc));
-> +}
-> +
->  /**
-
-Introduce helpers in the same patch that uses them please. Having to
-cross reference your series to see if there are any callers to this
-(and the callers are correct) is an unnecessary burden to the
-reviewers.
+Casting a page to a netmem_desc, and then checking if the page was a
+pp page doesn't makes sense to me on a fundamental level. The
+netmem_desc is only valid if the page was a pp page in the first
+place. Maybe page_to_nmdesc should reject the cast if the page is not
+a pp page or something.
 
 --=20
 Thanks,
