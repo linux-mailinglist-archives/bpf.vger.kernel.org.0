@@ -1,75 +1,95 @@
-Return-Path: <bpf+bounces-62902-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62903-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1845EAFFE06
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 11:26:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA471AFFE42
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 11:36:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5425917B9F5
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 09:26:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21DFE17E4C8
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 09:36:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3207B296165;
-	Thu, 10 Jul 2025 09:26:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A93982D3ED0;
+	Thu, 10 Jul 2025 09:36:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="j5MCLfwm"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="3HtqvJiN";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="zvj8PJKv";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="3HtqvJiN";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="zvj8PJKv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CF91293B70;
-	Thu, 10 Jul 2025 09:26:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F5D720B80A
+	for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 09:36:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752139609; cv=none; b=F73yKqQ+aIefzxQDe9zn5+Rk8+hy/fXck5dHxBC3JUU4qEeXqc2vgAQO2d0GqW684UYwtYD98rUmfaoUMlEMS4W7UFpjse7+wekO0/AADHHG2zg522lHrx1pyiB/63Jyee0znuc11GCcxp5BM8CFcOS7l4JqwrraTN2I5H0VUUk=
+	t=1752140172; cv=none; b=IDDI1JgRq1vlA/cCiuxm05ASIo3xhcxrCCTlyskiAv4ncdJ1CI1J5tPU8ZPdr1FsrTk1em30I+JZ5aSisoeyIFtFHgme992Pepr1o4u7kaeUST4cKp9ZCGP+RmFI+PGLtEiY2Lt7geYpASkHQEBKuIBK84xsDeZtUpzwGUtzAdo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752139609; c=relaxed/simple;
-	bh=kIKp3Gsy4qp5Ac/VOuMRe7AuX/Ux88/cWFZbJ0cxPMc=;
+	s=arc-20240116; t=1752140172; c=relaxed/simple;
+	bh=6SZNizaL3I4WJZ8Se2ri22OE98lYH9tqo9ReUXi0as8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Cvu6E+JUEwhcv8BcnAINTcT9E31KYgqXzKx//MUebIOi24fDOFdYf2BrK8Dkeup2ndjNPuit3MhkwkfqME9e7GoyceRbADWKomkTh7FdEJ1WueUTHnL9l4AACXHsRaqdHN4I7ooeHCmyW/jgRNbHxWpd1WOrfYKMoiqDz26FR9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=j5MCLfwm; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56A10DjP009207;
-	Thu, 10 Jul 2025 09:26:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=0prFwd
-	hdgQT8WWTWLkwH2Bc9DrjL6QjOoGmwYgTo5BA=; b=j5MCLfwm+NagId5+yxBPHp
-	10K1l/aCXRzOKn1RSh8ErwQ4j3MABPN+Nk8R1s7eLxkWPm5ZXBiS4pi95j9eflip
-	cmIdtKecBfxWR23BhCXuO8JIPj9LKWXjbV3Sfz3FWzCmkrxU3/x6kdKNgmAZ8vfY
-	rJIkZ8a9Y8sBLjrenkrRKZ5Y2uWJtkarPS9eXzUkBKV2QxOdm4tl4lCFgq8IY5LQ
-	ZPH0enG8jxQVnwrUICyqO8TlUOKC7wGILBk6X8jS+An4pzD144j9OOJiVO1Vj4DH
-	61KLX1V7YtFRLw2IVNLzrL93t50qqBSlAMDffpufArHDHFJ0rlvgmjrKXve7HP8g
-	==
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47svb245x4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 10 Jul 2025 09:26:25 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56A7WksD013562;
-	Thu, 10 Jul 2025 09:26:24 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 47qgkm4q0b-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 10 Jul 2025 09:26:24 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 56A9QK2729229776
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 10 Jul 2025 09:26:21 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id DA0512004E;
-	Thu, 10 Jul 2025 09:26:20 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4D3AD20043;
-	Thu, 10 Jul 2025 09:26:20 +0000 (GMT)
-Received: from [9.152.222.235] (unknown [9.152.222.235])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 10 Jul 2025 09:26:20 +0000 (GMT)
-Message-ID: <768363f9-a04b-4c54-ba1c-bb48f17b76da@linux.ibm.com>
-Date: Thu, 10 Jul 2025 11:26:19 +0200
+	 In-Reply-To:Content-Type; b=ru4ie6TZRpYUrrTpEU0+kgMtyIKiLnYwXFPtZgcIScfvdsA/QU0IVHPnOpruh24nCmgen/T9+iShH4nuGoZpllvYK+tHwVLlg/9JcdIyBg6ns/MksgtJRfGaJhZ36c0yvbjDc8QZqbvYWQLaSLvvFclc4x+A6lnrQOH5dmMpMt8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=3HtqvJiN; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=zvj8PJKv; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=3HtqvJiN; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=zvj8PJKv; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 73C341F385;
+	Thu, 10 Jul 2025 09:36:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1752140162; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=lHlXzHrcGn58ullX7mpSkYhYsJW7eBCgiba+w6ctkC0=;
+	b=3HtqvJiN+Z3PjcIgUkzb38HqmsQ43S0ycLfcMBcpziZVjnB2YsD4KjogmxtPYqMxqq+gmj
+	KH44cPNJGYXwIspY8+lCIeIrLERkG5RBRRLLHR2zc+QNr08xrBmiPMankfLDGd2J4zF49q
+	QIcj1NiO9iMY/14BlSjuLk74Ek1eHJ4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1752140162;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=lHlXzHrcGn58ullX7mpSkYhYsJW7eBCgiba+w6ctkC0=;
+	b=zvj8PJKvVGtETVhwaFIe3bz8w9YOlMakWB7VRO1wEDQ9knm+UNaK2G3QxTpVmvddGhWdrB
+	8i6f/GpfvAOfa8Dg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1752140162; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=lHlXzHrcGn58ullX7mpSkYhYsJW7eBCgiba+w6ctkC0=;
+	b=3HtqvJiN+Z3PjcIgUkzb38HqmsQ43S0ycLfcMBcpziZVjnB2YsD4KjogmxtPYqMxqq+gmj
+	KH44cPNJGYXwIspY8+lCIeIrLERkG5RBRRLLHR2zc+QNr08xrBmiPMankfLDGd2J4zF49q
+	QIcj1NiO9iMY/14BlSjuLk74Ek1eHJ4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1752140162;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=lHlXzHrcGn58ullX7mpSkYhYsJW7eBCgiba+w6ctkC0=;
+	b=zvj8PJKvVGtETVhwaFIe3bz8w9YOlMakWB7VRO1wEDQ9knm+UNaK2G3QxTpVmvddGhWdrB
+	8i6f/GpfvAOfa8Dg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4D358136CB;
+	Thu, 10 Jul 2025 09:36:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id EOifEYKJb2g2TwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Thu, 10 Jul 2025 09:36:02 +0000
+Message-ID: <683189c3-934e-4398-b970-34584ac70a69@suse.cz>
+Date: Thu, 10 Jul 2025 11:36:02 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -77,135 +97,224 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 06/12] unwind_user/sframe: Wire up unwind_user to
- sframe
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc: Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        x86@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        Josh Poimboeuf
- <jpoimboe@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Indu Bhagat <indu.bhagat@oracle.com>,
-        "Jose E. Marchesi" <jemarch@gnu.org>,
-        Beau Belgrave <beaub@linux.microsoft.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>,
-        Sam James <sam@gentoo.org>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-References: <20250708021115.894007410@kernel.org>
- <20250708021159.386608979@kernel.org>
- <d7d840f6-dc79-471e-9390-a58da20b6721@efficios.com>
- <20250708161124.23d775f4@gandalf.local.home>
- <a52c508c-2596-49d1-bbe8-8a92599714f6@linux.ibm.com>
- <39cf3aab-7073-443b-8876-9de65f4c315e@efficios.com>
- <7250b957-2139-4c03-9566-a6ed9713584e@efficios.com>
+Subject: Re: [PATCH v2 6/6] slab: Introduce kmalloc_nolock() and
+ kfree_nolock().
 Content-Language: en-US
-From: Jens Remus <jremus@linux.ibm.com>
-Organization: IBM Deutschland Research & Development GmbH
-In-Reply-To: <7250b957-2139-4c03-9566-a6ed9713584e@efficios.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org,
+ linux-mm@kvack.org
+Cc: harry.yoo@oracle.com, shakeel.butt@linux.dev, mhocko@suse.com,
+ bigeasy@linutronix.de, andrii@kernel.org, memxor@gmail.com,
+ akpm@linux-foundation.org, peterz@infradead.org, rostedt@goodmis.org,
+ hannes@cmpxchg.org
+References: <20250709015303.8107-1-alexei.starovoitov@gmail.com>
+ <20250709015303.8107-7-alexei.starovoitov@gmail.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ m6M14QORSWTLRg==
+In-Reply-To: <20250709015303.8107-7-alexei.starovoitov@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzEwMDA3OSBTYWx0ZWRfX8Q6Bb6cv7NDA UWxUZt2tuOAOqNXYAHQSDX1cEWdOfFbdz2vxPZBt5zsXp9thPBZJdZYaiddw6v0MVm7An+YB95E XOLjvoeQmQMk69h7tdjnQYHJtr5K98rIR13em3hzP99jqFmsoGKQiXde4Pa+tLXWdmbiVkHyy5w
- cpmSC2pcbD7A21IvgEY4UD030QxFAi2OF4JQCPtBxWLU7KdPPLwm0cu4GTfmpr5bAyXb0wACDxH pXqXAHjDaZWSPkp9t8aVhjdnKGVGcJM6DFycZfJ6VB0IUjNtkg2Fe2E13Cyvc7SZQryteyRHY7Q quGs2UhfHQLfk5h3ak1ntn7TLMVB/egAxbfC2u0HCfA5OQtjTJVesVbgSursNWIR+tdE0OdgPiy
- 5LF2S7zqwIQOJ+b4CtvoCjRwnLlQwdtvwWCpq9S4YP9jJo+npgncgwzi4Bdugwprlio849vP
-X-Authority-Analysis: v=2.4 cv=Y774sgeN c=1 sm=1 tr=0 ts=686f8741 cx=c_pps a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17 a=IkcTkHD0fZMA:10 a=Wb1JkmetP80A:10 a=VnNF1IyMAAAA:8 a=a9L8gB4W95wxkTyvaYMA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-ORIG-GUID: R2U_44eD1JowVai17296PMbh11yOz0sB
-X-Proofpoint-GUID: R2U_44eD1JowVai17296PMbh11yOz0sB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
- definitions=2025-07-10_01,2025-07-09_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
- priorityscore=1501 malwarescore=0 bulkscore=0 impostorscore=0
- lowpriorityscore=0 phishscore=0 suspectscore=0 mlxlogscore=999 mlxscore=0
- clxscore=1015 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
- definitions=main-2507100079
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_TLS_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_RCPT(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	FREEMAIL_TO(0.00)[gmail.com,vger.kernel.org,kvack.org];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[oracle.com,linux.dev,suse.com,linutronix.de,kernel.org,gmail.com,linux-foundation.org,infradead.org,goodmis.org,cmpxchg.org];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid];
+	RCVD_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Spam-Score: -2.80
 
-On 09.07.2025 15:51, Mathieu Desnoyers wrote:
-> On 2025-07-09 09:46, Mathieu Desnoyers wrote:
->> I concur with Jens. I think we should keep track of both:
->>
->> 1) available unwind methods,
->>
->> 2) unwind method used for the current frame.
->>
->> E.g.:
->>
->> /*
->>   * unwind types, listed in priority order: lower numbers are
->>   * attempted first if available.
->>   */
->> enum unwind_user_type_bits {
->>          UNWIND_USER_TYPE_SFRAME_BIT = 0,
->>          UNWIND_USER_TYPE_FP_BIT = 1,
->>          UNWIND_USER_TYPE_COMPAT_FP_BIT = 2,
->>
->>      _NR_UNWIND_USER_TYPE_BITS,
->> };
->>
->> enum unwind_user_type {
->>          UNWIND_USER_TYPE_NONE = 0,
->>          UNWIND_USER_TYPE_SFRAME = (1U << UNWIND_USER_TYPE_SFRAME_BIT),
->>          UNWIND_USER_TYPE_FP = (1U << UNWIND_USER_TYPE_FP_BIT),
->>          UNWIND_USER_TYPE_COMPAT_FP = (1U <<  UNWIND_USER_TYPE_COMPAT_FP_BIT),
->> };
->>
->> And have the following fields in struct unwind_user_state:
->>
->> /* Unwind time used for the most recent unwind traversal iteration. */
->> enum unwind_user_type current_type;
->>
->> /* Unwind types available in the current context. Bitmask of enum unwind_user_type. */
->> unsigned int available_types;
->>
->> So as we end up adding stuff like registered JIT unwind info, we will
->> want to expand the "available types". And it makes sense to both keep
->> track of all available types (as a way to quickly know which mechanisms
->> we need to query for the current task) *and* to let the caller know
->> which unwind type was used for the current frame.
->>
->> And AFAIU we'd be inserting a "jit unwind info" type between SFRAME and FP in
->> the future, because the jit unwind info would be more reliable than FP. This
->> would require that we bump the number for FP and COMPAT_FP, but that would
->> be OK because this is not ABI.
->>
->> Thoughts ?
+On 7/9/25 03:53, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
 > 
-> One use-case for giving the "current_type" to iteration callers is to
-> let end users know whether they should trust the frame info. If it
-> comes from sframe, then it should be pretty solid. However, if it comes
-> from frame pointers used as a fallback on a system that omits frame
-> pointers, the user should consider the resulting data with a high level
-> of skepticism.
+> kmalloc_nolock() relies on ability of local_lock to detect the situation
+> when it's locked.
+> In !PREEMPT_RT local_lock_is_locked() is true only when NMI happened in
+> irq saved region that protects _that specific_ per-cpu kmem_cache_cpu.
+> In that case retry the operation in a different kmalloc bucket.
+> The second attempt will likely succeed, since this cpu locked
+> different kmem_cache_cpu.
+> 
+> Similarly, in PREEMPT_RT local_lock_is_locked() returns true when
+> per-cpu rt_spin_lock is locked by current task. In this case re-entrance
+> into the same kmalloc bucket is unsafe, and kmalloc_nolock() tries
+> a different bucket that is most likely is not locked by the current
+> task. Though it may be locked by a different task it's safe to
+> rt_spin_lock() on it.
+> 
+> Similar to alloc_pages_nolock() the kmalloc_nolock() returns NULL
+> immediately if called from hard irq or NMI in PREEMPT_RT.
+> 
+> kfree_nolock() defers freeing to irq_work when local_lock_is_locked()
+> and in_nmi() or in PREEMPT_RT.
+> 
+> SLUB_TINY config doesn't use local_lock_is_locked() and relies on
+> spin_trylock_irqsave(&n->list_lock) to allocate while kfree_nolock()
+> always defers to irq_work.
+> 
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 
-The current_type may be different for every unwind step (frame).  So
-struct unwind_stacktrace would probably need the following added:
+>  static __fastpath_inline
+> @@ -2442,13 +2453,17 @@ static void *setup_object(struct kmem_cache *s, void *object)
+>   * Slab allocation and freeing
+>   */
+>  static inline struct slab *alloc_slab_page(gfp_t flags, int node,
+> -		struct kmem_cache_order_objects oo)
+> +					   struct kmem_cache_order_objects oo,
+> +					   bool allow_spin)
+>  {
+>  	struct folio *folio;
+>  	struct slab *slab;
+>  	unsigned int order = oo_order(oo);
+>  
+> -	if (node == NUMA_NO_NODE)
+> +	if (unlikely(!allow_spin)) {
+> +		folio = (struct folio *)alloc_frozen_pages_nolock(0/* __GFP_COMP is implied */,
+> +								  node, order);
+> +	} else if (node == NUMA_NO_NODE)
+>  		folio = (struct folio *)alloc_frozen_pages(flags, order);
+>  	else
+>  		folio = (struct folio *)__alloc_frozen_pages(flags, order, node, NULL);
 
-	/* Unwind types used for taking the stack trace.  */ 
-	unsigned int used_types;
+Nit: should use { } either for everything or nothing (seems your new branch
+would work without them)
 
-So that the user of unwind_user() could decide whether to trust the
-stack trace.  But as Steve suggested in his reply, all of this could
-be added later, once there is a need.
+>  			stat(s, ALLOC_NODE_MISMATCH);
+> @@ -3730,7 +3762,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+>  	 * PFMEMALLOC but right now, we are losing the pfmemalloc
+>  	 * information when the page leaves the per-cpu allocator
+>  	 */
+> -	if (unlikely(!pfmemalloc_match(slab, gfpflags)))
+> +	if (unlikely(!pfmemalloc_match(slab, gfpflags) && allow_spin))
+>  		goto deactivate_slab;
+>  
+>  	/* must check again c->slab in case we got preempted and it changed */
+> @@ -3803,7 +3835,12 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+>  		slub_set_percpu_partial(c, slab);
+>  
+>  		if (likely(node_match(slab, node) &&
+> -			   pfmemalloc_match(slab, gfpflags))) {
+> +			   pfmemalloc_match(slab, gfpflags)) ||
+> +		    /*
+> +		     * Reentrant slub cannot take locks necessary
+> +		     * for __put_partials(), hence downgrade to any node
+> +		     */
+> +		    !allow_spin) {
 
-Regards,
-Jens
--- 
-Jens Remus
-Linux on Z Development (D3303)
-+49-7031-16-1128 Office
-jremus@de.ibm.com
+Uh this seems rather ugly, I'd move the comment above everything. Also it's
+not "downgrade" as when you assign NUMA_NO_NODE earlier, I'd say "ignore the
+preference".
+Note that it would be bad to ignore with __GFP_THISNODE but then it's not
+allowed for kmalloc_nolock() so that's fine.
 
-IBM
+> @@ -3911,6 +3953,12 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+>  		void *flush_freelist = c->freelist;
+>  		struct slab *flush_slab = c->slab;
+>  
+> +		if (unlikely(!allow_spin))
+> +			/*
+> +			 * Reentrant slub cannot take locks
+> +			 * necessary for deactivate_slab()
+> +			 */
+> +			return NULL;
 
-IBM Deutschland Research & Development GmbH; Vorsitzender des Aufsichtsrats: Wolfgang Wendt; Geschäftsführung: David Faller; Sitz der Gesellschaft: Böblingen; Registergericht: Amtsgericht Stuttgart, HRB 243294
-IBM Data Privacy Statement: https://www.ibm.com/privacy/
+Hm but this is leaking the slab we allocated and have in the "slab"
+variable, we need to free it back in that case.
 
+>  		c->slab = NULL;
+>  		c->freelist = NULL;
+>  		c->tid = next_tid(c->tid);
+
+> @@ -4593,10 +4792,31 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
+>  	barrier();
+>  
+>  	if (unlikely(slab != c->slab)) {
+> -		__slab_free(s, slab, head, tail, cnt, addr);
+> +		/* cnt == 0 signals that it's called from kfree_nolock() */
+> +		if (unlikely(!cnt)) {
+> +			/*
+> +			 * __slab_free() can locklessly cmpxchg16 into a slab,
+> +			 * but then it might need to take spin_lock or local_lock
+> +			 * in put_cpu_partial() for further processing.
+> +			 * Avoid the complexity and simply add to a deferred list.
+> +			 */
+> +			defer_free(head);
+> +		} else {
+> +			__slab_free(s, slab, head, tail, cnt, addr);
+> +		}
+>  		return;
+>  	}
+>  
+> +	if (unlikely(!cnt)) {
+> +		if ((in_nmi() || !USE_LOCKLESS_FAST_PATH()) &&
+> +		    local_lock_is_locked(&s->cpu_slab->lock)) {
+> +			defer_free(head);
+> +			return;
+> +		}
+> +		cnt = 1;
+
+Hmm we might end up doing a "goto redo" later and then do the wrong thing above?
+
+> +		kasan_slab_free(s, head, false, false, /* skip quarantine */true);
+> +	}
+> +
+>  	if (USE_LOCKLESS_FAST_PATH()) {
+>  		freelist = READ_ONCE(c->freelist);
+>  
 
