@@ -1,96 +1,75 @@
-Return-Path: <bpf+bounces-62890-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62891-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5A89AFFB3E
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 09:45:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CF03AFFBA6
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 10:04:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE6E47BD984
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 07:43:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD7D9564214
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 08:04:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 606C228B519;
-	Thu, 10 Jul 2025 07:45:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72F2728B4E0;
+	Thu, 10 Jul 2025 08:04:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qH1bC//v";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DErqi3io";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qH1bC//v";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DErqi3io"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="OQpV2k4v"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE1C12248BE
-	for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 07:45:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CEE84A0C;
+	Thu, 10 Jul 2025 08:04:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752133511; cv=none; b=cjBOXPV/5vJ4DbXSFc4Wdy7qjyxSJuK9PplttDPQ2sO1QdTcIceiweAV/Fqq5UbhJl2LdYDrlfEuzRWneo6Xm6a/9vJ+Vp9NIhEnU9FxH1/UBRYMw104hSAt1pPDoPkuV0zqz1B3ZNHPUHtrh3eKu+7/rxprxXM4R8sL3VQlZPY=
+	t=1752134670; cv=none; b=Wl05Mzjn7hOtbGxaLkCDU846dPdA1IxQvAmDmEaEZXZYjd4C/76M1D2OEEJcV5c67GFYMdhL/wB/Bqrb6nesRpwhfSHiuINyI0W02A15xfFsKQLmBal9C+jXMlnzDTCyldtXzL8Cvme4lddk9WirrNRyWAKaJgut6TFhf6Ud5LM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752133511; c=relaxed/simple;
-	bh=LveLAck7KbOrV7YC6vm8GhszdxDKoonNsQMuCL0GkAA=;
+	s=arc-20240116; t=1752134670; c=relaxed/simple;
+	bh=UoxQ3Giq6Y9Cub6dytdzX/dzwXpAKILzBrPogGC/vHM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Hk3OuuwbAIhsnBrXi/hFJ0KKMVGd0iZy8C9RIq2ky175fjcuxS/Y2LoIvDlaUakxyn4Aw6UUw3MDkerxUdnuWd7nhAAlWsa6KKv+HFKMf7Fib0Cq7D47pNux8h9nL9+moowv5rn+WYYXLfL4nhLcnyVAjjasTImre3Lc3hSB5RU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qH1bC//v; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DErqi3io; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qH1bC//v; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DErqi3io; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7803021161;
-	Thu, 10 Jul 2025 07:45:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1752133507; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=SwiYXawlk2GbUglsLaVMtrw1Q7SkFLnzF9Ts2q98Ebk=;
-	b=qH1bC//vWa2298KcnU6iYKni6fdZ+yw/RgwdOzFKHV+iibnjQ1yIZtj6k5ciFSJ7Ye1Okg
-	HKe5Ct0tWlcoj4SdgrCGRjgbj7ubayoQ38VyWqzO+N1/RCD7pxye+nl3/j7uKW3av19IuL
-	ltV0rT2fady4SuUREjOordd+h/eUGwo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1752133507;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=SwiYXawlk2GbUglsLaVMtrw1Q7SkFLnzF9Ts2q98Ebk=;
-	b=DErqi3ioEn+iwlDOB2K7oahOdpSXDOn0L4urAUufUZPkvqCbORWZaQCp3DixKXq6zQJgmv
-	AylM2z0yyRznWKDw==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="qH1bC//v";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=DErqi3io
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1752133507; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=SwiYXawlk2GbUglsLaVMtrw1Q7SkFLnzF9Ts2q98Ebk=;
-	b=qH1bC//vWa2298KcnU6iYKni6fdZ+yw/RgwdOzFKHV+iibnjQ1yIZtj6k5ciFSJ7Ye1Okg
-	HKe5Ct0tWlcoj4SdgrCGRjgbj7ubayoQ38VyWqzO+N1/RCD7pxye+nl3/j7uKW3av19IuL
-	ltV0rT2fady4SuUREjOordd+h/eUGwo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1752133507;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=SwiYXawlk2GbUglsLaVMtrw1Q7SkFLnzF9Ts2q98Ebk=;
-	b=DErqi3ioEn+iwlDOB2K7oahOdpSXDOn0L4urAUufUZPkvqCbORWZaQCp3DixKXq6zQJgmv
-	AylM2z0yyRznWKDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 516CB13AAB;
-	Thu, 10 Jul 2025 07:45:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id mJ3yEYNvb2g2KAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Thu, 10 Jul 2025 07:45:07 +0000
-Message-ID: <3b1de14f-faef-420b-87e8-3b7f2845ced1@suse.cz>
-Date: Thu, 10 Jul 2025 09:45:07 +0200
+	 In-Reply-To:Content-Type; b=j3YfBZZAr5oNrZm8aYlpFHvh565own6e0swa9zZrSDH+r69qydM5xyCPjS4MlrX/LsdAOZdeN3DkuaaKKsR9YeaDXu06OY3oq5gCv7P0lbEFhP5ulathmVrLDPX42AyXP5rMtoQgRqJPpR7tJmvTU0uTHjMczKeQaXqz9BAj9QU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=OQpV2k4v; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56A49lk3032551;
+	Thu, 10 Jul 2025 08:03:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=ig5SFx
+	LMcxNNKRukoXkYPgH/XFtzRcRvvW25mYHk6Pg=; b=OQpV2k4vtsgcTSWxVAwURE
+	hlL97WxO1+KhVF9fcvDlXO16eknIAlASz/6Fc3xHDeJsjLVCqMHM1KCJYBsq4YeC
+	GznOIcWka40opHCLZjzbWsvuPTHY0ejtuXYUgBZR3WfuMP75FWZKwOSVtOm9mD6X
+	UCWhnQdzHcInvKxY3Nbjs7hkqZsEdw7GNf9XXy1KqCgaVde8WWCOnWCWd8hzSt8p
+	SFHoRZtCiTrmNeikiqZq41E9JoMouissTAvRErLh+/6obPbMDjEn/i1WuqWOB0AE
+	rHGI3eLnlveLg+O/zJDJbrFA5SHFhUir3jqDn8AhxqrFRHNU8KfTCbahKAWnC5gw
+	==
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47ptjrakc1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 10 Jul 2025 08:03:27 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56A5UHLn021522;
+	Thu, 10 Jul 2025 08:03:26 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 47qectvtyu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 10 Jul 2025 08:03:25 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 56A83MbV54723034
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 10 Jul 2025 08:03:22 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3C2412004B;
+	Thu, 10 Jul 2025 08:03:22 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C6C4820040;
+	Thu, 10 Jul 2025 08:03:21 +0000 (GMT)
+Received: from [9.152.222.235] (unknown [9.152.222.235])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 10 Jul 2025 08:03:21 +0000 (GMT)
+Message-ID: <517825b1-ee74-4ffa-a182-d3f9abf99298@linux.ibm.com>
+Date: Thu, 10 Jul 2025 10:03:21 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -98,113 +77,81 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 2/4] mm/slub: allow to set node and align in
- k[v]realloc
+Subject: Re: [PATCH v8 06/12] unwind_user/sframe: Wire up unwind_user to
+ sframe
+To: Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        x86@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+        Josh Poimboeuf
+ <jpoimboe@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Indu Bhagat <indu.bhagat@oracle.com>,
+        "Jose E. Marchesi" <jemarch@gnu.org>,
+        Beau Belgrave <beaub@linux.microsoft.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>,
+        Sam James <sam@gentoo.org>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+References: <20250708021115.894007410@kernel.org>
+ <20250708021159.386608979@kernel.org>
+ <d7d840f6-dc79-471e-9390-a58da20b6721@efficios.com>
+ <20250708161124.23d775f4@gandalf.local.home>
+ <a52c508c-2596-49d1-bbe8-8a92599714f6@linux.ibm.com>
+ <39cf3aab-7073-443b-8876-9de65f4c315e@efficios.com>
+ <7250b957-2139-4c03-9566-a6ed9713584e@efficios.com>
+ <20250709100601.3989235d@batman.local.home>
 Content-Language: en-US
-To: Vitaly Wool <vitaly.wool@konsulko.se>, linux-mm@kvack.org
-Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
- Uladzislau Rezki <urezki@gmail.com>, Danilo Krummrich <dakr@kernel.org>,
- Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
- "Liam R . Howlett" <Liam.Howlett@oracle.com>,
- Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org,
- bpf@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
- Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>
-References: <20250709172345.1031907-1-vitaly.wool@konsulko.se>
- <20250709172441.1032006-1-vitaly.wool@konsulko.se>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- m6M14QORSWTLRg==
-In-Reply-To: <20250709172441.1032006-1-vitaly.wool@konsulko.se>
+From: Jens Remus <jremus@linux.ibm.com>
+Organization: IBM Deutschland Research & Development GmbH
+In-Reply-To: <20250709100601.3989235d@batman.local.home>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 7803021161
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.51 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[linux-foundation.org,vger.kernel.org,gmail.com,kernel.org,google.com,oracle.com,linux.dev,gondor.apana.org.au,suse.de];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Score: -4.51
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=GL8IEvNK c=1 sm=1 tr=0 ts=686f73cf cx=c_pps a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17 a=IkcTkHD0fZMA:10 a=Wb1JkmetP80A:10 a=VnNF1IyMAAAA:8 a=Zg_fgM-7fzLk7_7bOdYA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+X-Proofpoint-ORIG-GUID: Irss1GOAyZA8o4Qh90smeF0D45qjNOXw
+X-Proofpoint-GUID: Irss1GOAyZA8o4Qh90smeF0D45qjNOXw
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzEwMDA2MSBTYWx0ZWRfXyClXCw1oiqON jFqX9kYVGEXy8P/vFYSHSl06W/dlmActh2DYRJLZmn6lhpv4tNur6TrHsLFRIMZ1zCLbDk/pYua CV+Or6F4HaIS8VFSxqikAZR3TArjQv8tUg8SNlzk8NotUHAo3rWFK/EjAeH0Yb+sVWqPj/Jjvjm
+ 7EsnZizKSGvjB9X1ixSqjFrITR1nGa0BFYo37HvBBmzuLEUlZZxs7EIzd8HSnq65dIzX++CQATm RQvdVSt+YuMG45vGB/SGR+/wDbBsNoIP6bm5OD0/MK7baeed9EjmsLvgNVnhIUF83/G9Y8dzQp/ j1U6z0R8nPWnZ2TGhsnA5/4YjFBhlyqEhvKP+yPgvdkYzZERp3Z1+aYADZ3F9TWODhYTglQT5jA
+ M1r4ahKw/8cCtdG55wDRsyFIg6ApO5RKZVlV0LzkHO61SYOR/IOAgTM9cuxj4gJTyFW4lQfF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
+ definitions=2025-07-09_05,2025-07-09_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ clxscore=1015 impostorscore=0 suspectscore=0 bulkscore=0 adultscore=0
+ priorityscore=1501 mlxscore=0 spamscore=0 mlxlogscore=953
+ lowpriorityscore=0 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
+ definitions=main-2507100061
 
-On 7/9/25 19:24, Vitaly Wool wrote:
-> Reimplement k[v]realloc_node() to be able to set node and
-> alignment should a user need to do so. In order to do that while
-> retaining the maximal backward compatibility, add
-> k[v]realloc_node_align() functions and redefine the rest of API
-> using these new ones.
-> 
-> While doing that, we also keep the number of  _noprof variants to a
-> minimum, which implies some changes to the existing users of older
-> _noprof functions, that basically being bcachefs.
-> 
-> With that change we also provide the ability for the Rust part of
-> the kernel to set node and alignment in its K[v]xxx
-> [re]allocations.
-> 
-> Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.se>
+On 09.07.2025 16:06, Steven Rostedt wrote:
+> But for now, until we have a use case that we are implementing, I want
+> to keep this simple, otherwise it will never get done. I don't want to
+> add features for hypothetical scenarios.
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+> Jens, is there something that the architecture code needs now? If so,
+> then lets fix it, otherwise lets do it when there is something. This
+> isn't user API, it can change in the future.
+
+I am fine with your suggestion.  My s390 sframe support does not require
+any changes in this regard.
+
+Regards,
+Jens
+-- 
+Jens Remus
+Linux on Z Development (D3303)
++49-7031-16-1128 Office
+jremus@de.ibm.com
+
+IBM
+
+IBM Deutschland Research & Development GmbH; Vorsitzender des Aufsichtsrats: Wolfgang Wendt; Geschäftsführung: David Faller; Sitz der Gesellschaft: Böblingen; Registergericht: Amtsgericht Stuttgart, HRB 243294
+IBM Data Privacy Statement: https://www.ibm.com/privacy/
 
 
