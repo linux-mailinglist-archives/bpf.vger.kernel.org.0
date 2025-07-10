@@ -1,151 +1,236 @@
-Return-Path: <bpf+bounces-62879-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62880-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B9ADAFF853
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 07:11:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7348BAFF8AB
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 07:55:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BF881C8348A
-	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 05:11:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53B3B5630B8
+	for <lists+bpf@lfdr.de>; Thu, 10 Jul 2025 05:55:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFB66220680;
-	Thu, 10 Jul 2025 05:11:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9460286D6B;
+	Thu, 10 Jul 2025 05:55:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ChLj4j8M"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="hfrQuwvl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2188286334
-	for <bpf@vger.kernel.org>; Thu, 10 Jul 2025 05:11:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 420205383;
+	Thu, 10 Jul 2025 05:55:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752124272; cv=none; b=et4VadyXj6YFjt2vYe0j0LTNkE6vCmt9NW6L1aQdfvi9voyK+F6LS6anRPlCqbX1IddqYkeQpUAyfFJMK5B8VWyfWSpa1edj7nHjTVFiCNIFAapVTJRYU8/qXOTHIdu3hKW4m/zMxP6QzQXwEmbi1YeOxyptLIJ2yHWcu2hhDlA=
+	t=1752126930; cv=none; b=RAXjFMJx8654T5wXIId4AX2jnj1puFQbkZyBheF1EGryp6rlm/31muQpdtr2nlijsuQaXYP/T8JaHNs7ZgqrPyl1fwEsw1LDwXEOyPjEqD+Z5VkKNe3ZJIjM3vCWmyO7YDozU2w85FYV1aaGKD6UmdGrUt2U5nnHE0HIS99l17c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752124272; c=relaxed/simple;
-	bh=UFQbDQd7w7am40EqQUFsalPXneKG43TM1Xr6EB2LB88=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=XZ4+m4UurN37LvE1PfDJvmTxY1393MslkhaFPkuIdJE5lBU8R6QXGXmKfjk9GrgRHQmW+HNTXJ5MwyptTrg2x61WGatsKtO6tjAAoaOsiukvOjCQ0+XkYWmSl2q/3D1gwNhygeRBZ9hhBmU/wW7/faKpoI82wiAv/zDyy2HuqN8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ChLj4j8M; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-235ef62066eso10086025ad.3
-        for <bpf@vger.kernel.org>; Wed, 09 Jul 2025 22:11:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752124270; x=1752729070; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=HR5Xj0YvMaoDoyvMKRcohDWQuaVOiBi1ktD1dNNacEQ=;
-        b=ChLj4j8M1H81ItBkoaMWTJgzBrt92Sr1UhKGw4o3/p3P8P7N8wwl0blz767OcrmYBK
-         vpR9NCT0ALX8BdyEDhdypGKCJaPe7UXKZJTz2/hIImXnra/8LZ3xzcL8wo4XspWfJGot
-         dN86+us8rDPUpzQDHSxKNjaDQlb7ajpZ9UDcGmHG2ds7Cxwv07BqsHFp3jwpvQPlV44U
-         Y7A4Ofpfm0gee78waNnktAmltOBE/Mdkg8hy3eRpNFrwZ9vz8c8n4rwxJjtTY3QUK/rI
-         HKYjEbkt/wGf6nAYEx9ovOuN/EJ197pZ1c82TYzFafdZ0eiphB8yaKtuG87MDky2CRSt
-         xMkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752124270; x=1752729070;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HR5Xj0YvMaoDoyvMKRcohDWQuaVOiBi1ktD1dNNacEQ=;
-        b=jZ5mlPf1KYXZNibxolYfm/FKi5owub68IvEs9camiCrq1zEmi+ZYCZ5MIIUuMcr1QV
-         0JzDFExVY0sVAgM9h9LF/60zth/TSDxpXrK9QF80rGIF1/1rz2hi9jfnJMhHFGj4760i
-         K1bwbohUTGVfzBrbOXXw2HsPKvrxsd0NQiDItq61YemPWLrzThDX4tLQlQUKZQO5Sfil
-         S3TV8wQ5464S+jH+EamO7XschiKsbvAiwRVjjopMJsfSnIN+MxkZ1NLD/6DGuBiLOi2P
-         lpWcT260z4B/aeVGmmZKQ0Z9+Lnoj2xXRfo39VAwTpR4FZVKf60yr5hmIHMoWuPx+5jb
-         R7RA==
-X-Forwarded-Encrypted: i=1; AJvYcCVYsmc+r2emVwVwcVXiAxhT8vS6Ce4SqthShqjpHJXlZ8NVs/afYzF0P5Pgtrrm4ZeIR/c=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzBbYt/Z+2uDZ4ibVIpJUklGmE2rsSwPpdCyh3x9yZtUPSS1YmL
-	9p1MT9ZLoxaNwYdE83RfItZjvSDCx11Qq4puyjK2+z0ssXddkdxuHBkm
-X-Gm-Gg: ASbGncvufRIpRFsTNLOxug34JTNDLYNjAQE63S3uxQf0/2MUm54dQ0NKhlUwEtF+4cV
-	GCdmST6uwz1YIhT6LU8IPMNEPgCxxAMDaOm5lMysebeu/hYcPWFAeQfzCaMjMjtTxgifdutuvCL
-	6LHFYtVWgwwzl9+ND145esuarwvNiCz8yuGEpah99peGAMo4PC4D1bqRZBQHFWgbQE37Mel/Axw
-	1WHXZgdZQNycrAjX0Mh+7I3SDY+zthJRSd+qJXI6touGxIBihSra54RuIez0YCR4KnNND1nPoYA
-	+iNgCxm64HCYR21l91zrutrg1kDJUxtnRw1FesaVile7ki2aa4hi8k8rBQ==
-X-Google-Smtp-Source: AGHT+IHVOmMDAUKI+92dcoTIWT9MQ4qm+DbccYB/61rI14eV/A46EMauRl+78ehxoI9hEtwf+EDyrA==
-X-Received: by 2002:a17:903:fa4:b0:236:15b7:62e8 with SMTP id d9443c01a7336-23ddb2f2bdbmr85270815ad.25.1752124270318;
-        Wed, 09 Jul 2025 22:11:10 -0700 (PDT)
-Received: from [192.168.0.56] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23de4323f0asm9721765ad.115.2025.07.09.22.11.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jul 2025 22:11:09 -0700 (PDT)
-Message-ID: <6254d58b01b255943269948ba4853afdcb9e9318.camel@gmail.com>
-Subject: Re: [RFC bpf-next 8/9] libbpf: support llvm-generated indirect jumps
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Anton Protopopov <a.s.protopopov@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf
- <bpf@vger.kernel.org>,  Alexei Starovoitov	 <ast@kernel.org>, Andrii
- Nakryiko <andrii@kernel.org>, Anton Protopopov	 <aspsk@isovalent.com>,
- Daniel Borkmann <daniel@iogearbox.net>, Quentin Monnet	 <qmo@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>
-Date: Wed, 09 Jul 2025 22:11:06 -0700
-In-Reply-To: <f38d1a6ff69991230b929f2cad5776f500a2a57c.camel@gmail.com>
-References: <20250615085943.3871208-1-a.s.protopopov@gmail.com>
-			 <20250615085943.3871208-9-a.s.protopopov@gmail.com>
-			 <CAADnVQKhVyh4WqjUgxYLZwn5VMY6hSMWyLoQPxt4TJG1812DcA@mail.gmail.com>
-			 <690335c5969530cb96ed9b968ce7371fb1f0228a.camel@gmail.com>
-			 <aG3/MWCOwdk5z0mp@mail.gmail.com>
-		 <f90ea7ec00265ab842e373a69f0ffdbb374f7614.camel@gmail.com>
-	 <f38d1a6ff69991230b929f2cad5776f500a2a57c.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1752126930; c=relaxed/simple;
+	bh=GlRTsNWYMTrAcXnXTGWwFfiMFFeCUzzVnFeqbx0HAzs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lLruVrfmdSKcswuL2Dc/p3peSmouf9/JLsdOS2Q6ZkrWb3tcW7w+KnAZs8p7ybNYm0JpRl1BLlOZIvisfVNALgJ4aFHdAXFpPG5soq1YUdNLYIad2mcZHukIayCB0zR+anrPYhE3y4fkTlZ2hqQaA0dfUDv3zApk/oG6U/nMGyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=hfrQuwvl; arc=none smtp.client-ip=220.197.31.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=Ok
+	Omog+xA6ZskFrf7mJLxT2vs7YHH1y9jNOPVQ1DbRU=; b=hfrQuwvlfSGZevpZBB
+	M2b5RmvtGGFuO64H2DqqDVLLUBe4XlCOZgtADHgyYvQctTxuSMIAgALe2gogRy65
+	hxvwpOVDDxLTgZziu789UyTFNTG20xfRBGv7dBE2NuXwpFafhKe2BVlYFMrKZNVb
+	yRVRyckjLVamBdkIIHDmVBUzk=
+Received: from localhost.localdomain (unknown [])
+	by gzga-smtp-mtada-g1-2 (Coremail) with SMTP id _____wCnddKLVW9o_xi_Dw--.25287S2;
+	Thu, 10 Jul 2025 13:54:21 +0800 (CST)
+From: Feng Yang <yangfeng59949@163.com>
+To: martin.lau@linux.dev,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	mattbobrowski@google.com,
+	rostedt@goodmis.org,
+	mhiramat@kernel.org,
+	olsajiri@gmail.com
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH v2 bpf-next] bpf: Clean up individual BTF_ID code
+Date: Thu, 10 Jul 2025 13:54:19 +0800
+Message-Id: <20250710055419.70544-1-yangfeng59949@163.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wCnddKLVW9o_xi_Dw--.25287S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW3Ww15KFy5AF4UKw15ZrWDJwb_yoW7tr1fpF
+	W8Z3srCr48tw4YgF1DJF4Uuryag3Z5W3y7Cr4DC3ySkF1DXryDWF1jgw13ZF1a9ryqgr9a
+	qr109F1avw1fuFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jnYFAUUUUU=
+X-CM-SenderInfo: p1dqww5hqjkmqzuzqiywtou0bp/1tbipRWGeGhvJOiDmgABsd
 
-On Wed, 2025-07-09 at 01:38 -0700, Eduard Zingerman wrote:
-> On Tue, 2025-07-08 at 22:58 -0700, Eduard Zingerman wrote:
->=20
-> [...]
->=20
-> > This seems to work:
-> > https://github.com/eddyz87/llvm-project/tree/separate-jumptables-sectio=
-n.1
+From: Feng Yang <yangfeng@kylinos.cn>
 
-[...]
+Use BTF_ID_LIST_SINGLE(a, b, c) instead of
+BTF_ID_LIST(a)
+BTF_ID(b, c)
 
-> I think this is a correct form, further changes should be LLVM
-> internal.
+Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
+---
+Changes in v2:
+- Add the missing ones, thanks: jirka.
+- Link to v1: https://lore.kernel.org/all/20250709082038.103249-1-yangfeng59949@163.com/
+---
+ kernel/bpf/btf.c         | 3 +--
+ kernel/bpf/link_iter.c   | 3 +--
+ kernel/bpf/prog_iter.c   | 3 +--
+ kernel/kallsyms.c        | 3 +--
+ kernel/trace/bpf_trace.c | 3 +--
+ net/ipv6/route.c         | 3 +--
+ net/netlink/af_netlink.c | 3 +--
+ net/sched/bpf_qdisc.c    | 9 +++------
+ 8 files changed, 10 insertions(+), 20 deletions(-)
 
-Pushed yet another update. Jump table entries computation was off by 1.
-Here is a comment from the commit:
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 2dd13eea7b0e..0aff814cb53a 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -6200,8 +6200,7 @@ int get_kern_ctx_btf_id(struct bpf_verifier_log *log, enum bpf_prog_type prog_ty
+ 	return kctx_type_id;
+ }
+ 
+-BTF_ID_LIST(bpf_ctx_convert_btf_id)
+-BTF_ID(struct, bpf_ctx_convert)
++BTF_ID_LIST_SINGLE(bpf_ctx_convert_btf_id, struct, bpf_ctx_convert)
+ 
+ static struct btf *btf_parse_base(struct btf_verifier_env *env, const char *name,
+ 				  void *data, unsigned int data_size)
+diff --git a/kernel/bpf/link_iter.c b/kernel/bpf/link_iter.c
+index fec8005a121c..8158e9c1af7b 100644
+--- a/kernel/bpf/link_iter.c
++++ b/kernel/bpf/link_iter.c
+@@ -78,8 +78,7 @@ static const struct seq_operations bpf_link_seq_ops = {
+ 	.show	= bpf_link_seq_show,
+ };
+ 
+-BTF_ID_LIST(btf_bpf_link_id)
+-BTF_ID(struct, bpf_link)
++BTF_ID_LIST_SINGLE(btf_bpf_link_id, struct, bpf_link)
+ 
+ static const struct bpf_iter_seq_info bpf_link_seq_info = {
+ 	.seq_ops		= &bpf_link_seq_ops,
+diff --git a/kernel/bpf/prog_iter.c b/kernel/bpf/prog_iter.c
+index 53a73c841c13..85d8fcb56fb7 100644
+--- a/kernel/bpf/prog_iter.c
++++ b/kernel/bpf/prog_iter.c
+@@ -78,8 +78,7 @@ static const struct seq_operations bpf_prog_seq_ops = {
+ 	.show	= bpf_prog_seq_show,
+ };
+ 
+-BTF_ID_LIST(btf_bpf_prog_id)
+-BTF_ID(struct, bpf_prog)
++BTF_ID_LIST_SINGLE(btf_bpf_prog_id, struct, bpf_prog)
+ 
+ static const struct bpf_iter_seq_info bpf_prog_seq_info = {
+ 	.seq_ops		= &bpf_prog_seq_ops,
+diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+index 4198f30aac3c..1e7635864124 100644
+--- a/kernel/kallsyms.c
++++ b/kernel/kallsyms.c
+@@ -829,8 +829,7 @@ static struct bpf_iter_reg ksym_iter_reg_info = {
+ 	.seq_info		= &ksym_iter_seq_info,
+ };
+ 
+-BTF_ID_LIST(btf_ksym_iter_id)
+-BTF_ID(struct, kallsym_iter)
++BTF_ID_LIST_SINGLE(btf_ksym_iter_id, struct, kallsym_iter)
+ 
+ static int __init bpf_ksym_iter_register(void)
+ {
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index e7f97a9a8bbd..c8162dc89dc3 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -781,8 +781,7 @@ BPF_CALL_1(bpf_task_pt_regs, struct task_struct *, task)
+ 	return (unsigned long) task_pt_regs(task);
+ }
+ 
+-BTF_ID_LIST(bpf_task_pt_regs_ids)
+-BTF_ID(struct, pt_regs)
++BTF_ID_LIST_SINGLE(bpf_task_pt_regs_ids, struct, pt_regs)
+ 
+ const struct bpf_func_proto bpf_task_pt_regs_proto = {
+ 	.func		= bpf_task_pt_regs,
+diff --git a/net/ipv6/route.c b/net/ipv6/route.c
+index 79c8f1acf8a3..0d5464c64965 100644
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -6805,8 +6805,7 @@ void __init ip6_route_init_special_entries(void)
+ #if defined(CONFIG_BPF_SYSCALL) && defined(CONFIG_PROC_FS)
+ DEFINE_BPF_ITER_FUNC(ipv6_route, struct bpf_iter_meta *meta, struct fib6_info *rt)
+ 
+-BTF_ID_LIST(btf_fib6_info_id)
+-BTF_ID(struct, fib6_info)
++BTF_ID_LIST_SINGLE(btf_fib6_info_id, struct, fib6_info)
+ 
+ static const struct bpf_iter_seq_info ipv6_route_seq_info = {
+ 	.seq_ops		= &ipv6_route_seq_ops,
+diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
+index e8972a857e51..bea064febf80 100644
+--- a/net/netlink/af_netlink.c
++++ b/net/netlink/af_netlink.c
+@@ -2869,8 +2869,7 @@ static const struct rhashtable_params netlink_rhashtable_params = {
+ };
+ 
+ #if defined(CONFIG_BPF_SYSCALL) && defined(CONFIG_PROC_FS)
+-BTF_ID_LIST(btf_netlink_sock_id)
+-BTF_ID(struct, netlink_sock)
++BTF_ID_LIST_SINGLE(btf_netlink_sock_id, struct, netlink_sock)
+ 
+ static const struct bpf_iter_seq_info netlink_seq_info = {
+ 	.seq_ops		= &netlink_seq_ops,
+diff --git a/net/sched/bpf_qdisc.c b/net/sched/bpf_qdisc.c
+index 7ea8b54b2ab1..adcb618a2bfc 100644
+--- a/net/sched/bpf_qdisc.c
++++ b/net/sched/bpf_qdisc.c
+@@ -130,8 +130,7 @@ static int bpf_qdisc_btf_struct_access(struct bpf_verifier_log *log,
+ 	return 0;
+ }
+ 
+-BTF_ID_LIST(bpf_qdisc_init_prologue_ids)
+-BTF_ID(func, bpf_qdisc_init_prologue)
++BTF_ID_LIST_SINGLE(bpf_qdisc_init_prologue_ids, func, bpf_qdisc_init_prologue)
+ 
+ static int bpf_qdisc_gen_prologue(struct bpf_insn *insn_buf, bool direct_write,
+ 				  const struct bpf_prog *prog)
+@@ -161,8 +160,7 @@ static int bpf_qdisc_gen_prologue(struct bpf_insn *insn_buf, bool direct_write,
+ 	return insn - insn_buf;
+ }
+ 
+-BTF_ID_LIST(bpf_qdisc_reset_destroy_epilogue_ids)
+-BTF_ID(func, bpf_qdisc_reset_destroy_epilogue)
++BTF_ID_LIST_SINGLE(bpf_qdisc_reset_destroy_epilogue_ids, func, bpf_qdisc_reset_destroy_epilogue)
+ 
+ static int bpf_qdisc_gen_epilogue(struct bpf_insn *insn_buf, const struct bpf_prog *prog,
+ 				  s16 ctx_stack_off)
+@@ -451,8 +449,7 @@ static struct bpf_struct_ops bpf_Qdisc_ops = {
+ 	.owner = THIS_MODULE,
+ };
+ 
+-BTF_ID_LIST(bpf_sk_buff_dtor_ids)
+-BTF_ID(func, bpf_kfree_skb)
++BTF_ID_LIST_SINGLE(bpf_sk_buff_dtor_ids, func, bpf_kfree_skb)
+ 
+ static int __init bpf_qdisc_kfunc_init(void)
+ {
+-- 
+2.43.0
 
---- 8< --------------------------------
-
-Emit JX instruction anchor label:
-
-       .reloc 0, FK_SecRel_8, BPF.JT.0.0
-       gotox r1
-  .LBPF.JX.0.0:                          <--- this
-
-This label is used to compute jump table entries:
-
-                 .--- basic block label
-                 v
-  .L0_0_set_7 =3D LBB0_7 - .LBPF.JX.0.0    <---- JX anchor label
-  ...
-  BPF.JT.0.0:                            <---- JT definition
-       .long   .L0_0_set_7
-
-The anchor needs to be placed after gotox to follow BPF
-jump offset rules: dest_pc =3D=3D jump_pc + off + 1.
-For example:
-
-  1: gotox r1 // suppose r1 value corresponds to to LBB0_7
-     ...
-  5: <insn>   // LBB0_7 physical address
-
-In order to jump to 5 from 1 offset read from jump table has to be 3,
-hence anchor should be placed at 2.
-
--------------------------------- >8 ---
-
-Please let me know if this works end-to-end.
 
