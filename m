@@ -1,162 +1,126 @@
-Return-Path: <bpf+bounces-63068-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63069-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6138BB0229A
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 19:27:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 279C6B0229F
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 19:29:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4131580CE4
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 17:27:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41901547F13
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 17:29:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C3712EF9A3;
-	Fri, 11 Jul 2025 17:27:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28BDC2F0E49;
+	Fri, 11 Jul 2025 17:29:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VD23y5be"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ik6Ttd4/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EC312F0C4B;
-	Fri, 11 Jul 2025 17:27:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61E3D2F5E;
+	Fri, 11 Jul 2025 17:29:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752254838; cv=none; b=t25q8smOt/yJe3nExUYoEet9xF4bzG2wrPc6o/IxdDhkHWQJ4gh46afJKgoHX9m6VSTtcmq7tgBdrWVD8EZ5VxRCOYKC67xEcUOsV/kJwZYWPNA4as/b8r68WDHpykYBxg3nXEpqyDl0dE+rODbq68KN/MTXyNsmmG8AegrTYEk=
+	t=1752254966; cv=none; b=oCeYpRbuFoTDR/kDpKNaJmZYpcqJd/E71oNubeSqSPi7jabec47dRCwut3v1769L9hQSNsvDhTG9cJNn8V2Oh7ejjdCl5j+8S1oaXE3tji0dvJ/zg3YaKo55QVRhthdFD9cYO+E/cX1wTsyFdUVQDywVkIafYu1mDgeJ7qZbfa8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752254838; c=relaxed/simple;
-	bh=cNZFmBkOS3jQ3ZVGfw6BKPEf+R4uiKYY5R6FN9eB/As=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Kx+4yqT4SbqQ+qCK6t75BIe92BAC7ngMwC//pvdv55RdJS9cqd65xz9pSMqZ5Ep+okpv85+McM2NNyOPsZNkAy+/S9pmmYxjSISY32nWtDnsIuBA6QX6UgTPTLisCxZPfhN3xqdAZNGqYNcDGobepDNWATfLKohJIgGVrzpMtok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VD23y5be; arc=none smtp.client-ip=209.85.214.176
+	s=arc-20240116; t=1752254966; c=relaxed/simple;
+	bh=I9AmB9XmUUGLZ7GB6cag1vt2ptSp1o/063OOfNCRYZQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qEW+s1gVVTB4IBWm1UX26OMstLv7yLnWBVxKhBrD4NjfDDdLPOk+pMGQCqUITCFmf8F8OmmeI2wQ2YIqgKxpmD8d5a1eG8UbEMQZRLRm+cGhL0N3ECpEXhs3eWzWVRYbJYtZcnT17icoad3ER3ZA5jNqIdO5n4h2ioj/sQXCV0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ik6Ttd4/; arc=none smtp.client-ip=209.85.210.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-23dea2e01e4so21196505ad.1;
-        Fri, 11 Jul 2025 10:27:17 -0700 (PDT)
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-74801bc6dc5so2058530b3a.1;
+        Fri, 11 Jul 2025 10:29:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752254837; x=1752859637; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fysRHsKzHK/c33ZLgzxKxc8ghDabYrIAdXWZiyAsxtM=;
-        b=VD23y5bewiJi+x4kG02enOYV4lbr0uPnUo/tG0+HeAAZgc+Aty4xv7l1H6Pjq3WtXn
-         N4IlFfEheasv4dgtQHdX8iFL8/IC7auBwmcAY9b02822PbsIxqpctg1/9qmpfbTh64sa
-         tSTAoMhnKpCpQ6fVwI4X3+fbFjaBxdTi0Z7NOLQRCOk9Z3srq2+36OFXJsm+A+cQRkTh
-         NLxcH+B2w7g63U8+RHiBS+w+FSstqP865c9sv0S7AkOKyN1ktnaR8cG+6Ii1TcAwgnN7
-         hCj8UGYLbF0ypVWKQR/LpejDjaa+Ty6Sd/vXaWnmp6u6nX7UWd1tjyksNQaUx6EFDFTQ
-         N6pg==
+        d=gmail.com; s=20230601; t=1752254964; x=1752859764; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VyqR9czgqmlQsWz3x2F48FXTqADO6sc8GMIlnOWwsc4=;
+        b=ik6Ttd4/26YMf3lGp2fhmsSlNMublG/mLHerLFsWMnQsdMvAfLQ3go/n8h1C2p+Wb8
+         M3og69+den6jgUM8mD1cKQDItz4KfptHOo+YwbG1k4pV6xlq0T0s03iabYGPWIzpJPec
+         qczGDysvN0fK2zV802OHwLRPO5+DG/6KPfSTLJrTusWFiefLzKq3vCsitsR8mEMSEciq
+         tJhRO7zIduJ+9SSX/QntSkuWOwwq/FuNXoXdmXEgY+DtETi0eY/ZA5UKcFYZuxzyYpD0
+         Gh+ql4qfNBO1jMVreSkTLoD9omkkCsH9iAzJwufLf5147Cur5XuCMwFqitTcETg3PdW1
+         C93A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752254837; x=1752859637;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fysRHsKzHK/c33ZLgzxKxc8ghDabYrIAdXWZiyAsxtM=;
-        b=h3HrM8xrBdzR55aaCV+E0tZIoo9JInD035WytUV76KkmvOQ2S+fYbJ20ALJrEJ0TTm
-         mFr7OQ9pyjRdBhpMRvWMWtMkwnB20WLiROKR4US1eIVbSO1ojyNVrT7475wei/9KtbbZ
-         A+GhGQTaeUER3MUFDhWLyQEoASJ7CfRpkaY10BDEzIMXYaBvhxRMZ5jfejNFDMn1hHXG
-         +rHMWgsdDivx1R0VPdEbQV7T3lNBy3ExEhyYpynPQ5DwqWc6JRasMQnif83upd2KUKMU
-         Z4caif17WLL6/O7Q/AXWdOc9kZZVyi6ulc+HYI3S9UPAEC8rqTyGVWS6uegfIbO6dzEH
-         BVoA==
-X-Forwarded-Encrypted: i=1; AJvYcCV55bVojkjJTwSgeZ3LijC9UXrDdF97aowvuCzV47QBqHyqEHRiA+EkdKC3ujOS2epyV78=@vger.kernel.org, AJvYcCWw3cFU6KOZ7TLhgmglT5eGrikojjPUHgm+7Oe1wug6TyJJqdpJLGgCqQNcn2Zj5H6DTF+sHnzq@vger.kernel.org
-X-Gm-Message-State: AOJu0YyDhzWXaj+iNhm6VTTdAYndLmlg0I2lu58cnuC2zFrQ8bBIHlpg
-	bi+uRgPM8+iuhf/ibHfN178N3CH6xJResSzU2uNjh4lb3rTyVAnybXTplhC3fg==
-X-Gm-Gg: ASbGncvhowXuAianAWAE49obX4J/EcJnQ5tpmra26kxGdr74//Nqrb5NF8TKy/PqfkO
-	QGoiGOnct3Kn5F8oVRt7xKZtMJlZ7KqpxnvX7DSskIwskmoxHEEFcTMcr3kPqbErHrjLiMJ3dvb
-	nVq5ktybkTrR43A31mKdnMa4WnA75k/HsrstqygVFvOgRG3RV+K2yPc1JPOx+KV7PLyR9bkXmmO
-	RldaVP0euAreHou+3aUHzQO768hlPYDVCrr7YM+4c9Q8PvpYgCFtMSxLQC/76OyWhx4l9KeE7mz
-	bBkAqGFox1JlfPLnztrwdV5/qWVL2l213CSX3ziQ4aE6Yvuw6jccD1gA0WlTraRRFV1GyE8VgA+
-	HO6k0VhowkRO7nVTCJM/unCQ=
-X-Google-Smtp-Source: AGHT+IHKwdBkeVlSOSJ7iood+G7ApKNd8CNg4/1mSbiXWQN2uqvmwwHN4ToyZlZS9C8DuR4GRZWLIw==
-X-Received: by 2002:a17:902:e5d1:b0:234:eb6:a35d with SMTP id d9443c01a7336-23dede7d5c5mr59048175ad.27.1752254836546;
-        Fri, 11 Jul 2025 10:27:16 -0700 (PDT)
-Received: from gmail.com ([98.97.39.174])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23de42853b5sm49519995ad.4.2025.07.11.10.27.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jul 2025 10:27:16 -0700 (PDT)
-Date: Fri, 11 Jul 2025 10:27:11 -0700
-From: John Fastabend <john.fastabend@gmail.com>
-To: vincent.whitchurch@datadoghq.comy
-Cc: Jakub Sitnicki <jakub@cloudflare.com>,
-	Kuniyuki Iwashima <kuniyu@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 1/5] net: Add splice_read to prot
-Message-ID: <20250711172711.qe2tgvwckswzgedh@gmail.com>
-References: <20250709-sockmap-splice-v3-0-b23f345a67fc@datadoghq.com>
- <20250709-sockmap-splice-v3-1-b23f345a67fc@datadoghq.com>
+        d=1e100.net; s=20230601; t=1752254964; x=1752859764;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VyqR9czgqmlQsWz3x2F48FXTqADO6sc8GMIlnOWwsc4=;
+        b=ONfuCkBfv7cD468YYVfi8FWFcBv66aXaMWpkwn9P+6UGBA65QWp27zUdQLbt5AxJxQ
+         eEBloJ3Xjw4xKQZbnZXvCAklgFoHu0AE7mXfOa8pebSwxK8z3aYi7S4wwh+sWLB0e3IJ
+         a+HwlZeck6LD+TsDicXNICTBa/peqborSZ8grdQ5qOvpC7muNk45HCdR9LArsgiW7o2s
+         uMkfYs5PIV97rS7XwdoSjnOmFyD/JECdltwqBFrN560Y1r4r1IUhCFfeoICr4+yAkHvW
+         wMt+L20RHPIHJzfbnGvtCIqQwawbGw2XZil8FURuBKc23zdii/+7iZC0HpmIPxviF2tM
+         w6pw==
+X-Forwarded-Encrypted: i=1; AJvYcCWT/3khcVXTFmHomoyPHPgMwCK9x/vhrU7gcrhnexB+6X0jKxoU+OelXv2LWaPwVmd6lFY=@vger.kernel.org, AJvYcCXftOZnV6uACehNvL6ZW+E2BxR+RyowXaGExpjNIjc9REWPyxE66cBwNuhuwfpjCltDb1LfNJS+DNtTdoD4kqRW@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxi2ZEQGWOElUDKLbDG/cvO217tiEMPNrCXR/7egEfMpcqTCpFF
+	ScHkw42rP/T+YHubwoAEyVhuKGQs7npXe7kru2n3/WZV1eChcEPMD+oM
+X-Gm-Gg: ASbGnctzI/YpaDb0Wate/udp5Z+qF6ESgNWimpvsSZUMmpIryEdgh6UdjdZIYK2zJW3
+	H1VQ5IjouB8sogVhlajTTjqxyNe9rhfui2NkXZDbHja7ifj9Jw6tMoNc5S1s0TsGd6EItUEm8nn
+	AlZWrGro9ZiW6U0aJ84O+gK4qR3fHzTcacpHQRbuhf8KM8noUIIf18gWPMbJ5XdADM54Nw9r6Ga
+	G5cdgf549faZGcWNT0CODubcER76JC0hUcJv2UNEumKux/oEPhRT5vUPg0Ydaaqh7D26baWmRHI
+	JYoPOmSu6c6ORf+Qv//I6SsMqBnEtp2Q7+3oFLm/jHDudOdArUt9P0ItperUZqwIyQbXbWguev1
+	AkmtM1GonNDTM8IfUP4Vb8kkHQOf3s7lIBGHe3YU96OuiXqedGipnhoqACJwLktEk86qdn2Y7
+X-Google-Smtp-Source: AGHT+IFk4CWCbWi4jW7/X/xlKpDtGqqmxQa5+vZch2160RBWHqC2c09IQS6El+JA9G7/mL1Q9KlR8Q==
+X-Received: by 2002:a05:6a21:69c:b0:21f:4ecc:119d with SMTP id adf61e73a8af0-2312551f273mr6513433637.7.1752254964331;
+        Fri, 11 Jul 2025 10:29:24 -0700 (PDT)
+Received: from ?IPV6:2a03:83e0:1151:15:14ea:ab53:89df:693b? ([2620:10d:c090:500::6:b0c9])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74eba428161sm5952372b3a.42.2025.07.11.10.29.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Jul 2025 10:29:23 -0700 (PDT)
+Message-ID: <1e5b7812-a544-40b8-98df-0e87b3f33eb5@gmail.com>
+Date: Fri, 11 Jul 2025 10:29:22 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250709-sockmap-splice-v3-1-b23f345a67fc@datadoghq.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next V2 0/5] selftests: drv-net: Test XDP native
+ support
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, pabeni@redhat.com, shuah@kernel.org, horms@kernel.org,
+ cratiu@nvidia.com, noren@nvidia.com, cjubran@nvidia.com, mbloch@nvidia.com,
+ jdamato@fastly.com, gal@nvidia.com, sdf@fomichev.me, ast@kernel.org,
+ daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20250710184351.63797-1-mohsin.bashr@gmail.com>
+ <20250711063917.7aad27f7@kernel.org>
+Content-Language: en-US
+From: Mohsin Bashir <mohsin.bashr@gmail.com>
+In-Reply-To: <20250711063917.7aad27f7@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 2025-07-09 14:47:57, Vincent Whitchurch via B4 Relay wrote:
-> From: Vincent Whitchurch <vincent.whitchurch@datadoghq.com>
+> The program does not load in the CI :(
 > 
-> The TCP BPF code will need to override splice_read(), so add it to prot.
+> 509: (15) if r1 == 0x0 goto pc+142    ; frame1: R1=scalar(smin=umin=umin32=1,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff))
+> 510: (25) if r1 > 0x100 goto pc+141   ; frame1: R1=scalar(smin=umin=smin32=umin32=1,smax=umax=smax32=umax32=256,var_off=(0x0; 0x1ff))
+> 511: (bf) r3 = r10                    ; frame1: R3_w=fp0 R10=fp0\n; if (bpf_xdp_load_bytes(ctx, 0, tmp_buff, hdr_len) < 0) @ xdp_native.bpf.c:377
+> 512: (07) r3 += -256                  ; frame1: R3_w=fp-256
+> 513: (bf) r1 = r7                     ; frame1: R1_w=ctx() R7=ctx()
+> 514: (b7) r2 = 0                      ; frame1: R2_w=0
+> 515: (bf) r4 = r8                     ; frame1: R4_w=scalar(id=3) R8=scalar(id=3)
+> 516: (7b) *(u64 *)(r10 -280) = r5     ; frame1: R5=32 R10=fp0 fp-280_w=32
+> 517: (85) call bpf_xdp_load_bytes#189
+> R4 min value is negative, either use unsigned or 'var &= const'
+> processed 262 insns (limit 1000000) max_states_per_insn 1 total_states 26 peak_states 26 mark_read 7
+> -- END PROG LOAD LOG
 > 
-> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@datadoghq.com>
-> ---
->  include/net/inet_common.h |  3 +++
->  include/net/sock.h        |  3 +++
->  net/ipv4/af_inet.c        | 13 ++++++++++++-
->  net/ipv4/tcp_ipv4.c       |  1 +
->  net/ipv6/af_inet6.c       |  2 +-
->  net/ipv6/tcp_ipv6.c       |  1 +
->  6 files changed, 21 insertions(+), 2 deletions(-)
+> I suppose it may be due to compiler version:
+> $ clang --version
+> clang version 15.0.7 (AWS 15.0.7-3.amzn2023.0.4)
+Perhaps
+
 > 
-> diff --git a/include/net/inet_common.h b/include/net/inet_common.h
-> index c17a6585d0b0..2a6480d0d575 100644
-> --- a/include/net/inet_common.h
-> +++ b/include/net/inet_common.h
-> @@ -35,6 +35,9 @@ void __inet_accept(struct socket *sock, struct socket *newsock,
->  		   struct sock *newsk);
->  int inet_send_prepare(struct sock *sk);
->  int inet_sendmsg(struct socket *sock, struct msghdr *msg, size_t size);
-> +ssize_t inet_splice_read(struct socket *sk, loff_t *ppos,
-> +			 struct pipe_inode_info *pipe, size_t len,
-> +			 unsigned int flags);
->  void inet_splice_eof(struct socket *sock);
->  int inet_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
->  		 int flags);
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index 4c37015b7cf7..4bdebcbcca38 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -1280,6 +1280,9 @@ struct proto {
->  					   size_t len);
->  	int			(*recvmsg)(struct sock *sk, struct msghdr *msg,
->  					   size_t len, int flags, int *addr_len);
-> +	ssize_t			(*splice_read)(struct socket *sock,  loff_t *ppos,
-> +					       struct pipe_inode_info *pipe, size_t len,
-> +					       unsigned int flags);
->  	void			(*splice_eof)(struct socket *sock);
->  	int			(*bind)(struct sock *sk,
->  					struct sockaddr *addr, int addr_len);
-> diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
-> index 76e38092cd8a..9c521d252f66 100644
-> --- a/net/ipv4/af_inet.c
-> +++ b/net/ipv4/af_inet.c
-> @@ -868,6 +868,17 @@ void inet_splice_eof(struct socket *sock)
->  }
->  EXPORT_SYMBOL_GPL(inet_splice_eof);
->  
-> +ssize_t inet_splice_read(struct socket *sock, loff_t *ppos,
-> +			 struct pipe_inode_info *pipe, size_t len,
-> +			 unsigned int flags)
-> +{
-> +	struct sock *sk = sock->sk;
-> +
-> +	return INDIRECT_CALL_1(sk->sk_prot->splice_read, tcp_splice_read, sock,
-> +			       ppos, pipe, len, flags);
-> +}
-
-Could we do a indirect_call_2 here?  something like this?
-
-  INDIRECT_CALL_2(sk->sk_prot->splice_read, tcp_splice_read ...
-
-Otherwise the series looks reasonable to me.
+> LMK if you need more info / can't repro, but I think the suggestion
+> makes sense?
+Let me try to repro and fix at my end. Complain seems valid.
 
