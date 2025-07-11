@@ -1,197 +1,163 @@
-Return-Path: <bpf+bounces-63088-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63089-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 666A4B025B3
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 22:21:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9B37B025C5
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 22:26:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10B3E3BD6F1
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 20:20:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2974F7ADB96
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 20:25:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 057B9BE4E;
-	Fri, 11 Jul 2025 20:21:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 408EC1F4181;
+	Fri, 11 Jul 2025 20:26:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GiCemEBH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sZty94Ez"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCAF919CC11
-	for <bpf@vger.kernel.org>; Fri, 11 Jul 2025 20:21:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD71B1F3B83;
+	Fri, 11 Jul 2025 20:26:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752265277; cv=none; b=hL2dkoSAFp7U8djthk1293P7l5wiVt47XxoaUiJ13mCEGX5N00IHE2aI4KxqwBqFaf8D5WWftGoy5+zwRdKzjrcc0ybK5k4i/i60uh0aLo5KL5BhyHruzoF7jmRVPM+bdNwot7QM530REgevNSNxvuUsQdNRAy1PIr1WZKGCqnM=
+	t=1752265591; cv=none; b=M94BTcZPTO/ao9LSRhwEv/VKoiT8/iW3GNXV+z5zkgc/7xEViJOVRufkc6EcSj3G0ZyEy8QZiCc2M/hVjkY0wimuZ7xCidytOX0JigXhdp5krrrKJmYy225a5JH95bmnrMOAlS8ea3FT7HL5C8JebRiD167Oho959CizFYI7wVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752265277; c=relaxed/simple;
-	bh=/5d6L1IJ7eN2MKzKitj4kt74lh0NwMijgZsAqT5DzuA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nBEDoEIOFfM5d3Cdm32qI+CR+muQosb6QKKxHqWafKaiAI1PNLAI750Nd5+EaZdbb/n86ksQi0Tq4f4CJSUjuHGD4gGUUH9DKtVTwNY153+4qAftkh1fcXnYNhgp8e/hCN1A/PpcVv0Y6WJog58MwTK/qHqHfhv2roaO4utIRgw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GiCemEBH; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-451dbe494d6so25128335e9.1
-        for <bpf@vger.kernel.org>; Fri, 11 Jul 2025 13:21:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752265274; x=1752870074; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z0NEhX22LjzXjHLaqGSMpH2jd8IODrD+xEAiP3ykLzs=;
-        b=GiCemEBHorUbb3xqoiSrDrE0k1dNMA65g/5GbL5ngM5X6NiBTk4aFGv+rMSnuvuUVE
-         LLfuqrNorUpPFPnec1VHssPw+uEXqGKyZ8v0y8XhQA9VchOOs/pb5UxN7vJfhjoatcAl
-         jK4xMsH6ie8CY5lYYIlrvNlrc2I5YT/LxmrpwZLUPc9CZxoKHF8jZ0MEqhsRbH+LeRH2
-         eBNNjoOsjW2c56GotVKyfdlUn8dE/1SbJBUIGqEhtXKDGkn547UEJcimGX8sUgX1Kvk2
-         P/+FGGS6XZcY2Jv3RQc1G63a4DUfSufENx+NHqQCjA2iGvR2Alr96mF/NTX5KcCMrbW0
-         Ztfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752265274; x=1752870074;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z0NEhX22LjzXjHLaqGSMpH2jd8IODrD+xEAiP3ykLzs=;
-        b=I1DJzUsfIm1qV9Jut6KYbSRAYhlabnelpdqkyem4VsjrjPpg85dFMEIEerKMX1VjQ0
-         7E3pP9kmO5sDuYIqcDdg1dO60cTR7vEKJLbuhSGGA5NzWGUuZYdQw/qYyNkLNcxi0qED
-         UL424cRT0/LRdgiYxBb2e0YqAdY5aSKj9ytBkeCpdRJxfHhtZlgdHw8BznkrPpQlRUPe
-         LIEsCDZG/u7gFXz3klqgZesIlsj+oAaq5WuCsA5V7p9x4Az5LSHs2DnJ45C/NIX0HvrP
-         p/uSOD1eiMKUZSOixO0U/Z/d4jfaIlo5+ad9GOPLbTBbRNM5/+npp5RgjmzuAbrFo+TH
-         turg==
-X-Forwarded-Encrypted: i=1; AJvYcCVzBMhaoHJj6sFQh9+kTYMdZCQKiECrNOcAytlIp7naC/M4IBvsf8VZmiALp/iACFd+XXk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwmBO6enHYGuFHBW1kcCopudGDe3K5VtfB4YzmzmWF0LQq9aUn0
-	KTFT0feS4NmM6yKNBecdXWckf/VXan3G8t5qsNkXmTuZkr7heLLvAW5VzC6WqOHCxOhA/fdjxhl
-	ZsOhOVrity1M1MGO+cDyvcAzBBei976ZtNA==
-X-Gm-Gg: ASbGncuSOXERDymr//AYVB3xRi/xe7rtcC9daFDK9I87Gqgv9bLzoySuZL2Q5d5XJi2
-	AESKZWjKSLG2vD+tVKLh78kxtPLpOQPkKACTJ436ZxS/WZIm4c1siFrGzrr75ZGuNI6T3rC8gvN
-	R7qCXvGLbJUCfbdo7S91OZT5PplLzuMQD6n3s3mKi7Tm07Xp6+Xn4r0Je5w8BMOyIqnVMnikG0j
-	n5BshGMPeda3+pxiTTB5mllbdvdVKQt6paP
-X-Google-Smtp-Source: AGHT+IGZAIvtMUmcddPEJ6OdFa1eoNSz/P/CFd1o4iaUsurj6jDnyIzNmnTPjN3uFnrvtsyaQnxZxpeK4LsDwhTk9bE=
-X-Received: by 2002:a5d:64e8:0:b0:3a4:e480:b5df with SMTP id
- ffacd0b85a97d-3b5f2e33b06mr3477995f8f.44.1752265273810; Fri, 11 Jul 2025
- 13:21:13 -0700 (PDT)
+	s=arc-20240116; t=1752265591; c=relaxed/simple;
+	bh=zKrzcOnCHUbj1zpcoKwKR8VG4KSswYK1nelmipRVgEo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lkHT2HCRAihdKqS0qxGjyypKcIemC5Dk3I2u2VlPPnxtWN8XEl4fxeBLwsXd0XIb9tU9Y/VE7kBhAx8kebYrbFoaN5eK4DgU7DyI+21xDlS+YwaQRYsJLrmrNqV89HnC8VrFRaLPF+W75t1U6LprW7xxJE36/OsVdFNj3WY7/a0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sZty94Ez; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80926C4CEED;
+	Fri, 11 Jul 2025 20:26:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752265591;
+	bh=zKrzcOnCHUbj1zpcoKwKR8VG4KSswYK1nelmipRVgEo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sZty94EzXu9ZGA3d79jnP7xeZIQ+FddaAmdFFBCuYZasAlqflfiw8zpn62X+Pu6oz
+	 /SrDhdiyMvf/OIiQHoCdGr1KT32HAR0NSKMHca42W6xnOAC2vyOCb4/J87Ds1WgoRB
+	 AUUp5w8dDMjBsfs5NNPJHG0mWVWYtkBXxnzlBLhYOKUX1DQKTmKqueeZ0B9nt9qhMi
+	 tXvbd7wgK6K4nDKLIFWkYHoAKrGPBswnH/n6NDqs9G9a+a2R3+skjjSryVm4pHPhpF
+	 sxNDzQo3Dz/+1avKMPQh1PeMGXV4sywDvrRNbJVCOHjGbUy/ce/ZXlncPfRN1XrPsC
+	 dhRFQoYswVdog==
+Date: Fri, 11 Jul 2025 13:26:28 -0700
+From: Namhyung Kim <namhyung@kernel.org>
+To: Steven Rostedt <rostedt@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, x86@kernel.org,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Indu Bhagat <indu.bhagat@oracle.com>,
+	"Jose E. Marchesi" <jemarch@gnu.org>,
+	Beau Belgrave <beaub@linux.microsoft.com>,
+	Jens Remus <jremus@linux.ibm.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>,
+	Sam James <sam@gentoo.org>
+Subject: Re: [PATCH v13 00/11] perf: Support the deferred unwinding
+ infrastructure
+Message-ID: <aHFzdCv3-BRw9btW@google.com>
+References: <20250708020003.565862284@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250708230825.4159486-1-ameryhung@gmail.com> <20250708230825.4159486-3-ameryhung@gmail.com>
- <68f4b77c-3265-489e-9190-0333ed54b697@linux.dev> <CAMB2axO3Ma7jYa00fbSzB8ZFZyekS13BNJ87rsTfbfcSZhpc6w@mail.gmail.com>
- <2d1b45f3-3bde-415d-8568-eb4c2a7dd219@linux.dev> <CAMB2axMDUr+s+f9K-4sj-5vSkPQV4RXHo8y73VH9V2JQbKZOxQ@mail.gmail.com>
- <CAEf4BzaUK0i7QFkKi800TQhAKw2WL+FyoG3eFP6nq_r-TUPBKw@mail.gmail.com> <CAMB2axONnVJ5BY-YOASWGUGpaZa-P64Yf5f6AbX+O8fjCiZNfw@mail.gmail.com>
-In-Reply-To: <CAMB2axONnVJ5BY-YOASWGUGpaZa-P64Yf5f6AbX+O8fjCiZNfw@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 11 Jul 2025 13:21:02 -0700
-X-Gm-Features: Ac12FXxcyc3qzL_Rd1iMUT6LCPL-gzNfMubwjaAkEPQjj1t5A5Q2LRmhMa0D4oE
-Message-ID: <CAADnVQJxu5hsDw0iCP68eRW3v2CXRBos8asfN1x9F=gVyGmqbw@mail.gmail.com>
-Subject: Re: [RFC bpf-next v1 2/4] bpf: Support cookie for linked-based
- struct_ops attachment
-To: Amery Hung <ameryhung@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Tejun Heo <tj@kernel.org>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250708020003.565862284@kernel.org>
 
-On Fri, Jul 11, 2025 at 12:29=E2=80=AFPM Amery Hung <ameryhung@gmail.com> w=
-rote:
->
-> On Fri, Jul 11, 2025 at 11:41=E2=80=AFAM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Thu, Jul 10, 2025 at 2:00=E2=80=AFPM Amery Hung <ameryhung@gmail.com=
-> wrote:
-> > >
-> > > On Thu, Jul 10, 2025 at 12:47=E2=80=AFPM Martin KaFai Lau <martin.lau=
-@linux.dev> wrote:
-> > > >
-> > > > On 7/10/25 11:39 AM, Amery Hung wrote:
-> > > > >> On 7/8/25 4:08 PM, Amery Hung wrote:
-> > > > >>> @@ -906,6 +904,10 @@ static long bpf_struct_ops_map_update_elem=
-(struct bpf_map *map, void *key,
-> > > > >>>                goto unlock;
-> > > > >>>        }
-> > > > >>>
-> > > > >>> +     err =3D bpf_struct_ops_prepare_attach(st_map, 0);
-> > > > >> A follow-up on the "using the map->id as the cookie" comment in =
-the cover
-> > > > >> letter. I meant to use the map->id here instead of 0. If the coo=
-kie is intended
-> > > > >> to identify a particular struct_ops instance (i.e., the struct_o=
-ps map), then
-> > > > >> map->id should be a good fit, and it is automatically generated =
-by the kernel
-> > > > >> during the map creation. As a result, I suspect that most of the=
- changes in
-> > > > >> patch 1 and patch 2 will not be needed.
-> > > > >>
-> > > > > Do you mean keep using cookie as the mechanism to associate progr=
-ams,
-> > > > > but for struct_ops the cookie will be map->id (i.e.,
-> > > > > bpf_get_attah_cookie() in struct_ops will return map->id)?
-> > > >
-> > > > I meant to use the map->id as the bpf_cookie stored in the bpf_tram=
-p_run_ctx.
-> > > > Then there is no need for user space to generate a unique cookie du=
-ring
-> > > > link_create. The kernel has already generated a unique ID in the ma=
-p->id. The
-> > > > map->id is available during the bpf_struct_ops_map_update_elem(). T=
-hen there is
-> > > > also no need to distinguish between SEC(".struct_ops") vs
-> > > > SEC(".struct_ops.link"). Most of the patch 1 and patch 2 will not b=
-e needed.
-> > > >
-> > > > A minor detail: note that the same struct ops program can be used i=
-n different
-> > > > trampolines. Thus, to be specific, the bpf cookie is stored in the =
-trampoline.
-> > > >
-> > > > If the question is about bpf global variable vs bpf cookie, yeah, I=
- think using
-> > > > a bpf global variable should also work. The global variable can be =
-initialized
-> > > > before libbpf's bpf_map__attach_struct_ops(). At that time, the map=
-->id should
-> > > > be known already. I don't have a strong opinion on reusing the bpf =
-cookie in the
-> > > > struct ops trampoline. No one is using it now, so it is available t=
-o be used.
-> > > > Exposing BPF_FUNC_get_attach_cookie for struct ops programs is pret=
-ty cheap
-> > > > also. Using bpf cookie to allow the struct ops program to tell whic=
-h struct_ops
-> > > > map is calling it seems to fit well also after sleeping on it a bit=
-. bpf global
-> > > > variable will also break if a bpf_prog.o has more than one SEC(".st=
-ruct_ops").
-> > > >
-> > >
-> > > While both of them work, using cookie instead of global variable is
-> > > one less thing for the user to take care of (i.e., slightly better
-> > > usability).
-> > >
-> > > With the approach you suggested, to not mix the existing semantics of
-> > > bpf cookie, I think a new struct_ops kfuncs is needed to retrieve the
-> >
-> > yes, if absolutely necessary, sure, let's reuse the spot that is
-> > reserved for cookie inside the trampoline, but let's not expose this
-> > as real BPF cookie (i.e., let's not allow bpf_get_attach_cookie()
-> > helper for struct_ops), because BPF cookie is meant to be fully user
-> > controllable and used for whatever they deem necessary. Not
-> > necessarily to just identify the struct_ops map. So it will be a huge
-> > violation to just pre-define what BPF cookie value is for struct_ops.
-> >
->
-> We had some offline discussions and figured out this will not work well.
->
-> sched_ext users already call scx kfuncs in global subprograms. If we
-> choose to add bpf_get_struct_ops_id() to get the id to be passed to
-> scx kfuncs, it will force the user to create two sets of the same
-> global subprog. The one called by struct_ops that calls
-> bpf_get_struct_ops_id() and tracing programs that calls
-> bpf_get_attach_cookie().
+Hi Steve,
 
-Can we put cookie into map_extra during st_ops map creation time and
-later copy it into actual cookie place in a trampoline?
+On Mon, Jul 07, 2025 at 10:00:03PM -0400, Steven Rostedt wrote:
+> This is based on top of the deferred unwind core patch series:
+> 
+>  https://lore.kernel.org/linux-trace-kernel/20250708012239.268642741@kernel.org/
+>    git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
+>      unwind/core
+> 
+> This series implements the perf interface to use deferred user space stack
+> tracing.
+> 
+> The code for this series is located here:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
+> unwind/perf
+> 
+> Changes since v12: https://lore.kernel.org/linux-trace-kernel/20250701180410.755491417@goodmis.org/
+> 
+> - Also check against PF_USER_WORKER as io workers do not have PF_KTHREAD
+>   set.
+> 
+> - Removed deferred_request_nmi() and have NMIs just use the normal
+>   deferred_request() function. As Peter Zijlstra has stated, in_nmi() can
+>   nest because some exceptions set in_nmi() and another NMI could come in.
+> 
+> - Removed use of timestamp. The deferred unwind has gone back to using
+>   cookies, and perf doesn't use the cookie. This means the
+>   struct perf_callchain_deferred_event is not modified.
+
+What about adding the cookies in the records to handle lost data?  Even
+if it's not necessary to match callchains to samples, it still needs to
+reject invalid callchains across the losts.  Maybe it can just flush
+pending samples when it sees LOST records and not try to match them but
+having the cookies will handle it more accurately as some callchains may
+be valid after the LOST.
+
+Thanks,
+Namhyung
+
+> 
+> Head SHA1: 3d88d03d533ede8d2d513942e768607aa9279c4b
+> 
+> 
+> Josh Poimboeuf (5):
+>       perf: Remove get_perf_callchain() init_nr argument
+>       perf: Have get_perf_callchain() return NULL if crosstask and user are set
+>       perf: Simplify get_perf_callchain() user logic
+>       perf: Skip user unwind if the task is a kernel thread
+>       perf: Support deferred user callchains
+> 
+> Namhyung Kim (4):
+>       perf tools: Minimal CALLCHAIN_DEFERRED support
+>       perf record: Enable defer_callchain for user callchains
+>       perf script: Display PERF_RECORD_CALLCHAIN_DEFERRED
+>       perf tools: Merge deferred user callchains
+> 
+> Steven Rostedt (2):
+>       perf: Use current->flags & PF_KTHREAD|PF_USER_WORKER instead of current->mm == NULL
+>       perf: Support deferred user callchains for per CPU events
+> 
+> ----
+>  include/linux/perf_event.h                |  13 +-
+>  include/uapi/linux/perf_event.h           |  19 +-
+>  kernel/bpf/stackmap.c                     |   8 +-
+>  kernel/events/callchain.c                 |  49 ++--
+>  kernel/events/core.c                      | 407 +++++++++++++++++++++++++++++-
+>  tools/include/uapi/linux/perf_event.h     |  19 +-
+>  tools/lib/perf/include/perf/event.h       |   7 +
+>  tools/perf/Documentation/perf-script.txt  |   5 +
+>  tools/perf/builtin-script.c               |  92 +++++++
+>  tools/perf/util/callchain.c               |  24 ++
+>  tools/perf/util/callchain.h               |   3 +
+>  tools/perf/util/event.c                   |   1 +
+>  tools/perf/util/evlist.c                  |   1 +
+>  tools/perf/util/evlist.h                  |   1 +
+>  tools/perf/util/evsel.c                   |  39 +++
+>  tools/perf/util/evsel.h                   |   1 +
+>  tools/perf/util/machine.c                 |   1 +
+>  tools/perf/util/perf_event_attr_fprintf.c |   1 +
+>  tools/perf/util/sample.h                  |   3 +-
+>  tools/perf/util/session.c                 |  78 ++++++
+>  tools/perf/util/tool.c                    |   2 +
+>  tools/perf/util/tool.h                    |   4 +-
+>  22 files changed, 742 insertions(+), 36 deletions(-)
 
