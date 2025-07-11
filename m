@@ -1,327 +1,317 @@
-Return-Path: <bpf+bounces-62997-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62998-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6671B012AD
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 07:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 97147B01301
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 07:51:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72CE37B8C6C
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 05:25:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AAEF37A87EC
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 05:50:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD5E51C2324;
-	Fri, 11 Jul 2025 05:26:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FB2C1C84D7;
+	Fri, 11 Jul 2025 05:51:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tGC4meOS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ORwrHJDa"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f195.google.com (mail-yb1-f195.google.com [209.85.219.195])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38D21190477;
-	Fri, 11 Jul 2025 05:26:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1F8E17A300;
+	Fri, 11 Jul 2025 05:51:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752211581; cv=none; b=BN3qrjvoEkn6rxdIonjsRzC3CRs4yRXTXtDPPrIhNizF54x7HRMMlCKafsskd5Mzuu0gp/7AWrtNz0rHQIDtH4qPqUhtJeiRBM1xpQV9T0wYmIJOrGrPKrB5XNqVREjES9415CtfkWUzUZifXxntkMCTmDNw9C9sLHfWVO7tiu8=
+	t=1752213096; cv=none; b=hcOle6Io6WSQX8uelVg9W1qGQV0SMlbBrm9YGi+j/iJY3pPSmddyZHJUliQyYb/6ziHZ5f/TiS4oOPDw13I9CdxvK3bsJwzMEIz4UfjEUk4nbvlqW9ZyznAWgYenAVuXIc3TcrXhZCujwF8Bk/SJs/qxYB1RVK54D4UKHDm7Rqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752211581; c=relaxed/simple;
-	bh=dppASgAanlsLZisx8bBsFuYj29uQNEX3zHa01KVeP3M=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=Dv4zFpRWeC0CsJw7LmoHqFKJEKXaID/0ApvMsfGGggHeX40AbzSQ5/7qticnwpoZWGarxFgKXWydqYnPPTR2Uo9weqEp2n94lMqcmhpBHt4H5W6BsAvATYAz8353YIG+KotlEQLPP6GMdcIUjWr5/1Xs2PURPycX1Q0SzpJ4oDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tGC4meOS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B048CC4CEED;
-	Fri, 11 Jul 2025 05:26:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752211578;
-	bh=dppASgAanlsLZisx8bBsFuYj29uQNEX3zHa01KVeP3M=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=tGC4meOSfwwbY+Y6W1tA3PEHWqt2KNsPwCzm3fXT2q6NnL1PbDPXw3ljOYoaqome0
-	 O965kDtenyVKNEsylTSoKhEry8Mn9YomFtjUcX1TjyUp4WNT0CsGq5okLbCyqwoJOe
-	 0I7WbLNVS9XR/GP+suW/VwZszhPQEc+MDVShFbm0VxT9TTPuTUEgAhRdss08N7jWSm
-	 uQHW0ZoWvZ0o2bXqA6JgQ8T/Qa4IHKrrYK5DZto3edHIvQ84YDOHHz2kZPohNBzdet
-	 aUl40dYPSke24lmiKtWgasMLtvEQv3+CFS2xPWahQnObVQtUyGGLbkBF/IXqnnLf91
-	 TCp3+x5FVc+Gw==
-Date: Fri, 11 Jul 2025 14:26:15 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- x86@kernel.org, Song Liu <songliubraving@fb.com>, Yonghong Song
- <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, Hao Luo
- <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>, Alan Maguire
- <alan.maguire@oracle.com>, David Laight <David.Laight@aculab.com>, Thomas
- =?UTF-8?B?V2Vpw59zY2h1aA==?= <thomas@t-8ch.de>, Ingo Molnar
- <mingo@kernel.org>
-Subject: Re: [PATCHv4 perf/core 08/22] uprobes/x86: Add mapping for
- optimized uprobe trampolines
-Message-Id: <20250711142615.867e25926a4026f496b23e22@kernel.org>
-In-Reply-To: <aG_DSXNFol_03h75@krava>
-References: <20250708132333.2739553-1-jolsa@kernel.org>
-	<20250708132333.2739553-9-jolsa@kernel.org>
-	<20250710160233.8750ccd59b3b9d62e78491e5@kernel.org>
-	<aG_DSXNFol_03h75@krava>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1752213096; c=relaxed/simple;
+	bh=jNsGupoBgwkp5RDX4ibpgNUay2qHWr/Leph5FYAPlOg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HsjNINnNmvK87WkL0/xiJdiJRk2I4QZWqmbqEdiNsjiKW35sDLBOPjbilLSkMfBrKYQfY2Hb1T2CYH8i4LWRMcJQWBo91e4mO9xonG4D2BqGHtgoR/ANzt1u+JxsinAuop2gRgTUEcrenJ8+UnTRuYyHI0F87mJdNbVAsob9ZiE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ORwrHJDa; arc=none smtp.client-ip=209.85.219.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f195.google.com with SMTP id 3f1490d57ef6-e740a09eb00so1417302276.0;
+        Thu, 10 Jul 2025 22:51:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752213093; x=1752817893; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s15kRBz3DosUsTKGgSKKOINpNlddbEfVm+2y2VNaNrQ=;
+        b=ORwrHJDaPcg4THpyrp/AcS4BgCUsB2yPx5qMp49eHvAqVJbM46fQOiPBJii8ThhOsn
+         c1tSITJuxTsICkEh1LDMGSPnNUZvIO0R7Xgh7NbMfq2lCNjO1Xh9KG23V8aMTDODDtXt
+         iqv7Tlg23NvcEcoZF3n4c35o6COTea59jH5SVjc6IfJAzYvIw0bV+AstO+QS7CjcHAmw
+         2QUGoH/T8G/Oks3MW3VuRuKbvBuILaT07ydOXS62bPgeRk1maFfW/RIeKzUWKqDBBjtL
+         mpMqwrBt3k2JYqxhJPnOUPDCUNWMjZGYudowzMxnRWPX+WaFgMIv2/BXitwg0BtNjnJ/
+         JdjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752213094; x=1752817894;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=s15kRBz3DosUsTKGgSKKOINpNlddbEfVm+2y2VNaNrQ=;
+        b=AFBA/vNJSWYbqpFDdcae0THxt+bI7ZSiorPlcQAV7vhrYFAMwp4EDfdUhcaEdGL8Xn
+         dmG00N8CfCGu3FYf45erQcJ6n9QIEwsMiNwwLnoKjP9Myc5SnDer92Jg8365dXbPll1t
+         znqcwlbACJlblvT/UHKw/LsSNFw9noPtYc6ZaTMLHE+DvxrpTYup61IKxWQTUK+cYAZn
+         Y5Eybkj+/XRUnPn9EWgRNBN1JQLcTctSzbQIe1npRDrUD9Hz/mhpJxTdItCq+bMDoxxu
+         u9r1G3l9iowBcKFaqpzX2xshKb45jo5NI9Su9FAbGoW5uNvl6BnRiCZ5eOsFSbL4FqVC
+         Hg5A==
+X-Forwarded-Encrypted: i=1; AJvYcCUnoDXK+ggsarb8e7Td7zH3g1xJB4qEtx6vfFgKBFFfI0JQGZ9QXL69OtPm0w/yjUvMVQM=@vger.kernel.org, AJvYcCWB7XdxpPm5Qma7VFPFvjHdGQ5dpqUgs1y7uUGiRz8QrUJrfm1BuOH2VefQzFyngETwF8s6CJ+vLBhbMbdr@vger.kernel.org
+X-Gm-Message-State: AOJu0YzXUh/ofFBkfGaH3YUGzFglkyUFfezR2ubZaw99ZkPDGUZSHdg6
+	wn7WkG+uUZFMoyLHICDQrolbsy8tZu34D635Bb7nMK62qwXoaYhA5XJWlfkgb5k6FkmmcPTyEU1
+	3891qwqeTyiUC3Ll2O6ZPta5RYXLdjlQ=
+X-Gm-Gg: ASbGncteO/JJ4PKsE3v7/tF0cOyZe4d40xJSlgTjdbvrdh0PEVEg8nR1QCLkkV7506g
+	8uZk0IpFQVl+ayowt4Q8NnPzaHKI0hmdlDzFzrhbOZ8lcy8/CBZDbpDJMW/D6omKprvMhs7YSiG
+	zxHHrqllZRc7N5wJ1KF01fYubrbrH7FU/oGp/zQhoV/5TvMjy93V4ozCd3oAagmYQVikPrgzrI0
+	s2aO88=
+X-Google-Smtp-Source: AGHT+IERE+v0OcXSMuyOLN1LpYSWLXq88YYT0bb9OVBfX5SbgkyM/k5Ofm+PXPIZgzHh56tkluyz04fLEceA9wxZvro=
+X-Received: by 2002:a05:690c:55c3:10b0:717:d7d1:4697 with SMTP id
+ 00721157ae682-717d7d15b34mr18439917b3.30.1752213093556; Thu, 10 Jul 2025
+ 22:51:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20250710070835.260831-1-dongml2@chinatelecom.cn>
+ <2f8c792e-9675-4385-b1cb-10266c72bd45@linux.dev> <ffcbe060-a15d-44d7-bf5e-090e74726c31@linux.dev>
+In-Reply-To: <ffcbe060-a15d-44d7-bf5e-090e74726c31@linux.dev>
+From: Menglong Dong <menglong8.dong@gmail.com>
+Date: Fri, 11 Jul 2025 13:51:31 +0800
+X-Gm-Features: Ac12FXwUN2IQLfPZaothBP8FC6pjD8dQ52POIYDGAy3WNsBZX3GgBz_Cr82hdaE
+Message-ID: <CADxym3YGF6jCg=J1bQs60SePEwigh7S+7yfXAdU+yc3WX9HAGQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3] bpf: make the attach target more accurate
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Menglong Dong <dongml2@chinatelecom.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 10 Jul 2025 15:42:33 +0200
-Jiri Olsa <olsajiri@gmail.com> wrote:
+On Fri, Jul 11, 2025 at 11:46=E2=80=AFAM Yonghong Song <yonghong.song@linux=
+.dev> wrote:
+>
+>
+>
+> On 7/10/25 8:10 PM, Yonghong Song wrote:
+> >
+> >
+> > On 7/10/25 12:08 AM, Menglong Dong wrote:
+> >> For now, we lookup the address of the attach target in
+> >> bpf_check_attach_target() with find_kallsyms_symbol_value or
+> >> kallsyms_lookup_name, which is not accurate in some cases.
+> >>
+> >> For example, we want to attach to the target "t_next", but there are
+> >> multiple symbols with the name "t_next" exist in the kallsyms, which
+> >> makes
+> >> the attach target ambiguous, and the attach should fail.
+> >>
+> >> Introduce the function bpf_lookup_attach_addr() to do the address
+> >> lookup,
+> >> which will return -EADDRNOTAVAIL when the symbol is not unique.
+> >>
+> >> We can do the testing with following shell:
+> >>
+> >> for s in $(cat /proc/kallsyms | awk '{print $3}' | sort | uniq -d)
+> >> do
+> >>    if grep -q "^$s\$"
+> >> /sys/kernel/debug/tracing/available_filter_functions
+> >>    then
+> >>      bpftrace -e "fentry:$s {printf(\"1\");}" -v
+> >>    fi
+> >> done
+> >>
+> >> The script will find all the duplicated symbols in /proc/kallsyms, whi=
+ch
+> >> is also in /sys/kernel/debug/tracing/available_filter_functions, and
+> >> attach them with bpftrace.
+> >>
+> >> After this patch, all the attaching fail with the error:
+> >>
+> >> The address of function xxx cannot be found
+> >> or
+> >> No BTF found for xxx
+> >>
+> >> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+> >
+> > Maybe we should prevent vmlinux BTF generation for such symbols
+> > which are static and have more than one instances? This can
+> > be done in pahole and downstream libbpf/kernel do not
+> > need to do anything. This can avoid libbpf/kernel runtime overhead
+> > since bpf_lookup_attach_addr() could be expensive as it needs
+> > to go through ALL symbols, even for unique symbols.
 
-> On Thu, Jul 10, 2025 at 04:02:33PM +0900, Masami Hiramatsu wrote:
-> > Hi Jiri,
-> > 
-> > On Tue,  8 Jul 2025 15:23:17 +0200
-> > Jiri Olsa <jolsa@kernel.org> wrote:
-> > 
-> > > Adding support to add special mapping for user space trampoline with
-> > > following functions:
-> > > 
-> > >   uprobe_trampoline_get - find or add uprobe_trampoline
-> > >   uprobe_trampoline_put - remove or destroy uprobe_trampoline
-> > > 
-> > > The user space trampoline is exported as arch specific user space special
-> > > mapping through tramp_mapping, which is initialized in following changes
-> > > with new uprobe syscall.
-> > > 
-> > > The uprobe trampoline needs to be callable/reachable from the probed address,
-> > > so while searching for available address we use is_reachable_by_call function
-> > > to decide if the uprobe trampoline is callable from the probe address.
-> > > 
-> > > All uprobe_trampoline objects are stored in uprobes_state object and are
-> > > cleaned up when the process mm_struct goes down. Adding new arch hooks
-> > > for that, because this change is x86_64 specific.
-> > > 
-> > > Locking is provided by callers in following changes.
-> > > 
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  arch/x86/kernel/uprobes.c | 169 ++++++++++++++++++++++++++++++++++++++
-> > >  include/linux/uprobes.h   |   6 ++
-> > >  kernel/events/uprobes.c   |  10 +++
-> > >  kernel/fork.c             |   1 +
-> > >  4 files changed, 186 insertions(+)
-> > > 
-> > > diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
-> > > index 77050e5a4680..6336bb961907 100644
-> > > --- a/arch/x86/kernel/uprobes.c
-> > > +++ b/arch/x86/kernel/uprobes.c
-> > > @@ -608,6 +608,175 @@ static void riprel_post_xol(struct arch_uprobe *auprobe, struct pt_regs *regs)
-> > >  		*sr = utask->autask.saved_scratch_register;
-> > >  	}
-> > >  }
-> > > +
-> > > +static int tramp_mremap(const struct vm_special_mapping *sm, struct vm_area_struct *new_vma)
-> > > +{
-> > > +	return -EPERM;
-> > > +}
-> > > +
-> > > +static struct page *tramp_mapping_pages[2] __ro_after_init;
-> > > +
-> > > +static struct vm_special_mapping tramp_mapping = {
-> > > +	.name   = "[uprobes-trampoline]",
-> > > +	.mremap = tramp_mremap,
-> > > +	.pages  = tramp_mapping_pages,
-> > > +};
-> > > +
-> > > +struct uprobe_trampoline {
-> > > +	struct hlist_node	node;
-> > > +	unsigned long		vaddr;
-> > > +};
-> > > +
-> > > +static bool is_reachable_by_call(unsigned long vtramp, unsigned long vaddr)
-> > > +{
-> > > +	long delta = (long)(vaddr + 5 - vtramp);
-> > > +
-> > > +	return delta >= INT_MIN && delta <= INT_MAX;
-> > > +}
-> > > +
-> > > +#define __4GB		 (1UL << 32)
-> > > +#define MASK_4GB	~(__4GB - 1)
-> > > +#define PAGE_COUNT(addr) ((addr & ~MASK_4GB) >> PAGE_SHIFT)
-> > > +
-> > > +static unsigned long find_nearest_trampoline(unsigned long vaddr)
-> > > +{
-> > > +	struct vm_unmapped_area_info info = {
-> > > +		.length     = PAGE_SIZE,
-> > > +		.align_mask = ~PAGE_MASK,
-> > > +	};
-> > > +	unsigned long limit, low_limit = PAGE_SIZE, high_limit = TASK_SIZE;
-> > > +	unsigned long cross_4GB, low_4GB, high_4GB;
-> > > +	unsigned long low_tramp, high_tramp;
-> > > +	unsigned long call_end = vaddr + 5;
-> > > +
-> > > +	/*
-> > > +	 * The idea is to create a trampoline every 4GB, so we need to find free
-> > > +	 * page closest to the 4GB alignment. We find intersecting 4GB alignment
-> > > +	 * address and search up and down to find the closest free page.
-> > 
-> > It is not guaranteed to be able to find unmapped 4GB aligned page.
-> > I still think just finding the nearest area is better (simpler and
-> > good enough.)
-> > 
-> > 	if (check_add_overflow(call_end, INT_MIN, &low_limit))
-> > 		low_limit = PAGE_SIZE;
-> > 
-> > 	high_limit = call_end + INT_MAX;
-> > 
-> > 	/* Search up from intersecting 4GB alignment address. */
-> > 	info.low_limit = call_end;
-> > 	info.high_limit = min(high_limit, TASK_SIZE);
-> > 	high_tramp = vm_unmapped_area(&info);
-> > 
-> > 	/* Search down from intersecting 4GB alignment address. */
-> > 	info.low_limit = max(low_limit, PAGE_SIZE);
-> > 	info.high_limit = call_end;
-> > 	info.flags = VM_UNMAPPED_AREA_TOPDOWN;
-> > 	low_tramp = vm_unmapped_area(&info);
-> > 
-> > See below;
-> > 
-> > > +	 */
-> > > +
-> > > +	low_4GB = call_end & MASK_4GB;
-> > > +	high_4GB = low_4GB + __4GB;
-> > > +
-> > > +	/* Restrict limits to be within (PAGE_SIZE,TASK_SIZE) boundaries. */
-> > > +	if (!check_add_overflow(call_end, INT_MIN, &limit))
-> > > +		low_limit = limit;
-> > 
-> > if not overflow, low_limit = limit = call_end - 2GB.
-> > 
-> > * if call_end := 2GB + 4095, limit can be 4095 < PAGE_SIZE. 
-> >   at the same time, low_4G == 0.
-> > 
-> > Note that low_limit can be > low_4G or < low_4G.
-> > 
-> > > +	if (low_limit == PAGE_SIZE)
-> > > +		low_4GB = low_limit;
-> > 
-> > If overflow, low_4GB = PAGE_SIZE too.
-> > 
-> > In summary, 
-> > 
-> > (a) 0 < call_end < 2GB: (overflow)
-> >   low_limit := PAGE_SIZE
-> >   low_4GB := PAGE_SIZE
-> > 
-> > (b) 2GB <= call_end < 2GB + PAGE_SIZE:
-> >   low_limit := call_end - 2GB (>= 0, < PAGE_SIZE)
-> >   low_4GB := 0 (= call_end & MASK_4GB)
-> > 
-> > (c) call_end == 2GB + PAGE_SIZE:
-> >   low_limit := PAGE_SIZE
-> >   low_4GB := PAGE_SIZE
-> > 
-> > (d) 2GB + PAGE_SIZE <= call_end < 4GB:
-> >   low_limit := call_end - 2GB (> PAGE_SIZE)
-> >   low_4GB := 0
-> > 
-> > (e) 4GB <= call_end:
-> >   low_limit := call_end - 2GB (> 2GB)
-> >   low_4GB := call_end & MASK_4GB (> 4GB)
-> > 
-> > Maybe (b) and (d) cases are unexpected?
-> > 
-> > 
-> > > +
-> > > +	high_limit = call_end + INT_MAX;
-> > 
-> > This should not overflow, OK.
-> > 
-> > > +	if (high_limit > TASK_SIZE)
-> > > +		high_limit = high_4GB = TASK_SIZE;
-> > > +
-> > > +	/* Get 4GB alligned address that's within 2GB distance from call_end */
-> > > +	if (low_limit <= low_4GB)
-> > 
-> > This means call_end is within the [low_4GB, low_4GB + 2GB).
-> > Call this case as (A)
-> > 
-> > > +		cross_4GB = low_4GB;
-> > > +	else
-> > > +		cross_4GB = high_4GB;
-> > 
-> > And this case as (B).
-> > 
-> > > +
-> > > +	/* Search up from intersecting 4GB alignment address. */
-> > > +	info.low_limit = cross_4GB;
-> > > +	info.high_limit = high_limit;
-> > > +	high_tramp = vm_unmapped_area(&info);
-> > 
-> > This searches the unmapped pages from low_limit.
-> > In (A) case, this starts from low_4GB to high_limit.
-> > In (B) case, this starts from high_4GB to high_limit.
-> > 
-> > So basically you search the unmapped area around the 4GB
-> > aligned address instead of the nearest area of the vaddr.
-> > But it is not guarantee that can find unmapped area near
-> > the 4GB aligned address.
-> 
-> ok, as you said the current code does the same logic but from 4GB
-> aligned address, while you suggest nearest page from the caller
-> 
-> I can't think of any benefit one way or the other apart from that
-> your change is less code, I ended up with code below
+Hi, yonghong. You are right, the best solution is to solve
+this problem in the pahole, just like what Jiri said in the V2:
+  https://lore.kernel.org/bpf/aG5hzvaqXi7uI4GL@krava/
 
+I wonder will we focus the users to use the latest pahole
+that supports duplicate symbols filter after we fix this problem
+in pahole? If so, this patch is useless, and just ignore it. If
+not, the only usage of this patch is for the users that build
+the kernel with an old pahole.
 
-Yeah, below one is simple and easy to read.
+>
+> There is a multi-link effort:
+>    https://lore.kernel.org/bpf/20250703121521.1874196-1-dongml2@chinatele=
+com.cn/
+> which tries to do similar thing for multi-kprobe. For example, for fentry=
+,
+> multi-link may pass an array of btf_id's to the kernel. For such cases,
+> this patch may cause significant performance overhead.
 
-Thank you!
+For the symbol in the vmlinux, there will be no additional overhead,
+as the logic is the same as previous. If the symbol is in the
+modules, it does have additional overhead. Following is the
+testing that hooks all the symbols with fentry-multi.
 
-> 
-> thanks,
-> jirka
-> 
-> 
-> ---
-> +static unsigned long find_nearest_trampoline(unsigned long vaddr)
-> +{
-> +	struct vm_unmapped_area_info info = {
-> +		.length     = PAGE_SIZE,
-> +		.align_mask = ~PAGE_MASK,
-> +	};
-> +	unsigned long low_limit, high_limit;
-> +	unsigned long low_tramp, high_tramp;
-> +	unsigned long call_end = vaddr + 5;
-> +
-> +	if (check_add_overflow(call_end, INT_MIN, &low_limit))
-> +		low_limit = PAGE_SIZE;
-> +
-> +	high_limit = call_end + INT_MAX;
-> +
-> +	/* Search up from the caller address. */
-> +	info.low_limit = call_end;
-> +	info.high_limit = min(high_limit, TASK_SIZE);
-> +	high_tramp = vm_unmapped_area(&info);
-> +
-> +	/* Search down from the caller address. */
-> +	info.low_limit = max(low_limit, PAGE_SIZE);
-> +	info.high_limit = call_end;
-> +	info.flags = VM_UNMAPPED_AREA_TOPDOWN;
-> +	low_tramp = vm_unmapped_area(&info);
-> +
-> +	if (IS_ERR_VALUE(high_tramp) && IS_ERR_VALUE(low_tramp))
-> +		return -ENOMEM;
-> +	if (IS_ERR_VALUE(high_tramp))
-> +		return low_tramp;
-> +	if (IS_ERR_VALUE(low_tramp))
-> +		return high_tramp;
-> +
-> +	/* Return address that's closest to the caller address. */
-> +	if (call_end - low_tramp < high_tramp - call_end)
-> +		return low_tramp;
-> +	return high_tramp;
-> +}
+Without this patch, the time to attach all the symbols:
+kernel: 0.372660s for 48857 symbols
+modules: 0.135543s for 8631 symbols
 
+And with this patch, the time is:
+kernel: 0.380087s for 48857 symbols
+modules: 0.176904s for 8631 symbols
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+One more thing, is there anyone to fix the problem in pahole?
+I mean, I'm not good at pahole. But if there is nobody, I still can
+do this job, but I need to learn it first :/
+
+Thanks!
+Menglong Dong
+>
+> >
+> >
+> >> ---
+> >> v3:
+> >> - reject all the duplicated symbols
+> >> v2:
+> >> - Lookup both vmlinux and modules symbols when mod is NULL, just like
+> >>    kallsyms_lookup_name().
+> >>
+> >>    If the btf is not a modules, shouldn't we lookup on the vmlinux onl=
+y?
+> >>    I'm not sure if we should keep the same logic with
+> >>    kallsyms_lookup_name().
+> >>
+> >> - Return the kernel symbol that don't have ftrace location if the
+> >> symbols
+> >>    with ftrace location are not available
+> >> ---
+> >>   kernel/bpf/verifier.c | 71 ++++++++++++++++++++++++++++++++++++++++-=
+--
+> >>   1 file changed, 66 insertions(+), 5 deletions(-)
+> >>
+> >> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> >> index 53007182b46b..bf4951154605 100644
+> >> --- a/kernel/bpf/verifier.c
+> >> +++ b/kernel/bpf/verifier.c
+> >> @@ -23476,6 +23476,67 @@ static int
+> >> check_non_sleepable_error_inject(u32 btf_id)
+> >>       return btf_id_set_contains(&btf_non_sleepable_error_inject,
+> >> btf_id);
+> >>   }
+> >>   +struct symbol_lookup_ctx {
+> >> +    const char *name;
+> >> +    unsigned long addr;
+> >> +};
+> >> +
+> >> +static int symbol_callback(void *data, unsigned long addr)
+> >> +{
+> >> +    struct symbol_lookup_ctx *ctx =3D data;
+> >> +
+> >> +    if (ctx->addr)
+> >> +        return -EADDRNOTAVAIL;
+> >> +    ctx->addr =3D addr;
+> >> +
+> >> +    return 0;
+> >> +}
+> >> +
+> >> +static int symbol_mod_callback(void *data, const char *name,
+> >> unsigned long addr)
+> >> +{
+> >> +    if (strcmp(((struct symbol_lookup_ctx *)data)->name, name) !=3D 0=
+)
+> >> +        return 0;
+> >> +
+> >> +    return symbol_callback(data, addr);
+> >> +}
+> >> +
+> >> +/**
+> >> + * bpf_lookup_attach_addr: Lookup address for a symbol
+> >> + *
+> >> + * @mod: kernel module to lookup the symbol, NULL means to lookup
+> >> both vmlinux
+> >> + * and modules symbols
+> >> + * @sym: the symbol to resolve
+> >> + * @addr: pointer to store the result
+> >> + *
+> >> + * Lookup the address of the symbol @sym. If multiple symbols with
+> >> the name
+> >> + * @sym exist, -EADDRNOTAVAIL will be returned.
+> >> + *
+> >> + * Returns: 0 on success, -errno otherwise.
+> >> + */
+> >> +static int bpf_lookup_attach_addr(const struct module *mod, const
+> >> char *sym,
+> >> +                  unsigned long *addr)
+> >> +{
+> >> +    struct symbol_lookup_ctx ctx =3D { .addr =3D 0, .name =3D sym };
+> >> +    const char *mod_name =3D NULL;
+> >> +    int err =3D 0;
+> >> +
+> >> +#ifdef CONFIG_MODULES
+> >> +    mod_name =3D mod ? mod->name : NULL;
+> >> +#endif
+> >> +    if (!mod_name)
+> >> +        err =3D kallsyms_on_each_match_symbol(symbol_callback, sym,
+> >> &ctx);
+> >> +
+> >> +    if (!err && !ctx.addr)
+> >> +        err =3D module_kallsyms_on_each_symbol(mod_name,
+> >> symbol_mod_callback,
+> >> +                             &ctx);
+> >> +
+> >> +    if (!ctx.addr)
+> >> +        err =3D -ENOENT;
+> >> +    *addr =3D err ? 0 : ctx.addr;
+> >> +
+> >> +    return err;
+> >> +}
+> >> +
+> >>   int bpf_check_attach_target(struct bpf_verifier_log *log,
+> >>                   const struct bpf_prog *prog,
+> >>                   const struct bpf_prog *tgt_prog,
+> >> @@ -23729,18 +23790,18 @@ int bpf_check_attach_target(struct
+> >> bpf_verifier_log *log,
+> >>               if (btf_is_module(btf)) {
+> >>                   mod =3D btf_try_get_module(btf);
+> >>                   if (mod)
+> >> -                    addr =3D find_kallsyms_symbol_value(mod, tname);
+> >> +                    ret =3D bpf_lookup_attach_addr(mod, tname, &addr)=
+;
+> >>                   else
+> >> -                    addr =3D 0;
+> >> +                    ret =3D -ENOENT;
+> >>               } else {
+> >> -                addr =3D kallsyms_lookup_name(tname);
+> >> +                ret =3D bpf_lookup_attach_addr(NULL, tname, &addr);
+> >>               }
+> >> -            if (!addr) {
+> >> +            if (ret) {
+> >>                   module_put(mod);
+> >>                   bpf_log(log,
+> >>                       "The address of function %s cannot be found\n",
+> >>                       tname);
+> >> -                return -ENOENT;
+> >> +                return ret;
+> >>               }
+> >>           }
+> >
+> >
+>
 
