@@ -1,237 +1,258 @@
-Return-Path: <bpf+bounces-63040-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63041-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AC0EB019F1
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 12:48:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 687D0B01A36
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 12:58:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D8E86485D0
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 10:47:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F19CF18970FE
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 10:58:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16026287510;
-	Fri, 11 Jul 2025 10:48:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BDCB28A1C2;
+	Fri, 11 Jul 2025 10:57:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="FevMw/nx";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="PZoH2apL";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="m+gAVmqZ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9FnTyCPC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jgdkm2i0"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12A6027F728
-	for <bpf@vger.kernel.org>; Fri, 11 Jul 2025 10:48:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49803146585
+	for <bpf@vger.kernel.org>; Fri, 11 Jul 2025 10:57:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752230896; cv=none; b=Wb7qwDfyyFbun2Z24jLZ/uVD272PqfM75blaVpmy3W3riwYUkOGodypk7m5Rg6Rbg7y9qBHa8JGhpHgT51Hnk2fjQw4n6We0fhFn1Rj4sciFnq+6wALN/rlAhqZXQQ7dprNogQFko3Z73u36LnGACb7SUyr94k06TZYFfsjkeQs=
+	t=1752231469; cv=none; b=DhshGWeGophlpLZ85n9Xx2j7BDHwOyzGW6anGt7PUQbI+T8od9rzDQdillgeTs4um42lyww7SANDF1KE64B8pVMeUYlz4oEn8+pOdhx9zsHhY/tue+iZDwYH/uGDUjFL19BhveRChe958XX/B5o1hb4G1+3ASVcWSPuzX0ZST+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752230896; c=relaxed/simple;
-	bh=xks7hR+Q99CR+do0YGntqZ5EpH5+an81u7Qt8g/ANi4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=h5o3vvTdeaQktsrZORVvhNHbqPvBTyNr4dO6lxoAJOwJYp6DAQ8nB+eUoJ4+0aS/9JmZujrUKOs+28U+jWG1zwpVfpuL6fg6S+2D1I7rISkxT7CNw3MVdwV8Ml7vWenQqW3jhFY71jeR5hTvlCdUrRhH+HhrE+jSxZW+ILRS5hY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=FevMw/nx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=PZoH2apL; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=m+gAVmqZ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9FnTyCPC; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E420A21169;
-	Fri, 11 Jul 2025 10:48:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1752230893; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=uKMusnDC3arwQHrqme1Pg8Mwb2SXrNcfmAaYCKtgKPs=;
-	b=FevMw/nx7WFQ3pip7cn6l8h0Mmxa0+UtftYbWyF5f2bU0hvUvOJNGq/ORMCbzS4H0yOeU2
-	xMfSyV0kZahGvi92kefpC2Y4nV18lcOPVrOjakoRUP0rORIM9XxHphUeM6hLIYuX+6c4/F
-	CLCMf30qfvG4VTBJ5vVwhaEGYqH6IUk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1752230893;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=uKMusnDC3arwQHrqme1Pg8Mwb2SXrNcfmAaYCKtgKPs=;
-	b=PZoH2apLTbG1VYqNmUUcLu4fpl2TXyvEvqdCxD1ZF+U+JkiIfQIaZzJj62KuYTvYihzAZu
-	NgMF0QxsdomnU9Bg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=m+gAVmqZ;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=9FnTyCPC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1752230891; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=uKMusnDC3arwQHrqme1Pg8Mwb2SXrNcfmAaYCKtgKPs=;
-	b=m+gAVmqZJI2VPI/108z3oRFihUrOwQZKxhJbKPzzEUr2Vm51CqWbyqq2oM4MZrJ469peJb
-	7yDzRSoUteDYxlAMSJBlv3UW3V95Hy1n5RwQchhnv9LsYbE+CQOaWs3jrooieP20QCwMy4
-	V0x1OEuwtF5x5OC6T3r+kNc9AKexdl0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1752230891;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=uKMusnDC3arwQHrqme1Pg8Mwb2SXrNcfmAaYCKtgKPs=;
-	b=9FnTyCPCjVoZIS/zD2tK64unr3cX5QO5jpQuVUo67Fx77/xE8EVFXT9xJbd9+tvsrf0/fQ
-	ia8njgbG84cHV3Dg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CBB68138A5;
-	Fri, 11 Jul 2025 10:48:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id kaheMevrcGjDBwAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Fri, 11 Jul 2025 10:48:11 +0000
-Message-ID: <54a10cc1-c87d-4b69-999c-9cf582c50849@suse.cz>
-Date: Fri, 11 Jul 2025 12:48:11 +0200
+	s=arc-20240116; t=1752231469; c=relaxed/simple;
+	bh=ywNictxKi62TJU8f5tFEq1MfRO6HjYg4Tt90uOYAqDw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GT/zQtypk6Br9iZYD54RbGxOByoZ2bKecl2j8n6sEN0c+N2eDFLCVjImrhxGUwC0PkI+6gd+HDKozMCRs2bg5yZjwLi6tnB+yQM+iX7mJh4gMcdTfEIPPzH0XDK0pfPrdvzLNQHHw9jWx689Etuz6S1gSxSNUuEWxTYPgupghYA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jgdkm2i0; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-454aaade1fbso20388495e9.3
+        for <bpf@vger.kernel.org>; Fri, 11 Jul 2025 03:57:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752231465; x=1752836265; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=kza3lbB0YTcalJYFxIfwh1FwdXyYLoSglQE6w0vuj6w=;
+        b=Jgdkm2i09P/UkPWdV5nfHmHo8lfGpw7MPDVTKIvzIoRnLL+VYrfL9wmK2+IDjpBUjS
+         kpaIwSo+ATOuVjuPCYiP8463c0U+stByHkcsuyKJx7UkrvLzXqIrrJnP8Et4s4Qu/4lN
+         rEc9DmsflTumkBHLE4/lNFLWKL6Da5zdpVuEuR4BDh18YUqVbq+Ynl0YFNmAWkdkC6o0
+         XqpvVi0CzVhSOg5RpkKg8/W+TMNsEgB135BwLgiN/ilcalHGoKVGDCxdmkfEZoQ0pEOR
+         fF2HHtyCAa3U7D2BXWJXevDeuUHvR/cXGEJxMEHOUUb9iPEoDh6O8gHfncrzgqwJPE0J
+         5Igw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752231465; x=1752836265;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kza3lbB0YTcalJYFxIfwh1FwdXyYLoSglQE6w0vuj6w=;
+        b=Uoaaf9ldVWrAO43H3mZuGF/OVPnU6rWacNjj1+6RlQ9BX9fqEl/lS6WwqgaZNqCS+9
+         1BTTyeRP2gQp5wjUMn0fs+GHlToDAovuSZHrNt7tnuMR8OJKdOYmmBGqciyDvk+iAZkx
+         SfgrK2v+4fgUslP+nRhZT+2H4sZ8LNLDCbwNpMC1U7vQmolnpGrAWpWt9ChSonn2fKMS
+         whwvuW7ieWFGFUArBwAiAiFjr8tBCEhJZS545JkqwFnGbY+pV7OwGEfpDi01K4t89fe0
+         gjqnq2Tqmn/EWTLGoy25EGu56FTfOtMt6nnTapjMCqgdjXh2iNkmrpxkhT52xgQ8o5df
+         CCFg==
+X-Gm-Message-State: AOJu0YwqaUlJH98DKAju/Aaaht59gpoJCqAWAHc542iOmhdiEv3I78qL
+	RDiuyvE7l4gsvOwKpY8+aq+DtgnJvIb0ZfhNQY7hYQlIWFVevnDKeO5dqIpF53o9Rgk=
+X-Gm-Gg: ASbGncsp4tONDd2FhL5F04Ey1s4beUBOVkT3cY7nnTUXpVlQpITEZLDK5n39CnaOrEf
+	sBaPXiVMPThcGTXv2c0uef5gMhFrfi8tAL46Nj/LHYxIlsrufp/xKTlXzwHuFOoBgzuP6NueWAN
+	gn+o4AxHK9sFXR7NrcFuijiM1KtVf1pemUYFfhjPqE78BzHehRDhqlNgwF8eUEDjs+uT3ll0MZN
+	EM1q6vmLJG/nVAorD7KF2WouWKRd2Kzrx24XDNzI8w1IPmRj+tpWZG+V11PD2eKzCk9muYg2AZ8
+	qCFtHQ0V+QNaHBGE6F+qjy9e13w+URPNo0xUfXN9/7QmuI0jCLvk3rvbruZ/RKd0PAeyTp6zkeH
+	g+NzxvhcXiynCzzpfzqjtM+t5ySBkmtviak1fl2Vxfkq0mJcjgtqh/wo=
+X-Google-Smtp-Source: AGHT+IGNRJ53DqNdDXYK7hcJGMtb1LMGQQZDqA5D8m98w4KPaF56dXFmV5g+anlP4y+lQXATvQJi0A==
+X-Received: by 2002:a05:600c:8b35:b0:442:ff8e:11ac with SMTP id 5b1f17b1804b1-454ec165297mr26119845e9.12.1752231465291;
+        Fri, 11 Jul 2025 03:57:45 -0700 (PDT)
+Received: from gmail.com (deskosmtp.auranext.com. [195.134.167.217])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-454d50511dfsm84213835e9.12.2025.07.11.03.57.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Jul 2025 03:57:44 -0700 (PDT)
+Date: Fri, 11 Jul 2025 12:57:43 +0200
+From: Mahe Tardy <mahe.tardy@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH bpf-next v1 3/4] bpf: add bpf_icmp_send_unreach
+ cgroup_skb kfunc
+Message-ID: <aHDuJ5rNeMTnUSju@gmail.com>
+References: <20250710102607.12413-1-mahe.tardy@gmail.com>
+ <20250710102607.12413-4-mahe.tardy@gmail.com>
+ <CAADnVQKq_-=N7eJoup6AqFngoocT+D02NF0md_3mi2Vcrw09nQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 6/6] slab: Introduce kmalloc_nolock() and
- kfree_nolock().
-Content-Language: en-US
-To: Harry Yoo <harry.yoo@oracle.com>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf@vger.kernel.org, linux-mm@kvack.org, shakeel.butt@linux.dev,
- mhocko@suse.com, bigeasy@linutronix.de, andrii@kernel.org, memxor@gmail.com,
- akpm@linux-foundation.org, peterz@infradead.org, rostedt@goodmis.org,
- hannes@cmpxchg.org
-References: <20250709015303.8107-1-alexei.starovoitov@gmail.com>
- <20250709015303.8107-7-alexei.starovoitov@gmail.com>
- <aHC-_upDSW_Twplc@hyeyoo>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- m6M14QORSWTLRg==
-In-Reply-To: <aHC-_upDSW_Twplc@hyeyoo>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:mid,suse.cz:dkim];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FREEMAIL_TO(0.00)[oracle.com,gmail.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,linux.dev,suse.com,linutronix.de,kernel.org,gmail.com,linux-foundation.org,infradead.org,goodmis.org,cmpxchg.org];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:mid,suse.cz:dkim]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Rspamd-Queue-Id: E420A21169
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -3.01
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQKq_-=N7eJoup6AqFngoocT+D02NF0md_3mi2Vcrw09nQ@mail.gmail.com>
 
-On 7/11/25 09:36, Harry Yoo wrote:
-> On Tue, Jul 08, 2025 at 06:53:03PM -0700, Alexei Starovoitov wrote:
+On Thu, Jul 10, 2025 at 09:07:59AM -0700, Alexei Starovoitov wrote:
+> On Thu, Jul 10, 2025 at 3:26 AM Mahe Tardy <mahe.tardy@gmail.com> wrote:
+> >
+> > This is needed in the context of Tetragon to provide improved feedback
+> > (in contrast to just dropping packets) to east-west traffic when blocked
+> > by policies using cgroup_skb programs.
+> >
+> > This reuse concepts from netfilter reject target codepath with the
+> > differences that:
+> > * Packets are cloned since the BPF user can still return SK_PASS from
+> >   the cgroup_skb progs and the current skb need to stay untouched
+> >   (cgroup_skb hooks only allow read-only skb payload).
+> > * Since cgroup_skb programs are called late in the stack, checksums do
+> >   not need to be computed or verified, and IPv4 fragmentation does not
+> >   need to be checked (ip_local_deliver should take care of that
+> >   earlier).
+> >
+> > Signed-off-by: Mahe Tardy <mahe.tardy@gmail.com>
+> > ---
+> >  net/core/filter.c | 61 ++++++++++++++++++++++++++++++++++++++++++++++-
+> >  1 file changed, 60 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index ab456bf1056e..9215f79e7690 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -85,6 +85,8 @@
+> >  #include <linux/un.h>
+> >  #include <net/xdp_sock_drv.h>
+> >  #include <net/inet_dscp.h>
+> > +#include <linux/icmp.h>
+> > +#include <net/icmp.h>
+> >
+> >  #include "dev.h"
+> >
+> > @@ -12140,6 +12142,53 @@ __bpf_kfunc int bpf_sock_ops_enable_tx_tstamp(struct bpf_sock_ops_kern *skops,
+> >         return 0;
+> >  }
+> >
+> > +__bpf_kfunc int bpf_icmp_send_unreach(struct __sk_buff *__skb, int code)
+> > +{
+> > +       struct sk_buff *skb = (struct sk_buff *)__skb;
+> > +       struct sk_buff *nskb;
+> > +
+> > +       switch (skb->protocol) {
+> > +       case htons(ETH_P_IP):
+> > +               if (code < 0 || code > NR_ICMP_UNREACH)
+> > +                       return -EINVAL;
+> > +
+> > +               nskb = skb_clone(skb, GFP_ATOMIC);
+> > +               if (!nskb)
+> > +                       return -ENOMEM;
+> > +
+> > +               if (ip_route_reply_fetch_dst(nskb) < 0) {
+> > +                       kfree_skb(nskb);
+> > +                       return -EHOSTUNREACH;
+> > +               }
+> > +
+> > +               icmp_send(nskb, ICMP_DEST_UNREACH, code, 0);
+> > +               kfree_skb(nskb);
+> > +               break;
+> > +#if IS_ENABLED(CONFIG_IPV6)
+> > +       case htons(ETH_P_IPV6):
+> > +               if (code < 0 || code > ICMPV6_REJECT_ROUTE)
+> > +                       return -EINVAL;
+> > +
+> > +               nskb = skb_clone(skb, GFP_ATOMIC);
+> > +               if (!nskb)
+> > +                       return -ENOMEM;
+> > +
+> > +               if (ip6_route_reply_fetch_dst(nskb) < 0) {
+> > +                       kfree_skb(nskb);
+> > +                       return -EHOSTUNREACH;
+> > +               }
+> > +
+> > +               icmpv6_send(nskb, ICMPV6_DEST_UNREACH, code, 0);
+> > +               kfree_skb(nskb);
+> > +               break;
+> > +#endif
+> > +       default:
+> > +               return -EPROTONOSUPPORT;
+> > +       }
+> > +
+> > +       return 0;
+> > +}
+> > +
+> >  __bpf_kfunc_end_defs();
+> >
+> >  int bpf_dynptr_from_skb_rdonly(struct __sk_buff *skb, u64 flags,
+> > @@ -12177,6 +12226,10 @@ BTF_KFUNCS_START(bpf_kfunc_check_set_sock_ops)
+> >  BTF_ID_FLAGS(func, bpf_sock_ops_enable_tx_tstamp, KF_TRUSTED_ARGS)
+> >  BTF_KFUNCS_END(bpf_kfunc_check_set_sock_ops)
+> >
+> > +BTF_KFUNCS_START(bpf_kfunc_check_set_icmp_send_unreach)
+> > +BTF_ID_FLAGS(func, bpf_icmp_send_unreach, KF_TRUSTED_ARGS)
+> > +BTF_KFUNCS_END(bpf_kfunc_check_set_icmp_send_unreach)
+> > +
+> >  static const struct btf_kfunc_id_set bpf_kfunc_set_skb = {
+> >         .owner = THIS_MODULE,
+> >         .set = &bpf_kfunc_check_set_skb,
+> > @@ -12202,6 +12255,11 @@ static const struct btf_kfunc_id_set bpf_kfunc_set_sock_ops = {
+> >         .set = &bpf_kfunc_check_set_sock_ops,
+> >  };
+> >
+> > +static const struct btf_kfunc_id_set bpf_kfunc_set_icmp_send_unreach = {
+> > +       .owner = THIS_MODULE,
+> > +       .set = &bpf_kfunc_check_set_icmp_send_unreach,
+> > +};
+> > +
+> >  static int __init bpf_kfunc_init(void)
+> >  {
+> >         int ret;
+> > @@ -12221,7 +12279,8 @@ static int __init bpf_kfunc_init(void)
+> >         ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP_SOCK_ADDR,
+> >                                                &bpf_kfunc_set_sock_addr);
+> >         ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &bpf_kfunc_set_tcp_reqsk);
+> > -       return ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SOCK_OPS, &bpf_kfunc_set_sock_ops);
+> > +       ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SOCK_OPS, &bpf_kfunc_set_sock_ops);
+> > +       return ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP_SKB, &bpf_kfunc_set_icmp_send_unreach);
 > 
-> By adding it to the lockless list, it's overwriting freed objects,
-> and it's not always safe.
-> 
-> Looking at calculate_sizes():
-> 
->         if (((flags & SLAB_TYPESAFE_BY_RCU) && !args->use_freeptr_offset) ||    
->             (flags & SLAB_POISON) || s->ctor ||                                 
->             ((flags & SLAB_RED_ZONE) &&                                         
->              (s->object_size < sizeof(void *) || slub_debug_orig_size(s)))) {    
->                 /*                                                              
->                  * Relocate free pointer after the object if it is not          
->                  * permitted to overwrite the first word of the object on           
->                  * kmem_cache_free.                                             
->                  *                                                              
->                  * This is the case if we do RCU, have a constructor or         
->                  * destructor, are poisoning the objects, or are                
->                  * redzoning an object smaller than sizeof(void *) or are           
->                  * redzoning an object with slub_debug_orig_size() enabled,         
->                  * in which case the right redzone may be extended.             
->                  *                                                              
->                  * The assumption that s->offset >= s->inuse means free         
->                  * pointer is outside of the object is used in the              
->                  * freeptr_outside_object() function. If that is no             
->                  * longer true, the function needs to be modified.              
->                  */                                                             
->                 s->offset = size;                                               
->                 size += sizeof(void *);  
-> 
-> Only sizeof(void *) bytes from object + s->offset is always safe to overwrite.
+> Does it have to be restricted to BPF_PROG_TYPE_CGROUP_SKB ?
+> Can it be a part of bpf_kfunc_set_skb[] and used more generally ?
 
-Great point! Agreed.
+From the assumptions that have been made to write the kfunc in this
+state yes, it has to be restricted to cgroup_skb. We would need
+additional checks for hooks that are earlier in the stack I think.
 
-> So either 1) teach defer_free() that it needs to use s->offset for each
-> object, instead of zero (and that the list can have objects from
-> different caches), or 2) introduce per-cache per-CPU lockless lists?
+Keeping in mind that this kfunc is not a necessity for other prog types
+which can already overwrite packets, like TC.
+ 
+> If restriction is necessary then I guess we can live with extra
+> bpf_kfunc_set_icmp_send_unreach, though it's odd to create a set
+> just for one kfunc.
+> Either way don't change the last 'return ...' line in this file.
+> Add 'ret = ret ?: register...' instead to reduce churn.
+> 
+> Also cc netdev and netfilter maintainers in v2.
 
-1) should be feasible. s->offset should be available when queueing the
-object, and in free_deferred_objects() you already obtain "s" too so it's
-trivial to subtract s->offset back. Thus 2) is unnecessary overhead.
+Yes to both.
+
+Aside, could I have your opinion on this part of the cover letter before
+I proceed to fix these patches:
+
+> Other design ideas (to prevent above issues) could be:
+> * Extend the return codes for the cgroup_skb program to trigger the
+>  reject after completion (SK_REJECT).
+> * Adding a kfunc to set the kernel to send an ICMP_HOST_UNREACH control
+>  message with appropriate code when the cgroup_skb program eventually
+>  terminates with SK_DROP.
+> 
+> We should bear in mind that we want to extend this with TCP reset next.
+> Please tell me what's your opinion on above ideas: if adding new return
+> codes could be considered and/or the other alternatives would be better
+> than this patch series and thus proposed instead.
+
+These two ideas would make it more natural for cgroup_skb progs but
+would prevent someone to extend it to more prog types in the future.
 
 
