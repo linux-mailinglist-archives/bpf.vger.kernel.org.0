@@ -1,145 +1,263 @@
-Return-Path: <bpf+bounces-63034-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63035-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E32D0B0183B
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 11:40:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40E68B018A0
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 11:46:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5CD12B4132F
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 09:35:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C6343AE71E
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 09:46:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E025127A47F;
-	Fri, 11 Jul 2025 09:36:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3150927FB02;
+	Fri, 11 Jul 2025 09:45:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OfDSUfdR"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NXATx2Xz"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5479E253F12;
-	Fri, 11 Jul 2025 09:36:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F77A27E7EC
+	for <bpf@vger.kernel.org>; Fri, 11 Jul 2025 09:45:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752226592; cv=none; b=ORotkoGB9yoOtX+0Gc6/qElvah8/5Py/61nExpXjwcB/fN8jA7ZVHhR3hvVg15IB6HGR+zduL6xPMwGLSjZwlX5xpIvd32+DLSM2yVcp9ZnjQy8BadJkKEa+KlifqZykRToVwWLv5mhdPomETENAWZ/vFnmcTmuW6V6STOTGoDA=
+	t=1752227156; cv=none; b=eCcs9AMHN6KuWD+O8FdIc9AN81M20hpa541xsvX3DBIu5y0apWORPF0PwIiBHWkqibpijddIQxv0gFT1OGKSbWTUr3ved+9HSNjwDEOQwmFx+0bj5MLzZfow0kriPVuc1u5B10iixRT+tt9Il8kOr17toVlHg1D86q4RuGGOmEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752226592; c=relaxed/simple;
-	bh=wravLw2QyrJLSNCdmXnM24JOPnV05g3lbLl4G+9JMH8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qS7qBFU8pf8uQeqcRle30bMpnHcX4mqwbG5phFs8p00GwjP66+2HeVES4ooOWkUesArvJZTlFgPlGCwPDUwlNQ2AvIk6ZZfES+wqz5+JuHYaorVJelZta8xovKCYs4iWjjLIvUOW/Qbbwi5gHTOyXoZCOM1UgmaLqqkvlpwlaSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OfDSUfdR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6DFAC4CEED;
-	Fri, 11 Jul 2025 09:36:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752226591;
-	bh=wravLw2QyrJLSNCdmXnM24JOPnV05g3lbLl4G+9JMH8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OfDSUfdRw476/lz/ONpYwW1LihVsJP6g0T4SmP1iy2bvr6qRewRf+NN6qbBh4loy4
-	 XRACTQsVQQKkeVgPiZ+RWxgjPwc4mFpA7ovzYbzspNEdtIOM16+PsVIznQZuGXTAjO
-	 YZepOneoK/wohc6HXIs4ZC6Dw0BMRD2fZXWkmRYafw+nYnYuohAHbnQyfuMF4JKUzo
-	 b/kZEPC8SbEEm0PHcf5sIEjBTqR4I9EN5tqD8XTVmuUcTUJyvUBSuDhq4FG32/pV4q
-	 Nk1uYNjkE5XN2AF5ImMIUTv0KevWM9wO4dVYjLt97vGrQgXCndA8TJQLrAVNEasasg
-	 H4O1AEKzCaDFg==
-Date: Fri, 11 Jul 2025 11:36:22 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Song Liu <songliubraving@meta.com>
-Cc: Paul Moore <paul@paul-moore.com>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Song Liu <song@kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>, "apparmor@lists.ubuntu.com" <apparmor@lists.ubuntu.com>, 
-	"selinux@vger.kernel.org" <selinux@vger.kernel.org>, 
-	"tomoyo-users_en@lists.sourceforge.net" <tomoyo-users_en@lists.sourceforge.net>, 
-	"tomoyo-users_ja@lists.sourceforge.net" <tomoyo-users_ja@lists.sourceforge.net>, Kernel Team <kernel-team@meta.com>, 
-	"andrii@kernel.org" <andrii@kernel.org>, "eddyz87@gmail.com" <eddyz87@gmail.com>, 
-	"ast@kernel.org" <ast@kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>, 
-	"martin.lau@linux.dev" <martin.lau@linux.dev>, "jack@suse.cz" <jack@suse.cz>, 
-	"kpsingh@kernel.org" <kpsingh@kernel.org>, "mattbobrowski@google.com" <mattbobrowski@google.com>, 
-	"amir73il@gmail.com" <amir73il@gmail.com>, "repnop@google.com" <repnop@google.com>, 
-	"jlayton@kernel.org" <jlayton@kernel.org>, "josef@toxicpanda.com" <josef@toxicpanda.com>, 
-	"mic@digikod.net" <mic@digikod.net>, "gnoack@google.com" <gnoack@google.com>, 
-	"m@maowtm.org" <m@maowtm.org>, "john.johansen@canonical.com" <john.johansen@canonical.com>, 
-	"john@apparmor.net" <john@apparmor.net>, 
-	"stephen.smalley.work@gmail.com" <stephen.smalley.work@gmail.com>, "omosnace@redhat.com" <omosnace@redhat.com>, 
-	"takedakn@nttdata.co.jp" <takedakn@nttdata.co.jp>, 
-	"penguin-kernel@i-love.sakura.ne.jp" <penguin-kernel@i-love.sakura.ne.jp>, "enlightened@chromium.org" <enlightened@chromium.org>
-Subject: Re: [RFC] vfs: security: Parse dev_name before calling
- security_sb_mount
-Message-ID: <20250711-pfirsich-worum-c408f9a14b13@brauner>
-References: <20250708230504.3994335-1-song@kernel.org>
- <20250709102410.GU1880847@ZenIV>
- <CAHC9VhSS1O+Cp7UJoJnWNbv-Towia72DitOPH0zmKCa4PBttkw@mail.gmail.com>
- <1959367A-15AB-4332-B1BC-7BBCCA646636@meta.com>
- <20250710-roden-hosen-ba7f215706bb@brauner>
- <5EB3EFBC-69BA-49CC-B416-D4A7398A2B47@meta.com>
+	s=arc-20240116; t=1752227156; c=relaxed/simple;
+	bh=zxuuEGNueutqrRURbOl7rW8OCM1hy4XsjEuCw/yFNpw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Tihs14tX2jZ3NmZGA0oB7czVsj2WlX1xkUCZcGHMzhvSyT0mOzLq5XJvisbP7n6UVrCfLkfJlpyd45X9hq7skmVHqp7hEERaxEaiLdKy6oBCsOphwEiWNvAeJ0N4uEo9734OycX0MC+leCHA/3VoZgw1c33J7EwJyuY3srx/rbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NXATx2Xz; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1752227142;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=TQD3v1aKvpDwwgaUlCECmBTZKfWk144pgLdrlapMGwk=;
+	b=NXATx2Xzqr0ZWmaKYFdrQ0u4cIQTw4Rrxoq8bAC46mnGF60y78At8S5O6eK9XqotUY+xAJ
+	1V+Eg6B1v1OvHwBDbx45DakKTVHTptgnHWEPMCXjTIA+1O13WZViY3FkuOCrARbhga5cH8
+	J894SQVmbaL/BojVvnbKMkmEOfj2o/I=
+From: Tao Chen <chen.dylane@linux.dev>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	willemb@google.com,
+	kerneljasonxing@gmail.com
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Tao Chen <chen.dylane@linux.dev>
+Subject: [PATCH bpf-next 1/2] bpf: Add struct bpf_token_info
+Date: Fri, 11 Jul 2025 17:45:16 +0800
+Message-ID: <20250711094517.931999-1-chen.dylane@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <5EB3EFBC-69BA-49CC-B416-D4A7398A2B47@meta.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Jul 10, 2025 at 05:00:18PM +0000, Song Liu wrote:
-> 
-> 
-> > On Jul 10, 2025, at 4:46 AM, Christian Brauner <brauner@kernel.org> wrote:
-> 
-> [...]
-> 
-> >> Right now, we have security_sb_mount and security_move_mount, for 
-> >> syscall “mount” and “move_mount” respectively. This is confusing 
-> >> because we can also do move mount with syscall “mount”. How about 
-> >> we create 5 different security hooks:
-> >> 
-> >> security_bind_mount
-> >> security_new_mount
-> >> security_reconfigure_mount
-> >> security_remount
-> >> security_change_type_mount
-> >> 
-> >> and remove security_sb_mount. After this, we will have 6 hooks for
-> >> each type of mount (the 5 above plus security_move_mount).
-> > 
-> > I've multiple times pointed out that the current mount security hooks
-> > aren't working and basically everything in the new mount api is
-> > unsupervised from an LSM perspective.
-> 
-> To make sure I understand the comment. By “new mount api”, do you mean 
-> the code path under do_new_mount()? 
+The 'commit 35f96de04127 ("bpf: Introduce BPF token object")' added
+BPF token as a new kind of BPF kernel object. And BPF_OBJ_GET_INFO_BY_FD
+already used to get BPF object info, so we can also get token info with
+this cmd.
 
-fsopen()
-fsconfig()
-fsmount()
-open_tree()
-open_tree_attr()
-move_mount()
-statmount()
-listmount()
+Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+---
+ include/linux/bpf.h            | 11 +++++++++++
+ include/uapi/linux/bpf.h       |  8 ++++++++
+ kernel/bpf/syscall.c           | 18 ++++++++++++++++++
+ kernel/bpf/token.c             | 30 ++++++++++++++++++++++++++++--
+ tools/include/uapi/linux/bpf.h |  8 ++++++++
+ 5 files changed, 73 insertions(+), 2 deletions(-)
 
-I think that's all.
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 34dd90ec7fa..2c772f1556d 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -2350,6 +2350,7 @@ extern const struct super_operations bpf_super_ops;
+ extern const struct file_operations bpf_map_fops;
+ extern const struct file_operations bpf_prog_fops;
+ extern const struct file_operations bpf_iter_fops;
++extern const struct file_operations bpf_token_fops;
+ 
+ #define BPF_PROG_TYPE(_id, _name, prog_ctx_type, kern_ctx_type) \
+ 	extern const struct bpf_prog_ops _name ## _prog_ops; \
+@@ -2546,6 +2547,9 @@ void bpf_token_inc(struct bpf_token *token);
+ void bpf_token_put(struct bpf_token *token);
+ int bpf_token_create(union bpf_attr *attr);
+ struct bpf_token *bpf_token_get_from_fd(u32 ufd);
++int bpf_token_get_info_by_fd(struct bpf_token *token,
++			     const union bpf_attr *attr,
++			     union bpf_attr __user *uattr);
+ 
+ bool bpf_token_allow_cmd(const struct bpf_token *token, enum bpf_cmd cmd);
+ bool bpf_token_allow_map_type(const struct bpf_token *token, enum bpf_map_type type);
+@@ -2944,6 +2948,13 @@ static inline struct bpf_token *bpf_token_get_from_fd(u32 ufd)
+ 	return ERR_PTR(-EOPNOTSUPP);
+ }
+ 
++static inline int bpf_token_get_info_by_fd(struct bpf_token *token,
++					   const union bpf_attr *attr,
++					   union bpf_attr __user *uattr)
++{
++	return -EOPNOTSUPP;
++}
++
+ static inline void __dev_flush(struct list_head *flush_list)
+ {
+ }
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 0670e15a610..233de867738 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -450,6 +450,7 @@ union bpf_iter_link_info {
+  *		* **struct bpf_map_info**
+  *		* **struct bpf_btf_info**
+  *		* **struct bpf_link_info**
++ *		* **struct bpf_token_info**
+  *
+  *	Return
+  *		Returns zero on success. On error, -1 is returned and *errno*
+@@ -6803,6 +6804,13 @@ struct bpf_link_info {
+ 	};
+ } __attribute__((aligned(8)));
+ 
++struct bpf_token_info {
++	__u64 allowed_cmds;
++	__u64 allowed_maps;
++	__u64 allowed_progs;
++	__u64 allowed_attachs;
++} __attribute__((aligned(8)));
++
+ /* User bpf_sock_addr struct to access socket fields and sockaddr struct passed
+  * by user and intended to be used by socket (e.g. to bind to, depends on
+  * attach type).
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 3f36bfe1326..c21b6bba62a 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -5234,6 +5234,21 @@ static int bpf_link_get_info_by_fd(struct file *file,
+ }
+ 
+ 
++static int token_get_info_by_fd(struct file *file,
++				struct bpf_token *token,
++				const union bpf_attr *attr,
++				union bpf_attr __user *uattr)
++{
++	struct bpf_token_info __user *uinfo = u64_to_user_ptr(attr->info.info);
++	u32 info_len = attr->info.info_len;
++	int err;
++
++	err = bpf_check_uarg_tail_zero(USER_BPFPTR(uinfo), sizeof(*uinfo), info_len);
++	if (err)
++		return err;
++	return bpf_token_get_info_by_fd(token, attr, uattr);
++}
++
+ #define BPF_OBJ_GET_INFO_BY_FD_LAST_FIELD info.info
+ 
+ static int bpf_obj_get_info_by_fd(const union bpf_attr *attr,
+@@ -5257,6 +5272,9 @@ static int bpf_obj_get_info_by_fd(const union bpf_attr *attr,
+ 	else if (fd_file(f)->f_op == &bpf_link_fops || fd_file(f)->f_op == &bpf_link_fops_poll)
+ 		return bpf_link_get_info_by_fd(fd_file(f), fd_file(f)->private_data,
+ 					      attr, uattr);
++	else if (fd_file(f)->f_op == &bpf_token_fops)
++		return token_get_info_by_fd(fd_file(f), fd_file(f)->private_data,
++					    attr, uattr);
+ 	return -EINVAL;
+ }
+ 
+diff --git a/kernel/bpf/token.c b/kernel/bpf/token.c
+index 26057aa1350..319e252b879 100644
+--- a/kernel/bpf/token.c
++++ b/kernel/bpf/token.c
+@@ -101,9 +101,9 @@ static void bpf_token_show_fdinfo(struct seq_file *m, struct file *filp)
+ 
+ #define BPF_TOKEN_INODE_NAME "bpf-token"
+ 
+-static const struct inode_operations bpf_token_iops = { };
++const struct inode_operations bpf_token_iops = { };
+ 
+-static const struct file_operations bpf_token_fops = {
++const struct file_operations bpf_token_fops = {
+ 	.release	= bpf_token_release,
+ 	.show_fdinfo	= bpf_token_show_fdinfo,
+ };
+@@ -210,6 +210,32 @@ int bpf_token_create(union bpf_attr *attr)
+ 	return err;
+ }
+ 
++int bpf_token_get_info_by_fd(struct bpf_token *token,
++			     const union bpf_attr *attr,
++			     union bpf_attr __user *uattr)
++{
++	struct bpf_token_info __user *uinfo;
++	struct bpf_token_info info;
++	u32 info_copy, uinfo_len;
++
++	uinfo = u64_to_user_ptr(attr->info.info);
++	uinfo_len = attr->info.info_len;
++
++	info_copy = min_t(u32, uinfo_len, sizeof(info));
++	memset(&info, 0, sizeof(info));
++
++	info.allowed_cmds = token->allowed_cmds;
++	info.allowed_maps = token->allowed_maps;
++	info.allowed_progs = token->allowed_progs;
++	info.allowed_attachs = token->allowed_attachs;
++
++	if (copy_to_user(uinfo, &info, info_copy) ||
++	    put_user(info_copy, &uattr->info.info_len))
++		return -EFAULT;
++
++	return 0;
++}
++
+ struct bpf_token *bpf_token_get_from_fd(u32 ufd)
+ {
+ 	CLASS(fd, f)(ufd);
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 0670e15a610..233de867738 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -450,6 +450,7 @@ union bpf_iter_link_info {
+  *		* **struct bpf_map_info**
+  *		* **struct bpf_btf_info**
+  *		* **struct bpf_link_info**
++ *		* **struct bpf_token_info**
+  *
+  *	Return
+  *		Returns zero on success. On error, -1 is returned and *errno*
+@@ -6803,6 +6804,13 @@ struct bpf_link_info {
+ 	};
+ } __attribute__((aligned(8)));
+ 
++struct bpf_token_info {
++	__u64 allowed_cmds;
++	__u64 allowed_maps;
++	__u64 allowed_progs;
++	__u64 allowed_attachs;
++} __attribute__((aligned(8)));
++
+ /* User bpf_sock_addr struct to access socket fields and sockaddr struct passed
+  * by user and intended to be used by socket (e.g. to bind to, depends on
+  * attach type).
+-- 
+2.48.1
 
-> 
-> > My recommendation is make a list of all the currently supported
-> > security_*() hooks in the mount code (I certainly don't have them in my
-> > head). Figure out what each of them allow to mediate effectively and how
-> > the callchains are related.
-> > 
-> > Then make a proposal how to replace them with something that a) doesn't
-> > cause regressions which is probably something that the LSMs care about
-> > and b) that covers the new mount API sufficiently to be properly
-> > mediated.
-> > 
-> > I'll happily review proposals. Fwiw, I'm pretty sure that this is
-> > something that Mickael is interested in as well.
-> 
-> So we will consider a proper redesign of LSM hooks for mount syscalls, 
-> but we do not want incremental improvements like this one. Do I get 
-> the direction right?
-
-If incremental is workable then I think so yes. But it would be great to
-get a consistent picture of what people want/need.
 
