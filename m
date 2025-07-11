@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-63074-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63075-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA8FBB0231F
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 19:49:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBFC8B02322
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 19:50:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5BACA44E4F
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 17:49:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC4BD1C485DF
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 17:50:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B44C72F1FDE;
-	Fri, 11 Jul 2025 17:49:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D8942F1FEC;
+	Fri, 11 Jul 2025 17:49:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EiEw5hfq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Un5vH3Ov"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DA042EF2AA
-	for <bpf@vger.kernel.org>; Fri, 11 Jul 2025 17:49:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2A612F0E59;
+	Fri, 11 Jul 2025 17:49:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752256191; cv=none; b=gE1ddxzXRRnAwjfhje8iAQuMfT4oVyzwmmLrJHLUmhditL0+P468GanxiXn+aeXDOMRE+HSqOBMNHbuYlQ19LPNbvueIGLlvJ/3LEw28o5v6+TyQFA2++XRd5Rfm52ZD7T1m1hHQEBk6AbTWHWjHKLAKogSZyqqiUXCTvEjqghE=
+	t=1752256196; cv=none; b=TUxMtw3+vO933vHT/OElj+g+/66nYcJ/VNHY2PLXxnDX5eXJjaA5R5STQ5rWI/hp4XKqv9kwZzkDiTBarUm9L5+gF97++9HjA93V+TXvQeZczCcOWhtlQdd8PjSdvNXWaFtUvIQkXfeRww11zE+yuIai57I9dQ4H2nrAs4p3Qf8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752256191; c=relaxed/simple;
-	bh=mmBw444e0Rg94wA0H3JqW7XnbFNNaJrF1mJ5IHEbp90=;
+	s=arc-20240116; t=1752256196; c=relaxed/simple;
+	bh=/MkA07c+dWNbSLuFOP7iyIQHic2zDExuAjUmWhSOOhQ=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=tOeWhR6P3Xcr1OyjOilu59xZGsLZinEYfKUEMMCBSijsjtUAzwgOWn7mDbD3y1z43AP2mG3ui/EUf3o0ZUl0WhMtuv8E3XojLTBe3Ch+eyH0hUSKxKBn4aY+AVcn/RdkxQ94YZ0FVqwLBkCJZiHJAWS5DwAqrQE6oO1biBLkoIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EiEw5hfq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C812C4CEED;
-	Fri, 11 Jul 2025 17:49:51 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=MxOO/pUlBAtWDwPa/yIL3wewXLLfpJ+jfMNrdicD4fMJZHaxe+KMnBqGKh86NxgJspTazqCJlSFFbWOkRAI3/XM5VCb802LB+y5OPlDBHJA67x9WS9/jD/kcqnVFs3VL2aSbw3oobTj5/eyZmrvHB4/o67PgvGV0fRJAN4Duv50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Un5vH3Ov; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 574A4C4CEED;
+	Fri, 11 Jul 2025 17:49:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752256191;
-	bh=mmBw444e0Rg94wA0H3JqW7XnbFNNaJrF1mJ5IHEbp90=;
+	s=k20201202; t=1752256195;
+	bh=/MkA07c+dWNbSLuFOP7iyIQHic2zDExuAjUmWhSOOhQ=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=EiEw5hfqA/bF1dPtVztG7cbSWjyyjS3VbRoQYKylj2ihTxzmKAw25tgKQ2YDSlJ5/
-	 f8FIsmIRXe/KCGbiHpGwZxnkeBtXxlZkBkKEiTIqntKC/f0l2kInoKH0y0yzozIpTk
-	 7+ZR/L9lJuRtfZ+SjR0NlLo/BYrrVR53vq+qi5+6oFZcrnx9vPaZR7tNPG+61KeV1W
-	 6iTC9mUXC9utD9uYXSvtP99GBWxg8XKNjVcXRyO2G0ve/wHMDk0QLRrLzUyCwQrM4d
-	 Q987nvL2eJpXye/qQBi80dWtiRYs9GwjeMSnst4x/WwPblK869FJ8ur3qCWulRtTZG
-	 Y+OO3984Ey9eg==
+	b=Un5vH3OvTCpmFaFPoo9XKUkWb6U/VcoVFLkxaE1R0zNnV9isQ3CBiMJZ8hxHrCkVh
+	 PQ59ofal99qxQoi2ERPb/+aLmAPszgBaNDSlXngaSUsLJfkP/GZ/5XATkq/XLnyEcb
+	 tGGoj6ZPmHb8BnqPXiAGRnnHK6cLenY8+6F+xVUiBkUHuvMtT0qS0K4vqGfSsMVwOw
+	 DQ6M3YBMYqtSOKC/SOiQthkbMwiOgZ5G6gfe/CLI3v35HyeIcpd9uXXJnrsCe+Q4KY
+	 FZ0OY8KunHUaL/GaOKLY+ye0er/5RZyCoPWm6z2/mZHNqg7/AlRMGBasOKjEDbkoXN
+	 rqWA4pW2CYJyw==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 34129383B275;
-	Fri, 11 Jul 2025 17:50:14 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70D36383B275;
+	Fri, 11 Jul 2025 17:50:18 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,38 +52,52 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v4 0/2] bpf/arena: Add kfunc for reserving arena memory
+Subject: Re: [PATCH net-next V2 0/5] selftests: drv-net: Test XDP native
+ support
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <175225621275.2353625.17022488161752474201.git-patchwork-notify@kernel.org>
-Date: Fri, 11 Jul 2025 17:50:12 +0000
-References: <20250709191312.29840-1-emil@etsalapatis.com>
-In-Reply-To: <20250709191312.29840-1-emil@etsalapatis.com>
-To: Emil Tsalapatis <emil@etsalapatis.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- memxor@gmail.com, yonghong.song@linux.dev, sched-ext@meta.com
+ <175225621699.2353625.7561288622143737480.git-patchwork-notify@kernel.org>
+Date: Fri, 11 Jul 2025 17:50:16 +0000
+References: <20250710184351.63797-1-mohsin.bashr@gmail.com>
+In-Reply-To: <20250710184351.63797-1-mohsin.bashr@gmail.com>
+To: Mohsin Bashir <mohsin.bashr@gmail.com>
+Cc: netdev@vger.kernel.org, kuba@kernel.org, andrew+netdev@lunn.ch,
+ davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+ shuah@kernel.org, horms@kernel.org, cratiu@nvidia.com, noren@nvidia.com,
+ cjubran@nvidia.com, mbloch@nvidia.com, jdamato@fastly.com, gal@nvidia.com,
+ sdf@fomichev.me, ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+ john.fastabend@gmail.com, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
 
 Hello:
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-On Wed,  9 Jul 2025 15:13:10 -0400 you wrote:
-> Add a new kfunc for BPF arenas that reserves a region of the mapping
-> to prevent it from being mapped. These regions serve as guards against
-> out-of-bounds accesses and are useful for debugging arena-related code.
+On Thu, 10 Jul 2025 11:43:46 -0700 you wrote:
+> This patch series add tests to validate XDP native support for PASS,
+> DROP, ABORT, and TX actions, as well as headroom and tailroom adjustment.
+> For adjustment tests, validate support for both the extension and
+> shrinking cases across various packet sizes and offset values.
 > 
-> CHANGELOG
-> =========
+> The pass criteria for head/tail adjustment tests require that at-least
+> one adjustment value works for at-least one packet size. This ensure
+> that the variability in maximum supported head/tail adjustment offset
+> across different drivers is being incorporated.
 > 
 > [...]
 
 Here is the summary with links:
-  - [v4,1/2] bpf/arena: add bpf_arena_reserve_pages kfunc
-    https://git.kernel.org/bpf/bpf-next/c/8fc3d2d8b501
-  - [v4,2/2] selftests/bpf: add selftests for bpf_arena_reserve_pages
-    https://git.kernel.org/bpf/bpf-next/c/9f9559f0acc4
+  - [net-next,1/5] selftests: drv-net: Add bpftool util
+    https://git.kernel.org/netdev/net-next/c/a339dd699a7a
+  - [net-next,2/5] selftests: drv-net: Test XDP_PASS/DROP support
+    (no matching commit)
+  - [net-next,3/5] selftests: drv-net: Test XDP_TX support
+    (no matching commit)
+  - [net-next,4/5] selftests: drv-net: Test tail-adjustment support
+    (no matching commit)
+  - [net-next,5/5] selftests: drv-net: Test head-adjustment support
+    (no matching commit)
 
 You are awesome, thank you!
 -- 
