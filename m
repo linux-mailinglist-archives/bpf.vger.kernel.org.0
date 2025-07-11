@@ -1,96 +1,95 @@
-Return-Path: <bpf+bounces-63051-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63052-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2C89B02057
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 17:24:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7875EB020C1
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 17:44:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B28811885C98
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 15:24:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F5513AD2F4
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 15:44:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA0F82D46C2;
-	Fri, 11 Jul 2025 15:23:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CF152EE268;
+	Fri, 11 Jul 2025 15:43:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="umuWXaK/";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gilzgUNE";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="umuWXaK/";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gilzgUNE"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="buVz6wBK";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lrfIPlZn";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="buVz6wBK";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lrfIPlZn"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8305C1552E0
-	for <bpf@vger.kernel.org>; Fri, 11 Jul 2025 15:23:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A96F32ED160
+	for <bpf@vger.kernel.org>; Fri, 11 Jul 2025 15:43:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752247436; cv=none; b=SOw9TtRzWzNDb/QFm+wbTIXvI8Gt6XxHFuVVfS1l3cZ9MfLj6kyYLZebm+q5sBRAzRgiujlgejFzWp6Ob/I8Soj0msYA35ChEJmX/eej9RBMIGrkJbBqwimjqUbxUecDBRfQdqWVu8/D8HWZH+Fmgnftm0uSzNE2w8d4qb701O4=
+	t=1752248600; cv=none; b=OG6v5eDM2dvCbppcgFqrlvfV6MN9tUYJJskgGnZRg6jOkyNy2i1lzty4tsNtxwqxETgKF+sxKPmzWDmXLRaYWp2FXgxXq4iBk05XG45ppdeVfjXvUlSs6k25W+bT5u41zZmNHs5XyBRok9eCaO36607NN46/K9EqFM1M1wxFKfA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752247436; c=relaxed/simple;
-	bh=qsZisP7lCGtB1PMJo4cFw90vsSPdSyI2wddzFKxsCZU=;
+	s=arc-20240116; t=1752248600; c=relaxed/simple;
+	bh=X4OMalfak3+mVNJ6hPZvojzo4/zMhqoNofhoFoNgwK8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=f/7ghPw/r8OfO3ETiv4GRdIv3nbufC7VLKdGbgaq22iVhr4o+aigGoos8X6ak8IfU7vypfS4P80Jy8XaXy8RVdGExxdYlTUpf6Qn+Rij+eGdHCg2acV3TnPDLq5kWFBqFHdsBISE4F9+ytboinyO/SPK0AYK/2KWdLy0YlsTF3A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=umuWXaK/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gilzgUNE; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=umuWXaK/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gilzgUNE; arc=none smtp.client-ip=195.135.223.130
+	 In-Reply-To:Content-Type; b=TnIrbflqpbV4mVggtQ4G0czxw91BQMpkKpeLHWg8RDeU5ZjLOGYw5Q0588p9h5c6tMhbJKgMJl/0+ngP4GLWYNntaFlFYwIwcUcRawVwx6wKKN4w2qKDUhlJZIWMAVO2ehuORpKDNdFmjim5VhW4GFeApnbrDIkqRvKFeunqbxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=buVz6wBK; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lrfIPlZn; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=buVz6wBK; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lrfIPlZn; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 40F62211E3;
-	Fri, 11 Jul 2025 15:23:52 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C8F1B1F451;
+	Fri, 11 Jul 2025 15:43:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1752247432; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1752248596; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=aL+7ZHIh65z7hr+E+sA+rYJjzi0QwKUmZV3M1YEco5E=;
-	b=umuWXaK/3MhisdBRyGEXN3/1nhhZT1mQsgH/MOjMTGG00AITA4zrTSp/2qhkueOlRGjWRu
-	gsUtp/C/GE18U/S3D3XqkFRGLVEtkNhvyEhIACC5p52mHhFLNT1j6oaSpL1BNf8qlbKFqX
-	uCLX5ifMq0nCFEaJUwZ4cDyzLRqVvac=
+	bh=QX0qRN0p/QGgY/SoU9mRpHTPekrDiV+O8fwwSQc0kC0=;
+	b=buVz6wBKiiIiyZM6vaFmOTWIxruB5hgLycrzUnFIP3i05lNHYTeXKflgPgUvyQkE5sBN7/
+	5egUzgt10/7IGx6jvx3sEv7Z2dsjcu03b49CnR6FNEFnhWXKtum5YJfwkLtR0kMbhzHbme
+	mWkaIPjCBZFp2bnXjMUdJy00Y4uBPGQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1752247432;
+	s=susede2_ed25519; t=1752248596;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=aL+7ZHIh65z7hr+E+sA+rYJjzi0QwKUmZV3M1YEco5E=;
-	b=gilzgUNEpihw+Hu7F1kCqx/yZPjkqbTCYMpeF4VB+M+lXszXJkI3AQmjnSY0pzHvfMNcPx
-	0D0o83IbwHAawYBw==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="umuWXaK/";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=gilzgUNE
+	bh=QX0qRN0p/QGgY/SoU9mRpHTPekrDiV+O8fwwSQc0kC0=;
+	b=lrfIPlZnuLcoU0b08zNg2VqqtM69xC64NHT8F4dxTn1rduqBgJcfhnotwiM4FFB1Y8kIWw
+	1s4eBVHL3UJ9mTAg==
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1752247432; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1752248596; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=aL+7ZHIh65z7hr+E+sA+rYJjzi0QwKUmZV3M1YEco5E=;
-	b=umuWXaK/3MhisdBRyGEXN3/1nhhZT1mQsgH/MOjMTGG00AITA4zrTSp/2qhkueOlRGjWRu
-	gsUtp/C/GE18U/S3D3XqkFRGLVEtkNhvyEhIACC5p52mHhFLNT1j6oaSpL1BNf8qlbKFqX
-	uCLX5ifMq0nCFEaJUwZ4cDyzLRqVvac=
+	bh=QX0qRN0p/QGgY/SoU9mRpHTPekrDiV+O8fwwSQc0kC0=;
+	b=buVz6wBKiiIiyZM6vaFmOTWIxruB5hgLycrzUnFIP3i05lNHYTeXKflgPgUvyQkE5sBN7/
+	5egUzgt10/7IGx6jvx3sEv7Z2dsjcu03b49CnR6FNEFnhWXKtum5YJfwkLtR0kMbhzHbme
+	mWkaIPjCBZFp2bnXjMUdJy00Y4uBPGQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1752247432;
+	s=susede2_ed25519; t=1752248596;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=aL+7ZHIh65z7hr+E+sA+rYJjzi0QwKUmZV3M1YEco5E=;
-	b=gilzgUNEpihw+Hu7F1kCqx/yZPjkqbTCYMpeF4VB+M+lXszXJkI3AQmjnSY0pzHvfMNcPx
-	0D0o83IbwHAawYBw==
+	bh=QX0qRN0p/QGgY/SoU9mRpHTPekrDiV+O8fwwSQc0kC0=;
+	b=lrfIPlZnuLcoU0b08zNg2VqqtM69xC64NHT8F4dxTn1rduqBgJcfhnotwiM4FFB1Y8kIWw
+	1s4eBVHL3UJ9mTAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 257EC138A5;
-	Fri, 11 Jul 2025 15:23:52 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A3C0B1388B;
+	Fri, 11 Jul 2025 15:43:16 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 9ueLCIgscWjUZQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Fri, 11 Jul 2025 15:23:52 +0000
-Message-ID: <c31bee2f-dee5-4dd5-8cf4-edc90d3c595b@suse.cz>
-Date: Fri, 11 Jul 2025 17:23:51 +0200
+	id VtBYJxQxcWhtawAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Fri, 11 Jul 2025 15:43:16 +0000
+Message-ID: <5bc89531-ab09-4690-aae4-a44f9ddb4a68@suse.cz>
+Date: Fri, 11 Jul 2025 17:43:16 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -98,20 +97,20 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/6] locking/local_lock: Introduce
- local_lock_lockdep_start/end()
+Subject: Re: [PATCH v12 2/4] mm/slub: allow to set node and align in
+ k[v]realloc
 Content-Language: en-US
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org,
- linux-mm@kvack.org, harry.yoo@oracle.com, shakeel.butt@linux.dev,
- mhocko@suse.com, andrii@kernel.org, memxor@gmail.com,
- akpm@linux-foundation.org, peterz@infradead.org, rostedt@goodmis.org,
- hannes@cmpxchg.org
-References: <20250709015303.8107-1-alexei.starovoitov@gmail.com>
- <20250709015303.8107-4-alexei.starovoitov@gmail.com>
- <20250711075001.fnlMZfk6@linutronix.de>
- <1adbee35-6131-49de-835b-2c93aacfdd1e@suse.cz>
- <20250711151730.rz_TY1Qq@linutronix.de>
+To: Harry Yoo <harry.yoo@oracle.com>, Vitaly Wool <vitaly.wool@konsulko.se>
+Cc: linux-mm@kvack.org, akpm@linux-foundation.org,
+ linux-kernel@vger.kernel.org, Uladzislau Rezki <urezki@gmail.com>,
+ Danilo Krummrich <dakr@kernel.org>, Alice Ryhl <aliceryhl@google.com>,
+ rust-for-linux@vger.kernel.org, Lorenzo Stoakes
+ <lorenzo.stoakes@oracle.com>, "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+ Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org,
+ bpf@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
+ Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>
+References: <20250709172345.1031907-1-vitaly.wool@konsulko.se>
+ <20250709172441.1032006-1-vitaly.wool@konsulko.se> <aHDSLyHZ8b1ELeWe@hyeyoo>
 From: Vlastimil Babka <vbabka@suse.cz>
 Autocrypt: addr=vbabka@suse.cz; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
@@ -152,100 +151,109 @@ Autocrypt: addr=vbabka@suse.cz; keydata=
  rywqgzTUhHFKKF6/9L/lYtrNcHU8Z6Y4Ju/MLUiNYkmtrGIMnkjKCiRqlRrZE/v5YFHbayRD
  dJKXobXTtCBYpLJM4ZYRpGZXne/FAtWNe4KbNJJqxMvrTOrnIatPj8NhBVI0RSJRsbilh6TE
  m6M14QORSWTLRg==
-In-Reply-To: <20250711151730.rz_TY1Qq@linutronix.de>
+In-Reply-To: <aHDSLyHZ8b1ELeWe@hyeyoo>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 40F62211E3
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00];
+X-Spamd-Result: default: False [-4.30 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TAGGED_RCPT(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
 	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
 	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[17];
 	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org,kvack.org,oracle.com,linux.dev,suse.com,kernel.org,linux-foundation.org,infradead.org,goodmis.org,cmpxchg.org];
+	FREEMAIL_CC(0.00)[kvack.org,linux-foundation.org,vger.kernel.org,gmail.com,kernel.org,google.com,oracle.com,linux.dev,gondor.apana.org.au,suse.de];
 	TO_DN_SOME(0.00)[];
 	FROM_EQ_ENVFROM(0.00)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
 	RCVD_COUNT_TWO(0.00)[2];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Spam-Score: -3.01
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid]
+X-Spam-Flag: NO
+X-Spam-Score: -4.30
 
-On 7/11/25 17:17, Sebastian Andrzej Siewior wrote:
-> On 2025-07-11 11:55:22 [+0200], Vlastimil Babka wrote:
->> On 7/11/25 09:50, Sebastian Andrzej Siewior wrote:
->> > On 2025-07-08 18:53:00 [-0700], Alexei Starovoitov wrote:
->> >> From: Alexei Starovoitov <ast@kernel.org>
->> >> 
->> >> Introduce local_lock_lockdep_start/end() pair to teach lockdep
->> >> about a region of execution where per-cpu local_lock is not taken
->> >> and lockdep should consider such local_lock() as "trylock" to
->> >> avoid multiple false-positives:
->> >> - lockdep doesn't like when the same lock is taken in normal and
->> >>   in NMI context
->> >> - lockdep cannot recognize that local_locks that protect kmalloc
->> >>   buckets are different local_locks and not taken together
->> >> 
->> >> This pair of lockdep aid is used by slab in the following way:
->> >> 
->> >> if (local_lock_is_locked(&s->cpu_slab->lock))
->> >> 	goto out;
->> >> local_lock_lockdep_start(&s->cpu_slab->lock);
->> >> p = ___slab_alloc(s, gfpflags, node, addr, c, orig_size);
->> >> local_lock_lockdep_end(&s->cpu_slab->lock);
->> >> 
->> >> Where ___slab_alloc() is calling
->> >> local_lock_irqsave(&s->cpu_slab->lock, ...) many times,
->> >> and all of them will not deadlock since this lock is not taken.
->> > 
->> > So you prefer this instead of using a trylock variant in ___slab_alloc()
->> > which would simply return in case the trylock fails?
+On 7/11/25 10:58, Harry Yoo wrote:
+> On Wed, Jul 09, 2025 at 07:24:41PM +0200, Vitaly Wool wrote:
+>> Reimplement k[v]realloc_node() to be able to set node and
+>> alignment should a user need to do so. In order to do that while
+>> retaining the maximal backward compatibility, add
+>> k[v]realloc_node_align() functions and redefine the rest of API
+>> using these new ones.
 >> 
->> The code isn't always in a position to "simply return". On !RT I think we
->> can at least assume that if we succeeded once, it means we're not a irq/nmi
->> interrupting a locked context so we'll succeed the following attempts too.
->> On RT IIUC the lock might be taken by someone else, so a trylock might fail
->> (even if it should also mean we're in a context that can do a non-try lock).
+>> While doing that, we also keep the number of  _noprof variants to a
+>> minimum, which implies some changes to the existing users of older
+>> _noprof functions, that basically being bcachefs.
+>> 
+>> With that change we also provide the ability for the Rust part of
+>> the kernel to set node and alignment in its K[v]xxx
+>> [re]allocations.
+>> 
+>> Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.se>
+>> ---
+>>  fs/bcachefs/darray.c   |  2 +-
+>>  fs/bcachefs/util.h     |  2 +-
+>>  include/linux/bpfptr.h |  2 +-
+>>  include/linux/slab.h   | 38 +++++++++++++++----------
+>>  lib/rhashtable.c       |  4 +--
+>>  mm/slub.c              | 64 +++++++++++++++++++++++++++++-------------
+>>  6 files changed, 72 insertions(+), 40 deletions(-)
+>  
+>> diff --git a/mm/slub.c b/mm/slub.c
+>> index c4b64821e680..6fad4cdea6c4 100644
+>> --- a/mm/slub.c
+>> +++ b/mm/slub.c
+>> @@ -4845,7 +4845,7 @@ void kfree(const void *object)
+>>  EXPORT_SYMBOL(kfree);
+>>  
+>>  static __always_inline __realloc_size(2) void *
+>> -__do_krealloc(const void *p, size_t new_size, gfp_t flags)
+>> +__do_krealloc(const void *p, size_t new_size, unsigned long align, gfp_t flags, int nid)
+>>  {
+>>  	void *ret;
+>>  	size_t ks = 0;
+>> @@ -4859,6 +4859,20 @@ __do_krealloc(const void *p, size_t new_size, gfp_t flags)
+>>  	if (!kasan_check_byte(p))
+>>  		return NULL;
+>>  
+>> +	/* refuse to proceed if alignment is bigger than what kmalloc() provides */
+>> +	if (!IS_ALIGNED((unsigned long)p, align) || new_size < align)
+>> +		return NULL;
 > 
-> There is this parent check. If the parent check "allows" the allocation
-> then on !RT the trylock should always succeed. So the return "empty
-> handed" would be there but should not happen kind of thing.
+> Hmm but what happens if `p` is aligned to `align`, but the new object is not?
 > 
-> On RT this is different so local_lock_is_locked() will return false but
-> the trylock might fail if the lock is acquired by another task.
+> For example, what will happen if we  allocate object with size=64, align=64
+> and then do krealloc with size=96, align=64...
 > 
-> But then with this change we do trylock from lockdep's point of view
-> while in reality we do the full locking including possible context
-> switch.
-> 
-> That is why I don't like the part where we trick lockdep.
-> 
-> If we the parent check we could trylock for !RT and normal lock for RT
-> what we actual do.
-> If there is no parent check then we could do "normal lock" on both
-> sides.
+> Or am I missing something?
 
-So you mean the approach of v1 with local_lock_irqsave_check()?
+Good point. We extended the alignment guarantees in commit ad59baa31695
+("slab, rust: extend kmalloc() alignment guarantees to remove Rust padding")
+for rust in a way that size 96 gives you alignment of 32. It assumes that
+rust side will ask for alignments that are power-of-two and sizes that are
+multiples of alignment. I think if that assumption is still honored than
+this will keep working, but the check added above (is it just a sanity check
+or something the rust side relies on?) doesn't seem correct?
 
-https://lore.kernel.org/bpf/20250501032718.65476-5-alexei.starovoitov@gmail.com/#t
-
-> Sebastian
+>> +	/*
+>> +	 * If reallocation is not necessary (e. g. the new size is less
+>> +	 * than the current allocated size), the current allocation will be
+>> +	 * preserved unless __GFP_THISNODE is set. In the latter case a new
+>> +	 * allocation on the requested node will be attempted.
+>> +	 */
+>> +	if (unlikely(flags & __GFP_THISNODE) && nid != NUMA_NO_NODE &&
+>> +		     nid != page_to_nid(virt_to_page(p)))
+>> +		goto alloc_new;
+>> +
+>>  	if (is_kfence_address(p)) {
+>>  		ks = orig_size = kfence_ksize(p);
+>>  	} else {
+> 
 
 
