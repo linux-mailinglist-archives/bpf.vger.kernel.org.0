@@ -1,222 +1,197 @@
-Return-Path: <bpf+bounces-63055-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63056-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CA32B0212D
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 18:06:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E434B02127
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 18:05:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 431747BACBF
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 16:03:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F9F4584D23
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 16:05:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95AA12EF2B7;
-	Fri, 11 Jul 2025 16:04:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TQe9E1DJ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D23BF2EF29B;
+	Fri, 11 Jul 2025 16:05:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F0982ED853;
-	Fri, 11 Jul 2025 16:04:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC332192B84;
+	Fri, 11 Jul 2025 16:05:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752249884; cv=none; b=LD3Qj6X5uWlOIsRnX73yMDt2FekZbjpd6f7rWXcd9OFdUPAZayN6d/2vzwQVQHhu9xfROHHjHIw8bwb4EqFi29UPkjE5lvM5mNxjAoskbNsFjunzIqyqWoUf+j1TYL4xS7xgQ7zLQahNhN9J4m/p/HgKwn9Ty7v4BKKO7wYyLbo=
+	t=1752249923; cv=none; b=Ctcxidfro6BsncoekhSOM5zo6BeAfHdDCQBYk6x/6vgS4lx3+zP8iys7JVTbQSLN/No8LdS9pOiDXWJGSITSfzi0d/43unJgqCDD67w2UAYTVkkPlRxYZUWOCJlMrOQrEQaEzFaSzZ1xlF6irtKaKs8dtbX72WEmeEDtRYZeIXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752249884; c=relaxed/simple;
-	bh=I2dYXcpKkPtWDTmSTK5R5s0PMWT6R/FKdCjvABiaqUQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F9z27T2CkCzGaO/DhEuXHAdVYaiJe9SSPVL1LZfG+ef3oncdlwChAXV+svYsclmlCoS514wi59H5BlAYKreer/wwU5IyHkrgf6csxPC9GJUxwUOWwg1huZPBDOYqt9l/e56s9QpQ08adbZngjNq+LejSCoGmLQJ0ElsAtWTjir0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TQe9E1DJ; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1752249923; c=relaxed/simple;
+	bh=DyaRLSL3wtVvoPto8BZy228KqqNCIVs9JEwqJCCslNQ=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=Tf1mN/hs/O7TVdGG7sBwmJxiecKAISeJ4roSCWQr4sZuZTo9E/nrsrbsJP4CTxP+IbuSPyzjHEV6GpBperuFqnHHtfx6+SMNYCUUbVK6PcOfeWbM0orX9V91xbLqJdLjb6BrMBzP/oxLXNa/bLsSrYqyQrSQOrjwTjsX0B/fWbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-23c8a5053c2so23552515ad.1;
-        Fri, 11 Jul 2025 09:04:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752249882; x=1752854682; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MS+ckbuk1c9/PJPIYEkMVs8xknKIT/dzRnotRzmAfwg=;
-        b=TQe9E1DJezcQg4pAH6ub/OiS9D8o+wWmaPa0vO0wMbUiNs+t0xd22HRje280FBLz2t
-         E2e0XEfJTp8vJhh+zQW3Z1lha8A8pMAuu7JXEU5MZmN1Pw+TGn+jytAkwf2VaHCfmc27
-         cfPoGFFIr9dyvBUmRoc738//pOxbj8uhCpKBIchkmJUb0T3a52NmbYcadkW9Zp9PXUd5
-         fNE8FJQtfDsJHOrE8Jova+WzgaHlzDmy4+GfFK0pmxs0TOXJrM5BJWIe3OdIwRCrhggC
-         FZ9C/xwIwWLgSzYYSD1s7G7NBGCsXIgxOO1pJlU20+vWhcP733ToHxhRhkUP8j9R+4qW
-         joTA==
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-60dffae17f3so3337323a12.1;
+        Fri, 11 Jul 2025 09:05:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752249882; x=1752854682;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MS+ckbuk1c9/PJPIYEkMVs8xknKIT/dzRnotRzmAfwg=;
-        b=ivL7/lDb4NVO2fBVE1einE9t3nZlNkr2vs1sGS3atbflSgRHohoGynqPnlG6UVVFUb
-         nzL4AO9aw+DqZzt9Ya5kNvVFmZMjb8XAnNJ7OG7hHeM2OrDbdH7YFuHZmjnS8gnfRWLX
-         kowxS5+7gdgCBTDo50FyfMW74pz8PB96SI3oJ4Q+SGZsYotfPwKH9avqSAr23T0Orkg8
-         XSbPwRI0s5cCI3reQ9Z3irIZPRlP7zss+tyy7Fi9MsVQBDOGXkdWJHNA51PdlXfAan8Z
-         G7Zus2iTK3heUGktFbI0z1b4SmOtzQAxyWryL5DaoCnRf1+h2zLHnlUjTg59LzlptES/
-         kQGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUGKFgq5k9nGW+9vIADYG/oLBxxIkXBzvRvSZ8tyOeV/SlylCAf2KIt44vHYjrWkrozqUX+DLrt@vger.kernel.org, AJvYcCWHXjmep7IxokSMOY5/WdoP8ta6O+/GR794kIi15mJqf+BrMpP/rCZK5GPl5C2r/jp1O60=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy1/UMqFn+DO8rpviM++2iMLJxmFqS4cvJOrAeNpq4DXhWEb9Qv
-	DOMQgnUQtVpUvmV9sp3mf6Lw2wDB0kLqNGxlNgq6+ZhreM0X8o6mEckyPe7J
-X-Gm-Gg: ASbGncs+gdpY8xQkaxFEIb7rFnNhsxTyZXmOJmWte7uzwC5+LqLtDS0pa4L6FB1ibUI
-	Guapw0hip+hIapyVT79RQjxZQilKE650vLWHIiGJDezGKaO8j+BxY9wvrd6fucrKbz3+VzQqWW2
-	BG5LuU3Xu/5LH+I4LJIrWjXnyewEN7Jz8kE/YaPW7Bc5smGQWaAbcViqEBSE+5xIfQUnq8A31+G
-	8lhyX0289AfMYIssSpHb5PlV+Letnorh6038TaeSfK9aVQAQl2AVb+pj5hpkDmqaPeGUAdPyO1u
-	lvOk0OwwVIxCr7xoquJpbzXZ/KT+OURbZt4dd3dEU4BGBnm+4q24WvFe9sPtqJyYNm4put9l6Pe
-	a1M92cWBmwfAUsZfYQHd2DzPnYS9L7a8BAHMeXwZMSg6YLrKYVXws1kmDDMI=
-X-Google-Smtp-Source: AGHT+IGnKre23WdGxuk5/d4b4IaGPXQqv/k4oOVKVaUtNA0IxIfsfNJriUKeV0j3CZwOg2u51/Lp8g==
-X-Received: by 2002:a17:902:f70a:b0:235:f3b0:ae81 with SMTP id d9443c01a7336-23df08e5e30mr45436935ad.27.1752249881331;
-        Fri, 11 Jul 2025 09:04:41 -0700 (PDT)
-Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
-        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-23de4322754sm49666405ad.120.2025.07.11.09.04.40
+        d=1e100.net; s=20230601; t=1752249920; x=1752854720;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=z0u1Nuau/v8sKJveSzb4nBKV8QzKO2475CmCFuNsGS4=;
+        b=QAuWOidSDXXptU1G4d1mt7dkLNuKzCX57JY9CIIhulDu9OREKvQtAOw5tt8nh1VxHw
+         fiH4ilsNIeRbL84qS6zDnD92P58l1lbH8NrtXgvfBCE7qiWZYT3HmUMSdBb6qRsnGs7b
+         YMgFTdZIrF/H6hdxtzDHCBs9D4/u4AVCmxU8xHfclR85CZg+ueti3sh3GO6LQVBF69If
+         WFgybnz2vnKG+xqoZn3b1kxzUa00NtLcrdD1dtY2PeDVGObMOdpbIWpK/L1v1qW/kIpW
+         VYhmYpUvxFxfN6ZBzA1/6F9sg2Yvv71AcW20eplodg2DjtAKjNW0ppAGvYP/hVmuQQvm
+         9eSw==
+X-Forwarded-Encrypted: i=1; AJvYcCUDcsVpNwWWZ+yTBDkCvjEDqXm/KhnMfMzhkFf9cTSRj+sKLCGfJOHMrC1yguFbIol5P/k=@vger.kernel.org, AJvYcCV723Tuo74oPFfY+G1VToyhj9ASKAVXGLGnlibB5xRSG17MiQquTheHoBFn+R7p+FBe0/JHibaa@vger.kernel.org, AJvYcCWaPH5ccST7qI+TzIIDc1JA/LhTzEhsQlhbkAG6ejFMMmkVgPZvlSgmyE6uhmD9FKcpyiSEvyAZTiGNMZcfGfQZ@vger.kernel.org
+X-Gm-Message-State: AOJu0YxYpCLVu/fg+QwTiCxmH4muk22uVCCv26soaudTwecMHgO+UDP6
+	ZdatICA+pY75SrKtLLAvWgVM5TLnVrat9BYOHfaVslfJvKCqGnDNCLu3
+X-Gm-Gg: ASbGncvBrIcUI+ZyL8jvr/6Da1GeBPXQE8E/FkCcTku5N1lZq/TxFjDsqqzGL0rcsw0
+	0XhQ4Z6j831sqakcKfTMOT1lJxh+MFkMAu8z0WNZrSyHYja/yL+FawnQVZTSZ15PPRSLscr6J2j
+	ElkkzXuZ40aQgpnvLnlCW+MONGoS7K9ifQAH40zfTJTRKzLATg1StRYqFVxlS4VQQhms7FSt5OD
+	cU1VfCsnFjOeK+mkPwicZzc3z0F6amLb+vDcuMP1VDiNdqrPjrLHPLxd98yvZBpgZ07xtAl+C/0
+	yPgutktLk3ghQZx9/FfmfqZKnyDdD3sXH0BEGj9T8SZVYCvq8EJfWEZG7pYqkuWitNfmCqi/B63
+	HS4GI7QW2NXlZlOb6vAbcaZA=
+X-Google-Smtp-Source: AGHT+IF3c63figOWHH1WEdXqwA9w1zoB2cRRSFJTk5OVa14dE+nd2jEbCqEkC5EatMORgvQAZq7LuA==
+X-Received: by 2002:a05:6402:5111:b0:607:6b8d:1a7c with SMTP id 4fb4d7f45d1cf-611e76386e4mr3422522a12.12.1752249919512;
+        Fri, 11 Jul 2025 09:05:19 -0700 (PDT)
+Received: from localhost ([2a03:2880:30ff:2::])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-611c94f2c0fsm2360708a12.15.2025.07.11.09.05.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jul 2025 09:04:40 -0700 (PDT)
-Date: Fri, 11 Jul 2025 09:04:39 -0700
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Lorenzo Bianconi <lorenzo@kernel.org>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <borkmann@iogearbox.net>,
-	Eric Dumazet <eric.dumazet@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Paolo Abeni <pabeni@redhat.com>, sdf@fomichev.me,
-	kernel-team@cloudflare.com, arthur@arthurfabre.com,
-	jakub@cloudflare.com
-Subject: Re: [PATCH bpf-next V2 0/7] xdp: Allow BPF to set RX hints for
- XDP_REDIRECTed packets
-Message-ID: <aHE2F1FJlYc37eIz@mini-arch>
-References: <175146824674.1421237.18351246421763677468.stgit@firesoul>
- <aGVY2MQ18BWOisWa@mini-arch>
- <b1873a92-747d-4f32-91f8-126779947e42@kernel.org>
- <aGvcb53APFXR8eJb@mini-arch>
- <aG427EcHHn9yxaDv@lore-desk>
+        Fri, 11 Jul 2025 09:05:19 -0700 (PDT)
+From: Breno Leitao <leitao@debian.org>
+Subject: [PATCH net-next v6 0/3] selftest: net: Add selftest for netpoll
+Date: Fri, 11 Jul 2025 09:05:08 -0700
+Message-Id: <20250711-netpoll_test-v6-0-130465f286a8@debian.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <aG427EcHHn9yxaDv@lore-desk>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIADQ2cWgC/23PQWrDMBCF4asIrTNFHkke2aveo5RiS6NEEORgC
+ 5MSfPcSd1HXznr43s885MRj4km24iFHntOUhixbUZ+E9JcunxlSkK2QqNCqukLIXG7D9fpVeCr
+ QVRpNQGXJO3kS8jZyTPd17kNmLpD5XuTnSchLmsowfq+duVrvryfnCiowRCaGxjZax/fAfery2
+ zCen4lfheqFsqp2TmMkjH6rnv0ZN020O42gwFBAIrKIeNR6q2mnNSiwZPuASnnXNQdt/jSp/b8
+ GFHj2iMTO1vqo7VY3O21BQa9Jk2tsFyP/08uy/AB6Gzry4QEAAA==
+X-Change-ID: 20250612-netpoll_test-a1324d2057c8
+To: Andrew Lunn <andrew+netdev@lunn.ch>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Shuah Khan <shuah@kernel.org>, Simon Horman <horms@kernel.org>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, bpf@vger.kernel.org, 
+ kernel-team@meta.com, Breno Leitao <leitao@debian.org>, 
+ Willem de Bruijn <willemb@google.com>
+X-Mailer: b4 0.15-dev-dd21f
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3656; i=leitao@debian.org;
+ h=from:subject:message-id; bh=DyaRLSL3wtVvoPto8BZy228KqqNCIVs9JEwqJCCslNQ=;
+ b=owEBbQKS/ZANAwAIATWjk5/8eHdtAcsmYgBocTY9MN+02dnHtqn3oOqeRY9TTwYlHSteb/Y8L
+ JYYndtZYfmJAjMEAAEIAB0WIQSshTmm6PRnAspKQ5s1o5Of/Hh3bQUCaHE2PQAKCRA1o5Of/Hh3
+ bQ9pD/9oUCHb42npIk1WwG1orwcx6v36uLneQX2goD8eJnxYVcHXU8Z+/xFJ6IYu/5DMrWoeJ22
+ Ca6UEjOCOw53ewoguFUMR1IiqKzOvb/ZCsUkXeRra52W63fMGG0NTYmEctd/+dxJfhZ/YiQCv61
+ eJMhl6wWetAG98lzM5EV2glJyj5s7faoG/QCrTtbONuem5JN0UzGv7MsomZFBHeRnK4VJFBdb9v
+ nKmMDR4w4jfn0VYZIFgNvnwyOSG511hGv7xmwaigQ8MvCrZ61IIvxLtATG2hMTjcaAnm3t1rDnY
+ Q9rld6Kenb4k9yd74yQT1MBcQvoNSZQMkH7N3NFy8v07lcWKDtsrmyN2wgP0FbVxZmxT/EoxnNO
+ tgjmsSepaFg07zWWyVWpB7cOm/KAcQNlp4OrtiAW8Ovzx99H+buQzklp0wJ9scFjEj+g174K5a/
+ YPlZ5jzSpBLQMSib8RX83kyDNIsjzGrPoDDPexkxavZkR0neDX6gAz+QVYScGY/s80d9NUozfJ8
+ xj2YKfDYK3fl7l1Pgou11jq/VlSv3FeUoBrFJVY7GbkW5cE74mhWo/vMeTv7WZfJsb5u+v/jg4K
+ eiOHMjePUxHQ7AAN54QmffVG2uykQRL0Fwf69wfriq8mpoBW71k7fkPpEGas6vZ7rtOtrBDx7iK
+ PKS7sDtPRdKfjqg==
+X-Developer-Key: i=leitao@debian.org; a=openpgp;
+ fpr=AC8539A6E8F46702CA4A439B35A3939FFC78776D
 
-On 07/09, Lorenzo Bianconi wrote:
-> On Jul 07, Stanislav Fomichev wrote:
-> > On 07/03, Jesper Dangaard Brouer wrote:
-> > > 
-> > > 
-> > > On 02/07/2025 18.05, Stanislav Fomichev wrote:
-> > > > On 07/02, Jesper Dangaard Brouer wrote:
-> > > > > This patch series introduces a mechanism for an XDP program to store RX
-> > > > > metadata hints - specifically rx_hash, rx_vlan_tag, and rx_timestamp -
-> > > > > into the xdp_frame. These stored hints are then used to populate the
-> > > > > corresponding fields in the SKB that is created from the xdp_frame
-> > > > > following an XDP_REDIRECT.
-> > > > > 
-> > > > > The chosen RX metadata hints intentionally map to the existing NIC
-> > > > > hardware metadata that can be read via kfuncs [1]. While this design
-> > > > > allows a BPF program to read and propagate existing hardware hints, our
-> > > > > primary motivation is to enable setting custom values. This is important
-> > > > > for use cases where the hardware-provided information is insufficient or
-> > > > > needs to be calculated based on packet contents unavailable to the
-> > > > > hardware.
-> > > > > 
-> > > > > The primary motivation for this feature is to enable scalable load
-> > > > > balancing of encapsulated tunnel traffic at the XDP layer. When tunnelled
-> > > > > packets (e.g., IPsec, GRE) are redirected via cpumap or to a veth device,
-> > > > > the networking stack later calculates a software hash based on the outer
-> > > > > headers. For a single tunnel, these outer headers are often identical,
-> > > > > causing all packets to be assigned the same hash. This collapses all
-> > > > > traffic onto a single RX queue, creating a performance bottleneck and
-> > > > > defeating receive-side scaling (RSS).
-> > > > > 
-> > > > > Our immediate use case involves load balancing IPsec traffic. For such
-> > > > > tunnelled traffic, any hardware-provided RX hash is calculated on the
-> > > > > outer headers and is therefore incorrect for distributing inner flows.
-> > > > > There is no reason to read the existing value, as it must be recalculated.
-> > > > > In our XDP program, we perform a partial decryption to access the inner
-> > > > > headers and calculate a new load-balancing hash, which provides better
-> > > > > flow distribution. However, without this patch set, there is no way to
-> > > > > persist this new hash for the network stack to use post-redirect.
-> > > > > 
-> > > > > This series solves the problem by introducing new BPF kfuncs that allow an
-> > > > > XDP program to write e.g. the hash value into the xdp_frame. The
-> > > > > __xdp_build_skb_from_frame() function is modified to use this stored value
-> > > > > to set skb->hash on the newly created SKB. As a result, the veth driver's
-> > > > > queue selection logic uses the BPF-supplied hash, achieving proper
-> > > > > traffic distribution across multiple CPU cores. This also ensures that
-> > > > > consumers, like the GRO engine, can operate effectively.
-> > > > > 
-> > > > > We considered XDP traits as an alternative to adding static members to
-> > > > > struct xdp_frame. Given the immediate need for this functionality and the
-> > > > > current development status of traits, we believe this approach is a
-> > > > > pragmatic solution. We are open to migrating to a traits-based
-> > > > > implementation if and when they become a generally accepted mechanism for
-> > > > > such extensions.
-> > > > > 
-> > > > > [1] https://docs.kernel.org/networking/xdp-rx-metadata.html
-> > > > > ---
-> > > > > V1: https://lore.kernel.org/all/174897271826.1677018.9096866882347745168.stgit@firesoul/
-> > > > 
-> > > > No change log?
-> > > 
-> > > We have fixed selftest as requested by Alexie.
-> > > And we have updated cover-letter and doc as you Stanislav requested.
-> > > 
-> > > > 
-> > > > Btw, any feedback on the following from v1?
-> > > > - https://lore.kernel.org/netdev/aFHUd98juIU4Rr9J@mini-arch/
-> > > 
-> > > Addressed as updated cover-letter and documentation. I hope this helps
-> > > reviewers understand the use-case, as the discussion turn into "how do we
-> > > transfer all HW metadata", which is NOT what we want (and a waste of
-> > > precious cycles).
-> > > 
-> > > For our use-case, it doesn't make sense to "transfer all HW metadata".
-> > > In fact we don't even want to read the hardware RH-hash, because we already
-> > > know it is wrong (for tunnels), we just want to override the RX-hash used at
-> > > SKB creation.  We do want the BPF programmers flexibility to call these
-> > > kfuncs individually (when relevant).
-> > > 
-> > > > - https://lore.kernel.org/netdev/20250616145523.63bd2577@kernel.org/
-> > > 
-> > > I feel pressured into critiquing Jakub's suggestion, hope this is not too
-> > > harsh.  First of all it is not relevant to our this patchset use-case, as it
-> > > focus on all HW metadata.
-> > 
-> > [..]
-> > 
-> > > Second, I disagree with the idea/mental model of storing in a
-> > > "driver-specific format". The current implementation of driver-specific
-> > > kfunc helpers that "get the metadata" is already doing a conversion to a
-> > > common format, because the BPF-programmer naturally needs this to be the
-> > > same across drivers.  Thus, it doesn't make sense to store it back in a
-> > > "driver-specific format", as that just complicate things.  My mental model
-> > > is thus, that after the driver-specific "get" operation to result is in a
-> > > common format, that is simply defined by the struct type of the kfunc, which
-> > > is both known by the kernel and BPF-prog.
-> > 
-> > Having get/set model seems a bit more generic, no? Potentially giving us the
-> > ability to "correct" HW metadata for the non-redirected cases as well.
-> > Plus we don't hard-code the (internal) layout. Solving only xdp_redirect
-> > seems a bit too narrow, idk..
-> 
-> I can't see what the non-redirected use-case could be. Can you please provide
-> more details?
-> Moreover, can it be solved without storing the rx_hash (or the other
-> hw-metadata) in a non-driver specific format?
+I am submitting a new selftest for the netpoll subsystem specifically
+targeting the case where the RX is polling in the TX path, which is
+a case that we don't have any test in the tree today. This is done when
+netpoll_poll_dev() called, and this test creates a scenario when that is
+probably.
 
-Having setters feels more generic than narrowly solving only the redirect,
-but I don't have a good use-case in mind.
+The test does the following:
 
-> Storing the hw-metadata in some of hw-specific format in xdp_frame will not
-> allow to consume them directly building the skb and we will require to decode
-> them again. What is the upside/use-case of this approach? (not considering the
-> orthogonality with the get method).
+ 1) Configuring a single RX/TX queue to increase contention on the
+    interface.
+ 2) Generating background traffic to saturate the network, mimicking
+    real-world congestion.
+ 3) Sending netconsole messages to trigger netpoll polling and monitor
+    its behavior.
+ 4) Using dynamic netconsole targets via configfs, with the ability to
+    delete and recreate targets during the test.
+ 5) Running bpftrace in parallel to verify that netpoll_poll_dev() is
+    called when expected. If it is called, then the test passes,
+    otherwise the test is marked as skipped.
 
-If we add the store kfuncs to regular drivers, the metadata  won't be stored
-in the xdp_frame; it will go into the rx descriptors so regular path that
-builds skbs will use it.
+In order to achieve it, I stole Jakub's bpftrace helper from [1], and
+did some small changes that I found useful to use the helper.
+
+So, this patchset basically contains:
+
+ 1) The code stolen from Jakub
+ 2) Improvements on bpftrace() helper
+ 3) The selftest itself
+
+Link: https://lore.kernel.org/all/20250421222827.283737-22-kuba@kernel.org/ [1]
+
+---
+Changes in v6:
+- Remove the network toggled (Jakub)
+- Set ringsize and queue size (Jakub)
+- Some other general improvements (Jakub)
+- Link to v5: https://lore.kernel.org/r/20250709-netpoll_test-v5-0-b3737895affe@debian.org
+
+Changes in v5:
+- Rebased on top of net-next.
+- Calling bpftrace_stop using the defer helper. (Willem)
+- Link to v4: https://lore.kernel.org/r/20250702-netpoll_test-v4-0-cec227e85639@debian.org
+
+Changes in v4:
+- Make the test XFail if it doesn't hit the function we are looking for
+- Toggle the interface while the traffic is flowing.
+- Bumped the number of messages from 10 to 40 per iterations.
+   * This is hitting ~15 times per run on my vng test.
+- Decreased the time from 15 seconds to 10 seconds, given that if
+  it didn't hit the function in 10 seconds, 5 seconds extra will not
+  help.
+- Link to v3: https://lore.kernel.org/r/20250627-netpoll_test-v3-0-575bd200c8a9@debian.org
+
+Changes in v3:
+- Make pylint happy (Simon)
+- Remove the unnecessary patch in bpftrace to raise an exception when it
+  fails. (Jakub)
+- Improved the bpftrace code (Willem)
+- Stop sending messages if bpftrace is not alive anymore.
+- Link to v2: https://lore.kernel.org/r/20250625-netpoll_test-v2-0-47d27775222c@debian.org
+
+Changes in v2:
+- Stole Jakub's helper to run bpftrace
+- Removed the DEBUG option and moved logs to logging
+- Change the code to have a higher chance of calling netpoll_poll_dev().
+  In my current configuration, it is hitting multiple times during the
+  test.
+- Save and restore TX/RX queue size (Jakub)
+- Link to v1: https://lore.kernel.org/r/20250620-netpoll_test-v1-1-5068832f72fc@debian.org
+
+---
+Breno Leitao (2):
+      selftests: drv-net: Strip '@' prefix from bpftrace map keys
+      selftests: net: add netpoll basic functionality test
+
+Jakub Kicinski (1):
+      selftests: drv-net: add helper/wrapper for bpftrace
+
+ tools/testing/selftests/drivers/net/Makefile       |   1 +
+ .../selftests/drivers/net/lib/py/__init__.py       |   3 +-
+ .../testing/selftests/drivers/net/netpoll_basic.py | 411 +++++++++++++++++++++
+ tools/testing/selftests/net/lib/py/utils.py        |  35 ++
+ 4 files changed, 449 insertions(+), 1 deletion(-)
+---
+base-commit: 0f26870a989bf69957ed69d10c7ffc57ca5a7f52
+change-id: 20250612-netpoll_test-a1324d2057c8
+
+Best regards,
+--  
+Breno Leitao <leitao@debian.org>
+
 
