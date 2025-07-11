@@ -1,160 +1,94 @@
-Return-Path: <bpf+bounces-63046-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63047-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 321E2B01B65
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 14:02:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD3BEB01E6B
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 15:54:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 939B2B42E35
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 12:01:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41095B61398
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 13:40:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E62028C02C;
-	Fri, 11 Jul 2025 12:02:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D9632D46C2;
+	Fri, 11 Jul 2025 13:39:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ezirXcrw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dFqogJIN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEC9827AC43;
-	Fri, 11 Jul 2025 12:02:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D1AC3A1CD;
+	Fri, 11 Jul 2025 13:39:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752235349; cv=none; b=SW3PE4yW/qQZZWweQKfCeb8Ozl912MCRlx2dx2pRmceB0CRuKFDMyopgmMCknamM2aqhYHHJZMDCRBfzh6XWiaNQhcSUXEuDJpZU7GFzB4Nk5KraE+LXOlaXVaxfLhAvuB/UuuEoSrL0px86krnJbg24mS2fmCJ3qkxNVgg4KV4=
+	t=1752241160; cv=none; b=XXwbXDtfV4ZUQuYKz87ToMQEHn/j2qPf32HSF92GHGSk+VxSmc1sxyTbO0PfNkYaHFUe/IkrRmBM8+UWNg6wC4EZEmYFyWlFEnYgyN/KonB4AxfRcu8LSH17M+fFABzLkFjbGHbRW4NqoroAk5G7Gw/ftDjbCdZAI6B40sf2wEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752235349; c=relaxed/simple;
-	bh=YzGUBDblhCNeSMFr4wgOeXaK4kq/G4RnWlOaMEMdEXU=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=XOYG/FB7pcLvHyToVQ4it0JEj4H3W3MbM8wA3ik826i5q8QhyVV9uQyhMrZ28N4l/l6D89Yi4BBbbI66vZsf1P6oc8BjzMXBps1QWdQEWya96Z1HBPy+n2abUm2xpwepuY/YtbG+Bv8c07tXia0kmrm8nA4j1kM0mzPeNqDhJcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ezirXcrw; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-7426c44e014so1960112b3a.3;
-        Fri, 11 Jul 2025 05:02:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752235347; x=1752840147; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=YzGUBDblhCNeSMFr4wgOeXaK4kq/G4RnWlOaMEMdEXU=;
-        b=ezirXcrwy0SOSJLKlTf+CTLX267/AbhOYwMSIofOecNgikIfYkBbjORosNXLPSy9Cb
-         DgUAFsAFH1yc7la6dOMc1na1i3tFmMD1raJziTwQYJTPfo25ZUnDQfQVBOqWIWJhdQhx
-         z2xDpu7XsRenJRLeOIehAF9i2w29sOOo2rlklyk8MDDPILNjjxtPu7TXjxJthYLhOONr
-         hpLSzlTBgf98vxYfNAAIh0ND953J1IyuT5v1FemQ29lf+uA0UrcVk/FfWcDRTwrD1ues
-         g2zYWZk6/hsCbNpg8wvRYXTey7K1/FK1O66cQVR2OfQo0kwla6JKE2BUSKGKACKySmmL
-         qC4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752235347; x=1752840147;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YzGUBDblhCNeSMFr4wgOeXaK4kq/G4RnWlOaMEMdEXU=;
-        b=K2tDd8tttI1sy78ne5PS8BNsXIv2O7uMSAsCxdIsiztiolcXmoknJSxyqTjxU5iqZB
-         clN508CPE/DR1GbddXC1rEC10OF7FY5OxVpuxwWcQeJlIdcXwdOEFDCxdWfDz1dmvrja
-         VxlDDfaVPa16CTk8pTH0S903iOcFM0SZ6V7jnrfliTT+qDEP14ubD1wwyyrvKPyj+0c+
-         6UFS1oUEBPRZ5jc35oIzbDQo6UpGmcws0D2FUSAQTiqhNWU0vaO45KNKidYqCSpYi5DM
-         t3kFa5bDyRGOR0I03xNqlkO5dF6Z2WB7u03jSc5NMJzA0OaAwDgkqOUT4srjbTuG/mGM
-         tKnA==
-X-Forwarded-Encrypted: i=1; AJvYcCUXmHwMIvjtdERp2PhmnD5Mv+EM7RM6aRb7JkKEPqCMBOq7MZBHCltjA/O9zynZX/EINLIFF/WH+VFKyHOEFH8R@vger.kernel.org, AJvYcCVKRTMcT1UMxWRMkQPTAJMuffnHfySbFHlAZx25/g+enREUCOu7DhLwwoknFI0z7sfKMFw=@vger.kernel.org, AJvYcCXUlgsdK+Lz/CtTIJR5mF6il89av2CrhLel/JseBbmZIxBUlhuWiBuYaP+9UtCVgksrX0JT6rO+NTjOvaee@vger.kernel.org
-X-Gm-Message-State: AOJu0YyIqvtH1bpRjRHpLWKrD/Udz+sf0wQ3rcTh3MKYo4qGf7MxJLIP
-	J94mLETsfZXxA0QFyRf9UosNqS3YXEgS8nNF4MKNgJwcbjHWHcFViqke
-X-Gm-Gg: ASbGncuRH2DlF1Zm/4GqDxn6pXyM0TZ1hpeaqnbU2otrAjggA0LlgAgTRK0+J9dj5c+
-	cLyEnPsoUjLKvFKAGt2A3s7UD1wUS1ApgMx/yTWDVh1JqRxwrMY3U6VvAzk3DSQzhSpvopgkE34
-	lefyXtzpvoE2TeLslnroaIkonfbLTgoGJKQ7YYRWgM+cDhDVwx8oiCT2epIYHuzKuewDarTMZjY
-	pZkLOo9DcWcKIv4aVp2mF3JVe4DmAvWBSYGuFxEBS56iDEKuZgjYK+BS9VMXU1yB2C5t87liLXx
-	ijjzs1OHHFAUhnIWrJ0ZAqBfY1Brv2kOgO1TUumX2RMQEloUTPRwOEJMaDvr28DcuEyNxdwdCrc
-	yicGK/4fuy+z+h/U8bUzVeA==
-X-Google-Smtp-Source: AGHT+IHNe58Ys1UMnITCoG7gp86G2b2/FSlpZzgnXSypLHA/Edm862V/yzRhw2fvS0mIuhzW0JNKLA==
-X-Received: by 2002:a05:6a00:c95:b0:748:f6a0:7731 with SMTP id d2e1a72fcca58-74f1efc0e27mr2976860b3a.23.1752235346465;
-        Fri, 11 Jul 2025 05:02:26 -0700 (PDT)
-Received: from [127.0.0.1] ([62.192.175.167])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74eb9f8cd75sm4954105b3a.164.2025.07.11.05.02.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jul 2025 05:02:26 -0700 (PDT)
-Message-ID: <10c6fff555875e23453b5e524ad27839805e51f2.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] bpf: Show precise rejected function when
- attaching to __btf_id functions
-From: KaFai Wan <mannkafai@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>,  John Fastabend <john.fastabend@gmail.com>, Andrii
- Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>,  Yonghong Song
- <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@fomichev.me>,  Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,  Shuah Khan
- <shuah@kernel.org>, Yafang Shao <laoar.shao@gmail.com>, LKML
- <linux-kernel@vger.kernel.org>,  bpf <bpf@vger.kernel.org>, "open
- list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Date: Fri, 11 Jul 2025 20:02:17 +0800
-In-Reply-To: <CAADnVQ+Ca43c757zaT80B+4RJesRozx39mLoz3hOdKXEaXLBLg@mail.gmail.com>
-References: <20250710162717.3808020-1-mannkafai@gmail.com>
-	 <20250710162717.3808020-3-mannkafai@gmail.com>
-	 <CAADnVQ+Ca43c757zaT80B+4RJesRozx39mLoz3hOdKXEaXLBLg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.0-1build2 
+	s=arc-20240116; t=1752241160; c=relaxed/simple;
+	bh=eFgED19dQRcbU4DIqiWV1GygAUnicd546BK4INZAAss=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Q0pcEQDrnH8uF69nrSK635L3jPZA6wjUX6vz5TSnMSB+KF2pyIZLnniLNEXAjZ6q1N+cAfKDfCaecZy2gS3bMA8fEuaNQ3KyCJcdkyXTLnU4M1pMOC2RdXexH5Wo83DBbB++cKr0DyAZfJ2RVYemmca/HHNqjVmddPsjqv8ItgU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dFqogJIN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECC08C4CEED;
+	Fri, 11 Jul 2025 13:39:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752241159;
+	bh=eFgED19dQRcbU4DIqiWV1GygAUnicd546BK4INZAAss=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=dFqogJINkHleezubFaTYRjl9rOp7Qu3v6UH1d2kfuLU5Att7mBp+vYht8FbPQ2OLj
+	 7MhhtQkPYEZxklTihibLlMUGol5w/Xp99J4gsFDg9gRDfNTXKNmFb1CkawU+l0Ew/5
+	 /A1yj3bLqkYUEgvw8IbL7LwWDPQqLaTU3V1+bbqaB/c56AEgU4h6Yd1hVgeGC2DGWC
+	 SPKFNohRdYyeFos9QOEHPd6O7Q+9RRSBSlNmkJBKYRE7vKv/KR85ywFxMI7st/L3MR
+	 ODx7cS5YtdOXPKjxmvkCcF6W4TkJnDTWGLDm5UfRwhddzARKVf4GjgS/B+uUmDVc+4
+	 Zkfu7ZLi/2d7w==
+Date: Fri, 11 Jul 2025 06:39:17 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Mohsin Bashir <mohsin.bashr@gmail.com>
+Cc: netdev@vger.kernel.org, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, pabeni@redhat.com, shuah@kernel.org, horms@kernel.org,
+ cratiu@nvidia.com, noren@nvidia.com, cjubran@nvidia.com, mbloch@nvidia.com,
+ jdamato@fastly.com, gal@nvidia.com, sdf@fomichev.me, ast@kernel.org,
+ daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH net-next V2 0/5] selftests: drv-net: Test XDP native
+ support
+Message-ID: <20250711063917.7aad27f7@kernel.org>
+In-Reply-To: <20250710184351.63797-1-mohsin.bashr@gmail.com>
+References: <20250710184351.63797-1-mohsin.bashr@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, 2025-07-10 at 10:19 -0700, Alexei Starovoitov wrote:
-> On Thu, Jul 10, 2025 at 9:27=E2=80=AFAM KaFai Wan <mannkafai@gmail.com>
-> wrote:
-> >=20
-> > Show the precise rejected function name when attaching tracing to
-> > __btf_id functions.
-> >=20
-> > $ ./fentry
-> > libbpf: prog 'migrate_disable': BPF program load failed: -EINVAL
-> > libbpf: prog 'migrate_disable': -- BEGIN PROG LOAD LOG --
-> > Attaching tracing to __btf_id function 'migrate_disable' is
-> > rejected.
-> >=20
-> > Signed-off-by: KaFai Wan <mannkafai@gmail.com>
-> > ---
-> > =C2=A0kernel/bpf/verifier.c | 2 ++
-> > =C2=A01 file changed, 2 insertions(+)
-> >=20
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 275d82fb1a1a..2779d63e1f8b 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -23938,6 +23938,8 @@ static int check_attach_btf_id(struct
-> > bpf_verifier_env *env)
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 retur=
-n ret;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else if (prog->type =3D=3D=
- BPF_PROG_TYPE_TRACING &&
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btf_id_set_contains(&btf_id_deny, b=
-tf_id)) {
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 verbose(env, "Attaching tracing to __btf_id
-> > function '%s' is rejected.\n",
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 tgt_info.tg=
-t_name);
->=20
-> "Attaching tracing to __btf_id" ?! What does it mean?
-> Drop "__btf_id" and "tracing" bits.
->=20
+On Thu, 10 Jul 2025 11:43:46 -0700 Mohsin Bashir wrote:
+> This patch series add tests to validate XDP native support for PASS,
+> DROP, ABORT, and TX actions, as well as headroom and tailroom adjustment.
+> For adjustment tests, validate support for both the extension and
+> shrinking cases across various packet sizes and offset values.
 
-My fault, I mean=C2=A0"Attaching tracing programs to function" in
-'btf_id_deny'.
+The program does not load in the CI :(
 
-I will change it in v2.
+509: (15) if r1 == 0x0 goto pc+142    ; frame1: R1=scalar(smin=umin=umin32=1,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff))
+510: (25) if r1 > 0x100 goto pc+141   ; frame1: R1=scalar(smin=umin=smin32=umin32=1,smax=umax=smax32=umax32=256,var_off=(0x0; 0x1ff))
+511: (bf) r3 = r10                    ; frame1: R3_w=fp0 R10=fp0\n; if (bpf_xdp_load_bytes(ctx, 0, tmp_buff, hdr_len) < 0) @ xdp_native.bpf.c:377
+512: (07) r3 += -256                  ; frame1: R3_w=fp-256
+513: (bf) r1 = r7                     ; frame1: R1_w=ctx() R7=ctx()
+514: (b7) r2 = 0                      ; frame1: R2_w=0
+515: (bf) r4 = r8                     ; frame1: R4_w=scalar(id=3) R8=scalar(id=3)
+516: (7b) *(u64 *)(r10 -280) = r5     ; frame1: R5=32 R10=fp0 fp-280_w=32
+517: (85) call bpf_xdp_load_bytes#189
+R4 min value is negative, either use unsigned or 'var &= const'
+processed 262 insns (limit 1000000) max_states_per_insn 1 total_states 26 peak_states 26 mark_read 7
+-- END PROG LOAD LOG
 
-> --
-> pw-bot: cr
+I suppose it may be due to compiler version:
+$ clang --version
+clang version 15.0.7 (AWS 15.0.7-3.amzn2023.0.4)
 
---=20
-Thanks,
-KaFai
+LMK if you need more info / can't repro, but I think the suggestion
+makes sense?
 
