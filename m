@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-63018-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63019-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F283B01639
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 10:33:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC0F5B0163C
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 10:34:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA98B3BB68F
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 08:32:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E02383B8CF1
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 08:32:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57065223719;
-	Fri, 11 Jul 2025 08:31:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F61F214A91;
+	Fri, 11 Jul 2025 08:31:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FbFT4CnV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M4KlycZG"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6DFE223323;
-	Fri, 11 Jul 2025 08:31:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80299205AD7;
+	Fri, 11 Jul 2025 08:31:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752222695; cv=none; b=uQ5DtcfnzqEtf/MZU1hZk78LhOxNk1NvQqM8OBtacCj+5loVDHWxahd4h1DNhW/BQaizI+0NxiWiRtXWRf9ubQjISXMx+271rPw+sXkzXM3a3D6F5XeN00Xk9/MV7vGSU1h31wAN1fHIQ4BUcQFHPjs20R7zPjK+6ys+n7AtHdo=
+	t=1752222710; cv=none; b=XJxqLV+JQOakdFWjowTzQz2t+YZZZAxvjNOtOtbEqPhkK8zCm/Fqc0XSraXRztFRNDpjEXjyVT0kWZdzEl6DCEC+FROsIZolYNcajYKboSSVaQJ/id8XCKgKPb53GN+/i1WzsKUGFy9+KvD7KMZi6EYzNgkiYVQC+NXlaJ01S8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752222695; c=relaxed/simple;
-	bh=0uPCwkrlmAM65hQENbFK9Kst+w2+mtffgmSOQzezgA0=;
+	s=arc-20240116; t=1752222710; c=relaxed/simple;
+	bh=qTdnBjXaSSzTYe0AwGRm181u80lXs1qNW8M7cA0XAuM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dCCIMIzdt0r6WxCiolz+GIPOqNJlOX/cAjGwU6DHB+SgjsFO9zdE9Nc05krhSnYp1zJ+hlVK8T5qeS3lTlToDSIgMDxN0d5uHMx1VG97dfqR9wT4kwJd2B9HYqs7A8faabnEXHpraXfU6cOvv56ZxCHNGDWb94S6fiU+dMGaQL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FbFT4CnV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72C0AC4CEED;
-	Fri, 11 Jul 2025 08:31:31 +0000 (UTC)
+	 MIME-Version:Content-Type; b=p8jVI9NoetT1+qZLgMcMr5LGqGBFY/1bKbZIbGj+PxJVpTt1L7Om9Ix78ONsiDvSdAQpnuUckTF7A1VRWQY3L1pr5sceaD2D5xTYueXuhzsxLeL0QlQFq71libTGdaTkxjxmxzM9vfdPdH5w2h/Gtq0l0kHhonlnGsKfDUzqFsQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M4KlycZG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CA9BC4CEED;
+	Fri, 11 Jul 2025 08:31:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752222695;
-	bh=0uPCwkrlmAM65hQENbFK9Kst+w2+mtffgmSOQzezgA0=;
+	s=k20201202; t=1752222710;
+	bh=qTdnBjXaSSzTYe0AwGRm181u80lXs1qNW8M7cA0XAuM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FbFT4CnV2BJHzR2ygVp1yVIg6DM7Rmk8B0vvvh4bjqX+Fs9BPYsh6wt0RobWP7efT
-	 DeSatPCb22zj8i2vPYG29Nsdo0LAOwmDinMN5Mqvvp0A4O2yZGY1KymU9rWHbf5U+2
-	 1Ngv/OIQi+wD7qjI57myHRiWgknTFMJmYh7PJOwsqCyY9jI8UMxQdBcLdQ+x7Abt95
-	 WspqKG85fjd2OLEI/EKT+WZQtD6R0NzpxvUnxhkfq+d15GOwAMM/2SwzUxKadv8sPW
-	 vUF5pv9W8jtZYXTsBx4XlOnMlbDze004yGbHgtec/KpSJTRD4o2w4NlDskwnz59QQD
-	 3koMcwpW8NEqw==
+	b=M4KlycZGtpth6SHaraMJoo4nXR9YyCdT/aUhyRM5yvuXmldVMGXpEpNqzuC7Lu2Ib
+	 qpP8hp+e0Q9hDc4Z1rfOCTBmSxOiaFnsZ7JgqWB16Kq3pf0A6tr+gCpj6wjd1dYVI7
+	 IUNeo5Z1Fi1sGwUqdFFjhRV7JXHy/vlJxGuRqIH7Wm7tE6S6ElQhZ442qg9uY04qjn
+	 CjZJNtu1HO2/00Thp4os1wAqL3bnrp1wFjF/MFJZYJYFspMCdBKliJxiwc5K8mLEr2
+	 CbZWfsixRsBvpnXQ7hfk4HWPxgK5MEgzIMMZlQZ58/+V3VbwP7geGCCQP89GXJuVVM
+	 9JsSoUVay9E/Q==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -59,9 +59,9 @@ Cc: bpf@vger.kernel.org,
 	David Laight <David.Laight@ACULAB.COM>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas@t-8ch.de>,
 	Ingo Molnar <mingo@kernel.org>
-Subject: [PATCHv5 perf/core 09/22] uprobes/x86: Add uprobe syscall to speed up uprobe
-Date: Fri, 11 Jul 2025 10:29:17 +0200
-Message-ID: <20250711082931.3398027-10-jolsa@kernel.org>
+Subject: [PATCHv5 perf/core 10/22] uprobes/x86: Add support to optimize uprobes
+Date: Fri, 11 Jul 2025 10:29:18 +0200
+Message-ID: <20250711082931.3398027-11-jolsa@kernel.org>
 X-Mailer: git-send-email 2.50.0
 In-Reply-To: <20250711082931.3398027-1-jolsa@kernel.org>
 References: <20250711082931.3398027-1-jolsa@kernel.org>
@@ -71,248 +71,553 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Adding new uprobe syscall that calls uprobe handlers for given
-'breakpoint' address.
+Putting together all the previously added pieces to support optimized
+uprobes on top of 5-byte nop instruction.
 
-The idea is that the 'breakpoint' address calls the user space
-trampoline which executes the uprobe syscall.
+The current uprobe execution goes through following:
 
-The syscall handler reads the return address of the initial call
-to retrieve the original 'breakpoint' address. With this address
-we find the related uprobe object and call its consumers.
+  - installs breakpoint instruction over original instruction
+  - exception handler hit and calls related uprobe consumers
+  - and either simulates original instruction or does out of line single step
+    execution of it
+  - returns to user space
 
-Adding the arch_uprobe_trampoline_mapping function that provides
-uprobe trampoline mapping. This mapping is backed with one global
-page initialized at __init time and shared by the all the mapping
-instances.
+The optimized uprobe path does following:
 
-We do not allow to execute uprobe syscall if the caller is not
-from uprobe trampoline mapping.
+  - checks the original instruction is 5-byte nop (plus other checks)
+  - adds (or uses existing) user space trampoline with uprobe syscall
+  - overwrites original instruction (5-byte nop) with call to user space
+    trampoline
+  - the user space trampoline executes uprobe syscall that calls related uprobe
+    consumers
+  - trampoline returns back to next instruction
 
-The uprobe syscall ensures the consumer (bpf program) sees registers
-values in the state before the trampoline was called.
+This approach won't speed up all uprobes as it's limited to using nop5 as
+original instruction, but we plan to use nop5 as USDT probe instruction
+(which currently uses single byte nop) and speed up the USDT probes.
+
+The arch_uprobe_optimize triggers the uprobe optimization and is called after
+first uprobe hit. I originally had it called on uprobe installation but then
+it clashed with elf loader, because the user space trampoline was added in a
+place where loader might need to put elf segments, so I decided to do it after
+first uprobe hit when loading is done.
+
+The uprobe is un-optimized in arch specific set_orig_insn call.
+
+The instruction overwrite is x86 arch specific and needs to go through 3 updates:
+(on top of nop5 instruction)
+
+  - write int3 into 1st byte
+  - write last 4 bytes of the call instruction
+  - update the call instruction opcode
+
+And cleanup goes though similar reverse stages:
+
+  - overwrite call opcode with breakpoint (int3)
+  - write last 4 bytes of the nop5 instruction
+  - write the nop5 first instruction byte
+
+We do not unmap and release uprobe trampoline when it's no longer needed,
+because there's no easy way to make sure none of the threads is still
+inside the trampoline. But we do not waste memory, because there's just
+single page for all the uprobe trampoline mappings.
+
+We do waste frame on page mapping for every 4GB by keeping the uprobe
+trampoline page mapped, but that seems ok.
+
+We take the benefit from the fact that set_swbp and set_orig_insn are
+called under mmap_write_lock(mm), so we can use the current instruction
+as the state the uprobe is in - nop5/breakpoint/call trampoline -
+and decide the needed action (optimize/un-optimize) based on that.
+
+Attaching the speed up from benchs/run_bench_uprobes.sh script:
+
+current:
+        usermode-count :  152.604 ± 0.044M/s
+        syscall-count  :   13.359 ± 0.042M/s
+-->     uprobe-nop     :    3.229 ± 0.002M/s
+        uprobe-push    :    3.086 ± 0.004M/s
+        uprobe-ret     :    1.114 ± 0.004M/s
+        uprobe-nop5    :    1.121 ± 0.005M/s
+        uretprobe-nop  :    2.145 ± 0.002M/s
+        uretprobe-push :    2.070 ± 0.001M/s
+        uretprobe-ret  :    0.931 ± 0.001M/s
+        uretprobe-nop5 :    0.957 ± 0.001M/s
+
+after the change:
+        usermode-count :  152.448 ± 0.244M/s
+        syscall-count  :   14.321 ± 0.059M/s
+        uprobe-nop     :    3.148 ± 0.007M/s
+        uprobe-push    :    2.976 ± 0.004M/s
+        uprobe-ret     :    1.068 ± 0.003M/s
+-->     uprobe-nop5    :    7.038 ± 0.007M/s
+        uretprobe-nop  :    2.109 ± 0.004M/s
+        uretprobe-push :    2.035 ± 0.001M/s
+        uretprobe-ret  :    0.908 ± 0.001M/s
+        uretprobe-nop5 :    3.377 ± 0.009M/s
+
+I see bit more speed up on Intel (above) compared to AMD. The big nop5
+speed up is partly due to emulating nop5 and partly due to optimization.
+
+The key speed up we do this for is the USDT switch from nop to nop5:
+        uprobe-nop     :    3.148 ± 0.007M/s
+        uprobe-nop5    :    7.038 ± 0.007M/s
 
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Acked-by: Oleg Nesterov <oleg@redhat.com>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- arch/x86/entry/syscalls/syscall_64.tbl |   1 +
- arch/x86/kernel/uprobes.c              | 122 +++++++++++++++++++++++++
- include/linux/syscalls.h               |   2 +
- include/linux/uprobes.h                |   1 +
- kernel/events/uprobes.c                |  17 ++++
- kernel/sys_ni.c                        |   1 +
- 6 files changed, 144 insertions(+)
+ arch/x86/include/asm/uprobes.h |   7 +
+ arch/x86/kernel/uprobes.c      | 288 ++++++++++++++++++++++++++++++++-
+ include/linux/uprobes.h        |   6 +-
+ kernel/events/uprobes.c        |  16 +-
+ 4 files changed, 310 insertions(+), 7 deletions(-)
 
-diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
-index cfb5ca41e30d..9fd1291e7bdf 100644
---- a/arch/x86/entry/syscalls/syscall_64.tbl
-+++ b/arch/x86/entry/syscalls/syscall_64.tbl
-@@ -345,6 +345,7 @@
- 333	common	io_pgetevents		sys_io_pgetevents
- 334	common	rseq			sys_rseq
- 335	common	uretprobe		sys_uretprobe
-+336	common	uprobe			sys_uprobe
- # don't use numbers 387 through 423, add new calls after the last
- # 'common' entry
- 424	common	pidfd_send_signal	sys_pidfd_send_signal
+diff --git a/arch/x86/include/asm/uprobes.h b/arch/x86/include/asm/uprobes.h
+index 678fb546f0a7..1ee2e5115955 100644
+--- a/arch/x86/include/asm/uprobes.h
++++ b/arch/x86/include/asm/uprobes.h
+@@ -20,6 +20,11 @@ typedef u8 uprobe_opcode_t;
+ #define UPROBE_SWBP_INSN		0xcc
+ #define UPROBE_SWBP_INSN_SIZE		   1
+ 
++enum {
++	ARCH_UPROBE_FLAG_CAN_OPTIMIZE   = 0,
++	ARCH_UPROBE_FLAG_OPTIMIZE_FAIL  = 1,
++};
++
+ struct uprobe_xol_ops;
+ 
+ struct arch_uprobe {
+@@ -45,6 +50,8 @@ struct arch_uprobe {
+ 			u8	ilen;
+ 		}			push;
+ 	};
++
++	unsigned long flags;
+ };
+ 
+ struct arch_uprobe_task {
 diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
-index 6c4dcbdd0c3c..5eecab712376 100644
+index 5eecab712376..b80942768f77 100644
 --- a/arch/x86/kernel/uprobes.c
 +++ b/arch/x86/kernel/uprobes.c
-@@ -752,6 +752,128 @@ void arch_uprobe_clear_state(struct mm_struct *mm)
- 	hlist_for_each_entry_safe(tramp, n, &state->head_tramps, node)
- 		destroy_uprobe_trampoline(tramp);
+@@ -18,6 +18,7 @@
+ #include <asm/processor.h>
+ #include <asm/insn.h>
+ #include <asm/mmu_context.h>
++#include <asm/nops.h>
+ 
+ /* Post-execution fixups. */
+ 
+@@ -702,7 +703,6 @@ static struct uprobe_trampoline *create_uprobe_trampoline(unsigned long vaddr)
+ 	return tramp;
  }
+ 
+-__maybe_unused
+ static struct uprobe_trampoline *get_uprobe_trampoline(unsigned long vaddr, bool *new)
+ {
+ 	struct uprobes_state *state = &current->mm->uprobes_state;
+@@ -874,6 +874,285 @@ static int __init arch_uprobes_init(void)
+ 
+ late_initcall(arch_uprobes_init);
+ 
++enum {
++	OPT_PART,
++	OPT_INSN,
++	UNOPT_INT3,
++	UNOPT_PART,
++};
 +
-+static bool __in_uprobe_trampoline(unsigned long ip)
++struct write_opcode_ctx {
++	unsigned long base;
++	int update;
++};
++
++static int is_call_insn(uprobe_opcode_t *insn)
 +{
-+	struct vm_area_struct *vma = vma_lookup(current->mm, ip);
-+
-+	return vma && vma_is_special_mapping(vma, &tramp_mapping);
++	return *insn == CALL_INSN_OPCODE;
 +}
 +
-+static bool in_uprobe_trampoline(unsigned long ip)
++static int verify_insn(struct page *page, unsigned long vaddr, uprobe_opcode_t *new_opcode,
++		       int nbytes, void *data)
 +{
-+	struct mm_struct *mm = current->mm;
-+	bool found, retry = true;
-+	unsigned int seq;
++	struct write_opcode_ctx *ctx = data;
++	uprobe_opcode_t old_opcode[5];
 +
-+	rcu_read_lock();
-+	if (mmap_lock_speculate_try_begin(mm, &seq)) {
-+		found = __in_uprobe_trampoline(ip);
-+		retry = mmap_lock_speculate_retry(mm, seq);
++	uprobe_copy_from_page(page, ctx->base, (uprobe_opcode_t *) &old_opcode, 5);
++
++	switch (ctx->update) {
++	case OPT_PART:
++	case OPT_INSN:
++		if (is_swbp_insn(&old_opcode[0]))
++			return 1;
++		break;
++	case UNOPT_INT3:
++		if (is_call_insn(&old_opcode[0]))
++			return 1;
++		break;
++	case UNOPT_PART:
++		if (is_swbp_insn(&old_opcode[0]))
++			return 1;
++		break;
 +	}
-+	rcu_read_unlock();
 +
-+	if (retry) {
-+		mmap_read_lock(mm);
-+		found = __in_uprobe_trampoline(ip);
-+		mmap_read_unlock(mm);
-+	}
-+	return found;
-+}
-+
-+SYSCALL_DEFINE0(uprobe)
-+{
-+	struct pt_regs *regs = task_pt_regs(current);
-+	unsigned long ip, sp, ax_r11_cx_ip[4];
-+	int err;
-+
-+	/* Allow execution only from uprobe trampolines. */
-+	if (!in_uprobe_trampoline(regs->ip))
-+		goto sigill;
-+
-+	err = copy_from_user(ax_r11_cx_ip, (void __user *)regs->sp, sizeof(ax_r11_cx_ip));
-+	if (err)
-+		goto sigill;
-+
-+	ip = regs->ip;
-+
-+	/*
-+	 * expose the "right" values of ax/r11/cx/ip/sp to uprobe_consumer/s, plus:
-+	 * - adjust ip to the probe address, call saved next instruction address
-+	 * - adjust sp to the probe's stack frame (check trampoline code)
-+	 */
-+	regs->ax  = ax_r11_cx_ip[0];
-+	regs->r11 = ax_r11_cx_ip[1];
-+	regs->cx  = ax_r11_cx_ip[2];
-+	regs->ip  = ax_r11_cx_ip[3] - 5;
-+	regs->sp += sizeof(ax_r11_cx_ip);
-+	regs->orig_ax = -1;
-+
-+	sp = regs->sp;
-+
-+	handle_syscall_uprobe(regs, regs->ip);
-+
-+	/*
-+	 * Some of the uprobe consumers has changed sp, we can do nothing,
-+	 * just return via iret.
-+	 */
-+	if (regs->sp != sp)
-+		return regs->ax;
-+
-+	regs->sp -= sizeof(ax_r11_cx_ip);
-+
-+	/* for the case uprobe_consumer has changed ax/r11/cx */
-+	ax_r11_cx_ip[0] = regs->ax;
-+	ax_r11_cx_ip[1] = regs->r11;
-+	ax_r11_cx_ip[2] = regs->cx;
-+
-+	/* keep return address unless we are instructed otherwise */
-+	if (ax_r11_cx_ip[3] - 5 != regs->ip)
-+		ax_r11_cx_ip[3] = regs->ip;
-+
-+	regs->ip = ip;
-+
-+	err = copy_to_user((void __user *)regs->sp, ax_r11_cx_ip, sizeof(ax_r11_cx_ip));
-+	if (err)
-+		goto sigill;
-+
-+	/* ensure sysret, see do_syscall_64() */
-+	regs->r11 = regs->flags;
-+	regs->cx  = regs->ip;
-+	return 0;
-+
-+sigill:
-+	force_sig(SIGILL);
 +	return -1;
 +}
 +
-+asm (
-+	".pushsection .rodata\n"
-+	".balign " __stringify(PAGE_SIZE) "\n"
-+	"uprobe_trampoline_entry:\n"
-+	"push %rcx\n"
-+	"push %r11\n"
-+	"push %rax\n"
-+	"movq $" __stringify(__NR_uprobe) ", %rax\n"
-+	"syscall\n"
-+	"pop %rax\n"
-+	"pop %r11\n"
-+	"pop %rcx\n"
-+	"ret\n"
-+	".balign " __stringify(PAGE_SIZE) "\n"
-+	".popsection\n"
-+);
-+
-+extern u8 uprobe_trampoline_entry[];
-+
-+static int __init arch_uprobes_init(void)
++static int write_insn(struct arch_uprobe *auprobe, struct vm_area_struct *vma, unsigned long vaddr,
++		      uprobe_opcode_t *insn, int nbytes, void *ctx)
 +{
-+	tramp_mapping_pages[0] = virt_to_page(uprobe_trampoline_entry);
++	return uprobe_write(auprobe, vma, vaddr, insn, nbytes, verify_insn,
++			    true /* is_register */, false /* do_update_ref_ctr */, ctx);
++}
++
++static void relative_call(void *dest, long from, long to)
++{
++	struct __packed __arch_relative_insn {
++		u8 op;
++		s32 raddr;
++	} *insn;
++
++	insn = (struct __arch_relative_insn *)dest;
++	insn->raddr = (s32)(to - (from + 5));
++	insn->op = CALL_INSN_OPCODE;
++}
++
++static int swbp_optimize(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
++			 unsigned long vaddr, unsigned long tramp)
++{
++	struct write_opcode_ctx ctx = {
++		.base = vaddr,
++	};
++	char call[5];
++	int err;
++
++	relative_call(call, vaddr, tramp);
++
++	/*
++	 * We are in state where breakpoint (int3) is installed on top of first
++	 * byte of the nop5 instruction. We will do following steps to overwrite
++	 * this to call instruction:
++	 *
++	 * - sync cores
++	 * - write last 4 bytes of the call instruction
++	 * - sync cores
++	 * - update the call instruction opcode
++	 */
++
++	smp_text_poke_sync_each_cpu();
++
++	ctx.update = OPT_PART;
++	err = write_insn(auprobe, vma, vaddr + 1, call + 1, 4, &ctx);
++	if (err)
++		return err;
++
++	smp_text_poke_sync_each_cpu();
++
++	ctx.update = OPT_INSN;
++	return write_insn(auprobe, vma, vaddr, call, 1, &ctx);
++}
++
++static int swbp_unoptimize(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
++			   unsigned long vaddr)
++{
++	uprobe_opcode_t int3 = UPROBE_SWBP_INSN;
++	struct write_opcode_ctx ctx = {
++		.base = vaddr,
++	};
++	int err;
++
++	/*
++	 * We need to overwrite call instruction into nop5 instruction with
++	 * breakpoint (int3) installed on top of its first byte. We will:
++	 *
++	 * - overwrite call opcode with breakpoint (int3)
++	 * - sync cores
++	 * - write last 4 bytes of the nop5 instruction
++	 * - sync cores
++	 */
++
++	ctx.update = UNOPT_INT3;
++	err = write_insn(auprobe, vma, vaddr, &int3, 1, &ctx);
++	if (err)
++		return err;
++
++	smp_text_poke_sync_each_cpu();
++
++	ctx.update = UNOPT_PART;
++	err = write_insn(auprobe, vma, vaddr + 1, (uprobe_opcode_t *) auprobe->insn + 1, 4, &ctx);
++
++	smp_text_poke_sync_each_cpu();
++	return err;
++}
++
++static int copy_from_vaddr(struct mm_struct *mm, unsigned long vaddr, void *dst, int len)
++{
++	unsigned int gup_flags = FOLL_FORCE|FOLL_SPLIT_PMD;
++	struct vm_area_struct *vma;
++	struct page *page;
++
++	page = get_user_page_vma_remote(mm, vaddr, gup_flags, &vma);
++	if (IS_ERR(page))
++		return PTR_ERR(page);
++	uprobe_copy_from_page(page, vaddr, dst, len);
++	put_page(page);
 +	return 0;
 +}
 +
-+late_initcall(arch_uprobes_init);
++static bool __is_optimized(uprobe_opcode_t *insn, unsigned long vaddr)
++{
++	struct __packed __arch_relative_insn {
++		u8 op;
++		s32 raddr;
++	} *call = (struct __arch_relative_insn *) insn;
 +
++	if (!is_call_insn(insn))
++		return false;
++	return __in_uprobe_trampoline(vaddr + 5 + call->raddr);
++}
++
++static int is_optimized(struct mm_struct *mm, unsigned long vaddr, bool *optimized)
++{
++	uprobe_opcode_t insn[5];
++	int err;
++
++	err = copy_from_vaddr(mm, vaddr, &insn, 5);
++	if (err)
++		return err;
++	*optimized = __is_optimized((uprobe_opcode_t *)&insn, vaddr);
++	return 0;
++}
++
++static bool should_optimize(struct arch_uprobe *auprobe)
++{
++	return !test_bit(ARCH_UPROBE_FLAG_OPTIMIZE_FAIL, &auprobe->flags) &&
++		test_bit(ARCH_UPROBE_FLAG_CAN_OPTIMIZE, &auprobe->flags);
++}
++
++int set_swbp(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
++	     unsigned long vaddr)
++{
++	if (should_optimize(auprobe)) {
++		bool optimized = false;
++		int err;
++
++		/*
++		 * We could race with another thread that already optimized the probe,
++		 * so let's not overwrite it with int3 again in this case.
++		 */
++		err = is_optimized(vma->vm_mm, vaddr, &optimized);
++		if (err)
++			return err;
++		if (optimized)
++			return 0;
++	}
++	return uprobe_write_opcode(auprobe, vma, vaddr, UPROBE_SWBP_INSN,
++				   true /* is_register */);
++}
++
++int set_orig_insn(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
++		  unsigned long vaddr)
++{
++	if (test_bit(ARCH_UPROBE_FLAG_CAN_OPTIMIZE, &auprobe->flags)) {
++		struct mm_struct *mm = vma->vm_mm;
++		bool optimized = false;
++		int err;
++
++		err = is_optimized(mm, vaddr, &optimized);
++		if (err)
++			return err;
++		if (optimized)
++			WARN_ON_ONCE(swbp_unoptimize(auprobe, vma, vaddr));
++	}
++	return uprobe_write_opcode(auprobe, vma, vaddr, *(uprobe_opcode_t *)&auprobe->insn,
++				   false /* is_register */);
++}
++
++static int __arch_uprobe_optimize(struct arch_uprobe *auprobe, struct mm_struct *mm,
++				  unsigned long vaddr)
++{
++	struct uprobe_trampoline *tramp;
++	struct vm_area_struct *vma;
++	bool new = false;
++	int err = 0;
++
++	vma = find_vma(mm, vaddr);
++	if (!vma)
++		return -EINVAL;
++	tramp = get_uprobe_trampoline(vaddr, &new);
++	if (!tramp)
++		return -EINVAL;
++	err = swbp_optimize(auprobe, vma, vaddr, tramp->vaddr);
++	if (WARN_ON_ONCE(err) && new)
++		destroy_uprobe_trampoline(tramp);
++	return err;
++}
++
++void arch_uprobe_optimize(struct arch_uprobe *auprobe, unsigned long vaddr)
++{
++	struct mm_struct *mm = current->mm;
++	uprobe_opcode_t insn[5];
++
++	/*
++	 * Do not optimize if shadow stack is enabled, the return address hijack
++	 * code in arch_uretprobe_hijack_return_addr updates wrong frame when
++	 * the entry uprobe is optimized and the shadow stack crashes the app.
++	 */
++	if (shstk_is_enabled())
++		return;
++
++	if (!should_optimize(auprobe))
++		return;
++
++	mmap_write_lock(mm);
++
++	/*
++	 * Check if some other thread already optimized the uprobe for us,
++	 * if it's the case just go away silently.
++	 */
++	if (copy_from_vaddr(mm, vaddr, &insn, 5))
++		goto unlock;
++	if (!is_swbp_insn((uprobe_opcode_t*) &insn))
++		goto unlock;
++
++	/*
++	 * If we fail to optimize the uprobe we set the fail bit so the
++	 * above should_optimize will fail from now on.
++	 */
++	if (__arch_uprobe_optimize(auprobe, mm, vaddr))
++		set_bit(ARCH_UPROBE_FLAG_OPTIMIZE_FAIL, &auprobe->flags);
++
++unlock:
++	mmap_write_unlock(mm);
++}
++
++static bool can_optimize(struct arch_uprobe *auprobe, unsigned long vaddr)
++{
++	if (memcmp(&auprobe->insn, x86_nops[5], 5))
++		return false;
++	/* We can't do cross page atomic writes yet. */
++	return PAGE_SIZE - (vaddr & ~PAGE_MASK) >= 5;
++}
  #else /* 32-bit: */
  /*
   * No RIP-relative addressing on 32-bit
-diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-index e5603cc91963..b0cc60f1c458 100644
---- a/include/linux/syscalls.h
-+++ b/include/linux/syscalls.h
-@@ -998,6 +998,8 @@ asmlinkage long sys_ioperm(unsigned long from, unsigned long num, int on);
+@@ -887,6 +1166,10 @@ static void riprel_pre_xol(struct arch_uprobe *auprobe, struct pt_regs *regs)
+ static void riprel_post_xol(struct arch_uprobe *auprobe, struct pt_regs *regs)
+ {
+ }
++static bool can_optimize(struct arch_uprobe *auprobe, unsigned long vaddr)
++{
++	return false;
++}
+ #endif /* CONFIG_X86_64 */
  
- asmlinkage long sys_uretprobe(void);
+ struct uprobe_xol_ops {
+@@ -1253,6 +1536,9 @@ int arch_uprobe_analyze_insn(struct arch_uprobe *auprobe, struct mm_struct *mm,
+ 	if (ret)
+ 		return ret;
  
-+asmlinkage long sys_uprobe(void);
++	if (can_optimize(auprobe, addr))
++		set_bit(ARCH_UPROBE_FLAG_CAN_OPTIMIZE, &auprobe->flags);
 +
- /* pciconfig: alpha, arm, arm64, ia64, sparc */
- asmlinkage long sys_pciconfig_read(unsigned long bus, unsigned long dfn,
- 				unsigned long off, unsigned long len,
+ 	ret = branch_setup_xol_ops(auprobe, &insn);
+ 	if (ret != -ENOSYS)
+ 		return ret;
 diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-index b40d33aae016..b6b077cc7d0f 100644
+index b6b077cc7d0f..08ef78439d0d 100644
 --- a/include/linux/uprobes.h
 +++ b/include/linux/uprobes.h
-@@ -239,6 +239,7 @@ extern unsigned long uprobe_get_trampoline_vaddr(void);
- extern void uprobe_copy_from_page(struct page *page, unsigned long vaddr, void *dst, int len);
+@@ -192,7 +192,7 @@ struct uprobes_state {
+ };
+ 
+ typedef int (*uprobe_write_verify_t)(struct page *page, unsigned long vaddr,
+-				     uprobe_opcode_t *insn, int nbytes);
++				     uprobe_opcode_t *insn, int nbytes, void *data);
+ 
+ extern void __init uprobes_init(void);
+ extern int set_swbp(struct arch_uprobe *aup, struct vm_area_struct *vma, unsigned long vaddr);
+@@ -204,7 +204,8 @@ extern unsigned long uprobe_get_trap_addr(struct pt_regs *regs);
+ extern int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma, unsigned long vaddr, uprobe_opcode_t,
+ 			       bool is_register);
+ extern int uprobe_write(struct arch_uprobe *auprobe, struct vm_area_struct *vma, const unsigned long opcode_vaddr,
+-			uprobe_opcode_t *insn, int nbytes, uprobe_write_verify_t verify, bool is_register, bool do_update_ref_ctr);
++			uprobe_opcode_t *insn, int nbytes, uprobe_write_verify_t verify, bool is_register, bool do_update_ref_ctr,
++			void *data);
+ extern struct uprobe *uprobe_register(struct inode *inode, loff_t offset, loff_t ref_ctr_offset, struct uprobe_consumer *uc);
+ extern int uprobe_apply(struct uprobe *uprobe, struct uprobe_consumer *uc, bool);
+ extern void uprobe_unregister_nosync(struct uprobe *uprobe, struct uprobe_consumer *uc);
+@@ -240,6 +241,7 @@ extern void uprobe_copy_from_page(struct page *page, unsigned long vaddr, void *
  extern void arch_uprobe_clear_state(struct mm_struct *mm);
  extern void arch_uprobe_init_state(struct mm_struct *mm);
-+extern void handle_syscall_uprobe(struct pt_regs *regs, unsigned long bp_vaddr);
+ extern void handle_syscall_uprobe(struct pt_regs *regs, unsigned long bp_vaddr);
++extern void arch_uprobe_optimize(struct arch_uprobe *auprobe, unsigned long vaddr);
  #else /* !CONFIG_UPROBES */
  struct uprobes_state {
  };
 diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index acec91a676b7..cbba31c0495f 100644
+index cbba31c0495f..e54081beeab9 100644
 --- a/kernel/events/uprobes.c
 +++ b/kernel/events/uprobes.c
-@@ -2772,6 +2772,23 @@ static void handle_swbp(struct pt_regs *regs)
- 	rcu_read_unlock_trace();
+@@ -192,7 +192,7 @@ static void copy_to_page(struct page *page, unsigned long vaddr, const void *src
  }
  
-+void handle_syscall_uprobe(struct pt_regs *regs, unsigned long bp_vaddr)
+ static int verify_opcode(struct page *page, unsigned long vaddr, uprobe_opcode_t *insn,
+-			 int nbytes)
++			 int nbytes, void *data)
+ {
+ 	uprobe_opcode_t old_opcode;
+ 	bool is_swbp;
+@@ -492,12 +492,13 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
+ 		bool is_register)
+ {
+ 	return uprobe_write(auprobe, vma, opcode_vaddr, &opcode, UPROBE_SWBP_INSN_SIZE,
+-			    verify_opcode, is_register, true /* do_update_ref_ctr */);
++			    verify_opcode, is_register, true /* do_update_ref_ctr */, NULL);
+ }
+ 
+ int uprobe_write(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
+ 		 const unsigned long insn_vaddr, uprobe_opcode_t *insn, int nbytes,
+-		 uprobe_write_verify_t verify, bool is_register, bool do_update_ref_ctr)
++		 uprobe_write_verify_t verify, bool is_register, bool do_update_ref_ctr,
++		 void *data)
+ {
+ 	const unsigned long vaddr = insn_vaddr & PAGE_MASK;
+ 	struct mm_struct *mm = vma->vm_mm;
+@@ -531,7 +532,7 @@ int uprobe_write(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
+ 		goto out;
+ 	folio = page_folio(page);
+ 
+-	ret = verify(page, insn_vaddr, insn, nbytes);
++	ret = verify(page, insn_vaddr, insn, nbytes, data);
+ 	if (ret <= 0) {
+ 		folio_put(folio);
+ 		goto out;
+@@ -2697,6 +2698,10 @@ bool __weak arch_uretprobe_is_alive(struct return_instance *ret, enum rp_check c
+ 	return true;
+ }
+ 
++void __weak arch_uprobe_optimize(struct arch_uprobe *auprobe, unsigned long vaddr)
 +{
-+	struct uprobe *uprobe;
-+	int is_swbp;
-+
-+	guard(rcu_tasks_trace)();
-+
-+	uprobe = find_active_uprobe_rcu(bp_vaddr, &is_swbp);
-+	if (!uprobe)
-+		return;
-+	if (!get_utask())
-+		return;
-+	if (arch_uprobe_ignore(&uprobe->arch, regs))
-+		return;
-+	handler_chain(uprobe, regs);
 +}
 +
  /*
-  * Perform required fix-ups and disable singlestep.
-  * Allow pending signals to take effect.
-diff --git a/kernel/sys_ni.c b/kernel/sys_ni.c
-index c00a86931f8c..bf5d05c635ff 100644
---- a/kernel/sys_ni.c
-+++ b/kernel/sys_ni.c
-@@ -392,3 +392,4 @@ COND_SYSCALL(setuid16);
- COND_SYSCALL(rseq);
+  * Run handler and ask thread to singlestep.
+  * Ensure all non-fatal signals cannot interrupt thread while it singlesteps.
+@@ -2761,6 +2766,9 @@ static void handle_swbp(struct pt_regs *regs)
  
- COND_SYSCALL(uretprobe);
-+COND_SYSCALL(uprobe);
+ 	handler_chain(uprobe, regs);
+ 
++	/* Try to optimize after first hit. */
++	arch_uprobe_optimize(&uprobe->arch, bp_vaddr);
++
+ 	if (arch_uprobe_skip_sstep(&uprobe->arch, regs))
+ 		goto out;
+ 
 -- 
 2.50.0
 
