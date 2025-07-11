@@ -1,142 +1,194 @@
-Return-Path: <bpf+bounces-62991-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62992-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87455B010A9
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 03:17:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFCCAB010CD
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 03:27:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6B9D5A8343
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 01:17:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A85271AA80BC
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 01:28:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8328E78F5E;
-	Fri, 11 Jul 2025 01:17:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 166B984D02;
+	Fri, 11 Jul 2025 01:27:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f8EavvGU"
 X-Original-To: bpf@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 384714409;
-	Fri, 11 Jul 2025 01:17:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from mail-yw1-f193.google.com (mail-yw1-f193.google.com [209.85.128.193])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9035E6F073;
+	Fri, 11 Jul 2025 01:27:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752196630; cv=none; b=XEx4FQm1JO/D27uylY+7/wIZbvlc/atUDOyK5cQ/UtGudmzJQxCi/JwnpYIcE3Ikb4g2p1G2bvWknhkoV19iSuGrnqd4eRdR39g5EBXUQ/pvvspYE/WA/tC1CbYsDPhO6fxRuzdVn1vQZ7+TeFVKooUOy0higusOZbVzVHXdWH0=
+	t=1752197270; cv=none; b=Dz4U2zMUaxouyO8dIZwcDQlpjXGGZWGQcjFJQkWAFv4AsZdHsC3nlolKbAimig49+kwfC0S72B56EhiPi3YcsGeMrUnnLaB95lb2uEDG2pfisnPi1LoK2sTQIpv4InPvAE5kX008U5vlQNMqTrjU7jhaFizJIcR8i7EUoJPg0cg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752196630; c=relaxed/simple;
-	bh=Jtk6z9y7hDRl+bGMqNMZgJfNfwoyTOtoQNDtHCHi0/g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aLVX5F+3ColI3VOCDd0mknW8ek/dsmjUCE0kt8PTQupec0AdPdhva3HuIIHPq9N/4nftZWXkGUBHmG1QyzlFucaJRwYz0miFlE+6qch6ZKQfstj0tXjAbVgxFgjaI6W7DGnvn8kDLs39y+mva9ddBdM9H49FcBuIvJSqeeusmjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-681ff7000002311f-8a-687066114969
-Date: Fri, 11 Jul 2025 10:17:00 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: Mina Almasry <almasrymina@google.com>
-Cc: willy@infradead.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	kernel_team@skhynix.com, kuba@kernel.org,
-	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
-	akpm@linux-foundation.org, davem@davemloft.net,
-	john.fastabend@gmail.com, andrew+netdev@lunn.ch,
-	asml.silence@gmail.com, toke@redhat.com, tariqt@nvidia.com,
-	edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com,
-	leon@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	david@redhat.com, lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
-	surenb@google.com, mhocko@suse.com, horms@kernel.org,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-	vishal.moola@gmail.com, hannes@cmpxchg.org, ziy@nvidia.com,
-	jackmanb@google.com
-Subject: Re: [PATCH net-next v9 4/8] netmem: use netmem_desc instead of page
- to access ->pp in __netmem_get_pp()
-Message-ID: <20250711011700.GD40145@system.software.com>
-References: <20250710082807.27402-1-byungchul@sk.com>
- <20250710082807.27402-5-byungchul@sk.com>
- <CAHS8izM8a-1k=q6bJAXuien1w6Zr+HAJ=XFo-3mbgM3=YBBtog@mail.gmail.com>
+	s=arc-20240116; t=1752197270; c=relaxed/simple;
+	bh=HFS+1dLZCMXLbRXybWkTOfr7F8qCGRXS+XIjE566oZ4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UrSmENRorONL6Pz1fj9hXoPP25Ilw3IV1TpmX/FmAud8cYk0O7kShHXuDce32IMp/w5gPALVG5hG3e0OgUDmdDSDYJaeVHVVxBPi3HzMeG8tY4fySazhaa9+VdSegtEO1pAs/0ydIdzTXkAYpNrJgKk1soCqddARVPQx3deSRQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f8EavvGU; arc=none smtp.client-ip=209.85.128.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f193.google.com with SMTP id 00721157ae682-70e767ce72eso15828687b3.1;
+        Thu, 10 Jul 2025 18:27:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752197267; x=1752802067; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KG9lxpLURaWwhvz42ij9wTJRd68a4iePoTZxhClKIzI=;
+        b=f8EavvGUTzmlNo2nVtCahPKM1lCenuGT8JUbFjJc+niObPcSTu0FuGGX5hzMW5oSeR
+         Esd+IEzszO0r9ePVH6eZE7pkkKVYeur9rfZC1I1DzBKdP9CVkj5onbF5LywxUflkD0G5
+         HYOdpE/Jz/m5XjKzni3SdB8+aKfRiGSv9odzxzoh+LWp/7QDeeLERm2H9cvc2tji6dyM
+         zGqy6zeELCipMw2RbJPjPTi/MJgCI6u5Tew9CDNgzt/pUVt9k4S+wfXce+ibiY+9N+sT
+         KM+w6T4QCut+UOPWR2rZOJTYJQhSw4BySbnBK5YXcK0bBZbhbfGZXP2U3oPCPHkGWhxb
+         afpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752197267; x=1752802067;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KG9lxpLURaWwhvz42ij9wTJRd68a4iePoTZxhClKIzI=;
+        b=AWfe5Bgtwzlii/lAaKwwIzN26751fJo6jvDSPnBVW9ozBTZuXUMDI7ERExNpidAt8V
+         5rT+QHILCp2+zC4b9XMiVZk+mq6aW3HepIXJ0N+lDkj22euia/5ad9HRXV1cDTnU3DlF
+         T2fytdNRNMC/14HlJDygiJtflLyDWDz61PhHjWlEuT3s0wtSGAFJWIfg8mUbms9nKrLg
+         yM/AK2tP4RaMirNDG/hVmzeKRfGXxtm9vGsWkCSmc2PmMD7ID0++fJh2RCkvoL3tnbuj
+         BGyMLudApJ8WSeQlNItpz9NqHay1OHtVvfpVOscr8URFIifINashuXsFn3Q/39nArTik
+         QNzQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVbIIGjgYKmna6tZdBCt2G8Pqbv5mbYY2ZDvVOaSUOxEraPNVqcTMY6lemkAt1UWR72aN77jGU/uoQIkL/c@vger.kernel.org, AJvYcCWQPkHch8+O5DwGBbPBd3n491ZsQ7s9tQ2YInprtXukyKo9heoRMZvYewRPFO/jyuHK1F4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwWVnsS36NH2uSnWKHS78n07iM+27J0k4F06i5OgCvHe7Ijtw9k
+	uP7kQ8NdgrX1/rmnxLjRxfTEUvuGhAwPz3jFCiYUTFuV8ViXnWTZrlV7a3LuXIWLQB43wBVwSoD
+	6nP0eRTN5ak+y8d6xGPtWIzyI4Wo2z1Q=
+X-Gm-Gg: ASbGnctBV5YbaTOJ9h4UOx3SK8UP9ByF/6Zp4trjKw/TT2yTkwiRruJWefV/XsyevIT
+	yVxdkGrc1xRQZb07D42kOn7/dmNC+KhqLeqC0gaHVBfXgSqP8ANk5N32Wx2GvU3m/ibWI6aZdK7
+	lOzTHTby2RwUdJQw9oPIlQ9Q+FECDs3pEKA6Jm6nERnrIuj2+qrRG4ee1dIA7fJm5styk1BKLs1
+	XTbSsk=
+X-Google-Smtp-Source: AGHT+IHA8KO4vFXJVj+xo0ubtjuUOVGSX3QHRDGnhbjsuAMjg9EJ9NlFwR2VmPglkjK8rdMruuD6J60xFlc4DxChEeU=
+X-Received: by 2002:a05:690c:1d:b0:70e:1474:63f2 with SMTP id
+ 00721157ae682-717d5b8aee0mr25663137b3.7.1752197267199; Thu, 10 Jul 2025
+ 18:27:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHS8izM8a-1k=q6bJAXuien1w6Zr+HAJ=XFo-3mbgM3=YBBtog@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRzGeXfO3nMcrc7WxVcTpJVlglpp8Sei/PhSBEnQh/pQI09uOadM
-	M5UKq1UkaRe1y9FiUnmZ1WqZN0xsmi6KFMNYeStvKVrRSvMS1TaJ/PbjeZ73ef4fXp5RP5YH
-	8npjqmgyag0arGAVnxcUh6sPJevWlf7EUGS7h6FiKh1KP9TIochaheDHdBcH35tbMdwunmSg
-	qM3MwoRthoGhln4OKuw7oa9kmIX6c9UM9F90YsgxzzLwdPoLB6dqymTQXpUrh/yZuwxUZ33g
-	4E1dEYbee3/kMOzIYeGFVM5CX24MtFiWweTLcQTNtmoZTF64iSGvw4JhwNyHoKOpn4XCk7kI
-	bA0uOcxOeToKn/dyMato0/hXhlaWv5PRWqmHoxb7Efq4LIxmuzoYareex9TuvsLR7rf1mDqv
-	z7K0tua7jOac/oLpt6H3LP3a0ImprbKTpa8szdwu1V7FljjRoE8TTZFbDyh03W8muOTfivSz
-	j64xWegtn438eCJEk4IJJ/OPH17p8TErhJDiqzewl7Gwhrhc0z59ibCW3Gm4LM9GCp4RJEw6
-	6/pZr7FYMJHKfKvMy0oByND7fOwNqYUyRPIKbcycoSIvbgz6HjCe1l+3Ojw67+HlpPQ3PycH
-	k9NPCn1xPyGWfBpo9sWXCitJY1WrzNtJBCdPRpxn2LmrA8izMhd7CamkeRPSvAnp/4Q0b8KC
-	WCtS641piVq9ITpCl2HUp0ccTEq0I89XKjn+a18NcrfvdiCBR5oFypiKJJ1ark1LyUh0IMIz
-	miXKBzuTdWplnDYjUzQl7TcdMYgpDrScZzX+yg2TR+PUQrw2VUwQxWTR9M+V8X6BWSi9O2/z
-	4KkAa6NqRfBu07r2sYITh/03RDcu2hF0vsC8MLM+7GHX/bU/Y9tW84mlx1ocUbRt+1QsvAtd
-	uc2wcdNlxcxIAn4dYB4ZDRyIHGVwyRiJ5/Nam24Fh4e4H31OLcgOC7k0E5ohBZEVe/Jj1oAU
-	7f4WGBV10Ghf/DHIFmTQsCk67fowxpSi/QsDSs0fRgMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRjG+Z9zdnZcTU7L6mBltZBIyTSKXuiCfSj/FWp+iCKoXHlqy9vY
-	VFQoVpMiSctLF48WE69Na7WWN2yWmhciitnMzBszrUTSvKUZ1aZEfvvxPM/7+/QypOymyJNR
-	xcTxmhhFlJyWUJKQHfpNS86olf4tFn/IM5XTUDadCCV9VSLIM1YgmJj5KIbxxmYaCvKnSMh7
-	k0LBpOknCQNNDjGUmYOht3iQgtorlSQ4rrfQkJYyS8KzmW9iuFRVSkDD3VYRvK1IF0H2zyIS
-	KnV9YmiryaOhp/yPCAbr0yhoFe5T0JseCE2G5TD1ahhBo6mSgKlrd2nIshlo6E/pRWBrcFCQ
-	ezEdgcnaIYLZaacj92WPONAbNwyPkNhy/wOBq4VuMTaY4/GTUh+c2mEjsdl4lcbmsUwx7mqv
-	pXHLnVkKV1eNEzhN/43G3wc6KTxitdO44MsogU0WO3VIdkyyM4KPUiXwms27wyXKrrZJsfq3
-	JPHy49ukDrUzqciN4dit3KPMbtLFFOvN5d/KoV1Msxu4jo6ZudyD3cgVWjNEqUjCkKxAc/Ya
-	B+UqlrIazpJtJFwsZYEb6MymXSMZW4q4rFwTOV8s4VpzPs0dkE7rr3s2Z844eSVX8puZj9dw
-	+qe5c3M3Noz73N84N1/GrueeVzQTN5C7sMAkLDAJ/03CApMBUUbkoYpJiFaoorb5aSOVSTGq
-	RL/TsdFm5HyW4vO/MqrQRFtQPWIZJF8sDSyLVcpEigRtUnQ94hhS7iF9GKxWyqQRiqRkXhN7
-	UhMfxWvr0UqGkq+QHjjCh8vYs4o4PpLn1bzmX0swbp46ZN1vs0wVFTd7FYY31rw/eEm/6oEy
-	vmJtzUgAlRmObTo+qO9owI5FJ7zXRV74wYQm+7Ja4lzmO0fdxYzV1hSq3LfnauiWH2Mh6qHt
-	ye4t/FCQYCyUK5sZXcIpbldTdVGBYN/DPyg5nhrmtW9m3d6TXYflpXpv++iLEI/a19N1X+WU
-	VqkI8CE1WsVfxfbcpigDAAA=
-X-CFilter-Loop: Reflected
+References: <20250710070835.260831-1-dongml2@chinatelecom.cn> <CAEf4BzZZRk0Ko64wy5E34wAa3psk07UhGg9DENU-CQYfLwT1ig@mail.gmail.com>
+In-Reply-To: <CAEf4BzZZRk0Ko64wy5E34wAa3psk07UhGg9DENU-CQYfLwT1ig@mail.gmail.com>
+From: Menglong Dong <menglong8.dong@gmail.com>
+Date: Fri, 11 Jul 2025 09:27:44 +0800
+X-Gm-Features: Ac12FXyodyEcAzVBGP9SODuexdqRjklpsY2SoNP4_DywxeGM8SW-JtdFG9IyHFk
+Message-ID: <CADxym3Y16eeQJtd0yi1nT28=NJHmsokuzQx+JuGNsf22vBUxNw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3] bpf: make the attach target more accurate
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Menglong Dong <dongml2@chinatelecom.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 10, 2025 at 11:25:12AM -0700, Mina Almasry wrote:
-> On Thu, Jul 10, 2025 at 1:28 AM Byungchul Park <byungchul@sk.com> wrote:
+On Fri, Jul 11, 2025 at 7:25=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Jul 10, 2025 at 12:10=E2=80=AFAM Menglong Dong <menglong8.dong@gm=
+ail.com> wrote:
 > >
-> > To eliminate the use of the page pool fields in struct page, the page
-> > pool code should use netmem descriptor and APIs instead.
+> > For now, we lookup the address of the attach target in
+> > bpf_check_attach_target() with find_kallsyms_symbol_value or
+> > kallsyms_lookup_name, which is not accurate in some cases.
 > >
-> > However, __netmem_get_pp() still accesses ->pp via struct page.  So
-> > change it to use struct netmem_desc instead, since ->pp no longer will
-> > be available in struct page.
+> > For example, we want to attach to the target "t_next", but there are
+> > multiple symbols with the name "t_next" exist in the kallsyms, which ma=
+kes
+> > the attach target ambiguous, and the attach should fail.
 > >
-> > Signed-off-by: Byungchul Park <byungchul@sk.com>
+> > Introduce the function bpf_lookup_attach_addr() to do the address looku=
+p,
+> > which will return -EADDRNOTAVAIL when the symbol is not unique.
+> >
+> > We can do the testing with following shell:
+> >
+> > for s in $(cat /proc/kallsyms | awk '{print $3}' | sort | uniq -d)
+> > do
+> >   if grep -q "^$s\$" /sys/kernel/debug/tracing/available_filter_functio=
+ns
+> >   then
+> >     bpftrace -e "fentry:$s {printf(\"1\");}" -v
+> >   fi
+> > done
+> >
+> > The script will find all the duplicated symbols in /proc/kallsyms, whic=
+h
+> > is also in /sys/kernel/debug/tracing/available_filter_functions, and
+> > attach them with bpftrace.
+> >
+> > After this patch, all the attaching fail with the error:
+> >
+> > The address of function xxx cannot be found
+> > or
+> > No BTF found for xxx
+> >
+> > Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
 > > ---
-> >  include/net/netmem.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > v3:
+> > - reject all the duplicated symbols
+> > v2:
+> > - Lookup both vmlinux and modules symbols when mod is NULL, just like
+> >   kallsyms_lookup_name().
 > >
-> > diff --git a/include/net/netmem.h b/include/net/netmem.h
-> > index 11e9de45efcb..283b4a997fbc 100644
-> > --- a/include/net/netmem.h
-> > +++ b/include/net/netmem.h
-> > @@ -306,7 +306,7 @@ static inline struct net_iov *__netmem_clear_lsb(netmem_ref netmem)
-> >   */
-> >  static inline struct page_pool *__netmem_get_pp(netmem_ref netmem)
-> >  {
-> > -       return __netmem_to_page(netmem)->pp;
-> > +       return __netmem_to_nmdesc(netmem)->pp;
+> >   If the btf is not a modules, shouldn't we lookup on the vmlinux only?
+> >   I'm not sure if we should keep the same logic with
+> >   kallsyms_lookup_name().
+> >
+> > - Return the kernel symbol that don't have ftrace location if the symbo=
+ls
+> >   with ftrace location are not available
+> > ---
+> >  kernel/bpf/verifier.c | 71 ++++++++++++++++++++++++++++++++++++++++---
+> >  1 file changed, 66 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 53007182b46b..bf4951154605 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -23476,6 +23476,67 @@ static int check_non_sleepable_error_inject(u3=
+2 btf_id)
+> >         return btf_id_set_contains(&btf_non_sleepable_error_inject, btf=
+_id);
 > >  }
 > >
-> 
-> __netmem_to_nmdesc should introduced with this patch.
+> > +struct symbol_lookup_ctx {
+> > +       const char *name;
+> > +       unsigned long addr;
+> > +};
+> > +
+> > +static int symbol_callback(void *data, unsigned long addr)
+> > +{
+> > +       struct symbol_lookup_ctx *ctx =3D data;
+> > +
+> > +       if (ctx->addr)
+> > +               return -EADDRNOTAVAIL;
+>
+> #define ENOTUNIQ        76     /* Name not unique on network */
+>
+> fits a bit better, no?
 
-Okay.
+Yeah, this looks much better. I'll use it instead of
+EADDRNOTAVAIL in the next version.
 
-> But also, I wonder why not modify all the callsites of
-> __netmem_to_page to the new __netmem_to_nmdesc and delete the
-> __nemem_to_page helper?
+Thanks!
+Menglong Dong
 
-It'd be better.  I will.  Thanks.
-
-	Byungchul
-> 
-> 
-> --
-> Thanks,
-> Mina
+>
+> > +       ctx->addr =3D addr;
+> > +
+> > +       return 0;
+> > +}
+> > +
+>
+> [...]
 
