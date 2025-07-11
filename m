@@ -1,163 +1,157 @@
-Return-Path: <bpf+bounces-63089-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63090-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9B37B025C5
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 22:26:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79413B025DA
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 22:40:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2974F7ADB96
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 20:25:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AF481C47CBA
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 20:41:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 408EC1F4181;
-	Fri, 11 Jul 2025 20:26:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEC8E1FE451;
+	Fri, 11 Jul 2025 20:40:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sZty94Ez"
+	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="MAOhYeuX"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD71B1F3B83;
-	Fri, 11 Jul 2025 20:26:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31D801C84A1
+	for <bpf@vger.kernel.org>; Fri, 11 Jul 2025 20:40:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752265591; cv=none; b=M94BTcZPTO/ao9LSRhwEv/VKoiT8/iW3GNXV+z5zkgc/7xEViJOVRufkc6EcSj3G0ZyEy8QZiCc2M/hVjkY0wimuZ7xCidytOX0JigXhdp5krrrKJmYy225a5JH95bmnrMOAlS8ea3FT7HL5C8JebRiD167Oho959CizFYI7wVE=
+	t=1752266441; cv=none; b=olnOKxdcvgKonMFizFMcrJs+fUCNrMwu+od7VpsgbqzSFIHHcA+Rv3VgYCifYtK3omnBA3v4o1jf5M58m3lVF265tpqLHWvi46bMFbjJVsThyeUTG6HS/Tl31htUv1OQ4Y7m+YlsXBM3+JlRk1colWTMcBfklsF4EEZmcg0rxwc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752265591; c=relaxed/simple;
-	bh=zKrzcOnCHUbj1zpcoKwKR8VG4KSswYK1nelmipRVgEo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lkHT2HCRAihdKqS0qxGjyypKcIemC5Dk3I2u2VlPPnxtWN8XEl4fxeBLwsXd0XIb9tU9Y/VE7kBhAx8kebYrbFoaN5eK4DgU7DyI+21xDlS+YwaQRYsJLrmrNqV89HnC8VrFRaLPF+W75t1U6LprW7xxJE36/OsVdFNj3WY7/a0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sZty94Ez; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80926C4CEED;
-	Fri, 11 Jul 2025 20:26:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752265591;
-	bh=zKrzcOnCHUbj1zpcoKwKR8VG4KSswYK1nelmipRVgEo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sZty94EzXu9ZGA3d79jnP7xeZIQ+FddaAmdFFBCuYZasAlqflfiw8zpn62X+Pu6oz
-	 /SrDhdiyMvf/OIiQHoCdGr1KT32HAR0NSKMHca42W6xnOAC2vyOCb4/J87Ds1WgoRB
-	 AUUp5w8dDMjBsfs5NNPJHG0mWVWYtkBXxnzlBLhYOKUX1DQKTmKqueeZ0B9nt9qhMi
-	 tXvbd7wgK6K4nDKLIFWkYHoAKrGPBswnH/n6NDqs9G9a+a2R3+skjjSryVm4pHPhpF
-	 sxNDzQo3Dz/+1avKMPQh1PeMGXV4sywDvrRNbJVCOHjGbUy/ce/ZXlncPfRN1XrPsC
-	 dhRFQoYswVdog==
-Date: Fri, 11 Jul 2025 13:26:28 -0700
-From: Namhyung Kim <namhyung@kernel.org>
-To: Steven Rostedt <rostedt@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, x86@kernel.org,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Indu Bhagat <indu.bhagat@oracle.com>,
-	"Jose E. Marchesi" <jemarch@gnu.org>,
-	Beau Belgrave <beaub@linux.microsoft.com>,
-	Jens Remus <jremus@linux.ibm.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>,
-	Sam James <sam@gentoo.org>
-Subject: Re: [PATCH v13 00/11] perf: Support the deferred unwinding
- infrastructure
-Message-ID: <aHFzdCv3-BRw9btW@google.com>
-References: <20250708020003.565862284@kernel.org>
+	s=arc-20240116; t=1752266441; c=relaxed/simple;
+	bh=EgxMiEzXV4BHBoNhQki9lRtfEJHjMHicsxYww/CypW8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LYrKqRN3U3qIV+rjAhiCVJDLDvWbDphzWzKvmpjXXkXDw0WlJOBrQsjmzSEaoT8xudtCMWi+K+rQ0oamq4EwZNNrtbC54ZQeggMoBYP368oxbk3LuD8jTzGGdazdEsvUgFypt8pjj+yo7+oW+JpwfCuRoSxGwhEGYy5d9YwqqXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=MAOhYeuX; arc=none smtp.client-ip=209.85.219.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-e897c8ca777so2277890276.2
+        for <bpf@vger.kernel.org>; Fri, 11 Jul 2025 13:40:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1752266438; x=1752871238; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LdCeu7JxJv4UATclN8T/Xy1z+bkPL1FfgfG7ODF2Nis=;
+        b=MAOhYeuXtiKjjsRcGhe/2bbT0Yth0IuBLXinWZ317CFvN/uvtysC+onZdG4r0I3DpF
+         RtUxB4xKjIGqrLvR3N4U1b6SNjKNPRCjqrGZ12YCuc7kR74052+rZJdhLcjbKFtMwhXt
+         CUozKFMjcI+Z1s8P+nsm6kz1P1RpNNZTedxiDGXVAhdpUIF2H6WSzjZbA2YWAZVLoU/K
+         PFIlV349x60TR+8szKsQbfKKaFFxzmUV8B9OxESeFoi453OEvYmLdXiq8CnNDWBCvdE7
+         gmgyNxhacHFD5WZZlk5xa9meV+nV1rzlpb/uVNj3Z/hOuinHo5xCsHecdcWcBB2tGsb2
+         AoYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752266438; x=1752871238;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LdCeu7JxJv4UATclN8T/Xy1z+bkPL1FfgfG7ODF2Nis=;
+        b=nG0hqeSPJ9JPuaNJ+0DvU5EtqwpqUgCVvvrbJGgluywQqeEH+357lifeEKisxGiCHq
+         /lsPIaS6JJL/odQRz6XtXDMMNaPZ5erUZ94LPq6/0NyBOCihddhAtF0/B4Tz8G3sBeBA
+         2V7bsFaw76igPhE1e3hIixs5YqE3pBHwDrTjOChLO7W0Ecm+iDn3DFiXArPk3ei31PNw
+         20zRIklUo9dlPhySRY3P0hydiyJrt+LtJ0JvzSJmNTU11/AB06Rna0UHcoZ8c7m8s5Ea
+         YmHUQR9IHltH7kzGq4VRNUaGU/ff1WhryBpONAzr2KLW0mpwxHUQIRbIh9ypjqU33XH5
+         cnZg==
+X-Gm-Message-State: AOJu0Yx0hZSHFZPsgpKapsibRd29AOIk3R2zxZ9BmJuOCtQf5c6H+nPN
+	kHjU/aiaiM17dWTDITX+LTFY6sD2nXJBJ8FDqSY6MlesAm8jnFtbs+Cfufw44WmWxprafV4DoZm
+	UUCtdl5tM/8Bzu82l/CgwpBPfdBcVtZkkWu9wUFJyRjcUNEa0ozwgCyc=
+X-Gm-Gg: ASbGncvTzX8EJNT9KEX8OPfOkovtqF82RecZ+CDPwvfCEc+67kPgBZ4+lJ2DERdHkdQ
+	pDWfxgYt68LGOsarPJB4KpailFfviZl1yyuYB3d7J+o7oPR11ueCh5c7n8tD/SkTqBUa55mrs9X
+	8n8ZuXyN4n/slLVASzN4aHB7EkfKAoPgnmM+ww35NCC3z32ZvK40oWYz08Lj2DxhbNyIWixwbzi
+	FTz8HGC
+X-Google-Smtp-Source: AGHT+IFqxgdaqyq7dDfOcIcYIu74TqNN5bG7fwUAb/a3u4dxbFT7+HbI4XewTpeTt9+IUxZpa+ME1UCXKVj/TljTW5I=
+X-Received: by 2002:a05:690c:4c0a:b0:710:ea78:8ff with SMTP id
+ 00721157ae682-717d5dac0ffmr85444937b3.23.1752266438070; Fri, 11 Jul 2025
+ 13:40:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250708020003.565862284@kernel.org>
+References: <20250711201159.75592-1-emil@etsalapatis.com>
+In-Reply-To: <20250711201159.75592-1-emil@etsalapatis.com>
+From: Emil Tsalapatis <emil@etsalapatis.com>
+Date: Fri, 11 Jul 2025 16:40:27 -0400
+X-Gm-Features: Ac12FXzBaAMj2hCM8B7oVPAEiHsy-QkUbzsIsRko5Ztg975v3boAoRmFVptpNxs
+Message-ID: <CABFh=a59MYYVXKzKAjPUbEKkBxMGzMuNC=7Njoe5YeiZraAnbA@mail.gmail.com>
+Subject: Re: [PATCH] bpf/verifier: factor BPF_F_TEST_RND_HI32 flag check out
+ of opt_subreg_zext_lo32_rnd_hi32
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, memxor@gmail.com, 
+	yonghong.song@linux.dev, sched-ext@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Steve,
+This patch is wrong, please disregard. Sorry about the noise.
 
-On Mon, Jul 07, 2025 at 10:00:03PM -0400, Steven Rostedt wrote:
-> This is based on top of the deferred unwind core patch series:
-> 
->  https://lore.kernel.org/linux-trace-kernel/20250708012239.268642741@kernel.org/
->    git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
->      unwind/core
-> 
-> This series implements the perf interface to use deferred user space stack
-> tracing.
-> 
-> The code for this series is located here:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
-> unwind/perf
-> 
-> Changes since v12: https://lore.kernel.org/linux-trace-kernel/20250701180410.755491417@goodmis.org/
-> 
-> - Also check against PF_USER_WORKER as io workers do not have PF_KTHREAD
->   set.
-> 
-> - Removed deferred_request_nmi() and have NMIs just use the normal
->   deferred_request() function. As Peter Zijlstra has stated, in_nmi() can
->   nest because some exceptions set in_nmi() and another NMI could come in.
-> 
-> - Removed use of timestamp. The deferred unwind has gone back to using
->   cookies, and perf doesn't use the cookie. This means the
->   struct perf_callchain_deferred_event is not modified.
-
-What about adding the cookies in the records to handle lost data?  Even
-if it's not necessary to match callchains to samples, it still needs to
-reject invalid callchains across the losts.  Maybe it can just flush
-pending samples when it sees LOST records and not try to match them but
-having the cookies will handle it more accurately as some callchains may
-be valid after the LOST.
-
-Thanks,
-Namhyung
-
-> 
-> Head SHA1: 3d88d03d533ede8d2d513942e768607aa9279c4b
-> 
-> 
-> Josh Poimboeuf (5):
->       perf: Remove get_perf_callchain() init_nr argument
->       perf: Have get_perf_callchain() return NULL if crosstask and user are set
->       perf: Simplify get_perf_callchain() user logic
->       perf: Skip user unwind if the task is a kernel thread
->       perf: Support deferred user callchains
-> 
-> Namhyung Kim (4):
->       perf tools: Minimal CALLCHAIN_DEFERRED support
->       perf record: Enable defer_callchain for user callchains
->       perf script: Display PERF_RECORD_CALLCHAIN_DEFERRED
->       perf tools: Merge deferred user callchains
-> 
-> Steven Rostedt (2):
->       perf: Use current->flags & PF_KTHREAD|PF_USER_WORKER instead of current->mm == NULL
->       perf: Support deferred user callchains for per CPU events
-> 
-> ----
->  include/linux/perf_event.h                |  13 +-
->  include/uapi/linux/perf_event.h           |  19 +-
->  kernel/bpf/stackmap.c                     |   8 +-
->  kernel/events/callchain.c                 |  49 ++--
->  kernel/events/core.c                      | 407 +++++++++++++++++++++++++++++-
->  tools/include/uapi/linux/perf_event.h     |  19 +-
->  tools/lib/perf/include/perf/event.h       |   7 +
->  tools/perf/Documentation/perf-script.txt  |   5 +
->  tools/perf/builtin-script.c               |  92 +++++++
->  tools/perf/util/callchain.c               |  24 ++
->  tools/perf/util/callchain.h               |   3 +
->  tools/perf/util/event.c                   |   1 +
->  tools/perf/util/evlist.c                  |   1 +
->  tools/perf/util/evlist.h                  |   1 +
->  tools/perf/util/evsel.c                   |  39 +++
->  tools/perf/util/evsel.h                   |   1 +
->  tools/perf/util/machine.c                 |   1 +
->  tools/perf/util/perf_event_attr_fprintf.c |   1 +
->  tools/perf/util/sample.h                  |   3 +-
->  tools/perf/util/session.c                 |  78 ++++++
->  tools/perf/util/tool.c                    |   2 +
->  tools/perf/util/tool.h                    |   4 +-
->  22 files changed, 742 insertions(+), 36 deletions(-)
+On Fri, Jul 11, 2025 at 4:12=E2=80=AFPM Emil Tsalapatis <emil@etsalapatis.c=
+om> wrote:
+>
+> BPF programs can be loaded with the BPF_F_TEST_RND_HI32 flag to instruct
+> the verifier to randomize the high 32 bits of a register being used as a
+> subregister. This is done in the opt_subreg_zext_lo32_rnd_hi32 pass that
+> scans the BPF program instruction by instruction, regardless of whether
+> the flag is set or not, and testing the flag on every iteration. However,
+> the flag is not modified at verification time, and the function is a no-o=
+p
+> if it is unset.
+>
+> Gate the randomization pass behind a single flag check instead of
+> testing the flag in the main loop of the pass.
+>
+> Signed-off-by: Emil Tsalapatis <emil@etsalapatis.com>
+> ---
+>  kernel/bpf/verifier.c | 9 +++------
+>  1 file changed, 3 insertions(+), 6 deletions(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index e2fcea860755..dc0981205d6a 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -21062,9 +21062,7 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct b=
+pf_verifier_env *env,
+>         int i, patch_len, delta =3D 0, len =3D env->prog->len;
+>         struct bpf_insn *insns =3D env->prog->insnsi;
+>         struct bpf_prog *new_prog;
+> -       bool rnd_hi32;
+>
+> -       rnd_hi32 =3D attr->prog_flags & BPF_F_TEST_RND_HI32;
+>         zext_patch[1] =3D BPF_ZEXT_REG(0);
+>         rnd_hi32_patch[1] =3D BPF_ALU64_IMM(BPF_MOV, BPF_REG_AX, 0);
+>         rnd_hi32_patch[2] =3D BPF_ALU64_IMM(BPF_LSH, BPF_REG_AX, 32);
+> @@ -21080,9 +21078,6 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct b=
+pf_verifier_env *env,
+>                         u8 code, class;
+>                         u32 imm_rnd;
+>
+> -                       if (!rnd_hi32)
+> -                               continue;
+> -
+>                         code =3D insn.code;
+>                         class =3D BPF_CLASS(code);
+>                         if (load_reg =3D=3D -1)
+> @@ -24700,7 +24695,9 @@ int bpf_check(struct bpf_prog **prog, union bpf_a=
+ttr *attr, bpfptr_t uattr, __u3
+>          * insns could be handled correctly.
+>          */
+>         if (ret =3D=3D 0 && !bpf_prog_is_offloaded(env->prog->aux)) {
+> -               ret =3D opt_subreg_zext_lo32_rnd_hi32(env, attr);
+> +               if (attr->prog_flags & BPF_F_TEST_RND_HI32)
+> +                       ret =3D opt_subreg_zext_lo32_rnd_hi32(env, attr);
+> +
+>                 env->prog->aux->verifier_zext =3D bpf_jit_needs_zext() ? =
+!ret
+>                                                                      : fa=
+lse;
+>         }
+> --
+> 2.49.0
+>
 
