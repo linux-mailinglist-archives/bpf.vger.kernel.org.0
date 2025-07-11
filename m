@@ -1,148 +1,144 @@
-Return-Path: <bpf+bounces-63002-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63003-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64140B01413
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 09:08:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8670B0149B
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 09:28:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97C077B57FD
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 07:07:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D116D3A7046
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 07:26:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8987C1E32D3;
-	Fri, 11 Jul 2025 07:08:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A98201EB5E1;
+	Fri, 11 Jul 2025 07:26:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=163.com header.i=@163.com header.b="IXuCEOYl"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="1NeBlvT0";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4A/h/3Vv"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.3])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3E3FA32;
-	Fri, 11 Jul 2025 07:08:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.3
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C93D11E9B08
+	for <bpf@vger.kernel.org>; Fri, 11 Jul 2025 07:26:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752217704; cv=none; b=AO38Nr7GSqUH5ZLkyuQaheg6F8fW4NAbE30Q8Rychp25L5dErmsqNFgO4FHxEp8v1t8n0xqibjUzORsIRffV4Focu3dG4tUZ8VfpfJhHajX0yJKWE+UvsGh28yxQSdmWuZWsgjKyfS3dDpE65NeaLfEjYCslKbacU8j/oHbuFe4=
+	t=1752218812; cv=none; b=tvA7+DShYjoF5K5MkPmoMlllcUX/RwKAOG1w6x0UZ535zOU8Gf34Y1npboR813R80BZkpYjraArUZJNoqN2xAX2T7eASkAGAGQ7LJbkYpjbfryTXGPpVpIcl1nDBuB8DFpBdlKiV+tLQvhNYxkjPES5tpX8UId6CYu0H+zoQxtc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752217704; c=relaxed/simple;
-	bh=RCfcN6QseSBhWb6QjrhT/kTItNPL0qWa+LWsVlSwpgU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
-	 MIME-Version:Message-ID; b=Qh7VuZJVngzcy6cRewKPlT8ClU03cY5fQ7OatnhlhrX1wCBAwNWmF0RPig7DwktcwJ3KRaYD2bIRmVQY8/5KcX+YKjr5nB+sLSWd/ykIxAwlufKDe4IBw16zIU0OIfmsKu/jyoE4IvFNQQRkL0dnO8AieUTsiNZz+rIPnsHk9bs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=fail (1024-bit key) header.d=163.com header.i=@163.com header.b=IXuCEOYl reason="signature verification failed"; arc=none smtp.client-ip=117.135.210.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Date:From:To:Subject:Content-Type:MIME-Version:
-	Message-ID; bh=sxbzHltCfwfXEeNyeIgEiJFlR2TiSUx9OskRrkFY8Xg=; b=I
-	XuCEOYlsH6qZMZjyUvfntQ57qxPv5duYDzBttvfJY2/RyV5nVvGu6QByvdrVdWy5
-	KFCArqEFJW6xSWxKYCiWNHnxKZt0ACisvCV1sdChpmDf7ixcpHvPXcV7sebEgTPJ
-	XG3z2wpqZvzSO9LP8cdqZNDmqOrumBq2nshenszyac=
-Received: from chenyuan_fl$163.com ( [116.128.244.171] ) by
- ajax-webmail-wmsvr-40-134 (Coremail) ; Fri, 11 Jul 2025 15:07:40 +0800
- (CST)
-Date: Fri, 11 Jul 2025 15:07:40 +0800 (CST)
-From: chenyuan  <chenyuan_fl@163.com>
-To: "Yonghong Song" <yonghong.song@linux.dev>
-Cc: ast@kernel.org, qmo@qmon.net, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, "Yuan Chen" <chenyuan@kylinos.cn>
-Subject: Re:Re: [PATCH v3] bpftool: Add CET-aware symbol matching for x86_64
- architectures
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20250519(9504565a)
- Copyright (c) 2002-2025 www.mailtech.cn 163com
-In-Reply-To: <21fbb0ba-25bc-4457-9f12-b5a8f6988e4c@linux.dev>
-References: <20250626061158.29702-1-chenyuan_fl@163.com>
- <20250626074930.81813-1-chenyuan_fl@163.com>
- <21fbb0ba-25bc-4457-9f12-b5a8f6988e4c@linux.dev>
-X-NTES-SC: AL_Qu2eAP6auE4t5iWbZukfmUoRhOY5UcK1s/kl1YBUOpp+jALo3S0qe2VSIkXa8Ma0BQKImgmGaiNc4/5TRbhaerMqTR6jXXTNKx6T++mRHX3doA==
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+	s=arc-20240116; t=1752218812; c=relaxed/simple;
+	bh=k8wyxScyK/MbudzbBVlpiDabHMGAWhxSUKRCt0KOIXo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cuOE7ytaD/Em8hrXnpxuHgQqcQf7Hcd2ia9SI1BJ3bRU3D56O7jLeDhDnzfQfJoTB3nLY41h58mdmt5a9vK2w/Fm6vfHnv8+5261soAJc239w8X+abafiwZ8rIq/nw/yxWgmFjnxrOGfAuLq4Rj6OR/k2sX5uAqd7sgDPPClgeE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=1NeBlvT0; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=4A/h/3Vv; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 11 Jul 2025 09:26:46 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1752218808;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=axeX5rHO1v0WWqEDd6CO74/uGVzY0aLrSXsg3JOknM0=;
+	b=1NeBlvT0YAe2FfUy5X9oDNf5b5P/VQ0NHEDFJabjBiaz1SNrlMfbSAVPMnZ5wBYtpd3RZB
+	6WoDT04hBsUUO7RrmmqaGFdMN5Z7PuNIXQMJdpgkW3ROMOK39MCmKJ4IewS7z4IUK8ifp1
+	FyN54r0m4dv6Y2FSTOpGE/J/JM3kz/A/GkHXAPraCk2l5+gVK4AqBH8zKWnCPNMI/tGjbU
+	dYO3zik9dj5XNVa0zGiCaJQi1pk3bMUiHNTgjQk6RTST3LTX5Ia2S4dcOVLhwOiF9l71FE
+	ArUkg5YKwmB44rIkpgR74qeWWe9D7MNzepxMUPSEx/CihSOiK36a9kyFG5WcEA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1752218808;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=axeX5rHO1v0WWqEDd6CO74/uGVzY0aLrSXsg3JOknM0=;
+	b=4A/h/3VvwkL2xRLm7rvrL8ASszAgLTOmPtgtI6lnWZDILs7nIdn2zKhDIbbdWppbLwhCGM
+	XovhIKR+69S0+KBQ==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf@vger.kernel.org, linux-mm@kvack.org, vbabka@suse.cz,
+	harry.yoo@oracle.com, shakeel.butt@linux.dev, mhocko@suse.com,
+	andrii@kernel.org, memxor@gmail.com, akpm@linux-foundation.org,
+	peterz@infradead.org, rostedt@goodmis.org, hannes@cmpxchg.org
+Subject: Re: [PATCH v2 6/6] slab: Introduce kmalloc_nolock() and
+ kfree_nolock().
+Message-ID: <20250711072646.a63qm4tP@linutronix.de>
+References: <20250709015303.8107-1-alexei.starovoitov@gmail.com>
+ <20250709015303.8107-7-alexei.starovoitov@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <172453cd.68e1.197f84fac7c.Coremail.chenyuan_fl@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:higvCgDXfxQ9uHBoG6kBAA--.14745W
-X-CM-SenderInfo: xfkh05pxdqswro6rljoofrz/1tbiUQCHvWhwsHgJGgACsq
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20250709015303.8107-7-alexei.starovoitov@gmail.com>
 
-VGhhbmsgeW91IGZvciB5b3VyIGZlZWRiYWNrISBEb2VzIEFSTTY0IHJlcXVpcmUgc2ltaWxhciBh
-ZGRyZXNzIGFkanVzdG1lbnQgZGV0ZWN0aW9uPyBJbiBteSBBUk02NAogZW52aXJvbm1lbnQgd2l0
-aCBCVEkgZW5hYmxlZCwgYnBmdG9vbCBjb3JyZWN0bHkgcmV0cmlldmVzIGFuZCBwcmludHMgZnVu
-Y3Rpb24gc3ltYm9scy4gQ291bGQgbXkgdmVyaWZpY2F0aW9uCiBtZXRob2QgYmUgZmxhd2VkPwpI
-ZXJloa9zIGEgZGV0YWlsZWQgZXhwbGFuYXRpb246CgpBUk02NCBCVEkgdnMuIHg4NiBDRVQ6IEZ1
-bmRhbWVudGFsIERpZmZlcmVuY2VzCgogICAgeDg2IENFVCAoQ29udHJvbC1mbG93IEVuZm9yY2Vt
-ZW50IFRlY2hub2xvZ3kpOgogICAgICAgIFJlcXVpcmVzIGVuZGJyMzIvZW5kYnI2NCBhdCBmdW5j
-dGlvbiBlbnRyaWVzLiBPdmVyd3JpdGluZyB0aGVzZSBpbnN0cnVjdGlvbnMgYnJlYWtzIENFVCBw
-cm90ZWN0aW9uIC4KICAgICAgICBLZXJuZWwgbG9naWMgKGUuZy4sIGJwZl90cmFjZS5jKSBhZGp1
-c3RzIHN5bWJvbCBhZGRyZXNzZXMgYnkgLTQgdG8gc2tpcCB0aGUgZW5kYnIgcHJlZml4IC4KICAg
-IEFSTTY0IEJUSSAoQnJhbmNoIFRhcmdldCBJZGVudGlmaWNhdGlvbik6CiAgICAgICAgVXNlcyBC
-VEkgaW5zdHJ1Y3Rpb25zIGFzICJsYW5kaW5nIHBhZHMiIGZvciBpbmRpcmVjdCBqdW1wcy4gS3By
-b2JlcyBjYW4gc2FmZWx5IG92ZXJ3cml0ZSBCVEkgaW5zdHJ1Y3Rpb25zIHdpdGhvdXQgdHJpZ2dl
-cmluZyBmYXVsdHMgYmVjYXVzZToKICAgICAgICAgICAgRXhlY3V0aW5nIEJUSSwgU0csIG9yIFBB
-Q0JUSSBjbGVhcnMgRVBTUi5CICh0aGUgZW5mb3JjZW1lbnQgZmxhZyksIGFsbG93aW5nIHN1YnNl
-cXVlbnQgbm9uLUJUSSBpbnN0cnVjdGlvbnMgLgogICAgICAgICAgICBOb24tbGFuZGluZy1wYWQg
-aW5zdHJ1Y3Rpb25zIChlLmcuLCBwcm9iZXMpIG9ubHkgZmF1bHQgaWYgZXhlY3V0ZWQgYmVmb3Jl
-IEVQU1IuQiBpcyBjbGVhcmVkIKhDIHdoaWNoIGRvZXNuoa90IG9jY3VyIHdoZW4gcHJvYmVzIHJl
-cGxhY2UgQlRJIC4KCmh0dHBzOi8vY29tbXVuaXR5LmFybS5jb20vYXJtLWNvbW11bml0eS1ibG9n
-cy9iL2FyY2hpdGVjdHVyZXMtYW5kLXByb2Nlc3NvcnMtYmxvZy9wb3N0cy9hcm12OC0xLW0tcG9p
-bnRlci1hdXRoZW50aWNhdGlvbi1hbmQtYnJhbmNoLXRhcmdldC1pZGVudGlmaWNhdGlvbi1leHRl
-bnNpb24KCgoKCgoKCgoKQXQgMjAyNS0wNy0wMSAxMDozMTo0MSwgIllvbmdob25nIFNvbmciIDx5
-b25naG9uZy5zb25nQGxpbnV4LmRldj4gd3JvdGU6Cj4KPgo+T24gNi8yNi8yNSAxMjo0OSBBTSwg
-WXVhbiBDaGVuIHdyb3RlOgo+PiBGcm9tOiBZdWFuIENoZW4gPGNoZW55dWFuQGt5bGlub3MuY24+
-Cj4+Cj4+IEFkanVzdCBzeW1ib2wgbWF0Y2hpbmcgbG9naWMgdG8gYWNjb3VudCBmb3IgQ29udHJv
-bC1mbG93IEVuZm9yY2VtZW50Cj4+IFRlY2hub2xvZ3kgKENFVCkgb24geDg2XzY0IHN5c3RlbXMu
-IENFVCBwcmVmaXhlcyBmdW5jdGlvbnMgd2l0aCBhIDQtYnl0ZQo+PiAnZW5kYnInIGluc3RydWN0
-aW9uLCBzaGlmdGluZyB0aGUgYWN0dWFsIGVudHJ5IHBvaW50IHRvIHN5bWJvbCArIDQuCj4+Cj4+
-IFNpZ25lZC1vZmYtYnk6IFl1YW4gQ2hlbiA8Y2hlbnl1YW5Aa3lsaW5vcy5jbj4KPj4gLS0tCj4+
-ICAgdG9vbHMvYnBmL2JwZnRvb2wvbGluay5jIHwgMzAgKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKy0tCj4+ICAgMSBmaWxlIGNoYW5nZWQsIDI4IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25z
-KC0pCj4+Cj4+IGRpZmYgLS1naXQgYS90b29scy9icGYvYnBmdG9vbC9saW5rLmMgYi90b29scy9i
-cGYvYnBmdG9vbC9saW5rLmMKPj4gaW5kZXggMDM1MTNmZmZmYjc5Li5kZmQxOTJiNGM1YWQgMTAw
-NjQ0Cj4+IC0tLSBhL3Rvb2xzL2JwZi9icGZ0b29sL2xpbmsuYwo+PiArKysgYi90b29scy9icGYv
-YnBmdG9vbC9saW5rLmMKPj4gQEAgLTMwNyw4ICszMDcsMjEgQEAgc2hvd19rcHJvYmVfbXVsdGlf
-anNvbihzdHJ1Y3QgYnBmX2xpbmtfaW5mbyAqaW5mbywganNvbl93cml0ZXJfdCAqd3RyKQo+PiAg
-IAkJZ290byBlcnJvcjsKPj4gICAKPj4gICAJZm9yIChpID0gMDsgaSA8IGRkLnN5bV9jb3VudDsg
-aSsrKSB7Cj4+IC0JCWlmIChkZC5zeW1fbWFwcGluZ1tpXS5hZGRyZXNzICE9IGRhdGFbal0uYWRk
-cikKPj4gKwkJaWYgKGRkLnN5bV9tYXBwaW5nW2ldLmFkZHJlc3MgIT0gZGF0YVtqXS5hZGRyKSB7
-Cj4+ICsjaWYgZGVmaW5lZChfX3g4Nl82NF9fKSB8fCBkZWZpbmVkKF9fYW1kNjRfXykKPj4gKwkJ
-CS8qCj4+ICsJCQkgKiBPbiB4ODZfNjQgYXJjaGl0ZWN0dXJlcyB3aXRoIENFVCAoQ29udHJvbC1m
-bG93IEVuZm9yY2VtZW50IFRlY2hub2xvZ3kpLAo+PiArCQkJICogZnVuY3Rpb24gZW50cnkgcG9p
-bnRzIGhhdmUgYSA0LWJ5dGUgJ2VuZGJyJyBpbnN0cnVjdGlvbiBwcmVmaXguCj4+ICsJCQkgKiBU
-aGlzIGNhdXNlcyB0aGUgYWN0dWFsIGZ1bmN0aW9uIGFkZHJlc3MgPSBzeW1ib2wgYWRkcmVzcyAr
-IDQuCj4+ICsJCQkgKiBIZXJlIHdlIGNoZWNrIGlmIHRoaXMgc3ltYm9sIG1hdGNoZXMgdGhlIHRh
-cmdldCBhZGRyZXNzIG1pbnVzIDQsCj4+ICsJCQkgKiBpbmRpY2F0aW5nIHdlJ3ZlIGZvdW5kIGEg
-Q0VULWVuYWJsZWQgZnVuY3Rpb24gZW50cnkgcG9pbnQuCj4+ICsJCQkgKi8KPj4gKwkJCWlmIChk
-ZC5zeW1fbWFwcGluZ1tpXS5hZGRyZXNzID09IGRhdGFbal0uYWRkciAtIDQpCj4+ICsJCQkJZ290
-byBmb3VuZDsKPj4gKyNlbmRpZgo+Cj5JbiBrZXJuZWwvdHJhY2UvYnBmX3RyYWNlLmMsIEkgc2Vl
-Cj4KPnN0YXRpYyBpbmxpbmUgdW5zaWduZWQgbG9uZyBnZXRfZW50cnlfaXAodW5zaWduZWQgbG9u
-ZyBmZW50cnlfaXApCj57Cj4jaWZkZWYgQ09ORklHX1g4Nl9LRVJORUxfSUJUCj4gICAgICAgICBp
-ZiAoaXNfZW5kYnIoKHZvaWQgKikoZmVudHJ5X2lwIC0gRU5EQlJfSU5TTl9TSVpFKSkpCj4gICAg
-ICAgICAgICAgICAgIGZlbnRyeV9pcCAtPSBFTkRCUl9JTlNOX1NJWkU7Cj4jZW5kaWYKPiAgICAg
-ICAgIHJldHVybiBmZW50cnlfaXA7Cj59Cj4KPkNvdWxkIHlvdSBleHBsYWluIHdoeSBhcm02NCBh
-bHNvIG5lZWQgdG8gZG8gY2hlY2tpbmcKPiAgICAgaWYgKGRkLnN5bV9tYXBwaW5nW2ldLmFkZHJl
-c3MgPT0gZGF0YVtqXS5hZGRyIC0gNCkKPmxpa2UgeDg2XzY0Pwo+Cj4+ICAgCQkJY29udGludWU7
-Cj4+ICsJCX0KPj4gK2ZvdW5kOgo+PiAgIAkJanNvbndfc3RhcnRfb2JqZWN0KGpzb25fd3RyKTsK
-Pj4gICAJCWpzb253X3VpbnRfZmllbGQoanNvbl93dHIsICJhZGRyIiwgZGQuc3ltX21hcHBpbmdb
-aV0uYWRkcmVzcyk7Cj4+ICAgCQlqc29ud19zdHJpbmdfZmllbGQoanNvbl93dHIsICJmdW5jIiwg
-ZGQuc3ltX21hcHBpbmdbaV0ubmFtZSk7Cj4+IEBAIC03NDQsOCArNzU3LDIxIEBAIHN0YXRpYyB2
-b2lkIHNob3dfa3Byb2JlX211bHRpX3BsYWluKHN0cnVjdCBicGZfbGlua19pbmZvICppbmZvKQo+
-PiAgIAo+PiAgIAlwcmludGYoIlxuXHQlLTE2cyAlLTE2cyAlcyIsICJhZGRyIiwgImNvb2tpZSIs
-ICJmdW5jIFttb2R1bGVdIik7Cj4+ICAgCWZvciAoaSA9IDA7IGkgPCBkZC5zeW1fY291bnQ7IGkr
-Kykgewo+PiAtCQlpZiAoZGQuc3ltX21hcHBpbmdbaV0uYWRkcmVzcyAhPSBkYXRhW2pdLmFkZHIp
-Cj4+ICsJCWlmIChkZC5zeW1fbWFwcGluZ1tpXS5hZGRyZXNzICE9IGRhdGFbal0uYWRkcikgewo+
-PiArI2lmIGRlZmluZWQoX194ODZfNjRfXykgfHwgZGVmaW5lZChfX2FtZDY0X18pCj4+ICsJCQkv
-Kgo+PiArCQkJICogT24geDg2XzY0IGFyY2hpdGVjdHVyZXMgd2l0aCBDRVQgKENvbnRyb2wtZmxv
-dyBFbmZvcmNlbWVudCBUZWNobm9sb2d5KSwKPj4gKwkJCSAqIGZ1bmN0aW9uIGVudHJ5IHBvaW50
-cyBoYXZlIGEgNC1ieXRlICdlbmRicicgaW5zdHJ1Y3Rpb24gcHJlZml4Lgo+PiArCQkJICogVGhp
-cyBjYXVzZXMgdGhlIGFjdHVhbCBmdW5jdGlvbiBhZGRyZXNzID0gc3ltYm9sIGFkZHJlc3MgKyA0
-Lgo+PiArCQkJICogSGVyZSB3ZSBjaGVjayBpZiB0aGlzIHN5bWJvbCBtYXRjaGVzIHRoZSB0YXJn
-ZXQgYWRkcmVzcyBtaW51cyA0LAo+PiArCQkJICogaW5kaWNhdGluZyB3ZSd2ZSBmb3VuZCBhIENF
-VC1lbmFibGVkIGZ1bmN0aW9uIGVudHJ5IHBvaW50Lgo+PiArCQkJICovCj4+ICsJCQlpZiAoZGQu
-c3ltX21hcHBpbmdbaV0uYWRkcmVzcyA9PSBkYXRhW2pdLmFkZHIgLSA0KQo+PiArCQkJCWdvdG8g
-Zm91bmQ7Cj4+ICsjZW5kaWYKPj4gICAJCQljb250aW51ZTsKPj4gKwkJfQo+PiArZm91bmQ6Cj4+
-ICAgCQlwcmludGYoIlxuXHQlMDE2bHggJS0xNmxseCAlcyIsCj4+ICAgCQkgICAgICAgZGQuc3lt
-X21hcHBpbmdbaV0uYWRkcmVzcywgZGF0YVtqXS5jb29raWUsIGRkLnN5bV9tYXBwaW5nW2ldLm5h
-bWUpOwo+PiAgIAkJaWYgKGRkLnN5bV9tYXBwaW5nW2ldLm1vZHVsZVswXSAhPSAnXDAnKQo=
+On 2025-07-08 18:53:03 [-0700], Alexei Starovoitov wrote:
+> @@ -4555,6 +4707,53 @@ static void __slab_free(struct kmem_cache *s, stru=
+ct slab *slab,
+>  	discard_slab(s, slab);
+>  }
+> =20
+> +static DEFINE_PER_CPU(struct llist_head, defer_free_objects);
+> +static DEFINE_PER_CPU(struct irq_work, defer_free_work);
+
+static DEFINE_PER_CPU(struct llist_head, defer_free_objects) =3D LLIST_HEAD=
+_INIT(defer_free_objects);
+static DEFINE_PER_CPU(struct irq_work, defer_free_work) =3D IRQ_WORK_INIT(f=
+ree_deferred_objects);
+
+would allow you to avoid init_defer_work().
+
+> +static void free_deferred_objects(struct irq_work *work)
+> +{
+> +	struct llist_head *llhead =3D this_cpu_ptr(&defer_free_objects);
+> +	struct llist_node *llnode, *pos, *t;
+=E2=80=A6
+> +}
+> +
+> +static int __init init_defer_work(void)
+> +{
+> +	int cpu;
+> +
+> +	for_each_possible_cpu(cpu) {
+> +		init_llist_head(per_cpu_ptr(&defer_free_objects, cpu));
+> +		init_irq_work(per_cpu_ptr(&defer_free_work, cpu),
+> +			      free_deferred_objects);
+> +	}
+> +	return 0;
+> +}
+> +late_initcall(init_defer_work);
+> +
+> +static void defer_free(void *head)
+> +{
+> +	if (llist_add(head, this_cpu_ptr(&defer_free_objects)))
+> +		irq_work_queue(this_cpu_ptr(&defer_free_work));
+
+If you group &defer_free_objects and &defer_free_work into a struct you
+could avoid using this_cpu_ptr twice.
+Having both in one struct would allow to use container_of() in
+free_deferred_objects() to get the free list.
+
+> +}
+=E2=80=A6
+> @@ -4844,6 +5064,62 @@ void kfree(const void *object)
+>  }
+>  EXPORT_SYMBOL(kfree);
+> =20
+> +/*
+> + * Can be called while holding raw_spin_lock or from IRQ and NMI,
+raw_spinlock_t
+
+> + * but only for objects allocated by kmalloc_nolock(),
+> + * since some debug checks (like kmemleak and kfence) were
+> + * skipped on allocation. large_kmalloc is not supported either.
+> + */
+> +void kfree_nolock(const void *object)
+> +{
+=E2=80=A6
+
+Sebastian
 
