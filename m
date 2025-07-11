@@ -1,143 +1,283 @@
-Return-Path: <bpf+bounces-63038-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63039-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D29B2B018F5
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 11:58:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3747B019CF
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 12:30:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0EDC5455D8
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 09:57:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1A675660B5
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 10:30:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8DDA27FB06;
-	Fri, 11 Jul 2025 09:57:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AF6E283FDE;
+	Fri, 11 Jul 2025 10:30:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZjoUNNwQ"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="C2kXUbXh";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dxNK0uir";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UczSr4Yj";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9YDhenHE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF4BC27E06D;
-	Fri, 11 Jul 2025 09:57:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF8F128313F
+	for <bpf@vger.kernel.org>; Fri, 11 Jul 2025 10:30:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752227874; cv=none; b=lYKqFigPwe0DvwZ33yS0DRcrfE1ey1Dzhr66LE8VOOewD7ZmGSHkA9opyj9A4eLCVha53UfRyoQGb9ue4gKx+00VKt58HVcLyswMASIo5OLVoJri0FW6CZJ7zDrDFT3GIuZJ4BT0+c9jZRxpU1JUwl+ZZJThrgU3+bLp2v77Qes=
+	t=1752229825; cv=none; b=gID2yYXtR8saDjtMSqPXmIodMdA/S5gmzFA1FthyNlOuowVALeFuitU9m1fwzNokABe3eJa2BPIW69k+HC22H/60m4AmVXS7dFz+Tlzuy0YtkuK4qrwD/39VP+uUTeJLDbUdlQqJGaQQZX1xbqsavcy/zfujXJRjRLpj2pUhwX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752227874; c=relaxed/simple;
-	bh=HdPeTB4OpvLmQsZ6TzAhg07c6wp7BnT+ZTIPurOkt7g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ndkNfoIYbWum6yoCIpLvKlzxHMi5CO0w45f6GMyE3VtpIPU4JAIYGTvcSjOs8M4V2Jtx0rIQV1xjAOi15LsUI9/TC8WYIeaFM73HIAOuxtI66/TEhRlRu5w1oDEdXwUZnWv54xNSNG9tlv6hRiSFWjaHmqgnC91dU36WU6zK1ag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZjoUNNwQ; arc=none smtp.client-ip=209.85.160.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-4a8244e897fso22487481cf.1;
-        Fri, 11 Jul 2025 02:57:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752227872; x=1752832672; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VF8ni1Qabwm5EDAGgO1yhgcz/0k2BPrIUU0X84lGYks=;
-        b=ZjoUNNwQ8CH0rpC/YZbNW3yyu4vhlf7GqVYEJu8IDPUzbZ2i9NM/dbZ0QW0FsI/E/v
-         zinTu2MZ8gE/oFYP/Gr4yqZB3g1Lk5NVZ/tTRKA4YQiTPSdl8u8bZDz3YAW964xMqEXo
-         AFqlrjGHfRHqENupkikmtoo2h+1q/6CBsCb98Cu6qe9vVIj7YZvJITUT21R5RI1aIDNu
-         qolIateIKgntqFWT6Jt7CWURPYWmQ2FX5RQeU9Rv6SaZZgCO+zhkf8nFBLrY+BQd6FTo
-         QQhiOg2vtPLmMgZSq9OAgMjIszBEXnfUUD4ndpx9l8Fp9F7pqb7U6E799cZK4DqR7HLi
-         AizA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752227872; x=1752832672;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VF8ni1Qabwm5EDAGgO1yhgcz/0k2BPrIUU0X84lGYks=;
-        b=fcIAkGFEtuDJMBTTtMJKl9zXqtvQUnwaVfDFjg7gMZFFDK5YgOA3xSkSlH0hiGwWfK
-         NukvQFP1RcQcHjc/A3NsbllByxjhtHvJouANfZHJjz8ukusIERkN82950fLtbFsGg2Ed
-         n7FETzGTNyf9lvairHJZCfQHZ+Qs5TOdQPwRGtnQ7coRlwY8f9lI2BEJK0+dapsFH5Sa
-         dOmkYc0d64h15Ppl93zVbWpn+vQ3b9jsjCzG4vjetCylqw+q7YjvHjz0GHTF8kedRq0S
-         XV/iyKqWtPl4pELo+LSFBaFGnWJ1yxZkbO3B6oAdva4mpbf182omb6UAKPZP/FqDA3P3
-         FKNg==
-X-Forwarded-Encrypted: i=1; AJvYcCV/KS+xv5Ep0gODc2Ydp8nnsUILkCE7Hgc13Cljj0cXiQjrqufTzXH1BPOpYdRG5KRqaaNd593M+F/rM5Os@vger.kernel.org, AJvYcCWvJdx5Qb9ffJfvqJ9Qy7qADoiwb0dFdu3F9qxOpDUYHL/yOCDjFE7ZTyGadp2dwxtjtDo=@vger.kernel.org, AJvYcCXrTmM9zqGsAQgW26xpdhBjSp0AB1ZA6eZkn6sQgRl+YJ7Ru+KuJu6Ekztunlsi+5xBDxVdaGw4Vjr72elyHk0L@vger.kernel.org
-X-Gm-Message-State: AOJu0YxSmgRlF8ba3XaNDW393meXaCZRD4qgozziHPY10W9QsDys4peg
-	n6t3BTeemwbHjE7TRK7Fy1blrZ1KTMaVBnQiMUpkrgPVsBGnd8fDS8txOJ9UagjKSn/sb7B1OWh
-	7Klf+G5mhmAjw9JWc+0ERxMrur4u6sgsAaE2pES4=
-X-Gm-Gg: ASbGnct9Vv+Hf0QRERXAXqawsvGY8EylEehbFx36y/QzhvYVBSVmGKIVAd9Qxuiapyx
-	c6egz5mzC0MMx0++cRFsOBcHkeKToVecLDzkX9Z5ymjPEEL9OB6HouX/FTt51H9wBBOnu3trE9t
-	vwlqJmSb0XuuV9szK9kFHlf8w4e9T9UQx+OTMbqTJ3tHjbZxGYrc17vQOWFYLNASLyWKsLcugSi
-	tajzpUBe7REaqrE0gA=
-X-Google-Smtp-Source: AGHT+IH2wevNPn/JSNpdOUj2BnaPxCEVoejrICXAJ8339nj2oPdHOpHANciP7L0NDRoLJ6wm47aLfIeGcevWFljogDA=
-X-Received: by 2002:a05:6214:800f:b0:704:a91e:2874 with SMTP id
- 6a1803df08f44-704a91e29c9mr12943876d6.19.1752227871571; Fri, 11 Jul 2025
- 02:57:51 -0700 (PDT)
+	s=arc-20240116; t=1752229825; c=relaxed/simple;
+	bh=/HFWjNiS22IwQbcoxsigfhzOXygvpprldfGcfDW/x+A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=N2uHE6OfLj6om6M1sQ9SAp2PHTOEMeuuHY01DdUa9R5Ud+WaQGkB+gJYzzJY67gu4bgmyhdAE4xlAEc9HC1acfVC+dlyvsXBowvBNAt1AtTp1HRo6Zr8G4OjnbtA60ldAoUuciRQI5BOYwekg5IHWUsxUqado8qgQBs2gI9vnJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=C2kXUbXh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dxNK0uir; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UczSr4Yj; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9YDhenHE; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 16F1121134;
+	Fri, 11 Jul 2025 10:30:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1752229822; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=XQUC9OVOv2qOIqch+zqVEKkeARwMtVSBf+YU+zk8A5M=;
+	b=C2kXUbXh2dLW49DX1a+a0l/N6y5kyZlbl/+k+l7F4KqzVxgJhVlcJqB5ckN7oeUktdgOL9
+	QE44n9gYuhQr3EuR6QYaESl8latFDuZbGrW+625VXkumc4eeH4ZwV/1NEmr3hy/+1Xg9TG
+	zX9DE1BLh9ggXie5Tp6+9vendBwK2N0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1752229822;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=XQUC9OVOv2qOIqch+zqVEKkeARwMtVSBf+YU+zk8A5M=;
+	b=dxNK0uirsT15sLkOgCcqF1J1gh8GFfUA4Gc5+wkueVhtSdqKOT4t1fmNsXnKcbeS6Erqqv
+	j/iroaG5mYKl/sCg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=UczSr4Yj;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=9YDhenHE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1752229820; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=XQUC9OVOv2qOIqch+zqVEKkeARwMtVSBf+YU+zk8A5M=;
+	b=UczSr4YjhlqhVvB7GMsdle7VLN/C7Ags8EyKU3xo5cOizpDnT7v5C6rQoW2wL4GlXmR+ot
+	IGCxAfRHe8TOS3ulQ59wIjmCxLOy+kY7C9JZ1/YyKr5Myhj7cWiv0JWXrC/NHt0GIlXEHd
+	qe6zXm8G8+R9K5iMia/OM6ezNCsZhOk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1752229820;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=XQUC9OVOv2qOIqch+zqVEKkeARwMtVSBf+YU+zk8A5M=;
+	b=9YDhenHEapPapsEkGZgEuq9C4jccbgRnIukHgl/SaBfyNavE6s3ug9DmSRt/HDV9fGdmFN
+	g6rRS6oprf5y6xBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EE2DF138A5;
+	Fri, 11 Jul 2025 10:30:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id zO3OObvncGi4AQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Fri, 11 Jul 2025 10:30:19 +0000
+Message-ID: <59c621bf-17cd-40ac-af99-3c7cb6ecafc3@suse.cz>
+Date: Fri, 11 Jul 2025 12:30:19 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250710162717.3808020-1-mannkafai@gmail.com> <20250710162717.3808020-3-mannkafai@gmail.com>
- <CAADnVQ+Ca43c757zaT80B+4RJesRozx39mLoz3hOdKXEaXLBLg@mail.gmail.com>
-In-Reply-To: <CAADnVQ+Ca43c757zaT80B+4RJesRozx39mLoz3hOdKXEaXLBLg@mail.gmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Fri, 11 Jul 2025 17:57:14 +0800
-X-Gm-Features: Ac12FXz_Z6qpVB3NlzPlv-24hnyKeoodjUEF0Pr8v9RgB_Gm4IUoL8gkZwgsyz4
-Message-ID: <CALOAHbCMCnYe=d04Ong5GzdMjK553CooF5XrBi0kQUwoh0oDrA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] bpf: Show precise rejected function when
- attaching to __btf_id functions
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 6/6] slab: Introduce kmalloc_nolock() and
+ kfree_nolock().
+Content-Language: en-US
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: KaFai Wan <mannkafai@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	bpf <bpf@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Cc: Harry Yoo <harry.yoo@oracle.com>, bpf <bpf@vger.kernel.org>,
+ linux-mm <linux-mm@kvack.org>, Shakeel Butt <shakeel.butt@linux.dev>,
+ Michal Hocko <mhocko@suse.com>, Sebastian Sewior <bigeasy@linutronix.de>,
+ Andrii Nakryiko <andrii@kernel.org>,
+ Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>,
+ Johannes Weiner <hannes@cmpxchg.org>
+References: <20250709015303.8107-1-alexei.starovoitov@gmail.com>
+ <20250709015303.8107-7-alexei.starovoitov@gmail.com>
+ <683189c3-934e-4398-b970-34584ac70a69@suse.cz> <aG-UMkt-AQpu8mKq@hyeyoo>
+ <e9bab147-5b36-4f9a-85b0-64740b84e826@suse.cz>
+ <CAADnVQ+G340va8h2B7nNO00mWxbP_chx3oHW2PYrKt2AfOZS8w@mail.gmail.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ m6M14QORSWTLRg==
+In-Reply-To: <CAADnVQ+G340va8h2B7nNO00mWxbP_chx3oHW2PYrKt2AfOZS8w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: 16F1121134
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_DN_ALL(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	RCVD_COUNT_TWO(0.00)[2];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[oracle.com,vger.kernel.org,kvack.org,linux.dev,suse.com,linutronix.de,kernel.org,gmail.com,linux-foundation.org,infradead.org,goodmis.org,cmpxchg.org];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:mid,suse.cz:email]
+X-Spam-Score: -3.01
 
-On Fri, Jul 11, 2025 at 1:19=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Jul 10, 2025 at 9:27=E2=80=AFAM KaFai Wan <mannkafai@gmail.com> w=
-rote:
-> >
-> > Show the precise rejected function name when attaching tracing to
-> > __btf_id functions.
-> >
-> > $ ./fentry
-> > libbpf: prog 'migrate_disable': BPF program load failed: -EINVAL
-> > libbpf: prog 'migrate_disable': -- BEGIN PROG LOAD LOG --
-> > Attaching tracing to __btf_id function 'migrate_disable' is rejected.
-> >
-> > Signed-off-by: KaFai Wan <mannkafai@gmail.com>
-> > ---
-> >  kernel/bpf/verifier.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 275d82fb1a1a..2779d63e1f8b 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -23938,6 +23938,8 @@ static int check_attach_btf_id(struct bpf_verif=
-ier_env *env)
-> >                         return ret;
-> >         } else if (prog->type =3D=3D BPF_PROG_TYPE_TRACING &&
-> >                    btf_id_set_contains(&btf_id_deny, btf_id)) {
-> > +               verbose(env, "Attaching tracing to __btf_id function '%=
-s' is rejected.\n",
-> > +                       tgt_info.tgt_name);
->
-> "Attaching tracing to __btf_id" ?! What does it mean?
+On 7/10/25 21:13, Alexei Starovoitov wrote:
+> On Thu, Jul 10, 2025 at 8:05 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>>
+>> On 7/10/25 12:21, Harry Yoo wrote:
+>> > On Thu, Jul 10, 2025 at 11:36:02AM +0200, Vlastimil Babka wrote:
+>> >> On 7/9/25 03:53, Alexei Starovoitov wrote:
+>> >>
+>> >> Hm but this is leaking the slab we allocated and have in the "slab"
+>> >> variable, we need to free it back in that case.
+> 
+> ohh. sorry for the silly mistake.
+> Re-reading the diff again I realized that I made a similar mistake in
+> alloc_single_from_new_slab().
+> It has this bit:
+> if (!alloc_debug_processing(...))
+>   return NULL;
+> 
+> so I assumed that doing:
+> if (!spin_trylock_irqsave(&n->list_lock,..))
+>    return NULL;
+> 
+> is ok too. Now I see that !alloc_debug is purposefully leaking memory.
+> 
+> Should we add:
+> @@ -2841,6 +2841,7 @@ static void *alloc_single_from_new_slab(struct
+> kmem_cache *s, struct slab *slab,
+>                  * It's not really expected that this would fail on a
+>                  * freshly allocated slab, but a concurrent memory
+>                  * corruption in theory could cause that.
+> +                * Leak newly allocated slab.
+>                  */
+>                 return NULL;
+> 
+> so the next person doesn't make the same mistake?
 
-The term "tracing" refers to BPF_PROG_TYPE_TRACING. I believe it is
-useful because it helps identify which functions cannot be attached by
-a given BPF program type.
-Perhaps we should replace "tracing" with "a tracing prog" for clarity?
+Sure, thanks.
 
-> Drop "__btf_id" and "tracing" bits.
+>> So... since we succeeded taking it from the list and thus the spin_trylock,
+>> it means it's safe to spinlock n->list_lock again - we might be waiting on
+>> other cpu to unlock it but we know we didn't NMI on our own cpu having the
+>> lock, right? But we'd probably need to convince lockdep about this somehow,
+>> and also remember if we allocated a new slab or taken on from the partial
+>> list... or just deal with this unlikely situation in another irq work :/
+> 
+> irq_work might be the least mind bending.
+> Good point about partial vs new slab.
+> For partial we can indeed proceed with deactivate_slab() and if
+> I'm reading the code correctly, it won't have new.inuse == 0,
 
---=20
-Regards
-Yafang
+Hm I think due to other cpus freeing objects concurrently it might end up
+with 0.
+
+> so it won't go to discard_slab() (which won't be safe in this path)
+> But teaching lockdep that below bit in deactivate_slab() is safe:
+>         } else if (new.freelist) {
+>                 spin_lock_irqsave(&n->list_lock, flags);
+>                 add_partial(n, slab, tail);
+> is a challenge.
+> 
+> Since defer_free_work is there, I'm leaning to reuse it for
+> deactive_slab too. It will process
+> static DEFINE_PER_CPU(struct llist_head, defer_free_objects);
+> and
+> static DEFINE_PER_CPU(struct llist_head, defer_deactivate_slabs);
+
+Should work. Also deactivate_slab() should be the correct operation for both
+a slab from partial list and a newly allocated one.
+But oops, where do we store all the parameters for deactivate_slab() We can
+probably reuse the union with "struct list_head slab_list" for queueing.
+kmem_cache pointer can be simply taken from struct slab, it's already tehre.
+But the separate flush_freelist pointer? Maybe take advantage of list_head
+being two pointers and struct llist_node just one pointer, so what we need
+will still fit?
+
+Otherwise we could do the first two phases of deactivate_slab() immediately
+and only defer the third phase where the freelists are already merged and
+there's no freelist pointer to handle anymore. But if it's not necessary,
+let's not complicate.
+
+Also should kmem_cache_destroy() path now get a barrier to flush all pending
+irq_work? Does it exist?
+
+> Shouldn't be too ugly. Better ideas?
+
 
