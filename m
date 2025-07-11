@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-63073-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63074-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C022B0231E
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA8FBB0231F
 	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 19:49:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5298F1C4827A
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 17:50:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5BACA44E4F
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 17:49:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83E972F1997;
-	Fri, 11 Jul 2025 17:49:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B44C72F1FDE;
+	Fri, 11 Jul 2025 17:49:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qdLjjG6T"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EiEw5hfq"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E80C2EF2AA
-	for <bpf@vger.kernel.org>; Fri, 11 Jul 2025 17:49:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DA042EF2AA
+	for <bpf@vger.kernel.org>; Fri, 11 Jul 2025 17:49:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752256190; cv=none; b=jrDdMe+jhapoI+KlZ+RtarLkMMtudwJoN6f26uPK+43n/r8eVjS44aZ9KeOMgx0PmCb94pKxIjzDOOz7gMV1DicjZX/13bswuU0yeH+d9RsOaV2cGwwjQl48ykdEEXv9nAfBPun+HPzYicpGjaHZD7kM2Ow2xlF1ujtRgaA/8v0=
+	t=1752256191; cv=none; b=gE1ddxzXRRnAwjfhje8iAQuMfT4oVyzwmmLrJHLUmhditL0+P468GanxiXn+aeXDOMRE+HSqOBMNHbuYlQ19LPNbvueIGLlvJ/3LEw28o5v6+TyQFA2++XRd5Rfm52ZD7T1m1hHQEBk6AbTWHWjHKLAKogSZyqqiUXCTvEjqghE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752256190; c=relaxed/simple;
-	bh=th6f6o1NGCgdGoryjdGZC+JsgvtwtQxnN8tnBTwtFGQ=;
+	s=arc-20240116; t=1752256191; c=relaxed/simple;
+	bh=mmBw444e0Rg94wA0H3JqW7XnbFNNaJrF1mJ5IHEbp90=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=qQciHIJ1VayFr90LayiCfeVtCn99D655kQVBv9DLdV0nQC3ke4cDztOvC0IbX173KUhb7XCgrLIRfqTLyamP+51tNcw25+jjCvNquxcsWYYdDeCd4kTHNYJMRXGxRueGiAVJeekeFH2QZcpl9lrjEyqa9EqE9kk8l7Z/Lj3/Z7w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qdLjjG6T; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88B19C4CEED;
-	Fri, 11 Jul 2025 17:49:49 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=tOeWhR6P3Xcr1OyjOilu59xZGsLZinEYfKUEMMCBSijsjtUAzwgOWn7mDbD3y1z43AP2mG3ui/EUf3o0ZUl0WhMtuv8E3XojLTBe3Ch+eyH0hUSKxKBn4aY+AVcn/RdkxQ94YZ0FVqwLBkCJZiHJAWS5DwAqrQE6oO1biBLkoIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EiEw5hfq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C812C4CEED;
+	Fri, 11 Jul 2025 17:49:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752256189;
-	bh=th6f6o1NGCgdGoryjdGZC+JsgvtwtQxnN8tnBTwtFGQ=;
+	s=k20201202; t=1752256191;
+	bh=mmBw444e0Rg94wA0H3JqW7XnbFNNaJrF1mJ5IHEbp90=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=qdLjjG6TudDIuJkxUuW6/zeQVwi/J/XP7X7BpwHS4/I+KG2rZAGguwPYGsBFOKi4O
-	 DuSgi7Nls/zp5J/iEw1DjGSIuRVygVMqhOoAY6t4rOWHEo7j9gCH6Q0Q+7TbhzdkU1
-	 WWqOKxe6i71PhlzayXfaCkPhwYPHyRyJFK0k6zYUd/oGCPRhE0LXKdNu4iUxOksSGS
-	 xOsxntT+G6vQ+sXR5CnQswuPRnO8qfUpVYQPMVcltjGTwCjatufSF21Y0kFzP7CAxF
-	 0KjoxFIM2aFC6ksNAFpj26WvucShcwaRdd1a+Mpps/QYYaMT2y2+maWla9/U9fd36E
-	 fRttIzQryyxGg==
+	b=EiEw5hfqA/bF1dPtVztG7cbSWjyyjS3VbRoQYKylj2ihTxzmKAw25tgKQ2YDSlJ5/
+	 f8FIsmIRXe/KCGbiHpGwZxnkeBtXxlZkBkKEiTIqntKC/f0l2kInoKH0y0yzozIpTk
+	 7+ZR/L9lJuRtfZ+SjR0NlLo/BYrrVR53vq+qi5+6oFZcrnx9vPaZR7tNPG+61KeV1W
+	 6iTC9mUXC9utD9uYXSvtP99GBWxg8XKNjVcXRyO2G0ve/wHMDk0QLRrLzUyCwQrM4d
+	 Q987nvL2eJpXye/qQBi80dWtiRYs9GwjeMSnst4x/WwPblK869FJ8ur3qCWulRtTZG
+	 Y+OO3984Ey9eg==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AECB3383B275;
-	Fri, 11 Jul 2025 17:50:12 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 34129383B275;
+	Fri, 11 Jul 2025 17:50:14 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,41 +52,38 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Forget ranges when refining tnum
- after
- JSET
+Subject: Re: [PATCH v4 0/2] bpf/arena: Add kfunc for reserving arena memory
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <175225621151.2353625.1704874843990005715.git-patchwork-notify@kernel.org>
-Date: Fri, 11 Jul 2025 17:50:11 +0000
-References: 
- <9d4fd6432a095d281f815770608fdcd16028ce0b.1752171365.git.paul.chaignon@gmail.com>
-In-Reply-To: 
- <9d4fd6432a095d281f815770608fdcd16028ce0b.1752171365.git.paul.chaignon@gmail.com>
-To: Paul Chaignon <paul.chaignon@gmail.com>
+ <175225621275.2353625.17022488161752474201.git-patchwork-notify@kernel.org>
+Date: Fri, 11 Jul 2025 17:50:12 +0000
+References: <20250709191312.29840-1-emil@etsalapatis.com>
+In-Reply-To: <20250709191312.29840-1-emil@etsalapatis.com>
+To: Emil Tsalapatis <emil@etsalapatis.com>
 Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, eddyz87@gmail.com
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ memxor@gmail.com, yonghong.song@linux.dev, sched-ext@meta.com
 
 Hello:
 
 This series was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Thu, 10 Jul 2025 20:20:53 +0200 you wrote:
-> Syzbot reported a kernel warning due to a range invariant violation on
-> the following BPF program.
+On Wed,  9 Jul 2025 15:13:10 -0400 you wrote:
+> Add a new kfunc for BPF arenas that reserves a region of the mapping
+> to prevent it from being mapped. These regions serve as guards against
+> out-of-bounds accesses and are useful for debugging arena-related code.
 > 
->   0: call bpf_get_netns_cookie
->   1: if r0 == 0 goto <exit>
->   2: if r0 & Oxffffffff goto <exit>
+> CHANGELOG
+> =========
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next,v2,1/2] bpf: Forget ranges when refining tnum after JSET
-    https://git.kernel.org/bpf/bpf-next/c/6279846b9b25
-  - [bpf-next,v2,2/2] selftests/bpf: Range analysis test case for JSET
-    https://git.kernel.org/bpf/bpf-next/c/d81526a6ebff
+  - [v4,1/2] bpf/arena: add bpf_arena_reserve_pages kfunc
+    https://git.kernel.org/bpf/bpf-next/c/8fc3d2d8b501
+  - [v4,2/2] selftests/bpf: add selftests for bpf_arena_reserve_pages
+    https://git.kernel.org/bpf/bpf-next/c/9f9559f0acc4
 
 You are awesome, thank you!
 -- 
