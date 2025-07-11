@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-62989-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62990-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F20CB01089
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 03:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id ABF1DB010A4
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 03:15:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2A491CA2B04
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 01:03:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DE801AA84EC
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 01:15:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00CA5481A3;
-	Fri, 11 Jul 2025 01:03:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C443C78F5E;
+	Fri, 11 Jul 2025 01:14:49 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AFB4DDBC;
-	Fri, 11 Jul 2025 01:02:59 +0000 (UTC)
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCD3D70808;
+	Fri, 11 Jul 2025 01:14:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752195787; cv=none; b=fHFwGxdWbhhEFBO4uO9vux3nnucioDHNgxggZ+FdykQ+HWwy+OeNv3HUHM1SnvNoDt2WQ/+0pOzzA+E/69JomcnXx9rXaQdTIROUGxsUCw331YTmMD6sAdQjBdyzuF+m8kkdl7p8GKYI1Z498CehD8G96nW0/2rJAtMffUgt2es=
+	t=1752196489; cv=none; b=QUGIV9aJHOrrSMBcSL68Njdlr1pb6xBVpYgIh9EzPuTM+hdIAFZnh8L1tVUXgFEIh9JWPbnQaoojEDiLLZh2irv6E6i6HNvMssFR10kwehFllC+qnYq88EZhpkrvyZ69QjdEx0ppUSs9z3PFmfj7DSDzYA0MjIuQRO96KrS9vRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752195787; c=relaxed/simple;
-	bh=jgthuvUu1Lw7rJCAYQk4VlnMNLSOEHxEc/VMepaFkuM=;
+	s=arc-20240116; t=1752196489; c=relaxed/simple;
+	bh=xhz4r0kUHVh86SkdUy07aHBytclY8GvduSjuV3fjBDI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QrICApQBxGTlcnKTRNZixJwVwKq4iG7vMelGQxtMDJzcNdfx9TZXBjFrC4SakP5zibTC0VBHED5RQH97sOmYvZtrKhoertQ2OIfTx+2C0+VEzj4HmoLNlpdOF7w7SI+qQPI3wyCOQdI2qpkEaYHqzInI6qzBEIazLnGJTW6IVj8=
+	 Content-Type:Content-Disposition:In-Reply-To; b=O72u0fB2UPcw60wJDhRbBZHhIZu+ChjscU1eOK8KoegAsA2Q9uohqPmVzdavGuIHxF1aOIdcgSgRLYgktuGw1ReYu60RkCJc4ezV7+PQXo1u9xIJkNdsaUo/pSWi112YcJjdqGkhhnBXM+1v4wdhEJJJn95TOVG5a3PNiPxUGHE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-669ff7000002311f-f4-687062c211be
-Date: Fri, 11 Jul 2025 10:02:53 +0900
+X-AuditID: a67dfc5b-681ff7000002311f-67-6870658031e2
+Date: Fri, 11 Jul 2025 10:14:35 +0900
 From: Byungchul Park <byungchul@sk.com>
 To: Mina Almasry <almasrymina@google.com>
 Cc: willy@infradead.org, netdev@vger.kernel.org,
@@ -46,12 +46,12 @@ Cc: willy@infradead.org, netdev@vger.kernel.org,
 	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
 	vishal.moola@gmail.com, hannes@cmpxchg.org, ziy@nvidia.com,
 	jackmanb@google.com
-Subject: Re: [PATCH net-next v9 2/8] netmem: introduce utility APIs to use
- struct netmem_desc
-Message-ID: <20250711010253.GB40145@system.software.com>
+Subject: Re: [PATCH net-next v9 3/8] page_pool: access ->pp_magic through
+ struct netmem_desc in page_pool_page_is_pp()
+Message-ID: <20250711011435.GC40145@system.software.com>
 References: <20250710082807.27402-1-byungchul@sk.com>
- <20250710082807.27402-3-byungchul@sk.com>
- <CAHS8izO0mgDBde57fxuN3ko38906F_C=pxxrSEnFA=_9ECO8oQ@mail.gmail.com>
+ <20250710082807.27402-4-byungchul@sk.com>
+ <CAHS8izMXkyGvYmf1u6r_kMY_QGSOoSCECkF0QJC4pdKx+DOq0A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -61,187 +61,124 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHS8izO0mgDBde57fxuN3ko38906F_C=pxxrSEnFA=_9ECO8oQ@mail.gmail.com>
+In-Reply-To: <CAHS8izMXkyGvYmf1u6r_kMY_QGSOoSCECkF0QJC4pdKx+DOq0A@mail.gmail.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa2yLYRTHPX2va/byroaHLUhnwZLNCHIkwiIiDyFxSSTDMmUvbbZ1TTez
-	CkkxEWXD3LuijK27UMq6rZmx7ioIyqjrpowPrOa27MJYLWLffvmfk//vfDg8pbjKjOM12gxJ
-	r1WlKFk5Le8IPh/t3qBTx3YUzAGLvYyF0u4sKGqrZMBS4kTwvecFB9/qm1goONdFgeV+Ng0/
-	7L0UtDf6OCh1LIPWwvc0VO+toMB3sJmFnOw+Cm70+DnYVWmTwQNnLgNHey9SUGFs4+CRy8LC
-	67LfDLx359Bw21xMQ2tuHDRaR0PXnU8I6u0VMug6cJqFIx4rC2+zWxF46nw05O/MRWCv8TLQ
-	1z3Qkd/wmoubROo+fabI9eJnMlJlfsURq2MLuWaLIiavhyKOkn0scXzN48jLJ9UsaT7ZR5Oq
-	ym8ykrPbz5Iv7c9p8rmmhSX26y00uWut55aHrJHPTZJSNJmSftq89XL1h/J+RueLznru7+eM
-	qCHChIJ4LM7Eriu13D++c+wxbUI8T4uRuMUYGYhZcTL2enuoAIeKU/GFmsOMCcl5SjSzuMXl
-	owODkWIi7jzhlAVYEAFX1LrYACtEG8L+82gwD8G3T737u08NlP4846ECLkoMw0X9/GA8Ae8u
-	z//rChJXYG+5iwnwKDEC33I2yQJeLN7lcXfnR3bw5rG41ualD6EQ8xCFeYjC/F9hHqKwIroE
-	KTTazFSVJmVmjNqg1WTFbExLdaCBRyrc8XNtJfr6YJUbiTxSBgtxpWlqBaPKTDekuhHmKWWo
-	cHmZTq0QklSGbZI+LVG/JUVKd6MwnlaOEWZ0bU1SiJtVGVKyJOkk/b+pjA8aZ0SWjoTW2SPy
-	hq3bmxeWQLgp5OryBfuPm7QRvmTbvhjXh00Rhl1PBeHmjLNFTv3cY9pHTTmrOxdGv5hgDJ5v
-	2NzLxedPLIsMPVtHEjeEf88Qyz6Gz9qj06DGeM8PgZqaca/6Uuz8Jv+i2MJRB4RT93Hq8KXT
-	tz9c0jB+ePfNX+Er3yxW0ulq1fQoSp+u+gNj84kCRAMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRjG+e9cHc6Oy+yUabQyUdQKMl4oxA9Fh8CoLwVS6MpDm206NhXt
-	Qiuli6h5qaxt1tIydeJopTNT0VlOMbrMjKXVZJklzFuWZIrlishvP57n5fd8eWlMXEqspuWp
-	6bw6VaqQkEJcuHd7TpTtiEq2eXg0GAzmOhJMP7Lg3lATAYbaRgTfZgcpmH5iJ6Hy9gwGhhe5
-	OHw3/8TgU5ebApMlHlxVIzi0XLBi4L7cTUJB7hwGrbPjFJxrqhZAZ3kPAS8bCwm48vMuBlbt
-	EAV9zQYSPtT9ImDEVoBDj64GB1dhHHQZA2Gm14PgidkqgJn8chJKHUYSPua6EDg63TjozxYi
-	MLc5CZj7sejQP/1AxYVynZ4JjHtY81bAPdK9pzijJYN7UB3B5TkdGGepvURylq8lFPfuTQvJ
-	dV+fw7lHTdMCriBnnOSmPg3g3ERbP8lVfpkUcOaH/fg+cYJwRzKvkGfy6k2xSULZ54YFQuWO
-	yhoYX6C06On6PORDs8xWtvfqazwP0TTOhLL92lBvTDJhrNM5i3k5gAln77QVE3lISGOMjmT7
-	m924t1jOJLKTZY0CL4sYYK0dzaSXxUw1Yscr0N/cn+25MfznHluUzt90YN4tjAli7y3Qf+O1
-	bE6D/s+WD7OfdTY0E15ewaxn2xvtgiLkp1ti0i0x6f6bdEtMRoTXogB5aqZSKlfERGuOy7JT
-	5VnRR9OUFrT4KlWn54ub0Le+3TbE0EjiK4ozpcnEhDRTk620IZbGJAGi+niVTCxKlmaf4NVp
-	ieoMBa+xoSAal6wU7TnIJ4mZY9J0/jjPq3j1v1ZA+6zWogpfZ0p4X8tY8Kl1hpEWP+p+pf5a
-	zMYNa/JPRW63u6zKgcOxZ74eOH9JP1H6jC25Zb+aEhHvjlZkPLDIX66ylYdMPz+xbEvkq1se
-	8ejHsOEEeJy9reN6Ue988rMxdevQrrLJoItJpf6SAzeNh+oD3YM7TUEno9qvhPhKN3YPxnqm
-	vkhwjUy6JQJTa6S/Acklu/gmAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRjHe3fOzjkOV8ep9ZpBtO5GluWHB4rwQ+UxMJL60gVs6KGN5oXN
+	TMtAy5QkbWaZzVkry8uMhjN1mlpNzXWjWljrYprlhTIjy6XOMk8i+e3H//nz/J4PD0PIzOL5
+	jCo2gdfEKtRySkJKvnpeXZ3GxyvXPs+XgsF8g4KKkSQo7bKKwWCqQfBz9C0NP1raKCi+4iLA
+	8DSdhGHzGAE997tpqLCEQ2dJLwkNmbUEdJ+xU5Cd7iagcXSQhuPWMhE8q8kRw7mx6wTUpnbR
+	8KLeQMH7GxNi6LVlk/BAX05CZ04I3DfOBdejAQQt5loRuE4XUZDnMFLwMb0TgaO5m4TCtBwE
+	5ianGNwjkzsKW9/TIUu45oFvBHer/LWIq9N30JzRcoirKgvgspwOgrOYTlGcZegszb172UBx
+	9gI3ydVZf4i47BODFPe95w3JfWtqpzjzrXaSe2xsoXd47ZFsjObVqkRes2bTfonSUW4Sx5cv
+	SDrZ6EapyDY3C3kwmA3GvUY7mub+ot9igUl2Ke5rb/uXU+xy7HSOEgL7sCvxtabcyY6EIVg9
+	hdvru8ksxDDebBI2PaIElLKAWy/sE+oytgzh2yOhAktZL/zg4idSYGJy5fglByHUCdYfl/5h
+	puKF+ER14b/Yg43AXQVbhNiXXYzv1rSJBClm7QxudeuoqYv98L0yJ6lDXvoZBv0Mg/6/QT/D
+	YESkCclUsYkxCpU6OFCZHKtKCoyKi7GgyTcqOTa+14qGnu20IZZBck9pSEWcUiZWJGqTY2wI
+	M4TcR3ozPF4pk0Yrko/wmrhIzSE1r7Uhf4aUz5Oucx2OlrEHFAn8QZ6P5zXTUxHjMT8VLajs
+	q1dHHPFV+ZUc/tCvruqYWLHc4PrlF6QrrcyvMlWaet5GzNnaYIjkQ/q0C8MG8y7u2vyEePXZ
+	5+jJOee9q1NmR31JUUUOh666c339hv1HpQWZ/TX0RHXDtozi7UF2daVHxhgdfM7dGpizbNbl
+	T2EaXW7UeN0inXVIm3K7Yzd+KCe1SkVQAKHRKv4C3wLim0IDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0hTYRiH+3bO+XYcTY7L6mBSsDIp6CZdXroKUX4URf0VVFArD255ZTOZ
+	QbWa3SQ1tciO0yaZlyktlukstZrlEolqYa7MXCtLQ7Sr6LSLp4j87+H3Pjx/vSylymXCWF1S
+	qqBP0iSosYJWbF1lXmASUrSL+/uiwGKvxlA1bIRyn5MBi60WwbeRTjl8ve/GcKVkiALL4wwa
+	vtsDFPS0+OVQ5dgC3WXvaWg4VUeBP+chhqyMUQoaRwbkcNxZIYPmolYGntRmM3A+cJWCOpNP
+	Ds9uWTC8rv7FwHtXFg2tYiUN3dnR0GKdBkNt/Qju2+tkMHS2CEO+x4rhbUY3Ak+zn4bCY9kI
+	7E1eBkaHxxuFD17LoyNIc/8gRWoqX8hIvdglJ1bHQXKjYj7J9Hoo4rCdwcTxJU9OXj1vwORh
+	wShN6p1fZSTLPIDJ556XNBlsasfkSu8nGbHXtNPbVDsVq2OFBF2aoF+0dq9C66m0MSmV4cYT
+	jaPIhFzTMlEQy3NL+d6iH4zENBfBf2h3I4kxF8l7vSOUxKHcPL60KXfcUbAUJ2K+/ZafzkQs
+	O4Uz8rY2LKGSA/7Bxd2SruIqEH97OEZiJRfCt156R0tMjSfHij2UpFPcDL78J/t3nsWbbxb+
+	mYO47byvYIM0T+Vm83dr3bJzKFicEBInhMT/IXFCyIpoGwrVJaUlanQJyxYa4rXpSTrjwv3J
+	iQ40/ihlh8dynejbsxgX4liknqyMrkrWqhhNmiE90YV4llKHKq9tSdGqlLGa9EOCPnmP/mCC
+	YHChGSytnq7ctEPYq+LiNKlCvCCkCPp/VxkbFGZC2v7jp5cLouHYpK43LVH2mRfGTgd/7Ihc
+	V+Zzx37Andebu1bcbcybs3KrUbyeeI3uOLLrpMt9smfV5c2+QGmvv7xmo2VFiDmnp5gECp2B
+	e7eHTpnC+0zF60ODF+0q2RS3Y40Xh8x9dCS5I7f+jts7uO/otjDu5idzvjfeip82HXirpg1a
+	zZL5lN6g+Q3HXtvPJAMAAA==
 X-CFilter-Loop: Reflected
 
-On Thu, Jul 10, 2025 at 11:11:51AM -0700, Mina Almasry wrote:
-> 
+On Thu, Jul 10, 2025 at 11:19:53AM -0700, Mina Almasry wrote:
 > On Thu, Jul 10, 2025 at 1:28 AM Byungchul Park <byungchul@sk.com> wrote:
 > >
-> > To eliminate the use of the page pool fields in struct page, the page
-> > pool code should use netmem descriptor and APIs instead.
+> > To simplify struct page, the effort to separate its own descriptor from
+> > struct page is required and the work for page pool is on going.
 > >
-> > However, some code e.g. __netmem_to_page() is still used to access the
-> > page pool fields e.g. ->pp via struct page, which should be changed so
-> > as to access them via netmem descriptor, struct netmem_desc instead,
-> > since the fields no longer will be available in struct page.
+> > To achieve that, all the code should avoid directly accessing page pool
+> > members of struct page.
 > >
-> > Introduce utility APIs to make them easy to use struct netmem_desc as
-> > descriptor.  The APIs are:
-> >
-> >    1. __netmem_to_nmdesc(), to convert netmem_ref to struct netmem_desc,
-> >       but unsafely without checking if it's net_iov or system memory.
-> >
-> >    2. netmem_to_nmdesc(), to convert netmem_ref to struct netmem_desc,
-> >       safely with checking if it's net_iov or system memory.
-> >
-> >    3. nmdesc_to_page(), to convert struct netmem_desc to struct page,
-> >       assuming struct netmem_desc overlays on struct page.
-> >
-> >    4. page_to_nmdesc(), to convert struct page to struct netmem_desc,
-> >       assuming struct netmem_desc overlays on struct page, allowing only
-> >       head page to be converted.
-> >
-> >    5. nmdesc_adress(), to get its virtual address corresponding to the
-> >       struct netmem_desc.
+> > Access ->pp_magic through struct netmem_desc instead of directly
+> > accessing it through struct page in page_pool_page_is_pp().  Plus, move
+> > page_pool_page_is_pp() from mm.h to netmem.h to use struct netmem_desc
+> > without header dependency issue.
 > >
 > > Signed-off-by: Byungchul Park <byungchul@sk.com>
+> > Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
+> > Reviewed-by: Mina Almasry <almasrymina@google.com>
+> > Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
+> > Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+> > Acked-by: Harry Yoo <harry.yoo@oracle.com>
 > > ---
-> >  include/net/netmem.h | 41 +++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 41 insertions(+)
+> >  include/linux/mm.h   | 12 ------------
+> >  include/net/netmem.h | 17 +++++++++++++++++
+> >  mm/page_alloc.c      |  1 +
+> >  3 files changed, 18 insertions(+), 12 deletions(-)
 > >
+> > diff --git a/include/linux/mm.h b/include/linux/mm.h
+> > index 0ef2ba0c667a..0b7f7f998085 100644
+> > --- a/include/linux/mm.h
+> > +++ b/include/linux/mm.h
+> > @@ -4172,16 +4172,4 @@ int arch_lock_shadow_stack_status(struct task_struct *t, unsigned long status);
+> >   */
+> >  #define PP_MAGIC_MASK ~(PP_DMA_INDEX_MASK | 0x3UL)
+> >
+> > -#ifdef CONFIG_PAGE_POOL
+> > -static inline bool page_pool_page_is_pp(struct page *page)
+> > -{
+> > -       return (page->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE;
+> > -}
+> > -#else
+> > -static inline bool page_pool_page_is_pp(struct page *page)
+> > -{
+> > -       return false;
+> > -}
+> > -#endif
+> > -
+> >  #endif /* _LINUX_MM_H */
 > > diff --git a/include/net/netmem.h b/include/net/netmem.h
-> > index 535cf17b9134..ad9444be229a 100644
+> > index ad9444be229a..11e9de45efcb 100644
 > > --- a/include/net/netmem.h
 > > +++ b/include/net/netmem.h
-> > @@ -198,6 +198,32 @@ static inline struct page *netmem_to_page(netmem_ref netmem)
-> >         return __netmem_to_page(netmem);
+> > @@ -355,6 +355,23 @@ static inline void *nmdesc_address(struct netmem_desc *nmdesc)
+> >         return page_address(nmdesc_to_page(nmdesc));
 > >  }
 > >
-> > +/**
-> > + * __netmem_to_nmdesc - unsafely get pointer to the &netmem_desc backing
-> > + * @netmem
-> > + * @netmem: netmem reference to convert
-> > + *
-> > + * Unsafe version of netmem_to_nmdesc(). When @netmem is always backed
-> > + * by system memory, performs faster and generates smaller object code
-> > + * (no check for the LSB, no WARN). When @netmem points to IOV, provokes
-> > + * undefined behaviour.
-> > + *
-> > + * Return: pointer to the &netmem_desc (garbage if @netmem is not backed
-> > + * by system memory).
+> > +#ifdef CONFIG_PAGE_POOL
+> > +/* XXX: This would better be moved to mm, once mm gets its way to
+> > + * identify the type of page for page pool.
 > > + */
-> > +static inline struct netmem_desc *__netmem_to_nmdesc(netmem_ref netmem)
+> > +static inline bool page_pool_page_is_pp(struct page *page)
 > > +{
-> > +       return (__force struct netmem_desc *)netmem;
+> > +       struct netmem_desc *desc = page_to_nmdesc(page);
+> > +
+> > +       return (desc->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE;
 > > +}
-> > +
 > 
-> Does a netmem_desc represent the pp fields shared between struct page
-> and struct net_iov, or does netmem_desc represent paged kernel memory?
-> If the former, I don't think we need a safe and unsafe version of this
-> helper, since netmem_ref always has netmem_desc fields underneath. If
-
-Ah, right.  I missed the point.  I will narrow down into a single safe
-helper for that purpose.
-
-> the latter, then this helper should not exist at all. We should not
-> allow casting netmem_ref to a netmem_desc without first checking if
-> it's a net_iov.
+> pages can be pp pages (where they have pp fields inside of them) or
+> non-pp pages (where they don't have pp fields inside them, because
+> they were never allocated from the page_pool).
 > 
-> To be honest the cover letter should come up with a detailed
-> explanation of (a) what are the current types (b) what are the new
-> types (c) what are the relationships between the types, so these
-> questions stop coming up.
+> Casting a page to a netmem_desc, and then checking if the page was a
+> pp page doesn't makes sense to me on a fundamental level. The
+> netmem_desc is only valid if the page was a pp page in the first
+> place. Maybe page_to_nmdesc should reject the cast if the page is not
+> a pp page or something.
 
-I will.  Thanks for the feedback.
+Right, as you already know, the current mainline code already has the
+same problem but we've been using the werid way so far, in other words,
+mm code is checking if it's a pp page or not by using ->pp_magic, but
+it's ->lur, ->buddy_list, or ->pcp_list if it's not a pp page.
 
-> > +static inline struct netmem_desc *netmem_to_nmdesc(netmem_ref netmem)
-> > +{
-> > +       if (WARN_ON_ONCE(netmem_is_net_iov(netmem)))
-> > +               return NULL;
-> > +
-> > +       return __netmem_to_nmdesc(netmem);
-> > +}
-> > +
-> >  static inline struct net_iov *netmem_to_net_iov(netmem_ref netmem)
-> >  {
-> >         if (netmem_is_net_iov(netmem))
-> > @@ -314,6 +340,21 @@ static inline netmem_ref netmem_compound_head(netmem_ref netmem)
-> >         return page_to_netmem(compound_head(netmem_to_page(netmem)));
-> >  }
-> >
-> > +#define nmdesc_to_page(nmdesc)         (_Generic((nmdesc),             \
-> > +       const struct netmem_desc * :    (const struct page *)(nmdesc),  \
-> > +       struct netmem_desc * :          (struct page *)(nmdesc)))
-> > +
-> > +static inline struct netmem_desc *page_to_nmdesc(struct page *page)
-> > +{
-> > +       VM_BUG_ON_PAGE(PageTail(page), page);
-> > +       return (struct netmem_desc *)page;
-> > +}
-> > +
-> 
-> It's not safe to cast a page to netmem_desc, without first checking if
-> it's a pp page or not, otherwise you may be casting random non-pp
-> pages to netmem_desc...
-
-Agree, but page_to_nmdesc() will be used in page_pool_page_is_pp() to
-check if it's a pp page or not:
-
-   static inline bool page_pool_page_is_pp(struct page *page)
-   {
-	struct netmem_desc *desc = page_to_nmdesc(page);
-
-	return (desc->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE;
-   }
-
-Hm.. maybe, it'd be better to resore the original code and remove this
-page_to_nmdesc() helper.  FYI, the original code was:
-
-   static inline bool page_pool_page_is_pp(struct page *page)
-   {
-	struct netmem_desc *desc = (struct netmem_desc *)page;
-
-	return (desc->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE;
-   }
-
-> > +static inline void *nmdesc_address(struct netmem_desc *nmdesc)
-> > +{
-> > +       return page_address(nmdesc_to_page(nmdesc));
-> > +}
-> > +
-> >  /**
-> 
-> Introduce helpers in the same patch that uses them please. Having to
-> cross reference your series to see if there are any callers to this
-> (and the callers are correct) is an unnecessary burden to the
-> reviewers.
-
-I adopted how Matthew Wilcox worked on this[1], but sure, I will.
-
-[1] https://lore.kernel.org/linux-mm/20230111042214.907030-3-willy@infradead.org/
+Both the mainline code and this patch can make sense *only if* it's
+actually a pp page.  It's unevitable until mm provides a way to identify
+the type of page for page pool.  Thoughts?
 
 	Byungchul
 
