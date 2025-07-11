@@ -1,51 +1,54 @@
-Return-Path: <bpf+bounces-63028-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63029-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 663F5B01662
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 10:37:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7473AB01665
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 10:37:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 019AE17D918
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 08:36:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 098963A5D27
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 08:35:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3697111BF;
-	Fri, 11 Jul 2025 08:33:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 680E421CC48;
+	Fri, 11 Jul 2025 08:33:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VI8Kxz4z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sa8YHyqo"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BDD721ABBB;
-	Fri, 11 Jul 2025 08:33:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9E24215191;
+	Fri, 11 Jul 2025 08:33:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752222820; cv=none; b=Fw4aQHocX3ngNBcHMfpXggdOte2GJrY6Yqf4qMXKzmfivdC503wnsEeKIT8VeLZ41HI1Xp8sQaFcNA3cE4uB6P3DlUEQh7NiF0UsRr2JMR5B6Lt0pIgGa2LlYYtVctdyTJ2AkjCZ9FntS8nPP/CzbYTpc+Yf4x+KGu1k0y/iWSA=
+	t=1752222833; cv=none; b=UB/KbdkpZdOTuORnw5t15OeuX7mh83WYwAiTDNVAUqlb0nrLRZ9UKVhKSEbwGY6kSCMwzszJ6sx75SiJVLODezvZAGmbE1wKP0ErG6KErxjJNexOBYcynJKgaAc5Vsmen2M55te8VGnK6W7uT6hlWP9v6msiS6TZvwlyCayY5JI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752222820; c=relaxed/simple;
-	bh=+ywqxuQlx+5CdeLdgvKCdELs+zxvlnwLuqzRLDkHIbs=;
+	s=arc-20240116; t=1752222833; c=relaxed/simple;
+	bh=rIp7sbNQP0A5qWOQtYUlleAGB3LRW4+80tsnHo9ItRo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=azHTF0AfScDvQX3xV0wul6T03i8rAC3S5q7g1Yoj/Z+h3zGHxK393sfNntPr7D8aIAyZFjxN93oKhfXCdpT3zghxgBYmK0K9eL1qRY/C++KkcUulQ12Sz+ioDjOL2RPeg8Asacwg/KeTFiZsQcRWsUrnmBtaoLRxrLbGSjFB8DY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VI8Kxz4z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D6F4C4CEED;
-	Fri, 11 Jul 2025 08:33:34 +0000 (UTC)
+	 MIME-Version; b=MW0CLj8znCat+6ym39XMZT4K4uYCJy/muBmz44KwpjGblmZdP6y9qM9MwqTn2xBihnZ1kTpPAySoBNGUFleIvHOrW3G6Cm9Moy2K9+LsB9JgJTNaltoOH8343es2Bn4YUG1XqisSxJCPubHtSGFaMMzKgHRrEAMfenaL6+9Ne3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sa8YHyqo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B673BC4CEF6;
+	Fri, 11 Jul 2025 08:33:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752222818;
-	bh=+ywqxuQlx+5CdeLdgvKCdELs+zxvlnwLuqzRLDkHIbs=;
+	s=k20201202; t=1752222832;
+	bh=rIp7sbNQP0A5qWOQtYUlleAGB3LRW4+80tsnHo9ItRo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=VI8Kxz4zjsaFgUQMDvmFnsj72uJCjLYt0XOY25vv10IIKUuyavvTksAYavVnSItLJ
-	 CfmjqTMRFgnSTY/7MHum8lCRB4oB8vCL/Hno7ZVM/ff/ZCVUo7SdA9pnt5yF75OdBs
-	 FXd6DaWioqv6wDPCykdGOsevEwVW3e9Ehw/TYKWIxQfFq1dsw8ifJrCQifNjX299Pf
-	 L0cvhaEEw3Ibs4q23zhEZ9zbnTMh7TLMpVW8W87ZQp4criQRr5Hn+h20d3PErn8iK5
-	 4DtrARY0zHOvms/vdU1nKQEaou5kQHngbpfnpCVleyB/hjUTV0o5JOgj6gyxiTsEqN
-	 7yOZtVh7s0gKA==
+	b=sa8YHyqodcUQZQZeMO+E/agiZB1pL8/BRrMdNqwLUwh4SZIttrBszoDUXvmVikhdr
+	 9oy6gbmP0vhLTny6CTZ7GpmwDB+HRgrYgEuDHt5ihsyRN9+cIgvjqp5/a2+kAcZMDj
+	 68JBpfofMw9MDAT1owq0yB2nsqWjTI+BhlvzAynqX+uKgKq14sENRUTg2WaC4QjcmQ
+	 vTRoe2H4pwX7BMkQLdJJFJgg+x7xxbTgGyQQkIk9ZIkaobbeWhiTmgK8hlbGiovelp
+	 dT4NmmqcCxfnggEVJiX7HJkVFqTyE9/WscnzvT49PSXloSFgZ8QTSJ6wVGQP1dalb/
+	 WbPZxxFqW8Tvg==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org,
+Cc: Kees Cook <keescook@chromium.org>,
+	Eyal Birger <eyal.birger@gmail.com>,
+	Kees Cook <kees@kernel.org>,
+	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org,
 	x86@kernel.org,
@@ -59,9 +62,9 @@ Cc: bpf@vger.kernel.org,
 	David Laight <David.Laight@ACULAB.COM>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas@t-8ch.de>,
 	Ingo Molnar <mingo@kernel.org>
-Subject: [PATCHv5 perf/core 19/22] selftests/bpf: Change test_uretprobe_regs_change for uprobe and uretprobe
-Date: Fri, 11 Jul 2025 10:29:27 +0200
-Message-ID: <20250711082931.3398027-20-jolsa@kernel.org>
+Subject: [PATCHv5 perf/core 20/22] seccomp: passthrough uprobe systemcall without filtering
+Date: Fri, 11 Jul 2025 10:29:28 +0200
+Message-ID: <20250711082931.3398027-21-jolsa@kernel.org>
 X-Mailer: git-send-email 2.50.0
 In-Reply-To: <20250711082931.3398027-1-jolsa@kernel.org>
 References: <20250711082931.3398027-1-jolsa@kernel.org>
@@ -73,113 +76,78 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Changing the test_uretprobe_regs_change test to test both uprobe
-and uretprobe by adding entry consumer handler to the testmod
-and making it to change one of the registers.
+Adding uprobe as another exception to the seccomp filter alongside
+with the uretprobe syscall.
 
-Making sure that changed values both uprobe and uretprobe handlers
-propagate to the user space.
+Same as the uretprobe the uprobe syscall is installed by kernel as
+replacement for the breakpoint exception and is limited to x86_64
+arch and isn't expected to ever be supported in i386.
 
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Eyal Birger <eyal.birger@gmail.com>
+Reviewed-by: Kees Cook <kees@kernel.org>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- .../selftests/bpf/prog_tests/uprobe_syscall.c        | 12 ++++++++----
- tools/testing/selftests/bpf/test_kmods/bpf_testmod.c | 11 +++++++++--
- 2 files changed, 17 insertions(+), 6 deletions(-)
+ kernel/seccomp.c | 32 +++++++++++++++++++++++++-------
+ 1 file changed, 25 insertions(+), 7 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-index fc0b75dd9c36..aa779e200202 100644
---- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-+++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-@@ -207,7 +207,7 @@ static int write_bpf_testmod_uprobe(unsigned long offset)
- 	return ret != n ? (int) ret : 0;
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index 41aa761c7738..7daf2da09e8e 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -741,6 +741,26 @@ seccomp_prepare_user_filter(const char __user *user_filter)
  }
  
--static void test_uretprobe_regs_change(void)
-+static void test_regs_change(void)
- {
- 	struct pt_regs before = {}, after = {};
- 	unsigned long *pb = (unsigned long *) &before;
-@@ -221,6 +221,9 @@ static void test_uretprobe_regs_change(void)
- 	if (!ASSERT_OK(err, "register_uprobe"))
- 		return;
- 
-+	/* make sure uprobe gets optimized */
-+	uprobe_regs_trigger();
-+
- 	uprobe_regs(&before, &after);
- 
- 	err = write_bpf_testmod_uprobe(0);
-@@ -643,7 +646,6 @@ static void test_uretprobe_shadow_stack(void)
- 
- 	test_uprobe_regs_equal(false);
- 	test_uprobe_regs_equal(true);
--	test_uretprobe_regs_change();
- 	test_uretprobe_syscall_call();
- 
- 	test_uprobe_legacy();
-@@ -651,6 +653,8 @@ static void test_uretprobe_shadow_stack(void)
- 	test_uprobe_session();
- 	test_uprobe_usdt();
- 
-+	test_regs_change();
-+
- 	shstk_is_enabled = false;
- 
- 	ARCH_PRCTL(ARCH_SHSTK_DISABLE, ARCH_SHSTK_SHSTK);
-@@ -799,8 +803,6 @@ static void __test_uprobe_syscall(void)
- {
- 	if (test__start_subtest("uretprobe_regs_equal"))
- 		test_uprobe_regs_equal(true);
--	if (test__start_subtest("uretprobe_regs_change"))
--		test_uretprobe_regs_change();
- 	if (test__start_subtest("uretprobe_syscall_call"))
- 		test_uretprobe_syscall_call();
- 	if (test__start_subtest("uretprobe_shadow_stack"))
-@@ -819,6 +821,8 @@ static void __test_uprobe_syscall(void)
- 		test_uprobe_sigill();
- 	if (test__start_subtest("uprobe_regs_equal"))
- 		test_uprobe_regs_equal(false);
-+	if (test__start_subtest("regs_change"))
-+		test_regs_change();
- }
- #else
- static void __test_uprobe_syscall(void)
-diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-index e9e918cdf31f..511911053bdc 100644
---- a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-@@ -500,15 +500,21 @@ static struct bin_attribute bin_attr_bpf_testmod_file __ro_after_init = {
-  */
- #ifdef __x86_64__
- 
-+static int
-+uprobe_handler(struct uprobe_consumer *self, struct pt_regs *regs, __u64 *data)
+ #ifdef SECCOMP_ARCH_NATIVE
++static bool seccomp_uprobe_exception(struct seccomp_data *sd)
 +{
-+	regs->cx = 0x87654321feebdaed;
-+	return 0;
++#if defined __NR_uretprobe || defined __NR_uprobe
++#ifdef SECCOMP_ARCH_COMPAT
++	if (sd->arch == SECCOMP_ARCH_NATIVE)
++#endif
++	{
++#ifdef __NR_uretprobe
++		if (sd->nr == __NR_uretprobe)
++			return true;
++#endif
++#ifdef __NR_uprobe
++		if (sd->nr == __NR_uprobe)
++			return true;
++#endif
++	}
++#endif
++	return false;
 +}
 +
- static int
- uprobe_ret_handler(struct uprobe_consumer *self, unsigned long func,
- 		   struct pt_regs *regs, __u64 *data)
+ /**
+  * seccomp_is_const_allow - check if filter is constant allow with given data
+  * @fprog: The BPF programs
+@@ -758,13 +778,8 @@ static bool seccomp_is_const_allow(struct sock_fprog_kern *fprog,
+ 		return false;
  
- {
- 	regs->ax  = 0x12345678deadbeef;
--	regs->cx  = 0x87654321feebdaed;
- 	regs->r11 = (u64) -1;
--	return true;
-+	return 0;
- }
+ 	/* Our single exception to filtering. */
+-#ifdef __NR_uretprobe
+-#ifdef SECCOMP_ARCH_COMPAT
+-	if (sd->arch == SECCOMP_ARCH_NATIVE)
+-#endif
+-		if (sd->nr == __NR_uretprobe)
+-			return true;
+-#endif
++	if (seccomp_uprobe_exception(sd))
++		return true;
  
- struct testmod_uprobe {
-@@ -520,6 +526,7 @@ struct testmod_uprobe {
- static DEFINE_MUTEX(testmod_uprobe_mutex);
- 
- static struct testmod_uprobe uprobe = {
-+	.consumer.handler = uprobe_handler,
- 	.consumer.ret_handler = uprobe_ret_handler,
+ 	for (pc = 0; pc < fprog->len; pc++) {
+ 		struct sock_filter *insn = &fprog->filter[pc];
+@@ -1042,6 +1057,9 @@ static const int mode1_syscalls[] = {
+ 	__NR_seccomp_read, __NR_seccomp_write, __NR_seccomp_exit, __NR_seccomp_sigreturn,
+ #ifdef __NR_uretprobe
+ 	__NR_uretprobe,
++#endif
++#ifdef __NR_uprobe
++	__NR_uprobe,
+ #endif
+ 	-1, /* negative terminated */
  };
- 
 -- 
 2.50.0
 
