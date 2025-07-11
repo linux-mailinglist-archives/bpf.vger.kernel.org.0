@@ -1,160 +1,152 @@
-Return-Path: <bpf+bounces-63086-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63087-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85F7BB024AD
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 21:36:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2BC9B0259F
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 22:12:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7E7C5C1E12
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 19:36:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD87F1C87DB1
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 20:12:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E1A61EBA1E;
-	Fri, 11 Jul 2025 19:36:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B04E1EFFB4;
+	Fri, 11 Jul 2025 20:12:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gQFuFEk2"
+	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="NtcblmHA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D0525FDA7;
-	Fri, 11 Jul 2025 19:36:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B48858F7D
+	for <bpf@vger.kernel.org>; Fri, 11 Jul 2025 20:12:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752262571; cv=none; b=ZuQi5IdfBuv+0oki0HBSOZl8pov5wlbJGAOv9Maat9Rc4gDfYlM9xIef6U5RAV3jY1nv+eZs8WnwYh+lreqof03cKElLuiDMPxRP1DJaUWzed5PksZz8FsB3SOn0hrPvGHrmWI0JWix/EusO9RqNbrMfiZym004qeHe7eS4uBPk=
+	t=1752264733; cv=none; b=abVyhbZ/P9RfLvwJOOGhho0Igvzw1C/IYS1fTtiNm+btpvmk7CNVz0nYZ+kMwwm3iM9xB4Yk8vkWRpo/1novzPyJ3BxIavyWIvqQeZbMbgyrDC44MqFrbPVP3vugPDlCqutLJOwfumR8EjjUDz8rVqUFQZmfXkV/AkhAcdqYtqg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752262571; c=relaxed/simple;
-	bh=2JyjkZbaVpOcZNXUr6/+YHVMQgQYM+1Zvh45n+aaKwo=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E10dW2tlAbTlZrTqKoNMpgKbglw8HWM0lYTWb4/By6PXsd+mnOLp8Yhyz9eRTA5l5Vb2bqdaQ5xmMBfd8IbM/ejT68QZPja07lDaZ8txFo5jp1yRN3h54aZbep26LqD2sxuszEvynaE32a0XznGrdDGe9QQH5dM8FDAdjrqGrQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gQFuFEk2; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-608acb0a27fso3471281a12.0;
-        Fri, 11 Jul 2025 12:36:09 -0700 (PDT)
+	s=arc-20240116; t=1752264733; c=relaxed/simple;
+	bh=nYBIC1cfNhcOSNos5d0rruIfECn9sPTg6nAnq9AbfuA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Jnf1RUE32AZsT0Wr717xlCT/30dZ9UNLhse0MHjY+UBrjqPSqtrsy0+t+cUSu0/vqRaubLbpXz70FyJ+V4ADfYTp6PEF9SJ7Bxubezxd86ym4G99JCDyw5t8eSaraWvcSarwpnnRmHS+r9TOqDxPGwjqu1HxpIjVaGFXyGyFXgk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=NtcblmHA; arc=none smtp.client-ip=209.85.160.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-4a585dc5f4aso30200301cf.2
+        for <bpf@vger.kernel.org>; Fri, 11 Jul 2025 13:12:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752262568; x=1752867368; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zIfOn6Rb3tfseofOmKK1vxMi7RNeHNheLMa9bMxs2dU=;
-        b=gQFuFEk2mQShfqaO0EsmvmDIZ96zNnjv/LqQPCW9uBn9JXa8LVuKNX5DANWDXy+jCS
-         5xKv+7U0nwfSyVwHekw6/JjjHj6W8tZDgb1GIMom1dEqsbcn3mXE2Y9FcHXnea4h767D
-         naB44CU3AOmz+948/1AuDRk0MsuHprvrTOvNkTmmTFL5qs0AEDufB3307wyrfUIsjPTZ
-         83RPhvxIFeZq8vkBVEBd+b2gLcbrw8LJBcbZkXd29HT7L3Dq/BJCuxOkyeZOYQwZwmEt
-         UfNI26YFSTfiyQmCb3W+Q106mxL4AhjmKVMZoiZG+brKn5jL49ozGlZf48R2xe6x05Cg
-         f7Nw==
+        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1752264730; x=1752869530; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gVnBw/jHbFm/CiXCRb8gj3cs9NgJcH3mTdOU/L7Hito=;
+        b=NtcblmHAVKqWOTm1Hk8eRXbBXHJbH1NWGIwj0/baWKpRmOgPNMPjGQpcdEqdhYjw3+
+         BAM4jnbvWGVeI+uB9RphG9mQwwKkq58fGsxJLIvE5txRXGBdnXLnrp1KZSqxxfLGfZH0
+         wAJuhPDNwEB8gQ9CV1UJI3KzW0PdbHlKatStlFNWc249PQ97ZUi37VZmGOHnkbxjRM05
+         DKh8733bfL84bTw+Huj2o9GUjxYzzGuRc7Z+UuZulgAlWdwif8aq0n4vb//glGn/Etxe
+         9jc19DnUujmuIaukw53e2NSjJfDnC5fD2xu0XfPwuMgmmYm8UnaSSzBxlzlohG+P7i96
+         n76A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752262568; x=1752867368;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zIfOn6Rb3tfseofOmKK1vxMi7RNeHNheLMa9bMxs2dU=;
-        b=dRJusogo6NHR/ULLSej8Z3rNy1rrKhOp1jvqmbX0bYCrEDbRq391XOD18MMNK1gYkJ
-         3Zd4tYot1HCB11YBvyN4lDrqu6l4jG4XfTAhTbxWBNCF8jhZnbSUN9uTYIk+9MgVu6WC
-         CpxR/am45hUMcCUl4hfQUjHB6oHGNC0+2c1HrQzdxzApOIpVossfxkyEKKUAy98TZNiP
-         z6LVZdkh1Vas1lEBN32AMBesr74TwBHwh7zYwdybTl/iiN2SJBHYvyKZIyEE7BTvX/yK
-         SeXFaScBcg/YkXmI40/wadPN4Rko4j3hqikkkbhDqa4AXuhH9VIr8V24PPO60peN+27o
-         LMrw==
-X-Forwarded-Encrypted: i=1; AJvYcCW/lxBhJJxDM+vwU6/dpiBR1/zpx2TAbsUrki0lPyN4HUuNcAlrPEEvz0z5rI2jcGlSsls=@vger.kernel.org, AJvYcCWqVwHtNIO/SbAJj5xdzmaO4mzu/21LBVx9SnSlglvJu3krMEPH18ZWJhOKSzd/H3Sc9akAjDqFU5sQjp+Mng6kV9m9@vger.kernel.org, AJvYcCXuqe+d8dXPImlK3rvf39OXreWS1G0lw7Es1ecxvlfdIUS1uPNGdy4DsSAQeoYxZ3nVVaK7S5HXKqx06vU1@vger.kernel.org
-X-Gm-Message-State: AOJu0YyRVocii2TA8NdGJqcgtJ7CCkFWjL3xwFzbctUwER0NXbcm+BNa
-	xqHlGlf3iW3F3Kn+8808DJfZsqoqcJEegP6escc/pIRRvxB02oWpUSx8
-X-Gm-Gg: ASbGncv4go8QWHFCrBPCiBxPyKLt8+xnc5wodzy3CEqPlVf8V+j84tfVJCDIOlz2exa
-	TYhCA++LKt43EREf60AawICO/vY9IGbbka9TbqzZJViqd2v0ys2JA5HpQdyIkh/Vc64lAmsrqN1
-	es0581mZ6nuIPcItO6EC05GATJ0lDUUPxiRSmE43apIzj2/x8mznq8q2ejWc8hX5KuZ+7/pdN/a
-	iWgMpOypCOvLArQYRSkS6Fz/r5kbsy3hNtx75MOswlUqrddIJdvu4Hb62nQ3myOEm3geKSRmiwE
-	RJu8WUDqfs8DwQqebwJUhQhu441SOeH0/PrSgRMBp+kSM5yyqrLxgjn5iAu381JkkQFysKEa2px
-	YJeyhsNeB4Q==
-X-Google-Smtp-Source: AGHT+IFDvB4IMf95WTCzX7Zq4Ah+hUJyynqhCkjv6kas9TazcKdgKM0N+esvU7a8CHSkhakrT8CgRA==
-X-Received: by 2002:a05:6402:42d4:b0:604:a869:67e9 with SMTP id 4fb4d7f45d1cf-611e8479c1amr3737986a12.22.1752262568011;
-        Fri, 11 Jul 2025 12:36:08 -0700 (PDT)
-Received: from krava ([176.74.159.170])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-611c973360bsm2615306a12.45.2025.07.11.12.36.07
+        d=1e100.net; s=20230601; t=1752264730; x=1752869530;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gVnBw/jHbFm/CiXCRb8gj3cs9NgJcH3mTdOU/L7Hito=;
+        b=MO/tmjnQJ5X+A3pw2Qi9jUbdKmEstQLL6S3LibRp0iJxNyMnkEV2hIvhdiAFZ4IRjz
+         hsP4anKiWRnTEaU0qOJ/HYxOhdrCmoPbZ0JsmqtybTk1/NBiKF8af5qKM81GGymN48ID
+         jDpNFz+KleyKWRHGJg3FnwJzb6mpkYZsL1eKwXTSL9jU0jLRIaBEoAZfQxy5hYIcojUO
+         k56evuih5Q3kMlIRbCzZYYBFRrYiYRtZbHScpgiFCY8N9Z+CpPW37wjLG44lrYk5zrZZ
+         h1CphC4P/poahdItOCkNOkh3gs4mdPcHJJlNzRDcEhyrMnlX2/+Bl1X9j/6p0hQ5Kagd
+         CPLw==
+X-Gm-Message-State: AOJu0YxTXOBufeZE/SYB9x1zD2z3wJuN+slzKczvpckiFCzlvGWefYWJ
+	r4TDXf87lIu6XW+nobjPYKqW6FumLd2cGXE9AfbmWtuV43zQ8zg6YCRH8b6MUdySmMUYbitRVtF
+	O70M04Lk=
+X-Gm-Gg: ASbGnctXbLXRoU8GVwUuAKBmblB9J3Eli4FHmQFxpZE5fEzaYIfyFUIYCqgT9Gsuamh
+	8s8NZQe6ih/SFQ+yS0Rt5dmlQI57thzvhIDlIItyTcUkQh9ozdyd4X5Qjj7l3SNUZRj2an2YIQ6
+	ivlhAImXcuOLBMBRTB5j/bT8hkNmR9f7rRqXeXQ5Dc6xQSS2fjQfDmi86jwKcqSz2On4fW33pTk
+	ltkgsqZQTBg2TRi3pEgXU+6u04EZ7fNZ1lxeKCsvpndPLSI0Z8hCjazgKhA8E7vJd4+2jRvdAxu
+	jb1zmbHVzUYLBrK95nmLQFZAMyj9QuAto0ZKACX8AU2qu00VJPg2Wh3vJxQssW+JvZVzHipEkCM
+	0hT4CEehppzvlLUmHPkE=
+X-Google-Smtp-Source: AGHT+IGUpayLT5iSJowHpRR8b8NrC0zUvVnEv/pjBZ1BpI5AZ74xmTQa99E3+224vikFWyZNxYvWsg==
+X-Received: by 2002:a05:622a:4684:b0:4ab:3b66:55dd with SMTP id d75a77b69052e-4ab3b6658aamr33462231cf.17.1752264730346;
+        Fri, 11 Jul 2025 13:12:10 -0700 (PDT)
+Received: from boreas.. ([140.174.215.70])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4a9edefb923sm24392771cf.75.2025.07.11.13.12.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jul 2025 12:36:07 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 11 Jul 2025 21:36:06 +0200
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	x86@kernel.org, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	David Laight <David.Laight@aculab.com>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
-	Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCHv5 perf/core 08/22] uprobes/x86: Add mapping for optimized
- uprobe trampolines
-Message-ID: <aHFnppb8xUGyezsK@krava>
-References: <20250711082931.3398027-1-jolsa@kernel.org>
- <20250711082931.3398027-9-jolsa@kernel.org>
- <20250711174631.GB11322@redhat.com>
+        Fri, 11 Jul 2025 13:12:10 -0700 (PDT)
+From: Emil Tsalapatis <emil@etsalapatis.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	memxor@gmail.com,
+	yonghong.song@linux.dev,
+	sched-ext@meta.com,
+	Emil Tsalapatis <emil@etsalapatis.com>
+Subject: [PATCH] bpf/verifier: factor BPF_F_TEST_RND_HI32 flag check out of opt_subreg_zext_lo32_rnd_hi32
+Date: Fri, 11 Jul 2025 16:11:59 -0400
+Message-ID: <20250711201159.75592-1-emil@etsalapatis.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250711174631.GB11322@redhat.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jul 11, 2025 at 07:46:32PM +0200, Oleg Nesterov wrote:
-> On 07/11, Jiri Olsa wrote:
-> >
-> > +static unsigned long find_nearest_trampoline(unsigned long vaddr)
-> > +{
-> > +	struct vm_unmapped_area_info info = {
-> > +		.length     = PAGE_SIZE,
-> > +		.align_mask = ~PAGE_MASK,
-> > +	};
-> > +	unsigned long low_limit, high_limit;
-> > +	unsigned long low_tramp, high_tramp;
-> > +	unsigned long call_end = vaddr + 5;
-> > +
-> > +	if (check_add_overflow(call_end, INT_MIN, &low_limit))
-> > +		low_limit = PAGE_SIZE;
-> > +
-> > +	high_limit = call_end + INT_MAX;
-> > +
-> > +	/* Search up from the caller address. */
-> > +	info.low_limit = call_end;
-> > +	info.high_limit = min(high_limit, TASK_SIZE);
-> > +	high_tramp = vm_unmapped_area(&info);
-> > +
-> > +	/* Search down from the caller address. */
-> > +	info.low_limit = max(low_limit, PAGE_SIZE);
-> > +	info.high_limit = call_end;
-> > +	info.flags = VM_UNMAPPED_AREA_TOPDOWN;
-> > +	low_tramp = vm_unmapped_area(&info);
-> > +
-> > +	if (IS_ERR_VALUE(high_tramp) && IS_ERR_VALUE(low_tramp))
-> > +		return -ENOMEM;
-> > +	if (IS_ERR_VALUE(high_tramp))
-> > +		return low_tramp;
-> > +	if (IS_ERR_VALUE(low_tramp))
-> > +		return high_tramp;
-> > +
-> > +	/* Return address that's closest to the caller address. */
-> > +	if (call_end - low_tramp < high_tramp - call_end)
-> > +		return low_tramp;
-> > +	return high_tramp;
-> > +}
-> 
-> IIUC, nothing else has changed since I've acked the previous version?
-> Then my ack still stands,
+BPF programs can be loaded with the BPF_F_TEST_RND_HI32 flag to instruct
+the verifier to randomize the high 32 bits of a register being used as a
+subregister. This is done in the opt_subreg_zext_lo32_rnd_hi32 pass that
+scans the BPF program instruction by instruction, regardless of whether
+the flag is set or not, and testing the flag on every iteration. However,
+the flag is not modified at verification time, and the function is a no-op
+if it is unset.
 
-correct, just the find_nearest_trampoline function
+Gate the randomization pass behind a single flag check instead of
+testing the flag in the main loop of the pass.
 
-> 
-> Acked-by: Oleg Nesterov <oleg@redhat.com>
-> 
+Signed-off-by: Emil Tsalapatis <emil@etsalapatis.com>
+---
+ kernel/bpf/verifier.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-thanks,
-jirka
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index e2fcea860755..dc0981205d6a 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -21062,9 +21062,7 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
+ 	int i, patch_len, delta = 0, len = env->prog->len;
+ 	struct bpf_insn *insns = env->prog->insnsi;
+ 	struct bpf_prog *new_prog;
+-	bool rnd_hi32;
+ 
+-	rnd_hi32 = attr->prog_flags & BPF_F_TEST_RND_HI32;
+ 	zext_patch[1] = BPF_ZEXT_REG(0);
+ 	rnd_hi32_patch[1] = BPF_ALU64_IMM(BPF_MOV, BPF_REG_AX, 0);
+ 	rnd_hi32_patch[2] = BPF_ALU64_IMM(BPF_LSH, BPF_REG_AX, 32);
+@@ -21080,9 +21078,6 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
+ 			u8 code, class;
+ 			u32 imm_rnd;
+ 
+-			if (!rnd_hi32)
+-				continue;
+-
+ 			code = insn.code;
+ 			class = BPF_CLASS(code);
+ 			if (load_reg == -1)
+@@ -24700,7 +24695,9 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
+ 	 * insns could be handled correctly.
+ 	 */
+ 	if (ret == 0 && !bpf_prog_is_offloaded(env->prog->aux)) {
+-		ret = opt_subreg_zext_lo32_rnd_hi32(env, attr);
++		if (attr->prog_flags & BPF_F_TEST_RND_HI32)
++			ret = opt_subreg_zext_lo32_rnd_hi32(env, attr);
++
+ 		env->prog->aux->verifier_zext = bpf_jit_needs_zext() ? !ret
+ 								     : false;
+ 	}
+-- 
+2.49.0
+
 
