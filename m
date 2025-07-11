@@ -1,307 +1,226 @@
-Return-Path: <bpf+bounces-62994-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-62995-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E223B010E9
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 03:45:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 844B2B01187
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 05:10:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED522764851
-	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 01:45:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD4C816D98F
+	for <lists+bpf@lfdr.de>; Fri, 11 Jul 2025 03:10:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EC99136352;
-	Fri, 11 Jul 2025 01:45:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 853531990D8;
+	Fri, 11 Jul 2025 03:10:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gh+OgkQ3"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="B0/4L3o0"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBDAA8F77;
-	Fri, 11 Jul 2025 01:45:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DA4870814
+	for <bpf@vger.kernel.org>; Fri, 11 Jul 2025 03:10:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752198338; cv=none; b=dIw3lzMgMmwgk2ThZq5h+pdekEsqf0an/TLEvuulF7QLC5Wpi+rlacmABn6agVAkQUq+g4x8ICRh0JvTY5yoSm4w2YqN/CBxCUbLRplAo1cMo/Dp/ZoDq6YGvPLsKbDgjCd1EBUpUkusPIaO0EDRVWN4mXCjsoTRs1u1ub67rQQ=
+	t=1752203441; cv=none; b=AF8zCSCd9iP/6z74qthAKjUYc0k3KloVZ3tDLNvscMw0hicDkuzDZE8IMLnzZiY9sSEETkOAIpZ2kvK0B6+AzDzUwVuHSkQi9PTRbB8Wv5MJ7SPAGNOHoorNVxkndTgOL8/ANpIYEdtSRLir7ciGpMJ8xdi/hdnV6iXFf8fCqMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752198338; c=relaxed/simple;
-	bh=gx8hEFVZ/aa1ORPcFqXp9sS5IQxNVLTFVczaBpglYsU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=u/XRwU16RgKWhb+8Fk49puuyCYnTvJP6ri2SKdAfxJeyboeR8h1HZhYO7ZO2+tEGqoiRRT9Xo+EZrg55n/XlKZ3MRTx0bNDXf+TBU4+RtANJAIKz6qLfixAV6KoKHXoAoOxKG52to60LhiwiEPsv86gVMNfsfVUTR79gNpJfrBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gh+OgkQ3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D279CC4CEE3;
-	Fri, 11 Jul 2025 01:45:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752198337;
-	bh=gx8hEFVZ/aa1ORPcFqXp9sS5IQxNVLTFVczaBpglYsU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Gh+OgkQ3BuemAnHv8zGCGZtsoFS95BSEA4GGuzcADG/mMvhWuwJkzZCEDKl9iTm1P
-	 hJgzyJWS2Z/8k0AUEDGr1x0GXw2Kn6/tUQLvLY1CWlOdjmArCgf3JBAaAlYK1w19mu
-	 wuZ8u3iZRHw00y/A0aAAAOHEm5vyr900LA4xGXwgBs2SuBl67tJ/IzHkTR7pGXRaUt
-	 lYKLOHmpucBpMXrNInjuWAKK7gHZ7sYUFla5qAWv+WWipAIMzNKOAvc5WPD3XMTdl7
-	 rdzWb3lHwJhN2BWiu03gu9E6X4zt+gfeXA2T5Aew0Rwbn0Wn3yci4GyIEgXdbMj7CV
-	 itUSbQJXD26yw==
-Date: Thu, 10 Jul 2025 18:45:35 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>, Simon Horman
- <horms@kernel.org>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Willem de Bruijn
- <willemdebruijn.kernel@gmail.com>, bpf@vger.kernel.org,
- kernel-team@meta.com, Willem de Bruijn <willemb@google.com>
-Subject: Re: [PATCH net-next v5 3/3] selftests: net: add netpoll basic
- functionality test
-Message-ID: <20250710184535.374a0643@kernel.org>
-In-Reply-To: <20250709-netpoll_test-v5-3-b3737895affe@debian.org>
-References: <20250709-netpoll_test-v5-0-b3737895affe@debian.org>
-	<20250709-netpoll_test-v5-3-b3737895affe@debian.org>
+	s=arc-20240116; t=1752203441; c=relaxed/simple;
+	bh=/m17edC0OXP7hMTmCRLK1oCb0lUyP4ccJ96sraTED0g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QHxovLyM9451qGfKkwypZHyZGLMYnd3kjwKxmeM75IXMIE6V+mawE37Wft3MzYWK1+w6sREH5pKy7R9WhEsbgVKd9QeD6Bgtj61P7LnBA07YW0jmf148uL7Rn/B4IJZ0JlsGwjjIHOIJYOnc7UmUZFpN8i2vGqPssRbFqmgUvQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=B0/4L3o0; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <2f8c792e-9675-4385-b1cb-10266c72bd45@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1752203437;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=x715/q+udRUTDW1yuo6mapYClglFmqiiqnYPKulS+Uk=;
+	b=B0/4L3o0Y6gI127BGVHuDHtJFgF+AxSK2e2eboTSclO75hweb+vut+vpNNJR0+esORmOPb
+	iEzHQKXsRD4WUJxU4FoQIvmtDPHMlD0rDq/RBXuITDuBKj14rkWE+7GqABcvUk9dgiFL3j
+	zgN0h/yLXpvQgYFr0YdjzuOlCZMA2PI=
+Date: Thu, 10 Jul 2025 20:10:29 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: [PATCH bpf-next v3] bpf: make the attach target more accurate
+Content-Language: en-GB
+To: Menglong Dong <menglong8.dong@gmail.com>, ast@kernel.org,
+ daniel@iogearbox.net
+Cc: john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Menglong Dong <dongml2@chinatelecom.cn>
+References: <20250710070835.260831-1-dongml2@chinatelecom.cn>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20250710070835.260831-1-dongml2@chinatelecom.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, 09 Jul 2025 02:08:17 -0700 Breno Leitao wrote:
-> Add a basic selftest for the netpoll polling mechanism, specifically
-> targeting the netpoll poll() side.
-> 
-> The test creates a scenario where network transmission is running at
-> maximum speed, and netpoll needs to poll the NIC. This is achieved by:
-> 
->   1. Configuring a single RX/TX queue to create contention
->   2. Generating background traffic to saturate the interface
->   3. Sending netconsole messages to trigger netpoll polling
->   4. Using dynamic netconsole targets via configfs
->   5. Delete and create new netconsole targets after some messages
->   6. Start a bpftrace in parallel to make sure netpoll_poll_dev() is
->      called
->   7. If bpftrace exists and netpoll_poll_dev() was called, stop.
-> 
-> The test validates a critical netpoll code path by monitoring traffic
-> flow and ensuring netpoll_poll_dev() is called when the normal TX path
-> is blocked.
 
-> +# Max number of netcons messages to send. Each iteration will setup
-> +# netconsole and send MAX_WRITES messages
-> +ITERATIONS: int = 20
-> +# Number of writes to /dev/kmsg per iteration
-> +MAX_WRITES: int = 40
 
-FWIW the test takes 25sec on our debug-heavy VMs right now.
-I think we can crank the writes quite a bit.. ?
+On 7/10/25 12:08 AM, Menglong Dong wrote:
+> For now, we lookup the address of the attach target in
+> bpf_check_attach_target() with find_kallsyms_symbol_value or
+> kallsyms_lookup_name, which is not accurate in some cases.
+>
+> For example, we want to attach to the target "t_next", but there are
+> multiple symbols with the name "t_next" exist in the kallsyms, which makes
+> the attach target ambiguous, and the attach should fail.
+>
+> Introduce the function bpf_lookup_attach_addr() to do the address lookup,
+> which will return -EADDRNOTAVAIL when the symbol is not unique.
+>
+> We can do the testing with following shell:
+>
+> for s in $(cat /proc/kallsyms | awk '{print $3}' | sort | uniq -d)
+> do
+>    if grep -q "^$s\$" /sys/kernel/debug/tracing/available_filter_functions
+>    then
+>      bpftrace -e "fentry:$s {printf(\"1\");}" -v
+>    fi
+> done
+>
+> The script will find all the duplicated symbols in /proc/kallsyms, which
+> is also in /sys/kernel/debug/tracing/available_filter_functions, and
+> attach them with bpftrace.
+>
+> After this patch, all the attaching fail with the error:
+>
+> The address of function xxx cannot be found
+> or
+> No BTF found for xxx
+>
+> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
 
-> +def ethtool_read_rx_tx_queue(interface_name: str) -> tuple[int, int]:
-> +    """
-> +    Read the number of RX and TX queues using ethtool. This will be used
-> +    to restore it after the test
-> +    """
-> +    rx_queue = 0
-> +    tx_queue = 0
+Maybe we should prevent vmlinux BTF generation for such symbols
+which are static and have more than one instances? This can
+be done in pahole and downstream libbpf/kernel do not
+need to do anything. This can avoid libbpf/kernel runtime overhead
+since bpf_lookup_attach_addr() could be expensive as it needs
+to go through ALL symbols, even for unique symbols.
+
+
+> ---
+> v3:
+> - reject all the duplicated symbols
+> v2:
+> - Lookup both vmlinux and modules symbols when mod is NULL, just like
+>    kallsyms_lookup_name().
+>
+>    If the btf is not a modules, shouldn't we lookup on the vmlinux only?
+>    I'm not sure if we should keep the same logic with
+>    kallsyms_lookup_name().
+>
+> - Return the kernel symbol that don't have ftrace location if the symbols
+>    with ftrace location are not available
+> ---
+>   kernel/bpf/verifier.c | 71 ++++++++++++++++++++++++++++++++++++++++---
+>   1 file changed, 66 insertions(+), 5 deletions(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 53007182b46b..bf4951154605 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -23476,6 +23476,67 @@ static int check_non_sleepable_error_inject(u32 btf_id)
+>   	return btf_id_set_contains(&btf_non_sleepable_error_inject, btf_id);
+>   }
+>   
+> +struct symbol_lookup_ctx {
+> +	const char *name;
+> +	unsigned long addr;
+> +};
 > +
-> +    try:
-> +        ethtool_result = ethtool(f"-g {interface_name}").stdout
+> +static int symbol_callback(void *data, unsigned long addr)
+> +{
+> +	struct symbol_lookup_ctx *ctx = data;
+> +
+> +	if (ctx->addr)
+> +		return -EADDRNOTAVAIL;
+> +	ctx->addr = addr;
+> +
+> +	return 0;
+> +}
+> +
+> +static int symbol_mod_callback(void *data, const char *name, unsigned long addr)
+> +{
+> +	if (strcmp(((struct symbol_lookup_ctx *)data)->name, name) != 0)
+> +		return 0;
+> +
+> +	return symbol_callback(data, addr);
+> +}
+> +
+> +/**
+> + * bpf_lookup_attach_addr: Lookup address for a symbol
+> + *
+> + * @mod: kernel module to lookup the symbol, NULL means to lookup both vmlinux
+> + * and modules symbols
+> + * @sym: the symbol to resolve
+> + * @addr: pointer to store the result
+> + *
+> + * Lookup the address of the symbol @sym. If multiple symbols with the name
+> + * @sym exist, -EADDRNOTAVAIL will be returned.
+> + *
+> + * Returns: 0 on success, -errno otherwise.
+> + */
+> +static int bpf_lookup_attach_addr(const struct module *mod, const char *sym,
+> +				  unsigned long *addr)
+> +{
+> +	struct symbol_lookup_ctx ctx = { .addr = 0, .name = sym };
+> +	const char *mod_name = NULL;
+> +	int err = 0;
+> +
+> +#ifdef CONFIG_MODULES
+> +	mod_name = mod ? mod->name : NULL;
+> +#endif
+> +	if (!mod_name)
+> +		err = kallsyms_on_each_match_symbol(symbol_callback, sym, &ctx);
+> +
+> +	if (!err && !ctx.addr)
+> +		err = module_kallsyms_on_each_symbol(mod_name, symbol_mod_callback,
+> +						     &ctx);
+> +
+> +	if (!ctx.addr)
+> +		err = -ENOENT;
+> +	*addr = err ? 0 : ctx.addr;
+> +
+> +	return err;
+> +}
+> +
+>   int bpf_check_attach_target(struct bpf_verifier_log *log,
+>   			    const struct bpf_prog *prog,
+>   			    const struct bpf_prog *tgt_prog,
+> @@ -23729,18 +23790,18 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+>   			if (btf_is_module(btf)) {
+>   				mod = btf_try_get_module(btf);
+>   				if (mod)
+> -					addr = find_kallsyms_symbol_value(mod, tname);
+> +					ret = bpf_lookup_attach_addr(mod, tname, &addr);
+>   				else
+> -					addr = 0;
+> +					ret = -ENOENT;
+>   			} else {
+> -				addr = kallsyms_lookup_name(tname);
+> +				ret = bpf_lookup_attach_addr(NULL, tname, &addr);
+>   			}
+> -			if (!addr) {
+> +			if (ret) {
+>   				module_put(mod);
+>   				bpf_log(log,
+>   					"The address of function %s cannot be found\n",
+>   					tname);
+> -				return -ENOENT;
+> +				return ret;
+>   			}
+>   		}
+>   
 
-json=True please and you'll get a dict, on CLI you can try:
-
-ethtool --json -g eth0
-
-> +        for line in ethtool_result.splitlines():
-> +            if line.startswith("RX:"):
-> +                rx_queue = int(line.split()[1])
-> +            if line.startswith("TX:"):
-> +                tx_queue = int(line.split()[1])
-> +    except IndexError as exception:
-> +        raise KsftSkipEx(
-> +            f"Failed to read RX/TX queues numbers: {exception}. Not going to mess with them."
-> +        ) from exception
-> +
-> +    if not rx_queue or not tx_queue:
-> +        raise KsftSkipEx(
-> +            "Failed to read RX/TX queues numbers. Not going to mess with them."
-> +        )
-> +    return rx_queue, tx_queue
-> +
-> +
-> +def ethtool_set_rx_tx_queue(interface_name: str, rx_val: int, tx_val: int) -> None:
-> +    """Set the number of RX and TX queues to 1 using ethtool"""
-> +    try:
-> +        # This don't need to be reverted, since interfaces will be deleted after test
-
-Well. But that's easily fixed;
-
-	defer(ethtool, f"-G {interface_name} rx {prev_rx} tx {prev_tx}")
-
-> +        ethtool(f"-G {interface_name} rx {rx_val} tx {tx_val}")
-
-This is setting _ring size_ not queue count.
-I suppose we want both, this and queue count to 1 (with ethtool -l / -L)
-The ring size of 1 is unlikely to work on real devices.
-I'd try setting it to 128 and 256 and if neither sticks just carry on
-with whatever was there.
-
-> +    except Exception as exception:
-> +        raise KsftSkipEx(
-> +            f"Failed to configure RX/TX queues: {exception}. Ethtool not available?"
-> +        ) from exception
-> +
-> +
-> +def netcons_generate_random_target_name() -> str:
-> +    """Generate a random target name starting with 'netcons'"""
-> +    random_suffix = "".join(random.choices(string.ascii_lowercase + string.digits, k=8))
-> +    return f"netcons_{random_suffix}"
-> +
-> +
-> +def netcons_create_target(
-> +    config_data: dict[str, str],
-> +    target_name: str,
-> +) -> None:
-> +    """Create a netconsole dynamic target against the interfaces"""
-> +    logging.debug("Using netconsole name: %s", target_name)
-> +    try:
-> +        os.makedirs(f"{NETCONSOLE_CONFIGFS_PATH}/{target_name}", exist_ok=True)
-> +        logging.debug(
-> +            "Created target directory: %s/%s", NETCONSOLE_CONFIGFS_PATH, target_name
-> +        )
-> +    except OSError as exception:
-> +        if exception.errno != errno.EEXIST:
-> +            raise KsftFailEx(
-> +                f"Failed to create netconsole target directory: {exception}"
-> +            ) from exception
-> +
-> +    try:
-> +        for key, value in config_data.items():
-> +            path = f"{NETCONSOLE_CONFIGFS_PATH}/{target_name}/{key}"
-> +            logging.debug("Writing %s to %s", key, path)
-> +            with open(path, "w", encoding="utf-8") as file:
-> +                # Always convert to string to write to file
-> +                file.write(str(value))
-> +
-> +        # Read all configuration values for debugging purposes
-> +        for debug_key in config_data.keys():
-> +            with open(
-> +                f"{NETCONSOLE_CONFIGFS_PATH}/{target_name}/{debug_key}",
-> +                "r",
-> +                encoding="utf-8",
-> +            ) as file:
-> +                content = file.read()
-> +                logging.debug(
-> +                    "%s/%s/%s : %s",
-> +                    NETCONSOLE_CONFIGFS_PATH,
-> +                    target_name,
-> +                    debug_key,
-> +                    content.strip(),
-> +                )
-> +
-> +    except Exception as exception:
-> +        raise KsftFailEx(
-> +            f"Failed to configure netconsole target: {exception}"
-> +        ) from exception
-> +
-> +
-> +def netcons_configure_target(
-> +    cfg: NetDrvEpEnv, interface_name: str, target_name: str
-> +) -> None:
-> +    """Configure netconsole on the interface with the given target name"""
-> +    config_data = {
-> +        "extended": "1",
-> +        "dev_name": interface_name,
-> +        "local_port": NETCONS_LOCAL_PORT,
-> +        "remote_port": NETCONS_REMOTE_PORT,
-> +        "local_ip": cfg.addr_v["4"] if cfg.addr_ipver == "4" else cfg.addr_v["6"],
-> +        "remote_ip": (
-> +            cfg.remote_addr_v["4"] if cfg.addr_ipver == "4" else cfg.remote_addr_v["6"]
-> +        ),
-
-this is already done for you
-cfg.addr is either v4 or v6 depending on what was provided in the env
-
-> +        "remote_mac": "00:00:00:00:00:00",  # Not important for this test
-> +        "enabled": "1",
-> +    }
-> +
-> +    netcons_create_target(config_data, target_name)
-> +    logging.debug(
-> +        "Created netconsole target: %s on interface %s", target_name, interface_name
-> +    )
-> +
-> +
-> +def netcons_delete_target(name: str) -> None:
-> +    """Delete a netconsole dynamic target"""
-> +    target_path = f"{NETCONSOLE_CONFIGFS_PATH}/{name}"
-> +    try:
-> +        if os.path.exists(target_path):
-> +            os.rmdir(target_path)
-> +    except OSError as exception:
-> +        raise KsftFailEx(
-> +            f"Failed to delete netconsole target: {exception}"
-> +        ) from exception
-
-> +# toggle the interface up and down, to cause some congestion
-
-Let's not do this, you're missing disruptive annotation and for many
-drivers NAPI is stopped before queues
-https://github.com/linux-netdev/nipa/wiki/Guidance-for-test-authors#ksft_disruptive
-
-> +def toggle_interface(ifname: str) -> None:
-> +    """Toggle the interface up and down"""
-> +    logging.debug("Toggling interface %s", ifname)
-> +    try:
-> +        ip(f"link set dev {ifname} down")
-> +        # Send a message while the interface is down, just to
-> +        # cause more test scenarios. Netconsole should be
-> +        # going down here as well, giving the link was lost
-> +        with open("/dev/kmsg", "w", encoding="utf-8") as kmsg:
-> +            kmsg.write("netcons test while interface down\n")
-> +
-> +        ip(f"link set dev {ifname} up")
-> +    except Exception as exception:
-> +        raise KsftFailEx(f"Failed to toggle interface: {exception}") from exception
-> +
-
-> +def test_netpoll(cfg: NetDrvEpEnv) -> None:
-> +    """
-> +    Test netpoll by sending traffic to the interface and then sending
-> +    netconsole messages to trigger a poll
-> +    """
-> +
-> +    target_name = netcons_generate_random_target_name()
-> +    ifname = cfg.dev["ifname"]
-
-cfg.ifname 
-
-> +    traffic = None
-> +    original_queues = ethtool_read_rx_tx_queue(ifname)
-> +
-> +    try:
-> +        # Set RX/TX queues to 1 to force congestion
-> +        ethtool_set_rx_tx_queue(ifname, 1, 1)
-> +
-> +        traffic = GenerateTraffic(cfg)
-> +        do_netpoll_flush_monitored(cfg, ifname, target_name)
-> +    finally:
-> +        if traffic:
-> +            traffic.stop()
-> +
-> +        # Revert RX/TX queues
-> +        ethtool_set_rx_tx_queue(ifname, original_queues[0], original_queues[1])
-> +        netcons_delete_target(target_name)
-
-
-> +def main() -> None:
-> +    """Main function to run the test"""
-> +    netcons_load_module()
-> +    test_check_dependencies()
-> +    with NetDrvEpEnv(__file__, nsim_test=True) as cfg:
-
-I think nsim_test=True will make the test run _only_ on netdevsim.
-But there's nothing netdevsim specific here right?
-You can remove the argument and let's have this run against real
-drivers, too?
--- 
-pw-bot: cr
 
