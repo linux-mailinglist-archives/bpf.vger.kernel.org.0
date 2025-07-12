@@ -1,387 +1,114 @@
-Return-Path: <bpf+bounces-63108-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63109-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D29CB02874
-	for <lists+bpf@lfdr.de>; Sat, 12 Jul 2025 02:53:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F06AB028D5
+	for <lists+bpf@lfdr.de>; Sat, 12 Jul 2025 03:26:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E81517DB9F
-	for <lists+bpf@lfdr.de>; Sat, 12 Jul 2025 00:53:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D4EC1C84972
+	for <lists+bpf@lfdr.de>; Sat, 12 Jul 2025 01:26:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72C7B137C52;
-	Sat, 12 Jul 2025 00:53:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94C1E14D70E;
+	Sat, 12 Jul 2025 01:25:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uby2Dw8B"
+	dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b="AcRek1df"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC1A719A
-	for <bpf@vger.kernel.org>; Sat, 12 Jul 2025 00:53:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B54E013C82E
+	for <bpf@vger.kernel.org>; Sat, 12 Jul 2025 01:25:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752281597; cv=none; b=XrLveWr6Vbp8u3uFDMFFG0HLLVk0zc1FdvXse3kfeJ3Q5/6KLoo4jJtkl3Daahk8aE5v6uWujRl4DTJKPLX4/ba3XVvlGBN6mkiE+Y/nDxAJHwDY9LfZVp4Cwm02S4IEq0reRRCQFwhHXpqm+TtIB79F4pXkzZiXGHrjj1ZvHII=
+	t=1752283552; cv=none; b=R8ApiezFTLiaBYJRIxG1LqafgIUAQW324i/tNC4R5O/BbR3ObWOjbqbcUZVt6ZV+joUn2zZ4E3uqa5SPymmQ7xxLNaqBPEBsYTygM099wE0hr1yP21/NS8K6FNZYx5bf5mP/b+R0hYQCpQ8ADIdWm0u72Whe8+WxNyQ7Z4z8wAE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752281597; c=relaxed/simple;
-	bh=s6VIGtdfxV+eatOYDsMgTULIlZEulVzKLMh/N21mdoE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=l2xEvfTnAEws/PAYilhn+F/T15Uv37cWcv5lcu7t7Kt53c+FUQi3kIQTANLhqxbdi8/HAnslA8A36MiZczZ90Xm6317G14Lu66iahxPl9Z2k4J5A9prMa06zMyXvaHEfIzrZ1brB1La8FS6O6HgEwNy+gF+SRt3E6opjiXeMYaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uby2Dw8B; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBD05C4AF0B
-	for <bpf@vger.kernel.org>; Sat, 12 Jul 2025 00:53:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752281596;
-	bh=s6VIGtdfxV+eatOYDsMgTULIlZEulVzKLMh/N21mdoE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=uby2Dw8BdiK9gu/5X7XmJ6CeZmMaZnJxuYpKDv1ypb3qqw2iS37q+oUka1V1bJ++6
-	 SKFnVpALQAMLIQ+T3vBzvtirwwX7cl4r4dpz967rbQ2djGhqT1LVhkjpJoUGPeVxqt
-	 GK7AD+D+YeXJLUliwbzBXVR8OuiNRwsNr/6HCmdd7H+THoNGpjE2NyFFCzlu3dn/V0
-	 h+i+4AuYnwi5uNW4OqhsxTKy4sGXskkI/r7JgQBGff/djtiJnLYtEDwItyIODTkZyb
-	 NKYCdGW2YL1dQVJvhdBD8ADHWrk32Ss1LArBte0Uklsq4shzR3LlMI/lXTnJ4gUMZF
-	 Lggpiz+Fye55g==
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-60c5b8ee2d9so5705167a12.2
-        for <bpf@vger.kernel.org>; Fri, 11 Jul 2025 17:53:16 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yy77ZAhTHr3oaipYSHLHDaX8YGe3T47qVCTCEFQ8QGRryAloxTL
-	4xdYsq11/t1mZE0bX81aP5Vkg8KasOMRF5V4HaEGVExhIG5G3SGVsNbfi4aNb2VRNmkT7GoJ0JU
-	9WX9bFcMJKr2nrmhGEvSTYLWRgw5B04gJ3BkuaVm9
-X-Google-Smtp-Source: AGHT+IFeaZ3ExkyPAZNsU0XrPdlD7MkeWvqxUqZvxrrVgmjlhd4ffqAwiKa7KEZFxKKo8pIvPkNkhyZZzB5US7CQOjs=
-X-Received: by 2002:a05:6402:13ca:b0:60e:9e2:5844 with SMTP id
- 4fb4d7f45d1cf-611ed137bffmr3994220a12.32.1752281595164; Fri, 11 Jul 2025
- 17:53:15 -0700 (PDT)
+	s=arc-20240116; t=1752283552; c=relaxed/simple;
+	bh=PS2YgBqI+n0K9OhdaYssPwqWk1XPSWBqfkuPRBvwZM8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=enpVIm63FXRxnEtyfsWbgvYeXigVuJfOT1GkqM5iNzMym7vzAxkmdN6NXIJjYu8Xuvhl25zN9PWWXaGqBISJ1oaQzbn6O7YaYVfkgjJLEwmOhT0O8ZY4d0xAH7lqEtMRjVEfKGLRTmyNwvdE7ectodT+N9IEUwxEfYw06H6B7J0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io; spf=none smtp.mailfrom=jrife.io; dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b=AcRek1df; arc=none smtp.client-ip=209.85.216.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=jrife.io
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-31306794b30so439316a91.2
+        for <bpf@vger.kernel.org>; Fri, 11 Jul 2025 18:25:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jrife-io.20230601.gappssmtp.com; s=20230601; t=1752283550; x=1752888350; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zm6O7L5piyBZEAF6L3BH1tqbFWWMqUD4pr03r8tz/i8=;
+        b=AcRek1dfD6NvJvobvk2gb9M0zZKloTJD22zrSH6ZflwLglr3X6dwRbZOH1G1UsDCZn
+         ZjpAo8NZ61BAUPo8AXFRT5AF98i0m9BG9T/0+vQg7n+pI/sxgtOgpfhTgaAsvJTJnu4C
+         JnD35NQfIghkultM0Y7Q1Z8DNw1bMBY8SSdOBS8p/SjkqeAC/yqAuZjHvxazN9L676DR
+         npdtcsc3f1nNZh9GF2n/RIDaGXyEOsq6qUVuAF55tW2deYW6uJevvbIKOCy6s/fpJeoJ
+         gVvK/MqCgYm5Wr0j0HBB2y/L75Sd1yndJBF9mCb6m02bvGBotATIPikGeu7TBzOnDAEy
+         skiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752283550; x=1752888350;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zm6O7L5piyBZEAF6L3BH1tqbFWWMqUD4pr03r8tz/i8=;
+        b=S1nXsse4/CAQbhvY5k1g6eFB5kumOShRpGPUuwJ0q+dKw2V55I7atYVV9I6MhTAgxc
+         jui82Uk/YE9Kw6CP50cqkFxK+g6aK4iAi2SJw0gBgpZ2Kd1gZeemLVtn37XGpiTpxXjD
+         D6n9fh8ymNqNMddU9KGSlyFx+SBGSvTKR4SYBKnTEfEY+NGwe1pSjoB9Y1J3lDtOjgui
+         3qOH0COeOJ/Gjd/vkHRnAFfu99oMbtzLnxAXUW4dtqj/X7Qdv9FsHLiPa0g4EeUYZXcV
+         f7Ni/mW3g76oRYOv8yhc8RWF6QBr5Uw/0P8huakVCKxV3HQcYSI71Dladr3L38Msd+rT
+         DhVg==
+X-Forwarded-Encrypted: i=1; AJvYcCXxAOG2QkzNQAJLiRY6IlW2wh756+7BHi3useGvo+fSmmOwYlOQ+/fvnBAxSLfoEbZGd8I=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwQNn2VLRUh4rO647H3z/mn2woEpmbX8BgVva7QMdYPMoRLPzBP
+	9vlksOCzBx45s+SjVIKYRl8//IbedLWmf1wI+TkrHZtJqctLPxv8XIokdF+qojEXo7s=
+X-Gm-Gg: ASbGncsuQOwi5lrfamXu5Lkh0xtCqAE/+8Ux0gI9/y7dhK1rrL3ULJ7kmH/iQw6eunD
+	6MDCe9K8ncAaryYbmcXDZ6Crq5GMqd7LrFHY4niZm3sEKN8CxWCUhJUAvt+giSXBurXy1Rus50P
+	vkHQEZuwK5o+S386yx6hgmWaTRiEwbRXy1J8KlhqZbddALXHg3yFBJyoo1DgkrUcQQjGhclNX39
+	lI9Yq9a+/rcYg3iFGFT/1/WSu7qjks0BWCdkdZp7M72XE1uAfA8xDrW6PbUVuknBIyuPOFD7dEL
+	uyk/7XxO7B1QAQWMprBe9MLMDoJxMfKGeaA+Uz50N62/hS7fm54nuXLv5pc45iQs6U1Ze1ONVJb
+	9xGEIYb0=
+X-Google-Smtp-Source: AGHT+IGZCes+k3Vgx7XWiAeA3ycb+6xDmUCazWi2pxvLOmeNDxdiC/fXDYp+kKtkRTAXwgnG+QF8Ag==
+X-Received: by 2002:a17:90b:4e87:b0:311:488:f506 with SMTP id 98e67ed59e1d1-31c4f545d00mr2518810a91.6.1752283549493;
+        Fri, 11 Jul 2025 18:25:49 -0700 (PDT)
+Received: from t14 ([2001:5a8:4528:b100:e3b0:5676:c947:423])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23de434141fsm53894615ad.168.2025.07.11.18.25.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Jul 2025 18:25:49 -0700 (PDT)
+Date: Fri, 11 Jul 2025 18:25:46 -0700
+From: Jordan Rife <jordan@jrife.io>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Kuniyuki Iwashima <kuniyu@google.com>, 
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Stanislav Fomichev <stfomichev@gmail.com>, 
+	netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v5 bpf-next 10/12] selftests/bpf: Create established
+ sockets in socket iterator tests
+Message-ID: <4hymd6ivknwleq7fvdicod6fdnbtlf3fqwkbjadfg5dsumfhcz@7gdrkdbocywe>
+References: <20250709230333.926222-1-jordan@jrife.io>
+ <20250709230333.926222-11-jordan@jrife.io>
+ <2c66f688-988f-4f55-a822-de5686178b1a@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250606232914.317094-1-kpsingh@kernel.org> <20250606232914.317094-6-kpsingh@kernel.org>
- <CAEf4BzYiWv9suM6PuyJuFaDiRUXZxOhy1_pBkHqZwGN+Nn=2Eg@mail.gmail.com>
-In-Reply-To: <CAEf4BzYiWv9suM6PuyJuFaDiRUXZxOhy1_pBkHqZwGN+Nn=2Eg@mail.gmail.com>
-From: KP Singh <kpsingh@kernel.org>
-Date: Sat, 12 Jul 2025 02:53:04 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ7_JfCmDC5mdjTUzO3ZKA2E1-WamPMxQ5F0iLoKgaFrAQ@mail.gmail.com>
-X-Gm-Features: Ac12FXzke_PzyxBP9PyCqnvk0shgcwsWXz3O4PADWUhlBlf48v5E0ykMkipDG3k
-Message-ID: <CACYkzJ7_JfCmDC5mdjTUzO3ZKA2E1-WamPMxQ5F0iLoKgaFrAQ@mail.gmail.com>
-Subject: Re: [PATCH 05/12] libbpf: Support exclusive map creation
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	bboscaccy@linux.microsoft.com, paul@paul-moore.com, kys@microsoft.com, 
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2c66f688-988f-4f55-a822-de5686178b1a@linux.dev>
 
-On Fri, Jun 13, 2025 at 12:56=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Fri, Jun 6, 2025 at 4:29=E2=80=AFPM KP Singh <kpsingh@kernel.org> wrot=
-e:
-> >
-> > Implement a convenient method i.e. bpf_map__make_exclusive which
-> > calculates the hash for the program and registers it with the map for
-> > creation as an exclusive map when the objects are loaded.
-> >
-> > The hash of the program must be computed after all the relocations are
-> > done.
-> >
-> > Signed-off-by: KP Singh <kpsingh@kernel.org>
-> > ---
-> >  tools/lib/bpf/bpf.c            |  4 +-
-> >  tools/lib/bpf/bpf.h            |  4 +-
-> >  tools/lib/bpf/libbpf.c         | 68 +++++++++++++++++++++++++++++++++-
-> >  tools/lib/bpf/libbpf.h         | 13 +++++++
-> >  tools/lib/bpf/libbpf.map       |  5 +++
-> >  tools/lib/bpf/libbpf_version.h |  2 +-
-> >  6 files changed, 92 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> > index a9c3e33d0f8a..11fa2d64ccca 100644
-> > --- a/tools/lib/bpf/bpf.c
-> > +++ b/tools/lib/bpf/bpf.c
-> > @@ -172,7 +172,7 @@ int bpf_map_create(enum bpf_map_type map_type,
-> >                    __u32 max_entries,
-> >                    const struct bpf_map_create_opts *opts)
-> >  {
-> > -       const size_t attr_sz =3D offsetofend(union bpf_attr, map_token_=
-fd);
-> > +       const size_t attr_sz =3D offsetofend(union bpf_attr, excl_prog_=
-hash);
-> >         union bpf_attr attr;
-> >         int fd;
-> >
-> > @@ -203,6 +203,8 @@ int bpf_map_create(enum bpf_map_type map_type,
-> >         attr.map_ifindex =3D OPTS_GET(opts, map_ifindex, 0);
-> >
-> >         attr.map_token_fd =3D OPTS_GET(opts, token_fd, 0);
-> > +       attr.excl_prog_hash =3D ptr_to_u64(OPTS_GET(opts, excl_prog_has=
-h, NULL));
-> > +       attr.excl_prog_hash_size =3D OPTS_GET(opts, excl_prog_hash_size=
-, 0);
-> >
-> >         fd =3D sys_bpf_fd(BPF_MAP_CREATE, &attr, attr_sz);
-> >         return libbpf_err_errno(fd);
-> > diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-> > index 777627d33d25..a82b79c0c349 100644
-> > --- a/tools/lib/bpf/bpf.h
-> > +++ b/tools/lib/bpf/bpf.h
-> > @@ -54,9 +54,11 @@ struct bpf_map_create_opts {
-> >         __s32 value_type_btf_obj_fd;
-> >
-> >         __u32 token_fd;
-> > +       __u32 excl_prog_hash_size;
-> > +       const void *excl_prog_hash;
-> >         size_t :0;
-> >  };
-> > -#define bpf_map_create_opts__last_field token_fd
-> > +#define bpf_map_create_opts__last_field excl_prog_hash
-> >
-> >  LIBBPF_API int bpf_map_create(enum bpf_map_type map_type,
-> >                               const char *map_name,
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index 475038d04cb4..17de756973f4 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -499,6 +499,7 @@ struct bpf_program {
-> >         __u32 line_info_rec_size;
-> >         __u32 line_info_cnt;
-> >         __u32 prog_flags;
-> > +       __u8  hash[SHA256_DIGEST_LENGTH];
-> >  };
-> >
-> >  struct bpf_struct_ops {
-> > @@ -578,6 +579,8 @@ struct bpf_map {
-> >         bool autocreate;
-> >         bool autoattach;
-> >         __u64 map_extra;
-> > +       const void *excl_prog_sha;
-> > +       __u32 excl_prog_sha_size;
-> >  };
-> >
-> >  enum extern_type {
-> > @@ -4485,6 +4488,43 @@ bpf_object__section_to_libbpf_map_type(const str=
-uct bpf_object *obj, int shndx)
-> >         }
-> >  }
-> >
-> > +static int bpf_program__compute_hash(struct bpf_program *prog)
-> > +{
-> > +       struct bpf_insn *purged;
-> > +       bool was_ld_map;
-> > +       int i, err;
-> > +
-> > +       purged =3D calloc(1, BPF_INSN_SZ * prog->insns_cnt);
-> > +       if (!purged)
-> > +               return -ENOMEM;
-> > +
-> > +       /* If relocations have been done, the map_fd needs to be
-> > +        * discarded for the digest calculation.
-> > +        */
->
-> all this looks sketchy, let's think about some more robust approach
-> here rather than randomly clearing some fields of some instructions...
->
-> > +       for (i =3D 0, was_ld_map =3D false; i < prog->insns_cnt; i++) {
-> > +               purged[i] =3D prog->insns[i];
-> > +               if (!was_ld_map &&
-> > +                   purged[i].code =3D=3D (BPF_LD | BPF_IMM | BPF_DW) &=
-&
-> > +                   (purged[i].src_reg =3D=3D BPF_PSEUDO_MAP_FD ||
-> > +                    purged[i].src_reg =3D=3D BPF_PSEUDO_MAP_VALUE)) {
-> > +                       was_ld_map =3D true;
-> > +                       purged[i].imm =3D 0;
-> > +               } else if (was_ld_map && purged[i].code =3D=3D 0 &&
-> > +                          purged[i].dst_reg =3D=3D 0 && purged[i].src_=
-reg =3D=3D 0 &&
-> > +                          purged[i].off =3D=3D 0) {
-> > +                       was_ld_map =3D false;
-> > +                       purged[i].imm =3D 0;
-> > +               } else {
-> > +                       was_ld_map =3D false;
-> > +               }
-> > +       }
->
-> this was_ld_map business is... unnecessary? Just access purged[i + 1]
-> (checking i + 1 < prog->insns_cnt, of course), and i +=3D 1. This
-> stateful approach is an unnecessary complication, IMO
->
-> > +       err =3D libbpf_sha256(purged,
-> > +                           prog->insns_cnt * sizeof(struct bpf_insn),
-> > +                           prog->hash);
->
-> fits on a single line?
->
-> > +       free(purged);
-> > +       return err;
-> > +}
-> > +
-> >  static int bpf_program__record_reloc(struct bpf_program *prog,
-> >                                      struct reloc_desc *reloc_desc,
-> >                                      __u32 insn_idx, const char *sym_na=
-me,
-> > @@ -5214,6 +5254,10 @@ static int bpf_object__create_map(struct bpf_obj=
-ect *obj, struct bpf_map *map, b
-> >         create_attr.token_fd =3D obj->token_fd;
-> >         if (obj->token_fd)
-> >                 create_attr.map_flags |=3D BPF_F_TOKEN_FD;
-> > +       if (map->excl_prog_sha) {
-> > +               create_attr.excl_prog_hash =3D map->excl_prog_sha;
-> > +               create_attr.excl_prog_hash_size =3D map->excl_prog_sha_=
-size;
-> > +       }
-> >
-> >         if (bpf_map__is_struct_ops(map)) {
-> >                 create_attr.btf_vmlinux_value_type_id =3D map->btf_vmli=
-nux_value_type_id;
-> > @@ -7933,6 +7977,11 @@ static int bpf_object_prepare_progs(struct bpf_o=
-bject *obj)
-> >                 err =3D bpf_object__sanitize_prog(obj, prog);
-> >                 if (err)
-> >                         return err;
-> > +               /* Now that the instruction buffer is stable finalize t=
-he hash
-> > +                */
-> > +               err =3D bpf_program__compute_hash(&obj->programs[i]);
-> > +               if (err)
-> > +                       return err;
->
-> we'll do this unconditionally for any program?.. why?
->
-> >         }
-> >         return 0;
-> >  }
-> > @@ -8602,8 +8651,8 @@ static int bpf_object_prepare(struct bpf_object *=
-obj, const char *target_btf_pat
-> >         err =3D err ? : bpf_object_adjust_struct_ops_autoload(obj);
-> >         err =3D err ? : bpf_object__relocate(obj, obj->btf_custom_path =
-? : target_btf_path);
-> >         err =3D err ? : bpf_object__sanitize_and_load_btf(obj);
-> > -       err =3D err ? : bpf_object__create_maps(obj);
-> >         err =3D err ? : bpf_object_prepare_progs(obj);
-> > +       err =3D err ? : bpf_object__create_maps(obj);
-> >
-> >         if (err) {
-> >                 bpf_object_unpin(obj);
-> > @@ -10502,6 +10551,23 @@ int bpf_map__set_inner_map_fd(struct bpf_map *=
-map, int fd)
-> >         return 0;
-> >  }
-> >
-> > +int bpf_map__make_exclusive(struct bpf_map *map, struct bpf_program *p=
-rog)
-> > +{
-> > +       if (map_is_created(map)) {
-> > +               pr_warn("%s must be called before creation\n", __func__=
-);
->
-> we don't really add __func__ for a long while now, please drop, we
-> have a consistent "map '%s': what the problem is" format
->
-> but for checks like this we also just return -EBUSY or something like
-> that without error message, so I'd just drop the message altogether
->
-> > +               return libbpf_err(-EINVAL);
-> > +       }
-> > +
-> > +       if (prog->obj->state =3D=3D OBJ_LOADED) {
-> > +               pr_warn("%s must be called before the prog load\n", __f=
-unc__);
-> > +               return libbpf_err(-EINVAL);
-> > +       }
->
-> this is unnecessary, map_is_created() takes care of this
+> > +		i++;
+> > +		established_socks[i] = accept_from_one(server_fds,
+> > +						       server_fds_len);
+> 
+> I am not sure the final ack is always received by the server at this point.
+> If not, the test could be flaky. Is this case possible? and is it better to
+> poll/select for a fixed number of seconds?
 
-No it does not? This is about the program and the latter is about the
-map, how does map_is_created check if the program is already loaded. A
-map needs to be marked as an exclusive to the program before the
-program is loaded.
+Fair point. It definitely seems like a potential source of flakiness.
+Using poll with a timeout sounds reasonable to me. I think this
+eliminates the need for setting the O_NONBLOCK flag as well, which is
+nice. I'll make some adjustments and send out another version.
 
+Thanks for catching this!
 
->
-> > +       map->excl_prog_sha =3D prog->hash;
-> > +       map->excl_prog_sha_size =3D SHA256_DIGEST_LENGTH;
->
-> this is a hack, I assume that's why you compute that hash for any
-> program all the time, right? Well, first, if this is called before
-> bpf_object_prepare(), it will silently do the wrong thing.
->
-> But also I don't think we should calculate hash proactively, we could
-> do this lazily.
->
-> > +       return 0;
-> > +}
-> > +
-> > +
-> >  static struct bpf_map *
-> >  __bpf_map__iter(const struct bpf_map *m, const struct bpf_object *obj,=
- int i)
-> >  {
-> > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> > index d39f19c8396d..b6ee9870523a 100644
-> > --- a/tools/lib/bpf/libbpf.h
-> > +++ b/tools/lib/bpf/libbpf.h
-> > @@ -1249,6 +1249,19 @@ LIBBPF_API int bpf_map__lookup_and_delete_elem(c=
-onst struct bpf_map *map,
-> >   */
-> >  LIBBPF_API int bpf_map__get_next_key(const struct bpf_map *map,
-> >                                      const void *cur_key, void *next_ke=
-y, size_t key_sz);
-> > +/**
-> > + * @brief **bpf_map__make_exclusive()** makes the map exclusive to a s=
-ingle program.
->
-> we should also probably error out if map was already marked as
-> exclusive to some other program
->
-> > + * @param map BPF map to make exclusive.
-> > + * @param prog BPF program to be the exclusive user of the map.
-> > + * @return 0 on success; a negative error code otherwise.
-> > + *
-> > + * Once a map is made exclusive, only the specified program can access=
- its
-> > + * contents. **bpf_map__make_exclusive** must be called before the obj=
-ects are
-> > + * loaded.
-> > + */
-> > +LIBBPF_API int bpf_map__make_exclusive(struct bpf_map *map, struct bpf=
-_program *prog);
-> > +
-> > +int bpf_map__make_exclusive(struct bpf_map *map, struct bpf_program *p=
-rog);
-> >
-> >  struct bpf_xdp_set_link_opts {
-> >         size_t sz;
-> > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> > index 1205f9a4fe04..67b1ff4202a1 100644
-> > --- a/tools/lib/bpf/libbpf.map
-> > +++ b/tools/lib/bpf/libbpf.map
-> > @@ -444,3 +444,8 @@ LIBBPF_1.6.0 {
-> >                 btf__add_decl_attr;
-> >                 btf__add_type_attr;
-> >  } LIBBPF_1.5.0;
-> > +
-> > +LIBBPF_1.7.0 {
-> > +       global:
-> > +               bpf_map__make_exclusive;
-> > +} LIBBPF_1.6.0;
->
-> we are still in v1.6 dev phase, no need to add 1.7 just yet
->
->
-> > diff --git a/tools/lib/bpf/libbpf_version.h b/tools/lib/bpf/libbpf_vers=
-ion.h
-> > index 28c58fb17250..99331e317dee 100644
-> > --- a/tools/lib/bpf/libbpf_version.h
-> > +++ b/tools/lib/bpf/libbpf_version.h
-> > @@ -4,6 +4,6 @@
-> >  #define __LIBBPF_VERSION_H
-> >
-> >  #define LIBBPF_MAJOR_VERSION 1
-> > -#define LIBBPF_MINOR_VERSION 6
-> > +#define LIBBPF_MINOR_VERSION 7
-> >
-> >  #endif /* __LIBBPF_VERSION_H */
-> > --
-> > 2.43.0
-> >
+Jordan
 
