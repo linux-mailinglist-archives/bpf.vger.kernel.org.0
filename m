@@ -1,32 +1,32 @@
-Return-Path: <bpf+bounces-63171-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63170-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F65BB03E1E
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 14:04:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65609B03E10
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 14:03:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B17FF7AEC5F
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 12:01:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 09F4C7A7412
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 12:00:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCCDD252903;
-	Mon, 14 Jul 2025 12:01:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABEF224CEE8;
+	Mon, 14 Jul 2025 12:01:02 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82C6F23A9BB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8533B23BF9C;
 	Mon, 14 Jul 2025 12:00:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752494463; cv=none; b=cVtYCejqOZVV5kGHBO0pywXJrvy4EM1n5tXoy9l8Z+ClO9SCwVzaqVOtJPaW3H/a3DTRHn/KqMXKNdoFkGBLytTTC2wEEVlH+K5l6hrrG7xGbKWxihujEG6b4U4+Foa0RfVUKKHV9lZtu8hqtv/eyhUJzs6vbHxYR5wK3WBSeoA=
+	t=1752494462; cv=none; b=ILmdGtTIAux4J0x9iNs/KPB6SY7cwmBaowMSrxghzYeVh0GmyS8vKow9AAITftyvTRK1Lr3UvOLVvJJqSh5VQDisDck+GwmOgNqCjzb1CuMM9OuTtpRRbWW9wz/4/izK1QzDuif/e+2mh95d0QyD2XRPvKWRnY+b3u8K2ig8tNg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752494463; c=relaxed/simple;
-	bh=KQ1Soy0mWqukdCEA5OCmYYHkHskKEoGTFa1vQZDsDDI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=gboIOKS9bpzsSH3eSiMCzsH59Jo9x8e8CfnztTaTeIUzUoI8Zf8fSFzd632qwGgjgRCwq9hP/uzCjeuZz4uoF3W1fRW6UeqFlk+ut6juMe+E+vKyGHHCNY9n50Jyb/C7y2DHK3AEzmk3YLnQRtexY7ablD5m0xogpkB+k+YQ9tc=
+	s=arc-20240116; t=1752494462; c=relaxed/simple;
+	bh=/W68wn6cUzyXMEqBcZXzREZJA8MzCiky7GeibbhGu0E=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=XcBhnTv9YdGUbwirTLcFVXGagwsnJtPCyQjY9OOR+KWOW6U0nA6mUVkblVPBHuGSEmkI9VWaFTI+N3KlIWpTJu8felY566RnlTHbSyBTpjZjlvpt5Ln5Yv3aWj1jx/sJ6D2SPdGDcv/+6TI5XYZJ+mIAR9iqqDKj4a2Mk2zvcec=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-681ff7000002311f-33-6874f179578c
+X-AuditID: a67dfc5b-681ff7000002311f-46-6874f179b704
 From: Byungchul Park <byungchul@sk.com>
 To: willy@infradead.org,
 	netdev@vger.kernel.org
@@ -95,45 +95,45 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-wireless@vger.kernel.org,
 	linux-mediatek@lists.infradead.org
-Subject: [PATCH net-next v10 04/12] netdevsim: access ->pp through netmem_desc instead of page
-Date: Mon, 14 Jul 2025 21:00:39 +0900
-Message-Id: <20250714120047.35901-5-byungchul@sk.com>
+Subject: [PATCH net-next v10 05/12] mt76: access ->pp through netmem_desc instead of page
+Date: Mon, 14 Jul 2025 21:00:40 +0900
+Message-Id: <20250714120047.35901-6-byungchul@sk.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20250714120047.35901-1-byungchul@sk.com>
 References: <20250714120047.35901-1-byungchul@sk.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAAzWSe0yTZxTGfb/3u7Wh27cq7ptmWdKFmZjM+9zJNNMYk72JIXEzxmRLcM34
-	XKu0mlIZmMyhQpiNVNwt4MosUllLdWVFobKC2iKyeVmpQqpAi/WGgnMK7WgBa4vZf7+c55zn
-	OSc5PFbeZObxWr1RMujVBSpWTssfZx1/d89To2aJLYDB4jrJQs9YHQPOiWL4dcjDQNAhwh+B
-	CQosjS0IxhP9HLgPDmAY67zEQn1dHEOiqZIGy99lNMRcSQz3uqIcdPumaXC6cyHScJ8Gb0Ur
-	Bn8sB6KHu1moLJvEUBMuZyF1a5KB9sQ/HOz32CloHznDQaDFzMAPyRMYWkuH0ll3+hi43mZh
-	4fqBHgThkykG7vvSgaP2AQ7MzqMIfOccLOwvWw6jZ8Y5+PfHTgwR81p4Xl0EXda5EL88iqD/
-	RC8FKa+Hg2vh3xjodLVScON2AkP8UC0LpseHEfTWtFFwpbaJAdvlG1R6j03Ql5qi4PuglYU7
-	ZREEQX+Uhp/3mRG4OkIMPPWmT56csLBr1xH/6BNMPIM2RE47blJkuOo5RUIdf1Hk7NFBjljd
-	u0mzfSGp9z6kiCkUxMTdeJAl7mffcWSgz8uS7upJmjTbviHDzTVo45ufylfnSwXaIsmw+MPP
-	5ZoJZx/aVS8rvuVJUKUowJmQjBeFFeKhri7WhPgZDqR0mTIrLBBDoQTO8BxhqTgWvUSbkJzH
-	wtUssb25msoIs4U8MRZpmPGhhRwx0lrKZlghvCe2PLyAX/q/JTqbzs+wTFgpHqu9jTKsTPd0
-	mGw4YyoKLpmYvHuaejnwhnjBHqKrkMKKZjUipVZfpFNrC1Ys0pTotcWLvtipc6P0wzV8PfWZ
-	Bz0LbPIhgUeqLAU8MmqUjLqosETnQyKPVXMUjwYNGqUiX12yRzLs3GrYXSAV+tB8nla9rlgW
-	/ypfKXypNko7JGmXZPhfpXjZvFJU8Umj/ZWLp9bnnx3fhsI5V49MNWQHyoltrv/YtP7jWcmO
-	I7qRSFtudPOS+WtW7dhStW3dB4I1Bsll8bevnHt135/bleP//RKqMubFtjzRtA/Wjry2d+9P
-	F8Pm84uH12SH+YqNH007okF/eXbltytl7x9/Z0FuP+7ZsOH3Xkdd3gN1z5CKLtSoly7EhkL1
-	C6aXEi5sAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAAzWSa0xTdxjG9z/3djQ5qYgnmjltQsxcVPBC3qhTs5n5zzIWDMnc9sHRyIk9
-	kyJpKwGNyqTE0AgyvIGWrA6o0BpLyoQqFWxhgKIbFGyqAoV6iWLd5riEitq1JH77PXmeJ8/7
-	4eVIZQu9mJNyDaIuV52jYuSU/JtNxasKXxk0KR2eT8HsuMzAwORFGuyzBXBpzEWDr1GAtv5Z
-	Asy2FgRTkYcsOEuHSZjs6mGg9uIMCZGmMgrMfxkpmHa8JuFJd4iFXu9bCuzOdAhan1LgPt5K
-	Qud0MoRO9jJQZpwjoXq0hIHogzkabkT+ZuGYq4GAzppbMfniKgv9LeU0nH5dT0Jr0Vhs8JGf
-	hsHrZgYGiwcQjF6O0vDUG1sNNwyzUG4/j8Db0cjAMeM6CF+dYuHfM10kBMu3wbuqfOi2JMFM
-	XxjBw/p7BETdLhb+HL1CQ5ejlYCh8QgJMydqGDC9PIngXvV1Au7UNNFQ1zdExO7IBH/0DQGn
-	fBYGHhmDCHydIQou/FyOwNEeoOGV20ht+wJ3hv8hsWukDuHfG+8T+FnFOwIH2m8T+Nr5ERZb
-	nAdwc8NKXOt+TmBTwEdip62Uwc7/Klk87HczuLdqjsLNdUfxs+ZqlLH0B/nmbDFHyhd1a7Zk
-	yTWzdj/Kq5UVPHBFiCLUz5oQxwn8eqE/qjUhGcfwK4RAIELGOZFPFSZDPZQJyTmSv5sg3Giu
-	IuLGAn63MB20snGm+GQh2FrExFnBbxBannvmywL/sWBvujnPMj5N+LVmHMVZGcu0m+rICiS3
-	oA9sKFHKzdeqpZwNq/X7NIW5UsHqPfu1ThT7JuvhN7+40NTgDi/iOaRKUMCEQaOk1fn6Qq0X
-	CRypSlRMjOg0SkW2uvCgqNv/o+5Ajqj3oiUcpVqk+GqXmKXk96oN4j5RzBN1712Cky0uQp4v
-	1+X9NB7a9CFKTlQ0diy/dcJtrTyruSJl3/86rdSaHCzrlp01HFpUf2TAUpnhkTKWbT+88e3M
-	3bL033aW+K31bTa773uUpM386ALz2VhF1toJT7EBZ4493pKx6o/j8tNC3m3ctmNrSVraKenb
-	c6mB7oVJfekppZKZ+sT2+XdDoKL0GnXqSlKnV/8PXxIIqkkDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAAzVSe0xTdxjd7/7uqw1dbgqyK8aQNSNGEvExIJ8J29Rkyf3HR2IyowTn3bix
+	jYCkIK+EjCHGWAXdmLFIyUAqtlQtaRU6LA8LFuKLp6QqBSxInCIKKKFW6VrM/js55zvnfF/y
+	sVjpoWJYTVaupM0SM1S0nJS/jri0oWguV73pZJ8CDNarNAws1FFgWSqAKxMOCgbNPNzqXyLA
+	0NiM4J3/KQO2U6MYFrp7aKivW8TgbyonwdBXRsJ76wcMz90+Bnpdn0iw2HbCeMM0Cc6TLRi6
+	3seB72wvDeVlAQxVYydoCD4JUNDmn2Wg1GEioO3VTQb6myso+OvDZQwtJROhrskRCoZaDTQM
+	HR9AMHY1SMG0K1Q4YxploMJyEYGrw0xDadm3MHPzHQNvz3djGK/YBsv6PHDXRsPivRkETy8/
+	IiDodDDwcOw6Bd3WFgKGn/kxLJ6poUH3+iyCR1WtBNyvaaLAeG+YCO2xF0aCHwmoHKylYbJs
+	HMFgl4+E6t8rEFjbPRTMOUMnB5YM9LYdQtfMGyw4vEYk3DA/JoQX55YJwdN+lxD+uehlhFrb
+	McFuihfqnf8Sgs4ziAVb4ylasM3/yQijI05a6NUHSMFu/E14Ya9Ce9YekKekSxmaPEm78ftD
+	crVB7yKzK5mC59XrS9BpWodkLM8l8mbDFKlD7Ap+9SY/TNPcOt7j8eMwjuI28wu+ntCInMXc
+	gwi+za4nwkIkt58fPuNbySG5OL7j2u0Vg4JL4uuG56nP+bG8palzhZdxyfzfNc9QGCtDM+06
+	Iw6H8ly9jHcP2fBnw2r+tslDnkOKWvRFI1JqsvIyRU1GYoK6MEtTkPDr0UwbCv1bQ/HHVAea
+	79/rQhyLVBEKeJmrVlJiXk5hpgvxLFZFKV56tWqlIl0sLJK0R3/WHsuQclxoDUuqvlJsWcxP
+	V3KHxVzpiCRlS9r/VYKVxZSgzONDs51b27gp7z7z1IbmNHfchV/SVtu13ktUuWlHx8HgtREm
+	Zhf39dp4jGN3W6Nao+XO2KiUZTGp6Dz/zcT27GLrZLVYt6rH9McPpbuTIt9WHvjyCKf/Lt/V
+	sFPJNozJ9ltSA2nEnvvl7ofdC7PJPxk7Ew7dSI7cdOfE4x/39RSryBy1uDkea3PE/wBNZQ3Y
+	awMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAAzWSa0hTcRjG+5+7w9FhSR0yKlYRCllRxtuVqA8doiIKun2pkae21CVn3mZI
+	Vuu2UrMbszbyVnmr2UxdNs3mJUstczpmeWtiZK7MNGla2Rb07fe8z/vyPB9eBpeVkbMZlTpW
+	ENWKKDklISQ71p5Zoh2JVS5rKV8JRnMxBW9Hs0ko+pkI9/usJLQVcPC09ScGxsJyBGPe9zRY
+	LnbhMFr3goLc7HEcvCWpBBjf6Aj4YZ7AYaDBTUOj/TcBRZbt0HvvIwG28xU41P5YBO70RgpS
+	dZM4ZPacpWDq3SQJVd6vNJy25mNQa3rpk0NlNLSWp5FwfeIuDhUpfb7AficJjkojBY4zbxH0
+	FE+R8NHuS/Xkd9GQVnQLgf1ZAQWndSvAUzZGw7cbdTj0pm2EP4Z4aMiaCeNNHgTv73ZgMGWz
+	0vC65yEJdeYKDNo/eHEYv2yiQP8lHUFHZiUGzaYSEvKa2jFfj93gnPqFwbW2LAr6db0I2mrd
+	BNw+lYbAXO0iYcSmIzZu5ms9wzhv7c5D/OOCToz/dOUPxruqX2H8k1vdNJ9lieNL80P5XNsg
+	xutdbThvKbxI8ZbvV2m+y2mj+EbDJMGX5p3kP5Vmop1zD0jWRQhRqnhBXLrhkERpNNiJmGt0
+	4sDtkBR0idIjhuHYldzQcIIeBTAUu5hzuby4n4PY5dyo+wWhRxIGZ1sCuapSA+Y3ZrD7ufbL
+	bsrPBLuIe/bg+b8DKRvOZbd/J/3MsfO4opKaf/MAdhV3x/QB+Vnm26nW5+FXkCQLTStEQSp1
+	fLRCFRUepolUatWqxLDDx6MtyPdM95J/ZVjRmGOLHbEMkgdK4XOsUkYq4jXaaDviGFweJP3c
+	LSpl0giFNkkQjx8U46IEjR0FM4R8lnTrXuGQjD2qiBUiBSFGEP+7GBMwOwXdKFE4hjMX7mFr
+	NmX0a7Tz3hzRpHaGrD+XvCZpYLpwk0amyfqc9N6zkdsXJKA6T5PBMbhamrCvUhpSHJdzLCa0
+	fvCqLDnpfsK2jKFpni+71KPOwJmPJi6Mtc4Kmr5gB9XUuVPikUvEvuaW4PliTdW7OQtfdTh/
+	B9t2cyPj5uycE3JCo1QsD8VFjeIvbEu7MkgDAAA=
 X-CFilter-Loop: Reflected
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -144,37 +144,27 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 To eliminate the use of struct page in page pool, the page pool users
 should use netmem descriptor and APIs instead.
 
-Make netdevsim access ->pp through netmem_desc instead of page.
+Make mt76 access ->pp through netmem_desc instead of page.
 
 Signed-off-by: Byungchul Park <byungchul@sk.com>
 ---
- drivers/net/netdevsim/netdev.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/wireless/mediatek/mt76/mt76.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/netdevsim/netdev.c b/drivers/net/netdevsim/netdev.c
-index e36d3e846c2d..d6b3a7755f14 100644
---- a/drivers/net/netdevsim/netdev.c
-+++ b/drivers/net/netdevsim/netdev.c
-@@ -842,7 +842,8 @@ nsim_pp_hold_write(struct file *file, const char __user *data,
- 		if (!ns->page)
- 			ret = -ENOMEM;
- 	} else {
--		page_pool_put_full_page(ns->page->pp, ns->page, false);
-+		page_pool_put_full_page(pp_page_to_nmdesc(ns->page)->pp,
-+					ns->page, false);
- 		ns->page = NULL;
- 	}
+diff --git a/drivers/net/wireless/mediatek/mt76/mt76.h b/drivers/net/wireless/mediatek/mt76/mt76.h
+index 14927a92f9d1..7e9ddf91b822 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt76.h
++++ b/drivers/net/wireless/mediatek/mt76/mt76.h
+@@ -1798,7 +1798,8 @@ static inline void mt76_put_page_pool_buf(void *buf, bool allow_direct)
+ {
+ 	struct page *page = virt_to_head_page(buf);
  
-@@ -1069,7 +1070,8 @@ void nsim_destroy(struct netdevsim *ns)
+-	page_pool_put_full_page(page->pp, page, allow_direct);
++	page_pool_put_full_page(pp_page_to_nmdesc(page)->pp, page,
++				allow_direct);
+ }
  
- 	/* Put this intentionally late to exercise the orphaning path */
- 	if (ns->page) {
--		page_pool_put_full_page(ns->page->pp, ns->page, false);
-+		page_pool_put_full_page(pp_page_to_nmdesc(ns->page)->pp,
-+					ns->page, false);
- 		ns->page = NULL;
- 	}
- 
+ static inline void *
 -- 
 2.17.1
 
