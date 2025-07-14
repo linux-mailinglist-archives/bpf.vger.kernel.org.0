@@ -1,99 +1,161 @@
-Return-Path: <bpf+bounces-63272-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63273-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CC04B04B11
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 00:51:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABF79B04C62
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 01:33:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE5A74A5A8A
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 22:51:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6ED14A1BB2
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 23:32:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C70B0277CB3;
-	Mon, 14 Jul 2025 22:51:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3E8A285C94;
+	Mon, 14 Jul 2025 23:32:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="c0uetxNg"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vzZ6vymR"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C36622083
-	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 22:51:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C1682857C9
+	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 23:32:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752533491; cv=none; b=YKEH15nmfLNBMngsu05klj9U9oy+agkCmo8ydnW4B+0G3YRoUbB0MLvoCs2v5AXPwytJyMH1ZIX/nLJRB4NoX4dYB7el7JleE9A8lNP1hDedRBxaxWqGGVhkKDKWfFffYvkD67g3hQD7+TBqFMRWtrHgR8oeNRc+VzQAmufi4+o=
+	t=1752535942; cv=none; b=N+CHTCQWYOMlAMHEXojOE2YxOYF7+Typt62Nxkfr4c2mlDrlI9jlhROfw2EUiIJm/5GucGfhAc1js0gnXCvdAfUQoxYL/VJYFmN/axBEoDhI8sHPsAO0Xhijs7JZ58185sr+38KmDt8zV1uQf/WQS2ckjACZ94Qbl5eEJSQHwN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752533491; c=relaxed/simple;
-	bh=qGEGGsLEkfCd2TcIxz7+VuvOfdgrAfBQKt0q4ngZHg4=;
+	s=arc-20240116; t=1752535942; c=relaxed/simple;
+	bh=g928VJ/MMQAjxhqh+sUjqL8aYh9PIDBqwlqj9HriKTU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Wm6bUmDIFWKGFNJNeLHKtJncns5mQps73qP+r+cjXQAseMCkoM+AHjHiGPRfgGy56Iftht724m1kT0u83lIo5lk1c1y6vmnxUn+0Atvq9QnvbuXqfafY7YqIeNyEAorE+oDLzTSVQ32fPQ9owTSkZKW0pcvTuqo+WkmXkJZzqv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=c0uetxNg; arc=none smtp.client-ip=95.215.58.172
+	 In-Reply-To:Content-Type; b=Pm393O2LnhdT/n/C0ZDFTTj1/KfGGs7TEUUWj3ZwXlKeymWrb0o06C5/oaGuw4cqExpSXnnae1lMsU7QIKjlLXvrr+rwlOw2ypQ1DCdHHiUjVVGP0eZljhchyWT0JtZKMAJyzuOhchA30nKf9j//WW8S0x61jjUysA3lrqc1v2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vzZ6vymR; arc=none smtp.client-ip=91.218.175.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <2fe9d096-846c-4cb6-ac7e-a9e072cb3281@linux.dev>
+Message-ID: <324a7b0b-ccff-4d8b-b0a2-f810e90f74f8@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1752533486;
+	t=1752535925;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=AUs7rSl9OOabs5zzmuV58HHyP49Xlu4Muu7/qo2/NcA=;
-	b=c0uetxNgQLzyjiFZBsX4MJUCl9BohZuUDyeEtfEafRG0rtJBtuPPz96S2kIYnGXLAXcgWh
-	fm+iBbYMWo49MPtFYe/mqUAI/Q/8ig3rSH9UnXHfj+XsQw1NtLpo6MwuNrYIMvnEXjcGHm
-	b4K9WOaKpgOxZfag+qLT6UaddvK6sGQ=
-Date: Mon, 14 Jul 2025 15:51:19 -0700
+	bh=fjnFWK9YKajtsmrg56AGOFx51s3W0UmHKzgeMTuEqPQ=;
+	b=vzZ6vymRoHDVW98EWXScGMUIpOnoibBi3W0HSqRmjnjuHLONeiE2iZ7zYHL237pwm0hmqM
+	ILoOyAn3xZhotkqGun+z48vW5HaALVi5C7qMSspMKZL+ByBfRehf0vWXUSRWFdsjf3QO4M
+	R+RAkQqp8l02sjVM55KbkcnrpKpXX/8=
+Date: Tue, 15 Jul 2025 07:32:05 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC bpf-next v1 2/4] bpf: Support cookie for linked-based
- struct_ops attachment
-To: Amery Hung <ameryhung@gmail.com>,
- Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Tejun Heo <tj@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>,
- Kernel Team <kernel-team@meta.com>, bpf <bpf@vger.kernel.org>
-References: <20250708230825.4159486-1-ameryhung@gmail.com>
- <20250708230825.4159486-3-ameryhung@gmail.com>
- <68f4b77c-3265-489e-9190-0333ed54b697@linux.dev>
- <CAMB2axO3Ma7jYa00fbSzB8ZFZyekS13BNJ87rsTfbfcSZhpc6w@mail.gmail.com>
- <2d1b45f3-3bde-415d-8568-eb4c2a7dd219@linux.dev>
- <CAMB2axMDUr+s+f9K-4sj-5vSkPQV4RXHo8y73VH9V2JQbKZOxQ@mail.gmail.com>
- <CAEf4BzaUK0i7QFkKi800TQhAKw2WL+FyoG3eFP6nq_r-TUPBKw@mail.gmail.com>
- <CAMB2axONnVJ5BY-YOASWGUGpaZa-P64Yf5f6AbX+O8fjCiZNfw@mail.gmail.com>
- <CAADnVQJxu5hsDw0iCP68eRW3v2CXRBos8asfN1x9F=gVyGmqbw@mail.gmail.com>
- <CAMB2axMw0uEojfdq33KbjqZXAtRSJwR2=f1Y1S4ma01sWJFNfg@mail.gmail.com>
- <CAEf4BzaoUCapHxdVJj6vyx=Ai_tCO+HY3kaD2ZNK2v0R0zuTMw@mail.gmail.com>
- <CAMB2axNXLm2mWnSv4EL_YxexYa97_OnRD9Nj7ww9Qq_3dAp5hg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3] bpf: make the attach target more accurate
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Menglong Dong <menglong8.dong@gmail.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ Menglong Dong <dongml2@chinatelecom.cn>
+References: <20250710070835.260831-1-dongml2@chinatelecom.cn>
+ <CAADnVQKmUE3_5RHDFLmKzNSDkLD=Z2g3bkfT2aRsPkFiMPd-4Q@mail.gmail.com>
+ <750dd5f1-a5f8-4ed2-a448-1a57cb5447dc@linux.dev>
+ <CAADnVQLHORFKC3PzJ540xxa_bETBypXu2-z7Z+8c+as97vByXA@mail.gmail.com>
 Content-Language: en-US
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAMB2axNXLm2mWnSv4EL_YxexYa97_OnRD9Nj7ww9Qq_3dAp5hg@mail.gmail.com>
+From: Menglong Dong <menglong.dong@linux.dev>
+In-Reply-To: <CAADnVQLHORFKC3PzJ540xxa_bETBypXu2-z7Z+8c+as97vByXA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-On 7/14/25 2:02 PM, Amery Hung wrote:
->>> It should work. Currently, it makes sense to have cookie in struct_ops
->>> map as all struct_ops implementers (hid, tcp cc, qdisc, sched_ext) do
->>> not allow multi-attachment of the same map. A struct_ops map is
->>> effectively an unique attachment for now.
+
+On 2025/7/15 06:29, Alexei Starovoitov wrote:
+> On Mon, Jul 14, 2025 at 2:50 PM Menglong Dong <menglong.dong@linux.dev> wrote:
 >>
->> Is there any conceptual reason why struct_ops map shouldn't be allowed
->> to be attached to multiple places? If not, should we try to lift this
->> restriction and not invent struct_ops-specific BPF cookie APIs?
+>> On 2025/7/15 03:52, Alexei Starovoitov wrote:
+>>> On Thu, Jul 10, 2025 at 12:10 AM Menglong Dong <menglong8.dong@gmail.com> wrote:
+>>>>                           } else {
+>>>> -                               addr = kallsyms_lookup_name(tname);
+>>>> +                               ret = bpf_lookup_attach_addr(NULL, tname, &addr);
+>>>>                           }
+>>> Not sure why your benchmarking doesn't show the difference,
+>>> but above is a big regression.
+>>> kallsyms_lookup_name() is a binary search whereas your
+>>> bpf_lookup_attach_addr() is linear.
+>>> You should see a massive degradation in multi-kprobe attach speeds.
+>>
+>> Hi, Alexei. Like I said above, the benchmarking does have
+>> a difference for the symbol in the modules, which makes
+>> the attachment time increased from 0.135543s to 0.176904s
+>> for 8631 symbols. As the symbols in the modules
+>> is not plentiful, which makes the overhead slight(or not?).
+>>
+>> But for the symbol in vmlinux, bpf_lookup_attach_addr() will
+>> call kallsyms_on_each_match_symbol(), which is also
+>> a binary search, so the benchmarking has no difference,
+>> which makes sense.
+> I see.
+> Just curious, what was the function count in modules on your system ?
+> cat /proc/kallsyms|grep '\['|grep -v bpf|wc -l
 
-bpf_struct_ops map currently does allow attaching multiple times through the 
-link interface. It is up to the subsystem tcp-cc/hid/qdisc/scx how to handle it.
+Hi, it's about 34k:
 
-> I am fixing the patchset by moving trampoline and ksyms to
-> bpf_struct_ops_link. It shouldn't complicate struct_ops code too much
-> (finger cross).
+   cat/proc/kallsyms|grep'\['|grep-vbpf|wc-l
+   34740
 
-seems reasonable. I think it will be useful to have comments in v2 on how their 
-lifecycle will be handled.
+
+>
+> Only now I read the diff carefully enough to realize that
+> you're looking for duplicates across vmlinux and that one module.
+>
+> Why ?
+> BTF based attachment identifies a specific module.
+> Even if there are dups between that module and vmlinux the attachment
+> is not ambiguous.
+
+
+When the module is not specified, kallsyms_lookup_name() will be called in
+
+bpf_check_attach_target() to get the address. And
+
+kallsyms_lookup_name() will lookup the symbols in the vmlinux
+
+first. If not found, it will lookup it in the modules. And in this
+
+commit, I follow this logic.
+
+
+So I lookup duplicates accross vmlinux and modules only when
+
+the modules is not specified, and that's reasonable. However,
+
+we always find the address in the vmlinux if module is not specified,
+
+as the btf type belong to the vmlinux. So we will never lookup the
+
+symbols in the modules if "mod" is not specified, which means
+
+bpf_lookup_attach_addr() won't lookup duplicates accross vmlinux
+and modules.
+
+So just forget it :/
+
+
+Thanks!
+Menglong Dong
+
+
+>
+>> I thought we don't need this patch after the pahole fixes this
+>> problem. Should I send a V4?
+> pahole should fix it, so this change is not needed.
+> But pahole will be removing the dups within vmlinux and
+> within each module independently. Not across them.
+> I don't think "across" is needed, but you somehow believe that
+> it's necessary ? (based on this diff)
 
