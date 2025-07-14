@@ -1,170 +1,138 @@
-Return-Path: <bpf+bounces-63179-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63180-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4479B03E55
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 14:10:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E23B0B03E35
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 14:07:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD2BA7B1F2F
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 12:04:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 308231A64AE6
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 12:07:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A77425E46A;
-	Mon, 14 Jul 2025 12:01:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5587024C07A;
+	Mon, 14 Jul 2025 12:04:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XLo1i9Fv"
 X-Original-To: bpf@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61472255E26;
-	Mon, 14 Jul 2025 12:01:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73C9B1EEF9;
+	Mon, 14 Jul 2025 12:04:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752494468; cv=none; b=kS3AO+NZoRjiOyKtsytQ0AwdGAyjhWd8wtdknv3OVvWYfst2PDC4Wxp1wdnDiwhsl6XRFZahnC2NB4uhJk5ZjqlDAVUL7gzV42fGmT4KBDPUW+Hw0rcH0po/JJxSHbz/11jV2rsOUgFL5AQkTqVln9UO70/yUT77Gt8ARSkfiVw=
+	t=1752494662; cv=none; b=f8Td8sOI/M7FxDwhAtnMG6ePc0bjEVaZWeU0HYNo2HuC+onP0UTIM/o/gieMdl/XJTy07UG/EtCI03R7ZbneyBwStwgg1NDfHLlV2SW9+rP6yNeNbmnYWKjS6f/I74ChhT7Fuagz2Q3chX3SxrZjn+qCuMijeqmNSO5CEaQE0jo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752494468; c=relaxed/simple;
-	bh=L+RgS7V7Au6Ri2a8QuAHoPOcLqT0mibOxx0N+Vk0UOU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=LXbvWAvg/ArjWPifaHKnNqUcONWkjUkiOQC+ZQbn0oEzw21nQxXKiTPSA5MRAbukej6K7jOb3CjX0pPbj+LehRtcKJYbGZTLC73qhssYOX5hyevQeT84gGQkmDpxs2+mkboKqXh7VCidTw8fsqD/J3BSBiqjSxMb0sFlwDLd37Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-681ff7000002311f-c5-6874f17a137d
-From: Byungchul Park <byungchul@sk.com>
-To: willy@infradead.org,
-	netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	kernel_team@skhynix.com,
-	almasrymina@google.com,
-	ilias.apalodimas@linaro.org,
-	harry.yoo@oracle.com,
-	akpm@linux-foundation.org,
-	andrew+netdev@lunn.ch,
-	asml.silence@gmail.com,
-	toke@redhat.com,
-	david@redhat.com,
-	Liam.Howlett@oracle.com,
-	vbabka@suse.cz,
-	rppt@kernel.org,
-	surenb@google.com,
-	mhocko@suse.com,
-	linux-rdma@vger.kernel.org,
-	bpf@vger.kernel.org,
-	vishal.moola@gmail.com,
-	hannes@cmpxchg.org,
-	ziy@nvidia.com,
-	jackmanb@google.com,
-	wei.fang@nxp.com,
-	shenwei.wang@nxp.com,
-	xiaoning.wang@nxp.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	anthony.l.nguyen@intel.com,
-	przemyslaw.kitszel@intel.com,
-	sgoutham@marvell.com,
-	gakula@marvell.com,
-	sbhatta@marvell.com,
-	hkelam@marvell.com,
-	bbhushan2@marvell.com,
-	tariqt@nvidia.com,
-	ast@kernel.org,
+	s=arc-20240116; t=1752494662; c=relaxed/simple;
+	bh=4ojJ6q6a4p7qbfAIGgVP5A2fBeW3ohzD64jsl+Xqpd4=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Jn4R15grcfXgjAxWQE+kzSDTWJ5QXtMYx6rG3Ycj8+UnppA3Y37UrTfybpHGAlm3LIY+nnsWv2wSceupPp0u10e8RVaXZgZo+BaOi3KMwuiiHDupDWhPGAbMs6Y3Bpvk029Nb9OCwUQ4D/hfaH30YFVi3/zuv3SE+EZaf6AUEJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XLo1i9Fv; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-2366e5e4dbaso40571475ad.1;
+        Mon, 14 Jul 2025 05:04:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752494661; x=1753099461; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yLQnFWSpHiCxC3tiUF83szw3bby4M3I217AXevLt7Ek=;
+        b=XLo1i9FvUnZep5dsK2I2CfbaG6Y4K8ywu2zK0/NLeoFVp8hA0JDQ7IhmX18nl7dgTT
+         nnIr/6Ud/eTTdu1r/Ri1fTkArC/b3/q5p5LI7kdgc3GwrtbYs0QW9Z5M0aRzlU5w6xLI
+         mUI9T4cHTKwoHVKyN4PAqtY2BpCgKBBPrFS4NnOchVT/HOxIz/3PaN2v2NHPV79LQdjx
+         2EgHMm5JXojCkw1AQ/vOKGgE2NJUBfgOsR63wwIo1l+4VViFC2qyKHMYVAvbZH9pWacA
+         tEQlM/tI/zuS9fVgExbrLDsCLfF3rqMzYilFv7H9X8M0vVaLBT9mjcgN1fX3QyzaTQ+8
+         ZtLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752494661; x=1753099461;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yLQnFWSpHiCxC3tiUF83szw3bby4M3I217AXevLt7Ek=;
+        b=oNcRMGJ8zY24ycsjIq2cK13kY1YLVCW6jQHP/iv1E92LBxOaHk3EJ5TV6uQfumvqTq
+         NxSsi8QgMiuZBVOX9SXnEbbNjtjK7zVSGue5YfoqVs9oPb8LFk64yMpWcAVycwv+g/9J
+         QUoxPmi+zRiUot7l0v5/Ulf7gP+1ZsAz/c+yJpk+4/sU5/20dIfUcRaBehIXi7AdxfwB
+         oZJqmJlVVtwy3LVnxvkfSNKexpbIWy9MMC73OJrMivcsqKZ5uL9uRf7WEDNB1PGnqqlh
+         0VMJ/YBWS9JxbaCqd+x2udE4jJqojcPS1tKGBnVDINvEe5qiUE8XF9/Y8vrHG0fPD0R/
+         PH9g==
+X-Forwarded-Encrypted: i=1; AJvYcCUzTiRdYAnuYqWhevW4oMJtb3UFJUtMeRVo/974YRXTx/zBr4m19sPUJEhXPrWdTyw+qhyOTQDMUkEtCl+j@vger.kernel.org, AJvYcCV9pHfP5ZUE0Idf320fo6Qm1XJCEwMZArpnVmPkId/8yVj7qsfHv+uPyKqbGoBX2XJJpE0=@vger.kernel.org, AJvYcCVYpurmdw5dP5oLgcZLZ0lPdEf/yeJvoqALIl6b3+xDgVuTK0DImAB/d/9zml1eL7eOW3EpHthpzVD0gOwWZbpX@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy0f6nLsuKybUC3VP3OhXZhO4qHDbZjvH5ol8rwscSK+eFDRaDJ
+	t5GzOSovY+8mQd1XK8rW1gDlziDV66dwO3F6BAc+45O7fg/ZKLqhyx/R
+X-Gm-Gg: ASbGnctKLK3znFhgz3KUmM8p99/2KiUUMpjCTJUM3G5bUghs2hQTZsm2khSfy+aEgQb
+	BYVOQ4DlUPB4y2IcbjtwIFUO1x5ysHU0VVoD296JjPde5CTPNGHMNDaxACC+nnHGkjMEjigd74v
+	7qwwIc+5Lt84ouoREL7xUgVDlgemVIaLv7Fb885WAhghZHxPBbRk60ynmo7dfhO/YtRc3h17d+X
+	6IPj+is/1K8s9ZsJzyElngVqrAV4rvPhgcebOhALOWv3D+ah/4APJhT9gO5g5mEdOm8R09dtkhv
+	BOCCDsfpkZVcJve/god9HlIf2rHIwnBGQMiRIIQ8FPpbGI/mNuKffvc9Bqu++Fe+yfE9wkY9Kly
+	UbrLpGTI5a1VWJKCboWYuw/A=
+X-Google-Smtp-Source: AGHT+IG2ZWulLP3HcUmHIw3GZPvxilMwzoRHxnFqBRDNAUlrv/mtI7z7Soa9kVw9mJxW2yR8ULZtaQ==
+X-Received: by 2002:a17:902:f785:b0:235:1b50:7245 with SMTP id d9443c01a7336-23dedd13873mr142214145ad.7.1752494660497;
+        Mon, 14 Jul 2025 05:04:20 -0700 (PDT)
+Received: from ubuntu2404.. ([125.120.99.224])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23de4359e4bsm89612895ad.215.2025.07.14.05.04.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jul 2025 05:04:20 -0700 (PDT)
+From: KaFai Wan <mannkafai@gmail.com>
+To: ast@kernel.org,
 	daniel@iogearbox.net,
-	hawk@kernel.org,
 	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
 	sdf@fomichev.me,
-	saeedm@nvidia.com,
-	leon@kernel.org,
-	mbloch@nvidia.com,
-	danishanwar@ti.com,
-	rogerq@kernel.org,
-	nbd@nbd.name,
-	lorenzo@kernel.org,
-	ryder.lee@mediatek.com,
-	shayne.chen@mediatek.com,
-	sean.wang@mediatek.com,
-	matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com,
-	aleksander.lobakin@intel.com,
-	horms@kernel.org,
-	m-malladi@ti.com,
-	krzysztof.kozlowski@linaro.org,
-	matthias.schiffer@ew.tq-group.com,
-	robh@kernel.org,
-	imx@lists.linux.dev,
-	intel-wired-lan@lists.osuosl.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-wireless@vger.kernel.org,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH net-next v10 12/12] libeth: xdp: access ->pp through netmem_desc instead of page
-Date: Mon, 14 Jul 2025 21:00:47 +0900
-Message-Id: <20250714120047.35901-13-byungchul@sk.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20250714120047.35901-1-byungchul@sk.com>
-References: <20250714120047.35901-1-byungchul@sk.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAAzWSe2xTZRjG/c53bq2rOakLHEeMSZVIFp1uIrwxaoh/fQlRMfznJa5hJ7Rx
-	F9J2Y8VQBs4QKqzIJemgzVq7jW6dtmlh62q3YbeMCU53Yzmzu5ZAEIduDOpK52o74n+/vE+e
-	53nf5OWxWmYKeH2lSTJUass1rJJW3s/77tUvl026150LT4PD38HC6IqbAd9qLVyaDzMw1ibC
-	jyOrFDjaOxE8TMU5CJ6YxrAycI0FjzuJIRU4RYPjt3oaHvkfY7g9mOBgKPYvDb7g+zDXeoeG
-	6PEuDP2PtkLCNsTCqfo0hsbZr1nI/J5moCf1FwfHwl4Kev68wsFIZwMD5x63YOiqm8923Zpk
-	YDziYGH8q1EEsx0ZBu7EsoWL3mkOGnwXEMT62lg4Vv8GLF55yMHS+QEMcw27YN1eA4OuTZC8
-	sYgg3nKTgkw0zMGvsz8wMODvomBiIYUhedLJgvW+DcHNxggFvzgDDDTfmKCye+yFycwaBWfH
-	XCzcqp9DMNafoOHi0QYE/l6ZgeVo9uT0qoPd9R7pX/wbk/BMMyKX26Yocvf0OkXk3usU6b4w
-	wxFXsJqEvIXEE/2DIlZ5DJNg+wmWBB+c4cj0ZJQlQ/Y0TULNR8jdUCPa8/zHyrfLpHJ9jWR4
-	7d1Spe5qQjgwzNZ2D59h6tAgY0U8LwrbxW/dVVak2MDAkI/LMSu8LMpyCuc4XygWVxLXaCtS
-	8lgYzhN7QnYqJzwrlIq3nZENpoWt4np8ecOsEnaINvcE9ST0BdEXuLoRpMjOm5wLKMdq4U2x
-	19qMc6Gi4FOIE5k1/MTwnPiTV6ZPI5ULPdWO1PrKmgqtvnx7kc5cqa8t2ldVEUTZf2s9vPZJ
-	GD0Y2RtDAo80eSq4Z9KpGW2N0VwRQyKPNfmqezMGnVpVpjUfkgxVnxuqyyVjDG3hac1mVUny
-	YJla2K81SV9I0gHJ8L9K8YqCOrS7r9hOlO8sHT771p44tdLHF+10060H5aaXzo1MXTd7jTta
-	CjXThyIznf/073yRjS41hbZUX5z/+fsFj23bBx9+9tH8M47L3enNm5JHVUfi5uOlNsNAqT+j
-	tJhHSyxF+efN7KcFa56OVqdLEzDulk9a6hTrpsj4fss3U5ZXPPYSDW3UaYsLscGo/Q8+Q2Wh
-	awMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAAzWSfUxTZxTGfe97v2iouamoN34mTdSIChLFnEUjZjN61eggJhqN0Va5sY1t
-	NS0SIFsGUrfQSEHFCNo6iKhAjZAitGJFUhDZED/4so5CoUbDpJtiAa0oWDD+9zvnyXme54/D
-	YlktNY9V61JEvU6pkdMSUrJrffaqjOEU1eqyhqVgqbxJw7NgCQW2j2lwo99JQXs5D3effiTA
-	UlGLYCTUw4A9x4sh2PSQhqslYxhCVbkkWJ4YSRit/IThVbOfgRb3FxJs9p3gu/6aBNcfDgyN
-	o0vAn9dCQ65xHENR32kaJv8Zp+Be6H8GTjnLCGi0/hUeh2oYeFprpqDg0zUMjsz+cODLbgo6
-	6iw0dGQ/Q9B3c5KC1+5waqDMy4DZdgmB+345DaeMayBQM8LAuwtNGHzmTTBRmArNxXNgrDWA
-	oOdaFwGTLicDj/tuUdBU6SCgcyCEYeyMlQbTf3kIuorqCHhkraKgtLWTCPfYDd2Tnwk4315M
-	w0ujD0F7o5+Ey1lmBJX1HgqGXUZy009CY+AtFpy9pUi4Xf6CEAbzJwjBU/83Idy51MsIxfaT
-	QnVZtHDV9S8hmDztWLBX5NCC/f05RvB2u2ihpXCcFKpLfxMGq4tQ4qL9kg3JokadKupjNyok
-	qgY/d6KNTrvTdo7KRM2UCUWwPLeWr2qxMVNMc8t4jyeEpziKi+OD/oekCUlYzLVF8veqC4kp
-	YRan4F9Z66aZ5JbwEz3D08dSbh2fV9JJfDNdzNuqGqaNIsL7P60DaIplXDxfbyrF+UhSjGZU
-	oCi1LlWrVGviYwzHVOk6dVrMkeNaOwp/0/VfP591opGOrW7EsUgeKYU3KSoZpUw1pGvdiGex
-	PEr6plevkkmTlekZov74If1JjWhwo/ksKZ8r3b5XVMi4o8oU8ZgonhD131WCjZiXiWocWa2x
-	K4YsiR9ykxIy1htmbslIO/T7tuWKNUcMi8+uZOP6Y7I/aAcKzkc/j8/fU+graN3oXWVPn/3j
-	DsZ8d+VQ3YM+PmvGwltdmtD8XRdzkgLJhzu0jgNa38EfBueMJu2L9CRg1dI4RcIvur0LgiOx
-	0otbrwQ3W342Ghf0eKUbkvvlpEGljIvGeoPyK23aEZJJAwAA
-X-CFilter-Loop: Reflected
+	haoluo@google.com,
+	jolsa@kernel.org,
+	mykolal@fb.com,
+	shuah@kernel.org,
+	mannkafai@gmail.com,
+	laoar.shao@gmail.com,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	leon.hwang@linux.dev
+Subject: [PATCH bpf-next v2 0/3] bpf: Show precise rejected function when attaching to __noreturn and deny list functions
+Date: Mon, 14 Jul 2025 20:04:05 +0800
+Message-ID: <20250714120408.1627128-1-mannkafai@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-To eliminate the use of struct page in page pool, the page pool users
-should use netmem descriptor and APIs instead.
+Show precise rejected function when attaching fexit/fmod_ret to __noreturn 
+functions.
+Add log for attaching tracing programs to functions in deny list.
+Add selftest for attaching tracing programs to functions in deny list.
 
-Make xdp access ->pp through netmem_desc instead of page.
+changes:
+v2:
+- change verifier log message (Alexei)
+- add missing Suggested-by
 
-Signed-off-by: Byungchul Park <byungchul@sk.com>
----
- include/net/libeth/xdp.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/net/libeth/xdp.h b/include/net/libeth/xdp.h
-index 6ce6aec6884c..f4880b50e804 100644
---- a/include/net/libeth/xdp.h
-+++ b/include/net/libeth/xdp.h
-@@ -1292,7 +1292,7 @@ static inline void libeth_xdp_prepare_buff(struct libeth_xdp_buff *xdp,
- 	xdp_init_buff(&xdp->base, fqe->truesize, xdp->base.rxq);
- #endif
- 	xdp_prepare_buff(&xdp->base, page_address(page) + fqe->offset,
--			 page->pp->p.offset, len, true);
-+			 pp_page_to_nmdesc(page)->pp->p.offset, len, true);
- }
+v1:
+ https://lore.kernel.org/all/20250710162717.3808020-1-mannkafai@gmail.com/
  
- /**
+---
+KaFai Wan (3):
+  bpf: Show precise rejected function when attaching fexit/fmod_ret to
+    __noreturn functions
+  bpf: Add log for attaching tracing programs to functions in deny list
+  selftests/bpf: Add selftest for attaching tracing programs to
+    functions in deny list
+
+ kernel/bpf/verifier.c                             |  5 ++++-
+ .../selftests/bpf/prog_tests/tracing_deny.c       | 11 +++++++++++
+ .../testing/selftests/bpf/progs/fexit_noreturns.c |  2 +-
+ tools/testing/selftests/bpf/progs/tracing_deny.c  | 15 +++++++++++++++
+ 4 files changed, 31 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/tracing_deny.c
+ create mode 100644 tools/testing/selftests/bpf/progs/tracing_deny.c
+
 -- 
-2.17.1
+2.43.0
 
 
