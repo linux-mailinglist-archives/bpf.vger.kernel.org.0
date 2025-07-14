@@ -1,122 +1,140 @@
-Return-Path: <bpf+bounces-63192-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63193-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CCE8B03F66
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 15:16:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F045B03FD5
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 15:28:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF38B3B5FFE
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 13:15:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD06A1892BF7
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 13:25:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DB4F221F29;
-	Mon, 14 Jul 2025 13:16:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71633257453;
+	Mon, 14 Jul 2025 13:22:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pQUnRcg8"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KtzCk5eQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85CF12F22
-	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 13:16:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33847253F1A
+	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 13:22:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752498969; cv=none; b=n/GSQlZuHeRPtouQQ+SiGeMavF8kQt0aVKFp2DVffA4S19Gd3a+/LK7R9w9jrEpCH8kTJJuLXV6y161Vco6iUAiQccdfjKFLy3psuSE84ZEKVY2QW8PY6LOsib4+JAGlbKkorQnmMa70oduUEPz9QPGC5ZGDKfjWcTXohiXjeRs=
+	t=1752499377; cv=none; b=qiTBbO/sAo6gdhTXRSKpGjaK1qH5WH2yjYgXtESdlUxPjcogBn7sGfLJj48EJbGqfP6kNiz7ldGpFVhIM+c2gpNJKuZ3/zZ4PKZPDXrRKyhnFUxF/KDmwj/h+P9VkIkEItSzhpjCMqRXJD+8r8g3kmeDJThTauKycMoHwGCH+1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752498969; c=relaxed/simple;
-	bh=uNySO4lrbvjnur5E+Fbnn4kIAnHeOJOxR0gDtx4P1Jo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hGe+BmvCOuoNayA/vjDjxOTFOHutqQ2X4FLXFs3xp0QlVF9qCYOr3wxJI7/Y5cRktotDGRtEzYO7cTZKmzEXgYUfVPOupT2N6yY8bpzkS8+6Qmwzyj0YklgElSIfwTJCPDxJ3+ePlLGbugyMcmq5s28fig2AAvU2ccfz7jwEyXU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pQUnRcg8; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <f580b139-a08b-4705-addd-31f104fd570c@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1752498961;
+	s=arc-20240116; t=1752499377; c=relaxed/simple;
+	bh=DSltvb0vEhfUg7AEaM3U6pLDRM1PmY8c4GSdMZ0F3aQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=e07FGn7vqPSq2TRPrQ2lIMwX0qDttXVAV9jfLEL2Jim2/Vz6RQkvhDAW/wDD2N3d/LSfnm63PUZFzzW5zlVfEs7FBPY5Duezx4SRN073mXtkBNM0L4eEnFwI42ajElOrErHNL1m3CEyonShg5vqiAzyY+XzX7QD2Oi4mtCMbEDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KtzCk5eQ; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1752499373;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Cwvkiriw30wqyfBkgssYOekF5g8YqkH87P9dXphqWRE=;
-	b=pQUnRcg80CPnSfkpWkKdM8t1njWTWpnOW0i/rQBEWtj5gatjUJ5Ki7EGxzIpK3xq4CN5ID
-	SZEXd1V+Ih+SbNQr1OT85+rNtB1tI+BWCqs7eGRGT9EI2bmO8Ty1dqQdbyj9j+lfA/jygF
-	gA2No1YVlGl0PSGZITIaYhW7wHod23M=
-Date: Mon, 14 Jul 2025 21:15:45 +0800
+	bh=+74sl1h9XcDCGHLtxtil1RR5aKu+l0UGJeyQC88qo+g=;
+	b=KtzCk5eQDTIEP3LW8VGRh9EL8q0ClmFn3JgDB+sIL5b3VnB92TG/9swsjbe7It4tcrcZGX
+	Za3FwKDrB2IlJJvd0RkOgYz7awZRk7Bhe6wA3vNZvheEfBA7Y+1rvL3ob9RAF03VIsYdKv
+	3Zp8QMtpiaPUmNvz/O0jV9AT202o3qU=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-413-YT0RcTIqMIKVP0mrVDNpVg-1; Mon, 14 Jul 2025 09:22:51 -0400
+X-MC-Unique: YT0RcTIqMIKVP0mrVDNpVg-1
+X-Mimecast-MFC-AGG-ID: YT0RcTIqMIKVP0mrVDNpVg_1752499371
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-45611579300so10414375e9.0
+        for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 06:22:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752499370; x=1753104170;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+74sl1h9XcDCGHLtxtil1RR5aKu+l0UGJeyQC88qo+g=;
+        b=uTcOpCtunMNCO8WxOi6QgFIcjWkGRdwytR0JEPxmPsjNGtcP3YWnsfLPwM3Y/LUt2+
+         A3TC7aaWfdWyviE1vjOyPFKNZSUUQy1MqPDRXS+ZGju7x9BVm/3zeo2FH7a1/LffsDmF
+         j6zTxuMBgpuvQELCECToudndZXG9qo2Rfg6VxNpzCEKzWlPCGUdsH2x8hUkkmczcSrkx
+         LG4BBnUn/QoDkVYBGl7/tYH5kV+Q2R/fUzO4wajKBjEsdGUk5P5qUN3yuOSldKI6PJiP
+         CB/lVOvgVahBrC2pMLeLMTY9rOOe7NtYorbQI9Rjx+ipWabc1FQBchbGvzXDa94UFqPe
+         zDRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVTV9e1PfO56SM1tt306VQHGDz0lZjYUfzJWwuow29ZS5EHi+znI2EKT6dz4dqJv1YUPsk=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw3cUQqQrSJpXvK1FFRaOCZiwwSSO4bunFa4Ice91bZH/8iFp6W
+	wACv3ogN5b8kWiBtW/VXJv0SlSTC1XjZ17WiubT4TIWfbW1VJe3VUCc24idVyyvMO0A2dF5UEGD
+	I9CRmKm7z5PYqrqVEbJZT3J4TixTPPMPEfLXH5kJ/aleKaaB9cNDumA==
+X-Gm-Gg: ASbGncv8JQvfjVXxGgCsrdjXCxbVS9sxu4xY+Ih2AFRDQGM1AXK76XtcEC4f+CN/mzu
+	t4GUOfC708pMtLSa9sANEz5lvaCHB8jQA1vYZd6DtN9hS8foMrsljszZH3dbF1qp5C12herfvrY
+	xtQTWaC5XtlckXRc9OGI14MM54zwGaxnbXIMUDTv961jW0EDUL4GVZ650znxA9HK4I4TxoWZB7Y
+	m/Y1XjK5DSDLQknFrrFgFpwJ/9KqLwmpx8IMrauek6bdYVAalqZRhmtCCg1ZiucQ7VRKojUiv3A
+	Z3v7QQQEM50yXoKxRAceqKs5nCFO2LN+vnG9o12WVyE=
+X-Received: by 2002:a05:600c:848c:b0:43c:e70d:44f0 with SMTP id 5b1f17b1804b1-4557f0b52f2mr103652045e9.19.1752499370516;
+        Mon, 14 Jul 2025 06:22:50 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHNCV4TnpnSpBNGL5u+cKnLCGpcA5mGUjaCcEkgIGAq0CDxzLK13e64IbjzNHnO8ged+huEHA==
+X-Received: by 2002:a05:600c:848c:b0:43c:e70d:44f0 with SMTP id 5b1f17b1804b1-4557f0b52f2mr103651615e9.19.1752499370003;
+        Mon, 14 Jul 2025 06:22:50 -0700 (PDT)
+Received: from [192.168.0.115] ([212.105.155.228])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-454d5032fcbsm173656775e9.6.2025.07.14.06.22.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Jul 2025 06:22:49 -0700 (PDT)
+Message-ID: <eaeaf8e5-ac94-4368-b897-538c757f4e34@redhat.com>
+Date: Mon, 14 Jul 2025 15:22:47 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add struct bpf_token_info
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, willemb@google.com,
- kerneljasonxing@gmail.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20250711094517.931999-1-chen.dylane@linux.dev>
- <CAEf4BzZzsqu1=Q-3+6uJvgvKd52o+FR=DFp28w+vT5knP9NyCQ@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Tao Chen <chen.dylane@linux.dev>
-In-Reply-To: <CAEf4BzZzsqu1=Q-3+6uJvgvKd52o+FR=DFp28w+vT5knP9NyCQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v12 net-next 07/15] tcp: Add wait_third_ack for ECN
+ negotiation in simultaneous connect
+To: chia-yu.chang@nokia-bell-labs.com, edumazet@google.com,
+ linux-doc@vger.kernel.org, corbet@lwn.net, horms@kernel.org,
+ dsahern@kernel.org, kuniyu@amazon.com, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, dave.taht@gmail.com, jhs@mojatatu.com,
+ kuba@kernel.org, stephen@networkplumber.org, xiyou.wangcong@gmail.com,
+ jiri@resnulli.us, davem@davemloft.net, andrew+netdev@lunn.ch,
+ donald.hunter@gmail.com, ast@fiberby.net, liuhangbin@gmail.com,
+ shuah@kernel.org, linux-kselftest@vger.kernel.org, ij@kernel.org,
+ ncardwell@google.com, koen.de_schepper@nokia-bell-labs.com,
+ g.white@cablelabs.com, ingemar.s.johansson@ericsson.com,
+ mirja.kuehlewind@ericsson.com, cheshire@apple.com, rs.ietf@gmx.at,
+ Jason_Livingood@comcast.com, vidhi_goel@apple.com
+References: <20250704085345.46530-1-chia-yu.chang@nokia-bell-labs.com>
+ <20250704085345.46530-8-chia-yu.chang@nokia-bell-labs.com>
+Content-Language: en-US
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <20250704085345.46530-8-chia-yu.chang@nokia-bell-labs.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-在 2025/7/12 01:10, Andrii Nakryiko 写道:
-
-Hi Andrri,
-
-> On Fri, Jul 11, 2025 at 2:45 AM Tao Chen <chen.dylane@linux.dev> wrote:
->>
->> The 'commit 35f96de04127 ("bpf: Introduce BPF token object")' added
->> BPF token as a new kind of BPF kernel object. And BPF_OBJ_GET_INFO_BY_FD
->> already used to get BPF object info, so we can also get token info with
->> this cmd.
->>
+On 7/4/25 10:53 AM, chia-yu.chang@nokia-bell-labs.com wrote:
+> From: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
 > 
-> Do you have a specific use case in mind for this API? I can see how
-> this might be useful for some hypothetical cases, but I have a few
-> reservations as of right now:
+> In simultaneous connect scenario, the connection will be established
+> when SYN/ACK is received after patch 23e89e8ee7be7. However, the
+> third ACK is still anticipated to complete the negotiation for either
+> RFC3168 ECN and Accurate ECN. In this sense, an additional flag
+> wait_third_ack is introduced to identify that the 3rd ACK is still
+> anticipated to ensure ECN or AccECN negotiation will be done in the
+> ESTABLISHED state.
 > 
->    - we don't allow iterating all BPF token objects in the system the
-> same way we do it for progs, maps, and btfs, so bpftool cannot take
-> advantage of this to list all available tokens and their info, which
-> makes this API a bit less useful, IMO;
-> 
->    - BPF token was designed in a way that users don't really need to
-> know allowed_* values (and if they do, they can get it from BPF FS's
-> mount information (e.g., from /proc/mounts).
-> 
-> As I said, I can come up with some hypothetical situations where a
-> user might want to avoid doing something that otherwise they'd do
-> outside of userns, but I'm wondering what your motivations are for
-> this?
-> 
+> Signed-off-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
+> Co-developed-by: Ilpo Järvinen <ij@kernel.org>
+> Signed-off-by: Ilpo Järvinen <ij@kernel.org>
 
-Sorry for the delay. Recentlly, i tried to use bpf_token feature in our 
-production environment, in fact, bpf_token grants permission to prog, 
-map, cmd, etc. It would be great if it could indicate which specific 
-permission is the issue to user. So i wanted to provide a token info 
-query interface. As you said, "mount | grep bpf" may solve it, but
-functionally, can we make it more complete?
+I saw there are existing pktdrill test for ECN with simultaneous
+connect, but I'm still wondering it there is a real use case behind?
 
->> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
->> ---
->>   include/linux/bpf.h            | 11 +++++++++++
->>   include/uapi/linux/bpf.h       |  8 ++++++++
->>   kernel/bpf/syscall.c           | 18 ++++++++++++++++++
->>   kernel/bpf/token.c             | 30 ++++++++++++++++++++++++++++--
->>   tools/include/uapi/linux/bpf.h |  8 ++++++++
->>   5 files changed, 73 insertions(+), 2 deletions(-)
->>
-> 
-> [...]
+AFAICS simult connect can happen only on loopback, and [Acc]ECN on
+loopback looks useless.
 
+I would simply not allow AccECN on simultaneous connect - assuming that
+would basically drop all the code in this patch without no fourther
+modification required.
 
--- 
-Best Regards
-Tao Chen
+/P
+
 
