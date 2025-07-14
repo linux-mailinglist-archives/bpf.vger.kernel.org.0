@@ -1,529 +1,305 @@
-Return-Path: <bpf+bounces-63255-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63256-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79817B04916
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 23:05:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D3B8B0491B
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 23:05:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7FFD4A2134
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 21:05:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D492A3AD514
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 21:05:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC1B5277CB2;
-	Mon, 14 Jul 2025 21:04:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2AFE25A33E;
+	Mon, 14 Jul 2025 21:05:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iA7oSN/4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BBMvBztC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62B9F26FDB2;
-	Mon, 14 Jul 2025 21:04:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B043323AB87;
+	Mon, 14 Jul 2025 21:05:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752527073; cv=none; b=igtB/lD5nRtWVEtpw/zoeTWWoRoQ6miFbPBdItXKJRBwB+LSFtkbx0M/JdGld/MZW1J/2sfn706YFG6U1aq+cUEwPTm2D7gAU8CgqaVmqIbrhGzTauiOXVVqLFqrd+g/rgEqEiMNqnBFtkNkYyasWe4qR/Ct6lAeg7UiDV+VoGw=
+	t=1752527152; cv=none; b=IPiUyy6Qti0SyHT21vSFI3PAnDYOMFGN2893WUzwIqAXCSHWQVal6ooXU/L9HwchcITVoU3MAlo42pUbqRepbnuK+6R24tt1tu4OBq+LG/2WQ1tlQryUSBTVL4tGgW+qrqWfCJbfVYZOP/mjjGYx88RI+cdGT62/9KVEunCLFT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752527073; c=relaxed/simple;
-	bh=w5BfSVj7I/pFtSMm1cpj8UWfBTRLYbxpXzZlfS1mkdA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oP3UjJvmtLP3972U4ANfpzSdWB7BFvXMF7ZNL6lJQThJp6heYOAm1TvQZGRE/kgBpIQ4VYtNgOXN/NCITW4phG5PkYzxbHk8NUBgLJW/xg81guNKZj5fnLJH5tHFbwYWlFY4YOAJn3wf9/hM/xrvNiz9SBkrqN1XJpvTepXmWWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iA7oSN/4; arc=none smtp.client-ip=209.85.221.49
+	s=arc-20240116; t=1752527152; c=relaxed/simple;
+	bh=NusgdEidmqg7WdLyA3nBpIQMXLCY2DEchKW9L6Su5k8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ai9hHRbVMPjcvJwlRl/sGu0JPqOPFgarIwZpfyiL36iGwOUfkBrOBn8xE96Z5INEtcY7MuEIFV+oU08yrMHDiOsJTuSl6W5UjA9P1CJIw6GTxWlHIP4LbUJCN8HJu/gvClA1M7lo9BejrUAjnlkOjtE1DPzDhDB1GFohgrXNXIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BBMvBztC; arc=none smtp.client-ip=209.85.216.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3a6d1369d4eso2703256f8f.2;
-        Mon, 14 Jul 2025 14:04:31 -0700 (PDT)
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-3138e64b42aso5267086a91.0;
+        Mon, 14 Jul 2025 14:05:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752527069; x=1753131869; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1752527150; x=1753131950; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rqErgbfk2NdwVHe+kbvti+EWERjWXh5EaL7MQZQqqyc=;
-        b=iA7oSN/47pksVWMM112apKaTtAY8b9BNh8X2jqNfRYIWnUKHgbswnq/tqKu375FRMz
-         vwtnW8MArh3I1hNEwQdNUrEzrwgSvTLoxMbrRuAT4LJzwe2PZpKBeMSeSU9Fz5iWKsIU
-         2PeLY9PYD0aTtL6R9S/dc1HCCUQb1bz5JYrOCGHE0usRNKahIKilcLzV6iiFnojigsa1
-         lY2W1IAbUxch7IqKQ2nAJwtRNOO+2S8apvbHzmHbliD5fy+yVB/48FwODT7Tip5pvN3z
-         oRnqBTiwbFSxZdjMw/Y+bKm9HdWAFB0rlJ+6AEzWJyv8ImbZF84eFkbBHHJ0qvBA4bKL
-         3AvQ==
+        bh=MjbOZUP2p87+AFpsykpDIoA3T27NYccoxH/LzMqLX/8=;
+        b=BBMvBztC04Ken0GqVH1f0T8KwS4f9ox8aX9EGcmKefkYOUdrQEXVIUMRzr0tjEJ1YQ
+         zTIGvXki1Gk7U+PgybNANoIAu81/9j65iEz3S8tfB4ZJAu0CHglBTSMwiK3mbGKVG0po
+         DEAxoBPZ0xbJscWD5qKZ4YFx5Dcxf90SHiWOkMwsUtKQqYMph1zQySrtSCE1OxC9MTzS
+         +IXrCa6y4TOw5fZPhpBpF/bdEpGDVQ9QNYpKdBtAqJugWBDqZl1iQDpKkeqBbwnvKCUY
+         nqpC1KAfglTWrYHxqWV2xPKqS0ZhZJy3eJ0AyNZrO4kYuy6v73jay5yswWDsd/Ozjamf
+         6gdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752527069; x=1753131869;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1752527150; x=1753131950;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rqErgbfk2NdwVHe+kbvti+EWERjWXh5EaL7MQZQqqyc=;
-        b=iRI/7mRe+jvW+6wSacDQNo5qAFetkgW6xHPlZqlGMPqoTDQ0PnairA0rNviy+8kBLm
-         ZlIIpvlv1SIpV2QjP7t7FrW3Fj2rgaH94Ir/fhybtNuoI4TJEGmr8CANleuF1OAm0Laz
-         OrqNrDa++CsQV0uHfMkAq8cOT8++y/qBzPbOnabS1BM2CWh1Rov0WJXVvbFPE/FST1an
-         aRCBCzBTKHnGPYo17aM6Ly7IslEjkDJmspyY54eNKldGR3hYP0nCf20j6SZIr6vB27uw
-         NnHsBeWL848jMiLkW6EOVj4jE/47lx/m7FS6XMcU/UfJLXRa3BaSqpxvGPh/r+XE8S/D
-         b0BA==
-X-Forwarded-Encrypted: i=1; AJvYcCVjtoboG+Cl5hd6V/O5pYtsrf5NvZgTDULklTwmvZuz1OiW6mrgVcetlquKVVZJ889+Yq6sLkrcdWQttoO/gpt3@vger.kernel.org, AJvYcCXZekVCSfgdD4iy8/fN16+k/4B8hZ45Tfyj+18E9WYaU//iBNwk1OTwRsGzFDO5LolKvyE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxsXYtYpegfe2zapLRrfQmS6nUZ+E200oJcSkuQZv2p1DYnd2f3
-	Mz+BYr+Ek6NIjAahJsziXxLGIar0+OzQiD9Rnh+7qu5sGMA6xg5IEYq4gzTN3qLf
-X-Gm-Gg: ASbGncs16hyDXYEI21bK6evPPpIZN9XoUpEuPt5Rm6D+mJOGWh7lqkLz14HZ+F4pzV0
-	E4PAZFEv2lz40vqnAiwVNr04WCn7KZ9XzwxFB9Usv5k7oD0n8xJLKAavO6B8mKl0sKzaAytrdKI
-	gK6juuiXDjM41iK0mGOSwxJF/q/inkasOvU8EdhYp+a7o/nRMDbl0/0W6N4uMDd1TL1VBrie4JX
-	ChRUza0fgzqsbZzi0uPC+Ag0U5WMPghHgjvE35B7DfiV+J+fyFFElekHcvkPzwNIQYbay13XoYO
-	J/mugNRQS7z38X0Da6CygIYD+BQkiHv3tyhRM0Wp8yhFviNOrwQFJjxZCAZAqxIG4Wm/R8uuJre
-	royx4BYm0+GUGDRWCCuv0XYYon95L8To=
-X-Google-Smtp-Source: AGHT+IHZqIcN05geTJTpVci//sQcZyB52IOXQfWqUCjIAKi+ug8wWmw1Y90c1UQ6e8z/BFQEK16cZQ==
-X-Received: by 2002:a5d:64cc:0:b0:3a4:d98d:76b9 with SMTP id ffacd0b85a97d-3b5f358567emr9646742f8f.41.1752527069140;
-        Mon, 14 Jul 2025 14:04:29 -0700 (PDT)
-Received: from localhost ([2a03:2880:31ff:74::])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-454dd55b1absm143251065e9.40.2025.07.14.14.04.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jul 2025 14:04:28 -0700 (PDT)
-From: Mohsin Bashir <mohsin.bashr@gmail.com>
-To: netdev@vger.kernel.org
-Cc: kuba@kernel.org,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	shuah@kernel.org,
-	horms@kernel.org,
-	cratiu@nvidia.com,
-	noren@nvidia.com,
-	cjubran@nvidia.com,
-	mbloch@nvidia.com,
-	mohsin.bashr@gmail.com,
-	jdamato@fastly.com,
-	gal@nvidia.com,
-	sdf@fomichev.me,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	nathan@kernel.org,
-	nick.desaulniers+lkml@gmail.com,
-	morbo@google.com,
-	justinstitt@google.com,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH net-next V4 5/5] selftests: drv-net: Test head-adjustment support
-Date: Mon, 14 Jul 2025 14:03:52 -0700
-Message-ID: <20250714210352.1115230-6-mohsin.bashr@gmail.com>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20250714210352.1115230-1-mohsin.bashr@gmail.com>
-References: <20250714210352.1115230-1-mohsin.bashr@gmail.com>
+        bh=MjbOZUP2p87+AFpsykpDIoA3T27NYccoxH/LzMqLX/8=;
+        b=g/rjnOVTgccZjiPyP54fOH2zTuzrSjaz9QMARzjUdBzShNrh0sHYZApJp4HT75BrYt
+         Euht35bsjQgwFXJ8p+8JjIvUm+igpDrvqEOTSxquPhTfVop65IS8B4sVRnfrc+0hn4cf
+         eAZsfNbjjvHzVCjt4FNOISDeNkWbJgfaAWBgsfEoLpL+GVAjjURe150wdn9w9DPDyWm9
+         BU47dP6kJc/oVuJhV+OG41hrmPGBp0JKDCCSJz+4AyVOY30aabaWndaGB246t8Zg3aWl
+         L4OVa99EbDotTmCp1m3ZJRM7bRKIOgOEBJ6v6tCFuqBa7UpKEh6EVrzw66EP1/koG02F
+         0ACQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWLAjCkCqyjbBKVxqL+og7SVWIJfWLwIgM7HOIb1A27T5BmPvGPC9AH+We8k7iA6nfRgNr/yDUHAsN09nGQ7is8Quahyq4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxUjmjNl/i2/QBYRohYBWbUkq4ni251nNsBeTqajUBZdUxQQudY
+	uYGaCrm1XckF8GlzDyp1DNZwIp7p6N8dqEhHVPs+cjRA2PBRu1+ZHOpirdtYczGJH+mAEQAHd/B
+	sluefLIfYFEKeAnYdb66VwiG1n1T1c10=
+X-Gm-Gg: ASbGncun+Lw1G8P1TTDWt7F+p8n800iFIG7Fc0SsBE3Ynt4/dVY6OUPr+MrYL+Z9w9y
+	kI+NcrWhmxYoDrwbW//+kkVGf/JAHv59CFFfVOZJgzC5Jo7LZYz4avzli++4SwlEXIn1uIS0D2I
+	qUEvostQoMdTpaqskFuWlrvZBF+P3zaTTRqmYl4PKNmqZO9lYNGvLPsqqsta4puJcwUIRloipgK
+	DOQ8/EKLdqC4DNBpN09AYE=
+X-Google-Smtp-Source: AGHT+IF0eemj59tu5WQxp9B7wK4lrZ/MFsXjYqjmK+pUqG5vzb6SjNxEhzxwFmuLF/36YG+KOmdD4Txr1V1SceZxdKY=
+X-Received: by 2002:a17:90a:d610:b0:313:fb08:4261 with SMTP id
+ 98e67ed59e1d1-31c4cd55c4cmr21017440a91.32.1752527149792; Mon, 14 Jul 2025
+ 14:05:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250606232914.317094-1-kpsingh@kernel.org> <20250606232914.317094-6-kpsingh@kernel.org>
+ <CAEf4BzYiWv9suM6PuyJuFaDiRUXZxOhy1_pBkHqZwGN+Nn=2Eg@mail.gmail.com>
+ <CACYkzJ4qs=CuKxjLkqqt+UeFTgqsqT9NvX_33C5QYGHry6femg@mail.gmail.com> <CACYkzJ6d6=mftCjCDw=cWOZqj87Asv7LNL_wyF=KeCjU=vSE4g@mail.gmail.com>
+In-Reply-To: <CACYkzJ6d6=mftCjCDw=cWOZqj87Asv7LNL_wyF=KeCjU=vSE4g@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 14 Jul 2025 14:05:34 -0700
+X-Gm-Features: Ac12FXwmolxB6HyYYRdL65YaqZvyfUl4479ldpgWhqX5OQ21shua_llwYFXpcgo
+Message-ID: <CAEf4BzYtU2VCJfW+P=1Wj7hxOW+Up6jWCTJ-YPs6jLL05JzMGQ@mail.gmail.com>
+Subject: Re: [PATCH 05/12] libbpf: Support exclusive map creation
+To: KP Singh <kpsingh@kernel.org>
+Cc: bpf@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	bboscaccy@linux.microsoft.com, paul@paul-moore.com, kys@microsoft.com, 
+	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add test to validate the headroom adjustment support for both extension
-and the shrinking cases. For the extension part, eat up space from
-the start of payload data whereas, for the shrinking part, populate
-the newly available space with a tag. In the user-space, validate that a
-test string is manipulated accordingly.
+On Mon, Jul 14, 2025 at 5:55=E2=80=AFAM KP Singh <kpsingh@kernel.org> wrote=
+:
+>
+> On Mon, Jul 14, 2025 at 2:29=E2=80=AFPM KP Singh <kpsingh@kernel.org> wro=
+te:
+> >
+> > On Fri, Jun 13, 2025 at 12:56=E2=80=AFAM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Fri, Jun 6, 2025 at 4:29=E2=80=AFPM KP Singh <kpsingh@kernel.org> =
+wrote:
+> > > >
+> > > > Implement a convenient method i.e. bpf_map__make_exclusive which
+> > > > calculates the hash for the program and registers it with the map f=
+or
+> > > > creation as an exclusive map when the objects are loaded.
+> > > >
+> > > > The hash of the program must be computed after all the relocations =
+are
+> > > > done.
+> > > >
+> > > > Signed-off-by: KP Singh <kpsingh@kernel.org>
+> > > > ---
+> > > >  tools/lib/bpf/bpf.c            |  4 +-
+> > > >  tools/lib/bpf/bpf.h            |  4 +-
+> > > >  tools/lib/bpf/libbpf.c         | 68 ++++++++++++++++++++++++++++++=
++++-
+> > > >  tools/lib/bpf/libbpf.h         | 13 +++++++
+> > > >  tools/lib/bpf/libbpf.map       |  5 +++
+> > > >  tools/lib/bpf/libbpf_version.h |  2 +-
+> > > >  6 files changed, 92 insertions(+), 4 deletions(-)
+> > > >
+> > > > diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+> > > > index a9c3e33d0f8a..11fa2d64ccca 100644
+> > > > --- a/tools/lib/bpf/bpf.c
+> > > > +++ b/tools/lib/bpf/bpf.c
+> > > > @@ -172,7 +172,7 @@ int bpf_map_create(enum bpf_map_type map_type,
+> > > >                    __u32 max_entries,
+> > > >                    const struct bpf_map_create_opts *opts)
+> > > >  {
+> > > > -       const size_t attr_sz =3D offsetofend(union bpf_attr, map_to=
+ken_fd);
+> > > > +       const size_t attr_sz =3D offsetofend(union bpf_attr, excl_p=
+rog_hash);
+> > > >         union bpf_attr attr;
+> > > >         int fd;
+> > > >
+> > > > @@ -203,6 +203,8 @@ int bpf_map_create(enum bpf_map_type map_type,
+> > > >         attr.map_ifindex =3D OPTS_GET(opts, map_ifindex, 0);
+> > > >
+> > > >         attr.map_token_fd =3D OPTS_GET(opts, token_fd, 0);
+> > > > +       attr.excl_prog_hash =3D ptr_to_u64(OPTS_GET(opts, excl_prog=
+_hash, NULL));
+> > > > +       attr.excl_prog_hash_size =3D OPTS_GET(opts, excl_prog_hash_=
+size, 0);
+> > > >
+> > > >         fd =3D sys_bpf_fd(BPF_MAP_CREATE, &attr, attr_sz);
+> > > >         return libbpf_err_errno(fd);
+> > > > diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+> > > > index 777627d33d25..a82b79c0c349 100644
+> > > > --- a/tools/lib/bpf/bpf.h
+> > > > +++ b/tools/lib/bpf/bpf.h
+> > > > @@ -54,9 +54,11 @@ struct bpf_map_create_opts {
+> > > >         __s32 value_type_btf_obj_fd;
+> > > >
+> > > >         __u32 token_fd;
+> > > > +       __u32 excl_prog_hash_size;
+> > > > +       const void *excl_prog_hash;
+> > > >         size_t :0;
+> > > >  };
+> > > > -#define bpf_map_create_opts__last_field token_fd
+> > > > +#define bpf_map_create_opts__last_field excl_prog_hash
+> > > >
+> > > >  LIBBPF_API int bpf_map_create(enum bpf_map_type map_type,
+> > > >                               const char *map_name,
+> > > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > > index 475038d04cb4..17de756973f4 100644
+> > > > --- a/tools/lib/bpf/libbpf.c
+> > > > +++ b/tools/lib/bpf/libbpf.c
+> > > > @@ -499,6 +499,7 @@ struct bpf_program {
+> > > >         __u32 line_info_rec_size;
+> > > >         __u32 line_info_cnt;
+> > > >         __u32 prog_flags;
+> > > > +       __u8  hash[SHA256_DIGEST_LENGTH];
+> > > >  };
+> > > >
+> > > >  struct bpf_struct_ops {
+> > > > @@ -578,6 +579,8 @@ struct bpf_map {
+> > > >         bool autocreate;
+> > > >         bool autoattach;
+> > > >         __u64 map_extra;
+> > > > +       const void *excl_prog_sha;
+> > > > +       __u32 excl_prog_sha_size;
+> > > >  };
+> > > >
+> > > >  enum extern_type {
+> > > > @@ -4485,6 +4488,43 @@ bpf_object__section_to_libbpf_map_type(const=
+ struct bpf_object *obj, int shndx)
+> > > >         }
+> > > >  }
+> > > >
+> > > > +static int bpf_program__compute_hash(struct bpf_program *prog)
+> > > > +{
+> > > > +       struct bpf_insn *purged;
+> > > > +       bool was_ld_map;
+> > > > +       int i, err;
+> > > > +
+> > > > +       purged =3D calloc(1, BPF_INSN_SZ * prog->insns_cnt);
+> > > > +       if (!purged)
+> > > > +               return -ENOMEM;
+> > > > +
+> > > > +       /* If relocations have been done, the map_fd needs to be
+> > > > +        * discarded for the digest calculation.
+> > > > +        */
+> > >
+> > > all this looks sketchy, let's think about some more robust approach
+> > > here rather than randomly clearing some fields of some instructions..=
+.
+> > >
+> > > > +       for (i =3D 0, was_ld_map =3D false; i < prog->insns_cnt; i+=
++) {
+> > > > +               purged[i] =3D prog->insns[i];
+> > > > +               if (!was_ld_map &&
+> > > > +                   purged[i].code =3D=3D (BPF_LD | BPF_IMM | BPF_D=
+W) &&
+> > > > +                   (purged[i].src_reg =3D=3D BPF_PSEUDO_MAP_FD ||
+> > > > +                    purged[i].src_reg =3D=3D BPF_PSEUDO_MAP_VALUE)=
+) {
+> > > > +                       was_ld_map =3D true;
+> > > > +                       purged[i].imm =3D 0;
+> > > > +               } else if (was_ld_map && purged[i].code =3D=3D 0 &&
+> > > > +                          purged[i].dst_reg =3D=3D 0 && purged[i].=
+src_reg =3D=3D 0 &&
+> > > > +                          purged[i].off =3D=3D 0) {
+> > > > +                       was_ld_map =3D false;
+> > > > +                       purged[i].imm =3D 0;
+> > > > +               } else {
+> > > > +                       was_ld_map =3D false;
+> > > > +               }
+> > > > +       }
+> > >
+> > > this was_ld_map business is... unnecessary? Just access purged[i + 1]
+> > > (checking i + 1 < prog->insns_cnt, of course), and i +=3D 1. This
+> > > stateful approach is an unnecessary complication, IMO
+> >
+> > Does this look better to you, the next instruction has to be the
+> > second half of the double word right?
+> >
+> > for (int i =3D 0; i < prog->insns_cnt; i++) {
+> >     purged[i] =3D prog->insns[i];
+> >     if (purged[i].code =3D=3D (BPF_LD | BPF_IMM | BPF_DW) &&
+> >         (purged[i].src_reg =3D=3D BPF_PSEUDO_MAP_FD ||
+> >          purged[i].src_reg =3D=3D BPF_PSEUDO_MAP_VALUE)) {
+> >         purged[i].imm =3D 0;
+> >         i++;
+> >         if (i >=3D prog->insns_cnt ||
+> >             prog->insns[i].code !=3D 0 ||
+> >             prog->insns[i].dst_reg !=3D 0 ||
+> >             prog->insns[i].src_reg !=3D 0 ||
+> >             prog->insns[i].off !=3D 0) {
+> >             return -EINVAL;
+> >         }
+>
+> I mean ofcourse
+>
+> err =3D -EINVAL;
+> goto out;
+>
+> to free the buffer.
 
-./drivers/net/xdp.py
-TAP version 13
-1..9
-ok 1 xdp.test_xdp_native_pass_sb
-ok 2 xdp.test_xdp_native_pass_mb
-ok 3 xdp.test_xdp_native_drop_sb
-ok 4 xdp.test_xdp_native_drop_mb
-ok 5 xdp.test_xdp_native_tx_mb
-\# Failed run: pkt_sz 2048, ... offset -256. Reason: Adjustment failed
-ok 6 xdp.test_xdp_native_adjst_tail_grow_data
-ok 7 xdp.test_xdp_native_adjst_tail_shrnk_data
-\# Failed run: pkt_sz 512, ... offset -128. Reason: Adjustment failed
-ok 8 xdp.test_xdp_native_adjst_head_grow_data
-\# Failed run: pkt_sz (2048) > HDS threshold (1536) and offset 64 > 48
-ok 9 xdp.test_xdp_native_adjst_head_shrnk_data
-\# Totals: pass:9 fail:0 xfail:0 xpass:0 skip:0 error:0
 
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Mohsin Bashir <mohsin.bashr@gmail.com>
----
- tools/testing/selftests/drivers/net/xdp.py    | 147 ++++++++++++++-
- .../selftests/net/lib/xdp_native.bpf.c        | 168 ++++++++++++++++++
- 2 files changed, 314 insertions(+), 1 deletion(-)
+Yes, but I'd probably modify it a bit for conciseness:
 
-diff --git a/tools/testing/selftests/drivers/net/xdp.py b/tools/testing/selftests/drivers/net/xdp.py
-index 8d80f6860b8b..89c70daa3e69 100755
---- a/tools/testing/selftests/drivers/net/xdp.py
-+++ b/tools/testing/selftests/drivers/net/xdp.py
-@@ -12,7 +12,7 @@ from dataclasses import dataclass
- from enum import Enum
- 
- from lib.py import ksft_run, ksft_exit, ksft_eq, ksft_ne, ksft_pr
--from lib.py import KsftFailEx, NetDrvEpEnv
-+from lib.py import KsftFailEx, NetDrvEpEnv, EthtoolFamily, NlError
- from lib.py import bkg, cmd, rand_port
- from lib.py import ip, bpftool, defer
- 
-@@ -31,6 +31,7 @@ class XDPAction(Enum):
-     DROP = 1  # Drop the packet
-     TX = 2    # Route the packet to the remote host
-     TAIL_ADJST = 3  # Adjust the tail of the packet
-+    HEAD_ADJST = 4  # Adjust the head of the packet
- 
- 
- class XDPStats(Enum):
-@@ -483,6 +484,147 @@ def test_xdp_native_adjst_tail_shrnk_data(cfg):
-     _validate_res(res, offset_lst, pkt_sz_lst)
- 
- 
-+def get_hds_thresh(cfg):
-+    """
-+    Retrieves the header data split (HDS) threshold for a network interface.
-+
-+    Args:
-+        cfg: Configuration object containing network settings.
-+
-+    Returns:
-+        The HDS threshold value. If the threshold is not supported or an error occurs,
-+        a default value of 1500 is returned.
-+    """
-+    netnl = cfg.netnl
-+    hds_thresh = 1500
-+
-+    try:
-+        rings = netnl.rings_get({'header': {'dev-index': cfg.ifindex}})
-+        if 'hds-thresh' not in rings:
-+            ksft_pr(f'hds-thresh not supported. Using default: {hds_thresh}')
-+            return hds_thresh
-+        hds_thresh = rings['hds-thresh']
-+    except NlError as e:
-+        ksft_pr(f"Failed to get rings: {e}. Using default: {hds_thresh}")
-+
-+    return hds_thresh
-+
-+
-+def _test_xdp_native_head_adjst(cfg, prog, pkt_sz_lst, offset_lst):
-+    """
-+    Tests the XDP head adjustment action for a multi-buffer case.
-+
-+    Args:
-+        cfg: Configuration object containing network settings.
-+        netnl: Network namespace or link object (not used in this function).
-+
-+    This function sets up the packet size and offset lists, then performs
-+    the head adjustment test by sending and receiving UDP packets.
-+    """
-+    cfg.require_cmd("socat", remote=True)
-+
-+    prog_info = _load_xdp_prog(cfg, BPFProgInfo(prog, "xdp_native.bpf.o", "xdp.frags", 9000))
-+    port = rand_port()
-+
-+    _set_xdp_map("map_xdp_setup", TestConfig.MODE.value, XDPAction.HEAD_ADJST.value)
-+    _set_xdp_map("map_xdp_setup", TestConfig.PORT.value, port)
-+
-+    hds_thresh = get_hds_thresh(cfg)
-+    for offset in offset_lst:
-+        for pkt_sz in pkt_sz_lst:
-+            # The "head" buffer must contain at least the Ethernet header
-+            # after we eat into it. We send large-enough packets, but if HDS
-+            # is enabled head will only contain headers. Don't try to eat
-+            # more than 28 bytes (UDPv4 + eth hdr left: (14 + 20 + 8) - 14)
-+            l2_cut_off = 28 if cfg.addr_ipver == 4 else 48
-+            if pkt_sz > hds_thresh and offset > l2_cut_off:
-+                ksft_pr(
-+                f"Failed run: pkt_sz ({pkt_sz}) > HDS threshold ({hds_thresh}) and "
-+                f"offset {offset} > {l2_cut_off}"
-+                )
-+                return {"status": "pass"}
-+
-+            test_str = ''.join(random.choice(string.ascii_lowercase) for _ in range(pkt_sz))
-+            tag = format(random.randint(65, 90), '02x')
-+
-+            _set_xdp_map("map_xdp_setup",
-+                     TestConfig.ADJST_OFFSET.value,
-+                     offset)
-+            _set_xdp_map("map_xdp_setup", TestConfig.ADJST_TAG.value, int(tag, 16))
-+            _set_xdp_map("map_xdp_setup", TestConfig.ADJST_OFFSET.value, offset)
-+
-+            recvd_str = _exchg_udp(cfg, port, test_str)
-+
-+            # Check for failures around adjustment and data exchange
-+            failure = _check_for_failures(recvd_str, _get_stats(prog_info['maps']['map_xdp_stats']))
-+            if failure is not None:
-+                return {
-+                    "status": "fail",
-+                    "reason": failure,
-+                    "offset": offset,
-+                    "pkt_sz": pkt_sz
-+                }
-+
-+            # Validate data content based on offset direction
-+            expected_data = None
-+            if offset < 0:
-+                expected_data = chr(int(tag, 16)) * (0 - offset) + test_str
-+            else:
-+                expected_data = test_str[offset:]
-+
-+            if recvd_str != expected_data:
-+                return {
-+                    "status": "fail",
-+                    "reason": "Data mismatch",
-+                    "offset": offset,
-+                    "pkt_sz": pkt_sz
-+                }
-+
-+    return {"status": "pass"}
-+
-+
-+def test_xdp_native_adjst_head_grow_data(cfg):
-+    """
-+    Tests the XDP headroom growth support.
-+
-+    Args:
-+        cfg: Configuration object containing network settings.
-+
-+    This function sets up the packet size and offset lists, then calls the
-+    _test_xdp_native_head_adjst_mb function to perform the actual test. The
-+    test is passed if the headroom is successfully extended for given packet
-+    sizes and offsets.
-+    """
-+    pkt_sz_lst = [512, 1024, 2048]
-+
-+    # Positive value indicates data part is growing by the corresponding value
-+    offset_lst = [-16, -32, -64, -128, -256]
-+    res = _test_xdp_native_head_adjst(cfg, "xdp_prog_frags", pkt_sz_lst, offset_lst)
-+
-+    _validate_res(res, offset_lst, pkt_sz_lst)
-+
-+
-+def test_xdp_native_adjst_head_shrnk_data(cfg):
-+    """
-+    Tests the XDP headroom shrinking support.
-+
-+    Args:
-+        cfg: Configuration object containing network settings.
-+
-+    This function sets up the packet size and offset lists, then calls the
-+    _test_xdp_native_head_adjst_mb function to perform the actual test. The
-+    test is passed if the headroom is successfully shrunk for given packet
-+    sizes and offsets.
-+    """
-+    pkt_sz_lst = [512, 1024, 2048]
-+
-+    # Negative value indicates data part is shrinking by the corresponding value
-+    offset_lst = [16, 32, 64, 128, 256]
-+    res = _test_xdp_native_head_adjst(cfg, "xdp_prog_frags", pkt_sz_lst, offset_lst)
-+
-+    _validate_res(res, offset_lst, pkt_sz_lst)
-+
-+
- def main():
-     """
-     Main function to execute the XDP tests.
-@@ -493,6 +635,7 @@ def main():
-     function to execute the tests.
-     """
-     with NetDrvEpEnv(__file__) as cfg:
-+        cfg.netnl = EthtoolFamily()
-         ksft_run(
-             [
-                 test_xdp_native_pass_sb,
-@@ -502,6 +645,8 @@ def main():
-                 test_xdp_native_tx_mb,
-                 test_xdp_native_adjst_tail_grow_data,
-                 test_xdp_native_adjst_tail_shrnk_data,
-+                test_xdp_native_adjst_head_grow_data,
-+                test_xdp_native_adjst_head_shrnk_data,
-             ],
-             args=(cfg,))
-     ksft_exit()
-diff --git a/tools/testing/selftests/net/lib/xdp_native.bpf.c b/tools/testing/selftests/net/lib/xdp_native.bpf.c
-index 1b196a809a07..e4465ed5a59f 100644
---- a/tools/testing/selftests/net/lib/xdp_native.bpf.c
-+++ b/tools/testing/selftests/net/lib/xdp_native.bpf.c
-@@ -27,6 +27,7 @@ enum {
- 	XDP_MODE_DROP = 1,
- 	XDP_MODE_TX = 2,
- 	XDP_MODE_TAIL_ADJST = 3,
-+	XDP_MODE_HEAD_ADJST = 4,
- } xdp_map_modes;
- 
- enum {
-@@ -325,6 +326,171 @@ static int xdp_tail_ext(struct xdp_md *ctx, __u16 port)
- 	return XDP_ABORTED;
- }
- 
-+static int xdp_adjst_head_shrnk_data(struct xdp_md *ctx, __u64 hdr_len,
-+				     const __u32 size)
-+{
-+	char tmp_buff[MAX_ADJST_OFFSET];
-+	void *data, *data_end;
-+	void *offset_ptr;
-+
-+	data = (void *)(long)ctx->data;
-+	data_end = (void *)(long)ctx->data_end;
-+
-+	/* Update the length information in the IP and UDP headers before
-+	 * adjusting the headroom. This simplifies accessing the relevant
-+	 * fields in the IP and UDP headers for fragmented packets. Any
-+	 * failure beyond this point will result in the packet being aborted,
-+	 * so we don't need to worry about incorrect length information for
-+	 * passed packets.
-+	 */
-+	update_pkt(data, data_end, (__s16)(0 - size));
-+
-+	if (bpf_xdp_load_bytes(ctx, 0, tmp_buff, MAX_ADJST_OFFSET) < 0)
-+		return -1;
-+
-+	if (bpf_xdp_adjust_head(ctx, size) < 0)
-+		return -1;
-+
-+	if (size > MAX_ADJST_OFFSET)
-+		return -1;
-+
-+	if (hdr_len > MAX_ADJST_OFFSET || hdr_len == 0)
-+		return -1;
-+
-+	/* Added here to handle clang complain about negative value */
-+	hdr_len = (hdr_len & 0x1ff) >= 256 ? 256 : hdr_len & 0xff;
-+
-+	if (hdr_len == 0)
-+		return -1;
-+
-+	if (bpf_xdp_store_bytes(ctx, 0, tmp_buff, hdr_len) < 0)
-+		return -1;
-+
-+	return 0;
-+}
-+
-+static int xdp_adjst_head_grow_data(struct xdp_md *ctx, __u64 hdr_len,
-+				    const __u32 size)
-+{
-+	char tmp_buff[MAX_ADJST_OFFSET];
-+	void *data, *data_end;
-+	void *offset_ptr;
-+	__s32 *val;
-+	__u32 key;
-+	__u8 tag;
-+
-+	if (hdr_len > MAX_ADJST_OFFSET || hdr_len == 0)
-+		return -1;
-+
-+	/* Added here to handle clang complain about negative value */
-+	hdr_len = (hdr_len & 0x1ff) >= 256 ? 256 : hdr_len & 0xff;
-+
-+	if (hdr_len == 0)
-+		return -1;
-+
-+	if (bpf_xdp_load_bytes(ctx, 0, tmp_buff, hdr_len) < 0)
-+		return -1;
-+
-+	if (size > MAX_ADJST_OFFSET)
-+		return -1;
-+
-+	if (bpf_xdp_adjust_head(ctx, 0 - size) < 0)
-+		return -1;
-+
-+	if (bpf_xdp_store_bytes(ctx, 0, tmp_buff, hdr_len) < 0)
-+		return -1;
-+
-+	data = (void *)(long)ctx->data;
-+	data_end = (void *)(long)ctx->data_end;
-+
-+	offset_ptr = data + hdr_len;
-+	if (offset_ptr > data_end)
-+		return -1;
-+
-+	key = XDP_ADJST_TAG;
-+	val = bpf_map_lookup_elem(&map_xdp_setup, &key);
-+	if (!val)
-+		return -1;
-+
-+	tag = (__u8)(*val);
-+
-+	for (int i = 0; i < min(MAX_ADJST_OFFSET, size); i++) {
-+		if (offset_ptr + 1 > data_end)
-+			return -1;
-+
-+		__builtin_memcpy(offset_ptr, &tag, 1);
-+		offset_ptr++;
-+	}
-+
-+	update_pkt(data, data_end, (__s16)(size));
-+
-+	return 0;
-+
-+}
-+
-+static int xdp_head_adjst(struct xdp_md *ctx, __u16 port)
-+{
-+	void *data_end = (void *)(long)ctx->data_end;
-+	void *data = (void *)(long)ctx->data;
-+	struct udphdr *udph_ptr = NULL;
-+	__u32 key, size, hdr_len;
-+	__s32 *val;
-+	int res;
-+
-+	/* Filter packets based on UDP port */
-+	udph_ptr = filter_udphdr(ctx, port);
-+	if (!udph_ptr)
-+		return XDP_PASS;
-+
-+	hdr_len = (void *)udph_ptr - data + sizeof(struct udphdr);
-+
-+	key = XDP_ADJST_OFFSET;
-+	val = bpf_map_lookup_elem(&map_xdp_setup, &key);
-+	if (!val)
-+		return XDP_PASS;
-+
-+	switch (*val) {
-+	case -16:
-+	case 16:
-+		size = 16;
-+		break;
-+	case -32:
-+	case 32:
-+		size = 32;
-+		break;
-+	case -64:
-+	case 64:
-+		size = 64;
-+		break;
-+	case -128:
-+	case 128:
-+		size = 128;
-+		break;
-+	case -256:
-+	case 256:
-+		size = 256;
-+		break;
-+	default:
-+		bpf_printk("Invalid adjustment offset: %d\n", *val);
-+		goto abort;
-+	}
-+
-+	if (*val < 0)
-+		res = xdp_adjst_head_grow_data(ctx, hdr_len, size);
-+	else
-+		res = xdp_adjst_head_shrnk_data(ctx, hdr_len, size);
-+
-+	if (res)
-+		goto abort;
-+
-+	record_stats(ctx, STATS_PASS);
-+	return XDP_PASS;
-+
-+abort:
-+	record_stats(ctx, STATS_ABORT);
-+	return XDP_ABORTED;
-+}
-+
- static int xdp_prog_common(struct xdp_md *ctx)
- {
- 	__u32 key, *port;
-@@ -349,6 +515,8 @@ static int xdp_prog_common(struct xdp_md *ctx)
- 		return xdp_mode_tx_handler(ctx, (__u16)(*port));
- 	case XDP_MODE_TAIL_ADJST:
- 		return xdp_tail_ext(ctx, (__u16)(*port));
-+	case XDP_MODE_HEAD_ADJST:
-+		return xdp_head_adjst(ctx, (__u16)(*port));
- 	}
- 
- 	/* Default action is to simple pass */
--- 
-2.47.1
+struct bpf_insn *purged, *insn;
+int i;
 
+purged =3D calloc(..);
+memcpy(purged, prog->insns, ...);
+
+for (i =3D 0; i < prog->insns_cnt; i++) {
+    insn =3D &purged[i];
+    if (insn[0].code =3D=3D (BPF_LD | BPF_IMM | BPF_DW) &&
+        (insn[0].src_reg =3D=3D BPF_PSEUDO_MAP_FD || ...) {
+        insn[0].imm =3D 0;
+        if (i >=3D prog_insns_cnt) {
+            err =3D -EINVAL;
+            goto err;
+        }
+        insn[1].imm =3D 0;
+        i++;
+}
+
+
+(I'm not sure libbpf needs to check code,dst_reg,src_reg,off for
+ldimm64, verifier will do it anyways, so I'd protect against
+out-of-bounds access only)
+
+I'd even consider just doing:
+
+if (i + 1 < prog->insns_cnt && insn[0].code =3D=3D (BPF_LD | BPF_IMM |
+BPF_DW) ...) {
+    insn[0].imm =3D 0;
+    insn[1].imm =3D 0;
+    i++;
+}
+
+
+i.e., don't even error out, verifier will do that anyway later because
+program is malformed, and hash won't even matter at that point
+
+[...]
 
