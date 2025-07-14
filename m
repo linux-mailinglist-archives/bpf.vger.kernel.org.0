@@ -1,86 +1,61 @@
-Return-Path: <bpf+bounces-63213-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63214-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 375A0B0433F
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 17:17:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 399F4B0443D
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 17:40:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1089416C27D
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 15:14:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF5EA7BA0D8
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 15:33:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F05EF265CBD;
-	Mon, 14 Jul 2025 15:12:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C65E2265630;
+	Mon, 14 Jul 2025 15:28:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CE/ZsBBm"
+	dkim=pass (2048-bit key) header.d=konsulko.se header.i=@konsulko.se header.b="Z/BES+gk";
+	dkim=permerror (0-bit key) header.d=konsulko.se header.i=@konsulko.se header.b="AQxoKkTN"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mailrelay-egress16.pub.mailoutpod3-cph3.one.com (mailrelay-egress16.pub.mailoutpod3-cph3.one.com [46.30.212.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06EEC25BEF0
-	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 15:12:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C448626462A
+	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 15:28:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.212.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752505951; cv=none; b=P9G6antX2mEAFCiVm7RTg/Hb+HeWTlZLjRDjPh/m5Ah79JBf0UYpsLnIwrzo59fV96Hifs/f9aHNlQlCgdDP+bAO0t4uGQepB0pnj0ztYyoVVeOI5uksfedqF2Ps82+DkjA4M7Kg2RV6+X7C3hfDjnIuEYEOheSZZGq/3nD0gEk=
+	t=1752506893; cv=none; b=Traa586B1wQYvam8quVb3yJLbDIQh9uLgNBURIF26+4KaeLX6GAPtwD7uDx36HN1IGLmmCshqXJswBjt5hJgnOD6q6QYd0ERILbizzxTX+AaLPR1xbB+zEFdo6yFWwdTkODrn3y6pd8ZLJA9P9Z7TeHSQFYmqSSqZQEJU/wc6pw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752505951; c=relaxed/simple;
-	bh=nUBsyJw1CVVySBdkscf0wKBNx6+3aTki+UmriA4CZ7w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=G/2WtXT0CDD1cyoVmkalz/InMz3noPpiuKdRcSb/2He6x0uaHcTLynuvR/scI/+j2HGVL+kwoaADNvlgm6lND4/mgCl8N7Zqc2Q629FxSyIkVFYbXgjBF3a0V3oLME0bkOTDSog3c7K81P9OMIN1vmL4/TsoFl4Ih5TFT1sVESI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CE/ZsBBm; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1752505949;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MByh1M8hBJM6ZO7YZ21H+SItyH0RTixPX6ghJ1VgS10=;
-	b=CE/ZsBBmkztiwkM5FOcQnznUuhm4O0ENziOD6M/UoikRqkAZ7zIc21MxBDYcogGeJzlulX
-	XO6r3Ffsk3DkJ7JKirNGdujWUwqiZ4kpHZEQXo0dy8IM/Sh6n4WI5+tnoTVB968SAoavSq
-	wuRT6eaOz4Z0PNx0f68YAm1N5zT4spo=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-137-AtFPR7gLOCSBdPznP7JPOw-1; Mon, 14 Jul 2025 11:12:25 -0400
-X-MC-Unique: AtFPR7gLOCSBdPznP7JPOw-1
-X-Mimecast-MFC-AGG-ID: AtFPR7gLOCSBdPznP7JPOw_1752505944
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4560b81ff9eso14046885e9.1
-        for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 08:12:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752505944; x=1753110744;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MByh1M8hBJM6ZO7YZ21H+SItyH0RTixPX6ghJ1VgS10=;
-        b=KvE1+A+d0P1nQEnNA/mMpFJ4CWr2Mmjc5lf9+HJEHg2fBba+Idt/CaPvUeUV4LKNkV
-         Gh4CasUuX0J85Tn0MNYY0/UaYqwBi5wvZVIEQ/+YcLSdO311MU6r/+xHa2yNZrmrTXrJ
-         6j4RjciR6H7bH92jy73W9QHmQAptm08lW+G5fwzhbVyFrPP8ijnp7tpiLLaKkmnaHHyi
-         f+fnNMg74ISKA/S4782bK+RBHT0jA/Lv1pRzoLuGH4fJWLSUHRvbdEQIKkZ1dgqF1RXA
-         eAIo0D1mPixsFO2xYJpW3bEtlKw53unjYUi4/pGGMh2osjcgzdYRxbbLcX5tMJciC/jq
-         Csow==
-X-Forwarded-Encrypted: i=1; AJvYcCXUg3VnY3Y5P17oDWi8GgcA9l3nzn/6nXCzeu8ImgHArO336XiRTDoMsMP3x6jSkpXsPVY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyUOMRVoDW8hBN8/BBel6gr7Fz5k5t+V0tRiInvVPsBdi1sDQWi
-	xia7oTLrO/glgGCu+8AQcyZsz5ZwqQSG/5G6L2BtdOBECG9JHD5zIGmI8+Z+9r9vNmHnH7umEZ/
-	6eDwXG8vsSUI798dZg3YD071jXx5LeB1vRQx54kAQALMIxnOiB4nhvg==
-X-Gm-Gg: ASbGncuHNmr6Fq5bwqfE4Zya+HHapx/uEE6zh0/6e+M1ysTwtGthWSbHDdNGlh0l2QU
-	Q9G7xfOKMWjoeqDhojmvul6+ZF3vVNfS7sQsLRFDMI1nPFgeGGLGdmJAjVo9hfoAkeWm2j4yCq/
-	BRRaG0SbEfrXuMkm2xQn9+Q/Xjptnoq57yxnvTOAJddsQ0RSNfc/Giq+5dp0oLGUeEsppm0Udu6
-	17y/cztzTlzs+nq9JPfgaofUMNloq81JAICxFBtVDYSnuboylw5SI3cgg86iQviB3j7xmhiu2Eq
-	zjJZyazP9bG52E79Temtyg5A9hmHTPXGkGLGW6tugoA=
-X-Received: by 2002:a05:600c:841a:b0:456:1b6b:daaa with SMTP id 5b1f17b1804b1-4561b6bdd3amr38488185e9.29.1752505944253;
-        Mon, 14 Jul 2025 08:12:24 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGI8sx2a/TCHL+bqItM/OhugxGKDQcaU6p5roxACLJIP/WtAGE/GxnvHPR1UMcQFIC+o2xoAQ==
-X-Received: by 2002:a05:600c:841a:b0:456:1b6b:daaa with SMTP id 5b1f17b1804b1-4561b6bdd3amr38487625e9.29.1752505943842;
-        Mon, 14 Jul 2025 08:12:23 -0700 (PDT)
-Received: from [192.168.0.115] ([212.105.155.228])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-454cd56d936sm117404425e9.0.2025.07.14.08.12.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Jul 2025 08:12:23 -0700 (PDT)
-Message-ID: <e3bef5ed-535f-4ce3-9ea4-f6a40df448ff@redhat.com>
-Date: Mon, 14 Jul 2025 17:12:20 +0200
+	s=arc-20240116; t=1752506893; c=relaxed/simple;
+	bh=6/eBWxJ1QIgkIgwCwS+ng4W7G8JH+ooFJnVUfMl83dE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=l1aQB7W0JhmKxSEeJONoe4dMglu19bZzSpOD1/0m62TgpqFI77jJh+hQ4kqU7Z/G2VsUXQB4lPKT9KXjts+Zv0p2GDZA763rIXtnjImuqHeAjmPfdJlgCQfdl2v87ZMPdVdYv2dmZ49en6vYuPmH6x3p15zUKXx4tPIgDUHaRn8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=konsulko.se; spf=none smtp.mailfrom=konsulko.se; dkim=pass (2048-bit key) header.d=konsulko.se header.i=@konsulko.se header.b=Z/BES+gk; dkim=permerror (0-bit key) header.d=konsulko.se header.i=@konsulko.se header.b=AQxoKkTN; arc=none smtp.client-ip=46.30.212.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=konsulko.se
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=konsulko.se
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1752506881; x=1753111681;
+	d=konsulko.se; s=rsa1;
+	h=content-transfer-encoding:content-type:in-reply-to:from:references:cc:to:
+	 subject:mime-version:date:message-id:from;
+	bh=CxNCFSgystRqkUUeIIO2FJHvWHtIjD7SOGJQsrFHYEE=;
+	b=Z/BES+gklQqP0Ut67CFd0O7AKDdxn7SzeAeP9sKo9hDxc5vHyaQluD8u4GBmORfa/K3k6FT/QNg5K
+	 +5pSyJLd1VjFqcGU04jt6VNqDAAKY3U2gnBYhHJ6CKvmCDjQu4vgMW4qZXRNtX3EmIVFOTqzZwJzXk
+	 zeb8JB1bgVleUMUYPfwoZcku/BGt2s7xNJaMnERDpWZcbDs0R3vrVJURffyKZK5uSNMVcOY8Da6QAH
+	 aky+odmUqXjx0O/6U3/CTVeIX0gYVFyMxMidO6cmQQq/CB7FbGRVLsUEonhUKu7GDT93zLKlHdMVZO
+	 TpEdBDsXq5yhp1IwW7irPS5z6/BDsZA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1752506881; x=1753111681;
+	d=konsulko.se; s=ed1;
+	h=content-transfer-encoding:content-type:in-reply-to:from:references:cc:to:
+	 subject:mime-version:date:message-id:from;
+	bh=CxNCFSgystRqkUUeIIO2FJHvWHtIjD7SOGJQsrFHYEE=;
+	b=AQxoKkTNHwRxzS8AOTETVDzj4k4Jmbk8Yhmp3MgKFL7e8XlwIfsKyDurTcDTsSbvUFVkpLk9Df/aH
+	 3NS4YiLAQ==
+X-HalOne-ID: 1ed28d5b-60c7-11f0-bb53-e90f2b8e16ca
+Received: from [192.168.10.245] (host-90-238-19-233.mobileonline.telia.com [90.238.19.233])
+	by mailrelay2.pub.mailoutpod2-cph3.one.com (Halon) with ESMTPSA
+	id 1ed28d5b-60c7-11f0-bb53-e90f2b8e16ca;
+	Mon, 14 Jul 2025 15:28:00 +0000 (UTC)
+Message-ID: <45e705ef-e40b-4dd3-a9b9-1a713df5d4e5@konsulko.se>
+Date: Mon, 14 Jul 2025 17:27:59 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -88,52 +63,109 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 net-next 12/15] tcp: accecn: AccECN option send
- control
-To: chia-yu.chang@nokia-bell-labs.com, edumazet@google.com,
- linux-doc@vger.kernel.org, corbet@lwn.net, horms@kernel.org,
- dsahern@kernel.org, kuniyu@amazon.com, bpf@vger.kernel.org,
- netdev@vger.kernel.org, dave.taht@gmail.com, jhs@mojatatu.com,
- kuba@kernel.org, stephen@networkplumber.org, xiyou.wangcong@gmail.com,
- jiri@resnulli.us, davem@davemloft.net, andrew+netdev@lunn.ch,
- donald.hunter@gmail.com, ast@fiberby.net, liuhangbin@gmail.com,
- shuah@kernel.org, linux-kselftest@vger.kernel.org, ij@kernel.org,
- ncardwell@google.com, koen.de_schepper@nokia-bell-labs.com,
- g.white@cablelabs.com, ingemar.s.johansson@ericsson.com,
- mirja.kuehlewind@ericsson.com, cheshire@apple.com, rs.ietf@gmx.at,
- Jason_Livingood@comcast.com, vidhi_goel@apple.com
-References: <20250704085345.46530-1-chia-yu.chang@nokia-bell-labs.com>
- <20250704085345.46530-13-chia-yu.chang@nokia-bell-labs.com>
+Subject: Re: [PATCH v12 2/4] mm/slub: allow to set node and align in
+ k[v]realloc
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Harry Yoo <harry.yoo@oracle.com>, linux-mm@kvack.org,
+ akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+ Uladzislau Rezki <urezki@gmail.com>, Danilo Krummrich <dakr@kernel.org>,
+ Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org,
+ Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+ "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+ Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org,
+ bpf@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
+ Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>
+References: <20250709172345.1031907-1-vitaly.wool@konsulko.se>
+ <20250709172441.1032006-1-vitaly.wool@konsulko.se> <aHDSLyHZ8b1ELeWe@hyeyoo>
+ <5bc89531-ab09-4690-aae4-a44f9ddb4a68@suse.cz>
+ <3AD3F7B5-679F-4DC8-968F-9FE991B56A5C@konsulko.se>
+ <1dedcee0-c5a2-47b3-ae13-315ad437ae1a@suse.cz>
 Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <20250704085345.46530-13-chia-yu.chang@nokia-bell-labs.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Vitaly Wool <vitaly.wool@konsulko.se>
+In-Reply-To: <1dedcee0-c5a2-47b3-ae13-315ad437ae1a@suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 7/4/25 10:53 AM, chia-yu.chang@nokia-bell-labs.com wrote:
-> @@ -1151,7 +1155,10 @@ static unsigned int tcp_established_options(struct sock *sk, struct sk_buff *skb
->  	}
->  
->  	if (tcp_ecn_mode_accecn(tp) &&
-> -	    READ_ONCE(sock_net(sk)->ipv4.sysctl_tcp_ecn_option)) {
-> +	    READ_ONCE(sock_net(sk)->ipv4.sysctl_tcp_ecn_option) &&
-> +	    (READ_ONCE(sock_net(sk)->ipv4.sysctl_tcp_ecn_option) >= TCP_ACCECN_OPTION_FULL ||
-> +	     tp->accecn_opt_demand ||
-> +	     tcp_accecn_option_beacon_check(sk))) {
->  		opts->use_synack_ecn_bytes = 0;
->  		size += tcp_options_fit_accecn(opts, tp->accecn_minlen,
->  					       MAX_TCP_OPTION_SPACE - size);
 
-whoops, I almost missed it...
 
-Please call READ_ONCE(sock_net(sk)->ipv4.sysctl_tcp_ecn_option) only
-once, i.e.:
+On 7/14/25 10:14, Vlastimil Babka wrote:
+> On 7/12/25 14:43, Vitaly Wool wrote:
+>>
+>>
+>>> On Jul 11, 2025, at 5:43 PM, Vlastimil Babka <vbabka@suse.cz> wrote:
+>>>
+>>> On 7/11/25 10:58, Harry Yoo wrote:
+>>>> On Wed, Jul 09, 2025 at 07:24:41PM +0200, Vitaly Wool wrote:
+>>>>> static __always_inline __realloc_size(2) void *
+>>>>> -__do_krealloc(const void *p, size_t new_size, gfp_t flags)
+>>>>> +__do_krealloc(const void *p, size_t new_size, unsigned long align, gfp_t flags, int nid)
+>>>>> {
+>>>>> void *ret;
+>>>>> size_t ks = 0;
+>>>>> @@ -4859,6 +4859,20 @@ __do_krealloc(const void *p, size_t new_size, gfp_t flags)
+>>>>> if (!kasan_check_byte(p))
+>>>>> return NULL;
+>>>>>
+>>>>> + /* refuse to proceed if alignment is bigger than what kmalloc() provides */
+>>>>> + if (!IS_ALIGNED((unsigned long)p, align) || new_size < align)
+>>>>> + return NULL;
+>>>>
+>>>> Hmm but what happens if `p` is aligned to `align`, but the new object is not?
+>>>>
+>>>> For example, what will happen if we  allocate object with size=64, align=64
+>>>> and then do krealloc with size=96, align=64...
+>>>>
+>>>> Or am I missing something?
+>>>
+>>> Good point. We extended the alignment guarantees in commit ad59baa31695
+>>> ("slab, rust: extend kmalloc() alignment guarantees to remove Rust padding")
+>>> for rust in a way that size 96 gives you alignment of 32. It assumes that
+>>> rust side will ask for alignments that are power-of-two and sizes that are
+>>> multiples of alignment. I think if that assumption is still honored than
+>>> this will keep working, but the check added above (is it just a sanity check
+>>> or something the rust side relies on?) doesn't seem correct?
+>>>
+>>
+>> It is a sanity check and it should have looked like this:
+>>
+>>          if (!IS_ALIGNED((unsigned long)p, align) && new_size <= ks)
+>>                  return NULL;
+>>
+>> and the reasoning for this is the following: if we don’t intend to reallocate (new size is not bigger than the original size), but the user requests a larger alignment, it’s a miss. Does that sound reasonable?
+> 
+> So taking a step back indeed the align passed to krealloc is indeed used
+> only for this check. If it's really just a sanity check, then I'd rather not
+> add this parameter to krealloc functions at all - kmalloc() itself also
+> doesn't have it, so it's inconsistent that krealloc() would have it - but
+> only to return NULL and not e.g. try to reallocate for alignment.
+> 
+> If it's not just a sanity check, it means it's expected that for some
+> sequence of valid kvrealloc_node_align() calls it can return NULL and then
+> rely on the fallback to vmalloc. That would be rather wasteful for the cases
+> like going from 64 to 96 bytes etc. So in that case it would be better if
+> krealloc did the reallocation, same as in cases when size increases. Of
+> course it would still have to rely on the documented alignment guarantees
+> only and not provide anything arbitrary. aligned_size() in
+> rust/kernel/alloc/allocator.rs is responsible for that, AFAIK.
+> 
+> And I think it's not a sanity check but the latter - if the following is a
+> valid k(v)realloc sequence (from Rust POV). The individual size+align
+> combinations AFAIK are, but if it's valid to make them follow one another
+> them like this, I don't know.
+> 
+> krealloc(size=96, align=32) -> can give object with 32 alignment only
+> krealloc(size=64, align=64) -> doesn't increase size but wants alignment 64
+> 
 
-	if (tcp_ecn_mode_accecn(tp)) {
-		int ecn_opt = READ_ONCE(sock_net(sk)->ipv4.sysctl_tcp_ecn_option);
+We should be able to correctly process these. I agree that making such 
+cases fall back to vrealloc is suboptimal but it's a technically correct 
+behavior. I understand that you would rather have a reallocation on the 
+slub side in these cases, so this will look as
 
-		if (ecn_opt && (ecn_opt >= TCP_ACCECN_OPTION_FULL || // ...
+           if (!IS_ALIGNED((unsigned long)p, align) && new_size <= ks)
+                   goto alloc_new;
 
-/P
+I'll modify/retest for the next patchset iteration.
 
+~Vitaly
 
