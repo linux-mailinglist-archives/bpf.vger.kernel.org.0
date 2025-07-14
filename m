@@ -1,104 +1,172 @@
-Return-Path: <bpf+bounces-63147-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63148-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C47BB03A1D
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 10:56:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC602B03AAA
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 11:21:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46131189146A
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 08:56:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACE2F3A78C8
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 09:20:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98D0023C4E1;
-	Mon, 14 Jul 2025 08:56:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B1AA241673;
+	Mon, 14 Jul 2025 09:20:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="jRJpb3zk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0429720AF67;
-	Mon, 14 Jul 2025 08:55:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+Received: from fllvem-ot04.ext.ti.com (fllvem-ot04.ext.ti.com [198.47.19.246])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9A9D20966B;
+	Mon, 14 Jul 2025 09:20:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.246
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752483361; cv=none; b=mJq66VW9PDKZqnNGtOY3RaIFsEWd+TIhADsJpuyRU2AKyf4OuZ5dkLcMTSK3kqJKwwADZGiPA1XGO3shxbDvEuBoEDHMdkGcPPSVjERD8paDOyB1lMGV2aRHNElBo9DCKfnv5JZaUfXIokU4GS5NeRe9TF6pAdTuUPenN6z77To=
+	t=1752484856; cv=none; b=VBMMUyRoEqF0xqaAfHGCbjHocqK582+osUxpzTFrVqkc0GWrohOzMV6HWq1JYWdyK0Y1VfulqIOHun0yTZE58h+Z1rn1dLyHs1ow+n+wtWzqk/nKTfV/vj6hN2qPmkSQGR+YXkzYaugq2b7DDLgcsFx/GKHQRYua5qP0QZySqLA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752483361; c=relaxed/simple;
-	bh=20+iTJmbXbYoI8B4eBq6ui+ltbUtnqon6F6dG60f0f4=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=rWYtSJoftwoAoHkECqCfyYm+3SW0JHMVlnG/IhRFMi9jAazGPB3bc6X+vj2yqRy4F/2urCLa5fPoNWLiY/H2kqgYGcP5/uSLLY/tgTYto8+vCllFenK6HjYQvH7Z7H+/Ys2yw3EqARI8II1c+suEMMhds9otTYbd/CbAG9ZcQhY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [113.200.148.30])
-	by gateway (Coremail) with SMTP id _____8CxG6wcxnRouB8pAQ--.45090S3;
-	Mon, 14 Jul 2025 16:55:56 +0800 (CST)
-Received: from [10.130.10.66] (unknown [113.200.148.30])
-	by front1 (Coremail) with SMTP id qMiowJAxvsEZxnRol5cWAA--.17732S3;
-	Mon, 14 Jul 2025 16:55:54 +0800 (CST)
-Subject: Re: [PATCH v3 0/5] Support trampoline for LoongArch
-To: Huacai Chen <chenhuacai@kernel.org>,
- Chenghao Duan <duanchenghao@kylinos.cn>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- hengqi.chen@gmail.com, martin.lau@linux.dev, eddyz87@gmail.com,
- song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
- kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
- kernel@xen0n.name, linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
- bpf@vger.kernel.org, guodongtai@kylinos.cn, youling.tang@linux.dev,
- jianghaoran@kylinos.cn
-References: <20250709055029.723243-1-duanchenghao@kylinos.cn>
- <CAAhV-H5EWp+h0R=YuTivEZEK0diDT+U2u--RPdhtYYr_KB4Z4Q@mail.gmail.com>
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <f30ebf97-0ba6-41cb-5fda-8972f1a0223e@loongson.cn>
-Date: Mon, 14 Jul 2025 16:55:51 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+	s=arc-20240116; t=1752484856; c=relaxed/simple;
+	bh=nsJCzN1RuvWH0xipKFOTbj1OfP0Tz1nFWOA2QY/vEq4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Jk4LWla5/71LNzFmMmTaCEcSbmt1vbc8wxT9Q3vXTlnRsyMTqy0jl5CJNrwKBFk5hRD/I96cFAMSyrMBWKFYEm4ZC4VOrJDYRyT2mJDfGN0DP/ecsGevD1TnlJhMMiHZ/QX1sNKXi1efHwbvuIQcJT6Cuog2g7uzbKpgtv02/98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=jRJpb3zk; arc=none smtp.client-ip=198.47.19.246
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllvem-sh03.itg.ti.com ([10.64.41.86])
+	by fllvem-ot04.ext.ti.com (8.15.2/8.15.2) with ESMTP id 56E9KCVD2579656;
+	Mon, 14 Jul 2025 04:20:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1752484812;
+	bh=VpRIsrh/SskIsYvaFioLSeLx3UZ4lfhfIHEZTyHFdm4=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=jRJpb3zkCM2TPcl/pnOSPoKvoGNKE2RRL8R3vySw8ty8MIGmfwjLeyF/u2TXmutp1
+	 3kg/8FTnKIMknYEV9gFX7feo6LK+SBynXsCac5zuUWnOD1argqveNGhHjY4N5Ds1IG
+	 V6LF4DGptIMEQl/nT4H3TZDsByJhpPtZ57s301+M=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+	by fllvem-sh03.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 56E9KCRv3165019
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
+	Mon, 14 Jul 2025 04:20:12 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Mon, 14
+ Jul 2025 04:20:11 -0500
+Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55 via
+ Frontend Transport; Mon, 14 Jul 2025 04:20:11 -0500
+Received: from [172.24.26.195] (lt9560gk3.dhcp.ti.com [172.24.26.195])
+	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 56E9K55c269797;
+	Mon, 14 Jul 2025 04:20:06 -0500
+Message-ID: <268f6849-efc6-4663-af20-f6726bd4b78d@ti.com>
+Date: Mon, 14 Jul 2025 14:50:05 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAAhV-H5EWp+h0R=YuTivEZEK0diDT+U2u--RPdhtYYr_KB4Z4Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC net-next 0/5] net: ethernet: ti: am65-cpsw: add AF_XDP
+ zero copy support
+To: Roger Quadros <rogerq@kernel.org>,
+        Siddharth Vadapalli
+	<s-vadapalli@ti.com>,
+        Andrew Lunn <andrew+netdev@lunn.ch>,
+        "David S. Miller"
+	<davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov
+	<ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard
+ Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Sumit
+ Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?=
+	<christian.koenig@amd.com>
+CC: <srk@ti.com>, <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <linaro-mm-sig@lists.linaro.org>
+References: <20250520-am65-cpsw-xdp-zc-v1-0-45558024f566@kernel.org>
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qMiowJAxvsEZxnRol5cWAA--.17732S3
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-	ZEXasCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29K
-	BjDU0xBIdaVrnRJUUUmjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26c
-	xKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vE
-	j48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxV
-	AFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E
-	14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI
-	0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280
-	aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2
-	xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4c8EcI0En4kS14v26r126r1DMxAqzxv26xkF
-	7I0En4kS14v26r1q6r43MxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r126r
-	1DMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-	67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2I
-	x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
-	z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
-	UI43ZEXa7IU82g43UUUUU==
+From: "Malladi, Meghana" <m-malladi@ti.com>
+In-Reply-To: <20250520-am65-cpsw-xdp-zc-v1-0-45558024f566@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
 
-On 2025/7/10 下午3:29, Huacai Chen wrote:
-> Hi, Tiezhu and Hengqi,
+Hi Roger,
+
+On 5/20/2025 3:53 PM, Roger Quadros wrote:
+> This series adds AF_XDP zero coppy support to am65-cpsw driver.
 > 
-> Could you please pay some time to review this series? I hope it can be
-> merged to 6.17.
+> Tests were performed on AM62x-sk with xdpsock application [1].
+> 
+> A clear improvement is seen in 64 byte packets on Transmit (txonly)
+> and receive (rxdrop).
+> 1500 byte test seems to be limited by line rate (1G link) so no
+> improvement seen there in packet rate. A test on higher speed link
+> (or PHY-less setup) might be worthwile.
+> 
+> There is some issue during l2fwd with 64 byte packets and benchmark
+> results show 0. I'm still investigating this issue.
+> 
+> AF_XDP performance using 64 byte packets in Kpps.
+> Benchmark:	XDP-SKB		XDP-Native	XDP-Native(ZeroCopy)
+> rxdrop		317		504		824
+> txonly		400		405		757
+> l2fwd 		207		264		0
+> 
+> AF_XDP performance using 1500 byte packets in Kpps.
+> Benchmark:	XDP-SKB		XDP-Native	XDP-Native(ZeroCopy)
+> rxdrop		82		82		82
+> txonly		82		82		82
+> l2fwd 		82		82		82
+> 
+> [1]: https://github.com/xdp-project/bpf-examples/tree/master/AF_XDP-example
+> 
+> To:
+> 
+> Signed-off-by: Roger Quadros <rogerq@kernel.org>
 
-With the patch #1, #2, #4 and #5, the following related testcases
-passed on LoongArch:
+This series crashes Linux on am64xx-hsevm, when I tried nfs boot using 
+AM65-CPSW-NUSS driver:
+logs: 
+https://gist.github.com/MeghanaMalladiTI/d655a1c8ca88113ee7f5f57d6ab0ec4c
 
-sudo ./test_progs -a fentry_test/fentry
-sudo ./test_progs -a fexit_test/fexit
-sudo ./test_progs -a fentry_fexit
-sudo ./test_progs -a modify_return
-sudo ./test_progs -a fexit_sleep
-sudo ./test_progs -a test_overhead
-sudo ./test_progs -a trampoline_count
+Seems like you have reverted the fix for the same bug which was reported 
+by Siddharth and fixed by Julien: 
+https://lore.kernel.org/all/7f7fb71a-6d15-46f1-b63c-b569a2e230b7@baylibre.com/
 
-Tested-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+reverted lines:
+		if (!common->ports[port].ndev)
+		/* FIXME should we BUG here? */
+			continue;
 
+Can you please take a look at it.
+
+> ---
+> Roger Quadros (5):
+>        net: ethernet: ti: am65-cpsw: fix BPF Program change on multi-port CPSW
+>        net: ethernet: ti: am65-cpsw: add XSK pool helpers
+>        net: ethernet: ti: am65-cpsw: Add AF_XDP zero copy for RX
+>        net: ethernet: ti: am65-cpsw: Add AF_XDP zero copy for TX
+>        net: ethernet: ti: am65-cpsw: enable zero copy in XDP features
+> 
+>   drivers/net/ethernet/ti/Makefile         |   2 +-
+>   drivers/net/ethernet/ti/am65-cpsw-nuss.c | 526 +++++++++++++++++++++++++++----
+>   drivers/net/ethernet/ti/am65-cpsw-nuss.h |  37 ++-
+>   drivers/net/ethernet/ti/am65-cpsw-xdp.c  | 155 +++++++++
+>   4 files changed, 656 insertions(+), 64 deletions(-)
+> ---
+> base-commit: 9f607dc39b6658ba8ea647bd99725e68c66071b7
+> change-id: 20250225-am65-cpsw-xdp-zc-2af9e4be1356
+> 
+> Best regards,
+
+-- 
 Thanks,
-Tiezhu
+Meghana Malladi
 
 
