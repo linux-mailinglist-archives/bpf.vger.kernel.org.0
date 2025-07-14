@@ -1,71 +1,79 @@
-Return-Path: <bpf+bounces-63153-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63154-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2727FB03B4B
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 11:48:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88C9AB03B6F
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 11:54:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7978B3A25AA
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 09:48:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF6A816F1DE
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 09:54:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AB0E242913;
-	Mon, 14 Jul 2025 09:48:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="BeWA0E5X"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C2F624503C;
+	Mon, 14 Jul 2025 09:54:02 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 264311E47A8;
-	Mon, 14 Jul 2025 09:48:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 259BA24291C;
+	Mon, 14 Jul 2025 09:53:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752486516; cv=none; b=UF8ya5VVgdgzdIYBlN0CxD7Q0X51CB3zT7b0RTDncPj2Jm38zctwKbPfwZ015Jbk02nmpWGnhlSlPIlxzzPI2XtKVq4AqYx59BNwWHXYsANE/R+hQgbcgSU7iPYFXsDGooY5KdueCln9LtAFRDBSElnpWndZU35L6CtzLoMJduE=
+	t=1752486841; cv=none; b=XgHej6c8puMo5TOzrBqKlOBMkmtdX2eSJYBBVQx/gmgY9jbF68OZfM+hMoekZXsg9zAo7CeKLA8dFrvzPloySK8jmjViYj7K/6dERzpPdICZnKWWNwWsRNATf3m2P/wvDHO7WbepGrRDmNpomQ4Q+Dy5nEqDkmkip7l3zR5SwEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752486516; c=relaxed/simple;
-	bh=Pqhjlt7Xe4QZEQNw9loSdR5L7feW5hzre3d9xP9ALNs=;
+	s=arc-20240116; t=1752486841; c=relaxed/simple;
+	bh=LVEVJJXdU2navZDiFimiwkAdBu778EfdOSQ47RGXLTw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gvn7BtCLIZV9VlGN6NuEhvJpC+R4WxE7QAprLCyXSSjnijVMCYOCoeN/FXMTwxS3FOR6XcWWq08dDRGycs+sjoadbEEaJHzvGpygLJGJH5N2m7+QyY+ooDhQT9+I/1EIywIT0oZyAbdu/4pBysPQtnNRQzEJZMxSy/fsKJ2tqBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=BeWA0E5X; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=0BQrc84RUIgCrBwltnNpR1JpwRq1C4cmxPtCU54YBc0=; b=BeWA0E5XyP48nCmsFvJIJs73aS
-	8gVWLdq+voR0crClgGWWRv1JrT9+htkSYntujcpCiu+awuHnsNjyRmC+fHkKqSrYvJsMGykhBY2Hh
-	6lgBVzbJIw3NM86AtzG7efTn9wTVj8JgX8TzXpIQG/B0CGmRBkoaIYUmLRY+Am9bSorRvidnMIkji
-	q+E8v9L3rYRkfxS0Np2Q4Nhpjaw22IZHl43VPtmejI/vB0wjtvQETBjZrNdCkm5iTbYc0IIE7OgTu
-	Z/4BvKl/HdHioId1SNJsmTJ2n9d9EVpYz6quXrmaqN0d/U4IluC4fBcKm0u/uROsMG9h7TZhxIcAC
-	shSWd9Jg==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ubFnM-00000009k4R-3bMv;
-	Mon, 14 Jul 2025 09:48:25 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 54682300186; Mon, 14 Jul 2025 11:48:24 +0200 (CEST)
-Date: Mon, 14 Jul 2025 11:48:24 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Andrii Nakryiko <andrii@kernel.org>,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	David Laight <David.Laight@aculab.com>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
-	Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCHv5 perf/core 10/22] uprobes/x86: Add support to optimize
- uprobes
-Message-ID: <20250714094824.GQ905792@noisy.programming.kicks-ass.net>
-References: <20250711082931.3398027-1-jolsa@kernel.org>
- <20250711082931.3398027-11-jolsa@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=EYjPvBqF2T/Q5/sLkUMN50nX0Eg95vs3H1u17KWJXAqIWwPXpAtLPAqvhscvTnJg7XySJddFMsy0CqT9kak1hQrofDHvFu8CRbA3eZQE2JA5VZg6EeTKWYywro0wTB1rbv4Uid4yp4eY/3qKEz4GAugx5IxO32+Abfh88TBDoBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-60707b740a6so6289426a12.0;
+        Mon, 14 Jul 2025 02:53:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752486838; x=1753091638;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5+nwQ+gUq+eVRVteBjqQ9zFxb4lMzQgpjj70tq9U1Z0=;
+        b=OCP8klGSwKsLhyQMjXVMyFRlnTtLj4KX6rEmPuiNS2Od9lpYSUoAfGoMq5HUARVI7L
+         oMgW5YfxsjI4bUbvkZ8JSBn+/KmHaVupUUY2+Brx+WYSyouR/ie7E6eqpj8ibP+GiTtY
+         83r5xqMf/WsuwDZ/HENjFaQ6f7sFaEMddRYRfVwIzrDFnrGdZlO9Vv7PcA68TavTOfmo
+         xmjS0xpskGS4iskLjPNW/XRdK9qJIcQS3C4JjaiGPCBo579COlTvJRDHj8C49F/qguhL
+         TCQbhLJftqNaQLejMPwACOrFpk7T79Q7i6XEQcruauSPd/KWjLhumEtDLVxvBJqC7hJf
+         U6vg==
+X-Forwarded-Encrypted: i=1; AJvYcCUE7+ORtlsq8V4Adtjy6jVx0P1lNStueDhczP3rwzrv/PwOui5B8ZiwCaAyu9vRPtZqfPg=@vger.kernel.org, AJvYcCVaY6lQT0WwqKR+lthPdjnJ9GIbMFOgzNIGCJrTo8D3+OoExuGzIAftz8Mtz5cRCcB6zMMoPXd4wVeaZxK3@vger.kernel.org, AJvYcCWGPnvP9zYiKBtI8+6OAD6hGblwSw5iWRupL3GjgqI67N9I+zeZZHsPOF7iTIyheH9PgpR0jV7m@vger.kernel.org, AJvYcCXksiaIpSUc26KAIoT9jhjzGwuHsnuo1jFMFFu3TTTpaeJ04/6fU5+d2hzGIBS8f3cb4V82DUU3jwF5kzahOc3n@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw1vELCKF3YmL282hAtXOXqBbqfBgdfZaMxbfe2lhGoslwEPveq
+	lrnEEGRmlOH3JNCo9ZQmgIRPgfTGyTCw+u6iGiJkoUxF8Y1NjFwvMA21
+X-Gm-Gg: ASbGncvEWv5Qs84++fp/5miEZRYcZ8LCk3E0jF/nUq9j/+oTi3NADU9VpT6t4DJJfMm
+	UiKIq5Xk0626FvD01SdSLlblwONVvJvU/ys4eqC4muDVEFDaEfZPQLTuJeixjuMJ5v/tsl5m+TX
+	Tbhz2whiEWujj2rOHdP3gC+quyQo68C9RTzF3Cy7Bq43oSRHndawG3JlqevkeqTUVDYaa1nmYC1
+	oTfTz9SEi9kbSuFKW4GzGaZ80Wp1g9H9S131Un4zak8SBcpKe405c7GRB/M/VAet/0Tie7ZC4tr
+	F4EPUVbQtIuaz+04Y0N7b97Kd7XgFBko95nMTKqEyKaPQu91R+6RYhwkFEn2LUm1Xcu1KidYM58
+	paJbsuBuV8awI6D2qOfEOxzc=
+X-Google-Smtp-Source: AGHT+IFLL9yNozFf9SkrqVC1Oj+fY6Ntdk+aVRqprSaJ8XTyV9GQg8vXooOlt13SfS2/j/4m+75OiQ==
+X-Received: by 2002:a17:907:84a:b0:ae3:a240:7ad2 with SMTP id a640c23a62f3a-ae6fc6aa6dcmr1339638066b.2.1752486838034;
+        Mon, 14 Jul 2025 02:53:58 -0700 (PDT)
+Received: from gmail.com ([2a03:2880:30ff:7::])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae6e8294b5fsm780577966b.125.2025.07.14.02.53.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jul 2025 02:53:57 -0700 (PDT)
+Date: Mon, 14 Jul 2025 02:52:13 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Andrew Lunn <andrew+netdev@lunn.ch>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>, Simon Horman <horms@kernel.org>, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, bpf@vger.kernel.org, kernel-team@meta.com, 
+	Willem de Bruijn <willemb@google.com>
+Subject: Re: [PATCH net-next v6 3/3] selftests: net: add netpoll basic
+ functionality test
+Message-ID: <v3tiskdekzcj4ra4pgd3wegz2wkafp5sfzber3e2i7unj72bsp@sywehjrf45xb>
+References: <20250711-netpoll_test-v6-0-130465f286a8@debian.org>
+ <20250711-netpoll_test-v6-3-130465f286a8@debian.org>
+ <20250711101415.6ae42daf@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -74,152 +82,48 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250711082931.3398027-11-jolsa@kernel.org>
+In-Reply-To: <20250711101415.6ae42daf@kernel.org>
 
-On Fri, Jul 11, 2025 at 10:29:18AM +0200, Jiri Olsa wrote:
-> +enum {
-> +	OPT_PART,
-> +	OPT_INSN,
-> +	UNOPT_INT3,
-> +	UNOPT_PART,
-> +};
-> +
-> +struct write_opcode_ctx {
-> +	unsigned long base;
-> +	int update;
-> +};
-> +
-> +static int is_call_insn(uprobe_opcode_t *insn)
-> +{
-> +	return *insn == CALL_INSN_OPCODE;
-> +}
-> +
-> +static int verify_insn(struct page *page, unsigned long vaddr, uprobe_opcode_t *new_opcode,
-> +		       int nbytes, void *data)
-> +{
-> +	struct write_opcode_ctx *ctx = data;
-> +	uprobe_opcode_t old_opcode[5];
-> +
-> +	uprobe_copy_from_page(page, ctx->base, (uprobe_opcode_t *) &old_opcode, 5);
-> +
-> +	switch (ctx->update) {
-> +	case OPT_PART:
-> +	case OPT_INSN:
-> +		if (is_swbp_insn(&old_opcode[0]))
-> +			return 1;
-> +		break;
-> +	case UNOPT_INT3:
-> +		if (is_call_insn(&old_opcode[0]))
-> +			return 1;
-> +		break;
-> +	case UNOPT_PART:
-> +		if (is_swbp_insn(&old_opcode[0]))
-> +			return 1;
-> +		break;
-> +	}
-> +
-> +	return -1;
-> +}
-> +
-> +static int write_insn(struct arch_uprobe *auprobe, struct vm_area_struct *vma, unsigned long vaddr,
-> +		      uprobe_opcode_t *insn, int nbytes, void *ctx)
-> +{
-> +	return uprobe_write(auprobe, vma, vaddr, insn, nbytes, verify_insn,
-> +			    true /* is_register */, false /* do_update_ref_ctr */, ctx);
-> +}
-> +
-> +static void relative_call(void *dest, long from, long to)
-> +{
-> +	struct __packed __arch_relative_insn {
-> +		u8 op;
-> +		s32 raddr;
-> +	} *insn;
-> +
-> +	insn = (struct __arch_relative_insn *)dest;
-> +	insn->raddr = (s32)(to - (from + 5));
-> +	insn->op = CALL_INSN_OPCODE;
-> +}
+Hello Jakub,
 
-We already have this in asm/text-patching.h, its called
-__text_gen_insn().
+On Fri, Jul 11, 2025 at 10:14:15AM -0700, Jakub Kicinski wrote:
+> On Fri, 11 Jul 2025 09:05:11 -0700 Breno Leitao wrote:
+> > +        rxq = ethtool_result["rx"]
+> > +        txq = ethtool_result["tx"]
+> 
+> Most HW NICs will actually use the "combined" channels (which have both
+> rx and tx ring on one NAPI).
 
-> +
-> +static int swbp_optimize(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
-> +			 unsigned long vaddr, unsigned long tramp)
-> +{
-> +	struct write_opcode_ctx ctx = {
-> +		.base = vaddr,
-> +	};
-> +	char call[5];
-> +	int err;
-> +
-> +	relative_call(call, vaddr, tramp);
+Right. I am getting combined as well. With the JSON output in ethtool,
+I get;
 
-	__text_gen_insn(call, CALL_INSN_OPCODE, vaddr, tramp, CALL_INSN_SIZE);
 
-> +
-> +	/*
-> +	 * We are in state where breakpoint (int3) is installed on top of first
-> +	 * byte of the nop5 instruction. We will do following steps to overwrite
-> +	 * this to call instruction:
-> +	 *
-> +	 * - sync cores
-> +	 * - write last 4 bytes of the call instruction
-> +	 * - sync cores
-> +	 * - update the call instruction opcode
+        ethtool_result = ethtool(f"-l {interface_name}", json=True)[0]
+        rxq = ethtool_result.get("rx", -1)
+        txq = ethtool_result.get("tx", -1)
+        combined = ethtool_result.get("combined", -1)
 
-The sanctioned text poke sequence has another sync-core at the end.
-Please also do this.
+> > +    logging.debug("calling: ethtool %s", cmdline)
+> 
+> ksft_pr() ? 
 
-> +	 */
-> +
-> +	smp_text_poke_sync_each_cpu();
-> +
-> +	ctx.update = OPT_PART;
-> +	err = write_insn(auprobe, vma, vaddr + 1, call + 1, 4, &ctx);
-> +	if (err)
-> +		return err;
-> +
-> +	smp_text_poke_sync_each_cpu();
-> +
-> +	ctx.update = OPT_INSN;
-> +	return write_insn(auprobe, vma, vaddr, call, 1, &ctx);
-> +}
-> +
-> +static int swbp_unoptimize(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
-> +			   unsigned long vaddr)
-> +{
-> +	uprobe_opcode_t int3 = UPROBE_SWBP_INSN;
-> +	struct write_opcode_ctx ctx = {
-> +		.base = vaddr,
-> +	};
-> +	int err;
-> +
-> +	/*
-> +	 * We need to overwrite call instruction into nop5 instruction with
-> +	 * breakpoint (int3) installed on top of its first byte. We will:
-> +	 *
-> +	 * - overwrite call opcode with breakpoint (int3)
-> +	 * - sync cores
-> +	 * - write last 4 bytes of the nop5 instruction
-> +	 * - sync cores
-> +	 */
-> +
-> +	ctx.update = UNOPT_INT3;
-> +	err = write_insn(auprobe, vma, vaddr, &int3, 1, &ctx);
-> +	if (err)
-> +		return err;
-> +
-> +	smp_text_poke_sync_each_cpu();
-> +
-> +	ctx.update = UNOPT_PART;
-> +	err = write_insn(auprobe, vma, vaddr + 1, (uprobe_opcode_t *) auprobe->insn + 1, 4, &ctx);
-> +
-> +	smp_text_poke_sync_each_cpu();
-> +	return err;
-> +}
+ksft_pr() would make it very verbose. logging.debug() is always
+disabled, so, the selftest executes cleanly.
 
-Please unify these two functions; it makes absolutely no sense to have
-two copies of this logic around.
+> We had a plan to add a verbose() helper which would still be
+> TAP-compatible, but never finished the patches.
 
+I can try to help. How do you want to set verbose during the test
+execution? Any shell environment variable?
+
+> Either way, would you mind respinning the series (without the 24h wait)?
+> It conflicts with another series which adds a bpftool() helper.
+> I applied that patch so you should see a trivial conflict when rebasing.
+
+Thanks. I am sending a new version assuming ethtool -l has the json
+option. That would make the code simpler, given we don't need that hacky
+to_int().
+
+Thanks for the review,
+--breno
 
