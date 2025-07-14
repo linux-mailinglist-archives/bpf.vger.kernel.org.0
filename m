@@ -1,131 +1,137 @@
-Return-Path: <bpf+bounces-63197-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63198-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F946B04012
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 15:34:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6294FB040BE
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 15:58:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A1487A97C4
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 13:33:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E424173875
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 13:58:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D1CC254AE1;
-	Mon, 14 Jul 2025 13:34:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1380D2594AA;
+	Mon, 14 Jul 2025 13:56:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DrJuoumm"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WkhC9Ud1"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C209252903
-	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 13:33:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B96142580F7;
+	Mon, 14 Jul 2025 13:56:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752500040; cv=none; b=R4PHO0nCMbvLzmU929LH36L3toFfKNsSMheBxHuF6mx18YX7j1Q1sgeXuhgBGzYdP/Eh9yO5ZPxF5+reCpvrtMCR9dB2s8+eBsaGVp4u7eoltOjlVLxp+pZkclUU8aNEuJs6qAw9CQ6pNwp7OA0s3BKV6O5qEKXkrD1mbPT5HgU=
+	t=1752501411; cv=none; b=MqRggS8Vyo96coJ3/KhM6Bcm+aOgYGevJn3M6Tj54NX1CPj7dJygc9U5whMH7k1fYe5BeqWd6JgPdqnw4yUEIDV21IBrqxN5JM0fJhXdnX889lqkbDI6ZebGBdwOCDCAyFnOdLTEKPIa7N/GeetFQuQ9m1rvhpPrKVEW+WARh8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752500040; c=relaxed/simple;
-	bh=dknSdYPDMo76cFz0sXYbOIhIT5DVtRwgwQqMWZ1ploE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=uGKWSjxZF3iG9VDfDRvsBdD8W1ggGkdADzPOx7LsDuTEWH6GvYHJF85iKL1JKQtU5EFnCXVjmrDUXYBw8qEaTqzOhXZH5Q13+PWE7Tg/C40Wu/s8Hv16E+zFsweezNG/AdF8PgIMjVWDpJPMQKGt1E5bUwjXCY7upY1dudkKXLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DrJuoumm; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1752500037;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ib61hPCB4AUA3/+sodbduYae96rRA8xkreivfOor25Y=;
-	b=DrJuoummdCjdsrPgz157Ra0gU6uQtwGNzUp27BUk+vA+dpSYjqNt0GqdKVYpns2YtX4gnH
-	+Gjqynk/wNEv3Dvyz1qFSM6t3a3F7M3TIFuwkS7xKMcQ8lOaagXrhg9s+ciRid3GYQw6EH
-	aP3BR0hXhkE61/d+TUG0ZFnocxdBpE4=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-351-g3maL9QyPnKY0NAeiK1cyw-1; Mon, 14 Jul 2025 09:33:55 -0400
-X-MC-Unique: g3maL9QyPnKY0NAeiK1cyw-1
-X-Mimecast-MFC-AGG-ID: g3maL9QyPnKY0NAeiK1cyw_1752500033
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3a4fabcafecso2104809f8f.0
-        for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 06:33:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752500033; x=1753104833;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ib61hPCB4AUA3/+sodbduYae96rRA8xkreivfOor25Y=;
-        b=mvoHvWMkbo5sDK5qgIOvJDjF0j7hhOnfFtQleJRsOhFqxSKlJnJzEuwTDMTajIYuy9
-         4jLme6OSwbITSOoYHsgb7gvzFxUUIRnDFR2BYsa0SRS4RI8eLy8odmtc160h2qLl2EsX
-         hWdn/fSkQS+aPhif288ON4qTR3P4NzJljWPV5KXdDPnahkTRXaI8VoaZfd2n39eDjU0R
-         VJYAXoJm/LMn8P81kzi+1mej0XGmBZRq9qBPHb/e6+q60DpcI+zOVM6IGqJ2WLPqVY+L
-         mvzmbA2x+lCvm3PdA50wERarh29DEoQe8YCSTqgISr9BNbCi0MvC4yQcZYkE9XBvJdR5
-         tIpw==
-X-Forwarded-Encrypted: i=1; AJvYcCX98uQ5N5Ptm+fzIMPCCl7pCvqICvvTdgM5FnxmXIceOdWY0snw30Cytu7FVcYldkVKLVU=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz3pBmY/O3H6nlce/JNUiYgQZk2G78HM3iECc6Gqxa6rJBwdxg/
-	FXOVYk3DD0LBmTbhGu5jI0i0Ed6oX6zl9MDS71OBJx6xuZO5gNV+030ofi5uX9KrAbPcgh4P25y
-	P2uCVSu+W/XrZTk1RiYXvjJND2b6ARpCz+HdW3KVkQAjWrgttrBf61g==
-X-Gm-Gg: ASbGnctOndqTeCN4CCa7ZlcOOMjiFOpDr5/P8iJSIQRIqrLYmPJXNguTKhHDM0ZWw7D
-	ehkv1ZekRU0aJWcAQ35o5UfKtB9BTKjZrQvcosppCwcilscsBY32yRHScOKo772iZowLkdov/ss
-	0tzUiamRqFz64TTWFxD1y7Aoh3O5lzsDIye3xzp6/c7CyKfZPUua8V81+05jzwnYlutu6ZzIXZ7
-	uWPkCCWEqzMO4SOh0f0nLsvpypSlJ26QII8hDyPO3NF3D6PTnr/mty2p3iGeQKlb9ctIUKgR5Zb
-	jLgBnLT5TIJ25TAD8yWICuakks366pbISgyfhOKRLvM=
-X-Received: by 2002:adf:e194:0:b0:3a4:e393:11e2 with SMTP id ffacd0b85a97d-3b5f35795c3mr9445131f8f.34.1752500032642;
-        Mon, 14 Jul 2025 06:33:52 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEcwfUCJlkG4jBfS0/HPnRj2f8oJvU/65bj2WaKyheEy4Aut2WkWbMl50W+qZ6Yk9d4ozuegA==
-X-Received: by 2002:adf:e194:0:b0:3a4:e393:11e2 with SMTP id ffacd0b85a97d-3b5f35795c3mr9445096f8f.34.1752500032183;
-        Mon, 14 Jul 2025 06:33:52 -0700 (PDT)
-Received: from [192.168.0.115] ([212.105.155.228])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b5e8e26f22sm12633688f8f.94.2025.07.14.06.33.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Jul 2025 06:33:51 -0700 (PDT)
-Message-ID: <226c49dc-ee9c-4edb-9428-2b8b37f542fe@redhat.com>
-Date: Mon, 14 Jul 2025 15:33:49 +0200
+	s=arc-20240116; t=1752501411; c=relaxed/simple;
+	bh=MlE8252+KP78YDkF+Nc2zLmb4D0AJx0GRBStApfzprk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=D5ysmYshEDJL92oP7J3WlmD7pIbknKiWuk+ozZD69udsUSaRDo1ipTXgs5LeCNljKY1B3nHjXk7sc2BVpbjSN/rZZCUGSMJGapAqFCK3jLRqyyyEvLs42j36sVDQ423zktVb8F8vbvgUQifBOvfIVUTxeL5v4Uo3B2e5Nf2x6Ss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=WkhC9Ud1; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=rJfNwhvDwBdRdwUftFwhy6EVQXSWL+4MqfUGTAPT3b0=; b=WkhC9Ud1STBCVebdnVnk9lb+iE
+	8LVYgZHqJJqG8ZydHrqWJYCYLlvxftl4mPeFnnpU00HYwSpbajCZG1yrObIVUtPi5wMW6S15yVsUZ
+	+zt/9BpAfOqpzj9jOlJVWxxAjO5Z6uoghr3ueSuo3pQasnb4geHnaZH9pTla0Yt0lK1rAkqmnxrC8
+	tZKOc6X9jkypK+1FMQaEUSayJvbybCwFVmmqVf22/vonPN6jVYnnKMgitoGAsJkoc35hgelyid8X1
+	BCD5wmDP0qbnuVG5MP4keUG0VkFsthCg+lZk5zEvHbudEufJE7FlEfyI+IH8xhq3tWuJBoYU3GNEM
+	q+yv+2fQ==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1ubJfb-00000009luO-19Ot;
+	Mon, 14 Jul 2025 13:56:39 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id C8623300186; Mon, 14 Jul 2025 15:56:38 +0200 (CEST)
+Date: Mon, 14 Jul 2025 15:56:38 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Steven Rostedt <rostedt@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, x86@kernel.org,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Indu Bhagat <indu.bhagat@oracle.com>,
+	"Jose E. Marchesi" <jemarch@gnu.org>,
+	Beau Belgrave <beaub@linux.microsoft.com>,
+	Jens Remus <jremus@linux.ibm.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>,
+	Sam James <sam@gentoo.org>
+Subject: Re: [PATCH v13 09/14] unwind deferred: Use SRCU
+ unwind_deferred_task_work()
+Message-ID: <20250714135638.GC4105545@noisy.programming.kicks-ass.net>
+References: <20250708012239.268642741@kernel.org>
+ <20250708012359.172959778@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 net-next 09/15] tcp: accecn: AccECN needs to know
- delivered bytes
-To: chia-yu.chang@nokia-bell-labs.com, edumazet@google.com,
- linux-doc@vger.kernel.org, corbet@lwn.net, horms@kernel.org,
- dsahern@kernel.org, kuniyu@amazon.com, bpf@vger.kernel.org,
- netdev@vger.kernel.org, dave.taht@gmail.com, jhs@mojatatu.com,
- kuba@kernel.org, stephen@networkplumber.org, xiyou.wangcong@gmail.com,
- jiri@resnulli.us, davem@davemloft.net, andrew+netdev@lunn.ch,
- donald.hunter@gmail.com, ast@fiberby.net, liuhangbin@gmail.com,
- shuah@kernel.org, linux-kselftest@vger.kernel.org, ij@kernel.org,
- ncardwell@google.com, koen.de_schepper@nokia-bell-labs.com,
- g.white@cablelabs.com, ingemar.s.johansson@ericsson.com,
- mirja.kuehlewind@ericsson.com, cheshire@apple.com, rs.ietf@gmx.at,
- Jason_Livingood@comcast.com, vidhi_goel@apple.com
-References: <20250704085345.46530-1-chia-yu.chang@nokia-bell-labs.com>
- <20250704085345.46530-10-chia-yu.chang@nokia-bell-labs.com>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <20250704085345.46530-10-chia-yu.chang@nokia-bell-labs.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250708012359.172959778@kernel.org>
 
-On 7/4/25 10:53 AM, chia-yu.chang@nokia-bell-labs.com wrote:
-> diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-> index eea790295e54..f7d7649612a2 100644
-> --- a/net/ipv4/tcp_input.c
-> +++ b/net/ipv4/tcp_input.c
-> @@ -1050,6 +1050,7 @@ struct tcp_sacktag_state {
->  	u64	last_sackt;
->  	u32	reord;
->  	u32	sack_delivered;
-> +	u32	delivered_bytes;
+On Mon, Jul 07, 2025 at 09:22:48PM -0400, Steven Rostedt wrote:
 
-Explicitly mentioning in the commit message that the above fills a 4
-bytes hole could be helpful for reviewers.
+> @@ -143,6 +144,7 @@ static void unwind_deferred_task_work(struct callback_head *head)
+>  	struct unwind_stacktrace trace;
+>  	struct unwind_work *work;
+>  	u64 cookie;
+> +	int idx;
+>  
+>  	if (WARN_ON_ONCE(!local_read(&info->pending)))
+>  		return;
+> @@ -161,13 +163,15 @@ static void unwind_deferred_task_work(struct callback_head *head)
+>  
+>  	cookie = info->id.id;
+>  
+> -	guard(mutex)(&callback_mutex);
+> -	list_for_each_entry(work, &callbacks, list) {
+> +	idx = srcu_read_lock(&unwind_srcu);
+> +	list_for_each_entry_srcu(work, &callbacks, list,
+> +				 srcu_read_lock_held(&unwind_srcu)) {
+>  		if (test_bit(work->bit, &info->unwind_mask)) {
+>  			work->func(work, &trace, cookie);
+>  			clear_bit(work->bit, &info->unwind_mask);
+>  		}
+>  	}
+> +	srcu_read_unlock(&unwind_srcu, idx);
+>  }
 
-Otherwise LGTM,
+Please; something like so:
 
-Acked-by: Paolo Abeni <pabeni@redhat.com>
-
+--- a/include/linux/srcu.h
++++ b/include/linux/srcu.h
+@@ -524,4 +524,9 @@ DEFINE_LOCK_GUARD_1(srcu, struct srcu_st
+ 		    srcu_read_unlock(_T->lock, _T->idx),
+ 		    int idx)
+ 
++DEFINE_LOCK_GUARD_1(srcu_lite, struct srcu_struct,
++		    _T->idx = srcu_read_lock_lite(_T->lock),
++		    srcu_read_unlock_lite(_T->lock, _T->idx),
++		    int idx)
++
+ #endif
+--- a/kernel/unwind/deferred.c
++++ b/kernel/unwind/deferred.c
+@@ -165,7 +165,7 @@ static void unwind_deferred_task_work(st
+ 
+ 	cookie = info->id.id;
+ 
+-	guard(mutex)(&callback_mutex);
++	guard(srcu_lite)(&unwind_srcu);
+ 	list_for_each_entry(work, &callbacks, list) {
+ 		work->func(work, &trace, cookie);
+ 	}
 
