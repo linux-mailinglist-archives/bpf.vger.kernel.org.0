@@ -1,164 +1,423 @@
-Return-Path: <bpf+bounces-63189-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63190-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CC10B03F04
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 14:53:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B70CB03F0F
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 14:55:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7BC6F3BA30E
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 12:53:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B865E7A757C
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 12:54:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90D9124A044;
-	Mon, 14 Jul 2025 12:53:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E169C24A051;
+	Mon, 14 Jul 2025 12:55:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="HSAA6N3i"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bt3FHDTo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AAD42441A0;
-	Mon, 14 Jul 2025 12:53:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BB63248F5F
+	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 12:55:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752497604; cv=none; b=QzMUOHtcp0SahLGi816epjygmQK8pEY7++evrWeeJs2L9/CBxkQazE0v5ZIdf/Zv+ikunlAAQj4CtWQSuQp0sVoMo2boOSQzfxpParB4CCx/aA9w1o8tq7aBJgm6M0J5LpmpO9HvrclLmHS7aa9RECd4s9D5R5E9GeCeKGqr9SU=
+	t=1752497735; cv=none; b=fMs95CpEOWxYebheP3pTVKDX05bjW7QfoW4p+H+e8+71i6qiAe+8Rkwnbqj8iVMBjfxNmwajZJR6FYR6l4xZBiAC/uzOIAlb2hkSXP6/3JNjYDBYVY/M69SSXc2ze04fVYg7FRBW7nhfiwCOxseVYHLZk5ahO/xSlFMKetDDGQI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752497604; c=relaxed/simple;
-	bh=Yk7o+6QKjO2xscEPPdtN+Wix7XgzMepfTG8R21PfXDA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jYWLugX7CAKDxOfIOOF/44UtmaEXxIha/tUcUCmrLfO5TzcT5tDSA3g0YNmDurJfkoiX1wsVNdfwyvRyE5GX+A0Teko76TJzBzMfyOjluvoY5dGqMzWyGX65KtHn4Ri5689kPWTwqhmN9ywJ/vmpS/LQvHd9OlATx29dGuMieuw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=HSAA6N3i; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56ECU9ns000345;
-	Mon, 14 Jul 2025 12:52:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=Dmi3t6
-	tQeygD99OL+wSK/MG41ey1/Qsgx6cZ4EEJJp0=; b=HSAA6N3iaC9khs3r7wAPmT
-	DC9xXRagVCk+cnyU9Xh/NOCbsga74dnW7c6Hc9td/k8YK1HnARyfAW/zfLNDq6Aj
-	O7ZrfJY4Dv2VcOoxzZ5Y4gtjAhXk3eG0FkqR3EAbkcqLjen1KCbfhDW6pPAvrx8a
-	fENDULULW31D2Dj+f9TCUi4ZqOpwiBeT57cZrEPPrMAQLu1ju5zBXOOJg4HWZp5+
-	u8mgCmeZFP0+34UYeYLNUQ2qnp1t/oR6NsJeIpjSjjr/njUpsiWLFaVhKj8aN9qM
-	YXE7hk8deB1zaZxGyrkD755SNUTaf6p7ugZnTwX9kdGIkHFDNVqvO1h8KyzdZKTw
-	==
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47ufc6se70-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 14 Jul 2025 12:52:20 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56E8WYMI008150;
-	Mon, 14 Jul 2025 12:52:20 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 47v2e0e2h2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 14 Jul 2025 12:52:19 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 56ECqFQ735193566
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 14 Jul 2025 12:52:15 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id CADE720043;
-	Mon, 14 Jul 2025 12:52:15 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 865CE20040;
-	Mon, 14 Jul 2025 12:52:14 +0000 (GMT)
-Received: from [9.111.200.219] (unknown [9.111.200.219])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 14 Jul 2025 12:52:14 +0000 (GMT)
-Message-ID: <98eeabe4-4458-4440-86f1-fc7fa55dfbbd@linux.ibm.com>
-Date: Mon, 14 Jul 2025 14:52:13 +0200
+	s=arc-20240116; t=1752497735; c=relaxed/simple;
+	bh=/909aGKlG7kJ0WjSTrY91XMCsjRYgr8cwWsMKDfGDeU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BkS91qqRzTWm/uV53dU211w1bPzYskwgRvqg+gttVwODkjjY7T5w/8OY2KeAsGaP9/eztl+AzTBvi5dNGfbo0ONDm7PsKvf+vsZsdOa3x2kCN37Qk6LcWj9VuyEXc/rKHf53V8SMIunRmSU9Z5rEi/c28xsAhbxC1RsWlxQzXXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bt3FHDTo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19B55C4CEF8
+	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 12:55:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752497735;
+	bh=/909aGKlG7kJ0WjSTrY91XMCsjRYgr8cwWsMKDfGDeU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=bt3FHDToG4GmbKyoauK6G4SX3jvtxRM23ldX/nIIkltDwJaMikr4ngkEzD/VY3UPW
+	 4x8663VikbgIOg6SBVpUXGtjlQSeMYVTTgxvNu6Jh1ctA5BtuEBgJ8NHUOhgTmoeMV
+	 sI37+6b4/eqVGMI7qi6F9k/5/Cuec+kHomluHixdIzB/jvIs3OqGDqzhMo6tZG+9M1
+	 NM1nZY1+Rnxqr5P1x9l4lYEHHxkr9g+gHryEAXKGDDIv/nIbowa4UIT0ORsBueSgic
+	 LpkLo5H87ONQtnpswV2lQjEmOM/WGuhbWzKEn6ClRviCnscLmVTrQiRvCTKl35LzB7
+	 R8acq1NsK9YMQ==
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-60c9d8a169bso7550263a12.1
+        for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 05:55:35 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yyi4n9p6QwD3oWsAYSrU7hMrUvEmEcaFwlk1Ojs+dcTDXfKVF6n
+	DaMfjnSWyPOsKnBinIDiRRSmWgq/l1xw+Ns9HJn0edPw3U8g8mak/0w4z1nKlVUCIJ6xbSQ345M
+	6VHF5f7kH26YgPqNLHuazPPOcLffzW/DSCSrs6LRw
+X-Google-Smtp-Source: AGHT+IEdT/aI8JLEGIvIhmpTu9+CtM2gS1I35JHu/77rx8TSb9156g2HYF0xy2gjOKuZxLb+jL0lDahAVlyxY1RYsE0=
+X-Received: by 2002:a05:6402:1d4c:b0:606:d25c:c779 with SMTP id
+ 4fb4d7f45d1cf-611e8514296mr12855776a12.34.1752497733472; Mon, 14 Jul 2025
+ 05:55:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 02/14] unwind_user: Add frame pointer support
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        x86@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Indu Bhagat <indu.bhagat@oracle.com>,
-        "Jose E. Marchesi" <jemarch@gnu.org>,
-        Beau Belgrave <beaub@linux.microsoft.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>,
-        Sam James <sam@gentoo.org>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-References: <20250708012239.268642741@kernel.org>
- <20250708012357.982692711@kernel.org>
- <d3279556-9bb6-429d-a037-fe279c5e3c67@linux.ibm.com>
- <20250710112147.41585f6a@batman.local.home>
- <155f22cb-b986-4d22-a853-6de49a1c2e03@linux.ibm.com>
- <20250710130859.41f3d5d0@batman.local.home>
-Content-Language: en-US
-From: Jens Remus <jremus@linux.ibm.com>
-Organization: IBM Deutschland Research & Development GmbH
-In-Reply-To: <20250710130859.41f3d5d0@batman.local.home>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=Je68rVKV c=1 sm=1 tr=0 ts=6874fd84 cx=c_pps a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17 a=IkcTkHD0fZMA:10 a=Wb1JkmetP80A:10 a=VnNF1IyMAAAA:8 a=0MvmVg10__VCTnNSAJcA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzE0MDA3MiBTYWx0ZWRfX0GmA12MjXPl0 mBleebw0c2P9DZSyzdVI/rFwyNpnKJuNwnipHu0cbHFskKcidiy6ktJrwTumFiA1pla+/R9Kkg8 ExFHZVn7WB4+Ve7gAZZub7bJBNJLq/2RlsS1Xx8H/nb02b+0/+cIuqonSJJf/1+3OqFuVQHF8kg
- 6DmWruXn4r8mxIm3n2rvEg64x0SYfhh48L5clhqbjjjJDNqjaW8bPJxidrfJKqEXLQalez1kBTE RHOZLgfa/I1ON24ruFHu88Bp8sPdxK3V6lM8I+MCuBWEW14hehWKJ9Fczb0Lq3PgVVbO4qNcXjk oBPCVzaPB3JwXG39TH2uHqsBCpsleaCU5ospb4AjU+ZqIVgWvN2AFJs9HAXm676t5Avv1N7gEh/
- 09VYeV53/4d29g21i51TT+ddWkVB3qJblodQp0HbdZ+ErmqMYZr/uKkHSTFiahhXixBX50P/
-X-Proofpoint-GUID: Oh6bCUxjZdZRr-S4SJxqEUAcMtwALGGj
-X-Proofpoint-ORIG-GUID: Oh6bCUxjZdZRr-S4SJxqEUAcMtwALGGj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
- definitions=2025-07-14_01,2025-07-14_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 lowpriorityscore=0 suspectscore=0 adultscore=0
- priorityscore=1501 clxscore=1015 bulkscore=0 phishscore=0 spamscore=0
- mlxlogscore=999 mlxscore=0 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
- definitions=main-2507140072
+References: <20250606232914.317094-1-kpsingh@kernel.org> <20250606232914.317094-6-kpsingh@kernel.org>
+ <CAEf4BzYiWv9suM6PuyJuFaDiRUXZxOhy1_pBkHqZwGN+Nn=2Eg@mail.gmail.com> <CACYkzJ4qs=CuKxjLkqqt+UeFTgqsqT9NvX_33C5QYGHry6femg@mail.gmail.com>
+In-Reply-To: <CACYkzJ4qs=CuKxjLkqqt+UeFTgqsqT9NvX_33C5QYGHry6femg@mail.gmail.com>
+From: KP Singh <kpsingh@kernel.org>
+Date: Mon, 14 Jul 2025 14:55:22 +0200
+X-Gmail-Original-Message-ID: <CACYkzJ6d6=mftCjCDw=cWOZqj87Asv7LNL_wyF=KeCjU=vSE4g@mail.gmail.com>
+X-Gm-Features: Ac12FXzZLmT5wAgtylnWQtfmErLl3uR_661lFPk-XRau7fol823v9mQjegesNw0
+Message-ID: <CACYkzJ6d6=mftCjCDw=cWOZqj87Asv7LNL_wyF=KeCjU=vSE4g@mail.gmail.com>
+Subject: Re: [PATCH 05/12] libbpf: Support exclusive map creation
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	bboscaccy@linux.microsoft.com, paul@paul-moore.com, kys@microsoft.com, 
+	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 10.07.2025 19:08, Steven Rostedt wrote:
-> On Thu, 10 Jul 2025 17:41:36 +0200
-> Jens Remus <jremus@linux.ibm.com> wrote:
-> 
->> cfa + frame->ra_off could be aligned by chance.  So could
->> cfa + frame->fp_off be as well of course.
->>
->> On s390 the CFA must be aligned (as the SP must be aligned) and the
->> FP and RA offsets from CFA must be aligned, as pointer / 64-bit integers
->> (such as 64-bit register values) must be aligned as well.
->>
->> So the CFA (and/or offset), FP offset, and RA offset could be validated
->> individually.  Not sure if that would be over engineering though.
-> 
-> I wonder if we should just validate that cfa is aligned? Would that work?
-> 
-> I would think that ra_off and fp_off should be aligned as well and if
-> cfa is aligned then it would still be aligned when adding those offsets.
+On Mon, Jul 14, 2025 at 2:29=E2=80=AFPM KP Singh <kpsingh@kernel.org> wrote=
+:
+>
+> On Fri, Jun 13, 2025 at 12:56=E2=80=AFAM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Fri, Jun 6, 2025 at 4:29=E2=80=AFPM KP Singh <kpsingh@kernel.org> wr=
+ote:
+> > >
+> > > Implement a convenient method i.e. bpf_map__make_exclusive which
+> > > calculates the hash for the program and registers it with the map for
+> > > creation as an exclusive map when the objects are loaded.
+> > >
+> > > The hash of the program must be computed after all the relocations ar=
+e
+> > > done.
+> > >
+> > > Signed-off-by: KP Singh <kpsingh@kernel.org>
+> > > ---
+> > >  tools/lib/bpf/bpf.c            |  4 +-
+> > >  tools/lib/bpf/bpf.h            |  4 +-
+> > >  tools/lib/bpf/libbpf.c         | 68 ++++++++++++++++++++++++++++++++=
++-
+> > >  tools/lib/bpf/libbpf.h         | 13 +++++++
+> > >  tools/lib/bpf/libbpf.map       |  5 +++
+> > >  tools/lib/bpf/libbpf_version.h |  2 +-
+> > >  6 files changed, 92 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+> > > index a9c3e33d0f8a..11fa2d64ccca 100644
+> > > --- a/tools/lib/bpf/bpf.c
+> > > +++ b/tools/lib/bpf/bpf.c
+> > > @@ -172,7 +172,7 @@ int bpf_map_create(enum bpf_map_type map_type,
+> > >                    __u32 max_entries,
+> > >                    const struct bpf_map_create_opts *opts)
+> > >  {
+> > > -       const size_t attr_sz =3D offsetofend(union bpf_attr, map_toke=
+n_fd);
+> > > +       const size_t attr_sz =3D offsetofend(union bpf_attr, excl_pro=
+g_hash);
+> > >         union bpf_attr attr;
+> > >         int fd;
+> > >
+> > > @@ -203,6 +203,8 @@ int bpf_map_create(enum bpf_map_type map_type,
+> > >         attr.map_ifindex =3D OPTS_GET(opts, map_ifindex, 0);
+> > >
+> > >         attr.map_token_fd =3D OPTS_GET(opts, token_fd, 0);
+> > > +       attr.excl_prog_hash =3D ptr_to_u64(OPTS_GET(opts, excl_prog_h=
+ash, NULL));
+> > > +       attr.excl_prog_hash_size =3D OPTS_GET(opts, excl_prog_hash_si=
+ze, 0);
+> > >
+> > >         fd =3D sys_bpf_fd(BPF_MAP_CREATE, &attr, attr_sz);
+> > >         return libbpf_err_errno(fd);
+> > > diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+> > > index 777627d33d25..a82b79c0c349 100644
+> > > --- a/tools/lib/bpf/bpf.h
+> > > +++ b/tools/lib/bpf/bpf.h
+> > > @@ -54,9 +54,11 @@ struct bpf_map_create_opts {
+> > >         __s32 value_type_btf_obj_fd;
+> > >
+> > >         __u32 token_fd;
+> > > +       __u32 excl_prog_hash_size;
+> > > +       const void *excl_prog_hash;
+> > >         size_t :0;
+> > >  };
+> > > -#define bpf_map_create_opts__last_field token_fd
+> > > +#define bpf_map_create_opts__last_field excl_prog_hash
+> > >
+> > >  LIBBPF_API int bpf_map_create(enum bpf_map_type map_type,
+> > >                               const char *map_name,
+> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > index 475038d04cb4..17de756973f4 100644
+> > > --- a/tools/lib/bpf/libbpf.c
+> > > +++ b/tools/lib/bpf/libbpf.c
+> > > @@ -499,6 +499,7 @@ struct bpf_program {
+> > >         __u32 line_info_rec_size;
+> > >         __u32 line_info_cnt;
+> > >         __u32 prog_flags;
+> > > +       __u8  hash[SHA256_DIGEST_LENGTH];
+> > >  };
+> > >
+> > >  struct bpf_struct_ops {
+> > > @@ -578,6 +579,8 @@ struct bpf_map {
+> > >         bool autocreate;
+> > >         bool autoattach;
+> > >         __u64 map_extra;
+> > > +       const void *excl_prog_sha;
+> > > +       __u32 excl_prog_sha_size;
+> > >  };
+> > >
+> > >  enum extern_type {
+> > > @@ -4485,6 +4488,43 @@ bpf_object__section_to_libbpf_map_type(const s=
+truct bpf_object *obj, int shndx)
+> > >         }
+> > >  }
+> > >
+> > > +static int bpf_program__compute_hash(struct bpf_program *prog)
+> > > +{
+> > > +       struct bpf_insn *purged;
+> > > +       bool was_ld_map;
+> > > +       int i, err;
+> > > +
+> > > +       purged =3D calloc(1, BPF_INSN_SZ * prog->insns_cnt);
+> > > +       if (!purged)
+> > > +               return -ENOMEM;
+> > > +
+> > > +       /* If relocations have been done, the map_fd needs to be
+> > > +        * discarded for the digest calculation.
+> > > +        */
+> >
+> > all this looks sketchy, let's think about some more robust approach
+> > here rather than randomly clearing some fields of some instructions...
+> >
+> > > +       for (i =3D 0, was_ld_map =3D false; i < prog->insns_cnt; i++)=
+ {
+> > > +               purged[i] =3D prog->insns[i];
+> > > +               if (!was_ld_map &&
+> > > +                   purged[i].code =3D=3D (BPF_LD | BPF_IMM | BPF_DW)=
+ &&
+> > > +                   (purged[i].src_reg =3D=3D BPF_PSEUDO_MAP_FD ||
+> > > +                    purged[i].src_reg =3D=3D BPF_PSEUDO_MAP_VALUE)) =
+{
+> > > +                       was_ld_map =3D true;
+> > > +                       purged[i].imm =3D 0;
+> > > +               } else if (was_ld_map && purged[i].code =3D=3D 0 &&
+> > > +                          purged[i].dst_reg =3D=3D 0 && purged[i].sr=
+c_reg =3D=3D 0 &&
+> > > +                          purged[i].off =3D=3D 0) {
+> > > +                       was_ld_map =3D false;
+> > > +                       purged[i].imm =3D 0;
+> > > +               } else {
+> > > +                       was_ld_map =3D false;
+> > > +               }
+> > > +       }
+> >
+> > this was_ld_map business is... unnecessary? Just access purged[i + 1]
+> > (checking i + 1 < prog->insns_cnt, of course), and i +=3D 1. This
+> > stateful approach is an unnecessary complication, IMO
+>
+> Does this look better to you, the next instruction has to be the
+> second half of the double word right?
+>
+> for (int i =3D 0; i < prog->insns_cnt; i++) {
+>     purged[i] =3D prog->insns[i];
+>     if (purged[i].code =3D=3D (BPF_LD | BPF_IMM | BPF_DW) &&
+>         (purged[i].src_reg =3D=3D BPF_PSEUDO_MAP_FD ||
+>          purged[i].src_reg =3D=3D BPF_PSEUDO_MAP_VALUE)) {
+>         purged[i].imm =3D 0;
+>         i++;
+>         if (i >=3D prog->insns_cnt ||
+>             prog->insns[i].code !=3D 0 ||
+>             prog->insns[i].dst_reg !=3D 0 ||
+>             prog->insns[i].src_reg !=3D 0 ||
+>             prog->insns[i].off !=3D 0) {
+>             return -EINVAL;
+>         }
 
-Makes sense, if the base assumption is that the SFrame information is
-valid and the primary intend is to check that the used CFA base register
-(i.e. SP or FP) was aligned.
+I mean ofcourse
 
-Regards,
-Jens
--- 
-Jens Remus
-Linux on Z Development (D3303)
-+49-7031-16-1128 Office
-jremus@de.ibm.com
+err =3D -EINVAL;
+goto out;
 
-IBM
+to free the buffer.
 
-IBM Deutschland Research & Development GmbH; Vorsitzender des Aufsichtsrats: Wolfgang Wendt; Geschäftsführung: David Faller; Sitz der Gesellschaft: Böblingen; Registergericht: Amtsgericht Stuttgart, HRB 243294
-IBM Data Privacy Statement: https://www.ibm.com/privacy/
+- KP
 
+>         purged[i] =3D prog->insns[i];
+>         purged[i].imm =3D 0;
+>     }
+> }
+>
+>
+>
+> >
+> > > +       err =3D libbpf_sha256(purged,
+> > > +                           prog->insns_cnt * sizeof(struct bpf_insn)=
+,
+> > > +                           prog->hash);
+> >
+> > fits on a single line?
+> >
+> > > +       free(purged);
+> > > +       return err;
+> > > +}
+> > > +
+> > >  static int bpf_program__record_reloc(struct bpf_program *prog,
+> > >                                      struct reloc_desc *reloc_desc,
+> > >                                      __u32 insn_idx, const char *sym_=
+name,
+> > > @@ -5214,6 +5254,10 @@ static int bpf_object__create_map(struct bpf_o=
+bject *obj, struct bpf_map *map, b
+> > >         create_attr.token_fd =3D obj->token_fd;
+> > >         if (obj->token_fd)
+> > >                 create_attr.map_flags |=3D BPF_F_TOKEN_FD;
+> > > +       if (map->excl_prog_sha) {
+> > > +               create_attr.excl_prog_hash =3D map->excl_prog_sha;
+> > > +               create_attr.excl_prog_hash_size =3D map->excl_prog_sh=
+a_size;
+> > > +       }
+> > >
+> > >         if (bpf_map__is_struct_ops(map)) {
+> > >                 create_attr.btf_vmlinux_value_type_id =3D map->btf_vm=
+linux_value_type_id;
+> > > @@ -7933,6 +7977,11 @@ static int bpf_object_prepare_progs(struct bpf=
+_object *obj)
+> > >                 err =3D bpf_object__sanitize_prog(obj, prog);
+> > >                 if (err)
+> > >                         return err;
+> > > +               /* Now that the instruction buffer is stable finalize=
+ the hash
+> > > +                */
+> > > +               err =3D bpf_program__compute_hash(&obj->programs[i]);
+> > > +               if (err)
+> > > +                       return err;
+> >
+> > we'll do this unconditionally for any program?.. why?
+> >
+> > >         }
+> > >         return 0;
+> > >  }
+> > > @@ -8602,8 +8651,8 @@ static int bpf_object_prepare(struct bpf_object=
+ *obj, const char *target_btf_pat
+> > >         err =3D err ? : bpf_object_adjust_struct_ops_autoload(obj);
+> > >         err =3D err ? : bpf_object__relocate(obj, obj->btf_custom_pat=
+h ? : target_btf_path);
+> > >         err =3D err ? : bpf_object__sanitize_and_load_btf(obj);
+> > > -       err =3D err ? : bpf_object__create_maps(obj);
+> > >         err =3D err ? : bpf_object_prepare_progs(obj);
+> > > +       err =3D err ? : bpf_object__create_maps(obj);
+> > >
+> > >         if (err) {
+> > >                 bpf_object_unpin(obj);
+> > > @@ -10502,6 +10551,23 @@ int bpf_map__set_inner_map_fd(struct bpf_map=
+ *map, int fd)
+> > >         return 0;
+> > >  }
+> > >
+> > > +int bpf_map__make_exclusive(struct bpf_map *map, struct bpf_program =
+*prog)
+> > > +{
+> > > +       if (map_is_created(map)) {
+> > > +               pr_warn("%s must be called before creation\n", __func=
+__);
+> >
+> > we don't really add __func__ for a long while now, please drop, we
+> > have a consistent "map '%s': what the problem is" format
+> >
+> > but for checks like this we also just return -EBUSY or something like
+> > that without error message, so I'd just drop the message altogether
+> >
+> > > +               return libbpf_err(-EINVAL);
+> > > +       }
+> > > +
+> > > +       if (prog->obj->state =3D=3D OBJ_LOADED) {
+> > > +               pr_warn("%s must be called before the prog load\n", _=
+_func__);
+> > > +               return libbpf_err(-EINVAL);
+> > > +       }
+> >
+> > this is unnecessary, map_is_created() takes care of this
+> >
+> > > +       map->excl_prog_sha =3D prog->hash;
+> > > +       map->excl_prog_sha_size =3D SHA256_DIGEST_LENGTH;
+> >
+> > this is a hack, I assume that's why you compute that hash for any
+> > program all the time, right? Well, first, if this is called before
+> > bpf_object_prepare(), it will silently do the wrong thing.
+> >
+> > But also I don't think we should calculate hash proactively, we could
+> > do this lazily.
+> >
+> > > +       return 0;
+> > > +}
+> > > +
+> > > +
+> > >  static struct bpf_map *
+> > >  __bpf_map__iter(const struct bpf_map *m, const struct bpf_object *ob=
+j, int i)
+> > >  {
+> > > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> > > index d39f19c8396d..b6ee9870523a 100644
+> > > --- a/tools/lib/bpf/libbpf.h
+> > > +++ b/tools/lib/bpf/libbpf.h
+> > > @@ -1249,6 +1249,19 @@ LIBBPF_API int bpf_map__lookup_and_delete_elem=
+(const struct bpf_map *map,
+> > >   */
+> > >  LIBBPF_API int bpf_map__get_next_key(const struct bpf_map *map,
+> > >                                      const void *cur_key, void *next_=
+key, size_t key_sz);
+> > > +/**
+> > > + * @brief **bpf_map__make_exclusive()** makes the map exclusive to a=
+ single program.
+> >
+> > we should also probably error out if map was already marked as
+> > exclusive to some other program
+> >
+> > > + * @param map BPF map to make exclusive.
+> > > + * @param prog BPF program to be the exclusive user of the map.
+> > > + * @return 0 on success; a negative error code otherwise.
+> > > + *
+> > > + * Once a map is made exclusive, only the specified program can acce=
+ss its
+> > > + * contents. **bpf_map__make_exclusive** must be called before the o=
+bjects are
+> > > + * loaded.
+> > > + */
+> > > +LIBBPF_API int bpf_map__make_exclusive(struct bpf_map *map, struct b=
+pf_program *prog);
+> > > +
+> > > +int bpf_map__make_exclusive(struct bpf_map *map, struct bpf_program =
+*prog);
+> > >
+> > >  struct bpf_xdp_set_link_opts {
+> > >         size_t sz;
+> > > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> > > index 1205f9a4fe04..67b1ff4202a1 100644
+> > > --- a/tools/lib/bpf/libbpf.map
+> > > +++ b/tools/lib/bpf/libbpf.map
+> > > @@ -444,3 +444,8 @@ LIBBPF_1.6.0 {
+> > >                 btf__add_decl_attr;
+> > >                 btf__add_type_attr;
+> > >  } LIBBPF_1.5.0;
+> > > +
+> > > +LIBBPF_1.7.0 {
+> > > +       global:
+> > > +               bpf_map__make_exclusive;
+> > > +} LIBBPF_1.6.0;
+> >
+> > we are still in v1.6 dev phase, no need to add 1.7 just yet
+> >
+> >
+> > > diff --git a/tools/lib/bpf/libbpf_version.h b/tools/lib/bpf/libbpf_ve=
+rsion.h
+> > > index 28c58fb17250..99331e317dee 100644
+> > > --- a/tools/lib/bpf/libbpf_version.h
+> > > +++ b/tools/lib/bpf/libbpf_version.h
+> > > @@ -4,6 +4,6 @@
+> > >  #define __LIBBPF_VERSION_H
+> > >
+> > >  #define LIBBPF_MAJOR_VERSION 1
+> > > -#define LIBBPF_MINOR_VERSION 6
+> > > +#define LIBBPF_MINOR_VERSION 7
+> > >
+> > >  #endif /* __LIBBPF_VERSION_H */
+> > > --
+> > > 2.43.0
+> > >
 
