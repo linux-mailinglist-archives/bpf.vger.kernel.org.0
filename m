@@ -1,171 +1,122 @@
-Return-Path: <bpf+bounces-63216-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63217-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16E41B0449D
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 17:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 504D2B044CA
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 17:54:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 549A4173156
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 15:49:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 928B216D939
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 15:54:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4CEB25C6E7;
-	Mon, 14 Jul 2025 15:49:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B31B25A645;
+	Mon, 14 Jul 2025 15:54:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="EySpEpw1"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="sNhrcmVO";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="CenooRRU"
 X-Original-To: bpf@vger.kernel.org
-Received: from lelvem-ot02.ext.ti.com (lelvem-ot02.ext.ti.com [198.47.23.235])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 445112E36F0;
-	Mon, 14 Jul 2025 15:49:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.235
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BEC025C827
+	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 15:54:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752508148; cv=none; b=AoiiijyqUcSaSZ/hOsH/qDMEdu/Hq8ZL66mNrjmT4J3NvnuKN1Fi0Nq7o1obGxSRxOmUmjXZY8GP///7EeEbHm2c8v3/7eC5e45XvTY7CnagPuvf7ome+R3ulgdg2UYoUUNfnMlH2xiyWMuJ5rwJdDY4CMb8s2Z994MJZB+JGnk=
+	t=1752508449; cv=none; b=oPflptlzzYmTim43/O8z9mgFQZJXt6J1xVMXp3bLZ/g8LEjx5s5DlFAfah3XKbcrSJ7SgM6R42TYAoHoBDORKxQhVlBP1/9+IEfPReUQj8Fv/qn49VCChqt6g0LRGtpDpsjij24Ahgq6vk06hZ5x1J8ESnsY1razXkwBut6yyc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752508148; c=relaxed/simple;
-	bh=gynR6U1af0ByDlmuzNPvrt9QOm6xRxe9HmvQRMgpo6E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=u80+sVQzM+LK+Xb8KMutMgqCnKmBhuJnHXIu10wS4GLi0eaFH9byvHNH6v89VSBzTlFOYWMpfqNpMd5YaBfB3sMtu8vM8BaKMZGidapSmEA1I0xPfEQh3eQ11SMUxr1sxqW90wgvwCrFCmXSyurqBo4QbOH6p0qhiL7Redt154s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=EySpEpw1; arc=none smtp.client-ip=198.47.23.235
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllvem-sh03.itg.ti.com ([10.64.41.86])
-	by lelvem-ot02.ext.ti.com (8.15.2/8.15.2) with ESMTP id 56EFmZeR2683833;
-	Mon, 14 Jul 2025 10:48:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1752508115;
-	bh=nRDeHKQbWfbtGevuT6SkWvzndahOFJlTNEgxm+DCyBo=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=EySpEpw1IJFNOmD1QRnL/tWLJ/q2t+AT/TjHLhXJ1/4R6EQfo1oSxW8+9t8tiLW14
-	 NDZ3t65tyxh7XiRY6mx2N2/hPdC+dENajLP7Ucs/19AZLFLRda5AESXsYZGqPUiT/c
-	 8glO+OCjDDxbZEXNHfrtqCsrMkNhc/cn8Vd296zI=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-	by fllvem-sh03.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 56EFmZfn3504193
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
-	Mon, 14 Jul 2025 10:48:35 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Mon, 14
- Jul 2025 10:48:34 -0500
-Received: from lelvem-mr05.itg.ti.com (10.180.75.9) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55 via
- Frontend Transport; Mon, 14 Jul 2025 10:48:34 -0500
-Received: from [10.249.131.66] ([10.249.131.66])
-	by lelvem-mr05.itg.ti.com (8.18.1/8.18.1) with ESMTP id 56EFmShm1272637;
-	Mon, 14 Jul 2025 10:48:29 -0500
-Message-ID: <ea631e0e-9cf7-4fae-820a-43013adcd1ec@ti.com>
-Date: Mon, 14 Jul 2025 21:18:27 +0530
+	s=arc-20240116; t=1752508449; c=relaxed/simple;
+	bh=dvqUnWP2LRuFOzHaCp4zLAitEfC6uBl72qA0knFTIbE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Z6uAixepd4KXSpsE+GoFMS7Qjg5tbZXF6UoiBb8AIJtGgYMykjbtjmTqwTyzYcCXSKUsL8FPuo4gSBF5LSm7hPZpUNK8uHh/dnuYjVv0ZjCyZ6f1AKxtKqWHp/hQTwVoZgwK7rJbjkYP8K8xZsby/EU6OjBnBSKrkfvt7GZc7EE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=sNhrcmVO; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=CenooRRU; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Mon, 14 Jul 2025 17:54:03 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1752508445;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xfxgbpirDG/4DqKWuHPV06tdlywV5pB/yCvyThpPMno=;
+	b=sNhrcmVOgz80smjkuLUzhvppTnv3o5XUYKyohdjm8U31CP154qpajIJkYe3omyHoSvsRsG
+	NPRk/mJN4a4U7/VJ6HlXLaFSEiA/JgTp5Se9Yg3fpdVsr7yk05WBOT9buIkCEMuwCUck0E
+	voDcUiDyDiNiZqtzH1nXxD4RpTSa6QqoYPEV0xLBwfYZxuNL8qekdb7Vicv8uZOQBBNLJy
+	MtWMT7Aq9SjOkEeh3NEC+7yzEWr9f2uZYEHsPdwPvStDx3AVrxewXWKVFesbrgSNgU30K3
+	kGKma6mi9f+6ND4N5YdCDq6nAqYGvNLaNW53+Asg7c6g7VsoEunARwMBydU8CQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1752508445;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xfxgbpirDG/4DqKWuHPV06tdlywV5pB/yCvyThpPMno=;
+	b=CenooRRUExsHoe0h+kQOvwmW9ugEXXe3M2iA4eq7a2wG5JN64grZv+mfWHdc60OMPwO9ET
+	u5YNQOGlEuVmGADg==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+	Harry Yoo <harry.yoo@oracle.com>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Michal Hocko <mhocko@suse.com>, Andrii Nakryiko <andrii@kernel.org>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: [PATCH v2 3/6] locking/local_lock: Introduce
+ local_lock_lockdep_start/end()
+Message-ID: <20250714155403.ThZUBUzH@linutronix.de>
+References: <20250709015303.8107-1-alexei.starovoitov@gmail.com>
+ <20250709015303.8107-4-alexei.starovoitov@gmail.com>
+ <20250711075001.fnlMZfk6@linutronix.de>
+ <1adbee35-6131-49de-835b-2c93aacfdd1e@suse.cz>
+ <20250711151730.rz_TY1Qq@linutronix.de>
+ <CAADnVQKF=U+Go44fpDYOoZp+3e0xrLYXE4yYLm82H819WqnpnA@mail.gmail.com>
+ <20250714110639.uOaKJEfL@linutronix.de>
+ <12615023-1762-49fc-9c86-2e1d9f5997f3@suse.cz>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [EXTERNAL] Re: [PATCH RFC net-next 0/5] net: ethernet: ti:
- am65-cpsw: add AF_XDP zero copy support
-To: Jakub Kicinski <kuba@kernel.org>
-CC: Roger Quadros <rogerq@kernel.org>,
-        Siddharth Vadapalli
-	<s-vadapalli@ti.com>,
-        Andrew Lunn <andrew+netdev@lunn.ch>,
-        "David S. Miller"
-	<davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Paolo Abeni
-	<pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann
-	<daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John
- Fastabend <john.fastabend@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        <srk@ti.com>, <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <linaro-mm-sig@lists.linaro.org>
-References: <20250520-am65-cpsw-xdp-zc-v1-0-45558024f566@kernel.org>
- <268f6849-efc6-4663-af20-f6726bd4b78d@ti.com>
- <20250714080629.29aa7a2d@kernel.org>
-Content-Language: en-US
-From: "Malladi, Meghana" <m-malladi@ti.com>
-In-Reply-To: <20250714080629.29aa7a2d@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <12615023-1762-49fc-9c86-2e1d9f5997f3@suse.cz>
 
-Hi Jakub,
-
-Sorry for the duplicate mail.
-
-On 7/14/2025 8:36 PM, Jakub Kicinski wrote:
-> On Mon, 14 Jul 2025 14: 50: 05 +0530 Malladi, Meghana wrote: > > AF_XDP 
-> performance using 64 byte packets in Kpps. > > Benchmark: XDP-SKB XDP- 
-> Native XDP-Native(ZeroCopy) > > rxdrop 317 504 824 > > txonly 400 405 757 >
-> ZjQcmQRYFpfptBannerStart
-> This message was sent from outside of Texas Instruments.
-> Do not click links or open attachments unless you recognize the source 
-> of this email and know the content is safe.
-> Report Suspicious
-> <https://us-phishalarm-ewt.proofpoint.com/EWT/v1/G3vK! 
-> uDdqXRfP1m37CoZlPNNDnQgOintsvKy- 
-> cENuCwB1b5Qxa66rT1SFJDmyny6jsjalW7Wur6ukCSGrdQ$>
-> ZjQcmQRYFpfptBannerEnd
+On 2025-07-14 17:35:52 [+0200], Vlastimil Babka wrote:
+> If we go with this, then I think the better approach would be simply:
 > 
-> On Mon, 14 Jul 2025 14:50:05 +0530 Malladi, Meghana wrote:
->> > AF_XDP performance using 64 byte packets in Kpps.
->> > Benchmark:	XDP-SKB		XDP-Native	XDP-Native(ZeroCopy)
->> > rxdrop		317		504		824
->> > txonly		400		405		757
->> > l2fwd 		207		264		0
->> > 
->> > AF_XDP performance using 1500 byte packets in Kpps.
->> > Benchmark:	XDP-SKB		XDP-Native	XDP-Native(ZeroCopy)
->> > rxdrop		82		82		82
->> > txonly		82		82		82
->> > l2fwd 		82		82		82
->> > 
->> > [1]: https://urldefense.com/v3/__https://github.com/xdp-project/bpf-examples/ 
-> tree/master/AF_XDP-example__;!!G3vK!Sv1p-bFPBDlzD-YMO2sjo- 
-> X2gv3CW5uHD_O771StRVzMR8Vr75k7tTGQJ27MRy_fz3d9m40aZg$ <https://urldefense.com/v3/__https://github.com/xdp-project/bpf-examples/tree/master/AF_XDP-example__;!!G3vK!Sv1p-bFPBDlzD-YMO2sjo-X2gv3CW5uHD_O771StRVzMR8Vr75k7tTGQJ27MRy_fz3d9m40aZg$>
->> > 
->> > To:
->> > 
->> > Signed-off-by: Roger Quadros <rogerq@kernel.org>  
->> 
->> This series crashes Linux on am64xx-hsevm, when I tried nfs boot using 
->> AM65-CPSW-NUSS driver:
->> logs: 
->> https://urldefense.com/v3/__https://gist.github.com/MeghanaMalladiTI/ 
-> d655a1c8ca88113ee7f5f57d6ab0ec4c__;!!G3vK!Sv1p-bFPBDlzD-YMO2sjo- 
-> X2gv3CW5uHD_O771StRVzMR8Vr75k7tTGQJ27MRy_fz3ecuWN_dw$ <https://urldefense.com/v3/__https://gist.github.com/MeghanaMalladiTI/d655a1c8ca88113ee7f5f57d6ab0ec4c__;!!G3vK!Sv1p-bFPBDlzD-YMO2sjo-X2gv3CW5uHD_O771StRVzMR8Vr75k7tTGQJ27MRy_fz3ecuWN_dw$>
->> 
->> Seems like you have reverted the fix for the same bug which was reported 
->> by Siddharth and fixed by Julien: 
->> https://urldefense.com/v3/__https://lore.kernel.org/ 
-> all/7f7fb71a-6d15-46f1-b63c-b569a2e230b7@baylibre.com/__;!!G3vK!Sv1p- 
-> bFPBDlzD-YMO2sjo-X2gv3CW5uHD_O771StRVzMR8Vr75k7tTGQJ27MRy_fz3exh7VnCw$ <https://urldefense.com/v3/__https://lore.kernel.org/all/7f7fb71a-6d15-46f1-b63c-b569a2e230b7@baylibre.com/__;!!G3vK!Sv1p-bFPBDlzD-YMO2sjo-X2gv3CW5uHD_O771StRVzMR8Vr75k7tTGQJ27MRy_fz3exh7VnCw$>
->> 
->> reverted lines:
->> 		if (!common->ports[port].ndev)
->> 		/* FIXME should we BUG here? */
->> 			continue;
->> 
->> Can you please take a look at it.
+> if (unlikely(!local_trylock_irqsave(&s->cpu_slab->lock, *flags))
+> 	local_lock_irqsave(&s->cpu_slab->lock, *flags);
 > 
-> Just to be clear -- you're reporting this problem to Roger so that its
-> fixed before the series is reposted? I don't see this in the tree, I
-> wanted to make sure it's not something I need to track as a regression.
-> 
+> - no branches before the likely to succeed local_trylock_irqsave()
+> - the unlikely local_lock_irqsave() fallback exists to handle the PREEMPT_RT
+> case / provide lockdep checks in case of screwing up
+> - we don't really need to evaluate allow_spin or add BUG_ON() (which is
+> actively disallowed to add these days anyway) - if we screw up, either
+> lockdep will splat, or we deadlock
 
-Yes you are right. This isn't a regression, I reported this as part of 
-my testing for this RFC patch series.
+Some people added BUG_ON() in cases were a warning would be more
+applicable and recovery would be still be possible. I don't see how to
+recover from this (unless you want return NULL) plus it should not
+happen.
+The only downside would that you don't evaluate the spinning part but
+this only matters on RT since !RT should always succeed. So why not.
 
--- 
-Thanks,
-Meghana Malladi
+> Also I'm thinking on !PREEMPT_RT && !LOCKDEP we don't even need the fallback
+> local_lock_irqsave part? The trylock is supposed to always succeed, right?
+> Either we allow spinning and that means we're not under kmalloc_nolock() and
+> should not be interrupting the locked section (as before this series). Or
+> it's the opposite and then the earlier local_lock_is_locked() check should
+> have prevented us from going here. So I guess we could just trylock without
+> checking the return value - any screw up should blow up quickly even without
+> the BUG_ON().
 
+As explained above, under normal circumstances the trylock will always
+succeed on !RT. But ignoring the return value here does not feel right
+and the API might get extended to warn if the return error is ignored.
+
+Sebastian
 
