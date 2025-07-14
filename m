@@ -1,423 +1,188 @@
-Return-Path: <bpf+bounces-63190-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63191-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B70CB03F0F
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 14:55:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5F68B03F54
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 15:11:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B865E7A757C
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 12:54:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B3B8188FBD3
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 13:11:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E169C24A051;
-	Mon, 14 Jul 2025 12:55:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0618C24C07A;
+	Mon, 14 Jul 2025 13:10:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bt3FHDTo"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="f8hPPQfr"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BB63248F5F
-	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 12:55:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA19E4315A
+	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 13:10:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752497735; cv=none; b=fMs95CpEOWxYebheP3pTVKDX05bjW7QfoW4p+H+e8+71i6qiAe+8Rkwnbqj8iVMBjfxNmwajZJR6FYR6l4xZBiAC/uzOIAlb2hkSXP6/3JNjYDBYVY/M69SSXc2ze04fVYg7FRBW7nhfiwCOxseVYHLZk5ahO/xSlFMKetDDGQI=
+	t=1752498654; cv=none; b=R7b7COlEXuKXO1vDx5DF/qPtu2tlpqLXaQwc2UJzgijWPA7GrtniOuolDxjblWi6jJ3uJH41jTRcF5aCUg0l88k4kRD0AMxxm05l+w+qHJPyNyeBaC8EbiEQEysLAI3Olo4vb/HG5UstuBG3bwS60F/53cBw5qior52ZGa6ZMpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752497735; c=relaxed/simple;
-	bh=/909aGKlG7kJ0WjSTrY91XMCsjRYgr8cwWsMKDfGDeU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BkS91qqRzTWm/uV53dU211w1bPzYskwgRvqg+gttVwODkjjY7T5w/8OY2KeAsGaP9/eztl+AzTBvi5dNGfbo0ONDm7PsKvf+vsZsdOa3x2kCN37Qk6LcWj9VuyEXc/rKHf53V8SMIunRmSU9Z5rEi/c28xsAhbxC1RsWlxQzXXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bt3FHDTo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19B55C4CEF8
-	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 12:55:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752497735;
-	bh=/909aGKlG7kJ0WjSTrY91XMCsjRYgr8cwWsMKDfGDeU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=bt3FHDToG4GmbKyoauK6G4SX3jvtxRM23ldX/nIIkltDwJaMikr4ngkEzD/VY3UPW
-	 4x8663VikbgIOg6SBVpUXGtjlQSeMYVTTgxvNu6Jh1ctA5BtuEBgJ8NHUOhgTmoeMV
-	 sI37+6b4/eqVGMI7qi6F9k/5/Cuec+kHomluHixdIzB/jvIs3OqGDqzhMo6tZG+9M1
-	 NM1nZY1+Rnxqr5P1x9l4lYEHHxkr9g+gHryEAXKGDDIv/nIbowa4UIT0ORsBueSgic
-	 LpkLo5H87ONQtnpswV2lQjEmOM/WGuhbWzKEn6ClRviCnscLmVTrQiRvCTKl35LzB7
-	 R8acq1NsK9YMQ==
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-60c9d8a169bso7550263a12.1
-        for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 05:55:35 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yyi4n9p6QwD3oWsAYSrU7hMrUvEmEcaFwlk1Ojs+dcTDXfKVF6n
-	DaMfjnSWyPOsKnBinIDiRRSmWgq/l1xw+Ns9HJn0edPw3U8g8mak/0w4z1nKlVUCIJ6xbSQ345M
-	6VHF5f7kH26YgPqNLHuazPPOcLffzW/DSCSrs6LRw
-X-Google-Smtp-Source: AGHT+IEdT/aI8JLEGIvIhmpTu9+CtM2gS1I35JHu/77rx8TSb9156g2HYF0xy2gjOKuZxLb+jL0lDahAVlyxY1RYsE0=
-X-Received: by 2002:a05:6402:1d4c:b0:606:d25c:c779 with SMTP id
- 4fb4d7f45d1cf-611e8514296mr12855776a12.34.1752497733472; Mon, 14 Jul 2025
- 05:55:33 -0700 (PDT)
+	s=arc-20240116; t=1752498654; c=relaxed/simple;
+	bh=OKHlmd7Qcr8AGinaQ5iuxYV6lu1d4kRrK0yKJPeVqJM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OQka2JIbxEaHGkGEVkqnZHmxYpxpgJNSzKWCKCqOmjbqClskX+D9TBABYb2JEZPjxCn0/DcGknsdyYC4qIO92SgwFTOqRac8RNejQgfvNG5Qstq77UI4PFO9xtXKWOVmzVd4d/3oxwuO9xg/nh3kXczwzlhjcGBgJe3673Q39Jo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=f8hPPQfr; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1752498652;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Slopq6lqfpeoL26O5BVE+c/eBR9HrgDvIWj6vuGUSOU=;
+	b=f8hPPQfrG3AYZwHJkl370+6azR5XGxj/zI98hqDcEcKFNLYTxDPBsZ7tYa3vpHgmKXo9S2
+	7RBuDJ3/9vhO62NlJTaDLn681HMp4XBxkp5HrDkYMlTOrpa+rjz0iP9eK4zuQ9z3ZdnB2+
+	fizE3pUC7oX/VpoUnrEDirbjYtV5G5g=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-63-Oio0yncAPaaoGcqAlMF4AA-1; Mon, 14 Jul 2025 09:10:50 -0400
+X-MC-Unique: Oio0yncAPaaoGcqAlMF4AA-1
+X-Mimecast-MFC-AGG-ID: Oio0yncAPaaoGcqAlMF4AA_1752498649
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4561c67daebso2564595e9.1
+        for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 06:10:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752498649; x=1753103449;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Slopq6lqfpeoL26O5BVE+c/eBR9HrgDvIWj6vuGUSOU=;
+        b=QNDyGcbotckMtPbFuxPv3P+RajgJgPQGhdrLeswXjD+x5WfPDMh7NPUTCMcLPSHGAR
+         2dLINEvVmg2gv0H3adn0e04REiOcwLox5z38lFIxFQ1JG0n7ZMnVPEBeLBZ35GrRPx4g
+         b5PZV4KS4mwnV2iglf7+cGtBlEND+KZSwajnrFLf6zXgK2mwAhdW302if3wgxOEzBW3R
+         D8x1H+utllK7Io4beSBMtxWOkPuGUT4LH7H3w25RBkSm85K/gEUHsieqGsDh5phvyrmc
+         2/cKrzMiKbyuwpsG/o6CzxLdVnEwAEdv8+QfYcwEDen8Nd3TroWCUWJBxA2jAeXjOzwY
+         DQWw==
+X-Forwarded-Encrypted: i=1; AJvYcCUCxJrWd2M9j3nYz3l8laT4JUOirqBuWMV3cMIabj7pg8Rtzd9mcos+51iBjqU56p/zgUs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YztqRrKQAJL+M0LAjB0va2XRYtouErl1Ny6IiI/EHB9E7l2BCvS
+	m6SdQRQ/J/bVIgRuNNjJmfHMqkJ+9SkgSYGavnX5ZLWihKChAyVL5kaUh+7Mqjo12znCgzRX1U9
+	FCJJ8I0RWeXPKLucRhOJ794TSesiRF6ZdRX9KhayJNBxKJBnbJNjgcA==
+X-Gm-Gg: ASbGncuAu5/dtiiJQvOCG6usVjeGYWhcXk6amxg/40VGZjDEzAFU+8A7NS+HvrZvXdd
+	wfLEayfDqneGLM48N5bxo83GFxPWW5Cg3pTJ7ZR2eRbLJxW1C9fBiC/oJMwQ3sw5ktY3D2DAbfv
+	NR9OXgmpbsbyMKzM8WUM32qqpvD8tD+IuY9L12aIZy+jww/o6I3Xanm9ujfQSL76RYSfafrmpAN
+	zs4vhhfQh9VuPuLzv2yIdOaifLeeKUcMNhlzOmjkhrNu40fpwJIWZH6OKmyEw4JBoBQi28A4/UY
+	QdBRyLOVBXKc5A2CNvv2R72AU0T1DIkkKass9M6cgDM=
+X-Received: by 2002:a05:600c:6095:b0:456:189e:223a with SMTP id 5b1f17b1804b1-456189e2325mr45725435e9.10.1752498649113;
+        Mon, 14 Jul 2025 06:10:49 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF4isJE0VuC1C1kTueLpR2HySlD/dQQOFEyhiZwFlkFPA9n3aecdOCB/5t4HOGIGIIR/iCaiw==
+X-Received: by 2002:a05:600c:6095:b0:456:189e:223a with SMTP id 5b1f17b1804b1-456189e2325mr45724915e9.10.1752498648590;
+        Mon, 14 Jul 2025 06:10:48 -0700 (PDT)
+Received: from [192.168.0.115] ([212.105.155.228])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b5e8e262c6sm12199695f8f.85.2025.07.14.06.10.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Jul 2025 06:10:48 -0700 (PDT)
+Message-ID: <dc03363a-36d0-4a56-9247-baa75d516620@redhat.com>
+Date: Mon, 14 Jul 2025 15:10:45 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250606232914.317094-1-kpsingh@kernel.org> <20250606232914.317094-6-kpsingh@kernel.org>
- <CAEf4BzYiWv9suM6PuyJuFaDiRUXZxOhy1_pBkHqZwGN+Nn=2Eg@mail.gmail.com> <CACYkzJ4qs=CuKxjLkqqt+UeFTgqsqT9NvX_33C5QYGHry6femg@mail.gmail.com>
-In-Reply-To: <CACYkzJ4qs=CuKxjLkqqt+UeFTgqsqT9NvX_33C5QYGHry6femg@mail.gmail.com>
-From: KP Singh <kpsingh@kernel.org>
-Date: Mon, 14 Jul 2025 14:55:22 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ6d6=mftCjCDw=cWOZqj87Asv7LNL_wyF=KeCjU=vSE4g@mail.gmail.com>
-X-Gm-Features: Ac12FXzZLmT5wAgtylnWQtfmErLl3uR_661lFPk-XRau7fol823v9mQjegesNw0
-Message-ID: <CACYkzJ6d6=mftCjCDw=cWOZqj87Asv7LNL_wyF=KeCjU=vSE4g@mail.gmail.com>
-Subject: Re: [PATCH 05/12] libbpf: Support exclusive map creation
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	bboscaccy@linux.microsoft.com, paul@paul-moore.com, kys@microsoft.com, 
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v12 net-next 06/15] tcp: accecn: AccECN negotiation
+To: chia-yu.chang@nokia-bell-labs.com, edumazet@google.com,
+ linux-doc@vger.kernel.org, corbet@lwn.net, horms@kernel.org,
+ dsahern@kernel.org, kuniyu@amazon.com, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, dave.taht@gmail.com, jhs@mojatatu.com,
+ kuba@kernel.org, stephen@networkplumber.org, xiyou.wangcong@gmail.com,
+ jiri@resnulli.us, davem@davemloft.net, andrew+netdev@lunn.ch,
+ donald.hunter@gmail.com, ast@fiberby.net, liuhangbin@gmail.com,
+ shuah@kernel.org, linux-kselftest@vger.kernel.org, ij@kernel.org,
+ ncardwell@google.com, koen.de_schepper@nokia-bell-labs.com,
+ g.white@cablelabs.com, ingemar.s.johansson@ericsson.com,
+ mirja.kuehlewind@ericsson.com, cheshire@apple.com, rs.ietf@gmx.at,
+ Jason_Livingood@comcast.com, vidhi_goel@apple.com
+Cc: Olivier Tilmans <olivier.tilmans@nokia.com>
+References: <20250704085345.46530-1-chia-yu.chang@nokia-bell-labs.com>
+ <20250704085345.46530-7-chia-yu.chang@nokia-bell-labs.com>
+Content-Language: en-US
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <20250704085345.46530-7-chia-yu.chang@nokia-bell-labs.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jul 14, 2025 at 2:29=E2=80=AFPM KP Singh <kpsingh@kernel.org> wrote=
-:
->
-> On Fri, Jun 13, 2025 at 12:56=E2=80=AFAM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Fri, Jun 6, 2025 at 4:29=E2=80=AFPM KP Singh <kpsingh@kernel.org> wr=
-ote:
-> > >
-> > > Implement a convenient method i.e. bpf_map__make_exclusive which
-> > > calculates the hash for the program and registers it with the map for
-> > > creation as an exclusive map when the objects are loaded.
-> > >
-> > > The hash of the program must be computed after all the relocations ar=
-e
-> > > done.
-> > >
-> > > Signed-off-by: KP Singh <kpsingh@kernel.org>
-> > > ---
-> > >  tools/lib/bpf/bpf.c            |  4 +-
-> > >  tools/lib/bpf/bpf.h            |  4 +-
-> > >  tools/lib/bpf/libbpf.c         | 68 ++++++++++++++++++++++++++++++++=
-+-
-> > >  tools/lib/bpf/libbpf.h         | 13 +++++++
-> > >  tools/lib/bpf/libbpf.map       |  5 +++
-> > >  tools/lib/bpf/libbpf_version.h |  2 +-
-> > >  6 files changed, 92 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> > > index a9c3e33d0f8a..11fa2d64ccca 100644
-> > > --- a/tools/lib/bpf/bpf.c
-> > > +++ b/tools/lib/bpf/bpf.c
-> > > @@ -172,7 +172,7 @@ int bpf_map_create(enum bpf_map_type map_type,
-> > >                    __u32 max_entries,
-> > >                    const struct bpf_map_create_opts *opts)
-> > >  {
-> > > -       const size_t attr_sz =3D offsetofend(union bpf_attr, map_toke=
-n_fd);
-> > > +       const size_t attr_sz =3D offsetofend(union bpf_attr, excl_pro=
-g_hash);
-> > >         union bpf_attr attr;
-> > >         int fd;
-> > >
-> > > @@ -203,6 +203,8 @@ int bpf_map_create(enum bpf_map_type map_type,
-> > >         attr.map_ifindex =3D OPTS_GET(opts, map_ifindex, 0);
-> > >
-> > >         attr.map_token_fd =3D OPTS_GET(opts, token_fd, 0);
-> > > +       attr.excl_prog_hash =3D ptr_to_u64(OPTS_GET(opts, excl_prog_h=
-ash, NULL));
-> > > +       attr.excl_prog_hash_size =3D OPTS_GET(opts, excl_prog_hash_si=
-ze, 0);
-> > >
-> > >         fd =3D sys_bpf_fd(BPF_MAP_CREATE, &attr, attr_sz);
-> > >         return libbpf_err_errno(fd);
-> > > diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-> > > index 777627d33d25..a82b79c0c349 100644
-> > > --- a/tools/lib/bpf/bpf.h
-> > > +++ b/tools/lib/bpf/bpf.h
-> > > @@ -54,9 +54,11 @@ struct bpf_map_create_opts {
-> > >         __s32 value_type_btf_obj_fd;
-> > >
-> > >         __u32 token_fd;
-> > > +       __u32 excl_prog_hash_size;
-> > > +       const void *excl_prog_hash;
-> > >         size_t :0;
-> > >  };
-> > > -#define bpf_map_create_opts__last_field token_fd
-> > > +#define bpf_map_create_opts__last_field excl_prog_hash
-> > >
-> > >  LIBBPF_API int bpf_map_create(enum bpf_map_type map_type,
-> > >                               const char *map_name,
-> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > > index 475038d04cb4..17de756973f4 100644
-> > > --- a/tools/lib/bpf/libbpf.c
-> > > +++ b/tools/lib/bpf/libbpf.c
-> > > @@ -499,6 +499,7 @@ struct bpf_program {
-> > >         __u32 line_info_rec_size;
-> > >         __u32 line_info_cnt;
-> > >         __u32 prog_flags;
-> > > +       __u8  hash[SHA256_DIGEST_LENGTH];
-> > >  };
-> > >
-> > >  struct bpf_struct_ops {
-> > > @@ -578,6 +579,8 @@ struct bpf_map {
-> > >         bool autocreate;
-> > >         bool autoattach;
-> > >         __u64 map_extra;
-> > > +       const void *excl_prog_sha;
-> > > +       __u32 excl_prog_sha_size;
-> > >  };
-> > >
-> > >  enum extern_type {
-> > > @@ -4485,6 +4488,43 @@ bpf_object__section_to_libbpf_map_type(const s=
-truct bpf_object *obj, int shndx)
-> > >         }
-> > >  }
-> > >
-> > > +static int bpf_program__compute_hash(struct bpf_program *prog)
-> > > +{
-> > > +       struct bpf_insn *purged;
-> > > +       bool was_ld_map;
-> > > +       int i, err;
-> > > +
-> > > +       purged =3D calloc(1, BPF_INSN_SZ * prog->insns_cnt);
-> > > +       if (!purged)
-> > > +               return -ENOMEM;
-> > > +
-> > > +       /* If relocations have been done, the map_fd needs to be
-> > > +        * discarded for the digest calculation.
-> > > +        */
-> >
-> > all this looks sketchy, let's think about some more robust approach
-> > here rather than randomly clearing some fields of some instructions...
-> >
-> > > +       for (i =3D 0, was_ld_map =3D false; i < prog->insns_cnt; i++)=
- {
-> > > +               purged[i] =3D prog->insns[i];
-> > > +               if (!was_ld_map &&
-> > > +                   purged[i].code =3D=3D (BPF_LD | BPF_IMM | BPF_DW)=
- &&
-> > > +                   (purged[i].src_reg =3D=3D BPF_PSEUDO_MAP_FD ||
-> > > +                    purged[i].src_reg =3D=3D BPF_PSEUDO_MAP_VALUE)) =
-{
-> > > +                       was_ld_map =3D true;
-> > > +                       purged[i].imm =3D 0;
-> > > +               } else if (was_ld_map && purged[i].code =3D=3D 0 &&
-> > > +                          purged[i].dst_reg =3D=3D 0 && purged[i].sr=
-c_reg =3D=3D 0 &&
-> > > +                          purged[i].off =3D=3D 0) {
-> > > +                       was_ld_map =3D false;
-> > > +                       purged[i].imm =3D 0;
-> > > +               } else {
-> > > +                       was_ld_map =3D false;
-> > > +               }
-> > > +       }
-> >
-> > this was_ld_map business is... unnecessary? Just access purged[i + 1]
-> > (checking i + 1 < prog->insns_cnt, of course), and i +=3D 1. This
-> > stateful approach is an unnecessary complication, IMO
->
-> Does this look better to you, the next instruction has to be the
-> second half of the double word right?
->
-> for (int i =3D 0; i < prog->insns_cnt; i++) {
->     purged[i] =3D prog->insns[i];
->     if (purged[i].code =3D=3D (BPF_LD | BPF_IMM | BPF_DW) &&
->         (purged[i].src_reg =3D=3D BPF_PSEUDO_MAP_FD ||
->          purged[i].src_reg =3D=3D BPF_PSEUDO_MAP_VALUE)) {
->         purged[i].imm =3D 0;
->         i++;
->         if (i >=3D prog->insns_cnt ||
->             prog->insns[i].code !=3D 0 ||
->             prog->insns[i].dst_reg !=3D 0 ||
->             prog->insns[i].src_reg !=3D 0 ||
->             prog->insns[i].off !=3D 0) {
->             return -EINVAL;
->         }
+On 7/4/25 10:53 AM, chia-yu.chang@nokia-bell-labs.com wrote:
+> @@ -375,7 +379,8 @@ struct tcp_sock {
+>  	u8	compressed_ack;
+>  	u8	dup_ack_counter:2,
+>  		tlp_retrans:1,	/* TLP is a retransmission */
+> -		unused:5;
+> +		syn_ect_snt:2,	/* AccECN ECT memory, only */
+> +		syn_ect_rcv:2;	/* ... needed durign 3WHS + first seqno */
 
-I mean ofcourse
+Minor nit: typo above: durign -> during
 
-err =3D -EINVAL;
-goto out;
+> +/* Infer the ECT value our SYN arrived with from the echoed ACE field */
+> +static inline int tcp_accecn_extract_syn_ect(u8 ace)
+>  {
+> -	tp->received_ce = 0;
+> -	tp->received_ce_pending = 0;
+> +	/* Below is an excerpt from Tables 2 of the AccECN spec:
+> +	 * +================================+========================+
+> +	 * |        Echoed ACE field        | Received ECT values of |
+> +	 * |      AE      CWR      ECE      |  our SYN arrived with  |
+> +	 * +================================+========================+
+> +	 * |       0         1         0    |         Not-ECT        |
+> +	 * |       0         1         1    |         ECT(1)         |
+> +	 * |       1         0         0    |         ECT(0)         |
+> +	 * |       1         1         0    |           CE           |
+> +	 * +================================+========================+
+> +	 */
+> +	if (ace & 0x1)
+> +		return INET_ECN_ECT_1;
+> +	if (!(ace & 0x2))
+> +		return INET_ECN_ECT_0;
+> +	if (ace & 0x4)
+> +		return INET_ECN_CE;
+> +	return INET_ECN_NOT_ECT;
 
-to free the buffer.
+Nit: implementing the above with a static array lookup would probably
+make the code simpler/more clear
 
-- KP
+> +/* Used to form the ACE flags for SYN/ACK */
+> +static inline u16 tcp_accecn_reflector_flags(u8 ect)
+> +{
+> +	/* TCP ACE flags of SYN/ACK are set based on IP-ECN codepoint received
+> +	 * from SYN. Below is an excerpt from Table 2 of the AccECN spec:
+> +	 * +====================+====================================+
+> +	 * |  IP-ECN codepoint  |  Respective ACE falgs on SYN/ACK   |
+> +	 * |   received on SYN  |       AE       CWR       ECE       |
+> +	 * +====================+====================================+
+> +	 * |      Not-ECT       |       0         1         0        |
+> +	 * |      ECT(1)        |       0         1         1        |
+> +	 * |      ECT(0)        |       1         0         0        |
+> +	 * |        CE          |       1         1         0        |
+> +	 * +====================+====================================+
+> +	 */
+> +	u32 flags = ect + 2;
+> +
+> +	if (ect == 3)
+> +		flags++;
+> +	return FIELD_PREP(TCPHDR_ACE, flags);
 
->         purged[i] =3D prog->insns[i];
->         purged[i].imm =3D 0;
->     }
-> }
->
->
->
-> >
-> > > +       err =3D libbpf_sha256(purged,
-> > > +                           prog->insns_cnt * sizeof(struct bpf_insn)=
-,
-> > > +                           prog->hash);
-> >
-> > fits on a single line?
-> >
-> > > +       free(purged);
-> > > +       return err;
-> > > +}
-> > > +
-> > >  static int bpf_program__record_reloc(struct bpf_program *prog,
-> > >                                      struct reloc_desc *reloc_desc,
-> > >                                      __u32 insn_idx, const char *sym_=
-name,
-> > > @@ -5214,6 +5254,10 @@ static int bpf_object__create_map(struct bpf_o=
-bject *obj, struct bpf_map *map, b
-> > >         create_attr.token_fd =3D obj->token_fd;
-> > >         if (obj->token_fd)
-> > >                 create_attr.map_flags |=3D BPF_F_TOKEN_FD;
-> > > +       if (map->excl_prog_sha) {
-> > > +               create_attr.excl_prog_hash =3D map->excl_prog_sha;
-> > > +               create_attr.excl_prog_hash_size =3D map->excl_prog_sh=
-a_size;
-> > > +       }
-> > >
-> > >         if (bpf_map__is_struct_ops(map)) {
-> > >                 create_attr.btf_vmlinux_value_type_id =3D map->btf_vm=
-linux_value_type_id;
-> > > @@ -7933,6 +7977,11 @@ static int bpf_object_prepare_progs(struct bpf=
-_object *obj)
-> > >                 err =3D bpf_object__sanitize_prog(obj, prog);
-> > >                 if (err)
-> > >                         return err;
-> > > +               /* Now that the instruction buffer is stable finalize=
- the hash
-> > > +                */
-> > > +               err =3D bpf_program__compute_hash(&obj->programs[i]);
-> > > +               if (err)
-> > > +                       return err;
-> >
-> > we'll do this unconditionally for any program?.. why?
-> >
-> > >         }
-> > >         return 0;
-> > >  }
-> > > @@ -8602,8 +8651,8 @@ static int bpf_object_prepare(struct bpf_object=
- *obj, const char *target_btf_pat
-> > >         err =3D err ? : bpf_object_adjust_struct_ops_autoload(obj);
-> > >         err =3D err ? : bpf_object__relocate(obj, obj->btf_custom_pat=
-h ? : target_btf_path);
-> > >         err =3D err ? : bpf_object__sanitize_and_load_btf(obj);
-> > > -       err =3D err ? : bpf_object__create_maps(obj);
-> > >         err =3D err ? : bpf_object_prepare_progs(obj);
-> > > +       err =3D err ? : bpf_object__create_maps(obj);
-> > >
-> > >         if (err) {
-> > >                 bpf_object_unpin(obj);
-> > > @@ -10502,6 +10551,23 @@ int bpf_map__set_inner_map_fd(struct bpf_map=
- *map, int fd)
-> > >         return 0;
-> > >  }
-> > >
-> > > +int bpf_map__make_exclusive(struct bpf_map *map, struct bpf_program =
-*prog)
-> > > +{
-> > > +       if (map_is_created(map)) {
-> > > +               pr_warn("%s must be called before creation\n", __func=
-__);
-> >
-> > we don't really add __func__ for a long while now, please drop, we
-> > have a consistent "map '%s': what the problem is" format
-> >
-> > but for checks like this we also just return -EBUSY or something like
-> > that without error message, so I'd just drop the message altogether
-> >
-> > > +               return libbpf_err(-EINVAL);
-> > > +       }
-> > > +
-> > > +       if (prog->obj->state =3D=3D OBJ_LOADED) {
-> > > +               pr_warn("%s must be called before the prog load\n", _=
-_func__);
-> > > +               return libbpf_err(-EINVAL);
-> > > +       }
-> >
-> > this is unnecessary, map_is_created() takes care of this
-> >
-> > > +       map->excl_prog_sha =3D prog->hash;
-> > > +       map->excl_prog_sha_size =3D SHA256_DIGEST_LENGTH;
-> >
-> > this is a hack, I assume that's why you compute that hash for any
-> > program all the time, right? Well, first, if this is called before
-> > bpf_object_prepare(), it will silently do the wrong thing.
-> >
-> > But also I don't think we should calculate hash proactively, we could
-> > do this lazily.
-> >
-> > > +       return 0;
-> > > +}
-> > > +
-> > > +
-> > >  static struct bpf_map *
-> > >  __bpf_map__iter(const struct bpf_map *m, const struct bpf_object *ob=
-j, int i)
-> > >  {
-> > > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> > > index d39f19c8396d..b6ee9870523a 100644
-> > > --- a/tools/lib/bpf/libbpf.h
-> > > +++ b/tools/lib/bpf/libbpf.h
-> > > @@ -1249,6 +1249,19 @@ LIBBPF_API int bpf_map__lookup_and_delete_elem=
-(const struct bpf_map *map,
-> > >   */
-> > >  LIBBPF_API int bpf_map__get_next_key(const struct bpf_map *map,
-> > >                                      const void *cur_key, void *next_=
-key, size_t key_sz);
-> > > +/**
-> > > + * @brief **bpf_map__make_exclusive()** makes the map exclusive to a=
- single program.
-> >
-> > we should also probably error out if map was already marked as
-> > exclusive to some other program
-> >
-> > > + * @param map BPF map to make exclusive.
-> > > + * @param prog BPF program to be the exclusive user of the map.
-> > > + * @return 0 on success; a negative error code otherwise.
-> > > + *
-> > > + * Once a map is made exclusive, only the specified program can acce=
-ss its
-> > > + * contents. **bpf_map__make_exclusive** must be called before the o=
-bjects are
-> > > + * loaded.
-> > > + */
-> > > +LIBBPF_API int bpf_map__make_exclusive(struct bpf_map *map, struct b=
-pf_program *prog);
-> > > +
-> > > +int bpf_map__make_exclusive(struct bpf_map *map, struct bpf_program =
-*prog);
-> > >
-> > >  struct bpf_xdp_set_link_opts {
-> > >         size_t sz;
-> > > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> > > index 1205f9a4fe04..67b1ff4202a1 100644
-> > > --- a/tools/lib/bpf/libbpf.map
-> > > +++ b/tools/lib/bpf/libbpf.map
-> > > @@ -444,3 +444,8 @@ LIBBPF_1.6.0 {
-> > >                 btf__add_decl_attr;
-> > >                 btf__add_type_attr;
-> > >  } LIBBPF_1.5.0;
-> > > +
-> > > +LIBBPF_1.7.0 {
-> > > +       global:
-> > > +               bpf_map__make_exclusive;
-> > > +} LIBBPF_1.6.0;
-> >
-> > we are still in v1.6 dev phase, no need to add 1.7 just yet
-> >
-> >
-> > > diff --git a/tools/lib/bpf/libbpf_version.h b/tools/lib/bpf/libbpf_ve=
-rsion.h
-> > > index 28c58fb17250..99331e317dee 100644
-> > > --- a/tools/lib/bpf/libbpf_version.h
-> > > +++ b/tools/lib/bpf/libbpf_version.h
-> > > @@ -4,6 +4,6 @@
-> > >  #define __LIBBPF_VERSION_H
-> > >
-> > >  #define LIBBPF_MAJOR_VERSION 1
-> > > -#define LIBBPF_MINOR_VERSION 6
-> > > +#define LIBBPF_MINOR_VERSION 7
-> > >
-> > >  #endif /* __LIBBPF_VERSION_H */
-> > > --
-> > > 2.43.0
-> > >
+Same here.
+
+> +}
+>  
+> -	wire_ace = tp->received_ce + TCP_ACCECN_CEP_INIT_OFFSET;
+> -	th->ece = !!(wire_ace & 0x1);
+> -	th->cwr = !!(wire_ace & 0x2);
+> -	th->ae = !!(wire_ace & 0x4);
+> +/* AccECN specificaiton, 3.1.2: If a TCP server that implements AccECN
+
+Minor nit: typo above: specificaiton -> specification
+
+Otherwise LGTM,
+
+Acked-by: Paolo Abeni <pabeni@redhat.com>
+
 
