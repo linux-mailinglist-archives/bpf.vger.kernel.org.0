@@ -1,520 +1,344 @@
-Return-Path: <bpf+bounces-63142-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63143-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B919B03588
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 07:22:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 898FDB037DC
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 09:25:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1530D189A374
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 05:22:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2C06189D125
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 07:25:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B77D1200132;
-	Mon, 14 Jul 2025 05:21:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6520238C19;
+	Mon, 14 Jul 2025 07:23:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UT2Jcuz1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ibCNhVJE"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3348634CF9;
-	Mon, 14 Jul 2025 05:21:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2678D22F767;
+	Mon, 14 Jul 2025 07:23:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752470507; cv=none; b=O/bVbLVzhurpSMRlQ56utiUBN7RpjLNw2IOdxv5wLjBFulI7UOOoJbTI9b6yAS8idHtTSNWgDpFwrV6csNt1W+dh7YicO0ufRawKz1l8bLXb/LEVxfDDMWcHKIh2PMoP6Xhx1iZZA5EB4Cn3UkOkj/y6mPnnneB77JAZMmeG0/Y=
+	t=1752477824; cv=none; b=QQAj/lSbO77qBb85an2lQLeqflM3CZGwokQWTkIyrUj07WR33iP77eCGETgoS9nOsIFbV2Z33+bApR27JoIqQu/IJK1BOrvYxv/uk26NbP8UvXJn5wD+3RH6sWezYi0yIK6GQnt8TYOdS0FfDccX1/gPA/yzQDHLFfc9p2YOiAE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752470507; c=relaxed/simple;
-	bh=fVHBPffVj8sheN7NxN5JXpdL+eXHxL378B9ax0IYDkQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oUG4VJ/ul2yW5Jh4ywb/akdAOYkz2GcWkANYrB64LqyT1uRVhSO0GmBs3jpNLLBsjCSVHkhS0kFv77Wzrq7zSjhzVr5SIcr2rmvG4m4+/uT5S3spMgXCu+Fc22UmoKMfFc2ws2prx/FA3xa5L9ZcmN03siuMhB6OIEA/9JFqicc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UT2Jcuz1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36F51C4CEED;
-	Mon, 14 Jul 2025 05:21:46 +0000 (UTC)
+	s=arc-20240116; t=1752477824; c=relaxed/simple;
+	bh=IYR1PWD+TFjz+HdMhUoBPAdd7rh92NNnRH3cV7LbYSM=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=GmVxjidfXM32f/YduR9dAdS7Ccao2nD8WZ0xSBim9p2Sg6RUpKTTwCxmI+O8a7Dg2vZdsLls5KCqA9ozYDp8J7RHmPGdkSy2/pl2gtet9uPnDpWBc0BT2837ft6QwWyBppEobqUGjzg0MsJ2LKNPYCOyT56o6XJw9IKGsqBIWHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ibCNhVJE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89F9AC4CEED;
+	Mon, 14 Jul 2025 07:23:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752470506;
-	bh=fVHBPffVj8sheN7NxN5JXpdL+eXHxL378B9ax0IYDkQ=;
-	h=From:To:Cc:Subject:Date:From;
-	b=UT2Jcuz18zqcz8yOnmJvmNrACwLfWfNSaof1WE1fpUcPD7i965OJLfDQFn/Hg6k8/
-	 /zBN4cwzP1Mzub+YP9Wu5nTGGdtf84Hbss8iY+hHBtbSLp72EtZom8tBW5UADxDDS/
-	 3RdWYkY/E3nHghFa33gexh5z2u71e0PXdNVPEWMZ+VfQI1YvxDvcCxlupfAtkhhJ++
-	 rXE9A719Ld4CllKtwAr8P7lY3akYY1PeZ7iB6lHpJxtlBl27SwxqLnzOGhlj7IQ5Fs
-	 M136XtIUzh2+CL0jVqDC9wd++zfZXVtyQzCkxAC2rO4zcmcW6pvlGWJZ7vN1Bf2d57
-	 X6eRRPuigrP6Q==
-From: Namhyung Kim <namhyung@kernel.org>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Kan Liang <kan.liang@linux.intel.com>
-Cc: Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Song Liu <song@kernel.org>,
-	bpf@vger.kernel.org
-Subject: [PATCH v2] perf ftrace latency: Add -e option to measure time between two events
-Date: Sun, 13 Jul 2025 22:21:43 -0700
-Message-ID: <20250714052143.342851-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.50.0.727.gbf7dc18ff4-goog
+	s=k20201202; t=1752477822;
+	bh=IYR1PWD+TFjz+HdMhUoBPAdd7rh92NNnRH3cV7LbYSM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=ibCNhVJEzhMI0W7M9WIBfCK4fCRK4YjqB0JwcbDjDwKLBpZ7KWOvWHY0ybyYGn8Yy
+	 fk6S3o2I5o3t5DZ7cw8F8PLFIz1xLi9rYMhHclQs/RNWVQZV1l+b3WuTuf5m4c9T4s
+	 xenT7ltaDDJ5lgNPZoMsjr9Sjt8/9pM1M080iRYl16V4/JOyQJ2e9V+vHz0l6IRHfh
+	 UTo7yZkMQnJsq8gYRSFzjIHMEBuubOkhLz4pUwxgRMZkGtM+PjaN3zqI3RvfdsI/5r
+	 D9tzfYMdY8agkdRRUNRdck3DFq/06fH6zsAqiZzLehA0xJmvro5l1egGvYCGWHUbnR
+	 2esd0UNwXzrfw==
+Date: Mon, 14 Jul 2025 16:23:38 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ x86@kernel.org, Song Liu <songliubraving@fb.com>, Yonghong Song
+ <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, Hao Luo
+ <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, David Laight
+ <David.Laight@ACULAB.COM>, Thomas =?UTF-8?B?V2Vpw59zY2h1aA==?=
+ <thomas@t-8ch.de>, Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCHv5 perf/core 08/22] uprobes/x86: Add mapping for
+ optimized uprobe trampolines
+Message-Id: <20250714162338.0c9e13b530c835f3010b3ff0@kernel.org>
+In-Reply-To: <20250711082931.3398027-9-jolsa@kernel.org>
+References: <20250711082931.3398027-1-jolsa@kernel.org>
+	<20250711082931.3398027-9-jolsa@kernel.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-In addition to the function latency, it can measure events latencies.
-Some kernel tracepoints are paired and it's menningful to measure how
-long it takes between the two events.  The latency is tracked for the
-same thread.
+On Fri, 11 Jul 2025 10:29:16 +0200
+Jiri Olsa <jolsa@kernel.org> wrote:
 
-Currently it only uses BPF to do the work but it can be lifted later.
-Instead of having separate a BPF program for each tracepoint, it only
-uses generic 'event_begin' and 'event_end' programs to attach to any
-(raw) tracepoints.
+> Adding support to add special mapping for user space trampoline with
+> following functions:
+> 
+>   uprobe_trampoline_get - find or add uprobe_trampoline
+>   uprobe_trampoline_put - remove or destroy uprobe_trampoline
+> 
+> The user space trampoline is exported as arch specific user space special
+> mapping through tramp_mapping, which is initialized in following changes
+> with new uprobe syscall.
+> 
+> The uprobe trampoline needs to be callable/reachable from the probed address,
+> so while searching for available address we use is_reachable_by_call function
+> to decide if the uprobe trampoline is callable from the probe address.
+> 
+> All uprobe_trampoline objects are stored in uprobes_state object and are
+> cleaned up when the process mm_struct goes down. Adding new arch hooks
+> for that, because this change is x86_64 specific.
+> 
+> Locking is provided by callers in following changes.
+> 
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 
-  $ sudo perf ftrace latency -a -b --hide-empty \
-    -e i915_request_wait_begin,i915_request_wait_end -- sleep 1
-  #   DURATION     |      COUNT | GRAPH                                |
-     256 -  512 us |          4 | ######                               |
-       2 -    4 ms |          2 | ###                                  |
-       4 -    8 ms |         12 | ###################                  |
-       8 -   16 ms |         10 | ################                     |
+Looks good to me.
 
-  # statistics  (in usec)
-    total time:               194915
-      avg time:                 6961
-      max time:                12855
-      min time:                  373
-         count:                   28
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
-v2) check the nunber of events properly  (Ian)
 
- tools/perf/Documentation/perf-ftrace.txt    |   6 +
- tools/perf/builtin-ftrace.c                 |  50 ++++++-
- tools/perf/util/bpf_ftrace.c                |  75 +++++++---
- tools/perf/util/bpf_skel/func_latency.bpf.c | 148 +++++++++++++-------
- tools/perf/util/ftrace.h                    |   1 +
- 5 files changed, 205 insertions(+), 75 deletions(-)
+Thank you!
 
-diff --git a/tools/perf/Documentation/perf-ftrace.txt b/tools/perf/Documentation/perf-ftrace.txt
-index b77f58c4d2fdcff9..914457853bcf53ac 100644
---- a/tools/perf/Documentation/perf-ftrace.txt
-+++ b/tools/perf/Documentation/perf-ftrace.txt
-@@ -139,6 +139,12 @@ OPTIONS for 'perf ftrace latency'
- 	Set the function name to get the histogram.  Unlike perf ftrace trace,
- 	it only allows single function to calculate the histogram.
- 
-+-e::
-+--events=::
-+	Set the pair of events to get the histogram.  The histogram is calculated
-+	by the time difference between the two events from the same thread.  This
-+	requires -b/--use-bpf option.
-+
- -b::
- --use-bpf::
- 	Use BPF to measure function latency instead of using the ftrace (it
-diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
-index 3a253a1b9f4526b9..e1f2f3fb1b0850a3 100644
---- a/tools/perf/builtin-ftrace.c
-+++ b/tools/perf/builtin-ftrace.c
-@@ -1549,6 +1549,33 @@ static void delete_filter_func(struct list_head *head)
- 	}
- }
- 
-+static int parse_filter_event(const struct option *opt, const char *str,
-+			     int unset __maybe_unused)
-+{
-+	struct list_head *head = opt->value;
-+	struct filter_entry *entry;
-+	char *s, *p;
-+	int ret = -ENOMEM;
-+
-+	s = strdup(str);
-+	if (s == NULL)
-+		return -ENOMEM;
-+
-+	while ((p = strsep(&s, ",")) != NULL) {
-+		entry = malloc(sizeof(*entry) + strlen(p) + 1);
-+		if (entry == NULL)
-+			goto out;
-+
-+		strcpy(entry->name, p);
-+		list_add_tail(&entry->list, head);
-+	}
-+	ret = 0;
-+
-+out:
-+	free(s);
-+	return ret;
-+}
-+
- static int parse_buffer_size(const struct option *opt,
- 			     const char *str, int unset)
- {
-@@ -1711,6 +1738,8 @@ int cmd_ftrace(int argc, const char **argv)
- 	const struct option latency_options[] = {
- 	OPT_CALLBACK('T', "trace-funcs", &ftrace.filters, "func",
- 		     "Show latency of given function", parse_filter_func),
-+	OPT_CALLBACK('e', "events", &ftrace.event_pair, "event1,event2",
-+		     "Show latency between the two events", parse_filter_event),
- #ifdef HAVE_BPF_SKEL
- 	OPT_BOOLEAN('b', "use-bpf", &ftrace.target.use_bpf,
- 		    "Use BPF to measure function latency"),
-@@ -1763,6 +1792,7 @@ int cmd_ftrace(int argc, const char **argv)
- 	INIT_LIST_HEAD(&ftrace.notrace);
- 	INIT_LIST_HEAD(&ftrace.graph_funcs);
- 	INIT_LIST_HEAD(&ftrace.nograph_funcs);
-+	INIT_LIST_HEAD(&ftrace.event_pair);
- 
- 	signal(SIGINT, sig_handler);
- 	signal(SIGUSR1, sig_handler);
-@@ -1817,9 +1847,24 @@ int cmd_ftrace(int argc, const char **argv)
- 		cmd_func = __cmd_ftrace;
- 		break;
- 	case PERF_FTRACE_LATENCY:
--		if (list_empty(&ftrace.filters)) {
--			pr_err("Should provide a function to measure\n");
-+		if (list_empty(&ftrace.filters) && list_empty(&ftrace.event_pair)) {
-+			pr_err("Should provide a function or events to measure\n");
- 			parse_options_usage(ftrace_usage, options, "T", 1);
-+			parse_options_usage(NULL, options, "e", 1);
-+			ret = -EINVAL;
-+			goto out_delete_filters;
-+		}
-+		if (!list_empty(&ftrace.filters) && !list_empty(&ftrace.event_pair)) {
-+			pr_err("Please specify either of function or events\n");
-+			parse_options_usage(ftrace_usage, options, "T", 1);
-+			parse_options_usage(NULL, options, "e", 1);
-+			ret = -EINVAL;
-+			goto out_delete_filters;
-+		}
-+		if (!list_empty(&ftrace.event_pair) && !ftrace.target.use_bpf) {
-+			pr_err("Event processing needs BPF\n");
-+			parse_options_usage(ftrace_usage, options, "b", 1);
-+			parse_options_usage(NULL, options, "e", 1);
- 			ret = -EINVAL;
- 			goto out_delete_filters;
- 		}
-@@ -1910,6 +1955,7 @@ int cmd_ftrace(int argc, const char **argv)
- 	delete_filter_func(&ftrace.notrace);
- 	delete_filter_func(&ftrace.graph_funcs);
- 	delete_filter_func(&ftrace.nograph_funcs);
-+	delete_filter_func(&ftrace.event_pair);
- 
- 	return ret;
- }
-diff --git a/tools/perf/util/bpf_ftrace.c b/tools/perf/util/bpf_ftrace.c
-index 7324668cc83e747e..0cb02412043c9196 100644
---- a/tools/perf/util/bpf_ftrace.c
-+++ b/tools/perf/util/bpf_ftrace.c
-@@ -21,15 +21,26 @@ int perf_ftrace__latency_prepare_bpf(struct perf_ftrace *ftrace)
- {
- 	int fd, err;
- 	int i, ncpus = 1, ntasks = 1;
--	struct filter_entry *func;
-+	struct filter_entry *func = NULL;
- 
--	if (!list_is_singular(&ftrace->filters)) {
--		pr_err("ERROR: %s target function(s).\n",
--		       list_empty(&ftrace->filters) ? "No" : "Too many");
--		return -1;
--	}
-+	if (!list_empty(&ftrace->filters)) {
-+		if (!list_is_singular(&ftrace->filters)) {
-+			pr_err("ERROR: Too many target functions.\n");
-+			return -1;
-+		}
-+		func = list_first_entry(&ftrace->filters, struct filter_entry, list);
-+	} else {
-+		int count = 0;
-+		struct list_head *pos;
- 
--	func = list_first_entry(&ftrace->filters, struct filter_entry, list);
-+		list_for_each(pos, &ftrace->event_pair)
-+			count++;
-+
-+		if (count != 2) {
-+			pr_err("ERROR: Needs two target events.\n");
-+			return -1;
-+		}
-+	}
- 
- 	skel = func_latency_bpf__open();
- 	if (!skel) {
-@@ -93,20 +104,44 @@ int perf_ftrace__latency_prepare_bpf(struct perf_ftrace *ftrace)
- 
- 	skel->bss->min = INT64_MAX;
- 
--	skel->links.func_begin = bpf_program__attach_kprobe(skel->progs.func_begin,
--							    false, func->name);
--	if (IS_ERR(skel->links.func_begin)) {
--		pr_err("Failed to attach fentry program\n");
--		err = PTR_ERR(skel->links.func_begin);
--		goto out;
--	}
-+	if (func) {
-+		skel->links.func_begin = bpf_program__attach_kprobe(skel->progs.func_begin,
-+								    false, func->name);
-+		if (IS_ERR(skel->links.func_begin)) {
-+			pr_err("Failed to attach fentry program\n");
-+			err = PTR_ERR(skel->links.func_begin);
-+			goto out;
-+		}
- 
--	skel->links.func_end = bpf_program__attach_kprobe(skel->progs.func_end,
--							  true, func->name);
--	if (IS_ERR(skel->links.func_end)) {
--		pr_err("Failed to attach fexit program\n");
--		err = PTR_ERR(skel->links.func_end);
--		goto out;
-+		skel->links.func_end = bpf_program__attach_kprobe(skel->progs.func_end,
-+								  true, func->name);
-+		if (IS_ERR(skel->links.func_end)) {
-+			pr_err("Failed to attach fexit program\n");
-+			err = PTR_ERR(skel->links.func_end);
-+			goto out;
-+		}
-+	} else {
-+		struct filter_entry *event;
-+
-+		event = list_first_entry(&ftrace->event_pair, struct filter_entry, list);
-+
-+		skel->links.event_begin = bpf_program__attach_raw_tracepoint(skel->progs.event_begin,
-+									     event->name);
-+		if (IS_ERR(skel->links.event_begin)) {
-+			pr_err("Failed to attach first tracepoint program\n");
-+			err = PTR_ERR(skel->links.event_begin);
-+			goto out;
-+		}
-+
-+		event = list_next_entry(event, list);
-+
-+		skel->links.event_end = bpf_program__attach_raw_tracepoint(skel->progs.event_end,
-+									     event->name);
-+		if (IS_ERR(skel->links.event_end)) {
-+			pr_err("Failed to attach second tracepoint program\n");
-+			err = PTR_ERR(skel->links.event_end);
-+			goto out;
-+		}
- 	}
- 
- 	/* XXX: we don't actually use this fd - just for poll() */
-diff --git a/tools/perf/util/bpf_skel/func_latency.bpf.c b/tools/perf/util/bpf_skel/func_latency.bpf.c
-index e731a79a753a4d2d..621e2022c8bc9648 100644
---- a/tools/perf/util/bpf_skel/func_latency.bpf.c
-+++ b/tools/perf/util/bpf_skel/func_latency.bpf.c
-@@ -52,34 +52,89 @@ const volatile unsigned int min_latency;
- const volatile unsigned int max_latency;
- const volatile unsigned int bucket_num = NUM_BUCKET;
- 
--SEC("kprobe/func")
--int BPF_PROG(func_begin)
-+static bool can_record(void)
- {
--	__u64 key, now;
--
--	if (!enabled)
--		return 0;
--
--	key = bpf_get_current_pid_tgid();
--
- 	if (has_cpu) {
- 		__u32 cpu = bpf_get_smp_processor_id();
- 		__u8 *ok;
- 
- 		ok = bpf_map_lookup_elem(&cpu_filter, &cpu);
- 		if (!ok)
--			return 0;
-+			return false;
- 	}
- 
- 	if (has_task) {
--		__u32 pid = key & 0xffffffff;
-+		__u32 pid = bpf_get_current_pid_tgid();
- 		__u8 *ok;
- 
- 		ok = bpf_map_lookup_elem(&task_filter, &pid);
- 		if (!ok)
--			return 0;
-+			return false;
- 	}
-+	return true;
-+}
-+
-+static void update_latency(__s64 delta)
-+{
-+	__u64 val = delta;
-+	__u32 key = 0;
-+	__u64 *hist;
-+	__u64 cmp_base = use_nsec ? 1 : 1000;
-+
-+	if (delta < 0)
-+		return;
- 
-+	if (bucket_range != 0) {
-+		val = delta / cmp_base;
-+
-+		if (min_latency > 0) {
-+			if (val > min_latency)
-+				val -= min_latency;
-+			else
-+				goto do_lookup;
-+		}
-+
-+		// Less than 1 unit (ms or ns), or, in the future,
-+		// than the min latency desired.
-+		if (val > 0) { // 1st entry: [ 1 unit .. bucket_range units )
-+			key = val / bucket_range + 1;
-+			if (key >= bucket_num)
-+				key = bucket_num - 1;
-+		}
-+
-+		goto do_lookup;
-+	}
-+	// calculate index using delta
-+	for (key = 0; key < (bucket_num - 1); key++) {
-+		if (delta < (cmp_base << key))
-+			break;
-+	}
-+
-+do_lookup:
-+	hist = bpf_map_lookup_elem(&latency, &key);
-+	if (!hist)
-+		return;
-+
-+	__sync_fetch_and_add(hist, 1);
-+
-+	__sync_fetch_and_add(&total, delta); // always in nsec
-+	__sync_fetch_and_add(&count, 1);
-+
-+	if (delta > max)
-+		max = delta;
-+	if (delta < min)
-+		min = delta;
-+}
-+
-+SEC("kprobe/func")
-+int BPF_PROG(func_begin)
-+{
-+	__u64 key, now;
-+
-+	if (!enabled || !can_record())
-+		return 0;
-+
-+	key = bpf_get_current_pid_tgid();
- 	now = bpf_ktime_get_ns();
- 
- 	// overwrite timestamp for nested functions
-@@ -92,7 +147,6 @@ int BPF_PROG(func_end)
- {
- 	__u64 tid;
- 	__u64 *start;
--	__u64 cmp_base = use_nsec ? 1 : 1000;
- 
- 	if (!enabled)
- 		return 0;
-@@ -101,56 +155,44 @@ int BPF_PROG(func_end)
- 
- 	start = bpf_map_lookup_elem(&functime, &tid);
- 	if (start) {
--		__s64 delta = bpf_ktime_get_ns() - *start;
--		__u64 val = delta;
--		__u32 key = 0;
--		__u64 *hist;
--
-+		update_latency(bpf_ktime_get_ns() - *start);
- 		bpf_map_delete_elem(&functime, &tid);
-+	}
- 
--		if (delta < 0)
--			return 0;
-+	return 0;
-+}
- 
--		if (bucket_range != 0) {
--			val = delta / cmp_base;
-+SEC("raw_tp")
-+int BPF_PROG(event_begin)
-+{
-+	__u64 key, now;
- 
--			if (min_latency > 0) {
--				if (val > min_latency)
--					val -= min_latency;
--				else
--					goto do_lookup;
--			}
-+	if (!enabled || !can_record())
-+		return 0;
- 
--			// Less than 1 unit (ms or ns), or, in the future,
--			// than the min latency desired.
--			if (val > 0) { // 1st entry: [ 1 unit .. bucket_range units )
--				key = val / bucket_range + 1;
--				if (key >= bucket_num)
--					key = bucket_num - 1;
--			}
-+	key = bpf_get_current_pid_tgid();
-+	now = bpf_ktime_get_ns();
- 
--			goto do_lookup;
--		}
--		// calculate index using delta
--		for (key = 0; key < (bucket_num - 1); key++) {
--			if (delta < (cmp_base << key))
--				break;
--		}
-+	// overwrite timestamp for nested events
-+	bpf_map_update_elem(&functime, &key, &now, BPF_ANY);
-+	return 0;
-+}
- 
--do_lookup:
--		hist = bpf_map_lookup_elem(&latency, &key);
--		if (!hist)
--			return 0;
-+SEC("raw_tp")
-+int BPF_PROG(event_end)
-+{
-+	__u64 tid;
-+	__u64 *start;
- 
--		__sync_fetch_and_add(hist, 1);
-+	if (!enabled)
-+		return 0;
- 
--		__sync_fetch_and_add(&total, delta); // always in nsec
--		__sync_fetch_and_add(&count, 1);
-+	tid = bpf_get_current_pid_tgid();
- 
--		if (delta > max)
--			max = delta;
--		if (delta < min)
--			min = delta;
-+	start = bpf_map_lookup_elem(&functime, &tid);
-+	if (start) {
-+		update_latency(bpf_ktime_get_ns() - *start);
-+		bpf_map_delete_elem(&functime, &tid);
- 	}
- 
- 	return 0;
-diff --git a/tools/perf/util/ftrace.h b/tools/perf/util/ftrace.h
-index a9bc47da83a56cd6..3f5094ac59080310 100644
---- a/tools/perf/util/ftrace.h
-+++ b/tools/perf/util/ftrace.h
-@@ -17,6 +17,7 @@ struct perf_ftrace {
- 	struct list_head	notrace;
- 	struct list_head	graph_funcs;
- 	struct list_head	nograph_funcs;
-+	struct list_head	event_pair;
- 	struct hashmap		*profile_hash;
- 	unsigned long		percpu_buffer_size;
- 	bool			inherit;
+> ---
+>  arch/x86/kernel/uprobes.c | 144 ++++++++++++++++++++++++++++++++++++++
+>  include/linux/uprobes.h   |   6 ++
+>  kernel/events/uprobes.c   |  10 +++
+>  kernel/fork.c             |   1 +
+>  4 files changed, 161 insertions(+)
+> 
+> diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
+> index 77050e5a4680..6c4dcbdd0c3c 100644
+> --- a/arch/x86/kernel/uprobes.c
+> +++ b/arch/x86/kernel/uprobes.c
+> @@ -608,6 +608,150 @@ static void riprel_post_xol(struct arch_uprobe *auprobe, struct pt_regs *regs)
+>  		*sr = utask->autask.saved_scratch_register;
+>  	}
+>  }
+> +
+> +static int tramp_mremap(const struct vm_special_mapping *sm, struct vm_area_struct *new_vma)
+> +{
+> +	return -EPERM;
+> +}
+> +
+> +static struct page *tramp_mapping_pages[2] __ro_after_init;
+> +
+> +static struct vm_special_mapping tramp_mapping = {
+> +	.name   = "[uprobes-trampoline]",
+> +	.mremap = tramp_mremap,
+> +	.pages  = tramp_mapping_pages,
+> +};
+> +
+> +struct uprobe_trampoline {
+> +	struct hlist_node	node;
+> +	unsigned long		vaddr;
+> +};
+> +
+> +static bool is_reachable_by_call(unsigned long vtramp, unsigned long vaddr)
+> +{
+> +	long delta = (long)(vaddr + 5 - vtramp);
+> +
+> +	return delta >= INT_MIN && delta <= INT_MAX;
+> +}
+> +
+> +static unsigned long find_nearest_trampoline(unsigned long vaddr)
+> +{
+> +	struct vm_unmapped_area_info info = {
+> +		.length     = PAGE_SIZE,
+> +		.align_mask = ~PAGE_MASK,
+> +	};
+> +	unsigned long low_limit, high_limit;
+> +	unsigned long low_tramp, high_tramp;
+> +	unsigned long call_end = vaddr + 5;
+> +
+> +	if (check_add_overflow(call_end, INT_MIN, &low_limit))
+> +		low_limit = PAGE_SIZE;
+> +
+> +	high_limit = call_end + INT_MAX;
+> +
+> +	/* Search up from the caller address. */
+> +	info.low_limit = call_end;
+> +	info.high_limit = min(high_limit, TASK_SIZE);
+> +	high_tramp = vm_unmapped_area(&info);
+> +
+> +	/* Search down from the caller address. */
+> +	info.low_limit = max(low_limit, PAGE_SIZE);
+> +	info.high_limit = call_end;
+> +	info.flags = VM_UNMAPPED_AREA_TOPDOWN;
+> +	low_tramp = vm_unmapped_area(&info);
+> +
+> +	if (IS_ERR_VALUE(high_tramp) && IS_ERR_VALUE(low_tramp))
+> +		return -ENOMEM;
+> +	if (IS_ERR_VALUE(high_tramp))
+> +		return low_tramp;
+> +	if (IS_ERR_VALUE(low_tramp))
+> +		return high_tramp;
+> +
+> +	/* Return address that's closest to the caller address. */
+> +	if (call_end - low_tramp < high_tramp - call_end)
+> +		return low_tramp;
+> +	return high_tramp;
+> +}
+> +
+> +static struct uprobe_trampoline *create_uprobe_trampoline(unsigned long vaddr)
+> +{
+> +	struct pt_regs *regs = task_pt_regs(current);
+> +	struct mm_struct *mm = current->mm;
+> +	struct uprobe_trampoline *tramp;
+> +	struct vm_area_struct *vma;
+> +
+> +	if (!user_64bit_mode(regs))
+> +		return NULL;
+> +
+> +	vaddr = find_nearest_trampoline(vaddr);
+> +	if (IS_ERR_VALUE(vaddr))
+> +		return NULL;
+> +
+> +	tramp = kzalloc(sizeof(*tramp), GFP_KERNEL);
+> +	if (unlikely(!tramp))
+> +		return NULL;
+> +
+> +	tramp->vaddr = vaddr;
+> +	vma = _install_special_mapping(mm, tramp->vaddr, PAGE_SIZE,
+> +				VM_READ|VM_EXEC|VM_MAYEXEC|VM_MAYREAD|VM_DONTCOPY|VM_IO,
+> +				&tramp_mapping);
+> +	if (IS_ERR(vma)) {
+> +		kfree(tramp);
+> +		return NULL;
+> +	}
+> +	return tramp;
+> +}
+> +
+> +__maybe_unused
+> +static struct uprobe_trampoline *get_uprobe_trampoline(unsigned long vaddr, bool *new)
+> +{
+> +	struct uprobes_state *state = &current->mm->uprobes_state;
+> +	struct uprobe_trampoline *tramp = NULL;
+> +
+> +	if (vaddr > TASK_SIZE || vaddr < PAGE_SIZE)
+> +		return NULL;
+> +
+> +	hlist_for_each_entry(tramp, &state->head_tramps, node) {
+> +		if (is_reachable_by_call(tramp->vaddr, vaddr)) {
+> +			*new = false;
+> +			return tramp;
+> +		}
+> +	}
+> +
+> +	tramp = create_uprobe_trampoline(vaddr);
+> +	if (!tramp)
+> +		return NULL;
+> +
+> +	*new = true;
+> +	hlist_add_head(&tramp->node, &state->head_tramps);
+> +	return tramp;
+> +}
+> +
+> +static void destroy_uprobe_trampoline(struct uprobe_trampoline *tramp)
+> +{
+> +	/*
+> +	 * We do not unmap and release uprobe trampoline page itself,
+> +	 * because there's no easy way to make sure none of the threads
+> +	 * is still inside the trampoline.
+> +	 */
+> +	hlist_del(&tramp->node);
+> +	kfree(tramp);
+> +}
+> +
+> +void arch_uprobe_init_state(struct mm_struct *mm)
+> +{
+> +	INIT_HLIST_HEAD(&mm->uprobes_state.head_tramps);
+> +}
+> +
+> +void arch_uprobe_clear_state(struct mm_struct *mm)
+> +{
+> +	struct uprobes_state *state = &mm->uprobes_state;
+> +	struct uprobe_trampoline *tramp;
+> +	struct hlist_node *n;
+> +
+> +	hlist_for_each_entry_safe(tramp, n, &state->head_tramps, node)
+> +		destroy_uprobe_trampoline(tramp);
+> +}
+>  #else /* 32-bit: */
+>  /*
+>   * No RIP-relative addressing on 32-bit
+> diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
+> index 5080619560d4..b40d33aae016 100644
+> --- a/include/linux/uprobes.h
+> +++ b/include/linux/uprobes.h
+> @@ -17,6 +17,7 @@
+>  #include <linux/wait.h>
+>  #include <linux/timer.h>
+>  #include <linux/seqlock.h>
+> +#include <linux/mutex.h>
+>  
+>  struct uprobe;
+>  struct vm_area_struct;
+> @@ -185,6 +186,9 @@ struct xol_area;
+>  
+>  struct uprobes_state {
+>  	struct xol_area		*xol_area;
+> +#ifdef CONFIG_X86_64
+> +	struct hlist_head	head_tramps;
+> +#endif
+>  };
+>  
+>  typedef int (*uprobe_write_verify_t)(struct page *page, unsigned long vaddr,
+> @@ -233,6 +237,8 @@ extern void uprobe_handle_trampoline(struct pt_regs *regs);
+>  extern void *arch_uretprobe_trampoline(unsigned long *psize);
+>  extern unsigned long uprobe_get_trampoline_vaddr(void);
+>  extern void uprobe_copy_from_page(struct page *page, unsigned long vaddr, void *dst, int len);
+> +extern void arch_uprobe_clear_state(struct mm_struct *mm);
+> +extern void arch_uprobe_init_state(struct mm_struct *mm);
+>  #else /* !CONFIG_UPROBES */
+>  struct uprobes_state {
+>  };
+> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> index 6795b8d82b9c..acec91a676b7 100644
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -1802,6 +1802,14 @@ static struct xol_area *get_xol_area(void)
+>  	return area;
+>  }
+>  
+> +void __weak arch_uprobe_clear_state(struct mm_struct *mm)
+> +{
+> +}
+> +
+> +void __weak arch_uprobe_init_state(struct mm_struct *mm)
+> +{
+> +}
+> +
+>  /*
+>   * uprobe_clear_state - Free the area allocated for slots.
+>   */
+> @@ -1813,6 +1821,8 @@ void uprobe_clear_state(struct mm_struct *mm)
+>  	delayed_uprobe_remove(NULL, mm);
+>  	mutex_unlock(&delayed_uprobe_lock);
+>  
+> +	arch_uprobe_clear_state(mm);
+> +
+>  	if (!area)
+>  		return;
+>  
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index bd8c21d64746..70f2d4e2e8fe 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -1009,6 +1009,7 @@ static void mm_init_uprobes_state(struct mm_struct *mm)
+>  {
+>  #ifdef CONFIG_UPROBES
+>  	mm->uprobes_state.xol_area = NULL;
+> +	arch_uprobe_init_state(mm);
+>  #endif
+>  }
+>  
+> -- 
+> 2.50.0
+> 
+
+
 -- 
-2.50.0.727.gbf7dc18ff4-goog
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
