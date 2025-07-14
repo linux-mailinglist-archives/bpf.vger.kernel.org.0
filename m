@@ -1,551 +1,184 @@
-Return-Path: <bpf+bounces-63158-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63159-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26B58B03B88
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 11:58:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09951B03B99
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 12:06:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3A37178401
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 09:58:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 274B81894C09
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 10:06:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D460246BDE;
-	Mon, 14 Jul 2025 09:57:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFBEF244660;
+	Mon, 14 Jul 2025 10:06:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAA38245014;
-	Mon, 14 Jul 2025 09:57:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2DA780B;
+	Mon, 14 Jul 2025 10:05:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752487045; cv=none; b=LgWuBT9QqSFuOvhBKJn8pKWkT9ILcPHZ4stvIigHivhzrAZUj6zeTWVSk4HFloVId7AUTMuLnudUHkYh3uP9NW+uoi2WZ/vppbkwTk1yngBACYwR5Om/gCPc+oUc8XrgKAIF+vEhEf+XUW1McC6Y4xZ8xwq8UFhvte+dHKQSJnA=
+	t=1752487565; cv=none; b=P1g7xtNFh8vlqu8sfxBzpcb3oesqbGZM7KVYVSSRKRPK9JPEmFnFYU1KEVUmwCFZuyZQA7khWIaWCMVeUVveUdOrkxBaejy4++dFqclIMm+/1opYWd3UVdTwXbjA+Mn690xNXwQ7R0uTw1OwuKI09DgDwjSiykd0CKN7UW/11jE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752487045; c=relaxed/simple;
-	bh=4PUUFQopNWdbDgg0u3YlG82u/hz7li2G4FaDvZ6YhcQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Gp3f3e73CpbcaJ78SpvKWXpwZ/l42My61KC7d3a2dQvm68Bn31fna8o6ObXlVK3eSssexkWqKhvyX+s5Mnp1neIte79q3RqdVrIZT17JmDjq2v46rynWhEyZ0AjMUW3qzVBCkDp4aD/5lLmHu9bhQLqFu5GPeYrOKvAccaXdK+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-60bfcada295so6381020a12.1;
-        Mon, 14 Jul 2025 02:57:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752487041; x=1753091841;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Iif/tPC1a66vRUitvjQII1Cjmas2fT1VMy6tpXIQwTo=;
-        b=l4I1q82ckqIp9Uw0c5rujp4Nd/zYdcgAybU7cqfAXiHmoGpAdlOVXyGCWHC0c9qsKG
-         7OSmulxX1YOEQEZFjRJQPkCU4Q7+ez/Qc3f4GI3RAYR8UB8ycbdE/8ddjdByheMbabIG
-         +AKul1Allboueuc6WEPRLfEXlDIVdERHW68HgliVIsYV7MzAFJQgMaPbBGE9QuwEtDjd
-         CAfnBmLQtn+zlGkwX59rkT5qrg+PhYLvLFEv9GL7NH6NlZ3J5z7a9MfS01UR+Y/TB43+
-         vecVDeV/cA7bRNZBGkG0j8RYjWZPRbUS7V+XbUulQN1HGUH0/WvB34r6v86+pZJDUUro
-         w4Mw==
-X-Forwarded-Encrypted: i=1; AJvYcCXH7Ou3e3QOwkXKmZEjctR2mLWYoH490D19SnhseZR1bnb6dJawfF6PasbJLIh1UKTVIIfAbLJYjhqG9MPCdFNp@vger.kernel.org, AJvYcCXgADIDh1zBnZ9XbL6XDdwm0gueNKwld0qU5DzQvSRxjT11dhIuAfJgG5uiUdj9w8UHeCA=@vger.kernel.org, AJvYcCXrpJP8D3rgX3eP5vU4HWH2cOZ0GwPyN/RGJVti17DGPiwKoDfOckEc6nv4XudZaQSDW9gBwTwx@vger.kernel.org
-X-Gm-Message-State: AOJu0YwCQj/7HLSglrjoB+olcWsrA1o9baOy+RaIxHFggRLhCqVrJpT4
-	MAUnGH755Ube89AmLaBrm1y3ZWm7L8YK7jg7e1Wuz0vv0FTYbO4eZDNM8ls3uw==
-X-Gm-Gg: ASbGncv1/3PdDuC3lBYRfqO75fykNVFZo/SMmafPfOacy9voBXp1F0m/TKg0bvKq12O
-	XAxWiHnmb2m/HO+Cg07iALrja4oAUDyHMCd0XUvG0PIYGv/BOTCkLOOHUbJBfw2jgM50cLgqr4I
-	XpoSlG9mtPAyjYreD1ktClJnzpmJXXkeC7cDnHtf/8jX1LS01RKL2T/YTGXvHvxCXdJrxWHw0O9
-	CMvod2SArcGYh8kQKFzW9Y3Adj/+W9hTheA+DVKg3gbGQc1hLopLD9BVUcqw37wFW8b9L49LBPu
-	xeJKb4N7gfntfzA3bjVxWs3x9/oDiuGY2zT8NsxPRm9TNTUoALlJ31RaYbXGJbgj6eHiCKD/J2I
-	ZjwhlgyhLTpLS
-X-Google-Smtp-Source: AGHT+IHZr5zKTLSiWv3i4+7EBokAtcoOSjrhtZ2CWmjBbZcBCbH1Pp1i1PVzl/O/1AtTkQ3iifzISQ==
-X-Received: by 2002:a17:907:1c26:b0:ae6:e0b1:9633 with SMTP id a640c23a62f3a-ae6fcbc2afcmr1208967066b.33.1752487040562;
-        Mon, 14 Jul 2025 02:57:20 -0700 (PDT)
-Received: from localhost ([2a03:2880:30ff:4::])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae6e82645f2sm783781966b.89.2025.07.14.02.57.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jul 2025 02:57:20 -0700 (PDT)
-From: Breno Leitao <leitao@debian.org>
-Date: Mon, 14 Jul 2025 02:56:50 -0700
-Subject: [PATCH net-next v7 3/3] selftests: net: add netpoll basic
- functionality test
+	s=arc-20240116; t=1752487565; c=relaxed/simple;
+	bh=wW+uBxRxSh7drtS3oHUktaTkC7UxagpwSUmVuFGOxTA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YZ1PgIX+ovqhx2uOhzJI9lMfAMe1D8BF+F6hlKzqqaT1zlI/+MY6S8sS3mBOKmRAmoe6o1b0QVZXKI9Z2J6hd42cBeUmsG24SPM5epNCIwlcYTaatmmRez3wB3b5Mxhj965gC02pG2WCXOSkClNrSCJ/qqZRqXSw/6sG182XHzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-669ff7000002311f-07-6874d685ba14
+Date: Mon, 14 Jul 2025 19:05:51 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: willy@infradead.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	kernel_team@skhynix.com, kuba@kernel.org, almasrymina@google.com,
+	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
+	akpm@linux-foundation.org, davem@davemloft.net,
+	john.fastabend@gmail.com, andrew+netdev@lunn.ch, toke@redhat.com,
+	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com,
+	saeedm@nvidia.com, leon@kernel.org, ast@kernel.org,
+	daniel@iogearbox.net, david@redhat.com, lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
+	surenb@google.com, mhocko@suse.com, horms@kernel.org,
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+	vishal.moola@gmail.com, hannes@cmpxchg.org, ziy@nvidia.com,
+	jackmanb@google.com
+Subject: Re: [PATCH net-next v9 2/8] netmem: introduce utility APIs to use
+ struct netmem_desc
+Message-ID: <20250714100551.GA44803@system.software.com>
+References: <20250710082807.27402-1-byungchul@sk.com>
+ <20250710082807.27402-3-byungchul@sk.com>
+ <4a8b0a45-b829-462c-a655-af0bda10a246@gmail.com>
+ <20250713230752.GA7758@system.software.com>
+ <5ee839d6-2734-41c5-b34c-8d686c910bc8@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250714-netpoll_test-v7-3-c0220cfaa63e@debian.org>
-References: <20250714-netpoll_test-v7-0-c0220cfaa63e@debian.org>
-In-Reply-To: <20250714-netpoll_test-v7-0-c0220cfaa63e@debian.org>
-To: Andrew Lunn <andrew+netdev@lunn.ch>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Shuah Khan <shuah@kernel.org>, Simon Horman <horms@kernel.org>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, bpf@vger.kernel.org, 
- kernel-team@meta.com, Breno Leitao <leitao@debian.org>, 
- Willem de Bruijn <willemb@google.com>
-X-Mailer: b4 0.15-dev-dd21f
-X-Developer-Signature: v=1; a=openpgp-sha256; l=15746; i=leitao@debian.org;
- h=from:subject:message-id; bh=4PUUFQopNWdbDgg0u3YlG82u/hz7li2G4FaDvZ6YhcQ=;
- b=owEBbQKS/ZANAwAIATWjk5/8eHdtAcsmYgBodNR6xU6Xjp9WkrQsyehYyS/dIKJ879xpLJQbA
- 7lEWetWbcuJAjMEAAEIAB0WIQSshTmm6PRnAspKQ5s1o5Of/Hh3bQUCaHTUegAKCRA1o5Of/Hh3
- bT94D/49bWePQ+FL9co/oZTEg8BlN7hGFhOzi63ipZOGNVKN3T8biLgT7yR+z8bm++DOoAsOde7
- DO5SqMdLxbdAR25Uzp3fV95zTDGLQmcC0SG8ruUk4DdzTohUtfqNvOQdIYYRKVOeICji3glsg9+
- nbrnNSuHMEEPFe+hO6dgX6DjaNWnvwSiggTm1K01ZFscuziVvnzu+PRydWJYMIAAziB2lyFtqzX
- SqN4YbNjjVRwY4oscIYiLmkc5Im7lKUtQDYb3yuJFghR4JX3wqQAoDRm6I3Alr/dNFGEaDP05mR
- y74hoREUOnULIr757SRm/LDGq8wmkpF1Z+/PJ1seIZzKOChEDWX4vTAgUwnRocBMptXNv5y9iGp
- n8jart3ysi2acvgRCVYrzOQpC13FmSXk0Z5EWGQt201tXHzPBG3DiubS2xxsYDkRStHnFRQlkiO
- Cvp2zn2YjYSdpbCO+cO/uD7echyFEdhdEk02tyh8koTe4FLn4WovlRfHC2syQZby9QDnvaAnCu4
- HbhSD6yZ2y5JBD+M/els/rF3MKplEj48/9tbStYsIY0XwMZElqt6AHKooRVA9KPm8gcypuNYmJu
- pv50m8N+SL32i7ZcLg4NQfXBkcFcwLTHx3PNWl29AogSo9gARwSKBX46Uy/1lbASQfBAmuxgiII
- JClf/ivnXjqf33A==
-X-Developer-Key: i=leitao@debian.org; a=openpgp;
- fpr=AC8539A6E8F46702CA4A439B35A3939FFC78776D
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5ee839d6-2734-41c5-b34c-8d686c910bc8@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRjHeXfOzjkOF8d5e0soWImkZBZWD1ER1YcD0QWCKPtgo53caF7Y
+	1FykaFmZqWWL0mWxLpo6cbLETV1mc06li2Zo66ZmallmpaWZpTlF6tuP5/88P/4fHoaQ6IWL
+	GGVMPK+OkamklIgUffa8seJUZ7wirGXEGwpMZRQYfybBnR6rEApKqxB8n3hFw6ijiYJbN8YI
+	KGhNJ+GH6RcB/c5eGozmHdBdNECC7YyFgN7zzRRkp08ScG9imIYT1mIBtFXlCOHSr0ICLKk9
+	NDyrKaCgq2xaCAP2bBJa9CUkdOdsBqfBD8YeDiFwmCwCGMu6RoGu3UDBu/RuBO0NvSRcTctB
+	YKpzCWHy54zjamMXvXkZ1zD0heAqS14IuGr9G5ozmBO4u8XBXKarneDMpWcpzjxykeZed9oo
+	rjlvkuSqraMCLvvkMMV9639Jcl/qOijOVNlBco8MDnq3V4Rog5xXKRN59cpNB0WK5vcWMq5i
+	SVKLy0KlonH/TOTBYDYcm5xO4Txfv185yyQbiAfbvpFuptgg7HJNEG72YUPwp+d2OhOJGILN
+	o3D52yLKHXizkfjrlSqBm8UsYON3C+lekrA/EHbUfyDmAi/ckt83ayXYYOyaGpw5YGY4AN+Z
+	YtxjD3Yj7rtcMVvCl12K66uaBHPlbAzOGtLO8UL8oNhFXkCs/j+r/j+r/p/VgIhSJFHGJEbL
+	lKrwUIU2RpkUeig22oxmPqYo+fcBKxpp22NHLIOknmJXpUYhEcoSNdpoO8IMIfURf3yjVkjE
+	cpn2GK+OjVQnqHiNHQUwpNRfvHrsqFzCRsni+SM8H8er51MB47EoFRkzAmsLi1M22GrKI54W
+	PUHVgzudOr/9awwhy3XbkroOx29v3OLndV4+bsnND5IfG96ybt/jgHUZ28LO/VkzXq+Li2ww
+	eS4OSovKXVvf2Zd4pqe5r6w2q+n285SwBcb12qzpPx3SC62OQl9/61bbh9MhN/fW5iZvykg9
+	Xv7KtlinCt4lJTUK2apgQq2R/QX/hLe1LQMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRjHec95d85xNDouy5Mm0UICoysJD90Q/NAxukGJGJQtPbjltU3H
+	DALTQTTT7repZYjzSltrbVpqsnmZ+GGlVDMzzSytRK28ZlmbEfXtx/N/fn+eDw9DSn/iIEaZ
+	miGoUuXJMkqMxfu25a7TvchQbHSWbYUiUw0F1TNaKO+vFUFRlQ3BxGwPDd+a2ygovTtFQpFb
+	h2HS9J2E960DNFRb9kKf8QOG+rN2EgYuuCjI182R0DA7SkNObQUBzuJ2ETy1FYjg6vcyEuzZ
+	/TR0PSqi4E3NLxF8cORjaDdUYugriIDWkmUw1TGCoNlkJ2DqfDEFVzpLKHin60PQ6RzAUHim
+	AIGp0SOCuRlvR2HLGzoilHeOjJG8tbKb4OsMvTRfYsnkH1SE8XpPJ8lbqs5RvOXrZZp//aKe
+	4l035zBfV/uN4PNzRyn+y/tXmB9rfE7xpcPjBG+yPscHpIfF2xOEZKVGUG3YeUyscA3Zcbp5
+	pbbdY6ey0XSgHvkxHLuFu/3EKvIxZkO5j0+/YB9T7BrO45klfRzAruU+v3TQeiRmSPYmxd17
+	a6R8wRI2jhu/YSN8LGGBq56wY9+SlJ1EXHPTMPkn8Ofabw0utJJsGOeZ/+gVGC8Hc+XzjG/s
+	x+7gBq+bF45Yyq7mmmxtxEUkMfxnG/6zDf/sEkRWoQBlqiZFrkwOX69OUmSlKrXr49NSLMj7
+	FMbTPy7VoomuXQ7EMki2SOKxqhVSkVyjzkpxII4hZQGST70qhVSSIM86JajS4lSZyYLagYIZ
+	LAuU7I4RjknZRHmGkCQI6YLqb0owfkHZqDB2vmNsxLnfnR3fUxU1P5wXVRodEynfE8ekh0R3
+	Pcxzhxeu7banxAbc6cZtM+acIyfuO1cuqfO/MGrsn+w2y6bii4c01x6s2KzXtDSsWt71zP14
+	/OtQjv6Whq4/OJ04sLi/yf/t8UhXToL25KHxEO3R4mizsDoE9BEtzY9j0s7IsFoh3xRGqtTy
+	36w7ufIQAwAA
+X-CFilter-Loop: Reflected
 
-Add a basic selftest for the netpoll polling mechanism, specifically
-targeting the netpoll poll() side.
+On Mon, Jul 14, 2025 at 10:43:35AM +0100, Pavel Begunkov wrote:
+> On 7/14/25 00:07, Byungchul Park wrote:
+> > On Sat, Jul 12, 2025 at 12:59:34PM +0100, Pavel Begunkov wrote:
+> > > On 7/10/25 09:28, Byungchul Park wrote:
+> > > ...> +
+> > > >    static inline struct net_iov *netmem_to_net_iov(netmem_ref netmem)
+> > > >    {
+> > > >        if (netmem_is_net_iov(netmem))
+> > > > @@ -314,6 +340,21 @@ static inline netmem_ref netmem_compound_head(netmem_ref netmem)
+> > > >        return page_to_netmem(compound_head(netmem_to_page(netmem)));
+> > > >    }
+> > > > 
+> > > > +#define nmdesc_to_page(nmdesc)               (_Generic((nmdesc),             \
+> > > > +     const struct netmem_desc * :    (const struct page *)(nmdesc),  \
+> > > > +     struct netmem_desc * :          (struct page *)(nmdesc)))
+> > > 
+> > > Considering that nmdesc is going to be separated from pages and
+> > > accessed through indirection, and back reference to the page is
+> > > not needed (at least for net/), this helper shouldn't even exist.
+> > > And in fact, you don't really use it ...
+> > > > +static inline struct netmem_desc *page_to_nmdesc(struct page *page)
+> > > > +{
+> > > > +     VM_BUG_ON_PAGE(PageTail(page), page);
+> > > > +     return (struct netmem_desc *)page;
+> > > > +}
+> > > > +
+> > > > +static inline void *nmdesc_address(struct netmem_desc *nmdesc)
+> > > > +{
+> > > > +     return page_address(nmdesc_to_page(nmdesc));
+> > > > +}
+> > > 
+> > > ... That's the only caller, and nmdesc_address() is not used, so
+> > > just nuke both of them. This helper doesn't even make sense.
+> > > 
+> > > Please avoid introducing functions that you don't use as a general
+> > > rule.
+> > 
+> > I'm sorry about making you confused.  I should've included another patch
+> > using the helper like the following.
+> 
+> Ah, I see. And still, it's not a great function. There should be
+> no way to extract a page or a page address from a nmdesc.
+> 
+> For the diff below it's same as with the mt76 patch, it's allocating
+> a page, expects it to be a page, using it as a page, but for no reason
+> keeps it wrapped into netmem. It only adds confusion and overhead.
+> A rule of thumb would be only converting to netmem if the new code
+> would be able to work with a netmem-wrapped net_iovs.
 
-The test creates a scenario where network transmission is running at
-maximum speed, and netpoll needs to poll the NIC. This is achieved by:
+Thanks.  I'm now working on this job, avoiding your concern.
 
-  1. Configuring a single RX/TX queue to create contention
-  2. Generating background traffic to saturate the interface
-  3. Sending netconsole messages to trigger netpoll polling
-  4. Using dynamic netconsole targets via configfs
-  5. Delete and create new netconsole targets after some messages
-  6. Start a bpftrace in parallel to make sure netpoll_poll_dev() is
-     called
-  7. If bpftrace exists and netpoll_poll_dev() was called, stop.
+By the way, am I supposed to wait for you to complete the work about
+extracting type from page e.g. page pool (or bump) type?
 
-The test validates a critical netpoll code path by monitoring traffic
-flow and ensuring netpoll_poll_dev() is called when the normal TX path
-is blocked.
+	Byungchul
 
-This addresses a gap in netpoll test coverage for a path that is
-tricky for the network stack.
-
-Signed-off-by: Breno Leitao <leitao@debian.org>
-Reviewed-by: Willem de Bruijn <willemb@google.com>
----
- tools/testing/selftests/drivers/net/Makefile       |   1 +
- .../testing/selftests/drivers/net/netpoll_basic.py | 396 +++++++++++++++++++++
- 2 files changed, 397 insertions(+)
-
-diff --git a/tools/testing/selftests/drivers/net/Makefile b/tools/testing/selftests/drivers/net/Makefile
-index bd309b2d39095..9bd84d6b542e5 100644
---- a/tools/testing/selftests/drivers/net/Makefile
-+++ b/tools/testing/selftests/drivers/net/Makefile
-@@ -16,6 +16,7 @@ TEST_PROGS := \
- 	netcons_fragmented_msg.sh \
- 	netcons_overflow.sh \
- 	netcons_sysdata.sh \
-+	netpoll_basic.py \
- 	ping.py \
- 	queues.py \
- 	stats.py \
-diff --git a/tools/testing/selftests/drivers/net/netpoll_basic.py b/tools/testing/selftests/drivers/net/netpoll_basic.py
-new file mode 100755
-index 0000000000000..408bd54d67798
---- /dev/null
-+++ b/tools/testing/selftests/drivers/net/netpoll_basic.py
-@@ -0,0 +1,396 @@
-+#!/usr/bin/env python3
-+# SPDX-License-Identifier: GPL-2.0
-+# Author: Breno Leitao <leitao@debian.org>
-+"""
-+ This test aims to evaluate the netpoll polling mechanism (as in
-+ netpoll_poll_dev()). It presents a complex scenario where the network
-+ attempts to send a packet but fails, prompting it to poll the NIC from within
-+ the netpoll TX side.
-+
-+ This has been a crucial path in netpoll that was previously untested. Jakub
-+ suggested using a single RX/TX queue, pushing traffic to the NIC, and then
-+ sending netpoll messages (via netconsole) to trigger the poll.
-+
-+ In parallel, bpftrace is used to detect if netpoll_poll_dev() was called. If
-+ so, the test passes, otherwise it will be skipped. This test is very dependent on
-+ the driver and environment, given we are trying to trigger a tricky scenario.
-+"""
-+
-+import errno
-+import logging
-+import os
-+import random
-+import string
-+import threading
-+import time
-+from typing import Optional
-+
-+from lib.py import (
-+    bpftrace,
-+    CmdExitFailure,
-+    defer,
-+    ethtool,
-+    GenerateTraffic,
-+    ksft_exit,
-+    ksft_pr,
-+    ksft_run,
-+    KsftFailEx,
-+    KsftSkipEx,
-+    NetDrvEpEnv,
-+    KsftXfailEx,
-+)
-+
-+# Configure logging
-+logging.basicConfig(
-+    level=logging.INFO,
-+    format="%(asctime)s - %(levelname)s - %(message)s",
-+)
-+
-+NETCONSOLE_CONFIGFS_PATH: str = "/sys/kernel/config/netconsole"
-+NETCONS_REMOTE_PORT: int = 6666
-+NETCONS_LOCAL_PORT: int = 1514
-+
-+# Max number of netcons messages to send. Each iteration will setup
-+# netconsole and send MAX_WRITES messages
-+ITERATIONS: int = 20
-+# Number of writes to /dev/kmsg per iteration
-+MAX_WRITES: int = 40
-+# MAPS contains the information coming from bpftrace it will have only one
-+# key: "hits", which tells the number of times netpoll_poll_dev() was called
-+MAPS: dict[str, int] = {}
-+# Thread to run bpftrace in parallel
-+BPF_THREAD: Optional[threading.Thread] = None
-+# Time bpftrace will be running in parallel.
-+BPFTRACE_TIMEOUT: int = 10
-+
-+
-+def ethtool_get_ringsize(interface_name: str) -> tuple[int, int]:
-+    """
-+    Read the ringsize using ethtool. This will be used to restore it after the test
-+    """
-+    try:
-+        ethtool_result = ethtool(f"-g {interface_name}", json=True)[0]
-+        rxs = ethtool_result["rx"]
-+        txs = ethtool_result["tx"]
-+    except (KeyError, IndexError) as exception:
-+        raise KsftSkipEx(
-+            f"Failed to read RX/TX ringsize: {exception}. Not going to mess with them."
-+        ) from exception
-+
-+    return rxs, txs
-+
-+
-+def ethtool_set_ringsize(interface_name: str, ring_size: tuple[int, int]) -> bool:
-+    """Try to the number of RX and TX ringsize."""
-+    rxs = ring_size[0]
-+    txs = ring_size[1]
-+
-+    logging.debug("Setting ring size to %d/%d", rxs, txs)
-+    try:
-+        ethtool(f"-G {interface_name} rx {rxs} tx {txs}")
-+    except CmdExitFailure:
-+        # This might fail on real device, retry with a higher value,
-+        # worst case, keep it as it is.
-+        return False
-+
-+    return True
-+
-+
-+def ethtool_get_queues_cnt(interface_name: str) -> tuple[int, int, int]:
-+    """Read the number of RX, TX and combined queues using ethtool"""
-+
-+    try:
-+        ethtool_result = ethtool(f"-l {interface_name}", json=True)[0]
-+        rxq = ethtool_result.get("rx", -1)
-+        txq = ethtool_result.get("tx", -1)
-+        combined = ethtool_result.get("combined", -1)
-+
-+    except IndexError as exception:
-+        raise KsftSkipEx(
-+            f"Failed to read queues numbers: {exception}. Not going to mess with them."
-+        ) from exception
-+
-+    return rxq, txq, combined
-+
-+
-+def ethtool_set_queues_cnt(interface_name: str, queues: tuple[int, int, int]) -> None:
-+    """Set the number of RX, TX and combined queues using ethtool"""
-+    rxq, txq, combined = queues
-+
-+    cmdline = f"-L {interface_name}"
-+
-+    if rxq != -1:
-+        cmdline += f" rx {rxq}"
-+    if txq != -1:
-+        cmdline += f" tx {txq}"
-+    if combined != -1:
-+        cmdline += f" combined {combined}"
-+
-+    logging.debug("calling: ethtool %s", cmdline)
-+
-+    try:
-+        ethtool(cmdline)
-+    except CmdExitFailure as exception:
-+        raise KsftSkipEx(
-+            f"Failed to configure RX/TX queues: {exception}. Ethtool not available?"
-+        ) from exception
-+
-+
-+def netcons_generate_random_target_name() -> str:
-+    """Generate a random target name starting with 'netcons'"""
-+    random_suffix = "".join(random.choices(string.ascii_lowercase + string.digits, k=8))
-+    return f"netcons_{random_suffix}"
-+
-+
-+def netcons_create_target(
-+    config_data: dict[str, str],
-+    target_name: str,
-+) -> None:
-+    """Create a netconsole dynamic target against the interfaces"""
-+    logging.debug("Using netconsole name: %s", target_name)
-+    try:
-+        os.makedirs(f"{NETCONSOLE_CONFIGFS_PATH}/{target_name}", exist_ok=True)
-+        logging.debug(
-+            "Created target directory: %s/%s", NETCONSOLE_CONFIGFS_PATH, target_name
-+        )
-+    except OSError as exception:
-+        if exception.errno != errno.EEXIST:
-+            raise KsftFailEx(
-+                f"Failed to create netconsole target directory: {exception}"
-+            ) from exception
-+
-+    try:
-+        for key, value in config_data.items():
-+            path = f"{NETCONSOLE_CONFIGFS_PATH}/{target_name}/{key}"
-+            logging.debug("Writing %s to %s", key, path)
-+            with open(path, "w", encoding="utf-8") as file:
-+                # Always convert to string to write to file
-+                file.write(str(value))
-+
-+        # Read all configuration values for debugging purposes
-+        for debug_key in config_data.keys():
-+            with open(
-+                f"{NETCONSOLE_CONFIGFS_PATH}/{target_name}/{debug_key}",
-+                "r",
-+                encoding="utf-8",
-+            ) as file:
-+                content = file.read()
-+                logging.debug(
-+                    "%s/%s/%s : %s",
-+                    NETCONSOLE_CONFIGFS_PATH,
-+                    target_name,
-+                    debug_key,
-+                    content.strip(),
-+                )
-+
-+    except Exception as exception:
-+        raise KsftFailEx(
-+            f"Failed to configure netconsole target: {exception}"
-+        ) from exception
-+
-+
-+def netcons_configure_target(
-+    cfg: NetDrvEpEnv, interface_name: str, target_name: str
-+) -> None:
-+    """Configure netconsole on the interface with the given target name"""
-+    config_data = {
-+        "extended": "1",
-+        "dev_name": interface_name,
-+        "local_port": NETCONS_LOCAL_PORT,
-+        "remote_port": NETCONS_REMOTE_PORT,
-+        "local_ip": cfg.addr,
-+        "remote_ip": cfg.remote_addr,
-+        "remote_mac": "00:00:00:00:00:00",  # Not important for this test
-+        "enabled": "1",
-+    }
-+
-+    netcons_create_target(config_data, target_name)
-+    logging.debug(
-+        "Created netconsole target: %s on interface %s", target_name, interface_name
-+    )
-+
-+
-+def netcons_delete_target(name: str) -> None:
-+    """Delete a netconsole dynamic target"""
-+    target_path = f"{NETCONSOLE_CONFIGFS_PATH}/{name}"
-+    try:
-+        if os.path.exists(target_path):
-+            os.rmdir(target_path)
-+    except OSError as exception:
-+        raise KsftFailEx(
-+            f"Failed to delete netconsole target: {exception}"
-+        ) from exception
-+
-+
-+def netcons_load_module() -> None:
-+    """Try to load the netconsole module"""
-+    os.system("modprobe netconsole")
-+
-+
-+def bpftrace_call() -> None:
-+    """Call bpftrace to find how many times netpoll_poll_dev() is called.
-+    Output is saved in the global variable `maps`"""
-+
-+    # This is going to update the global variable, that will be seen by the
-+    # main function
-+    global MAPS  # pylint: disable=W0603
-+
-+    # This will be passed to bpftrace as in bpftrace -e "expr"
-+    expr = "kprobe:netpoll_poll_dev { @hits = count(); }"
-+
-+    MAPS = bpftrace(expr, timeout=BPFTRACE_TIMEOUT, json=True)
-+    logging.debug("BPFtrace output: %s", MAPS)
-+
-+
-+def bpftrace_start():
-+    """Start a thread to call `call_bpf` in a parallel thread"""
-+    global BPF_THREAD  # pylint: disable=W0603
-+
-+    BPF_THREAD = threading.Thread(target=bpftrace_call)
-+    BPF_THREAD.start()
-+    if not BPF_THREAD.is_alive():
-+        raise KsftSkipEx("BPFtrace thread is not alive. Skipping test")
-+
-+
-+def bpftrace_stop() -> None:
-+    """Stop the bpftrace thread"""
-+    if BPF_THREAD:
-+        BPF_THREAD.join()
-+
-+
-+def bpftrace_any_hit(join: bool) -> bool:
-+    """Check if netpoll_poll_dev() was called by checking the global variable `maps`"""
-+    if not BPF_THREAD:
-+        raise KsftFailEx("BPFtrace didn't start")
-+
-+    if BPF_THREAD.is_alive():
-+        if join:
-+            # Wait for bpftrace to finish
-+            BPF_THREAD.join()
-+        else:
-+            # bpftrace is still running, so, we will not check the result yet
-+            return False
-+
-+    logging.debug("MAPS coming from bpftrace = %s", MAPS)
-+    if "hits" not in MAPS.keys():
-+        raise KsftFailEx(f"bpftrace failed to run!?: {MAPS}")
-+
-+    logging.debug("Got a total of %d hits", MAPS["hits"])
-+    return MAPS["hits"] > 0
-+
-+
-+def do_netpoll_flush_monitored(cfg: NetDrvEpEnv, ifname: str, target_name: str) -> None:
-+    """Print messages to the console, trying to trigger a netpoll poll"""
-+    # Start bpftrace in parallel, so, it is watching
-+    # netpoll_poll_dev() while we are sending netconsole messages
-+    bpftrace_start()
-+    defer(bpftrace_stop)
-+
-+    do_netpoll_flush(cfg, ifname, target_name)
-+
-+    if bpftrace_any_hit(join=True):
-+        ksft_pr("netpoll_poll_dev() was called. Success")
-+        return
-+
-+    raise KsftXfailEx("netpoll_poll_dev() was not called during the test...")
-+
-+
-+def do_netpoll_flush(cfg: NetDrvEpEnv, ifname: str, target_name: str) -> None:
-+    """Print messages to the console, trying to trigger a netpoll poll"""
-+    netcons_configure_target(cfg, ifname, target_name)
-+    retry = 0
-+
-+    for i in range(int(ITERATIONS)):
-+        if not BPF_THREAD.is_alive() or bpftrace_any_hit(join=False):
-+            # bpftrace is done, stop sending messages
-+            break
-+
-+        msg = f"netcons test #{i}"
-+        with open("/dev/kmsg", "w", encoding="utf-8") as kmsg:
-+            for j in range(MAX_WRITES):
-+                try:
-+                    kmsg.write(f"{msg}-{j}\n")
-+                except OSError as exception:
-+                    # in some cases, kmsg can be busy, so, we will retry
-+                    time.sleep(1)
-+                    retry += 1
-+                    if retry < 5:
-+                        logging.info("Failed to write to kmsg. Retrying")
-+                        # Just retry a few times
-+                        continue
-+                    raise KsftFailEx(
-+                        f"Failed to write to kmsg: {exception}"
-+                    ) from exception
-+
-+        netcons_delete_target(target_name)
-+        netcons_configure_target(cfg, ifname, target_name)
-+        # If we sleep here, we will have a better chance of triggering
-+        # This number is based on a few tests I ran while developing this test
-+        time.sleep(0.4)
-+
-+
-+def configure_network(ifname: str) -> None:
-+    """Configure ring size and queue numbers"""
-+
-+    # Set defined queues to 1 to force congestion
-+    prev_queues = ethtool_get_queues_cnt(ifname)
-+    logging.debug("RX/TX/combined queues: %s", prev_queues)
-+    # Only set the queues to 1 if they exists in the device. I.e, they are > 0
-+    ethtool_set_queues_cnt(ifname, tuple(1 if x > 0 else x for x in prev_queues))
-+    defer(ethtool_set_queues_cnt, ifname, prev_queues)
-+
-+    # Try to set the ring size to some low value.
-+    # Do not fail if the hardware do not accepted desired values
-+    prev_ring_size = ethtool_get_ringsize(ifname)
-+    for size in [(1, 1), (128, 128), (256, 256)]:
-+        if ethtool_set_ringsize(ifname, size):
-+            # hardware accepted the desired ringsize
-+            logging.debug("Set RX/TX ringsize to: %s from %s", size, prev_ring_size)
-+            break
-+    defer(ethtool_set_ringsize, ifname, prev_ring_size)
-+
-+
-+def test_netpoll(cfg: NetDrvEpEnv) -> None:
-+    """
-+    Test netpoll by sending traffic to the interface and then sending
-+    netconsole messages to trigger a poll
-+    """
-+
-+    ifname = cfg.ifname
-+    configure_network(ifname)
-+    target_name = netcons_generate_random_target_name()
-+    traffic = None
-+
-+    try:
-+        traffic = GenerateTraffic(cfg)
-+        do_netpoll_flush_monitored(cfg, ifname, target_name)
-+    finally:
-+        if traffic:
-+            traffic.stop()
-+
-+        # Revert RX/TX queues
-+        netcons_delete_target(target_name)
-+
-+
-+def test_check_dependencies() -> None:
-+    """Check if the dependencies are met"""
-+    if not os.path.exists(NETCONSOLE_CONFIGFS_PATH):
-+        raise KsftSkipEx(
-+            f"Directory {NETCONSOLE_CONFIGFS_PATH} does not exist. CONFIG_NETCONSOLE_DYNAMIC might not be set."  # pylint: disable=C0301
-+        )
-+
-+
-+def main() -> None:
-+    """Main function to run the test"""
-+    netcons_load_module()
-+    test_check_dependencies()
-+    with NetDrvEpEnv(__file__) as cfg:
-+        ksft_run(
-+            [test_netpoll],
-+            args=(cfg,),
-+        )
-+    ksft_exit()
-+
-+
-+if __name__ == "__main__":
-+    main()
-
--- 
-2.47.1
-
+> > diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+> > index cef9dfb877e8..adccc7c8e68f 100644
+> > --- a/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+> > +++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+> > @@ -3266,7 +3266,7 @@ static u32 idpf_rx_hsplit_wa(const struct libeth_fqe *hdr,
+> >                            struct libeth_fqe *buf, u32 data_len)
+> >   {
+> >       u32 copy = data_len <= L1_CACHE_BYTES ? data_len : ETH_HLEN;
+> > -     struct page *hdr_page, *buf_page;
+> > +     struct netmem_desc *hdr_nmdesc, *buf_nmdesc;
+> >       const void *src;
+> >       void *dst;
+> > 
+> > @@ -3274,10 +3274,10 @@ static u32 idpf_rx_hsplit_wa(const struct libeth_fqe *hdr,
+> >           !libeth_rx_sync_for_cpu(buf, copy))
+> >               return 0;
+> > 
+> > -     hdr_page = __netmem_to_page(hdr->netmem);
+> > -     buf_page = __netmem_to_page(buf->netmem);
+> > -     dst = page_address(hdr_page) + hdr->offset + hdr_page->pp->p.offset;
+> > -     src = page_address(buf_page) + buf->offset + buf_page->pp->p.offset;
+> > +     hdr_nmdesc = __netmem_to_nmdesc(hdr->netmem);
+> > +     buf_nmdesc = __netmem_to_nmdesc(buf->netmem);
+> > +     dst = nmdesc_address(hdr_nmdesc) + hdr->offset + hdr_nmdesc->pp->p.offset;
+> > +     src = nmdesc_address(buf_nmdesc) + buf->offset + buf_nmdesc->pp->p.offset;
+> > 
+> >       memcpy(dst, src, LARGEST_ALIGN(copy));
+> >       buf->offset += copy;
+> --
+> Pavel Begunkov
 
