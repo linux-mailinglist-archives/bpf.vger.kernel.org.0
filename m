@@ -1,273 +1,235 @@
-Return-Path: <bpf+bounces-63222-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63223-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9240DB046E7
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 19:52:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B592B04721
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 20:09:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B676E1A66D29
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 17:52:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56DC34A0DE6
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 18:09:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0C87265CB0;
-	Mon, 14 Jul 2025 17:52:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96C6026C3A4;
+	Mon, 14 Jul 2025 18:09:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SQIdkBYT"
+	dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b="NU0ssmkK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFB7A1F5433
-	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 17:52:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48F7826A087
+	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 18:09:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752515549; cv=none; b=oGQrbNuYTLlZDY3hxPcQY9rG4yUwv4Vr1SLM7I+N7LBtcIpl9K8TmDdkQbfrUwmvhHrJ6FOyosa/ZUBkpeSiInII3pLZ+vSpLfZWpUd14+KxdnUQhUHPCNK9HZMriw7OHSv2gxTh+XJl8RZKMeMUJOQBYkOqDyFlsq7UZDX6xn0=
+	t=1752516570; cv=none; b=j1R306bbIcRYU+kC86wYVgbXopxbZ6VUA00K4NsgLNHEuDzNVLAu1Ga85V31DhJwxsxfQTOqkJpKTT3H4mDZsO8/QA90TWaTB0dhP4G+6C9kUcRbgih1WJEwcsGijSrM7DTQStLyoNm9QNDn2Cop2w/jnbK5Y/JnhXcf1Km5kO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752515549; c=relaxed/simple;
-	bh=9J+acBa2hfwJUEqQA4ChSvh2W0jCKQS9G4+eJBp0ez0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mP/LEw0xZ81HqV+FlEl86VwMklBMKUzKhq9zzvWjQF4SIrofQacj7j1vL52TGgMVafjmgbbxDflnCRKVlp7JmRAGFdXtMLXITENoIt7M6BmCfW6rerZVb4Q79h2a8Zee9Dikwr/DRHG/PE3IEB7J3iSR5fonht84ql2iNQo9JBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SQIdkBYT; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-455fdfb5d04so13311435e9.2
-        for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 10:52:27 -0700 (PDT)
+	s=arc-20240116; t=1752516570; c=relaxed/simple;
+	bh=bxxFogUP1oFJd3d2e7LXv1WV66TV2hKEyk3AFHWrq/0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=trBcgaNee2I0/uMH8v5jAAYrXI5hqEykZ7RY3iiyBuKGJV+vbqyPJOOAiHLcrEzf9tu5O2vpbPG5jwUTRlc1UEO2W/M6fH9uHfgOrLd2FR/s9DiOiEG950u6MFa3XGNwEHQ4osA49EManHyWqr5le0e9E7yk2do/t/0BuGBI/As=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io; spf=none smtp.mailfrom=jrife.io; dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b=NU0ssmkK; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=jrife.io
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-23de2b47a48so4981695ad.2
+        for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 11:09:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752515546; x=1753120346; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CrXOR3em4+gjn8PtaxMxqX8DlqyBrsVytx3gz0g+Udg=;
-        b=SQIdkBYT2ZTpfAKaFJWN5Hm/iZsCSvFvi2JX7IeOuKA+cTz2Lhmdr5SxhVOd4xB09/
-         Vu9IwxSpKC4HzOeK8IEQlBhsJkSw7vA+Cljjh+eBBaGxYIGv2BUUgl9QKMnDqWpDFUjM
-         nHxmbN657v9LHuOFyQdsWcfcbkm9BMs/oKQGAhh1kXzbg4T++9wU2DkhlwfXclFQ/mwc
-         uwzm2j8FUoXGLTjqPAam9pGXBpAWB/wFEW3mQXwOlzpggU834S9mcgtz02vAurEy7TIj
-         0h1/jAm5KW4hyYvUPy8QTtCzF382z8FS0+B6hr3N6cFVF6P8NS961fDF/yiUMD1yqJkt
-         HH2w==
+        d=jrife-io.20230601.gappssmtp.com; s=20230601; t=1752516567; x=1753121367; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UCIeepe8RfVctcxWkoxn2Xqz4Sfp2ySYQyPBvgJjOjs=;
+        b=NU0ssmkKYBbFwRT/7kFXozy/eZUK9eUpLOkxPIpUpu/7JM905uhLuDL0SlR8L+ZJcd
+         lHOnAK6UG45gYFGJgdeQr8aoIyQDZ8+44wv6W9Slr9Fq/SzdKfkn1lczZ9cLv8DpIbyK
+         IlMMPC5iyDSuTD5v9ORR3P6lmq4C5JxP9Ny8Lrnvw6eUC0qJpccsaO2v7S/yvjvNIh3P
+         Hvee9UR6RbqFKBN3+kd3Nxnbd7/rah3Zr0Y3Rnaybfzlke4nDuqjOI18/IJOyNpIv9rG
+         VWl3FsxyhBGT5z0XnFspLpeXhFK0YO7OodxMJrY3SXgrQm864Ko5Wgmn/KsLz4a58G5g
+         I01A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752515546; x=1753120346;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CrXOR3em4+gjn8PtaxMxqX8DlqyBrsVytx3gz0g+Udg=;
-        b=auKJioXAJ/lpeH6tzXVbdp43x/0+xD/6zGW8KkFxiNdpvB7O4DYgbAWC7fFNwIAIMh
-         SKxvr1FL/xc7AlcoxPjwBuZqktoCJ8ZBtxkKJe7XJZIRgTe3a228XInI0JXHo3Mqf/4v
-         tLGDii685hVuBKqIp9qMuOREvprHAahh+LTZdRuC+uuDb1MavoPvE087TzFHeRDGK1qS
-         uAtcVEWNqybgxMmxGKEeNuTYqhmAET1TflNW1N0rraPPnGMlPjAwMtcVG0vKaXgL3etM
-         M412ZRZV321L8rnRL2wkMwMovNaIiXWAjnmBvUKwzJRCnyNpNRQagjJjmhU619SyWiW4
-         cxJw==
-X-Forwarded-Encrypted: i=1; AJvYcCUYvzfDDOTkeCguh0vA725SAR+ZSLZhyXRwMh+4xS1ZXBXJJbH5QyF4YHxRTuqkIfPKv7A=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyvUnm8OKjZJE6F83oWftaTAPZ12sXTVrfoEHA1xiUMtvhHpGIg
-	YDbGKa7S4/OXqLmpbBBbUCDGZsjyISJhds+6Kv95sCdOC2m5Y8sLqGjYALvGl2h98nXLeOL8Uh6
-	PoTMK+8pWGCU9dAxbkvFsYNmHtxE/P1k=
-X-Gm-Gg: ASbGncsLut3FzOHSAY8NRd4e9igKvpvZmzyRxEq678rRBlAenCj4d31dGD/o+jhgf+o
-	ApXbmZZgva2g46EoK/QM8DbUwUCrcZfhvryUDVCstfkNhtblPsd3N8alCTo6bEwFIEAyFbffRV+
-	fAGNi10FFnZWd3n1laTFbtxD6guJindxPiIHd1g+lmZzdbg6zpR+/mASqn2XQZYLlis6fp+vc0a
-	H+fySIqJgRHt5KF/GXlRCE=
-X-Google-Smtp-Source: AGHT+IGX1x/rLh6T62gvVj2EWhzF8UHfmjEJsyqMGiPwxRo/2hggBPZEdkSV/4xL+6Tf1c2M/aWyB9xO7EGuKGSK52A=
-X-Received: by 2002:adf:e186:0:b0:3a5:2653:7308 with SMTP id
- ffacd0b85a97d-3b5f18debd5mr13480127f8f.57.1752515545708; Mon, 14 Jul 2025
- 10:52:25 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1752516567; x=1753121367;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UCIeepe8RfVctcxWkoxn2Xqz4Sfp2ySYQyPBvgJjOjs=;
+        b=REc/d0U9kxhzt9neWKqkIk9qdRlHXZ6np/CWWg+05WnZxFjwwP2jdOKColC7xTL4by
+         YzXb8AOQJheAdiM+b9cjLaTtUr86mZlk0Qzy9x+Z19+w6304oEOxZQqjIS677FFfcw3c
+         MpHCOcr0wHRRM/Uzh/4u/sLxuT9fJxT53h6VbFGybXQhb5lxmBcHSpT9v8RLWOvqueUk
+         27ooiZxGWUQD6nOo+4eX4XrZnih+CmxWEOeBSoCb4ajI7hYXhX2bew1Q6D6SJdDrC4Ph
+         CArMvB56yp8UvazTtMLrKzVS3dVTVyGolFNpucNNNorMmgcnAsj9mATDAAXg8VAo+fue
+         n/VQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU+m5oNJtLaXt3awhM2za3j+GioKXW5QX2sjG3WWVBqvbpeO9vlXjXsNNYYjr4BJiM25vk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyFwo8KGJ2gT290Ho6pPVM8MWr1Pdrhz4o7+/v3zLQL+UOrjTlL
+	+/6H+bvjqD8r2Wq8Y+x4A0zcfYEC2vaOOEKNGwAg1oyjBSyczqNUI4tP96JokCMuvho=
+X-Gm-Gg: ASbGncvzJz6A25wcM5ZHubvf1It0W+LQUj6y9+XPGN3KCpC9xCxTLhDbpCUnmqe/Ykh
+	M8SXq6eC66/dJvyrxeFjpKmYAw2GOSbGjb/eGfjUdx/Z+zNBkSGeYleE8O4G6hbLFeMerPXM/g1
+	ZGgwAQRWtob8SGyd0GsxNEDXAMIcsfm8XFHSk/RZODOQAX4JC+2basr46+eyY9Y30p3DafmUtL7
+	z3j+UPkprHYtn8DdHObiCkIwZDn1F/FyLUzs8wpvUKPRRno9CmNRhFPPJ9LH0zxrJd3NLXJRnm0
+	lyI8OcbTIcnLCbDxT1W88Jka/GU60vW5/rrSJq52Zy5Gvdc9EHUhCTg2ZzpZDN2wEDiCnJjidGB
+	EcdFuJ8rnog==
+X-Google-Smtp-Source: AGHT+IFzfrE5MqiPgJJWw1On6i9rxwd3VZ8RAZkUcfW6mxZA8sYTKwvf5KmfJzvI9R/s/mBJUFtFww==
+X-Received: by 2002:a17:902:c40a:b0:23c:8f17:5e2f with SMTP id d9443c01a7336-23dede497e0mr85368255ad.4.1752516567327;
+        Mon, 14 Jul 2025 11:09:27 -0700 (PDT)
+Received: from t14.. ([2a00:79e1:abc:133:84d3:3b84:b221:e691])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23de42aeadcsm98126405ad.78.2025.07.14.11.09.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jul 2025 11:09:27 -0700 (PDT)
+From: Jordan Rife <jordan@jrife.io>
+To: netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Cc: Jordan Rife <jordan@jrife.io>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Kuniyuki Iwashima <kuniyu@google.com>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Stanislav Fomichev <stfomichev@gmail.com>
+Subject: [PATCH v6 bpf-next 00/12] bpf: tcp: Exactly-once socket iteration
+Date: Mon, 14 Jul 2025 11:09:04 -0700
+Message-ID: <20250714180919.127192-1-jordan@jrife.io>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250709015303.8107-1-alexei.starovoitov@gmail.com>
- <20250709015303.8107-4-alexei.starovoitov@gmail.com> <20250711075001.fnlMZfk6@linutronix.de>
- <1adbee35-6131-49de-835b-2c93aacfdd1e@suse.cz> <20250711151730.rz_TY1Qq@linutronix.de>
- <CAADnVQKF=U+Go44fpDYOoZp+3e0xrLYXE4yYLm82H819WqnpnA@mail.gmail.com> <20250714110639.uOaKJEfL@linutronix.de>
-In-Reply-To: <20250714110639.uOaKJEfL@linutronix.de>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 14 Jul 2025 10:52:10 -0700
-X-Gm-Features: Ac12FXzoWo31JpXtCiKZcrl4QbhAUBZ3qtzSYF9FUHB5ZK9i7dwpYq3d49cxqVQ
-Message-ID: <CAADnVQLORq64ezK+gaU=Q2F2KyCYOBZiVE0aaJuqK=xfUwMFiw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/6] locking/local_lock: Introduce local_lock_lockdep_start/end()
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Vlastimil Babka <vbabka@suse.cz>, bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
-	Harry Yoo <harry.yoo@oracle.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Michal Hocko <mhocko@suse.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jul 14, 2025 at 4:06=E2=80=AFAM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
->
-> On 2025-07-11 19:19:26 [-0700], Alexei Starovoitov wrote:
-> > > If there is no parent check then we could do "normal lock" on both
-> > > sides.
-> >
-> > How would ___slab_alloc() know whether there was a parent check or not?
-> >
-> > imo keeping local_lock_irqsave() as-is is cleaner,
-> > since if there is no parent check lockdep will rightfully complain.
->
-> what about this:
->
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 7e2ffe1d46c6c..3520d1c25c205 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -3693,6 +3693,34 @@ static inline void *freeze_slab(struct kmem_cache =
-*s, struct slab *slab)
->         return freelist;
->  }
->
-> +static void local_lock_cpu_slab(struct kmem_cache *s, const gfp_t gfp_fl=
-ags,
-> +                               unsigned long *flags)
-> +{
-> +       bool allow_spin =3D gfpflags_allow_spinning(gfp_flags);
-> +
-> +       /*
-> +        * ___slab_alloc()'s caller is supposed to check if kmem_cache::k=
-mem_cache_cpu::lock
-> +        * can be acquired without a deadlock before invoking the functio=
-n.
-> +        *
-> +        * On PREEMPT_RT an invocation is not possible from IRQ-off or pr=
-eempt
-> +        * disabled context. The lock will always be acquired and if need=
-ed it
-> +        * block and sleep until the lock is available.
-> +        *
-> +        * On !PREEMPT_RT allocations from any context but NMI are safe. =
-The lock
-> +        * is always acquired with disabled interrupts meaning it is alwa=
-ys
-> +        * possible to it.
-> +        * In NMI context it is needed to check if the lock is acquired. =
-If it is not,
-> +        * it is safe to acquire it. The trylock semantic is used to tell=
- lockdep
-> +        * that we don't spin. The BUG_ON() will not trigger if it is saf=
-e to acquire
-> +        * the lock.
-> +        *
-> +        */
-> +       if (!IS_ENABLED(CONFIG_PREEMPT_RT) && !allow_spin)
-> +               BUG_ON(!local_trylock_irqsave(&s->cpu_slab->lock, *flags)=
-);
-> +       else
-> +               local_lock_irqsave(&s->cpu_slab->lock, *flags);
-> +}
+TCP socket iterators use iter->offset to track progress through a
+bucket, which is a measure of the number of matching sockets from the
+current bucket that have been seen or processed by the iterator. On
+subsequent iterations, if the current bucket has unprocessed items, we
+skip at least iter->offset matching items in the bucket before adding
+any remaining items to the next batch. However, iter->offset isn't
+always an accurate measure of "things already seen" when the underlying
+bucket changes between reads, which can lead to repeated or skipped
+sockets. Instead, this series remembers the cookies of the sockets we
+haven't seen yet in the current bucket and resumes from the first cookie
+in that list that we can find on the next iteration.
 
-the patch misses these two:
+This is a continuation of the work started in [1]. This series largely
+replicates the patterns applied to UDP socket iterators, applying them
+instead to TCP socket iterators.
 
-diff --git a/mm/slub.c b/mm/slub.c
-index 36779519b02c..2f30b85fbf68 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -3260,7 +3260,7 @@ static void put_cpu_partial(struct kmem_cache
-*s, struct slab *slab, int drain)
-        unsigned long flags;
-        int slabs =3D 0;
+CHANGES
+=======
+v5 -> v6:
+* In patch ten ("selftests/bpf: Create established sockets in socket
+  iterator tests"), use poll() to choose a socket that has a connection
+  ready to be accept()ed. Before, connect_to_server would set the
+  O_NONBLOCK flag on all listening sockets so that accept_from_one could
+  loop through them all and find the one that connect_to_addr_str
+  connected to. However, this is subtly buggy and could potentially lead
+  to test flakes, since the 3 way handshake isn't necessarily done when
+  connect returns, so it's possible none of the accept() calls succeed.
+  Use poll() instead to guarantee that the socket we accept() from is
+  ready and eliminate the need for the O_NONBLOCK flag (Martin).
 
--       local_lock_irqsave(&s->cpu_slab->lock, flags);
-+       local_lock_cpu_slab(s, 0, &flags);
+v4 -> v5:
+* Move WARN_ON_ONCE before the `done` label in patch two ("bpf: tcp:
+  Make sure iter->batch always contains a full bucket snapshot"")
+  (Martin).
+* Remove unnecessary kfunc declaration in patch eleven ("selftests/bpf:
+  Create iter_tcp_destroy test program") (Martin).
+* Make sure to close the socket fd at the end of `destroy` in patch
+  twelve ("selftests/bpf: Add tests for bucket resume logic in
+  established sockets") (Martin).
 
-        oldslab =3D this_cpu_read(s->cpu_slab->partial);
+v3 -> v4:
+* Drop braces around sk_nulls_for_each_from in patch five ("bpf: tcp:
+  Avoid socket skips and repeats during iteration") (Stanislav).
+* Add a break after the TCP_SEQ_STATE_ESTABLISHED case in patch five
+  (Stanislav).
+* Add an `if (sock_type == SOCK_STREAM)` check before assigning
+  TCP_LISTEN to skel->rodata->ss in patch eight ("selftests/bpf: Allow
+  for iteration over multiple states") to more clearly express the
+  intent that the option is only consumed for SOCK_STREAM tests
+  (Stanislav).
+* Move the `i = 0` assignment into the for loop in patch ten
+  ("selftests/bpf: Create established sockets in socket iterator
+  tests") (Stanislav).
 
-@@ -4889,8 +4889,9 @@ static __always_inline void do_slab_free(struct
-kmem_cache *s,
-                        goto redo;
-                }
-        } else {
-+               long flags;
-                /* Update the free list under the local lock */
--               local_lock(&s->cpu_slab->lock);
-+               local_lock_cpu_slab(s, 0, &flags);
-                c =3D this_cpu_ptr(s->cpu_slab);
-                if (unlikely(slab !=3D c->slab)) {
-                        local_unlock(&s->cpu_slab->lock);
+v2 -> v3:
+* Unroll the loop inside bpf_iter_tcp_batch to make the logic easier to
+  follow in patch two ("bpf: tcp: Make sure iter->batch always contains
+  a full bucket snapshot"). This gets rid of the `resizes` variable from
+  v2 and eliminates the extra conditional that checks how many batch
+  resize attempts have occurred so far (Stanislav).
+    Note: This changes the behavior slightly. Before, in the case that
+    the second call to tcp_seek_last_pos (and later bpf_iter_tcp_resume)
+    advances to a new bucket, which may happen if the current bucket is
+    emptied after releasing its lock, the `resizes` "budget" would be
+    reset, the net effect being that we would try a batch resize with
+    GFP_USER at most once per bucket. Now, we try to resize the batch
+    with GFP_USER at most once per call, so it makes it slightly more
+    likely that we hit the GFP_NOWAIT scenario. However, this edge case
+    should be rare in practice anyway, and the new behavior is more or
+    less consistent with the original retry logic, so avoid the loop and
+    prefer code clarity.
+* Move the call to bpf_iter_tcp_put_batch out of
+  bpf_iter_tcp_realloc_batch and call it directly before invoking
+  bpf_iter_tcp_realloc_batch with GFP_USER inside bpf_iter_tcp_batch.
+  /Don't/ call it before invoking bpf_iter_tcp_realloc_batch the second
+  time while we hold the lock with GFP_NOWAIT. This avoids a conditional
+  inside bpf_iter_tcp_realloc_batch from v2 that only calls
+  bpf_iter_tcp_put_batch if flags != GFP_NOWAIT and is a bit more
+  explicit (Stanislav).
+* Adjust patch five ("bpf: tcp: Avoid socket skips and repeats during
+  iteration") to fit with the new logic in patch two.
 
-I realized that the latter one was missing local_lock_lockdep_start/end()
-in my patch as well, but that's secondary.
+v1 -> v2:
+* In patch five ("bpf: tcp: Avoid socket skips and repeats during
+  iteration"), remove unnecessary bucket bounds checks in
+  bpf_iter_tcp_resume. In either case, if st->bucket is outside the
+  current table's range then bpf_iter_tcp_resume_* calls *_get_first
+  which immediately returns NULL anyway and the logic will fall through.
+  (Martin)
+* Add a check at the top of bpf_iter_tcp_resume_listening and
+  bpf_iter_tcp_resume_established to see if we're done with the current
+  bucket and advance it immediately instead of wasting time finding the
+  first matching socket in that bucket with
+  (listening|established)_get_first. In v1, we originally discussed
+  adding logic to advance the bucket in bpf_iter_tcp_seq_next and
+  bpf_iter_tcp_seq_stop, but after trying this the logic seemed harder
+  to track. Overall, keeping everything inside bpf_iter_tcp_resume_*
+  seemed a bit clearer. (Martin)
+* Instead of using a timeout in the last patch ("selftests/bpf: Add
+  tests for bucket resume logic in established sockets") to wait for
+  sockets to leave the ehash table after calling close(), use
+  bpf_sock_destroy to deterministically destroy and remove them. This
+  introduces one more patch ("selftests/bpf: Create iter_tcp_destroy
+  test program") to create the iterator program that destroys a selected
+  socket. Drive this through a destroy() function in the last patch
+  which, just like close(), accepts a socket file descriptor. (Martin)
+* Introduce one more patch ("selftests/bpf: Allow for iteration over
+  multiple states") to fix a latent bug in iter_tcp_soreuse where the
+  sk->sk_state != TCP_LISTEN check was ignored. Add the "ss" variable to
+  allow test code to configure which socket states to allow.
 
-So with above it works on !RT,
-but on RT lockdep complains as I explained earlier.
+[1]: https://lore.kernel.org/bpf/20250502161528.264630-1-jordan@jrife.io/
 
-With yours and above hunks applied here is full lockdep splat:
+Jordan Rife (12):
+  bpf: tcp: Make mem flags configurable through
+    bpf_iter_tcp_realloc_batch
+  bpf: tcp: Make sure iter->batch always contains a full bucket snapshot
+  bpf: tcp: Get rid of st_bucket_done
+  bpf: tcp: Use bpf_tcp_iter_batch_item for bpf_tcp_iter_state batch
+    items
+  bpf: tcp: Avoid socket skips and repeats during iteration
+  selftests/bpf: Add tests for bucket resume logic in listening sockets
+  selftests/bpf: Allow for iteration over multiple ports
+  selftests/bpf: Allow for iteration over multiple states
+  selftests/bpf: Make ehash buckets configurable in socket iterator
+    tests
+  selftests/bpf: Create established sockets in socket iterator tests
+  selftests/bpf: Create iter_tcp_destroy test program
+  selftests/bpf: Add tests for bucket resume logic in established
+    sockets
 
-[   39.819636] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-[   39.819638] WARNING: possible recursive locking detected
-[   39.819641] 6.16.0-rc5-00342-gc8aca7837440-dirty #54 Tainted: G         =
-  O
-[   39.819645] --------------------------------------------
-[   39.819646] page_alloc_kthr/2306 is trying to acquire lock:
-[   39.819650] ff110001f5cbea88 ((&c->lock)){+.+.}-{3:3}, at:
-___slab_alloc+0xb7/0xec0
-[   39.819667]
-[   39.819667] but task is already holding lock:
-[   39.819668] ff110001f5cbfe88 ((&c->lock)){+.+.}-{3:3}, at:
-___slab_alloc+0xb7/0xec0
-[   39.819677]
-[   39.819677] other info that might help us debug this:
-[   39.819678]  Possible unsafe locking scenario:
-[   39.819678]
-[   39.819679]        CPU0
-[   39.819680]        ----
-[   39.819681]   lock((&c->lock));
-[   39.819684]   lock((&c->lock));
-[   39.819687]
-[   39.819687]  *** DEADLOCK ***
-[   39.819687]
-[   39.819687]  May be due to missing lock nesting notation
-[   39.819687]
-[   39.819689] 2 locks held by page_alloc_kthr/2306:
-[   39.819691]  #0: ff110001f5cbfe88 ((&c->lock)){+.+.}-{3:3}, at:
-___slab_alloc+0xb7/0xec0
-[   39.819700]  #1: ffffffff8588f3a0 (rcu_read_lock){....}-{1:3}, at:
-rt_spin_lock+0x197/0x250
-[   39.819710]
-[   39.819710] stack backtrace:
-[   39.819714] CPU: 1 UID: 0 PID: 2306 Comm: page_alloc_kthr Tainted:
-G           O        6.16.0-rc5-00342-gc8aca7837440-dirty #54
-PREEMPT_RT
-[   39.819721] Tainted: [O]=3DOOT_MODULE
-[   39.819723] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-[   39.819726] Call Trace:
-[   39.819729]  <TASK>
-[   39.819734]  dump_stack_lvl+0x5b/0x80
-[   39.819740]  print_deadlock_bug.cold+0xbd/0xca
-[   39.819747]  __lock_acquire+0x12ad/0x2590
-[   39.819753]  ? __lock_acquire+0x42b/0x2590
-[   39.819758]  lock_acquire+0x133/0x2d0
-[   39.819763]  ? ___slab_alloc+0xb7/0xec0
-[   39.819769]  ? try_to_take_rt_mutex+0x624/0xfc0
-[   39.819773]  ? __lock_acquire+0x42b/0x2590
-[   39.819778]  rt_spin_lock+0x6f/0x250
-[   39.819783]  ? ___slab_alloc+0xb7/0xec0
-[   39.819788]  ? rtlock_slowlock_locked+0x5c60/0x5c60
-[   39.819792]  ? rtlock_slowlock_locked+0xc3/0x5c60
-[   39.819798]  ___slab_alloc+0xb7/0xec0
-[   39.819803]  ? __lock_acquire+0x42b/0x2590
-[   39.819809]  ? my_debug_callback+0x20e/0x390 [bpf_testmod]
-[   39.819826]  ? __lock_acquire+0x42b/0x2590
-[   39.819830]  ? rt_read_unlock+0x2f0/0x2f0
-[   39.819835]  ? my_debug_callback+0x20e/0x390 [bpf_testmod]
-[   39.819844]  ? kmalloc_nolock_noprof+0x15a/0x430
-[   39.819849]  kmalloc_nolock_noprof+0x15a/0x430
-[   39.819857]  my_debug_callback+0x20e/0x390 [bpf_testmod]
-[   39.819867]  ? page_alloc_kthread+0x320/0x320 [bpf_testmod]
-[   39.819875]  ? lock_is_held_type+0x85/0xe0
-[   39.819881]  ___slab_alloc+0x256/0xec0
-[   39.819898]  ? lock_acquire+0x133/0x2d0
-[   39.819927]  ? __kmalloc_cache_noprof+0xd6/0x3b0
-[   39.819932]  __kmalloc_cache_noprof+0xd6/0x3b0
+ net/ipv4/tcp_ipv4.c                           | 269 +++++++---
+ .../bpf/prog_tests/sock_iter_batch.c          | 461 +++++++++++++++++-
+ .../selftests/bpf/progs/sock_iter_batch.c     |  36 +-
+ 3 files changed, 682 insertions(+), 84 deletions(-)
 
-As I said earlier lockdep _has_ to be tricked.
-We cannot unconditionally call local_lock_irqsave() on RT.
-lockdep doesn't understand per-cpu local_lock.
-And it doesn't understand this "if !locked_by_current_task -> go and lock"
-concept.
-lockdep has to be taught about safe lock region (call it tricking
-lockdep, but it has to be an external signal to lockdep).
+-- 
+2.43.0
+
 
