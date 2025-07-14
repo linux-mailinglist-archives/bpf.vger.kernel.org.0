@@ -1,262 +1,158 @@
-Return-Path: <bpf+bounces-63249-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63250-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39309B048ED
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 23:02:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80491B04903
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 23:04:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7890E4A19C5
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 21:02:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6815189CA1D
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 21:04:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6181C23643E;
-	Mon, 14 Jul 2025 21:02:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAC722475E3;
+	Mon, 14 Jul 2025 21:04:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dWBq2EN9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NCNb9MQ/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B5DE5B21A
-	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 21:02:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9839815C158;
+	Mon, 14 Jul 2025 21:04:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752526952; cv=none; b=YGowzqYtDU72VQk2K/liSNW0gCfIRAdD6C5tc93NiW7VMHBBJagc5SAWfvfHPFloQdhKUhdy+MYksqzA1zSPcZT9qEDc80WKyf9Hpjdk3qw3cSaGh2/kKvvecd/ZijR2xXQTQabtmvFSwkQoT5VyKKw/Z2oQd5iteuDEVUrWFQ8=
+	t=1752527057; cv=none; b=bEkEnY7/AeAVgJ1f4fQwLqB3jFObCiTO/2rasDTORtSp3pOQWPATDeQQYir3REaykhQ9/DwelLAP+PcaY7Fu4UIORBYwmbN8m2sFK28OmtcRQGe75xs6JqWoTuAE6LPcVSHQTxQ2lj054cvJQBWOyyJ2dEPFZow+6aXvTEEjgGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752526952; c=relaxed/simple;
-	bh=bkDdbTNgW8hjA/1GG2l1MWwcviqf5fOJ/w4lRvkNdHk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YZhfIlyVeDvOjIGS1YSCzQ+y1Yx+iulp0eXluDrDY3ASVczS/w+z+VBjHpFSOZj5USR932YAKeNz/gvhGHuf0aa2VQ8pEpzR1c52YuIV5qQXA97KC9+i19/ePaX3u9RdtxuzwdgMAeWAN/yWBhWhO4YrbM0LmBhZR5uwVdLRngg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dWBq2EN9; arc=none smtp.client-ip=209.85.128.174
+	s=arc-20240116; t=1752527057; c=relaxed/simple;
+	bh=XWC0zxNYZfIjRWOG7IoJiPS5eyTrWieCg+q04+Ow2d0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EMs0DA49FLo8ityGySoEnbmr9RCe5xdqJouMIrBmpVJwg7O5pI3rRFDilEMjLKA/Ucvu5XnMdXy1IexNFlN46VgBTUcoqMZU5tYGL/YosIPi/JTGg4RmQZhQFcPorVp0m9D+Gq7ruwLh+NqglFOBlHaJnUpUCnsAi8RCbJC1t38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NCNb9MQ/; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-7170344c100so40555467b3.0
-        for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 14:02:30 -0700 (PDT)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-451d41e1ad1so33447735e9.1;
+        Mon, 14 Jul 2025 14:04:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752526950; x=1753131750; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CAAy7XnA5S6UCgECt8P2goo0hboFWcStzD/8p5tAKbM=;
-        b=dWBq2EN9JWfPoFp4VPRoVD7lkUNjYAeqRXkQ4+HXD8jDw5iKzx96uSoLlxmWGUHCxP
-         26raCV/u3N6+YUh315PMKAhjhcs1fH93oZVTewHC5NepEnCvZmFeQ/SYxbMq6Tv6RKW0
-         DAj5D7ZECuTEGX4/SvqfUKDdCkt/iGPml1mBqnr/dLcnZmTNxkBbHlsMPb3OW6eQF6kp
-         +hL2Tnky4ZaSgWX5+QxANdvrl+xlWZQbRFAbMV9w87bMU3D3o1OpW3cVNtGx2jSUN77N
-         U6I/NsR8HbWzD3M43Gvhx0wZwa6haCeB1VCpb+zJT2XyzcgD9VEFbD/O6eBIAA+GrfAQ
-         kLqQ==
+        d=gmail.com; s=20230601; t=1752527052; x=1753131852; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mouR0tzYVYgaU9BwCE8alLNv2Rg+cKwIajr55xzq3Io=;
+        b=NCNb9MQ/QzEiPl+AjCNda7ZSJDFm5STuDzcV4G3z+LE6z52/58mquzKJm3qoPCClsy
+         YVXXMwTZ/N0y9LbLIvvqx6WUG8ldgnLydZBQA1n95HJqVkMF1SDNFbI8WMllcwiCNT90
+         lpe7ixfqmPiGtv9NILtIb6biZ2N3cj8uBFgllxTkpHMJq36VQjW6ECscG3yoApqfRVzZ
+         QWzoN2RJ+T+Tu6JYewKSIdg+lVM3xGPwyFyu3rsIoSFeEL8Uh+3+7ECZhsU6MEgzBQx6
+         Ql6D0CJQRqKX/9xBUgcBegxF/oCgN4QMQPnAxlX+H5azv1ywM7EdhEJgA60vXNKBE6AO
+         XkBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752526950; x=1753131750;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CAAy7XnA5S6UCgECt8P2goo0hboFWcStzD/8p5tAKbM=;
-        b=qZ0q3Fe1jpGamvwwCAA8PsWXuPrkR9f9ZtLPyDzUKUdQTSgjpNuk4c5i75EK+JYNrm
-         TFQQljErGdN2US3Qu9exSMY/CTuxEC9k8lsYcLXos5MgUjWE+0FtfSygVA+VVgq9iUV/
-         myx2O3MdX6Y1vDvltXo2OCxre2As5o1xvOJaHuhBNNPKXm3HUSzIxC55QH4S0lmQba11
-         RbmSXx8iIQYeY61qkX+k1MSc0pUD2oKT1UZMNoYBDVJTPtCvbqThF1Pq3xZlG8BawEXc
-         ygVetsA7YeLfx4DVO5civjZvZ6u5ylfQeCCzYba4t2QMbl406dF6yLSj8kxYUmH5OmTu
-         ZOvg==
-X-Forwarded-Encrypted: i=1; AJvYcCXAw7LWbcs/Uxwl7pDSbkjpcyZA8rZsEm9FaczeaSBs3CCytWt+2qOnV5hQO6JcXgLNsHk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyr2+5aiLqlYALcrmfYHZ0X3e19OOYaRZpVkKr5T6BM4haeD4jy
-	6eYAcs/nDLs36jfonSjVz4iaN/87AhZDDgUWCyKhcHPVCt8bDURxTu66X9Py0VypDMu+kjysvgJ
-	LEq6q+3QKBs2zWSl2prHgWbUVVBWZYcE=
-X-Gm-Gg: ASbGncsxM/6DhaFs8OgyHAgImEVCbT1sPh9htK60BHH+Nl6JwendE/i6okYQVwR4HnH
-	VvNfNUPV840xnRNAeew1Ip+ZP8SXp+ds8vPJzxgkraaWH/XZn3YS/NB/jl7sJ4y0TiW4gB1UQmQ
-	1ooA4gLB6yCNdU0+KLTU2u9BlTt7bxZAdwh/cbW69X/FZvAC5RYQHjBNyFsWzPQi8E+ooTcoOuC
-	FQTEj8=
-X-Google-Smtp-Source: AGHT+IEoTZcszw6yw4eBNoY6gXVfTBfvp1Thapmx/iYT18RM0VKUrusiK73axE8Wjbl6OoDqA1CbyueLF1mTdgdjERI=
-X-Received: by 2002:a05:690c:640e:b0:713:ff70:8588 with SMTP id
- 00721157ae682-717d7a8e9c9mr220309057b3.36.1752526949904; Mon, 14 Jul 2025
- 14:02:29 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1752527052; x=1753131852;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mouR0tzYVYgaU9BwCE8alLNv2Rg+cKwIajr55xzq3Io=;
+        b=Jw4Jcsl4oFJp1SqvIWzOR9Dwy/NXvjdtgnygOVhYDkoM4iPeuJ1MuS/jN0Etc4c67Y
+         mjvf62K5tnRtqo9lQDCfm7z52wG+MCdvpRzWvInaqEVaWjuLEjaBRuAd76TTYe4I/vg3
+         wKFnCis8rgBab0NbKc3xHbAwLrHtcyb+tjZJKHvE0Mlk1neGkssClKhO+shthtDKHaKc
+         rlArdYdKqQtbp+58Do2gmsMrlgZyh5DyqHaYUzNjBhVzX0iSOJC0aYsfILC4XklKa7Tu
+         j3NPYuLdxOTXBoPvt/dJEQn73XwyVW7SB14P7uNleagPpBNEid9yXcbIxctLCncZcyF5
+         elGA==
+X-Forwarded-Encrypted: i=1; AJvYcCVV230zqE6CeR4lRbPhVAJClfMyyxqBub4ompt508UvmKJjZ/MMOqgsg/PKbWRdjP+Ho47rOXsnNc89nOcjSWyd@vger.kernel.org, AJvYcCW9DB0xwrTYiv+nm+Kf5HvRBOuPV5swvuSA1DF51lOFo9nwG6Wq0EnJPXZy5r/+NMV4xOE=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx9r2hEAKOJz/vSbgNk+oEB0WKo+yj1/Ob8qSY4g1/irnS910Bg
+	eJz8Tv1TqDpEKk11KPwCmZ8WuvvdVFZsTqQ1Ret5QLAzR9Pw8T0mnVa725J0c6GL
+X-Gm-Gg: ASbGnctpOwcQ99xJ3HgP5OZV96Ek4C5N7KjWbZfcM5zDWqzaM7ZDsSd9UJcUzCWB7BR
+	RM826EoRZseorr86Ql6TFbzLaDzgrCCd4ufFLDAHiFwQlPPRjujecpOhJU9vT9XVJutZux4r+SE
+	XrtnSzUM47kta5kxqRII6VFwY5Ml+FzYCIWT1OQy9PynC0wDRfJM79eQL3UFUOhg/ncxWgv4WFE
+	fSfiy9UEeS4zmKJxY1rcUG5wOkOlcEbJIoTpaIkBV31ocYxu9HJ4jPlm5ramnyxzji2t7KX9V9H
+	mZGmKdeAtKigWmEH1w1wMkdvV/vIPJ0rUsKPo7I10jashNl0steb58gXoKOmiqWvVtLdnqveSbi
+	Q8+HNY2YCBJCTTC5fvpY=
+X-Google-Smtp-Source: AGHT+IH6zXTxX+LNCWcxRTcfW/J/nHlhc1PThiqfATIeWBU6atdA9tOZZyTYRLPbCj8P4NRFR2HI9w==
+X-Received: by 2002:a05:600c:8505:b0:442:e0f9:394d with SMTP id 5b1f17b1804b1-45565edc90dmr113035265e9.24.1752527052297;
+        Mon, 14 Jul 2025 14:04:12 -0700 (PDT)
+Received: from localhost ([2a03:2880:31ff:8::])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4561b176f87sm40748325e9.35.2025.07.14.14.04.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jul 2025 14:04:11 -0700 (PDT)
+From: Mohsin Bashir <mohsin.bashr@gmail.com>
+To: netdev@vger.kernel.org
+Cc: kuba@kernel.org,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	shuah@kernel.org,
+	horms@kernel.org,
+	cratiu@nvidia.com,
+	noren@nvidia.com,
+	cjubran@nvidia.com,
+	mbloch@nvidia.com,
+	mohsin.bashr@gmail.com,
+	jdamato@fastly.com,
+	gal@nvidia.com,
+	sdf@fomichev.me,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	nathan@kernel.org,
+	nick.desaulniers+lkml@gmail.com,
+	morbo@google.com,
+	justinstitt@google.com,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH net-next V4 0/5] selftests: drv-net: Test XDP native support
+Date: Mon, 14 Jul 2025 14:03:47 -0700
+Message-ID: <20250714210352.1115230-1-mohsin.bashr@gmail.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250708230825.4159486-1-ameryhung@gmail.com> <20250708230825.4159486-3-ameryhung@gmail.com>
- <68f4b77c-3265-489e-9190-0333ed54b697@linux.dev> <CAMB2axO3Ma7jYa00fbSzB8ZFZyekS13BNJ87rsTfbfcSZhpc6w@mail.gmail.com>
- <2d1b45f3-3bde-415d-8568-eb4c2a7dd219@linux.dev> <CAMB2axMDUr+s+f9K-4sj-5vSkPQV4RXHo8y73VH9V2JQbKZOxQ@mail.gmail.com>
- <CAEf4BzaUK0i7QFkKi800TQhAKw2WL+FyoG3eFP6nq_r-TUPBKw@mail.gmail.com>
- <CAMB2axONnVJ5BY-YOASWGUGpaZa-P64Yf5f6AbX+O8fjCiZNfw@mail.gmail.com>
- <CAADnVQJxu5hsDw0iCP68eRW3v2CXRBos8asfN1x9F=gVyGmqbw@mail.gmail.com>
- <CAMB2axMw0uEojfdq33KbjqZXAtRSJwR2=f1Y1S4ma01sWJFNfg@mail.gmail.com> <CAEf4BzaoUCapHxdVJj6vyx=Ai_tCO+HY3kaD2ZNK2v0R0zuTMw@mail.gmail.com>
-In-Reply-To: <CAEf4BzaoUCapHxdVJj6vyx=Ai_tCO+HY3kaD2ZNK2v0R0zuTMw@mail.gmail.com>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Mon, 14 Jul 2025 14:02:19 -0700
-X-Gm-Features: Ac12FXxAQ5edGyIzngMVNzpe7ZyTHXEyo6q6ArcUf766AkAyOb6hw3eIfzzG4Rk
-Message-ID: <CAMB2axNXLm2mWnSv4EL_YxexYa97_OnRD9Nj7ww9Qq_3dAp5hg@mail.gmail.com>
-Subject: Re: [RFC bpf-next v1 2/4] bpf: Support cookie for linked-based
- struct_ops attachment
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Tejun Heo <tj@kernel.org>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jul 14, 2025 at 1:46=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Fri, Jul 11, 2025 at 2:38=E2=80=AFPM Amery Hung <ameryhung@gmail.com> =
-wrote:
-> >
-> > On Fri, Jul 11, 2025 at 1:21=E2=80=AFPM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Fri, Jul 11, 2025 at 12:29=E2=80=AFPM Amery Hung <ameryhung@gmail.=
-com> wrote:
-> > > >
-> > > > On Fri, Jul 11, 2025 at 11:41=E2=80=AFAM Andrii Nakryiko
-> > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > >
-> > > > > On Thu, Jul 10, 2025 at 2:00=E2=80=AFPM Amery Hung <ameryhung@gma=
-il.com> wrote:
-> > > > > >
-> > > > > > On Thu, Jul 10, 2025 at 12:47=E2=80=AFPM Martin KaFai Lau <mart=
-in.lau@linux.dev> wrote:
-> > > > > > >
-> > > > > > > On 7/10/25 11:39 AM, Amery Hung wrote:
-> > > > > > > >> On 7/8/25 4:08 PM, Amery Hung wrote:
-> > > > > > > >>> @@ -906,6 +904,10 @@ static long bpf_struct_ops_map_updat=
-e_elem(struct bpf_map *map, void *key,
-> > > > > > > >>>                goto unlock;
-> > > > > > > >>>        }
-> > > > > > > >>>
-> > > > > > > >>> +     err =3D bpf_struct_ops_prepare_attach(st_map, 0);
-> > > > > > > >> A follow-up on the "using the map->id as the cookie" comme=
-nt in the cover
-> > > > > > > >> letter. I meant to use the map->id here instead of 0. If t=
-he cookie is intended
-> > > > > > > >> to identify a particular struct_ops instance (i.e., the st=
-ruct_ops map), then
-> > > > > > > >> map->id should be a good fit, and it is automatically gene=
-rated by the kernel
-> > > > > > > >> during the map creation. As a result, I suspect that most =
-of the changes in
-> > > > > > > >> patch 1 and patch 2 will not be needed.
-> > > > > > > >>
-> > > > > > > > Do you mean keep using cookie as the mechanism to associate=
- programs,
-> > > > > > > > but for struct_ops the cookie will be map->id (i.e.,
-> > > > > > > > bpf_get_attah_cookie() in struct_ops will return map->id)?
-> > > > > > >
-> > > > > > > I meant to use the map->id as the bpf_cookie stored in the bp=
-f_tramp_run_ctx.
-> > > > > > > Then there is no need for user space to generate a unique coo=
-kie during
-> > > > > > > link_create. The kernel has already generated a unique ID in =
-the map->id. The
-> > > > > > > map->id is available during the bpf_struct_ops_map_update_ele=
-m(). Then there is
-> > > > > > > also no need to distinguish between SEC(".struct_ops") vs
-> > > > > > > SEC(".struct_ops.link"). Most of the patch 1 and patch 2 will=
- not be needed.
-> > > > > > >
-> > > > > > > A minor detail: note that the same struct ops program can be =
-used in different
-> > > > > > > trampolines. Thus, to be specific, the bpf cookie is stored i=
-n the trampoline.
-> > > > > > >
-> > > > > > > If the question is about bpf global variable vs bpf cookie, y=
-eah, I think using
-> > > > > > > a bpf global variable should also work. The global variable c=
-an be initialized
-> > > > > > > before libbpf's bpf_map__attach_struct_ops(). At that time, t=
-he map->id should
-> > > > > > > be known already. I don't have a strong opinion on reusing th=
-e bpf cookie in the
-> > > > > > > struct ops trampoline. No one is using it now, so it is avail=
-able to be used.
-> > > > > > > Exposing BPF_FUNC_get_attach_cookie for struct ops programs i=
-s pretty cheap
-> > > > > > > also. Using bpf cookie to allow the struct ops program to tel=
-l which struct_ops
-> > > > > > > map is calling it seems to fit well also after sleeping on it=
- a bit. bpf global
-> > > > > > > variable will also break if a bpf_prog.o has more than one SE=
-C(".struct_ops").
-> > > > > > >
-> > > > > >
-> > > > > > While both of them work, using cookie instead of global variabl=
-e is
-> > > > > > one less thing for the user to take care of (i.e., slightly bet=
-ter
-> > > > > > usability).
-> > > > > >
-> > > > > > With the approach you suggested, to not mix the existing semant=
-ics of
-> > > > > > bpf cookie, I think a new struct_ops kfuncs is needed to retrie=
-ve the
-> > > > >
-> > > > > yes, if absolutely necessary, sure, let's reuse the spot that is
-> > > > > reserved for cookie inside the trampoline, but let's not expose t=
-his
-> > > > > as real BPF cookie (i.e., let's not allow bpf_get_attach_cookie()
-> > > > > helper for struct_ops), because BPF cookie is meant to be fully u=
-ser
-> > > > > controllable and used for whatever they deem necessary. Not
-> > > > > necessarily to just identify the struct_ops map. So it will be a =
-huge
-> > > > > violation to just pre-define what BPF cookie value is for struct_=
-ops.
-> > > > >
-> > > >
-> > > > We had some offline discussions and figured out this will not work =
-well.
-> > > >
-> > > > sched_ext users already call scx kfuncs in global subprograms. If w=
-e
-> > > > choose to add bpf_get_struct_ops_id() to get the id to be passed to
-> > > > scx kfuncs, it will force the user to create two sets of the same
-> > > > global subprog. The one called by struct_ops that calls
-> > > > bpf_get_struct_ops_id() and tracing programs that calls
-> > > > bpf_get_attach_cookie().
-> > >
-> > > Can we put cookie into map_extra during st_ops map creation time and
-> > > later copy it into actual cookie place in a trampoline?
-> >
-> > It should work. Currently, it makes sense to have cookie in struct_ops
-> > map as all struct_ops implementers (hid, tcp cc, qdisc, sched_ext) do
-> > not allow multi-attachment of the same map. A struct_ops map is
-> > effectively an unique attachment for now.
->
-> Is there any conceptual reason why struct_ops map shouldn't be allowed
-> to be attached to multiple places? If not, should we try to lift this
-> restriction and not invent struct_ops-specific BPF cookie APIs?
->
-> From libbpf POV, struct_ops map is created implicitly from the
-> struct_ops variable. There is no map_flags field there. We'll need to
-> add new special APIs and/or conventions just to be able to set
-> map_flags.
->
-> >
-> > Additionally, we will be able to support cookie for non-link
-> > struct_ops with this way.
-> >
-> > This approach will not block future effort to support link-specific
-> > cookie if there is such a use case. We can revisit this patchset then.
->
-> It will create two ways to specify BPF cookie for struct_ops: (legacy
-> and special way) through map_flags and common one through the
-> LINK_CREATE command (and I guess we'd need to reject LINK_CREATE if
-> cookie was already set through map_flags, right?). Why confuse users
-> like that?
->
-> From what I understand, the problem is that currently struct_ops map's
-> BPF trampoline(s) are created a bit too early, before the attachment
-> step. How hard would it be to move trampoline creation to an actual
-> attachment time? Should we seriously consider this before we invent
-> new struct_ops-specific exceptions for BPF cookie?
+This patch series add tests to validate XDP native support for PASS,
+DROP, ABORT, and TX actions, as well as headroom and tailroom adjustment.
+For adjustment tests, validate support for both the extension and
+shrinking cases across various packet sizes and offset values.
 
-Yeah...
+The pass criteria for head/tail adjustment tests require that at-least
+one adjustment value works for at-least one packet size. This ensure
+that the variability in maximum supported head/tail adjustment offset
+across different drivers is being incorporated.
 
-I realized that while map_extra works, the cookie needs to be passed
-to the kernel in map creation time and will create the confusion you
-mentioned in libbpf.
+The results reported in this series are based on fbnic. However, the
+series is tested against multiple other drivers including netdevism.
 
-I am fixing the patchset by moving trampoline and ksyms to
-bpf_struct_ops_link. It shouldn't complicate struct_ops code too much
-(finger cross).
+Note: The XDP support for fbnic will be added later.
+---
+Change-log:
+V4:
+  - Support XDP handling for netdevsim
+  - Fix pylint warning with P4
+  - Update commit message for P2,P3 to show pass/fail summary
+V3: https://lore.kernel.org/netdev/20250712002648.2385849-1-mohsin.bashr@gmail.com
+V2: https://lore.kernel.org/netdev/20250710184351.63797-1-mohsin.bashr@gmail.com
+V1: https://lore.kernel.org/netdev/20250709173707.3177206-1-mohsin.bashr@gmail.com
+
+
+Jakub Kicinski (1):
+  net: netdevsim: hook in XDP handling
+
+Mohsin Bashir (4):
+  selftests: drv-net: Test XDP_PASS/DROP support
+  selftests: drv-net: Test XDP_TX support
+  selftests: drv-net: Test tail-adjustment support
+  selftests: drv-net: Test head-adjustment support
+
+ drivers/net/netdevsim/netdev.c                |  19 +-
+ tools/testing/selftests/drivers/net/Makefile  |   1 +
+ tools/testing/selftests/drivers/net/xdp.py    | 656 ++++++++++++++++++
+ .../selftests/net/lib/xdp_native.bpf.c        | 538 ++++++++++++++
+ 4 files changed, 1213 insertions(+), 1 deletion(-)
+ create mode 100755 tools/testing/selftests/drivers/net/xdp.py
+ create mode 100644 tools/testing/selftests/net/lib/xdp_native.bpf.c
+
+-- 
+2.47.1
+
 
