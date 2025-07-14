@@ -1,220 +1,210 @@
-Return-Path: <bpf+bounces-63194-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63195-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42FE8B03FDB
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 15:28:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B243B04007
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 15:33:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4FEE4A6563
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 13:24:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 899634A53D9
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 13:29:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9974824EF8B;
-	Mon, 14 Jul 2025 13:24:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC4AF24EAB1;
+	Mon, 14 Jul 2025 13:29:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AWpvA5Mn";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MORvkYEK";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AWpvA5Mn";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MORvkYEK"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="QaRYtQUT"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D59824A047
-	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 13:24:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EB3D149C51;
+	Mon, 14 Jul 2025 13:29:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752499447; cv=none; b=LBjotD37Xw6LejB2/abD7xuhmqKG9d3Yk59CL+EBPRyhZ/JUHJcPu1ikpI3w1+lztgBYz9ZH0Vw/j1ogImce1+QZNbI9ibK2J0ZawqAxIz5wcR0nRF/aMLVlwLmsdtHc7rl44mJ5EeWliP5FO339QgzaZj2Ft8rVpb+K1p1da8E=
+	t=1752499799; cv=none; b=nmBYrdYGHAk4XLOezVt+jYG2TpO9VsrC0i04ZGBKslryrYnt1PiMXTtwfRBlPV7jcwdl9bBSYxs/bW8FTQ5QZtIlhgfO6gHUdGsiMJ6frv+6TM7ar96mX9CUw/pItpMMkF38iU2TL3juv82YWwOOHQd7Oz++yEUYKtkMyLkquIo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752499447; c=relaxed/simple;
-	bh=iUFYrjPTWaorjo8hMNDtqJKBDwwwnfzk4l5oqmb0t8E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=r7YVd0xaZD0Fgk65pIx25TPDUqjhChUDEkIg3TMzjiS1k9F9Otn/RBve+OkztBmnCxRmxzh0zi0ywcWgC6+H8xFfKjumvf0+Ym7A+0/xUmKPgoqrgbJXSmPt1jYUiybHaveORbIi35gznE5Wt1Myz1XASILaUZ+spWxefrLCY7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AWpvA5Mn; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MORvkYEK; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AWpvA5Mn; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MORvkYEK; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 6CEB51F387;
-	Mon, 14 Jul 2025 13:24:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1752499443; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=tKznGN/QHd573gll6YXfcW05c/8J5n9Vq6ijHudJWMI=;
-	b=AWpvA5MnJzaZ9xL1d1wNIVk8DSXFqmfyNWrntuHiRs5SmKxbxDAGyl8YDixporR06ItzOi
-	JqFs+214inopKojRublon68rK4ibwBnoeiCUPTZfUSUX2tG5ORIe9lWNDlroo2CtA4CeHE
-	xNHGjyY+01wPfubV09jQazHiUM793HE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1752499443;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=tKznGN/QHd573gll6YXfcW05c/8J5n9Vq6ijHudJWMI=;
-	b=MORvkYEKhrO5sQZFpofVuk7aeGpJk5GVvpgzIII2yylgtLgr9OQ28bPUFEWAzgG1Nh5znX
-	M7m7v5CwQ1Kv0UDA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=AWpvA5Mn;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=MORvkYEK
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1752499443; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=tKznGN/QHd573gll6YXfcW05c/8J5n9Vq6ijHudJWMI=;
-	b=AWpvA5MnJzaZ9xL1d1wNIVk8DSXFqmfyNWrntuHiRs5SmKxbxDAGyl8YDixporR06ItzOi
-	JqFs+214inopKojRublon68rK4ibwBnoeiCUPTZfUSUX2tG5ORIe9lWNDlroo2CtA4CeHE
-	xNHGjyY+01wPfubV09jQazHiUM793HE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1752499443;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=tKznGN/QHd573gll6YXfcW05c/8J5n9Vq6ijHudJWMI=;
-	b=MORvkYEKhrO5sQZFpofVuk7aeGpJk5GVvpgzIII2yylgtLgr9OQ28bPUFEWAzgG1Nh5znX
-	M7m7v5CwQ1Kv0UDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2C0D8138A1;
-	Mon, 14 Jul 2025 13:24:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id qk5dCvMEdWixDQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 14 Jul 2025 13:24:03 +0000
-Message-ID: <92073822-ab60-40ca-9ff5-a41119c0ad3d@suse.cz>
-Date: Mon, 14 Jul 2025 15:24:02 +0200
+	s=arc-20240116; t=1752499799; c=relaxed/simple;
+	bh=uSDvZ7VTvhMtab969Fj7Ke5hLfJuIyLW2Vi1cGLIv8c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CGZ0HxKBeIHgFyQpjkSPss6ygE35Ick/2fCxLPuQfydJV6YAx+hbJGQQUT7XbbkWb9kfkT4FP10Xk/PrtaZsoVeHPCpQ1+oXf1HNWOGY+OwNCmhvsHesGFftNN8qXTYLJton8kxF53fPab+iGd4UK+cflst0g6tX/ysLp+rdjsE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=QaRYtQUT; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=pLHtmwVxblwTxA9MgozfbATAwzmb9kfhVgNP2IA4oMs=; b=QaRYtQUT8DMpCfibdprLAmU2yP
+	s6O31SaFATCU/6kXR25bnBKQDVCedhjAlRRXmVan5tWPqWOZcv7tVMfpG9exJ28l6GxzxB+uxYSNj
+	wOcJUw7oBaKIFgS6MfzlbfjHEIYJihiwqUJ3J6JbfI/Cytmb9XVIwWgBD3ExsOtvcWVmx+ehLJUeQ
+	QCO9FS7+H/RYp/PSOotRq/8iL/xAx9/nqbDNglsbFm6ejOlZAgzgRL47Low1Mkl1cMAKerFC6ZW/5
+	nOjzbrrsbBWh5gz5sQghWUoRysrTMWEJ+1w5F0v459MxIn2MDZOWQUF43xb+ATuRG7XS+H3mSAuf1
+	CzpLgnJg==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1ubJFR-00000009llQ-3hx3;
+	Mon, 14 Jul 2025 13:29:38 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id BC1CA30039A; Mon, 14 Jul 2025 15:29:36 +0200 (CEST)
+Date: Mon, 14 Jul 2025 15:29:36 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Steven Rostedt <rostedt@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, x86@kernel.org,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Indu Bhagat <indu.bhagat@oracle.com>,
+	"Jose E. Marchesi" <jemarch@gnu.org>,
+	Beau Belgrave <beaub@linux.microsoft.com>,
+	Jens Remus <jremus@linux.ibm.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>,
+	Sam James <sam@gentoo.org>
+Subject: Re: [PATCH v13 07/14] unwind_user/deferred: Make unwind deferral
+ requests NMI-safe
+Message-ID: <20250714132936.GB4105545@noisy.programming.kicks-ass.net>
+References: <20250708012239.268642741@kernel.org>
+ <20250708012358.831631671@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v7 1/7] netmem: introduce struct netmem_desc
- mirroring struct page
-Content-Language: en-US
-To: Harry Yoo <harry.yoo@oracle.com>, Jakub Kicinski <kuba@kernel.org>
-Cc: Byungchul Park <byungchul@sk.com>, willy@infradead.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- kernel_team@skhynix.com, almasrymina@google.com,
- ilias.apalodimas@linaro.org, hawk@kernel.org, akpm@linux-foundation.org,
- davem@davemloft.net, john.fastabend@gmail.com, andrew+netdev@lunn.ch,
- asml.silence@gmail.com, toke@redhat.com, tariqt@nvidia.com,
- edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com, leon@kernel.org,
- ast@kernel.org, daniel@iogearbox.net, david@redhat.com,
- lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, rppt@kernel.org,
- surenb@google.com, mhocko@suse.com, horms@kernel.org,
- linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com,
- hannes@cmpxchg.org, ziy@nvidia.com, jackmanb@google.com
-References: <20250625043350.7939-1-byungchul@sk.com>
- <20250625043350.7939-2-byungchul@sk.com> <20250626174904.4a6125c9@kernel.org>
- <20250627035405.GA4276@system.software.com>
- <20250627173730.15b25a8c@kernel.org> <aGHNmKRng9H6kTqz@hyeyoo>
- <20250701164508.0738f00f@kernel.org> <aHTQrso2Klvcwasf@hyeyoo>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- m6M14QORSWTLRg==
-In-Reply-To: <aHTQrso2Klvcwasf@hyeyoo>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 6CEB51F387
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCPT_COUNT_TWELVE(0.00)[37];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[sk.com,infradead.org,vger.kernel.org,kvack.org,skhynix.com,google.com,linaro.org,kernel.org,linux-foundation.org,davemloft.net,gmail.com,lunn.ch,redhat.com,nvidia.com,iogearbox.net,oracle.com,suse.com,cmpxchg.org];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[netdev];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	R_RATELIMIT(0.00)[to_ip_from(RLduzbn1medsdpg3i8igc4rk67)];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:mid]
-X-Spam-Score: -3.01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250708012358.831631671@kernel.org>
 
-On 7/14/25 11:42, Harry Yoo wrote:
-> On Tue, Jul 01, 2025 at 04:45:08PM -0700, Jakub Kicinski wrote:
->> Thanks a lot, this clarifies things for me.
+On Mon, Jul 07, 2025 at 09:22:46PM -0400, Steven Rostedt wrote:
+> From: Steven Rostedt <rostedt@goodmis.org>
 > 
-> You're welcome :)
+> Make unwind_deferred_request() NMI-safe so tracers in NMI context can
+> call it and safely request a user space stacktrace when the task exits.
 > 
->> Unfortunately, I still think that it's hard to judge patches 1 and 7 
->> in context limited to this series, so let's proceed to reposting just
->> the "middle 5" patches.
+> Note, this is only allowed for architectures that implement a safe
+> cmpxchg. If an architecture requests a deferred stack trace from NMI
+> context that does not support a safe NMI cmpxchg, it will get an -EINVAL.
+> For those architectures, they would need another method (perhaps an
+> irqwork), to request a deferred user space stack trace. That can be dealt
+> with later if one of theses architectures require this feature.
 > 
-> Could you please share your thoughts on why it's hard to judge them and
-> what's missing from the series, such as in the comments, changelog, or
-> the cover letter?
+> Suggested-by: Peter Zijlstra <peterz@infradead.org>
 
-I think we moved on in the discussion since then? "middle 5" patches are now
-merged, and 1+7 was, along with more patches (that make the context less
-limited hopefully), posted as v9/v10 now?
+How's this instead?
 
-
+---
+--- a/kernel/unwind/deferred.c
++++ b/kernel/unwind/deferred.c
+@@ -12,6 +12,40 @@
+ #include <linux/slab.h>
+ #include <linux/mm.h>
+ 
++/*
++ * For requesting a deferred user space stack trace from NMI context
++ * the architecture must support a safe cmpxchg in NMI context.
++ * For those architectures that do not have that, then it cannot ask
++ * for a deferred user space stack trace from an NMI context. If it
++ * does, then it will get -EINVAL.
++ */
++#ifdef CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG
++#define UNWIND_NMI_SAFE 1
++static inline bool try_assign_cnt(struct unwind_task_info *info, u32 cnt)
++{
++	u32 zero = 0;
++	return try_cmpxchg(&info->id.cnt, &zero, cnt);
++}
++static inline bool test_and_set_pending(struct unwind_task_info *info)
++{
++	return info->pending || cmpxchg_local(&info->pending, 0, 1);
++}
++#else
++#define UNWIND_NMI_SAFE 0
++/* When NMIs are not allowed, this always succeeds */
++static inline bool try_assign_cnt(struct unwind_task_info *info, u32 cnt)
++{
++	info->id.cnt = cnt;
++	return true;
++}
++static inline bool test_and_set_pending(struct unwind_task_info *info)
++{
++	int pending = info->pending;
++	info->pending = 1;
++	return pending;
++}
++#endif /* CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG */
++
+ /* Make the cache fit in a 4K page */
+ #define UNWIND_MAX_ENTRIES					\
+ 	((SZ_4K - sizeof(struct unwind_cache)) / sizeof(long))
+@@ -41,21 +75,16 @@ static DEFINE_PER_CPU(u32, unwind_ctx_ct
+  */
+ static u64 get_cookie(struct unwind_task_info *info)
+ {
+-	u32 cpu_cnt;
+-	u32 cnt;
+-	u32 old = 0;
++	u32 cnt = 1;
+ 
+ 	if (info->id.cpu)
+ 		return info->id.id;
+ 
+-	cpu_cnt = __this_cpu_read(unwind_ctx_ctr);
+-	cpu_cnt += 2;
+-	cnt = cpu_cnt | 1; /* Always make non zero */
+-
+-	if (try_cmpxchg(&info->id.cnt, &old, cnt)) {
+-		/* Update the per cpu counter */
+-		__this_cpu_write(unwind_ctx_ctr, cpu_cnt);
+-	}
++	/* LSB it always set to ensure 0 is an invalid value. */
++	cnt |= __this_cpu_read(unwind_ctx_ctr) + 2;
++	if (try_assign_cnt(info, cnt))
++		__this_cpu_write(unwind_ctx_ctr, cnt);
++
+ 	/* Interrupts are disabled, the CPU will always be same */
+ 	info->id.cpu = smp_processor_id() + 1; /* Must be non zero */
+ 
+@@ -174,27 +203,29 @@ int unwind_deferred_request(struct unwin
+ 
+ 	*cookie = 0;
+ 
+-	if (WARN_ON_ONCE(in_nmi()))
+-		return -EINVAL;
+-
+ 	if ((current->flags & (PF_KTHREAD | PF_EXITING)) ||
+ 	    !user_mode(task_pt_regs(current)))
+ 		return -EINVAL;
+ 
++	/* NMI requires having safe cmpxchg operations */
++	if (WARN_ON_ONCE(!UNWIND_NMI_SAFE && in_nmi()))
++		return -EINVAL;
++
+ 	guard(irqsave)();
+ 
+ 	*cookie = get_cookie(info);
+ 
+ 	/* callback already pending? */
+-	if (info->pending)
++	if (test_and_set_pending(info))
+ 		return 1;
+ 
+ 	/* The work has been claimed, now schedule it. */
+ 	ret = task_work_add(current, &info->work, TWA_RESUME);
+-	if (WARN_ON_ONCE(ret))
++	if (WARN_ON_ONCE(ret)) {
++		WRITE_ONCE(info->pending, 0);
+ 		return ret;
++	}
+ 
+-	info->pending = 1;
+ 	return 0;
+ }
+ 
 
