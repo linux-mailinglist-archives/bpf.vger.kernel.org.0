@@ -1,212 +1,247 @@
-Return-Path: <bpf+bounces-63246-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63247-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C7F3B04829
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 21:58:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98065B048CD
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 22:47:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF4B87A802E
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 19:57:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF2851A65B2F
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 20:47:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EC2926A0DD;
-	Mon, 14 Jul 2025 19:58:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C556238C2A;
+	Mon, 14 Jul 2025 20:46:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TvsJ6Q/T"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HWBQ3uQt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0266C2475E3
-	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 19:58:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22691341AA
+	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 20:46:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752523110; cv=none; b=TXKa0Zk5gmbK81wn94ITH8SRC00D5uAL65vyxYBMCvFzjpfhmVX5ouSdPRzeYd/7YsadvZYEhEAZRpdq/4c5wsZ83fdOllXAe4iuYRiGhnP1DrxFeAeMX3cWgdH6glLHCc79dXnZr3Ey6ApbkB5INr6bnWzcbmQBnDspbvR5k88=
+	t=1752526018; cv=none; b=BT6mHLF/3GATO9ngqQ5IKtjpqUTjEggFaOfLhw4YhpL6CKIfywJdxa77v0+5otrA5yL1mlzJtGGqV2qLqMcgDvXa5kkg84F/ct4YVPUjILFChDBF4ciAMMgAIc/gSMf//nHWGWWl02jKxmF1ls/UbjkSrZugsqye6sUcWYgpy1I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752523110; c=relaxed/simple;
-	bh=+pqyeAoD5157xnmPHhmqS7gq9lKU2DrmIZAQW9Mfn58=;
+	s=arc-20240116; t=1752526018; c=relaxed/simple;
+	bh=W2rQstUrICSDnWxjPFCFbI19N4qAECcX/JEzYb+Ni84=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=D9yPcFvXRytXoWCwe30jqazwJrU2FjSObYCaEq+V2BqM8/qFhA7GrzWLL6/3a73o8rVa7Z+wSa+1qeqGTNEe2C0ZUH5cysfi/KSvQMDSxXMJeffkNaMjf0MjLe55Qaw0iUhT+/zdI8Nn7srDWq6O53/naepYEWNpc7QqC72ajj0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TvsJ6Q/T; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-237f18108d2so45905ad.0
-        for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 12:58:28 -0700 (PDT)
+	 To:Cc:Content-Type; b=HoT4IpGu7VN8fdCdfDt+atSKPPP/VHyEk9T6yxPW3vGtfBspG5MByR1lIrqOPC9bCP8IkaWZDcFUZDky2xDmPRvu3p9Rlttp35wMFLWJwZeEuHNUhvOKXXUZy5N7/9SId8gji0xbS4IjccsA6NmmBSAX1HnH41+MG5qpvOJOp/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HWBQ3uQt; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-3135f3511bcso4008679a91.0
+        for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 13:46:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1752523108; x=1753127908; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1752526016; x=1753130816; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tDa5D0A4lwaiBKd2JNzdgebIMAD7+wg9x+lwbfz747o=;
-        b=TvsJ6Q/TBr/xSzZ19yFXmoqEptr5c1imFBCqpPwSpUWlqJT6i+aKgrEXw62mYctkUR
-         qrzflpNLMiqQjMEYHHJGRcTuN93QiAQkExL4kVrTrpVQB8gCy8BuFy7qNHPQDkRhBk/c
-         j5e7PVO3d0zyrAouvz/L6ZNspf3+c0412LTkkvIHIBBTJQM3Ow4P3Bq9zxBpmjPNcWAx
-         eRIrK9ADLtPiMGSB3wcGUpUXr8F5Xmr17MnYTkvmGiMNUVvBRfSf33RelrJD1vAMWdtr
-         CqIlTOORaHKrt5c0RwLgkYeQ9rSjqm+lOFusQLH4zoRrcUO8R3SGQuCT6yXNIopoBk2E
-         E81Q==
+        bh=yEC2S1tg5ToMSLoJuWnhgw6IyieSs5HzboJbcBJo09g=;
+        b=HWBQ3uQtMhD9QaTRr/PcI/VzSiX7n2pBCrVLDpDketowDf2Ma7QoMCIEGDKDO3RPPm
+         m2aAdivBkMNLuhgqWZliHTdu6mzBuFKVJ/cLH9oHN0x6clCOwkMLA7hNsyFKsdB4ESJP
+         bYm1aNIdMdUamEJrLeuR7qBNbUbwiEyiqt+lwS9geNWBLoAkgbYiWQasKpTCBIqmU9OW
+         6JaAn8nuOJulwNCCuEjgzcBi8moB5QCb+56uWuwTP2ShgEKulSvH7pl/BbFNaK+G7hCW
+         Gjpzf8RVei3MBZIGlJr7A40zDtkm4NtfiWoxOC5W95+h54I9v5IHERuvQ6xkfAIo0GxF
+         PJow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752523108; x=1753127908;
+        d=1e100.net; s=20230601; t=1752526016; x=1753130816;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tDa5D0A4lwaiBKd2JNzdgebIMAD7+wg9x+lwbfz747o=;
-        b=p+h6FleAE5lqR6vy7awgjPGPsPsI+cL+8Iw6y4XcOfnZx2ClEukRj5Tyq1hqByJvxy
-         9YpVJeAIQWH7GAgSwfh5OJsfumksMXMmtL04RT36e2cQvD5uNOAMm/ISGacqd+VdTutD
-         +CoE2H5UxdmPjokxIVBIUiJF/vq0pR/4QPsCP4wsee2DJ/To1G6CIBdMifG6LY0oWI/g
-         MkyRammzjxoiKyZJGvdRKzzDvWkwamUjruRCV+QrqofBnc0SLAmsjDNnmDrMj9myHsa9
-         XjdyDlBLa7D21RUZoecFo1/SK3AYCaDy4g+u9u+23/45clXb4jTREcP5/7a6IIOR3X0X
-         5O4A==
-X-Forwarded-Encrypted: i=1; AJvYcCWdjJWbrUZjObj89LPXhtvIoo71EiQ5BqBEUzaWIrFVr09gGhCwNTQXBsW5NksjaNH1oVQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzdSBvUVg8c/gr3R1T3FTkliZRFVeDW/hkZmUfiIuHB3Kz0oQAg
-	/LKyL7qgVk0DiauEl8teH4PJuDvzlXQWsXoWKpG+IN5YTTEBP82MQUrywGhHLEFr89CRmgZuVh0
-	eN2OmL1NqqD/nDV0hlUj2vQKTcu5r/2cHz0cSI7g4
-X-Gm-Gg: ASbGncutVo3weCg0di8N/HETcXF0V2sQRXm7hirWS6lldysQROgg3h06OfIy0BL+VNg
-	BF7NgHeWH7SVyuGq0Ejf46BObsl+/zl117ZPokSxA55YJKuzdenhhnH2PlAhdXMF8xU0+HNWzmV
-	kLAnumkLPt816lLe/i0TiDRNKmRcgVhjVJGDvAkOaQzQ/10hWBng6+5ACspE6OTkCDcpAFnGMbf
-	MVoiqajVUeaM21P+APLy3igu2Nw3VK0DJPC0Al+cVYvUXZ9
-X-Google-Smtp-Source: AGHT+IFWnfMDtJC2CezIF3KnAbgH/pbj3O5jwVGjDMwdXbeGoiYAzNm9r+9HSREvdPvfvdh1fRM05JSSpaSXXTed5k8=
-X-Received: by 2002:a17:902:c40d:b0:235:e1fa:1fbc with SMTP id
- d9443c01a7336-23e1aa6bd1bmr603895ad.0.1752523107669; Mon, 14 Jul 2025
- 12:58:27 -0700 (PDT)
+        bh=yEC2S1tg5ToMSLoJuWnhgw6IyieSs5HzboJbcBJo09g=;
+        b=mgfV07qerygUa3hoWB1aJ27J3zvtkXt/A6/NJ3OdPvPLIkfgWZnm1QREcohq7U8FOf
+         KrZx4lnWrEfki5iJK35bTNZf0PZPVwkVV9e7fXJPiusoyCGkx/6F+C6vuo8hRLbwf8PF
+         HW6p6KruPDy4uI5lzzvWt2yhq4slGEV9IenUOc36eQHUHztxNmMm1pa+Z3uYyE1ymUUK
+         pi3J7t9IWuCUZAgMOsMQuUynHxeA67jMJbr96792jaHW0G57/PCUJqazQuujh2JPatVN
+         9ntyEMRm8FcNy0tjsoFW765kI521qTZ1BEzyeKzlLKex0bc0fvohzON8Zp2psYlXrbpA
+         Ofgw==
+X-Forwarded-Encrypted: i=1; AJvYcCU+DwCcpKJSHhOcGBGhOaJLQxSddU4i2pl2xr+2vjMtilRcnvllc4l6dMUEWIMfED4NRp8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzoA6LxHr0jv9pUucc7vq7wB2ac4Jow7Pqsm0WhBkqq/qTbwmC9
+	k1f8IY988QIBjABMFNnoTydga7cle+zDKKiEurtwkKJkpRoC0rreSWCh/uYR1QSKtyOgEohao12
+	VhrC3L2kAsPl5+Mo+qaLpwa2nqeZRxrg=
+X-Gm-Gg: ASbGncsdp6S+sm4WGW4zDgGqRtysClzXhijsMREVxoEgNu1cCVyaUh3G4edtH0G0xbw
+	IQ42oVH6ThayedmM19FyHGja/mi6L9CJ8hyerBpqXce1vjtIXzAo1blJkH6PoxUo7CXd6r+wvcu
+	2ZLKSsvXz2UYL6YSAWOeLJViGLkP1jZEg7cv90052WAx7+imR9AZi1HJs6U5EIRPDn69tDr2MOk
+	pwlmGqc/NRSdH/ID7xHXBE=
+X-Google-Smtp-Source: AGHT+IH3lbJeoCnfO6Xl8n4A7z2VyELvw66VVsu4BT6NyCIYT2PbHDBP8LCSFjqUQkGe6hTDen4x12+vc64EuOts4PQ=
+X-Received: by 2002:a17:90b:33c8:b0:311:baa0:89ce with SMTP id
+ 98e67ed59e1d1-31c4ca84837mr23502487a91.12.1752526016062; Mon, 14 Jul 2025
+ 13:46:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250714120047.35901-1-byungchul@sk.com> <20250714120047.35901-3-byungchul@sk.com>
- <CAHS8izO393X_BDJxnX2d-auhTwrUZK5wYdoAh_tJc0GBf0AqcQ@mail.gmail.com>
-In-Reply-To: <CAHS8izO393X_BDJxnX2d-auhTwrUZK5wYdoAh_tJc0GBf0AqcQ@mail.gmail.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Mon, 14 Jul 2025 12:58:15 -0700
-X-Gm-Features: Ac12FXz5nYW9H_RK0Nw_oICAspVAx9135uss8L0AQRp8qp4a_9a4RkfhL6o4a4I
-Message-ID: <CAHS8izNh7aCJOb1WKTx7CXNDPv_UBqFyq2XEHHhqHH=5JPmJCQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v10 02/12] netmem: use netmem_desc instead of
- page to access ->pp in __netmem_get_pp()
-To: Byungchul Park <byungchul@sk.com>
-Cc: willy@infradead.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, kernel_team@skhynix.com, ilias.apalodimas@linaro.org, 
-	harry.yoo@oracle.com, akpm@linux-foundation.org, andrew+netdev@lunn.ch, 
-	asml.silence@gmail.com, toke@redhat.com, david@redhat.com, 
-	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org, surenb@google.com, 
-	mhocko@suse.com, linux-rdma@vger.kernel.org, bpf@vger.kernel.org, 
-	vishal.moola@gmail.com, hannes@cmpxchg.org, ziy@nvidia.com, 
-	jackmanb@google.com, wei.fang@nxp.com, shenwei.wang@nxp.com, 
-	xiaoning.wang@nxp.com, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, pabeni@redhat.com, anthony.l.nguyen@intel.com, 
-	przemyslaw.kitszel@intel.com, sgoutham@marvell.com, gakula@marvell.com, 
-	sbhatta@marvell.com, hkelam@marvell.com, bbhushan2@marvell.com, 
-	tariqt@nvidia.com, ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
-	john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com, leon@kernel.org, 
-	mbloch@nvidia.com, danishanwar@ti.com, rogerq@kernel.org, nbd@nbd.name, 
-	lorenzo@kernel.org, ryder.lee@mediatek.com, shayne.chen@mediatek.com, 
-	sean.wang@mediatek.com, matthias.bgg@gmail.com, 
-	angelogioacchino.delregno@collabora.com, aleksander.lobakin@intel.com, 
-	horms@kernel.org, m-malladi@ti.com, krzysztof.kozlowski@linaro.org, 
-	matthias.schiffer@ew.tq-group.com, robh@kernel.org, imx@lists.linux.dev, 
-	intel-wired-lan@lists.osuosl.org, linux-arm-kernel@lists.infradead.org, 
-	linux-wireless@vger.kernel.org, linux-mediatek@lists.infradead.org
+References: <20250708230825.4159486-1-ameryhung@gmail.com> <20250708230825.4159486-3-ameryhung@gmail.com>
+ <68f4b77c-3265-489e-9190-0333ed54b697@linux.dev> <CAMB2axO3Ma7jYa00fbSzB8ZFZyekS13BNJ87rsTfbfcSZhpc6w@mail.gmail.com>
+ <2d1b45f3-3bde-415d-8568-eb4c2a7dd219@linux.dev> <CAMB2axMDUr+s+f9K-4sj-5vSkPQV4RXHo8y73VH9V2JQbKZOxQ@mail.gmail.com>
+ <CAEf4BzaUK0i7QFkKi800TQhAKw2WL+FyoG3eFP6nq_r-TUPBKw@mail.gmail.com>
+ <CAMB2axONnVJ5BY-YOASWGUGpaZa-P64Yf5f6AbX+O8fjCiZNfw@mail.gmail.com>
+ <CAADnVQJxu5hsDw0iCP68eRW3v2CXRBos8asfN1x9F=gVyGmqbw@mail.gmail.com> <CAMB2axMw0uEojfdq33KbjqZXAtRSJwR2=f1Y1S4ma01sWJFNfg@mail.gmail.com>
+In-Reply-To: <CAMB2axMw0uEojfdq33KbjqZXAtRSJwR2=f1Y1S4ma01sWJFNfg@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 14 Jul 2025 13:46:40 -0700
+X-Gm-Features: Ac12FXxHy1-E06iUw-Rrc65-gccdUTJgwMvtn__GdFZKdbGlViZSYuUstpBEiSE
+Message-ID: <CAEf4BzaoUCapHxdVJj6vyx=Ai_tCO+HY3kaD2ZNK2v0R0zuTMw@mail.gmail.com>
+Subject: Re: [RFC bpf-next v1 2/4] bpf: Support cookie for linked-based
+ struct_ops attachment
+To: Amery Hung <ameryhung@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Tejun Heo <tj@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 14, 2025 at 12:37=E2=80=AFPM Mina Almasry <almasrymina@google.c=
-om> wrote:
+On Fri, Jul 11, 2025 at 2:38=E2=80=AFPM Amery Hung <ameryhung@gmail.com> wr=
+ote:
 >
-> On Mon, Jul 14, 2025 at 5:01=E2=80=AFAM Byungchul Park <byungchul@sk.com>=
- wrote:
+> On Fri, Jul 11, 2025 at 1:21=E2=80=AFPM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> > To eliminate the use of the page pool fields in struct page, the page
-> > pool code should use netmem descriptor and APIs instead.
+> > On Fri, Jul 11, 2025 at 12:29=E2=80=AFPM Amery Hung <ameryhung@gmail.co=
+m> wrote:
+> > >
+> > > On Fri, Jul 11, 2025 at 11:41=E2=80=AFAM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > >
+> > > > On Thu, Jul 10, 2025 at 2:00=E2=80=AFPM Amery Hung <ameryhung@gmail=
+.com> wrote:
+> > > > >
+> > > > > On Thu, Jul 10, 2025 at 12:47=E2=80=AFPM Martin KaFai Lau <martin=
+.lau@linux.dev> wrote:
+> > > > > >
+> > > > > > On 7/10/25 11:39 AM, Amery Hung wrote:
+> > > > > > >> On 7/8/25 4:08 PM, Amery Hung wrote:
+> > > > > > >>> @@ -906,6 +904,10 @@ static long bpf_struct_ops_map_update_=
+elem(struct bpf_map *map, void *key,
+> > > > > > >>>                goto unlock;
+> > > > > > >>>        }
+> > > > > > >>>
+> > > > > > >>> +     err =3D bpf_struct_ops_prepare_attach(st_map, 0);
+> > > > > > >> A follow-up on the "using the map->id as the cookie" comment=
+ in the cover
+> > > > > > >> letter. I meant to use the map->id here instead of 0. If the=
+ cookie is intended
+> > > > > > >> to identify a particular struct_ops instance (i.e., the stru=
+ct_ops map), then
+> > > > > > >> map->id should be a good fit, and it is automatically genera=
+ted by the kernel
+> > > > > > >> during the map creation. As a result, I suspect that most of=
+ the changes in
+> > > > > > >> patch 1 and patch 2 will not be needed.
+> > > > > > >>
+> > > > > > > Do you mean keep using cookie as the mechanism to associate p=
+rograms,
+> > > > > > > but for struct_ops the cookie will be map->id (i.e.,
+> > > > > > > bpf_get_attah_cookie() in struct_ops will return map->id)?
+> > > > > >
+> > > > > > I meant to use the map->id as the bpf_cookie stored in the bpf_=
+tramp_run_ctx.
+> > > > > > Then there is no need for user space to generate a unique cooki=
+e during
+> > > > > > link_create. The kernel has already generated a unique ID in th=
+e map->id. The
+> > > > > > map->id is available during the bpf_struct_ops_map_update_elem(=
+). Then there is
+> > > > > > also no need to distinguish between SEC(".struct_ops") vs
+> > > > > > SEC(".struct_ops.link"). Most of the patch 1 and patch 2 will n=
+ot be needed.
+> > > > > >
+> > > > > > A minor detail: note that the same struct ops program can be us=
+ed in different
+> > > > > > trampolines. Thus, to be specific, the bpf cookie is stored in =
+the trampoline.
+> > > > > >
+> > > > > > If the question is about bpf global variable vs bpf cookie, yea=
+h, I think using
+> > > > > > a bpf global variable should also work. The global variable can=
+ be initialized
+> > > > > > before libbpf's bpf_map__attach_struct_ops(). At that time, the=
+ map->id should
+> > > > > > be known already. I don't have a strong opinion on reusing the =
+bpf cookie in the
+> > > > > > struct ops trampoline. No one is using it now, so it is availab=
+le to be used.
+> > > > > > Exposing BPF_FUNC_get_attach_cookie for struct ops programs is =
+pretty cheap
+> > > > > > also. Using bpf cookie to allow the struct ops program to tell =
+which struct_ops
+> > > > > > map is calling it seems to fit well also after sleeping on it a=
+ bit. bpf global
+> > > > > > variable will also break if a bpf_prog.o has more than one SEC(=
+".struct_ops").
+> > > > > >
+> > > > >
+> > > > > While both of them work, using cookie instead of global variable =
+is
+> > > > > one less thing for the user to take care of (i.e., slightly bette=
+r
+> > > > > usability).
+> > > > >
+> > > > > With the approach you suggested, to not mix the existing semantic=
+s of
+> > > > > bpf cookie, I think a new struct_ops kfuncs is needed to retrieve=
+ the
+> > > >
+> > > > yes, if absolutely necessary, sure, let's reuse the spot that is
+> > > > reserved for cookie inside the trampoline, but let's not expose thi=
+s
+> > > > as real BPF cookie (i.e., let's not allow bpf_get_attach_cookie()
+> > > > helper for struct_ops), because BPF cookie is meant to be fully use=
+r
+> > > > controllable and used for whatever they deem necessary. Not
+> > > > necessarily to just identify the struct_ops map. So it will be a hu=
+ge
+> > > > violation to just pre-define what BPF cookie value is for struct_op=
+s.
+> > > >
+> > >
+> > > We had some offline discussions and figured out this will not work we=
+ll.
+> > >
+> > > sched_ext users already call scx kfuncs in global subprograms. If we
+> > > choose to add bpf_get_struct_ops_id() to get the id to be passed to
+> > > scx kfuncs, it will force the user to create two sets of the same
+> > > global subprog. The one called by struct_ops that calls
+> > > bpf_get_struct_ops_id() and tracing programs that calls
+> > > bpf_get_attach_cookie().
 > >
-> > However, __netmem_get_pp() still accesses ->pp via struct page.  So
-> > change it to use struct netmem_desc instead, since ->pp no longer will
-> > be available in struct page.
-> >
-> > While at it, add a helper, pp_page_to_nmdesc(), that can be used to
-> > extract netmem_desc from page only if it's pp page.  For now that
-> > netmem_desc overlays on page, it can be achieved by just casting.
-> >
-> > Signed-off-by: Byungchul Park <byungchul@sk.com>
-> > ---
-> >  include/net/netmem.h | 13 ++++++++++++-
-> >  1 file changed, 12 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/include/net/netmem.h b/include/net/netmem.h
-> > index 535cf17b9134..2b8a7b51ac99 100644
-> > --- a/include/net/netmem.h
-> > +++ b/include/net/netmem.h
-> > @@ -267,6 +267,17 @@ static inline struct net_iov *__netmem_clear_lsb(n=
-etmem_ref netmem)
-> >         return (struct net_iov *)((__force unsigned long)netmem & ~NET_=
-IOV);
-> >  }
-> >
-> > +static inline struct netmem_desc *pp_page_to_nmdesc(struct page *page)
-> > +{
-> > +       DEBUG_NET_WARN_ON_ONCE(!page_pool_page_is_pp(page));
-> > +
-> > +       /* XXX: How to extract netmem_desc from page must be changed,
-> > +        * once netmem_desc no longer overlays on page and will be
-> > +        * allocated through slab.
-> > +        */
-> > +       return (struct netmem_desc *)page;
-> > +}
-> > +
+> > Can we put cookie into map_extra during st_ops map creation time and
+> > later copy it into actual cookie place in a trampoline?
 >
-> Same thing. Do not create a generic looking pp_page_to_nmdesc helper
-> which does not check that the page is the correct type. The
-> DEBUG_NET... is not good enough.
+> It should work. Currently, it makes sense to have cookie in struct_ops
+> map as all struct_ops implementers (hid, tcp cc, qdisc, sched_ext) do
+> not allow multi-attachment of the same map. A struct_ops map is
+> effectively an unique attachment for now.
+
+Is there any conceptual reason why struct_ops map shouldn't be allowed
+to be attached to multiple places? If not, should we try to lift this
+restriction and not invent struct_ops-specific BPF cookie APIs?
+
+From libbpf POV, struct_ops map is created implicitly from the
+struct_ops variable. There is no map_flags field there. We'll need to
+add new special APIs and/or conventions just to be able to set
+map_flags.
+
 >
-> You don't need to add a generic helper here. There is only one call
-> site. Open code this in the callsite. The one callsite is marked as
-> unsafe, only called by code that knows that the netmem is specifically
-> a pp page. Open code this in the unsafe callsite, instead of creating
-> a generic looking unsafe helper and not even documenting it's unsafe.
+> Additionally, we will be able to support cookie for non-link
+> struct_ops with this way.
 >
+> This approach will not block future effort to support link-specific
+> cookie if there is such a use case. We can revisit this patchset then.
 
-On second read through the series, I actually now think this is a
-great idea :-) Adding this helper has simplified the series greatly. I
-did not realize you were converting entire drivers to netmem just to
-get rid of page->pp accesses. Adding a pp_page_to_nmdesc helper makes
-the entire series simpler.
+It will create two ways to specify BPF cookie for struct_ops: (legacy
+and special way) through map_flags and common one through the
+LINK_CREATE command (and I guess we'd need to reject LINK_CREATE if
+cookie was already set through map_flags, right?). Why confuse users
+like that?
 
-You're also calling it only from code paths like drivers that already
-assumed that the page is a pp page and did page->pp deference without
-a check, so this should be safe.
-
-Only thing I would change is add a comment explaining that the calling
-code needs to check the page is pp page or know it's a pp page (like a
-driver that supports pp).
-
-
-> >  /**
-> >   * __netmem_get_pp - unsafely get pointer to the &page_pool backing @n=
-etmem
-> >   * @netmem: netmem reference to get the pointer from
-> > @@ -280,7 +291,7 @@ static inline struct net_iov *__netmem_clear_lsb(ne=
-tmem_ref netmem)
-> >   */
-> >  static inline struct page_pool *__netmem_get_pp(netmem_ref netmem)
-> >  {
-> > -       return __netmem_to_page(netmem)->pp;
-> > +       return pp_page_to_nmdesc(__netmem_to_page(netmem))->pp;
-> >  }
->
-> This makes me very sad. Casting from netmem -> page -> nmdesc...
->
-> Instead, we should be able to go from netmem directly to nmdesc. I
-> would suggest rename __netmem_clear_lsb to netmem_to_nmdesc and have
-> it return netmem_desc instead of net_iov. Then use it here.
->
-> We could have an unsafe version of netmem_to_nmdesc which converts the
-> netmem to netmem_desc without clearing the lsb and mark it unsafe.
->
-
-This, I think, we should address to keep some sanity in the code and
-reduce the casts and make it a bit more maintainable.
-
---=20
-Thanks,
-Mina
+From what I understand, the problem is that currently struct_ops map's
+BPF trampoline(s) are created a bit too early, before the attachment
+step. How hard would it be to move trampoline creation to an actual
+attachment time? Should we seriously consider this before we invent
+new struct_ops-specific exceptions for BPF cookie?
 
