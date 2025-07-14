@@ -1,334 +1,245 @@
-Return-Path: <bpf+bounces-63239-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63240-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 373E7B0477E
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 20:46:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11DE4B047AD
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 21:02:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67A50189F6C6
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 18:46:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54C454A40EC
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 19:02:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 664C01E7C03;
-	Mon, 14 Jul 2025 18:46:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F27AE27701E;
+	Mon, 14 Jul 2025 19:02:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yy7Xvg8S"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ze0aM0vG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 014861CD1F
-	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 18:46:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1623D2475C3
+	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 19:02:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752518792; cv=none; b=sqrAWFbZqlbjgUN6817P2O8zRWkgfOeVFvSwncWK6c+JAphCQ6FWL2MtA4mf2eOAomqB8zRVCIpIjRxRhQDlHHEnneyV4P4XW+eXGnIeIyUvcEgm4w62DbMVPFXiVRFpg+5uNwvw3XxKsN0Jr9i3dstjv47FOj48UGPhResDyRs=
+	t=1752519746; cv=none; b=lJH+vzm+qw6i7zhKoCiHSP12LTXS+a95WSPNmrh/tOy6eWA/SfRUh4TesTFAuwlWV/AQauSOvYimmAkjlp/TzSZPJFo6vq+tJzIBPQSfz4dNUt4rFE7RYRcg+JkUS3rEht32mpDiPiPrTbDX81YB5EPD76sOl/jAzIjTg1H8sUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752518792; c=relaxed/simple;
-	bh=XATRLAahby8N4OpDs0BuKX4kAITpK+F9rCNOTlH+tBY=;
+	s=arc-20240116; t=1752519746; c=relaxed/simple;
+	bh=IlC6zSATruhsMz1ZplTcZDwaO5Ka3Y33EyLYUL4LW70=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KTudpUxQCA5hBRtYg4oqBHqVDtGJ94xf9wao6zSU2ink4y/MPRs1k9P9fzUl+AsgRI0bbDW3Qdgb8JlWCnzvmP2HJv8XPZfMfTjYwelTC71g1EADVLJNWgTzZMkTlFlm6DBDfwLFNErrRJ8tquAU8Xw6oLdBUTDxEgiklpjC+Jc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yy7Xvg8S; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3a6f2c6715fso3755988f8f.1
-        for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 11:46:29 -0700 (PDT)
+	 To:Cc:Content-Type; b=ajv+YbR48ZH4mW5zU2rgWmbjROU53tjWLDi47hLK0B/dylW0U8/lZCXjj7bKYwTb0r/EG8Sucqio41i/Pjf6DwY7lHjCLS/5KXZ2l5oRbFuzEKNbX/pzpqdPvhOcj8udS1NqCx8KQ+UfgwUOhSWVchPdEw4vSvY5NXrbNtLDXas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ze0aM0vG; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-237f18108d2so34285ad.0
+        for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 12:02:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752518788; x=1753123588; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1752519744; x=1753124544; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fE8CIuj1NSGIOmV+CFOurI1s5NLtbei1Sq1HYe0whhQ=;
-        b=Yy7Xvg8ShvtoxMkCvymySUWY31lQsUa/U2RsV+2Ficeb0SnvbKgRE5kTQkJCAmIyxa
-         NkZQniQI7UXlIYuK5wtx9w0f0/GGSuX/QOPAY9jgMBj1NwMd8VRM2/rKD5I5R6yVovr3
-         7ttKh/fo6NMERoGcdo3wP7bni1dIB8RYp9qo/7c89QWCX3tpuYPWJcT9Y51aEVbiGIyL
-         X1bKCGtBvyC8gC7yeM6K5AY4/VSpNzn16cOe1haSpcpszu9fwGLRtVx28WZkNPJE2lFO
-         2tDQC75OW/IbpQ7gIwabnwn279o1td4w5gHJqWKy3iXS/pNT8elUJKdkF1YXPHsxTxEE
-         Nqhg==
+        bh=7VNuZztsVJnCZDih7ufg2t56wYe/NpWWBgR9l5kOONY=;
+        b=Ze0aM0vGdX4i5f/qfOpVz7HayrDETwVBsMj/UjGARrE3xuQM0slF+8+sed9Bw7eug7
+         K6doNqC18sC94AS2vMSbEW2qYjOWDrMeCqu7/csady6veIMo1whCm1CQCKZRp7hhBNSK
+         1piweQimn6FbIquD/AcDQBSM1i0fccLORn4Utj60e4z6zlSTMxsOf2K9uCEeHjo7/LI7
+         REOGX2leJjk7ESfyeszVd5dyxBvwUZl5VEbwdvrUxrGqqgveh+nyPl5dHM5OG2mkbH07
+         QIotVnOIJSKTX9I0hrlzMkxXjiEZ2kDPf8qXd7oAIWNOfDmCRWHTYFNhTuU6KFq9+dG6
+         J9jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752518788; x=1753123588;
+        d=1e100.net; s=20230601; t=1752519744; x=1753124544;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fE8CIuj1NSGIOmV+CFOurI1s5NLtbei1Sq1HYe0whhQ=;
-        b=te9MYIBi9fEDffLL+h//tjPNhcsuEH/TcP2l8Tpp7NgVPLg2KEiDYO/C45yfumUIS8
-         bkhJ347FLejgIormGq7dBy4XTO0u0x1Qbn6X+UgEHvsua/vzWXYp6Ai9kg78T7ZC7heP
-         kkVSYxFFO7g5+kSUSvRRip+RbsZhmAURQq44W/co4v9covr7Ia30dgv5AlnDY/50QJ9B
-         cL0OBvUpAvfPwUgarQvuXZ9yEk5Ko1XO71lFWMTgBs11Lwp6ycEqCGHKoCxH7kyhIcvZ
-         8OkCvYpnz3LQvo60EjX2+De0xNtozCKlOYH5lANWLHVMm/FrA94zH3Fm+pQDn+tH1/jZ
-         kj3w==
-X-Forwarded-Encrypted: i=1; AJvYcCUYnG8OSyboPdbzWC/rUIl0UligFNjYNsiu+eJtwltO54imajqQ7oVbHGXrmvIqrdTCT60=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy0VsNRKgo1p1Wd4QMSKPIEc8sv8syX6vYRsK+PB55bGd4rObnc
-	fcpMFT9BRXzgRD41Pb2LIHwDV5LgmB3mPdV2uXaxfApG5x/o9zJKJNV/YrgRISKBLPd6uViYvBQ
-	zz3Ryy/ptawIy5gGReYT1MLdZjQ7IdZk=
-X-Gm-Gg: ASbGncv4kvS24VMgoEYKlYpPNd9Ua8pIHCT4q8jUxXXhBDkdDh0CEABaA0mjrQ7uvi3
-	EBXA/eGBp0qaJgM3GYTSuUNkDJ/XkuBvgdHwOZIdOKOcbohg56mgTx9/9AW3aN11+NTPPqKBCdh
-	HsIInEPL29U5Ox9Wv6m3Cwu5kSaM1mxzaIPhUwRtEbVsqChbPUAkmT+DfIY29nAmq2Ajm5fiEel
-	zMz2f2DV2cuDsVY8eNnvek=
-X-Google-Smtp-Source: AGHT+IEoGMs2VNK9KodUHhx9kWA0nxw7EEC51nbhdajDCX1VdU45zhDhU6YG+APa7TdwC1UiaxKoceBTzt5B+dU47Xo=
-X-Received: by 2002:a05:6000:26c3:b0:3a4:f7e3:c63c with SMTP id
- ffacd0b85a97d-3b5f2d2c149mr11595283f8f.0.1752518787823; Mon, 14 Jul 2025
- 11:46:27 -0700 (PDT)
+        bh=7VNuZztsVJnCZDih7ufg2t56wYe/NpWWBgR9l5kOONY=;
+        b=ddxlO8PJXe95GkEXf9kosbFse/sLbGuouR/Cnl5JhWDciKTYGNTzY5bYR2Hr7t9mgq
+         1HhpeC6/6mI0Bi4EywoGQFRZFMtSdQVt7HHhTMqW6hNcc9DpYT7oabuY7f4xf2Wybxhb
+         mvEaPYGf+b4kEuckuar/NzSoDSOi7pddNTlQcsmgNvT3i7voMv0zZ8zqGRrsGnKvk8Je
+         /F+3FPSTLVfwYwa6w/4qbBGYocWS9XSvuRRJ4UhSSdIRcU/QQ76cg1VJwhGnn3LF4K29
+         6hcH2TFsMBkJ5Yobe04cNiIboEFwHA23NvER3zTPmgupLpG2EwL7OJ16eJSmiEXurkxP
+         OQlg==
+X-Forwarded-Encrypted: i=1; AJvYcCXMApl4Ayr8cx3zcoW7cR7ILp/jpObDqE3tpBAaeM25NGLPKPIjA65Fh3uxkOVh+nYx+VM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzyrodCO44Zu6Bil4lfKOPdo0g+UKpRRN/Q59xamp7gcJnlroDE
+	FQVA1rwenXzBZmtyWMtuPduhLtjVzMhzdm335F9O3sLqDYDdScCl+vE7yKgMXQFvEZJBpaGTA6R
+	90p5pLBzHCZY7qd/YgMpYBOb5jlJmn8uh3Gro4Vxi
+X-Gm-Gg: ASbGnct10hjbqm4NzbKPY9hVzWKal49eZciSup6JBZxJjCESjfz7rUxsrMh2eCzPG2r
+	qBSUIJZQypT/wfiFEpMZ+mgyEdG1sMVProrJcfDbpH9+KfxjNaijzF9iNPEqCOMp4E6le0slHBS
+	axT+QsO164e6qEnE3W6WtTIRTyJcf/MP8a6pOh5DHwpa39+aHimheiC5VtXmeFefYt2WHUppO2b
+	UtBOyNxUyNdb5nmp+3349OZ1P0jM1UipoG+pA==
+X-Google-Smtp-Source: AGHT+IE6b3u0FEYbE/5zU2GFDjTpZUgGKFIuxC3GHJP9usTARJ45zz7VYQPM3TtdZ3Tr5Ox8uT4ZdAfccFl5CsvEYCc=
+X-Received: by 2002:a17:902:e552:b0:22e:766f:d66e with SMTP id
+ d9443c01a7336-23e1ab000f4mr410435ad.12.1752519743690; Mon, 14 Jul 2025
+ 12:02:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250709015303.8107-1-alexei.starovoitov@gmail.com>
- <20250709015303.8107-4-alexei.starovoitov@gmail.com> <20250711075001.fnlMZfk6@linutronix.de>
- <1adbee35-6131-49de-835b-2c93aacfdd1e@suse.cz> <20250711151730.rz_TY1Qq@linutronix.de>
- <CAADnVQKF=U+Go44fpDYOoZp+3e0xrLYXE4yYLm82H819WqnpnA@mail.gmail.com>
- <20250714110639.uOaKJEfL@linutronix.de> <CAADnVQLORq64ezK+gaU=Q2F2KyCYOBZiVE0aaJuqK=xfUwMFiw@mail.gmail.com>
- <d556c4fb-ddc2-4bf0-9510-5c682cd717f5@suse.cz>
-In-Reply-To: <d556c4fb-ddc2-4bf0-9510-5c682cd717f5@suse.cz>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 14 Jul 2025 11:46:14 -0700
-X-Gm-Features: Ac12FXxFbTAz4ruKThiiT7B_QMHMH6DNJ_14i4n0-hrL4qNhb-43Kz_IBgOWr-Q
-Message-ID: <CAADnVQK3B4ToOOuWOWQdvHO-1as3X2YMGkj45vYQ0Nxoe55Nsw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/6] locking/local_lock: Introduce local_lock_lockdep_start/end()
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, bpf <bpf@vger.kernel.org>, 
-	linux-mm <linux-mm@kvack.org>, Harry Yoo <harry.yoo@oracle.com>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Michal Hocko <mhocko@suse.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Steven Rostedt <rostedt@goodmis.org>, Johannes Weiner <hannes@cmpxchg.org>
+References: <20250710082807.27402-1-byungchul@sk.com> <20250710082807.27402-7-byungchul@sk.com>
+ <CAHS8izM9FO01kTxFhM8VUOqDFdtA80BbY=5xpKDM=S9fMcd3YA@mail.gmail.com> <20250711013257.GE40145@system.software.com>
+In-Reply-To: <20250711013257.GE40145@system.software.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Mon, 14 Jul 2025 12:02:02 -0700
+X-Gm-Features: Ac12FXxeXh1UoBnGrAUfq0hNcg_aduZtehgNTdEPgSN61td1YzR9QhWexF1R0b0
+Message-ID: <CAHS8izOOZ5w_+5W=uYGrr3V8VjYXfo6fzs3cjJF1eoZsqcm71Q@mail.gmail.com>
+Subject: Re: [PATCH net-next v9 6/8] mlx4: use netmem descriptor and APIs for
+ page pool
+To: Byungchul Park <byungchul@sk.com>
+Cc: willy@infradead.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, kernel_team@skhynix.com, kuba@kernel.org, 
+	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org, 
+	akpm@linux-foundation.org, davem@davemloft.net, john.fastabend@gmail.com, 
+	andrew+netdev@lunn.ch, asml.silence@gmail.com, toke@redhat.com, 
+	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com, 
+	leon@kernel.org, ast@kernel.org, daniel@iogearbox.net, david@redhat.com, 
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz, 
+	rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org, 
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com, 
+	hannes@cmpxchg.org, ziy@nvidia.com, jackmanb@google.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 14, 2025 at 11:33=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> w=
+On Thu, Jul 10, 2025 at 6:33=E2=80=AFPM Byungchul Park <byungchul@sk.com> w=
 rote:
 >
-> On 7/14/25 19:52, Alexei Starovoitov wrote:
-> > On Mon, Jul 14, 2025 at 4:06=E2=80=AFAM Sebastian Andrzej Siewior
-> > <bigeasy@linutronix.de> wrote:
-> >>
-> >> On 2025-07-11 19:19:26 [-0700], Alexei Starovoitov wrote:
-> >> > > If there is no parent check then we could do "normal lock" on both
-> >> > > sides.
-> >> >
-> >> > How would ___slab_alloc() know whether there was a parent check or n=
-ot?
-> >> >
-> >> > imo keeping local_lock_irqsave() as-is is cleaner,
-> >> > since if there is no parent check lockdep will rightfully complain.
-> >>
-> >> what about this:
-> >>
-> >> diff --git a/mm/slub.c b/mm/slub.c
-> >> index 7e2ffe1d46c6c..3520d1c25c205 100644
-> >> --- a/mm/slub.c
-> >> +++ b/mm/slub.c
-> >> @@ -3693,6 +3693,34 @@ static inline void *freeze_slab(struct kmem_cac=
-he *s, struct slab *slab)
-> >>         return freelist;
-> >>  }
-> >>
-> >> +static void local_lock_cpu_slab(struct kmem_cache *s, const gfp_t gfp=
-_flags,
-> >> +                               unsigned long *flags)
-> >> +{
-> >> +       bool allow_spin =3D gfpflags_allow_spinning(gfp_flags);
-> >> +
-> >> +       /*
-> >> +        * ___slab_alloc()'s caller is supposed to check if kmem_cache=
-::kmem_cache_cpu::lock
-> >> +        * can be acquired without a deadlock before invoking the func=
-tion.
-> >> +        *
-> >> +        * On PREEMPT_RT an invocation is not possible from IRQ-off or=
- preempt
-> >> +        * disabled context. The lock will always be acquired and if n=
-eeded it
-> >> +        * block and sleep until the lock is available.
-> >> +        *
-> >> +        * On !PREEMPT_RT allocations from any context but NMI are saf=
-e. The lock
-> >> +        * is always acquired with disabled interrupts meaning it is a=
-lways
-> >> +        * possible to it.
-> >> +        * In NMI context it is needed to check if the lock is acquire=
-d. If it is not,
-> >> +        * it is safe to acquire it. The trylock semantic is used to t=
-ell lockdep
-> >> +        * that we don't spin. The BUG_ON() will not trigger if it is =
-safe to acquire
-> >> +        * the lock.
-> >> +        *
-> >> +        */
-> >> +       if (!IS_ENABLED(CONFIG_PREEMPT_RT) && !allow_spin)
-> >> +               BUG_ON(!local_trylock_irqsave(&s->cpu_slab->lock, *fla=
-gs));
-> >> +       else
-> >> +               local_lock_irqsave(&s->cpu_slab->lock, *flags);
-> >> +}
+> On Thu, Jul 10, 2025 at 11:29:35AM -0700, Mina Almasry wrote:
+> > On Thu, Jul 10, 2025 at 1:28=E2=80=AFAM Byungchul Park <byungchul@sk.co=
+m> wrote:
+> > >
+> > > To simplify struct page, the effort to separate its own descriptor fr=
+om
+> > > struct page is required and the work for page pool is on going.
+> > >
+> > > Use netmem descriptor and APIs for page pool in mlx4 code.
+> > >
+> > > Signed-off-by: Byungchul Park <byungchul@sk.com>
+> > > ---
+> > >  drivers/net/ethernet/mellanox/mlx4/en_rx.c   | 48 +++++++++++-------=
+--
+> > >  drivers/net/ethernet/mellanox/mlx4/en_tx.c   |  8 ++--
+> > >  drivers/net/ethernet/mellanox/mlx4/mlx4_en.h |  4 +-
+> > >  3 files changed, 32 insertions(+), 28 deletions(-)
+> > >
+> > > diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net=
+/ethernet/mellanox/mlx4/en_rx.c
+> > > index b33285d755b9..7cf0d2dc5011 100644
+> > > --- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+> > > +++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+> > > @@ -62,18 +62,18 @@ static int mlx4_en_alloc_frags(struct mlx4_en_pri=
+v *priv,
+> > >         int i;
+> > >
+> > >         for (i =3D 0; i < priv->num_frags; i++, frags++) {
+> > > -               if (!frags->page) {
+> > > -                       frags->page =3D page_pool_alloc_pages(ring->p=
+p, gfp);
+> > > -                       if (!frags->page) {
+> > > +               if (!frags->netmem) {
+> > > +                       frags->netmem =3D page_pool_alloc_netmems(rin=
+g->pp, gfp);
+> > > +                       if (!frags->netmem) {
+> > >                                 ring->alloc_fail++;
+> > >                                 return -ENOMEM;
+> > >                         }
+> > > -                       page_pool_fragment_page(frags->page, 1);
+> > > +                       page_pool_fragment_netmem(frags->netmem, 1);
+> > >                         frags->page_offset =3D priv->rx_headroom;
+> > >
+> > >                         ring->rx_alloc_pages++;
+> > >                 }
+> > > -               dma =3D page_pool_get_dma_addr(frags->page);
+> > > +               dma =3D page_pool_get_dma_addr_netmem(frags->netmem);
+> > >                 rx_desc->data[i].addr =3D cpu_to_be64(dma + frags->pa=
+ge_offset);
+> > >         }
+> > >         return 0;
+> > > @@ -83,10 +83,10 @@ static void mlx4_en_free_frag(const struct mlx4_e=
+n_priv *priv,
+> > >                               struct mlx4_en_rx_ring *ring,
+> > >                               struct mlx4_en_rx_alloc *frag)
+> > >  {
+> > > -       if (frag->page)
+> > > -               page_pool_put_full_page(ring->pp, frag->page, false);
+> > > +       if (frag->netmem)
+> > > +               page_pool_put_full_netmem(ring->pp, frag->netmem, fal=
+se);
+> > >         /* We need to clear all fields, otherwise a change of priv->l=
+og_rx_info
+> > > -        * could lead to see garbage later in frag->page.
+> > > +        * could lead to see garbage later in frag->netmem.
+> > >          */
+> > >         memset(frag, 0, sizeof(*frag));
+> > >  }
+> > > @@ -440,29 +440,33 @@ static int mlx4_en_complete_rx_desc(struct mlx4=
+_en_priv *priv,
+> > >         unsigned int truesize =3D 0;
+> > >         bool release =3D true;
+> > >         int nr, frag_size;
+> > > -       struct page *page;
+> > > +       netmem_ref netmem;
+> > >         dma_addr_t dma;
+> > >
+> > >         /* Collect used fragments while replacing them in the HW desc=
+riptors */
+> > >         for (nr =3D 0;; frags++) {
+> > >                 frag_size =3D min_t(int, length, frag_info->frag_size=
+);
+> > >
+> > > -               page =3D frags->page;
+> > > -               if (unlikely(!page))
+> > > +               netmem =3D frags->netmem;
+> > > +               if (unlikely(!netmem))
+> > >                         goto fail;
+> > >
+> > > -               dma =3D page_pool_get_dma_addr(page);
+> > > +               dma =3D page_pool_get_dma_addr_netmem(netmem);
+> > >                 dma_sync_single_range_for_cpu(priv->ddev, dma, frags-=
+>page_offset,
+> > >                                               frag_size, priv->dma_di=
+r);
+> > >
+> > > -               __skb_fill_page_desc(skb, nr, page, frags->page_offse=
+t,
+> > > -                                    frag_size);
+> > > +               __skb_fill_netmem_desc(skb, nr, netmem, frags->page_o=
+ffset,
+> > > +                                      frag_size);
+> > >
+> > >                 truesize +=3D frag_info->frag_stride;
+> > >                 if (frag_info->frag_stride =3D=3D PAGE_SIZE / 2) {
+> > > +                       struct page *page =3D netmem_to_page(netmem);
 > >
-> > the patch misses these two:
-> >
-> > diff --git a/mm/slub.c b/mm/slub.c
-> > index 36779519b02c..2f30b85fbf68 100644
-> > --- a/mm/slub.c
-> > +++ b/mm/slub.c
-> > @@ -3260,7 +3260,7 @@ static void put_cpu_partial(struct kmem_cache
-> > *s, struct slab *slab, int drain)
-> >         unsigned long flags;
-> >         int slabs =3D 0;
-> >
-> > -       local_lock_irqsave(&s->cpu_slab->lock, flags);
-> > +       local_lock_cpu_slab(s, 0, &flags);
-> >
-> >         oldslab =3D this_cpu_read(s->cpu_slab->partial);
-> >
-> > @@ -4889,8 +4889,9 @@ static __always_inline void do_slab_free(struct
-> > kmem_cache *s,
-> >                         goto redo;
-> >                 }
-> >         } else {
-> > +               long flags;
-> >                 /* Update the free list under the local lock */
-> > -               local_lock(&s->cpu_slab->lock);
-> > +               local_lock_cpu_slab(s, 0, &flags);
-> >                 c =3D this_cpu_ptr(s->cpu_slab);
-> >                 if (unlikely(slab !=3D c->slab)) {
-> >                         local_unlock(&s->cpu_slab->lock);
-> >
-> > I realized that the latter one was missing local_lock_lockdep_start/end=
-()
-> > in my patch as well, but that's secondary.
-> >
-> > So with above it works on !RT,
-> > but on RT lockdep complains as I explained earlier.
-> >
-> > With yours and above hunks applied here is full lockdep splat:
-> >
-> > [   39.819636] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> > [   39.819638] WARNING: possible recursive locking detected
-> > [   39.819641] 6.16.0-rc5-00342-gc8aca7837440-dirty #54 Tainted: G     =
-      O
-> > [   39.819645] --------------------------------------------
-> > [   39.819646] page_alloc_kthr/2306 is trying to acquire lock:
-> > [   39.819650] ff110001f5cbea88 ((&c->lock)){+.+.}-{3:3}, at:
-> > ___slab_alloc+0xb7/0xec0
-> > [   39.819667]
-> > [   39.819667] but task is already holding lock:
-> > [   39.819668] ff110001f5cbfe88 ((&c->lock)){+.+.}-{3:3}, at:
-> > ___slab_alloc+0xb7/0xec0
-> > [   39.819677]
-> > [   39.819677] other info that might help us debug this:
-> > [   39.819678]  Possible unsafe locking scenario:
-> > [   39.819678]
-> > [   39.819679]        CPU0
-> > [   39.819680]        ----
-> > [   39.819681]   lock((&c->lock));
-> > [   39.819684]   lock((&c->lock));
-> > [   39.819687]
-> > [   39.819687]  *** DEADLOCK ***
-> > [   39.819687]
-> > [   39.819687]  May be due to missing lock nesting notation
-> > [   39.819687]
-> > [   39.819689] 2 locks held by page_alloc_kthr/2306:
-> > [   39.819691]  #0: ff110001f5cbfe88 ((&c->lock)){+.+.}-{3:3}, at:
-> > ___slab_alloc+0xb7/0xec0
-> > [   39.819700]  #1: ffffffff8588f3a0 (rcu_read_lock){....}-{1:3}, at:
-> > rt_spin_lock+0x197/0x250
-> > [   39.819710]
-> > [   39.819710] stack backtrace:
-> > [   39.819714] CPU: 1 UID: 0 PID: 2306 Comm: page_alloc_kthr Tainted:
-> > G           O        6.16.0-rc5-00342-gc8aca7837440-dirty #54
-> > PREEMPT_RT
-> > [   39.819721] Tainted: [O]=3DOOT_MODULE
-> > [   39.819723] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-> > BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-> > [   39.819726] Call Trace:
-> > [   39.819729]  <TASK>
-> > [   39.819734]  dump_stack_lvl+0x5b/0x80
-> > [   39.819740]  print_deadlock_bug.cold+0xbd/0xca
-> > [   39.819747]  __lock_acquire+0x12ad/0x2590
-> > [   39.819753]  ? __lock_acquire+0x42b/0x2590
-> > [   39.819758]  lock_acquire+0x133/0x2d0
-> > [   39.819763]  ? ___slab_alloc+0xb7/0xec0
-> > [   39.819769]  ? try_to_take_rt_mutex+0x624/0xfc0
-> > [   39.819773]  ? __lock_acquire+0x42b/0x2590
-> > [   39.819778]  rt_spin_lock+0x6f/0x250
+> > This cast is not safe, try to use the netmem type directly.
 >
-> But why are we here in ___slab_alloc, trying to take the lock...
+> Can it be net_iov?  It already ensures it's a page-backed netmem.  Why
+> is that unsafe?
 >
-> > [   39.819783]  ? ___slab_alloc+0xb7/0xec0
-> > [   39.819788]  ? rtlock_slowlock_locked+0x5c60/0x5c60
-> > [   39.819792]  ? rtlock_slowlock_locked+0xc3/0x5c60
-> > [   39.819798]  ___slab_alloc+0xb7/0xec0
-> > [   39.819803]  ? __lock_acquire+0x42b/0x2590
-> > [   39.819809]  ? my_debug_callback+0x20e/0x390 [bpf_testmod]
-> > [   39.819826]  ? __lock_acquire+0x42b/0x2590
-> > [   39.819830]  ? rt_read_unlock+0x2f0/0x2f0
-> > [   39.819835]  ? my_debug_callback+0x20e/0x390 [bpf_testmod]
-> > [   39.819844]  ? kmalloc_nolock_noprof+0x15a/0x430
-> > [   39.819849]  kmalloc_nolock_noprof+0x15a/0x430
+
+Precisely because it can be net_iov. The whole point of netmem_ref is
+that it's an abstract type that can be something else underneath.
+Converting the driver to netmem only to then say "well, the netmem is
+just pages, cast it back" is just adding a lot of useless typecasting
+and wasted cpu cycles with no benefit. In general netmem_to_page casts
+in drivers are heavily discouraged.
+
+> With netmem, page_count() and page_to_nid() cannot be used, but needed.
+> Or checking 'page =3D=3D NULL' after the casting works for you?
 >
-> When in patch 6/6 __slab_alloc() we should have bailed out via
->
->         if (unlikely(!gfpflags_allow_spinning(gfpflags))) {
-> +               if (local_lock_is_locked(&s->cpu_slab->lock)) {
-> +                       /*
-> +                        * EBUSY is an internal signal to kmalloc_nolock(=
-) to
-> +                        * retry a different bucket. It's not propagated
-> +                        * to the caller.
-> +                        */
-> +                       p =3D ERR_PTR(-EBUSY);
-> +                       goto out;
-> +               }
->
-> So it doesn't seem to me as a lack of lockdep tricking, but we reached
-> something we should not have because the avoidance based on
-> local_lock_is_locked() above didn't work properly? At least if I read the
-> splat and backtrace properly, it doesn't seem to suggest a theoretical
-> scenario but that we really tried to lock something we already had locked=
-.
 
-It's not theoretical. Such slab re-entrance can happen with
-a tracepoint:
-slab -> some tracepoint -> bpf -> slab
+I'm really hoping that you can read the code and be a bit familiar
+with the driver that you're modifying and suggest a solution that
+works for us. netmem_to_page() followed by page_count() without a NULL
+check crashes the kernel if the netmem is not a page underneath... so
+it shouldn't work for anyone.
 
-I simulate it with a stress test:
-+extern void (*debug_callback)(void);
-+#define local_unlock_irqrestore(lock, flags)                   \
-+       do {                    \
-+               if (debug_callback) debug_callback(); \
-+               __local_unlock_irqrestore(lock, flags); \
-+       } while (0)
+What may be acceptable here is netmem_count helper and what not like
+we have netmem_is_pfmemalloc which handles net_iov correctly.
 
-and debug_callback() calls kmalloc_nolock(random_size) without any bpf
-to simplify testing.
+However, it looks like this driver is trying to check if the netmem is
+recyclable, we have a helper like that already in
+__page_pool_page_can_be_recycled. Maybe that can be reused somehow.
 
-> > [   39.819857]  my_debug_callback+0x20e/0x390 [bpf_testmod]
->
-> What exactly did you instrument here?
->
-> > [   39.819867]  ? page_alloc_kthread+0x320/0x320 [bpf_testmod]
-> > [   39.819875]  ? lock_is_held_type+0x85/0xe0
-> > [   39.819881]  ___slab_alloc+0x256/0xec0
->
-> And here we took the lock originally?
-
-yes, but they are truly different local_locks of different
-kmalloc buckets, and local_lock_is_locked() is working.
-
-See in the splat:
-
-> > [   39.819646] page_alloc_kthr/2306 is trying to acquire lock:
-> > [   39.819650] ff110001f5cbea88 ((&c->lock)){+.+.}-{3:3}, at:
-> > ___slab_alloc+0xb7/0xec0
-> > [   39.819667]
-> > [   39.819667] but task is already holding lock:
-> > [   39.819668] ff110001f5cbfe88 ((&c->lock)){+.+.}-{3:3}, at:
-> > ___slab_alloc+0xb7/0xec0
-
-the addresses of the locks are different and they're different
-kmalloc buckets, but lockdep cannot understand this without
-explicit local_lock_lockdep_start().
-The same thing I'm trying to explain in the commit log.
+--=20
+Thanks,
+Mina
 
