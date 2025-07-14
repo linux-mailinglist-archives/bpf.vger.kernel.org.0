@@ -1,119 +1,99 @@
-Return-Path: <bpf+bounces-63270-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63272-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4DBDB04AAF
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 00:30:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CC04B04B11
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 00:51:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06C4D4A347B
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 22:30:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE5A74A5A8A
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 22:51:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FEF3278142;
-	Mon, 14 Jul 2025 22:30:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C70B0277CB3;
+	Mon, 14 Jul 2025 22:51:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y8zaKZwB"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="c0uetxNg"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 894BC126F0A;
-	Mon, 14 Jul 2025 22:30:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C36622083
+	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 22:51:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752532200; cv=none; b=cYP7/WonwQp+aHtPReR3MrURNkf662AKxk8EhJ6rmaMWe/aX3NL+k8vpvThfYDgbYEAjiK5ZOdWsOdK9W+dP8THL5U8GJ0r8ns1aj9l1QTS3GgT78ifqsc4Knicit+6zvTKGfFT6cRPGVsuhHBye8/aUQUbyWIInBXtDgz5QNbU=
+	t=1752533491; cv=none; b=YKEH15nmfLNBMngsu05klj9U9oy+agkCmo8ydnW4B+0G3YRoUbB0MLvoCs2v5AXPwytJyMH1ZIX/nLJRB4NoX4dYB7el7JleE9A8lNP1hDedRBxaxWqGGVhkKDKWfFffYvkD67g3hQD7+TBqFMRWtrHgR8oeNRc+VzQAmufi4+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752532200; c=relaxed/simple;
-	bh=M0PZUEikwZplgsTp5pCh0WMPeVdma/lYCtz7xVZ+LUo=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=QrVKpsbbnb+qgkKjKnkhVYMF+NmiX4iAt6BUgYDSQHfrjySNCCUCm0UvVaqxGLC2XXLESTjGr5IDY7VH546jNg2OhOXfBdYhW1OMtBF3Zvo3JkpYscQ8YCPhNNFaxuj2SnWlZXudB9l4PDXB5qnaHKwozdoUsKONbKUzDHywWbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y8zaKZwB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AA0DC4CEED;
-	Mon, 14 Jul 2025 22:30:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752532200;
-	bh=M0PZUEikwZplgsTp5pCh0WMPeVdma/lYCtz7xVZ+LUo=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Y8zaKZwBCt+WmYCbsPSZfpJ1aHjxuSnwRYDxK38vvBBXLhKL9Z7t7mC95INXkyY6w
-	 2Xa33caw7jycaGFBrdrHIISwS+Tz2ZdNv8soFBW8IgWZiuuChnNSitx1AmFztQ9ufs
-	 SG1lFyyC9rXUWrT35VusMrhEPRy+p0dxTJnznQGNtR8mK+rflEHNg+UjyMmpNMedKC
-	 z6XtXzlkhFb9lr7jdYV1Yi+VV5hJO0ZBI2y1DCLAf27oKO2TUG77hg6ah/95uetYu2
-	 QTJttpI5RweBPnkW35ojVSVgLghg7skfa2o1v+x/qVxAsacoAaNV/mqxt3WiuZPMj4
-	 kamQgOnFJ9ReA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33CE8383B276;
-	Mon, 14 Jul 2025 22:30:22 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1752533491; c=relaxed/simple;
+	bh=qGEGGsLEkfCd2TcIxz7+VuvOfdgrAfBQKt0q4ngZHg4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Wm6bUmDIFWKGFNJNeLHKtJncns5mQps73qP+r+cjXQAseMCkoM+AHjHiGPRfgGy56Iftht724m1kT0u83lIo5lk1c1y6vmnxUn+0Atvq9QnvbuXqfafY7YqIeNyEAorE+oDLzTSVQ32fPQ9owTSkZKW0pcvTuqo+WkmXkJZzqv0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=c0uetxNg; arc=none smtp.client-ip=95.215.58.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <2fe9d096-846c-4cb6-ac7e-a9e072cb3281@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1752533486;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AUs7rSl9OOabs5zzmuV58HHyP49Xlu4Muu7/qo2/NcA=;
+	b=c0uetxNgQLzyjiFZBsX4MJUCl9BohZuUDyeEtfEafRG0rtJBtuPPz96S2kIYnGXLAXcgWh
+	fm+iBbYMWo49MPtFYe/mqUAI/Q/8ig3rSH9UnXHfj+XsQw1NtLpo6MwuNrYIMvnEXjcGHm
+	b4K9WOaKpgOxZfag+qLT6UaddvK6sGQ=
+Date: Mon, 14 Jul 2025 15:51:19 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v6 bpf-next 00/12] bpf: tcp: Exactly-once socket iteration
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <175253222101.4006958.10212169466412631754.git-patchwork-notify@kernel.org>
-Date: Mon, 14 Jul 2025 22:30:21 +0000
-References: <20250714180919.127192-1-jordan@jrife.io>
-In-Reply-To: <20250714180919.127192-1-jordan@jrife.io>
-To: Jordan Rife <jordan@jrife.io>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
- martin.lau@linux.dev, willemdebruijn.kernel@gmail.com, kuniyu@google.com,
- alexei.starovoitov@gmail.com, stfomichev@gmail.com
+Subject: Re: [RFC bpf-next v1 2/4] bpf: Support cookie for linked-based
+ struct_ops attachment
+To: Amery Hung <ameryhung@gmail.com>,
+ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Tejun Heo <tj@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>,
+ Kernel Team <kernel-team@meta.com>, bpf <bpf@vger.kernel.org>
+References: <20250708230825.4159486-1-ameryhung@gmail.com>
+ <20250708230825.4159486-3-ameryhung@gmail.com>
+ <68f4b77c-3265-489e-9190-0333ed54b697@linux.dev>
+ <CAMB2axO3Ma7jYa00fbSzB8ZFZyekS13BNJ87rsTfbfcSZhpc6w@mail.gmail.com>
+ <2d1b45f3-3bde-415d-8568-eb4c2a7dd219@linux.dev>
+ <CAMB2axMDUr+s+f9K-4sj-5vSkPQV4RXHo8y73VH9V2JQbKZOxQ@mail.gmail.com>
+ <CAEf4BzaUK0i7QFkKi800TQhAKw2WL+FyoG3eFP6nq_r-TUPBKw@mail.gmail.com>
+ <CAMB2axONnVJ5BY-YOASWGUGpaZa-P64Yf5f6AbX+O8fjCiZNfw@mail.gmail.com>
+ <CAADnVQJxu5hsDw0iCP68eRW3v2CXRBos8asfN1x9F=gVyGmqbw@mail.gmail.com>
+ <CAMB2axMw0uEojfdq33KbjqZXAtRSJwR2=f1Y1S4ma01sWJFNfg@mail.gmail.com>
+ <CAEf4BzaoUCapHxdVJj6vyx=Ai_tCO+HY3kaD2ZNK2v0R0zuTMw@mail.gmail.com>
+ <CAMB2axNXLm2mWnSv4EL_YxexYa97_OnRD9Nj7ww9Qq_3dAp5hg@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAMB2axNXLm2mWnSv4EL_YxexYa97_OnRD9Nj7ww9Qq_3dAp5hg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hello:
+On 7/14/25 2:02 PM, Amery Hung wrote:
+>>> It should work. Currently, it makes sense to have cookie in struct_ops
+>>> map as all struct_ops implementers (hid, tcp cc, qdisc, sched_ext) do
+>>> not allow multi-attachment of the same map. A struct_ops map is
+>>> effectively an unique attachment for now.
+>>
+>> Is there any conceptual reason why struct_ops map shouldn't be allowed
+>> to be attached to multiple places? If not, should we try to lift this
+>> restriction and not invent struct_ops-specific BPF cookie APIs?
 
-This series was applied to bpf/bpf-next.git (net)
-by Martin KaFai Lau <martin.lau@kernel.org>:
+bpf_struct_ops map currently does allow attaching multiple times through the 
+link interface. It is up to the subsystem tcp-cc/hid/qdisc/scx how to handle it.
 
-On Mon, 14 Jul 2025 11:09:04 -0700 you wrote:
-> TCP socket iterators use iter->offset to track progress through a
-> bucket, which is a measure of the number of matching sockets from the
-> current bucket that have been seen or processed by the iterator. On
-> subsequent iterations, if the current bucket has unprocessed items, we
-> skip at least iter->offset matching items in the bucket before adding
-> any remaining items to the next batch. However, iter->offset isn't
-> always an accurate measure of "things already seen" when the underlying
-> bucket changes between reads, which can lead to repeated or skipped
-> sockets. Instead, this series remembers the cookies of the sockets we
-> haven't seen yet in the current bucket and resumes from the first cookie
-> in that list that we can find on the next iteration.
-> 
-> [...]
+> I am fixing the patchset by moving trampoline and ksyms to
+> bpf_struct_ops_link. It shouldn't complicate struct_ops code too much
+> (finger cross).
 
-Here is the summary with links:
-  - [v6,bpf-next,01/12] bpf: tcp: Make mem flags configurable through bpf_iter_tcp_realloc_batch
-    https://git.kernel.org/bpf/bpf-next/c/8271bec9fc1c
-  - [v6,bpf-next,02/12] bpf: tcp: Make sure iter->batch always contains a full bucket snapshot
-    https://git.kernel.org/bpf/bpf-next/c/cdec67a489d4
-  - [v6,bpf-next,03/12] bpf: tcp: Get rid of st_bucket_done
-    https://git.kernel.org/bpf/bpf-next/c/e25ab9b874a4
-  - [v6,bpf-next,04/12] bpf: tcp: Use bpf_tcp_iter_batch_item for bpf_tcp_iter_state batch items
-    https://git.kernel.org/bpf/bpf-next/c/efeb820951eb
-  - [v6,bpf-next,05/12] bpf: tcp: Avoid socket skips and repeats during iteration
-    https://git.kernel.org/bpf/bpf-next/c/f5080f612a1c
-  - [v6,bpf-next,06/12] selftests/bpf: Add tests for bucket resume logic in listening sockets
-    https://git.kernel.org/bpf/bpf-next/c/da1d987d3b39
-  - [v6,bpf-next,07/12] selftests/bpf: Allow for iteration over multiple ports
-    https://git.kernel.org/bpf/bpf-next/c/346066c3278f
-  - [v6,bpf-next,08/12] selftests/bpf: Allow for iteration over multiple states
-    https://git.kernel.org/bpf/bpf-next/c/f00468124a08
-  - [v6,bpf-next,09/12] selftests/bpf: Make ehash buckets configurable in socket iterator tests
-    (no matching commit)
-  - [v6,bpf-next,10/12] selftests/bpf: Create established sockets in socket iterator tests
-    (no matching commit)
-  - [v6,bpf-next,11/12] selftests/bpf: Create iter_tcp_destroy test program
-    https://git.kernel.org/bpf/bpf-next/c/8fc0c5a82d04
-  - [v6,bpf-next,12/12] selftests/bpf: Add tests for bucket resume logic in established sockets
-    https://git.kernel.org/bpf/bpf-next/c/f126f0ce7c83
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+seems reasonable. I think it will be useful to have comments in v2 on how their 
+lifecycle will be handled.
 
