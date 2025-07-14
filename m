@@ -1,189 +1,125 @@
-Return-Path: <bpf+bounces-63162-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63163-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C96B7B03CE3
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 13:07:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10518B03D2D
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 13:20:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 358BC17E3AE
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 11:07:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B97774A438C
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 11:19:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 481512459E3;
-	Mon, 14 Jul 2025 11:06:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6470624678C;
+	Mon, 14 Jul 2025 11:20:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="at0T0m9R";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Pz9Mr1bh"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TCo43i71"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48DC323A9BB
-	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 11:06:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71B0E1EB9FA
+	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 11:20:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752491204; cv=none; b=Tewe+WkYH4SKyfMRrORVKJ4aGCKjiQW6xcDPHsR1eYo4+K1gyChOANFcc7ffBgfgFI9DHjVnAzy7F/JwUDiAY4fRHdOuVHYIim2tHnT2/qnQUvkcALhtHHzJ2Ys5We7/93M6Y35nsU1sGd/pej8i//NlLSjC+C0cLzxmCrXrXcU=
+	t=1752492015; cv=none; b=kszgcGNVMAiCTn9/sjtiiLoArDEpz2eBTWmYyUaCwQvqoj9PGsZTyAiy07mdsAq2dokZ6a/Vwag9CK1N6rR8ii8w3dWjUvYjwuRW0OMpNtOS5J2RJRqVwc4HAt4YRVticnsfhRl7N5A2JSxoW9ZvHVBV1RtbVOj3lquWsU2cLGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752491204; c=relaxed/simple;
-	bh=jRluGQynhdoMFll9tYsXYmd1yfKerzPJNsCG+1wG85o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Es1MTuZLnYSG2L38hV3YKGBZPt79DYbhEI/pP4ssL15d6s5twQaBAUeQGpEhtlZapl3tjPlzwTZ5tl7XA2DgDuU9vPy4Kp9f5jvaSjlkCp0w/juPHRMdWhi+UKaH+a78QCntR9eFtli/i1przZ8h7pzhiRWbXjB6aWVVkPD7KNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=at0T0m9R; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Pz9Mr1bh; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 14 Jul 2025 13:06:39 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1752491200;
+	s=arc-20240116; t=1752492015; c=relaxed/simple;
+	bh=U+ABV2Z/K8FhS1tVsDtWSNLoxl2AP1Zy78uF8iTobqs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=SiYHosKEo56ab6Ks3EahT9h8Y2lFulT33HEzXJyEwuQgpW/e2sVwisyuO49+yTGoQV6+KMh6SV7pmRLsCIdXs0L9eGsrV4il0OvCAZN+f0BbtEQ6dtjxYBVuUnXL0SeZIjHk1q+nBHfmj2bd1hMCBdfgtdaGJuJXdmbc6V2A+Js=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TCo43i71; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1752492013;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=hAeMljy94torG0RE/zR7wOqaRk7RtPGz5NSK370Hp+c=;
-	b=at0T0m9RHqcR8lKW+YjBPxJ72+Px+u8ULawyibBVsS2MHSmRRoZOggCklKypka79izBtFn
-	5048iHeIcjWv4BkqrQbsuXzw7e2KCDAkaM5DJ1kPnAsSKyKgBzOBqhLF50jLt5kKc74Sr2
-	2BoZUmO5Jn2S5IfGLuloKxUIboeV8no3lDgXLIcG/xxzB5Uhu0Omt6peqnTbo3SPLYwdWV
-	lljeMP5/kMI3GFjwogWgssIRk0CQZUFF3qFPBGByK66Hacshf5pGw5Qq8MxGmjqk2R6hPF
-	/P5ALTrsPghi3Vdeo47eXpmzqC8agCDdFONBiw0HbfPVdu870k1K0FodExOJlg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1752491200;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hAeMljy94torG0RE/zR7wOqaRk7RtPGz5NSK370Hp+c=;
-	b=Pz9Mr1bhXR8hOu1fTjp+QiWeQRrQEZeJ56sH926MlFsu0EWc0IMNIDFENOfIbk1261Tthj
-	yICWZTJqQf1lxWCw==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>, bpf <bpf@vger.kernel.org>,
-	linux-mm <linux-mm@kvack.org>, Harry Yoo <harry.yoo@oracle.com>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Michal Hocko <mhocko@suse.com>, Andrii Nakryiko <andrii@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Johannes Weiner <hannes@cmpxchg.org>
-Subject: Re: [PATCH v2 3/6] locking/local_lock: Introduce
- local_lock_lockdep_start/end()
-Message-ID: <20250714110639.uOaKJEfL@linutronix.de>
-References: <20250709015303.8107-1-alexei.starovoitov@gmail.com>
- <20250709015303.8107-4-alexei.starovoitov@gmail.com>
- <20250711075001.fnlMZfk6@linutronix.de>
- <1adbee35-6131-49de-835b-2c93aacfdd1e@suse.cz>
- <20250711151730.rz_TY1Qq@linutronix.de>
- <CAADnVQKF=U+Go44fpDYOoZp+3e0xrLYXE4yYLm82H819WqnpnA@mail.gmail.com>
+	bh=1Y2GjFqzQOcWBUPguZ9USD97IUATEowPrFd5x574Jlc=;
+	b=TCo43i71mxbIFTPT/vwzSGnUEtXb3Hjb3IMFYn40LP3/UAwGr6K87DzTxp0oOAmFl9kFk1
+	NlwV8UxpB5h5APA2ZXySSL3XxSEfiF4IoWX1qbRRA84gXQDCY5A8KeQ+rTy6U4ejmhwrho
+	le56Hs2AM2PXctT+f8WTI+lT0ZV3AJI=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-380-rjhotTtuO3mw1XxX1eC1aw-1; Mon, 14 Jul 2025 07:20:12 -0400
+X-MC-Unique: rjhotTtuO3mw1XxX1eC1aw-1
+X-Mimecast-MFC-AGG-ID: rjhotTtuO3mw1XxX1eC1aw_1752492011
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3a5780e8137so2792442f8f.1
+        for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 04:20:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752492011; x=1753096811;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1Y2GjFqzQOcWBUPguZ9USD97IUATEowPrFd5x574Jlc=;
+        b=HKHBk314B6noc9X+m9tKKWUbFhNV20K1jOV35jAl5wfX4nnkMNUpmxeivnRVmuWqxG
+         r+OcxZtwGAB7QHd1gQUNW7hzfU1H5WoadEtKQE4CZWbKwWP60j8e/aodG7zYKh1gAHiB
+         bJeee/tW4TBvPQ+NF0SmDVEsNeHWQyx2hKC/U+eZYdMOMu0iKDvhAJV0QpB/bL12yP+G
+         fmhsTG1PDmyxaRBqJDlcYCX+m792uNbhRu+oJ/nRaskL5HTsH68Iae3GmAr8jN+MgH5A
+         YAE4l3GkkpIuqK9nCBYSkVFJ8qdMOqIZMO7tcLCT5WmKAzKeT4pg9DjeOkFFsoZKVH6E
+         N80w==
+X-Forwarded-Encrypted: i=1; AJvYcCUqCgwb0QZAq92tuwLAqW+PM/hBwKnKITgrwi3/UJdQgPu9wFhvk6ADox1HFl3Yu6MRDrQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyj9S7jKA8F5A4u0m2Cd/Pple6TOjPFPIg+nAJJlDQo14nV9g65
+	dUxwbIFYRm79/jV6Zy91sBirA8rBaL5k+v96FJ9DAGB+smNEVdzWeR+JUKkyclnLMHfL+DESRLD
+	74RpQdYh1Fx369wnWH7GYRLn/0SjfO7Bye2dayUFBgEckUIUYpvZXjg==
+X-Gm-Gg: ASbGncs1gXcPdqK34sMBI1Xr8LgrhD6KCPlG08aDnNl2jp4Ke1mLq7RAzxuliJQQDCf
+	P0uEJTdmGlq3sO3aNabULIgums5tvSBl16/0cW7/NO5DcLuAQi3JnRbD0FsKMNcGQGUZ4p7pjIU
+	lbskJTCpAkPbV32vQ9k2MfTReZs+4g8PTZIWPuClkHXNeKveSyxzIs2mXL8hkrafLWCMIp99l8b
+	/l4gvQYKBjRkU5IjofC1gThN7dopXeY+GihLYQbLuuJRhRDZMljJDAiq3SNlPqXq3jskbmt9KUw
+	P9yw9JtimyOzWB74mILcn9cLtmXjlLZlxeZqQoSFON4=
+X-Received: by 2002:a05:6000:240e:b0:3a3:70ab:b274 with SMTP id ffacd0b85a97d-3b5e7f13a0amr13230081f8f.12.1752492010670;
+        Mon, 14 Jul 2025 04:20:10 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFY5XrOya3yhJllGztjovrFQKpCxb10L3EkWzmPKdKNg7g1cHqucJ9l4yQULMvIkstPwMqvTQ==
+X-Received: by 2002:a05:6000:240e:b0:3a3:70ab:b274 with SMTP id ffacd0b85a97d-3b5e7f13a0amr13230053f8f.12.1752492010098;
+        Mon, 14 Jul 2025 04:20:10 -0700 (PDT)
+Received: from [192.168.0.115] ([212.105.155.228])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b5e8dc201asm11984844f8f.22.2025.07.14.04.20.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Jul 2025 04:20:09 -0700 (PDT)
+Message-ID: <b8f0ae48-b059-4137-9b74-f69c122f98f9@redhat.com>
+Date: Mon, 14 Jul 2025 13:20:06 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAADnVQKF=U+Go44fpDYOoZp+3e0xrLYXE4yYLm82H819WqnpnA@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v12 net-next 04/15] tcp: ecn functions in separated
+ include file
+To: chia-yu.chang@nokia-bell-labs.com, edumazet@google.com,
+ linux-doc@vger.kernel.org, corbet@lwn.net, horms@kernel.org,
+ dsahern@kernel.org, kuniyu@amazon.com, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, dave.taht@gmail.com, jhs@mojatatu.com,
+ kuba@kernel.org, stephen@networkplumber.org, xiyou.wangcong@gmail.com,
+ jiri@resnulli.us, davem@davemloft.net, andrew+netdev@lunn.ch,
+ donald.hunter@gmail.com, ast@fiberby.net, liuhangbin@gmail.com,
+ shuah@kernel.org, linux-kselftest@vger.kernel.org, ij@kernel.org,
+ ncardwell@google.com, koen.de_schepper@nokia-bell-labs.com,
+ g.white@cablelabs.com, ingemar.s.johansson@ericsson.com,
+ mirja.kuehlewind@ericsson.com, cheshire@apple.com, rs.ietf@gmx.at,
+ Jason_Livingood@comcast.com, vidhi_goel@apple.com
+References: <20250704085345.46530-1-chia-yu.chang@nokia-bell-labs.com>
+ <20250704085345.46530-5-chia-yu.chang@nokia-bell-labs.com>
+Content-Language: en-US
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <20250704085345.46530-5-chia-yu.chang@nokia-bell-labs.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 2025-07-11 19:19:26 [-0700], Alexei Starovoitov wrote:
-> > If there is no parent check then we could do "normal lock" on both
-> > sides.
+On 7/4/25 10:53 AM, chia-yu.chang@nokia-bell-labs.com wrote:
+> From: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
 > 
-> How would ___slab_alloc() know whether there was a parent check or not?
+> The following patches will modify ECN helpers and add AccECN herlpers,
+> and this patch moves the existing ones into a separated include file.
 > 
-> imo keeping local_lock_irqsave() as-is is cleaner,
-> since if there is no parent check lockdep will rightfully complain.
+> No functional changes.
+> 
+> Signed-off-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
 
-what about this:
+Acked-by: Paolo Abeni <pabeni@redhat.com>
 
-diff --git a/mm/slub.c b/mm/slub.c
-index 7e2ffe1d46c6c..3520d1c25c205 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -3693,6 +3693,34 @@ static inline void *freeze_slab(struct kmem_cache *s, struct slab *slab)
- 	return freelist;
- }
- 
-+static void local_lock_cpu_slab(struct kmem_cache *s, const gfp_t gfp_flags,
-+				unsigned long *flags)
-+{
-+	bool allow_spin = gfpflags_allow_spinning(gfp_flags);
-+
-+	/*
-+	 * ___slab_alloc()'s caller is supposed to check if kmem_cache::kmem_cache_cpu::lock
-+	 * can be acquired without a deadlock before invoking the function.
-+	 *
-+	 * On PREEMPT_RT an invocation is not possible from IRQ-off or preempt
-+	 * disabled context. The lock will always be acquired and if needed it
-+	 * block and sleep until the lock is available.
-+	 *
-+	 * On !PREEMPT_RT allocations from any context but NMI are safe. The lock
-+	 * is always acquired with disabled interrupts meaning it is always
-+	 * possible to it.
-+	 * In NMI context it is needed to check if the lock is acquired. If it is not,
-+	 * it is safe to acquire it. The trylock semantic is used to tell lockdep
-+	 * that we don't spin. The BUG_ON() will not trigger if it is safe to acquire
-+	 * the lock.
-+	 *
-+	 */
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT) && !allow_spin)
-+		BUG_ON(!local_trylock_irqsave(&s->cpu_slab->lock, *flags));
-+	else
-+		local_lock_irqsave(&s->cpu_slab->lock, *flags);
-+}
-+
- /*
-  * Slow path. The lockless freelist is empty or we need to perform
-  * debugging duties.
-@@ -3765,7 +3793,8 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 		goto deactivate_slab;
- 
- 	/* must check again c->slab in case we got preempted and it changed */
--	local_lock_irqsave(&s->cpu_slab->lock, flags);
-+	local_lock_cpu_slab(s, gfpflags, &flags);
-+
- 	if (unlikely(slab != c->slab)) {
- 		local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 		goto reread_slab;
-@@ -3803,7 +3832,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 
- deactivate_slab:
- 
--	local_lock_irqsave(&s->cpu_slab->lock, flags);
-+	local_lock_cpu_slab(s, gfpflags, &flags);
- 	if (slab != c->slab) {
- 		local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 		goto reread_slab;
-@@ -3819,7 +3848,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 
- #ifdef CONFIG_SLUB_CPU_PARTIAL
- 	while (slub_percpu_partial(c)) {
--		local_lock_irqsave(&s->cpu_slab->lock, flags);
-+		local_lock_cpu_slab(s, gfpflags, &flags);
- 		if (unlikely(c->slab)) {
- 			local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 			goto reread_slab;
-@@ -3947,7 +3976,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 
- retry_load_slab:
- 
--	local_lock_irqsave(&s->cpu_slab->lock, flags);
-+	local_lock_cpu_slab(s, gfpflags, &flags);
- 	if (unlikely(c->slab)) {
- 		void *flush_freelist = c->freelist;
- 		struct slab *flush_slab = c->slab;
-@@ -4003,12 +4032,8 @@ static void *__slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 			p = ERR_PTR(-EBUSY);
- 			goto out;
- 		}
--		local_lock_lockdep_start(&s->cpu_slab->lock);
--		p = ___slab_alloc(s, gfpflags, node, addr, c, orig_size);
--		local_lock_lockdep_end(&s->cpu_slab->lock);
--	} else {
--		p = ___slab_alloc(s, gfpflags, node, addr, c, orig_size);
- 	}
-+	p = ___slab_alloc(s, gfpflags, node, addr, c, orig_size);
- out:
- #ifdef CONFIG_PREEMPT_COUNT
- 	slub_put_cpu_ptr(s->cpu_slab);
-
-
-Sebastian
 
