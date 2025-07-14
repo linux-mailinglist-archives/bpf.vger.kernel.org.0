@@ -1,188 +1,122 @@
-Return-Path: <bpf+bounces-63191-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63192-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5F68B03F54
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 15:11:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CCE8B03F66
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 15:16:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B3B8188FBD3
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 13:11:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF38B3B5FFE
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 13:15:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0618C24C07A;
-	Mon, 14 Jul 2025 13:10:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DB4F221F29;
+	Mon, 14 Jul 2025 13:16:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="f8hPPQfr"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pQUnRcg8"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA19E4315A
-	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 13:10:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85CF12F22
+	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 13:16:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752498654; cv=none; b=R7b7COlEXuKXO1vDx5DF/qPtu2tlpqLXaQwc2UJzgijWPA7GrtniOuolDxjblWi6jJ3uJH41jTRcF5aCUg0l88k4kRD0AMxxm05l+w+qHJPyNyeBaC8EbiEQEysLAI3Olo4vb/HG5UstuBG3bwS60F/53cBw5qior52ZGa6ZMpM=
+	t=1752498969; cv=none; b=n/GSQlZuHeRPtouQQ+SiGeMavF8kQt0aVKFp2DVffA4S19Gd3a+/LK7R9w9jrEpCH8kTJJuLXV6y161Vco6iUAiQccdfjKFLy3psuSE84ZEKVY2QW8PY6LOsib4+JAGlbKkorQnmMa70oduUEPz9QPGC5ZGDKfjWcTXohiXjeRs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752498654; c=relaxed/simple;
-	bh=OKHlmd7Qcr8AGinaQ5iuxYV6lu1d4kRrK0yKJPeVqJM=;
+	s=arc-20240116; t=1752498969; c=relaxed/simple;
+	bh=uNySO4lrbvjnur5E+Fbnn4kIAnHeOJOxR0gDtx4P1Jo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OQka2JIbxEaHGkGEVkqnZHmxYpxpgJNSzKWCKCqOmjbqClskX+D9TBABYb2JEZPjxCn0/DcGknsdyYC4qIO92SgwFTOqRac8RNejQgfvNG5Qstq77UI4PFO9xtXKWOVmzVd4d/3oxwuO9xg/nh3kXczwzlhjcGBgJe3673Q39Jo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=f8hPPQfr; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1752498652;
+	 In-Reply-To:Content-Type; b=hGe+BmvCOuoNayA/vjDjxOTFOHutqQ2X4FLXFs3xp0QlVF9qCYOr3wxJI7/Y5cRktotDGRtEzYO7cTZKmzEXgYUfVPOupT2N6yY8bpzkS8+6Qmwzyj0YklgElSIfwTJCPDxJ3+ePlLGbugyMcmq5s28fig2AAvU2ccfz7jwEyXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pQUnRcg8; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <f580b139-a08b-4705-addd-31f104fd570c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1752498961;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Slopq6lqfpeoL26O5BVE+c/eBR9HrgDvIWj6vuGUSOU=;
-	b=f8hPPQfrG3AYZwHJkl370+6azR5XGxj/zI98hqDcEcKFNLYTxDPBsZ7tYa3vpHgmKXo9S2
-	7RBuDJ3/9vhO62NlJTaDLn681HMp4XBxkp5HrDkYMlTOrpa+rjz0iP9eK4zuQ9z3ZdnB2+
-	fizE3pUC7oX/VpoUnrEDirbjYtV5G5g=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-63-Oio0yncAPaaoGcqAlMF4AA-1; Mon, 14 Jul 2025 09:10:50 -0400
-X-MC-Unique: Oio0yncAPaaoGcqAlMF4AA-1
-X-Mimecast-MFC-AGG-ID: Oio0yncAPaaoGcqAlMF4AA_1752498649
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4561c67daebso2564595e9.1
-        for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 06:10:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752498649; x=1753103449;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Slopq6lqfpeoL26O5BVE+c/eBR9HrgDvIWj6vuGUSOU=;
-        b=QNDyGcbotckMtPbFuxPv3P+RajgJgPQGhdrLeswXjD+x5WfPDMh7NPUTCMcLPSHGAR
-         2dLINEvVmg2gv0H3adn0e04REiOcwLox5z38lFIxFQ1JG0n7ZMnVPEBeLBZ35GrRPx4g
-         b5PZV4KS4mwnV2iglf7+cGtBlEND+KZSwajnrFLf6zXgK2mwAhdW302if3wgxOEzBW3R
-         D8x1H+utllK7Io4beSBMtxWOkPuGUT4LH7H3w25RBkSm85K/gEUHsieqGsDh5phvyrmc
-         2/cKrzMiKbyuwpsG/o6CzxLdVnEwAEdv8+QfYcwEDen8Nd3TroWCUWJBxA2jAeXjOzwY
-         DQWw==
-X-Forwarded-Encrypted: i=1; AJvYcCUCxJrWd2M9j3nYz3l8laT4JUOirqBuWMV3cMIabj7pg8Rtzd9mcos+51iBjqU56p/zgUs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YztqRrKQAJL+M0LAjB0va2XRYtouErl1Ny6IiI/EHB9E7l2BCvS
-	m6SdQRQ/J/bVIgRuNNjJmfHMqkJ+9SkgSYGavnX5ZLWihKChAyVL5kaUh+7Mqjo12znCgzRX1U9
-	FCJJ8I0RWeXPKLucRhOJ794TSesiRF6ZdRX9KhayJNBxKJBnbJNjgcA==
-X-Gm-Gg: ASbGncuAu5/dtiiJQvOCG6usVjeGYWhcXk6amxg/40VGZjDEzAFU+8A7NS+HvrZvXdd
-	wfLEayfDqneGLM48N5bxo83GFxPWW5Cg3pTJ7ZR2eRbLJxW1C9fBiC/oJMwQ3sw5ktY3D2DAbfv
-	NR9OXgmpbsbyMKzM8WUM32qqpvD8tD+IuY9L12aIZy+jww/o6I3Xanm9ujfQSL76RYSfafrmpAN
-	zs4vhhfQh9VuPuLzv2yIdOaifLeeKUcMNhlzOmjkhrNu40fpwJIWZH6OKmyEw4JBoBQi28A4/UY
-	QdBRyLOVBXKc5A2CNvv2R72AU0T1DIkkKass9M6cgDM=
-X-Received: by 2002:a05:600c:6095:b0:456:189e:223a with SMTP id 5b1f17b1804b1-456189e2325mr45725435e9.10.1752498649113;
-        Mon, 14 Jul 2025 06:10:49 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF4isJE0VuC1C1kTueLpR2HySlD/dQQOFEyhiZwFlkFPA9n3aecdOCB/5t4HOGIGIIR/iCaiw==
-X-Received: by 2002:a05:600c:6095:b0:456:189e:223a with SMTP id 5b1f17b1804b1-456189e2325mr45724915e9.10.1752498648590;
-        Mon, 14 Jul 2025 06:10:48 -0700 (PDT)
-Received: from [192.168.0.115] ([212.105.155.228])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b5e8e262c6sm12199695f8f.85.2025.07.14.06.10.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Jul 2025 06:10:48 -0700 (PDT)
-Message-ID: <dc03363a-36d0-4a56-9247-baa75d516620@redhat.com>
-Date: Mon, 14 Jul 2025 15:10:45 +0200
+	bh=Cwvkiriw30wqyfBkgssYOekF5g8YqkH87P9dXphqWRE=;
+	b=pQUnRcg80CPnSfkpWkKdM8t1njWTWpnOW0i/rQBEWtj5gatjUJ5Ki7EGxzIpK3xq4CN5ID
+	SZEXd1V+Ih+SbNQr1OT85+rNtB1tI+BWCqs7eGRGT9EI2bmO8Ty1dqQdbyj9j+lfA/jygF
+	gA2No1YVlGl0PSGZITIaYhW7wHod23M=
+Date: Mon, 14 Jul 2025 21:15:45 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 net-next 06/15] tcp: accecn: AccECN negotiation
-To: chia-yu.chang@nokia-bell-labs.com, edumazet@google.com,
- linux-doc@vger.kernel.org, corbet@lwn.net, horms@kernel.org,
- dsahern@kernel.org, kuniyu@amazon.com, bpf@vger.kernel.org,
- netdev@vger.kernel.org, dave.taht@gmail.com, jhs@mojatatu.com,
- kuba@kernel.org, stephen@networkplumber.org, xiyou.wangcong@gmail.com,
- jiri@resnulli.us, davem@davemloft.net, andrew+netdev@lunn.ch,
- donald.hunter@gmail.com, ast@fiberby.net, liuhangbin@gmail.com,
- shuah@kernel.org, linux-kselftest@vger.kernel.org, ij@kernel.org,
- ncardwell@google.com, koen.de_schepper@nokia-bell-labs.com,
- g.white@cablelabs.com, ingemar.s.johansson@ericsson.com,
- mirja.kuehlewind@ericsson.com, cheshire@apple.com, rs.ietf@gmx.at,
- Jason_Livingood@comcast.com, vidhi_goel@apple.com
-Cc: Olivier Tilmans <olivier.tilmans@nokia.com>
-References: <20250704085345.46530-1-chia-yu.chang@nokia-bell-labs.com>
- <20250704085345.46530-7-chia-yu.chang@nokia-bell-labs.com>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <20250704085345.46530-7-chia-yu.chang@nokia-bell-labs.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add struct bpf_token_info
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, willemb@google.com,
+ kerneljasonxing@gmail.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250711094517.931999-1-chen.dylane@linux.dev>
+ <CAEf4BzZzsqu1=Q-3+6uJvgvKd52o+FR=DFp28w+vT5knP9NyCQ@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Tao Chen <chen.dylane@linux.dev>
+In-Reply-To: <CAEf4BzZzsqu1=Q-3+6uJvgvKd52o+FR=DFp28w+vT5knP9NyCQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 7/4/25 10:53 AM, chia-yu.chang@nokia-bell-labs.com wrote:
-> @@ -375,7 +379,8 @@ struct tcp_sock {
->  	u8	compressed_ack;
->  	u8	dup_ack_counter:2,
->  		tlp_retrans:1,	/* TLP is a retransmission */
-> -		unused:5;
-> +		syn_ect_snt:2,	/* AccECN ECT memory, only */
-> +		syn_ect_rcv:2;	/* ... needed durign 3WHS + first seqno */
+在 2025/7/12 01:10, Andrii Nakryiko 写道:
 
-Minor nit: typo above: durign -> during
+Hi Andrri,
 
-> +/* Infer the ECT value our SYN arrived with from the echoed ACE field */
-> +static inline int tcp_accecn_extract_syn_ect(u8 ace)
->  {
-> -	tp->received_ce = 0;
-> -	tp->received_ce_pending = 0;
-> +	/* Below is an excerpt from Tables 2 of the AccECN spec:
-> +	 * +================================+========================+
-> +	 * |        Echoed ACE field        | Received ECT values of |
-> +	 * |      AE      CWR      ECE      |  our SYN arrived with  |
-> +	 * +================================+========================+
-> +	 * |       0         1         0    |         Not-ECT        |
-> +	 * |       0         1         1    |         ECT(1)         |
-> +	 * |       1         0         0    |         ECT(0)         |
-> +	 * |       1         1         0    |           CE           |
-> +	 * +================================+========================+
-> +	 */
-> +	if (ace & 0x1)
-> +		return INET_ECN_ECT_1;
-> +	if (!(ace & 0x2))
-> +		return INET_ECN_ECT_0;
-> +	if (ace & 0x4)
-> +		return INET_ECN_CE;
-> +	return INET_ECN_NOT_ECT;
+> On Fri, Jul 11, 2025 at 2:45 AM Tao Chen <chen.dylane@linux.dev> wrote:
+>>
+>> The 'commit 35f96de04127 ("bpf: Introduce BPF token object")' added
+>> BPF token as a new kind of BPF kernel object. And BPF_OBJ_GET_INFO_BY_FD
+>> already used to get BPF object info, so we can also get token info with
+>> this cmd.
+>>
+> 
+> Do you have a specific use case in mind for this API? I can see how
+> this might be useful for some hypothetical cases, but I have a few
+> reservations as of right now:
+> 
+>    - we don't allow iterating all BPF token objects in the system the
+> same way we do it for progs, maps, and btfs, so bpftool cannot take
+> advantage of this to list all available tokens and their info, which
+> makes this API a bit less useful, IMO;
+> 
+>    - BPF token was designed in a way that users don't really need to
+> know allowed_* values (and if they do, they can get it from BPF FS's
+> mount information (e.g., from /proc/mounts).
+> 
+> As I said, I can come up with some hypothetical situations where a
+> user might want to avoid doing something that otherwise they'd do
+> outside of userns, but I'm wondering what your motivations are for
+> this?
+> 
 
-Nit: implementing the above with a static array lookup would probably
-make the code simpler/more clear
+Sorry for the delay. Recentlly, i tried to use bpf_token feature in our 
+production environment, in fact, bpf_token grants permission to prog, 
+map, cmd, etc. It would be great if it could indicate which specific 
+permission is the issue to user. So i wanted to provide a token info 
+query interface. As you said, "mount | grep bpf" may solve it, but
+functionally, can we make it more complete?
 
-> +/* Used to form the ACE flags for SYN/ACK */
-> +static inline u16 tcp_accecn_reflector_flags(u8 ect)
-> +{
-> +	/* TCP ACE flags of SYN/ACK are set based on IP-ECN codepoint received
-> +	 * from SYN. Below is an excerpt from Table 2 of the AccECN spec:
-> +	 * +====================+====================================+
-> +	 * |  IP-ECN codepoint  |  Respective ACE falgs on SYN/ACK   |
-> +	 * |   received on SYN  |       AE       CWR       ECE       |
-> +	 * +====================+====================================+
-> +	 * |      Not-ECT       |       0         1         0        |
-> +	 * |      ECT(1)        |       0         1         1        |
-> +	 * |      ECT(0)        |       1         0         0        |
-> +	 * |        CE          |       1         1         0        |
-> +	 * +====================+====================================+
-> +	 */
-> +	u32 flags = ect + 2;
-> +
-> +	if (ect == 3)
-> +		flags++;
-> +	return FIELD_PREP(TCPHDR_ACE, flags);
+>> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+>> ---
+>>   include/linux/bpf.h            | 11 +++++++++++
+>>   include/uapi/linux/bpf.h       |  8 ++++++++
+>>   kernel/bpf/syscall.c           | 18 ++++++++++++++++++
+>>   kernel/bpf/token.c             | 30 ++++++++++++++++++++++++++++--
+>>   tools/include/uapi/linux/bpf.h |  8 ++++++++
+>>   5 files changed, 73 insertions(+), 2 deletions(-)
+>>
+> 
+> [...]
 
-Same here.
 
-> +}
->  
-> -	wire_ace = tp->received_ce + TCP_ACCECN_CEP_INIT_OFFSET;
-> -	th->ece = !!(wire_ace & 0x1);
-> -	th->cwr = !!(wire_ace & 0x2);
-> -	th->ae = !!(wire_ace & 0x4);
-> +/* AccECN specificaiton, 3.1.2: If a TCP server that implements AccECN
-
-Minor nit: typo above: specificaiton -> specification
-
-Otherwise LGTM,
-
-Acked-by: Paolo Abeni <pabeni@redhat.com>
-
+-- 
+Best Regards
+Tao Chen
 
