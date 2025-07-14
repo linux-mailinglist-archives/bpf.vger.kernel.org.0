@@ -1,311 +1,295 @@
-Return-Path: <bpf+bounces-63166-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63172-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE393B03DE4
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 13:59:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B5A0B03E0A
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 14:02:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38D8E7A5EB3
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 11:57:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D5FF1A617F8
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 12:02:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FC3A2472AA;
-	Mon, 14 Jul 2025 11:59:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8EBF253351;
+	Mon, 14 Jul 2025 12:01:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 874A21E5018;
-	Mon, 14 Jul 2025 11:59:03 +0000 (UTC)
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88C21178372;
+	Mon, 14 Jul 2025 12:00:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752494351; cv=none; b=dsOekOtGk2/2G940CJfHUjWPi9wL/m1zwfxN3WhWR3fTDc7HDcim66/h80Gmub+I9/Chk1ckqMPFv2ydfJsFzrghDs8fZWnN0N4QRsYaNSBJDqg9PUW98RAYvqQuHGrmLzMqpZR4lcdh4h652ho1O63/qDJJadOR/m3bzY+Cvtc=
+	t=1752494463; cv=none; b=Kqt/vRKS/hz6Ltm1XTZzscxkkrO4AoCRucDufkXlf8QVnCEHa0DlYl/JgopwbTAxO7yz6iLl7IPrQQ6HmJd7HhG32B3ikXysYPKjPa/XgkIVTRkpVcNwSNw+RHuy4G7GElRP/8olV23c8RhkOzpJp2RwBvXzEB9ibq7zyUIgRQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752494351; c=relaxed/simple;
-	bh=+8kGNKX/cS17HIoZdLxG+aIihYIgBAWGehSLPSD24hw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z3Q5LBZtwTaXXT4QFSNtym3f/KE+KudzBHz61KWsnW6CxuBdWQ3kPCr058dA3uZnMeomICwn8rNEzphdY7BdhHlyCfU5EoTIGImzIWwNAiXHhsyvlqeuW2AQcfEKMr4EGUOmvxcrabO3W5qXko2Ygx9uzHr36cnUC87bPxojBNU=
+	s=arc-20240116; t=1752494463; c=relaxed/simple;
+	bh=DKtpnwmgtwr3ulIqs99dUHLBjCDPmbzOQGaSeTJIesM=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=u3ZHlWf31BUyQqyYDXPGzAKl5MzsPXevWDBGe5VjEWhsPIXVVW+pvQSUXzgraAVKDHL/7ExDZ3EoxzOsOf9kDpKZJc9STi7pGkJgTfPnbVFZXnO5gBnzX68XkNCbkp/crHBSeKvgOlLhje4FW87OMrT6y1oThkXAYJHFCjb1TwY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-681ff7000002311f-47-6874f10695f3
-Date: Mon, 14 Jul 2025 20:58:57 +0900
+X-AuditID: a67dfc5b-681ff7000002311f-e8-6874f17962cc
 From: Byungchul Park <byungchul@sk.com>
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: willy@infradead.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	kernel_team@skhynix.com, kuba@kernel.org, almasrymina@google.com,
-	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
-	akpm@linux-foundation.org, davem@davemloft.net,
-	john.fastabend@gmail.com, andrew+netdev@lunn.ch, toke@redhat.com,
-	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com,
-	saeedm@nvidia.com, leon@kernel.org, ast@kernel.org,
-	daniel@iogearbox.net, david@redhat.com, lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
-	surenb@google.com, mhocko@suse.com, horms@kernel.org,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-	vishal.moola@gmail.com, hannes@cmpxchg.org, ziy@nvidia.com,
-	jackmanb@google.com
-Subject: Re: [PATCH net-next v9 1/8] netmem: introduce struct netmem_desc
- mirroring struct page
-Message-ID: <20250714115857.GA31302@system.software.com>
-References: <20250710082807.27402-1-byungchul@sk.com>
- <20250710082807.27402-2-byungchul@sk.com>
- <b1f80514-3bd8-4feb-b227-43163b70d5c4@gmail.com>
- <20250714042346.GA68818@system.software.com>
- <a7bd1e6f-b854-4172-a29a-3f0662c6fd6e@gmail.com>
+To: willy@infradead.org,
+	netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	kernel_team@skhynix.com,
+	almasrymina@google.com,
+	ilias.apalodimas@linaro.org,
+	harry.yoo@oracle.com,
+	akpm@linux-foundation.org,
+	andrew+netdev@lunn.ch,
+	asml.silence@gmail.com,
+	toke@redhat.com,
+	david@redhat.com,
+	Liam.Howlett@oracle.com,
+	vbabka@suse.cz,
+	rppt@kernel.org,
+	surenb@google.com,
+	mhocko@suse.com,
+	linux-rdma@vger.kernel.org,
+	bpf@vger.kernel.org,
+	vishal.moola@gmail.com,
+	hannes@cmpxchg.org,
+	ziy@nvidia.com,
+	jackmanb@google.com,
+	wei.fang@nxp.com,
+	shenwei.wang@nxp.com,
+	xiaoning.wang@nxp.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	anthony.l.nguyen@intel.com,
+	przemyslaw.kitszel@intel.com,
+	sgoutham@marvell.com,
+	gakula@marvell.com,
+	sbhatta@marvell.com,
+	hkelam@marvell.com,
+	bbhushan2@marvell.com,
+	tariqt@nvidia.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	sdf@fomichev.me,
+	saeedm@nvidia.com,
+	leon@kernel.org,
+	mbloch@nvidia.com,
+	danishanwar@ti.com,
+	rogerq@kernel.org,
+	nbd@nbd.name,
+	lorenzo@kernel.org,
+	ryder.lee@mediatek.com,
+	shayne.chen@mediatek.com,
+	sean.wang@mediatek.com,
+	matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com,
+	aleksander.lobakin@intel.com,
+	horms@kernel.org,
+	m-malladi@ti.com,
+	krzysztof.kozlowski@linaro.org,
+	matthias.schiffer@ew.tq-group.com,
+	robh@kernel.org,
+	imx@lists.linux.dev,
+	intel-wired-lan@lists.osuosl.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-wireless@vger.kernel.org,
+	linux-mediatek@lists.infradead.org
+Subject: [PATCH net-next v10 00/12] Split netmem from struct page
+Date: Mon, 14 Jul 2025 21:00:35 +0900
+Message-Id: <20250714120047.35901-1-byungchul@sk.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAAzWSa2yLcRTG/f/vdbUmb2rhRRBNBMPckyNBxqeXREJEJEam0TfarBvartuE
+	mCli2YYh6baiZWYX0WmxotvohjGXmV06unXmkpmaWW3WDdVNfHtyfuc5zznJYQmZm5rCqpP0
+	ojZJoZHTElLyNfLSgrTvetWi7qdzwWy7RsOrgJWCsqFUuNrppKCxhId7DUMYzKW3EfwIvmXA
+	fsJLQKD2MQ2XrYMEBMuzSTC/NJIwYBsm4OOjLgbq3L9JKLNvAF/RJxJcxysIqBmYBV0n62jI
+	No4QkNdxlIbQmxEKKoO9DGQ4izFUfrnFQMPtHArODl8hoCK9M5z1voWC13fNNLw+8gpBx7UQ
+	BZ/c4UB/sZeBnLJ8BO7qEhoyjEvBf+sHA33nagnw5cTCH5MBHlkmwmC9H8HbK80YQi4nAy86
+	rlNQa6vA0PQuSMBg1nkaMr+eRNCcdxfDs/PlFBTWN+HwHpuhJfQLw5lGCw3vjT4EjTVdJBQc
+	zkFgq/JQ8N0VPnlkyEzHrhVq/N8IwdleiISbJW1Y6D71BwueqqdYuJPfzggWe7LgKI4WLrs+
+	YyHT00gI9tITtGDvz2UEb4uLFupMI6TgKDwkdDvy0MZp2yQrlaJGbRC1C1fvlKgKAr14r3dp
+	qs8TwOkoMCcTRbA8t4w/XRIg/uussw5mVNPcbN7jCY7Vo7jFfKDrMZmJJCzBPY/kKx0mPAom
+	cGt4a6h5rInkZvFNx/xjZim3nM86XYD/DZ3Bl5XfJ0bNPFcQwXsufqT+gcn8g2IPeQqNt6Bx
+	pUimTjIkKtSaZTGqtCR1asyuPYl2FP6sooO/4pyov2GzG3EskkdKoUevklEKgy4t0Y14lpBH
+	SXvatSqZVKlI2y9q98RrkzWizo2msqR8knTJYIpSxu1W6MUEUdwrav9TzEZMSUerUmJ5Ur9i
+	/DyHBW+tVmqe/Owz6SZcVLKFQz38+txom3RS/E4UF79vvr31SXXcQEuCN/tIT+V23wHjGeva
+	bbkZ4uFeo5k8t39L55y2/NUmyFP/TvBPd6ybWbShL+O49RKz6cKH5NaOHTfEhwObdqUMa4Mx
+	BqY+MqZ/R+xG7mGKnNSpFIujCa1O8ReSf+AMVQMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAAzWSe0yTZxTGfb/3u7Wj8ROJfkE3TY2BmIgaLzmJRlk02TsXjcn+mMFErfrF
+	Nlw0LVbYdIJ2W6wIqMxwaSfMKpeiYKtQoaIpTJmKSrnYzXJZvQS0gq7Y0KLWovG/5+R5nvM7
+	fxwex55h4nlNRqakzVClKVk5Ld+48sjC7NeZ6sV/VSvAVFfLQmegggHreBZUDjoYcFeL0Pxg
+	nAJTTQOCsdAjDmxHvRgCbbdYOFsRxBCqP06D6b6Bhjd1YQxPb/o4aHe9o8Fq2wAD55/R4Pyt
+	EUPrm/ngK2hn4bhhAkNJ/y8sRP6dYOBaaISDw44qClrNf0fHF1c4eNCQz0BR+ByGxpzBKPBx
+	LwNdTSYWuo50IuivjTDwzBWl+qu8HORbSxG4rlezcNiwFPxXxjh49XsbhoH8ZHhfrIeb5TMg
+	eMeP4NG5HgoiTgcH9/ovMtBW10hB938hDME8MwvGlwUIekqaKLhrrmfAcqebit7xPfRG3lJw
+	yl3OwmPDAAJ3q4+Gstx8BHUtHgZeOw108lrS6h/FxNFnQeRy9T8UGSp8TxFPy22KXC3t40i5
+	bR+xVy0gZ53DFDF63JjYao6yxPb/SY54e50saS+eoIndcogM2UvQpq9S5Kt2SWkavaRdtHq7
+	XF0WGKH2epdmDXgCVA4KJBqRjBeFZWJekZ2b1KyQIHo8ITyp44QlYsB3izYiOY+Fjhjxmr2Y
+	mjSmC1+LFZGejyFamC92/+r/WFYIy8W8E2XUp6VzRGv9DVyI+HI0pQbFaTL06SpN2vIkXao6
+	O0OTlbRzT7oNRd/m/MG3JxxorOsbFxJ4pIxRwPNMdSyj0uuy011I5LEyTvG8T6uOVexSZf8o
+	afds0+5Lk3QuNIunlTMV63+QtscKu1WZUqok7ZW0n12Kl8XnoMIm4xdcf8dmevhbb0qLY658
+	IkXvK9LlDppOW2b3NBwrZf5Ikl1IsLlTH343ellWqmk60GGfqi4Ir9i6ctqBeZah3K5Fnbjl
+	y9TK5Kc79v90qWFkzY5E62hi8Od1W2KCzePck7zuOfJNq+XkVPzBYU6WsJmEzbnmu2c6/pxh
+	bg4TJa1Tq5YswFqd6gPgoPYEMgMAAA==
+X-CFilter-Loop: Reflected
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a7bd1e6f-b854-4172-a29a-3f0662c6fd6e@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sf0zMcRjH97nvz27d9u0UH2VsJ2NRYf3x2Pw29p1ms7AMm676rju6aldS
-	DQtZ3LqENrnOXKwrdTo7ra6k6frpx0iJi1JKhQjh9OOK7prx32vP+/289vzxsIQ0n/JllXFJ
-	gjpOHiujxaT4s+f1QPpbkmLlz9Jg0JtNNJSOpUBRr5UCfUkFgh/jrxn43tBMw40CBwH6pxkk
-	/DRPEDDQ1MdAqWUH9BgHSajJrCSg73wLDdqMSQLujY8wcMpaLILWimwKcicKCahM72WgvVpP
-	wxvTbwoGbVoSHuhuktCTvRGaDHPB8egTggZzpQgcWVdpuNRmoKE/owdBW30fCfknsxGYa+0U
-	TI7NOPIb3zAb/fn6T18Ivvxmp4iv0nUzvMFyhL9THMBr7G0Ebyk5R/OW0YsM3/WihuZb8iZJ
-	vsr6XcRrT4/Q/LeBVyT/pbaD5s3lHST/2NDA7PTaJ14bLcQqkwV18PoIseLUdB1KeLYl5WTZ
-	BSodfQ3RIA8WcyE401JO/OXBRhPpYpJbgjtH291Mc0ux3T7u7nhzy/HwSxujQWKW4PJoXPbW
-	SLuCOZwcP3RmuxckHOD3xmHkKkk5B8J52kZqNvDCD668c5cILgDbpz+INIidYT9cNM26xh7c
-	Ojz0RO+u+HCL8f2KZpHLgzkri+0TufTspfNxXbGdzEGc7j+t7j+t7p/WgIgSJFXGJavkytiQ
-	IEVqnDIlKCpeZUEzL2M87txvRaOtu2yIY5HMUwIfkxRSSp6cmKqyIcwSMm/Jx261QiqJlqem
-	Cer4g+ojsUKiDfmxpGyeZLXjaLSUi5EnCYcFIUFQ/01FrIdvOoopW1Ft8tkT2eTsUGyaWkVp
-	c5xN+9StU5tNw4oaw4KRNeJl2+NVv593a0KP91H528LTshZa94aF+6d3/zpzTbfFGdYyoCmo
-	uFt9Wfe6JTI36mD87gEYK2BUix7eqgrddfZATKaMezaFhyNu3d4anaEqDHT+GurfcOLQsRyj
-	X5d3oIxMVMhXBRDqRPkf8I3lSi4DAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRjG+Z9zdnY2WpzWrIN+m0WgZQUGL2giRPWnNKKb1JdceWjDK5ua
-	BoU3EC1XVpitDdbNO42mblNUavPazVLKWd5t5q3MS6KzLGdEfvvxPM/v/fQypPQX5c2o4hJ5
-	dZwiRk6LKfGRoMwd9HSicpe7ywf0pgoayhdSoHjAJgB9mQXB3OInIcw2ttDw8P48Cfr2LAp+
-	mNwkuJqHhFBuDof+ohEK6rKtJAxdb6UhL2uJhPrFb0LIsJUQ4DC0CeCtRSuA2+7HJFjTBoTQ
-	Waunoa/itwBG7HkUtOlKKejXhkKzcRPMv5xE0GiyEjB/zUDDrQ4jDcNZ/Qg6HEMU3EvXIjA1
-	OAWwtLBy415TnzB0K3ZMTpG4qrSbwDW6XiE2mpNwZYkfznV2kNhclkNj88xNIe75UEfj1sIl
-	CtfYZgmcl/mNxtOujxSeanhP44ej3wlsqnpPHZWeEQdH8TGqZF69MyRSrMxYfo4S3u1LSX+S
-	L0hD3wNzkYjh2EBupKmC8jDFbuW6ZzpXmWa3cU7nIulhGevPTXTZhblIzJBsIc09GSyiPcVG
-	VsG9+KldFSQscKNFE8gzkrLziCvMaxL8LTZwbXc/r45I1o9zLo8RuYhZYR+ueJnxxCJ2L/fl
-	jX514sX6cs8sLcQNJNGtsXVrbN1/24jIMiRTxSXHKlQxewI00crUOFVKwPn4WDNaeYqiyz/z
-	bWiu86AdsQySr5PAeKJSKlAka1Jj7YhjSLlMMt6rVkolUYrUS7w6/qw6KYbX2JEPQ8k3Sw5F
-	8JFS9oIikY/m+QRe/a8lGJF3GnJ5b9HSY5WZ51peHxPNbWdDDxcsaAPennTh4kFD9vGL4Y9O
-	Pnh0R2RQ3zKJrLVeE9Yt+wN7UtOcEUfawqoP1AU/tTD5rijT8qkrHWFXq3P8C5D/bV9DvaXU
-	/eVpiN/60zL73RO8Mah92hH74NVQ+c2vMp+FwxuGzaHXwg6e0hCVckqjVOz2I9UaxR9qCeNy
-	EAMAAA==
-X-CFilter-Loop: Reflected
 
-On Mon, Jul 14, 2025 at 12:30:12PM +0100, Pavel Begunkov wrote:
-> On 7/14/25 05:23, Byungchul Park wrote:
-> > On Sat, Jul 12, 2025 at 03:39:59PM +0100, Pavel Begunkov wrote:
-> > > On 7/10/25 09:28, Byungchul Park wrote:
-> > > > To simplify struct page, the page pool members of struct page should be
-> > > > moved to other, allowing these members to be removed from struct page.
-> > > > 
-> > > > Introduce a network memory descriptor to store the members, struct
-> > > > netmem_desc, and make it union'ed with the existing fields in struct
-> > > > net_iov, allowing to organize the fields of struct net_iov.
-> > > 
-> > > FWIW, regardless of memdesc business, I think it'd be great to have
-> > > this patch, as it'll help with some of the netmem casting ugliness and
-> > > shed some cycles as well. For example, we have a bunch of
-> > > niov -> netmem -> niov casts in various places.
-> > 
-> > If Jakub agrees with this, I will re-post this as a separate patch so
-> > that works that require this base can go ahead.
-> 
-> I think it'd be a good idea. It's needed to clean up netmem handling,
-> and I'll convert io_uring and get rid of the union in niov.
-> 
-> The diff below should give a rough idea of what I want to use it for.
-> It kills __netmem_clear_lsb() to avoid casting struct page * to niov.
-> And saves some masking for zcrx, see page_pool_get_dma_addr_nmdesc(),
-> and there are more places like that.
-> 
-> 
-> diff --git a/include/net/netmem.h b/include/net/netmem.h
-> index 535cf17b9134..41f3a3fd6b6c 100644
-> --- a/include/net/netmem.h
-> +++ b/include/net/netmem.h
-> @@ -247,6 +247,8 @@ static inline unsigned long netmem_pfn_trace(netmem_ref netmem)
->        return page_to_pfn(netmem_to_page(netmem));
->  }
-> 
-> +#define pp_page_to_nmdesc(page)        ((struct netmem_desc *)(page))
-> +
->  /* __netmem_clear_lsb - convert netmem_ref to struct net_iov * for access to
->   * common fields.
->   * @netmem: netmem reference to extract as net_iov.
-> @@ -262,11 +264,18 @@ static inline unsigned long netmem_pfn_trace(netmem_ref netmem)
->   *
->   * Return: the netmem_ref cast to net_iov* regardless of its underlying type.
->   */
-> -static inline struct net_iov *__netmem_clear_lsb(netmem_ref netmem)
-> +static inline struct net_iov *__netmem_to_niov(netmem_ref netmem)
->  {
->        return (struct net_iov *)((__force unsigned long)netmem & ~NET_IOV);
->  }
-> 
-> +static inline struct netmem_desc *netmem_to_nmdesc(netmem_ref netmem)
+Hi all,
 
-I removed netmem_to_nmdesc() and its users, while I was working for v10.
-However, You can add it if needed for your clean up.
+The MM subsystem is trying to reduce struct page to a single pointer.
+See the following link for your information:
 
-I think I should share v10 now, to share the decision I made.
+   https://kernelnewbies.org/MatthewWilcox/Memdescs/Path
+
+The first step towards that is splitting struct page by its individual
+users, as has already been done with folio and slab.  This patchset does
+that for page pool.
+
+Matthew Wilcox tried and stopped the same work, you can see in:
+
+   https://lore.kernel.org/linux-mm/20230111042214.907030-1-willy@infradead.org/
+
+I focused on removing the page pool members in struct page this time,
+not moving the allocation code of page pool from net to mm.  It can be
+done later if needed.
+
+The final patch that removes the page pool fields will be posted once
+all the conversions are completed.
 
 	Byungchul
+---
+Changes from v9:
+	1. Remove the patch 'page_pool: access ->pp_magic through
+	   netmem_desc in page_pool_page_is_pp()' and decide to wait for
+	   Pavel's work of PageNetpp() to identify page type for page
+	   pool, that doesn't need to access ->pp_magic.
+	2. Rename page_to_nmdesc() to pp_page_to_nmdesc() and add
+	   DEBUG_NET_WARN_ON_ONCE(!page_pool_page_is_pp(page)) in it,
+	   just in case. (feedbacked by Pavel)
+	3. Apply just simple casting from page to netmem_desc for
+	   accessing ->pp and ->pp_ref_count, instead of full converting
+	   page to netmem_ref for network drivers e.g. mlx4, netdevsim,
+	   and mt76.
+	4. Expand the support for drivers to access ->pp and
+	   ->pp_ref_count to fec, octeontx2-pf, iavf, idpf, mlx5, ti,
+	   and xdp.
+	5. Squash each helper with its first user. (feedbacked by Mina)
 
-> +{
-> +       if (netmem_is_net_iov(netmem))
-> +               return &__netmem_to_niov(netmem)->desc;
-> +       return pp_page_to_nmdesc(__netmem_to_page(netmem));
-> +}
-> +
->  /**
->   * __netmem_get_pp - unsafely get pointer to the &page_pool backing @netmem
->   * @netmem: netmem reference to get the pointer from
-> @@ -280,17 +289,17 @@ static inline struct net_iov *__netmem_clear_lsb(netmem_ref netmem)
->   */
->  static inline struct page_pool *__netmem_get_pp(netmem_ref netmem)
->  {
-> -       return __netmem_to_page(netmem)->pp;
-> +       return pp_page_to_nmdesc(__netmem_to_page(netmem))->pp;
->  }
-> 
->  static inline struct page_pool *netmem_get_pp(netmem_ref netmem)
->  {
-> -       return __netmem_clear_lsb(netmem)->pp;
-> +       return netmem_to_nmdesc(netmem)->pp;
->  }
-> 
->  static inline atomic_long_t *netmem_get_pp_ref_count_ref(netmem_ref netmem)
->  {
-> -       return &__netmem_clear_lsb(netmem)->pp_ref_count;
-> +       return &netmem_to_nmdesc(netmem)->pp_ref_count;
->  }
-> 
->  static inline bool netmem_is_pref_nid(netmem_ref netmem, int pref_nid)
-> @@ -355,7 +364,7 @@ static inline bool netmem_is_pfmemalloc(netmem_ref netmem)
-> 
->  static inline unsigned long netmem_get_dma_addr(netmem_ref netmem)
->  {
-> -       return __netmem_clear_lsb(netmem)->dma_addr;
-> +       return netmem_to_nmdesc(netmem)->dma_addr;
->  }
-> 
->  void get_netmem(netmem_ref netmem);
-> diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
-> index db180626be06..002858f3bcb3 100644
-> --- a/include/net/page_pool/helpers.h
-> +++ b/include/net/page_pool/helpers.h
-> @@ -425,9 +425,9 @@ static inline void page_pool_free_va(struct page_pool *pool, void *va,
->        page_pool_put_page(pool, virt_to_head_page(va), -1, allow_direct);
->  }
-> 
-> -static inline dma_addr_t page_pool_get_dma_addr_netmem(netmem_ref netmem)
-> +static inline dma_addr_t page_pool_get_dma_addr_nmdesc(struct netmem_desc *desc)
->  {
-> -       dma_addr_t ret = netmem_get_dma_addr(netmem);
-> +       dma_addr_t ret = desc->dma_addr;
-> 
->        if (PAGE_POOL_32BIT_ARCH_WITH_64BIT_DMA)
->                ret <<= PAGE_SHIFT;
-> @@ -435,6 +435,13 @@ static inline dma_addr_t page_pool_get_dma_addr_netmem(netmem_ref netmem)
->        return ret;
->  }
-> 
-> +static inline dma_addr_t page_pool_get_dma_addr_netmem(netmem_ref netmem)
-> +{
-> +       struct netmem_desc *desc = netmem_to_nmdesc(netmem);
-> +
-> +       return page_pool_get_dma_addr_nmdesc(desc);
-> +}
-> +
->  /**
->   * page_pool_get_dma_addr() - Retrieve the stored DMA address.
->   * @page:     page allocated from a page pool
-> diff --git a/io_uring/zcrx.c b/io_uring/zcrx.c
-> index 085eeed8cd50..2e80692d9ee1 100644
-> --- a/io_uring/zcrx.c
-> +++ b/io_uring/zcrx.c
-> @@ -290,7 +290,7 @@ static void io_zcrx_sync_for_device(const struct page_pool *pool,
->        if (!dma_dev_need_sync(pool->p.dev))
->                return;
-> 
-> -       dma_addr = page_pool_get_dma_addr_netmem(net_iov_to_netmem(niov));
-> +       dma_addr = page_pool_get_dma_addr_nmdesc(&niov->desc);
->        __dma_sync_single_for_device(pool->p.dev, dma_addr + pool->p.offset,
->                                     PAGE_SIZE, pool->p.dma_dir);
->  #endif
-> diff --git a/net/core/netmem_priv.h b/net/core/netmem_priv.h
-> index cd95394399b4..97d4beda9174 100644
-> --- a/net/core/netmem_priv.h
-> +++ b/net/core/netmem_priv.h
-> @@ -5,19 +5,21 @@
-> 
->  static inline unsigned long netmem_get_pp_magic(netmem_ref netmem)
->  {
-> -       return __netmem_clear_lsb(netmem)->pp_magic & ~PP_DMA_INDEX_MASK;
-> +       return netmem_to_nmdesc(netmem)->pp_magic & ~PP_DMA_INDEX_MASK;
->  }
-> 
->  static inline void netmem_or_pp_magic(netmem_ref netmem, unsigned long pp_magic)
->  {
-> -       __netmem_clear_lsb(netmem)->pp_magic |= pp_magic;
-> +       netmem_to_nmdesc(netmem)->pp_magic |= pp_magic;
->  }
-> 
->  static inline void netmem_clear_pp_magic(netmem_ref netmem)
->  {
-> -       WARN_ON_ONCE(__netmem_clear_lsb(netmem)->pp_magic & PP_DMA_INDEX_MASK);
-> +       struct netmem_desc *desc = netmem_to_nmdesc(netmem);
-> 
-> -       __netmem_clear_lsb(netmem)->pp_magic = 0;
-> +       WARN_ON_ONCE(desc->pp_magic & PP_DMA_INDEX_MASK);
-> +
-> +       desc->pp_magic = 0;
->  }
-> 
->  static inline bool netmem_is_pp(netmem_ref netmem)
-> @@ -27,13 +29,13 @@ static inline bool netmem_is_pp(netmem_ref netmem)
-> 
->  static inline void netmem_set_pp(netmem_ref netmem, struct page_pool *pool)
->  {
-> -       __netmem_clear_lsb(netmem)->pp = pool;
-> +       netmem_to_nmdesc(netmem)->pp = pool;
->  }
-> 
->  static inline void netmem_set_dma_addr(netmem_ref netmem,
->                                       unsigned long dma_addr)
->  {
-> -       __netmem_clear_lsb(netmem)->dma_addr = dma_addr;
-> +       netmem_to_nmdesc(netmem)->dma_addr = dma_addr;
->  }
-> 
->  static inline unsigned long netmem_get_dma_index(netmem_ref netmem)
-> @@ -43,7 +45,7 @@ static inline unsigned long netmem_get_dma_index(netmem_ref netmem)
->        if (WARN_ON_ONCE(netmem_is_net_iov(netmem)))
->                return 0;
-> 
-> -       magic = __netmem_clear_lsb(netmem)->pp_magic;
-> +       magic = netmem_to_nmdesc(netmem)->pp_magic;
-> 
->        return (magic & PP_DMA_INDEX_MASK) >> PP_DMA_INDEX_SHIFT;
->  }
-> @@ -51,12 +53,12 @@ static inline unsigned long netmem_get_dma_index(netmem_ref netmem)
->  static inline void netmem_set_dma_index(netmem_ref netmem,
->                                        unsigned long id)
->  {
-> -       unsigned long magic;
-> +       struct netmem_desc *desc;
-> 
->        if (WARN_ON_ONCE(netmem_is_net_iov(netmem)))
->                return;
-> 
-> -       magic = netmem_get_pp_magic(netmem) | (id << PP_DMA_INDEX_SHIFT);
-> -       __netmem_clear_lsb(netmem)->pp_magic = magic;
-> +       desc = netmem_to_nmdesc(netmem);
-> +       desc->pp_magic |= id << PP_DMA_INDEX_SHIFT;
->  }
->  #endif
+Changes from v8:
+	1. Rebase on net-next/main as of Jul 10.
+	2. Exclude non-controversial patches that have already been
+	   merged to net-next.
+	3. Re-add the patches that focus on removing accessing the page
+	   pool fields in struct page.
+	4. Add utility APIs e.g. casting, to use struct netmem_desc as
+	   descriptor, to support __netmem_get_pp() that has started to
+	   be used again e.g. by libeth.
+
+Changes from v7 (no actual updates):
+	1. Exclude "netmem: introduce struct netmem_desc mirroring
+	   struct page" that might be controversial.
+	2. Exclude "netmem: introduce a netmem API,
+	   virt_to_head_netmem()" since there are no users.
+
+Changes from v6 (no actual updates):
+	1. Rebase on net-next/main as of Jun 25.
+	2. Supplement a comment describing struct net_iov.
+	3. Exclude a controversial patch, "page_pool: access ->pp_magic
+	   through struct netmem_desc in page_pool_page_is_pp()".
+	4. Exclude "netmem: remove __netmem_get_pp()" since the API
+	   started to be used again by libeth.
+
+Changes from v5 (no actual updates):
+	1. Rebase on net-next/main as of Jun 20.
+	2. Add given 'Reviewed-by's and 'Acked-by's, thanks to all.
+	3. Add missing cc's.
+
+Changes from v4:
+	1. Add given 'Reviewed-by's, thanks to all.
+	2. Exclude potentially controversial patches.
+
+Changes from v3:
+	1. Relocates ->owner and ->type of net_iov out of netmem_desc
+	   and make them be net_iov specific.
+	2. Remove __force when casting struct page to struct netmem_desc.
+
+Changes from v2:
+	1. Introduce a netmem API, virt_to_head_netmem(), and use it
+	   when it's needed.
+	2. Introduce struct netmem_desc as a new struct and union'ed
+	   with the existing fields in struct net_iov.
+	3. Make page_pool_page_is_pp() access ->pp_magic through struct
+	   netmem_desc instead of struct page.
+	4. Move netmem alloc APIs from include/net/netmem.h to
+	   net/core/netmem_priv.h.
+	5. Apply trivial feedbacks, thanks to Mina, Pavel, and Toke.
+	6. Add given 'Reviewed-by's, thanks to Mina.
+
+Changes from v1:
+	1. Rebase on net-next's main as of May 26.
+	2. Check checkpatch.pl, feedbacked by SJ Park.
+	3. Add converting of page to netmem in mt76.
+	4. Revert 'mlx5: use netmem descriptor and APIs for page pool'
+	   since it's on-going by Tariq Toukan.  I will wait for his
+	   work to be done.
+	5. Revert 'page_pool: use netmem APIs to access page->pp_magic
+	   in page_pool_page_is_pp()' since we need more discussion.
+	6. Revert 'mm, netmem: remove the page pool members in struct
+	   page' since there are some prerequisite works to remove the
+	   page pool fields from struct page.  I can submit this patch
+	   separatedly later.
+	7. Cancel relocating a page pool member in struct page.
+	8. Modify static assert for offests and size of struct
+	   netmem_desc.
+
+Changes from rfc:
+	1. Rebase on net-next's main branch.
+	   https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/
+	2. Fix a build error reported by kernel test robot.
+	   https://lore.kernel.org/all/202505100932.uzAMBW1y-lkp@intel.com/
+	3. Add given 'Reviewed-by's, thanks to Mina and Ilias.
+	4. Do static_assert() on the size of struct netmem_desc instead
+	   of placing place-holder in struct page, feedbacked by
+	   Matthew.
+	5. Do struct_group_tagged(netmem_desc) on struct net_iov instead
+	   of wholly renaming it to strcut netmem_desc, feedbacked by
+	   Mina and Pavel.
+
+Byungchul Park (12):
+  netmem: introduce struct netmem_desc mirroring struct page
+  netmem: use netmem_desc instead of page to access ->pp in
+    __netmem_get_pp()
+  mlx4: access ->pp_ref_count through netmem_desc instead of page
+  netdevsim: access ->pp through netmem_desc instead of page
+  mt76: access ->pp through netmem_desc instead of page
+  net: fec: access ->pp through netmem_desc instead of page
+  octeontx2-pf: access ->pp through netmem_desc instead of page
+  iavf: access ->pp through netmem_desc instead of page
+  idpf: access ->pp through netmem_desc instead of page
+  mlx5: access ->pp through netmem_desc instead of page
+  net: ti: icssg-prueth: access ->pp through netmem_desc instead of page
+  libeth: xdp: access ->pp through netmem_desc instead of page
+
+ drivers/net/ethernet/freescale/fec_main.c     |  10 +-
+ drivers/net/ethernet/intel/iavf/iavf_txrx.c   |   2 +-
+ drivers/net/ethernet/intel/idpf/idpf_txrx.c   |   8 +-
+ .../marvell/octeontx2/nic/otx2_txrx.c         |   2 +-
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |   4 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |   3 +-
+ .../net/ethernet/ti/icssg/icssg_prueth_sr1.c  |   4 +-
+ drivers/net/netdevsim/netdev.c                |   6 +-
+ drivers/net/wireless/mediatek/mt76/mt76.h     |   3 +-
+ include/net/libeth/xdp.h                      |   2 +-
+ include/net/netmem.h                          | 129 +++++++++++++++---
+ 11 files changed, 135 insertions(+), 38 deletions(-)
+
+
+base-commit: c65d34296b2252897e37835d6007bbd01b255742
+-- 
+2.17.1
+
 
