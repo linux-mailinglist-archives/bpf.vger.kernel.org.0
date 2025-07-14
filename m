@@ -1,130 +1,126 @@
-Return-Path: <bpf+bounces-63206-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63207-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36845B0428A
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 17:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 53DDEB0428F
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 17:06:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB8F51677E6
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 15:03:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63B5316A7BB
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 15:04:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D70AD2571DD;
-	Mon, 14 Jul 2025 15:03:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8749258CEC;
+	Mon, 14 Jul 2025 15:04:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RkZDeKoJ"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="EIbDYaxC"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3E37198E91
-	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 15:03:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73F01246778;
+	Mon, 14 Jul 2025 15:04:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752505416; cv=none; b=cMfxJ78RbFnmJ7SkVeyQYuva+Hq/asZSQEQMTGrX35lxj51UYP/w+UYAVCG/BdVbhYmPLtnLk+R+8oJc7eZBExo7TQzyWSB+pwzANZKcwY33Vvmc5ofPysb9EReIG+IJP7ZN8HAbxTXoewkGVXApqvjZEVkForPZ6vJOqoFlsbs=
+	t=1752505444; cv=none; b=s0rd73/RBnzXYJqiPrnHop1rgKJxftctdfLdB+k/FgkdAkS3nFjUg8qb0ARqgnXgOJkjijHZ8YB2/YgUQaJgZ+pRlNna/8ZP9OYYNJo0MLRrht4Dfni6akKy4ATLIP+nWNLo1NGnupzdczYtDR6flIM4LlSq5S8KY4LNi/N8930=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752505416; c=relaxed/simple;
-	bh=HgEdt27/fadF/UDelzRUDfGMNwFhsLgZIGfeu1efcvA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=dXpB2IkFO1MWI1KPnm+uvzaeL2Dlbc+xbYxzZGf5P7c6ZPsU/5jFDh70TCjtawNZvElEdiVMKzwRe1Qe7xwoAImEXQoWWirxCfZYTT7fiZ6bkEUXmieILtUpwkPJScbTjGOx26jfkVxmQFd3sk7zjuQaqHasDp9C2cofBuPwgZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RkZDeKoJ; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1752505413;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CHjUCxwTYZsQwTU8Zui9gNjcOnUwNl2oic1dvzZPsoo=;
-	b=RkZDeKoJAs88NjgOYsJeEQz2pI1C1dII/6FnbsAm44fCbH4sxD2yxtYdxbbCsJRCV7gibU
-	XSTMMtgrvpJBNsFw5LeEudMuclt1kFpU9JDjXXOyAPSrrnjtMrmeT0OKATsnn+hB1boKvw
-	uhnELfewUjtuGKuIFWgzMrJn8SWnzyI=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-94-rXdASc5UNKyBa7x7xvryaA-1; Mon, 14 Jul 2025 11:03:32 -0400
-X-MC-Unique: rXdASc5UNKyBa7x7xvryaA-1
-X-Mimecast-MFC-AGG-ID: rXdASc5UNKyBa7x7xvryaA_1752505411
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-455f79a2a16so22116335e9.2
-        for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 08:03:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752505411; x=1753110211;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CHjUCxwTYZsQwTU8Zui9gNjcOnUwNl2oic1dvzZPsoo=;
-        b=i04EuF1fn1VmSkYr3GtRD4c7qnpMRQpSuxJK6lZkFRmD4OPyJUkCUk+/XaAiMAxPtv
-         Iu8Wx7Z1JFhw74SqQbLJjo5xaq4wKUe/XqO/yQfl910xEXxUzGOi9ZfgC6Ycnrb5o0al
-         gsFJVsX/l5X76A0nKe30/c2P8BXLf9+ikblAFlaRQUzgoUjeyZIZRIRtTFS9xYnvWZfp
-         pTALZZ5QFU45Gzv4uM15q80eYsYaPwEnFTOwutAmT8gIA9vjwYCMH38LwMzOHP4jfTuJ
-         UjOR74wV7HPi+ozHMAmF5Ep0vrejBtQ6OU+H3JPI6R4hUN3MfGOsHAp+is0Z5NpABbmc
-         ahkg==
-X-Forwarded-Encrypted: i=1; AJvYcCVx3WeKK/xeN0p5g7uwWE0SUOja+zGdJyuMXT1qSG/sc5l+NGiEkm3fP/uJF5jQcyIBez8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywq1S+jfJ2Rc/ZP8d/hU6ewDrqIN/2HUdwZWdD2albxe+mRhUO9
-	lnxVBmHpI2twQO/AIJ1+ESpbHRXxj2+CsZYajEy6z5+bFaMUnxyGA6pJeWXAjuX1sfxPmcFeU+r
-	Xi+uZFWxjSDANDPZ+88+QuwOjflXQc4T8QmmoPrJsxKVTetrDAV5guA==
-X-Gm-Gg: ASbGncttc0UQvMdc9OyCo3oq3BeqJSvz0sgxWZqMjDkZYf5YM0HATBbP8Q/k5h9Cmy6
-	8W+OzIUabTP3QD3O4Hhi6e7NwocN5FFIH6NyTSUHT089OU8sfBtr5KauOUzdeUFcWt1NlfGleaT
-	p8I3UnHer52QEr+ZhlrsohOoVCETsPMxIT+7bl2UmFZmrUcH53EBvlqK3M5rXVT2WIO3OoG8JOt
-	158ifQDh7xRcD/ZoUwfu4z/Jv56WTZHLH3pgBEAjDVkL+Z4Oh4mXs74UT/X8dYF4WRqUKNi8Mov
-	fytrXlLAmTjtjDawFokwzueNkjSRG8nwlZWdFOE19+M=
-X-Received: by 2002:a05:600c:1f14:b0:43d:fa59:af97 with SMTP id 5b1f17b1804b1-454f4255695mr113362275e9.32.1752505410971;
-        Mon, 14 Jul 2025 08:03:30 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEgGUQLi8QIz9qJck9h2onkd29NM35VCq7kR/qUQg+hshIrtci80OF3+t9fpKWQoP0MLQ3vkg==
-X-Received: by 2002:a05:600c:1f14:b0:43d:fa59:af97 with SMTP id 5b1f17b1804b1-454f4255695mr113361195e9.32.1752505410294;
-        Mon, 14 Jul 2025 08:03:30 -0700 (PDT)
-Received: from [192.168.0.115] ([212.105.155.228])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b5e8dc201asm12513593f8f.22.2025.07.14.08.03.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Jul 2025 08:03:29 -0700 (PDT)
-Message-ID: <d16bda13-2f84-4d15-a737-d2782cda480f@redhat.com>
-Date: Mon, 14 Jul 2025 17:03:27 +0200
+	s=arc-20240116; t=1752505444; c=relaxed/simple;
+	bh=7kzQgCqlTjkjlznWYkmhokDiFU/LWNISMUtL8pwfR3s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DneE1y0c1lIq85+qj2zSCh5ayNMuzNLcuOUh7Rtjl5I/cKLvo3pWciDl7/7dl5+UAA8UKS0OJOm88971ACp0sRylms7vkOkbHensna8bLiwIbzUngjJBBGxB86qv8FCeEZAOqIQcuyMYd4sLzTm+h3xh8QKSJVCXb2QZ31HONqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=EIbDYaxC; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=rE0ipn3kKI2mA1FsjVZAKGKcjbPn01lZj8/tcXHVRzI=; b=EIbDYaxCcw/NxNHtcL5sQaMn+o
+	UXadanzF9T7fTGHeBhlz/OUBeu46P/p83dm2IPmgruw0zP+wbhhoQlCkyOPP1at+LL6bvBjVujMB6
+	aczpzZm+UKtPvy2G+idbaalzAASVItqck6LzmNRlPiWpPl/PyEx/ar9n3fJ93Gqway9asI6tNsjpy
+	TxBcushnJ9MAl1cwtrvpmHXuh++0DtnYidBF1l5ttgKk/dJdptkjllLxBR/cSHqkeMQ8T9faG5Qee
+	oKNGp2A7lIQhXGZd5IW+NKOqinLhJYTmywf1AM332HHTBEWDVtqLzzPa2s3lthUZWwqbZhQB2WrQ0
+	+ZgxnIQQ==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1ubKiZ-00000009mK7-1F6h;
+	Mon, 14 Jul 2025 15:03:48 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 2D2C33001AA; Mon, 14 Jul 2025 17:03:46 +0200 (CEST)
+Date: Mon, 14 Jul 2025 17:03:46 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	x86@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Indu Bhagat <indu.bhagat@oracle.com>,
+	"Jose E. Marchesi" <jemarch@gnu.org>,
+	Beau Belgrave <beaub@linux.microsoft.com>,
+	Jens Remus <jremus@linux.ibm.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>,
+	Sam James <sam@gentoo.org>
+Subject: Re: [PATCH v13 09/14] unwind deferred: Use SRCU
+ unwind_deferred_task_work()
+Message-ID: <20250714150346.GD4105545@noisy.programming.kicks-ass.net>
+References: <20250708012239.268642741@kernel.org>
+ <20250708012359.172959778@kernel.org>
+ <20250714135638.GC4105545@noisy.programming.kicks-ass.net>
+ <20250714102140.4886afa0@batman.local.home>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 net-next 14/15] tcp: accecn: AccECN option ceb/cep and
- ACE field multi-wrap heuristics
-To: chia-yu.chang@nokia-bell-labs.com, edumazet@google.com,
- linux-doc@vger.kernel.org, corbet@lwn.net, horms@kernel.org,
- dsahern@kernel.org, kuniyu@amazon.com, bpf@vger.kernel.org,
- netdev@vger.kernel.org, dave.taht@gmail.com, jhs@mojatatu.com,
- kuba@kernel.org, stephen@networkplumber.org, xiyou.wangcong@gmail.com,
- jiri@resnulli.us, davem@davemloft.net, andrew+netdev@lunn.ch,
- donald.hunter@gmail.com, ast@fiberby.net, liuhangbin@gmail.com,
- shuah@kernel.org, linux-kselftest@vger.kernel.org, ij@kernel.org,
- ncardwell@google.com, koen.de_schepper@nokia-bell-labs.com,
- g.white@cablelabs.com, ingemar.s.johansson@ericsson.com,
- mirja.kuehlewind@ericsson.com, cheshire@apple.com, rs.ietf@gmx.at,
- Jason_Livingood@comcast.com, vidhi_goel@apple.com
-References: <20250704085345.46530-1-chia-yu.chang@nokia-bell-labs.com>
- <20250704085345.46530-15-chia-yu.chang@nokia-bell-labs.com>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <20250704085345.46530-15-chia-yu.chang@nokia-bell-labs.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250714102140.4886afa0@batman.local.home>
 
-On 7/4/25 10:53 AM, chia-yu.chang@nokia-bell-labs.com wrote:
-> From: Ilpo Järvinen <ij@kernel.org>
+On Mon, Jul 14, 2025 at 10:21:40AM -0400, Steven Rostedt wrote:
+> On Mon, 14 Jul 2025 15:56:38 +0200
+> Peter Zijlstra <peterz@infradead.org> wrote:
 > 
-> The AccECN option ceb/cep heuristic algorithm is from AccECN spec
-> Appendix A.2.2 to mitigate against false ACE field overflows. Armed
-> with ceb delta from option, delivered bytes, and delivered packets it
-> is possible to estimate how many times ACE field wrapped.
+> > Please; something like so:
+> > 
+> > --- a/include/linux/srcu.h
+> > +++ b/include/linux/srcu.h
+> > @@ -524,4 +524,9 @@ DEFINE_LOCK_GUARD_1(srcu, struct srcu_st
+> >  		    srcu_read_unlock(_T->lock, _T->idx),
+> >  		    int idx)
+> >  
+> > +DEFINE_LOCK_GUARD_1(srcu_lite, struct srcu_struct,
+> > +		    _T->idx = srcu_read_lock_lite(_T->lock),
+> > +		    srcu_read_unlock_lite(_T->lock, _T->idx),
+> > +		    int idx)
+> > +
+> >  #endif
+> > --- a/kernel/unwind/deferred.c
+> > +++ b/kernel/unwind/deferred.c
+> > @@ -165,7 +165,7 @@ static void unwind_deferred_task_work(st
+> >  
+> >  	cookie = info->id.id;
+> >  
+> > -	guard(mutex)(&callback_mutex);
+> > +	guard(srcu_lite)(&unwind_srcu);
+> >  	list_for_each_entry(work, &callbacks, list) {
+> >  		work->func(work, &trace, cookie);
+> >  	}
 > 
-> This calculation is necessary only if more than one wrap is possible.
-> Without SACK, delivered bytes and packets are not always trustworthy in
-> which case TCP falls back to the simpler no-or-all wraps ceb algorithm.
-> 
-> Signed-off-by: Ilpo Järvinen <ij@kernel.org>
-> Signed-off-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
+> I think I rather have a scoped_guard() here. One thing that bothers me
+> about the guard() logic is that it could easily start to "leak"
+> protection. That is, the unwind_srcu is only needed for walking the
+> list. The reason I chose to open code the protection, is because I
+> wanted to distinctly denote where the end of the protection was.
 
-Acked-by: Paolo Abeni <pabeni@redhat.com>
-
+Sure. But the point was more to:
+ - use scru_lite; and,
+ - use guards
 
