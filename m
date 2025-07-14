@@ -1,245 +1,262 @@
-Return-Path: <bpf+bounces-63240-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63241-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11DE4B047AD
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 21:02:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41560B047B4
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 21:05:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54C454A40EC
-	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 19:02:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 228AD1A673DD
+	for <lists+bpf@lfdr.de>; Mon, 14 Jul 2025 19:05:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F27AE27701E;
-	Mon, 14 Jul 2025 19:02:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4593260565;
+	Mon, 14 Jul 2025 19:05:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ze0aM0vG"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sTCwD1sV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1623D2475C3
-	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 19:02:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 682F5277003
+	for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 19:05:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752519746; cv=none; b=lJH+vzm+qw6i7zhKoCiHSP12LTXS+a95WSPNmrh/tOy6eWA/SfRUh4TesTFAuwlWV/AQauSOvYimmAkjlp/TzSZPJFo6vq+tJzIBPQSfz4dNUt4rFE7RYRcg+JkUS3rEht32mpDiPiPrTbDX81YB5EPD76sOl/jAzIjTg1H8sUw=
+	t=1752519902; cv=none; b=momsUN24WIhukg3V/dW6PTT1wq8tdKLsd2ho5Z9RFT4SdWt5CAc7W9Uom0Vc1v8EYRZQN5M7Xd6bmGRmFb8UJZI0yozitZffY53ut8tvhilVJroay2SsU1rpR1+VaMuAN2htgGStbdYA68NgtAVVDIv835VCziiWfBNKRHGBuW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752519746; c=relaxed/simple;
-	bh=IlC6zSATruhsMz1ZplTcZDwaO5Ka3Y33EyLYUL4LW70=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ajv+YbR48ZH4mW5zU2rgWmbjROU53tjWLDi47hLK0B/dylW0U8/lZCXjj7bKYwTb0r/EG8Sucqio41i/Pjf6DwY7lHjCLS/5KXZ2l5oRbFuzEKNbX/pzpqdPvhOcj8udS1NqCx8KQ+UfgwUOhSWVchPdEw4vSvY5NXrbNtLDXas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ze0aM0vG; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-237f18108d2so34285ad.0
-        for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 12:02:24 -0700 (PDT)
+	s=arc-20240116; t=1752519902; c=relaxed/simple;
+	bh=q+olkIxO6QSEQI4AAJlhbaSdpfzA/5MYP0ugPj8Pg54=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=mCo+0sjCX/GgjSItmxbhlAW0q8vFvM3SikTCbjW7SxQdzB2FoCMhvkAj+TLc9xKc6d0etv45Gnt0LSE1srSOr6Nl8yi9sxidRfbpYly+nNEd5AMXTG75B1ljLTh4ABBofjfzLc/nrmsDEC6FNq6QhdGDgw7CUpPomNO56qJ+85E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=sTCwD1sV; arc=none smtp.client-ip=209.85.167.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-41b4bf6ead9so261895b6e.3
+        for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 12:05:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1752519744; x=1753124544; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7VNuZztsVJnCZDih7ufg2t56wYe/NpWWBgR9l5kOONY=;
-        b=Ze0aM0vGdX4i5f/qfOpVz7HayrDETwVBsMj/UjGARrE3xuQM0slF+8+sed9Bw7eug7
-         K6doNqC18sC94AS2vMSbEW2qYjOWDrMeCqu7/csady6veIMo1whCm1CQCKZRp7hhBNSK
-         1piweQimn6FbIquD/AcDQBSM1i0fccLORn4Utj60e4z6zlSTMxsOf2K9uCEeHjo7/LI7
-         REOGX2leJjk7ESfyeszVd5dyxBvwUZl5VEbwdvrUxrGqqgveh+nyPl5dHM5OG2mkbH07
-         QIotVnOIJSKTX9I0hrlzMkxXjiEZ2kDPf8qXd7oAIWNOfDmCRWHTYFNhTuU6KFq9+dG6
-         J9jw==
+        d=linaro.org; s=google; t=1752519899; x=1753124699; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BdAiWES77XaDLnO1vrNoocWtjPZ3jZaAJoidOert7wA=;
+        b=sTCwD1sVSnftV5hJjV8nFHfLb4mon1BUI16mKTCnYmtsyTmntOioiWqOo/rtCdH2rI
+         GkUHmxMPYJYEJ2OpcdMV7uZIxtUMAPZDdGVl80ymcZPY5NjwvfMSf5/lMWhqIcMqWPLL
+         DrTMXQPSzYHUtVrJbMizG11FocMlG5tTx43NKmQr4PtmjHGKjPuVx/jjW5FJDvJrcc8o
+         KP7jJfxad7TvkbV8auzqpNgnlVr+QgVwtlP5ruH7MOig/f7nknRhEtSneFv5ShiNFNUJ
+         mHnGlkspSxfvb43+eRM7nxZ5xIjF0VPA1+nm3Ez7Q9suQQEMr2pXbm18D6bkn5wZihCP
+         YxOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752519744; x=1753124544;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7VNuZztsVJnCZDih7ufg2t56wYe/NpWWBgR9l5kOONY=;
-        b=ddxlO8PJXe95GkEXf9kosbFse/sLbGuouR/Cnl5JhWDciKTYGNTzY5bYR2Hr7t9mgq
-         1HhpeC6/6mI0Bi4EywoGQFRZFMtSdQVt7HHhTMqW6hNcc9DpYT7oabuY7f4xf2Wybxhb
-         mvEaPYGf+b4kEuckuar/NzSoDSOi7pddNTlQcsmgNvT3i7voMv0zZ8zqGRrsGnKvk8Je
-         /F+3FPSTLVfwYwa6w/4qbBGYocWS9XSvuRRJ4UhSSdIRcU/QQ76cg1VJwhGnn3LF4K29
-         6hcH2TFsMBkJ5Yobe04cNiIboEFwHA23NvER3zTPmgupLpG2EwL7OJ16eJSmiEXurkxP
-         OQlg==
-X-Forwarded-Encrypted: i=1; AJvYcCXMApl4Ayr8cx3zcoW7cR7ILp/jpObDqE3tpBAaeM25NGLPKPIjA65Fh3uxkOVh+nYx+VM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzyrodCO44Zu6Bil4lfKOPdo0g+UKpRRN/Q59xamp7gcJnlroDE
-	FQVA1rwenXzBZmtyWMtuPduhLtjVzMhzdm335F9O3sLqDYDdScCl+vE7yKgMXQFvEZJBpaGTA6R
-	90p5pLBzHCZY7qd/YgMpYBOb5jlJmn8uh3Gro4Vxi
-X-Gm-Gg: ASbGnct10hjbqm4NzbKPY9hVzWKal49eZciSup6JBZxJjCESjfz7rUxsrMh2eCzPG2r
-	qBSUIJZQypT/wfiFEpMZ+mgyEdG1sMVProrJcfDbpH9+KfxjNaijzF9iNPEqCOMp4E6le0slHBS
-	axT+QsO164e6qEnE3W6WtTIRTyJcf/MP8a6pOh5DHwpa39+aHimheiC5VtXmeFefYt2WHUppO2b
-	UtBOyNxUyNdb5nmp+3349OZ1P0jM1UipoG+pA==
-X-Google-Smtp-Source: AGHT+IE6b3u0FEYbE/5zU2GFDjTpZUgGKFIuxC3GHJP9usTARJ45zz7VYQPM3TtdZ3Tr5Ox8uT4ZdAfccFl5CsvEYCc=
-X-Received: by 2002:a17:902:e552:b0:22e:766f:d66e with SMTP id
- d9443c01a7336-23e1ab000f4mr410435ad.12.1752519743690; Mon, 14 Jul 2025
- 12:02:23 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1752519899; x=1753124699;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BdAiWES77XaDLnO1vrNoocWtjPZ3jZaAJoidOert7wA=;
+        b=aqzMtbiMvBeWQ6iGCIxXI6xflZh6gcZUwAupx6yk0s3lvvrmkDsmP0SJ2QEmcq43BZ
+         9niVuEXOpM25aO7VdS1VTr6O+evwt1q0FqVtnerNj5v1WHy530dk+iEcSx/FhV9iPGKf
+         sLOJ1JdrFhKKphLZV0UY2MfxsdP04xsAR6H1tbnokuvQmwTncWRYpzIZxAW96E7cWEVL
+         FTayw0znIUWo9NXboObJBaUswgfIiRDFhHAq9+Q3rG8Mi5SuCCv1vgZ114Dm+S+GpBFp
+         nEbgsL+iPjFAHZ3wzFVm5wGjqNAy2MkjRpPcQcsY9weWU/ORLWmOIZ8GECX7U+9idzPS
+         vP0A==
+X-Forwarded-Encrypted: i=1; AJvYcCXdlTBWI4J6Os6UQPrL9mTQ9UiubNLo4sqP3S3hg7XA+a66J4cG6RB/oYpaOh6Cdnxs6xc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxsG/UkIL0tCDw/pOwJ7/p5Z9UO3MYkOpXbClCN0ViMUUqB5fHb
+	9mdyfWQ4NSboE/88tccvonJ/T3lEzJIpZWUxXDx31UNscxqCNs7TUDUoaLf6WeusyJY=
+X-Gm-Gg: ASbGncsZH2kbeQGoYSnnWEz3W1/3y7JNgSITPFHcAKF7KxLIf+KzMJ/vzp3IMjP/EoB
+	4K0C10UeiyxmSXlIOHOeumh1kgYu/aoCC41c+5HztL2omomdQKm8c22OSCcak7UCI7NNPMFsjMm
+	Jf7IL+2Bvcx24Qs4Ba6MhgnYsZrbsRsLCFJVThIlYOtwHaVTped+6hv5oTCte7grmQBaY9Y/Gry
+	vgoVo3AJgeW/q5EG04RoVIgCq2/Nnb+9P1jJRrHMJHMh2AqxOXruhoVbyGt+mn+8mvrEPR09DuU
+	X0NM8w2nEq/WC0MXjT84Yh6LbJw3mOZmGR0nwkPwyLmg+EZPttMfAQze69WMpWkeWEcXQsqHdNT
+	gQptrvxtesqfecEfVuiA/GrLgLxcVfLH3jh/qokPZ
+X-Google-Smtp-Source: AGHT+IG9VB44/JBXZgU5GVNb+6d0g32N/Qwu1+N9nXvPuxbsMeajY2PfOx1sKYCIufDjdIs+/yM6kg==
+X-Received: by 2002:a05:6808:4f63:b0:408:fb4c:859e with SMTP id 5614622812f47-4150d745cfcmr9800740b6e.6.1752519899258;
+        Mon, 14 Jul 2025 12:04:59 -0700 (PDT)
+Received: from localhost ([2603:8080:b800:f700:6bb2:d90f:e5da:befc])
+        by smtp.gmail.com with ESMTPSA id 5614622812f47-414196c9b24sm1580366b6e.17.2025.07.14.12.04.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jul 2025 12:04:58 -0700 (PDT)
+Date: Mon, 14 Jul 2025 22:04:57 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: oe-kbuild@lists.linux.dev,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	andrii@kernel.org
+Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
+	magnus.karlsson@intel.com, stfomichev@gmail.com,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Eryk Kubanski <e.kubanski@partner.samsung.com>
+Subject: Re: [PATCH v2 bpf] xsk: fix immature cq descriptor production
+Message-ID: <440ed42e-16d5-4b00-9402-1f26d73715d4@suswa.mountain>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250710082807.27402-1-byungchul@sk.com> <20250710082807.27402-7-byungchul@sk.com>
- <CAHS8izM9FO01kTxFhM8VUOqDFdtA80BbY=5xpKDM=S9fMcd3YA@mail.gmail.com> <20250711013257.GE40145@system.software.com>
-In-Reply-To: <20250711013257.GE40145@system.software.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Mon, 14 Jul 2025 12:02:02 -0700
-X-Gm-Features: Ac12FXxeXh1UoBnGrAUfq0hNcg_aduZtehgNTdEPgSN61td1YzR9QhWexF1R0b0
-Message-ID: <CAHS8izOOZ5w_+5W=uYGrr3V8VjYXfo6fzs3cjJF1eoZsqcm71Q@mail.gmail.com>
-Subject: Re: [PATCH net-next v9 6/8] mlx4: use netmem descriptor and APIs for
- page pool
-To: Byungchul Park <byungchul@sk.com>
-Cc: willy@infradead.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, kernel_team@skhynix.com, kuba@kernel.org, 
-	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org, 
-	akpm@linux-foundation.org, davem@davemloft.net, john.fastabend@gmail.com, 
-	andrew+netdev@lunn.ch, asml.silence@gmail.com, toke@redhat.com, 
-	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com, 
-	leon@kernel.org, ast@kernel.org, daniel@iogearbox.net, david@redhat.com, 
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz, 
-	rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org, 
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com, 
-	hannes@cmpxchg.org, ziy@nvidia.com, jackmanb@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250705135512.1963216-1-maciej.fijalkowski@intel.com>
 
-On Thu, Jul 10, 2025 at 6:33=E2=80=AFPM Byungchul Park <byungchul@sk.com> w=
-rote:
->
-> On Thu, Jul 10, 2025 at 11:29:35AM -0700, Mina Almasry wrote:
-> > On Thu, Jul 10, 2025 at 1:28=E2=80=AFAM Byungchul Park <byungchul@sk.co=
-m> wrote:
-> > >
-> > > To simplify struct page, the effort to separate its own descriptor fr=
-om
-> > > struct page is required and the work for page pool is on going.
-> > >
-> > > Use netmem descriptor and APIs for page pool in mlx4 code.
-> > >
-> > > Signed-off-by: Byungchul Park <byungchul@sk.com>
-> > > ---
-> > >  drivers/net/ethernet/mellanox/mlx4/en_rx.c   | 48 +++++++++++-------=
---
-> > >  drivers/net/ethernet/mellanox/mlx4/en_tx.c   |  8 ++--
-> > >  drivers/net/ethernet/mellanox/mlx4/mlx4_en.h |  4 +-
-> > >  3 files changed, 32 insertions(+), 28 deletions(-)
-> > >
-> > > diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net=
-/ethernet/mellanox/mlx4/en_rx.c
-> > > index b33285d755b9..7cf0d2dc5011 100644
-> > > --- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-> > > +++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-> > > @@ -62,18 +62,18 @@ static int mlx4_en_alloc_frags(struct mlx4_en_pri=
-v *priv,
-> > >         int i;
-> > >
-> > >         for (i =3D 0; i < priv->num_frags; i++, frags++) {
-> > > -               if (!frags->page) {
-> > > -                       frags->page =3D page_pool_alloc_pages(ring->p=
-p, gfp);
-> > > -                       if (!frags->page) {
-> > > +               if (!frags->netmem) {
-> > > +                       frags->netmem =3D page_pool_alloc_netmems(rin=
-g->pp, gfp);
-> > > +                       if (!frags->netmem) {
-> > >                                 ring->alloc_fail++;
-> > >                                 return -ENOMEM;
-> > >                         }
-> > > -                       page_pool_fragment_page(frags->page, 1);
-> > > +                       page_pool_fragment_netmem(frags->netmem, 1);
-> > >                         frags->page_offset =3D priv->rx_headroom;
-> > >
-> > >                         ring->rx_alloc_pages++;
-> > >                 }
-> > > -               dma =3D page_pool_get_dma_addr(frags->page);
-> > > +               dma =3D page_pool_get_dma_addr_netmem(frags->netmem);
-> > >                 rx_desc->data[i].addr =3D cpu_to_be64(dma + frags->pa=
-ge_offset);
-> > >         }
-> > >         return 0;
-> > > @@ -83,10 +83,10 @@ static void mlx4_en_free_frag(const struct mlx4_e=
-n_priv *priv,
-> > >                               struct mlx4_en_rx_ring *ring,
-> > >                               struct mlx4_en_rx_alloc *frag)
-> > >  {
-> > > -       if (frag->page)
-> > > -               page_pool_put_full_page(ring->pp, frag->page, false);
-> > > +       if (frag->netmem)
-> > > +               page_pool_put_full_netmem(ring->pp, frag->netmem, fal=
-se);
-> > >         /* We need to clear all fields, otherwise a change of priv->l=
-og_rx_info
-> > > -        * could lead to see garbage later in frag->page.
-> > > +        * could lead to see garbage later in frag->netmem.
-> > >          */
-> > >         memset(frag, 0, sizeof(*frag));
-> > >  }
-> > > @@ -440,29 +440,33 @@ static int mlx4_en_complete_rx_desc(struct mlx4=
-_en_priv *priv,
-> > >         unsigned int truesize =3D 0;
-> > >         bool release =3D true;
-> > >         int nr, frag_size;
-> > > -       struct page *page;
-> > > +       netmem_ref netmem;
-> > >         dma_addr_t dma;
-> > >
-> > >         /* Collect used fragments while replacing them in the HW desc=
-riptors */
-> > >         for (nr =3D 0;; frags++) {
-> > >                 frag_size =3D min_t(int, length, frag_info->frag_size=
-);
-> > >
-> > > -               page =3D frags->page;
-> > > -               if (unlikely(!page))
-> > > +               netmem =3D frags->netmem;
-> > > +               if (unlikely(!netmem))
-> > >                         goto fail;
-> > >
-> > > -               dma =3D page_pool_get_dma_addr(page);
-> > > +               dma =3D page_pool_get_dma_addr_netmem(netmem);
-> > >                 dma_sync_single_range_for_cpu(priv->ddev, dma, frags-=
->page_offset,
-> > >                                               frag_size, priv->dma_di=
-r);
-> > >
-> > > -               __skb_fill_page_desc(skb, nr, page, frags->page_offse=
-t,
-> > > -                                    frag_size);
-> > > +               __skb_fill_netmem_desc(skb, nr, netmem, frags->page_o=
-ffset,
-> > > +                                      frag_size);
-> > >
-> > >                 truesize +=3D frag_info->frag_stride;
-> > >                 if (frag_info->frag_stride =3D=3D PAGE_SIZE / 2) {
-> > > +                       struct page *page =3D netmem_to_page(netmem);
-> >
-> > This cast is not safe, try to use the netmem type directly.
->
-> Can it be net_iov?  It already ensures it's a page-backed netmem.  Why
-> is that unsafe?
->
+Hi Maciej,
 
-Precisely because it can be net_iov. The whole point of netmem_ref is
-that it's an abstract type that can be something else underneath.
-Converting the driver to netmem only to then say "well, the netmem is
-just pages, cast it back" is just adding a lot of useless typecasting
-and wasted cpu cycles with no benefit. In general netmem_to_page casts
-in drivers are heavily discouraged.
+kernel test robot noticed the following build warnings:
 
-> With netmem, page_count() and page_to_nid() cannot be used, but needed.
-> Or checking 'page =3D=3D NULL' after the casting works for you?
->
+url:    https://github.com/intel-lab-lkp/linux/commits/Maciej-Fijalkowski/xsk-fix-immature-cq-descriptor-production/20250705-215714
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
+patch link:    https://lore.kernel.org/r/20250705135512.1963216-1-maciej.fijalkowski%40intel.com
+patch subject: [PATCH v2 bpf] xsk: fix immature cq descriptor production
+config: x86_64-randconfig-r071-20250706 (https://download.01.org/0day-ci/archive/20250706/202507061447.DwFSGum1-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14+deb12u1) 12.2.0
 
-I'm really hoping that you can read the code and be a bit familiar
-with the driver that you're modifying and suggest a solution that
-works for us. netmem_to_page() followed by page_count() without a NULL
-check crashes the kernel if the netmem is not a page underneath... so
-it shouldn't work for anyone.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+| Closes: https://lore.kernel.org/r/202507061447.DwFSGum1-lkp@intel.com/
 
-What may be acceptable here is netmem_count helper and what not like
-we have netmem_is_pfmemalloc which handles net_iov correctly.
+smatch warnings:
+net/xdp/xsk.c:819 xsk_build_skb() warn: passing zero to 'ERR_PTR'
 
-However, it looks like this driver is trying to check if the netmem is
-recyclable, we have a helper like that already in
-__page_pool_page_can_be_recycled. Maybe that can be reused somehow.
+vim +/ERR_PTR +819 net/xdp/xsk.c
 
---=20
-Thanks,
-Mina
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  689  static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  690  				     struct xdp_desc *desc)
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  691  {
+48eb03dd26304c Stanislav Fomichev        2023-11-27  692  	struct xsk_tx_metadata *meta = NULL;
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  693  	struct net_device *dev = xs->dev;
+67a37dcecabbf0 Maciej Fijalkowski        2025-07-05  694  	struct xsk_addrs *addrs = NULL;
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  695  	struct sk_buff *skb = xs->skb;
+48eb03dd26304c Stanislav Fomichev        2023-11-27  696  	bool first_frag = false;
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  697  	int err;
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  698  
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  699  	if (dev->priv_flags & IFF_TX_SKB_NO_LINEAR) {
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  700  		skb = xsk_build_skb_zerocopy(xs, desc);
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  701  		if (IS_ERR(skb)) {
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  702  			err = PTR_ERR(skb);
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  703  			goto free_err;
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  704  		}
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  705  	} else {
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  706  		u32 hr, tr, len;
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  707  		void *buffer;
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  708  
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  709  		buffer = xsk_buff_raw_get_data(xs->pool, desc->addr);
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  710  		len = desc->len;
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  711  
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  712  		if (!skb) {
+0c0d0f42ffa6ac Felix Maurer              2024-11-14  713  			first_frag = true;
+0c0d0f42ffa6ac Felix Maurer              2024-11-14  714  
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  715  			hr = max(NET_SKB_PAD, L1_CACHE_ALIGN(dev->needed_headroom));
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  716  			tr = dev->needed_tailroom;
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  717  			skb = sock_alloc_send_skb(&xs->sk, hr + len + tr, 1, &err);
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  718  			if (unlikely(!skb))
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  719  				goto free_err;
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  720  
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  721  			skb_reserve(skb, hr);
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  722  			skb_put(skb, len);
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  723  
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  724  			err = skb_store_bits(skb, 0, buffer, len);
+0c0d0f42ffa6ac Felix Maurer              2024-11-14  725  			if (unlikely(err))
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  726  				goto free_err;
+67a37dcecabbf0 Maciej Fijalkowski        2025-07-05  727  
+67a37dcecabbf0 Maciej Fijalkowski        2025-07-05  728  			addrs = kzalloc(sizeof(*addrs), GFP_KERNEL);
+67a37dcecabbf0 Maciej Fijalkowski        2025-07-05  729  			if (!addrs)
+67a37dcecabbf0 Maciej Fijalkowski        2025-07-05  730  				goto free_err;
+
+err is not set on this path.
+
+regards,
+dan carpenter
+
+67a37dcecabbf0 Maciej Fijalkowski        2025-07-05  731  
+67a37dcecabbf0 Maciej Fijalkowski        2025-07-05  732  			xsk_set_destructor_arg(skb, addrs);
+67a37dcecabbf0 Maciej Fijalkowski        2025-07-05  733  
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  734  		} else {
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  735  			int nr_frags = skb_shinfo(skb)->nr_frags;
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  736  			struct page *page;
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  737  			u8 *vaddr;
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  738  
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  739  			if (unlikely(nr_frags == (MAX_SKB_FRAGS - 1) && xp_mb_desc(desc))) {
+9d0a67b9d42c63 Tirthendu Sarkar          2023-08-23  740  				err = -EOVERFLOW;
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  741  				goto free_err;
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  742  			}
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  743  
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  744  			page = alloc_page(xs->sk.sk_allocation);
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  745  			if (unlikely(!page)) {
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  746  				err = -EAGAIN;
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  747  				goto free_err;
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  748  			}
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  749  
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  750  			vaddr = kmap_local_page(page);
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  751  			memcpy(vaddr, buffer, len);
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  752  			kunmap_local(vaddr);
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  753  
+2127c604383666 Sebastian Andrzej Siewior 2024-02-02  754  			skb_add_rx_frag(skb, nr_frags, page, 0, len, PAGE_SIZE);
+2127c604383666 Sebastian Andrzej Siewior 2024-02-02  755  			refcount_add(PAGE_SIZE, &xs->sk.sk_wmem_alloc);
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  756  		}
+48eb03dd26304c Stanislav Fomichev        2023-11-27  757  
+48eb03dd26304c Stanislav Fomichev        2023-11-27  758  		if (first_frag && desc->options & XDP_TX_METADATA) {
+48eb03dd26304c Stanislav Fomichev        2023-11-27  759  			if (unlikely(xs->pool->tx_metadata_len == 0)) {
+48eb03dd26304c Stanislav Fomichev        2023-11-27  760  				err = -EINVAL;
+48eb03dd26304c Stanislav Fomichev        2023-11-27  761  				goto free_err;
+48eb03dd26304c Stanislav Fomichev        2023-11-27  762  			}
+48eb03dd26304c Stanislav Fomichev        2023-11-27  763  
+48eb03dd26304c Stanislav Fomichev        2023-11-27  764  			meta = buffer - xs->pool->tx_metadata_len;
+ce59f9686e0eca Stanislav Fomichev        2023-11-27  765  			if (unlikely(!xsk_buff_valid_tx_metadata(meta))) {
+ce59f9686e0eca Stanislav Fomichev        2023-11-27  766  				err = -EINVAL;
+ce59f9686e0eca Stanislav Fomichev        2023-11-27  767  				goto free_err;
+ce59f9686e0eca Stanislav Fomichev        2023-11-27  768  			}
+48eb03dd26304c Stanislav Fomichev        2023-11-27  769  
+48eb03dd26304c Stanislav Fomichev        2023-11-27  770  			if (meta->flags & XDP_TXMD_FLAGS_CHECKSUM) {
+48eb03dd26304c Stanislav Fomichev        2023-11-27  771  				if (unlikely(meta->request.csum_start +
+48eb03dd26304c Stanislav Fomichev        2023-11-27  772  					     meta->request.csum_offset +
+48eb03dd26304c Stanislav Fomichev        2023-11-27  773  					     sizeof(__sum16) > len)) {
+48eb03dd26304c Stanislav Fomichev        2023-11-27  774  					err = -EINVAL;
+48eb03dd26304c Stanislav Fomichev        2023-11-27  775  					goto free_err;
+48eb03dd26304c Stanislav Fomichev        2023-11-27  776  				}
+48eb03dd26304c Stanislav Fomichev        2023-11-27  777  
+48eb03dd26304c Stanislav Fomichev        2023-11-27  778  				skb->csum_start = hr + meta->request.csum_start;
+48eb03dd26304c Stanislav Fomichev        2023-11-27  779  				skb->csum_offset = meta->request.csum_offset;
+48eb03dd26304c Stanislav Fomichev        2023-11-27  780  				skb->ip_summed = CHECKSUM_PARTIAL;
+11614723af26e7 Stanislav Fomichev        2023-11-27  781  
+11614723af26e7 Stanislav Fomichev        2023-11-27  782  				if (unlikely(xs->pool->tx_sw_csum)) {
+11614723af26e7 Stanislav Fomichev        2023-11-27  783  					err = skb_checksum_help(skb);
+11614723af26e7 Stanislav Fomichev        2023-11-27  784  					if (err)
+11614723af26e7 Stanislav Fomichev        2023-11-27  785  						goto free_err;
+11614723af26e7 Stanislav Fomichev        2023-11-27  786  				}
+48eb03dd26304c Stanislav Fomichev        2023-11-27  787  			}
+ca4419f15abd19 Song Yoong Siang          2025-02-16  788  
+ca4419f15abd19 Song Yoong Siang          2025-02-16  789  			if (meta->flags & XDP_TXMD_FLAGS_LAUNCH_TIME)
+ca4419f15abd19 Song Yoong Siang          2025-02-16  790  				skb->skb_mstamp_ns = meta->request.launch_time;
+48eb03dd26304c Stanislav Fomichev        2023-11-27  791  		}
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  792  	}
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  793  
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  794  	skb->dev = dev;
+10bbf1652c1cca Eric Dumazet              2023-09-21  795  	skb->priority = READ_ONCE(xs->sk.sk_priority);
+3c5b4d69c358a9 Eric Dumazet              2023-07-28  796  	skb->mark = READ_ONCE(xs->sk.sk_mark);
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  797  	skb->destructor = xsk_destruct_skb;
+48eb03dd26304c Stanislav Fomichev        2023-11-27  798  	xsk_tx_metadata_to_compl(meta, &skb_shinfo(skb)->xsk_meta);
+67a37dcecabbf0 Maciej Fijalkowski        2025-07-05  799  
+67a37dcecabbf0 Maciej Fijalkowski        2025-07-05  800  	addrs = (struct xsk_addrs *)skb_shinfo(skb)->destructor_arg;
+67a37dcecabbf0 Maciej Fijalkowski        2025-07-05  801  	addrs->addrs[addrs->num_descs++] = desc->addr;
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  802  
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  803  	return skb;
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  804  
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  805  free_err:
+0c0d0f42ffa6ac Felix Maurer              2024-11-14  806  	if (first_frag && skb)
+0c0d0f42ffa6ac Felix Maurer              2024-11-14  807  		kfree_skb(skb);
+0c0d0f42ffa6ac Felix Maurer              2024-11-14  808  
+9d0a67b9d42c63 Tirthendu Sarkar          2023-08-23  809  	if (err == -EOVERFLOW) {
+9d0a67b9d42c63 Tirthendu Sarkar          2023-08-23  810  		/* Drop the packet */
+67a37dcecabbf0 Maciej Fijalkowski        2025-07-05  811  		xsk_inc_skb_descs(xs->skb);
+9d0a67b9d42c63 Tirthendu Sarkar          2023-08-23  812  		xsk_drop_skb(xs->skb);
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  813  		xskq_cons_release(xs->tx);
+9d0a67b9d42c63 Tirthendu Sarkar          2023-08-23  814  	} else {
+9d0a67b9d42c63 Tirthendu Sarkar          2023-08-23  815  		/* Let application retry */
+e6c4047f512280 Maciej Fijalkowski        2024-10-07  816  		xsk_cq_cancel_locked(xs->pool, 1);
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  817  	}
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19  818  
+cf24f5a5feeaae Tirthendu Sarkar          2023-07-19 @819  	return ERR_PTR(err);
+9c8f21e6f8856a Xuan Zhuo                 2021-02-18  820  }
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
 
