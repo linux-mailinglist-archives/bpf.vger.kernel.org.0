@@ -1,145 +1,111 @@
-Return-Path: <bpf+bounces-63296-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63297-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63A9CB04FA1
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 05:59:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 830C5B0506F
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 06:42:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C5053BCC0B
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 03:59:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CED9C4A7DBB
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 04:42:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96AA32D1F6B;
-	Tue, 15 Jul 2025 03:59:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D2812D1916;
+	Tue, 15 Jul 2025 04:42:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="g/dX0Tro"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="L4Bi6sck"
 X-Original-To: bpf@vger.kernel.org
 Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9519A4964E
-	for <bpf@vger.kernel.org>; Tue, 15 Jul 2025 03:59:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 210DB7DA73
+	for <bpf@vger.kernel.org>; Tue, 15 Jul 2025 04:41:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752551960; cv=none; b=gOgoXhIrHiA8zzbSKA77xZyhvGUeZC5yYCSeKSUnij2n7ePrCpN+yD+0e/XgEnF9gHAWcA9Ykc5CIWGYm8ouHMDZb6cJHYqIdZcguN/au30JJ6U/CEjlLeX5JagLOKSERuumg9RHEQUv6Yq0e6/GiH5BKFyDBKZ8XKdA5CRCTrI=
+	t=1752554522; cv=none; b=HVX2atLkwNUSO27/BzJORhFZXk8O/+m6DHQREf+YJUAv3s0pAM5zbW3kcX4YoVrvs2JA8HfInj1DVWq7bcclw/BRNWeA23mUD9JFqLp6+SNT0ma0x+qlBoHecIaHq2LKbn3TLi9ycc4TFzO3iVJ0LH+c7Zi8hgbzQ9RPUVcQEhk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752551960; c=relaxed/simple;
-	bh=Z2fbt4ZMkqcpdteW12kCStIL0WQeB29wtyk0cZqu9Sg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dE4zNJ+BrP30cTOyJR5CPELqyXy5em5OxUFkKGKvKvT9XsXaZcOA/g0BhhqI3iKCvh9QgwJK06d9I058y4qoXVSjkN0Ocw7rPvBoiXAljUoeTwk88nEi7AqHMkHwsG5DuHUVWTca/k0fjKlWW9SMAF7DOmR3Jz750R4uGWKdmik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=g/dX0Tro; arc=none smtp.client-ip=95.215.58.171
+	s=arc-20240116; t=1752554522; c=relaxed/simple;
+	bh=pHQ9P2dvkglzwB8lr2IDOoFpbdG3sa7i+KpcXFiW37w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TOrQsR2w1qxYXwYDauWS5wVgP6u7l78HQ/z1sHfxDsVY0Hwg2aeY7YjsUuJqqtNanA6ziSVJGwhyOCUktER4/F3WMR7Xotwue7O2E9yu67Vuei2y4ItSqBTCskL0Q1M3swcytFHJr6a67oLP+2Pz1RAiHuneuuZjH+2S9mS+Ep4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=L4Bi6sck; arc=none smtp.client-ip=95.215.58.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+Message-ID: <22e15dd2-8564-4e71-ab77-8b436870850d@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1752551956;
+	t=1752554518;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KYdnTAguL4o2oJrb1acoqmop89YA3GwF4mvs4rZ/2SI=;
-	b=g/dX0TroQomXaiklZVzFTNw4fe2pD938vD8h8Knx6NJntnfVA7/KTylqgYL8Je5hTGFy5j
-	OpgvCSJ3QniMTQN/j6YjH+zfa/0kwiD3pboKGNu7+XTlhD9us1VrVu1piArxag4ZKlFngA
-	tw6gyt6aHYKjWYIgBl6ZtNAmINVQ1d8=
-From: Tao Chen <chen.dylane@linux.dev>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	willemb@google.com,
-	kerneljasonxing@gmail.com
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Tao Chen <chen.dylane@linux.dev>
-Subject: [PATCH bpf-next v2 2/2] bpf/selftests: Add selftests for token info
-Date: Tue, 15 Jul 2025 11:58:31 +0800
-Message-ID: <20250715035831.1094282-2-chen.dylane@linux.dev>
-In-Reply-To: <20250715035831.1094282-1-chen.dylane@linux.dev>
-References: <20250715035831.1094282-1-chen.dylane@linux.dev>
+	bh=YUYSUO3giFQLHh8Swep5anuUUJIkaXAbxJDBLSg5p5c=;
+	b=L4Bi6sckgrAU/vXCr8x/Tg9CCy4LNwl7n/ec6rWQd/+sHtSoJv9jDHIowLZ7RT4C6VBD5g
+	TWdSrdVHFKi2m9Aa1m87w4AH9b+QAj8DcRamNXY/ES1pBabKq/1n+n834Kt3+GiMLpm8Fu
+	3Ju4IjuQ34E1fgA8ewO8HmRqNResbWM=
+Date: Tue, 15 Jul 2025 12:40:55 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v2 14/18] libbpf: add btf type hash lookup
+ support
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+ Menglong Dong <menglong8.dong@gmail.com>
+Cc: alexei.starovoitov@gmail.com, rostedt@goodmis.org, jolsa@kernel.org,
+ bpf@vger.kernel.org, Menglong Dong <dongml2@chinatelecom.cn>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ linux-kernel@vger.kernel.org
+References: <20250703121521.1874196-1-dongml2@chinatelecom.cn>
+ <20250703121521.1874196-15-dongml2@chinatelecom.cn>
+ <CAEf4BzaoKNNf5pr4z8vEokj3AyLNZYyjYQUOoEMMZHN6ETUg4g@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Menglong Dong <menglong.dong@linux.dev>
+In-Reply-To: <CAEf4BzaoKNNf5pr4z8vEokj3AyLNZYyjYQUOoEMMZHN6ETUg4g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-A previous change added bpf_token_info to get token info with
-bpf_get_obj_info_by_fd, this patch adds a new test for token info.
 
- #461/12  token/bpf_token_info:OK
+On 7/15/25 06:07, Andrii Nakryiko wrote:
+> On Thu, Jul 3, 2025 at 5:22 AM Menglong Dong <menglong8.dong@gmail.com> wrote:
+>> For now, the libbpf find the btf type id by loop all the btf types and
+>> compare its name, which is inefficient if we have many functions to
+>> lookup.
+>>
+>> We add the "use_hash" to the function args of find_kernel_btf_id() to
+>> indicate if we should lookup the btf type id by hash. The hash table will
+>> be initialized if it has not yet.
+> Or we could build hashtable-based index outside of struct btf for a
+> specific use case, because there is no one perfect hashtable-based
+> indexing that can be done generically (e.g., just by name, or
+> name+kind, or kind+name, or some more complicated lookup key) and
+> cover all potential use cases. I'd prefer not to get into a problem of
+> defining and building indexes and leave it to callers (even if the
+> caller is other part of libbpf itself).
 
-Signed-off-by: Tao Chen <chen.dylane@linux.dev>
----
- .../testing/selftests/bpf/prog_tests/token.c  | 39 +++++++++++++++++++
- 1 file changed, 39 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/token.c b/tools/testing/selftests/bpf/prog_tests/token.c
-index cfc032b910c..a16f25bdd4c 100644
---- a/tools/testing/selftests/bpf/prog_tests/token.c
-+++ b/tools/testing/selftests/bpf/prog_tests/token.c
-@@ -1047,6 +1047,36 @@ static int userns_obj_priv_implicit_token_envvar(int mnt_fd, struct token_lsm *l
- 
- #define bit(n) (1ULL << (n))
- 
-+static int userns_bpf_token_info(int mnt_fd, struct token_lsm *lsm_skel)
-+{
-+	int err, token_fd = -1;
-+	struct bpf_token_info info;
-+	u32 len = sizeof(struct bpf_token_info);
-+
-+	/* create BPF token from BPF FS mount */
-+	token_fd = bpf_token_create(mnt_fd, NULL);
-+	if (!ASSERT_GT(token_fd, 0, "token_create")) {
-+		err = -EINVAL;
-+		goto cleanup;
-+	}
-+
-+	memset(&info, 0, len);
-+	err = bpf_obj_get_info_by_fd(token_fd, &info, &len);
-+	if (!ASSERT_ERR(err, "bpf_obj_get_token_info"))
-+		goto cleanup;
-+	if (!ASSERT_EQ(info.allowed_cmds, bit(BPF_MAP_CREATE), "token_info_cmds_map_create"))
-+		goto cleanup;
-+	if (!ASSERT_EQ(info.allowed_progs, bit(BPF_PROG_TYPE_XDP), "token_info_progs_xdp"))
-+		goto cleanup;
-+
-+	/* The BPF_PROG_TYPE_EXT is not set in token */
-+	ASSERT_EQ(info.allowed_progs, bit(BPF_PROG_TYPE_EXT), "token_info_progs_ext");
-+
-+cleanup:
-+	zclose(token_fd);
-+	return err;
-+}
-+
- void test_token(void)
- {
- 	if (test__start_subtest("map_token")) {
-@@ -1150,4 +1180,13 @@ void test_token(void)
- 
- 		subtest_userns(&opts, userns_obj_priv_implicit_token_envvar);
- 	}
-+	if (test__start_subtest("bpf_token_info")) {
-+		struct bpffs_opts opts = {
-+			.cmds = bit(BPF_MAP_CREATE),
-+			.progs = bit(BPF_PROG_TYPE_XDP),
-+			.attachs = ~0ULL,
-+		};
-+
-+		subtest_userns(&opts, userns_bpf_token_info);
-+	}
- }
--- 
-2.48.1
+I think that works. We can define a global hash table in libbpf.c,
+and add all the btf type to it. I'll redesign this part, and make it
+separate with the btf.
 
+Thanks!
+Menglong Dong
+
+>> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+>> ---
+>>   tools/lib/bpf/btf.c      | 102 +++++++++++++++++++++++++++++++++++++++
+>>   tools/lib/bpf/btf.h      |   6 +++
+>>   tools/lib/bpf/libbpf.c   |  37 +++++++++++---
+>>   tools/lib/bpf/libbpf.map |   3 ++
+>>   4 files changed, 140 insertions(+), 8 deletions(-)
+>>
+> [...]
+>
 
