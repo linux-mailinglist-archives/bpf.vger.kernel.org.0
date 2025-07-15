@@ -1,97 +1,93 @@
-Return-Path: <bpf+bounces-63372-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63373-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECB3BB06888
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 23:27:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC831B068D2
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 23:49:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF32A4E0342
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 21:27:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D5BB564F37
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 21:49:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CED002BE628;
-	Tue, 15 Jul 2025 21:27:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6663F27511F;
+	Tue, 15 Jul 2025 21:49:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="u8Nu9TKP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="omISNenc"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CDAF34545
-	for <bpf@vger.kernel.org>; Tue, 15 Jul 2025 21:27:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7AE826AD9
+	for <bpf@vger.kernel.org>; Tue, 15 Jul 2025 21:49:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752614841; cv=none; b=AP0TGxPksTahdpNlXaarc+tbMCrJwS3kQnjj6lUWWHeuz59ICThQafJoXnlXdQgc3mMl6CIZOhY0Dc8Xxxr3yjhpGdv87bPytLR1e0x2vqrWcb3CMmABlpcbm28CjX8XkYyVqSSy/oVSS/hoIZNEWpzsZcy9daqyihkb3q73XMk=
+	t=1752616187; cv=none; b=Y3FsA5/p7gdFKKFh/CZxgoUwd50zSojmSRIR8BEKAVcQGifj2t0snRB2ANkObzLNy88O8nVsa14LSBikblgUCU6Xo3+wdeZaEg/8TRpbiE/ssplNpSpl6BDdh7sz4KgG+LFfLjNaBDRNCpCApFEAYJfD73r2EiX7wE1+7s84xpE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752614841; c=relaxed/simple;
-	bh=VjpNf35OKcnhkXnLzTF/gK68gYHm7BJ+ugctx3uQ9Uo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Bygy0JeezwsJEYxi6dPVN1tUfXG56YOadPO9x5i82gpNl4wDJEy2q2b7ARx7ubM8/4EJ2p+DjlnpUB/NkB+RVMmZGRyZHaP5ExZP7Wa0GPUY28jd/IOuoACvTE/0U+XYp3QsBLbBPtG3etmEjsQAmKvDzaY1OB/XObXnjHMfIfg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=u8Nu9TKP; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <27c7c76c-becf-47b1-812b-05f260a8cd85@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1752614826;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TEA/2zAXePybJDFAxaDLpMM9vm6sWfj9MGiKkmagMtg=;
-	b=u8Nu9TKPospipBgfTFv9o4Tgfk0N3dRsFKn0cXx/l1STx1pHu3MUdBOyYvX/LGW8NhDJ5d
-	EVRN1+35e7poQW7ktf+qgaMeoHTqoaN6uA1HR71eLkcXYHGC3t7rnmsWgSSpON2dZ47+gB
-	MEu5EAHwE6b9/NByeWjUbriQ3hH/NC8=
-Date: Tue, 15 Jul 2025 14:26:56 -0700
+	s=arc-20240116; t=1752616187; c=relaxed/simple;
+	bh=k6R7rWpg24vuoniXTBFyXeojGDUsGPI6fLu3PyAXjhs=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=j55bXzjc/6Go/dg72H6GIXS/92WtyTpkAqdDrGmDf1VPvfN+jMuv4+CjoawKSLHEokKTwdX/L/GWLSL/VKCUfIxQtsxg0n2Lk4aH8PCbMrBU+N9vEAbGYKbdL8l8ncJtuXKtaxgVFXOB+OXzdj0l2B6JHXHkE7Cz0HKTGyAnxVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=omISNenc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69AC6C4CEE3;
+	Tue, 15 Jul 2025 21:49:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752616186;
+	bh=k6R7rWpg24vuoniXTBFyXeojGDUsGPI6fLu3PyAXjhs=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=omISNenc79QHR+jzRMk3AGNBEcjpXdXtlHDSStyObWx2MWk+WD2H/JIRBjdYcnriA
+	 /QIxu1AbiXTdiUvFnzpzrQKbho4Bk4AB3V4RmbPb6CJ6L9gB9eHDexzXGSYmWGTEfW
+	 dYs09HibGNBFOEEkA0yRcfuf1VfxOUFs3BbYVG4j0nnItDBmrnWzXXstEx/ZsEvMpn
+	 Ueotm4xlVmr9XTdOPCP9etJxukDtqFY0r2ZFQzUHh59nZie3+PTDwvw0zBTN25opbV
+	 WWTmMas3A/DpMftH1+V7UXVIevS0Sly27dLI3rXj44dMtHIiX9Nzs86RliDmyMm8T5
+	 FwOo9GgnanTdA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33D5F383BA30;
+	Tue, 15 Jul 2025 21:50:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] bpf: restrict verifier access to bpf_lru_node.ref
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Shankari Anand <shankari.ak0208@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- Martin KaFai Lau <martin.lau@kernel.org>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- syzbot+ad4661d6ca888ce7fe11@syzkaller.appspotmail.com
-References: <20250715075755.114339-1-shankari.ak0208@gmail.com>
- <CAADnVQJ6_pB8ZU2Cw5S6nB4J-6s7bw5Fp-Hst9M_EE9=HxN8+g@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-Content-Language: en-US
-In-Reply-To: <CAADnVQJ6_pB8ZU2Cw5S6nB4J-6s7bw5Fp-Hst9M_EE9=HxN8+g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix build error due to certain
+ uninitialized variables
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175261620676.591886.12198265090549711186.git-patchwork-notify@kernel.org>
+Date: Tue, 15 Jul 2025 21:50:06 +0000
+References: <20250715185910.3659447-1-yonghong.song@linux.dev>
+In-Reply-To: <20250715185910.3659447-1-yonghong.song@linux.dev>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, kernel-team@fb.com, martin.lau@kernel.org
 
-On 7/15/25 7:49 AM, Alexei Starovoitov wrote:
-> Also you misread the kcsan report.
-> 
-> It says that 'read' comes from:
-> 
-> read to 0xffff888118f3d568 of 4 bytes by task 4719 on cpu 1:
->   lookup_nulls_elem_raw kernel/bpf/hashtab.c:643 [inline]
-> 
-> which is reading hash and key of htab_elem while
-> write side actually writes hash too:
-> *(u32 *)((void *)node + lru->hash_offset) = hash;
-> 
-> Martin,
-> is it really possible for these read/write to race ?
+Hello:
 
-I think it is possible. The elem in the lru's freelist currently does not wait 
-for a rcu gp before reuse. There is a chance that the rcu reader is still 
-reading the hash value that was put in the freelist, while the writer is reusing 
-and updating it.
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-I think the percpu_freelist used in the regular hashmap should have similar 
-behavior, so may be worth finding a common solution, such as waiting for a rcu 
-gp before reusing it.
+On Tue, 15 Jul 2025 11:59:10 -0700 you wrote:
+> With the latest llvm21 compiler, I hit several errors when building bpf
+> selftests. Some of errors look like below:
+> 
+>   test_maps.c:565:40: error: variable 'val' is uninitialized when passed as a
+>       const pointer argument here [-Werror,-Wuninitialized-const-pointer]
+>     565 |         assert(bpf_map_update_elem(fd, NULL, &val, 0) < 0 &&
+>         |                                               ^~~
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next] selftests/bpf: Fix build error due to certain uninitialized variables
+    https://git.kernel.org/bpf/bpf-next/c/e860a98c8aeb
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
