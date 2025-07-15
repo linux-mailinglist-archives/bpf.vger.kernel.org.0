@@ -1,240 +1,227 @@
-Return-Path: <bpf+bounces-63335-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63336-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF9AFB062A5
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 17:17:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6ECFB0630F
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 17:35:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5701178BCD
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 15:14:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06AEE5806B2
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 15:34:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F0FD221F17;
-	Tue, 15 Jul 2025 15:14:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B06C24BBEE;
+	Tue, 15 Jul 2025 15:34:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b="BHoyKigj"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="weuKPp28";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="8JCEqK1Y";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="weuKPp28";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="8JCEqK1Y"
 X-Original-To: bpf@vger.kernel.org
-Received: from AS8PR03CU001.outbound.protection.outlook.com (mail-westeuropeazon11012048.outbound.protection.outlook.com [52.101.71.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB28D1E1C36;
-	Tue, 15 Jul 2025 15:14:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.71.48
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752592458; cv=fail; b=qHJuy7sS3w+r694lOCz+ZPaj6SnM4djbfWOa7OYGMuyguZNwd5ptNd/1R30o7gYm2o39wmMeJeak7U0T6joair2RfOmXz6kDqeJhjwFSbGtfPeVJ6BwEUCeaVKXuRX0mUqGEJj5v/RXxdJ7qsv2t29Q9hCRjBr0Ho7Ec4IjKv24=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752592458; c=relaxed/simple;
-	bh=CAB6daWfq+hGpSDCmcjrvsRLiUmFDKZDEGdvbB5z/MU=;
-	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=X1mFw5enOINEdWrjgTp08gXuRSIM0c5lPkB3ACpmaQJAK2nNhallgaG4QQGBTfDThFuIXOZqGtpIFdVwgJSeJjEkQnjmhn+TqjLatMlUXz5FeZkeeLwsTUc+HbRRqcGvO/HuGbAcaUayM6QjvTyJQ6ZlPgLCSoV41eoasWCsgMk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com; spf=fail smtp.mailfrom=nokia-bell-labs.com; dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b=BHoyKigj; arc=fail smtp.client-ip=52.101.71.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nokia-bell-labs.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=yzSWn113iC0kOxlMWTNuH0F4mqcM+6zQxohyd9HbGJvv5FaC/GmNs7GwWH+mw1tnVy/9HadMWNEABYo6LE/EkOCIaF+SxaVbSM7aAIleXLkJL+8M2dbdE0t1/WIU7V1ZK3384krmrkXPw4coicsU32f8pZ1G4Whwb+jaqGyWMrrN6bhew13LHzSYUKxU7RHp67gMcNo6+bKf9PY+8fRiRD8hSc72ajk23AJjgUZ16UE4iSh+2L9qDx+P5/Rh+uETEap84r4DzDIai8UL5qGpz8CfLeoIrUEGISWCJkyxAPwSCVxgdSFvQAxfqGzLWmCUe5MEyrD7FusUsNb4Av76+w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CAB6daWfq+hGpSDCmcjrvsRLiUmFDKZDEGdvbB5z/MU=;
- b=xDCiSBtM9MmnKPBKPo7KczNi1aX2QUlrrdk/qYT6SLqBoPv31yrP7WyZLHbBkuL3/4+qESvzEM8rMArqnET1TLOpKk535taI4GmfGzE+17YE/J05++HaKjDT0eQgRSnd/8gerxeQkyFJnDQJeT8WeKNmffcNPM4KP3hZm1SItMveTue2RhIPJlPN98tBlOHq/5muEqrWmmOwClyv5VIP83SgfhFdtCNIVMCbR4BEeiE9BACM45w8e3w8D8DsXnV54YIP9l3fs9tZ7Npf6Y6ZP5FjiOZo/Lc37XQJBm8mMhEGyKbb+7hTvBYeUPX93XltLXOvJxW5EhA0b6hlmMVk8g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia-bell-labs.com; dmarc=pass action=none
- header.from=nokia-bell-labs.com; dkim=pass header.d=nokia-bell-labs.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia-bell-labs.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CAB6daWfq+hGpSDCmcjrvsRLiUmFDKZDEGdvbB5z/MU=;
- b=BHoyKigjjMzN2OHr6GDBdMr7lQP5FCH2uabgU7nYBHRrYN7PPXLIgjh3ObDMjD7soxh1+Cr+EIHNFyEOmZ1dFL4JAhsnmOUm0hCZoaf/NMn1F3cd/O0E0GD7Sxfwhts1/fLbOj2/o5JmnYGDIfpPj0gI8eWWFqv8LwRKb5IKe94iNmb3hEjsU0ZNO8JHUCc6TJJUrdRPc4dvt73Immn/opLx4jlxkhA7lQ1nii6CTIx9fwpLzhGbny2bjr744QUtuKPIEJt6QgtzmgqWko3Lm/FPDPYLKqSVGTxiBlRdqmN+JgoiayLMklKaJgl9nyPzsKbYsQno20JzRm65464HZA==
-Received: from PAXPR07MB7984.eurprd07.prod.outlook.com (2603:10a6:102:133::12)
- by PAWPR07MB9928.eurprd07.prod.outlook.com (2603:10a6:102:38f::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8901.29; Tue, 15 Jul
- 2025 15:14:12 +0000
-Received: from PAXPR07MB7984.eurprd07.prod.outlook.com
- ([fe80::b7f8:dc0a:7e8d:56]) by PAXPR07MB7984.eurprd07.prod.outlook.com
- ([fe80::b7f8:dc0a:7e8d:56%6]) with mapi id 15.20.8922.028; Tue, 15 Jul 2025
- 15:14:11 +0000
-From: "Chia-Yu Chang (Nokia)" <chia-yu.chang@nokia-bell-labs.com>
-To: Paolo Abeni <pabeni@redhat.com>, "edumazet@google.com"
-	<edumazet@google.com>, "linux-doc@vger.kernel.org"
-	<linux-doc@vger.kernel.org>, "corbet@lwn.net" <corbet@lwn.net>,
-	"horms@kernel.org" <horms@kernel.org>, "dsahern@kernel.org"
-	<dsahern@kernel.org>, "kuniyu@amazon.com" <kuniyu@amazon.com>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "dave.taht@gmail.com" <dave.taht@gmail.com>,
-	"jhs@mojatatu.com" <jhs@mojatatu.com>, "kuba@kernel.org" <kuba@kernel.org>,
-	"stephen@networkplumber.org" <stephen@networkplumber.org>,
-	"xiyou.wangcong@gmail.com" <xiyou.wangcong@gmail.com>, "jiri@resnulli.us"
-	<jiri@resnulli.us>, "davem@davemloft.net" <davem@davemloft.net>,
-	"andrew+netdev@lunn.ch" <andrew+netdev@lunn.ch>, "donald.hunter@gmail.com"
-	<donald.hunter@gmail.com>, "ast@fiberby.net" <ast@fiberby.net>,
-	"liuhangbin@gmail.com" <liuhangbin@gmail.com>, "shuah@kernel.org"
-	<shuah@kernel.org>, "linux-kselftest@vger.kernel.org"
-	<linux-kselftest@vger.kernel.org>, "ij@kernel.org" <ij@kernel.org>,
-	"ncardwell@google.com" <ncardwell@google.com>, "Koen De Schepper (Nokia)"
-	<koen.de_schepper@nokia-bell-labs.com>, "g.white@cablelabs.com"
-	<g.white@cablelabs.com>, "ingemar.s.johansson@ericsson.com"
-	<ingemar.s.johansson@ericsson.com>, "mirja.kuehlewind@ericsson.com"
-	<mirja.kuehlewind@ericsson.com>, "cheshire@apple.com" <cheshire@apple.com>,
-	"rs.ietf@gmx.at" <rs.ietf@gmx.at>, "Jason_Livingood@comcast.com"
-	<Jason_Livingood@comcast.com>, "vidhi_goel@apple.com" <vidhi_goel@apple.com>
-Subject: RE: [PATCH v12 net-next 12/15] tcp: accecn: AccECN option send
- control
-Thread-Topic: [PATCH v12 net-next 12/15] tcp: accecn: AccECN option send
- control
-Thread-Index: AQHb7MFma+VjHWM6Vk+TnZlrvuwkPLQxxQeAgAGXUHA=
-Date: Tue, 15 Jul 2025 15:14:11 +0000
-Message-ID:
- <PAXPR07MB7984D6FA40FF000E51F694F3A357A@PAXPR07MB7984.eurprd07.prod.outlook.com>
-References: <20250704085345.46530-1-chia-yu.chang@nokia-bell-labs.com>
- <20250704085345.46530-13-chia-yu.chang@nokia-bell-labs.com>
- <b2c0653e-077f-4609-922e-777f1d868dd0@redhat.com>
-In-Reply-To: <b2c0653e-077f-4609-922e-777f1d868dd0@redhat.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nokia-bell-labs.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PAXPR07MB7984:EE_|PAWPR07MB9928:EE_
-x-ms-office365-filtering-correlation-id: e6a410ff-6d64-4f1b-2809-08ddc3b2410c
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|376014|7416014|366016|1800799024|38070700018|921020;
-x-microsoft-antispam-message-info:
- =?utf-8?B?Q21MTVpHU1FkUFpOck1QU1Q2NzdJcElWK0t0V3AxZDI3R2F4ZmdVOHV2MjRZ?=
- =?utf-8?B?c2lSNXJsSldxa1VHeFByeVRjZkp0V2oxUXg2T2JtNCtqVEVwYnBCdkZreVNO?=
- =?utf-8?B?eENUZVp3cFJYOU1RdWJULzhjdmxIdnFGb2RMVHU3OFhIMXlxQ2Z0cDdSMlpT?=
- =?utf-8?B?Y2E2SGpqOTlBTzdWbWhVa1I1eFpHbWE5NnpNOW4yWTJhSzVZNXdRRVR0SFg2?=
- =?utf-8?B?NXo2RW1hSHNZcU0yR3RCZStpS0x6eGlObGoySUMxSUdYay9MTUR6T2Q2bjhD?=
- =?utf-8?B?aDJ1TGN2Q1oyQk4veFdWdlhjMlNqcFhyU1JUV1Z5UndpQ1NPeEtkZlk0dnJU?=
- =?utf-8?B?RXlKNzFOMTc1VkFtcjJPNVVnYXFZVUt1U0QwQVk5eHNIWGl5TUIyWUlpT1ZH?=
- =?utf-8?B?KzU4VUx1dStaSVpBM2pKVjB0N282UzE5ZFhRY0JJRlhoRUdjVEhRbXkya01C?=
- =?utf-8?B?N1NoSkdQci9zTU9VQWc4OE9vbElVWW1ONFE2a0wreFNqaTN0MDl4ODNRSThR?=
- =?utf-8?B?VjBaeG9zaldDOGMzNks0My9DdDZEY2hoNjdhZzM5bVg0Mmg0UzhHaHpjN04v?=
- =?utf-8?B?OU1WbFM0WGtiZEVPb3RtVjRpY0FpTFZIdlFJTHlEM1JjeDBiVlFLaktEQjND?=
- =?utf-8?B?YzUyN3RhTmFPS2hrb2swN0x2aGY2cnhJT2ZFQ2c0TTNHZmdZYU5RZmdOeEV1?=
- =?utf-8?B?eHQyeVlOM3VsamFsK0QyaU4rSVVJTm5RNVdNdWFOSEF4OWpnTEVIaFkxNThs?=
- =?utf-8?B?azh2L2p5MG1JL1BPclRJMDZPQmkrY0FZanBnTm5VRUpKR3gwRldzdnBlUEhn?=
- =?utf-8?B?b3hQMTVOV2NVWEFNSVZSenVyRmducXNHalZGaXBWNGNjc2c1b0VHYnJtZmRs?=
- =?utf-8?B?MDEzRytnR0NlL1VUTUkrZXdBbHkycWZQOUY2YStvZVRzMUdaQWtZM3RVQ1Jk?=
- =?utf-8?B?ako4V0tMS1hZSlM0bzRKTDZFMWRkZ1BRM1F4ZnN2MzZlK0t1bjlwZHNHdXJV?=
- =?utf-8?B?SUhHcGpjcWtJcjlJclZTbmpxQ3h5RFhXNEY0aElMVnRIOFo5VmYrakNiY0FC?=
- =?utf-8?B?ZjJHZjNBcngrVG5Mcnh3VFlwZ3pmWEV5TDhxZGIwemEwZUZyeVBvUGdTK3BO?=
- =?utf-8?B?aW1ORUZrYkUyUmVTdVUwZXF0V290TGFlYVVkakxPU3dDOFBqZGszeGJ5VHNY?=
- =?utf-8?B?MW1qcUJNOXdNUzJqZGg3UVpiR1l6UVBEWWo0Y2V3aUovNzg2c3dDRmNRVldU?=
- =?utf-8?B?YlJOQ1RhVGQ0dm9kV1NaNVhuSjBCRDh1NVprZ25zRzlCRkN1REkwcDAycElo?=
- =?utf-8?B?TmZxd0VwZ2N6U3ZMQzBrSHIwVEtLb2RESkFCSnphZkxNMXJzOUI2cDdtKzBO?=
- =?utf-8?B?YjFZSGh3NUw0QVhxajZTQ2QxQm1SMFdFZXJvTEVMTU9vd3NWcXJXeHU0elU5?=
- =?utf-8?B?RnphSUFIY2MwK3pMUUhobmhJNkJpcjBSOVB4bUVEby9FZm9xYi9meGpURVNy?=
- =?utf-8?B?bW0xOUFJMm1wVS94RCtNSnplWmplN3hpSzFUK3prOVlKUS8vMTkvMG5TQzBU?=
- =?utf-8?B?MFY3YnQ2Q3pNK01TT0xXT250ZTZ3ek0wVnhwNUwwOGdOV1hLWU9OaGM5SWNi?=
- =?utf-8?B?RTRqcTkxU3dzU25yZHFrZTRwaVRHeWFDZDFja09KWGRsOWsyYU1KYVNJcloz?=
- =?utf-8?B?Y1JQNGxUdkRRVEQ2V3JEVWxid0F2WlRsYy82dDIxdTBKeDNTYVN6Vnl5MHND?=
- =?utf-8?B?RGxhV3laWUh3ZExYL2VrNGVFQzVWSFhOMGlRUUtuRVBRNDhVb0xjWURNb05X?=
- =?utf-8?B?QjlobGVFUHVzZjJzS09tbHFEMzM0OEl0b3BDMEh6b0VMNDZkbEExMXRKSTNV?=
- =?utf-8?B?MzFobzdOWitreDhHTWdJN0gzc1NZMmY2a2J1dDhaYytJSHFCck5sc0Z6algx?=
- =?utf-8?B?KzBTTnZXWWpScXQwbVFaWHFSRWZQYzh1cWh0RitDRHhoZlY1VXBtMXhFdzlx?=
- =?utf-8?B?b0l1ZDROOTVZWFFjaG5MQ1Q0N2ZrM3RMOXJReVVyOURLRkh0NnRWYzgyQ1py?=
- =?utf-8?Q?5NGgG1?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR07MB7984.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024)(38070700018)(921020);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?ZytQTmxnR1Zna0l4ajBHd0FDZk5Dc3F2RXd6MCtMeEFBU0FaVnIwYVgwUXZ6?=
- =?utf-8?B?THMzRXRMb2xaWUQ4SkpPaXRlRCtFK2pxTi83OXBXYW5zMDlqRjQ4UFZlSCt3?=
- =?utf-8?B?WFhEaVd2V0RTNzFBQmhaRWltcmE3SFFTaGNmbEl3WUhGeU5FYW9XVUhsWDFF?=
- =?utf-8?B?a2ZrN2VzYnBUV1VNTzBCUmpreThDSTQ3UzgwNVNhYzRDekprYXhORno2R0wr?=
- =?utf-8?B?d3BsUEFLSVFOaFJDVXNSdUIwQ2NOMk1uOWd4US9IMW5nbW1MZytXNnMwSjdQ?=
- =?utf-8?B?WUZNcS9YbUIvV1krck5hVTFjeFlvdEdZRTdQRXlwMEtBWS9HZU5xVGd1QTBv?=
- =?utf-8?B?MmNSTEh2b2xBMk0wdzUrQVhtQnF5V2UzWkJ2blRoaHB0Z2xWOVBHa2s4RlRC?=
- =?utf-8?B?OHp5YlBiUGZXSFRlN3VWUlVFOXNqa0w4ZmJRdjN0Nnl5Mko2cUxrSCsyUmN6?=
- =?utf-8?B?RzkxQ01pM0s3b1IxcStwdTZLRHZqRjMwdVpRV3hackluOWNLVCszQ0dYT0hN?=
- =?utf-8?B?WDNSSWtNREU4bjhEckZhMXFQK2JwZ1FJczV0UklEK2NMV0JYS2plZWRDcy9N?=
- =?utf-8?B?ays2aXpHeTFHeGdxbSsrZUh6M2JBakJaa1czY0ViRDdNeVNFQnBlVUJLSGVP?=
- =?utf-8?B?VHhSMzRKRkE5VVJVTDRpSHlOU3pSS0h5VktpMlNkeVZXTkZRT1B0MUF1VUpC?=
- =?utf-8?B?Z09GSUtUK3VJb3BlQlYzUHc3RGFqcUNvdklVMmZqWjFnN201WHJTOTluZWQz?=
- =?utf-8?B?M2QwWWorMkROUWxTcVBacWx4WVM0a3hOa08rWjZ4a3V4c0Q4OWdzMGJYdCsx?=
- =?utf-8?B?dTR2WE9sajJ5VVBycDA0LzhMOUJiV3d0bWdLMlZzV3U3SWI2VDNjd0NxcVV3?=
- =?utf-8?B?WWQ4eGFBKzNVTTQybm9ISE84QTgycXhZM0s1RFlBR3RjRkQyd3crd0N1emo0?=
- =?utf-8?B?WmxJbXhSdlI3T044cXhyMXBDcTI3Wk9vMDltU01hS0p4K1E4c055T0dPU2FJ?=
- =?utf-8?B?S2R4OGorR0ZnZWdhSXRZUjNYMHVLVk9nNHRUWFREQ1lvQWw0TU9vQnlFemR3?=
- =?utf-8?B?T2pCUVBMSzJ5emhmeklpVlg0QU12djVZV0Q5b0FwcXBlUWNjUHFwRDVoZzRB?=
- =?utf-8?B?N2dSdEFXdTliTFJiTk1hYXlGdFY5aGNyT3B5U2FNMUVUS2xVL2RpUHJVTGQ1?=
- =?utf-8?B?cldZUXhiUVpxRjhRcUxPWkNHbmduTk02ZDNYenRuaDFtbXhTNDVPc2c1dG5Q?=
- =?utf-8?B?RDV1VkVlaXBkYlZMY0lOZGk0bzEvS0cveS9TUk92dCtxOENIVFNEQk9zeHdE?=
- =?utf-8?B?ZmE1bnBUREtHWEZyaFg0ejFvNGdIR09mZ2Jla3Q0M3lZbkU4M2VDUGdXTHQ5?=
- =?utf-8?B?U2NoZUMwWkpjREpDSkszQjdzVUl0ZThaWVpkUi9keVJnOXZRNDRoQkM0V2xv?=
- =?utf-8?B?NzVUWGJ5elRRdUNqQXZyeWhGbHBONmROdmd4K1p4b0krYWZvM3Zsdm5JUjRB?=
- =?utf-8?B?cGJFWTAwT2UveXN1NkFxeDRHZVdvMkN6S2Z5ZVlaclNxNDVaRitKcm5Hc2lw?=
- =?utf-8?B?Mm1RY3dFNnJDZ0phS0Q0Zml2RTQ5VXNwb2d2bWthNlFKcWlkT09YV05yZGtK?=
- =?utf-8?B?cEY5MjZhd3Bxa2QwQ2tEZU1PSVdibE9VWFBKWGRxMFhQbUpMZzRES2xzNXNk?=
- =?utf-8?B?RkVERlpLUzdFK0tRSThqckc1bDBHZ2s0TGRFWVZpZDBtUzc1Wm9laEIwb2ZO?=
- =?utf-8?B?ZkFPYlUweTRGYVZjcE52U3R2RWtjR2x6NFB4aEthSDkyZmRwRUZ5WFkrSWVx?=
- =?utf-8?B?VUNGQk9ZZjA4RWZGdXlOcUZPZTBkTzg3QVIvR3owRDNkVHBXRVVpbU1ndTlD?=
- =?utf-8?B?QmI0SkE0YzcwVmM3OHZXcUYwNDlxUER4Zis1UkxaMzluR0lUZzBUc1FwLzRt?=
- =?utf-8?B?ZkFXQVpVSGRsWG0vMHErUHVMMHhxaUxDQlk4SXE5QkxRcFlQSG5Iak11aWcy?=
- =?utf-8?B?WU05VnFTMGFNZlhjNnJQMlBibGZGbk9IQXlpWFlDSHh6NUF3L2V1VjZNNmtS?=
- =?utf-8?B?OG5ESmc3dFhYaFlPcEYvWHJHQWpyQUtGaTIzSnlVMm83SkJZeW9mNmJHRVp2?=
- =?utf-8?B?WXEvaHRxQjFRU09IbXZtNU53S2RkUS9QTFdUNGU1d085eFdYVHVyZ3pKN1ls?=
- =?utf-8?Q?4dhMTRhSzxxrztzmqMlOhP8=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC16084039
+	for <bpf@vger.kernel.org>; Tue, 15 Jul 2025 15:34:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1752593665; cv=none; b=VOjebjfsY/oeUtZH4yu5ef69wS9w/f9pv+lfv7rK4GKQ5+Gg99zaaPYMTTZ8dhd1VeqWFWkpmVWm0qth4ivOdMLCLoicjeQfxfRxNBsMs5bHQaaVqoC1U6lekukfWF4y6BTx3AuXg1bvbTrziqKeuDli8d4PEYnmy2X30lMTRVM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1752593665; c=relaxed/simple;
+	bh=m1tPZ6E6Fo1uYAoYypHOqU9s8YA9XsS8DprvtDx5/iQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lULNpDf2bcNCFx+T6M+LMkGrWdVQHQtGUFxk8sOEvw9Ofa3qPOMeNH19VLgAyj5pAWvP05Q9C58aX9FtQOI5MFafdJnyrxS5xXX/U1Auj8hhOidTIZ8q5iRtjgouLs+BG1sGzTnjpnHl4+rkKwVXwfY7BqDH7NyEOe2tNFfSBPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=weuKPp28; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=8JCEqK1Y; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=weuKPp28; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=8JCEqK1Y; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 0CCCA211D4;
+	Tue, 15 Jul 2025 15:34:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1752593661; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=qNoq8mHkdJD9dv4Bl1KFQ2tFDOhjLYSD+a5dl7OxpgA=;
+	b=weuKPp28UfQ08F+RICd3TblaQpRkO1BgArnR0V4zXcceO+SL3Ki8Zt4vBX+eMcHvSERwp4
+	O4/F7KpOHAimGMyMlct5cpbao4OBFDsMYAlm3tnNJ43ZGNbYZVrZRjihCC1KjZpt8+OTYn
+	g8zZW56j1OTA2Vl4qJ++T0+gU5qkiqY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1752593661;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=qNoq8mHkdJD9dv4Bl1KFQ2tFDOhjLYSD+a5dl7OxpgA=;
+	b=8JCEqK1YRa4VJlBX+hud9zeOA+/yVU0WpsJiWaY2kMp4uiMc1C9ouX/esYqo7BeZECG9UZ
+	pdGRuXDw6UIrIwDQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1752593661; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=qNoq8mHkdJD9dv4Bl1KFQ2tFDOhjLYSD+a5dl7OxpgA=;
+	b=weuKPp28UfQ08F+RICd3TblaQpRkO1BgArnR0V4zXcceO+SL3Ki8Zt4vBX+eMcHvSERwp4
+	O4/F7KpOHAimGMyMlct5cpbao4OBFDsMYAlm3tnNJ43ZGNbYZVrZRjihCC1KjZpt8+OTYn
+	g8zZW56j1OTA2Vl4qJ++T0+gU5qkiqY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1752593661;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=qNoq8mHkdJD9dv4Bl1KFQ2tFDOhjLYSD+a5dl7OxpgA=;
+	b=8JCEqK1YRa4VJlBX+hud9zeOA+/yVU0WpsJiWaY2kMp4uiMc1C9ouX/esYqo7BeZECG9UZ
+	pdGRuXDw6UIrIwDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D4E9E13A68;
+	Tue, 15 Jul 2025 15:34:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id PeCSM/x0dmhkYAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 15 Jul 2025 15:34:20 +0000
+Message-ID: <07d3689c-185e-496e-a0b8-53bb3194f0da@suse.cz>
+Date: Tue, 15 Jul 2025 17:34:20 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nokia-bell-labs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR07MB7984.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e6a410ff-6d64-4f1b-2809-08ddc3b2410c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jul 2025 15:14:11.9166
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3q/H7Pas7vs3uvU4qyKY3LHAT4fm8hlYWLKVqgqRuMQ/DZDjzgxy7UfWFfFG0eXouT7ZlcUuMGfUWFJPg0AxwtKIJ6FnDNdwR2IX1X25eFjHqZaVwHEfFgG1xywVrnHy
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR07MB9928
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 2/4] mm/slub: allow to set node and align in
+ k[v]realloc
+Content-Language: en-US
+To: Danilo Krummrich <dakr@kernel.org>, Vitaly Wool
+ <vitaly.wool@konsulko.se>, Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-mm@kvack.org, akpm@linux-foundation.org,
+ linux-kernel@vger.kernel.org, Uladzislau Rezki <urezki@gmail.com>,
+ Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org,
+ Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+ "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+ linux-bcachefs@vger.kernel.org, bpf@vger.kernel.org,
+ Herbert Xu <herbert@gondor.apana.org.au>, Jann Horn <jannh@google.com>,
+ Pedro Falcato <pfalcato@suse.de>, Kent Overstreet <kent.overstreet@linux.dev>
+References: <20250715135645.2230065-1-vitaly.wool@konsulko.se>
+ <20250715135815.2230224-1-vitaly.wool@konsulko.se>
+ <DBCPB0BHKNTQ.K0NWNXIFKCT0@kernel.org>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ m6M14QORSWTLRg==
+In-Reply-To: <DBCPB0BHKNTQ.K0NWNXIFKCT0@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[kvack.org,linux-foundation.org,vger.kernel.org,gmail.com,google.com,oracle.com,gondor.apana.org.au,suse.de,linux.dev];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,imap1.dmz-prg2.suse.org:helo]
+X-Spam-Flag: NO
+X-Spam-Score: -4.30
 
-PiBDQVVUSU9OOiBUaGlzIGlzIGFuIGV4dGVybmFsIGVtYWlsLiBQbGVhc2UgYmUgdmVyeSBjYXJl
-ZnVsIHdoZW4gY2xpY2tpbmcgbGlua3Mgb3Igb3BlbmluZyBhdHRhY2htZW50cy4gU2VlIHRoZSBV
-Ukwgbm9rLml0L2V4dCBmb3IgYWRkaXRpb25hbCBpbmZvcm1hdGlvbi4NCj4gDQo+IA0KPiANCj4g
-T24gNy80LzI1IDEwOjUzIEFNLCBjaGlhLXl1LmNoYW5nQG5va2lhLWJlbGwtbGFicy5jb20gd3Jv
-dGU6DQo+ID4gQEAgLTI4NSw5ICsyOTcsMzMgQEAgc3RhdGljIGlubGluZSB2b2lkIA0KPiA+IHRj
-cF9lY25fcmVjZWl2ZWRfY291bnRlcnMoc3RydWN0IHNvY2sgKnNrLA0KPiA+DQo+ID4gICAgICAg
-ICAgICAgICBpZiAobGVuID4gMCkgew0KPiA+ICAgICAgICAgICAgICAgICAgICAgICB1OCBtaW5s
-ZW4gPSANCj4gPiB0Y3BfZWNuZmllbGRfdG9fYWNjZWNuX29wdGZpZWxkKGVjbmZpZWxkKTsNCj4g
-PiArICAgICAgICAgICAgICAgICAgICAgdTMyIG9sZGJ5dGVzID0gdHAtPnJlY2VpdmVkX2Vjbl9i
-eXRlc1tlY25maWVsZCAtIA0KPiA+ICsgMV07DQo+ID4gKw0KPiA+ICAgICAgICAgICAgICAgICAg
-ICAgICB0cC0+cmVjZWl2ZWRfZWNuX2J5dGVzW2VjbmZpZWxkIC0gMV0gKz0gbGVuOw0KPiA+ICAg
-ICAgICAgICAgICAgICAgICAgICB0cC0+YWNjZWNuX21pbmxlbiA9IG1heF90KHU4LCB0cC0+YWNj
-ZWNuX21pbmxlbiwNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBtaW5sZW4pOw0KPiA+ICsNCj4gPiArICAgICAgICAgICAgICAgICAgICAgLyogRGVt
-YW5kIEFjY0VDTiBvcHRpb24gYXQgbGVhc3QgZXZlcnkgMl4yMiBieXRlcyB0bw0KPiA+ICsgICAg
-ICAgICAgICAgICAgICAgICAgKiBhdm9pZCBvdmVyZmxvd2luZyB0aGUgRUNOIGJ5dGUgY291bnRl
-cnMuDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAqLw0KPiA+ICsgICAgICAgICAgICAgICAg
-ICAgICBpZiAoKHRwLT5yZWNlaXZlZF9lY25fYnl0ZXNbZWNuZmllbGQgLSAxXSBeIG9sZGJ5dGVz
-KSAmDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICB+KCgxIDw8IDIyKSAtIDEpKSB7DQo+
-IA0KPiBJIGRvbid0IHVuZGVyc3RhbmQgdGhlIGFib3ZlIHN0YXRlbWVudCwgSSBkb24ndCB0aGlu
-ayBpdCB5aWVsZCB0aGUgcmVzdWx0IGV4cGVjdGVkIGFjY29yZGluZyB0byB0aGUgYWJvdmUgY29t
-bWVudC4NCg0KSGkgUGFvbG8sDQoNCkkgd2FzIHRoaW5raW5nIHRvIGNoYW5nZSBpdCBpbnRvIEdF
-Tk1BU0tfVTMyKCkgYW5kIGNvbW1lbnRzIGxpa2UgYmVsb3cuDQoNCkl0IGlzIGludGVuZGVkIHRv
-IHNlbmQgQWNjRUNOIG9wdGlvbiBhdCBsZWFzdCBvbmNlIHBlciAyXjIyLWJ5dGUgaW5jcmVhc2Ug
-aW4gdGhlIGNvdW50ZXIuDQoNCkJ1dCB0aGlzIGlzIGRvbmUgYnkgY2hlY2tpbmcgdGhlIGJpdCBl
-ZGdlcyAoZnJvbSBiaXQgMjIpIG9mIHRoZSBieXRlIGNvdW50ZXJzIHRvIGF2b2lkIGV4dHJhIHZh
-cmlhYmxlcy4NCg0KdTMyIG9sZGJ5dGVzID0gdHAtPnJlY2VpdmVkX2Vjbl9ieXRlc1tlY25maWVs
-ZCAtIDFdOw0KdTMyIGJ5dGVzX21hc2sgPSBHRU5NQVNLX1UzMigzMSwgMjIpOw0KDQp0cC0+cmVj
-ZWl2ZWRfZWNuX2J5dGVzW2VjbmZpZWxkIC0gMV0gKz0gbGVuOw0KdHAtPmFjY2Vjbl9taW5sZW4g
-PSBtYXhfdCh1OCwgdHAtPmFjY2Vjbl9taW5sZW4sDQogICAgICAgICAgICAgICAgICAgICAgICAg
-IG1pbmxlbik7DQoNCi8qIFNlbmQgQWNjRUNOIG9wdGlvbiBpZiBhbnkgRUNOIGJ5dGUgY291bnRl
-ciBpcw0KICogaW5jcmVhc2VkIGJ5IGF0IGxlYXN0IDJeMjIgYnl0ZXMuDQogKi8NCmlmICgodHAt
-PnJlY2VpdmVkX2Vjbl9ieXRlc1tlY25maWVsZCAtIDFdIF4gb2xkYnl0ZXMpICYNCiAgICBieXRl
-c19tYXNrKSB7DQogICAgICAgIHRjcF9hY2NlY25fb3B0X2RlbWFuZF9taW4oc2ssIDEpOw0KfQ0K
-DQpXb3VsZCBpdCBtYWtlIG1vcmUgc2Vuc2UgdG8geW91Pw0K
+On 7/15/25 16:33, Danilo Krummrich wrote:
+> On Tue Jul 15, 2025 at 3:58 PM CEST, Vitaly Wool wrote:
+>> diff --git a/fs/bcachefs/darray.c b/fs/bcachefs/darray.c
+>> index e86d36d23e9e..928e83a1ce42 100644
+>> --- a/fs/bcachefs/darray.c
+>> +++ b/fs/bcachefs/darray.c
+>> @@ -21,7 +21,7 @@ int __bch2_darray_resize_noprof(darray_char *d, size_t element_size, size_t new_
+>>  			return -ENOMEM;
+>>  
+>>  		void *data = likely(bytes < INT_MAX)
+>> -			? kvmalloc_noprof(bytes, gfp)
+>> +			? kvmalloc_node_align_noprof(bytes, 1, gfp, NUMA_NO_NODE)
+>>  			: vmalloc_noprof(bytes);
+>>  		if (!data)
+>>  			return -ENOMEM;
+>> diff --git a/fs/bcachefs/util.h b/fs/bcachefs/util.h
+>> index 0a4b1d433621..2d6d4b547db8 100644
+>> --- a/fs/bcachefs/util.h
+>> +++ b/fs/bcachefs/util.h
+>> @@ -61,7 +61,7 @@ static inline void *bch2_kvmalloc_noprof(size_t n, gfp_t flags)
+>>  {
+>>  	void *p = unlikely(n >= INT_MAX)
+>>  		? vmalloc_noprof(n)
+>> -		: kvmalloc_noprof(n, flags & ~__GFP_ZERO);
+>> +		: kvmalloc_node_align_noprof(n, 1, flags & ~__GFP_ZERO, NUMA_NO_NODE);
+>>  	if (p && (flags & __GFP_ZERO))
+>>  		memset(p, 0, n);
+>>  	return p;
+> 
+> I assume this is because kvmalloc(), and hence kvrealloc(), does this:
+> 
+> 	/* Don't even allow crazy sizes */
+> 	if (unlikely(size > INT_MAX)) {
+> 		WARN_ON_ONCE(!(flags & __GFP_NOWARN));
+> 		return NULL;
+> 	}
+> 
+> Do we still consider this a "crazy size"? :)
+
+Yeah, with "we" including Linus:
+https://lore.kernel.org/all/CAHk-=wi=PrbZnwnvhKEF6UUQNCZdNsUbr+hk-jOWGr-q4Mmz=Q@mail.gmail.com/
+
+
 
