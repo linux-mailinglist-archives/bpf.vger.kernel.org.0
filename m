@@ -1,225 +1,147 @@
-Return-Path: <bpf+bounces-63327-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63328-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B421B06097
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 16:19:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1097B060ED
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 16:26:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B595506588
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 14:11:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 837875A45C5
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 14:14:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 826C92F3634;
-	Tue, 15 Jul 2025 13:58:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 180D3211A19;
+	Tue, 15 Jul 2025 14:02:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=konsulko.se header.i=@konsulko.se header.b="ovFk8pli";
-	dkim=permerror (0-bit key) header.d=konsulko.se header.i=@konsulko.se header.b="a6O6XJEF"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Ohr1ZKGW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailrelay-egress16.pub.mailoutpod3-cph3.one.com (mailrelay-egress16.pub.mailoutpod3-cph3.one.com [46.30.212.3])
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D2A32E49AB
-	for <bpf@vger.kernel.org>; Tue, 15 Jul 2025 13:58:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.212.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01A27202C26;
+	Tue, 15 Jul 2025 14:02:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752587932; cv=none; b=cyWSp3tG+LUnclhHY/jc8W4xJp+xLqirRkQkDoAI4lemE9uWUW1KaMb+kiH/mYqLMT0Xy6Pte4Fe+/BqMtKVtgFcmVQ3HzSxLc06G4AdrMYTBOpdI/xNgRSFKhxVkgt0up4Mspe56b+t5j0zUpqMoRuDLCfOIhxUSNgTk9Z4+tU=
+	t=1752588152; cv=none; b=E6qcE+Ism+mnEYMBujfUj+v9J92EquZwHsPzOTReaQabthTYw+f+MVPy5nw7wBrB+Rcm8/PqGH1VEII9ZhGEBufxDYhf/CYB+Td2kKJL2RKVJN4N+kFAhk3Cnftzvn8x7lp+l4Bhb1mQDIkNchsiMTfJrTHiXfkSGwI9p7eCIo4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752587932; c=relaxed/simple;
-	bh=jfk2V22ERQUvp6fNK5tGHU3+ExFDd+662b5a1Os5EE0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=C0JftM+UZbJm+QbnF2S16KegWFGlc1LfrJ35cFUq2AgigOSx+f7n5ebovWk9lJ9btlvnTG+BEWeN8Uq5SmSMXlMXCqQTx2N45A4UQiA9Zzf/t/DqiUOnMGefpWVQR4Bf9D6AXG4VwesArsWDKrc0mGWNzkyu43PnytP4l0Aklb0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=konsulko.se; spf=none smtp.mailfrom=konsulko.se; dkim=pass (2048-bit key) header.d=konsulko.se header.i=@konsulko.se header.b=ovFk8pli; dkim=permerror (0-bit key) header.d=konsulko.se header.i=@konsulko.se header.b=a6O6XJEF; arc=none smtp.client-ip=46.30.212.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=konsulko.se
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=konsulko.se
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1752587929; x=1753192729;
-	d=konsulko.se; s=rsa1;
-	h=content-transfer-encoding:mime-version:references:in-reply-to:message-id:date:
-	 subject:cc:to:from:from;
-	bh=W9+2URA1qXrl1fhBq8o38MQgoc5ORxkxAU8T1e724LI=;
-	b=ovFk8plinhgq1Pm98F2EKee7NHCl2Ao8cMk6fGyDGd1YoQlEsrBMV6zs55mm+tHUMh35SLSCXMVLF
-	 8gEOdmR33UWgFx1U33SOcQWDl5/J5WaEpjuFi6K2xZ433tQymQ425NCPakQtux0+rRt6BPd6AkBTp7
-	 SdTH9OxYdStN1pJNvrlGMWFSSs5Gnu/jfT7fNIgT2UVjfU5uP8EnqlBrMgZX+fbD+qnahA7+YiAI8b
-	 T+9wBc8psR4e0ArRwGbvKVUhAcGcmAN/GzRYDYKyrevQFUP3KmL1gNk0qnHNDSK3wvqC5Ow4/2XAYF
-	 QlNnGTwIDwVuxLsEsTtF3WXVii8lNJg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1752587929; x=1753192729;
-	d=konsulko.se; s=ed1;
-	h=content-transfer-encoding:mime-version:references:in-reply-to:message-id:date:
-	 subject:cc:to:from:from;
-	bh=W9+2URA1qXrl1fhBq8o38MQgoc5ORxkxAU8T1e724LI=;
-	b=a6O6XJEFJ2Z8BV5TamKbPrPPKpdpDUaatdq2FnN8VN6hmU58hHo+ExcR8mJ7Tp9mcnZct0gQNoiFJ
-	 6XI7xZMCg==
-X-HalOne-ID: d344b59a-6183-11f0-a951-85eb291bc831
-Received: from slottsdator.home (host-90-238-19-233.mobileonline.telia.com [90.238.19.233])
-	by mailrelay5.pub.mailoutpod2-cph3.one.com (Halon) with ESMTPSA
-	id d344b59a-6183-11f0-a951-85eb291bc831;
-	Tue, 15 Jul 2025 13:58:48 +0000 (UTC)
-From: Vitaly Wool <vitaly.wool@konsulko.se>
-To: linux-mm@kvack.org
-Cc: akpm@linux-foundation.org,
-	linux-kernel@vger.kernel.org,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Danilo Krummrich <dakr@kernel.org>,
-	Alice Ryhl <aliceryhl@google.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	rust-for-linux@vger.kernel.org,
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
-	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	linux-bcachefs@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Jann Horn <jannh@google.com>,
-	Pedro Falcato <pfalcato@suse.de>,
-	Vitaly Wool <vitaly.wool@konsulko.se>
-Subject: [PATCH v13 4/4] rust: support large alignments in allocations
-Date: Tue, 15 Jul 2025 15:58:45 +0200
-Message-Id: <20250715135845.2230333-1-vitaly.wool@konsulko.se>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20250715135645.2230065-1-vitaly.wool@konsulko.se>
-References: <20250715135645.2230065-1-vitaly.wool@konsulko.se>
+	s=arc-20240116; t=1752588152; c=relaxed/simple;
+	bh=f1cM/7QBDfw3ynfq4r+6ueDeeE07SE1ymM7fUCG61e8=;
+	h=Mime-Version:Content-Type:Date:Message-Id:To:Subject:Cc:From:
+	 References:In-Reply-To; b=cupIq9B73cRD6F27RCZzvMUBSnnSlu0i9EcnPA+Ri9/gF2U1BX7loR1YESiLJj0Nf1MTUiZOy3NGUK0LKbculTChDX/Tc/44q82yR7zmKczvhjnadZsyXSwanQ4L3SVFn1MXsm62QGCngyWPL8h8gSJyy6wVnkRu3VvL4GTOvWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Ohr1ZKGW; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id EF5C544410;
+	Tue, 15 Jul 2025 14:02:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1752588148;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Lk6YS19eH8sl7JMJlZ3DJG1FxHGmkLhzKUSEcTA4E0g=;
+	b=Ohr1ZKGWHYKUPNEXEl46hgF6TQ3LZlc0hvDeytv/gT65N3h3Ab2tGCfHDWFG0rZz9yZqcM
+	GeL8Updmc8eobyHblIB4FjLPJkh//fBMg7qA1m4K32fYwSReVsY2y81/wiZTdu4IEJXkYz
+	zSmzVGy95jlzloW57DqpLucelajOCmeo7S73g3Qd52RWyebVQm8ePQ40ydBOj543bJ1jsz
+	WV+jFc5hfOTso61Gv43Tj+0wS9vuMz00NzuZV7vR9oA0I9Ad2rqTX8IH8unDKS5QE1PrVY
+	PJ/cc3RFGuMXGLVv0ZZWlpKA8DWtDzXVpG+fzBROwdoApgROYpb37MK7a5IbWg==
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 15 Jul 2025 16:02:25 +0200
+Message-Id: <DBCONB7XHN7E.2UQMMG6RICMFY@bootlin.com>
+To: "Will Deacon" <will@kernel.org>
+Subject: Re: [PATCH 1/2] bpf, arm64: remove structs on stack constraint
+Cc: "Alexei Starovoitov" <ast@kernel.org>, "Daniel Borkmann"
+ <daniel@iogearbox.net>, "Andrii Nakryiko" <andrii@kernel.org>, "Martin
+ KaFai Lau" <martin.lau@linux.dev>, "Eduard Zingerman" <eddyz87@gmail.com>,
+ "Song Liu" <song@kernel.org>, "Yonghong Song" <yonghong.song@linux.dev>,
+ "John Fastabend" <john.fastabend@gmail.com>, "KP Singh"
+ <kpsingh@kernel.org>, "Stanislav Fomichev" <sdf@fomichev.me>, "Hao Luo"
+ <haoluo@google.com>, "Jiri Olsa" <jolsa@kernel.org>, "Puranjay Mohan"
+ <puranjay@kernel.org>, "Xu Kuohai" <xukuohai@huaweicloud.com>, "Catalin
+ Marinas" <catalin.marinas@arm.com>, "Mykola Lysenko" <mykolal@fb.com>,
+ "Shuah Khan" <shuah@kernel.org>, <ebpf@linuxfoundation.org>, "Thomas
+ Petazzoni" <thomas.petazzoni@bootlin.com>, "Bastien Curutchet"
+ <bastien.curutchet@bootlin.com>, "Ihor Solodrai" <ihor.solodrai@linux.dev>,
+ <bpf@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>
+From: =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+X-Mailer: aerc 0.20.1-0-g2ecb8770224a-dirty
+References: <20250709-arm64_relax_jit_comp-v1-0-3850fe189092@bootlin.com>
+ <20250709-arm64_relax_jit_comp-v1-1-3850fe189092@bootlin.com>
+ <aHZYcY_9JtK8so3C@willie-the-truck>
+In-Reply-To: <aHZYcY_9JtK8so3C@willie-the-truck>
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdehhedtudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepggfgtgffkffvufevhffofhgjsehtqhertdertdejnecuhfhrohhmpeetlhgvgihishcunfhothhhohhrrocuoegrlhgvgihishdrlhhothhhohhrvgessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepuefhhfejhffftedthfeukeeiueekffffjeefkeeujeetleekfedtvdegieehvdegnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpsghoohhtlhhinhdrtghomhenucfkphepledtrdekledrudeifedruddvjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeeltddrkeelrdduieefrdduvdejpdhhvghloheplhhotggrlhhhohhsthdpmhgrihhlfhhrohhmpegrlhgvgihishdrlhhothhhohhrvgessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepvdeipdhrtghpthhtohepfihilhhlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhopegrnhgurhhiiheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhgrrhhtihhnrdhlrghus
+ ehlihhnuhigrdguvghvpdhrtghpthhtohepvgguugihiiekjeesghhmrghilhdrtghomhdprhgtphhtthhopehsohhngheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohephihonhhghhhonhhgrdhsohhngheslhhinhhugidruggvvh
+X-GND-Sasl: alexis.lothore@bootlin.com
 
-Add support for large (> PAGE_SIZE) alignments in Rust allocators.
-All the preparations on the C side are already done, we just need
-to add bindings for <alloc>_node_align() functions and start
-using those.
+On Tue Jul 15, 2025 at 3:32 PM CEST, Will Deacon wrote:
+> On Wed, Jul 09, 2025 at 10:36:55AM +0200, Alexis Lothor=C3=A9 (eBPF Found=
+ation) wrote:
+>> While introducing support for 9+ arguments for tracing programs on
+>> ARM64, commit 9014cf56f13d ("bpf, arm64: Support up to 12 function
+>> arguments") has also introduced a constraint preventing BPF trampolines
+>> from being generated if the target function consumes a struct argument
+>> passed on stack, because of uncertainties around the exact struct
+>> location: if the struct has been marked as packed or with a custom
+>> alignment, this info is not reflected in BTF data, and so generated
+>> tracing trampolines could read the target function arguments at wrong
+>> offsets.
+>>=20
+>> This issue is not specific to ARM64: there has been an attempt (see [1])
+>> to bring the same constraint to other architectures JIT compilers. But
+>> discussions following this attempt led to the move of this constraint
+>> out of the kernel (see [2]): instead of preventing the kernel from
+>> generating trampolines for those functions consuming structs on stack,
+>> it is simpler to just make sure that those functions with uncertain
+>> struct arguments location are not encoded in BTF information, and so
+>> that one can not even attempt to attach a tracing program to such
+>> function. The task is then deferred to pahole (see [3]).
+>>=20
+>> Now that the constraint is handled by pahole, remove it from the arm64
+>> JIT compiler to keep it simple.
+>>=20
+>> [1] https://lore.kernel.org/bpf/20250613-deny_trampoline_structs_on_stac=
+k-v1-0-5be9211768c3@bootlin.com/
+>> [2] https://lore.kernel.org/bpf/CAADnVQ+sj9XhscN9PdmTzjVa7Eif21noAUH3y1K=
+6x5bWcL-5pg@mail.gmail.com/
+>> [3] https://lore.kernel.org/bpf/20250707-btf_skip_structs_on_stack-v3-0-=
+29569e086c12@bootlin.com/
+>>=20
+>> Signed-off-by: Alexis Lothor=C3=A9 (eBPF Foundation) <alexis.lothore@boo=
+tlin.com>
+>> ---
+>>  arch/arm64/net/bpf_jit_comp.c | 5 -----
+>>  1 file changed, 5 deletions(-)
+>
+> This is a question born more out of ignorance that insight, but how do
+> we ensure that the version of pahole being used is sufficiently
+> up-to-date that the in-kernel check is not required?
 
-Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.se>
-Acked-by: Danilo Krummrich <dakr@kernel.org>
----
- rust/helpers/slab.c            | 10 ++++++----
- rust/helpers/vmalloc.c         |  5 +++--
- rust/kernel/alloc/allocator.rs | 30 +++++++++---------------------
- 3 files changed, 18 insertions(+), 27 deletions(-)
+Based on earlier discussions, I am not convinced it is worth maintaining
+the check depending on the pahole version used in BTF. Other architectures
+exposing a JIT compiler don't have the in-kernel check and so are already
+exposed to this very specific case, but discussions around my attempt to
+enforce the check on other JIT comp showed that the rarity of this case do
+not justify protecting it on kernel side (see [1]).
 
-diff --git a/rust/helpers/slab.c b/rust/helpers/slab.c
-index 8472370a4338..7fac958907b0 100644
---- a/rust/helpers/slab.c
-+++ b/rust/helpers/slab.c
-@@ -3,13 +3,15 @@
- #include <linux/slab.h>
- 
- void * __must_check __realloc_size(2)
--rust_helper_krealloc_node(const void *objp, size_t new_size, gfp_t flags, int node)
-+rust_helper_krealloc_node_align(const void *objp, size_t new_size, unsigned long align,
-+				gfp_t flags, int node)
- {
--	return krealloc_node(objp, new_size, flags, node);
-+	return krealloc_node_align(objp, new_size, align, flags, node);
- }
- 
- void * __must_check __realloc_size(2)
--rust_helper_kvrealloc_node(const void *p, size_t size, gfp_t flags, int node)
-+rust_helper_kvrealloc_node_align(const void *p, size_t size, unsigned long align,
-+				 gfp_t flags, int node)
- {
--	return kvrealloc_node(p, size, flags, node);
-+	return kvrealloc_node_align(p, size, align, flags, node);
- }
-diff --git a/rust/helpers/vmalloc.c b/rust/helpers/vmalloc.c
-index 62d30db9a1a6..7d7f7336b3d2 100644
---- a/rust/helpers/vmalloc.c
-+++ b/rust/helpers/vmalloc.c
-@@ -3,7 +3,8 @@
- #include <linux/vmalloc.h>
- 
- void * __must_check __realloc_size(2)
--rust_helper_vrealloc_node(const void *p, size_t size, gfp_t flags, int node)
-+rust_helper_vrealloc_node_align(const void *p, size_t size, unsigned long align,
-+				gfp_t flags, int node)
- {
--	return vrealloc_node(p, size, flags, node);
-+	return vrealloc_node_align(p, size, align, flags, node);
- }
-diff --git a/rust/kernel/alloc/allocator.rs b/rust/kernel/alloc/allocator.rs
-index 8af7e04e3cc6..63f271624428 100644
---- a/rust/kernel/alloc/allocator.rs
-+++ b/rust/kernel/alloc/allocator.rs
-@@ -15,7 +15,6 @@
- 
- use crate::alloc::{AllocError, Allocator, NumaNode};
- use crate::bindings;
--use crate::pr_warn;
- 
- /// The contiguous kernel allocator.
- ///
-@@ -56,25 +55,26 @@ fn aligned_size(new_layout: Layout) -> usize {
- 
- /// # Invariants
- ///
--/// One of the following: `krealloc_node`, `vrealloc_node`, `kvrealloc_node`.
-+/// One of the following: `krealloc_node_align`, `vrealloc_node_align`, `kvrealloc_node_align`.
- struct ReallocFunc(
-     unsafe extern "C" fn(
-         *const crate::ffi::c_void,
-         usize,
-+        crate::ffi::c_ulong,
-         u32,
-         crate::ffi::c_int,
-     ) -> *mut crate::ffi::c_void,
- );
- 
- impl ReallocFunc {
--    // INVARIANT: `krealloc_node` satisfies the type invariants.
--    const KREALLOC: Self = Self(bindings::krealloc_node);
-+    // INVARIANT: `krealloc_node_align` satisfies the type invariants.
-+    const KREALLOC: Self = Self(bindings::krealloc_node_align);
- 
--    // INVARIANT: `vrealloc_node` satisfies the type invariants.
--    const VREALLOC: Self = Self(bindings::vrealloc_node);
-+    // INVARIANT: `vrealloc_node_align` satisfies the type invariants.
-+    const VREALLOC: Self = Self(bindings::vrealloc_node_align);
- 
--    // INVARIANT: `kvrealloc_node` satisfies the type invariants.
--    const KVREALLOC: Self = Self(bindings::kvrealloc_node);
-+    // INVARIANT: `kvrealloc_node_align` satisfies the type invariants.
-+    const KVREALLOC: Self = Self(bindings::kvrealloc_node_align);
- 
-     /// # Safety
-     ///
-@@ -116,7 +116,7 @@ unsafe fn call(
-         // - Those functions provide the guarantees of this function.
-         let raw_ptr = unsafe {
-             // If `size == 0` and `ptr != NULL` the memory behind the pointer is freed.
--            self.0(ptr.cast(), size, flags.0, nid.0).cast()
-+            self.0(ptr.cast(), size, layout.align(), flags.0, nid.0).cast()
-         };
- 
-         let ptr = if size == 0 {
-@@ -160,12 +160,6 @@ unsafe fn realloc(
-         flags: Flags,
-         nid: NumaNode,
-     ) -> Result<NonNull<[u8]>, AllocError> {
--        // TODO: Support alignments larger than PAGE_SIZE.
--        if layout.align() > bindings::PAGE_SIZE {
--            pr_warn!("Vmalloc does not support alignments larger than PAGE_SIZE yet.\n");
--            return Err(AllocError);
--        }
--
-         // SAFETY: If not `None`, `ptr` is guaranteed to point to valid memory, which was previously
-         // allocated with this `Allocator`.
-         unsafe { ReallocFunc::VREALLOC.call(ptr, layout, old_layout, flags, nid) }
-@@ -185,12 +179,6 @@ unsafe fn realloc(
-         flags: Flags,
-         nid: NumaNode,
-     ) -> Result<NonNull<[u8]>, AllocError> {
--        // TODO: Support alignments larger than PAGE_SIZE.
--        if layout.align() > bindings::PAGE_SIZE {
--            pr_warn!("KVmalloc does not support alignments larger than PAGE_SIZE yet.\n");
--            return Err(AllocError);
--        }
--
-         // SAFETY: If not `None`, `ptr` is guaranteed to point to valid memory, which was previously
-         // allocated with this `Allocator`.
-         unsafe { ReallocFunc::KVREALLOC.call(ptr, layout, old_layout, flags, nid) }
--- 
-2.39.2
+Alexis
+
+[1] https://lore.kernel.org/bpf/CAADnVQ+sj9XhscN9PdmTzjVa7Eif21noAUH3y1K6x5=
+bWcL-5pg@mail.gmail.com/
+
+
+--=20
+Alexis Lothor=C3=A9, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
 
