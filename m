@@ -1,189 +1,196 @@
-Return-Path: <bpf+bounces-63348-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63349-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6905B06514
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 19:24:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F2F6B06524
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 19:29:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E93CC1887918
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 17:24:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6285B179441
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 17:29:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2854B28507B;
-	Tue, 15 Jul 2025 17:24:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC6CA27BF89;
+	Tue, 15 Jul 2025 17:29:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AZ7uUlho"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TKw31uuT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CE8E1D514B;
-	Tue, 15 Jul 2025 17:24:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF23C272E43
+	for <bpf@vger.kernel.org>; Tue, 15 Jul 2025 17:29:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752600253; cv=none; b=hOhFRotoQn8X5lSBUI49JyYs13h2tYPtJQ3HxbzDzUhjVtSDDPs3HoNx3rl9Qx/zayIrCUUitTE9BEr4KVt1rBJZcimGENFsRFAw1ioM5F2+jjfQXXAK0hN80hKHCSGDL2BRKf88pFmlas3w4Tazze+nvJKU88pF0Sisaa1Dndc=
+	t=1752600576; cv=none; b=tczlaMUq0g6CDqCSDzv2aG90+H0yeNWCQ5VmIWkllB2oOpOsVkS4fyI4vDHUH7VHyZLdsMAW+FeXWJXqa7ilozSKhlKtaMWHSngtTeSj1ErC3Ly0o7XeMAN2yK0b9IM9jt3OICmI9JfkNzKcPy1ab/LsDFCTY1JPzgfDp8Rm+Wg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752600253; c=relaxed/simple;
-	bh=a1ajk6ivQ9gs4z1y2vr3lDFbqauo6COR9aN1Ze+u9nw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LRMjuZ1y87tCyTGGr3DxTfPBMXRL31AhxBMweY2Y4VNatdyU/RTHGyJG/+WTanDiMakT8ZXjrpKrqdEqa4n/tF6SnoGUGno2ie73vWushB6AlbgqhJep+dERr2fiBlNIhHshxwEKSHqktNn73ORtt0974If8h4WBBmcHObGZD6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AZ7uUlho; arc=none smtp.client-ip=209.85.210.172
+	s=arc-20240116; t=1752600576; c=relaxed/simple;
+	bh=Il8kjokkfqu4kCN4ROicHOAK/MLLzKO5lyB9l2umNs4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=N0xI/RJFUAwYjIDR4hTJL+2100KzVgzfeffGkc/cJihZP9RqOLenX10XxEdQwsB1U1tqCgOxT6e/O1Lyg1HyYURGpWJUvqjg7G0v9mdsb1yWJFdv4aNfzlz0wjsBJhrg04K665QWsc5eoh4x0uAPPxNX9zAHLF9b+KjnMYGF+1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TKw31uuT; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-7425bd5a83aso4884938b3a.0;
-        Tue, 15 Jul 2025 10:24:12 -0700 (PDT)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-23694cec0feso53200675ad.2
+        for <bpf@vger.kernel.org>; Tue, 15 Jul 2025 10:29:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752600251; x=1753205051; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=r/jqVI1RoUbitx8fUJx1/BZ8RYAU7+dho5rCq1Y3BFw=;
-        b=AZ7uUlhoAUDVvBLNiCy/RO8qlMRQc3GTOKLmnQgAr7ObIs00voEo7DBQIW++YWyJ0R
-         9Ixy4lL49U66mxcbAMibOcBNbZt2iUahT3z+ypDMd4gcBALbqpAwgdCNg9QXW7UOSN1+
-         7GmQmOCsTZgXPR4Zho205rF62GiBrOhlYIOcBVDwFYs/jQUFsmkkol0Qa+IUZk9UjzAb
-         VTgn4ZrkJV7/6RFu67GRW+Gg2BPI15OnGpZiBTyDwLwlSjlCLaZnypTHE/Y6jWIggTy9
-         5MKznC5a/2lPgUFLOVxJmC09EHQBZW9fOqqgG3bf+QXlsU/Fszhui82dXGoINySBASvm
-         1VEw==
+        d=gmail.com; s=20230601; t=1752600574; x=1753205374; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RzvA+upP7N+xmyl3rKQjK7wKukGDrRXLQFpGIH1dIN4=;
+        b=TKw31uuTx3lh+4giHMNTT/D1V1lhEc4IJyzbUNL/55LtiXz3Ee9OYnMI4NcJYmZcMG
+         cMNKC+T1uVg5Rg8b/x/ww8brkJSdLBWTHfgvMs80wfuhCZ60z71dPPs5I53uu7zm6HZm
+         V8bUdJf0hp7SUwoAA8F92y1zbJ1HWmNouRjfuMdIOhor+XlTQToIsr7YJPOpOpyb73RG
+         cdFk07L2gkJGF5C9DlW1WN2FtJifBgfLc9adqF57QeCBHI8+4Cjs1cionY0HLf8Ugzuq
+         XBfsGIA892bvDclF7NF/Zc8C9H4H88+sBdDb+m4K3XFveT99JEpeI9q9uHGlQBH6eVIh
+         V8ZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752600251; x=1753205051;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=r/jqVI1RoUbitx8fUJx1/BZ8RYAU7+dho5rCq1Y3BFw=;
-        b=pd5UnmFfp8G5UXHcInCGvuFO8tLx3fQqsXA8QH2gZy/AJXNI83WA11ZLpBfnX4Tc0c
-         jwVX23pb1OraMA7I4yj+l0EFavFF7mavbe+9eRnlwH/BqiogCg68hJkSf4OETfkC6Lq8
-         GLKprb9UwrQYZ4+r0IVCxnKFCz+cgFXEqCpXkDX0F185Y0J3Bz5zZbGtO6BRFtIGoNW4
-         Ry+cZbX23OdRwaytii+UoTSEowKxGW5VGiadyLVCSA87aW+mN2/SOrrMD8FymOnCAuNT
-         Pd2+L2as2XYHCdpGtpBLTWP8Y/rIQCTSpEZhKPbb4NENqLCtYP3cxPTDdetQEsaPDYo3
-         HFVg==
-X-Forwarded-Encrypted: i=1; AJvYcCUcqR8c7nrGvCaGRE036/DYeOSP2LbteNWUflVdI+Ovqm/3GfCI5fymTrvNfyXDFH/tikg=@vger.kernel.org, AJvYcCVkvs3d62djLYv0aTktqEP2DDUXDTeCxSUXqb6pvv2m31kRCl28kOdl/UJB+yIeM0brfnmnant0+hUJijfJ@vger.kernel.org
-X-Gm-Message-State: AOJu0YxbxCpv6EI8e8QyBEXdSndhYFcTSARaRQg1Yzn8v20XnGaZ+VYs
-	vcYyd9aGDJvaAr4tFl34eTgfn4ZygHGDNqB5Gvhxa5KRo4poM2tG0syLbUGvc9X4lxdCoTYzinT
-	apTJRHAgYH+rRlg5xUVDyYcdbmgBHAmI=
-X-Gm-Gg: ASbGncv2ne6hcUFHjMN9xyqU7IxbKS0NFTW/ZJx1HXngOIw6fNEBZmB8zvNZyjhMw3v
-	6lgnI8Sfz5hKYVORVxrHzM8W/xrdLhs2WCedSp+o26ssV1vYw6Mr+zjkNUWujX7ejDLsKnMScsQ
-	ETG8jaF4LKFxD4MiD2NLSTb8P3djm/mubsclPCTv5nYlJYbpdCeclxSBfa8Cosjdo8QdWtqriZr
-	P+WQUPBtYPBSBbXMuUeXV+vSCQlC2Ve3w==
-X-Google-Smtp-Source: AGHT+IE9eeumIRNyUxafbRszxTrw1fCYg6bl+KqabIqRNP/oMm+qcn9XVtXpgNXBy69KgXxG1ai8sbswpNvC5lOBxSE=
-X-Received: by 2002:a05:6a20:430e:b0:231:6ba:881c with SMTP id
- adf61e73a8af0-237d5601bd5mr308088637.6.1752600251256; Tue, 15 Jul 2025
- 10:24:11 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1752600574; x=1753205374;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RzvA+upP7N+xmyl3rKQjK7wKukGDrRXLQFpGIH1dIN4=;
+        b=UpvEOoPeRxIvrmHd9v53sFpQKtL2ZuE5WvBrWFNdGoO9KxL8f5iG/Qq8HO5Iy7T89t
+         vVbXfqIGkPXPl5u6Sre0SwM0Qc1aSJiwKq6xivGzRYVm30hWU55bDwNSPKEKQBOFQ8Tz
+         VLwmLRMgjmu2gPmwyXAwOmhKa2nS7Se1ekH0xC2GaGvsGZJj+aVj0IPvAJZlYQ+ZRihZ
+         XvLQJOJVlA5qYe14KDb2xDvkvGPMN1MpOV6+hw4SZbeD7mZKIB+Wqn1Ei0EqJAQdqMBe
+         97zG0dWLeW+nNkJXx8HqlKLXtn4QfDksPAY9sahcCHs62KFiA9QhQ+1eSRYxvdE4Gugx
+         IQRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWXpVi73mFGzzehJXRFnmfEFWYXgpvkKYA8OQg3igrLEzC4je1G9JDoAPQfI0F90wsfFgI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwhZz3yLAHeikytTjjX9qOSNo+gP6wyGBkZVxsUk1CTsch+277o
+	Q5ms+D+ZbIZGANEcDz85nKpPwqewNLkQLbwNuBKuoNLD7SRfIRarc9oQ
+X-Gm-Gg: ASbGncvXXcFJM+NAry6u2ZaVwjBDfmMy+dVNqKMhQTkK10bl7Br/EtLJFMwOMPffNAf
+	CG7eh/IbCLBkhYBoKMfg0uV+V67XZQp1S3pWmCh7rNdt5oEGxvRnaOwcsjwgt5mDgGLrw4NDeHb
+	cZJKC8nIUKjK0PBopfmI24cjCKSoHuHjJxzVdL3e5Zql9wwZyCeDLgPW8Q6K8N7Wpkh75uXR4k0
+	uqztv+Rf/oUILH4m92aoSEmbZHgCO0LCv5p8VJG/2q1Xo6dUdY8p71mrAwfLYHF3FM9qcGNL4sR
+	ErHiyAnvvbKVG+PY6zbaZ2gwak4ZTu9IDOoJRjL08KUfz6PmE9Lb99BK7+oUm2ug+8pqxjnrFPd
+	cq3tT/UJefi8QkT0ZUUXjSHXZEBkbOJg=
+X-Google-Smtp-Source: AGHT+IG+94srJz5lZkl9mh3K1Oa0+wlS3LVpvh/lQZV3IAVp64fuuVdfR64LE/Xar9ig3W/fHDiLrA==
+X-Received: by 2002:a17:902:ea0e:b0:235:779:edea with SMTP id d9443c01a7336-23e1b195f18mr55245305ad.38.1752600573864;
+        Tue, 15 Jul 2025 10:29:33 -0700 (PDT)
+Received: from ast-mac ([2620:10d:c090:500::6:249f])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23de4332cdcsm111929315ad.145.2025.07.15.10.29.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jul 2025 10:29:33 -0700 (PDT)
+Date: Tue, 15 Jul 2025 10:29:27 -0700
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
+	bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, Harry Yoo <harry.yoo@oracle.com>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Michal Hocko <mhocko@suse.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: [PATCH v2 3/6] locking/local_lock: Introduce
+ local_lock_lockdep_start/end()
+Message-ID: <mb6gbhm7f6xflrtzkjjz4rsapudg55ushyzqqo2uw7intdqmcc@4ess725k2gjj>
+References: <20250709015303.8107-4-alexei.starovoitov@gmail.com>
+ <20250711075001.fnlMZfk6@linutronix.de>
+ <1adbee35-6131-49de-835b-2c93aacfdd1e@suse.cz>
+ <20250711151730.rz_TY1Qq@linutronix.de>
+ <CAADnVQKF=U+Go44fpDYOoZp+3e0xrLYXE4yYLm82H819WqnpnA@mail.gmail.com>
+ <20250714110639.uOaKJEfL@linutronix.de>
+ <CAADnVQLORq64ezK+gaU=Q2F2KyCYOBZiVE0aaJuqK=xfUwMFiw@mail.gmail.com>
+ <d556c4fb-ddc2-4bf0-9510-5c682cd717f5@suse.cz>
+ <CAADnVQK3B4ToOOuWOWQdvHO-1as3X2YMGkj45vYQ0Nxoe55Nsw@mail.gmail.com>
+ <6835614d-c316-4ecf-ae2b-52687a66ae7c@suse.cz>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250703121521.1874196-1-dongml2@chinatelecom.cn>
- <20250703121521.1874196-16-dongml2@chinatelecom.cn> <CAEf4BzZb793wAXROPNcE_EggfU1U3g80jdDsvP5sr86uDBhgmA@mail.gmail.com>
- <21970a1e-dcda-4c23-af84-553419007a38@linux.dev>
-In-Reply-To: <21970a1e-dcda-4c23-af84-553419007a38@linux.dev>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 15 Jul 2025 10:23:57 -0700
-X-Gm-Features: Ac12FXy7js9NERiywfc-z0hZo9OfpBmTDB6gLern-KAKM4FPwveBeLKJyUK1FXI
-Message-ID: <CAEf4BzY4RaB5n1k7-O5XtCAOc9Rq=sYS1zLt_mDLih=4ypvb7g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 15/18] libbpf: add skip_invalid and
- attach_tracing for tracing_multi
-To: Menglong Dong <menglong.dong@linux.dev>
-Cc: Menglong Dong <menglong8.dong@gmail.com>, alexei.starovoitov@gmail.com, 
-	rostedt@goodmis.org, jolsa@kernel.org, bpf@vger.kernel.org, 
-	Menglong Dong <dongml2@chinatelecom.cn>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6835614d-c316-4ecf-ae2b-52687a66ae7c@suse.cz>
 
-On Mon, Jul 14, 2025 at 10:49=E2=80=AFPM Menglong Dong <menglong.dong@linux=
-.dev> wrote:
->
->
-> On 7/15/25 06:07, Andrii Nakryiko wrote:
-> > On Thu, Jul 3, 2025 at 5:23=E2=80=AFAM Menglong Dong <menglong8.dong@gm=
-ail.com> wrote:
-> >> We add skip_invalid and attach_tracing for tracing_multi for the
-> >> selftests.
-> >>
-> >> When we try to attach all the functions in available_filter_functions =
-with
-> >> tracing_multi, we can't tell if the target symbol can be attached
-> >> successfully, and the attaching will fail. When skip_invalid is set to
-> >> true, we will check if it can be attached in libbpf, and skip the inva=
-lid
-> >> entries.
-> >>
-> >> We will skip the symbols in the following cases:
-> >>
-> >> 1. the btf type not exist
-> >> 2. the btf type is not a function proto
-> >> 3. the function args count more that 6
-> >> 4. the return type is struct or union
-> >> 5. any function args is struct or union
-> >>
-> >> The 5th rule can be a manslaughter, but it's ok for the testings.
-> >>
-> >> "attach_tracing" is used to convert a TRACING prog to TRACING_MULTI. F=
-or
-> >> example, we can set the attach type to FENTRY_MULTI before we load the
-> >> skel. And we can attach the prog with
-> >> bpf_program__attach_trace_multi_opts() with "attach_tracing=3D1". The =
-libbpf
-> >> will attach the target btf type of the prog automatically. This is als=
-o
-> >> used to reuse the selftests of tracing.
-> >>
-> >> (Oh my goodness! What am I doing?)
-> > exactly...
-> >
-> > Let's think if we need any of that, as in: take a step back, and try
-> > to explain why you think any of this should be part of libbpf's UAPI.
->
-> I know it's weird. The "attach_tracing" is used for selftests, which I ca=
-n
-> use something else instead. But the "skip_invalid" is something that we
-> need.
->
-> For example, we have a function list, which contains 1000 kernel function=
-s,
-> and we want to attach fentry-multi to them. However, we don't know which
-> of them can't be attached, so the attachment will fail. And we need a way=
- to
-> skip the functions that can't be attached to make the attachment success.
+On Tue, Jul 15, 2025 at 08:56:21AM +0200, Vlastimil Babka wrote:
+> > the addresses of the locks are different and they're different
+> > kmalloc buckets, but lockdep cannot understand this without
+> > explicit local_lock_lockdep_start().
+> > The same thing I'm trying to explain in the commit log.
+> 
+> Thanks for the explanation and sorry for being so dense.
+> Maybe lockdep's lock classes can be used here somehow instead of having to
+> teach lockdep completely new tricks, but I don't know enough about those to
+> know for sure.
 
-The right answer here is you need to know what's attachable and what's
-not, instead of just ignoring attachment failures somewhere deep
-inside libbpf API. Filter and check before you try to attach. There is
-/sys/kernel/tracing/available_filter_functions and some similar
-blacklist file, consult that, filter out stuff that's not attachable.
+I tried that with a separate lock_key for each local_trylock_t
+and it's sort-of kinda works for 16 cpus, but doesn't scale
+when number of cpus is large.
+There is no good way to pick LOCKDEP_BITS.
 
-We won't be adding libbpf APIs just to make some selftests easier to
-write by being sloppy.
+It can be made optional on PREEMP_RT only
+and used for kmalloc buckets only that kmalloc_nolock() is using,
+but still feels less clean than
+local_lock_lockdep_start/end()
+since it makes lockdep work harder.
 
->
-> This should be a common use case. And let me do more research to see if
-> we can do such filter out of the libbpf.
+Better ideas?
 
-I have similar issues with retsnoop ([0]) and do just fine without
-abusing libbpf API.
+From da2b3bac08950929da105836fbff7e2ea4ecbc0e Mon Sep 17 00:00:00 2001
+From: Alexei Starovoitov <ast@kernel.org>
+Date: Tue, 15 Jul 2025 10:16:42 -0700
+Subject: [PATCH] lockdep
 
-  [0] https://github.com/anakryiko/retsnoop/blob/master/src/mass_attacher.c=
-#L749
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+---
+ lib/Kconfig.debug |  2 +-
+ mm/slub.c         | 13 +++++++++++++
+ 2 files changed, 14 insertions(+), 1 deletion(-)
 
->
-> Thanks!
-> Menglong Dong
->
->
-> >
-> >> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
-> >> ---
-> >>   tools/lib/bpf/libbpf.c | 97 ++++++++++++++++++++++++++++++++++++----=
---
-> >>   tools/lib/bpf/libbpf.h |  6 ++-
-> >>   2 files changed, 89 insertions(+), 14 deletions(-)
-> >>
-> > [...]
-> >
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index ebe33181b6e6..94c07b84ecd0 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1526,7 +1526,7 @@ config LOCKDEP_BITS
+ 	int "Size for MAX_LOCKDEP_ENTRIES (as Nth power of 2)"
+ 	depends on LOCKDEP && !LOCKDEP_SMALL
+ 	range 10 24
+-	default 15
++	default 16
+ 	help
+ 	  Try increasing this value if you hit "BUG: MAX_LOCKDEP_ENTRIES too low!" message.
+ 
+diff --git a/mm/slub.c b/mm/slub.c
+index 2f30b85fbf68..2ae6bf3ebcd0 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -395,6 +395,7 @@ struct kmem_cache_cpu {
+ 	struct slab *partial;	/* Partially allocated slabs */
+ #endif
+ 	local_trylock_t lock;	/* Protects the fields above */
++	struct lock_class_key lock_key;
+ #ifdef CONFIG_SLUB_STATS
+ 	unsigned int stat[NR_SLUB_STAT_ITEMS];
+ #endif
+@@ -3083,6 +3084,8 @@ static void init_kmem_cache_cpus(struct kmem_cache *s)
+ 	for_each_possible_cpu(cpu) {
+ 		c = per_cpu_ptr(s->cpu_slab, cpu);
+ 		local_trylock_init(&c->lock);
++		lockdep_register_key(&c->lock_key);
++		lockdep_set_class(&c->lock, &c->lock_key);
+ 		c->tid = init_tid(cpu);
+ 	}
+ }
+@@ -5953,6 +5956,16 @@ void __kmem_cache_release(struct kmem_cache *s)
+ {
+ 	cache_random_seq_destroy(s);
+ #ifndef CONFIG_SLUB_TINY
++	{
++		int cpu;
++
++		for_each_possible_cpu(cpu) {
++			struct kmem_cache_cpu *c = per_cpu_ptr(s->cpu_slab,
++							       cpu);
++
++			lockdep_unregister_key(&c->lock_key);
++		}
++	}
+ 	free_percpu(s->cpu_slab);
+ #endif
+ 	free_kmem_cache_nodes(s);
+-- 
+2.47.1
+
 
