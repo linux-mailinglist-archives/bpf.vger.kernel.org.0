@@ -1,139 +1,455 @@
-Return-Path: <bpf+bounces-63376-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63377-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77FE4B06901
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 00:01:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8755B0693E
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 00:27:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2DE5565A10
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 22:01:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 118041AA7631
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 22:27:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 635972BEC41;
-	Tue, 15 Jul 2025 22:01:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 148812C17B2;
+	Tue, 15 Jul 2025 22:27:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="ndktiuph"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3D0245945;
-	Tue, 15 Jul 2025 22:01:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.16
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C19A52C15A2;
+	Tue, 15 Jul 2025 22:27:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752616884; cv=none; b=SCnYl93i6GPyfq7iKOKiXSK/WFd6Z8xxlEnZ+qi3mu9mLjGyErrctEQ9ckHbfsENUyhZL6WDC8Yi+IykmCaUrKbCjMGG0lWxnK/BKS7Ea/ogLDWXYfdBfDasZEzdJ39m1pY1F17VzVQaWbG1RKPALdIJ4yzic2H6GrkCtsve9eI=
+	t=1752618424; cv=none; b=ICHfxNA0DRGz00gzRvL4j5hjSF+B/2oVSBm6sfBb5FlbHOor3+HeksP3J+ZlyPOd4ECbsbt4Q+jW4DnvRufkLlMqbr1p95HyLiLjdn2qDVMfnOIo3SQIN9BWRz4+ZFFpXx7T4h9BC9ef8Ohy0eU1F92WUkW0JIR5ErMh9v/Z6R4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752616884; c=relaxed/simple;
-	bh=VIKRw06pGE2/3puvs1e2lNmGY2lvMx6DwWfE6MV66WI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=psKbtVu7YaxF/s7MMry0GP7looAtmHCaxXUqwmFfDR5v+GpD5NYEZdB0NezSuHQRNXAh4gdxYIUOItCi/HnFJ4fGl2O3EYNKKs0QqvHX9g6dQxNJLyGAu2F+NJTrDM2fNVMoTDDXGtzxvOrE6R67FeZYyBbnZGhtYij8sFACKQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf12.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay02.hostedemail.com (Postfix) with ESMTP id 0133E12B3C0;
-	Tue, 15 Jul 2025 22:01:10 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf12.hostedemail.com (Postfix) with ESMTPA id 2B7EB18;
-	Tue, 15 Jul 2025 22:01:06 +0000 (UTC)
-Date: Tue, 15 Jul 2025 18:01:05 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org,
- Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
- Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Namhyung Kim
- <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Andrii
- Nakryiko <andrii@kernel.org>, Indu Bhagat <indu.bhagat@oracle.com>, "Jose
- E. Marchesi" <jemarch@gnu.org>, Beau Belgrave <beaub@linux.microsoft.com>,
- Jens Remus <jremus@linux.ibm.com>, Linus Torvalds
- <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>,
- Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>, Sam
- James <sam@gentoo.org>
-Subject: Re: [PATCH v13 10/14] unwind: Clear unwind_mask on exit back to
- user space
-Message-ID: <20250715180105.2a36560a@batman.local.home>
-In-Reply-To: <20250715102912.GQ1613200@noisy.programming.kicks-ass.net>
-References: <20250708012239.268642741@kernel.org>
-	<20250708012359.345060579@kernel.org>
-	<20250715102912.GQ1613200@noisy.programming.kicks-ass.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1752618424; c=relaxed/simple;
+	bh=JU/FvqQtox0m+7JiJ35JiynqoZsQL4UV2bqXgK6amg4=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=T/VkF9wQEhsfZT/2i9zt0sqGZQTCWqgUE3y9By5elq3XVAqUuhGXqQ180KawaqBBaFN1BHJXJJAbnrADlW0X5A95VyNqb+6aE2PnQXwdl5vEJ/wBlFRXZ8p9eTwi+guzfnPGQxp4fnoxFEpA4P02/d2sFQkeTxjp4OhMMsSPXqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=ndktiuph; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from narnia.corp.microsoft.com (unknown [40.78.12.133])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 3CEA9201B1DA;
+	Tue, 15 Jul 2025 15:27:01 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3CEA9201B1DA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1752618422;
+	bh=Lk2AJ48Hkhszm8pgdJgbSf69mJKzIm0FMgmZJrtUogU=;
+	h=From:To:Subject:Date:From;
+	b=ndktiuphTFG93A2w3HeWCRb7gXdBhu60heHbiQlKngNrMA5fWHVc+tWUK76rvHwEw
+	 LhvZLDb6GlT5tZBVt6ic3udKV41BUKwP9R2o5P9AP7cLjVH82jho9HsBhLdSd2zie2
+	 dDmtcavRSjvQz360bbY+sKqmhE6G1TyrxSpNsGHs=
+From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+To: Paul Moore <paul@paul-moore.com>,
+	James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>,
+	Stephen Smalley <stephen.smalley.work@gmail.com>,
+	Ondrej Mosnacek <omosnace@redhat.com>,
+	Casey Schaufler <casey@schaufler-ca.com>,
+	John Johansen <john.johansen@canonical.com>,
+	Blaise Boscaccy <bboscaccy@linux.microsoft.com>,
+	=?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>,
+	linux-security-module@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	selinux@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH] lsm,selinux: Add LSM blob support for BPF objects
+Date: Tue, 15 Jul 2025 15:25:58 -0700
+Message-ID: <20250715222655.705241-1-bboscaccy@linux.microsoft.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: 318wnxsifrjw9hrdnoxb3rqssc8wnpj4
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: 2B7EB18
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1/NNwN0TIKShUMbuKenhraq5IABVHHjb7U=
-X-HE-Tag: 1752616866-522475
-X-HE-Meta: U2FsdGVkX19Zl+x3EINDkb0eDwqz4ng8mKFqqTtyydAMOYsUrKwf4Tms8KzAjALEnRlfvUTEsJPBSf1I7/cmDXddtL5vBWM9mlwpsj7Sbgy2rrHD1ByMOG/Sjx4UYT2zsaNarhAfMI9+o/jBNmzYFnA9Is0nezV4rN0Zapo7vK0QbEXZe9gOPyMebyn46Nj8CwtVcSjDSPBco9gFlo0oN20MVLpRyIuZxLtYSrT7/lCk7fD6UjYsaxwX4hsGVD3NrO9wnCC52YpXyb3c+GHs6DQtkCSHBSA8rRrdDoKQ7V4Zw2REelzQ0VQmhPHKBVSiPN6Klv/xKWs+PjA1OfUF9UUDzo8i/RFrhBBjXnhj8Ak6U5ZIj4j+P/XL/l22fYIU
+Content-Transfer-Encoding: 8bit
 
-On Tue, 15 Jul 2025 12:29:12 +0200
-Peter Zijlstra <peterz@infradead.org> wrote:
+This patch introduces LSM blob support for BPF maps, programs, and
+tokens to enable LSM stacking and multiplexing of LSM modules that
+govern BPF objects. Additionally, the existing BPF hooks used by
+SELinux have been updated to utilize the new blob infrastructure,
+removing the assumption of exclusive ownership of the security
+pointer.
 
-> The below is the last four patches rolled into one. Not been near a
-> compiler.
+Signed-off-by: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+---
+ include/linux/lsm_hooks.h         |   3 +
+ security/security.c               | 120 +++++++++++++++++++++++++++++-
+ security/selinux/hooks.c          |  56 +++-----------
+ security/selinux/include/objsec.h |  17 +++++
+ 4 files changed, 147 insertions(+), 49 deletions(-)
 
-And it shows ;-)
+diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
+index 090d1d3e19fed..79ec5a2bdcca7 100644
+--- a/include/linux/lsm_hooks.h
++++ b/include/linux/lsm_hooks.h
+@@ -116,6 +116,9 @@ struct lsm_blob_sizes {
+ 	int lbs_xattr_count; /* number of xattr slots in new_xattrs array */
+ 	int lbs_tun_dev;
+ 	int lbs_bdev;
++	int lbs_bpf_map;
++	int lbs_bpf_prog;
++	int lbs_bpf_token;
+ };
+ 
+ /*
+diff --git a/security/security.c b/security/security.c
+index 596d418185773..8c413b84f33db 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -283,6 +283,9 @@ static void __init lsm_set_blob_sizes(struct lsm_blob_sizes *needed)
+ 	lsm_set_blob_size(&needed->lbs_xattr_count,
+ 			  &blob_sizes.lbs_xattr_count);
+ 	lsm_set_blob_size(&needed->lbs_bdev, &blob_sizes.lbs_bdev);
++	lsm_set_blob_size(&needed->lbs_bpf_map, &blob_sizes.lbs_bpf_map);
++	lsm_set_blob_size(&needed->lbs_bpf_prog, &blob_sizes.lbs_bpf_prog);
++	lsm_set_blob_size(&needed->lbs_bpf_token, &blob_sizes.lbs_bpf_token);
+ }
+ 
+ /* Prepare LSM for initialization. */
+@@ -480,6 +483,9 @@ static void __init ordered_lsm_init(void)
+ 	init_debug("tun device blob size = %d\n", blob_sizes.lbs_tun_dev);
+ 	init_debug("xattr slots          = %d\n", blob_sizes.lbs_xattr_count);
+ 	init_debug("bdev blob size       = %d\n", blob_sizes.lbs_bdev);
++	init_debug("bpf map blob size    = %d\n", blob_sizes.lbs_bpf_map);
++	init_debug("bpf prog blob size   = %d\n", blob_sizes.lbs_bpf_prog);
++	init_debug("bpf token blob size  = %d\n", blob_sizes.lbs_bpf_token);
+ 
+ 	/*
+ 	 * Create any kmem_caches needed for blobs
+@@ -835,6 +841,72 @@ static int lsm_bdev_alloc(struct block_device *bdev)
+ 	return 0;
+ }
+ 
++/**
++ * lsm_bpf_map_alloc - allocate a composite bpf_map blob
++ * @map: the bpf_map that needs a blob
++ *
++ * Allocate the bpf_map blob for all the modules
++ *
++ * Returns 0, or -ENOMEM if memory can't be allocated.
++ */
++static int lsm_bpf_map_alloc(struct bpf_map *map)
++{
++	if (blob_sizes.lbs_bpf_map == 0) {
++		map->security = NULL;
++		return 0;
++	}
++
++	map->security = kzalloc(blob_sizes.lbs_bpf_map, GFP_KERNEL);
++	if (!map->security)
++		return -ENOMEM;
++
++	return 0;
++}
++
++/**
++ * lsm_bpf_prog_alloc - allocate a composite bpf_prog blob
++ * @prog: the bpf_prog that needs a blob
++ *
++ * Allocate the bpf_prog blob for all the modules
++ *
++ * Returns 0, or -ENOMEM if memory can't be allocated.
++ */
++static int lsm_bpf_prog_alloc(struct bpf_prog *prog)
++{
++	if (blob_sizes.lbs_bpf_prog == 0) {
++		prog->aux->security = NULL;
++		return 0;
++	}
++
++	prog->aux->security = kzalloc(blob_sizes.lbs_bpf_prog, GFP_KERNEL);
++	if (!prog->aux->security)
++		return -ENOMEM;
++
++	return 0;
++}
++
++/**
++ * lsm_bpf_token_alloc - allocate a composite bpf_token blob
++ * @token: the bpf_token that needs a blob
++ *
++ * Allocate the bpf_token blob for all the modules
++ *
++ * Returns 0, or -ENOMEM if memory can't be allocated.
++ */
++static int lsm_bpf_token_alloc(struct bpf_token *token)
++{
++	if (blob_sizes.lbs_bpf_token == 0) {
++		token->security = NULL;
++		return 0;
++	}
++
++	token->security = kzalloc(blob_sizes.lbs_bpf_token, GFP_KERNEL);
++	if (!token->security)
++		return -ENOMEM;
++
++	return 0;
++}
++
+ /**
+  * lsm_early_task - during initialization allocate a composite task blob
+  * @task: the task that needs a blob
+@@ -5684,7 +5756,16 @@ int security_bpf_prog(struct bpf_prog *prog)
+ int security_bpf_map_create(struct bpf_map *map, union bpf_attr *attr,
+ 			    struct bpf_token *token, bool kernel)
+ {
+-	return call_int_hook(bpf_map_create, map, attr, token, kernel);
++	int rc = 0;
++
++	rc = lsm_bpf_map_alloc(map);
++	if (unlikely(rc))
++		return rc;
++
++	rc = call_int_hook(bpf_map_create, map, attr, token, kernel);
++	if (unlikely(rc))
++		security_bpf_map_free(map);
++	return rc;
+ }
+ 
+ /**
+@@ -5703,7 +5784,16 @@ int security_bpf_map_create(struct bpf_map *map, union bpf_attr *attr,
+ int security_bpf_prog_load(struct bpf_prog *prog, union bpf_attr *attr,
+ 			   struct bpf_token *token, bool kernel)
+ {
+-	return call_int_hook(bpf_prog_load, prog, attr, token, kernel);
++	int rc = 0;
++
++	rc = lsm_bpf_prog_alloc(prog);
++	if (unlikely(rc))
++		return rc;
++
++	rc = call_int_hook(bpf_prog_load, prog, attr, token, kernel);
++	if (unlikely(rc))
++		security_bpf_prog_free(prog);
++	return rc;
+ }
+ 
+ /**
+@@ -5720,7 +5810,16 @@ int security_bpf_prog_load(struct bpf_prog *prog, union bpf_attr *attr,
+ int security_bpf_token_create(struct bpf_token *token, union bpf_attr *attr,
+ 			      const struct path *path)
+ {
+-	return call_int_hook(bpf_token_create, token, attr, path);
++	int rc = 0;
++
++	rc = lsm_bpf_token_alloc(token);
++	if (unlikely(rc))
++		return rc;
++
++	rc = call_int_hook(bpf_token_create, token, attr, path);
++	if (unlikely(rc))
++		security_bpf_token_free(token);
++	return rc;
+ }
+ 
+ /**
+@@ -5763,7 +5862,12 @@ int security_bpf_token_capable(const struct bpf_token *token, int cap)
+  */
+ void security_bpf_map_free(struct bpf_map *map)
+ {
++	if (!map->security)
++		return;
++
+ 	call_void_hook(bpf_map_free, map);
++	kfree(map->security);
++	map->security = NULL;
+ }
+ 
+ /**
+@@ -5774,7 +5878,12 @@ void security_bpf_map_free(struct bpf_map *map)
+  */
+ void security_bpf_prog_free(struct bpf_prog *prog)
+ {
++	if (!prog->aux->security)
++		return;
++
+ 	call_void_hook(bpf_prog_free, prog);
++	kfree(prog->aux->security);
++	prog->aux->security = NULL;
+ }
+ 
+ /**
+@@ -5785,7 +5894,12 @@ void security_bpf_prog_free(struct bpf_prog *prog)
+  */
+ void security_bpf_token_free(struct bpf_token *token)
+ {
++	if (!token->security)
++		return;
++
+ 	call_void_hook(bpf_token_free, token);
++	kfree(token->security);
++	token->security = NULL;
+ }
+ #endif /* CONFIG_BPF_SYSCALL */
+ 
+diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+index 595ceb314aeb3..8052fb5fafc4d 100644
+--- a/security/selinux/hooks.c
++++ b/security/selinux/hooks.c
+@@ -7038,14 +7038,14 @@ static int bpf_fd_pass(const struct file *file, u32 sid)
+ 
+ 	if (file->f_op == &bpf_map_fops) {
+ 		map = file->private_data;
+-		bpfsec = map->security;
++		bpfsec = selinux_bpf_map_security(map);
+ 		ret = avc_has_perm(sid, bpfsec->sid, SECCLASS_BPF,
+ 				   bpf_map_fmode_to_av(file->f_mode), NULL);
+ 		if (ret)
+ 			return ret;
+ 	} else if (file->f_op == &bpf_prog_fops) {
+ 		prog = file->private_data;
+-		bpfsec = prog->aux->security;
++		bpfsec = selinux_bpf_prog_security(prog);
+ 		ret = avc_has_perm(sid, bpfsec->sid, SECCLASS_BPF,
+ 				   BPF__PROG_RUN, NULL);
+ 		if (ret)
+@@ -7059,7 +7059,7 @@ static int selinux_bpf_map(struct bpf_map *map, fmode_t fmode)
+ 	u32 sid = current_sid();
+ 	struct bpf_security_struct *bpfsec;
+ 
+-	bpfsec = map->security;
++	bpfsec = selinux_bpf_map_security(map);
+ 	return avc_has_perm(sid, bpfsec->sid, SECCLASS_BPF,
+ 			    bpf_map_fmode_to_av(fmode), NULL);
+ }
+@@ -7069,7 +7069,7 @@ static int selinux_bpf_prog(struct bpf_prog *prog)
+ 	u32 sid = current_sid();
+ 	struct bpf_security_struct *bpfsec;
+ 
+-	bpfsec = prog->aux->security;
++	bpfsec = selinux_bpf_prog_security(prog);
+ 	return avc_has_perm(sid, bpfsec->sid, SECCLASS_BPF,
+ 			    BPF__PROG_RUN, NULL);
+ }
+@@ -7079,69 +7079,33 @@ static int selinux_bpf_map_create(struct bpf_map *map, union bpf_attr *attr,
+ {
+ 	struct bpf_security_struct *bpfsec;
+ 
+-	bpfsec = kzalloc(sizeof(*bpfsec), GFP_KERNEL);
+-	if (!bpfsec)
+-		return -ENOMEM;
+-
++	bpfsec = selinux_bpf_map_security(map);
+ 	bpfsec->sid = current_sid();
+-	map->security = bpfsec;
+ 
+ 	return 0;
+ }
+ 
+-static void selinux_bpf_map_free(struct bpf_map *map)
+-{
+-	struct bpf_security_struct *bpfsec = map->security;
+-
+-	map->security = NULL;
+-	kfree(bpfsec);
+-}
+-
+ static int selinux_bpf_prog_load(struct bpf_prog *prog, union bpf_attr *attr,
+ 				 struct bpf_token *token, bool kernel)
+ {
+ 	struct bpf_security_struct *bpfsec;
+ 
+-	bpfsec = kzalloc(sizeof(*bpfsec), GFP_KERNEL);
+-	if (!bpfsec)
+-		return -ENOMEM;
+-
++	bpfsec = selinux_bpf_prog_security(prog);
+ 	bpfsec->sid = current_sid();
+-	prog->aux->security = bpfsec;
+ 
+ 	return 0;
+ }
+ 
+-static void selinux_bpf_prog_free(struct bpf_prog *prog)
+-{
+-	struct bpf_security_struct *bpfsec = prog->aux->security;
+-
+-	prog->aux->security = NULL;
+-	kfree(bpfsec);
+-}
+-
+ static int selinux_bpf_token_create(struct bpf_token *token, union bpf_attr *attr,
+ 				    const struct path *path)
+ {
+ 	struct bpf_security_struct *bpfsec;
+ 
+-	bpfsec = kzalloc(sizeof(*bpfsec), GFP_KERNEL);
+-	if (!bpfsec)
+-		return -ENOMEM;
+-
++	bpfsec = selinux_bpf_token_security(token);
+ 	bpfsec->sid = current_sid();
+-	token->security = bpfsec;
+ 
+ 	return 0;
+ }
+-
+-static void selinux_bpf_token_free(struct bpf_token *token)
+-{
+-	struct bpf_security_struct *bpfsec = token->security;
+-
+-	token->security = NULL;
+-	kfree(bpfsec);
+-}
+ #endif
+ 
+ struct lsm_blob_sizes selinux_blob_sizes __ro_after_init = {
+@@ -7159,6 +7123,9 @@ struct lsm_blob_sizes selinux_blob_sizes __ro_after_init = {
+ 	.lbs_xattr_count = SELINUX_INODE_INIT_XATTRS,
+ 	.lbs_tun_dev = sizeof(struct tun_security_struct),
+ 	.lbs_ib = sizeof(struct ib_security_struct),
++	.lbs_bpf_map = sizeof(struct bpf_security_struct),
++	.lbs_bpf_prog = sizeof(struct bpf_security_struct),
++	.lbs_bpf_token = sizeof(struct bpf_security_struct),
+ };
+ 
+ #ifdef CONFIG_PERF_EVENTS
+@@ -7510,9 +7477,6 @@ static struct security_hook_list selinux_hooks[] __ro_after_init = {
+ 	LSM_HOOK_INIT(bpf, selinux_bpf),
+ 	LSM_HOOK_INIT(bpf_map, selinux_bpf_map),
+ 	LSM_HOOK_INIT(bpf_prog, selinux_bpf_prog),
+-	LSM_HOOK_INIT(bpf_map_free, selinux_bpf_map_free),
+-	LSM_HOOK_INIT(bpf_prog_free, selinux_bpf_prog_free),
+-	LSM_HOOK_INIT(bpf_token_free, selinux_bpf_token_free),
+ #endif
+ 
+ #ifdef CONFIG_PERF_EVENTS
+diff --git a/security/selinux/include/objsec.h b/security/selinux/include/objsec.h
+index 6ee7dc4dfd6e0..9f935ed9a761f 100644
+--- a/security/selinux/include/objsec.h
++++ b/security/selinux/include/objsec.h
+@@ -26,6 +26,7 @@
+ #include <linux/lsm_hooks.h>
+ #include <linux/msg.h>
+ #include <net/net_namespace.h>
++#include <linux/bpf.h>
+ #include "flask.h"
+ #include "avc.h"
+ 
+@@ -237,4 +238,20 @@ selinux_perf_event(void *perf_event)
+ 	return perf_event + selinux_blob_sizes.lbs_perf_event;
+ }
+ 
++#ifdef CONFIG_BPF_SYSCALL
++static inline struct bpf_security_struct *selinux_bpf_map_security(struct bpf_map *map)
++{
++	return map->security + selinux_blob_sizes.lbs_bpf_map;
++}
++
++static inline struct bpf_security_struct *selinux_bpf_prog_security(struct bpf_prog *prog)
++{
++	return prog->aux->security + selinux_blob_sizes.lbs_bpf_prog;
++}
++
++static inline struct bpf_security_struct *selinux_bpf_token_security(struct bpf_token *token)
++{
++	return token->security + selinux_blob_sizes.lbs_bpf_token;
++}
++#endif /* CONFIG_BPF_SYSCALL */
+ #endif /* _SELINUX_OBJSEC_H_ */
+-- 
+2.48.1
 
-> @@ -117,13 +138,13 @@ static void unwind_deferred_task_work(st
->  	struct unwind_task_info *info = container_of(head, struct unwind_task_info, work);
->  	struct unwind_stacktrace trace;
->  	struct unwind_work *work;
-> +	unsigned long bits;
->  	u64 cookie;
->  
-> -	if (WARN_ON_ONCE(!info->pending))
-> +	if (WARN_ON_ONCE(!unwind_pending(info)))
->  		return;
->  
-> -	/* Allow work to come in again */
-> -	WRITE_ONCE(info->pending, 0);
-> +	bits = atomic_long_fetch_andnot(UNWIND_PENDING, &info->unwind_mask);
-
-I may need to do what other parts of the kernel has done and turn the
-above into:
-
-	bits = atomic_long_fetch_andnot(UNWIND_PENDING, (atomic_long_t *)&info->unwind_mask);
-
-As there's other bit manipulations that atomic_long does not take care
-of and it's making the code more confusing. When I looked to see how
-other users of atomic_long_andnot() did things, most just typecasted
-the value to use that function :-/
-
--- Steve
-
-
->  
->  	/*
->  	 * From here on out, the callback must always be called, even if it's
-> @@ -136,9 +157,11 @@ static void unwind_deferred_task_work(st
->  
->  	cookie = info->id.id;
->  
-> -	guard(mutex)(&callback_mutex);
-> -	list_for_each_entry(work, &callbacks, list) {
-> -		work->func(work, &trace, cookie);
-> +	guard(srcu_lite)(&unwind_srcu);
-> +	list_for_each_entry_srcu(work, &callbacks, list,
-> +				 srcu_read_lock_held(&unwind_srcu)) {
-> +		if (test_bit(work->bit, &bits))
-> +			work->func(work, &trace, cookie);
->  	}
->  }
->  
-> @@ -162,7 +185,7 @@ static void unwind_deferred_task_work(st
->   * because it has already been previously called for the same entry context,
->   * it will be called again with the same stack trace and cookie.
->   *
-> - * Return: 1 if the the callback was already queued.
-> + * Return: 1 if the callback was already queued.
->   *         0 if the callback successfully was queued.
->   *         Negative if there's an error.
->   *         @cookie holds the cookie of the first request by any user
 
