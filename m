@@ -1,119 +1,106 @@
-Return-Path: <bpf+bounces-63320-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63321-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F3ECB05D6F
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 15:44:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1E47B05F85
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 16:06:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CFED34E528D
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 13:38:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4770A1C27582
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 13:58:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 869E42E49A0;
-	Tue, 15 Jul 2025 13:32:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04E862E49AA;
+	Tue, 15 Jul 2025 13:47:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZI7SwqgD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tu+DwCab"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0313E2E4980;
-	Tue, 15 Jul 2025 13:32:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77C532E92CF;
+	Tue, 15 Jul 2025 13:47:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752586361; cv=none; b=Hc36RFoUNCPUbKf/r1urJb6ptWNJSllAfGiOEqztlErRJymUauefsEWuC/Gb48tnK1KbYW95d7W18dkrBAiaAYUs8sEx9tJd9FZS9zfOcfw5QEbINsv1vaSovtiMugWrbsqLeof9IbbJcgPqHCsCvUxQ4zPqKYhF33DEoTrvVmI=
+	t=1752587267; cv=none; b=Wzuncy0abVSvaznLV/gnNxseduJ5vUFLdndvDjGc1FQtQujSZnlgXhKBPJgZcwsW8PPL4yT8ulE3IEEn4SNIR08RyAI/G2TO+pR3HcWhz6oRUyLMwchDrUZWThEowXuWuVLb/aAekI6KiI9kpcmiGNGFfB+0OLh2tukeQbJFIjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752586361; c=relaxed/simple;
-	bh=SKALgTAWbYSqaPqfyTvDFdr5s2YmxkBpet4kPaBBqXM=;
+	s=arc-20240116; t=1752587267; c=relaxed/simple;
+	bh=XRdi2rYpWozWFUyNpKRyQIlIgW0ex9Y+h8idTQDCjmE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LuoSAwHG+MAJcdSg1PsWLA/Jh0jTUsgpLZupBQgaWkM4OBsicIiDiUnrgSm18oumwfi0AAUrTVaPXnBWCqFrwU76ZQKGiggGqIq4Y1NCt3Hyk8mNJ4NlIMy1k0wk+09xth/ryJNgIJCzjLurLvmlDru7iClXKjgj/fjBkSoq/kA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZI7SwqgD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FEEEC4CEF1;
-	Tue, 15 Jul 2025 13:32:36 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=CVdGBDHEr0dcPBUE24Vge3kZ12dKvDlPpBN9toLX6z4VAi8+/Av/yBH+v+7u9vum4lVj+AIvzxL0+kCpo0tVSr0I8D5YGdhANh1NYYqcEeXudGSKFJUrU/MtqPZi43cRvExA0nEru66i2I44+Fktof4GxPxUjZM//yExm9jfaVI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tu+DwCab; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AAB9C4CEE3;
+	Tue, 15 Jul 2025 13:47:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752586360;
-	bh=SKALgTAWbYSqaPqfyTvDFdr5s2YmxkBpet4kPaBBqXM=;
+	s=k20201202; t=1752587266;
+	bh=XRdi2rYpWozWFUyNpKRyQIlIgW0ex9Y+h8idTQDCjmE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZI7SwqgD8TbMTdcjaid36j2VW68WCjsz6IphHoD3L8oj7yvvv8AVD0gXb47xBudX9
-	 Pc5lIOST05zZnar4sTA8GcsqOT1JDsnL6BxC/stKQJL/tIwrZMPyNSbLFrq1ZQzNk/
-	 AcksIGBQR73ls1IkuW+NHqxXCWT2tqkJS8RocH3HegHVAjZJr6RpHFjIPS++afsXRc
-	 OIAdcf/IUjuB3QHTojwD6oJ0tX+m2fDKAn4dlKbu0D8toI79/Oam/t1l6tWJ9LUqD9
-	 kuYAWoTjxyYhsu7y8434uE0H1khF6wORrOc60BtaenKWXshOiwxkqAvXPvO1K94W49
-	 l+sd2izuEvAug==
-Date: Tue, 15 Jul 2025 14:32:33 +0100
-From: Will Deacon <will@kernel.org>
-To: Alexis =?iso-8859-1?Q?Lothor=E9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Xu Kuohai <xukuohai@huaweicloud.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	ebpf@linuxfoundation.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Bastien Curutchet <bastien.curutchet@bootlin.com>,
-	Ihor Solodrai <ihor.solodrai@linux.dev>, bpf@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	b=Tu+DwCab5+deHPy3s6INOdZMdPIW1N9NkH+bYpL0aKue8oLK+DKa+1ktykwln0eQx
+	 jj/348mIAJpMTyLKsVKMLG8Vzu0V+y3nvmni875mlBT3vBBwPdPBazpVw9XcbcG2X8
+	 LwrvghvFMkftpg3fiSn9eu76XGZEhFrZGTASUo24YhRr4PJ2dt9azWWcBln00dfzCx
+	 U9sPbGpKS/lW6Lb488yHauZwTMaPAOIePhS3aGG7dcc0IX1/9FNYUWe8o1AwNJLh5J
+	 4iZemKyZAw7nOTvI7GnbI9veQUsKEoBt8rFjBLSKU17i1EAdik7luBrIFM/ykkpphu
+	 pYTcQQlJuFmbA==
+Date: Tue, 15 Jul 2025 14:47:40 +0100
+From: Simon Horman <horms@kernel.org>
+To: Mohsin Bashir <mohsin.bashr@gmail.com>
+Cc: netdev@vger.kernel.org, kuba@kernel.org, andrew+netdev@lunn.ch,
+	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+	shuah@kernel.org, cratiu@nvidia.com, noren@nvidia.com,
+	cjubran@nvidia.com, mbloch@nvidia.com, jdamato@fastly.com,
+	gal@nvidia.com, sdf@fomichev.me, ast@kernel.org,
+	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+	nathan@kernel.org, nick.desaulniers+lkml@gmail.com,
+	morbo@google.com, justinstitt@google.com, bpf@vger.kernel.org,
 	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 1/2] bpf, arm64: remove structs on stack constraint
-Message-ID: <aHZYcY_9JtK8so3C@willie-the-truck>
-References: <20250709-arm64_relax_jit_comp-v1-0-3850fe189092@bootlin.com>
- <20250709-arm64_relax_jit_comp-v1-1-3850fe189092@bootlin.com>
+Subject: Re: [PATCH net-next V4 1/5] net: netdevsim: hook in XDP handling
+Message-ID: <20250715134740.GA1341824@horms.kernel.org>
+References: <20250714210352.1115230-1-mohsin.bashr@gmail.com>
+ <20250714210352.1115230-2-mohsin.bashr@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250709-arm64_relax_jit_comp-v1-1-3850fe189092@bootlin.com>
+In-Reply-To: <20250714210352.1115230-2-mohsin.bashr@gmail.com>
 
-On Wed, Jul 09, 2025 at 10:36:55AM +0200, Alexis Lothoré (eBPF Foundation) wrote:
-> While introducing support for 9+ arguments for tracing programs on
-> ARM64, commit 9014cf56f13d ("bpf, arm64: Support up to 12 function
-> arguments") has also introduced a constraint preventing BPF trampolines
-> from being generated if the target function consumes a struct argument
-> passed on stack, because of uncertainties around the exact struct
-> location: if the struct has been marked as packed or with a custom
-> alignment, this info is not reflected in BTF data, and so generated
-> tracing trampolines could read the target function arguments at wrong
-> offsets.
+On Mon, Jul 14, 2025 at 02:03:48PM -0700, Mohsin Bashir wrote:
+> From: Jakub Kicinski <kuba@kernel.org>
 > 
-> This issue is not specific to ARM64: there has been an attempt (see [1])
-> to bring the same constraint to other architectures JIT compilers. But
-> discussions following this attempt led to the move of this constraint
-> out of the kernel (see [2]): instead of preventing the kernel from
-> generating trampolines for those functions consuming structs on stack,
-> it is simpler to just make sure that those functions with uncertain
-> struct arguments location are not encoded in BTF information, and so
-> that one can not even attempt to attach a tracing program to such
-> function. The task is then deferred to pahole (see [3]).
+> Add basic XDP support by hooking in do_xdp_generic().
+> This should be enough to validate most basic XDP tests.
 > 
-> Now that the constraint is handled by pahole, remove it from the arm64
-> JIT compiler to keep it simple.
-> 
-> [1] https://lore.kernel.org/bpf/20250613-deny_trampoline_structs_on_stack-v1-0-5be9211768c3@bootlin.com/
-> [2] https://lore.kernel.org/bpf/CAADnVQ+sj9XhscN9PdmTzjVa7Eif21noAUH3y1K6x5bWcL-5pg@mail.gmail.com/
-> [3] https://lore.kernel.org/bpf/20250707-btf_skip_structs_on_stack-v3-0-29569e086c12@bootlin.com/
-> 
-> Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> Signed-off-by: Mohsin Bashir <mohsin.bashr@gmail.com>
 > ---
->  arch/arm64/net/bpf_jit_comp.c | 5 -----
->  1 file changed, 5 deletions(-)
+>  drivers/net/netdevsim/netdev.c | 19 ++++++++++++++++++-
+>  1 file changed, 18 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/netdevsim/netdev.c b/drivers/net/netdevsim/netdev.c
+> index f316e44130f7..ab2cdbf968a7 100644
+> --- a/drivers/net/netdevsim/netdev.c
+> +++ b/drivers/net/netdevsim/netdev.c
+> @@ -332,15 +332,32 @@ static int nsim_get_iflink(const struct net_device *dev)
+>  static int nsim_rcv(struct nsim_rq *rq, int budget)
+>  {
+>  	struct net_device *dev = rq->napi.dev;
+> +	struct bpf_prog *xdp_prog;
+> +	struct netdevsim *ns;
+>  	struct sk_buff *skb;
+>  	unsigned int skblen;
+>  	int i, ret;
+>  
+> +	ns = netdev_priv(dev);
+> +	xdp_prog = rcu_dereference(ns->xdp.prog);
 
-This is a question born more out of ignorance that insight, but how do
-we ensure that the version of pahole being used is sufficiently
-up-to-date that the in-kernel check is not required?
+I'm somewhat confused by this because ns->xdp.prog doesn't appear to be
+protected by RCU.
 
-Will
+Flagged by Sparse.
+
+-- 
+pw-bot: changes-requested
 
