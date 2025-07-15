@@ -1,155 +1,139 @@
-Return-Path: <bpf+bounces-63375-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63376-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7F41B068DC
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 23:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 77FE4B06901
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 00:01:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47BD156507E
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 21:52:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2DE5565A10
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 22:01:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51D362C158D;
-	Tue, 15 Jul 2025 21:52:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WFpYZhJI"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 635972BEC41;
+	Tue, 15 Jul 2025 22:01:24 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B400262FD3;
-	Tue, 15 Jul 2025 21:52:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3D0245945;
+	Tue, 15 Jul 2025 22:01:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752616369; cv=none; b=UyOMG0Ltukih0oh8eNzVOiz/C75cs9sYasjHApy5OJGAxcso6bKIf4kmcEcN5rHhoIsdUtXs4KjLi3O7t/w5oyUBSvGJbW/qTxGn5mBzHY7aZXCwJ8CXKMxsUeXFGWrpYDCv0eEzs9hBac4Er6IpcXdWGEROVXjuZdchAN7jfTE=
+	t=1752616884; cv=none; b=SCnYl93i6GPyfq7iKOKiXSK/WFd6Z8xxlEnZ+qi3mu9mLjGyErrctEQ9ckHbfsENUyhZL6WDC8Yi+IykmCaUrKbCjMGG0lWxnK/BKS7Ea/ogLDWXYfdBfDasZEzdJ39m1pY1F17VzVQaWbG1RKPALdIJ4yzic2H6GrkCtsve9eI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752616369; c=relaxed/simple;
-	bh=Ge/cctw+NXe1+MRq03rvs+wlvLtRg87qIQYx1yHumfo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BU2sshgHAPB1aE5KX4rh4x/Zdyz8j0g/1qWu/Y5paO8WQOcStxnSlvpAAoM9cqAjDnykiCx5/Lnk+f7aXqjFM9ASUGpeq8txmGYxdEZ18mUuzw7leRMlsmOtMAg73wcdcbmdpk2R5AAFuABf+munBh1tpP2VrdoQpBIC2AuMjpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WFpYZhJI; arc=none smtp.client-ip=209.85.216.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-3121aed2435so5081405a91.2;
-        Tue, 15 Jul 2025 14:52:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752616368; x=1753221168; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GfFYPJTC0I1v1ZEhrPXUSN0MIdrTssECU7FDWoGrzhw=;
-        b=WFpYZhJIHlx6FRE25hkdjGOLByDpkJPOt49cfxraowpUnLtTiFnKhvCb5oQLRcszKV
-         z6jc2U4kAKEcSJM1S1SyKwfEjZLv/NGDk4VaUw9r15AL1GQDzeYSiVd5w4U919cM2JGR
-         xwOYRLE6cqvykCm4NupoYzllv2pk1xaNTV7VHHH0pIXK3G43nao5GGDC2aXCgB/K+DYH
-         yGwmzFs3dfcCL2D0c0lx/VnzBzhSbFq2NWb2t6Bd7q9j0kHZvPuLMMuRwXOeZfYfE5Zs
-         JeKAFkATtTxUGu+bZI5Gvo+x1qP69hAt4Ds+v0ut3ScCeo3FO8KqevKPogmoNCeSUDYh
-         Ea0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752616368; x=1753221168;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GfFYPJTC0I1v1ZEhrPXUSN0MIdrTssECU7FDWoGrzhw=;
-        b=Wa1X8ix6+fbpUEQWqCJ3T6TbpfbQVADfoIKr4tYAElu8/ej+L5wZ9QKIKGVrzNyVJS
-         2wJC5I3CX/Y14dMVTO7MY5qLw/meFd9cLnRKk8mflYP7RC7lLd4mqf1jQqPq4z64Io7L
-         NTH5jRdj27QbpnqrKX/T5BdqP40ORT0DAcok2pxzpB5B5OoUWKSVgtwUZdHp6RcZAEtZ
-         tPTu80oCqwayzr+hK/5zJcKnNW+lT+1NScsi3nb4tRz59y0UxZj8EvHkP8XnMNdjzBhY
-         KRy/BGM1X/1iKCriK62fHQFIY/tHc4OTjq/pvqBHwEnhH5jlXOEBYkSzQ5tBec0PprHL
-         tnTw==
-X-Forwarded-Encrypted: i=1; AJvYcCUnClRmLUG8/D+usX3lR5bTbjTTdjGu4nzT2HjmJcoNJjSA+iRDAaQjAyHFtdUCJn98g/g=@vger.kernel.org, AJvYcCWA3Hvp3c8AIQEZ8VJBdrVAdravtRWOBZdOevQxL4i0nBpaVjYQIq2X0vI+Fb6ivbmyYUgXyd3CoN3BkZeH@vger.kernel.org
-X-Gm-Message-State: AOJu0YyDWn2yiSFx3fIwaHppFEOe+a/6FwS+Lgvf2SAu43dKXmz+M3fY
-	Kj2sDQaTII2vBLu8hWsf454R/RxKUITmAlt4ZgSUpf4CMqQy6Q7k4IPb9NhSernxzCBvhvQTfad
-	xPuAdaB7ta7ThKyW47P9kjB+atgeAA8V/r6+m
-X-Gm-Gg: ASbGncuPivcGTmYUUVi7MdY0K3viFZWY8V3kT3UG+6M31ymekoE8sjbl2DcAsBlYICx
-	iIModtjU2tYICJXtFiKQCpTJUGIPdaT5SttNAmj168dwerjgtS5My7ldMLK0UlGLANih6lc7yC3
-	J3cc7v1keMNi5j9GeSucG1BIQDGTdk+GgWl2V25Zp0Hf33ekBgLIr/XYGs+d/FE6gqmSUCBs4Nt
-	BM89n2x9jHYkK8qIFHILg==
-X-Google-Smtp-Source: AGHT+IGLRt+pcxVTGx2Sv86iRSPINzMc4fpbtNOZ5MIdOtjFqhJqLQEbfF9zdnI+mPaufujHK1TNLSvL8c4Bi0EqmcU=
-X-Received: by 2002:a17:90b:37cb:b0:313:db0b:75db with SMTP id
- 98e67ed59e1d1-31c9e7a37e3mr1255256a91.33.1752616367698; Tue, 15 Jul 2025
- 14:52:47 -0700 (PDT)
+	s=arc-20240116; t=1752616884; c=relaxed/simple;
+	bh=VIKRw06pGE2/3puvs1e2lNmGY2lvMx6DwWfE6MV66WI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=psKbtVu7YaxF/s7MMry0GP7looAtmHCaxXUqwmFfDR5v+GpD5NYEZdB0NezSuHQRNXAh4gdxYIUOItCi/HnFJ4fGl2O3EYNKKs0QqvHX9g6dQxNJLyGAu2F+NJTrDM2fNVMoTDDXGtzxvOrE6R67FeZYyBbnZGhtYij8sFACKQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf12.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay02.hostedemail.com (Postfix) with ESMTP id 0133E12B3C0;
+	Tue, 15 Jul 2025 22:01:10 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf12.hostedemail.com (Postfix) with ESMTPA id 2B7EB18;
+	Tue, 15 Jul 2025 22:01:06 +0000 (UTC)
+Date: Tue, 15 Jul 2025 18:01:05 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org,
+ Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
+ Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Namhyung Kim
+ <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Andrii
+ Nakryiko <andrii@kernel.org>, Indu Bhagat <indu.bhagat@oracle.com>, "Jose
+ E. Marchesi" <jemarch@gnu.org>, Beau Belgrave <beaub@linux.microsoft.com>,
+ Jens Remus <jremus@linux.ibm.com>, Linus Torvalds
+ <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>,
+ Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>, Sam
+ James <sam@gentoo.org>
+Subject: Re: [PATCH v13 10/14] unwind: Clear unwind_mask on exit back to
+ user space
+Message-ID: <20250715180105.2a36560a@batman.local.home>
+In-Reply-To: <20250715102912.GQ1613200@noisy.programming.kicks-ass.net>
+References: <20250708012239.268642741@kernel.org>
+	<20250708012359.345060579@kernel.org>
+	<20250715102912.GQ1613200@noisy.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250715035831.1094282-1-chen.dylane@linux.dev>
-In-Reply-To: <20250715035831.1094282-1-chen.dylane@linux.dev>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 15 Jul 2025 14:52:33 -0700
-X-Gm-Features: Ac12FXxzcMpTVI7-7wHM4I_AMczS5O3LtpJrT0mJQh0coskkQkxHbQmHhi3yApY
-Message-ID: <CAEf4BzbkfhqfpBt49h7SXYwbR1SK423pqf1328i8XujofjLYhQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Add struct bpf_token_info
-To: Tao Chen <chen.dylane@linux.dev>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, willemb@google.com, 
-	kerneljasonxing@gmail.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: 318wnxsifrjw9hrdnoxb3rqssc8wnpj4
+X-Rspamd-Server: rspamout03
+X-Rspamd-Queue-Id: 2B7EB18
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1/NNwN0TIKShUMbuKenhraq5IABVHHjb7U=
+X-HE-Tag: 1752616866-522475
+X-HE-Meta: U2FsdGVkX19Zl+x3EINDkb0eDwqz4ng8mKFqqTtyydAMOYsUrKwf4Tms8KzAjALEnRlfvUTEsJPBSf1I7/cmDXddtL5vBWM9mlwpsj7Sbgy2rrHD1ByMOG/Sjx4UYT2zsaNarhAfMI9+o/jBNmzYFnA9Is0nezV4rN0Zapo7vK0QbEXZe9gOPyMebyn46Nj8CwtVcSjDSPBco9gFlo0oN20MVLpRyIuZxLtYSrT7/lCk7fD6UjYsaxwX4hsGVD3NrO9wnCC52YpXyb3c+GHs6DQtkCSHBSA8rRrdDoKQ7V4Zw2REelzQ0VQmhPHKBVSiPN6Klv/xKWs+PjA1OfUF9UUDzo8i/RFrhBBjXnhj8Ak6U5ZIj4j+P/XL/l22fYIU
 
-On Mon, Jul 14, 2025 at 8:59=E2=80=AFPM Tao Chen <chen.dylane@linux.dev> wr=
-ote:
->
-> The 'commit 35f96de04127 ("bpf: Introduce BPF token object")' added
-> BPF token as a new kind of BPF kernel object. And BPF_OBJ_GET_INFO_BY_FD
-> already used to get BPF object info, so we can also get token info with
-> this cmd.
-> One usage scenario, when program runs failed with token, because of
-> the permission failure, we can report what BPF token is allowing with
-> this API for debugging.
->
-> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
-> ---
->  include/linux/bpf.h            | 11 +++++++++++
->  include/uapi/linux/bpf.h       |  8 ++++++++
->  kernel/bpf/syscall.c           | 18 ++++++++++++++++++
->  kernel/bpf/token.c             | 28 +++++++++++++++++++++++++++-
->  tools/include/uapi/linux/bpf.h |  8 ++++++++
->  5 files changed, 72 insertions(+), 1 deletion(-)
->
+On Tue, 15 Jul 2025 12:29:12 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-LGTM, but see a nit below and in selftest patch
+> The below is the last four patches rolled into one. Not been near a
+> compiler.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+And it shows ;-)
 
-[...]
+> @@ -117,13 +138,13 @@ static void unwind_deferred_task_work(st
+>  	struct unwind_task_info *info = container_of(head, struct unwind_task_info, work);
+>  	struct unwind_stacktrace trace;
+>  	struct unwind_work *work;
+> +	unsigned long bits;
+>  	u64 cookie;
+>  
+> -	if (WARN_ON_ONCE(!info->pending))
+> +	if (WARN_ON_ONCE(!unwind_pending(info)))
+>  		return;
+>  
+> -	/* Allow work to come in again */
+> -	WRITE_ONCE(info->pending, 0);
+> +	bits = atomic_long_fetch_andnot(UNWIND_PENDING, &info->unwind_mask);
 
->
-> +int bpf_token_get_info_by_fd(struct bpf_token *token,
-> +                            const union bpf_attr *attr,
-> +                            union bpf_attr __user *uattr)
-> +{
-> +       struct bpf_token_info __user *uinfo;
-> +       struct bpf_token_info info;
-> +       u32 info_copy, uinfo_len;
-> +
-> +       uinfo =3D u64_to_user_ptr(attr->info.info);
-> +       uinfo_len =3D attr->info.info_len;
-> +
-> +       info_copy =3D min_t(u32, uinfo_len, sizeof(info));
+I may need to do what other parts of the kernel has done and turn the
+above into:
 
-you don't use info_len past this point, so just reassign it instead of
-adding another variable (info_copy); seems like some other
-get_info_by_fd functions use the same approach
+	bits = atomic_long_fetch_andnot(UNWIND_PENDING, (atomic_long_t *)&info->unwind_mask);
 
-> +       memset(&info, 0, sizeof(info));
-> +
-> +       info.allowed_cmds =3D token->allowed_cmds;
-> +       info.allowed_maps =3D token->allowed_maps;
-> +       info.allowed_progs =3D token->allowed_progs;
-> +       info.allowed_attachs =3D token->allowed_attachs;
-> +
-> +       if (copy_to_user(uinfo, &info, info_copy) ||
-> +           put_user(info_copy, &uattr->info.info_len))
-> +               return -EFAULT;
-> +
-> +       return 0;
-> +}
-> +
+As there's other bit manipulations that atomic_long does not take care
+of and it's making the code more confusing. When I looked to see how
+other users of atomic_long_andnot() did things, most just typecasted
+the value to use that function :-/
 
-[...]
+-- Steve
+
+
+>  
+>  	/*
+>  	 * From here on out, the callback must always be called, even if it's
+> @@ -136,9 +157,11 @@ static void unwind_deferred_task_work(st
+>  
+>  	cookie = info->id.id;
+>  
+> -	guard(mutex)(&callback_mutex);
+> -	list_for_each_entry(work, &callbacks, list) {
+> -		work->func(work, &trace, cookie);
+> +	guard(srcu_lite)(&unwind_srcu);
+> +	list_for_each_entry_srcu(work, &callbacks, list,
+> +				 srcu_read_lock_held(&unwind_srcu)) {
+> +		if (test_bit(work->bit, &bits))
+> +			work->func(work, &trace, cookie);
+>  	}
+>  }
+>  
+> @@ -162,7 +185,7 @@ static void unwind_deferred_task_work(st
+>   * because it has already been previously called for the same entry context,
+>   * it will be called again with the same stack trace and cookie.
+>   *
+> - * Return: 1 if the the callback was already queued.
+> + * Return: 1 if the callback was already queued.
+>   *         0 if the callback successfully was queued.
+>   *         Negative if there's an error.
+>   *         @cookie holds the cookie of the first request by any user
 
