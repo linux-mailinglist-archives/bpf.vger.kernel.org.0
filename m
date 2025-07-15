@@ -1,233 +1,245 @@
-Return-Path: <bpf+bounces-63279-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63280-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 166BAB04CCB
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 02:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 636A7B04D28
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 03:01:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DE641AA1755
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 00:26:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 734E61A677DF
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 01:01:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F95E1552FA;
-	Tue, 15 Jul 2025 00:26:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C60CE17A31C;
+	Tue, 15 Jul 2025 01:01:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="G1FHzJlm"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sdMUz4iC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B42C510E3
-	for <bpf@vger.kernel.org>; Tue, 15 Jul 2025 00:26:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AB7C33F6
+	for <bpf@vger.kernel.org>; Tue, 15 Jul 2025 01:01:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752539185; cv=none; b=hxqnA4pGtqODBUNOYHRbXkoD/AppttEd5/bD1SKYPZx2+aIa7iTXSil6HJXCr2+dMI+HuthUVN35rDVRwJGOanfAiVmcuaVU2KAt9XgJGKZwQ39aSjFyvY3iIrFdDYvVGLHieGLa9IPXC5KdNj+jCt3JPluqnjlS84hUoa0kypc=
+	t=1752541283; cv=none; b=knc3Zh4yv1atC6uPpr9sk6HqJqGetJh+YAV1tDnwt4LKcmuG+hvmzWWgPgM5GDMByt8c8Vi0E3IfQf2ZsKAeBO9uwcMj2RZmHwC3Uc0v1GlG3obpUro3UNj1xe68dgVK//QePoixHFjwVmcoUCtNIZq8AsTVDJUxb0mhhb0nP/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752539185; c=relaxed/simple;
-	bh=LiV8jHKcIjJme1/D5vj/00XvOEmMQMptlJ6ONy5ps8Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AQTChx+U8mjh5rwQo0eOvS0NUTV5R9GfG/WcGIManOe6Qvq6Df+tBYaoGGDxPuLfsALREfK0YPyr6lRP2rxYbPjllGM8LNx6gbCvQed5PS2mzH2hEeXlUHiMqt+bd1Bc3jj7k+muxG6bY+Jrdp096HHb5ps0Zc06nzv9sG1uWSI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=G1FHzJlm; arc=none smtp.client-ip=209.85.219.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-6fadb9a0325so43795846d6.2
-        for <bpf@vger.kernel.org>; Mon, 14 Jul 2025 17:26:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1752539182; x=1753143982; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3Mlpwfj3URCo7lhI788Fsy/bl58+0MG3EEAGnhLZHaE=;
-        b=G1FHzJlmUFib2oeWagMri3DgmAng4+2A0ymNEFXcjIX3Jo471oWRZ8JKAvUZb8qq4r
-         vL7Lviyu1euxl3a7dr8PGxyK8zvPqyr6yCjmX01pMMRQFExU8d1u465Exde1pUOQXqDx
-         JpNbbNrpbuP1KkMezl373b5labnd0OeIaP2nJontdKbMp6ZQvA9hNzdgCGSqUB8UxeEb
-         g4tPwwLjpPKagdkb7p3kKrmj327+uscM8o2xq1Z8M9a1SJmil2HQ/AIIOycGlZxsS9nh
-         euhcieJuzKBEEe04s7orvxCPfKKl7r3z3x5CF8WKJ8ud39cyipyI5u5olFzdLzHAFesL
-         FeiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752539182; x=1753143982;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3Mlpwfj3URCo7lhI788Fsy/bl58+0MG3EEAGnhLZHaE=;
-        b=kzMjGmZgQHHHWn9a8GMisPr4DdfACOEEm+WCBPtcx1ExjCAT14nmN+C6b0nZ1e7FWJ
-         6spf4c43rY5KLtvZpPI6J6CPCpD8R1yGPANp5Lo4XrkiSH8pcJfmxsS+o2xekxBXJR8K
-         aUkVpAFLPBBg8ek69FTTIifmOJd2tmIqhAO+uSy+FO8fS7o0llV9MfnbH4QhNKfdkOci
-         b33270FtcHqfwDpEoqMZHNGeLqWYfYaCSq2Q6uOHwRoTZuymMAf+Cv1clO/8Ue8jREDO
-         N6mREIiN9Km3rSQLi2oj1GKGSKBDdpwggKIrXL3/0vmkDbqc13paPdnhFcNhvIREhA13
-         5Bdg==
-X-Forwarded-Encrypted: i=1; AJvYcCV9s5lQrXLd2Ah1oArcvk5EhJzyuc6b7RuKWLkom1eX+k2qvj/7Z506xkE1Qh72AP86PSY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxLjjMEW8B+0jte03KV8OvqQQPnNTOIOUPTL55v+5N+6WfHCRQv
-	8QdviMM1JfkogiUlhNwsZ35ShxHcUYjBpd2HJcft9nBhd3ZSMFvwT3ossE0CIrZrVZQ=
-X-Gm-Gg: ASbGncsDQpTi/PUlha3PexIw3VJ0n5jRlPscklCQBFYFVpkzsAvJajbFmDbBhAPjVJH
-	a0BHivw2DsAYG2nJg8SY+d3YLrgEAdABH3L3KD/IgONUaHdSpeov/WHhZPQ7U90WeQIr69DoLhD
-	utpDD65/qa15tC5L06Xz2CcCrt3O6x/Mlr8uNkVQh8sCxJxTN+29eff3Ca0Uk0D0+jRnzD1yjEo
-	4icXedK6ILBUsO5luvlBuT+Ttc2AvvjpeL4N0GeaT/WbdjibTc0vb3uc9MyA10NDxpDkvZzTARV
-	3UUDUQwZAgPvdjoI5m6vBN5BE3FfVym3yJXDyBdgL/rfVLo2KnujamKMwrIPdMCGY/Nyczy3x5I
-	yPtrqPP4Bo8eXtAal569esMVcvVIhSD6GxxTJK3YtTYnhqUc=
-X-Google-Smtp-Source: AGHT+IGq5NuM2gYxO5y5Q/ZrhH0BxEUoJ3LwVIlugtZFybZHtEhx2FKOOI4VDSQ3wT6tdREu1nnDrA==
-X-Received: by 2002:a05:6214:1cc3:b0:702:c15f:3291 with SMTP id 6a1803df08f44-704a38b3207mr273136436d6.22.1752539182318;
-        Mon, 14 Jul 2025 17:26:22 -0700 (PDT)
-Received: from [10.73.214.168] ([208.184.112.130])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-70497d5d5absm52458586d6.83.2025.07.14.17.26.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Jul 2025 17:26:21 -0700 (PDT)
-Message-ID: <755110eb-9dea-4df6-b207-21bc06491498@bytedance.com>
-Date: Mon, 14 Jul 2025 17:26:19 -0700
+	s=arc-20240116; t=1752541283; c=relaxed/simple;
+	bh=oMQ2NlXm0F7hFbT8fHVGR9ePO588hquX/dmuzEcRRzo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KuHptd2GJ01Pqi44zQeQzHIzSjP+IAnjFVHo9DiNiD7s1/c6sAsStBdOokPU5YH8ueku6eucajhDyNbTpomIztBf6PZQaBxzJIClmHuUuD1KrR2vHnm4XrzBQIonuZIQUk0XtBbLrMlxfmpJvxjnNz2WM/PEKWe7MU54t0tnIaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sdMUz4iC; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 14 Jul 2025 18:01:12 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1752541277;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kkGY49o9mkr9a18WXmSmtl1PWltf1qT78TLZWFouPow=;
+	b=sdMUz4iC1c5M0dN9rlk4LEQ9HNBiA8a7LJns1+1pYnGwxz4Y9QzI/7gH6hzysKJhb0cNqG
+	mvbLJsiMLQ31HYTmWG7sF5MAfldhmxpzgCSMNMoqIru2mLWDFbhUNyxbC5w24N1YZONSXF
+	6Z1zsa1YlmWAp66kh8qAR0uwAU812uc=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Tejun Heo <tj@kernel.org>
+Cc: "Paul E . McKenney" <paulmck@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, JP Kobryn <inwardvessel@gmail.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Ying Huang <huang.ying.caritas@gmail.com>, 
+	Vlastimil Babka <vbabka@suse.cz>, Alexei Starovoitov <ast@kernel.org>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, 
+	bpf@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH v3] cgroup: llist: avoid memory tears for llist_node
+Message-ID: <yzh6dybu63ntnmbvd3nqi7bku44xpgplatviy7wopfbutfizsk@quqgvb3xxlef>
+References: <20250704180804.3598503-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch bpf-next v4 4/4] tcp_bpf: improve ingress redirection
- performance with message corking
-To: Jakub Sitnicki <jakub@cloudflare.com>,
- Cong Wang <xiyou.wangcong@gmail.com>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, john.fastabend@gmail.com,
- zhoufeng.zf@bytedance.com, Amery Hung <amery.hung@bytedance.com>,
- Cong Wang <cong.wang@bytedance.com>
-References: <20250701011201.235392-1-xiyou.wangcong@gmail.com>
- <20250701011201.235392-5-xiyou.wangcong@gmail.com>
- <87ecuyn5x2.fsf@cloudflare.com>
- <509939c4-2e3e-41a6-888f-cbbf6d4c93cb@bytedance.com>
- <87a55lmrwn.fsf@cloudflare.com> <aGdWhRi/0KLTFL8k@pop-os.localdomain>
- <87cyabhotr.fsf@cloudflare.com>
-Content-Language: en-US
-From: Zijian Zhang <zijianzhang@bytedance.com>
-In-Reply-To: <87cyabhotr.fsf@cloudflare.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250704180804.3598503-1-shakeel.butt@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 
-On 7/8/25 1:51 AM, Jakub Sitnicki wrote:
-> On Thu, Jul 03, 2025 at 09:20 PM -07, Cong Wang wrote:
->> On Thu, Jul 03, 2025 at 01:32:08PM +0200, Jakub Sitnicki wrote:
->>> I'm all for reaping the benefits of batching, but I'm not thrilled about
->>> having a backlog worker on the path. The one we have on the sk_skb path
->>> has been a bottleneck:
->>
->> It depends on what you compare with. If you compare it with vanilla
->> TCP_BPF, we did see is 5% latency increase. If you compare it with
->> regular TCP, it is still much better. Our goal is to make Cillium's
->> sockops-enable competitive with regular TCP, hence we compare it with
->> regular TCP.
->>
->> I hope this makes sense to you. Sorry if this was not clear in our cover
->> letter.
+Hi Tejun, any comments or concerns on this patch?
+
+On Fri, Jul 04, 2025 at 11:08:04AM -0700, Shakeel Butt wrote:
+> Before the commit 36df6e3dbd7e ("cgroup: make css_rstat_updated nmi
+> safe"), the struct llist_node is expected to be private to the one
+> inserting the node to the lockless list or the one removing the node
+> from the lockless list. After the mentioned commit, the llist_node in
+> the rstat code is per-cpu shared between the stacked contexts i.e.
+> process, softirq, hardirq & nmi. It is possible the compiler may tear
+> the loads or stores of llist_node. Let's avoid that.
 > 
-> Latency-wise I think we should be comparing sk_msg send-to-local against
-> UDS rather than full-stack TCP.
+> KCSAN reported the following race:
 > 
-> There is quite a bit of guessing on my side as to what you're looking
-> for because the cover letter doesn't say much about the use case.
+>  Reported by Kernel Concurrency Sanitizer on:
+>  CPU: 60 UID: 0 PID: 5425 ... 6.16.0-rc3-next-20250626 #1 NONE
+>  Tainted: [E]=UNSIGNED_MODULE
+>  Hardware name: ...
+>  ==================================================================
+>  ==================================================================
+>  BUG: KCSAN: data-race in css_rstat_flush / css_rstat_updated
+>  write to 0xffffe8fffe1c85f0 of 8 bytes by task 1061 on cpu 1:
+>   css_rstat_flush+0x1b8/0xeb0
+>   __mem_cgroup_flush_stats+0x184/0x190
+>   flush_memcg_stats_dwork+0x22/0x50
+>   process_one_work+0x335/0x630
+>   worker_thread+0x5f1/0x8a0
+>   kthread+0x197/0x340
+>   ret_from_fork+0xd3/0x110
+>   ret_from_fork_asm+0x11/0x20
+>  read to 0xffffe8fffe1c85f0 of 8 bytes by task 3551 on cpu 15:
+>   css_rstat_updated+0x81/0x180
+>   mod_memcg_lruvec_state+0x113/0x2d0
+>   __mod_lruvec_state+0x3d/0x50
+>   lru_add+0x21e/0x3f0
+>   folio_batch_move_lru+0x80/0x1b0
+>   __folio_batch_add_and_move+0xd7/0x160
+>   folio_add_lru_vma+0x42/0x50
+>   do_anonymous_page+0x892/0xe90
+>   __handle_mm_fault+0xfaa/0x1520
+>   handle_mm_fault+0xdc/0x350
+>   do_user_addr_fault+0x1dc/0x650
+>   exc_page_fault+0x5c/0x110
+>   asm_exc_page_fault+0x22/0x30
+>  value changed: 0xffffe8fffe18e0d0 -> 0xffffe8fffe1c85f0
 > 
-
-Let me add more details to the use cases,
-
-Assume user space code uses TCP to connect to a peer which may be
-local or remote. We are trying to use sockmap to transparently
-accelerate the TCP connection where both the sender and the receiver are
-on the same machine. User space code does not need to be modified, local
-connections will be accelerated, remote connections remain the same.
-Because of the transparency here, UDS is not an option here. UDS
-requires user-space code change, and it means users know they are
-talking to local peer.
-
-We assume that since we bypass the Linux network stack, better tput,
-latency and cpu usage will be observed. However, it's not ths case, tput
-is worse when the message size is small (<64k).
-
-It's similar to cilium "sockops-enable" config, which is deprecated
-mostly because of performance. The config uses sockmap to manage the
-TCP connection between pods in the same machine.
-
-https://github.com/cilium/cilium/blob/v1.11.4/bpf/sockops/bpf_sockops.c
-
-> For instance, do you control the sender?  Why not do big writes on the
-> sender side if raw throughput is what you care about?
+> $ ./scripts/faddr2line vmlinux css_rstat_flush+0x1b8/0xeb0
+> css_rstat_flush+0x1b8/0xeb0:
+> init_llist_node at include/linux/llist.h:86
+> (inlined by) llist_del_first_init at include/linux/llist.h:308
+> (inlined by) css_process_update_tree at kernel/cgroup/rstat.c:148
+> (inlined by) css_rstat_updated_list at kernel/cgroup/rstat.c:258
+> (inlined by) css_rstat_flush at kernel/cgroup/rstat.c:389
 > 
-
-As described above, we assume user space uses TCP, and we cannot change
-the user space code.
-
->>> 1) There's no backpressure propagation so you can have a backlog
->>> build-up. One thing to check is what happens if the receiver closes its
->>> window.
->>
->> Right, I am sure there are still a lot of optimizations we can further
->> improve. The only question is how much we need for now. How about
->> optimizing it one step each time? :)
+> $ ./scripts/faddr2line vmlinux css_rstat_updated+0x81/0x180
+> css_rstat_updated+0x81/0x180:
+> css_rstat_updated at kernel/cgroup/rstat.c:90 (discriminator 1)
 > 
-> This is introducing a quite a bit complexity from the start. I'd like to
-> least explore if it can be done in a simpler fashion before committing to
-> it.
+> These are expected race and a simple READ_ONCE/WRITE_ONCE resolves these
+> reports. However let's add comments to explain the race and the need for
+> memory barriers if stronger guarantees are needed.
 > 
-> You point at wake-ups as being the throughput killer. As an alternative,
-> can we wake up the receiver conditionally? That is only if the receiver
-> has made progress since on the queue since the last notification. This
-> could also be a form of wakeup moderation.
+> More specifically the rstat updater and the flusher can race and cause a
+> scenario where the stats updater skips adding the css to the lockless
+> list but the flusher might not see those updates done by the skipped
+> updater. This is benign race and the subsequent flusher will flush those
+> stats and at the moment there aren't any rstat users which are not fine
+> with this kind of race. However some future user might want more
+> stricter guarantee, so let's add appropriate comments to ease the job of
+> future users.
 > 
-
-wake-up is indeed one of the throughput killer, and I agree it can be
-mitigated by waking up the receiver conditionally.
-
-IIRC, sock lock is another __main__ throughput killer,
-In the tcp_bpf_sendmsg, the context of sender process,
-we need to lock_sock(sender) -> release_sock(sender) -> lock_sock(recv)
--> release_sock(recv) -> lock_sock(sender) -> release_sock(sender).
-
-This makes the sender somewhat dependent to the receiver, when the 
-receiver is working, the sender will be blocked.
-
-    sender                      receiver
-tcp_bpf_sendmsg
-                            tcp_bpf_recvmsg (working)
-tcp_bpf_sendmsg (blocked)
-
-
-We introduce kworker here mainly to solve the sock lock issue, we want
-to have senders only need to acquire sender sock lock, receivers only
-need to acquire receiver sock lock. Only the kworker, as a middle man,
-needs to have both sender and receiver lock to transfer the data from
-the sender to the receiver. As a result, tcp_bpf_sendmsg and
-tcp_bpf_recvmsg can be independent to each other.
-
-    sender                      receiver
-tcp_bpf_sendmsg
-                            tcp_bpf_recvmsg (working)
-tcp_bpf_sendmsg
-tcp_bpf_sendmsg
-...
-
->>> 2) There's a scheduling latency. That's why the performance of splicing
->>> sockets with sockmap (ingress-to-egress) looks bleak [1].
->>
->> Same for regular TCP, we have to wakeup the receiver/worker. But I may
->> misunderstand this point?
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+> Fixes: 36df6e3dbd7e ("cgroup: make css_rstat_updated nmi safe")
+> ---
 > 
-> What I meant is that, in the pessimistic case, to deliver a message we
-> now have to go through two wakeups:
+> Changes since v2:
+> - Removed data_race() as explained and requested by Paul.
+> - Squashed into one patch.
+> http://lore.kernel.org/20250703200012.3734798-1-shakeel.butt@linux.dev
 > 
-> sender -wakeup-> kworker -wakeup-> receiver
+> Changes since v1:
+> - Added comments explaining race and the need for memory barrier as
+>   requested by Tejun
+> - Added comments as a separate patch.
+> http://lore.kernel.org/20250626190550.4170599-1-shakeel.butt@linux.dev
 > 
->>> So I have to dig deeper...
->>>
->>> Have you considered and/or evaluated any alternative designs? For
->>> instance, what stops us from having an auto-corking / coalescing
->>> strategy on the sender side?
->>
->> Auto corking _may_ be not as easy as TCP, since essentially we have no
->> protocol here, just a pure socket layer.
+>  include/linux/llist.h |  6 +++---
+>  kernel/cgroup/rstat.c | 28 +++++++++++++++++++++++++++-
+>  2 files changed, 30 insertions(+), 4 deletions(-)
 > 
-> You're right. We don't have a flush signal for auto-corking on the
-> sender side with sk_msg's.
+> diff --git a/include/linux/llist.h b/include/linux/llist.h
+> index 27b17f64bcee..607b2360c938 100644
+> --- a/include/linux/llist.h
+> +++ b/include/linux/llist.h
+> @@ -83,7 +83,7 @@ static inline void init_llist_head(struct llist_head *list)
+>   */
+>  static inline void init_llist_node(struct llist_node *node)
+>  {
+> -	node->next = node;
+> +	WRITE_ONCE(node->next, node);
+>  }
+>  
+>  /**
+> @@ -97,7 +97,7 @@ static inline void init_llist_node(struct llist_node *node)
+>   */
+>  static inline bool llist_on_list(const struct llist_node *node)
+>  {
+> -	return node->next != node;
+> +	return READ_ONCE(node->next) != node;
+>  }
+>  
+>  /**
+> @@ -220,7 +220,7 @@ static inline bool llist_empty(const struct llist_head *head)
+>  
+>  static inline struct llist_node *llist_next(struct llist_node *node)
+>  {
+> -	return node->next;
+> +	return READ_ONCE(node->next);
+>  }
+>  
+>  /**
+> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+> index c8a48cf83878..981e2f77ad4e 100644
+> --- a/kernel/cgroup/rstat.c
+> +++ b/kernel/cgroup/rstat.c
+> @@ -60,6 +60,12 @@ static inline struct llist_head *ss_lhead_cpu(struct cgroup_subsys *ss, int cpu)
+>   * Atomically inserts the css in the ss's llist for the given cpu. This is
+>   * reentrant safe i.e. safe against softirq, hardirq and nmi. The ss's llist
+>   * will be processed at the flush time to create the update tree.
+> + *
+> + * NOTE: if the user needs the guarantee that the updater either add itself in
+> + * the lockless list or the concurrent flusher flushes its updated stats, a
+> + * memory barrier is needed before the call to css_rstat_updated() i.e. a
+> + * barrier after updating the per-cpu stats and before calling
+> + * css_rstat_updated().
+>   */
+>  __bpf_kfunc void css_rstat_updated(struct cgroup_subsys_state *css, int cpu)
+>  {
+> @@ -86,7 +92,12 @@ __bpf_kfunc void css_rstat_updated(struct cgroup_subsys_state *css, int cpu)
+>  		return;
+>  
+>  	rstatc = css_rstat_cpu(css, cpu);
+> -	/* If already on list return. */
+> +	/*
+> +	 * If already on list return. This check is racy and smp_mb() is needed
+> +	 * to pair it with the smp_mb() in css_process_update_tree() if the
+> +	 * guarantee that the updated stats are visible to concurrent flusher is
+> +	 * needed.
+> +	 */
+>  	if (llist_on_list(&rstatc->lnode))
+>  		return;
+>  
+> @@ -148,6 +159,21 @@ static void css_process_update_tree(struct cgroup_subsys *ss, int cpu)
+>  	while ((lnode = llist_del_first_init(lhead))) {
+>  		struct css_rstat_cpu *rstatc;
+>  
+> +		/*
+> +		 * smp_mb() is needed here (more specifically in between
+> +		 * init_llist_node() and per-cpu stats flushing) if the
+> +		 * guarantee is required by a rstat user where etiher the
+> +		 * updater should add itself on the lockless list or the
+> +		 * flusher flush the stats updated by the updater who have
+> +		 * observed that they are already on the list. The
+> +		 * corresponding barrier pair for this one should be before
+> +		 * css_rstat_updated() by the user.
+> +		 *
+> +		 * For now, there aren't any such user, so not adding the
+> +		 * barrier here but if such a use-case arise, please add
+> +		 * smp_mb() here.
+> +		 */
+> +
+>  		rstatc = container_of(lnode, struct css_rstat_cpu, lnode);
+>  		__css_process_update_tree(rstatc->owner, cpu);
+>  	}
+> -- 
+> 2.47.1
 > 
-> What about what I mentioned above - can we moderate the wakeups based on
-> receiver making progress? Does that sound feasible to you?
-> 
-> Thanks,
-> -jkbs
-
 
