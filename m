@@ -1,109 +1,145 @@
-Return-Path: <bpf+bounces-63309-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63310-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1425B055EB
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 11:10:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C13A0B05656
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 11:32:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D8087AB30E
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 09:08:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A48753A6FC0
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 09:31:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB73B2D5423;
-	Tue, 15 Jul 2025 09:10:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C13032475E3;
+	Tue, 15 Jul 2025 09:31:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WCEmIKao"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EuvzzO3B"
 X-Original-To: bpf@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9C0A23C8C7;
-	Tue, 15 Jul 2025 09:10:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FF5F214811
+	for <bpf@vger.kernel.org>; Tue, 15 Jul 2025 09:31:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752570612; cv=none; b=DwJFLksVbYSAKlm/BoHdoY8tAnHAyy7qIOpqi/mc70EXMJcxcP1eN29jDbrZg+lq7hDOsRbSuHdpdkB0pqMi1rJ75J10gZgyuNkVRJpnLBiKGZqnFywb41rxy+asHaRKPAdo8I+/FB6KvKL79eSq8c1URhde6SCHai9a+aNxt6A=
+	t=1752571893; cv=none; b=G4zzYxVMGpE6/8tTRHm0q6vINWtRCx9qM07mtuSGY8GmWcB02Fmg+5xDqWKywONuJSqqY0Hi2TLFi7wK1FuRb0vMPx0cdKxVon8WP4mHr9cXM+olchy0D69hX0dH3u4sVwrN0HCNjBhoxeeRTbAbzOySFijdAc/lF4IAPT/vR+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752570612; c=relaxed/simple;
-	bh=qLrKfX0ZBO8alZEOE65+uBiUUrqvs2pz0+3KbaN7E00=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e9Jm2T95rVfPu8Qa4LEobyIr9HNW1tpoVboFwus9WBvDfytAD5PeTNdgYjRBPMRW8NvKrFK8a2+DSRFYnYST0HldymKBExi/mHdLzRLm7zkqrPksw/kQ7waI52gUbprpkV1TU+oUolCzTugAeakZuMZcggSwTaUQUxQKldQ8v3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=WCEmIKao; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=01rNQb63ptE9QSTfqmkP9iEp/OrX4ZghKbDPnKTvdzc=; b=WCEmIKaoclUOlMvqahdyT9LUks
-	8lhhpOM5gIeKV76LuQN135e0mX9T8h40f+Oyy3QGI8Ov8ZCWXnZH+PVEaiX9+zvuN5fRJLjfVghN5
-	TFFaiCiGkSWFFiO16lQEuw48JKFNesJYsll64UDY0mQmdp/5N0z5IL5BaKmVGJsV0uxFIDHj+n5X/
-	oMlrP9HiB3P34CmxG84vQETOda26wXKrxgNRLP6G8y5wp3kfcj6f21VNicxKy1odNNGe/G3PW/EdY
-	0nd1l5YFRWqGu7mOq4DhHhgc/6Wc1j5se2KDRCzuMilQpMdlgmTgTmdlkCllSbQdKFZHbY1mOvVnL
-	SCbbX8fw==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ubbfg-00000009rR1-3Hmu;
-	Tue, 15 Jul 2025 09:09:57 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 984B33001AA; Tue, 15 Jul 2025 11:09:55 +0200 (CEST)
-Date: Tue, 15 Jul 2025 11:09:55 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	x86@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Indu Bhagat <indu.bhagat@oracle.com>,
-	"Jose E. Marchesi" <jemarch@gnu.org>,
-	Beau Belgrave <beaub@linux.microsoft.com>,
-	Jens Remus <jremus@linux.ibm.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>,
-	Sam James <sam@gentoo.org>
-Subject: Re: [PATCH v13 07/14] unwind_user/deferred: Make unwind deferral
- requests NMI-safe
-Message-ID: <20250715090955.GP1613200@noisy.programming.kicks-ass.net>
-References: <20250708012239.268642741@kernel.org>
- <20250708012358.831631671@kernel.org>
- <20250714132936.GB4105545@noisy.programming.kicks-ass.net>
- <20250714101919.1ea7f323@batman.local.home>
- <20250714150516.GE4105545@noisy.programming.kicks-ass.net>
- <20250714111158.41219a86@batman.local.home>
+	s=arc-20240116; t=1752571893; c=relaxed/simple;
+	bh=O6JvNQl9xBY2bpg9LmsVRPGmuCcGyKF26AwgbCaUKes=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=poEXRkNnY4IZu8NkSQ/wGFz6PXiSladVKgz+MXXFPVD+dwLeJLl1yBnkuv0jYG7ey0R/erPYiW5aQX2NgIPHcXggEav7DnmPalqhQXGbxpm2zyAoVkFMRTgvndUrU5BRjXJtjvXgexd+aQMC6p1w9QBA77fYoy2hBrdwZ/MXkDM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=EuvzzO3B; arc=none smtp.client-ip=95.215.58.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <3bccb986-bea1-4df0-a4fe-1e668498d5d5@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1752571879;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xeb/5krIjlgFOYTQ1dg8crO5sGUnJfkG9s1zmFFtH8Y=;
+	b=EuvzzO3B/H/e5s4kCNrtS+wt9dPXsnn0AgakROKGTq+yeKTtz8On47cQoohDsrc3Watfqv
+	/q8qpaNKC2KQvfLz4cXso5ZF9T+MYK5sCHmvqf3FnjZtWdrkuYvhwby9VxL99rxSNcyUAk
+	ZrjOy28AcgB7oZApVxf0z4uE2IKxLrM=
+Date: Tue, 15 Jul 2025 17:30:19 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250714111158.41219a86@batman.local.home>
+Subject: Re: [PATCH bpf-next v2 02/18] x86,bpf: add bpf_global_caller for
+ global trampoline
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Menglong Dong <menglong8.dong@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Jiri Olsa <jolsa@kernel.org>,
+ bpf <bpf@vger.kernel.org>, Menglong Dong <dongml2@chinatelecom.cn>,
+ "H. Peter Anvin" <hpa@zytor.com>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ LKML <linux-kernel@vger.kernel.org>,
+ Network Development <netdev@vger.kernel.org>
+References: <20250703121521.1874196-1-dongml2@chinatelecom.cn>
+ <20250703121521.1874196-3-dongml2@chinatelecom.cn>
+ <CAADnVQKP1-gdmq1xkogFeRM6o3j2zf0Q8Atz=aCEkB0PkVx++A@mail.gmail.com>
+ <45f4d349-7b08-45d3-9bec-3ab75217f9b6@linux.dev>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Menglong Dong <menglong.dong@linux.dev>
+In-Reply-To: <45f4d349-7b08-45d3-9bec-3ab75217f9b6@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Jul 14, 2025 at 11:11:58AM -0400, Steven Rostedt wrote:
-> On Mon, 14 Jul 2025 17:05:16 +0200
-> Peter Zijlstra <peterz@infradead.org> wrote:
-> 
-> > Urgh; so I hate reviewing code you're ripping out in the next patch :-(
-> 
-> Sorry. It just happened to be developed that way. Patch 10 came about
-> to fix a bug that was triggered with the current method.
+On 7/15/25 16:36, Menglong Dong wrote:
+>
+> On 7/15/25 10:25, Alexei Starovoitov wrote:
+>> Pls share top 10 from "perf report" while running the bench.
+>> I'm curious about what's hot.
+>> Last time I benchmarked fentry/fexit migrate_disable/enable were
+>> one the hottest functions. I suspect it's the case here as well.
+>
+>
+> You are right, the migrate_disable/enable are the hottest functions in
+> both bpf trampoline and global trampoline. Following is the perf top
+> for fentry-multi:
+> 36.36% bpf_prog_2dcccf652aac1793_bench_trigger_fentry_multi [k] 
+> bpf_prog_2dcccf652aac1793_bench_trigger_fentry_multi 20.54% [kernel] 
+> [k] migrate_enable 19.35% [kernel] [k] bpf_global_caller_5_run 6.52% 
+> [kernel] [k] bpf_global_caller_5 3.58% libc.so.6 [.] syscall 2.88% 
+> [kernel] [k] entry_SYSCALL_64 1.50% [kernel] [k] memchr_inv 1.39% 
+> [kernel] [k] fput 1.04% [kernel] [k] migrate_disable 0.91% [kernel] 
+> [k] _copy_to_user
+>
+> And I also did the testing for fentry:
+>
+> 54.63% bpf_prog_2dcccf652aac1793_bench_trigger_fentry [k] 
+> bpf_prog_2dcccf652aac1793_bench_trigger_fentry
+> 10.43% [kernel] [k] migrate_enable
+> 10.07% bpf_trampoline_6442517037 [k] bpf_trampoline_6442517037
+> 8.06% [kernel] [k] __bpf_prog_exit_recur 4.11% libc.so.6 [.] syscall 
+> 2.15% [kernel] [k] entry_SYSCALL_64 1.48% [kernel] [k] memchr_inv 
+> 1.32% [kernel] [k] fput 1.16% [kernel] [k] _copy_to_user 0.73% 
+> [kernel] [k] bpf_prog_test_run_raw_tp
+> The migrate_enable/disable are used to do the recursive checking,
+> and I even wanted to perform recursive checks in the same way as
+> ftrace to eliminate this overhead :/
+>
 
-Sure; but then you rework the series such that the bug never happened
-and reviewers don't go insane from the back and forth and possibly
-stumbling over the same bug you then fix later.
+Sorry that I'm not familiar with Thunderbird yet, and the perf top
+messed up. Following are the test results for fentry-multi:
+   36.36% bpf_prog_2dcccf652aac1793_bench_trigger_fentry_multi [k] 
+bpf_prog_2dcccf652aac1793_bench_trigger_fentry_multi
+   20.54% [kernel] [k] migrate_enable
+   19.35% [kernel] [k] bpf_global_caller_5_run
+   6.52% [kernel] [k] bpf_global_caller_5
+   3.58% libc.so.6 [.] syscall
+   2.88% [kernel] [k] entry_SYSCALL_64
+   1.50% [kernel] [k] memchr_inv
+   1.39% [kernel] [k] fput
+   1.04% [kernel] [k] migrate_disable
+   0.91% [kernel] [k] _copy_to_user
 
-You should know this.
+And I also did the testing for fentry:
+   54.63% bpf_prog_2dcccf652aac1793_bench_trigger_fentry [k] 
+bpf_prog_2dcccf652aac1793_bench_trigger_fentry
+   10.43% [kernel] [k] migrate_enable
+   10.07% bpf_trampoline_6442517037 [k] bpf_trampoline_6442517037
+   8.06% [kernel] [k] __bpf_prog_exit_recur
+   4.11% libc.so.6 [.] syscall
+   2.15% [kernel] [k] entry_SYSCALL_64
+   1.48% [kernel] [k] memchr_inv
+   1.32% [kernel] [k] fput
+   1.16% [kernel] [k] _copy_to_user
+   0.73% [kernel] [k] bpf_prog_test_run_raw_tp
 
-I'm going to not stare at email for some 3 weeks soon; I strongly
-suggest you take this time to fix up this series to not suffer nonsense
-like this.
+The migrate_enable/disable are used to do the recursive checking,
+and I even wanted to perform recursive checks in the same way as
+ftrace to eliminate this overhead :/
 
-
+Thanks!
+Menglong Dong
 
