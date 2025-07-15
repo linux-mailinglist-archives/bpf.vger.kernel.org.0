@@ -1,110 +1,133 @@
-Return-Path: <bpf+bounces-63303-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63304-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 008D7B0540A
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 10:05:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E63FB0543B
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 10:12:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5423B176E5B
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 08:05:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12090188C49D
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 08:12:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 711FD26E70B;
-	Tue, 15 Jul 2025 08:05:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C729274B26;
+	Tue, 15 Jul 2025 08:12:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="nWF33BhM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XLGg6JGi"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay15.mail.gandi.net (relay15.mail.gandi.net [217.70.178.235])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C332172615;
-	Tue, 15 Jul 2025 08:05:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.178.235
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EF2126D4E9;
+	Tue, 15 Jul 2025 08:12:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752566704; cv=none; b=RtEXglRVSE/Rga9qcFlIXxl7kTUkLnFXeLbc3KEXako2i+PdTbe8RpdgLrIzBfBNQcXr5W1wxXqAuAAjNQ8GovmYrNU/OSOpyquMdLCg6sFUL4/gezBJISHiKGKRlA9khzRlDT5yufSJJPaDscGvwBGADr6yYgsk0Ta990TtgAE=
+	t=1752567132; cv=none; b=iUf2a/dtxo0+7ddnxKNm11hEDBJ462EVhevXonk4sLC6c2F2NfNqPyL60F6WJkFjKjyHsoLRwJzYGYvT0MQGeWlY7cfjdrMSMjCvd+PPo4NU2FZ/an7ZV8I2Gxne8bHP/X5K1OL1SVJWm1sqPL+HiVLFo9yM79GWB7QZiiKXEtg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752566704; c=relaxed/simple;
-	bh=3FczV4+V77qB1tJUH4mWYXvQ+RrjfmHzqEimI9fCMsI=;
-	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Subject:Cc:
-	 References:In-Reply-To; b=qydsflRONVP3gTvExl8ysDO/mBgyFvJl1gqeI8r6f8cPSh8z28lebD11pDypiBI8g3m+hsefKSx7hu1d4+5dQPa98J4q9zlOrEunH3aQACs8WBA9JXBueE+5s5ZJ6SZW/8a4bRGh9pfI1E/6o9ptwBrpxe1U6inb+4BlRb68u/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=nWF33BhM; arc=none smtp.client-ip=217.70.178.235
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8C1BF4421D;
-	Tue, 15 Jul 2025 08:04:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1752566700;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3FczV4+V77qB1tJUH4mWYXvQ+RrjfmHzqEimI9fCMsI=;
-	b=nWF33BhMwPcK+Y4o3NquqExF/41owAYOE1SrNBv6ipTnKM7/ELoPgl3lYWJhlZf9qojjWE
-	ei3s+U/AsAmeqaucwjEimI3OMGC6VttaX71QgettBpKBSozhf3dH3P4NIJyExdHt3TK/Or
-	xltnyV4kPtX9TZUB37Maz8PSaHqg2GqGxHDdptmXOuxRWhDsktF+JaPDNCG/D0fsX1NNdd
-	qHdBrBqclbTEG0XmmSU+rwXRG0/ewvnM5kSMubbnNxTIE35tMe+CpbpzoZs3dq0Fs8njuD
-	kkFCN5xVCtd+MbvDe7ZAqZMhUJZK19DPwtoueWmGILtLC1meMt+7ac7Iwz0fVw==
+	s=arc-20240116; t=1752567132; c=relaxed/simple;
+	bh=A42hZ1CXXzEmtAuN3Oh4U+HhEO00ifH9+iMTus1OfLM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IUxfrtm2TGGH1LovzJ+CrtgoXZMuh75tZa+uH3V5daiLALSha8cWlGzNWQawCZaDgxZ/3BiidVvuZr++DsTcOiPpvYo8KAZbcphARk3drjr8xIdHa1J95GZuPtRm4owz/sgTK8Pg4LtD/ZWCYHkIu4T8YQ0g6V4ceq0E7WveZPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XLGg6JGi; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-3134c67a173so5363652a91.1;
+        Tue, 15 Jul 2025 01:12:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752567131; x=1753171931; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=J9cZzIxfvxK1Q11zfJm7mjrfAiqzGoJPBeFUMFwlPyY=;
+        b=XLGg6JGi4DKHsaBDMBomYu7kgK8vsYLIPEaOSOuTPEw4qIeQ4/WGHqbfW8hBgw67Ql
+         XmTLvSbUioR6Si/qiGhUrPU5PgL6lnFJ7leYqtgu+wgKL5lK+Nkx/gkWr+CpSMOFNEyt
+         NA/IEipe13IUsUKiVfWrkei/+vE1O2uKZ5RDorbqFX7D4pBnHy3dnQtUZM+2ROXLWiMf
+         sR8XZ4SwG5Yiin51EPIm3gEZFKK659KUrQkPTDEdVTzNY6a3KiA18chp6ax5tRsoa1J2
+         p69LSRtq1RphSXE4qw6GdBdKWNmjdb6uD0Ys7G18k4+dQ2zRMdo8ebpjct0D475y5+ES
+         vUZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752567131; x=1753171931;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=J9cZzIxfvxK1Q11zfJm7mjrfAiqzGoJPBeFUMFwlPyY=;
+        b=fEDnJkBCLEiSxRk7eFFMChoViWqjy9clvqG5czS4+l7o4StqTss4CAe756ixMIPrVd
+         9LIWNIZlbNYEBhC3nqHBtFm0Lz4sG4bhKtaAG77NTOVtZE2Vkt1eVzHpYC5Va8ysuN6R
+         nfXiV/7Whz5zf3kA5Iu0E+DD5lmYrU6/HIK9yMjWRRDhu2Dwhz7649Sc3174Dc9dsQLX
+         geV3fJ/2/kRkDz8qLiBfWjv6qpiQ2UViUmLpn43S+dZABN8r8WPB7IoxlXGiqoZZaU3E
+         GoMBWxAFV7/Ltq2ev9JebD1p5vOiVoCFe/iskomQQy7m6PcyFdIF98XHw7870v3KHhLh
+         1eCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU+ByCqzn2ZawVyw1bQDHSIJu6SJzGdi74cs0Mxg3X69yckGCZyh+fmSrFWeMLe5EUQDME=@vger.kernel.org, AJvYcCWWYbakaQHUAP/8PHmHIeC4wNNp3gFbH4wdvX7tqfq+koroocWJZyX1UTblNWUhKjoXwkwyPm0W@vger.kernel.org, AJvYcCX7xspcH7bEkOF/Oaoo4BYYuOUKVrSvdoOmyhEgnfi+tAql44X9G/P5qo1ouXuXJAK51apeJiCQPXVnoJg/@vger.kernel.org
+X-Gm-Message-State: AOJu0YywIDJVJkq4E+PZHAF/5huIQU1MuQo8C4nLG2ZpG8Ar10ScSHlk
+	emoJpf0UGJnbK6xSPYGgJkggKo5eyp9AL0cK/D0RGYnub87TL/ZlGJ0Q
+X-Gm-Gg: ASbGncs7xuH7ScbpnkthrdqqBExuExlrx/Ep4ORxf4OfV6e/CcWU6VrmoTrhq7Cy24S
+	VOovyOhk35amIoow4EAAT+QWOCS1Pn1YTL4EVXYB+ra0og64j8tFsNm0B9Jd7jgLZ0DIduDjAle
+	71c3SNPurebzdMFesD2pm/2Isz4mwltYBGLIw+P7SrFsnPd26FJTona+mM3e+FA7QnsF2c1bk3/
+	AyYHcWH3vsPcO6S00U6iTs5E3rf6pMiB2wW2hM+fWWO+Onu10NJIQ7L/VGO2X0GALTgGIDvY71l
+	iW35b1sXxklw+aCsim1r2Ei9qz3ZKEET6uKVPnv/c4VJ7k6Pt6UaW7maLb2aXVGwsWeDJcSJEPc
+	RXCGg/a0jK2Ypxea+kQLsar3asn4NFvn+PZSamWEd/BE=
+X-Google-Smtp-Source: AGHT+IFs5trgbTAyKft18DYDReY5ltyl88fzCm7ptR0K9hii4EwznJNonE1VzgHtlmmcLfwXRMVL9g==
+X-Received: by 2002:a17:90b:3b90:b0:312:25dd:1c99 with SMTP id 98e67ed59e1d1-31c4ccd99d8mr25949761a91.19.1752567130634;
+        Tue, 15 Jul 2025 01:12:10 -0700 (PDT)
+Received: from manjaro.domain.name ([2401:4900:1c68:e0ce:6703:6e3f:3a79:d2e6])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31c3017ca4csm14236712a91.31.2025.07.15.01.12.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jul 2025 01:12:10 -0700 (PDT)
+From: Pranav Tyagi <pranav.tyagi03@gmail.com>
+To: john.fastabend@gmail.com,
+	jakub@cloudflare.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	ast@kernel.org,
+	cong.wang@bytedance.com,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: skhan@linuxfoundation.org,
+	linux-kernel-mentees@lists.linux.dev,
+	Pranav Tyagi <pranav.tyagi03@gmail.com>,
+	syzbot+b18872ea9631b5dcef3b@syzkaller.appspotmail.com
+Subject: [PATCH] net: skmsg: fix NULL pointer dereference in sk_msg_recvmsg()
+Date: Tue, 15 Jul 2025 13:41:58 +0530
+Message-ID: <20250715081158.7651-1-pranav.tyagi03@gmail.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 15 Jul 2025 10:04:59 +0200
-Message-Id: <DBCH1MVGI5EV.JODF0DE5B063@bootlin.com>
-From: =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-To: "Alan Maguire" <alan.maguire@oracle.com>, "Ihor Solodrai"
- <ihor.solodrai@linux.dev>, <dwarves@vger.kernel.org>, "Arnaldo Carvalho de
- Melo" <acme@kernel.org>
-Subject: Re: [PATCH v3 2/3] tests: add some tests validating skipped
- functions due to uncertain arg location
-Cc: <bpf@vger.kernel.org>, "Alexei Starovoitov" <ast@fb.com>, "Thomas
- Petazzoni" <thomas.petazzoni@bootlin.com>, "Bastien Curutchet"
- <bastien.curutchet@bootlin.com>, <ebpf@linuxfoundation.org>
-X-Mailer: aerc 0.20.1-0-g2ecb8770224a-dirty
-References: <20250707-btf_skip_structs_on_stack-v3-0-29569e086c12@bootlin.com> <20250707-btf_skip_structs_on_stack-v3-2-29569e086c12@bootlin.com> <DB5VWHU0N27I.3ETC4G47KB9Q@bootlin.com> <d26bb031-e88c-4d4b-8ce2-439aedc7a4a8@linux.dev> <680c6507-af5f-41be-8823-c8c9dfceaf5f@oracle.com>
-In-Reply-To: <680c6507-af5f-41be-8823-c8c9dfceaf5f@oracle.com>
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdehgeeftdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepggfgtgffkffhvffuvefofhgjsehtqhertdertdejnecuhfhrohhmpeetlhgvgihishcunfhothhhohhrrocuoegrlhgvgihishdrlhhothhhohhrvgessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepueevvdehkeduffefffejiedtteegkeehteehudeufeekudeitdekhfeihfehtdffnecuffhomhgrihhnpegsohhothhlihhnrdgtohhmnecukfhppeeltddrkeelrdduieefrdduvdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepledtrdekledrudeifedruddvjedphhgvlhhopehlohgtrghlhhhoshhtpdhmrghilhhfrhhomheprghlvgigihhsrdhlohhthhhorhgvsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopeelpdhrtghpthhtoheprghlrghnrdhmrghguhhirhgvsehorhgrtghlvgdrtghomhdprhgtphhtthhopehihhhorhdrshholhhoughrrghisehlihhnuhigrdguvghvpdhrtghpthhtohepugifrghrvhgvshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegrtghmvgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepsghpfhesv
- hhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegrshhtsehfsgdrtghomhdprhgtphhtthhopehthhhomhgrshdrphgvthgriiiiohhnihessghoohhtlhhinhdrtghomhdprhgtphhtthhopegsrghsthhivghnrdgtuhhruhhttghhvghtsegsohhothhlihhnrdgtohhm
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Wed Jul 9, 2025 at 6:21 PM CEST, Alan Maguire wrote:
-> On 07/07/2025 20:36, Ihor Solodrai wrote:
->> On 7/7/25 7:14 AM, Alexis Lothor=C3=83=C2=A9 wrote:
->>> On Mon Jul 7, 2025 at 4:02 PM CEST, Alexis Lothor=C3=A9 (eBPF Foundatio=
-n)
->>> wrote:
+A NULL page from sg_page() in sk_msg_recvmsg() can reach
+__kmap_local_page_prot() and crash the kernel. Add a check for the page
+before calling copy_page_to_iter() and fail early with -EFAULT to
+prevent the crash.
 
-[...]
+Reported-by: syzbot+b18872ea9631b5dcef3b@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=b18872ea9631b5dcef3b
+Fixes: 2bc793e3272a ("skmsg: Extract __tcp_bpf_recvmsg() and tcp_bpf_wait_data()")
+Signed-off-by: Pranav Tyagi <pranav.tyagi03@gmail.com>
+---
+ net/core/skmsg.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
->> I think a proper fix for this is differentiating two variants of
->> LSK__STOP_LOADING: stop because of an error, and stop because there is
->> nothing else to do. That would require a bit of refactoring.
->>=20
->> Alan, Arnaldo, what do you think?
->>
->
-> Would it suffice to treat LSK__STOP_LOADING as an error in the BTF
-> encoding case, and not otherwise? That's a bit of hack; ideally I
-> suppose we'd introduce LSK__ABORT (like DWARF_CB_ABORT) and use it for
-> all the failure modes, reserving LSK__STOP_LOADING for cases where we
-> are done processing rather than we met an error.
-
-Ihor, Alan, is anyone one of you planning to work on it ? If not, do you
-want me take a look and implement one of the solution suggested above ? I
-guess it's best to aim for Alan's second suggestion first (introducing a
-new LSK enum to represent a failure), otherwise the simpler solution
-distinguishing reasons for LSK__STOP_LOADING.
-
-Alexis
-
---=20
-Alexis Lothor=C3=A9, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+index 4d75ef9d24bf..f5367356a483 100644
+--- a/net/core/skmsg.c
++++ b/net/core/skmsg.c
+@@ -432,6 +432,10 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
+ 			sge = sk_msg_elem(msg_rx, i);
+ 			copy = sge->length;
+ 			page = sg_page(sge);
++			if (!page) {
++				copied = copied ? copied : -EFAULT;
++				goto out;
++			}
+ 			if (copied + copy > len)
+ 				copy = len - copied;
+ 			copy = copy_page_to_iter(page, sge->offset, copy, iter);
+-- 
+2.49.0
 
 
