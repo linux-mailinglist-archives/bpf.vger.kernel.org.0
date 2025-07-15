@@ -1,40 +1,40 @@
-Return-Path: <bpf+bounces-63354-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63355-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FFC6B065CA
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 20:10:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3ABFB065F3
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 20:26:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C9A156650D
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 18:10:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 26B5F566A1F
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 18:26:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7619A29AAF5;
-	Tue, 15 Jul 2025 18:10:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C28B2BE641;
+	Tue, 15 Jul 2025 18:26:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
+Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFDD125A331;
-	Tue, 15 Jul 2025 18:10:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50DB928F948;
+	Tue, 15 Jul 2025 18:26:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752603023; cv=none; b=G2OzCoZNZvxutbVkCZe33G+6NCyJ+nCevDo3VMf7iq72xRaY2XFqVTay128mbByjfsDmHibrPqneMe4S6UWHF7ZQ3u/OpYZpsdWTv3MjLoM7VTaPTFh0b8dZ0CorMmtXki0+73VOhdO/av7YX2HZog6gzM6o4kcKfRtUvqaqpe8=
+	t=1752603982; cv=none; b=IN2aYwI4K2BanO7dAhXlz2kBZbe3H5u44D4ENINQrVgDTF3fK4kPAB1Mhl0uX5E8XG5UZ/6UFwawGxCfVd/FAFZbmeQIp0FrFFXFdA5dAj6qHJlKlSFZ5avrtNBJ8gryE3odlSRldq1fj5ZCDh5BBZ2luei6MvfKU/6bcMYYTAU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752603023; c=relaxed/simple;
-	bh=+I67IhVZrwNzIQDh2QnMQiYAzkAGHSBvrsqyNmzwc1E=;
+	s=arc-20240116; t=1752603982; c=relaxed/simple;
+	bh=d492akOQwE/nITNKQ6WXsp4Sz5y0/EdvpkqiIAEmBXg=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WuipiwOmPP+e1JMlTp+FErSCIkDKJW7hyf7/gnhEVwzDWpwHcZJ6LiYNKVCPxsYLI+35SlzJWF9Uph9EVfGauCD1JFU1MqcbyOCY1/Ac1WvrEI+wt0647GK5BmHIQu4L1PwShyNIiegZ1yBcWr7v2LfnD1ukmERCypfmC3Xmse8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.15
+	 MIME-Version:Content-Type; b=b2t0QUEPt+WotjMSi+2F3cjxrPsQxlRflmqRiw75uTr5FdK0cSqNbFxAeRoxBfA5h76iL4Y14lnA02xlUs3YOpCv97mOKVojvNoxKpi2vGCfMgCEWcECa2RVtV+uHnw/+noMMQVFpCPkxyWwZz1LCwRxUTN3GEGeanBIoMToK6k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf14.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay09.hostedemail.com (Postfix) with ESMTP id EDEFF80157;
-	Tue, 15 Jul 2025 18:10:17 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf14.hostedemail.com (Postfix) with ESMTPA id 6CB5832;
-	Tue, 15 Jul 2025 18:10:13 +0000 (UTC)
-Date: Tue, 15 Jul 2025 14:10:12 -0400
+Received: from omf03.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay03.hostedemail.com (Postfix) with ESMTP id 89F7AB6575;
+	Tue, 15 Jul 2025 18:26:17 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf03.hostedemail.com (Postfix) with ESMTPA id CC22A6000A;
+	Tue, 15 Jul 2025 18:26:11 +0000 (UTC)
+Date: Tue, 15 Jul 2025 14:26:10 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Peter Zijlstra <peterz@infradead.org>
 Cc: Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
@@ -51,7 +51,7 @@ Cc: Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
  James <sam@gentoo.org>
 Subject: Re: [PATCH v13 10/14] unwind: Clear unwind_mask on exit back to
  user space
-Message-ID: <20250715141012.7ef40529@batman.local.home>
+Message-ID: <20250715142610.2e1bb341@batman.local.home>
 In-Reply-To: <20250715140650.19c0a8ed@batman.local.home>
 References: <20250708012239.268642741@kernel.org>
 	<20250708012359.345060579@kernel.org>
@@ -67,28 +67,52 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 6CB5832
-X-Stat-Signature: xuuact5orag81z4gzz7ztcmtmnxsnbuw
-X-Rspamd-Server: rspamout02
+X-Stat-Signature: 99usg7ufpezufy9zhi7bi7f6cp394fk3
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: CC22A6000A
 X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1/4exjFpoJeQpgEWCycArim0ykI5+OTwUU=
-X-HE-Tag: 1752603013-164919
-X-HE-Meta: U2FsdGVkX1+b1QGOHoeREoKqJRwZ0dWtN2myVHg4o4ohSY4UfAReCaJaRbgBlG+63MWblAcxZnWlwWfGZ8WiVAtL8ghYdZzgt9vWWYKaBAl34i1IuTtd4Vqu2LZ9s4hfwY351iU/7V7LxYSL9z5qx0DzLO1snDLrw54j6ZWtByMLT4p4qyfJrON7ahEyTNPC9svIqayXuLmI8O2m2znAAmERtCXdOAkKH4bcieL0ay8ZQCIn73UaC2Ti80Xbs/f8/jED0V+c4r5FaWx5N6O0WPretf64PSk+tCoWs+sop4hNEbc//sttGEW7ecSZWU8FiKTNlfTFq9szdJv3Pj7nEnVxfZhbJo0cEn9gCcgjdZZM18efcciofdthhpAOib9X
+X-Session-ID: U2FsdGVkX1/W3K8oETpXrrrMPECrBZjLRieU+nnwXec=
+X-HE-Tag: 1752603971-275217
+X-HE-Meta: U2FsdGVkX1/rB0YRB4mWgS30gnYn0qDx+/FYMc/dZ2PNChHSq0DQzLsUn5FFj5wEIvUJ97yX0X1+XVVviFXgkcej58MuQtGdI3x85RmdJbSjzHyr46cik9t0v1bb70NivZM1pIY/xTL4uqPUHDYRwmzCt8vr0w5JVkC/MXRoLPjEg65X8JM8aO/LXjFO6Pnfm7HMNKLscX3BkkLJ+aRzwjmJ+sBt9+fSDVCK5aowcq22usFQUqy6+pn4aFrCwsyy+2oXH2PkKCPpjfYDun2Xx6xCLPKBNg1L7H6+I3pWfOGLChcgxtXauLF4e2Qj9HgnlaNFsaQfwXrMD3MuGrwcMn4JIRY/gwmkeC7kBAP32Jyp56AEn3xFP6hxWYUzpTHh
 
 On Tue, 15 Jul 2025 14:06:50 -0400
 Steven Rostedt <rostedt@goodmis.org> wrote:
 
+> > > > + * Return: 0 if the callback successfully was queued.
+> > > > + *         UNWIND_ALREADY_PENDING if the the callback was already queued.
+> > > > + *         UNWIND_ALREADY_EXECUTED if the callback was already called
+> > > > + *                (and will not be called again)
+> > > >   *         Negative if there's an error.
+> > > >   *         @cookie holds the cookie of the first request by any user
+> > > >   */      
+> > > 
+> > > Lots of babbling in the Changelog, but no real elucidation as to why you
+> > > need this second return value.
+> > > 
+> > > AFAICT it serves no real purpose; the users of this function should not
+> > > care. The only difference is that the unwind reference (your cookie)
+> > > becomes a backward reference instead of a forward reference. But why
+> > > would anybody care?    
+> > 
+> > Older versions of the code required it. I think I can remove it now.  
+> 
 > Ah it is still used in the perf code:
+> 
+> perf_callchain() has:
+> 
+>         if (defer_user) {
+>                 int ret = deferred_request(event);
+>                 if (!ret)
+>                         local_inc(&event->ctx->nr_no_switch_fast);
 
-Either way, what I'll do is to remove this special return value for this
-series, and add it back in the perf series if needed.
-
-This is one of the problems that arises when you take a series with
-lots of changes and try to break it apart. You will always miss
-something that isn't needed in one where a change was made for another
-series.
-
-Working on each one to make sure this all works, it starts to blend together :-p
+Hmm, I guess this could work if it returned non zero for both already
+queued and already executed. So it doesn't need to be two different
+values.
 
 -- Steve
+
+
+>                 else if (ret < 0)
+>                         defer_user = false;
+>         }
 
