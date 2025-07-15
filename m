@@ -1,162 +1,204 @@
-Return-Path: <bpf+bounces-63312-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63313-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A44CB05750
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 12:00:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FB2FB0579F
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 12:18:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DE28162F46
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 10:00:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1ED91C22040
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 10:18:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D91BA2D63F4;
-	Tue, 15 Jul 2025 09:59:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04FAE2D77F3;
+	Tue, 15 Jul 2025 10:18:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KHUIsELy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ck0fVEUx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A59EBBA42;
-	Tue, 15 Jul 2025 09:59:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FE442475E3;
+	Tue, 15 Jul 2025 10:18:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752573599; cv=none; b=o32N/mzi/u34wagIyf2qJZsHD/bMdfroz5e9SdOkUnNpRopYFcRCJXJ8QBgu0eJsPILV7Yvdi3OPvoNCxOHc5GC5egpvjEBhsHRp137+JE+cQc8URLtgTovbOuk5wnoMpHeqRxkbDQ3+a24kTGn3ZMzEY8xtfNL1hOrJfKg0apA=
+	t=1752574690; cv=none; b=bjNXVF5C4DqZBLeTSH2R8haK0wu0CMBw5wwWFZtNAISP5UdwqzYJZ4bgKfE42zk4PrzpIlQ5tb+f2Hel0nIAVzyU+3Gn9XN5pTpx0PG29yxEXXxPqqhfWWzzNtNKyHBwX0/ZvLn2bz5RwEywASJ2tM2+cAtjymYnkwCAadh8TSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752573599; c=relaxed/simple;
-	bh=KfkXVO6R11coJY+jTBff9gxTZ/FJoNl3D/4pOwtlcNY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=teyufzHZ2/37why7LMsUR8Ph8PNbRls10+2ld7F4KwANfSKMIzvEtTGShL/Zf0RK04fv2RUMmSoGgbsztL2vZv4UcfWOwPo80FNvmSDIcF/WkvjSB10Gg0oJNMNjGO40iVSfwDaRgSD6VmdlNzcwaQXRQgP7PmSOVSRtR/hivKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KHUIsELy; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-ae0dffaa8b2so1044330066b.0;
-        Tue, 15 Jul 2025 02:59:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752573596; x=1753178396; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PYOMLk8TERJztvlhTETYqkHUNW747NVR3GmboO+0P6E=;
-        b=KHUIsELyVugFdW+FnRFNBiQIMzG/zgjRZIEOazYNr7Sgi2Bb6sksQSCRBQvD388+Ii
-         gtrP8DQnVIoiVvWhcZMfSqmsdSd1a6b9mpidjE/JecMSSkLysKTu3NHkLhSqfnLEtiKT
-         REgHEnID/UIvxS/uRf08bGeQUv+mZMKO045YajNjHNIYzIQDoe6Nbi+SXubM3zkBcDGm
-         qUSuo77du9idgCI4OJgn6xpxmVnnRnuo66Sxp5HWVD0cw7R0V0zvwt8GZIZWPuHs2cDu
-         /ThnDKFZRQAo4rJg+73es7yedSjtoQ+Bou9X0Gxvh1hppohetfOZCT8OX2f5H6AxkTls
-         wEfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752573596; x=1753178396;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PYOMLk8TERJztvlhTETYqkHUNW747NVR3GmboO+0P6E=;
-        b=RgQtG61a0SKrAvzHq4kIExrVQtPZaISNYq7JSttTfz7iN7KAjl5+xAh1gJKnc5L2Br
-         ByzuZefyQat/0HIgFlxkcRCMq2W/16fScxdy20EUkPSQkUmxEmgqgtDHKs0X6f+y8NJ8
-         izzC4UNlBUBwyEdI5yKsAEQkKDDO04AZlby2TmjaDvJJH+44oXgedJCWIZbxrSw8zoSb
-         FHwv2UVa7vXwb8OnH9b/lixuBi90LcJXqu6Uo5v2kRUxi7EmHhbmXBZnSIxRvPTbSqZ5
-         gtRvdJFXbvTMn7XPk/j4L0MV2l4vrQwojkjZB+GJlJAahF8Of6VJbNYWvKxLk0bXdQ4F
-         Avsg==
-X-Forwarded-Encrypted: i=1; AJvYcCV+m9oqyKcH5HHwGER1EHpjQpu/eM7BP8nSNpDoLNAcD8WqAucAR5IKyFwXtjetHfsYsof8eg0i@vger.kernel.org, AJvYcCVZ5kVW4YrJfzEI9r2bYYKJ+EKqK+8Em3FmK8xiTxVD+9o4fCG+Q/RZKyETBTGudoLVO7V3IqQTqzNWc1kM@vger.kernel.org, AJvYcCWt6CBtpWapcv42wtJ1v366fCAdnZpDqf6WRxD5WpK/dg9UhyOjn9EjZEPterJRl8JXzn+P5I4VNY77Yw==@vger.kernel.org, AJvYcCXuZHEiRSL/2B/rVcy7lyOm+C+TTu2e8+Gvvr4xkSGnsHuRAKoQpT/1uhwNSoCxgrA4pNc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwVgprJm5XhqfHJIIJFifaw48QUJoEMND2JtRjFYMci8Fa3arga
-	xnQfVHzKiHNLuWqvp378AWSc3bV4Z2Clzg4KBooHoGaVHDLXYZA4+6/C
-X-Gm-Gg: ASbGncs8VuTvI3XlqLnK3y3+DxXdOQNAZv/I/hZ6SrqWxcBO84oh/wza5e0v2pBB2cT
-	86EBXTV6TmfsCirvff2doHA2IZMB383zq0ELPYspDSKxT0XncCEFusC0fVSVn+dXLVXTIVvPSoH
-	XbNiPgYpivzNOqkezICgtsd7WeCxsEnMy+YRHP77mv9yKFo+2Hm2cOnmtfEFo/fqw1WoGD9Nk6Z
-	P2RseAxR5zcKam5JdFeRMC1D6pZe6l4qRqhZ1rxcA6dFogWO8PUAX9VlpsJqmrTMpxUNIvIQob/
-	msMLMr/rR15PTxj1EzV94qcWFwovJRt/0QaX0r9V99iVFiIMKXFEj7g6LwlL+9oM3e0nPPrBblS
-	y43X/lo1pYvkjHPtv9Txk2kfXtcK02LyNuag=
-X-Google-Smtp-Source: AGHT+IEClANar98EqQcH01HezY8+daSMVOJbnjooC+tE4RrQapF+6luAQA+hn2S+9tC3xu75GcdOmg==
-X-Received: by 2002:a17:907:d2d5:b0:ae7:ec3:ef41 with SMTP id a640c23a62f3a-ae70ec3f087mr1332966566b.45.1752573595500;
-        Tue, 15 Jul 2025 02:59:55 -0700 (PDT)
-Received: from ?IPV6:2620:10d:c096:325::1ac? ([2620:10d:c092:600::1:a4c1])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae6e7e910d2sm973242366b.2.2025.07.15.02.59.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jul 2025 02:59:54 -0700 (PDT)
-Message-ID: <d5d8db9b-580e-4ede-8949-c8accc725e78@gmail.com>
-Date: Tue, 15 Jul 2025 11:01:22 +0100
+	s=arc-20240116; t=1752574690; c=relaxed/simple;
+	bh=MR6q/geuJGxm8/wZrl4YYFQ5XKIXGNHi6Rtqi170EHw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TAvC6Clas2hB+YjVdcnw1d98UQxaWL1gsVyrNSvtflsXJcdsozSfjobp2BywserIoI2zFWZJGPGGrKoYaWJM2RniDDA/AUauAuTMQiEj4rZMGgngm0kQddvsoKKBV+5swyOZW9clRmX1LCjrRieY5CoKAhKTtzGLDwZuluDb3t4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ck0fVEUx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24204C4CEE3;
+	Tue, 15 Jul 2025 10:18:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752574689;
+	bh=MR6q/geuJGxm8/wZrl4YYFQ5XKIXGNHi6Rtqi170EHw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ck0fVEUx2KEdhj3ok/Wm3DEMI8e6ZuXmmpXA3SZqyaJvVSHhT3egfr19RmV/Hxb9h
+	 qSal6nwSBBvrSJflFMO2kgf1nM6PQcW6mUB98MntVpxFOsTciA9HSfw8LGddZHfBmI
+	 d3PZk2nb0z341rntBAMatM766ucxWLO90DGo3rI7iCyWYYFmkUwWcMTNjwq9PquYWt
+	 TFFMi/rSJAkAkZOMedTK4AFTdRF9xf/Mh4IuqNl3bhl+8yXQbWGWb2V9SSt7RJ3aag
+	 pL64AaDUiV4SkQ35D4DqGAq/XApDsXJOLiHLAb2yX2K4bNdhLWa16/M9b1B4ue0zuF
+	 YLbkb54PyprIQ==
+Date: Tue, 15 Jul 2025 12:18:00 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Song Liu <songliubraving@meta.com>
+Cc: Paul Moore <paul@paul-moore.com>, Al Viro <viro@zeniv.linux.org.uk>, 
+	Song Liu <song@kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>, "apparmor@lists.ubuntu.com" <apparmor@lists.ubuntu.com>, 
+	"selinux@vger.kernel.org" <selinux@vger.kernel.org>, 
+	"tomoyo-users_en@lists.sourceforge.net" <tomoyo-users_en@lists.sourceforge.net>, 
+	"tomoyo-users_ja@lists.sourceforge.net" <tomoyo-users_ja@lists.sourceforge.net>, Kernel Team <kernel-team@meta.com>, 
+	"andrii@kernel.org" <andrii@kernel.org>, "eddyz87@gmail.com" <eddyz87@gmail.com>, 
+	"ast@kernel.org" <ast@kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>, 
+	"martin.lau@linux.dev" <martin.lau@linux.dev>, "jack@suse.cz" <jack@suse.cz>, 
+	"kpsingh@kernel.org" <kpsingh@kernel.org>, "mattbobrowski@google.com" <mattbobrowski@google.com>, 
+	"amir73il@gmail.com" <amir73il@gmail.com>, "repnop@google.com" <repnop@google.com>, 
+	"jlayton@kernel.org" <jlayton@kernel.org>, "josef@toxicpanda.com" <josef@toxicpanda.com>, 
+	"mic@digikod.net" <mic@digikod.net>, "gnoack@google.com" <gnoack@google.com>, 
+	"m@maowtm.org" <m@maowtm.org>, "john.johansen@canonical.com" <john.johansen@canonical.com>, 
+	"john@apparmor.net" <john@apparmor.net>, 
+	"stephen.smalley.work@gmail.com" <stephen.smalley.work@gmail.com>, "omosnace@redhat.com" <omosnace@redhat.com>, 
+	"takedakn@nttdata.co.jp" <takedakn@nttdata.co.jp>, 
+	"penguin-kernel@i-love.sakura.ne.jp" <penguin-kernel@i-love.sakura.ne.jp>, "enlightened@chromium.org" <enlightened@chromium.org>
+Subject: Re: [RFC] vfs: security: Parse dev_name before calling
+ security_sb_mount
+Message-ID: <20250715-knattern-hochklassig-ddc27ddd4557@brauner>
+References: <20250708230504.3994335-1-song@kernel.org>
+ <20250709102410.GU1880847@ZenIV>
+ <CAHC9VhSS1O+Cp7UJoJnWNbv-Towia72DitOPH0zmKCa4PBttkw@mail.gmail.com>
+ <1959367A-15AB-4332-B1BC-7BBCCA646636@meta.com>
+ <20250710-roden-hosen-ba7f215706bb@brauner>
+ <5EB3EFBC-69BA-49CC-B416-D4A7398A2B47@meta.com>
+ <20250711-pfirsich-worum-c408f9a14b13@brauner>
+ <4EE690E2-4276-41E6-9D8C-FBF7E90B9EB3@meta.com>
+ <20250714-ansonsten-shrimps-b4df1566f016@brauner>
+ <3ACFCAB1-9FEC-4D4E-BFB0-9F37A21AA204@meta.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v9 1/8] netmem: introduce struct netmem_desc
- mirroring struct page
-To: Mina Almasry <almasrymina@google.com>
-Cc: Byungchul Park <byungchul@sk.com>, willy@infradead.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- kernel_team@skhynix.com, kuba@kernel.org, ilias.apalodimas@linaro.org,
- harry.yoo@oracle.com, hawk@kernel.org, akpm@linux-foundation.org,
- davem@davemloft.net, john.fastabend@gmail.com, andrew+netdev@lunn.ch,
- toke@redhat.com, tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com,
- saeedm@nvidia.com, leon@kernel.org, ast@kernel.org, daniel@iogearbox.net,
- david@redhat.com, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
- vbabka@suse.cz, rppt@kernel.org, surenb@google.com, mhocko@suse.com,
- horms@kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
- vishal.moola@gmail.com, hannes@cmpxchg.org, ziy@nvidia.com,
- jackmanb@google.com
-References: <20250710082807.27402-1-byungchul@sk.com>
- <20250710082807.27402-2-byungchul@sk.com>
- <b1f80514-3bd8-4feb-b227-43163b70d5c4@gmail.com>
- <20250714042346.GA68818@system.software.com>
- <a7bd1e6f-b854-4172-a29a-3f0662c6fd6e@gmail.com>
- <CAHS8izMGGCG2kNkj2vqcUO3-M77P_7whY1BeRH58b6ix+R-kRw@mail.gmail.com>
-Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <CAHS8izMGGCG2kNkj2vqcUO3-M77P_7whY1BeRH58b6ix+R-kRw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <3ACFCAB1-9FEC-4D4E-BFB0-9F37A21AA204@meta.com>
 
-On 7/14/25 20:17, Mina Almasry wrote:
-> On Mon, Jul 14, 2025 at 4:28 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
-...>> diff --git a/include/net/netmem.h b/include/net/netmem.h
->> index 535cf17b9134..41f3a3fd6b6c 100644
->> --- a/include/net/netmem.h
->> +++ b/include/net/netmem.h
->> @@ -247,6 +247,8 @@ static inline unsigned long netmem_pfn_trace(netmem_ref netmem)
->>          return page_to_pfn(netmem_to_page(netmem));
->>    }
->>
->> +#define pp_page_to_nmdesc(page)        ((struct netmem_desc *)(page))
->> +
->>    /* __netmem_clear_lsb - convert netmem_ref to struct net_iov * for access to
->>     * common fields.
->>     * @netmem: netmem reference to extract as net_iov.
->> @@ -262,11 +264,18 @@ static inline unsigned long netmem_pfn_trace(netmem_ref netmem)
->>     *
->>     * Return: the netmem_ref cast to net_iov* regardless of its underlying type.
->>     */
->> -static inline struct net_iov *__netmem_clear_lsb(netmem_ref netmem)
->> +static inline struct net_iov *__netmem_to_niov(netmem_ref netmem)
->>    {
->>          return (struct net_iov *)((__force unsigned long)netmem & ~NET_IOV);
->>    }
->>
->> +static inline struct netmem_desc *netmem_to_nmdesc(netmem_ref netmem)
->> +{
->> +       if (netmem_is_net_iov(netmem))
->> +               return &__netmem_to_niov(netmem)->desc;
->> +       return pp_page_to_nmdesc(__netmem_to_page(netmem));
->> +}
->> +
+On Mon, Jul 14, 2025 at 03:10:57PM +0000, Song Liu wrote:
 > 
-> I think instead of netmem_to_nmdesc, you want __netmem_clear_lsb to
-> return a netmem_desc instead of net_iov.
+> 
+> > On Jul 14, 2025, at 1:45 AM, Christian Brauner <brauner@kernel.org> wrote:
+> > 
+> > On Fri, Jul 11, 2025 at 04:22:52PM +0000, Song Liu wrote:
+> >> 
+> >> 
+> >>> On Jul 11, 2025, at 2:36 AM, Christian Brauner <brauner@kernel.org> wrote:
+> >> 
+> >> [...]
+> >> 
+> >>>>> 
+> >>>> To make sure I understand the comment. By “new mount api”, do you mean 
+> >>>> the code path under do_new_mount()?
+> >>> 
+> >>> fsopen()
+> >>> fsconfig()
+> >>> fsmount()
+> >>> open_tree()
+> >>> open_tree_attr()
+> >>> move_mount()
+> >>> statmount()
+> >>> listmount()
+> >>> 
+> >>> I think that's all.
+> >> 
+> >> Thanks for the clarification and pointer!
+> >> 
+> >>> 
+> >>>> 
+> >>>>> My recommendation is make a list of all the currently supported
+> >>>>> security_*() hooks in the mount code (I certainly don't have them in my
+> >>>>> head). Figure out what each of them allow to mediate effectively and how
+> >>>>> the callchains are related.
+> >>>>> 
+> >>>>> Then make a proposal how to replace them with something that a) doesn't
+> >>>>> cause regressions which is probably something that the LSMs care about
+> >>>>> and b) that covers the new mount API sufficiently to be properly
+> >>>>> mediated.
+> >>>>> 
+> >>>>> I'll happily review proposals. Fwiw, I'm pretty sure that this is
+> >>>>> something that Mickael is interested in as well.
+> >>>> 
+> >>>> So we will consider a proper redesign of LSM hooks for mount syscalls, 
+> >>>> but we do not want incremental improvements like this one. Do I get 
+> >>>> the direction right?
+> >>> 
+> >>> If incremental is workable then I think so yes. But it would be great to
+> >>> get a consistent picture of what people want/need.
+> >> 
+> >> In short term, we would like a way to get struct path of dev_name for  
+> > 
+> > You scared me for a second. By "dev_name" you mean the source path.
+> 
+> Right, we need to get struct path for the source path specified by 
+> string “dev_name”.
+> 
+> > 
+> >> bind mount. AFAICT, there are a few options:
+> >> 
+> >> 1. Introduce bpf_kern_path kfunc.
+> >> 2. Add new hook(s), such as [1].
+> >> 3. Something like this patch.
+> >> 
+> >> [1] https://lore.kernel.org/linux-security-module/20250110021008.2704246-1-enlightened@chromium.org/ 
+> >> 
+> >> Do you think we can ship one of them?
+> > 
+> > If you place a new security hook into __do_loopback() the only thing
+> > that I'm not excited about is that we're holding the global namespace
+> > semaphore at that point. And I want to have as little LSM hook calls
+> > under the namespace semaphore as possible.
+> 
+> do_loopback() changed a bit since [1]. But if we put the new hook 
+> in do_loopback() before lock_mount(), we don’t have the problem with
+> the namespace semaphore, right? Also, this RFC doesn’t seem to have 
+> this issue either. 
 
-Same thing, the diff just renames __netmem_clear_lsb -> netmem_to_nmdesc
-on top.
+While the mount isn't locked another mount can still be mounted on top
+of it. lock_mount() will detect this and lookup the topmost mount and
+use that. IOW, the value of old_path->mnt may have changed after
+lock_mount().
 
-> __netmem_clear_lsb returning a net_iov was always a bit of a hack. The
-> return value of __netmem_clear_lsb is clearly not a net_iov, but we
-> needed to access the pp fields, and net_iov encapsulates the pp
-> fields.
+> > If you have 1000 containers each calling into
+> > security_something_something_bind_mount() and then you do your "walk
+> > upwards towards the root stuff" and that root is 100000 directories away
+> > you've introduced a proper DOS or at least a severe new bottleneck into
+> > the system. And because of mount namespace propagation that needs to be
+> > serialized across all mount namespaces the namespace semaphore isn't
+> > something we can just massage away.
+> 
+> AFAICT, a poorly designed LSM can easily DoS a system. Therefore, I 
+> don’t think we need to overthink about a LSM helper causing DoS in 
+> some special scenarios. The owner of the LSM, either built-in LSM or 
+> BPF LSM, need to be aware of such risks and design the LSM rules 
+> properly to avoid DoS risks. For example, if the path tree is really 
+> deep, the LSM may decide to block the mount after walking a preset 
+> number of steps. 
 
-Right, and netmem_desc nicely solves that. I remember suggesting such
-a common type during review to the initial netmem / niov patches as well.
+The scope of the lock matters _a lot_. If a poorly designed LSM happens
+to take exorbitant amount of time under the inode_lock() it's annoying:
+to anyone else wanting to grab the inode_lock() _for that single inode_.
 
--- 
-Pavel Begunkov
+If a poorly designed LSM does broken stuff under the namespace semaphore
+any mount event on the whole system will block, effectively deadlocking
+the system in an instant. For example, if anything even glances at
+/proc/<pid>/mountinfo it's game over. It's already iffy that we allow
+security_sb_statfs() under there but that's at least guaranteed to be
+fast.
 
+If you can make it work so that we don't have to place security_*()
+under the namespace semaphore and you can figure out how to deal with a
+potential overmount racing you then this would be ideal for everyone.
 
