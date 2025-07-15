@@ -1,194 +1,187 @@
-Return-Path: <bpf+bounces-63300-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63301-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22D90B0525A
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 09:03:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D87CB05285
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 09:16:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC3894A4262
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 07:03:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FB3A4A724A
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 07:16:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F63026D4EB;
-	Tue, 15 Jul 2025 07:03:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B1E82727F7;
+	Tue, 15 Jul 2025 07:15:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="p6di1us/"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l5bWZrNa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3722E4A21
-	for <bpf@vger.kernel.org>; Tue, 15 Jul 2025 07:03:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC76626F478;
+	Tue, 15 Jul 2025 07:15:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752563023; cv=none; b=hYvAVk2tTTNrScnvmX9n48+PDr99WFRqrmVFAkTYquyFwGqsFA0VUYDGTenS3Zs8p31dtKKYCq6PAlUEFMNJ9qpgKLy/0GQT8mEpGNiyA3LMvjcLh/xxItOrnRIRfk/Y1gMpJS02iGf5j9J2HGMlNF/EvuPlTB03EbUbiHJuOEo=
+	t=1752563741; cv=none; b=kpXW3UxySfinsoUGjR78q7bulE1f1DZH+t0qB1LeRU8b+uhdf+YrcK32IXhlVCrl9oeCHOd36zWC4iR8py0/1O430oanVknIcsQ0DOqAllKu8j9RLW0andlhy2f7aV6rPXpMNlJwQzAsEzoNCZLZQLS5XjFbOu3K8EhP9W/1T/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752563023; c=relaxed/simple;
-	bh=jGIHWJIRk9i2hR7tXdegBVyUzLtZws4m098Ez8HCiu8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NhM3Saomeef40pRW+nMDwhO+6FWS2O1QxsueUBKRhdvOPGi5thnXE4rx9/ig0pBH3j6xL9WZ7SQMuK7a5vs38rbQHieI2H3ocwR4Uqt2TFt2RiL8ky4wHEGttcdK4cp4ktKpsversOUsQNCl3o/3sx3IFBdw/T1TlXZPiLeXAPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=p6di1us/; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-451d6ade159so36393035e9.1
-        for <bpf@vger.kernel.org>; Tue, 15 Jul 2025 00:03:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1752563020; x=1753167820; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jt/6M57mZgMPhITvF8HdLS12vV1vFn0N4xhHPTTFoy0=;
-        b=p6di1us/YOoA1lZHdJKciAn/weTVp3gueuCxxgxq0vox0P1weH/XwtFqEzh7VG8rdE
-         z/8Ok3qMaemxdgDCx3iENLGbHdvgZD8fsioGrTK8eWKyVl8EXeXjT87ZyNXwOgV0xjr/
-         1ptF1Bzg65wX4mYOInpU7lCCH8mgq1sWxn9UB2X8VvhX2NmQuXyPja6UF8r+sJaUyaR4
-         Lsejui+EiNRyPQDOtDghE81neDRuCYhPB/mp71EX3Ne7pCdRiqjyCItgH6awQjiTqH0S
-         0seB7xl69ukokxhyGUBRrOnW7Zw+qODHBzgsbnqdy2qrnnYqCMJCtSpWF5aa0MnT5nPu
-         edGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752563020; x=1753167820;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jt/6M57mZgMPhITvF8HdLS12vV1vFn0N4xhHPTTFoy0=;
-        b=V5UmohO+BiFGyJjMswIurK5KTgfx+zHKyM5AE3XaHIK7AtgJNGeajl1zVRqGyrDH3V
-         R+P8ZTrG5MO3u1ZCzidDMSUHisrP5sXU0RUiCloa5DdF31Tv6orVGpVpjkeBYO/pNyxr
-         Z8lMjVY6OoK24HE6s2d3cIj6bcupd8eyw8bFueGm0Pw+BkULwVhCEZhjfSpgDC4jsB6E
-         CofLtoFfCFwQJRbhUi3ZKNkWlH1fYJ4d+K98TXvGcOiuiCtSU7hZ3xG9M6+2DyB/L3Iz
-         vCnzSDRFdCIVFNhOavmktZiJZ3NkgdtrkZNRddLEpDp75+7MbqtcL+oMd0qAkwyokj1b
-         eIjA==
-X-Forwarded-Encrypted: i=1; AJvYcCVfXd93cdM8835eRC49keC+LSXVYLqfyV4H7OoGUPMXLGbwhD+NNgntsA3Kq6dVZCA8Z0A=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwZaU7Uy3PQPgVZP8CJbvKA6xAkLh2h4jEsz7ow8fgZlK013vOB
-	WxWT0HyGr+Gw4J+Lym/idQELa/KwSTWh13AaDTQs/TMaIip2SNYQP740/xs9zpuX1TbIhQ250He
-	VJpoZXdNc8/Q2T8KnlqTOsSB6sKBK9exzO0glfxmU
-X-Gm-Gg: ASbGncv+c1njGdDkv7Ma7b5AkFej3gF6TcPSsfHnnsWdSvRo64gpqxBRuWX7hLqMX2b
-	BGaY/43tWBoARKVex1x8gARRD8fDI28uS9Bq7us1uusqcjWOmUlBBgFMXOD8eCYuy67D8/gAgGH
-	pWIcaDFC6rAIN7H32c9ww9T94Kq+9HWn2D7joc9I8DuSqavjbJanr6drlQr4UnIkVV/aXMlaz8X
-	PKRqvRf
-X-Google-Smtp-Source: AGHT+IE1/MY0RQcecLFoHvQZdO+7sZGnb0kcJHS9oa/ewG1ZdNmenXVcPC2k1yhTjRTUuDq69k9FOq7rxEcXnfgllNg=
-X-Received: by 2002:a05:6000:1a86:b0:3a4:eda1:6c39 with SMTP id
- ffacd0b85a97d-3b5f2dc216dmr10969220f8f.13.1752563020324; Tue, 15 Jul 2025
- 00:03:40 -0700 (PDT)
+	s=arc-20240116; t=1752563741; c=relaxed/simple;
+	bh=66XFHTlp/vLtCpVft2/nBl04cFbKoI8kcWKDesGdOEQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lTy/ggFCXmbCGXKOZXW3xJeqsOH/RtjEKAhkUxIbtm+PXMYW5/EuLxshyLtsIgli+DiarqMGB0jI8HooRUFtegpAOCtP1k7v76yn2MJlGEcD2+CblgptLdGU8gVGvNwofiIxJ6gqFWhB9+vyV4442vH9vCD1FekNOfvD1MBWwBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=l5bWZrNa; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1752563740; x=1784099740;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=66XFHTlp/vLtCpVft2/nBl04cFbKoI8kcWKDesGdOEQ=;
+  b=l5bWZrNa0njdriL2m/+9rSIR/4fq6BVyvF293cGYIRATyuj6cypdDcUn
+   Tl2tqV0/hnk7Wyj0oK4J1bWbrrAs+ZY4D/WZ4yQqiCr7aKgnJNqJ8N2qV
+   TQY/bp2dnrkUmfxmWW+mqwuiSHkFdGc0LIGF0laBQ/T0S9WQyyQiev2eG
+   RSA0Y0MpXWq/YEzEGOpjONx+COp6VPiAcj37rBX89uqe7gAK1YvOeuVsJ
+   S4VWpaG5BbcVnN3DERjwLiiXtX8/I/dRmkM/Zdcs8azK8x9rkXMHH4SyN
+   tTUx0vUxzqyovWrN2MbHd71H5N7b4g2w7jV/mf5wdAw7UZnm8q/LEMel7
+   g==;
+X-CSE-ConnectionGUID: dgq2UFbaTx2XxRaw9v5qyg==
+X-CSE-MsgGUID: vrWH766zSq2CD5X/dZz7bA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11491"; a="58427976"
+X-IronPort-AV: E=Sophos;i="6.16,313,1744095600"; 
+   d="scan'208";a="58427976"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2025 00:15:36 -0700
+X-CSE-ConnectionGUID: Pv1ZxgCOTJONF08bK+CveQ==
+X-CSE-MsgGUID: j90nGgMtTZuXn4FtKbEdaA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,313,1744095600"; 
+   d="scan'208";a="188155495"
+Received: from p12ill20yoongsia.png.intel.com ([10.88.227.38])
+  by fmviesa001.fm.intel.com with ESMTP; 15 Jul 2025 00:15:32 -0700
+From: Song Yoong Siang <yoong.siang.song@intel.com>
+To: "David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Stanislav Fomichev <sdf@fomichev.me>
+Cc: netdev@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH bpf-next,v4 1/1] doc: clarify XDP Rx metadata handling and driver requirements
+Date: Tue, 15 Jul 2025 15:15:02 +0800
+Message-Id: <20250715071502.3503440-1-yoong.siang.song@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250709172345.1031907-1-vitaly.wool@konsulko.se>
- <20250709172441.1032006-1-vitaly.wool@konsulko.se> <aHDSLyHZ8b1ELeWe@hyeyoo>
- <5bc89531-ab09-4690-aae4-a44f9ddb4a68@suse.cz> <3AD3F7B5-679F-4DC8-968F-9FE991B56A5C@konsulko.se>
- <1dedcee0-c5a2-47b3-ae13-315ad437ae1a@suse.cz>
-In-Reply-To: <1dedcee0-c5a2-47b3-ae13-315ad437ae1a@suse.cz>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Tue, 15 Jul 2025 09:03:27 +0200
-X-Gm-Features: Ac12FXx5pgrLnvLVllVwWAxwc6ktT76M5E8OvULeGL7H3WltRDY_yqdMh5SmBiA
-Message-ID: <CAH5fLggV2Y+N7k=+b5z=Hy5a556VomEZEa3bGhufvKBU+Fd=Ug@mail.gmail.com>
-Subject: Re: [PATCH v12 2/4] mm/slub: allow to set node and align in k[v]realloc
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Vitaly Wool <vitaly.wool@konsulko.se>, Harry Yoo <harry.yoo@oracle.com>, linux-mm@kvack.org, 
-	akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
-	Uladzislau Rezki <urezki@gmail.com>, Danilo Krummrich <dakr@kernel.org>, rust-for-linux@vger.kernel.org, 
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, "Liam R . Howlett" <Liam.Howlett@oracle.com>, 
-	Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org, 
-	bpf@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>, 
-	Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jul 14, 2025 at 10:14=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> w=
-rote:
->
-> On 7/12/25 14:43, Vitaly Wool wrote:
-> >
-> >
-> >> On Jul 11, 2025, at 5:43=E2=80=AFPM, Vlastimil Babka <vbabka@suse.cz> =
-wrote:
-> >>
-> >> On 7/11/25 10:58, Harry Yoo wrote:
-> >>> On Wed, Jul 09, 2025 at 07:24:41PM +0200, Vitaly Wool wrote:
-> >>>> static __always_inline __realloc_size(2) void *
-> >>>> -__do_krealloc(const void *p, size_t new_size, gfp_t flags)
-> >>>> +__do_krealloc(const void *p, size_t new_size, unsigned long align, =
-gfp_t flags, int nid)
-> >>>> {
-> >>>> void *ret;
-> >>>> size_t ks =3D 0;
-> >>>> @@ -4859,6 +4859,20 @@ __do_krealloc(const void *p, size_t new_size,=
- gfp_t flags)
-> >>>> if (!kasan_check_byte(p))
-> >>>> return NULL;
-> >>>>
-> >>>> + /* refuse to proceed if alignment is bigger than what kmalloc() pr=
-ovides */
-> >>>> + if (!IS_ALIGNED((unsigned long)p, align) || new_size < align)
-> >>>> + return NULL;
-> >>>
-> >>> Hmm but what happens if `p` is aligned to `align`, but the new object=
- is not?
-> >>>
-> >>> For example, what will happen if we  allocate object with size=3D64, =
-align=3D64
-> >>> and then do krealloc with size=3D96, align=3D64...
-> >>>
-> >>> Or am I missing something?
-> >>
-> >> Good point. We extended the alignment guarantees in commit ad59baa3169=
-5
-> >> ("slab, rust: extend kmalloc() alignment guarantees to remove Rust pad=
-ding")
-> >> for rust in a way that size 96 gives you alignment of 32. It assumes t=
-hat
-> >> rust side will ask for alignments that are power-of-two and sizes that=
- are
-> >> multiples of alignment. I think if that assumption is still honored th=
-an
-> >> this will keep working, but the check added above (is it just a sanity=
- check
-> >> or something the rust side relies on?) doesn't seem correct?
-> >>
-> >
-> > It is a sanity check and it should have looked like this:
-> >
-> >         if (!IS_ALIGNED((unsigned long)p, align) && new_size <=3D ks)
-> >                 return NULL;
-> >
-> > and the reasoning for this is the following: if we don=E2=80=99t intend=
- to reallocate (new size is not bigger than the original size), but the use=
-r requests a larger alignment, it=E2=80=99s a miss. Does that sound reasona=
-ble?
->
-> So taking a step back indeed the align passed to krealloc is indeed used
-> only for this check. If it's really just a sanity check, then I'd rather =
-not
-> add this parameter to krealloc functions at all - kmalloc() itself also
-> doesn't have it, so it's inconsistent that krealloc() would have it - but
-> only to return NULL and not e.g. try to reallocate for alignment.
->
-> If it's not just a sanity check, it means it's expected that for some
-> sequence of valid kvrealloc_node_align() calls it can return NULL and the=
-n
-> rely on the fallback to vmalloc. That would be rather wasteful for the ca=
-ses
-> like going from 64 to 96 bytes etc. So in that case it would be better if
-> krealloc did the reallocation, same as in cases when size increases. Of
-> course it would still have to rely on the documented alignment guarantees
-> only and not provide anything arbitrary. aligned_size() in
-> rust/kernel/alloc/allocator.rs is responsible for that, AFAIK.
->
-> And I think it's not a sanity check but the latter - if the following is =
-a
-> valid k(v)realloc sequence (from Rust POV). The individual size+align
-> combinations AFAIK are, but if it's valid to make them follow one another
-> them like this, I don't know.
->
-> krealloc(size=3D96, align=3D32) -> can give object with 32 alignment only
-> krealloc(size=3D64, align=3D64) -> doesn't increase size but wants alignm=
-ent 64
+Improves the documentation for XDP Rx metadata handling, especially for
+AF_XDP use cases. It clarifies that drivers must remove any device-reserved
+metadata from the data_meta area before passing the frame to the XDP
+program.
 
-On the Rust side, you specify what the old size/align was, and what
-you which size/align you want after the call, and they can be anything
-including that combination.
+Besides, expand the explanation of how userspace and BPF programs should
+coordinate the use of METADATA_SIZE, and adds a detailed diagram to
+illustrate pointer adjustments and metadata layout.
 
-Alice
+Additional, describe the requirements and constraints enforced by
+bpf_xdp_adjust_meta().
+
+Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
+---
+
+V4:
+  - update the documentation to indicate that drivers are expected to copy
+    any device-reserved metadata from the metadata area (Jakub)
+  - remove selftest tool changes.
+
+V3: https://lore.kernel.org/netdev/20250702165757.3278625-1-yoong.siang.song@intel.com/
+  - update doc and commit msg accordingly.
+
+V2: https://lore.kernel.org/netdev/20250702030349.3275368-1-yoong.siang.song@intel.com/
+  - unconditionally do bpf_xdp_adjust_meta with -XDP_METADATA_SIZE (Stanislav)
+
+V1: https://lore.kernel.org/netdev/20250701042940.3272325-1-yoong.siang.song@intel.com/
+---
+ Documentation/networking/xdp-rx-metadata.rst | 47 ++++++++++++++------
+ 1 file changed, 34 insertions(+), 13 deletions(-)
+
+diff --git a/Documentation/networking/xdp-rx-metadata.rst b/Documentation/networking/xdp-rx-metadata.rst
+index a6e0ece18be5..2e067eb6c5d6 100644
+--- a/Documentation/networking/xdp-rx-metadata.rst
++++ b/Documentation/networking/xdp-rx-metadata.rst
+@@ -49,7 +49,10 @@ as follows::
+              |                 |
+    xdp_buff->data_meta   xdp_buff->data
+ 
+-An XDP program can store individual metadata items into this ``data_meta``
++Certain devices may utilize the ``data_meta`` area for specific purposes.
++Drivers for these devices must move any hardware-related metadata out from the
++``data_meta`` area before presenting the frame to the XDP program. This ensures
++that the XDP program can store individual metadata items into this ``data_meta``
+ area in whichever format it chooses. Later consumers of the metadata
+ will have to agree on the format by some out of band contract (like for
+ the AF_XDP use case, see below).
+@@ -63,18 +66,36 @@ the final consumer. Thus the BPF program manually allocates a fixed number of
+ bytes out of metadata via ``bpf_xdp_adjust_meta`` and calls a subset
+ of kfuncs to populate it. The userspace ``XSK`` consumer computes
+ ``xsk_umem__get_data() - METADATA_SIZE`` to locate that metadata.
+-Note, ``xsk_umem__get_data`` is defined in ``libxdp`` and
+-``METADATA_SIZE`` is an application-specific constant (``AF_XDP`` receive
+-descriptor does _not_ explicitly carry the size of the metadata).
+-
+-Here is the ``AF_XDP`` consumer layout (note missing ``data_meta`` pointer)::
+-
+-  +----------+-----------------+------+
+-  | headroom | custom metadata | data |
+-  +----------+-----------------+------+
+-                               ^
+-                               |
+-                        rx_desc->address
++Note, ``xsk_umem__get_data`` is defined in ``libxdp`` and ``METADATA_SIZE`` is
++an application-specific constant. Since the ``AF_XDP`` receive descriptor does
++_not_ explicitly carry the size of the metadata, it is the responsibility of the
++driver to copy any device-reserved metadata out from the metadata area and
++ensure that ``xdp_buff->data_meta`` is set equal to ``xdp_buff->data`` before a
++BPF program is executed. This is necessary so that, after the BPF program
++adjusts the metadata area, the consumer can reliably retrieve the metadata
++address using ``METADATA_SIZE`` offset.
++
++The following diagram shows how custom metadata is positioned relative to the
++packet data and how pointers are adjusted for metadata access (note the absence
++of the ``data_meta`` pointer in ``xdp_desc``)::
++
++              |<-- bpf_xdp_adjust_meta(xdp_buff, -METADATA_SIZE) --|
++  new xdp_buff->data_meta                              old xdp_buff->data_meta
++              |                                                    |
++              |                                            xdp_buff->data
++              |                                                    |
++   +----------+----------------------------------------------------+------+
++   | headroom |                  custom metadata                   | data |
++   +----------+----------------------------------------------------+------+
++              |                                                    |
++              |                                            xdp_desc->addr
++              |<------ xsk_umem__get_data() - METADATA_SIZE -------|
++
++``bpf_xdp_adjust_meta`` ensures that ``METADATA_SIZE`` is aligned to 4 bytes,
++does not exceed 252 bytes, and leaves sufficient space for building the
++xdp_frame. If these conditions are not met, it returns a negative error. In this
++case, the BPF program should not proceed to populate data into the ``data_meta``
++area.
+ 
+ XDP_PASS
+ ========
+-- 
+2.34.1
+
 
