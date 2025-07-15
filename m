@@ -1,226 +1,168 @@
-Return-Path: <bpf+bounces-63282-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63283-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86A97B04D83
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 03:37:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04EF4B04D8A
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 03:46:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25BF37AF383
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 01:35:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 548584A8124
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 01:46:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0530F288C8C;
-	Tue, 15 Jul 2025 01:36:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E2EC2BF013;
+	Tue, 15 Jul 2025 01:45:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VaYijqUi"
 X-Original-To: bpf@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 542FB2882B7;
-	Tue, 15 Jul 2025 01:36:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 848052BEC42;
+	Tue, 15 Jul 2025 01:45:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752543411; cv=none; b=kBuG3tSFoKE03oxS29NKZOEI82kcjaRBU/yNtr409Ts3PnNEjXG6GeF7X6X1cD4EkAqbIL0FSxudLt9AyQe1v2ODHjqiOcDEBQD1OQBdNrob940jf+LAEJrEwJd3QwnagWja1IZ5KukVFff7M7tBgdQ6vCWtzh9am1SdIlQzbcw=
+	t=1752543958; cv=none; b=Ug2nkGCpwio0z+snvO6DiPHtB16kkfSO065iy9zUGScL7s6XYHPo0lyvIipI87eLitsot4CyuiOxlWGOFpOHNSooNahUM0tNCx+s+AZIPnQsqQfQe6J/MdxViuKg9bVIG/wVwV2Xd4ulwpag5Wp8yVnR6i2ty6sz/oWQF9/9U7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752543411; c=relaxed/simple;
-	bh=rjv9ebF1tIJq2t2V5hyW1X90P8nhO4gHfYr1e/VsC3g=;
+	s=arc-20240116; t=1752543958; c=relaxed/simple;
+	bh=/swcXr2ss79nJxFip+SNNqYNuVuEmY4AkU1neU+GXDQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fmCN6zcnCPOTcexus7AkKsFsemrSadF2OysugGz1lbT7DjnNlnDX6Q8PPrh/AAUmInCKwP9eIum6rlQEPqYgTzb8tIXfYIJRliadcIKcrbNUFt6gXYrTQkMhIE+Fkl14XIBsnUZJwxYjsiKy2DHxiTvOT5PcCNVTkKUy1luugRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-669ff7000002311f-cc-6875b0a2a86a
-Date: Tue, 15 Jul 2025 10:36:26 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: Mina Almasry <almasrymina@google.com>
-Cc: willy@infradead.org, netdev@vger.kernel.org,
+	 Content-Type:Content-Disposition:In-Reply-To; b=a/cHBex2ImmzWcbIaXzm6H4UpvJOLJIvgLGTvqTTnJkM1b0M7vhJWFwUH0Obx3uGAxkLF98rLiGuKvhZy7WsBVIZmO3rMyo2OuptSvZIBo6R/4KpxGTwJnmthEMAd6LPOXE/ZGZtz2lv5kkMA4jNuoroyOnxEOzwCt8lwgJUcIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VaYijqUi; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1752543956; x=1784079956;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/swcXr2ss79nJxFip+SNNqYNuVuEmY4AkU1neU+GXDQ=;
+  b=VaYijqUi0xfEBYEfYfCe0jZMGPeCNnnSUAdY3gFX7lRTGO/QWmV4/5V9
+   EgwYbwoF9o0cVORYDFFc6oSkpfN2j1PWnZqe6HOlQRkhvLyMF40xEjz+r
+   CzES+N+eVCAzDuELcrvigNym6v5yRydGoPWdUOjaPRwdjQm19U55Kp87o
+   kjKzqH8da61s0LlR/1raEhvOPjkyJh9+RgS+OX31kNC+mxcEiyol1yk3t
+   NeTOK6mC1l8KKK4q51vX2A2GCJwVv45iJOCf7c3CszJPj5PMSRBgshcN0
+   0jUJeSeL99AgyzhGVMuiste+SyZjUZ6O+XTXGiaF6TCbB+0aYGyv0IBB9
+   A==;
+X-CSE-ConnectionGUID: DB6WahnkRSCAxxlDMBSjwg==
+X-CSE-MsgGUID: 9ObbP/PBTLGIt6HxOGZaWw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11491"; a="57360546"
+X-IronPort-AV: E=Sophos;i="6.16,312,1744095600"; 
+   d="scan'208";a="57360546"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2025 18:45:55 -0700
+X-CSE-ConnectionGUID: yu+/zp4GTtKNOp/AuwsKwA==
+X-CSE-MsgGUID: J3Rvn9+kRXemF9VDSSLEcg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,312,1744095600"; 
+   d="scan'208";a="162633732"
+Received: from lkp-server01.sh.intel.com (HELO 9ee84586c615) ([10.239.97.150])
+  by fmviesa004.fm.intel.com with ESMTP; 14 Jul 2025 18:45:48 -0700
+Received: from kbuild by 9ee84586c615 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1ubUjr-0009Wt-01;
+	Tue, 15 Jul 2025 01:45:47 +0000
+Date: Tue, 15 Jul 2025 09:45:38 +0800
+From: kernel test robot <lkp@intel.com>
+To: Byungchul Park <byungchul@sk.com>, willy@infradead.org,
+	netdev@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
 	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	kernel_team@skhynix.com, ilias.apalodimas@linaro.org,
-	harry.yoo@oracle.com, akpm@linux-foundation.org,
-	andrew+netdev@lunn.ch, asml.silence@gmail.com, toke@redhat.com,
-	david@redhat.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
-	rppt@kernel.org, surenb@google.com, mhocko@suse.com,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-	vishal.moola@gmail.com, hannes@cmpxchg.org, ziy@nvidia.com,
-	jackmanb@google.com, wei.fang@nxp.com, shenwei.wang@nxp.com,
-	xiaoning.wang@nxp.com, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, anthony.l.nguyen@intel.com,
-	przemyslaw.kitszel@intel.com, sgoutham@marvell.com,
-	gakula@marvell.com, sbhatta@marvell.com, hkelam@marvell.com,
-	bbhushan2@marvell.com, tariqt@nvidia.com, ast@kernel.org,
-	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-	sdf@fomichev.me, saeedm@nvidia.com, leon@kernel.org,
-	mbloch@nvidia.com, danishanwar@ti.com, rogerq@kernel.org,
-	nbd@nbd.name, lorenzo@kernel.org, ryder.lee@mediatek.com,
-	shayne.chen@mediatek.com, sean.wang@mediatek.com,
-	matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
-	aleksander.lobakin@intel.com, horms@kernel.org, m-malladi@ti.com,
-	krzysztof.kozlowski@linaro.org, matthias.schiffer@ew.tq-group.com,
-	robh@kernel.org, imx@lists.linux.dev,
-	intel-wired-lan@lists.osuosl.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-wireless@vger.kernel.org, linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net-next v10 02/12] netmem: use netmem_desc instead of
- page to access ->pp in __netmem_get_pp()
-Message-ID: <20250715013626.GA49874@system.software.com>
-References: <20250714120047.35901-1-byungchul@sk.com>
- <20250714120047.35901-3-byungchul@sk.com>
- <CAHS8izO393X_BDJxnX2d-auhTwrUZK5wYdoAh_tJc0GBf0AqcQ@mail.gmail.com>
- <CAHS8izNh7aCJOb1WKTx7CXNDPv_UBqFyq2XEHHhqHH=5JPmJCQ@mail.gmail.com>
+	kernel_team@skhynix.com, almasrymina@google.com,
+	ilias.apalodimas@linaro.org, harry.yoo@oracle.com,
+	akpm@linux-foundation.org, andrew+netdev@lunn.ch,
+	asml.silence@gmail.com, toke@redhat.com, david@redhat.com,
+	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
+	surenb@google.com, mhocko@suse.com, linux-rdma@vger.kernel.org,
+	bpf@vger.kernel.org, vishal.moola@gmail.com, hannes@cmpxchg.org,
+	ziy@nvidia.com, jackmanb@google.com, wei.fang@nxp.com,
+	shenwei.wang@nxp.com, xiaoning.wang@nxp.com, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org
+Subject: Re: [PATCH net-next v10 12/12] libeth: xdp: access ->pp through
+ netmem_desc instead of page
+Message-ID: <202507150904.kGZOOZns-lkp@intel.com>
+References: <20250714120047.35901-13-byungchul@sk.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHS8izNh7aCJOb1WKTx7CXNDPv_UBqFyq2XEHHhqHH=5JPmJCQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sf1DTdRjH7/P98dmXxbwvC/OjZN1NzaJLKb3ruYuM669v3XXleVdXeuYu
-	vrbRQBuMH51dE8YVmEiBnpuzRgwEZo6GwKKBNEhROoGBOAUGghkgaKEsBou1wXnx3+t5nvc9
-	r89z9+Fo+W94HadOyxC1aUqNAksZ6XR02QvltTpVwvGRBDDbz2LoeVDGgm0uG86MOFnwVBP4
-	pXuOAnNNA4KHgQEJOAoGaXjQfglDeZmfhkDtUQbMXQYGZu3zNPxxcVQCHe5/GbA53oLhyjsM
-	uL5spKFtdhOMHuvAcNSwQIPRl48hdHOBhebAPQnkOqsoaL5bL4HuhiIWSucraGjUj4RdY/0s
-	9DaZMfTm9SDwnQ2xcMcdFk5VDUqgyGZC4L5QjSHXsA2m6h9K4K/j7TQMFyXB4slMuGh5Avyd
-	UwgGKq5REHI5JXDVd46FdnsjBX23AjT4vz6NoXD6GIJrxiYKfj9dy4K1s48Kv2MX9IeCFJR4
-	LBjGDMMIPG2jDJw6XITA3uJl4W9X+OSFOTNOel1om7pPC84hKxLOV9+ghPHiRUrwtlyhhJ9N
-	QxLB4tAJdVXxQrlrghIKvR5acNQUYMEx861EGOx3YaHj5AIj1Fm/EMbrjOid9R9IE5NFjTpT
-	1G7dsU+q+jN4FR/0bcz+yvCqHtU+WYiiOMJvJ7crmthHrD9xno4ww28i4+2zVIQxv5l4vYGl
-	fiz/HLG2fBPOSzmat3JkotmJIsUqfoYmnbOdTCT1OK8jP9zyLrGMBzKWX8BEQnL+PiJHnAF2
-	eRBDLhtvL4XosCL4nSes4MIcR84scsvtp0le/aklcxS/k/zovYcjvJrfQFobLlGRnYTPlRJb
-	3jRePmEt+bXKyxQjuWmFwrRCYfpfYVqhsCCmBsnVaZmpSrVm+xZVTpo6e8tHB1IdKPy5Kz8P
-	7naime5dbsRzSBEtg8kMlZxVZqbnpLoR4WhFrGxySKuSy5KVOZ+J2gMfanUaMd2N4jhGsUb2
-	kj8rWc5/rMwQPxHFg6L20ZTiotbp0aHLJRbfnqD/+hrjZl3vu3e3lea8kaKwlV/vmohPeWW+
-	RlOyz/5p6tZF2d7px64EVYkbSrNi9O+/9tNEUtL8qt3Jlmcqb9IlfW0XYvb2eJ468WZr/mG8
-	Py5rrW3jy9Gt+vdCRwaKd6y+MXLuH/uhgcnnE7pSfNr9alz8dvf36xPde2L7nlUw6Srli/G0
-	Nl35H/YfORbYAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0xTZxiH853v3GhWd9ahfsFdkk5cRjJ02UzeZNO56LKTZTNzI/G2RJtx
-	sjZcZC0lYHZBKYHWiTLcBrUwwMrVja4IdK6iaQmXdXNShBy5CohDAd2EEitI12KW8d/zvu8v
-	v+f74+OxqpKN4XWp6ZI+VZOsZhW0YufrOS9XOozaTVVyPNgazrHQPVvBQP2DTKi+4WLAX0vg
-	16sPKLDVNSOYCw5w4DQPYpht62DhTMU8hqDjOA22P000BBoeYphoH+Og0/OIhnrn+zBSdYsG
-	d14LBm8gFsZOdLJw3LSAoWQ4l4VQ/wIDF4N3OTjqqqHAW9oVHqeaOLjaXMDAqYdnMbRk3wgL
-	x/sY6LlgY6EnpxvB8LkQA7c8Yet0zSAHBfVWBJ5LtSwcNb0K001zHPz9bRuGkYJtsFScAe3l
-	a2DeN41g4GwvBSG3i4Mrwz8x0NbQQsG10SCG+a9LWbDMnEDQW3KBgt9LHQzYfdeo8Ds+gr7Q
-	IgVF/nIWxk0jCPzeMRpOHylA0NAqM/CP20Rv2y56p+9h0TVkR+L52uuUOHlyiRLl1t8o8Rfr
-	ECeWO41iY02ceMZ9mxItsh+LzjozKzrvf8OJg31uVuwsXqDFRvtX4mRjCfrguX2KNxKlZF2G
-	pN+49aBC+9fiFTZteH1mvmlLNnI8Y0FRPBFeI9nfnccRpoVYMtkWoCLMCi8SWQ4u76OFl4i9
-	tZCxIAWPBTtPbl90ociwSriPiS/goyOppwUjqRyVl1kpABnPNdORkEq4h8gxV5B5fHiKdJXc
-	XA7hsGKxzB9W8GFeR6qX+Mfr50lO0+llc5Swi/wo32UjvFp4gVxu7qBOoietK5qsK5qs/zdZ
-	VzSVI7oORetSM1I0uuTN8YYkbVaqLjP+k0MpThT+uVVfLBa60FzPOx4k8Ej9hBLupGtVjCbD
-	kJXiQYTH6mjlnSG9VqVM1GQdlvSHDuiNyZLBg9bxtHqt8t3d0kGV8KkmXUqSpDRJ/9+V4qNi
-	spH3SP6X0TuqO8z1e+17PlP3LiRtLWqxzuYdqFjz+UTCsQ3EkLg2dkdQnrB9vOqH/W+mp+Q9
-	2/4IJWw0HvZ9GI97ft5smyrcUJRws2N0on8+7o/tpe1dA6auJEug+K2ZtPd2vu3tL5sJmddf
-	cg/szbr8/VT3/i1ljnzn7pxN9OqY3LHrp9S0Qat5JQ7rDZp/AaLKAyC1AwAA
-X-CFilter-Loop: Reflected
+In-Reply-To: <20250714120047.35901-13-byungchul@sk.com>
 
-On Mon, Jul 14, 2025 at 12:58:15PM -0700, Mina Almasry wrote:
-> On Mon, Jul 14, 2025 at 12:37 PM Mina Almasry <almasrymina@google.com> wrote:
-> >
-> > On Mon, Jul 14, 2025 at 5:01 AM Byungchul Park <byungchul@sk.com> wrote:
-> > >
-> > > To eliminate the use of the page pool fields in struct page, the page
-> > > pool code should use netmem descriptor and APIs instead.
-> > >
-> > > However, __netmem_get_pp() still accesses ->pp via struct page.  So
-> > > change it to use struct netmem_desc instead, since ->pp no longer will
-> > > be available in struct page.
-> > >
-> > > While at it, add a helper, pp_page_to_nmdesc(), that can be used to
-> > > extract netmem_desc from page only if it's pp page.  For now that
-> > > netmem_desc overlays on page, it can be achieved by just casting.
-> > >
-> > > Signed-off-by: Byungchul Park <byungchul@sk.com>
-> > > ---
-> > >  include/net/netmem.h | 13 ++++++++++++-
-> > >  1 file changed, 12 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/include/net/netmem.h b/include/net/netmem.h
-> > > index 535cf17b9134..2b8a7b51ac99 100644
-> > > --- a/include/net/netmem.h
-> > > +++ b/include/net/netmem.h
-> > > @@ -267,6 +267,17 @@ static inline struct net_iov *__netmem_clear_lsb(netmem_ref netmem)
-> > >         return (struct net_iov *)((__force unsigned long)netmem & ~NET_IOV);
-> > >  }
-> > >
-> > > +static inline struct netmem_desc *pp_page_to_nmdesc(struct page *page)
-> > > +{
-> > > +       DEBUG_NET_WARN_ON_ONCE(!page_pool_page_is_pp(page));
-> > > +
-> > > +       /* XXX: How to extract netmem_desc from page must be changed,
-> > > +        * once netmem_desc no longer overlays on page and will be
-> > > +        * allocated through slab.
-> > > +        */
-> > > +       return (struct netmem_desc *)page;
-> > > +}
-> > > +
-> >
-> > Same thing. Do not create a generic looking pp_page_to_nmdesc helper
-> > which does not check that the page is the correct type. The
-> > DEBUG_NET... is not good enough.
-> >
-> > You don't need to add a generic helper here. There is only one call
-> > site. Open code this in the callsite. The one callsite is marked as
-> > unsafe, only called by code that knows that the netmem is specifically
-> > a pp page. Open code this in the unsafe callsite, instead of creating
-> > a generic looking unsafe helper and not even documenting it's unsafe.
-> >
-> 
-> On second read through the series, I actually now think this is a
-> great idea :-) Adding this helper has simplified the series greatly. I
-> did not realize you were converting entire drivers to netmem just to
-> get rid of page->pp accesses. Adding a pp_page_to_nmdesc helper makes
-> the entire series simpler.
-> 
-> You're also calling it only from code paths like drivers that already
-> assumed that the page is a pp page and did page->pp deference without
-> a check, so this should be safe.
-> 
-> Only thing I would change is add a comment explaining that the calling
-> code needs to check the page is pp page or know it's a pp page (like a
-> driver that supports pp).
-> 
-> 
-> > >  /**
-> > >   * __netmem_get_pp - unsafely get pointer to the &page_pool backing @netmem
-> > >   * @netmem: netmem reference to get the pointer from
-> > > @@ -280,7 +291,7 @@ static inline struct net_iov *__netmem_clear_lsb(netmem_ref netmem)
-> > >   */
-> > >  static inline struct page_pool *__netmem_get_pp(netmem_ref netmem)
-> > >  {
-> > > -       return __netmem_to_page(netmem)->pp;
-> > > +       return pp_page_to_nmdesc(__netmem_to_page(netmem))->pp;
-> > >  }
-> >
-> > This makes me very sad. Casting from netmem -> page -> nmdesc...
-> >
-> > Instead, we should be able to go from netmem directly to nmdesc. I
-> > would suggest rename __netmem_clear_lsb to netmem_to_nmdesc and have
-> > it return netmem_desc instead of net_iov. Then use it here.
-> >
-> > We could have an unsafe version of netmem_to_nmdesc which converts the
-> > netmem to netmem_desc without clearing the lsb and mark it unsafe.
-> >
-> 
-> This, I think, we should address to keep some sanity in the code and
-> reduce the casts and make it a bit more maintainable.
+Hi Byungchul,
 
-I will reflect your suggestions.  To summarize:
+kernel test robot noticed the following build errors:
 
-   1) The current implementation of pp_page_to_nmdesc() is good enough
-      to keep, but add a comment on it like "Check if the page is a pp
-      page before calling this function or know it's a pp page.".
+[auto build test ERROR on c65d34296b2252897e37835d6007bbd01b255742]
 
-   2) Introduce the unsafe version, __netmem_to_nmdesc(), and use it in
-      __netmem_get_pp().
+url:    https://github.com/intel-lab-lkp/linux/commits/Byungchul-Park/netmem-introduce-struct-netmem_desc-mirroring-struct-page/20250714-200214
+base:   c65d34296b2252897e37835d6007bbd01b255742
+patch link:    https://lore.kernel.org/r/20250714120047.35901-13-byungchul%40sk.com
+patch subject: [PATCH net-next v10 12/12] libeth: xdp: access ->pp through netmem_desc instead of page
+config: x86_64-rhel-9.4-rust (https://download.01.org/0day-ci/archive/20250715/202507150904.kGZOOZns-lkp@intel.com/config)
+compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
+rustc: rustc 1.88.0 (6b00bc388 2025-06-23)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250715/202507150904.kGZOOZns-lkp@intel.com/reproduce)
 
-   3) Rename __netmem_clear_lsb() to netmem_to_nmdesc(), and return
-      netmem_desc, and use it in all users of __netmem_clear_lsb().
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202507150904.kGZOOZns-lkp@intel.com/
 
-Anything else?
+All errors (new ones prefixed by >>):
 
-	Byungchul
-> 
-> --
-> Thanks,
-> Mina
+   In file included from drivers/net/ethernet/intel/libeth/tx.c:6:
+>> include/net/libeth/xdp.h:1295:23: error: passing 'const struct page *' to parameter of type 'struct page *' discards qualifiers [-Werror,-Wincompatible-pointer-types-discards-qualifiers]
+    1295 |                          pp_page_to_nmdesc(page)->pp->p.offset, len, true);
+         |                                            ^~~~
+   include/net/netmem.h:270:66: note: passing argument to parameter 'page' here
+     270 | static inline struct netmem_desc *pp_page_to_nmdesc(struct page *page)
+         |                                                                  ^
+   1 error generated.
+
+
+vim +1295 include/net/libeth/xdp.h
+
+  1263	
+  1264	bool libeth_xdp_buff_add_frag(struct libeth_xdp_buff *xdp,
+  1265				      const struct libeth_fqe *fqe,
+  1266				      u32 len);
+  1267	
+  1268	/**
+  1269	 * libeth_xdp_prepare_buff - fill &libeth_xdp_buff with head FQE data
+  1270	 * @xdp: XDP buffer to attach the head to
+  1271	 * @fqe: FQE containing the head buffer
+  1272	 * @len: buffer len passed from HW
+  1273	 *
+  1274	 * Internal, use libeth_xdp_process_buff() instead. Initializes XDP buffer
+  1275	 * head with the Rx buffer data: data pointer, length, headroom, and
+  1276	 * truesize/tailroom. Zeroes the flags.
+  1277	 * Uses faster single u64 write instead of per-field access.
+  1278	 */
+  1279	static inline void libeth_xdp_prepare_buff(struct libeth_xdp_buff *xdp,
+  1280						   const struct libeth_fqe *fqe,
+  1281						   u32 len)
+  1282	{
+  1283		const struct page *page = __netmem_to_page(fqe->netmem);
+  1284	
+  1285	#ifdef __LIBETH_WORD_ACCESS
+  1286		static_assert(offsetofend(typeof(xdp->base), flags) -
+  1287			      offsetof(typeof(xdp->base), frame_sz) ==
+  1288			      sizeof(u64));
+  1289	
+  1290		*(u64 *)&xdp->base.frame_sz = fqe->truesize;
+  1291	#else
+  1292		xdp_init_buff(&xdp->base, fqe->truesize, xdp->base.rxq);
+  1293	#endif
+  1294		xdp_prepare_buff(&xdp->base, page_address(page) + fqe->offset,
+> 1295				 pp_page_to_nmdesc(page)->pp->p.offset, len, true);
+  1296	}
+  1297	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
