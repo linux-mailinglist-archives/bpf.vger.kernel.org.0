@@ -1,62 +1,71 @@
-Return-Path: <bpf+bounces-63377-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63378-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8755B0693E
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 00:27:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42934B06941
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 00:28:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 118041AA7631
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 22:27:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88C8E17A7D3
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 22:28:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 148812C17B2;
-	Tue, 15 Jul 2025 22:27:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14D042C178E;
+	Tue, 15 Jul 2025 22:28:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="ndktiuph"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="CCd9qaGU"
 X-Original-To: bpf@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C19A52C15A2;
-	Tue, 15 Jul 2025 22:27:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED4092741BC;
+	Tue, 15 Jul 2025 22:27:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752618424; cv=none; b=ICHfxNA0DRGz00gzRvL4j5hjSF+B/2oVSBm6sfBb5FlbHOor3+HeksP3J+ZlyPOd4ECbsbt4Q+jW4DnvRufkLlMqbr1p95HyLiLjdn2qDVMfnOIo3SQIN9BWRz4+ZFFpXx7T4h9BC9ef8Ohy0eU1F92WUkW0JIR5ErMh9v/Z6R4=
+	t=1752618479; cv=none; b=GYdk3Zlz/vXo9ZwZUbvzKikXngrtEzG7PNW3Rz5eL6xG5o7Wzzc6oZcZvSXE/lHry7w8IeXp2VaSRHgv7JQzUsbH5tzOhgjQ5RrHQgrwFgouh4KqGEUkvLWzNE47Wpl6UJPbiL0zCWkQU9sAQb525663z5+mammcD0XnsRuf0A0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752618424; c=relaxed/simple;
-	bh=JU/FvqQtox0m+7JiJ35JiynqoZsQL4UV2bqXgK6amg4=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=T/VkF9wQEhsfZT/2i9zt0sqGZQTCWqgUE3y9By5elq3XVAqUuhGXqQ180KawaqBBaFN1BHJXJJAbnrADlW0X5A95VyNqb+6aE2PnQXwdl5vEJ/wBlFRXZ8p9eTwi+guzfnPGQxp4fnoxFEpA4P02/d2sFQkeTxjp4OhMMsSPXqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=ndktiuph; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from narnia.corp.microsoft.com (unknown [40.78.12.133])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 3CEA9201B1DA;
-	Tue, 15 Jul 2025 15:27:01 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3CEA9201B1DA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1752618422;
-	bh=Lk2AJ48Hkhszm8pgdJgbSf69mJKzIm0FMgmZJrtUogU=;
-	h=From:To:Subject:Date:From;
-	b=ndktiuphTFG93A2w3HeWCRb7gXdBhu60heHbiQlKngNrMA5fWHVc+tWUK76rvHwEw
-	 LhvZLDb6GlT5tZBVt6ic3udKV41BUKwP9R2o5P9AP7cLjVH82jho9HsBhLdSd2zie2
-	 dDmtcavRSjvQz360bbY+sKqmhE6G1TyrxSpNsGHs=
-From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
-To: Paul Moore <paul@paul-moore.com>,
-	James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>,
-	Stephen Smalley <stephen.smalley.work@gmail.com>,
-	Ondrej Mosnacek <omosnace@redhat.com>,
-	Casey Schaufler <casey@schaufler-ca.com>,
-	John Johansen <john.johansen@canonical.com>,
-	Blaise Boscaccy <bboscaccy@linux.microsoft.com>,
-	=?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>,
-	linux-security-module@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	selinux@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH] lsm,selinux: Add LSM blob support for BPF objects
-Date: Tue, 15 Jul 2025 15:25:58 -0700
-Message-ID: <20250715222655.705241-1-bboscaccy@linux.microsoft.com>
-X-Mailer: git-send-email 2.48.1
+	s=arc-20240116; t=1752618479; c=relaxed/simple;
+	bh=ocGQa01go6Kb79d/4JBGL0Wx9SVjLqUNyavQbgjutQ0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oXt7K7XO2NiilnKTrc3Vj9Eo3e/nPR7TQy2Rl56a51/sYJsrNGN5xjoy3npKNjkbl2SL8MljsUuHFYf4vpcnfmNrfSje+dURQgjxMnslvxD++YW+N1or05NXcLsayGS2FDCoUB/L10Ed0+XxEUZ/kWBo1+/Drqr2t2z+qZVFn9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=CCd9qaGU; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56FKXgqG019158;
+	Tue, 15 Jul 2025 22:27:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=corp-2025-04-25; bh=gS+/tuQy976W+RVTHE95eqQhqHkfx
+	MKnoasXRQUdi/A=; b=CCd9qaGUWakMmuH+qe6vmOhX1N+Oh41rlrUAqVU788q42
+	cgGXazXnhbjDeam0+n4HhLIZgOTqVkaZO3wgcJxjDAWhIYex8xrXY0zZggga2VDS
+	KmwPdRlJrwBIuXhzXqvYUWgnXO0hWSxS3ZGKehml8IrE88tBvi0jmIL9E+KlJKSe
+	FrQsaZn9848Lrd9Bn6k2uBUXySJQ5eMwpnO6k+KrzoNxqVQUcPVXz9GVfKBMuHls
+	w8HwbAyvvJ6Kwf3AmDABK32NDz5DG1knLGmEy1LCp0lH/FlqjnZFN6/zl8OLOAQV
+	oCHCCTA1mYJK/zsKse3OdU1hz3v7zPWtU/+1jBnuQ==
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 47ujr0ypca-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 15 Jul 2025 22:27:51 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 56FLJDDJ023939;
+	Tue, 15 Jul 2025 22:27:50 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 47ue5akb1n-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 15 Jul 2025 22:27:50 +0000
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 56FMRn6a033852;
+	Tue, 15 Jul 2025 22:27:49 GMT
+Received: from ca-dev110.us.oracle.com (ca-dev110.us.oracle.com [10.129.136.45])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 47ue5akb1d-1;
+	Tue, 15 Jul 2025 22:27:49 +0000
+From: Yifei Liu <yifei.l.liu@oracle.com>
+To: yonghong.song@linux.dev, ast@kernel.org
+Cc: yifei.l.liu@oracle.com, bpf@vger.kernel.org, stable@vger.kernel.org
+Subject: [PATCH linux-6.12.y 1/2] selftests/bpf: Add a test for arena range tree algorithm
+Date: Tue, 15 Jul 2025 15:27:20 -0700
+Message-ID: <20250715222721.3483220-1-yifei.l.liu@oracle.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -64,392 +73,173 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-07-15_05,2025-07-15_02,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
+ mlxlogscore=999 malwarescore=0 mlxscore=0 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2505160000
+ definitions=main-2507150207
+X-Authority-Analysis: v=2.4 cv=d9T1yQjE c=1 sm=1 tr=0 ts=6876d5e7 b=1 cx=c_pps a=WeWmnZmh0fydH62SvGsd2A==:117 a=WeWmnZmh0fydH62SvGsd2A==:17 a=Wb1JkmetP80A:10 a=VwQbUJbxAAAA:8 a=pGLkceISAAAA:8 a=yPCof4ZbAAAA:8 a=EwfujYzQiyYeUg5ViUcA:9
+X-Proofpoint-ORIG-GUID: jjjHXd8M7urWXTbtXFX7Jiia9FZIedbq
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzE1MDIwOCBTYWx0ZWRfXxKhmx2KSa29I LZSLALgfx0wYTM9jCqDrsp4h0Ji+4dnLsztuTnKwWMrRt3X6XVRh7/SQgK4rooDN0RkxYudw8nl bCQ1nqwMZvGlIphH0NILOj0dzi8qyuj5dUY+iAab88j++NoAaUZID5FTJkWLlsE7aYJuH98sZXT
+ ZoOvdM2wHhpcDqdfFvnCzTXaNhw2g7Pm4bfOlGuDogENdR/fGF5sEGlN8x5Wzjb1V5/GUJmxCeW wlPdwUJOPQTksepIUMQ5+NRapGF/OiSiucV9/XjJQTfTrZpsZaU6PaiIklgCUWYXoMpFySOryqi T/9ZxoklmsnMomh71OjgXD+Pv1FPNF7+8lX1N1D/M2HdSoxvPB5KN3IbVvJIUvoGTzidXyzIwtu
+ Djd/JHboNwAlpXS86U85bDdiNvMPPsJFWqYsyWe+BpvcDMAHiWB8LKIJylMS6wmw6Gsi65Ja
+X-Proofpoint-GUID: jjjHXd8M7urWXTbtXFX7Jiia9FZIedbq
 
-This patch introduces LSM blob support for BPF maps, programs, and
-tokens to enable LSM stacking and multiplexing of LSM modules that
-govern BPF objects. Additionally, the existing BPF hooks used by
-SELinux have been updated to utilize the new blob infrastructure,
-removing the assumption of exclusive ownership of the security
-pointer.
+From: Alexei Starovoitov <ast@kernel.org>
 
-Signed-off-by: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+Add a test that verifies specific behavior of arena range tree
+algorithm and adjust existing big_alloc1 test due to use
+of global data in arena.
+
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Link: https://lore.kernel.org/bpf/20241108025616.17625-3-alexei.starovoitov@gmail.com
+(cherry picked from commit e58358afa84e8e271a296459d35d1715c7572013)
+
+[Yifei: This commit fixes the failure of verifier_arena_large test over 64k page size kernels.
+This commit also introduce some new tests targeting the new feature, arena range tree algorithm,
+which is not in linux-6.12.y, I just comment out the test headers so that it would not be run here.
+If this feature is introduced later, we can just uncomment those two lines.]
+
+Signed-off-by: Yifei Liu <yifei.l.liu@oracle.com>
 ---
- include/linux/lsm_hooks.h         |   3 +
- security/security.c               | 120 +++++++++++++++++++++++++++++-
- security/selinux/hooks.c          |  56 +++-----------
- security/selinux/include/objsec.h |  17 +++++
- 4 files changed, 147 insertions(+), 49 deletions(-)
+ .../bpf/progs/verifier_arena_large.c          | 110 +++++++++++++++++-
+ 1 file changed, 108 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
-index 090d1d3e19fed..79ec5a2bdcca7 100644
---- a/include/linux/lsm_hooks.h
-+++ b/include/linux/lsm_hooks.h
-@@ -116,6 +116,9 @@ struct lsm_blob_sizes {
- 	int lbs_xattr_count; /* number of xattr slots in new_xattrs array */
- 	int lbs_tun_dev;
- 	int lbs_bdev;
-+	int lbs_bpf_map;
-+	int lbs_bpf_prog;
-+	int lbs_bpf_token;
- };
- 
- /*
-diff --git a/security/security.c b/security/security.c
-index 596d418185773..8c413b84f33db 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -283,6 +283,9 @@ static void __init lsm_set_blob_sizes(struct lsm_blob_sizes *needed)
- 	lsm_set_blob_size(&needed->lbs_xattr_count,
- 			  &blob_sizes.lbs_xattr_count);
- 	lsm_set_blob_size(&needed->lbs_bdev, &blob_sizes.lbs_bdev);
-+	lsm_set_blob_size(&needed->lbs_bpf_map, &blob_sizes.lbs_bpf_map);
-+	lsm_set_blob_size(&needed->lbs_bpf_prog, &blob_sizes.lbs_bpf_prog);
-+	lsm_set_blob_size(&needed->lbs_bpf_token, &blob_sizes.lbs_bpf_token);
- }
- 
- /* Prepare LSM for initialization. */
-@@ -480,6 +483,9 @@ static void __init ordered_lsm_init(void)
- 	init_debug("tun device blob size = %d\n", blob_sizes.lbs_tun_dev);
- 	init_debug("xattr slots          = %d\n", blob_sizes.lbs_xattr_count);
- 	init_debug("bdev blob size       = %d\n", blob_sizes.lbs_bdev);
-+	init_debug("bpf map blob size    = %d\n", blob_sizes.lbs_bpf_map);
-+	init_debug("bpf prog blob size   = %d\n", blob_sizes.lbs_bpf_prog);
-+	init_debug("bpf token blob size  = %d\n", blob_sizes.lbs_bpf_token);
- 
- 	/*
- 	 * Create any kmem_caches needed for blobs
-@@ -835,6 +841,72 @@ static int lsm_bdev_alloc(struct block_device *bdev)
- 	return 0;
- }
- 
-+/**
-+ * lsm_bpf_map_alloc - allocate a composite bpf_map blob
-+ * @map: the bpf_map that needs a blob
-+ *
-+ * Allocate the bpf_map blob for all the modules
-+ *
-+ * Returns 0, or -ENOMEM if memory can't be allocated.
-+ */
-+static int lsm_bpf_map_alloc(struct bpf_map *map)
-+{
-+	if (blob_sizes.lbs_bpf_map == 0) {
-+		map->security = NULL;
-+		return 0;
-+	}
-+
-+	map->security = kzalloc(blob_sizes.lbs_bpf_map, GFP_KERNEL);
-+	if (!map->security)
-+		return -ENOMEM;
-+
-+	return 0;
-+}
-+
-+/**
-+ * lsm_bpf_prog_alloc - allocate a composite bpf_prog blob
-+ * @prog: the bpf_prog that needs a blob
-+ *
-+ * Allocate the bpf_prog blob for all the modules
-+ *
-+ * Returns 0, or -ENOMEM if memory can't be allocated.
-+ */
-+static int lsm_bpf_prog_alloc(struct bpf_prog *prog)
-+{
-+	if (blob_sizes.lbs_bpf_prog == 0) {
-+		prog->aux->security = NULL;
-+		return 0;
-+	}
-+
-+	prog->aux->security = kzalloc(blob_sizes.lbs_bpf_prog, GFP_KERNEL);
-+	if (!prog->aux->security)
-+		return -ENOMEM;
-+
-+	return 0;
-+}
-+
-+/**
-+ * lsm_bpf_token_alloc - allocate a composite bpf_token blob
-+ * @token: the bpf_token that needs a blob
-+ *
-+ * Allocate the bpf_token blob for all the modules
-+ *
-+ * Returns 0, or -ENOMEM if memory can't be allocated.
-+ */
-+static int lsm_bpf_token_alloc(struct bpf_token *token)
-+{
-+	if (blob_sizes.lbs_bpf_token == 0) {
-+		token->security = NULL;
-+		return 0;
-+	}
-+
-+	token->security = kzalloc(blob_sizes.lbs_bpf_token, GFP_KERNEL);
-+	if (!token->security)
-+		return -ENOMEM;
-+
-+	return 0;
-+}
-+
- /**
-  * lsm_early_task - during initialization allocate a composite task blob
-  * @task: the task that needs a blob
-@@ -5684,7 +5756,16 @@ int security_bpf_prog(struct bpf_prog *prog)
- int security_bpf_map_create(struct bpf_map *map, union bpf_attr *attr,
- 			    struct bpf_token *token, bool kernel)
- {
--	return call_int_hook(bpf_map_create, map, attr, token, kernel);
-+	int rc = 0;
-+
-+	rc = lsm_bpf_map_alloc(map);
-+	if (unlikely(rc))
-+		return rc;
-+
-+	rc = call_int_hook(bpf_map_create, map, attr, token, kernel);
-+	if (unlikely(rc))
-+		security_bpf_map_free(map);
-+	return rc;
- }
- 
- /**
-@@ -5703,7 +5784,16 @@ int security_bpf_map_create(struct bpf_map *map, union bpf_attr *attr,
- int security_bpf_prog_load(struct bpf_prog *prog, union bpf_attr *attr,
- 			   struct bpf_token *token, bool kernel)
- {
--	return call_int_hook(bpf_prog_load, prog, attr, token, kernel);
-+	int rc = 0;
-+
-+	rc = lsm_bpf_prog_alloc(prog);
-+	if (unlikely(rc))
-+		return rc;
-+
-+	rc = call_int_hook(bpf_prog_load, prog, attr, token, kernel);
-+	if (unlikely(rc))
-+		security_bpf_prog_free(prog);
-+	return rc;
- }
- 
- /**
-@@ -5720,7 +5810,16 @@ int security_bpf_prog_load(struct bpf_prog *prog, union bpf_attr *attr,
- int security_bpf_token_create(struct bpf_token *token, union bpf_attr *attr,
- 			      const struct path *path)
- {
--	return call_int_hook(bpf_token_create, token, attr, path);
-+	int rc = 0;
-+
-+	rc = lsm_bpf_token_alloc(token);
-+	if (unlikely(rc))
-+		return rc;
-+
-+	rc = call_int_hook(bpf_token_create, token, attr, path);
-+	if (unlikely(rc))
-+		security_bpf_token_free(token);
-+	return rc;
- }
- 
- /**
-@@ -5763,7 +5862,12 @@ int security_bpf_token_capable(const struct bpf_token *token, int cap)
-  */
- void security_bpf_map_free(struct bpf_map *map)
- {
-+	if (!map->security)
-+		return;
-+
- 	call_void_hook(bpf_map_free, map);
-+	kfree(map->security);
-+	map->security = NULL;
- }
- 
- /**
-@@ -5774,7 +5878,12 @@ void security_bpf_map_free(struct bpf_map *map)
-  */
- void security_bpf_prog_free(struct bpf_prog *prog)
- {
-+	if (!prog->aux->security)
-+		return;
-+
- 	call_void_hook(bpf_prog_free, prog);
-+	kfree(prog->aux->security);
-+	prog->aux->security = NULL;
- }
- 
- /**
-@@ -5785,7 +5894,12 @@ void security_bpf_prog_free(struct bpf_prog *prog)
-  */
- void security_bpf_token_free(struct bpf_token *token)
- {
-+	if (!token->security)
-+		return;
-+
- 	call_void_hook(bpf_token_free, token);
-+	kfree(token->security);
-+	token->security = NULL;
- }
- #endif /* CONFIG_BPF_SYSCALL */
- 
-diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-index 595ceb314aeb3..8052fb5fafc4d 100644
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -7038,14 +7038,14 @@ static int bpf_fd_pass(const struct file *file, u32 sid)
- 
- 	if (file->f_op == &bpf_map_fops) {
- 		map = file->private_data;
--		bpfsec = map->security;
-+		bpfsec = selinux_bpf_map_security(map);
- 		ret = avc_has_perm(sid, bpfsec->sid, SECCLASS_BPF,
- 				   bpf_map_fmode_to_av(file->f_mode), NULL);
- 		if (ret)
- 			return ret;
- 	} else if (file->f_op == &bpf_prog_fops) {
- 		prog = file->private_data;
--		bpfsec = prog->aux->security;
-+		bpfsec = selinux_bpf_prog_security(prog);
- 		ret = avc_has_perm(sid, bpfsec->sid, SECCLASS_BPF,
- 				   BPF__PROG_RUN, NULL);
- 		if (ret)
-@@ -7059,7 +7059,7 @@ static int selinux_bpf_map(struct bpf_map *map, fmode_t fmode)
- 	u32 sid = current_sid();
- 	struct bpf_security_struct *bpfsec;
- 
--	bpfsec = map->security;
-+	bpfsec = selinux_bpf_map_security(map);
- 	return avc_has_perm(sid, bpfsec->sid, SECCLASS_BPF,
- 			    bpf_map_fmode_to_av(fmode), NULL);
- }
-@@ -7069,7 +7069,7 @@ static int selinux_bpf_prog(struct bpf_prog *prog)
- 	u32 sid = current_sid();
- 	struct bpf_security_struct *bpfsec;
- 
--	bpfsec = prog->aux->security;
-+	bpfsec = selinux_bpf_prog_security(prog);
- 	return avc_has_perm(sid, bpfsec->sid, SECCLASS_BPF,
- 			    BPF__PROG_RUN, NULL);
- }
-@@ -7079,69 +7079,33 @@ static int selinux_bpf_map_create(struct bpf_map *map, union bpf_attr *attr,
- {
- 	struct bpf_security_struct *bpfsec;
- 
--	bpfsec = kzalloc(sizeof(*bpfsec), GFP_KERNEL);
--	if (!bpfsec)
--		return -ENOMEM;
--
-+	bpfsec = selinux_bpf_map_security(map);
- 	bpfsec->sid = current_sid();
--	map->security = bpfsec;
- 
- 	return 0;
- }
- 
--static void selinux_bpf_map_free(struct bpf_map *map)
--{
--	struct bpf_security_struct *bpfsec = map->security;
--
--	map->security = NULL;
--	kfree(bpfsec);
--}
--
- static int selinux_bpf_prog_load(struct bpf_prog *prog, union bpf_attr *attr,
- 				 struct bpf_token *token, bool kernel)
- {
- 	struct bpf_security_struct *bpfsec;
- 
--	bpfsec = kzalloc(sizeof(*bpfsec), GFP_KERNEL);
--	if (!bpfsec)
--		return -ENOMEM;
--
-+	bpfsec = selinux_bpf_prog_security(prog);
- 	bpfsec->sid = current_sid();
--	prog->aux->security = bpfsec;
- 
- 	return 0;
- }
- 
--static void selinux_bpf_prog_free(struct bpf_prog *prog)
--{
--	struct bpf_security_struct *bpfsec = prog->aux->security;
--
--	prog->aux->security = NULL;
--	kfree(bpfsec);
--}
--
- static int selinux_bpf_token_create(struct bpf_token *token, union bpf_attr *attr,
- 				    const struct path *path)
- {
- 	struct bpf_security_struct *bpfsec;
- 
--	bpfsec = kzalloc(sizeof(*bpfsec), GFP_KERNEL);
--	if (!bpfsec)
--		return -ENOMEM;
--
-+	bpfsec = selinux_bpf_token_security(token);
- 	bpfsec->sid = current_sid();
--	token->security = bpfsec;
- 
- 	return 0;
- }
--
--static void selinux_bpf_token_free(struct bpf_token *token)
--{
--	struct bpf_security_struct *bpfsec = token->security;
--
--	token->security = NULL;
--	kfree(bpfsec);
--}
+diff --git a/tools/testing/selftests/bpf/progs/verifier_arena_large.c b/tools/testing/selftests/bpf/progs/verifier_arena_large.c
+index 6065f862d964..f318675814c6 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_arena_large.c
++++ b/tools/testing/selftests/bpf/progs/verifier_arena_large.c
+@@ -29,12 +29,12 @@ int big_alloc1(void *ctx)
+ 	if (!page1)
+ 		return 1;
+ 	*page1 = 1;
+-	page2 = bpf_arena_alloc_pages(&arena, base + ARENA_SIZE - PAGE_SIZE,
++	page2 = bpf_arena_alloc_pages(&arena, base + ARENA_SIZE - PAGE_SIZE * 2,
+ 				      1, NUMA_NO_NODE, 0);
+ 	if (!page2)
+ 		return 2;
+ 	*page2 = 2;
+-	no_page = bpf_arena_alloc_pages(&arena, base + ARENA_SIZE,
++	no_page = bpf_arena_alloc_pages(&arena, base + ARENA_SIZE - PAGE_SIZE,
+ 					1, NUMA_NO_NODE, 0);
+ 	if (no_page)
+ 		return 3;
+@@ -66,4 +66,110 @@ int big_alloc1(void *ctx)
  #endif
- 
- struct lsm_blob_sizes selinux_blob_sizes __ro_after_init = {
-@@ -7159,6 +7123,9 @@ struct lsm_blob_sizes selinux_blob_sizes __ro_after_init = {
- 	.lbs_xattr_count = SELINUX_INODE_INIT_XATTRS,
- 	.lbs_tun_dev = sizeof(struct tun_security_struct),
- 	.lbs_ib = sizeof(struct ib_security_struct),
-+	.lbs_bpf_map = sizeof(struct bpf_security_struct),
-+	.lbs_bpf_prog = sizeof(struct bpf_security_struct),
-+	.lbs_bpf_token = sizeof(struct bpf_security_struct),
- };
- 
- #ifdef CONFIG_PERF_EVENTS
-@@ -7510,9 +7477,6 @@ static struct security_hook_list selinux_hooks[] __ro_after_init = {
- 	LSM_HOOK_INIT(bpf, selinux_bpf),
- 	LSM_HOOK_INIT(bpf_map, selinux_bpf_map),
- 	LSM_HOOK_INIT(bpf_prog, selinux_bpf_prog),
--	LSM_HOOK_INIT(bpf_map_free, selinux_bpf_map_free),
--	LSM_HOOK_INIT(bpf_prog_free, selinux_bpf_prog_free),
--	LSM_HOOK_INIT(bpf_token_free, selinux_bpf_token_free),
- #endif
- 
- #ifdef CONFIG_PERF_EVENTS
-diff --git a/security/selinux/include/objsec.h b/security/selinux/include/objsec.h
-index 6ee7dc4dfd6e0..9f935ed9a761f 100644
---- a/security/selinux/include/objsec.h
-+++ b/security/selinux/include/objsec.h
-@@ -26,6 +26,7 @@
- #include <linux/lsm_hooks.h>
- #include <linux/msg.h>
- #include <net/net_namespace.h>
-+#include <linux/bpf.h>
- #include "flask.h"
- #include "avc.h"
- 
-@@ -237,4 +238,20 @@ selinux_perf_event(void *perf_event)
- 	return perf_event + selinux_blob_sizes.lbs_perf_event;
+ 	return 0;
  }
- 
-+#ifdef CONFIG_BPF_SYSCALL
-+static inline struct bpf_security_struct *selinux_bpf_map_security(struct bpf_map *map)
++
++#if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
++#define PAGE_CNT 100
++__u8 __arena * __arena page[PAGE_CNT]; /* occupies the first page */
++__u8 __arena *base;
++
++/*
++ * Check that arena's range_tree algorithm allocates pages sequentially
++ * on the first pass and then fills in all gaps on the second pass.
++ */
++__noinline int alloc_pages(int page_cnt, int pages_atonce, bool first_pass,
++		int max_idx, int step)
 +{
-+	return map->security + selinux_blob_sizes.lbs_bpf_map;
++	__u8 __arena *pg;
++	int i, pg_idx;
++
++	for (i = 0; i < page_cnt; i++) {
++		pg = bpf_arena_alloc_pages(&arena, NULL, pages_atonce,
++					   NUMA_NO_NODE, 0);
++		if (!pg)
++			return step;
++		pg_idx = (pg - base) / PAGE_SIZE;
++		if (first_pass) {
++			/* Pages must be allocated sequentially */
++			if (pg_idx != i)
++				return step + 100;
++		} else {
++			/* Allocator must fill into gaps */
++			if (pg_idx >= max_idx || (pg_idx & 1))
++				return step + 200;
++		}
++		*pg = pg_idx;
++		page[pg_idx] = pg;
++		cond_break;
++	}
++	return 0;
 +}
 +
-+static inline struct bpf_security_struct *selinux_bpf_prog_security(struct bpf_prog *prog)
++//SEC("syscall")
++//__success __retval(0)
++int big_alloc2(void *ctx)
 +{
-+	return prog->aux->security + selinux_blob_sizes.lbs_bpf_prog;
-+}
++	__u8 __arena *pg;
++	int i, err;
 +
-+static inline struct bpf_security_struct *selinux_bpf_token_security(struct bpf_token *token)
-+{
-+	return token->security + selinux_blob_sizes.lbs_bpf_token;
++	base = bpf_arena_alloc_pages(&arena, NULL, 1, NUMA_NO_NODE, 0);
++	if (!base)
++		return 1;
++	bpf_arena_free_pages(&arena, (void __arena *)base, 1);
++
++	err = alloc_pages(PAGE_CNT, 1, true, PAGE_CNT, 2);
++	if (err)
++		return err;
++
++	/* Clear all even pages */
++	for (i = 0; i < PAGE_CNT; i += 2) {
++		pg = page[i];
++		if (*pg != i)
++			return 3;
++		bpf_arena_free_pages(&arena, (void __arena *)pg, 1);
++		page[i] = NULL;
++		cond_break;
++	}
++
++	/* Allocate into freed gaps */
++	err = alloc_pages(PAGE_CNT / 2, 1, false, PAGE_CNT, 4);
++	if (err)
++		return err;
++
++	/* Free pairs of pages */
++	for (i = 0; i < PAGE_CNT; i += 4) {
++		pg = page[i];
++		if (*pg != i)
++			return 5;
++		bpf_arena_free_pages(&arena, (void __arena *)pg, 2);
++		page[i] = NULL;
++		page[i + 1] = NULL;
++		cond_break;
++	}
++
++	/* Allocate 2 pages at a time into freed gaps */
++	err = alloc_pages(PAGE_CNT / 4, 2, false, PAGE_CNT, 6);
++	if (err)
++		return err;
++
++	/* Check pages without freeing */
++	for (i = 0; i < PAGE_CNT; i += 2) {
++		pg = page[i];
++		if (*pg != i)
++			return 7;
++		cond_break;
++	}
++
++	pg = bpf_arena_alloc_pages(&arena, NULL, 1, NUMA_NO_NODE, 0);
++
++	if (!pg)
++		return 8;
++	/*
++	 * The first PAGE_CNT pages are occupied. The new page
++	 * must be above.
++	 */
++	if ((pg - base) / PAGE_SIZE < PAGE_CNT)
++		return 9;
++	return 0;
 +}
-+#endif /* CONFIG_BPF_SYSCALL */
- #endif /* _SELINUX_OBJSEC_H_ */
++#endif
+ char _license[] SEC("license") = "GPL";
 -- 
-2.48.1
+2.46.0
 
 
