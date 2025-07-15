@@ -1,111 +1,190 @@
-Return-Path: <bpf+bounces-63337-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63338-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00928B0631F
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 17:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B9B9B06333
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 17:41:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D67FD189DFEC
-	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 15:37:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3406C1AA217F
+	for <lists+bpf@lfdr.de>; Tue, 15 Jul 2025 15:41:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C33522DFB5;
-	Tue, 15 Jul 2025 15:37:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE3582459F7;
+	Tue, 15 Jul 2025 15:41:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CaYHf0xI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TQyysHlf"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 059AC189F43
-	for <bpf@vger.kernel.org>; Tue, 15 Jul 2025 15:36:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BA0F2AD2D;
+	Tue, 15 Jul 2025 15:41:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752593821; cv=none; b=fEeMP+ObC5/M1vry6dEmNslzuhE/HAaB6B7m2JzSviEapR5vC7q3Rf9vGsxlNsgQm1towAIvrVizwFAd5QPgHc4mSgL2F9cDAAkIap9dbcLt3EPifcDnBIvW9E/FZWfGYRQwiy3dR6isRYSxzFDVYiAL87EYshv+eK6UKHLQdpY=
+	t=1752594076; cv=none; b=IblhCEzSUrtD9EjWoc6KKH6HoCxRdOLyPEDqfQmjVg34OGhtLuUt3ScBN5bTo8KRGZaIEdy71/KY5ULoFfM+Uy33kOz465wAk6nEPIYheuJfxKo2nrTWM152Q4h6aFrEvHp5BlwyPuXXmhcBjJECHCFq++VPdgf9CK6LpZSyIiw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752593821; c=relaxed/simple;
-	bh=Bh0Y8SZoiEglHf0+3cV2Zu2LLLSNgefs0REhwYjPpfw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sRR0DvJNV+WrloS0ivnohFnG/MAGqhTh5geFLtFB9TJLFcm7+kwsVdDFcqAsgYzkS1/0h7SoFHvaeHWkDt262kTobYat50DXfIxdQpTT0LnY2OH5dDdfcgjwucUoebnuM3GyGzano1WCr7ipNZY3VWYWq9WcAhrpZpJs5Q8td5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CaYHf0xI; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <e0dea1f3-b396-4503-8aeb-baba7cd21981@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1752593816;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZEhoBoqHfzUdGt1/xboG0chXhAgdsaLzQMQXZ1dytdg=;
-	b=CaYHf0xIrT3MZtAkEqHXNJHw94z5TjHF0qbmvq+bikkuPEkp4KNkK0NAw16ty0L5pB073K
-	ZMx+QQ3maRzuz8tt+xUvTg+NPtbk9RX1ORq8KhodMji46MGwI4iTegMlO3goVSdSaz7zcL
-	LdIRSx+w8FkWL13tDFj//olL9qBQHrQ=
-Date: Tue, 15 Jul 2025 08:36:41 -0700
+	s=arc-20240116; t=1752594076; c=relaxed/simple;
+	bh=nsrtnQIEqo/9toTmS791NZyWW4l5LXFWwuQd8lEs75E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=inTCba7cGEQCYzEvKgmtUcrHredoscvCtiMJpRPsMmOHZqclCGSEG0c7YC6M16/FHpX2zgOahtlKZ8I8rb5W65pGS7/Q7HfYiDO4jz4Ya2FwhUJgXjPrYwIjwdq/TNvtBjTkxXhKoYC4f1OHfIC6et5sE4m1beD7VNzqtU5WZrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TQyysHlf; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-455b00283a5so24871995e9.0;
+        Tue, 15 Jul 2025 08:41:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752594073; x=1753198873; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vP/jid/lwTMuSUYEVvS3TKkMNboILXns6WgZgd7cJYQ=;
+        b=TQyysHlfyd+MY/H0hig/TyBlHx85Z2r6n4J9g1EVlFNLwO6AOSBVqUwJ/N/Va/upUt
+         sxrbl/SHsF0Ukk+3eGyyKqIOaCr6wqqIpJwjFyc3ZPVXOKa6to/BW9HfvyggA8xqmvip
+         BEUNwlYPr7BE9RZx1w4+PfCDypLVv6qLw1rjvetQf4F6e0n7JsZwBV9qJKhXH4V6YQyf
+         eWqmmVdLlFqGr2Bv9A+W4t8o5cp4ghzfO1Nla1TvpL00ZEOAlF5+z5fx4cOk8mdRLi3D
+         s7oglV6m6nODrtrIcZoMgn1OSdhlAASP6KyhdZExfOqugZiJMm5r2DKBCmnTS0cV8H5b
+         mHKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752594073; x=1753198873;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vP/jid/lwTMuSUYEVvS3TKkMNboILXns6WgZgd7cJYQ=;
+        b=QtzJuVx0SJSHPlUAocN3izv0MNCmWA4qH/0U7iv7KhpvSQ5QvulACbiHHAwv+e2jWR
+         x0ZDdEwnjzXWS6IIUVZvu3lJOLoCFLz1tAyMU1nHmEmpRnqJRMswQW2Lgl3nhDp+VVnn
+         xMpOgA98iO/uvBR8x1TNJQ9vVK1/htaAMR6NQKuMeZ/H29KStrOm9J4raViFOq6gTrTD
+         LafYKqKaxeuTMC3TgJMpqkcfmRaea8rVd68in4GVXV6W7Dezx4BAQ5AJd9TPTrqRNcOO
+         JTMMPPS8AfSwK+YINsYiFgSQUFFieqV0NbB1tszuqUxgXYoUv07KRUd9JXNaE46YUpUZ
+         oW6w==
+X-Forwarded-Encrypted: i=1; AJvYcCVvMoPGcGC2Ccrf8vYF+6mGrORoJsMb6HaAhLwY6CFYVOhoo+thyBjd+lQY6pjtW0p55fM=@vger.kernel.org, AJvYcCW//1SbJXfe3KZEHAz1kG+QwR5N3ml4JyzrDS7x9qRbVbU+JoCTvCQK7vbYIdYLbRDNEOrk2TkmfxqmrbCW@vger.kernel.org, AJvYcCWWNZZjqHVnPZSE/m29e+FmqfvYr9JGVDFR/jG8o0vPOHwoi6ZEsD0dKaHwkKtzmI17mvOwXTnxfbDKREVDgum1@vger.kernel.org
+X-Gm-Message-State: AOJu0YyR0x1AqT9J2+2+CqkVAt3hbTcQ/WQS8s6gRXomIKQbVpRBr82g
+	RoQp24ourFLnCzZtmeco0K5Q853hXGKtV4IlMduQKBglRX4M6+mSXgFE1njvmofHScOavjj3Khd
+	pLqE8Iw6Lz7wr0cuggxn6xPlBBsILMuM=
+X-Gm-Gg: ASbGncsVM02FPFnkFJu85MNZ6gF5mFsJVrfJB5qvSTud1/yb8vaxI1JAqLnMGUcjEPT
+	9ZL7d39rjKgqVxaKVlu/u6oNwgopGjKs9VbXknJj6qJLEkN/C+6E7csBBDEw9FOzI2nDgye7id/
+	WWXbloOuNi2mLwses9/+oo261VIY3cUzRA+mC9AtgRJel3f8tU7UgTZjtaXhNQchqatRyhjtJVC
+	JeMClFsaOtlMONS7MejMtc=
+X-Google-Smtp-Source: AGHT+IHUe55CPlfoXQFNA46EX3tD2L+zAmA4ABcayvzkZKklLjj2akBlQVEyroKE2ImpxzjeHZRCNGen3/yjsDKdInE=
+X-Received: by 2002:adf:edd0:0:b0:3a5:2cb5:6429 with SMTP id
+ ffacd0b85a97d-3b5f18d96camr13102332f8f.43.1752594072711; Tue, 15 Jul 2025
+ 08:41:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 2/3] tests: add some tests validating skipped functions
- due to uncertain arg location
-To: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>,
- Alan Maguire <alan.maguire@oracle.com>, dwarves@vger.kernel.org,
- Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@fb.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Bastien Curutchet <bastien.curutchet@bootlin.com>, ebpf@linuxfoundation.org
-References: <20250707-btf_skip_structs_on_stack-v3-0-29569e086c12@bootlin.com>
- <20250707-btf_skip_structs_on_stack-v3-2-29569e086c12@bootlin.com>
- <DB5VWHU0N27I.3ETC4G47KB9Q@bootlin.com>
- <d26bb031-e88c-4d4b-8ce2-439aedc7a4a8@linux.dev>
- <680c6507-af5f-41be-8823-c8c9dfceaf5f@oracle.com>
- <DBCH1MVGI5EV.JODF0DE5B063@bootlin.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-In-Reply-To: <DBCH1MVGI5EV.JODF0DE5B063@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250709-arm64_relax_jit_comp-v1-0-3850fe189092@bootlin.com>
+ <20250709-arm64_relax_jit_comp-v1-1-3850fe189092@bootlin.com>
+ <aHZYcY_9JtK8so3C@willie-the-truck> <DBCONB7XHN7E.2UQMMG6RICMFY@bootlin.com> <aHZmOVpcoyTvGY1u@willie-the-truck>
+In-Reply-To: <aHZmOVpcoyTvGY1u@willie-the-truck>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 15 Jul 2025 08:40:59 -0700
+X-Gm-Features: Ac12FXzvpz_ddy7GAzzzXQfSfZjOu2uIdytRA66-cTwOPYu3QFq5bNb__jBKM6M
+Message-ID: <CAADnVQK=x7p6zjvNbv0iqOfE73DM3j0nGSGrFX+pVExLMkJb=w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] bpf, arm64: remove structs on stack constraint
+To: Will Deacon <will@kernel.org>
+Cc: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
+	Xu Kuohai <xukuohai@huaweicloud.com>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, ebpf@linuxfoundation.org, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+	Bastien Curutchet <bastien.curutchet@bootlin.com>, Ihor Solodrai <ihor.solodrai@linux.dev>, 
+	bpf <bpf@vger.kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 7/15/25 1:04 AM, Alexis Lothoré wrote:
-> On Wed Jul 9, 2025 at 6:21 PM CEST, Alan Maguire wrote:
->> On 07/07/2025 20:36, Ihor Solodrai wrote:
->>> On 7/7/25 7:14 AM, Alexis LothorÃ© wrote:
->>>> On Mon Jul 7, 2025 at 4:02 PM CEST, Alexis Lothoré (eBPF Foundation)
->>>> wrote:
-> 
-> [...]
-> 
->>> I think a proper fix for this is differentiating two variants of
->>> LSK__STOP_LOADING: stop because of an error, and stop because there is
->>> nothing else to do. That would require a bit of refactoring.
->>>
->>> Alan, Arnaldo, what do you think?
->>>
->>
->> Would it suffice to treat LSK__STOP_LOADING as an error in the BTF
->> encoding case, and not otherwise? That's a bit of hack; ideally I
->> suppose we'd introduce LSK__ABORT (like DWARF_CB_ABORT) and use it for
->> all the failure modes, reserving LSK__STOP_LOADING for cases where we
->> are done processing rather than we met an error.
-> 
-> Ihor, Alan, is anyone one of you planning to work on it ? If not, do you
-> want me take a look and implement one of the solution suggested above ? I
-> guess it's best to aim for Alan's second suggestion first (introducing a
-> new LSK enum to represent a failure), otherwise the simpler solution
-> distinguishing reasons for LSK__STOP_LOADING.
+On Tue, Jul 15, 2025 at 7:31=E2=80=AFAM Will Deacon <will@kernel.org> wrote=
+:
+>
+> On Tue, Jul 15, 2025 at 04:02:25PM +0200, Alexis Lothor=C3=A9 wrote:
+> > On Tue Jul 15, 2025 at 3:32 PM CEST, Will Deacon wrote:
+> > > On Wed, Jul 09, 2025 at 10:36:55AM +0200, Alexis Lothor=C3=A9 (eBPF F=
+oundation) wrote:
+> > >> While introducing support for 9+ arguments for tracing programs on
+> > >> ARM64, commit 9014cf56f13d ("bpf, arm64: Support up to 12 function
+> > >> arguments") has also introduced a constraint preventing BPF trampoli=
+nes
+> > >> from being generated if the target function consumes a struct argume=
+nt
+> > >> passed on stack, because of uncertainties around the exact struct
+> > >> location: if the struct has been marked as packed or with a custom
+> > >> alignment, this info is not reflected in BTF data, and so generated
+> > >> tracing trampolines could read the target function arguments at wron=
+g
+> > >> offsets.
+> > >>
+> > >> This issue is not specific to ARM64: there has been an attempt (see =
+[1])
+> > >> to bring the same constraint to other architectures JIT compilers. B=
+ut
+> > >> discussions following this attempt led to the move of this constrain=
+t
+> > >> out of the kernel (see [2]): instead of preventing the kernel from
+> > >> generating trampolines for those functions consuming structs on stac=
+k,
+> > >> it is simpler to just make sure that those functions with uncertain
+> > >> struct arguments location are not encoded in BTF information, and so
+> > >> that one can not even attempt to attach a tracing program to such
+> > >> function. The task is then deferred to pahole (see [3]).
+> > >>
+> > >> Now that the constraint is handled by pahole, remove it from the arm=
+64
+> > >> JIT compiler to keep it simple.
+> > >>
+> > >> [1] https://lore.kernel.org/bpf/20250613-deny_trampoline_structs_on_=
+stack-v1-0-5be9211768c3@bootlin.com/
+> > >> [2] https://lore.kernel.org/bpf/CAADnVQ+sj9XhscN9PdmTzjVa7Eif21noAUH=
+3y1K6x5bWcL-5pg@mail.gmail.com/
+> > >> [3] https://lore.kernel.org/bpf/20250707-btf_skip_structs_on_stack-v=
+3-0-29569e086c12@bootlin.com/
+> > >>
+> > >> Signed-off-by: Alexis Lothor=C3=A9 (eBPF Foundation) <alexis.lothore=
+@bootlin.com>
+> > >> ---
+> > >>  arch/arm64/net/bpf_jit_comp.c | 5 -----
+> > >>  1 file changed, 5 deletions(-)
+> > >
+> > > This is a question born more out of ignorance that insight, but how d=
+o
+> > > we ensure that the version of pahole being used is sufficiently
+> > > up-to-date that the in-kernel check is not required?
+> >
+> > Based on earlier discussions, I am not convinced it is worth maintainin=
+g
+> > the check depending on the pahole version used in BTF. Other architectu=
+res
+> > exposing a JIT compiler don't have the in-kernel check and so are alrea=
+dy
+> > exposed to this very specific case, but discussions around my attempt t=
+o
+> > enforce the check on other JIT comp showed that the rarity of this case=
+ do
+> > not justify protecting it on kernel side (see [1]).
+>
+> I can understand why doing this in pahole rather than in each individual
+> JIT is preferable, but I don't think there's any harm leaving the
+> existing two line check in arm64 as long as older versions of pahole
+> might be used, is there? I wouldn't say that removing it really
+> simplifies the JIT compiler when you consider the rest of the
+> implementation.
+>
+> Of course, once the kernel requires a version of pahole recent enough
+> to contain [3], we should drop the check in the JIT compiler as the
+> one in pahole looks like it's more selective about the functions it
+> rejects.
 
-If you're willing to work on this, please go ahead.
-
-It's not directly related to this series though, so maybe a separate
-patch.
-
-> 
-> Alexis
-> 
-
+I frankly don't see the point in adding and maintaining such checks
+and code in the kernel for hypothetical cases that are not present
+in the kernel and highly unlikely ever be.
+The arm64 jit check was added out of abundance of caution.
+There was way too much "caution".
 
