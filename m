@@ -1,162 +1,171 @@
-Return-Path: <bpf+bounces-63448-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63449-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04FE3B07A6E
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 17:55:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7903EB07A9F
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 18:05:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C79B3AEDA0
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 15:55:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C592E7A508D
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 16:04:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A08FD2F49EF;
-	Wed, 16 Jul 2025 15:55:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F5CB2F531B;
+	Wed, 16 Jul 2025 16:05:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="f359YEDD"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dntEMyKB"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF5821E0B91
-	for <bpf@vger.kernel.org>; Wed, 16 Jul 2025 15:55:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ECD41A238C
+	for <bpf@vger.kernel.org>; Wed, 16 Jul 2025 16:05:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752681351; cv=none; b=Flr8f2JPsN0DQwItvY+ofcU5QI4xtY6WxJ8CxdK+T70FQ9BFX9U2gKPlWR90J11oC5hw44XD+jFInRXsA+viWc4K2XOGbMUbz+HpG1ygLyfBZ+xXNgFeppnPDUbCFAhEBfAlPTDbV43mLHjJPwaE/UMhL5tOzuoxIrmMwcZqloY=
+	t=1752681924; cv=none; b=u5JAJlRMe+d25cM0qBSbWb1utQ6Bv3A3KlBLTSHW/M2OhJDFsK3DWgcyb6vd3qrwfC5N/mXslidsW3gucaHuejha0LnsM5pAqxz6zidMDQ9gpMj0Pi6eYXXtcfgtkcZVej+wvtBfRzVNXldPIPHuas7CPPZ4Bu8hRvWhXPLE9Z0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752681351; c=relaxed/simple;
-	bh=Gfq0RN8nx4eBZsOJksZpCTB/HLpQ7B1znLA6eT7xYdI=;
+	s=arc-20240116; t=1752681924; c=relaxed/simple;
+	bh=wRRCUNbWnyKy2Hpmvrbgoq7o1QqOfvzi2Xqp++0fABY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OQMa0QRkYjAPSaOHQJxfYKIYMMTm3GyhwJY4/smGlQGW3IlDD2QdYsmcJD1l2i3+2xt+87mXyF9lFphSnu+cKA37GfvkdB2eJtT2yUp7ip3bMO7sMtMEA5gRJDoBQkSDRtqD7DR6ADRy8ztftnKuYQCb3nPB75dx/aV82JQLNFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=f359YEDD; arc=none smtp.client-ip=91.218.175.185
+	 In-Reply-To:Content-Type; b=oPEv94aRKJoxbcfiID1lFer2eDvfJePYaBqwgCGd5Pyu7ISHfDtepP8SwrDi+vmk5DLWaF7oykbftZZnV4eKwbdGaAIwA6ZwcUXJj9I/mIjTcfbFxCzbslUZfoZAB3lHwnqF/ZVbV6mi8NPJM8Bez6VxyXWvKOuDqujiseWTJeM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dntEMyKB; arc=none smtp.client-ip=91.218.175.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <3300af59-741d-495a-b2bb-255989aa16c8@linux.dev>
+Message-ID: <9b41f9f5-396f-47e0-9a12-46c52087df6c@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1752681336;
+	t=1752681910;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=MiXIy7sVTXVx65SuyVLUmcYFjGQ7qw41XvKHBEyEtQI=;
-	b=f359YEDDd/ckKl0IYjzVXc/zgMPG/MBuabLqs+IPF64+7Iqvf13vNUqL7r1AxW9dwUzITV
-	VH5EtGTWAOj+VX14WHr82q0jExrPSKYnJa/NSw7fJfizRGdIQr1KZkM4lhjxwepLsDZ0qf
-	UD/yi3ReoXC4kEYwvxJm3/XtF2n7JOA=
-Date: Wed, 16 Jul 2025 08:55:32 -0700
+	bh=gFkj+dcLTyPkcrHAQwjqQzmOpLBhzP4CPtROubMCqJs=;
+	b=dntEMyKBBID3TFof0pknd4Ktq8oRtqJ+eoEu7Tf6rZA7vlqDson7+VUi+LIt7Kv7eofIoV
+	42neJ6VYJYy1QIow5xFj2rWkSYQtRaq/8dHZTs6GpkEq/DSsKrgTZ21j0Ap5Y8Uc3DqALt
+	1MleAQRBvCcWo358aSpQIBdBAyDn7CM=
+Date: Wed, 16 Jul 2025 09:05:05 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: Subject: [RFC PATCH 0/1] bpf: Add helper to mark xdp_buff->data
- as PTR_TO_PACKET for tracing
+Subject: Re: [PATCH bpf-next v5 2/2] selftests/bpf: Add tests with stack ptr
+ register in conditional jmp
 Content-Language: en-GB
-To: Vijay Nag <nagvijay@microsoft.com>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-References: <KUZP153MB1371D7C7160643B3FC965E6CC456A@KUZP153MB1371.APCP153.PROD.OUTLOOK.COM>
- <KUZP153MB137161E2B4EC720F933B7F95C456A@KUZP153MB1371.APCP153.PROD.OUTLOOK.COM>
+To: Shung-Hsi Yu <shung-hsi.yu@suse.com>, Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+ Martin KaFai Lau <martin.lau@kernel.org>, stable@vger.kernel.org,
+ Sasha Levin <sashal@kernel.org>
+References: <20250524041335.4046126-1-yonghong.song@linux.dev>
+ <20250524041340.4046304-1-yonghong.song@linux.dev>
+ <4goguotzo5jh4224ox7oaan5l4mh2mt4y54j2bpbeba45umzws@7is5vdizr6m3>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <KUZP153MB137161E2B4EC720F933B7F95C456A@KUZP153MB1371.APCP153.PROD.OUTLOOK.COM>
+In-Reply-To: <4goguotzo5jh4224ox7oaan5l4mh2mt4y54j2bpbeba45umzws@7is5vdizr6m3>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
 
 
-On 7/15/25 11:34 PM, Vijay Nag wrote:
-> Hi BPF maintainers,
+On 7/16/25 3:13 AM, Shung-Hsi Yu wrote:
+> Hi Andrii and Yonghong,
 >
-> This is an RFC to propose  new BPF helper that will enable tracing programs attached to XDP entry points, such as __xdp_dispatch, to safely parse packet headers using xdp_buff->data with native pointer semantics.
+> On Fri, May 23, 2025 at 09:13:40PM -0700, Yonghong Song wrote:
+>> Add two tests:
+>>    - one test has 'rX <op> r10' where rX is not r10, and
+>>    - another test has 'rX <op> rY' where rX and rY are not r10
+>>      but there is an early insn 'rX = r10'.
+>>
+>> Without previous verifier change, both tests will fail.
+>>
+>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>> ---
+>>   .../selftests/bpf/progs/verifier_precision.c  | 53 +++++++++++++++++++
+>>   1 file changed, 53 insertions(+)
+> I was looking this commit (5ffb537e416e) since it was a BPF selftest
+> test for CVE-2025-38279, but upon looking I found that the commit
+> differs from the patch, there is an extra hunk that changed
+> kernel/bpf/verifier.c that wasn't found the Yonghong's original patch.
 >
-> Currently, the verifier treats xdp_buff->data and xdp_buff->data_end as generic PTR_TO_MEM. Consequently, even with proper bounds checks, attempts to access header fields using pointer arithmetic (e.g., eth+1) fail verification. This forces users to revert to bpf_probe_read_kernel() even when the packet data is safely readable in memory.
->
-> ## Motivation
->
-> There are several valid scenarios where tracing or instrumentation tools (e.g., xdpdump, latency profilers) need to inspect packet headers at XDP hook points without writing or maintaining full XDP programs. These scenarios include:
->
-> - Conditional flow capture based on IP/TCP header fields
-> - Per-packet metadata collection (e.g., timestamp, RSS queue, etc.)
-> - Passive flow observation from fentry to existing XDP functions
->
-> In these cases, users often write tracing programs that receive a struct xdp_buff * context and want to treat xdp->data as the start of the packet, similar to how XDP programs can with xdp_md->data.
->
-> ## Proposal
->
-> I propose introducing a new BPF helper:
->
-> void *bpf_pkt_ptr_from_xdp_buff(struct xdp_buff *xdp);
+> I suppose it was meant to be squashed into the previous commit
+> e2d2115e56c4 "bpf: Do not include stack ptr register in precision
+> backtracking bookkeeping"?
 
-You cannot introduce bpf helper any more. If really necessary, kfunc is the
-only option now.
+Andrii made some change to my original patch for easy understanding.
+See
+   https://lore.kernel.org/bpf/20250524041335.4046126-1-yonghong.song@linux.dev
+Quoted below:
+"
+I've moved it inside the preceding if/else (twice), so it's more
+obvious that BPF_X deal with both src_reg and dst_reg, and BPF_K case
+deals only with BPF_K. The end result is the same, but I found this
+way a bit easier to follow. Applied to bpf-next, thanks.
 
->
-> This helper would:
->
-> - Return xdp->data
-> - Mark the pointer as PTR_TO_PACKET in verifier metadata
-> - Allow safe pointer arithmetic and field access (e.g., eth+1, iph->saddr)
-> - Maintain strict bounds checking via xdp->data_end
->
-> This approach allows safe, verifier-friendly packet parsing logic in fentry/kprobe programs that work on struct xdp_buff *.
->
-> ## Example Usage
->
-> SEC("fentry/__xdp_dispatch")
-> int BPF_PROG(trace_xdp_entry, struct xdp_buff *xdp)
-> {
->      void *data = bpf_pkt_ptr_from_xdp_buff(xdp);
->      void *data_end = xdp->data_end;
->      struct ethhdr *eth = data;
->      if ((void *)(eth + 1) > data_end)
->          return 0;
->      if (eth->h_proto == bpf_htons(ETH_P_IP))
->          bpf_printk("Captured IPv4 packet\n");
->      return 0;
-> }
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c index 
+831c2eff56e1..c9a372ca7830 100644 --- a/kernel/bpf/verifier.c +++ 
+b/kernel/bpf/verifier.c @@ -16471,6 +16471,8 @@ static int 
+check_cond_jmp_op(struct bpf_verifier_env *env,
 
-In the above, do not use helper and direct use
-   void *data = xdp->data;
+                 if (src_reg->type == PTR_TO_STACK)
+                         insn_flags |= INSN_F_SRC_REG_STACK;
++ if (dst_reg->type == PTR_TO_STACK) + insn_flags |= INSN_F_DST_REG_STACK;         } else {
+                 if (insn->src_reg != BPF_REG_0) {
+                         verbose(env, "BPF_JMP/JMP32 uses reserved fields\n");
+@@ -16480,10 +16482,11 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
+                 memset(src_reg, 0, sizeof(*src_reg));
+                 src_reg->type = SCALAR_VALUE;
+                 __mark_reg_known(src_reg, insn->imm);
++ + if (dst_reg->type == PTR_TO_STACK) + insn_flags |= 
+INSN_F_DST_REG_STACK;         }
 
-With latest bpf-next, your code will succeed with
-verification due to the following recent verifier change:
-   https://lore.kernel.org/all/20250704230354.1323244-1-eddyz87@gmail.com/
-
-Previously, 'data/data_end' will become a scalar after xdp->{data,data_end}.
-But with the above patch set, 'data/data_end' will become
-rdonly_untrusted_mem, which allows further dereference.
+- if (dst_reg->type == PTR_TO_STACK) - insn_flags |= INSN_F_DST_REG_STACK;         if (insn_flags) {
+                 err = push_insn_history(env, this_branch, insn_flags, 0);
+                 if (err)
+...
+"
 
 >
-> ## Alternatives Considered
+> Since stable backports got only e2d2115e56c4, but not the 5ffb537e416e
+> here with the extra change for kernel/bpf/verifier.c, I'd guess the
+> backtracking logic in the stable kernel isn't correct at the moment,
+> so I'll send 5ffb537e416e "selftests/bpf: Add tests with stack ptr
+> register in conditional jmp" to stable as well. Let me know if that's
+> not the right thing to do.
 >
-> - Using bpf_probe_read_kernel() for each header:
->    - Works, but incurs copy overhead
->    - Prevents natural packet pointer-based idioms
->    - Not ideal for frequent filtered tracing
+> Shung-Hsi
 >
-> - Teaching the verifier to infer packet provenance on raw PTR_TO_MEM:
->    - Complex, error-prone, and hard to generalize
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 98c52829936e..a7d6e0c5928b 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -16456,6 +16456,8 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
+>   
+>   		if (src_reg->type == PTR_TO_STACK)
+>   			insn_flags |= INSN_F_SRC_REG_STACK;
+> +		if (dst_reg->type == PTR_TO_STACK)
+> +			insn_flags |= INSN_F_DST_REG_STACK;
+>   	} else {
+>   		if (insn->src_reg != BPF_REG_0) {
+>   			verbose(env, "BPF_JMP/JMP32 uses reserved fields\n");
+> @@ -16465,10 +16467,11 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
+>   		memset(src_reg, 0, sizeof(*src_reg));
+>   		src_reg->type = SCALAR_VALUE;
+>   		__mark_reg_known(src_reg, insn->imm);
+> +
+> +		if (dst_reg->type == PTR_TO_STACK)
+> +			insn_flags |= INSN_F_DST_REG_STACK;
+>   	}
+>   
+> -	if (dst_reg->type == PTR_TO_STACK)
+> -		insn_flags |= INSN_F_DST_REG_STACK;
+>   	if (insn_flags) {
+>   		err = push_insn_history(env, this_branch, insn_flags, 0);
+>   		if (err)
 >
-> ## Security Considerations
->
-> - The helper is read-only and does not modify xdp_buff or data
-> - The returned pointer would follow the same bounds logic as xdp_md->data
-> - Maintains safety via verifier checks against data_end
-> - Pattern is similar to existing helpers like bpf_xdp_load_bytes()
->
-> ## Open Questions
->
-> - Would this helper be preferred over modifying verifier logic?
-> - Is this useful for skb- or tc_buff-based tracing too?
-> - Should there be constraints on program type or attachment points?
->
-> I am eagerly looking forward to your feedback. If the idea is acceptable, I would be happy to submit a working implementation and documentation update.
->
-> Thanks,
-> Vijay Nag
->
+>> diff --git a/tools/testing/selftests/bpf/progs/verifier_precision.c b/tools/testing/selftests/bpf/progs/verifier_precision.c
+> ...
 >
 
 
