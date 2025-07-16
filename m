@@ -1,87 +1,48 @@
-Return-Path: <bpf+bounces-63420-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63421-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F07AFB070A6
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 10:33:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EBBCB0719A
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 11:26:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89F953AA57C
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 08:33:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B03A77A2EB2
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 09:25:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BF0D2EE97C;
-	Wed, 16 Jul 2025 08:33:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4DF62EFDBE;
+	Wed, 16 Jul 2025 09:26:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ot7ekC/Q"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GV8QBgOV"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4469326E6F9
-	for <bpf@vger.kernel.org>; Wed, 16 Jul 2025 08:33:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F8842F0059;
+	Wed, 16 Jul 2025 09:26:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752654821; cv=none; b=Fi2Vji/qonztPSdGf1qLLk/J1lBz3ueSNDAXQ1+dBTZ+if+ET92du79ZUnViADWOTQkfSvyGcpMzk9iFIYGuWuGz4iiD2T2kGRvm0aJikZnOXycU4nS41zihkplF/6r45+MvM9VAbkbjIr2wwJ/wYd1vc+S8PJwO75fP0PaSvD4=
+	t=1752657989; cv=none; b=qJFg1MGkV3UtkEjffvrhw67dmUvYgZwCSlKr8bJmnECMFhrh6mZsFyTCLt1QMtasl/UWmVbxlXiRHUjPkPOpoeHP5Lm93JdGIAlImRLh5w6cjMDoI1dX8xwwqPcRPxH/7q9RaQKPokJnM7psUzJx0agFTXq/izqJNpC5cksQ2+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752654821; c=relaxed/simple;
-	bh=PO/hVtAFUJcvYOoFA5Lsz2XawUBmB+drYH34Ga9YmFo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=D1NLPDwyy+HhZwI8JPivmITzfERDSrTVxBVcc6IU4AYtRDbrDFl9iUHZlyHFLKouuX1fBI6KzdTLSef5E2J8ixL7XxigUkCiqwCrGD3pN12L4/tu5ROkfR+aGBXrMIasGN12NZeV9iTaLJCxSxEz7XV5o7qq7glCg8RLWA+FvbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ot7ekC/Q; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1752654819;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1/mMMz9r3dZS5fLhT7uV9k7AsWyXJpRGJaGcTiHmpis=;
-	b=Ot7ekC/QeQO4d7qwMfesFi7OCIqtRsPrkTp3ZurfiwbfSLW0ytRCfHWH4uQK/aSDQk0K11
-	ZWiXuH9fdohWhmLNW6R09fQT/VLBtb/EGuKRKJxYd1Xebqv6pJn3Z/D8MeuvfTuGeYAgyD
-	RaJsKUo7I+VecJJRHDQNfPaGkDm1o+k=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-479-cyh4thZbPjGcYRpNy4A_-g-1; Wed, 16 Jul 2025 04:33:37 -0400
-X-MC-Unique: cyh4thZbPjGcYRpNy4A_-g-1
-X-Mimecast-MFC-AGG-ID: cyh4thZbPjGcYRpNy4A_-g_1752654816
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3a4f7ebfd00so2625205f8f.2
-        for <bpf@vger.kernel.org>; Wed, 16 Jul 2025 01:33:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752654816; x=1753259616;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1/mMMz9r3dZS5fLhT7uV9k7AsWyXJpRGJaGcTiHmpis=;
-        b=YzvDtzcSKsVumo/qZiuqAbSYKmSEbAw63d3p3IacOJBteknHH3K62B7dDscq+r6YSE
-         J9IhkwGrNqV3S5R/iKZt2U8uWBEAT1OdJka8gio0Rlexrx6nKbQfN6FpN3QpfHhj1MBK
-         wuFKPfSdq+UrJ58KYVymyoevcvfgc69ECENCuNeXqetcMaxjAVShgdRilhwB4+++ZE6l
-         ulAYiLTeULKxZnh4jN1q1mI4ro4C1oEsMRsYUuDmXyxo7U+En9KaNDbrJs+X/EFL/zIr
-         CLGWN0Wps2nk18M1T39CA/fMzOoy0x2Zhrxrx7iHtMBo8pc5utsmW3bh5s5KxElwjmEb
-         d77A==
-X-Forwarded-Encrypted: i=1; AJvYcCXUc30e6Oe6p7bzKFLPh9p6N1SbJP5twzQU3vnl3MxYEGbDLW/MkbsIoJpHSrskJFOPKb0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwEHiaAF5++aJNAdGTlQtorlw9trJi4pxP3zRSl1cYVbW0a7fHC
-	Nh8oQIuh78qwyDcp7w5oasPHrsBiLL6CYNOnxDAfi32SOVk7dyIIAa9udVIi0fkzyRP6BdpC1Mx
-	G7kIHXRH/s81eLBqRdFiT7NtAqvyg9FPgIETA9o9oDil4B01W6/2hog==
-X-Gm-Gg: ASbGncsvW8+Cz5AWO9Vc9kWI7HznBI69qi8kTCdSM3RFjQabBE1O/jLGGeI46V5OzhI
-	VYKURu8XPm8pdybjIbwCF7kKXadDyi/r784ajGjoN60gDcZpdbX/vrXx9rLshhgyKEHTQ1k0SxG
-	WoU8Gs3WsuB8be/ebO01WJmWBQxTnFuBIKBx5ajLX740TrQkIccX/FzkL8wOE939xYXj0lei3p6
-	mahlEdVxg1y95gotpCX2e+z0LbyCXPYv5JFgaN9lum9kt0NlekKhsSJJ/FQ1oJmcF3lsIUyyBxL
-	ndTXpgLWTv0/fZrjDI1wsjRm+RjdPmHYrb3lSls+8FNQTdzSkhFLTZYbWyiWbJ3g/u61ESE4pI2
-	rfsw9mj8sL3I=
-X-Received: by 2002:a05:6000:2101:b0:3a5:67d5:a400 with SMTP id ffacd0b85a97d-3b60dd7ad32mr1289762f8f.33.1752654816264;
-        Wed, 16 Jul 2025 01:33:36 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF9yD8/Rt4+/VGcbyULapP54i40HRfZLKuicTBEq7LAucDsT5xtqNB3H6FZ/JdSK6n94pjh2w==
-X-Received: by 2002:a05:6000:2101:b0:3a5:67d5:a400 with SMTP id ffacd0b85a97d-3b60dd7ad32mr1289729f8f.33.1752654815741;
-        Wed, 16 Jul 2025 01:33:35 -0700 (PDT)
-Received: from ?IPV6:2a0d:3344:2712:7e10:4d59:d956:544f:d65c? ([2a0d:3344:2712:7e10:4d59:d956:544f:d65c])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4562e886286sm13769075e9.26.2025.07.16.01.33.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jul 2025 01:33:35 -0700 (PDT)
-Message-ID: <514ca303-149a-4f7e-a473-31051fb7162b@redhat.com>
-Date: Wed, 16 Jul 2025 10:33:33 +0200
+	s=arc-20240116; t=1752657989; c=relaxed/simple;
+	bh=rZFV7iCiwcCgWnCKhjPZ1zpfN5fAxekeaBpaYqRspxc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bqYfwCzA29e73UvntFaP32QPy2L4dzCL6ZkicygAWDBd4Qb3m8QY+te0jfxZK19zaICAGMehoOErVt8z2/r71omSBxEDQaDz29jAq58+TiXOa6BE6Wc4WS0V+jFPs5NiveMthzcXWMoI94cQqx0vLbS0i3iTot7aa6u3K3rUKsY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GV8QBgOV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75ECEC4CEF0;
+	Wed, 16 Jul 2025 09:26:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752657988;
+	bh=rZFV7iCiwcCgWnCKhjPZ1zpfN5fAxekeaBpaYqRspxc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=GV8QBgOVbpAs4HDllMV5uCVc8Pw02E4JwJg9Au3KHZbyiDW+E9qegDcLn8mXH6p1s
+	 jV1ElzA9RiOwwq3eoa+id2OmrJLN6+BEKV2CbSPBW1ClcaVWWNyTFfrTRRUW0ikyWc
+	 5NAoJJ089zojD4qGVqsDsUIJbw2SI5ZkNsvzK0W9L47Fz9v5HOLtmTGJu7hgfJ0cJp
+	 w09LGsjhtiT+DG2kdXS8t25D15W4/smfKkrhLT8HxVsIYQZN+d+1o8r3NW6AnbCdFu
+	 EN9SWpOz7qD4cHtwLuZa3c4LUE7koGsd0THT3xzGjcM2+coQyzQM5zEP57HEtpiZ/z
+	 5i3CZnvLd9V2g==
+Message-ID: <d0c8c1ce-5bb2-45f5-9d7f-fac734dcfe31@kernel.org>
+Date: Wed, 16 Jul 2025 11:26:24 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -89,79 +50,105 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 net-next 12/15] tcp: accecn: AccECN option send
- control
-To: "Chia-Yu Chang (Nokia)" <chia-yu.chang@nokia-bell-labs.com>,
- "edumazet@google.com" <edumazet@google.com>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "corbet@lwn.net" <corbet@lwn.net>, "horms@kernel.org" <horms@kernel.org>,
- "dsahern@kernel.org" <dsahern@kernel.org>,
- "kuniyu@amazon.com" <kuniyu@amazon.com>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "dave.taht@gmail.com" <dave.taht@gmail.com>,
- "jhs@mojatatu.com" <jhs@mojatatu.com>, "kuba@kernel.org" <kuba@kernel.org>,
- "stephen@networkplumber.org" <stephen@networkplumber.org>,
- "xiyou.wangcong@gmail.com" <xiyou.wangcong@gmail.com>,
- "jiri@resnulli.us" <jiri@resnulli.us>,
- "davem@davemloft.net" <davem@davemloft.net>,
- "andrew+netdev@lunn.ch" <andrew+netdev@lunn.ch>,
- "donald.hunter@gmail.com" <donald.hunter@gmail.com>,
- "ast@fiberby.net" <ast@fiberby.net>,
- "liuhangbin@gmail.com" <liuhangbin@gmail.com>,
- "shuah@kernel.org" <shuah@kernel.org>,
- "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
- "ij@kernel.org" <ij@kernel.org>, "ncardwell@google.com"
- <ncardwell@google.com>,
- "Koen De Schepper (Nokia)" <koen.de_schepper@nokia-bell-labs.com>,
- "g.white@cablelabs.com" <g.white@cablelabs.com>,
- "ingemar.s.johansson@ericsson.com" <ingemar.s.johansson@ericsson.com>,
- "mirja.kuehlewind@ericsson.com" <mirja.kuehlewind@ericsson.com>,
- "cheshire@apple.com" <cheshire@apple.com>, "rs.ietf@gmx.at"
- <rs.ietf@gmx.at>, "Jason_Livingood@comcast.com"
- <Jason_Livingood@comcast.com>, "vidhi_goel@apple.com" <vidhi_goel@apple.com>
-References: <20250704085345.46530-1-chia-yu.chang@nokia-bell-labs.com>
- <20250704085345.46530-13-chia-yu.chang@nokia-bell-labs.com>
- <b2c0653e-077f-4609-922e-777f1d868dd0@redhat.com>
- <PAXPR07MB7984D6FA40FF000E51F694F3A357A@PAXPR07MB7984.eurprd07.prod.outlook.com>
+Subject: Re: [PATCH net-next V4] net: track pfmemalloc drops via
+ SKB_DROP_REASON_PFMEMALLOC
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
+ Eric Dumazet <eric.dumazet@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+ kernel-team@cloudflare.com, mfleming@cloudflare.com
+References: <175146472829.1363787.9293177520571232738.stgit@firesoul>
+ <20250707174346.2211c46a@kernel.org>
 Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <PAXPR07MB7984D6FA40FF000E51F694F3A357A@PAXPR07MB7984.eurprd07.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <20250707174346.2211c46a@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 7/15/25 5:14 PM, Chia-Yu Chang (Nokia) wrote:
->> On 7/4/25 10:53 AM, chia-yu.chang@nokia-bell-labs.com wrote:
->>> @@ -285,9 +297,33 @@ static inline void 
->>> tcp_ecn_received_counters(struct sock *sk,
->>>
->>>               if (len > 0) {
->>>                       u8 minlen = 
->>> tcp_ecnfield_to_accecn_optfield(ecnfield);
->>> +                     u32 oldbytes = tp->received_ecn_bytes[ecnfield - 
->>> + 1];
->>> +
->>>                       tp->received_ecn_bytes[ecnfield - 1] += len;
->>>                       tp->accecn_minlen = max_t(u8, tp->accecn_minlen,
->>>                                                 minlen);
->>> +
->>> +                     /* Demand AccECN option at least every 2^22 bytes to
->>> +                      * avoid overflowing the ECN byte counters.
->>> +                      */
->>> +                     if ((tp->received_ecn_bytes[ecnfield - 1] ^ oldbytes) &
->>> +                         ~((1 << 22) - 1)) {
+
+
+On 08/07/2025 02.43, Jakub Kicinski wrote:
+> On Wed, 02 Jul 2025 15:59:19 +0200 Jesper Dangaard Brouer wrote:
+>> Add a new SKB drop reason (SKB_DROP_REASON_PFMEMALLOC) to track packets
+>> dropped due to memory pressure. In production environments, we've observed
+>> memory exhaustion reported by memory layer stack traces, but these drops
+>> were not properly tracked in the SKB drop reason infrastructure.
 >>
->> I don't understand the above statement, I don't think it yield the result expected according to the above comment.
+>> While most network code paths now properly report pfmemalloc drops, some
+>> protocol-specific socket implementations still use sk_filter() without
+>> drop reason tracking:
+>> - Bluetooth L2CAP sockets
+>> - CAIF sockets
+>> - IUCV sockets
+>> - Netlink sockets
+>> - SCTP sockets
+>> - Unix domain sockets
 > 
-> Hi Paolo,
+>> @@ -1030,10 +1030,8 @@ static netdev_tx_t tun_net_xmit(struct sk_buff *skb, struct net_device *dev)
+>>   	}
+>>   
+>>   	if (tfile->socket.sk->sk_filter &&
+>> -	    sk_filter(tfile->socket.sk, skb)) {
+>> -		drop_reason = SKB_DROP_REASON_SOCKET_FILTER;
+>> +	    (sk_filter_reason(tfile->socket.sk, skb, &drop_reason)))
 > 
-> I was thinking to change it into GENMASK_U32() and comments like below.
+> why the outside brackets?
 > 
-> It is intended to send AccECN option at least once per 2^22-byte increase in the counter.
 
-Ok, I see it now. Please mention explicitly the above in the comment and
-test just the 22 bit.
+Good catch, yes the brackets are unnecessary, will remove in V5.
 
-/P
+>> @@ -591,6 +592,10 @@ enum skb_drop_reason {
+>>   	 * non conform CAN-XL frame (or device is unable to receive CAN frames)
+>>   	 */
+>>   	SKB_DROP_REASON_CANXL_RX_INVALID_FRAME,
+>> +	/**
+>> +	 * @SKB_DROP_REASON_PFMEMALLOC: dropped when under memory pressure
+> 
+> I guess kinda, but in practice not very precise?
+> 
+> How about: packet allocated from memory reserve reached a path or
+> socket not eligible for use of memory reserves.
+> 
 
+I like it, this is a good description, thanks! :-)
+
+> I could be misremembering the meaning of "memory reserve" TBH.
+> 
+>> +	 */
+>> +	SKB_DROP_REASON_PFMEMALLOC,
+>>   	/**
+>>   	 * @SKB_DROP_REASON_MAX: the maximum of core drop reasons, which
+>>   	 * shouldn't be used as a real 'reason' - only for tracing code gen
+> 
+>> -	if (unlikely(sk_add_backlog(sk, skb, limit))) {
+>> +	if (unlikely((err = sk_add_backlog(sk, skb, limit)))) {
+> 
+> I understand the else if () case but here you can simply:
+> 
+> 	err = sk_add_backlog(sk, skb, limit);
+> 	if (unlikely(err))
+
+Agreed, will fix in V5.
+
+> no need to make checkpatch upset.
+> 
+>> @@ -162,7 +163,7 @@ static int rose_state3_machine(struct sock *sk, struct sk_buff *skb, int framety
+>>   		rose_frames_acked(sk, nr);
+>>   		if (ns == rose->vr) {
+>>   			rose_start_idletimer(sk);
+>> -			if (sk_filter_trim_cap(sk, skb, ROSE_MIN_LEN) == 0 &&
+>> +			if (sk_filter_trim_cap(sk, skb, ROSE_MIN_LEN, &dr) == 0 &&
+> 
+> let's switch to negation rather than comparing to 0 while at it?
+> otherwise we run over 80 chars
+> 
+
+Sure I will adjust code.
+
+>>   			    __sock_queue_rcv_skb(sk, skb) == 0) {
+>>   				rose->vr = (rose->vr + 1) % ROSE_MODULUS;
+>>   				queued = 1;
+
+--Jesper
 
