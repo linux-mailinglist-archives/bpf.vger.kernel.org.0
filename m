@@ -1,304 +1,160 @@
-Return-Path: <bpf+bounces-63476-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63477-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6367EB07D0F
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 20:41:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07918B07D8E
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 21:25:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EB133A9587
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 18:41:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 739CC1897BC3
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 19:25:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEFFD29B20D;
-	Wed, 16 Jul 2025 18:41:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SrHgDB4R"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF24C29DB71;
+	Wed, 16 Jul 2025 19:25:32 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9252188A3A;
-	Wed, 16 Jul 2025 18:41:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F29BB13D503;
+	Wed, 16 Jul 2025 19:25:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752691298; cv=none; b=rm4mY7Ud+1SZehjnvjxK7VFi/X5g6aysZD6xcUGjflc2fQAri1Z+TANR4m24EW21K2AQWfZDIIPJ+PkypnGX7APMJC6lyCuS2PCV9JkIWDXFJMfBbHi/UQJ6pzgU71uzEWXCBCMtNc3E8lXQTn5lztUejzTx2ceGL4w25cLvu1U=
+	t=1752693932; cv=none; b=b/pThbYU4Ub4WeZcmgykN7XQFNLHwUYaTwZknFEaZ9V1+ZoI4gyobS34AiOkfDb8HpWvogAsR3VIQT6rmMtYSvgM7iCh60vsuWe7aKkxPHsFj1D08cP85kp3sr+uN5hvhXI5L+Fh0SUVSfSI7qWbHGfL2VY2W/EaiWEVY9rXAYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752691298; c=relaxed/simple;
-	bh=VumIU/sQM3hsahHgvU+bHUnU0BcQF4aFEvHlkCVGo4c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uE9SvjaIPI282l1EYjKtxNvG0WewB0PptPWc/7Eq1gdGA1gYqLuxtSpqATwxV2cM8IpXxCA9+lDITtcYIAns7cTLX5RI1jbWjpE0QJIXNNKbwSuYpfny9lzwsXI1P/FOOLDvrlzix/Yl368HgZzqL1KXyawG+L+JGaWIzw6O4Xs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SrHgDB4R; arc=none smtp.client-ip=209.85.160.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-4ab7384b108so2787631cf.0;
-        Wed, 16 Jul 2025 11:41:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752691296; x=1753296096; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=20DFtMKXGjzMStkeiX0rV+WhW7MQLkFjtE1G1H2gznA=;
-        b=SrHgDB4RVsv0n+H4mlhVtq60euYC8/aUf/SF2M5tNpH/NrSLNpSBzsYm8GxnR1lyfQ
-         QhjBuwPdXaDIu4pQEde3FXIIFVR11xg06bIJdGuGZJkL3ROGDIl4ExgxIiQhN44lWviL
-         dPkqZDsO0TnJNHXORDXepenxEfp0TlIvZj1Z/7LSkhcEodmFFC0NztRuM6h2cRYP4m5P
-         j3Yn481TbaZphfy6sj0XASirqpvqUoHvBxNDW2LOERUH6mvKB9LZSZ4bTd+OCIkbokeJ
-         LI5C8Jv/4psRJleSxsJOEyxbUU8nwqdPA4A6qaWtwmmZTrFs+ED7BuoHa9zkmkfUiYo8
-         Egog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752691296; x=1753296096;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=20DFtMKXGjzMStkeiX0rV+WhW7MQLkFjtE1G1H2gznA=;
-        b=g02QK2pnmIItj/kTrEWpNjYxKwIXBYZjUqhQ/8MFXujF2l/f5XYT0+gSqTFFMus9Kf
-         m0wU79zwosA/FkB5NvcGFNZDvKn32sbEIpCR6ahDrxyQD8an70zMA+pvenGycKIKITX3
-         +Qs1uqecSXM3VsQCowMfwO7S+30GWCHrbQ0f6gianFlyi+uiIwc3tqWKhCHHMtv4oUPi
-         z8SEYmvolAS1mkhlIlr+RbeT69TNESowh8xoIKKErEWmLrQyw2m7f5MD7xR2ilOw1feG
-         lHQ89ydjLKh6GUGqRpweVHbEC/LA+7JNH48Z0DjcQuAUi5k8pk9q8SkWOH2siP0D6QWP
-         fMqA==
-X-Forwarded-Encrypted: i=1; AJvYcCUmi39hFR8cw2jGx7f0wg7MfVlkwHTCVhpoa5Elc8DCRhlCWqLJr7je0tn5p/ix8wk1DG3SY9vJEpr0S708@vger.kernel.org, AJvYcCXchK2EkHa3wMmP0tcGKLQZRpWYLmgZbeIfvvJl1Mo4ipiqyxM74kP7oCuZVG3y+rdQSPc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzbdiQVAStAaO87GowEDG9+hTIeYYehYL/0EfEgtPAi+/beJxbH
-	i43S8CG9LapWFjAlSO3AcEDssOuTvET0rvS5PihrKJk8hZk7mnxZ7i963h7YAid+Bq70sep5bda
-	ChrVey4GY6pJMlM5FtAL+l/h+TeEkOg8=
-X-Gm-Gg: ASbGncttPLYOxhww/pqkPMJcmbGgqrydckk3FFu6/iJKZTRgaPwH6XIHeevcw7G2+ux
-	x0BlE/lqB/5zAe5ohjQsEFdlNVEJD38jrWju/PscDloHYnfIPgDyXzdBFBnAKXu25HCkWci06Zr
-	8KMdL2/Fk5695vXMT9ESm7i4dUJmp+o5NKEVQwxcHNRZH8ox9kzh79UZ4W5TPJijUInO3HyrrPU
-	6dXVQg=
-X-Google-Smtp-Source: AGHT+IFZwWhnvlktHUbt+Kieuk0AwdbSCwlwmi+WtIYajV9/Z+Oy1x/flaxD7uD3ONgFDnnoPfGTonQLpOquT9UuWu8=
-X-Received: by 2002:a05:622a:7289:b0:4ab:9586:bdd8 with SMTP id
- d75a77b69052e-4ab9586c4f5mr41812881cf.55.1752691295354; Wed, 16 Jul 2025
- 11:41:35 -0700 (PDT)
+	s=arc-20240116; t=1752693932; c=relaxed/simple;
+	bh=Hv63yMay8mbhFM4zLLO5m/N2tIfthDwtdzQ7Esa2S80=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ky1/6eCEnuns+Jd0U6kZJ/oTgEpl79HUuWOX3Jcr7oRHLHyvQ+i3EoWIkDAdr4GwMbkK0bZkYBN5mi4zJIHDMyglL0D9xqAIEqQ0o5A+zdkzCClgE4RnRCh9YZH1ZV0+jLgzKafPFyMuNZm95T/tAREla0MgYiUgekHP7NLBZzs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf09.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay08.hostedemail.com (Postfix) with ESMTP id 8201114051A;
+	Wed, 16 Jul 2025 19:25:21 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf09.hostedemail.com (Postfix) with ESMTPA id CE1E920025;
+	Wed, 16 Jul 2025 19:25:16 +0000 (UTC)
+Date: Wed, 16 Jul 2025 15:25:15 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org,
+ Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
+ Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Namhyung Kim
+ <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Andrii
+ Nakryiko <andrii@kernel.org>, Indu Bhagat <indu.bhagat@oracle.com>, "Jose
+ E. Marchesi" <jemarch@gnu.org>, Beau Belgrave <beaub@linux.microsoft.com>,
+ Jens Remus <jremus@linux.ibm.com>, Linus Torvalds
+ <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>,
+ Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>, Sam
+ James <sam@gentoo.org>
+Subject: Re: [PATCH v13 10/14] unwind: Clear unwind_mask on exit back to
+ user space
+Message-ID: <20250716152515.20699c64@batman.local.home>
+In-Reply-To: <20250716143352.54d9d965@batman.local.home>
+References: <20250708012239.268642741@kernel.org>
+	<20250708012359.345060579@kernel.org>
+	<20250715102912.GQ1613200@noisy.programming.kicks-ass.net>
+	<20250716142609.47f0e4a5@batman.local.home>
+	<20250716143352.54d9d965@batman.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250709055029.723243-1-duanchenghao@kylinos.cn> <20250709055029.723243-5-duanchenghao@kylinos.cn>
-In-Reply-To: <20250709055029.723243-5-duanchenghao@kylinos.cn>
-From: Vincent Li <vincent.mc.li@gmail.com>
-Date: Wed, 16 Jul 2025 11:41:24 -0700
-X-Gm-Features: Ac12FXwCRPmy4fnOAV5BMBHHNEa-DFWYMRw-qWQJNXIcPq2W8Wh-_O30cTGVz84
-Message-ID: <CAK3+h2zbcumLibRXi0Oh5zc1FB6JcQco5CTjTYd8o0DOkijjAw@mail.gmail.com>
-Subject: Re: [PATCH v3 4/5] LoongArch: BPF: Add bpf_arch_xxxxx support for Loongarch
-To: Chenghao Duan <duanchenghao@kylinos.cn>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	yangtiezhu@loongson.cn, hengqi.chen@gmail.com, chenhuacai@kernel.org, 
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, kernel@xen0n.name, 
-	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, bpf@vger.kernel.org, 
-	guodongtai@kylinos.cn, youling.tang@linux.dev, jianghaoran@kylinos.cn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: yqzgk9yxdrffy97jtommr38674rsztpz
+X-Rspamd-Server: rspamout07
+X-Rspamd-Queue-Id: CE1E920025
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1++iWTZbjkHMBToQzNUvwO99krfymIct90=
+X-HE-Tag: 1752693916-499051
+X-HE-Meta: U2FsdGVkX1/+uRuX2HxufIA1KYgJgnoqc5TCl/FWSkKdz8KThzUUeGFW3dCnqRBdDkJX7qOICyzu7TKJJXgqieZ3HscvgW+0Z4D7q5xXB1naLq0n/YNYZrULMskuZPHNKNjOC3jeo6WobKCiZfhB7Ks9VatY5T/0aNOhL/IOe4Fb7RskgwcSBCPlX6sqvpTGQdNSGbu2FLKbO9GWPmSp2CDzJLYu3Hv7ZD350/I8RyhKugeiNIT+eDKMrEnb7LL1LmUQU32ry+hdx1c/3TF/mj+fM6+hN39d7EVcw5XKxpUTDArpAaQ0VVLv1VT0vd6CCTSzQyLIVOgkeSK9i6UPmraFuCeBDsvGAQew+1ATPrZUQM0hN4xkGqK+uPLZ3Ii9
 
-On Tue, Jul 8, 2025 at 11:02=E2=80=AFPM Chenghao Duan <duanchenghao@kylinos=
-.cn> wrote:
->
-> Implement the functions of bpf_arch_text_poke, bpf_arch_text_copy, and
-> bpf_arch_text_invalidate on the LoongArch architecture.
->
-> On LoongArch, since symbol addresses in the direct mapping
-> region cannot be reached via relative jump instructions from the paged
-> mapping region, we use the move_imm+jirl instruction pair as absolute
-> jump instructions. These require 2-5 instructions, so we reserve 5 NOP
-> instructions in the program as placeholders for function jumps.
->
-> Co-developed-by: George Guo <guodongtai@kylinos.cn>
-> Signed-off-by: George Guo <guodongtai@kylinos.cn>
-> Signed-off-by: Chenghao Duan <duanchenghao@kylinos.cn>
-> ---
->  arch/loongarch/include/asm/inst.h |  1 +
->  arch/loongarch/kernel/inst.c      | 32 +++++++++++
->  arch/loongarch/net/bpf_jit.c      | 90 +++++++++++++++++++++++++++++++
->  3 files changed, 123 insertions(+)
->
-> diff --git a/arch/loongarch/include/asm/inst.h b/arch/loongarch/include/a=
-sm/inst.h
-> index 2ae96a35d..88bb73e46 100644
-> --- a/arch/loongarch/include/asm/inst.h
-> +++ b/arch/loongarch/include/asm/inst.h
-> @@ -497,6 +497,7 @@ void arch_simulate_insn(union loongarch_instruction i=
-nsn, struct pt_regs *regs);
->  int larch_insn_read(void *addr, u32 *insnp);
->  int larch_insn_write(void *addr, u32 insn);
->  int larch_insn_patch_text(void *addr, u32 insn);
-> +int larch_insn_text_copy(void *dst, void *src, size_t len);
->
->  u32 larch_insn_gen_nop(void);
->  u32 larch_insn_gen_b(unsigned long pc, unsigned long dest);
-> diff --git a/arch/loongarch/kernel/inst.c b/arch/loongarch/kernel/inst.c
-> index 674e3b322..8d6594968 100644
-> --- a/arch/loongarch/kernel/inst.c
-> +++ b/arch/loongarch/kernel/inst.c
-> @@ -4,6 +4,7 @@
->   */
->  #include <linux/sizes.h>
->  #include <linux/uaccess.h>
-> +#include <linux/set_memory.h>
->
->  #include <asm/cacheflush.h>
->  #include <asm/inst.h>
-> @@ -218,6 +219,37 @@ int larch_insn_patch_text(void *addr, u32 insn)
->         return ret;
->  }
->
-> +int larch_insn_text_copy(void *dst, void *src, size_t len)
-> +{
-> +       unsigned long flags;
-> +       size_t wlen =3D 0;
-> +       size_t size;
-> +       void *ptr;
-> +       int ret =3D 0;
-> +
-> +       set_memory_rw((unsigned long)dst, round_up(len, PAGE_SIZE) / PAGE=
-_SIZE);
-> +       raw_spin_lock_irqsave(&patch_lock, flags);
-> +       while (wlen < len) {
-> +               ptr =3D dst + wlen;
-> +               size =3D min_t(size_t, PAGE_SIZE - offset_in_page(ptr),
-> +                            len - wlen);
-> +
-> +               ret =3D copy_to_kernel_nofault(ptr, src + wlen, size);
-> +               if (ret) {
-> +                       pr_err("%s: operation failed\n", __func__);
-> +                       break;
-> +               }
-> +               wlen +=3D size;
-> +       }
-> +       raw_spin_unlock_irqrestore(&patch_lock, flags);
-> +       set_memory_rox((unsigned long)dst, round_up(len, PAGE_SIZE) / PAG=
-E_SIZE);
-> +
-> +       if (!ret)
-> +               flush_icache_range((unsigned long)dst, (unsigned long)dst=
- + len);
-> +
-> +       return ret;
-> +}
-> +
->  u32 larch_insn_gen_nop(void)
->  {
->         return INSN_NOP;
-> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
-> index 7032f11d3..9cb01f0b0 100644
-> --- a/arch/loongarch/net/bpf_jit.c
-> +++ b/arch/loongarch/net/bpf_jit.c
-> @@ -4,6 +4,7 @@
->   *
->   * Copyright (C) 2022 Loongson Technology Corporation Limited
->   */
-> +#include <linux/memory.h>
->  #include "bpf_jit.h"
->
->  #define REG_TCC                LOONGARCH_GPR_A6
-> @@ -1367,3 +1368,92 @@ bool bpf_jit_supports_subprog_tailcalls(void)
->  {
->         return true;
->  }
-> +
-> +static int emit_jump_and_link(struct jit_ctx *ctx, u8 rd, u64 ip, u64 ta=
-rget)
-> +{
-> +       s64 offset =3D (s64)(target - ip);
-> +
-> +       if (offset && (offset >=3D -SZ_128M && offset < SZ_128M)) {
-> +               emit_insn(ctx, bl, offset >> 2);
-> +       } else {
-> +               move_imm(ctx, LOONGARCH_GPR_T1, target, false);
-> +               emit_insn(ctx, jirl, rd, LOONGARCH_GPR_T1, 0);
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static int gen_jump_or_nops(void *target, void *ip, u32 *insns, bool is_=
-call)
-> +{
-> +       struct jit_ctx ctx;
-> +
-> +       ctx.idx =3D 0;
-> +       ctx.image =3D (union loongarch_instruction *)insns;
-> +
-> +       if (!target) {
-> +               emit_insn((&ctx), nop);
-> +               emit_insn((&ctx), nop);
-> +               return 0;
-> +       }
-> +
-> +       return emit_jump_and_link(&ctx, is_call ? LOONGARCH_GPR_T0 : LOON=
-GARCH_GPR_ZERO,
-> +                                 (unsigned long)ip, (unsigned long)targe=
-t);
-> +}
-> +
-> +int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
-> +                      void *old_addr, void *new_addr)
-> +{
-> +       u32 old_insns[5] =3D {[0 ... 4] =3D INSN_NOP};
-> +       u32 new_insns[5] =3D {[0 ... 4] =3D INSN_NOP};
-> +       bool is_call =3D poke_type =3D=3D BPF_MOD_CALL;
-> +       int ret;
-> +
-> +       if (!is_kernel_text((unsigned long)ip) &&
-> +               !is_bpf_text_address((unsigned long)ip))
-> +               return -ENOTSUPP;
-> +
-> +       ret =3D gen_jump_or_nops(old_addr, ip, old_insns, is_call);
-> +       if (ret)
-> +               return ret;
-> +
-> +       if (memcmp(ip, old_insns, 5 * 4))
-> +               return -EFAULT;
-> +
-> +       ret =3D gen_jump_or_nops(new_addr, ip, new_insns, is_call);
-> +       if (ret)
-> +               return ret;
-> +
-> +       mutex_lock(&text_mutex);
-> +       if (memcmp(ip, new_insns, 5 * 4))
-> +               ret =3D larch_insn_text_copy(ip, new_insns, 5 * 4);
-> +       mutex_unlock(&text_mutex);
-> +       return ret;
-> +}
-> +
+On Wed, 16 Jul 2025 14:33:52 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-I recommend to add comment for bpf_arch_text_poke() similar to
-bpf_arch_text_poke() in arch/arm64/net/bpf_jit_comp.c so we have clear
-understanding on how it works, given we already have issue with it
-when running xdp-filter from xdp-tools that I reported from another
-email thread.
+> [Task enters kernel]
+>   request -> add cookie
+>   request -> add cookie
+>   [..]
+>   callback -> add trace + cookie
+>  [ftrace clears bits]
+>   callback -> add trace + cookie
+> [Task exits back to user space]
 
-> +int bpf_arch_text_invalidate(void *dst, size_t len)
-> +{
-> +       int i;
-> +       int ret =3D 0;
-> +       u32 *inst;
-> +
-> +       inst =3D kvmalloc(len, GFP_KERNEL);
-> +       if (!inst)
-> +               return -ENOMEM;
-> +
-> +       for (i =3D 0; i < (len/sizeof(u32)); i++)
-> +               inst[i] =3D INSN_BREAK;
-> +
-> +       if (larch_insn_text_copy(dst, inst, len))
-> +               ret =3D -EINVAL;
-> +
-> +       kvfree(inst);
-> +       return ret;
-> +}
-> +
-> +void *bpf_arch_text_copy(void *dst, void *src, size_t len)
-> +{
-> +       if (larch_insn_text_copy(dst, src, len))
-> +               return ERR_PTR(-EINVAL);
-> +
-> +       return dst;
-> +}
-> --
-> 2.43.0
->
->
+Another solution could be to add another unwind mask of completed
+callbacks. Then we could use the fetch_or(). I guess that could look
+like this:
+
+diff --git a/include/linux/unwind_deferred.h b/include/linux/unwind_deferred.h
+index 15045999c5e2..0124865aaab4 100644
+--- a/include/linux/unwind_deferred.h
++++ b/include/linux/unwind_deferred.h
+@@ -61,8 +61,10 @@ static __always_inline void unwind_reset_info(void)
+ 		} while (!try_cmpxchg(&info->unwind_mask, &bits, 0UL));
+ 		current->unwind_info.id.id = 0;
+ 
+-		if (unlikely(info->cache))
++		if (unlikely(info->cache)) {
+ 			info->cache->nr_entries = 0;
++			info->cache->unwind_completed = 0;
++		}
+ 	}
+ }
+ 
+diff --git a/include/linux/unwind_deferred_types.h b/include/linux/unwind_deferred_types.h
+index 5dc9cda141ff..33b62ac25c86 100644
+--- a/include/linux/unwind_deferred_types.h
++++ b/include/linux/unwind_deferred_types.h
+@@ -3,6 +3,7 @@
+ #define _LINUX_UNWIND_USER_DEFERRED_TYPES_H
+ 
+ struct unwind_cache {
++	unsigned long		unwind_completed;
+ 	unsigned int		nr_entries;
+ 	unsigned long		entries[];
+ };
+diff --git a/kernel/unwind/deferred.c b/kernel/unwind/deferred.c
+index 60cc71062f86..9a3e06ee9d63 100644
+--- a/kernel/unwind/deferred.c
++++ b/kernel/unwind/deferred.c
+@@ -170,13 +170,19 @@ static void process_unwind_deferred(struct task_struct *task)
+ 
+ 	unwind_user_faultable(&trace);
+ 
++	if (info->cache)
++		bits &= ~(info->cache->unwind_completed);
++
+ 	cookie = info->id.id;
+ 
+ 	guard(srcu_lite)(&unwind_srcu);
+ 	list_for_each_entry_srcu(work, &callbacks, list,
+ 				 srcu_read_lock_held(&unwind_srcu)) {
+-		if (test_bit(work->bit, &bits))
++		if (test_bit(work->bit, &bits)) {
+ 			work->func(work, &trace, cookie);
++			if (info->cache)
++				info->cache->unwind_completed |= BIT(work->bit);
++		}
+ 	}
+ }
+ 
+Instead of adding another long word in the tasks struct, I just use the
+unwind_cache that gets allocated on the first use.
+
+I think this can work. I'll switch it over to this and then I can use
+the fetch_or() and there should be no extra callbacks, even if an
+already called callback is requested again after another callback was
+requested which would trigger another task work.
+
+I'll update this patch (and fold it into the bitmask patch) with the
+fetch_or() and create this patch as a separate patch that just gets rid
+of spurious callbacks.
+
+-- Steve
 
