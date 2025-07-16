@@ -1,75 +1,78 @@
-Return-Path: <bpf+bounces-63397-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63398-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5887B06BB1
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 04:30:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FB3CB06BB3
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 04:30:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04AF2562C91
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 02:30:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D03397AD080
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 02:28:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 684A7270ECB;
-	Wed, 16 Jul 2025 02:29:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3077E2749E6;
+	Wed, 16 Jul 2025 02:29:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cah+oOuV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ClPZJ7cY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 848D52E36EF
-	for <bpf@vger.kernel.org>; Wed, 16 Jul 2025 02:29:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 626612E36EF
+	for <bpf@vger.kernel.org>; Wed, 16 Jul 2025 02:29:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752632996; cv=none; b=p9UTz0dLGn9Tt+A3uGY3U0w3PLDS02PLpzaThL9XI8u7vA/Z27uVix+gv+D+qJgjm5f9NRs8Xjjpm3m1b4jZLZKHHvxt1/ms01nDx0y6/rRGU+3v5WnkupQo4aoY2sNqNH15aT14mU3OZGCRLSlzIYpT72OpdiYnF9Jd31irA9k=
+	t=1752632998; cv=none; b=AHr9MTvVazXk29+jzWKS9j24vtcE6lDghACFMLroLb0jYJ5DD652/Wg2I6njb+lxDSm+siccjbtG6sIEeX/A17wX22N0vq9oogtgoesAWLpedZGsawFVPSPmYaQIQ8/OoD9Q1keRUtz2/+W+QDZUCuDVcdzPQUOoJCSNjfSXFIs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752632996; c=relaxed/simple;
-	bh=vBxG/v2pCJ7vaTafMYJLzqV0HphjP6qCPqV3b7rPI+Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Hx77/Rwy5EUc+jLj/+nMJ5rG96du1oOiss+TXx8XIbkMGbS8yH88weDBVbczTd4IszSvY4gV5KuNiqVpnF6A4T0IFoWvQ0J14ZdaJT7GIdJhOni02bbyDv/1xEXwkWutL1//I7vGy1ZCZoWD94yO5nH10YsHE2s2RvrCXkEnAxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cah+oOuV; arc=none smtp.client-ip=209.85.216.49
+	s=arc-20240116; t=1752632998; c=relaxed/simple;
+	bh=oPpc/owN0nnybCG8ZrOpKDTYgxnCo+M0v02f6gECNLM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=fLohwMX+tv0BPe6VjzRjU37eXUIkJkbMbMzvnyYkPaArShdj0NAWw/U79QJqmP27Oa0vnJfK1oRGqRpWNYGFNTQLoO2MdCZCTVTXtfeEnNXyTmAn9bFY61461GZaLECMUCb33Y9km2RK7uxvjJ0Dir61K5l5ZiX7zC/ARX2zJqs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ClPZJ7cY; arc=none smtp.client-ip=209.85.215.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-313154270bbso5726633a91.2
-        for <bpf@vger.kernel.org>; Tue, 15 Jul 2025 19:29:54 -0700 (PDT)
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-b271f3ae786so4622208a12.3
+        for <bpf@vger.kernel.org>; Tue, 15 Jul 2025 19:29:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752632993; x=1753237793; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=54YMk9JDQn8IHKAz5YLE0koa8eulLZZ41W4aFx7nouU=;
-        b=cah+oOuVpbA6wdZC88NCUKIJrd+j1kmjdq3vw46TYcIcfZ94+N9FW1WpvDXTH66VOw
-         1rn4pu8cIcWJtQ48SJ9kLNyL7EfJdq028uLxLgmXcPQ67ghQ0mxhjrzbcpr1Yu50hOxD
-         sFi5YWcfmP8hdn9FNl+9hDEgx9xPQ1acirPMb0++XpJBT4mWd2bpti6JPyZYP6FQJ0dp
-         D3SZPdqs4mY3PFsGzhb02weY/pHYHoCU6YE1+X4YgwwXfz6SL1QZjq+W8x1sncQkAJQq
-         SXNmyuAj+H+VhFQvSFUlOiZieSK3GGZTcsh4so45AfZz0byOtXCpiTjULoCp5b765Ra+
-         xgrQ==
+        d=gmail.com; s=20230601; t=1752632996; x=1753237796; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xIhGNjzYvU0LF9WvNv9O3HmVQLiCNpvjb+HJX/OSNPE=;
+        b=ClPZJ7cYSf4wTm14knzXiWD4jhj8K4Iz5o929ofBK12+ihpaduYytEsRbr0ZO9n2t5
+         ptnvQ25uRRPeaJJSCvgK3ZqYjH0KL1AGB1AVNfLUWCCIY8A0rYhL3pfX49haLi2vXrFd
+         7uAhXt+jQN1Ip9z7RzpnS3STQG9gh/yGHOYLH/qMcM08sudgicFIYOH0/PfkZRqFECDF
+         WNF6uLrIZWkCxZVMzUiQnQAt1SJ1X+/WHVLBAoaKZPryAZ9wVjTb8dtssnttvjUctOAQ
+         Uh0kYJEHCE5/aTx3SGD90mJYxE8R109wUdZCf5woZMu/XcgtYvQG2IOCIBN1n8D+BdlR
+         bjXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752632993; x=1753237793;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=54YMk9JDQn8IHKAz5YLE0koa8eulLZZ41W4aFx7nouU=;
-        b=Wyl09pTVSwuOQEuaGeD9uH7tmB0yrzz7FoA6AfngOyIkMkvYp0US6/rgTHQjAGiCh3
-         oPdEL996qLj/Oe5C38kpXnb+rSQvUm0g03e25/JRDMojw4X3hRphv3e9oDEj/ULTkNjZ
-         u4sYD0JmXq6V/Btnugxf8gCw+I2SC0Hmytpls5OX7xpwwLLNHExzLcP5j1tLgEkQVnVo
-         uyxPzaUQGg5EK/cUQ1Xzv44rPl9ww/iiRzJxZN9RBd7N3QpQXvN4dRw8oZiWTwtSCfTv
-         UqbwKT6b71Fv/zWVfpVOMMob7EtXomZExt79+Od1Rj1GdDrQGg4VmOKmodPimDt8kuhx
-         MOLQ==
-X-Gm-Message-State: AOJu0YwIco36hw0Rn7KaJmy4XD89m7SNogfW3rTiKmx7DTtL2VHFrqqx
-	O3TTVSiuWalbYBwyTTjbKRDku+L8nujQJaK1syaMtPSbVYA7xFShI8zDjCf9JQ==
-X-Gm-Gg: ASbGncv63LulRuAQxbCCNUNGpW/qLWYvntwfW6uVhstd9K5pmWk/roLINWa884LxBRP
-	IZuhceD34KMn5saOUI9a8q3ZjsYuouSBvHAzdHdICXgb3V+82aZvxSubjs6B3XveWlbkIRG0zBs
-	IYwaOtmT68d9oax9fTvdPqfyoAi9geljXXjyLina+p3zyWZRLDGHzkSd06vG1Xump9Fygs22/Cc
-	k74nrHW1I7rJFj4K95xsC/HT2ZzBFgLyi1uOD/bOAD0lYonNIBCvJ0I3gMTzsuyFDK7fgxtnWYp
-	018uFbEdDfvkoym9pf0DfH8IedpY7mIgos/uQ/wUAkFDQX+TmfuzWOD+s+Epa0ppFZXaYm0M5iW
-	KQ8RDyj+EREcThqHMeDsxIvXbSgITMFdmpbneE0PE8IddPUPKq92NOiFz9XEsV3w=
-X-Google-Smtp-Source: AGHT+IFH8pUexJCnFJRvpl8rZhS654EBz2PixSOVjcUbuVR23X8JzXXfrQK1qEDlWeKIKXuRZG/jMA==
-X-Received: by 2002:a17:90b:1c82:b0:311:ffe8:20e6 with SMTP id 98e67ed59e1d1-31c9f3eeac5mr1164056a91.3.1752632993285;
-        Tue, 15 Jul 2025 19:29:53 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1752632996; x=1753237796;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xIhGNjzYvU0LF9WvNv9O3HmVQLiCNpvjb+HJX/OSNPE=;
+        b=Xo8mqp4EMv8uB+xnVSj54u8bOGPV9VOfeoCzubF8sgK0OelobK7UjBpjOTw4s0axmI
+         M6PtoFKUr0PzK3c9Z8TAWkc0M4LZKRogSzApWeXlxlJaFkdRg6fymkE61Ji43kwrQf2a
+         bab/Tm/mkqipmkdLHQbabmalOTkOH/QSfTFJ0RAFsqZjP4eN+XY6eDV9xBnVu3zTGCn/
+         i3naYl7vol8QZPoQGWseSKovT/c1c/YaXK8cR4xlalB9xowNtbQ+wLvJLZdbrVyRnIL4
+         0Smk7G7MAkhBKhgaZDCxizFeSZ4/8NA4o+/ATrnYd4nnDv1ZI1HSbS6i8sl7CGbRizAZ
+         NsDw==
+X-Gm-Message-State: AOJu0Yxjm84YQNJ7aBAADkDD7To/yxg36tYOGCIzsKsiwylcvRLzVWno
+	edxFWnCePuPS41vKnQFbb71CZ4PBVsBCkFOL7NS8MMnkofOp3xZZcqZWbCuNOw==
+X-Gm-Gg: ASbGncs7ujzBQVbMyRGuH14lEymY68kqg/Ic4pg2dhQRTJCp0zi84OXhE+5KgR9r6of
+	Q0MjcImIWUPIsslxIGJeQIfkkynULwGayPxPHUewPFrGWUa7ZYxoUQcfeDT7LiByTdh0e8K3Wrc
+	QRBZvUb5Okq90sIWnZQGmVsCaFP+b58nC9N2p+sk/DAeyO7aFKDj8b180LwPqBm7bGb6x9hg9ox
+	qpzYNZn9rSD2+7Ev0WVQIy87feXIb8kkK5AsuA23eNwpPxMu3aVGtbj7AGFNNagsNv5mdVEsrS6
+	LEotq1nGF+ozd3IjvA9uLY20GFeeJmvOIaNOBp5rwgtEtlgTdbsaOqfa8/oSoyMFvAFZS6b6eMy
+	HXlhYCdh6pQZaYUKYzBhKZlx9hWIaPw4g46YcZDq1dnFPohG/Vgld1eCq5k7tMIznTZtFyuAMUw
+	==
+X-Google-Smtp-Source: AGHT+IHCbDCnBNsYFUrlELiNVRR+WQGwclzTbTvrNbJRvXa814XxhR4RgGxtQ8AbYbbnq0npyYXQAg==
+X-Received: by 2002:a17:902:e743:b0:235:e76c:4353 with SMTP id d9443c01a7336-23e25000edfmr16416005ad.51.1752632996321;
+        Tue, 15 Jul 2025 19:29:56 -0700 (PDT)
 Received: from localhost.localdomain ([2001:558:600a:7:a83d:600f:32cc:235a])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31c9f2879fcsm338049a91.28.2025.07.15.19.29.52
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31c9f1fb8dbsm307910a91.22.2025.07.15.19.29.55
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 15 Jul 2025 19:29:52 -0700 (PDT)
+        Tue, 15 Jul 2025 19:29:55 -0700 (PDT)
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: bpf@vger.kernel.org,
 	linux-mm@kvack.org
@@ -84,10 +87,12 @@ Cc: vbabka@suse.cz,
 	peterz@infradead.org,
 	rostedt@goodmis.org,
 	hannes@cmpxchg.org
-Subject: [PATCH v3 0/6] slab: Re-entrant kmalloc_nolock() 
-Date: Tue, 15 Jul 2025 19:29:44 -0700
-Message-Id: <20250716022950.69330-1-alexei.starovoitov@gmail.com>
+Subject: [PATCH v3 1/6] locking/local_lock: Expose dep_map in local_trylock_t.
+Date: Tue, 15 Jul 2025 19:29:45 -0700
+Message-Id: <20250716022950.69330-2-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+In-Reply-To: <20250716022950.69330-1-alexei.starovoitov@gmail.com>
+References: <20250716022950.69330-1-alexei.starovoitov@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -98,78 +103,50 @@ Content-Transfer-Encoding: 8bit
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-v2->v3:
-- Adopted Sebastian's local_lock_cpu_slab(), but dropped gfpflags
-  to avoid extra branch for performance reasons,
-  and added local_unlock_cpu_slab() for symmetry.
-- Dropped local_lock_lockdep_start/end() pair and switched to
-  per kmem_cache lockdep class on PREEMPT_RT to silence false positive
-  when the same cpu/task acquires two local_lock-s.
-- Refactorred defer_free per Sebastian's suggestion
-- Fixed slab leak when it needs to be deactivated via irq_work and llist
-  as Vlastimil proposed. Including defer_free_barrier().
-- Use kmem_cache->offset for llist_node pointer when linking objects
-  instead of zero offset, since whole object could be used for slabs
-  with ctors and other cases.
-- Fixed "cnt = 1; goto redo;" issue.
-- Fixed slab leak in alloc_single_from_new_slab().
-- Retested with slab_debug, RT, !RT, lockdep, kasan, slab_tiny
-- Added acks to patches 1-4 that should be good to go.
+lockdep_is_held() macro assumes that "struct lockdep_map dep_map;"
+is a top level field of any lock that participates in LOCKDEP.
+Make it so for local_trylock_t.
 
-v2:
-https://lore.kernel.org/bpf/20250709015303.8107-1-alexei.starovoitov@gmail.com/
+Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+---
+ include/linux/local_lock_internal.h | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-v1->v2:
-Added more comments for this non-trivial logic and addressed earlier comments.
-In particular:
-- Introduce alloc_frozen_pages_nolock() to avoid refcnt race
-- alloc_pages_nolock() defaults to GFP_COMP
-- Support SLUB_TINY
-- Added more variants to stress tester to discover that kfree_nolock() can
-  OOM, because deferred per-slab llist won't be serviced if kfree_nolock()
-  gets unlucky long enough. Scraped previous approach and switched to
-  global per-cpu llist with immediate irq_work_queue() to process all
-  object sizes.
-- Reentrant kmalloc cannot deactivate_slab(). In v1 the node hint was
-  downgraded to NUMA_NO_NODE before calling slab_alloc(). Realized it's not
-  good enough. There are odd cases that can trigger deactivate. Rewrote
-  this part.
-- Struggled with SLAB_NO_CMPXCHG. Thankfully Harry had a great suggestion:
-  https://lore.kernel.org/bpf/aFvfr1KiNrLofavW@hyeyoo/
-  which was adopted. So slab_debug works now.
-- In v1 I had to s/local_lock_irqsave/local_lock_irqsave_check/ in a bunch
-  of places in mm/slub.c to avoid lockdep false positives.
-  Came up with much cleaner approach to silence invalid lockdep reports
-  without sacrificing lockdep coverage. See local_lock_lockdep_start/end().
-
-v1:
-https://lore.kernel.org/bpf/20250501032718.65476-1-alexei.starovoitov@gmail.com/
-
-Alexei Starovoitov (6):
-  locking/local_lock: Expose dep_map in local_trylock_t.
-  locking/local_lock: Introduce local_lock_is_locked().
-  mm: Allow GFP_ACCOUNT to be used in alloc_pages_nolock().
-  mm: Introduce alloc_frozen_pages_nolock()
-  slab: Introduce kmalloc_nolock() and kfree_nolock().
-  slab: Make slub local_trylock_t more precise for LOCKDEP
-
- include/linux/gfp.h                 |   2 +-
- include/linux/kasan.h               |  13 +-
- include/linux/local_lock.h          |   2 +
- include/linux/local_lock_internal.h |  16 +-
- include/linux/rtmutex.h             |   9 +
- include/linux/slab.h                |   4 +
- kernel/bpf/syscall.c                |   2 +-
- kernel/locking/rtmutex_common.h     |   9 -
- mm/Kconfig                          |   1 +
- mm/internal.h                       |   4 +
- mm/kasan/common.c                   |   5 +-
- mm/page_alloc.c                     |  54 ++--
- mm/slab.h                           |   7 +
- mm/slab_common.c                    |   3 +
- mm/slub.c                           | 471 +++++++++++++++++++++++++---
- 15 files changed, 513 insertions(+), 89 deletions(-)
-
+diff --git a/include/linux/local_lock_internal.h b/include/linux/local_lock_internal.h
+index 8d5ac16a9b17..85c2e1b1af6b 100644
+--- a/include/linux/local_lock_internal.h
++++ b/include/linux/local_lock_internal.h
+@@ -17,7 +17,10 @@ typedef struct {
+ 
+ /* local_trylock() and local_trylock_irqsave() only work with local_trylock_t */
+ typedef struct {
+-	local_lock_t	llock;
++#ifdef CONFIG_DEBUG_LOCK_ALLOC
++	struct lockdep_map	dep_map;
++	struct task_struct	*owner;
++#endif
+ 	u8		acquired;
+ } local_trylock_t;
+ 
+@@ -31,7 +34,7 @@ typedef struct {
+ 	.owner = NULL,
+ 
+ # define LOCAL_TRYLOCK_DEBUG_INIT(lockname)		\
+-	.llock = { LOCAL_LOCK_DEBUG_INIT((lockname).llock) },
++	LOCAL_LOCK_DEBUG_INIT(lockname)
+ 
+ static inline void local_lock_acquire(local_lock_t *l)
+ {
+@@ -81,7 +84,7 @@ do {								\
+ 	local_lock_debug_init(lock);				\
+ } while (0)
+ 
+-#define __local_trylock_init(lock) __local_lock_init(lock.llock)
++#define __local_trylock_init(lock) __local_lock_init((local_lock_t *)lock)
+ 
+ #define __spinlock_nested_bh_init(lock)				\
+ do {								\
 -- 
 2.47.1
 
