@@ -1,120 +1,153 @@
-Return-Path: <bpf+bounces-63427-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63428-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2507AB07524
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 13:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D358B0752A
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 13:57:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DEFC1896A89
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 11:55:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1384D1C26ED0
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 11:56:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A1CE2F2712;
-	Wed, 16 Jul 2025 11:54:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A33352248B5;
+	Wed, 16 Jul 2025 11:56:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kCV0QIWi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eOVYVcrw"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 249FB2F0043
-	for <bpf@vger.kernel.org>; Wed, 16 Jul 2025 11:54:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A50832F430D;
+	Wed, 16 Jul 2025 11:55:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752666898; cv=none; b=E5XbtW/y/HRIPqED0Tp+5LMbedivroozL61piX2YKmB7TSB+HGj/qYl294jqNShhgVFEl7t3ZuOSPDdPFCg/fwXH4DWzXLiAwlxUBGmpb36GaF9pMe9fkZNTKKcoirxdeCrmfIqD3XQvMpxpIgnIre/4Zu5rddyt+ITldDZ+6N4=
+	t=1752666960; cv=none; b=a/o3uDF8VHTFmuAceJkN+6yxGTmnrlAuzjJrq8w0N6Mz5PjJYkLwEm96w52aJyJYMqaEm7BpmyuetBn+lsOWJ/HloR/19DxL/UaD8Aj5kw4EEFzdH4hjyw7sWliJ5sCZiVJEvMbLH/0CTAvmCBQu1pBzfZbVJGSC4lWfj8Bl1Qs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752666898; c=relaxed/simple;
-	bh=5MLzakPnK7x1wR/xUJvUAIyxiAo8Nz3QyiHKXJQC+ng=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VfiQiSnN5nv6bN6V138cRqp3HjmSsN3FaCyZykuhJFNOdUoaS8GQuBbQ2IrhZP5hZLh8OegLQa9OcfhjaoiqGv2X2HNwXdnoXm5tBL2xRV7lZ8JsbmhxAUBo3owGt0w84dVBjQqfAsER6wKWJLriz0fvXBmPIDdGaW0ueN3i7Z0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kCV0QIWi; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1752666892;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5MLzakPnK7x1wR/xUJvUAIyxiAo8Nz3QyiHKXJQC+ng=;
-	b=kCV0QIWi6mbXGDOyzDE1puMWGwAAhdSowsRx8oxSr0ZTZl/gfPGyM/3JBWm2lXrEc6kD6v
-	EZidyBjcG5t3unZmTzNDO3ZwnKCaym38JNJuKTBooM/wgCiVO/QddpFF87PVKmmmsGunp1
-	PaV20lPSwAhAmHDWYWJx7DyDw0dr7bE=
-From: Menglong Dong <menglong.dong@linux.dev>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Menglong Dong <menglong8.dong@gmail.com>, alexei.starovoitov@gmail.com,
- rostedt@goodmis.org, jolsa@kernel.org, bpf@vger.kernel.org,
- Martin KaFai Lau <martin.lau@linux.dev>,
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- linux-kernel@vger.kernel.org
-Subject:
- Re: [PATCH bpf-next v2 14/18] libbpf: add btf type hash lookup support
-Date: Wed, 16 Jul 2025 19:53:50 +0800
-Message-ID: <3339133.5fSG56mABF@7940hx>
-In-Reply-To:
- <CAEf4BzZCPcq0eo=1SN-r=k5QF1XE5hihEYHYYdi37aiV7VXwVQ@mail.gmail.com>
-References:
- <20250703121521.1874196-1-dongml2@chinatelecom.cn>
- <22e15dd2-8564-4e71-ab77-8b436870850d@linux.dev>
- <CAEf4BzZCPcq0eo=1SN-r=k5QF1XE5hihEYHYYdi37aiV7VXwVQ@mail.gmail.com>
+	s=arc-20240116; t=1752666960; c=relaxed/simple;
+	bh=46KRWc6CL8rDgHI0Ds+dVS1e/7PnwHqn6Cb6seF0cFk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=debzadqBzkbcLp1HTKZ46qFuOiQU8dBvbTMRB94Jw62w2vyOnMRY4dGrXMpp3G4x8QUFnvPdkNjkafgpbDM4dLoBkG7cXe6/x7xybQQD6GP3lIUwjswf6tM3Kn58RJSzpmJyTF+sKkOX+KvS7aHOcTz0tUco7p6CEdBNx1H8hxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eOVYVcrw; arc=none smtp.client-ip=209.85.161.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-61598534619so746225eaf.2;
+        Wed, 16 Jul 2025 04:55:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752666958; x=1753271758; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EgpuWStD+g9XlsGil0a2qM7CDtMSHNw/qYVDjYHubzs=;
+        b=eOVYVcrwbGTJMDixo3OolOWGc3/yHj8Tuh9Kv1DrJrXnEKM73vOenDbZN3Dx3VChNv
+         1qv/r/VTUPMOgUxxzw9Q95+J+vLMPTSGrpQqSEnMzSTFyu7FFknQXFIowYZHAWfaznkF
+         YKoXPWZzBGCUga9vyhRhL4TFrbiB+7thV61Gf4ykyFCIIUT7wPZxvbAG1uT5BUUc9GZg
+         ESwyNVloLs8+ghf983lv6qtG5mSaOy/E9HmPCqrljG5BC3ec+Jacc9rlwdXfJ14If2Dm
+         U4GVYc9S05lGwy0JGLXs1ctVkLw4LUgHd/FIkLIxb1z2KiBPseeOSoncq/0zadUhOJ/l
+         iILA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752666958; x=1753271758;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EgpuWStD+g9XlsGil0a2qM7CDtMSHNw/qYVDjYHubzs=;
+        b=gvSpFBPUTt7vHQxNvXEYsbBShUIXhKkjeUdDkdfq9bgO99Jj5n4TYXbs7youHFFZwg
+         8kwWktn1i7WM8kiartPJYZp3J7UstGsdqlOdV4UPDnN52sKYDB3AYYnzNWzTorLYoNwz
+         gz6gF0SPwzb0BRFWAjDFrMJBe+PJ6I/3NGdEIakYobE4KnDmqzoR6zSCf82zEEdi3jPl
+         HZhwpvJPtm16bcCXSieH97Rk3XXPYDmCO++4GBa2khkJt5rE+ntQeJR8OvQXxeb8u8pr
+         FsRIs7L1KxD18yDZkyC5kqvUXiR1OloedDlglk8xSA1JhEYOaWfsZ91LiLzK4xoRNo46
+         LpgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUyyL9Hmdw3e0sNrkg0NO2qEyVKVfiIynyTrYJFdrOEBgE9cxE70JZu2NPZ+QW6iu12d0h2R572UsVYPKN3@vger.kernel.org, AJvYcCVxhYmjIsnJb8CFDgbsPv92YRcK+WSkHgM2noKKVOvuyHGCsUvNvQW/VPuH9/5uLhiztn4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx9fxA1pi1oI8jef7p67uGlxM8H1a87FB9Nm3EoSOhM4YMSJnU7
+	4jEDzqwZs/NSAAc445HwojDLhoy7ljchVSAvAIf1RdV1+xqoWJ8cXwPH7/QGsmFLDBI9eJDFNgV
+	C74ISHO5dFshwyWJAFFdsQMSTIf8wNzs=
+X-Gm-Gg: ASbGncsIPb4UBfiDi2mkPlIZ1hsqoCTVITytFV2poB2dC1IyJp7S+Z9dmtI7Mh3/jo8
+	a4lcA0mgHPOxfB5rmbYrUlp+SxD+SkFjgK6S7LqsfQ8C9MAVLsBz2jR5IyG8rcaki8OAl/g8ng+
+	wpdJtyMeoJDgxqpNtRCar+Qx5TznXFNItsg8EiH6JoqUtbstpg5Ym7UO5oNgej/LKjeAVQMkiLG
+	n0pHbE=
+X-Google-Smtp-Source: AGHT+IETKnvezmKlq+zmC9uwg6Ch1WE6f4Jt7hYDCbTCtYguhAyXT7+KyCQsYA1VXTT6YMNAqwQVB9dyT+azQ5SC4qs=
+X-Received: by 2002:a05:6820:1e03:b0:611:a799:cb65 with SMTP id
+ 006d021491bc7-615a1ed3996mr1490965eaf.2.1752666957689; Wed, 16 Jul 2025
+ 04:55:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+References: <20250709055029.723243-1-duanchenghao@kylinos.cn> <20250709055029.723243-3-duanchenghao@kylinos.cn>
+In-Reply-To: <20250709055029.723243-3-duanchenghao@kylinos.cn>
+From: Hengqi Chen <hengqi.chen@gmail.com>
+Date: Wed, 16 Jul 2025 19:55:46 +0800
+X-Gm-Features: Ac12FXz_Ud4KBSmMLY9gQ2gi1DdYRSZe-UgrRD1--igSRHmSf1PEp6zyl_Z6UoY
+Message-ID: <CAEyhmHSs5Ev5LBp8KWDnK93NcJnfvVZPy=X80Miy9PnP4rMA=A@mail.gmail.com>
+Subject: Re: [PATCH v3 2/5] LoongArch: BPF: Update the code to rename
+ validate_code to validate_ctx.
+To: Chenghao Duan <duanchenghao@kylinos.cn>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	yangtiezhu@loongson.cn, chenhuacai@kernel.org, martin.lau@linux.dev, 
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, kernel@xen0n.name, 
+	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, bpf@vger.kernel.org, 
+	guodongtai@kylinos.cn, youling.tang@linux.dev, jianghaoran@kylinos.cn
 Content-Type: text/plain; charset="UTF-8"
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: quoted-printable
 
-On Wednesday, July 16, 2025 1:20 AM Andrii Nakryiko <andrii.nakryiko@gmail.=
-com> write:
-> On Mon, Jul 14, 2025 at 9:41=E2=80=AFPM Menglong Dong <menglong.dong@linu=
-x.dev> wrote:
-> >
-> >
-> > On 7/15/25 06:07, Andrii Nakryiko wrote:
-> > > On Thu, Jul 3, 2025 at 5:22=E2=80=AFAM Menglong Dong <menglong8.dong@=
-gmail.com> wrote:
-> > >> For now, the libbpf find the btf type id by loop all the btf types a=
-nd
-> > >> compare its name, which is inefficient if we have many functions to
-> > >> lookup.
-> > >>
-> > >> We add the "use_hash" to the function args of find_kernel_btf_id() to
-> > >> indicate if we should lookup the btf type id by hash. The hash table=
- will
-> > >> be initialized if it has not yet.
-> > > Or we could build hashtable-based index outside of struct btf for a
-> > > specific use case, because there is no one perfect hashtable-based
-> > > indexing that can be done generically (e.g., just by name, or
-> > > name+kind, or kind+name, or some more complicated lookup key) and
-> > > cover all potential use cases. I'd prefer not to get into a problem of
-> > > defining and building indexes and leave it to callers (even if the
-> > > caller is other part of libbpf itself).
-> >
-> >
-> > I think that works. We can define a global hash table in libbpf.c,
-> > and add all the btf type to it. I'll redesign this part, and make it
-> > separate with the btf.
->=20
-> No global things, please. It can be held per-bpf_object, or even
-> constructed on demand during attachment and then freed. No need for
-> anything global.
+On Wed, Jul 9, 2025 at 1:50=E2=80=AFPM Chenghao Duan <duanchenghao@kylinos.=
+cn> wrote:
+>
+> Update the code to rename validate_code to validate_ctx.
+> validate_code is used to check the validity of code.
+> validate_ctx is used to check both code validity and table entry
+> correctness.
+>
 
-Okay, the per-bpf_object is a good idea, and I'll try to implement
-it this way.
+The commit message is awkward to read.
+Please describe the purpose of this change.
+* Rename the existing validate_code() to validate_ctx()
+* Factor out the code validation handling into a new helper validate_code()
 
-Thanks!
-Menglong Dong
+The new validate_code() will be used in subsequent changes.
 
-
-
-
-
+> Co-developed-by: George Guo <guodongtai@kylinos.cn>
+> Signed-off-by: George Guo <guodongtai@kylinos.cn>
+> Signed-off-by: Chenghao Duan <duanchenghao@kylinos.cn>
+> ---
+>  arch/loongarch/net/bpf_jit.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
+> index fa1500d4a..7032f11d3 100644
+> --- a/arch/loongarch/net/bpf_jit.c
+> +++ b/arch/loongarch/net/bpf_jit.c
+> @@ -1180,6 +1180,14 @@ static int validate_code(struct jit_ctx *ctx)
+>                         return -1;
+>         }
+>
+> +       return 0;
+> +}
+> +
+> +static int validate_ctx(struct jit_ctx *ctx)
+> +{
+> +       if (validate_code(ctx))
+> +               return -1;
+> +
+>         if (WARN_ON_ONCE(ctx->num_exentries !=3D ctx->prog->aux->num_exen=
+tries))
+>                 return -1;
+>
+> @@ -1288,7 +1296,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_pro=
+g *prog)
+>         build_epilogue(&ctx);
+>
+>         /* 3. Extra pass to validate JITed code */
+> -       if (validate_code(&ctx)) {
+> +       if (validate_ctx(&ctx)) {
+>                 bpf_jit_binary_free(header);
+>                 prog =3D orig_prog;
+>                 goto out_offset;
+> --
+> 2.43.0
+>
 
