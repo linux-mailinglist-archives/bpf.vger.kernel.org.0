@@ -1,123 +1,138 @@
-Return-Path: <bpf+bounces-63443-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63444-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B6E3B0782A
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 16:32:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55B3DB07853
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 16:41:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 456CC17040D
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 14:31:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B3219188D4DC
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 14:41:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E14B2C326B;
-	Wed, 16 Jul 2025 14:30:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C6F9262FC2;
+	Wed, 16 Jul 2025 14:41:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QGqOXs1u"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CxnAO2U+"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f196.google.com (mail-yb1-f196.google.com [209.85.219.196])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92155263C9F;
-	Wed, 16 Jul 2025 14:30:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC85119F40A;
+	Wed, 16 Jul 2025 14:40:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752676250; cv=none; b=T09tE91Sue3efDA+1emlkw24trNOUbxx85KfKf/QbtO/e6K7UBc03Ux8RFNd8cOMxAh/A7O+3Z3ttBCBtqvKtlG1AL8lLxFWA2WAiRQufsAP2DCkAAwjt5O6wGtu5m0Lvw6oSTkVeicaeZ1WR2U4aXa7XQodde8V1mq8Q4Oi3sQ=
+	t=1752676859; cv=none; b=MPK2yRTKQ3t1rPj4aMDp78WfbJMWskxF0c/rDhSjWwS9I4fAsO/ojqApuho9kZAn1rYCzd7uWrS9A0MayIYGS9qUE7PD04ysCOhkK16kEQmBO7h2cWabTScx3W+cuhIEX3cpO1jh4RkYDo6EpoCNHbcjfLTW0d6fjo9DSxE5HYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752676250; c=relaxed/simple;
-	bh=+7GaLCQmfxsw2Ze83ywPS5OxpKBvvXdTtasxk+627lU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=E8BOA693WXQ+f4i49kWDtj0sXDH/XVHVGJHer9EuKVnJ7gcqHKvtiIKLz5R4oUN5aqoCbBgbiLLy4Cf+XC+b+af0CQxpGkmKcZWS6N8GZGx/jbBNwe4ABUSEcRqC3EpBPg89GmJzxwK3fIBREXHS2GxEFT+WfmtNoTpflWUfLCg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QGqOXs1u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A9A7C4CEE7;
-	Wed, 16 Jul 2025 14:30:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752676250;
-	bh=+7GaLCQmfxsw2Ze83ywPS5OxpKBvvXdTtasxk+627lU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=QGqOXs1u0zySTLcUmFrIDYXDkv2yPNs1SuBpeQt/Re5xhNXypKTWDW7vNlCCbSLpo
-	 xlr9MYwyVcddC6UmAPn4bl+dYJ1QOV1V3MdCDsmEJr6etSlz9Q7DtpeXa7lEpqRbrL
-	 2z/YD75gDjbWNjTXokItmjd9xF7aSrSwig5MG1twuoa+Oh/jNEsleJFMZ43OLeg5zP
-	 cRK5TEVHo6t4uuxxdXnoN0818O4zVPqewc0uv/qDqagsq+lAuZBiux3Zg1i4XYngWj
-	 qnTlHpMwqpVTwQBh7u5pgpPlifRJtRa6fLU+uLLAwXWYTQr8hfbPhfN6dURQfAoL7E
-	 Got7FyN64ebKg==
-Date: Wed, 16 Jul 2025 07:30:48 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Mohsin Bashir <mohsin.bashr@gmail.com>
-Cc: netdev@vger.kernel.org, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, pabeni@redhat.com, shuah@kernel.org, horms@kernel.org,
- cratiu@nvidia.com, noren@nvidia.com, cjubran@nvidia.com, mbloch@nvidia.com,
- jdamato@fastly.com, gal@nvidia.com, sdf@fomichev.me, ast@kernel.org,
- daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
- nathan@kernel.org, nick.desaulniers+lkml@gmail.com, morbo@google.com,
- justinstitt@google.com, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH net-next V5 0/5] net: netdevsim: hook in XDP handling
-Message-ID: <20250716073048.03e117a1@kernel.org>
-In-Reply-To: <20250715210553.1568963-1-mohsin.bashr@gmail.com>
-References: <20250715210553.1568963-1-mohsin.bashr@gmail.com>
+	s=arc-20240116; t=1752676859; c=relaxed/simple;
+	bh=pfwYeQ0lSxFqkmbHNbtiMcwWyHLPm2mIdKPW8D3rFWA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XSSRLPHLdQvqxSWtKh3Xf20CFYKqbdmj6TVhBAZm2Vv3a+SEYrfAp5sVMlrKSfEOWqQ4TlNXWPObFx8Pkk56aSDck2V2YArz7P0Ad87CYi7EujIeqaMDRPikdF1AADFqQLKP2JvvLQqxlemp0z8iwSQ9mb31rsz6a0skWB+BEz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CxnAO2U+; arc=none smtp.client-ip=209.85.219.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f196.google.com with SMTP id 3f1490d57ef6-e8bd171826cso315362276.3;
+        Wed, 16 Jul 2025 07:40:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752676856; x=1753281656; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pfwYeQ0lSxFqkmbHNbtiMcwWyHLPm2mIdKPW8D3rFWA=;
+        b=CxnAO2U+dEL/tkywJlpiZnh46YQfJZFgAQ2VXFpsR/EhweHqf5uSjgJlgpX0hFH5jz
+         cMWZB8iJKS1KrR24wpDjabEFLJIcIwMpJJDPtUkq+zuenicwONYDOFNFqbZsIlFwT/An
+         dzO0V3VzlO6ZSgycTY1+JkIpuZUM1UgtJZdqgL2DDINWcKr4hFdVssLRioxB/jjS2Yos
+         70qqUgKU1b/QPSs2ERdZGiHGG/r9aD1RR7HjFrmAMetU+IXvGx5c71lSfjRb339DG1cV
+         iP1mR7cUH5oEJWt0OkKYqrC9wB7IyzHAzy1mJm8JMkAc0DGzSHUZa1x4eDBaD2uUcby1
+         VW3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752676856; x=1753281656;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pfwYeQ0lSxFqkmbHNbtiMcwWyHLPm2mIdKPW8D3rFWA=;
+        b=gkUExtFWo8OzdS6+grI/8SRU6p2ZyfeXJpv//JTKTdCSlquoYPwc45/epyDx4n0v2r
+         YDoGmbuHiwfszIw6Df1KROyEIO5/RYluW4leNOJI823EzsN25uRXHliFA+1WhlO8ZbX4
+         ISTol/J0Rbr0WR8NniZB5HxYivAITj79ppbkhJpG19NEQZVSbYE1dJwcPokQUtaGv7sQ
+         FgkJajn2yZFDf940xtJvk3SFokiupK8BU46131j4XKfli4hLih9J0xzd7zjrwQCX0tof
+         aO+u2IFAwrsaTAGx8RuDO/OY/UnZpxzAiLX/cqVxnSdB9EUEdIQ1eAKzeoRdJiKrJxc6
+         sWaw==
+X-Forwarded-Encrypted: i=1; AJvYcCU2YUWbOzRt68e4k6cbxN+cYqjbS1Vjx3vspDpnCULkfmkYs419t9GwdaWo5+/lHHI3MEDMNvfsF3iEz+7a@vger.kernel.org, AJvYcCU8aDc4uAsVlX3HEmownYcqJIurqz1g+iFuCrT1Hxj1hN+jPTxiZqu9pifjTJmZ0bxh9s+3YLRx@vger.kernel.org, AJvYcCUR701OLNhTic/i0UVnJx6uKMovU09sWvsw+0B1NVIfCDyPMp8lX7mNua6wR7kVhCvdVXw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzYrTlwbCActBEG9qS345Ar2XUtg1ewUNNuqI/uNn5FyD6/N7SS
+	2YRVgpYu7G+6xXBftRCXs4+71csYfUMuL8880bJPv5t3cA6TyH3Zhlfk8Qws7wMOaoXwWwP8DYO
+	6sTYexg/krcLZaC2M2GmjoBo7zg2263W2GpQ7q5pLYA==
+X-Gm-Gg: ASbGncvLivG/ftp0L90vALGXQ+CpGpdRHVRg83USKiDy7pFXMOSMYTjyH4v26KAWHlr
+	llVHlHhP+z0LDa2NidILZ8OAs2Wk3PdesgTtC86VelQlEqyaBK0efVBbd3blmozOpRzTC9UgbhN
+	my0pD0VcG8qmc+O0uBjVhCQqY37vQtiJgyXv0WLxq8wYrbmVDFv2d+nAATC4EqUJSluMpwKXPyL
+	URJG0o=
+X-Google-Smtp-Source: AGHT+IEEsGkjeJRr+4AxB4v8yEdFBdHjv0f7mCtSLB+EbeD9EY0YJN/yeyk9YT3I1MCKXufJeinGe9qxBV4f6r3UUfs=
+X-Received: by 2002:a05:690c:3693:b0:710:f09c:b00f with SMTP id
+ 00721157ae682-7183712dc18mr40453547b3.15.1752676855537; Wed, 16 Jul 2025
+ 07:40:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20250703121521.1874196-1-dongml2@chinatelecom.cn>
+ <20250703121521.1874196-3-dongml2@chinatelecom.cn> <CAADnVQKP1-gdmq1xkogFeRM6o3j2zf0Q8Atz=aCEkB0PkVx++A@mail.gmail.com>
+ <45f4d349-7b08-45d3-9bec-3ab75217f9b6@linux.dev> <CAADnVQ+7NhegoZGHkiRyNO8ywks3ssPzQd6ipQzumZsWUHJALg@mail.gmail.com>
+In-Reply-To: <CAADnVQ+7NhegoZGHkiRyNO8ywks3ssPzQd6ipQzumZsWUHJALg@mail.gmail.com>
+From: Menglong Dong <menglong8.dong@gmail.com>
+Date: Wed, 16 Jul 2025 22:40:54 +0800
+X-Gm-Features: Ac12FXwhFnOEikntgmWcObUoZ2zctoMhZNba-RlPeEbc7K2an5Dl4pIZ79cUM88
+Message-ID: <CADxym3bT8P796Qqcd0mtJwR09bgs0Bc45GuPkb39ELLsg1MQ_g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 02/18] x86,bpf: add bpf_global_caller for
+ global trampoline
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Menglong Dong <menglong.dong@linux.dev>, Steven Rostedt <rostedt@goodmis.org>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	LKML <linux-kernel@vger.kernel.org>, Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 15 Jul 2025 14:05:48 -0700 Mohsin Bashir wrote:
-> This patch series add tests to validate XDP native support for PASS,
-> DROP, ABORT, and TX actions, as well as headroom and tailroom adjustment.
-> For adjustment tests, validate support for both the extension and
-> shrinking cases across various packet sizes and offset values.
-> 
-> The pass criteria for head/tail adjustment tests require that at-least
-> one adjustment value works for at-least one packet size. This ensure
-> that the variability in maximum supported head/tail adjustment offset
-> across different drivers is being incorporated.
-> 
-> The results reported in this series are based on fbnic. However, the
-> series is tested against multiple other drivers including netdevism.
+On Wed, Jul 16, 2025 at 12:35=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Tue, Jul 15, 2025 at 1:37=E2=80=AFAM Menglong Dong <menglong.dong@linu=
+x.dev> wrote:
+> >
+> >
+> > On 7/15/25 10:25, Alexei Starovoitov wrote:
+[......]
+> >
+> > According to my benchmark, it has ~5% overhead to save/restore
+> > *5* variants when compared with *0* variant. The save/restore of regs
+> > is fast, but it still need 12 insn, which can produce ~6% overhead.
+>
+> I think it's an ok trade off, because with one global trampoline
+> we do not need to call rhashtable lookup before entering bpf prog.
+> bpf prog will do it on demand if/when it needs to access arguments.
+> This will compensate for a bit of lost performance due to extra save/rest=
+ore.
 
-Not much luck, on netdevsim with a debug kernel build the test seems to
-time out after 3min 30sec without printing anything.
+I just think of another benefit of defining multiple global trampolines
+here, which you may be interested in. In the feature, we can make
+the global trampoline supports functions that have 7+ arguments.
+If we use _one_ global trampoline, it's not possible, as we can't handle
+the arguments in the stack. However, it's possible if we define
+different global trampoline for the functions that have different arguments
+count, and what we need to do in the feature is do some adjustment
+to CALLER_DEFINE().
 
-A normal VM it doesn't time out but it seems to reliably fail as follows:
+Wish you are interested in this idea :)
 
-TAP version 13
-1..1
-# timeout set to 180
-# selftests: drivers/net: xdp.py
-# TAP version 13
-# 1..9
-# ok 1 xdp.test_xdp_native_pass_sb
-# ok 2 xdp.test_xdp_native_pass_mb
-# ok 3 xdp.test_xdp_native_drop_sb
-# ok 4 xdp.test_xdp_native_drop_mb
-# ok 5 xdp.test_xdp_native_tx_mb
-# # Exception| Traceback (most recent call last):
-# # Exception|   File "/home/virtme/testing-17/tools/testing/selftests/net/lib/py/ksft.py", line 243, in ksft_run
-# # Exception|     case(*args)
-# # Exception|   File "/home/virtme/testing-17/tools/testing/selftests/drivers/net/./xdp.py", line 466, in test_xdp_native_adjst_tail_grow_data
-# # Exception|     _validate_res(res, offset_lst, pkt_sz_lst)
-# # Exception|   File "/home/virtme/testing-17/tools/testing/selftests/drivers/net/./xdp.py", line 337, in _validate_res
-# # Exception|     raise KsftFailEx(f"{res['reason']}")
-# # Exception| net.lib.py.ksft.KsftFailEx: Adjustment failed
-# not ok 6 xdp.test_xdp_native_adjst_tail_grow_data
-# ok 7 xdp.test_xdp_native_adjst_tail_shrnk_data
-# # Failed run: pkt_sz 512, offset -256. Last successful run: pkt_sz 512, offset -128. Reason: Adjustment failed
-# ok 8 xdp.test_xdp_native_adjst_head_grow_data
-# # Exception| Traceback (most recent call last):
-# # Exception|   File "/home/virtme/testing-17/tools/testing/selftests/net/lib/py/ksft.py", line 243, in ksft_run
-# # Exception|     case(*args)
-# # Exception|   File "/home/virtme/testing-17/tools/testing/selftests/drivers/net/./xdp.py", line 625, in test_xdp_native_adjst_head_shrnk_data
-# # Exception|     _validate_res(res, offset_lst, pkt_sz_lst)
-# # Exception|   File "/home/virtme/testing-17/tools/testing/selftests/drivers/net/./xdp.py", line 337, in _validate_res
-# # Exception|     raise KsftFailEx(f"{res['reason']}")
-# # Exception| net.lib.py.ksft.KsftFailEx: Data exchange failed
-# not ok 9 xdp.test_xdp_native_adjst_head_shrnk_data
-# # Totals: pass:7 fail:2 xfail:0 xpass:0 skip:0 error:0
-not ok 1 selftests: drivers/net: xdp.py # exit=1
--- 
-pw-bot: cr
+Thanks!
+Menglong Dong
+
+
+>
+> PS
+> pls don't add your chinatelecom.cn email in cc.
+> gmail just cannot deliver there and it's annoying to keep deleting
+> it manually in every reply.
 
