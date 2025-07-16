@@ -1,301 +1,233 @@
-Return-Path: <bpf+bounces-63430-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63431-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97239B0757B
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 14:22:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79DEDB075A0
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 14:27:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D72421AA3D80
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 12:22:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E749E1897137
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 12:28:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 887F02F49FD;
-	Wed, 16 Jul 2025 12:22:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 284962F5081;
+	Wed, 16 Jul 2025 12:27:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EgVlbgOB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GNnc0juZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80B2123ABB0;
-	Wed, 16 Jul 2025 12:22:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42DBD20110B;
+	Wed, 16 Jul 2025 12:27:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752668533; cv=none; b=j6jEYH/sfgXinErN5PYqW8i5d6eEDVwklA5qrVojQnHQZTT034ZEHELOmin6Ut4np8XvYyUGimBOFyleQpTBSp007lcND7ljGMjzhWFXVIkHzc5OjD/Uuw8/IknG6s/reSaQ0rguhW0OGo3dRJmmIbJ8XQkydbF6GcycvntUnjc=
+	t=1752668856; cv=none; b=TLnO+3LrFVqCi4iylJXoHbUch/UCLGNyB4O3Hgo0EAK2+U5X8KLhMbphmB+hX1crwTRy81YAVhtX9IVE9X8QEPaFC/egpIku/18VlDAnVN9vdv4kF/YXRq2z6J8HPVGMjWd1bkm8oHszrBCzvp6I8STP8dQyYf2eTl+m7mwke4k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752668533; c=relaxed/simple;
-	bh=EJGOiFH+EU5CNzkZ/PqBKWLV7F65x+cAx3JuBIlqwMo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hC7lNnj5ubunVbaEUnaN9VY4I+GkChnSDP/W2G1DaiaeZ44oLR9KX7DcAq7WwEKhWXhMf7yUzlSdXAd6iXkRlH1cpx24XSAUePkuTtfkzPDlRpJ47PPybfOxxDk01yR3ep9BQrzXX9BmTplR9XEE2uSS277d8FopMsaDcq9iUKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EgVlbgOB; arc=none smtp.client-ip=209.85.210.44
+	s=arc-20240116; t=1752668856; c=relaxed/simple;
+	bh=xwq/vRLbdM7WL4q5HIsuxXoQO20oEJ8lc3HqoaMuIeM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fhFFJAGS2YNmz4ceTZApkm28sSL+4D7vgzwv4JteFvFTIYq+N5B4INBrfCwOIVHTvSGcAAMPx1mWpJ1J5x7LDuiVSvg40vmux8HrSLEc/8kSIruqshB4nw3uvVxG0BxZ9KrQBqXPbiF2kAaMoltOo0LG68F1BxlDjEfCXPPScOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GNnc0juZ; arc=none smtp.client-ip=209.85.210.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-73e650f3c31so250702a34.3;
-        Wed, 16 Jul 2025 05:22:11 -0700 (PDT)
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-742c7a52e97so5409600b3a.3;
+        Wed, 16 Jul 2025 05:27:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752668530; x=1753273330; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G+tnr3e4/mymYLtJajATmZkmmv8sB/rgRTqanOQGPLM=;
-        b=EgVlbgOBQgh/E+4O+gjUs5b9p6mZ2kBplWx/7gaJ4/Oa6kYyTtPo/H1yyKuIcTbTYH
-         +BWnLtBQbTgMCge49tSL4g/K+Kctu8n1kJ4EfSyzipMPyHVKVIWp0q7uRY9RT3/h8hWa
-         OLwTi6aY45LM+HM4dvzHcBNgyS7AlGRg9VrbKqw3pkNFhKde8behbgKFnCokZV1LVh1/
-         qk7et4Nc+bO8ihwtPzFlGM2oiO8M0R+lqo18l6zNkz509lKOxH3VBTRyLHxfxUv5IljD
-         mfswZ+JUQHuaNKdB2pdZoMbIvX2n9OidfJN2WEm2CDxBvVADaRUrJpaLUD4sSvrT4U8A
-         TF4A==
+        d=gmail.com; s=20230601; t=1752668854; x=1753273654; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=COHxjyd9TVO00pYSe36h0VbD3h6ewBA8auhnHn9D4Vs=;
+        b=GNnc0juZxgbVRGyKoBRKfZNXEe6HEwkbZ13ayBioTK/lepHBZU5eoe6LLH9DAzTN6d
+         dbWL1fSgXPnI5F8PpEUknKMzXaxSHaB0mPlwKwAmBsuF1uXppciVulYgVnVsOCDeWv3l
+         zMLT7sH5es/csMRDOaQYQdHGImCLGrNYpqyZVe5pJfPVPYuFGMvcyJrmy+G+RD0IMteX
+         TNOQ3rrIx9U12vNUDLFP3jjNzZtO5VmolIIy8amvuTbWsCB3p3DyG6VbAoHKrDJTpkyM
+         SETBDBfe0J4GfNzCcQiIgF4y9Uo69iZds7uVx/bSm2DGoSuYRxA1br4PcbNulbAIhRY0
+         r19w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752668530; x=1753273330;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=G+tnr3e4/mymYLtJajATmZkmmv8sB/rgRTqanOQGPLM=;
-        b=eHHYWVMz82PKS1bOTMlc3PGyIz/PlOo4tsHOPR1URws3aSvesLKiHEIJ7uLzvTTefY
-         Pqabh57Ff0lCNZFwY80MT9SH8sXM3H0/vZn9B31cn+u3y72yaRzJniuDseWK2tT/JIv7
-         ydzidxTN/A23s2LDTh35DSMwXxP5AKZ68kzIdtr4ajjcsChpL4/JH/RZeQsas+GqMSLa
-         RMvPhQSDRrrvknXt8Cek9LtfDcGQphACJ8ZQfOHWUYwDPeD1pBP0TUHkV3I8nB97wDgn
-         /1zGTTl+LkpiKJsRVMcf5vQyB0rikJ0WCNvLlYnwsSZmC9s9Qia3Sf9i03We011/1r/2
-         TtMg==
-X-Forwarded-Encrypted: i=1; AJvYcCUG5MOT7Ads1MOBFhhqcO58mHzC0v9NQLqbuEx96uVjaPHAudy4KMoxEp/IQ46jbY459Lk=@vger.kernel.org, AJvYcCVtNFhHUHECmOr7N6IYykfOo6sjFTy3o8rTXG/ZHRzdjQ/eFzZbcSfnyRjpNv+K6Cn942GmsNM7SxuXpuh4@vger.kernel.org
-X-Gm-Message-State: AOJu0YxPVICbuw1Q9xNr99g0ByIo7wWTK/qlg/E2ioLwVmMQJReff4lN
-	AReCL7hTs2/0feGkxeJKTPDgL08urSv3caJ0W3GfGGd4tseBRdVI1qkedAkxy1pUhgXgpWFL4OD
-	p57kCEqcQWuyHsjH4ve087pdxtdYG3+c=
-X-Gm-Gg: ASbGncv0FD9dIZxnGh7PEwSvYQkbsZ0Kb89YFFf6RXKLAnz/tPl6hWVYeUyfQRfH5l+
-	FOAvmoibxAnyuPqXbimLqass3HL/UyTl29OFLmIV/f+qwGqurx4AxnzI/njL+yiOFwwtqZ5gQag
-	mTov4pD0lCswqkXFCWF7JQU+1bgQgs9tVNiSedZhLoZwZt3ms8thXk9utXwEFXUnxzFFQXgH3jb
-	Y8hmns=
-X-Google-Smtp-Source: AGHT+IGL7XLsKwtMZM/7v+p6warUqLB5ZMqihYIBn4laUW39QjxxtyX3/q++rHGgY6HE0TYuHA1qbA7pXZ2XHUIrfDk=
-X-Received: by 2002:a05:6808:d4a:b0:409:52f:b361 with SMTP id
- 5614622812f47-41ceb405866mr2082913b6e.0.1752668530359; Wed, 16 Jul 2025
- 05:22:10 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1752668854; x=1753273654;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=COHxjyd9TVO00pYSe36h0VbD3h6ewBA8auhnHn9D4Vs=;
+        b=buiD7w8F12MNhgOTodLbmMvtJ2zrLiO9ZozOv4vO8Jv1F9wi+jCa3d1BzGT3nLiVlR
+         RsEU/Fcv1GqPcUxx3sRrivr6uda5FOplWFTsGBAXc+4c6m0VvQ0KWXHkGrT0dyFDGG5n
+         f/NLzXgpzxZLL1Y2DeClPhl6KoCaaRU/6a58zWgZQs+InQby9aGJkUVdOYcIN11TxdKP
+         1FiyYQ8MwGLuQEvrXS09JqjymcVUAsdY4gLWQpYQ2hqrEXVjvCEpOcUpVtlCNjkrmY8c
+         y0EN56jt9/W/hX4GqDy/Yc8gP39Qd/NgloqNtPv+HycYhwQieR+mtdVZHclRnCv3Tbw0
+         rSfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU9OVIb5c9541N/JbCLdksrE+N9YcV3TH48bDO92rg/8PT14F01eCFoGJITvACaMF70rBBBP0c=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzGuikNUenaxBGBFeQP5eWKQ8IdZD90/vJP3BGA+UmKtFFgBveT
+	tPyw3sC7CTtKAPbHUH8aXe9c6/1EDWo7JsYHcwi5dtNz1BO+od86jvFJ
+X-Gm-Gg: ASbGncuzngEqmSmYsqnHDschs6cBJSCiAuvbQF+jprx1lUS6pk8Bef/67VQ1dTTnc1O
+	zUCIYFHXwOFTKIraZx6o1lbLIRgvWboD3cGTSRkMAEMVSeW8ZTsX9BUa5oN5XaxXhCyeCVQItro
+	FLjvC5JzTjd89zMbVzxrxlh2O/u4VRd0Xs/a4P0ZGPi0Waj9zmvFhAnaQ8vC0vCIlCWUGgRDmnk
+	JvZD03jn4V7MVCv6VrYLjgak7XLuqYBCUmtL0eaHqYC+spKjs4GW0tVDMmPW3g/mg5lN2Apu37k
+	9aDn15p9z6O8lsYGGNm0gi4BQCXVxmGxv8T2LnQHaIq628EPUDgDdM7/mOBuPCG+NCQvCqX5TzF
+	wHAUXYuAcmmgbdv1TItaYgS6Y9RWJx7EaseaVzzcF+GzMX2DBABaG88T2X4f7pkkQfh7ziA==
+X-Google-Smtp-Source: AGHT+IHyJtLsZB/0aPAdoOaZcA2I1LWb6k5JcJIxHbQDwRstjmQx8MuU8sX1SNxozXJnQaCI2D6eNw==
+X-Received: by 2002:a05:6a00:887:b0:736:50d1:fc84 with SMTP id d2e1a72fcca58-756ea8b5c61mr4275871b3a.21.1752668854345;
+        Wed, 16 Jul 2025 05:27:34 -0700 (PDT)
+Received: from KERNELXING-MB0.tencent.com ([43.132.141.24])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74eb9dd5a94sm14164946b3a.21.2025.07.16.05.27.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jul 2025 05:27:33 -0700 (PDT)
+From: Jason Xing <kerneljasonxing@gmail.com>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	bjorn@kernel.org,
+	magnus.karlsson@intel.com,
+	maciej.fijalkowski@intel.com,
+	jonathan.lemon@gmail.com,
+	sdf@fomichev.me,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	joe@dama.to,
+	willemdebruijn.kernel@gmail.com
+Cc: bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	Jason Xing <kernelxing@tencent.com>
+Subject: [PATCH net-next v2] xsk: skip validating skb list in xmit path
+Date: Wed, 16 Jul 2025 20:27:25 +0800
+Message-Id: <20250716122725.6088-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250709055029.723243-1-duanchenghao@kylinos.cn> <20250709055029.723243-5-duanchenghao@kylinos.cn>
-In-Reply-To: <20250709055029.723243-5-duanchenghao@kylinos.cn>
-From: Hengqi Chen <hengqi.chen@gmail.com>
-Date: Wed, 16 Jul 2025 20:21:59 +0800
-X-Gm-Features: Ac12FXyuUgPud7MHnYU5OY6d35OPLh1aCxgn6SeR3TFritbJv3zps56X5lpe79c
-Message-ID: <CAEyhmHS__fqHS8Bpg7+4apO7OuXG1sP3miCcAMT+Y3uU0+_xjg@mail.gmail.com>
-Subject: Re: [PATCH v3 4/5] LoongArch: BPF: Add bpf_arch_xxxxx support for Loongarch
-To: Chenghao Duan <duanchenghao@kylinos.cn>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	yangtiezhu@loongson.cn, chenhuacai@kernel.org, martin.lau@linux.dev, 
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	haoluo@google.com, jolsa@kernel.org, kernel@xen0n.name, 
-	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, bpf@vger.kernel.org, 
-	guodongtai@kylinos.cn, youling.tang@linux.dev, jianghaoran@kylinos.cn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jul 9, 2025 at 1:50=E2=80=AFPM Chenghao Duan <duanchenghao@kylinos.=
-cn> wrote:
->
-> Implement the functions of bpf_arch_text_poke, bpf_arch_text_copy, and
-> bpf_arch_text_invalidate on the LoongArch architecture.
->
-> On LoongArch, since symbol addresses in the direct mapping
-> region cannot be reached via relative jump instructions from the paged
-> mapping region, we use the move_imm+jirl instruction pair as absolute
-> jump instructions. These require 2-5 instructions, so we reserve 5 NOP
-> instructions in the program as placeholders for function jumps.
->
-> Co-developed-by: George Guo <guodongtai@kylinos.cn>
-> Signed-off-by: George Guo <guodongtai@kylinos.cn>
-> Signed-off-by: Chenghao Duan <duanchenghao@kylinos.cn>
-> ---
->  arch/loongarch/include/asm/inst.h |  1 +
->  arch/loongarch/kernel/inst.c      | 32 +++++++++++
->  arch/loongarch/net/bpf_jit.c      | 90 +++++++++++++++++++++++++++++++
->  3 files changed, 123 insertions(+)
->
-> diff --git a/arch/loongarch/include/asm/inst.h b/arch/loongarch/include/a=
-sm/inst.h
-> index 2ae96a35d..88bb73e46 100644
-> --- a/arch/loongarch/include/asm/inst.h
-> +++ b/arch/loongarch/include/asm/inst.h
-> @@ -497,6 +497,7 @@ void arch_simulate_insn(union loongarch_instruction i=
-nsn, struct pt_regs *regs);
->  int larch_insn_read(void *addr, u32 *insnp);
->  int larch_insn_write(void *addr, u32 insn);
->  int larch_insn_patch_text(void *addr, u32 insn);
-> +int larch_insn_text_copy(void *dst, void *src, size_t len);
->
->  u32 larch_insn_gen_nop(void);
->  u32 larch_insn_gen_b(unsigned long pc, unsigned long dest);
-> diff --git a/arch/loongarch/kernel/inst.c b/arch/loongarch/kernel/inst.c
-> index 674e3b322..8d6594968 100644
-> --- a/arch/loongarch/kernel/inst.c
-> +++ b/arch/loongarch/kernel/inst.c
-> @@ -4,6 +4,7 @@
->   */
->  #include <linux/sizes.h>
->  #include <linux/uaccess.h>
-> +#include <linux/set_memory.h>
->
->  #include <asm/cacheflush.h>
->  #include <asm/inst.h>
-> @@ -218,6 +219,37 @@ int larch_insn_patch_text(void *addr, u32 insn)
->         return ret;
->  }
->
-> +int larch_insn_text_copy(void *dst, void *src, size_t len)
-> +{
-> +       unsigned long flags;
-> +       size_t wlen =3D 0;
-> +       size_t size;
-> +       void *ptr;
-> +       int ret =3D 0;
-> +
-> +       set_memory_rw((unsigned long)dst, round_up(len, PAGE_SIZE) / PAGE=
-_SIZE);
-> +       raw_spin_lock_irqsave(&patch_lock, flags);
-> +       while (wlen < len) {
-> +               ptr =3D dst + wlen;
-> +               size =3D min_t(size_t, PAGE_SIZE - offset_in_page(ptr),
-> +                            len - wlen);
-> +
-> +               ret =3D copy_to_kernel_nofault(ptr, src + wlen, size);
-> +               if (ret) {
-> +                       pr_err("%s: operation failed\n", __func__);
-> +                       break;
-> +               }
-> +               wlen +=3D size;
-> +       }
+From: Jason Xing <kernelxing@tencent.com>
 
-Again, why do you do copy_to_kernel_nofault() in a loop ?
-This larch_insn_text_copy() can be part of the first patch like
-larch_insn_gen_{beq,bne}. WDYT ?
+This patch only does one thing that removes validate_xmit_skb_list()
+for xsk.
 
-> +       raw_spin_unlock_irqrestore(&patch_lock, flags);
-> +       set_memory_rox((unsigned long)dst, round_up(len, PAGE_SIZE) / PAG=
-E_SIZE);
-> +
-> +       if (!ret)
-> +               flush_icache_range((unsigned long)dst, (unsigned long)dst=
- + len);
-> +
-> +       return ret;
-> +}
-> +
->  u32 larch_insn_gen_nop(void)
->  {
->         return INSN_NOP;
-> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
-> index 7032f11d3..9cb01f0b0 100644
-> --- a/arch/loongarch/net/bpf_jit.c
-> +++ b/arch/loongarch/net/bpf_jit.c
-> @@ -4,6 +4,7 @@
->   *
->   * Copyright (C) 2022 Loongson Technology Corporation Limited
->   */
-> +#include <linux/memory.h>
->  #include "bpf_jit.h"
->
->  #define REG_TCC                LOONGARCH_GPR_A6
-> @@ -1367,3 +1368,92 @@ bool bpf_jit_supports_subprog_tailcalls(void)
->  {
->         return true;
->  }
-> +
-> +static int emit_jump_and_link(struct jit_ctx *ctx, u8 rd, u64 ip, u64 ta=
-rget)
-> +{
-> +       s64 offset =3D (s64)(target - ip);
-> +
-> +       if (offset && (offset >=3D -SZ_128M && offset < SZ_128M)) {
-> +               emit_insn(ctx, bl, offset >> 2);
-> +       } else {
-> +               move_imm(ctx, LOONGARCH_GPR_T1, target, false);
-> +               emit_insn(ctx, jirl, rd, LOONGARCH_GPR_T1, 0);
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static int gen_jump_or_nops(void *target, void *ip, u32 *insns, bool is_=
-call)
-> +{
-> +       struct jit_ctx ctx;
-> +
-> +       ctx.idx =3D 0;
-> +       ctx.image =3D (union loongarch_instruction *)insns;
-> +
-> +       if (!target) {
-> +               emit_insn((&ctx), nop);
-> +               emit_insn((&ctx), nop);
-> +               return 0;
-> +       }
-> +
-> +       return emit_jump_and_link(&ctx, is_call ? LOONGARCH_GPR_T0 : LOON=
-GARCH_GPR_ZERO,
-> +                                 (unsigned long)ip, (unsigned long)targe=
-t);
-> +}
-> +
-> +int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
-> +                      void *old_addr, void *new_addr)
-> +{
-> +       u32 old_insns[5] =3D {[0 ... 4] =3D INSN_NOP};
-> +       u32 new_insns[5] =3D {[0 ... 4] =3D INSN_NOP};
-> +       bool is_call =3D poke_type =3D=3D BPF_MOD_CALL;
-> +       int ret;
-> +
-> +       if (!is_kernel_text((unsigned long)ip) &&
-> +               !is_bpf_text_address((unsigned long)ip))
-> +               return -ENOTSUPP;
-> +
-> +       ret =3D gen_jump_or_nops(old_addr, ip, old_insns, is_call);
-> +       if (ret)
-> +               return ret;
-> +
-> +       if (memcmp(ip, old_insns, 5 * 4))
-> +               return -EFAULT;
-> +
-> +       ret =3D gen_jump_or_nops(new_addr, ip, new_insns, is_call);
-> +       if (ret)
-> +               return ret;
-> +
-> +       mutex_lock(&text_mutex);
-> +       if (memcmp(ip, new_insns, 5 * 4))
-> +               ret =3D larch_insn_text_copy(ip, new_insns, 5 * 4);
-> +       mutex_unlock(&text_mutex);
-> +       return ret;
-> +}
-> +
-> +int bpf_arch_text_invalidate(void *dst, size_t len)
-> +{
-> +       int i;
-> +       int ret =3D 0;
-> +       u32 *inst;
-> +
-> +       inst =3D kvmalloc(len, GFP_KERNEL);
-> +       if (!inst)
-> +               return -ENOMEM;
-> +
-> +       for (i =3D 0; i < (len/sizeof(u32)); i++)
-> +               inst[i] =3D INSN_BREAK;
-> +
-> +       if (larch_insn_text_copy(dst, inst, len))
-> +               ret =3D -EINVAL;
-> +
-> +       kvfree(inst);
-> +       return ret;
-> +}
-> +
-> +void *bpf_arch_text_copy(void *dst, void *src, size_t len)
-> +{
-> +       if (larch_insn_text_copy(dst, src, len))
-> +               return ERR_PTR(-EINVAL);
-> +
-> +       return dst;
-> +}
-> --
-> 2.43.0
->
+For xsk, it's not needed to validate and check the skb in
+validate_xmit_skb_list() in copy mode because xsk_build_skb() doesn't
+and doesn't need to prepare those requisites to validate. Xsk is just
+responsible for delivering raw data from userspace to the driver.
+
+The __dev_direct_xmit was taken out of af_packet in commit 865b03f21162
+("dev: packet: make packet_direct_xmit a common function"). And a call
+to validate_xmit_skb_list was added in commit 104ba78c9880 ("packet: on
+direct_xmit, limit tso and csum to supported devices") to support TSO.
+Since we don't support tso/vlan offloads in xsk_build_skb, we can remove
+validate_xmit_skb_list for xsk. Skipping numerous checks somehow
+contributes to the transmission especially in the extremely hot path.
+
+Performance-wise, I used './xdpsock -i enp2s0f0np0 -t  -S -s 64' to verify
+the guess and then measured on the machine with ixgbe driver. It stably
+goes up by 5.48%, which can be seen in the shown below:
+Before:
+ sock0@enp2s0f0np0:0 txonly xdp-skb
+                   pps            pkts           1.00
+rx                 0              0
+tx                 1,187,410      3,513,536
+After:
+ sock0@enp2s0f0np0:0 txonly xdp-skb
+                   pps            pkts           1.00
+rx                 0              0
+tx                 1,252,590      2,459,456
+
+This patch also removes total ~4% consumption which can be observed
+by perf:
+|--2.97%--validate_xmit_skb
+|          |
+|           --1.76%--netif_skb_features
+|                     |
+|                      --0.65%--skb_network_protocol
+|
+|--1.06%--validate_xmit_xfrm
+
+Signed-off-by: Jason Xing <kernelxing@tencent.com>
+---
+V2
+Link: https://lore.kernel.org/all/20250713025756.24601-1-kerneljasonxing@gmail.com/
+1. avoid adding a new flag
+2. add more descriptions from Stan
+---
+ include/linux/netdevice.h | 30 ++++++++++++++++++++----------
+ net/core/dev.c            |  6 ------
+ 2 files changed, 20 insertions(+), 16 deletions(-)
+
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index a80d21a14612..8e05c99928e1 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -3364,16 +3364,6 @@ static inline int dev_queue_xmit_accel(struct sk_buff *skb,
+ 	return __dev_queue_xmit(skb, sb_dev);
+ }
+ 
+-static inline int dev_direct_xmit(struct sk_buff *skb, u16 queue_id)
+-{
+-	int ret;
+-
+-	ret = __dev_direct_xmit(skb, queue_id);
+-	if (!dev_xmit_complete(ret))
+-		kfree_skb(skb);
+-	return ret;
+-}
+-
+ int register_netdevice(struct net_device *dev);
+ void unregister_netdevice_queue(struct net_device *dev, struct list_head *head);
+ void unregister_netdevice_many(struct list_head *head);
+@@ -4301,6 +4291,26 @@ static __always_inline int ____dev_forward_skb(struct net_device *dev,
+ 	return 0;
+ }
+ 
++static inline int dev_direct_xmit(struct sk_buff *skb, u16 queue_id)
++{
++	struct net_device *dev = skb->dev;
++	struct sk_buff *orig_skb = skb;
++	bool again = false;
++	int ret;
++
++	skb = validate_xmit_skb_list(skb, dev, &again);
++	if (skb != orig_skb) {
++		dev_core_stats_tx_dropped_inc(dev);
++		kfree_skb_list(skb);
++		return NET_XMIT_DROP;
++	}
++
++	ret = __dev_direct_xmit(skb, queue_id);
++	if (!dev_xmit_complete(ret))
++		kfree_skb(skb);
++	return ret;
++}
++
+ bool dev_nit_active_rcu(const struct net_device *dev);
+ static inline bool dev_nit_active(const struct net_device *dev)
+ {
+diff --git a/net/core/dev.c b/net/core/dev.c
+index e365b099484e..793f5d45c6b2 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -4744,19 +4744,13 @@ EXPORT_SYMBOL(__dev_queue_xmit);
+ int __dev_direct_xmit(struct sk_buff *skb, u16 queue_id)
+ {
+ 	struct net_device *dev = skb->dev;
+-	struct sk_buff *orig_skb = skb;
+ 	struct netdev_queue *txq;
+ 	int ret = NETDEV_TX_BUSY;
+-	bool again = false;
+ 
+ 	if (unlikely(!netif_running(dev) ||
+ 		     !netif_carrier_ok(dev)))
+ 		goto drop;
+ 
+-	skb = validate_xmit_skb_list(skb, dev, &again);
+-	if (skb != orig_skb)
+-		goto drop;
+-
+ 	skb_set_queue_mapping(skb, queue_id);
+ 	txq = skb_get_tx_queue(dev, skb);
+ 
+-- 
+2.41.3
+
 
