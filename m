@@ -1,56 +1,55 @@
-Return-Path: <bpf+bounces-63410-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63411-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D1C6B06D31
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 07:29:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18A48B06D33
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 07:29:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43D774E70ED
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 05:28:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A10C16C71C
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 05:29:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 121EF270EBD;
-	Wed, 16 Jul 2025 05:29:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CDCA29C33F;
+	Wed, 16 Jul 2025 05:29:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nfy1ADgS"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VAJyDpX1"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A792B134BD
-	for <bpf@vger.kernel.org>; Wed, 16 Jul 2025 05:28:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E3812652A4
+	for <bpf@vger.kernel.org>; Wed, 16 Jul 2025 05:29:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752643740; cv=none; b=VcIhvNOVTaxMGWLtdii4tirqgiZ+Meg4oS/CsqsUdth2O6w4l1mkBe3Lux62UXMWhB+7zbT4rdeg03RYdM2z2fz+h3WeIxy0y9Y6+uAnnwn/5VdqXE+A1G2nZWu5UMsFeFTSsIUBPvHzZRq67d9njaW2wxtiKtvM/dXBYgF8KZ8=
+	t=1752643784; cv=none; b=OC7E+Sa/hlYVn2WaVoQzSVt4pp1HFye4PtxCzE4izTJrDmdEgaWSSoFqAsz/RqnN/oJKDNdBV3JRlMR+f6L9ewP62ZKP1fePhULhLp0R/glbbcMUVpRtoL1tUZJZALvRAKoSItPu7iodhylG9T8b+dSrROGIHvVDMfXx183tXio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752643740; c=relaxed/simple;
-	bh=VutHikv1pvEMGzxLE3PRw2qY+nMCiEHHyOZJtbI+ik4=;
+	s=arc-20240116; t=1752643784; c=relaxed/simple;
+	bh=aRIDWx0Vo97BwUWY6RDNUAmXF5pxa+CZ6zSfpPXD2e8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VU5ly68obOmAgtLbvtHTqxYrI6EjR1NPaF+6uCWqOzUQepD2PAqyl8Lp1o3q7xUFODmWvSxXuFhxliOVqAhjUDo9ZUVcHJhHM/gnQq7E24huX9hhnXO13ZbPelqy2d97/9hbDqntwOwQcazVBYgLRFhnFQV2OtzsBjNV6RN5wEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nfy1ADgS; arc=none smtp.client-ip=91.218.175.185
+	 In-Reply-To:Content-Type; b=f19VUABY/us8jZlQVJ9Waa7bHodtqUQZ1IFT691vKjPgujFFjJO/Yjo1WsuyiCEyvzpxa+KCBK2wEl0lBtlQhNYnsSV5I7Fa3BDieYoZm3wUwJs6bo+5fyMCtG2nMZsdCiKWIHwPZvtgsD5DdEVDS6K8A/j88OtmTFrhDwp3YjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VAJyDpX1; arc=none smtp.client-ip=91.218.175.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d9716ac8-b6b1-4524-8c94-2f7261f9b5cf@linux.dev>
+Message-ID: <31dac2d6-da40-4b7c-a8ca-d67891e7326d@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1752643726;
+	t=1752643780;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=xyhZ/FnFe6rb1lJ+3cQ1tnL5rn/O/A2CII8bIqwgAEI=;
-	b=nfy1ADgSrX3vI0IWtmxsIz3mEDMcMNgniXaLYdsFYXQZ+ZJSrsIwNcbcOhaUODUkhu92qC
-	vdTp5gESXRpGAGbaPlaYpY/6ZQY9diwpP9gCYyOLzyNSuPlGEI6YXLppjUK33Ftzk8kVw/
-	u3PnOyZflaFAHZhiDDD5wi8XcNTj5qg=
-Date: Wed, 16 Jul 2025 13:28:32 +0800
+	bh=Wcry2zWRJ5O/NvpFg8ru9gzwxCAkaTiLYWddxO8g8so=;
+	b=VAJyDpX1ht9X+Jz6Hefw4NKQJqumbU7V+YtCslIwIYMCG7acz5ccjUU170FSB1dp6Wn/xk
+	wRaBzSwMuVVuo4DqHtmUs2DOCJe5+twWHtCJA6qSL3iMxFwDtBDckJwloG+KLwPkUXYchO
+	koKerLF/l/MsZQa/VM3jT2iSANSe28k=
+Date: Wed, 16 Jul 2025 13:29:29 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 2/2] bpf/selftests: Add selftests for token
- info
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Add struct bpf_token_info
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
  martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
@@ -58,95 +57,78 @@ Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
  sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, willemb@google.com,
  kerneljasonxing@gmail.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20250715035831.1094282-1-chen.dylane@linux.dev>
- <20250715035831.1094282-2-chen.dylane@linux.dev>
- <CAEf4Bza8FVL55qLds5ZWaKuz5Hw_r+bwg-MeXWX9H7ZsA_8ZJw@mail.gmail.com>
+ <CAEf4BzbkfhqfpBt49h7SXYwbR1SK423pqf1328i8XujofjLYhQ@mail.gmail.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Tao Chen <chen.dylane@linux.dev>
-In-Reply-To: <CAEf4Bza8FVL55qLds5ZWaKuz5Hw_r+bwg-MeXWX9H7ZsA_8ZJw@mail.gmail.com>
+In-Reply-To: <CAEf4BzbkfhqfpBt49h7SXYwbR1SK423pqf1328i8XujofjLYhQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-在 2025/7/16 05:51, Andrii Nakryiko 写道:
+在 2025/7/16 05:52, Andrii Nakryiko 写道:
 > On Mon, Jul 14, 2025 at 8:59 PM Tao Chen <chen.dylane@linux.dev> wrote:
 >>
->> A previous change added bpf_token_info to get token info with
->> bpf_get_obj_info_by_fd, this patch adds a new test for token info.
->>
->>   #461/12  token/bpf_token_info:OK
+>> The 'commit 35f96de04127 ("bpf: Introduce BPF token object")' added
+>> BPF token as a new kind of BPF kernel object. And BPF_OBJ_GET_INFO_BY_FD
+>> already used to get BPF object info, so we can also get token info with
+>> this cmd.
+>> One usage scenario, when program runs failed with token, because of
+>> the permission failure, we can report what BPF token is allowing with
+>> this API for debugging.
 >>
 >> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
 >> ---
->>   .../testing/selftests/bpf/prog_tests/token.c  | 39 +++++++++++++++++++
->>   1 file changed, 39 insertions(+)
+>>   include/linux/bpf.h            | 11 +++++++++++
+>>   include/uapi/linux/bpf.h       |  8 ++++++++
+>>   kernel/bpf/syscall.c           | 18 ++++++++++++++++++
+>>   kernel/bpf/token.c             | 28 +++++++++++++++++++++++++++-
+>>   tools/include/uapi/linux/bpf.h |  8 ++++++++
+>>   5 files changed, 72 insertions(+), 1 deletion(-)
 >>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/token.c b/tools/testing/selftests/bpf/prog_tests/token.c
->> index cfc032b910c..a16f25bdd4c 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/token.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/token.c
->> @@ -1047,6 +1047,36 @@ static int userns_obj_priv_implicit_token_envvar(int mnt_fd, struct token_lsm *l
->>
->>   #define bit(n) (1ULL << (n))
->>
->> +static int userns_bpf_token_info(int mnt_fd, struct token_lsm *lsm_skel)
->> +{
->> +       int err, token_fd = -1;
->> +       struct bpf_token_info info;
->> +       u32 len = sizeof(struct bpf_token_info);
->> +
->> +       /* create BPF token from BPF FS mount */
->> +       token_fd = bpf_token_create(mnt_fd, NULL);
->> +       if (!ASSERT_GT(token_fd, 0, "token_create")) {
->> +               err = -EINVAL;
->> +               goto cleanup;
->> +       }
->> +
->> +       memset(&info, 0, len);
->> +       err = bpf_obj_get_info_by_fd(token_fd, &info, &len);
->> +       if (!ASSERT_ERR(err, "bpf_obj_get_token_info"))
->> +               goto cleanup;
->> +       if (!ASSERT_EQ(info.allowed_cmds, bit(BPF_MAP_CREATE), "token_info_cmds_map_create"))
->> +               goto cleanup;
->> +       if (!ASSERT_EQ(info.allowed_progs, bit(BPF_PROG_TYPE_XDP), "token_info_progs_xdp"))
->> +               goto cleanup;
 > 
-> nit: there is no harm in just doing a few ASSERT_EQ() checks
-> unconditionally, it's cleaner and more succinct (and either way you
-> return err == 0 in this case)
->
-
-It seems necessary to assign the err when ASSERT_EQ fails, will fix it 
-in v3, thanks.
-
+> LGTM, but see a nit below and in selftest patch
+> 
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> 
+> [...]
+> 
+>>
+>> +int bpf_token_get_info_by_fd(struct bpf_token *token,
+>> +                            const union bpf_attr *attr,
+>> +                            union bpf_attr __user *uattr)
+>> +{
+>> +       struct bpf_token_info __user *uinfo;
+>> +       struct bpf_token_info info;
+>> +       u32 info_copy, uinfo_len;
 >> +
->> +       /* The BPF_PROG_TYPE_EXT is not set in token */
->> +       ASSERT_EQ(info.allowed_progs, bit(BPF_PROG_TYPE_EXT), "token_info_progs_ext");
+>> +       uinfo = u64_to_user_ptr(attr->info.info);
+>> +       uinfo_len = attr->info.info_len;
 >> +
->> +cleanup:
->> +       zclose(token_fd);
->> +       return err;
+>> +       info_copy = min_t(u32, uinfo_len, sizeof(info));
+> 
+> you don't use info_len past this point, so just reassign it instead of
+> adding another variable (info_copy); seems like some other
+> get_info_by_fd functions use the same approach
+> 
+
+will change it in v3, thanks.
+
+>> +       memset(&info, 0, sizeof(info));
+>> +
+>> +       info.allowed_cmds = token->allowed_cmds;
+>> +       info.allowed_maps = token->allowed_maps;
+>> +       info.allowed_progs = token->allowed_progs;
+>> +       info.allowed_attachs = token->allowed_attachs;
+>> +
+>> +       if (copy_to_user(uinfo, &info, info_copy) ||
+>> +           put_user(info_copy, &uattr->info.info_len))
+>> +               return -EFAULT;
+>> +
+>> +       return 0;
 >> +}
 >> +
->>   void test_token(void)
->>   {
->>          if (test__start_subtest("map_token")) {
->> @@ -1150,4 +1180,13 @@ void test_token(void)
->>
->>                  subtest_userns(&opts, userns_obj_priv_implicit_token_envvar);
->>          }
->> +       if (test__start_subtest("bpf_token_info")) {
->> +               struct bpffs_opts opts = {
->> +                       .cmds = bit(BPF_MAP_CREATE),
->> +                       .progs = bit(BPF_PROG_TYPE_XDP),
->> +                       .attachs = ~0ULL,
->> +               };
->> +
->> +               subtest_userns(&opts, userns_bpf_token_info);
->> +       }
->>   }
->> --
->> 2.48.1
->>
+> 
+> [...]
 
 
 -- 
