@@ -1,226 +1,383 @@
-Return-Path: <bpf+bounces-63395-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63396-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA027B06B8D
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 04:05:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FCC4B06BAC
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 04:29:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0891C561740
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 02:05:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 625CF188891B
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 02:29:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BB47273D85;
-	Wed, 16 Jul 2025 02:05:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FD19274B34;
+	Wed, 16 Jul 2025 02:28:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A/3gDYqD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dMXflEoa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0B05270EAA;
-	Wed, 16 Jul 2025 02:05:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.20
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752631513; cv=fail; b=Ed9xxYfWNaUDGDHP/YNyCXWB+cc1Z5JV11jj6D1wqahNixa7t4nhIWwedf/BKTEo6VMtiKZ9JrJON5VTXAzeoHuEpyLQclbX3UO6PuPe/wP9H3lYQx3i1THTk4oGyagO72HRD+epiMEKXx+Di3rPd647QWzYu7njYa3UljULuJI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752631513; c=relaxed/simple;
-	bh=hZ+D9Fclx1zTXL9/zTQg/4ukW6G0Yc+dobQa3hF3Lvk=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=PinFE3Zkog7N7oBmfR2UWfLXb5Jj3SjVWcNI0nLjh1lk5SRS+H2kay2uUsZeIN00yb42fGoF9eVwQtuyt+wflQv4DhdGgqZKyYe4A9wxpzivigL5xT8dMxfppimvLzfClJqiPKzvndUnhtkACtLKdTJ+JIyee1ltTeB7x/geIw8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A/3gDYqD; arc=fail smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1752631512; x=1784167512;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=hZ+D9Fclx1zTXL9/zTQg/4ukW6G0Yc+dobQa3hF3Lvk=;
-  b=A/3gDYqD2+a1Pkbl1r6+56zXM9BORG+L+M96er/cIpwFklOboULUWksJ
-   nBOFv0/StzANP0tv/lWeLpUWClnB/vfXwlItMhEX4zOBO1YJ+BlmAbMQb
-   pXC2pG0Poy9H5v86FT8dY1gr/sn1b/ETUQdjzuWc0GktSvr+ocDwFDNXy
-   2sfQktI2F1HsBF8auTOYiRMFxFDazMywh5U5SUvBqeQ3k1j/KT8TRJ/0b
-   nJFNDPrMwbjfH3gZ7nTgCmvBD4Hq2EQ/iIciJ20hpxub6kYnSTAKAgoWQ
-   rnlf3+mrcaoTr6K/6QIJCk7omNsTD2BA7cuo05EuOt/Cxc1INiqVyVMca
-   Q==;
-X-CSE-ConnectionGUID: PcHiyCPCRY+geG9gPemadQ==
-X-CSE-MsgGUID: qECKTdmjT6eCLd0EFRSNVw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11493"; a="54575459"
-X-IronPort-AV: E=Sophos;i="6.16,315,1744095600"; 
-   d="scan'208";a="54575459"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2025 19:05:11 -0700
-X-CSE-ConnectionGUID: 8yNzrBT7S2W/1HMQ86xQtQ==
-X-CSE-MsgGUID: D+xJ6BAEQlSoo8v0Oojw8Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,315,1744095600"; 
-   d="scan'208";a="158097419"
-Received: from orsmsx901.amr.corp.intel.com ([10.22.229.23])
-  by fmviesa010.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2025 19:05:10 -0700
-Received: from ORSMSX903.amr.corp.intel.com (10.22.229.25) by
- ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1748.26; Tue, 15 Jul 2025 19:05:09 -0700
-Received: from ORSEDG902.ED.cps.intel.com (10.7.248.12) by
- ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1748.26 via Frontend Transport; Tue, 15 Jul 2025 19:05:09 -0700
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (40.107.95.44) by
- edgegateway.intel.com (134.134.137.112) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.25; Tue, 15 Jul 2025 19:05:09 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=L5YKnYWkcfD0R05JQy8MSjtuQnnffgQ4ly2nq7I5TN2FSOPNZQBkBxkLaqXeHJ8ZRwEEu7cu+q1pqDaH2wq1ORfGXQ9mdiQnvURtlR0Kl7R41RBlSTTNocBir3Z+WTzBDRcyQHr8ByvEXQR/xJzMnZY2Bp1Ty58mBphbXJcBecExwa1mj27qxCRHP1XPWsEEuGjngfv0HT2MN8SzYrK8inO4TF+qIWB4AiBv/gI8mxcFttbJdzs48+3glWsBUqRMAWSmAQpx+bET14mWPa/YhKklnMmx6iMOHBir0l8H+nMEEOsva7TTudddA07uXPgD8DF4c/AvTj3Q3m5iALX7pQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IF7xMPY5iK6Fvnsw3nbdzBu2lEcGr8ZFf465azifljk=;
- b=vwSKLIG7MFDKMnJ1UEUXTvcasvZTYJ91LUGDYnzkJPt+2GawxizDu6nMx9U9XTmk7Lb8RPzPcv0QL4dX7zSqe1UzB6OmyPlvGyl4MQKCZzTp1Nf428DdRnBX9cpY/UDihZVRimaaZXkoFw4npAATJ4wori/B5n/yv2AbStdPtqADK6iy6nd5Fy7V/Oc2uSvl+ibtUpTOK/ZMJ/5qujsrN7VYTVLyUUcg5ZY5aI5LkJprv44TnyOfqeC85iQKZYeXXNNUXqUwuLxBluvXDNvP5Mn2tSomV1fsqDxVaRk7dfcGWTRjAzmj65SYm4Ix5HYumEYAl3SbSQnQ3t9PR3J2OQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from IA3PR11MB9254.namprd11.prod.outlook.com (2603:10b6:208:573::10)
- by BL3PR11MB6507.namprd11.prod.outlook.com (2603:10b6:208:38e::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8880.27; Wed, 16 Jul
- 2025 02:05:06 +0000
-Received: from IA3PR11MB9254.namprd11.prod.outlook.com
- ([fe80::8547:f00:c13c:8fc7]) by IA3PR11MB9254.namprd11.prod.outlook.com
- ([fe80::8547:f00:c13c:8fc7%5]) with mapi id 15.20.8922.028; Wed, 16 Jul 2025
- 02:05:04 +0000
-From: "Song, Yoong Siang" <yoong.siang.song@intel.com>
-To: Jakub Kicinski <kuba@kernel.org>
-CC: "David S . Miller" <davem@davemloft.net>, Eric Dumazet
-	<edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Simon Horman
-	<horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Alexei Starovoitov
-	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, "Jesper Dangaard
- Brouer" <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
-	Stanislav Fomichev <sdf@fomichev.me>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "linux-doc@vger.kernel.org"
-	<linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: RE: [PATCH bpf-next,v4 1/1] doc: clarify XDP Rx metadata handling and
- driver requirements
-Thread-Topic: [PATCH bpf-next,v4 1/1] doc: clarify XDP Rx metadata handling
- and driver requirements
-Thread-Index: AQHb9Vhr0Aafvgr6uUyDGhiaxQBAhLQz23GAgAAlxZA=
-Date: Wed, 16 Jul 2025 02:05:04 +0000
-Message-ID: <IA3PR11MB9254FD76B5402AE44F2CAC13D856A@IA3PR11MB9254.namprd11.prod.outlook.com>
-References: <20250715071502.3503440-1-yoong.siang.song@intel.com>
- <20250715164913.3ed08273@kernel.org>
-In-Reply-To: <20250715164913.3ed08273@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: IA3PR11MB9254:EE_|BL3PR11MB6507:EE_
-x-ms-office365-filtering-correlation-id: 1df5db3f-c3d5-49f5-d050-08ddc40d2e3a
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|366016|376014|7416014|1800799024|38070700018;
-x-microsoft-antispam-message-info: =?us-ascii?Q?heGII9kUbB/cHAZtDogeyth/8ULpb5tF+wE8VzBxwUI9liAQtGnXCdWT1y91?=
- =?us-ascii?Q?Y6s6KATEMDHm0pV8ACxaYgpIH2sVZN/kNQMcNgFIwM232NeAU9W1NGMomR0f?=
- =?us-ascii?Q?xGcWocltvHpiJpACErfmxKXFB5FzTk9QCNqFTP59jytNRstZohWnKT/H4ls1?=
- =?us-ascii?Q?qGvCOCGQ1a6k+Gpc0Q2rcgGBTzTFMyVN8NV2shHzKAe53BCDiucjlUMFeiU5?=
- =?us-ascii?Q?hPdkqsACf4rqvOweSi1zHpcZINUGYIrz3E3icRjP3ksT+oChgmS4cD1QGv8u?=
- =?us-ascii?Q?bgMAoDFXCNPqysLwU12GWk+SVOHfV9rweUQxqg0rljUKNyVyAu0zfxe0sfWa?=
- =?us-ascii?Q?ezdLwNM9CYLhw96NgInwLO3BIXg5iblYDEPykOtJ4WL+RHz24ULY9XoxMnJU?=
- =?us-ascii?Q?VOTPu3a4rS9owkqI6SNM8G0vKvTKNS8S8KzzqffjDgMPSwW3flukVN7H6KHc?=
- =?us-ascii?Q?Mj+FRSzOoBxHLETEChDI98ocQDdBjXTwKjVPIv/ozt/9zHVd5KigmYJQfogR?=
- =?us-ascii?Q?vFCTF+GHkl1ZgZsGvQouonO2v2hbHtcG94l38sQFyNEECebW9mhJwSxlX1kw?=
- =?us-ascii?Q?WCUV8RlZJ0Gtmr9T2vmV9w5+tnLFHfQvf6W4xNtDsUt6tTvFoKlWAM4rfWHd?=
- =?us-ascii?Q?o1YyQLofti8N3u3SyKfPl4bYRcVmeyn7koW7+cqXhqWuDGouMJoVID21lsU5?=
- =?us-ascii?Q?hWy9TRvNUY38XheSa9YvVZaMMg2TsMU+AVEcUGu2qm+NOkwJDfugHAtTxnX8?=
- =?us-ascii?Q?dYXTbQc7K0S/i2OGxexFOCDi00+RAHGf5NUI7lfPnfExfZ8xQABfX1IJjJpg?=
- =?us-ascii?Q?hm0QqmcVKUnfWB8/QyXxOcFu1wumqREbLGdtkFMv6tm3MGgC/kjtS4P/aOcP?=
- =?us-ascii?Q?wnuKQLD7nT1w4iadEgrv26KvjmuRbqTQx7T86ljNlzgcP3PUg224ZFptzJyq?=
- =?us-ascii?Q?kzE5rLbrnfnkcnygSz3fBTSgmGwjJ7RylCpWN/+f7l3k5M6FONmBSeZ07S2z?=
- =?us-ascii?Q?w+bt0lU/b2U0L1jz78fTYd84WFua0r1o8+L8HcEOVPsBDaYUqtcVsG152cPQ?=
- =?us-ascii?Q?di8mLJHONf0nq+ADFaOTq5dUujCwfcmwlUVsAYNm2n1ldY2NOJOkut69iqE1?=
- =?us-ascii?Q?YfL4J4U7ehZoZHkUANA9kAmGuSKTY7CS49H+g+M/yu7w7v5A6DjMAaoH7lp1?=
- =?us-ascii?Q?MO6WD1pDvboMcHA379Ppy22hjfWP7K8z34ljutZJLiH7lTUxV2yj9SYWfJ4x?=
- =?us-ascii?Q?aYlbVrLyTcU4hEsEwMnpv5Btxq64OVOtDl+V4Jz/38fcWsrEUsUIyntCx0lu?=
- =?us-ascii?Q?nG4fySxXppVtEZ3NebdVZGvplQ5oR7hUok0U1EkHCpzwDgQx9h4tfQsZk8LF?=
- =?us-ascii?Q?tMputdqQxLL7/RD3Crmnc3aBQ6qJ7BNcfe4pnKus9FthJv43/M0Yun9STKwi?=
- =?us-ascii?Q?Or1q3m17j0l7MRDV3vV5CGG/aJDrVgkAJz1DivAF+x/oBQEtD7hpd/u0kvN9?=
- =?us-ascii?Q?j0nKRZnNFwntZQg=3D?=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA3PR11MB9254.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?sP6lauBqM8wg7phw6SYNYt495db+wbGfF0Drk/vD2VEYxRX5Ucw+nPhOhqCX?=
- =?us-ascii?Q?9+2KkkB4WejdFljqZl1AhRa8B5Ge4i2pKVJ/5QMJYhKWUSiSBSGlkqL1HX71?=
- =?us-ascii?Q?KHdHkp0d4uuB+FyYkQnBpmGGoZalyaHTZrCHdX6hGVkb8Cc0fuig5UCkQ06J?=
- =?us-ascii?Q?w1hjYbv7waEcDt9Z5nPD9Ul6VTViTGMCvBnnyYSGEnk/pNXf6at7vLRtKsUX?=
- =?us-ascii?Q?Kwk+aX1D9XFTceuqViG51K3BiGstyf9EJcJZfBaYuzanrHAP5oHvrDU4A9ds?=
- =?us-ascii?Q?2sBzWv079bJjKU26OMH+YT0nVc37Pe+lNBWu77dQE3PKpmVnloLdRZ0N2E25?=
- =?us-ascii?Q?ULngny/kFfGTubeJAk2+3D2f9TJWA3QjjrAGQ+bef3F6VKJBx1SzPFOJtAn1?=
- =?us-ascii?Q?ATMQmroHYUrlXLBGqK83IC2hfFGds86h3hPy0VNHF1hfeejAK5cLGgvXidUp?=
- =?us-ascii?Q?zI4HxHIOnrjJMQmLBM/S4HzaqBGr/1c2E+beoeYe9jIlX+hQfOeuNz8wrQbm?=
- =?us-ascii?Q?cZEThODSUc8OehSMJbYTYa8g1mwTD7uPhORkO45ydhsIdyCgS89lqOePAiVd?=
- =?us-ascii?Q?MIzefLdZwp4dm1fUlciRPmYLK/s7LUwce5hZC5kZzo6VE5kCRWc/fctSMbnT?=
- =?us-ascii?Q?nygsubG1iR/fUmJldJrMIVq2rB6ht5G/HJze48T4pKI+BgmG5Ppf12AxzdCa?=
- =?us-ascii?Q?v8hfuHdXx9eK7GxEAyr67n/Fw1/7jrErfLoVKGFrVC1DmQHN6nkiuIn0fvkI?=
- =?us-ascii?Q?TADMvHc6X1Q3JRtk4jnbBggW3JRIN5qa+H+Kpf9z6rS50gAVDkHLedHH5GqY?=
- =?us-ascii?Q?F89OMTjGklkOCEcXyluAZWj3GeyTKqindPdGou6NpnLnXdspAOrTtPPi2G0W?=
- =?us-ascii?Q?mamxs/yGEv2YvOvtVjRf6XMyrdAFDRMV5qTVhLvZiEDhO+oRBzBHa1CkPlKn?=
- =?us-ascii?Q?WK0O2MtOtoQUDq/gkalY0l3rj384r1C/E24QfOwr6cT7eVCz7akCXuxcOkAD?=
- =?us-ascii?Q?OC14KxFrOLM1tWNpqBg3Pe/WYI5P+z9rrLaLwXECaHis0+j2cSi4I4motdaD?=
- =?us-ascii?Q?X0ktgLGZOlz0QSXGcT+gfa3a5TVTcOHE5ujRGRfbSnutdBVQSpDEOZSaK3eo?=
- =?us-ascii?Q?z4ghZ2L0su0gJ+8wzkBxNOCr1hHd03AZQ0UULqPi9YFzKbifuUT1wff0wNWE?=
- =?us-ascii?Q?FJ1eUVg1A79Z52oKPXB2kKzW0EuIY1zTEzj/B9su5u0xWViRbhh2Y6RuBfA6?=
- =?us-ascii?Q?BQWd/g2KIynn6WpOGAlcLdZ2wT9D+N2wq0MOOgJduhrBfMX3FOANgdJbdkGY?=
- =?us-ascii?Q?oM7zJLZkluoh9aVARmKhJzc4YTTvbJRanvTSZMpFw+VQGf5npJ6VsG4bk0gv?=
- =?us-ascii?Q?oCzoViJs99NS07j7b9PFTF2yeRgVWjmejxYBg8OdIA0c1Qtk7u0GOZxm/4r8?=
- =?us-ascii?Q?xFypklKWFK6qcKYWKEk1B6QoIg98JwJo6euKklq4xRsnJOiKjH0N1Dfyu/WZ?=
- =?us-ascii?Q?zO3mghhVicOBUq4JvNoqjQrvR2d2pVv1cgsdj4Tkn30hw49I7v6G/ynU8UMM?=
- =?us-ascii?Q?qMoI1Qi2qxCwXrQBkjND3l1C44SFr8tUoMV5JJ0UoCLkDszDZX5ZjnqTy/Cu?=
- =?us-ascii?Q?wQ=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 043002741D4
+	for <bpf@vger.kernel.org>; Wed, 16 Jul 2025 02:28:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.177
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1752632931; cv=none; b=RPeU2+cDI+Zgjn1aykLCTwqYVgX4LdJeEljQnTcdiXL1MQeICNsgiXHYM8xIh2Hjpt46pJ8wOelnfooqjr3p+/7LMYroQz3zp8Aqd8giprAFS/xbTNtNUN1+ah64Lg4wRwrxnj4zhWpyT46NjdCB2HmRW3CMUUhmHCa0gY1YHck=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1752632931; c=relaxed/simple;
+	bh=AWfwmjnHvLE+MpT8hMlVet+rFcUn+f08eOzcek6CPYk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=s89CjX+2+tswwfjMq74SECc+jwnSlQuV08zvYCNTGXLr5J/gUi1OsShPHVJ7VDVX+9N9TJzLZROTgT+HBvfkiCnNxP+ObbMMmVc0AWSybj+SF5Up2+u3HhEbUZrkfcPx+0jspYj0FOZu9svdkz2LPOexAgWcRh4TEZ1a8BIa/Is=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dMXflEoa; arc=none smtp.client-ip=209.85.167.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-41b309ce799so1448118b6e.2
+        for <bpf@vger.kernel.org>; Tue, 15 Jul 2025 19:28:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752632929; x=1753237729; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Clf/r36wco3qYSSxwYtd6w4WQgNVaLyCiWy+Ub5pxb0=;
+        b=dMXflEoabbI60LrvSQ1JRdAqM69No6ql3bT7qyrARmFa6aQXq5Ho0nAKqHGFcs5Q0i
+         PpSDfp6IVj8t4Z7GqjsJl07i/fpA4WKnTl82aJ/vvkzzEBInuUbof1OrNcC3SAocpjC+
+         EflxyXy6nHQMnTACiTLJRcC3u5x+9cKmimp7WMdRt3MyuetYibbw0sHQPoS+SfWab5cB
+         ioAG5mbJhLLVeuQY9D4i0qzP+5b8jU6SwoJfa2zhjexYXsYunlGefCr62V2aZmq8yV76
+         tsP3L0mBGYk/iRIuVwxGAInWaq+ixIbQK0p84LBImiEXbftsJRrxFAgDVW0TYHJb71Kh
+         MV6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752632929; x=1753237729;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Clf/r36wco3qYSSxwYtd6w4WQgNVaLyCiWy+Ub5pxb0=;
+        b=IM3wV8rfncJqFc2+X+YGHcT6XC4gLV4p+wQ7UfuIeCms+Ch5q4nWZwftyDlOXQJJ1/
+         LMkmOgu0+zVnoS4iDGDxhLabREU9W/LNHwl7RerRpv2K3wOl897WIXhv2UnZEoryP1Yg
+         Norgc4NZ0rZNJGzIcxzcsI9n3c7j5o3YOuPg2duqcKPcEYaI1dvWD5UhRK58zs5eFvMi
+         2H+7jtOP5YCehCVifekGCcEMO7dSM29n17AubnKhJK0O85TpKKdMt+Xo+/HYxShfDM88
+         RJzwVkArFAEODJ0QLiZLcJWmGr8DJ0EuVzzX2nVg8jlv2j+93XwmVxyL7nbRj6U2qb6g
+         xgXw==
+X-Forwarded-Encrypted: i=1; AJvYcCWViDNNeOaOqqE4aFeiq3bZnlj4v3XDZDpAKgL5bu1ZiuGsmUCEabgOU874+/J5AydRRjk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyGVgcZz47a36TuTlotfFQts7X1ehor9Dg5TsXnACFIQeuNCYoO
+	uo8NCxHvcq8ppUjcolTlclJ/SmIeYyaNSN5IhH7jWmnIyoZas0md7Gi+CRwFjQJOTuotC3E/Hyy
+	ptzZJdqiUwbG0SuxFoA+o+GDQK+tmNn8=
+X-Gm-Gg: ASbGncu3wOB3uLGlEeOCin4FcK1BVvW6ZN+CQ5YGbS53LhXomAOtYBVlXE5uym08/XQ
+	3FnZTbPxl8BHhwmNDIIIC8H32ZGz9QujKYHNoKmSHTLpnqBsgQkUKRizsa6nAz+dV/FZWzTdFnk
+	0OoNolaOGXUbzdWT2wwoII3kTuWjAOUuuQhsOdSOZTgx0tfDZ2et7FPfqaMK03bVby5czJmDdMw
+	l81eNo=
+X-Google-Smtp-Source: AGHT+IFyHxeOWTqCoEZ7KsNuV0shRCjm/SggPFjouaNpDZNZjriJdpzqvaTwJvg0DRqNrOprmg5ThrtaZ1/nnNlTuCQ=
+X-Received: by 2002:a05:6808:4f20:b0:406:794b:462 with SMTP id
+ 5614622812f47-41d006ed00bmr900738b6e.0.1752632928757; Tue, 15 Jul 2025
+ 19:28:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: IA3PR11MB9254.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1df5db3f-c3d5-49f5-d050-08ddc40d2e3a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jul 2025 02:05:04.5313
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: LFAbv2HKzY8nRHYMQPq7LJt1JK66B4osG7IFf9Rm2KMfTqJ+zVF2eaHs+RB/taNKLeiVEJWLCb8h+HIUeejW6UicmOlIRuwqc/8yPogBcyg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR11MB6507
-X-OriginatorOrg: intel.com
+References: <20250708071840.556686-1-jianghaoran@kylinos.cn> <20250708071840.556686-3-jianghaoran@kylinos.cn>
+In-Reply-To: <20250708071840.556686-3-jianghaoran@kylinos.cn>
+From: Hengqi Chen <hengqi.chen@gmail.com>
+Date: Wed, 16 Jul 2025 10:28:37 +0800
+X-Gm-Features: Ac12FXysx7IqDDtECjqpg_t7a4pnzmEAh9SieM_kyWBiVLmrKiIFMBGxXkqKeQY
+Message-ID: <CAEyhmHTSw-DKj+TLOwfKuSvvTq2cXRackaRCZDiK7ymh-jvpog@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] LoongArch: BPF: Fix tailcall hierarchy
+To: Haoran Jiang <jianghaoran@kylinos.cn>
+Cc: loongarch@lists.linux.dev, bpf@vger.kernel.org, kernel@xen0n.name, 
+	chenhuacai@kernel.org, yangtiezhu@loongson.cn, jolsa@kernel.org, 
+	haoluo@google.com, sdf@fomichev.me, kpsingh@kernel.org, 
+	john.fastabend@gmail.com, yonghong.song@linux.dev, song@kernel.org, 
+	eddyz87@gmail.com, martin.lau@linux.dev, andrii@kernel.org, 
+	daniel@iogearbox.net, ast@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wednesday, July 16, 2025 7:49 AM, Jakub Kicinski <kuba@kernel.org> wrote=
-:
->On Tue, 15 Jul 2025 15:15:02 +0800 Song Yoong Siang wrote:
->> -An XDP program can store individual metadata items into this ``data_met=
-a``
->> +Certain devices may utilize the ``data_meta`` area for specific purpose=
-s.
+On Tue, Jul 8, 2025 at 3:19=E2=80=AFPM Haoran Jiang <jianghaoran@kylinos.cn=
+> wrote:
 >
->Calling headroom "``data_meta`` area" is confusing, IMO. I'd say:
+> In specific use cases combining tailcalls and BPF-to-BPF calls=EF=BC=8C
+> MAX_TAIL_CALL_CNT won't work because of missing tail_call_cnt
+> back-propagation from callee to caller=E3=80=82This patch fixes this
+> tailcall issue caused by abusing the tailcall in bpf2bpf feature
+> on LoongArch like the way of "bpf, x64: Fix tailcall hierarchy".
 >
->  Certain devices may prepend metadata to received packets.
+> push tail_call_cnt_ptr and tail_call_cnt into the stack,
+> tail_call_cnt_ptr is passed between tailcall and bpf2bpf,
+> uses tail_call_cnt_ptr to increment tail_call_cnt.
 >
->And the rest of this paragraph can stay as is.
+> Fixes: bb035ef0cc91 ("LoongArch: BPF: Support mixing bpf2bpf and tailcall=
+s")
+> Fixes: 5dc615520c4d ("LoongArch: Add BPF JIT support")
+> Signed-off-by: Haoran Jiang <jianghaoran@kylinos.cn>
+> ---
+>  arch/loongarch/net/bpf_jit.c | 112 +++++++++++++++++++++--------------
+>  1 file changed, 68 insertions(+), 44 deletions(-)
 >
+> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
+> index 5061bfc978f2..45f804b7c556 100644
+> --- a/arch/loongarch/net/bpf_jit.c
+> +++ b/arch/loongarch/net/bpf_jit.c
+> @@ -7,10 +7,9 @@
+>  #include "bpf_jit.h"
+>
+>  #define REG_TCC                LOONGARCH_GPR_A6
+> -#define TCC_SAVED      LOONGARCH_GPR_S5
+>
+> -#define SAVE_RA                BIT(0)
+> -#define SAVE_TCC       BIT(1)
+> +#define BPF_TAIL_CALL_CNT_PTR_STACK_OFF(stack) (round_up(stack, 16) - 80=
+)
+> +
+>
+>  static const int regmap[] =3D {
+>         /* return value from in-kernel function, and exit value for eBPF =
+program */
+> @@ -32,32 +31,37 @@ static const int regmap[] =3D {
+>         [BPF_REG_AX] =3D LOONGARCH_GPR_T0,
+>  };
+>
+> -static void mark_call(struct jit_ctx *ctx)
+> +static void prepare_bpf_tail_call_cnt(struct jit_ctx *ctx, int *store_of=
+fset)
 
-Noted. Will rework accordingly.=20
+Consider adding more comments(e.g. pseudocode) for prepare_bpf_tail_call_cn=
+t().
+Assembly is hard to read. (At least for me :))
 
->> +Drivers for these devices must move any hardware-related metadata out f=
-rom
->the
->> +``data_meta`` area before presenting the frame to the XDP program. This=
- ensures
->> +that the XDP program can store individual metadata items into this ``da=
-ta_meta``
+>  {
+> -       ctx->flags |=3D SAVE_RA;
+> -}
+> +       const struct bpf_prog *prog =3D ctx->prog;
+> +       const bool is_main_prog =3D !bpf_is_subprog(prog);
+>
+> -static void mark_tail_call(struct jit_ctx *ctx)
+> -{
+> -       ctx->flags |=3D SAVE_TCC;
+> -}
+> +       if (is_main_prog) {
+> +               emit_insn(ctx, addid, LOONGARCH_GPR_T3, LOONGARCH_GPR_ZER=
+O, MAX_TAIL_CALL_CNT);
+> +               *store_offset -=3D sizeof(long);
+>
+> -static bool seen_call(struct jit_ctx *ctx)
+> -{
+> -       return (ctx->flags & SAVE_RA);
+> -}
+> +               emit_tailcall_jmp(ctx, BPF_JGT, REG_TCC, LOONGARCH_GPR_T3=
+, 4);
 
+Why emit_tailcall_jmp() here ? Shouldn't this be emit_cond_jmp() ?
+
+>
+> -static bool seen_tail_call(struct jit_ctx *ctx)
+> -{
+> -       return (ctx->flags & SAVE_TCC);
+> -}
+> +               /* If REG_TCC < MAX_TAIL_CALL_CNT, push REG_TCC into stac=
+k */
+> +               emit_insn(ctx, std, REG_TCC, LOONGARCH_GPR_SP, *store_off=
+set);
+>
+> -static u8 tail_call_reg(struct jit_ctx *ctx)
+> -{
+> -       if (seen_call(ctx))
+> -               return TCC_SAVED;
+> +               /* Calculate the pointer to REG_TCC in the stack and assi=
+gn it to REG_TCC */
+> +               emit_insn(ctx, addid, REG_TCC, LOONGARCH_GPR_SP, *store_o=
+ffset);
+> +
+> +               emit_uncond_jmp(ctx, 2);
+> +
+> +               emit_insn(ctx, std, REG_TCC, LOONGARCH_GPR_SP, *store_off=
+set);
+>
+> -       return REG_TCC;
+> +               *store_offset -=3D sizeof(long);
+> +               emit_insn(ctx, std, REG_TCC, LOONGARCH_GPR_SP, *store_off=
+set);
+> +
+> +       } else {
+> +               *store_offset -=3D sizeof(long);
+> +               emit_insn(ctx, std, REG_TCC, LOONGARCH_GPR_SP, *store_off=
+set);
+> +
+> +               *store_offset -=3D sizeof(long);
+> +               emit_insn(ctx, std, REG_TCC, LOONGARCH_GPR_SP, *store_off=
+set);
+> +       }
+>  }
+>
+>  /*
+> @@ -80,6 +84,10 @@ static u8 tail_call_reg(struct jit_ctx *ctx)
+>   *                            |           $s4           |
+>   *                            +-------------------------+
+>   *                            |           $s5           |
+> + *                            +-------------------------+
+> + *                            |          reg_tcc        |
+> + *                            +-------------------------+
+> + *                            |          reg_tcc_ptr    |
+>   *                            +-------------------------+ <--BPF_REG_FP
+>   *                            |  prog->aux->stack_depth |
+>   *                            |        (optional)       |
+> @@ -89,21 +97,24 @@ static u8 tail_call_reg(struct jit_ctx *ctx)
+>  static void build_prologue(struct jit_ctx *ctx)
+>  {
+>         int stack_adjust =3D 0, store_offset, bpf_stack_adjust;
+> +       const struct bpf_prog *prog =3D ctx->prog;
+> +       const bool is_main_prog =3D !bpf_is_subprog(prog);
+>
+>         bpf_stack_adjust =3D round_up(ctx->prog->aux->stack_depth, 16);
+>
+> -       /* To store ra, fp, s0, s1, s2, s3, s4 and s5. */
+> -       stack_adjust +=3D sizeof(long) * 8;
+> +       /* To store ra, fp, s0, s1, s2, s3, s4, s5, reg_tcc and reg_tcc_p=
+tr */
+> +       stack_adjust +=3D sizeof(long) * 10;
+>
+>         stack_adjust =3D round_up(stack_adjust, 16);
+>         stack_adjust +=3D bpf_stack_adjust;
+>
+>         /*
+> -        * First instruction initializes the tail call count (TCC).
+> -        * On tail call we skip this instruction, and the TCC is
+> +        * First instruction initializes the tail call count (TCC) regist=
+er
+> +        * to zero. On tail call we skip this instruction, and the TCC is
+>          * passed in REG_TCC from the caller.
+>          */
+> -       emit_insn(ctx, addid, REG_TCC, LOONGARCH_GPR_ZERO, MAX_TAIL_CALL_=
+CNT);
+> +       if (is_main_prog)
+> +               emit_insn(ctx, addid, REG_TCC, LOONGARCH_GPR_ZERO, 0);
+>
+>         emit_insn(ctx, addid, LOONGARCH_GPR_SP, LOONGARCH_GPR_SP, -stack_=
+adjust);
+>
+> @@ -131,20 +142,13 @@ static void build_prologue(struct jit_ctx *ctx)
+>         store_offset -=3D sizeof(long);
+>         emit_insn(ctx, std, LOONGARCH_GPR_S5, LOONGARCH_GPR_SP, store_off=
+set);
+>
+> +       prepare_bpf_tail_call_cnt(ctx, &store_offset);
+> +
+>         emit_insn(ctx, addid, LOONGARCH_GPR_FP, LOONGARCH_GPR_SP, stack_a=
+djust);
+>
+>         if (bpf_stack_adjust)
+>                 emit_insn(ctx, addid, regmap[BPF_REG_FP], LOONGARCH_GPR_S=
+P, bpf_stack_adjust);
+>
+> -       /*
+> -        * Program contains calls and tail calls, so REG_TCC need
+> -        * to be saved across calls.
+> -        */
+> -       if (seen_tail_call(ctx) && seen_call(ctx))
+> -               move_reg(ctx, TCC_SAVED, REG_TCC);
+> -       else
+> -               emit_insn(ctx, nop);
+> -
+>         ctx->stack_size =3D stack_adjust;
+>  }
+>
+> @@ -177,6 +181,17 @@ static void __build_epilogue(struct jit_ctx *ctx, bo=
+ol is_tail_call)
+>         load_offset -=3D sizeof(long);
+>         emit_insn(ctx, ldd, LOONGARCH_GPR_S5, LOONGARCH_GPR_SP, load_offs=
+et);
+>
+> +       /*
+> +        *  When push into the stack, follow the order of tcc then tcc_pt=
+r.
+> +        *  When pop from the stack, first pop tcc_ptr followed by tcc
+> +        */
+> +       load_offset -=3D 2*sizeof(long);
+> +       emit_insn(ctx, ldd, REG_TCC, LOONGARCH_GPR_SP, load_offset);
+> +
+> +       /* pop tcc_ptr to REG_TCC */
+> +       load_offset +=3D sizeof(long);
+> +       emit_insn(ctx, ldd, REG_TCC, LOONGARCH_GPR_SP, load_offset);
+> +
+>         emit_insn(ctx, addid, LOONGARCH_GPR_SP, LOONGARCH_GPR_SP, stack_a=
+djust);
+>
+>         if (!is_tail_call) {
+> @@ -211,7 +226,7 @@ bool bpf_jit_supports_far_kfunc_call(void)
+>  static int emit_bpf_tail_call(struct jit_ctx *ctx, int insn)
+>  {
+>         int off;
+> -       u8 tcc =3D tail_call_reg(ctx);
+> +       int tcc_ptr_off =3D BPF_TAIL_CALL_CNT_PTR_STACK_OFF(ctx->stack_si=
+ze);
+>         u8 a1 =3D LOONGARCH_GPR_A1;
+>         u8 a2 =3D LOONGARCH_GPR_A2;
+>         u8 t1 =3D LOONGARCH_GPR_T1;
+> @@ -240,11 +255,15 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx, =
+int insn)
+>                 goto toofar;
+>
+>         /*
+> -        * if (--TCC < 0)
+> -        *       goto out;
+> +        * if ((*tcc_ptr)++ >=3D MAX_TAIL_CALL_CNT)
+> +        *      goto out;
+>          */
+> -       emit_insn(ctx, addid, REG_TCC, tcc, -1);
+> -       if (emit_tailcall_jmp(ctx, BPF_JSLT, REG_TCC, LOONGARCH_GPR_ZERO,=
+ jmp_offset) < 0)
+> +       emit_insn(ctx, ldd, REG_TCC, LOONGARCH_GPR_SP, tcc_ptr_off);
+> +       emit_insn(ctx, ldd, t3, REG_TCC, 0);
+> +       emit_insn(ctx, addid, t3, t3, 1);
+> +       emit_insn(ctx, std, t3, REG_TCC, 0);
+> +       emit_insn(ctx, addid, t2, LOONGARCH_GPR_ZERO, MAX_TAIL_CALL_CNT);
+> +       if (emit_tailcall_jmp(ctx, BPF_JSGT, t3, t2, jmp_offset) < 0)
+>                 goto toofar;
+>
+>         /*
+> @@ -465,6 +484,7 @@ static int build_insn(const struct bpf_insn *insn, st=
+ruct jit_ctx *ctx, bool ext
+>         const s16 off =3D insn->off;
+>         const s32 imm =3D insn->imm;
+>         const bool is32 =3D BPF_CLASS(insn->code) =3D=3D BPF_ALU || BPF_C=
+LASS(insn->code) =3D=3D BPF_JMP32;
+> +       int tcc_ptr_off;
+>
+>         switch (code) {
+>         /* dst =3D src */
+> @@ -891,12 +911,17 @@ static int build_insn(const struct bpf_insn *insn, =
+struct jit_ctx *ctx, bool ext
+>
+>         /* function call */
+>         case BPF_JMP | BPF_CALL:
+> -               mark_call(ctx);
+>                 ret =3D bpf_jit_get_func_addr(ctx->prog, insn, extra_pass=
+,
+>                                             &func_addr, &func_addr_fixed)=
+;
+>                 if (ret < 0)
+>                         return ret;
+>
+> +               if (insn->src_reg =3D=3D BPF_PSEUDO_CALL) {
+> +                       tcc_ptr_off =3D BPF_TAIL_CALL_CNT_PTR_STACK_OFF(c=
+tx->stack_size);
+> +                       emit_insn(ctx, ldd, REG_TCC, LOONGARCH_GPR_SP, tc=
+c_ptr_off);
+> +               }
+> +
+> +
+>                 move_addr(ctx, t1, func_addr);
+>                 emit_insn(ctx, jirl, LOONGARCH_GPR_RA, t1, 0);
+>
+> @@ -907,7 +932,6 @@ static int build_insn(const struct bpf_insn *insn, st=
+ruct jit_ctx *ctx, bool ext
+>
+>         /* tail call */
+>         case BPF_JMP | BPF_TAIL_CALL:
+> -               mark_tail_call(ctx);
+>                 if (emit_bpf_tail_call(ctx, i) < 0)
+>                         return -EINVAL;
+>                 break;
+> --
+> 2.43.0
+>
 
