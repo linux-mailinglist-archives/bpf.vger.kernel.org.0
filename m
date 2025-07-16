@@ -1,151 +1,123 @@
-Return-Path: <bpf+bounces-63442-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63443-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A685B0774E
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 15:47:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B6E3B0782A
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 16:32:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB4941C2718E
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 13:48:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 456CC17040D
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 14:31:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5324A1E572F;
-	Wed, 16 Jul 2025 13:47:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E14B2C326B;
+	Wed, 16 Jul 2025 14:30:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="K9HZao44"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QGqOXs1u"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 082791D7E26;
-	Wed, 16 Jul 2025 13:47:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92155263C9F;
+	Wed, 16 Jul 2025 14:30:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752673650; cv=none; b=F5XW/esc+jsl415CIgvQon2zzmU0c6gMj9RxYYccfjYOudiarcu29nzxvdp+gPb0f/I61sWfX7tcdEgt1M7Q40wElLtEx9AuyR+XEVYsbCm/CoR7A4pMDhy7v6G21M6S4SjIAwi90zh9Q1nQ2F8Av1vaVl7jeq3IYcB0NMuDFyY=
+	t=1752676250; cv=none; b=T09tE91Sue3efDA+1emlkw24trNOUbxx85KfKf/QbtO/e6K7UBc03Ux8RFNd8cOMxAh/A7O+3Z3ttBCBtqvKtlG1AL8lLxFWA2WAiRQufsAP2DCkAAwjt5O6wGtu5m0Lvw6oSTkVeicaeZ1WR2U4aXa7XQodde8V1mq8Q4Oi3sQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752673650; c=relaxed/simple;
-	bh=wV6AB4b15vzlnHpyXKLaORlUnvgaI8PNAU6JPGUkVks=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=c6y1kzL2/9fGkB6cHpk24xzJ+SG2J3c/U2cv4ftjUTxxqeH9qJY2baJ5kPu/AykXAHiroQ0CMxETwV5K3aNxvOdiv5MB+xN4uZHsnDUCvAi0JjyeW9A6FjMtWNy0NbbzbL319PjyUipNX5T+91i5dYcQEHn2Vo4OE9qGk6jaN88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=K9HZao44; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1752673646;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yTbtrHDHNEb8o4OaDgUEPfHagRJTln/rm7XQuawnK0c=;
-	b=K9HZao44phT8iUlvn1iaW5RRiahSS0TG/0mmstBTvQI+Dxj0ubVuQ2HqTWn/RptnbeeAIW
-	bLXAoOg7QF1Vjij3uaZyqCfPGs0GB6pWb9e7uhbzEHaeNzOZ7c+cOQtspiC/XrR8NZ2tdq
-	r3EMuYleYFJ73OmcfjZWchA1lkmtSvo=
-From: Tao Chen <chen.dylane@linux.dev>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	willemb@google.com,
-	kerneljasonxing@gmail.com
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Tao Chen <chen.dylane@linux.dev>
-Subject: [PATCH bpf-next v3 2/2] bpf/selftests: Add selftests for token info
-Date: Wed, 16 Jul 2025 21:46:54 +0800
-Message-ID: <20250716134654.1162635-2-chen.dylane@linux.dev>
-In-Reply-To: <20250716134654.1162635-1-chen.dylane@linux.dev>
-References: <20250716134654.1162635-1-chen.dylane@linux.dev>
+	s=arc-20240116; t=1752676250; c=relaxed/simple;
+	bh=+7GaLCQmfxsw2Ze83ywPS5OxpKBvvXdTtasxk+627lU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=E8BOA693WXQ+f4i49kWDtj0sXDH/XVHVGJHer9EuKVnJ7gcqHKvtiIKLz5R4oUN5aqoCbBgbiLLy4Cf+XC+b+af0CQxpGkmKcZWS6N8GZGx/jbBNwe4ABUSEcRqC3EpBPg89GmJzxwK3fIBREXHS2GxEFT+WfmtNoTpflWUfLCg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QGqOXs1u; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A9A7C4CEE7;
+	Wed, 16 Jul 2025 14:30:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752676250;
+	bh=+7GaLCQmfxsw2Ze83ywPS5OxpKBvvXdTtasxk+627lU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=QGqOXs1u0zySTLcUmFrIDYXDkv2yPNs1SuBpeQt/Re5xhNXypKTWDW7vNlCCbSLpo
+	 xlr9MYwyVcddC6UmAPn4bl+dYJ1QOV1V3MdCDsmEJr6etSlz9Q7DtpeXa7lEpqRbrL
+	 2z/YD75gDjbWNjTXokItmjd9xF7aSrSwig5MG1twuoa+Oh/jNEsleJFMZ43OLeg5zP
+	 cRK5TEVHo6t4uuxxdXnoN0818O4zVPqewc0uv/qDqagsq+lAuZBiux3Zg1i4XYngWj
+	 qnTlHpMwqpVTwQBh7u5pgpPlifRJtRa6fLU+uLLAwXWYTQr8hfbPhfN6dURQfAoL7E
+	 Got7FyN64ebKg==
+Date: Wed, 16 Jul 2025 07:30:48 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Mohsin Bashir <mohsin.bashr@gmail.com>
+Cc: netdev@vger.kernel.org, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, pabeni@redhat.com, shuah@kernel.org, horms@kernel.org,
+ cratiu@nvidia.com, noren@nvidia.com, cjubran@nvidia.com, mbloch@nvidia.com,
+ jdamato@fastly.com, gal@nvidia.com, sdf@fomichev.me, ast@kernel.org,
+ daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+ nathan@kernel.org, nick.desaulniers+lkml@gmail.com, morbo@google.com,
+ justinstitt@google.com, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH net-next V5 0/5] net: netdevsim: hook in XDP handling
+Message-ID: <20250716073048.03e117a1@kernel.org>
+In-Reply-To: <20250715210553.1568963-1-mohsin.bashr@gmail.com>
+References: <20250715210553.1568963-1-mohsin.bashr@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-A previous change added bpf_token_info to get token info with
-bpf_get_obj_info_by_fd, this patch adds a new test for token info.
+On Tue, 15 Jul 2025 14:05:48 -0700 Mohsin Bashir wrote:
+> This patch series add tests to validate XDP native support for PASS,
+> DROP, ABORT, and TX actions, as well as headroom and tailroom adjustment.
+> For adjustment tests, validate support for both the extension and
+> shrinking cases across various packet sizes and offset values.
+> 
+> The pass criteria for head/tail adjustment tests require that at-least
+> one adjustment value works for at-least one packet size. This ensure
+> that the variability in maximum supported head/tail adjustment offset
+> across different drivers is being incorporated.
+> 
+> The results reported in this series are based on fbnic. However, the
+> series is tested against multiple other drivers including netdevism.
 
- #461/12  token/bpf_token_info:OK
+Not much luck, on netdevsim with a debug kernel build the test seems to
+time out after 3min 30sec without printing anything.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Tao Chen <chen.dylane@linux.dev>
----
- .../testing/selftests/bpf/prog_tests/token.c  | 44 +++++++++++++++++++
- 1 file changed, 44 insertions(+)
+A normal VM it doesn't time out but it seems to reliably fail as follows:
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/token.c b/tools/testing/selftests/bpf/prog_tests/token.c
-index cfc032b910c..b81dde28305 100644
---- a/tools/testing/selftests/bpf/prog_tests/token.c
-+++ b/tools/testing/selftests/bpf/prog_tests/token.c
-@@ -1047,6 +1047,41 @@ static int userns_obj_priv_implicit_token_envvar(int mnt_fd, struct token_lsm *l
- 
- #define bit(n) (1ULL << (n))
- 
-+static int userns_bpf_token_info(int mnt_fd, struct token_lsm *lsm_skel)
-+{
-+	int err, token_fd = -1;
-+	struct bpf_token_info info;
-+	u32 len = sizeof(struct bpf_token_info);
-+
-+	/* create BPF token from BPF FS mount */
-+	token_fd = bpf_token_create(mnt_fd, NULL);
-+	if (!ASSERT_GT(token_fd, 0, "token_create")) {
-+		err = -EINVAL;
-+		goto cleanup;
-+	}
-+
-+	memset(&info, 0, len);
-+	err = bpf_obj_get_info_by_fd(token_fd, &info, &len);
-+	if (!ASSERT_ERR(err, "bpf_obj_get_token_info"))
-+		goto cleanup;
-+	if (!ASSERT_EQ(info.allowed_cmds, bit(BPF_MAP_CREATE), "token_info_cmds_map_create")) {
-+		err = -EINVAL;
-+		goto cleanup;
-+	}
-+	if (!ASSERT_EQ(info.allowed_progs, bit(BPF_PROG_TYPE_XDP), "token_info_progs_xdp")) {
-+		err = -EINVAL;
-+		goto cleanup;
-+	}
-+
-+	/* The BPF_PROG_TYPE_EXT is not set in token */
-+	if (ASSERT_EQ(info.allowed_progs, bit(BPF_PROG_TYPE_EXT), "token_info_progs_ext"))
-+		err = -EINVAL;
-+
-+cleanup:
-+	zclose(token_fd);
-+	return err;
-+}
-+
- void test_token(void)
- {
- 	if (test__start_subtest("map_token")) {
-@@ -1150,4 +1185,13 @@ void test_token(void)
- 
- 		subtest_userns(&opts, userns_obj_priv_implicit_token_envvar);
- 	}
-+	if (test__start_subtest("bpf_token_info")) {
-+		struct bpffs_opts opts = {
-+			.cmds = bit(BPF_MAP_CREATE),
-+			.progs = bit(BPF_PROG_TYPE_XDP),
-+			.attachs = ~0ULL,
-+		};
-+
-+		subtest_userns(&opts, userns_bpf_token_info);
-+	}
- }
+TAP version 13
+1..1
+# timeout set to 180
+# selftests: drivers/net: xdp.py
+# TAP version 13
+# 1..9
+# ok 1 xdp.test_xdp_native_pass_sb
+# ok 2 xdp.test_xdp_native_pass_mb
+# ok 3 xdp.test_xdp_native_drop_sb
+# ok 4 xdp.test_xdp_native_drop_mb
+# ok 5 xdp.test_xdp_native_tx_mb
+# # Exception| Traceback (most recent call last):
+# # Exception|   File "/home/virtme/testing-17/tools/testing/selftests/net/lib/py/ksft.py", line 243, in ksft_run
+# # Exception|     case(*args)
+# # Exception|   File "/home/virtme/testing-17/tools/testing/selftests/drivers/net/./xdp.py", line 466, in test_xdp_native_adjst_tail_grow_data
+# # Exception|     _validate_res(res, offset_lst, pkt_sz_lst)
+# # Exception|   File "/home/virtme/testing-17/tools/testing/selftests/drivers/net/./xdp.py", line 337, in _validate_res
+# # Exception|     raise KsftFailEx(f"{res['reason']}")
+# # Exception| net.lib.py.ksft.KsftFailEx: Adjustment failed
+# not ok 6 xdp.test_xdp_native_adjst_tail_grow_data
+# ok 7 xdp.test_xdp_native_adjst_tail_shrnk_data
+# # Failed run: pkt_sz 512, offset -256. Last successful run: pkt_sz 512, offset -128. Reason: Adjustment failed
+# ok 8 xdp.test_xdp_native_adjst_head_grow_data
+# # Exception| Traceback (most recent call last):
+# # Exception|   File "/home/virtme/testing-17/tools/testing/selftests/net/lib/py/ksft.py", line 243, in ksft_run
+# # Exception|     case(*args)
+# # Exception|   File "/home/virtme/testing-17/tools/testing/selftests/drivers/net/./xdp.py", line 625, in test_xdp_native_adjst_head_shrnk_data
+# # Exception|     _validate_res(res, offset_lst, pkt_sz_lst)
+# # Exception|   File "/home/virtme/testing-17/tools/testing/selftests/drivers/net/./xdp.py", line 337, in _validate_res
+# # Exception|     raise KsftFailEx(f"{res['reason']}")
+# # Exception| net.lib.py.ksft.KsftFailEx: Data exchange failed
+# not ok 9 xdp.test_xdp_native_adjst_head_shrnk_data
+# # Totals: pass:7 fail:2 xfail:0 xpass:0 skip:0 error:0
+not ok 1 selftests: drivers/net: xdp.py # exit=1
 -- 
-2.48.1
-
+pw-bot: cr
 
