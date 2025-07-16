@@ -1,68 +1,68 @@
-Return-Path: <bpf+bounces-63481-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63480-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0C9FB07E56
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 21:46:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F1CEB07E55
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 21:46:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AC2CE7B9B33
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 19:44:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 258DD3AD45D
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 19:45:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73DD22BCF4A;
-	Wed, 16 Jul 2025 19:45:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D54B28DF01;
+	Wed, 16 Jul 2025 19:45:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="P2e5PxYT"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="T85TPD10"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D41629A9F9;
-	Wed, 16 Jul 2025 19:45:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A49D2737FF
+	for <bpf@vger.kernel.org>; Wed, 16 Jul 2025 19:45:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752695149; cv=none; b=VesUcSDsnZr2yAYNk5v6HkulzBU8T3M7F61sWSG5kmGL+MwaZ9QJWFFckmPbNl3VF9QtjBWIN0yKfsjVaKzj676j4lpdOEVugWzBaCnEQwZQU2Ww685D0j3gCTKiQ8DfHky4FMpRpyDqEZLmAqemUUfzUcy+9cQqIXirzpqN6IE=
+	t=1752695146; cv=none; b=QS3vnmjLZVEg38kSVYKItdUzdo2mU2IrC5zbESODhLItYpYtJpucuKNPgnLunIF5pgutdzQbMIVaXOnRhBlYSxz/GjdLfx0NWsGz/OwLmdU8JLL4luykVQSdbV1Xa0X/tOWrdQN5Drl8oRYs1h6qbGqZ6y5bGdgJIrtnex3Cc2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752695149; c=relaxed/simple;
-	bh=NQtTZkIvBOastxLKC5Q7RvR2xUBGdx/wgZ5cQzkQwUg=;
+	s=arc-20240116; t=1752695146; c=relaxed/simple;
+	bh=AJX0UYl3NfMaLrnmvnVEyGbY5F/sTP01VkEuxC2GPb4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=D7VLy9qzM6yLkLg7awrLQoSE2yzRsQ62s/dSrGGd/PkpLEhn0leR0mb7OHdd1x5UOi+xw5baEYM1vPsJMYnCsfPFN5LAMyPMRqCeBlDIjGarmg9ae7Voqyrn3Q4gQhxUVHIREwZo63B0bUN/sRzf6inVLLid50vRPScewN0TWtg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=P2e5PxYT; arc=none smtp.client-ip=148.163.156.1
+	 MIME-Version; b=s/EC2kdwOrfJOowJsI6bT8vEaDKKyWKQsrs9X7Ivf4OwYwTqVJovs9IAurl1YVeSqcNSKhfQeHPNEaacVSSPI/c2HHOpHSsCs+f31CzfZiIj0/TkNMVULRYq9yi/4WJBk1R09m3NfLLofR/rnmEQ+Gs2gkhGWgFwNGL5lfx9Bd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=T85TPD10; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56GH8vni011103;
-	Wed, 16 Jul 2025 19:45:33 GMT
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56GITAkm023073;
+	Wed, 16 Jul 2025 19:45:32 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=pp1; bh=Y29BVFkUhPv1mwyCA
-	qjEKzTRIB2vGX3QxGjiUAJ79EQ=; b=P2e5PxYTrvwsgkrsth0Q1/unCziIwMxNC
-	wiJ304oWITvx71U3fJy2ETW3pLE5+UGStt5ZOA9x2KHaPWaUK5Tn4sVU7P+oCNiM
-	ICLRcAFHX2Nj7MEeAuMBp+ROhVtyMf6cqieJdBwqlnISwTD07qR1sHpeAn+I6HBg
-	CLE7IC31zfmK6bB5lm4clonVaxKdgf1TUDQJaTWiKCU4FfI/BvyW9GKswK/rupvt
-	4duQ+IJYVSgx3HF3LBcit2fyv7g2v3Qru3JEaeUjMS4hP7Ve/z2vXNLoBpi7iekW
-	FrcbfPl05hSDs7A9bOZHxMlwv9GLjw4e2VV23yrIUDXpRxjkV9vvw==
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47vdfmt4s0-1
+	:mime-version:references:subject:to; s=pp1; bh=xmP3JvXmFjTGH3P0K
+	39gMlC3fKb13+yvhsVe2oF0uhE=; b=T85TPD10djFVXqHsYgzQq4dNITG1RSWKx
+	yE9ha9Wf5OTVMGqgKChelidOWjdKVy/3FeRR+PLtpfW2gKXyZsZn7EXe2C3lmZF7
+	kOxzgnP72C3d5IUG5YDVSEq6rP85BweyeECt8L3ndEik+CvDAixYbWHCQNGy6bDJ
+	z2LX1bNAbvGcxyzzA3IG1MjhWKU9NO3HfylRbnrIPUifi0+4jiAeIBHXzDwUMCbe
+	bhGkLWJYvXlysHTw3e/Yk/KxMbkNZH3XY+RW9MNnaRHWC7nO581NaFdN0hC4Ickr
+	XQbdLdEs68Sjq0oQWg3xzpSMbsRlr4t05jsMf2xcMBf2F4adJXuJQ==
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 47vamu2hfb-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 16 Jul 2025 19:45:32 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56GIFGqx025987;
+	Wed, 16 Jul 2025 19:45:31 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56GJigfD032758;
 	Wed, 16 Jul 2025 19:45:31 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 47v31ps2ge-1
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 47v48m8res-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 16 Jul 2025 19:45:30 +0000
+	Wed, 16 Jul 2025 19:45:31 +0000
 Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 56GJjQXq48103814
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 56GJjRRY45744478
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
 	Wed, 16 Jul 2025 19:45:27 GMT
 Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id DA4652004B;
-	Wed, 16 Jul 2025 19:45:26 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 632CC2004B;
+	Wed, 16 Jul 2025 19:45:27 +0000 (GMT)
 Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 64E9120040;
+	by IMSVA (Postfix) with ESMTP id EE18020040;
 	Wed, 16 Jul 2025 19:45:26 +0000 (GMT)
 Received: from heavy.lan (unknown [9.87.137.252])
 	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
@@ -74,10 +74,10 @@ To: Alexei Starovoitov <ast@kernel.org>,
 Cc: bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>,
         Alexander Gordeev <agordeev@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>, stable@vger.kernel.org
-Subject: [PATCH 1/2] s390/bpf: Fix bpf_arch_text_poke() with new_addr == NULL again
-Date: Wed, 16 Jul 2025 21:35:06 +0200
-Message-ID: <20250716194524.48109-2-iii@linux.ibm.com>
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH 2/2] selftests/bpf: Stress test attaching a BPF prog to another BPF prog
+Date: Wed, 16 Jul 2025 21:35:07 +0200
+Message-ID: <20250716194524.48109-3-iii@linux.ibm.com>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20250716194524.48109-1-iii@linux.ibm.com>
 References: <20250716194524.48109-1-iii@linux.ibm.com>
@@ -89,57 +89,106 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: h6PgWwoveQNaYjY_jT_0f6J_WjI8sLSU
-X-Authority-Analysis: v=2.4 cv=JOI7s9Kb c=1 sm=1 tr=0 ts=6878015c cx=c_pps a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17 a=Wb1JkmetP80A:10 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=HvXbtDsurDdKXsHfnjQA:9
-X-Proofpoint-ORIG-GUID: h6PgWwoveQNaYjY_jT_0f6J_WjI8sLSU
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzE2MDE3NCBTYWx0ZWRfX9VcOhuLRTsZR vHEgyXNiHcOZhAzuVt++tEh8uEmTK8zp7PpwWrnmGxZNKmpfkpi5DGLp3UF9nJj5SEV6qLIL301 kcDAlZMURMzvzw9S7ZCBE8piYBpT4h+bgQC3MyXaYsHVpleuoLgGNtYfrinm29Pdc7D2cnyG2dz
- vgspdJh8XLP+hvhWTkHZzfCkLuB461wZrLqMd5VOeQyM8Lh9/7WRz86fI2973jRHj/bZCKGYQOW 28K87dk1icOD6N23XzquLC2EWEajVANe6HerYUZM7Cd+A+fDB5hihnPWCrD59RYeAHQgW2tc3UG tQs6ZM/SlXiSG5pcXziwTgb3y01fLW7JLCf+Q3bh1cLLMYmXSTQVO0Pb4NQoawE9H7ayG07DToE
- LRxoec3JxMaaLJ0MV85bDsQ5BSnzLpZ0rY+V8g34YsMGkZCJMQzW9zDdUTUSO02jXJBfNb2E
+X-Proofpoint-GUID: 2oWHNtsB_dFhiGxCS4Sd-iIY7w-ut7HK
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzE2MDE3NCBTYWx0ZWRfXy8JtmuEf3kOO Gi9BDT7KHzSmZ9d7PbVsdFF20xyp/i0vmk0u0OzrBwqFe8G63E7ilydswCfeATSNc/Rw43hWMlj leBe7lLMYde/zFYa3BEB7k6PtGrf6eKlghXBXUUFEkMlpvmd9+JjFo5O1yPfRtt53R7FblXCcSe
+ i3DxpJcmeJQ+OlTSOJQhLfS2cEql5qqtNaTXNG4nAKzc7RjOPqR0C0mbTh4EeJ5a+UOXsPbaLbm IuXSrDl7drBuCGyqnPgdZWyBBtAkpdp2g2ssxKQRz/bvvx/5GidfbVu6KkvPAUeb+hIB8ozxgEB OqZ5zVvkd3J83fBP1R+RhKZ82yw4bsQ5Tqb+BfPHnDfQ9hbM88PzvZdjh02c0sURDkEYJxwbs47
+ MZ2XQX8UIkNVYKttQO8jZwg0CoRsfXbdE77k8xXK1Do69ik49HKF/1jDTTSrOI9V9HeXx0LU
+X-Proofpoint-ORIG-GUID: 2oWHNtsB_dFhiGxCS4Sd-iIY7w-ut7HK
+X-Authority-Analysis: v=2.4 cv=dNSmmPZb c=1 sm=1 tr=0 ts=6878015b cx=c_pps a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17 a=Wb1JkmetP80A:10 a=VnNF1IyMAAAA:8 a=C-jh98RXXXx_s4NBbG0A:9
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
  definitions=2025-07-16_03,2025-07-16_02,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 mlxlogscore=999 malwarescore=0 clxscore=1011 bulkscore=0
- priorityscore=1501 mlxscore=0 spamscore=0 adultscore=0 impostorscore=0
- suspectscore=0 classifier=spam authscore=0 authtc=n/a authcc=
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=775 bulkscore=0 lowpriorityscore=0 suspectscore=0 spamscore=0
+ clxscore=1015 phishscore=0 malwarescore=0 mlxscore=0 adultscore=0
+ impostorscore=0 classifier=spam authscore=0 authtc=n/a authcc=
  route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
  definitions=main-2507160174
 
-Commit 7ded842b356d ("s390/bpf: Fix bpf_plt pointer arithmetic") has
-accidentally removed the critical piece of commit c730fce7c70c
-("s390/bpf: Fix bpf_arch_text_poke() with new_addr == NULL"), causing
-intermittent kernel panics in e.g. perf's on_switch() prog to reappear.
+Add a test that invokes a BPF prog in a loop, while concurrently
+attaching and detaching another BPF prog to and from it. This helps
+identifying race conditions in bpf_arch_text_poke().
 
-Restore the fix and add a comment.
-
-Fixes: 7ded842b356d ("s390/bpf: Fix bpf_plt pointer arithmetic")
-Cc: stable@vger.kernel.org
 Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 ---
- arch/s390/net/bpf_jit_comp.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ .../bpf/prog_tests/recursive_attach.c         | 67 +++++++++++++++++++
+ 1 file changed, 67 insertions(+)
 
-diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index 8bb738f1b1b6..bb17efe29d65 100644
---- a/arch/s390/net/bpf_jit_comp.c
-+++ b/arch/s390/net/bpf_jit_comp.c
-@@ -576,7 +576,15 @@ static void bpf_jit_plt(struct bpf_plt *plt, void *ret, void *target)
- {
- 	memcpy(plt, &bpf_plt, sizeof(*plt));
- 	plt->ret = ret;
--	plt->target = target;
-+	/*
-+	 * (target == NULL) implies that the branch to this PLT entry was
-+	 * patched and became a no-op. However, some CPU could have jumped
-+	 * to this PLT entry before patching and may be still executing it.
-+	 *
-+	 * Since the intention in this case is to make the PLT entry a no-op,
-+	 * make the target point to the return label instead of NULL.
-+	 */
-+	plt->target = target ?: ret;
+diff --git a/tools/testing/selftests/bpf/prog_tests/recursive_attach.c b/tools/testing/selftests/bpf/prog_tests/recursive_attach.c
+index 8100509e561b..0ffa01d54ce2 100644
+--- a/tools/testing/selftests/bpf/prog_tests/recursive_attach.c
++++ b/tools/testing/selftests/bpf/prog_tests/recursive_attach.c
+@@ -149,3 +149,70 @@ void test_fentry_attach_btf_presence(void)
+ 	fentry_recursive_target__destroy(target_skel);
+ 	fentry_recursive__destroy(tracing_skel);
  }
- 
- /*
++
++static void *fentry_target_test_run(void *arg)
++{
++	for (;;) {
++		int prog_fd = __atomic_load_n((int *)arg, __ATOMIC_SEQ_CST);
++		LIBBPF_OPTS(bpf_test_run_opts, topts);
++		int err;
++
++		if (prog_fd == -1)
++			break;
++		err = bpf_prog_test_run_opts(prog_fd, &topts);
++		if (!ASSERT_OK(err, "fentry_target test_run"))
++			break;
++	}
++
++	return NULL;
++}
++
++void test_fentry_attach_stress(void)
++{
++	struct fentry_recursive_target *target_skel = NULL;
++	struct fentry_recursive *tracing_skel = NULL;
++	struct bpf_program *prog;
++	int err, i, tgt_prog_fd;
++	pthread_t thread;
++
++	target_skel = fentry_recursive_target__open_and_load();
++	if (!ASSERT_OK_PTR(target_skel,
++			   "fentry_recursive_target__open_and_load"))
++		goto close_prog;
++	tgt_prog_fd = bpf_program__fd(target_skel->progs.fentry_target);
++	err = pthread_create(&thread, NULL,
++			     fentry_target_test_run, &tgt_prog_fd);
++	if (!ASSERT_OK(err, "bpf_program__set_attach_target"))
++		goto close_prog;
++
++	for (i = 0; i < 1000; i++) {
++		tracing_skel = fentry_recursive__open();
++		if (!ASSERT_OK_PTR(tracing_skel, "fentry_recursive__open"))
++			goto stop_thread;
++
++		prog = tracing_skel->progs.recursive_attach;
++		err = bpf_program__set_attach_target(prog, tgt_prog_fd,
++						     "fentry_target");
++		if (!ASSERT_OK(err, "bpf_program__set_attach_target"))
++			goto stop_thread;
++
++		err = fentry_recursive__load(tracing_skel);
++		if (!ASSERT_OK(err, "fentry_recursive__load"))
++			goto stop_thread;
++
++		err = fentry_recursive__attach(tracing_skel);
++		if (!ASSERT_OK(err, "fentry_recursive__attach"))
++			goto stop_thread;
++
++		fentry_recursive__destroy(tracing_skel);
++		tracing_skel = NULL;
++	}
++
++stop_thread:
++	__atomic_store_n(&tgt_prog_fd, -1, __ATOMIC_SEQ_CST);
++	err = pthread_join(thread, NULL);
++	ASSERT_OK(err, "pthread_join");
++close_prog:
++	fentry_recursive__destroy(tracing_skel);
++	fentry_recursive_target__destroy(target_skel);
++}
 -- 
 2.50.1
 
