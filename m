@@ -1,317 +1,189 @@
-Return-Path: <bpf+bounces-63418-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63419-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2786EB07092
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 10:30:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B16C1B0709C
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 10:32:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96124505FB5
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 08:29:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7FD61881091
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 08:32:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E37E12EBDF4;
-	Wed, 16 Jul 2025 08:29:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CCAE2EE97D;
+	Wed, 16 Jul 2025 08:32:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hugj5jDO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TjGFTVb7"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFF572EACEA
-	for <bpf@vger.kernel.org>; Wed, 16 Jul 2025 08:29:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 110A12EA749;
+	Wed, 16 Jul 2025 08:32:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752654577; cv=none; b=UehcCLGtTFtnVAvBDcMMCNbuw6Q/BGpixdXjZGCS8NurQyoZZ495YjPXQal3UijFvodygEaEFh8M6zO7/AHd492AS+uDCCdc6AhOHqmtfjAExudCBJU7rLPaMRAvQN8xA6Ljry8AOpLhk/s2VRkdv03zt8PHvX2g2gGuMX2iUJc=
+	t=1752654724; cv=none; b=LTYaCrc7jaZNRT3jOS+miyLLaounv2F9IzWDOJFMeNaZ6Z6ZtkEy5x0scIRgDQ0iWqfOLNPjQgJRfY6p4g5nX3zkbMTAYpEdXVoy9aad5r8ux9Yv++bZeDOo8eCcxQlzogy8qwjhj6YgRsmdIvSPMZ+Qs0ogbdyd0CRGpDc9/JU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752654577; c=relaxed/simple;
-	bh=RXd93FrMXhD6nQlRw5UhfdK/Fc7hARdOf1IOkW55cdI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ue5q0ZAsER2Df+CrmETgkwEUZcXlcFmRsev37/XhtpLhJubHAMuSR9RmraIumxdg+urhWp2OYkjEIPQpFu8/AB6CZkaY5OV6SkbrBfE5gnexfb0pO8WfYApAmAw6UX4CVyrRWB4y84Os4TrJYDP6EZZVOTA2BgQlB1R0zbh9NX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hugj5jDO; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1752654574;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ffz+MsDbG4Gm1eq6U3qZmEbUy+20PK+4pgl+eju8lOY=;
-	b=hugj5jDOzI4I836/Xrgw1HCqHFAene5hio//8Mx1xm25YdBQGoogYZ/eFYQcqVI8badZgn
-	JhlTQaatjFNf5C+8GBad1eZF1IfTLxNh5f5VWxDjShkJUK/CuAltpfS8F31kle4PwMXlWE
-	G1puZkCs93/fh7kaSR+MnuNQAWt9SP4=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-99-6wcQfTiaP2qgdFi_EI3ePw-1; Wed, 16 Jul 2025 04:29:32 -0400
-X-MC-Unique: 6wcQfTiaP2qgdFi_EI3ePw-1
-X-Mimecast-MFC-AGG-ID: 6wcQfTiaP2qgdFi_EI3ePw_1752654571
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-456013b59c1so24099185e9.3
-        for <bpf@vger.kernel.org>; Wed, 16 Jul 2025 01:29:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752654571; x=1753259371;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ffz+MsDbG4Gm1eq6U3qZmEbUy+20PK+4pgl+eju8lOY=;
-        b=PJ5fJrNBp5pUvG4+/h7jy7TbUwvjgekuxTRcNLB1wEypV0nH+pe29K8WiJ28W/TsQp
-         Vr4+3hBZrnTm42tYjWw8abV6ZTZI2H9oV8TWZTW3wzRDmkUCx6NIxOUwoBNKZ2f0uazc
-         dyRnNiB1170ksGoyDEWby9EYmZxi1FhmD9NiwDk+jN/cXrm8dIUCQjTJdrMALsvaVUbP
-         XIYkz4LMmBy3rq6ys6DR7FL7a4WsKSjHZu5K0wEUHHSc4/b6tTDgNL7kJ4HLmPWOso4O
-         ZwviQ28J84DjJAilslxEfpNiLUFFP5z7z70jEcx9Q/THGOyOD0VdJQiA02jRyQtlsm1k
-         oEwA==
-X-Forwarded-Encrypted: i=1; AJvYcCVIgnaCLTe0uvw8H8qFKVEKEV8OfDvfkUjztBFnQdJpW30TQyYY3lztv6gh/4YrHvCeDkw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxLJ697Po5oyYRC+/CWrENt5v8GJs09e6RZTnFStbMmRzwIBqT2
-	A4528bbE01KiVL6kOP5MCchNhlVJBxhLtyJsXcvA+oaaGfx01ucaIBYKuTO271CiJkZj3iKfM1W
-	ouelu+xp3sikY2HOvWsQlFYKu4G1XVhivvrCA2SZGiv7kM7RLdOUZEA==
-X-Gm-Gg: ASbGncvn/+MoHIxDX4BytHlml969XUioJRKKucQcyBiGCsSmxaQMzlXlu2Mrw2YeUcx
-	p9eOeIRduDnco4ACihnb7CoQiaKwFYDqSlXJStwetRPWZ8MDCurWY0GLpE7MDqZnmJUEAofVoVC
-	MqV0v2EYcyCgSBa9iFTwbwdklFTHRranpdxLRz8lMbBPnUhqTLH6VCeVxNZNLHdu5TPJ/g5VzET
-	68BRzH67ST3AuEXI6IBVSiDgqlONwiUjkHTFnBEIUPyYmlXW6Ev6ZqhBTqWOr9KakhpWxVUtf8J
-	wyqy5k5DagTc2fAiwh3z3yv1YpmNyQbJL56b5xF3YGzoGZd/NrWxwueF4/XiFBlydcQTK8TzRcL
-	vTrPqvsDGfkI=
-X-Received: by 2002:a05:6000:3113:b0:3a4:cb4f:ac2a with SMTP id ffacd0b85a97d-3b60e4c225fmr1234132f8f.21.1752654571239;
-        Wed, 16 Jul 2025 01:29:31 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHLiGksmElCYFmj6deUhZX70Iugn3d4BK4R3BF8eDMEuaPTLbQdgfRYY0kjWfYoS6K8Me3pxQ==
-X-Received: by 2002:a05:6000:3113:b0:3a4:cb4f:ac2a with SMTP id ffacd0b85a97d-3b60e4c225fmr1234094f8f.21.1752654570753;
-        Wed, 16 Jul 2025 01:29:30 -0700 (PDT)
-Received: from ?IPV6:2a0d:3344:2712:7e10:4d59:d956:544f:d65c? ([2a0d:3344:2712:7e10:4d59:d956:544f:d65c])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b5e8e1e2cfsm16961144f8f.75.2025.07.16.01.29.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jul 2025 01:29:30 -0700 (PDT)
-Message-ID: <f60c5ef5-47b6-4132-bd7c-9707c81289a2@redhat.com>
-Date: Wed, 16 Jul 2025 10:29:27 +0200
+	s=arc-20240116; t=1752654724; c=relaxed/simple;
+	bh=pixhDAk3NXF+ez/UC4sCfxH4mfu5c2ZCe/3FOrSKxmA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=N1JbmuQZwm0092RdX2YZ7GlHmrhDEIqFhdeWHDlSm+awzmxhyD68HsrB2c7vYn225sVKi8QFggtfDiGmfjasHezQ8Gj3OmuuvlFpEMH4AZSBThLlweJE8h+a3LAx3cn0aZ236m9eugpMK/vr2L4oBIZQo19KVEHtNN7kjqgCQfU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TjGFTVb7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AC1AC4CEF0;
+	Wed, 16 Jul 2025 08:31:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752654723;
+	bh=pixhDAk3NXF+ez/UC4sCfxH4mfu5c2ZCe/3FOrSKxmA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TjGFTVb7WA8CXJ6fa9ZunnX0H7E3pACvrqlm6U6kufhsPuFT7/qKNj+2PuK4rf422
+	 +/Vz5U7FyZF1IKEu6uwNqPHz+FJaWsNVM3NJmGFvApIa55S4kznSr5h0dOm9jqrvcS
+	 ZPWl1dYW0SDaotH84/KEdVcBl9HWmemC76mRyRv1mFee8RuPfM+aSSgy4AsWsR0Jtt
+	 2428KtOR29kVeXOrvqufoE3TflupQjHHf5sr6r2T2XqQCjsHhG0vGUZPWgvobe7gw3
+	 YiaNk0muRgqqvpTWNR8BqdV5pCZV+sLz8AY6vym0qlT1Prz0py2hxARudlILw5soG7
+	 GJGCOYu1gVsYQ==
+Date: Wed, 16 Jul 2025 10:31:53 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Song Liu <songliubraving@meta.com>
+Cc: Paul Moore <paul@paul-moore.com>, Al Viro <viro@zeniv.linux.org.uk>, 
+	Song Liu <song@kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>, "apparmor@lists.ubuntu.com" <apparmor@lists.ubuntu.com>, 
+	"selinux@vger.kernel.org" <selinux@vger.kernel.org>, 
+	"tomoyo-users_en@lists.sourceforge.net" <tomoyo-users_en@lists.sourceforge.net>, 
+	"tomoyo-users_ja@lists.sourceforge.net" <tomoyo-users_ja@lists.sourceforge.net>, Kernel Team <kernel-team@meta.com>, 
+	"andrii@kernel.org" <andrii@kernel.org>, "eddyz87@gmail.com" <eddyz87@gmail.com>, 
+	"ast@kernel.org" <ast@kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>, 
+	"martin.lau@linux.dev" <martin.lau@linux.dev>, "jack@suse.cz" <jack@suse.cz>, 
+	"kpsingh@kernel.org" <kpsingh@kernel.org>, "mattbobrowski@google.com" <mattbobrowski@google.com>, 
+	"amir73il@gmail.com" <amir73il@gmail.com>, "repnop@google.com" <repnop@google.com>, 
+	"jlayton@kernel.org" <jlayton@kernel.org>, "josef@toxicpanda.com" <josef@toxicpanda.com>, 
+	"mic@digikod.net" <mic@digikod.net>, "gnoack@google.com" <gnoack@google.com>, 
+	"m@maowtm.org" <m@maowtm.org>, "john.johansen@canonical.com" <john.johansen@canonical.com>, 
+	"john@apparmor.net" <john@apparmor.net>, 
+	"stephen.smalley.work@gmail.com" <stephen.smalley.work@gmail.com>, "omosnace@redhat.com" <omosnace@redhat.com>, 
+	"takedakn@nttdata.co.jp" <takedakn@nttdata.co.jp>, 
+	"penguin-kernel@i-love.sakura.ne.jp" <penguin-kernel@i-love.sakura.ne.jp>, "enlightened@chromium.org" <enlightened@chromium.org>
+Subject: Re: [RFC] vfs: security: Parse dev_name before calling
+ security_sb_mount
+Message-ID: <20250716-unsolidarisch-sagst-e70630ddf6b7@brauner>
+References: <CAHC9VhSS1O+Cp7UJoJnWNbv-Towia72DitOPH0zmKCa4PBttkw@mail.gmail.com>
+ <1959367A-15AB-4332-B1BC-7BBCCA646636@meta.com>
+ <20250710-roden-hosen-ba7f215706bb@brauner>
+ <5EB3EFBC-69BA-49CC-B416-D4A7398A2B47@meta.com>
+ <20250711-pfirsich-worum-c408f9a14b13@brauner>
+ <4EE690E2-4276-41E6-9D8C-FBF7E90B9EB3@meta.com>
+ <20250714-ansonsten-shrimps-b4df1566f016@brauner>
+ <3ACFCAB1-9FEC-4D4E-BFB0-9F37A21AA204@meta.com>
+ <20250715-knattern-hochklassig-ddc27ddd4557@brauner>
+ <B2872298-BC9C-4BFD-8C88-CED88E0B7E3A@meta.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 net-next 11/15] tcp: accecn: AccECN option
-To: "Chia-Yu Chang (Nokia)" <chia-yu.chang@nokia-bell-labs.com>,
- "edumazet@google.com" <edumazet@google.com>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "corbet@lwn.net" <corbet@lwn.net>, "horms@kernel.org" <horms@kernel.org>,
- "dsahern@kernel.org" <dsahern@kernel.org>,
- "kuniyu@amazon.com" <kuniyu@amazon.com>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "dave.taht@gmail.com" <dave.taht@gmail.com>,
- "jhs@mojatatu.com" <jhs@mojatatu.com>, "kuba@kernel.org" <kuba@kernel.org>,
- "stephen@networkplumber.org" <stephen@networkplumber.org>,
- "xiyou.wangcong@gmail.com" <xiyou.wangcong@gmail.com>,
- "jiri@resnulli.us" <jiri@resnulli.us>,
- "davem@davemloft.net" <davem@davemloft.net>,
- "andrew+netdev@lunn.ch" <andrew+netdev@lunn.ch>,
- "donald.hunter@gmail.com" <donald.hunter@gmail.com>,
- "ast@fiberby.net" <ast@fiberby.net>,
- "liuhangbin@gmail.com" <liuhangbin@gmail.com>,
- "shuah@kernel.org" <shuah@kernel.org>,
- "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
- "ij@kernel.org" <ij@kernel.org>, "ncardwell@google.com"
- <ncardwell@google.com>,
- "Koen De Schepper (Nokia)" <koen.de_schepper@nokia-bell-labs.com>,
- "g.white@cablelabs.com" <g.white@cablelabs.com>,
- "ingemar.s.johansson@ericsson.com" <ingemar.s.johansson@ericsson.com>,
- "mirja.kuehlewind@ericsson.com" <mirja.kuehlewind@ericsson.com>,
- "cheshire@apple.com" <cheshire@apple.com>, "rs.ietf@gmx.at"
- <rs.ietf@gmx.at>, "Jason_Livingood@comcast.com"
- <Jason_Livingood@comcast.com>, "vidhi_goel@apple.com" <vidhi_goel@apple.com>
-References: <20250704085345.46530-1-chia-yu.chang@nokia-bell-labs.com>
- <20250704085345.46530-12-chia-yu.chang@nokia-bell-labs.com>
- <0ddc5daf-adb4-4d97-9e8e-e60fdf9a007f@redhat.com>
- <PAXPR07MB7984F66EB2AD576D2385C351A357A@PAXPR07MB7984.eurprd07.prod.outlook.com>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <PAXPR07MB7984F66EB2AD576D2385C351A357A@PAXPR07MB7984.eurprd07.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <B2872298-BC9C-4BFD-8C88-CED88E0B7E3A@meta.com>
 
-On 7/15/25 4:49 PM, Chia-Yu Chang (Nokia) wrote:
-> On 7/4/25 10:53 AM, chia-yu.chang@nokia-bell-labs.com wrote:
-> [...]
->>> +}
->>> +
->>> +/* Handles AccECN option ECT and CE 24-bit byte counters update into
->>> + * the u32 value in tcp_sock. As we're processing TCP options, it is
->>> + * safe to access from - 1.
->>> + */
->>> +static inline s32 tcp_update_ecn_bytes(u32 *cnt, const char *from,
->>> +                                    u32 init_offset) {
->>> +     u32 truncated = (get_unaligned_be32(from - 1) - init_offset) &
->>> +                     0xFFFFFFU;
->>> +     u32 delta = (truncated - *cnt) & 0xFFFFFFU;
->>> +
->>> +     /* If delta has the highest bit set (24th bit) indicating
->>> +      * negative, sign extend to correct an estimation using
->>> +      * sign_extend32(delta, 24 - 1)
->>> +      */
->>> +     delta = sign_extend32(delta, 23);
->>
->> I'm under the impression that delta could be simply:
->>
->>         delta = (truncated - *cnt)
->>
->> What am I missing?
+On Tue, Jul 15, 2025 at 10:31:39PM +0000, Song Liu wrote:
 > 
-> Hi Paolo,
+> > On Jul 15, 2025, at 3:18 AM, Christian Brauner <brauner@kernel.org> wrote:
+> > On Mon, Jul 14, 2025 at 03:10:57PM +0000, Song Liu wrote:
 > 
-> I think this code is necessary to ensure delta will not a super large value in case of wrap adound.
-> 
-> For instance, if truncated = 0x0000001F and *cnt = 0x00FFFFFF, then (truncated - *cnt) = 0xFF000020
-> 
-> But sign_extend32(((truncated - *cnt) & 0xFFFFFFU, 23) = 0x00000020, which shall be corrrect.
-> 
-> Another example, if truncated = 0x0000001F and *cnt = 0x0000003F, then (truncated - *cnt) = 0xFFFFFFE0
-> 
-> And sign_extend32(((truncated - *cnt) & 0xFFFFFFU, 23) = 0xFFFFFFE0.
-> 
-> In this latter example, both are correct.
-
-Ok, I missed the fact that *cnt is a 24 bit integer, too. Your code
-looks good.
-
 > 
 > [...]
->>> a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c index 
->>> d98a1a17eb52..2169fd28594e 100644
->>> --- a/net/ipv4/tcp_output.c
->>> +++ b/net/ipv4/tcp_output.c
->>> @@ -385,6 +385,7 @@ static inline bool tcp_urg_mode(const struct tcp_sock *tp)
->>>  #define OPTION_SMC           BIT(9)
->>>  #define OPTION_MPTCP         BIT(10)
->>>  #define OPTION_AO            BIT(11)
->>> +#define OPTION_ACCECN                BIT(12)
->>>
->>>  static void smc_options_write(__be32 *ptr, u16 *options)  { @@ -406,6 
->>> +407,8 @@ struct tcp_out_options {
->>>       u16 mss;                /* 0 to disable */
->>>       u8 ws;                  /* window scale, 0 to disable */
->>>       u8 num_sack_blocks;     /* number of SACK blocks to include */
->>> +     u8 num_accecn_fields:7, /* number of AccECN fields needed */
->>> +        use_synack_ecn_bytes:1; /* Use synack_ecn_bytes or not */
->>>       u8 hash_size;           /* bytes in hash_location */
->>>       u8 bpf_opt_len;         /* length of BPF hdr option */
->>>       __u8 *hash_location;    /* temporary pointer, overloaded */
->>> @@ -621,6 +624,8 @@ static void tcp_options_write(struct tcphdr *th, struct tcp_sock *tp,
->>>                             struct tcp_out_options *opts,
->>>                             struct tcp_key *key)  {
->>> +     u8 leftover_highbyte = TCPOPT_NOP; /* replace 1st NOP if avail */
->>> +     u8 leftover_lowbyte = TCPOPT_NOP;  /* replace 2nd NOP in 
->>> + succession */
->>>       __be32 *ptr = (__be32 *)(th + 1);
->>>       u16 options = opts->options;    /* mungable copy */
->>>
->>> @@ -656,15 +661,79 @@ static void tcp_options_write(struct tcphdr *th, struct tcp_sock *tp,
->>>               *ptr++ = htonl(opts->tsecr);
->>>       }
->>>
->>> +     if (OPTION_ACCECN & options) {
->>> +             /* Initial values for AccECN option, ordered is based on ECN field bits
->>> +              * similar to received_ecn_bytes. Used for SYN/ACK AccECN option.
->>> +              */
->>> +             static u32 synack_ecn_bytes[3] = { 0, 0, 0 };
->>
->> I think this does not address Eric's concern on v9 WRT global variable, as every CPU will still touch the same memory while accessing the above array.
->>
->>> +             const u8 ect0_idx = INET_ECN_ECT_0 - 1;
->>> +             const u8 ect1_idx = INET_ECN_ECT_1 - 1;
->>> +             const u8 ce_idx = INET_ECN_CE - 1;
->>> +             u32 e0b;
->>> +             u32 e1b;
->>> +             u32 ceb;
->>> +             u8 len;
->>> +
->>> +             if (opts->use_synack_ecn_bytes) {
->>> +                     e0b = synack_ecn_bytes[ect0_idx] + TCP_ACCECN_E0B_INIT_OFFSET;
->>> +                     e1b = synack_ecn_bytes[ect1_idx] + TCP_ACCECN_E1B_INIT_OFFSET;
->>> +                     ceb = synack_ecn_bytes[ce_idx] + 
->>> + TCP_ACCECN_CEB_INIT_OFFSET;
->>
->> On the flip side I don't see such array modified here, not in later patches?!? If so you could make it const and a global variable would be ok.
 > 
-> Sure, I will make it as static const global variable, which I hope this is ok for you.
+> >>> If you place a new security hook into __do_loopback() the only thing
+> >>> that I'm not excited about is that we're holding the global namespace
+> >>> semaphore at that point. And I want to have as little LSM hook calls
+> >>> under the namespace semaphore as possible.
+> >> 
+> >> do_loopback() changed a bit since [1]. But if we put the new hook 
+> >> in do_loopback() before lock_mount(), we don’t have the problem with
+> >> the namespace semaphore, right? Also, this RFC doesn’t seem to have 
+> >> this issue either.
+> > 
+> > While the mount isn't locked another mount can still be mounted on top
+> > of it. lock_mount() will detect this and lookup the topmost mount and
+> > use that. IOW, the value of old_path->mnt may have changed after
+> > lock_mount().
 > 
+> I am probably confused. Do you mean path->mnt (instead of old_path->mnt) 
+> may have changed after lock_mount()? 
+
+I mean the target path. I forgot that the code uses @old_path to mean
+the source path not the target path. And you're interested in the source
+path, not the target path.
+
 > 
->>> +/* Calculates how long AccECN option will fit to @remaining option space.
->>> + *
->>> + * AccECN option can sometimes replace NOPs used for alignment of 
->>> +other
->>> + * TCP options (up to @max_combine_saving available).
->>> + *
->>> + * Only solutions with at least @required AccECN fields are accepted.
->>> + *
->>> + * Returns: The size of the AccECN option excluding space repurposed 
->>> +from
->>> + * the alignment of the other options.
->>> + */
->>> +static int tcp_options_fit_accecn(struct tcp_out_options *opts, int required,
->>> +                               int remaining) {
->>> +     int size = TCP_ACCECN_MAXSIZE;
->>> +     int max_combine_saving;
->>> +
->>> +     if (opts->use_synack_ecn_bytes)
->>> +             max_combine_saving = tcp_synack_options_combine_saving(opts);
->>> +     else
->>> +             max_combine_saving = opts->num_sack_blocks > 0 ? 2 : 0;
->>> +     opts->num_accecn_fields = TCP_ACCECN_NUMFIELDS;
->>> +     while (opts->num_accecn_fields >= required) {
->>> +             int leftover_size = size & 0x3;
->>> +             /* Pad to dword if cannot combine */
->>> +             if (leftover_size > max_combine_saving)
->>> +                     leftover_size = -((4 - leftover_size) & 0x3);
->>
->> I *think* that with the above you mean something alike:
->>
->>                         size = ALIGN(size, 4);
->>                         leftover_size = 0
->>
->> ?
->>
->> The used code looks quite obscure to me.
->>
->> /P
+> > If you have 1000 containers each calling into
+> >>> security_something_something_bind_mount() and then you do your "walk
+> >>> upwards towards the root stuff" and that root is 100000 directories away
+> >>> you've introduced a proper DOS or at least a severe new bottleneck into
+> >>> the system. And because of mount namespace propagation that needs to be
+> >>> serialized across all mount namespaces the namespace semaphore isn't
+> >>> something we can just massage away.
+> >> 
+> >> AFAICT, a poorly designed LSM can easily DoS a system. Therefore, I 
+> >> don’t think we need to overthink about a LSM helper causing DoS in 
+> >> some special scenarios. The owner of the LSM, either built-in LSM or 
+> >> BPF LSM, need to be aware of such risks and design the LSM rules 
+> >> properly to avoid DoS risks. For example, if the path tree is really 
+> >> deep, the LSM may decide to block the mount after walking a preset 
+> >> number of steps.
+> > 
+> > The scope of the lock matters _a lot_. If a poorly designed LSM happens
+> > to take exorbitant amount of time under the inode_lock() it's annoying:
+> > to anyone else wanting to grab the inode_lock() _for that single inode_.
+> > 
+> > If a poorly designed LSM does broken stuff under the namespace semaphore
+> > any mount event on the whole system will block, effectively deadlocking
+> > the system in an instant. For example, if anything even glances at
+> > /proc/<pid>/mountinfo it's game over. It's already iffy that we allow
+> > security_sb_statfs() under there but that's at least guaranteed to be
+> > fast.
+> > 
+> > If you can make it work so that we don't have to place security_*()
+> > under the namespace semaphore and you can figure out how to deal with a
+> > potential overmount racing you then this would be ideal for everyone.
 > 
-> Indeed, I will make below changes in the next version by using ALIGN() and ALIGN_DOWN()
+> I am trying to understand all the challenges here. 
+
+As long as you're only interested in the source path's mount, you're
+fine.
+
 > 
-> Here the aim is to pad up (if max_combine_saving is not enough) or trim down (if max_combine saving is enough) to DWORD.
+> It appears to me that do_loopback() has the tricky issue:
 > 
-> And the final return size will be the the a multiple of DWORD.
-> 
-> Would it be more readable?
-> 
-> /* Pad to DWORD if cannot combine. Align_size represents
->  * the final size to be used by AccECN options.
->  * +======+=============+====================+============+
->  * | size | size exceed | max_combine_saving | align_size |
->  * |      |    DWORD    |                    |            |
->  * +======+=============+====================+============+
->  * |   2  |       2     |         < 2        |      4     |
->  * |   2  |       2     |         >=2        |      0     |
->  * |   5  |       1     |         < 1        |      8     |
->  * |   5  |       1     |         >=1        |      4     |
->  * |   8  |       0     |         Any        |      8     |
->  * |  11  |       3     |         < 3        |     12     |
->  * |  11  |       3     |         >=3        |      8     |
->  * +======+=============+====================+============+
->  */
-> if ((size & 0x3) > max_combine_saving)
->         align_size = ALIGN(size, 4);
-> else
->         align_size = ALIGN_DOWN(size, 4);
-> 
-> if (remaining >= align_size) {
->         size = align_size;
->         break;
+> static int do_loopback(struct path *path, ...)
+> {
+> 	...
+> 	/* 
+> 	 * path may still change, so not a good point to add
+> 	 * security hook 
+> 	 */
+> 	mp = lock_mount(path);
+> 	if (IS_ERR(mp)) {
+> 		/* ... */
+> 	}
+> 	/* 
+> 	 * namespace_sem is locked, so not a good point to add
+> 	 * security hook
+> 	 */
+> 	...
 > }
+> 
+> Basically, without major work with locking, there is no good 
+> spot to insert a security hook into do_loopback(). Or, maybe 
+> we can add a hook somewhere in lock_mount()? 
 
-Yes, IMHO is more readable. No need to add the table, the original
-comment is clear enough.
+You can't really because the lookup_mnt() call in lock_mount() happens
+under the namespace semaphore already and if it's the topmost mount it
+won't be dropped again and you can't drop it again without risking
+overmounts again.
 
-Thanks,
-
-Paolo
-
+But again, as long as you are interested in the source mount you should
+be fine.
 
