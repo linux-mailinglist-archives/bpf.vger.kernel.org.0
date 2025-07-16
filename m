@@ -1,99 +1,233 @@
-Return-Path: <bpf+bounces-63472-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63473-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE992B07CDF
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 20:25:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53FEDB07CE4
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 20:26:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2376A172832
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 18:25:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A0A871C41C40
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 18:26:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E28429B239;
-	Wed, 16 Jul 2025 18:24:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="De6aRbuk"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A218E29A30D;
+	Wed, 16 Jul 2025 18:26:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 306CD19DFAB;
-	Wed, 16 Jul 2025 18:24:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E0C8299AB1;
+	Wed, 16 Jul 2025 18:26:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752690262; cv=none; b=h/OQS0x3I8rR5ZSv9k02xvYgbx4Kd54EXIBEmaXWKAEGlOWITyAmrI4QsXMBBqILEuu1liX2dBfYTG6qtsWjkuz2z3Blu7A8ZUlytcyt1P4cwW0WXu0L6YNKpVl9JbplgsoTEp2jxA3RZsqj6VW7AW6tgTlkU84gE/QR8KmzYho=
+	t=1752690383; cv=none; b=qj77B8WQFaJsqzviNUO3cNGa68ttJUOe9QVcs/5Tn0yOFnUOHFWjgZRWJxpwP0Er6YtMQSq0f32RpJoVSIV++I0vr3JDdmXyfUCKo+aMvDiPWXU3lrcNMb8hL3ituB8QMkvZAb3jQTVAJkzVhLfdLj5fowqxAzcRTVOz/IW1ZUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752690262; c=relaxed/simple;
-	bh=rq2sNcvGNSXQGHJOcJcmFZzvpuSjQI0+RgGNGsfTdds=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MNZUsoQiwt7prun+BbJU9B8W58wdqRcqS9irCV9CVtoQsJtKZQpdiLT6SC/wS8ZwyKVzduEsWbs0D924jMzzS5ObrONGwZDUghz3krZhQhB5BFZbRxPO+DdyK86b7ZduWxTihiVUjl3qgDTUmSTkX1LKnkSkPSWsj3XbUU/DT00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=De6aRbuk; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=c186ZNgQmAaLS8afZJIRv4pOWgMcJfYqLO2lB+Do3FQ=; b=De6aRbukFLaahYguOiPeZ/16x4
-	CRNwGMxNGkbljygJ9Ogege8ytbzXLVS17ASPMstF2omMKYMcUNJi6wQVwvaxhRFOKHq9IQojG3HpQ
-	hEJkXl2XoC4IBh7p5HfVQdi9zasAB7FXaZKfUtLL8mFyYRGtR5Dckc/llRjSwNeQseKADmksy8MX5
-	ucUqRkCp4wjS7j6iWfwAvAMjNgAXYUpIVFHlS8s1RDy4/Rj8B02iF3EcKp9b8VasQ/9JxgtGHg2N0
-	pNnRv11KacQ6ZsvhoSUVFOJhiD8YkpjyCLl3/gN5j7mN/Nz1Nbq8h1NdNXsLE5hcZrtHaSDEKMkZU
-	IINqJGgA==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uc6nf-0000000A9X8-29NZ;
-	Wed, 16 Jul 2025 18:24:15 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 63CAB300230; Wed, 16 Jul 2025 20:24:14 +0200 (CEST)
-Date: Wed, 16 Jul 2025 20:24:14 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Menglong Dong <menglong.dong@linux.dev>,
-	Menglong Dong <menglong8.dong@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>, Jiri Olsa <jolsa@kernel.org>,
-	bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Network Development <netdev@vger.kernel.org>
-Subject: Re: Inlining migrate_disable/enable. Was: [PATCH bpf-next v2 02/18]
- x86,bpf: add bpf_global_caller for global trampoline
-Message-ID: <20250716182414.GI4105545@noisy.programming.kicks-ass.net>
-References: <20250703121521.1874196-1-dongml2@chinatelecom.cn>
- <20250703121521.1874196-3-dongml2@chinatelecom.cn>
- <CAADnVQKP1-gdmq1xkogFeRM6o3j2zf0Q8Atz=aCEkB0PkVx++A@mail.gmail.com>
- <45f4d349-7b08-45d3-9bec-3ab75217f9b6@linux.dev>
- <3bccb986-bea1-4df0-a4fe-1e668498d5d5@linux.dev>
- <CAADnVQ+Afov4E=9t=3M=zZmO9z4ZqT6imWD5xijDHshTf3J=RA@mail.gmail.com>
+	s=arc-20240116; t=1752690383; c=relaxed/simple;
+	bh=XzpgU7jl/zpAfUMEFHo0K1KXG3Oiqgp651zOZTVwv/Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LkHElJ5NmrJxtpEML29W8ClFAEZp4OAK2vFfscqctFlxsK9iPANa3xCrlzPel4O1VIoykCBnHmmb6d4v6Vlv+8nC0LR3SNFHIlDb8oOtMbZA5jZtgIy6dfMqEOQSv1GbhpDK51oqYlZ+YlQJ04L/43y1tEHNzHb9yN4R0jR4Q7A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf15.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay06.hostedemail.com (Postfix) with ESMTP id 5AB6210FCB2;
+	Wed, 16 Jul 2025 18:26:15 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf15.hostedemail.com (Postfix) with ESMTPA id AAE451C;
+	Wed, 16 Jul 2025 18:26:10 +0000 (UTC)
+Date: Wed, 16 Jul 2025 14:26:09 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org,
+ Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
+ Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Namhyung Kim
+ <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Andrii
+ Nakryiko <andrii@kernel.org>, Indu Bhagat <indu.bhagat@oracle.com>, "Jose
+ E. Marchesi" <jemarch@gnu.org>, Beau Belgrave <beaub@linux.microsoft.com>,
+ Jens Remus <jremus@linux.ibm.com>, Linus Torvalds
+ <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>,
+ Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>, Sam
+ James <sam@gentoo.org>
+Subject: Re: [PATCH v13 10/14] unwind: Clear unwind_mask on exit back to
+ user space
+Message-ID: <20250716142609.47f0e4a5@batman.local.home>
+In-Reply-To: <20250715102912.GQ1613200@noisy.programming.kicks-ass.net>
+References: <20250708012239.268642741@kernel.org>
+	<20250708012359.345060579@kernel.org>
+	<20250715102912.GQ1613200@noisy.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQ+Afov4E=9t=3M=zZmO9z4ZqT6imWD5xijDHshTf3J=RA@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: AAE451C
+X-Stat-Signature: axpt9nptznm8di1wxstaxcbqkwqzigw1
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1/PWOeFhq+1iBqv5Jz8IESvBHKT5u4Gdmk=
+X-HE-Tag: 1752690370-713770
+X-HE-Meta: U2FsdGVkX19X2p8S26zainYyCRQRlNq+Gt0Aaey/HsEXn6oTubLKF+mNLCQCZAojQyy2k04Y6mlvkfQAzwlN72jOd7BvBd2Y1A6+zsKysDZGIRqumosaUARILqOjTPxj7z0XWwoPpJD+Wg70Xhy3yEIKNzCTHrq2Xiqmn+AelJsE1mW3zHRpx1VV71DCQdewNYZ+so3zSElenfRjRDqxN9KTbMDfUus17kTdz9V9LuuSdFhvdBopjuvz8szljVzSM3eBgcJwr8s515D2Gaj/NFsfObE3NGr0oBpWMcE9+AoiG97g1T3JQxH8NyeY+D/ZGHDZIe5J4Ry8Y28fQzTJ7bKp18fq0x77Ajqy/YELaQ0dYunIIBveKVg4kvwMuJyb
 
-On Wed, Jul 16, 2025 at 09:56:11AM -0700, Alexei Starovoitov wrote:
+On Tue, 15 Jul 2025 12:29:12 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-> Maybe Peter has better ideas ?
+> On Mon, Jul 07, 2025 at 09:22:49PM -0400, Steven Rostedt wrote:
+> >  
+> > +	/*
+> > +	 * This is the first to enable another task_work for this task since
+> > +	 * the task entered the kernel, or had already called the callbacks.
+> > +	 * Set only the bit for this work and clear all others as they have
+> > +	 * already had their callbacks called, and do not need to call them
+> > +	 * again because of this work.
+> > +	 */
+> > +	bits = UNWIND_PENDING | BIT(bit);
+> > +
+> > +	/*
+> > +	 * If the cmpxchg() fails, it means that an NMI came in and set
+> > +	 * the pending bit as well as cleared the other bits. Just
+> > +	 * jump to setting the bit for this work.
+> > +	 */
+> >  	if (CAN_USE_IN_NMI) {
+> > -		/* Claim the work unless an NMI just now swooped in to do so. */
+> > -		if (!local_try_cmpxchg(&info->pending, &pending, 1))
+> > +		if (!try_cmpxchg(&info->unwind_mask, &old, bits))
+> >  			goto out;
+> >  	} else {
+> > -		local_set(&info->pending, 1);
+> > +		info->unwind_mask = bits;
+> >  	}
+> >  
+> >  	/* The work has been claimed, now schedule it. */
+> >  	ret = task_work_add(current, &info->work, TWA_RESUME);
+> > -	if (WARN_ON_ONCE(ret)) {
+> > -		local_set(&info->pending, 0);
+> > -		return ret;
+> > -	}
+> >  
+> > +	if (WARN_ON_ONCE(ret))
+> > +		WRITE_ONCE(info->unwind_mask, 0);
+> > +
+> > +	return ret;
+> >   out:
+> > -	return test_and_set_bit(bit, &info->unwind_mask);
+> > +	return test_and_set_bit(bit, &info->unwind_mask) ?
+> > +		UNWIND_ALREADY_PENDING : 0;
+> >  }  
+> 
+> This is some of the most horrifyingly confused code I've seen in a
+> while.
+> 
+> Please just slow down and think for a minute.
+> 
+> The below is the last four patches rolled into one. Not been near a
+> compiler.
 
-Is it possible to express runqueues::nr_pinned as an alias?
-
-extern unsigned int __attribute__((alias("runqueues.nr_pinned"))) this_nr_pinned;
-
-And use:
-
-	__this_cpu_inc(&this_nr_pinned);
+The above is still needed as is (explained below).
 
 
-This syntax doesn't actually seem to work; but can we construct
-something like that?
+> @@ -170,41 +193,62 @@ static void unwind_deferred_task_work(st
+>  int unwind_deferred_request(struct unwind_work *work, u64 *cookie)
+>  {
+>  	struct unwind_task_info *info = &current->unwind_info;
+> -	int ret;
+> +	unsigned long bits, mask;
+> +	int bit, ret;
+>  
+>  	*cookie = 0;
+>  
+> -	if (WARN_ON_ONCE(in_nmi()))
+> -		return -EINVAL;
+> -
+>  	if ((current->flags & (PF_KTHREAD | PF_EXITING)) ||
+>  	    !user_mode(task_pt_regs(current)))
+>  		return -EINVAL;
+>  
+> +	/* NMI requires having safe cmpxchg operations */
+> +	if (WARN_ON_ONCE(!UNWIND_NMI_SAFE && in_nmi()))
+> +		return -EINVAL;
+> +
+> +	/* Do not allow cancelled works to request again */
+> +	bit = READ_ONCE(work->bit);
+> +	if (WARN_ON_ONCE(bit < 0))
+> +		return -EINVAL;
+> +
+>  	guard(irqsave)();
+>  
+>  	*cookie = get_cookie(info);
+>  
+> -	/* callback already pending? */
+> -	if (info->pending)
+> +	bits = UNWIND_PENDING | BIT(bit);
+> +	mask = atomic_long_fetch_or(bits, &info->unwind_mask);
+> +	if (mask & bits)
+>  		return 1;
 
-Google finds me this:
 
- https://gcc.gnu.org/pipermail/gcc-help/2012-February/109877.html
+So the fetch_or() isn't good enough for what needs to be done, and why
+the code above is the way it is.
 
+We have this scenario:
+
+
+  perf and ftrace are both tracing the same task. perf with bit 1 and
+  ftrace with bit 2. Let's say there's even another perf program
+  running and registered bit 3.
+
+
+  perf requests a deferred callback, and info->unwind_mask gets bit 1
+  and the pending bit set.
+
+  The task is exiting to user space and calls perf's callback and
+  clears the pending bit but keeps perf's bit set as it was already
+  called, and doesn't need to be called again even if perf requests a
+  new stacktrace before the task gets back to user space.
+
+  Now before the task gets back to user space, ftrace requests the
+  deferred trace. To do so, it must set the pending bit and its bit,
+  but it must also clear the perf bit as it should not call perf's
+  callback again.
+
+The atomic_long_fetch_or() above will set ftrace's bit but not clear
+perf's bits and the perf callback will get called a second time even
+though perf never requested another callback.
+
+This is why the code at the top has:
+
+	bits = UNWIND_PENDING | BIT(bit);
+
+	/*
+	 * If the cmpxchg() fails, it means that an NMI came in and set
+	 * the pending bit as well as cleared the other bits. Just
+	 * jump to setting the bit for this work.
+	 */
+	if (CAN_USE_IN_NMI) {
+		/* Claim the work unless an NMI just now swooped in to do so. */
+		if (!local_try_cmpxchg(&info->pending, &pending, 1))
+		if (!try_cmpxchg(&info->unwind_mask, &old, bits))
+			goto out;
+
+That cmpxchg() clears out any of the old bits if pending isn't set. Now
+if an NMI came in and the other perf process requested a callback, it
+would set its own bit plus the pending bit and then ftrace only needs
+to jump to the end and do the test_and_set on its bit.
+
+-- Steve
+
+
+>  
+>  	/* The work has been claimed, now schedule it. */
+>  	ret = task_work_add(current, &info->work, TWA_RESUME);
+>  	if (WARN_ON_ONCE(ret))
+> -		return ret;
+> -
+> -	info->pending = 1;
+> -	return 0;
+> +		atomic_long_set(0, &info->unwind_mask);
+>  }
+>  
 
