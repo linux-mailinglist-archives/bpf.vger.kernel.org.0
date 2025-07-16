@@ -1,383 +1,176 @@
-Return-Path: <bpf+bounces-63396-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63397-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FCC4B06BAC
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 04:29:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5887B06BB1
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 04:30:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 625CF188891B
-	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 02:29:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04AF2562C91
+	for <lists+bpf@lfdr.de>; Wed, 16 Jul 2025 02:30:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FD19274B34;
-	Wed, 16 Jul 2025 02:28:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 684A7270ECB;
+	Wed, 16 Jul 2025 02:29:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dMXflEoa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cah+oOuV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 043002741D4
-	for <bpf@vger.kernel.org>; Wed, 16 Jul 2025 02:28:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 848D52E36EF
+	for <bpf@vger.kernel.org>; Wed, 16 Jul 2025 02:29:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752632931; cv=none; b=RPeU2+cDI+Zgjn1aykLCTwqYVgX4LdJeEljQnTcdiXL1MQeICNsgiXHYM8xIh2Hjpt46pJ8wOelnfooqjr3p+/7LMYroQz3zp8Aqd8giprAFS/xbTNtNUN1+ah64Lg4wRwrxnj4zhWpyT46NjdCB2HmRW3CMUUhmHCa0gY1YHck=
+	t=1752632996; cv=none; b=p9UTz0dLGn9Tt+A3uGY3U0w3PLDS02PLpzaThL9XI8u7vA/Z27uVix+gv+D+qJgjm5f9NRs8Xjjpm3m1b4jZLZKHHvxt1/ms01nDx0y6/rRGU+3v5WnkupQo4aoY2sNqNH15aT14mU3OZGCRLSlzIYpT72OpdiYnF9Jd31irA9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752632931; c=relaxed/simple;
-	bh=AWfwmjnHvLE+MpT8hMlVet+rFcUn+f08eOzcek6CPYk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=s89CjX+2+tswwfjMq74SECc+jwnSlQuV08zvYCNTGXLr5J/gUi1OsShPHVJ7VDVX+9N9TJzLZROTgT+HBvfkiCnNxP+ObbMMmVc0AWSybj+SF5Up2+u3HhEbUZrkfcPx+0jspYj0FOZu9svdkz2LPOexAgWcRh4TEZ1a8BIa/Is=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dMXflEoa; arc=none smtp.client-ip=209.85.167.177
+	s=arc-20240116; t=1752632996; c=relaxed/simple;
+	bh=vBxG/v2pCJ7vaTafMYJLzqV0HphjP6qCPqV3b7rPI+Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Hx77/Rwy5EUc+jLj/+nMJ5rG96du1oOiss+TXx8XIbkMGbS8yH88weDBVbczTd4IszSvY4gV5KuNiqVpnF6A4T0IFoWvQ0J14ZdaJT7GIdJhOni02bbyDv/1xEXwkWutL1//I7vGy1ZCZoWD94yO5nH10YsHE2s2RvrCXkEnAxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cah+oOuV; arc=none smtp.client-ip=209.85.216.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-41b309ce799so1448118b6e.2
-        for <bpf@vger.kernel.org>; Tue, 15 Jul 2025 19:28:49 -0700 (PDT)
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-313154270bbso5726633a91.2
+        for <bpf@vger.kernel.org>; Tue, 15 Jul 2025 19:29:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752632929; x=1753237729; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Clf/r36wco3qYSSxwYtd6w4WQgNVaLyCiWy+Ub5pxb0=;
-        b=dMXflEoabbI60LrvSQ1JRdAqM69No6ql3bT7qyrARmFa6aQXq5Ho0nAKqHGFcs5Q0i
-         PpSDfp6IVj8t4Z7GqjsJl07i/fpA4WKnTl82aJ/vvkzzEBInuUbof1OrNcC3SAocpjC+
-         EflxyXy6nHQMnTACiTLJRcC3u5x+9cKmimp7WMdRt3MyuetYibbw0sHQPoS+SfWab5cB
-         ioAG5mbJhLLVeuQY9D4i0qzP+5b8jU6SwoJfa2zhjexYXsYunlGefCr62V2aZmq8yV76
-         tsP3L0mBGYk/iRIuVwxGAInWaq+ixIbQK0p84LBImiEXbftsJRrxFAgDVW0TYHJb71Kh
-         MV6A==
+        d=gmail.com; s=20230601; t=1752632993; x=1753237793; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=54YMk9JDQn8IHKAz5YLE0koa8eulLZZ41W4aFx7nouU=;
+        b=cah+oOuVpbA6wdZC88NCUKIJrd+j1kmjdq3vw46TYcIcfZ94+N9FW1WpvDXTH66VOw
+         1rn4pu8cIcWJtQ48SJ9kLNyL7EfJdq028uLxLgmXcPQ67ghQ0mxhjrzbcpr1Yu50hOxD
+         sFi5YWcfmP8hdn9FNl+9hDEgx9xPQ1acirPMb0++XpJBT4mWd2bpti6JPyZYP6FQJ0dp
+         D3SZPdqs4mY3PFsGzhb02weY/pHYHoCU6YE1+X4YgwwXfz6SL1QZjq+W8x1sncQkAJQq
+         SXNmyuAj+H+VhFQvSFUlOiZieSK3GGZTcsh4so45AfZz0byOtXCpiTjULoCp5b765Ra+
+         xgrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752632929; x=1753237729;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Clf/r36wco3qYSSxwYtd6w4WQgNVaLyCiWy+Ub5pxb0=;
-        b=IM3wV8rfncJqFc2+X+YGHcT6XC4gLV4p+wQ7UfuIeCms+Ch5q4nWZwftyDlOXQJJ1/
-         LMkmOgu0+zVnoS4iDGDxhLabREU9W/LNHwl7RerRpv2K3wOl897WIXhv2UnZEoryP1Yg
-         Norgc4NZ0rZNJGzIcxzcsI9n3c7j5o3YOuPg2duqcKPcEYaI1dvWD5UhRK58zs5eFvMi
-         2H+7jtOP5YCehCVifekGCcEMO7dSM29n17AubnKhJK0O85TpKKdMt+Xo+/HYxShfDM88
-         RJzwVkArFAEODJ0QLiZLcJWmGr8DJ0EuVzzX2nVg8jlv2j+93XwmVxyL7nbRj6U2qb6g
-         xgXw==
-X-Forwarded-Encrypted: i=1; AJvYcCWViDNNeOaOqqE4aFeiq3bZnlj4v3XDZDpAKgL5bu1ZiuGsmUCEabgOU874+/J5AydRRjk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyGVgcZz47a36TuTlotfFQts7X1ehor9Dg5TsXnACFIQeuNCYoO
-	uo8NCxHvcq8ppUjcolTlclJ/SmIeYyaNSN5IhH7jWmnIyoZas0md7Gi+CRwFjQJOTuotC3E/Hyy
-	ptzZJdqiUwbG0SuxFoA+o+GDQK+tmNn8=
-X-Gm-Gg: ASbGncu3wOB3uLGlEeOCin4FcK1BVvW6ZN+CQ5YGbS53LhXomAOtYBVlXE5uym08/XQ
-	3FnZTbPxl8BHhwmNDIIIC8H32ZGz9QujKYHNoKmSHTLpnqBsgQkUKRizsa6nAz+dV/FZWzTdFnk
-	0OoNolaOGXUbzdWT2wwoII3kTuWjAOUuuQhsOdSOZTgx0tfDZ2et7FPfqaMK03bVby5czJmDdMw
-	l81eNo=
-X-Google-Smtp-Source: AGHT+IFyHxeOWTqCoEZ7KsNuV0shRCjm/SggPFjouaNpDZNZjriJdpzqvaTwJvg0DRqNrOprmg5ThrtaZ1/nnNlTuCQ=
-X-Received: by 2002:a05:6808:4f20:b0:406:794b:462 with SMTP id
- 5614622812f47-41d006ed00bmr900738b6e.0.1752632928757; Tue, 15 Jul 2025
- 19:28:48 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1752632993; x=1753237793;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=54YMk9JDQn8IHKAz5YLE0koa8eulLZZ41W4aFx7nouU=;
+        b=Wyl09pTVSwuOQEuaGeD9uH7tmB0yrzz7FoA6AfngOyIkMkvYp0US6/rgTHQjAGiCh3
+         oPdEL996qLj/Oe5C38kpXnb+rSQvUm0g03e25/JRDMojw4X3hRphv3e9oDEj/ULTkNjZ
+         u4sYD0JmXq6V/Btnugxf8gCw+I2SC0Hmytpls5OX7xpwwLLNHExzLcP5j1tLgEkQVnVo
+         uyxPzaUQGg5EK/cUQ1Xzv44rPl9ww/iiRzJxZN9RBd7N3QpQXvN4dRw8oZiWTwtSCfTv
+         UqbwKT6b71Fv/zWVfpVOMMob7EtXomZExt79+Od1Rj1GdDrQGg4VmOKmodPimDt8kuhx
+         MOLQ==
+X-Gm-Message-State: AOJu0YwIco36hw0Rn7KaJmy4XD89m7SNogfW3rTiKmx7DTtL2VHFrqqx
+	O3TTVSiuWalbYBwyTTjbKRDku+L8nujQJaK1syaMtPSbVYA7xFShI8zDjCf9JQ==
+X-Gm-Gg: ASbGncv63LulRuAQxbCCNUNGpW/qLWYvntwfW6uVhstd9K5pmWk/roLINWa884LxBRP
+	IZuhceD34KMn5saOUI9a8q3ZjsYuouSBvHAzdHdICXgb3V+82aZvxSubjs6B3XveWlbkIRG0zBs
+	IYwaOtmT68d9oax9fTvdPqfyoAi9geljXXjyLina+p3zyWZRLDGHzkSd06vG1Xump9Fygs22/Cc
+	k74nrHW1I7rJFj4K95xsC/HT2ZzBFgLyi1uOD/bOAD0lYonNIBCvJ0I3gMTzsuyFDK7fgxtnWYp
+	018uFbEdDfvkoym9pf0DfH8IedpY7mIgos/uQ/wUAkFDQX+TmfuzWOD+s+Epa0ppFZXaYm0M5iW
+	KQ8RDyj+EREcThqHMeDsxIvXbSgITMFdmpbneE0PE8IddPUPKq92NOiFz9XEsV3w=
+X-Google-Smtp-Source: AGHT+IFH8pUexJCnFJRvpl8rZhS654EBz2PixSOVjcUbuVR23X8JzXXfrQK1qEDlWeKIKXuRZG/jMA==
+X-Received: by 2002:a17:90b:1c82:b0:311:ffe8:20e6 with SMTP id 98e67ed59e1d1-31c9f3eeac5mr1164056a91.3.1752632993285;
+        Tue, 15 Jul 2025 19:29:53 -0700 (PDT)
+Received: from localhost.localdomain ([2001:558:600a:7:a83d:600f:32cc:235a])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31c9f2879fcsm338049a91.28.2025.07.15.19.29.52
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Tue, 15 Jul 2025 19:29:52 -0700 (PDT)
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: bpf@vger.kernel.org,
+	linux-mm@kvack.org
+Cc: vbabka@suse.cz,
+	harry.yoo@oracle.com,
+	shakeel.butt@linux.dev,
+	mhocko@suse.com,
+	bigeasy@linutronix.de,
+	andrii@kernel.org,
+	memxor@gmail.com,
+	akpm@linux-foundation.org,
+	peterz@infradead.org,
+	rostedt@goodmis.org,
+	hannes@cmpxchg.org
+Subject: [PATCH v3 0/6] slab: Re-entrant kmalloc_nolock() 
+Date: Tue, 15 Jul 2025 19:29:44 -0700
+Message-Id: <20250716022950.69330-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250708071840.556686-1-jianghaoran@kylinos.cn> <20250708071840.556686-3-jianghaoran@kylinos.cn>
-In-Reply-To: <20250708071840.556686-3-jianghaoran@kylinos.cn>
-From: Hengqi Chen <hengqi.chen@gmail.com>
-Date: Wed, 16 Jul 2025 10:28:37 +0800
-X-Gm-Features: Ac12FXysx7IqDDtECjqpg_t7a4pnzmEAh9SieM_kyWBiVLmrKiIFMBGxXkqKeQY
-Message-ID: <CAEyhmHTSw-DKj+TLOwfKuSvvTq2cXRackaRCZDiK7ymh-jvpog@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] LoongArch: BPF: Fix tailcall hierarchy
-To: Haoran Jiang <jianghaoran@kylinos.cn>
-Cc: loongarch@lists.linux.dev, bpf@vger.kernel.org, kernel@xen0n.name, 
-	chenhuacai@kernel.org, yangtiezhu@loongson.cn, jolsa@kernel.org, 
-	haoluo@google.com, sdf@fomichev.me, kpsingh@kernel.org, 
-	john.fastabend@gmail.com, yonghong.song@linux.dev, song@kernel.org, 
-	eddyz87@gmail.com, martin.lau@linux.dev, andrii@kernel.org, 
-	daniel@iogearbox.net, ast@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jul 8, 2025 at 3:19=E2=80=AFPM Haoran Jiang <jianghaoran@kylinos.cn=
-> wrote:
->
-> In specific use cases combining tailcalls and BPF-to-BPF calls=EF=BC=8C
-> MAX_TAIL_CALL_CNT won't work because of missing tail_call_cnt
-> back-propagation from callee to caller=E3=80=82This patch fixes this
-> tailcall issue caused by abusing the tailcall in bpf2bpf feature
-> on LoongArch like the way of "bpf, x64: Fix tailcall hierarchy".
->
-> push tail_call_cnt_ptr and tail_call_cnt into the stack,
-> tail_call_cnt_ptr is passed between tailcall and bpf2bpf,
-> uses tail_call_cnt_ptr to increment tail_call_cnt.
->
-> Fixes: bb035ef0cc91 ("LoongArch: BPF: Support mixing bpf2bpf and tailcall=
-s")
-> Fixes: 5dc615520c4d ("LoongArch: Add BPF JIT support")
-> Signed-off-by: Haoran Jiang <jianghaoran@kylinos.cn>
-> ---
->  arch/loongarch/net/bpf_jit.c | 112 +++++++++++++++++++++--------------
->  1 file changed, 68 insertions(+), 44 deletions(-)
->
-> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
-> index 5061bfc978f2..45f804b7c556 100644
-> --- a/arch/loongarch/net/bpf_jit.c
-> +++ b/arch/loongarch/net/bpf_jit.c
-> @@ -7,10 +7,9 @@
->  #include "bpf_jit.h"
->
->  #define REG_TCC                LOONGARCH_GPR_A6
-> -#define TCC_SAVED      LOONGARCH_GPR_S5
->
-> -#define SAVE_RA                BIT(0)
-> -#define SAVE_TCC       BIT(1)
-> +#define BPF_TAIL_CALL_CNT_PTR_STACK_OFF(stack) (round_up(stack, 16) - 80=
-)
-> +
->
->  static const int regmap[] =3D {
->         /* return value from in-kernel function, and exit value for eBPF =
-program */
-> @@ -32,32 +31,37 @@ static const int regmap[] =3D {
->         [BPF_REG_AX] =3D LOONGARCH_GPR_T0,
->  };
->
-> -static void mark_call(struct jit_ctx *ctx)
-> +static void prepare_bpf_tail_call_cnt(struct jit_ctx *ctx, int *store_of=
-fset)
+From: Alexei Starovoitov <ast@kernel.org>
 
-Consider adding more comments(e.g. pseudocode) for prepare_bpf_tail_call_cn=
-t().
-Assembly is hard to read. (At least for me :))
+v2->v3:
+- Adopted Sebastian's local_lock_cpu_slab(), but dropped gfpflags
+  to avoid extra branch for performance reasons,
+  and added local_unlock_cpu_slab() for symmetry.
+- Dropped local_lock_lockdep_start/end() pair and switched to
+  per kmem_cache lockdep class on PREEMPT_RT to silence false positive
+  when the same cpu/task acquires two local_lock-s.
+- Refactorred defer_free per Sebastian's suggestion
+- Fixed slab leak when it needs to be deactivated via irq_work and llist
+  as Vlastimil proposed. Including defer_free_barrier().
+- Use kmem_cache->offset for llist_node pointer when linking objects
+  instead of zero offset, since whole object could be used for slabs
+  with ctors and other cases.
+- Fixed "cnt = 1; goto redo;" issue.
+- Fixed slab leak in alloc_single_from_new_slab().
+- Retested with slab_debug, RT, !RT, lockdep, kasan, slab_tiny
+- Added acks to patches 1-4 that should be good to go.
 
->  {
-> -       ctx->flags |=3D SAVE_RA;
-> -}
-> +       const struct bpf_prog *prog =3D ctx->prog;
-> +       const bool is_main_prog =3D !bpf_is_subprog(prog);
->
-> -static void mark_tail_call(struct jit_ctx *ctx)
-> -{
-> -       ctx->flags |=3D SAVE_TCC;
-> -}
-> +       if (is_main_prog) {
-> +               emit_insn(ctx, addid, LOONGARCH_GPR_T3, LOONGARCH_GPR_ZER=
-O, MAX_TAIL_CALL_CNT);
-> +               *store_offset -=3D sizeof(long);
->
-> -static bool seen_call(struct jit_ctx *ctx)
-> -{
-> -       return (ctx->flags & SAVE_RA);
-> -}
-> +               emit_tailcall_jmp(ctx, BPF_JGT, REG_TCC, LOONGARCH_GPR_T3=
-, 4);
+v2:
+https://lore.kernel.org/bpf/20250709015303.8107-1-alexei.starovoitov@gmail.com/
 
-Why emit_tailcall_jmp() here ? Shouldn't this be emit_cond_jmp() ?
+v1->v2:
+Added more comments for this non-trivial logic and addressed earlier comments.
+In particular:
+- Introduce alloc_frozen_pages_nolock() to avoid refcnt race
+- alloc_pages_nolock() defaults to GFP_COMP
+- Support SLUB_TINY
+- Added more variants to stress tester to discover that kfree_nolock() can
+  OOM, because deferred per-slab llist won't be serviced if kfree_nolock()
+  gets unlucky long enough. Scraped previous approach and switched to
+  global per-cpu llist with immediate irq_work_queue() to process all
+  object sizes.
+- Reentrant kmalloc cannot deactivate_slab(). In v1 the node hint was
+  downgraded to NUMA_NO_NODE before calling slab_alloc(). Realized it's not
+  good enough. There are odd cases that can trigger deactivate. Rewrote
+  this part.
+- Struggled with SLAB_NO_CMPXCHG. Thankfully Harry had a great suggestion:
+  https://lore.kernel.org/bpf/aFvfr1KiNrLofavW@hyeyoo/
+  which was adopted. So slab_debug works now.
+- In v1 I had to s/local_lock_irqsave/local_lock_irqsave_check/ in a bunch
+  of places in mm/slub.c to avoid lockdep false positives.
+  Came up with much cleaner approach to silence invalid lockdep reports
+  without sacrificing lockdep coverage. See local_lock_lockdep_start/end().
 
->
-> -static bool seen_tail_call(struct jit_ctx *ctx)
-> -{
-> -       return (ctx->flags & SAVE_TCC);
-> -}
-> +               /* If REG_TCC < MAX_TAIL_CALL_CNT, push REG_TCC into stac=
-k */
-> +               emit_insn(ctx, std, REG_TCC, LOONGARCH_GPR_SP, *store_off=
-set);
->
-> -static u8 tail_call_reg(struct jit_ctx *ctx)
-> -{
-> -       if (seen_call(ctx))
-> -               return TCC_SAVED;
-> +               /* Calculate the pointer to REG_TCC in the stack and assi=
-gn it to REG_TCC */
-> +               emit_insn(ctx, addid, REG_TCC, LOONGARCH_GPR_SP, *store_o=
-ffset);
-> +
-> +               emit_uncond_jmp(ctx, 2);
-> +
-> +               emit_insn(ctx, std, REG_TCC, LOONGARCH_GPR_SP, *store_off=
-set);
->
-> -       return REG_TCC;
-> +               *store_offset -=3D sizeof(long);
-> +               emit_insn(ctx, std, REG_TCC, LOONGARCH_GPR_SP, *store_off=
-set);
-> +
-> +       } else {
-> +               *store_offset -=3D sizeof(long);
-> +               emit_insn(ctx, std, REG_TCC, LOONGARCH_GPR_SP, *store_off=
-set);
-> +
-> +               *store_offset -=3D sizeof(long);
-> +               emit_insn(ctx, std, REG_TCC, LOONGARCH_GPR_SP, *store_off=
-set);
-> +       }
->  }
->
->  /*
-> @@ -80,6 +84,10 @@ static u8 tail_call_reg(struct jit_ctx *ctx)
->   *                            |           $s4           |
->   *                            +-------------------------+
->   *                            |           $s5           |
-> + *                            +-------------------------+
-> + *                            |          reg_tcc        |
-> + *                            +-------------------------+
-> + *                            |          reg_tcc_ptr    |
->   *                            +-------------------------+ <--BPF_REG_FP
->   *                            |  prog->aux->stack_depth |
->   *                            |        (optional)       |
-> @@ -89,21 +97,24 @@ static u8 tail_call_reg(struct jit_ctx *ctx)
->  static void build_prologue(struct jit_ctx *ctx)
->  {
->         int stack_adjust =3D 0, store_offset, bpf_stack_adjust;
-> +       const struct bpf_prog *prog =3D ctx->prog;
-> +       const bool is_main_prog =3D !bpf_is_subprog(prog);
->
->         bpf_stack_adjust =3D round_up(ctx->prog->aux->stack_depth, 16);
->
-> -       /* To store ra, fp, s0, s1, s2, s3, s4 and s5. */
-> -       stack_adjust +=3D sizeof(long) * 8;
-> +       /* To store ra, fp, s0, s1, s2, s3, s4, s5, reg_tcc and reg_tcc_p=
-tr */
-> +       stack_adjust +=3D sizeof(long) * 10;
->
->         stack_adjust =3D round_up(stack_adjust, 16);
->         stack_adjust +=3D bpf_stack_adjust;
->
->         /*
-> -        * First instruction initializes the tail call count (TCC).
-> -        * On tail call we skip this instruction, and the TCC is
-> +        * First instruction initializes the tail call count (TCC) regist=
-er
-> +        * to zero. On tail call we skip this instruction, and the TCC is
->          * passed in REG_TCC from the caller.
->          */
-> -       emit_insn(ctx, addid, REG_TCC, LOONGARCH_GPR_ZERO, MAX_TAIL_CALL_=
-CNT);
-> +       if (is_main_prog)
-> +               emit_insn(ctx, addid, REG_TCC, LOONGARCH_GPR_ZERO, 0);
->
->         emit_insn(ctx, addid, LOONGARCH_GPR_SP, LOONGARCH_GPR_SP, -stack_=
-adjust);
->
-> @@ -131,20 +142,13 @@ static void build_prologue(struct jit_ctx *ctx)
->         store_offset -=3D sizeof(long);
->         emit_insn(ctx, std, LOONGARCH_GPR_S5, LOONGARCH_GPR_SP, store_off=
-set);
->
-> +       prepare_bpf_tail_call_cnt(ctx, &store_offset);
-> +
->         emit_insn(ctx, addid, LOONGARCH_GPR_FP, LOONGARCH_GPR_SP, stack_a=
-djust);
->
->         if (bpf_stack_adjust)
->                 emit_insn(ctx, addid, regmap[BPF_REG_FP], LOONGARCH_GPR_S=
-P, bpf_stack_adjust);
->
-> -       /*
-> -        * Program contains calls and tail calls, so REG_TCC need
-> -        * to be saved across calls.
-> -        */
-> -       if (seen_tail_call(ctx) && seen_call(ctx))
-> -               move_reg(ctx, TCC_SAVED, REG_TCC);
-> -       else
-> -               emit_insn(ctx, nop);
-> -
->         ctx->stack_size =3D stack_adjust;
->  }
->
-> @@ -177,6 +181,17 @@ static void __build_epilogue(struct jit_ctx *ctx, bo=
-ol is_tail_call)
->         load_offset -=3D sizeof(long);
->         emit_insn(ctx, ldd, LOONGARCH_GPR_S5, LOONGARCH_GPR_SP, load_offs=
-et);
->
-> +       /*
-> +        *  When push into the stack, follow the order of tcc then tcc_pt=
-r.
-> +        *  When pop from the stack, first pop tcc_ptr followed by tcc
-> +        */
-> +       load_offset -=3D 2*sizeof(long);
-> +       emit_insn(ctx, ldd, REG_TCC, LOONGARCH_GPR_SP, load_offset);
-> +
-> +       /* pop tcc_ptr to REG_TCC */
-> +       load_offset +=3D sizeof(long);
-> +       emit_insn(ctx, ldd, REG_TCC, LOONGARCH_GPR_SP, load_offset);
-> +
->         emit_insn(ctx, addid, LOONGARCH_GPR_SP, LOONGARCH_GPR_SP, stack_a=
-djust);
->
->         if (!is_tail_call) {
-> @@ -211,7 +226,7 @@ bool bpf_jit_supports_far_kfunc_call(void)
->  static int emit_bpf_tail_call(struct jit_ctx *ctx, int insn)
->  {
->         int off;
-> -       u8 tcc =3D tail_call_reg(ctx);
-> +       int tcc_ptr_off =3D BPF_TAIL_CALL_CNT_PTR_STACK_OFF(ctx->stack_si=
-ze);
->         u8 a1 =3D LOONGARCH_GPR_A1;
->         u8 a2 =3D LOONGARCH_GPR_A2;
->         u8 t1 =3D LOONGARCH_GPR_T1;
-> @@ -240,11 +255,15 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx, =
-int insn)
->                 goto toofar;
->
->         /*
-> -        * if (--TCC < 0)
-> -        *       goto out;
-> +        * if ((*tcc_ptr)++ >=3D MAX_TAIL_CALL_CNT)
-> +        *      goto out;
->          */
-> -       emit_insn(ctx, addid, REG_TCC, tcc, -1);
-> -       if (emit_tailcall_jmp(ctx, BPF_JSLT, REG_TCC, LOONGARCH_GPR_ZERO,=
- jmp_offset) < 0)
-> +       emit_insn(ctx, ldd, REG_TCC, LOONGARCH_GPR_SP, tcc_ptr_off);
-> +       emit_insn(ctx, ldd, t3, REG_TCC, 0);
-> +       emit_insn(ctx, addid, t3, t3, 1);
-> +       emit_insn(ctx, std, t3, REG_TCC, 0);
-> +       emit_insn(ctx, addid, t2, LOONGARCH_GPR_ZERO, MAX_TAIL_CALL_CNT);
-> +       if (emit_tailcall_jmp(ctx, BPF_JSGT, t3, t2, jmp_offset) < 0)
->                 goto toofar;
->
->         /*
-> @@ -465,6 +484,7 @@ static int build_insn(const struct bpf_insn *insn, st=
-ruct jit_ctx *ctx, bool ext
->         const s16 off =3D insn->off;
->         const s32 imm =3D insn->imm;
->         const bool is32 =3D BPF_CLASS(insn->code) =3D=3D BPF_ALU || BPF_C=
-LASS(insn->code) =3D=3D BPF_JMP32;
-> +       int tcc_ptr_off;
->
->         switch (code) {
->         /* dst =3D src */
-> @@ -891,12 +911,17 @@ static int build_insn(const struct bpf_insn *insn, =
-struct jit_ctx *ctx, bool ext
->
->         /* function call */
->         case BPF_JMP | BPF_CALL:
-> -               mark_call(ctx);
->                 ret =3D bpf_jit_get_func_addr(ctx->prog, insn, extra_pass=
-,
->                                             &func_addr, &func_addr_fixed)=
-;
->                 if (ret < 0)
->                         return ret;
->
-> +               if (insn->src_reg =3D=3D BPF_PSEUDO_CALL) {
-> +                       tcc_ptr_off =3D BPF_TAIL_CALL_CNT_PTR_STACK_OFF(c=
-tx->stack_size);
-> +                       emit_insn(ctx, ldd, REG_TCC, LOONGARCH_GPR_SP, tc=
-c_ptr_off);
-> +               }
-> +
-> +
->                 move_addr(ctx, t1, func_addr);
->                 emit_insn(ctx, jirl, LOONGARCH_GPR_RA, t1, 0);
->
-> @@ -907,7 +932,6 @@ static int build_insn(const struct bpf_insn *insn, st=
-ruct jit_ctx *ctx, bool ext
->
->         /* tail call */
->         case BPF_JMP | BPF_TAIL_CALL:
-> -               mark_tail_call(ctx);
->                 if (emit_bpf_tail_call(ctx, i) < 0)
->                         return -EINVAL;
->                 break;
-> --
-> 2.43.0
->
+v1:
+https://lore.kernel.org/bpf/20250501032718.65476-1-alexei.starovoitov@gmail.com/
+
+Alexei Starovoitov (6):
+  locking/local_lock: Expose dep_map in local_trylock_t.
+  locking/local_lock: Introduce local_lock_is_locked().
+  mm: Allow GFP_ACCOUNT to be used in alloc_pages_nolock().
+  mm: Introduce alloc_frozen_pages_nolock()
+  slab: Introduce kmalloc_nolock() and kfree_nolock().
+  slab: Make slub local_trylock_t more precise for LOCKDEP
+
+ include/linux/gfp.h                 |   2 +-
+ include/linux/kasan.h               |  13 +-
+ include/linux/local_lock.h          |   2 +
+ include/linux/local_lock_internal.h |  16 +-
+ include/linux/rtmutex.h             |   9 +
+ include/linux/slab.h                |   4 +
+ kernel/bpf/syscall.c                |   2 +-
+ kernel/locking/rtmutex_common.h     |   9 -
+ mm/Kconfig                          |   1 +
+ mm/internal.h                       |   4 +
+ mm/kasan/common.c                   |   5 +-
+ mm/page_alloc.c                     |  54 ++--
+ mm/slab.h                           |   7 +
+ mm/slab_common.c                    |   3 +
+ mm/slub.c                           | 471 +++++++++++++++++++++++++---
+ 15 files changed, 513 insertions(+), 89 deletions(-)
+
+-- 
+2.47.1
+
 
