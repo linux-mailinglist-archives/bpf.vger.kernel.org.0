@@ -1,74 +1,73 @@
-Return-Path: <bpf+bounces-63644-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63645-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBF43B092FF
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 19:19:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE0D7B09305
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 19:20:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEEBA581B76
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 17:19:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 917F9A450E6
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 17:20:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51D842FD5B8;
-	Thu, 17 Jul 2025 17:19:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A5DF2FA63E;
+	Thu, 17 Jul 2025 17:20:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PuAoSDZ9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KN8liwjn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FB04157A55;
-	Thu, 17 Jul 2025 17:19:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BECE2FD59D;
+	Thu, 17 Jul 2025 17:20:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752772785; cv=none; b=pohaLOaUgAzwwUUwLcWVfa4BZqw83AtGGdXz04pj4Vo0xfERDPlTUDC0KS73lf0j5aAG7KpswGyf8xnrqG4rGr3LHVC1z89qmY0ZGRpBYDDyIWNFIPnDcfpXYlUrTkVAUAUemMk8z3rMki7CGJq0p8X5zXgdo82j1T0QhkJxCPA=
+	t=1752772848; cv=none; b=pA0XeKe5Mb7ujNgh3KuODUK92edNTPvGDyyRrug0NeTnnnto7oZx2FJibB16COqfxZJrzQfj9f6MMlXGHJbGFhm12jpKk5S6r9h+emimq0CT2MSkJ9a0hEcSrpAQJqohzbxtbUu789GjLrX93smZA/mqPuL+hlFU91v0y+AP7RI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752772785; c=relaxed/simple;
-	bh=W/DhiasmwCBuFbQCyp1dQTsirgqXj/Eu5bRAkhtMAog=;
+	s=arc-20240116; t=1752772848; c=relaxed/simple;
+	bh=QzW3TzJHY7MTLMOOnMpu8mKFRvV0aVq6toqLC/Mg3PU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eK7Seo/Lv5AboLiBTGfnG5wozUSO4OgH2QW3Lnr/DnEN9L0ub5xg4NG5X6PTtlz9/1C1CVlJRBkgpPrbB4QJkMGTh0i+BaIYk9GQ8JFgaul3JlAs0CdaEoTZ3xIZfcg7Dpjv2quNXbSe8r/fTpgYrGZOXH+ZaZWijtfx6OThulo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PuAoSDZ9; arc=none smtp.client-ip=209.85.218.50
+	 To:Cc:Content-Type; b=bWa3NDJGiJrSDeSkLWbstEDOAToH0b4i82Pfk29+BXZhPo0K7e5jR3Z6ZWTDBkE2qER+joRiFmHE2ZQ+D84lkiLTY3Z1rb+S8fST4j9ubYP1tLLf4rxk3WfhCsnxXDDGA4te70Q1rvWa+ghWXpv9mY743Bl0/R6jCB06DA/jfyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KN8liwjn; arc=none smtp.client-ip=209.85.160.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-ae0de1c378fso184392266b.3;
-        Thu, 17 Jul 2025 10:19:44 -0700 (PDT)
+Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-2c6ed7efb1dso832503fac.2;
+        Thu, 17 Jul 2025 10:20:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752772782; x=1753377582; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=v1rMoCL6Z35Q1ZU9wAKtXkSeqp3Yq+uqdhZO2nKQumQ=;
-        b=PuAoSDZ9DE3IQEvB1iVDtthOFz6uq+FC45ysyIjZHrtVCQ2PcTVDqNoeUJrw9KJF7H
-         8LIN2THFmE2TuQzELLjc9UaWCc/8vitSNhvQJyGxPpwHqGi8XyXqyJKQre95VcA8oCHq
-         Q5CUdRqoPwoUiVUCyB4qL2qpEXVLKgv7b76KJzViHZp4MwcCSiAbQxV52s4OqRLJr2nV
-         l2ktdLmoP+gtsFfZsoSQH/BXS8OlY1m+EycvTYY4SpiUGBjoamzt0NkyH3wWHGUe5tHi
-         0FFXAs1QRH/9JNP1Jei/d0tNptCHWW658Lr+JzW5qS3U78RhzrrIAz4RdFgMrxdwJQs8
-         kHwQ==
+        d=gmail.com; s=20230601; t=1752772845; x=1753377645; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=QzW3TzJHY7MTLMOOnMpu8mKFRvV0aVq6toqLC/Mg3PU=;
+        b=KN8liwjnxwH/FrkPls/1jOAFu8tA3FLPuhyb4+bQbeYkAJM250hn/HMWYqIV6vfvQB
+         b90VXRP/P/URz92W5sg7/U0SgCivmB6eRcCRhj2YlKM9IhmjArUT7xNqx2CBfyPZeesV
+         G23N+pALhV4HfarxRMPrjSxtNBIBGbXkDuFMHAisoUCS2I9wNy9ei1CPIFtl1oBd/XCS
+         Dalv0LyYDR6Y7E6zOKavLR9ERfyL94sbDGH3dAVAGgvzIB7INUdsZPxM0GQeJjGh5zzZ
+         ePRiAnpJcdazDYgEJfJTQaeCWXIxv9sg/j9G3P0gVHrEGrU3zJGkzGH44SKF8yCIiqux
+         lkog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752772782; x=1753377582;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=v1rMoCL6Z35Q1ZU9wAKtXkSeqp3Yq+uqdhZO2nKQumQ=;
-        b=YskcuGvtHrKDvVYCOdizGiyMLNRG8jhnyxWzsQkLee+h+i4AHSMWm6KKR/K0Fr6Y+8
-         3xvk2xBd31k4ZLnOk29n7k+Wj02NYRrrRbjmo+gdoZ/WuguqtNt3h9n6c8PTKtAwh3pV
-         jDK42Y9qGKX4NRIdhxww0QOjbZqIC4M5Lg2FJ7TCyZC3q5KXApouWs0QI75AiA78gz2T
-         I3I6hOb2+vj+kf9BwZAqaWZx1e7s/ahkfScRwx5xVAt7pVJeCvRO2+BGCDEpBwHSbI6g
-         Js/az9XOMnlN21LN/XXs6xWBqmRfkUBEXPotbmnCwvhKXU1rBU8sjFlu9aTu6qJlwn3y
-         BomA==
-X-Forwarded-Encrypted: i=1; AJvYcCUs5fREWE962hB3pMx6zdnwNFZzLIoZUvXlQY2hAKrBqkAR11+m9D3YUCZ93ovIDEeHkwsG3u3WvSp2zsT9@vger.kernel.org, AJvYcCVHcTbF/6zhwxCYO0W3yhvIo8JI6VFdOnemh35ecxHxniN8rVu6ofeLRAARLCVhv9uEygg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxJ1ZrvixubffEE9pVu08qwvrExQbwIOis4aOw4sDGEIJjE33SW
-	Y7Kb5rvCnQK3jGDMAbo13BFyckk5X9oaERSJ02n4mth2mYZ2uMlvV/hcAoPyVcmC/TDN7XIDN+R
-	qT/2D7IJWdBJUpkfjt+CCQqovBJQiHmY=
-X-Gm-Gg: ASbGncsWfCSRS2jI3fSny5khV5ghX1KyGZdyLbvp1fN4dWHnKKRJ805+csOnO/Z4Xhe
-	zHAWkqRtAIw25qstc6nRMgJ8pq/coxndFpetWSRbupNxtEQNcbnVcgclPedZkVM4dLPKnBOIVny
-	8kHfZPy9g4Qs5mv/uty0xeOlqIi+KGsQdLcdkVZjH5Rf/rENynhUDWwJyCPD+Q30dXAV4I4rF71
-	C4yMnD3XNP2U5z9ShJTQHQ=
-X-Google-Smtp-Source: AGHT+IF7yR8TLWdZv2iR76wMOEnBUAhFbb+Wlu2gwrj7g0DqD5585fO9/6fbqBQJsJwLWddBAL96wRMabRjRvTmlkwY=
-X-Received: by 2002:a17:907:7f24:b0:adb:229f:6b71 with SMTP id
- a640c23a62f3a-ae9cddb1d86mr811165766b.5.1752772782364; Thu, 17 Jul 2025
- 10:19:42 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1752772845; x=1753377645;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QzW3TzJHY7MTLMOOnMpu8mKFRvV0aVq6toqLC/Mg3PU=;
+        b=w7lxT6Fsyhjgs7K6AMojkqgT7NqlCATnZSlOFrGlB3FZCNc2HTbmmAYNdpa5HFp7JZ
+         K8OfmPiSKq3P6N9Wi44INVRDepc0z+hBeHF7hMOgVbrRrz6BzbLk9+6iXVrunONo74Tu
+         iwLVULyDzU7luEYmO46vrH5xiZve4PvMcy/giMjK/vvaBJA9JYXCvTIE5/O/NjuE4ryM
+         kpLhhEhspOiZbbAExXpLY8ZgO29slKqX6eDM55Phd2iTEMavWDUZLrdtqyxhYgdz/FOZ
+         WklIfjyoHYUcydL9T43XeuQl59I9mK4VhLh4sLLB/37/gdNxElbIcJADJ/lLNruP6J70
+         /isQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUMm0604MikcqmWRQPvWl9Oj7ASN+zyTZ8Lbt059vRS9nBNS5wEAKpcoqBfXRgpN1uuz7BYUnLFoHiVn/CU@vger.kernel.org, AJvYcCXBkuhdTi3zp9RKAOI5xxTUlzbc81vSoiNbqb9f2FW1uV32kdR4oWr6PUXmKaFJzyeIESw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxQINg6cMx254MKUOkPj/FZOLT3A68ql5GHSAp4Hbu9f05OvNSl
+	7yj6x3Ejxw3YskE/w5fWDa8jUbZzK0VqqVyJO66RNeVQqG96/Ugs/ZToAUwyc/aE4of7GRKE8KW
+	FuOquzKknCjRtxVRs0SiYVImjn5ZvL/o=
+X-Gm-Gg: ASbGncs0IGCcN9MwYCoteMV762ss5n0AoLopBIPsan7qCilsMiDtfbpHPKV5jGLRuAz
+	4DP3eaUGWWQIs8H+/vqK7CXmLc+LcDiiJcbxJmCKyH//Al9mLItSWYJziBnwbNxUXxmSdiDsQZp
+	DDQ/fGPXuATefqLQZc5DJYBfEtp0ISoXXvab6lWO7tPYL3leq2MBszBXdW3N8fncmuFUY9nAZWI
+	5OpMVAC
+X-Google-Smtp-Source: AGHT+IGkry+/VfENK4FfpgTo78UQOqjs2I1quI25rQ7ik3+6oBFDseF6tGEewUI75qPag3XTu41YslI06Xj3GfBcdds=
+X-Received: by 2002:a05:687c:2c20:b0:2ff:cb23:97b4 with SMTP id
+ 586e51a60fabf-2ffcb2398d7mr3207511fac.18.1752772845406; Thu, 17 Jul 2025
+ 10:20:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,61 +75,35 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20250717115936.7025-1-suchitkarunakaran@gmail.com>
-In-Reply-To: <20250717115936.7025-1-suchitkarunakaran@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 17 Jul 2025 10:19:28 -0700
-X-Gm-Features: Ac12FXwUFRH32wJkU9vAEP0Pbh4sI4UAGAlSrErRxYicCr0UK-kVl1OC2kUKGHY
-Message-ID: <CAEf4BzZ+OTkaXmtWPbOGB0OWz5xmj-d06UWchooO+iUyDHar4g@mail.gmail.com>
+ <f6c4944d-c6c2-4a7e-8dd3-791d0c29022b@linux.dev> <CAO9wTFjEJOfF7krFuV=DkZFzRU3FpRXtnq93UaX8=_Y=wnwbHw@mail.gmail.com>
+ <2025071756-motor-slackness-ef0d@gregkh>
+In-Reply-To: <2025071756-motor-slackness-ef0d@gregkh>
+From: Suchit K <suchitkarunakaran@gmail.com>
+Date: Thu, 17 Jul 2025 22:50:34 +0530
+X-Gm-Features: Ac12FXxLcp2VHp2DpkAP_e7qN_lhHYsL-fQPhMc5_0UqSpWKkgNzljuXToTD3Yw
+Message-ID: <CAO9wTFioFna7r_qxfWNQasAYC6rodkqP+1GdYJKSQEFKg-xXtg@mail.gmail.com>
 Subject: Re: [PATCH] libbpf: Replace strcpy() with memcpy() in bpf_object__new()
-To: Suchit Karunakaran <suchitkarunakaran@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Yonghong Song <yonghong.song@linux.dev>, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
 	skhan@linuxfoundation.org, linux-kernel-mentees@lists.linux.dev, 
 	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 17, 2025 at 4:59=E2=80=AFAM Suchit Karunakaran
-<suchitkarunakaran@gmail.com> wrote:
+> Your change also did not do any bounds checking at all, so how is this
+> now safer?
 >
-> Replace the unsafe strcpy() call with memcpy() when copying the path
-> into the bpf_object structure. Since the memory is pre-allocated to
-> exactly strlen(path) + 1 bytes and the length is already known, memcpy()
-> is safer than strcpy().
+> confused,
 >
-> Signed-off-by: Suchit Karunakaran <suchitkarunakaran@gmail.com>
-> ---
->  tools/lib/bpf/libbpf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 52e353368f58..279f226dd965 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -1495,7 +1495,7 @@ static struct bpf_object *bpf_object__new(const cha=
-r *path,
->                 return ERR_PTR(-ENOMEM);
->         }
->
-> -       strcpy(obj->path, path);
-> +       memcpy(obj->path, path, strlen(path) + 1);
+> greg k-h
 
-
-This is user-space libbpf code, where the API contract mandates that
-the path argument is a well-formed zero-terminated C string. Plus, if
-you look at the few lines above, we allocate just enough space to fit
-the entire contents of the string without truncation.
-
-In other words, there is nothing to fix or improve here.
-
-pw-bot: cr
-
->         if (obj_name) {
->                 libbpf_strlcpy(obj->name, obj_name, sizeof(obj->name));
->         } else {
-> --
-> 2.50.1
->
+I assumed bounds checking wasn't necessary here because obj is
+allocated at the start of the function with enough space
+(sizeof(struct bpf_object) + strlen(path) + 1). My main motivation for
+the change was the deprecation of strcpy(). However, thinking about it
+now, I'm not entirely sure memcpy is even needed in this context. I'd
+really appreciate any feedback or clarification on the best approach
+here.
 
