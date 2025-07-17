@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-63542-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63543-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C725B082AB
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 04:01:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF41EB082BC
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 04:06:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C90E4E66F9
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 02:00:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5887B1C2102B
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 02:06:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C882A15D1;
-	Thu, 17 Jul 2025 02:01:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E41C31C8633;
+	Thu, 17 Jul 2025 02:06:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T9R//HVr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fvZi6t2s"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4288C1BC58;
-	Thu, 17 Jul 2025 02:01:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64FD0383;
+	Thu, 17 Jul 2025 02:06:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752717670; cv=none; b=ER0f4flVldEwvbj7439Nx/fUWlebBvEL6MmAD90CPl8L8zzrRS/9ZODArEXA1RwKPy8sWobwDSaOqowRF6ZFQozzRC0g9Vc+ONrPEb/40lt/Kth1L67SlCrdNlD9NmWZilJCOoBIMlBgSvdxz0aoFJsY7wTYfw1Jxnd2bp4VdTU=
+	t=1752717966; cv=none; b=RTph/8KIRXdUoVTQj6iToP8YPD7cDo8HBj7cwW+8NhgiWeNIjZOml871hg9ZDcGxMNQuFAK6zLtvCnHxWFU3ZC7KQDt++T60c/tVjyN/7uvHi/iJ3T++d8Oan+k/ppbr3UyDC85Y/42Zj3QQMbJKW4dgdIEhr//+k2TagJwFdlU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752717670; c=relaxed/simple;
-	bh=S7Y8uiFlZlxrGHyyuEem013pBJJXIkns4WysoiiW7tw=;
+	s=arc-20240116; t=1752717966; c=relaxed/simple;
+	bh=GEUd1AmzQwdYuwp2PPPg8qHYUSWLqdn6zZ9PO8zi+T8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eH+TmGDNpy+vJejhsI1UZ/fYIPsT7sAyGcpqkNdv2feOcuKwiBVn6AKSfmHpdIsVls9E79K8X50AnlcQSiORKqMb6KSCZjXxu7wbEho2WdD525yUG3GVCsgfmnyORXNAT9NnCleZNXJYPF3SDjsIoapWoge5ZB6OyOTAfQNMxik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T9R//HVr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AD18C4CEE7;
-	Thu, 17 Jul 2025 02:01:08 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=KSLyOG+/fOtqYGe8SAsFriCTbkaBLE9FP46ZnsFdyHSuFsevsfp2yR/fA/Pokhn2v2tCnLBrH6s4bOPzaxA077feDbkOR8Bs5xecLwxoWwP2RBjdhLZRTjPLeGAPR2Jd08Boi9udrc+I7298+3sSAj+YA1F3xZxo4trPsWRqq2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fvZi6t2s; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39B24C4CEE7;
+	Thu, 17 Jul 2025 02:06:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752717669;
-	bh=S7Y8uiFlZlxrGHyyuEem013pBJJXIkns4WysoiiW7tw=;
+	s=k20201202; t=1752717965;
+	bh=GEUd1AmzQwdYuwp2PPPg8qHYUSWLqdn6zZ9PO8zi+T8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=T9R//HVrOII6pCWTJfXfKlkYXyHyCqHFyM1TkVjra35UBaj2gpa/tTm3D52lkxau5
-	 f9ejgGEmKr3xF6mLy5OKecxnjcBTS+wUbz7K9c7zT1MyPrlWyyNyfwlol1xYRXjaN8
-	 5MWbGNZ1OicJT9XJf8baTIqy11+LVC1N3vu771F4t9P9PyYsBl63SzrwHHDWNDsD2Y
-	 +QWFZc/jMRDrc8gWvpkOnRbzc1mPfeLiAorsKaoKJoIQjN/Q+PrvqnaOkE5wn3BAL0
-	 57NLM0brSk1WbgMvPII83wP0nc4bUy8UYnG7GR+ISrSpu0lPjyrEG/1Fsj+mG9t2X4
-	 aIY5SnIlX5TPQ==
-Date: Wed, 16 Jul 2025 19:01:06 -0700
+	b=fvZi6t2sJvKlfsUcnWKrsaiMrqkIJ2Sl3kVi0jQ1SFPh4x2OZEwAvJEgKyusSQpKT
+	 QQ9oG2xKAnnzmMj7+QXZJ1N9X+R3Q+jAKnGI5GXSLAWgujMrTD+U+MTueNi35HGqoB
+	 rE94rEeOcjPe4d2LrRE8i8oAgphJ1t1lprvYUnyO1IQJj2snGLhKImEy/jg8k5xCHo
+	 7pgCiIL/nSF8vlxx75fNnDrYs/FzIdTYOCyqQeU/B3kHMB6Hzrb0QtCdvWEF9uywHF
+	 5xc+VYapQfEbFZjm6K0XKOz04W7w4T5PRdUzQnv77pYhdOQS5GvMqKykBX00RyalVE
+	 hauZfn7lGz6yQ==
+Date: Wed, 16 Jul 2025 19:06:02 -0700
 From: Josh Poimboeuf <jpoimboe@kernel.org>
 To: Jens Remus <jremus@linux.ibm.com>
 Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
@@ -55,11 +55,11 @@ Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
 	Beau Belgrave <beaub@linux.microsoft.com>, Linus Torvalds <torvalds@linux-foundation.org>, 
 	Andrew Morton <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>, 
 	Florian Weimer <fweimer@redhat.com>, Sam James <sam@gentoo.org>
-Subject: Re: [RFC PATCH v1 08/16] unwind_user: Enable archs that save RA/FP
- in other registers
-Message-ID: <oasyyga72yuiad7y2nzh7wcd7t7wmxnsbo2kuvsn5xsnuypewd@ukxxgdjbvegz>
+Subject: Re: [RFC PATCH v1 12/16] unwind_user/backchain: Introduce back chain
+ user space unwinding
+Message-ID: <a4dd5okskro2h45zmqgg3etj6uwici2hoop2uaf6iqrlaej7yh@xlduwjqke4ec>
 References: <20250710163522.3195293-1-jremus@linux.ibm.com>
- <20250710163522.3195293-9-jremus@linux.ibm.com>
+ <20250710163522.3195293-13-jremus@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -68,150 +68,46 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250710163522.3195293-9-jremus@linux.ibm.com>
+In-Reply-To: <20250710163522.3195293-13-jremus@linux.ibm.com>
 
-On Thu, Jul 10, 2025 at 06:35:14PM +0200, Jens Remus wrote:
-> +#ifndef unwind_user_get_reg
-> +
-> +/**
-> + * generic_unwind_user_get_reg - Get register value.
-> + * @val: Register value.
-> + * @regnum: DWARF register number to obtain the value from.
-> + *
-> + * Returns zero if successful. Otherwise -EINVAL.
-> + */
-> +static inline int generic_unwind_user_get_reg(unsigned long *val, int regnum)
-> +{
-> +	return -EINVAL;
-> +}
-> +
-> +#define unwind_user_get_reg generic_unwind_user_get_reg
-> +
-> +#endif /* !unwind_user_get_reg */
-
-I believe the traditional way to do this is to give the function the
-same name as the define:
-
-#ifndef unwind_user_get_reg
-static inline int unwind_user_get_reg(unsigned long *val, int regnum)
-{
-	return -EINVAL;
-}
-#define unwind_user_get_reg unwind_user_get_reg
-#endif
-
-> +/**
-> + * generic_sframe_set_frame_reginfo - Populate info to unwind FP/RA register
-> + * from SFrame offset.
-> + * @reginfo: Unwind info for FP/RA register.
-> + * @offset: SFrame offset value.
-> + *
-> + * A non-zero offset value denotes a stack offset from CFA and indicates
-> + * that the register is saved on the stack. A zero offset value indicates
-> + * that the register is not saved.
-> + */
-> +static inline void generic_sframe_set_frame_reginfo(
-> +	struct unwind_user_reginfo *reginfo,
-> +	s32 offset)
-> +{
-> +	if (offset) {
-> +		reginfo->loc = UNWIND_USER_LOC_STACK;
-> +		reginfo->frame_off = offset;
-> +	} else {
-> +		reginfo->loc = UNWIND_USER_LOC_NONE;
-> +	}
-> +}
-
-This just inits the reginfo struct, can we call it sframe_init_reginfo()?
-
-Also the function comment seems completely superfluous as the function
-is completely obvious.
-
-Also the signature should match kernel style, something like:
-
-static inline void
-sframe_init_reginfo(struct unwind_user_reginfo *reginfo, s32 offset)
-
-> @@ -98,26 +98,57 @@ static int unwind_user_next(struct unwind_user_state *state)
->  
->  
->  	/* Get the Return Address (RA) */
-> -	if (frame->ra_off) {
-> +	switch (frame->ra.loc) {
-> +	case UNWIND_USER_LOC_NONE:
-> +		if (!IS_ENABLED(CONFIG_HAVE_USER_RA_REG) || !topmost)
+On Thu, Jul 10, 2025 at 06:35:18PM +0200, Jens Remus wrote:
+> @@ -66,12 +73,20 @@ static int unwind_user_next(struct unwind_user_state *state)
+>  		/* sframe expects the frame to be local storage */
+>  		frame = &_frame;
+>  		if (sframe_find(state->ip, frame, topmost)) {
+> -			if (!IS_ENABLED(CONFIG_HAVE_UNWIND_USER_FP))
+> -				goto done;
+> -			frame = &fp_frame;
+> +			if (IS_ENABLED(CONFIG_HAVE_UNWIND_USER_FP)) {
+> +				frame = &fp_frame;
+> +			} else if (IS_ENABLED(CONFIG_HAVE_UNWIND_USER_BACKCHAIN)) {
+> +				if (unwind_user_backchain_next(state))
+> +					goto done;
+> +				goto done_backchain;
+> +			}
+>  		}
+>  	} else if (fp_state(state)) {
+>  		frame = &fp_frame;
+> +	} else if (backchain_state(state)) {
+> +		if (unwind_user_backchain_next(state))
 > +			goto done;
-> +		ra = user_return_address(task_pt_regs(current));
-> +		break;
-> +	case UNWIND_USER_LOC_STACK:
-> +		if (!frame->ra.frame_off)
-> +			goto done;
->  		/* Make sure that the address is word aligned */
->  		shift = sizeof(long) == 4 || compat_fp_state(state) ? 2 : 3;
-> -		if ((cfa + frame->ra_off) & ((1 << shift) - 1))
-> +		if ((cfa + frame->ra.frame_off) & ((1 << shift) - 1))
->  			goto done;
-> -		if (unwind_get_user_long(ra, cfa + frame->ra_off, state))
-> +		if (unwind_get_user_long(ra, cfa + frame->ra.frame_off, state))
->  			goto done;
-> -	} else {
-> -		if (!IS_ENABLED(CONFIG_HAVE_USER_RA_REG) || !topmost)
-> +		break;
-> +	case UNWIND_USER_LOC_REG:
-> +		if (!IS_ENABLED(CONFIG_HAVE_UNWIND_USER_LOC_REG) || !topmost)
->  			goto done;
-> -		ra = user_return_address(task_pt_regs(current));
-> +		if (unwind_user_get_reg(&ra, frame->ra.regnum))
-> +			goto done;
-> +		break;
-> +	default:
-> +		WARN_ON_ONCE(1);
-> +		goto done;
-
-The default case will never happen, can we make it a BUG()?
-
->  	}
->  
->  	/* Get the Frame Pointer (FP) */
-> -	if (frame->fp_off && unwind_get_user_long(fp, cfa + frame->fp_off, state))
-> +	switch (frame->fp.loc) {
-> +	case UNWIND_USER_LOC_NONE:
-> +		break;
-
-The UNWIND_USER_LOC_NONE behavior is different here compared to above.
-Do we also need UNWIND_USER_LOC_PT_REGS?
-
-> +	case UNWIND_USER_LOC_STACK:
-> +		if (!frame->fp.frame_off)
-> +			goto done;
-> +		if (unwind_get_user_long(fp, cfa + frame->fp.frame_off, state))
-> +			goto done;
-> +		break;
-> +	case UNWIND_USER_LOC_REG:
-> +		if (!IS_ENABLED(CONFIG_HAVE_UNWIND_USER_LOC_REG) || !topmost)
-> +			goto done;
-
-The topmost checking is *really* getting cumbersome, I do hope we can
-get rid of that.
-
-> +		if (unwind_user_get_reg(&fp, frame->fp.regnum))
-> +			goto done;
-> +		break;
-> +	default:
-> +		WARN_ON_ONCE(1);
+> +		goto done_backchain;
+>  	} else {
 >  		goto done;
-> +	}
+>  	}
+> @@ -153,6 +168,7 @@ static int unwind_user_next(struct unwind_user_state *state)
+>  
+>  	arch_unwind_user_next(state);
+>  
+> +done_backchain:
+>  	state->topmost = false;
+>  	return 0;
 
-BUG(1) here as well.
+This feels very grafted on, is there not some way to make it more
+generic, i.e., to just work with CONFIG_HAVE_UNWIND_USER_FP?
 
->  	state->ip = ra;
->  	state->sp = sp;
-> -	if (frame->fp_off)
-> +	if (frame->fp.loc != UNWIND_USER_LOC_NONE)
->  		state->fp = fp;
-
-Instead of the extra conditional here, can fp be initialized to zero?
-Either at the top of the function or in the RA switch statement?
+Also, if distros aren't even compiling with -mbackchain, I wonder if we
+can just not do this altogether :-)
 
 -- 
 Josh
