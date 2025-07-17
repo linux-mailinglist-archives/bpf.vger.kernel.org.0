@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-63538-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63539-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C51DEB08288
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 03:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C23CCB0828A
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 03:40:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC3021A64B42
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 01:40:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FB2E1A64CFE
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 01:40:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B649F1E5705;
-	Thu, 17 Jul 2025 01:40:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 677E81F5413;
+	Thu, 17 Jul 2025 01:40:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i/0exGG5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OtQ2rWi2"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38A7C1D5CC7;
-	Thu, 17 Jul 2025 01:40:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEB5C1EE02F;
+	Thu, 17 Jul 2025 01:40:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752716402; cv=none; b=OowVnQAlG0YsZOrEjORGkm2I84AmB8wKIP2Y1rInigPN6KK3Ij4Gb7gSiKw/g3p+u94flaD/o57uPfX2UB/QleuwvLB7kEC97+5EVU4UHLpKejXssu1i8bGW9vqxVszUZGbrVYPdIZg7FRfSOMvO91Blgxl3s5L1eOztFZC0GGQ=
+	t=1752716403; cv=none; b=VOu/H2x7jnBQ71DjULMjDa5PGLpK5/kDFxvdSElFgeW45ZSjjFS4VlTBxY60tDWMnMsgX6xKBoROSn6IK7oh+PH6/JtXjM8m5grtLR6V70oIGe6tgaxXfbHKOyw9qkkKxTBL/i1o6wdMN7Hi9Aq1qUPIIlZ2jJy1H2JD/Yefbzc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752716402; c=relaxed/simple;
-	bh=58gi4xzM0JLIVD3K8RC0ZAEtUD3oiBPIAedir7mif1w=;
+	s=arc-20240116; t=1752716403; c=relaxed/simple;
+	bh=eWAwC1GBJWP4MMsdwqJNitn5FU+zU5RAmgOfK+oLt6U=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=tbAtgxMUyVwI+c2G0b2sP32T1PuS2iKfdFcUQ3ie+qEwyCrCGIx5ZXYMOde2M6uhJ8DTnsupFtrqmYr5QOKB9uT4e9vZKWiLGNnx8AaEl+yI5J60JseazOI48k2XKE+hlTz7bxLIHkV/w9ZsTwbNyvnW2WNoAB71z/LlI9rhIxk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i/0exGG5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C06D0C4CEF0;
-	Thu, 17 Jul 2025 01:40:01 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=Gx/sk7NtgjWQTQsp1fn58cIYyNQUe3vD1JtuYt2mj7IqL8oBj600D42g4w4iX1H5y0BxLjd+9vCcJKKOBj4mK954uuPiPWrre2BrAUO7HzGrgmYGBNnr9woJ9gZfkT5+rZWSK1hRUsoFQjb1iLPrkFsNBBjnLFgJlbfXt9HuA6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OtQ2rWi2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A8B7C4CEF0;
+	Thu, 17 Jul 2025 01:40:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752716401;
-	bh=58gi4xzM0JLIVD3K8RC0ZAEtUD3oiBPIAedir7mif1w=;
+	s=k20201202; t=1752716403;
+	bh=eWAwC1GBJWP4MMsdwqJNitn5FU+zU5RAmgOfK+oLt6U=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=i/0exGG5Cc/5ijte9hRmjXmCwHIrRwLG9y4p+9mJTMeP2KhaE8X20r9AokekrEtrN
-	 ztQS6WJWxLmaLc1BzcoRP4cEax6Q9j1rQXLL5hjzdCa7yhi0QdHBlg5scpJpkQfrQr
-	 0XptsYhqGiGnGFfrTF0z6ZUVwTvVKXNTwyuuKgGwZDfB6zACN434zc/GaavckObKC5
-	 WDv4URLoqpaSRwiB3ElJGeAKlC+3Q9HGUySwgyrNsGVRdBGvPLZncJIEZ+SNyCY/wt
-	 TEBM4RrReJ4Kli5Yd7oWGlc4YJjRrpFN6O/WlXb02P7W28FN04gDhErmMhvxwe8hB7
-	 UXyA4cALdYjsg==
+	b=OtQ2rWi2AD19Sxm7KcYKZFZWeKSQ1W5wme+BgWW9eF8Yn4jhJQtmlnQa7H5vH5WV9
+	 R1F9oqLeHiG1uYeGU41To4wozRBRXUs7Dc8+mmyfJH8kSwh+GQYb+8Fv8BGb7aVdBj
+	 uMIx/ywBAl1ENrJTrRALWEWjH6GgB8p/aC9VZzSNN3TVA+jgstYgK6kvlJLAh8hdSr
+	 WKu3ald6c4vwduyJQvc4msVUM1g8OvYGuQ7n3yRQW4+RScotFsdrWcP8NfTjmyB1MN
+	 x9ZTFK9fbTVm4S/EqbajhZd8Wr5YEcmDFoVe/AyXDl972If3hPWjDYrhakkPoy/UrV
+	 xgPgUxC1P+Vtg==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 341E6383BA38;
-	Thu, 17 Jul 2025 01:40:23 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADC62383BA38;
+	Thu, 17 Jul 2025 01:40:24 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,41 +52,41 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: Add struct bpf_token_info
+Subject: Re: [PATCH v2 bpf-next] bpf: Clean up individual BTF_ID code
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <175271642175.1391969.17690324440245877462.git-patchwork-notify@kernel.org>
-Date: Thu, 17 Jul 2025 01:40:21 +0000
-References: <20250716134654.1162635-1-chen.dylane@linux.dev>
-In-Reply-To: <20250716134654.1162635-1-chen.dylane@linux.dev>
-To: Tao Chen <chen.dylane@linux.dev>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, willemb@google.com,
- kerneljasonxing@gmail.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+ <175271642326.1391969.12291957818977082467.git-patchwork-notify@kernel.org>
+Date: Thu, 17 Jul 2025 01:40:23 +0000
+References: <20250710055419.70544-1-yangfeng59949@163.com>
+In-Reply-To: <20250710055419.70544-1-yangfeng59949@163.com>
+To: Feng Yang <yangfeng59949@163.com>
+Cc: martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+ mattbobrowski@google.com, rostedt@goodmis.org, mhiramat@kernel.org,
+ olsajiri@gmail.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org
 
 Hello:
 
-This series was applied to bpf/bpf-next.git (master)
+This patch was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Wed, 16 Jul 2025 21:46:53 +0800 you wrote:
-> The 'commit 35f96de04127 ("bpf: Introduce BPF token object")' added
-> BPF token as a new kind of BPF kernel object. And BPF_OBJ_GET_INFO_BY_FD
-> already used to get BPF object info, so we can also get token info with
-> this cmd.
-> One usage scenario, when program runs failed with token, because of
-> the permission failure, we can report what BPF token is allowing with
-> this API for debugging.
+On Thu, 10 Jul 2025 13:54:19 +0800 you wrote:
+> From: Feng Yang <yangfeng@kylinos.cn>
+> 
+> Use BTF_ID_LIST_SINGLE(a, b, c) instead of
+> BTF_ID_LIST(a)
+> BTF_ID(b, c)
+> 
+> Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next,v3,1/2] bpf: Add struct bpf_token_info
-    https://git.kernel.org/bpf/bpf-next/c/19d18fdfc792
-  - [bpf-next,v3,2/2] bpf/selftests: Add selftests for token info
-    https://git.kernel.org/bpf/bpf-next/c/fd60aa0a45c1
+  - [v2,bpf-next] bpf: Clean up individual BTF_ID code
+    https://git.kernel.org/bpf/bpf-next/c/62ef449b8d8e
 
 You are awesome, thank you!
 -- 
