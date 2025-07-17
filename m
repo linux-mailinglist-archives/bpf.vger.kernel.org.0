@@ -1,153 +1,182 @@
-Return-Path: <bpf+bounces-63520-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63521-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EADEDB08229
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 03:13:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 274C4B08244
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 03:29:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D1DE6167F31
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 01:13:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60B58563D38
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 01:29:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16FDD1B4223;
-	Thu, 17 Jul 2025 01:13:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B5281E5705;
+	Thu, 17 Jul 2025 01:29:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M18k3886"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="evvfT5K9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 302952E371A;
-	Thu, 17 Jul 2025 01:13:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEE9410A1F;
+	Thu, 17 Jul 2025 01:29:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752714813; cv=none; b=gbmCg2J2KyAoB1DsNvi+IhtSDaBOcD5TbYF96vrNKyoa2c1kCgVlgqSTupabgaKZt41yewINwVzFU4SPAYyv0PfvT7T8nlbGD8scBs0krYxlTKyxahk59JvBZ2VsBAgE/JcVRO7mK2hGhtHgwJASVdBRcxE4BnB/8gUHO76MYsU=
+	t=1752715756; cv=none; b=pcDa8v59kpr0MvNOHddALHEulrd/C+D2VZW8pGnNNiFnfQtlIxeyESD97B48GwXLja+JK6hl671vL4ziyvQw5hFzIjQ8UFhFQp7+Lj6ZOcXWFAiVJdlsTDLes3CR6Y0sPX78wRCrZeO/00KWScCGdpwe0N4n7TSyCdTyFz67Qho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752714813; c=relaxed/simple;
-	bh=MXoVxG3n4rT3K90u+1ubqCjerqq0R8LcHr5fEXnaUnQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JuEx7Mxdw/bT2Cidy40dsU3yU2OoUibc5MAmkawrrGCDuYO34Q5ES5OCo+Bj6IcoYXdwfLCJs+UDyyyoojpBLUmTcoMGqxcOZTVFt5IBrv5eVnqj5jWNGC6+dDb8bFnMGNrqxFJXODVN/rh0t/AZpW63xCtZcW0/ttxOakXMDg8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M18k3886; arc=none smtp.client-ip=209.85.166.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-86a052d7897so38856439f.0;
-        Wed, 16 Jul 2025 18:13:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752714811; x=1753319611; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MXoVxG3n4rT3K90u+1ubqCjerqq0R8LcHr5fEXnaUnQ=;
-        b=M18k3886EAwtuE5lYiKUsUkHWMFWVxRVc8Z2CKjEg/UwmdvF1u0MFFYFCx7DOgNSA+
-         EZdqUkys5onVrpC3IDo/T46PZ5GVtHAtG3RurZP9Ljp5ZaNKtGpA8rYeVyd8r2sV/rHx
-         pndC31A9EWVcpZ/QJKy7TN5zCBl/2/YT0nbxOx4W/0nJf5rAMEj1SH65k8cDvgCkf93w
-         PXg5AAOVErp3NwP45MOhR3LkgbfABcChEBfwhXz1h8wgjkM5SBtsrlYDLxUBLM4kgXhT
-         GEt5yP4O5jH8kOxsBDFNcoros84aU7xiITzkzk92YtN6QMUz2uUO9bfVN2yCCUoxZK14
-         GDvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752714811; x=1753319611;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MXoVxG3n4rT3K90u+1ubqCjerqq0R8LcHr5fEXnaUnQ=;
-        b=wL4Qz3rlcQGV54y0ZCX22vWtTEZGHosIASZO58V+UQWjn0tR6eVZaITrg9PdDNuoa8
-         TwX9k8SDjEtPBNfQ3Shuh1xNcn4ZX+vH6YiDxep1vZXW6ki3qMXnrRWsSJSOlPH8SpaG
-         DoH2OaT6MCUS4WW9dF1xJ39zECZdgFKvBeIhdUHON2tFDPThAhvK/X4m/PPcb0H7Zpqi
-         uSsJo66LXb4nJFufEBY/ei8qEH5mwxMEm9eobz47SB33mv1PzIZjRZjLOOf2vGshZGgA
-         7sbWMCs0qdH5SQeeRfXnVx8KChxfMZ1LOLY7g56XksoomQ5azH1gvvS08adI0PeaghRN
-         f7Ig==
-X-Forwarded-Encrypted: i=1; AJvYcCVHbZwxcVM0H5Ddu+IDieeUyKpni2rHtSimWaFT+7Ow/e1MH9sy63jesXUyMlkluS2YEejzBzKf@vger.kernel.org, AJvYcCVMAEojKhNFpvm581FPbfdv1HTRxelD5H4Cmn2918BRVJNk3ioTIhmDmIr8THdsKq88M1M=@vger.kernel.org
-X-Gm-Message-State: AOJu0YySN9MNWJN+eAaXldUOksk3EyPQdmQX4s/46Z6QmvYcwmW5mgeT
-	0JnaRpAA4sP7Q4O8AZOXtayIHb3DT1E1MRpHoy7LuAhMIrnW3MkjnQdbrwwSLxRdImUWEVTY1sv
-	7diXwaVR3AOzWGq/Erxz575AbQlcV7Jk=
-X-Gm-Gg: ASbGnctYgpIOsnbIJ0HFzRYnRMSjJf+PkvG/S2SAaBK2i1/F7wTvpGO/dYg+bjcPe1P
-	oQ+0Ljv9Ym8zEgFQqLij/uSavUsZTvwwSFHgosCHVmQJyGkdlpApJLQ2D4dm/DnKHQNJu0/QWKK
-	q8d0C+w8EYqg7wsj2hIAh84nL5bB1VXznLjrseFhFMlkr/S9l+mlljqA9x6jzU3+dW7b7A27aAR
-	3VbSQ==
-X-Google-Smtp-Source: AGHT+IGk6JnR0W2meKWxHrizaj2wksySomjAfMXMb9FQyg09pft6e8rov4boPIkvjYx2Ye6bq7hRgN/SxZMn2RzBTps=
-X-Received: by 2002:a05:6602:6c0d:b0:86c:e686:ca29 with SMTP id
- ca18e2360f4ac-879c0892211mr688495439f.2.1752714811061; Wed, 16 Jul 2025
- 18:13:31 -0700 (PDT)
+	s=arc-20240116; t=1752715756; c=relaxed/simple;
+	bh=mwgGXlD+YqgvJfDNd+mq4DKUszz6+Y7D+MWVgagdQ6E=;
+	h=Message-ID:Date:From:To:Cc:Subject; b=MTx5SI6Uggqi1Iq66bqbx9LxF5lCFOh4slCz2KHIoJig/PcCYw+jaBWaXmLBkzyh6Wb3rSgPwVb7zDsn7rz9dr29/q/8h1sCIkuOznzE8BurBQ8bJVg4qSTcdHvfSDn8stB8j7615i6ILpFgNBBmdERCo8IXfYcDPMnSOUDDV5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=evvfT5K9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F0AAC4CEE7;
+	Thu, 17 Jul 2025 01:29:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752715755;
+	bh=mwgGXlD+YqgvJfDNd+mq4DKUszz6+Y7D+MWVgagdQ6E=;
+	h=Date:From:To:Cc:Subject:From;
+	b=evvfT5K9udXSEphaHh3rXj4+mONYCJrBnsypjSlEWlaE3Gi0LC2C1CYLndiYPRDwh
+	 vzLlsaheSLrui0G9BFCspXWvYHj2B5lt6uHMOCbrN/krOq6NN6KFy4BL2/tkkGZ9A/
+	 gWXXwEBHaaDXwHhb8Qg1gIkdecTinN0NOR1LRGwzQhbVwabBOSt7jkI/JQiJc9jrdz
+	 /t9l46mpTYP37DgvFB37k1xR5RnVXcFM2aAqxlz75Z0/4j9siPpEo5hyaAXk4ulYZC
+	 NAyZB7p+nh06UYFAn+vV4G7Bfp/1mlcpTOieTEAu4v6AjtTvG04eZDHQm/fABCEHwF
+	 woopkXL1qkKuQ==
+Received: from rostedt by gandalf with local (Exim 4.98.2)
+	(envelope-from <rostedt@kernel.org>)
+	id 1ucDRH-000000068uF-3AMR;
+	Wed, 16 Jul 2025 21:29:35 -0400
+Message-ID: <20250717012848.927473176@kernel.org>
+User-Agent: quilt/0.68
+Date: Wed, 16 Jul 2025 21:28:48 -0400
+From: Steven Rostedt <rostedt@kernel.org>
+To: linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org,
+ x86@kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Josh Poimboeuf <jpoimboe@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Ingo Molnar <mingo@kernel.org>,
+ Jiri Olsa <jolsa@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Andrii Nakryiko <andrii@kernel.org>,
+ Indu Bhagat <indu.bhagat@oracle.com>,
+ "Jose E. Marchesi" <jemarch@gnu.org>,
+ Beau Belgrave <beaub@linux.microsoft.com>,
+ Jens Remus <jremus@linux.ibm.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Jens Axboe <axboe@kernel.dk>,
+ Florian Weimer <fweimer@redhat.com>,
+ Sam James <sam@gentoo.org>
+Subject: [PATCH v9 00/11] unwind_deferred: Implement sframe handling
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250716122725.6088-1-kerneljasonxing@gmail.com>
- <20250716145645.194db702@kernel.org> <CAL+tcoByyPQX+L3bbAg1hC4YLbnuPrLKidgqKqbyoj0Sny7mxQ@mail.gmail.com>
- <20250716164312.40a18d2f@kernel.org> <CAL+tcoA1LMjxKgQb4WZZ8LeipbGU038is21M_y+kc93eoUpBCA@mail.gmail.com>
- <20250716175248.4f626bdb@kernel.org>
-In-Reply-To: <20250716175248.4f626bdb@kernel.org>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Thu, 17 Jul 2025 09:12:54 +0800
-X-Gm-Features: Ac12FXy8BqrE2XsYETu3EEHmmnmj54eqJPs14i393o5p4ojzgbfcO-QqEgErPtU
-Message-ID: <CAL+tcoCMQhaZdvbR1p50tuVk0RUdqAiRgjDrO0b+EO1XvM=2qw@mail.gmail.com>
-Subject: Re: [PATCH net-next v2] xsk: skip validating skb list in xmit path
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: davem@davemloft.net, edumazet@google.com, pabeni@redhat.com, 
-	bjorn@kernel.org, magnus.karlsson@intel.com, maciej.fijalkowski@intel.com, 
-	jonathan.lemon@gmail.com, sdf@fomichev.me, ast@kernel.org, 
-	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com, joe@dama.to, 
-	willemdebruijn.kernel@gmail.com, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 17, 2025 at 8:52=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> On Thu, 17 Jul 2025 08:06:48 +0800 Jason Xing wrote:
-> > To be honest, this patch really only does one thing as the commit
-> > says. It might look very complex, but if readers take a deep look they
-> > will find only one removal of that validation for xsk in the hot path.
-> > Nothing more and nothing less. So IMHO, it doesn't bring more complex
-> > codes here.
-> >
-> > And removal of one validation indeed contributes to the transmission.
-> > I believe there remain a number of applications using copy mode
-> > currently. And maintainers of xsk don't regard copy mode as orphaned,
-> > right?
->
-> First of all, I'm not sure the patch is correct. The XSK skbs can have
-> frags, if device doesn't support or clears _SG we should linearize,
-> right?
+This code is based on top of:
 
-But note that there is one more function __skb_linearize() after
-skb_needs_linearize() in the validate_xmit_skb(). __skb_linearize()
-tests many members of skbs, which are not used to check the skbs from
-xsk. For xsk, it's very simple (please see xsk_build_skb())
+ https://lore.kernel.org/linux-trace-kernel/20250717004910.297898999@kernel.org/
+  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
+   unwind/core
 
->
-> Second, we don't understand where the win is coming from, the numbers
-> you share are a bit vague. What's so expensive about a few skbs
+This is the implementation of parsing the SFrame section in an ELF file.
+It's a continuation of Josh's last work that can be found here:
 
-To be more accurate, it's not "a few" but "so many" because of the
-high pps reaching more than 1,000,000. So if people run the xdpsock to
-test it, it's not hard to see most of time is spent during the skb
-allocation process.
+   https://lore.kernel.org/all/cover.1737511963.git.jpoimboe@kernel.org/
 
-> accesses? Maybe there's an optimization possible to the validation,
-> which would apply more broadly, instead of skipping it for one trivial
-> case.
->
-> Third, I asked you to compare with AF_PACKET, because IIUC it should
-> have similar properties as AF_XDP in copy mode. So why not use that?
+Currently the only way to get a user space stack trace from a stack
+walk (and not just copying large amount of user stack into the kernel
+ring buffer) is to use frame pointers. This has a few issues. The biggest
+one is that compiling frame pointers into every application and library
+has been shown to cause performance overhead.
 
-I haven't run into AF_PACKET so far. At least, I can confirm that xsk
-doesn't need it from my side. The whole logic of validation apparently
-is not designed for xsk case...
+Another issue is that the format of the frames may not always be consistent
+between different compilers and some architectures (s390) has no defined
+format to do a reliable stack walk. The only way to perform user space
+profiling on these architectures is to copy the user stack into the kernel
+buffer.
 
->
-> Lastly, the patch is not all that bad, sure. But the experience of
-> supporting generic XDP is a very mixed. All the paths that pretend
-> to do XDP on skbs have a bunch of quirks and bugs. I'd prefer that
-> we push back more broadly on any sort of pretend XDP.
+SFrames[1] is now supported in gcc binutils and soon will also be supported
+by LLVM. SFrames acts more like ORC, and lives in the ELF executable
+file as its own section. Like ORC it has two tables where the first table
+is sorted by instruction pointers (IP) and using the current IP and finding
+it's entry in the first table, it will take you to the second table which
+will tell you where the return address of the current function is located
+and then you can use that address to look it up in the first table to find
+the return address of that function, and so on. This performs a user
+space stack walk.
 
-Well, sorry, I feel a bit upset when reading this because as I
-insisted before not everyone can use the advanced zerocopy mode.
+Now because the SFrame section lives in the ELF file it needs to be faulted
+into memory when it is used. This means that walking the user space stack
+requires being in a faultable context. As profilers like perf request a stack
+trace in interrupt or NMI context, it cannot do the walking when it is
+requested. Instead it must be deferred until it is safe to fault in user
+space. One place this is known to be safe is when the task is about to return
+back to user space.
 
-Thanks,
-Jason
+This series makes the deferred unwind code implement SFrames.
+
+[1] https://sourceware.org/binutils/wiki/sframe
+
+The code for this series is located here:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
+unwind/sframe
+
+Head SHA1: 2e9c59950d225f260c7407a54a10ea3fb682fde3
+
+Changes since v8: https://lore.kernel.org/linux-trace-kernel/20250708021115.894007410@kernel.org/
+
+- Rebased on the changes by Mathieu in the kernel/unwind/user.c file
+  https://lore.kernel.org/all/20250710164301.3094-2-mathieu.desnoyers@efficios.com/
+
+- Add "safe_read_fre()" and "safe_read_fde()" to call their respective
+  functions with a user_read_access_begin() wrapper around them so that
+  the validator can simply use dbg_sec() directly instead of a _uaccess()
+  hacked version.
+
+- Removed the hacky patch to debug sframes in user_access areas. (Linus Torvalds) 
+
+Josh Poimboeuf (11):
+      unwind_user/sframe: Add support for reading .sframe headers
+      unwind_user/sframe: Store sframe section data in per-mm maple tree
+      x86/uaccess: Add unsafe_copy_from_user() implementation
+      unwind_user/sframe: Add support for reading .sframe contents
+      unwind_user/sframe: Detect .sframe sections in executables
+      unwind_user/sframe: Wire up unwind_user to sframe
+      unwind_user/sframe/x86: Enable sframe unwinding on x86
+      unwind_user/sframe: Remove .sframe section on detected corruption
+      unwind_user/sframe: Show file name in debug output
+      unwind_user/sframe: Add .sframe validation option
+      [DO NOT APPLY] unwind_user/sframe: Add prctl() interface for registering .sframe sections
+
+----
+ MAINTAINERS                       |   1 +
+ arch/Kconfig                      |  23 ++
+ arch/x86/Kconfig                  |   1 +
+ arch/x86/include/asm/mmu.h        |   2 +-
+ arch/x86/include/asm/uaccess.h    |  39 ++-
+ fs/binfmt_elf.c                   |  49 +++-
+ include/linux/mm_types.h          |   3 +
+ include/linux/sframe.h            |  60 ++++
+ include/linux/unwind_user_types.h |   4 +-
+ include/uapi/linux/elf.h          |   1 +
+ include/uapi/linux/prctl.h        |   6 +-
+ kernel/fork.c                     |  10 +
+ kernel/sys.c                      |   9 +
+ kernel/unwind/Makefile            |   3 +-
+ kernel/unwind/sframe.c            | 593 ++++++++++++++++++++++++++++++++++++++
+ kernel/unwind/sframe.h            |  71 +++++
+ kernel/unwind/sframe_debug.h      |  68 +++++
+ kernel/unwind/user.c              |  41 ++-
+ mm/init-mm.c                      |   2 +
+ 19 files changed, 967 insertions(+), 19 deletions(-)
+ create mode 100644 include/linux/sframe.h
+ create mode 100644 kernel/unwind/sframe.c
+ create mode 100644 kernel/unwind/sframe.h
+ create mode 100644 kernel/unwind/sframe_debug.h
 
