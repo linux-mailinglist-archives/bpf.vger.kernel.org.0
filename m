@@ -1,246 +1,173 @@
-Return-Path: <bpf+bounces-63551-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63552-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7914EB0833E
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 05:10:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE60BB08340
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 05:11:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBCE7174323
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 03:10:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2C421AA56C1
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 03:11:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F05951E0DE3;
-	Thu, 17 Jul 2025 03:10:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4762A1E379B;
+	Thu, 17 Jul 2025 03:11:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N2ddTCjQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="isn1pze/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF349171C9
-	for <bpf@vger.kernel.org>; Thu, 17 Jul 2025 03:10:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 604BF63CF;
+	Thu, 17 Jul 2025 03:11:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752721835; cv=none; b=utpEbVJOZHDAKmbXS9sgWBI6HUI/EXNnyqrDvY+07JYjnl/Fx1hDBSE/2HQUVTJ+0mDzJFDeiu6pM2fe9LABnxFn40SHTCZaT2BzQkdXZo6W39jUI7O51gdFiUbPszC6jW6UIbg0Ecmws3fC6fgfYIkgVF3DmX8TJ8ClV+xp38E=
+	t=1752721887; cv=none; b=hVRaxN6qsqCkXqAhT6tbrQv9uKEFFeHTkcJ+nvPXLzaz4P42gFS9CIN7AGBcVMyHeAPyBo9J5jVLjJIEPFMvIdv86vH1LhMmrqdo9mEpiKjVoIeEJMmASlSjkG4MxiPdsjNh4LNMGl3kD6Of2xysQ2aWWzOkkIHfteoDgzcCIBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752721835; c=relaxed/simple;
-	bh=JPIYYUCPuoaBTJMGFo83xeNYRn7dZh/OTbyM1GrDsaw=;
+	s=arc-20240116; t=1752721887; c=relaxed/simple;
+	bh=xfRY10Q3m/4i5x7a2WbzvtkGzjEBTWgP2bb4vKVkmCU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JXyzRn1Ow8sPdNlf7YAHwn58j9d+K4lVPQvdRRj4r57tb6EFFO+9tRSGr8tzDvp0y2zZRyfdls2o7GTETtNcVa4AvvG4khJkZ2OpN6goBf6cn7fPrWWgkiH9NSiF12M0osjVlnWm06FKUoPZcK2fsSQBn5yghZXulyAz2pgjCIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N2ddTCjQ; arc=none smtp.client-ip=209.85.222.173
+	 To:Cc:Content-Type; b=lfniLp1rDxSIs91JOrsas8A/AZclgRWvvugPjgOOCYArgcI0ItAjGtOdXbqfDaJ0nuqttga/arsFPe4FI5fEY8zjKU9zWIrTgssuHOmDeOGnxvWx90vyJC0Mr5TNVyIZu+PYcqYVYYqnHo4J/cMXg+bZ9U5IZFeen7hqrFOMXNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=isn1pze/; arc=none smtp.client-ip=209.85.166.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-7e278d8345aso50708185a.0
-        for <bpf@vger.kernel.org>; Wed, 16 Jul 2025 20:10:33 -0700 (PDT)
+Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-8762a0866a3so9121339f.2;
+        Wed, 16 Jul 2025 20:11:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752721833; x=1753326633; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1752721885; x=1753326685; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GdEjgjFyfSkQ7Qq7sTJYYecJMsmFRlNLmJSZOVtGdIM=;
-        b=N2ddTCjQyfFeFHSINSZuzgawemJEPc4huhsIdOcZei9nvmKqPom2Ancb4QKRW0v8zG
-         xx/M0FO3Cj2xjnVE0zNDCIKfzYCJLDd4wibKsWvrPvB1xzndBa/C/MUqpKW+oZxh4wSY
-         9UkWdsFKaf3AtR1EUkT4Tg5b1KKXtNb35GNOaO648QJh7+amPr5DNP0/fRDVsujRLr/K
-         tYg7JkuTliPM1ds0NoBvstPk/B/EGsRmtPWsT/Exvw3Z7mCxETfPfAlYIGPdvAgLhGKM
-         6bKjOYgTowYLnALpd5F5rGB47YaSMOd6SYjF43biH7tC76s7j8z2REkTf2n7SFhfZcDj
-         9Usw==
+        bh=xfRY10Q3m/4i5x7a2WbzvtkGzjEBTWgP2bb4vKVkmCU=;
+        b=isn1pze/qOThi8q1dCsHRr3UqdL6kxCgle2cSfX6Ilcs1MT6cTKeaBWU1FdwL8I7qo
+         AgsgaTyrCWlB9vihKP4697mqt8DC9Frusj9Tvd1Cr1Px4C+2/+KbB9+fbbRT9l+xuqMb
+         rZltvwByNRdlRXkKWDJpLqmsrJuAc7M9L+sIprMqa8s56t1y31uHERRJQHO4JZdyfoDK
+         vkDXgIEQNFqwscM4iDtvjx9mbvSHTuPYbnatikXHyFYcwns8r9KCzW6SZbwAZuUH/7oj
+         j1GOymCmewxXSM4JlxAQRen4bWg5Il3Y87eapBHIoOyprCrI0TyHjTftXHd1VVStQpeL
+         s3iA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752721833; x=1753326633;
+        d=1e100.net; s=20230601; t=1752721885; x=1753326685;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GdEjgjFyfSkQ7Qq7sTJYYecJMsmFRlNLmJSZOVtGdIM=;
-        b=N075QHfbgO59r2JPQJ0KG76SPVoS8Cq4dI1p85HoIkxCxUNZEyM2kk8GcUntWL4eHN
-         4CLwhp3vg4MIeIqizQk2+jVMufX17/CG5hwFFYkX6GLAAw3v6mmzQQOJ5L7HR56tghfG
-         dG6hE/N4g+1y0wwkAAVm4c+/BjsXErmhCv08g+Iw/3a89EconaIif47aCP3f8O8w8ZqL
-         bhjjQxkeKcabZpcfANoz/PSwObC1WMiM97w1TGAowhWAa14wb6F5zFZf321hxMxdrIdu
-         txzP8cZNXY7PPH6rsKQc9FIlv29j7kzTHMWb0WHgD7Vde8BzYeQrX12qDl3cq+sCrsPx
-         82nA==
-X-Forwarded-Encrypted: i=1; AJvYcCWIKDM0Wl/Gu9BS/lZwtPt44I6ky0jJePCGdbSoxS4+8eaHtpoEkmnG4m6m+ubq74ToeGY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyIyhBJzLwNYZ3AArorKSkf/oTq73dmURHHaCxqz9B1DbUwL7re
-	KOpL+JykghDGb+9gMBeM91IwQbSSNIRWGQFRk7JEvfaq5xBQaJZP4yrm/zGOceIH++0xgowW1eu
-	B/4v8rFytw8aolM5pZX83+Ueo48A+oPU=
-X-Gm-Gg: ASbGncs6PlcTkR87YAh0YDLmT8SXixHMRFKYl9FophRPFLtG8XLyaxnchc+lkWiFsiI
-	9wzyZnDW5+usd6NyfKS94ThWnUKLCxDXUwnRMeXfl6L8lYrY1D5DGrRQ/VJzpZZb8fc0gIJ7Zl0
-	0lXmbIZZ5YXwT5W4919NyZ+nzzRlEc1VjCPRsWTtSCrr19meIstPC2fySXon/NGYlF7LHw3T18A
-	a9K4NFqH7C05dFemIE=
-X-Google-Smtp-Source: AGHT+IGaEET0Q41yt/KUxbXgwYWDbCP2Fwqe/8vdtggSADiYMaZbm3jv4KJAEUX2LELc4GVmkLBYVb1fLlHzCK+aTKA=
-X-Received: by 2002:a05:620a:450c:b0:7e2:769a:c85d with SMTP id
- af79cd13be357-7e343350fb3mr712947785a.3.1752721832629; Wed, 16 Jul 2025
- 20:10:32 -0700 (PDT)
+        bh=xfRY10Q3m/4i5x7a2WbzvtkGzjEBTWgP2bb4vKVkmCU=;
+        b=LL8OzODdOerT9Sk/axPi2lH7j7PxBHfH47Xoa2jvhBAtLohar8zVoVVKoBu1Z/N97i
+         2tOwDwOkqaYaNaHp27bNx+sr7VtAjL3ZdcauliyIVMEfcCoqZrfIdLmzM8xUlQ6tj3wP
+         iSg8O+h3gVsxOUj9L21/cYsOr0D+bfSzuU/2TV1Dk+S/fKlxX8EVeKA3BHObwZTU+vQS
+         Mv762LgFraEhvBYoyEGjMPv3yORSbBAbpct9fFZW5oQb7+xQ4HNUus42o/7knxt0+Q3F
+         879jenxXvMSEKQLXC+TEcOtfSNQ9zfRvAKjshO5kmbf9WEe8CaR/fcWWgXJefhqKK7KA
+         XhtA==
+X-Forwarded-Encrypted: i=1; AJvYcCVpjwGEY8xjK9NuSQiXd62eEYuGJfYA6EWHKeOsDxelt9CjM2bjpiI/3kn3GKDMjLAEp20=@vger.kernel.org, AJvYcCX7mRumqyYLl4MfMhLi2d4hjEnLDs+bkeafLguli4cPkrsHO8On+IOZbzglbguSN+GOTrfmCVMF@vger.kernel.org
+X-Gm-Message-State: AOJu0YyiYkSXUV1ROwP56N8lS8tlYrBS30Exaz/pX7KrlWBlGbDFMdGD
+	fy08vSnx9Qt1GiEnMFRWZSOxM7EtNCHDe7SE5eSC8soqE93yXVu+oVm0G3D9X+T5tlhsIUQzgAQ
+	qVzPNLlBa2Vi8pxleSxNSgp/DHbO9RdE=
+X-Gm-Gg: ASbGncuCJ/ioptoLy0NtJgUv9Vx/Bss2IXLS04zbkisBUvZtFqKBnAAKJyX+2xQOaH3
+	ZdNdQAuxPom/62WTa7a4wcou7KCtNysZWQHthTrrAmquyQlavIa/i0zv9AmvqDj1IAoI4KSfxyu
+	wd0laoqc+VqJRLPXNrLtlkdeQHEVdGctUAMJHU0GtFiIxxK5ZLmf5OFMKc4V77o5IAtCTruHtGC
+	JLaEEY=
+X-Google-Smtp-Source: AGHT+IHS9dqyksCoN5oNW3oIxyZEnTBYLjVB/y4gyLu3p4oY0myhdWTFJ7lYUqgjlAE/hq8fOgB+gn2FMDa5EEGjEEU=
+X-Received: by 2002:a05:6602:1348:b0:879:66fe:8d1e with SMTP id
+ ca18e2360f4ac-87c0138865bmr140299839f.8.1752721885305; Wed, 16 Jul 2025
+ 20:11:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250608073516.22415-1-laoar.shao@gmail.com> <b2fc85fb-1c7b-40ab-922b-9351114aa994@redhat.com>
-In-Reply-To: <b2fc85fb-1c7b-40ab-922b-9351114aa994@redhat.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Thu, 17 Jul 2025 11:09:56 +0800
-X-Gm-Features: Ac12FXy-t5oZin4xRVLt33sd1d3DxFzwzaSxQSIQzkxN07Im_3FtSYyRMyaRWxA
-Message-ID: <CALOAHbD2-f5CRXJy6wpXuCC5P9gqqsbVbjBzgAF4e+PqWv0xNg@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 0/5] mm, bpf: BPF based THP adjustment
-To: David Hildenbrand <david@redhat.com>, Matthew Wilcox <willy@infradead.org>
-Cc: akpm@linux-foundation.org, ziy@nvidia.com, baolin.wang@linux.alibaba.com, 
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, npache@redhat.com, 
-	ryan.roberts@arm.com, dev.jain@arm.com, hannes@cmpxchg.org, 
-	usamaarif642@gmail.com, gutierrez.asier@huawei-partners.com, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org, 
-	linux-mm@kvack.org
+References: <20250716122725.6088-1-kerneljasonxing@gmail.com>
+ <20250716145645.194db702@kernel.org> <CAL+tcoByyPQX+L3bbAg1hC4YLbnuPrLKidgqKqbyoj0Sny7mxQ@mail.gmail.com>
+ <20250716164312.40a18d2f@kernel.org> <CAL+tcoA1LMjxKgQb4WZZ8LeipbGU038is21M_y+kc93eoUpBCA@mail.gmail.com>
+ <20250716175248.4f626bdb@kernel.org> <CAL+tcoCMQhaZdvbR1p50tuVk0RUdqAiRgjDrO0b+EO1XvM=2qw@mail.gmail.com>
+ <6878655ca06c7_9aa0c294c5@willemb.c.googlers.com.notmuch>
+In-Reply-To: <6878655ca06c7_9aa0c294c5@willemb.c.googlers.com.notmuch>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Thu, 17 Jul 2025 11:10:48 +0800
+X-Gm-Features: Ac12FXybXgTUEEKerdQr9fM84bKdc9vOeWAxIPiLBxbzMCwCqW2P0uprSu9HBI0
+Message-ID: <CAL+tcoAEtJ43UKR6rDsLV9s9U31KmT_sE2+xpYnvFRQjsSAu5w@mail.gmail.com>
+Subject: Re: [PATCH net-next v2] xsk: skip validating skb list in xmit path
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net, edumazet@google.com, 
+	pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com, 
+	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com, sdf@fomichev.me, 
+	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
+	john.fastabend@gmail.com, joe@dama.to, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 16, 2025 at 6:42=E2=80=AFAM David Hildenbrand <david@redhat.com=
+On Thu, Jul 17, 2025 at 10:52=E2=80=AFAM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
+>
+> Jason Xing wrote:
+> > On Thu, Jul 17, 2025 at 8:52=E2=80=AFAM Jakub Kicinski <kuba@kernel.org=
 > wrote:
+> > >
+> > > On Thu, 17 Jul 2025 08:06:48 +0800 Jason Xing wrote:
+> > > > To be honest, this patch really only does one thing as the commit
+> > > > says. It might look very complex, but if readers take a deep look t=
+hey
+> > > > will find only one removal of that validation for xsk in the hot pa=
+th.
+> > > > Nothing more and nothing less. So IMHO, it doesn't bring more compl=
+ex
+> > > > codes here.
+> > > >
+> > > > And removal of one validation indeed contributes to the transmissio=
+n.
+> > > > I believe there remain a number of applications using copy mode
+> > > > currently. And maintainers of xsk don't regard copy mode as orphane=
+d,
+> > > > right?
+> > >
+> > > First of all, I'm not sure the patch is correct. The XSK skbs can hav=
+e
+> > > frags, if device doesn't support or clears _SG we should linearize,
+> > > right?
+> >
+> > But note that there is one more function __skb_linearize() after
+> > skb_needs_linearize() in the validate_xmit_skb(). __skb_linearize()
+> > tests many members of skbs, which are not used to check the skbs from
+> > xsk. For xsk, it's very simple (please see xsk_build_skb())
 >
-> On 08.06.25 09:35, Yafang Shao wrote:
+> For single frame xsk skb_needs_linearize will be false and thus
+> __skb_linearize is not called?
 >
-> Sorry for not replying earlier, I was caught up with all other stuff.
+> More generally, I would also think that the cost of the
+> validate_xmit_skb checks are quite cheap in the xsk case where they
+> are all false. On the assumption that the touched cachelines are
+> likely warm.
 >
-> I still consider this a very interesting approach, although I think we
-> should think more about what a reasonable policy would look like
-> medoium-term (in particular, multiple THP sizes, not always falling back
-> to small pages if it means splitting excessively in the buddy etc.)
-
-I find it difficult to understand why we introduced the mTHP sysfs
-knobs instead of implementing automatic THP size switching within the
-kernel. I'm skeptical about its practical utility in real-world
-workloads.
-
-In contrast, XFS large folio (AKA. File THP) can automatically select
-orders between 0 and 9. Based on our verification, this feature has
-proven genuinely useful for certain specific workloads=E2=80=94though it's =
-not
-yet perfect.
-
+> > >
+> > > Second, we don't understand where the win is coming from, the numbers
+> > > you share are a bit vague. What's so expensive about a few skbs
+> >
+> > To be more accurate, it's not "a few" but "so many" because of the
+> > high pps reaching more than 1,000,000. So if people run the xdpsock to
+> > test it, it's not hard to see most of time is spent during the skb
+> > allocation process.
 >
-> > Background
-> > ----------
-> >
-> > We have consistently configured THP to "never" on our production server=
-s
-> > due to past incidents caused by its behavior:
-> >
-> > - Increased memory consumption
-> >    THP significantly raises overall memory usage.
-> >
-> > - Latency spikes
-> >    Random latency spikes occur due to more frequent memory compaction
-> >    activity triggered by THP.
-> >
-> > - Lack of Fine-Grained Control
-> >    THP tuning knobs are globally configured, making them unsuitable for
-> >    containerized environments. When different workloads run on the same
-> >    host, enabling THP globally (without per-workload control) can cause
-> >    unpredictable behavior.
-> >
-> > Due to these issues, system administrators remain hesitant to switch to
-> > "madvise" or "always" modes=E2=80=94unless finer-grained control over T=
-HP
-> > behavior is implemented.
-> >
-> > New Motivation
-> > --------------
-> >
-> > We have now identified that certain AI workloads achieve substantial
-> > performance gains with THP enabled. However, we=E2=80=99ve also verifie=
-d that some
-> > workloads see little to no benefit=E2=80=94or are even negatively impac=
-ted=E2=80=94by THP.
-> >
-> > In our Kubernetes environment, we deploy mixed workloads on a single se=
-rver
-> > to maximize resource utilization. Our goal is to selectively enable THP=
- for
-> > services that benefit from it while keeping it disabled for others. Thi=
-s
-> > approach allows us to incrementally enable THP for additional services =
-and
-> > assess how to make it more viable in production.
-> >
-> > Proposed Solution
-> > -----------------
-> >
-> > To enable fine-grained control over THP behavior, we propose dynamicall=
-y
-> > adjusting THP policies using BPF. This approach allows per-workload THP
-> > tuning, providing greater flexibility and precision.
-> >
-> > The BPF-based THP adjustment mechanism introduces two new APIs for gran=
-ular
-> > policy control:
-> >
-> > - THP allocator
-> >
-> >    int (*allocator)(unsigned long vm_flags, unsigned long tva_flags);
-> >
-> >    The BPF program returns either THP_ALLOC_CURRENT or THP_ALLOC_KHUGEP=
-AGED,
-> >    indicating whether THP allocation should be performed synchronously
-> >    (current task) or asynchronously (khugepaged).
-> >
-> >    The decision is based on the current task context, VMA flags, and TV=
-A
-> >    flags.
->
-> I think we should go one step further and actually get advises about the
-> orders (THP sizes) to use. It might be helpful if the program would have
-> access to system stats, to make an educated decision.
->
-> Given page fault information and system information, the program could
-> then decide which orders to try to allocate.
+> Right, the alloc or memcpy more than the validate?
 
-Yes, that aligns with my thoughts as well. For instance, we could
-automate the decision-making process based on factors like PSI, memory
-fragmentation, and other metrics. However, this logic could be
-implemented within BPF programs=E2=80=94all we=E2=80=99d need is to extend =
-the feature
-by introducing a few kfuncs (also known as BPF helpers).
+Thanks for chiming in.
 
->
-> That means, one would query during page faults and during khugepaged,
-> which order one should try -- compared to our current approach of "start
-> with the largest order that is enabled and fits".
->
-> >
-> > - THP reclaimer
-> >
-> >    int (*reclaimer)(bool vma_madvised);
-> >
-> >    The BPF program returns either RECLAIMER_CURRENT or RECLAIMER_KSWAPD=
-,
-> >    determining whether memory reclamation is handled by the current tas=
-k or
-> >    kswapd.
->
-> Not sure about that, will have to look into the details.
+Sure thing. Validate only takes 4% total time, which could be easily
+observed by using perf.
 
-Some workloads allocate all their memory during initialization and do
-not require THP at runtime. For such cases, aggressively attempting
-THP allocation is beneficial. However, other workloads may dynamically
-allocate THP during execution=E2=80=94if these are latency-sensitive, we mu=
-st
-avoid introducing long allocation delays.
+The story behind the patch is that I was scanning the code and found
+the validation is not necessary based on the theory instead of
+experiment, _then_ I tried xdpsock to see if any performance impact
+and used perf to capture the hot spot.
 
-Given these differing requirements, the global
-/sys/kernel/mm/transparent_hugepage/defrag setting is insufficient.
-Instead, we should implement per-workload defrag policies to better
-optimize performance based on individual application behavior.
+And I don't think I can find any other useful improvement whether in
+copy mode or zc mode after finishing investigation so far.
 
->
-> But what could be interesting is deciding how to deal with underutilized
-> THPs: for now we will try replacing zero-filled pages by the shared
-> zeropage during a split. *maybe* some workloads could benefit from ...
-> not doing that, and instead optimize the split.
+Last time, I mentioned that I tried two out-of-thin-air approaches[1].
+But everything didn't go as well as expected...
 
-I believe a per-workload THP shrinker (e.g.,
-/sys/kernel/mm/transparent_hugepage/shrink_underused) would also be
-valuable.
-Thank you for the suggestion.
+[1]: https://lore.kernel.org/all/CAL+tcoAn8ADUGARSzZB=3D5dGoa+Kh7HnNBLxyqTa=
+3W6tOhUK-sg@mail.gmail.com/
 
---=20
-Regards
-Yafang
+Thanks,
+Jason
 
