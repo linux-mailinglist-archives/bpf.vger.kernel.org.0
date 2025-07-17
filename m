@@ -1,130 +1,96 @@
-Return-Path: <bpf+bounces-63594-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63595-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 605E0B08C50
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 14:00:20 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86EBBB08C71
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 14:06:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8ADD51C24BBF
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 12:00:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F081F7BCAB4
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 12:04:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9392429B8E8;
-	Thu, 17 Jul 2025 11:59:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C2c2d1UT"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B176529DB8F;
+	Thu, 17 Jul 2025 12:05:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay.hostedemail.com (smtprelay0010.hostedemail.com [216.40.44.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1440244695;
-	Thu, 17 Jul 2025 11:59:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 302922877C8;
+	Thu, 17 Jul 2025 12:05:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752753591; cv=none; b=X/M1XbFyqEdTJ+oDr9XrLvn0Ptv4NTixIeo1oL4wQH2FL0xCAVm2fErINONnA8sn42bjDEBpd4obp5mF+AQwRhllUAqMkiZ7Z8O6yG1c7fjDOsonZnRScI4p48z26wI3h+T9WQkWEkUq7MphxIK6QjFH90GfJDjJuHKbujqWEiM=
+	t=1752753951; cv=none; b=sf6G/rk3LLX//u6XocxOzJkFLPi6noBs8kfv7y0kl9xgnpUX/R3WT9gOy/NqIR6wyy2PPMNocMdiEpeCMpL+sz9Ll1C4Yr0iHiGhYhToNasml+DXXtq96nqdEG48kBM+dJXgR1OyzxQWvHtps0Ik5k8EsNEV6UyNMtFLBsT/Qb8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752753591; c=relaxed/simple;
-	bh=nkcmylT9yipRsOBI6uhXOZOwKH5/VJoxCifVdfyQYUQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qarOlq+ZvZGuXOWyITbqLAtlgEfLiFb+kV+F6v/z9QShyRV+DToHSyKT81ibyb/ZJ8aWAyFhUHmBWRA91tMda0iu52HiIUzdnyi0PxV+3TwLE0xZ/8hxEB5dXhH/6/uUZOHYdyLhNg+XKWNatjpN8cJZyjRSyRvn/RHiOWvge6Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C2c2d1UT; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2350fc2591dso8957485ad.1;
-        Thu, 17 Jul 2025 04:59:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752753589; x=1753358389; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PbLRuGBCBDgfVU6yEnMIFZuymSG0mxgBMi0dHo+HMI4=;
-        b=C2c2d1UTtTht7AQKKfVt2LRi3iJuDY9IZY86Kvu0txlL57PgndO7X7AoaQT/nh/lHg
-         fiYtxytJsnK4yEheZAWdU+EE6OZlxztW0yuy0hVsgYPQJ5I7+aQSuYMSiZkhn0ErlmI4
-         /O7lFX07mZo58Mnx3G3zuwsXlgENyI/G6uN5guZEBktY9ZR8n8isxqFfpRJ35afFgUfp
-         Qw6sZnBRNdKmpQ37u9pKCtW9ivfwRGs2gCiQt95in7clSXpJv1J2ofQpm7yyRf/SOhl6
-         6HTqjC5ov7p3LEEUo4fQ3hxsW+3Qv0wnIX6vGBhoDbjWaWXkCCLlMRDi+1rqS0INLBbo
-         7s4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752753589; x=1753358389;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PbLRuGBCBDgfVU6yEnMIFZuymSG0mxgBMi0dHo+HMI4=;
-        b=ni4+kQuzU4Yf9ZEx4PfW+9PeZsdHsOUv6LP4eIhnGJctsLsFaLd4BGeVb1TcKbQ5DL
-         UqK9RqYEzlKuVDzoJ0DXudJFbkW9N2BtLd2ajVTSHHcw26sGl7tHl5yfiHPgQrsYW7h5
-         FQjloKqWm8UBdPsdTMGKV9ssSQWaGwuCXIYtbtazrnVUO1b9Kv4kKV1hOsZW/qZLVYUK
-         YEdTO5AFQU/aOyhVRNEKCyMn0DHOTOwsvMUhUqQsZmLairoHtQkKtVkKvvG3WngTaTYV
-         /+BFG/EdfBPLa9dOLToyW7z1MstH7lO8QpwU4hAMtNkWnX9qsjNQ5jqq4wpuA8GqRlH/
-         nK9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVqA7pBTb6gO1we8q3g1FIRVxckvTmxffO0xt8mzOSTaB+YsZ68OlWa/4jJfZz3WOVG0W0=@vger.kernel.org, AJvYcCXIMz97rJTpodoup3UaPO7GO0FGZHUmjzev6zN94U63EfPv+KOb0lAi9OXYmhBE7RoRtyMyyylkrvu4tuzG@vger.kernel.org
-X-Gm-Message-State: AOJu0YwSIQ3zz+ivroS9M66AR6jF31RqesdZmGkaB4ZsPal/inDE2VOj
-	OcH1o2sykdlMII36TzV9TLPsPSRnb7Q5/PO6gj+pFZDauzbafQiVAneF
-X-Gm-Gg: ASbGnctYC460TOkWwPkp78veru63ku9hw6u8FxZ744x5F91EWUWewxVuBO3Drd1FP+A
-	3saDZIV3VBtFfRzHYdPV0mcwq9/IbYSHwkEaq+i6LBx+iUovilk22AG/Ol1umzcmbMcWAaomhxl
-	Z3h25p5YRF5z7qynrPpV5BgjytaUpkiM3NLIif7uQA5LZVAWLBwLZj/ap9/ELyUGtfy3QM2eJ7o
-	ilqwOIMZONRMQbr4ebZlJ8Crgrytgo+KtfyWpHTS1YzEqSJRvfDG3bml36Mad7sgcIYNfDqE/+H
-	D0u9+xODWaeMr7JBHngbxJSyTUjK5B+L18wjREEJoEx3rq4IeomFdgUZ+5BDQFe2SckZp/9beP5
-	6s0JbtcsrKGnoDIzUZYmxWsaOHf/d+w==
-X-Google-Smtp-Source: AGHT+IE7gXMblI4F3h/n2WJ5+86/B68s1uRAd1eAVRlCcY9lkPK3X73PWe7RYmr9PH2N+slxR08t+Q==
-X-Received: by 2002:a17:902:bd4a:b0:237:e3bc:7691 with SMTP id d9443c01a7336-23e2f704bbamr31439535ad.13.1752753588815;
-        Thu, 17 Jul 2025 04:59:48 -0700 (PDT)
-Received: from archlinux ([38.188.108.234])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23de4322890sm146172075ad.136.2025.07.17.04.59.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jul 2025 04:59:48 -0700 (PDT)
-From: Suchit Karunakaran <suchitkarunakaran@gmail.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	bpf@vger.kernel.org
-Cc: skhan@linuxfoundation.org,
-	linux-kernel-mentees@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Suchit Karunakaran <suchitkarunakaran@gmail.com>
-Subject: [PATCH] libbpf: Replace strcpy() with memcpy() in bpf_object__new()
-Date: Thu, 17 Jul 2025 17:29:36 +0530
-Message-ID: <20250717115936.7025-1-suchitkarunakaran@gmail.com>
-X-Mailer: git-send-email 2.50.1
+	s=arc-20240116; t=1752753951; c=relaxed/simple;
+	bh=bdMErvXqnvFLupofuAuxGT85J4l/p6dZ+MKnVf9wb3Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=no362YlqZwrEkXnop7tDcOFgdIA2ba7w0LTVKubnK0UnlUI66QPCBy8lKZOy9cCaUKeZruhPZ+YggUDI/bRhSCcJCrjBjeXALRUdstooWSLGG479nIg4lGm5Hspkp6poI1Qe5Z97E6yyAHmSw+HKfrRpJHY6ayhr0Q4tD1ID8W8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf10.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay09.hostedemail.com (Postfix) with ESMTP id 5A0CB80734;
+	Thu, 17 Jul 2025 12:05:40 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf10.hostedemail.com (Postfix) with ESMTPA id 21DAA32;
+	Thu, 17 Jul 2025 12:05:35 +0000 (UTC)
+Date: Thu, 17 Jul 2025 08:05:55 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: Jens Remus <jremus@linux.ibm.com>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org,
+ Steven Rostedt <rostedt@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+ Vasily Gorbik <gor@linux.ibm.com>, Ilya Leoshkevich <iii@linux.ibm.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Peter Zijlstra <peterz@infradead.org>,
+ Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Namhyung Kim
+ <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Andrii
+ Nakryiko <andrii@kernel.org>, Indu Bhagat <indu.bhagat@oracle.com>, "Jose
+ E. Marchesi" <jemarch@gnu.org>, Beau Belgrave <beaub@linux.microsoft.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton
+ <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>, Florian Weimer
+ <fweimer@redhat.com>, Sam James <sam@gentoo.org>
+Subject: Re: [RFC PATCH v1 08/16] unwind_user: Enable archs that save RA/FP
+ in other registers
+Message-ID: <20250717080555.4647863b@gandalf.local.home>
+In-Reply-To: <nunn2n7geqbz7pra6x5wlpqxlqfkrolae22lqerk4klk4wfofy@wx5hquzmi527>
+References: <20250710163522.3195293-1-jremus@linux.ibm.com>
+	<20250710163522.3195293-9-jremus@linux.ibm.com>
+	<oasyyga72yuiad7y2nzh7wcd7t7wmxnsbo2kuvsn5xsnuypewd@ukxxgdjbvegz>
+	<20250716235751.119a1273@gandalf.local.home>
+	<nunn2n7geqbz7pra6x5wlpqxlqfkrolae22lqerk4klk4wfofy@wx5hquzmi527>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: 21DAA32
+X-Stat-Signature: amruy4oo5ftnnbo7n7bzn31wa3busn1a
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX19z/QRmnIKVg6oAv6zk/ZSYPTiGQlvBuV8=
+X-HE-Tag: 1752753935-794805
+X-HE-Meta: U2FsdGVkX1/YlLKcXen6blpQMuhPTpLQVCTQsG8SxwELcGI0MuFabtDDbi4XbJDquWZ8q6HfzpE+extYo8V2QA6l2tX9m5X19ISAUPDN+722I88EIrQ51Mezj9Iu3Fk+jFnQpLO79J9JYK6U2sbaeltOOCgHPKToFJvw/Twl6InX2jLm2O/rnP8EfJuuYBJFb0jGag6nz9N6zvAb9aO5sno8jr3WHrd5N2CWzt22gRAC5+QJc3OfV1cSxI7x+APFnMcGGBWnktvLsKaLXVJBpDBf6fC56vauTYvVhVDdzIekrcIPjhIOqk5lk9Yy6D6D6sJX+u1i8tm/Wil8Qb2xJAnLpQdL57Gq
 
-Replace the unsafe strcpy() call with memcpy() when copying the path
-into the bpf_object structure. Since the memory is pre-allocated to
-exactly strlen(path) + 1 bytes and the length is already known, memcpy()
-is safer than strcpy().
+On Thu, 17 Jul 2025 00:24:47 -0700
+Josh Poimboeuf <jpoimboe@kernel.org> wrote:
 
-Signed-off-by: Suchit Karunakaran <suchitkarunakaran@gmail.com>
----
- tools/lib/bpf/libbpf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > The only time I ever use BUG() is if it's too dangerous to continue (like a
+> > function graph trampoline that gets corrupted and has no place to return
+> > to). In general, usage of BUG() should be avoided.  
+> 
+> This is an unreachable code path, but __builtin_unreachable() is crap
+> due to undefined behavior.  IMO, BUG() for unreachable paths is cleaner
+> than WARN_ON_ONCE(), but it doesn't matter much either way I suppose.
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 52e353368f58..279f226dd965 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -1495,7 +1495,7 @@ static struct bpf_object *bpf_object__new(const char *path,
- 		return ERR_PTR(-ENOMEM);
- 	}
- 
--	strcpy(obj->path, path);
-+	memcpy(obj->path, path, strlen(path) + 1);
- 	if (obj_name) {
- 		libbpf_strlcpy(obj->name, obj_name, sizeof(obj->name));
- 	} else {
--- 
-2.50.1
+Linus has stated that BUG() should be avoided too. If the code changes in
+the future and this suddenly becomes a reachable path, would you rather
+have a WARN or a BUG? If you don't have your system set up properly,
+the BUG may not even show you why your system crashed.
 
+-- Steve
 
