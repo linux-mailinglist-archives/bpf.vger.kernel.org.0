@@ -1,235 +1,308 @@
-Return-Path: <bpf+bounces-63561-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63562-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FF29B08420
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 06:43:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16EB3B084F4
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 08:32:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 825F316B55A
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 04:43:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6E927ABE69
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 06:31:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 354C81FBEB0;
-	Thu, 17 Jul 2025 04:43:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iZ8N7/0Y"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E275216605;
+	Thu, 17 Jul 2025 06:32:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A789E17A309;
-	Thu, 17 Jul 2025 04:43:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 473881A841F;
+	Thu, 17 Jul 2025 06:32:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752727428; cv=none; b=gRJVnVrqBkTMFn00KTxJnB466DLsM+Z0yAUonZR9iMn1usXpGetVn2EnuBLdlduKNrUizoJVEspmCtvfJ26q/z2RsxDmdYuQJtvJtj8UawBQn7lKqNVBmpD/hb033BVkm/g6L4YpLm9NWpIra1IhN3GD9SWaMGREwcupkDV7XRI=
+	t=1752733958; cv=none; b=L9mAYTWt3+KDxucCIpXNTWzRjUh2WL+4E1XWzOqtA2pafmNcW9QBzKSqLjXmu9igheRjIH4XbdJmH0bmIlSrtLrMBcfZfMYDkmQ1kdKQOeEkrG5cmVZyNSltS00RafOATEbUSt+2BgvJ/j9Gp8NginLJ5MUvUZq00MCWXawpQtA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752727428; c=relaxed/simple;
-	bh=6lVvVHz/c5X9krXweCRNUBaPhyNHQY6SALOUx6VGQ9A=;
+	s=arc-20240116; t=1752733958; c=relaxed/simple;
+	bh=4TMBl1ezB8kszm0sZIN26Bt/jSN0MsvU0gKuNks4fqs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B26lza6V+BuhGVKi8brBWq+M9GoN0NWA9iFj0JiiC2//jEXS5cVMVL25G5Wxwkzb22I39+FrdFXyILMUUosfJyC4PLek7SHUFTS1P5ibPbHaKCtlDGIqcaveXzkocurvsbDr2kMQiC4ag/PkN7Zw0n58tE/UPAB3+w/jNMeh7qI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iZ8N7/0Y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 098CAC4CEE3;
-	Thu, 17 Jul 2025 04:43:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752727428;
-	bh=6lVvVHz/c5X9krXweCRNUBaPhyNHQY6SALOUx6VGQ9A=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=iZ8N7/0YgvIEj/vvRSbQQETKGqVXhSZpCk/nzcT97njNqO2ZqHujfIUkk1QSlbj5Z
-	 kEp71si3ohw3ylbNgl5JxzlTnlHnCbJt8rGzXiHUsHEUrexfut5Y8HK6f81FU9vuvk
-	 qwvf5Cy5Q2W9IdMvlLnVotEHD1HfzWB+TZUXEpiEwN/jK3QfKGq35jrnG6bf3CStfI
-	 upm8KbS1ZTTjXCWnvAXymIdZX61AnzS63vmEEeItBqCZb0PljRaqSaeLPYqzDbpie3
-	 kFyAaJMJGbJPao+CYMQ8HxDdV8NEosGkqIHgZIQUgcyEOVGR4N71whAW6M0D21dXXK
-	 0quFZO5u91niA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id A8B84CE09C2; Wed, 16 Jul 2025 21:43:47 -0700 (PDT)
-Date: Wed, 16 Jul 2025 21:43:47 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Steven Rostedt <rostedt@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, x86@kernel.org,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Indu Bhagat <indu.bhagat@oracle.com>,
-	"Jose E. Marchesi" <jemarch@gnu.org>,
-	Beau Belgrave <beaub@linux.microsoft.com>,
-	Jens Remus <jremus@linux.ibm.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>,
-	Sam James <sam@gentoo.org>
-Subject: Re: [PATCH v14 09/12] unwind deferred: Use SRCU
- unwind_deferred_task_work()
-Message-ID: <47c3b0df-9f11-4e14-97e2-0f3ba3b09855@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20250717004910.297898999@kernel.org>
- <20250717004957.918908732@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=AzRIzzcbpw7vzs1W90DAR5jnKprmzn+G44rxQwD7euFSbiinP+zoYCg6PUYUkLRvyW0KOv2DwRbl4pSA7A6FwlPNVX9rsY9Qkja6AlDmvL0IOhojmJDxMa95vKg8ykJamGJ58WxiMH5kxA2kXoncOkb7JHwCLnvQWOtms3OzUMg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-681ff7000002311f-f3-687898feb6e6
+Date: Thu, 17 Jul 2025 15:32:25 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Mina Almasry <almasrymina@google.com>
+Cc: "Lobakin, Aleksander" <aleksander.lobakin@intel.com>,
+	willy@infradead.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	kernel_team@skhynix.com, ilias.apalodimas@linaro.org,
+	harry.yoo@oracle.com, akpm@linux-foundation.org,
+	andrew+netdev@lunn.ch, asml.silence@gmail.com, toke@redhat.com,
+	david@redhat.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
+	rppt@kernel.org, surenb@google.com, mhocko@suse.com,
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+	vishal.moola@gmail.com, hannes@cmpxchg.org, ziy@nvidia.com,
+	jackmanb@google.com, wei.fang@nxp.com, shenwei.wang@nxp.com,
+	xiaoning.wang@nxp.com, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, anthony.l.nguyen@intel.com,
+	przemyslaw.kitszel@intel.com, sgoutham@marvell.com,
+	gakula@marvell.com, sbhatta@marvell.com, hkelam@marvell.com,
+	bbhushan2@marvell.com, tariqt@nvidia.com, ast@kernel.org,
+	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+	sdf@fomichev.me, saeedm@nvidia.com, leon@kernel.org,
+	mbloch@nvidia.com, danishanwar@ti.com, rogerq@kernel.org,
+	nbd@nbd.name, lorenzo@kernel.org, ryder.lee@mediatek.com,
+	shayne.chen@mediatek.com, sean.wang@mediatek.com,
+	matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+	horms@kernel.org, m-malladi@ti.com, krzysztof.kozlowski@linaro.org,
+	matthias.schiffer@ew.tq-group.com, robh@kernel.org,
+	imx@lists.linux.dev, intel-wired-lan@lists.osuosl.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-wireless@vger.kernel.org, linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next v10 02/12] netmem: use netmem_desc instead of
+ page to access ->pp in __netmem_get_pp()
+Message-ID: <20250717063225.GA28772@system.software.com>
+References: <20250714120047.35901-1-byungchul@sk.com>
+ <20250714120047.35901-3-byungchul@sk.com>
+ <CAHS8izO393X_BDJxnX2d-auhTwrUZK5wYdoAh_tJc0GBf0AqcQ@mail.gmail.com>
+ <CAHS8izNh7aCJOb1WKTx7CXNDPv_UBqFyq2XEHHhqHH=5JPmJCQ@mail.gmail.com>
+ <20250715013626.GA49874@system.software.com>
+ <CAHS8izNgfrN-MimH1uv349AqNudvQJoeOsyHpoBT_QokF3Zv=w@mail.gmail.com>
+ <20250716045124.GB12760@system.software.com>
+ <CAHS8izMK2JA4rGNMRMqQbZtJVEP8b_QPLXzoKNeVgQFzAmdv3g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250717004957.918908732@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHS8izMK2JA4rGNMRMqQbZtJVEP8b_QPLXzoKNeVgQFzAmdv3g@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0yTdxTG83/vNNS8VLf9p1tcuonRRNyULSfZJUa/vF9cNC5ZolFo5J1t
+	BkhaqUCyjWmXzWZUho7QUhSlaLmMYhGoWjptkbK5bLRSrHIrOI2biMxLR7mUvS0x49uT5zl5
+	fuckhyMVLmYlp8k/JGrzVblKRkbJHqWe3RCvKlK/fbXxfbA6mhkIPD1DQ9N0EZyPuGgINmC4
+	0jdNgLWxA8Gz2CALzmNDJDzt9jNQdyZKQqy1jALrHwYKnjtmSLjXM85Cr3eegibndhg9d58C
+	97edJPier4Hx470MlBlmSTCPfMPAwp1ZGrpikywccdkJ6HrYzkJfh4mGkzP1JHSWRiTW3QEa
+	bl62MnDzaADBSPMCDfe9EnDCPsSCqcmCwPtzAwNHDJthov0ZC1M/dpMwatoC8So99NS+DNEb
+	EwgG60MELLhdLPw+0kJDt6OTgP6xGAnR72sYMD46jiBkvkzAbzWtNNhu9BPSHrtgYGGOgBPB
+	WgbuGkYRBH3jFFR/bULg8IRp+MctnTw7bWW2bBV8E49JwTVsQ8LFhtuE8KA8Tghhz6+EcMky
+	zAq1zkKhzb5eqHP/RQjGcJAUnI3HGMH5pIIVhgbcjNBbNUsJbbavhAdtZrTj9d2yD3LEXI1e
+	1G78KFum7g+U0QXhbUUXfOmlKL7JiFI4zGdiv7WKeqHtxttkQlP8Gnyh20MnNMOvxeFwLOmv
+	4Ndhm+cHyZdxJN+Sisce3kGJYDlfiM+OhZNFch7wTw1xlBhS8IMkrpwzMotBGv7F/GdyiJRa
+	504FpVZO0qvw+Ti3aK/GR9urk7AUfice6W9P6pf4N/HVDj+R6MR8NAVfujaGFrd+FV+zh6ly
+	lGZZgrAsQVj+R1iWIGoR1YgUmnx9nkqTm5mhLs7XFGXsP5jnRNI/n/tibo8LPenb5UU8h5Sp
+	8uzWw2oFrdLrivO8CHOkcoX8RFCvVshzVMUlovZglrYwV9R50SqOUr4i3xQ9nKPgD6gOiZ+L
+	YoGofZESXMrKUiQ3zWTU1L+2J572HrE9csWnK0/v+24Hf2pS8FdsSO9xTm+OOPZmRajTusrh
+	f7NQKNtQ0fKpedI29aW/efBeRhOxr+Bk17vBkg/fmnrj+q2ZbeLfmfV7W8wHQuO3qudV2ouV
+	8/C4zvFZ4PTHZKXnk5rJoZK1y1zxUF0osGzf6p3rtiopnVr1znpSq1P9B9AI6bPLAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUxTdxTG87//+0ZHl7uObTeaOVPiyDBzsjlzli0LiVl2x+Je4hYzPkwK
+	3KydUKS1HSwaO6hZbGytAgtU0DJQS0HAdkDVjm0tEZx7kYKk8lIEHXMBpw5EK6XsFrOMb895
+	npPfcz4cFiuq6FWsRrtb1GlVBUpaRsree738xXh1iXqj3aSE2rYWGvpn6yloflACp675KAg1
+	8XD+8gMCat2dCOaiIwx4DoximO3ppaGhfh5DtN1KQu3vZhLutT3E8MeFSQb6AoskNHu2wvjJ
+	KRL8X3dhCN5bB5OH+miwmhcw1ET207A0vEDB99G/GSjzuQgI1l2UxukOBi532iiofHgCQ5fp
+	mlR4fYiCgXO1NAyU9yOItCxRMBWQWmdcowzYmh0IAj800VBmfgVmOuYYuFPVg2HclgnxaiNc
+	cD4N85dmEIycuELAkt/HwG+RVgp62roIGJyIYpg/WEeD5dYhBFdqzhHwS107BY2XBgnpjm0w
+	tBQjoCLkpOG6eRxBKDhJwtGvbAjausMU3PWbycwtQnDmNhZ8Y41I+K7pKiHctMcJIdz9MyGc
+	dYwxgtNjELyudKHB/xchWMIhLHjcB2jB888RRhgd8tNCX/UCKXgb9wk3vTXogzXZsjfyxQKN
+	UdS99GaOTD3Yb6V2hbeUnAk+b0Lxly0oieW5TbzLchUnNMmt48/0dFMJTXNpfDgcXfZTuBf4
+	xu7Dki9jMdeazE9MD6NE8CRn4L+dCJMJLeeAP90UR4klBTeC+W9iFvpR8AR/sebG8hKWqLFj
+	IYnKSno1fyrOPrKf48s7ji6XJXEf8pHBjmX9FJfK/9jZS9jR444VJMcKkuN/kmMFyYlIN0rR
+	aI2FKk3Bqxv0O9WlWk3JhryiQg+SnvXk3thhH5obeDuAOBYpk+U57V+oFZTKqC8tDCCexcoU
+	eUXIqFbI81WlX4q6oh06Q4GoD6DVLKl8Rp61XcxRcJ+pdos7RXGXqPsvJdikVSaUGtnYWlyf
+	nzwQW6/NWHz2RmY8Y7OtYr3BuiYNu/233M25VWPFn6Qzn37cmfvO5m2f75jatG/y/vkG5s5Q
+	XtnZd+++76z80zCWFrFPn05d6+4q/mjeNew9+Gt21tbsrP25ssrje3RrZ4/DT9Yj44/d33N7
+	wWR5y753e16L7bVe72JdUVRJ6tWqjHSs06v+BSardbOoAwAA
+X-CFilter-Loop: Reflected
 
-On Wed, Jul 16, 2025 at 08:49:19PM -0400, Steven Rostedt wrote:
-> From: Steven Rostedt <rostedt@goodmis.org>
+On Wed, Jul 16, 2025 at 12:41:04PM -0700, Mina Almasry wrote:
+> On Tue, Jul 15, 2025 at 9:51 PM Byungchul Park <byungchul@sk.com> wrote:
+> >
+> > On Tue, Jul 15, 2025 at 12:09:34PM -0700, Mina Almasry wrote:
+> > > On Mon, Jul 14, 2025 at 6:36 PM Byungchul Park <byungchul@sk.com> wrote:
+> > > >
+> > > > On Mon, Jul 14, 2025 at 12:58:15PM -0700, Mina Almasry wrote:
+> > > > > On Mon, Jul 14, 2025 at 12:37 PM Mina Almasry <almasrymina@google.com> wrote:
+> > > > > >
+> > > > > > On Mon, Jul 14, 2025 at 5:01 AM Byungchul Park <byungchul@sk.com> wrote:
+> > > > > > >
+> > > > > > > To eliminate the use of the page pool fields in struct page, the page
+> > > > > > > pool code should use netmem descriptor and APIs instead.
+> > > > > > >
+> > > > > > > However, __netmem_get_pp() still accesses ->pp via struct page.  So
+> > > > > > > change it to use struct netmem_desc instead, since ->pp no longer will
+> > > > > > > be available in struct page.
+> > > > > > >
+> > > > > > > While at it, add a helper, pp_page_to_nmdesc(), that can be used to
+> > > > > > > extract netmem_desc from page only if it's pp page.  For now that
+> > > > > > > netmem_desc overlays on page, it can be achieved by just casting.
+> > > > > > >
+> > > > > > > Signed-off-by: Byungchul Park <byungchul@sk.com>
+> > > > > > > ---
+> > > > > > >  include/net/netmem.h | 13 ++++++++++++-
+> > > > > > >  1 file changed, 12 insertions(+), 1 deletion(-)
+> > > > > > >
+> > > > > > > diff --git a/include/net/netmem.h b/include/net/netmem.h
+> > > > > > > index 535cf17b9134..2b8a7b51ac99 100644
+> > > > > > > --- a/include/net/netmem.h
+> > > > > > > +++ b/include/net/netmem.h
+> > > > > > > @@ -267,6 +267,17 @@ static inline struct net_iov *__netmem_clear_lsb(netmem_ref netmem)
+> > > > > > >         return (struct net_iov *)((__force unsigned long)netmem & ~NET_IOV);
+> > > > > > >  }
+> > > > > > >
+> > > > > > > +static inline struct netmem_desc *pp_page_to_nmdesc(struct page *page)
+> > > > > > > +{
+> > > > > > > +       DEBUG_NET_WARN_ON_ONCE(!page_pool_page_is_pp(page));
+> > > > > > > +
+> > > > > > > +       /* XXX: How to extract netmem_desc from page must be changed,
+> > > > > > > +        * once netmem_desc no longer overlays on page and will be
+> > > > > > > +        * allocated through slab.
+> > > > > > > +        */
+> > > > > > > +       return (struct netmem_desc *)page;
+> > > > > > > +}
+> > > > > > > +
+> > > > > >
+> > > > > > Same thing. Do not create a generic looking pp_page_to_nmdesc helper
+> > > > > > which does not check that the page is the correct type. The
+> > > > > > DEBUG_NET... is not good enough.
+> > > > > >
+> > > > > > You don't need to add a generic helper here. There is only one call
+> > > > > > site. Open code this in the callsite. The one callsite is marked as
+> > > > > > unsafe, only called by code that knows that the netmem is specifically
+> > > > > > a pp page. Open code this in the unsafe callsite, instead of creating
+> > > > > > a generic looking unsafe helper and not even documenting it's unsafe.
+> > > > > >
+> > > > >
+> > > > > On second read through the series, I actually now think this is a
+> > > > > great idea :-) Adding this helper has simplified the series greatly. I
+> > > > > did not realize you were converting entire drivers to netmem just to
+> > > > > get rid of page->pp accesses. Adding a pp_page_to_nmdesc helper makes
+> > > > > the entire series simpler.
+> > > > >
+> > > > > You're also calling it only from code paths like drivers that already
+> > > > > assumed that the page is a pp page and did page->pp deference without
+> > > > > a check, so this should be safe.
+> > > > >
+> > > > > Only thing I would change is add a comment explaining that the calling
+> > > > > code needs to check the page is pp page or know it's a pp page (like a
+> > > > > driver that supports pp).
+> > > > >
+> > > > >
+> > > > > > >  /**
+> > > > > > >   * __netmem_get_pp - unsafely get pointer to the &page_pool backing @netmem
+> > > > > > >   * @netmem: netmem reference to get the pointer from
+> > > > > > > @@ -280,7 +291,7 @@ static inline struct net_iov *__netmem_clear_lsb(netmem_ref netmem)
+> > > > > > >   */
+> > > > > > >  static inline struct page_pool *__netmem_get_pp(netmem_ref netmem)
+> > > > > > >  {
+> > > > > > > -       return __netmem_to_page(netmem)->pp;
+> > > > > > > +       return pp_page_to_nmdesc(__netmem_to_page(netmem))->pp;
+> > > > > > >  }
+> > > > > >
+> > > > > > This makes me very sad. Casting from netmem -> page -> nmdesc...
+> > > > > >
+> > > > > > Instead, we should be able to go from netmem directly to nmdesc. I
+> > > > > > would suggest rename __netmem_clear_lsb to netmem_to_nmdesc and have
+> > > > > > it return netmem_desc instead of net_iov. Then use it here.
+> > > > > >
+> > > > > > We could have an unsafe version of netmem_to_nmdesc which converts the
+> > > > > > netmem to netmem_desc without clearing the lsb and mark it unsafe.
+> > > > > >
+> > > > >
+> > > > > This, I think, we should address to keep some sanity in the code and
+> > > > > reduce the casts and make it a bit more maintainable.
+> > > >
+> > > > I will reflect your suggestions.  To summarize:
+> > > >
+> > > >    1) The current implementation of pp_page_to_nmdesc() is good enough
+> > > >       to keep, but add a comment on it like "Check if the page is a pp
+> > > >       page before calling this function or know it's a pp page.".
+> > > >
+> > >
+> > > Yes please.
+> > >
+> > > >    2) Introduce the unsafe version, __netmem_to_nmdesc(), and use it in
+> > > >       __netmem_get_pp().
+> > > >
+> > >
+> > > No need following Pavel's feedback. We can just delete
+> > > __netmem_get_pp. If we do find a need in the future to extract the
+> > > netmem_desc from a netmem_ref, I would rather we do a straight cast
+> > > from netmem_ref to netmem_desc rather than netmem_ref -> pages/net_iov
+> > > -> netmem_desc.
+> > >
+> > > But that seems unnecessary for this series.
+> >
+> > No.  The series should remove accessing ->pp through page.
+> >
+> > I will kill __netmem_get_pp() as you and I prefer.  However,
+> > __netmem_get_pp() users e.i. libeth_xdp_return_va() and
+> > libeth_xdp_tx_fill_buf() should be altered.  I will modify the code like:
+> >
+> > as is: __netmem_get_pp(netmem)
+> > to be: __netmem_nmdesc(netmem)->pp
+> >
+> > Is it okay with you?
+> >
 > 
-> Instead of using the callback_mutex to protect the link list of callbacks
-> in unwind_deferred_task_work(), use SRCU instead. This gets called every
-> time a task exits that has to record a stack trace that was requested.
-> This can happen for many tasks on several CPUs at the same time. A mutex
-> is a bottleneck and can cause a bit of contention and slow down performance.
+> When Pavel and I were saying 'remove __netmem_get_pp', I think we
+> meant to remove the entire concept of unsafe netmem -> page
+> conversions. I think we both don't like them. From this perspective,
+> __netmem_nmdesc(netmem)->pp is just as bad as __netmem_get_pp(netmem).
 > 
-> As the callbacks themselves are allowed to sleep, regular RCU cannot be
-> used to protect the list. Instead use SRCU, as that still allows the
-> callbacks to sleep and the list can be read without needing to hold the
-> callback_mutex.
+> I think since the unsafe netmem-to-page casts are already in mainline,
+> lets assume they should stay there until someone feels strongly enough
+> to remove them. The logic in Olek's patch is sound:
 > 
-> Link: https://lore.kernel.org/all/ca9bd83a-6c80-4ee0-a83c-224b9d60b755@efficios.com/
+> https://lore.kernel.org/all/20241203173733.3181246-8-aleksander.lobakin@intel.com/
 > 
-> Also added a new guard (srcu_lite) written by Peter Zilstra
+> Header buffer page pools do always use pages and will likely remain so
+> for a long time, so I guess lets continue to support them rather than
+> try to remove them in this series. A followup series could try to
+> remove them.
 > 
-> Link: https://lore.kernel.org/all/20250715102912.GQ1613200@noisy.programming.kicks-ass.net/
+> > > >    3) Rename __netmem_clear_lsb() to netmem_to_nmdesc(), and return
+> > > >       netmem_desc, and use it in all users of __netmem_clear_lsb().
+> > > >
+> > >
+> > > Following Pavel's comment, this I think also is not necessary for this
+> > > series. Cleaning up the return value of __netmem_clear_lsb is good
+> > > work I think, but we're already on v10 of this and I think it would
+> > > unnecessary to ask for added cleanups. We can do the cleanup on top.
+> >
+> > However, I still need to include 'introduce __netmem_nmdesc() helper'
 > 
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Suggested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
-> Changes since v13: https://lore.kernel.org/20250708012359.172959778@kernel.org
+> Yes.
 > 
-> - Have the locking of the link list walk use guard(srcu_lite)
->   (Peter Zijlstra)
+> > in this series since it should be used to remove __netmem_get_pp() as I
 > 
-> - Fixed up due to the new atomic_long logic.
+> lets keep __netmem_get_pp, which does a `return
+> __netmem_nmdesc(netmem)->pp;` In general we avoid allowing the driver
+> to do any netmem casts in the driver code, and we do any casting in
+> core.
 > 
->  include/linux/srcu.h     |  4 ++++
->  kernel/unwind/deferred.c | 27 +++++++++++++++++++++------
->  2 files changed, 25 insertions(+), 6 deletions(-)
+> > described above.  I think I'd better add netmem_nmdesc() too while at it.
+> >
 > 
-> diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-> index 900b0d5c05f5..879054b8bf87 100644
-> --- a/include/linux/srcu.h
-> +++ b/include/linux/srcu.h
-> @@ -524,4 +524,8 @@ DEFINE_LOCK_GUARD_1(srcu, struct srcu_struct,
->  		    srcu_read_unlock(_T->lock, _T->idx),
->  		    int idx)
->  
-> +DEFINE_LOCK_GUARD_1(srcu_lite, struct srcu_struct,
+> Yes. netmem_nmdesc should replace __netmem_clear_lsb.
 
-You need srcu_fast because srcu_lite is being removed.  They are quite
-similar, but srcu_fast is faster and is NMI-safe.  (This last might or
-might not matter here.)
+Even though the unsafe version is required in this series, on second
+though, the safe version, netmem_nmdesc() doesn't have to be a part of
+this series.  Let's do adding the safe version on top after.
 
-See https://lore.kernel.org/all/20250716225418.3014815-3-paulmck@kernel.org/
-for a srcu_fast_notrace, so something like this:
+	Byungchul
 
-DEFINE_LOCK_GUARD_1(srcu_fast, struct srcu_struct,
-		    _T->scp = srcu_read_lock_fast(_T->lock),
-		    srcu_read_unlock_fast(_T->lock, _T->scp),
-		    struct srcu_ctr __percpu *scp)
-
-Other than that, it looks plausible.
-
-							Thanx, Paul
-
-> +		    _T->idx = srcu_read_lock_lite(_T->lock),
-> +		    srcu_read_unlock_lite(_T->lock, _T->idx),
-> +		    int idx)
->  #endif
-> diff --git a/kernel/unwind/deferred.c b/kernel/unwind/deferred.c
-> index 2311b725d691..353f7af610bf 100644
-> --- a/kernel/unwind/deferred.c
-> +++ b/kernel/unwind/deferred.c
-> @@ -41,7 +41,7 @@ static inline bool try_assign_cnt(struct unwind_task_info *info, u32 cnt)
->  #define UNWIND_MAX_ENTRIES					\
->  	((SZ_4K - sizeof(struct unwind_cache)) / sizeof(long))
->  
-> -/* Guards adding to and reading the list of callbacks */
-> +/* Guards adding to or removing from the list of callbacks */
->  static DEFINE_MUTEX(callback_mutex);
->  static LIST_HEAD(callbacks);
->  
-> @@ -49,6 +49,7 @@ static LIST_HEAD(callbacks);
->  
->  /* Zero'd bits are available for assigning callback users */
->  static unsigned long unwind_mask = RESERVED_BITS;
-> +DEFINE_STATIC_SRCU(unwind_srcu);
->  
->  static inline bool unwind_pending(struct unwind_task_info *info)
->  {
-> @@ -174,8 +175,9 @@ static void unwind_deferred_task_work(struct callback_head *head)
->  
->  	cookie = info->id.id;
->  
-> -	guard(mutex)(&callback_mutex);
-> -	list_for_each_entry(work, &callbacks, list) {
-> +	guard(srcu_lite)(&unwind_srcu);
-> +	list_for_each_entry_srcu(work, &callbacks, list,
-> +				 srcu_read_lock_held(&unwind_srcu)) {
->  		if (test_bit(work->bit, &bits)) {
->  			work->func(work, &trace, cookie);
->  			if (info->cache)
-> @@ -213,7 +215,7 @@ int unwind_deferred_request(struct unwind_work *work, u64 *cookie)
->  {
->  	struct unwind_task_info *info = &current->unwind_info;
->  	unsigned long old, bits;
-> -	unsigned long bit = BIT(work->bit);
-> +	unsigned long bit;
->  	int ret;
->  
->  	*cookie = 0;
-> @@ -230,6 +232,14 @@ int unwind_deferred_request(struct unwind_work *work, u64 *cookie)
->  	if (WARN_ON_ONCE(!CAN_USE_IN_NMI && in_nmi()))
->  		return -EINVAL;
->  
-> +	/* Do not allow cancelled works to request again */
-> +	bit = READ_ONCE(work->bit);
-> +	if (WARN_ON_ONCE(bit < 0))
-> +		return -EINVAL;
-> +
-> +	/* Only need the mask now */
-> +	bit = BIT(bit);
-> +
->  	guard(irqsave)();
->  
->  	*cookie = get_cookie(info);
-> @@ -281,10 +291,15 @@ void unwind_deferred_cancel(struct unwind_work *work)
->  		return;
->  
->  	guard(mutex)(&callback_mutex);
-> -	list_del(&work->list);
-> +	list_del_rcu(&work->list);
-> +
-> +	/* Do not allow any more requests and prevent callbacks */
-> +	work->bit = -1;
->  
->  	__clear_bit(bit, &unwind_mask);
->  
-> +	synchronize_srcu(&unwind_srcu);
-> +
->  	guard(rcu)();
->  	/* Clear this bit from all threads */
->  	for_each_process_thread(g, t) {
-> @@ -307,7 +322,7 @@ int unwind_deferred_init(struct unwind_work *work, unwind_callback_t func)
->  	work->bit = ffz(unwind_mask);
->  	__set_bit(work->bit, &unwind_mask);
->  
-> -	list_add(&work->list, &callbacks);
-> +	list_add_rcu(&work->list, &callbacks);
->  	work->func = func;
->  	return 0;
->  }
-> -- 
-> 2.47.2
+> > I assume __netmem_nmdesc() is an unsafe version not clearing lsb.  The
+> 
+> Yes.
+> 
+> > safe version, netmem_nmdesc() needs an additional operation clearing lsb.
+> 
+> Yes.
 > 
 > 
+> --
+> Thanks,
+> Mina
 
