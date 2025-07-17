@@ -1,162 +1,387 @@
-Return-Path: <bpf+bounces-63630-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63631-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BB9FB091A6
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 18:24:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD537B091AD
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 18:25:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B08FC189761A
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 16:24:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F4937A36E8
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 16:24:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8201B2FC3DB;
-	Thu, 17 Jul 2025 16:24:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 357BA2FC3D9;
+	Thu, 17 Jul 2025 16:25:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b679k7B3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KUCToMag"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FD472FC007
-	for <bpf@vger.kernel.org>; Thu, 17 Jul 2025 16:23:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4A7D52F66
+	for <bpf@vger.kernel.org>; Thu, 17 Jul 2025 16:25:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752769440; cv=none; b=n1UshJeV0eZ1zFATHQTnf/j6/32jROMXN5UspZmLT1Z4G42RDbp4n92qxta0IAshBW/X0w1B3/jo3qDiO0Hu574k/EJ6HNbEhRrwV6FphSlG4z5NO9ScOlBESH9mz1SKl2R07fW1rwWP501lp2bLD7hW00nMFzLz7PMkDw0lzfo=
+	t=1752769548; cv=none; b=f2ZPHgAdc6U+L31Nph3I1L2XsDTIG4VidqZa7LqwvVwnaPgP/EqCW1W03Ci/KWXZhetbdjy3mmmLO/BGSBmcpEQoD6LCE6Q+TnjkF08l+IIJV+FM0bvvNKc5IavniLlTKgTQ5Boj/0DJ7ruQWZvn7+qqWAHX37xt/jx8mXndQNc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752769440; c=relaxed/simple;
-	bh=Nk8MgKi5lPnsc5ClvbjZVmm59ODJhkuhBra1IO5r/SM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rv2kX68FT9Axp3oboz7AX6W9w0FSAPZ9LpefC6hX9dPfwbNTzDB/gqfGO5rh9RKoMN8TzTSmObCRLbd/a5KcrDCVbVTH+Jqk1ZSwonZkmSVIh+eKLvF6wkBRT47Y2kbX0yWRgNQ6ySNDotUx8zOQbIqvcqCbjM9o4u6K2UGKj6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b679k7B3; arc=none smtp.client-ip=209.85.221.54
+	s=arc-20240116; t=1752769548; c=relaxed/simple;
+	bh=XpwsVdVL6Do5Vg/ItUv84Hm+MGjMt+UNqrl3aRu/r5s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SrWh7fB8vCe18mYh0P5SXqHsMTuIkpBLN6vEfe5T2cBj1lGvLqEHkLiVuySSxDF38MgvmhTEK9fTQ8WNsa3L51RTxMIahwQT+Uc2t/Zf6QO+6sXGJdMbZXJwlPJ5WfSxNuX1mryz4zbhFnDa0C+7dx2tNfEQS3JUopUQrakKP0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KUCToMag; arc=none smtp.client-ip=209.85.218.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3a6d1369d4eso735084f8f.2
-        for <bpf@vger.kernel.org>; Thu, 17 Jul 2025 09:23:58 -0700 (PDT)
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-adfb562266cso198094066b.0
+        for <bpf@vger.kernel.org>; Thu, 17 Jul 2025 09:25:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752769437; x=1753374237; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Nk8MgKi5lPnsc5ClvbjZVmm59ODJhkuhBra1IO5r/SM=;
-        b=b679k7B3EEUNt8cE8xiPHSRPajlKVPqilDfIaMLaqj/tiuKYj/tPRjlMUhfRA88VPK
-         NVzNOuq3X53eLgKbuEG4bAZM3TX2Z/bK3XiYKsJj7ERfdEopatlujygGqo8s9dec1A1Q
-         D4e6SntefyL25cCsjZtQyg381JDmQ0shJj1rVq+QU7DHRSJE4rb1wbiAMxQt+ULbQZn9
-         o9in4K6G7vLpEERmCu9dIZA+vaE2qP3yNT3Duy9ILs9Wi9FKIhXPUu2qDMBQ582lg89z
-         XXlKjagRBIhtcQO5RZLYpiO76wT0e74PeQ3J8jMHrQnpGpvg/KIuJ4zQabgtJfmd2MEv
-         F3CQ==
+        d=gmail.com; s=20230601; t=1752769545; x=1753374345; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5EPkM4MV2NqCPptDvx5vWcMgE78ZZptHn3oX5iA9oSM=;
+        b=KUCToMag6iCurqZdwOnVzHjWcm433zlas5uWg6bomr3wwyoTvZC3stC2r8O/aqvfkY
+         FeyqVVQ0NaGErN4X6qJkMYLIBjPQa55nUguBvWXnz83m+S8BGbnzGPpYBR89sLcTwrlM
+         BNd0qGe6bKm2mBBpnL9e5NdXaQvuOBz0TwP50bEEUsYHBaD0Cz9GVZN6sqfJ9bWPwQkN
+         l9jf6dzj3Qon2WZ8sMRLnXAQJLFSWbGIj7Hu9YEqaak8FsODdALWPae7vse0kXCZUQ+Y
+         sVLoftgwDWSJv+CiJdJVs6dAl3JgQ4pQhGjWeRzZCRy9El3Xa/igqZEKjS9SIaSUMD5K
+         9INg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752769437; x=1753374237;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Nk8MgKi5lPnsc5ClvbjZVmm59ODJhkuhBra1IO5r/SM=;
-        b=wswa5zYRxAm+mottADqlx7Fy4vRSujBT/7WIKYtYERWP8yfkq1WNGX075YM52tg+aB
-         E5OOSVo9UKX+grtSsgdFaI7rrQNH9NeVL0yxQD//1oaDlaj4wRAwdGHXjmFdD3VFdBy+
-         G6ak/gkTRNrPa2iO0VTdYtEURvoPgW9qf3u5NZ7k5hfEa4pgL/nKe02JWoRwKhf6gXtE
-         tK4Pse7OkpWMBDQrfSgi94tp+kPfyDnirruVVtMA/+N0tAXk/FwRShgWCIsJ5IpGv35b
-         Nr9c4eC1kSNpjqJtsDg1Imtq0iiT/9/vXcOOrhAxAxQ/QlWHJcNQyUZk3O5TWLTOJJia
-         TyNw==
-X-Gm-Message-State: AOJu0Yz3BBPLS+0UNZZBvQeUQgJvGAsrWWKIQ3vbnZl4vCTGiw25k1ev
-	lGfigtjPfjWT0xE2MWlKXs8RBBCKW+edcPotdYLkPPBXZS9i7xSQzD8SJoFMS6PR3oE00XfwDNd
-	ZrXGKMThlFWGPOfiYW0+ezw8ON6kdfm9tYWT9
-X-Gm-Gg: ASbGncu6wHUsjSZUXCi9fsNGfI+mTpyFtE7PTIIwjUjUytQnJwPdZJHkfIOWuRPFV7N
-	aBrnZabXAVTecjgDINVhFMzla9BDkCl34zopvo7+cwI2a/xMObo57kqwVzcvH1aEc892K1WbaoN
-	sYWJpaQOUIz2bpWHM06LhMbOklQj6AyDKw6JMjRwsqplFE9PUoXOEGEvqR9mN4NuYt6H9S1ANCM
-	KGn3G4K4nT6vYYGgKIpghA=
-X-Google-Smtp-Source: AGHT+IGObr3+mK/nBSSAqr/4D47SeJcDylS1eU4gWKtCeotozAgGPtjm/iwky2NIR12Cx4hqxuLn+zfiCVR+CKHVt0o=
-X-Received: by 2002:a05:6000:25c3:b0:3a5:8a68:b815 with SMTP id
- ffacd0b85a97d-3b60dd996d8mr6556382f8f.46.1752769436470; Thu, 17 Jul 2025
- 09:23:56 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1752769545; x=1753374345;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5EPkM4MV2NqCPptDvx5vWcMgE78ZZptHn3oX5iA9oSM=;
+        b=w1EoMy8p1k72iuXzEfHQAQCAfaERZFH+6NtyHr39dlbUS4lCiRPequhgwezTsCiqnL
+         tdc3qOOE2OzBr70Ro8rT8em9UTAjAlpflag2UXtrMwjHBcjTWYAgCCNtxsNL8HFlE3xQ
+         NLaPLe7/bhdb7mk4qlBnhfbxc+fUOECJRSRcVCHNkmTeaClzPDm3EcW+8lOlb0Dpbdsq
+         +cizT5ITVs6Vt8BeZLs0AYfhZO5MlBQ7nrEFS3Oda5xb0x3XkhFTKRxU1pIgZaG6fwQC
+         pKpprVwWH9Kjk0Grd2fwVbv/fRGitduNIt/6pC0jhamVfX9DB4J0VgWz26r8kgGj9MKU
+         /G3A==
+X-Gm-Message-State: AOJu0YwFFfd44N1tPLaa00+lX4v7gPtlzYqLPcesXXgsQP8MZdKGMTR1
+	sqUS5uD95Caz/+ES9OjACRCm/PF0Fg+Z4yYIWGf1CPyAOM3tMb5BJlhl
+X-Gm-Gg: ASbGncvRA4BCjsrccYBOwPHiqvi//Jz7snOivX7IOR50IjnGTcJoGyqTQUeRka8BDPc
+	uhom/5Up/621hWhqC95Cz87uOWAFIeaeBJyjFLCwRmI6tpW4nmcYYeOrkpFu2ZSx2dZM24uMTnW
+	d3SolMGWdYY3iLKETWg6Fsrqq6ak84rviImjqEE14v2AgxiRaolMkBOyINyLofU+LwgfyJMC+1U
+	m3w0zPIfZpptfSfexCuZHG9TwuFa0FpBPO7Rl4RJrX9tTauz1A75nED5TavtM2/7kh07a6hNUBS
+	RYzEvF3cP2GpqGuGPNqiDZ+A+ZYyS9wl91uPXRQX1OJoHhQJZEFg/OqKmEyiaKxCN+Jq9NPnf2W
+	LYl1Tu4WF3t9ZRVgyEKe7rhIbAbYRGGRH3xgzgHS0Iotw7atEr6ForE5HCFykWhCAx9EpKdw=
+X-Google-Smtp-Source: AGHT+IHeLcr1pBbKBFA1pU6Brp5R8o8KUPnlWlbjIIlH4I6mN0jgJFRhVmH47BFgYKizmcvJjONjqA==
+X-Received: by 2002:a17:907:9809:b0:ae0:b22a:29b4 with SMTP id a640c23a62f3a-ae9c9ac18c2mr754671866b.39.1752769544566;
+        Thu, 17 Jul 2025 09:25:44 -0700 (PDT)
+Received: from ?IPV6:2a03:83e0:1126:4:14f1:c189:9748:5e5a? ([2620:10d:c092:500::7:8a92])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae6e7e90a16sm1378047466b.24.2025.07.17.09.25.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Jul 2025 09:25:43 -0700 (PDT)
+Message-ID: <c7de5a5b-60ca-4c0c-9adb-c68104c63aa1@gmail.com>
+Date: Thu, 17 Jul 2025 17:25:40 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250716022950.69330-1-alexei.starovoitov@gmail.com>
- <20250716022950.69330-6-alexei.starovoitov@gmail.com> <a28390e4-23cf-4615-93e3-611b046e1973@suse.cz>
- <CAADnVQJBGWdWkGOGSMSN2quSXfaKYdnFpAqfAYYEbpJgchyNbg@mail.gmail.com> <e1095887-7a20-411c-9efe-5687e6a5ef74@suse.cz>
-In-Reply-To: <e1095887-7a20-411c-9efe-5687e6a5ef74@suse.cz>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 17 Jul 2025 09:23:43 -0700
-X-Gm-Features: Ac12FXwzl8imCEsBuPqkG9NPDgHmLDQTXaLnFMmXbSPj6skZY9zJYfF0awK8QKc
-Message-ID: <CAADnVQLUk7oa5kLkdO3B-YTG+nwBTnkRv7PO9XQk5sWbXPHvGA@mail.gmail.com>
-Subject: Re: [PATCH v3 5/6] slab: Introduce kmalloc_nolock() and kfree_nolock().
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
-	Harry Yoo <harry.yoo@oracle.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Michal Hocko <mhocko@suse.com>, Sebastian Sewior <bigeasy@linutronix.de>, 
-	Andrii Nakryiko <andrii@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Steven Rostedt <rostedt@goodmis.org>, Johannes Weiner <hannes@cmpxchg.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v3 4/5] mm: thp: add bpf thp struct ops
+To: Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org,
+ david@redhat.com, ziy@nvidia.com, baolin.wang@linux.alibaba.com,
+ lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, npache@redhat.com,
+ ryan.roberts@arm.com, dev.jain@arm.com, hannes@cmpxchg.org,
+ gutierrez.asier@huawei-partners.com, willy@infradead.org, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org
+Cc: bpf@vger.kernel.org, linux-mm@kvack.org
+References: <20250608073516.22415-1-laoar.shao@gmail.com>
+ <20250608073516.22415-5-laoar.shao@gmail.com>
+Content-Language: en-US
+From: Usama Arif <usamaarif642@gmail.com>
+In-Reply-To: <20250608073516.22415-5-laoar.shao@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jul 17, 2025 at 2:18=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
-ote:
->
-> >
-> > When "bool allow_spin" was there in Sebastian's version it definitely
-> > looked cleaner as a proper function,
-> > but now, if (!IS_ENABLED(CONFIG_PREEMPT_RT)) can be
-> > #ifdef CONFIG_PREEMPT_RT
-> > and the comment will look normal (without ugly backslashes)
-> > So yeah. I'll convert it to macro.
->
-> To clarify, the ideal I think would be e.g.
->
-> #if defined(CONFIG_PREEMPT_RT) || !defined(CONFIG_LOCKDEP)
->
-> local_lock_irqsave();
->
-> #else
->
-> lockdep_assert(local_trylock_irqsave());
->
-> #endif
->
-> This should mean that without lockdep we just trust the code to be correc=
-t
-> (kmalloc_nolock() using local_lock_held() properly before calling here, a=
-nd
-> kmalloc() callers not being in an unsupported context, as before this
-> series) with no checking on both RT and !RT.
->
-> With lockdep, on RT lockdep does its checking in local_lock_irqsave()
-> normally. On !RT we need to use trylock to avoid false positives in nmi, =
-but
-> lockdep_assert() will catch a bug still in case of a true positive.
->
-> At least I hope I got it right...
 
-Yes. Exactly what I had in mind.
 
-> > My preference is to add a comment saying that only objects
-> > allocated by kmalloc_nolock() should be freed by kfree_nolock().
->
-> We could go with that until someone has a case for changing this, and the=
-n
-> handle kmemleak and kfence with defer_free()...
+On 08/06/2025 08:35, Yafang Shao wrote:
+> A new bpf_thp struct ops is introduced to provide finer-grained control
+> over THP allocation policy. The struct ops includes two APIs for
+> determining the THP allocator and reclaimer behavior:
+> 
+> - THP allocator
+> 
+>   int (*allocator)(unsigned long vm_flags, unsigned long tva_flags);
+> 
+>   The BPF program returns either THP_ALLOC_CURRENT or THP_ALLOC_KHUGEPAGED,
+>   indicating whether THP allocation should be performed synchronously
+>   (current task) or asynchronously (khugepaged).
+> 
+>   The decision is based on the current task context, VMA flags, and TVA
+>   flags.
+> 
+> - THP reclaimer
+> 
+>   int (*reclaimer)(bool vma_madvised);
+> 
+>   The BPF program returns either RECLAIMER_CURRENT or RECLAIMER_KSWAPD,
+>   determining whether memory reclamation is handled by the current task or
+>   kswapd.
+> 
+>   The decision depends on the current task and VMA flags.
+> 
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> ---
+>  include/linux/huge_mm.h |  13 +--
+>  mm/Makefile             |   3 +
+>  mm/bpf_thp.c            | 184 ++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 190 insertions(+), 10 deletions(-)
+>  create mode 100644 mm/bpf_thp.c
+> 
+> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+> index 6a40ebf25f5c..0d02c9b56a85 100644
+> --- a/include/linux/huge_mm.h
+> +++ b/include/linux/huge_mm.h
+> @@ -54,6 +54,7 @@ enum transparent_hugepage_flag {
+>  	TRANSPARENT_HUGEPAGE_DEFRAG_REQ_MADV_FLAG,
+>  	TRANSPARENT_HUGEPAGE_DEFRAG_KHUGEPAGED_FLAG,
+>  	TRANSPARENT_HUGEPAGE_USE_ZERO_PAGE_FLAG,
+> +	TRANSPARENT_HUGEPAGE_BPF_ATTACHED,	/* BPF prog is attached */
+>  };
+>  
+>  struct kobject;
+> @@ -192,16 +193,8 @@ static inline bool hugepage_global_always(void)
+>  
+>  #define THP_ALLOC_KHUGEPAGED (1 << 1)
+>  #define THP_ALLOC_CURRENT (1 << 2)
+> -static inline int bpf_thp_allocator(unsigned long vm_flags,
+> -				     unsigned long tva_flags)
+> -{
+> -	return THP_ALLOC_KHUGEPAGED | THP_ALLOC_CURRENT;
+> -}
+> -
+> -static inline gfp_t bpf_thp_gfp_mask(bool vma_madvised)
+> -{
+> -	return 0;
+> -}
 
-Good. Will go with warning/comment for now.
+It makes it quite confusing for review to add code in earlier patches and remove it here.
 
-At least from bpf infra pov the context where free-ing is done
-is better controlled than allocation.
-Free is often in call_rcu() or call_rcu_tasks_trace() callback.
-Whereas the context of kmalloc_nolock() is impossible to predict
-when it comes to tracing bpf progs.
-So the issues from kmalloc_nolock() -> kfree() transition are more
-likely to occur, but bpf progs won't be using these primitives
-directly, of course. The existing layers of protection
-like bpf_obj_new()/bpf_obj_drop() will continue to be the interface.
+I dont think you should have had the first 3 patches? and the code is mostly in
+this patch?
 
-Fun fact... initially I was planning to implement kmalloc_nolock()
-only :) since bpf use case of freeing is after rcu and rcu_tasks_trace GP,
-but once I realized that slab is already recursive and kmalloc_nolock()
-has to be able to free deep inside, I figured I had to implement
-kfree_nolock() in the same patch.
-I'm talking about
-alloc_slab_obj_exts() -> vec =3D kmalloc_nolock() -> kfree_nolock(vec) path=
-.
+> +int bpf_thp_allocator(unsigned long vm_flags, unsigned long tva_flags);
+> +gfp_t bpf_thp_gfp_mask(bool vma_madvised);
+>  
+>  static inline int highest_order(unsigned long orders)
+>  {
+> diff --git a/mm/Makefile b/mm/Makefile
+> index 1a7a11d4933d..e5f41cf3fd61 100644
+> --- a/mm/Makefile
+> +++ b/mm/Makefile
+> @@ -99,6 +99,9 @@ obj-$(CONFIG_MIGRATION) += migrate.o
+>  obj-$(CONFIG_NUMA) += memory-tiers.o
+>  obj-$(CONFIG_DEVICE_MIGRATION) += migrate_device.o
+>  obj-$(CONFIG_TRANSPARENT_HUGEPAGE) += huge_memory.o khugepaged.o
+> +ifdef CONFIG_BPF_SYSCALL
+> +obj-$(CONFIG_TRANSPARENT_HUGEPAGE) += bpf_thp.o
+> +endif
+>  obj-$(CONFIG_PAGE_COUNTER) += page_counter.o
+>  obj-$(CONFIG_MEMCG_V1) += memcontrol-v1.o
+>  obj-$(CONFIG_MEMCG) += memcontrol.o vmpressure.o
+> diff --git a/mm/bpf_thp.c b/mm/bpf_thp.c
+> new file mode 100644
+> index 000000000000..894d6cb93107
+> --- /dev/null
+> +++ b/mm/bpf_thp.c
+> @@ -0,0 +1,184 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/bpf.h>
+> +#include <linux/btf.h>
+> +#include <linux/huge_mm.h>
+> +#include <linux/khugepaged.h>
+> +
+> +#define RECLAIMER_CURRENT (1 << 1)
+> +#define RECLAIMER_KSWAPD (1 << 2)
+> +#define RECLAIMER_BOTH (RECLAIMER_CURRENT | RECLAIMER_KSWAPD)
+> +
+> +struct bpf_thp_ops {
+> +	/**
+> +	 * @allocator: Specifies whether the THP allocation is performed
+> +	 * by the current task or by khugepaged.
+> +	 * @vm_flags: Flags for the VMA in the current allocation context
+> +	 * @tva_flags: Flags for the TVA in the current allocation context
+> +	 *
+> +	 * Rerurn:
+> +	 * - THP_ALLOC_CURRENT: THP was allocated synchronously by the calling
+> +	 *   task's context.
+> +	 * - THP_ALLOC_KHUGEPAGED: THP was allocated asynchronously by the
+> +	 *   khugepaged kernel thread.
+> +	 * - 0: THP allocation is disallowed in the current context.
+> +	 */
+> +	int (*allocator)(unsigned long vm_flags, unsigned long tva_flags);
+> +	/**
+> +	 * @reclaimer: Specifies the entity performing page reclaim:
+> +	 *             - current task context
+> +	 *             - kswapd
+> +	 *             - none (no reclaim)
+> +	 * @vma_madvised: MADV flags for this VMA (e.g., MADV_HUGEPAGE, MADV_NOHUGEPAGE)
+> +	 *
+> +	 * Return:
+> +	 * - RECLAIMER_CURRENT: Direct reclaim by the current task if THP
+> +	 *   allocation fails.
+> +	 * - RECLAIMER_KSWAPD: Wake kswapd to reclaim memory if THP allocation fails.
+> +	 * - RECLAIMER_ALL: Both current and kswapd will perform the reclaim
+> +	 * - 0: No reclaim will be attempted.
+> +	 */
+> +	int (*reclaimer)(bool vma_madvised);
+> +};
+> +
+> +static struct bpf_thp_ops bpf_thp;
+> +
+> +int bpf_thp_allocator(unsigned long vm_flags, unsigned long tva_flags)
+> +{
+> +	int allocator;
+> +
+> +	/* No BPF program is attached */
+> +	if (!(transparent_hugepage_flags & (1<<TRANSPARENT_HUGEPAGE_BPF_ATTACHED)))
+> +		return THP_ALLOC_KHUGEPAGED | THP_ALLOC_CURRENT;
+> +
+> +	if (current_is_khugepaged())
+> +		return THP_ALLOC_KHUGEPAGED | THP_ALLOC_CURRENT;
+> +	if (!bpf_thp.allocator)
+> +		return THP_ALLOC_KHUGEPAGED | THP_ALLOC_CURRENT;
+
+Probably make it 
+
+if (current_is_khugepaged() || !bpf_thp.allocator)
+	return THP_ALLOC_KHUGEPAGED | THP_ALLOC_CURRENT;
+
+> +
+> +	allocator = bpf_thp.allocator(vm_flags, tva_flags);
+> +	if (!allocator)
+> +		return 0;
+> +	/* invalid return value */
+> +	if (allocator & ~(THP_ALLOC_KHUGEPAGED | THP_ALLOC_CURRENT))
+> +		return THP_ALLOC_KHUGEPAGED | THP_ALLOC_CURRENT;
+> +	return allocator;
+> +}
+> +
+> +gfp_t bpf_thp_gfp_mask(bool vma_madvised)
+> +{
+> +	int reclaimer;
+> +
+> +	if (!(transparent_hugepage_flags & (1<<TRANSPARENT_HUGEPAGE_BPF_ATTACHED)))
+> +		return 0;
+> +
+> +	if (!bpf_thp.reclaimer)
+> +		return 0;
+> +
+> +	reclaimer = bpf_thp.reclaimer(vma_madvised);
+> +	switch (reclaimer) {
+> +	case RECLAIMER_CURRENT:
+> +		return GFP_TRANSHUGE | __GFP_NORETRY;
+> +	case RECLAIMER_KSWAPD:
+> +		return GFP_TRANSHUGE_LIGHT | __GFP_KSWAPD_RECLAIM;
+> +	case RECLAIMER_BOTH:
+> +		return GFP_TRANSHUGE | __GFP_KSWAPD_RECLAIM | __GFP_NORETRY;
+> +	default:
+> +		return 0;
+
+maybe you let the userspace decide GFP flags instead of having RECLAIMER_xyz?
+
+> +	}
+> +}
+> +
+> +static bool bpf_thp_ops_is_valid_access(int off, int size,
+> +					enum bpf_access_type type,
+> +					const struct bpf_prog *prog,
+> +					struct bpf_insn_access_aux *info)
+> +{
+> +	return bpf_tracing_btf_ctx_access(off, size, type, prog, info);
+> +}
+> +
+> +static const struct bpf_func_proto *
+> +bpf_thp_get_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+> +{
+> +	return bpf_base_func_proto(func_id, prog);
+> +}
+> +
+> +static const struct bpf_verifier_ops thp_bpf_verifier_ops = {
+> +	.get_func_proto = bpf_thp_get_func_proto,
+> +	.is_valid_access = bpf_thp_ops_is_valid_access,
+> +};
+> +
+> +static int bpf_thp_reg(void *kdata, struct bpf_link *link)
+> +{
+> +	struct bpf_thp_ops *ops = kdata;
+> +
+> +	/* TODO: add support for multiple attaches */
+> +	if (test_and_set_bit(TRANSPARENT_HUGEPAGE_BPF_ATTACHED,
+> +		&transparent_hugepage_flags))
+> +		return -EOPNOTSUPP;
+> +	bpf_thp.allocator = ops->allocator;
+> +	bpf_thp.reclaimer = ops->reclaimer;
+> +	return 0;
+> +}
+> +
+> +static void bpf_thp_unreg(void *kdata, struct bpf_link *link)
+> +{
+> +	clear_bit(TRANSPARENT_HUGEPAGE_BPF_ATTACHED, &transparent_hugepage_flags);
+> +	bpf_thp.allocator = NULL;
+> +	bpf_thp.reclaimer = NULL;
+> +}
+> +
+> +static int bpf_thp_check_member(const struct btf_type *t,
+> +				const struct btf_member *member,
+> +				const struct bpf_prog *prog)
+> +{
+> +	return 0;
+> +}
+> +
+> +static int bpf_thp_init_member(const struct btf_type *t,
+> +			       const struct btf_member *member,
+> +			       void *kdata, const void *udata)
+> +{
+> +	return 0;
+> +}
+> +
+> +static int bpf_thp_init(struct btf *btf)
+> +{
+> +	return 0;
+> +}
+> +
+> +static int allocator(unsigned long vm_flags, unsigned long tva_flags)
+> +{
+> +	return 0;
+> +}
+> +
+> +static int reclaimer(bool vma_madvised)
+> +{
+> +	return 0;
+> +}
+> +
+> +static struct bpf_thp_ops __bpf_thp_ops = {
+> +	.allocator = allocator,
+> +	.reclaimer = reclaimer,
+> +};
+> +
+> +static struct bpf_struct_ops bpf_bpf_thp_ops = {
+> +	.verifier_ops = &thp_bpf_verifier_ops,
+> +	.init = bpf_thp_init,
+> +	.check_member = bpf_thp_check_member,
+> +	.init_member = bpf_thp_init_member,
+> +	.reg = bpf_thp_reg,
+> +	.unreg = bpf_thp_unreg,
+> +	.name = "bpf_thp_ops",
+> +	.cfi_stubs = &__bpf_thp_ops,
+> +	.owner = THIS_MODULE,
+> +};
+> +
+> +static int __init bpf_thp_ops_init(void)
+> +{
+> +	int err = register_bpf_struct_ops(&bpf_bpf_thp_ops, bpf_thp_ops);
+> +
+> +	if (err)
+> +		pr_err("bpf_thp: Failed to register struct_ops (%d)\n", err);
+> +	return err;
+> +}
+> +late_initcall(bpf_thp_ops_init);
+
 
