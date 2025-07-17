@@ -1,53 +1,53 @@
-Return-Path: <bpf+bounces-63505-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63506-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94C0AB081AC
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 02:50:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15452B081AD
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 02:50:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 855224E6EBF
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 00:49:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D55C56728B
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 00:50:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E47C91C5499;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E48291C5D4B;
 	Thu, 17 Jul 2025 00:49:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jqgjp0s6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eIjzHHP0"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59254184540;
-	Thu, 17 Jul 2025 00:49:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B2FD189F3F;
+	Thu, 17 Jul 2025 00:49:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752713377; cv=none; b=XWi6qQZQOYMAphRTzmVnhfddy7NUCNLJMXyNVTXNQravPSiZazyAtuHvSf+7EslIgGidt+LpPv/VhaI3SOug4nO8iABZlrKKvOJvpFlbu0gTjQsBHnwXGQlV2IOvXvjSV/MRzj0pwDY/dX72rqAR+5Egpz4SsV297v4AkvIrLWo=
+	t=1752713377; cv=none; b=Ko0a+xRXSVshJkwkZxk+ReJlAI9/tNqZX/64lJy9i99ZtPGt8QrEw3ys3lcoFHcCXftGB3QdONyp8IswvneL+WlgdsF52MzHcT1aVR4rpTM0ThPX5VUA2ZlifVo1Gfj1VsLe+VrGQMnDfmU3bmUBccWfWfFnSe0m8rpw4ivh58g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1752713377; c=relaxed/simple;
-	bh=D6WzydJYTzpIkcTqf6Eb08Cdq6+JZu7JrzcdUkXXQ6w=;
+	bh=khOhKXtWFZeIJYQHz9mkKupo2UshQTC5+3EPNwqv7Gk=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=UgBXaBeUzubRcPBlm/jOll17gsVhBJLC0P2iQjlNsCtH5xzj9na115oFdN2jFOxzMoYwfdhI1rJ70xuFJPedJ4bMh7Cjrrqv9Tl1wLdSgtDzLwSC25coHogPDb5+BIeAYcwWVcVudLgjjfyrYI/ih5mNOVVG+iRnu53kVwdBPWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jqgjp0s6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A620FC4CEF0;
+	 Content-Type; b=LXg8EqPcrEgemsZwCCIyqct/WDOFNQP5eTLBCrK8rIFiGKZYWaR2SKfgmnlcY3/Qu6+nTPgAe+EEMxSy2089uLhy7waVgtuKFQEUAm/gFnEnkYYBPF+PsjxuVGd+KQXI5m9ub55BgNE27MU93fV9/46hQbmSVBUKnVb0PTRXyY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eIjzHHP0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFAF1C4AF15;
 	Thu, 17 Jul 2025 00:49:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1752713376;
-	bh=D6WzydJYTzpIkcTqf6Eb08Cdq6+JZu7JrzcdUkXXQ6w=;
+	bh=khOhKXtWFZeIJYQHz9mkKupo2UshQTC5+3EPNwqv7Gk=;
 	h=Date:From:To:Cc:Subject:References:From;
-	b=Jqgjp0s6Ll6niU9H2T9RfefOkbTdis1CX6M0RbPc6AfL+cS5+cIujbkU87qV+lrSk
-	 JvmXYEZuyMtz6jMRjIHDwIY0dbu6V+2eaObYAWL/n1j84adfz4AlyEioDEtXmY4InT
-	 NhIZtJWkrjvmW/E3cEisRlNZs52kL7K0GphH0yNNUP51QuW3B9j4LHTL0lAlYm6S1I
-	 mMEnProjx2QwWfVuyWgBYLg2YmibnmzraEB9+kNVJIQJgBTkYUFOVo8k8AJ5Yu9s6y
-	 X8I0gCFVvW83N9P9KvF/cK5zhggy6tLskcnqF88NA2S3RqKIHgZ3Ox13jUT2Ne3IGx
-	 IkJPQsdwkoPGA==
+	b=eIjzHHP0uTNWGqOOjAXgUiEmK1ij6h7Vneu5tAV03sbMq8Fko0PkPmVkcISuhsXgR
+	 q0fEcZbyA5uHk/ReLLcvrqUO8M7ZKL7+dqLugtyvyoQptAw928iBPIyeMsB8mmbzcf
+	 3qIW19owFIJo4US9HucvkoFovgnqbCXmhvF26TvD+DSRkIR9o5fhjH9GWqijPv/FGn
+	 uHsIjVut1U70juxc+HwHqlTRt0JL+0hzNIKlr+d9hPBbpV7GBJ3ETRj4cRRiMjhHIm
+	 BPgji4cOxgxGV0XNZz4PiKyIHw98oUY3Evm88usaBrkzHnawDlu21Lrq3oA+iHjVLT
+	 UBXYv/LeX7qVg==
 Received: from rostedt by gandalf with local (Exim 4.98.2)
 	(envelope-from <rostedt@kernel.org>)
-	id 1ucCou-000000067SU-3ill;
-	Wed, 16 Jul 2025 20:49:56 -0400
-Message-ID: <20250717004956.741541953@kernel.org>
+	id 1ucCov-000000067Sy-0Ept;
+	Wed, 16 Jul 2025 20:49:57 -0400
+Message-ID: <20250717004956.907070321@kernel.org>
 User-Agent: quilt/0.68
-Date: Wed, 16 Jul 2025 20:49:12 -0400
+Date: Wed, 16 Jul 2025 20:49:13 -0400
 From: Steven Rostedt <rostedt@kernel.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org,
@@ -71,7 +71,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Jens Axboe <axboe@kernel.dk>,
  Florian Weimer <fweimer@redhat.com>,
  Sam James <sam@gentoo.org>
-Subject: [PATCH v14 02/12] unwind_user/deferred: Add unwind_user_faultable()
+Subject: [PATCH v14 03/12] unwind_user/deferred: Add unwind cache
 References: <20250717004910.297898999@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -81,204 +81,163 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 
-From: Steven Rostedt <rostedt@goodmis.org>
+From: Josh Poimboeuf <jpoimboe@kernel.org>
 
-Add a new API to retrieve a user space callstack called
-unwind_user_faultable(). The difference between this user space stack
-tracer from the current user space stack tracer is that this must be
-called from faultable context as it may use routines to access user space
-data that needs to be faulted in.
+Cache the results of the unwind to ensure the unwind is only performed
+once, even when called by multiple tracers.
 
-It can be safely called from entering or exiting a system call as the code
-can still be faulted in there.
+The cache nr_entries gets cleared every time the task exits the kernel.
+When a stacktrace is requested, nr_entries gets set to the number of
+entries in the stacktrace. If another stacktrace is requested, if
+nr_entries is not zero, then it contains the same stacktrace that would be
+retrieved so it is not processed again and the entries is given to the
+caller.
 
-This code is based on work by Josh Poimboeuf's deferred unwinding code:
-
-Link: https://lore.kernel.org/all/6052e8487746603bdb29b65f4033e739092d9925.1737511963.git.jpoimboe@kernel.org/
-
+Co-developed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- include/linux/sched.h                 |  5 +++
- include/linux/unwind_deferred.h       | 24 +++++++++++
- include/linux/unwind_deferred_types.h |  9 ++++
- kernel/fork.c                         |  4 ++
- kernel/unwind/Makefile                |  2 +-
- kernel/unwind/deferred.c              | 60 +++++++++++++++++++++++++++
- 6 files changed, 103 insertions(+), 1 deletion(-)
- create mode 100644 include/linux/unwind_deferred.h
- create mode 100644 include/linux/unwind_deferred_types.h
- create mode 100644 kernel/unwind/deferred.c
+ include/linux/entry-common.h          |  2 ++
+ include/linux/unwind_deferred.h       |  8 +++++++
+ include/linux/unwind_deferred_types.h |  7 +++++-
+ kernel/unwind/deferred.c              | 31 +++++++++++++++++++++------
+ 4 files changed, 40 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 4f78a64beb52..59fdf7d9bb1e 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -46,6 +46,7 @@
- #include <linux/rv.h>
- #include <linux/uidgid_types.h>
- #include <linux/tracepoint-defs.h>
-+#include <linux/unwind_deferred_types.h>
- #include <asm/kmap_size.h>
+diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
+index f94f3fdf15fc..8908b8eeb99b 100644
+--- a/include/linux/entry-common.h
++++ b/include/linux/entry-common.h
+@@ -12,6 +12,7 @@
+ #include <linux/resume_user_mode.h>
+ #include <linux/tick.h>
+ #include <linux/kmsan.h>
++#include <linux/unwind_deferred.h>
  
- /* task_struct member predeclarations (sorted alphabetically): */
-@@ -1654,6 +1655,10 @@ struct task_struct {
- 	struct user_event_mm		*user_event_mm;
- #endif
+ #include <asm/entry-common.h>
+ #include <asm/syscall.h>
+@@ -362,6 +363,7 @@ static __always_inline void exit_to_user_mode(void)
+ 	lockdep_hardirqs_on_prepare();
+ 	instrumentation_end();
  
-+#ifdef CONFIG_UNWIND_USER
-+	struct unwind_task_info		unwind_info;
-+#endif
-+
- 	/* CPU-specific state of this task: */
- 	struct thread_struct		thread;
- 
++	unwind_reset_info();
+ 	user_enter_irqoff();
+ 	arch_exit_to_user_mode();
+ 	lockdep_hardirqs_on(CALLER_ADDR0);
 diff --git a/include/linux/unwind_deferred.h b/include/linux/unwind_deferred.h
-new file mode 100644
-index 000000000000..a5f6e8f8a1a2
---- /dev/null
+index a5f6e8f8a1a2..baacf4a1eb4c 100644
+--- a/include/linux/unwind_deferred.h
 +++ b/include/linux/unwind_deferred.h
-@@ -0,0 +1,24 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_UNWIND_USER_DEFERRED_H
-+#define _LINUX_UNWIND_USER_DEFERRED_H
+@@ -12,6 +12,12 @@ void unwind_task_free(struct task_struct *task);
+ 
+ int unwind_user_faultable(struct unwind_stacktrace *trace);
+ 
++static __always_inline void unwind_reset_info(void)
++{
++	if (unlikely(current->unwind_info.cache))
++		current->unwind_info.cache->nr_entries = 0;
++}
 +
-+#include <linux/unwind_user.h>
-+#include <linux/unwind_deferred_types.h>
+ #else /* !CONFIG_UNWIND_USER */
+ 
+ static inline void unwind_task_init(struct task_struct *task) {}
+@@ -19,6 +25,8 @@ static inline void unwind_task_free(struct task_struct *task) {}
+ 
+ static inline int unwind_user_faultable(struct unwind_stacktrace *trace) { return -ENOSYS; }
+ 
++static inline void unwind_reset_info(void) {}
 +
-+#ifdef CONFIG_UNWIND_USER
-+
-+void unwind_task_init(struct task_struct *task);
-+void unwind_task_free(struct task_struct *task);
-+
-+int unwind_user_faultable(struct unwind_stacktrace *trace);
-+
-+#else /* !CONFIG_UNWIND_USER */
-+
-+static inline void unwind_task_init(struct task_struct *task) {}
-+static inline void unwind_task_free(struct task_struct *task) {}
-+
-+static inline int unwind_user_faultable(struct unwind_stacktrace *trace) { return -ENOSYS; }
-+
-+#endif /* !CONFIG_UNWIND_USER */
-+
-+#endif /* _LINUX_UNWIND_USER_DEFERRED_H */
+ #endif /* !CONFIG_UNWIND_USER */
+ 
+ #endif /* _LINUX_UNWIND_USER_DEFERRED_H */
 diff --git a/include/linux/unwind_deferred_types.h b/include/linux/unwind_deferred_types.h
-new file mode 100644
-index 000000000000..aa32db574e43
---- /dev/null
+index aa32db574e43..db5b54b18828 100644
+--- a/include/linux/unwind_deferred_types.h
 +++ b/include/linux/unwind_deferred_types.h
-@@ -0,0 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_UNWIND_USER_DEFERRED_TYPES_H
-+#define _LINUX_UNWIND_USER_DEFERRED_TYPES_H
-+
-+struct unwind_task_info {
-+	unsigned long		*entries;
+@@ -2,8 +2,13 @@
+ #ifndef _LINUX_UNWIND_USER_DEFERRED_TYPES_H
+ #define _LINUX_UNWIND_USER_DEFERRED_TYPES_H
+ 
++struct unwind_cache {
++	unsigned int		nr_entries;
++	unsigned long		entries[];
 +};
 +
-+#endif /* _LINUX_UNWIND_USER_DEFERRED_TYPES_H */
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 1ee8eb11f38b..3341d50c61f2 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -105,6 +105,7 @@
- #include <uapi/linux/pidfd.h>
- #include <linux/pidfs.h>
- #include <linux/tick.h>
-+#include <linux/unwind_deferred.h>
+ struct unwind_task_info {
+-	unsigned long		*entries;
++	struct unwind_cache	*cache;
+ };
  
- #include <asm/pgalloc.h>
- #include <linux/uaccess.h>
-@@ -732,6 +733,7 @@ void __put_task_struct(struct task_struct *tsk)
- 	WARN_ON(refcount_read(&tsk->usage));
- 	WARN_ON(tsk == current);
- 
-+	unwind_task_free(tsk);
- 	sched_ext_free(tsk);
- 	io_uring_free(tsk);
- 	cgroup_free(tsk);
-@@ -2135,6 +2137,8 @@ __latent_entropy struct task_struct *copy_process(
- 	p->bpf_ctx = NULL;
- #endif
- 
-+	unwind_task_init(p);
-+
- 	/* Perform scheduler related setup. Assign this task to a CPU. */
- 	retval = sched_fork(clone_flags, p);
- 	if (retval)
-diff --git a/kernel/unwind/Makefile b/kernel/unwind/Makefile
-index 349ce3677526..eae37bea54fd 100644
---- a/kernel/unwind/Makefile
-+++ b/kernel/unwind/Makefile
-@@ -1 +1 @@
-- obj-$(CONFIG_UNWIND_USER) += user.o
-+ obj-$(CONFIG_UNWIND_USER)	+= user.o deferred.o
+ #endif /* _LINUX_UNWIND_USER_DEFERRED_TYPES_H */
 diff --git a/kernel/unwind/deferred.c b/kernel/unwind/deferred.c
-new file mode 100644
-index 000000000000..a0badbeb3cc1
---- /dev/null
+index a0badbeb3cc1..96368a5aa522 100644
+--- a/kernel/unwind/deferred.c
 +++ b/kernel/unwind/deferred.c
-@@ -0,0 +1,60 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Deferred user space unwinding
-+ */
-+#include <linux/kernel.h>
-+#include <linux/sched.h>
-+#include <linux/slab.h>
-+#include <linux/unwind_deferred.h>
+@@ -4,10 +4,13 @@
+  */
+ #include <linux/kernel.h>
+ #include <linux/sched.h>
++#include <linux/sizes.h>
+ #include <linux/slab.h>
+ #include <linux/unwind_deferred.h>
+ 
+-#define UNWIND_MAX_ENTRIES 512
++/* Make the cache fit in a 4K page */
++#define UNWIND_MAX_ENTRIES					\
++	((SZ_4K - sizeof(struct unwind_cache)) / sizeof(long))
+ 
+ /**
+  * unwind_user_faultable - Produce a user stacktrace in faultable context
+@@ -24,6 +27,7 @@
+ int unwind_user_faultable(struct unwind_stacktrace *trace)
+ {
+ 	struct unwind_task_info *info = &current->unwind_info;
++	struct unwind_cache *cache;
+ 
+ 	/* Should always be called from faultable context */
+ 	might_fault();
+@@ -31,17 +35,30 @@ int unwind_user_faultable(struct unwind_stacktrace *trace)
+ 	if (current->flags & PF_EXITING)
+ 		return -EINVAL;
+ 
+-	if (!info->entries) {
+-		info->entries = kmalloc_array(UNWIND_MAX_ENTRIES, sizeof(long),
+-					      GFP_KERNEL);
+-		if (!info->entries)
++	if (!info->cache) {
++		info->cache = kzalloc(struct_size(cache, entries, UNWIND_MAX_ENTRIES),
++				      GFP_KERNEL);
++		if (!info->cache)
+ 			return -ENOMEM;
+ 	}
+ 
++	cache = info->cache;
++	trace->entries = cache->entries;
 +
-+#define UNWIND_MAX_ENTRIES 512
-+
-+/**
-+ * unwind_user_faultable - Produce a user stacktrace in faultable context
-+ * @trace: The descriptor that will store the user stacktrace
-+ *
-+ * This must be called in a known faultable context (usually when entering
-+ * or exiting user space). Depending on the available implementations
-+ * the @trace will be loaded with the addresses of the user space stacktrace
-+ * if it can be found.
-+ *
-+ * Return: 0 on success and negative on error
-+ *         On success @trace will contain the user space stacktrace
-+ */
-+int unwind_user_faultable(struct unwind_stacktrace *trace)
-+{
-+	struct unwind_task_info *info = &current->unwind_info;
-+
-+	/* Should always be called from faultable context */
-+	might_fault();
-+
-+	if (current->flags & PF_EXITING)
-+		return -EINVAL;
-+
-+	if (!info->entries) {
-+		info->entries = kmalloc_array(UNWIND_MAX_ENTRIES, sizeof(long),
-+					      GFP_KERNEL);
-+		if (!info->entries)
-+			return -ENOMEM;
++	if (cache->nr_entries) {
++		/*
++		 * The user stack has already been previously unwound in this
++		 * entry context.  Skip the unwind and use the cache.
++		 */
++		trace->nr = cache->nr_entries;
++		return 0;
 +	}
 +
-+	trace->nr = 0;
-+	trace->entries = info->entries;
-+	unwind_user(trace, UNWIND_MAX_ENTRIES);
+ 	trace->nr = 0;
+-	trace->entries = info->entries;
+ 	unwind_user(trace, UNWIND_MAX_ENTRIES);
+ 
++	cache->nr_entries = trace->nr;
 +
-+	return 0;
-+}
-+
-+void unwind_task_init(struct task_struct *task)
-+{
-+	struct unwind_task_info *info = &task->unwind_info;
-+
-+	memset(info, 0, sizeof(*info));
-+}
-+
-+void unwind_task_free(struct task_struct *task)
-+{
-+	struct unwind_task_info *info = &task->unwind_info;
-+
-+	kfree(info->entries);
-+}
+ 	return 0;
+ }
+ 
+@@ -56,5 +73,5 @@ void unwind_task_free(struct task_struct *task)
+ {
+ 	struct unwind_task_info *info = &task->unwind_info;
+ 
+-	kfree(info->entries);
++	kfree(info->cache);
+ }
 -- 
 2.47.2
 
