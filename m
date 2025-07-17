@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-63539-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63540-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C23CCB0828A
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 03:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D82FB0829B
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 03:49:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FB2E1A64CFE
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 01:40:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 780EA1A6604E
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 01:50:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 677E81F5413;
-	Thu, 17 Jul 2025 01:40:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1EBE191499;
+	Thu, 17 Jul 2025 01:49:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OtQ2rWi2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f4c2kPWQ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEB5C1EE02F;
-	Thu, 17 Jul 2025 01:40:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47373FBF0;
+	Thu, 17 Jul 2025 01:49:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752716403; cv=none; b=VOu/H2x7jnBQ71DjULMjDa5PGLpK5/kDFxvdSElFgeW45ZSjjFS4VlTBxY60tDWMnMsgX6xKBoROSn6IK7oh+PH6/JtXjM8m5grtLR6V70oIGe6tgaxXfbHKOyw9qkkKxTBL/i1o6wdMN7Hi9Aq1qUPIIlZ2jJy1H2JD/Yefbzc=
+	t=1752716988; cv=none; b=hIpFHkVH3F1qc7roAnE6P221nbovkHqjGOqrOMOTtstMY1YMxPL98KmiicVNZnvV0iDM2pqrVpX/0e0U5D6SKukftFNZC4LgyEpX1PAHGbcX0kzctRw0tXOTfID5TqJG37YfeyXaSZYaVK2kJ0MxjOuh8kfD2w/xF3dfJh2RMk0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752716403; c=relaxed/simple;
-	bh=eWAwC1GBJWP4MMsdwqJNitn5FU+zU5RAmgOfK+oLt6U=;
+	s=arc-20240116; t=1752716988; c=relaxed/simple;
+	bh=wGad5u9D4gBJQzmzLVHad8FkkuNUEHduVtO97jZN3YI=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Gx/sk7NtgjWQTQsp1fn58cIYyNQUe3vD1JtuYt2mj7IqL8oBj600D42g4w4iX1H5y0BxLjd+9vCcJKKOBj4mK954uuPiPWrre2BrAUO7HzGrgmYGBNnr9woJ9gZfkT5+rZWSK1hRUsoFQjb1iLPrkFsNBBjnLFgJlbfXt9HuA6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OtQ2rWi2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A8B7C4CEF0;
-	Thu, 17 Jul 2025 01:40:03 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=E/koryRGZJMfs+5bqSB0fIxLSyRC0vkqPI+OAFdEGOR6Z8O4mXlsJ4a+9Lkro17l32r50qtUSMb/lsgA/Lk4WFwV+aBVHec21Ctwh6nzXNC2SJUuXM9HOO2RElIE9dSkRDez3iNof8/vj5R9GukOJsW9uBya7CCErGoJRA+WMHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f4c2kPWQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C8E8C4CEE7;
+	Thu, 17 Jul 2025 01:49:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752716403;
-	bh=eWAwC1GBJWP4MMsdwqJNitn5FU+zU5RAmgOfK+oLt6U=;
+	s=k20201202; t=1752716988;
+	bh=wGad5u9D4gBJQzmzLVHad8FkkuNUEHduVtO97jZN3YI=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=OtQ2rWi2AD19Sxm7KcYKZFZWeKSQ1W5wme+BgWW9eF8Yn4jhJQtmlnQa7H5vH5WV9
-	 R1F9oqLeHiG1uYeGU41To4wozRBRXUs7Dc8+mmyfJH8kSwh+GQYb+8Fv8BGb7aVdBj
-	 uMIx/ywBAl1ENrJTrRALWEWjH6GgB8p/aC9VZzSNN3TVA+jgstYgK6kvlJLAh8hdSr
-	 WKu3ald6c4vwduyJQvc4msVUM1g8OvYGuQ7n3yRQW4+RScotFsdrWcP8NfTjmyB1MN
-	 x9ZTFK9fbTVm4S/EqbajhZd8Wr5YEcmDFoVe/AyXDl972If3hPWjDYrhakkPoy/UrV
-	 xgPgUxC1P+Vtg==
+	b=f4c2kPWQFDIFaNv1Y+u7OupG22GRBbv2Nd+1Mi/ETtys2Un8/douvG/OstGK56wED
+	 LrNuDp+t9e6J741NFjwZtlQgiwAciXm1iLlYIPhzx8SrYtL9Xsd8n7Gm+lH73n7pUn
+	 /SMXE5VG30fP9KYAiMpaLpGyrzgkjUYQ3Z86IM8c9L+xIrCi0UKTBjl+lG3dMWCtYj
+	 fM341E6u6M0AnjeOg7ibufN6BCTZ3Uigxse+vC1GO5lAM6P8o6a1ACeqSjykH/befy
+	 ADmEJZaNYiZwxhrfBDeEJ+R+wyZn/ObLVfC2fXn1F2hmpslC3VsQPe8RPXR5Ts40Ym
+	 YmuavjLerbAVg==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADC62383BA38;
-	Thu, 17 Jul 2025 01:40:24 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70DEA383BA38;
+	Thu, 17 Jul 2025 01:50:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,41 +52,38 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf-next] bpf: Clean up individual BTF_ID code
+Subject: Re: [PATCH bpf-next 0/1] A tool to verify the BPF memory model
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <175271642326.1391969.12291957818977082467.git-patchwork-notify@kernel.org>
-Date: Thu, 17 Jul 2025 01:40:23 +0000
-References: <20250710055419.70544-1-yangfeng59949@163.com>
-In-Reply-To: <20250710055419.70544-1-yangfeng59949@163.com>
-To: Feng Yang <yangfeng59949@163.com>
-Cc: martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
+ <175271700826.1394291.8116417405326135907.git-patchwork-notify@kernel.org>
+Date: Thu, 17 Jul 2025 01:50:08 +0000
+References: <20250710175434.18829-1-puranjay@kernel.org>
+In-Reply-To: <20250710175434.18829-1-puranjay@kernel.org>
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: andrii@kernel.org, eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org,
+ daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
  yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
- mattbobrowski@google.com, rostedt@goodmis.org, mhiramat@kernel.org,
- olsajiri@gmail.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, memxor@gmail.com,
+ paulmck@kernel.org, bpf@vger.kernel.org, lkmm@lists.linux.dev
 
 Hello:
 
 This patch was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Thu, 10 Jul 2025 13:54:19 +0800 you wrote:
-> From: Feng Yang <yangfeng@kylinos.cn>
+On Thu, 10 Jul 2025 17:54:32 +0000 you wrote:
+> I am building a tool called blitmus[1] that converts memory model litmus
+> tests written in C into BPF programs that run in parallel to verify that the
+> JITs are enforcing the memory model correctly.
 > 
-> Use BTF_ID_LIST_SINGLE(a, b, c) instead of
-> BTF_ID_LIST(a)
-> BTF_ID(b, c)
-> 
-> Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
+> With this tool I was able to find a bug in the implementation of the smp_mb()
+> in the selftests.
 > 
 > [...]
 
 Here is the summary with links:
-  - [v2,bpf-next] bpf: Clean up individual BTF_ID code
-    https://git.kernel.org/bpf/bpf-next/c/62ef449b8d8e
+  - [bpf-next,1/1] selftests/bpf: fix implementation of smp_mb()
+    https://git.kernel.org/bpf/bpf-next/c/0769857a07b4
 
 You are awesome, thank you!
 -- 
