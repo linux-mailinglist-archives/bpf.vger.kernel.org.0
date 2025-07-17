@@ -1,142 +1,181 @@
-Return-Path: <bpf+bounces-63601-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63602-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFDE5B08D2B
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 14:39:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74F7FB08DE0
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 15:09:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B94424A586A
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 12:39:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9CE0188B020
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 13:09:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B0F02C3276;
-	Thu, 17 Jul 2025 12:39:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91F092D77E9;
+	Thu, 17 Jul 2025 13:08:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Roreyz6l"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A4E829ACF3;
-	Thu, 17 Jul 2025 12:39:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09B172063E7;
+	Thu, 17 Jul 2025 13:08:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752755970; cv=none; b=AMEc2cJQRlRStBs+ay4X9H0+p4IQSctzta4YJusPleP04hH7KB1HKsOJL7jPbh4ahMJ7Q22MxYa6PFlOWkb4lC7FS8XQRjLnRBFvFppgc+83or+aT9BzY982ViPU7N38Iwjj3Mon9Ngjrdxwu7QJtgl4hWU1j6apT/vDdHWCGCE=
+	t=1752757737; cv=none; b=APj0LdmA0i6IrRrJQlSZmgQIROHWTqwdxmuI9GKBtsAmKU33Ke12DEgz0wA3DdqPC3Dtn3n5Uvjjgom2IXq922+sq2igy8G7kSeeI1FTGW4ntK0dDqrejRlyzvr3+QeOtTM0aJrtySGHz0HQOKpBSJrnz8FduwmvSmMRc99xW4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752755970; c=relaxed/simple;
-	bh=YH2pOK4vBUjN8aM5VaclvCspIE9DyGdEoB1Ya5XTqD8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QvRJdK4oCH9GetZtb6LFxhbHvbatH4jpanvtDr26vXJIC7yE0BYSUTp2aeEL8Gi/8UxfODlhDInzolyH2OYCXWXdfbd76UFNvyJPGNwXxQ/fuAznNoY6ek7DhdDbJgDK455G4CI9dm2jHCVpUI+cly/KnLReVqUCe/nIht88bdg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-ae3a604b43bso158962866b.0;
-        Thu, 17 Jul 2025 05:39:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752755966; x=1753360766;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8FbVsGYaq0NyKNgSaxcwvLjtec9H1rtMkyXCq5d8Dfs=;
-        b=wl7vbN3cIgWuNXv62L9cvvyhZRLu+e2XWQkbrC2X881oUbS5EL0ss1Xfvh9Kq15g62
-         H5ikdOp0Cdp0IOSLKFjNIqzoES05pkHn6aqScK1xBGfABwLSjqcSEM9D9XPeaEXbyx4+
-         Q/9yDkyYlQvf6HK+bD/uf7j+Fhsu6kfypuyNx1wmMnxRTyZFmOBy5oUay9mvE6X7xJgW
-         QUdQbVt1+to7bZXA8iSJWU6FbiAWrnnhemAzEnfS+UQJTjIlFqMa5bM2s8dDyXzJFfzk
-         9hqonI/zpkQyd0xKUQB98GX06ol02OufZMWzGzZtJt71iYkLJRwCFH2H3A8/H9LFEtNQ
-         rn1A==
-X-Forwarded-Encrypted: i=1; AJvYcCUawH1+uOq8gbL5gCHKgBFGf/eryY4Tuo/BNYAwxaMxrQ4KG2x6RnRoAIcvQU9wF4CvC8EZFL8cn6de+A==@vger.kernel.org, AJvYcCUl0O8T5JH1VgS4K1FEr+kw9Wv1fQE8aWZFkin10FL2d/ao9BUjf7RuG5GL09J8IvNFqEE=@vger.kernel.org, AJvYcCXcNGV+8K9nxAXcliUnZUQIuE/bE1HTqnWuhaAbr6fW8A4Ft4/7s/roEHRJk96EJo5UTHaKdHg0GCY53Skt@vger.kernel.org, AJvYcCXe5KUdHzCr9HJy3j3faAa7bnvBqphtKOuvPF7OMle/l4KbjLqFiLjjw/6SsoJEzGIedIIMrp68FcPYmf7JvPZ1@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx7mB4MVWxDGdewprmK00HPfhLmPcOlLyJ/xMF4AFkcXNI00SbU
-	8CvW05Dac48VlffML6Rd1Mfmyo6KTPk/iLu+fFDgYjJsbRh0YqRYCrpG
-X-Gm-Gg: ASbGncs3uPzzQv40tqChYwix8VhPreRUz7LuFotji0ywbQwnAJJSH9TyBOM3lRi8W0X
-	wcOFpk+kOLGns6mSUti52sju4fAd+IqNr0ddR630CN9k7R3UZrHRe0GEKBEbOu+BvYcJisHWOXU
-	Cspuys8O4Siv55kQvJgKhUwoksUAtgR6/qeHOa9MothV9prDw9BE4rR0fI/IwVsFi5M/B7ekfVY
-	XuhV2AeB5fWh8TtOoQcfE6pjUpkb+UCKMukqWtBHVQZG8fadcfwKVt8kYDuMv/P8YxXH9hkx1+V
-	CnhZaujFwksC4u8dG9ifNJ97Pu2mKDVlawevZQv9cRDKu3nU8dMEcCPNrOf3VZ6Cv5W19ZGXyTG
-	Eiuwx7JwkUYpWhTx4m/q3sbM=
-X-Google-Smtp-Source: AGHT+IFGMudLSa+MO2VRzIbQxkbKfo9sFMUMYLFenyZfvGkLpQS2jb+5lrL6tqgUkH/mp49v4K+DYQ==
-X-Received: by 2002:a17:907:80b:b0:aec:55c0:6d5e with SMTP id a640c23a62f3a-aec55c0765dmr171272166b.30.1752755965867;
-        Thu, 17 Jul 2025 05:39:25 -0700 (PDT)
-Received: from gmail.com ([2a03:2880:30ff:1::])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae6e7ee471asm1374427366b.54.2025.07.17.05.39.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jul 2025 05:39:25 -0700 (PDT)
-Date: Thu, 17 Jul 2025 05:39:22 -0700
-From: Breno Leitao <leitao@debian.org>
-To: Lorenz Bauer <lmb@isovalent.com>, linux-arm-kernel@lists.infradead.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, 
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
-	Shuah Khan <shuah@kernel.org>, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	Alan Maguire <alan.maguire@oracle.com>
-Subject: Re: [PATCH bpf-next v5 1/3] btf: allow mmap of vmlinux btf
-Message-ID: <g2gqhkunbu43awrofzqb4cs4sxkxg2i4eud6p4qziwrdh67q4g@mtw3d3aqfgmb>
-References: <20250520-vmlinux-mmap-v5-0-e8c941acc414@isovalent.com>
- <20250520-vmlinux-mmap-v5-1-e8c941acc414@isovalent.com>
+	s=arc-20240116; t=1752757737; c=relaxed/simple;
+	bh=Gxdr3RZXteWorE0Y2DFq5UsYlM8TYBwQDD2qhb2K7q8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=b1rxk8vqf62pmH6JYnBkoVjT3MDHg4uMRqr+4tr2kg+vgR7KKim/hMA9p16zA423rKINyRwqdjDgqZzx81osfbC/3BJKegO3aRfzQDYqkyv3b6PvRq2qCi3a3RD+l+SlkXwYLEYgQ4XSwGaDLmaHJNzDd2k11AB6rwMZIO6LqAA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Roreyz6l; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBFDBC4CEE3;
+	Thu, 17 Jul 2025 13:08:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752757735;
+	bh=Gxdr3RZXteWorE0Y2DFq5UsYlM8TYBwQDD2qhb2K7q8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Roreyz6l6LFUeMrm8RCdb5RnOBvxEudhN7Xa+JoGReCxC+FX1N2jcQ9z7IDwIazyT
+	 +F6yKOG8MKX5baGpAi0ynF1llNZLhig/xtp/vKidJQcTB+h+J+omKqN4TX+Jio2gBq
+	 70SPGTN+CAcfVZ7FjLTnyOwvajwzCJDKQ2ox/XcYK++ou4WRt1523WvqmmIf7rWvy+
+	 c+V5BIS409g0ZtSCSkOCDG2ZPUUdRaIvV/XhWnCz8CNl+xTBRgU96ysEmvebVDkYye
+	 CLa91tRqavtSNML1T5vUEjSwVwHzRn40YwEdQ5zixaCdw6YlKp12WGPE2haJl1SMR0
+	 Z0jSbFONExiSQ==
+Message-ID: <fbb026f9-54cf-49ba-b0dc-0df0f54c6961@kernel.org>
+Date: Thu, 17 Jul 2025 15:08:49 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250520-vmlinux-mmap-v5-1-e8c941acc414@isovalent.com>
-
-Hello Lorenz,
-
-On Tue, May 20, 2025 at 02:01:17PM +0100, Lorenz Bauer wrote:
-> diff --git a/kernel/bpf/sysfs_btf.c b/kernel/bpf/sysfs_btf.c
-> index 81d6cf90584a7157929c50f62a5c6862e7a3d081..941d0d2427e3a2d27e8f1cff7b6424d0d41817c1 100644
-> --- a/kernel/bpf/sysfs_btf.c
-> +++ b/kernel/bpf/sysfs_btf.c
-
->  extern char __start_BTF[];
->  extern char __stop_BTF[];
-
-> +static int btf_sysfs_vmlinux_mmap(struct file *filp, struct kobject *kobj,
-> +				  const struct bin_attribute *attr,
-> +				  struct vm_area_struct *vma)
-> +{
-> +	unsigned long pages = PAGE_ALIGN(attr->size) >> PAGE_SHIFT;
-> +	size_t vm_size = vma->vm_end - vma->vm_start;
-> +	phys_addr_t addr = virt_to_phys(__start_BTF);
-
-I am getting the following warning on arm64 which seems related to this
-code here. lines are based on cd031354087d8ae ("Merge branch
-'net-mlx5e-add-support-for-pcie-congestion-events') net-next branch
-
-	[   58.896157] virt_to_phys used for non-linear address: 000000009fea9737 (__start_BTF+0x0/0x685530)
-	[   23.988669] WARNING: CPU: 25 PID: 1442 at arch/arm64/mm/physaddr.c:15 __virt_to_phys (arch/arm64/mm/physaddr.c:?)
-	[   24.018136] Modules linked in: nvidia_cspmu(E) mlx5_ib(E) ipmi_ssif(E) arm_smmuv3_pmu(E) arm_cspmu_module(E) coresight_trbe(E) ib_uverbs(E) ipmi_devintf(E) ipmi_msghandler(E) coresight_stm(E) coresight_etm4x(E) coresight_tmc(E) coresight_funnel(E) stm_core(E) coresight(E) cppc_cpufreq(E) sch_fq_codel(E) drm(E) backlight(E) drm_panel_orientation_quirks(E) xhci_pci(E) xhci_hcd(E) sm3_ce(E) sha3_ce(E) sha512_ce(E) spi_tegra210_quad(E) acpi_power_meter(E) loop(E) efivarfs(E) autofs4(E)
-	[   24.075371] Tainted: [E]=UNSIGNED_MODULE, [N]=TEST
-	[   24.080276] Hardware name: Quanta S7GM 20S7GCU0010/S7G MB (CG1), BIOS 3D22 07/03/2024
-	[   24.088295] pstate: 63400009 (nZCv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
-	[   24.098440] pc : __virt_to_phys (arch/arm64/mm/physaddr.c:?)
-	[   24.105398] lr : __virt_to_phys (arch/arm64/mm/physaddr.c:?)
-	[   24.112227] sp : ffff8000ba00f8e0
-	[   24.115620] x29: ffff8000ba00f8e0 x28: ffff8000ba00faf0 x27: ffff8000ba00fa88
-	[   24.122919] x26: ffff8000ba00fa40 x25: ffff800082772000 x24: 0000fffd6db70000
-	[   24.130226] x23: 0000000000685530 x22: 0000fffd6e200000 x21: ffff800081cc0000
-	[   24.140540] x20: ffff800081be02d8 x19: ffff800081cc0000 x18: 5f5f282037333739
-	[   24.150708] x17: 6165663930303030 x16: 0000000000000fc4 x15: 0000000000000003
-	[   24.160737] x14: ffff800082923398 x13: 0000000000000003 x12: 0000000000000003
-	[   24.168042] x11: 00000000fffeffff x10: ffff800082663784 x9 : cc38fcac5cdabe00
-	[   24.175348] x8 : 0001000000000000 x7 : ffff8000813dd878 x6 : 0000000000000000
-	[   24.182653] x5 : 0000000000000001 x4 : 0000000000000001 x3 : 0000000000000000
-	[   24.189959] x2 : 0000000000000000 x1 : ffff800081a3a6d0 x0 : 0000000000000055
-	[   24.197257] Call trace:
-	[   24.199761] __virt_to_phys (arch/arm64/mm/physaddr.c:?) (P)
-	[   24.206883] btf_sysfs_vmlinux_mmap (kernel/bpf/sysfs_btf.c:27)
-	[   24.214264] sysfs_kf_bin_mmap (fs/sysfs/file.c:179)
-	[   24.218536] kernfs_fop_mmap (fs/kernfs/file.c:462)
-	[   24.222461] mmap_region (./include/linux/fs.h:? mm/internal.h:167 mm/vma.c:2405 mm/vma.c:2467 mm/vma.c:2622 mm/vma.c:2692)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next V2 0/7] xdp: Allow BPF to set RX hints for
+ XDP_REDIRECTed packets
+To: Jakub Kicinski <kuba@kernel.org>, Lorenzo Bianconi <lorenzo@kernel.org>
+Cc: Stanislav Fomichev <stfomichev@gmail.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <borkmann@iogearbox.net>,
+ Eric Dumazet <eric.dumazet@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>, sdf@fomichev.me,
+ kernel-team@cloudflare.com, arthur@arthurfabre.com, jakub@cloudflare.com,
+ Jesse Brandeburg <jbrandeburg@cloudflare.com>
+References: <175146824674.1421237.18351246421763677468.stgit@firesoul>
+ <aGVY2MQ18BWOisWa@mini-arch>
+ <b1873a92-747d-4f32-91f8-126779947e42@kernel.org>
+ <aGvcb53APFXR8eJb@mini-arch> <aG427EcHHn9yxaDv@lore-desk>
+ <aHE2F1FJlYc37eIz@mini-arch> <aHeKYZY7l2i1xwel@lore-desk>
+ <20250716142015.0b309c71@kernel.org>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <20250716142015.0b309c71@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
-Should __pa_symbol() be used instead of virt_to_phys()?
 
-Thanks
---breno
+On 16/07/2025 23.20, Jakub Kicinski wrote:
+> On Wed, 16 Jul 2025 13:17:53 +0200 Lorenzo Bianconi wrote:
+>>>> I can't see what the non-redirected use-case could be. Can you please provide
+>>>> more details?
+>>>> Moreover, can it be solved without storing the rx_hash (or the other
+>>>> hw-metadata) in a non-driver specific format?
+>>>
+>>> Having setters feels more generic than narrowly solving only the redirect,
+>>> but I don't have a good use-case in mind.
+>>>    
+>>>> Storing the hw-metadata in some of hw-specific format in xdp_frame will not
+>>>> allow to consume them directly building the skb and we will require to decode
+>>>> them again. What is the upside/use-case of this approach? (not considering the
+>>>> orthogonality with the get method).
+>>>
+>>> If we add the store kfuncs to regular drivers, the metadata  won't be stored
+>>> in the xdp_frame; it will go into the rx descriptors so regular path that
+>>> builds skbs will use it.
+>>
+>> IIUC, the described use-case would be to modify the hw metadata via a
+>> 'setter' kfunc executed by an eBPF program bounded to the NIC and to store
+>> the new metadata in the DMA descriptor in order to be consumed by the driver
+>> codebase building the skb, right?
+>> If so:
+>> - we can get the same result just storing (running a kfunc) the modified hw
+>>    metadata in the xdp_buff struct using a well-known/generic layout and
+>>    consume it in the driver codebase (e.g. if the bounded eBPF program
+>>    returns XDP_PASS) using a generic xdp utility routine. This part is not in
+>>    the current series.
+>> - Using this approach we are still not preserving the hw metadata if we pass
+>>    the xdp_frame to a remote CPU returning XDP_REDIRCT (we need to add more
+>>    code)
+>> - I am not completely sure if can always modify the DMA descriptor directly
+>>    since it is DMA mapped.
+
+Let me explain why it is a bad idea of writing into the RX descriptors.
+The DMA descriptors are allocated as coherent DMA (dma_alloc_coherent).
+This is memory that is shared with the NIC hardware device, which
+implies cache-line coherence.  NIC performance is tightly coupled to
+limiting cache misses for descriptors.  One common trick is to pack more
+descriptors into a single cache-line.  Thus, if we start to write into
+the current RX-descriptor, then we invalidate that cache-line seen from
+the device, and next RX-descriptor (from this cache-line) will be in an
+unfortunate coherent state.  Behind the scene this might lead to some
+extra PCIe transactions.
+
+By writing to the xdp_frame, we don't have to modify the DMA descriptors
+directly and risk invalidating cache lines for the NIC.
+
+>>
+>> What do you think?
+> 
+> FWIW I commented on an earlier revision to similar effect as Stanislav.
+> To me the main concern is that we're adding another adhoc scheme, and
+> are making xdp_frame grow into a para-skb. We added XDP to make raw
+> packet access fast, now we're making drivers convert metadata twice :/
+
+Thanks for the feedback. I can see why you'd be concerned about adding
+another adhoc scheme or making xdp_frame grow into a "para-skb".
+
+However, I'd like to frame this as part of a long-term plan we've been
+calling the "mini-SKB" concept. This isn't a new idea, but a
+continuation of architectural discussions from as far back as [2016].
+
+The long-term goal, described in these presentations from [2018] and
+[2019], has always been to evolve the xdp_frame to handle more hardware
+offloads, with the ultimate vision of moving SKB allocation out of NIC
+drivers entirely. In the future, the netstack could perform L3
+forwarding (and L2 bridging) directly on these enhanced xdp_frames
+[2019-slide20]. The main blocker for this vision has been the lack of
+hardware metadata in the xdp_frame.
+
+This patchset is a small but necessary first step towards that goal. It
+focuses on the concrete XDP_REDIRECT use-case where we can immediately
+benefit for our production use-case. Storing this metadata in the
+xdp_frame is fundamental to the plan. It's no coincidence the fields are
+compatible with the SKB; they need to be.
+
+I'm certainly open to debating the bigger picture, but I hope we can
+agree that it shouldn't hold up this first step, which solves an
+immediate need. Perhaps we can evaluate the merits of this specific
+change first, and discuss the overall architecture in parallel?
+
+--Jesper
+
+
+Links:
+------
+[2019] XDP closer integration with network stack
+  - 
+https://people.netfilter.org/hawk/presentations/KernelRecipes2019/xdp-netstack-concert.pdf
+  - 
+https://github.com/xdp-project/xdp-project/blob/main/conference/KernelRecipes2019/xdp-netstack-concert.org#slide-move-skb-allocations-out-of-nic-drivers
+  - [2019-slide20] 
+https://github.com/xdp-project/xdp-project/blob/main/conference/KernelRecipes2019/xdp-netstack-concert.org#slide-fun-with-xdp_frame-before-skb-alloc
+
+[2018] LPC Networking Track: XDP - challenges and future work
+  - https://people.netfilter.org/hawk/presentations/LinuxPlumbers2018/
+  - 
+https://github.com/xdp-project/xdp-project/blob/main/conference/LinuxPlumbers2018/presentation-lpc2018-xdp-future.org#topic-moving-skb-allocation-out-of-driver
+
+[2016] Network Performance Workshop
+  - 
+https://people.netfilter.org/hawk/presentations/NetDev1.2_2016/net_performance_workshop_netdev1.2.pdf
 
