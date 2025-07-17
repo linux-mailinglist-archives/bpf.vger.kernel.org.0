@@ -1,188 +1,127 @@
-Return-Path: <bpf+bounces-63614-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63615-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ED33B09065
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 17:18:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33367B09084
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 17:25:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4960217430F
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 15:18:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ECF467BD353
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 15:23:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D2D91E8322;
-	Thu, 17 Jul 2025 15:18:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB46A2E54B0;
+	Thu, 17 Jul 2025 15:25:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B/Mjz8N8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QaU9i+od"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF027E107;
-	Thu, 17 Jul 2025 15:18:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CEDC2F85DE;
+	Thu, 17 Jul 2025 15:25:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752765505; cv=none; b=HaORC/ozX+KDR3KrdPwjmV6LmvMmFxLhwo6Hz0EH5BJ16BWyywmFzB6Rjvnk61x2J2iv3F8YcVcElUha27L57d4JZFBPohFTBRm/kCsuU+h86rH+G+bWuKaVZyqhwJC+dX9g6y8iWYcuCl78Tlq3LQgghWEFJrBt9iZVsDhaB3E=
+	t=1752765905; cv=none; b=NBEcjnFVlFXWCsqAg6X/Pfag6rJfI6Q8AwFD/tPlgpDmL5XHAfVini4Kq0NlEOywtbsmLIHJ/8P9yQE++1JsUaa5uU5mhF2uZvMSiFtfBSnG1R9aJJ4H66dLeR8Czsj+cJ3ZTqQzR1/tsmf5+DkoTcAYERltEcQhgSv4Zb6EhEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752765505; c=relaxed/simple;
-	bh=tRboDQsJ5JM93kjNC6bgN2KgDzfrJvfH+DqeB39GWcI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZOq8EqMMbUzPVxGLR4/MRA1RUkiikjjhrG2wy3WKABJriBbHvso0CubQgEDLFWo5mswTamWzabRFnaVZ64pUnvzbY3Junna0lNy/MgBpH283ITK67maNOXTUgEOHC5gLMsseQOiXaQES5OdtaWJ2KW5sdag4kSmddj0G5B7qEa4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B/Mjz8N8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D877C4CEE3;
-	Thu, 17 Jul 2025 15:18:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752765505;
-	bh=tRboDQsJ5JM93kjNC6bgN2KgDzfrJvfH+DqeB39GWcI=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=B/Mjz8N8398vnpqxR1Zs2h91k/JdpgSMflzaLDrK44MpO6jG5Dp/apCe8rqC2FY2S
-	 a958rFhmovVeQaJFTN7pE5Oe26SQzXG+5iGo3PD2XiHD7KsMF+l8jNJmgIiflSgdLS
-	 zhBw5WqCWA1aGOLGNog9eLK0AAO4Cr0c1VD9SyajTJO2WzmPzcBNivMIS37YMYiovu
-	 KDaK8n4Y9aOzIu6KZwSZaHxE7dcs2TNE50ijGsp4ulrnlJyaKDxvXKApBgI99anAo3
-	 awynQ17OrP+iE/y4H/zzjmZuaBpwQTCcRXx+Fh3puMCt//92afakaEi4NXpBCcdnfO
-	 W6LbgWVvhQSXg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id BA9F7CE09F5; Thu, 17 Jul 2025 08:18:24 -0700 (PDT)
-Date: Thu, 17 Jul 2025 08:18:24 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Boqun Feng <boqun.feng@gmail.com>, linux-rt-devel@lists.linux.dev,
-	rcu@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
-	bpf@vger.kernel.org
-Subject: Re: [RFC PATCH 1/2] rcu: Add rcu_read_lock_notrace()
-Message-ID: <2f8bb8bb-320e-480f-9a56-8eb5cbd4438a@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <acb07426-db2f-4268-97e2-a9588c921366@paulmck-laptop>
- <ba0743dc-8644-4355-862b-d38a7791da4c@efficios.com>
- <512331d8-fdb4-4dc1-8d9b-34cc35ba48a5@paulmck-laptop>
- <bbe08cca-72c4-4bd2-a894-97227edcd1ad@efficios.com>
- <16dd7f3c-1c0f-4dfd-bfee-4c07ec844b72@paulmck-laptop>
- <20250716110922.0dadc4ec@batman.local.home>
- <895b48bd-d51e-4439-b5e0-0cddcc17a142@paulmck-laptop>
- <bb20a575-235b-499e-aa1d-70fe9e2c7617@paulmck-laptop>
- <e8f7829c-51c9-494a-827a-ee471b2e17cd@efficios.com>
- <2d9eb910-f880-4966-ba40-9b1e0835279c@efficios.com>
+	s=arc-20240116; t=1752765905; c=relaxed/simple;
+	bh=mVBl7jkFfQQPKcMZo2FqFRxKgFZixBaqxem8v889rXw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZkltVxJOI/iNlD6X+M1Fp/F3xWmERidqLgamgheojLLTeY8IO67frOU7x1DSUGKfqkY6EEtHYgiPMY059cDAXfLdbZqV9+D0jEP84IPaz89NEO1i1GMRqrpisqEG1/mTF6BFhAsBlIX/+qPFtBCKbpc8ioIHEny/Yp3aGdEb4yk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QaU9i+od; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3a53359dea5so534532f8f.0;
+        Thu, 17 Jul 2025 08:25:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752765902; x=1753370702; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=K6VckmbMeNSXle4zRhCa92H9M1awVcFui2HysraFMAs=;
+        b=QaU9i+odghnAOqAuOb4DIRN4QMZn/wAmcFEisDySwERcc8JFE6cpVJz5D0BsS+FPNk
+         9Cf8/UcNxFtdYMm3LdJJqfqYG765q+RtlmcARBkzbffVJbTjiqJuqyyqAB5luLTtGz1j
+         YFOuB+Q5CXjcf+WsYo1bWD+puvj9a5+4/HyWNQVba8c4kIHqpMuCC+s+wh9RS7x2HlQ9
+         Ap6wSkOFXAa5R4+abUDUtBH/4HK2rSWRmDaPbcCpTuerwGvtkpKnRUUaU/BB6+6+p0xN
+         QoJ4Rv/jPHU1Jb1SJFkXlU1SHgD1yd4pWJ74Y7wERiVofyWWlGXkvhREc6zUz8D1eCP6
+         hBtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752765902; x=1753370702;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=K6VckmbMeNSXle4zRhCa92H9M1awVcFui2HysraFMAs=;
+        b=nzi+bYt4bpVJHAYUAhGvLY1UgmZvqjJB4tTdtOhQieBunEpoPG6EQV2oaRWgVPyzp4
+         hqaQXVxI7bixTWF4A4yQiMp4T3sXIWtL1g0bgSsqX4SXM5mIbs5H3ej2Jdo3pY5ZK91w
+         FBp3P1DO5Tnzp2UrX1kcPWnJuK/WoTLPLVYqom2YfiKBiRl24QqUiDhxE1kUPeaGUj/o
+         Dmnu8RKQ+zX+iabwPzIB9K0hf19IhMGsiOa4G4keDIZnDcf6Y1u8WfWMoWqHzKCSC2+8
+         lfoo5NLInjJzQlVxkqHaeykw3on/xY6Fb/+NWvHOfhSWeA1ja8Qe6rGzAuLT0zwDj+Kr
+         0tww==
+X-Forwarded-Encrypted: i=1; AJvYcCV0dJ/AHXN3s8cp90ctkz5dE15WA6GkfmIKvAPl/i7h0QPAlZwQ5EejC2kJqYgwCeJ/L9qcKZ66y8UkSEL/@vger.kernel.org, AJvYcCVTYXXKetH5uHv37g3jZbLICuRVPtFLK3NIkPuv1dbT4pidQErlH6IWbmnJuUtnkvxh9toZkz1M7byXKdBtDJS2@vger.kernel.org, AJvYcCWxOVsk/kvhMVYloy8b9HdP876TBv4DnQiw14uwzJgIlX6Dp6mdfP373+BlimLE77FaarZond5QTm2nQw==@vger.kernel.org, AJvYcCXUqqXfMDpApGPkjnua+3WwYtE/dn03ea7GFVcihN6dBmI6i91VFnTcgHwoAQuvFPkjV9g=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyQ+m5jyxZFvFK5jUsPaM9UaS7B402F6qrrfG1A3jJUfYhIdtS9
+	G/dwrHUW+5s2lA7qBaIcuRFLmgmvuKbOrF5odx4qOjihaOQF+Ka0fWmBFlys5YwF1amXrMp0sNH
+	1oP8eOzo5XCTm0qHssh8dcd7u5bPCyHs=
+X-Gm-Gg: ASbGncuV9+I1OyimxIdy44kbfhNYIdS2GbvbYsHrIWakYjHNGwCMjh+dQZqz+j3ka16
+	KChMl2yeY5VIwFuaKNU0JFsjrYNdy8YLtw+QEqtWE38qFNZV0Ipb/31KpdEMmrjY1nAgrZiOMhT
+	QgqnpgFrf6donRBlVcCyXMhLw/yR8ackgvZfJ2pQUYQ0hYNce6C8SKdtNK5rBkduH7Uv5hQVJYR
+	9eRV2abWLuXQJe1SINfrDQ=
+X-Google-Smtp-Source: AGHT+IGeW++fImtoeS2B0SWaaDzKCqDG3PBDTK7fijr/paFUbpQ9Q2BBphVZE3USeT269JcqVLR3X4fwk0ujRPHOEEo=
+X-Received: by 2002:a05:6000:144b:b0:3b5:dfc2:f0ca with SMTP id
+ ffacd0b85a97d-3b60e53ea17mr6047409f8f.40.1752765901784; Thu, 17 Jul 2025
+ 08:25:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2d9eb910-f880-4966-ba40-9b1e0835279c@efficios.com>
+References: <20250520-vmlinux-mmap-v5-0-e8c941acc414@isovalent.com>
+ <20250520-vmlinux-mmap-v5-1-e8c941acc414@isovalent.com> <g2gqhkunbu43awrofzqb4cs4sxkxg2i4eud6p4qziwrdh67q4g@mtw3d3aqfgmb>
+ <CAN+4W8hsK6FMBon0-J6mAYk1yVsamYL=cHqFkj3syepxiv16Ug@mail.gmail.com>
+ <CAADnVQ+WZsaDS-Vuc9AN7P3=xvX8TG=rY65A8wYdOARLtkt6Mw@mail.gmail.com> <CAN+4W8i+PqYDcJjWk+g63W4kdKvhFKSad61q-T=JJky5m7j79w@mail.gmail.com>
+In-Reply-To: <CAN+4W8i+PqYDcJjWk+g63W4kdKvhFKSad61q-T=JJky5m7j79w@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 17 Jul 2025 08:24:48 -0700
+X-Gm-Features: Ac12FXww1JBCS6XraoQajcOSXv0y_LFuMb7d0LFifqkes7LZtbikQbv87_xdbD8
+Message-ID: <CAADnVQLJTmjt8nE-xoPhE=6Q+bDOWTTwQ9OqQjX+YKT5RPBNrA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 1/3] btf: allow mmap of vmlinux btf
+To: Lorenz Bauer <lmb@isovalent.com>
+Cc: Breno Leitao <leitao@debian.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	linux-arch <linux-arch@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Alan Maguire <alan.maguire@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 17, 2025 at 10:46:46AM -0400, Mathieu Desnoyers wrote:
-> On 2025-07-17 09:14, Mathieu Desnoyers wrote:
-> > On 2025-07-16 18:54, Paul E. McKenney wrote:
-> [...]
-> > 
-> > 2) I think I'm late to the party in reviewing srcu-fast, I'll
-> >     go have a look :)
-> 
-> OK, I'll bite. :) Please let me know where I'm missing something:
-> 
-> Looking at srcu-lite and srcu-fast, I understand that they fundamentally
-> depend on a trick we published here https://lwn.net/Articles/573497/
-> "The RCU-barrier menagerie" that allows turning, e.g. this Dekker:
-> 
-> volatile int x = 0, y = 0
-> 
-> CPU 0              CPU 1
-> 
-> x = 1              y = 1
-> smp_mb             smp_mb
-> r2 = y             r4 = x
-> 
-> BUG_ON(r2 == 0 && r4 == 0)
-> 
-> into
-> 
-> volatile int x = 0, y = 0
-> 
-> CPU 0            CPU 1
-> 
-> rcu_read_lock()
-> x = 1              y = 1
->                    synchronize_rcu()
-> r2 = y             r4 = x
-> rcu_read_unlock()
-> 
-> BUG_ON(r2 == 0 && r4 == 0)
-> 
-> So looking at srcu-fast, we have:
-> 
->  * Note that both this_cpu_inc() and atomic_long_inc() are RCU read-side
->  * critical sections either because they disables interrupts, because they
->  * are a single instruction, or because they are a read-modify-write atomic
->  * operation, depending on the whims of the architecture.
-> 
-> It appears to be pairing, as RCU read-side:
-> 
-> - irq off/on implied by this_cpu_inc
-> - atomic
-> - single instruction
-> 
-> with synchronize_rcu within the grace period, and hope that this behaves as a
-> smp_mb pairing preventing the srcu read-side critical section from leaking
-> out of the srcu read lock/unlock.
-> 
-> I note that there is a validation that rcu_is_watching() within
-> __srcu_read_lock_fast, but it's one thing to have rcu watching, but
-> another to have an actual read-side critical section. Note that
-> preemption, irqs, softirqs can very well be enabled when calling
-> __srcu_read_lock_fast.
-> 
-> My understanding of the how memory barriers implemented with RCU
-> work is that we need to surround the memory accesses on the fast-path
-> (where we turn smp_mb into barrier) with an RCU read-side critical
-> section to make sure it does not spawn across a synchronize_rcu.
-> 
-> What I am missing here is how can a RCU side-side that only consist
-> of the irq off/on or atomic or single instruction cover all memory
-> accesses we are trying to order, namely those within the srcu
-> critical section after the compiler barrier() ? Is having RCU
-> watching sufficient to guarantee this ?
+On Thu, Jul 17, 2025 at 8:15=E2=80=AFAM Lorenz Bauer <lmb@isovalent.com> wr=
+ote:
+>
+> On Thu, Jul 17, 2025 at 3:49=E2=80=AFPM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>
+> > __pa_symbol() should work for start_BTF, but would be good
+> > to double check with Ard that the rest stays linear.
+>
+> Alexei,
+>
+> This code in the arm64 setup does make me think we'll be OK.
+>
+> kernel_code.start   =3D __pa_symbol(_stext);
+> kernel_code.end     =3D __pa_symbol(__init_begin - 1);
+> kernel_data.start   =3D __pa_symbol(_sdata);
+> kernel_data.end     =3D __pa_symbol(_end - 1);
+>
+> Using these as start and end only makes sense to me if the addresses
+> are linear? See
+> https://elixir.bootlin.com/linux/v6.15.6/source/arch/arm64/kernel/setup.c=
+#L217
 
-Good eyes!!!
-
-The trick is that this "RCU read-side critical section" consists only of
-either this_cpu_inc() or atomic_long_inc(), with the latter only happening
-in systems that have NMIs, but don't have NMI-safe per-CPU operations.
-Neither this_cpu_inc() nor atomic_long_inc() can be interrupted, and
-thus both act as an interrupts-disabled RCU read-side critical section.
-
-Therefore, if the SRCU grace-period computation fails to see an
-srcu_read_lock_fast() increment, its earlier code is guaranteed to
-happen before the corresponding critical section.  Similarly, if the SRCU
-grace-period computation sees an srcu_read_unlock_fast(), its subsequent
-code is guaranteed to happen after the corresponding critical section.
-
-Does that help?  If so, would you be interested and nominating a comment?
-
-Or am I missing something subtle here?
-
-Either way, many thanks for digging into this!!!
-
-							Thanx, Paul
-
-> Thanks,
-> 
-> Mathieu
-> 
-> -- 
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> https://www.efficios.com
+Thanks for checking. lgtm.
 
