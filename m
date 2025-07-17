@@ -1,173 +1,100 @@
-Return-Path: <bpf+bounces-63552-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63553-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE60BB08340
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 05:11:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83992B0836A
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 05:29:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2C421AA56C1
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 03:11:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 710723AC962
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 03:29:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4762A1E379B;
-	Thu, 17 Jul 2025 03:11:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 353011F09A5;
+	Thu, 17 Jul 2025 03:29:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="isn1pze/"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="G3O6dMgK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 604BF63CF;
-	Thu, 17 Jul 2025 03:11:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.54
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 141441DB127;
+	Thu, 17 Jul 2025 03:29:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752721887; cv=none; b=hVRaxN6qsqCkXqAhT6tbrQv9uKEFFeHTkcJ+nvPXLzaz4P42gFS9CIN7AGBcVMyHeAPyBo9J5jVLjJIEPFMvIdv86vH1LhMmrqdo9mEpiKjVoIeEJMmASlSjkG4MxiPdsjNh4LNMGl3kD6Of2xysQ2aWWzOkkIHfteoDgzcCIBA=
+	t=1752722961; cv=none; b=PVqW3KbYkuc0aPgCFJYRWsDTpCwY0iu8wz1o437rBIpp//XJsSlHJoUOJ0GDR6MCaLTGkdo4jm4R2XjpDNjnSK4QysfQObUDMfWOA9l4r+JNtGWu64wFAe40Wj1tcs6o8iQxHADIjo2vgtgQWrIAg3HtTVcpJtWKpleyqx2r/6M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752721887; c=relaxed/simple;
-	bh=xfRY10Q3m/4i5x7a2WbzvtkGzjEBTWgP2bb4vKVkmCU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lfniLp1rDxSIs91JOrsas8A/AZclgRWvvugPjgOOCYArgcI0ItAjGtOdXbqfDaJ0nuqttga/arsFPe4FI5fEY8zjKU9zWIrTgssuHOmDeOGnxvWx90vyJC0Mr5TNVyIZu+PYcqYVYYqnHo4J/cMXg+bZ9U5IZFeen7hqrFOMXNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=isn1pze/; arc=none smtp.client-ip=209.85.166.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-8762a0866a3so9121339f.2;
-        Wed, 16 Jul 2025 20:11:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752721885; x=1753326685; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xfRY10Q3m/4i5x7a2WbzvtkGzjEBTWgP2bb4vKVkmCU=;
-        b=isn1pze/qOThi8q1dCsHRr3UqdL6kxCgle2cSfX6Ilcs1MT6cTKeaBWU1FdwL8I7qo
-         AgsgaTyrCWlB9vihKP4697mqt8DC9Frusj9Tvd1Cr1Px4C+2/+KbB9+fbbRT9l+xuqMb
-         rZltvwByNRdlRXkKWDJpLqmsrJuAc7M9L+sIprMqa8s56t1y31uHERRJQHO4JZdyfoDK
-         vkDXgIEQNFqwscM4iDtvjx9mbvSHTuPYbnatikXHyFYcwns8r9KCzW6SZbwAZuUH/7oj
-         j1GOymCmewxXSM4JlxAQRen4bWg5Il3Y87eapBHIoOyprCrI0TyHjTftXHd1VVStQpeL
-         s3iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752721885; x=1753326685;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xfRY10Q3m/4i5x7a2WbzvtkGzjEBTWgP2bb4vKVkmCU=;
-        b=LL8OzODdOerT9Sk/axPi2lH7j7PxBHfH47Xoa2jvhBAtLohar8zVoVVKoBu1Z/N97i
-         2tOwDwOkqaYaNaHp27bNx+sr7VtAjL3ZdcauliyIVMEfcCoqZrfIdLmzM8xUlQ6tj3wP
-         iSg8O+h3gVsxOUj9L21/cYsOr0D+bfSzuU/2TV1Dk+S/fKlxX8EVeKA3BHObwZTU+vQS
-         Mv762LgFraEhvBYoyEGjMPv3yORSbBAbpct9fFZW5oQb7+xQ4HNUus42o/7knxt0+Q3F
-         879jenxXvMSEKQLXC+TEcOtfSNQ9zfRvAKjshO5kmbf9WEe8CaR/fcWWgXJefhqKK7KA
-         XhtA==
-X-Forwarded-Encrypted: i=1; AJvYcCVpjwGEY8xjK9NuSQiXd62eEYuGJfYA6EWHKeOsDxelt9CjM2bjpiI/3kn3GKDMjLAEp20=@vger.kernel.org, AJvYcCX7mRumqyYLl4MfMhLi2d4hjEnLDs+bkeafLguli4cPkrsHO8On+IOZbzglbguSN+GOTrfmCVMF@vger.kernel.org
-X-Gm-Message-State: AOJu0YyiYkSXUV1ROwP56N8lS8tlYrBS30Exaz/pX7KrlWBlGbDFMdGD
-	fy08vSnx9Qt1GiEnMFRWZSOxM7EtNCHDe7SE5eSC8soqE93yXVu+oVm0G3D9X+T5tlhsIUQzgAQ
-	qVzPNLlBa2Vi8pxleSxNSgp/DHbO9RdE=
-X-Gm-Gg: ASbGncuCJ/ioptoLy0NtJgUv9Vx/Bss2IXLS04zbkisBUvZtFqKBnAAKJyX+2xQOaH3
-	ZdNdQAuxPom/62WTa7a4wcou7KCtNysZWQHthTrrAmquyQlavIa/i0zv9AmvqDj1IAoI4KSfxyu
-	wd0laoqc+VqJRLPXNrLtlkdeQHEVdGctUAMJHU0GtFiIxxK5ZLmf5OFMKc4V77o5IAtCTruHtGC
-	JLaEEY=
-X-Google-Smtp-Source: AGHT+IHS9dqyksCoN5oNW3oIxyZEnTBYLjVB/y4gyLu3p4oY0myhdWTFJ7lYUqgjlAE/hq8fOgB+gn2FMDa5EEGjEEU=
-X-Received: by 2002:a05:6602:1348:b0:879:66fe:8d1e with SMTP id
- ca18e2360f4ac-87c0138865bmr140299839f.8.1752721885305; Wed, 16 Jul 2025
- 20:11:25 -0700 (PDT)
+	s=arc-20240116; t=1752722961; c=relaxed/simple;
+	bh=5R3dfz2lj3mf0WbiZnGJuNepSOPHnC4JgNW5LbpZEMQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mT/Phfwp+f77DtxyPet/XmcFhSp5tnncErIIp5iH6Wbtltz2l2hHlk+b6+A0jm2kkab5Gg/YrAbUujw9axavXMM+NwXjXksoKT6bTkR/5YEvGbUYspAy0fv8w2mRMAMrikuYuGVg7XHTs7t1YYMbwdgXGhg45gH21yZ/TKq1tV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=G3O6dMgK; arc=none smtp.client-ip=220.197.31.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=wg
+	QB8DttVT6yjXgZ8qnbtAL+MSpdleuQeSvriQZD2ns=; b=G3O6dMgK9D0+isBxx2
+	tTKmt6vQZcNaUKVPfanyiC8egj7dTseHRhu99ixZKsOXtaIkMJAD5pAQDfrlnft5
+	ma4iwQ5a5sbjvTurdAJqc1BTUE809BaMbdbKOymZtd4Ekur4qN4uzqPpyYD45Iie
+	X4KfCsB/u1/EG7a5+yHfGIIn4=
+Received: from localhost.localdomain (unknown [])
+	by gzga-smtp-mtada-g0-3 (Coremail) with SMTP id _____wD3_4bdbXhoJsULFQ--.2953S2;
+	Thu, 17 Jul 2025 11:28:31 +0800 (CST)
+From: Feng Yang <yangfeng59949@163.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	memxor@gmail.com
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 bpf-next 0/2] Fix macro redefined and delete
+Date: Thu, 17 Jul 2025 11:28:26 +0800
+Message-Id: <20250717032828.500146-1-yangfeng59949@163.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250716122725.6088-1-kerneljasonxing@gmail.com>
- <20250716145645.194db702@kernel.org> <CAL+tcoByyPQX+L3bbAg1hC4YLbnuPrLKidgqKqbyoj0Sny7mxQ@mail.gmail.com>
- <20250716164312.40a18d2f@kernel.org> <CAL+tcoA1LMjxKgQb4WZZ8LeipbGU038is21M_y+kc93eoUpBCA@mail.gmail.com>
- <20250716175248.4f626bdb@kernel.org> <CAL+tcoCMQhaZdvbR1p50tuVk0RUdqAiRgjDrO0b+EO1XvM=2qw@mail.gmail.com>
- <6878655ca06c7_9aa0c294c5@willemb.c.googlers.com.notmuch>
-In-Reply-To: <6878655ca06c7_9aa0c294c5@willemb.c.googlers.com.notmuch>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Thu, 17 Jul 2025 11:10:48 +0800
-X-Gm-Features: Ac12FXybXgTUEEKerdQr9fM84bKdc9vOeWAxIPiLBxbzMCwCqW2P0uprSu9HBI0
-Message-ID: <CAL+tcoAEtJ43UKR6rDsLV9s9U31KmT_sE2+xpYnvFRQjsSAu5w@mail.gmail.com>
-Subject: Re: [PATCH net-next v2] xsk: skip validating skb list in xmit path
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net, edumazet@google.com, 
-	pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com, 
-	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com, sdf@fomichev.me, 
-	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
-	john.fastabend@gmail.com, joe@dama.to, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wD3_4bdbXhoJsULFQ--.2953S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7GF47GF1kAF4UAry3tr1rXrb_yoW3Krg_WF
+	y5tF95WrnxCF15Kr1UKr13GrZ8t3y0qrn7JF47trWjqrnxXa1UXr4kuFW8uas8WFsxCFW7
+	tFn8JryDZrsrZjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8o7K3UUUUU==
+X-CM-SenderInfo: p1dqww5hqjkmqzuzqiywtou0bp/1tbipQONeGh4ajB0vwAAsS
 
-On Thu, Jul 17, 2025 at 10:52=E2=80=AFAM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
->
-> Jason Xing wrote:
-> > On Thu, Jul 17, 2025 at 8:52=E2=80=AFAM Jakub Kicinski <kuba@kernel.org=
-> wrote:
-> > >
-> > > On Thu, 17 Jul 2025 08:06:48 +0800 Jason Xing wrote:
-> > > > To be honest, this patch really only does one thing as the commit
-> > > > says. It might look very complex, but if readers take a deep look t=
-hey
-> > > > will find only one removal of that validation for xsk in the hot pa=
-th.
-> > > > Nothing more and nothing less. So IMHO, it doesn't bring more compl=
-ex
-> > > > codes here.
-> > > >
-> > > > And removal of one validation indeed contributes to the transmissio=
-n.
-> > > > I believe there remain a number of applications using copy mode
-> > > > currently. And maintainers of xsk don't regard copy mode as orphane=
-d,
-> > > > right?
-> > >
-> > > First of all, I'm not sure the patch is correct. The XSK skbs can hav=
-e
-> > > frags, if device doesn't support or clears _SG we should linearize,
-> > > right?
-> >
-> > But note that there is one more function __skb_linearize() after
-> > skb_needs_linearize() in the validate_xmit_skb(). __skb_linearize()
-> > tests many members of skbs, which are not used to check the skbs from
-> > xsk. For xsk, it's very simple (please see xsk_build_skb())
->
-> For single frame xsk skb_needs_linearize will be false and thus
-> __skb_linearize is not called?
->
-> More generally, I would also think that the cost of the
-> validate_xmit_skb checks are quite cheap in the xsk case where they
-> are all false. On the assumption that the touched cachelines are
-> likely warm.
->
-> > >
-> > > Second, we don't understand where the win is coming from, the numbers
-> > > you share are a bit vague. What's so expensive about a few skbs
-> >
-> > To be more accurate, it's not "a few" but "so many" because of the
-> > high pps reaching more than 1,000,000. So if people run the xdpsock to
-> > test it, it's not hard to see most of time is spent during the skb
-> > allocation process.
->
-> Right, the alloc or memcpy more than the validate?
+From: Feng Yang <yangfeng@kylinos.cn>
 
-Thanks for chiming in.
+Fix macro redefined and delete map_in_map test
+---
+Changes in v2:
+- directly use bpf_stream_stage_printk
+- delete map_in_map test, thanks, Yonghong Song.
+- Link to v1: https://lore.kernel.org/all/20250716080616.1357793-1-yangfeng59949@163.com/
 
-Sure thing. Validate only takes 4% total time, which could be easily
-observed by using perf.
+Feng Yang (2):
+  bpf: Fix macro redefined
+  samples/bpf: Delete map_in_map test
 
-The story behind the patch is that I was scanning the code and found
-the validation is not necessary based on the theory instead of
-experiment, _then_ I tried xdpsock to see if any performance impact
-and used perf to capture the hot spot.
+ include/linux/bpf.h                |   1 -
+ kernel/bpf/core.c                  |   2 +-
+ kernel/bpf/rqspinlock.c            |   8 +-
+ samples/bpf/Makefile               |   3 -
+ samples/bpf/test_map_in_map.bpf.c  | 172 -----------------------------
+ samples/bpf/test_map_in_map_user.c | 168 ----------------------------
+ 6 files changed, 5 insertions(+), 349 deletions(-)
+ delete mode 100644 samples/bpf/test_map_in_map.bpf.c
+ delete mode 100644 samples/bpf/test_map_in_map_user.c
 
-And I don't think I can find any other useful improvement whether in
-copy mode or zc mode after finishing investigation so far.
+-- 
+2.43.0
 
-Last time, I mentioned that I tried two out-of-thin-air approaches[1].
-But everything didn't go as well as expected...
-
-[1]: https://lore.kernel.org/all/CAL+tcoAn8ADUGARSzZB=3D5dGoa+Kh7HnNBLxyqTa=
-3W6tOhUK-sg@mail.gmail.com/
-
-Thanks,
-Jason
 
