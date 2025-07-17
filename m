@@ -1,191 +1,170 @@
-Return-Path: <bpf+bounces-63605-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63606-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE1B4B08EF4
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 16:19:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F721B08FB2
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 16:41:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0871D7B786B
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 14:17:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D38E51C417D4
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 14:41:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F8D92F5C40;
-	Thu, 17 Jul 2025 14:18:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B29982F7D0A;
+	Thu, 17 Jul 2025 14:40:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JWNc4+Nh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XPXbbj3m"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 320332E3700;
-	Thu, 17 Jul 2025 14:18:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 373E229ACCC;
+	Thu, 17 Jul 2025 14:40:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752761936; cv=none; b=ZTuUafjg8GHZfKW4aSqBRY3h8no1t/CLq3oH9xfRneYFbzwgYQsdC638QTZP03MdS7awhdmNj5/G+QdEeZm7TS4hZfiFa9POYoaQ547rJ5GJ2rVywbBkf5IMMg9xZgIEHuf3CrT7PRLsmMtsS8lWO1ZIZcD+M3kDN0O5XXy3PJc=
+	t=1752763253; cv=none; b=jCoF0fATQopYqcIMhE790eJPl+ts8ZH5zMH7PfS+zsbvamjJAVQo1SGaFsY7uYm4FNKS5Oqw/sD9pFeXAac9hJTmSjH/hj1cqiBXE8aoxPKjLxTmKafn/DHwgL0Y1RhuCAFUFDhBhT5V1rMNJyulYEshqLnpLrF6Dgl9CK+ZFzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752761936; c=relaxed/simple;
-	bh=XctmZo9SvD03oJXci75LIEr7H5ii62ha/tjuZuMJEB4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=mL2x5NmgdoFzUZcTT5xiVVRsMLPREnR6aH2IGB2C1io1R5uz2nit0LSNe0BTRPqUWJYG2w55FSWR0EW5cBoQigcmXgW3vCZOiwQusE3UDdStCrDdfuDF84KC80WpRtzi7p82hozT5ug75E1J6Hn/qYOp9uV9XcT3BncyPwefRrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JWNc4+Nh; arc=none smtp.client-ip=209.85.216.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-311e2cc157bso972102a91.2;
-        Thu, 17 Jul 2025 07:18:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752761934; x=1753366734; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=XctmZo9SvD03oJXci75LIEr7H5ii62ha/tjuZuMJEB4=;
-        b=JWNc4+NhzgVtgGoB8DpQ+rxQ6fS6el6WRgZPJeCEcuEbGOspoySukKzOVYLxY704ok
-         dxYuFU+4SwWm7vcP8cCevPJroc6nu51W95JnNygl3+Ffn8RmSt6HnyoHo1I9tlf1qFBn
-         Q51ziLQ2irRShBVIzv3kzPT5BcTxurvvoOrKFQdkX8emDhnINESL+jYWSQUJ455jPKYh
-         0mQsSy6veQSR/qzmUrGe3qoqOnV4m8xBV56V8kbN6PRHjcWRrbihyHlPkhuugaSNxaE9
-         WNsv/0K8VxXAm3JAqYmr+XysuSfAdfpbJoSrsBkN9Vt6WPEVXB5hDRPcEOoT5buei1Xy
-         xFvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752761934; x=1753366734;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XctmZo9SvD03oJXci75LIEr7H5ii62ha/tjuZuMJEB4=;
-        b=vsd5Xg3R7tMz0HLuYIkYgJ39w0Igs+e7aCCPn5tGL+LLKjvIRCWhvO69bvUtr/nVZL
-         zh4Tyi5yByKPWHU67rme1y9BxPPxluA0hDFfAzZjhf6YwBNA8zxvMTUYYRxYEeo4ca3g
-         ykzXpInGrgiwIrQ7g1DGpc5TAb9QCBwytOdU31+I60tYuUHHms3m2gYesrg0Upfa92Hr
-         5u/+XQ1rmIWfgp/krecsAFlXmw6Ncvmrc3uQrJgIrNG6eiEurd0ZSTD6oZqc2ecQztzH
-         sBfaSstpDBlLrJyjUYFWgB+4S7mGrkkSGu8tDEWSvOtjPIyIanXLFFWzYTNxpay/cR3K
-         qEKA==
-X-Forwarded-Encrypted: i=1; AJvYcCV7lyH/qzhSvJPLoz9/vb/YcUxVLnbAK+fpwNWdNJW9CGLk5oMAvXaPiOOU/8rb+YGuEeAAf+t5f5xhHFJ7@vger.kernel.org, AJvYcCXOeVZIlYIe8OIBZDg5gFXWcM8aNrhexoeAQw5u7eKOIfCUTHzjTFXGeGxhCr/1f7FLNjuJm5c8TXxTxhDje7pY@vger.kernel.org, AJvYcCXieiI0/beAiWtemFHda9P932yOrwSnEXUp/Pg7Opv8kxISV4XJSbrJk/kZATIQxpSRhs0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxTj+8Oiei7O6q13M9CnbcQ5q7y4x/o4eUto5/75QO1gSukioU0
-	GCbIVY4TDkDdce9ixWECeMXW7xIay7Sue8rlQFM65hXMiN5b8LrWaIdu
-X-Gm-Gg: ASbGncswK7rwD7xCCe1hgInfFNar7eL2PEMzhMmgBN00ZcKGyDmrHB0smDhwaDVW8Pl
-	m4KR6YWQBAk9GrQmfOlGCI7N3+Mm9RECy64dq+WuicCu9MomPt7H0wAtbtHNMhd6wmlWOFWs3Sn
-	1W6X8CYHgzu8JhJxg9AaNph1OKkWiTTSupT1Bqc2oz+9IwxvPn3OQOcoifnN36eytcA4PWwRbnV
-	CXVZ9GzohCVLBJivi0aWkAbeILdaZULqkOrykU+a/zZ5aG0JV67SRy7qf8lpQAPbsZq7auAjcuP
-	nvTVZ8l/LSgMisJyHDWU9PEldjsnWdN3lmgAfhoi78LMDe8dlM/LojfQHBB8c/ZHSPmA60eVJYv
-	skcZrsU74lnxe/95Q0eKT
-X-Google-Smtp-Source: AGHT+IGuxnZt9hKB3LiaRFtAjSyz8kcQOd2eGpull1QNd1vam25zcF6spQZ/+RWeF3qGI3lE0gdePw==
-X-Received: by 2002:a17:90b:48c8:b0:315:b07a:ac12 with SMTP id 98e67ed59e1d1-31c9e6f71b8mr11185576a91.14.1752761934264;
-        Thu, 17 Jul 2025 07:18:54 -0700 (PDT)
-Received: from [127.0.0.1] ([115.205.228.8])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31caf835438sm1662990a91.45.2025.07.17.07.18.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jul 2025 07:18:53 -0700 (PDT)
-Message-ID: <2a3a90e4672d497e430ce40d039a90613c4390c0.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/3] selftests/bpf: Add selftest for
- attaching tracing programs to functions in deny list
-From: KaFai Wan <mannkafai@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>,  John Fastabend <john.fastabend@gmail.com>, Andrii
- Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>,  Yonghong Song
- <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@fomichev.me>,  Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,  Shuah Khan
- <shuah@kernel.org>, Yafang Shao <laoar.shao@gmail.com>, LKML
- <linux-kernel@vger.kernel.org>,  bpf <bpf@vger.kernel.org>, "open
- list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Leon
- Hwang <leon.hwang@linux.dev>
-Date: Thu, 17 Jul 2025 22:18:42 +0800
-In-Reply-To: <CAADnVQ+H6oHMFPvWkXuHv9oanHT57F_HrD_ZpxB0X=37vdAoyw@mail.gmail.com>
-References: <20250714120408.1627128-1-mannkafai@gmail.com>
-	 <20250714120408.1627128-4-mannkafai@gmail.com>
-	 <CAADnVQ+H6oHMFPvWkXuHv9oanHT57F_HrD_ZpxB0X=37vdAoyw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.0-1build2 
+	s=arc-20240116; t=1752763253; c=relaxed/simple;
+	bh=bpWidnBpLifO5P1O5LA1/myCspMXXfq7Rf8rUup5noc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tvRLgbl0FUoTg6zxLLvOclpfDWhkQeI6lBePzR8LTZgzGD8eAEfy8YT00r8lV7m56+ilZv6mLuO+I0gzsXsh7GuYvp/RNOgIqZv08IrOcVLRdPQ0BQ8XkakwXOYObxkfQi3q45XkLyM9P4GFKY8feoDly+U/Sl2I6Dlm1EP+TOY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XPXbbj3m; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B60F6C4CEE3;
+	Thu, 17 Jul 2025 14:40:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752763252;
+	bh=bpWidnBpLifO5P1O5LA1/myCspMXXfq7Rf8rUup5noc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=XPXbbj3mVzfAxdH3n4ny9Wp7FtY4k82PPbnYItf8Z6JJw1nsY0r7QwzuDGEhAnoqs
+	 ZUBaNNC+SIObdXT7sV9o8QWqDl18W/H0z8cwF7iw9Vzky5maZM0hSEWei4zbDg9TLZ
+	 fslYEOp3QblKMAcVPAoGubIHloVu2Wb780x2boOlhrZ238WV3p14+6Jbwchu7Zx/g4
+	 WnTUpJ8foDZiV1n+Mpv0uvktkD9BJelbdkYzfrN5wQQCYXCoxorWIVp4mmJrrxxosF
+	 MXzsUQWxHVIXIDaUzsZGGzTsKpelWNqMo17sRHIJptL+s2jTpgZhnXy5wD9rVsK2jo
+	 Qc7+qsS4G8nNw==
+Message-ID: <d0561121-3d36-4c55-8dbb-fc6b802a0f68@kernel.org>
+Date: Thu, 17 Jul 2025 16:40:47 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next V2 1/7] net: xdp: Add xdp_rx_meta structure
+To: Jakub Sitnicki <jakub@cloudflare.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
+ Jakub Kicinski <kuba@kernel.org>, lorenzo@kernel.org,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <borkmann@iogearbox.net>, Eric Dumazet <eric.dumazet@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ sdf@fomichev.me, kernel-team@cloudflare.com, arthur@arthurfabre.com
+References: <175146824674.1421237.18351246421763677468.stgit@firesoul>
+ <175146829944.1421237.13943404585579626611.stgit@firesoul>
+ <87v7nrdvi8.fsf@cloudflare.com>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <87v7nrdvi8.fsf@cloudflare.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, 2025-07-16 at 18:37 -0700, Alexei Starovoitov wrote:
-> On Mon, Jul 14, 2025 at 5:04=E2=80=AFAM KaFai Wan <mannkafai@gmail.com>
-> wrote:
-> >=20
-> > The reuslt:
-> >=20
-> > =C2=A0 $ tools/testing/selftests/bpf/test_progs --name=3Dtracing_deny
-> > =C2=A0 #467/1=C2=A0=C2=A0 tracing_deny/migrate_disable:OK
-> > =C2=A0 #467=C2=A0=C2=A0=C2=A0=C2=A0 tracing_deny:OK
-> > =C2=A0 Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
-> >=20
-> > Signed-off-by: KaFai Wan <mannkafai@gmail.com>
-> > ---
-> > =C2=A0.../selftests/bpf/prog_tests/tracing_deny.c=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 | 11 +++++++++++
-> > =C2=A0tools/testing/selftests/bpf/progs/tracing_deny.c=C2=A0 | 15
-> > +++++++++++++++
-> > =C2=A02 files changed, 26 insertions(+)
-> > =C2=A0create mode 100644
-> > tools/testing/selftests/bpf/prog_tests/tracing_deny.c
-> > =C2=A0create mode 100644
-> > tools/testing/selftests/bpf/progs/tracing_deny.c
-> >=20
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/tracing_deny.c
-> > b/tools/testing/selftests/bpf/prog_tests/tracing_deny.c
-> > new file mode 100644
-> > index 000000000000..460c59a9667f
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/tracing_deny.c
-> > @@ -0,0 +1,11 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +#include <test_progs.h>
-> > +#include "tracing_deny.skel.h"
-> > +
-> > +void test_tracing_deny(void)
-> > +{
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* migrate_disable depends on CON=
-FIG_SMP */
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (libbpf_find_vmlinux_btf_id("m=
-igrate_disable",
-> > BPF_TRACE_FENTRY) > 0)
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 RUN_TESTS(tracing_deny);
-> > +}
-> > diff --git a/tools/testing/selftests/bpf/progs/tracing_deny.c
-> > b/tools/testing/selftests/bpf/progs/tracing_deny.c
-> > new file mode 100644
-> > index 000000000000..98ef834f0b6d
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/tracing_deny.c
-> > @@ -0,0 +1,15 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +#include <linux/bpf.h>
-> > +#include <bpf/bpf_helpers.h>
-> > +#include <bpf/bpf_tracing.h>
-> > +#include "bpf_misc.h"
-> > +
-> > +char _license[] SEC("license") =3D "GPL";
-> > +
-> > +SEC("fentry/migrate_disable")
-> > +__failure __msg("Attaching tracing programs to function
-> > 'migrate_disable' is rejected.")
-> > +int BPF_PROG(migrate_disable)
-> > +{
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
-> > +}
->=20
-> Please roll these two tiny files into existing files in progs/ and
-> prog_tests/
-> directories.
-> Every file takes time to compile 4 times, so let's avoid unnecessary
-> overhead.
->=20
 
-Okay, will update it in v3.
 
-> --
-> pw-bot: cr
+On 17/07/2025 11.19, Jakub Sitnicki wrote:
+> On Wed, Jul 02, 2025 at 04:58 PM +02, Jesper Dangaard Brouer wrote:
+>> From: Lorenzo Bianconi <lorenzo@kernel.org>
+>>
+>> Introduce the `xdp_rx_meta` structure to serve as a container for XDP RX
+>> hardware hints within XDP packet buffers. Initially, this structure will
+>> accommodate `rx_hash` and `rx_vlan` metadata. (The `rx_timestamp` hint will
+>> get stored in `skb_shared_info`).
+>>
+>> A key design aspect is making this metadata accessible both during BPF
+>> program execution (via `struct xdp_buff`) and later if an `struct
+>> xdp_frame` is materialized (e.g., for XDP_REDIRECT).
+>> To achieve this:
+>>    - The `struct xdp_frame` embeds an `xdp_rx_meta` field directly for
+>>      storage.
+>>    - The `struct xdp_buff` includes an `xdp_rx_meta` pointer. This pointer
+>>      is initialized (in `xdp_prepare_buff`) to point to the memory location
+>>      within the packet buffer's headroom where the `xdp_frame`'s embedded
+>>      `rx_meta` field would reside.
+>>
+>> This setup allows BPF kfuncs, operating on `xdp_buff`, to populate the
+>> metadata in the precise location where it will be found if an `xdp_frame`
+>> is subsequently created.
+>>
+>> The availability of this metadata storage area within the buffer is
+>> indicated by the `XDP_FLAGS_META_AREA` flag in `xdp_buff->flags` (and
+>> propagated to `xdp_frame->flags`). This flag is only set if sufficient
+>> headroom (at least `XDP_MIN_HEADROOM`, currently 192 bytes) is present.
+>> Specific hints like `XDP_FLAGS_META_RX_HASH` and `XDP_FLAGS_META_RX_VLAN`
+>> will then denote which types of metadata have been populated into the
+>> `xdp_rx_meta` structure.
+>>
+>> This patch is a step for enabling the preservation and use of XDP RX
+>> hints across operations like XDP_REDIRECT.
+>>
+>> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+>> Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
+>> ---
+>>   include/net/xdp.h       |   57 +++++++++++++++++++++++++++++++++++------------
+>>   net/core/xdp.c          |    1 +
+>>   net/xdp/xsk_buff_pool.c |    4 ++-
+>>   3 files changed, 47 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/include/net/xdp.h b/include/net/xdp.h
+>> index b40f1f96cb11..f52742a25212 100644
+>> --- a/include/net/xdp.h
+>> +++ b/include/net/xdp.h
+>> @@ -71,11 +71,31 @@ struct xdp_txq_info {
+>>   	struct net_device *dev;
+>>   };
+>>   
+>> +struct xdp_rx_meta {
+>> +	struct xdp_rx_meta_hash {
+>> +		u32 val;
+>> +		u32 type; /* enum xdp_rss_hash_type */
+>> +	} hash;
+>> +	struct xdp_rx_meta_vlan {
+>> +		__be16 proto;
+>> +		u16 tci;
+>> +	} vlan;
+>> +};
+>> +
+>> +/* Storage area for HW RX metadata only available with reasonable headroom
+>> + * available. Less than XDP_PACKET_HEADROOM due to Intel drivers.
+>> + */
+>> +#define XDP_MIN_HEADROOM	192
+>> +
+>>   enum xdp_buff_flags {
+>>   	XDP_FLAGS_HAS_FRAGS		= BIT(0), /* non-linear xdp buff */
+>>   	XDP_FLAGS_FRAGS_PF_MEMALLOC	= BIT(1), /* xdp paged memory is under
+>>   						   * pressure
+>>   						   */
+>> +	XDP_FLAGS_META_AREA		= BIT(2), /* storage area available */
+> 
+> Idea: Perhaps this could be called *HW*_META_AREA to differentiate from
+> the existing custom metadata area:
+> 
 
---=20
-Thanks,
-KaFai
+I agree, that calling it META_AREA can easily be misunderstood and 
+confused with metadata or data_meta.
+
+What do you think about renaming this to "hints" ?
+  E.g. XDP_FLAGS_HINTS_AREA
+  or   XDP_FLAGS_HINTS_AVAIL
+
+And also renaming XDP_FLAGS_META_RX_* to
+  e.g XDP_FLAGS_META_RX_HASH -> XDP_FLAGS_HINT_RX_HASH
+                            or  XDP_FLAGS_HW_HINT_RX_HASH
+
+> https://docs.kernel.org/networking/xdp-rx-metadata.html#af-xdp
+> 
+>> +	XDP_FLAGS_META_RX_HASH		= BIT(3), /* hw rx hash */
+>> +	XDP_FLAGS_META_RX_VLAN		= BIT(4), /* hw rx vlan */
+>> +	XDP_FLAGS_META_RX_TS		= BIT(5), /* hw rx timestamp */
+>>   };
+>>   
+> 
+> [...]
 
