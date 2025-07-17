@@ -1,121 +1,97 @@
-Return-Path: <bpf+bounces-63557-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63558-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15FB9B08374
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 05:33:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07311B08398
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 05:57:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97363169310
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 03:33:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DFD5A4596E
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 03:57:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE3E91F3BA9;
-	Thu, 17 Jul 2025 03:33:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FusCoqje"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C492C1F582C;
+	Thu, 17 Jul 2025 03:57:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay.hostedemail.com (smtprelay0012.hostedemail.com [216.40.44.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D61931DA62E;
-	Thu, 17 Jul 2025 03:33:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ECAA4A11;
+	Thu, 17 Jul 2025 03:57:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752723218; cv=none; b=Xfq0zntsxD5FKf1N7I/kEoFp9MjGBTeChGvoqKfvwnp1jVTEtdlhaLUZn54oxXzr8dQ56HZrSSXE/xjJb9DuoLavmakMeL1XGlAkOA+77Wo4NoKMhRUTmR0iHLtmRVYzNBToWG0svVXti2N+ZHxKVDHb4akCd16o5PiNy8+P6lg=
+	t=1752724661; cv=none; b=jooYAejTznQMnr/acdhaxqaCuQSGGs4GulE0u7YtLEnnzSoifZCBcYBwWD2tPnmPnAnXHwGQUNnRoQJ4mwZ5YjY7o599A7Zoi6DL7lQ5xaD/pbOvzQ1G6Ks0t6gbkv+mwSvSg07Rr9IkDeM4xO4tqQSdOB9xanFcygJ/FC9Lf2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752723218; c=relaxed/simple;
-	bh=NxcYhOyfWQrT7mpklE3E8/PuJaPlbavmD2SNVWaOFb0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=K9GjSL/131fM+YQvUUDBmwELilG378mIApsuGc4+YbWlLxRrnxsWQ52xE7Q1xtItRzGG4vsRVdl/q7g9yygG0pdC1yQiGIbquQk0DPia7jKFZ3f7kzfOgjMLtTz3+qkfZmM/7DvF3ge5/2H50tFb3L8NXdSPYtJMf4aC/cJoH4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FusCoqje; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-45555e3317aso2556375e9.3;
-        Wed, 16 Jul 2025 20:33:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752723215; x=1753328015; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9oA8y14yagrQ5k6xSbfVfV7QH4qEs2A8CSReVFmZTWA=;
-        b=FusCoqjegfZkj22l4PYv4+tvsTL5O9ZDaKyp7dtES3fS9Rf7RBqt7ui00zXW+fOou4
-         ko3NFa1inqgSwmFcyxFAEDZUai6noX4a/n8/L6gKIkiXvC9q0qunJGgkrjepKY/qMjac
-         oV45Ptcl0hM09TW+VAlWaU0gtwdSzKPgiiOLn2X1xbaQExpPIyaTJnHXrDJ/SGHCKBk7
-         7Z+9GGsMDXsMvC9YBjdp3jVeSG8RP7shgZpWkEAOdnKS1QLIWIqbtgLJsOcwlzoSQIwC
-         AaqDfg5uELNRQSPqXP+AfrhMKWKfu9OnFlMmX6X8DBlfXzWR31TTf96CaED6qJXk/1GC
-         2Y7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752723215; x=1753328015;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9oA8y14yagrQ5k6xSbfVfV7QH4qEs2A8CSReVFmZTWA=;
-        b=kcJIdKLnE9IPeq6t9s+2KNGZbwaD10Mi7T50hICGhMbl6jQNjGt+Q8D3fZoBz0+PsN
-         LVrJOJ6dOWfu6PtGFphVxUzUoKdKoV5RiPhbt2hVzR/A8MNKd5U1M6Sw6h5HvlC+CSiS
-         IByYmTNFItGoMRH1mZIMANKLqvOrjhhZgEBoiB1a1dDME/kAG/xb3URaOxsO/M2zitUj
-         g5qUtPqdyPeBctHKPb0TUkuShoJNavxBZo8MDJI+r+YKGJKfaLp9z9RDqTi+V7e8HNWJ
-         z+b1pXQL64rEJjrXisDPy5Yvvo693mjU0Bb42AM58GMnl2ZOAKOeFrx3J3fZINNRXi3C
-         z2Uw==
-X-Forwarded-Encrypted: i=1; AJvYcCUJuih9g7Khn1KOsAePWnJ66eq+ao0yn5koO9lKQgG4KqXqBtDOtaOCNk1YoZA32OtC/rw=@vger.kernel.org, AJvYcCVAQrjdISAzAVjt5XUyNngdpfFPIZ+y/a+x4eE5ei9+ChEOEXG+fZ1C3e4ZrCaSy061KS7nk7u6Yuula6uU@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw3DJnE81fbEoqsYchySFYqWsyW9wxQWFMtdzlDTsftI25mbxQ9
-	ol9u/ZvFVBiw7Q915qrLebsfUjLncv3+OtffrdawZDCgbebsIlmpMm7+WOPDhgGO9glHoqIFHG5
-	WFXCjClPk2kbfPOEeNBmtgZGz6XtexDw=
-X-Gm-Gg: ASbGncv/wiWVUNB6Rwp9+FSFCQCOK1AzrFwSNYX2i2gALuZqBP9dxNpPlxjaw1xA66L
-	GgtSVZXBOAJ9dZgyGF6IwmkEZHl17wBGwwP6677DgMs7Hh9dww9JxG1M/eyRiPRujH9uDgxn2f9
-	RU5JoRLhzua1PN0UA6lLJoKjgXaZlivf0r7fkHd5q0/9cHSrdFc87onWkDXi1FrWj2N8vfyRunh
-	uiVC16U8YqXI4r98Rd6urKuOFUly9EhRiiS
-X-Google-Smtp-Source: AGHT+IG+pmFZbAAM7Z9l3eMc+Veb/P/zicLt/6saYIOedxnEL29h5HnKsL/4dSTZ6zRwHN779i9D9qxS7EslSQ7ngVY=
-X-Received: by 2002:a05:600c:4688:b0:43c:f8fc:f697 with SMTP id
- 5b1f17b1804b1-4562e3548e5mr51501185e9.9.1752723215028; Wed, 16 Jul 2025
- 20:33:35 -0700 (PDT)
+	s=arc-20240116; t=1752724661; c=relaxed/simple;
+	bh=/Wcq1ACFNdx2ow0ykhdjhlATIRdXhubEO21CSF4mXyA=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=bEi8XQN/gBpS4RrpFXk1OQJ3RzGc4LciMkZkuNwA0EH3SZv0jW0SdU14/H9N6CmODsffSL2hwenbkkEteAL/BEOhQbhsbhFd0qeIVyz0RWc0QpeHM0pqfCoIu/5iu/F0SQ0EYaZIwds5MK0zs01bbuFxX58RXBrHaxtHemjs85I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf09.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay02.hostedemail.com (Postfix) with ESMTP id 3A1E412E2E9;
+	Thu, 17 Jul 2025 03:57:36 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf09.hostedemail.com (Postfix) with ESMTPA id 336F020024;
+	Thu, 17 Jul 2025 03:57:31 +0000 (UTC)
+Date: Wed, 16 Jul 2025 23:57:51 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: Jens Remus <jremus@linux.ibm.com>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org,
+ Steven Rostedt <rostedt@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+ Vasily Gorbik <gor@linux.ibm.com>, Ilya Leoshkevich <iii@linux.ibm.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Peter Zijlstra <peterz@infradead.org>,
+ Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Namhyung Kim
+ <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Andrii
+ Nakryiko <andrii@kernel.org>, Indu Bhagat <indu.bhagat@oracle.com>, "Jose
+ E. Marchesi" <jemarch@gnu.org>, Beau Belgrave <beaub@linux.microsoft.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton
+ <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>, Florian Weimer
+ <fweimer@redhat.com>, Sam James <sam@gentoo.org>
+Subject: Re: [RFC PATCH v1 08/16] unwind_user: Enable archs that save RA/FP
+ in other registers
+Message-ID: <20250716235751.119a1273@gandalf.local.home>
+In-Reply-To: <oasyyga72yuiad7y2nzh7wcd7t7wmxnsbo2kuvsn5xsnuypewd@ukxxgdjbvegz>
+References: <20250710163522.3195293-1-jremus@linux.ibm.com>
+	<20250710163522.3195293-9-jremus@linux.ibm.com>
+	<oasyyga72yuiad7y2nzh7wcd7t7wmxnsbo2kuvsn5xsnuypewd@ukxxgdjbvegz>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250717032828.500146-1-yangfeng59949@163.com> <20250717032828.500146-2-yangfeng59949@163.com>
-In-Reply-To: <20250717032828.500146-2-yangfeng59949@163.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 16 Jul 2025 20:33:23 -0700
-X-Gm-Features: Ac12FXyw-BcEEGJjU0Q-RBC4WK4I7LITosRIzBxYH8dQ4nYSu_X4D71WO5qzivo
-Message-ID: <CAADnVQL2OWzpEujGafMObS-V6LKbJsg5rLDEG7b9L2VfJ0uS8g@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/2] bpf: Fix macro redefined
-To: Feng Yang <yangfeng59949@163.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: 33jwewuerc8foyfcaek3xc5ekq3q1idq
+X-Rspamd-Server: rspamout03
+X-Rspamd-Queue-Id: 336F020024
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1+CHvE0rseswar59cxqUuLAMJ6f+JgT6n4=
+X-HE-Tag: 1752724651-985942
+X-HE-Meta: U2FsdGVkX19CvRwyrQ8B55S+Wqqs+O/Ob9ObLkdMzkTFa/3d+qeI+avsV9Azxr28fsLrQXTUEx+M9LX/JkybAHkSwefbUhXZmjAzt9AwGZzMF3GRfcwMgGL8yQ0yLuFnwnWp0LFjqugzapGcXiLah9rKNWdhWWyzF/1Xhyv4jWv3AOVngGu0+lm1msfchmpbl/FWqzXQAvzRuoDhh+vXfPMl21bEbP6ra8GPFvodzZAfsXUgZHV2sp7r1/uy6de0R+Pdyr5+MMowDWueXn7Mp2jmZbGolGmHKoRABJfsb3tCoDxpdAZV/VZAkJsFWeGYs08tZFnGi5YjmBw4Y/7MLa0UYhNmtJzk
 
-On Wed, Jul 16, 2025 at 8:29=E2=80=AFPM Feng Yang <yangfeng59949@163.com> w=
-rote:
->
-> From: Feng Yang <yangfeng@kylinos.cn>
->
-> When compiling a program that include <linux/bpf.h> and <bpf/bpf_helpers.=
-h>, (For example: make samples/bpf)
-> the following warning will be generated:
-> In file included from tcp_dumpstats_kern.c:7:
-> samples/bpf/libbpf/include/bpf/bpf_helpers.h:321:9: warning: 'bpf_stream_=
-printk' macro redefined [-Wmacro-redefined]
->   321 | #define bpf_stream_printk(stream_id, fmt, args...)               =
-               \
->       |         ^
-> include/linux/bpf.h:3626:9: note: previous definition is here
->  3626 | #define bpf_stream_printk(ss, ...) bpf_stream_stage_printk(&ss, _=
-_VA_ARGS__)
->       |         ^
->
-> The main reason is due to below in sample/bpf/Makefile:
+On Wed, 16 Jul 2025 19:01:06 -0700
+Josh Poimboeuf <jpoimboe@kernel.org> wrote:
 
-No. We're not going to change kernel code because of samples.
+> > +		if (unwind_user_get_reg(&ra, frame->ra.regnum))
+> > +			goto done;
+> > +		break;
+> > +	default:
+> > +		WARN_ON_ONCE(1);
+> > +		goto done;  
+> 
+> The default case will never happen, can we make it a BUG()?
 
---
-pw-bot: cr
+Is this really serious enough to crash the system? WARN_ON_ONCE() *is* for
+things that will never happen.
+
+The only time I ever use BUG() is if it's too dangerous to continue (like a
+function graph trampoline that gets corrupted and has no place to return
+to). In general, usage of BUG() should be avoided.
+
+-- Steve
 
