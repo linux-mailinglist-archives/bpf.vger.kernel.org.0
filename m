@@ -1,200 +1,298 @@
-Return-Path: <bpf+bounces-63549-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63550-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33A13B08325
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 04:52:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00E22B0833C
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 05:09:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 652AB58164A
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 02:52:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C80CC1AA5414
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 03:09:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA2031E0083;
-	Thu, 17 Jul 2025 02:52:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W+LQnLWG"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3171D1E5207;
+	Thu, 17 Jul 2025 03:09:19 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0835D1B4244;
-	Thu, 17 Jul 2025 02:52:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EEA71F95C;
+	Thu, 17 Jul 2025 03:09:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752720736; cv=none; b=BeFlhri0xvpkIwysYHYAgQRjLiv/IiThVesFPGXzx5iKvY6qu1Xsx1JdJi2oBsBo2uvHBH444l7kBu5YAOUMz+qqtxga/2Ng5t9zkmQUXJjXdTcv+SaQfLcti8CEtZKJVituXPt06XU9+gsq3EqpgpeCCZPaaC2dx1Mj5vNBE4Q=
+	t=1752721758; cv=none; b=pIpBlqZHxlQub+HqACXWJYbixdzJsQCM2yTcmx7EAg9idbdHCOztGgU4EpRagP4dykPEXa3Wz1/VLDz5wXP0NaUd4+V83eDZQyAOzqbK5PvsKBpU6zqFJRgA44Cu2Fv6+ToJVCS72aJgvEEz79+8Wn3+Qr6PBS7Ad3U6DBNP91w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752720736; c=relaxed/simple;
-	bh=+lJpU2mXa0TyzC21P9ldpmZXpfExs2ldRnSoRpZsCXM=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=dQe4Aw6Eed7vOvWB4l2vOvayTHjPGII0pKGZi9yZNbtnJUmOWUv8LGxwPhB7RU0XLEG672Cahuehre+mKDdBQe+YXkq+p+r6XOimZWZKNfCaC44OmY0c/7dUvuAC73QZhPLTA2HNn+TB777Xky5VzYq/iB4j6Ni+YLb1ixcLhcE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W+LQnLWG; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-e8275f110c6so452805276.2;
-        Wed, 16 Jul 2025 19:52:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752720734; x=1753325534; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+lJpU2mXa0TyzC21P9ldpmZXpfExs2ldRnSoRpZsCXM=;
-        b=W+LQnLWGIpkjPqZMyd/7C1dbqBtImkEpuytl/HxRzrrQ322ihDL249WKxIXBZt7Q5K
-         aGC9S1eKnOHNwhVCpV+PbpSYD8cqEcPCTxuJxLrs8pl6jpIop5vhbbv5lUd0lgPEzOho
-         Bw41ci7/08afQdJN7AsycwBoqWtRCRCpOTGpE3Yn+aUHhRFJMzTmPq59ZG0ERCp+Vq8q
-         D9zK/5O0heYEe4dSjwcVN1715VRGZ/rads8jMuciIHQR2ovaztryGZTb0u3pW0Yon8qf
-         s2YR7mXsv3piE93e+VludkjNneR/OkB7Z2Vvu3M4gRAGR5i886PCufBSyBdVl0LzlLo/
-         qbcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752720734; x=1753325534;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=+lJpU2mXa0TyzC21P9ldpmZXpfExs2ldRnSoRpZsCXM=;
-        b=Gf3VJ8Qmqg8fWzMIBXLygOOJnPVi578MpdSdptt7W5WvNC6Wy3FNNL2Lo8rCOYS+aF
-         QcMIej8Zkf/FAkLifIPwsD7xLDmrQghYGClatkZqELONNY/fo5W9o1V7vU2QIdHFoI9a
-         CO43O1FQDHPjPuL2yECLGWnU7H7xBq7B+Wk/usobqzCTjZYJhzqy6shY8QdSxOcVAQlL
-         nmosv2sL9+CT5SHG2a1ApEYKi0gXLOabFidBMv3B8mVY4sshDhzoFVyrMTFMyZCH80cH
-         1rR4ddFkJPTxIgz6Km8TbRmWCu7RFtE7H/TUP3+fHtef68V8pY0UijzqjN6esUerZE6Z
-         mlGA==
-X-Forwarded-Encrypted: i=1; AJvYcCW0+jpcag802F7O3gRwjCRRWwND1dGNeDkb8R2ohd5aHO+SSH6TzcSHEwU36cOSShiXym8=@vger.kernel.org, AJvYcCXtldKn4aY+xRx9HO4w4qALgZYeLv3nKGB0oCGLlAoBZV5gm4fkSj2UPHjy7SwT59hwbnhpqwC1@vger.kernel.org
-X-Gm-Message-State: AOJu0YxJMSMQ/ADZ1wodloj+0wdFW3AiW00VQWmkIejd1q2Ug5Y7VG9x
-	U+aOl+AXLFXgUQuh6a7SV9ydrFS49i098qt1C2rWZE68rCqPVyWO8Fd7
-X-Gm-Gg: ASbGncusrdoh1BuAKXmDnW8JQWeVCGKhpgoWStaObvOz/HOa2QwyOpLWDPw+eSSmgoc
-	A6E+PyHipi2AiXSZ6ueCoviOJwDS7RspozPNUqzOlNUsOzPLEl8cqBGBpYlC4Xylbi7RmNYLPI7
-	JaGP16t1oxKB7upyy0FVeRBU/oe0h6GDcKX9+W9i7FvdCF6x/kecnmvdryZy/ujgEIBU9LzW/ER
-	wNGrJP3A5tG1x4IwEk81uXJ5MpeUIh7TqukwWpkx+FiYs+KrGPgWIdmF0Yy8ziGJVGfjgoRN7qH
-	zpOtOTiLy0ylHzi0x82TCbWIBBeUIBNb0HPeRaYaWj6BPvTFmuO/uwY0Nk96fLjmKiaGoZA5zyR
-	yAy3MNMsD5KAAamk61oEQTngA/jerhpTqWHeUf10g+5hyynP9XtXewTn1sGmyCzIpgs3FYw==
-X-Google-Smtp-Source: AGHT+IGIv/PNECzN/AP4YQUb37vr5VvmtdSKCMT8TaKIQLlfNS+FyLaApcES2IWkhCWdaq47lrXErg==
-X-Received: by 2002:a05:6902:2602:b0:e8b:bd41:c781 with SMTP id 3f1490d57ef6-e8bc255e3e9mr6502842276.11.1752720733738;
-        Wed, 16 Jul 2025 19:52:13 -0700 (PDT)
-Received: from localhost (23.67.48.34.bc.googleusercontent.com. [34.48.67.23])
-        by smtp.gmail.com with UTF8SMTPSA id 3f1490d57ef6-e8bb928f0edsm1502225276.34.2025.07.16.19.52.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jul 2025 19:52:13 -0700 (PDT)
-Date: Wed, 16 Jul 2025 22:52:12 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Jason Xing <kerneljasonxing@gmail.com>, 
- Jakub Kicinski <kuba@kernel.org>
-Cc: davem@davemloft.net, 
- edumazet@google.com, 
- pabeni@redhat.com, 
- bjorn@kernel.org, 
- magnus.karlsson@intel.com, 
- maciej.fijalkowski@intel.com, 
- jonathan.lemon@gmail.com, 
- sdf@fomichev.me, 
- ast@kernel.org, 
- daniel@iogearbox.net, 
- hawk@kernel.org, 
- john.fastabend@gmail.com, 
- joe@dama.to, 
- willemdebruijn.kernel@gmail.com, 
- bpf@vger.kernel.org, 
- netdev@vger.kernel.org, 
- Jason Xing <kernelxing@tencent.com>
-Message-ID: <6878655ca06c7_9aa0c294c5@willemb.c.googlers.com.notmuch>
-In-Reply-To: <CAL+tcoCMQhaZdvbR1p50tuVk0RUdqAiRgjDrO0b+EO1XvM=2qw@mail.gmail.com>
-References: <20250716122725.6088-1-kerneljasonxing@gmail.com>
- <20250716145645.194db702@kernel.org>
- <CAL+tcoByyPQX+L3bbAg1hC4YLbnuPrLKidgqKqbyoj0Sny7mxQ@mail.gmail.com>
- <20250716164312.40a18d2f@kernel.org>
- <CAL+tcoA1LMjxKgQb4WZZ8LeipbGU038is21M_y+kc93eoUpBCA@mail.gmail.com>
- <20250716175248.4f626bdb@kernel.org>
- <CAL+tcoCMQhaZdvbR1p50tuVk0RUdqAiRgjDrO0b+EO1XvM=2qw@mail.gmail.com>
-Subject: Re: [PATCH net-next v2] xsk: skip validating skb list in xmit path
+	s=arc-20240116; t=1752721758; c=relaxed/simple;
+	bh=/A6dkkboZZCec41Ma72Iyrcv75pL7Zzl0qbmSOdeQL0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bBC3elas4/RWf37y6ecGzWOQV8/s3aH24RVff4UvfoG+du14ZXTwvw6mJ1YjZuuaP3i4Fe0azj+fpFksXYYdmVLhSpoeFbwRY/vCSrI4hHDN4xVsQ2zTGE8auZFQGjygGYqXpyxAdBLvzH02Ew5sAfqSE87f79ZAML4bIEglIPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-681ff7000002311f-57-6878694f2f10
+Date: Thu, 17 Jul 2025 12:08:58 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: Mina Almasry <almasrymina@google.com>,
+	David Hildenbrand <david@redhat.com>,
+	"willy@infradead.org" <willy@infradead.org>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	kernel_team@skhynix.com, kuba@kernel.org,
+	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
+	akpm@linux-foundation.org, davem@davemloft.net,
+	john.fastabend@gmail.com, andrew+netdev@lunn.ch, toke@redhat.com,
+	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com,
+	saeedm@nvidia.com, leon@kernel.org, ast@kernel.org,
+	daniel@iogearbox.net, lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
+	surenb@google.com, mhocko@suse.com, horms@kernel.org,
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+	vishal.moola@gmail.com, hannes@cmpxchg.org, ziy@nvidia.com,
+	jackmanb@google.com
+Subject: Re: [PATCH net-next v9 3/8] page_pool: access ->pp_magic through
+ struct netmem_desc in page_pool_page_is_pp()
+Message-ID: <20250717030858.GA26168@system.software.com>
+References: <20250710082807.27402-1-byungchul@sk.com>
+ <20250710082807.27402-4-byungchul@sk.com>
+ <CAHS8izMXkyGvYmf1u6r_kMY_QGSOoSCECkF0QJC4pdKx+DOq0A@mail.gmail.com>
+ <20250711011435.GC40145@system.software.com>
+ <582f41c0-2742-4400-9c81-0d46bf4e8314@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <582f41c0-2742-4400-9c81-0d46bf4e8314@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRjG+e+cnXNcDv6tsr8VgasIlOyCH17SrIjg0B2iLxXl1EMbzWWz
+	dBOtVUI20jK7zgWTzGwaqyVzSVot0yRhscjWzdVMQzTN28hMzaNEfnt43uf58X54OEpxVbqA
+	0+iOCXqdSqtkZLTsR3jpip0ag3qVyb8SrI4qBip/GeDOF7cUrHYXgqGRjywMNjQxcKs0RIHV
+	m0fDsOM3BR2NQRYqndshUN5Jw+OzNRQEL7xkoCBvlIK6kV4WTrsrJPDaVSiFy79vU1Bj+sLC
+	m1orA21VE1Lo9BTQ0Gy5S0OgcAM02iIg9KoHQYOjRgKh8zcZKPbZGGjPCyDwPQ/SUHKqEIGj
+	3i+F0V+TjJIXbeyGpfzznj6Kr777XsI/snxmeZvzOP+wIpo3+30U77SfY3jnwCWW/9T6mOFf
+	Xh+l+UfuQQlfcKaX4fs7PtB8X/1bhndUv6X5FlsDu2v2XllCqqDVZAr6lYlJMrW7KESnl603
+	lNaW0CZUv8qMOI7gOFLsjjOjsCn59FofI9o0XkY89hWizeDlxO8foUQ9F8eQ7nceVtQUfseQ
+	cmeiGJ+DDcT+aqopx0B8Y3vNSMYpsFlCHP3dUjEux7NJ841v9HQ1mvjHuyRinsILyZ1xTrTD
+	8Dpiqeuaos/DS8hTV5NE5BDs5sjlsjLp9JeR5FmFn76IsGUG1jIDa/mPtSHKjhQaXWaaSqON
+	i1UbdRpDbMqRNCeaXEt57p99bjTwercHYQ4pw+VJ97PUCqkqM8OY5kGEo5Rz5cW+TLVCnqoy
+	Zgv6Iwf1x7VChgct5GjlfPmaUFaqAh9SHRMOC0K6oP93lXBhC0zoKK7d49JpmqxRmybWGmcl
+	DjQuTqYSwnMeNDyJNy3aHxiuunVg6OSWXO1a/VBXtTLqe7N3oyUpR5MSolq0Eds+umIsV53X
+	o0uftHgvjM2v3J5a5D0U4/BmByPb6zbHRMV/HdPHng4k5LfuS95R2Lo1+LN+64l7csFn3CXL
+	97snrijpDLVqdTSlz1D9BfwjHZcpAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRjG+59zdnZcDY7L8jSFYiGBkhoZvHSxUZF/BLtAENSHHHloS121
+	6ZxBZDoq56XsgrUtWlSzLWGxZE5T02leEDIm5krLWhaVknmlua4ror49PO/v93x6GVISpKSM
+	Sp3Ha9SKHBktokQ7NpSs3qnSK5MfP4gFi7OWhrtf9FDzyiMAi8ONYCY4JITpji4abt6YI8HS
+	Z6Bg1jlPwtvOgBDuujJgxPaOgqYz9SQEznXTUGEIkdAc/CSEYs8dAtqv9QjgibtSAJfmb5NQ
+	X/RKCP2NFhpe1v4QwDtvBQU9JjsFI5Vy6LQuhbnecQQdznoC5sqv0XDRZ6XhjWEEga89QIH5
+	VCUCZ4tfAKEvvzbMj14K5XG4fXyCxHX2ZwRuML0QYqsrH9+/E4+Nfh+JXY5SGrumLgjx8NMm
+	GndfCVG4wTNN4IqSTzSefPucwhMtAzS++f4zgZ11A9QuyT7Rxiw+R6XjNUmpmSKlp2qOOnpr
+	s/5Go5kqQi3JRhTBcGwK11o9QRsRw1BsHOd1rA7XNLuK8/uDZDhHsQnc2KBXGM4kO0hzNldq
+	GF/M6jlH729TzALn+7bPiESMhDUSnHNyTBDGxWwk13N1lPqjxnP+7x+IME+yMVzNdyZcR7Cb
+	OFPzh9/rS9iVXKu7iziPxKb/bNN/tumfbUWkA0Wp1LpchSpnXaI2W1moVukTDx7JdaFfD2E7
+	8bXKg2b607yIZZBskTjzXoFSIlDotIW5XsQxpCxKfNGnU0rEWYrC47zmyAFNfg6v9aIYhpJF
+	i9P38pkS9pAij8/m+aO85u+VYCKkRehh3NfLeR3BVQ0xw9qgQR/oGPuoXtD8se16mX3gpGp/
+	9/LW8t3VoWPbl/f0Vc3LY+tN9jTT+tJvsPF0+miG0bhiPHqh133G1iZ9oA+dlR9OS1pWMHp1
+	6zbvdLK8+DRRNvR6uE4q2zJ4YjCxPHLaPNUPblxQmzK73Z8AgeiRPWtllFapWBNParSKn16C
+	57gMAwAA
+X-CFilter-Loop: Reflected
 
-Jason Xing wrote:
-> On Thu, Jul 17, 2025 at 8:52=E2=80=AFAM Jakub Kicinski <kuba@kernel.org=
-> wrote:
-> >
-> > On Thu, 17 Jul 2025 08:06:48 +0800 Jason Xing wrote:
-> > > To be honest, this patch really only does one thing as the commit
-> > > says. It might look very complex, but if readers take a deep look t=
-hey
-> > > will find only one removal of that validation for xsk in the hot pa=
-th.
-> > > Nothing more and nothing less. So IMHO, it doesn't bring more compl=
-ex
-> > > codes here.
-> > >
-> > > And removal of one validation indeed contributes to the transmissio=
-n.
-> > > I believe there remain a number of applications using copy mode
-> > > currently. And maintainers of xsk don't regard copy mode as orphane=
-d,
-> > > right?
-> >
-> > First of all, I'm not sure the patch is correct. The XSK skbs can hav=
-e
-> > frags, if device doesn't support or clears _SG we should linearize,
-> > right?
-> =
+On Sat, Jul 12, 2025 at 02:58:14PM +0100, Pavel Begunkov wrote:
+> On 7/11/25 02:14, Byungchul Park wrote:
+> ...>>> +#ifdef CONFIG_PAGE_POOL
+> > > > +/* XXX: This would better be moved to mm, once mm gets its way to
+> > > > + * identify the type of page for page pool.
+> > > > + */
+> > > > +static inline bool page_pool_page_is_pp(struct page *page)
+> > > > +{
+> > > > +       struct netmem_desc *desc = page_to_nmdesc(page);
+> > > > +
+> > > > +       return (desc->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE;
+> > > > +}
+> > > 
+> > > pages can be pp pages (where they have pp fields inside of them) or
+> > > non-pp pages (where they don't have pp fields inside them, because
+> > > they were never allocated from the page_pool).
+> > > 
+> > > Casting a page to a netmem_desc, and then checking if the page was a
+> > > pp page doesn't makes sense to me on a fundamental level. The
+> > > netmem_desc is only valid if the page was a pp page in the first
+> > > place. Maybe page_to_nmdesc should reject the cast if the page is not
+> > > a pp page or something.
+> > 
+> > Right, as you already know, the current mainline code already has the
+> > same problem but we've been using the werid way so far, in other words,
+> > mm code is checking if it's a pp page or not by using ->pp_magic, but
+> > it's ->lur, ->buddy_list, or ->pcp_list if it's not a pp page.
+> > 
+> > Both the mainline code and this patch can make sense *only if* it's
+> > actually a pp page.  It's unevitable until mm provides a way to identify
+> > the type of page for page pool.  Thoughts?
+> Question to mm folks, can we add a new PGTY for page pool and use
+> that to filter page pool originated pages? Like in the incomplete
+> and untested diff below?
+> 
+> 
+> commit 8fc2347fb3ff4a3fc7929c70a5a21e1128935d4a
+> Author: Pavel Begunkov <asml.silence@gmail.com>
+> Date:   Sat Jul 12 14:29:52 2025 +0100
+> 
+>     net/mm: use PGTY for tracking page pool pages
+> 
+>     Currently, we use page->pp_magic to determine whether a page belongs to
+>     a page pool. It's not ideal as the field is aliased with other page
+>     types, and thus needs to to rely on elaborated rules to work. Add a new
+>     page type for page pool.
 
-> But note that there is one more function __skb_linearize() after
-> skb_needs_linearize() in the validate_xmit_skb(). __skb_linearize()
-> tests many members of skbs, which are not used to check the skbs from
-> xsk. For xsk, it's very simple (please see xsk_build_skb())
+Hi Pavel,
 
-For single frame xsk skb_needs_linearize will be false and thus
-__skb_linearize is not called?
+I need this work to be done to remove ->pp_magic in struct page.  Will
+you let me work on this work?  Or can you please refine and post this
+work?  If you let me, I will go for this as a separate patch from this
+series.
 
-More generally, I would also think that the cost of the
-validate_xmit_skb checks are quite cheap in the xsk case where they
-are all false. On the assumption that the touched cachelines are
-likely warm.
- =
+	Byungchul
 
-> >
-> > Second, we don't understand where the win is coming from, the numbers=
-
-> > you share are a bit vague. What's so expensive about a few skbs
-> =
-
-> To be more accurate, it's not "a few" but "so many" because of the
-> high pps reaching more than 1,000,000. So if people run the xdpsock to
-> test it, it's not hard to see most of time is spent during the skb
-> allocation process.
-
-Right, the alloc or memcpy more than the validate?
-
-> > accesses? Maybe there's an optimization possible to the validation,
-> > which would apply more broadly, instead of skipping it for one trivia=
-l
-> > case.
-> >
-> > Third, I asked you to compare with AF_PACKET, because IIUC it should
-> > have similar properties as AF_XDP in copy mode. So why not use that?
-> =
-
-> I haven't run into AF_PACKET so far. At least, I can confirm that xsk
-> doesn't need it from my side. The whole logic of validation apparently
-> is not designed for xsk case...
-> =
-
-> >
-> > Lastly, the patch is not all that bad, sure. But the experience of
-> > supporting generic XDP is a very mixed. All the paths that pretend
-> > to do XDP on skbs have a bunch of quirks and bugs. I'd prefer that
-> > we push back more broadly on any sort of pretend XDP.
-> =
-
-> Well, sorry, I feel a bit upset when reading this because as I
-> insisted before not everyone can use the advanced zerocopy mode.
-> =
-
-> Thanks,
-> Jason
-
-
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 0ef2ba0c667a..975a013f1f17 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -4175,7 +4175,7 @@ int arch_lock_shadow_stack_status(struct task_struct *t, unsigned long status);
+>  #ifdef CONFIG_PAGE_POOL
+>  static inline bool page_pool_page_is_pp(struct page *page)
+>  {
+> -       return (page->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE;
+> +       return PageNetpp(page);
+>  }
+>  #else
+>  static inline bool page_pool_page_is_pp(struct page *page)
+> diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+> index 4fe5ee67535b..9bd1dfded2fc 100644
+> --- a/include/linux/page-flags.h
+> +++ b/include/linux/page-flags.h
+> @@ -957,6 +957,7 @@ enum pagetype {
+>        PGTY_zsmalloc           = 0xf6,
+>        PGTY_unaccepted         = 0xf7,
+>        PGTY_large_kmalloc      = 0xf8,
+> +       PGTY_netpp              = 0xf9,
+> 
+>        PGTY_mapcount_underflow = 0xff
+>  };
+> @@ -1101,6 +1102,11 @@ PAGE_TYPE_OPS(Zsmalloc, zsmalloc, zsmalloc)
+>  PAGE_TYPE_OPS(Unaccepted, unaccepted, unaccepted)
+>  FOLIO_TYPE_OPS(large_kmalloc, large_kmalloc)
+> 
+> +/*
+> + * Marks page_pool allocated pages
+> + */
+> +PAGE_TYPE_OPS(Netpp, netpp, netpp)
+> +
+>  /**
+>   * PageHuge - Determine if the page belongs to hugetlbfs
+>   * @page: The page to test.
+> diff --git a/include/net/netmem.h b/include/net/netmem.h
+> index de1d95f04076..20f5dbb08149 100644
+> --- a/include/net/netmem.h
+> +++ b/include/net/netmem.h
+> @@ -113,6 +113,8 @@ static inline bool netmem_is_net_iov(const netmem_ref netmem)
+>   */
+>  static inline struct page *__netmem_to_page(netmem_ref netmem)
+>  {
+> +       DEBUG_NET_WARN_ON_ONCE(netmem_is_net_iov(netmem));
+> +
+>        return (__force struct page *)netmem;
+>  }
+> 
+> diff --git a/net/core/netmem_priv.h b/net/core/netmem_priv.h
+> index cd95394399b4..e38c64da1a78 100644
+> --- a/net/core/netmem_priv.h
+> +++ b/net/core/netmem_priv.h
+> @@ -13,16 +13,11 @@ static inline void netmem_or_pp_magic(netmem_ref netmem, unsigned long pp_magic)
+>        __netmem_clear_lsb(netmem)->pp_magic |= pp_magic;
+>  }
+> 
+> -static inline void netmem_clear_pp_magic(netmem_ref netmem)
+> -{
+> -       WARN_ON_ONCE(__netmem_clear_lsb(netmem)->pp_magic & PP_DMA_INDEX_MASK);
+> -
+> -       __netmem_clear_lsb(netmem)->pp_magic = 0;
+> -}
+> -
+>  static inline bool netmem_is_pp(netmem_ref netmem)
+>  {
+> -       return (netmem_get_pp_magic(netmem) & PP_MAGIC_MASK) == PP_SIGNATURE;
+> +       if (netmem_is_net_iov(netmem))
+> +               return true;
+> +       return page_pool_page_is_pp(netmem_to_page(netmem));
+>  }
+> 
+>  static inline void netmem_set_pp(netmem_ref netmem, struct page_pool *pool)
+> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> index 05e2e22a8f7c..52120e2912a6 100644
+> --- a/net/core/page_pool.c
+> +++ b/net/core/page_pool.c
+> @@ -371,6 +371,13 @@ struct page_pool *page_pool_create(const struct page_pool_params *params)
+>  }
+>  EXPORT_SYMBOL(page_pool_create);
+> 
+> +static void page_pool_set_page_pp_info(struct page_pool *pool,
+> +                                      struct page *page)
+> +{
+> +       __SetPageNetpp(page);
+> +       page_pool_set_pp_info(page_to_netmem(page));
+> +}
+> +
+>  static void page_pool_return_netmem(struct page_pool *pool, netmem_ref netmem);
+> 
+>  static noinline netmem_ref page_pool_refill_alloc_cache(struct page_pool *pool)
+> @@ -534,7 +541,7 @@ static struct page *__page_pool_alloc_page_order(struct page_pool *pool,
+>        }
+> 
+>        alloc_stat_inc(pool, slow_high_order);
+> -       page_pool_set_pp_info(pool, page_to_netmem(page));
+> +       page_pool_set_page_pp_info(pool, page);
+> 
+>        /* Track how many pages are held 'in-flight' */
+>        pool->pages_state_hold_cnt++;
+> @@ -579,7 +586,7 @@ static noinline netmem_ref __page_pool_alloc_netmems_slow(struct page_pool *pool
+>                        continue;
+>                }
+> 
+> -               page_pool_set_pp_info(pool, netmem);
+> +               page_pool_set_page_pp_info(pool, __netmem_to_page(netmem));
+>                pool->alloc.cache[pool->alloc.count++] = netmem;
+>                /* Track how many pages are held 'in-flight' */
+>                pool->pages_state_hold_cnt++;
+> @@ -654,7 +661,6 @@ s32 page_pool_inflight(const struct page_pool *pool, bool strict)
+>  void page_pool_set_pp_info(struct page_pool *pool, netmem_ref netmem)
+>  {
+>        netmem_set_pp(netmem, pool);
+> -       netmem_or_pp_magic(netmem, PP_SIGNATURE);
+> 
+>        /* Ensuring all pages have been split into one fragment initially:
+>         * page_pool_set_pp_info() is only called once for every page when it
+> @@ -669,7 +675,6 @@ void page_pool_set_pp_info(struct page_pool *pool, netmem_ref netmem)
+> 
+>  void page_pool_clear_pp_info(netmem_ref netmem)
+>  {
+> -       netmem_clear_pp_magic(netmem);
+>        netmem_set_pp(netmem, NULL);
+>  }
+> 
+> @@ -730,8 +735,11 @@ static void page_pool_return_netmem(struct page_pool *pool, netmem_ref netmem)
+>        trace_page_pool_state_release(pool, netmem, count);
+> 
+>        if (put) {
+> +               struct page *page = netmem_to_page(netmem);
+> +
+>                page_pool_clear_pp_info(netmem);
+> -               put_page(netmem_to_page(netmem));
+> +               __ClearPageNetpp(page);
+> +               put_page(page);
+>        }
+>        /* An optimization would be to call __free_pages(page, pool->p.order)
+>         * knowing page is not part of page-cache (thus avoiding a
+> 
+> --
+> Pavel Begunkov
 
