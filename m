@@ -1,242 +1,153 @@
-Return-Path: <bpf+bounces-63519-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63520-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A04FEB081FB
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 03:00:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EADEDB08229
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 03:13:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B90E64A81F2
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 01:00:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D1DE6167F31
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 01:13:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16DD719D880;
-	Thu, 17 Jul 2025 01:00:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16FDD1B4223;
+	Thu, 17 Jul 2025 01:13:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LomFmmdV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M18k3886"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C74782E36E2;
-	Thu, 17 Jul 2025 00:59:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 302952E371A;
+	Thu, 17 Jul 2025 01:13:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752714001; cv=none; b=Iken4+L8157HsAgcq75LEmPlm2osU49W5DAOUmL0fJohwxDNECIdPfv33kfY1Cg9o4fENXntl+Bi0PiaRmEUFGD7+Ssn4/OUWl8XDub/QWG5M8kue5c1+6A+TRwBmP3+Lnp9zNIxCSvGcumltmENKKV0SqO4sVwccNlnEEgJNz0=
+	t=1752714813; cv=none; b=gbmCg2J2KyAoB1DsNvi+IhtSDaBOcD5TbYF96vrNKyoa2c1kCgVlgqSTupabgaKZt41yewINwVzFU4SPAYyv0PfvT7T8nlbGD8scBs0krYxlTKyxahk59JvBZ2VsBAgE/JcVRO7mK2hGhtHgwJASVdBRcxE4BnB/8gUHO76MYsU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752714001; c=relaxed/simple;
-	bh=kaKiA8MRNCWa3wuLWzsfVMtnO70zx2SGqWj1iBtKs08=;
+	s=arc-20240116; t=1752714813; c=relaxed/simple;
+	bh=MXoVxG3n4rT3K90u+1ubqCjerqq0R8LcHr5fEXnaUnQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Xs40v14LM+iDwHVYuA8SPRiOw5lrh2hnmcaRFvInFoifU32zH0qPZXlLo8WSxc5YHeNm+Q1KMj8LuJKxki7qlKiOuA5wOyxyEUNSEzKx/489fi74KdtER3LamgKQjB5sc5Ym38fnHzhoUKv8gxUwTHAszxJs8B8eCWvBTQ6eGJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LomFmmdV; arc=none smtp.client-ip=209.85.128.45
+	 To:Cc:Content-Type; b=JuEx7Mxdw/bT2Cidy40dsU3yU2OoUibc5MAmkawrrGCDuYO34Q5ES5OCo+Bj6IcoYXdwfLCJs+UDyyyoojpBLUmTcoMGqxcOZTVFt5IBrv5eVnqj5jWNGC6+dDb8bFnMGNrqxFJXODVN/rh0t/AZpW63xCtZcW0/ttxOakXMDg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M18k3886; arc=none smtp.client-ip=209.85.166.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4561a4a8bf2so3797305e9.1;
-        Wed, 16 Jul 2025 17:59:59 -0700 (PDT)
+Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-86a052d7897so38856439f.0;
+        Wed, 16 Jul 2025 18:13:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752713998; x=1753318798; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1752714811; x=1753319611; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kaKiA8MRNCWa3wuLWzsfVMtnO70zx2SGqWj1iBtKs08=;
-        b=LomFmmdVvKJb7zhAow5ZA58n6VPQJ4sPwFBJqznUBe6GTBqQLVtGTqAZHSYiW51NcV
-         XUuwpLXu5Rzp8drGEdhTWgrcjekNt6ReiPNOBVKIrHKxeh061G0ENtiQqarzMvJFw8pd
-         z90TovpIME5u0ZbYYOLZDkhUesi0Z45+aLe2dtHqsfitiLUEB9cGGZU69IhJM8M+ns4n
-         kq55HJvUJ/6E9/jtNCwH9ukZv6Dxc8IATs6/M+Nr2vWbMrqm2475D+aoET0e5NWJtAEm
-         w5dZwEhZoMUT0JB+yXdse4NSi+R5aImcsrXAejNrvv8EFACzB9zGtzW3RH+ca3zYgGTr
-         hJsg==
+        bh=MXoVxG3n4rT3K90u+1ubqCjerqq0R8LcHr5fEXnaUnQ=;
+        b=M18k3886EAwtuE5lYiKUsUkHWMFWVxRVc8Z2CKjEg/UwmdvF1u0MFFYFCx7DOgNSA+
+         EZdqUkys5onVrpC3IDo/T46PZ5GVtHAtG3RurZP9Ljp5ZaNKtGpA8rYeVyd8r2sV/rHx
+         pndC31A9EWVcpZ/QJKy7TN5zCBl/2/YT0nbxOx4W/0nJf5rAMEj1SH65k8cDvgCkf93w
+         PXg5AAOVErp3NwP45MOhR3LkgbfABcChEBfwhXz1h8wgjkM5SBtsrlYDLxUBLM4kgXhT
+         GEt5yP4O5jH8kOxsBDFNcoros84aU7xiITzkzk92YtN6QMUz2uUO9bfVN2yCCUoxZK14
+         GDvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752713998; x=1753318798;
+        d=1e100.net; s=20230601; t=1752714811; x=1753319611;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kaKiA8MRNCWa3wuLWzsfVMtnO70zx2SGqWj1iBtKs08=;
-        b=ckgDwqbwPO32buc81KryLVtCNwqZOVfU98TiHm4PNnfyX3NnjIxshpzjL8X09j3AeZ
-         ZrWivW9iC04/ZfZEDHX73gEcPLA9sGb27zJMAYdQKWbFvzg/spER3hmuv3q44xCC+4Wn
-         5xmp6ed8AR4PngSugO55poFBXRY2i80qX7dwwoW4IjruIiA4OrBiDF2YjXe4+1Avrrqr
-         mwS6yqvI+xmkox4JqXwRVdEYgWSUME/PwcxF80KuaKT8Z59QwHcR0b1d4kR0JIZ0KGK2
-         dJBG4eRAkzvfPnmB32PStRdbd9p71nerqHsVGz+c0KgYlZwSKSe8yHAKRqsU5/48J5rL
-         ILLg==
-X-Forwarded-Encrypted: i=1; AJvYcCVSW4cwkNbYBRqpfmLZs64FXOjCOPxZXuQ7HghedL+OecfAbjH3sos2AMC91jThXn/fiGZsyHeUgifd3ADs@vger.kernel.org, AJvYcCVWnvW/uKUnZBrW0omRmLcyayuxpvWCUO3dFz9YXbbLPCIs0IHZ+1rdybF3yauhEmM1MWM=@vger.kernel.org, AJvYcCX6+vAWDoxM9FVNaRCgOSeMVcfbvrVIYpjoQ/RmjYDooStqHjBDuoZClpCJ3mjydHWEyE0MV6yv@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz5AL00Rnwa7Xc7jqDGuhdHDw8gSHeWmJW55W0Mo+Rb6MISViGB
-	Ck/2C+v8mMFxFgyycIGe7z4WLCEApQ0eXqZOzPl09E2aWfsvnaXnH4wIcvHSbJEkpaq+8FKOCqa
-	22VBb7G5gocxRr4wWYXdx3PGz/rZvnBhqNfoc
-X-Gm-Gg: ASbGncsQgh23iRVBVM14lFn+6RO+Q2EVJaue73G9BL1V2VS3QcaXL04XYdTIFqnEnT6
-	XQhTOYswGnAtBz9gimEkTgWjxp5vwfMC2JioUnS3U48nNxVg7/KuIHMZax/VNIzgHw1UAtdIwUe
-	wNE/v+hltnmgfpzqii5qZNpLfbBwfMP6nUNvyn/UwlBdSMVsALMwA3dj1753IVjaWOuQ6ZSNiR0
-	blXFQ1BgUNWWQCpXGWeVQHJw+8bU9A4LQC3+nDQVhFEPGI=
-X-Google-Smtp-Source: AGHT+IFCNgk5E3ceQgcpnh7J6MKotd+WLEcT5lR77HmZSey0/9RSoHj/57iwsScI9gfB2mc22+BtTLQYBXvaFXi2Nu0=
-X-Received: by 2002:a05:600c:64ce:b0:455:f59e:fd79 with SMTP id
- 5b1f17b1804b1-4562e33d64emr46741885e9.11.1752713997693; Wed, 16 Jul 2025
- 17:59:57 -0700 (PDT)
+        bh=MXoVxG3n4rT3K90u+1ubqCjerqq0R8LcHr5fEXnaUnQ=;
+        b=wL4Qz3rlcQGV54y0ZCX22vWtTEZGHosIASZO58V+UQWjn0tR6eVZaITrg9PdDNuoa8
+         TwX9k8SDjEtPBNfQ3Shuh1xNcn4ZX+vH6YiDxep1vZXW6ki3qMXnrRWsSJSOlPH8SpaG
+         DoH2OaT6MCUS4WW9dF1xJ39zECZdgFKvBeIhdUHON2tFDPThAhvK/X4m/PPcb0H7Zpqi
+         uSsJo66LXb4nJFufEBY/ei8qEH5mwxMEm9eobz47SB33mv1PzIZjRZjLOOf2vGshZGgA
+         7sbWMCs0qdH5SQeeRfXnVx8KChxfMZ1LOLY7g56XksoomQ5azH1gvvS08adI0PeaghRN
+         f7Ig==
+X-Forwarded-Encrypted: i=1; AJvYcCVHbZwxcVM0H5Ddu+IDieeUyKpni2rHtSimWaFT+7Ow/e1MH9sy63jesXUyMlkluS2YEejzBzKf@vger.kernel.org, AJvYcCVMAEojKhNFpvm581FPbfdv1HTRxelD5H4Cmn2918BRVJNk3ioTIhmDmIr8THdsKq88M1M=@vger.kernel.org
+X-Gm-Message-State: AOJu0YySN9MNWJN+eAaXldUOksk3EyPQdmQX4s/46Z6QmvYcwmW5mgeT
+	0JnaRpAA4sP7Q4O8AZOXtayIHb3DT1E1MRpHoy7LuAhMIrnW3MkjnQdbrwwSLxRdImUWEVTY1sv
+	7diXwaVR3AOzWGq/Erxz575AbQlcV7Jk=
+X-Gm-Gg: ASbGnctYgpIOsnbIJ0HFzRYnRMSjJf+PkvG/S2SAaBK2i1/F7wTvpGO/dYg+bjcPe1P
+	oQ+0Ljv9Ym8zEgFQqLij/uSavUsZTvwwSFHgosCHVmQJyGkdlpApJLQ2D4dm/DnKHQNJu0/QWKK
+	q8d0C+w8EYqg7wsj2hIAh84nL5bB1VXznLjrseFhFMlkr/S9l+mlljqA9x6jzU3+dW7b7A27aAR
+	3VbSQ==
+X-Google-Smtp-Source: AGHT+IGk6JnR0W2meKWxHrizaj2wksySomjAfMXMb9FQyg09pft6e8rov4boPIkvjYx2Ye6bq7hRgN/SxZMn2RzBTps=
+X-Received: by 2002:a05:6602:6c0d:b0:86c:e686:ca29 with SMTP id
+ ca18e2360f4ac-879c0892211mr688495439f.2.1752714811061; Wed, 16 Jul 2025
+ 18:13:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250703121521.1874196-1-dongml2@chinatelecom.cn>
- <45f4d349-7b08-45d3-9bec-3ab75217f9b6@linux.dev> <CAADnVQ+7NhegoZGHkiRyNO8ywks3ssPzQd6ipQzumZsWUHJALg@mail.gmail.com>
- <4737114.cEBGB3zze1@7940hx>
-In-Reply-To: <4737114.cEBGB3zze1@7940hx>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 16 Jul 2025 17:59:45 -0700
-X-Gm-Features: Ac12FXwTACRJ1EmkfUyG9feoU05Z3TPhagq0jgGugeWtmgahYJQbU9MgVPv5FeA
-Message-ID: <CAADnVQJ47PJXxjqES8BvtWkPq3fj9D0oTF6qqeNNpG66-_MGCg@mail.gmail.com>
-Subject: multi-fentry proposal. Was: [PATCH bpf-next v2 02/18] x86,bpf: add
- bpf_global_caller for global trampoline
-To: Menglong Dong <menglong.dong@linux.dev>, Jiri Olsa <jolsa@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: Menglong Dong <menglong8.dong@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	LKML <linux-kernel@vger.kernel.org>, Network Development <netdev@vger.kernel.org>
+References: <20250716122725.6088-1-kerneljasonxing@gmail.com>
+ <20250716145645.194db702@kernel.org> <CAL+tcoByyPQX+L3bbAg1hC4YLbnuPrLKidgqKqbyoj0Sny7mxQ@mail.gmail.com>
+ <20250716164312.40a18d2f@kernel.org> <CAL+tcoA1LMjxKgQb4WZZ8LeipbGU038is21M_y+kc93eoUpBCA@mail.gmail.com>
+ <20250716175248.4f626bdb@kernel.org>
+In-Reply-To: <20250716175248.4f626bdb@kernel.org>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Thu, 17 Jul 2025 09:12:54 +0800
+X-Gm-Features: Ac12FXy8BqrE2XsYETu3EEHmmnmj54eqJPs14i393o5p4ojzgbfcO-QqEgErPtU
+Message-ID: <CAL+tcoCMQhaZdvbR1p50tuVk0RUdqAiRgjDrO0b+EO1XvM=2qw@mail.gmail.com>
+Subject: Re: [PATCH net-next v2] xsk: skip validating skb list in xmit path
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: davem@davemloft.net, edumazet@google.com, pabeni@redhat.com, 
+	bjorn@kernel.org, magnus.karlsson@intel.com, maciej.fijalkowski@intel.com, 
+	jonathan.lemon@gmail.com, sdf@fomichev.me, ast@kernel.org, 
+	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com, joe@dama.to, 
+	willemdebruijn.kernel@gmail.com, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	Jason Xing <kernelxing@tencent.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 16, 2025 at 6:06=E2=80=AFAM Menglong Dong <menglong.dong@linux.=
-dev> wrote:
+On Thu, Jul 17, 2025 at 8:52=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> wr=
+ote:
 >
-> On Wednesday, July 16, 2025 12:35 AM Alexei Starovoitov <alexei.starovoit=
-ov@gmail.com> write:
-> > On Tue, Jul 15, 2025 at 1:37=E2=80=AFAM Menglong Dong <menglong.dong@li=
-nux.dev> wrote:
-> > >
-> > >
-> > > On 7/15/25 10:25, Alexei Starovoitov wrote:
-> [......]
-> > >
-> > > According to my benchmark, it has ~5% overhead to save/restore
-> > > *5* variants when compared with *0* variant. The save/restore of regs
-> > > is fast, but it still need 12 insn, which can produce ~6% overhead.
+> On Thu, 17 Jul 2025 08:06:48 +0800 Jason Xing wrote:
+> > To be honest, this patch really only does one thing as the commit
+> > says. It might look very complex, but if readers take a deep look they
+> > will find only one removal of that validation for xsk in the hot path.
+> > Nothing more and nothing less. So IMHO, it doesn't bring more complex
+> > codes here.
 > >
-> > I think it's an ok trade off, because with one global trampoline
-> > we do not need to call rhashtable lookup before entering bpf prog.
-> > bpf prog will do it on demand if/when it needs to access arguments.
-> > This will compensate for a bit of lost performance due to extra save/re=
-store.
+> > And removal of one validation indeed contributes to the transmission.
+> > I believe there remain a number of applications using copy mode
+> > currently. And maintainers of xsk don't regard copy mode as orphaned,
+> > right?
 >
-> I don't understand here :/
+> First of all, I'm not sure the patch is correct. The XSK skbs can have
+> frags, if device doesn't support or clears _SG we should linearize,
+> right?
+
+But note that there is one more function __skb_linearize() after
+skb_needs_linearize() in the validate_xmit_skb(). __skb_linearize()
+tests many members of skbs, which are not used to check the skbs from
+xsk. For xsk, it's very simple (please see xsk_build_skb())
+
 >
-> The rhashtable lookup is done at the beginning of the global trampoline,
-> which is called before we enter bpf prog. The bpf progs is stored in the
-> kfunc_md, and we need get them from the hash table.
+> Second, we don't understand where the win is coming from, the numbers
+> you share are a bit vague. What's so expensive about a few skbs
 
-Ahh. Right.
+To be more accurate, it's not "a few" but "so many" because of the
+high pps reaching more than 1,000,000. So if people run the xdpsock to
+test it, it's not hard to see most of time is spent during the skb
+allocation process.
 
-Looking at the existing bpf trampoline... It has complicated logic
-to handle livepatching and tailcalls. Your global trampoline
-doesn't, and once that is added it's starting to feel that it will
-look just as complex as the current one.
-So I think we better repurpose what we have.
-Maybe we can rewrite the existing one in C too.
+> accesses? Maybe there's an optimization possible to the validation,
+> which would apply more broadly, instead of skipping it for one trivial
+> case.
+>
+> Third, I asked you to compare with AF_PACKET, because IIUC it should
+> have similar properties as AF_XDP in copy mode. So why not use that?
 
-How about the following approach.
-I think we discussed something like this in the past
-and Jiri tried to implement something like this.
-Andrii reminded me recently about it.
+I haven't run into AF_PACKET so far. At least, I can confirm that xsk
+doesn't need it from my side. The whole logic of validation apparently
+is not designed for xsk case...
 
-Say, we need to attach prog A to 30k functions.
-10k with 2 args, 10k with 3 args, and 10k with 7 args.
-We can generate 3 _existing_ bpf trampolines for 2,3,7 args
-with hard coded prog A in there (the cookies would need to be
-fetched via binary search similar to kprobe-multi).
-The arch_prepare_bpf_trampoline() supports BPF_TRAMP_F_ORIG_STACK.
-So one 2-arg trampoline will work to invoke prog A in all 10k 2-arg functio=
-ns.
-We don't need to match types, but have to compare that btf_func_model-s
-are the same.
+>
+> Lastly, the patch is not all that bad, sure. But the experience of
+> supporting generic XDP is a very mixed. All the paths that pretend
+> to do XDP on skbs have a bunch of quirks and bugs. I'd prefer that
+> we push back more broadly on any sort of pretend XDP.
 
-Menglong, your global trampoline for 0,1,..6 args works only for x86,
-because btf_func_model doesn't care about sizes of args,
-but it's not the correct mental model to use.
+Well, sorry, I feel a bit upset when reading this because as I
+insisted before not everyone can use the advanced zerocopy mode.
 
-The above "10k with 2 args" is a simplified example.
-We will need an arch specific callback is_btf_func_model_equal()
-that will compare func models in arch specific ways.
-For x86-64 the number of args is all it needs.
-For other archs it will compare sizes and flags too.
-So 30k functions will be sorted into
-10k with btf_func_model_1, 10k with btf_func_model_2 and so on.
-And the corresponding number of equivalent trampolines will be generated.
-
-Note there will be no actual BTF types. All args will be untyped and
-untrusted unlike current fentry.
-We can go further and sort 30k functions by comparing BTFs
-instead of btf_func_model-s, but I suspect 30k funcs will be split
-into several thousands of exact BTFs. At that point multi-fentry
-benefits are diminishing and we might as well generate 30k unique
-bpf trampolines for 30k functions and avoid all the complexity.
-So I would sort by btf_func_model compared by arch specific comparator.
-
-Now say prog B needs to be attached to another 30k functions.
-If all 30k+30k functions are different then it's the same as
-the previous step.
-Say, prog A is attached to 10k funcs with btf_func_model_1.
-If prog B wants to attach to the exact same func set then we
-just regenerate bpf trampoline with hard coded progs A and B
-and reattach.
-If not then we need to split the set into up to 3 sets.
-Say, prog B wants 5k funcs, but only 1k func are common:
-(prog_A, 9k func with btf_func_model_1) -> bpf trampoline X
-(prog_A, prog_B, 1k funcs with btf_func_model_1) -> bpf trampoline Y
-(prog_B, 4k funcs with btf_func_model_1) -> bpf trampoline Z
-
-And so on when prog C needs to be attached.
-At detach time we can merge sets/trampolines,
-but for now we can leave it all fragmented.
-Unlike regular fentry progs the multi-fentry progs are not going to
-be attached for long time. So we can reduce the detach complexity.
-
-The nice part of the algorithm is that coexistence of fentry
-and multi-fentry is easy.
-If fentry is already attached to some function we just
-attach multi-fentry prog to that bpf trampoline.
-If multi-fentry was attached first and fentry needs to be attached,
-we create a regular bpf trampoline and add both progs there.
-
-The intersect and sorting by btf_func_model is not trivial,
-but we can hold global trampoline_mutex, so no concerns of races.
-
-Example:
-bpf_link_A is a set of:
-(prog_A, funcs X,Y with btf_func_model_1)
-(prog_A, funcs N,M with btf_func_model_2)
-
-To attach prog B via bpf_link_B that wants:
-(prog_B, funcs Y,Z with btf_func_model_1)
-(prog_B, funcs P,Q with btf_func_model_3)
-
-walk all existing links, intersect and split, and update the links.
-At the end:
-
-bpf_link_A:
-(prog_A, funcs X with btf_func_model_1)
-(prog_A, prog_B funcs Y with btf_func_model_1)
-(prog_A, funcs N,M with btf_func_model_2)
-
-bpf_link_B:
-(prog_A, prog_B funcs Y with btf_func_model_1)
-(prog_B, funcs Z with btf_func_model_1)
-(prog_B, funcs P,Q with btf_func_model_3)
-
-When link is detached: walk its own tuples, remove the prog,
-if nr_progs =3D=3D 0 -> detach corresponding trampoline,
-if nr_progs > 0 -> remove prog and regenerate trampoline.
-
-If fentry prog C needs to be attached to N it might split bpf_link_A:
-(prog_A, funcs X with btf_func_model_1)
-(prog_A, prog_B funcs Y with btf_func_model_1)
-(prog_A, funcs M with btf_func_model_2)
-(prog_A, prog_C funcs N with _fentry_)
-
-Last time we gave up on it because we discovered that
-overlap support was too complicated, but I cannot recall now
-what it was :)
-Maybe all of the above repeating some old mistakes.
-
-Jiri,
-How does the above proposal look to you?
+Thanks,
+Jason
 
