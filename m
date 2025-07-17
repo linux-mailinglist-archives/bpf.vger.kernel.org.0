@@ -1,194 +1,92 @@
-Return-Path: <bpf+bounces-63672-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63673-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C69FEB0960B
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 22:56:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6205AB09657
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 23:26:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B731188AF08
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 20:57:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE8393A964F
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 21:26:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B250C22A4D6;
-	Thu, 17 Jul 2025 20:56:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rWA/cVgw"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C233C231839;
+	Thu, 17 Jul 2025 21:26:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E885EEBB;
-	Thu, 17 Jul 2025 20:56:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5218F1DE4E1;
+	Thu, 17 Jul 2025 21:26:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752785810; cv=none; b=V1K0nhOSrIG2WKFOrR0Xe9KS719kwwfoyhwiIP7PF5YDy25WSSOH/2/tJNdNBeZs9sQHsFBx2B2cYYQv6KBmPPpYPaHIKNuIweMfaGsuWJI6x+W8Zv9peGVKaf9ZdCpe+tWMwbhPmHF8BWbwipOhQC4Y1Npygg/DKbVnTCBpBSc=
+	t=1752787597; cv=none; b=cyCBr0bsq8du0r7rp5HVX1NfYL7vp51cX0pnhc9utHDgf773cWh6l8AmI/xPcvXSMbqACdU9IWB0+LDimBThzghRAjLY4uxAYsUrIqZilTKVGchgcmMDW3YFC91JTeMPqOLoyxT/F7y5yB2ePuIGXeZBGPcAQXVWswiC1yTJimE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752785810; c=relaxed/simple;
-	bh=Ys203Svg62wgyIV0TPHIA8gLtygtPUojKJwCWhI3mMs=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=bv0iWPGPx2yAdd6Yn3tusdTzfbwXW4uI58BNQJ827a2vM7bp9JODKPBeFY3lKC+UvWhorsJi1jYN2n/JVyGPebT2N2Yshyo5gi1cH7HlFc6HfdogdniPbcOJNpxHCLgKL08G0wWzD1q5NLHVaRHV+G+eKNYhU/TxKPQbp8BrcGw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rWA/cVgw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48843C4CEE3;
-	Thu, 17 Jul 2025 20:56:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752785809;
-	bh=Ys203Svg62wgyIV0TPHIA8gLtygtPUojKJwCWhI3mMs=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=rWA/cVgwaGrm6pq4B7i4gDgcU3D87a0eBpWBu6FZZv6GNu/oXL0sn2F7la8RX9keL
-	 ZIaOeZynH3rSAnQr7/ivnd9PGS8+RxmcNv7IqrApDqvJqViLlUEF/a+vIRWMtN3L0v
-	 VM/T8+IiOeS6/oba0yONX3gEq6E5ZJHPQQf5/3VXBcXoCm4SG56nnjD0x3ygYC9uU4
-	 VqWtTn4aaJQ6x53maV01dTbDeTI94kdV875y9BOY6yvUEg6Ip8QOfCumfCnINkJwHI
-	 aJweomH1oTn2dEaoxKbr+ft7C1RdnxvFMD3+5tgWKhHpIbXdFsiO7fir+0B6ws+nS1
-	 C4NK478mZE6wA==
-From: <puranjay@kernel.org>
-To: Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman
- <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Christophe
- Leroy <christophe.leroy@csgroup.eu>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard
- Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Hari Bathini
- <hbathini@linux.ibm.com>, Naveen N Rao <naveen@kernel.org>, Mykola Lysenko
- <mykolal@fb.com>, Peilin Ye <yepeilin@google.com>, Kumar Kartikeya Dwivedi
- <memxor@gmail.com>
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, "Paul E . McKenney" <paulmck@kernel.org>,
- lkmm@lists.linux.dev
-Subject: Re: [PATCH RESEND bpf-next 1/1] powerpc64/bpf: Add jit support for
- load_acquire and store_release
-In-Reply-To: <20250717202935.29018-2-puranjay@kernel.org>
-References: <20250717202935.29018-1-puranjay@kernel.org>
- <20250717202935.29018-2-puranjay@kernel.org>
-Date: Thu, 17 Jul 2025 20:56:45 +0000
-Message-ID: <mb61pfreuy1rm.fsf@kernel.org>
+	s=arc-20240116; t=1752787597; c=relaxed/simple;
+	bh=91tOrToOHduYdlbBS11+MtbUYmMDSyKuWHwf50X1irw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iwqSJxbSYeqRvICVCUAyt1Uhvu15GrqwQithpFzkoWgbtbehm6wmDzvBZh+3INKWvw594DDqrYsW/jMr9oVcdNa3fL8Y3/x9cyJKo74Q2YOHFGkMD2pkPivmrws1dajCKMyykb8ryYDz3jg9L4urDQd9DAVWq7SI4uFFd6t1OdY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
+Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
+	id 683CD60E4D; Thu, 17 Jul 2025 23:26:32 +0200 (CEST)
+Date: Thu, 17 Jul 2025 23:26:32 +0200
+From: Florian Westphal <fw@strlen.de>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Kuniyuki Iwashima <kuniyu@google.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Xu <dxu@dxuuu.xyz>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	Kuniyuki Iwashima <kuni1840@gmail.com>, bpf <bpf@vger.kernel.org>,
+	Network Development <netdev@vger.kernel.org>,
+	netfilter-devel <netfilter-devel@vger.kernel.org>,
+	syzbot+40f772d37250b6d10efc@syzkaller.appspotmail.com
+Subject: Re: [PATCH v1 bpf] bpf: Disable migration in nf_hook_run_bpf().
+Message-ID: <aHlqiEaG43iqUsOX@strlen.de>
+References: <20250717185837.1073456-1-kuniyu@google.com>
+ <CAADnVQJdn5ERUBfmTHAdfmn0dLozcY6FHsHodNnvfOA40GZYWg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQJdn5ERUBfmTHAdfmn0dLozcY6FHsHodNnvfOA40GZYWg@mail.gmail.com>
 
-Puranjay Mohan <puranjay@kernel.org> writes:
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > Let's call migrate_disable() before calling bpf_prog_run() in
+> > nf_hook_run_bpf().
 
-Somehow the cover letter for this patch was missed, adding it here:
+Or use bpf_prog_run_pin_on_cpu() which wraps bpf_prog_run().
 
-To test the functionality of these special instructions, a tool called
-blitmus[0] was used to convert the following baseline litmus test[1] to bpf
-programs:
+> > Fixes: 91721c2d02d3 ("netfilter: bpf: Support BPF_F_NETFILTER_IP_DEFRAG in netfilter link")
+> 
+> Fixes tag looks wrong.
+> I don't think it's Daniel's defrag series.
+> No idea why syzbot bisected it to this commit.
 
- C MP+poonceonces
+Didn't check but I'd wager the bpf prog attach is rejected due to an
+unsupported flag before this commit.  Looks like correct tag is
 
- (*
-  * Result: Sometimes
-  *
-  * Can the counter-intuitive message-passing outcome be prevented with
-  * no ordering at all?
-  *)
+Fixes: fd9c663b9ad6 ("bpf: minimal support for programs hooked into netfilter framework")
 
- {}
+I don't see anything that implicitly disables preemption and even 6.4 has
+the cant_migrate() call there.
 
- P0(int *buf, int *flag)
- {
-         WRITE_ONCE(*buf, 1);
-         WRITE_ONCE(*flag, 1);
- }
+> > +       unsigned int ret;
+> >
+> > -       return bpf_prog_run(prog, &ctx);
+> > +       migrate_disable();
+> > +       ret = bpf_prog_run(prog, &ctx);
+> > +       migrate_enable();
+> 
+> The fix looks correct, but we need to root cause it better.
+> Why did it start now ?
 
- P1(int *buf, int *flag)
- {
-         int r0;
-         int r1;
-
-         r0 = READ_ONCE(*flag);
-         r1 = READ_ONCE(*buf);
- }
-
- exists (1:r0=1 /\ 1:r1=0) (* Bad outcome. *)
-
-Running the generated bpf program shows that the bad outcome is possible on
-powerpc:
-
- [fedora@linux-kernel blitmus]$ sudo ./mp_poonceonces
- Starting litmus test with configuration:
-   Test: MP+poonceonces
-   Iterations: 4100
-
- Test MP+poonceonces Allowed
- Histogram (4 states)
- 21548375 :>1:r0=0; 1:r1=0;
- 301187   :>1:r0=0; 1:r1=1;
- 337147   *>1:r0=1; 1:r1=0;
- 18813291 :>1:r0=1; 1:r1=1;
- Ok
-
- Witnesses
- Positive: 337147, Negative: 40662853
- Condition exists (1:r0=1 /\ 1:r1=0) is validated
- Observation MP+poonceonces Sometimes 337147 40662853
- Time MP+poonceonces 13.48
-
- Thu Jul 17 18:12:51 UTC
-
-Now the second write and the first read is converted to store_release and
-load_acquire and it gives us the following litmus test[2]
-
- C MP+pooncerelease+poacquireonce
-
- (*
-  * Result: Never
-  *
-  * This litmus test demonstrates that smp_store_release() and
-  * smp_load_acquire() provide sufficient ordering for the message-passing
-  * pattern.
-  *)
-
- {}
-
- P0(int *buf, int *flag)
- {
-         WRITE_ONCE(*buf, 1);
-         smp_store_release(flag, 1);
- }
-
- P1(int *buf, int *flag)
- {
-         int r0;
-         int r1;
-
-         r0 = smp_load_acquire(flag);
-         r1 = READ_ONCE(*buf);
- }
-
- exists (1:r0=1 /\ 1:r1=0) (* Bad outcome. *)
-
-
-Running the generated bpf program shows that the bad outcome is *not* possible
-on powerpc with the implementation in this patch:
-
- [fedora@linux-kernel blitmus]$ sudo ./mp_pooncerelease_poacquireonce
- Starting litmus test with configuration:
-   Test: MP+pooncerelease+poacquireonce
-   Iterations: 4100
-
- Test MP+pooncerelease+poacquireonce Allowed
- Histogram (3 states)
- 21036021 :>1:r0=0; 1:r1=0;
- 14488694 :>1:r0=0; 1:r1=1;
- 5475285  :>1:r0=1; 1:r1=1;
- No
-
- Witnesses
- Positive: 0, Negative: 41000000
- Condition exists (1:r0=1 /\ 1:r1=0) is NOT validated
- Observation MP+pooncerelease+poacquireonce Never 0 41000000
- Time MP+pooncerelease+poacquireonce 13.74
-
- Thu Jul 17 18:13:40 UTC
-
-[0] https://github.com/puranjaymohan/blitmus
-[1] https://github.com/puranjaymohan/blitmus/blob/main/litmus_tests/MP%2Bpoonceonces.litmus
-[2] https://github.com/puranjaymohan/blitmus/blob/main/litmus_tests/MP%2Bpooncerelease%2Bpoacquireonce.litmus
+I guess most people don't have preemptible rcu enabled.
 
