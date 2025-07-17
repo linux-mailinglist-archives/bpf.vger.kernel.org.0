@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-63663-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63664-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F17EB09512
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 21:38:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25AE5B09513
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 21:38:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5722717A82D
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 19:38:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 769177A961B
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 19:37:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3ECB2FC3D0;
-	Thu, 17 Jul 2025 19:38:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEC8A2FC3D5;
+	Thu, 17 Jul 2025 19:38:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LOpnNdOb"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QFQ1T0kj"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4FC72080C4
-	for <bpf@vger.kernel.org>; Thu, 17 Jul 2025 19:38:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54D3D2080C4
+	for <bpf@vger.kernel.org>; Thu, 17 Jul 2025 19:38:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752781114; cv=none; b=ZjsXhzH5Ju+8Cik0DcUlu+Ed12TxPbq6KC1l7rH7tN6odxnXV6GqBu4vjHKFLMA9Ew+kIEPOYx7Bo9KJRBz7RXefkF0EdM2IwPP2pdIsaJjAPZMXJqattkw0XK9B1nMNlDlFwvFok4tczOZzhLUeqChf4oaOq5zp0//3A2WHMZY=
+	t=1752781119; cv=none; b=L4ZyasBGCjIqX4aKt+08RuM0k7NykmK5ibqBGY+TEGCwO7KNdvkLqg1JrA5QjZwKaa/lTCb6oa1biuhp1R+14wEeUEu82ssSQnTzX7E8TifoQc3JGBNOPxDFgE+LGZFHUFHQKbMkOT69OUSFHGOPAA8OuiITdkSAM+fs6/4PLBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752781114; c=relaxed/simple;
-	bh=9+ntgFbnjMrZYS43QiRIyaCBMJXMwk1nTGlbjO37xSo=;
+	s=arc-20240116; t=1752781119; c=relaxed/simple;
+	bh=mpJSy73cvQwQ9eKc6ImIdEHylV/du/dAAa5BhCEdfgg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uaXFDcB/0UbrDMntLqcADaRqdb3+fASp/UnoXkohtDdUeduYO5cYS7ztUhroFWxQp6OkS4urHOri5kZDslkFa4tFWfwk30/fdSVu5WUEhyiP8jxrzsaU7LYEHXjfkfgQKmXVzrWn6NUAE9efoTrVOsiE5zJMapJYff7XzuzzdCs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LOpnNdOb; arc=none smtp.client-ip=91.218.175.178
+	 MIME-Version; b=l5G0UHBfqQBi5CFhyy1Taoe1zyRzZQtPvO1DBogfAHiNNUGKvrAkbKQpXHZWIlyyIffsBJVnbaIfySmjkFUx/2l30eE59O9Yi5mV2OkLOi8dqVcx3GuIjJsk7ladVtTBUZAwURJB6i7kpV4df40twjC9TFuuXN3vr998o51XqwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QFQ1T0kj; arc=none smtp.client-ip=91.218.175.186
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1752781110;
+	t=1752781114;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+hKu5B+A9IL9jJSouU/bizbztY2SwsJzp4YGIWTPaOw=;
-	b=LOpnNdObA3Mz1kqoy6DL3N8ybbEjMx1pS9w9ke9SQctJqIC8qe0Z4U6IsN/FJQIspKdybD
-	fkLkyZR3L0ingNKU5utnpgigf9ZQXafEyBfts9qzMpEKjrh5ZowSYAPY8a9pVVzw0ky2MJ
-	L4cVTDEvsRWMP26vh3Kk1EN0VrkoHQE=
+	bh=54S2WUlrE3h6hlMRPiHGte8JRH1tNYyH5qrHOuJIagI=;
+	b=QFQ1T0kjNCaEKvolNWK5JXZFB1jEShCFbSVL3acWVZhGLwXJYu/10I/7F2ZmFAcu3p1mjc
+	/G8zVkCcUJsXRO6yvHcaUe+JcPlb9Cl51fV2StLFG9wbLY+ky21WONu7T566wv2+x8+9Z+
+	xdY1dHjlNO7h99P7p6omGgO3y2brYhU=
 From: Leon Hwang <leon.hwang@linux.dev>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -54,9 +54,9 @@ Cc: ast@kernel.org,
 	deso@posteo.net,
 	leon.hwang@linux.dev,
 	kernel-patches-bot@fb.com
-Subject: [PATCH bpf-next 2/3] bpf, libbpf: Support BPF_F_CPU for percpu_array map
-Date: Fri, 18 Jul 2025 03:37:55 +0800
-Message-ID: <20250717193756.37153-3-leon.hwang@linux.dev>
+Subject: [PATCH bpf-next 3/3] selftests/bpf: Add case to test BPF_F_CPU
+Date: Fri, 18 Jul 2025 03:37:56 +0800
+Message-ID: <20250717193756.37153-4-leon.hwang@linux.dev>
 In-Reply-To: <20250717193756.37153-1-leon.hwang@linux.dev>
 References: <20250717193756.37153-1-leon.hwang@linux.dev>
 Precedence: bulk
@@ -68,370 +68,254 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-This patch adds libbpf support for the BPF_F_CPU flag in percpu_array maps,
-introducing the following APIs:
+This patch adds test coverage for the new BPF_F_CPU flag support in
+percpu_array maps. The following APIs are exercised:
 
-1. bpf_map_update_elem_opts(): update with struct bpf_map_update_elem_opts
-2. bpf_map_lookup_elem_opts(): lookup with struct bpf_map_lookup_elem_opts
-3. bpf_map__update_elem_opts(): high-level wrapper with input validation
-4. bpf_map__lookup_elem_opts(): high-level wrapper with input validation
+* bpf_map_update_batch()
+* bpf_map_lookup_batch()
+* bpf_map_update_elem_opts()
+* bpf_map__update_elem_opts()
+* bpf_map_lookup_elem_opts()
+* bpf_map__lookup_elem_opts()
 
-Behavior:
-
-* If opts->cpu == (u32)~0, the update is applied to all CPUs.
-* Otherwise, it applies only to the specified CPU.
-* Lookup APIs retrieve values from the target CPU when BPF_F_CPU is used.
+cd tools/testing/selftests/bpf/
+./test_progs -t percpu_alloc/cpu_flag_tests
+253/13  percpu_alloc/cpu_flag_tests:OK
+253     percpu_alloc:OK
+Summary: 1/13 PASSED, 0 SKIPPED, 0 FAILED
 
 Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
 ---
- tools/lib/bpf/bpf.c           | 23 ++++++++++++++
- tools/lib/bpf/bpf.h           | 36 +++++++++++++++++++++-
- tools/lib/bpf/libbpf.c        | 56 +++++++++++++++++++++++++++++++----
- tools/lib/bpf/libbpf.h        | 53 ++++++++++++++++++++++++++++-----
- tools/lib/bpf/libbpf.map      |  5 ++++
- tools/lib/bpf/libbpf_common.h | 14 +++++++++
- 6 files changed, 173 insertions(+), 14 deletions(-)
+ .../selftests/bpf/prog_tests/percpu_alloc.c   | 172 ++++++++++++++++++
+ .../selftests/bpf/progs/percpu_array_flag.c   |  24 +++
+ 2 files changed, 196 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/percpu_array_flag.c
 
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index ab40dbf9f020..8061093d84f9 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -402,6 +402,17 @@ int bpf_map_update_elem(int fd, const void *key, const void *value,
- 	return libbpf_err_errno(ret);
+diff --git a/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c b/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c
+index 343da65864d6..2bf4e6f1d357 100644
+--- a/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c
++++ b/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c
+@@ -3,6 +3,7 @@
+ #include "percpu_alloc_array.skel.h"
+ #include "percpu_alloc_cgrp_local_storage.skel.h"
+ #include "percpu_alloc_fail.skel.h"
++#include "percpu_array_flag.skel.h"
+ 
+ static void test_array(void)
+ {
+@@ -115,6 +116,175 @@ static void test_failure(void) {
+ 	RUN_TESTS(percpu_alloc_fail);
  }
  
-+int bpf_map_update_elem_opts(int fd, const void *key, const void *value,
-+			     const struct bpf_map_update_elem_opts *opts)
++static void test_cpu_flag(void)
 +{
-+	__u64 flags;
-+	__u32 cpu;
++	int map_fd, *keys = NULL, value_size, cpu, i, j, nr_cpus, err;
++	size_t key_sz = sizeof(int), value_sz = sizeof(u64);
++	struct percpu_array_flag *skel;
++	u64 batch = 0, *values = NULL;
++	const u64 value = 0xDEADC0DE;
++	u32 count, max_entries;
++	struct bpf_map *map;
++	LIBBPF_OPTS(bpf_map_lookup_elem_opts, lookup_opts,
++		    .flags = BPF_F_CPU,
++		    .cpu = 0,
++	);
++	LIBBPF_OPTS(bpf_map_update_elem_opts, update_opts,
++		    .flags = BPF_F_CPU,
++		    .cpu = 0,
++	);
++	LIBBPF_OPTS(bpf_map_batch_opts, batch_opts,
++		    .elem_flags = BPF_F_CPU,
++		    .flags = 0,
++	);
 +
-+	cpu = OPTS_GET(opts, cpu, 0);
-+	flags = ((__u64) cpu) << 32 | OPTS_GET(opts, flags, 0);
-+	return bpf_map_update_elem(fd, key, value, flags);
-+}
++	nr_cpus = libbpf_num_possible_cpus();
++	if (!ASSERT_GT(nr_cpus, 0, "libbpf_num_possible_cpus"))
++		return;
 +
- int bpf_map_lookup_elem(int fd, const void *key, void *value)
- {
- 	const size_t attr_sz = offsetofend(union bpf_attr, flags);
-@@ -433,6 +444,17 @@ int bpf_map_lookup_elem_flags(int fd, const void *key, void *value, __u64 flags)
- 	return libbpf_err_errno(ret);
- }
- 
-+int bpf_map_lookup_elem_opts(int fd, const void *key, void *value,
-+			     const struct bpf_map_lookup_elem_opts *opts)
-+{
-+	__u64 flags;
-+	__u32 cpu;
++	skel = percpu_array_flag__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "percpu_array_flag__open_and_load"))
++		return;
 +
-+	cpu = OPTS_GET(opts, cpu, 0);
-+	flags = ((__u64) cpu) << 32 | OPTS_GET(opts, flags, 0);
-+	return bpf_map_lookup_elem_flags(fd, key, value, flags);
-+}
++	map = skel->maps.percpu;
++	map_fd = bpf_map__fd(map);
++	max_entries = bpf_map__max_entries(map);
 +
- int bpf_map_lookup_and_delete_elem(int fd, const void *key, void *value)
- {
- 	const size_t attr_sz = offsetofend(union bpf_attr, flags);
-@@ -542,6 +564,7 @@ static int bpf_map_batch_common(int cmd, int fd, void  *in_batch,
- 	attr.batch.count = *count;
- 	attr.batch.elem_flags  = OPTS_GET(opts, elem_flags, 0);
- 	attr.batch.flags = OPTS_GET(opts, flags, 0);
-+	attr.batch.cpu = OPTS_GET(opts, cpu, 0);
- 
- 	ret = sys_bpf(cmd, &attr, attr_sz);
- 	*count = attr.batch.count;
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index 7252150e7ad3..d0ab18b50294 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -163,12 +163,42 @@ LIBBPF_API int bpf_map_delete_elem_flags(int fd, const void *key, __u64 flags);
- LIBBPF_API int bpf_map_get_next_key(int fd, const void *key, void *next_key);
- LIBBPF_API int bpf_map_freeze(int fd);
- 
-+/**
-+ * @brief **bpf_map_update_elem_opts** allows for updating map with options.
-+ *
-+ * @param fd BPF map file descriptor
-+ * @param key pointer to key
-+ * @param value pointer to value
-+ * @param opts options for configuring the way to update map
-+ * @return 0, on success; negative error code, otherwise (errno is also set to
-+ * the error code)
-+ */
-+LIBBPF_API int bpf_map_update_elem_opts(int fd, const void *key, const void *value,
-+					const struct bpf_map_update_elem_opts *opts);
++	value_size = value_sz * nr_cpus;
++	values = calloc(max_entries, value_size);
++	if (!ASSERT_OK_PTR(values, "calloc values"))
++		goto out;
++	keys = calloc(max_entries, key_sz);
++	if (!ASSERT_OK_PTR(keys, "calloc keys"))
++		goto out;
 +
-+/**
-+ * @brief **bpf_map_lookup_elem_opts** allows for looking up the value with
-+ * options.
-+ *
-+ * @param fd BPF map file descriptor
-+ * @param key pointer to key
-+ * @param value pointer to value
-+ * @param opts options for configuring the way to lookup map
-+ * @return 0, on success; negative error code, otherwise (errno is also set to
-+ * the error code)
-+ */
-+LIBBPF_API int bpf_map_lookup_elem_opts(int fd, const void *key, void *value,
-+					const struct bpf_map_lookup_elem_opts *opts);
++	for (i = 0; i < max_entries; i++)
++		keys[i] = i;
++	memset(values, 0, max_entries * value_size);
 +
++	batch_opts.cpu = nr_cpus;
++	err = bpf_map_update_batch(map_fd, keys, values, &max_entries, &batch_opts);
++	if (!ASSERT_EQ(err, -E2BIG, "bpf_map_update_batch -E2BIG"))
++		goto out;
 +
- struct bpf_map_batch_opts {
- 	size_t sz; /* size of this struct for forward/backward compatibility */
- 	__u64 elem_flags;
- 	__u64 flags;
-+	__u32 cpu;
-+	size_t:0;
- };
--#define bpf_map_batch_opts__last_field flags
-+#define bpf_map_batch_opts__last_field cpu
- 
- 
- /**
-@@ -286,6 +316,10 @@ LIBBPF_API int bpf_map_lookup_and_delete_batch(int fd, void *in_batch,
-  *    Update spin_lock-ed map elements. This must be
-  *    specified if the map value contains a spinlock.
-  *
-+ * **BPF_F_CPU**
-+ *    As for percpu map, update value across all CPUs if **opts->cpu** is
-+ *    (__u32)~0, or on specified CPU otherwise.
-+ *
-  * @param fd BPF map file descriptor
-  * @param keys pointer to an array of *count* keys
-  * @param values pointer to an array of *count* values
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index aee36402f0a3..35faedef6ab4 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -10582,7 +10582,8 @@ bpf_object__find_map_fd_by_name(const struct bpf_object *obj, const char *name)
- }
- 
- static int validate_map_op(const struct bpf_map *map, size_t key_sz,
--			   size_t value_sz, bool check_value_sz)
-+			   size_t value_sz, bool check_value_sz, __u64 flags,
-+			   __u32 cpu)
- {
- 	if (!map_is_created(map)) /* map is not yet created */
- 		return -ENOENT;
-@@ -10601,6 +10602,19 @@ static int validate_map_op(const struct bpf_map *map, size_t key_sz,
- 	if (!check_value_sz)
- 		return 0;
- 
-+	if (flags & BPF_F_CPU) {
-+		if (map->def.type != BPF_MAP_TYPE_PERCPU_ARRAY)
-+			return -EINVAL;
-+		if (cpu != BPF_ALL_CPUS && cpu >= libbpf_num_possible_cpus())
-+			return -E2BIG;
-+		if (map->def.value_size != value_sz) {
-+			pr_warn("map '%s': unexpected value size %zu provided, expected %u\n",
-+				map->name, value_sz, map->def.value_size);
-+			return -EINVAL;
++	for (cpu = 0; cpu < nr_cpus; cpu++) {
++		memset(values, 0, max_entries * value_size);
++
++		/* clear values on all CPUs */
++		batch_opts.cpu = BPF_ALL_CPUS;
++		batch_opts.elem_flags = BPF_F_CPU;
++		err = bpf_map_update_batch(map_fd, keys, values, &max_entries, &batch_opts);
++		if (!ASSERT_OK(err, "bpf_map_update_batch all cpus"))
++			goto out;
++
++		/* update values on current CPU */
++		for (i = 0; i < max_entries; i++)
++			values[i] = value;
++
++		batch_opts.cpu = cpu;
++		err = bpf_map_update_batch(map_fd, keys, values, &max_entries, &batch_opts);
++		if (!ASSERT_OK(err, "bpf_map_update_batch current cpu"))
++			goto out;
++
++		/* lookup values on current CPU */
++		batch_opts.cpu = cpu;
++		batch_opts.elem_flags = BPF_F_CPU;
++		memset(values, 0, max_entries * value_sz);
++		err = bpf_map_lookup_batch(map_fd, NULL, &batch, keys, values, &count, &batch_opts);
++		if (!ASSERT_TRUE(!err || err == -ENOENT, "bpf_map_lookup_batch current cpu"))
++			goto out;
++
++		for (i = 0; i < max_entries; i++)
++			if (!ASSERT_EQ(values[i], value, "value on current cpu"))
++				goto out;
++
++		/* lookup values on all CPUs */
++		batch_opts.cpu = 0;
++		batch_opts.elem_flags = 0;
++		memset(values, 0, max_entries * value_size);
++		err = bpf_map_lookup_batch(map_fd, NULL, &batch, keys, values, &count, &batch_opts);
++		if (!ASSERT_TRUE(!err || err == -ENOENT, "bpf_map_lookup_batch all cpus"))
++			goto out;
++
++		for (i = 0; i < max_entries; i++) {
++			for (j = 0; j < nr_cpus; j++) {
++				if (!ASSERT_EQ(values[i*nr_cpus + j], j != cpu ? 0 : value,
++					       "value on cpu"))
++					goto out;
++			}
 +		}
-+		return 0;
 +	}
 +
- 	switch (map->def.type) {
- 	case BPF_MAP_TYPE_PERCPU_ARRAY:
- 	case BPF_MAP_TYPE_PERCPU_HASH:
-@@ -10633,32 +10647,62 @@ int bpf_map__lookup_elem(const struct bpf_map *map,
- {
- 	int err;
- 
--	err = validate_map_op(map, key_sz, value_sz, true);
-+	err = validate_map_op(map, key_sz, value_sz, true, 0, 0);
- 	if (err)
- 		return libbpf_err(err);
- 
- 	return bpf_map_lookup_elem_flags(map->fd, key, value, flags);
- }
- 
-+int bpf_map__lookup_elem_opts(const struct bpf_map *map, const void *key,
-+			      size_t key_sz, void *value, size_t value_sz,
-+			      const struct bpf_map_lookup_elem_opts *opts)
-+{
-+	__u64 flags = OPTS_GET(opts, flags, 0);
-+	__u32 cpu = OPTS_GET(opts, cpu, 0);
-+	int err;
++	update_opts.cpu = nr_cpus;
++	err = bpf_map_update_elem_opts(map_fd, keys, values, &update_opts);
++	if (!ASSERT_EQ(err, -E2BIG, "bpf_map_update_elem_opts -E2BIG"))
++		goto out;
 +
-+	err = validate_map_op(map, key_sz, value_sz, true, flags, cpu);
-+	if (err)
-+		return libbpf_err(err);
++	err = bpf_map__update_elem_opts(map, keys, key_sz, values, value_sz,
++					&update_opts);
++	if (!ASSERT_EQ(err, -E2BIG, "bpf_map__update_elem_opts -E2BIG"))
++		goto out;
 +
-+	return bpf_map_lookup_elem_opts(map->fd, key, value, opts);
++	lookup_opts.cpu = nr_cpus;
++	err = bpf_map_lookup_elem_opts(map_fd, keys, values, &lookup_opts);
++	if (!ASSERT_EQ(err, -E2BIG, "bpf_map_lookup_elem_opts -E2BIG"))
++		goto out;
++
++	err = bpf_map__lookup_elem_opts(map, keys, key_sz, values, value_sz,
++					&lookup_opts);
++	if (!ASSERT_EQ(err, -E2BIG, "bpf_map__lookup_elem_opts -E2BIG"))
++		goto out;
++
++	/* clear value on all cpus */
++	batch_opts.cpu = BPF_ALL_CPUS;
++	batch_opts.elem_flags = BPF_F_CPU;
++	memset(values, 0, max_entries * value_sz);
++	err = bpf_map_update_batch(map_fd, keys, values, &max_entries, &batch_opts);
++	if (!ASSERT_OK(err, "bpf_map_update_batch all cpus"))
++		goto out;
++
++	for (cpu = 0; cpu < nr_cpus; cpu++) {
++		/* update value on current cpu */
++		values[0] = value;
++		update_opts.cpu = cpu;
++		for (i = 0; i < max_entries; i++) {
++			err = bpf_map__update_elem_opts(map, keys + i,
++							key_sz, values,
++							value_sz, &update_opts);
++			if (!ASSERT_OK(err, "bpf_map__update_elem_opts current cpu"))
++				goto out;
++
++			for (j = 0; j < nr_cpus; j++) {
++				/* lookup then check value on CPUs */
++				lookup_opts.cpu = j;
++				err = bpf_map__lookup_elem_opts(map, keys + i,
++								key_sz, values,
++								value_sz,
++								&lookup_opts);
++				if (!ASSERT_OK(err, "bpf_map__lookup_elem_opts current cpu"))
++					goto out;
++				if (!ASSERT_EQ(values[0], j != cpu ? 0 : value,
++					       "bpf_map__lookup_elem_opts value on current cpu"))
++					goto out;
++			}
++		}
++
++		/* clear value on current cpu */
++		values[0] = 0;
++		err = bpf_map__update_elem_opts(map, keys, key_sz, values,
++						value_sz, &update_opts);
++		if (!ASSERT_OK(err, "bpf_map__update_elem_opts current cpu"))
++			goto out;
++	}
++
++out:
++	if (keys)
++		free(keys);
++	if (values)
++		free(values);
++	percpu_array_flag__destroy(skel);
 +}
 +
- int bpf_map__update_elem(const struct bpf_map *map,
- 			 const void *key, size_t key_sz,
- 			 const void *value, size_t value_sz, __u64 flags)
+ void test_percpu_alloc(void)
  {
- 	int err;
- 
--	err = validate_map_op(map, key_sz, value_sz, true);
-+	err = validate_map_op(map, key_sz, value_sz, true, 0, 0);
- 	if (err)
- 		return libbpf_err(err);
- 
- 	return bpf_map_update_elem(map->fd, key, value, flags);
+ 	if (test__start_subtest("array"))
+@@ -125,4 +295,6 @@ void test_percpu_alloc(void)
+ 		test_cgrp_local_storage();
+ 	if (test__start_subtest("failure_tests"))
+ 		test_failure();
++	if (test__start_subtest("cpu_flag_tests"))
++		test_cpu_flag();
  }
- 
-+int bpf_map__update_elem_opts(const struct bpf_map *map, const void *key,
-+			      size_t key_sz, const void *value, size_t value_sz,
-+			      const struct bpf_map_update_elem_opts *opts)
+diff --git a/tools/testing/selftests/bpf/progs/percpu_array_flag.c b/tools/testing/selftests/bpf/progs/percpu_array_flag.c
+new file mode 100644
+index 000000000000..4d92e121958e
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/percpu_array_flag.c
+@@ -0,0 +1,24 @@
++// SPDX-License-Identifier: GPL-2.0
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++struct {
++	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
++	__uint(max_entries, 2);
++	__type(key, int);
++	__type(value, u64);
++} percpu SEC(".maps");
++
++SEC("fentry/bpf_fentry_test1")
++int BPF_PROG(test_percpu_array, int x)
 +{
-+	__u64 flags = OPTS_GET(opts, flags, 0);
-+	__u32 cpu = OPTS_GET(opts, cpu, 0);
-+	int err;
++	u64 value = 0xDEADC0DE;
++	int key = 0;
 +
-+	err = validate_map_op(map, key_sz, value_sz, true, flags, cpu);
-+	if (err)
-+		return libbpf_err(err);
-+
-+	return bpf_map_update_elem_opts(map->fd, key, value, opts);
++	bpf_map_update_elem(&percpu, &key, &value, BPF_ANY);
++	return 0;
 +}
 +
- int bpf_map__delete_elem(const struct bpf_map *map,
- 			 const void *key, size_t key_sz, __u64 flags)
- {
- 	int err;
- 
--	err = validate_map_op(map, key_sz, 0, false /* check_value_sz */);
-+	err = validate_map_op(map, key_sz, 0, false /* check_value_sz */, 0, 0);
- 	if (err)
- 		return libbpf_err(err);
- 
-@@ -10671,7 +10715,7 @@ int bpf_map__lookup_and_delete_elem(const struct bpf_map *map,
- {
- 	int err;
- 
--	err = validate_map_op(map, key_sz, value_sz, true);
-+	err = validate_map_op(map, key_sz, value_sz, true, 0, 0);
- 	if (err)
- 		return libbpf_err(err);
- 
-@@ -10683,7 +10727,7 @@ int bpf_map__get_next_key(const struct bpf_map *map,
- {
- 	int err;
- 
--	err = validate_map_op(map, key_sz, 0, false /* check_value_sz */);
-+	err = validate_map_op(map, key_sz, 0, false /* check_value_sz */, 0, 0);
- 	if (err)
- 		return libbpf_err(err);
- 
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index d1cf813a057b..fd4940759bc9 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -1168,13 +1168,7 @@ LIBBPF_API struct bpf_map *bpf_map__inner_map(struct bpf_map *map);
-  * @param key pointer to memory containing bytes of the key used for lookup
-  * @param key_sz size in bytes of key data, needs to match BPF map definition's **key_size**
-  * @param value pointer to memory in which looked up value will be stored
-- * @param value_sz size in byte of value data memory; it has to match BPF map
-- * definition's **value_size**. For per-CPU BPF maps value size has to be
-- * a product of BPF map value size and number of possible CPUs in the system
-- * (could be fetched with **libbpf_num_possible_cpus()**). Note also that for
-- * per-CPU values value size has to be aligned up to closest 8 bytes for
-- * alignment reasons, so expected size is: `round_up(value_size, 8)
-- * * libbpf_num_possible_cpus()`.
-+ * @param value_sz refer to **bpf_map__lookup_elem_opts()**'s description.
-  * @flags extra flags passed to kernel for this operation
-  * @return 0, on success; negative error, otherwise
-  *
-@@ -1185,6 +1179,32 @@ LIBBPF_API int bpf_map__lookup_elem(const struct bpf_map *map,
- 				    const void *key, size_t key_sz,
- 				    void *value, size_t value_sz, __u64 flags);
- 
-+/**
-+ * @brief **bpf_map__lookup_elem_opts()** allows to lookup BPF map value
-+ * corresponding to provided key with options.
-+ * @param map BPF map to lookup element in
-+ * @param key pointer to memory containing bytes of the key used for lookup
-+ * @param key_sz size in bytes of key data, needs to match BPF map definition's **key_size**
-+ * @param value pointer to memory in which looked up value will be stored
-+ * @param value_sz size in byte of value data memory; it has to match BPF map
-+ * definition's **value_size**. For per-CPU BPF maps value size can be
-+ * definition's **value_size** if **BPF_F_CPU** is specified in **opts->flags**,
-+ * otherwise a product of BPF map value size and number of possible CPUs in the
-+ * system (could be fetched with **libbpf_num_possible_cpus()**). Note else that
-+ * for per-CPU values value size has to be aligned up to closest 8 bytes for
-+ * alignment reasons, so expected size is: `round_up(value_size, 8)
-+ * * libbpf_num_possible_cpus()`.
-+ * @opts extra options passed to kernel for this operation
-+ * @return 0, on success; negative error, otherwise
-+ *
-+ * **bpf_map__lookup_elem_opts()** is high-level equivalent of
-+ * **bpf_map_lookup_elem_opts()** API with added check for key and value size.
-+ */
-+LIBBPF_API int bpf_map__lookup_elem_opts(const struct bpf_map *map,
-+					 const void *key, size_t key_sz,
-+					 void *value, size_t value_sz,
-+					 const struct bpf_map_lookup_elem_opts *opts);
++char _license[] SEC("license") = "GPL";
 +
- /**
-  * @brief **bpf_map__update_elem()** allows to insert or update value in BPF
-  * map that corresponds to provided key.
-@@ -1209,6 +1229,25 @@ LIBBPF_API int bpf_map__update_elem(const struct bpf_map *map,
- 				    const void *key, size_t key_sz,
- 				    const void *value, size_t value_sz, __u64 flags);
- 
-+/**
-+ * @brief **bpf_map__update_elem_opts()** allows to insert or update value in BPF
-+ * map that corresponds to provided key with options.
-+ * @param map BPF map to insert to or update element in
-+ * @param key pointer to memory containing bytes of the key
-+ * @param key_sz size in bytes of key data, needs to match BPF map definition's **key_size**
-+ * @param value pointer to memory containing bytes of the value
-+ * @param value_sz refer to **bpf_map__lookup_elem_opts()**'s description.
-+ * @opts extra options passed to kernel for this operation
-+ * @return 0, on success; negative error, otherwise
-+ *
-+ * **bpf_map__update_elem_opts()** is high-level equivalent of
-+ * **bpf_map_update_elem_opts()** API with added check for key and value size.
-+ */
-+LIBBPF_API int bpf_map__update_elem_opts(const struct bpf_map *map,
-+					 const void *key, size_t key_sz,
-+					 const void *value, size_t value_sz,
-+					 const struct bpf_map_update_elem_opts *opts);
-+
- /**
-  * @brief **bpf_map__delete_elem()** allows to delete element in BPF map that
-  * corresponds to provided key.
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index d7bd463e7017..fa415d9f26ce 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -448,4 +448,9 @@ LIBBPF_1.6.0 {
- } LIBBPF_1.5.0;
- 
- LIBBPF_1.7.0 {
-+	global:
-+		bpf_map__lookup_elem_opts;
-+		bpf_map__update_elem_opts;
-+		bpf_map_lookup_elem_opts;
-+		bpf_map_update_elem_opts;
- } LIBBPF_1.6.0;
-diff --git a/tools/lib/bpf/libbpf_common.h b/tools/lib/bpf/libbpf_common.h
-index 8fe248e14eb6..84ca89ace1be 100644
---- a/tools/lib/bpf/libbpf_common.h
-+++ b/tools/lib/bpf/libbpf_common.h
-@@ -89,4 +89,18 @@
- 		memcpy(&NAME, &___##NAME, sizeof(NAME));		    \
- 	} while (0)
- 
-+struct bpf_map_update_elem_opts {
-+	size_t sz; /* size of this struct for forward/backward compatibility */
-+	__u64 flags;
-+	__u32 cpu;
-+	size_t:0;
-+};
-+
-+struct bpf_map_lookup_elem_opts {
-+	size_t sz; /* size of this struct for forward/backward compatibility */
-+	__u64 flags;
-+	__u32 cpu;
-+	size_t:0;
-+};
-+
- #endif /* __LIBBPF_LIBBPF_COMMON_H */
 -- 
 2.50.1
 
