@@ -1,137 +1,128 @@
-Return-Path: <bpf+bounces-63608-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63609-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 516CDB08FCB
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 16:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C7BAB08FD1
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 16:49:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AFAC5601C3
-	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 14:48:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B12D156203F
+	for <lists+bpf@lfdr.de>; Thu, 17 Jul 2025 14:49:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9479F2F7CF1;
-	Thu, 17 Jul 2025 14:48:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27FA82F85C7;
+	Thu, 17 Jul 2025 14:49:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mo38WBMM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DkTVuPvL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A6412ED16D
-	for <bpf@vger.kernel.org>; Thu, 17 Jul 2025 14:48:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 223B62F7D0B;
+	Thu, 17 Jul 2025 14:49:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752763726; cv=none; b=lO8gAIkj+6UGujvE5DB7U6hxxSzAhcCTiW1fgYg8TWiBcbZ2z5y3EoqCCGJj46cZMGm1GPOUXF4SDm0xljXJbavfrZSoCDBQY3gcAQ0YbWq5xvGk+XbYQnXBEpmPnDkISeRb842hRmJfl8J++hFq2Rg3ged/h0kugkm8oze3Wmo=
+	t=1752763754; cv=none; b=dtx6qFOVnEcAi5kTadMKTrSv2sn6+DoqHXOQuYT4GcUQc9m5Ey7K7YjHIRM7WhO7egubdJM3SmO9qjJrIJmt+cHRg2Iwpw54KgVfTf5RL3lta264UCmLSaopI81IU+EHG8cC/Cvo4IABak6c5j7MocKrsPFdL6SIU6cvaPxfwDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752763726; c=relaxed/simple;
-	bh=T4kaRAGegsGNL02EHEAOd+xPxcbsrg2pfxrrvo0cJ/s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Js7TkxAkE+VIyrYESi/FbOko16FZTJ99IIejdJ4gOs+31YpBlxMBfZvd0b77WBbuHLko6peBqZWpqu3FVZKkHewUpMdaWym9Uoeii5LW5CEwgDeVYwXgLgL7if51280GxIw/Rg1u30M+MlHHeR9bruIKCEyoVXeCZxojPv+6Axc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Mo38WBMM; arc=none smtp.client-ip=209.85.208.50
+	s=arc-20240116; t=1752763754; c=relaxed/simple;
+	bh=efekQXQZrme7QsOpedSZsB6fxq6pPsbBEH1ewRwDxdA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=A4rK60MEWZ95iXj3d2iIVz7l5QHMtl/zWuyrcV4ySv/tSz99MjubjHetEA/Bvcmanw/QDKcXxU/6B96vC/D3cu46JiSfsP3ttX3Pya1Xz/FZuRTdp+uDPFQjNGRF2X3BT99rPeKqn5zT51x5e8bf3HsoVg5huPmQNrfeJIKBNGk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DkTVuPvL; arc=none smtp.client-ip=209.85.128.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-611f74c1837so1860643a12.3
-        for <bpf@vger.kernel.org>; Thu, 17 Jul 2025 07:48:44 -0700 (PDT)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4561ed868b5so8338085e9.0;
+        Thu, 17 Jul 2025 07:49:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752763723; x=1753368523; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Iw/Wu22cnB7NCngBl0TR+xjDDf5pHdg2GDKrviJBZ3c=;
-        b=Mo38WBMMWYO8vh8dWD2zd46zTKwCucZfgDmaEa2MoB9yRNMdCYmrlMEuatj9M4WHAj
-         G1EN5oU1ejyr0gdp8dvJePGi4G/ueiU6uFSZuvdEjuW35c06CU56VN6A3+gv6JG+SzHL
-         5oExlEVZW76dBng/14Zh94RpfIix4VSpEON8U/QAkyRf/YIFWRPOR/Tv5+POkWV04mrP
-         6WrOvmUqlTseoI9Aq0w8aRSNNsBVhTN+fSudh0siYRJUg5J+7ELu5OMXpcSWF1uQfz3m
-         KDWnnXLJWqEPMXPhtqcy990xEEJtTtLr9SFNTTE5go6y3J2yDDA0cYLyM1Uc9G399oc9
-         JuJQ==
+        d=gmail.com; s=20230601; t=1752763751; x=1753368551; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=efekQXQZrme7QsOpedSZsB6fxq6pPsbBEH1ewRwDxdA=;
+        b=DkTVuPvL/WDEaWnS6/dWrODR8hbj5Vp3/KFw6a7xe2QvQRDlgu/K521xWI35K1v6//
+         0Wn4UmJlP3onDzm2ejY4NkFRZDpzP+w5ReKMJFEMTGU5hID/anMpwwPlSvRGVUUR7YOo
+         76P5iNSpvXVeHmRNK6Ppd4Z1y/rs9UIYxGJ7lFZDNmQG3F0KqQc7o2ANA11YMv29nsVx
+         /01qeGmv7Hf1NqAJ4tU8IfgWdVQ1Fjwa7kcIqYolCYaanKZb7xowCldGZgByJSOOzmTO
+         qEzXlQT7ItJ4lKRN1ywVeS9fI5rwRBzRmbAQcC4veB36htycNs/NU4Rd6PMD6ZwJPW3Q
+         XvfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752763723; x=1753368523;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Iw/Wu22cnB7NCngBl0TR+xjDDf5pHdg2GDKrviJBZ3c=;
-        b=AJtZaBLnBMXuEb7wJhCY+vs17sV4rdF32Qu654Xu/F1TchwLdS8sHogLDv8NJ820Nr
-         mLnfUkmy2EMEQg1CfKdsF6ory+VeVROV/g/Om9K3kFO0e11hjEGwHSTlHGvhjELIec9p
-         z6dnB5wWIUC/C6+GrDvVsHDGUpqqGxAnpgVLDZstt3eyskRbduTZKc3LtPom3+JEL5k+
-         fMitUT3a5OZsQhFs+Y3gvMO+bMuZ3Ix/O0/clMkVx8vv3dywI6AxhszfZzPHJ86o+zHO
-         liy0qFhMNmRM39pcpfM1bY9katEu0oUaTd6KGie0SHfFIElGOsZZBAAqVtbf30VfEzSJ
-         rXGQ==
-X-Gm-Message-State: AOJu0YxDfx8c8M/MX0X6Ex203QFvph7PxP05MbEj0l7L3twCQhpIEm1f
-	/JxjVVSSZf/BV5EGYnm9BVspcQ83UhYbuK1JH6iqbs+d7iQ8hloYHlgb
-X-Gm-Gg: ASbGncsOFnN+f/NSECHWfwR3L1WM1fqVhFCowfDJ3p3GFor6zoqoLa1kMX7zaugFqFL
-	uA8BsB/+SzxIG+RwepBjEX9vpvaeLSSDV2oN8qyngfIqVHLlEGKLeyUEA5Ko9twPqbuAwGX8ff9
-	w5/nHztzmzZAqY69e8OVAhb8SMlREWgFTbPuLO7ByLyr/gAuHc9T3P0wpFL1eai2hG+Omsc5xX6
-	JbA6xgrausAd7H3qKwkz8+/+OdY23xO+jtlW6YHyWXiZf4NY3n8b5F+1/xIdbFgLuWTRJdacoTe
-	o+4P4QV4U0/j3ZNVXjRKKwkquI3XUPkuTrjL9J4gyKDm/M5xNNS83d2P5Lvn98XYY6/dY1W9ix1
-	d0Sf+Jh/43nA7P7QXc2nVJaNEZvgy3FHo0x03JOtIf0xA5jmZfZ2Fqub5rJ+xgiCDkYl2Oo4=
-X-Google-Smtp-Source: AGHT+IF+ZlqtPhXZntOTf7k0IhgSZ5eOF3kN2nKesocfNZywTkRlH6l4yVpCGS0SF12qy1k2Tg4cXA==
-X-Received: by 2002:a05:6402:27cb:b0:608:64ff:c9b5 with SMTP id 4fb4d7f45d1cf-61281eca285mr6839430a12.8.1752763722542;
-        Thu, 17 Jul 2025 07:48:42 -0700 (PDT)
-Received: from ?IPV6:2a03:83e0:1126:4:14f1:c189:9748:5e5a? ([2620:10d:c092:500::7:8a92])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-61268c93b63sm3889881a12.9.2025.07.17.07.48.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Jul 2025 07:48:41 -0700 (PDT)
-Message-ID: <58c82190-e7b7-499b-9463-527312a28a3d@gmail.com>
-Date: Thu, 17 Jul 2025 15:48:38 +0100
+        d=1e100.net; s=20230601; t=1752763751; x=1753368551;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=efekQXQZrme7QsOpedSZsB6fxq6pPsbBEH1ewRwDxdA=;
+        b=NU6Q3M6LTMS8qyTxBmD/W3EfxsHCgnNOIDG11ZG3DPFqyf1bKTFqzkngzNywws0nyE
+         f8K7J0irP4jScJERoOe5BcG5zifYL/Vff7XuhOEvRPjzl7aEYq1Q4gDf6esaX8BztpKb
+         x3zxFhL2KwodTUhZkmf9q568pqTIZPK9UhoZCCAXwe5zw8WmOUj4io68fPa9B5O/WTKe
+         FYiQXI9uW3SPhXQlUdreRChxNMX0VTOdX/5ACqTvBpSpJipK9Ms+5YJ5zQs+KhJv3jMm
+         onVf7JN7NlmV9ADFl2OEsEeuJ7ZSbrKObACJ2hbd6m1aNXbz1cPoDXiXe0IrEkvN/HoJ
+         uQ0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCURNM7voZYJzRwCLGDcj1OH1e1oSe9WeDW/HBs1GPTUlFkBZsR7rMAous1O7d/5HlrUprq/YcTlhQNozppM@vger.kernel.org, AJvYcCW6qVNmTxHXEJx04bR/sT/poZ8io2uCo9V7fi6GKE9bRtyWPT0YN+HJk+5v/M+yE0j39igB1UyybaB1kg==@vger.kernel.org, AJvYcCXeon5eyMa4t1pr0ANwTJaBjLu1ZuCtAW7AcrV+9dnyey1uUcezLUu9C2DH3jgzwehAaPLfurHPj0AwRb67/Vcz@vger.kernel.org, AJvYcCXr8hTdVJWrLXduIjUx8GzM79dFcGcF4OH4eV4McjabYlxB1Dfgm3O1/Vfc4K3Jpmqg1zo=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx/3BrwZgSiH990qVeLPzjZfvTD0Nb5g0fCU7VPoqMtJM064MrT
+	ChEErgMLdR1Wgf9afWyZjfFJQP0Vp5pYucejlYQK/ks5cR2DJtnDeBPmwDjjSaYNOIvDzMyp8f0
+	tbKBnhiljEoh1mQ+3kaiK2HtHQ2064x8=
+X-Gm-Gg: ASbGncuKmhV6cuUfOlqQ9Tma4FJXFkHCw1fVtjhVHTN3CUFS3ktTtMMjQaOkO17f0vT
+	DLi4EAVipQ5eGe+yxgKpota6xp433KHHcgKJBtSrkW2+ERn8+fwiJoTsXCc6tzVIof6DlDzgUQd
+	o1QzMKujHCqnMiJyRk0KgdZ1IUa6T9MfO9V9ZC6GgtG8od0uJzNE9SccQ23E6iwj0vauViLVDdj
+	WjNO0qYGS4HnQkvFWZWAdA=
+X-Google-Smtp-Source: AGHT+IG4miO/dv212kLZpG/e9v0ljtOerGAGBpNDY1tobNdy2ARDGjlhc1t+cVUf7eDrDA2bneaE9/9c2sJ3VTWdlXU=
+X-Received: by 2002:a05:600c:5492:b0:456:207e:fd83 with SMTP id
+ 5b1f17b1804b1-4562e330ff3mr65892995e9.4.1752763750958; Thu, 17 Jul 2025
+ 07:49:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v3 1/5] mm, thp: use __thp_vma_allowable_orders() in
- khugepaged_enter_vma()
-To: Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org,
- david@redhat.com, ziy@nvidia.com, baolin.wang@linux.alibaba.com,
- lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, npache@redhat.com,
- ryan.roberts@arm.com, dev.jain@arm.com, hannes@cmpxchg.org,
- gutierrez.asier@huawei-partners.com, willy@infradead.org, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org
-Cc: bpf@vger.kernel.org, linux-mm@kvack.org
-References: <20250608073516.22415-1-laoar.shao@gmail.com>
- <20250608073516.22415-2-laoar.shao@gmail.com>
-Content-Language: en-US
-From: Usama Arif <usamaarif642@gmail.com>
-In-Reply-To: <20250608073516.22415-2-laoar.shao@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20250520-vmlinux-mmap-v5-0-e8c941acc414@isovalent.com>
+ <20250520-vmlinux-mmap-v5-1-e8c941acc414@isovalent.com> <g2gqhkunbu43awrofzqb4cs4sxkxg2i4eud6p4qziwrdh67q4g@mtw3d3aqfgmb>
+ <CAN+4W8hsK6FMBon0-J6mAYk1yVsamYL=cHqFkj3syepxiv16Ug@mail.gmail.com>
+In-Reply-To: <CAN+4W8hsK6FMBon0-J6mAYk1yVsamYL=cHqFkj3syepxiv16Ug@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 17 Jul 2025 07:48:59 -0700
+X-Gm-Features: Ac12FXxv9eZP3WGHijR1aiMMgitwCgckpKc4CSnltjSp9gY2rQ-YiI071IreGAA
+Message-ID: <CAADnVQ+WZsaDS-Vuc9AN7P3=xvX8TG=rY65A8wYdOARLtkt6Mw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 1/3] btf: allow mmap of vmlinux btf
+To: Lorenz Bauer <lmb@isovalent.com>
+Cc: Breno Leitao <leitao@debian.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	linux-arch <linux-arch@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Alan Maguire <alan.maguire@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Jul 17, 2025 at 6:18=E2=80=AFAM Lorenz Bauer <lmb@isovalent.com> wr=
+ote:
+>
+> Hi Breno,
+>
+> Thanks for reaching out.
+>
+> On Thu, Jul 17, 2025 at 1:39=E2=80=AFPM Breno Leitao <leitao@debian.org> =
+wrote:
+>
+> > Should __pa_symbol() be used instead of virt_to_phys()?
+>
+> I'm not really well versed with mm in general. Looking around a bit I
+> found some explanation in [1]. Your suggested fix does make sense to
+> me based on that.
+>
+> Let me run the patch against bpf-ci and see what happens.
+>
+> 1: https://lore.kernel.org/all/90667b2b7f773308318261f96ebefd1a67133c4c.1=
+732464395.git.lukas@wunner.de/
 
-
-On 08/06/2025 08:35, Yafang Shao wrote:
-> The order has already been validated in hugepage_pmd_enabled(), so there's
-> no need to recheck it in thp_vma_allowable_orders().
-> 
-
-
-The checks are not equivalent.
-
-hugepage_pmd_enabled just checks if the sysfs entries allow hugification.
-thp_vma_allowable_orders modifies the orders that can be used based on vm_flags,
-which is not done in hugepage_pmd_enabled.
-
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> ---
->  mm/khugepaged.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-> index 15203ea7d007..79e208999ddb 100644
-> --- a/mm/khugepaged.c
-> +++ b/mm/khugepaged.c
-> @@ -474,8 +474,8 @@ void khugepaged_enter_vma(struct vm_area_struct *vma,
->  {
->  	if (!test_bit(MMF_VM_HUGEPAGE, &vma->vm_mm->flags) &&
->  	    hugepage_pmd_enabled()) {
-> -		if (thp_vma_allowable_order(vma, vm_flags, TVA_ENFORCE_SYSFS,
-> -					    PMD_ORDER))
-> +		if (__thp_vma_allowable_orders(vma, vm_flags, TVA_ENFORCE_SYSFS,
-> +					       BIT(PMD_ORDER)))
->  			__khugepaged_enter(vma->vm_mm);
->  	}
->  }
-
-
+Thanks for the link.
+Key quote: "arm64 maps the kernel in the vmalloc space."
+I think the map shouldn't be destroying linearity of kernel rodata.
+__pa_symbol() should work for start_BTF, but would be good
+to double check with Ard that the rest stays linear.
 
