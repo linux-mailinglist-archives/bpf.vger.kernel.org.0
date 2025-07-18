@@ -1,188 +1,133 @@
-Return-Path: <bpf+bounces-63705-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63706-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1448AB0A0C1
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 12:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CCDCB0A156
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 12:57:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A1DF17FC63
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 10:33:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 075945A77DC
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 10:57:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44E2C29E10F;
-	Fri, 18 Jul 2025 10:33:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BCB32BE026;
+	Fri, 18 Jul 2025 10:56:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="P7ZOjkLX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dja8nQYS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B32B198A2F
-	for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 10:33:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D15EF2BDC20;
+	Fri, 18 Jul 2025 10:56:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752834801; cv=none; b=fxvZ0lfpNXqpbMU3TLN39hnIbtT6nZ0odkQccwK83ttZfgUL+ngPYvqtVcY9G6KI1BB3MjjUTwifSAEtzHna/+dJswFh5jmnvctjjjV3TRuz73Dd7zcHz0Xf40GabHQ2sIpFyeJjziWC3DwVllLemgPK8grp8bO62Uw1IfLHnFA=
+	t=1752836212; cv=none; b=fCn8MplnSEB5h3dda91FNwrffIhJTyJha3PZ6p/EMKptQB0a92THG6NAuezy3jX6lbJccUFU5x8yX+uC1bbyXl6sOVfftM1laS7hsP2WQwcK56Xq7gAujzT7ZXzfttKTAvMaZICBjQ6tn4vBJAL2y+V0LeIOR7h2xj9ulb3ez6M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752834801; c=relaxed/simple;
-	bh=MZxnnVSvs/0WsHdvQkVxja+tke/AhUx/MmlasdjPGFk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=REe/DOJrfgguGmZucifT4nd2iuYbxNzzs8EmRLGOaUssaA6tvr+iswYkvKAOREhchjhuneaYouMNp8FQvQVfJyyF04GXhwpoIEDldn9NsPXAIAlkW79wlakTeZFA5UFTxlvbrMTwpPGXTvLI4T1GuUrjrkwn6G/ERqU9DInfI8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=P7ZOjkLX; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-607cc1a2bd8so3020368a12.2
-        for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 03:33:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1752834798; x=1753439598; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wPH+MSL3mefkL/YatwG52J+EAfQDGfIWHdPzs+J8XTI=;
-        b=P7ZOjkLXNNcCgpGjrdKGr7UGEWtpWG109mQG35cNg7JndONnv4kfvNKvFEYQPPtyy4
-         7+jVGg5oNnh7IgK9iVgUf6aaldAMW1Y0zGRnu4uCrsTx/UbARjrGBqrIbSJVbA1i3vGi
-         ELpBVWdqoIa/bAWTwH5A1y6Ry0Md88q7Hq2mFZnpfjowkJMewF2k/47fSSe5aztdPIPv
-         10Ie1q5Hes3x47PiXA5ZfVk5Pk0SGrEEFQI6s8+zRjrnOB5hGqOrGZW29eRLmhgrsWvf
-         Ul6bSLN+Ds329q9ot1QVUgFExMyrwYZwySPQ7w4mE7JqwBpFrfyb22jUxG2eWZgD/hbI
-         I4yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752834798; x=1753439598;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wPH+MSL3mefkL/YatwG52J+EAfQDGfIWHdPzs+J8XTI=;
-        b=lTFRnclijMKVqea8yazy5jHUoVFvQDhqyDhI2s5eY7cupnlrJuX1bN9hIZmGk+X+kQ
-         LeBfOpJVCcqjv5O9l53qyAn5H5PBLKWYvsf9R9vF+JSP1a63C6QtinNavGvfwHem7Ql5
-         waM+FHE55K5xTYv73b1+gJAxuGzMXzy/tJkbi9j6w1K9z7bM4u7r/y5/5BD9dmomjtZn
-         5a+R4qCx2WbypUhVQ3KNX9iBBftvKitakqhLlo92K0NAy080TGhsn/vWjO2DxiwgnuPz
-         tXbQvFSALuNVUbseVlS33+TTd+4z1OX9mDxs8M1Y+lnMc8iA8t6v9VNizQxmXDwI65c8
-         WT3g==
-X-Gm-Message-State: AOJu0YyFCtUb+BtCIQVv3XTphGBpb0G688sfAVKci7usOE1Wn4SEKYa5
-	lKpKX5W36oyry6cGZyOo0OeL2UwFf8NNzmWoKHzil0BDyugARYFRBqimkzzM6eyP6Is=
-X-Gm-Gg: ASbGncv8f1JzIojHBJqf94aUB5WXTFHVGJihRafIXVw8uzDca+kXninUDwMCK3cq96c
-	JA3AX7jSKea0qG83sfkgLAJ5bFOWQ5dK299WeD+/mdppgyq2rTnJzNCth2sy2WVdFqs3beojM93
-	ZSGqpFipk0BN4RkZsfSCf8kSJ/1bF8hEqjfjvTjxdEdJRGYsZBZ3qdubch+TioIvNgKwuNM4gFh
-	5YN1eZcd00xFH1tMnKpRE1OHzz4CYiRMahmi4nSH0IBZHG79lmM6niffreCy0FaQhkPWPvf1cme
-	PTq2aSaJWGqT0ntm51ilFI/C85uEaNz0UFQ7uJO8W+R/XV5kra/RccDYerhi2bqEjUrcrDJWb/D
-	OS43Rx+82lrnM
-X-Google-Smtp-Source: AGHT+IH+6hYQFYOiAYWIW7j/jrNY1Cumio9CfOWO/zWzNuoianqrzk61GpNfNEJZxcXlgD/39g4ukQ==
-X-Received: by 2002:a17:906:8f12:b0:ae3:64e2:c1e with SMTP id a640c23a62f3a-ae9cdda3d23mr1043328166b.10.1752834798185;
-        Fri, 18 Jul 2025 03:33:18 -0700 (PDT)
-Received: from cloudflare.com ([2a09:bac5:5063:2dc::49:ca])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aec6ca7e069sm95626566b.122.2025.07.18.03.33.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jul 2025 03:33:17 -0700 (PDT)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: bpf@vger.kernel.org,  netdev@vger.kernel.org,  Jakub Kicinski
- <kuba@kernel.org>,  lorenzo@kernel.org,  Alexei Starovoitov
- <ast@kernel.org>,  Daniel Borkmann <borkmann@iogearbox.net>,  Eric Dumazet
- <eric.dumazet@gmail.com>,  "David S. Miller" <davem@davemloft.net>,  Paolo
- Abeni <pabeni@redhat.com>,  sdf@fomichev.me,  kernel-team@cloudflare.com,
-  arthur@arthurfabre.com
-Subject: Re: [PATCH bpf-next V2 1/7] net: xdp: Add xdp_rx_meta structure
-In-Reply-To: <d0561121-3d36-4c55-8dbb-fc6b802a0f68@kernel.org> (Jesper
-	Dangaard Brouer's message of "Thu, 17 Jul 2025 16:40:47 +0200")
-References: <175146824674.1421237.18351246421763677468.stgit@firesoul>
-	<175146829944.1421237.13943404585579626611.stgit@firesoul>
-	<87v7nrdvi8.fsf@cloudflare.com>
-	<d0561121-3d36-4c55-8dbb-fc6b802a0f68@kernel.org>
-Date: Fri, 18 Jul 2025 12:33:16 +0200
-Message-ID: <871pqdeqkz.fsf@cloudflare.com>
+	s=arc-20240116; t=1752836212; c=relaxed/simple;
+	bh=GXGPG/dXUPXi2EQO1KdqRc/RUmrH2/XT1ZYS2PrRhFE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Nc7sVmnEVZ1r5d1IL3pzj3XaZSoUhK9t1wxrNxGU3OsnSnHAfygMaRBANPjzgyEgWsg4nKzCQw2dgN2Xdsy7KjOa52AzYLejMAniFunVlQdBiSjTkdQKBLImFGeSBD5pzZ+2Ve452uQI4bz4fKRuvROfLGPapVvJCcMMlb7y6Vw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dja8nQYS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7DB9C4CEEB;
+	Fri, 18 Jul 2025 10:56:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752836212;
+	bh=GXGPG/dXUPXi2EQO1KdqRc/RUmrH2/XT1ZYS2PrRhFE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=dja8nQYSBSupKitQWWNnqZrNzUZh6rQ6Ns7Mz6j3dOlZJDjNRIUqNXFTTF8AXHFba
+	 UKdPImSbYNn+p/cWqD8khhs3nHlgzikLRelQl4L9Zy8A0CHLuNdi+5rkSevbHay7dE
+	 gZPZUCx/i8H5hdM9gn9ytZN4Mryom7WkolsDlOeAKHrDjFk2u76eHzs4/Q4R8EmbrK
+	 18ZKuBN1y7wxHsG7ERAvV/yGfhzPdAphRyD+wPF9RCZYkf+qvYqH9GDGPIsdzpsGJP
+	 R6FZs33unqtB/pOwvUOpcmbTEHLhlNev+0+VEqVfPtBXlBoPY1Anzmh98LB+U1/bBj
+	 XKmU9Ge5tSP9w==
+Message-ID: <ebc18aba-d832-4eb6-b626-4ca3a2f27fe2@kernel.org>
+Date: Fri, 18 Jul 2025 12:56:46 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next V2 0/7] xdp: Allow BPF to set RX hints for
+ XDP_REDIRECTed packets
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Lorenzo Bianconi <lorenzo@kernel.org>,
+ Stanislav Fomichev <stfomichev@gmail.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <borkmann@iogearbox.net>,
+ Eric Dumazet <eric.dumazet@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>, sdf@fomichev.me,
+ kernel-team@cloudflare.com, arthur@arthurfabre.com, jakub@cloudflare.com,
+ Jesse Brandeburg <jbrandeburg@cloudflare.com>
+References: <175146824674.1421237.18351246421763677468.stgit@firesoul>
+ <aGVY2MQ18BWOisWa@mini-arch>
+ <b1873a92-747d-4f32-91f8-126779947e42@kernel.org>
+ <aGvcb53APFXR8eJb@mini-arch> <aG427EcHHn9yxaDv@lore-desk>
+ <aHE2F1FJlYc37eIz@mini-arch> <aHeKYZY7l2i1xwel@lore-desk>
+ <20250716142015.0b309c71@kernel.org>
+ <fbb026f9-54cf-49ba-b0dc-0df0f54c6961@kernel.org>
+ <20250717182534.4f305f8a@kernel.org>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <20250717182534.4f305f8a@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jul 17, 2025 at 04:40 PM +02, Jesper Dangaard Brouer wrote:
-> On 17/07/2025 11.19, Jakub Sitnicki wrote:
->> On Wed, Jul 02, 2025 at 04:58 PM +02, Jesper Dangaard Brouer wrote:
->>> From: Lorenzo Bianconi <lorenzo@kernel.org>
->>>
->>> Introduce the `xdp_rx_meta` structure to serve as a container for XDP RX
->>> hardware hints within XDP packet buffers. Initially, this structure will
->>> accommodate `rx_hash` and `rx_vlan` metadata. (The `rx_timestamp` hint will
->>> get stored in `skb_shared_info`).
->>>
->>> A key design aspect is making this metadata accessible both during BPF
->>> program execution (via `struct xdp_buff`) and later if an `struct
->>> xdp_frame` is materialized (e.g., for XDP_REDIRECT).
->>> To achieve this:
->>>    - The `struct xdp_frame` embeds an `xdp_rx_meta` field directly for
->>>      storage.
->>>    - The `struct xdp_buff` includes an `xdp_rx_meta` pointer. This pointer
->>>      is initialized (in `xdp_prepare_buff`) to point to the memory location
->>>      within the packet buffer's headroom where the `xdp_frame`'s embedded
->>>      `rx_meta` field would reside.
->>>
->>> This setup allows BPF kfuncs, operating on `xdp_buff`, to populate the
->>> metadata in the precise location where it will be found if an `xdp_frame`
->>> is subsequently created.
->>>
->>> The availability of this metadata storage area within the buffer is
->>> indicated by the `XDP_FLAGS_META_AREA` flag in `xdp_buff->flags` (and
->>> propagated to `xdp_frame->flags`). This flag is only set if sufficient
->>> headroom (at least `XDP_MIN_HEADROOM`, currently 192 bytes) is present.
->>> Specific hints like `XDP_FLAGS_META_RX_HASH` and `XDP_FLAGS_META_RX_VLAN`
->>> will then denote which types of metadata have been populated into the
->>> `xdp_rx_meta` structure.
->>>
->>> This patch is a step for enabling the preservation and use of XDP RX
->>> hints across operations like XDP_REDIRECT.
->>>
->>> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
->>> Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
->>> ---
->>>   include/net/xdp.h       |   57 +++++++++++++++++++++++++++++++++++------------
->>>   net/core/xdp.c          |    1 +
->>>   net/xdp/xsk_buff_pool.c |    4 ++-
->>>   3 files changed, 47 insertions(+), 15 deletions(-)
->>>
->>> diff --git a/include/net/xdp.h b/include/net/xdp.h
->>> index b40f1f96cb11..f52742a25212 100644
->>> --- a/include/net/xdp.h
->>> +++ b/include/net/xdp.h
->>> @@ -71,11 +71,31 @@ struct xdp_txq_info {
->>>   	struct net_device *dev;
->>>   };
->>>   +struct xdp_rx_meta {
->>> +	struct xdp_rx_meta_hash {
->>> +		u32 val;
->>> +		u32 type; /* enum xdp_rss_hash_type */
->>> +	} hash;
->>> +	struct xdp_rx_meta_vlan {
->>> +		__be16 proto;
->>> +		u16 tci;
->>> +	} vlan;
->>> +};
->>> +
->>> +/* Storage area for HW RX metadata only available with reasonable headroom
->>> + * available. Less than XDP_PACKET_HEADROOM due to Intel drivers.
->>> + */
->>> +#define XDP_MIN_HEADROOM	192
->>> +
->>>   enum xdp_buff_flags {
->>>   	XDP_FLAGS_HAS_FRAGS		= BIT(0), /* non-linear xdp buff */
->>>   	XDP_FLAGS_FRAGS_PF_MEMALLOC	= BIT(1), /* xdp paged memory is under
->>>   						   * pressure
->>>   						   */
->>> +	XDP_FLAGS_META_AREA		= BIT(2), /* storage area available */
->> Idea: Perhaps this could be called *HW*_META_AREA to differentiate from
->> the existing custom metadata area:
->> 
->
-> I agree, that calling it META_AREA can easily be misunderstood and confused with
-> metadata or data_meta.
->
-> What do you think about renaming this to "hints" ?
->  E.g. XDP_FLAGS_HINTS_AREA
->  or   XDP_FLAGS_HINTS_AVAIL
->
-> And also renaming XDP_FLAGS_META_RX_* to
->  e.g XDP_FLAGS_META_RX_HASH -> XDP_FLAGS_HINT_RX_HASH
->                            or  XDP_FLAGS_HW_HINT_RX_HASH
 
-Any name that doesn't lean on the already overloaded "metadata" term is
-a better alternative, in my mind :-)
+
+
+On 18/07/2025 03.25, Jakub Kicinski wrote:
+> On Thu, 17 Jul 2025 15:08:49 +0200 Jesper Dangaard Brouer wrote:
+>> Let me explain why it is a bad idea of writing into the RX descriptors.
+>> The DMA descriptors are allocated as coherent DMA (dma_alloc_coherent).
+>> This is memory that is shared with the NIC hardware device, which
+>> implies cache-line coherence.  NIC performance is tightly coupled to
+>> limiting cache misses for descriptors.  One common trick is to pack more
+>> descriptors into a single cache-line.  Thus, if we start to write into
+>> the current RX-descriptor, then we invalidate that cache-line seen from
+>> the device, and next RX-descriptor (from this cache-line) will be in an
+>> unfortunate coherent state.  Behind the scene this might lead to some
+>> extra PCIe transactions.
+>>
+>> By writing to the xdp_frame, we don't have to modify the DMA descriptors
+>> directly and risk invalidating cache lines for the NIC.
+> 
+> I thought you main use case is redirected packets. In which case it's
+> the _remote_ end that's writing its metadata, if it's veth it's
+> obviously not going to be doing it into DMA coherent memory.
+
+My apologies for the confusion. That entire explanation about the
+dangers of writing to RX descriptors was a direct response to
+Stanislav's earlier proposal (for the XDP_PASS case, I assume).
+
+You are right that this isn't relevant for redirected xdp_frames,
+as there is no access to the original RX-descriptor on a remote CPU or
+target device like veth.
+
+
+>> Thanks for the feedback. I can see why you'd be concerned about adding
+>> another adhoc scheme or making xdp_frame grow into a "para-skb".
+>>
+>> However, I'd like to frame this as part of a long-term plan we've been
+>> calling the "mini-SKB" concept. This isn't a new idea, but a
+>> continuation of architectural discussions from as far back as [2016].
+> 
+> My understanding is that while this was floated as a plan by some,
+> nobody came up with a clean way of implementing it.
+
+I can see why you might think that, but from my perspective, the
+xdp_frame *is* the implementation of the mini-SKB concept. We've been
+building it incrementally for years. It started as the most minimal
+structure possible and has gradually gained more context (e.g. dev_rx,
+mem_info/rxq_info, flags, and also uses skb_shared_info with same layout
+as SKB).
+
+This patch is simply the next logical step in that existing evolution:
+adding hardware metadata to make it more capable, starting with enabling
+XDP_REDIRECT offloads. The xdp_frame is our mini-SKB, and this patchset
+continues its evolution.
+
+--Jesper
 
