@@ -1,164 +1,198 @@
-Return-Path: <bpf+bounces-63678-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63679-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D794B098C4
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 02:10:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDC5EB098FD
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 02:44:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 557D53A46B0
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 00:09:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FB7F4A0FC3
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 00:44:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A3F83C38;
-	Fri, 18 Jul 2025 00:10:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l76sQP+D"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F143E80BEC;
+	Fri, 18 Jul 2025 00:44:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8D4120E6
-	for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 00:10:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1233D2AD2C;
+	Fri, 18 Jul 2025 00:43:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752797411; cv=none; b=c04UwnhbYj8SVvMSdMd5KdzDKkmDh1aaw3Z1fi9uxUj2Yyzpoav1a99F43uPWFGtL92GEzOGB4br7wwf4zitDl57Gu5RLqLy8oTEBvwg6SEqVj4OGCBptqnoBVO7EQf1wxzejgCyVX1SwvEO42xxB2ylkbxVbu1z3ZYL5NqFLV0=
+	t=1752799440; cv=none; b=V1g3nzaFQ/A2zQsdzDXykpMZpEvBDtHdB4UEAgOxskfljXwRs6qAQm1snU14FhJCZwjgoilqrmYttotJ9JI3bPfLoGyVLR2upFvIPz7wEUPfnDDjeV4uevxWSDIC0CWB1RBLgUN1qQnaIr8rWQi3/RIoS1fIA1465MTufWnfp9c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752797411; c=relaxed/simple;
-	bh=o0FmoIezzDRWUfyaNVXcoO9D0eCWLTcnjznz0CceNWQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=brNLvlhK8GcWo+unMAQ2f0WgLJ3vngvlzEThQOfrx/MYnVDLD8UiY9s5vNl9FcnRWsBhtd+kUcrghXCLhUidQqyt92/yt1Ee935pduVkCDgWsN7gEKgCnvCIRAc5kteEhmY3fFwL8ptVSLldkBl3vMQGuv4CAi5mliLQR0ncCSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l76sQP+D; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26E24C4CEE3;
-	Fri, 18 Jul 2025 00:10:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752797411;
-	bh=o0FmoIezzDRWUfyaNVXcoO9D0eCWLTcnjznz0CceNWQ=;
-	h=From:To:Cc:Subject:Date:From;
-	b=l76sQP+DjqIz6XYNRP18B0KDbvzsLV+0dOY1X7+jHCtmeOABqZXgsKSYmuVqsHQ/w
-	 9/hn30ilJJdvshpF85Mqs1kcbfzujTCsVsEvqIBqx8bPaDQkxnLYkkBqcW7s0V1N9e
-	 6A8/vd2orWQIAL33V0oLkawa0DjKeBiWHtubswJkqneFsuLEV574vBI1it/mZd/MD1
-	 6uFZW2J/fTnv2pxLv5zw1CP0zw0dEj8lqVwS1HTZmLB+Jw7N7RBt1Ll8uAyggtB3eo
-	 Q80eE6JjI0KnfwmnoRHbxY3d8/DXNlUhDqOl6+D1yZ1bhypGdXcfOHnWu6e4SveeYI
-	 VOpp9XO7NwUKw==
-From: Andrii Nakryiko <andrii@kernel.org>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@kernel.org
-Cc: andrii@kernel.org,
-	kernel-team@meta.com
-Subject: [PATCH bpf] libbpf: fix handling of BPF arena relocations
-Date: Thu, 17 Jul 2025 17:10:09 -0700
-Message-ID: <20250718001009.610955-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.47.1
+	s=arc-20240116; t=1752799440; c=relaxed/simple;
+	bh=Ox2D1goCtlPhcg2S8wC1ZqhkF53ndLC5sNkhZmMWolw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iwIJ2BVE6bu20i9cl8OXxOhGHChNoAF1Ti4DiirosG+L0kJO45VvtefFh+cNgSg5KY7kZlqzyWYtt3c6vcB+asQYU3yx+lMHM0/H+d01idoGDm8OB83CMYoUXa/S3zQRty6r61nT8+LSBMxUk5q9v0PsfA9yYcv6iIg+tDM159U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-681ff7000002311f-41-687998c8062f
+Date: Fri, 18 Jul 2025 09:43:46 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: kernel test robot <lkp@intel.com>
+Cc: willy@infradead.org, netdev@vger.kernel.org,
+	oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, kernel_team@skhynix.com, almasrymina@google.com,
+	ilias.apalodimas@linaro.org, harry.yoo@oracle.com,
+	akpm@linux-foundation.org, andrew+netdev@lunn.ch,
+	asml.silence@gmail.com, toke@redhat.com, david@redhat.com,
+	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
+	surenb@google.com, mhocko@suse.com, linux-rdma@vger.kernel.org,
+	bpf@vger.kernel.org, vishal.moola@gmail.com, hannes@cmpxchg.org,
+	ziy@nvidia.com, jackmanb@google.com, wei.fang@nxp.com,
+	shenwei.wang@nxp.com, xiaoning.wang@nxp.com, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org
+Subject: Re: [Intel-wired-lan] [PATCH net-next v11 12/12] libeth: xdp: access
+ ->pp through netmem_desc instead of page
+Message-ID: <20250718004346.GA38833@system.software.com>
+References: <20250717070052.6358-13-byungchul@sk.com>
+ <202507180111.jygqJHzk-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202507180111.jygqJHzk-lkp@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUhTUQCGOffe3V3Hlrf5ddKgmGghqSn+OELEfvTjQhiGRJBFjXZxK50y
+	dU2hslT6UjMlmDZwUsxPsKbN+ZHpZjorTHTpEtMpzjJKmZr4MbRNkfz38L7nPO/5cShcmMcJ
+	puSKLFapkKSKSB7B+8OvjrRqcmQnOywBSNvUSKKGNTWqcZg4SFtvBGi5t59E2i8FBPrbtIEj
+	Z98MFzUYEtCUfo5AxQWbOHq3vsBFQ8YSDmrNc3DRSLuWRJON2xw0Zy4m0K/8GRJNlYhRny4Q
+	metsGOptasXQ6LYbQ+XDOhINW2YI9OJeCUBNXXYOcnV6pjbXPI5+m9NTfJjkio8wlt+LONNS
+	9w1j2iq/cxmdIZtpro1gXnbOY4yh/hHJGJbKuMzEaCfJWDWbBPOzuQIwbaZljCnOXyCZNwsm
+	jHE5xwlmsesrmeh3iXdKyqbKVawy+vQ1nqzVbuZmfD6hrh97jecB/dHHwIeCdBysKJ0l9/ip
+	xQq8TNBh0Gktw7xM0seg3b6Oe9nfk5um9Z6cR+F0Dwcu9to8BUX50Wro1qq8ZwQ0gkXm9h2n
+	kL4CjVVj+G5+EA5UzBJexukIaN+ax7xXcToE1mxR3tiHjoXu6dWd2QA6FHYb+3emIP2cggOa
+	Wu7uOw/Bnlo7UQroyn3ayn3ayv9aHcDrgVCuUKVJ5KlxUbIchVwddT09zQA8/0J/251sAktD
+	SWZAU0DEF3Q71TIhR6LKzEkzA0jhIn9B+bBKJhRIJTm5rDL9qjI7lc00gxCKEAUJYldvSYV0
+	iiSLvcmyGaxyr8Uon+A8IF9yiJP75RdtHYcj+a67LUkNuYNFZxwSDeipi48ZW9wg3W5954/A
+	ovigAzOF4eLLGfE3REu9xpXRwXMJiZ/moG0l1OU7ckE4COzSs5EptskwpAi3uHlvX02Mnx+V
+	PyicCruvcUdbw5/4vx/nG47f+egzrqpSSp89rPWNL60WEZkySUwErsyU/APdXmvcEwMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA02RfUhTYRTGe++9u7sOR7c566IEsojKylSK3rBEEOqtKEqEwIocenHDOW3T
+	tUWBoYVZ01QyPxZqwdQpTafplGW6mc4IEj9n5NdollGamaH51VZE/vc7z3Oe8/xxKFzgJPwo
+	qTyVVcjFMhHJI3hnwzL224s0kuA7ZRyoM9aSsGZRDSsnzO7J0ATgfGc3CXVvMwm4YPyFQ1eX
+	kwtrTGfguH6KgNrMZRy+WJrhQtvjHg7sbcrhwOb0CS7sb9WRcKx2nQOnrFoCfs5wknA8JwJ2
+	lW+F1uoBDHYamzE4tL6CwYK+chL22ZwELL2VA6CxzcGBcxZ33/Ki+0b3gMttvBrjRgQg25dZ
+	HDVWj2CopWSUi8pNaaihKhA9tUxjyGS4SyLT93wuej9kIZG9aJlAnxqKAWoxz2NImzFDovoZ
+	M4bmXO8INNs2SJ4TxvCOxrMyqYpVHAiP5UmaHVZuypt9asNwHZ4O9AHZwIti6INMrs0OPEzQ
+	OxmXPR/zMEnvYhyOJdzDQrduntS7dR6F0x0cZrZzwG1QlA+tZlZ0Ks8On4bMfWsr6WEBfZlp
+	KhvG/+pbmJ7iD4SHcTqQcaxNY54oTvszlWuUR/aiQ5mVyZ9/an3pHUx7Uzf2APBLNqRLNqRL
+	/qfLAW4AQqlclSSWyg4FKRMlGrlUHRSXnGQC7s/rb67kmcGP/hNWQFNA5M1vd6klAo5YpdQk
+	WQFD4SIhv6BPJRHw48Wa66wi+YoiTcYqrcCfIkTb+KcusLECOkGcyiaybAqr+OdilJdfOoio
+	/1blbckasEfffqZ5Xvo6anvQkZPh1cLlPXU3tLqQ0MAs78ZNE4qLX01LCUXc1eNEYVG2yQxH
+	e9dkIoM9Lmavein1YeQl39yP+vNy67HI04+mF3yqS9HVsSe2em1hMHBZOq6JczfnrQ7uvlch
+	a6yoqjn8csQYFR22ViuyFeIiQikRhwTiCqX4N/Q2WRj1AgAA
+X-CFilter-Loop: Reflected
 
-Initial __arean global variable support implementation in libbpf
-contains a bug: it remembers struct bpf_map pointer for arena, which is
-used later on to process relocations. Recording this pointer is
-problematic because map pointers are not stable during ELF relocation
-collection phase, as an array of struct bpf_map's can be reallocated,
-invalidating all the pointers. Libbpf is dealing with similar issues by
-using a stable internal map index, though for BPF arena map specifically
-this approach wasn't used due to an oversight.
+On Fri, Jul 18, 2025 at 01:42:38AM +0800, kernel test robot wrote:
+> Hi Byungchul,
+> 
+> kernel test robot noticed the following build warnings:
+> 
+> [auto build test WARNING on c65d34296b2252897e37835d6007bbd01b255742]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Byungchul-Park/netmem-introduce-struct-netmem_desc-mirroring-struct-page/20250717-150253
+> base:   c65d34296b2252897e37835d6007bbd01b255742
+> patch link:    https://lore.kernel.org/r/20250717070052.6358-13-byungchul%40sk.com
+> patch subject: [Intel-wired-lan] [PATCH net-next v11 12/12] libeth: xdp: access ->pp through netmem_desc instead of page
+> config: arm-randconfig-r072-20250717 (https://download.01.org/0day-ci/archive/20250718/202507180111.jygqJHzk-lkp@intel.com/config)
+> compiler: arm-linux-gnueabi-gcc (GCC) 8.5.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250718/202507180111.jygqJHzk-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202507180111.jygqJHzk-lkp@intel.com/
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>    In file included from include/linux/container_of.h:5,
+>                     from include/linux/list.h:5,
+>                     from include/linux/timer.h:5,
+>                     from include/linux/netdevice.h:24,
+>                     from include/trace/events/xdp.h:8,
+>                     from include/linux/bpf_trace.h:5,
+>                     from include/net/libeth/xdp.h:7,
+>                     from drivers/net/ethernet/intel/libeth/tx.c:6:
+>    include/net/libeth/xdp.h: In function 'libeth_xdp_prepare_buff':
+> >> include/net/libeth/xdp.h:1295:23: warning: passing argument 1 of 'page_pool_page_is_pp' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+>         pp_page_to_nmdesc(page)->pp->p.offset, len, true);
+>                           ^~~~
+>    include/linux/build_bug.h:30:63: note: in definition of macro 'BUILD_BUG_ON_INVALID'
+>     #define BUILD_BUG_ON_INVALID(e) ((void)(sizeof((__force long)(e))))
+>                                                                   ^
+>    include/net/netmem.h:301:2: note: in expansion of macro 'DEBUG_NET_WARN_ON_ONCE'
+>      DEBUG_NET_WARN_ON_ONCE(!page_pool_page_is_pp(p));  \
+>      ^~~~~~~~~~~~~~~~~~~~~~
+>    include/net/libeth/xdp.h:1295:5: note: in expansion of macro 'pp_page_to_nmdesc'
+>         pp_page_to_nmdesc(page)->pp->p.offset, len, true);
+>         ^~~~~~~~~~~~~~~~~
+>    In file included from arch/arm/include/asm/cacheflush.h:10,
+>                     from include/linux/cacheflush.h:5,
+>                     from include/linux/highmem.h:8,
+>                     from include/linux/bvec.h:10,
+>                     from include/linux/skbuff.h:17,
+>                     from include/net/net_namespace.h:43,
+>                     from include/linux/netdevice.h:38,
+>                     from include/trace/events/xdp.h:8,
+>                     from include/linux/bpf_trace.h:5,
+>                     from include/net/libeth/xdp.h:7,
+>                     from drivers/net/ethernet/intel/libeth/tx.c:6:
+>    include/linux/mm.h:4176:54: note: expected 'struct page *' but argument is of type 'const struct page *'
+>     static inline bool page_pool_page_is_pp(struct page *page)
+>                                             ~~~~~~~~~~~~~^~~~
 
-The resulting behavior is non-deterministic issue which depends on exact
-layout of ELF object file, number of actual maps, etc. We didn't hit
-this until very recently, when this bug started triggering crash in BPF
-CI when validating one of sched-ext BPF programs.
+Oh.  page_pool_page_is_pp() in the mainline code already has this issue
+that the helper cannot take const struct page * as argument.
 
-The fix is rather straightforward: we just follow an established pattern
-of remembering map index (just like obj->kconfig_map_idx, for example)
-instead of `struct bpf_map *`, and resolving index to a pointer at the
-point where map information is necessary.
+How should we resolve the issue?  Changing page_pool_page_is_pp() to
+macro and using _Generic again looks too much.  Or should we?  Any idea?
 
-While at it also add debug-level message for arena-related relocation
-resolution information, which we already have for all other kinds of
-maps.
+	Byungchul
 
-Fixes: 2e7ba4f8fd1f ("libbpf: Recognize __arena global variables.")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/libbpf.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index aee36402f0a3..699ac147acb4 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -735,7 +735,7 @@ struct bpf_object {
- 
- 	struct usdt_manager *usdt_man;
- 
--	struct bpf_map *arena_map;
-+	int arena_map_idx;
- 	void *arena_data;
- 	size_t arena_data_sz;
- 
-@@ -1517,6 +1517,7 @@ static struct bpf_object *bpf_object__new(const char *path,
- 	obj->efile.obj_buf_sz = obj_buf_sz;
- 	obj->efile.btf_maps_shndx = -1;
- 	obj->kconfig_map_idx = -1;
-+	obj->arena_map_idx = -1;
- 
- 	obj->kern_version = get_kernel_version();
- 	obj->state  = OBJ_OPEN;
-@@ -2964,7 +2965,7 @@ static int init_arena_map_data(struct bpf_object *obj, struct bpf_map *map,
- 	const long page_sz = sysconf(_SC_PAGE_SIZE);
- 	size_t mmap_sz;
- 
--	mmap_sz = bpf_map_mmap_sz(obj->arena_map);
-+	mmap_sz = bpf_map_mmap_sz(map);
- 	if (roundup(data_sz, page_sz) > mmap_sz) {
- 		pr_warn("elf: sec '%s': declared ARENA map size (%zu) is too small to hold global __arena variables of size %zu\n",
- 			sec_name, mmap_sz, data_sz);
-@@ -3038,12 +3039,12 @@ static int bpf_object__init_user_btf_maps(struct bpf_object *obj, bool strict,
- 		if (map->def.type != BPF_MAP_TYPE_ARENA)
- 			continue;
- 
--		if (obj->arena_map) {
-+		if (obj->arena_map_idx >= 0) {
- 			pr_warn("map '%s': only single ARENA map is supported (map '%s' is also ARENA)\n",
--				map->name, obj->arena_map->name);
-+				map->name, obj->maps[obj->arena_map_idx].name);
- 			return -EINVAL;
- 		}
--		obj->arena_map = map;
-+		obj->arena_map_idx = i;
- 
- 		if (obj->efile.arena_data) {
- 			err = init_arena_map_data(obj, map, ARENA_SEC, obj->efile.arena_data_shndx,
-@@ -3053,7 +3054,7 @@ static int bpf_object__init_user_btf_maps(struct bpf_object *obj, bool strict,
- 				return err;
- 		}
- 	}
--	if (obj->efile.arena_data && !obj->arena_map) {
-+	if (obj->efile.arena_data && obj->arena_map_idx < 0) {
- 		pr_warn("elf: sec '%s': to use global __arena variables the ARENA map should be explicitly declared in SEC(\".maps\")\n",
- 			ARENA_SEC);
- 		return -ENOENT;
-@@ -4583,8 +4584,13 @@ static int bpf_program__record_reloc(struct bpf_program *prog,
- 	if (shdr_idx == obj->efile.arena_data_shndx) {
- 		reloc_desc->type = RELO_DATA;
- 		reloc_desc->insn_idx = insn_idx;
--		reloc_desc->map_idx = obj->arena_map - obj->maps;
-+		reloc_desc->map_idx = obj->arena_map_idx;
- 		reloc_desc->sym_off = sym->st_value;
-+
-+		map = &obj->maps[obj->arena_map_idx];
-+		pr_debug("prog '%s': found arena map %d (%s, sec %d, off %zu) for insn %u\n",
-+			 prog->name, obj->arena_map_idx, map->name, map->sec_idx,
-+			 map->sec_offset, insn_idx);
- 		return 0;
- 	}
- 
--- 
-2.47.1
-
+> vim +1295 include/net/libeth/xdp.h
+> 
+>   1263
+>   1264  bool libeth_xdp_buff_add_frag(struct libeth_xdp_buff *xdp,
+>   1265                                const struct libeth_fqe *fqe,
+>   1266                                u32 len);
+>   1267
+>   1268  /**
+>   1269   * libeth_xdp_prepare_buff - fill &libeth_xdp_buff with head FQE data
+>   1270   * @xdp: XDP buffer to attach the head to
+>   1271   * @fqe: FQE containing the head buffer
+>   1272   * @len: buffer len passed from HW
+>   1273   *
+>   1274   * Internal, use libeth_xdp_process_buff() instead. Initializes XDP buffer
+>   1275   * head with the Rx buffer data: data pointer, length, headroom, and
+>   1276   * truesize/tailroom. Zeroes the flags.
+>   1277   * Uses faster single u64 write instead of per-field access.
+>   1278   */
+>   1279  static inline void libeth_xdp_prepare_buff(struct libeth_xdp_buff *xdp,
+>   1280                                             const struct libeth_fqe *fqe,
+>   1281                                             u32 len)
+>   1282  {
+>   1283          const struct page *page = __netmem_to_page(fqe->netmem);
+>   1284
+>   1285  #ifdef __LIBETH_WORD_ACCESS
+>   1286          static_assert(offsetofend(typeof(xdp->base), flags) -
+>   1287                        offsetof(typeof(xdp->base), frame_sz) ==
+>   1288                        sizeof(u64));
+>   1289
+>   1290          *(u64 *)&xdp->base.frame_sz = fqe->truesize;
+>   1291  #else
+>   1292          xdp_init_buff(&xdp->base, fqe->truesize, xdp->base.rxq);
+>   1293  #endif
+>   1294          xdp_prepare_buff(&xdp->base, page_address(page) + fqe->offset,
+> > 1295                           pp_page_to_nmdesc(page)->pp->p.offset, len, true);
+>   1296  }
+>   1297
+> 
+> --
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
 
