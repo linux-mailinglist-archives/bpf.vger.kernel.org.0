@@ -1,212 +1,179 @@
-Return-Path: <bpf+bounces-63776-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63777-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F4EBB0AC32
-	for <lists+bpf@lfdr.de>; Sat, 19 Jul 2025 00:34:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1611CB0AC49
+	for <lists+bpf@lfdr.de>; Sat, 19 Jul 2025 00:49:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E13F5AA84A4
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 22:34:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81251188D511
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 22:49:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A88D225A24;
-	Fri, 18 Jul 2025 22:33:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 251BF225793;
+	Fri, 18 Jul 2025 22:49:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TltY7oL4"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="EE+xtiZV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6009322424C
-	for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 22:33:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77F87224B06
+	for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 22:49:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752878038; cv=none; b=WIF2rYKry4O3YNAnLGEIaEeFRTTjMvAermvMmtRH5EKJ7lIlCjCaKH2pwDeh8gptcWkki7j0hUvOESPNVEgvtTB123WarCqAaZby4WPVhUpFwVu2DU1qgVPYlFsQwpaykeX4HVzmgJQz5zwV/jGjnW5lgATjCgoY1FssNuo8coU=
+	t=1752878946; cv=none; b=qXFqhW9d8Sp+lXqAutEdiHX/1yD+trXd1+QIEgDkScJ5BKQpHb1bvdKpz4IutJS6k0ObG3svFq+6j4bX/HXKscVSZ6bsiYO3NIUQv0sOnnhOIvxYXDCelv7FBhoy9cDEt1XH6nXdXdsUrKpM6B6r0mIERpBk1ba6bV8hRE1RaR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752878038; c=relaxed/simple;
-	bh=V+dt4wW9K74uYhg92zaTld9WHEncBcnDJyhO9sfR1hk=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=IKXtJwNoB866qh7eQ4GZNaJ664IQ/KOXzPynsiemRzWiNuIr7fOBdtrZtl7YvhvyYeERS/kKo6qt0FXpc7QdpFW5oT0YpVXAP3KX3URiXIFrsdGvog+s6gpMUuJq7KlYK+oK3s75yo6rvy3BixFgtqIc1nYVhcPugylS+33iyzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--samitolvanen.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TltY7oL4; arc=none smtp.client-ip=209.85.210.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--samitolvanen.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-748f13ef248so2535388b3a.3
-        for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 15:33:57 -0700 (PDT)
+	s=arc-20240116; t=1752878946; c=relaxed/simple;
+	bh=qo67utYF/ovAn2X4y/cKDIWgVFy2L9OSLb/CZy1qQmg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=L/lMoEc0yxQzLoHqBEM8copSTSChSLhjqq+mMZQJWqrCQwPn23q9VmguUJF2dhCo4JqdZLZdUmvwJwlQbYm3n1rJaHueLRNeE4ZijmkC6PQBpOSziP/15azbgwC4FZXmgqiyY72SJgR0F0lmUSBa2iyFy3wBzrMff3LWeeVtPDY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=EE+xtiZV; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-aec46b50f33so463033866b.3
+        for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 15:49:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1752878037; x=1753482837; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZHownloYScgx/peEPOAu+NanD7LJponwsGoBJ5e+uKQ=;
-        b=TltY7oL4Mttd7c/PMZMUwTvGcyC+JfRocdHUqGs/YUzWMvTQUhFa2zjGbAXQPQoIDa
-         yhUxQtGakB0UCd7he0YMUH/BiHkGnKv4IhHT1DjJyYJNeSMsyWUZQg5dpWGPtEOxGBSW
-         cz02HwpnOC9V9BEbdnFyWg5vZPNNFjNxmy5s6DURlX378Ns9P0MF/49J8CzTDquM9QpG
-         RP2pCVCse55r71xENdug7u4RyMH4b81EqkWKy10cb4uqeOef8cMO258Sl8yfFyVZKmjx
-         UOrTO7kYcGCBdn0LTntvfKerNXDj8ixFyW8CTFPWLvxrWIAE7/U3qNZkuzCAySK0JJ1R
-         MFWA==
+        d=linux-foundation.org; s=google; t=1752878943; x=1753483743; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=UqwKREBTKqb14178is+L3e4wy7hqQP2KCNVEXG6C+zY=;
+        b=EE+xtiZV3pTL9spwkSPTfXDisyDviHr83y5B1p02ZwHtfhU/KDq+pIIHR7RsuK14SH
+         YGaRsknFWNaSIExvUcrr8w/2ojIq/u8D2Lm+gU/gb/kQxdeoPePtzEu6kN3gfYRVTdE5
+         Xq8RE4dACVdiKWcysdDMnrOqC08hlJa4sTESg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752878037; x=1753482837;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZHownloYScgx/peEPOAu+NanD7LJponwsGoBJ5e+uKQ=;
-        b=cKzhc3CLzOl8QpFGTldgzO9cUuOyTd4125rNHH5QLF2AQyhZcKKq4d2gzbjMawbFfD
-         hPjlGU+SLBt9Ab1u4kIl1qZD6YbkcfdqRpFIYGF5Ee83xkjF8mFiI/r/kBFRKV7YhgGP
-         jmh5VNIut6jzTK5y4J93e0mjfHPb9dNrWlbe/q5aTzzIYpEuk8Mka0VTddEpX+FEMaUV
-         6p++bJ1Fgdug3cQzBGcw9AYqSRDUoz0ZqQXhLs8WlaNk8/utrNnfAFfHJBOIujLB1Udf
-         gQ91A+u5Dksnu8y5ayXs8gr0trZbUCTSP9beqe9v7YSQEWYM3wa3pu9e7WH7UPsaepfl
-         RWTw==
-X-Gm-Message-State: AOJu0YxOi4IMEntHmsVlQFVRuT36KST9AW0HgalFHC8YytcxeE3Xe2c5
-	Q2jtjCSAaiajfJ5Sv+gda4y22o3Sf8uuaUfyZr2NJysDQ8NCEKuTAFHZCQGq54Pvb9XnW+mPNC3
-	xF0NyiGRbV7oEbx7ra/hKDe/WoSaDZh38zO5SrgxnWIRS/LpnPENFfArOiYPm0WWtQdZz2EzfW1
-	hxyseL0gDLCehYiFgVcbdhKnJ8WVliOUvaULPYbdEdnDLl5WtE6Jq9/daFszNyQyFE
-X-Google-Smtp-Source: AGHT+IH/zdK2zKLGKRZy6B1NJr3Oj3Ajj+FM6XNXJaqaMMi3F49NCdknto5RfR6BR+VXKXY2MJ7ChfHz+3y7/DnjrgM=
-X-Received: from pgbcw13.prod.google.com ([2002:a05:6a02:428d:b0:b3b:b53c:abce])
- (user=samitolvanen job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6a20:7283:b0:220:b161:431 with SMTP id adf61e73a8af0-23811d5b52dmr20957669637.7.1752878036666;
- Fri, 18 Jul 2025 15:33:56 -0700 (PDT)
-Date: Fri, 18 Jul 2025 22:33:49 +0000
-In-Reply-To: <20250718223345.1075521-5-samitolvanen@google.com>
+        d=1e100.net; s=20230601; t=1752878943; x=1753483743;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UqwKREBTKqb14178is+L3e4wy7hqQP2KCNVEXG6C+zY=;
+        b=SODu7DEmImMEtRDEOaM9Zj/xyrYXVzk0dycQuOYz3yeBcDMuqBkGGYeKuCnMFhyQ3t
+         +0POV9tz3wwr3z2u6c3p80lhKs6629PT4in9JdElSPEvGePzqFRsbQJheJ26ZrgWvqr8
+         HBjHDBhwbmeizP4U8qOKyT9x3XKmZAmq4HP3ArXOevFDgrtYURywvF1g/iy8+GybzUc5
+         qyJgKo42mL9Pz/V6k3Z/yjxq4vJfpcvgf3d2WFrdSfsHL+hpTrhkBvKRuapzITKzxjrZ
+         p3KWHIG03sOdW1nAfKtnv+6KXKNRoQQbasOC2JwuyeSeba0o/631PxjJDFFZtOeDFgq+
+         tWxg==
+X-Forwarded-Encrypted: i=1; AJvYcCVsBpXX7B1r56lxUIYX83O23lstFTEfG9VW1AN3AO14P8xxuZNnT17u9e5XuBHWLReCH8E=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzaEeiQFURyIYvUZ43FexTb8KANMmQP38Ede4TZv8riRVFxo214
+	EaUWNX7yTjPu6OX1aGC+KrWDyZbuDB32eA3CTXxDQxiV5MPw3/xDm0BWCzFO/YWcQ/Q2iQVOHuS
+	S+T+swaw=
+X-Gm-Gg: ASbGncsaetBQdnzSXcCJNRkZgO4wX3zJcz0mHtAHOvwM1c2kmjWS6fGOUrcR40uQF2p
+	cNQKc1MtCzhDWp7xwebOCko8dsb7DxwKKTA2loK6vj3BHZ7ahtUuVxKz7GoQ5WBJPL3K4JFIVKb
+	pyuGezSedbcqdsBYCKPTgiXvaJgxgaLcTS5eI6vuIuW7dBdnB8ZfNJegFbbMEPnk0oXqVgesX9U
+	+OTR2V7n9dHVl6EKmG1NobmLIXIdgJVqHqM5yEELbfSojfutv6flnFbUmAV3eGXW7Tm5Eht88PE
+	SwHchw9o3y4oItnMVBIehY3UfXJqzvan8raP5aTB7BxHb1mr8gBhOsrtjcEw+K7HvBjNElPL1ta
+	7TkSqPdLyRxUNwzV+ivEOhPXvuR08TruIqZgndaLyf3zYcRZp9yELrXGf/c0XDn04Bd3saMAQ
+X-Google-Smtp-Source: AGHT+IGt+KRme6kDlLaqnETvc4+CRcHKnrsROM9a6tLox0eLBBDHZQZKaJHGweIL1JdtVQ9UbQw6lQ==
+X-Received: by 2002:a17:907:96a2:b0:ae3:60e5:ece3 with SMTP id a640c23a62f3a-ae9cdd8436fmr1221407666b.6.1752878942637;
+        Fri, 18 Jul 2025 15:49:02 -0700 (PDT)
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com. [209.85.208.41])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aec6cad69basm195843466b.145.2025.07.18.15.49.02
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Jul 2025 15:49:02 -0700 (PDT)
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-60c93c23b08so4967115a12.3
+        for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 15:49:02 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUO+HLEjt57arkKUExh9mGWQIbmRDUdsbkskp8WErJq2rudfJJkhwZ3c5/EtcNCssf7+yk=@vger.kernel.org
+X-Received: by 2002:a05:6402:84d:b0:60c:3f77:3f44 with SMTP id
+ 4fb4d7f45d1cf-61285ba5366mr11281504a12.17.1752878941898; Fri, 18 Jul 2025
+ 15:49:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250718223345.1075521-5-samitolvanen@google.com>
-X-Developer-Key: i=samitolvanen@google.com; a=openpgp; fpr=35CCFB63B283D6D3AEB783944CB5F6848BBC56EE
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4115; i=samitolvanen@google.com;
- h=from:subject; bh=Btyu244psEehuoYDLzh4LQVWud/Fy+nWITFJv1APkz4=;
- b=owGbwMvMwCUWxa662nLh8irG02pJDBlVp0+vOOYy/+r1p9FXT9/9bvhfYatWqmliIcvzpfss7
- nEd6b5e0lHKwiDGxSArpsjS8nX11t3fnVJffS6SgJnDygQyhIGLUwAmYv2Q4b/Tz0kKatVhr094
- /Mh1+8s362EK68bAg55SBpU3Z/W19b9h+MOxK2GeXUlXzJuM9M3uFzpnH7O2PvB9isca9m0a5pX XgngB
-X-Mailer: git-send-email 2.50.0.727.gbf7dc18ff4-goog
-Message-ID: <20250718223345.1075521-8-samitolvanen@google.com>
-Subject: [PATCH bpf-next v11 3/3] arm64/cfi,bpf: Support kCFI + BPF on arm64
-From: Sami Tolvanen <samitolvanen@google.com>
-To: bpf@vger.kernel.org, Puranjay Mohan <puranjay@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	Maxwell Bland <mbland@motorola.com>, Puranjay Mohan <puranjay12@gmail.com>, 
-	Sami Tolvanen <samitolvanen@google.com>, Dao Huang <huangdao1@oppo.com>
+MIME-Version: 1.0
+References: <20250718213252.2384177-1-hpa@zytor.com> <20250718213252.2384177-5-hpa@zytor.com>
+ <CAHk-=whGcopJ_wewAtzfTS7=cG1yvpC90Y-xz5t-1Aw0ew682w@mail.gmail.com>
+In-Reply-To: <CAHk-=whGcopJ_wewAtzfTS7=cG1yvpC90Y-xz5t-1Aw0ew682w@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 18 Jul 2025 15:48:44 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whrbqBn_rCnPNwtLuoGHwjkqsLgDXYgjA0NW2ShAwqNkw@mail.gmail.com>
+X-Gm-Features: Ac12FXwPQm0wFuMqO4T5e7rkg71dcrU60Bx64WOT68AUbiGf34w2BtStF_AEh5c
+Message-ID: <CAHk-=whrbqBn_rCnPNwtLuoGHwjkqsLgDXYgjA0NW2ShAwqNkw@mail.gmail.com>
+Subject: Re: [PATCH 4/7] arch/nios: replace "__auto_type" with "auto"
+To: "H. Peter Anvin" <hpa@zytor.com>
+Cc: =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
+	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+	"Michael S. Tsirkin" <mst@redhat.com>, Al Viro <viro@zeniv.linux.org.uk>, 
+	Alexei Starovoitov <ast@kernel.org>, Alexey Dobriyan <adobriyan@gmail.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Arnd Bergmann <arnd@kernel.org>, Borislav Petkov <bp@alien8.de>, Cong Wang <cong.wang@bytedance.com>, 
+	Dan Williams <dan.j.williams@intel.com>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, David Laight <David.Laight@aculab.com>, 
+	David Lechner <dlechner@baylibre.com>, Dinh Nguyen <dinguyen@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Gatlin Newhouse <gatlin.newhouse@gmail.com>, 
+	Hao Luo <haoluo@google.com>, Ingo Molnar <mingo@redhat.com>, 
+	Jakub Sitnicki <jakub@cloudflare.com>, Jan Hendrik Farr <kernel@jfarr.cc>, Jason Wang <jasowang@redhat.com>, 
+	Jiri Olsa <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Josh Poimboeuf <jpoimboe@kernel.org>, 
+	KP Singh <kpsingh@kernel.org>, Kees Cook <kees@kernel.org>, 
+	Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, Marc Herbert <Marc.Herbert@linux.intel.com>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Mateusz Guzik <mjguzik@gmail.com>, Michal Luczaj <mhal@rbox.co>, 
+	Miguel Ojeda <ojeda@kernel.org>, Mykola Lysenko <mykolal@fb.com>, NeilBrown <neil@brown.name>, 
+	Peter Zijlstra <peterz@infradead.org>, Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
+	Sami Tolvanen <samitolvanen@google.com>, Shuah Khan <shuah@kernel.org>, Song Liu <song@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Thomas Gleixner <tglx@linutronix.de>, 
+	Thorsten Blum <thorsten.blum@linux.dev>, Uros Bizjak <ubizjak@gmail.com>, 
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Yafang Shao <laoar.shao@gmail.com>, 
+	Ye Bin <yebin10@huawei.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	Yufeng Wang <wangyufeng@kylinos.cn>, bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-sparse@vger.kernel.org, virtualization@lists.linux.dev, x86@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-From: Puranjay Mohan <puranjay12@gmail.com>
+On Fri, 18 Jul 2025 at 14:49, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Fri, 18 Jul 2025 at 14:34, H. Peter Anvin <hpa@zytor.com> wrote:
+> >
+> > -       __auto_type __pu_ptr = (ptr);                                   \
+> > +       auto __pu_ptr = (ptr);                                  \
+> >         typeof(*__pu_ptr) __pu_val = (typeof(*__pu_ptr))(x);            \
+>
+> But that second case obviously is exactly the "auto type" case, just
+> written using __typeof__.
 
-Currently, bpf_dispatcher_*_func() is marked with `__nocfi` therefore
-calling BPF programs from this interface doesn't cause CFI warnings.
+Actually, looking at it, I actually think the NIOS2 header is a bit
+buggy here, exactly because it should *not* have that cast to force
+the types the same.
 
-When BPF programs are called directly from C: from BPF helpers or
-struct_ops, CFI warnings are generated.
+It's the exact same situation that on x86 is inside
+do_put_user_call(), and on x86 uses that
 
-Implement proper CFI prologues for the BPF programs and callbacks and
-drop __nocfi for arm64. Fix the trampoline generation code to emit kCFI
-prologue when a struct_ops trampoline is being prepared.
+        __typeof__(*(ptr)) __x = (x); /* eval x once */
 
-Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-Co-developed-by: Maxwell Bland <mbland@motorola.com>
-Signed-off-by: Maxwell Bland <mbland@motorola.com>
-Co-developed-by: Sami Tolvanen <samitolvanen@google.com>
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Tested-by: Dao Huang <huangdao1@oppo.com>
-Acked-by: Will Deacon <will@kernel.org>
----
- arch/arm64/include/asm/cfi.h  |  7 +++++++
- arch/arm64/net/bpf_jit_comp.c | 22 +++++++++++++++++++---
- 2 files changed, 26 insertions(+), 3 deletions(-)
- create mode 100644 arch/arm64/include/asm/cfi.h
+pattern instead: we don't want a cast, because we actually want just
+the implicit type conversions, and a warning if the types aren't
+compatible. Writing things to user space is still supposed to catch
+type safety issues.
 
-diff --git a/arch/arm64/include/asm/cfi.h b/arch/arm64/include/asm/cfi.h
-new file mode 100644
-index 000000000000..ab90f0351b7a
---- /dev/null
-+++ b/arch/arm64/include/asm/cfi.h
-@@ -0,0 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_ARM64_CFI_H
-+#define _ASM_ARM64_CFI_H
-+
-+#define __bpfcall
-+
-+#endif /* _ASM_ARM64_CFI_H */
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 89b1b8c248c6..f4a98c1a1583 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -10,6 +10,7 @@
- #include <linux/arm-smccc.h>
- #include <linux/bitfield.h>
- #include <linux/bpf.h>
-+#include <linux/cfi.h>
- #include <linux/filter.h>
- #include <linux/memory.h>
- #include <linux/printk.h>
-@@ -166,6 +167,12 @@ static inline void emit_bti(u32 insn, struct jit_ctx *ctx)
- 		emit(insn, ctx);
- }
- 
-+static inline void emit_kcfi(u32 hash, struct jit_ctx *ctx)
-+{
-+	if (IS_ENABLED(CONFIG_CFI_CLANG))
-+		emit(hash, ctx);
-+}
-+
- /*
-  * Kernel addresses in the vmalloc space use at most 48 bits, and the
-  * remaining bits are guaranteed to be 0x1. So we can compose the address
-@@ -476,7 +483,6 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
- 	const bool is_main_prog = !bpf_is_subprog(prog);
- 	const u8 fp = bpf2a64[BPF_REG_FP];
- 	const u8 arena_vm_base = bpf2a64[ARENA_VM_START];
--	const int idx0 = ctx->idx;
- 	int cur_offset;
- 
- 	/*
-@@ -502,6 +508,9 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
- 	 *
- 	 */
- 
-+	emit_kcfi(is_main_prog ? cfi_bpf_hash : cfi_bpf_subprog_hash, ctx);
-+	const int idx0 = ctx->idx;
-+
- 	/* bpf function may be invoked by 3 instruction types:
- 	 * 1. bl, attached via freplace to bpf prog via short jump
- 	 * 2. br, attached via freplace to bpf prog via long jump
-@@ -2055,9 +2064,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 		jit_data->ro_header = ro_header;
- 	}
- 
--	prog->bpf_func = (void *)ctx.ro_image;
-+	prog->bpf_func = (void *)ctx.ro_image + cfi_get_offset();
- 	prog->jited = 1;
--	prog->jited_len = prog_size;
-+	prog->jited_len = prog_size - cfi_get_offset();
- 
- 	if (!prog->is_func || extra_pass) {
- 		int i;
-@@ -2426,6 +2435,12 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
- 	/* return address locates above FP */
- 	retaddr_off = stack_size + 8;
- 
-+	if (flags & BPF_TRAMP_F_INDIRECT) {
-+		/*
-+		 * Indirect call for bpf_struct_ops
-+		 */
-+		emit_kcfi(cfi_get_func_hash(func_addr), ctx);
-+	}
- 	/* bpf trampoline may be invoked by 3 instruction types:
- 	 * 1. bl, attached to bpf prog or kernel function via short jump
- 	 * 2. br, attached to bpf prog or kernel function via long jump
-@@ -2942,6 +2957,7 @@ void bpf_jit_free(struct bpf_prog *prog)
- 					   sizeof(jit_data->header->size));
- 			kfree(jit_data);
- 		}
-+		prog->bpf_func -= cfi_get_offset();
- 		hdr = bpf_jit_binary_pack_hdr(prog);
- 		bpf_jit_binary_pack_free(hdr, NULL);
- 		WARN_ON_ONCE(!bpf_prog_kallsyms_verify_off(prog));
--- 
-2.50.0.727.gbf7dc18ff4-goog
+So having that '(typeof(*__pu_ptr))' cast of the value of '(x)' is
+actually wrong, because it will silently (for example) convert a
+pointer into a 'unsigned long' or vice versa, and __put_user() just
+shouldn't do that.
 
+If the user access is to a 'unsigned long __user *' location, the
+kernel shouldn't be writing pointers into it.
+
+Do we care? No. This is obviously nios2-specific, and the x86 version
+will catch any generic mis-uses where somebody would try to
+'put_user()' the wrong type.
+
+And any "auto" conversion wouldn't change the bug anyway. But I
+thought I'd mention it since it started bothering me and I went and
+looked closer at that case I quoted.
+
+And while looking at this, I think we have a similar mis-feature / bug
+on x86 too: the unsafe_put_user() macro does exactly that cast:
+
+  #define unsafe_put_user(x, ptr, label)  \
+        __put_user_size((__typeof__(*(ptr)))(x), ..
+
+and I think that cast is wrong.
+
+I wonder if it's actively hiding some issue with unsafe_put_user(), or
+if I'm just missing something.
+
+            Linus
 
