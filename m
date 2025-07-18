@@ -1,144 +1,138 @@
-Return-Path: <bpf+bounces-63760-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63761-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D275B0AAAD
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 21:27:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2249B0AB8D
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 23:35:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E1171C46C8E
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 19:27:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBBAAAA67CB
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 21:35:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D2E82066F7;
-	Fri, 18 Jul 2025 19:27:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47C70220F2A;
+	Fri, 18 Jul 2025 21:35:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="T6FjiKBb"
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="QZ5S+p32"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A66C18E20
-	for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 19:27:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55F7F1F4623;
+	Fri, 18 Jul 2025 21:35:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752866833; cv=none; b=RHdD2RyhI6nVWmWJVtL1riqUdkdm3Y3hF7eHio7kPz1djRq6OWKxF3Z5Ej6JusvvdYQFpiCkuMI3I2OQlXw1lKCA9tI1vJsmiDqT/sGViVcMqfSh0rXiXW2QNbEtsrJfdPNvwNV61TvoH3Kfff6W4JhhxFmKh7GIRyttcb+3CG4=
+	t=1752874519; cv=none; b=fs5HxK2hWRchQntrtAO+SAEFmTXWUB0wLt1aYXRXBpZRTQPGCnywOJ9p2Z1TOCUWBW+d4BtfF2B/rvSRbwx2Co4hQAjAa3J7/dJx5bA47zcgaGVzI5ahhZaB5KyqnlIeitgPltU7Dhsq0yd8QInznHUUZj6Wk7H/xSs7H7MrZrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752866833; c=relaxed/simple;
-	bh=25+to93ShQHSvOuoIexentfc5C2YcmA4FilaMDheiOo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=CL3vqpmhsM7vu1DCNKW3kyUCIKsJ7DX4vGtkbbX6LKNDqqa7UgqroJBfbSBh1yIr72GzrDaQLcZfcceJQMnOuRpBHYhNw4eSWJ2QNztpWkStMmWNl45j/pekoIv4dfQC8Ge4OuqwhkKHPXdSDJAdBi0CWo3Zi7T0uEW+EEpQTpQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=T6FjiKBb; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-611f74c1837so4520228a12.3
-        for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 12:27:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1752866830; x=1753471630; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=emAG3cpajcjjwK0jkPQTeWHCQ//4c8ADIC+eWWCB+tk=;
-        b=T6FjiKBbwge+neZ/J5omMZdGrPV3C5Ici7bHUB7U+pcCGZXdRLqNnREkXDtcHUw0aF
-         J7VuFXepo9U++hTAhbPV2B4Z8BUSHGb1jkaOS6Ck8I8p/1oBBbd3wqwZvBT/AHVncHPh
-         2sHAuRaKB6hSzy7Ib8ku6h5X9orQaAXp8QvbABPYO0TVHW0z6uQgms3Z2UBpvcb/Haup
-         ReErZvy6BzD4vjrV7eB6CIgvyrZ/ucfzi3RyUwgGvrA+K4undwTaHUjnJV1V85fBwOCf
-         S3EISfFqlQXbXH+Gup3yZqSXN2oZEd9CxYwlRB1nAlcsZIKmdDZMBXyEd+/ZjARUm2el
-         N/8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752866830; x=1753471630;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=emAG3cpajcjjwK0jkPQTeWHCQ//4c8ADIC+eWWCB+tk=;
-        b=Pwg7quvWw9HYbRnRs36p/Cf+5IiDbGKzZiOc3zh89LA62/TUE34fGviFiuXSD52JtL
-         JAbXc5kd6bEI2hkJJgUvSPsFNDfoh/3KY/pVYtRK8j1uYGUfLNteUVdx7Akne3G2a3Ss
-         W31x1w2rmQYRTbQgmw3CDKTgO2ixck9P7HwicED3JNqHd1g7bvJxH14w+5mhK9CDoYqw
-         oOF2wuplyAmX0+nuawU5RXdzGOEZw2iCkMg5+Vb6D+wj7RVMnKvmon4a9kXsMvIiByPi
-         rmdDDog8jlueWF3BL8DGByBjKLE0ZAqiJYQfXCE3PduHGiqIE+7dIPOXx7ssHdSwNxZF
-         pFaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUbv/X/kuYS/ea6L6A0aj2Pt+ABf9Gk20eDRgo1Cri11pPFkHGRmjrapYky1REaUyG31ds=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxqHDq3CdRrJqRy2/xsCYn4S0EFzpSMab+t7PUzXuVrH6HvNVFd
-	ilLC+m0RyYXDLq0yADQemghai5Pp7ad/iVbHNBZCI0vneFbzukT3DemH8hpbiNMzlZ43tk8YzQs
-	PP+U1
-X-Gm-Gg: ASbGnctEDHA6Jm/P1lxCYvZtDwkjnTpEc+x/opJUvW4n6/JvgPuu9Bkj18hVbDQLuqp
-	QnYI3hd3jigStIcnh4mELmbjOUvKKgyZ3HwZkfsH3ibx/NwjCLDOmE38/cxBmNiwHI97dyQOF/z
-	cC2wht0fJVrudoyCowKPff/CTlDNIYuaQ26xwLRpQi39kLJXGoC95US0vSOEiutfCG3rgt7eq4n
-	EmURs8aMREfzdxjU8wW5NgXNIhp5ES1ybbOLX15DGRWWnc08Pms4u8i3aAPBOhZZIenhkxd3mCF
-	GxE2LEjaqyT3lhyqIPUYFqF13xNMi5RWihiGhOacBWRDx3Agf0lSKk787avSrCVLPIetydoyde+
-	9l88NXApReSXTloE=
-X-Google-Smtp-Source: AGHT+IFHP79HD4JFd5kxhWz8FDhjOhMfmvGsZY7qNlS4B4/b4vmUL1UzgqjcbBlVKY//SsdR5LdM6Q==
-X-Received: by 2002:a05:6402:13ca:b0:608:8204:c600 with SMTP id 4fb4d7f45d1cf-612c731f6c0mr3736800a12.3.1752866830529;
-        Fri, 18 Jul 2025 12:27:10 -0700 (PDT)
-Received: from cloudflare.com ([2a09:bac5:5063:2432::39b:cc])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-612c8f09db1sm1428133a12.8.2025.07.18.12.27.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jul 2025 12:27:09 -0700 (PDT)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Alexei Starovoitov <ast@kernel.org>,  Andrii Nakryiko
- <andrii@kernel.org>,  Arthur Fabre <arthur@arthurfabre.com>,  Daniel
- Borkmann <daniel@iogearbox.net>,  Eric Dumazet <edumazet@google.com>,
-  Jakub Kicinski <kuba@kernel.org>,  Jesper Dangaard Brouer
- <hawk@kernel.org>,  Jesse Brandeburg <jbrandeburg@cloudflare.com>,  Joanne
- Koong <joannelkoong@gmail.com>,  Lorenzo Bianconi <lorenzo@kernel.org>,
-  Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <thoiland@redhat.com>,  Yan
- Zhai
- <yan@cloudflare.com>,  kernel-team@cloudflare.com,
-  netdev@vger.kernel.org,  Stanislav Fomichev <sdf@fomichev.me>,
-  bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 01/13] bpf: Add dynptr type for skb metadata
-In-Reply-To: <1ae43248-189e-4765-b43c-b80e58160587@linux.dev> (Martin KaFai
-	Lau's message of "Fri, 18 Jul 2025 12:19:44 -0700")
-References: <20250716-skb-metadata-thru-dynptr-v2-0-5f580447e1df@cloudflare.com>
-	<20250716-skb-metadata-thru-dynptr-v2-1-5f580447e1df@cloudflare.com>
-	<9aa1f2b0-0f63-45e8-b787-e14d53cac75a@linux.dev>
-	<875xfpes14.fsf@cloudflare.com>
-	<1ae43248-189e-4765-b43c-b80e58160587@linux.dev>
-Date: Fri, 18 Jul 2025 21:27:08 +0200
-Message-ID: <87wm85cnar.fsf@cloudflare.com>
+	s=arc-20240116; t=1752874519; c=relaxed/simple;
+	bh=e26wcrCpgtY0ThMsVaf6VETi8cowQt0T8Wlu/NYupfY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gkGQpYbbQFaSRkij1qYGboUgUzCvhqlGk4imPGu6LD50C4C6ZgrtNr50ekoA2/WYnMpa0pNJk4O9yIost630fj2y54L2l/DvT+Gj1/ZT+R4VpnYDIPvTvVsbfxHBHrExEtIY8zUUUXd0NXE4AAZiQKjwDO7zaGsyPG0ihc/t8Nk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=QZ5S+p32; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from mail.zytor.com ([IPv6:2601:646:8081:9482:197f:c1e5:8ae9:2d06])
+	(authenticated bits=0)
+	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 56ILX0si2795198
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+	Fri, 18 Jul 2025 14:33:00 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 56ILX0si2795198
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2025062101; t=1752874388;
+	bh=gldC6YCEbu9Wrkqgglu65d8d6ydEAjRPt571KpQxh08=;
+	h=From:To:Cc:Subject:Date:From;
+	b=QZ5S+p32GsU27K2XDsJHVIHXIncdLYMVx9WkzgY9upJ2iSoAd8fOE6NLZvS2z8pHx
+	 prhlzCi6T6l62vb9elhydX5NGbcUOL15dyvEwc51AyEsiTYSDTmUgUZzGm0Jpifvg0
+	 p4Pb2759nqiqNKXHrvRbkNlUhkGC+y3LpLGwlZ6No42OS0Kq7x+ONSxKb+AgGAGM2j
+	 Iazr3VxtTbJ+oPkfc1/FSKWp7rpY/KwlZkkLO56MZTHbhHz4JNPcfsS9E02xOWOanE
+	 rr9BJ0ie8/pESWhCvoLLLxODingDn66IzCZnsV2qSKV8NUMyX9IqT3Uo48ddW3zo4v
+	 W9YbGSw7reB9Q==
+From: "H. Peter Anvin" <hpa@zytor.com>
+To: 
+Cc: "H. Peter Anvin" <hpa@zytor.com>,
+        =?UTF-8?q?Eugenio=20P=C3=A9rez?= <eperezma@redhat.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, Alexei Starovoitov <ast@kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrii Nakryiko <andrii@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, Cong Wang <cong.wang@bytedance.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Laight <David.Laight@ACULAB.COM>,
+        David Lechner <dlechner@baylibre.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Gatlin Newhouse <gatlin.newhouse@gmail.com>,
+        Hao Luo <haoluo@google.com>, Ingo Molnar <mingo@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Jan Hendrik Farr <kernel@jfarr.cc>, Jason Wang <jasowang@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>, KP Singh <kpsingh@kernel.org>,
+        Kees Cook <kees@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Marc Herbert <Marc.Herbert@linux.intel.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Mateusz Guzik <mjguzik@gmail.com>, Michal Luczaj <mhal@rbox.co>,
+        Miguel Ojeda <ojeda@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+        NeilBrown <neil@brown.name>, Peter Zijlstra <peterz@infradead.org>,
+        Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+        Sami Tolvanen <samitolvanen@google.com>, Shuah Khan <shuah@kernel.org>,
+        Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Thorsten Blum <thorsten.blum@linux.dev>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Yafang Shao <laoar.shao@gmail.com>, Ye Bin <yebin10@huawei.com>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        Yufeng Wang <wangyufeng@kylinos.cn>, bpf@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-sparse@vger.kernel.org,
+        virtualization@lists.linux.dev, x86@kernel.org
+Subject: [PATCH 0/7] Replace "__auto_type" with "auto"
+Date: Fri, 18 Jul 2025 14:32:43 -0700
+Message-ID: <20250718213252.2384177-1-hpa@zytor.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jul 18, 2025 at 12:19 PM -07, Martin KaFai Lau wrote:
-> On 7/18/25 3:01 AM, Jakub Sitnicki wrote:
->> On Thu, Jul 17, 2025 at 05:06 PM -07, Martin KaFai Lau wrote:
->>> On 7/16/25 9:16 AM, Jakub Sitnicki wrote:
->>>> +__bpf_kfunc int bpf_dynptr_from_skb_meta(struct __sk_buff *skb, u64 flags,
->>>> +					 struct bpf_dynptr *ptr__uninit)
->>>> +{
->>>> +	return dynptr_from_skb_meta(skb, flags, ptr__uninit, false);
->>>> +}
->>>> +
->>>>    __bpf_kfunc int bpf_dynptr_from_xdp(struct xdp_md *x, u64 flags,
->>>>    				    struct bpf_dynptr *ptr__uninit)
->>>>    {
->>>> @@ -12165,8 +12190,15 @@ int bpf_dynptr_from_skb_rdonly(struct __sk_buff *skb, u64 flags,
->>>>    	return 0;
->>>>    }
->>>>    +int bpf_dynptr_from_skb_meta_rdonly(struct __sk_buff *skb, u64 flags,
->>>> +				    struct bpf_dynptr *ptr__uninit)
->>>> +{
->>>> +	return dynptr_from_skb_meta(skb, flags, ptr__uninit, true);
->>>> +}
->>>> +
->>>>    BTF_KFUNCS_START(bpf_kfunc_check_set_skb)
->>>>    BTF_ID_FLAGS(func, bpf_dynptr_from_skb, KF_TRUSTED_ARGS)
->>>> +BTF_ID_FLAGS(func, bpf_dynptr_from_skb_meta, KF_TRUSTED_ARGS)
->>>
->>> I looked at the high level of the set. I have a quick question.
->>>
->>> Have you considered to create another bpf_kfunc_check_set_xxx that is only for
->>> the tc and tracing prog type? No need to expose this kfunc to other prog types
->
-> After some more thoughts, lets target it for tc only. I think skb_meta is not
-> available in most of the tracepoints now. Lets wait until the skb_meta will be
-> supported in other hooks/layers first.
+"auto" was defined as a keyword back in the K&R days, but as a storage
+type specifier.  No one ever used it, since it was and is the default
+storage type for local variables.
 
-Makes sense. I was planning to drop patch 5 ("net: Clear skb metadata on
-handover from device to protocol"), which means
-skb_shinfo(skb)->meta_len could be invalid at some tracepoints.
+C++11 recycled the keyword to allow a type to be declared based on the
+type of an initializer.  This was finally adopted into standard C in
+C23.
+
+gcc and clang provide the "__auto_type" alias keyword as an extension
+for pre-C23, however, there is no reason to pollute the bulk of the
+source base with this temporary keyword; instead define "auto" as a
+macro unless the compiler is running in C23+ mode.
+
+This macro is added in <linux/compiler_types.h> because that header is
+included in some of the tools headers, wheres <linux/compiler.h> is
+not as it has a bunch of very kernel-specific things in it.
+
+--- 
+ arch/nios2/include/asm/uaccess.h                        |  4 ++--
+ arch/x86/include/asm/bug.h                              |  2 +-
+ arch/x86/include/asm/string_64.h                        |  6 +++---
+ arch/x86/include/asm/uaccess_64.h                       |  2 +-
+ fs/proc/inode.c                                         | 16 ++++++++--------
+ include/linux/cleanup.h                                 |  4 ++--
+ include/linux/compiler.h                                |  2 +-
+ include/linux/compiler_types.h                          | 13 +++++++++++++
+ include/linux/minmax.h                                  |  6 +++---
+ tools/testing/selftests/bpf/prog_tests/socket_helpers.h |  9 +++++++--
+ tools/virtio/linux/compiler.h                           |  2 +-
+ 11 files changed, 42 insertions(+), 24 deletions(-)
 
