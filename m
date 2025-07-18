@@ -1,82 +1,82 @@
-Return-Path: <bpf+bounces-63777-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63778-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1611CB0AC49
-	for <lists+bpf@lfdr.de>; Sat, 19 Jul 2025 00:49:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7BF5B0AC72
+	for <lists+bpf@lfdr.de>; Sat, 19 Jul 2025 01:05:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81251188D511
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 22:49:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2CBA01C2645E
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 23:05:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 251BF225793;
-	Fri, 18 Jul 2025 22:49:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FDAC1E8322;
+	Fri, 18 Jul 2025 23:05:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="EE+xtiZV"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Fa4AJsKw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77F87224B06
-	for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 22:49:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DA48222578
+	for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 23:05:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752878946; cv=none; b=qXFqhW9d8Sp+lXqAutEdiHX/1yD+trXd1+QIEgDkScJ5BKQpHb1bvdKpz4IutJS6k0ObG3svFq+6j4bX/HXKscVSZ6bsiYO3NIUQv0sOnnhOIvxYXDCelv7FBhoy9cDEt1XH6nXdXdsUrKpM6B6r0mIERpBk1ba6bV8hRE1RaR8=
+	t=1752879909; cv=none; b=HlPjghBLqe5O3AtMRR1sKReg1CBjKGpXT/iTcLjen95fbE3I+q7Vh+Ky+oHC1+etB9rOaxazwbyFA2UpUZUzGc0xgjkPutYAU/OC78KGSuhsWPwD7gS0dVKaN+0z5lfuRosBSseo1RWEUq8KmmRhVuNgDfCmxOOMSMxPWU3lrmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752878946; c=relaxed/simple;
-	bh=qo67utYF/ovAn2X4y/cKDIWgVFy2L9OSLb/CZy1qQmg=;
+	s=arc-20240116; t=1752879909; c=relaxed/simple;
+	bh=H40tep0Rv0U6gqMR0evT7Pj2Me2Gk77w4/2xIDdHb+A=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=L/lMoEc0yxQzLoHqBEM8copSTSChSLhjqq+mMZQJWqrCQwPn23q9VmguUJF2dhCo4JqdZLZdUmvwJwlQbYm3n1rJaHueLRNeE4ZijmkC6PQBpOSziP/15azbgwC4FZXmgqiyY72SJgR0F0lmUSBa2iyFy3wBzrMff3LWeeVtPDY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=EE+xtiZV; arc=none smtp.client-ip=209.85.218.46
+	 To:Cc:Content-Type; b=qeqpwWdPolMqXUWym8L/8KtQSj/p+p2Ii0Ed2JebX8rpk4K8YuARuoBhGGHPJ34/0a7/PzZqwv7kxeHjc7L0d/u0SaXYgSwMly5Se09mfOq1xyelKVl8JPCG9+amebMd9czLbIjfcaQnb9X6J6/6XW6/qzVYht8xtXkbvak9uhY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Fa4AJsKw; arc=none smtp.client-ip=209.85.208.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-aec46b50f33so463033866b.3
-        for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 15:49:04 -0700 (PDT)
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-60c60f7eeaaso4454414a12.0
+        for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 16:05:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1752878943; x=1753483743; darn=vger.kernel.org;
+        d=linux-foundation.org; s=google; t=1752879905; x=1753484705; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=UqwKREBTKqb14178is+L3e4wy7hqQP2KCNVEXG6C+zY=;
-        b=EE+xtiZV3pTL9spwkSPTfXDisyDviHr83y5B1p02ZwHtfhU/KDq+pIIHR7RsuK14SH
-         YGaRsknFWNaSIExvUcrr8w/2ojIq/u8D2Lm+gU/gb/kQxdeoPePtzEu6kN3gfYRVTdE5
-         Xq8RE4dACVdiKWcysdDMnrOqC08hlJa4sTESg=
+        bh=p0G8yeUdMDA9tVTNUd0r33p22vJCTOHruEzV0haxXnE=;
+        b=Fa4AJsKwQCE3RO4IY2jB6MGjunRv8OrwVviE2uKJ/1veN9Ivf594SCUUH8NSmmhjXz
+         kTuN9P3qVcaBnJGsMQidK5X8XQGPJgU4XoMP/k/nrI6myS6t3MXvoOeQzQ7rS5RI2Jg1
+         bpAYtteuI65qX1+eomwWhPkj4KvyLllwnHIDs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752878943; x=1753483743;
+        d=1e100.net; s=20230601; t=1752879905; x=1753484705;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=UqwKREBTKqb14178is+L3e4wy7hqQP2KCNVEXG6C+zY=;
-        b=SODu7DEmImMEtRDEOaM9Zj/xyrYXVzk0dycQuOYz3yeBcDMuqBkGGYeKuCnMFhyQ3t
-         +0POV9tz3wwr3z2u6c3p80lhKs6629PT4in9JdElSPEvGePzqFRsbQJheJ26ZrgWvqr8
-         HBjHDBhwbmeizP4U8qOKyT9x3XKmZAmq4HP3ArXOevFDgrtYURywvF1g/iy8+GybzUc5
-         qyJgKo42mL9Pz/V6k3Z/yjxq4vJfpcvgf3d2WFrdSfsHL+hpTrhkBvKRuapzITKzxjrZ
-         p3KWHIG03sOdW1nAfKtnv+6KXKNRoQQbasOC2JwuyeSeba0o/631PxjJDFFZtOeDFgq+
-         tWxg==
-X-Forwarded-Encrypted: i=1; AJvYcCVsBpXX7B1r56lxUIYX83O23lstFTEfG9VW1AN3AO14P8xxuZNnT17u9e5XuBHWLReCH8E=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzaEeiQFURyIYvUZ43FexTb8KANMmQP38Ede4TZv8riRVFxo214
-	EaUWNX7yTjPu6OX1aGC+KrWDyZbuDB32eA3CTXxDQxiV5MPw3/xDm0BWCzFO/YWcQ/Q2iQVOHuS
-	S+T+swaw=
-X-Gm-Gg: ASbGncsaetBQdnzSXcCJNRkZgO4wX3zJcz0mHtAHOvwM1c2kmjWS6fGOUrcR40uQF2p
-	cNQKc1MtCzhDWp7xwebOCko8dsb7DxwKKTA2loK6vj3BHZ7ahtUuVxKz7GoQ5WBJPL3K4JFIVKb
-	pyuGezSedbcqdsBYCKPTgiXvaJgxgaLcTS5eI6vuIuW7dBdnB8ZfNJegFbbMEPnk0oXqVgesX9U
-	+OTR2V7n9dHVl6EKmG1NobmLIXIdgJVqHqM5yEELbfSojfutv6flnFbUmAV3eGXW7Tm5Eht88PE
-	SwHchw9o3y4oItnMVBIehY3UfXJqzvan8raP5aTB7BxHb1mr8gBhOsrtjcEw+K7HvBjNElPL1ta
-	7TkSqPdLyRxUNwzV+ivEOhPXvuR08TruIqZgndaLyf3zYcRZp9yELrXGf/c0XDn04Bd3saMAQ
-X-Google-Smtp-Source: AGHT+IGt+KRme6kDlLaqnETvc4+CRcHKnrsROM9a6tLox0eLBBDHZQZKaJHGweIL1JdtVQ9UbQw6lQ==
-X-Received: by 2002:a17:907:96a2:b0:ae3:60e5:ece3 with SMTP id a640c23a62f3a-ae9cdd8436fmr1221407666b.6.1752878942637;
-        Fri, 18 Jul 2025 15:49:02 -0700 (PDT)
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com. [209.85.208.41])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aec6cad69basm195843466b.145.2025.07.18.15.49.02
+        bh=p0G8yeUdMDA9tVTNUd0r33p22vJCTOHruEzV0haxXnE=;
+        b=cRLjMWS/N3iknvPkrT2B4A+BuDstji0cvvSzKgUKjbWmYeUm/QBA6NMV8Hkeo5JOpg
+         ecA0F0iZ0kqqqjAf9pG8XUEbayVkehPtExEHQwvWfLka7kho9C/5ZeT7tCaWd+u+UZeA
+         mCogx1jO/ba7IMPZpXl+X4hiXRTsI+emJMUdKnZVzKt5diope3KhTHwm969POzfowKWD
+         7p30p5b/FIgio2C7kDxB5oSlf5+/89KwafuHBLxL51I+Sfgx7ByrbRZNoPPtP1fodc1x
+         JSWGFaTctk0CUS2B0+9ZoT+DP4/4JtUqK/ukF9vnt6nysA5ry3KJS5GWW1aNswQoVPJf
+         HkOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXCfEx0E5npTgSSSXnfhBBvE+qHYSpT4bl9Ygld35Cs/BF3FmJoRcmz0h9XceF2s8E3igs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyKUUal5ekNnyqzsAaYq/+M95+x8jk7r0RyRSj49yoWN/cghVQO
+	aKW8zCnBpeoxgvAolZdD/t6p0aZXszFPE3aN9K74A7BLV++DQNE/Gd+fDC28w5pw0kSBEjDXFeE
+	BDMT0wJA5zg==
+X-Gm-Gg: ASbGncvwzCaJdSv+3w9syFmfR9mff2sdu4VZ2VbVW7rtaPe7/MWAuCRXnrBSvivB2Vt
+	0+9sIuoVCovToHvI9yE4/1Ifw/XvnpCVSbFlXKiPgwOf50SXWEsWx5foa7cKz8ngwpSCnsyIxH2
+	pJOEL4ETnaD0Xe1JBzzNJJvjSXOzq8Ym2FyF7sYTC9A9iP3ZdG+0PKn8IY3G3lgLhB6WpX4r7tr
+	M/vzF5eWmTAaNWc7RBatuFsgSmuBykcf8yS/BFvzhFe/vjVOyFuyQwGHamKFsEv9dFei7fTapRL
+	XWpb4ga81IVxBIhFWRKTgnoxdN57rBij1B18MJY7ColJ8Wy1dmuVDZoTrCc18PoPZZZuupJNRCL
+	m6RpoNWYdO78NXaO6WAI2rRnJu8In4wXZaxs+4IqnAzyKDnAZ6ZXLeYXHdI6IHZ7ZEqzUkeeb
+X-Google-Smtp-Source: AGHT+IHimNVhpwo6cpcwxnLi2yKhijU0/4uAxZ07+s+QyFy1NZfXgLCcmrIh/g8WbRwkUWGC3NWjPw==
+X-Received: by 2002:a05:6402:1d55:b0:612:bc52:a93d with SMTP id 4fb4d7f45d1cf-612bc52abcdmr5519622a12.13.1752879905105;
+        Fri, 18 Jul 2025 16:05:05 -0700 (PDT)
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com. [209.85.221.44])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-612c9074a11sm1631416a12.49.2025.07.18.16.05.04
         for <bpf@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jul 2025 15:49:02 -0700 (PDT)
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-60c93c23b08so4967115a12.3
-        for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 15:49:02 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUO+HLEjt57arkKUExh9mGWQIbmRDUdsbkskp8WErJq2rudfJJkhwZ3c5/EtcNCssf7+yk=@vger.kernel.org
-X-Received: by 2002:a05:6402:84d:b0:60c:3f77:3f44 with SMTP id
- 4fb4d7f45d1cf-61285ba5366mr11281504a12.17.1752878941898; Fri, 18 Jul 2025
- 15:49:01 -0700 (PDT)
+        Fri, 18 Jul 2025 16:05:04 -0700 (PDT)
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3a548a73ff2so2396778f8f.0
+        for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 16:05:04 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXSTMu5494n6m6bjoKghvVCh0Qi5g3jKWtiah1Zz6JqUm6ypvUlabZ1gFrDk51ZXWOf8Gs=@vger.kernel.org
+X-Received: by 2002:a05:6402:510f:b0:607:6097:2faa with SMTP id
+ 4fb4d7f45d1cf-61281ebe074mr11282976a12.8.1752879516873; Fri, 18 Jul 2025
+ 15:58:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -84,13 +84,13 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20250718213252.2384177-1-hpa@zytor.com> <20250718213252.2384177-5-hpa@zytor.com>
- <CAHk-=whGcopJ_wewAtzfTS7=cG1yvpC90Y-xz5t-1Aw0ew682w@mail.gmail.com>
-In-Reply-To: <CAHk-=whGcopJ_wewAtzfTS7=cG1yvpC90Y-xz5t-1Aw0ew682w@mail.gmail.com>
+ <CAHk-=whGcopJ_wewAtzfTS7=cG1yvpC90Y-xz5t-1Aw0ew682w@mail.gmail.com> <CAHk-=whrbqBn_rCnPNwtLuoGHwjkqsLgDXYgjA0NW2ShAwqNkw@mail.gmail.com>
+In-Reply-To: <CAHk-=whrbqBn_rCnPNwtLuoGHwjkqsLgDXYgjA0NW2ShAwqNkw@mail.gmail.com>
 From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 18 Jul 2025 15:48:44 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whrbqBn_rCnPNwtLuoGHwjkqsLgDXYgjA0NW2ShAwqNkw@mail.gmail.com>
-X-Gm-Features: Ac12FXwPQm0wFuMqO4T5e7rkg71dcrU60Bx64WOT68AUbiGf34w2BtStF_AEh5c
-Message-ID: <CAHk-=whrbqBn_rCnPNwtLuoGHwjkqsLgDXYgjA0NW2ShAwqNkw@mail.gmail.com>
+Date: Fri, 18 Jul 2025 15:58:19 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whiL-ieTm19zuPqC9HLHh_-L_3pSMRUwsaN4Czp0PW6iA@mail.gmail.com>
+X-Gm-Features: Ac12FXzEvcUEKGC31NKbtJTOHrioow4MaXx8l9_sG1eUWxP_1nSQ3xv-ujuWcb8
+Message-ID: <CAHk-=whiL-ieTm19zuPqC9HLHh_-L_3pSMRUwsaN4Czp0PW6iA@mail.gmail.com>
 Subject: Re: [PATCH 4/7] arch/nios: replace "__auto_type" with "auto"
 To: "H. Peter Anvin" <hpa@zytor.com>
 Cc: =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
@@ -122,58 +122,47 @@ Cc: =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
 	linux-sparse@vger.kernel.org, virtualization@lists.linux.dev, x86@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 18 Jul 2025 at 14:49, Linus Torvalds
+On Fri, 18 Jul 2025 at 15:48, Linus Torvalds
 <torvalds@linux-foundation.org> wrote:
 >
-> On Fri, 18 Jul 2025 at 14:34, H. Peter Anvin <hpa@zytor.com> wrote:
-> >
-> > -       __auto_type __pu_ptr = (ptr);                                   \
-> > +       auto __pu_ptr = (ptr);                                  \
-> >         typeof(*__pu_ptr) __pu_val = (typeof(*__pu_ptr))(x);            \
+> And while looking at this, I think we have a similar mis-feature / bug
+> on x86 too: the unsafe_put_user() macro does exactly that cast:
 >
-> But that second case obviously is exactly the "auto type" case, just
-> written using __typeof__.
+>   #define unsafe_put_user(x, ptr, label)  \
+>         __put_user_size((__typeof__(*(ptr)))(x), ..
+>
+> and I think that cast is wrong.
+>
+> I wonder if it's actively hiding some issue with unsafe_put_user(), or
+> if I'm just missing something.
 
-Actually, looking at it, I actually think the NIOS2 header is a bit
-buggy here, exactly because it should *not* have that cast to force
-the types the same.
+... and I decided to try to look into it by just removing the cast.
 
-It's the exact same situation that on x86 is inside
-do_put_user_call(), and on x86 uses that
+And yes indeed, there's a reason for the cast - or at least it's
+hiding problems:
 
-        __typeof__(*(ptr)) __x = (x); /* eval x once */
+arch/x86/kernel/signal_64.c:128:
+        unsafe_put_user(fpstate, (unsigned long __user *)&sc->fpstate, Efault);
 
-pattern instead: we don't want a cast, because we actually want just
-the implicit type conversions, and a warning if the types aren't
-compatible. Writing things to user space is still supposed to catch
-type safety issues.
+arch/x86/kernel/signal_64.c:188:
+        unsafe_put_user(ksig->ka.sa.sa_restorer, &frame->pretcode, Efault);
 
-So having that '(typeof(*__pu_ptr))' cast of the value of '(x)' is
-actually wrong, because it will silently (for example) convert a
-pointer into a 'unsigned long' or vice versa, and __put_user() just
-shouldn't do that.
+arch/x86/kernel/signal_64.c:332:
+        unsafe_put_user(restorer, (unsigned long __user
+*)&frame->pretcode, Efault);
 
-If the user access is to a 'unsigned long __user *' location, the
-kernel shouldn't be writing pointers into it.
+The one on line 188 at least makes some sense. The other ones are
+literally hiding the fact that we explicitly cast things to the wrong
+pointer.
 
-Do we care? No. This is obviously nios2-specific, and the x86 version
-will catch any generic mis-uses where somebody would try to
-'put_user()' the wrong type.
+I suspect it's just very old historical "we have been lazy and mixing
+'unsigned long' and 'pointer value'" issues.
 
-And any "auto" conversion wouldn't change the bug anyway. But I
-thought I'd mention it since it started bothering me and I went and
-looked closer at that case I quoted.
+Oh well. None of these are actual *bugs*, they are more just ugly. And
+the cast that is hiding this ugliness might be hiding other things.
 
-And while looking at this, I think we have a similar mis-feature / bug
-on x86 too: the unsafe_put_user() macro does exactly that cast:
+Not worth the churn at least late in the release cycle, but one of
+those "this might be worth cleaning up some day" issues.
 
-  #define unsafe_put_user(x, ptr, label)  \
-        __put_user_size((__typeof__(*(ptr)))(x), ..
-
-and I think that cast is wrong.
-
-I wonder if it's actively hiding some issue with unsafe_put_user(), or
-if I'm just missing something.
-
-            Linus
+              Linus
 
