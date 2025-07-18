@@ -1,118 +1,93 @@
-Return-Path: <bpf+bounces-63738-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63739-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54A56B0A7CF
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 17:43:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE9A6B0A7D4
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 17:43:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78799A860C4
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 15:39:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26B39A8424B
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 15:40:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71FDF2DECBB;
-	Fri, 18 Jul 2025 15:39:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7B802DFA29;
+	Fri, 18 Jul 2025 15:39:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kx61WjNj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NB7wQ72Z"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C7D42DE1FE;
-	Fri, 18 Jul 2025 15:39:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D48D2DFA24;
+	Fri, 18 Jul 2025 15:39:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752853172; cv=none; b=cwsXhKHNPUA3Q1i1N4JxkjSoMicKOvVmPNSZ6Io1cBuGqwohai3AI+tP9IcEVfksxIAZZMDc9bHDOmwC4KRS3exckofznZzLUgrE/ifa7W1uOy7NrDPzzK9Bok5yKOPFVG0jDRZoyGY9c1vnBTRn72He/Vq9nxNCQuaS3tBh05g=
+	t=1752853187; cv=none; b=Iet4nvuoxQXrUcXHOksuvm0P+8iP1H58eR2KTaFV8b5u2644yebFq+OS6I1lgDAh+vm0iRjLsVL5q4OcyTUPNlT/MsUKQKVzihTTF9zaNoBiT+UKtjdp955cPq4u2gJ1ycVy7RXVs2OBs8RvgwR0CvrcFGsVaI0TAEVj+ibgLS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752853172; c=relaxed/simple;
-	bh=9VSV9uLZb50DfyKoCnVz+avlkKOMbZZ5AZGoFFpkR+o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=myo1tFLFlyVpw/m/KNRRjG4Icf+ntQvgfp2tuC7MS8BWHXiRPZul+ERx9Wp3csIVikNDU6Tsv0GjX/VnKv3HQY7EcK2WfiuwBpSCAGD0RZ594Qx50Dj8qrV03puqd8S/7wjxyMtH+dLD1Rcs8CXGURu6qCDOg6bpMcy3llcqjR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kx61WjNj; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-ae708b0e83eso394092466b.2;
-        Fri, 18 Jul 2025 08:39:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752853169; x=1753457969; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9VSV9uLZb50DfyKoCnVz+avlkKOMbZZ5AZGoFFpkR+o=;
-        b=Kx61WjNjYVsPyp9+RcAroDkuRTrLDQurdCeKzRZ6bA0LdFJcuOFmJSsTp5jMe7l4Gj
-         4HnJGeDcuJBYGzos6IVB9EXxoYC62HtrCrhpfU03pi45bAcusJm/uaNN+B/X1Z+XmdGC
-         SNbtZkIrQOS1/MdnxH5ZhrL6y7bRJc/E/WdjwGMmlVQTuTaP6QgMiW/zD06k+9n07dWc
-         ypmtY0dezqobS5wqyd+xjPKq7E29uHUCo+AvKloyLcqhOEARMlWl0OwK94wOObepges0
-         MeN5bB+Q3FXJJdWnd82VP7eWFxo3lbFtCgZQy+vj/LkbtpmMzoJ95vrTImokfqYKFfbV
-         4UIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752853169; x=1753457969;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9VSV9uLZb50DfyKoCnVz+avlkKOMbZZ5AZGoFFpkR+o=;
-        b=Oo6QLTAV9Q4iti9bsK3BSf65kdQdVycPWkAALAM5NvujrmQzgBZcjvMvhjw0K0n3wh
-         R+HRo0xCg+9xfjPtqgPHNlhpAZIzOiheo0R55zVp5zQiHMwzZWhjZlso7oi9OfLy1qJz
-         IDTYSKX9K8ETwt0zNPuDblSg9oQnycW9nTuZ4jyntez5NJV0PTASHT2iB/+9UZaeD2oO
-         4fRAuIjz/sBdj3t785vujVKSyIES89DufjtUkTYEFMhE6o20F2KNQyliACbH9eYWSMEa
-         18XPZ6ijE0oSO7t0uYJPedMOrxP9Mxlkw5Np8accrRjdcGI5A285Yq0Z5xxqBYprxr/S
-         Jlyg==
-X-Forwarded-Encrypted: i=1; AJvYcCU6++l5CRnunK+ip67N5P6Eu8id59UAtcF13UQdeeogEFz04SmEPghEc43rWqcQQNPlIdmWNF6aaWM6syZt@vger.kernel.org, AJvYcCWoA0eX3Q3RSI7fu7m+fki01yRmtpcaLYrmnHMRCAiqPCPMV3MKznBg2w7Ul877vS6d7+o=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw1Owlfe8gHrESJQCwADEdh/UhMvuF+fPQ44xueeamTc077ECzi
-	ucLp6+cctVk3fY8EClbrJBeDtbtjp0S/dAMRhMTtChLwQ8dysdeDk4THg8TL/JT+INgi2l1VX1v
-	ae/0TkE+o7YDGFH+E/cTbluG4+n/FrCBPBQ==
-X-Gm-Gg: ASbGncuBO8y8jYON4WiQOoRQBFjnJL0RFtjfpmbJOM9STmn04FF8hMJ1YWGFREbVGcR
-	R4w7k8c/GXC5/MDyxHU50YJLo92sRLLvcYbSCuqMz6FOVfRf/1tgzxag4I4juLG84HfXSw8eklq
-	nbvZUtiyljLSZZXYhvriylAnPnE1ZygQWWzYJKFq1Z5wZYUjBL3UYDE2qAkgEs7v8C1MTw5unFb
-	QrQ8g==
-X-Google-Smtp-Source: AGHT+IEpeVxME6aVq15riUIEW3IcE9rZry6wSWfhQX8HqiZb7qciuqAosUdiKMt2TXpE4cJ1jOG0BXke05WcjyCrYC8=
-X-Received: by 2002:a17:907:989:b0:ae0:b7ef:1c11 with SMTP id
- a640c23a62f3a-ae9cdd86a54mr1116865766b.5.1752853169232; Fri, 18 Jul 2025
- 08:39:29 -0700 (PDT)
+	s=arc-20240116; t=1752853187; c=relaxed/simple;
+	bh=eHA0H0ZU7L8ygGlTVLTGPDEbDmfk3M/hioSYJC/nwPI=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=Mc++UuRZGKSzXabh1jZy6SzeXFnb9YlwRo4AAR84OhMY8z0LlSZmqsHQlnYOSXpdDJv9uIfaOlSMv0ya7RZfa1hcuTLGKSC6ycEy357zwZeDlD92AQzPFHo7rDpDJoKNYP+5sC9nOmclTJdCHgVaPoPvoMSLPnvi34sAIlJWmlQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NB7wQ72Z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82857C4CEEB;
+	Fri, 18 Jul 2025 15:39:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752853186;
+	bh=eHA0H0ZU7L8ygGlTVLTGPDEbDmfk3M/hioSYJC/nwPI=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=NB7wQ72ZL2/g2O3M8FGyvfcKAWm3e/i97fckcMGYSVJHWcRY80rMT/r9Vcq+z31Ye
+	 +fYgVg5BX12a/reqLSlmeCfJeP9dlmn15B7A4gZAzal1kUikso1DuXemWPFtJu1i76
+	 bOX0lOK706BuvB7x5NURTWcjZvFFoIcVaq/qAB2/51YEAUWYnlOU6BV0QMKg4hbylN
+	 hAuj1NCPxvRfMZz7acLGIXRcsjEYM1s8U54jGQcn9fz13ayDtBd7iDH56NTulpoHrp
+	 aKtkmRpgWBt1Nx8jRVm/5hV0EOhGgmgiLvRW4ebpgg7DpXu99SsIHzKKvuxf/22dEH
+	 pLcfm/rI19uLQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70B86383BA3C;
+	Fri, 18 Jul 2025 15:40:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250717115936.7025-1-suchitkarunakaran@gmail.com>
- <CAEf4BzZ+OTkaXmtWPbOGB0OWz5xmj-d06UWchooO+iUyDHar4g@mail.gmail.com> <CAO9wTFgLOymS+VDcUTCHZ7niu_gEgN-N-F1uX-Kpm+uqvaMrQg@mail.gmail.com>
-In-Reply-To: <CAO9wTFgLOymS+VDcUTCHZ7niu_gEgN-N-F1uX-Kpm+uqvaMrQg@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 18 Jul 2025 08:39:01 -0700
-X-Gm-Features: Ac12FXxnbJSkiNaYLXamvASk4rtFXxTiGngAImtikLHkoEBtFQMXFsQXoFL0bO0
-Message-ID: <CAEf4Bzayn6UNjjbtgA8i2n4-_kuyERnOZAZMfc4cXTDKrSFr+w@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: Replace strcpy() with memcpy() in bpf_object__new()
-To: Suchit K <suchitkarunakaran@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
-	skhan@linuxfoundation.org, linux-kernel-mentees@lists.linux.dev, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] libbpf: fix warning
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175285320626.2706765.18311882177801047852.git-patchwork-notify@kernel.org>
+Date: Fri, 18 Jul 2025 15:40:06 +0000
+References: <20250717200337.49168-1-technoboy85@gmail.com>
+In-Reply-To: <20250717200337.49168-1-technoboy85@gmail.com>
+To: Matteo Croce <technoboy85@gmail.com>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, teknoraver@meta.com
 
-On Thu, Jul 17, 2025 at 10:33=E2=80=AFAM Suchit K <suchitkarunakaran@gmail.=
-com> wrote:
->
-> > This is user-space libbpf code, where the API contract mandates that
-> > the path argument is a well-formed zero-terminated C string. Plus, if
-> > you look at the few lines above, we allocate just enough space to fit
-> > the entire contents of the string without truncation.
-> >
-> > In other words, there is nothing to fix or improve here.
-> >
->
-> Even though it=E2=80=99s safe in this context, would it still be a good i=
-dea
-> to replace strcpy() with something like memcpy() since it's
+Hello:
 
-no, there is no need. And keep in mind that this is libbpf library
-source code, which is developed as part of kernel repo, but isn't
-running inside the kernel itself
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-> deprecated? I=E2=80=99m still a beginner in kernel development and trying=
- to
-> find my way around, so I=E2=80=99d appreciate any guidance.
+On Thu, 17 Jul 2025 22:03:37 +0200 you wrote:
+> From: Matteo Croce <teknoraver@meta.com>
+> 
+> When compiling libbpf with some compilers, this warning is triggered:
+> 
+> libbpf.c: In function ‘bpf_object__gen_loader’:
+> libbpf.c:9209:28: error: ‘calloc’ sizes specified with ‘sizeof’ in the earlier argument and not in the later argument [-Werror=calloc-transposed-args]
+>  9209 |         gen = calloc(sizeof(*gen), 1);
+>       |                            ^
+> libbpf.c:9209:28: note: earlier argument should specify number of elements, later size of each element
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next] libbpf: fix warning
+    https://git.kernel.org/bpf/bpf-next/c/0ee30d937c14
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
