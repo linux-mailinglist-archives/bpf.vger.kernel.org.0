@@ -1,129 +1,231 @@
-Return-Path: <bpf+bounces-63702-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63703-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88B36B09FD8
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 11:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 04585B0A027
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 11:55:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DF27A86F4F
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 09:32:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F2C13A6890
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 09:54:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89F5E223710;
-	Fri, 18 Jul 2025 09:31:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B58829B76B;
+	Fri, 18 Jul 2025 09:55:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TojAV+ph"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qGiQPedG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64DF9221FBA;
-	Fri, 18 Jul 2025 09:31:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 838181EEA55;
+	Fri, 18 Jul 2025 09:55:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752831073; cv=none; b=Bo/CiFEVR9s6rhU36hddroU5LMbjhdoUBYvF7oG5z449MZ8O1ICTSosKVnxLqMLN8TB7yqo9DVtUYeyK+iYiyxIOsgjdDr+knfafJZxJv4TFxcnwaXeZrKLgEkLHfHCZuyPsg0WTaHoxCq/R4uhA62O3ydEmNh3nzEJu6YolvHg=
+	t=1752832507; cv=none; b=W9qEOGb9lLgUVjvGqQhUEeJF+ElPmmUpC7tH22WDdhKX2FUtDlJRWi1599QREKOM/tUjjJvpRFqIhrAIAiJfbbQAx2kJEZjoHS7DJ/esXdn7LyFZDOB+ChIUPYzaTa6iCh1mhYVP3y3VrbqJouGBqwRMN457B4jyn+vxBp3iy1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752831073; c=relaxed/simple;
-	bh=bhe0zcLGy5GklMgwNIQG4xyAuKnkHHvNVTH7d7Uwzqs=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=q/7s1MlWFbFrqKG1so033sfP0hTdPF8fhMcAUZ7nuQFpfUjFuSBTJ5Jx+VL/6hmkcYbkje4Q6CpqUsQbFjAVDf36sPQeZnMPp/iL+n0c6Yv8Ru14kiHYC0vLoolJbzJfFRZl+CjlZ8q5ylw7dcdSjImSzq3kz/KEVJvo4G33ahE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TojAV+ph; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-ae0e0271d82so335662866b.3;
-        Fri, 18 Jul 2025 02:31:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752831070; x=1753435870; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=XjU6nrqfbiw0u0TIKCSt6roZUluHkikf0/decEoYNJE=;
-        b=TojAV+phUnHpE12r/iHX2Yz5o1m1dHl06PQjdp9hkZkG2NK8Esx77EPg0wLlqaUxNu
-         tctMMIYbwuUc5YcXn10of94ELvmSnWF338zsp2WSdV2oYBDCCwDotnPBWqzBGfK//lHF
-         Cykj6z0MeXOxzYbxAHH7c8PoMEFwGx8aoREWzwvs2qwPeO6g2eYZlzNuh0X6yQk2VTbq
-         Bec6zemUETdlEU70WqC35z1TCAU26n7irzebZIScMGDHAuvzVhM1Y2YneCqx4hlfNrZD
-         ACWuT5e854cuKEIcIftQaZTO0y8UeXbzC2dyW1o2yjP9cBggKn9yiy/N/lYlmpK+S+DI
-         ovXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752831070; x=1753435870;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XjU6nrqfbiw0u0TIKCSt6roZUluHkikf0/decEoYNJE=;
-        b=Euh1x1iLF0m9JyM7qRzEDe+SWE9ug6FCDU+3HZH1fkeigc+qn3VVuuQeTjzvy2c5bb
-         GnliDKlmTl7cjHzkUzKMrcMuygYDYAlLzdGQKafRrK1x6LNxP2t7GK8bc7nouR9gck/e
-         pQLzl+fY8Fc7XYGefyrq0de1cN4t9Ik1ex+jsaQUQrMEm8dbiem9k3maQ8BdXfaw6RaL
-         HD3JX7jk3b0QyWT8gEP1LydDzHc8kzNMSDZ4mhpZWJeqQfH5aUnoCD67osNr0z2TMOT2
-         f20ecTPtHjaT/FMTIobJ4OeSfG/eK4kuLaE7OfFqFtDZoHVhhUc+wYuCnNxyf/Yfc8tO
-         hs5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV/SEAb1QSTRVTYxTZvGtYnYSAf60PTNrci+hYHVK3IjtbqHb5gcQirYD/Z6R5C9j4lsJiUuct9@vger.kernel.org, AJvYcCVpN5zFb68TecQJMhzZ9P9OMHeAHaZMyW7uUF+kLJkHKpPVX9PbQwW8QKbDbFeapdImwXs=@vger.kernel.org, AJvYcCWX+X9G4DBg0C7GZslYMkEAYAKARDmAxdpsZ9sMnL19hX/7CsWl6kUO8UmxPdTbsyR7emWOlQTXKpirIfS/@vger.kernel.org, AJvYcCXbl/HMjIGDgCSL89VU0iGPIvzbLfsROUEdinG0vv2wuYirBuFqZX0i/anxO06aEzfbRoUGmUqc6fovRg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyDGTrJhIRmvcomt9EktZGqAbxKu1DGpK1S5kkZRpViYHVJntym
-	f/wrs8CrFnoUGHny3CrMpYydsEGjV/ctgiQvd8g40uDWuOvLDRYjNo/x
-X-Gm-Gg: ASbGncu4GzhQS4NUzkjM1GbBgR8LSf6pVr37zAFrm/VXU8XP0yFupWE2G5/NDFdSkV1
-	M2dk1H9L/gN2XbLj9gkfvPxawTtLK5+G3sNGFcPV985Fyng1qEjnoC7oa/HXEc+RiKsPcD105Pk
-	mFriq+zZj8xxk0lmbHg22q5MV9BjBY0pWRZPIcsVAgPFLyjnQ/0+EeHB/FkjBFyhBv4eByxm/rA
-	Yj8prI9q7jxpZKt3tibWAAnJ+kxrJDQ9kwVmTj/SqqYLb7oiUFoaHYQlMh20+NMWrhEVqCs4PXK
-	FqiCw2Z0IWF3RB+2gDelllKrkCcEBQNP6gIk0rYpU1sR25jsP7XoS/hOuskCem6U4xpafnCktXn
-	Rr3b1mnw7NXefI7NN3n549vBK90nVoS/gwhU=
-X-Google-Smtp-Source: AGHT+IFIqad+0hlUN3zY87QsZXaNiyLAJ+x0TZ9qnNxIHZCIsq6bsPaf5QF99Ci+hSan+dVtZ2on2A==
-X-Received: by 2002:a17:907:990c:b0:ae6:eff6:165c with SMTP id a640c23a62f3a-aec4fc41e91mr497084166b.48.1752831069432;
-        Fri, 18 Jul 2025 02:31:09 -0700 (PDT)
-Received: from ?IPV6:2620:10d:c096:325::1ac? ([2620:10d:c092:600::1:6915])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aec6c7d46ffsm88380066b.42.2025.07.18.02.31.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jul 2025 02:31:08 -0700 (PDT)
-Message-ID: <1fe747ea-56ce-4418-92cb-057d989e3732@gmail.com>
-Date: Fri, 18 Jul 2025 10:32:38 +0100
+	s=arc-20240116; t=1752832507; c=relaxed/simple;
+	bh=ZOpxGvlB4jXA+g08s6brGIOXdPzVhwvsEnSWfq9WdFY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LiXoE9IMgsiwEKmIsqjWdow7EgPfPTos2GVd+uogd9QRBsb70Bh2tYIgJXEjNM1HfJbsdamstfZDrgiqIQ/K8eKAzqiZssbhqwIt3L7JOzmFT4983twuhJZClI28WVH+1rDryR+1Nx3SYGNoOR3uRT+WZAlpOIzdW94KLHXK9IA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qGiQPedG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8901C4CEEB;
+	Fri, 18 Jul 2025 09:55:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752832507;
+	bh=ZOpxGvlB4jXA+g08s6brGIOXdPzVhwvsEnSWfq9WdFY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qGiQPedGYIJQhddVeiLfKZCQ61FNIFbIAGmkvICPdk5FCjrKswrbQ3OUKhH1gsAUM
+	 uztcV1j7faqMlUhC0svXM7alPcYeAknWBiV/sG5tKGv6a7R+j2FP+ZGO/h8tdyDqvY
+	 FkfN0YiWhzU33fEYesDanVP9XU6Xu125sk+3jDEHZEuPZOBuwDzr4VwlCahPBls2nZ
+	 cHqPjkFWvVsMk5TavDpB38V/A+1AQUQBhy0crvSbLPwxMGt7UypXgeec3x07v96yu3
+	 Ou1MzuqkOGi2gKoKNWyWNTXXHntftD/fzFSaz0SWb6E/tN8AaZobtUg4KKf9UsyGzX
+	 frcSvogauAdqg==
+Date: Fri, 18 Jul 2025 11:55:04 +0200
+From: Lorenzo Bianconi <lorenzo@kernel.org>
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: Jakub Kicinski <kuba@kernel.org>,
+	Stanislav Fomichev <stfomichev@gmail.com>, bpf@vger.kernel.org,
+	netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <borkmann@iogearbox.net>,
+	Eric Dumazet <eric.dumazet@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Paolo Abeni <pabeni@redhat.com>, sdf@fomichev.me,
+	kernel-team@cloudflare.com, arthur@arthurfabre.com,
+	jakub@cloudflare.com, Jesse Brandeburg <jbrandeburg@cloudflare.com>
+Subject: Re: [PATCH bpf-next V2 0/7] xdp: Allow BPF to set RX hints for
+ XDP_REDIRECTed packets
+Message-ID: <aHoZ-LtKT9p5FKAD@lore-desk>
+References: <175146824674.1421237.18351246421763677468.stgit@firesoul>
+ <aGVY2MQ18BWOisWa@mini-arch>
+ <b1873a92-747d-4f32-91f8-126779947e42@kernel.org>
+ <aGvcb53APFXR8eJb@mini-arch>
+ <aG427EcHHn9yxaDv@lore-desk>
+ <aHE2F1FJlYc37eIz@mini-arch>
+ <aHeKYZY7l2i1xwel@lore-desk>
+ <20250716142015.0b309c71@kernel.org>
+ <fbb026f9-54cf-49ba-b0dc-0df0f54c6961@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Intel-wired-lan] [PATCH net-next v11 12/12] libeth: xdp: access
- ->pp through netmem_desc instead of page
-From: Pavel Begunkov <asml.silence@gmail.com>
-To: Byungchul Park <byungchul@sk.com>, kernel test robot <lkp@intel.com>
-Cc: willy@infradead.org, netdev@vger.kernel.org,
- oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, kernel_team@skhynix.com, almasrymina@google.com,
- ilias.apalodimas@linaro.org, harry.yoo@oracle.com,
- akpm@linux-foundation.org, andrew+netdev@lunn.ch, toke@redhat.com,
- david@redhat.com, Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
- surenb@google.com, mhocko@suse.com, linux-rdma@vger.kernel.org,
- bpf@vger.kernel.org, vishal.moola@gmail.com, hannes@cmpxchg.org,
- ziy@nvidia.com, jackmanb@google.com, wei.fang@nxp.com, shenwei.wang@nxp.com,
- xiaoning.wang@nxp.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org
-References: <20250717070052.6358-13-byungchul@sk.com>
- <202507180111.jygqJHzk-lkp@intel.com>
- <20250718004346.GA38833@system.software.com>
- <20250718011407.GB38833@system.software.com>
- <35592824-6749-4fa4-89d9-2de9caccc695@gmail.com>
-Content-Language: en-US
-In-Reply-To: <35592824-6749-4fa4-89d9-2de9caccc695@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="8cQoNIRDvDCW5dqT"
+Content-Disposition: inline
+In-Reply-To: <fbb026f9-54cf-49ba-b0dc-0df0f54c6961@kernel.org>
 
-On 7/18/25 10:18, Pavel Begunkov wrote:
-> On 7/18/25 02:14, Byungchul Park wrote:
-...>>>>     include/linux/mm.h:4176:54: note: expected 'struct page *' but argument is of type 'const struct page *'
->>>>      static inline bool page_pool_page_is_pp(struct page *page)
->>>>                                              ~~~~~~~~~~~~~^~~~
->>>
->>> Oh.  page_pool_page_is_pp() in the mainline code already has this issue
->>> that the helper cannot take const struct page * as argument.
-> 
-> Probably not, and probably for wrong reasons. netmem_ref is define
-> as an integer, compilers cast away such const unlike const pointers.
 
-Taking a look libeth, at least at the reported spot it does
-page->pp->p.offset, that should be fine. And your problem
-is caused by the is_pp check in pp_page_to_nmdesc().
+--8cQoNIRDvDCW5dqT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Pavel Begunkov
+>=20
+>=20
+> On 16/07/2025 23.20, Jakub Kicinski wrote:
+> > On Wed, 16 Jul 2025 13:17:53 +0200 Lorenzo Bianconi wrote:
+> > > > > I can't see what the non-redirected use-case could be. Can you pl=
+ease provide
+> > > > > more details?
+> > > > > Moreover, can it be solved without storing the rx_hash (or the ot=
+her
+> > > > > hw-metadata) in a non-driver specific format?
+> > > >=20
+> > > > Having setters feels more generic than narrowly solving only the re=
+direct,
+> > > > but I don't have a good use-case in mind.
+> > > > > Storing the hw-metadata in some of hw-specific format in xdp_fram=
+e will not
+> > > > > allow to consume them directly building the skb and we will requi=
+re to decode
+> > > > > them again. What is the upside/use-case of this approach? (not co=
+nsidering the
+> > > > > orthogonality with the get method).
+> > > >=20
+> > > > If we add the store kfuncs to regular drivers, the metadata  won't =
+be stored
+> > > > in the xdp_frame; it will go into the rx descriptors so regular pat=
+h that
+> > > > builds skbs will use it.
+> > >=20
+> > > IIUC, the described use-case would be to modify the hw metadata via a
+> > > 'setter' kfunc executed by an eBPF program bounded to the NIC and to =
+store
+> > > the new metadata in the DMA descriptor in order to be consumed by the=
+ driver
+> > > codebase building the skb, right?
+> > > If so:
+> > > - we can get the same result just storing (running a kfunc) the modif=
+ied hw
+> > >    metadata in the xdp_buff struct using a well-known/generic layout =
+and
+> > >    consume it in the driver codebase (e.g. if the bounded eBPF program
+> > >    returns XDP_PASS) using a generic xdp utility routine. This part i=
+s not in
+> > >    the current series.
+> > > - Using this approach we are still not preserving the hw metadata if =
+we pass
+> > >    the xdp_frame to a remote CPU returning XDP_REDIRCT (we need to ad=
+d more
+> > >    code)
+> > > - I am not completely sure if can always modify the DMA descriptor di=
+rectly
+> > >    since it is DMA mapped.
+>=20
+> Let me explain why it is a bad idea of writing into the RX descriptors.
+> The DMA descriptors are allocated as coherent DMA (dma_alloc_coherent).
+> This is memory that is shared with the NIC hardware device, which
+> implies cache-line coherence.  NIC performance is tightly coupled to
+> limiting cache misses for descriptors.  One common trick is to pack more
+> descriptors into a single cache-line.  Thus, if we start to write into
+> the current RX-descriptor, then we invalidate that cache-line seen from
+> the device, and next RX-descriptor (from this cache-line) will be in an
+> unfortunate coherent state.  Behind the scene this might lead to some
+> extra PCIe transactions.
+>=20
+> By writing to the xdp_frame, we don't have to modify the DMA descriptors
+> directly and risk invalidating cache lines for the NIC.
+>=20
+> > >=20
+> > > What do you think?
+> >=20
+> > FWIW I commented on an earlier revision to similar effect as Stanislav.
+> > To me the main concern is that we're adding another adhoc scheme, and
+> > are making xdp_frame grow into a para-skb. We added XDP to make raw
+> > packet access fast, now we're making drivers convert metadata twice :/
+>=20
+> Thanks for the feedback. I can see why you'd be concerned about adding
+> another adhoc scheme or making xdp_frame grow into a "para-skb".
+>=20
+> However, I'd like to frame this as part of a long-term plan we've been
+> calling the "mini-SKB" concept. This isn't a new idea, but a
+> continuation of architectural discussions from as far back as [2016].
+>=20
+> The long-term goal, described in these presentations from [2018] and
+> [2019], has always been to evolve the xdp_frame to handle more hardware
+> offloads, with the ultimate vision of moving SKB allocation out of NIC
+> drivers entirely. In the future, the netstack could perform L3
+> forwarding (and L2 bridging) directly on these enhanced xdp_frames
+> [2019-slide20]. The main blocker for this vision has been the lack of
+> hardware metadata in the xdp_frame.
+>=20
+> This patchset is a small but necessary first step towards that goal. It
+> focuses on the concrete XDP_REDIRECT use-case where we can immediately
+> benefit for our production use-case. Storing this metadata in the
+> xdp_frame is fundamental to the plan. It's no coincidence the fields are
+> compatible with the SKB; they need to be.
+>=20
+> I'm certainly open to debating the bigger picture, but I hope we can
+> agree that it shouldn't hold up this first step, which solves an
+> immediate need. Perhaps we can evaluate the merits of this specific
+> change first, and discuss the overall architecture in parallel?
 
+Considering the XDP_REDIRECT use-case, this series will allow us (in the
+future) to avoid recomputing the packet checksum redirecting the frame into
+a veth and then into a container, obtaining a significant performance
+improvement.
+
+Regarding,
+Lorenzo
+
+>=20
+> --Jesper
+>=20
+>=20
+> Links:
+> ------
+> [2019] XDP closer integration with network stack
+>  - https://people.netfilter.org/hawk/presentations/KernelRecipes2019/xdp-=
+netstack-concert.pdf
+>  - https://github.com/xdp-project/xdp-project/blob/main/conference/Kernel=
+Recipes2019/xdp-netstack-concert.org#slide-move-skb-allocations-out-of-nic-=
+drivers
+>  - [2019-slide20] https://github.com/xdp-project/xdp-project/blob/main/co=
+nference/KernelRecipes2019/xdp-netstack-concert.org#slide-fun-with-xdp_fram=
+e-before-skb-alloc
+>=20
+> [2018] LPC Networking Track: XDP - challenges and future work
+>  - https://people.netfilter.org/hawk/presentations/LinuxPlumbers2018/
+>  - https://github.com/xdp-project/xdp-project/blob/main/conference/LinuxP=
+lumbers2018/presentation-lpc2018-xdp-future.org#topic-moving-skb-allocation=
+-out-of-driver
+>=20
+> [2016] Network Performance Workshop
+>  - https://people.netfilter.org/hawk/presentations/NetDev1.2_2016/net_per=
+formance_workshop_netdev1.2.pdf
+
+--8cQoNIRDvDCW5dqT
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCaHoZ+AAKCRA6cBh0uS2t
+rLDFAQCbmijHuCrJlWVOiBF0P7vNUUI/egbAkiNHuJEaxSUMVAD8DyOMQMEtMzwX
+1P2Buyv3O3D2WvXpB3UPwcUzFt+KSA4=
+=mc7P
+-----END PGP SIGNATURE-----
+
+--8cQoNIRDvDCW5dqT--
 
