@@ -1,167 +1,159 @@
-Return-Path: <bpf+bounces-63755-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63756-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D827B0A8FC
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 19:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C9C4B0A988
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 19:30:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF3B856063B
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 17:00:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 588D016E63B
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 17:30:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFB262E7171;
-	Fri, 18 Jul 2025 17:00:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4677B2E7BAB;
+	Fri, 18 Jul 2025 17:30:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nyjyMO/U"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="k0GOq3HM"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EB042E6D0C;
-	Fri, 18 Jul 2025 17:00:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 029391DF759
+	for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 17:30:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752858003; cv=none; b=DF3woJ6mIphPxRG1go2X7eW2X2zKlPYcUI+MyYfKLrOPtKEGydDKrtabP3/SUW1FiZOciQY7Igk1ysqf4YsqYNbeA025JxvRtgrKfMOyz206NS/V6MewpA2iXY3QvOA6/eVoCT6QIDaGxYMr2tVxDxEaCPC6kits5ykXQkwgTz4=
+	t=1752859818; cv=none; b=EIHc/lF/dp7SCbqz3qxQGmKCGYLL+SQflkHvZ9nGe7oh5YbWdtzEgiLY6LUyB3+G+VoYbdRradupnqWNaoj3v+dc5bZLLQgMJHi3pN+lmNELUTo4UFil9lpPyGTkKnnPge1A23UEspWs3C0lzmCIv0nJkbZPE+n7ev4kn+uN+yo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752858003; c=relaxed/simple;
-	bh=W8t2koyJaLZ0JVX3vE0SM1n+BlRW5WXxbRMRDeUKeho=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mnBr5giqlFNla9STzXeQ6fGrP3GRTZAf+MWIrgYtDRpDnT8NOhpNkWJqeEhL2ebnzEfe6XQDQxfKeXZ1jsJRRVMn7LMAsE+ujbHQz8QTkl9HdixBbHXU0/Zfz4bqPpATI/t7SO+BW7gGGb9TBb4t2xPoX7DbYx9q3UYAMKCLa6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nyjyMO/U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DAAEC4CEEB;
-	Fri, 18 Jul 2025 17:00:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752858003;
-	bh=W8t2koyJaLZ0JVX3vE0SM1n+BlRW5WXxbRMRDeUKeho=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nyjyMO/U4AOcZ5FiPo2kAvehkOrhceb+dLNPToeAHAtFe+iWzwTApDQs+rMZYLlwt
-	 YulTf7jRbvvH/SloIfDPEyzq9xidtthHrwngAZWUzKqZMut9rslgyZohR1OEfV7Ru9
-	 OirTfvVGP9FY/b4iGd96Me65dtz2huk0t+3dGW09oLgZ2EyrVsV1EUh8e72AA2kOy7
-	 YuerM2aadCH4ms8HYKmqWPoVLwoJXS+mtdyki/s3YRn4z1OG2W9NAtUXup6A2O5W/m
-	 XEIKLoSfUPQxY18ygr3FpHdq6YtdbrJHkQFfKi10rGUtYCPGDer6rK2TxfAL84Xkdj
-	 tDg6FIppgcy8g==
-Date: Fri, 18 Jul 2025 09:59:59 -0700
-From: Josh Poimboeuf <jpoimboe@kernel.org>
-To: Jens Remus <jremus@linux.ibm.com>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, x86@kernel.org, Steven Rostedt <rostedt@kernel.org>, 
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Ilya Leoshkevich <iii@linux.ibm.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, 
-	Indu Bhagat <indu.bhagat@oracle.com>, "Jose E. Marchesi" <jemarch@gnu.org>, 
-	Beau Belgrave <beaub@linux.microsoft.com>, Linus Torvalds <torvalds@linux-foundation.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>, 
-	Florian Weimer <fweimer@redhat.com>, Sam James <sam@gentoo.org>
-Subject: Re: [RFC PATCH v1 07/16] unwind_user: Enable archs that do not
- necessarily save RA
-Message-ID: <v6gwx63cd5divimoadofeuz2vn72uw7zrlcjacufaedeuxbvjc@qmobatrxo66u>
-References: <20250710163522.3195293-1-jremus@linux.ibm.com>
- <20250710163522.3195293-8-jremus@linux.ibm.com>
- <xgbpe46th7rbpslybo5xdt57ushlgwr5xyrq4epuft5nfrqms3@izeojto3wzu4>
- <b5121d71-f916-45ea-9e6c-b74a27f90dcd@linux.ibm.com>
- <fb9ee560-d449-4d46-9fb1-19780ff28e65@linux.ibm.com>
+	s=arc-20240116; t=1752859818; c=relaxed/simple;
+	bh=GQJLQRp6wR0E+oqpeGWe0eJScNcdbrpnD/j+pa2qtoQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CHuZnnvJGrJ+hMcjJe+t2zvqjWeovhqcnUX9/RbvkD5q8M6WUUNGMz3aLPBkLaus94iHzrk4Lfo31xtexZy4xSmtQI6w+/YFc/Rlf6n5L1cnANVKTYiKQyzYGgkMxKI19ORJT48U1oyIShY1gbo6PcDO8LVB0voV92TOg/EySV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=k0GOq3HM; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1752859805;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=1qNW6csArfqmL300w4UUL/cdLHtMm0ChRs8zkgA/5EY=;
+	b=k0GOq3HMzK2rMNk0WPSsnkw0v6KgzeZJpVIY0KFoItiQFHfyO2gYKKzUrOBTSi/1qAB4n0
+	06nZbzAWABvX058GHIhY9OSBAraTDmur1xnU8V/YVlCydg+d57fA0TYHfXcwc0QnRicM45
+	XirXGlR2J6/vWK55FY2fyCvxfmyTNBg=
+From: Tao Chen <chen.dylane@linux.dev>
+To: pablo@netfilter.org,
+	kadlec@netfilter.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	ast@kernel.org,
+	fw@strlen.de
+Cc: netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	Tao Chen <chen.dylane@linux.dev>,
+	syzbot+92c5daf9a23f04ccfc99@syzkaller.appspotmail.com
+Subject: [PATCH bpf-next] netfilter: bpf: Disable migrate before bpf_prog run
+Date: Sat, 19 Jul 2025 01:27:46 +0800
+Message-ID: <20250718172746.1268813-1-chen.dylane@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <fb9ee560-d449-4d46-9fb1-19780ff28e65@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Jul 18, 2025 at 10:28:32AM +0200, Jens Remus wrote:
-> On 17.07.2025 13:09, Jens Remus wrote:
-> > On 17.07.2025 01:01, Josh Poimboeuf wrote:
-> >> On Thu, Jul 10, 2025 at 06:35:13PM +0200, Jens Remus wrote:
-> >>> +++ b/arch/Kconfig
-> >>> @@ -450,6 +450,11 @@ config HAVE_UNWIND_USER_SFRAME
-> >>>  	bool
-> >>>  	select UNWIND_USER
-> >>>  
-> >>> +config HAVE_USER_RA_REG
-> >>> +	bool
-> >>> +	help
-> >>> +	  The arch passes the return address (RA) in user space in a register.
-> >>
-> >> How about "HAVE_UNWIND_USER_RA_REG" so it matches the existing
-> >> namespace?
-> > 
-> > Ok.  I am open to any improvements.
-> 
-> Thinking about this again I realized that the config option actually
-> serves two purposes:
-> 
-> 1. Enable code (e.g. unwind user) to determine the presence of the new
->    user_return_address().  That is where I derived the name from.
-> 2. Enable unwind user (sframe) to behave differently, if an architecture
->    has/uses a RA register (unlike x86, which solely uses the stack).
+syzkaller reported an issue:
 
-The sframe CONFIG_HAVE_USER_RA_REG check is redundant with the
-unwind_user one, no?  I'm thinking it's better for sframe to just decode
-the entry as it is, and then let unwind_user validate things.
+BUG: assuming non migratable context at ./include/linux/filter.h:703
+in_atomic(): 0, irqs_disabled(): 0, migration_disabled() 0 pid: 5829, name: sshd-session
+3 locks held by sshd-session/5829:
+ #0: ffff88807b4e4218 (sk_lock-AF_INET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1667 [inline]
+ #0: ffff88807b4e4218 (sk_lock-AF_INET){+.+.}-{0:0}, at: tcp_sendmsg+0x20/0x50 net/ipv4/tcp.c:1395
+ #1: ffffffff8e5c4e00 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire include/linux/rcupdate.h:331 [inline]
+ #1: ffffffff8e5c4e00 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock include/linux/rcupdate.h:841 [inline]
+ #1: ffffffff8e5c4e00 (rcu_read_lock){....}-{1:3}, at: __ip_queue_xmit+0x69/0x26c0 net/ipv4/ip_output.c:470
+ #2: ffffffff8e5c4e00 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire include/linux/rcupdate.h:331 [inline]
+ #2: ffffffff8e5c4e00 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock include/linux/rcupdate.h:841 [inline]
+ #2: ffffffff8e5c4e00 (rcu_read_lock){....}-{1:3}, at: nf_hook+0xb2/0x680 include/linux/netfilter.h:241
+CPU: 0 UID: 0 PID: 5829 Comm: sshd-session Not tainted 6.16.0-rc6-syzkaller-00002-g155a3c003e55 #0 PREEMPT(full)
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x16c/0x1f0 lib/dump_stack.c:120
+ __cant_migrate kernel/sched/core.c:8860 [inline]
+ __cant_migrate+0x1c7/0x250 kernel/sched/core.c:8834
+ __bpf_prog_run include/linux/filter.h:703 [inline]
+ bpf_prog_run include/linux/filter.h:725 [inline]
+ nf_hook_run_bpf+0x83/0x1e0 net/netfilter/nf_bpf_link.c:20
+ nf_hook_entry_hookfn include/linux/netfilter.h:157 [inline]
+ nf_hook_slow+0xbb/0x200 net/netfilter/core.c:623
+ nf_hook+0x370/0x680 include/linux/netfilter.h:272
+ NF_HOOK_COND include/linux/netfilter.h:305 [inline]
+ ip_output+0x1bc/0x2a0 net/ipv4/ip_output.c:433
+ dst_output include/net/dst.h:459 [inline]
+ ip_local_out net/ipv4/ip_output.c:129 [inline]
+ __ip_queue_xmit+0x1d7d/0x26c0 net/ipv4/ip_output.c:527
+ __tcp_transmit_skb+0x2686/0x3e90 net/ipv4/tcp_output.c:1479
+ tcp_transmit_skb net/ipv4/tcp_output.c:1497 [inline]
+ tcp_write_xmit+0x1274/0x84e0 net/ipv4/tcp_output.c:2838
+ __tcp_push_pending_frames+0xaf/0x390 net/ipv4/tcp_output.c:3021
+ tcp_push+0x225/0x700 net/ipv4/tcp.c:759
+ tcp_sendmsg_locked+0x1870/0x42b0 net/ipv4/tcp.c:1359
+ tcp_sendmsg+0x2e/0x50 net/ipv4/tcp.c:1396
+ inet_sendmsg+0xb9/0x140 net/ipv4/af_inet.c:851
+ sock_sendmsg_nosec net/socket.c:712 [inline]
+ __sock_sendmsg net/socket.c:727 [inline]
+ sock_write_iter+0x4aa/0x5b0 net/socket.c:1131
+ new_sync_write fs/read_write.c:593 [inline]
+ vfs_write+0x6c7/0x1150 fs/read_write.c:686
+ ksys_write+0x1f8/0x250 fs/read_write.c:738
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xcd/0x4c0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7
 
-> I think the primary notion is that an architecture has/uses a register
-> for the return address and thus provides user_return_address().  What
-> consumers such as unwind user do with that info is secondary.
-> 
-> Thoughts?
+The cant_migrate() check in __bpf_prog_run requires to disable
+migrate before running the bpf_prog, it seems that migrate is
+not disabled in the above execution path.
 
-user_return_address() only has the single user, and is not all that
-generically useful anyway (e.g., it warns on x86), so let's keep it
-encapsulated in include/linux/unwind_user.h and give it the
-"unwind_user" prefix.
+Fixes: fd9c663b9ad6 ("bpf: minimal support for programs hooked into netfilter framework")
+Reported-by: syzbot+92c5daf9a23f04ccfc99@syzkaller.appspotmail.com
+Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+---
+ net/netfilter/nf_bpf_link.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-Also, "RA_REG" is a bit ambiguous, it sounds almost like that other
-option which spills RA to another register.  Conceptually, it's a link
-register, so can we rename that to CONFIG_HAVE_UNWIND_USER_LINK_REG and
-unwind_user_get_link_reg() or so?
-
-Similarly, CONFIG_HAVE_UNWIND_USER_LOC_REG isn't that descriptive, how
-about CONFIG_HAVE_UNWIND_USER_LINK_REG_SPILL?
-
-Also we can get rid of the '#define func_name func_name' things and just
-guard those functions with their corresponding CONFIG options in
-inclide/linux/unwind_user.h.
-
-Also those two functions should have similar naming and prototypes.
-
-For example, in include/linux/unwind_user.h:
-
-#ifndef CONFIG_HAVE_UNWIND_USER_LINK_REG
-int unwind_user_get_link_reg(unsigned long *val)
-{
-	WARN_ON_ONCE(1);
-	return -EINVAL;
-}
-#endif
-
-#ifndef CONFIG_HAVE_UNWIND_USER_LINK_REG_SPILL
-int unwind_user_get_reg(unsigned long *val, unsigned int regnum)
-{
-	WARN_ON_ONCE(1);
-	return -EINVAL;
-}
-#endif
-
-Then the code can be simplified (assuming no topmost checks):
-
-	/* Get the Return Address (RA) */
-	switch (frame->ra.loc) {
-	case UNWIND_USER_LOC_NONE:
-		if (unwind_user_get_link_reg(&ra))
-			goto done;
-		break;
-	...
-	case UNWIND_USER_LOC_REG:
-		if (unwind_user_get_reg(&ra, frame->ra.regnum))
-			goto done;
-		break;
-	...
-
+diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
+index a054d3b216d..b6ed1b844cc 100644
+--- a/net/netfilter/nf_bpf_link.c
++++ b/net/netfilter/nf_bpf_link.c
+@@ -11,13 +11,18 @@
+ static unsigned int nf_hook_run_bpf(void *bpf_prog, struct sk_buff *skb,
+ 				    const struct nf_hook_state *s)
+ {
++	u32 ret;
+ 	const struct bpf_prog *prog = bpf_prog;
+ 	struct bpf_nf_ctx ctx = {
+ 		.state = s,
+ 		.skb = skb,
+ 	};
+ 
+-	return bpf_prog_run(prog, &ctx);
++	migrate_disable();
++	ret = bpf_prog_run(prog, &ctx);
++	migrate_enable();
++
++	return ret;
+ }
+ 
+ struct bpf_nf_link {
 -- 
-Josh
+2.48.1
+
 
