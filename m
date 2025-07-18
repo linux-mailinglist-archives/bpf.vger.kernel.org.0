@@ -1,80 +1,80 @@
-Return-Path: <bpf+bounces-63701-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63702-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78B5AB09EFE
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 11:17:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88B36B09FD8
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 11:34:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7FE47B2436
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 09:15:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DF27A86F4F
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 09:32:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB10C2980A4;
-	Fri, 18 Jul 2025 09:17:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89F5E223710;
+	Fri, 18 Jul 2025 09:31:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="co4gKkvF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TojAV+ph"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C91C8207DF7;
-	Fri, 18 Jul 2025 09:17:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64DF9221FBA;
+	Fri, 18 Jul 2025 09:31:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752830236; cv=none; b=H6EG8QJ7ufWd2oGwCmvx/l75LbTFJi5mqecrxGPIud6ooLnMedb+atQRTo2SP2WYXXpSF9/WBdZYMNWM0vdGtb1HCYTPzPZvm7yvvVshqR8/JKfUfXaJWQP9cybr+x9rkvIP43ihl5CmhMywCvz1syV7NiPooAj4NCCYxFMFImk=
+	t=1752831073; cv=none; b=Bo/CiFEVR9s6rhU36hddroU5LMbjhdoUBYvF7oG5z449MZ8O1ICTSosKVnxLqMLN8TB7yqo9DVtUYeyK+iYiyxIOsgjdDr+knfafJZxJv4TFxcnwaXeZrKLgEkLHfHCZuyPsg0WTaHoxCq/R4uhA62O3ydEmNh3nzEJu6YolvHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752830236; c=relaxed/simple;
-	bh=Fw3ZT2waXkd52WH6dSOHrXUL1IonLYSsmY5LPvFE23I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=srpsS2mSSVkSeVweHjz6NjoZfJ/z7CcivcnABEm1WNpXFCQ1wrmODm6wwAr8EHuHa7zUnLKWHmS+A8LVV0qDaEa54tJE1aZFtXeN20hSBbzFc8WvAhBpSV24nD/BeYpgG/MFQ10JUg/w9Q2OGNaH1N55cIFoh/uTlAPWzEbOW9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=co4gKkvF; arc=none smtp.client-ip=209.85.208.45
+	s=arc-20240116; t=1752831073; c=relaxed/simple;
+	bh=bhe0zcLGy5GklMgwNIQG4xyAuKnkHHvNVTH7d7Uwzqs=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=q/7s1MlWFbFrqKG1so033sfP0hTdPF8fhMcAUZ7nuQFpfUjFuSBTJ5Jx+VL/6hmkcYbkje4Q6CpqUsQbFjAVDf36sPQeZnMPp/iL+n0c6Yv8Ru14kiHYC0vLoolJbzJfFRZl+CjlZ8q5ylw7dcdSjImSzq3kz/KEVJvo4G33ahE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TojAV+ph; arc=none smtp.client-ip=209.85.218.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-605b9488c28so3057092a12.2;
-        Fri, 18 Jul 2025 02:17:14 -0700 (PDT)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-ae0e0271d82so335662866b.3;
+        Fri, 18 Jul 2025 02:31:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752830233; x=1753435033; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DQt5WkoSDJsxA1BJMl3UO35qCdstjQjYzU9xXXTDo18=;
-        b=co4gKkvF6inHK98b6s4f5uK6YO3m/VlU3WN+2+qQaudKb2ZIxxPN0sbC/QV53HAj6l
-         gMcKptL1JI7ssi3rlPBVp6M8deZJ8CmtZfzVjyb6i85X5aIy+LBc5DIlhC4S34KXS7cL
-         54Xe903ECJBJZx9oRs/egbRTKWpLWzCMAY5MWJu/gb2tGjwkbQ4Rh+XcQoIQtp8Hiq2J
-         1uu0v8S6tY3hSysBAI9wv97vcvjQhbuXRivqMunzLaK/PkSn0sbQvLeKEYfziEar7n+w
-         /c1kyV7MxHBRyHAzFw4LQ3se4Dyu+r5rMSDZ1cqK4BdtK4YDdSmz8esT4dXMf/1NUR9t
-         o2ug==
+        d=gmail.com; s=20230601; t=1752831070; x=1753435870; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=XjU6nrqfbiw0u0TIKCSt6roZUluHkikf0/decEoYNJE=;
+        b=TojAV+phUnHpE12r/iHX2Yz5o1m1dHl06PQjdp9hkZkG2NK8Esx77EPg0wLlqaUxNu
+         tctMMIYbwuUc5YcXn10of94ELvmSnWF338zsp2WSdV2oYBDCCwDotnPBWqzBGfK//lHF
+         Cykj6z0MeXOxzYbxAHH7c8PoMEFwGx8aoREWzwvs2qwPeO6g2eYZlzNuh0X6yQk2VTbq
+         Bec6zemUETdlEU70WqC35z1TCAU26n7irzebZIScMGDHAuvzVhM1Y2YneCqx4hlfNrZD
+         ACWuT5e854cuKEIcIftQaZTO0y8UeXbzC2dyW1o2yjP9cBggKn9yiy/N/lYlmpK+S+DI
+         ovXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752830233; x=1753435033;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1752831070; x=1753435870;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DQt5WkoSDJsxA1BJMl3UO35qCdstjQjYzU9xXXTDo18=;
-        b=HZyWxmL4kOi98ZrBEgQvNAD6hDRuoijr7jg5/96itIpBP+Yg4e2Ni/iEWCvL57svkI
-         v5398MpVnWdTPB1+y8/t2r0QdT2D6YpLLT3/lbEI7RVJQibv3jcxU9eYWoO6GWYzu9Ls
-         Z9Y3duEhfefyfNiWuNMNcXCzScC3E4oeUpekaq2IijwDDD3wy/HijWx+f5pNKcHnm4qt
-         YQPQN9gVOPfiKs0XKHaH39hnZI8Uwm8pwj4yoNwLB5tVegdfLaSU2OvdXtD+LtD9waX9
-         LVPxuluSVBh52RrH0VOkgoqKMGalvVf1nyj3Bpj+U0X1XkhTpAsLj9WXoZegkeBAWPz4
-         zpyA==
-X-Forwarded-Encrypted: i=1; AJvYcCU7UpcD6ibzjDV10GBP9gyf4QI9TNFgjlDBBnyh7q9glcCA/d1zcfQppZsm33yScTmU3+eOtfrHErYDgQ==@vger.kernel.org, AJvYcCWs/QfPI+CJgJp6VzbFdsUo3lL/961vDNTgfi0NxriDqKLK7OZf+I+FpA7nIdBwPNMwO7QlnvfR@vger.kernel.org, AJvYcCWzC63zWMekgjcF9nQPYkrxbcHOaQM8C5zrV/Xt1FTDJdReeHC7dVAFImdlqtjMgj5uEoH+jtoPJOFkEbQw@vger.kernel.org, AJvYcCXo0Y0u1sqz6ekt7kPnaqyJ/krtMaIFLEEery1NAPNAJMsWF9hiRW9Lol0eFOk6raoE9rw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyBzZzDBc/YY6FKzVawFvMXwygXevirdoxgLb2JNddaWFv7Sbmd
-	QSP/DRb8sQswCw1hNt0xXgiXenmZUJT3Q4p3V7MMZRvH+ATDPmHrnfJt
-X-Gm-Gg: ASbGnctGe01sEjlSPl6OW8FESmC6MNEjCeT/gYIGr+WXDOnonvQ9sdqFqt7nfXIxvOB
-	/MAV8wl8h5zvSgixZJHFf3JDWBOKnZNSHKHa4lGW+C/CH2FZrQB3rzW2mlnvZ6/ZyjGk2MWqb7r
-	hv8fNh4liMvrMIivpB/2V+n5EIbOnhPmIRfM4kMlxuIikRflvGLU0eCWsv9lLU9KEUyhR1NC5nH
-	qXcz6mCRXyX70mPF4/7jojBdq6QYxckSg2YxWnQNlhkbNHe3domBwH/hg9d8zjnlyL4LYzNk0/z
-	QQHVxqxexfak6lWRUOCAblkK3L9KTN3w9GE0/+zLMynCIgf4CbCWQ1ls50S1hLIPIkI26egXWRA
-	muLwnmKVBsE9B3fM/FDcww0b/m+UD8CTkZ1Y=
-X-Google-Smtp-Source: AGHT+IHJ6Qkjj0/27EzE9VVfOI7xbm7fY60xnb0OKnLRmHC6l4c5UZ1MzUN+MM+C38ZmrD/ZAYQsDw==
-X-Received: by 2002:a17:907:7f24:b0:adb:229f:6b71 with SMTP id a640c23a62f3a-ae9cddb1d86mr1032671266b.5.1752830232698;
-        Fri, 18 Jul 2025 02:17:12 -0700 (PDT)
+        bh=XjU6nrqfbiw0u0TIKCSt6roZUluHkikf0/decEoYNJE=;
+        b=Euh1x1iLF0m9JyM7qRzEDe+SWE9ug6FCDU+3HZH1fkeigc+qn3VVuuQeTjzvy2c5bb
+         GnliDKlmTl7cjHzkUzKMrcMuygYDYAlLzdGQKafRrK1x6LNxP2t7GK8bc7nouR9gck/e
+         pQLzl+fY8Fc7XYGefyrq0de1cN4t9Ik1ex+jsaQUQrMEm8dbiem9k3maQ8BdXfaw6RaL
+         HD3JX7jk3b0QyWT8gEP1LydDzHc8kzNMSDZ4mhpZWJeqQfH5aUnoCD67osNr0z2TMOT2
+         f20ecTPtHjaT/FMTIobJ4OeSfG/eK4kuLaE7OfFqFtDZoHVhhUc+wYuCnNxyf/Yfc8tO
+         hs5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV/SEAb1QSTRVTYxTZvGtYnYSAf60PTNrci+hYHVK3IjtbqHb5gcQirYD/Z6R5C9j4lsJiUuct9@vger.kernel.org, AJvYcCVpN5zFb68TecQJMhzZ9P9OMHeAHaZMyW7uUF+kLJkHKpPVX9PbQwW8QKbDbFeapdImwXs=@vger.kernel.org, AJvYcCWX+X9G4DBg0C7GZslYMkEAYAKARDmAxdpsZ9sMnL19hX/7CsWl6kUO8UmxPdTbsyR7emWOlQTXKpirIfS/@vger.kernel.org, AJvYcCXbl/HMjIGDgCSL89VU0iGPIvzbLfsROUEdinG0vv2wuYirBuFqZX0i/anxO06aEzfbRoUGmUqc6fovRg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyDGTrJhIRmvcomt9EktZGqAbxKu1DGpK1S5kkZRpViYHVJntym
+	f/wrs8CrFnoUGHny3CrMpYydsEGjV/ctgiQvd8g40uDWuOvLDRYjNo/x
+X-Gm-Gg: ASbGncu4GzhQS4NUzkjM1GbBgR8LSf6pVr37zAFrm/VXU8XP0yFupWE2G5/NDFdSkV1
+	M2dk1H9L/gN2XbLj9gkfvPxawTtLK5+G3sNGFcPV985Fyng1qEjnoC7oa/HXEc+RiKsPcD105Pk
+	mFriq+zZj8xxk0lmbHg22q5MV9BjBY0pWRZPIcsVAgPFLyjnQ/0+EeHB/FkjBFyhBv4eByxm/rA
+	Yj8prI9q7jxpZKt3tibWAAnJ+kxrJDQ9kwVmTj/SqqYLb7oiUFoaHYQlMh20+NMWrhEVqCs4PXK
+	FqiCw2Z0IWF3RB+2gDelllKrkCcEBQNP6gIk0rYpU1sR25jsP7XoS/hOuskCem6U4xpafnCktXn
+	Rr3b1mnw7NXefI7NN3n549vBK90nVoS/gwhU=
+X-Google-Smtp-Source: AGHT+IFIqad+0hlUN3zY87QsZXaNiyLAJ+x0TZ9qnNxIHZCIsq6bsPaf5QF99Ci+hSan+dVtZ2on2A==
+X-Received: by 2002:a17:907:990c:b0:ae6:eff6:165c with SMTP id a640c23a62f3a-aec4fc41e91mr497084166b.48.1752831069432;
+        Fri, 18 Jul 2025 02:31:09 -0700 (PDT)
 Received: from ?IPV6:2620:10d:c096:325::1ac? ([2620:10d:c092:600::1:6915])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aec6cadd8c7sm84561966b.155.2025.07.18.02.17.10
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aec6c7d46ffsm88380066b.42.2025.07.18.02.31.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jul 2025 02:17:11 -0700 (PDT)
-Message-ID: <35592824-6749-4fa4-89d9-2de9caccc695@gmail.com>
-Date: Fri, 18 Jul 2025 10:18:41 +0100
+        Fri, 18 Jul 2025 02:31:08 -0700 (PDT)
+Message-ID: <1fe747ea-56ce-4418-92cb-057d989e3732@gmail.com>
+Date: Fri, 18 Jul 2025 10:32:38 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -84,6 +84,7 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [Intel-wired-lan] [PATCH net-next v11 12/12] libeth: xdp: access
  ->pp through netmem_desc instead of page
+From: Pavel Begunkov <asml.silence@gmail.com>
 To: Byungchul Park <byungchul@sk.com>, kernel test robot <lkp@intel.com>
 Cc: willy@infradead.org, netdev@vger.kernel.org,
  oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
@@ -100,63 +101,27 @@ References: <20250717070052.6358-13-byungchul@sk.com>
  <202507180111.jygqJHzk-lkp@intel.com>
  <20250718004346.GA38833@system.software.com>
  <20250718011407.GB38833@system.software.com>
+ <35592824-6749-4fa4-89d9-2de9caccc695@gmail.com>
 Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <20250718011407.GB38833@system.software.com>
+In-Reply-To: <35592824-6749-4fa4-89d9-2de9caccc695@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 7/18/25 02:14, Byungchul Park wrote:
-...>>>
->>>     In file included from include/linux/container_of.h:5,
->>>                      from include/linux/list.h:5,
->>>                      from include/linux/timer.h:5,
->>>                      from include/linux/netdevice.h:24,
->>>                      from include/trace/events/xdp.h:8,
->>>                      from include/linux/bpf_trace.h:5,
->>>                      from include/net/libeth/xdp.h:7,
->>>                      from drivers/net/ethernet/intel/libeth/tx.c:6:
->>>     include/net/libeth/xdp.h: In function 'libeth_xdp_prepare_buff':
->>>>> include/net/libeth/xdp.h:1295:23: warning: passing argument 1 of 'page_pool_page_is_pp' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
->>>          pp_page_to_nmdesc(page)->pp->p.offset, len, true);
->>>                            ^~~~
->>>     include/linux/build_bug.h:30:63: note: in definition of macro 'BUILD_BUG_ON_INVALID'
->>>      #define BUILD_BUG_ON_INVALID(e) ((void)(sizeof((__force long)(e))))
->>>                                                                    ^
->>>     include/net/netmem.h:301:2: note: in expansion of macro 'DEBUG_NET_WARN_ON_ONCE'
->>>       DEBUG_NET_WARN_ON_ONCE(!page_pool_page_is_pp(p));  \
->>>       ^~~~~~~~~~~~~~~~~~~~~~
->>>     include/net/libeth/xdp.h:1295:5: note: in expansion of macro 'pp_page_to_nmdesc'
->>>          pp_page_to_nmdesc(page)->pp->p.offset, len, true);
->>>          ^~~~~~~~~~~~~~~~~
->>>     In file included from arch/arm/include/asm/cacheflush.h:10,
->>>                      from include/linux/cacheflush.h:5,
->>>                      from include/linux/highmem.h:8,
->>>                      from include/linux/bvec.h:10,
->>>                      from include/linux/skbuff.h:17,
->>>                      from include/net/net_namespace.h:43,
->>>                      from include/linux/netdevice.h:38,
->>>                      from include/trace/events/xdp.h:8,
->>>                      from include/linux/bpf_trace.h:5,
->>>                      from include/net/libeth/xdp.h:7,
->>>                      from drivers/net/ethernet/intel/libeth/tx.c:6:
->>>     include/linux/mm.h:4176:54: note: expected 'struct page *' but argument is of type 'const struct page *'
->>>      static inline bool page_pool_page_is_pp(struct page *page)
->>>                                              ~~~~~~~~~~~~~^~~~
->>
->> Oh.  page_pool_page_is_pp() in the mainline code already has this issue
->> that the helper cannot take const struct page * as argument.
+On 7/18/25 10:18, Pavel Begunkov wrote:
+> On 7/18/25 02:14, Byungchul Park wrote:
+...>>>>     include/linux/mm.h:4176:54: note: expected 'struct page *' but argument is of type 'const struct page *'
+>>>>      static inline bool page_pool_page_is_pp(struct page *page)
+>>>>                                              ~~~~~~~~~~~~~^~~~
+>>>
+>>> Oh.  page_pool_page_is_pp() in the mainline code already has this issue
+>>> that the helper cannot take const struct page * as argument.
+> 
+> Probably not, and probably for wrong reasons. netmem_ref is define
+> as an integer, compilers cast away such const unlike const pointers.
 
-Probably not, and probably for wrong reasons. netmem_ref is define
-as an integer, compilers cast away such const unlike const pointers.
-
->> How should we resolve the issue?  Changing page_pool_page_is_pp() to
->> macro and using _Generic again looks too much.  Or should we?  Any idea?
-
-page_pool_page_is_pp() doesn't change the page, just make the
-argument const.
-
-bool page_pool_page_is_pp(const struct page *page)
+Taking a look libeth, at least at the reported spot it does
+page->pp->p.offset, that should be fine. And your problem
+is caused by the is_pp check in pp_page_to_nmdesc().
 
 -- 
 Pavel Begunkov
