@@ -1,168 +1,336 @@
-Return-Path: <bpf+bounces-63778-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63779-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7BF5B0AC72
-	for <lists+bpf@lfdr.de>; Sat, 19 Jul 2025 01:05:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F284B0AC75
+	for <lists+bpf@lfdr.de>; Sat, 19 Jul 2025 01:08:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2CBA01C2645E
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 23:05:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D43D51C2655A
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 23:08:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FDAC1E8322;
-	Fri, 18 Jul 2025 23:05:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D136B22759D;
+	Fri, 18 Jul 2025 23:08:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Fa4AJsKw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NOXrmIGW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DA48222578
-	for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 23:05:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E00E7D098;
+	Fri, 18 Jul 2025 23:08:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752879909; cv=none; b=HlPjghBLqe5O3AtMRR1sKReg1CBjKGpXT/iTcLjen95fbE3I+q7Vh+Ky+oHC1+etB9rOaxazwbyFA2UpUZUzGc0xgjkPutYAU/OC78KGSuhsWPwD7gS0dVKaN+0z5lfuRosBSseo1RWEUq8KmmRhVuNgDfCmxOOMSMxPWU3lrmQ=
+	t=1752880101; cv=none; b=Yj25bY8Q+xlkGfYyN+VpYDRsC8ccwfz4iuMLRotl0A1wB8st55DQXwd51NSEMHHMhKxaIXR9rd/NInuox0VFMFuE8VP+sXDllBgQFdyqp4NsqZy6oQDVdo2nGa4vFTv0pkXen3qVMvnKqZukHWfjk3xOT0YZOPm4CDdtyyHF6GM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752879909; c=relaxed/simple;
-	bh=H40tep0Rv0U6gqMR0evT7Pj2Me2Gk77w4/2xIDdHb+A=;
+	s=arc-20240116; t=1752880101; c=relaxed/simple;
+	bh=v5sa0Ubz/eBPiv6tbC6mxL8Iy5Y5ms6q627orkUvUbw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qeqpwWdPolMqXUWym8L/8KtQSj/p+p2Ii0Ed2JebX8rpk4K8YuARuoBhGGHPJ34/0a7/PzZqwv7kxeHjc7L0d/u0SaXYgSwMly5Se09mfOq1xyelKVl8JPCG9+amebMd9czLbIjfcaQnb9X6J6/6XW6/qzVYht8xtXkbvak9uhY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Fa4AJsKw; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-60c60f7eeaaso4454414a12.0
-        for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 16:05:06 -0700 (PDT)
+	 To:Cc:Content-Type; b=Pn06LuohGHbNDs7E69stipAvggWLOmXHubvVimW8M49DXR0z8kXultT5AuBP5nNxZsqEQSbop76khOy/1vM/ntCZ8e/VQD3K3Bu5/C+QKMNLmqSN+haePrDAokdsE+FQUEDlUohWi71gTo1HgSb+gzjrh078c2zfgMfadUNRAQM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NOXrmIGW; arc=none smtp.client-ip=209.85.160.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-4aba19f4398so34385151cf.1;
+        Fri, 18 Jul 2025 16:08:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1752879905; x=1753484705; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=p0G8yeUdMDA9tVTNUd0r33p22vJCTOHruEzV0haxXnE=;
-        b=Fa4AJsKwQCE3RO4IY2jB6MGjunRv8OrwVviE2uKJ/1veN9Ivf594SCUUH8NSmmhjXz
-         kTuN9P3qVcaBnJGsMQidK5X8XQGPJgU4XoMP/k/nrI6myS6t3MXvoOeQzQ7rS5RI2Jg1
-         bpAYtteuI65qX1+eomwWhPkj4KvyLllwnHIDs=
+        d=gmail.com; s=20230601; t=1752880098; x=1753484898; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jstStqtvURlnoxN/0ZFbfDdKJbR90Q6tsef1Qb95mxM=;
+        b=NOXrmIGW1RY7h32Yjem3Ft42xp19gAqIsw7HuimoKnCKoel/81JkCkOL3+fEngNbE1
+         192yCuZ5whFZ2xjzRP/0VUNf/ZHrd6jSgO9uDVwRHO9TFJNikGgmQ+Y9brBRyzpDJ20X
+         MxhkpSFBknj72Ez1FeGEGO8pvaGZP3ph7auJv8cQtA7bZeo0Fe+cUsOraoTG64HP313p
+         T4pAV1PZxWENikRWfmVuKVmWtMgwwKk1khKgb9Adpe66mCm+0yOP5D2SXKNRzW+mCOfl
+         9Phy/D1C3vGqzEHzQiPCzPMixw/PrnG359j14q+T9RdCchPgSRv/0UuT5OXDdW5B2N16
+         CNHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752879905; x=1753484705;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=p0G8yeUdMDA9tVTNUd0r33p22vJCTOHruEzV0haxXnE=;
-        b=cRLjMWS/N3iknvPkrT2B4A+BuDstji0cvvSzKgUKjbWmYeUm/QBA6NMV8Hkeo5JOpg
-         ecA0F0iZ0kqqqjAf9pG8XUEbayVkehPtExEHQwvWfLka7kho9C/5ZeT7tCaWd+u+UZeA
-         mCogx1jO/ba7IMPZpXl+X4hiXRTsI+emJMUdKnZVzKt5diope3KhTHwm969POzfowKWD
-         7p30p5b/FIgio2C7kDxB5oSlf5+/89KwafuHBLxL51I+Sfgx7ByrbRZNoPPtP1fodc1x
-         JSWGFaTctk0CUS2B0+9ZoT+DP4/4JtUqK/ukF9vnt6nysA5ry3KJS5GWW1aNswQoVPJf
-         HkOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXCfEx0E5npTgSSSXnfhBBvE+qHYSpT4bl9Ygld35Cs/BF3FmJoRcmz0h9XceF2s8E3igs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyKUUal5ekNnyqzsAaYq/+M95+x8jk7r0RyRSj49yoWN/cghVQO
-	aKW8zCnBpeoxgvAolZdD/t6p0aZXszFPE3aN9K74A7BLV++DQNE/Gd+fDC28w5pw0kSBEjDXFeE
-	BDMT0wJA5zg==
-X-Gm-Gg: ASbGncvwzCaJdSv+3w9syFmfR9mff2sdu4VZ2VbVW7rtaPe7/MWAuCRXnrBSvivB2Vt
-	0+9sIuoVCovToHvI9yE4/1Ifw/XvnpCVSbFlXKiPgwOf50SXWEsWx5foa7cKz8ngwpSCnsyIxH2
-	pJOEL4ETnaD0Xe1JBzzNJJvjSXOzq8Ym2FyF7sYTC9A9iP3ZdG+0PKn8IY3G3lgLhB6WpX4r7tr
-	M/vzF5eWmTAaNWc7RBatuFsgSmuBykcf8yS/BFvzhFe/vjVOyFuyQwGHamKFsEv9dFei7fTapRL
-	XWpb4ga81IVxBIhFWRKTgnoxdN57rBij1B18MJY7ColJ8Wy1dmuVDZoTrCc18PoPZZZuupJNRCL
-	m6RpoNWYdO78NXaO6WAI2rRnJu8In4wXZaxs+4IqnAzyKDnAZ6ZXLeYXHdI6IHZ7ZEqzUkeeb
-X-Google-Smtp-Source: AGHT+IHimNVhpwo6cpcwxnLi2yKhijU0/4uAxZ07+s+QyFy1NZfXgLCcmrIh/g8WbRwkUWGC3NWjPw==
-X-Received: by 2002:a05:6402:1d55:b0:612:bc52:a93d with SMTP id 4fb4d7f45d1cf-612bc52abcdmr5519622a12.13.1752879905105;
-        Fri, 18 Jul 2025 16:05:05 -0700 (PDT)
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com. [209.85.221.44])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-612c9074a11sm1631416a12.49.2025.07.18.16.05.04
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jul 2025 16:05:04 -0700 (PDT)
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3a548a73ff2so2396778f8f.0
-        for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 16:05:04 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXSTMu5494n6m6bjoKghvVCh0Qi5g3jKWtiah1Zz6JqUm6ypvUlabZ1gFrDk51ZXWOf8Gs=@vger.kernel.org
-X-Received: by 2002:a05:6402:510f:b0:607:6097:2faa with SMTP id
- 4fb4d7f45d1cf-61281ebe074mr11282976a12.8.1752879516873; Fri, 18 Jul 2025
- 15:58:36 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1752880098; x=1753484898;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jstStqtvURlnoxN/0ZFbfDdKJbR90Q6tsef1Qb95mxM=;
+        b=Qeh8yOqsDF4fETEdryTJR3c5SEMh2PBhY8SKTLDJ0+1BBxuQrrfXiLt0e//hqIuUHM
+         gFPxeGoaxsfLW1k/pKfaxbNL8r0luc6dYFZaCTL/s9Ku5VGWChYqEZa7f4OgrPpiTZqt
+         wj2MiLJwQdPXkGbqSuNGiBPxGOGbnhnR6iTunnvW67QY0qbqQeBu6cq4XpGUOnbrLGXb
+         08iP3t4UpBsuEn9TUn6H9UuI4EOpb5oHciQNrXjveIo9T9zMV1b7zbbVWbkWsfSAlMzh
+         FRTTypLj7rK6yy+lEwR+J7q76joGMgSQQevzLP+xxp87t47hWicJgjgoVzIWJM12nKlO
+         fGfw==
+X-Forwarded-Encrypted: i=1; AJvYcCUpM0aDm5pumVYN72eHpsBwWtpFhq1qxZqs4K4plP4W2i+bYmEZdpdDFuD+mP242EFUab7Lb26+cF4sJqY9@vger.kernel.org, AJvYcCV/I3iD6uy8+Ipd6t3oRGa5m960q2lPR2E7psm5ac1t2GUmGl7WSE/FjSc76eq1/nlJN80=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy9qZ/Y3BgpNfcInBXa0YTPCxNvUy5OC/4W6ArIAvxsFrlCcK+R
+	rqzS852ygv2Su/quN54bh1RbROAMyTKyqmf43nMPemVokI5H4RlPYI6CEqPb9rHMd/xlT3+uuri
+	UGdPBVvk0HO1A2IS0GJEtI2q66XZow30=
+X-Gm-Gg: ASbGncuO26XsT9e0jEajXpfl8He4z2/epocpY8XRph6y0wxe1DIVHmYVGAbRkLjiIuc
+	0Wz1ZVhM9bGn9boVTyI8+x3pUHcKFArdJMkr6xTN8vdZIbjXBTssL1uvU3V4pbpXBbjmf7r5FtN
+	+MBSvltlkWP3qwlYz/29iLUplkL2+QHxeQdfyHnQ7yK+LJ93bdDGW7/28CxUDV4vUjeT8Ax0aOn
+	eNEMw4=
+X-Google-Smtp-Source: AGHT+IHNsdarn7CSt/1PDcBt4FjTRfdMRkg0YpLbzcnrT1IQ9EUuVSE/2ul4tT8H3hUHdSayi+66AwiOoQvq1WzfGSc=
+X-Received: by 2002:ac8:5e06:0:b0:4a9:8685:1e92 with SMTP id
+ d75a77b69052e-4ab90b1b83bmr184050101cf.34.1752880098347; Fri, 18 Jul 2025
+ 16:08:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250718213252.2384177-1-hpa@zytor.com> <20250718213252.2384177-5-hpa@zytor.com>
- <CAHk-=whGcopJ_wewAtzfTS7=cG1yvpC90Y-xz5t-1Aw0ew682w@mail.gmail.com> <CAHk-=whrbqBn_rCnPNwtLuoGHwjkqsLgDXYgjA0NW2ShAwqNkw@mail.gmail.com>
-In-Reply-To: <CAHk-=whrbqBn_rCnPNwtLuoGHwjkqsLgDXYgjA0NW2ShAwqNkw@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 18 Jul 2025 15:58:19 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whiL-ieTm19zuPqC9HLHh_-L_3pSMRUwsaN4Czp0PW6iA@mail.gmail.com>
-X-Gm-Features: Ac12FXzEvcUEKGC31NKbtJTOHrioow4MaXx8l9_sG1eUWxP_1nSQ3xv-ujuWcb8
-Message-ID: <CAHk-=whiL-ieTm19zuPqC9HLHh_-L_3pSMRUwsaN4Czp0PW6iA@mail.gmail.com>
-Subject: Re: [PATCH 4/7] arch/nios: replace "__auto_type" with "auto"
-To: "H. Peter Anvin" <hpa@zytor.com>
-Cc: =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	"Michael S. Tsirkin" <mst@redhat.com>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Alexei Starovoitov <ast@kernel.org>, Alexey Dobriyan <adobriyan@gmail.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Arnd Bergmann <arnd@kernel.org>, Borislav Petkov <bp@alien8.de>, Cong Wang <cong.wang@bytedance.com>, 
-	Dan Williams <dan.j.williams@intel.com>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, David Laight <David.Laight@aculab.com>, 
-	David Lechner <dlechner@baylibre.com>, Dinh Nguyen <dinguyen@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Gatlin Newhouse <gatlin.newhouse@gmail.com>, 
-	Hao Luo <haoluo@google.com>, Ingo Molnar <mingo@redhat.com>, 
-	Jakub Sitnicki <jakub@cloudflare.com>, Jan Hendrik Farr <kernel@jfarr.cc>, Jason Wang <jasowang@redhat.com>, 
-	Jiri Olsa <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Josh Poimboeuf <jpoimboe@kernel.org>, 
-	KP Singh <kpsingh@kernel.org>, Kees Cook <kees@kernel.org>, 
-	Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, Marc Herbert <Marc.Herbert@linux.intel.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Mateusz Guzik <mjguzik@gmail.com>, Michal Luczaj <mhal@rbox.co>, 
-	Miguel Ojeda <ojeda@kernel.org>, Mykola Lysenko <mykolal@fb.com>, NeilBrown <neil@brown.name>, 
-	Peter Zijlstra <peterz@infradead.org>, Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
-	Sami Tolvanen <samitolvanen@google.com>, Shuah Khan <shuah@kernel.org>, Song Liu <song@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Thomas Gleixner <tglx@linutronix.de>, 
-	Thorsten Blum <thorsten.blum@linux.dev>, Uros Bizjak <ubizjak@gmail.com>, 
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Yafang Shao <laoar.shao@gmail.com>, 
-	Ye Bin <yebin10@huawei.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	Yufeng Wang <wangyufeng@kylinos.cn>, bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-sparse@vger.kernel.org, virtualization@lists.linux.dev, x86@kernel.org
+References: <20250709055029.723243-1-duanchenghao@kylinos.cn> <20250709055029.723243-5-duanchenghao@kylinos.cn>
+In-Reply-To: <20250709055029.723243-5-duanchenghao@kylinos.cn>
+From: Vincent Li <vincent.mc.li@gmail.com>
+Date: Fri, 18 Jul 2025 16:08:07 -0700
+X-Gm-Features: Ac12FXybRUorkpV3SfDpaT4CFeXjeDJvvj97Iw6LEOQcx-4Zmjk9cnMrrzSYvn8
+Message-ID: <CAK3+h2zTfS0M7K5Mao=yQ72RLgM6R1aJTukiJMRcXhbTpc0Ezg@mail.gmail.com>
+Subject: Re: [PATCH v3 4/5] LoongArch: BPF: Add bpf_arch_xxxxx support for Loongarch
+To: Chenghao Duan <duanchenghao@kylinos.cn>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	yangtiezhu@loongson.cn, hengqi.chen@gmail.com, chenhuacai@kernel.org, 
+	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, kernel@xen0n.name, 
+	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, bpf@vger.kernel.org, 
+	guodongtai@kylinos.cn, youling.tang@linux.dev, jianghaoran@kylinos.cn
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 18 Jul 2025 at 15:48, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+Hi Chenghao,
+
+On Tue, Jul 8, 2025 at 11:02=E2=80=AFPM Chenghao Duan <duanchenghao@kylinos=
+.cn> wrote:
 >
-> And while looking at this, I think we have a similar mis-feature / bug
-> on x86 too: the unsafe_put_user() macro does exactly that cast:
+> Implement the functions of bpf_arch_text_poke, bpf_arch_text_copy, and
+> bpf_arch_text_invalidate on the LoongArch architecture.
 >
->   #define unsafe_put_user(x, ptr, label)  \
->         __put_user_size((__typeof__(*(ptr)))(x), ..
+> On LoongArch, since symbol addresses in the direct mapping
+> region cannot be reached via relative jump instructions from the paged
+> mapping region, we use the move_imm+jirl instruction pair as absolute
+> jump instructions. These require 2-5 instructions, so we reserve 5 NOP
+> instructions in the program as placeholders for function jumps.
 >
-> and I think that cast is wrong.
+
+When I compare your Loongarch implementation to riscv commit 596f2e6f9
+("riscv, bpf: Add bpf_arch_text_poke support for RV64"), I noticed
+riscv commit has below change to bpf_jit_build_prologue(), that I
+think is for adding 4 NOPs for bpf2bpf (bpf freplace bpf) use case.
+but your implementation does not have a similar change to loongarch
+build_prologue.
+
+ @@ -1293,6 +1373,10 @@ void bpf_jit_build_prologue(struct rv_jit_context *=
+ctx)
+
+        store_offset =3D stack_adjust - 8;
+
++       /* reserve 4 nop insns */
++       for (i =3D 0; i < 4; i++)
++               emit(rv_nop(), ctx);
++
+
+later  riscv commit 25ad10658d ("riscv, bpf: Adapt bpf trampoline to
+optimized riscv ftrace framework") made further changes to
+bpf_jit_build_prologue() with below.
+
+@@ -1691,8 +1702,8 @@ void bpf_jit_build_prologue(struct rv_jit_context *ct=
+x)
+
+        store_offset =3D stack_adjust - 8;
+
+-       /* reserve 4 nop insns */
+-       for (i =3D 0; i < 4; i++)
++       /* nops reserved for auipc+jalr pair */
++       for (i =3D 0; i < RV_FENTRY_NINSNS; i++)
+                emit(rv_nop(), ctx);
+
+I assume Loongarch has not adopted the ftrace framework, so Loongarch
+build_prologue() should reserve 5 NOPs too? and that would resolve the
+xdp-tool use case  and selftest fexit_bpf2bpf issue?
+
+> Co-developed-by: George Guo <guodongtai@kylinos.cn>
+> Signed-off-by: George Guo <guodongtai@kylinos.cn>
+> Signed-off-by: Chenghao Duan <duanchenghao@kylinos.cn>
+> ---
+>  arch/loongarch/include/asm/inst.h |  1 +
+>  arch/loongarch/kernel/inst.c      | 32 +++++++++++
+>  arch/loongarch/net/bpf_jit.c      | 90 +++++++++++++++++++++++++++++++
+>  3 files changed, 123 insertions(+)
 >
-> I wonder if it's actively hiding some issue with unsafe_put_user(), or
-> if I'm just missing something.
-
-... and I decided to try to look into it by just removing the cast.
-
-And yes indeed, there's a reason for the cast - or at least it's
-hiding problems:
-
-arch/x86/kernel/signal_64.c:128:
-        unsafe_put_user(fpstate, (unsigned long __user *)&sc->fpstate, Efault);
-
-arch/x86/kernel/signal_64.c:188:
-        unsafe_put_user(ksig->ka.sa.sa_restorer, &frame->pretcode, Efault);
-
-arch/x86/kernel/signal_64.c:332:
-        unsafe_put_user(restorer, (unsigned long __user
-*)&frame->pretcode, Efault);
-
-The one on line 188 at least makes some sense. The other ones are
-literally hiding the fact that we explicitly cast things to the wrong
-pointer.
-
-I suspect it's just very old historical "we have been lazy and mixing
-'unsigned long' and 'pointer value'" issues.
-
-Oh well. None of these are actual *bugs*, they are more just ugly. And
-the cast that is hiding this ugliness might be hiding other things.
-
-Not worth the churn at least late in the release cycle, but one of
-those "this might be worth cleaning up some day" issues.
-
-              Linus
+> diff --git a/arch/loongarch/include/asm/inst.h b/arch/loongarch/include/a=
+sm/inst.h
+> index 2ae96a35d..88bb73e46 100644
+> --- a/arch/loongarch/include/asm/inst.h
+> +++ b/arch/loongarch/include/asm/inst.h
+> @@ -497,6 +497,7 @@ void arch_simulate_insn(union loongarch_instruction i=
+nsn, struct pt_regs *regs);
+>  int larch_insn_read(void *addr, u32 *insnp);
+>  int larch_insn_write(void *addr, u32 insn);
+>  int larch_insn_patch_text(void *addr, u32 insn);
+> +int larch_insn_text_copy(void *dst, void *src, size_t len);
+>
+>  u32 larch_insn_gen_nop(void);
+>  u32 larch_insn_gen_b(unsigned long pc, unsigned long dest);
+> diff --git a/arch/loongarch/kernel/inst.c b/arch/loongarch/kernel/inst.c
+> index 674e3b322..8d6594968 100644
+> --- a/arch/loongarch/kernel/inst.c
+> +++ b/arch/loongarch/kernel/inst.c
+> @@ -4,6 +4,7 @@
+>   */
+>  #include <linux/sizes.h>
+>  #include <linux/uaccess.h>
+> +#include <linux/set_memory.h>
+>
+>  #include <asm/cacheflush.h>
+>  #include <asm/inst.h>
+> @@ -218,6 +219,37 @@ int larch_insn_patch_text(void *addr, u32 insn)
+>         return ret;
+>  }
+>
+> +int larch_insn_text_copy(void *dst, void *src, size_t len)
+> +{
+> +       unsigned long flags;
+> +       size_t wlen =3D 0;
+> +       size_t size;
+> +       void *ptr;
+> +       int ret =3D 0;
+> +
+> +       set_memory_rw((unsigned long)dst, round_up(len, PAGE_SIZE) / PAGE=
+_SIZE);
+> +       raw_spin_lock_irqsave(&patch_lock, flags);
+> +       while (wlen < len) {
+> +               ptr =3D dst + wlen;
+> +               size =3D min_t(size_t, PAGE_SIZE - offset_in_page(ptr),
+> +                            len - wlen);
+> +
+> +               ret =3D copy_to_kernel_nofault(ptr, src + wlen, size);
+> +               if (ret) {
+> +                       pr_err("%s: operation failed\n", __func__);
+> +                       break;
+> +               }
+> +               wlen +=3D size;
+> +       }
+> +       raw_spin_unlock_irqrestore(&patch_lock, flags);
+> +       set_memory_rox((unsigned long)dst, round_up(len, PAGE_SIZE) / PAG=
+E_SIZE);
+> +
+> +       if (!ret)
+> +               flush_icache_range((unsigned long)dst, (unsigned long)dst=
+ + len);
+> +
+> +       return ret;
+> +}
+> +
+>  u32 larch_insn_gen_nop(void)
+>  {
+>         return INSN_NOP;
+> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
+> index 7032f11d3..9cb01f0b0 100644
+> --- a/arch/loongarch/net/bpf_jit.c
+> +++ b/arch/loongarch/net/bpf_jit.c
+> @@ -4,6 +4,7 @@
+>   *
+>   * Copyright (C) 2022 Loongson Technology Corporation Limited
+>   */
+> +#include <linux/memory.h>
+>  #include "bpf_jit.h"
+>
+>  #define REG_TCC                LOONGARCH_GPR_A6
+> @@ -1367,3 +1368,92 @@ bool bpf_jit_supports_subprog_tailcalls(void)
+>  {
+>         return true;
+>  }
+> +
+> +static int emit_jump_and_link(struct jit_ctx *ctx, u8 rd, u64 ip, u64 ta=
+rget)
+> +{
+> +       s64 offset =3D (s64)(target - ip);
+> +
+> +       if (offset && (offset >=3D -SZ_128M && offset < SZ_128M)) {
+> +               emit_insn(ctx, bl, offset >> 2);
+> +       } else {
+> +               move_imm(ctx, LOONGARCH_GPR_T1, target, false);
+> +               emit_insn(ctx, jirl, rd, LOONGARCH_GPR_T1, 0);
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int gen_jump_or_nops(void *target, void *ip, u32 *insns, bool is_=
+call)
+> +{
+> +       struct jit_ctx ctx;
+> +
+> +       ctx.idx =3D 0;
+> +       ctx.image =3D (union loongarch_instruction *)insns;
+> +
+> +       if (!target) {
+> +               emit_insn((&ctx), nop);
+> +               emit_insn((&ctx), nop);
+> +               return 0;
+> +       }
+> +
+> +       return emit_jump_and_link(&ctx, is_call ? LOONGARCH_GPR_T0 : LOON=
+GARCH_GPR_ZERO,
+> +                                 (unsigned long)ip, (unsigned long)targe=
+t);
+> +}
+> +
+> +int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
+> +                      void *old_addr, void *new_addr)
+> +{
+> +       u32 old_insns[5] =3D {[0 ... 4] =3D INSN_NOP};
+> +       u32 new_insns[5] =3D {[0 ... 4] =3D INSN_NOP};
+> +       bool is_call =3D poke_type =3D=3D BPF_MOD_CALL;
+> +       int ret;
+> +
+> +       if (!is_kernel_text((unsigned long)ip) &&
+> +               !is_bpf_text_address((unsigned long)ip))
+> +               return -ENOTSUPP;
+> +
+> +       ret =3D gen_jump_or_nops(old_addr, ip, old_insns, is_call);
+> +       if (ret)
+> +               return ret;
+> +
+> +       if (memcmp(ip, old_insns, 5 * 4))
+> +               return -EFAULT;
+> +
+> +       ret =3D gen_jump_or_nops(new_addr, ip, new_insns, is_call);
+> +       if (ret)
+> +               return ret;
+> +
+> +       mutex_lock(&text_mutex);
+> +       if (memcmp(ip, new_insns, 5 * 4))
+> +               ret =3D larch_insn_text_copy(ip, new_insns, 5 * 4);
+> +       mutex_unlock(&text_mutex);
+> +       return ret;
+> +}
+> +
+> +int bpf_arch_text_invalidate(void *dst, size_t len)
+> +{
+> +       int i;
+> +       int ret =3D 0;
+> +       u32 *inst;
+> +
+> +       inst =3D kvmalloc(len, GFP_KERNEL);
+> +       if (!inst)
+> +               return -ENOMEM;
+> +
+> +       for (i =3D 0; i < (len/sizeof(u32)); i++)
+> +               inst[i] =3D INSN_BREAK;
+> +
+> +       if (larch_insn_text_copy(dst, inst, len))
+> +               ret =3D -EINVAL;
+> +
+> +       kvfree(inst);
+> +       return ret;
+> +}
+> +
+> +void *bpf_arch_text_copy(void *dst, void *src, size_t len)
+> +{
+> +       if (larch_insn_text_copy(dst, src, len))
+> +               return ERR_PTR(-EINVAL);
+> +
+> +       return dst;
+> +}
+> --
+> 2.43.0
+>
+>
 
