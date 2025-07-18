@@ -1,78 +1,77 @@
-Return-Path: <bpf+bounces-63688-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63689-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5F9FB099BB
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 04:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2560BB099BE
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 04:18:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0FDEF7B9897
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 02:16:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64EB77B9AF9
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 02:16:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDAF1186E2D;
-	Fri, 18 Jul 2025 02:17:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 715101C7013;
+	Fri, 18 Jul 2025 02:17:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ByptkZyh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cEdEPaMr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E79EB17597
-	for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 02:17:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94D0619067C
+	for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 02:17:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752805023; cv=none; b=f+4q9RlEYu4rBpArWkY6cQg3zp9zPx8ejjkJJiGdPIq8h6P1srl2N/BuirolhLSCO0GjUNiqew8fNIcW/JKUz3mpi7knFEHemNtHtKFOACaA6pbF+J3d33xUC76ymAgJpC2BPs9BTqpT+m/fIDcI9t4mrwXMv6oTYEHsoKLWTZY=
+	t=1752805026; cv=none; b=HG/hZbcK/An0ZQqIcFQ0C6ME3ZuemANa/LG0hSi74suSR094b0OAutZ12qHFREJMl5qQLEpb/j7MbJiJShWi/3IGAqXGRUkwKTeQm9OjKqEiQ6/XsAdtkxtztQEGOEDsoMV4b/JDOLPbQ95WU92sOTs2Ood9kzcueeQfDl1/NBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752805023; c=relaxed/simple;
-	bh=Y3MT3oWHibBcKRhB/N+6RZY3S66hj1wDO7MapAJKhd0=;
+	s=arc-20240116; t=1752805026; c=relaxed/simple;
+	bh=VsW3knDCb2p7hqwuc87Iuwtv0OF7l/eTW1lo3LOH/Ro=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=J7vgStfkH96Zr6eNBsw/BotLQYK1ZcvgM8hkjW3MhAxNNHNpMWCFC0wkI019/jfponka5xugXQtvWelzadPP5iy/OsCOjEC39KPot7EBPjsDaNGAreRyRgm/Fc7bEq/GZAN+uylHT07bHuqGmTHD1tfFH0Lsvs5CDyGBuQYdz8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ByptkZyh; arc=none smtp.client-ip=209.85.210.169
+	 MIME-Version; b=Pn80ZAHb6ZtStb7nK/9nD1tbrEGArNFeYzizXscYdIhYlpF7/1BVbdveSNJ9peC7WxwD1KjzX6QozHh3BKu+LV8q6aegJknbHO7RyGR7pReQAetxIZczjDyh2vr8AnEcNY+RvFO/Vi95o+V5JhflkER7bhbDWAWOUEu4F3FdFYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cEdEPaMr; arc=none smtp.client-ip=209.85.210.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-7426c44e014so1686826b3a.3
-        for <bpf@vger.kernel.org>; Thu, 17 Jul 2025 19:17:01 -0700 (PDT)
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-748e378ba4fso2017223b3a.1
+        for <bpf@vger.kernel.org>; Thu, 17 Jul 2025 19:17:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752805021; x=1753409821; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1752805024; x=1753409824; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=i518bbzfZO/aJkAgPJDTpr5hRhX5KSVRvbb0iT/IJ8Q=;
-        b=ByptkZyh0vtMgUB9BWpsHbfzkMQPaVbUbo4QzHmH8hSW7GKc4JWahS5AMhsKGrdUq0
-         p6DOBFmAXs/7q7cOsthYEnqXarFahgoMATFPL6Hvu0WIKEI7O6O3UplFsHOupdTNU8ub
-         K590r7LEODU9hxap/kD7ivjN5ySvDBCb5Lf6NZ6PmGhLUqRa3FZsIl6Rkk36QRZrKb2l
-         9o9MQ/eKaDiikkYqSwDbOYwSYtMHnPsDfXunJX39a8QX8W0AG+R2dxNc8A2UQ5Ompg2C
-         2yh0SnE9TZpzAiqCi6T6v1OJ1p/KBJ3RvsBZnNW8w8lGLYYi87cXbLUyCMRi1S6EM7GV
-         rdkQ==
+        bh=uWETJlOKGazWkISOD3+6VC2F2WWqxCGLlibMASETCes=;
+        b=cEdEPaMr24UwiRNuG1hJF7F7HpVMg/70oQ9enCTWqodeA5UJR8nAD+eYIBwS0srXDi
+         5o8B1q98FLQ6JJUIuzFlCfznJwI4Yq9bXNaV+HgpSNI/J21aY4nkAGxw1cxUy0xtgte3
+         ubE40vYfXFiqAoFTC2qVDtFfNhonXU9blD9HQZGOeyTW8alk8KokLaxeeG2Pwt7AmAvn
+         NblYmZZRldE6IvoMYOPFC6ndy5yIpvXHydiK5CX01eO8icugfTHJwuX9MRGW8GTsuBP3
+         38ATywG/RODPc7sIzNTZu8B1NoXDChwxQq2EFNYmVt/whWt7LlQ9k2XStPopUh9DZ/8l
+         AscQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752805021; x=1753409821;
+        d=1e100.net; s=20230601; t=1752805024; x=1753409824;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=i518bbzfZO/aJkAgPJDTpr5hRhX5KSVRvbb0iT/IJ8Q=;
-        b=Q5v0ylbdO3Nv5oXu5duhs00AEqWt/lAtu6AfjFjHkA8comTAmwkfjc3OYwtfQ6HwdS
-         hs2g6LwyMW/GVUVVjm/ljVl11tL6fBh1TvzsMaCly4WeV1gkDizj/OR8SkGrXdT5Bt4U
-         3gnOXGQ51LLqJqWJmBiya9uK5NYvJKRIhf2h+WLWafT05mQBP8FBlgFoYIIjlF8HMamo
-         n3YCHXYDQ9y/x5iZafkKxSMG2aecewb182rom4uz+mhjlc9K4QfyjAZ5zIyvhTE7WVCF
-         6K0WdpNPWCv/IpE0CkpUqDhxOqZgqyuL8GS4cZ+WXByeIc0D0wQ8ZL5mwMxrbAZ+SuNg
-         Q2YQ==
-X-Gm-Message-State: AOJu0YycVKyhGLjW/M0c882QGF8VmxoXRkYKRmwdsxG3Of+rPxjrGFHk
-	JlpTQWewwRWCSkS4a6FEsGgnUEqghe7PwrC8tfeA3r2WJROTW7wwbzjKiMYqEw==
-X-Gm-Gg: ASbGncsxtgQ0+/fKHXaiSfh23oq/+Xg7UXI6Df1KUQoLvwRK0UBabPIeHXOy74pTv2o
-	1CTZztmTCQlvH9P2OWX7Ot49S7GifY4rVUd+TI/qFT6XODJNh3J8NGMI1Z0d6CWxlyPNyUvk+2D
-	OcwO456sTGCTYhvs/I46KFnWOfsEuvluIFtcTYmeNZ2GRMwwCoTYmggrJ2zkjJkJZDo1y1QaIJQ
-	7ySB4jS+WAVnJJIB8/9ldSEHqnQT48vVCKcjCpUL3u31EwZTDAT0mgjrDPi2El3wMI2o98C3U1Q
-	aGdFyE2xIi8MVbd9xT5tOCJGnjinsE8MAa5O5TnF+3y/V/MWiAdiOmZaXjV4+uTaYldhTosMuQU
-	us6V6hO66+FP5jwxN1SGRK6rSPIc65kDpWoLKZ55X44tmbSnyTv1+ZSuzi/FDVEz2rOfrXX3kZw
-	==
-X-Google-Smtp-Source: AGHT+IFcY2VsA7LkPF499uUm0R86UTS1mtNIOHPycskWH/JF5YYqWIqSstbyRkbU87Fg4yiMkJvBRQ==
-X-Received: by 2002:a05:6a20:7290:b0:235:b6de:4470 with SMTP id adf61e73a8af0-237d5a04312mr16499209637.13.1752805020753;
-        Thu, 17 Jul 2025 19:17:00 -0700 (PDT)
+        bh=uWETJlOKGazWkISOD3+6VC2F2WWqxCGLlibMASETCes=;
+        b=H78eRUcfMNe/8toiJx0rGoLpVuUphCDNQl67iPC+pmvAYro9bLSgzTuX/ABSHU4lFv
+         nsmifEc6Me5YEf+I/+jsR27FHBjccilIH/iMG7vi6MKGJVvOr4xsOtbx1FmCXY8Hm+iJ
+         3c1sxOxR1cOdIdSzISczch5IrCAtsj2/5E5i+KmAezGDGqUs4akeflH2SqLfSWcecGlH
+         UQhSraRP0i+YWS4uM1+z3WGlGvuTs7k+gHf7NdB1/ABbuiqEH26EQFpiB42V7q3TWaNl
+         4CN8Hl419bAx1DCK5QgtKV2+5nEqSwsZEm8D1Mo+gEWdq6+3OSa064/vGjUI8KPA//XH
+         k+Og==
+X-Gm-Message-State: AOJu0YxhMpCRzDj2Yn6rZe77lF13bm6BrLu/nkMvaWWlQJ0N1DLZgelg
+	7qabg3CJZl3F9eS7IVcJ/SrbcBo1uYSZevHNfm1+TbAudouSQ5D0Zx9NU8C5RQ==
+X-Gm-Gg: ASbGncvbyUYrUAGMgXM7S+AEmH/0+xFgV+6+skow69np7Idi9J3k9ELLQVXit6K2vUu
+	18l+IkhAxLmgWT/3iREogy3mw5UvgkHEE2mixGtfM1MBDon0Csw22PlrGpg/BPgPx/OQe9T6DUZ
+	9fnFyLcPyEq1HiDjQyb0H363RFjhgrZ83y1d6R4fjVf82OIIPyxg6RQy4dEjq9DdYyBZVj7yRUL
+	mXpIK2kFGE6KuRQrL2hIvENYAuKw29R7MYSVgm8HzbpuWdPX4l6SGOLKhkiLzncXB6gGR9nVI+V
+	Aykaenl6OZqeqqKKpQfH6uKao+spNJS7fn2Ed0BE+Jg3MQA+Z55NejZxTF6mWLQYPxK2X0ey+o9
+	1cxRi/RV9rsXomvP/vl+rkMd0ta6CKFrb40pu43InP/9660PiaSrU55Sb4ctsZpI=
+X-Google-Smtp-Source: AGHT+IHWyxaj7icsLAL7jj7PUwL0yEJU4J9Ecb5MsKbovfcnY7bdDm2SOePe+iLUf+n5utsLBghogw==
+X-Received: by 2002:a05:6a21:7109:b0:238:351a:6438 with SMTP id adf61e73a8af0-2390dc71a6fmr7468515637.44.1752805023593;
+        Thu, 17 Jul 2025 19:17:03 -0700 (PDT)
 Received: from localhost.localdomain ([2001:558:600a:7:a83d:600f:32cc:235a])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b3f2ffb69b8sm300281a12.71.2025.07.17.19.16.59
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-759cb154755sm224084b3a.69.2025.07.17.19.17.02
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Thu, 17 Jul 2025 19:17:00 -0700 (PDT)
+        Thu, 17 Jul 2025 19:17:03 -0700 (PDT)
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: bpf@vger.kernel.org,
 	linux-mm@kvack.org
@@ -87,9 +86,9 @@ Cc: vbabka@suse.cz,
 	peterz@infradead.org,
 	rostedt@goodmis.org,
 	hannes@cmpxchg.org
-Subject: [PATCH v4 4/6] mm: Introduce alloc_frozen_pages_nolock()
-Date: Thu, 17 Jul 2025 19:16:44 -0700
-Message-Id: <20250718021646.73353-5-alexei.starovoitov@gmail.com>
+Subject: [PATCH v4 5/6] slab: Make slub local_(try)lock more precise for LOCKDEP
+Date: Thu, 17 Jul 2025 19:16:45 -0700
+Message-Id: <20250718021646.73353-6-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 In-Reply-To: <20250718021646.73353-1-alexei.starovoitov@gmail.com>
 References: <20250718021646.73353-1-alexei.starovoitov@gmail.com>
@@ -103,103 +102,99 @@ Content-Transfer-Encoding: 8bit
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Split alloc_pages_nolock() and introduce alloc_frozen_pages_nolock()
-to be used by alloc_slab_page().
+kmalloc_nolock() can be called from any context
+the ___slab_alloc() can acquire local_trylock_t (which is rt_spin_lock
+in PREEMPT_RT) and attempt to acquire a different local_trylock_t
+while in the same task context.
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+The calling sequence might look like:
+kmalloc() -> tracepoint -> bpf -> kmalloc_nolock()
+
+or more precisely:
+__lock_acquire+0x12ad/0x2590
+lock_acquire+0x133/0x2d0
+rt_spin_lock+0x6f/0x250
+___slab_alloc+0xb7/0xec0
+kmalloc_nolock_noprof+0x15a/0x430
+my_debug_callback+0x20e/0x390 [testmod]
+___slab_alloc+0x256/0xec0
+__kmalloc_cache_noprof+0xd6/0x3b0
+
+Make LOCKDEP understand that local_trylock_t-s protect
+different kmem_caches. In order to do that add lock_class_key
+for each kmem_cache and use that key in local_trylock_t.
+
+This stack trace is possible on both PREEMPT_RT and !PREEMPT_RT,
+but teach lockdep about it only for PREEMPT_RT, since
+in !PREEMPT_RT the ___slab_alloc() code is using
+local_trylock_irqsave() when lockdep is on.
+
+Note, this patch applies this logic to local_lock_t
+while the next one converts it to local_trylock_t.
+Both are mapped to rt_spin_lock in PREEMPT_RT.
+
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- mm/internal.h   |  4 ++++
- mm/page_alloc.c | 48 +++++++++++++++++++++++++++---------------------
- 2 files changed, 31 insertions(+), 21 deletions(-)
+ mm/slab.h |  1 +
+ mm/slub.c | 20 ++++++++++++++++++++
+ 2 files changed, 21 insertions(+)
 
-diff --git a/mm/internal.h b/mm/internal.h
-index 5b0f71e5434b..ea85cf703331 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -837,6 +837,10 @@ static inline struct page *alloc_frozen_pages_noprof(gfp_t gfp, unsigned int ord
- #define alloc_frozen_pages(...) \
- 	alloc_hooks(alloc_frozen_pages_noprof(__VA_ARGS__))
+diff --git a/mm/slab.h b/mm/slab.h
+index 05a21dc796e0..4f4dfc3d239c 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -258,6 +258,7 @@ struct kmem_cache_order_objects {
+ struct kmem_cache {
+ #ifndef CONFIG_SLUB_TINY
+ 	struct kmem_cache_cpu __percpu *cpu_slab;
++	struct lock_class_key lock_key;
+ #endif
+ 	/* Used for retrieving partial slabs, etc. */
+ 	slab_flags_t flags;
+diff --git a/mm/slub.c b/mm/slub.c
+index c4b64821e680..54444bce218e 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -3051,12 +3051,29 @@ static inline void note_cmpxchg_failure(const char *n,
  
-+struct page *alloc_frozen_pages_nolock_noprof(gfp_t gfp_flags, int nid, unsigned int order);
-+#define alloc_frozen_pages_nolock(...) \
-+	alloc_hooks(alloc_frozen_pages_nolock_noprof(__VA_ARGS__))
-+
- extern void zone_pcp_reset(struct zone *zone);
- extern void zone_pcp_disable(struct zone *zone);
- extern void zone_pcp_enable(struct zone *zone);
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 148945f0b667..11a184bab03c 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -7504,23 +7504,7 @@ static bool __free_unaccepted(struct page *page)
- 
- #endif /* CONFIG_UNACCEPTED_MEMORY */
- 
--/**
-- * alloc_pages_nolock - opportunistic reentrant allocation from any context
-- * @gfp_flags: GFP flags. Only __GFP_ACCOUNT allowed.
-- * @nid: node to allocate from
-- * @order: allocation order size
-- *
-- * Allocates pages of a given order from the given node. This is safe to
-- * call from any context (from atomic, NMI, and also reentrant
-- * allocator -> tracepoint -> alloc_pages_nolock_noprof).
-- * Allocation is best effort and to be expected to fail easily so nobody should
-- * rely on the success. Failures are not reported via warn_alloc().
-- * See always fail conditions below.
-- *
-- * Return: allocated page or NULL on failure. NULL does not mean EBUSY or EAGAIN.
-- * It means ENOMEM. There is no reason to call it again and expect !NULL.
-- */
--struct page *alloc_pages_nolock_noprof(gfp_t gfp_flags, int nid, unsigned int order)
-+struct page *alloc_frozen_pages_nolock_noprof(gfp_t gfp_flags, int nid, unsigned int order)
+ static void init_kmem_cache_cpus(struct kmem_cache *s)
  {
- 	/*
- 	 * Do not specify __GFP_DIRECT_RECLAIM, since direct claim is not allowed.
-@@ -7583,16 +7567,38 @@ struct page *alloc_pages_nolock_noprof(gfp_t gfp_flags, int nid, unsigned int or
++#ifdef CONFIG_PREEMPT_RT
++	/*
++	 * Register lockdep key for non-boot kmem caches to avoid
++	 * WARN_ON_ONCE(static_obj(key))) in lockdep_register_key()
++	 */
++	bool finegrain_lockdep = !init_section_contains(s, 1);
++#else
++	/*
++	 * Don't bother with different lockdep classes for each
++	 * kmem_cache, since we only use local_trylock_irqsave().
++	 */
++	bool finegrain_lockdep = false;
++#endif
+ 	int cpu;
+ 	struct kmem_cache_cpu *c;
  
- 	/* Unlike regular alloc_pages() there is no __alloc_pages_slowpath(). */
- 
--	if (page)
--		set_page_refcounted(page);
--
- 	if (memcg_kmem_online() && page && (gfp_flags & __GFP_ACCOUNT) &&
- 	    unlikely(__memcg_kmem_charge_page(page, alloc_gfp, order) != 0)) {
--		free_pages_nolock(page, order);
-+		__free_frozen_pages(page, order, FPI_TRYLOCK);
- 		page = NULL;
++	if (finegrain_lockdep)
++		lockdep_register_key(&s->lock_key);
+ 	for_each_possible_cpu(cpu) {
+ 		c = per_cpu_ptr(s->cpu_slab, cpu);
+ 		local_lock_init(&c->lock);
++		if (finegrain_lockdep)
++			lockdep_set_class(&c->lock, &s->lock_key);
+ 		c->tid = init_tid(cpu);
  	}
- 	trace_mm_page_alloc(page, order, alloc_gfp, ac.migratetype);
- 	kmsan_alloc_page(page, order, alloc_gfp);
- 	return page;
  }
-+/**
-+ * alloc_pages_nolock - opportunistic reentrant allocation from any context
-+ * @gfp_flags: GFP flags. Only __GFP_ACCOUNT allowed.
-+ * @nid: node to allocate from
-+ * @order: allocation order size
-+ *
-+ * Allocates pages of a given order from the given node. This is safe to
-+ * call from any context (from atomic, NMI, and also reentrant
-+ * allocator -> tracepoint -> alloc_pages_nolock_noprof).
-+ * Allocation is best effort and to be expected to fail easily so nobody should
-+ * rely on the success. Failures are not reported via warn_alloc().
-+ * See always fail conditions below.
-+ *
-+ * Return: allocated page or NULL on failure. NULL does not mean EBUSY or EAGAIN.
-+ * It means ENOMEM. There is no reason to call it again and expect !NULL.
-+ */
-+struct page *alloc_pages_nolock_noprof(gfp_t gfp_flags, int nid, unsigned int order)
-+{
-+	struct page *page;
-+
-+	page = alloc_frozen_pages_nolock_noprof(gfp_flags, nid, order);
-+	if (page)
-+		set_page_refcounted(page);
-+	return page;
-+}
- EXPORT_SYMBOL_GPL(alloc_pages_nolock_noprof);
+@@ -5614,6 +5631,9 @@ void __kmem_cache_release(struct kmem_cache *s)
+ {
+ 	cache_random_seq_destroy(s);
+ #ifndef CONFIG_SLUB_TINY
++#ifdef CONFIG_PREEMPT_RT
++	lockdep_unregister_key(&s->lock_key);
++#endif
+ 	free_percpu(s->cpu_slab);
+ #endif
+ 	free_kmem_cache_nodes(s);
 -- 
 2.47.1
 
