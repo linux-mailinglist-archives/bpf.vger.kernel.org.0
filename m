@@ -1,121 +1,185 @@
-Return-Path: <bpf+bounces-63742-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63744-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B437DB0A84A
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 18:19:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AD28B0A8AC
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 18:43:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E91FD5A3538
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 16:19:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE5DAA8767D
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 16:42:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6DE82E11D1;
-	Fri, 18 Jul 2025 16:19:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 957292E7171;
+	Fri, 18 Jul 2025 16:43:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M8umVjmU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NOzc0Kno"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AE9C1D88D0;
-	Fri, 18 Jul 2025 16:18:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FB6A2E5433;
+	Fri, 18 Jul 2025 16:42:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752855540; cv=none; b=iO2uzA1/TYbDUJs0YbVoHaKo5hQg3EuEOlYsCf3Se5vX8oVu1mSEZFvrmstSjDrlCP8Ql7OKeG0NYrdA/o6it4HjQHX33RKOWneq7v90QTuXWfI01Iy3z3KHZ7z1KUfsbvIScrERfmmuJjKy22gyWar9XBy4U25iVTp80M7e2Qk=
+	t=1752856980; cv=none; b=Kuw/sWGXlAQzQYNjDWi6XHe1vqIrNB1VhatU+X086mIWhq8PQ5bkaDjFkO97Vf9KyhtbLkWcRtvU+GjnjpknGcgbDoZzW3PUILIo7FHXFFBtlJi5TNguqCN/r0v5DJCEnbuAlgo4GWEB4s0Dl/XxOHQ8Wftt6SLfjEV6PbsT2/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752855540; c=relaxed/simple;
-	bh=JsGI4d1WgsQxQwDTlELaaQan2DJyyq7rBgqt3cAK84Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Si/sHFB7RYI+G/P/WysEJdg9hwRd1ECdKhhPJzzjz0g55e43IFbkUFx/xi8hF64lWH1/HVHQyPNNfWK0+Cpk7lvVQdMOJXIOme22BkA0AVCYeiNZ5cHu/DR4+a4pZUwTIa2hOYERmuWozs9mEibuIhRJ3ziRJHyGEFWUzATvORs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M8umVjmU; arc=none smtp.client-ip=209.85.160.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-2ebb72384dbso769250fac.1;
-        Fri, 18 Jul 2025 09:18:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752855538; x=1753460338; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JsGI4d1WgsQxQwDTlELaaQan2DJyyq7rBgqt3cAK84Q=;
-        b=M8umVjmUuWh/O0qn+XkrvkRM7EMUOEUcg4Cl934gRYWM1RHs7BG41Z8Ib6pWnsqQ4M
-         L5NOfNwMy8ROv1ecjagO2tonOk/lW3E+Iv+qyCAlUm3NIoIe9tj3yw5VpcXIDceI1vNv
-         fINWq2zwInZ98tALlqp9C8Jsb6A5f0rhgVjdNF7GSOBCa3I2kw72Fj/qRa0cwpzrGKiH
-         JhA53Aa7cC61E4xJ8N1UtkXpl4X29vZEYKUYm6PD5Ws6D2d+LWiDqZc0sRJ3CdF30tX8
-         CcBp91wYGODHteKsS7IdPkCL2+OGXxWdJ4BtVqNG5a+1X9KJZfeO1RJTijsZd8fg65LD
-         o3rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752855538; x=1753460338;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JsGI4d1WgsQxQwDTlELaaQan2DJyyq7rBgqt3cAK84Q=;
-        b=hDxTGeJYN5v3e/qvlLTytbCRnigNN0unGLTGqz89rMJv6LdTJNrMZJoD1Nx069mq7P
-         karfvYwWmaOTGXTg9+16kTKA+nQtZ0ToQpcO9idVzqGNdEsVx4mTbGvWZ34SCeRTZYi0
-         SEdrM9f4llcX886sX/jbKaFP6Xd11NeGB+vgOhsGYqesEE14iRbc/h6Y/Rbm/Cob4oFm
-         JIyFsuGEDl5XMp2kk9htPS83/u2wX7OarFBanXbFDYXC4WYEWOPMf4rd6TSGpThJI3md
-         8AQFWunw90fbc35pXShCQylY6s6IDvLHQym8J1wps/Z+nkU2ZClZ3bnPlfcJw7LBNC9l
-         c29Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWAXNmDSDhv13ZDO0kCueieVjX8OiZIYogRwmklGuH3JujzFJFVYDXXLvFFi/hmMOfvWhDXL2bIGkZxYBEI@vger.kernel.org, AJvYcCXDe6fdSoI4OhSKUrU0j8lZ9DQ1iKGs14Gi4ymjtJy8tcAD2vhfrZq3hWQ26DTBurGWFhc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwVyYSLQu/+TDik1rJgO/IW1RNInKEayirjd45FmdPdA2x2OMWL
-	cZda8NCWKMmzZmPfqdWUpgKCW3rT32k6n7+X0tkyXgLkhj6B6QQ/kgg/nfL5ClUIz2UxZI/KnqE
-	ospECGUWTFqr/XZtMJwSZS5+u6fuxaCY=
-X-Gm-Gg: ASbGncvOqUBd0F36jd/uG9aOCBPDl2nCn+KuuP//8txFyKHfdZi0uLY4e8DZK8/yhuX
-	ifzpz4+7u2aZqKa1gNkqW4JbklsDsbnUZSSm74u89+ygf9DMoUcmCn54dVcKIzPzIXBLGGNpLCJ
-	F7izAPpvSrvpSA73JRiukii7VVxxCsxaEtVsMXb2bItcT+Ba6TbxH7Yx2kPQXoe6SykT9oue7mT
-	7HyZgVN
-X-Google-Smtp-Source: AGHT+IGe4Yj5ws/qqsi0APF23sRi0Iv9xe2xK91Wy35K93f2vavegXJAkOTU2w+EaE+/G0T1B+A6VAnk+FODlxkSWOk=
-X-Received: by 2002:a05:6870:a40a:b0:2c1:bc87:9bd7 with SMTP id
- 586e51a60fabf-300ea49dbd9mr2765849fac.35.1752855537239; Fri, 18 Jul 2025
- 09:18:57 -0700 (PDT)
+	s=arc-20240116; t=1752856980; c=relaxed/simple;
+	bh=bE+eAgrZ3LfmBx40aBbR03Bt5Aui65kGfAn0UrENcUs=;
+	h=Message-ID:Date:From:To:Cc:Subject; b=cSGDJp1fH2FG40+UWHatjkUk9hVwl9GwFQGltiz24iX9gkt7VhqNyPwnSnkECWCANYUSgGM8lTHbPDw4RZCoEkFiDA9+ZPAVgNNh1RgEUn8OIFjwLqpl93epHfXyZALzmZDKzMJk10OwFL7Ll7hwiKVnn75b1bQxEazY++uFImM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NOzc0Kno; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85620C4CEEB;
+	Fri, 18 Jul 2025 16:42:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752856979;
+	bh=bE+eAgrZ3LfmBx40aBbR03Bt5Aui65kGfAn0UrENcUs=;
+	h=Date:From:To:Cc:Subject:From;
+	b=NOzc0KnouEJNPflqi5tZeAy2XMkZX65fRsNE1yNYB52WJO4++dqhIjiuaIeVQRDYN
+	 9jm37XLjvEksuLFTY5hhOHBu2Rr0IWiMTm2iIp3Gvw33beB1GKbaxv/CXJmfpt7DqD
+	 ovTnlZbDRC9LLrjiy4Lv3APtZyGvSkJ2TtETY6qVaNMB0GQM5KnUh/kRjJOWQLDB0h
+	 XddhnG/UXkjz5jLibZtSuUQpYY8sKZXzBUief+GQxyRtLWz6y6sWCoAYvkjvE/fLCD
+	 j6wDUAO+haLHaJurmc4bEc4yE+c5q/XMjD19nKTZo4AI25LyMupXC2eKqNExrtL/ox
+	 JQte9mhghtKTw==
+Received: from rostedt by gandalf with local (Exim 4.98.2)
+	(envelope-from <rostedt@kernel.org>)
+	id 1ucoB9-00000007JVo-0pvE;
+	Fri, 18 Jul 2025 12:43:23 -0400
+Message-ID: <20250718164119.089692174@kernel.org>
+User-Agent: quilt/0.68
+Date: Fri, 18 Jul 2025 12:41:19 -0400
+From: Steven Rostedt <rostedt@kernel.org>
+To: linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org,
+ x86@kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Josh Poimboeuf <jpoimboe@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Ingo Molnar <mingo@kernel.org>,
+ Jiri Olsa <jolsa@kernel.org>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Andrii Nakryiko <andrii@kernel.org>,
+ Indu Bhagat <indu.bhagat@oracle.com>,
+ "Jose E. Marchesi" <jemarch@gnu.org>,
+ Beau Belgrave <beaub@linux.microsoft.com>,
+ Jens Remus <jremus@linux.ibm.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Jens Axboe <axboe@kernel.dk>,
+ Florian Weimer <fweimer@redhat.com>,
+ Sam James <sam@gentoo.org>
+Subject: [PATCH v14 00/11] perf: Support the deferred unwinding infrastructure
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250717115936.7025-1-suchitkarunakaran@gmail.com>
- <CAEf4BzZ+OTkaXmtWPbOGB0OWz5xmj-d06UWchooO+iUyDHar4g@mail.gmail.com>
- <CAO9wTFgLOymS+VDcUTCHZ7niu_gEgN-N-F1uX-Kpm+uqvaMrQg@mail.gmail.com> <CAEf4Bzayn6UNjjbtgA8i2n4-_kuyERnOZAZMfc4cXTDKrSFr+w@mail.gmail.com>
-In-Reply-To: <CAEf4Bzayn6UNjjbtgA8i2n4-_kuyERnOZAZMfc4cXTDKrSFr+w@mail.gmail.com>
-From: Suchit K <suchitkarunakaran@gmail.com>
-Date: Fri, 18 Jul 2025 21:48:42 +0530
-X-Gm-Features: Ac12FXwjJnu7p3rh_Nm1Hf80A9R6X2OQXnzsdSC58X3ar7pRz68vSsoQRwmvdJo
-Message-ID: <CAO9wTFgGgoEs08PazyWvnRyEQ4tvdCgjvtLNnzX_6Ov-RjU4Rg@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: Replace strcpy() with memcpy() in bpf_object__new()
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
-	skhan@linuxfoundation.org, linux-kernel-mentees@lists.linux.dev, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, 18 Jul 2025 at 21:09, Andrii Nakryiko <andrii.nakryiko@gmail.com> w=
-rote:
->
-> On Thu, Jul 17, 2025 at 10:33=E2=80=AFAM Suchit K <suchitkarunakaran@gmai=
-l.com> wrote:
-> >
-> > > This is user-space libbpf code, where the API contract mandates that
-> > > the path argument is a well-formed zero-terminated C string. Plus, if
-> > > you look at the few lines above, we allocate just enough space to fit
-> > > the entire contents of the string without truncation.
-> > >
-> > > In other words, there is nothing to fix or improve here.
-> > >
-> >
-> > Even though it=E2=80=99s safe in this context, would it still be a good=
- idea
-> > to replace strcpy() with something like memcpy() since it's
->
-> no, there is no need. And keep in mind that this is libbpf library
-> source code, which is developed as part of kernel repo, but isn't
-> running inside the kernel itself
->
+This is based on top of the deferred unwind core patch series:
 
-Yup got it. Thank you so much for the clarification.
+ https://lore.kernel.org/linux-trace-kernel/20250717004910.297898999@kernel.org/
+   git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
+     unwind/core
+
+This series implements the perf interface to use deferred user space stack
+tracing.
+
+The first 5 patches are clean ups and simplifications. There's a standalone
+series with these patches here:
+
+  https://lore.kernel.org/linux-trace-kernel/20250717173125.434618999@kernel.org/
+
+
+Patch 6 implements a task deferred tracing that works with events following
+a specific task (per thread).
+
+Patch 7 implements a per CPU deferred tracing that requires the application
+(perf user space) to have a per CPU event buffer for every CPU where a task
+may migrate to from the time a deferred request is made to when the stack
+trace occurs, as a task may migrate to a different CPU after the request and
+before it goes back to user space.
+
+The rest of the patches implement the tool side of perf.
+
+KNOWN ISSUES:
+
+- The marker that adds the USER_DEFERRED when the request was made, should
+  also add the cookie. As the cookie can be used to figure out if dropped
+  events missed a stack trace and not to attach a stack trace to the wrong
+  events.
+
+- The writing of the stack trace should probably be changed to act more like
+  get_perf_callchain() where it does fixups to uprobes.
+
+The code for this series is located here:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
+unwind/perf
+
+Head SHA1: 5753b61c16f61e50f35bf0f3dfbf8a00b8de2d51
+
+Changes since v13: https://lore.kernel.org/linux-trace-kernel/20250708020003.565862284@kernel.org/
+
+- Missed one location to replace the current->mm == NULL check that still
+  only checked PF_KTHREAD. It must also check PF_USER_WORKER.
+
+- Need to copy the trace.entries[] one a at a time as the perf entry in
+  the ring buffer has 64 bit entries, but trace.entries[] are size long.
+ 
+- Added back the cookie field in perf_callchain_deferred_event structure
+  (Note, it was a timestamp before) (Namhyung Kim)
+ 
+- Add the cookie to the comment explaining perf_callchain_deferred_event.
+
+- Fixed deferred_unwind_request() to return 1 if the request was already
+  queued or was already executed to not incorrectly increment
+  nr_no_switch_fast.
+
+- Display the cookie in the -D output
+
+
+Josh Poimboeuf (5):
+      perf: Remove get_perf_callchain() init_nr argument
+      perf: Have get_perf_callchain() return NULL if crosstask and user are set
+      perf: Simplify get_perf_callchain() user logic
+      perf: Skip user unwind if the task is a kernel thread
+      perf: Support deferred user callchains
+
+Namhyung Kim (4):
+      perf tools: Minimal CALLCHAIN_DEFERRED support
+      perf record: Enable defer_callchain for user callchains
+      perf script: Display PERF_RECORD_CALLCHAIN_DEFERRED
+      perf tools: Merge deferred user callchains
+
+Steven Rostedt (2):
+      perf: Use current->flags & PF_KTHREAD|PF_USER_WORKER instead of current->mm == NULL
+      perf: Support deferred user callchains for per CPU events
+
+----
+ include/linux/perf_event.h                |  13 +-
+ include/uapi/linux/perf_event.h           |  20 +-
+ kernel/bpf/stackmap.c                     |   8 +-
+ kernel/events/callchain.c                 |  49 ++--
+ kernel/events/core.c                      | 424 +++++++++++++++++++++++++++++-
+ tools/include/uapi/linux/perf_event.h     |  19 +-
+ tools/lib/perf/include/perf/event.h       |   8 +
+ tools/perf/Documentation/perf-script.txt  |   5 +
+ tools/perf/builtin-script.c               |  92 +++++++
+ tools/perf/util/callchain.c               |  24 ++
+ tools/perf/util/callchain.h               |   3 +
+ tools/perf/util/event.c                   |   1 +
+ tools/perf/util/evlist.c                  |   1 +
+ tools/perf/util/evlist.h                  |   1 +
+ tools/perf/util/evsel.c                   |  39 +++
+ tools/perf/util/evsel.h                   |   1 +
+ tools/perf/util/machine.c                 |   1 +
+ tools/perf/util/perf_event_attr_fprintf.c |   1 +
+ tools/perf/util/sample.h                  |   3 +-
+ tools/perf/util/session.c                 |  79 ++++++
+ tools/perf/util/tool.c                    |   2 +
+ tools/perf/util/tool.h                    |   4 +-
+ 22 files changed, 762 insertions(+), 36 deletions(-)
 
