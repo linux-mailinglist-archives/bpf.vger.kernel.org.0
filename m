@@ -1,133 +1,133 @@
-Return-Path: <bpf+bounces-63706-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63707-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CCDCB0A156
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 12:57:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD562B0A1F3
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 13:33:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 075945A77DC
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 10:57:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 510391894D16
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 11:33:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BCB32BE026;
-	Fri, 18 Jul 2025 10:56:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A88502D9498;
+	Fri, 18 Jul 2025 11:33:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dja8nQYS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XFwPSbbk"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D15EF2BDC20;
-	Fri, 18 Jul 2025 10:56:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A4A3221F04;
+	Fri, 18 Jul 2025 11:33:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752836212; cv=none; b=fCn8MplnSEB5h3dda91FNwrffIhJTyJha3PZ6p/EMKptQB0a92THG6NAuezy3jX6lbJccUFU5x8yX+uC1bbyXl6sOVfftM1laS7hsP2WQwcK56Xq7gAujzT7ZXzfttKTAvMaZICBjQ6tn4vBJAL2y+V0LeIOR7h2xj9ulb3ez6M=
+	t=1752838401; cv=none; b=oUO4gwPq94zceEdH+3BoI1ZNlu+h7Hq81S1UNOEDxZx5s7tdQPayjXsoCaPZCgiTEYkKhCRD1POaqVZw4qF7ysU8bUdeM1dg9rk+tkVTZ5qVJnYqsR6zpbs/tknhgzSc9z1J/OhqPCPjyDNL984xcD/HWl2pBiEuYOeCt1SZ7b4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752836212; c=relaxed/simple;
-	bh=GXGPG/dXUPXi2EQO1KdqRc/RUmrH2/XT1ZYS2PrRhFE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Nc7sVmnEVZ1r5d1IL3pzj3XaZSoUhK9t1wxrNxGU3OsnSnHAfygMaRBANPjzgyEgWsg4nKzCQw2dgN2Xdsy7KjOa52AzYLejMAniFunVlQdBiSjTkdQKBLImFGeSBD5pzZ+2Ve452uQI4bz4fKRuvROfLGPapVvJCcMMlb7y6Vw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dja8nQYS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7DB9C4CEEB;
-	Fri, 18 Jul 2025 10:56:48 +0000 (UTC)
+	s=arc-20240116; t=1752838401; c=relaxed/simple;
+	bh=92arq/Wo1/KhOpoRdEXUKIc1y6xuILihx9THlijFiR0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TjVq/qbyBJH2d4hikvH2BzQDi89E4Xcwz0ZTFoky4OJZgw16320d+xBZ+VtnY3sIDIzePfoqqOvQsGPGCBmskCoVw7J2wPtkXWgRQCQ+pnmNUXgQQW6whr84oeU/n5DLGFHbb2vND/yyK+wVfhSTZ7PQAME0i1dfgHaqd86WJes=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XFwPSbbk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A11AC4CEEB;
+	Fri, 18 Jul 2025 11:33:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752836212;
-	bh=GXGPG/dXUPXi2EQO1KdqRc/RUmrH2/XT1ZYS2PrRhFE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=dja8nQYSBSupKitQWWNnqZrNzUZh6rQ6Ns7Mz6j3dOlZJDjNRIUqNXFTTF8AXHFba
-	 UKdPImSbYNn+p/cWqD8khhs3nHlgzikLRelQl4L9Zy8A0CHLuNdi+5rkSevbHay7dE
-	 gZPZUCx/i8H5hdM9gn9ytZN4Mryom7WkolsDlOeAKHrDjFk2u76eHzs4/Q4R8EmbrK
-	 18ZKuBN1y7wxHsG7ERAvV/yGfhzPdAphRyD+wPF9RCZYkf+qvYqH9GDGPIsdzpsGJP
-	 R6FZs33unqtB/pOwvUOpcmbTEHLhlNev+0+VEqVfPtBXlBoPY1Anzmh98LB+U1/bBj
-	 XKmU9Ge5tSP9w==
-Message-ID: <ebc18aba-d832-4eb6-b626-4ca3a2f27fe2@kernel.org>
-Date: Fri, 18 Jul 2025 12:56:46 +0200
+	s=k20201202; t=1752838400;
+	bh=92arq/Wo1/KhOpoRdEXUKIc1y6xuILihx9THlijFiR0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XFwPSbbkzFb40PzhDQ/wJAwKW3YmtkzoutTGTkV/zX1+GLT4rYBnnKNNYzGDui87P
+	 Yi7IOtoXvaRhL5fa1rWumqqxtuAhQae5fbYevDcyF+Lxo0ccUSuMoguYPO/egRL/Qm
+	 EQeCo/h2G3/kiEcq4oJQnk+8G+3ev4ZIRyyke8n1bh/8qHk9kyldId2MUKh5ePVkjP
+	 lcCkEdu1CxQu9uFDq34mw7pvxII3CRaE2y464pDItUdJhiCri28vwejHJU0WqreC7G
+	 7BXZuGgFrCPbtERV8zuJ/vRXT1P1j0zzRzJhZ+1NFvXe3udHk/iOi+ANqxnMqWa2ud
+	 2yZwCecPVUMaw==
+Date: Fri, 18 Jul 2025 12:33:15 +0100
+From: Will Deacon <will@kernel.org>
+To: Sami Tolvanen <samitolvanen@google.com>
+Cc: bpf@vger.kernel.org, Puranjay Mohan <puranjay@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Maxwell Bland <mbland@motorola.com>, Dao Huang <huangdao1@oppo.com>
+Subject: Re: [PATCH bpf-next v10 1/3] cfi: add C CFI type macro
+Message-ID: <aHow-yVsJCO2AJsn@willie-the-truck>
+References: <20250715225733.3921432-5-samitolvanen@google.com>
+ <20250715225733.3921432-6-samitolvanen@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next V2 0/7] xdp: Allow BPF to set RX hints for
- XDP_REDIRECTed packets
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Lorenzo Bianconi <lorenzo@kernel.org>,
- Stanislav Fomichev <stfomichev@gmail.com>, bpf@vger.kernel.org,
- netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <borkmann@iogearbox.net>,
- Eric Dumazet <eric.dumazet@gmail.com>, "David S. Miller"
- <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>, sdf@fomichev.me,
- kernel-team@cloudflare.com, arthur@arthurfabre.com, jakub@cloudflare.com,
- Jesse Brandeburg <jbrandeburg@cloudflare.com>
-References: <175146824674.1421237.18351246421763677468.stgit@firesoul>
- <aGVY2MQ18BWOisWa@mini-arch>
- <b1873a92-747d-4f32-91f8-126779947e42@kernel.org>
- <aGvcb53APFXR8eJb@mini-arch> <aG427EcHHn9yxaDv@lore-desk>
- <aHE2F1FJlYc37eIz@mini-arch> <aHeKYZY7l2i1xwel@lore-desk>
- <20250716142015.0b309c71@kernel.org>
- <fbb026f9-54cf-49ba-b0dc-0df0f54c6961@kernel.org>
- <20250717182534.4f305f8a@kernel.org>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <20250717182534.4f305f8a@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250715225733.3921432-6-samitolvanen@google.com>
 
-
-
-
-On 18/07/2025 03.25, Jakub Kicinski wrote:
-> On Thu, 17 Jul 2025 15:08:49 +0200 Jesper Dangaard Brouer wrote:
->> Let me explain why it is a bad idea of writing into the RX descriptors.
->> The DMA descriptors are allocated as coherent DMA (dma_alloc_coherent).
->> This is memory that is shared with the NIC hardware device, which
->> implies cache-line coherence.  NIC performance is tightly coupled to
->> limiting cache misses for descriptors.  One common trick is to pack more
->> descriptors into a single cache-line.  Thus, if we start to write into
->> the current RX-descriptor, then we invalidate that cache-line seen from
->> the device, and next RX-descriptor (from this cache-line) will be in an
->> unfortunate coherent state.  Behind the scene this might lead to some
->> extra PCIe transactions.
->>
->> By writing to the xdp_frame, we don't have to modify the DMA descriptors
->> directly and risk invalidating cache lines for the NIC.
+On Tue, Jul 15, 2025 at 10:57:35PM +0000, Sami Tolvanen wrote:
+> From: Mark Rutland <mark.rutland@arm.com>
 > 
-> I thought you main use case is redirected packets. In which case it's
-> the _remote_ end that's writing its metadata, if it's veth it's
-> obviously not going to be doing it into DMA coherent memory.
-
-My apologies for the confusion. That entire explanation about the
-dangers of writing to RX descriptors was a direct response to
-Stanislav's earlier proposal (for the XDP_PASS case, I assume).
-
-You are right that this isn't relevant for redirected xdp_frames,
-as there is no access to the original RX-descriptor on a remote CPU or
-target device like veth.
-
-
->> Thanks for the feedback. I can see why you'd be concerned about adding
->> another adhoc scheme or making xdp_frame grow into a "para-skb".
->>
->> However, I'd like to frame this as part of a long-term plan we've been
->> calling the "mini-SKB" concept. This isn't a new idea, but a
->> continuation of architectural discussions from as far back as [2016].
+> Currently x86 and riscv open-code 4 instances of the same logic to
+> define a u32 variable with the KCFI typeid of a given function.
 > 
-> My understanding is that while this was floated as a plan by some,
-> nobody came up with a clean way of implementing it.
+> Replace the duplicate logic with a common macro.
+> 
+> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> Co-developed-by: Maxwell Bland <mbland@motorola.com>
+> Signed-off-by: Maxwell Bland <mbland@motorola.com>
+> Co-developed-by: Sami Tolvanen <samitolvanen@google.com>
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> Tested-by: Dao Huang <huangdao1@oppo.com>
+> ---
+>  arch/riscv/kernel/cfi.c       | 35 +++--------------------------------
+>  arch/x86/kernel/alternative.c | 31 +++----------------------------
+>  include/linux/cfi_types.h     | 23 +++++++++++++++++++++++
+>  3 files changed, 29 insertions(+), 60 deletions(-)
 
-I can see why you might think that, but from my perspective, the
-xdp_frame *is* the implementation of the mini-SKB concept. We've been
-building it incrementally for years. It started as the most minimal
-structure possible and has gradually gained more context (e.g. dev_rx,
-mem_info/rxq_info, flags, and also uses skb_shared_info with same layout
-as SKB).
+[...]
 
-This patch is simply the next logical step in that existing evolution:
-adding hardware metadata to make it more capable, starting with enabling
-XDP_REDIRECT offloads. The xdp_frame is our mini-SKB, and this patchset
-continues its evolution.
+> diff --git a/include/linux/cfi_types.h b/include/linux/cfi_types.h
+> index 6b8713675765..e5567c0fd0b3 100644
+> --- a/include/linux/cfi_types.h
+> +++ b/include/linux/cfi_types.h
+> @@ -41,5 +41,28 @@
+>  	SYM_TYPED_START(name, SYM_L_GLOBAL, SYM_A_ALIGN)
+>  #endif
+>  
+> +#else /* __ASSEMBLY__ */
+> +
+> +#ifdef CONFIG_CFI_CLANG
+> +#define DEFINE_CFI_TYPE(name, func)						\
+> +	/*									\
+> +	 * Force a reference to the function so the compiler generates		\
+> +	 * __kcfi_typeid_<func>.						\
+> +	 */									\
+> +	__ADDRESSABLE(func);							\
+> +	/* u32 name __ro_after_init = __kcfi_typeid_<func> */			\
+> +	extern u32 name;							\
+> +	asm (									\
+> +	"	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"	\
+> +	"	.type	" #name ",@object				\n"	\
+> +	"	.globl	" #name "					\n"	\
+> +	"	.p2align	2, 0x0					\n"	\
+> +	#name ":							\n"	\
+> +	"	.4byte	__kcfi_typeid_" #func "				\n"	\
+> +	"	.size	" #name ", 4					\n"	\
+> +	"	.popsection						\n"	\
+> +	);
+> +#endif
 
---Jesper
+This looks good to me. I was initially a bit worried about the portability
+of the '.4byte' directive, but it seems that cfi_types.h is already using
+that for the __CFI_TYPE() macro so I'm assuming it's not an issue.
+
+In which case:
+
+Acked-by: Will Deacon <will@kernel.org>
+
+Thanks for cleaning it up.
+
+Will
 
