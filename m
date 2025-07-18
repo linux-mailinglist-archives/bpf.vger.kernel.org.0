@@ -1,77 +1,78 @@
-Return-Path: <bpf+bounces-63685-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63686-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D4BAB099B9
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 04:17:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7CA4B099B6
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 04:17:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77EC17B566F
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 02:15:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F6AE4A604E
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 02:17:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 126621B4156;
-	Fri, 18 Jul 2025 02:16:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E205970825;
+	Fri, 18 Jul 2025 02:16:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G9JhUYWR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fx5k6yYh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42F6370825
-	for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 02:16:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 090D917597
+	for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 02:16:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752805014; cv=none; b=WCP6Cy+duD5Zn+E0chnB9clKM6MORIO73E6nDRihZ2sVIDJ3whr+6DA+/oIdAJwHtJZMh1vH3THzfiWMiL+eVDsfOCCTGgzyC+YqStv7mv4ReXSJtsg6tWeV8c1bJT8WdxHQ8uhA7SvPnl8gQE4/rSeERA+WPCOAtRUNu58fmUc=
+	t=1752805017; cv=none; b=aFIW8hE89jtM7prxy4WndVLH+sKfuEqXYyl5HXeYLJLbkNoxyy5BBfNaFKo3y/+iypnOji2YGcRmJiYIxvA2RtONlQBB1u0RDvUq/aybYhvkWhPyPLQcm+SBjR/ywsoMdLEJO4T+7JzPhlSylApH9cDQGfbgzsjcxx3IpYBrvsg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752805014; c=relaxed/simple;
-	bh=oPpc/owN0nnybCG8ZrOpKDTYgxnCo+M0v02f6gECNLM=;
+	s=arc-20240116; t=1752805017; c=relaxed/simple;
+	bh=WH/nN3YY1cNfC4PBbfuLBafDCPaz6c1Seo5Bg85aSM8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=enH8QWPTJCRAYQQWUm/EC+CNkYDfhmxqM/UZXRqBmQ9a8nQ6Xt6W56ObVXGo9UOIPlVcSPLHN5es0h/tFbtptUQCKy/HX3AOMpH1XfW3ROocJmvuafLj2RuCEBNmbKNTdRL+DUbV9sPGBzDXDvUXQOHdvp7d8aVUicnysGmAYFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G9JhUYWR; arc=none smtp.client-ip=209.85.215.182
+	 MIME-Version; b=dH2wzCst/kZ5ygoMWphdTpJ3Wtxqn+N15IlHpReOfAS554+vFh4t+ZA21jVxZfK8Z1mJvd/fuTARje9ELNL52Qwd1FAb354aJbek5ulfd2pj3E89eRFFDGRFLbm//SHlDvBQgV7ulYSW8O6AaRpr2XaYPZ7pHACeRiPyvZ4SM0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fx5k6yYh; arc=none smtp.client-ip=209.85.215.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-b3aa2a0022cso1548870a12.1
-        for <bpf@vger.kernel.org>; Thu, 17 Jul 2025 19:16:52 -0700 (PDT)
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-b26f5f47ba1so1278424a12.1
+        for <bpf@vger.kernel.org>; Thu, 17 Jul 2025 19:16:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752805012; x=1753409812; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1752805015; x=1753409815; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xIhGNjzYvU0LF9WvNv9O3HmVQLiCNpvjb+HJX/OSNPE=;
-        b=G9JhUYWRXJKVEEkQgAWcWKhvwZuQ6XVwygiouyoUth+kcXdCL3VsUqQnOlYPDCBZ3m
-         3EUfmLRg3qZ81o+hWYa8CAsrKI8jYhhlQkuAT0kO2r7S1cWt2bmqbbe9r7RnUTJ5Ye4I
-         iwq8RURICLR8+He4bL5NZPN80wUay5XBZUDkNt4fwW5/g/p8WGodRT7pz5065h2QyFue
-         HqCddKyp+a62JXXAjicym65d+hXE33KlZf4j+H651lAVq7EaxnUjfS7hl9J1N/9PV74x
-         u49bvdG9w771tg08hjsUMi3rHQ2ZFBWjKFAvmqC7zeqk2TflqatbIONU/MP+JDWkJSp4
-         AE9g==
+        bh=+QPfGz9hyNuSzeIbSFrflGYEbZW75nC7LqiC3enF+gU=;
+        b=Fx5k6yYh9tL9lDCSUhelghyVCc/ptRGAXaeSD2j+04L0gSiVx0V/GOKvu3leBELkjn
+         YX8GGlwpqkhhvtoCc7+F0elCqgX+UAyKP1jXv9kmDXm1J7+s/Qd67O3bfaePbF/z6+1s
+         qwhpZzf6Mi7aCSVUbjbl98GqIy6K43s7YFkSmV28v8Pbl3INhyTBvwQIGelUY/c9hlQm
+         CzOZN2TMYbcubmn0asmj1Av0nehHc9Jkbh66F7049CQkheI9n55kA8EaO45qhQya5upl
+         QtHVxmdBQiwwz9h9dL/xkYl1TpesHnnzdG3wR6WwaSXu4yLElu/eIzs6wOzYxVwQy7AD
+         2kcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752805012; x=1753409812;
+        d=1e100.net; s=20230601; t=1752805015; x=1753409815;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xIhGNjzYvU0LF9WvNv9O3HmVQLiCNpvjb+HJX/OSNPE=;
-        b=P7bGrFWV8Y1YOMq4nVNvyj+rY73m43mFQgMLOpew3R6QHC//+e78yYppwSmvLWRHYr
-         DRAElofAugTR49poEvCksQWxWU3G6uiZGZqDN/qORX6ikZXlvw0wTB5wjxKCgh7spRae
-         cO/JHMRoYfQdwcjDTdw9p/AUIC5oV3ArCAFzS7tq2fP3EH+XuFw6y0MVFDYZP9KS9l0f
-         pt7k67dD1wRpm1/vEzYmFy37eoiiEz3vZ9InF2XWokVQSKrigOOiTFuqAMs0k8sRqT9A
-         +/0Mp25yvlH6vxEhwceqUsanhVKuzFUAC8ULIAovYZazS/eSvEmf0vNvBnlafgJmvY3o
-         sosw==
-X-Gm-Message-State: AOJu0YxHg7rp24eFCzepZFIb2fTzMn+pEQkJPlqNfLRrmynqJM5ATz12
-	oyC4sNhMmrQ4kIxWFClnv4niCYy6q9agMzBs2Nl/IMxyizvOtT/VON8NBF/PhQ==
-X-Gm-Gg: ASbGncuPfXzAbiIZJbwVPfF0NBUB5MVhtwOjyWmHn+x/8PiAQIecRLe3bKliUDLJWle
-	f6+XrLP/r9OEsKt6CkauKe0U1E8kAi1ftHbmCl+MgbRdEg4HwVrMkhOgIE/z2S6TYadaNfYc2O5
-	Sq3eVXlLHtNrxWUmZCGJh3xfj9w8iyNb6t+oqSej7M5ep1MCgeQ6X7WDWDHCPYEj1SRihghsHfo
-	2mlJ4vLK/w057e9ytdBW/7euI6/rkgbGoPHY6n2enFjIzgBApXkFv18N+wOKlK3Yi7LbQOdAT2O
-	wN2F6zxqdRcbsPPbSTGiO8h7dCFa2JHJAao63Qks5aSrY/s7mZWM0YafEj1McQfUUHqWwT2SzbV
-	HW9FrqsTEnRYgjHur1MCuH+xby7IRjl6P0vahJg72el9KoPNtfJaWovGn4bPIbEk=
-X-Google-Smtp-Source: AGHT+IGUTr2ssiwc+Q/DxQkSyymIb/HkWdb6h+t44qN6znpvcLwh2+OCFlaQX/CKqvK+LvFsBWCg3A==
-X-Received: by 2002:a17:90b:4fca:b0:30e:3718:e9d with SMTP id 98e67ed59e1d1-31c9f48a301mr13192447a91.35.1752805011963;
-        Thu, 17 Jul 2025 19:16:51 -0700 (PDT)
+        bh=+QPfGz9hyNuSzeIbSFrflGYEbZW75nC7LqiC3enF+gU=;
+        b=kcCc58pS9/gIN1kV9602mB8kuGZ4H/lASMcREV2v8zF55MP/mQ2vnz08AiC2mxlUsb
+         imCi9p2RfdbBXhNHV0iAM26paNcy2K6/SWtX9l7egWe6Qs38lHdq3gPsNgiqEybvU4B2
+         0pJGSVTZ5iHZoe1icaqGZ6ACGso521l3LiJmTUGoYPJF1DxnqddS29oWacwgTxC0INE/
+         s55xY4xThBdW5pxKP84nkrlKCfF3hVpwBJ9KteufAGnsypbyh5VJnuJjruHt2rVMuz7p
+         Dd9E5fFxA0/CzzaHD9nhOqzUQ1SENys+YoTNAmqg5JS8izc11CnY/RptnqLjbk/gLUb8
+         dw4g==
+X-Gm-Message-State: AOJu0YzNIdTUsC4RegT2zgaQqdN2E0kUENfoHB2BZxichVrrxXaczZJT
+	dIn6yEmSHzW4p8XyO+2X/CHxynlnV3JI+MJWsEUVu0tEsmbfA9RazWCOJ0fFtw==
+X-Gm-Gg: ASbGnctZJ/f41qv/1KMFp7c7UbOtaeFf4NwdY9h1jVex/KPgpF+H8V4OukcUiYaeSu7
+	5dLGd8s8zga8UzIiQ/e6lIfOoW0fmzg187Qb1opVLVBp0xI2lRB5D7m9TRo5VMTzV66zTgf78gf
+	3PUn78PI1aK+SVN2QvC+t3yd7b0nF1/zjfBm8Lk+1sWgMqCNfzu4R+pnOLDNdpC7ppasMrKwyTS
+	vltLpzYhXPO6wVmaHlgDrzakI8J1PtsSkPOj+KKfPTIGK1ny49gKQ/4nz+++e4RrYJgHIogMn1h
+	U0fL3jWHz3jBk7elSMBv/3LeSaj8vamHlEPk2XyMORAso8bp43M3SH+2TCkOjJhuoL8vncNWnqH
+	OYbvRK+6E/II6Sl6dgPtla0lfKtX2BtXmo4+U5lRcH8wNZXjoWeehJNZ97UKZl+7IVFGFbzS12g
+	==
+X-Google-Smtp-Source: AGHT+IFqshWLuYL3hiVrY/cvf94EL2o5tpDcrxRmMAgP2cCNokNJ8dULFXwjqBQyApqZRBONGsor5A==
+X-Received: by 2002:a05:6a20:7343:b0:237:a825:8b54 with SMTP id adf61e73a8af0-2381313e9dfmr14531524637.38.1752805014909;
+        Thu, 17 Jul 2025 19:16:54 -0700 (PDT)
 Received: from localhost.localdomain ([2001:558:600a:7:a83d:600f:32cc:235a])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31cc3f162d5sm214591a91.22.2025.07.17.19.16.50
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b3f2ff5eecfsm235416a12.47.2025.07.17.19.16.54
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Thu, 17 Jul 2025 19:16:51 -0700 (PDT)
+        Thu, 17 Jul 2025 19:16:54 -0700 (PDT)
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: bpf@vger.kernel.org,
 	linux-mm@kvack.org
@@ -86,9 +87,9 @@ Cc: vbabka@suse.cz,
 	peterz@infradead.org,
 	rostedt@goodmis.org,
 	hannes@cmpxchg.org
-Subject: [PATCH v4 1/6] locking/local_lock: Expose dep_map in local_trylock_t.
-Date: Thu, 17 Jul 2025 19:16:41 -0700
-Message-Id: <20250718021646.73353-2-alexei.starovoitov@gmail.com>
+Subject: [PATCH v4 2/6] locking/local_lock: Introduce local_lock_is_locked().
+Date: Thu, 17 Jul 2025 19:16:42 -0700
+Message-Id: <20250718021646.73353-3-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 In-Reply-To: <20250718021646.73353-1-alexei.starovoitov@gmail.com>
 References: <20250718021646.73353-1-alexei.starovoitov@gmail.com>
@@ -102,50 +103,97 @@ Content-Transfer-Encoding: 8bit
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-lockdep_is_held() macro assumes that "struct lockdep_map dep_map;"
-is a top level field of any lock that participates in LOCKDEP.
-Make it so for local_trylock_t.
+Introduce local_lock_is_locked() that returns true when
+given local_lock is locked by current cpu (in !PREEMPT_RT) or
+by current task (in PREEMPT_RT).
+The goal is to detect a deadlock by the caller.
 
 Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- include/linux/local_lock_internal.h | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ include/linux/local_lock.h          |  2 ++
+ include/linux/local_lock_internal.h |  7 +++++++
+ include/linux/rtmutex.h             | 10 ++++++++++
+ kernel/locking/rtmutex_common.h     |  9 ---------
+ 4 files changed, 19 insertions(+), 9 deletions(-)
 
+diff --git a/include/linux/local_lock.h b/include/linux/local_lock.h
+index 16a2ee4f8310..092ce89b162a 100644
+--- a/include/linux/local_lock.h
++++ b/include/linux/local_lock.h
+@@ -66,6 +66,8 @@
+  */
+ #define local_trylock(lock)		__local_trylock(lock)
+ 
++#define local_lock_is_locked(lock)	__local_lock_is_locked(lock)
++
+ /**
+  * local_trylock_irqsave - Try to acquire a per CPU local lock, save and disable
+  *			   interrupts if acquired
 diff --git a/include/linux/local_lock_internal.h b/include/linux/local_lock_internal.h
-index 8d5ac16a9b17..85c2e1b1af6b 100644
+index 85c2e1b1af6b..db61409f040c 100644
 --- a/include/linux/local_lock_internal.h
 +++ b/include/linux/local_lock_internal.h
-@@ -17,7 +17,10 @@ typedef struct {
+@@ -165,6 +165,9 @@ do {								\
+ 		!!tl;						\
+ 	})
  
- /* local_trylock() and local_trylock_irqsave() only work with local_trylock_t */
- typedef struct {
--	local_lock_t	llock;
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+	struct lockdep_map	dep_map;
-+	struct task_struct	*owner;
++/* preemption or migration must be disabled before calling __local_lock_is_locked */
++#define __local_lock_is_locked(lock) READ_ONCE(this_cpu_ptr(lock)->acquired)
++
+ #define __local_lock_release(lock)					\
+ 	do {								\
+ 		local_trylock_t *tl;					\
+@@ -285,4 +288,8 @@ do {								\
+ 		__local_trylock(lock);				\
+ 	})
+ 
++/* migration must be disabled before calling __local_lock_is_locked */
++#define __local_lock_is_locked(__lock)					\
++	(rt_mutex_owner(&this_cpu_ptr(__lock)->lock) == current)
++
+ #endif /* CONFIG_PREEMPT_RT */
+diff --git a/include/linux/rtmutex.h b/include/linux/rtmutex.h
+index 7d049883a08a..98391601fe94 100644
+--- a/include/linux/rtmutex.h
++++ b/include/linux/rtmutex.h
+@@ -44,6 +44,16 @@ static inline bool rt_mutex_base_is_locked(struct rt_mutex_base *lock)
+ 	return READ_ONCE(lock->owner) != NULL;
+ }
+ 
++#ifdef CONFIG_RT_MUTEXES
++#define RT_MUTEX_HAS_WAITERS	1UL
++
++static inline struct task_struct *rt_mutex_owner(struct rt_mutex_base *lock)
++{
++	unsigned long owner = (unsigned long) READ_ONCE(lock->owner);
++
++	return (struct task_struct *) (owner & ~RT_MUTEX_HAS_WAITERS);
++}
 +#endif
- 	u8		acquired;
- } local_trylock_t;
+ extern void rt_mutex_base_init(struct rt_mutex_base *rtb);
  
-@@ -31,7 +34,7 @@ typedef struct {
- 	.owner = NULL,
+ /**
+diff --git a/kernel/locking/rtmutex_common.h b/kernel/locking/rtmutex_common.h
+index 78dd3d8c6554..cf6ddd1b23a2 100644
+--- a/kernel/locking/rtmutex_common.h
++++ b/kernel/locking/rtmutex_common.h
+@@ -153,15 +153,6 @@ static inline struct rt_mutex_waiter *task_top_pi_waiter(struct task_struct *p)
+ 			pi_tree.entry);
+ }
  
- # define LOCAL_TRYLOCK_DEBUG_INIT(lockname)		\
--	.llock = { LOCAL_LOCK_DEBUG_INIT((lockname).llock) },
-+	LOCAL_LOCK_DEBUG_INIT(lockname)
- 
- static inline void local_lock_acquire(local_lock_t *l)
- {
-@@ -81,7 +84,7 @@ do {								\
- 	local_lock_debug_init(lock);				\
- } while (0)
- 
--#define __local_trylock_init(lock) __local_lock_init(lock.llock)
-+#define __local_trylock_init(lock) __local_lock_init((local_lock_t *)lock)
- 
- #define __spinlock_nested_bh_init(lock)				\
- do {								\
+-#define RT_MUTEX_HAS_WAITERS	1UL
+-
+-static inline struct task_struct *rt_mutex_owner(struct rt_mutex_base *lock)
+-{
+-	unsigned long owner = (unsigned long) READ_ONCE(lock->owner);
+-
+-	return (struct task_struct *) (owner & ~RT_MUTEX_HAS_WAITERS);
+-}
+-
+ /*
+  * Constants for rt mutex functions which have a selectable deadlock
+  * detection.
 -- 
 2.47.1
 
