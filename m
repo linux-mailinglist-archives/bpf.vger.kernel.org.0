@@ -1,113 +1,164 @@
-Return-Path: <bpf+bounces-63677-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63678-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6B3EB098C2
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 02:09:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D794B098C4
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 02:10:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E574C587D61
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 00:09:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 557D53A46B0
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 00:09:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61093AD21;
-	Fri, 18 Jul 2025 00:09:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A3F83C38;
+	Fri, 18 Jul 2025 00:10:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mGcjHtFo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l76sQP+D"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D027137E
-	for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 00:09:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8D4120E6
+	for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 00:10:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752797361; cv=none; b=m2jdr+mq1fpSK6TNvsza/8BiEGG5E7ZY7BJtgf0dFdZ5e1jbIyuV3BoHlYfX9F9Fh3MWaTO8euWwYOiswd8oBwU0XhGvUOM4NP55nnWaspnhQjSh11gxyaeFxF6ZPnFhVkeywUqhOsqcBLu1U/gGbTT1GQGJFlmcbi8ozPLF5eA=
+	t=1752797411; cv=none; b=c04UwnhbYj8SVvMSdMd5KdzDKkmDh1aaw3Z1fi9uxUj2Yyzpoav1a99F43uPWFGtL92GEzOGB4br7wwf4zitDl57Gu5RLqLy8oTEBvwg6SEqVj4OGCBptqnoBVO7EQf1wxzejgCyVX1SwvEO42xxB2ylkbxVbu1z3ZYL5NqFLV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752797361; c=relaxed/simple;
-	bh=dlXAKFkSwNCkyqyH5NucpCFYtKH3bdQYFBpaLQRgPsU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QU43iKltuly34VKtkQaH3PBTab7I24WjQpXKRLHQYLn8/ZiMeY18UdNZfv7D+15gJXPvuNiFzdu5KCKWRTbZh/wrjES0RlvJaAtxOi3OQqO9hXKo3ffbvd7n5FCw/gq/NfCbF87IU5gEoq3cm4F68joDyf1O6Hy4UdNNoLGtuyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mGcjHtFo; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4560d176f97so17390975e9.0
-        for <bpf@vger.kernel.org>; Thu, 17 Jul 2025 17:09:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752797359; x=1753402159; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eFPWUEY/toVDVNd2k/LREoggH1XAsJ0FDgoZbNXOeEw=;
-        b=mGcjHtFoVr6L31afm3WO2QOXisqQ7zkgbXxW8NQpFgxULj0pZ6f2FwQ2emcQplF7LI
-         kEJRPpFbUHx5nILJAQ2nBjVm3CtprbkKfmlut11ak7NjL2qam5N01N+BHlYNprIiLuOm
-         JpFY/Mj7bQBqewy0AkF+NBBEHggpyMFRDqob4qVveVVmR3WnrhICH24SKudrJrRlSwzZ
-         eGiegzM6lZ++k+ctZuMuDsX+2opw06gX0ochJX6dqaK8+CjMBkLH5TwE2/yAJIGuEAWo
-         80MLoDNIkf7bzQRenr4HW2ya1O3jTUpjXdlJAOA7QKOSxDigRHEPE2yTGznNfXQc2OIK
-         aOrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752797359; x=1753402159;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eFPWUEY/toVDVNd2k/LREoggH1XAsJ0FDgoZbNXOeEw=;
-        b=HsFes89C6Re1rGMsfNrfewhHRjMm1Zwy1/cTMiqrFZQ7lqUIqhq1FthYAwUbbQ/d4G
-         tlzDeY9D1rjsQXxJ2bxYja+lQy7u5f6fqxxa7quD8f1dIecPNJ/8bLuRPghsmPAkmrdG
-         HIiyuuNEKwNh5fIitE0ZsfZXvmp14uYr2F3xUsyO6g23O8Tr/n/QI2VJuPRVQtTlRbBF
-         jsdc1P5a8X7UtmL7AA9wSaWSOTRilizP7S39ciygZLKot3Q5oxw9nlN7krUh3+UtPdYA
-         QikvWPEuXd0AQwfQyTmPC0kRceFtawHVHCV49Iwf4j4clVd06z5T/KYgZQ9/lTZbbvAN
-         3HMA==
-X-Gm-Message-State: AOJu0Yw/8jinA3FD2WnayLTP82nSLCkYySRRi+2FITWSTco4wjvVHed+
-	60wePqhT9kcoIcKkXb4ctK+aC7y64dCQPsIGjyy1geTpz21OeWUzyczRkC7zwGNH2FmEcINsFgV
-	vq0VIlDTF7FiSjt+/FSDfEw0KxtANuNo=
-X-Gm-Gg: ASbGncumDHkDQmZM+eHoJtURSLHsWsZS20+r5dV2OOcn50W/xuXV+TiT5bQcOc4HGFo
-	pjiUmL46j7A5qNEABS7y0Fp9RjPSaeYdD9baItfSDpbmWLYJvK/Xmt3uv4LIIN0NVX+GQntvpSc
-	qu2qELDHBNOBcbvklPkgORj2zhZ/CT61rFm563cx9HM4lcwQp2KhbWBqk2Jy5vA2MnwvpRGd3gw
-	EhaQA5dKGby5no3j7E5CHnxnkWAdEDB8tXz
-X-Google-Smtp-Source: AGHT+IGYVqyNSH5VcHb5xfEd4kdi0HK7d5DKZtBzqRjqBNAznkd+mV06DBV510d5MK9IAuovfULZzPgCJqPyRuMqsyM=
-X-Received: by 2002:a05:6000:4383:b0:3a5:27ba:479c with SMTP id
- ffacd0b85a97d-3b60e50ff53mr6669743f8f.43.1752797358393; Thu, 17 Jul 2025
- 17:09:18 -0700 (PDT)
+	s=arc-20240116; t=1752797411; c=relaxed/simple;
+	bh=o0FmoIezzDRWUfyaNVXcoO9D0eCWLTcnjznz0CceNWQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=brNLvlhK8GcWo+unMAQ2f0WgLJ3vngvlzEThQOfrx/MYnVDLD8UiY9s5vNl9FcnRWsBhtd+kUcrghXCLhUidQqyt92/yt1Ee935pduVkCDgWsN7gEKgCnvCIRAc5kteEhmY3fFwL8ptVSLldkBl3vMQGuv4CAi5mliLQR0ncCSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l76sQP+D; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26E24C4CEE3;
+	Fri, 18 Jul 2025 00:10:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752797411;
+	bh=o0FmoIezzDRWUfyaNVXcoO9D0eCWLTcnjznz0CceNWQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=l76sQP+DjqIz6XYNRP18B0KDbvzsLV+0dOY1X7+jHCtmeOABqZXgsKSYmuVqsHQ/w
+	 9/hn30ilJJdvshpF85Mqs1kcbfzujTCsVsEvqIBqx8bPaDQkxnLYkkBqcW7s0V1N9e
+	 6A8/vd2orWQIAL33V0oLkawa0DjKeBiWHtubswJkqneFsuLEV574vBI1it/mZd/MD1
+	 6uFZW2J/fTnv2pxLv5zw1CP0zw0dEj8lqVwS1HTZmLB+Jw7N7RBt1Ll8uAyggtB3eo
+	 Q80eE6JjI0KnfwmnoRHbxY3d8/DXNlUhDqOl6+D1yZ1bhypGdXcfOHnWu6e4SveeYI
+	 VOpp9XO7NwUKw==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@kernel.org
+Cc: andrii@kernel.org,
+	kernel-team@meta.com
+Subject: [PATCH bpf] libbpf: fix handling of BPF arena relocations
+Date: Thu, 17 Jul 2025 17:10:09 -0700
+Message-ID: <20250718001009.610955-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250716022950.69330-1-alexei.starovoitov@gmail.com>
- <20250716022950.69330-6-alexei.starovoitov@gmail.com> <a28390e4-23cf-4615-93e3-611b046e1973@suse.cz>
- <CAADnVQJBGWdWkGOGSMSN2quSXfaKYdnFpAqfAYYEbpJgchyNbg@mail.gmail.com>
-In-Reply-To: <CAADnVQJBGWdWkGOGSMSN2quSXfaKYdnFpAqfAYYEbpJgchyNbg@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 17 Jul 2025 17:09:07 -0700
-X-Gm-Features: Ac12FXx_Iq-pygiU7pxgIINcF_KXSgBWin1TYT6Y-FBrGuzcHLrtq2k27mccSzc
-Message-ID: <CAADnVQL2fZ56MNGFniyjbMRj6BSE0axv9psFp8V7R+uRoUMPVA@mail.gmail.com>
-Subject: Re: [PATCH v3 5/6] slab: Introduce kmalloc_nolock() and kfree_nolock().
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
-	Harry Yoo <harry.yoo@oracle.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Michal Hocko <mhocko@suse.com>, Sebastian Sewior <bigeasy@linutronix.de>, 
-	Andrii Nakryiko <andrii@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Steven Rostedt <rostedt@goodmis.org>, Johannes Weiner <hannes@cmpxchg.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jul 16, 2025 at 7:50=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> > > +#ifndef CONFIG_SLUB_TINY
-> > > +     if (!in_nmi() || !local_lock_is_locked(&s->cpu_slab->lock))
-> > > +#endif
-> > > +             ret =3D __slab_alloc_node(s, alloc_gfp, node, _RET_IP_,=
- size);
-> >
-> > Nit: use IS_DEFINED(CONFIG_SLUB_TINY) to make this look better?
->
-> ok.
+Initial __arean global variable support implementation in libbpf
+contains a bug: it remembers struct bpf_map pointer for arena, which is
+used later on to process relocations. Recording this pointer is
+problematic because map pointers are not stable during ELF relocation
+collection phase, as an array of struct bpf_map's can be reallocated,
+invalidating all the pointers. Libbpf is dealing with similar issues by
+using a stable internal map index, though for BPF arena map specifically
+this approach wasn't used due to an oversight.
 
-Will take it back. That doesn't work since s->cpu_slab doesn't exist
-with SLUB_TINY.
-So I kept the ifdef.
-Addressed the rest of comments and will send v4 soon.
+The resulting behavior is non-deterministic issue which depends on exact
+layout of ELF object file, number of actual maps, etc. We didn't hit
+this until very recently, when this bug started triggering crash in BPF
+CI when validating one of sched-ext BPF programs.
+
+The fix is rather straightforward: we just follow an established pattern
+of remembering map index (just like obj->kconfig_map_idx, for example)
+instead of `struct bpf_map *`, and resolving index to a pointer at the
+point where map information is necessary.
+
+While at it also add debug-level message for arena-related relocation
+resolution information, which we already have for all other kinds of
+maps.
+
+Fixes: 2e7ba4f8fd1f ("libbpf: Recognize __arena global variables.")
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/lib/bpf/libbpf.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index aee36402f0a3..699ac147acb4 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -735,7 +735,7 @@ struct bpf_object {
+ 
+ 	struct usdt_manager *usdt_man;
+ 
+-	struct bpf_map *arena_map;
++	int arena_map_idx;
+ 	void *arena_data;
+ 	size_t arena_data_sz;
+ 
+@@ -1517,6 +1517,7 @@ static struct bpf_object *bpf_object__new(const char *path,
+ 	obj->efile.obj_buf_sz = obj_buf_sz;
+ 	obj->efile.btf_maps_shndx = -1;
+ 	obj->kconfig_map_idx = -1;
++	obj->arena_map_idx = -1;
+ 
+ 	obj->kern_version = get_kernel_version();
+ 	obj->state  = OBJ_OPEN;
+@@ -2964,7 +2965,7 @@ static int init_arena_map_data(struct bpf_object *obj, struct bpf_map *map,
+ 	const long page_sz = sysconf(_SC_PAGE_SIZE);
+ 	size_t mmap_sz;
+ 
+-	mmap_sz = bpf_map_mmap_sz(obj->arena_map);
++	mmap_sz = bpf_map_mmap_sz(map);
+ 	if (roundup(data_sz, page_sz) > mmap_sz) {
+ 		pr_warn("elf: sec '%s': declared ARENA map size (%zu) is too small to hold global __arena variables of size %zu\n",
+ 			sec_name, mmap_sz, data_sz);
+@@ -3038,12 +3039,12 @@ static int bpf_object__init_user_btf_maps(struct bpf_object *obj, bool strict,
+ 		if (map->def.type != BPF_MAP_TYPE_ARENA)
+ 			continue;
+ 
+-		if (obj->arena_map) {
++		if (obj->arena_map_idx >= 0) {
+ 			pr_warn("map '%s': only single ARENA map is supported (map '%s' is also ARENA)\n",
+-				map->name, obj->arena_map->name);
++				map->name, obj->maps[obj->arena_map_idx].name);
+ 			return -EINVAL;
+ 		}
+-		obj->arena_map = map;
++		obj->arena_map_idx = i;
+ 
+ 		if (obj->efile.arena_data) {
+ 			err = init_arena_map_data(obj, map, ARENA_SEC, obj->efile.arena_data_shndx,
+@@ -3053,7 +3054,7 @@ static int bpf_object__init_user_btf_maps(struct bpf_object *obj, bool strict,
+ 				return err;
+ 		}
+ 	}
+-	if (obj->efile.arena_data && !obj->arena_map) {
++	if (obj->efile.arena_data && obj->arena_map_idx < 0) {
+ 		pr_warn("elf: sec '%s': to use global __arena variables the ARENA map should be explicitly declared in SEC(\".maps\")\n",
+ 			ARENA_SEC);
+ 		return -ENOENT;
+@@ -4583,8 +4584,13 @@ static int bpf_program__record_reloc(struct bpf_program *prog,
+ 	if (shdr_idx == obj->efile.arena_data_shndx) {
+ 		reloc_desc->type = RELO_DATA;
+ 		reloc_desc->insn_idx = insn_idx;
+-		reloc_desc->map_idx = obj->arena_map - obj->maps;
++		reloc_desc->map_idx = obj->arena_map_idx;
+ 		reloc_desc->sym_off = sym->st_value;
++
++		map = &obj->maps[obj->arena_map_idx];
++		pr_debug("prog '%s': found arena map %d (%s, sec %d, off %zu) for insn %u\n",
++			 prog->name, obj->arena_map_idx, map->name, map->sec_idx,
++			 map->sec_offset, insn_idx);
+ 		return 0;
+ 	}
+ 
+-- 
+2.47.1
+
 
