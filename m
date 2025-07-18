@@ -1,92 +1,156 @@
-Return-Path: <bpf+bounces-63726-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63727-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32B51B0A6E8
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 17:14:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5C14B0A766
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 17:31:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9F04A88014
-	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 15:13:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5FA511C833A7
+	for <lists+bpf@lfdr.de>; Fri, 18 Jul 2025 15:30:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A371A2DD61E;
-	Fri, 18 Jul 2025 15:14:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D8AE2E54DA;
+	Fri, 18 Jul 2025 15:26:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from skybeam2.hostnetwork.com (unknown [96.127.178.115])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4B1A2DCC02
-	for <bpf@vger.kernel.org>; Fri, 18 Jul 2025 15:14:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.127.178.115
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 674D02E54BD;
+	Fri, 18 Jul 2025 15:26:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752851647; cv=none; b=ZOA389yCrbgCLYMoVLmjJpTcS+5Qukq5FKU5RxOMSl/jKLSesojuk1r6GlFb21R+UkIFNqXJfa8nxjGeL2STxUrMWVNz1JwkD9kJIQj8GakLzoci/RCVJEb6ikIFgGkEScj613UWXLhHZGfYx26XXg7Y61NnERucP+7/iiqzgog=
+	t=1752852363; cv=none; b=O+dq2LXpCCwYK2ER0TB1rQgo0BMedwJ4JzFLkZJfASV0LNaXCWFrDo0Qwlv/OmH3kODR8FFKkzRX08q0vnlSKXou34X9SGF3gk+iXg+EPT8iu6cj9tfkGcV9xkR+XI5LZm6nk+cONSCphUvsQyMDwSJcn9xl343wpr9pearrFig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752851647; c=relaxed/simple;
-	bh=u9za1bwokGPjqP/JQqaiCpkltIMZbPMAQqV+xewN+Qs=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jodEisKusJA8PMks3qDjz5iqPxdOtWv2kQlisH+8ReM1+zG1aVfARP54xWaaOcfUClBLA1qpC18QAz1ABQjdJage36ix81wFXrbS8LNgKY/9+Eb7xzAB9wbUw2/AdKc/pbpQ5EVBXTXNLmt5zyyCFfpY+qNkfHETmJm1XbnC35Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=aulad.org; spf=fail smtp.mailfrom=aulad.org; arc=none smtp.client-ip=96.127.178.115
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=aulad.org
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=aulad.org
-Received: from [208.89.63.152] (port=61390 helo=[152.63.89.208])
-	by ns-144.awsdns-18.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.98.2)
-	(envelope-from <rizkiamalia@aulad.org>)
-	id 1ucmmj-0000000BiTE-29RJ
-	for bpf@vger.kernel.org;
-	Fri, 18 Jul 2025 15:13:59 +0000
-Reply-To: info@sventgicapitall.com
-From: Erick Hanns Teppo <rizkiamalia@aulad.org>
-To: bpf@vger.kernel.org
-Subject: Re: request
-Date: 18 Jul 2025 08:13:58 -0700
-Message-ID: <20250718081358.F05446DE61F49BED@aulad.org>
+	s=arc-20240116; t=1752852363; c=relaxed/simple;
+	bh=L/zjElicyBquY6FNje7j0/5XPOZRjJinzZxw5ZTiPLw=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=pr35+V0qxlVeeubb9+T7696H9qKTXKM3znfquVoG2khrRg8bEm4AJ+MJ3UWil13infZQD2+JWuWzyuMu5LGmzaTljINp/LaJDAAvHBHcrxM9b25Zjbl21SnY6/dHOoXrmhXXUZVtoqCq3GBkmI/cqna9zXNgogO3UBjLCj5FJJA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8039C16A3;
+	Fri, 18 Jul 2025 08:25:53 -0700 (PDT)
+Received: from e132581.arm.com (e132581.arm.com [10.1.196.87])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C02823F6A8;
+	Fri, 18 Jul 2025 08:25:56 -0700 (PDT)
+From: Leo Yan <leo.yan@arm.com>
+Subject: [PATCH v2 0/6] perf auxtrace: Support AUX pause and resume with
+ BPF
+Date: Fri, 18 Jul 2025 16:25:34 +0100
+Message-Id: <20250718-perf_aux_pause_resume_bpf_rebase-v2-0-992557b8fb16@arm.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - ns-144.awsdns-18.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - aulad.org
-X-Get-Message-Sender-Via: ns-144.awsdns-18.com: authenticated_id: aws.cloud.smtp000144@aws.amazon.com
-X-Authenticated-Sender: ns-144.awsdns-18.com: aws.cloud.smtp000144@aws.amazon.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAG5nemgC/x2NsQrCMBBAfyXcbCANlqCbuDg6uJUS7upFb7CGH
+ CmF0n83uL23vLeBchFWOJsNCi+i8p2b+IOB6Y3zi608m4N3vnehCzZzSRHrGjNW5VhY64cj5dS
+ QUNl24TiFEzlC6qFlcuEk638xwP3yuN7M4mHc9x/zaua2fAAAAA==
+X-Change-ID: 20250717-perf_aux_pause_resume_bpf_rebase-174c79b0bab5
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+ Arnaldo Carvalho de Melo <acme@kernel.org>, 
+ Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+ Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+ KP Singh <kpsingh@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>, 
+ Song Liu <song@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Steven Rostedt <rostedt@goodmis.org>, 
+ Masami Hiramatsu <mhiramat@kernel.org>, 
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+ James Clark <james.clark@linaro.org>, 
+ Suzuki K Poulose <suzuki.poulose@arm.com>, 
+ Mike Leach <mike.leach@linaro.org>
+Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+ Leo Yan <leo.yan@arm.com>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1752852356; l=3313;
+ i=leo.yan@arm.com; s=20250604; h=from:subject:message-id;
+ bh=L/zjElicyBquY6FNje7j0/5XPOZRjJinzZxw5ZTiPLw=;
+ b=nYbD7ZpIfxhu4FTCNxB0+kCewOUWhgYrUmxGvY03Rg/CeHbAPDZojVmLoLhTgh5tWOXagx5wp
+ nvzi7Oim5A5DbMYOf9xwxJIoRJ49PgIG3WY4g6AyQ/VDB/iavw/Zq8Z
+X-Developer-Key: i=leo.yan@arm.com; a=ed25519;
+ pk=k4BaDbvkCXzBFA7Nw184KHGP5thju8lKqJYIrOWxDhI=
 
-Re:Hello,
-=20
-I wanted to follow up on the funding request you shared with us=20
-previously. If you haven't yet secured the necessary financing,=20
-we would like to invite you to revisit our offer and explore how=20
-we can collaborate to achieve your goals this year.
-=20
-At Lex Capital Group, we are seeking to expand and establish our=20
-business interests internationally, focusing on sectors such as=20
-Oil and Gas, Construction, Real Estate, Tourism and Hospitality,=20
-Stock Trading, Mining, Transportation, Healthcare, Communication=20
-Services, Agriculture, Forestry, and Fishing. We are also open to=20
-exploring other industries with strong potential for a solid=20
-return on investment (ROI).
-=20
-If you are seeking funding or partnership opportunities in any of=20
-these sectors or have a viable business idea in another high-
-potential industry, please let us know. We are eager to discuss=20
-how we can support your vision and help bring it to life.
-=20
-Let me know if you'd like MORE information to explore this=20
-opportunity further. Our commitment remains steadfast in=20
-supporting credible ventures that promise growth and mutual=20
-success.
-=20
-Looking forward to your response.
-=20
+This series extends Perf for fine-grained tracing by using BPF program
+to pause and resume AUX tracing. The BPF program can be attached to
+tracepoints (including ftrace tracepoints and dynamic tracepoints, like
+kprobe, kretprobe, uprobe and uretprobe).
+
+The first two patches are changes in kernel - it adds a bpf kfunc which
+can be invoked from BPF program.
+
+The Perf tool implements BPF skeleton program, hooks BPF program into a
+perf record session. This is finished by patches 03 ~ 05.
+
+The patch 06 updates documentation for usage of the new introduced
+option '--bpf-aux-pause'.
+
+This series has been tested on Hikey960 platform with commands:
+
+  perf record -e cs_etm/aux-action=start-paused/ \
+    --bpf-aux-pause="kretprobe:p:__arm64_sys_openat,kprobe:r:__arm64_sys_openat,tp:r:sched:sched_switch" \
+    -a -- ls
+
+  perf record -e cs_etm/aux-action=start-paused/ \
+    --bpf-aux-pause="kretprobe:p:__arm64_sys_openat,kprobe:r:__arm64_sys_openat,tp:r:sched:sched_switch" \
+    -i -- ls
+
+  perf record -e cs_etm/aux-action=start-paused/ \
+    --bpf-aux-pause="uretprobe:p:/mnt/sort:bubble_sort,uprobe:r:/mnt/sort:bubble_sort" \
+    --per-thread -- /mnt/sort
+
+Note, as the AUX pause operation cannot be inherited by child tasks, it
+requires to specify the '-i' option for default mode. Otherwise, the
+tool reports an error to remind user to disable inherited mode:
+
+  Failed to update BPF map for auxtrace: Operation not supported.
+    Try to disable inherit mode with option '-i'.
+
+Changes in v2:
+- Changed to use BPF kfunc and dropped uAPI (Yonghong).
+- Added support uprobe/uretprobe.
+- Refined the syntax for trigger points (mainly for trigger action {p:r}).
+- Fixed a bug in the BPF program with passing wrong flag.
+- Rebased on bpf-next branch.
+- Link to v1: https://lore.kernel.org/linux-perf-users/20241215193436.275278-1-leo.yan@arm.com/T/#m10ea3e66bca7418db07c141a14217934f36e3bc8
+
+Signed-off-by: Leo Yan <leo.yan@arm.com>
+---
+Leo Yan (6):
+      perf/core: Make perf_event_aux_pause() as external function
+      bpf: Add bpf_perf_event_aux_pause kfunc
+      perf: auxtrace: Control AUX pause and resume with BPF
+      perf: auxtrace: Add BPF userspace program for AUX pause and resume
+      perf record: Support AUX pause and resume with BPF
+      perf docs: Document AUX pause and resume with BPF
+
+ include/linux/perf_event.h                    |   1 +
+ kernel/events/core.c                          |   2 +-
+ kernel/trace/bpf_trace.c                      |  60 ++++
+ tools/perf/Documentation/perf-record.txt      |  51 ++++
+ tools/perf/Makefile.perf                      |   1 +
+ tools/perf/builtin-record.c                   |  20 +-
+ tools/perf/util/Build                         |   4 +
+ tools/perf/util/auxtrace.h                    |  43 +++
+ tools/perf/util/bpf_auxtrace_pause.c          | 408 ++++++++++++++++++++++++++
+ tools/perf/util/bpf_skel/auxtrace_pause.bpf.c | 156 ++++++++++
+ tools/perf/util/evsel.c                       |   6 +
+ tools/perf/util/record.h                      |   1 +
+ 12 files changed, 751 insertions(+), 2 deletions(-)
+---
+base-commit: 0768e980feb5cffe63920d375bebef3bb4654961
+change-id: 20250717-perf_aux_pause_resume_bpf_rebase-174c79b0bab5
+
 Best regards,
-Erick Hanns Teppo
-Group Investment Director
-Lex Capital Group
+-- 
+Leo Yan <leo.yan@arm.com>
+
 
