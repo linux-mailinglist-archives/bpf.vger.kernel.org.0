@@ -1,160 +1,121 @@
-Return-Path: <bpf+bounces-63803-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63804-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 499A1B0B032
-	for <lists+bpf@lfdr.de>; Sat, 19 Jul 2025 15:15:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27DD8B0B067
+	for <lists+bpf@lfdr.de>; Sat, 19 Jul 2025 16:21:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC8AE7AA639
-	for <lists+bpf@lfdr.de>; Sat, 19 Jul 2025 13:13:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63235560A31
+	for <lists+bpf@lfdr.de>; Sat, 19 Jul 2025 14:21:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2453F2874F5;
-	Sat, 19 Jul 2025 13:15:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D23912874FD;
+	Sat, 19 Jul 2025 14:21:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="knA3+jwx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FRNWL5dW"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FC32286D7A;
-	Sat, 19 Jul 2025 13:15:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33BDB1DC9A3
+	for <bpf@vger.kernel.org>; Sat, 19 Jul 2025 14:21:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752930912; cv=none; b=K7dgOdm7RF88UeZkHW8zIrJOmtwBRhZPmK8w2KC6tH72bxP3K1fCF9X9eT8aKayLCgD0B5dtyzUOhibQi1F4bQ4h9m5D9F13A/RWgE5ZF806K6SUlvCkvyuKKBp3/Lux+fwyUPTzfW15xiYfScFoMmWLG2/j5H+244EHe9tCKK8=
+	t=1752934865; cv=none; b=lTJ3b1Ez1TV3tznvl5yxfcKUgxMRb1h5jCqSiIaJs9t4pL8aQHv25rlGt8ypaDT8Mi/MT/uz2syQDjavyx+eCISQbvfEp60AISOWcaoE4fBAtVLNUgJY1koOkt4Ej0opq7+tzSPu3++lBAUO+0w8X5d96naLMVNgXKtxbxW8JGk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752930912; c=relaxed/simple;
-	bh=Y56Y9TszFLVMWinBCZFOHZxvFqKUs/k3AHWrTwYXNBI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Hu/bMnjaZrVZToIzftaVycHSpLZkw5uXt63gWuKArNvaHD8wT9oYhJGGUVP2evgmjBGNaK+US3eWrFLdR0ITvSCfv51x0Iu+dWvcPl9uyz6OY0+Y/wXHCdElYy9SJ/DzCd37P5t4/tmjbv+Jp/dy8i1ZHqtzhRpSgNnc2xXdkZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=knA3+jwx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CC0AC4CEE3;
-	Sat, 19 Jul 2025 13:15:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752930912;
-	bh=Y56Y9TszFLVMWinBCZFOHZxvFqKUs/k3AHWrTwYXNBI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=knA3+jwxJ5/pPrzTMnyfUBfKL1V+3ZIfj6r1GGRWjfwBiKnjAuDznBaXjQsa1Dh0b
-	 ObE3uIAwdhux6+4Yjk313yDknHRfADprbR0oNEbrYTP399z4+xIYGjJc8azdxFbF+F
-	 UmwnxH+tj5kT2IJrgVk81w3nLnV4mRYdWwzKbDoxYtWuTeF80xHPDMaKWVC/ketKdr
-	 NsnZ3zWsqMUUABAI8HJwiiU3cakyDe8vO9JJs0mEiFtdv0FBIIYemXINpD5s7L4n4L
-	 agNBid3yCcvCfV7n6zgACi5P1ogwui64zpkSiWi/ME3lOixtn7pbgBNLLKkVA7Uvud
-	 KUVvYyiVznBUg==
-Message-ID: <81cd8749-6212-4fcf-8e1a-5eba5a8e2a73@kernel.org>
-Date: Sat, 19 Jul 2025 15:15:06 +0200
+	s=arc-20240116; t=1752934865; c=relaxed/simple;
+	bh=Y1P9ndc2oB7yv/H2cpvO170tBw/iyPG9K7pyAVaggSk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=GoEOP7bqSE3qf1R0So3gliebW0XVMcybi37FwqDIdDvfs10tAaUjQV8PR8M6fwi7vygpiFGcnFZI+hWPtHnBupaaaI2RyA+nGhIzASPLUkzmxXUNJkNFnBH7CImSWyqeC9s1XD/7RaAwCwbc6oOimv+I2aSjcKOL9cnQ4T0EtsQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FRNWL5dW; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3b49ffbb31bso1834749f8f.3
+        for <bpf@vger.kernel.org>; Sat, 19 Jul 2025 07:21:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752934860; x=1753539660; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fkb+NkF6raswtaySUsvExpmqzWUDsoLG5hEGDU19O1U=;
+        b=FRNWL5dW5zV1zweVZnQERx5OxPgUrdZPu3s0evprDDAJG6a9ZTEJTTPkzaL74+iFi+
+         /596CwMvEl0zD2muZkmga8O0FVXp40r7KKoupQ0qQhBvj8z0hnCPsYQ683jxSQONAxNy
+         DKpb56PQGiKwdNdTtd0JSnbD6K9Pd6V0VHZf//RDmA8ZnEY2vd28iVwpWBbZ42TH3rqt
+         m2pcSmQCX+oWKwC2YKmNyp59GjsS47AUerjwBF5PnSN/8np3Ix4I/AX+iuHnt9aj9mAp
+         hL7Z2e2w2lfS04HHnko/ds1nizlrQicignjr3ve2n7voufvgCIR/oBxSY/DjIbZvJ5H3
+         VvJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752934860; x=1753539660;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fkb+NkF6raswtaySUsvExpmqzWUDsoLG5hEGDU19O1U=;
+        b=X6JT9Z7bHIaLVgA8DCUl7b7vrGadl3Erzq3/qrpN3VC7CFsEgSH5PsBRjOATp1QfZL
+         PYSgRtRkYtBVyJospuvSIlPgtveeMpTeyAZSZ3Ijb5WLGg2mrweIHFYBgb97kepUASCP
+         LBSNjrdZ6jnoBmcg8XsBJq6UjjQ+R8wuKHkXpyGqDFFY/NFsUqBaywQgLUWD8qVX0vSa
+         wl3RMWaIGtuxlg5bJVUxRPzYBWmoCM+2eyIY7qUSsQ9iNeImhnbb4zR+DVtL3eg2BiAd
+         geaAQCdMblEPUuL34AmEBIEpGRu66kriIQg6OPKpd8m/wzX3IER3hxy0q/bUmS0zlslJ
+         4nzQ==
+X-Gm-Message-State: AOJu0Yz3fAuBvGb4bEqEg3iaIsu27QPD0cT6+I5iEXN4TyDx1QytJAni
+	ABRjVktK7lSN2Pzm9Dk5jiXFOR3AVjgTq7ZcMsWxUiRIf3WeqptxUHlVtoloqYXB
+X-Gm-Gg: ASbGncvT4B6gJ5+IuP5iba/xoGknyU0Mnh3d9aKBA+nYRhOH7fkSuiek3Bfk1dfWeMh
+	dW8fjEWqHoWy/Fv0NvInIDrZUto0ij6mIgIvxpit4KbFL4zy7/+9SX5nX2hXM/MBwFE52Fqp/XQ
+	WqTdE/nT/ifIwI/RMHGsLPfqKEoYlpYlDef60KSF83c4ajM3WtsFck/bogvNC+hbMU1CEJ7FkV1
+	ZmzmuFhatTmgq9xhI7lYZExv4f6hV7BwiLGRWodZLUB8v6G9WjqWuISdQZ8tvg8dAW+bChI/PGm
+	8KaYAocQelE4IHPrLHek0wOb4JDcFj/7rxN+pk3Xl/HSBtf13QdJiwSU7S25JqWThKUL3RmTXXI
+	F+Av9907B7Aos2nnKhffZwkxI7GzxVnpAQ2R0Ny6NSj1+HVmNJMX1r7F0CcVM9xhbzBpwOxDE9S
+	NBUq6og7Y63A==
+X-Google-Smtp-Source: AGHT+IFr4R3RHfy7ztUlugO67tR/n5bu2YBLE1QusqbVawghTVELp5/QJqdS2Md1yvOBXIRA6kuSTA==
+X-Received: by 2002:a05:6000:2c01:b0:3a4:fa6a:9189 with SMTP id ffacd0b85a97d-3b613e9831cmr8182585f8f.31.1752934860108;
+        Sat, 19 Jul 2025 07:21:00 -0700 (PDT)
+Received: from Tunnel (2a01cb089436c000eab97b50918e1e74.ipv6.abo.wanadoo.fr. [2a01:cb08:9436:c000:eab9:7b50:918e:1e74])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4562e89c87esm106608055e9.33.2025.07.19.07.20.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Jul 2025 07:20:59 -0700 (PDT)
+Date: Sat, 19 Jul 2025 16:20:51 +0200
+From: Paul Chaignon <paul.chaignon@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Yonghong Song <yonghong.song@linux.dev>
+Subject: [PATCH bpf-next 0/4] bpf: Improve 64bits bounds refinement
+Message-ID: <cover.1752934170.git.paul.chaignon@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] selftests/bpf: Add LPM trie microbenchmarks
-To: Matt Fleming <matt@readmodwrite.com>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Martin KaFai Lau <martin.lau@kernel.org>
-Cc: Shuah Khan <shuah@kernel.org>, kernel-team@cloudflare.com,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, Matt Fleming <mfleming@cloudflare.com>,
- Yonghong Song <yonghong.song@linux.dev>, Netdev <netdev@vger.kernel.org>
-References: <20250718150554.48210-1-matt@readmodwrite.com>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <20250718150554.48210-1-matt@readmodwrite.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+This patchset improves the 64bits bounds refinement when the s64 ranges
+crosses the sign boundary. The first patch explains the small addition
+to __reg64_deduce_bounds. The third patch adds a selftest with a more
+complete example of the impact on verification. The second and last
+patches update the existing selftests to take the new refinement into
+account.
 
+This patchset should reduce the number of kernel warnings hit by
+syzkaller due to invariant violations [1]. It was also tested with
+Agni [2] (and Cilium's CI for good measure).
 
-On 18/07/2025 17.05, Matt Fleming wrote:
-> From: Matt Fleming <mfleming@cloudflare.com>
-> 
-> Add benchmarks for the standard set of operations: lookup, update,
-> delete. Also, include a benchmark for trie_free() which is known to have
-> terrible performance for maps with many entries.
-> 
-> Benchmarks operate on tries without gaps in the key range, i.e. each
-> test begins with a trie with valid keys in the range [0, nr_entries).
-> This is intended to cause maximum branching when traversing the trie.
-> 
-> All measurements are recorded inside the kernel to remove syscall
-> overhead.
-> 
-> Most benchmarks run an XDP program to generate stats but free needs to
-> collect latencies using fentry/fexit on map_free_deferred() because it's
-> not possible to use fentry directly on lpm_trie.c since commit
-> c83508da5620 ("bpf: Avoid deadlock caused by nested kprobe and fentry
-> bpf programs") and there's no way to create/destroy a map from within an
-> XDP program.
-> 
-> Here is example output from an AMD EPYC 9684X 96-Core machine for each
-> of the benchmarks using a trie with 10K entries and a 32-bit prefix
-> length, e.g.
-> 
->    $ ./bench lpm-trie-$op \
->    	--prefix_len=32  \
-> 	--producers=1     \
-> 	--nr_entries=10000
-> 
->    lookup: throughput    7.423 ± 0.023 M ops/s (  7.423M ops/prod), latency  134.710 ns/op
->    update: throughput    2.643 ± 0.015 M ops/s (  2.643M ops/prod), latency  378.310 ns/op
->    delete: throughput    0.712 ± 0.008 M ops/s (  0.712M ops/prod), latency 1405.152 ns/op
->      free: throughput    0.574 ± 0.003 K ops/s (  0.574K ops/prod), latency    1.743 ms/op
-> 
-> Signed-off-by: Matt Fleming <mfleming@cloudflare.com>
-> ---
->   tools/testing/selftests/bpf/Makefile          |   2 +
->   tools/testing/selftests/bpf/bench.c           |  10 +
->   tools/testing/selftests/bpf/bench.h           |   1 +
->   .../selftests/bpf/benchs/bench_lpm_trie_map.c | 345 ++++++++++++++++++
->   .../selftests/bpf/progs/lpm_trie_bench.c      | 175 +++++++++
->   .../selftests/bpf/progs/lpm_trie_map.c        |  19 +
->   6 files changed, 552 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/benchs/bench_lpm_trie_map.c
->   create mode 100644 tools/testing/selftests/bpf/progs/lpm_trie_bench.c
->   create mode 100644 tools/testing/selftests/bpf/progs/lpm_trie_map.c
-> 
+Link: https://syzkaller.appspot.com/bug?extid=c711ce17dd78e5d4fdcf [1]
+Link: https://github.com/bpfverif/agni [2]
 
-I've already tested + reviewed this and different version of this 
-benchmark during internal development.  Thanks to Matt for working on this.
+Paul Chaignon (4):
+  bpf: Improve bounds when s64 crosses sign boundary
+  selftests/bpf: Update reg_bound range refinement logic
+  selftests/bpf: Test cross-sign 64bits range refinement
+  selftests/bpf: Test invariants on JSLT crossing sign
 
-Tested-by: Jesper Dangaard Brouer <hawk@kernel.org>
+ kernel/bpf/verifier.c                         | 44 +++++++++++++++++++
+ .../selftests/bpf/prog_tests/reg_bounds.c     | 14 ++++++
+ .../selftests/bpf/progs/verifier_bounds.c     | 25 ++++++++++-
+ 3 files changed, 82 insertions(+), 1 deletion(-)
 
-You can add my reviewed by when we resolve below comment.
-
-Reviewed-by: Jesper Dangaard Brouer <hawk@kernel.org>
-
-
-> [...]
-> diff --git a/tools/testing/selftests/bpf/progs/lpm_trie_bench.c b/tools/testing/selftests/bpf/progs/lpm_trie_bench.c
-> new file mode 100644
-> index 000000000000..c335718cc240
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/lpm_trie_bench.c
-> @@ -0,0 +1,175 @@
-[...]
-> +
-> +static __always_inline void atomic_inc(long *cnt)
-> +{
-> +	__atomic_add_fetch(cnt, 1, __ATOMIC_SEQ_CST);
-> +}
-> +
-> +static __always_inline long atomic_swap(long *cnt, long val)
-> +{
-> +	return __atomic_exchange_n(cnt, val, __ATOMIC_SEQ_CST);
-> +}
-
-For userspace includes we have similar defines in bench.h.
-Except they use __ATOMIC_RELAXED and here __ATOMIC_SEQ_CST.
-Which is the correct to use?
-
-For BPF kernel-side do selftests have another header file that define
-these `atomic_inc` and `atomic_swap` ?
-
---Jesper
-
-
+-- 
+2.43.0
 
 
