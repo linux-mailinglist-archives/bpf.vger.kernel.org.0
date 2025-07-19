@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-63805-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63806-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95B0EB0B068
-	for <lists+bpf@lfdr.de>; Sat, 19 Jul 2025 16:22:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66EE5B0B069
+	for <lists+bpf@lfdr.de>; Sat, 19 Jul 2025 16:22:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C47F35609D4
-	for <lists+bpf@lfdr.de>; Sat, 19 Jul 2025 14:22:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 094FFAA4570
+	for <lists+bpf@lfdr.de>; Sat, 19 Jul 2025 14:22:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA94E2874FD;
-	Sat, 19 Jul 2025 14:22:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5093C28750B;
+	Sat, 19 Jul 2025 14:22:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fn5k1AR7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mb44dHZ9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83F7C1DC9A3
-	for <bpf@vger.kernel.org>; Sat, 19 Jul 2025 14:22:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4863F1DC9A3
+	for <bpf@vger.kernel.org>; Sat, 19 Jul 2025 14:22:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752934936; cv=none; b=L68DT4vxjEkvPYOOYSMBHVx3f7EhGjm7vVFUG/4MYRyR/6DBkv+FoOjZ9hcgAOuZDNAL7vsvTldQMkUesjjm0g2eVJ8+K6IPQkIcz9k0zAtdbsTnzSnbBvB+Ycxxm32U8iXLZePYsnJTfjXP6idqDw7Azal3ich7ji62VMoYASk=
+	t=1752934966; cv=none; b=AgCjQhY/IThPGxTSXp9/rxsEn8THZd2N2heaXz9WIblFMojvUBbUIodoA2enrP1dHz4xChFLgiPJs5keGANtPeAeIjhxj3hsfoC9EvMNnv6eaqqWpEpboI/oUO8GDlkAm1ZJxrmkaukflE6Cwq9cF200lvnu8V6lFMxMqpDU5wg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752934936; c=relaxed/simple;
-	bh=GTZ2W5k9w/S3hm7ea5+7oMTapX/oEKV9MwVscRdhtXM=;
+	s=arc-20240116; t=1752934966; c=relaxed/simple;
+	bh=Z0MDe3LHAfrawqW0N3X+qA+QAiayFMBilX7JcNxF64U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VHMkYd0N40u/dcYn6h+dliGG3Yx3J6by7SxC2b3DxqlaASCIZhcdZ8vJniKRdbTG2OTS10TsjZb10Ph+D9p4EIhL+qoHNTEFPsKdOPtm7kpsnB9W1yglD23e6x2HOchr6qcZMrxgiKYUh5bzk97o2RLLy1/WzLil3OD1ZeereL8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fn5k1AR7; arc=none smtp.client-ip=209.85.221.50
+	 Content-Type:Content-Disposition:In-Reply-To; b=RgxS9aSYKuUX/EJ6qaXWMmjuUnXG5iHftoJ/ulCLKsEf/ngceY5HqDcOh2OMhVk4Nv9x7tVMd14W8QT2oWzoEXVRktdbean953v31Kk3fbxYMLdCtS2mbSwvj4GbgZmgX6cY44NEmo7NT3VKTAsX02D52+orqF8IBy2A+C9+3no=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mb44dHZ9; arc=none smtp.client-ip=209.85.221.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3a57c8e247cso2753328f8f.1
-        for <bpf@vger.kernel.org>; Sat, 19 Jul 2025 07:22:14 -0700 (PDT)
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3a503d9ef59so2107815f8f.3
+        for <bpf@vger.kernel.org>; Sat, 19 Jul 2025 07:22:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752934933; x=1753539733; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1752934963; x=1753539763; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mC3HruI9rAbUbZ6/68sf2sRFf0WPLBwopnKl5kSWEZE=;
-        b=Fn5k1AR7y1m/afL6C35svm9HKCEpP0OKg3BYt1MOCOmGJfaCnUhKam9MnexuRPABpm
-         S4L+U0/bdwwG414rej9cNumK8jaK3nP4LSsqanQkKKlcgZSq6E5Qquox7+oWUOelUcrI
-         rR8vD1yvw7sLm56D+EzilZXaPF4ve7XSAUcYdKDQ6grjmRpsaTlVw/C2HQnb8ZwLB7JD
-         6lKY5lNCtJ3/QJg/ctdeOYLo5syTV+KPv80WDaQPp7cc/nIeeCwj6wYXXIEmWaz0jLT9
-         s/IeVGEvJZNFCvT78fPFUBZO2mtuX1MIk9Bfax/ImwLeLJ2u5Bb1S6B3Rlr2Rw28PLmg
-         +Lng==
+        bh=Iyar+rw2bBx03KbdYGZt5nl6MmAcBgI/wFI8/eBGUv0=;
+        b=mb44dHZ9XoBYNRcP3ufciwrMS83EODUVD74aDd8IfzXxvWZT45lSpRfOk2VP42sn1I
+         mqGz/8Lo68n8uKW84R1GaBNQY1dfy+cwL68oO1r+2FOn3SVGl24YeRFgpSsdlzB0AupJ
+         6GjfRJP+eFRhLV04Rarh1JotdAlCU18jta3asbyJCrCfF1mifOQhbKhbpz4cWFz3FPk+
+         mcYOciTzaF92DWz78y8LSu2Kd/mYR6lu4f18Br6UP+oekWCFBgS5AVnRW3rRcnWcG1C6
+         pLd+tmEIBMnQNOXplgI6toeKS2MN/bpys4mdwdLM9X5S97WVwUY9Ahcm9WeFcuMXlRa2
+         mCxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752934933; x=1753539733;
+        d=1e100.net; s=20230601; t=1752934963; x=1753539763;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mC3HruI9rAbUbZ6/68sf2sRFf0WPLBwopnKl5kSWEZE=;
-        b=IQVgN5V6fp3ly2OfvnL5UQBoZaR0udXXFVVs0eZofEROFqTtw90BghUISf8rlFb3Pg
-         RR4QoVeRPHru3gOtQvZLGOGOUp1GbC2277ojh9Ek1fL4fL/O5NVUKFymsCEdrBsGocMd
-         oT9rNqkxTQJcIWf8YQ6lnSuMJ2i9DCfQo8lropRAgkJ0F8/L2N/w1cDWyYWXmUiWV2pl
-         BadskLt8u1TjXu7Fkr0GoyFSUuPpidq75UrzEfeEPnvFEVzQ03dE+RXb5WQeJIo8uymE
-         FaLT0Y2RjpdLZ2RZRMkmInPKwH6oztIfOJ7T9HLk2U6r3iSLmeNmzKFrrHIZFeeQsXQl
-         Fjiw==
-X-Gm-Message-State: AOJu0YzirualujK1c5LfE4d3R3QLYaGoOCBiLrVLV54UEzNX9wg+GjXT
-	UmNx65JmUmjd9/F1KAB7CqhVKGmTzelS39hhyDwO9Zwd/FtdqoDcshLpSPo/KhHJ
-X-Gm-Gg: ASbGncuMrIoBMVu4EaKtnzd59MZjAxtpvnlb58eqmtmVd8ngOMer8OFw+ykkntEaTMX
-	WVZWByADxAbF9rkxEmLCzRTqleW7PQ77SErbyFzxV5iHh0Y5HHMCIngdP7zuY2D5EqwTwL5ELxg
-	6nKvQdjMzqWywzJ6mpGeZHhA290SUo+XNh72eK+ov82E4ocQKQcLj9LGOKR7BfnMG45vlr7cjuC
-	G6w7I3ES/E01EU8mdKqC85j7AbUp4fCisVKG6iSKugx5CBFDsVpgp9F6rVSBM3Ky+26U/NA1Nvw
-	OtO6zqVrfV6y9Hy1/cqRXA2gDIQSAKZcbrQ6eZ6zdeYsT72BLuWGaxUFmCqRp95szC/AinKOpNs
-	/CEi5Vf9jDl1Tnxy8fc1SlICG2DsfVoggnw8dUV9YGmffcMROwp6UXMNWnCd0nfIShuoV61sh09
-	E8Y8/xV37bAA==
-X-Google-Smtp-Source: AGHT+IG0FS43zIIu9LpzbT4iDtLXaeCxp2PwfbAGFnnvd6pvUtAo8avBrd78rZiM6EfC73EWlNtYBg==
-X-Received: by 2002:a05:6000:2209:b0:3b4:9721:2b2b with SMTP id ffacd0b85a97d-3b60e4c90f7mr12900304f8f.12.1752934932505;
-        Sat, 19 Jul 2025 07:22:12 -0700 (PDT)
+        bh=Iyar+rw2bBx03KbdYGZt5nl6MmAcBgI/wFI8/eBGUv0=;
+        b=BTaaH0srqqqmlvmJA4++KhK5QQt+dX6H0yyYcpeTVwCtknh9P776Ba1chPMnaeGVP3
+         T2kzuALzqakz4NshKUOeKP7g7rnm7WPIliUPcroCKzpolGjyMNt9l/FCFVJlzqx5CITH
+         sNjjmaidg06RQAGEOKk+H3+UBy/nFBqNkhWte6eNJrgF77cMk9qfwaO0g1C07YFM5WzK
+         /A2puo+PCmWZolMphaQl9i2WT6PRXsk4JJuRiYLb0IUUVOkTLbLRqGnzzc5NpSZ/b9i3
+         xNy89nYvUsXHhSyqMtSG4i8q42pK/ygX8cKa7HhDqqawXZtR/17zsVSGJA97KUg25c6Z
+         0+8Q==
+X-Gm-Message-State: AOJu0YzyvxTVvrQ+jSt0Y+6kvyi2huKGEgjHKAEscanwAMTotoIcbKBf
+	JM1eOWCHFisV4niLqRnjCXV2jFRxVQCdDM7FWGvT7lmwmgcao28TOSUezDeYTvQJ
+X-Gm-Gg: ASbGnctpXZJMtpS7xZCXbGAu3obGwaq0H2RRDP6tMj5BshNcBbGAMiEYYlpDROkQ5Mn
+	OKJlr8Zj18FI9arOQuKP60f7ShWv4K58VTbp28g9ukw6jFhTV9ObD/81MvqSd9P5AWznyTtYFGN
+	MeHohoinIQ43/9CEYYShZV4RZnDrsIa5DfQ+aWm+HYT9fc5yOP4ffcskoZRP+kEI6pLqFYiMbE1
+	ezTqsN4H1Hj4JPWXOVl9wzNwP9Ik0NguW0W3F9djk3aEHegFAink7Gpaj0jjWLkRk/JKo0RGmuf
+	RlbZTpKr7jc6BnTfqm0SEolZJvMCo1ypFGrKaHvk8++kv5U6NwNnqCESV5K2cXsKbrJNHOngTko
+	N/EpMHv7smTPvYStc3DDavD1ob6091k7a2IlZcf2T8MCpa5CiJ8UcMH9xVqxuO5Rgx3W8WZpf2s
+	BTnU3NSUY9WQ==
+X-Google-Smtp-Source: AGHT+IExrzECqg/5Ax5ZZ9d1t62C1d2x13i52czTraVPuWza0n26Ni82xHV3ZuIH0L6GRNLGq3zqRg==
+X-Received: by 2002:a5d:588f:0:b0:3a4:d64a:3df6 with SMTP id ffacd0b85a97d-3b60e4c914amr11964908f8f.3.1752934963401;
+        Sat, 19 Jul 2025 07:22:43 -0700 (PDT)
 Received: from Tunnel (2a01cb089436c000eab97b50918e1e74.ipv6.abo.wanadoo.fr. [2a01:cb08:9436:c000:eab9:7b50:918e:1e74])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b61ca2cc06sm4885569f8f.35.2025.07.19.07.22.11
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b61ca5c298sm4885375f8f.76.2025.07.19.07.22.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Jul 2025 07:22:11 -0700 (PDT)
-Date: Sat, 19 Jul 2025 16:22:05 +0200
+        Sat, 19 Jul 2025 07:22:42 -0700 (PDT)
+Date: Sat, 19 Jul 2025 16:22:41 +0200
 From: Paul Chaignon <paul.chaignon@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -80,9 +80,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Eduard Zingerman <eddyz87@gmail.com>,
 	Yonghong Song <yonghong.song@linux.dev>
-Subject: [PATCH bpf-next 1/4] bpf: Improve bounds when s64 crosses sign
- boundary
-Message-ID: <d5be66c893ee61f7ceb9ac576fd92a3ecf7d0fa1.1752934170.git.paul.chaignon@gmail.com>
+Subject: [PATCH bpf-next 2/4] selftests/bpf: Update reg_bound range
+ refinement logic
+Message-ID: <4636f494d90da3627e955d62e54a7927c6b2b92e.1752934170.git.paul.chaignon@gmail.com>
 References: <cover.1752934170.git.paul.chaignon@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -94,96 +94,41 @@ Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <cover.1752934170.git.paul.chaignon@gmail.com>
 
-__reg64_deduce_bounds currently improves the s64 range using the u64
-range and vice versa, but only if it doesn't cross the sign boundary.
+This patch updates the range refinement logic in the reg_bound test to
+match the new logic from the previous commit. Without this change, tests
+would fail because we end with more precise ranges than the tests
+expect.
 
-This patch improves __reg64_deduce_bounds to cover the case where the
-s64 range crosses the sign boundary but overlaps with the u64 range on
-only one end. In that case, we can improve both ranges. Consider the
-following example, with the s64 range crossing the sign boundary:
-
-    0                                                   U64_MAX
-    |  [xxxxxxxxxxxxxx u64 range xxxxxxxxxxxxxx]              |
-    |----------------------------|----------------------------|
-    |xxxxx s64 range xxxxxxxxx]                       [xxxxxxx|
-    0                     S64_MAX S64_MIN                    -1
-
-The u64 range overlaps only with positive portion of the s64 range. We
-can thus derive the following new s64 and u64 ranges.
-
-    0                                                   U64_MAX
-    |  [xxxxxx u64 range xxxxx]                               |
-    |----------------------------|----------------------------|
-    |  [xxxxxx s64 range xxxxx]                               |
-    0                     S64_MAX S64_MIN                    -1
-
-The same logic can probably apply to the s32/u32 ranges, but this patch
-doesn't implement that change.
-
-In addition to the selftests, this change was also tested with Agni,
-the formal verification tool for the range analysis [1].
-
-Link: https://github.com/bpfverif/agni [1]
 Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
 ---
- kernel/bpf/verifier.c | 44 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
+ .../testing/selftests/bpf/prog_tests/reg_bounds.c  | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index e2fcea860755..152b97a71f85 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2523,6 +2523,50 @@ static void __reg64_deduce_bounds(struct bpf_reg_state *reg)
- 	if ((u64)reg->smin_value <= (u64)reg->smax_value) {
- 		reg->umin_value = max_t(u64, reg->smin_value, reg->umin_value);
- 		reg->umax_value = min_t(u64, reg->smax_value, reg->umax_value);
-+	} else {
-+		/* If the s64 range crosses the sign boundary, then it's split
-+		 * between the beginning and end of the U64 domain. In that
-+		 * case, we can derive new bounds if the u64 range overlaps
-+		 * with only one end of the s64 range.
-+		 *
-+		 * In the following example, the u64 range overlaps only with
-+		 * positive portion of the s64 range.
-+		 *
-+		 * 0                                                   U64_MAX
-+		 * |  [xxxxxxxxxxxxxx u64 range xxxxxxxxxxxxxx]              |
-+		 * |----------------------------|----------------------------|
-+		 * |xxxxx s64 range xxxxxxxxx]                       [xxxxxxx|
-+		 * 0                     S64_MAX S64_MIN                    -1
-+		 *
-+		 * We can thus derive the following new s64 and u64 ranges.
-+		 *
-+		 * 0                                                   U64_MAX
-+		 * |  [xxxxxx u64 range xxxxx]                               |
-+		 * |----------------------------|----------------------------|
-+		 * |  [xxxxxx s64 range xxxxx]                               |
-+		 * 0                     S64_MAX S64_MIN                    -1
-+		 *
-+		 * If they overlap in two places, we can't derive anything
-+		 * because reg_state can't represent two ranges per numeric
-+		 * domain.
-+		 *
-+		 * 0                                                   U64_MAX
-+		 * |  [xxxxxxxxxxxxxxxxx u64 range xxxxxxxxxxxxxxxxx]        |
-+		 * |----------------------------|----------------------------|
-+		 * |xxxxx s64 range xxxxxxxxx]                    [xxxxxxxxxx|
-+		 * 0                     S64_MAX S64_MIN                    -1
-+		 *
-+		 * The first condition below corresponds to the diagram above.
-+		 * The second condition considers the case where the u64 range
-+		 * overlaps with the negative porition of the s64 range.
-+		 */
-+		if (reg->umax_value < (u64)reg->smin_value) {
-+			reg->smin_value = (s64)reg->umin_value;
-+			reg->umax_value = min_t(u64, reg->umax_value, reg->smax_value);
-+		} else if ((u64)reg->smax_value < reg->umin_value) {
-+			reg->smax_value = (s64)reg->umax_value;
-+			reg->umin_value = max_t(u64, reg->umin_value, reg->smin_value);
-+		}
+diff --git a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
+index 39d42271cc46..e261b0e872db 100644
+--- a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
++++ b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
+@@ -465,6 +465,20 @@ static struct range range_refine(enum num_t x_t, struct range x, enum num_t y_t,
+ 		return range_improve(x_t, x, x_swap);
  	}
- }
  
++	if (!t_is_32(x_t) && !t_is_32(y_t) && x_t != y_t) {
++		if (x_t == S64 && x.a > x.b) {
++			if (x.b < y.a && x.a <= y.b)
++				return range(x_t, x.a, y.b);
++			if (x.a > y.b && x.b >= y.a)
++				return range(x_t, y.a, x.b);
++		} else if (x_t == U64 && y.a > y.b) {
++			if (y.b < x.a && y.a <= x.b)
++				return range(x_t, y.a, x.b);
++			if (y.a > x.b && y.b >= x.a)
++				return range(x_t, x.a, y.b);
++		}
++	}
++
+ 	/* otherwise, plain range cast and intersection works */
+ 	return range_improve(x_t, x, y_cast);
+ }
 -- 
 2.43.0
 
