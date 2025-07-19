@@ -1,125 +1,149 @@
-Return-Path: <bpf+bounces-63808-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63809-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF970B0B06B
-	for <lists+bpf@lfdr.de>; Sat, 19 Jul 2025 16:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 54C40B0B06F
+	for <lists+bpf@lfdr.de>; Sat, 19 Jul 2025 16:26:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 683DB1AA3810
-	for <lists+bpf@lfdr.de>; Sat, 19 Jul 2025 14:24:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BEF8E1AA3A08
+	for <lists+bpf@lfdr.de>; Sat, 19 Jul 2025 14:27:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86927287255;
-	Sat, 19 Jul 2025 14:24:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D86B72877EE;
+	Sat, 19 Jul 2025 14:26:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D4MALlyE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PCdD8nAq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EDA91DC9A3
-	for <bpf@vger.kernel.org>; Sat, 19 Jul 2025 14:24:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3EB016DEB3;
+	Sat, 19 Jul 2025 14:26:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752935070; cv=none; b=rvQWPQbDWIylKhOtuRp+cyismxPl/gPOi4r/ZPEEPpxjEYH6K3/A+RLthRMlWegT7iHSfkuwhj31MxE9Mdp/WeroL+tYrn9S0DBH/Pi1IvAOeBKfF4fGGqOLGpB1S++YqCKIB7R9P5Bh4DkTFTB2+NkgCxePQztCte2eBts+x78=
+	t=1752935196; cv=none; b=ZVI2qda5ogANCJ/LhUsaGDhZxbhA9A55vhdSiCE+GE2lkiexQwTeAMl0bc0jZwjeBfSVcOW9pcJW6zlOK7v9H3EY1FXxznga//H17+1921+14fJHf9ISfsdr/i4iTgvaLqtenGfPMkiUToT28kP3V6HfuUQE0y31P7kKH9h/61Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752935070; c=relaxed/simple;
-	bh=iwGHIFFfN/CzQWzwpYwAd5dSWVK+9CGzDtmtixXHpTY=;
+	s=arc-20240116; t=1752935196; c=relaxed/simple;
+	bh=Q9VM8+RfTrjN07A2gob6Pf9y9R1h/h3neejkCLSzKKw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AmcRT2A/9ctteN3XKb3XNf9Oh7uJ3koAikD0TkkyhPd0GnHg9kv/tR01xJ0CPvM3EmtEQ7eFsW7bPsEOowAkbWZIMmYNnSBiBUuROLxHTpRrK4TfhZRhFyZx4SqyM02jxABDKmZszeQ8jThAutc7HC17i83b6zQ3YokVsrxZQC0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D4MALlyE; arc=none smtp.client-ip=209.85.221.44
+	 Content-Type:Content-Disposition:In-Reply-To; b=VRvLI40P0A9QSKkIXKce02Nnfv/7tAcWa9Qi1Ftex4idoYkeT8k7KkNvZVmorttG9w3lQHuDDoDpvmEH8mLVB93qZaCjQxvRVZT4TqtSIGxZBWag6hDssAnBACH4x/0xE/Fmz3VbNNk6u0/UIm940m07bSKdQi6FSctbIg1o+dk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PCdD8nAq; arc=none smtp.client-ip=209.85.218.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3a588da60dfso1806823f8f.1
-        for <bpf@vger.kernel.org>; Sat, 19 Jul 2025 07:24:28 -0700 (PDT)
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-ae6fa02d8feso446099866b.0;
+        Sat, 19 Jul 2025 07:26:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752935067; x=1753539867; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1752935193; x=1753539993; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sF+xvVmHZPhTzNR1UoHcqNUN0jk8rLNsh8L6Q+kGkzw=;
-        b=D4MALlyEv2Tra9AUE6V8geqrhT583fZrE1iGQece1+8Iw6T9zxHxk5cLCArX3CxymQ
-         8pK0PiNft8NHPspOv3CUhB2O5KPmms6NqIU50crRGVohczdRvzS1OJ0Hnv2mC/CtqDfe
-         z3zTy74WfMcBpntSNrxd8OOvZ+8QM5N0tEmh9wgv2rUvHhgXO6hFgcEwlqs/2VaeHnt3
-         f2fQq1yg+ytLAmVsZeXBpsrtRWQxvTMAJNU5yoxkwGtaW6qA8DTDhIaTFBa/FAlj/AW7
-         TWHUruvNnWqLNMTnuJLoRO0ptlVF9BCtPYJR/C31I+N6wo1/3u8eX4JOM85etoxyj2Ke
-         Owrg==
+        bh=/azvO26ioqqebf0mIHfr/fJKozOpQTGU5YXwyKRsJps=;
+        b=PCdD8nAqo1B3kyYHPxA+s2IO3NwamEmErvSmVhWuwdkLxaR8FYwrDdGBSVi5lbtWnZ
+         FSSGF8M8WB7FxErsO8ljuuYGj/Ro6z2ONsxCGVjgwt4NzUj24EQdv5PShwrWfLgSPZN8
+         gISkgMhzNs+I0e2zy8i+DYfYPPBhb3W7BXe5oaRESgm9S/V3JLbeVflf8YTTHkxSBKai
+         NemOMJ9pdHxndjctBuMZE5TuNl/K4J8rU7RyhoyA29xyHOQ1LArGyZdomJXoSpsTqprp
+         b5nxjhfMWJWBzwt8UZNcBXg1BXRTftZmTs29JUaCeVe4Yd6vH5qfwM1xm/rrGn5k4Gh0
+         IOqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752935067; x=1753539867;
+        d=1e100.net; s=20230601; t=1752935193; x=1753539993;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sF+xvVmHZPhTzNR1UoHcqNUN0jk8rLNsh8L6Q+kGkzw=;
-        b=G8FFNjqM1xIAk9h5Bt1ay420bU+c+hUmW9erViA7/DzgZ89BNJeNy+t4cIlUDO85HO
-         jlDz+EZhCu5SEhHyeGQlI3g7DTMuteWA85ZbWhUXX8mgju39WSdrvsHIv3oWwxpyH7VT
-         zM5C58aul7P8sbYVtZbAfLi33bzqpQ9SlgdKBf1yZhkejUZkDYupc4lJFBZ3uCPG2cZJ
-         JLev2lzZnnt2musWJwiHwt4KYNIBSkOE9EL+ODn9CAQKt8GxmkRK5vY6UK4JljH/FYyK
-         pyEkdWo4Q71B0g1A9QhVMHJqUCtOa4hVP1oBManqVnVuEELEi5bcdZQ38hPaUZhgpGN+
-         VXXw==
-X-Gm-Message-State: AOJu0YwlbpZeFzwCD6pjdX5Jz8Qrna9bD1Ko4HtIkOI1ranE5ow0M4Rr
-	WLEJhMhUxq+8pG3Dutr2xSuztmwh+VKc1AGKRMajFHlbF1RjUB6bOhzGeEsGk8so
-X-Gm-Gg: ASbGncsKPZHSTI8nHQIKabdpbRTjLPd2j+ly1Du+6WVV8VQmaqjLfBHEk/KmDmkon+9
-	ZLSFLVJIcgGbnMthzXBN0eshRiXArHGzkI93zF8IJNo3bCoD7kSfkooS5GCXzmcMZBPU72TsY9J
-	BkGwO9AUrlHtTD79r5uNxKvuR/N/bq8KXBo7hYJXUZ0E0gc2kzgvh52ZAXseHeWsaW6x0OCmqKW
-	vpU5RhM5Q7U90xkb4C2STcQHq8KXFD4PKK5njvI4MX4NCq8pW3qJHak7puqiDiAJsietNGnyHIZ
-	5ATHphXBP2wPfP8YwYQbTot4hNkcXPOLZ1wuFhbdDkST66VGHh8AZzj2eK1/54FNzUHT0X9xlXI
-	PEey+O7UHom4wtn8xq33tL3w+WRZ9ubTm556nGikL+7ad3MVR0BoL0ulrs6nabeK1jBo8DwJOks
-	PawbUNLVfKo4s8fQcanex9
-X-Google-Smtp-Source: AGHT+IFLAekQOO19a2lFRLKqYBpnFWYjahuEuIIW/wlq+GTuPNJMeQDwUZLjCfyHl+BrSOvwGCiLuw==
-X-Received: by 2002:a5d:6f0e:0:b0:3a6:d92d:9f7c with SMTP id ffacd0b85a97d-3b60e4c5212mr12847153f8f.9.1752935066515;
-        Sat, 19 Jul 2025 07:24:26 -0700 (PDT)
-Received: from Tunnel (2a01cb089436c000eab97b50918e1e74.ipv6.abo.wanadoo.fr. [2a01:cb08:9436:c000:eab9:7b50:918e:1e74])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b61ca48cb9sm4961884f8f.45.2025.07.19.07.24.25
+        bh=/azvO26ioqqebf0mIHfr/fJKozOpQTGU5YXwyKRsJps=;
+        b=Q6bi/dRzViQ3YkAmKHMzedlMXMIuGsTADRRfoaXzsQS216W7kuS3BJUlTwX0S/yhOB
+         m0ScojG6zcNLjqaxga64O/WZwrmzWEG5Ho5aaGSXzd3Fpoo+tycfpvkZY2iak3+HvBj3
+         +HdmQ6l888xezZTU/z6cm8Cglgfu6a17pavbVmavYgzt1dO8LZoBqC55zV8WUQqgaap0
+         +MOMei0j3O8dygiUMV+6KvCWnVt5vP6ZX1mIG/8P9iHhLBY692UXi9h7l2e4QJj5cbXp
+         Pit5O0xjKovqMMZftajZBo/H1rL8UKJ0hAiuDuAD+5wTEPIecZgnr6wwotfeaLkeTTtE
+         ep6A==
+X-Forwarded-Encrypted: i=1; AJvYcCU/FQLfB8pyre9O0wJkXGFrQnHV1kJs+liL7YWRbfhrqT73Zqa/ebyLfKMp+ViM39my1uaPPcPn7/S5JJ/b@vger.kernel.org, AJvYcCUUwlpXrFvjTJx5xhCMUDPR2J+mm0rR2gY17L6Frrtv35dgriyWsCZ9GTxC2Nms1IGr5lA=@vger.kernel.org, AJvYcCWWhoLvRq5eOyPlEfEX3FMzoxNo6KjAYMdpdpVB8Fob106ZuLxq2QZqz7ChY/uqZn1OHPi5RfRIUHRlvO5F@vger.kernel.org, AJvYcCWaflZ/ZJ6+erwRh2euM8Sc9AmNYNd5Ypu4eAxomdpm6N65eIJ3vVMi6crBQ1x8OGbjlv7VYkSAUNAJH1vNnA==@vger.kernel.org, AJvYcCXLiW1fxIipARiseOoVr7/1LRSFpQ3aj1TOwwbY/t2qbOAa+1Czjbn9JayanLfwubDPsmBv2vl1KTdGJn8YwkMR@vger.kernel.org
+X-Gm-Message-State: AOJu0YwuyiypG5mhBi8Z63rMnHD76kdiMqu4twVyE43x/BrVfGnLirQp
+	Bx1IE/raUEoE18Ee5rj6tfpe2OG0nQV75P8tWPzrjKHoBq6Bnkl+3K4=
+X-Gm-Gg: ASbGncu5inb91x6b8pjwqzMAppQzJtqGjSYDe+KJEJiZYxlNoJG4+aSzVMKyoe+G1AE
+	UjKE+o73EfXVs7bql2WjSLzP8YlfvWUfJZJoKHG+59p518GhvNyUC2DwR9TRUTNAlkWjlAjRtLS
+	vgFb17FiZh5DKAFU819ftseL8DIrbqN7Bq2bGt7iIrXIUgds/wKw5H27Htkye/Duhf5Asyy1Ifr
+	HwHaqxh1Wa/aVNoM0f6n5+bDgZkSpPuY/WIdKFPZIf9/Ox+hNDPzhtaa5OerzMdjATtDqAYHySw
+	xWWzBpDKn56v5PMN3HVht78CFuIY8pKmPWEuo3BngvbG/2LFT1IIimIUbsJyX4u/cvH60dC6FkR
+	pZmRfhnzfKXn3Nxs9F6Td
+X-Google-Smtp-Source: AGHT+IH4rIX/bypehArMCYVoJKbKtQr7DZ+CDQF06CuILCUV9Hj7vLhxbEx9C5tE4wNvPK/j+RVLfA==
+X-Received: by 2002:a17:907:80b:b0:aec:5516:239c with SMTP id a640c23a62f3a-aec55163f91mr913241166b.58.1752935192840;
+        Sat, 19 Jul 2025 07:26:32 -0700 (PDT)
+Received: from p183 ([46.53.249.160])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aec6c79ae67sm317872366b.11.2025.07.19.07.26.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Jul 2025 07:24:25 -0700 (PDT)
-Date: Sat, 19 Jul 2025 16:24:24 +0200
-From: Paul Chaignon <paul.chaignon@gmail.com>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
+        Sat, 19 Jul 2025 07:26:32 -0700 (PDT)
+Date: Sat, 19 Jul 2025 17:26:28 +0300
+From: Alexey Dobriyan <adobriyan@gmail.com>
+To: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Eugenio =?utf-8?B?UMOpcmV6?= <eperezma@redhat.com>,
+	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
+	Arnd Bergmann <arnd@kernel.org>, Borislav Petkov <bp@alien8.de>,
+	Cong Wang <cong.wang@bytedance.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	David Laight <David.Laight@aculab.com>,
+	David Lechner <dlechner@baylibre.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
 	Eduard Zingerman <eddyz87@gmail.com>,
-	Yonghong Song <yonghong.song@linux.dev>
-Subject: [PATCH bpf-next 4/4] selftests/bpf: Test invariants on JSLT crossing
- sign
-Message-ID: <e5cc3f2135707d463997e3ecc02f8a70c248223f.1752934170.git.paul.chaignon@gmail.com>
-References: <cover.1752934170.git.paul.chaignon@gmail.com>
+	Gatlin Newhouse <gatlin.newhouse@gmail.com>,
+	Hao Luo <haoluo@google.com>, Ingo Molnar <mingo@redhat.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Jakub Sitnicki <jakub@cloudflare.com>,
+	Jan Hendrik Farr <kernel@jfarr.cc>,
+	Jason Wang <jasowang@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>, KP Singh <kpsingh@kernel.org>,
+	Kees Cook <kees@kernel.org>,
+	Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+	Marc Herbert <Marc.Herbert@linux.intel.com>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Mateusz Guzik <mjguzik@gmail.com>, Michal Luczaj <mhal@rbox.co>,
+	Miguel Ojeda <ojeda@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+	NeilBrown <neil@brown.name>, Peter Zijlstra <peterz@infradead.org>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Shuah Khan <shuah@kernel.org>, Song Liu <song@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Thorsten Blum <thorsten.blum@linux.dev>,
+	Uros Bizjak <ubizjak@gmail.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Yafang Shao <laoar.shao@gmail.com>, Ye Bin <yebin10@huawei.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Yufeng Wang <wangyufeng@kylinos.cn>, bpf@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-sparse@vger.kernel.org,
+	virtualization@lists.linux.dev, x86@kernel.org
+Subject: Re: [PATCH 3/7] fs/proc: replace "__auto_type" with "auto"
+Message-ID: <63adc48b-9b81-4f35-9462-0de103474d13@p183>
+References: <20250718213252.2384177-1-hpa@zytor.com>
+ <20250718213252.2384177-4-hpa@zytor.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <cover.1752934170.git.paul.chaignon@gmail.com>
+In-Reply-To: <20250718213252.2384177-4-hpa@zytor.com>
 
-The improvement of the u64/s64 range refinement fixed the invariant
-violation that was happening on this test for BPF_JSLT when crossing the
-sign boundary.
+On Fri, Jul 18, 2025 at 02:32:46PM -0700, H. Peter Anvin wrote:
+> Replace uses of "__auto_type" in fs/proc/inode.c with "auto".
 
-After this patch, we have one test remaining with a known invariant
-violation. It's the same test as fixed here but for 32 bits ranges.
+>  static ssize_t pde_read(struct proc_dir_entry *pde, struct file *file, char __user *buf, size_t count, loff_t *ppos)
+>  {
+> -	__auto_type read = pde->proc_ops->proc_read;
+> +	auto read = pde->proc_ops->proc_read;
 
-Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
----
- tools/testing/selftests/bpf/progs/verifier_bounds.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks! I'd prefer "const auto" but OK.
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_bounds.c b/tools/testing/selftests/bpf/progs/verifier_bounds.c
-index d104d43ff911..ddf36d8ab07a 100644
---- a/tools/testing/selftests/bpf/progs/verifier_bounds.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_bounds.c
-@@ -1066,7 +1066,7 @@ l0_%=:	r0 = 0;						\
- SEC("xdp")
- __description("bound check with JMP_JSLT for crossing 64-bit signed boundary")
- __success __retval(0)
--__flag(!BPF_F_TEST_REG_INVARIANTS) /* known invariants violation */
-+__flag(BPF_F_TEST_REG_INVARIANTS)
- __naked void crossing_64_bit_signed_boundary_2(void)
- {
- 	asm volatile ("					\
--- 
-2.43.0
-
+Reviewed-by: Alexey Dobriyan <adobriyan@gmail.com>
 
