@@ -1,141 +1,162 @@
-Return-Path: <bpf+bounces-63799-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63802-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13F3BB0AF05
-	for <lists+bpf@lfdr.de>; Sat, 19 Jul 2025 11:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E27C5B0AF32
+	for <lists+bpf@lfdr.de>; Sat, 19 Jul 2025 11:52:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB1DE5871DE
-	for <lists+bpf@lfdr.de>; Sat, 19 Jul 2025 09:16:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0ED08568259
+	for <lists+bpf@lfdr.de>; Sat, 19 Jul 2025 09:52:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7117236453;
-	Sat, 19 Jul 2025 09:14:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C299120E70B;
+	Sat, 19 Jul 2025 09:52:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hKCtxXzR"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6B6823D283;
-	Sat, 19 Jul 2025 09:14:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3656227B94;
+	Sat, 19 Jul 2025 09:52:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752916472; cv=none; b=sA+UugEH0Oe4Rp6+nSJf5mE88/SY95JOghp/2aQBUb5k6ri31bkTv2zO6tExLhXxOLCBnwzzFBvUNVKdAS5iQ+elHEnYmr0uz+TFM9o2hE/WBrPh7jR818u6URSpXX6tR/ZBFgs1JrQmDf50J/r0I72rRZ8NjEUJnqMkBLAf9D0=
+	t=1752918754; cv=none; b=pu1CYdAfH6LT5Pyjc0MTaxBgAiwDEJdTNzueiSrACmDBIS3RSFxKAdraFECg+Lbd2LPVZovhJz9+8qcfIHi0PduXWuq1XSq1u0KJ64mLdrDp2FebfSiCj2dNrGp6tLd68aAECa8bs4x8PzqWacbce/XXCZtcwxepBxiU//rRd+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752916472; c=relaxed/simple;
-	bh=1RyxC+Wor3JwVpOaea7sc7S00uf2LUgWPxGe7w24Muo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=aUtmpYq5Q3ZWmoe/oA4uFmDmgp8CgoU81w7aU3gTgAoWj7XG/W7WeIHXmfV+SXYjAajJvy/R9L6x6dRNhLws1mMbQibTkO+GjEG211XpywWFgcruuR4DNLjKn02bcR9yvges+PppA4wfdpTOKEs1qj+ynQPeoc9iwqhkrd9SeFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4bkgw16M2ZzKHMrP;
-	Sat, 19 Jul 2025 17:14:25 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 881CE1A188D;
-	Sat, 19 Jul 2025 17:14:24 +0800 (CST)
-Received: from ultra.huawei.com (unknown [10.90.53.71])
-	by APP4 (Coremail) with SMTP id gCh0CgCHURLuYXtopCAYAw--.54295S12;
-	Sat, 19 Jul 2025 17:14:24 +0800 (CST)
-From: Pu Lehui <pulehui@huaweicloud.com>
-To: bpf@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Alexandre Ghiti <alex@ghiti.fr>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Pu Lehui <pulehui@huawei.com>
-Subject: [PATCH bpf-next 10/10] selftests/bpf: Enable arena atomics tests for RV64
-Date: Sat, 19 Jul 2025 09:17:30 +0000
-Message-Id: <20250719091730.2660197-11-pulehui@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250719091730.2660197-1-pulehui@huaweicloud.com>
-References: <20250719091730.2660197-1-pulehui@huaweicloud.com>
+	s=arc-20240116; t=1752918754; c=relaxed/simple;
+	bh=oSt+1bwQznG4gMR3tFfughPMF0WDaB7Y07l3ebktgr4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tSZCiPfrl4LtCQXWvKSBFVFmbJ5CCmoNTbn73rs30MpzUC6Out1EPaGy3vvMnKuI/RIXIk6kBNKC1odfBPj/26GSsOrjegfHX2misgvNfbcmbXWk6cfBSk87b3YL2FAbpn12vu1FfVKUWubTyfbCUBZAsL7fY5vLw76Nmwsw9ew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hKCtxXzR; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-451d54214adso20612785e9.3;
+        Sat, 19 Jul 2025 02:52:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752918751; x=1753523551; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5pEXn5VHOGjD9SP45xNUPOGCXrKn0jYGF1BCukLPods=;
+        b=hKCtxXzRTaCZm0wGBSkNIcxm4b4aq7S79pQXEA/aonYCm5GGHai5by6PtYCNvHGQiq
+         nrPqX6+TNROHPSEWypuhFjMmyeodYslkei9EU/ngGFPRhQ0hdNctk+6sLIe4tu+YAd5y
+         eBCXGeR2x3VPUc2k/fdoMIIyaDG3eIWjCjf330YWOYw0LxeDD3Wej4fYIETDjKwgXpyo
+         LejBDeMXBZEnhxSSZoCRpjGWpYOaVHjG3aPnS7tg/Bz8D59mJviZcraH48LpXZLJ6Cea
+         /85xOD0q9j4YBK439c8q9AahuYK8GSvsWsM/q2o8Sn69VBRRyan28fakqnLCtRtF2K8N
+         iNSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752918751; x=1753523551;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5pEXn5VHOGjD9SP45xNUPOGCXrKn0jYGF1BCukLPods=;
+        b=qAHiyyRCshbJJZUDg9hewod149Jo9SPrTBivp5eQF7UJRFyoCwejaBnDF7tDDsawIc
+         vIKM5gEHi8aN3h+KHtp51+37AZryqDAhP4Wj/cvb29hFzmD8uK90u0/9aghFwiBfMv8N
+         oJZK6u45VM5UYCNSsSF+rKtWw9+6RODUN7rVRa4LQ5tNhuHby2zLCfdBbtkHSwWvIEqO
+         9UHIsL+dqitKS+BxJerUDPRAjKTsgfxleU8a3DJDNqbYSdu2Sm7oz4xczk4p9E6K1SCR
+         a0Y9xOzxoPhRKE7isUmUwMegCboOCAY5TLjTYCXrLijkf/6ytCestxkMSS21W4SaI2PS
+         WKuA==
+X-Forwarded-Encrypted: i=1; AJvYcCUYTFNo89fqvd5m3Bd4gX6GPlB4BIhOiFKjbqQgBW4xL25SbKXVzHNmhjt+9FeV0TSUwAzttzbMfcoKIp1ZVErX@vger.kernel.org, AJvYcCV+hTnNQ5SZiZ3aFJnyQxAzd9S3AoArY92DLukxAGPhUvmyGiT/79ttuzwqxuHTmeUxyeo5qtXHhDklj3AJ@vger.kernel.org, AJvYcCVGNd/NRwazYBzrkL8dhy7WHmyaT2FDMEf4qSQDzfodEAxGkZlyJGSuBDUX2tHh+FHa3CYz22wWqNcu7dZ1@vger.kernel.org, AJvYcCX3BvTAS5xc6iqo4xIbKbYxRqqRZWHX94foq5KhpfsbfoxQCLCFAxDu4HOYKwtwe2R6DTneOzATlMx9WRlRTA==@vger.kernel.org, AJvYcCX5d8+8OHdWafoVYEzAcoLzzVfSzmJxF/iy1dl44e9V7uVyJJsDo6ERcj5+s6GJHuoXn+Q=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywgt/4U+BYa3PG00MHbAriBGPLqAHcSYhro2I56LjrG4OURztvI
+	JHyhqLeULFG+UbpQUOJEwzHOzf1ksT13XiCeooXgYQi91ziJAjhdNda5
+X-Gm-Gg: ASbGncu0GPUnk7EtkesxcwN5xWWGLvhSSC9+tqoOz4wga2KIWWV0EEuk5+V7TTc/OA2
+	m6BOy8RFv5l9MKCWdyyiirNqHwb2NKfTo9aH7UCIgbjBUoWbTOwFPV+faibebd0DqAxUjPrXN5+
+	YCQB9aS+5JZO3c23QfZDXLotmpab00GUdbrey3arf8ECaLt/rcnx8XxaKZXTkCWuFxSOCgYAkOV
+	P8LQk1ruqG9Sy2y0tQ46IytS34C9it/6jBj7Wqbz29q2KCqx22TPRHeZ9rEkAgK6oGyvgFapf72
+	RlrDnaIdw/0G/FVDu4QsILKS3lPYv0k+yG5kEMzLB7VqWzJMxAVgivryygNhLQTP1FPy7DjtFsZ
+	+0XOSw9m59FDOE0GBRto6uWVK5tSNbzf/vEkxBpR5j23Nsu3yxL4KsLbJ4U6o
+X-Google-Smtp-Source: AGHT+IGgS3eKZd0WOE5CaGVORMk8w7YbhfbUyHdCIflKLfBmlFtKqD0yPw9BMSfCnK1ze+Ow5Wktqw==
+X-Received: by 2002:a05:600c:3484:b0:456:1a41:f932 with SMTP id 5b1f17b1804b1-4563535d2ddmr77234825e9.22.1752918750524;
+        Sat, 19 Jul 2025 02:52:30 -0700 (PDT)
+Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4562e7f2bb4sm100634135e9.8.2025.07.19.02.52.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Jul 2025 02:52:30 -0700 (PDT)
+Date: Sat, 19 Jul 2025 10:52:28 +0100
+From: David Laight <david.laight.linux@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "H. Peter Anvin" <hpa@zytor.com>, Eugenio =?UTF-8?B?UMOpcmV6?=
+ <eperezma@redhat.com>, Ilpo =?UTF-8?B?SsOkcnZpbmVu?=
+ <ilpo.jarvinen@linux.intel.com>, "Michael S. Tsirkin" <mst@redhat.com>, Al
+ Viro <viro@zeniv.linux.org.uk>, Alexei Starovoitov <ast@kernel.org>, Alexey
+ Dobriyan <adobriyan@gmail.com>, Andrew Morton <akpm@linux-foundation.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
+ Borislav Petkov <bp@alien8.de>, Cong Wang <cong.wang@bytedance.com>, Dan
+ Williams <dan.j.williams@intel.com>, Daniel Borkmann
+ <daniel@iogearbox.net>, Dave Hansen <dave.hansen@linux.intel.com>, David
+ Laight <David.Laight@aculab.com>, David Lechner <dlechner@baylibre.com>,
+ Dinh Nguyen <dinguyen@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Gatlin Newhouse <gatlin.newhouse@gmail.com>, Hao Luo <haoluo@google.com>,
+ Ingo Molnar <mingo@redhat.com>, Jakub Sitnicki <jakub@cloudflare.com>, Jan
+ Hendrik Farr <kernel@jfarr.cc>, Jason Wang <jasowang@redhat.com>, Jiri Olsa
+ <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Jonathan
+ Cameron <Jonathan.Cameron@huawei.com>, Josh Poimboeuf
+ <jpoimboe@kernel.org>, KP Singh <kpsingh@kernel.org>, Kees Cook
+ <kees@kernel.org>, Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, Marc
+ Herbert <Marc.Herbert@linux.intel.com>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Mateusz Guzik <mjguzik@gmail.com>, Michal Luczaj
+ <mhal@rbox.co>, Miguel Ojeda <ojeda@kernel.org>, Mykola Lysenko
+ <mykolal@fb.com>, NeilBrown <neil@brown.name>, Peter Zijlstra
+ <peterz@infradead.org>, Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+ Sami Tolvanen <samitolvanen@google.com>, Shuah Khan <shuah@kernel.org>,
+ Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Thomas
+ Gleixner <tglx@linutronix.de>, Thorsten Blum <thorsten.blum@linux.dev>,
+ Uros Bizjak <ubizjak@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+ Yafang Shao <laoar.shao@gmail.com>, Ye Bin <yebin10@huawei.com>, Yonghong
+ Song <yonghong.song@linux.dev>, Yufeng Wang <wangyufeng@kylinos.cn>,
+ bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-sparse@vger.kernel.org, virtualization@lists.linux.dev,
+ x86@kernel.org
+Subject: Re: [PATCH 4/7] arch/nios: replace "__auto_type" with "auto"
+Message-ID: <20250719105228.1704538d@pumpkin>
+In-Reply-To: <CAHk-=whGcopJ_wewAtzfTS7=cG1yvpC90Y-xz5t-1Aw0ew682w@mail.gmail.com>
+References: <20250718213252.2384177-1-hpa@zytor.com>
+	<20250718213252.2384177-5-hpa@zytor.com>
+	<CAHk-=whGcopJ_wewAtzfTS7=cG1yvpC90Y-xz5t-1Aw0ew682w@mail.gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCHURLuYXtopCAYAw--.54295S12
-X-Coremail-Antispam: 1UD129KBjvJXoW7KF4DurWkJw13ury7Xry8AFb_yoW8CFy5pF
-	48ZF98ta4Fgr42kas3tF4UZr4rCws5ArWUCFWqgw4DG3ZrJ3yxKF92ka98ArZ0ga4S9ry5
-	Aw10q3sI9r48Aw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPvb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-	AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
-	14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
-	xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
-	z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2
-	AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAq
-	x4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6r
-	W5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF
-	7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14
-	v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuY
-	vjxUI-eODUUUU
-X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-From: Pu Lehui <pulehui@huawei.com>
+On Fri, 18 Jul 2025 14:49:41 -0700
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-Enable arena atomics tests for RV64.
+...
+> Side note: I think some coccinelle (or sed) script that replaces that
+> older form of
+> 
+>        typeof(x) Y = (typeof(x))(Z);
+...
+> 
+> with just
+> 
+>         auto Y = Z;
+> 
+> is also worthwhile at some point.
 
-Signed-off-by: Pu Lehui <pulehui@huawei.com>
----
- tools/testing/selftests/bpf/progs/arena_atomics.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+That one needs to keep the typeof() - but the cast might be spurious.
+It could be either:
+	typeof(x) Y = Z;
+or:
+	auto Y = (typeof(x))(Z);
+but the latter could hide compilation errors.
 
-diff --git a/tools/testing/selftests/bpf/progs/arena_atomics.c b/tools/testing/selftests/bpf/progs/arena_atomics.c
-index a52feff98112..d1841aac94a2 100644
---- a/tools/testing/selftests/bpf/progs/arena_atomics.c
-+++ b/tools/testing/selftests/bpf/progs/arena_atomics.c
-@@ -28,7 +28,8 @@ bool skip_all_tests = true;
- 
- #if defined(ENABLE_ATOMICS_TESTS) &&		  \
- 	defined(__BPF_FEATURE_ADDR_SPACE_CAST) && \
--	(defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86))
-+	(defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86) || \
-+	 (defined(__TARGET_ARCH_riscv) && __riscv_xlen == 64))
- bool skip_lacq_srel_tests __attribute((__section__(".data"))) = false;
- #else
- bool skip_lacq_srel_tests = true;
-@@ -314,7 +315,8 @@ int load_acquire(const void *ctx)
- {
- #if defined(ENABLE_ATOMICS_TESTS) &&		  \
- 	defined(__BPF_FEATURE_ADDR_SPACE_CAST) && \
--	(defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86))
-+	(defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86) || \
-+	 (defined(__TARGET_ARCH_riscv) && __riscv_xlen == 64))
- 
- #define LOAD_ACQUIRE_ARENA(SIZEOP, SIZE, SRC, DST)	\
- 	{ asm volatile (				\
-@@ -365,7 +367,8 @@ int store_release(const void *ctx)
- {
- #if defined(ENABLE_ATOMICS_TESTS) &&		  \
- 	defined(__BPF_FEATURE_ADDR_SPACE_CAST) && \
--	(defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86))
-+	(defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86) || \
-+	 (defined(__TARGET_ARCH_riscv) && __riscv_xlen == 64))
- 
- #define STORE_RELEASE_ARENA(SIZEOP, DST, VAL)	\
- 	{ asm volatile (			\
--- 
-2.34.1
+I'm waiting for the next 'duck shoot' (after strings) to be casts.
 
+While casts of 'buffer' to/from 'void *' are fine (and not needed),
+casts to/from 'integer_type *' are definitely problematic.
+
+And 'random' casts of integer values could easily hide real bugs
+and most just aren't needed.
+Although you might want the compiler to make the result of
+'u64_var & 0xffu' 'unsigned int'.
+
+	David
 
