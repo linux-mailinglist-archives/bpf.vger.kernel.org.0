@@ -1,162 +1,160 @@
-Return-Path: <bpf+bounces-63802-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63803-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E27C5B0AF32
-	for <lists+bpf@lfdr.de>; Sat, 19 Jul 2025 11:52:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 499A1B0B032
+	for <lists+bpf@lfdr.de>; Sat, 19 Jul 2025 15:15:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0ED08568259
-	for <lists+bpf@lfdr.de>; Sat, 19 Jul 2025 09:52:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC8AE7AA639
+	for <lists+bpf@lfdr.de>; Sat, 19 Jul 2025 13:13:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C299120E70B;
-	Sat, 19 Jul 2025 09:52:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2453F2874F5;
+	Sat, 19 Jul 2025 13:15:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hKCtxXzR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="knA3+jwx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3656227B94;
-	Sat, 19 Jul 2025 09:52:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FC32286D7A;
+	Sat, 19 Jul 2025 13:15:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752918754; cv=none; b=pu1CYdAfH6LT5Pyjc0MTaxBgAiwDEJdTNzueiSrACmDBIS3RSFxKAdraFECg+Lbd2LPVZovhJz9+8qcfIHi0PduXWuq1XSq1u0KJ64mLdrDp2FebfSiCj2dNrGp6tLd68aAECa8bs4x8PzqWacbce/XXCZtcwxepBxiU//rRd+M=
+	t=1752930912; cv=none; b=K7dgOdm7RF88UeZkHW8zIrJOmtwBRhZPmK8w2KC6tH72bxP3K1fCF9X9eT8aKayLCgD0B5dtyzUOhibQi1F4bQ4h9m5D9F13A/RWgE5ZF806K6SUlvCkvyuKKBp3/Lux+fwyUPTzfW15xiYfScFoMmWLG2/j5H+244EHe9tCKK8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752918754; c=relaxed/simple;
-	bh=oSt+1bwQznG4gMR3tFfughPMF0WDaB7Y07l3ebktgr4=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tSZCiPfrl4LtCQXWvKSBFVFmbJ5CCmoNTbn73rs30MpzUC6Out1EPaGy3vvMnKuI/RIXIk6kBNKC1odfBPj/26GSsOrjegfHX2misgvNfbcmbXWk6cfBSk87b3YL2FAbpn12vu1FfVKUWubTyfbCUBZAsL7fY5vLw76Nmwsw9ew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hKCtxXzR; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-451d54214adso20612785e9.3;
-        Sat, 19 Jul 2025 02:52:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752918751; x=1753523551; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5pEXn5VHOGjD9SP45xNUPOGCXrKn0jYGF1BCukLPods=;
-        b=hKCtxXzRTaCZm0wGBSkNIcxm4b4aq7S79pQXEA/aonYCm5GGHai5by6PtYCNvHGQiq
-         nrPqX6+TNROHPSEWypuhFjMmyeodYslkei9EU/ngGFPRhQ0hdNctk+6sLIe4tu+YAd5y
-         eBCXGeR2x3VPUc2k/fdoMIIyaDG3eIWjCjf330YWOYw0LxeDD3Wej4fYIETDjKwgXpyo
-         LejBDeMXBZEnhxSSZoCRpjGWpYOaVHjG3aPnS7tg/Bz8D59mJviZcraH48LpXZLJ6Cea
-         /85xOD0q9j4YBK439c8q9AahuYK8GSvsWsM/q2o8Sn69VBRRyan28fakqnLCtRtF2K8N
-         iNSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752918751; x=1753523551;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5pEXn5VHOGjD9SP45xNUPOGCXrKn0jYGF1BCukLPods=;
-        b=qAHiyyRCshbJJZUDg9hewod149Jo9SPrTBivp5eQF7UJRFyoCwejaBnDF7tDDsawIc
-         vIKM5gEHi8aN3h+KHtp51+37AZryqDAhP4Wj/cvb29hFzmD8uK90u0/9aghFwiBfMv8N
-         oJZK6u45VM5UYCNSsSF+rKtWw9+6RODUN7rVRa4LQ5tNhuHby2zLCfdBbtkHSwWvIEqO
-         9UHIsL+dqitKS+BxJerUDPRAjKTsgfxleU8a3DJDNqbYSdu2Sm7oz4xczk4p9E6K1SCR
-         a0Y9xOzxoPhRKE7isUmUwMegCboOCAY5TLjTYCXrLijkf/6ytCestxkMSS21W4SaI2PS
-         WKuA==
-X-Forwarded-Encrypted: i=1; AJvYcCUYTFNo89fqvd5m3Bd4gX6GPlB4BIhOiFKjbqQgBW4xL25SbKXVzHNmhjt+9FeV0TSUwAzttzbMfcoKIp1ZVErX@vger.kernel.org, AJvYcCV+hTnNQ5SZiZ3aFJnyQxAzd9S3AoArY92DLukxAGPhUvmyGiT/79ttuzwqxuHTmeUxyeo5qtXHhDklj3AJ@vger.kernel.org, AJvYcCVGNd/NRwazYBzrkL8dhy7WHmyaT2FDMEf4qSQDzfodEAxGkZlyJGSuBDUX2tHh+FHa3CYz22wWqNcu7dZ1@vger.kernel.org, AJvYcCX3BvTAS5xc6iqo4xIbKbYxRqqRZWHX94foq5KhpfsbfoxQCLCFAxDu4HOYKwtwe2R6DTneOzATlMx9WRlRTA==@vger.kernel.org, AJvYcCX5d8+8OHdWafoVYEzAcoLzzVfSzmJxF/iy1dl44e9V7uVyJJsDo6ERcj5+s6GJHuoXn+Q=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywgt/4U+BYa3PG00MHbAriBGPLqAHcSYhro2I56LjrG4OURztvI
-	JHyhqLeULFG+UbpQUOJEwzHOzf1ksT13XiCeooXgYQi91ziJAjhdNda5
-X-Gm-Gg: ASbGncu0GPUnk7EtkesxcwN5xWWGLvhSSC9+tqoOz4wga2KIWWV0EEuk5+V7TTc/OA2
-	m6BOy8RFv5l9MKCWdyyiirNqHwb2NKfTo9aH7UCIgbjBUoWbTOwFPV+faibebd0DqAxUjPrXN5+
-	YCQB9aS+5JZO3c23QfZDXLotmpab00GUdbrey3arf8ECaLt/rcnx8XxaKZXTkCWuFxSOCgYAkOV
-	P8LQk1ruqG9Sy2y0tQ46IytS34C9it/6jBj7Wqbz29q2KCqx22TPRHeZ9rEkAgK6oGyvgFapf72
-	RlrDnaIdw/0G/FVDu4QsILKS3lPYv0k+yG5kEMzLB7VqWzJMxAVgivryygNhLQTP1FPy7DjtFsZ
-	+0XOSw9m59FDOE0GBRto6uWVK5tSNbzf/vEkxBpR5j23Nsu3yxL4KsLbJ4U6o
-X-Google-Smtp-Source: AGHT+IGgS3eKZd0WOE5CaGVORMk8w7YbhfbUyHdCIflKLfBmlFtKqD0yPw9BMSfCnK1ze+Ow5Wktqw==
-X-Received: by 2002:a05:600c:3484:b0:456:1a41:f932 with SMTP id 5b1f17b1804b1-4563535d2ddmr77234825e9.22.1752918750524;
-        Sat, 19 Jul 2025 02:52:30 -0700 (PDT)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4562e7f2bb4sm100634135e9.8.2025.07.19.02.52.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Jul 2025 02:52:30 -0700 (PDT)
-Date: Sat, 19 Jul 2025 10:52:28 +0100
-From: David Laight <david.laight.linux@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: "H. Peter Anvin" <hpa@zytor.com>, Eugenio =?UTF-8?B?UMOpcmV6?=
- <eperezma@redhat.com>, Ilpo =?UTF-8?B?SsOkcnZpbmVu?=
- <ilpo.jarvinen@linux.intel.com>, "Michael S. Tsirkin" <mst@redhat.com>, Al
- Viro <viro@zeniv.linux.org.uk>, Alexei Starovoitov <ast@kernel.org>, Alexey
- Dobriyan <adobriyan@gmail.com>, Andrew Morton <akpm@linux-foundation.org>,
- Andrii Nakryiko <andrii@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
- Borislav Petkov <bp@alien8.de>, Cong Wang <cong.wang@bytedance.com>, Dan
- Williams <dan.j.williams@intel.com>, Daniel Borkmann
- <daniel@iogearbox.net>, Dave Hansen <dave.hansen@linux.intel.com>, David
- Laight <David.Laight@aculab.com>, David Lechner <dlechner@baylibre.com>,
- Dinh Nguyen <dinguyen@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Gatlin Newhouse <gatlin.newhouse@gmail.com>, Hao Luo <haoluo@google.com>,
- Ingo Molnar <mingo@redhat.com>, Jakub Sitnicki <jakub@cloudflare.com>, Jan
- Hendrik Farr <kernel@jfarr.cc>, Jason Wang <jasowang@redhat.com>, Jiri Olsa
- <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Jonathan
- Cameron <Jonathan.Cameron@huawei.com>, Josh Poimboeuf
- <jpoimboe@kernel.org>, KP Singh <kpsingh@kernel.org>, Kees Cook
- <kees@kernel.org>, Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, Marc
- Herbert <Marc.Herbert@linux.intel.com>, Martin KaFai Lau
- <martin.lau@linux.dev>, Mateusz Guzik <mjguzik@gmail.com>, Michal Luczaj
- <mhal@rbox.co>, Miguel Ojeda <ojeda@kernel.org>, Mykola Lysenko
- <mykolal@fb.com>, NeilBrown <neil@brown.name>, Peter Zijlstra
- <peterz@infradead.org>, Przemek Kitszel <przemyslaw.kitszel@intel.com>,
- Sami Tolvanen <samitolvanen@google.com>, Shuah Khan <shuah@kernel.org>,
- Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Thomas
- Gleixner <tglx@linutronix.de>, Thorsten Blum <thorsten.blum@linux.dev>,
- Uros Bizjak <ubizjak@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
- Yafang Shao <laoar.shao@gmail.com>, Ye Bin <yebin10@huawei.com>, Yonghong
- Song <yonghong.song@linux.dev>, Yufeng Wang <wangyufeng@kylinos.cn>,
- bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-sparse@vger.kernel.org, virtualization@lists.linux.dev,
- x86@kernel.org
-Subject: Re: [PATCH 4/7] arch/nios: replace "__auto_type" with "auto"
-Message-ID: <20250719105228.1704538d@pumpkin>
-In-Reply-To: <CAHk-=whGcopJ_wewAtzfTS7=cG1yvpC90Y-xz5t-1Aw0ew682w@mail.gmail.com>
-References: <20250718213252.2384177-1-hpa@zytor.com>
-	<20250718213252.2384177-5-hpa@zytor.com>
-	<CAHk-=whGcopJ_wewAtzfTS7=cG1yvpC90Y-xz5t-1Aw0ew682w@mail.gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+	s=arc-20240116; t=1752930912; c=relaxed/simple;
+	bh=Y56Y9TszFLVMWinBCZFOHZxvFqKUs/k3AHWrTwYXNBI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Hu/bMnjaZrVZToIzftaVycHSpLZkw5uXt63gWuKArNvaHD8wT9oYhJGGUVP2evgmjBGNaK+US3eWrFLdR0ITvSCfv51x0Iu+dWvcPl9uyz6OY0+Y/wXHCdElYy9SJ/DzCd37P5t4/tmjbv+Jp/dy8i1ZHqtzhRpSgNnc2xXdkZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=knA3+jwx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CC0AC4CEE3;
+	Sat, 19 Jul 2025 13:15:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752930912;
+	bh=Y56Y9TszFLVMWinBCZFOHZxvFqKUs/k3AHWrTwYXNBI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=knA3+jwxJ5/pPrzTMnyfUBfKL1V+3ZIfj6r1GGRWjfwBiKnjAuDznBaXjQsa1Dh0b
+	 ObE3uIAwdhux6+4Yjk313yDknHRfADprbR0oNEbrYTP399z4+xIYGjJc8azdxFbF+F
+	 UmwnxH+tj5kT2IJrgVk81w3nLnV4mRYdWwzKbDoxYtWuTeF80xHPDMaKWVC/ketKdr
+	 NsnZ3zWsqMUUABAI8HJwiiU3cakyDe8vO9JJs0mEiFtdv0FBIIYemXINpD5s7L4n4L
+	 agNBid3yCcvCfV7n6zgACi5P1ogwui64zpkSiWi/ME3lOixtn7pbgBNLLKkVA7Uvud
+	 KUVvYyiVznBUg==
+Message-ID: <81cd8749-6212-4fcf-8e1a-5eba5a8e2a73@kernel.org>
+Date: Sat, 19 Jul 2025 15:15:06 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] selftests/bpf: Add LPM trie microbenchmarks
+To: Matt Fleming <matt@readmodwrite.com>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Martin KaFai Lau <martin.lau@kernel.org>
+Cc: Shuah Khan <shuah@kernel.org>, kernel-team@cloudflare.com,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, Matt Fleming <mfleming@cloudflare.com>,
+ Yonghong Song <yonghong.song@linux.dev>, Netdev <netdev@vger.kernel.org>
+References: <20250718150554.48210-1-matt@readmodwrite.com>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <20250718150554.48210-1-matt@readmodwrite.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, 18 Jul 2025 14:49:41 -0700
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-...
-> Side note: I think some coccinelle (or sed) script that replaces that
-> older form of
+
+On 18/07/2025 17.05, Matt Fleming wrote:
+> From: Matt Fleming <mfleming@cloudflare.com>
 > 
->        typeof(x) Y = (typeof(x))(Z);
-...
+> Add benchmarks for the standard set of operations: lookup, update,
+> delete. Also, include a benchmark for trie_free() which is known to have
+> terrible performance for maps with many entries.
 > 
-> with just
+> Benchmarks operate on tries without gaps in the key range, i.e. each
+> test begins with a trie with valid keys in the range [0, nr_entries).
+> This is intended to cause maximum branching when traversing the trie.
 > 
->         auto Y = Z;
+> All measurements are recorded inside the kernel to remove syscall
+> overhead.
 > 
-> is also worthwhile at some point.
+> Most benchmarks run an XDP program to generate stats but free needs to
+> collect latencies using fentry/fexit on map_free_deferred() because it's
+> not possible to use fentry directly on lpm_trie.c since commit
+> c83508da5620 ("bpf: Avoid deadlock caused by nested kprobe and fentry
+> bpf programs") and there's no way to create/destroy a map from within an
+> XDP program.
+> 
+> Here is example output from an AMD EPYC 9684X 96-Core machine for each
+> of the benchmarks using a trie with 10K entries and a 32-bit prefix
+> length, e.g.
+> 
+>    $ ./bench lpm-trie-$op \
+>    	--prefix_len=32  \
+> 	--producers=1     \
+> 	--nr_entries=10000
+> 
+>    lookup: throughput    7.423 ± 0.023 M ops/s (  7.423M ops/prod), latency  134.710 ns/op
+>    update: throughput    2.643 ± 0.015 M ops/s (  2.643M ops/prod), latency  378.310 ns/op
+>    delete: throughput    0.712 ± 0.008 M ops/s (  0.712M ops/prod), latency 1405.152 ns/op
+>      free: throughput    0.574 ± 0.003 K ops/s (  0.574K ops/prod), latency    1.743 ms/op
+> 
+> Signed-off-by: Matt Fleming <mfleming@cloudflare.com>
+> ---
+>   tools/testing/selftests/bpf/Makefile          |   2 +
+>   tools/testing/selftests/bpf/bench.c           |  10 +
+>   tools/testing/selftests/bpf/bench.h           |   1 +
+>   .../selftests/bpf/benchs/bench_lpm_trie_map.c | 345 ++++++++++++++++++
+>   .../selftests/bpf/progs/lpm_trie_bench.c      | 175 +++++++++
+>   .../selftests/bpf/progs/lpm_trie_map.c        |  19 +
+>   6 files changed, 552 insertions(+)
+>   create mode 100644 tools/testing/selftests/bpf/benchs/bench_lpm_trie_map.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/lpm_trie_bench.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/lpm_trie_map.c
+> 
 
-That one needs to keep the typeof() - but the cast might be spurious.
-It could be either:
-	typeof(x) Y = Z;
-or:
-	auto Y = (typeof(x))(Z);
-but the latter could hide compilation errors.
+I've already tested + reviewed this and different version of this 
+benchmark during internal development.  Thanks to Matt for working on this.
 
-I'm waiting for the next 'duck shoot' (after strings) to be casts.
+Tested-by: Jesper Dangaard Brouer <hawk@kernel.org>
 
-While casts of 'buffer' to/from 'void *' are fine (and not needed),
-casts to/from 'integer_type *' are definitely problematic.
+You can add my reviewed by when we resolve below comment.
 
-And 'random' casts of integer values could easily hide real bugs
-and most just aren't needed.
-Although you might want the compiler to make the result of
-'u64_var & 0xffu' 'unsigned int'.
+Reviewed-by: Jesper Dangaard Brouer <hawk@kernel.org>
 
-	David
+
+> [...]
+> diff --git a/tools/testing/selftests/bpf/progs/lpm_trie_bench.c b/tools/testing/selftests/bpf/progs/lpm_trie_bench.c
+> new file mode 100644
+> index 000000000000..c335718cc240
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/lpm_trie_bench.c
+> @@ -0,0 +1,175 @@
+[...]
+> +
+> +static __always_inline void atomic_inc(long *cnt)
+> +{
+> +	__atomic_add_fetch(cnt, 1, __ATOMIC_SEQ_CST);
+> +}
+> +
+> +static __always_inline long atomic_swap(long *cnt, long val)
+> +{
+> +	return __atomic_exchange_n(cnt, val, __ATOMIC_SEQ_CST);
+> +}
+
+For userspace includes we have similar defines in bench.h.
+Except they use __ATOMIC_RELAXED and here __ATOMIC_SEQ_CST.
+Which is the correct to use?
+
+For BPF kernel-side do selftests have another header file that define
+these `atomic_inc` and `atomic_swap` ?
+
+--Jesper
+
+
+
 
