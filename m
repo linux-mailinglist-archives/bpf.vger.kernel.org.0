@@ -1,88 +1,88 @@
-Return-Path: <bpf+bounces-63814-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63815-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 045A6B0B33E
-	for <lists+bpf@lfdr.de>; Sun, 20 Jul 2025 05:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EC867B0B33F
+	for <lists+bpf@lfdr.de>; Sun, 20 Jul 2025 05:03:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F65D3ABBCF
-	for <lists+bpf@lfdr.de>; Sun, 20 Jul 2025 03:00:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6756E3B929E
+	for <lists+bpf@lfdr.de>; Sun, 20 Jul 2025 03:03:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9E6C2E3716;
-	Sun, 20 Jul 2025 03:00:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4900E13B280;
+	Sun, 20 Jul 2025 03:03:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MmHBQBZH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L1/qk6xH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B93E94C85
-	for <bpf@vger.kernel.org>; Sun, 20 Jul 2025 03:00:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E530EEBD
+	for <bpf@vger.kernel.org>; Sun, 20 Jul 2025 03:03:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752980445; cv=none; b=f+/nX85VKBW/Ju526NMIPjFqDZNytdXruw+FAGwh/h4/rz8Dj7cRNbSoTu8+MA/OlGJOFbEiCFzhB4vZ4i26uzBjvbotjMHqscgRBaq9rUVkcZuczhBM6SDVOUvyZB1I8OJiWQCFoHGFqHqM4pXgRTCBOTtLDXK7AMEsPIxyVOU=
+	t=1752980630; cv=none; b=cS+jVuPPVDoAKJEGs41tmbHGc1b8kN3peWMe+QdJXZdu/+AaLaEI8OVSm6OEgbd4DCLaCvxXWyVe76YT5vkQJW+bjE16KJfoRxhghNVG5eN1+ggZWU81020ydUMrITDRAxaAJaYBJmEwuoyrKwDgO/720e6ExHmfYiJaj56+xSI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752980445; c=relaxed/simple;
-	bh=+LZIJ42lefgHc3vN2WiJ7zYk1jcjdZULo5z4KEBsL00=;
+	s=arc-20240116; t=1752980630; c=relaxed/simple;
+	bh=BOce4MbA8ktWc2us+aViFZnZInpJO9ewtJThK51bNGg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZZ8hbxlzyvHxF45G9z0ooyeUmffg4ZTyWQYtIKqP0o4s9RhcVcG4v7rS50+nRi+MPyJ/sosKHc9v1qcK8VDe7lOda/bhUgXii5fSBz5SQk2NVt+Td4rjtOZZ1QgFnxkotNgLeI12fMJLySDrmTx16xLv9UAFm4M8rEABUbMhLYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MmHBQBZH; arc=none smtp.client-ip=209.85.219.49
+	 To:Cc:Content-Type; b=q/6JCDsdZ3tRU5gTqvq2BC9HwEbjG1jrTb3QZY0iJ2PEySc9HLVkpI7N2ewb6g5HW+Ws2WvQjMh1dFrueYjE4yM1aoTLLm8MYht6LMYyCRGXQQduFDcofc9qT+16A3WLH0LvDsMkVwmRUa523JJVv7wWe5zgTvXceXOJmlub/bs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L1/qk6xH; arc=none smtp.client-ip=209.85.219.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-6fabb948e5aso33839606d6.1
-        for <bpf@vger.kernel.org>; Sat, 19 Jul 2025 20:00:43 -0700 (PDT)
+Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6faf66905baso41344076d6.2
+        for <bpf@vger.kernel.org>; Sat, 19 Jul 2025 20:03:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752980442; x=1753585242; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1752980628; x=1753585428; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=usaLBwpi9OVmz3of8m9IN0eJF2HKiIcgcSrXxMCtjhk=;
-        b=MmHBQBZHFjyrBpgS1W6410IjP/In3YyrB4aGLTgWt7nIcjWAnSdHmxhq1dcxIUWvxh
-         kN+UUuI5FlMnh3qBELWTmF1EfHjxL6EAJWBK2hd3+wSRT2Y2V9WM9rVTVZzBzNIwDiDH
-         QcICYk8AMDtLwgPvxE6NaAF04WURVRT0N0goeZX1CH1RT8RDFLkhN4vhacqgFRetAYnK
-         My2qlYo9osL3T5P3DFJPQPT3TNraAWucJos1Fv+ez52JPagRuJjFk6BoeUjICvDjmuhx
-         NlIq+PHRCH04RNBJqGYaX1urI29GQ5yUEstbQa5VPSN+ehT6xKJMH6u3xkM7X8CDF+T0
-         UTEA==
+        bh=zCjuC119tyiMw7gaePzpsOiGU0ul4JjOaj2XTy2l69A=;
+        b=L1/qk6xHKuJE4zHYZpLNmhgYZLa5ayXRY3bLq2E60VwdwxN00kAp61YhBp7pLREHvs
+         1cM/Q8T9ywK5tRvB/yfYUMIjh7/9W8vno/F+R4LSHwazwWZH16GYeewuuDF498JLM2Qq
+         CkCWESm0MG2jRwY3tJ2rfELAy/k34anqyLWHPVOUdHsSsVVjC6vjIPFZxACsf4usPQl+
+         0/oG9iK/QkwzvMDMtzQFhbjNuj39URPeHlOJJSMaj2oVWmyCY1YqrxV7bLg1nAp8zBXV
+         WXoDo/c7GtlJdYJElgNuUKa1FQBpMMS3duthgKCd0LxMtCY9NqxR5UiNW9/NM0mCqJ+v
+         rFHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752980442; x=1753585242;
+        d=1e100.net; s=20230601; t=1752980628; x=1753585428;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=usaLBwpi9OVmz3of8m9IN0eJF2HKiIcgcSrXxMCtjhk=;
-        b=tcOJurd5Tb08kqJS7TjJhY3/xgqaLVg18Wi+xzU5co/rX7+pVEFAs5wJTML7/nDUJS
-         jVkrSFA77H7l3KGieLi/6xuy1+dkjYbu1AyBXGvr9xzoJrxLVftZgg6QTbpklxNEehef
-         LfZiyGlBYjPpTuflTeWvIRkXOV+e6E1Hg7msSRWzJUv/IuqkX+W4hXesCHvbiG+G3+Gd
-         V0XCnouRQqo9+JlhUNZrhkdnc3gChO+75oi8Y3fM3CbSegNtWYcbNWd83g5FT0kdOY4Y
-         /yqEyvRj7sUJ3rUMhnGpeA/dh8KytYh1Yyo1A5Q2LTSSlTHRc32HHZRnYuxlCV3YIyAT
-         CMxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUzGniOy+bCICanQEoioeYyxWExZtck6u684a0PckA4hxIihQ/noSqjnVcd3pEb1TtNKL8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxFgAFTwQpSnB1BqTYNeeokc29Hn9zD7eyZwWqg3Q+kBr8h92O4
-	saQEqcHFgL5KldCFGqF6w4MyqRn8xyJVML0WZhBDwlzuN93qPXkLNLhM2m52jrXlNCL79J2TWVS
-	p0C6nIUrfBeX+x66L53r3II8ygGjXZP4=
-X-Gm-Gg: ASbGnctiruuzvgErwBbfCScJHLR6foo2vqDGchvVZAs98kABlOIYMaoKQQke/YWX9i2
-	YlPVTv6dJwdeDmdkWWDw8b0cRKJv2Pw2orLI4Bl/k9pNo+XyI3Amny8l5wLUI2UwSqPLCFF2n2R
-	t3lscbEz4KoYYWpqGLeUTu0A+y73F8knZ2U/I5S5vh9h7e75H03O5PG3tLTwaX8zaUUkQpMRZNE
-	cSYuuR2
-X-Google-Smtp-Source: AGHT+IEn+qPSPfjnI0o/h2PRsh2Z14ypiX7IZI3vT0u2cSjT2O3N8mv53++RoBSEcpuQ/A5YdpPVAiWKa8DWUntEZbg=
-X-Received: by 2002:a05:6214:2621:b0:704:e137:e29 with SMTP id
- 6a1803df08f44-704f69fde21mr205580286d6.9.1752980442473; Sat, 19 Jul 2025
- 20:00:42 -0700 (PDT)
+        bh=zCjuC119tyiMw7gaePzpsOiGU0ul4JjOaj2XTy2l69A=;
+        b=kwqtDSgJS86Yt/SCcqHsgY+SsNjsJhoU5MHb5wkDnnIpiyV6DnFMkMOZqDYRs0Lo49
+         mwCh+2P88j7qHt2p6h/7RroG/bxSxAeOiZwOhHuF5U2en2v1RG4W6EhlNbNB+cVT4dXc
+         NbkNu4tHbJs54/XbuWBz3pMgztOV1vjqq8AGMHqxjwTB63hiZdhLwRY8iZzwZ9rB3DCd
+         YNdDo1vnD5HKxSpdHemHjI307HrB/tzQOttUvCOFEPFpgWblIrkw5b+M10HR80D783D+
+         u0ySX1kLdOi1H1UogHG6T8eHh6CAeNaxKava13xm84uoo/DMaJfrVoOZuqRAbctaU/ON
+         bY0A==
+X-Forwarded-Encrypted: i=1; AJvYcCX4XNUFG1/rw4PuI20Z9vwOJtdg4X5mFtY69lM+n1FfidtFn8yApfArBKLqoviJCnakVMc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxBI5/1pEFcxjnrWUfwwYVKSOPh6Fy9u4dtF0CAWCvSnTSPsyZ5
+	1OowxS9hXmQSxIeUoWr2WyboxKFnQnust53LZL1L+bNoWepr2QuYrk6Fy8xZShIcdqgQbSyQNZF
+	OUuLWPGrVTMccwfxgOehxIC6VdkljwI0=
+X-Gm-Gg: ASbGnctaWB4TSEpPv+V58nM6gI6nKvsvr6OyvxK4cQ8lmnRaEiflO5Nb2bv07WdKSZH
+	bCU7i37ndVi4LSCFE1l8QTuK2476rgOvWj+bUKVYoGIll8oiMszX3dfeMqAQxpNbuqbB2d2I1xq
+	Naaz3McuB7ozLgc/BKSanpk7yIhA42LgPE4S9FPRAiDHaV8ZzHDSxJLBj5RbbumU2oc9NJH4VAz
+	4iN/aaSNcphi7FfGQs=
+X-Google-Smtp-Source: AGHT+IFhOPYOf/lckF/l/0RcodINTrGCuCkeA4w9OuSdtZDV82b9jV+CxWQUwA5sEfoCOGGbPl3M/yeg8nq9/Fl1lSo=
+X-Received: by 2002:a05:6214:5d0f:b0:702:d822:9381 with SMTP id
+ 6a1803df08f44-704f6a6ba4fmr278869956d6.19.1752980628228; Sat, 19 Jul 2025
+ 20:03:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250608073516.22415-1-laoar.shao@gmail.com> <20250608073516.22415-3-laoar.shao@gmail.com>
- <90ef1e37-4d76-4714-9071-51c33e315fa5@gmail.com>
-In-Reply-To: <90ef1e37-4d76-4714-9071-51c33e315fa5@gmail.com>
+References: <20250608073516.22415-1-laoar.shao@gmail.com> <20250608073516.22415-4-laoar.shao@gmail.com>
+ <f37a0f14-9185-4ebd-aa2f-39d377902a89@gmail.com>
+In-Reply-To: <f37a0f14-9185-4ebd-aa2f-39d377902a89@gmail.com>
 From: Yafang Shao <laoar.shao@gmail.com>
-Date: Sun, 20 Jul 2025 11:00:06 +0800
-X-Gm-Features: Ac12FXyEytQQb_wC9IJ5Ce1VsEVIrs0HGGDVDTCa3Pqzem5X8li2u8jHxBopWok
-Message-ID: <CALOAHbCZ3Tnsv=rCKeGnw5LoMmaoPK9e0MLKnnt6+=pznuDTmA@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 2/5] mm, thp: add bpf thp hook to determine thp allocator
+Date: Sun, 20 Jul 2025 11:03:12 +0800
+X-Gm-Features: Ac12FXwhvamZBGFJ_Yw_P0mAAohn5C7tPLVHgwv3BzaZced3l3dpggPaVLhZxs0
+Message-ID: <CALOAHbD_BaE2i71A_0gr1O31_UUGApg3=sGuCE0unafonvYAaA@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 3/5] mm, thp: add bpf thp hook to determine thp reclaimer
 To: Usama Arif <usamaarif642@gmail.com>
 Cc: akpm@linux-foundation.org, david@redhat.com, ziy@nvidia.com, 
 	baolin.wang@linux.alibaba.com, lorenzo.stoakes@oracle.com, 
@@ -93,80 +93,59 @@ Cc: akpm@linux-foundation.org, david@redhat.com, ziy@nvidia.com,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 17, 2025 at 11:30=E2=80=AFPM Usama Arif <usamaarif642@gmail.com=
+On Fri, Jul 18, 2025 at 12:06=E2=80=AFAM Usama Arif <usamaarif642@gmail.com=
 > wrote:
 >
 >
 >
 > On 08/06/2025 08:35, Yafang Shao wrote:
-> > A new hook bpf_thp_allocator() is added to determine if the THP is
-> > allocated by khugepaged or by the current task.
->
-> I would add in the summary why we need this. I am assuming I will find ou=
-t
-> when reviewing the next few patches, but would be good to know here.
->
+> > A new hook, bpf_thp_gfp_mask(), is introduced to determine whether memo=
+ry
+> > reclamation is being performed by the current task or by kswapd.
 > >
 > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 > > ---
-> >  include/linux/huge_mm.h | 10 ++++++++++
-> >  mm/khugepaged.c         |  2 ++
-> >  2 files changed, 12 insertions(+)
+> >  include/linux/huge_mm.h | 5 +++++
+> >  mm/huge_memory.c        | 5 +++++
+> >  2 files changed, 10 insertions(+)
 > >
 > > diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-> > index 2f190c90192d..db2eadd3f65b 100644
+> > index db2eadd3f65b..6a40ebf25f5c 100644
 > > --- a/include/linux/huge_mm.h
 > > +++ b/include/linux/huge_mm.h
-> > @@ -190,6 +190,14 @@ static inline bool hugepage_global_always(void)
-> >                       (1<<TRANSPARENT_HUGEPAGE_FLAG);
+> > @@ -198,6 +198,11 @@ static inline int bpf_thp_allocator(unsigned long =
+vm_flags,
+> >       return THP_ALLOC_KHUGEPAGED | THP_ALLOC_CURRENT;
 > >  }
 > >
-> > +#define THP_ALLOC_KHUGEPAGED (1 << 1)
-> > +#define THP_ALLOC_CURRENT (1 << 2)
-> > +static inline int bpf_thp_allocator(unsigned long vm_flags,
-> > +                                  unsigned long tva_flags)
+> > +static inline gfp_t bpf_thp_gfp_mask(bool vma_madvised)
 > > +{
-> > +     return THP_ALLOC_KHUGEPAGED | THP_ALLOC_CURRENT;
->
-> You dont use either vm_flags or tva_flags in this function?
-> I am guessing you wanted to check if these bits are set here?
->
->
-> But you dont seem to be setting these flags anywhere? I am guessing
-> its in a future patch. If it is, I would move the setting of these bits
-> here as its confusing to only see the check without knowing where its
->
-> I feel this patch is broken and needs to be rewritten.
-
-The `bpf_thp_allocator()` function serves as a placeholder that will
-be implemented by a BPF program. The BPF implementation will use the
-`@vm_flags` and `@tva_flags` parameters to determine whether a task
-qualifies for THP allocation.
-
-I see how this could be confusing.
-
+> > +     return 0;
 > > +}
 > > +
 > >  static inline int highest_order(unsigned long orders)
 > >  {
 > >       return fls_long(orders) - 1;
-> > @@ -290,6 +298,8 @@ unsigned long thp_vma_allowable_orders(struct vm_ar=
-ea_struct *vma,
-> >       if ((tva_flags & TVA_ENFORCE_SYSFS) && vma_is_anonymous(vma)) {
-> >               unsigned long mask =3D READ_ONCE(huge_anon_orders_always)=
-;
-> >
-> > +             if (!(bpf_thp_allocator(vm_flags, tva_flags) & THP_ALLOC_=
-CURRENT))
-> > +                     return 0;
+> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> > index d3e66136e41a..81c1711d13fa 100644
+> > --- a/mm/huge_memory.c
+> > +++ b/mm/huge_memory.c
+> > @@ -1280,6 +1280,11 @@ static vm_fault_t __do_huge_pmd_anonymous_page(s=
+truct vm_fault *vmf)
+> >  gfp_t vma_thp_gfp_mask(struct vm_area_struct *vma)
+> >  {
+> >       const bool vma_madvised =3D vma && (vma->vm_flags & VM_HUGEPAGE);
+> > +     gfp_t gfp_mask;
+> > +
+> > +     gfp_mask =3D bpf_thp_gfp_mask(vma_madvised);
 >
-> I am assuming that this is the point to check for allocation, but thp_vma=
-_allowable_orders
-> is not just used for allocation, its used for in other places as well, li=
-ke hugepage_vma_revalidate
-> and swap.
+>
+> I am guessing bpf_thp_gfp_mask returns 0, as its something yet to be impl=
+emented,
+> but I really dont understand what this patch is supposed to do.
 
-Agreed, some adjustments are necessary.
+This change only introduces a placeholder for the BPF program. It
+might be cleaner to squash it into patch #4.
 
 --=20
 Regards
