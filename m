@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-63829-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63830-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2F4CB0B487
-	for <lists+bpf@lfdr.de>; Sun, 20 Jul 2025 11:12:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E599B0B489
+	for <lists+bpf@lfdr.de>; Sun, 20 Jul 2025 11:12:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB8D317997D
-	for <lists+bpf@lfdr.de>; Sun, 20 Jul 2025 09:12:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B81547AC749
+	for <lists+bpf@lfdr.de>; Sun, 20 Jul 2025 09:10:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24DD11EDA3A;
-	Sun, 20 Jul 2025 09:11:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E64D1EB5CE;
+	Sun, 20 Jul 2025 09:11:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gdzwQYyC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gSyBGzye"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 483141E520C;
-	Sun, 20 Jul 2025 09:11:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 804513D6D;
+	Sun, 20 Jul 2025 09:11:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753002709; cv=none; b=KPnCxdJDd2TcrBqjSriEkBh61wCNLuzCk4RykXaHald3zMFpoOPSvZ+9KNyyjskkNneZpBmG33hXYTzRlbYP6LvutdMTovDSPSkmqEvg8Z5wOcqGilBmWMnYQ2npbGZA0+mnD058XX6kDqBHe9V6TRzyYDyaSx7R4Qkshd5t20I=
+	t=1753002715; cv=none; b=mNdZbWWALOsauHGP5zu3wnfSrO61JmA+WSlGVPVLgYwCU/w8DFsK/Z3WR8TEx3PBTcgnlp7a/d9FeU+N0PvUszZZ8ORVBTAeKUGE8vSJb+LWyWn4EovyGWVWxcu/D09cyrG1Gi64PVv34UWXZETvmfQ46xDmpL8frA2w39OxNpk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753002709; c=relaxed/simple;
-	bh=c+3narHnZorj4My5QLVAzIE2WB1tt9M5m95t3zaHXAA=;
+	s=arc-20240116; t=1753002715; c=relaxed/simple;
+	bh=vvKrXvD9m8CHq33RulmBOZfcELAk0cPPHjC5hRe0Y1I=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=d8uy1j8MX2C1XxyQ+jzfXI+7BdtCWJp7tRHiFfIWMiXlijOdEKlzmZLt941lcWf5ZmoII6QlxKRAO8jhFAd9TjLNelAxsJocOW5wT8ytp7x/yGgzwuE9MJqgxcReywgkAagijDVH6F3BzHla1+Hy6oexxsHOgDu1tvsiguEL7aY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gdzwQYyC; arc=none smtp.client-ip=209.85.210.170
+	 MIME-Version; b=jHRAXyoYMz76Wj2YUxKattgg6GYlI5O/m26H9qjXmWigGZhCYGKcPgxpwwAPtkvk5/lan55sEDt+vf/k1w6pXQdLvBageaILZ78iUHsoc1DMylrZe51NEYVdWHYshuqVch2bSiTHrIy6iUh2hlAI5qy37hMFU7vWCuVnIuoDyxw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gSyBGzye; arc=none smtp.client-ip=209.85.210.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-74931666cbcso2869945b3a.0;
-        Sun, 20 Jul 2025 02:11:48 -0700 (PDT)
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-748feca4a61so1902812b3a.3;
+        Sun, 20 Jul 2025 02:11:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753002707; x=1753607507; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1753002713; x=1753607513; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XweBJ/0MYVVQb+Ps7XFsEfRMQO+tmpbLCmT+yp+uezc=;
-        b=gdzwQYyCQ0zvmVdz7zWDkmy6Mdv6mjnB31k9Eq7/lbXwe/cqnmdo4Pl6mQMT6Ngef1
-         IgL63uW4LKmHw323K0uPvWBlTSvj39f+FyktKG/68NBraW3BsQgpd43Uw0NdGJoXJ1jQ
-         m2BZkdbxyl9L/AN1YE1EmDzaNFctCETVjwPI0d7UG0LYC1KQC/XOdCHQDu1JgmY5QQzb
-         qDTclfCODflT8++tFAiu0D07b8Iy4GUva3LmoMcpybR7xCb98jR5GCRurUrq9HIVSL6Z
-         9/bZyoqk50UMC8IlWW0TUc/+NJ7UqDZVnD94Vtks6rxibA/HCU1JNtGFJSGxhbWsTJrm
-         BPCw==
+        bh=GSUZaotcK6F1L2ahR58XYB1HWdRYHUo7Ql3E/8Mqj5U=;
+        b=gSyBGzyeUodusfkI/Azdk9b8isg8Kri+Rb9o8M3uSUvo6KTz5zRnu5OcoJC6eEYK1L
+         yMeHCB4pj5y/S5gmgMpsMMm5DVAj2J8fZBIGlDe20e1weuVLdidz81qf3lmu0Nsmbk7M
+         +tanIVmoj/RbRZNCjuFeBw9G8mS0QZ7KrzCR0mMH2fpFz3HC1X73gE0Zc+HQgaX4QatG
+         C8cYN2YFbat2VQj5GF7wLZ1WU4uavfZj9J5FICalMBCmuItpoXpYbB2pEKHkje5eh9oI
+         P1tUhrJCDBT4wcw2xS8MrppGjaRze0aRLU+SkAMbY0DZSLc4M3X66AqbstS6cyb63Fxz
+         TVYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753002707; x=1753607507;
+        d=1e100.net; s=20230601; t=1753002713; x=1753607513;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XweBJ/0MYVVQb+Ps7XFsEfRMQO+tmpbLCmT+yp+uezc=;
-        b=RmaNrenq9Y1E0LvDFROdfefDCMEpUw6SCimztgdVZsPzAIUi/Q72F/vgWcS1/F6mgz
-         ggjr1dg1WJtMsPMflGelHwINaTE7d1mEgPYnqdXUuFhjDYKgDT6o1gsU9MLOvPyweAAG
-         pMQddHRjJnH6r0Sv+drZ8goVsZfp8U98ogq8e0oNNj3oJkamnmxq93yHrzGtd/NM9LZc
-         Os/c/mKeQfaTM5KVWCbqbklfm4SV0d4n+nZtitpm9N502BfZh9lwJZwtyq/VdIQqPoGw
-         /bJIstzlDL1GrOEOtsvluxzxUYuJzKm7lbjtGIePJO68aKVPafJedvmQB7yIsQ/wqvBs
-         tjDA==
-X-Forwarded-Encrypted: i=1; AJvYcCXW5yQscAjdp9lKnnTwZRARPnwo+Sc+nuiitksAf9qOzF63kc0nC6OfgzdrXNnrjtSeauUDoxo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwMVcs4cdXNvDRzmpZzVY/8I44rWuRzAiRF6aVCl/acEiPJpqKy
-	8KAMNNpVCjaX0jDq17Uf4Zv2EKRHH8JZW26V84uC8sr5fvGT6zhVl8iv
-X-Gm-Gg: ASbGnctgaTyAz4bvWpb592Cin39tydbm4nCNTdHjRqdo4y9dq1Um8gfAgel4TfJ9WwF
-	oThQetcDUR88ntE34msTe+lzPYRFjk27k0DOXmkdyL6KYPcwA33e38TzaLkE+hHqC9PPf/9eRTS
-	BKi5KYQ4g46v3kfmlP1JbrG0uOpZlSQAIhQvQeRl5G7eEMrvAh2HgZs8AKdhDJRy3TKEZLtiifm
-	dzPWTnX8nHihwZ8reOg5wLrZHtSjBQofjQ1YI/kqa4cbHVbpLdT5/axghh5b69cdNCEfZ57DHi8
-	cmTnVhGBQQIBFMBdukdU+AQ/Q19igqvnm/ER1xb9J83bjCXgD5iSeUHI71ILx1gwRE5fb9njT3l
-	o0shjLusgDNconbMsb+Jl47SqXpzw37mU1oAWnGriDqFl2mhX+E0hBRGD7Eg=
-X-Google-Smtp-Source: AGHT+IHorp1bRu9HtmMw6GlN9olv5TOncXRl5qHg8FrQc9eBehnphTLcYkb51Og0pTgG0T7xRZI0+w==
-X-Received: by 2002:a05:6a00:1a8b:b0:74e:ac5b:17ff with SMTP id d2e1a72fcca58-7584aa4d084mr17167004b3a.13.1753002707459;
-        Sun, 20 Jul 2025 02:11:47 -0700 (PDT)
+        bh=GSUZaotcK6F1L2ahR58XYB1HWdRYHUo7Ql3E/8Mqj5U=;
+        b=qUPgNEqAJponR8LrkvjudTkY0f3fcv05i1UtPsLvynI7u6XA2qU5bf+QR3o6K5/9ot
+         Px2xaWRvIw7jIAOfgXIHOr/PvrBTbZgaryIB9fbyNt6MTCSK/BF/Ks7hqNXuZZ9Gfi/s
+         Vb28OB3n0uTvgIKCC+EJl98EBzo85ZNB1EhzMxqXeWmNj9/CjaqdeRYXWYNt5xGA4zqX
+         ZkSBt6II6FUEE7vp26/EHYynGaVoQuBfL1tnZywEgrR/ciO7YFY4UE8BHGuuGe3epdxJ
+         InIVPi2n6jwl0L9s4kZNv/Z6WXiFt4g35ZlyU8zJRZF8um9FQvKA7D+SjEa6wYCFuUvF
+         yj/w==
+X-Forwarded-Encrypted: i=1; AJvYcCUk0wcePZLj6uUqmHiHrNYbh6b/cojTjCKxVmoh9O9DNTPmjurEJxJs85Co3OQ3J2pGCiQbNaM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzIQ0KgXkWquxEFvge63emJotynSf7l3Tbr/Dt4IYmHXmgd/FpE
+	xCTpt2NmnU63xy34Bs+1prdGAd2AF3XuzX/DnDWQ4+fLMYwiDWZCa7dP
+X-Gm-Gg: ASbGnctLB2SvyJ8Rv+HrUakTDTHk8rIt6BHiSqkm9pWj6fJp/yJ+E3wYk0IfVnzlxld
+	j+3FRu41t1MwbHfpQEn7C5yubA4SVcNBK7OlJEHczqbUHCC63GxdNuR5KOwxTEN9K0UGdHrHHdu
+	3S/MMMOcYyua+8DNhNSQMA8i1IpN29XiZfGBhy2TDWDVuL4OorKopZDYCNFU82JIF54V0DSsOWd
+	rhS9VqAbIJEq4+fr3EhAL1NHC73Xsjn8p7AI7ghPJsI20T62dFU9axNsdk1fOffSroQrTVFHIfc
+	EY0RrQkP0jZV/nWi+tRsJMfeuls2fbek2AXKJF7WSzqmRn1FwgHOadWwH4Oa9ofu1wO448CejGk
+	j6GvINBBouF9OKsGQrYlE8EYvo2yJhQtgz2wcmALGbgNxcjY7cqqeurjd5qOFhcACp4TRWg==
+X-Google-Smtp-Source: AGHT+IEra553OLR9Wt+3ggRMepnkqBz8W2d+vtlnTjf8GjUJtXbtNVC9HcE+mFBzjIfueWvlQKSB9g==
+X-Received: by 2002:a05:6a00:10cb:b0:748:ffaf:9b53 with SMTP id d2e1a72fcca58-757242790admr20643963b3a.16.1753002712650;
+        Sun, 20 Jul 2025 02:11:52 -0700 (PDT)
 Received: from KERNELXING-MC1.tencent.com ([111.201.24.59])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-759cb76d53fsm3902585b3a.105.2025.07.20.02.11.42
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-759cb76d53fsm3902585b3a.105.2025.07.20.02.11.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Jul 2025 02:11:47 -0700 (PDT)
+        Sun, 20 Jul 2025 02:11:52 -0700 (PDT)
 From: Jason Xing <kerneljasonxing@gmail.com>
 To: anthony.l.nguyen@intel.com,
 	przemyslaw.kitszel@intel.com,
@@ -94,9 +94,9 @@ Cc: bpf@vger.kernel.org,
 	intel-wired-lan@lists.osuosl.org,
 	netdev@vger.kernel.org,
 	Jason Xing <kernelxing@tencent.com>
-Subject: [PATCH net-next 3/5] ixgbe: xsk: use ixgbe_desc_unused as the budget in ixgbe_xmit_zc
-Date: Sun, 20 Jul 2025 17:11:21 +0800
-Message-Id: <20250720091123.474-4-kerneljasonxing@gmail.com>
+Subject: [PATCH net-next 4/5] ixgbe: xsk: support batched xsk Tx interfaces to increase performance
+Date: Sun, 20 Jul 2025 17:11:22 +0800
+Message-Id: <20250720091123.474-5-kerneljasonxing@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20250720091123.474-1-kerneljasonxing@gmail.com>
 References: <20250720091123.474-1-kerneljasonxing@gmail.com>
@@ -110,72 +110,163 @@ Content-Transfer-Encoding: 8bit
 
 From: Jason Xing <kernelxing@tencent.com>
 
-- Adjust ixgbe_desc_unused as the budget value.
-- Avoid checking desc_unused over and over again in the loop.
-
-The patch makes ixgbe follow i40e driver that was done in commit
-1fd972ebe523 ("i40e: move check of full Tx ring to outside of send loop").
-[ Note that the above i40e patch has problem when ixgbe_desc_unused(tx_ring)
-returns zero. The zero value as the budget value means we don't have any
-possible descs to be sent, so it should return true instead to tell the
-napi poll not to launch another poll to handle tx packets. Even though
-that patch behaves correctly by returning true in this case, it happens
-because of the unexpected underflow of the budget. Taking the current
-version of i40e_xmit_zc() as an example, it returns true as expected. ]
-Hence, this patch adds a standalone if statement of zero budget in front
-of ixgbe_xmit_zc() as explained before.
-
-Use ixgbe_desc_unused to replace the original fixed budget with the number
-of available slots in the Tx ring. It can gain some performance.
+Like what i40e driver initially did in commit 3106c580fb7cf
+("i40e: Use batched xsk Tx interfaces to increase performance"), use
+the batched xsk feature to transmit packets.
 
 Signed-off-by: Jason Xing <kernelxing@tencent.com>
 ---
- drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c | 106 +++++++++++++------
+ 1 file changed, 72 insertions(+), 34 deletions(-)
 
 diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-index a463c5ac9c7c..f3d3f5c1cdc7 100644
+index f3d3f5c1cdc7..9fe2c4bf8bc5 100644
 --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
 +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-@@ -393,17 +393,14 @@ static bool ixgbe_xmit_zc(struct ixgbe_ring *xdp_ring, unsigned int budget)
+@@ -2,12 +2,15 @@
+ /* Copyright(c) 2018 Intel Corporation. */
+ 
+ #include <linux/bpf_trace.h>
++#include <linux/unroll.h>
+ #include <net/xdp_sock_drv.h>
+ #include <net/xdp.h>
+ 
+ #include "ixgbe.h"
+ #include "ixgbe_txrx_common.h"
+ 
++#define PKTS_PER_BATCH 4
++
+ struct xsk_buff_pool *ixgbe_xsk_pool(struct ixgbe_adapter *adapter,
+ 				     struct ixgbe_ring *ring)
+ {
+@@ -388,58 +391,93 @@ void ixgbe_xsk_clean_rx_ring(struct ixgbe_ring *rx_ring)
+ 	}
+ }
+ 
+-static bool ixgbe_xmit_zc(struct ixgbe_ring *xdp_ring, unsigned int budget)
++static void ixgbe_set_rs_bit(struct ixgbe_ring *xdp_ring)
++{
++	u16 ntu = xdp_ring->next_to_use ? xdp_ring->next_to_use - 1 : xdp_ring->count - 1;
++	union ixgbe_adv_tx_desc *tx_desc;
++
++	tx_desc = IXGBE_TX_DESC(xdp_ring, ntu);
++	tx_desc->read.cmd_type_len |= cpu_to_le32(IXGBE_TXD_CMD_RS);
++}
++
++static void ixgbe_xmit_pkt(struct ixgbe_ring *xdp_ring, struct xdp_desc *desc,
++			   int i)
++
+ {
  	struct xsk_buff_pool *pool = xdp_ring->xsk_pool;
  	union ixgbe_adv_tx_desc *tx_desc = NULL;
  	struct ixgbe_tx_buffer *tx_bi;
--	bool work_done = true;
- 	struct xdp_desc desc;
+-	struct xdp_desc desc;
  	dma_addr_t dma;
  	u32 cmd_type;
  
+-	if (!budget)
+-		return true;
++	dma = xsk_buff_raw_get_dma(pool, desc[i].addr);
++	xsk_buff_raw_dma_sync_for_device(pool, dma, desc[i].len);
+ 
 -	while (likely(budget)) {
--		if (unlikely(!ixgbe_desc_unused(xdp_ring))) {
--			work_done = false;
+-		if (!netif_carrier_ok(xdp_ring->netdev))
 -			break;
--		}
-+	if (!budget)
++	tx_bi = &xdp_ring->tx_buffer_info[xdp_ring->next_to_use];
++	tx_bi->bytecount = desc[i].len;
++	tx_bi->xdpf = NULL;
++	tx_bi->gso_segs = 1;
+ 
+-		if (!xsk_tx_peek_desc(pool, &desc))
+-			break;
++	tx_desc = IXGBE_TX_DESC(xdp_ring, xdp_ring->next_to_use);
++	tx_desc->read.buffer_addr = cpu_to_le64(dma);
+ 
+-		dma = xsk_buff_raw_get_dma(pool, desc.addr);
+-		xsk_buff_raw_dma_sync_for_device(pool, dma, desc.len);
++	cmd_type = IXGBE_ADVTXD_DTYP_DATA |
++		   IXGBE_ADVTXD_DCMD_DEXT |
++		   IXGBE_ADVTXD_DCMD_IFCS;
++	cmd_type |= desc[i].len | IXGBE_TXD_CMD_EOP;
++	tx_desc->read.cmd_type_len = cpu_to_le32(cmd_type);
++	tx_desc->read.olinfo_status =
++		cpu_to_le32(desc[i].len << IXGBE_ADVTXD_PAYLEN_SHIFT);
+ 
+-		tx_bi = &xdp_ring->tx_buffer_info[xdp_ring->next_to_use];
+-		tx_bi->bytecount = desc.len;
+-		tx_bi->xdpf = NULL;
+-		tx_bi->gso_segs = 1;
++	xdp_ring->next_to_use++;
++}
+ 
+-		tx_desc = IXGBE_TX_DESC(xdp_ring, xdp_ring->next_to_use);
+-		tx_desc->read.buffer_addr = cpu_to_le64(dma);
++static void ixgbe_xmit_pkt_batch(struct ixgbe_ring *xdp_ring, struct xdp_desc *desc)
++{
++	u32 i;
+ 
+-		/* put descriptor type bits */
+-		cmd_type = IXGBE_ADVTXD_DTYP_DATA |
+-			   IXGBE_ADVTXD_DCMD_DEXT |
+-			   IXGBE_ADVTXD_DCMD_IFCS;
+-		cmd_type |= desc.len | IXGBE_TXD_CMD;
+-		tx_desc->read.cmd_type_len = cpu_to_le32(cmd_type);
+-		tx_desc->read.olinfo_status =
+-			cpu_to_le32(desc.len << IXGBE_ADVTXD_PAYLEN_SHIFT);
++	unrolled_count(PKTS_PER_BATCH)
++	for (i = 0; i < PKTS_PER_BATCH; i++)
++		ixgbe_xmit_pkt(xdp_ring, desc, i);
++}
+ 
+-		xdp_ring->next_to_use++;
+-		if (xdp_ring->next_to_use == xdp_ring->count)
+-			xdp_ring->next_to_use = 0;
++static void ixgbe_fill_tx_hw_ring(struct ixgbe_ring *xdp_ring,
++				  struct xdp_desc *descs, u32 nb_pkts)
++{
++	u32 batched, leftover, i;
++
++	batched = nb_pkts & ~(PKTS_PER_BATCH - 1);
++	leftover = nb_pkts & (PKTS_PER_BATCH - 1);
++	for (i = 0; i < batched; i += PKTS_PER_BATCH)
++		ixgbe_xmit_pkt_batch(xdp_ring, &descs[i]);
++	for (i = batched; i < batched + leftover; i++)
++		ixgbe_xmit_pkt(xdp_ring, &descs[i], 0);
++}
+ 
+-		budget--;
+-	}
++static bool ixgbe_xmit_zc(struct ixgbe_ring *xdp_ring, unsigned int budget)
++{
++	struct xdp_desc *descs = xdp_ring->xsk_pool->tx_descs;
++	u32 nb_pkts, nb_processed = 0;
+ 
+-	if (tx_desc) {
+-		ixgbe_xdp_ring_update_tail(xdp_ring);
+-		xsk_tx_release(pool);
++	if (!netif_carrier_ok(xdp_ring->netdev))
 +		return true;
- 
-+	while (likely(budget)) {
- 		if (!netif_carrier_ok(xdp_ring->netdev))
- 			break;
- 
-@@ -442,7 +439,7 @@ static bool ixgbe_xmit_zc(struct ixgbe_ring *xdp_ring, unsigned int budget)
- 		xsk_tx_release(pool);
++
++	nb_pkts = xsk_tx_peek_release_desc_batch(xdp_ring->xsk_pool, budget);
++	if (!nb_pkts)
++		return true;
++
++	if (xdp_ring->next_to_use + nb_pkts >= xdp_ring->count) {
++		nb_processed = xdp_ring->count - xdp_ring->next_to_use;
++		ixgbe_fill_tx_hw_ring(xdp_ring, descs, nb_processed);
++		xdp_ring->next_to_use = 0;
  	}
  
--	return !!budget && work_done;
-+	return !!budget;
+-	return !!budget;
++	ixgbe_fill_tx_hw_ring(xdp_ring, &descs[nb_processed], nb_pkts - nb_processed);
++
++	ixgbe_set_rs_bit(xdp_ring);
++	ixgbe_xdp_ring_update_tail(xdp_ring);
++
++	return nb_pkts < budget;
  }
  
  static void ixgbe_clean_xdp_tx_buffer(struct ixgbe_ring *tx_ring,
-@@ -505,7 +502,7 @@ bool ixgbe_clean_xdp_tx_irq(struct ixgbe_q_vector *q_vector,
- 	if (xsk_uses_need_wakeup(pool))
- 		xsk_set_tx_need_wakeup(pool);
- 
--	return ixgbe_xmit_zc(tx_ring, q_vector->tx.work_limit);
-+	return ixgbe_xmit_zc(tx_ring, ixgbe_desc_unused(tx_ring));
- }
- 
- int ixgbe_xsk_wakeup(struct net_device *dev, u32 qid, u32 flags)
 -- 
 2.41.3
 
