@@ -1,206 +1,127 @@
-Return-Path: <bpf+bounces-63825-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63826-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 319C7B0B404
-	for <lists+bpf@lfdr.de>; Sun, 20 Jul 2025 09:00:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1835BB0B47C
+	for <lists+bpf@lfdr.de>; Sun, 20 Jul 2025 11:11:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4E02189C9D9
-	for <lists+bpf@lfdr.de>; Sun, 20 Jul 2025 07:00:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5337189B3E8
+	for <lists+bpf@lfdr.de>; Sun, 20 Jul 2025 09:11:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B0911DDA24;
-	Sun, 20 Jul 2025 07:00:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DE331E5B64;
+	Sun, 20 Jul 2025 09:11:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="X/ZNv9Uw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ED+vLG6Q"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97FEE1C84D5;
-	Sun, 20 Jul 2025 07:00:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FDDA1EA65;
+	Sun, 20 Jul 2025 09:11:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752994815; cv=none; b=Xh5K4HqMH+dE76ei2ufIgFl5LyvwU3LRbAnqhTUgRTLYbWHRHLUhqdtcaq0dMdnBPgT1cSkXZHv8fdURoil5VSOuITwLAQlxNrR0dOtWlHGXNoh9dOHIUVML09n+WC2oY5XdUxuqhtvxq/JT2654uv5RZU7O72XraLMN5XigutU=
+	t=1753002693; cv=none; b=lOYa9n0RD8HO2/mdRveyBKsiZOupxZ/R0YmhoExL2jC9Hntpz8Nl2eFnZ3OSNSfj0NXOZ8qdyPrH5FP8AIaWtNRCChwr/Z+e5aS7J/1QDoMz4OmFBiH5+do2tg/+O0H3gio09t5cFxq7KUU/9VPMmQAPGUbq6G3h44UliQ/SIQo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752994815; c=relaxed/simple;
-	bh=jAgN3a59HW0jFBgp7fJXfejPjGPuyVLybrmtNNuLGZA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DuEhKumEt0lTGQcfRW3OjAu6Z5kaRGzj7UkQQdu01MqC52FTtRm8Hy58D4aINLBkKoKq8EksTnCLgFJd1SGP+sFDBb+luOySkLCQKBPOcbt059TLpXPfgQTXopBX3c1mrx03gcwUtq3JxSMWo66VfGV6hoSnTIQcV89PJn0syDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=X/ZNv9Uw; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from mail.zytor.com ([IPv6:2601:646:8081:9484:f04a:f27d:fd66:5c61])
-	(authenticated bits=0)
-	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 56K6woIr3558364
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-	Sat, 19 Jul 2025 23:58:51 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 56K6woIr3558364
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2025062101; t=1752994735;
-	bh=qWkl5KkNltsuNThUh3tqROvdQvDotGvMGGERi6Uh9Rs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=X/ZNv9Uw1SvFZpCH3dxz1ibqkF2nY9hpqTHSvNP45WMauA9ovKJTK0SQ1mAGUnKXK
-	 5RMV/KtpYvt4zIqwwlluOZ7jjlIlIQWIEJnz2jG9DZ5cqpHeEo3NXYCmQMuvi1np5I
-	 /LEh6bB+Zwkih2cKhduFKCnDM04ZsoJHas36/UHGWNotFC/hsucPpehZr8Rdy73pph
-	 NlJdyStrt02WvcD7WThBw8x+0MR7YfpkEyUI+MoIeeFvRyUYVUVVecN9L/6cDu5ewH
-	 l6M2ToSTJZCdjWl0oxn8Mz3qrJmpm+xdAArLw0rSVcog7WrTiy+2nJbynUVpFTGlF8
-	 68mw9pqkJMMgA==
-From: "H. Peter Anvin" <hpa@zytor.com>
-To: 
-Cc: "H. Peter Anvin" <hpa@zytor.com>,
-        =?UTF-8?q?Eugenio=20P=C3=A9rez?= <eperezma@redhat.com>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, Alexei Starovoitov <ast@kernel.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrii Nakryiko <andrii@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Laight <David.Laight@ACULAB.COM>,
-        David Lechner <dlechner@baylibre.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Gatlin Newhouse <gatlin.newhouse@gmail.com>,
-        Hao Luo <haoluo@google.com>, Ingo Molnar <mingo@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Jan Hendrik Farr <kernel@jfarr.cc>, Jason Wang <jasowang@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>, KP Singh <kpsingh@kernel.org>,
-        Kees Cook <kees@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Marc Herbert <Marc.Herbert@linux.intel.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Mateusz Guzik <mjguzik@gmail.com>, Michal Luczaj <mhal@rbox.co>,
-        Miguel Ojeda <ojeda@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
-        NeilBrown <neil@brown.name>, Peter Zijlstra <peterz@infradead.org>,
-        Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-        Sami Tolvanen <samitolvanen@google.com>, Shuah Khan <shuah@kernel.org>,
-        Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Thorsten Blum <thorsten.blum@linux.dev>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Yafang Shao <laoar.shao@gmail.com>, Ye Bin <yebin10@huawei.com>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        Yufeng Wang <wangyufeng@kylinos.cn>, bpf@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-sparse@vger.kernel.org,
-        virtualization@lists.linux.dev, x86@kernel.org
-Subject: [PATCH v2.1 3/7] fs/proc: replace "__auto_type" with "const auto"
-Date: Sat, 19 Jul 2025 23:58:43 -0700
-Message-ID: <20250720065844.2860000-1-hpa@zytor.com>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20250720065045.2859105-4-hpa@zytor.com>
-References: 
+	s=arc-20240116; t=1753002693; c=relaxed/simple;
+	bh=wie3zAjgVALuc7NjlqJG/3+QLcMwoX5yvQ3EwfDjXTE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=erOq5Mz1PBsOFzns8XIAUnl43B7dqGFYLx/MuuE+loPjs42jrIhKUsWX8ICJFwt1RKXXHEKBc0Voth/xbtWFdzIJBuqdJfm+NtImkg/0RRJQj8cxCnzscl7ok0VONOoXQPQJtO+0brQpP6F94MhV8vJQCwF9y8TRbdi/5APMD6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ED+vLG6Q; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-74ce477af25so2178182b3a.3;
+        Sun, 20 Jul 2025 02:11:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1753002691; x=1753607491; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=iWrXKbM+G34xoKVnK1eplahDGaVhKpTnihCDqzU7Q9c=;
+        b=ED+vLG6QCmNV/JiC5zDP998zetskJwaW8IczlFr6IAVEzt96pAybV9UTRUNC95Z0pM
+         7aXjTF2izbf8FCAF06C7EA7J8p0afLV6LwAFOveVeRO/G4EK7odOiEBfwyOB4KfCGpK4
+         mhfI7GTcTyflc1tTY3S6ityTnrCooSZsde0jl3swBzpAv9IDTLykMK+7nMPSNrfOBB02
+         AQiq+l/q9HcA9ehQ4GrdvucjRhGhc+v+fWC00ddwTK+7DytCRhZu4HLamsGUzr7F3TE0
+         3qiZpgxqv1BO/Q1ThXrR2NiM+U2yhzaJVI0vQKE+5zeFDPw6qN89h87bmommh3E9MKOT
+         IGEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753002691; x=1753607491;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iWrXKbM+G34xoKVnK1eplahDGaVhKpTnihCDqzU7Q9c=;
+        b=famTTb8akimh3OFKBPzFZ/lytU0+7d9SFHx+7Ne7FAUOjSpyC+QHm8K1UjfTKgCZad
+         6DBJLGH2WKxSB5VAJX4PIL0QrLASsUg08bxrtf3kWMAb7f0blraTipBybYq5cjMGZe9e
+         mXQoo3SbHlpWapK5Z50MeuNmpA/TnYCHMp1kmVfwcKo7DdK7qdGRf98DVYb2PfRvQdFg
+         WcJ4sF+QEATzAXqhsPJVN6VdRmtCwxx12R3R5vHh0pn02j1RVm8xi/SwlVJl0z12AyC3
+         F/MjjOsT3fryrWj1lAdFXYpWzIEcL6j7dornI8RwwN3TzYXV9uxY73K1UNER5HVAPbOn
+         LCDg==
+X-Forwarded-Encrypted: i=1; AJvYcCV3qsFf5nwpulfMewRA81a1pG4RZTQe72ZA3gRPRzIZthl0WvdK6nLmoAr7rpoKQe+uFVYS8fU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YythS9J69SCoBsLBAB1rv0BydVoMQu7oXH/XRVDXF/uF416DAHo
+	9tOdYvtvwLj/JDdt/1kgSXPEwK2hDH9Kr4VdPcO+7Ejnp2AYODUmwVhx
+X-Gm-Gg: ASbGncs8m0XYqugiY9PJmVCPFgl3/E9RUscPFWK/kM75Mn2P95D7oYjbCJgHFGlDZTz
+	H5e+1IP8Yf6WU/uzpQMzpcKYrLtdCHheMqn/qbsq+CqeblmRAAF77ao07/gJ4xIitvIHyr+QLo8
+	8pQCUCd+2ysemX3alWkBK8qriJXMM3Do9D3XykWAPQkj9iZuW9fba/uJSYIlzFEhM9PzdnEIoGx
+	5ZpHm07jDBaQAfmvQmo127/3QlT7ZcM5wdWHExCG2cnlIgnC+sdwJ/+NoFU0CVu2UhFT8tGhAyv
+	7JNDVVdTcGcAl9KqdTBn9Q/v491aFT8awUcOuyYyLxwOXiqqg6ucZAAco23KD7sfvwSszXZW3Ks
+	zOsdrq8BjANBVCc4fBAAUnTw9HDmB+Spu8ToHyaFb7CY82CwyfL+fecQOUc0=
+X-Google-Smtp-Source: AGHT+IFxnWK1x+9KvMP+PbmzAvTkrGWlhYtcdtm8EXw47+H9FngwkBEW6Wbvc53qUZM+VZOp33M0dw==
+X-Received: by 2002:a05:6a20:9389:b0:234:3932:2958 with SMTP id adf61e73a8af0-2381245729dmr24494413637.20.1753002691445;
+        Sun, 20 Jul 2025 02:11:31 -0700 (PDT)
+Received: from KERNELXING-MC1.tencent.com ([111.201.24.59])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-759cb76d53fsm3902585b3a.105.2025.07.20.02.11.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Jul 2025 02:11:31 -0700 (PDT)
+From: Jason Xing <kerneljasonxing@gmail.com>
+To: anthony.l.nguyen@intel.com,
+	przemyslaw.kitszel@intel.com,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	bjorn@kernel.org,
+	magnus.karlsson@intel.com,
+	maciej.fijalkowski@intel.com,
+	jonathan.lemon@gmail.com,
+	sdf@fomichev.me,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com
+Cc: bpf@vger.kernel.org,
+	intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org,
+	Jason Xing <kernelxing@tencent.com>
+Subject: [PATCH net-next 0/5] ixgbe: xsk: a couple of changes for zerocopy
+Date: Sun, 20 Jul 2025 17:11:18 +0800
+Message-Id: <20250720091123.474-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Supercedes: <20250720065045.2859105-4-hpa@zytor.com>
 Content-Transfer-Encoding: 8bit
 
-Replace use of "__auto_type" in fs/proc/inode.c with "const auto".
+From: Jason Xing <kernelxing@tencent.com>
 
-Suggested-by: Alexey Dobriyan <adobriyan@gmail.com>
-Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
-Reviewed-by: Alexey Dobriyan <adobriyan@gmail.com>
----
- fs/proc/inode.c | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
+The series mostly follows the development of i40e/ice to improve the
+performance for zerocopy mode in the tx path.
 
-[ v2 of this patch was an obvious thinko, this is the correct one ]
+Jason Xing (5):
+  ixgbe: xsk: remove budget from ixgbe_clean_xdp_tx_irq
+  ixgbe: xsk: resolve the underflow of budget in ixgbe_xmit_zc
+  ixgbe: xsk: use ixgbe_desc_unused as the budget in ixgbe_xmit_zc
+  ixgbe: xsk: support batched xsk Tx interfaces to increase performance
+  ixgbe: xsk: add TX multi-buffer support
 
-diff --git a/fs/proc/inode.c b/fs/proc/inode.c
-index 3604b616311c..8b90ab9b9cfc 100644
---- a/fs/proc/inode.c
-+++ b/fs/proc/inode.c
-@@ -303,7 +303,7 @@ static ssize_t proc_reg_read_iter(struct kiocb *iocb, struct iov_iter *iter)
- 
- static ssize_t pde_read(struct proc_dir_entry *pde, struct file *file, char __user *buf, size_t count, loff_t *ppos)
- {
--	__auto_type read = pde->proc_ops->proc_read;
-+	const auto read = pde->proc_ops->proc_read;
- 	if (read)
- 		return read(file, buf, count, ppos);
- 	return -EIO;
-@@ -325,7 +325,7 @@ static ssize_t proc_reg_read(struct file *file, char __user *buf, size_t count,
- 
- static ssize_t pde_write(struct proc_dir_entry *pde, struct file *file, const char __user *buf, size_t count, loff_t *ppos)
- {
--	__auto_type write = pde->proc_ops->proc_write;
-+	const auto write = pde->proc_ops->proc_write;
- 	if (write)
- 		return write(file, buf, count, ppos);
- 	return -EIO;
-@@ -347,7 +347,7 @@ static ssize_t proc_reg_write(struct file *file, const char __user *buf, size_t
- 
- static __poll_t pde_poll(struct proc_dir_entry *pde, struct file *file, struct poll_table_struct *pts)
- {
--	__auto_type poll = pde->proc_ops->proc_poll;
-+	const auto poll = pde->proc_ops->proc_poll;
- 	if (poll)
- 		return poll(file, pts);
- 	return DEFAULT_POLLMASK;
-@@ -369,7 +369,7 @@ static __poll_t proc_reg_poll(struct file *file, struct poll_table_struct *pts)
- 
- static long pde_ioctl(struct proc_dir_entry *pde, struct file *file, unsigned int cmd, unsigned long arg)
- {
--	__auto_type ioctl = pde->proc_ops->proc_ioctl;
-+	const auto ioctl = pde->proc_ops->proc_ioctl;
- 	if (ioctl)
- 		return ioctl(file, cmd, arg);
- 	return -ENOTTY;
-@@ -392,7 +392,7 @@ static long proc_reg_unlocked_ioctl(struct file *file, unsigned int cmd, unsigne
- #ifdef CONFIG_COMPAT
- static long pde_compat_ioctl(struct proc_dir_entry *pde, struct file *file, unsigned int cmd, unsigned long arg)
- {
--	__auto_type compat_ioctl = pde->proc_ops->proc_compat_ioctl;
-+	const auto compat_ioctl = pde->proc_ops->proc_compat_ioctl;
- 	if (compat_ioctl)
- 		return compat_ioctl(file, cmd, arg);
- 	return -ENOTTY;
-@@ -414,7 +414,7 @@ static long proc_reg_compat_ioctl(struct file *file, unsigned int cmd, unsigned
- 
- static int pde_mmap(struct proc_dir_entry *pde, struct file *file, struct vm_area_struct *vma)
- {
--	__auto_type mmap = pde->proc_ops->proc_mmap;
-+	const auto mmap = pde->proc_ops->proc_mmap;
- 	if (mmap)
- 		return mmap(file, vma);
- 	return -EIO;
-@@ -497,7 +497,7 @@ static int proc_reg_open(struct inode *inode, struct file *file)
- 	if (!use_pde(pde))
- 		return -ENOENT;
- 
--	__auto_type release = pde->proc_ops->proc_release;
-+	const auto release = pde->proc_ops->proc_release;
- 	if (release) {
- 		pdeo = kmem_cache_alloc(pde_opener_cache, GFP_KERNEL);
- 		if (!pdeo) {
-@@ -534,10 +534,9 @@ static int proc_reg_release(struct inode *inode, struct file *file)
- 	struct pde_opener *pdeo;
- 
- 	if (pde_is_permanent(pde)) {
--		__auto_type release = pde->proc_ops->proc_release;
--		if (release) {
-+		const auto release = pde->proc_ops->proc_release;
-+		if (release)
- 			return release(inode, file);
--		}
- 		return 0;
- 	}
- 
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |   6 +-
+ .../ethernet/intel/ixgbe/ixgbe_txrx_common.h  |   2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c  | 121 ++++++++++++------
+ 3 files changed, 86 insertions(+), 43 deletions(-)
+
 -- 
-2.50.1
+2.41.3
 
 
