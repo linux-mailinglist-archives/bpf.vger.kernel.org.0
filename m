@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-63852-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63853-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93671B0B58F
-	for <lists+bpf@lfdr.de>; Sun, 20 Jul 2025 13:26:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 046CAB0B593
+	for <lists+bpf@lfdr.de>; Sun, 20 Jul 2025 13:27:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF9643BDCCD
-	for <lists+bpf@lfdr.de>; Sun, 20 Jul 2025 11:26:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93A4516744B
+	for <lists+bpf@lfdr.de>; Sun, 20 Jul 2025 11:26:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC9201FBCB0;
-	Sun, 20 Jul 2025 11:25:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E2D8211706;
+	Sun, 20 Jul 2025 11:25:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T2dZXs22"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iE4HkYhC"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ED1D1F874F;
-	Sun, 20 Jul 2025 11:25:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CA57204866;
+	Sun, 20 Jul 2025 11:25:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753010728; cv=none; b=pp655mV7eawgvSYEUSgDIaLQjIZYhoZQAGwmL1Xq80iRATL0RZeG9/NbkHAKG9h9ZgCdIEw2vudmTK+SJaqXlkVjL9YUMI+S/M1reU61wy7DlLn3WdSdsC+oghNn20WnItOGk3q54Qc9rno0xXUKktGhsZk0AQZHCH57JRG8we8=
+	t=1753010740; cv=none; b=fQ/E7ZppS54WS4V4TSuW4RJGKeqcCeraLJWcXLeFp/4gD1xwnEbgDKGGd2ysYoff7gLlbRLxp1ORC7W15Wf67lnJYhzu9/apwx48i4AW+JQn3FYaTeJhjXToVhMnNfHSpq3EGJZQ2Qt9eiz6gWm/uUPFcJzyxg7NCTwllap4Y00=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753010728; c=relaxed/simple;
-	bh=u2WElNou00r4N/xZHGUZ6efEeZsgVdxZMo7zSDdQsag=;
+	s=arc-20240116; t=1753010740; c=relaxed/simple;
+	bh=ivjFKwQACAGTKpsYMbShtvns3ViBFuL3QShhOxBiUpM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Csk/ytaB4c/Mi8kFJ+KuKmdgycEDVLZe5sb+8+efsfmQygLJstl+oE9HcajsEePDo3iaGKN+3qywvOHDcnlJGmHuPCwsVGLr4QISpywxEBWd19LYN00gnXtU+tpQLi4GxTUyOuhGZGpN9ES6/0AHOMD926FuZZLVQ7nso1o9hZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T2dZXs22; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CCC3C4CEE7;
-	Sun, 20 Jul 2025 11:25:23 +0000 (UTC)
+	 MIME-Version; b=I8ysO2fHrcfyvUbBgwBtzN6LT9lxL5ROSymnBzVRqroqyVOxbSee0UqBxdLPrsnGBMFJok93NBsY2/xBrA0+lU/PoS/QyHLyvyJxENuh/S+96+M9iciqCr0Z4uCE/UQeu9TwKB/i/B22g3qnuncWQehEz1pkFrt/HmYntvqRn74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iE4HkYhC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07BBAC4CEE7;
+	Sun, 20 Jul 2025 11:25:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753010728;
-	bh=u2WElNou00r4N/xZHGUZ6efEeZsgVdxZMo7zSDdQsag=;
+	s=k20201202; t=1753010739;
+	bh=ivjFKwQACAGTKpsYMbShtvns3ViBFuL3QShhOxBiUpM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=T2dZXs22cCuomt8poj1nlMH+NvE04+HeEaJBnxc/slJCC0hUK8HbdSBQm3Mb6+bGE
-	 3cMAcTNCQzyHK0f6+GnNhUqLbRBY7Z1oN8VUHI7PuNIXl8hMnNFJ9b3mv4w1+lNYQM
-	 qcpWAr2CqeA919cobG2or5pdWfSML3w3KhfxcIZYlfEAdEuOHiDlIdnJpaqtdkXINO
-	 ozN0MoqlrG7MvHIAmVtNOOSlOtdOwqePvggnw/Tv0igllyDZb5q475s4bGUlfFQYTo
-	 TRtszduIlTPLBdtYT5RwmOFaNFd+i3OuYkGELiBYkQ85PA5zHO8qsLKCraIyC3z5eB
-	 gD8KSNG6UBFig==
+	b=iE4HkYhCgloSPxbs3pP3MBt3alrWfgRqL9FWdcTeOSXi3glUE+1xa5xl71DUbflBM
+	 C9cJXVCydHeO+TXvPBznWkaT22qtr4c5ImQX/+nE5y/mtlc5kHkMOxbgT6v3zKMor0
+	 eDSG3g1aWs2GI+jF4ECPh/JXv+7R7mub8mt62cJVHQM55TKTuCdSkZe9sV6Ao7Hmv5
+	 H9nap/fW9V35Q7IELA/1DEQk6UVYrJWZGGn6A8BPoB7sNsQci/dBxp4wmhvlNlxyxC
+	 0heTWcJSZFoQ5NlJQfnrcsAEzO2wYhE/uq0cDXoNyqOexgqDNTkR3QCU8l9k+BMy5s
+	 9AYnup2IRWyag==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -62,9 +62,9 @@ Cc: Kees Cook <keescook@chromium.org>,
 	David Laight <David.Laight@ACULAB.COM>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas@t-8ch.de>,
 	Ingo Molnar <mingo@kernel.org>
-Subject: [PATCHv6 perf/core 20/22] seccomp: passthrough uprobe systemcall without filtering
-Date: Sun, 20 Jul 2025 13:21:30 +0200
-Message-ID: <20250720112133.244369-21-jolsa@kernel.org>
+Subject: [PATCHv6 perf/core 21/22] selftests/seccomp: validate uprobe syscall passes through seccomp
+Date: Sun, 20 Jul 2025 13:21:31 +0200
+Message-ID: <20250720112133.244369-22-jolsa@kernel.org>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20250720112133.244369-1-jolsa@kernel.org>
 References: <20250720112133.244369-1-jolsa@kernel.org>
@@ -76,78 +76,227 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding uprobe as another exception to the seccomp filter alongside
-with the uretprobe syscall.
+Adding uprobe checks into the current uretprobe tests.
 
-Same as the uretprobe the uprobe syscall is installed by kernel as
-replacement for the breakpoint exception and is limited to x86_64
-arch and isn't expected to ever be supported in i386.
+All the related tests are now executed with attached uprobe
+or uretprobe or without any probe.
+
+Renaming the test fixture to uprobe, because it seems better.
 
 Cc: Kees Cook <keescook@chromium.org>
 Cc: Eyal Birger <eyal.birger@gmail.com>
 Reviewed-by: Kees Cook <kees@kernel.org>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- kernel/seccomp.c | 32 +++++++++++++++++++++++++-------
- 1 file changed, 25 insertions(+), 7 deletions(-)
+ tools/testing/selftests/seccomp/seccomp_bpf.c | 107 ++++++++++++++----
+ 1 file changed, 86 insertions(+), 21 deletions(-)
 
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 41aa761c7738..7daf2da09e8e 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -741,6 +741,26 @@ seccomp_prepare_user_filter(const char __user *user_filter)
+diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+index 61acbd45ffaa..2cf6fc825d86 100644
+--- a/tools/testing/selftests/seccomp/seccomp_bpf.c
++++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+@@ -73,6 +73,14 @@
+ #define noinline __attribute__((noinline))
+ #endif
+ 
++#ifndef __nocf_check
++#define __nocf_check __attribute__((nocf_check))
++#endif
++
++#ifndef __naked
++#define __naked __attribute__((__naked__))
++#endif
++
+ #ifndef PR_SET_NO_NEW_PRIVS
+ #define PR_SET_NO_NEW_PRIVS 38
+ #define PR_GET_NO_NEW_PRIVS 39
+@@ -4896,7 +4904,36 @@ TEST(tsync_vs_dead_thread_leader)
+ 	EXPECT_EQ(0, status);
  }
  
- #ifdef SECCOMP_ARCH_NATIVE
-+static bool seccomp_uprobe_exception(struct seccomp_data *sd)
-+{
-+#if defined __NR_uretprobe || defined __NR_uprobe
-+#ifdef SECCOMP_ARCH_COMPAT
-+	if (sd->arch == SECCOMP_ARCH_NATIVE)
-+#endif
-+	{
-+#ifdef __NR_uretprobe
-+		if (sd->nr == __NR_uretprobe)
-+			return true;
-+#endif
-+#ifdef __NR_uprobe
-+		if (sd->nr == __NR_uprobe)
-+			return true;
-+#endif
-+	}
-+#endif
-+	return false;
-+}
+-noinline int probed(void)
++#ifdef __x86_64__
 +
- /**
-  * seccomp_is_const_allow - check if filter is constant allow with given data
-  * @fprog: The BPF programs
-@@ -758,13 +778,8 @@ static bool seccomp_is_const_allow(struct sock_fprog_kern *fprog,
- 		return false;
- 
- 	/* Our single exception to filtering. */
--#ifdef __NR_uretprobe
--#ifdef SECCOMP_ARCH_COMPAT
--	if (sd->arch == SECCOMP_ARCH_NATIVE)
--#endif
--		if (sd->nr == __NR_uretprobe)
--			return true;
--#endif
-+	if (seccomp_uprobe_exception(sd))
-+		return true;
- 
- 	for (pc = 0; pc < fprog->len; pc++) {
- 		struct sock_filter *insn = &fprog->filter[pc];
-@@ -1042,6 +1057,9 @@ static const int mode1_syscalls[] = {
- 	__NR_seccomp_read, __NR_seccomp_write, __NR_seccomp_exit, __NR_seccomp_sigreturn,
- #ifdef __NR_uretprobe
- 	__NR_uretprobe,
++/*
++ * We need naked probed_uprobe function. Using __nocf_check
++ * check to skip possible endbr64 instruction and ignoring
++ * -Wattributes, otherwise the compilation might fail.
++ */
++#pragma GCC diagnostic push
++#pragma GCC diagnostic ignored "-Wattributes"
++
++__naked __nocf_check noinline int probed_uprobe(void)
++{
++	/*
++	 * Optimized uprobe is possible only on top of nop5 instruction.
++	 */
++	asm volatile ("                                 \n"
++		".byte 0x0f, 0x1f, 0x44, 0x00, 0x00     \n"
++		"ret                                    \n"
++	);
++}
++#pragma GCC diagnostic pop
++
++#else
++noinline int probed_uprobe(void)
++{
++	return 1;
++}
 +#endif
-+#ifdef __NR_uprobe
-+	__NR_uprobe,
- #endif
- 	-1, /* negative terminated */
++
++noinline int probed_uretprobe(void)
+ {
+ 	return 1;
+ }
+@@ -4949,35 +4986,46 @@ static ssize_t get_uprobe_offset(const void *addr)
+ 	return found ? (uintptr_t)addr - start + base : -1;
+ }
+ 
+-FIXTURE(URETPROBE) {
++FIXTURE(UPROBE) {
+ 	int fd;
  };
+ 
+-FIXTURE_VARIANT(URETPROBE) {
++FIXTURE_VARIANT(UPROBE) {
+ 	/*
+-	 * All of the URETPROBE behaviors can be tested with either
+-	 * uretprobe attached or not
++	 * All of the U(RET)PROBE behaviors can be tested with either
++	 * u(ret)probe attached or not
+ 	 */
+ 	bool attach;
++	/*
++	 * Test both uprobe and uretprobe.
++	 */
++	bool uretprobe;
+ };
+ 
+-FIXTURE_VARIANT_ADD(URETPROBE, attached) {
++FIXTURE_VARIANT_ADD(UPROBE, not_attached) {
++	.attach = false,
++	.uretprobe = false,
++};
++
++FIXTURE_VARIANT_ADD(UPROBE, uprobe_attached) {
+ 	.attach = true,
++	.uretprobe = false,
+ };
+ 
+-FIXTURE_VARIANT_ADD(URETPROBE, not_attached) {
+-	.attach = false,
++FIXTURE_VARIANT_ADD(UPROBE, uretprobe_attached) {
++	.attach = true,
++	.uretprobe = true,
+ };
+ 
+-FIXTURE_SETUP(URETPROBE)
++FIXTURE_SETUP(UPROBE)
+ {
+ 	const size_t attr_sz = sizeof(struct perf_event_attr);
+ 	struct perf_event_attr attr;
+ 	ssize_t offset;
+ 	int type, bit;
+ 
+-#ifndef __NR_uretprobe
+-	SKIP(return, "__NR_uretprobe syscall not defined");
++#if !defined(__NR_uprobe) || !defined(__NR_uretprobe)
++	SKIP(return, "__NR_uprobe ot __NR_uretprobe syscalls not defined");
+ #endif
+ 
+ 	if (!variant->attach)
+@@ -4987,12 +5035,17 @@ FIXTURE_SETUP(URETPROBE)
+ 
+ 	type = determine_uprobe_perf_type();
+ 	ASSERT_GE(type, 0);
+-	bit = determine_uprobe_retprobe_bit();
+-	ASSERT_GE(bit, 0);
+-	offset = get_uprobe_offset(probed);
++
++	if (variant->uretprobe) {
++		bit = determine_uprobe_retprobe_bit();
++		ASSERT_GE(bit, 0);
++	}
++
++	offset = get_uprobe_offset(variant->uretprobe ? probed_uretprobe : probed_uprobe);
+ 	ASSERT_GE(offset, 0);
+ 
+-	attr.config |= 1 << bit;
++	if (variant->uretprobe)
++		attr.config |= 1 << bit;
+ 	attr.size = attr_sz;
+ 	attr.type = type;
+ 	attr.config1 = ptr_to_u64("/proc/self/exe");
+@@ -5003,7 +5056,7 @@ FIXTURE_SETUP(URETPROBE)
+ 			   PERF_FLAG_FD_CLOEXEC);
+ }
+ 
+-FIXTURE_TEARDOWN(URETPROBE)
++FIXTURE_TEARDOWN(UPROBE)
+ {
+ 	/* we could call close(self->fd), but we'd need extra filter for
+ 	 * that and since we are calling _exit right away..
+@@ -5017,11 +5070,17 @@ static int run_probed_with_filter(struct sock_fprog *prog)
+ 		return -1;
+ 	}
+ 
+-	probed();
++	/*
++	 * Uprobe is optimized after first hit, so let's hit twice.
++	 */
++	probed_uprobe();
++	probed_uprobe();
++
++	probed_uretprobe();
+ 	return 0;
+ }
+ 
+-TEST_F(URETPROBE, uretprobe_default_allow)
++TEST_F(UPROBE, uprobe_default_allow)
+ {
+ 	struct sock_filter filter[] = {
+ 		BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_ALLOW),
+@@ -5034,7 +5093,7 @@ TEST_F(URETPROBE, uretprobe_default_allow)
+ 	ASSERT_EQ(0, run_probed_with_filter(&prog));
+ }
+ 
+-TEST_F(URETPROBE, uretprobe_default_block)
++TEST_F(UPROBE, uprobe_default_block)
+ {
+ 	struct sock_filter filter[] = {
+ 		BPF_STMT(BPF_LD|BPF_W|BPF_ABS,
+@@ -5051,11 +5110,14 @@ TEST_F(URETPROBE, uretprobe_default_block)
+ 	ASSERT_EQ(0, run_probed_with_filter(&prog));
+ }
+ 
+-TEST_F(URETPROBE, uretprobe_block_uretprobe_syscall)
++TEST_F(UPROBE, uprobe_block_syscall)
+ {
+ 	struct sock_filter filter[] = {
+ 		BPF_STMT(BPF_LD|BPF_W|BPF_ABS,
+ 			offsetof(struct seccomp_data, nr)),
++#ifdef __NR_uprobe
++		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_uprobe, 1, 2),
++#endif
+ #ifdef __NR_uretprobe
+ 		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_uretprobe, 0, 1),
+ #endif
+@@ -5070,11 +5132,14 @@ TEST_F(URETPROBE, uretprobe_block_uretprobe_syscall)
+ 	ASSERT_EQ(0, run_probed_with_filter(&prog));
+ }
+ 
+-TEST_F(URETPROBE, uretprobe_default_block_with_uretprobe_syscall)
++TEST_F(UPROBE, uprobe_default_block_with_syscall)
+ {
+ 	struct sock_filter filter[] = {
+ 		BPF_STMT(BPF_LD|BPF_W|BPF_ABS,
+ 			offsetof(struct seccomp_data, nr)),
++#ifdef __NR_uprobe
++		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_uprobe, 3, 0),
++#endif
+ #ifdef __NR_uretprobe
+ 		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_uretprobe, 2, 0),
+ #endif
 -- 
 2.50.1
 
