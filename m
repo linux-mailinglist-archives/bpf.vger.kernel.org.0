@@ -1,53 +1,52 @@
-Return-Path: <bpf+bounces-63853-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63854-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 046CAB0B593
-	for <lists+bpf@lfdr.de>; Sun, 20 Jul 2025 13:27:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BA5FB0B595
+	for <lists+bpf@lfdr.de>; Sun, 20 Jul 2025 13:27:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93A4516744B
-	for <lists+bpf@lfdr.de>; Sun, 20 Jul 2025 11:26:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7726C189C94E
+	for <lists+bpf@lfdr.de>; Sun, 20 Jul 2025 11:27:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E2D8211706;
-	Sun, 20 Jul 2025 11:25:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71B0D219A6B;
+	Sun, 20 Jul 2025 11:25:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iE4HkYhC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kOC4qUcr"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CA57204866;
-	Sun, 20 Jul 2025 11:25:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E45C62080C8;
+	Sun, 20 Jul 2025 11:25:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753010740; cv=none; b=fQ/E7ZppS54WS4V4TSuW4RJGKeqcCeraLJWcXLeFp/4gD1xwnEbgDKGGd2ysYoff7gLlbRLxp1ORC7W15Wf67lnJYhzu9/apwx48i4AW+JQn3FYaTeJhjXToVhMnNfHSpq3EGJZQ2Qt9eiz6gWm/uUPFcJzyxg7NCTwllap4Y00=
+	t=1753010751; cv=none; b=aww5uLe17jt6R5S/XkHyriKsfbqM9qd2IIGJB2DZXtvlGMgtYjDyqac8XXWQWNpv98g0Ea9cbr3YqxTWOsu8NygE6qWa5ML0Bc72Zuci6p79naemPUNkE8qXDrMEq1J5NV/EOO/UvusRSkKTK9FpgJmat2qyI27VwocfslS1DxQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753010740; c=relaxed/simple;
-	bh=ivjFKwQACAGTKpsYMbShtvns3ViBFuL3QShhOxBiUpM=;
+	s=arc-20240116; t=1753010751; c=relaxed/simple;
+	bh=0SrhICvUGRiP7kpUGTH3UD+WPF2mV6G/vO2pnCZmge4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=I8ysO2fHrcfyvUbBgwBtzN6LT9lxL5ROSymnBzVRqroqyVOxbSee0UqBxdLPrsnGBMFJok93NBsY2/xBrA0+lU/PoS/QyHLyvyJxENuh/S+96+M9iciqCr0Z4uCE/UQeu9TwKB/i/B22g3qnuncWQehEz1pkFrt/HmYntvqRn74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iE4HkYhC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07BBAC4CEE7;
-	Sun, 20 Jul 2025 11:25:34 +0000 (UTC)
+	 MIME-Version; b=InrXAQPeTbA2yEBA30XWgNDKGVlwDBncQhanbxiGtITIsQ3yO+SfR5mEtyYq0N9K894icwlkSnu5IRNmjWbeE924OxDLR/M7/zCwVX6+Kqqm/ttEV6OMym6vClMAmFwDhn2q3uLZV/5yjW0n4DqECJs4em+ipExffophoOaBIpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kOC4qUcr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99857C4CEE7;
+	Sun, 20 Jul 2025 11:25:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753010739;
-	bh=ivjFKwQACAGTKpsYMbShtvns3ViBFuL3QShhOxBiUpM=;
+	s=k20201202; t=1753010750;
+	bh=0SrhICvUGRiP7kpUGTH3UD+WPF2mV6G/vO2pnCZmge4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=iE4HkYhCgloSPxbs3pP3MBt3alrWfgRqL9FWdcTeOSXi3glUE+1xa5xl71DUbflBM
-	 C9cJXVCydHeO+TXvPBznWkaT22qtr4c5ImQX/+nE5y/mtlc5kHkMOxbgT6v3zKMor0
-	 eDSG3g1aWs2GI+jF4ECPh/JXv+7R7mub8mt62cJVHQM55TKTuCdSkZe9sV6Ao7Hmv5
-	 H9nap/fW9V35Q7IELA/1DEQk6UVYrJWZGGn6A8BPoB7sNsQci/dBxp4wmhvlNlxyxC
-	 0heTWcJSZFoQ5NlJQfnrcsAEzO2wYhE/uq0cDXoNyqOexgqDNTkR3QCU8l9k+BMy5s
-	 9AYnup2IRWyag==
+	b=kOC4qUcrfqDyhup7CQD+kZURESws7IE/gk1MObkHQDz3o5aasiUSla0twppHPtb78
+	 0sWwY5qza7ZsM0B+tckv+rz3HS9Tx974q+Cu9XqSbVK+UX5CxoF5JtUko+WdWpJi1O
+	 ka4O/WAuR16Bb6LS20dBIo4eINqi2GnJGq0YuRyMHlYJlm35MPtclEydTU4sMDelUU
+	 6z69mSZ65bn0lYCqpit59ncUlyvjuMPwOEhyHUFc/WCsP1p5JWenSg878DefpriFxY
+	 BvqxRPCv07QdpW7jYHmcmjd6ruLySzTVQoclBulFlWLFNKGBSEEMyXnck5BnYWIcmH
+	 /kVK/K2wpe38g==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Andrii Nakryiko <andrii@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>,
-	Eyal Birger <eyal.birger@gmail.com>,
-	Kees Cook <kees@kernel.org>,
+Cc: Alejandro Colomar <alx@kernel.org>,
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
 	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org,
@@ -57,14 +56,13 @@ Cc: Kees Cook <keescook@chromium.org>,
 	John Fastabend <john.fastabend@gmail.com>,
 	Hao Luo <haoluo@google.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
 	Alan Maguire <alan.maguire@oracle.com>,
 	David Laight <David.Laight@ACULAB.COM>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas@t-8ch.de>,
 	Ingo Molnar <mingo@kernel.org>
-Subject: [PATCHv6 perf/core 21/22] selftests/seccomp: validate uprobe syscall passes through seccomp
-Date: Sun, 20 Jul 2025 13:21:31 +0200
-Message-ID: <20250720112133.244369-22-jolsa@kernel.org>
+Subject: [PATCHv5 22/22] man2: Add uprobe syscall page
+Date: Sun, 20 Jul 2025 13:21:32 +0200
+Message-ID: <20250720112133.244369-23-jolsa@kernel.org>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20250720112133.244369-1-jolsa@kernel.org>
 References: <20250720112133.244369-1-jolsa@kernel.org>
@@ -76,228 +74,101 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding uprobe checks into the current uretprobe tests.
+Changing uretprobe syscall man page to be shared with new
+uprobe syscall man page.
 
-All the related tests are now executed with attached uprobe
-or uretprobe or without any probe.
-
-Renaming the test fixture to uprobe, because it seems better.
-
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Eyal Birger <eyal.birger@gmail.com>
-Reviewed-by: Kees Cook <kees@kernel.org>
+Cc: Alejandro Colomar <alx@kernel.org>
+Reviewed-by: Alejandro Colomar <alx@kernel.org>
+Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/testing/selftests/seccomp/seccomp_bpf.c | 107 ++++++++++++++----
- 1 file changed, 86 insertions(+), 21 deletions(-)
+ man/man2/uprobe.2    |  1 +
+ man/man2/uretprobe.2 | 36 ++++++++++++++++++++++++------------
+ 2 files changed, 25 insertions(+), 12 deletions(-)
+ create mode 100644 man/man2/uprobe.2
 
-diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index 61acbd45ffaa..2cf6fc825d86 100644
---- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-+++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -73,6 +73,14 @@
- #define noinline __attribute__((noinline))
- #endif
- 
-+#ifndef __nocf_check
-+#define __nocf_check __attribute__((nocf_check))
-+#endif
-+
-+#ifndef __naked
-+#define __naked __attribute__((__naked__))
-+#endif
-+
- #ifndef PR_SET_NO_NEW_PRIVS
- #define PR_SET_NO_NEW_PRIVS 38
- #define PR_GET_NO_NEW_PRIVS 39
-@@ -4896,7 +4904,36 @@ TEST(tsync_vs_dead_thread_leader)
- 	EXPECT_EQ(0, status);
- }
- 
--noinline int probed(void)
-+#ifdef __x86_64__
-+
-+/*
-+ * We need naked probed_uprobe function. Using __nocf_check
-+ * check to skip possible endbr64 instruction and ignoring
-+ * -Wattributes, otherwise the compilation might fail.
-+ */
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wattributes"
-+
-+__naked __nocf_check noinline int probed_uprobe(void)
-+{
-+	/*
-+	 * Optimized uprobe is possible only on top of nop5 instruction.
-+	 */
-+	asm volatile ("                                 \n"
-+		".byte 0x0f, 0x1f, 0x44, 0x00, 0x00     \n"
-+		"ret                                    \n"
-+	);
-+}
-+#pragma GCC diagnostic pop
-+
-+#else
-+noinline int probed_uprobe(void)
-+{
-+	return 1;
-+}
-+#endif
-+
-+noinline int probed_uretprobe(void)
- {
- 	return 1;
- }
-@@ -4949,35 +4986,46 @@ static ssize_t get_uprobe_offset(const void *addr)
- 	return found ? (uintptr_t)addr - start + base : -1;
- }
- 
--FIXTURE(URETPROBE) {
-+FIXTURE(UPROBE) {
- 	int fd;
- };
- 
--FIXTURE_VARIANT(URETPROBE) {
-+FIXTURE_VARIANT(UPROBE) {
- 	/*
--	 * All of the URETPROBE behaviors can be tested with either
--	 * uretprobe attached or not
-+	 * All of the U(RET)PROBE behaviors can be tested with either
-+	 * u(ret)probe attached or not
- 	 */
- 	bool attach;
-+	/*
-+	 * Test both uprobe and uretprobe.
-+	 */
-+	bool uretprobe;
- };
- 
--FIXTURE_VARIANT_ADD(URETPROBE, attached) {
-+FIXTURE_VARIANT_ADD(UPROBE, not_attached) {
-+	.attach = false,
-+	.uretprobe = false,
-+};
-+
-+FIXTURE_VARIANT_ADD(UPROBE, uprobe_attached) {
- 	.attach = true,
-+	.uretprobe = false,
- };
- 
--FIXTURE_VARIANT_ADD(URETPROBE, not_attached) {
--	.attach = false,
-+FIXTURE_VARIANT_ADD(UPROBE, uretprobe_attached) {
-+	.attach = true,
-+	.uretprobe = true,
- };
- 
--FIXTURE_SETUP(URETPROBE)
-+FIXTURE_SETUP(UPROBE)
- {
- 	const size_t attr_sz = sizeof(struct perf_event_attr);
- 	struct perf_event_attr attr;
- 	ssize_t offset;
- 	int type, bit;
- 
--#ifndef __NR_uretprobe
--	SKIP(return, "__NR_uretprobe syscall not defined");
-+#if !defined(__NR_uprobe) || !defined(__NR_uretprobe)
-+	SKIP(return, "__NR_uprobe ot __NR_uretprobe syscalls not defined");
- #endif
- 
- 	if (!variant->attach)
-@@ -4987,12 +5035,17 @@ FIXTURE_SETUP(URETPROBE)
- 
- 	type = determine_uprobe_perf_type();
- 	ASSERT_GE(type, 0);
--	bit = determine_uprobe_retprobe_bit();
--	ASSERT_GE(bit, 0);
--	offset = get_uprobe_offset(probed);
-+
-+	if (variant->uretprobe) {
-+		bit = determine_uprobe_retprobe_bit();
-+		ASSERT_GE(bit, 0);
-+	}
-+
-+	offset = get_uprobe_offset(variant->uretprobe ? probed_uretprobe : probed_uprobe);
- 	ASSERT_GE(offset, 0);
- 
--	attr.config |= 1 << bit;
-+	if (variant->uretprobe)
-+		attr.config |= 1 << bit;
- 	attr.size = attr_sz;
- 	attr.type = type;
- 	attr.config1 = ptr_to_u64("/proc/self/exe");
-@@ -5003,7 +5056,7 @@ FIXTURE_SETUP(URETPROBE)
- 			   PERF_FLAG_FD_CLOEXEC);
- }
- 
--FIXTURE_TEARDOWN(URETPROBE)
-+FIXTURE_TEARDOWN(UPROBE)
- {
- 	/* we could call close(self->fd), but we'd need extra filter for
- 	 * that and since we are calling _exit right away..
-@@ -5017,11 +5070,17 @@ static int run_probed_with_filter(struct sock_fprog *prog)
- 		return -1;
- 	}
- 
--	probed();
-+	/*
-+	 * Uprobe is optimized after first hit, so let's hit twice.
-+	 */
-+	probed_uprobe();
-+	probed_uprobe();
-+
-+	probed_uretprobe();
- 	return 0;
- }
- 
--TEST_F(URETPROBE, uretprobe_default_allow)
-+TEST_F(UPROBE, uprobe_default_allow)
- {
- 	struct sock_filter filter[] = {
- 		BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_ALLOW),
-@@ -5034,7 +5093,7 @@ TEST_F(URETPROBE, uretprobe_default_allow)
- 	ASSERT_EQ(0, run_probed_with_filter(&prog));
- }
- 
--TEST_F(URETPROBE, uretprobe_default_block)
-+TEST_F(UPROBE, uprobe_default_block)
- {
- 	struct sock_filter filter[] = {
- 		BPF_STMT(BPF_LD|BPF_W|BPF_ABS,
-@@ -5051,11 +5110,14 @@ TEST_F(URETPROBE, uretprobe_default_block)
- 	ASSERT_EQ(0, run_probed_with_filter(&prog));
- }
- 
--TEST_F(URETPROBE, uretprobe_block_uretprobe_syscall)
-+TEST_F(UPROBE, uprobe_block_syscall)
- {
- 	struct sock_filter filter[] = {
- 		BPF_STMT(BPF_LD|BPF_W|BPF_ABS,
- 			offsetof(struct seccomp_data, nr)),
-+#ifdef __NR_uprobe
-+		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_uprobe, 1, 2),
-+#endif
- #ifdef __NR_uretprobe
- 		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_uretprobe, 0, 1),
- #endif
-@@ -5070,11 +5132,14 @@ TEST_F(URETPROBE, uretprobe_block_uretprobe_syscall)
- 	ASSERT_EQ(0, run_probed_with_filter(&prog));
- }
- 
--TEST_F(URETPROBE, uretprobe_default_block_with_uretprobe_syscall)
-+TEST_F(UPROBE, uprobe_default_block_with_syscall)
- {
- 	struct sock_filter filter[] = {
- 		BPF_STMT(BPF_LD|BPF_W|BPF_ABS,
- 			offsetof(struct seccomp_data, nr)),
-+#ifdef __NR_uprobe
-+		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_uprobe, 3, 0),
-+#endif
- #ifdef __NR_uretprobe
- 		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_uretprobe, 2, 0),
- #endif
+diff --git a/man/man2/uprobe.2 b/man/man2/uprobe.2
+new file mode 100644
+index 000000000000..ea5ccf901591
+--- /dev/null
++++ b/man/man2/uprobe.2
+@@ -0,0 +1 @@
++.so man2/uretprobe.2
+diff --git a/man/man2/uretprobe.2 b/man/man2/uretprobe.2
+index bbbfb0c59335..df0e5d92e5ed 100644
+--- a/man/man2/uretprobe.2
++++ b/man/man2/uretprobe.2
+@@ -2,22 +2,28 @@
+ .\"
+ .\" SPDX-License-Identifier: Linux-man-pages-copyleft
+ .\"
+-.TH uretprobe 2 (date) "Linux man-pages (unreleased)"
++.TH uprobe 2 (date) "Linux man-pages (unreleased)"
+ .SH NAME
++uprobe,
+ uretprobe
+ \-
+-execute pending return uprobes
++execute pending entry or return uprobes
+ .SH SYNOPSIS
+ .nf
++.B int uprobe(void);
+ .B int uretprobe(void);
+ .fi
+ .SH DESCRIPTION
++.BR uprobe ()
++is an alternative to breakpoint instructions
++for triggering entry uprobe consumers.
++.P
+ .BR uretprobe ()
+ is an alternative to breakpoint instructions
+ for triggering return uprobe consumers.
+ .P
+ Calls to
+-.BR uretprobe ()
++these system calls
+ are only made from the user-space trampoline provided by the kernel.
+ Calls from any other place result in a
+ .BR SIGILL .
+@@ -26,22 +32,28 @@ The return value is architecture-specific.
+ .SH ERRORS
+ .TP
+ .B SIGILL
+-.BR uretprobe ()
+-was called by a user-space program.
++These system calls
++were called by a user-space program.
+ .SH VERSIONS
+ The behavior varies across systems.
+ .SH STANDARDS
+ None.
+ .SH HISTORY
++.TP
++.BR uprobe ()
++TBD
++.TP
++.BR uretprobe ()
+ Linux 6.11.
+ .P
+-.BR uretprobe ()
+-was initially introduced for the x86_64 architecture
+-where it was shown to be faster than breakpoint traps.
+-It might be extended to other architectures.
++These system calls
++were initially introduced for the x86_64 architecture
++where they were shown to be faster than breakpoint traps.
++They might be extended to other architectures.
+ .SH CAVEATS
+-.BR uretprobe ()
+-exists only to allow the invocation of return uprobe consumers.
+-It should
++These system calls
++exist only to allow the invocation of
++entry or return uprobe consumers.
++They should
+ .B never
+ be called directly.
 -- 
-2.50.1
+2.49.0
 
 
