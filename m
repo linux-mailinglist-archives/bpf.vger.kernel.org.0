@@ -1,174 +1,123 @@
-Return-Path: <bpf+bounces-63854-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63855-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BA5FB0B595
-	for <lists+bpf@lfdr.de>; Sun, 20 Jul 2025 13:27:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF38AB0B59D
+	for <lists+bpf@lfdr.de>; Sun, 20 Jul 2025 13:39:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7726C189C94E
-	for <lists+bpf@lfdr.de>; Sun, 20 Jul 2025 11:27:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C4873BC530
+	for <lists+bpf@lfdr.de>; Sun, 20 Jul 2025 11:39:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71B0D219A6B;
-	Sun, 20 Jul 2025 11:25:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 078D91F0995;
+	Sun, 20 Jul 2025 11:39:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kOC4qUcr"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cNDhpEiT"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E45C62080C8;
-	Sun, 20 Jul 2025 11:25:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7BD21DDC07
+	for <bpf@vger.kernel.org>; Sun, 20 Jul 2025 11:39:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753010751; cv=none; b=aww5uLe17jt6R5S/XkHyriKsfbqM9qd2IIGJB2DZXtvlGMgtYjDyqac8XXWQWNpv98g0Ea9cbr3YqxTWOsu8NygE6qWa5ML0Bc72Zuci6p79naemPUNkE8qXDrMEq1J5NV/EOO/UvusRSkKTK9FpgJmat2qyI27VwocfslS1DxQ=
+	t=1753011584; cv=none; b=MKWrpkfxOIe2I3i3bbAwLlZ1zlhwaUMt27p1qSm0PpfC9kN7mT/QYYn/6HksVvfXwQQpKxaUhcvn7HSDmDhb8K777V+hS7FKos2AaNj4YWaQW8WfFGidbMHuWgWIshwp7Wn4CAuJlm7KHXhTME/OtlYsTjDRRlGq3XQiqauZPJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753010751; c=relaxed/simple;
-	bh=0SrhICvUGRiP7kpUGTH3UD+WPF2mV6G/vO2pnCZmge4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=InrXAQPeTbA2yEBA30XWgNDKGVlwDBncQhanbxiGtITIsQ3yO+SfR5mEtyYq0N9K894icwlkSnu5IRNmjWbeE924OxDLR/M7/zCwVX6+Kqqm/ttEV6OMym6vClMAmFwDhn2q3uLZV/5yjW0n4DqECJs4em+ipExffophoOaBIpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kOC4qUcr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99857C4CEE7;
-	Sun, 20 Jul 2025 11:25:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753010750;
-	bh=0SrhICvUGRiP7kpUGTH3UD+WPF2mV6G/vO2pnCZmge4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kOC4qUcrfqDyhup7CQD+kZURESws7IE/gk1MObkHQDz3o5aasiUSla0twppHPtb78
-	 0sWwY5qza7ZsM0B+tckv+rz3HS9Tx974q+Cu9XqSbVK+UX5CxoF5JtUko+WdWpJi1O
-	 ka4O/WAuR16Bb6LS20dBIo4eINqi2GnJGq0YuRyMHlYJlm35MPtclEydTU4sMDelUU
-	 6z69mSZ65bn0lYCqpit59ncUlyvjuMPwOEhyHUFc/WCsP1p5JWenSg878DefpriFxY
-	 BvqxRPCv07QdpW7jYHmcmjd6ruLySzTVQoclBulFlWLFNKGBSEEMyXnck5BnYWIcmH
-	 /kVK/K2wpe38g==
-From: Jiri Olsa <jolsa@kernel.org>
-To: Oleg Nesterov <oleg@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: Alejandro Colomar <alx@kernel.org>,
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	x86@kernel.org,
-	Song Liu <songliubraving@fb.com>,
+	s=arc-20240116; t=1753011584; c=relaxed/simple;
+	bh=Iu6H7igpd/ZsMaAM411NjFixrXtxN56J3mN+7gbg90c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Mbv9fG+cpBycHiI+pLv4L79dI/eScQQmH7AlOD2pybz6h5nlAXYofrn4j1pcvLYHjJ/yNGfCZOrVD77tkRSB9azRLKg9tLhx3/c6c1upw+EV6krKcvyCH1/+rDF9eVzVVos+aReMPKR+CvK2y3ZdbrPObAChHRflZt5sQTaCa3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cNDhpEiT; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1753011582;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Iu6H7igpd/ZsMaAM411NjFixrXtxN56J3mN+7gbg90c=;
+	b=cNDhpEiTma0B66UQysvaDHQw0ir279vtEHao5YQopd2fnvcrD0xBDWy+G7BeM+qwGo89g0
+	/ytyaemWPPGwwf9augpu3KMA3XiR1nBiKi3VuLatZADF9EoQRmVdbfqgE/Rs5/iHbmoUkG
+	vPxK05Hks2uC21QOytPew2RSCwVr+jU=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-561-MRzKWyJ3MKuUez4dgd4jOg-1; Sun,
+ 20 Jul 2025 07:39:29 -0400
+X-MC-Unique: MRzKWyJ3MKuUez4dgd4jOg-1
+X-Mimecast-MFC-AGG-ID: MRzKWyJ3MKuUez4dgd4jOg_1753011558
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 458A11800447;
+	Sun, 20 Jul 2025 11:39:17 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.44.32.30])
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 5711E1800D82;
+	Sun, 20 Jul 2025 11:39:11 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Sun, 20 Jul 2025 13:38:24 +0200 (CEST)
+Date: Sun, 20 Jul 2025 13:38:17 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	x86@kernel.org, Song Liu <songliubraving@fb.com>,
 	Yonghong Song <yhs@fb.com>,
 	John Fastabend <john.fastabend@gmail.com>,
-	Hao Luo <haoluo@google.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
+	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
 	Alan Maguire <alan.maguire@oracle.com>,
 	David Laight <David.Laight@ACULAB.COM>,
-	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas@t-8ch.de>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
 	Ingo Molnar <mingo@kernel.org>
-Subject: [PATCHv5 22/22] man2: Add uprobe syscall page
-Date: Sun, 20 Jul 2025 13:21:32 +0200
-Message-ID: <20250720112133.244369-23-jolsa@kernel.org>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20250720112133.244369-1-jolsa@kernel.org>
+Subject: Re: [PATCHv6 perf/core 09/22] uprobes/x86: Add uprobe syscall to
+ speed up uprobe
+Message-ID: <20250720113816.GA23012@redhat.com>
 References: <20250720112133.244369-1-jolsa@kernel.org>
+ <20250720112133.244369-10-jolsa@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250720112133.244369-10-jolsa@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 
-Changing uretprobe syscall man page to be shared with new
-uprobe syscall man page.
+On 07/20, Jiri Olsa wrote:
+>
+> Adding new uprobe syscall that calls uprobe handlers for given
+> 'breakpoint' address.
+>
+> The idea is that the 'breakpoint' address calls the user space
+> trampoline which executes the uprobe syscall.
+>
+> The syscall handler reads the return address of the initial call
+> to retrieve the original 'breakpoint' address. With this address
+> we find the related uprobe object and call its consumers.
+>
+> Adding the arch_uprobe_trampoline_mapping function that provides
+> uprobe trampoline mapping. This mapping is backed with one global
+> page initialized at __init time and shared by the all the mapping
+> instances.
+>
+> We do not allow to execute uprobe syscall if the caller is not
+> from uprobe trampoline mapping.
+>
+> The uprobe syscall ensures the consumer (bpf program) sees registers
+> values in the state before the trampoline was called.
+>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 
-Cc: Alejandro Colomar <alx@kernel.org>
-Reviewed-by: Alejandro Colomar <alx@kernel.org>
-Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- man/man2/uprobe.2    |  1 +
- man/man2/uretprobe.2 | 36 ++++++++++++++++++++++++------------
- 2 files changed, 25 insertions(+), 12 deletions(-)
- create mode 100644 man/man2/uprobe.2
+My ack still stands,
 
-diff --git a/man/man2/uprobe.2 b/man/man2/uprobe.2
-new file mode 100644
-index 000000000000..ea5ccf901591
---- /dev/null
-+++ b/man/man2/uprobe.2
-@@ -0,0 +1 @@
-+.so man2/uretprobe.2
-diff --git a/man/man2/uretprobe.2 b/man/man2/uretprobe.2
-index bbbfb0c59335..df0e5d92e5ed 100644
---- a/man/man2/uretprobe.2
-+++ b/man/man2/uretprobe.2
-@@ -2,22 +2,28 @@
- .\"
- .\" SPDX-License-Identifier: Linux-man-pages-copyleft
- .\"
--.TH uretprobe 2 (date) "Linux man-pages (unreleased)"
-+.TH uprobe 2 (date) "Linux man-pages (unreleased)"
- .SH NAME
-+uprobe,
- uretprobe
- \-
--execute pending return uprobes
-+execute pending entry or return uprobes
- .SH SYNOPSIS
- .nf
-+.B int uprobe(void);
- .B int uretprobe(void);
- .fi
- .SH DESCRIPTION
-+.BR uprobe ()
-+is an alternative to breakpoint instructions
-+for triggering entry uprobe consumers.
-+.P
- .BR uretprobe ()
- is an alternative to breakpoint instructions
- for triggering return uprobe consumers.
- .P
- Calls to
--.BR uretprobe ()
-+these system calls
- are only made from the user-space trampoline provided by the kernel.
- Calls from any other place result in a
- .BR SIGILL .
-@@ -26,22 +32,28 @@ The return value is architecture-specific.
- .SH ERRORS
- .TP
- .B SIGILL
--.BR uretprobe ()
--was called by a user-space program.
-+These system calls
-+were called by a user-space program.
- .SH VERSIONS
- The behavior varies across systems.
- .SH STANDARDS
- None.
- .SH HISTORY
-+.TP
-+.BR uprobe ()
-+TBD
-+.TP
-+.BR uretprobe ()
- Linux 6.11.
- .P
--.BR uretprobe ()
--was initially introduced for the x86_64 architecture
--where it was shown to be faster than breakpoint traps.
--It might be extended to other architectures.
-+These system calls
-+were initially introduced for the x86_64 architecture
-+where they were shown to be faster than breakpoint traps.
-+They might be extended to other architectures.
- .SH CAVEATS
--.BR uretprobe ()
--exists only to allow the invocation of return uprobe consumers.
--It should
-+These system calls
-+exist only to allow the invocation of
-+entry or return uprobe consumers.
-+They should
- .B never
- be called directly.
--- 
-2.49.0
+Acked-by: Oleg Nesterov <oleg@redhat.com>
 
 
