@@ -1,361 +1,313 @@
-Return-Path: <bpf+bounces-63866-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63869-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB93AB0B9CA
-	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 03:39:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 287BBB0BA83
+	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 04:23:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 221323B8E01
-	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 01:38:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0CCB3160E12
+	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 02:23:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A791B1714B7;
-	Mon, 21 Jul 2025 01:39:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lUuIxxgs"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E2A4223714;
+	Mon, 21 Jul 2025 02:18:54 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71CAD8460;
-	Mon, 21 Jul 2025 01:38:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.178
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C0951FDE33;
+	Mon, 21 Jul 2025 02:18:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753061941; cv=none; b=WhEfeVmgJtgLjI63zEqZ24qijOxdSX/+zBc9DNljg+wrCYuxb6rghKxpHt8mapn+h5UkxBEofGmrUd25wZ0gU/hl/AundjdQqatV6d7RJgWdMalymjskMmwjxXF+RTTsbzYd9yOO8rhfmleDhYywHFIS7hzT57hIu+dX74uK+YQ=
+	t=1753064333; cv=none; b=YPP3fmp7yWDOFOn8+JwCAHyijD6KY/mq+5D0qqF3h1yPw8CJpeB4eqPTpRPd3JKmOjbjdycvcK4squnDdi5KoORLuuN1PpV5C2/Knci9G9ItNf22hPsX/v1/k5BplVSZU76tkcwlK3Slezy5rquFSvLjt3h0OmqaTEBiP9o0KeY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753061941; c=relaxed/simple;
-	bh=PO4MwsGmW9qPk9qjtrdQ41wKEw14fK2NLOmzYqtm4Kw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Xo3UX7jYG8cl57sVDJLDL6Alsp6zYwz59SHaODuJaHKZRxxNUaJeeSS0y/8SHqo1t1ytbZlg86GZkTCRDCN+WaauAxTNoDHV/NJmTLk0pygaQ39AxtQhohScey3TQ7e6CahdKPOIeN0e5QsPcf2W0qE5J1E598Ai0jaOqUFn0J8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lUuIxxgs; arc=none smtp.client-ip=209.85.167.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-41eaf6805ebso1580422b6e.3;
-        Sun, 20 Jul 2025 18:38:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753061938; x=1753666738; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+VvhFlhsZQMCnpfYYt4dMxY8vbQNulzPjC3pPcEi758=;
-        b=lUuIxxgsmuoG5B3Q0PvRXuHr46GUrYch/KLA0NfXQ8aXH1j0O2Zx+fPqRLbUOv46vh
-         oyfPEOP0UZAHDWWCAkmmTx9Lr2fvVFhRCmTyJn91A71/fWNdqgZFPnDsMwEs0EmA2CUm
-         IN19hKVVQC3PAPBvrZlMsa8HyM4Dhy8zbV1C1Gd7G+m4DV6p413s/uCw3dSfd7tjBqDl
-         LIEYmkFiJT3bBOyHxrTWuw/xNdiC3kcr8xBZAtFkQtP1Ffh0qSTkJZZAJvzOXGTr4aGM
-         vLoy2pzfkW2JKx7hWrvy/tRc6ZrwvrztrI8mK59WcjgcLZzps5BCAtNOETBgMT5siKqr
-         Zz2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753061938; x=1753666738;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+VvhFlhsZQMCnpfYYt4dMxY8vbQNulzPjC3pPcEi758=;
-        b=WiLauSkrDfra0aovu5Nuhw4KU8RKKB6Wmf2aDdpSAK52R6Upr4Pae8vJa7Hqavp3ik
-         N1csF00RHr0z/8EpRJBEYdAQyOGCiIrBV/zxhC9Vs9Q11bIs0Dx7T83rNWtdbFLq3vmk
-         mfJ3VkhxC9lWYwKE5nFqVHG4C5rCTalA38Jq/q/QfUvgEorZAoJguj/UU0o8Ocj7Ss4M
-         WJkoOFF4vdjuJxyca6VVeZIdJlIYqMx0rZ23ZISMx1Y4TcaGS+PehkApvrXZtCKfOhpQ
-         fUPm95a1kl9iYw3247Wtevo4A5zOp0AsJOk8Pnf24f4ggZ2kSGSLrcuXrfbaAOfKsv97
-         TLIg==
-X-Forwarded-Encrypted: i=1; AJvYcCV5VnUpmMc49g0pd/vXpbadsmIP9MWjZmYHVJXF16yWJoFsGKxqKlRS/kHORvbPfENMwTKfZvZyyWRWfBz1@vger.kernel.org, AJvYcCX05Tn9A/QlLB/d6txzJf13b4tK0fvYcoyJRmK6q88Q9w8FrZS28JTHEy59CmJxPFEzzFg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwTdyzyhgCt54xbQjwiUVSM7GfxX8VWpRNkX5JM7my5+3HeiKx7
-	O0Am1HN0ZLEwUognHux6lfggBf7suMRNivpcRqJu5eX9m0IEP97exoAbf8TBaDlZzAM557ZOtKJ
-	wGPO3LUco3pE3spVg8BSmM5eRA3N/yKo=
-X-Gm-Gg: ASbGncsOjTiAgL1w8BWu+8DbiFKg1rKIMVUsdIrrmnyrAUMrz/AqVh2LkGsZ3lVK8Qc
-	QgMjIV8QhHODdag2ba35sIAaClqJpB5PxlsaeeV6/bXmAPxGgM/Z+CT2/QNl+Pt2P8QYLIGxoDM
-	nerB9uOkyuz9lRY7G0nZc1gJ6u2hpIAfKGlyw9pnNEBb8r3AyzncDvcjYbVmTWqPv1QNpgaxAf0
-	c5QMRo=
-X-Google-Smtp-Source: AGHT+IFGpEW1mdQOV07ps+z7zGHj/SHi0zMpi1/Owyf6XyhxVieE95N5nioKlkCZb5ZNc1b+Clyf7hTMNXm8rXNutzI=
-X-Received: by 2002:a05:6808:4f54:b0:41b:51c4:3db0 with SMTP id
- 5614622812f47-41cee274b50mr15015805b6e.1.1753061938265; Sun, 20 Jul 2025
- 18:38:58 -0700 (PDT)
+	s=arc-20240116; t=1753064333; c=relaxed/simple;
+	bh=X0I06x4aQVy03H2Q+eSR47savsMbLrp9kZFapn6lQhQ=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=A8iyLy+ej4K1pamVExVZlNp2pDMClE9Ei54RJUBCpIzTt8LkrP3lmao/v/ZRD06Xsfx76F2BE8LQD9FrC+IYxe+HanVp2O+A+7sfYX2/Z7A/KPIHUxeD0iULBlubCgGWD/SpNzR/0H6hiBewUnbfvtY+NVj5w0gUC9UcNyQGByY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-669ff7000002311f-22-687da385c1a5
+From: Byungchul Park <byungchul@sk.com>
+To: willy@infradead.org,
+	netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	kernel_team@skhynix.com,
+	almasrymina@google.com,
+	ilias.apalodimas@linaro.org,
+	harry.yoo@oracle.com,
+	akpm@linux-foundation.org,
+	andrew+netdev@lunn.ch,
+	asml.silence@gmail.com,
+	toke@redhat.com,
+	david@redhat.com,
+	Liam.Howlett@oracle.com,
+	vbabka@suse.cz,
+	rppt@kernel.org,
+	surenb@google.com,
+	mhocko@suse.com,
+	linux-rdma@vger.kernel.org,
+	bpf@vger.kernel.org,
+	vishal.moola@gmail.com,
+	hannes@cmpxchg.org,
+	ziy@nvidia.com,
+	jackmanb@google.com,
+	wei.fang@nxp.com,
+	shenwei.wang@nxp.com,
+	xiaoning.wang@nxp.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	anthony.l.nguyen@intel.com,
+	przemyslaw.kitszel@intel.com,
+	sgoutham@marvell.com,
+	gakula@marvell.com,
+	sbhatta@marvell.com,
+	hkelam@marvell.com,
+	bbhushan2@marvell.com,
+	tariqt@nvidia.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	sdf@fomichev.me,
+	saeedm@nvidia.com,
+	leon@kernel.org,
+	mbloch@nvidia.com,
+	danishanwar@ti.com,
+	rogerq@kernel.org,
+	nbd@nbd.name,
+	lorenzo@kernel.org,
+	ryder.lee@mediatek.com,
+	shayne.chen@mediatek.com,
+	sean.wang@mediatek.com,
+	matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com,
+	aleksander.lobakin@intel.com,
+	horms@kernel.org,
+	m-malladi@ti.com,
+	krzysztof.kozlowski@linaro.org,
+	matthias.schiffer@ew.tq-group.com,
+	robh@kernel.org,
+	imx@lists.linux.dev,
+	intel-wired-lan@lists.osuosl.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-wireless@vger.kernel.org,
+	linux-mediatek@lists.infradead.org
+Subject: [PATCH net-next v12 00/12] Split netmem from struct page
+Date: Mon, 21 Jul 2025 11:18:23 +0900
+Message-Id: <20250721021835.63939-1-byungchul@sk.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAAzWSfUxTZxSHfe97P0ql5toZveqMSTM1MZEPP+JxIUYNWV5dXKb8tWmijdzY
+	blBJEQQjsdMqAUdlc5vAykQLSCkKaYVWVrp5QUHcEFGwagWFzAArfiENpUDXbvO/J/nlnOec
+	5CfDSolZItPqDot6nTpNxcpp+VjspTWnLXmahPPeeDDX17Fwb/wiA7bJHLj8zMVAj1WAX7sn
+	KTDXNiF4F3zCgb3Ah2G8rZ0Fy8UAhmBDEQ3mu0YaJuqnMPx1a5CDDmmGBpt9JwxUv6DBne/E
+	0DqxAgbPdrBQZAxhKO0/xUL4cYiBluBLDk64aiho+buRg+4mEwM/TFVhcBqeRVxDfQzcbzaz
+	cP/kPQT9dWEGXkgRob/Gx4HJVoZA+s3KwgnjOvA3vuPg9Y9tGAZMW2C2JBtuVSyEwB0/gidV
+	vRSE3S4OuvqvMtBW76TgwfMghsC35SwUjp1F0FvaTMEf5Q0MVN55QEXuSIG+8DQF53oqWBgy
+	DiDoaR2k4edvTAjqPV4G3rgjL4cmzeyWbaTV/woT19NKRK5ZH1FkuHiWIl5PJ0Wulz3lSIU9
+	izhqVhOLe4Qihd4eTOy1BSyxv/2eI74+N0s6SkI0cVQeJ8OOUvT5si/lSalimjZb1Mdv3i/X
+	TDX5uAzPppzuMyc5AypdU4hiZAK/XqgaHWLe80/W2/8yy68SvN4gjvICPlEYH2ynC5Fchvk/
+	Y4UWRwkVDT7gtwqucIiLMs2vEILO0yjKCn6D8DJ4nftv6XLB1vA7jg4LfH6McMN283/bYuFG
+	jZcuRnMr0JxapNTqstPV2rT1cZpcnTYn7sChdDuKNKs6b3qPC73tTpEQL0OqWEUGnadRMurs
+	zNx0CQkyrFqgIO1HNUpFqjr3qKg/tE+flSZmSmipjFYtUqwNHElV8gfVh8WvRTFD1L9PKVnM
+	EgNKXN67ccLwcWBmkWt2emRvfrnDsjfZOW/OrjflLZZPvmoeS3k0ok/qNHV6ZvqPNzWycmne
+	w92u5O+My4bLejsWOxOokmRH4/YyJqvO/cWuoh1XinfO3z666vynO157PjPsj72gjMPWyaqV
+	r851+T/czP3S5UvSbeuTCuriPoo5NhSYq6IzNerE1Vifqf4H/jYm1FUDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAAzWSe0hTcRzF+913w8FlSd2MjEZSRGbR69uDHvSHP4Kixx9BBbnq1sbUZFtT
+	A0ndKrJcT0NNaeJzTprMcquW1mZpb91KVpraouhh9tCkq9XaiP77HA6cc/44HKm4TMdxmnSD
+	qEtXpSoZGSXbtNKUeLQyR72gr3oOlDkaGOgarqDB/jMLagfcNPhtAtzs/ElAWX0zghGphwXn
+	iV4ShtvaGaisGCVBaiykoOypmYIfjjES3t4LsdDh/U2B3bkR+mveUeA57iLB9yMBQqc7GCg0
+	j5NQ0neUgfDLcRpuSUMs5LvrCPCV34/IT9dY6Gy20HBhrJoEV+5ApPBNNw2BG2UMBExdCPoa
+	wjS880ZaB+t6WbDYSxF4W20M5JsXweC1ERa+FrWR0G9ZC3+KjXDPOhlGHw4i6Kl+TkDY42bh
+	Sd8VGtocLgKevZZIGD1VzkDB59MInpfcIOBReSMNVQ+fEZEd26A7/IuA834rA2/M/Qj8vhAF
+	l/IsCBwtQRq+eczU2vXYN/iFxO5XVQhftb0g8PszfwgcbHlA4Oulr1hsdR7CTXVzcaXnA4EL
+	gn4SO+tPMNj5/RyLe7s9DO4oHqdwU9UR/L6pBG2O3yFbtU9M1RhFXdLqFJl6rLmXzWhZntV5
+	0sTmopLEAjSRE/jFwkXbfTrKDD9bCAYlMsqx/EJhONROFSAZR/KPY4RbTcVE1JjErxPc4XE2
+	yhSfIEiuYyjKcn6JMCRdZ/+FzhDsjbfJM4izogn1KFaTbkxTaVKXzNdr1dnpmqz5ew+mOVHk
+	NjU5v8660Ugg2Yt4Dilj5BlUjlpBq4z67DQvEjhSGSvH7YfVCvk+VfZhUXdwt+5Qqqj3omkc
+	pZwi37BdTFHwB1QGUSuKGaLuv0twE+NyUcXdXY9nDRmC1EtlZkqAdUjihKUfdmoL7x5wKeJD
+	cZqpeIuta3elI+nsaG2pPSnxqad0Ums42fugbY0jRbNV2p8HA/FHrOE7N9O08/JbJsfUZvc7
+	Z4YCyaZlrUv9088Nr9qT99mwYoXBkmksuvNdW9XlnvMxK+9rw8mYuNc+0yklpVerFs4ldXrV
+	XyhXj/QyAwAA
+X-CFilter-Loop: Reflected
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250709055029.723243-1-duanchenghao@kylinos.cn>
- <20250709055029.723243-5-duanchenghao@kylinos.cn> <CAEyhmHS__fqHS8Bpg7+4apO7OuXG1sP3miCcAMT+Y3uU0+_xjg@mail.gmail.com>
- <20250717092746.GA993901@chenghao-pc> <CAEyhmHTpJ0OKbW1QEFV+XMxCC9kL2eSwKMkk7=YyLprjNxc8iA@mail.gmail.com>
- <20250718021658.GA203872@chenghao-pc>
-In-Reply-To: <20250718021658.GA203872@chenghao-pc>
-From: Hengqi Chen <hengqi.chen@gmail.com>
-Date: Mon, 21 Jul 2025 09:38:47 +0800
-X-Gm-Features: Ac12FXzElR97SWvvE_bw_O8oDY9xd9oLIQXI1mxXQHZXvgj_GlG9MSrK1vSrj_k
-Message-ID: <CAEyhmHRL0FFwSqyir9DcKm24_k1idX02CtwFStwBL-Fxc2ukMQ@mail.gmail.com>
-Subject: Re: [PATCH v3 4/5] LoongArch: BPF: Add bpf_arch_xxxxx support for Loongarch
-To: Chenghao Duan <duanchenghao@kylinos.cn>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	yangtiezhu@loongson.cn, chenhuacai@kernel.org, martin.lau@linux.dev, 
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	haoluo@google.com, jolsa@kernel.org, kernel@xen0n.name, 
-	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, bpf@vger.kernel.org, 
-	guodongtai@kylinos.cn, youling.tang@linux.dev, jianghaoran@kylinos.cn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 18, 2025 at 10:17=E2=80=AFAM Chenghao Duan <duanchenghao@kylino=
-s.cn> wrote:
->
-> On Thu, Jul 17, 2025 at 06:12:55PM +0800, Hengqi Chen wrote:
-> > On Thu, Jul 17, 2025 at 5:27=E2=80=AFPM Chenghao Duan <duanchenghao@kyl=
-inos.cn> wrote:
-> > >
-> > > On Wed, Jul 16, 2025 at 08:21:59PM +0800, Hengqi Chen wrote:
-> > > > On Wed, Jul 9, 2025 at 1:50=E2=80=AFPM Chenghao Duan <duanchenghao@=
-kylinos.cn> wrote:
-> > > > >
-> > > > > Implement the functions of bpf_arch_text_poke, bpf_arch_text_copy=
-, and
-> > > > > bpf_arch_text_invalidate on the LoongArch architecture.
-> > > > >
-> > > > > On LoongArch, since symbol addresses in the direct mapping
-> > > > > region cannot be reached via relative jump instructions from the =
-paged
-> > > > > mapping region, we use the move_imm+jirl instruction pair as abso=
-lute
-> > > > > jump instructions. These require 2-5 instructions, so we reserve =
-5 NOP
-> > > > > instructions in the program as placeholders for function jumps.
-> > > > >
-> > > > > Co-developed-by: George Guo <guodongtai@kylinos.cn>
-> > > > > Signed-off-by: George Guo <guodongtai@kylinos.cn>
-> > > > > Signed-off-by: Chenghao Duan <duanchenghao@kylinos.cn>
-> > > > > ---
-> > > > >  arch/loongarch/include/asm/inst.h |  1 +
-> > > > >  arch/loongarch/kernel/inst.c      | 32 +++++++++++
-> > > > >  arch/loongarch/net/bpf_jit.c      | 90 +++++++++++++++++++++++++=
-++++++
-> > > > >  3 files changed, 123 insertions(+)
-> > > > >
-> > > > > diff --git a/arch/loongarch/include/asm/inst.h b/arch/loongarch/i=
-nclude/asm/inst.h
-> > > > > index 2ae96a35d..88bb73e46 100644
-> > > > > --- a/arch/loongarch/include/asm/inst.h
-> > > > > +++ b/arch/loongarch/include/asm/inst.h
-> > > > > @@ -497,6 +497,7 @@ void arch_simulate_insn(union loongarch_instr=
-uction insn, struct pt_regs *regs);
-> > > > >  int larch_insn_read(void *addr, u32 *insnp);
-> > > > >  int larch_insn_write(void *addr, u32 insn);
-> > > > >  int larch_insn_patch_text(void *addr, u32 insn);
-> > > > > +int larch_insn_text_copy(void *dst, void *src, size_t len);
-> > > > >
-> > > > >  u32 larch_insn_gen_nop(void);
-> > > > >  u32 larch_insn_gen_b(unsigned long pc, unsigned long dest);
-> > > > > diff --git a/arch/loongarch/kernel/inst.c b/arch/loongarch/kernel=
-/inst.c
-> > > > > index 674e3b322..8d6594968 100644
-> > > > > --- a/arch/loongarch/kernel/inst.c
-> > > > > +++ b/arch/loongarch/kernel/inst.c
-> > > > > @@ -4,6 +4,7 @@
-> > > > >   */
-> > > > >  #include <linux/sizes.h>
-> > > > >  #include <linux/uaccess.h>
-> > > > > +#include <linux/set_memory.h>
-> > > > >
-> > > > >  #include <asm/cacheflush.h>
-> > > > >  #include <asm/inst.h>
-> > > > > @@ -218,6 +219,37 @@ int larch_insn_patch_text(void *addr, u32 in=
-sn)
-> > > > >         return ret;
-> > > > >  }
-> > > > >
-> > > > > +int larch_insn_text_copy(void *dst, void *src, size_t len)
-> > > > > +{
-> > > > > +       unsigned long flags;
-> > > > > +       size_t wlen =3D 0;
-> > > > > +       size_t size;
-> > > > > +       void *ptr;
-> > > > > +       int ret =3D 0;
-> > > > > +
-> > > > > +       set_memory_rw((unsigned long)dst, round_up(len, PAGE_SIZE=
-) / PAGE_SIZE);
-> > > > > +       raw_spin_lock_irqsave(&patch_lock, flags);
-> > > > > +       while (wlen < len) {
-> > > > > +               ptr =3D dst + wlen;
-> > > > > +               size =3D min_t(size_t, PAGE_SIZE - offset_in_page=
-(ptr),
-> > > > > +                            len - wlen);
-> > > > > +
-> > > > > +               ret =3D copy_to_kernel_nofault(ptr, src + wlen, s=
-ize);
-> > > > > +               if (ret) {
-> > > > > +                       pr_err("%s: operation failed\n", __func__=
-);
-> > > > > +                       break;
-> > > > > +               }
-> > > > > +               wlen +=3D size;
-> > > > > +       }
-> > > >
-> > > > Again, why do you do copy_to_kernel_nofault() in a loop ?
-> > >
-> > > The while loop processes all sizes. I referred to how ARM64 and
-> > > RISC-V64 handle this using loops as well.
-> >
-> > Any pointers ?
->
-> I didn't understand what you meant.
->
+Hi all,
 
-It's your responsibility to explain why we need a loop here, not mine.
-I checked every callsite of copy_to_kernel_nofault(), no one uses a loop.
+The MM subsystem is trying to reduce struct page to a single pointer.
+See the following link for your information:
 
-> >
-> > >
-> > > > This larch_insn_text_copy() can be part of the first patch like
-> > > > larch_insn_gen_{beq,bne}. WDYT ?
-> > >
-> > > From my perspective, it is acceptable to include both
-> > > larch_insn_text_copy and larch_insn_gen_{beq,bne} in the same patch,
-> > > or place them in the bpf_arch_xxxx patch. larch_insn_text_copy is
-> > > solely used for BPF; the application scope of larch_insn_gen_{beq,bne=
-}
-> > > is not limited to BPF.
-> > >
-> >
-> > The implementation of larch_insn_text_copy() seems generic.
->
-> The use of larch_insn_text_copy() requires page_size alignment.
-> Currently, only the size of the trampoline is page-aligned.
->
+   https://kernelnewbies.org/MatthewWilcox/Memdescs/Path
 
-Then clearly document it.
+The first step towards that is splitting struct page by its individual
+users, as has already been done with folio and slab.  This patchset does
+that for page pool.
 
-> >
-> > > >
-> > > > > +       raw_spin_unlock_irqrestore(&patch_lock, flags);
-> > > > > +       set_memory_rox((unsigned long)dst, round_up(len, PAGE_SIZ=
-E) / PAGE_SIZE);
-> > > > > +
-> > > > > +       if (!ret)
-> > > > > +               flush_icache_range((unsigned long)dst, (unsigned =
-long)dst + len);
-> > > > > +
-> > > > > +       return ret;
-> > > > > +}
-> > > > > +
-> > > > >  u32 larch_insn_gen_nop(void)
-> > > > >  {
-> > > > >         return INSN_NOP;
-> > > > > diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bp=
-f_jit.c
-> > > > > index 7032f11d3..9cb01f0b0 100644
-> > > > > --- a/arch/loongarch/net/bpf_jit.c
-> > > > > +++ b/arch/loongarch/net/bpf_jit.c
-> > > > > @@ -4,6 +4,7 @@
-> > > > >   *
-> > > > >   * Copyright (C) 2022 Loongson Technology Corporation Limited
-> > > > >   */
-> > > > > +#include <linux/memory.h>
-> > > > >  #include "bpf_jit.h"
-> > > > >
-> > > > >  #define REG_TCC                LOONGARCH_GPR_A6
-> > > > > @@ -1367,3 +1368,92 @@ bool bpf_jit_supports_subprog_tailcalls(vo=
-id)
-> > > > >  {
-> > > > >         return true;
-> > > > >  }
-> > > > > +
-> > > > > +static int emit_jump_and_link(struct jit_ctx *ctx, u8 rd, u64 ip=
-, u64 target)
-> > > > > +{
-> > > > > +       s64 offset =3D (s64)(target - ip);
-> > > > > +
-> > > > > +       if (offset && (offset >=3D -SZ_128M && offset < SZ_128M))=
- {
-> > > > > +               emit_insn(ctx, bl, offset >> 2);
-> > > > > +       } else {
-> > > > > +               move_imm(ctx, LOONGARCH_GPR_T1, target, false);
-> > > > > +               emit_insn(ctx, jirl, rd, LOONGARCH_GPR_T1, 0);
-> > > > > +       }
-> > > > > +
-> > > > > +       return 0;
-> > > > > +}
-> > > > > +
-> > > > > +static int gen_jump_or_nops(void *target, void *ip, u32 *insns, =
-bool is_call)
-> > > > > +{
-> > > > > +       struct jit_ctx ctx;
-> > > > > +
-> > > > > +       ctx.idx =3D 0;
-> > > > > +       ctx.image =3D (union loongarch_instruction *)insns;
-> > > > > +
-> > > > > +       if (!target) {
-> > > > > +               emit_insn((&ctx), nop);
-> > > > > +               emit_insn((&ctx), nop);
-> > > > > +               return 0;
-> > > > > +       }
-> > > > > +
-> > > > > +       return emit_jump_and_link(&ctx, is_call ? LOONGARCH_GPR_T=
-0 : LOONGARCH_GPR_ZERO,
-> > > > > +                                 (unsigned long)ip, (unsigned lo=
-ng)target);
-> > > > > +}
-> > > > > +
-> > > > > +int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_ty=
-pe,
-> > > > > +                      void *old_addr, void *new_addr)
-> > > > > +{
-> > > > > +       u32 old_insns[5] =3D {[0 ... 4] =3D INSN_NOP};
-> > > > > +       u32 new_insns[5] =3D {[0 ... 4] =3D INSN_NOP};
-> > > > > +       bool is_call =3D poke_type =3D=3D BPF_MOD_CALL;
-> > > > > +       int ret;
-> > > > > +
-> > > > > +       if (!is_kernel_text((unsigned long)ip) &&
-> > > > > +               !is_bpf_text_address((unsigned long)ip))
-> > > > > +               return -ENOTSUPP;
-> > > > > +
-> > > > > +       ret =3D gen_jump_or_nops(old_addr, ip, old_insns, is_call=
-);
-> > > > > +       if (ret)
-> > > > > +               return ret;
-> > > > > +
-> > > > > +       if (memcmp(ip, old_insns, 5 * 4))
-> > > > > +               return -EFAULT;
-> > > > > +
-> > > > > +       ret =3D gen_jump_or_nops(new_addr, ip, new_insns, is_call=
-);
-> > > > > +       if (ret)
-> > > > > +               return ret;
-> > > > > +
-> > > > > +       mutex_lock(&text_mutex);
-> > > > > +       if (memcmp(ip, new_insns, 5 * 4))
-> > > > > +               ret =3D larch_insn_text_copy(ip, new_insns, 5 * 4=
-);
-> > > > > +       mutex_unlock(&text_mutex);
-> > > > > +       return ret;
-> > > > > +}
-> > > > > +
-> > > > > +int bpf_arch_text_invalidate(void *dst, size_t len)
-> > > > > +{
-> > > > > +       int i;
-> > > > > +       int ret =3D 0;
-> > > > > +       u32 *inst;
-> > > > > +
-> > > > > +       inst =3D kvmalloc(len, GFP_KERNEL);
-> > > > > +       if (!inst)
-> > > > > +               return -ENOMEM;
-> > > > > +
-> > > > > +       for (i =3D 0; i < (len/sizeof(u32)); i++)
-> > > > > +               inst[i] =3D INSN_BREAK;
-> > > > > +
-> > > > > +       if (larch_insn_text_copy(dst, inst, len))
-> > > > > +               ret =3D -EINVAL;
-> > > > > +
-> > > > > +       kvfree(inst);
-> > > > > +       return ret;
-> > > > > +}
-> > > > > +
-> > > > > +void *bpf_arch_text_copy(void *dst, void *src, size_t len)
-> > > > > +{
-> > > > > +       if (larch_insn_text_copy(dst, src, len))
-> > > > > +               return ERR_PTR(-EINVAL);
-> > > > > +
-> > > > > +       return dst;
-> > > > > +}
-> > > > > --
-> > > > > 2.43.0
-> > > > >
+Matthew Wilcox tried and stopped the same work, you can see in:
+
+   https://lore.kernel.org/linux-mm/20230111042214.907030-1-willy@infradead.org/
+
+I focused on removing the page pool members in struct page this time,
+not moving the allocation code of page pool from net to mm.  It can be
+done later if needed.
+
+The final patch that removes the page pool fields will be posted once
+all the conversions are completed.
+
+	Byungchul
+---
+Changes from v11:
+	1. Rebase on net-next/main as of Jul 21.
+	2. Change page_pool_page_is_pp() to check for const type of
+	   page.  For now that it's called along with every
+	   pp_page_to_nmdesc() call as Pavel suggested,
+	   page_pool_page_is_pp() should also cover const type of page.
+
+Changes from v10:
+	1. Introduce __netmem_to_nmdesc() and use it in
+	   __netmem_get_pp(). (feedbacked by Mina)
+	2. Fix a bug that fails on casting 'const page -> const
+	   netmem_desc', by using macros and _Generic. (feedbacked by
+	   test robot)
+	3. Add comment on pp_page_to_nmdesc() to ask for more attention
+	   before using the helper. (feedbacked by Mina)
+
+Changes from v9:
+	1. Remove the patch 'page_pool: access ->pp_magic through
+	   netmem_desc in page_pool_page_is_pp()' and decide to wait for
+	   Pavel's work of PageNetpp() to identify page type for page
+	   pool, that doesn't need to access ->pp_magic.
+	2. Rename page_to_nmdesc() to pp_page_to_nmdesc() and add
+	   DEBUG_NET_WARN_ON_ONCE(!page_pool_page_is_pp(page)) in it,
+	   just in case. (feedbacked by Pavel)
+	3. Apply just simple casting from page to netmem_desc for
+	   accessing ->pp and ->pp_ref_count, instead of full converting
+	   page to netmem_ref for network drivers e.g. mlx4, netdevsim,
+	   and mt76.
+	4. Expand the support for drivers to access ->pp and
+	   ->pp_ref_count to fec, octeontx2-pf, iavf, idpf, mlx5, ti,
+	   and xdp.
+	5. Squash each helper with its first user. (feedbacked by Mina)
+
+Changes from v8:
+	1. Rebase on net-next/main as of Jul 10.
+	2. Exclude non-controversial patches that have already been
+	   merged to net-next.
+	3. Re-add the patches that focus on removing accessing the page
+	   pool fields in struct page.
+	4. Add utility APIs e.g. casting, to use struct netmem_desc as
+	   descriptor, to support __netmem_get_pp() that has started to
+	   be used again e.g. by libeth.
+
+Changes from v7 (no actual updates):
+	1. Exclude "netmem: introduce struct netmem_desc mirroring
+	   struct page" that might be controversial.
+	2. Exclude "netmem: introduce a netmem API,
+	   virt_to_head_netmem()" since there are no users.
+
+Changes from v6 (no actual updates):
+	1. Rebase on net-next/main as of Jun 25.
+	2. Supplement a comment describing struct net_iov.
+	3. Exclude a controversial patch, "page_pool: access ->pp_magic
+	   through struct netmem_desc in page_pool_page_is_pp()".
+	4. Exclude "netmem: remove __netmem_get_pp()" since the API
+	   started to be used again by libeth.
+
+Changes from v5 (no actual updates):
+	1. Rebase on net-next/main as of Jun 20.
+	2. Add given 'Reviewed-by's and 'Acked-by's, thanks to all.
+	3. Add missing cc's.
+
+Changes from v4:
+	1. Add given 'Reviewed-by's, thanks to all.
+	2. Exclude potentially controversial patches.
+
+Changes from v3:
+	1. Relocates ->owner and ->type of net_iov out of netmem_desc
+	   and make them be net_iov specific.
+	2. Remove __force when casting struct page to struct netmem_desc.
+
+Changes from v2:
+	1. Introduce a netmem API, virt_to_head_netmem(), and use it
+	   when it's needed.
+	2. Introduce struct netmem_desc as a new struct and union'ed
+	   with the existing fields in struct net_iov.
+	3. Make page_pool_page_is_pp() access ->pp_magic through struct
+	   netmem_desc instead of struct page.
+	4. Move netmem alloc APIs from include/net/netmem.h to
+	   net/core/netmem_priv.h.
+	5. Apply trivial feedbacks, thanks to Mina, Pavel, and Toke.
+	6. Add given 'Reviewed-by's, thanks to Mina.
+
+Changes from v1:
+	1. Rebase on net-next's main as of May 26.
+	2. Check checkpatch.pl, feedbacked by SJ Park.
+	3. Add converting of page to netmem in mt76.
+	4. Revert 'mlx5: use netmem descriptor and APIs for page pool'
+	   since it's on-going by Tariq Toukan.  I will wait for his
+	   work to be done.
+	5. Revert 'page_pool: use netmem APIs to access page->pp_magic
+	   in page_pool_page_is_pp()' since we need more discussion.
+	6. Revert 'mm, netmem: remove the page pool members in struct
+	   page' since there are some prerequisite works to remove the
+	   page pool fields from struct page.  I can submit this patch
+	   separatedly later.
+	7. Cancel relocating a page pool member in struct page.
+	8. Modify static assert for offests and size of struct
+	   netmem_desc.
+
+Changes from rfc:
+	1. Rebase on net-next's main branch.
+	   https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/
+	2. Fix a build error reported by kernel test robot.
+	   https://lore.kernel.org/all/202505100932.uzAMBW1y-lkp@intel.com/
+	3. Add given 'Reviewed-by's, thanks to Mina and Ilias.
+	4. Do static_assert() on the size of struct netmem_desc instead
+	   of placing place-holder in struct page, feedbacked by
+	   Matthew.
+	5. Do struct_group_tagged(netmem_desc) on struct net_iov instead
+	   of wholly renaming it to strcut netmem_desc, feedbacked by
+	   Mina and Pavel.
+
+Byungchul Park (12):
+  netmem: introduce struct netmem_desc mirroring struct page
+  netmem: use netmem_desc instead of page to access ->pp in
+    __netmem_get_pp()
+  netmem, mlx4: access ->pp_ref_count through netmem_desc instead of
+    page
+  netdevsim: access ->pp through netmem_desc instead of page
+  mt76: access ->pp through netmem_desc instead of page
+  net: fec: access ->pp through netmem_desc instead of page
+  octeontx2-pf: access ->pp through netmem_desc instead of page
+  iavf: access ->pp through netmem_desc instead of page
+  idpf: access ->pp through netmem_desc instead of page
+  mlx5: access ->pp through netmem_desc instead of page
+  net: ti: icssg-prueth: access ->pp through netmem_desc instead of page
+  libeth: xdp: access ->pp through netmem_desc instead of page
+
+ drivers/net/ethernet/freescale/fec_main.c     |  10 +-
+ drivers/net/ethernet/intel/iavf/iavf_txrx.c   |   2 +-
+ drivers/net/ethernet/intel/idpf/idpf_txrx.c   |   8 +-
+ .../marvell/octeontx2/nic/otx2_txrx.c         |   2 +-
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |   4 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |   3 +-
+ .../net/ethernet/ti/icssg/icssg_prueth_sr1.c  |   4 +-
+ drivers/net/netdevsim/netdev.c                |   6 +-
+ drivers/net/wireless/mediatek/mt76/mt76.h     |   3 +-
+ include/linux/mm.h                            |   4 +-
+ include/net/libeth/xdp.h                      |   2 +-
+ include/net/netmem.h                          | 153 +++++++++++++++---
+ 12 files changed, 161 insertions(+), 40 deletions(-)
+
+
+base-commit: 4701ee5044fb3992f1c910630a9673c2dc600ce5
+-- 
+2.17.1
+
 
