@@ -1,92 +1,153 @@
-Return-Path: <bpf+bounces-63920-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63921-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B25FB0C66F
-	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 16:33:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCD24B0C673
+	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 16:34:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 730A21AA691D
-	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 14:34:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0580817947F
+	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 14:34:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4087F1DF754;
-	Mon, 21 Jul 2025 14:33:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 400781E492D;
+	Mon, 21 Jul 2025 14:34:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NA3NF4Sw"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="f+uNMXDC"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB0C7189BB0;
-	Mon, 21 Jul 2025 14:33:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46F941DF990
+	for <bpf@vger.kernel.org>; Mon, 21 Jul 2025 14:34:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753108431; cv=none; b=t6ax17uwQBB0b9H7oS2feLHYnBllAi6JEhW1j23nntFowjECKZXizbeeRCAZTRzLEoxOLc18qSB+OUHPBb7lOVA65kcDTDVeCp5LT3UgcCewzuh1qnAZqfvLuD2cd9zs2GkAq2sQ9BynnlwJkqcqMsX/vBbCDRDnKaGZkIr0LqY=
+	t=1753108483; cv=none; b=NHCmhdkwbct2VbPVofn2PuJ5Z4q8BfjnFtYKxPBQiyI6sQRXlywabsc9jJ1dlECNsC6EZf8tNoNXiNzqtB2rx5PVM2hBGMoTOmSkMZNuuTtLxTQIFPQLAZ7Y5qVQBGixNMm+c6I24TRN2nCwNgRvPSHXh9Ma0/lMpQWUKLB2djM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753108431; c=relaxed/simple;
-	bh=W3DsCBY2u1iSBpXEbgL+BBx51siqsbpsok2aDJTUk7I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QsoZ7aUoxqcaLA8TKS784eIrlrQowgsARh4yA73kBdkJ0XUOErP4r8ylgbkAzN6DlRDXf80/A/1ThN05POM4aH54ybfFiJOo7NKSrufT7354MREqIMV0L8NOXVZVzxWqOPLsm+ST1U7Vko3GuIOhXYRezBYeTORPmNwof2gxG6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NA3NF4Sw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CB5BC4CEED;
-	Mon, 21 Jul 2025 14:33:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753108431;
-	bh=W3DsCBY2u1iSBpXEbgL+BBx51siqsbpsok2aDJTUk7I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NA3NF4SwRguReA5PzVLGxM2kOQRnW6dl5eszhshHh05TjV/aXBdeKRfdRVIDfz517
-	 fYvSfJdrVvkqvumZMi2yWX7uZgupy1mbFZ9xGTdyJnulFVybRE4kGIQ1rVYzobRazE
-	 0nzcEEzZZko+3TLWwwi3366OsDH64fjsGVPXRQguBFYtlHEvtD8gSaTlalSv0T6hj5
-	 ETOaHncxlYb7sqYdGlLFPHaXjAaFU9r6G8k0hTU4XlY4yVsUu/vpH0lJEsR0nnG3Tu
-	 4i+bPrJatkkGWPbVqzCIvObFfsa3eSEDloykgduuHFHAZhhe1YkNlOmxh8mSx9X/St
-	 F3GzdYXn6sU+w==
-Date: Mon, 21 Jul 2025 15:33:46 +0100
-From: Will Deacon <will@kernel.org>
-To: Sami Tolvanen <samitolvanen@google.com>
-Cc: bpf@vger.kernel.org, Puranjay Mohan <puranjay@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Maxwell Bland <mbland@motorola.com>
-Subject: Re: [PATCH bpf-next v11 2/3] cfi: Move BPF CFI types and helpers to
- generic code
-Message-ID: <aH5PypjBVdzVxxlo@willie-the-truck>
-References: <20250718223345.1075521-5-samitolvanen@google.com>
- <20250718223345.1075521-7-samitolvanen@google.com>
+	s=arc-20240116; t=1753108483; c=relaxed/simple;
+	bh=E56olDj2MoY8eJpBRka+4Dj8y6CnK8s1XJDDsgAMXT8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=B3cBJAnYEsLFJf+MfaRf4QVmLGCWFnhZ1vCruNVn84C/PAn1lxuB7e87HYutHuV29QUZ7804sgZCUzenajq830IIsVJiz14NBWzD/4saEd4/kvAZtjuNpuxDPMUSsibewJ1quB2ZtGsoxQ7fZv7x4p19dkR5Wx2a/QdEp8b1lv0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=f+uNMXDC; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <9b2417fe-8b87-4fb6-9f68-2f7501b839ca@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1753108479;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8I04gcLkOlPoH/QpKo/168xzalvDclRKisftxEUbQrs=;
+	b=f+uNMXDComyunc/8W5qGJQ66vKlLXS2Xgh+ZhbKGd+yC18+YpoZoKFapfZ4MmWDgNrNY7e
+	x6AItxq+3kVbYiCQ00sz7Fa4x5soH9T2plCV/9TI82kf6/glFkpMKcKXtWmA7FhO8ftOD7
+	Ohb+T9a8MTtsARLx+SQMGnb5BDisoWk=
+Date: Mon, 21 Jul 2025 07:34:33 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250718223345.1075521-7-samitolvanen@google.com>
+Subject: Re: [PATCH] selftests/bpf: Add LPM trie microbenchmarks
+Content-Language: en-GB
+To: Matt Fleming <matt@readmodwrite.com>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>
+Cc: Shuah Khan <shuah@kernel.org>, kernel-team@cloudflare.com,
+ Jesper Dangaard Brouer <hawk@kernel.org>, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ Matt Fleming <mfleming@cloudflare.com>
+References: <20250718150554.48210-1-matt@readmodwrite.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20250718150554.48210-1-matt@readmodwrite.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Jul 18, 2025 at 10:33:48PM +0000, Sami Tolvanen wrote:
-> Instead of duplicating the same code for each architecture, move
-> the CFI type hash variables for BPF function types and related
-> helper functions to generic CFI code, and allow architectures to
-> override the function definitions if needed.
-> 
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+
+
+On 7/18/25 8:05 AM, Matt Fleming wrote:
+> From: Matt Fleming <mfleming@cloudflare.com>
+>
+> Add benchmarks for the standard set of operations: lookup, update,
+> delete. Also, include a benchmark for trie_free() which is known to have
+> terrible performance for maps with many entries.
+>
+> Benchmarks operate on tries without gaps in the key range, i.e. each
+> test begins with a trie with valid keys in the range [0, nr_entries).
+> This is intended to cause maximum branching when traversing the trie.
+>
+> All measurements are recorded inside the kernel to remove syscall
+> overhead.
+>
+> Most benchmarks run an XDP program to generate stats but free needs to
+> collect latencies using fentry/fexit on map_free_deferred() because it's
+> not possible to use fentry directly on lpm_trie.c since commit
+> c83508da5620 ("bpf: Avoid deadlock caused by nested kprobe and fentry
+> bpf programs") and there's no way to create/destroy a map from within an
+> XDP program.
+>
+> Here is example output from an AMD EPYC 9684X 96-Core machine for each
+> of the benchmarks using a trie with 10K entries and a 32-bit prefix
+> length, e.g.
+>
+>    $ ./bench lpm-trie-$op \
+>    	--prefix_len=32  \
+> 	--producers=1     \
+> 	--nr_entries=10000
+>
+>    lookup: throughput    7.423 ± 0.023 M ops/s (  7.423M ops/prod), latency  134.710 ns/op
+>    update: throughput    2.643 ± 0.015 M ops/s (  2.643M ops/prod), latency  378.310 ns/op
+>    delete: throughput    0.712 ± 0.008 M ops/s (  0.712M ops/prod), latency 1405.152 ns/op
+>      free: throughput    0.574 ± 0.003 K ops/s (  0.574K ops/prod), latency    1.743 ms/op
+>
+> Signed-off-by: Matt Fleming <mfleming@cloudflare.com>
 > ---
->  arch/riscv/include/asm/cfi.h  | 16 ------------
->  arch/riscv/kernel/cfi.c       | 24 ------------------
->  arch/x86/include/asm/cfi.h    | 10 ++------
->  arch/x86/kernel/alternative.c | 12 ---------
->  include/linux/cfi.h           | 47 +++++++++++++++++++++++++++++------
->  kernel/cfi.c                  | 15 +++++++++++
->  6 files changed, 56 insertions(+), 68 deletions(-)
+>   tools/testing/selftests/bpf/Makefile          |   2 +
+>   tools/testing/selftests/bpf/bench.c           |  10 +
+>   tools/testing/selftests/bpf/bench.h           |   1 +
+>   .../selftests/bpf/benchs/bench_lpm_trie_map.c | 345 ++++++++++++++++++
+>   .../selftests/bpf/progs/lpm_trie_bench.c      | 175 +++++++++
+>   .../selftests/bpf/progs/lpm_trie_map.c        |  19 +
+>   6 files changed, 552 insertions(+)
+>   create mode 100644 tools/testing/selftests/bpf/benchs/bench_lpm_trie_map.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/lpm_trie_bench.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/lpm_trie_map.c
+>
+[...]
 
-Thanks, Sami, I like the look of this now.
+> +
+> +static __always_inline double duration_ms(struct bench_res *res)
+> +{
+> +	if (!res->hits)
+> +		return 0.0;
+> +
+> +	return res->duration_ns / res->hits / NSEC_PER_MSEC;
+> +}
 
-If you can get the kbuild robot on board too, then I think we're good to
-go!
+The above function 'duration_ms' is not used.
 
-Will
+> +
+> +static void free_ops_report_progress(int iter, struct bench_res *res,
+> +				     long delta_ns)
+> +{
+> +	double hits_per_sec, hits_per_prod;
+> +	double rate_divisor = 1000.0;
+> +	char rate = 'K';
+> +
+> +	hits_per_sec = res->hits / (res->duration_ns / (double)NSEC_PER_SEC) /
+> +		       rate_divisor;
+> +	hits_per_prod = hits_per_sec / env.producer_cnt;
+> +
+> +	printf("Iter %3d (%7.3lfus): ", iter,
+> +	       (delta_ns - NSEC_PER_SEC) / 1000.0);
+> +	printf("hits %8.3lf%c/s (%7.3lf%c/prod)\n", hits_per_sec, rate,
+> +	       hits_per_prod, rate);
+> +}
+> +
+
+[...]
+
 
