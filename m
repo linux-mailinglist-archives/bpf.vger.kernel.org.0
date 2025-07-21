@@ -1,143 +1,111 @@
-Return-Path: <bpf+bounces-63889-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63890-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFD9DB0BF91
-	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 11:03:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10323B0BF99
+	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 11:05:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B57FF3BBF94
-	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 09:02:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81C7B189AD57
+	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 09:05:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 482BC288C05;
-	Mon, 21 Jul 2025 09:02:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83B84288C0F;
+	Mon, 21 Jul 2025 09:05:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="bVw9oMZQ";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="xvpNVwMt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FAC91D63E8;
-	Mon, 21 Jul 2025 09:02:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DA133C463;
+	Mon, 21 Jul 2025 09:05:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753088576; cv=none; b=dhwArgvP+OiHlH2gqWhgzCCECk5kCF+5unn3nHHQkO1V3m3a/M2o8nQnYFQKARMQq78M9QLSBTykja33/XsIfQMr7V7UFN3PCc8IhOpy3mle1jI9F4X1M/4EzbxvO3c4K1Vth3IPchUirnSFrSUFP055/Xzc9/DQgQ8Kr0269E4=
+	t=1753088708; cv=none; b=YbJKr23puFXxofPIOdtd7ymRP3/DnyIcGNF/gztuPH9DXWtnjLmHj/oC+P+119mPCEIRlAsjOlXaLOKPoDp9z+V89MhsjIRqVwI6X1QTO3stWBkA3OGXUEL89TlEtk9cujW8/pyXbJIYDAAG5Sctdh/NjmdV3RPblqWYKM8ov5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753088576; c=relaxed/simple;
-	bh=ZdThKZSm+1hzPQTXdTtWibDdW5Gde4dZ7oXUpmiIEl0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EA7YIOZy5VzqqmOEOl4KoD0oraighhnsn/V8rs2wXpkHLQcZB6wVneFv0ET7OYLa3r/cPEoUz4H/YiygppbATutr/f3NkY7vYoB1UR2AwNZAekCL4cm1Dkdg9eF/pm5sTmEc5+p5hPZHao5wrIohynAWsP7Av1zL5H9FPs6i7aM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
-Received: from [192.168.2.202] (p5dc55eaf.dip0.t-ipconnect.de [93.197.94.175])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pmenzel)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 9118D61E64844;
-	Mon, 21 Jul 2025 10:56:34 +0200 (CEST)
-Message-ID: <8c9e97e4-3590-49a8-940b-717deac0078d@molgen.mpg.de>
-Date: Mon, 21 Jul 2025 10:56:33 +0200
+	s=arc-20240116; t=1753088708; c=relaxed/simple;
+	bh=XUez0qzb1XxTxBFFSHpKERH/bWxLNcie0otjxRbGjk4=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=cbPs1ynhLp2p6arSo7P9OMXOd4xBRUSZCYt+Vz9jRDi8jL+7fH/F7tHZc1JrpCCJ7315olZZYFT6R13ClZcvg7HxA3GLAecH6/wZ8e++o7xZBsY5XYM20ti32JPtHDc5ml+kazK0kZS8Im9K4wXWg1nw2tnRIVtJURFIUQ+jWc0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=bVw9oMZQ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=xvpNVwMt; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1753088704;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=v7xwhbM4ewVSUaK6LjsBDrkhD8VT3UYS2YiOSlfKy+I=;
+	b=bVw9oMZQmFhBoQjLz3YVGtxCHj11YIzddmPltbORk7Bwpm74+KMIQJkjPRkbiWZa5l3TLF
+	9s7P+6nG08ykq1Aqq4Bv7JwfqQUyOU+VavFT34ClqVj3yUrrNBgCkFaH7GIzmx5Qs+w4Ns
+	pgqhACQxyOTGDXBPxdNtZHib+xDlqtFY0/h4DEs8Y7zY4riLftmd0M3UoybDFNrz5OAGxU
+	EfS2N0sNtoRIWtwsKI8LvmHYflKBA9scISGGANntftYFnLkL+ps99OdyjYg6bRO63tfTcq
+	SXIo6DdQD1jvJLNt2dICaE2sLMKeIiTHJyu6WZ4t8JCSVJnopeE1tu34MX+/aA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1753088704;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=v7xwhbM4ewVSUaK6LjsBDrkhD8VT3UYS2YiOSlfKy+I=;
+	b=xvpNVwMtspikSnKCOv6wCA7olKBjwF+Y/LZHah4hsCZWhEqmQlw4zavJ+BhCSmPIepfX4v
+	b4U7oG9/K81zVpAA==
+Subject: [PATCH bpf-next 0/2] umd: Remove usermode driver framework
+Date: Mon, 21 Jul 2025 11:04:40 +0200
+Message-Id: <20250721-remove-usermode-driver-v1-0-0d0083334382@linutronix.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Intel-wired-lan] [PATCH net-next 1/2] stmmac: xsk: fix underflow
- of budget in zerocopy mode
-To: Jason Xing <kerneljasonxing@gmail.com>
-Cc: anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com,
- andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, bjorn@kernel.org,
- magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
- jonathan.lemon@gmail.com, sdf@fomichev.me, ast@kernel.org,
- daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
- mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
- linux-stm32@st-md-mailman.stormreply.com, bpf@vger.kernel.org,
- intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
- Jason Xing <kernelxing@tencent.com>
-References: <20250721083343.16482-1-kerneljasonxing@gmail.com>
- <20250721083343.16482-2-kerneljasonxing@gmail.com>
-Content-Language: en-US
-From: Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <20250721083343.16482-2-kerneljasonxing@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAKgCfmgC/x3MQQqDMBBG4avIrDsQA0H0KuLCJn90FiYyaYMg3
+ r2hy7f43k0FKig0dTcpqhTJqUX/6sjva9rAElqTNdaZwfasOHIFf5s7cgAHlQrlFT7Cjs54N1L
+ DpyLK9R/P9D4jJ1wfWp7nB5S5wK5yAAAA
+X-Change-ID: 20250721-remove-usermode-driver-aecfe2950c59
+To: Alexander Viro <viro@zeniv.linux.org.uk>, 
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>, 
+ Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org, 
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1753088703; l=666;
+ i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
+ bh=XUez0qzb1XxTxBFFSHpKERH/bWxLNcie0otjxRbGjk4=;
+ b=phF9AoagASovhoGeUtXwmm3h3ZyDYoesRXck1e1Phmgkbe5DX/T46CKpQn8QgzP0n6s5yj9N5
+ yZQ8cd1Bm0UAO0alZZQfLZqNviGb0xqcSSC9sec+Vm7h73WJU2zj1rf
+X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
+ pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 
-Dear Jason,
+The code is unused, remove it.
 
+Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
+---
+Thomas Weißschuh (2):
+      bpf/preload: Don't select USERMODE_DRIVER
+      umd: Remove usermode driver framework
 
-Thank you for your patch.
+ include/linux/usermode_driver.h |  19 ----
+ kernel/Makefile                 |   1 -
+ kernel/bpf/preload/Kconfig      |   5 --
+ kernel/usermode_driver.c        | 191 ----------------------------------------
+ 4 files changed, 216 deletions(-)
+---
+base-commit: 19272b37aa4f83ca52bdf9c16d5d81bdd1354494
+change-id: 20250721-remove-usermode-driver-aecfe2950c59
 
-Am 21.07.25 um 10:33 schrieb Jason Xing:
-> From: Jason Xing <kernelxing@tencent.com>
-> 
-> The issue can happen when the budget number of descs are consumed. As
+Best regards,
+-- 
+Thomas Weißschuh <thomas.weissschuh@linutronix.de>
 
-Instead of “The issue”, I’d use “An underflow …”.
-
-> long as the budget is decreased to zero, it will again go into
-> while (budget-- > 0) statement and get decreased by one, so the
-> underflow issue can happen. It will lead to returning true whereas the
-> expected value should be false.
-
-What is “it”?
-
-> In this case where all the budget are used up, it means zc function
-
-*is* used?
-
-> should return false to let the poll run again because normally we
-> might have more data to process.
-
-Do you have a reproducer, you could add to the commit message?
-
-> Fixes: 132c32ee5bc0 ("net: stmmac: Add TX via XDP zero-copy socket")
-> Signed-off-by: Jason Xing <kernelxing@tencent.com>
-> ---
->   drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> index f350a6662880..ea5541f9e9a6 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> @@ -2596,7 +2596,7 @@ static bool stmmac_xdp_xmit_zc(struct stmmac_priv *priv, u32 queue, u32 budget)
->   
->   	budget = min(budget, stmmac_tx_avail(priv, queue));
->   
-> -	while (budget-- > 0) {
-> +	while (budget > 0) {
-
-So, if the while loop should not be entered with budget being 0, then 
-the line could  be changed to `while (--budget > 0) {`? But then it 
-wouldn’t be called for budget being 1.
-
-A for loop might be the better choice for a loop with budget as counting 
-variable?
-
->   		struct stmmac_metadata_request meta_req;
->   		struct xsk_tx_metadata *meta = NULL;
->   		dma_addr_t dma_addr;
-> @@ -2681,6 +2681,8 @@ static bool stmmac_xdp_xmit_zc(struct stmmac_priv *priv, u32 queue, u32 budget)
->   
->   		tx_q->cur_tx = STMMAC_GET_ENTRY(tx_q->cur_tx, priv->dma_conf.dma_tx_size);
->   		entry = tx_q->cur_tx;
-> +
-> +		budget--;
->   	}
->   	u64_stats_update_begin(&txq_stats->napi_syncp);
->   	u64_stats_add(&txq_stats->napi.tx_set_ic_bit, tx_set_ic_bit);
-
-Excuse my ignorance, but I do not yet see the problem that the while 
-loop is entered and buffer is set to 0. Is it later the return condition?
-
-     return !!budget && work_done;
-
-
-Kind regards,
-
-Paul
 
