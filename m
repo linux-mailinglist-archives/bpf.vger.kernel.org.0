@@ -1,105 +1,107 @@
-Return-Path: <bpf+bounces-63926-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63927-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2427CB0C7D4
-	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 17:40:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22C35B0C81D
+	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 17:52:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34F353B02EF
-	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 15:40:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 893D81C20365
+	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 15:53:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E05862DF3FD;
-	Mon, 21 Jul 2025 15:40:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEEE22E11CB;
+	Mon, 21 Jul 2025 15:51:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DgbipwdA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LqzH6sQ2"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CD9F1ADC90;
-	Mon, 21 Jul 2025 15:40:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFF772E0902;
+	Mon, 21 Jul 2025 15:51:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753112449; cv=none; b=YEYB+JDgpVHjUf17TH+LGBShIq/XX7Hpt47BVlTUw7IDq14dRVKhhSzJ3h848jxSvePhTApPIkInaw24f81A7+n3h+6DqIrUNeU2KFpDKCfQPhQVwAHHpldiNg7q1BBZ60k6uGY99djma1zbXc+//q7AQnl8CP+uOTI8hxjkgL0=
+	t=1753113097; cv=none; b=V1TNmaWBW+MdUWTkW0PFGl7pCrKcjy889ak1yaSjr/SV4jIw+K4wuE5735le7GMKUtMBr2MAhaJj0hEW0PQO5FeJ3NmJ87m2vX3jCm4DLdY5J4VGvAZwNdsURI0MzYWB7gxf4xYKfrGj/A08akfimum63Os8kZHPa4v+4XowVmM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753112449; c=relaxed/simple;
-	bh=DgSOmx6CYfdPt7+e2WdBwvaKwxEtjgphHOCiRnjXtZo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=h+GbIOmG/xJvQCRep8HLDNNOmwq3PM0Citp361a3zm7K9ruOM9qaMKQxt5n9fa/8BbXg9xp2LszU4lOy5pjejjpuPxapeU2sVuXsTa5Tw6Q2G9cE9WVfOoDZqe0yekRBL7ZjZcZ2AZbjES1filRjD9c0+8VYPta+t06a6kYtMh8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DgbipwdA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D713C4CEED;
-	Mon, 21 Jul 2025 15:40:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753112448;
-	bh=DgSOmx6CYfdPt7+e2WdBwvaKwxEtjgphHOCiRnjXtZo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=DgbipwdAAx2zGAN2XoiTG4uovy2DPLWpJcb64mQnfoxOeUK4DUxxArYiam1/bie/N
-	 OjFIbjr3d/gRfefLGE21r1h1FlwRCC5off8vGDRaNBcBjSmzzBckwVdxdYp3xVE3OF
-	 4n6pM+W2nhqvarobVMm76vv4KGBvCDbcBWWAKSiWSEnYh5tg5ibRsmoFIJZhWpJfip
-	 YgTkcM14e94Eg3U0sXLdADgBHbjY1UlazUOHP80+ahVb6ZDKfZBMqrLXT+HYZ+D/XR
-	 SBZrcVHoqVBqJ3JLoXNolzd3J3nfXhywFOfLJUYQSjSzR+7Qk8ddGJl5wMcEnVDruR
-	 as1CoggGZroCA==
-Date: Mon, 21 Jul 2025 08:40:46 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Nimrod Oren <noren@nvidia.com>
-Cc: Mohsin Bashir <mohsin.bashr@gmail.com>, netdev@vger.kernel.org,
- andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
- pabeni@redhat.com, shuah@kernel.org, horms@kernel.org, cratiu@nvidia.com,
- cjubran@nvidia.com, mbloch@nvidia.com, jdamato@fastly.com, gal@nvidia.com,
- sdf@fomichev.me, ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
- john.fastabend@gmail.com, nathan@kernel.org,
- nick.desaulniers+lkml@gmail.com, morbo@google.com, justinstitt@google.com,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
- tariqt@nvidia.com, thoiland@redhat.com
-Subject: Re: [PATCH net-next V6 2/5] selftests: drv-net: Test XDP_PASS/DROP
- support
-Message-ID: <20250721084046.5659971c@kernel.org>
-In-Reply-To: <ab65545f-c79c-492b-a699-39f7afa984ea@nvidia.com>
-References: <20250719083059.3209169-1-mohsin.bashr@gmail.com>
-	<20250719083059.3209169-3-mohsin.bashr@gmail.com>
-	<ab65545f-c79c-492b-a699-39f7afa984ea@nvidia.com>
+	s=arc-20240116; t=1753113097; c=relaxed/simple;
+	bh=5XMysMMXpehjqqR2u+P47tGjPv3TyoZWsI8PZ5C8ZUI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=W/CEJY0jnzdpJGOd5Xu7iFnFkwijMDv4hr4VsHQfOUvjQByZYP6vM9Wzbn9nCDc1nerYXFtH8KBNK+sp1iWQ43zFDTsBbr718pXUxjvZdw/uowvLyemFuugCMYfdsCnyQz+7f8hKzzDvW5E8O4BMRJHu2zevBt9Q6AdwgaheHPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LqzH6sQ2; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3a6cd1a6fecso4357337f8f.3;
+        Mon, 21 Jul 2025 08:51:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1753113094; x=1753717894; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5XMysMMXpehjqqR2u+P47tGjPv3TyoZWsI8PZ5C8ZUI=;
+        b=LqzH6sQ2OKozdN92/fL2hZbkaXql8qt44wonHGcA+SfEnQCDJqGgnY7Oo/VFCRkXtA
+         RP/bclD9HcYhQt11Rei2K6jw/z3uQRn/T88DA3FRBP0BAHtMbnUdyz319uNPWcC/xqod
+         UyIBFJ1w6ubnPYfh/1oW+mfdh4gu6Y0kkf/cBoRa+sBK/bb3u6o4Kdlv3d6qCuBMXLKM
+         El8DCxJVnoi6tZM02+L48c0nl2MFXzzrmTxZ9YktLcF2bCMyWDDE32THWlaooaROzCDp
+         Vxq147KnAc03SxJmUFaUukyOQ/p5egPkn/2xW87/x8Xb0I+AqtT/Cb0HeNs4os5Or1P2
+         3Wow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753113094; x=1753717894;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5XMysMMXpehjqqR2u+P47tGjPv3TyoZWsI8PZ5C8ZUI=;
+        b=LtthrEvI6Jl0eQHdDB0LlhRyur1wrErVD1Q/a8qkEbqnWaYzVaWdj9mfHyhUT2TesD
+         uKpYtQrYrfWZduWSr9HLZZYlSWu1yohzNGruAqOPiwJ46J25nG3CTBDMixKVyVm+QAXa
+         9Bogq5RONM6Y/eBKwVMtq0mFBmcY8Vc/geqrPwjgj6mIYIN64X43/THZzevc4vusoxlw
+         MvCdsLbnd9zAAuQmss7INsAh7+GFtmXgUFhP3G7r91VD8pXR3wfSHS0c7F8X2gGWSoYr
+         dnoUl/+EfxyKkyhzAqg3OEYXtcg0V7d2iqzm0JFDykbq719g6s1eWQum0eqTxKEUvlYv
+         YBjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUZPgSOwkqBBrxK7cT1fWan8G1wxcEU3uQVqNW4BS+9X2LSmd9Yuhj08S01GtYfX7Q0Vq1SVDspRFpGlngY@vger.kernel.org, AJvYcCUavz6s4dRXEM/HlWVXS4GlC9QfbDWNAXvCxw5cGMRAveHebYc4hXYp26V73IsW5oDlPR4=@vger.kernel.org, AJvYcCVZYD0HsPR0dmopw/WnF5eMSS2Dfbim6QG1ynck1gZ/kxWcs28DtnsijiRBfm/pTEJw/MNvB2eN63m109l4/g==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy6GpW+94P3lIDCMevoxY/ieR2cWZnq5gnSVZsqKh16al6zBP9U
+	Sei/Yyh0pcaTRcFjizdtJ4RR+IEGFdzxk8g+n9L+FzhBUFhZFCJTr8BghpCP58YEPxLvsmTiA7G
+	W+KzoWlUPithVXHoeM/QmIiAj3eE2uaM=
+X-Gm-Gg: ASbGnctvEhMfpnnmZ2/o/Tvwd6ztbSNgVeHVkOKPSO5G+Z8SfhDEDfQkGLONWVIHxUC
+	4toh0duv0bhbex+Vr/44pwhFTfgG9qjtLFQWUGLnXtCPdlkWG84B1m7BqFGhn7llZ4MgotGOnID
+	KM3vqrAXDJKdJcg67TAdiPIf2OYR/0r4DC5AbyBKIAUETySOF4KB8rdMNYAJ4Y0JRBtJp3/NDfj
+	peeX6/Xig==
+X-Google-Smtp-Source: AGHT+IHrHhq+dYpMaz3nCXiO4FUHfaZDPUxmqax+tKgZZloikFKERJtZ7/w6CC7wfkOD7JkR7v4iIZZBavPwHPC2fT4=
+X-Received: by 2002:a05:6000:43c8:b0:3b6:936:976c with SMTP id
+ ffacd0b85a97d-3b60dd4fademr14004586f8f.17.1753113093864; Mon, 21 Jul 2025
+ 08:51:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20250721-remove-usermode-driver-v1-0-0d0083334382@linutronix.de> <20250721-remove-usermode-driver-v1-2-0d0083334382@linutronix.de>
+In-Reply-To: <20250721-remove-usermode-driver-v1-2-0d0083334382@linutronix.de>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 21 Jul 2025 08:51:22 -0700
+X-Gm-Features: Ac12FXxaIv2U_gNudEqMNsu5lhlwi5shFVshXODMjX2h-Ud3NFFOOpUhlz28tK4
+Message-ID: <CAADnVQ+Mw=bG-HZ5KMMDWzr_JqcCwWNQNf-JRvRsTLZ6P7-tUw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] umd: Remove usermode driver framework
+To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, "Eric W. Biederman" <ebiederm@xmission.com>, Christoph Hellwig <hch@lst.de>, 
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 21 Jul 2025 14:43:15 +0300 Nimrod Oren wrote:
-> > +static struct udphdr *filter_udphdr(struct xdp_md *ctx, __u16 port)
-> > +{
-> > +	void *data_end = (void *)(long)ctx->data_end;
-> > +	void *data = (void *)(long)ctx->data;
-> > +	struct udphdr *udph = NULL;
-> > +	struct ethhdr *eth = data;
-> > +
-> > +	if (data + sizeof(*eth) > data_end)
-> > +		return NULL;
-> > +  
-> 
-> This check assumes that the packet headers reside in the linear part of
-> the xdp_buff. However, this assumption does not hold across all drivers.
-> For example, in mlx5, the linear part is empty when using multi-buffer
-> mode with striding rq configuration. This causes all multi-buffer test
-> cases to fail over mlx5.
-> 
-> To ensure correctness across all drivers, all direct accesses to packet
-> data should use these safer helper functions instead:
-> bpf_xdp_load_bytes() and bpf_xdp_store_bytes().
-> 
-> Related discussion and context can be found here:
-> https://github.com/xdp-project/xdp-tools/pull/409
+On Mon, Jul 21, 2025 at 2:05=E2=80=AFAM Thomas Wei=C3=9Fschuh
+<thomas.weissschuh@linutronix.de> wrote:
+>
+> The code is unused since commit 98e20e5e13d2 ("bpfilter: remove bpfilter"=
+),
+> remove it.
 
-That's a reasonable way to modify the test. But I'm not sure it's
-something that should be blocking merging the patches.
-Or for that matter whether it's Mohsin's responsibility to make the
-test cater to quirks of mlx5, which is not even part of NIPA testing -
-we have no way of knowing what passes for mlx5, what regresses it etc.
-
-Not related to this series, but I'd be curious what the perf hit is for
-having to load the headers.
+Correct, but we have plans to use it.
+Since it's not causing any problems we prefer to keep it
+to avoid reverting the removal later.
 
