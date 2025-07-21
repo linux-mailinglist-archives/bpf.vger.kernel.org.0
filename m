@@ -1,115 +1,161 @@
-Return-Path: <bpf+bounces-63965-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63966-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BAE4B0CD7D
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 01:02:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05BB6B0CD89
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 01:06:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 812636C35D8
-	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 23:01:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE1867A6AE2
+	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 23:04:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D01923D2B6;
-	Mon, 21 Jul 2025 23:01:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88812242D8F;
+	Mon, 21 Jul 2025 23:06:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LvlEQJAw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JXjVF5mz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD93E1AC88B
-	for <bpf@vger.kernel.org>; Mon, 21 Jul 2025 23:01:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94DC018D643;
+	Mon, 21 Jul 2025 23:06:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753138889; cv=none; b=krZhKfSyeuc/AClp7gGEfXThSGtc/5uEVP1F/nLs+lvNYv1/87IpqQ/4QekZ1BSwaD0eH4Z1CwI37GtyV0x3130d7x+7NsQB55imWXwEKapIMEqCNYg06vIFH4RDJe2MPArllk2yuYYUBmRALvsHHHc8NHNyep2+7blytFyVZpI=
+	t=1753139174; cv=none; b=AksJXZ3yHD28V44d7mBl9AFBp8dgpIFh82dtWE7iqxlewM3XrNkSdjIMTn6CA+G5kGBs3o3zQ6AY7OU1lNmCHHCNaw7TfLDHHfOPj0wH/NVYZRezOghFVm2sbNM5nLvPAVb9wpuj6Ih+DFiTOynJ8BYZhJBvp4kqezEcJtNrPdk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753138889; c=relaxed/simple;
-	bh=drFTvDndEoVe5muySRQK94rvwG5dqoRU+0nD5Ww2BCE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=LBM6C5bkeknV6hs4RUV2cGEcxj55VBGpPxdx8Acpw/t04lp/bMJ4Y2f+Bip+nQ2EXoT19rstpFrC1pJQuFmcZ4J8tbqScnm21E3kjj/MmHjEAIYg8ZUxACpih64OtSDibldT4HEKcx5txgprEClbjUAabzZsuIqWkyHqlSLFQLw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LvlEQJAw; arc=none smtp.client-ip=209.85.214.180
+	s=arc-20240116; t=1753139174; c=relaxed/simple;
+	bh=v1GzKQ/2OH/U4QZ6QZG/B49zrfbUhnYprM4zjVWA5l0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=N8agI7wzEzfECVRchZxHonVFcPWenwQFR8eOhr29XrEfm1aML1/d10lNsDABwF91TaSmmgKQovEu67BEQJlJxlTKr1RNfgp4AdddFSDemB06Ok+esss9jqmEBZRyQ0p5/CsCyaFooBXCyRXBqAb9C4jVwi4nH+vufg1hT1oqi8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JXjVF5mz; arc=none smtp.client-ip=209.85.166.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-23c8f179e1bso48703665ad.1
-        for <bpf@vger.kernel.org>; Mon, 21 Jul 2025 16:01:27 -0700 (PDT)
+Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-3de252f75d7so46634355ab.3;
+        Mon, 21 Jul 2025 16:06:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753138887; x=1753743687; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=drFTvDndEoVe5muySRQK94rvwG5dqoRU+0nD5Ww2BCE=;
-        b=LvlEQJAwz0iie34RpamRYYnEUe7MF2DzofgRxGLh9FEC1iTlPdLO9szxSYWha958k3
-         RD7T6qJWwQAn4gQSBrNuPLw4iwjynjLBa/B7bWtLz5JKVvReCV9vX200JQg5VodQP0Y8
-         AhpHSYP4kwCBfdFftvKnVDVzQ4PnAwbej6QNcWAQjrhPAU30zJkrie+jw+qSje6VzTf0
-         8prlz+db3DeIRZbUDgZDec8sBgwyO3QyuuCUnATSF5s++xK3Cy3qHbn1jQm06h985V08
-         PJ3aLsIiqj0nQ2LY3G4mgboCNtAVXoOg/G2ZZIuBSdfA7EEwvLM8187fZi9bTE2aiZNZ
-         wbOA==
+        d=gmail.com; s=20230601; t=1753139172; x=1753743972; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KEFwVf9DCXPYhb5E+L2S2B43pN/gLrA3tUcn9Sv1yes=;
+        b=JXjVF5mzSJkMkYaplfh5tM8ssSFBiMd9LCszS9nBN1lP114R618AxMStrNHsyGkPxx
+         M+4bgDheO5g8vcYrzEnmu1mU7fRoi86kbb7emsoCqm3JlEGl8Lv2VayBWRzwRZYoiWdc
+         v6BHbXKgowVMkDjIvRpgQAZ9A+ptj68DsNWPS0ITBn+QWGagn2RBkK8fX1tZA+Sn1Fc8
+         6m0oiCBqEF3Zhe72k6thQrp5IMzvyp3uo5/9lHOf97CZ9LsRAVddelBiyoV9ulOBWoL0
+         LYScSRa3m7DYT993cxfTQAUmy7Aqu2dTpmUMwkCY3ZkMfOKgmwb3+DQV0uFObW/q3Wty
+         yQMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753138887; x=1753743687;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=drFTvDndEoVe5muySRQK94rvwG5dqoRU+0nD5Ww2BCE=;
-        b=rw1jqFmm0D52TLcpmUHWbesNtSyzL4mgV2SQQEhczCL5vu1AM29Q2J3dbwqsZwi821
-         eqMR5DWIvXjAFyPEOISLlvac//oGnWQnCndmNkPBrgllJIgB6PfvOct9u/gasdQCQL7g
-         p1WxTHGVCqJbIpJ1KL5rhFZ9omHCL7VZD+AeZPMt84f6D2shv9Cp91B+VmBwbua5a9zC
-         dlOL/4xifAUoILz/8gw8BFxlPwMuyUxfB8OibXwvKIsjn+AqMGQrx4Azm6Z1QpRD4M7G
-         TaPFR1AHrsGRdwLJwht0UlDBlA4ruvErCMYt0INVm9qM4O3ON0nZSqG74t0iqyq5vqUd
-         s1Ug==
-X-Forwarded-Encrypted: i=1; AJvYcCUFDEJJ4cu/lzhoC7XmoFaTKYYvlYcmefeHwBFnHVGyMOdweCCSMvp5Pwdl90e09UO9CSA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxpLY2suewbgFSDgce/7vLHma+hUoATh0+4fZ2fTPP6iGvq8SRL
-	y8gV3iYsZ4snFVBjIIlH3bg7sVXj+PoYDftuI7DjcpTZ6dvP3V/RBeJu
-X-Gm-Gg: ASbGncsU/IogjA1L3IFag3zQE6eyj5vFmuAAr0kY4pJZvHF0UDIvJ7P2VbpKCorY5BF
-	rXud3Vs1ZxC8QjivrvOvouGxU8eIL+0zH0+uphcwiyzQ4s1IFqmBY51uXuPRt/MfbsmA2KBmlLy
-	28xU6zE+xAzPygJtfXrEZ9+Faw97Oq/GkGOfIyY6Pxzg5P/aXdwbV5H1P0zk2i7uGehM8riugeq
-	p/koz1XvfQkrtBxPutZbsxXZGUvf8r3OTupNsDTNTRjhpaNoNsEqlv8Y/3W3MZUZbnb9LYUaNJt
-	eSB7HV+Gic/8tK1/PqaPhX97lLazaBgk2S77DXXEKyc3wBHgddqN3K7JG0tnjzpHuh4mOs7X5KY
-	DdfeQLdRkELj7OhhAvsQuaeFRPcmIrTNb51sT+ys=
-X-Google-Smtp-Source: AGHT+IGA5xU1/uh9WI1f0Rk3RcijSwEFSZSqdDh9vqQ1FMcTMHDBokucP6e4kZD3wwY19lF46LDk8A==
-X-Received: by 2002:a17:902:e884:b0:235:129a:175f with SMTP id d9443c01a7336-23e2573647bmr303360255ad.34.1753138886843;
-        Mon, 21 Jul 2025 16:01:26 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c096:14a::281? ([2620:10d:c090:600::1:7203])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23e3b5e2e51sm62952975ad.19.2025.07.21.16.01.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jul 2025 16:01:26 -0700 (PDT)
-Message-ID: <1bdcf2d020c6bd69be8421cd5e979f825e14dd64.camel@gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Use ERR_CAST instead of
- ERR_PTR(PTR_ERR(...))
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
- <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,
- kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>, kernel test
- robot <lkp@intel.com>
-Date: Mon, 21 Jul 2025 16:01:24 -0700
-In-Reply-To: <20250720164754.3999140-1-yonghong.song@linux.dev>
-References: <20250720164754.3999140-1-yonghong.song@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        d=1e100.net; s=20230601; t=1753139172; x=1753743972;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KEFwVf9DCXPYhb5E+L2S2B43pN/gLrA3tUcn9Sv1yes=;
+        b=IY5OKk1uUP5rgWwV7523U6BOaH/OhTRqHWhlX2t+Yg5aIXh/vWFVeQTnCkTrJ0z41d
+         uAIu6jNCX9ek1Y7sWezY0HAH+I0QPlEiX7fbskcqcoirj7UKUH5XxOLZsRkftcwlGboU
+         INU/LXmRIZ3BlkJ6mTLPAK+XlB6unKGMc+O6seMBZK1g7KzTkahhuBPr4XykrwUyyB/T
+         KUAfzHk/BMTHT0dYKQ9UFKmArpZ8KE471ea0FmdFP7WtCBv/M8Hh/jRYMsur+uUYJlHA
+         E+ht74uMSOMO5QqW/oEO+/yRhUGGiwuisByH7z2ho2xqI4IFOEWg9m3SdHA4xCRrDSv4
+         OXEw==
+X-Forwarded-Encrypted: i=1; AJvYcCVAdKhaKrrUaP67BKIvtoXciTZxpu/8uCH0kEacMyb8XLxhVZP0kicQH7l1pU8FHFp3UNs=@vger.kernel.org, AJvYcCVOT5jvY7zaRXIYZ3AiI3hTGjLvdTq6HiZlLM78HzX3bYdUo9a+EBqU75TdH1UKN6xiAap3+7Mk@vger.kernel.org
+X-Gm-Message-State: AOJu0YxXu3ArbkmnpWv1DQhUbABfRtdQ1x7or9AXZl/vbQja9V3leDm7
+	9yL+GRMiyhxGDHpcX2dsfh+HoUeOC4oFX45Jk73WWuM6YfWUIx5Qq2sXTL4KHV79DBVi91ZjthX
+	x9NdgUKUj9KmULtI859Q3GxYUmc7rYys=
+X-Gm-Gg: ASbGnctPUT496obUOwQRHS+DQSetsDyab0YhAy7SsXO/QVq59Dhz9ie5DI0gLeiarXN
+	Kw6jL6eYkEJl6Gr63U4aXps503Oa4zS+tKGOhssXsPMSU/W2SK05Nq64xmiDLFdXOC5vsQ9pkUw
+	KQqVKq4fnAOBlriDksm7xLVIBsCqIE6V63rYPWJ2X948f7UuIRmTBuSseeChYTeg/ygFjxXvrwJ
+	gR/hwM=
+X-Google-Smtp-Source: AGHT+IG5RIx4CUBqOhyC6+z/etJI6PdiSzvihPpHLIk0ADX/H+hEWkFMYdf4iuelppqsril2kN/LOnjdXOMfNu/RNqM=
+X-Received: by 2002:a05:6e02:1d9d:b0:3e2:8ddd:b406 with SMTP id
+ e9e14a558f8ab-3e28dddb51amr192280595ab.17.1753139171561; Mon, 21 Jul 2025
+ 16:06:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20250721083343.16482-1-kerneljasonxing@gmail.com>
+ <20250721083343.16482-2-kerneljasonxing@gmail.com> <aH5exXo_BdonTfmf@mini-arch>
+In-Reply-To: <aH5exXo_BdonTfmf@mini-arch>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Tue, 22 Jul 2025 07:05:35 +0800
+X-Gm-Features: Ac12FXzrl82q1J1EBI4gPmmpTws7FVNkFQm2LLp1FtXXiWxpRliUiuaDdNslSpc
+Message-ID: <CAL+tcoB9U-YnJ7MPn7FQ4+ZsW5cgQXE3Tks-7=kGMhUE6nNprg@mail.gmail.com>
+Subject: Re: [PATCH net-next 1/2] stmmac: xsk: fix underflow of budget in
+ zerocopy mode
+To: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com, 
+	andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, pabeni@redhat.com, bjorn@kernel.org, 
+	magnus.karlsson@intel.com, maciej.fijalkowski@intel.com, 
+	jonathan.lemon@gmail.com, sdf@fomichev.me, ast@kernel.org, 
+	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com, 
+	mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com, 
+	linux-stm32@st-md-mailman.stormreply.com, bpf@vger.kernel.org, 
+	intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org, 
+	Jason Xing <kernelxing@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, 2025-07-20 at 09:47 -0700, Yonghong Song wrote:
-> Intel linux test robot reported a warning that ERR_CAST can be used
-> for error pointer casting instead of more-complicated/rarely-used
-> ERR_PTR(PTR_ERR(...)) style.
->=20
-> There is no functionality change, but still let us replace two such
-> instances as it improves consistency and readability.
->=20
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202507201048.bceHy8zX-lkp@i=
-ntel.com/
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-> ---
+On Mon, Jul 21, 2025 at 11:37=E2=80=AFPM Stanislav Fomichev
+<stfomichev@gmail.com> wrote:
+>
+> On 07/21, Jason Xing wrote:
+> > From: Jason Xing <kernelxing@tencent.com>
+> >
+> > The issue can happen when the budget number of descs are consumed. As
+> > long as the budget is decreased to zero, it will again go into
+> > while (budget-- > 0) statement and get decreased by one, so the
+> > underflow issue can happen. It will lead to returning true whereas the
+> > expected value should be false.
+> >
+> > In this case where all the budget are used up, it means zc function
+> > should return false to let the poll run again because normally we
+> > might have more data to process.
+> >
+> > Fixes: 132c32ee5bc0 ("net: stmmac: Add TX via XDP zero-copy socket")
+> > Signed-off-by: Jason Xing <kernelxing@tencent.com>
+> > ---
+> >  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/driver=
+s/net/ethernet/stmicro/stmmac/stmmac_main.c
+> > index f350a6662880..ea5541f9e9a6 100644
+> > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> > @@ -2596,7 +2596,7 @@ static bool stmmac_xdp_xmit_zc(struct stmmac_priv=
+ *priv, u32 queue, u32 budget)
+> >
+> >       budget =3D min(budget, stmmac_tx_avail(priv, queue));
+> >
+> > -     while (budget-- > 0) {
+> > +     while (budget > 0) {
+>
+> There is a continue on line 2621.
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+Thanks for catching this!
 
-[...]
+> Should we do 'for (; budget > 0; budget--)'
+> instead? And maybe the same for ixgbe [0]?
+
+Not really. I think I can move the 'budget--' just before the
+'continue' part. If we convert it to use 'for' loop and then we end up
+with one of 'break' statements, the budget still gets accidently
+increased by one whereas ixgbe driver even doesn't handle the desc
+this time. IIUC, it should not happen, right?
+
+>
+> 0: https://lore.kernel.org/netdev/20250720091123.474-3-kerneljasonxing@gm=
+ail.com/
+
+The same logic as above can be applied here as well. There are three
+'break' statements in ixgbe_xmit_zc().
+
+Hence, IMHO, I prefer to use while(...) in this case but I ought to
+adjust the position of budget--.
+
+Thanks,
+Jason
 
