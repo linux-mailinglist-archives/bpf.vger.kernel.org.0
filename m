@@ -1,105 +1,102 @@
-Return-Path: <bpf+bounces-63963-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63964-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CC57B0CD4B
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 00:32:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A34D2B0CD59
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 00:39:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20C6F7AFE37
-	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 22:31:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8F605446A4
+	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 22:39:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C77F242902;
-	Mon, 21 Jul 2025 22:32:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84645242D71;
+	Mon, 21 Jul 2025 22:39:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W1o0xnaW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bZ25C3R9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 457731D63E8;
-	Mon, 21 Jul 2025 22:32:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B63BE8F40;
+	Mon, 21 Jul 2025 22:39:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753137162; cv=none; b=MuVm2L5dw0R6arRhqhVaPqnwOwK091cLCoTKIHvpAL6qV9sQILbqbXokStUt0p0ewg7joG0rtg8EI1ejpM8qAXIVBhoJ7fk4zpSWnlLPxNVz4ktP5q2Kbou/5sbsOKIMbFcu1GLr7aa9fw34OPVraJxWqRFDeeN+zdDGVbgweK8=
+	t=1753137545; cv=none; b=AQ8hbBop1F4mrwDEE95kkXfwXPsmGFb3D7vK9TxYXGSaf+kihUIQRQqVIHHk4j2xiyB62OH9/QdJICC8NSsUbR2t152gxKGjq41ts0jrjGdMeL4qqi34OG3Vrj+GLdd25KwqDQ58kiDSnv/rqlOetd8OpxMWx59bEoPZWh8BwrQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753137162; c=relaxed/simple;
-	bh=ELPl9lWbCPvMx9ROUix88btEknHVjfc7IpFHv1NZmk0=;
+	s=arc-20240116; t=1753137545; c=relaxed/simple;
+	bh=UbpXCOpSVnI6N9IQrEqmNGNfsdb/u83IjJbbivKICtg=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=dOHL6d7jK2WLs0noyyILn0P8H9HvMXjxkk4OnlxUXrdwVLQz/g6R0Xp+hzzNXcGRGoZTvJfpVgMd4oXFwJXMvUIivPHWlnfb+Xg9uGa9uVjmVUnbmI8VTm609eD3weaoq3W/RyFDAwcg+mIufCbNloQaJpXHoBygsb0kZ5ZKw6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W1o0xnaW; arc=none smtp.client-ip=209.85.214.182
+	 Content-Type:MIME-Version; b=VWgIKTDceA2pW53rtbqMH5o0GiqLjAIDILZAD1y2S88SrCIGhrybkm0xh3qjhmyA/2/q939hxs1rr5toKUbZzpH2W1O+i+hPQ9tQMGAMhPpeQ6kQUS2YH7DLT1Ymd6+Y017YU63metVZdKqRLc+U0/s6DVnxl7JqiONr8LE8TaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bZ25C3R9; arc=none smtp.client-ip=209.85.210.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-23f8d8928efso124105ad.0;
-        Mon, 21 Jul 2025 15:32:41 -0700 (PDT)
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-74b54cead6cso3100835b3a.1;
+        Mon, 21 Jul 2025 15:39:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753137160; x=1753741960; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1753137543; x=1753742343; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=VyDfV7rrZC5dmrjBy7MCe0nD1X8oWEIwHRrOY9MYlZc=;
-        b=W1o0xnaW4eZxtKC0HEvZDZ87KqcG693m7ewupGW/oFKPc8QCunolmCvCaUkKSKEAQA
-         nD2GuUqFU0cJFVlXcpmuMa0E7vZYBxAtpn3YtDrELoP+29omrqnMYNxAk8VcAtubC+Rs
-         c7yDua551obZjUv/hmQ0BKqY2uyQBP5Hqk3xkdCpZa6+6Ce9BG8kh0+YwVTSYWb2uhn0
-         6UCje6V1Ho9W3krFuwTDLTKGv0d2LLgiAqOcm8zkZYuFQUPvyE7zCEXErDvzrNB9+M2y
-         DfdhqA06IBgQQPB+74G5JIoCOSsuUbF4i++3e4BDpmdF/SguQOo1pbaRF8/LEBJjImWG
-         JcIw==
+        bh=+flNOTHZGwl5tQTzAtuKBDIQ+jwApZ1+t8fvYYT5Rs0=;
+        b=bZ25C3R9ga/ThlxFm5Qo4lyiV/eTaHB9Mopl5IyI9CFcOnAye2jky9ETWkbdgjlXws
+         CT9uEmFWTA+WYaOqWD8izWu3nBxItkiau+Pv7fv+Dh6YFQ74By6+eZ4S360bNSiwXVPE
+         sJ3p3QpmHcCWHHbG33JvCYd0ohw8Zjek5MvVZcd4W6YLk9Dy97AebJxR5Yf2xOmGET6T
+         Pt7qXgC1Leybf9J4cHYwHoCPFfcQOzQiA1kX/CAHZFH98igJXGvFXyYcmeg5aJ0RwirP
+         QE+FELokSTUGRvLiu73bNck7wFO6ZFRYlcOybss8zHVZd3JweH9Myt/A6/KHX0hbYErI
+         G9Iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753137160; x=1753741960;
+        d=1e100.net; s=20230601; t=1753137543; x=1753742343;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=VyDfV7rrZC5dmrjBy7MCe0nD1X8oWEIwHRrOY9MYlZc=;
-        b=cw0Fp2oswvKAtqp56CkyzQqmynH1+RWYorJEYE49qTA5DSMmqMQ3h2Mp5RsiT/DK9S
-         Bi3VbxcvdbE1dZM0QTJ46Dw8lxBaY2KXCIF7vk6gqcYghvlHxFtD+hRucQkEnU1gBUwe
-         iafGZUclxhGHvZ50WhpuNDVHWyh660/lU0GE20p7jjPdM/GcATp0YUBMjGhglbiOcyVZ
-         LszXW1Fl6AlHYV0kc7bmYkasDLadRcWnoMr1n/z6JlXBDkA6JXiVJYwV77clYfgdmqOo
-         AwQ1+rPK0iuD1ShYyagTvXSD8wbk6cpoIWYvON45UqJp2ojq5yq0GFevoN6O+y65GQXl
-         ZfMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU1yoW5BDvHCVd6YHwJyftVGtLm9oqqeYULHI8qvUPz8FwXBOiblRxa49tYC/cwhSiOCrz0HzZ1ViIB4g3Q0EKrSg==@vger.kernel.org, AJvYcCU4NDHM/DbUI29abunDmc3x7nuRqP1rFBh0JR2ZS55ah36nTn6773UU4bapF+Cr+7j4l+ynODMJGAlvH/o6NC5CJ/5H@vger.kernel.org, AJvYcCUoZCv+uSLdYniGm1kdtANbigluRMp4cVMm8UawYlsjueBVMejar7r2r8AnUirnfdJoH68=@vger.kernel.org, AJvYcCWWXywy/70OEikAQM68NQB4t2VikYcKQjAO3jpOMrZUSlXJ2vvWOSvHqxZwmoloepkhGHvnVUZ1Pm1XSmQ5@vger.kernel.org
-X-Gm-Message-State: AOJu0YzkN2aO8JzgRNNVB4BWidv0nFCVAre16+rM2zVzjm+t6oxWPX9E
-	A1WLhJKuQ2KePt3Xgkcj5tGoNsAFi4pFKBzwfLD0Xylya2iQnc/FBbaN
-X-Gm-Gg: ASbGncthaDAVPvSsCFMZTCKNJb0UGVczxqIYCgHokjKjsrnbeh+e+Cmsfm/2ZKUeBfk
-	2JieeEB4X4htgzx1mRpQ/za301J+gzt0u8qiWCrilTfW5XqlKID3anClF7lmfreAwvCbnUaQXqm
-	x+X7vEC/sp/SNRrIkN5NZ24UAGmSKNMuRbheGi/z9iLTZFJtPLxzehI85mjE1dA6ks0OEXoPE0B
-	tfOxR9v1Yiaj7dMQiaF9g/61qMDOPIMZfDWCDKTukn9sA6Oblj3FpGsIDq0ovX9nO98WfJRqINa
-	CAkPvfu9eZaNdQIryWpe5vMFW34pFy/tSC+u/YoXwajTJNoDRNmIMwOjZ6uwMMlPRd0iAviyTs+
-	B2aKqOQc6dSr94axAMVhgaVICe1tm
-X-Google-Smtp-Source: AGHT+IFxy0rmgZAbiSXgvLRGw/zEKapICvB3xXkOxn8uTPeRFBUpotCA5y8fyW59jrPG+IccPl/FbA==
-X-Received: by 2002:a17:902:dac1:b0:235:ecf2:393 with SMTP id d9443c01a7336-23e257a3b70mr339054145ad.53.1753137160347;
-        Mon, 21 Jul 2025 15:32:40 -0700 (PDT)
+        bh=+flNOTHZGwl5tQTzAtuKBDIQ+jwApZ1+t8fvYYT5Rs0=;
+        b=I/PFCFLoeTy6i2bWT7ZGXm4Hs1wlqk8r8WVw7Viti0ux70D0ghFt1C56b7tL//Ba9Q
+         Ewm6a2XHrHppWtIMl4tHBzcBjYvo38crwukm/hnOrssci2j5PO32CpD74xvU0e8Fr/Hx
+         /quQtGhA5HuZjuOt4gBvdPT8F7PrHwCmdlPtc6vx+AfZp3ZK/ZZgGVfT7JcGbh7TwZXY
+         M1vWibYV/efOz12QRUneopChjKEf6POWeCWmPhM+MYxZjbB8lPsoVGorTvpEhz7v2Mp5
+         hU2UYqovI8XZj/CyUxvL5Vlion96V/OAOCUFRvash8NDUVx0tCKGoSisyVDAh+FCVc8c
+         ICAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV8O9lPwTmiBr/0bcDOJaCYbsBIj7zIvxEvMbM07ARpcHwsxqSIIFS1+YTqUCQ7F30OugeOnZOh2ajwW2q5IzNf7scY@vger.kernel.org, AJvYcCW6EcTO05DX5uXPp1lHNPfWHPGGEkhqTYwDpiAldNecMBIXqfYlIQ2eaj5nng9Fov5sT7EGqpxA03dnG2dK@vger.kernel.org, AJvYcCXWfLKOPu+AfiotMu+gOo97e8PK0t6ZEmfQLiVZapnYGGapRNtI0NbYEEL1PAIMZq2qhWU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzQ67HJ0/cLJzTFnvU6urWZBCKq8owf1TkeQKi1lkxnNDyH28ZJ
+	uI0xisN8ldUhLb3fGT+eqST5A9KbYJfCruH8CEyG5V8de/P3m6586n2l
+X-Gm-Gg: ASbGnctNwRO21Mc8Gq8GxAp8XVaezTYS3WFOeZ0Tv7whBxsgwdFJW0EBQXv4g2U2cEG
+	nKf2scAKFKJ7tZaR/7QdEjh1jzp+IgLMbqGkzNbGUGW7L/FeBAxyvw/EaskaGRdUTcpDrOkTPWY
+	Jsav93b8HZ0K6tJxXIC6wgMgLQqC3jKFc9CnRNO/STd7k7GAlapEsrlDcHhwWBCSnPRcfjrBece
+	pwgNo6C9O8xdsMkWEX294URHLD3jf5h52bNXL1C/dBNBigN0NdJDbIGz1RwUzF9dt9q5x11GZX0
+	Ao+th7ntsD7B6vKbkEe0qqGdn4+8SlMEitmj71R49VUAzbB4bQFPdimAuIz38e9F+6Qbo0IYCwu
+	cM4qw9kgPYt3H84D1tXByoyNCBAeQ
+X-Google-Smtp-Source: AGHT+IGHuL6EcqmV2YbTKaTZXfPkI9SvE9yeb5FM/NP9QXasZt5olfZKPRuC/PrXh8bdWBDrRNYceQ==
+X-Received: by 2002:a05:6a00:2194:b0:742:a111:ee6f with SMTP id d2e1a72fcca58-7572286b05emr25926354b3a.10.1753137542824;
+        Mon, 21 Jul 2025 15:39:02 -0700 (PDT)
 Received: from ?IPv6:2620:10d:c096:14a::281? ([2620:10d:c090:600::1:7203])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31cc3e5b439sm6639389a91.14.2025.07.21.15.32.37
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-759cb15761dsm6393291b3a.67.2025.07.21.15.39.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jul 2025 15:32:39 -0700 (PDT)
-Message-ID: <3790244e9b6f5508ef54eb799ed5b6e6a9d72b3a.camel@gmail.com>
-Subject: Re: [PATCH v1 2/7] bpf: Add bpf_perf_event_aux_pause kfunc
+        Mon, 21 Jul 2025 15:39:02 -0700 (PDT)
+Message-ID: <ac8266f19ecde10a49911192014dddf35b3b496d.camel@gmail.com>
+Subject: Re: [PATCH PATCH v2 v2 2/6] bpf: Add bpf_perf_event_aux_pause kfunc
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: Leo Yan <leo.yan@arm.com>, Yonghong Song <yonghong.song@linux.dev>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Adrian Hunter	
- <adrian.hunter@intel.com>, Namhyung Kim <namhyung@kernel.org>, Jiri Olsa	
- <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, James Clark	
- <james.clark@linaro.org>, "Liang, Kan" <kan.liang@linux.intel.com>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>,  Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,  Matt Bobrowski
- <mattbobrowski@google.com>, Steven Rostedt <rostedt@goodmis.org>, Masami
- Hiramatsu	 <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, 	linux-kernel@vger.kernel.org,
- linux-perf-users@vger.kernel.org, 	bpf@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, Suzuki K Poulose	
- <suzuki.poulose@arm.com>, Mike Leach <mike.leach@linaro.org>
-Date: Mon, 21 Jul 2025 15:32:31 -0700
-In-Reply-To: <20250718153801.GB3137075@e132581.arm.com>
-References: <20241215193436.275278-1-leo.yan@arm.com>
-	 <20241215193436.275278-3-leo.yan@arm.com>
-	 <80f412f1-a060-463b-9034-3128906e6929@linux.dev>
-	 <20250714174505.GA3020098@e132581.arm.com>
-	 <ba5c04f4-a33d-4d7f-9272-eee4a4389def@linux.dev>
-	 <20250718153801.GB3137075@e132581.arm.com>
+To: Leo Yan <leo.yan@arm.com>, Peter Zijlstra <peterz@infradead.org>, Ingo
+ Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim	 <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Ian
+ Rogers	 <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, KP
+ Singh	 <kpsingh@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>,
+ Song Liu	 <song@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann	 <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau	 <martin.lau@linux.dev>, Yonghong Song
+ <yonghong.song@linux.dev>, John Fastabend	 <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo	 <haoluo@google.com>, Steven
+ Rostedt <rostedt@goodmis.org>, Masami Hiramatsu	 <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,  James Clark
+ <james.clark@linaro.org>, Suzuki K Poulose <suzuki.poulose@arm.com>, Mike
+ Leach	 <mike.leach@linaro.org>
+Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Date: Mon, 21 Jul 2025 15:38:59 -0700
+In-Reply-To: <20250718-perf_aux_pause_resume_bpf_rebase-v2-2-992557b8fb16@arm.com>
+References: 
+	<20250718-perf_aux_pause_resume_bpf_rebase-v2-0-992557b8fb16@arm.com>
+	 <20250718-perf_aux_pause_resume_bpf_rebase-v2-2-992557b8fb16@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
@@ -110,22 +107,55 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Fri, 2025-07-18 at 16:38 +0100, Leo Yan wrote:
+On Fri, 2025-07-18 at 16:25 +0100, Leo Yan wrote:
 
 [...]
 
-> Just clarify one thing, I defined the kfunc in new patch:
->=20
->   int bpf_perf_event_aux_pause(void *p__map, u64 flags, u32 pause)
->=20
-> Unlike your suggestion, I defined the first parameter as "void
-> *p__map" (I refers to bpf_arena_alloc_pages()) rather than
-> "struct bpf_map *map". This is because the BPF program will pass a
-> variable from the map section, rather than passing a map pointer.
+> +__bpf_kfunc int bpf_perf_event_aux_pause(void *p__map, u64 flags, u32 pa=
+use)
+> +{
+> +	struct bpf_map *map =3D p__map;
+> +	struct bpf_array *array =3D container_of(map, struct bpf_array, map);
 
-This is correct,
-see commit 8d94f1357c00 ("bpf: Recognize '__map' suffix in kfunc arguments"=
-)
+Verifier makes sure that p__map is a not null pointer to an object of
+type bpf_map, but it does not guarantee that the object is an instance
+of bpf_array.
+You need to check map->type, same way bpf_arena_alloc_pages() does.
+
+> +	unsigned int cpu =3D smp_processor_id();
+> +	u64 index =3D flags & BPF_F_INDEX_MASK;
+> +	struct bpf_event_entry *ee;
+> +	int ret =3D 0;
+> +
+> +	/* Disabling IRQ avoids race condition with perf event flows. */
+> +	guard(irqsave)();
+> +
+> +	if (unlikely(flags & ~(BPF_F_INDEX_MASK))) {
+> +		ret =3D -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	if (index =3D=3D BPF_F_CURRENT_CPU)
+> +		index =3D cpu;
+> +
+> +	if (unlikely(index >=3D array->map.max_entries)) {
+> +		ret =3D -E2BIG;
+> +		goto out;
+> +	}
+> +
+> +	ee =3D READ_ONCE(array->ptrs[index]);
+> +	if (!ee) {
+> +		ret =3D -ENOENT;
+> +		goto out;
+> +	}
+> +
+> +	if (!has_aux(ee->event))
+> +		ret =3D -EINVAL;
+> +
+> +	perf_event_aux_pause(ee->event, pause);
+> +out:
+> +	return ret;
+> +}
 
 [...]
 
