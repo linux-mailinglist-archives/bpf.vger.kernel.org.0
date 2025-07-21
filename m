@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-63937-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63938-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24330B0CBB1
-	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 22:20:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7685B0CBB4
+	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 22:21:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 632D73A9B67
-	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 20:20:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDA223AB492
+	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 20:20:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E7BA23C8D3;
-	Mon, 21 Jul 2025 20:20:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E210E23DEAD;
+	Mon, 21 Jul 2025 20:20:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZB4XF3Xm"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="h5UPIvgu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18BA623AB85
-	for <bpf@vger.kernel.org>; Mon, 21 Jul 2025 20:20:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B003023C4FE
+	for <bpf@vger.kernel.org>; Mon, 21 Jul 2025 20:20:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753129228; cv=none; b=pQPjQ4HN8egziAhfaa9yEpdOxIydmfK0eWQleiZzSr7fCWuZjD99t4uWL3AEesI7cD+Vb30UeaMTG0LtZbdBSU4APf/2T+jN1v1yoWnlUmLDr56AwuRLrM5YHw1+UX+yn8YsZYDX4x0tdX8OKC5sZXrZ7Esd06I1/QJGU9pt7+U=
+	t=1753129230; cv=none; b=mGgy9921qXZNEALswuwznkelH+Tz4MPV9snzNxP8gS691bbH5/0K69CgjsMBlPyTdbXnfRSOUDScPSpsQSzqNoGWjQWkC4DTJxKahdZ1J0CAVGHAwTYx1QoUWgDdhy6xVFouCADhCkVjvdc2W5TMXHu5iODqYubGqkUxpFZ19ak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753129228; c=relaxed/simple;
-	bh=zd5DznBVI4sVvso/l/68ScJA/RSIQeiYIJRJ5CEjGgY=;
+	s=arc-20240116; t=1753129230; c=relaxed/simple;
+	bh=8sqyVESEJUMNiJl/uCjzhPfl9OVRxgVUJjpXrAl5Bgs=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=DgUBCyahNrfALJz3tSy5GkJH4xs9nJ7tOiNzDe31N2MVxtdDjb76aZQhfjiE7b81Rc4G78vr/URKgNpwF2vRQv2AenchFYANEA0odTWjYg5BEojCZsTckY5a463Cj46CVhyVOMgVS3mQpPiO49oTjE/FSjJrwgHxRR9L2QWqv58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--samitolvanen.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZB4XF3Xm; arc=none smtp.client-ip=209.85.210.202
+	 To:Cc:Content-Type; b=MtNrtNxUvz3X6B4QlsaVUpJGJlgzW4i5mlSHkXvsVVweIdqbpPVnMxtuuruKrTaHA0Hv273unBGLIyO9is6SvTiImgy25GAJbBkkYanej/Ft2wsbqgctdzHbrs6CR79MBeM5azgrUo71Q+hXuxV3XRnDVObTF7s6r6RYNAy19IA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--samitolvanen.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=h5UPIvgu; arc=none smtp.client-ip=209.85.214.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--samitolvanen.bounces.google.com
-Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-74d12fa4619so4029095b3a.0
-        for <bpf@vger.kernel.org>; Mon, 21 Jul 2025 13:20:26 -0700 (PDT)
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-235e3f93687so68056925ad.2
+        for <bpf@vger.kernel.org>; Mon, 21 Jul 2025 13:20:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1753129226; x=1753734026; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1753129228; x=1753734028; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ATtT7J3eGVlX0DAsIWIni7wioYwQuHnqhrVZz3llpO4=;
-        b=ZB4XF3Xmr2M3vs/FIVHi6GZJE43YF4K6NUd7aWqZxQf3CsUzPWmDMXyzWQA3miZB8v
-         MMaLiNLpw8gLHEECbVxtBDzUUSX7ap9LlIzMoHsO1FA7m+U0NBCN5UbgOjMGAwarm9sQ
-         JzzkGWSXsQreAytInRXOxWmhGIUf7rZApMsZXWWbWGlCraSMIOWsJgCIqgXybfrXBl80
-         ne87qZgpeu9Yt7WXLyB5pj6QCxtUyWDYiUALljc0wN8NmbzAgX5FK2vP5VNsAx8MxGpX
-         U28FVo6/PZLpX+8u1dbZFJAnv3GIUQssVhQmosBK001aEwObLuMWoiIyNi5BrTtQAIDm
-         zm/g==
+        bh=FfCLGywMG5rCOsx3g823MlhxRQ/vXUvg0nXF69NJcN8=;
+        b=h5UPIvgu6tgiAZRh1o9lV5y6qcifmRdz8mT6VrRHPOJ4ViWuPFi7WdbB91m6MWFWzQ
+         yvGuM6dpIrc6LF0jcqD7kOkvYFaxPdh1SKwc4GZod/bhRXXMWeSFB6u4r6/r+lTIk9M4
+         psIblFYFj6qNuOawe03FhXfdJ2wP8+dJS/Cm8QOpJ4+B7+ms7OmKHtE9p6wcSD80S8cf
+         U229xDSdJG5eEzywWtAzsdLoda0DfZp/ViEnYPzhWPa++FQG8ojtLSZ1W1zOrwENbewB
+         GQN7w/dCAbpx9L9mcf8IxPhkwMA7Wzq8l9fb0K+wrt7plre0k62ymcTKhUDke4rJpGAb
+         DDWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753129226; x=1753734026;
+        d=1e100.net; s=20230601; t=1753129228; x=1753734028;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ATtT7J3eGVlX0DAsIWIni7wioYwQuHnqhrVZz3llpO4=;
-        b=o0qTjrQ+k1Q1SKiv625O/qyHsiEvJREPNKntzVaoXeAzcNbgqKkQNMuzT7TRBTnful
-         qmSmjFKfT91PYivkG/Tk0YqVAnNuQiJO5gGtFrE97j1I2h2/ml/F6SNXK1LPBt/1B6CU
-         fa5hEQ4I9Zcq6mWXxHKtKL2acs2MbiKJJO+xXcbJaweQrvtPa5k9znSKUQfb7FD7yTWI
-         BvIg4fGHGaQY+HI6a8TTEdumpECbfQfLHe7tDvzEAopettgbh69xvCp+7gYKEnnhH8jf
-         dDxvc27bWpXvHONG/ED50Mn+b5SEI2d5WItII3xUtA67o/t+K7IflDg9yB6i+9kEpe4u
-         5YbA==
-X-Gm-Message-State: AOJu0YzF9Bre9ofTCh6jmIhmnych0/EO73zYnbfVYTi+F31z/cM8iYbP
-	0Qk4iHWMoaWXmNWMcHCjGyhRsX+f0bcVINwRAru1FUVXkfsIXzsl2s1+f4vAlQ6QtpZQPJtiK2j
-	jXDTyfwkPc/Uy1uLZyrclA4J4IGAvl6u1ck9WK0MoTtFLqvvfJ4lxL/i4eRx1/XsldMWDa+Y3sv
-	QfDjvWkiXgER/S1482ocHPaZcFs9xiAxulks4JxI/BOKmSpjBiBDuM5X2P15utP6IN
-X-Google-Smtp-Source: AGHT+IFMHr6borf7kwzwjf/sDWkpfr6CqD7C7zKnwE9LtBZhs0jVXDx6hG0voSrPzJ9O9xdehYJ43YU69oZLT1yhuXc=
-X-Received: from pfbdh6.prod.google.com ([2002:a05:6a00:4786:b0:746:2a27:3025])
+        bh=FfCLGywMG5rCOsx3g823MlhxRQ/vXUvg0nXF69NJcN8=;
+        b=hI55+ssjJYD+ddvwMiVvSy1SLQyZLVekuTfbctjEa7MZc5vzZqeVKI2JGsCtLtQVsh
+         O9qd88mP6lspvLZ+cdWDy2DoO52NMgd1xwvk2Z33vuYXX1eUyWszhoqkgQseiWR0OanZ
+         6lZKFp46qiO4+TwI+urD/36twAM83XH8tH2MQso/ZjJCQl1lNFSK3/GFiCyvFWxSfBPP
+         8mTSMcF1FrpNWpVfxD7eNO0TUIurhB8EpSWbGRCzqt/UGhWnJD3FmOb2FLm7IqslW8yX
+         L657d8pHE2rmKFQQQdMSXlFCXPZ8BCyJwn4Ix7G84m0Jfy3L9LJcun6js/NKFPUSDpPV
+         9z0A==
+X-Gm-Message-State: AOJu0YwRL8golP/xb6nCZR12eQ1ot/M0yDSxVzcwQxZlHPUT3dLxAe9v
+	k5LDSCpYNoJ1smRQJ0h/TTfG600pwzYRBJhprOyMaUw8eaR7oA/FUQyfUHEbP2LKxwNat2omjW0
+	EQIE92NB184kZUHbf/cS5PG0NwbHtfW28li4RDajG6F/sROiGMqpRYaMRYFea1pOBhfSNOnzc46
+	S4d8Gp+AcHvMQJnxXts0ZOxOhjuQpgMUx4C+Ngw4gSvZQONCLv4oSG3/0EnGLb9fWs
+X-Google-Smtp-Source: AGHT+IF9TN23l4Ltc5Ne0W9DXoqr4LrShXyYJ09L4HPKeDWk0WXzGvv99/JjdmYIPAHjl12wDtMdJ0tsHdbTsMDzT4M=
+X-Received: from pjbph15.prod.google.com ([2002:a17:90b:3bcf:b0:313:285a:5547])
  (user=samitolvanen job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6a00:179f:b0:749:4fd7:3513 with SMTP id d2e1a72fcca58-759ad9e5239mr17855621b3a.16.1753129226170;
- Mon, 21 Jul 2025 13:20:26 -0700 (PDT)
-Date: Mon, 21 Jul 2025 20:20:17 +0000
+ 2002:a17:903:228a:b0:235:e942:cb9c with SMTP id d9443c01a7336-23e2566aa35mr324880815ad.5.1753129228021;
+ Mon, 21 Jul 2025 13:20:28 -0700 (PDT)
+Date: Mon, 21 Jul 2025 20:20:18 +0000
 In-Reply-To: <20250721202015.3530876-5-samitolvanen@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -74,185 +74,275 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20250721202015.3530876-5-samitolvanen@google.com>
 X-Developer-Key: i=samitolvanen@google.com; a=openpgp; fpr=35CCFB63B283D6D3AEB783944CB5F6848BBC56EE
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5301; i=samitolvanen@google.com;
- h=from:subject; bh=Dmv7MBdL2t4YlIN+ZApIs9QGn/40RNGjIGDoX876EIY=;
- b=owGbwMvMwCUWxa662nLh8irG02pJDBl1CxnqNh54s6quo15jb5tZrkxbpfL6Jv22VLWgfzd6F
- GTfOOzoKGVhEONikBVTZGn5unrr7u9Oqa8+F0nAzGFlAhnCwMUpABM5wMbI8DcknJ0t5F/vvaom
- pj9+Gsy/7gdvUpzI6b5azZuD3SiihpFhl8XUw5Z+xseCHzuuWyhu37zwzZEfQi8i4+30jbZYzj/ CDwA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=7400; i=samitolvanen@google.com;
+ h=from:subject; bh=8sqyVESEJUMNiJl/uCjzhPfl9OVRxgVUJjpXrAl5Bgs=;
+ b=owGbwMvMwCUWxa662nLh8irG02pJDBl1CxnubhOs9bG86TVvvUGxxO87f2/x30p4zuy/IZlJf
+ ENdZCxLRykLgxgXg6yYIkvL19Vbd393Sn31uUgCZg4rE8gQBi5OAZjI10BGhmtPP/KsOczfuyr6
+ cPaq3d0dBsJhr6SqDrZOmfo7ucNuQQrDf5fUL8VPJE2edc5cGlTUvqzpS/Xyl8o865YopAY+Ulg bzwgA
 X-Mailer: git-send-email 2.50.0.727.gbf7dc18ff4-goog
-Message-ID: <20250721202015.3530876-6-samitolvanen@google.com>
-Subject: [PATCH bpf-next v12 1/3] cfi: add C CFI type macro
+Message-ID: <20250721202015.3530876-7-samitolvanen@google.com>
+Subject: [PATCH bpf-next v12 2/3] cfi: Move BPF CFI types and helpers to
+ generic code
 From: Sami Tolvanen <samitolvanen@google.com>
 To: bpf@vger.kernel.org, Puranjay Mohan <puranjay@kernel.org>, 
 	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>
 Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
 	Andrii Nakryiko <andrii@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
 	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	Maxwell Bland <mbland@motorola.com>, Sami Tolvanen <samitolvanen@google.com>, 
-	Dao Huang <huangdao1@oppo.com>
+	Maxwell Bland <mbland@motorola.com>, Sami Tolvanen <samitolvanen@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-From: Mark Rutland <mark.rutland@arm.com>
+Instead of duplicating the same code for each architecture, move
+the CFI type hash variables for BPF function types and related
+helper functions to generic CFI code, and allow architectures to
+override the function definitions if needed.
 
-Currently x86 and riscv open-code 4 instances of the same logic to
-define a u32 variable with the KCFI typeid of a given function.
-
-Replace the duplicate logic with a common macro.
-
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Co-developed-by: Maxwell Bland <mbland@motorola.com>
-Signed-off-by: Maxwell Bland <mbland@motorola.com>
-Co-developed-by: Sami Tolvanen <samitolvanen@google.com>
 Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Tested-by: Dao Huang <huangdao1@oppo.com>
-Acked-by: Will Deacon <will@kernel.org>
 ---
- arch/riscv/kernel/cfi.c       | 35 +++--------------------------------
- arch/x86/kernel/alternative.c | 31 +++----------------------------
- include/linux/cfi_types.h     | 23 +++++++++++++++++++++++
- 3 files changed, 29 insertions(+), 60 deletions(-)
+ arch/riscv/include/asm/cfi.h  | 16 ------------
+ arch/riscv/kernel/cfi.c       | 24 ------------------
+ arch/x86/include/asm/cfi.h    | 10 ++------
+ arch/x86/kernel/alternative.c | 12 ---------
+ include/linux/cfi.h           | 47 +++++++++++++++++++++++++++++------
+ kernel/cfi.c                  | 15 +++++++++++
+ 6 files changed, 56 insertions(+), 68 deletions(-)
 
+diff --git a/arch/riscv/include/asm/cfi.h b/arch/riscv/include/asm/cfi.h
+index fb9696d7a3f2..4508aaa7a2fd 100644
+--- a/arch/riscv/include/asm/cfi.h
++++ b/arch/riscv/include/asm/cfi.h
+@@ -14,27 +14,11 @@ struct pt_regs;
+ #ifdef CONFIG_CFI_CLANG
+ enum bug_trap_type handle_cfi_failure(struct pt_regs *regs);
+ #define __bpfcall
+-static inline int cfi_get_offset(void)
+-{
+-	return 4;
+-}
+-
+-#define cfi_get_offset cfi_get_offset
+-extern u32 cfi_bpf_hash;
+-extern u32 cfi_bpf_subprog_hash;
+-extern u32 cfi_get_func_hash(void *func);
+ #else
+ static inline enum bug_trap_type handle_cfi_failure(struct pt_regs *regs)
+ {
+ 	return BUG_TRAP_TYPE_NONE;
+ }
+-
+-#define cfi_bpf_hash 0U
+-#define cfi_bpf_subprog_hash 0U
+-static inline u32 cfi_get_func_hash(void *func)
+-{
+-	return 0;
+-}
+ #endif /* CONFIG_CFI_CLANG */
+ 
+ #endif /* _ASM_RISCV_CFI_H */
 diff --git a/arch/riscv/kernel/cfi.c b/arch/riscv/kernel/cfi.c
-index 64bdd3e1ab8c..e7aec5f36dd5 100644
+index e7aec5f36dd5..6ec9dbd7292e 100644
 --- a/arch/riscv/kernel/cfi.c
 +++ b/arch/riscv/kernel/cfi.c
-@@ -4,6 +4,7 @@
+@@ -4,7 +4,6 @@
   *
   * Copyright (C) 2023 Google LLC
   */
-+#include <linux/cfi_types.h>
+-#include <linux/cfi_types.h>
  #include <linux/cfi.h>
  #include <asm/insn.h>
  
-@@ -82,41 +83,11 @@ struct bpf_insn;
- /* Must match bpf_func_t / DEFINE_BPF_PROG_RUN() */
- extern unsigned int __bpf_prog_runX(const void *ctx,
- 				    const struct bpf_insn *insn);
--
--/*
-- * Force a reference to the external symbol so the compiler generates
-- * __kcfi_typid.
-- */
--__ADDRESSABLE(__bpf_prog_runX);
--
--/* u32 __ro_after_init cfi_bpf_hash = __kcfi_typeid___bpf_prog_runX; */
--asm (
--"	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"
--"	.type	cfi_bpf_hash,@object				\n"
--"	.globl	cfi_bpf_hash					\n"
--"	.p2align	2, 0x0					\n"
--"cfi_bpf_hash:							\n"
--"	.word	__kcfi_typeid___bpf_prog_runX			\n"
--"	.size	cfi_bpf_hash, 4					\n"
--"	.popsection						\n"
--);
-+DEFINE_CFI_TYPE(cfi_bpf_hash, __bpf_prog_runX);
+@@ -76,26 +75,3 @@ enum bug_trap_type handle_cfi_failure(struct pt_regs *regs)
  
- /* Must match bpf_callback_t */
- extern u64 __bpf_callback_fn(u64, u64, u64, u64, u64);
+ 	return report_cfi_failure(regs, regs->epc, &target, type);
+ }
 -
--__ADDRESSABLE(__bpf_callback_fn);
+-#ifdef CONFIG_CFI_CLANG
+-struct bpf_insn;
 -
--/* u32 __ro_after_init cfi_bpf_subprog_hash = __kcfi_typeid___bpf_callback_fn; */
--asm (
--"	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"
--"	.type	cfi_bpf_subprog_hash,@object			\n"
--"	.globl	cfi_bpf_subprog_hash				\n"
--"	.p2align	2, 0x0					\n"
--"cfi_bpf_subprog_hash:						\n"
--"	.word	__kcfi_typeid___bpf_callback_fn			\n"
--"	.size	cfi_bpf_subprog_hash, 4				\n"
--"	.popsection						\n"
--);
-+DEFINE_CFI_TYPE(cfi_bpf_subprog_hash, __bpf_callback_fn);
+-/* Must match bpf_func_t / DEFINE_BPF_PROG_RUN() */
+-extern unsigned int __bpf_prog_runX(const void *ctx,
+-				    const struct bpf_insn *insn);
+-DEFINE_CFI_TYPE(cfi_bpf_hash, __bpf_prog_runX);
+-
+-/* Must match bpf_callback_t */
+-extern u64 __bpf_callback_fn(u64, u64, u64, u64, u64);
+-DEFINE_CFI_TYPE(cfi_bpf_subprog_hash, __bpf_callback_fn);
+-
+-u32 cfi_get_func_hash(void *func)
+-{
+-	u32 hash;
+-
+-	if (get_kernel_nofault(hash, func - cfi_get_offset()))
+-		return 0;
+-
+-	return hash;
+-}
+-#endif
+diff --git a/arch/x86/include/asm/cfi.h b/arch/x86/include/asm/cfi.h
+index 3e51ba459154..1751f1eb95ef 100644
+--- a/arch/x86/include/asm/cfi.h
++++ b/arch/x86/include/asm/cfi.h
+@@ -116,8 +116,6 @@ struct pt_regs;
+ #ifdef CONFIG_CFI_CLANG
+ enum bug_trap_type handle_cfi_failure(struct pt_regs *regs);
+ #define __bpfcall
+-extern u32 cfi_bpf_hash;
+-extern u32 cfi_bpf_subprog_hash;
  
- u32 cfi_get_func_hash(void *func)
+ static inline int cfi_get_offset(void)
  {
+@@ -135,6 +133,8 @@ static inline int cfi_get_offset(void)
+ #define cfi_get_offset cfi_get_offset
+ 
+ extern u32 cfi_get_func_hash(void *func);
++#define cfi_get_func_hash cfi_get_func_hash
++
+ extern int cfi_get_func_arity(void *func);
+ 
+ #ifdef CONFIG_FINEIBT
+@@ -153,12 +153,6 @@ static inline enum bug_trap_type handle_cfi_failure(struct pt_regs *regs)
+ {
+ 	return BUG_TRAP_TYPE_NONE;
+ }
+-#define cfi_bpf_hash 0U
+-#define cfi_bpf_subprog_hash 0U
+-static inline u32 cfi_get_func_hash(void *func)
+-{
+-	return 0;
+-}
+ static inline int cfi_get_func_arity(void *func)
+ {
+ 	return 0;
 diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index ea1d984166cd..a555665b4d9c 100644
+index a555665b4d9c..9f6b7dab2d9a 100644
 --- a/arch/x86/kernel/alternative.c
 +++ b/arch/x86/kernel/alternative.c
-@@ -2,6 +2,7 @@
+@@ -2,7 +2,6 @@
  #define pr_fmt(fmt) "SMP alternatives: " fmt
  
  #include <linux/mmu_context.h>
-+#include <linux/cfi_types.h>
+-#include <linux/cfi_types.h>
  #include <linux/perf_event.h>
  #include <linux/vmalloc.h>
  #include <linux/memory.h>
-@@ -1189,37 +1190,11 @@ struct bpf_insn;
- /* Must match bpf_func_t / DEFINE_BPF_PROG_RUN() */
- extern unsigned int __bpf_prog_runX(const void *ctx,
- 				    const struct bpf_insn *insn);
--
--KCFI_REFERENCE(__bpf_prog_runX);
--
--/* u32 __ro_after_init cfi_bpf_hash = __kcfi_typeid___bpf_prog_runX; */
--asm (
--"	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"
--"	.type	cfi_bpf_hash,@object				\n"
--"	.globl	cfi_bpf_hash					\n"
--"	.p2align	2, 0x0					\n"
--"cfi_bpf_hash:							\n"
--"	.long	__kcfi_typeid___bpf_prog_runX			\n"
--"	.size	cfi_bpf_hash, 4					\n"
--"	.popsection						\n"
--);
-+DEFINE_CFI_TYPE(cfi_bpf_hash, __bpf_prog_runX);
- 
- /* Must match bpf_callback_t */
- extern u64 __bpf_callback_fn(u64, u64, u64, u64, u64);
--
--KCFI_REFERENCE(__bpf_callback_fn);
--
--/* u32 __ro_after_init cfi_bpf_subprog_hash = __kcfi_typeid___bpf_callback_fn; */
--asm (
--"	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"
--"	.type	cfi_bpf_subprog_hash,@object			\n"
--"	.globl	cfi_bpf_subprog_hash				\n"
--"	.p2align	2, 0x0					\n"
--"cfi_bpf_subprog_hash:						\n"
--"	.long	__kcfi_typeid___bpf_callback_fn			\n"
--"	.size	cfi_bpf_subprog_hash, 4				\n"
--"	.popsection						\n"
--);
-+DEFINE_CFI_TYPE(cfi_bpf_subprog_hash, __bpf_callback_fn);
- 
- u32 cfi_get_func_hash(void *func)
- {
-diff --git a/include/linux/cfi_types.h b/include/linux/cfi_types.h
-index 6b8713675765..685f7181780f 100644
---- a/include/linux/cfi_types.h
-+++ b/include/linux/cfi_types.h
-@@ -41,5 +41,28 @@
- 	SYM_TYPED_START(name, SYM_L_GLOBAL, SYM_A_ALIGN)
+@@ -1185,17 +1184,6 @@ bool cfi_bhi __ro_after_init = false;
  #endif
  
-+#else /* __ASSEMBLY__ */
-+
+ #ifdef CONFIG_CFI_CLANG
+-struct bpf_insn;
+-
+-/* Must match bpf_func_t / DEFINE_BPF_PROG_RUN() */
+-extern unsigned int __bpf_prog_runX(const void *ctx,
+-				    const struct bpf_insn *insn);
+-DEFINE_CFI_TYPE(cfi_bpf_hash, __bpf_prog_runX);
+-
+-/* Must match bpf_callback_t */
+-extern u64 __bpf_callback_fn(u64, u64, u64, u64, u64);
+-DEFINE_CFI_TYPE(cfi_bpf_subprog_hash, __bpf_callback_fn);
+-
+ u32 cfi_get_func_hash(void *func)
+ {
+ 	u32 hash;
+diff --git a/include/linux/cfi.h b/include/linux/cfi.h
+index 1db17ecbb86c..52a98886a455 100644
+--- a/include/linux/cfi.h
++++ b/include/linux/cfi.h
+@@ -11,16 +11,9 @@
+ #include <linux/module.h>
+ #include <asm/cfi.h>
+ 
 +#ifdef CONFIG_CFI_CLANG
-+#define DEFINE_CFI_TYPE(name, func)						\
-+	/*									\
-+	 * Force a reference to the function so the compiler generates		\
-+	 * __kcfi_typeid_<func>.						\
-+	 */									\
-+	__ADDRESSABLE(func);							\
-+	/* u32 name __ro_after_init = __kcfi_typeid_<func> */			\
-+	extern u32 name;							\
-+	asm (									\
-+	"	.pushsection	.data..ro_after_init,\"aw\",\%progbits	\n"	\
-+	"	.type	" #name ",\%object				\n"	\
-+	"	.globl	" #name "					\n"	\
-+	"	.p2align	2, 0x0					\n"	\
-+	#name ":							\n"	\
-+	"	.4byte	__kcfi_typeid_" #func "				\n"	\
-+	"	.size	" #name ", 4					\n"	\
-+	"	.popsection						\n"	\
-+	);
+ extern bool cfi_warn;
+ 
+-#ifndef cfi_get_offset
+-static inline int cfi_get_offset(void)
+-{
+-	return 0;
+-}
+-#endif
+-
+-#ifdef CONFIG_CFI_CLANG
+ enum bug_trap_type report_cfi_failure(struct pt_regs *regs, unsigned long addr,
+ 				      unsigned long *target, u32 type);
+ 
+@@ -29,6 +22,44 @@ static inline enum bug_trap_type report_cfi_failure_noaddr(struct pt_regs *regs,
+ {
+ 	return report_cfi_failure(regs, addr, NULL, 0);
+ }
++
++#ifndef cfi_get_offset
++/*
++ * Returns the CFI prefix offset. By default, the compiler emits only
++ * a 4-byte CFI type hash before the function. If an architecture
++ * uses -fpatchable-function-entry=N,M where M>0 to change the prefix
++ * offset, they must override this function.
++ */
++static inline int cfi_get_offset(void)
++{
++	return 4;
++}
 +#endif
 +
- #endif /* __ASSEMBLY__ */
- #endif /* _LINUX_CFI_TYPES_H */
++#ifndef cfi_get_func_hash
++static inline u32 cfi_get_func_hash(void *func)
++{
++	u32 hash;
++
++	if (get_kernel_nofault(hash, func - cfi_get_offset()))
++		return 0;
++
++	return hash;
++}
++#endif
++
++/* CFI type hashes for BPF function types */
++extern u32 cfi_bpf_hash;
++extern u32 cfi_bpf_subprog_hash;
++
++#else /* CONFIG_CFI_CLANG */
++
++static inline int cfi_get_offset(void) { return 0; }
++static inline u32 cfi_get_func_hash(void *func) { return 0; }
++
++#define cfi_bpf_hash 0U
++#define cfi_bpf_subprog_hash 0U
++
+ #endif /* CONFIG_CFI_CLANG */
+ 
+ #ifdef CONFIG_ARCH_USES_CFI_TRAPS
+diff --git a/kernel/cfi.c b/kernel/cfi.c
+index 422fa4f958ae..4dad04ead06c 100644
+--- a/kernel/cfi.c
++++ b/kernel/cfi.c
+@@ -5,6 +5,8 @@
+  * Copyright (C) 2022 Google LLC
+  */
+ 
++#include <linux/bpf.h>
++#include <linux/cfi_types.h>
+ #include <linux/cfi.h>
+ 
+ bool cfi_warn __ro_after_init = IS_ENABLED(CONFIG_CFI_PERMISSIVE);
+@@ -27,6 +29,19 @@ enum bug_trap_type report_cfi_failure(struct pt_regs *regs, unsigned long addr,
+ 	return BUG_TRAP_TYPE_BUG;
+ }
+ 
++/*
++ * Declare two non-existent functions with types that match bpf_func_t and
++ * bpf_callback_t pointers, and use DEFINE_CFI_TYPE to define type hash
++ * variables for each function type. The cfi_bpf_* variables are used by
++ * arch-specific BPF JIT implementations to ensure indirectly callable JIT
++ * code has matching CFI type hashes.
++ */
++extern typeof(*(bpf_func_t)0) __bpf_prog_runX;
++DEFINE_CFI_TYPE(cfi_bpf_hash, __bpf_prog_runX);
++
++extern typeof(*(bpf_callback_t)0) __bpf_callback_fn;
++DEFINE_CFI_TYPE(cfi_bpf_subprog_hash, __bpf_callback_fn);
++
+ #ifdef CONFIG_ARCH_USES_CFI_TRAPS
+ static inline unsigned long trap_address(s32 *p)
+ {
 -- 
 2.50.0.727.gbf7dc18ff4-goog
 
