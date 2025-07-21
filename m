@@ -1,228 +1,258 @@
-Return-Path: <bpf+bounces-63933-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63934-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C029B0CA9C
-	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 20:34:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9750CB0CAB4
+	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 20:53:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FBC817EBB4
-	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 18:34:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42B561AA577B
+	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 18:53:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A1F92DFA5C;
-	Mon, 21 Jul 2025 18:34:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="J7bZlhBO"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0EF421FF46;
+	Mon, 21 Jul 2025 18:53:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2074.outbound.protection.outlook.com [40.107.243.74])
+Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45B781FE44B;
-	Mon, 21 Jul 2025 18:34:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.74
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753122860; cv=fail; b=IewVIZTOmyAVSRbzK3PUzNZDOBP79edR9Clrkpq9PvdQDkQevPBkiqtt4ptlojKle/NH48qtNukRAsQvlyAcGDZVjDoJERT6aSMfW+RyzfM2RrvZdeZmDFDtlDMrrvagNxsl/XuoBTiOEFpWaTzhm0MqMG7i4Ay1kQTAhImz7bE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753122860; c=relaxed/simple;
-	bh=ZHWZMdZYqB5ZhFIT/FK0RpE92jxfkvy6UFTOG5CZX7A=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=kX8gukat/wxaqS+8cuKMscQ/5YdpfaJm7+46AM2K7OZFJiRFbRjRx8dJQ4qREJ6HiJ3lbpwhzAgaWjqiUGlkOdGdeVtVSH+jT/nc6+SWgR6eqYyiVZrKvgcI6XZV0knnwoaycdyJ1be5PofVziEjo5P2kb9ax1uQxqe+UTe0bvc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=J7bZlhBO; arc=fail smtp.client-ip=40.107.243.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=roGt6yZQIka3rVpuWlmjO5WEgHo5wp7RFuo7QqhcnIrmQ47UnMhYRj9/HgD+N1PP232oRzYCrsX4KJJUbRBoxfbkH4rHzefcSNVqtAvtIWNLmNicDuKzL4DvvFNzlC/R34bhjXCCsxPx64W+BEJ3TBlC9DlbsREvrFpSJkMSWe4GQtkF1my9BYrS3xflMap6FvzsuOF8FCfgf6PsP5JzLmzcLzxJBYdXltcy6sAKjj/oN4YQYCatgcpsawXcNUOYl9bJNC25UIYkY/pnV+iVfTub92qJuUvkxVxkqPYxJRh27544fcck2wtRAmRFqL+HICOjZL0TjtHxHh86R9Tuxg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hHZpxWc47/fPKtrx8v5CsxOXSjnJ0cQJbjY5gz30YLw=;
- b=yiIhidnXAxjEvCBu4oQA6r2kL6E16J7NNWdEHe0qaMZ937r33Sy3y2bbjVhcJnCd8hR8kY8euAFGSaz7rkFkUmRj9PaLR+1pG6Go45eIKehX+4iT3L4l3IJVHh3g1+yoPVkT3lXBScmo1Y63OIP0HuYoOIzeocIzV8EXyiyTfsORJa74s2dQo297lT/Q3CsywNF5u8LgCwCD/a/Ve5q7C4oAN7F7F6oFuw2CLnXxcz1WqtutJRFwrv5TrJGmFuxs+1BExQYcSnLDUhwSqfH41MqrWcDLxAs1xbG4mEB43ubz1oN8IwuI8hdXgWjvgMZD4T44OrLVJ54orx9SFHoYuQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hHZpxWc47/fPKtrx8v5CsxOXSjnJ0cQJbjY5gz30YLw=;
- b=J7bZlhBOJ3pZ9gwJzmY/PK+G/HnKP8NQykVOVHs1Ab8NGQiHwAQ8Q8qydLPeRvjEqDBItseDBdrchH0ovegdj0TCnLluQKBWtQoADNob1vOn5pK9TqP57MhMhicSDvow1XF1ve0/dxHPyeF2mjjOzoymaSKE47E9SOYuYuD/buJ9kCdOyK/rp57huQLGSeRFg+O5m/6nxG5RGpK4z70x4rR49E5SnvNgMbz9HuQzJN1AuQZYloDVdGqBk3bqfbKBVbaTSH55Ifw827VGuS0o/BZp7bDB7bm0h4KI6AWOu8LMjFMg7dshE8mTEmBZaVvnU/simtuvlQ4Tn98eMtBeow==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CH3PR12MB7500.namprd12.prod.outlook.com (2603:10b6:610:148::17)
- by IA0PPFF4B476A86.namprd12.prod.outlook.com (2603:10b6:20f:fc04::bea) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8835.26; Mon, 21 Jul
- 2025 18:34:14 +0000
-Received: from CH3PR12MB7500.namprd12.prod.outlook.com
- ([fe80::7470:5626:d269:2bf2]) by CH3PR12MB7500.namprd12.prod.outlook.com
- ([fe80::7470:5626:d269:2bf2%4]) with mapi id 15.20.8943.029; Mon, 21 Jul 2025
- 18:34:14 +0000
-Message-ID: <eaca90db-897c-45a0-8eed-92c36dbec825@nvidia.com>
-Date: Mon, 21 Jul 2025 21:34:05 +0300
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next V6 2/5] selftests: drv-net: Test XDP_PASS/DROP
- support
-To: Jakub Kicinski <kuba@kernel.org>, Nimrod Oren <noren@nvidia.com>
-Cc: Mohsin Bashir <mohsin.bashr@gmail.com>, netdev@vger.kernel.org,
- andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
- pabeni@redhat.com, shuah@kernel.org, horms@kernel.org, cratiu@nvidia.com,
- cjubran@nvidia.com, mbloch@nvidia.com, jdamato@fastly.com, sdf@fomichev.me,
- ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
- john.fastabend@gmail.com, nathan@kernel.org,
- nick.desaulniers+lkml@gmail.com, morbo@google.com, justinstitt@google.com,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
- tariqt@nvidia.com, thoiland@redhat.com
-References: <20250719083059.3209169-1-mohsin.bashr@gmail.com>
- <20250719083059.3209169-3-mohsin.bashr@gmail.com>
- <ab65545f-c79c-492b-a699-39f7afa984ea@nvidia.com>
- <20250721084046.5659971c@kernel.org>
-Content-Language: en-US
-From: Gal Pressman <gal@nvidia.com>
-In-Reply-To: <20250721084046.5659971c@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: TLZP290CA0007.ISRP290.PROD.OUTLOOK.COM (2603:1096:950:9::7)
- To CH3PR12MB7500.namprd12.prod.outlook.com (2603:10b6:610:148::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B887DDDC3;
+	Mon, 21 Jul 2025 18:53:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.17
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1753124003; cv=none; b=b3vV7THlT0MHFaE7T90kyfsb7CecBc0TL+N/s1+sv7hd0D5jc7NeSGoZmoXYMTCjyhLktu4G0XRJ6xDilRDO2d/ObJZu1igXUGDbwli/tgFcUIT2SZTEQogokDejNb/y8S7p/b+eA5V/+Ykg8O87XUmWB+zd/Al6AmmQ1XL5NP8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1753124003; c=relaxed/simple;
+	bh=X7ohL0l9JcoXzthoLsppaS0fdOu+yELUNFlMzVZzJZ4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BESiQb3Tn88JbPRI3qBgW2LzrPqAH1zyh9VbijFqeAnDHge81MgyKZRHbNJXHbmnoAoJrAwvHhfyL2rVp+Kg7e/3JcTrMR31zwQFglVYE/tPb+/x51xvbt3fdDe1NNcp0FJ5kHCO6BzN13mnwcfruGgin7P4tKx62jz+5v8fGRU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf19.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay04.hostedemail.com (Postfix) with ESMTP id AB4F61A0198;
+	Mon, 21 Jul 2025 18:53:17 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf19.hostedemail.com (Postfix) with ESMTPA id E380A20028;
+	Mon, 21 Jul 2025 18:53:12 +0000 (UTC)
+Date: Mon, 21 Jul 2025 14:53:43 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, x86@kernel.org, Masami Hiramatsu
+ <mhiramat@kernel.org>, Josh Poimboeuf <jpoimboe@kernel.org>, Peter Zijlstra
+ <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, Jiri Olsa
+ <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner
+ <tglx@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, Indu Bhagat
+ <indu.bhagat@oracle.com>, "Jose E. Marchesi" <jemarch@gnu.org>, Beau
+ Belgrave <beaub@linux.microsoft.com>, Jens Remus <jremus@linux.ibm.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton
+ <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>, Florian Weimer
+ <fweimer@redhat.com>, Sam James <sam@gentoo.org>, Brian Robbins
+ <brianrob@microsoft.com>, Elena Zannoni <elena.zannoni@oracle.com>
+Subject: Re: [RFC] New codectl(2) system call for sframe registration
+Message-ID: <20250721145343.5d9b0f80@gandalf.local.home>
+In-Reply-To: <2fa31347-3021-4604-bec3-e5a2d57b77b5@efficios.com>
+References: <2fa31347-3021-4604-bec3-e5a2d57b77b5@efficios.com>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB7500:EE_|IA0PPFF4B476A86:EE_
-X-MS-Office365-Filtering-Correlation-Id: fe273949-874d-46ca-3c32-08ddc8853158
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|7416014|1800799024|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?ek1GRzNnelRNYytobDI3SDBWSHBqYVpGTGVGN1dXLzc4OWJTeHdPYlNUSmFG?=
- =?utf-8?B?MFZaTGVvbTNXNjdEVUsvVnZyUlladWlKY3pZSDVFeU5XMUZLS0hXdDhxUksr?=
- =?utf-8?B?c2hyN0JCcDg4bWg1SS9Ld3A5RlpXOHBkR0N5OHNiRDVWM1VDNlQ1Qko5Y0JE?=
- =?utf-8?B?a05qWWlidjRHc0pXOFA4OEJMcm1QSUpVT2R2N0pnV0NISmF5bklJZ29zeW1R?=
- =?utf-8?B?QUtlU010WVA5WUNRelVYNUJsSjRtT2JXRUtRbnZBdDNkUW1SRTBxTTFNeUh0?=
- =?utf-8?B?SVlxUml2L2ZuWExvZ0VTUTdKVHRtK2s4bEJmbURsbkJjR1dZWDlTREF6SFl6?=
- =?utf-8?B?VWVqNlFPMkdUU1p6MU56OWFRSThwdzRZS3NqbDRDOEZhMFkrZXJCd1JtM0Jx?=
- =?utf-8?B?bHhpQi83ZWlybFJSV01WeUpBVjVsZ1RCZVRiRC96RzMzdjlSOUZGaG9hT0kv?=
- =?utf-8?B?ZHJkZjdLYkRwVG4xb2J3Q1hhK21UMi91WjU2akJsRXhQeklCVVJaMlRwNzlV?=
- =?utf-8?B?Z0xMNSt2aGxaRi9CYkxmRlNtemhSNzJOVjNHK29zVW9ZbXFiYy95bjMwajRR?=
- =?utf-8?B?ZnZ6NzRRMG1pWk1lQVpPWWF4NG1abjZ3TE9VRGtrRFZ2YjRRNm1TcjNVN2Vw?=
- =?utf-8?B?YktCd2VFTmZWVndhVFRDSFRpdVlVa2J4TDErdzc2bUlVRUgwUy9yMzNacExB?=
- =?utf-8?B?L3h3dGIzbFhMTnRVaUNuZzJKNnJkRE5HQnJydnloc2VJZTUrNllNSXowbk10?=
- =?utf-8?B?a0xRMUxzdTAxRTlJVVphTkNlR3cyUFVQVVh2VUNpV1pveDZXNVVtSG9vQ1Rz?=
- =?utf-8?B?S2tSMm03L1h0bTRvMGRFVHFybG43VEcwK0lHR3lNNUl0OGM1RXlwWDZheHNK?=
- =?utf-8?B?WU0rVGtKL2JOa2V1eGtUeW9aYmZmTVRLQTJzdHU5VGhmMDh5VFFMUURvRDlG?=
- =?utf-8?B?OGRDYWdFQ3FGTnVNYmYvMFBMbnBRTkNtWmhIb3FzcTY0ZTloWnJsQVpkT2JN?=
- =?utf-8?B?eGxOenRuK3hITkFIUHpOSU4wVzhSbmRPQkdjZDlLZ21oWkFkcitEN2pvMHln?=
- =?utf-8?B?eWNhcXp0ZVRjMXhSb3VSOE9WZ0VTOFN6Z3FWdm5rRXg5QmdDbldUMUh5VFQ5?=
- =?utf-8?B?SS91VUFQSUs2aXNldWMzWE1YTXQ4eW8zOXdyQ2kxZW41ZytmTG1FL1lrZkxX?=
- =?utf-8?B?TDZwcUJKQndWWUNzRGE4TmdFZGdweFZWYVB1M2NucUVjQkx3MUE1WmJhdmlH?=
- =?utf-8?B?TXlOTE84cFhsdTJhYTg5L1RldTBVSUw2ZWJqSDZuUVdUL1FZUEE3ZHlvMUxV?=
- =?utf-8?B?MUQxRjNSNVl2RUJ2MngvU0htZFZWOG5hMzNmQ1JEUXB6NGpUUTdYK1ZSNFdp?=
- =?utf-8?B?aTdvdllLYUhrWUhRRjdDMmVOQnlUc1NWbHcxYWhZTDd1eHF6ZHlvTUFyalBX?=
- =?utf-8?B?YWFNVUpzSTFMdzI5aENPQVpPZE1BRTFDNWVTQUNydUVscUk3R2svdzJ2UEVi?=
- =?utf-8?B?YnVjT29SODNzby9iYWlpOGF2c0xBUCtBNFJXampoT1NEdWZMS1M0MllGS3ZZ?=
- =?utf-8?B?dVJEbnhyV0pad2gwQTdzTWxmT3Y3bGZ5T25DeVBhNHJjazdqVG5MbFZ4bmd0?=
- =?utf-8?B?TXBQaU91Mkd6Vk9JaU5UbmpQSUwzTTJ1ZVlSZmdMM2lxNysyRDdRUHdTc2hk?=
- =?utf-8?B?b1BaczlVSTZBVHg4UlRxNlIveCtkS2JZWmdHV2lEdEVYV1pUM1BGdHRDb2J3?=
- =?utf-8?B?ci9jVmJHcjVXWjAvL0h1MUtnV2N1QmovempIZk5vd0R2eXpMR3pZL1orYS8y?=
- =?utf-8?B?OWUvQkhCZmFsUi8xY1h1NVdKYXFTQWdHYUpWbTBvS1FHY1NRU08yMWNnN1lo?=
- =?utf-8?B?U0VSSWNObEhzY3V4bGZKVVJ1TnBPdTBVRE9zeGxaTFpPbUt2U2JzR1dQeHhU?=
- =?utf-8?Q?S9DZtqoD6Z8=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB7500.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(1800799024)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?M3N5anB0K1A3cHFkck5nU0M5WUJqc1U0NlpNY2tCZEwzVmMxczlEb1BvYTVi?=
- =?utf-8?B?TDdTdHpON3Vpd1JoS2pUcG1KU2hCQWVFUDhZc095UDA5aEtqblVTS1JnbnFl?=
- =?utf-8?B?SnJ2MDdRK0ZIdE80TFRZUVNlUGpBRE85NlRvRmtWOVdjZUtpc0dQVTZGQ0xh?=
- =?utf-8?B?Vm1lclpPTUFjSnlWTTc1YyszaWNWcXcrV29oNmNQS1Faclhib1hHdS9TZXo3?=
- =?utf-8?B?SVBKVWM0a2t2ZEdXOHFJWUJWTXpla2EydS9zMUNIdWlYZzAwNlNpRzROdVQz?=
- =?utf-8?B?OTBCOGpJcEtTUEpSRkM3Q0RDd3NjbkxIdVhCSUZKQ01qWkhiUnRIZVBrMUUy?=
- =?utf-8?B?STZCTEtOL0RBS3BNYmVtTkh5TUowV1BsTmo3cXVuS2pxVHhBci90UHZ4Qmsz?=
- =?utf-8?B?UDczUEVvdlBSem1sZTlZUjJCb3ZqUWxFOFdqRnpOTWRKK2ZLb0dYSEF0eWVK?=
- =?utf-8?B?TUh1L0hFVzgwbUZqbkNrTi9mTlRINEtJSDFHMGpvQmZBQzlFdEFLSHdhc1NU?=
- =?utf-8?B?MjdpamIzeVJRby9oQ0NIYVZ4K1JHdlMyK3lCSmNnU0xiMEVuR0ZWMTZvWnpW?=
- =?utf-8?B?Mnh5emJnZmdxQ3daM2tsbktyaXdWUUhoUWxpUTJBTExVZCtkSDFmbFBoRVV4?=
- =?utf-8?B?QmZYU3JLZ25rVEJlaFZKcTVMa1lQWHhyMHBhZFhhQWRsWWRHcnAyS0Uwd2d2?=
- =?utf-8?B?bDF5cVoyRmdKOWNqMlpralNqYUsvOGRVMm5DS2xkRzJGRjQrRXo2Y1hRb0k0?=
- =?utf-8?B?S0N2U0F4dDd0SnZTaUlFMUUvQm5uZ1ZJdHM4TDg3ckd6N3FNN2VjcmtrMVBV?=
- =?utf-8?B?L2U0SzJPK1VpS0hMT0c3bDcrcVJDdXdkWDFOYmtmRmtKSUNvL2M0UGdHU0FB?=
- =?utf-8?B?YWtFZUZkQTFtZlBWZFJ4UDI5Q2FyV0wrNy9aejF0aHhVMmtyVE1rVVROMitP?=
- =?utf-8?B?YTB1Y0ducVd3TlppUnZqbjNzdjJFRU12ZXFUQW9ZYkV2YVFnbUFvOXJlNHBi?=
- =?utf-8?B?ekl1cUk3N0pKSG9RSklhT3AvaWNOSW9zbHR4bWJyc0w4RVFtWk8wT09Jb1Fy?=
- =?utf-8?B?TWlqK1NDN3paMUorU2JDRnZzd0l0Zkx2ZTBUWnpyMUV4ZTVyRVloWDRWU1lX?=
- =?utf-8?B?YXVsbVJ1MTFWQ0QxeXVxeGJzTXlaeWRJd3BxL2FFMmNCTEtNY0liMjEySkpi?=
- =?utf-8?B?MklkRVh1RXBGaGp1RWVxU2xLaWlXZWMzUWI5S0psNFFoVm9kSVpLUmVHOGJW?=
- =?utf-8?B?UW9HSmREV2V3VnhFOWVVZkhxTEIyR3pDNWpyVXEzQVd3cVRoQkxVU0FQT2gy?=
- =?utf-8?B?UEFDRHZqOVZUK1dTaGNtQWRsSFdUQjFjUjVJZXdlalIvTGxtSStmVjI5TVo0?=
- =?utf-8?B?eFJrbFNuUWR4cklBTUQyVXJ4R0RpUW1xNlZ2TjFqYkx2NFl2WDZkOUl4Mmt6?=
- =?utf-8?B?Z05NaDE3U056OEtHL2ZOV0Q2cWExNzZmdUp3VmR1M0NlM1hINDUzYmhwV2Fh?=
- =?utf-8?B?RzQxcjFxUGh6ZEc2eUVwL0NycWxlbXdBcG50bmNVYzQxYjNYaUV0dmY2a2xT?=
- =?utf-8?B?Y1VSUUcxcGpybHNYQm9mOWpsVVVkaFRTRmlyZElySWZoTDZVQ1ludVl3T2ZN?=
- =?utf-8?B?dVBUd1V3bDEzNW9VUkJldSs0bnlpRUlMUHA3OG5Ddmpya1JESk9OVTZsVTRr?=
- =?utf-8?B?L1ZCRnJybDZwNjFoVTcvYUYvdnpvRGhXcGprZ1BSRDNDS0ovNk91N2tlMlBR?=
- =?utf-8?B?VzgybkRjTVREN3F4UGpnQm9JWEZTTUQ1YXFrblQ5bWtvZ3crMHRBOFpPT0Za?=
- =?utf-8?B?VGNBOVFjVnhPa3g2blgvL2ZKN080K09WejAwMlExT3lkNy9FeXI2eEZOTXdZ?=
- =?utf-8?B?aTR6TGs1c3c5U3Z5UnFORVQ1N1ZRQlh1aEFMc3FlOUtkNktERnB0SVRwU2Fa?=
- =?utf-8?B?endDMC9WZFB1VERrN3dBZGNzNEZtNitndUxla0srTXBhK0pNQWhPb1ZsdDNE?=
- =?utf-8?B?UWpEV3d0Z3R6UDJidVdGSXRFVmZ2alpPU1BJMzNyemltdkcrUDhDMEI0SmFu?=
- =?utf-8?B?dFk3KzRCZGJ2WEJFSC9lbFI1VEp1dmdhNENGazNHcE9rTmVMSlRzN0RtNXhW?=
- =?utf-8?Q?T1zc=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fe273949-874d-46ca-3c32-08ddc8853158
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB7500.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2025 18:34:14.4440
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lbjGXXVjcOQURz569EN38pzT63caEXtakORTCp8DBHnR4KhN4Kej5JLIX36Svx9i
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PPFF4B476A86
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+X-Stat-Signature: 3wfbsfszaepa8icypym6eij1phb5h9hu
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: E380A20028
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1/uxOdSyTbUbm9DRBoc2ZPS52vmSLxAVSI=
+X-HE-Tag: 1753123992-811885
+X-HE-Meta: U2FsdGVkX18hrS6Pkp3rZXlCB33Q6moaQMnuDps3pNGqs/WF0WjwKGQZvXnZUbPTOfG6czkHAzfpZ5tn27Srto+2k4D1Uuda9KXzsf+1Vod7zna3HAFza9rKDX+w9fDOj58cOvMfotfhwhH1zdp+XDgTnfKlcEfk5LTTNyV2S064E2KypM3hQSqyXmGExuWaT/N535Jm2psMjZlez/DOQR9vGActZmte81pOu5/cBw6pHDj2O4A3Lu5WfEo6/JrC0sHF65KOR4wEr9HkJL44LWLUKAzySZSVF83YX9up/F8eYUtv1hMCIjJ1l4YcoyY9e4GvMVSH6F22iGzTejA1sPXCUvmfWfpHegJk72grMNd0YF07Kj8uJCQwH8n5vXMA8CcuiV9N5pxu/tiCHpTvfiwoy94QIes7zeCYcDgNVZLN1P9WVpzmyD91fkLUXs/E
 
-On 21/07/2025 18:40, Jakub Kicinski wrote:
-> On Mon, 21 Jul 2025 14:43:15 +0300 Nimrod Oren wrote:
->>> +static struct udphdr *filter_udphdr(struct xdp_md *ctx, __u16 port)
->>> +{
->>> +	void *data_end = (void *)(long)ctx->data_end;
->>> +	void *data = (void *)(long)ctx->data;
->>> +	struct udphdr *udph = NULL;
->>> +	struct ethhdr *eth = data;
->>> +
->>> +	if (data + sizeof(*eth) > data_end)
->>> +		return NULL;
->>> +  
->>
->> This check assumes that the packet headers reside in the linear part of
->> the xdp_buff. However, this assumption does not hold across all drivers.
->> For example, in mlx5, the linear part is empty when using multi-buffer
->> mode with striding rq configuration. This causes all multi-buffer test
->> cases to fail over mlx5.
->>
->> To ensure correctness across all drivers, all direct accesses to packet
->> data should use these safer helper functions instead:
->> bpf_xdp_load_bytes() and bpf_xdp_store_bytes().
->>
->> Related discussion and context can be found here:
->> https://github.com/xdp-project/xdp-tools/pull/409
-> 
-> That's a reasonable way to modify the test. But I'm not sure it's
-> something that should be blocking merging the patches.
-> Or for that matter whether it's Mohsin's responsibility to make the
-> test cater to quirks of mlx5, 
+On Mon, 21 Jul 2025 11:20:34 -0400
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 
-Definitely not a quirk, you cannot assume the headers are in the linear
-part, especially if you're going to put this program as reference in the
-kernel tree.
+> Hi!
+>=20
+> I've written up an RFC for a new system call to handle sframe registration
+> for shared libraries. There has been interest to cover both sframe in
+> the short term, but also JIT use-cases in the long term, so I'm
+> covering both here in this RFC to provide the full context. Implementation
+> wise we could start by only covering the sframe use-case.
+>=20
+> I've called it "codectl(2)" for now, but I'm of course open to feedback.
 
-This issue has nothing to do with mlx5, but a buggy XDP program.
+Hmm, I guess I'm OK with that name. I can't really think of anything that
+would be better. But kernel developers are notorious for sucking at coming
+up with decent names ;-)
 
-> which is not even part of NIPA testing -
-> we have no way of knowing what passes for mlx5, what regresses it etc.
+>=20
+> For ELF, I'm including the optional pathname, build id, and debug link
+> information which are really useful to translate from instruction pointers
+> to executable/library name, symbol, offset, source file, line number.
+> This is what we are using in LTTng-UST and Babeltrace debug-info filter
+> plugin [1], and I think this would be relevant for kernel tracers as well
+> so they can make the resulting stack traces meaningful to users.
 
-People have been developing XDP code that runs on mlx5 long before NIPA
-even existed 🤷‍♂️..
-And as you know, we run these selftests on mlx5 hardware, as evident by
-Nimrod's mail, and others you've seen on the list. You know what regresses.
+Honestly, I'm not sure it needs to be an ELF file. Just a file that has an
+sframe section in it.
+
+>=20
+> sys_codectl(2)
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>=20
+> * arg0: unsigned int @option:
+>=20
+> /* Additional labels can be added to enum code_opt, for extensibility. */
+>=20
+> enum code_opt {
+>      CODE_REGISTER_ELF,
+
+Perhaps the above should be: CODE_REGISTER_SFRAME,
+
+as currently SFrame is read only via files.
+
+>      CODE_REGISTER_JIT,
+
+=46rom our other conversations, JIT will likely be a completely different
+format than SFRAME, so calling it just JIT should be fine.
+
+
+>      CODE_UNREGISTER,
+
+I wonder if this should be the first enum. That is, "0" is to unregister.
+
+That way, all non-zero options will be for what is being registered, and
+"0" is for unregistering any of them.
+
+
+> };
+>=20
+> * arg1: void * @info
+>=20
+> /* if (@option =3D=3D CODE_REGISTER_ELF) */
+>=20
+> /*
+>   * text_start, text_end, sframe_start, sframe_end allow unwinding of the
+>   * call stack.
+>   *
+>   * elf_start, elf_end, pathname, and either build_id or debug_link allows
+>   * mapping instruction pointers to file, symbol, offset, and source file
+>   * location.
+>   */
+> struct code_elf_info {
+> :   __u64 elf_start;
+>      __u64 elf_end;
+
+Perhaps:
+
+	__u64 file_start;
+	__u64 file_end;
+
+?
+
+And call it "struct code_sframe_info"
+
+>      __u64 text_start;
+>      __u64 text_end;
+
+>      __u64 sframe_start;
+>      __u64 sframe_end;
+
+What is the above "sframe" for?
+
+>      __u64 pathname;              /* char *, NULL if unavailable. */
+>=20
+>      __u64 build_id;              /* char *, NULL if unavailable. */
+>      __u64 debug_link_pathname;   /* char *, NULL if unavailable. */
+
+Maybe just list the above three as "optional" ?
+
+It may be available, but the implementer just doesn't want to implement it.
+
+>      __u32 build_id_len;
+>      __u32 debug_link_crc;
+> };
+>=20
+>=20
+> /* if (@option =3D=3D CODE_REGISTER_JIT) */
+>=20
+> /*
+>   * Registration of sorted JIT unwind table: The reserved memory area is
+>   * of size reserved_len. Userspace increases used_len as new code is
+>   * populated between text_start and text_end. This area is populated in
+>   * increasing address order, and its ABI requires to have no overlapping
+>   * fre. This fits the common use-case where JITs populate code into
+>   * a given memory area by increasing address order. The sorted unwind
+>   * tables can be chained with a singly-linked list as they become full.
+>   * Consecutive chained tables are also in sorted text address order.
+>   *
+>   * Note: if there is an eventual use-case for unsorted jit unwind table,
+>   * this would be introduced as a new "code option".
+>   */
+>=20
+> struct code_jit_info {
+>      __u64 text_start;      /* text_start >=3D addr */
+>      __u64 text_end;        /* addr < text_end */
+>      __u64 unwind_head;     /* struct code_jit_unwind_table * */
+> };
+>=20
+> struct code_jit_unwind_fre {
+>      /*
+>       * Contains info similar to sframe, allowing unwind for a given
+>       * code address range.
+>       */
+>      __u32 size;
+>      __u32 ip_off;  /* offset from text_start */
+>      __s32 cfa_off;
+>      __s32 ra_off;
+>      __s32 fp_off;
+>      __u8 info;
+> };
+>=20
+> struct code_jit_unwind_table {
+>      __u64 reserved_len;
+>      __u64 used_len; /*
+>                       * Incremented by userspace (store-release), read by
+>                       * the kernel (load-acquire).
+>                       */
+>      __u64 next;     /* Chain with next struct code_jit_unwind_table. */
+>      struct code_jit_unwind_fre fre[];
+> };
+
+I wonder if we should avoid the "jit" portion completely for now until we
+know what exactly we need.
+
+Thanks,
+
+-- Steve
+
+
+>=20
+> /* if (@option =3D=3D CODE_UNREGISTER) */
+>=20
+> void *info
+>=20
+> * arg2: size_t info_size
+>=20
+> /*
+>   * Size of @info structure, allowing extensibility. See
+>   * copy_struct_from_user().
+>   */
+>=20
+> * arg3: unsigned int flags (0)
+>=20
+> /* Flags for extensibility. */
+>=20
+> Your feedback is welcome,
+>=20
+> Thanks,
+>=20
+> Mathieu
+>=20
+> [1] https://babeltrace.org/docs/v2.0/man7/babeltrace2-filter.lttng-utils.=
+debug-info.7/
+>=20
+
 
