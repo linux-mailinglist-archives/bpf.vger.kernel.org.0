@@ -1,280 +1,394 @@
-Return-Path: <bpf+bounces-63943-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63944-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 610A3B0CC49
-	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 23:15:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EE85B0CC5B
+	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 23:20:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09DD61AA2220
-	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 21:16:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F08FD1AA5542
+	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 21:20:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BAE723D2A0;
-	Mon, 21 Jul 2025 21:15:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB0E723E34C;
+	Mon, 21 Jul 2025 21:20:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sxXL0iZz"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C52381F4C92;
-	Mon, 21 Jul 2025 21:15:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CA3A2222BB;
+	Mon, 21 Jul 2025 21:20:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753132539; cv=none; b=hvYf+DV+jQ28EEfA62kCCbgZ5O2HwW6xWOCkxTlZjYFWUd8+B5x+dIAd3XBJH0Wix8KaK9xjej3dczHupeeQL+jHgDILLI5ECrLtJOSTEC+mecbEnKXS2uaYmGkdljT1NACkHfCUzLBqyKP3farLKcEQaCFfNzjiptWzTHlWhk8=
+	t=1753132805; cv=none; b=Ym6dne1o2FE46hHl6S/grJ1YebaqWfaCQpXpeyW/QN5WRt3i5UhH0T7wvE0jDioZGQVMG65mkVtGZuj6eNq/k+XWDGkIPcSUjoN5GSOCBucjrJ/ixXuQQIQPxL9fBz1L3SwoZlWubaKwFfpenAT0cCaIdkz2Qg/L0HfNDMvVNm8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753132539; c=relaxed/simple;
-	bh=UXQqaSrKNl32HMXFzjbrX6dAJBcUn1XXimPqlbYI1Zc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OHQFX2+OZ02AWb4IZZ7k9bj3NVMnvtSEc3RFWX52Uu83QLn199hTwdAFS8SZ41dpDEHMxO6FA1Zkw60O74mrBCYpbR5HKdU+kMZ+h3cagolXKBevNKqMlBE29IUNHiJBZ4jvNcDliZsaL1jqQ/e18MrOYJHOFQzPVE/FxWKE2zE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf01.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay08.hostedemail.com (Postfix) with ESMTP id 8CC3F1401AF;
-	Mon, 21 Jul 2025 21:15:33 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf01.hostedemail.com (Postfix) with ESMTPA id BA6B06000F;
-	Mon, 21 Jul 2025 21:15:28 +0000 (UTC)
-Date: Mon, 21 Jul 2025 17:15:59 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org, x86@kernel.org, Masami Hiramatsu
- <mhiramat@kernel.org>, Josh Poimboeuf <jpoimboe@kernel.org>, Peter Zijlstra
- <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, Jiri Olsa
- <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner
- <tglx@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, Indu Bhagat
- <indu.bhagat@oracle.com>, "Jose E. Marchesi" <jemarch@gnu.org>, Beau
- Belgrave <beaub@linux.microsoft.com>, Jens Remus <jremus@linux.ibm.com>,
- Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton
- <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>, Florian Weimer
- <fweimer@redhat.com>, Sam James <sam@gentoo.org>, Brian Robbins
- <brianrob@microsoft.com>, Elena Zannoni <elena.zannoni@oracle.com>
-Subject: Re: [RFC] New codectl(2) system call for sframe registration
-Message-ID: <20250721171559.53ea892f@gandalf.local.home>
-In-Reply-To: <e7926bca-318b-40a0-a586-83516302e8c1@efficios.com>
-References: <2fa31347-3021-4604-bec3-e5a2d57b77b5@efficios.com>
-	<20250721145343.5d9b0f80@gandalf.local.home>
-	<e7926bca-318b-40a0-a586-83516302e8c1@efficios.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1753132805; c=relaxed/simple;
+	bh=DdMZqGsMcsX2j5Fwr65TWS1YgbRCYftmS2bbZClwudk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BNHdtV6+OI2nC2BWOmbWJIg7/rY9HOz4EZzrMaWLVkfKrXYPQVR4TcdnjefmhsOWdos4RddcDvgB/2g498mSTlDTYGv5BTiXl9OQPuR8yDX0Y7VgQSj2xKcegyCzXQFgxl5yBVEdFdkwMLzaoPOfrMLx2f7ZBOVIwcAKUKViKeA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sxXL0iZz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CABFC4CEED;
+	Mon, 21 Jul 2025 21:20:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753132805;
+	bh=DdMZqGsMcsX2j5Fwr65TWS1YgbRCYftmS2bbZClwudk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=sxXL0iZzBjLDI3GORBNFaBZR44fWtFMVaAGQbjy35okBCFBE3UhnVuTtbj9sWbXqb
+	 gsl40ft0NpOAUypvL0l6skjWDQB42CfKLrGg2NCght/XNOmh66hXkHSBvzT474BQ4g
+	 WpRWRwvUL0QMsrSRIZyYCWNvdEPkPyPL64FWc+Fl8Q5qHc7DXaPDBtgasBl5ZAKanM
+	 bOqv4QViCT9bSB2/idTZMigoic/XduK1KRwydMhxRC7UWI/Ghkdq4l2Q2k21G8dQy9
+	 ZFEsPU7m4b9C8rgHkmGOZPIMaaVjQBQeX+8A1N9wdPMKy31rRddE4B6ciVp/qvdJ2Y
+	 52q3Ljnb3nFjg==
+From: KP Singh <kpsingh@kernel.org>
+To: bpf@vger.kernel.org,
+	linux-security-module@vger.kernel.org
+Cc: bboscaccy@linux.microsoft.com,
+	paul@paul-moore.com,
+	kys@microsoft.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org
+Subject: [PATCH v2 00/13] Signed BPF programs
+Date: Mon, 21 Jul 2025 23:19:45 +0200
+Message-ID: <20250721211958.1881379-1-kpsingh@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: ag81zer5egpqh9su1tcpmhb9adkx5adh
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: BA6B06000F
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX18IAN69k6jt255S96ZtQ7lzqvvHrMQq1QI=
-X-HE-Tag: 1753132528-518571
-X-HE-Meta: U2FsdGVkX1/R7XQyqHfn2QUhOnBWDmWkCePphtyYWkDNL+6B52nQVE3yRvQ5HLxL2sUDQ8LKaFrdrJXqHBm6H8P5TwkX4SoubRxIYW5kal1toHP6Ye5YHJRYrcLVHXk1FQe3Upqojj9UoIFx3HMPHWuTfltybq4gGCFwNw6GePA/IxLLWciO8WnyYiG3GzLZS4GitYhyswY+S0QjcmGboxsO7Deb9xQJkgQx1sNv0odWvrXIzwmgFlJ+ZmeB62NNLO4/uAFr5zLUbCBDCGBZk8D8xW17Hs649LEGZpAT/IhUmTxLAb3a1qOGBzgWYGT2bJine59ge8Mu3b0lUthTBEVn23B0OoMFHN/+xxL0xWFcZ3ZpQ+h+RZWDBr1X7MlM
+Content-Transfer-Encoding: 8bit
 
-On Mon, 21 Jul 2025 16:58:43 -0400
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+#v1 -> v2
 
-> > Honestly, I'm not sure it needs to be an ELF file. Just a file that has an
-> > sframe section in it.  
-> 
-> Indu told me on IRC that for GNU/Linux, SFrame will be an
-> allocated,loaded section in elf files.
+* Addressed feedback on excl maps and their implementation
+* fixed s390x and other tests that were failing in the CI.
+* using the kernel's sha256 API since it now uses acceleration if available
+* simple signing test case, this can be extended to inject a false SHA into
+  the loader
 
-Yes it is, but is that a requirement for this interface? I just don't want
-to add requirements based on how thing currently work if they are not
-needed.
+BPF Signing has gone over multiple discussions in various conferences with the
+kernel and BPF community and the following patch series is a culmination
+of the current of discussion and signed BPF programs. Once signing is
+implemented, the next focus would be to implement the right security policies
+for all BPF use-cases (dynamically generated bpf programs, simple non CO-RE
+programs).
 
-> 
-> I'm planning to add optional fields (build id, debug link) that are
-> ELF-specific. I therefore think it's best that we keep this specific as
-> registration of an elf file.
+Signing also paves the way for allowing unrivileged users to
+load vetted BPF programs and helps in adhering to the principle of least
+privlege by avoiding unnecessary elevation of privileges to CAP_BPF and
+CAP_SYS_ADMIN (ofcourse, with the appropriate security policy active).
 
-Here's a hypothetical, what if for some reason (say having the sframe
-sections outside of the elf file) that the linker shares that?
+A early version of this design was proposed in [1]:
 
-For instance, if the sframe sections are downloaded separately as a
-separate package for a given executable (to make it not mandatory for an
-install), the linker could be smart enough to see that they exist in some
-special location and then pass that to the kernel. In other words, this is
-option is specific for sframe and not ELF. I rather call it by that.
+# General Idea: Trusted Hash Chain
 
-> 
-> If there are other file types in the future that happen to contain an
-> sframe section (but are not ELF), then we can simply add a new label to
-> enum code_opt.
-> 
-> >   
-> >>
-> >> sys_codectl(2)
-> >> =================
-> >>
-> >> * arg0: unsigned int @option:
-> >>
-> >> /* Additional labels can be added to enum code_opt, for extensibility. */
-> >>
-> >> enum code_opt {
-> >>       CODE_REGISTER_ELF,  
-> > 
-> > Perhaps the above should be: CODE_REGISTER_SFRAME,
-> > 
-> > as currently SFrame is read only via files.  
-> 
-> As I pointed out above, on GNU/Linux, sframe is always an allocated,loaded
-> ELF section. AFAIU, your comment implies that we'd want to support other scenarios
-> where the sframe is in files outside of elf binary sframe sections. Can you
-> expand on the use-case you have for this, or is it just for future-proofing ?
+The key idea of the design is to use a signing algorithm that allows
+us to integrity-protect a number of future payloads, including their
+order, by creating a chain of trust.
 
-Heh, I just did above (before reading this). But yeah, it could be. As I
-mentioned above, this is not about ELF files. Sframes just happen to be in
-an ELF file. CODE_REGISTER_ELF sounds like this is for doing special
-actions to an ELF file, when in reality it is doing special actions to tell
-the kernel this is an sframe table. It just happens that sframes are in
-ELF. Let's call it for what it is used for.
+Consider that Alice needs to send messages M_1, M_2, ..., M_n to Bob.
+We define blocks of data such that:
 
-> 
-> >   
-> >>       CODE_REGISTER_JIT,  
-> > 
-> >  From our other conversations, JIT will likely be a completely different
-> > format than SFRAME, so calling it just JIT should be fine.  
-> 
-> OK
-> 
-> > 
-> >   
-> >>       CODE_UNREGISTER,  
-> > 
-> > I wonder if this should be the first enum. That is, "0" is to unregister.
-> > 
-> > That way, all non-zero options will be for what is being registered, and
-> > "0" is for unregistering any of them.  
-> 
-> Good idea, I'll do that.
-> 
-> > 
-> >   
-> >> };
-> >>
-> >> * arg1: void * @info
-> >>
-> >> /* if (@option == CODE_REGISTER_ELF) */
-> >>
-> >> /*
-> >>    * text_start, text_end, sframe_start, sframe_end allow unwinding of the
-> >>    * call stack.
-> >>    *
-> >>    * elf_start, elf_end, pathname, and either build_id or debug_link allows
-> >>    * mapping instruction pointers to file, symbol, offset, and source file
-> >>    * location.
-> >>    */
-> >> struct code_elf_info {
-> >> :   __u64 elf_start;
-> >>       __u64 elf_end;  
-> > 
-> > Perhaps:
-> > 
-> > 	__u64 file_start;
-> > 	__u64 file_end;
-> > 
-> > ?
-> > 
-> > And call it "struct code_sframe_info"
-> >   
-> >>       __u64 text_start;
-> >>       __u64 text_end;  
-> >   
-> >>       __u64 sframe_start;
-> >>       __u64 sframe_end;  
-> > 
-> > What is the above "sframe" for?
+    B_n = M_n || H(termination_marker)
 
-Still wondering what the above is for.
+(Each block contains its corresponding message and the hash of the
+*next* block in the chain.)
 
-> >   
-> >>       __u64 pathname;              /* char *, NULL if unavailable. */
-> >>
-> >>       __u64 build_id;              /* char *, NULL if unavailable. */
-> >>       __u64 debug_link_pathname;   /* char *, NULL if unavailable. */  
-> > 
-> > Maybe just list the above three as "optional" ?  
-> 
-> This is what I had in mind with "NULL if unavailable", but I can clarify
-> them as being "optional" in the comment.
-> 
-> Do you envision that the sizeof(struct code_elf_info) could be smaller
-> and not include the optional fields, or just specifying them as NULL if
-> unavailable is enough ?
+    B_{n-1} = M_{n-1} || H(B_n)
+    B_{n-2} = M_{n-2} || H(B_{n-1})
 
-Hmm, are we going to allow this structure to expand? Should we give it a
-size. Or just state that different options could have different sizes (and
-make this more of a union than a structure).
+  ...
 
-> 
-> > 
-> > It may be available, but the implementer just doesn't want to implement it.
-> >   
-> >>       __u32 build_id_len;
-> >>       __u32 debug_link_crc;
-> >> };
-> >>
-> >>
-> >> /* if (@option == CODE_REGISTER_JIT) */
-> >>
-> >> /*
-> >>    * Registration of sorted JIT unwind table: The reserved memory area is
-> >>    * of size reserved_len. Userspace increases used_len as new code is
-> >>    * populated between text_start and text_end. This area is populated in
-> >>    * increasing address order, and its ABI requires to have no overlapping
-> >>    * fre. This fits the common use-case where JITs populate code into
-> >>    * a given memory area by increasing address order. The sorted unwind
-> >>    * tables can be chained with a singly-linked list as they become full.
-> >>    * Consecutive chained tables are also in sorted text address order.
-> >>    *
-> >>    * Note: if there is an eventual use-case for unsorted jit unwind table,
-> >>    * this would be introduced as a new "code option".
-> >>    */
-> >>
-> >> struct code_jit_info {
-> >>       __u64 text_start;      /* text_start >= addr */
-> >>       __u64 text_end;        /* addr < text_end */
-> >>       __u64 unwind_head;     /* struct code_jit_unwind_table * */
-> >> };
-> >>
-> >> struct code_jit_unwind_fre {
-> >>       /*
-> >>        * Contains info similar to sframe, allowing unwind for a given
-> >>        * code address range.
-> >>        */
-> >>       __u32 size;
-> >>       __u32 ip_off;  /* offset from text_start */
-> >>       __s32 cfa_off;
-> >>       __s32 ra_off;
-> >>       __s32 fp_off;
-> >>       __u8 info;
-> >> };
-> >>
-> >> struct code_jit_unwind_table {
-> >>       __u64 reserved_len;
-> >>       __u64 used_len; /*
-> >>                        * Incremented by userspace (store-release), read by
-> >>                        * the kernel (load-acquire).
-> >>                        */
-> >>       __u64 next;     /* Chain with next struct code_jit_unwind_table. */
-> >>       struct code_jit_unwind_fre fre[];
-> >> };  
-> > 
-> > I wonder if we should avoid the "jit" portion completely for now until we
-> > know what exactly we need.  
-> 
-> I don't want to spend too much discussion time on the jit portion at this stage,
-> but I think it's good to keep this in mind so we come up with an ABI that will
-> naturally extend to cover that use case. I favor keeping the JIT portion in these
-> discussions but not implement it initially.
+    B_2 = M_2 || H(B_3)
+    B_1 = M_1 || H(B_2)
 
-As long as the structure is flexible to handle this. We could even add the
-JIT enum, but return -EINVAL (or whatever) if it is used to state that it's
-not currently implemented.
+Alice does the following (e.g., on a build system where all payloads
+are available):
 
--- Steve
+  * Assembles the blocks B_1, B_2, ..., B_n.
+  * Calculates H(B_1) and signs it, yielding Sig(H(B_1)).
+
+Alice sends the following to Bob:
+
+    M_1, H(B_2), Sig(H(B_1))
+
+Bob receives this payload and does the following:
+
+    * Reconstructs B_1 as B_1' using the received M_1 and H(B_2)
+(i.e., B_1' = M_1 || H(B_2)).
+    * Recomputes H(B_1') and verifies the signature against the
+received Sig(H(B_1)).
+    * If the signature verifies, it establishes the integrity of M_1
+and H(B_2) (and transitively, the integrity of the entire chain). Bob
+now stores the verified H(B_2) until it receives the next message.
+    * When Bob receives M_2 (and H(B_3) if n > 2), it reconstructs
+B_2' (e.g., B_2' = M_2 || H(B_3), or if n=2, B_2' = M_2 ||
+H(termination_marker)). Bob then computes H(B_2') and compares it
+against the stored H(B_2) that was verified in the previous step.
+
+This process continues until the last block is received and verified.
+
+Now, applying this to the BPF signing use-case, we simplify to two messages:
+
+    M_1 = I_loader (the instructions of the loader program)
+    M_2 = M_metadata (the metadata for the loader program, passed in a
+map, which includes the programs to be loaded and other context)
+
+For this specific BPF case, we will directly sign a composite of the
+first message and the hash of the second. Let H_meta = H(M_metadata).
+The block to be signed is effectively:
+
+    B_signed = I_loader || H_meta
+
+The signature generated is Sig(B_signed).
+
+The process then follows a similar pattern to the Alice and Bob model,
+where the kernel (Bob) verifies I_loader and H_meta using the
+signature. Then, the trusted I_loader is responsible for verifying
+M_metadata against the trusted H_meta.
+
+From an implementation standpoint:
+
+# Build
+
+bpftool (or some other tool in a trusted build environment) knows
+about the metadata (M_metadata) and the loader program (I_loader). It
+first calculates H_meta = H(M_metadata). Then it constructs the object
+to be signed and computes the signature:
+
+    Sig(I_loader || H_meta)
+
+# Loader
+
+The loader program and the metadata are a hermetic representation of the source
+of the eBPF program, its maps and context. The loader program is generated by
+libbpf as a part of a standard API i.e. bpf_object__gen_loader.
+
+## Supply chain
+
+While users can use light skeletons as a convenient method to use signing
+support, they can directly use the loader program generation using libbpf
+(bpf_object__gen_loader) into their own trusted toolchains.
+
+libbpf, which has access to the program's instruction buffer is a key part of
+the TCB of the build environment
+
+An advanced threat model that does not intend to depend on libbpf (or any provenant
+userspace BPF libraries) due to supply chain risks despite it being developed
+in the kernel source and by the kernel community will require reimplmenting a
+lot of the core BPF userspace support (like instruction relocation, map handling).
+
+Such an advanced user would also need to integrate the generation of the loader
+into their toolchain.
+
+Given that many use-cases (e.g. Cilium) generate trusted BPF programs,
+trusted loaders are an inevitability and a requirement for signing support, a
+entrusting loader programs will be a fundamental requirement for an security
+policy.
+
+The initial instructions of the loader program verify the SHA256 hash
+of the metadata (M_metadata) that will be passed in a map. These instructions
+effectively embed the precomputed H_meta as immediate values.
+
+    ld_imm64 r1, const_ptr_to_map // insn[0].src_reg == BPF_PSEUDO_MAP_IDX
+    r2 = *(u64 *)(r1 + 0);
+    ld_imm64 r3, sha256_of_map_part1 // precomputed by bpf_object__gen_load/libbpf (H_meta_1)
+    if r2 != r3 goto out;
+
+    r2 = *(u64 *)(r1 + 8);
+    ld_imm64 r3, sha256_of_map_part2 // precomputed by bpf_object__gen_load/libbpf (H_meta_2)
+    if r2 != r3 goto out;
+
+    r2 = *(u64 *)(r1 + 16);
+    ld_imm64 r3, sha256_of_map_part3 // precomputed by bpf_object__gen_load/libbpf (H_meta_3)
+    if r2 != r3 goto out;
+
+    r2 = *(u64 *)(r1 + 24);
+    ld_imm64 r3, sha256_of_map_part4 // precomputed by bpf_object__gen_load/libbpf (H_meta_4)
+    if r2 != r3 goto out;
+    ...
+
+This implicitly makes the payload equivalent to the signed block (B_signed)
+
+    I_loader || H_meta
+
+bpftool then generates the signature of this I_loader payload (which
+now contains the expected H_meta) using a key and an identity:
+
+This signature is stored in bpf_attr, which is extended as follows for
+the BPF_PROG_LOAD command:
+
+    __aligned_u64 signature;
+    __u32 signature_size;
+    __u32 keyring_id;
+
+The reasons for a simpler UAPI is that it's more future proof (e.g.) with more
+stable instruction buffers, loader programs being directly into the compilers.
+A simple API also allows simple programs e.g. for networking that don't need
+loader programs to directly use signing.
+
+# Extending OBJ_GET_INFO_BY_FD for hashes
+
+OBJ_GET_INFO_BY_FD is used to get information about BPF objects (maps, programs, links) and
+returning the hash of the map is a natural extension of the UAPI as it can be
+helpful for debugging, fingerprinting etc.
+
+Currently, it's only implemented for BPF_MAP_TYPE_ARRAY. It can be trivially
+extended for BPF programs to return the complete SHA256 along with the tag.
+
+The SHA is stored in struct bpf_map for exclusive and frozen maps
+
+    struct bpf_map {
+    +   u64 sha[4];
+        const struct bpf_map_ops *ops;
+        struct bpf_map *inner_map_meta;
+    };
+
+## Exclusive BPF maps
+
+Exclusivity ensures that the map can only be used by a future BPF
+program whose SHA256 hash matches sha256_of_future_prog.
+
+First, bpf_prog_calc_tag() is updated to compute the SHA256 instead of
+SHA1, and this hash is stored in struct bpf_prog_aux:
+
+    @@ -1588,6 +1588,7 @@ struct bpf_prog_aux {
+         int cgroup_atype; /* enum cgroup_bpf_attach_type */
+         struct bpf_map *cgroup_storage[MAX_BPF_CGROUP_STORAGE_TYPE];
+         char name[BPF_OBJ_NAME_LEN];
+    +    u64 sha[4];
+         u64 (*bpf_exception_cb)(u64 cookie, u64 sp, u64 bp, u64, u64);
+         // ...
+    };
+
+An exclusive is created by passing an excl_prog_hash
+(and excl_prog_hash_size) in the BPF_MAP_CREATE command.
+When a BPF program is subsequently loaded and it attempts to use this map,
+the kernel will compare the program's own SHA256 hash against the one
+registered with the map, if matching, it will be added to prog->used_maps[].
+
+The program load will fail if the hashes do not match or if the map is
+already in use by another (non-matching) exclusive program.
+
+Exclusive maps ensure that no other BPF programs and compromise the intergity of
+the map post the signature verification.
+
+NOTE: Exclusive maps cannot be added as inner maps.
+
+# Light Skeleton Sequence (Userspace Example)
+
+	err = map_fd = skel_map_create(BPF_MAP_TYPE_ARRAY, "__loader.map",
+				       opts->excl_prog_hash,
+				       opts->excl_prog_hash_sz, 4,
+				       opts->data_sz, 1);
+	err = skel_map_update_elem(map_fd, &key, opts->data, 0);
+
+	err = skel_map_freeze(map_fd);
+
+	// Kernel computes the hash of the map.
+	err = skel_obj_get_info_by_fd(map_fd);
+
+	memset(&attr, 0, prog_load_attr_sz);
+	attr.prog_type = BPF_PROG_TYPE_SYSCALL;
+	attr.insns = (long) opts->insns;
+	attr.insn_cnt = opts->insns_sz / sizeof(struct bpf_insn);
+	attr.signature = (long) opts->signature;
+	attr.signature_size = opts->signature_sz;
+	attr.keyring_id = opts->keyring_id;
+	attr.license = (long) "Dual BSD/GPL";
+
+The kernel will:
+
+    * Compute the hash of the provided I_loader bytecode.
+    * Verify the signature against this computed hash.
+    * Check if the metadata map (now exclusive) is intended for this
+      program's hash.
+
+The signature check happens in BPF_PROG_LOAD before the security_bpf_prog
+LSM hook.
+
+This ensures that the loaded loader program (I_loader), including the
+embedded expected hash of the metadata (H_meta), is trusted.
+Since the loader program is now trusted, it can be entrusted to verify
+the actual metadata (M_metadata) read from the (now exclusive and
+frozen) map against the embedded (and trusted) H_meta. There is no
+Time-of-Check-Time-of-Use (TOCTOU) vulnerability here because:
+
+    * The signature covers the I_loader and its embedded H_meta.
+    * The metadata map M_metadata is frozen before the loader program is loaded
+      and associated with it.
+    * The map is made exclusive to the specific (signed and verified)
+      loader program.
+
+[1] https://lore.kernel.org/bpf/CACYkzJ6VQUExfyt0=-FmXz46GHJh3d=FXh5j4KfexcEFbHV-vg@mail.gmail.com/#t
+
+
+KP Singh (13):
+  bpf: Update the bpf_prog_calc_tag to use SHA256
+  bpf: Implement exclusive map creation
+  libbpf: Implement SHA256 internal helper
+  libbpf: Support exclusive map creation
+  selftests/bpf: Add tests for exclusive maps
+  bpf: Return hashes of maps in BPF_OBJ_GET_INFO_BY_FD
+  bpf: Move the signature kfuncs to helpers.c
+  bpf: Implement signature verification for BPF programs
+  libbpf: Update light skeleton for signing
+  libbpf: Embed and verify the metadata hash in the loader
+  bpftool: Add support for signing BPF programs
+  selftests/bpf: Enable signature verification for all lskel tests
+  selftests/bpf: Add test for signed programs
+
+ crypto/asymmetric_keys/pkcs7_verify.c         |   1 +
+ include/linux/bpf.h                           |  42 +++-
+ include/linux/filter.h                        |   6 -
+ include/linux/verification.h                  |   1 +
+ include/uapi/linux/bpf.h                      |  14 ++
+ kernel/bpf/Kconfig                            |   2 +-
+ kernel/bpf/arraymap.c                         |  13 ++
+ kernel/bpf/core.c                             |  50 +----
+ kernel/bpf/helpers.c                          | 166 ++++++++++++++
+ kernel/bpf/syscall.c                          |  96 +++++++-
+ kernel/bpf/verifier.c                         |   6 +
+ kernel/trace/bpf_trace.c                      | 183 ---------------
+ .../bpf/bpftool/Documentation/bpftool-gen.rst |  12 +
+ .../bpftool/Documentation/bpftool-prog.rst    |  12 +
+ tools/bpf/bpftool/Makefile                    |   6 +-
+ tools/bpf/bpftool/cgroup.c                    |   5 +-
+ tools/bpf/bpftool/gen.c                       |  58 ++++-
+ tools/bpf/bpftool/main.c                      |  21 +-
+ tools/bpf/bpftool/main.h                      |  11 +
+ tools/bpf/bpftool/prog.c                      |  25 +++
+ tools/bpf/bpftool/sign.c                      | 210 ++++++++++++++++++
+ tools/include/uapi/linux/bpf.h                |  14 ++
+ tools/lib/bpf/bpf.c                           |   6 +-
+ tools/lib/bpf/bpf.h                           |   4 +-
+ tools/lib/bpf/bpf_gen_internal.h              |   2 +
+ tools/lib/bpf/gen_loader.c                    |  55 +++++
+ tools/lib/bpf/libbpf.c                        | 125 +++++++++++
+ tools/lib/bpf/libbpf.h                        |  21 +-
+ tools/lib/bpf/libbpf.map                      |   2 +
+ tools/lib/bpf/libbpf_internal.h               |   4 +
+ tools/lib/bpf/skel_internal.h                 |  75 ++++++-
+ tools/testing/selftests/bpf/.gitignore        |   1 +
+ tools/testing/selftests/bpf/Makefile          |  19 +-
+ .../selftests/bpf/prog_tests/map_excl.c       |  56 +++++
+ .../selftests/bpf/prog_tests/signing.c        |  36 +++
+ tools/testing/selftests/bpf/progs/map_excl.c  |  34 +++
+ tools/testing/selftests/bpf/progs/signing.c   |  16 ++
+ .../selftests/bpf/progs/verifier_map_ptr.c    |   7 +-
+ tools/testing/selftests/bpf/test_progs.c      |  13 ++
+ .../testing/selftests/bpf/verify_sig_setup.sh |  13 +-
+ 40 files changed, 1183 insertions(+), 260 deletions(-)
+ create mode 100644 tools/bpf/bpftool/sign.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/map_excl.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/signing.c
+ create mode 100644 tools/testing/selftests/bpf/progs/map_excl.c
+ create mode 100644 tools/testing/selftests/bpf/progs/signing.c
+
+-- 
+2.43.0
+
 
