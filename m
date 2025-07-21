@@ -1,107 +1,437 @@
-Return-Path: <bpf+bounces-63927-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63928-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22C35B0C81D
-	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 17:52:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4B55B0C892
+	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 18:24:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 893D81C20365
-	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 15:53:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96808165FF0
+	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 16:24:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEEE22E11CB;
-	Mon, 21 Jul 2025 15:51:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F50F2E03FA;
+	Mon, 21 Jul 2025 16:23:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LqzH6sQ2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tH3N33YN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFF772E0902;
-	Mon, 21 Jul 2025 15:51:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 790D81F37D3;
+	Mon, 21 Jul 2025 16:23:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753113097; cv=none; b=V1TNmaWBW+MdUWTkW0PFGl7pCrKcjy889ak1yaSjr/SV4jIw+K4wuE5735le7GMKUtMBr2MAhaJj0hEW0PQO5FeJ3NmJ87m2vX3jCm4DLdY5J4VGvAZwNdsURI0MzYWB7gxf4xYKfrGj/A08akfimum63Os8kZHPa4v+4XowVmM=
+	t=1753115035; cv=none; b=Wu37EebPak7vbVUMDQzm1/EuRYR6+vD0xanFsYHk+28QtBGPkhtmqxLr0fU222mH2/kujQkukSjuGaityHDiuSuVYEJs+v9RAhWvOIkVcOearlpgIymoKNKsHgltcmwyXE+JxLBvGH0V3dsWe1YrB9bvgPYYA4gN2sv5SbomGmc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753113097; c=relaxed/simple;
-	bh=5XMysMMXpehjqqR2u+P47tGjPv3TyoZWsI8PZ5C8ZUI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=W/CEJY0jnzdpJGOd5Xu7iFnFkwijMDv4hr4VsHQfOUvjQByZYP6vM9Wzbn9nCDc1nerYXFtH8KBNK+sp1iWQ43zFDTsBbr718pXUxjvZdw/uowvLyemFuugCMYfdsCnyQz+7f8hKzzDvW5E8O4BMRJHu2zevBt9Q6AdwgaheHPo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LqzH6sQ2; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3a6cd1a6fecso4357337f8f.3;
-        Mon, 21 Jul 2025 08:51:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753113094; x=1753717894; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5XMysMMXpehjqqR2u+P47tGjPv3TyoZWsI8PZ5C8ZUI=;
-        b=LqzH6sQ2OKozdN92/fL2hZbkaXql8qt44wonHGcA+SfEnQCDJqGgnY7Oo/VFCRkXtA
-         RP/bclD9HcYhQt11Rei2K6jw/z3uQRn/T88DA3FRBP0BAHtMbnUdyz319uNPWcC/xqod
-         UyIBFJ1w6ubnPYfh/1oW+mfdh4gu6Y0kkf/cBoRa+sBK/bb3u6o4Kdlv3d6qCuBMXLKM
-         El8DCxJVnoi6tZM02+L48c0nl2MFXzzrmTxZ9YktLcF2bCMyWDDE32THWlaooaROzCDp
-         Vxq147KnAc03SxJmUFaUukyOQ/p5egPkn/2xW87/x8Xb0I+AqtT/Cb0HeNs4os5Or1P2
-         3Wow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753113094; x=1753717894;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5XMysMMXpehjqqR2u+P47tGjPv3TyoZWsI8PZ5C8ZUI=;
-        b=LtthrEvI6Jl0eQHdDB0LlhRyur1wrErVD1Q/a8qkEbqnWaYzVaWdj9mfHyhUT2TesD
-         uKpYtQrYrfWZduWSr9HLZZYlSWu1yohzNGruAqOPiwJ46J25nG3CTBDMixKVyVm+QAXa
-         9Bogq5RONM6Y/eBKwVMtq0mFBmcY8Vc/geqrPwjgj6mIYIN64X43/THZzevc4vusoxlw
-         MvCdsLbnd9zAAuQmss7INsAh7+GFtmXgUFhP3G7r91VD8pXR3wfSHS0c7F8X2gGWSoYr
-         dnoUl/+EfxyKkyhzAqg3OEYXtcg0V7d2iqzm0JFDykbq719g6s1eWQum0eqTxKEUvlYv
-         YBjQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUZPgSOwkqBBrxK7cT1fWan8G1wxcEU3uQVqNW4BS+9X2LSmd9Yuhj08S01GtYfX7Q0Vq1SVDspRFpGlngY@vger.kernel.org, AJvYcCUavz6s4dRXEM/HlWVXS4GlC9QfbDWNAXvCxw5cGMRAveHebYc4hXYp26V73IsW5oDlPR4=@vger.kernel.org, AJvYcCVZYD0HsPR0dmopw/WnF5eMSS2Dfbim6QG1ynck1gZ/kxWcs28DtnsijiRBfm/pTEJw/MNvB2eN63m109l4/g==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy6GpW+94P3lIDCMevoxY/ieR2cWZnq5gnSVZsqKh16al6zBP9U
-	Sei/Yyh0pcaTRcFjizdtJ4RR+IEGFdzxk8g+n9L+FzhBUFhZFCJTr8BghpCP58YEPxLvsmTiA7G
-	W+KzoWlUPithVXHoeM/QmIiAj3eE2uaM=
-X-Gm-Gg: ASbGnctvEhMfpnnmZ2/o/Tvwd6ztbSNgVeHVkOKPSO5G+Z8SfhDEDfQkGLONWVIHxUC
-	4toh0duv0bhbex+Vr/44pwhFTfgG9qjtLFQWUGLnXtCPdlkWG84B1m7BqFGhn7llZ4MgotGOnID
-	KM3vqrAXDJKdJcg67TAdiPIf2OYR/0r4DC5AbyBKIAUETySOF4KB8rdMNYAJ4Y0JRBtJp3/NDfj
-	peeX6/Xig==
-X-Google-Smtp-Source: AGHT+IHrHhq+dYpMaz3nCXiO4FUHfaZDPUxmqax+tKgZZloikFKERJtZ7/w6CC7wfkOD7JkR7v4iIZZBavPwHPC2fT4=
-X-Received: by 2002:a05:6000:43c8:b0:3b6:936:976c with SMTP id
- ffacd0b85a97d-3b60dd4fademr14004586f8f.17.1753113093864; Mon, 21 Jul 2025
- 08:51:33 -0700 (PDT)
+	s=arc-20240116; t=1753115035; c=relaxed/simple;
+	bh=kO/ojY0PKE/G0K4Aubf2edaZj4LmwtMDF2WwLrQ1IUU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Hhu8Sl+C+UdrIHA8USTKdBpScS3OQ6GqatnXL0SZgPQBzSinyTppswccKIMb8R7rcFfjeqGFk2u8Osz92qo37dgiNmHwD3i/tuyiVHe5qrz6CHmAYhFeL9cmjaa0I0KtzrUwKONMyz2NXcwDxVgaypDTfYdfSAKgNOxF71Cte88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tH3N33YN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44C41C4CEED;
+	Mon, 21 Jul 2025 16:23:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753115035;
+	bh=kO/ojY0PKE/G0K4Aubf2edaZj4LmwtMDF2WwLrQ1IUU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=tH3N33YNAGoUDzxav2ywGWPKinOWFxIp5t3GbrgF0ubIvy0u7H+GFTQZ/SZ5xj5iI
+	 9j0IQjlAVKDQXzuWqikwXYAWcE9ZhLBFrGa1HnEB3TI+jjUUyIdnEdf1XmfGjwkDVU
+	 5BgBRAh4x3Ndp+JlaBucVjjTrLBVqgyYYxACVob5jE3rBEGsrUC+1ajEDlqbWeMt0z
+	 4Po82Ff13FhV44Y0hoYeL4zL3xhR2/gd3z1xQSp3Rk4rTvMPGbrd1EL26uUcXC29nf
+	 MEj6+KfSnXS3PQXRX7ka+LcmYmUtGVjtsUUKVr782yFISn1KFYiP5EZCPmOKSyieiJ
+	 RuAHqpSNCm+ug==
+Message-ID: <6b0669fd-fef6-4f4e-b80d-512769e86938@kernel.org>
+Date: Mon, 21 Jul 2025 17:23:50 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250721-remove-usermode-driver-v1-0-0d0083334382@linutronix.de> <20250721-remove-usermode-driver-v1-2-0d0083334382@linutronix.de>
-In-Reply-To: <20250721-remove-usermode-driver-v1-2-0d0083334382@linutronix.de>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 21 Jul 2025 08:51:22 -0700
-X-Gm-Features: Ac12FXxaIv2U_gNudEqMNsu5lhlwi5shFVshXODMjX2h-Ud3NFFOOpUhlz28tK4
-Message-ID: <CAADnVQ+Mw=bG-HZ5KMMDWzr_JqcCwWNQNf-JRvRsTLZ6P7-tUw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] umd: Remove usermode driver framework
-To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, "Eric W. Biederman" <ebiederm@xmission.com>, Christoph Hellwig <hch@lst.de>, 
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 1/2] bpftool: Add bpf_token show
+To: Tao Chen <chen.dylane@linux.dev>, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+ kuba@kernel.org, hawk@kernel.org
+Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <20250720173310.1334483-1-chen.dylane@linux.dev>
+From: Quentin Monnet <qmo@kernel.org>
+Content-Language: en-GB
+In-Reply-To: <20250720173310.1334483-1-chen.dylane@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jul 21, 2025 at 2:05=E2=80=AFAM Thomas Wei=C3=9Fschuh
-<thomas.weissschuh@linutronix.de> wrote:
->
-> The code is unused since commit 98e20e5e13d2 ("bpfilter: remove bpfilter"=
-),
-> remove it.
+Thanks a lot for this!
 
-Correct, but we have plans to use it.
-Since it's not causing any problems we prefer to keep it
-to avoid reverting the removal later.
+
+2025-07-21 01:33 UTC+0800 ~ Tao Chen <chen.dylane@linux.dev>
+> Add `bpftool token show` command to get token info
+> from bpf fs in /proc/mounts.
+> 
+> Example plain output for `token show`:
+> token_info:
+>         /sys/fs/bpf/token
+> 
+> allowed_cmds:
+>         map_create          prog_load
+> 
+> allowed_maps:
+> 
+> allowed_progs:
+>         kprobe
+> 
+> allowed_attachs:
+>         xdp
+> 
+> Example json output for `token show`:
+> {
+>     "token_info": "/sys/fs/bpf/token",
+>     "allowed_cmds": ["map_create","prog_load"
+>     ],
+>     "allowed_maps":
+
+
+This is not valid JSON. You're missing a value for "allowed_maps" (here
+it should likely be an empty array), and the comma:
+
+	"allowed_maps": [],
+
+
+>     "allowed_progs": ["kprobe"
+>     ],
+>     "allowed_attachs": ["xdp"
+>     ]
+> }
+> 
+> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+> ---
+>  tools/bpf/bpftool/main.c  |   3 +-
+>  tools/bpf/bpftool/main.h  |   1 +
+>  tools/bpf/bpftool/token.c | 229 ++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 232 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/bpf/bpftool/token.c
+> 
+> diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+> index 2b7f2bd3a7d..0f1183b2ed0 100644
+> --- a/tools/bpf/bpftool/main.c
+> +++ b/tools/bpf/bpftool/main.c
+> @@ -61,7 +61,7 @@ static int do_help(int argc, char **argv)
+>  		"       %s batch file FILE\n"
+>  		"       %s version\n"
+>  		"\n"
+> -		"       OBJECT := { prog | map | link | cgroup | perf | net | feature | btf | gen | struct_ops | iter }\n"
+> +		"       OBJECT := { prog | map | link | cgroup | perf | net | feature | btf | gen | struct_ops | iter | token }\n"
+>  		"       " HELP_SPEC_OPTIONS " |\n"
+>  		"                    {-V|--version} }\n"
+>  		"",
+> @@ -87,6 +87,7 @@ static const struct cmd commands[] = {
+>  	{ "gen",	do_gen },
+>  	{ "struct_ops",	do_struct_ops },
+>  	{ "iter",	do_iter },
+> +	{ "token",	do_token },
+>  	{ "version",	do_version },
+>  	{ 0 }
+>  };
+> diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
+> index 6db704fda5c..a2bb0714b3d 100644
+> --- a/tools/bpf/bpftool/main.h
+> +++ b/tools/bpf/bpftool/main.h
+> @@ -166,6 +166,7 @@ int do_tracelog(int argc, char **arg) __weak;
+>  int do_feature(int argc, char **argv) __weak;
+>  int do_struct_ops(int argc, char **argv) __weak;
+>  int do_iter(int argc, char **argv) __weak;
+> +int do_token(int argc, char **argv) __weak;
+>  
+>  int parse_u32_arg(int *argc, char ***argv, __u32 *val, const char *what);
+>  int prog_parse_fd(int *argc, char ***argv);
+> diff --git a/tools/bpf/bpftool/token.c b/tools/bpf/bpftool/token.c
+> new file mode 100644
+> index 00000000000..2fcaff4f2ba
+> --- /dev/null
+> +++ b/tools/bpf/bpftool/token.c
+> @@ -0,0 +1,229 @@
+> +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +
+> +#ifndef _GNU_SOURCE
+> +#define _GNU_SOURCE
+> +#endif
+> +#include <errno.h>
+> +#include <fcntl.h>
+> +#include <stdbool.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <string.h>
+> +#include <unistd.h>
+> +#include <mntent.h>
+> +#include <sys/types.h>
+> +#include <sys/stat.h>
+> +
+> +#include "json_writer.h"
+> +#include "main.h"
+> +
+> +#define MOUNTS_FILE "/proc/mounts"
+> +
+> +#define zclose(fd) do { if (fd >= 0) close(fd); fd = -1; } while (0)
+
+
+Seems unused?
+
+
+> +
+> +static bool has_delegate_options(const char *mnt_ops)
+> +{
+> +	return strstr(mnt_ops, "delegate_cmds") != NULL ||
+> +	       strstr(mnt_ops, "delegate_maps") != NULL ||
+> +	       strstr(mnt_ops, "delegate_progs") != NULL ||
+> +	       strstr(mnt_ops, "delegate_attachs") != NULL;
+> +}
+> +
+> +static char *get_delegate_value(const char *opts, const char *key)
+> +{
+> +	char *token, *rest, *ret = NULL;
+> +	char *opts_copy = strdup(opts);
+> +
+> +	if (!opts_copy)
+> +		return NULL;
+> +
+> +	for (token = strtok_r(opts_copy, ",", &rest); token != NULL;
+> +			token = strtok_r(NULL, ",", &rest)) {
+> +		if (strncmp(token, key, strlen(key)) == 0 &&
+> +				token[strlen(key)] == '=') {
+> +			ret = token + strlen(key) + 1;
+> +			break;
+> +		}
+> +	}
+> +	free(opts_copy);
+> +
+> +	return ret;
+> +}
+> +
+> +static void print_items_per_line(const char *input, int items_per_line)
+> +{
+> +	char *str, *rest;
+> +	int cnt = 0;
+> +	char *strs = strdup(input);
+> +
+> +	if (!strs)
+> +		return;
+> +
+> +	for (str = strtok_r(strs, ":", &rest); str != NULL;
+> +			str = strtok_r(NULL, ":", &rest)) {
+> +		if (cnt % items_per_line == 0)
+> +			printf("\n\t");
+> +
+> +		printf("%-20s", str);
+> +		cnt++;
+> +	}
+> +
+> +	free(strs);
+> +}
+> +
+> +#define ITEMS_PER_LINE 4
+> +static void show_token_info_plain(struct mntent *mntent)
+> +{
+> +	char *value;
+> +
+> +	printf("\ntoken_info:");
+> +	printf("\n\t%s\n", mntent->mnt_dir);
+> +
+> +	printf("\nallowed_cmds:");
+> +	value = get_delegate_value(mntent->mnt_opts, "delegate_cmds");
+> +	if (value)
+> +		print_items_per_line(value, ITEMS_PER_LINE);
+> +	printf("\n");
+> +
+> +	printf("\nallowed_maps:");
+> +	value = get_delegate_value(mntent->mnt_opts, "delegate_maps");
+> +	if (value)
+> +		print_items_per_line(value, ITEMS_PER_LINE);
+> +	printf("\n");
+> +
+> +	printf("\nallowed_progs:");
+> +	value = get_delegate_value(mntent->mnt_opts, "delegate_progs");
+> +	if (value)
+> +		print_items_per_line(value, ITEMS_PER_LINE);
+> +	printf("\n");
+> +
+> +	printf("\nallowed_attachs:");
+> +	value = get_delegate_value(mntent->mnt_opts, "delegate_attachs");
+> +	if (value)
+> +		print_items_per_line(value, ITEMS_PER_LINE);
+> +	printf("\n");
+> +}
+> +
+> +static void __json_array_str(const char *input)
+
+
+Nit: Why the double underscore in the function name? Let's use a more
+explicit name also, maybe something like "split_to_json_array"?
+
+
+> +{
+> +	char *str, *rest;
+> +	char *strs = strdup(input);
+> +
+> +	if (!strs)
+> +		return;
+> +
+> +	jsonw_start_array(json_wtr);
+> +	for (str = strtok_r(strs, ":", &rest); str != NULL;
+> +			str = strtok_r(NULL, ":", &rest)) {
+> +		jsonw_string(json_wtr, str);
+> +	}
+> +	jsonw_end_array(json_wtr);
+> +
+> +	free(strs);
+> +}
+> +
+> +static void show_token_info_json(struct mntent *mntent)
+> +{
+> +	char *value;
+> +
+> +	jsonw_start_object(json_wtr);
+> +
+> +	jsonw_string_field(json_wtr, "token_info", mntent->mnt_dir);
+> +
+> +	jsonw_name(json_wtr, "allowed_cmds");
+> +	value = get_delegate_value(mntent->mnt_opts, "delegate_cmds");
+> +	if (value)
+> +		__json_array_str(value);
+
+
+As mentioned above, you need to change __json_array_str() to print
+something when you don't get a "value" here - just have it print an
+empty array.
+
+
+> +
+> +	jsonw_name(json_wtr, "allowed_maps");
+> +	value = get_delegate_value(mntent->mnt_opts, "delegate_maps");
+> +	if (value)
+> +		__json_array_str(value);
+> +
+> +	jsonw_name(json_wtr, "allowed_progs");
+> +	value = get_delegate_value(mntent->mnt_opts, "delegate_progs");
+> +	if (value)
+> +		__json_array_str(value);
+> +
+> +	jsonw_name(json_wtr, "allowed_attachs");
+> +	value = get_delegate_value(mntent->mnt_opts, "delegate_attachs");
+> +	if (value)
+> +		__json_array_str(value);
+> +
+> +	jsonw_end_object(json_wtr);
+> +}
+> +
+> +static int __show_token_info(struct mntent *mntent)
+> +{
+> +
+> +	if (json_output)
+> +		show_token_info_json(mntent);
+> +	else
+> +		show_token_info_plain(mntent);
+> +
+> +	return 0;
+> +}
+> +
+> +static int show_token_info(void)
+> +{
+> +	FILE *fp;
+> +	struct mntent *ent;
+> +	bool hit = false;
+> +
+> +	fp = setmntent(MOUNTS_FILE, "r");
+> +	if (!fp) {
+> +		p_err("Failed to open:%s", MOUNTS_FILE);
+
+
+Missing space after the colon, in the error message.
+
+
+> +		return -1;
+> +	}
+> +
+> +	while ((ent = getmntent(fp)) != NULL) {
+> +		if (strcmp(ent->mnt_type, "bpf") == 0) {
+
+
+File common.c has:
+
+		if (strncmp(mntent->mnt_type, "bpf", 3) != 0)
+			continue;
+
+Maybe do the same for consistency, and to avoid indenting too far right?
+
+
+> +			if (has_delegate_options(ent->mnt_opts)) {
+> +				hit = true;
+> +				break;
+
+
+Apologies, my knowledge of BPF tokens is limited. Can you have only one
+token exposed through a bpffs at a time? Asking because I know you can
+have several bpffs on your system, if each can have delegate options
+then why stop after the first bpffs mount point you find?
+
+
+> +			}
+> +		}
+> +	}
+> +
+> +	if (hit)
+> +		__show_token_info(ent);
+
+
+Maybe at least a p_info() message if you don't find anything to print?
+
+
+> +	endmntent(fp);
+> +
+> +	return 0;
+> +}
+> +
+> +static int do_show(int argc, char **argv)
+> +{
+> +	if (argc)
+> +		return BAD_ARG();
+> +
+> +	return show_token_info();
+> +}
+> +
+> +static int do_help(int argc, char **argv)
+> +{
+> +	if (json_output) {
+> +		jsonw_null(json_wtr);
+> +		return 0;
+> +	}
+> +
+> +	fprintf(stderr,
+> +		"Usage: %1$s %2$s { show | list }\n"
+> +		"	%1$s %2$s help\n"
+> +		"\n"
+> +		"",
+> +		bin_name, argv[-2]);
+> +	return 0;
+> +}
+> +
+> +static const struct cmd cmds[] = {
+> +	{ "show",	do_show },
+> +	{ "help",	do_help },
+> +	{ "list",	do_show },
+
+
+Nit: Can we have "help" coming third, below both "show" and "list" please?
+
+
+> +	{ 0 }
+> +};
+> +
+> +int do_token(int argc, char **argv)
+> +{
+> +	return cmd_select(cmds, argc, argv, do_help);
+> +}
+
 
