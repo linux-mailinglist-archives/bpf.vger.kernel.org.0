@@ -1,76 +1,78 @@
-Return-Path: <bpf+bounces-63885-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63886-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D16DB0BEF9
-	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 10:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0120AB0BEFE
+	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 10:34:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C402164734
-	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 08:34:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 502C0167140
+	for <lists+bpf@lfdr.de>; Mon, 21 Jul 2025 08:34:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5A592820AB;
-	Mon, 21 Jul 2025 08:33:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1247287267;
+	Mon, 21 Jul 2025 08:33:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mG5HJPcN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MHrKzHQB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0049D1E50B;
-	Mon, 21 Jul 2025 08:33:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C97931E50B;
+	Mon, 21 Jul 2025 08:33:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753086833; cv=none; b=RSYR9V6edZ4qt4j/Pid3gOQesf/e9RJbsTBvASyzd4RbKXDyzFO9cJQP7E9wkKwK4s/6PGUImK/EIKpa/lI9pahCu6ESk9dAeWk67Ag5qylE5Du8DKC9ck8j3tjpWDWKGJTkuxfLrEfeLQ1yafc4VZylwpHwprqgnDwWwGRj/20=
+	t=1753086839; cv=none; b=cVlgR/B1rSe2M/XPBja/P7GW6V+rIRvSlZnMZIB+bTubeMJtBuQ+j28/D36cPDpti0red/qy2iyGPb7W6YVgT9bZSqTXD3UPRIfh1rx2oX9doipuKH7Oabtlq9Yt/Gg/RaYvQKosA8oKVTakQkwf3a3VmIHqSWVV2TrYB2yN7mg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753086833; c=relaxed/simple;
-	bh=0O7hWoJ8FFOuZs8FVPqw3k1X6ALMl1XrXfMdfiGuiCw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lndS7T7790ZjMbtmP5mAr3/5mzmJS4KQMTkdqgKVfRNXLJhpWiHWONnc0OPUPZn8lSVuJmKl4SPcJm3ZowSir1avuyYlGdxXRipA7C4VENzEJjOdUdX/Eu7UZ0seYZiLQFIcvo+NVidemKo4cXgWKR3WsWa4urjSltZTDDBlSf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mG5HJPcN; arc=none smtp.client-ip=209.85.216.46
+	s=arc-20240116; t=1753086839; c=relaxed/simple;
+	bh=0+NqqLP6G0f2uYl8Ky0lzuB+4Vk844rbB561dkDcbeA=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=bAD9ste+1fttvW0d7++is/jSCcISU+rDJxQWN/KZtRpPJJw8EU2PRGTjJ/yMi+nz3PlF/PqNIFoMrEBgEzhDrLPrjhHlapRv5WLYkklFAF788BwwcOJlXgeeip4HDmQtyaZg64kdisIHIPYVCSNr3YOAYqFNvIyiUNPf4MegnUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MHrKzHQB; arc=none smtp.client-ip=209.85.215.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-31c38e75dafso3274208a91.2;
-        Mon, 21 Jul 2025 01:33:51 -0700 (PDT)
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-b31e0ead80eso3054141a12.0;
+        Mon, 21 Jul 2025 01:33:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753086831; x=1753691631; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9fsE2sNuXpdXdhRH0OAvRrhIA0vlIXlgXbN8nwt6iNk=;
-        b=mG5HJPcN0seTEmNwIuXhzbjVNo9rZyRNELcnWKMI7ifa1sOxQQ8P0iHxNcKnlUALCU
-         Rrq7ixk2D/aadIR4kkoNzBgSzG3UiAZz3456uaNg9eI6KfygjYSMzvK5puw+N2KOwA51
-         Gm3c+zB5LeUl0tn2rPOv+CHyMNfE/Z1bKdxhEzMY1T9ypsEOB61vB4QowTbsQJFhzNkT
-         JHjqLe16aRmDXvuvknhrC2P1iTcFJrvE+Kx5CgpAB62cfVSsSy60lTwNX6r+J+/1fHQ9
-         EV01/r6iNAbz+SouA3auPMEWQX/wUmjoJajBWFVO3BQRcYyIkgSULwVKgCc8qlV6xGNw
-         Q+EA==
+        d=gmail.com; s=20230601; t=1753086837; x=1753691637; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=P7UTJT8lT4wXm+7/izafM3LkSsGFsZ5F3TgOwU6IHtI=;
+        b=MHrKzHQBmXmwQGzegASef1TsJp2meCDXd116uIbPm2aRept+ioeHJSaJzIaHGmVFrv
+         eA1egxLPvz9fEipZuVHMzZnlFregUvG35LZTjvTT+N3Yw3Dr8Q2WyVEIcwo5HOIeqxg9
+         eXRRhMQOEacgfF9tWSJ0Ang9F4oJcSTUPWgln3dUbfwOzBs21PCNKSGxaXxkN+mB06HG
+         mraO1NqGYKJHVBqjo7Ur86/i8zZfxOpgdkewZ1cfsBjRXKTeK1ZQwR7H9WrX4XeELtvd
+         bZyGW7ocj/UQ4OuMLKnRl4NsQqmTF9EYRPYA/oXvvG2lWBpJQuVwAUi/8AJV0vmW8IR4
+         FSUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753086831; x=1753691631;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9fsE2sNuXpdXdhRH0OAvRrhIA0vlIXlgXbN8nwt6iNk=;
-        b=ME982xCPlVqna7XiwXYc8ZOCktkzjooAXbrDcflri9ZcF9H+QsRS88MIC/Xg9pPiRe
-         GT7VYLsSXQVNV+8NDui9zc8li112TRwawOWTOd4gPcGOCKPWiA2PbnxkCMWR64oQqlmv
-         h4s4bb8rAt6vll3f7/eTAwz08jpZW9mKX+LxDpg0P386R0h7u6MUJ4DksSc6pSOAYpUX
-         lFziyBjl+gbdOn52fOmg6B+6t7nhNTq1k2zVSv9GBuwms8dBsoTfG0JnQUEX5D29/20P
-         EzAtqBRFfkGSCgxWmSrWSicEGNEnOeBWLAzdZGmYYpMeDCNY553NSEckBfGRdyE1r43b
-         MnSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWzSaXL/aeIXyoY1NKdJUnRFIfRqppT+eFxqe39fgqfLYhnNxAvIeQ2JMtItvZlkJv/L5c=@vger.kernel.org, AJvYcCXH0BR/AwtW5uFKQKCoK4vKLJ9iKNzY9ZNPlPygwlia5cf/kRW0DFnpzUrz05krxoE0gYsHNBS+@vger.kernel.org
-X-Gm-Message-State: AOJu0YwzsrNBqaDYlups+jgWPMjChVuGKx+wFObHf07SiEB8v8RVL6oa
-	jBZ1zLAtJ68XEtQ8JL3q2X97Mo4lElO0TtZEzTrVwcGq7Kox+eLQzGGC
-X-Gm-Gg: ASbGncvv+WWBLBFANnD33R5Ek/31vHJhK4hmXoX2mannju1bhHp9ZQx4Zxu2qEg4PNb
-	M7/6BuydVsTHmk+IiLhTS5jyjA/UDKTtmfT3CnwQreo7lRIdvrIJJGKHHeZ94Kmw3P0oDBrIttq
-	Feym3RN/i6MYV/5ZWH1iHQ8NG4YUPo/UMIpkXK9PRtV9SaBgQYticcMYP0+egsibmSAAbJGNXU+
-	YO1Q+jduvuk5c0FBmjf/wacXoJFhX1X3lXEtwz0/q0G6Chf8qT0N5FzQNNiYVtfn9Am3iFdu5dt
-	FDtKxUcSx0XhZCsaQ1vcrR8VbT35Nkjt6KJQ3hDXa6aGlMPyiSQAqekxtYcN4yFPkQ3ai8BuI6m
-	ivauvKXACPUxbp8YqOXtAUZSaNbZ5dGPKGdN6VJ7g7u235NzWzhTrnDtS2nk=
-X-Google-Smtp-Source: AGHT+IE8NhryGKMJDsH4u3alU+wk4yQjNrEdlHvCXHsLOGmQ4xHKQNG4+AcSzLJ7hhq8981ot0Wbag==
-X-Received: by 2002:a17:90b:50ce:b0:312:f2ee:a895 with SMTP id 98e67ed59e1d1-31c9f45b0abmr26601296a91.31.1753086831079;
-        Mon, 21 Jul 2025 01:33:51 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1753086837; x=1753691637;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=P7UTJT8lT4wXm+7/izafM3LkSsGFsZ5F3TgOwU6IHtI=;
+        b=NRmr7Vv9G3Hs/NxoT2GAar7xiaJMtLTi9XUGSGuloJwEiJ6ooZJYfYCUihJtDv/eyf
+         cw+i6V3lBfo1z+5JgEBBb/6FfJQFHlyRoCVm/bCdYGdMGwf9MIfIxJyI+ZvBG1I71o+I
+         xzVcR7kw6x2ihRWKYeRX6hk7AFlmCYjkW4A7ZGg2CPXCkfJskTs34iIdSyoenP7MJOLq
+         g1Wmmmqf57DmubuxGMF73s7zSvzsA24LyqUpG8YtsPBCvdjywJepkAuzmKXx/L7EIwmq
+         qx/btIAMFlBUHY6+ZOO5sLKCB9xDqsIH74WCIQ8MVCpbgu8LztZvTXs16XdU8svHFkNk
+         YUBA==
+X-Forwarded-Encrypted: i=1; AJvYcCVD2jd3c9QuizG3WKBrs97uwhs4RRDIqesmLfVxBw8yAvRshAUO9W/0DuNaB6po6w0upg4=@vger.kernel.org, AJvYcCWhJGjA7FdKJYgupu3rxoR0qqtGIK3XLG5r1zTCDwnmRqZRGSjotv6vaajjuFgm72m4Ta+YLcgK@vger.kernel.org
+X-Gm-Message-State: AOJu0YwwsIrraGBG97xSqUtLKFVV0X/zmRFQgD9Vbb26D4SgtsPtoCqh
+	GXJnaKeLXSAt9obVQdgvNfGu5hayrLn8KSDAOBiwI9T3vUmL3nQJ7MaA
+X-Gm-Gg: ASbGnctfdBITMwnHKJPSQnRYj+KsT+rflTBhbE+7r4gsMFoINQtjSKd35VR5TMbuOO2
+	VZ+eM8n/zR1mYCRRyqEcOuPIB5OpsUiAPJCkuNwwaWsXY+SC3/mSRO5WbVKc+pC0CV3Hn8rGgjC
+	QAuptLOyLXUQu7v9PEMYAW5t7FRuOpuUskBVMIeU+WFYd1FtoblIhVXCG4rc8+FkJp/aZFrXoU9
+	5iHiH2fD0Bb6s4qOa1YImmLnGSuCIhnrgGndz0DaY2AmDDG/dZXrcT4SVBTkRKeORXJ4MU47BjI
+	BOnANqXqsoPMKc6nn81sbPuuvSvvb90DD2FMkXUObXUhU9Gv80V1KVX0H/a5QlfE2mXlMBK4MsO
+	VsVYgPNFHKYXXsiNMJs7cVGQnr/SmCvw5Ue/T3lRVSiJb2pOQ5f/ncuqnVa0=
+X-Google-Smtp-Source: AGHT+IF8Hz+/t/2gY/ArGAcHrkTSl0567NOaqn1eqgYFznb2pekdZjDkcc5903EJP9BByp6s3l8uNA==
+X-Received: by 2002:a17:90b:2e4f:b0:319:bf4:c3e8 with SMTP id 98e67ed59e1d1-31c9e75afe6mr30594397a91.18.1753086836826;
+        Mon, 21 Jul 2025 01:33:56 -0700 (PDT)
 Received: from KERNELXING-MC1.tencent.com ([111.201.24.59])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31cb7742596sm7082116a91.27.2025.07.21.01.33.45
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31cb7742596sm7082116a91.27.2025.07.21.01.33.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jul 2025 01:33:50 -0700 (PDT)
+        Mon, 21 Jul 2025 01:33:56 -0700 (PDT)
 From: Jason Xing <kerneljasonxing@gmail.com>
 To: anthony.l.nguyen@intel.com,
 	przemyslaw.kitszel@intel.com,
@@ -95,10 +97,12 @@ Cc: linux-stm32@st-md-mailman.stormreply.com,
 	intel-wired-lan@lists.osuosl.org,
 	netdev@vger.kernel.org,
 	Jason Xing <kernelxing@tencent.com>
-Subject: [PATCH net-next 0/2] xsk: fix underflow issues in zerocopy xmit
-Date: Mon, 21 Jul 2025 16:33:41 +0800
-Message-Id: <20250721083343.16482-1-kerneljasonxing@gmail.com>
+Subject: [PATCH net-next 1/2] stmmac: xsk: fix underflow of budget in zerocopy mode
+Date: Mon, 21 Jul 2025 16:33:42 +0800
+Message-Id: <20250721083343.16482-2-kerneljasonxing@gmail.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20250721083343.16482-1-kerneljasonxing@gmail.com>
+References: <20250721083343.16482-1-kerneljasonxing@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -109,16 +113,44 @@ Content-Transfer-Encoding: 8bit
 
 From: Jason Xing <kernelxing@tencent.com>
 
-Fix two underflow issues around {stmmac_xdp|igb}_xmit_zc().
+The issue can happen when the budget number of descs are consumed. As
+long as the budget is decreased to zero, it will again go into
+while (budget-- > 0) statement and get decreased by one, so the
+underflow issue can happen. It will lead to returning true whereas the
+expected value should be false.
 
-Jason Xing (2):
-  stmmac: xsk: fix underflow of budget in zerocopy mode
-  igb: xsk: solve underflow of nb_pkts in zerocopy mode
+In this case where all the budget are used up, it means zc function
+should return false to let the poll run again because normally we
+might have more data to process.
 
- drivers/net/ethernet/intel/igb/igb_xsk.c          | 2 +-
+Fixes: 132c32ee5bc0 ("net: stmmac: Add TX via XDP zero-copy socket")
+Signed-off-by: Jason Xing <kernelxing@tencent.com>
+---
  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 4 +++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index f350a6662880..ea5541f9e9a6 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -2596,7 +2596,7 @@ static bool stmmac_xdp_xmit_zc(struct stmmac_priv *priv, u32 queue, u32 budget)
+ 
+ 	budget = min(budget, stmmac_tx_avail(priv, queue));
+ 
+-	while (budget-- > 0) {
++	while (budget > 0) {
+ 		struct stmmac_metadata_request meta_req;
+ 		struct xsk_tx_metadata *meta = NULL;
+ 		dma_addr_t dma_addr;
+@@ -2681,6 +2681,8 @@ static bool stmmac_xdp_xmit_zc(struct stmmac_priv *priv, u32 queue, u32 budget)
+ 
+ 		tx_q->cur_tx = STMMAC_GET_ENTRY(tx_q->cur_tx, priv->dma_conf.dma_tx_size);
+ 		entry = tx_q->cur_tx;
++
++		budget--;
+ 	}
+ 	u64_stats_update_begin(&txq_stats->napi_syncp);
+ 	u64_stats_add(&txq_stats->napi.tx_set_ic_bit, tx_set_ic_bit);
 -- 
 2.41.3
 
