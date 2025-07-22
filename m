@@ -1,114 +1,145 @@
-Return-Path: <bpf+bounces-64082-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64083-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99344B0E213
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 18:41:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0CCCB0E215
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 18:42:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FFC41C85096
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 16:41:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B34B51C84353
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 16:42:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF5ED27E060;
-	Tue, 22 Jul 2025 16:40:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50B67248F60;
+	Tue, 22 Jul 2025 16:42:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HGebIkmi"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ihS9mnO/"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39A2227AC57;
-	Tue, 22 Jul 2025 16:40:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64A8719309C
+	for <bpf@vger.kernel.org>; Tue, 22 Jul 2025 16:42:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753202454; cv=none; b=tHuIIxVUEgaoR5bxmUJ4lG+sgY5PGTuaAP1/yiBl2zDK3Py3GrhzHUM0AR3c3r7B8DlD7b/33L9WHm/bmx/90H9BF/DZXcXBbF+xjQutLG7dpmNM78nwtQr0JnjlKxI9CKmySPoSwL3Y6mDg8RSSbPCN8weOY0TVHCfTPV/Oa00=
+	t=1753202541; cv=none; b=ZuAcBOL85rnODokVpDK/xvUi7fYDMXgFn8+l65b8GRyqaE8SmVWSxq0dhhmajp2XNzBoxt/mlBCdmf4cBuai+8uoldPSwYP5TLK9Wku3K35+jr5iY+PukAU3NNQqhmdTDXKp59g7EjgwiMa99QClr25HagJRvqjnUcVTJs2iI9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753202454; c=relaxed/simple;
-	bh=airQyOAZ1Bb21STyZQ/0koQyH4JJ9mEFvxRJ/K+2RGs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sRVUNNU45A9igqkMhlSnZttR51sbwr9P8yrQqaHLaHCWJPXrwYJnUF/lideqH8OtdDXypoKX52CZ9PjhXcwImyAe5E2o/Z+hMNIxyMeccps1Uqm6I5cwgegfVsh+vlmMTxWGtNnEujgpSktU96tciTptlxY5y8H8bBtweHTvvm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HGebIkmi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BB47C4CEF1;
-	Tue, 22 Jul 2025 16:40:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753202453;
-	bh=airQyOAZ1Bb21STyZQ/0koQyH4JJ9mEFvxRJ/K+2RGs=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=HGebIkmivaIby4umGllHirYAZa1/fB0/I7hv187bGX1UyQ4JpVveA2is/M55Fsp2I
-	 bGEmvYBKodu6AqzK+KmTuf9s2S3b8crnHDVQOaiwtmKzFBZpm5d0z6eUgw9DCqdiRc
-	 UqY1GL2TbDfkZN/te2DQPyNVzcyXkUrbVtrXQjngaZyKTk6C8A9daClKSTYsdnrjNv
-	 niRoioWJu/pZB6ruZEguQcWOpbj0xqP5CjKDjF04PM0NDDJZG7NmcLkEpdJa6tkAo/
-	 N557ktHd1Ww9Bf+TK7w8EhXF2S1TzwzDNskE5qLu9iLwSWCCh8bbw0Nl5eCM5UvaTT
-	 /Z8Ylz0g0WRvg==
-Message-ID: <c73d2b1c-5f19-4e03-935c-71f68aa8bca7@kernel.org>
-Date: Tue, 22 Jul 2025 11:40:47 -0500
+	s=arc-20240116; t=1753202541; c=relaxed/simple;
+	bh=RaJ+Jpxw4Z1gkEyO0AntIYQXlU/FNtY01F1LH3AHnLs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZBBhQIlwTB334Hm6jIVNCUuC+H0HrxAZeSenAjL7BPGRqoEK1LTL+R8WS+IDLIKPPmSOIJqmJdt8WqKrXNsggzbftaF+EpAkvBJQSmiTGtyWa9Oo40jnbM6rJLRCX562GzAAeT7lUnyIuL41Otzd3JX+nLikgTWn4iCeABgKTCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ihS9mnO/; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1753202541; x=1784738541;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=RaJ+Jpxw4Z1gkEyO0AntIYQXlU/FNtY01F1LH3AHnLs=;
+  b=ihS9mnO//BPmrALLZ+4O8qbyVB6QKIIo7rsZRamN0B0SePN5jMxmkBHE
+   8kzyZxtd3NpApNO06CRYpmymWLVrUr35e/WdGJsCxczKsfKp7TyPImAj5
+   0pkKFnp3nvqOoi0QxDhjimv6ongeMYwq4w8rdJmX3fAa6JlrBXcazgqnR
+   hDJeLg2O8G3Usq2Jr68g92WeKFSnn7K2SMjIkjukymxA2T9LiW+zuYfKN
+   7iWYnvzilw+WiP9XYJflu4AveP90l7IbzRLlBBh4xS0sfR/L+x/Gk5Bze
+   0xRtZcKrE6cVfqIPCxBiQiWo8k3LRjvnf2s9bdiTGV+u8lNffNb/6NEu2
+   w==;
+X-CSE-ConnectionGUID: jsdiqXqER6yLZcNS2d9fLg==
+X-CSE-MsgGUID: /SMmmjt0TxSd05kLspGFnA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11500"; a="55611989"
+X-IronPort-AV: E=Sophos;i="6.16,331,1744095600"; 
+   d="scan'208";a="55611989"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2025 09:42:20 -0700
+X-CSE-ConnectionGUID: QdnwgSZkTSWNugI+qCkkpw==
+X-CSE-MsgGUID: OnyzoUzLQze6vfH2jpY8cQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,331,1744095600"; 
+   d="scan'208";a="163430987"
+Received: from lkp-server01.sh.intel.com (HELO 9ee84586c615) ([10.239.97.150])
+  by orviesa003.jf.intel.com with ESMTP; 22 Jul 2025 09:42:12 -0700
+Received: from kbuild by 9ee84586c615 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1ueG49-000IXj-0d;
+	Tue, 22 Jul 2025 16:42:09 +0000
+Date: Wed, 23 Jul 2025 00:42:08 +0800
+From: kernel test robot <lkp@intel.com>
+To: Pingfan Liu <piliu@redhat.com>, bpf@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, Pingfan Liu <piliu@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Jeremy Linton <jeremy.linton@arm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Simon Horman <horms@kernel.org>, Gerd Hoffmann <kraxel@redhat.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Philipp Rudo <prudo@redhat.com>, Viktor Malik <vmalik@redhat.com>,
+	Jan Hendrik Farr <kernel@jfarr.cc>, Baoquan He <bhe@redhat.com>,
+	Dave Young <dyoung@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	kexec@lists.infradead.org, KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [PATCHv4 03/12] bpf: Introduce bpf_copy_to_kernel() to buffer
+ the content from bpf-prog
+Message-ID: <202507230035.9xLXz9Js-lkp@intel.com>
+References: <20250722020319.5837-4-piliu@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/7] arch/nios2: replace "__auto_type" and adjacent
- equivalent with "auto"
-To: "H. Peter Anvin" <hpa@zytor.com>
-Cc: =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- "Michael S. Tsirkin" <mst@redhat.com>, Al Viro <viro@zeniv.linux.org.uk>,
- Alexei Starovoitov <ast@kernel.org>, Alexey Dobriyan <adobriyan@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Andrii Nakryiko <andrii@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
- Borislav Petkov <bp@alien8.de>, Dan Williams <dan.j.williams@intel.com>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- David Laight <David.Laight@ACULAB.COM>, David Lechner
- <dlechner@baylibre.com>, Eduard Zingerman <eddyz87@gmail.com>,
- Gatlin Newhouse <gatlin.newhouse@gmail.com>, Hao Luo <haoluo@google.com>,
- Ingo Molnar <mingo@redhat.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Jakub Sitnicki <jakub@cloudflare.com>, Jan Hendrik Farr <kernel@jfarr.cc>,
- Jason Wang <jasowang@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- Josh Poimboeuf <jpoimboe@kernel.org>, KP Singh <kpsingh@kernel.org>,
- Kees Cook <kees@kernel.org>, Luc Van Oostenryck
- <luc.vanoostenryck@gmail.com>, Marc Herbert <Marc.Herbert@linux.intel.com>,
- Martin KaFai Lau <martin.lau@linux.dev>, Mateusz Guzik <mjguzik@gmail.com>,
- Michal Luczaj <mhal@rbox.co>, Miguel Ojeda <ojeda@kernel.org>,
- Mykola Lysenko <mykolal@fb.com>, NeilBrown <neil@brown.name>,
- Peter Zijlstra <peterz@infradead.org>,
- Przemek Kitszel <przemyslaw.kitszel@intel.com>,
- Sami Tolvanen <samitolvanen@google.com>, Shuah Khan <shuah@kernel.org>,
- Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Thomas Gleixner <tglx@linutronix.de>, Thorsten Blum
- <thorsten.blum@linux.dev>, Uros Bizjak <ubizjak@gmail.com>,
- Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Yafang Shao <laoar.shao@gmail.com>,
- Ye Bin <yebin10@huawei.com>, Yonghong Song <yonghong.song@linux.dev>,
- Yufeng Wang <wangyufeng@kylinos.cn>, bpf@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-sparse@vger.kernel.org,
- virtualization@lists.linux.dev, x86@kernel.org
-References: <20250720065045.2859105-1-hpa@zytor.com>
- <20250720065045.2859105-5-hpa@zytor.com>
-Content-Language: en-US
-From: Dinh Nguyen <dinguyen@kernel.org>
-In-Reply-To: <20250720065045.2859105-5-hpa@zytor.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250722020319.5837-4-piliu@redhat.com>
 
-On 7/20/25 01:50, H. Peter Anvin wrote:
-> Replace uses of "__auto_type" in arch/nios2/include/asm/uaccess.h with
-> "auto", and equivalently convert an adjacent cast to the analogous
-> form.
-> 
-> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
-> ---
->   arch/nios2/include/asm/uaccess.h | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
-> 
+Hi Pingfan,
 
-Acked-by: Dinh Nguyen <dinguyen@kernel.org>
+kernel test robot noticed the following build errors:
 
+[auto build test ERROR on bpf-next/net]
+[also build test ERROR on bpf/master arm64/for-next/core linus/master v6.16-rc7]
+[cannot apply to bpf-next/master next-20250722]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Pingfan-Liu/kexec_file-Make-kexec_image_load_default-global-visible/20250722-100843
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git net
+patch link:    https://lore.kernel.org/r/20250722020319.5837-4-piliu%40redhat.com
+patch subject: [PATCHv4 03/12] bpf: Introduce bpf_copy_to_kernel() to buffer the content from bpf-prog
+config: x86_64-buildonly-randconfig-003-20250722 (https://download.01.org/0day-ci/archive/20250723/202507230035.9xLXz9Js-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14+deb12u1) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250723/202507230035.9xLXz9Js-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202507230035.9xLXz9Js-lkp@intel.com/
+
+All error/warnings (new ones prefixed by >>):
+
+   kernel/bpf/helpers_carrier.c:84:17: warning: no previous prototype for 'bpf_mem_range_result_put' [-Wmissing-prototypes]
+      84 | __bpf_kfunc int bpf_mem_range_result_put(struct mem_range_result *result)
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers_carrier.c:93:17: warning: no previous prototype for 'bpf_copy_to_kernel' [-Wmissing-prototypes]
+      93 | __bpf_kfunc int bpf_copy_to_kernel(const char *name, char *buf, int size)
+         |                 ^~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers_carrier.c: In function 'bpf_copy_to_kernel':
+>> kernel/bpf/helpers_carrier.c:124:9: warning: enumeration value 'TYPE_VMAP' not handled in switch [-Wswitch]
+     124 |         switch (alloc_type) {
+         |         ^~~~~~
+--
+>> ld: mm/mmu_notifier.o:mm/mmu_notifier.c:25: multiple definition of `__pcpu_unique_srcu_srcu_data'; kernel/bpf/helpers_carrier.o:kernel/bpf/helpers_carrier.c:13: first defined here
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
