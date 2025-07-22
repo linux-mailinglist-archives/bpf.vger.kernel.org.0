@@ -1,98 +1,90 @@
-Return-Path: <bpf+bounces-64102-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64103-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11359B0E4FA
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 22:30:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8925EB0E50A
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 22:40:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C4E76C8103
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 20:29:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 703A47A7CB7
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 20:38:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F13B285C8F;
-	Tue, 22 Jul 2025 20:30:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96AFD285047;
+	Tue, 22 Jul 2025 20:40:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BUKkRAhS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lTrBjjKT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 499CD284678;
-	Tue, 22 Jul 2025 20:30:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C56CF4C92
+	for <bpf@vger.kernel.org>; Tue, 22 Jul 2025 20:40:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753216209; cv=none; b=AH79ZobLKOxkRRhpHLIe1zx0B4ba9ILlOi0lMF2SDKyvsdMD2PosQ7pxdsf0ojf4JORJJSrtsp8lsjChLQcUvPbJ8KqzHjY7KfF780+aI5jaBLO0FhiCvVpCuvw+n07pSqOYMFTaFm0Gu5GAoQznSpTPEoCzOsuA2yMRG0p/WHI=
+	t=1753216807; cv=none; b=kIJttYeA5jS10r1VBW3Y1MlPDQ/rcFgN4wPvPLkg921mSTbwmzyX+49rEPxiQ+v9HmNYvUfJurHuiH8NsnCqeCnQZsHIAH1jj8mSuWbRCLQbWW19fXrEJzNq5g/uu7Yq5xqw8LxOVqRMt/LH4UVdEJ+EGEx2gPWRwYJJ6Q0K6YU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753216209; c=relaxed/simple;
-	bh=F1ORnkS2ZRXD5Zafjm8DnqQVEDOZ11ibI9BgiW4IXtk=;
+	s=arc-20240116; t=1753216807; c=relaxed/simple;
+	bh=2p89ZmbFQAv/8fefdq75yxL5xEbPHJVca772vJgu3/o=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=P4JbzCAwfaLfvOLSJcPimvCRJMu/uHED1baLWMFDsC7XUCtvamlsnYG35SV4CJRkAUHn1fm29bkbXf8EIMrhNHx2XlSZOQVF3jIThBpWuQN8KEUxXyFIA+444AnXRat66iSIMBozp5EDhNlm/acvAEK+FAByJ+LgkxAdg+fYUBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BUKkRAhS; arc=none smtp.client-ip=209.85.214.175
+	 Content-Type:MIME-Version; b=nIbnxLNtruQ2pFBuFDvv/ALH5ashQm6vKKmbjLkY5fmsYsv93Ia44tqm4c41QwEY4yIDvj/rc6DcxRMtfmwG6Rl8jmPN4aEmncr7oDO6cc6PRxUIHGiG9LZ/vdd8NqWCSaZktgoE4mQ0WRyqRzK6fm7MAPOl3jKXpD6Y+y+rhgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lTrBjjKT; arc=none smtp.client-ip=209.85.214.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-237e6963f63so36038405ad.2;
-        Tue, 22 Jul 2025 13:30:08 -0700 (PDT)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-235f9e87f78so56326795ad.2
+        for <bpf@vger.kernel.org>; Tue, 22 Jul 2025 13:40:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753216207; x=1753821007; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1753216805; x=1753821605; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=F1ORnkS2ZRXD5Zafjm8DnqQVEDOZ11ibI9BgiW4IXtk=;
-        b=BUKkRAhSKsTBO/0zQ32qkaPRg+Zkf7OJquKf/KHSWY8EL9AYXVuUa50YYqlZG6y9yB
-         90XJQ4k4s2CyBlPyn3JJYsExFuN6Mxk2d5fIqYOiukbtFoP15B4aGsUVX4SpEUftVTQM
-         sZBjxoMnv0mPiHyokLIs8G0tcq5bjBw9JNeZdObeZs/S4VpH+K8bjP5bB7FcwI//sBW8
-         /qYKybfJyLU2bBCCJJrXFI5vW/ALy4kMY2zPfYxWSfshL3gAISOuaafF9CYYv3hAXlpo
-         OTFkb2B0Ml/LF91M74YztpfC7aX++wF/OvBJ8HsuiT5K6LF1HIFfp7JQ1q3mk44y027i
-         sJyw==
+        bh=wXyplxZqqCGKWi9bRS6ZzaF8g5KCpaN7u7lmH83eJyg=;
+        b=lTrBjjKTFPlOXkksrIVuDQQf6cNiv9jokc3sMMO0r7GZ64f3pG7zT5in4Q0G2E62Hf
+         s8A1URG4BiYT4eFB/mi219zIRYNR2E2WzHa8EbWH9nK+pGYl0mJPDyMhtsHGRVNnMXjR
+         QQ+VbLH841ANbWVWEuwJGRa3zJnxMb8TNTyqU3i1yOn4DfBqnHqTrXzybRAiTAA9Iaji
+         gWs+0tq/DNlWe/Ef8q9oVrSNNo629bs2r2L+4k5VCdmQsZ+dsNl2Ms5r4XEWAUW9NhJ0
+         x+kC7aWtGwEu4+QOwdVJN2Wp3PeA3fuM3v3fkF8rwALv6edT/TKaTp+ZgkM8hKX1dcNO
+         I8GA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753216207; x=1753821007;
+        d=1e100.net; s=20230601; t=1753216805; x=1753821605;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=F1ORnkS2ZRXD5Zafjm8DnqQVEDOZ11ibI9BgiW4IXtk=;
-        b=UNqeEAvJD7QYOrHapT7LZsr37ALAqb76yTVH0gq3OL7YOZ6Xgo2bRpPIg+8Sh3ER8n
-         TcVWZWZVA0NX8HJ4hPiH4NYCiqVfOLLUv5wOwIesisnulzbIqPu0lbZgqc53KEszSAmg
-         ncDVaC2t0u+/il7+WZSh+VcZllmoC96zwGawQ0UdDRE5WeZy/C7Gh4X30hlsQuP4UHco
-         94ysigdBlvAodB2wpxnDZhbsT8/QAZfq1z7uP9K1KXmyRmPFsFkyxwx0NLxfHlpp1wcv
-         2/dqEEEGbGuFtfxYGHh/bpHq/SPnVno20yzI6tFq4T5KqieQkxKDDu7qyI0zU11Hw6S/
-         kJDg==
-X-Forwarded-Encrypted: i=1; AJvYcCUesG6rcL2P90CQri/weBUyZA0s6pe9w5H8SD/+qmQUELYbliXdszTstP6abjKuwSTMOrJroK/f@vger.kernel.org, AJvYcCUryBeW8vEXOFGzSK7bqck+syqBdam7jJ43y72QYkAiLthEK1Cm5GC4Bmzu3nVFtaK9Okk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyknOf0AUJ68ia+x3VDY4bii6sIBnkop2tGm8z8Wqzs/XPIKQrs
-	0Alsr8BjTHqNJZrNW0EaKQ3oZxARsgHiVEQh+x6JBp9YSK8l30IvTvPh
-X-Gm-Gg: ASbGncte4/CYh2WBOthxcOblQKnFM2FJSt083hUfXrfZiWaVhqSw7uTuLqMcjTjeJwS
-	kSnj4DXk7CGh7H0B0HTk+ZrPX1aW39ggqJidfPOAoRiU7LrCYvHeiFCfIAiQzwE0uARFUsfpZJ8
-	9+b0V8WaOg1Kdc8POuTHFzhuUyfUh99T4rjnqrcifIyMc2IWgh68b7KpMvPj5gbfkURvz0AZ+XD
-	JL9oz1K00+IfEt4Hbgl6Y2mRQzwqJ9tV6asZ93FOV44usFZT0lUSj/ugVc0yJ+ezxoL2sE7mn7v
-	LprqZFjgZ8WaucG2HzITjvDTHrnT7KW02WUbLW0ikSuBT7Qm8w87uHrUGXwOFuwkPCJ2W+avfgk
-	AdnIURuE1zEesEFBh9zF8JBG9dAc1
-X-Google-Smtp-Source: AGHT+IHfitxi0LoViDqo2L2Y44f2y4/6nPw0DKh00QAmQdO5O8qVIorEXQvg8jvpDaAp//HManXZaQ==
-X-Received: by 2002:a17:903:46c6:b0:23d:ed96:e2b6 with SMTP id d9443c01a7336-23f981d24f0mr3951395ad.44.1753216207444;
-        Tue, 22 Jul 2025 13:30:07 -0700 (PDT)
+        bh=wXyplxZqqCGKWi9bRS6ZzaF8g5KCpaN7u7lmH83eJyg=;
+        b=M1FolQ+sHUZGv5ZeWp5t20wrNiXiF2SfhOQY3CwNq6AJTfRx45D7jFO7yAgmkbRjnl
+         zcb/I7B9K02T/IT/AylO1vY9CA1hC4qaB9jNt7xh93RPuipHQfUTWBG0/CDTe9f42xmX
+         vfkmXVM8jbeIDifwnDAaZs8MuN7gCrgoCFufNpERoPigYk7pebRVG6FbQeWrGnFhWzoj
+         KGrpREAQXwi25y+IQBfbycHpQ9ELdLABKFiPAvio7Ju3LApqciF8YkTa3op7QQQy5O9l
+         vR6cTB8kYeBW1clV2rqIBjAuqZsZm6pmOgDkn2wvfdhMbICGwzjjs4sFfp4LgVtetp8s
+         QkFw==
+X-Forwarded-Encrypted: i=1; AJvYcCUtnn3ObrybolTSyqHVCxE/d5u7td4/bA3To6O6q03Aq3qYaSnjvQ+s0dBfLcGp4GLp6FI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxrsUZ1wis9wuZHbE3VOa0pPNxdxMwtYNg65S8pR8W5tKX3N7+Q
+	blV/IOMw5ijb6MW+V03YltTFLQhYkXaHvUwklGAGATcqlxCBOFrEvcNH
+X-Gm-Gg: ASbGncs2qAIvDIRMIe1U5ldLEk31DDAP0PRxhlemDjnyyE6ThJ9BcPnhXss6HJ/2btG
+	c376OSGxJM1ZuUxGveBOmOLGgwOeuo2uMFnhf+OM7b0EQd3Vz8rCVIabnaNnKUihazO5xviW6tX
+	5wba/7+hVOjoDndzGlxyR6YSHkx3rYkKsviVr3If2MbILzXY5PY9Th+X/fUwtDizXVyGBvRK7tt
+	t67yyBKJcvaozizwJX+q0nzX+wfx4dHR1QOcEcJBDIu2LLXyJuFlB0/Z4j2OIQ1OyUIGn6rAY0j
+	bDSAiZfmj0kydnmgT+SuP3KIZWMSb+MiBt9V5ns/Jh8t6jZwaCjDXGljQPIocIi7VO49fQi2R7r
+	sfy116vY54qxaEMItuwr8rQaAr3Hc
+X-Google-Smtp-Source: AGHT+IFnoi9yncZgPD/LiFpO84+kwUkOHkjfTeRl5HlDpqtCGwHZrsVuetaOcQD2zwcl6EprMv+3UA==
+X-Received: by 2002:a17:903:2984:b0:23d:d9ae:3b56 with SMTP id d9443c01a7336-23f98142833mr5460765ad.22.1753216805005;
+        Tue, 22 Jul 2025 13:40:05 -0700 (PDT)
 Received: from ?IPv6:2620:10d:c096:14a::281? ([2620:10d:c090:600::1:e6e1])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31e51876dfasm47801a91.0.2025.07.22.13.30.05
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23e3b5e2cfasm82248775ad.30.2025.07.22.13.40.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jul 2025 13:30:07 -0700 (PDT)
-Message-ID: <addca8ce8c3c51bbd147175406e9da84fbc9c1e7.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 10/10] selftests/bpf: Cover read/write to
- skb metadata at an offset
+        Tue, 22 Jul 2025 13:40:04 -0700 (PDT)
+Message-ID: <a5edd1e43ec75a026e19b687fb4f21efe5ebaa88.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Reject narrower access to pointer
+ ctx fields
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: Jakub Sitnicki <jakub@cloudflare.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
- <andrii@kernel.org>,  Arthur Fabre <arthur@arthurfabre.com>, Daniel
- Borkmann <daniel@iogearbox.net>, Eric Dumazet	 <edumazet@google.com>, Jakub
- Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer	 <hawk@kernel.org>,
- Jesse Brandeburg <jbrandeburg@cloudflare.com>, Joanne Koong	
- <joannelkoong@gmail.com>, Lorenzo Bianconi <lorenzo@kernel.org>, Martin
- KaFai Lau <martin.lau@linux.dev>, Toke
- =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <thoiland@redhat.com>,  Yan Zhai
- <yan@cloudflare.com>, kernel-team@cloudflare.com, netdev@vger.kernel.org,
- Stanislav Fomichev	 <sdf@fomichev.me>
-Date: Tue, 22 Jul 2025 13:30:05 -0700
-In-Reply-To: <20250721-skb-metadata-thru-dynptr-v3-10-e92be5534174@cloudflare.com>
+To: Paul Chaignon <paul.chaignon@gmail.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>, John
+ Fastabend <john.fastabend@gmail.com>
+Date: Tue, 22 Jul 2025 13:40:03 -0700
+In-Reply-To: <3b8dcee67ff4296903351a974ddd9c4dca768b64.1753194596.git.paul.chaignon@gmail.com>
 References: 
-	<20250721-skb-metadata-thru-dynptr-v3-0-e92be5534174@cloudflare.com>
-	 <20250721-skb-metadata-thru-dynptr-v3-10-e92be5534174@cloudflare.com>
+	<3b8dcee67ff4296903351a974ddd9c4dca768b64.1753194596.git.paul.chaignon@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
@@ -103,16 +95,45 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Mon, 2025-07-21 at 12:52 +0200, Jakub Sitnicki wrote:
-> Exercise r/w access to skb metadata through an offset-adjusted dynptr,
-> read/write helper with an offset argument, and a slice starting at an
-> offset.
+On Tue, 2025-07-22 at 16:32 +0200, Paul Chaignon wrote:
+> The following BPF program, simplified from a syzkaller repro, causes a
+> kernel warning:
 >=20
-> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+>     r0 =3D *(u8 *)(r1 + 169);
+>     exit;
+>=20
+> With pointer field sk being at offset 168 in __sk_buff. This access is
+> detected as a narrower read in bpf_skb_is_valid_access because it
+> doesn't match offsetof(struct __sk_buff, sk). It is therefore allowed
+> and later proceeds to bpf_convert_ctx_access. At that point,
+> target_size is null and the verifier errors with a kernel warning and:
+>=20
+>     verifier bug: error during ctx access conversion(1)
+>=20
+> This patch fixes that to return a proper "invalid bpf_context access
+> off=3DX size=3DY" error on the load instruction.
+>=20
+> The same issue affects multiple other fields in context structures that
+> allow narrow access. Some other non-affected fields (for sk_msg,
+> sk_lookup, and sockopt) were also changed to use bpf_ctx_range_ptr for
+> consistency.
+>=20
+> Note this syzkaller crash was reported in [1], which used to be about a
+> different bug, fixed in commit fce7bd8e385a ("bpf/verifier: Handle
+> BPF_LOAD_ACQ instructions in insn_def_regno()"). Because syzbot somehow
+> confused the two bugs, the new crash and repro didn't get reported to
+> the mailing list.
+>=20
+> Link: https://syzkaller.appspot.com/bug?extid=3D0ef84a7bdf5301d4cbec [1]
+> Fixes: f96da09473b52 ("bpf: simplify narrower ctx access")
+> Fixes: 0df1a55afa832 ("bpf: Warn on internal verifier errors")
+> Reported-by: syzbot+0ef84a7bdf5301d4cbec@syzkaller.appspotmail.com
+> Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
 > ---
+> Changes in v2:
+>   - Use bpf_ctx_range{,_ptr} for a few other fields, for consistency,
+>     as suggested by Eduard and John.
+>   - Fix accesses to skb_hwtstamp, reported by Eduard.
 
-Maybe also add a test case checking error conditions for out of bounds
-metadata access?
-
-[...]
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
