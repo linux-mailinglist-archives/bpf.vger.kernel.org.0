@@ -1,111 +1,80 @@
-Return-Path: <bpf+bounces-64046-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64047-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0D45B0DAEC
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 15:34:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F791B0DB88
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 15:50:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3BD75621EE
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 13:34:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D78483B2D59
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 13:49:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73D281E4A9;
-	Tue, 22 Jul 2025 13:34:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF4682EA15E;
+	Tue, 22 Jul 2025 13:49:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b3hHPjXu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lMOpGh7g"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2533221555
-	for <bpf@vger.kernel.org>; Tue, 22 Jul 2025 13:34:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21B942E8E0F;
+	Tue, 22 Jul 2025 13:49:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753191268; cv=none; b=LkMa38Sbzw4WPNEaDzH6xNwAEqCbdDHr3Y6CycdJQMrIt/YZEpYLjqkcUjmhZRiUFxhzT1droBvE8zN28BeeBZODRuNQVuLs2nBwET+dOCq+BVihW1fHBnl+Bwul8t9cuGQBEAkQtJZTHXLCH0dDF6C6cZ9easXWQVyPNTSn/1k=
+	t=1753192196; cv=none; b=n3YYVsea7JBXTva787IlxGubv8VdbTGY2zHe+Tn9hR016mvpuaxWxkFuaY9ylmMcJO4S1FtJTJ1MQyADUmsdNIOkb/eWZF2jkS2uopzq9zSflvGfRJF0jhye/1R5Shqr1fZsvV5ZWedZTRmcb/EaeVr2SpI1xQ1lLZaD0i7czi4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753191268; c=relaxed/simple;
-	bh=FVtYWPhnS81RWnGYc/7xfA8SLLR+4zw/mjH1VeiJ4X4=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ryEBC/CWVilnI2FmMiaaK9ujsasTZPWtLTVBXh/kgIBrHvmXLRiG2npme25ceidQ3eVq59HkgRM1xZygaik3Y0+cs/gyq/exwKv5VLHqanJRiS2wGBw0LRMODChGfg1p9FUFVRzHRpR/NYjf6qC1Y3QJkNOf6HewDYc9/uvX5Z0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b3hHPjXu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52DDAC4CEEB;
-	Tue, 22 Jul 2025 13:34:27 +0000 (UTC)
+	s=arc-20240116; t=1753192196; c=relaxed/simple;
+	bh=ddxKdBE3hjswK34PDNueVY4oEHoE9C/gkKBjP/BExc4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=iFswv5FqmHIvV7vSa5Y/XrgeIReJah5tGxYVqHTxje2/MRomIDT3wFsTJCHvIvf86MAv2hwyKGzYRyTZcG8HrNbfKCEuwqUqPNzusjAKTAzzzAeLwo19zrsWLLFF+nTXjt6PpSa5TRLnOfC0C/A9r/mzpvGV7caOaK6cDwHcKXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lMOpGh7g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E0FFC4CEEB;
+	Tue, 22 Jul 2025 13:49:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753191267;
-	bh=FVtYWPhnS81RWnGYc/7xfA8SLLR+4zw/mjH1VeiJ4X4=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=b3hHPjXuj8iTp2lAyW4q7KldUiyvflDL7JVSmlQ4ohq7JMspxMEKIJ0Uf5S6WLz5h
-	 X5E+wiKo9LBTY89ugGihAbygNwY/gQip/SFdfG3HTzzA3bkRR5pipK2pld0dJvf04q
-	 WJ+aaiFsBub/0HN6PzMazh+KTeNolc9SzJYmLXQYjY+wAjfhzfUp6SAB60uiGcN2Qg
-	 bKRdFDLmF304jv4DjSOC3kiFtbQe4goe5tKB9iEuXuCviU6ajw8wpAslz5G7q7BnMz
-	 2wr+W3i/9xH6FzpLmWQ1yWUF67fVL9wQDuwSitZwccqGhKrvU2p/HWKSBuuTEnTiwd
-	 ZByUe+kb3cP5w==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Xu Kuohai <xukuohai@huaweicloud.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org
-Subject: [PATCH bpf-next 1/1] bpf, arm64: fix fp initialization for exception boundary
-Date: Tue, 22 Jul 2025 13:34:09 +0000
-Message-ID: <20250722133410.54161-2-puranjay@kernel.org>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20250722133410.54161-1-puranjay@kernel.org>
-References: <20250722133410.54161-1-puranjay@kernel.org>
+	s=k20201202; t=1753192195;
+	bh=ddxKdBE3hjswK34PDNueVY4oEHoE9C/gkKBjP/BExc4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=lMOpGh7gUzCgU2JCzvffqqe1ECUyFe7TpYQd0yQppiLNVO//kChktylStkjPmiP/f
+	 1aBaPEd/ND+1BRyYdmLIBaB8wg8ucaHY8rUZSrYD7P6haCgjShC2ZDwNWu6lVP2K+e
+	 2dP1eQR8baaOD6XYD5rou68iRXw8xUUzwlL4GZJ31WJqsDs+hkr8u5d8vwWPccygkU
+	 +y7RoNN0cfKikiIhvsNaNv8PTcIevF4vImrL8r6csrPLbl1Q2aGvIx5SzHu+QED74N
+	 RKPmx/7PR+j8gCinuwARDiA8l+PaXv5Fu+50fGJLz9X8SKK/Npv14R/xm+TJLRJOMA
+	 wfiae2S6H+owg==
+Date: Tue, 22 Jul 2025 06:49:54 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Gal Pressman <gal@nvidia.com>
+Cc: Nimrod Oren <noren@nvidia.com>, Mohsin Bashir <mohsin.bashr@gmail.com>,
+ netdev@vger.kernel.org, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, pabeni@redhat.com, shuah@kernel.org, horms@kernel.org,
+ cratiu@nvidia.com, cjubran@nvidia.com, mbloch@nvidia.com,
+ jdamato@fastly.com, sdf@fomichev.me, ast@kernel.org, daniel@iogearbox.net,
+ hawk@kernel.org, john.fastabend@gmail.com, nathan@kernel.org,
+ nick.desaulniers+lkml@gmail.com, morbo@google.com, justinstitt@google.com,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
+ tariqt@nvidia.com, thoiland@redhat.com
+Subject: Re: [PATCH net-next V6 2/5] selftests: drv-net: Test XDP_PASS/DROP
+ support
+Message-ID: <20250722064954.5b5b4a92@kernel.org>
+In-Reply-To: <60729195-9c48-45fb-99c0-8965c95927df@nvidia.com>
+References: <20250719083059.3209169-1-mohsin.bashr@gmail.com>
+	<20250719083059.3209169-3-mohsin.bashr@gmail.com>
+	<ab65545f-c79c-492b-a699-39f7afa984ea@nvidia.com>
+	<20250721084046.5659971c@kernel.org>
+	<eaca90db-897c-45a0-8eed-92c36dbec825@nvidia.com>
+	<20250721133325.73e2f076@kernel.org>
+	<60729195-9c48-45fb-99c0-8965c95927df@nvidia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-In the ARM64 BPF JIT when prog->aux->exception_boundary is set for a BPF
-program, find_used_callee_regs() is not called because for a program
-acting as exception boundary, all callee saved registers are saved.
-find_used_callee_regs() sets `ctx->fp_used = true;` when it sees FP
-being used in any of the instructions.
+On Tue, 22 Jul 2025 10:21:22 +0300 Gal Pressman wrote:
+> This thread is more about pushing NIPA agenda than a technical discussion.
 
-For programs acting as exception boundary, ctx->fp_used remains false
-even if frame pointer is used by the program and therefore, FP is not
-set-up for such programs in the prologue. This can cause the kernel to
-crash due to a pagefault.
-
-Fix it by setting ctx->fp_used = true for exception boundary programs as
-fp is always saved in such programs.
-
-Fixes: 5d4fa9ec5643 ("bpf, arm64: Avoid blindly saving/restoring all callee-saved registers")
-Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
----
- arch/arm64/net/bpf_jit_comp.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 89b1b8c248c62..97ab651c0bd5d 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -412,6 +412,7 @@ static void push_callee_regs(struct jit_ctx *ctx)
- 		emit(A64_PUSH(A64_R(23), A64_R(24), A64_SP), ctx);
- 		emit(A64_PUSH(A64_R(25), A64_R(26), A64_SP), ctx);
- 		emit(A64_PUSH(A64_R(27), A64_R(28), A64_SP), ctx);
-+		ctx->fp_used = true;
- 	} else {
- 		find_used_callee_regs(ctx);
- 		for (i = 0; i + 1 < ctx->nr_used_callee_reg; i += 2) {
--- 
-2.47.1
-
+What is the "NIPA agenda"? Please explain, this is getting funny :D
 
