@@ -1,235 +1,150 @@
-Return-Path: <bpf+bounces-64043-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64044-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F005AB0D96A
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 14:22:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10753B0DACB
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 15:29:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 493331C8122A
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 12:21:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6558563B01
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 13:29:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1B5F2ECD3F;
-	Tue, 22 Jul 2025 12:17:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA5752EA49D;
+	Tue, 22 Jul 2025 13:28:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YsIIubAU"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b="L8Rycg9Q"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from nbd.name (nbd.name [46.4.11.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F9BF2EBDFC
-	for <bpf@vger.kernel.org>; Tue, 22 Jul 2025 12:16:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DB022E338B;
+	Tue, 22 Jul 2025 13:28:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.4.11.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753186621; cv=none; b=fKYGg5rdB9YEgbqh0L7v4PKQw+pkGFmbLmTl4UgABg2NvSYRnmfSVm+f85rDkm7jNZmmLRJurCjwPBrJGnWFUuInEzCij906CxFFPv8GwuYP2aGIzwSaY8nafcZuwUME14lRlsvj+c28zEfcklOAGcyWz/3HvVurbpffUTPb5zM=
+	t=1753190907; cv=none; b=W275R69pgAWmdUtbyKJBzPRq9wM0PybJ50WArJpY0W4X5anrAaEh+Gqg686ohZhZbYVxvyJmHZ3N/46e/o5Ie8d0jcofH3FwzUBy/72rq9JPrzS/Je7okltLUnE4GwBNusxAdWSS4o+8VXVp4kEY6TWC68obQ/36/vALoXUC7vA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753186621; c=relaxed/simple;
-	bh=1+hfXiK3bFD0KCZfea5VOfPQwSaJGBGiuAGZGWs2KoU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o+D/sx3GBaUKY5uw8Vb6X8hqc388aAfFUMlAfhN9ZyRTlbGYgsRAg2g2XuGTQUF3jZfGJgqFbWbRrqBhSSEycebJy3+6t1wNThXvxdPN8+Ee1CXBN06UNNdi1PCErA/ng2pyVCCHed3wBBC+hPrhGKQ1733NPK8gW7dvE3Fg8cE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YsIIubAU; arc=none smtp.client-ip=209.85.219.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6fadd3ad18eso52560776d6.2
-        for <bpf@vger.kernel.org>; Tue, 22 Jul 2025 05:16:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753186618; x=1753791418; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d2dh4GvcIefc0hFeVr2+yL7P2gWg4zPcsSe2xE6W3bs=;
-        b=YsIIubAU7LtC/1LEsebev92hl7TnLVpufS/EUUbVJmQXNXLfi5aU5oucTAdeFFB2rk
-         q/Qb9JCTo+2Xrg4WlGSDersdxQRtsnJMZobOY21F6DcUrxfE6FdHv8gh4PUW96G8wDrO
-         CGvdzEfUUFtLEHspKV5+ESe+RGiHSXc4in80hveCEwev9OHKVDwvl4BfFhizI4viLQ0K
-         91xbEK/H9z2Fm7Sn0rZXhAe5l6Mx5YXOvlyV+uUZrNP9K0myO2U5jPAyVIkRYJMGH5Yx
-         sGtJfgFc0YENWn4L96q8hbmrXAJJFn8oHMGAftP5QGQxRTggDp91/8ktW8d71h0m7XiQ
-         ucFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753186618; x=1753791418;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=d2dh4GvcIefc0hFeVr2+yL7P2gWg4zPcsSe2xE6W3bs=;
-        b=MeH8hPxf+uvFYSLEqvUWCdXPFldkeGYsoDJ00V7bXfBr8FeAqmXc+RQ5BQC/1eNVn5
-         ZPLy81k+Wu/O8cILtiUG5zaSAJVKEutEFF3Tq/QE+MEVRGlNdaCK/w5d5RquEMiIj4Gb
-         IgvU6eftVRKxhRh+fnTI/TXHS3sAIff1fNgunZd515VgIgcFu5e0f5DF5UVXqUMuBGhB
-         Ncc4epPQEcQVtoiKA7tvfy9QhyX3P/7O/eUqzk5HYImmJGmwXje0TcNDlhHYHbAk6BfN
-         CnK2vz4e0SZXv/i2XOHkesLsfDM4yRK5ISXWt3ssZaU2BfstRO0gA9A4B72XHYymbleB
-         i40g==
-X-Forwarded-Encrypted: i=1; AJvYcCX6Zg31SRWDU/uqzsYxXD/hCnHWNdkt2LLRy8IhzB024F7QuO/2OqPhGophh9XwyR19qac=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxcb4aTflpFcW5+P7P9lHNf7Yp2GMBQiReWoZ47S6lVtAdof4Iz
-	HJXW7dyU4DDYxntlHyDnVr7u0uaZbF7W90LRCLniStZbWZpa0vVoI09sXnaoXO1lCtgzSIVe7ZA
-	IvB80CAVmTTYlZwAfyRVRMMRoPOFH9ck=
-X-Gm-Gg: ASbGnct1UN6Nt4quQmrgmX0RoINunuuHM+mXwQsFfZQtKlJkYAetDhMyVFktx2VUzFp
-	pF36YEGuVUjG03SmFmEujPgNCNauNDInS9kbdf6Rr5qecqJQg9UnPAym+Eo6C9JwMfwrjLfiUA8
-	Q3dYlC0e0fS3qWVR/6C+KMk7wLrJiiLXfKyr7KDSZc6utgHqQJjsH6A1f2TmoMFM1OEU5Gs++5t
-	AsvdQix
-X-Google-Smtp-Source: AGHT+IHobXtgKhcXxKs5zE1UVYtEi4Qw+CLzI/vVtT8yLXo7N7RF6680jlqb/8T5JSOGZWQ0LwDWzc6hojOUMno0Hh4=
-X-Received: by 2002:a05:6214:dc7:b0:6f8:a978:d46 with SMTP id
- 6a1803df08f44-7050722961cmr354570346d6.19.1753186618099; Tue, 22 Jul 2025
- 05:16:58 -0700 (PDT)
+	s=arc-20240116; t=1753190907; c=relaxed/simple;
+	bh=UlPoVR5QC1KhInRk9vJr6g7Szxa5HcUjm/ee86z3yn0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=ZRyrEXGXRTlzBonmdF3y93KrIzRXWV18lldFyxkuJr5IYb0sWA7mhnQ7h77n9Hs/K97AzfU4gOELpotbcLN1bhDPyM2Do1+TySi9c2RM0zuYUmwEvWnCePPgpyzOK+M7yDFGBIXSyHaDhcw/WW4cmaXModq45Va7Fo5kzI2+NfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name; spf=none smtp.mailfrom=nbd.name; dkim=pass (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b=L8Rycg9Q; arc=none smtp.client-ip=46.4.11.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=nbd.name
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
+	s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=cQbj0cQcdo0qq8guQgb1++o9RIM4pgMuhBXxGM8ddco=; b=L8Rycg9Qrn7ru2lad/IIluFfsQ
+	TljNaD1lcdmbBIVU4EmLMl12zfqoVbR2y5U32E5r/s1IM/S0q7YlGJ/ztDOPIc2X3pqx08GT+B76l
+	taeTyVtiuA9TX6kRIw9xaT4OeO0cFo9V3g6Ww1SSt9Qi9Fh3lQm+pBpl3NtvA4G+5vms=;
+Received: from p5b2062ed.dip0.t-ipconnect.de ([91.32.98.237] helo=nf.local)
+	by ds12 with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <nbd@nbd.name>)
+	id 1ueD2U-00Fylh-0O;
+	Tue, 22 Jul 2025 15:28:14 +0200
+Message-ID: <2e267b4b-0540-45d8-9310-e127bf95fc63@nbd.name>
+Date: Tue, 22 Jul 2025 15:28:13 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250608073516.22415-1-laoar.shao@gmail.com> <b2fc85fb-1c7b-40ab-922b-9351114aa994@redhat.com>
- <CALOAHbD2-f5CRXJy6wpXuCC5P9gqqsbVbjBzgAF4e+PqWv0xNg@mail.gmail.com>
- <9bc57721-5287-416c-aa30-46932d605f63@redhat.com> <CALOAHbBoZpAartkb-HEwxJZ90Zgn+u6G4fCC0_Wq-shKqnb6iQ@mail.gmail.com>
- <87a54cdb-1e13-4f6f-9603-14fb1210ae8a@redhat.com> <CALOAHbA5NUHXPs+DbQWaKUfMeMWY3SLCxHWK_dda9K1Orqi=WA@mail.gmail.com>
- <404de270-6d00-4bb7-b84b-ae3b1be1dba8@redhat.com> <694a8b10-6082-44ac-8239-2c28b4ba8640@lucifer.local>
- <CALOAHbBepZiORN2yLvDDQWbvom38HHvCyqAqvS7uKzQqy8zgjg@mail.gmail.com> <dda67ea5-2943-497c-a8e5-d81f0733047d@lucifer.local>
-In-Reply-To: <dda67ea5-2943-497c-a8e5-d81f0733047d@lucifer.local>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Tue, 22 Jul 2025 20:16:20 +0800
-X-Gm-Features: Ac12FXyMzY-ryTl9mU_SERXrlYB3V2uAa7Zc3M0QA5uuO-MZVuqrYonrF1COTzI
-Message-ID: <CALOAHbDxjQrk4qjd4PouxfS=ZpR=HtL6Su53vsxvJWHckKoM_g@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 0/5] mm, bpf: BPF based THP adjustment
-To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
-Cc: David Hildenbrand <david@redhat.com>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
-	Matthew Wilcox <willy@infradead.org>, akpm@linux-foundation.org, ziy@nvidia.com, 
-	baolin.wang@linux.alibaba.com, Liam.Howlett@oracle.com, npache@redhat.com, 
-	ryan.roberts@arm.com, dev.jain@arm.com, hannes@cmpxchg.org, 
-	usamaarif642@gmail.com, gutierrez.asier@huawei-partners.com, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org, 
-	linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 1/1] bpf: fix WARNING in __bpf_prog_ret0_warn
+ when jit failed
+To: KaFai Wan <mannkafai@gmail.com>, ast@kernel.org, daniel@iogearbox.net,
+ john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250526133358.2594176-1-mannkafai@gmail.com>
+From: Felix Fietkau <nbd@nbd.name>
+Content-Language: en-US
+Autocrypt: addr=nbd@nbd.name; keydata=
+ xsDiBEah5CcRBADIY7pu4LIv3jBlyQ/2u87iIZGe6f0f8pyB4UjzfJNXhJb8JylYYRzIOSxh
+ ExKsdLCnJqsG1PY1mqTtoG8sONpwsHr2oJ4itjcGHfn5NJSUGTbtbbxLro13tHkGFCoCr4Z5
+ Pv+XRgiANSpYlIigiMbOkide6wbggQK32tC20QxUIwCg4k6dtV/4kwEeiOUfErq00TVqIiEE
+ AKcUi4taOuh/PQWx/Ujjl/P1LfJXqLKRPa8PwD4j2yjoc9l+7LptSxJThL9KSu6gtXQjcoR2
+ vCK0OeYJhgO4kYMI78h1TSaxmtImEAnjFPYJYVsxrhay92jisYc7z5R/76AaELfF6RCjjGeP
+ wdalulG+erWju710Bif7E1yjYVWeA/9Wd1lsOmx6uwwYgNqoFtcAunDaMKi9xVQW18FsUusM
+ TdRvTZLBpoUAy+MajAL+R73TwLq3LnKpIcCwftyQXK5pEDKq57OhxJVv1Q8XkA9Dn1SBOjNB
+ l25vJDFAT9ntp9THeDD2fv15yk4EKpWhu4H00/YX8KkhFsrtUs69+vZQwc0cRmVsaXggRmll
+ dGthdSA8bmJkQG5iZC5uYW1lPsJgBBMRAgAgBQJGoeQnAhsjBgsJCAcDAgQVAggDBBYCAwEC
+ HgECF4AACgkQ130UHQKnbvXsvgCgjsAIIOsY7xZ8VcSm7NABpi91yTMAniMMmH7FRenEAYMa
+ VrwYTIThkTlQzsFNBEah5FQQCACMIep/hTzgPZ9HbCTKm9xN4bZX0JjrqjFem1Nxf3MBM5vN
+ CYGBn8F4sGIzPmLhl4xFeq3k5irVg/YvxSDbQN6NJv8o+tP6zsMeWX2JjtV0P4aDIN1pK2/w
+ VxcicArw0VYdv2ZCarccFBgH2a6GjswqlCqVM3gNIMI8ikzenKcso8YErGGiKYeMEZLwHaxE
+ Y7mTPuOTrWL8uWWRL5mVjhZEVvDez6em/OYvzBwbkhImrryF29e3Po2cfY2n7EKjjr3/141K
+ DHBBdgXlPNfDwROnA5ugjjEBjwkwBQqPpDA7AYPvpHh5vLbZnVGu5CwG7NAsrb2isRmjYoqk
+ wu++3117AAMFB/9S0Sj7qFFQcD4laADVsabTpNNpaV4wAgVTRHKV/kC9luItzwDnUcsZUPdQ
+ f3MueRJ3jIHU0UmRBG3uQftqbZJj3ikhnfvyLmkCNe+/hXhPu9sGvXyi2D4vszICvc1KL4RD
+ aLSrOsROx22eZ26KqcW4ny7+va2FnvjsZgI8h4sDmaLzKczVRIiLITiMpLFEU/VoSv0m1F4B
+ FtRgoiyjFzigWG0MsTdAN6FJzGh4mWWGIlE7o5JraNhnTd+yTUIPtw3ym6l8P+gbvfoZida0
+ TspgwBWLnXQvP5EDvlZnNaKa/3oBes6z0QdaSOwZCRA3QSLHBwtgUsrT6RxRSweLrcabwkkE
+ GBECAAkFAkah5FQCGwwACgkQ130UHQKnbvW2GgCeMncXpbbWNT2AtoAYICrKyX5R3iMAoMhw
+ cL98efvrjdstUfTCP2pfetyN
+In-Reply-To: <20250526133358.2594176-1-mannkafai@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jul 22, 2025 at 8:05=E2=80=AFPM Lorenzo Stoakes
-<lorenzo.stoakes@oracle.com> wrote:
->
-> On Tue, Jul 22, 2025 at 07:56:21PM +0800, Yafang Shao wrote:
-> > On Tue, Jul 22, 2025 at 6:09=E2=80=AFPM Lorenzo Stoakes
-> > <lorenzo.stoakes@oracle.com> wrote:
-> > >
-> > > On Tue, Jul 22, 2025 at 09:28:02AM +0200, David Hildenbrand wrote:
-> > > > On 22.07.25 04:40, Yafang Shao wrote:
-> > > > > On Sun, Jul 20, 2025 at 11:56=E2=80=AFPM David Hildenbrand <david=
-@redhat.com> wrote:
-> > > > > >
-> > > > > > > >
-> > > > > > > > We discussed this yesterday at a THP upstream meeting, and =
-what we
-> > > > > > > > should look into is:
-> > > > > > > >
-> > > > > > > > (1) Having a callback like
-> > > > > > > >
-> > > > > > > > unsigned int (*get_suggested_order)(.., bool in_pagefault);
-> > > > > > >
-> > > > > > > This interface meets our needs precisely, enabling allocation=
- orders
-> > > > > > > of either 0 or 9 as required by our workloads.
-> > >
-> > > That's great to hear, and to be clear my views align with David on th=
-is - I
-> > > feel like having a _carefully chosen_ BPF interface could be valuable=
- here,
-> > > especially in the short to medium term where it will allow us to more
-> > > rapidly iterate on an automated [m]THP mechanism.
-> > >
-> > > I think one key question here is - do we want to retain a _permanent_=
- BPF
-> > > hook here?
-> > >
-> > > In any cae, for the first experiments with this we absolutely _must_ =
-be
-> > > able to express that this is going away, NO, not based on whether it'=
-s
-> > > widely used, it IS going away.
-> >
-> > If this BPF kfunc provides clear user value with minimal maintenance
-> > overhead, what would be the rationale for removing it? That said, if
-> > you and David both agree it should be deprecated, I won't object -
-> > though I'd suggest following the standard deprecation process.
->
-> You see herein lies the problem... :) from my point of view we want to ha=
-ve
-> the ability to choose, fundamentally.
->
-> We may find out the proposed interface is unworkable, or sets assumptions
-> we don't want to make.
->
-> So I think hiding ehhind a CONFIG_ flag is the best idea here to really
-> enforce that and make it clear.
->
-> Personally I have a sense that we _will_ introduce something permanent. W=
-e
-> just need to have the 'space' to positively decide to do that once the
-> experimentation is complete.
+Hi,
 
-Thanks for your explanation.
+On 26.05.25 15:33, KaFai Wan wrote:
+> syzkaller reported an issue:
+> 
+> WARNING: CPU: 3 PID: 217 at kernel/bpf/core.c:2357 __bpf_prog_ret0_warn+0xa/0x20 kernel/bpf/core.c:2357
+> Modules linked in:
+> CPU: 3 UID: 0 PID: 217 Comm: kworker/u32:6 Not tainted 6.15.0-rc4-syzkaller-00040-g8bac8898fe39 #0 PREEMPT(full)
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+> Workqueue: ipv6_addrconf addrconf_dad_work
+> RIP: 0010:__bpf_prog_ret0_warn+0xa/0x20 kernel/bpf/core.c:2357
+> RSP: 0018:ffffc900031f6c18 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: ffffc9000006e000 RCX: 1ffff9200000dc06
+> RDX: ffff8880234ba440 RSI: ffffffff81ca6979 RDI: ffff888031e93040
+> RBP: ffffc900031f6cb8 R08: 0000000000000001 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000000 R12: ffff88802b61e010
+> R13: ffff888031e93040 R14: 00000000000000a0 R15: ffff88802c3d4800
+> FS:  0000000000000000(0000) GS:ffff8880d6ce2000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 000055557b6d2ca8 CR3: 000000002473e000 CR4: 0000000000352ef0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>   <TASK>
+>   bpf_dispatcher_nop_func include/linux/bpf.h:1316 [inline]
+>   __bpf_prog_run include/linux/filter.h:718 [inline]
+>   bpf_prog_run include/linux/filter.h:725 [inline]
+>   cls_bpf_classify+0x74a/0x1110 net/sched/cls_bpf.c:105
+>   ...
+> 
+> When creating bpf program, 'fp->jit_requested' depends on bpf_jit_enable.
+> Currently the value of bpf_jit_enable is available from 0 to 2, 0 means use
+> interpreter and not jit, 1 and 2 means need to jit. When
+> CONFIG_BPF_JIT_ALWAYS_ON is enabled, bpf_jit_enable is permanently set
+> to 1, when it's not set or disabled, we can set bpf_jit_enable via proc.
+> 
+> This issue is triggered because of CONFIG_BPF_JIT_ALWAYS_ON is not set
+> and bpf_jit_enable is set to 1, causing the arch to attempt JIT the prog,
+> but jit failed due to FAULT_INJECTION. As a result, incorrectly
+> treats the program as valid, when the program runs it calls
+> `__bpf_prog_ret0_warn` and triggers the WARN_ON_ONCE(1).
+> 
+> Reported-by: syzbot+0903f6d7f285e41cdf10@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/bpf/6816e34e.a70a0220.254cdc.002c.GAE@google.com
+> Fixes: fa9dd599b4da ("bpf: get rid of pure_initcall dependency to enable jits")
+> Signed-off-by: KaFai Wan <mannkafai@gmail.com>
 
->
-> > > I find this documentation super contradictory. I'm sorry but you can'=
-t
-> > > have:
-> > >
-> > > "...can therefore be modified or removed by a maintainer of the subsy=
-stem
-> > >  they=E2=80=99re defined in when it=E2=80=99s deemed necessary."
-> > >
-> > > And:
-> > >
-> > > "kfuncs that are widely used or have been in the kernel for a long ti=
-me
-> > > will be more difficult to justify being changed or removed by a
-> > > maintainer."
-> > >
-> > > At the same time. Let alone:
-> > >
-> > > "A kfunc will never have any hard stability guarantees. BPF APIs cann=
-ot and
-> > > will not ever hard-block a change in the kernel purely for stability
-> > > reasons"
-> > >
-> > > Make your mind up!!
-> > >
-> > > I mean the EXPORT_SYMBOL_GPL() example isn't accurate AT ALL - we can
-> > > _absolutely_ change or remove those _at will_ as we don't care about
-> > > external modules.
-> > >
-> > > Really this seems to be saying, in not so many words, that this is
-> > > basically a kAPI and you can't change it.
-> > >
-> > > So this strictly violates what we need here.
-> >
-> > The maintainers have the authority to make the final determination ;-)
->
-> Well the kernel doesn't entirely work this way... pressure can come which
-> impacts what others may do.
->
-> If you have people saying 'hey we rely on this and removing it will break
-> our cloud deployment' and 'hey I checked the docs and it says you guys ha=
-ve
-> to take this into account', I am not so sure Andrew or Linus will accept
-> the patch.
+I think this patch may have caused a regression in configurations with 
+CONFIG_BPF_JIT_DEFAULT_ON=y when programs can't be JITed. Attaching the 
+program fails with error -ENOTSUPP.
 
-understood.
+Please see https://github.com/openwrt/openwrt/issues/19405 for more 
+information.
 
->
-> > > I wonder if we can use a CONFIG_xxx and put this behind that, which
-> > > specifically says 'WE WILL REMOVE THIS'
-> > > CONFIG_EXPERIMENTAL_DO_NOT_USE_THP_THINGY :P
-> >
-> > That's a reasonable suggestion. We could implement this function under
-> > CONFIG_EXPERIMENTAL to mark it as experimental infrastructure.
->
-> Thanks! Yes, I was looking for this flag :P didn't know if we still had
-> that or not actually...
->
-> But, yeah, putting it behind that explicitly also makes it very clearly.
->
-> CONFIG_EXPERIMENTAL_BPF_FAULT_ORDER relies on CONFIG_EXPERIMENTAL makes i=
-t
-> you know... pretty clear ;)
-
-Agreed. Let's move forward with the CONFIG_EXPERIMENTAL_BPF_FAULT_ORDER opt=
-ion.
-
---=20
-Regards
-Yafang
+- Felix
 
