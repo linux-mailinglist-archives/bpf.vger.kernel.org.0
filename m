@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-64083-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64084-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0CCCB0E215
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 18:42:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19360B0E285
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 19:23:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B34B51C84353
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 16:42:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D0E0AA0405
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 17:23:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50B67248F60;
-	Tue, 22 Jul 2025 16:42:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6566627FB3A;
+	Tue, 22 Jul 2025 17:23:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ihS9mnO/"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="N8o2mR+a"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64A8719309C
-	for <bpf@vger.kernel.org>; Tue, 22 Jul 2025 16:42:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AFDB27FB21
+	for <bpf@vger.kernel.org>; Tue, 22 Jul 2025 17:23:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753202541; cv=none; b=ZuAcBOL85rnODokVpDK/xvUi7fYDMXgFn8+l65b8GRyqaE8SmVWSxq0dhhmajp2XNzBoxt/mlBCdmf4cBuai+8uoldPSwYP5TLK9Wku3K35+jr5iY+PukAU3NNQqhmdTDXKp59g7EjgwiMa99QClr25HagJRvqjnUcVTJs2iI9U=
+	t=1753205006; cv=none; b=c7p93hEqGsCWVIlWEQH13xa/D3y3kxGAExIzBcnzJBSME2CitwhzYsxSwk0yk5da5aGMJp0xklPUbgpezs9vUBgPsBcwp4l8acSwpHajUeQErlgXgtxH02r9H5hh5NZw02wo4gDIcdFqzTynoitN/AFvHLBFcH+4TuMdkRDu//Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753202541; c=relaxed/simple;
-	bh=RaJ+Jpxw4Z1gkEyO0AntIYQXlU/FNtY01F1LH3AHnLs=;
+	s=arc-20240116; t=1753205006; c=relaxed/simple;
+	bh=8tLBsgDMoKYn/cmEEtG36C5Re6c2A8hBzfa0rJS9qf8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZBBhQIlwTB334Hm6jIVNCUuC+H0HrxAZeSenAjL7BPGRqoEK1LTL+R8WS+IDLIKPPmSOIJqmJdt8WqKrXNsggzbftaF+EpAkvBJQSmiTGtyWa9Oo40jnbM6rJLRCX562GzAAeT7lUnyIuL41Otzd3JX+nLikgTWn4iCeABgKTCs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ihS9mnO/; arc=none smtp.client-ip=192.198.163.15
+	 Content-Type:Content-Disposition:In-Reply-To; b=NxL1QSzZt46pLNC4+p8y400OrzldA6lVJ1yXPHhfZMjxw7dwYnpvDlSkCD41mADePnRX1EWiq6OKiyN/gyrgMXT6gNeXTstgHf/Nmz1uDmRhS9EbB7oqQ+sBxZoFiw/pnYgXzOpQxHS2eUP7WTxt2s8/guRFHByDb08VQpG4EAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=N8o2mR+a; arc=none smtp.client-ip=192.198.163.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1753202541; x=1784738541;
+  t=1753205004; x=1784741004;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=RaJ+Jpxw4Z1gkEyO0AntIYQXlU/FNtY01F1LH3AHnLs=;
-  b=ihS9mnO//BPmrALLZ+4O8qbyVB6QKIIo7rsZRamN0B0SePN5jMxmkBHE
-   8kzyZxtd3NpApNO06CRYpmymWLVrUr35e/WdGJsCxczKsfKp7TyPImAj5
-   0pkKFnp3nvqOoi0QxDhjimv6ongeMYwq4w8rdJmX3fAa6JlrBXcazgqnR
-   hDJeLg2O8G3Usq2Jr68g92WeKFSnn7K2SMjIkjukymxA2T9LiW+zuYfKN
-   7iWYnvzilw+WiP9XYJflu4AveP90l7IbzRLlBBh4xS0sfR/L+x/Gk5Bze
-   0xRtZcKrE6cVfqIPCxBiQiWo8k3LRjvnf2s9bdiTGV+u8lNffNb/6NEu2
-   w==;
-X-CSE-ConnectionGUID: jsdiqXqER6yLZcNS2d9fLg==
-X-CSE-MsgGUID: /SMmmjt0TxSd05kLspGFnA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11500"; a="55611989"
-X-IronPort-AV: E=Sophos;i="6.16,331,1744095600"; 
-   d="scan'208";a="55611989"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2025 09:42:20 -0700
-X-CSE-ConnectionGUID: QdnwgSZkTSWNugI+qCkkpw==
-X-CSE-MsgGUID: OnyzoUzLQze6vfH2jpY8cQ==
+  bh=8tLBsgDMoKYn/cmEEtG36C5Re6c2A8hBzfa0rJS9qf8=;
+  b=N8o2mR+a9KjgfRSNpYdrYfIQBSuJt07o18tIrUgIPMUIjrsrOi3R2I0K
+   4ylewetzFSwCcxBu7y+dL74JJL/s1wcOctk5bDgtbeOOhJaVFZw0NQyCr
+   dueVEg2xCxFivuzGEK7NY2Ild8CdESix5NvO6yP6xBJKdbjQj4ACsFpsw
+   Y4BSjYsi6AAh48qVw+n/qYstfOP9DGKvzXZ039jCVUE1X53O8VzcKK9tj
+   2ZcFSRqA2h/r9LLM86nc+DjXO7DAOce/F6Xtrs03GBmipK0umnTqWYUpp
+   q29trTo4puswfe4E+0kWlSykhzT19nhqzK1Hp6CtQUY+CnD5AQq/qXaPL
+   Q==;
+X-CSE-ConnectionGUID: p3xOGf+ERK68CzVPg5zJjg==
+X-CSE-MsgGUID: GNP1jpavTz2fjIPFwCPNIA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11500"; a="55617287"
+X-IronPort-AV: E=Sophos;i="6.16,332,1744095600"; 
+   d="scan'208";a="55617287"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2025 10:23:23 -0700
+X-CSE-ConnectionGUID: T62YgRhbStu03UHmIKqpvQ==
+X-CSE-MsgGUID: vlVplxbJSAyI/3mxscLURw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,331,1744095600"; 
-   d="scan'208";a="163430987"
+X-IronPort-AV: E=Sophos;i="6.16,332,1744095600"; 
+   d="scan'208";a="158503142"
 Received: from lkp-server01.sh.intel.com (HELO 9ee84586c615) ([10.239.97.150])
-  by orviesa003.jf.intel.com with ESMTP; 22 Jul 2025 09:42:12 -0700
+  by orviesa010.jf.intel.com with ESMTP; 22 Jul 2025 10:23:17 -0700
 Received: from kbuild by 9ee84586c615 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1ueG49-000IXj-0d;
-	Tue, 22 Jul 2025 16:42:09 +0000
-Date: Wed, 23 Jul 2025 00:42:08 +0800
+	id 1ueGhv-000IaD-1j;
+	Tue, 22 Jul 2025 17:23:15 +0000
+Date: Wed, 23 Jul 2025 01:22:56 +0800
 From: kernel test robot <lkp@intel.com>
-To: Pingfan Liu <piliu@redhat.com>, bpf@vger.kernel.org
+To: Pingfan Liu <piliu@redhat.com>, kexec@lists.infradead.org
 Cc: oe-kbuild-all@lists.linux.dev, Pingfan Liu <piliu@redhat.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -83,13 +83,10 @@ Cc: oe-kbuild-all@lists.linux.dev, Pingfan Liu <piliu@redhat.com>,
 	Dave Young <dyoung@redhat.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Linux Memory Management List <linux-mm@kvack.org>,
-	kexec@lists.infradead.org, KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [PATCHv4 03/12] bpf: Introduce bpf_copy_to_kernel() to buffer
- the content from bpf-prog
-Message-ID: <202507230035.9xLXz9Js-lkp@intel.com>
-References: <20250722020319.5837-4-piliu@redhat.com>
+	bpf@vger.kernel.org
+Subject: Re: [PATCHv4 08/12] kexec: Factor out routine to find a symbol in ELF
+Message-ID: <202507230016.NQ1WXqwG-lkp@intel.com>
+References: <20250722020319.5837-9-piliu@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -98,7 +95,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250722020319.5837-4-piliu@redhat.com>
+In-Reply-To: <20250722020319.5837-9-piliu@redhat.com>
 
 Hi Pingfan,
 
@@ -113,31 +110,36 @@ https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
 url:    https://github.com/intel-lab-lkp/linux/commits/Pingfan-Liu/kexec_file-Make-kexec_image_load_default-global-visible/20250722-100843
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git net
-patch link:    https://lore.kernel.org/r/20250722020319.5837-4-piliu%40redhat.com
-patch subject: [PATCHv4 03/12] bpf: Introduce bpf_copy_to_kernel() to buffer the content from bpf-prog
-config: x86_64-buildonly-randconfig-003-20250722 (https://download.01.org/0day-ci/archive/20250723/202507230035.9xLXz9Js-lkp@intel.com/config)
+patch link:    https://lore.kernel.org/r/20250722020319.5837-9-piliu%40redhat.com
+patch subject: [PATCHv4 08/12] kexec: Factor out routine to find a symbol in ELF
+config: x86_64-buildonly-randconfig-006-20250722 (https://download.01.org/0day-ci/archive/20250723/202507230016.NQ1WXqwG-lkp@intel.com/config)
 compiler: gcc-12 (Debian 12.2.0-14+deb12u1) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250723/202507230035.9xLXz9Js-lkp@intel.com/reproduce)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250723/202507230016.NQ1WXqwG-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202507230035.9xLXz9Js-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202507230016.NQ1WXqwG-lkp@intel.com/
 
-All error/warnings (new ones prefixed by >>):
+All errors (new ones prefixed by >>):
 
-   kernel/bpf/helpers_carrier.c:84:17: warning: no previous prototype for 'bpf_mem_range_result_put' [-Wmissing-prototypes]
-      84 | __bpf_kfunc int bpf_mem_range_result_put(struct mem_range_result *result)
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers_carrier.c:93:17: warning: no previous prototype for 'bpf_copy_to_kernel' [-Wmissing-prototypes]
-      93 | __bpf_kfunc int bpf_copy_to_kernel(const char *name, char *buf, int size)
-         |                 ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers_carrier.c: In function 'bpf_copy_to_kernel':
->> kernel/bpf/helpers_carrier.c:124:9: warning: enumeration value 'TYPE_VMAP' not handled in switch [-Wswitch]
-     124 |         switch (alloc_type) {
-         |         ^~~~~~
---
->> ld: mm/mmu_notifier.o:mm/mmu_notifier.c:25: multiple definition of `__pcpu_unique_srcu_srcu_data'; kernel/bpf/helpers_carrier.o:kernel/bpf/helpers_carrier.c:13: first defined here
+   In file included from include/linux/crash_dump.h:5,
+                    from drivers/of/fdt.c:11:
+>> include/linux/kexec.h:544:7: error: unknown type name 'Elf_Sym'
+     544 | const Elf_Sym *elf_find_symbol(const Elf_Ehdr *ehdr, const char *name);
+         |       ^~~~~~~
+>> include/linux/kexec.h:544:38: error: unknown type name 'Elf_Ehdr'
+     544 | const Elf_Sym *elf_find_symbol(const Elf_Ehdr *ehdr, const char *name);
+         |                                      ^~~~~~~~
+
+
+vim +/Elf_Sym +544 include/linux/kexec.h
+
+   542	
+   543	#if defined(CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY) || defined(CONFIG_KEXEC_PE_IMAGE)
+ > 544	const Elf_Sym *elf_find_symbol(const Elf_Ehdr *ehdr, const char *name);
+   545	#endif
+   546	
 
 -- 
 0-DAY CI Kernel Test Service
