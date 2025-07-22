@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-64069-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64070-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A98A8B0E09E
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 17:35:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41F03B0E0A0
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 17:36:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D748BAA651B
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 15:35:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 567E61C82B0F
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 15:36:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5328327933F;
-	Tue, 22 Jul 2025 15:35:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27C20278E5A;
+	Tue, 22 Jul 2025 15:35:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HmEaddyg"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SupDX+iV"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B67827877F
-	for <bpf@vger.kernel.org>; Tue, 22 Jul 2025 15:35:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02C65278E53
+	for <bpf@vger.kernel.org>; Tue, 22 Jul 2025 15:35:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753198530; cv=none; b=abbTgNj0c/Snuz4iUpoyzxPmq2w3Ygv+UyaV04tpqLOrSHvjWCvE+9mfayvs0dQXPD35qTLiN8S+tUXWGlrdoth99EPNhrQikKH/4Q+RqhYukQ5pjhy/tjxuaW3yE2/Voo+4kWQwFGhTl0iF2JcVgSGODBOOdXN4j6b6MMv/2OY=
+	t=1753198536; cv=none; b=mxmyJGGN8VWbEHCur9kmJSsNQis4PGQL5JLHkwAtKycliAbb+O6VpcF/ovxRs5gDSs1h7ZpvV3osAu4iLPgTxs4PoG5CUsjJ97ixvGDEI/2yEND6RdLe3VXzWPGGVC+iJbjXDmd4ymp3+29uxg53f5t0jtwVJvseH3JTfMi2R2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753198530; c=relaxed/simple;
-	bh=6PKQRM+trCUIVCmPY+p17BM5pPiI9HJPMZ/vwSb+rV4=;
+	s=arc-20240116; t=1753198536; c=relaxed/simple;
+	bh=/YWJAaEMKsQpB79XKIShJIz579wQYx3BFktuZTqQQfI=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=U9OWpX+aWiZM3CWuAFKLmlL00cwyQxzXSyCYFhjH/2JPRb2e908I/tohgPpICR365QqsX0ZElkU5ZHrBmWYzQYnPTZQvR3HB8UcEn1Cnw7AUNeZLgTu0R0DMmMkO8IW98NzxSlK0gbsn6av2FN34FVO6shojZWCh2jSZuczLKkI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HmEaddyg; arc=none smtp.client-ip=91.218.175.171
+	 MIME-Version; b=Ifk5hgEEribBUlWZEA6YOK5lLTwjfB1WKnrkk5Yc3BararDP+PaMvI0KziYe4iup88l55n1AmsEVv4cyaDC8Sjbr/Fy/X4plaHVCo9mGlBrXO25da9UAowS5fTSF/f5ggKpmW3OLpSWaLOwh6HhWYtvDPCZaZ262o2J1z2UKPgc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SupDX+iV; arc=none smtp.client-ip=91.218.175.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1753198526;
+	t=1753198532;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cp6iNzapmusfmxQ0x7rEWLTmm+LPm3BtU19zWn32g3g=;
-	b=HmEaddygsJTd5Ds29vSdfVE1XU8zywgGJa61/WMN15ptIJMjmT9B6ibW5p4CPjikJI0OnZ
-	c1iy+l4C3G6HzGmxHFynmtM6G9cM5zISOIPzCStq9yd/jlheyUUdMrr+9ZsbyFdLLtkrYF
-	zALa/gaoEbnwLeAvHdbmbdUdc15KHm8=
+	bh=dvldxwGncKCm2/+TEH6ACEmFzgbPQOhXnryfMQbqEB4=;
+	b=SupDX+iVwPylwkv3MKyyf0LYltqXcPQpnYGCATUZXnuRZtl00RXVELyprfMsqLyb8f4+Cx
+	qcXLSSYW/zfTAxJn8a7e3mIQ17UlJJix28Afh1rsAsLaObkj9WNBljHY6727PsHVBBzh1R
+	O3yn0ZqYKWIxiMFVUqvRFb35YlM2+So=
 From: KaFai Wan <kafai.wan@linux.dev>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -63,9 +63,9 @@ To: ast@kernel.org,
 	bpf@vger.kernel.org,
 	linux-kselftest@vger.kernel.org,
 	leon.hwang@linux.dev
-Subject: [PATCH bpf-next v3 1/4] bpf: Show precise rejected function when attaching fexit/fmod_ret to __noreturn functions
-Date: Tue, 22 Jul 2025 23:34:31 +0800
-Message-ID: <20250722153434.20571-2-kafai.wan@linux.dev>
+Subject: [PATCH bpf-next v3 2/4] bpf: Add log for attaching tracing programs to functions in deny list
+Date: Tue, 22 Jul 2025 23:34:32 +0800
+Message-ID: <20250722153434.20571-3-kafai.wan@linux.dev>
 In-Reply-To: <20250722153434.20571-1-kafai.wan@linux.dev>
 References: <20250722153434.20571-1-kafai.wan@linux.dev>
 Precedence: bulk
@@ -77,48 +77,36 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-With this change, we know the precise rejected function name when
-attaching fexit/fmod_ret to __noreturn functions from log.
+Show the rejected function name when attaching tracing programs to
+functions in deny list.
 
-$ ./fexit
-libbpf: prog 'fexit': BPF program load failed: -EINVAL
-libbpf: prog 'fexit': -- BEGIN PROG LOAD LOG --
-Attaching fexit/fmod_ret to __noreturn function 'do_exit' is rejected.
+With this change, we know why tracing programs can't attach to functions
+like migrate_disable() from log.
+
+$ ./fentry
+libbpf: prog 'migrate_disable': BPF program load failed: -EINVAL
+libbpf: prog 'migrate_disable': -- BEGIN PROG LOAD LOG --
+Attaching tracing programs to function 'migrate_disable' is rejected.
 
 Suggested-by: Leon Hwang <leon.hwang@linux.dev>
 Signed-off-by: KaFai Wan <kafai.wan@linux.dev>
 ---
- kernel/bpf/verifier.c                               | 3 ++-
- tools/testing/selftests/bpf/progs/fexit_noreturns.c | 2 +-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ kernel/bpf/verifier.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index e2fcea860755..00d287814f12 100644
+index 00d287814f12..c24c0d57e595 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -23946,7 +23946,8 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
- 	} else if ((prog->expected_attach_type == BPF_TRACE_FEXIT ||
- 		   prog->expected_attach_type == BPF_MODIFY_RETURN) &&
- 		   btf_id_set_contains(&noreturn_deny, btf_id)) {
--		verbose(env, "Attaching fexit/fmod_ret to __noreturn functions is rejected.\n");
-+		verbose(env, "Attaching fexit/fmod_ret to __noreturn function '%s' is rejected.\n",
+@@ -23942,6 +23942,8 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+ 			return ret;
+ 	} else if (prog->type == BPF_PROG_TYPE_TRACING &&
+ 		   btf_id_set_contains(&btf_id_deny, btf_id)) {
++		verbose(env, "Attaching tracing programs to function '%s' is rejected.\n",
 +			tgt_info.tgt_name);
  		return -EINVAL;
- 	}
- 
-diff --git a/tools/testing/selftests/bpf/progs/fexit_noreturns.c b/tools/testing/selftests/bpf/progs/fexit_noreturns.c
-index 54654539f550..b1c33d958ae2 100644
---- a/tools/testing/selftests/bpf/progs/fexit_noreturns.c
-+++ b/tools/testing/selftests/bpf/progs/fexit_noreturns.c
-@@ -8,7 +8,7 @@
- char _license[] SEC("license") = "GPL";
- 
- SEC("fexit/do_exit")
--__failure __msg("Attaching fexit/fmod_ret to __noreturn functions is rejected.")
-+__failure __msg("Attaching fexit/fmod_ret to __noreturn function 'do_exit' is rejected.")
- int BPF_PROG(noreturns)
- {
- 	return 0;
+ 	} else if ((prog->expected_attach_type == BPF_TRACE_FEXIT ||
+ 		   prog->expected_attach_type == BPF_MODIFY_RETURN) &&
 -- 
 2.43.0
 
