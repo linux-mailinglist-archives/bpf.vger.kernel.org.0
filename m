@@ -1,64 +1,64 @@
-Return-Path: <bpf+bounces-63989-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63990-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D436B0CF8B
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 04:05:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C365B0CF8C
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 04:06:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 890223A649D
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 02:05:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1AB61AA09C0
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 02:06:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D51A1CCB40;
-	Tue, 22 Jul 2025 02:05:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC25D1DE3AB;
+	Tue, 22 Jul 2025 02:06:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Xx9Trkdq"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UYYCTpsg"
 X-Original-To: bpf@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2400E1ADC7E
-	for <bpf@vger.kernel.org>; Tue, 22 Jul 2025 02:05:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C12CD1CCB40
+	for <bpf@vger.kernel.org>; Tue, 22 Jul 2025 02:06:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753149955; cv=none; b=R4x0Cif8hO4VEaq55rHVgJRQVG2PNQXwd8z845FAiCgR8p2UY7N6509UrUgDKQkbrInuRz2gOh/YdJQCv9hqMl3SILPE14aA+JVHvHmO6bfID/h0ENOGSDSme4Aql+mpIg5OfiONxBPKTREDIdImkA75SMi5m7iYaXlGaqqCwN0=
+	t=1753149965; cv=none; b=BOWvzxnPUPOUGjCVRhl/6Lb5KVdJpjAzPwy4cCJIVifHCZ9wqF4KUAZJbT4M+PFsdtJcD3PFi4qy3oGZdky6n2SR6loJkM2pM790Zti2iylv78Mo+kOC15y+T0O1JKKOWPkLiNKXKgO1nEjE1HxgS6S2dtqOG5+ybbdEgilfD2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753149955; c=relaxed/simple;
-	bh=xENFj464i3VaLC/5qoXyvhLix/xDSlpZugWLT6/573A=;
+	s=arc-20240116; t=1753149965; c=relaxed/simple;
+	bh=SePdD2s+ILWRk3SetiOCrtuWcs+UDrCdCyaOtMW1GoQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=t+HLtIQUKBuDJbfl25G0llfSX4I0DcxPy4A+UWGwwEONj5+la05lMqjcXzboCiyGqzMYXLIFLtLF/YiPc8BFJjF6FI4FXeP8YEC67CMfVVIx1c3L1/b4MaRSQdHX/iPKfv357miNrkcOFdhlQvdojLyd526skBm8Nd9cNrAZYYk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Xx9Trkdq; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=TtZvn4dF9yyZRsDhqE5IIFIdA/EQoNEuu2rom26plgAiiX0ZSzKbv+tZ4LU9nxkzUS4qXxrLLR0S3ttOvPku4CDtWWCLtwCWXMDe3E/3vb3nSvbxgf70vD+q+WUwtbrd11uBvDa+hzh5eUmTBmpksZeGlzc8+LGrJMVDrtEamFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UYYCTpsg; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1753149953;
+	s=mimecast20190719; t=1753149963;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FC3yvRWGyaEerEFkky/lXdjnRYSQ2y+Y4Lf3dI4+DrQ=;
-	b=Xx9TrkdqwTJLFmr8lct9db1KxeVt66feyD9LWe7IqKM0UacnD33D6joTAuMHRb9fSC2UMx
-	CskQv5ESiezxvidn4op0vPnZ1OU2MzW45WdFDwm+0zIfkxxxUq63MqtoQGspB2t5nM2nm+
-	zJFZ9qlX/PAfDgA5NmCq0pxe/lJYCSI=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
+	bh=8vHacGbWnhvBwUA0iicqaKhgkqKTgi2HHeqZ7RGnODY=;
+	b=UYYCTpsgradLvGbIGmQLVMFnUjxwjR3H6PzgtA5S1n8GiwTTgQ5fS+BH4+vZGQ2bZ39K3s
+	Iae8FOVopcr7AvP5vkaFvJK0vq8Jhn8mL2L2hdTOamue3u/TuPb2lxvm1CRUB9oDTn5I0C
+	FUhu8YtkivqMYTl2DdvUxvWapLFIdoU=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-167-krhlqYdLNpmfvhBQlmR6zg-1; Mon,
- 21 Jul 2025 22:05:49 -0400
-X-MC-Unique: krhlqYdLNpmfvhBQlmR6zg-1
-X-Mimecast-MFC-AGG-ID: krhlqYdLNpmfvhBQlmR6zg_1753149947
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-685-sMyD1AhzPWiIA5Fv8H6GEQ-1; Mon,
+ 21 Jul 2025 22:05:59 -0400
+X-MC-Unique: sMyD1AhzPWiIA5Fv8H6GEQ-1
+X-Mimecast-MFC-AGG-ID: sMyD1AhzPWiIA5Fv8H6GEQ_1753149957
 Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 0274719560AA;
-	Tue, 22 Jul 2025 02:05:47 +0000 (UTC)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 5ABE3195FD02;
+	Tue, 22 Jul 2025 02:05:57 +0000 (UTC)
 Received: from fedora.redhat.com (unknown [10.72.112.104])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 9F8F718003FC;
-	Tue, 22 Jul 2025 02:05:36 +0000 (UTC)
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id B64F0180049D;
+	Tue, 22 Jul 2025 02:05:47 +0000 (UTC)
 From: Pingfan Liu <piliu@redhat.com>
-To: linux-arm-kernel@lists.infradead.org
+To: kexec@lists.infradead.org
 Cc: Pingfan Liu <piliu@redhat.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -81,11 +81,10 @@ Cc: Pingfan Liu <piliu@redhat.com>,
 	Baoquan He <bhe@redhat.com>,
 	Dave Young <dyoung@redhat.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
-	kexec@lists.infradead.org,
 	bpf@vger.kernel.org
-Subject: [PATCHv4 10/12] arm64/kexec: Add PE image format support
-Date: Tue, 22 Jul 2025 10:03:17 +0800
-Message-ID: <20250722020319.5837-11-piliu@redhat.com>
+Subject: [PATCHv4 11/12] tools/kexec: Introduce a bpf-prog to parse zboot image format
+Date: Tue, 22 Jul 2025 10:03:18 +0800
+Message-ID: <20250722020319.5837-12-piliu@redhat.com>
 In-Reply-To: <20250722020319.5837-1-piliu@redhat.com>
 References: <20250722020319.5837-1-piliu@redhat.com>
 Precedence: bulk
@@ -97,57 +96,298 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
-Now everything is ready for kexec PE image parser. Select it on arm64
-for zboot and UKI image support.
+This BPF program aligns with the convention defined in the kernel file
+kexec_pe_parser_bpf.lskel.h, where the interface between the BPF program
+and the kernel is established, and is composed of:
+    four maps:
+                    struct bpf_map_desc ringbuf_1;
+                    struct bpf_map_desc ringbuf_2;
+                    struct bpf_map_desc ringbuf_3;
+                    struct bpf_map_desc ringbuf_4;
+    four sections:
+                    struct bpf_map_desc rodata;
+                    struct bpf_map_desc data;
+                    struct bpf_map_desc bss;
+                    struct bpf_map_desc rodata_str1_1;
+
+    two progs:
+            SEC("fentry.s/bpf_handle_pefile")
+            SEC("fentry.s/bpf_post_handle_pefile")
+
+This BPF program only uses ringbuf_1, so it minimizes the size of the
+other three ringbufs to one byte.  The size of ringbuf_1 is deduced from
+the size of the uncompressed file 'vmlinux.bin', which is usually less
+than 64MB. With the help of a group of bpf kfuncs: bpf_decompress(),
+bpf_copy_to_kernel(), bpf_mem_range_result_put(), this bpf-prog stores
+the uncompressed kernel image inside the kernel space.
 
 Signed-off-by: Pingfan Liu <piliu@redhat.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-To: linux-arm-kernel@lists.infradead.org
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Baoquan He <bhe@redhat.com>
+Cc: Dave Young <dyoung@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Philipp Rudo <prudo@redhat.com>
+Cc: bpf@vger.kernel.org
+To: kexec@lists.infradead.org
 ---
- arch/arm64/Kconfig                     | 1 +
- arch/arm64/include/asm/kexec.h         | 1 +
- arch/arm64/kernel/machine_kexec_file.c | 3 +++
- 3 files changed, 5 insertions(+)
+ tools/kexec/Makefile           |  82 +++++++++++++++++
+ tools/kexec/zboot_parser_bpf.c | 158 +++++++++++++++++++++++++++++++++
+ 2 files changed, 240 insertions(+)
+ create mode 100644 tools/kexec/Makefile
+ create mode 100644 tools/kexec/zboot_parser_bpf.c
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 55fc331af3371..8973697ed1479 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -1606,6 +1606,7 @@ config ARCH_SELECTS_KEXEC_FILE
- 	def_bool y
- 	depends on KEXEC_FILE
- 	select HAVE_IMA_KEXEC if IMA
-+	select KEXEC_PE_IMAGE
- 
- config ARCH_SUPPORTS_KEXEC_SIG
- 	def_bool y
-diff --git a/arch/arm64/include/asm/kexec.h b/arch/arm64/include/asm/kexec.h
-index 4d9cc7a76d9ca..d50796bd2f1e6 100644
---- a/arch/arm64/include/asm/kexec.h
-+++ b/arch/arm64/include/asm/kexec.h
-@@ -120,6 +120,7 @@ struct kimage_arch {
- 
- #ifdef CONFIG_KEXEC_FILE
- extern const struct kexec_file_ops kexec_image_ops;
-+extern const struct kexec_file_ops kexec_pe_image_ops;
- 
- int arch_kimage_file_post_load_cleanup(struct kimage *image);
- #define arch_kimage_file_post_load_cleanup arch_kimage_file_post_load_cleanup
-diff --git a/arch/arm64/kernel/machine_kexec_file.c b/arch/arm64/kernel/machine_kexec_file.c
-index af1ca875c52ce..7c544c385a9ab 100644
---- a/arch/arm64/kernel/machine_kexec_file.c
-+++ b/arch/arm64/kernel/machine_kexec_file.c
-@@ -24,6 +24,9 @@
- 
- const struct kexec_file_ops * const kexec_file_loaders[] = {
- 	&kexec_image_ops,
-+#ifdef CONFIG_KEXEC_PE_IMAGE
-+	&kexec_pe_image_ops,
-+#endif
- 	NULL
- };
- 
+diff --git a/tools/kexec/Makefile b/tools/kexec/Makefile
+new file mode 100644
+index 0000000000000..c9e7ce9ff4c19
+--- /dev/null
++++ b/tools/kexec/Makefile
+@@ -0,0 +1,82 @@
++# SPDX-License-Identifier: GPL-2.0
++
++# Ensure Kbuild variables are available
++include ../scripts/Makefile.include
++
++srctree := $(patsubst %/tools/kexec,%,$(CURDIR))
++VMLINUX = $(srctree)/vmlinux
++TOOLSDIR := $(srctree)/tools
++LIBDIR := $(TOOLSDIR)/lib
++BPFDIR := $(LIBDIR)/bpf
++ARCH ?= $(shell uname -m | sed -e s/i.86/x86/ -e s/x86_64/x86/ -e s/aarch64.*/arm64/ -e s/riscv64/riscv/ -e s/loongarch.*/loongarch/)
++# At present, zboot image format is used by arm64, riscv, loongarch
++# And arch/$(ARCH)/boot/vmlinux.bin is the uncompressed file instead of arch/$(ARCH)/boot/Image
++ifeq ($(ARCH),$(filter $(ARCH),arm64 riscv loongarch))
++	EFI_IMAGE := $(srctree)/arch/$(ARCH)/boot/vmlinuz.efi
++	KERNEL_IMAGE := $(srctree)/arch/$(ARCH)/boot/vmlinux.bin
++else
++	@echo "Unsupported architecture: $(ARCH)"
++	@exit 1
++endif
++
++
++CC = clang
++CFLAGS = -O2
++BPF_PROG_CFLAGS = -g -O2 -target bpf -Wall -I $(BPFDIR) -I .
++BPFTOOL = bpftool
++
++# List of generated target files
++HEADERS = vmlinux.h bpf_helper_defs.h image_size.h
++ZBOOT_TARGETS = bytecode.c zboot_parser_bpf.o bytecode.o
++
++
++# Targets
++zboot: $(HEADERS) $(ZBOOT_TARGETS)
++
++# Rule to generate vmlinux.h from vmlinux
++vmlinux.h: $(VMLINUX)
++	@command -v $(BPFTOOL) >/dev/null 2>&1 || { echo >&2 "$(BPFTOOL) is required but not found. Please install it."; exit 1; }
++	@$(BPFTOOL) btf dump file $(VMLINUX) format c > vmlinux.h
++
++bpf_helper_defs.h: $(srctree)/tools/include/uapi/linux/bpf.h
++	@$(QUIET_GEN)$(srctree)/scripts/bpf_doc.py --header \
++		--file $(srctree)/tools/include/uapi/linux/bpf.h > bpf_helper_defs.h
++
++image_size.h: $(KERNEL_IMAGE)
++	@{ \
++		if [ ! -f "$(KERNEL_IMAGE)" ]; then \
++			echo "Error: File '$(KERNEL_IMAGE)' does not exist"; \
++			exit 1; \
++		fi; \
++		FILE_SIZE=$$(stat -c '%s' "$(KERNEL_IMAGE)" 2>/dev/null); \
++		POWER=4096; \
++		while [ $$POWER -le $$FILE_SIZE ]; do \
++			POWER=$$((POWER * 2)); \
++		done; \
++		RINGBUF_SIZE=$$POWER; \
++		echo "#define RINGBUF1_SIZE $$RINGBUF_SIZE" > $@; \
++		echo "#define IMAGE_SIZE $$FILE_SIZE" >> $@; \
++	}
++
++
++# Rule to generate zboot_parser_bpf.o, depends on vmlinux.h
++zboot_parser_bpf.o: zboot_parser_bpf.c vmlinux.h bpf_helper_defs.h
++	@$(CC) $(BPF_PROG_CFLAGS) -c zboot_parser_bpf.c -o zboot_parser_bpf.o
++
++# Generate zboot_parser_bpf.lskel.h using bpftool
++# Then, extract the opts_data[] and opts_insn[] arrays and remove 'static'
++# keywords to avoid being optimized away.
++bytecode.c: zboot_parser_bpf.o
++	@$(BPFTOOL) gen skeleton -L zboot_parser_bpf.o > zboot_parser_bpf.lskel.h
++	@sed -n '/static const char opts_data\[\]/,/;/p' zboot_parser_bpf.lskel.h | sed 's/static const/const/' > $@
++	@sed -n '/static const char opts_insn\[\]/,/;/p' zboot_parser_bpf.lskel.h | sed 's/static const/const/' >> $@
++	@rm -f zboot_parser_bpf.lskel.h
++
++bytecode.o: bytecode.c
++	@$(CC) -c $< -o $@
++
++# Clean up generated files
++clean:
++	@rm -f $(HEADERS) $(ZBOOT_TARGETS)
++
++.PHONY: all clean
+diff --git a/tools/kexec/zboot_parser_bpf.c b/tools/kexec/zboot_parser_bpf.c
+new file mode 100644
+index 0000000000000..e60621780a1a9
+--- /dev/null
++++ b/tools/kexec/zboot_parser_bpf.c
+@@ -0,0 +1,158 @@
++// SPDX-License-Identifier: GPL-2.0
++//
++#include "vmlinux.h"
++#include <bpf_helpers.h>
++#include <bpf_tracing.h>
++#include "image_size.h"
++
++/* uncompressed vmlinux.bin plus 4KB */
++#define MAX_RECORD_SIZE	(IMAGE_SIZE + 4096)
++/* ringbuf 2,3,4 are useless */
++#define MIN_BUF_SIZE 1
++
++#define KEXEC_RES_KERNEL_NAME "kexec:kernel"
++#define KEXEC_RES_INITRD_NAME "kexec:initrd"
++#define KEXEC_RES_CMDLINE_NAME "kexec:cmdline"
++
++/* ringbuf is safe since the user space has no write access to them */
++struct {
++	__uint(type, BPF_MAP_TYPE_RINGBUF);
++	__uint(max_entries, RINGBUF1_SIZE);
++} ringbuf_1 SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_RINGBUF);
++	__uint(max_entries, MIN_BUF_SIZE);
++} ringbuf_2 SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_RINGBUF);
++	__uint(max_entries, MIN_BUF_SIZE);
++} ringbuf_3 SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_RINGBUF);
++	__uint(max_entries, MIN_BUF_SIZE);
++} ringbuf_4 SEC(".maps");
++
++char LICENSE[] SEC("license") = "GPL";
++
++/*
++ * This function ensures that the sections .rodata, .data .bss and .rodata.str1.1
++ * are created for a bpf prog.
++ */
++__attribute__((used)) static int dummy(void)
++{
++	static const char res_kernel[16] __attribute__((used, section(".rodata"))) = KEXEC_RES_KERNEL_NAME;
++	static char local_name[16] __attribute__((used, section(".data"))) = KEXEC_RES_CMDLINE_NAME;
++	static char res_cmdline[16] __attribute__((used, section(".bss")));
++
++	__builtin_memcpy(local_name, KEXEC_RES_INITRD_NAME, 16);
++	return __builtin_memcmp(local_name, res_kernel, 4);
++}
++
++extern int bpf_copy_to_kernel(const char *name, char *buf, int size) __weak __ksym;
++extern struct mem_range_result *bpf_decompress(char *image_gz_payload, int image_gz_sz) __weak __ksym;
++extern int bpf_mem_range_result_put(struct mem_range_result *result) __weak __ksym;
++
++
++
++
++/* see drivers/firmware/efi/libstub/zboot-header.S */
++struct linux_pe_zboot_header {
++	unsigned int mz_magic;
++	char image_type[4];
++	unsigned int payload_offset;
++	unsigned int payload_size;
++	unsigned int reserved[2];
++	char comp_type[4];
++	unsigned int linux_pe_magic;
++	unsigned int pe_header_offset;
++} __attribute__((packed));
++
++
++SEC("fentry.s/bpf_handle_pefile")
++int BPF_PROG(parse_pe, struct kexec_context *context)
++{
++	struct linux_pe_zboot_header *zboot_header;
++	unsigned int image_sz;
++	char *buf;
++	char local_name[32];
++
++	bpf_printk("begin parse PE\n");
++	/* BPF verifier should know each variable initial state */
++	if (!context->image || (context->image_sz > MAX_RECORD_SIZE)) {
++		bpf_printk("Err: image size is greater than 0x%lx\n", MAX_RECORD_SIZE);
++		return 0;
++	}
++
++	/* In order to access bytes not aligned on 2 order, copy into ringbuf.
++	 * And allocate the memory all at once, later overwriting.
++	 *
++	 * R2 is ARG_CONST_ALLOC_SIZE_OR_ZERO, should be decided at compling time
++	 */
++	buf = (char *)bpf_ringbuf_reserve(&ringbuf_1, MAX_RECORD_SIZE, 0);
++	if (!buf) {
++	    	bpf_printk("Err: fail to reserve ringbuf to parse zboot header\n");
++		return 0;
++	}
++	image_sz = context->image_sz;
++	bpf_probe_read((void *)buf, sizeof(struct linux_pe_zboot_header), context->image);
++	zboot_header = (struct linux_pe_zboot_header *)buf;
++	if (!!__builtin_memcmp(&zboot_header->image_type, "zimg",
++			sizeof(zboot_header->image_type))) {
++		bpf_ringbuf_discard(buf, BPF_RB_NO_WAKEUP);
++		bpf_printk("Err: image is not zboot image\n");
++		return 0;
++	}
++
++	unsigned int payload_offset = zboot_header->payload_offset;
++	unsigned int payload_size = zboot_header->payload_size;
++	bpf_printk("zboot image payload offset=0x%x, size=0x%x\n", payload_offset, payload_size);
++	/* sane check */
++	if (payload_size > image_sz) {
++		bpf_ringbuf_discard(buf, BPF_RB_NO_WAKEUP);
++		bpf_printk("Invalid zboot image payload offset and size\n");
++		return 0;
++	}
++	if (payload_size >= MAX_RECORD_SIZE ) {
++		bpf_ringbuf_discard(buf, BPF_RB_NO_WAKEUP);
++		bpf_printk("Err: payload_size > MAX_RECORD_SIZE\n");
++		return 0;
++	}
++	/* Overwrite buf */
++	bpf_probe_read((void *)buf, payload_size, context->image + payload_offset);
++	bpf_printk("Calling bpf_kexec_decompress()\n");
++	struct mem_range_result *r = bpf_decompress(buf, payload_size - 4);
++	if (!r) {
++		bpf_ringbuf_discard(buf, BPF_RB_NO_WAKEUP);
++		bpf_printk("Err: fail to decompress\n");
++		return 0;
++	}
++
++	image_sz = r->data_sz;
++	if (image_sz > MAX_RECORD_SIZE) {
++		bpf_ringbuf_discard(buf, BPF_RB_NO_WAKEUP);
++		bpf_mem_range_result_put(r);
++		bpf_printk("Err: decompressed size too big\n");
++		return 0;
++	}
++	
++	/* Since the decompressed size is bigger than original, no need to clean */
++	bpf_probe_read((void *)buf, image_sz, r->buf);
++	bpf_printk("Calling bpf_copy_to_kernel(), image_sz=0x%x\n", image_sz);
++	/* Verifier is unhappy to expose .rodata.str1.1 'map' to kernel */
++	__builtin_memcpy(local_name, KEXEC_RES_KERNEL_NAME, 32);
++	const char *res_name = local_name;
++	bpf_copy_to_kernel(res_name, buf, image_sz);
++	bpf_ringbuf_discard(buf, BPF_RB_NO_WAKEUP);
++	bpf_mem_range_result_put(r);
++
++	return 0;
++}
++
++SEC("fentry.s/bpf_post_handle_pefile")
++int BPF_PROG(post_parse_pe, struct kexec_context *context)
++{
++	return 0;
++}
 -- 
 2.49.0
 
