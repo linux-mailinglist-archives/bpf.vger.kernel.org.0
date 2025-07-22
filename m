@@ -1,48 +1,48 @@
-Return-Path: <bpf+bounces-64081-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64082-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52BD6B0E209
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 18:38:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99344B0E213
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 18:41:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E807C1C822B9
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 16:38:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FFC41C85096
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 16:41:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A1CF27D776;
-	Tue, 22 Jul 2025 16:37:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF5ED27E060;
+	Tue, 22 Jul 2025 16:40:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oZfSsKoX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HGebIkmi"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16A5A27A45C;
-	Tue, 22 Jul 2025 16:37:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39A2227AC57;
+	Tue, 22 Jul 2025 16:40:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753202266; cv=none; b=otkuERChlBDBM2amACL2llLEjcBjrruMVWcBgKlsEHy7g5NYaP7uNywoHtyKxfu2ltAkbRp86CYZCGQxfWlO/gzPwztzHw6fRrMBwk51YDKdComBdOtK0eI3NZLNBBqzGis9u/NCItQfOwdDRotro2jzJBx2BmT4R2w2N/PM8ww=
+	t=1753202454; cv=none; b=tHuIIxVUEgaoR5bxmUJ4lG+sgY5PGTuaAP1/yiBl2zDK3Py3GrhzHUM0AR3c3r7B8DlD7b/33L9WHm/bmx/90H9BF/DZXcXBbF+xjQutLG7dpmNM78nwtQr0JnjlKxI9CKmySPoSwL3Y6mDg8RSSbPCN8weOY0TVHCfTPV/Oa00=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753202266; c=relaxed/simple;
-	bh=PSZCZlgLDHJeFiBgv9CV8RQ8XZNfkVSfhfmiSDoXa44=;
+	s=arc-20240116; t=1753202454; c=relaxed/simple;
+	bh=airQyOAZ1Bb21STyZQ/0koQyH4JJ9mEFvxRJ/K+2RGs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LVZvejGQnfhNnlHXVrg4wdZRsHXigqFerslci9fA8Uggsvm8zSrTpfZOwcN55VcMek+2Es6H+jKizia10u0g4qDxBeKC1WOo8Co5AneJSHgKK8MYE8hnRt1FOSwp1ZbwbPHBJBpIwBr2E60h+KequTWVY5CH7U0fuconQBiFcMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oZfSsKoX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0E55C4CEEB;
-	Tue, 22 Jul 2025 16:37:41 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=sRVUNNU45A9igqkMhlSnZttR51sbwr9P8yrQqaHLaHCWJPXrwYJnUF/lideqH8OtdDXypoKX52CZ9PjhXcwImyAe5E2o/Z+hMNIxyMeccps1Uqm6I5cwgegfVsh+vlmMTxWGtNnEujgpSktU96tciTptlxY5y8H8bBtweHTvvm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HGebIkmi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BB47C4CEF1;
+	Tue, 22 Jul 2025 16:40:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753202264;
-	bh=PSZCZlgLDHJeFiBgv9CV8RQ8XZNfkVSfhfmiSDoXa44=;
+	s=k20201202; t=1753202453;
+	bh=airQyOAZ1Bb21STyZQ/0koQyH4JJ9mEFvxRJ/K+2RGs=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=oZfSsKoXODVUKw718g6ksG32T860olqq3DnOSR06GTiOm2O/Q8gb1zWKGKLri2agd
-	 ImdWCXs9tdsqWIXl0nzdi5CApPwT5ILPHFUlr3+WbNmWVbE7e2ZdMwe9R9AHe31tki
-	 wvW5o/uoqLr/QKx1HriBXGqpRrlivRd3vGx2wid1hhLEp0XPkDL4SeclMZFIxOpUqJ
-	 XwdeJCOikLleX6EWVMuOiWdH9Nqaj//sFtVMSHet6ppZbxMMZphMKB3wsnBZ6HK+Eq
-	 0TFjeGiqFl8QcYpu6SQKHfvelstWsYoj5S/e3gk9BvRMqLT92/OkDYqYd8huwLQ448
-	 Vc5YK5AjLWCvg==
-Message-ID: <50872d17-fd8a-4f84-826b-62c08c7d304a@kernel.org>
-Date: Tue, 22 Jul 2025 17:37:40 +0100
+	b=HGebIkmivaIby4umGllHirYAZa1/fB0/I7hv187bGX1UyQ4JpVveA2is/M55Fsp2I
+	 bGEmvYBKodu6AqzK+KmTuf9s2S3b8crnHDVQOaiwtmKzFBZpm5d0z6eUgw9DCqdiRc
+	 UqY1GL2TbDfkZN/te2DQPyNVzcyXkUrbVtrXQjngaZyKTk6C8A9daClKSTYsdnrjNv
+	 niRoioWJu/pZB6ruZEguQcWOpbj0xqP5CjKDjF04PM0NDDJZG7NmcLkEpdJa6tkAo/
+	 N557ktHd1Ww9Bf+TK7w8EhXF2S1TzwzDNskE5qLu9iLwSWCCh8bbw0Nl5eCM5UvaTT
+	 /Z8Ylz0g0WRvg==
+Message-ID: <c73d2b1c-5f19-4e03-935c-71f68aa8bca7@kernel.org>
+Date: Tue, 22 Jul 2025 11:40:47 -0500
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -50,46 +50,65 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2 3/3] bpftool: Add bash completion for token
- argument
-To: Tao Chen <chen.dylane@linux.dev>, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
- kuba@kernel.org, hawk@kernel.org
-Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org
-References: <20250722120912.1391604-1-chen.dylane@linux.dev>
- <20250722120912.1391604-3-chen.dylane@linux.dev>
- <ba84629f-5675-4793-9320-25d9029d2a35@kernel.org>
- <5681662e-6038-433f-9da7-438b383621b7@linux.dev>
-From: Quentin Monnet <qmo@kernel.org>
-Content-Language: en-GB
-In-Reply-To: <5681662e-6038-433f-9da7-438b383621b7@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 4/7] arch/nios2: replace "__auto_type" and adjacent
+ equivalent with "auto"
+To: "H. Peter Anvin" <hpa@zytor.com>
+Cc: =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ "Michael S. Tsirkin" <mst@redhat.com>, Al Viro <viro@zeniv.linux.org.uk>,
+ Alexei Starovoitov <ast@kernel.org>, Alexey Dobriyan <adobriyan@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
+ Borislav Petkov <bp@alien8.de>, Dan Williams <dan.j.williams@intel.com>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Dave Hansen <dave.hansen@linux.intel.com>,
+ David Laight <David.Laight@ACULAB.COM>, David Lechner
+ <dlechner@baylibre.com>, Eduard Zingerman <eddyz87@gmail.com>,
+ Gatlin Newhouse <gatlin.newhouse@gmail.com>, Hao Luo <haoluo@google.com>,
+ Ingo Molnar <mingo@redhat.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Jakub Sitnicki <jakub@cloudflare.com>, Jan Hendrik Farr <kernel@jfarr.cc>,
+ Jason Wang <jasowang@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Josh Poimboeuf <jpoimboe@kernel.org>, KP Singh <kpsingh@kernel.org>,
+ Kees Cook <kees@kernel.org>, Luc Van Oostenryck
+ <luc.vanoostenryck@gmail.com>, Marc Herbert <Marc.Herbert@linux.intel.com>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Mateusz Guzik <mjguzik@gmail.com>,
+ Michal Luczaj <mhal@rbox.co>, Miguel Ojeda <ojeda@kernel.org>,
+ Mykola Lysenko <mykolal@fb.com>, NeilBrown <neil@brown.name>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+ Sami Tolvanen <samitolvanen@google.com>, Shuah Khan <shuah@kernel.org>,
+ Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+ Thomas Gleixner <tglx@linutronix.de>, Thorsten Blum
+ <thorsten.blum@linux.dev>, Uros Bizjak <ubizjak@gmail.com>,
+ Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Yafang Shao <laoar.shao@gmail.com>,
+ Ye Bin <yebin10@huawei.com>, Yonghong Song <yonghong.song@linux.dev>,
+ Yufeng Wang <wangyufeng@kylinos.cn>, bpf@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-sparse@vger.kernel.org,
+ virtualization@lists.linux.dev, x86@kernel.org
+References: <20250720065045.2859105-1-hpa@zytor.com>
+ <20250720065045.2859105-5-hpa@zytor.com>
+Content-Language: en-US
+From: Dinh Nguyen <dinguyen@kernel.org>
+In-Reply-To: <20250720065045.2859105-5-hpa@zytor.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-2025-07-23 00:35 UTC+0800 ~ Tao Chen <chen.dylane@linux.dev>
-> 在 2025/7/22 23:02, Quentin Monnet 写道:
->> 2025-07-22 20:09 UTC+0800 ~ Tao Chen <chen.dylane@linux.dev>
->>> This commit updates the bash completion script with the new token
->>> argument.
->>> $ bpftool
->>> batch       cgroup      gen         iter        map        
->>> perf        struct_ops
->>> btf         feature     help        link        net        
->>> prog        token
->>
->>
->> This is a terrible example, offering "token" as completion for just
->> "bpftool [tab]" works without this patch :) The main commands are parsed
->> from the output of "bpftool help" so it should work after your first
->> patch. In this one, we add "list", "show" and "help" for completing
->> "bpftool token [tab]".
->>
+On 7/20/25 01:50, H. Peter Anvin wrote:
+> Replace uses of "__auto_type" in arch/nios2/include/asm/uaccess.h with
+> "auto", and equivalently convert an adjacent cast to the analogous
+> form.
 > 
-> As you said, how about this one? I will change it in v3, thanks.
->     $ bpftool token
->     help  list  show
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
+> ---
+>   arch/nios2/include/asm/uaccess.h | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
+> 
 
-Yes, perfect
+Acked-by: Dinh Nguyen <dinguyen@kernel.org>
+
 
