@@ -1,64 +1,64 @@
-Return-Path: <bpf+bounces-63983-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63984-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B760CB0CF81
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 04:05:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12739B0CF87
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 04:05:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0859189F5AC
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 02:05:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E99D1AA1305
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 02:05:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45F2E1D5ADC;
-	Tue, 22 Jul 2025 02:04:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDD381E2307;
+	Tue, 22 Jul 2025 02:04:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="U17VOHvG"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KhjfNMR9"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0095819AD8C
-	for <bpf@vger.kernel.org>; Tue, 22 Jul 2025 02:04:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E5A91CCB40
+	for <bpf@vger.kernel.org>; Tue, 22 Jul 2025 02:04:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753149889; cv=none; b=XGfq53ehlyJ7jI76ILi0XL0bJ7DxXZWHKykDVY2FTjkh4SyH/sXgYulRC5jivnjzLH7IJD3tmjE4qhafMfreZKxv+jV3wWXV8kuHoJxI5KK02/lZlgQvA/9cH7f+soOeD9VKFVTVT6B2mxxRZP+cV9u7g9kkoK0H22eN1ALin3o=
+	t=1753149899; cv=none; b=BtXqTK9yxfuaZla65w35CaqlkbbvbQhOsaJtVVLV7ibD7fEAug2g5/fMnWrG18ntAidLm2sDQsFkK2jUO0C7BfTyhT8uaW+hY/PX6hGbfKIXomFWwgOxC6eB0BdvYs/5ssNtyme5/kmXX3juE8qL3qfG5vapFxDXCrvR6u5EWOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753149889; c=relaxed/simple;
-	bh=vJEDEApR3Mw62zP+DKykJoenbRuhSYaX4oAGMscx4UY=;
+	s=arc-20240116; t=1753149899; c=relaxed/simple;
+	bh=xOOpRL7LpsJTw7Hn6K3rHFigxtZ9jiabb/Y2er4h+IE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MBs9gnM0UaZ4gWBlbe7hOnsgz8Yr1W1mZOR0yTpxiFED3qmrU7uKjV59ZCFWRyWVN297JztQ1qJWmtHU2SI8WPwIzoOTO8Al68rL9R5OsfSIkBXPesSUtjCF/mPKL2J5NPM8oo4zwvisQ33Um0bv0mlMIJVQiHocvRVt5dutOvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=U17VOHvG; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=oSKqKkeC241yQ43XMtXTnmEuRl67+vlSgfVJo9xoAQVfD5TWxSYzE6/hKVd6AdB9y4ZHHUFAq99qg8sGfHRUsNVrmVPkfY7v/wjS5+GOh3nlE1iWXNNgA+yrvXA0PrcTGODlSdxMRBKGSSimR23aUv2IPlquNhGonyWDnUlX3/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KhjfNMR9; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1753149887;
+	s=mimecast20190719; t=1753149896;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=hWbk/DvSddeTSWgfGzpReJfVl7jv9klqhi5pKmYIaDM=;
-	b=U17VOHvG/W4yQX+zSx/2PhEL2kOyd2iHjkb1LpQomCrAXOMrmgIG54zTJHdR569I3wkTR+
-	mL1fzn7FJaCePWtDdzu8PPA1PGlBiuV7xe8Yn62bcwOz1Gtz8tSXW7XSs+n2Ybejf6MfBx
-	3QCM8waxGBPx5Y3h3thl2064Zgdelko=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
+	bh=00Np+E2rGY+oFq/5SRp6jo1pfFqcvSeB3iF+NfA9kB4=;
+	b=KhjfNMR9bwH2Sw8REra8EXWhJRrH2GCxg2ewt8/8JP0H/RQTfQSyi2tc95GcTscnl+cK9i
+	ygfulzjwSlz/MT/YM2xEZ4T34M1+7AZbh73751UZbko7bIwZ86qTOQBZJRU+O8IXfU6bqK
+	bEYtt6Wr5gU7OjmdFCrPLZz71M2H1bo=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-353-FR6p_3O6OVi-unhhpD_4dg-1; Mon,
- 21 Jul 2025 22:04:42 -0400
-X-MC-Unique: FR6p_3O6OVi-unhhpD_4dg-1
-X-Mimecast-MFC-AGG-ID: FR6p_3O6OVi-unhhpD_4dg_1753149880
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-600-x1zwKBEvPrmbL82oIBbTRQ-1; Mon,
+ 21 Jul 2025 22:04:52 -0400
+X-MC-Unique: x1zwKBEvPrmbL82oIBbTRQ-1
+X-Mimecast-MFC-AGG-ID: x1zwKBEvPrmbL82oIBbTRQ_1753149890
 Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B097C19560B2;
-	Tue, 22 Jul 2025 02:04:39 +0000 (UTC)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 13D65195FD02;
+	Tue, 22 Jul 2025 02:04:50 +0000 (UTC)
 Received: from fedora.redhat.com (unknown [10.72.112.104])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 966F918003FC;
-	Tue, 22 Jul 2025 02:04:27 +0000 (UTC)
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 70FB118003FC;
+	Tue, 22 Jul 2025 02:04:40 +0000 (UTC)
 From: Pingfan Liu <piliu@redhat.com>
-To: bpf@vger.kernel.org
+To: kexec@lists.infradead.org
 Cc: Pingfan Liu <piliu@redhat.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -81,14 +81,10 @@ Cc: Pingfan Liu <piliu@redhat.com>,
 	Baoquan He <bhe@redhat.com>,
 	Dave Young <dyoung@redhat.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
-	kexec@lists.infradead.org,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>
-Subject: [PATCHv4 04/12] bpf: Introduce decompressor kfunc
-Date: Tue, 22 Jul 2025 10:03:11 +0800
-Message-ID: <20250722020319.5837-5-piliu@redhat.com>
+	bpf@vger.kernel.org
+Subject: [PATCHv4 05/12] kexec: Introduce kexec_pe_image to parse and load PE file
+Date: Tue, 22 Jul 2025 10:03:12 +0800
+Message-ID: <20250722020319.5837-6-piliu@redhat.com>
 In-Reply-To: <20250722020319.5837-1-piliu@redhat.com>
 References: <20250722020319.5837-1-piliu@redhat.com>
 Precedence: bulk
@@ -100,281 +96,436 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
-This commit bridges the gap between bpf-prog and the kernel
-decompression routines. At present, only a global memory allocator is
-used for the decompression. Later, if needed, the decompress_fn's
-prototype can be changed to pass in a task related allocator.
+As UEFI becomes popular, a few architectures support to boot a PE format
+kernel image directly. But the internal of PE format varies, which means
+each parser for each format.
 
-This memory allocator can allocate 2MB each time with a transient
-virtual address, up to a 1GB limit.  After decompression finishes, it
-presents all of the decompressed data in a new unified virtual
-address space.
+This patch (with the rest in this series) introduces a common skeleton
+to all parsers, and leave the format parsing in
+bpf-prog, so the kernel code can keep relative stable.
+
+A new kexec_file_ops is implementation, named pe_image_ops.
+
+There are some place holder function in this patch. (They will take
+effect after the introduction of kexec bpf light skeleton and bpf
+helpers). Overall the parsing progress is a pipeline, the current
+bpf-prog parser is attached to bpf_handle_pefile(), and detatched at the
+end of the current stage 'disarm_bpf_prog()' the current parsed result
+by the current bpf-prog will be buffered in kernel 'prepare_nested_pe()'
+, and deliver to the next stage.  For each stage, the bpf bytecode is
+extracted from the '.bpf' section in the PE file.
 
 Signed-off-by: Pingfan Liu <piliu@redhat.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Song Liu <song@kernel.org>
-Cc: Yonghong Song <yonghong.song@linux.dev>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: Stanislav Fomichev <sdf@fomichev.me>
-Cc: Hao Luo <haoluo@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-To: bpf@vger.kernel.org
+Cc: Baoquan He <bhe@redhat.com>
+Cc: Dave Young <dyoung@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Philipp Rudo <prudo@redhat.com>
+To: kexec@lists.infradead.org
 ---
- kernel/bpf/helpers.c | 223 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 223 insertions(+)
+ include/linux/kexec.h   |   1 +
+ kernel/Kconfig.kexec    |   8 +
+ kernel/Makefile         |   1 +
+ kernel/kexec_pe_image.c | 348 ++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 358 insertions(+)
+ create mode 100644 kernel/kexec_pe_image.c
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index b30a2114f15b8..70fae899f173e 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -24,6 +24,7 @@
- #include <linux/bpf_mem_alloc.h>
- #include <linux/kasan.h>
- #include <linux/bpf_verifier.h>
-+#include <linux/decompress/generic.h>
+diff --git a/include/linux/kexec.h b/include/linux/kexec.h
+index 3a2b9b4fffa18..da527f323a930 100644
+--- a/include/linux/kexec.h
++++ b/include/linux/kexec.h
+@@ -434,6 +434,7 @@ static inline int machine_kexec_post_load(struct kimage *image) { return 0; }
  
- #include "../../lib/kstrtox.h"
+ extern struct kimage *kexec_image;
+ extern struct kimage *kexec_crash_image;
++extern const struct kexec_file_ops pe_image_ops;
  
-@@ -3278,12 +3279,234 @@ __bpf_kfunc void __bpf_trap(void)
- {
- }
+ bool kexec_load_permitted(int kexec_image_type);
  
-+#define MAX_UNCOMPRESSED_BUF_SIZE	(1 << 28)
-+/* a chunk should be large enough to contain a decompressing */
-+#define CHUNK_SIZE	(1 << 23)
+diff --git a/kernel/Kconfig.kexec b/kernel/Kconfig.kexec
+index e64ce21f9a805..304a82d03f750 100644
+--- a/kernel/Kconfig.kexec
++++ b/kernel/Kconfig.kexec
+@@ -46,6 +46,14 @@ config KEXEC_FILE
+ 	  for kernel and initramfs as opposed to list of segments as
+ 	  accepted by kexec system call.
+ 
++config KEXEC_PE_IMAGE
++	bool "Enable parsing UEFI PE file through kexec file based system call"
++	depends on KEXEC_FILE
++	depends on DEBUG_INFO_BTF && BPF_SYSCALL
++	help
++	  This option makes the kexec_file_load() syscall cooperates with bpf-prog
++	  to parse PE format file
 +
+ config KEXEC_SIG
+ 	bool "Verify kernel signature during kexec_file_load() syscall"
+ 	depends on ARCH_SUPPORTS_KEXEC_SIG
+diff --git a/kernel/Makefile b/kernel/Makefile
+index 32e80dd626af0..def3f50a0b2ef 100644
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -80,6 +80,7 @@ obj-$(CONFIG_CRASH_DUMP) += crash_core.o
+ obj-$(CONFIG_CRASH_DM_CRYPT) += crash_dump_dm_crypt.o
+ obj-$(CONFIG_KEXEC) += kexec.o
+ obj-$(CONFIG_KEXEC_FILE) += kexec_file.o
++obj-$(CONFIG_KEXEC_PE_IMAGE) += kexec_pe_image.o
+ obj-$(CONFIG_KEXEC_ELF) += kexec_elf.o
+ obj-$(CONFIG_KEXEC_HANDOVER) += kexec_handover.o
+ obj-$(CONFIG_BACKTRACE_SELF_TEST) += backtracetest.o
+diff --git a/kernel/kexec_pe_image.c b/kernel/kexec_pe_image.c
+new file mode 100644
+index 0000000000000..b0cf9942e68d2
+--- /dev/null
++++ b/kernel/kexec_pe_image.c
+@@ -0,0 +1,348 @@
++// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * At present, one global allocator for decompression. Later if needed, changing the
-+ * prototype of decompress_fn to introduce each task's allocator.
-+ */
-+static DEFINE_MUTEX(output_buf_mutex);
++ * Kexec PE image loader
 +
-+struct decompress_mem_allocator {
-+	struct page **pages;
-+	unsigned int pg_idx;
-+	void *chunk_start;
-+	unsigned int chunk_size;
-+	void *chunk_cur;
++ * Copyright (C) 2025 Red Hat, Inc
++ */
++
++#define pr_fmt(fmt)	"kexec_file(Image): " fmt
++
++#include <linux/err.h>
++#include <linux/errno.h>
++#include <linux/list.h>
++#include <linux/kernel.h>
++#include <linux/vmalloc.h>
++#include <linux/kexec.h>
++#include <linux/pe.h>
++#include <linux/string.h>
++#include <linux/bpf.h>
++#include <linux/filter.h>
++#include <asm/byteorder.h>
++#include <asm/image.h>
++#include <asm/memory.h>
++
++
++#define KEXEC_RES_KERNEL_NAME "kexec:kernel"
++#define KEXEC_RES_INITRD_NAME "kexec:initrd"
++#define KEXEC_RES_CMDLINE_NAME "kexec:cmdline"
++
++struct kexec_res {
++	char *name;
++	/* The free of buffer is deferred to kimage_file_post_load_cleanup */
++	struct mem_range_result *r;
 +};
 +
-+static struct decompress_mem_allocator dcmpr_allocator;
++static struct kexec_res parsed_resource[3] = {
++	{ KEXEC_RES_KERNEL_NAME, },
++	{ KEXEC_RES_INITRD_NAME, },
++	{ KEXEC_RES_CMDLINE_NAME, },
++};
 +
-+/*
-+ * Set up an active chunk to hold partial decompressed data.
-+ */
-+static void *vmap_decompressed_chunk(void)
++static bool pe_has_bpf_section(const char *file_buf, unsigned long pe_sz);
++
++static bool is_valid_pe(const char *kernel_buf, unsigned long kernel_len)
 +{
-+	struct decompress_mem_allocator *a = &dcmpr_allocator;
-+	unsigned int i, pg_cnt = a->chunk_size >> PAGE_SHIFT;
-+	struct page **pg_start = &a->pages[a->pg_idx];
++	struct mz_hdr *mz;
++	struct pe_hdr *pe;
 +
-+	for (i = 0; i < pg_cnt; i++)
-+		a->pages[a->pg_idx++] = alloc_page(GFP_KERNEL | __GFP_ACCOUNT);
-+
-+	return vmap(pg_start, pg_cnt, VM_MAP, PAGE_KERNEL);
-+}
-+
-+/*
-+ * Present the scattered pages containing decompressed data at a unified virtual
-+ * address.
-+ */
-+static int decompress_mem_allocator_handover(struct decompress_mem_allocator *a,
-+		struct mem_range_result *range)
-+{
-+	unsigned long pg_array_sz = a->pg_idx * sizeof(struct page *);
-+
-+	range->pages = vmalloc(pg_array_sz);
-+	if (!range->pages)
-+		return -ENOMEM;
-+
-+	range->pg_cnt = a->pg_idx;
-+	memcpy(range->pages, a->pages, pg_array_sz);
-+	range->buf = vmap(range->pages, range->pg_cnt, VM_MAP, PAGE_KERNEL);
-+	if (!range->buf) {
-+		vfree(range->pages);
-+		return -1;
++	if (!kernel_buf)
++		return false;
++	mz = (struct mz_hdr *)kernel_buf;
++	if (mz->magic != IMAGE_DOS_SIGNATURE)
++		return false;
++	pe = (struct pe_hdr *)(kernel_buf + mz->peaddr);
++	if (pe->magic != IMAGE_NT_SIGNATURE)
++		return false;
++	if (pe->opt_hdr_size == 0) {
++		pr_err("optional header is missing\n");
++		return false;
 +	}
-+	/*
-+	 * Free the tracing pointer; The pages are freed when mem_range_result
-+	 * is released.
-+	 */
-+	vfree(a->pages);
-+	a->pages = NULL;
 +
-+	/* vmap-ed */
-+	range->alloc_type = TYPE_VMAP;
-+	range->buf_sz = a->pg_idx << PAGE_SHIFT;
-+	range->data_sz = range->buf_sz - a->chunk_size;
-+	range->data_sz += a->chunk_cur - a->chunk_start;
-+
-+	return 0;
++	return pe_has_bpf_section(kernel_buf, kernel_len);
 +}
 +
-+static int decompress_mem_allocator_init(
-+	struct decompress_mem_allocator *allocator,
-+	unsigned int chunk_size)
++static bool is_valid_format(const char *kernel_buf, unsigned long kernel_len)
 +{
-+	unsigned long sz = (MAX_UNCOMPRESSED_BUF_SIZE >> PAGE_SHIFT) * sizeof(struct page *);
-+
-+	allocator->pages = __vmalloc(sz, GFP_KERNEL | __GFP_ACCOUNT);
-+	if (!allocator->pages)
-+		return -ENOMEM;
-+
-+	allocator->pg_idx = 0;
-+	allocator->chunk_start = NULL;
-+	allocator->chunk_size = chunk_size;
-+	allocator->chunk_cur = NULL;
-+	return 0;
-+}
-+
-+static void decompress_mem_allocator_fini(struct decompress_mem_allocator *allocator)
-+{
-+	unsigned int i;
-+
-+	/* unmap the active chunk */
-+	if (!!allocator->chunk_start)
-+		vunmap(allocator->chunk_start);
-+	if (!!allocator->pages) {
-+		for (i = 0; i < allocator->pg_idx; i++)
-+			__free_pages(allocator->pages[i], 0);
-+		vfree(allocator->pages);
-+	}
++	return is_valid_pe(kernel_buf, kernel_len);
 +}
 +
 +/*
-+ * This is a callback for decompress_fn.
-+ *
-+ * It copies the partial decompressed content in [buf, buf + len) to dst. If the
-+ * active chunk is not large enough, retire it and activate a new chunk to hold
-+ * the remaining data.
++ * The UEFI Terse Executable (TE) image has MZ header.
 + */
-+static long flush(void *buf, unsigned long len)
++static int pe_image_probe(const char *kernel_buf, unsigned long kernel_len)
 +{
-+	struct decompress_mem_allocator *a = &dcmpr_allocator;
-+	long free, copied = 0;
-+
-+	/* The first time allocation */
-+	if (unlikely(!a->chunk_start)) {
-+		a->chunk_start = a->chunk_cur = vmap_decompressed_chunk();
-+		if (unlikely(!a->chunk_start))
-+			return -1;
-+	}
-+
-+	free = a->chunk_start + a->chunk_size - a->chunk_cur;
-+	BUG_ON(free < 0);
-+	if (free < len) {
-+		/*
-+		 * If the totoal size exceeds MAX_UNCOMPRESSED_BUF_SIZE,
-+		 * return -1 to indicate the decompress method that something
-+		 * is wrong
-+		 */
-+		if (unlikely((a->pg_idx >= MAX_UNCOMPRESSED_BUF_SIZE >> PAGE_SHIFT)))
-+			return -1;
-+		memcpy(a->chunk_cur, buf, free);
-+		copied += free;
-+		a->chunk_cur += free;
-+		len -= free;
-+		/*
-+		 * When retiring the active chunk, release its virtual address
-+		 * but do not release the contents in the pages.
-+		 */
-+		vunmap(a->chunk_start);
-+		a->chunk_start = a->chunk_cur = vmap_decompressed_chunk();
-+		if (unlikely(!a->chunk_start))
-+			return -1;
-+	}
-+	memcpy(a->chunk_cur, buf, len);
-+	copied += len;
-+	a->chunk_cur += len;
-+	return copied;
++	return is_valid_pe(kernel_buf, kernel_len) ? 0 : -1;
 +}
 +
-+__bpf_kfunc struct mem_range_result *bpf_decompress(char *image_gz_payload, int image_gz_sz)
++static int pe_get_section(const char *file_buf, const char *sect_name,
++		char **sect_start, unsigned long *sect_sz)
 +{
-+	struct decompress_mem_allocator *a = &dcmpr_allocator;
-+	decompress_fn decompressor;
-+	struct mem_cgroup *memcg, *old_memcg;
-+	struct mem_range_result *range;
-+	const char *name;
-+	char *input_buf;
++	struct pe_hdr *pe_hdr;
++	struct pe32plus_opt_hdr *opt_hdr;
++	struct section_header *sect_hdr;
++	int section_nr, i;
++	struct mz_hdr *mz = (struct mz_hdr *)file_buf;
++
++	*sect_start = NULL;
++	*sect_sz = 0;
++	pe_hdr = (struct pe_hdr *)(file_buf + mz->peaddr);
++	section_nr = pe_hdr->sections;
++	opt_hdr = (struct pe32plus_opt_hdr *)(file_buf + mz->peaddr + sizeof(struct pe_hdr));
++	sect_hdr = (struct section_header *)((char *)opt_hdr + pe_hdr->opt_hdr_size);
++
++	for (i = 0; i < section_nr; i++) {
++		if (strcmp(sect_hdr->name, sect_name) == 0) {
++			*sect_start = (char *)file_buf + sect_hdr->data_addr;
++			*sect_sz = sect_hdr->raw_data_size;
++			return 0;
++		}
++		sect_hdr++;
++	}
++
++	return -1;
++}
++
++static bool pe_has_bpf_section(const char *file_buf, unsigned long pe_sz)
++{
++	char *sect_start = NULL;
++	unsigned long sect_sz = 0;
 +	int ret;
 +
-+	memcg = get_mem_cgroup_from_current();
-+	old_memcg = set_active_memcg(memcg);
-+	range = mem_range_result_alloc();
-+	if (!range) {
-+		pr_err("fail to allocate mem_range_result\n");
-+		goto error;
-+	}
-+
-+	input_buf = __vmalloc(image_gz_sz, GFP_KERNEL | __GFP_ACCOUNT);
-+	if (!input_buf) {
-+		kfree(range);
-+		pr_err("fail to allocate input buffer\n");
-+		goto error;
-+	}
-+
-+	ret = copy_from_kernel_nofault(input_buf, image_gz_payload, image_gz_sz);
-+	if (ret < 0) {
-+		kfree(range);
-+		vfree(input_buf);
-+		pr_err("Error when copying from 0x%p, size:0x%x\n",
-+				image_gz_payload, image_gz_sz);
-+		goto error;
-+	}
-+
-+	mutex_lock(&output_buf_mutex);
-+	decompress_mem_allocator_init(a, CHUNK_SIZE);
-+	decompressor = decompress_method(input_buf, image_gz_sz, &name);
-+	if (!decompressor) {
-+		kfree(range);
-+		vfree(input_buf);
-+		pr_err("Can not find decompress method\n");
-+		goto error;
-+	}
-+	ret = decompressor(input_buf, image_gz_sz, NULL, flush,
-+				NULL, NULL, NULL);
-+
-+	vfree(input_buf);
-+	if (ret == 0) {
-+		ret = decompress_mem_allocator_handover(a, range);
-+		if (!!ret)
-+			goto fail;
-+		range->status = 0;
-+		mem_cgroup_tryget(memcg);
-+		range->memcg = memcg;
-+		set_active_memcg(old_memcg);
-+	}
-+fail:
-+	decompress_mem_allocator_fini(a);
-+	mutex_unlock(&output_buf_mutex);
-+	if (!!ret) {
-+		kfree(range);
-+		range = NULL;
-+		pr_err("Decompress error\n");
-+	}
-+
-+error:
-+	set_active_memcg(old_memcg);
-+	mem_cgroup_put(memcg);
-+	return range;
++	ret = pe_get_section(file_buf, ".bpf", &sect_start, &sect_sz);
++	if (ret < 0)
++		return false;
++	return true;
 +}
 +
- __bpf_kfunc_end_defs();
- 
- BTF_KFUNCS_START(generic_btf_ids)
- #ifdef CONFIG_CRASH_DUMP
- BTF_ID_FLAGS(func, crash_kexec, KF_DESTRUCTIVE)
- #endif
-+BTF_ID_FLAGS(func, bpf_decompress, KF_TRUSTED_ARGS | KF_ACQUIRE | KF_SLEEPABLE)
- BTF_ID_FLAGS(func, bpf_mem_range_result_put, KF_RELEASE | KF_SLEEPABLE)
- BTF_ID_FLAGS(func, bpf_copy_to_kernel, KF_TRUSTED_ARGS | KF_SLEEPABLE)
- BTF_ID_FLAGS(func, bpf_obj_new_impl, KF_ACQUIRE | KF_RET_NULL)
++/* Load a ELF */
++static int arm_bpf_prog(char *bpf_elf, unsigned long sz)
++{
++	return 0;
++}
++
++static void disarm_bpf_prog(void)
++{
++}
++
++struct kexec_context {
++	bool kdump;
++	char *image;
++	int image_sz;
++	char *initrd;
++	int initrd_sz;
++	char *cmdline;
++	int cmdline_sz;
++};
++
++void bpf_handle_pefile(struct kexec_context *context);
++void bpf_post_handle_pefile(struct kexec_context *context);
++
++
++/*
++ * optimize("O0") prevents inline, compiler constant propagation
++ */
++__attribute__((used, optimize("O0"))) void bpf_handle_pefile(struct kexec_context *context)
++{
++	/*
++	 * To prevent linker from Identical Code Folding (ICF) with bpf_handle_pefile,
++	 * making them have different code.
++	 */
++	volatile int dummy = 0;
++
++	dummy += 1;
++}
++
++__attribute__((used, optimize("O0"))) void bpf_post_handle_pefile(struct kexec_context *context)
++{
++	volatile int dummy = 0;
++
++	dummy += 2;
++}
++
++/*
++ * PE file may be nested and should be unfold one by one.
++ * Query 'kernel', 'initrd', 'cmdline' in cur_phase, as they are inputs for the
++ * next phase.
++ */
++static int prepare_nested_pe(char **kernel, unsigned long *kernel_len, char **initrd,
++		unsigned long *initrd_len, char **cmdline)
++{
++	struct kexec_res *res;
++	int ret = -1;
++
++	*kernel = NULL;
++	*kernel_len = 0;
++
++	res = &parsed_resource[0];
++	if (!!res->r) {
++		*kernel = res->r->buf;
++		*kernel_len = res->r->data_sz;
++		ret = 0;
++	}
++
++	res = &parsed_resource[1];
++	if (!!res->r) {
++		*initrd = res->r->buf;
++		*initrd_len = res->r->data_sz;
++	}
++
++	res = &parsed_resource[2];
++	if (!!res->r) {
++		*cmdline = res->r->buf;
++	}
++
++	return ret;
++}
++
++static void *pe_image_load(struct kimage *image,
++				char *kernel, unsigned long kernel_len,
++				char *initrd, unsigned long initrd_len,
++				char *cmdline, unsigned long cmdline_len)
++{
++	char *linux_start, *initrd_start, *cmdline_start, *bpf_start;
++	unsigned long linux_sz, initrd_sz, cmdline_sz, bpf_sz;
++	struct kexec_res *res;
++	struct mem_range_result *r;
++	void *ldata;
++	int ret;
++
++	linux_start = kernel;
++	linux_sz = kernel_len;
++	initrd_start = initrd;
++	initrd_sz = initrd_len;
++	cmdline_start = cmdline;
++	cmdline_sz = cmdline_len;
++
++	while (is_valid_format(linux_start, linux_sz) &&
++	       pe_has_bpf_section(linux_start, linux_sz)) {
++		struct kexec_context context;
++
++		pe_get_section((const char *)linux_start, ".bpf", &bpf_start, &bpf_sz);
++		if (!!bpf_sz) {
++			/* load and attach bpf-prog */
++			ret = arm_bpf_prog(bpf_start, bpf_sz);
++			if (ret) {
++				pr_err("Fail to load .bpf section\n");
++				ldata = ERR_PTR(ret);
++				goto err;
++			}
++		}
++		if (image->type != KEXEC_TYPE_CRASH)
++			context.kdump = false;
++		else
++			context.kdump = true;
++		context.image = linux_start;
++		context.image_sz = linux_sz;
++		context.initrd = initrd_start;
++		context.initrd_sz = initrd_sz;
++		context.cmdline = cmdline_start;
++		context.cmdline_sz = strlen(cmdline_start);
++		/* bpf-prog fentry, which handle above buffers. */
++		bpf_handle_pefile(&context);
++
++		prepare_nested_pe(&linux_start, &linux_sz, &initrd_start,
++					&initrd_sz, &cmdline_start);
++		/* bpf-prog fentry */
++		bpf_post_handle_pefile(&context);
++		/*
++		 * detach the current bpf-prog from their attachment points.
++		 */
++		disarm_bpf_prog();
++	}
++
++	/*
++	 * image's kernel_buf, initrd_buf, cmdline_buf are set. Now they should
++	 * be updated to the new content.
++	 */
++
++	res = &parsed_resource[0];
++	/* Kernel part should always be parsed */
++	if (!res->r) {
++		pr_err("Can not parse kernel\n");
++		ldata = ERR_PTR(-EINVAL);
++		goto err;
++	}
++	kernel = res->r->buf;
++	kernel_len = res->r->data_sz;
++	vfree(image->kernel_buf);
++	image->kernel_buf = kernel;
++	image->kernel_buf_len = kernel_len;
++
++	res = &parsed_resource[1];
++	if (!!res->r) {
++		initrd = res->r->buf;
++		initrd_len = res->r->data_sz;
++		vfree(image->initrd_buf);
++		image->initrd_buf = initrd;
++		image->initrd_buf_len = initrd_len;
++	}
++	res = &parsed_resource[2];
++	if (!!res->r) {
++		cmdline = res->r->buf;
++		cmdline_len = res->r->data_sz;
++		kfree(image->cmdline_buf);
++		image->cmdline_buf = cmdline;
++		image->cmdline_buf_len = cmdline_len;
++	}
++
++	if (kernel == NULL || initrd == NULL || cmdline == NULL) {
++		char *c, buf[64];
++
++		c = buf;
++		if (kernel == NULL) {
++			strcpy(c, "kernel ");
++			c += strlen("kernel ");
++		}
++		if (initrd == NULL) {
++			strcpy(c, "initrd ");
++			c += strlen("initrd ");
++		}
++		if (cmdline == NULL) {
++			strcpy(c, "cmdline ");
++			c += strlen("cmdline ");
++		}
++		c = '\0';
++		pr_err("Can not extract data for %s", buf);
++		ldata = ERR_PTR(-EINVAL);
++		goto err;
++	}
++
++	ret = arch_kexec_kernel_image_probe(image, image->kernel_buf,
++					    image->kernel_buf_len);
++	if (ret) {
++		pr_err("Fail to find suitable image loader\n");
++		ldata = ERR_PTR(ret);
++		goto err;
++	}
++	ldata = kexec_image_load_default(image);
++	if (IS_ERR(ldata)) {
++		pr_err("architecture code fails to load image\n");
++		goto err;
++	}
++	image->image_loader_data = ldata;
++
++err:
++	for (int i = 0; i < 3; i++) {
++		r = parsed_resource[i].r;
++		if (!r)
++			continue;
++		parsed_resource[i].r = NULL;
++		/*
++		 * The release of buffer defers to
++		 * kimage_file_post_load_cleanup()
++		 */
++		r->buf = NULL;
++		r->buf_sz = 0;
++		mem_range_result_put(r);
++	}
++
++	return ldata;
++}
++
++const struct kexec_file_ops kexec_pe_image_ops = {
++	.probe = pe_image_probe,
++	.load = pe_image_load,
++#ifdef CONFIG_KEXEC_IMAGE_VERIFY_SIG
++	.verify_sig = kexec_kernel_verify_pe_sig,
++#endif
++};
 -- 
 2.49.0
 
