@@ -1,150 +1,171 @@
-Return-Path: <bpf+bounces-64044-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64045-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10753B0DACB
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 15:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A48A5B0DAEB
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 15:34:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6558563B01
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 13:29:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE487562095
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 13:34:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA5752EA49D;
-	Tue, 22 Jul 2025 13:28:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ED3A23B636;
+	Tue, 22 Jul 2025 13:34:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b="L8Rycg9Q"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tgr1Tgre"
 X-Original-To: bpf@vger.kernel.org
-Received: from nbd.name (nbd.name [46.4.11.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DB022E338B;
-	Tue, 22 Jul 2025 13:28:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.4.11.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DDFC1E4A9
+	for <bpf@vger.kernel.org>; Tue, 22 Jul 2025 13:34:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753190907; cv=none; b=W275R69pgAWmdUtbyKJBzPRq9wM0PybJ50WArJpY0W4X5anrAaEh+Gqg686ohZhZbYVxvyJmHZ3N/46e/o5Ie8d0jcofH3FwzUBy/72rq9JPrzS/Je7okltLUnE4GwBNusxAdWSS4o+8VXVp4kEY6TWC68obQ/36/vALoXUC7vA=
+	t=1753191263; cv=none; b=HkjvHtdBur385AgZMtKAhfG7c7iufdQp0aX5p6VMiQ7GIhw1xr9DwK1UnRm6wb/p5Hy3mn3ygOvGzu/zTEy211C6Bt0ckR0QwRnZSxm9HQ+VgJFrqCB+3ZtKSZORiK+kynwB738rVzdlyLiJmUURgF/+Ux8fv7JwVOJEe3rTJCw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753190907; c=relaxed/simple;
-	bh=UlPoVR5QC1KhInRk9vJr6g7Szxa5HcUjm/ee86z3yn0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ZRyrEXGXRTlzBonmdF3y93KrIzRXWV18lldFyxkuJr5IYb0sWA7mhnQ7h77n9Hs/K97AzfU4gOELpotbcLN1bhDPyM2Do1+TySi9c2RM0zuYUmwEvWnCePPgpyzOK+M7yDFGBIXSyHaDhcw/WW4cmaXModq45Va7Fo5kzI2+NfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name; spf=none smtp.mailfrom=nbd.name; dkim=pass (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b=L8Rycg9Q; arc=none smtp.client-ip=46.4.11.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=nbd.name
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
-	s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=cQbj0cQcdo0qq8guQgb1++o9RIM4pgMuhBXxGM8ddco=; b=L8Rycg9Qrn7ru2lad/IIluFfsQ
-	TljNaD1lcdmbBIVU4EmLMl12zfqoVbR2y5U32E5r/s1IM/S0q7YlGJ/ztDOPIc2X3pqx08GT+B76l
-	taeTyVtiuA9TX6kRIw9xaT4OeO0cFo9V3g6Ww1SSt9Qi9Fh3lQm+pBpl3NtvA4G+5vms=;
-Received: from p5b2062ed.dip0.t-ipconnect.de ([91.32.98.237] helo=nf.local)
-	by ds12 with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96)
-	(envelope-from <nbd@nbd.name>)
-	id 1ueD2U-00Fylh-0O;
-	Tue, 22 Jul 2025 15:28:14 +0200
-Message-ID: <2e267b4b-0540-45d8-9310-e127bf95fc63@nbd.name>
-Date: Tue, 22 Jul 2025 15:28:13 +0200
+	s=arc-20240116; t=1753191263; c=relaxed/simple;
+	bh=cpVVOpKqJMowKezArzWqHRnlHnTMZtgYv2FGlQcjelg=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=O7fcyBM1RIwhXj3aTm8DbodTZqt+2VVV3z3qHoFfMkHkCxvivyvlO49tyrSAExMEfkpjMEmSphhGwPYrPPXLg8ASwaIbhRcUhSFeLlfGzG/GY4aGaZ4Kw62Yoa1TBvpOTThCAiTg9ilXNLnEWIbESHDVOvja4+0AIxOBFcmrbXQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tgr1Tgre; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBEA7C4CEEB;
+	Tue, 22 Jul 2025 13:34:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753191263;
+	bh=cpVVOpKqJMowKezArzWqHRnlHnTMZtgYv2FGlQcjelg=;
+	h=From:To:Subject:Date:From;
+	b=Tgr1TgreItVdtbas0lUgDgplkZknhj2bZad+h2WFv3IUsWylxMcKFdJ2kIfs74WiS
+	 TfHJf5HrHwrneGIjJSxUW83pxc+fYLwF2ZS2+Fi9gzm5/L6AG7agd2v0GJDBidTY56
+	 JFar8i4LkGUyNSe3MwefDDfLEatMljq3V9QWUogfGkt/HOdTeEenVBUr8ucvj4emqr
+	 JumnCDtiFsFz3maCK7Vczfgaupjmt8kMB4uh2vqT78SAB/zF8vKOyxuNRtfys2YAOA
+	 su0r5/UK4wA6WebByF6IU3nOgZ/HRf+3hryBmFHhdu529uDngxhz94WXcaUvQXMynw
+	 CqKWzm3RV73Gw==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Puranjay Mohan <puranjay@kernel.org>,
+	Xu Kuohai <xukuohai@huaweicloud.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org
+Subject: [PATCH bpf-next 0/1] bpf, arm64: fix fp initialization for exception boundary
+Date: Tue, 22 Jul 2025 13:34:08 +0000
+Message-ID: <20250722133410.54161-1-puranjay@kernel.org>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 1/1] bpf: fix WARNING in __bpf_prog_ret0_warn
- when jit failed
-To: KaFai Wan <mannkafai@gmail.com>, ast@kernel.org, daniel@iogearbox.net,
- john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
- eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
- kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20250526133358.2594176-1-mannkafai@gmail.com>
-From: Felix Fietkau <nbd@nbd.name>
-Content-Language: en-US
-Autocrypt: addr=nbd@nbd.name; keydata=
- xsDiBEah5CcRBADIY7pu4LIv3jBlyQ/2u87iIZGe6f0f8pyB4UjzfJNXhJb8JylYYRzIOSxh
- ExKsdLCnJqsG1PY1mqTtoG8sONpwsHr2oJ4itjcGHfn5NJSUGTbtbbxLro13tHkGFCoCr4Z5
- Pv+XRgiANSpYlIigiMbOkide6wbggQK32tC20QxUIwCg4k6dtV/4kwEeiOUfErq00TVqIiEE
- AKcUi4taOuh/PQWx/Ujjl/P1LfJXqLKRPa8PwD4j2yjoc9l+7LptSxJThL9KSu6gtXQjcoR2
- vCK0OeYJhgO4kYMI78h1TSaxmtImEAnjFPYJYVsxrhay92jisYc7z5R/76AaELfF6RCjjGeP
- wdalulG+erWju710Bif7E1yjYVWeA/9Wd1lsOmx6uwwYgNqoFtcAunDaMKi9xVQW18FsUusM
- TdRvTZLBpoUAy+MajAL+R73TwLq3LnKpIcCwftyQXK5pEDKq57OhxJVv1Q8XkA9Dn1SBOjNB
- l25vJDFAT9ntp9THeDD2fv15yk4EKpWhu4H00/YX8KkhFsrtUs69+vZQwc0cRmVsaXggRmll
- dGthdSA8bmJkQG5iZC5uYW1lPsJgBBMRAgAgBQJGoeQnAhsjBgsJCAcDAgQVAggDBBYCAwEC
- HgECF4AACgkQ130UHQKnbvXsvgCgjsAIIOsY7xZ8VcSm7NABpi91yTMAniMMmH7FRenEAYMa
- VrwYTIThkTlQzsFNBEah5FQQCACMIep/hTzgPZ9HbCTKm9xN4bZX0JjrqjFem1Nxf3MBM5vN
- CYGBn8F4sGIzPmLhl4xFeq3k5irVg/YvxSDbQN6NJv8o+tP6zsMeWX2JjtV0P4aDIN1pK2/w
- VxcicArw0VYdv2ZCarccFBgH2a6GjswqlCqVM3gNIMI8ikzenKcso8YErGGiKYeMEZLwHaxE
- Y7mTPuOTrWL8uWWRL5mVjhZEVvDez6em/OYvzBwbkhImrryF29e3Po2cfY2n7EKjjr3/141K
- DHBBdgXlPNfDwROnA5ugjjEBjwkwBQqPpDA7AYPvpHh5vLbZnVGu5CwG7NAsrb2isRmjYoqk
- wu++3117AAMFB/9S0Sj7qFFQcD4laADVsabTpNNpaV4wAgVTRHKV/kC9luItzwDnUcsZUPdQ
- f3MueRJ3jIHU0UmRBG3uQftqbZJj3ikhnfvyLmkCNe+/hXhPu9sGvXyi2D4vszICvc1KL4RD
- aLSrOsROx22eZ26KqcW4ny7+va2FnvjsZgI8h4sDmaLzKczVRIiLITiMpLFEU/VoSv0m1F4B
- FtRgoiyjFzigWG0MsTdAN6FJzGh4mWWGIlE7o5JraNhnTd+yTUIPtw3ym6l8P+gbvfoZida0
- TspgwBWLnXQvP5EDvlZnNaKa/3oBes6z0QdaSOwZCRA3QSLHBwtgUsrT6RxRSweLrcabwkkE
- GBECAAkFAkah5FQCGwwACgkQ130UHQKnbvW2GgCeMncXpbbWNT2AtoAYICrKyX5R3iMAoMhw
- cL98efvrjdstUfTCP2pfetyN
-In-Reply-To: <20250526133358.2594176-1-mannkafai@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi,
+In the ARM64 BPF JIT when prog->aux->exception_boundary is set for a BPF
+program, find_used_callee_regs() is not called because for a program acting
+as exception boundary, all callee saved registers are saved.
+find_used_callee_regs() sets `ctx->fp_used = true;` when it sees FP being
+used in any of the instructions.
+For programs acting as exception boundary, ctx->fp_used always remains
+false and therefore, BPF frame pointer is never set-up for such programs in
+the prologue.
 
-On 26.05.25 15:33, KaFai Wan wrote:
-> syzkaller reported an issue:
-> 
-> WARNING: CPU: 3 PID: 217 at kernel/bpf/core.c:2357 __bpf_prog_ret0_warn+0xa/0x20 kernel/bpf/core.c:2357
-> Modules linked in:
-> CPU: 3 UID: 0 PID: 217 Comm: kworker/u32:6 Not tainted 6.15.0-rc4-syzkaller-00040-g8bac8898fe39 #0 PREEMPT(full)
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-> Workqueue: ipv6_addrconf addrconf_dad_work
-> RIP: 0010:__bpf_prog_ret0_warn+0xa/0x20 kernel/bpf/core.c:2357
-> RSP: 0018:ffffc900031f6c18 EFLAGS: 00010293
-> RAX: 0000000000000000 RBX: ffffc9000006e000 RCX: 1ffff9200000dc06
-> RDX: ffff8880234ba440 RSI: ffffffff81ca6979 RDI: ffff888031e93040
-> RBP: ffffc900031f6cb8 R08: 0000000000000001 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000000 R12: ffff88802b61e010
-> R13: ffff888031e93040 R14: 00000000000000a0 R15: ffff88802c3d4800
-> FS:  0000000000000000(0000) GS:ffff8880d6ce2000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000055557b6d2ca8 CR3: 000000002473e000 CR4: 0000000000352ef0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->   <TASK>
->   bpf_dispatcher_nop_func include/linux/bpf.h:1316 [inline]
->   __bpf_prog_run include/linux/filter.h:718 [inline]
->   bpf_prog_run include/linux/filter.h:725 [inline]
->   cls_bpf_classify+0x74a/0x1110 net/sched/cls_bpf.c:105
->   ...
-> 
-> When creating bpf program, 'fp->jit_requested' depends on bpf_jit_enable.
-> Currently the value of bpf_jit_enable is available from 0 to 2, 0 means use
-> interpreter and not jit, 1 and 2 means need to jit. When
-> CONFIG_BPF_JIT_ALWAYS_ON is enabled, bpf_jit_enable is permanently set
-> to 1, when it's not set or disabled, we can set bpf_jit_enable via proc.
-> 
-> This issue is triggered because of CONFIG_BPF_JIT_ALWAYS_ON is not set
-> and bpf_jit_enable is set to 1, causing the arch to attempt JIT the prog,
-> but jit failed due to FAULT_INJECTION. As a result, incorrectly
-> treats the program as valid, when the program runs it calls
-> `__bpf_prog_ret0_warn` and triggers the WARN_ON_ONCE(1).
-> 
-> Reported-by: syzbot+0903f6d7f285e41cdf10@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/bpf/6816e34e.a70a0220.254cdc.002c.GAE@google.com
-> Fixes: fa9dd599b4da ("bpf: get rid of pure_initcall dependency to enable jits")
-> Signed-off-by: KaFai Wan <mannkafai@gmail.com>
+This can cause crashes like:
 
-I think this patch may have caused a regression in configurations with 
-CONFIG_BPF_JIT_DEFAULT_ON=y when programs can't be JITed. Attaching the 
-program fails with error -ENOTSUPP.
+With the following BPF program loaded and attached:
 
-Please see https://github.com/openwrt/openwrt/issues/19405 for more 
-information.
+    static __noinline int static_func(u64 i)
+    {
+            bpf_throw(0);
+            return i;
+    }
 
-- Felix
+    SEC("fentry/do_unlinkat")
+    int BPF_PROG(do_unlinkat, int dfd, struct filename *name)
+    {
+            volatile u64 a[2] = {0};
+
+            a[1] = __sync_fetch_and_add(&a[0], 1);
+
+            static_func(23);
+            return 0;
+    }
+
+Triggering it causes a page fault because the FP register is not
+initialised.
+
+[root@localhost ~]# touch test
+[root@localhost ~]# rm test
+ Unable to handle kernel paging request at virtual address fffffffffffffff0
+ Mem abort info:
+   ESR = 0x0000000096000006
+   EC = 0x25: DABT (current EL), IL = 32 bits
+   SET = 0, FnV = 0
+   EA = 0, S1PTW = 0
+   FSC = 0x06: level 2 translation fault
+ Data abort info:
+   ISV = 0, ISS = 0x00000006, ISS2 = 0x00000000
+   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+ swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000043783000
+ [fffffffffffffff0] pgd=0000000000000000, p4d=00000000450a0403, pud=00000000450a1403, pmd=0000000000000000
+ Internal error: Oops: 0000000096000006 [#1]  SMP
+ Modules linked in:
+ CPU: 12 UID: 0 PID: 487 Comm: rm Not tainted 6.16.0-rc6-00212-g7abc678e3084 #7 PREEMPT
+ Hardware name: linux,dummy-virt (DT)
+ pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+ pc : bpf_prog_5148f2d6554f3ab3_do_unlinkat+0x48/0x90
+ lr : bpf_trampoline_6442562433+0x68/0x168
+ sp : ffff80008c8b3d10
+ x29: ffff80008c8b3d80 x28: ffff0000d66d0000 x27: 0000000000000000
+ x26: ffff80008c8b3d70 x25: 0000000000000000 x24: 0000000000000000
+ x23: 0000000060001000 x22: 0000ffffaea95b0c x21: 00000000ffffffff
+ x20: 0000000000000001 x19: ffff80008c1bd000 x18: 0000000000000000
+ x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
+ x14: 0000000000000000 x13: 0000000000020000 x12: 0000000000000015
+ x11: 0000000000000000 x10: fffffffffffffff0 x9 : ffff8000871d65e8
+ x8 : ffff800084eb1d30 x7 : 0000000000000000 x6 : 0000000000000001
+ x5 : 00000000c3affd79 x4 : 000000001055937d x3 : ffff801809627000
+ x2 : ffff0000d66d0000 x1 : 0000000100000000 x0 : 0000000000000001
+ Call trace:
+  bpf_prog_5148f2d6554f3ab3_do_unlinkat+0x48/0x90 (P)
+  bpf_trampoline_6442562433+0x68/0x168
+  do_unlinkat+0x8/0x290
+  __arm64_sys_unlinkat+0x44/0x90
+  invoke_syscall+0x50/0x120
+  el0_svc_common.constprop.0+0xc8/0xf0
+  do_el0_svc+0x24/0x38
+  el0_svc+0x48/0xf0
+  el0t_64_sync_handler+0xc8/0xd0
+  el0t_64_sync+0x198/0x1a0
+ Code: f90007e0 f90003e0 d2800020 d100432a (f8e00140)
+ ---[ end trace 0000000000000000 ]---
+ Kernel panic - not syncing: Oops: Fatal exception
+ SMP: stopping secondary CPUs
+ Kernel Offset: disabled
+ CPU features: 0x2000,000081c0,02004ca1,04407a0b
+ Memory Limit: none
+ ---[ end Kernel panic - not syncing: Oops: Fatal exception ]---
+
+Please take it into the bpf tree if needed, I sent it to bpf-next as
+this bug is multiple months old.
+
+Puranjay Mohan (1):
+  bpf, arm64: fix fp initialization for exception boundary
+
+ arch/arm64/net/bpf_jit_comp.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+-- 
+2.47.1
+
 
