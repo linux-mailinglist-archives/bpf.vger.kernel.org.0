@@ -1,694 +1,382 @@
-Return-Path: <bpf+bounces-64086-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64087-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26C1FB0E2A3
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 19:33:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FD60B0E367
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 20:23:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 478535680F2
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 17:33:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F18227A48E6
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 18:21:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFA3C27E1AC;
-	Tue, 22 Jul 2025 17:33:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7B0C28031C;
+	Tue, 22 Jul 2025 18:23:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tlCIe9FQ"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="daJCb8J+";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="IFIHZwjB"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A1035234
-	for <bpf@vger.kernel.org>; Tue, 22 Jul 2025 17:33:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753205583; cv=none; b=Cos78s91P/l9FZQFP4QdRc229dITZR0fR9GCcdnQYXH2xTRU/JoMEu2HBDAK91qziaqgiTvCiRjG5MLrPv9L7ycvDhWNGgCqVIv3KqzD/OS8Whz18jjncnNJ2dy/zQtpTBUnFz0hDmmwarrVF1Xv8Z66Bl+bpyj+vxFM2e4O41U=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753205583; c=relaxed/simple;
-	bh=Qoukclw0KYaiazGAATKMFmXuR9PxEJH0YMOlXhnTTgw=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=SYA8gQcdsQx2c+B50w1vhCUoOk41Z0KI4T7JTchK+94/Ycg6BugVbuYORWtVNU3qrTZs7QWWsFDgUNDwyE+bh/MXdRND1BOuNdV/1cF4WI1EnTdeUrk6VSUnvFyzoZhD5uKnjk5qjaS63uJri0r3++IcZs1xZbQg/UscW04wokk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tlCIe9FQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 681D6C4CEEB;
-	Tue, 22 Jul 2025 17:33:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753205582;
-	bh=Qoukclw0KYaiazGAATKMFmXuR9PxEJH0YMOlXhnTTgw=;
-	h=From:To:Subject:Date:From;
-	b=tlCIe9FQoL7PYk33fqj8JOxm7zliJeEZPcrUw7SZOAaGe0oLpJRDZE3O3YWetEnJh
-	 /QhgclB8qZpdQxQiaPgw1CIx1IDoShd5pz7j0CTyqkGIDsvot/6JsV51PpMIb6wTEq
-	 NZ5tfX5PkyCXgQr9+Yr5hcbCWr9czorHWehsdUTU1nM9sUxBIqUrijTOv0b4t3jViE
-	 TlKjhNVPlIgHKnTRD6sAI9PG5etEAvXnIMPRVTs1rYAuDk07kVSLOqD5zfsSlUrsNV
-	 D6kOGkJ0Bas/0B5bB/AlW2L4a3Zg64tTYlX1mqyReqm2VEd8iZtORzUK3yG+e4fiON
-	 jP6q5AIGgDvEg==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Xu Kuohai <xukuohai@huaweicloud.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	bpf@vger.kernel.org
-Subject: [PATCH bpf-next] bpf, arm64: JIT support for private stack
-Date: Tue, 22 Jul 2025 17:32:50 +0000
-Message-ID: <20250722173254.3879-1-puranjay@kernel.org>
-X-Mailer: git-send-email 2.47.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EF1E27EFFA;
+	Tue, 22 Jul 2025 18:23:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1753208584; cv=fail; b=BTFeRAeK8vIZOYt9fH3QS5hYw5gf50lMQaorqwkB4FDah5NM7dr6ZqCROfRbq4vx/4yh/XmW0ePg4IDwjRKA95KvUVTe0UKzrOfAMtu+qdFoNVDylJtfE5paib7jgZ7/1VaDrYhfzHk1IOc0QyeYaord97B9/ZsdpSGZLRJ8Z1Y=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1753208584; c=relaxed/simple;
+	bh=kSlUbTsic25lCmNuWHNUzK8NBOxICANV4C7NWCy/GYw=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=eK2aJZYtvQ8u3qKRJHSovTg4R0FdXawvSM86fDYyYbPj/ehtkJ3pDsQxVB6JticDNOdOLC36dVlGNcCHSUNLUEtwdUF3UUQiqmMJxjvDEE08OBOpIXkMhZNfyV0+oBFhlZDh8AzXubROZy9jqvQY9W8zt3CeTmOD2x6HubnrWxg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=daJCb8J+; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=IFIHZwjB; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56MFXr7A028534;
+	Tue, 22 Jul 2025 18:21:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	corp-2025-04-25; bh=WHBjIlOIGqlwBuYP7h3uWOGZN15YXyC1djnZ/8lCZUE=; b=
+	daJCb8J+eKTecDUD9vTVKEM3SWIXAY20WJ2IWkfU67BpVqE3uJ0iKPatZIebou+o
+	D4pP16zvPOnNRxEeoVX4rwK3XufkXMLSg2CN0g48YqS0nD3LdQS54SJUEB3bAclm
+	zCE0E7jbJuKBvyLmzT+oKFtzz8l2b7nI/mUMpcpNZyNwg7iBwHDIgDcmz7hg/oCg
+	YxM73juUiHmkn9V9D64dpPNHaDBTSDcHwTMdk4bBAH3BxtpVQmlkvKjP2rfDJYHJ
+	Uelg7we1Hd+cW1HQGM79UICyw9vGWssDbC+8jsrAoXhN+sC+AyFq+iw5fQ0fiR1s
+	DoCE+wpkrubfZoiERd3ifQ==
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 482cwhrfve-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 22 Jul 2025 18:21:26 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 56MHpIlI031482;
+	Tue, 22 Jul 2025 18:21:26 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10on2079.outbound.protection.outlook.com [40.107.93.79])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4801tfy73w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 22 Jul 2025 18:21:26 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=uY9/9skzG6tfX/Sk0WgGeSwndv1GorP/OXbaHL1M+DdyMocSGmL5GmRzSDGsEDPkGEeQmdBNtB8PJbaAVN6MFugrSayyMNvVFVbWDFHXkEP9DMDiMr0DjXE8q9hl/Aj8CD+ov/Mn77nQvBZjtM1OpC5KA4Rt6hs9ttIXVm7EpkpHsJ8Etkk8JLlDTsIL4+MgH+H8IqDogtSpQUr+cb4se91uJP9+p8LQ0StN/gqBGoFARxBgyAr26pHIEJMzRac6StuW4rl2Mnu9UJmyLBEUWBIIU3xiYjYQbZ0eEswi8HXGB/s28MYSYRSgSy0d8aKZIsTUOW8HYUG519WfsLxm1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WHBjIlOIGqlwBuYP7h3uWOGZN15YXyC1djnZ/8lCZUE=;
+ b=lb/d74hkfGsQ5rwgdoMwA/xL09twb/3hhWIM73YlNCAMFOlXvh6dBI+fR7CT1fMiKtZGG9Lclz0rBo7lhnZX+VKAzfWrjLxyaws/+g96nT9JTegwHt68sOWThMoxlz+yUxDDOuCn6lWX0j9WNcQzWcz/o2zx3GJ2y6i0VMcC08Fg7CFINS5RFvYXzyUb0VS/3ftDRux1AkrtgjFxw9TyFl2jkqQoUZy7hFmzenyUKgjtPDqMSeaxOHZAvElX1MpiNv8HlPdLaWDT/TkRlWhr/xObcJiLwkMZfawOZATWapDBm/yO/oATST1UEV11ZxkvSqYYtFqABAWM2U1fStuM9Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WHBjIlOIGqlwBuYP7h3uWOGZN15YXyC1djnZ/8lCZUE=;
+ b=IFIHZwjBK+WcpN4syNVpP2hzAaR/sAGigrpkVeyb717yafqi+W/idymSzL5HlgMrw1GssHacyj708RA5vmO4qbQv3AveBFGO/JBBkRxnuEv9lyGl2FiqEiPKgZSlmJ6NP8aTuCYLlzPiGEMOUTohbLErZzoRvtEI23jggcgDhUE=
+Received: from SA1PR10MB6365.namprd10.prod.outlook.com (2603:10b6:806:255::12)
+ by DM6PR10MB4284.namprd10.prod.outlook.com (2603:10b6:5:21f::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8943.30; Tue, 22 Jul
+ 2025 18:21:23 +0000
+Received: from SA1PR10MB6365.namprd10.prod.outlook.com
+ ([fe80::81bb:1fc4:37c7:a515]) by SA1PR10MB6365.namprd10.prod.outlook.com
+ ([fe80::81bb:1fc4:37c7:a515%6]) with mapi id 15.20.8964.019; Tue, 22 Jul 2025
+ 18:21:23 +0000
+Message-ID: <69d09381-2315-4c95-ba5a-28d148ffd19d@oracle.com>
+Date: Tue, 22 Jul 2025 11:21:14 -0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC] New codectl(2) system call for sframe registration
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rostedt <rostedt@goodmis.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, x86@kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "Jose E. Marchesi" <jemarch@gnu.org>,
+        Beau Belgrave <beaub@linux.microsoft.com>,
+        Jens Remus
+ <jremus@linux.ibm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>,
+        Sam James <sam@gentoo.org>, Brian Robbins <brianrob@microsoft.com>,
+        Elena Zannoni <elena.zannoni@oracle.com>
+References: <2fa31347-3021-4604-bec3-e5a2d57b77b5@efficios.com>
+Content-Language: en-US
+From: Indu Bhagat <indu.bhagat@oracle.com>
+In-Reply-To: <2fa31347-3021-4604-bec3-e5a2d57b77b5@efficios.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MW4PR03CA0221.namprd03.prod.outlook.com
+ (2603:10b6:303:b9::16) To SA1PR10MB6365.namprd10.prod.outlook.com
+ (2603:10b6:806:255::12)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR10MB6365:EE_|DM6PR10MB4284:EE_
+X-MS-Office365-Filtering-Correlation-Id: e01d97af-c59f-4208-5751-08ddc94c9061
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|7416014|376014|10070799003|366016|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?eVJQMUdsY05xUXZQbWI4TWs1K0lVcEwvQ2JjeCtzTnY2TG1XU0hNbTVIV0hW?=
+ =?utf-8?B?S1EvVE16VVNRVW9iNCtnK2xyRXVlZmtCVjduaHJuLzZwZGlLTTl6akR2VXZz?=
+ =?utf-8?B?d3RxMmY1VjA2dU9ZVkU3NWMwT2F3dHlaNWg5RnBFQ293VnkrWnlaM0V0R1FR?=
+ =?utf-8?B?R2hsUjU3K0Q0NW4zcEgrTzFQa1NsbHJZVzlucW1mWGVsWEtXdGZBMjI2L2F1?=
+ =?utf-8?B?cmdtYVRuRGp5ckJockhoVnFic1BrallYMDVwUTA2eVQ3Q0xka2hEWlcvVG92?=
+ =?utf-8?B?R1J1Y0dWWURLbEwvSnVXS3pHRnI1bFlnNXVpWWhNcW11TDBOY1NBei9WQ2xY?=
+ =?utf-8?B?N3QvNVV1KzNwbUJaZFJnOEk5UzZpcTJjejlybWZqeWVXb0M5SVl1N1cxQTVG?=
+ =?utf-8?B?LzF3cTB5WUs0SDVGVE8yR1oraFcwOGRidzdUUFUxcHhKR3grV2RETVVwbkp6?=
+ =?utf-8?B?elBoZ3c4Wmg2WlJwRGJoREorQzgrbDlQRHk5NUl5MGk5OUJYekNVbFpkREZF?=
+ =?utf-8?B?TWhTZVI3aGdZRU9abFNXQ2lhWUthZ0FaU0pNWEpsT2Z1TkRYeGk0ZTN6bjNL?=
+ =?utf-8?B?MFZvbTBFVEZOeEJheU1wZ0k5UHYvN2hINnFnaEovMlNlWCs5TzZQQVRvZFEy?=
+ =?utf-8?B?WEYwbHo4RVNBWFFHNWpFY3ZkZ1Bndm80UW5Wa2F4QlZaRnlEakowSXRDUkQ2?=
+ =?utf-8?B?ZnhDa1pXanRuT0YyVXlkSGlqOWZ0RElSKzVqeWFFT0xkTWRFdnRKc3VHNytR?=
+ =?utf-8?B?aGtRT2RHdTFzNTl6ZVVpblJrS04yb0pPblhvNGxxaWQvRkRwRzYzOG1hbnN4?=
+ =?utf-8?B?bXY2aWd2VklTMGExOGZEWnpJRU4zK3BLdUxqTVdXb0k5UXhkT1pwdnBNUXEy?=
+ =?utf-8?B?LzdIU2hrMCtiL2ZBRXliaU9wVTZKVDI0d1ViaWtNWU1UcjBNczBvOWlMd05V?=
+ =?utf-8?B?R3VwL0lpWU05UUVIUWwrNlJLNWtmR2pnUnBqVFNybFZ6TVhNWGNYcVY3VmtC?=
+ =?utf-8?B?YXdWdGllZUpmSU5aMitsUjZOQlhqOC9GaVllMURDMU9pZjlmTksxZnk3dlgy?=
+ =?utf-8?B?bUR0cTRXcGVUOG1nQzBHMGY3b0pNajYvalY2cVJRdUNoVHBoSVhPZVZsUnFB?=
+ =?utf-8?B?RnVjcm5lMGNCemd1SGRiUUR6amdpSFR1Q0xOeTFnYUJodmJwL3FyWGZYRTly?=
+ =?utf-8?B?VnA1UVhzc2JpZDB6Sks1aktFaTV5UDIzbFAxOHBlSWhpckRreUx3NE1iVnJX?=
+ =?utf-8?B?c0JSSHl4SnhWTUQ2clFVTjFDR1NSS0k5SWtnSW1peERwZGJ2dXNHeThiSFA3?=
+ =?utf-8?B?UlI3dnZEOTlIWGZhN3NHdUlVOWsvK3BPbTVJamkxbTEyNzVYcnE4TDdjdi9v?=
+ =?utf-8?B?MUVuakpwNkZTZDVCdmlMTUtZUTZMVXFSZFpkUWtMRFg4ZHdlWjQwM01rMG5L?=
+ =?utf-8?B?cWU2L0RWNnQreTBEanpvWlNiL3dhNDBGbFpxOTREK3JwMnlsSEoxVjk1d0Qv?=
+ =?utf-8?B?enlBM0c5b0xyWTBvS1NrR2ZuTUhTUFFRSW53Z0h3NlRJNE5qTUFxVW03aTNo?=
+ =?utf-8?B?QUFnT3U0TlZiYVQyTmpmTk5wOE94b2MvZDc0WittT1FLTEZ6V0JZMzR2Si9j?=
+ =?utf-8?B?RTdaVk84ekZad0k3QnBWdnlFN21mczFEZFQrNUhmWDVyek5uZHk2dy83aG1Z?=
+ =?utf-8?B?RWxldWdIQW9aZ3NSNFVOSkxjU2xPL05sYlYzclNkS3JRY01tbWRwUFR1K2lr?=
+ =?utf-8?B?MWw1di82cm9YLzllTm1LMUFmY2FQWUI1d25KMjlndGpidnNZSlhXYmcybTdO?=
+ =?utf-8?Q?AypSZM2r5PqyiqJZcpkPb7k60oPxU8GD2qgw0=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR10MB6365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(10070799003)(366016)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?SGxvK200QnhxdVJzRmFVNVZ5QW5QeFFCTVhBSDV5bm1tanNKSzV0bW9jSFcz?=
+ =?utf-8?B?RU5nTXNWL2p1U3FOZ2E1YmJvU3lnaUFxT3UvLy9TYmhNSzUrZ2tuRXdJVDhF?=
+ =?utf-8?B?VzJtSHpCcytpemZmbW9udFUyK3pmb0NSUGJTZkViN3pmSzZZWDlJZ1BVdnZP?=
+ =?utf-8?B?RllTS2lIb2RCZUg1OUZTelpoK1hPUVh6M1ZMY3pTRkJ2aE5sM0doWVV3dTd2?=
+ =?utf-8?B?U0dZaCtrdENRYkRXbzhUcnJ1NStvWFcyMEVvQXFCMGJuQ2tPUGd2L3dSMjR1?=
+ =?utf-8?B?U2tNT1VRV3BFdVNldHIweEUyejBYWTB0Q0VoY2lBdHhPeE8zZ3BOcjBLSms1?=
+ =?utf-8?B?RTNTTXdGbE1PM1ZHUk9uSjdNOVhrN2g0Q1d1M1BjbVVBOSttZmNUT1g1ZUZ6?=
+ =?utf-8?B?aHpNbzZEL3VmN3JTVlFLOS9GbFVmbXhXTnphV0N6UXlmaDk1NlhFNTc0TXhM?=
+ =?utf-8?B?aXNFN2xIeVB1UlpjYS9TWkZEMWpmRkg1b3I0eWlRN2JHQUtQdFVESFJWOHM5?=
+ =?utf-8?B?dVVPY1c0VVpwcmhQdTdtUlBQYWZpNm5wS0YxN1dUM0kxcFFCYWRZaUpWYUZJ?=
+ =?utf-8?B?S1hUbVF1cVNKY1NRV3ZXRzU5bGljeUtIQkRnMGtDWnBqY0x4Vm1ZN2pMcnk4?=
+ =?utf-8?B?YlhpZi85TTBoTnMzM1VudUxFeW5wYUoxZlRGQlYzcElzY0xjTlcwUXpScnNv?=
+ =?utf-8?B?aXRjL2psTVI4NUVNTkVzZWhhUWV5SkpiZk5HWllXcUF1N2RwL09IYkkxWThk?=
+ =?utf-8?B?YkdMd3dHd3djLzBPL3lxOGRwejNUTmhIRmdFUTVuYUR1U3RtbjJIMFJ2SGQw?=
+ =?utf-8?B?S2tsYkZWdHhPN09VdkJsVU5pOFdQazNSOWNIcjVRWDl1L0hlcVBBY2lLTTJN?=
+ =?utf-8?B?ZVJyOEs0MlJwSGdEUmlkcDdIUVVXOEdSSmxrbEFyRzdoK0dXbEtxdDZXQXJu?=
+ =?utf-8?B?V2t2VWswNXRlSDBXNlZpZllMQXlueU1TeFV5U3NrRTR6QytvU3pQZ3g2SzB5?=
+ =?utf-8?B?NjdqL0hDeHBPY25HOFkzT1AraWhweXY1dDRiNDZsamtLVk5xWlFXeEdLTVlX?=
+ =?utf-8?B?a1pmeE1SNjNmUXZMeVF2ck96VXlKZXpoME9yMlhrSGx6VUZIME5ZZE5LNlpk?=
+ =?utf-8?B?T2hFd0Y3TEM2S0pwOHF1VXVrL0JUUmcwL2w4NlBQVVU5K1czS2pCQzAvd2Ew?=
+ =?utf-8?B?SnhFT2k2d2FsR1I1NC9HWWxsYlFYaDFTMXBnQzVpTkVWOUxrL1lMSklCTUlL?=
+ =?utf-8?B?b1NyZGt4V1BFdzg3YlVNR0dheld6dStEdm9KbFZTNVZ5SUJyU1pZM0JIblhx?=
+ =?utf-8?B?Ym00WmFud2h1K24zaGNYYVlCcUJEOG0wNlluWFRXb1o5T3lwaE4wTUZPWmNY?=
+ =?utf-8?B?YVY0Z1FDb2J3WGZ3Y1lGMG9qS3kxUWFHancxZDNwMWJabjgxTHl5NThHQXhU?=
+ =?utf-8?B?Vk5tYjFYMGtNYUROaVlLWWZBZ05hb0VZZHB0SjdwbG0wQTdvVi9KQWZFcHFQ?=
+ =?utf-8?B?a2RGZTdScVBZQTNFZkdhVlhTM2FxRTI0eUlkcm5HMk1TeVloeFRJT0VlYTZV?=
+ =?utf-8?B?S2dVVVByZFFwdWNBVm5xak9KNDkwajI0dmJBQjFJNWh4VTQvQ3ArWWN0NUhZ?=
+ =?utf-8?B?aHBZTG9GOUlnU2Fsd3czVG5MQm1qQ3BGczdydVBuck40bjlyRGNoYlIwSnFw?=
+ =?utf-8?B?eCs4THNGR0JHL1cwY1dzRmYxRnZmUXIxcURldFBpSWc3UmNqcW5LaGtNdWpv?=
+ =?utf-8?B?aThkc25hekNUcW5JRlJGWnZ5dGFXT3M2a2F6STJTeVFsakxPZ1NpdS9WZVpD?=
+ =?utf-8?B?dmwyM3FYdlYrcm05aGJHZUVqR0ZYdnZoOHB2VzRoU2paVi9VbEVucDFnaDBp?=
+ =?utf-8?B?eCs1WUgzWlVLL1FXMVhiL2hySHlmdEpkZHdhZ3FaVGhtb1BqYkM3RUswSFNw?=
+ =?utf-8?B?SjRaWk9nUDdBZWtVTEpnWkVUSWppZE5xckZDaWdiR3JBa1hwT2lTU2UxUFlw?=
+ =?utf-8?B?SlRlaWp1MjJKM3NIT2V6c3Fxc0p4ajlVTkZVZDRyKytqYVRzbnZqc2c1MVg0?=
+ =?utf-8?B?aGNtUnB1VFlFYWVCNDVneEE0U0FGQ3RZRFZSTklaaHllQzBNeTYwU0JyQ3ha?=
+ =?utf-8?B?M1paZVk1NWRNMkx2R2xFWW0rR2RwY0dTdXpiazh4RkwxWG1DTHl3L1JRbGxN?=
+ =?utf-8?Q?pb+0SB8gYYT8SyNVoY8ZXVM=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	1qUfiBN2Iak8MK+U6Pi5/0dJUOyY7g/0TGVUfUMcS2854NBEtvn+CbNwYV+d8zpeWPMWSW7ig86FlrU6IVp8nPECSss9bqnpDJF2HM2jzuczhHuu/tSGlPjTWz2eBE+upmhHAsR/QvYoQB+z08t5q218w+jGKBKfb77QaheglkrKwPAZPLt0aloQzpfHdcBbi/JXKBnedEQS5lsSHd+SHQYEpfCYhFEEvzjCcNdeBAgsAuAFkPVNysWru4VIgfQE09e161iup8PbAwVuiyRpuTs41tLiEMNQnwr59oWJ28gBDKGX2wOkrGTTaNYlpxDDR3AoCb1xNLqUiCNl0Yyuunbbo7dpNovum06x1BGpwS/fBY85JiMI4r+hBfz5+h86aO/WVFAVwbRl9y0cEK0JriRbqjacmFXXW2S4YnvKbaVwwv+2BPJTdj5WEPgmLaxO2SBNwgHOlL7hNN+v5I/T9m6VJSDmPhnprynpqX6k1UGMLEgmBfoIBG58x89DQKa2gSq9tdUA7iFa/3u3PhbLavk2aMpvLef0myf9ehImPb+/zNU+kj8F32chVCCrCn/ic8uo5euOqDTP6iRcY/6+ll0V583F6mY5AH9nc5Oao7A=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e01d97af-c59f-4208-5751-08ddc94c9061
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR10MB6365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jul 2025 18:21:23.5209
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oHDPmJzPMHjrCg79dvu8DkIPpcUI0Wbvwn4Bxermv4RmN8mZIWVX2RFSCRIenKGWu7uVKUg9sQhQqvk0m1ftAQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR10MB4284
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-07-22_02,2025-07-21_02,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 mlxscore=0
+ suspectscore=0 malwarescore=0 spamscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2505160000
+ definitions=main-2507220155
+X-Proofpoint-GUID: 53g8X7_lA1ATioknsXgiXseZ_jAVJ1f3
+X-Proofpoint-ORIG-GUID: 53g8X7_lA1ATioknsXgiXseZ_jAVJ1f3
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzIyMDE1NiBTYWx0ZWRfX0M6mAdoSxmib
+ w/mCo2MG73/lfLAi3f7/GANzuMCgXvsnp2nG2FgalauA1hudZ7g1k3TbhaWwkwDeGxlx5PwVPUR
+ 1jO5zXJJG5XSnYnLock3g8hNgF8kHez63tOgdOfcYd4fPTzx2F+5thg48NZnoSWdCxZgEejBxQY
+ RD1XZ09dKre0o76eElfvyzs+xIk1YsVHwArLBbn8xscXbsWXq9GQvB9oShfd++sdXm710fdJzk6
+ nKNjSuqXNq8ORV5lzYPZrd6BQlyC8fGPGCku1BVmhtWbisabe189sHEzdFuvvzC6qROxanqXaHN
+ mYe778o74LMnV9DcJE/6CIz2TdyyVQOlStDhKKX/oBNcYGVfRcZ6/PNSIfZ97wkA0TMuwe6Qpba
+ Y/UUlUrAXJKFgl1+baN+yCPLxpPz2IKMyPlDewOfAKjWCsi9wg73vLcEq94xCgUIAVlLlvns
+X-Authority-Analysis: v=2.4 cv=IPoCChvG c=1 sm=1 tr=0 ts=687fd6a7 b=1 cx=c_pps
+ a=e1sVV491RgrpLwSTMOnk8w==:117 a=e1sVV491RgrpLwSTMOnk8w==:17
+ a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19
+ a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19 a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19
+ a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10 a=Wb1JkmetP80A:10 a=GoEa3M9JfhUA:10
+ a=U40Yx87jAAAA:8 a=xs52Cs_lJFdGfbY3zQEA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+ a=yv_D6YSC6K1Ih23S2Yuy:22 cc=ntf awl=host:13600
 
-The private stack is allocated in bpf_int_jit_compile() with 16-byte
-alignment. It includes additional guard regions to detect stack
-overflows and underflows at runtime.
+On 7/21/25 8:20 AM, Mathieu Desnoyers wrote:
+> Hi!
+> 
+> I've written up an RFC for a new system call to handle sframe registration
+> for shared libraries. There has been interest to cover both sframe in
+> the short term, but also JIT use-cases in the long term, so I'm
+> covering both here in this RFC to provide the full context. Implementation
+> wise we could start by only covering the sframe use-case.
+> 
+> I've called it "codectl(2)" for now, but I'm of course open to feedback.
+> 
+> For ELF, I'm including the optional pathname, build id, and debug link
+> information which are really useful to translate from instruction pointers
+> to executable/library name, symbol, offset, source file, line number.
+> This is what we are using in LTTng-UST and Babeltrace debug-info filter
+> plugin [1], and I think this would be relevant for kernel tracers as well
+> so they can make the resulting stack traces meaningful to users.
+> 
+> sys_codectl(2)
+> =================
+> 
+> * arg0: unsigned int @option:
+> 
+> /* Additional labels can be added to enum code_opt, for extensibility. */
+> 
+> enum code_opt {
+>      CODE_REGISTER_ELF,
+>      CODE_REGISTER_JIT,
+>      CODE_UNREGISTER,
+> };
+> 
+> * arg1: void * @info
+> 
+> /* if (@option == CODE_REGISTER_ELF) */
+> 
+> /*
+>   * text_start, text_end, sframe_start, sframe_end allow unwinding of the
+>   * call stack.
+>   *
+>   * elf_start, elf_end, pathname, and either build_id or debug_link allows
+>   * mapping instruction pointers to file, symbol, offset, and source file
+>   * location.
+>   */
+> struct code_elf_info {
+> :   __u64 elf_start;
+>      __u64 elf_end;
 
-Memory layout:
+What are the elf_start , elf_end intended for ?
 
-              +------------------------------------------------------+
-              |                                                      |
-              |  16 bytes padding (overflow guard - stack top)       |
-              |  [ detects writes beyond top of stack ]              |
-     BPF FP ->+------------------------------------------------------+
-              |                                                      |
-              |  BPF private stack (sized by verifier)               |
-              |  [ 16-byte aligned ]                                 |
-              |                                                      |
-BPF PRIV SP ->+------------------------------------------------------+
-              |                                                      |
-              |  16 bytes padding (underflow guard - stack bottom)   |
-              |  [ detects accesses before start of stack ]          |
-              |                                                      |
-              +------------------------------------------------------+
+>      __u64 text_start;
+>      __u64 text_end;
+>      __u64 sframe_start;
+>      __u64 sframe_end;
+>      __u64 pathname;              /* char *, NULL if unavailable. */
+> 
+>      __u64 build_id;              /* char *, NULL if unavailable. */
+>      __u64 debug_link_pathname;   /* char *, NULL if unavailable. */
+>      __u32 build_id_len;
+>      __u32 debug_link_crc;
+> };
+> 
+> 
+> /* if (@option == CODE_REGISTER_JIT) */
+> 
+> /*
+>   * Registration of sorted JIT unwind table: The reserved memory area is
+>   * of size reserved_len. Userspace increases used_len as new code is
+>   * populated between text_start and text_end. This area is populated in
+>   * increasing address order, and its ABI requires to have no overlapping
+>   * fre. This fits the common use-case where JITs populate code into
+>   * a given memory area by increasing address order. The sorted unwind
+>   * tables can be chained with a singly-linked list as they become full.
+>   * Consecutive chained tables are also in sorted text address order.
+>   *
+>   * Note: if there is an eventual use-case for unsorted jit unwind table,
+>   * this would be introduced as a new "code option".
+>   */
+> 
+> struct code_jit_info {
+>      __u64 text_start;      /* text_start >= addr */
+>      __u64 text_end;        /* addr < text_end */
+>      __u64 unwind_head;     /* struct code_jit_unwind_table * */
+> };
+> 
 
-On detection of an overflow or underflow, the kernel emits messages
-like:
-    BPF private stack overflow/underflow detected for prog <prog_name>
+I see the discussion has evolved here with the general sentiment that 
+the JIT part needs to be kept in mind for a rough sketch but cannot be 
+designed at this time. But two comments (if we keep JIT part in the 
+discussion):
+   - I think we need to keep __u64 unwind_head not a pointer to a 
+defined structure (struct code_jit_unwind_table * above), but some 
+opaque type like we have for SFrame case.
+   - The reserved_len should ideally be a part of code_jit_info, so the 
+length can be known without parsing the contents.
 
-After commit bd737fcb6485 ("bpf, arm64: Get rid of fpb"), Jited BPF
-programs use the stack in two ways:
-1. Via the BPF frame pointer (top of stack), using negative offsets.
-2. Via the stack pointer (bottom of stack), using positive offsets in
-   LDR/STR instructions.
-
-When a private stack is used, ARM64 callee-saved register x27 replaces
-the stack pointer. The BPF frame pointer usage remains unchanged; but it
-now points to the top of the private stack.
-
-Relevant tests:
-
- #415/1   struct_ops_private_stack/private_stack:OK
- #415/2   struct_ops_private_stack/private_stack_fail:OK
- #415/3   struct_ops_private_stack/private_stack_recur:OK
- #415     struct_ops_private_stack:OK
- #549/1   verifier_private_stack/Private stack, single prog:OK
- #549/2   verifier_private_stack/Private stack, subtree > MAX_BPF_STACK:OK
- #549/3   verifier_private_stack/No private stack:OK
- #549/4   verifier_private_stack/Private stack, callback:OK
- #549/5   verifier_private_stack/Private stack, exception in main prog:OK
- #549/6   verifier_private_stack/Private stack, exception in subprog:OK
- #549/7   verifier_private_stack/Private stack, async callback, not nested:OK
- #549/8   verifier_private_stack/Private stack, async callback, potential nesting:OK
- #549     verifier_private_stack:OK
- Summary: 2/11 PASSED, 0 SKIPPED, 0 FAILED
-
-Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
----
-Note: This needs the fix in [1] to work properly.
-[1] https://lore.kernel.org/all/20250722133410.54161-2-puranjay@kernel.org/
----
- arch/arm64/net/bpf_jit_comp.c                 | 131 ++++++++++++++++--
- arch/x86/net/bpf_jit_comp.c                   |   9 +-
- include/linux/filter.h                        |   2 +
- kernel/bpf/core.c                             |   7 +
- .../bpf/progs/struct_ops_private_stack.c      |   2 +-
- .../bpf/progs/struct_ops_private_stack_fail.c |   2 +-
- .../progs/struct_ops_private_stack_recur.c    |   2 +-
- .../bpf/progs/verifier_private_stack.c        |  89 +++++++++++-
- 8 files changed, 221 insertions(+), 23 deletions(-)
-
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 89b1b8c248c62..5a0170536c8d4 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -30,6 +30,7 @@
- #define TMP_REG_2 (MAX_BPF_JIT_REG + 1)
- #define TCCNT_PTR (MAX_BPF_JIT_REG + 2)
- #define TMP_REG_3 (MAX_BPF_JIT_REG + 3)
-+#define PRIVATE_SP (MAX_BPF_JIT_REG + 4)
- #define ARENA_VM_START (MAX_BPF_JIT_REG + 5)
- 
- #define check_imm(bits, imm) do {				\
-@@ -68,6 +69,8 @@ static const int bpf2a64[] = {
- 	[TCCNT_PTR] = A64_R(26),
- 	/* temporary register for blinding constants */
- 	[BPF_REG_AX] = A64_R(9),
-+	/* callee saved register for private stack pointer */
-+	[PRIVATE_SP] = A64_R(27),
- 	/* callee saved register for kern_vm_start address */
- 	[ARENA_VM_START] = A64_R(28),
- };
-@@ -86,6 +89,7 @@ struct jit_ctx {
- 	u64 user_vm_start;
- 	u64 arena_vm_start;
- 	bool fp_used;
-+	bool priv_sp_used;
- 	bool write;
- };
- 
-@@ -98,6 +102,10 @@ struct bpf_plt {
- #define PLT_TARGET_SIZE   sizeof_field(struct bpf_plt, target)
- #define PLT_TARGET_OFFSET offsetof(struct bpf_plt, target)
- 
-+/* Memory size/value to protect private stack overflow/underflow */
-+#define PRIV_STACK_GUARD_SZ    16
-+#define PRIV_STACK_GUARD_VAL   0xEB9F12345678eb9fULL
-+
- static inline void emit(const u32 insn, struct jit_ctx *ctx)
- {
- 	if (ctx->image != NULL && ctx->write)
-@@ -387,8 +395,11 @@ static void find_used_callee_regs(struct jit_ctx *ctx)
- 	if (reg_used & 8)
- 		ctx->used_callee_reg[i++] = bpf2a64[BPF_REG_9];
- 
--	if (reg_used & 16)
-+	if (reg_used & 16) {
- 		ctx->used_callee_reg[i++] = bpf2a64[BPF_REG_FP];
-+		if (ctx->priv_sp_used)
-+			ctx->used_callee_reg[i++] = bpf2a64[PRIVATE_SP];
-+	}
- 
- 	if (ctx->arena_vm_start)
- 		ctx->used_callee_reg[i++] = bpf2a64[ARENA_VM_START];
-@@ -461,6 +472,19 @@ static void pop_callee_regs(struct jit_ctx *ctx)
- 	}
- }
- 
-+static void emit_percpu_ptr(const u8 dst_reg, void __percpu *ptr,
-+			    struct jit_ctx *ctx)
-+{
-+	const u8 tmp = bpf2a64[TMP_REG_1];
-+
-+	emit_a64_mov_i64(dst_reg, (__force const u64)ptr, ctx);
-+	if (cpus_have_cap(ARM64_HAS_VIRT_HOST_EXTN))
-+		emit(A64_MRS_TPIDR_EL2(tmp), ctx);
-+	else
-+		emit(A64_MRS_TPIDR_EL1(tmp), ctx);
-+	emit(A64_ADD(1, dst_reg, dst_reg, tmp), ctx);
-+}
-+
- #define BTI_INSNS (IS_ENABLED(CONFIG_ARM64_BTI_KERNEL) ? 1 : 0)
- #define PAC_INSNS (IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL) ? 1 : 0)
- 
-@@ -476,6 +500,8 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
- 	const bool is_main_prog = !bpf_is_subprog(prog);
- 	const u8 fp = bpf2a64[BPF_REG_FP];
- 	const u8 arena_vm_base = bpf2a64[ARENA_VM_START];
-+	const u8 priv_sp = bpf2a64[PRIVATE_SP];
-+	void __percpu *priv_stack_ptr;
- 	const int idx0 = ctx->idx;
- 	int cur_offset;
- 
-@@ -551,15 +577,23 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
- 		emit(A64_SUB_I(1, A64_SP, A64_FP, 96), ctx);
- 	}
- 
--	if (ctx->fp_used)
--		/* Set up BPF prog stack base register */
--		emit(A64_MOV(1, fp, A64_SP), ctx);
--
- 	/* Stack must be multiples of 16B */
- 	ctx->stack_size = round_up(prog->aux->stack_depth, 16);
- 
-+	if (ctx->fp_used) {
-+		if (ctx->priv_sp_used) {
-+			/* Set up private stack pointer */
-+			priv_stack_ptr = prog->aux->priv_stack_ptr + PRIV_STACK_GUARD_SZ;
-+			emit_percpu_ptr(priv_sp, priv_stack_ptr, ctx);
-+			emit(A64_ADD_I(1, fp, priv_sp, ctx->stack_size), ctx);
-+		} else {
-+			/* Set up BPF prog stack base register */
-+			emit(A64_MOV(1, fp, A64_SP), ctx);
-+		}
-+	}
-+
- 	/* Set up function call stack */
--	if (ctx->stack_size)
-+	if (ctx->stack_size && !ctx->priv_sp_used)
- 		emit(A64_SUB_I(1, A64_SP, A64_SP, ctx->stack_size), ctx);
- 
- 	if (ctx->arena_vm_start)
-@@ -623,7 +657,7 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
- 	emit(A64_STR64I(tcc, ptr, 0), ctx);
- 
- 	/* restore SP */
--	if (ctx->stack_size)
-+	if (ctx->stack_size && !ctx->priv_sp_used)
- 		emit(A64_ADD_I(1, A64_SP, A64_SP, ctx->stack_size), ctx);
- 
- 	pop_callee_regs(ctx);
-@@ -991,7 +1025,7 @@ static void build_epilogue(struct jit_ctx *ctx, bool was_classic)
- 	const u8 ptr = bpf2a64[TCCNT_PTR];
- 
- 	/* We're done with BPF stack */
--	if (ctx->stack_size)
-+	if (ctx->stack_size && !ctx->priv_sp_used)
- 		emit(A64_ADD_I(1, A64_SP, A64_SP, ctx->stack_size), ctx);
- 
- 	pop_callee_regs(ctx);
-@@ -1120,6 +1154,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 	const u8 tmp2 = bpf2a64[TMP_REG_2];
- 	const u8 fp = bpf2a64[BPF_REG_FP];
- 	const u8 arena_vm_base = bpf2a64[ARENA_VM_START];
-+	const u8 priv_sp = bpf2a64[PRIVATE_SP];
- 	const s16 off = insn->off;
- 	const s32 imm = insn->imm;
- 	const int i = insn - ctx->prog->insnsi;
-@@ -1564,7 +1599,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 			src = tmp2;
- 		}
- 		if (src == fp) {
--			src_adj = A64_SP;
-+			src_adj = ctx->priv_sp_used ? priv_sp : A64_SP;
- 			off_adj = off + ctx->stack_size;
- 		} else {
- 			src_adj = src;
-@@ -1654,7 +1689,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 			dst = tmp2;
- 		}
- 		if (dst == fp) {
--			dst_adj = A64_SP;
-+			dst_adj = ctx->priv_sp_used ? priv_sp : A64_SP;
- 			off_adj = off + ctx->stack_size;
- 		} else {
- 			dst_adj = dst;
-@@ -1716,7 +1751,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 			dst = tmp2;
- 		}
- 		if (dst == fp) {
--			dst_adj = A64_SP;
-+			dst_adj = ctx->priv_sp_used ? priv_sp : A64_SP;
- 			off_adj = off + ctx->stack_size;
- 		} else {
- 			dst_adj = dst;
-@@ -1859,6 +1894,39 @@ static inline void bpf_flush_icache(void *start, void *end)
- 	flush_icache_range((unsigned long)start, (unsigned long)end);
- }
- 
-+static void priv_stack_init_guard(void __percpu *priv_stack_ptr, int alloc_size)
-+{
-+	int cpu, underflow_idx = (alloc_size - PRIV_STACK_GUARD_SZ) >> 3;
-+	u64 *stack_ptr;
-+
-+	for_each_possible_cpu(cpu) {
-+		stack_ptr = per_cpu_ptr(priv_stack_ptr, cpu);
-+		stack_ptr[0] = PRIV_STACK_GUARD_VAL;
-+		stack_ptr[1] = PRIV_STACK_GUARD_VAL;
-+		stack_ptr[underflow_idx] = PRIV_STACK_GUARD_VAL;
-+		stack_ptr[underflow_idx + 1] = PRIV_STACK_GUARD_VAL;
-+	}
-+}
-+
-+static void priv_stack_check_guard(void __percpu *priv_stack_ptr, int alloc_size,
-+				   struct bpf_prog *prog)
-+{
-+	int cpu, underflow_idx = (alloc_size - PRIV_STACK_GUARD_SZ) >> 3;
-+	u64 *stack_ptr;
-+
-+	for_each_possible_cpu(cpu) {
-+		stack_ptr = per_cpu_ptr(priv_stack_ptr, cpu);
-+		if (stack_ptr[0] != PRIV_STACK_GUARD_VAL ||
-+		    stack_ptr[1] != PRIV_STACK_GUARD_VAL ||
-+		    stack_ptr[underflow_idx] != PRIV_STACK_GUARD_VAL ||
-+		    stack_ptr[underflow_idx + 1] != PRIV_STACK_GUARD_VAL) {
-+			pr_err("BPF private stack overflow/underflow detected for prog %sx\n",
-+			       bpf_jit_get_prog_name(prog));
-+			break;
-+		}
-+	}
-+}
-+
- struct arm64_jit_data {
- 	struct bpf_binary_header *header;
- 	u8 *ro_image;
-@@ -1873,7 +1941,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	struct bpf_binary_header *header;
- 	struct bpf_binary_header *ro_header;
- 	struct arm64_jit_data *jit_data;
-+	void __percpu *priv_stack_ptr = NULL;
- 	bool was_classic = bpf_prog_was_classic(prog);
-+	int priv_stack_alloc_sz;
- 	bool tmp_blinded = false;
- 	bool extra_pass = false;
- 	struct jit_ctx ctx;
-@@ -1905,6 +1975,23 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 		}
- 		prog->aux->jit_data = jit_data;
- 	}
-+	priv_stack_ptr = prog->aux->priv_stack_ptr;
-+	if (!priv_stack_ptr && prog->aux->jits_use_priv_stack) {
-+		/* Allocate actual private stack size with verifier-calculated
-+		 * stack size plus two memory guards to protect overflow and
-+		 * underflow.
-+		 */
-+		priv_stack_alloc_sz = round_up(prog->aux->stack_depth, 16) +
-+				      2 * PRIV_STACK_GUARD_SZ;
-+		priv_stack_ptr = __alloc_percpu_gfp(priv_stack_alloc_sz, 16, GFP_KERNEL);
-+		if (!priv_stack_ptr) {
-+			prog = orig_prog;
-+			goto out_priv_stack;
-+		}
-+
-+		priv_stack_init_guard(priv_stack_ptr, priv_stack_alloc_sz);
-+		prog->aux->priv_stack_ptr = priv_stack_ptr;
-+	}
- 	if (jit_data->ctx.offset) {
- 		ctx = jit_data->ctx;
- 		ro_image_ptr = jit_data->ro_image;
-@@ -1928,6 +2015,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	ctx.user_vm_start = bpf_arena_get_user_vm_start(prog->aux->arena);
- 	ctx.arena_vm_start = bpf_arena_get_kern_vm_start(prog->aux->arena);
- 
-+	if (priv_stack_ptr)
-+		ctx.priv_sp_used = true;
-+
- 	/* Pass 1: Estimate the maximum image size.
- 	 *
- 	 * BPF line info needs ctx->offset[i] to be the offset of
-@@ -2067,7 +2157,12 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 			ctx.offset[i] *= AARCH64_INSN_SIZE;
- 		bpf_prog_fill_jited_linfo(prog, ctx.offset + 1);
- out_off:
-+		if (!ro_header && priv_stack_ptr) {
-+			free_percpu(priv_stack_ptr);
-+			prog->aux->priv_stack_ptr = NULL;
-+		}
- 		kvfree(ctx.offset);
-+out_priv_stack:
- 		kfree(jit_data);
- 		prog->aux->jit_data = NULL;
- 	}
-@@ -2086,6 +2181,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	goto out_off;
- }
- 
-+bool bpf_jit_supports_private_stack(void)
-+{
-+	return true;
-+}
-+
- bool bpf_jit_supports_kfunc_call(void)
- {
- 	return true;
-@@ -2931,6 +3031,8 @@ void bpf_jit_free(struct bpf_prog *prog)
- 	if (prog->jited) {
- 		struct arm64_jit_data *jit_data = prog->aux->jit_data;
- 		struct bpf_binary_header *hdr;
-+		void __percpu *priv_stack_ptr;
-+		int priv_stack_alloc_sz;
- 
- 		/*
- 		 * If we fail the final pass of JIT (from jit_subprogs),
-@@ -2944,6 +3046,13 @@ void bpf_jit_free(struct bpf_prog *prog)
- 		}
- 		hdr = bpf_jit_binary_pack_hdr(prog);
- 		bpf_jit_binary_pack_free(hdr, NULL);
-+		priv_stack_ptr = prog->aux->priv_stack_ptr;
-+		if (priv_stack_ptr) {
-+			priv_stack_alloc_sz = round_up(prog->aux->stack_depth, 16) +
-+					      2 * PRIV_STACK_GUARD_SZ;
-+			priv_stack_check_guard(priv_stack_ptr, priv_stack_alloc_sz, prog);
-+			free_percpu(prog->aux->priv_stack_ptr);
-+		}
- 		WARN_ON_ONCE(!bpf_prog_kallsyms_verify_off(prog));
- 	}
- 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 40e1b3b9634fe..7e3fca1646203 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -3501,13 +3501,6 @@ int arch_prepare_bpf_dispatcher(void *image, void *buf, s64 *funcs, int num_func
- 	return emit_bpf_dispatcher(&prog, 0, num_funcs - 1, funcs, image, buf);
- }
- 
--static const char *bpf_get_prog_name(struct bpf_prog *prog)
--{
--	if (prog->aux->ksym.prog)
--		return prog->aux->ksym.name;
--	return prog->aux->name;
--}
--
- static void priv_stack_init_guard(void __percpu *priv_stack_ptr, int alloc_size)
- {
- 	int cpu, underflow_idx = (alloc_size - PRIV_STACK_GUARD_SZ) >> 3;
-@@ -3531,7 +3524,7 @@ static void priv_stack_check_guard(void __percpu *priv_stack_ptr, int alloc_size
- 		if (stack_ptr[0] != PRIV_STACK_GUARD_VAL ||
- 		    stack_ptr[underflow_idx] != PRIV_STACK_GUARD_VAL) {
- 			pr_err("BPF private stack overflow/underflow detected for prog %sx\n",
--			       bpf_get_prog_name(prog));
-+			       bpf_jit_get_prog_name(prog));
- 			break;
- 		}
- 	}
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index eca229752cbef..5cc7a82ec8322 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -1278,6 +1278,8 @@ int bpf_jit_get_func_addr(const struct bpf_prog *prog,
- 			  const struct bpf_insn *insn, bool extra_pass,
- 			  u64 *func_addr, bool *func_addr_fixed);
- 
-+const char *bpf_jit_get_prog_name(struct bpf_prog *prog);
-+
- struct bpf_prog *bpf_jit_blind_constants(struct bpf_prog *fp);
- void bpf_jit_prog_release_other(struct bpf_prog *fp, struct bpf_prog *fp_other);
- 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 61613785bdd0f..29c0225c14aa9 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -1297,6 +1297,13 @@ int bpf_jit_get_func_addr(const struct bpf_prog *prog,
- 	return 0;
- }
- 
-+const char *bpf_jit_get_prog_name(struct bpf_prog *prog)
-+{
-+	if (prog->aux->ksym.prog)
-+		return prog->aux->ksym.name;
-+	return prog->aux->name;
-+}
-+
- static int bpf_jit_blind_insn(const struct bpf_insn *from,
- 			      const struct bpf_insn *aux,
- 			      struct bpf_insn *to_buff,
-diff --git a/tools/testing/selftests/bpf/progs/struct_ops_private_stack.c b/tools/testing/selftests/bpf/progs/struct_ops_private_stack.c
-index 0e4d2ff63ab81..dbe646013811a 100644
---- a/tools/testing/selftests/bpf/progs/struct_ops_private_stack.c
-+++ b/tools/testing/selftests/bpf/progs/struct_ops_private_stack.c
-@@ -7,7 +7,7 @@
- 
- char _license[] SEC("license") = "GPL";
- 
--#if defined(__TARGET_ARCH_x86)
-+#if defined(__TARGET_ARCH_x86) || defined(__TARGET_ARCH_arm64)
- bool skip __attribute((__section__(".data"))) = false;
- #else
- bool skip = true;
-diff --git a/tools/testing/selftests/bpf/progs/struct_ops_private_stack_fail.c b/tools/testing/selftests/bpf/progs/struct_ops_private_stack_fail.c
-index 58d5d8dc22352..3d89ad7cbe2a9 100644
---- a/tools/testing/selftests/bpf/progs/struct_ops_private_stack_fail.c
-+++ b/tools/testing/selftests/bpf/progs/struct_ops_private_stack_fail.c
-@@ -7,7 +7,7 @@
- 
- char _license[] SEC("license") = "GPL";
- 
--#if defined(__TARGET_ARCH_x86)
-+#if defined(__TARGET_ARCH_x86) || defined(__TARGET_ARCH_arm64)
- bool skip __attribute((__section__(".data"))) = false;
- #else
- bool skip = true;
-diff --git a/tools/testing/selftests/bpf/progs/struct_ops_private_stack_recur.c b/tools/testing/selftests/bpf/progs/struct_ops_private_stack_recur.c
-index 31e58389bb8b0..b1f6d7e5a8e50 100644
---- a/tools/testing/selftests/bpf/progs/struct_ops_private_stack_recur.c
-+++ b/tools/testing/selftests/bpf/progs/struct_ops_private_stack_recur.c
-@@ -7,7 +7,7 @@
- 
- char _license[] SEC("license") = "GPL";
- 
--#if defined(__TARGET_ARCH_x86)
-+#if defined(__TARGET_ARCH_x86) || defined(__TARGET_ARCH_arm64)
- bool skip __attribute((__section__(".data"))) = false;
- #else
- bool skip = true;
-diff --git a/tools/testing/selftests/bpf/progs/verifier_private_stack.c b/tools/testing/selftests/bpf/progs/verifier_private_stack.c
-index fc91b414364e0..1ecd34ebde196 100644
---- a/tools/testing/selftests/bpf/progs/verifier_private_stack.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_private_stack.c
-@@ -8,7 +8,7 @@
- /* From include/linux/filter.h */
- #define MAX_BPF_STACK    512
- 
--#if defined(__TARGET_ARCH_x86)
-+#if defined(__TARGET_ARCH_x86) || defined(__TARGET_ARCH_arm64)
- 
- struct elem {
- 	struct bpf_timer t;
-@@ -30,6 +30,18 @@ __jited("	movabsq	$0x{{.*}}, %r9")
- __jited("	addq	%gs:{{.*}}, %r9")
- __jited("	movl	$0x2a, %edi")
- __jited("	movq	%rdi, -0x100(%r9)")
-+__arch_arm64
-+__jited("	stp	x25, x27, [sp, {{.*}}]!")
-+__jited("	mov	x27, {{.*}}")
-+__jited("	movk	x27, {{.*}}, lsl #16")
-+__jited("	movk	x27, {{.*}}")
-+__jited("	mrs	x10, TPIDR_EL{{[0-1]}}")
-+__jited("	add	x27, x27, x10")
-+__jited("	add	x25, x27, {{.*}}")
-+__jited("	mov	x0, #0x2a")
-+__jited("	str	x0, [x27]")
-+__jited("...")
-+__jited("	ldp	x25, x27, [sp], {{.*}}")
- __naked void private_stack_single_prog(void)
- {
- 	asm volatile ("			\
-@@ -45,6 +57,9 @@ __description("No private stack")
- __success
- __arch_x86_64
- __jited("	subq	$0x8, %rsp")
-+__arch_arm64
-+__jited("	mov	x25, sp")
-+__jited("	sub	sp, sp, #0x10")
- __naked void no_private_stack_nested(void)
- {
- 	asm volatile ("			\
-@@ -81,6 +96,19 @@ __jited("	pushq	%r9")
- __jited("	callq	0x{{.*}}")
- __jited("	popq	%r9")
- __jited("	xorl	%eax, %eax")
-+__arch_arm64
-+__jited("	stp	x25, x27, [sp, {{.*}}]!")
-+__jited("	mov	x27, {{.*}}")
-+__jited("	movk	x27, {{.*}}, lsl #16")
-+__jited("	movk	x27, {{.*}}")
-+__jited("	mrs	x10, TPIDR_EL{{[0-1]}}")
-+__jited("	add	x27, x27, x10")
-+__jited("	add	x25, x27, {{.*}}")
-+__jited("	mov	x0, #0x2a")
-+__jited("	str	x0, [x27]")
-+__jited("	bl	{{.*}}")
-+__jited("...")
-+__jited("	ldp	x25, x27, [sp], {{.*}}")
- __naked void private_stack_nested_1(void)
- {
- 	asm volatile ("				\
-@@ -131,6 +159,24 @@ __jited("	movq	%rdi, -0x200(%r9)")
- __jited("	pushq	%r9")
- __jited("	callq")
- __jited("	popq	%r9")
-+__arch_arm64
-+__jited("func #1")
-+__jited("...")
-+__jited("	stp	x25, x27, [sp, {{.*}}]!")
-+__jited("	mov	x27, {{.*}}")
-+__jited("	movk	x27, {{.*}}, lsl #16")
-+__jited("	movk	x27, {{.*}}")
-+__jited("	mrs	x10, TPIDR_EL{{[0-1]}}")
-+__jited("	add	x27, x27, x10")
-+__jited("	add	x25, x27, {{.*}}")
-+__jited("	bl	0x{{.*}}")
-+__jited("	add	x7, x0, #0x0")
-+__jited("	mov	x0, #0x2a")
-+__jited("	str	x0, [x27]")
-+__jited("	bl	0x{{.*}}")
-+__jited("	add	x7, x0, #0x0")
-+__jited("	mov	x7, #0x0")
-+__jited("	ldp	x25, x27, [sp], {{.*}}")
- __naked void private_stack_callback(void)
- {
- 	asm volatile ("			\
-@@ -154,6 +200,28 @@ __arch_x86_64
- __jited("	pushq	%r9")
- __jited("	callq")
- __jited("	popq	%r9")
-+__arch_arm64
-+__jited("	stp	x29, x30, [sp, #-0x10]!")
-+__jited("	mov	x29, sp")
-+__jited("	stp	xzr, x26, [sp, #-0x10]!")
-+__jited("	mov	x26, sp")
-+__jited("	stp	x19, x20, [sp, #-0x10]!")
-+__jited("	stp	x21, x22, [sp, #-0x10]!")
-+__jited("	stp	x23, x24, [sp, #-0x10]!")
-+__jited("	stp	x25, x26, [sp, #-0x10]!")
-+__jited("	stp	x27, x28, [sp, #-0x10]!")
-+__jited("	mov	x27, {{.*}}")
-+__jited("	movk	x27, {{.*}}, lsl #16")
-+__jited("	movk	x27, {{.*}}")
-+__jited("	mrs	x10, TPIDR_EL{{[0-1]}}")
-+__jited("	add	x27, x27, x10")
-+__jited("	add	x25, x27, {{.*}}")
-+__jited("	mov	x0, #0x2a")
-+__jited("	str	x0, [x27]")
-+__jited("	mov	x0, #0x0")
-+__jited("	bl	0x{{.*}}")
-+__jited("	add	x7, x0, #0x0")
-+__jited("	ldp	x27, x28, [sp], #0x10")
- int private_stack_exception_main_prog(void)
- {
- 	asm volatile ("			\
-@@ -179,6 +247,19 @@ __jited("	movq	%rdi, -0x200(%r9)")
- __jited("	pushq	%r9")
- __jited("	callq")
- __jited("	popq	%r9")
-+__arch_arm64
-+__jited("	stp	x27, x28, [sp, #-0x10]!")
-+__jited("	mov	x27, {{.*}}")
-+__jited("	movk	x27, {{.*}}, lsl #16")
-+__jited("	movk	x27, {{.*}}")
-+__jited("	mrs	x10, TPIDR_EL{{[0-1]}}")
-+__jited("	add	x27, x27, x10")
-+__jited("	add	x25, x27, {{.*}}")
-+__jited("	mov	x0, #0x2a")
-+__jited("	str	x0, [x27]")
-+__jited("	bl	0x{{.*}}")
-+__jited("	add	x7, x0, #0x0")
-+__jited("	ldp	x27, x28, [sp], #0x10")
- int private_stack_exception_sub_prog(void)
- {
- 	asm volatile ("			\
-@@ -220,6 +301,10 @@ __description("Private stack, async callback, not nested")
- __success __retval(0)
- __arch_x86_64
- __jited("	movabsq	$0x{{.*}}, %r9")
-+__arch_arm64
-+__jited("	mrs	x10, TPIDR_EL{{[0-1]}}")
-+__jited("	add	x27, x27, x10")
-+__jited("	add	x25, x27, {{.*}}")
- int private_stack_async_callback_1(void)
- {
- 	struct bpf_timer *arr_timer;
-@@ -241,6 +326,8 @@ __description("Private stack, async callback, potential nesting")
- __success __retval(0)
- __arch_x86_64
- __jited("	subq	$0x100, %rsp")
-+__arch_arm64
-+__jited("	sub	sp, sp, #0x100")
- int private_stack_async_callback_2(void)
- {
- 	struct bpf_timer *arr_timer;
--- 
-2.47.1
+> struct code_jit_unwind_fre {
+>      /*
+>       * Contains info similar to sframe, allowing unwind for a given
+>       * code address range.
+>       */
+>      __u32 size;
+>      __u32 ip_off;  /* offset from text_start */
+>      __s32 cfa_off;
+>      __s32 ra_off;
+>      __s32 fp_off;
+>      __u8 info;
+> };
+> 
+> struct code_jit_unwind_table {
+>      __u64 reserved_len;
+>      __u64 used_len; /*
+>                       * Incremented by userspace (store-release), read by
+>                       * the kernel (load-acquire).
+>                       */
+>      __u64 next;     /* Chain with next struct code_jit_unwind_table. */
+>      struct code_jit_unwind_fre fre[];
+> };
+> 
+> /* if (@option == CODE_UNREGISTER) */
+> 
+> void *info
+> 
+> * arg2: size_t info_size
+> 
+> /*
+>   * Size of @info structure, allowing extensibility. See
+>   * copy_struct_from_user().
+>   */
+> 
+> * arg3: unsigned int flags (0)
+> 
+> /* Flags for extensibility. */
+> 
+> Your feedback is welcome,
+> 
+> Thanks,
+> 
+> Mathieu
+> 
+> [1] https://babeltrace.org/docs/v2.0/man7/babeltrace2-filter.lttng- 
+> utils.debug-info.7/
+> 
 
 
