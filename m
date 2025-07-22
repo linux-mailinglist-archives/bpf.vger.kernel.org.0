@@ -1,166 +1,217 @@
-Return-Path: <bpf+bounces-64007-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64008-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2905BB0D5DD
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 11:24:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1E31B0D608
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 11:34:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FDE8189ACB0
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 09:24:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C05B23BA947
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 09:34:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39E9718FC91;
-	Tue, 22 Jul 2025 09:23:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hnpr+OvF"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4AC32DCBFA;
+	Tue, 22 Jul 2025 09:34:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFBCB1D5CD4;
-	Tue, 22 Jul 2025 09:23:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6587239E8B
+	for <bpf@vger.kernel.org>; Tue, 22 Jul 2025 09:34:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753176237; cv=none; b=YPUOFVJxhOW54hkpCdSH5EJnzxgBerVxBdaWUh9w/XAURZWIjjlx840GIdVyE0E5UG0rBYlR30kE/w6pSvGujOnn1QK+0eFITfAWs/n4fGAQWv/YNWLsEh95yeVEY4LE+1SVpyt1N/BN6kUkkKCxByXIUTDTYt8Q6RS2lJLWIRM=
+	t=1753176891; cv=none; b=fwWYPTx3FbWYdVZT1EAWFzDm5CAXGKPpS8aJ3bxHOL7aEfNTps2/Xbu4VcidnzxoYBb7SDciyQjHXW8k06eLTXtu2JEOeND9sJjh59UBlsrTQnomUmM3oSY+8GjE0Gp+dG3+y2hAqCdTPM8NL0fTk31PEam3TSU62ml+lQXg9Us=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753176237; c=relaxed/simple;
-	bh=a+8E4SAu1ib+nNJy6o6lE6mpCzXJ/lWhWHoAp+XIqMQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qj3rhWKNK+zMr8F9FFDdg7U6nYLTV/eJp4WhhJs4BmI5cpiBLgJiTLFX2y+9RDyoJHMo70rbT0jogZEheS9deMi/wQSEmy4PvJMDRWdKy/UFnWYrwsBK4BtmLJC9+7Jx5RGJ7y5eePshcBlwJHZXoWme9AdXtpp0Tv9E96uLMic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hnpr+OvF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C4B7C4CEEB;
-	Tue, 22 Jul 2025 09:23:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753176237;
-	bh=a+8E4SAu1ib+nNJy6o6lE6mpCzXJ/lWhWHoAp+XIqMQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=hnpr+OvFQrLwa9kjrXjGWutJC5Mk7eTwdSFAzB04Y0W/gneYBFZu6N+XiTI1FhnJ9
-	 fasF4G353RSl1Zv7ZsgcE623tPIDs3J7bvNvCSe254Ucr2PWxfr1O0G+PeMRR/VfDv
-	 mgbBc9cvhWwm5LfvExkE1vAKzuP6EiAd0RFZB8iGt5nbVLkS9CovoHGT9Ixr1rCUJ0
-	 xBvvI9fQ57+uvh7g7l6EceitjKj/idoXSHxs2xa8UJ6d4KefJ27L7eTkuwSgroGHfK
-	 yTH2wRCISnEZ02CCi/yfj8N3VREIOTE7u9M5pZ4zvzcUReNHeqqqPlf41r1L+G7Q3u
-	 G6/a/k/3b4t+w==
-Message-ID: <f956664e-24a2-410a-be9b-4d90e08c7c64@kernel.org>
-Date: Tue, 22 Jul 2025 10:23:53 +0100
+	s=arc-20240116; t=1753176891; c=relaxed/simple;
+	bh=iFKePA9680XzRjV70hdBXc62Hpz8lkQ7fU85KVFrFy0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ldO3wn+mVlxsSe1gtCjOmnRxSPJGvFsH5d1YgIUiWoJSc3Ul4xYGFxgldkGzakkumSQiX1AHT2Xc/HKnDJckP+Nz4NVR156P6ehxrgLgR6CmwJEP6gb+YoDJpmC1aB4GQ2BeOf564bsxpthV6T4/pEGuM4QIo2ROzvKCN8SAhao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 18955a6066df11f0b29709d653e92f7d-20250722
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.45,REQID:1e3a7a24-7a6d-406e-a4ea-fac57fd3d0f4,IP:10,
+	URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-40,FILE:0,BULK:0,RULE:Release_Ham,ACT
+	ION:release,TS:-35
+X-CID-INFO: VERSION:1.1.45,REQID:1e3a7a24-7a6d-406e-a4ea-fac57fd3d0f4,IP:10,UR
+	L:0,TC:0,Content:-5,EDM:0,RT:0,SF:-40,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:-35
+X-CID-META: VersionHash:6493067,CLOUDID:b991f3ddc67df1f5aacca9efeaa9fb13,BulkI
+	D:250722173443WLR6NJDC,BulkQuantity:0,Recheck:0,SF:10|24|44|64|66|78|80|81
+	|82|83|102|841,TC:nil,Content:0|51,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk
+	:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,
+	BRE:0,ARC:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FSI
+X-UUID: 18955a6066df11f0b29709d653e92f7d-20250722
+X-User: jianghaoran@kylinos.cn
+Received: from [192.168.31.67] [(223.70.159.239)] by mailgw.kylinos.cn
+	(envelope-from <jianghaoran@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 733763614; Tue, 22 Jul 2025 17:34:42 +0800
+Message-ID: <4443b6e55d74fd2b78e6790b0719b32e70a0df00.camel@kylinos.cn>
+Subject: =?gb2312?Q?re=A3=BA=5BPATCH?= v2 1/2] LoongArch: BPF: Optimize the
+ calculation method of jmp_offset in the emit_bpf_tail_call function
+From: jianghaoran <jianghaoran@kylinos.cn>
+To: Hengqi Chen <hengqi.chen@gmail.com>
+Cc: loongarch@lists.linux.dev, bpf@vger.kernel.org, kernel@xen0n.name, 
+ chenhuacai@kernel.org, yangtiezhu@loongson.cn, jolsa@kernel.org,
+ haoluo@google.com,  sdf@fomichev.me, kpsingh@kernel.org,
+ john.fastabend@gmail.com,  yonghong.song@linux.dev, song@kernel.org,
+ eddyz87@gmail.com, martin.lau@linux.dev,  andrii@kernel.org,
+ daniel@iogearbox.net, ast@kernel.org
+Date: Tue, 22 Jul 2025 17:34:37 +0800
+In-Reply-To: <CAEyhmHRUQV5JROOO+PyuZoLuFRrVJ-eeYH5hMf9gtVXW18aa8w@mail.gmail.com>
+References: <20250708071840.556686-1-jianghaoran@kylinos.cn>
+	 <20250708071840.556686-2-jianghaoran@kylinos.cn>
+	 <CAEyhmHRUQV5JROOO+PyuZoLuFRrVJ-eeYH5hMf9gtVXW18aa8w@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.1-2kord0k2.4.25.1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 1/2] bpftool: Add bpf_token show
-To: Tao Chen <chen.dylane@linux.dev>, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
- kuba@kernel.org, hawk@kernel.org
-Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org
-References: <20250720173310.1334483-1-chen.dylane@linux.dev>
- <6b0669fd-fef6-4f4e-b80d-512769e86938@kernel.org>
- <06387128-8d34-49fd-a409-d35f5d60b094@linux.dev>
-From: Quentin Monnet <qmo@kernel.org>
-Content-Language: en-GB
-In-Reply-To: <06387128-8d34-49fd-a409-d35f5d60b094@linux.dev>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-2025-07-22 13:48 UTC+0800 ~ Tao Chen <chen.dylane@linux.dev>
-> 在 2025/7/22 00:23, Quentin Monnet 写道:
->> Thanks a lot for this!
->>
+
+
+
+
+在 2025-07-16星期三的 09:31 +0800，Hengqi Chen写道：
+> Hi Haoran,
 > 
-> Hi Quenin,
+> On Tue, Jul 8, 2025 at 3:19 PM Haoran Jiang <
+jianghaoran@kylinos.cn> > wrote:
+> > 
+> > The extra pass of bpf_int_jit_compile() skips JIT context initialization
+> > which essentially skips offset calculation leaving out_offset = -1,
+> > the jmp_offset in emit_bpf_tail_call is calculated
+> > by #define jmp_offset (out_offset - (cur_offset)) is a negative number,
+> > which does not meet expectations.The final generated assembly as follow.
+> > 
 > 
->>
->> 2025-07-21 01:33 UTC+0800 ~ Tao Chen <chen.dylane@linux.dev>
->>> Add `bpftool token show` command to get token info
->>> from bpf fs in /proc/mounts.
->>>
->>> Example plain output for `token show`:
->>> token_info:
->>>          /sys/fs/bpf/token
->>>
->>> allowed_cmds:
->>>          map_create          prog_load
->>>
->>> allowed_maps:
->>>
->>> allowed_progs:
->>>          kprobe
->>>
->>> allowed_attachs:
->>>          xdp
->>>
->>> Example json output for `token show`:
->>> {
->>>      "token_info": "/sys/fs/bpf/token",
->>>      "allowed_cmds": ["map_create","prog_load"
->>>      ],
->>>      "allowed_maps":
->>
->>
->> This is not valid JSON. You're missing a value for "allowed_maps" (here
->> it should likely be an empty array), and the comma:
->>
->>     "allowed_maps": [],
->>
->>
->>>      "allowed_progs": ["kprobe"
->>>      ],
->>>      "allowed_attachs": ["xdp"
->>>      ]
->>> }
->>>
->>> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
->>> ---
->>>   tools/bpf/bpftool/main.c  |   3 +-
->>>   tools/bpf/bpftool/main.h  |   1 +
->>>   tools/bpf/bpftool/token.c | 229 ++++++++++++++++++++++++++++++++++++++
->>>   3 files changed, 232 insertions(+), 1 deletion(-)
->>>   create mode 100644 tools/bpf/bpftool/token.c
->>>
-
-[...]
-
->>> diff --git a/tools/bpf/bpftool/token.c b/tools/bpf/bpftool/token.c
->>> new file mode 100644
->>> index 00000000000..2fcaff4f2ba
->>> --- /dev/null
->>> +++ b/tools/bpf/bpftool/token.c
-
-[...]
-
->>> +            if (has_delegate_options(ent->mnt_opts)) {
->>> +                hit = true;
->>> +                break;
->>
->>
->> Apologies, my knowledge of BPF tokens is limited. Can you have only one
->> token exposed through a bpffs at a time? Asking because I know you can
->> have several bpffs on your system, if each can have delegate options
->> then why stop after the first bpffs mount point you find?
->>
+> "does not meet expectations" ? Simply "is wrong" ?
 > 
-> Yes it is, only the first bpffs with token info will be showed above.
-> Actually, it will not be limited how many bpffs ceated in kernel, it
-> depends on the user scenarios. In most cases, only one will be created.
-> But, maybe it's better to show all. I will change it in v2.
+> The subject line should be something like:
+>   Fix jump offset calculation in tailcall
+> 
+> It's a fix, not optimization.
+> 
+> Other than that, feel free to add:
+> Reviewed-by: Hengqi Chen <
+hengqi.chen@gmail.com> >
+I will make the modification in the next version.
 
-Yes please. If there are several tokens available, bpftool should "list"
-them all, as the command name implies. The user scenarios don't really
-count here, we should just dump all token info we can see. In the
-future, we could then add the possibility to take an argument (likely a
-path to a bpffs) to show info for a particular mountpoint; a bit like
-you can list all existing programs with "bpftool prog show" but can also
-chose to pick one with "bpftool prog show id ...".
+> > 54:     bgeu            $a2, $t1, -8        # 0x0000004c
+> > 58:     addi.d          $a6, $s5, -1
+> > 5c:     bltz            $a6, -16            # 0x0000004c
+> > 60:     alsl.d          $t2, $a2, $a1, 0x3
+> > 64:     ld.d            $t2, $t2, 264
+> > 68:     beq             $t2, $zero, -28     # 0x0000004c
+> > 
+> > Before apply this patch, the follow test case will reveal soft
+> > lock issues.
+> > 
+> > cd tools/testing/selftests/bpf/
+> > ./test_progs --allow=tailcalls/tailcall_bpf2bpf_1
+> > 
+> > dmesg:
+> > watchdog: BUG: soft lockup - CPU#2 stuck for 26s!
+> > [test_progs:25056]
+> > 
+> > Fixes: 5dc615520c4d ("LoongArch: Add BPF JIT support")
+> > Signed-off-by: Haoran Jiang <
+> > jianghaoran@kylinos.cn
+> > >
+> > ---
+> >  arch/loongarch/net/bpf_jit.c | 21 ++++++---------------
+> >  1 file changed, 6 insertions(+), 15 deletions(-)
+> > 
+> > diff --git a/arch/loongarch/net/bpf_jit.c
+> > b/arch/loongarch/net/bpf_jit.c
+> > index fa1500d4aa3e..5061bfc978f2 100644
+> > --- a/arch/loongarch/net/bpf_jit.c
+> > +++ b/arch/loongarch/net/bpf_jit.c
+> > @@ -208,9 +208,7 @@ bool bpf_jit_supports_far_kfunc_call(void)
+> >         return true;
+> >  }
+> > 
+> > -/* initialized on the first pass of build_body() */
+> > -static int out_offset = -1;
+> > -static int emit_bpf_tail_call(struct jit_ctx *ctx)
+> > +static int emit_bpf_tail_call(struct jit_ctx *ctx, int insn)
+> >  {
+> >         int off;
+> >         u8 tcc = tail_call_reg(ctx);
+> > @@ -220,9 +218,10 @@ static int emit_bpf_tail_call(struct
+> > jit_ctx *ctx)
+> >         u8 t2 = LOONGARCH_GPR_T2;
+> >         u8 t3 = LOONGARCH_GPR_T3;
+> >         const int idx0 = ctx->idx;
+> > +       int tc_ninsn = 0;
+> > 
+> >  #define cur_offset (ctx->idx - idx0)
+> > -#define jmp_offset (out_offset - (cur_offset))
+> > +#define jmp_offset (tc_ninsn - (cur_offset))
+> > 
+> >         /*
+> >          * a0: &ctx
+> > @@ -232,6 +231,8 @@ static int emit_bpf_tail_call(struct
+> > jit_ctx *ctx)
+> >          * if (index >= array->map.max_entries)
+> >          *       goto out;
+> >          */
+> > +       tc_ninsn = insn ? ctx->offset[insn+1] - ctx-
+> > >offset[insn] :
+> > +               ctx->offset[0];
+> >         off = offsetof(struct bpf_array, map.max_entries);
+> >         emit_insn(ctx, ldwu, t1, a1, off);
+> >         /* bgeu $a2, $t1, jmp_offset */
+> > @@ -263,15 +264,6 @@ static int emit_bpf_tail_call(struct
+> > jit_ctx *ctx)
+> >         emit_insn(ctx, ldd, t3, t2, off);
+> >         __build_epilogue(ctx, true);
+> > 
+> > -       /* out: */
+> > -       if (out_offset == -1)
+> > -               out_offset = cur_offset;
+> > -       if (cur_offset != out_offset) {
+> > -               pr_err_once("tail_call out_offset = %d,
+> > expected %d!\n",
+> > -                           cur_offset, out_offset);
+> > -               return -1;
+> > -       }
+> > -
+> >         return 0;
+> > 
+> >  toofar:
+> > @@ -916,7 +908,7 @@ static int build_insn(const struct bpf_insn
+> > *insn, struct jit_ctx *ctx, bool ext
+> >         /* tail call */
+> >         case BPF_JMP | BPF_TAIL_CALL:
+> >                 mark_tail_call(ctx);
+> > -               if (emit_bpf_tail_call(ctx) < 0)
+> > +               if (emit_bpf_tail_call(ctx, i) < 0)
+> >                         return -EINVAL;
+> >                 break;
+> > 
+> > @@ -1342,7 +1334,6 @@ struct bpf_prog
+> > *bpf_int_jit_compile(struct bpf_prog *prog)
+> >         if (tmp_blinded)
+> >                 bpf_jit_prog_release_other(prog, prog ==
+> > orig_prog ? tmp : orig_prog);
+> > 
+> > -       out_offset = -1;
+> > 
+> >         return prog;
+> > 
+> > --
+> > 2.43.0
+> > 
+> > 
 
-If we print info for several mountpoint, I'd suggest adjusting the
-format for the plain output slightly: I'd remove the blank lines between
-the different sections to get something more compact, maybe play with
-the indent as well, like when we list programs or maps.
-
-Thanks,
-Quentin
 
