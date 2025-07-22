@@ -1,262 +1,223 @@
-Return-Path: <bpf+bounces-64028-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64029-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 154B9B0D808
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 13:19:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0BCCB0D886
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 13:47:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B3931891559
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 11:20:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4F5256047A
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 11:47:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 959312E1C4E;
-	Tue, 22 Jul 2025 11:19:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43C79289811;
+	Tue, 22 Jul 2025 11:47:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d0XOO0+r"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LTryDRHb"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11CDB7080C;
-	Tue, 22 Jul 2025 11:19:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37D532E3B09
+	for <bpf@vger.kernel.org>; Tue, 22 Jul 2025 11:47:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753183177; cv=none; b=t4JmlLa+8qOxa54BGHRiNhsh98Us1CXMLwrRBdjxvRgMXGZ+OJIpxDvvmHXyu7tv2FWuuxaufRBhUP0Hj5XlCZccXoLxtLbxos6UvJ1L7WMao+cmq7/AlITCPGvoF2LEjNrlz9CyELzBeQoeR6D3dnPYR+zv77BQ1NXkcne9LUo=
+	t=1753184856; cv=none; b=gaR328Zu48yn1TFZh4KX1BrFc9cQqB8I6Tn7I25AG/s1120u+ZcLpsoNcH6na23qNESXPjfLb7uP2+DbwsF72vATwp3BxTIHGHuThAF4zvK8BCI5JSnW5daWhdiAnlmZF8ekfr+moYhjAVdTSUMF7ydZ+mT6zFO9PAfCeAiq/SA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753183177; c=relaxed/simple;
-	bh=2miBTodTuvA5czJ/0Egx0TFlpE3uye94c6AudsbNSUo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L6Kbp1wkkEBT/2skZ75PQ64BUD7MiFwk61y/IICfiaoa6Edi32N2pzGRsXKQbi9GE1L2stagofWJBnBE+oa8Y2CdGd47vvXnNKsYWdnd170nx05UFyO2BihBHJeuK3XqIpn+yqe/HIKhoJ+E1RkD4Z795xMIgTq5fb0la/tr7mY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d0XOO0+r; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB809C4CEEB;
-	Tue, 22 Jul 2025 11:19:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753183176;
-	bh=2miBTodTuvA5czJ/0Egx0TFlpE3uye94c6AudsbNSUo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=d0XOO0+rGGEGiV1JHMYVEKkhnGwyy+40jnkGGVqu+hvsU2Rn6TDKHuul1lkaCgzf2
-	 FFmbSaroynvwk+OmXO7zYNNUaqyxVcaZp2ydO+SWJK+gnCPMilwGAg8C01f0zTckY3
-	 6+F9JAbllIPsNZausRN2zZgxXjA2xDwTFHp5vzDrmTSjsARi9StRmLnA+o6x9zuZ52
-	 JohdYqwMD3IM5oyrzmYfMT8PiQo2vwzSSOSFO1yB4DU5Yl2iGIi4vhqTnxFXU82NdI
-	 bwpL+Ca4sYfzROXXqDY19eA918P3vIQvTZBxGO9ph1lAnXSYyJ5umkLy1s9Q9pJWH4
-	 mNWZsNdKDb2xg==
-Date: Tue, 22 Jul 2025 12:19:29 +0100
-From: Simon Horman <horms@kernel.org>
-To: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-Cc: kuba@kernel.org, kys@microsoft.com, haiyangz@microsoft.com,
-	wei.liu@kernel.org, decui@microsoft.com, andrew+netdev@lunn.ch,
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	longli@microsoft.com, kotaranov@microsoft.com, ast@kernel.org,
-	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-	sdf@fomichev.me, lorenzo@kernel.org, michal.kubiak@intel.com,
-	ernis@linux.microsoft.com, shradhagupta@linux.microsoft.com,
-	shirazsaleem@microsoft.com, rosenp@gmail.com,
-	netdev@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-	ssengar@linux.microsoft.com
-Subject: Re: [PATCH] net: mana: Use page pool fragments for RX buffers
- instead of full pages to improve memory efficiency and throughput.
-Message-ID: <20250722111929.GE2459@horms.kernel.org>
-References: <20250721101417.GA18873@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+	s=arc-20240116; t=1753184856; c=relaxed/simple;
+	bh=IYd2SVQO/88yZZDYLARly/OQimi/YXd+JziGESCzFGs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kIps/s+NfMwhyDC06x3dip6YFVCyloOfoHZ/t4QfbNjV/JXRqiwI/73ZVk3fExeRkLl8pFP4EzTTXm7ZaZvtv91Cp7gIob1VCWpkajghHFe5EjCbfi6zi+jxuHumjYjk49Ga5pMccTHlUmsZ9wijl1SL70QtvhNReo2n8mXsHGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LTryDRHb; arc=none smtp.client-ip=209.85.219.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-6fd0a91ae98so26928656d6.1
+        for <bpf@vger.kernel.org>; Tue, 22 Jul 2025 04:47:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1753184854; x=1753789654; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vHMdnk+Wpd6f3kSGFKIIMTs7gzct/9V5bz3hnN7QYxg=;
+        b=LTryDRHbWbw74KBCJzIr/WpTEJk1R47+PZX7Evj9yYkWIJVa4yvB4KefJ6jpN40Fvz
+         OkNCIt5WQX5Gd1pnaAN0JMd0dp4xedOcZY/t8vo6tcOpn8ipdPXH4k+8Tw/1E/G3E4Bq
+         fmFw2gX26x/FT4MC2b8qxjCS7JiBQYreaP6pumXwSucNpOw/TkB4YbvuI4+ce1VLJvZf
+         TpCpKPHTVkQln2vVIRuk/V4yIhU5PYF4GaF92DyyXj4VT7QoY+Y+/dRVMfegsbSEk+WY
+         v/x7MAc+4VL2IZg7Y9puOKmRWSrMGkKDbTHn4aJLBAeWSSm1cJuo5bLwr4STCFGOr2lQ
+         dzew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753184854; x=1753789654;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vHMdnk+Wpd6f3kSGFKIIMTs7gzct/9V5bz3hnN7QYxg=;
+        b=mA2L8UYMtft45nxZSrBGTblngx2pQXB9/1KWYKmW/87VU/Ggu3YoqfkdeXrdiN+7+v
+         OA/08wFcrR7tiyq4OvZ3dlId+nbpUNjVC+PkHiF/5u5zp644LOABPj98Fg2ZYMUDNz6c
+         JUu49H47tha9XSD7TZ7VrES5xdAKjo2QCfYxo+C2yWoZ9lwm+X+kltDAI0PrKAUrHm7z
+         +vqwXV8m42i32vgtlyj4KsDETMa5coKXds3HC+pm6HSQff2cwyvrd5aiYN+E03dBhRfb
+         JvBP+s9zou1YMV2PkZqiroWd/ELMuAhJ3yDw7hM3D9iHar47nu/qcnP4c/ZXOF7gZIIi
+         pfWw==
+X-Forwarded-Encrypted: i=1; AJvYcCUmgc7dmmYFvV0KQ563Pbf6NbRmBhgT1gzfX5XV5KIixgUtWwTIZ3zTdghGxqtndFlS9go=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxoal4hFN7p9MMvD0OIjfb4ReOPO/32CjYcY64ycOef6S9E/xDz
+	/yGXvxnVLK7WLpLjI3URN0P0TN7U78B0Gt1McgJunKQlXoO+WFFWPxxviu0hGX/WgZY81hVBn9e
+	TypBT3ZanNoAJb9kWipP3R427zykZ6a4=
+X-Gm-Gg: ASbGncutsC81NXlZ1PNq00nEpPOhps8E7NFBRDbZZigrMDQmWgraZUj5hIKo4U48QAE
+	61e59ZWA7jnjqAN0fpzETgCg06f7+A/rVqMyOha7hRelxVOfqV6LcP/jXzkzNKRVJQFaDyW+q1t
+	QtoQIAUnRhi9WNSnIOpwhZ9+z9kA4e8szeCGdibGOidjThFigY81bLjECnopr0mgHz8ScjBxG24
+	wD8GN5jVu3HS1yAS+U=
+X-Google-Smtp-Source: AGHT+IHMsfJpOeMbShkuBIEq7YspBbQUww6KaCi2GGNbFFrWA5JDg3RbIc56D8Yebt1J1J2lKqY2ZNgLOPy5QC3Dtzg=
+X-Received: by 2002:a05:6214:248f:b0:700:c179:f57c with SMTP id
+ 6a1803df08f44-704f6aebc0cmr396330066d6.38.1753184853948; Tue, 22 Jul 2025
+ 04:47:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250721101417.GA18873@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <20250608073516.22415-1-laoar.shao@gmail.com> <b2fc85fb-1c7b-40ab-922b-9351114aa994@redhat.com>
+ <CALOAHbD2-f5CRXJy6wpXuCC5P9gqqsbVbjBzgAF4e+PqWv0xNg@mail.gmail.com>
+ <9bc57721-5287-416c-aa30-46932d605f63@redhat.com> <CALOAHbBoZpAartkb-HEwxJZ90Zgn+u6G4fCC0_Wq-shKqnb6iQ@mail.gmail.com>
+ <87a54cdb-1e13-4f6f-9603-14fb1210ae8a@redhat.com> <CALOAHbA5NUHXPs+DbQWaKUfMeMWY3SLCxHWK_dda9K1Orqi=WA@mail.gmail.com>
+ <404de270-6d00-4bb7-b84b-ae3b1be1dba8@redhat.com>
+In-Reply-To: <404de270-6d00-4bb7-b84b-ae3b1be1dba8@redhat.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Tue, 22 Jul 2025 19:46:57 +0800
+X-Gm-Features: Ac12FXxSR7-gHde2KyZLRLKo9WLpXSMnnby4hUqghVR5k92W9pAaQcWWQqjIMEY
+Message-ID: <CALOAHbDMxVe6Q1iadqDnxrXaMbh8OG7rFTg0G7R8nP+BKZ9v6g@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 0/5] mm, bpf: BPF based THP adjustment
+To: David Hildenbrand <david@redhat.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Matthew Wilcox <willy@infradead.org>, 
+	akpm@linux-foundation.org, ziy@nvidia.com, baolin.wang@linux.alibaba.com, 
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, npache@redhat.com, 
+	ryan.roberts@arm.com, dev.jain@arm.com, hannes@cmpxchg.org, 
+	usamaarif642@gmail.com, gutierrez.asier@huawei-partners.com, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org, 
+	linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 21, 2025 at 03:14:17AM -0700, Dipayaan Roy wrote:
-> This patch enhances RX buffer handling in the mana driver by allocating
-> pages from a page pool and slicing them into MTU-sized fragments, rather
-> than dedicating a full page per packet. This approach is especially
-> beneficial on systems with 64KB page sizes.
-> 
-> Key improvements:
-> 
-> - Proper integration of page pool for RX buffer allocations.
-> - MTU-sized buffer slicing to improve memory utilization.
-> - Reduce overall per Rx queue memory footprint.
-> - Automatic fallback to full-page buffers when:
->    * Jumbo frames are enabled (MTU > PAGE_SIZE / 2).
->    * The XDP path is active, to avoid complexities with fragment reuse.
-> - Removal of redundant pre-allocated RX buffers used in scenarios like MTU
->   changes, ensuring consistency in RX buffer allocation.
-> 
-> Testing on VMs with 64KB pages shows around 200% throughput improvement.
-> Memory efficiency is significantly improved due to reduced wastage in page
-> allocations. Example: We are now able to fit 35 Rx buffers in a single 64KB
-> page for MTU size of 1500, instead of 1 Rx buffer per page previously.
-> 
-> Tested:
-> 
-> - iperf3, iperf2, and nttcp benchmarks.
-> - Jumbo frames with MTU 9000.
-> - Native XDP programs (XDP_PASS, XDP_DROP, XDP_TX, XDP_REDIRECT) for
->   testing the driver’s XDP path.
-> - Page leak detection (kmemleak).
-> - Driver load/unload, reboot, and stress scenarios.
-> 
-> Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+On Tue, Jul 22, 2025 at 3:28=E2=80=AFPM David Hildenbrand <david@redhat.com=
+> wrote:
+>
+> On 22.07.25 04:40, Yafang Shao wrote:
+> > On Sun, Jul 20, 2025 at 11:56=E2=80=AFPM David Hildenbrand <david@redha=
+t.com> wrote:
+> >>
+> >>>>
+> >>>> We discussed this yesterday at a THP upstream meeting, and what we
+> >>>> should look into is:
+> >>>>
+> >>>> (1) Having a callback like
+> >>>>
+> >>>> unsigned int (*get_suggested_order)(.., bool in_pagefault);
+> >>>
+> >>> This interface meets our needs precisely, enabling allocation orders
+> >>> of either 0 or 9 as required by our workloads.
+> >>>
+> >>>>
+> >>>> Where we can provide some information about the fault (vma
+> >>>> size/flags/anon_name), and whether we are in the page fault (or in
+> >>>> khugepaged).
+> >>>>
+> >>>> Maybe we want a bitmap of orders to try (fallback), not sure yet.
+> >>>>
+> >>>> (2) Having some way to tag these callbacks as "this is absolutely
+> >>>> unstable for now and can be changed as we please.".
+> >>>
+> >>> BPF has already helped us complete this, so we don=E2=80=99t need to =
+implement
+> >>> this restriction.
+> >>> Note that all BPF kfuncs (including struct_ops) are currently unstabl=
+e
+> >>> and may change in the future.
+> >>   > > Alexei, could you confirm this understanding?
+> >>
+> >> Every MM person I talked to about this was like "as soon as it's
+> >> actively used out there (e.g., a distro supports it), there is no way
+> >> you can easily change these callbacks ever again - it will just silent=
+ly
+> >> become stable."
+> >>
+> >> That is actually the biggest concern from the MM side: being stuck wit=
+h
+> >> an interface that was promised to be "unstable" but suddenly it's
+> >> not-so-unstable anymore, and we have to support something that is very
+> >> likely to be changed in the future.
+> >>
+> >> Which guarantees do we have in the regard?
+> >>
+> >> How can we make it clear to anybody using this specific interface that
+> >> "if you depend on this being stable, you should learn how to read and
+> >> you are to blame, not the MM people" ?
+> >
+> > As explained in the kernel document [0]:
+> >
+> > kfuncs provide a kernel <-> kernel API, and thus are not bound by any
+> > of the strict stability restrictions associated with kernel <-> user
+> > UAPIs. This means they can be thought of as similar to
+> > EXPORT_SYMBOL_GPL, and can therefore be modified or removed by a
+> > maintainer of the subsystem they=E2=80=99re defined in when it=E2=80=99=
+s deemed
+> > necessary.
+> >
+> > [0] https://docs.kernel.org/bpf/kfuncs.html#bpf-kfunc-lifecycle-expecta=
+tions
+> >
+> > That said, users of BPF kfuncs should treat them as inherently
+> > unstable and take responsibility for verifying their compatibility
+> > when switching kernel versions. However, this does not imply that BPF
+> > kfuncs can be modified arbitrarily.
+> >
+> > For widely adopted kfuncs that deliver substantial value, changes
+> > should be made cautiously=E2=80=94preferably through backward-compatibl=
+e
+> > extensions to ensure continued functionality across new kernel
+> > versions. Removal should only be considered in exceptional cases, such
+> > as:
+> > - Severe, unfixable issues within the kernel
+> > - Maintenance burdens that block new features or critical improvements.
+>
+> And that is exactly what we are worried about.
+>
+> You don't know beforehand whether something will be "widely adopted".
+>
+> Even if there is the "A kfunc will never have any hard stability
+> guarantees." in there.
+>
+> The concerning bit is:
+>
+> "kfuncs that are widely used or have been in the kernel for a long time
+> will be more difficult to justify being changed or removed by a
+> maintainer. "
+>
+> Just no. Not going to happen for the kfuncs we know upfront (like here)
+> will stand in our way in the future at some point and *will* be changed
+> one way or another.
+>
+>
+> So for these kfuncs I want a clear way of expressing "whatever the
+> kfuncs doc says, this here is completely unstable even if widely used"
 
-Hi,
+This statement does not conflict with the BPF kfuncs documentation, as
+it explicitly states:
+"This means they can be thought of as similar to EXPORT_SYMBOL_GPL,
+and can therefore be modified or removed by a maintainer of the
+subsystem they're defined in when deemed necessary."
 
-Some minor feedback from my side.
+There is no question that subsystem maintainers have the authority to
+remove kfuncs. However, the reason I raised the issue of removing
+widely used kfuncs is to highlight the recommended practice:
+- First mark the kfunc as KF_DEPRECATED.
+- Remove it in the next development cycle.
 
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+While this is not a strict requirement=E2=80=94maintainers can remove kfunc=
+s
+immediately without deprecation=E2=80=94following this guideline helps avoi=
+d
+unnecessary disruptions for users.
 
-...
-
-> -int mana_pre_alloc_rxbufs(struct mana_port_context *mpc, int new_mtu, int num_queues)
-> -{
-> -	struct device *dev;
-> -	struct page *page;
-> -	dma_addr_t da;
-> -	int num_rxb;
-> -	void *va;
-> -	int i;
-> -
-> -	mana_get_rxbuf_cfg(new_mtu, &mpc->rxbpre_datasize,
-> -			   &mpc->rxbpre_alloc_size, &mpc->rxbpre_headroom);
-> -
-> -	dev = mpc->ac->gdma_dev->gdma_context->dev;
-> -
-> -	num_rxb = num_queues * mpc->rx_queue_size;
-> -
-> -	WARN(mpc->rxbufs_pre, "mana rxbufs_pre exists\n");
-> -	mpc->rxbufs_pre = kmalloc_array(num_rxb, sizeof(void *), GFP_KERNEL);
-> -	if (!mpc->rxbufs_pre)
-> -		goto error;
->  
-> -	mpc->das_pre = kmalloc_array(num_rxb, sizeof(dma_addr_t), GFP_KERNEL);
-> -	if (!mpc->das_pre)
-> -		goto error;
-> -
-> -	mpc->rxbpre_total = 0;
-> -
-> -	for (i = 0; i < num_rxb; i++) {
-> -		page = dev_alloc_pages(get_order(mpc->rxbpre_alloc_size));
-> -		if (!page)
-> -			goto error;
-> -
-> -		va = page_to_virt(page);
-> -
-> -		da = dma_map_single(dev, va + mpc->rxbpre_headroom,
-> -				    mpc->rxbpre_datasize, DMA_FROM_DEVICE);
-> -		if (dma_mapping_error(dev, da)) {
-> -			put_page(page);
-> -			goto error;
-> +	/* For xdp and jumbo frames make sure only one packet fits per page */
-> +	if (((mtu + MANA_RXBUF_PAD) > PAGE_SIZE / 2) || rcu_access_pointer(apc->bpf_prog)) {
-
-The line above seems to have unnecessary parentheses.
-And should be line wrapped to be 80 columns wide or less,
-as is still preferred by Networking code.
-The latter condition is flagged by checkpatch.pl --max-line-length=80
-
-	if (mtu + MANA_RXBUF_PAD > PAGE_SIZE / 2 ||
-	    rcu_access_pointer(apc->bpf_prog)) {
-
-(The above is completely untested)
-
-Also, I am a little confused by the use of rcu_access_pointer()
-above and below, as bpf_prog does not seem to be managed by RCU.
-
-Flagged by Sparse.
-
-> +		if (rcu_access_pointer(apc->bpf_prog)) {
-> +			*headroom = XDP_PACKET_HEADROOM;
-> +			*alloc_size = PAGE_SIZE;
-> +		} else {
-> +			*headroom = 0; /* no support for XDP */
-> +			*alloc_size = SKB_DATA_ALIGN(mtu + MANA_RXBUF_PAD + *headroom);
->  		}
->  
-> -		mpc->rxbufs_pre[i] = va;
-> -		mpc->das_pre[i] = da;
-> -		mpc->rxbpre_total = i + 1;
-> +		*frag_count = 1;
-> +		return;
->  	}
->  
-> -	return 0;
-> +	/* Standard MTU case - optimize for multiple packets per page */
-> +	*headroom = 0;
->  
-> -error:
-> -	netdev_err(mpc->ndev, "Failed to pre-allocate RX buffers for %d queues\n", num_queues);
-> -	mana_pre_dealloc_rxbufs(mpc);
-> -	return -ENOMEM;
-> +	/* Calculate base buffer size needed */
-> +	u32 len = SKB_DATA_ALIGN(mtu + MANA_RXBUF_PAD + *headroom);
-> +	u32 buf_size = ALIGN(len, MANA_RX_FRAG_ALIGNMENT);
-> +
-> +	/* Calculate how many packets can fit in a page */
-> +	*frag_count = PAGE_SIZE / buf_size;
-> +	*alloc_size = buf_size;
->  }
-
-...
-
-> -static void *mana_get_rxfrag(struct mana_rxq *rxq, struct device *dev,
-> -			     dma_addr_t *da, bool *from_pool)
-> +static void *mana_get_rxfrag(struct mana_rxq *rxq,
-> +			     struct device *dev, dma_addr_t *da, bool *from_pool)
->  {
->  	struct page *page;
-> +	u32 offset;
->  	void *va;
-> -
->  	*from_pool = false;
->  
-> -	/* Reuse XDP dropped page if available */
-> -	if (rxq->xdp_save_va) {
-> -		va = rxq->xdp_save_va;
-> -		rxq->xdp_save_va = NULL;
-> -	} else {
-> -		page = page_pool_dev_alloc_pages(rxq->page_pool);
-> -		if (!page)
-> +	/* Don't use fragments for jumbo frames or XDP (i.e when fragment = 1 per page) */
-> +	if (rxq->frag_count == 1) {
-> +		/* Reuse XDP dropped page if available */
-> +		if (rxq->xdp_save_va) {
-> +			va = rxq->xdp_save_va;
-> +			rxq->xdp_save_va = NULL;
-> +		} else {
-> +			page = page_pool_dev_alloc_pages(rxq->page_pool);
-> +			if (!page)
-> +				return NULL;
-> +
-> +			*from_pool = true;
-> +			va = page_to_virt(page);
-> +		}
-> +
-> +		*da = dma_map_single(dev, va + rxq->headroom, rxq->datasize,
-> +				     DMA_FROM_DEVICE);
-> +		if (dma_mapping_error(dev, *da)) {
-> +			if (*from_pool)
-> +				page_pool_put_full_page(rxq->page_pool, page, false);
-> +			else
-> +				put_page(virt_to_head_page(va));
-
-The put logic above seems to appear in this patch
-more than once. IMHO a helper would be nice.
-
-> +
->  			return NULL;
-> +		}
->  
-> -		*from_pool = true;
-> -		va = page_to_virt(page);
-> +		return va;
->  	}
-
-...
-
--- 
-pw-bot: changes-requested
+--=20
+Regards
+Yafang
 
