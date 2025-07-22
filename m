@@ -1,80 +1,208 @@
-Return-Path: <bpf+bounces-63998-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63999-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 827D8B0D166
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 07:49:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38D80B0D1A3
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 08:07:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF3417A93BA
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 05:48:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E7D03AA4C8
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 06:06:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAABE28C84A;
-	Tue, 22 Jul 2025 05:49:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A394328C86D;
+	Tue, 22 Jul 2025 06:07:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rDFVuPNO"
 X-Original-To: bpf@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22DDB28C030
-	for <bpf@vger.kernel.org>; Tue, 22 Jul 2025 05:49:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A8C64502F
+	for <bpf@vger.kernel.org>; Tue, 22 Jul 2025 06:07:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753163385; cv=none; b=YKM+4ikRp6mwbi0yG2N36MMaVqzk6fE7NRqRwDQU0JbQqirADK/C9fePDb2YLriKzqCgagt/Qqe/TZL1H5N4EyEk0IJ+HbQ+MT3wL7h7sXsvS/jRT++Qya4WLLrxH+3mWVbEYY8dTsD309gv2HwQNYspwDnKMKzINpNupYGS/IQ=
+	t=1753164431; cv=none; b=VNOMxDYuY2j3+9Ub2NDVu3g98iKIUzSWeoAy3ZZcKR1JRhNiBhHPQRun/mCI24v9houOBM9YDETLmrGIyg1XL58Yp0B6wM69zCX1IOounwiOdDcKFjfOk/3v0an5H34yDbCgD4HSwIr0UEXh12RK4hInHFKYZcm6Xsudt1oW8Kk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753163385; c=relaxed/simple;
-	bh=OLmQBVvr8sUK94FODMo2oPiARQIUhTsc6GYXGiLNw7A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qgxZnKr6IzVlUYCluos+rqXBbU4ODErz8jzClvgVH4dY8SpgrMt2gC/JqmBQJWngHgaj5yRN3uiakpaTs0k5XzYKN544W+J/TGSmtjHmiy2cJfFREwkbd4i6VyYt7V+GctNXmcJ40w4iQoEBc2WtNvuKjSF8UobuPEQ8yxsJGIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DEB04152B;
-	Mon, 21 Jul 2025 22:49:36 -0700 (PDT)
-Received: from arm.com (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 68B153F59E;
-	Mon, 21 Jul 2025 22:49:36 -0700 (PDT)
-Date: Tue, 22 Jul 2025 06:49:32 +0100
-From: Catalin Marinas <catalin.marinas@arm.com>
-To: Pingfan Liu <piliu@redhat.com>
-Cc: linux-arm-kernel@lists.infradead.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Jeremy Linton <jeremy.linton@arm.com>,
-	Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Simon Horman <horms@kernel.org>, Gerd Hoffmann <kraxel@redhat.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Philipp Rudo <prudo@redhat.com>, Viktor Malik <vmalik@redhat.com>,
-	Jan Hendrik Farr <kernel@jfarr.cc>, Baoquan He <bhe@redhat.com>,
-	Dave Young <dyoung@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	kexec@lists.infradead.org, bpf@vger.kernel.org
-Subject: Re: [PATCHv4 10/12] arm64/kexec: Add PE image format support
-Message-ID: <aH8mbFzwiKM9MMgm@arm.com>
-References: <20250722020319.5837-1-piliu@redhat.com>
- <20250722020319.5837-11-piliu@redhat.com>
+	s=arc-20240116; t=1753164431; c=relaxed/simple;
+	bh=Xu1S1FDHVkYe1QdoHx9idY6UjirqhGUv/g8oY+JSOV0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Y6L5OC/H7q/geQRU+vFPi63FdnuT13VyW0SZBplRJ8No2oTbwtWKjv4L2uzdI2f5d4G2DFTvk00ePRkyPFN1+DHk2EyQ/0Y4FKZWQZiC2kt2BURdPTfsfh5pdY+UqhRhKGWCCZK/5flbt+iEgMoCYzx4jXwZ02t0nE98B5nfXuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rDFVuPNO; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <629f59b1-9760-4233-bb17-6be12c0965ba@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1753164425;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xVjS0EudrLw88Tcwso/HMMGV5sllQzXKCupSAMsbJFo=;
+	b=rDFVuPNOYPRnROToXhdjs7ERmlcD4uk9CFgs7AO/zgMz7EonF1Yk+nmuOITj7DfRP+3aRu
+	Q7tZ6pVAswPuABXBe3+RVp2yr+7hCOJaYrxADP5rx3SIpkR+iCacS4g3fIKFiKgk7N+qVA
+	cTDr9oWk5A4yBf59KjG+PQqJG3tZgfE=
+Date: Tue, 22 Jul 2025 14:06:51 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250722020319.5837-11-piliu@redhat.com>
+Subject: Re: [PATCH bpf-next 2/2] bpftool: Add bpftool-token manpage
+To: Quentin Monnet <qmo@kernel.org>, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+ kuba@kernel.org, hawk@kernel.org
+Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <20250720173310.1334483-1-chen.dylane@linux.dev>
+ <20250720173310.1334483-2-chen.dylane@linux.dev>
+ <ab308d9e-a0dc-4b57-b498-93a0f56771c4@kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Tao Chen <chen.dylane@linux.dev>
+In-Reply-To: <ab308d9e-a0dc-4b57-b498-93a0f56771c4@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Jul 22, 2025 at 10:03:17AM +0800, Pingfan Liu wrote:
-> Now everything is ready for kexec PE image parser. Select it on arm64
-> for zboot and UKI image support.
+在 2025/7/22 00:23, Quentin Monnet 写道:
+> 2025-07-21 01:33 UTC+0800 ~ Tao Chen <chen.dylane@linux.dev>
+>> Add bpftool-token manpage with information and examples of token-related
+>> commands.
+>>
+>> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+>> ---
+>>   .../bpftool/Documentation/bpftool-token.rst   | 68 +++++++++++++++++++
+>>   1 file changed, 68 insertions(+)
+>>   create mode 100644 tools/bpf/bpftool/Documentation/bpftool-token.rst
+>>
+>> diff --git a/tools/bpf/bpftool/Documentation/bpftool-token.rst b/tools/bpf/bpftool/Documentation/bpftool-token.rst
+>> new file mode 100644
+>> index 00000000000..177f93c0bc7
+>> --- /dev/null
+>> +++ b/tools/bpf/bpftool/Documentation/bpftool-token.rst
+>> @@ -0,0 +1,68 @@
+>> +.. SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +
+>> +================
+>> +bpftool-token
+>> +================
+>> +-------------------------------------------------------------------------------
+>> +tool for inspection and simple manipulation of eBPF progs
 > 
-> Signed-off-by: Pingfan Liu <piliu@redhat.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> To: linux-arm-kernel@lists.infradead.org
+> 
+> Copy-pasted from bpftool-prog.rst, please update.
+> 
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+will update it in v2, thanks.
+
+> 
+>> +-------------------------------------------------------------------------------
+>> +
+>> +:Manual section: 8
+>> +
+>> +.. include:: substitutions.rst
+>> +
+>> +SYNOPSIS
+>> +========
+>> +
+>> +**bpftool** [*OPTIONS*] **token** *COMMAND*
+>> +
+>> +*OPTIONS* := { |COMMON_OPTIONS| }
+>> +
+>> +*COMMANDS* := { **show** | **list** | **help** }
+>> +
+>> +TOKEN COMMANDS
+>> +===============
+>> +
+>> +| **bpftool** **token** { **show** | **list** }
+>> +| **bpftool** **token help**
+>> +|
+>> +
+>> +DESCRIPTION
+>> +===========
+>> +bpftool token { show | list }
+>> +    List all the concrete allowed_types for cmds maps progs attachs
+>> +    and the bpffs mount_point used to set the token info.
+> 
+> 
+> This is not a summary, please let's use a more verbose description and
+> avoid abbreviations:
+> 
+> 	List all the concrete allowed types for **bpf**\ () system call
+> 	commands, maps, programs, and attach types, as well as the
+> 	*bpffs* mount point used to set the token information.
+> 
+> What is a "concrete" allowed_type?
+> 
+
+Uh... I wanted to say speciafic allowed_type, sorry for the poor english.
+  > >> +
+>> +bpftool prog help
+>> +    Print short help message.
+>> +
+>> +OPTIONS
+>> +========
+>> +.. include:: common_options.rst
+>> +
+>> +EXAMPLES
+>> +========
+>> +|
+>> +| **# mkdir -p /sys/fs/bpf/token**
+>> +| **# mount -t bpf bpffs /sys/fs/bpf/token** \
+>> +|         **-o delegate_cmds=prog_load:map_create** \
+>> +|         **-o delegate_progs=kprobe** \
+>> +|         **-o delegate_attachs=xdp**
+>> +| **# bpftool token list**
+>> +
+>> +::
+>> +
+>> +    token_info:
+>> +            /sys/fs/bpf/token
+>> +
+>> +    allowed_cmds:
+>> +            map_create          prog_load
+>> +
+>> +    allowed_maps:
+>> +
+>> +    allowed_progs:
+>> +            kprobe
+>> +
+>> +    allowed_attachs:
+>> +            xdp
+>> +
+> 
+> 
+> Please also update bpftool's bash completion file. I think it should be:
+> 
+
+will add it in v2.
+
+>      diff --git i/tools/bpf/bpftool/bash-completion/bpftool w/tools/bpf/bpftool/bash-completion/bpftool
+>      index a759ba24471d..3f119d7eae96 100644
+>      --- i/tools/bpf/bpftool/bash-completion/bpftool
+>      +++ w/tools/bpf/bpftool/bash-completion/bpftool
+>      @@ -1215,6 +1215,17 @@ _bpftool()
+>                           ;;
+>                   esac
+>                   ;;
+>      +        token)
+>      +            case $command in
+>      +                show|list)
+>      +                    return 0
+>      +                    ;;
+>      +                *)
+>      +                    [[ $prev == $object ]] && \
+>      +                        COMPREPLY=( $( compgen -W 'help show list' -- "$cur" ) )
+>      +                    ;;
+>      +            esac
+>      +            ;;
+>           esac
+>       } &&
+>       complete -F _bpftool bpftool
+> 
+-- 
+Best Regards
+Tao Chen
 
