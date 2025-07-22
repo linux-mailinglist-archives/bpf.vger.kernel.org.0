@@ -1,147 +1,183 @@
-Return-Path: <bpf+bounces-64084-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64085-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19360B0E285
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 19:23:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 368C7B0E29B
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 19:29:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D0E0AA0405
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 17:23:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 540521C85593
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 17:29:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6566627FB3A;
-	Tue, 22 Jul 2025 17:23:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A739927FB37;
+	Tue, 22 Jul 2025 17:29:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="N8o2mR+a"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k4IhFijP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AFDB27FB21
-	for <bpf@vger.kernel.org>; Tue, 22 Jul 2025 17:23:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9927A277CBA;
+	Tue, 22 Jul 2025 17:29:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753205006; cv=none; b=c7p93hEqGsCWVIlWEQH13xa/D3y3kxGAExIzBcnzJBSME2CitwhzYsxSwk0yk5da5aGMJp0xklPUbgpezs9vUBgPsBcwp4l8acSwpHajUeQErlgXgtxH02r9H5hh5NZw02wo4gDIcdFqzTynoitN/AFvHLBFcH+4TuMdkRDu//Q=
+	t=1753205372; cv=none; b=EyVB4uX1cNEgc2sUNL24v+hvKAFneeAADMmEyJDuuUnaI2wK4tMSdmr9t0TRIYVKxqd9rTd3godeDT0t8JicqrzrIL1RztVm/h9vSP4Ii3/+CcYN6Aeuqt1i0qm1xP+L62XvIrPTEzMhgi4wMMa72MGI6F0ycrv9hpmZi230G/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753205006; c=relaxed/simple;
-	bh=8tLBsgDMoKYn/cmEEtG36C5Re6c2A8hBzfa0rJS9qf8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NxL1QSzZt46pLNC4+p8y400OrzldA6lVJ1yXPHhfZMjxw7dwYnpvDlSkCD41mADePnRX1EWiq6OKiyN/gyrgMXT6gNeXTstgHf/Nmz1uDmRhS9EbB7oqQ+sBxZoFiw/pnYgXzOpQxHS2eUP7WTxt2s8/guRFHByDb08VQpG4EAU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=N8o2mR+a; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1753205004; x=1784741004;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=8tLBsgDMoKYn/cmEEtG36C5Re6c2A8hBzfa0rJS9qf8=;
-  b=N8o2mR+a9KjgfRSNpYdrYfIQBSuJt07o18tIrUgIPMUIjrsrOi3R2I0K
-   4ylewetzFSwCcxBu7y+dL74JJL/s1wcOctk5bDgtbeOOhJaVFZw0NQyCr
-   dueVEg2xCxFivuzGEK7NY2Ild8CdESix5NvO6yP6xBJKdbjQj4ACsFpsw
-   Y4BSjYsi6AAh48qVw+n/qYstfOP9DGKvzXZ039jCVUE1X53O8VzcKK9tj
-   2ZcFSRqA2h/r9LLM86nc+DjXO7DAOce/F6Xtrs03GBmipK0umnTqWYUpp
-   q29trTo4puswfe4E+0kWlSykhzT19nhqzK1Hp6CtQUY+CnD5AQq/qXaPL
-   Q==;
-X-CSE-ConnectionGUID: p3xOGf+ERK68CzVPg5zJjg==
-X-CSE-MsgGUID: GNP1jpavTz2fjIPFwCPNIA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11500"; a="55617287"
-X-IronPort-AV: E=Sophos;i="6.16,332,1744095600"; 
-   d="scan'208";a="55617287"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2025 10:23:23 -0700
-X-CSE-ConnectionGUID: T62YgRhbStu03UHmIKqpvQ==
-X-CSE-MsgGUID: vlVplxbJSAyI/3mxscLURw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,332,1744095600"; 
-   d="scan'208";a="158503142"
-Received: from lkp-server01.sh.intel.com (HELO 9ee84586c615) ([10.239.97.150])
-  by orviesa010.jf.intel.com with ESMTP; 22 Jul 2025 10:23:17 -0700
-Received: from kbuild by 9ee84586c615 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1ueGhv-000IaD-1j;
-	Tue, 22 Jul 2025 17:23:15 +0000
-Date: Wed, 23 Jul 2025 01:22:56 +0800
-From: kernel test robot <lkp@intel.com>
-To: Pingfan Liu <piliu@redhat.com>, kexec@lists.infradead.org
-Cc: oe-kbuild-all@lists.linux.dev, Pingfan Liu <piliu@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Jeremy Linton <jeremy.linton@arm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Simon Horman <horms@kernel.org>, Gerd Hoffmann <kraxel@redhat.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Philipp Rudo <prudo@redhat.com>, Viktor Malik <vmalik@redhat.com>,
-	Jan Hendrik Farr <kernel@jfarr.cc>, Baoquan He <bhe@redhat.com>,
-	Dave Young <dyoung@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	bpf@vger.kernel.org
-Subject: Re: [PATCHv4 08/12] kexec: Factor out routine to find a symbol in ELF
-Message-ID: <202507230016.NQ1WXqwG-lkp@intel.com>
-References: <20250722020319.5837-9-piliu@redhat.com>
+	s=arc-20240116; t=1753205372; c=relaxed/simple;
+	bh=wAsiexFpJG29+h65JJPZFpAJdqh8AwtAuRFszUNX74E=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=AwydX7YWJz+OBkw3Joshr6ZuY52U6XI+fhB7Tk7j7iWmp+YKOnEPEU8jz4bdzgRmKL2ZtgFTeLGNRkZ6JV99BZyq62jWJ4l3eazpdoDXr9TngcItlX/Kz9X14TbGuzKpAhGM7xM3A5T79Pb0F7j374R7foAhKkrqmvpXiMHUxXs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k4IhFijP; arc=none smtp.client-ip=209.85.219.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-e8bd3fbd9f7so4990324276.3;
+        Tue, 22 Jul 2025 10:29:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1753205369; x=1753810169; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wAsiexFpJG29+h65JJPZFpAJdqh8AwtAuRFszUNX74E=;
+        b=k4IhFijPO9Ns6yLwHOMD0spvNj2poaoZmuWzus1Oqrf7S6oOfj0jJbWYGmQASwpfmI
+         0iCYhJbE7yRqzyrcKRAajuCmVyN1u9AJ0MiuwsEBIefI9XYmBdwWEyNHnHXVH+wyVsUm
+         Do6II7FMFGCcNn6AhOs/Tpj6NaevA2He+ZTjdgxDiUumzfxNnjAQO/fXqtYvzRz2EwqB
+         WxaQhRafIJTEYwrpv5d/e4eOL2A7oV7PZVfIf2g7WgVikmFv44b/Xxzb28bjrMCs4+Zx
+         p8dDRQR+RtQ69+Ya8sOUBjnBrmaJeBE5ti2UBxPkHtA7mgiS0UykMxZFtlwBgxQ4dO/u
+         8Pnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753205369; x=1753810169;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=wAsiexFpJG29+h65JJPZFpAJdqh8AwtAuRFszUNX74E=;
+        b=tlwU2wuJw4pQw+KenrerVSPu4KF9tYoIrVOFRLJVlAoXVx/GdWI+rBNCvOOtXlXDvF
+         XAEGUB0Nbk/FZ249wCIrMaNClNSvYhUxlW+nuCwZkcy/PeeJEbsDqAkii53qA+MlJfpf
+         0oqFgfhWnP6gv5jfSot/L3DEGRpf8+4mZb9kwZXvQoPeKVd5dSAzbJr0zxgDVRBB3eQM
+         CJQHNJ1o64jtuf/u5HTcjIT8gFmn+8cLx8SW/xHCL+6SNgwbizU6S9meOLDX3TUrLRnM
+         pRUN88vWzqlZpZkTa5GDrSqI/ug1YKWnalZKXhLiTkQsjCTVid33GXX0XMbdcKI5g1qL
+         4Ffg==
+X-Forwarded-Encrypted: i=1; AJvYcCWXbEcuDdxbG3t6gijDnLLJy39DpxFPYiy6gQfY6kOrhYNH+F5fJwkHpxXU0sX+CTj6BCQ=@vger.kernel.org, AJvYcCWdzHqPtJvJLcSdRy/jO8YlfLQjOMXWwv1mIoWsMKAbBJWqPvz2DS7B39L8PpLoYGcjrSTBqDZi@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx+/yqvytZvQn32DriX2TQA9xTHb5MlRM8T8yj0gaUZ1agKY98a
+	A4+iG0JlsIt9+tzij1RYe9BkYglZpwHih1hyv3MjiFjoXKqxLN6B4WKg
+X-Gm-Gg: ASbGncvL7JXyavZ4UtZ1KveIz7tqtqlxsKxX4lUd0go0Q5aFf0hhSUgOXjtG9O0wEAF
+	WHp6q82d1HYkkkgQrY02k9JWar0VGAB93yazNRc+yPxJhG1pubnKyO5NY8wnLPyZaJ9k3WhO14F
+	L+OOrhSPd05drHV9udGKGoXBEHCxSv9bqkEhfkw3UfcEADGHtXCFNS5Sl9FWiOeSOhvb9oDFxun
+	4MjjJDW9DOmj3rZKwHEU4pCPpywK/gYCTB0RPzeikaJ+xbB23sA+9bet/lQq97KoH6Nc7We5Ixr
+	MZ5KQzUUtUUgtfXMo85vomdrqVSXF0yIfopFbcUjIXYtY0CdbEx2eMHXOkrrJGbkWg2ffbkMGf3
+	e7oF7PHmpQCs2kmm6P0VVU8KdEmvsu285Fn/iq5svAzMdc+iGaWNWEXDSIOC8MPhCyAXxCQ==
+X-Google-Smtp-Source: AGHT+IF7A13lSEqts+dgqsU65x9gG5+n8sudziRUQP5o9tvzg5UXPLY2Xux38fUj0ahxVpgCIrZuJA==
+X-Received: by 2002:a05:690c:8c08:b0:719:4bd6:8ba6 with SMTP id 00721157ae682-7194bd68c99mr168256107b3.20.1753205369278;
+        Tue, 22 Jul 2025 10:29:29 -0700 (PDT)
+Received: from localhost (23.67.48.34.bc.googleusercontent.com. [34.48.67.23])
+        by smtp.gmail.com with UTF8SMTPSA id 00721157ae682-719532c7cc0sm26018107b3.70.2025.07.22.10.29.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jul 2025 10:29:28 -0700 (PDT)
+Date: Tue, 22 Jul 2025 13:29:28 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Jason Xing <kerneljasonxing@gmail.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: Paul Menzel <pmenzel@molgen.mpg.de>, 
+ anthony.l.nguyen@intel.com, 
+ przemyslaw.kitszel@intel.com, 
+ andrew+netdev@lunn.ch, 
+ davem@davemloft.net, 
+ edumazet@google.com, 
+ kuba@kernel.org, 
+ pabeni@redhat.com, 
+ bjorn@kernel.org, 
+ magnus.karlsson@intel.com, 
+ maciej.fijalkowski@intel.com, 
+ jonathan.lemon@gmail.com, 
+ sdf@fomichev.me, 
+ ast@kernel.org, 
+ daniel@iogearbox.net, 
+ hawk@kernel.org, 
+ john.fastabend@gmail.com, 
+ mcoquelin.stm32@gmail.com, 
+ alexandre.torgue@foss.st.com, 
+ linux-stm32@st-md-mailman.stormreply.com, 
+ bpf@vger.kernel.org, 
+ intel-wired-lan@lists.osuosl.org, 
+ netdev@vger.kernel.org, 
+ Jason Xing <kernelxing@tencent.com>
+Message-ID: <687fca7852e84_2cbf622949d@willemb.c.googlers.com.notmuch>
+In-Reply-To: <CAL+tcoC5KnTuWKxKcUqFGh-nBSF+X+RWzr=RkkK86+jY1Q20Kw@mail.gmail.com>
+References: <20250721083343.16482-1-kerneljasonxing@gmail.com>
+ <20250721083343.16482-2-kerneljasonxing@gmail.com>
+ <8c9e97e4-3590-49a8-940b-717deac0078d@molgen.mpg.de>
+ <CAL+tcoAP7Zk7A4pzK-za+_NMoX11SGR3ubtY6R+aaywoEq_H+g@mail.gmail.com>
+ <687f9d4cf0b14_2aa7cc29443@willemb.c.googlers.com.notmuch>
+ <CAL+tcoC5KnTuWKxKcUqFGh-nBSF+X+RWzr=RkkK86+jY1Q20Kw@mail.gmail.com>
+Subject: Re: [Intel-wired-lan] [PATCH net-next 1/2] stmmac: xsk: fix underflow
+ of budget in zerocopy mode
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250722020319.5837-9-piliu@redhat.com>
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi Pingfan,
+Jason Xing wrote:
+> On Tue, Jul 22, 2025 at 10:16=E2=80=AFPM Willem de Bruijn
+> <willemdebruijn.kernel@gmail.com> wrote:
+> >
+> > Jason Xing wrote:
+> > > Hi Paul,
+> > >
+> > > On Mon, Jul 21, 2025 at 4:56=E2=80=AFPM Paul Menzel <pmenzel@molgen=
+.mpg.de> wrote:
+> > > >
+> > > > Dear Jason,
+> > > >
+> > > >
+> > > > Thank you for your patch.
+> > >
+> > > Thanks for your quick response and review :)
+> > >
+> > > >
+> > > > Am 21.07.25 um 10:33 schrieb Jason Xing:
+> > > > > From: Jason Xing <kernelxing@tencent.com>
+> > > > >
+> > > > > The issue can happen when the budget number of descs are consum=
+ed. As
+> > > >
+> > > > Instead of =E2=80=9CThe issue=E2=80=9D, I=E2=80=99d use =E2=80=9C=
+An underflow =E2=80=A6=E2=80=9D.
+> > >
+> > > Will change it.
+> > >
+> > > >
+> > > > > long as the budget is decreased to zero, it will again go into
+> > > > > while (budget-- > 0) statement and get decreased by one, so the=
 
-kernel test robot noticed the following build errors:
+> > > > > underflow issue can happen. It will lead to returning true wher=
+eas the
+> > > > > expected value should be false.
+> > > >
+> > > > What is =E2=80=9Cit=E2=80=9D?
+> > >
+> > > It means 'underflow of budget' behavior.
+> >
+> > A technicality, but this is (negative) overflow.
+> >
+> > Underflow is a computation that results in a value that is too small
+> > to be represented by the given type.
+> =
 
-[auto build test ERROR on bpf-next/net]
-[also build test ERROR on bpf/master arm64/for-next/core linus/master v6.16-rc7]
-[cannot apply to bpf-next/master next-20250722]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> Interesting. Thanks for sharing this with me:)
+> =
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Pingfan-Liu/kexec_file-Make-kexec_image_load_default-global-visible/20250722-100843
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git net
-patch link:    https://lore.kernel.org/r/20250722020319.5837-9-piliu%40redhat.com
-patch subject: [PATCHv4 08/12] kexec: Factor out routine to find a symbol in ELF
-config: x86_64-buildonly-randconfig-006-20250722 (https://download.01.org/0day-ci/archive/20250723/202507230016.NQ1WXqwG-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14+deb12u1) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250723/202507230016.NQ1WXqwG-lkp@intel.com/reproduce)
+> I just checked the wikipedia[1] that says " Underflow can in part be
+> regarded as negative overflow of the exponent of the floating-point
+> value.". I assume this rule can also be applied in this case? I'm
+> hesitant to send the v3 patch tomorrow with this 'negative overflow'
+> term included.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202507230016.NQ1WXqwG-lkp@intel.com/
+My point is very pedantic. I think these cases are not underflow.
 
-All errors (new ones prefixed by >>):
-
-   In file included from include/linux/crash_dump.h:5,
-                    from drivers/of/fdt.c:11:
->> include/linux/kexec.h:544:7: error: unknown type name 'Elf_Sym'
-     544 | const Elf_Sym *elf_find_symbol(const Elf_Ehdr *ehdr, const char *name);
-         |       ^~~~~~~
->> include/linux/kexec.h:544:38: error: unknown type name 'Elf_Ehdr'
-     544 | const Elf_Sym *elf_find_symbol(const Elf_Ehdr *ehdr, const char *name);
-         |                                      ^~~~~~~~
-
-
-vim +/Elf_Sym +544 include/linux/kexec.h
-
-   542	
-   543	#if defined(CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY) || defined(CONFIG_KEXEC_PE_IMAGE)
- > 544	const Elf_Sym *elf_find_symbol(const Elf_Ehdr *ehdr, const char *name);
-   545	#endif
-   546	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+But it is often called that, understandably. So choose as you see fit.
 
