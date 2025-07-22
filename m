@@ -1,221 +1,470 @@
-Return-Path: <bpf+bounces-63996-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-63997-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46184B0D13C
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 07:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CE17EB0D15F
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 07:48:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 675FF542B59
-	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 05:31:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF47517EF06
+	for <lists+bpf@lfdr.de>; Tue, 22 Jul 2025 05:48:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94BDA1CF7AF;
-	Tue, 22 Jul 2025 05:31:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1FE728B4F8;
+	Tue, 22 Jul 2025 05:48:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CtuJTAnA"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jkr7B2K3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB2FF139D
-	for <bpf@vger.kernel.org>; Tue, 22 Jul 2025 05:31:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A1A178F32
+	for <bpf@vger.kernel.org>; Tue, 22 Jul 2025 05:48:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753162273; cv=none; b=n33u7PMOUF4OUrEZbQBWKWRIZx2zi4v/PCOSFaruX1YJ/cEdFEqskjVIF0LYEr5oG8hYpzWsOp4MR0IPZIgdRXDzgQwb42vu+kwYLWWP19ZEYlfj0IS1UPfgnoKzLJVwJPK96bor0kCul94hB02ZFWs993PnVNEAHshuk2gT5E8=
+	t=1753163326; cv=none; b=ldhe288yFRxFDfaEuExw+ygVvP886awmYvaKig1HmQFTeWSr7tItTe1P4+grENUPqXfow5bQ5IEZCn1sWLQd4pA/tCqR7AtKDR9/Vvg1Twktv/Zas9ZIcgcstEfdz8M50i2ZxugJOnfrZsnhwdL/oljJgbOOtBdD4E99JWqFMq0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753162273; c=relaxed/simple;
-	bh=BOGN2PLvs3XG5QM2eURevPsXPnJ51iSDkn3Q8K4I0Mo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NlUAXM6L8AM8UKydJ4Rbq3jvRZJL+pYL+xQ7y+INULzC82wzDc3AVZaXKFb9KlfR13ht/3KQded/ZO1FLIxhXnqWGpPhzu4cLSDmHlSZp5zkXwuOv2nrv7GS8BC4yTbqDzsHEqMsTxN5ZFx4cBfr0CTwG0cUPJFb7LG0cMjaGq0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CtuJTAnA; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-23c8f179e1bso51009335ad.1
-        for <bpf@vger.kernel.org>; Mon, 21 Jul 2025 22:31:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753162270; x=1753767070; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/P//A2KZZWxx8b9QZunjDsBGm9xb7tJtbAwMXVUcdNg=;
-        b=CtuJTAnAH03NOmabIYyGxUsnu1RFVrz83FwCwZQZl850rqV+e1u6k41XFdN078lJAC
-         1bYuADuN22GCjKsPBqQsTIcDlWVciOuVO8VOb6v/5Oc2otItjqKqUEM/rTPa6aP3yIa6
-         t30/ZmlOcBuiRrKDkasplkITUMfKk0vNtoK16gbkoV1NoapXICVnly76Fj1bmxmLWPmP
-         4i0smuZDL8zAeaLRlX+BY5QxbUUEN11sPPl7x8bpp5uazFSlJXKb3DUhXp+QkBjJwYrQ
-         0nrSRAjZvQaSsRRwlXYnIw+UnblHaXA67CAe1XTBJkxmxqo4od1U6k77PZQhW9pLjq6U
-         iIvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753162270; x=1753767070;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/P//A2KZZWxx8b9QZunjDsBGm9xb7tJtbAwMXVUcdNg=;
-        b=TGrwlfzEbK/a4NJdiR44WJMMS7Hzc2fX3EuNjLqD0HZQ3oO6CFJ6x7O651oUkFe7L1
-         5OxXqS+3PpGukeVaKIO0Lnw3piVK1EytLoULJjW7OzfW2mwIB1Bec0GObACNNbK/81Sc
-         zg+liXjnvIJKW5iL/nAC3bwovl2TZZVF0+COiLUfd741goxuH/t8uA0zpFNIMEKDAvpa
-         kvRwMwFIb1NK6gQKouIG9uVr782gATeTwADhS+DDtrh35w2QPN+KaWrI+reFOLbqDya3
-         pREe4l2ObtqqWFfPYSt0tI0w2rSDK1u0vE0fMgegNNS23TYOlh2rt0nMKy0Mp6/7kmtt
-         VvUA==
-X-Forwarded-Encrypted: i=1; AJvYcCV6H++0OBBTns9UE2VITlwNz6AK29tkuLS0ACRcupcJiTwzr5oEI7KJYoBqPxPn4t0820M=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwL7SH84FkNwKJqvP/FdA06mMf/rSS8GrF0pvUnNMzhmBEJ4VwY
-	CDqbadK8h/8pdouCB9XxzKLakyP98StG5pPdZy/KMSeY+3Sb6uT/V3BCe4QDzA==
-X-Gm-Gg: ASbGncvXaI+N9vy1vQ0zsq1M0gi0ftaXYjGHYYXDu3x/ewQKg37CY93ZeRvjxs91kx8
-	J0GPlg9CyTAIiZwWzka7XsTMz0XZxIEHcmhLQelkDWkfTOLPkthYqednQlwwP1DVpoH49OUOzcO
-	vCwKEmXDJ5ZxNmMwikT6HcE4C1JXDU92dkdLqa39TcopW163ANE54BkAU/4WO+5Ah5z2E3V/z25
-	D3cBwckyW4nZtXJRIboXkSPTMp28RUN3ZYTu5N1AaPQFJLZpPoVH53EDApvTCUhLcdQbLVD7PPF
-	EN1jts5Xpq5Duu79Vr80NKh+eXy3waiH5dOmhTYV92HMdP8yYOkxp4VwcvluptIP4Nh4MlDTIK1
-	XDT7oc4zq99D81p5k1PbCAnoECE9xyTXq
-X-Google-Smtp-Source: AGHT+IFv2z4axmTTMON+kH9wggWvdWl4ElWjDLUKYt3rwsxeTUCDhPEbsBMQz7gaRn7eaRUqbDczCw==
-X-Received: by 2002:a17:902:c948:b0:235:f078:473e with SMTP id d9443c01a7336-23e25763d54mr335169445ad.43.1753162269832;
-        Mon, 21 Jul 2025 22:31:09 -0700 (PDT)
-Received: from gmail.com ([98.97.38.28])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23e3b6b5626sm67358335ad.123.2025.07.21.22.31.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jul 2025 22:31:09 -0700 (PDT)
-Date: Mon, 21 Jul 2025 22:30:57 -0700
-From: John Fastabend <john.fastabend@gmail.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Paul Chaignon <paul.chaignon@gmail.com>, bpf@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Reject narrower access to pointer ctx
- fields
-Message-ID: <20250722053057.rj4gx652d5apw563@gmail.com>
-References: <e900f2e8c188460284127fe1403728c10c1eb8f4.1753099618.git.paul.chaignon@gmail.com>
- <ee25ac4771732bb09513e48fb2bc86614d3fd045.camel@gmail.com>
+	s=arc-20240116; t=1753163326; c=relaxed/simple;
+	bh=C3xpCXSwydRrWzTdRceLtbVq+xVHgKzdzMnpKU5QheM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=i5ubfq7jgVYyR6ko8YoaZPSmPiHSNfYqzQiULTe1/wm7dXNlf76mVII+/ozu6qKLsjss1uFy/moHSTVB7iMXbQuYzCw8A+V+b+Fr3rrMTN8iBs3udhYJHw3/fCJoe6UrS6AsDkqpNKRlPYg6YanpAZN0W596kIyBvoJSJShxLWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jkr7B2K3; arc=none smtp.client-ip=91.218.175.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <06387128-8d34-49fd-a409-d35f5d60b094@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1753163321;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m/iwLPdiIBFi6lp1IENj7q/2PClonPRpthSmWe4Tk/c=;
+	b=jkr7B2K3bc55GgaXWR4zwgbI1qDEq33XvAeRPGQONKTIqbOL+Egj3NJ6SWLapcygwaXrC4
+	sMssxCc7+JR962mGrWBwE9HosZGL+IsI/VHm5euAQ8z6uxER/1eth+FE9WRa5sKl01Cf5V
+	MKlHMuZ1HcNgfrqxzO1Xx1PC9fX8aYk=
+Date: Tue, 22 Jul 2025 13:48:28 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ee25ac4771732bb09513e48fb2bc86614d3fd045.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpftool: Add bpf_token show
+To: Quentin Monnet <qmo@kernel.org>, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+ kuba@kernel.org, hawk@kernel.org
+Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <20250720173310.1334483-1-chen.dylane@linux.dev>
+ <6b0669fd-fef6-4f4e-b80d-512769e86938@kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Tao Chen <chen.dylane@linux.dev>
+In-Reply-To: <6b0669fd-fef6-4f4e-b80d-512769e86938@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 2025-07-21 17:08:05, Eduard Zingerman wrote:
-> On Mon, 2025-07-21 at 14:57 +0200, Paul Chaignon wrote:
-> 
-> [...]
-> 
-> > diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> > index 72c8b50dca0a..3a4ad9f124e1 100644
-> > --- a/kernel/bpf/cgroup.c
-> > +++ b/kernel/bpf/cgroup.c
-> > @@ -2577,17 +2577,17 @@ static bool cg_sockopt_is_valid_access(int off, int size,
-> >  	}
-> >  
-> >  	switch (off) {
-> > -	case offsetof(struct bpf_sockopt, sk):
-> > +	case bpf_ctx_range_ptr(struct bpf_sockopt, sk):
-> >  		if (size != sizeof(__u64))
-> >  			return false;
-> >  		info->reg_type = PTR_TO_SOCKET;
-> >  		break;
-> > -	case offsetof(struct bpf_sockopt, optval):
-> > +	case bpf_ctx_range_ptr(struct bpf_sockopt, optval):
-> >  		if (size != sizeof(__u64))
-> >  			return false;
-> >  		info->reg_type = PTR_TO_PACKET;
-> >  		break;
-> > -	case offsetof(struct bpf_sockopt, optval_end):
-> > +	case bpf_ctx_range_ptr(struct bpf_sockopt, optval_end):
-> >  		if (size != sizeof(__u64))
-> >  			return false;
-> >  		info->reg_type = PTR_TO_PACKET_END;
-> 
-> Nit: I'd also convert `case offsetof(struct bpf_sockopt, retval):`
->      just below.  Otherwise reader would spend some time figuring out
->      why `retval` is special (it's not).
-> 
-> > diff --git a/net/core/filter.c b/net/core/filter.c
-> > index 7a72f766aacf..458908c5f1f4 100644
-> > --- a/net/core/filter.c
-> > +++ b/net/core/filter.c
-> > @@ -8690,7 +8690,7 @@ static bool bpf_skb_is_valid_access(int off, int size, enum bpf_access_type type
-> >  		if (size != sizeof(__u64))
-> >  			return false;
-> >  		break;
-> > -	case offsetof(struct __sk_buff, sk):
-> > +	case bpf_ctx_range_ptr(struct __sk_buff, sk):
-> >  		if (type == BPF_WRITE || size != sizeof(__u64))
-> >  			return false;
-> >  		info->reg_type = PTR_TO_SOCK_COMMON_OR_NULL;
-> > @@ -9268,7 +9268,7 @@ static bool sock_addr_is_valid_access(int off, int size,
-> >  				return false;
-> >  		}
-> >  		break;
-> > -	case offsetof(struct bpf_sock_addr, sk):
-> > +	case bpf_ctx_range_ptr(struct bpf_sock_addr, sk):
-> >  		if (type != BPF_READ)
-> >  			return false;
-> >  		if (size != sizeof(__u64))
-> > @@ -9318,17 +9318,17 @@ static bool sock_ops_is_valid_access(int off, int size,
-> >  			if (size != sizeof(__u64))
-> >  				return false;
-> >  			break;
-> > -		case offsetof(struct bpf_sock_ops, sk):
-> > +		case bpf_ctx_range_ptr(struct bpf_sock_ops, sk):
-> >  			if (size != sizeof(__u64))
-> >  				return false;
-> >  			info->reg_type = PTR_TO_SOCKET_OR_NULL;
-> >  			break;
-> > -		case offsetof(struct bpf_sock_ops, skb_data):
-> > +		case bpf_ctx_range_ptr(struct bpf_sock_ops, skb_data):
-> >  			if (size != sizeof(__u64))
-> >  				return false;
-> >  			info->reg_type = PTR_TO_PACKET;
-> >  			break;
-> > -		case offsetof(struct bpf_sock_ops, skb_data_end):
-> > +		case bpf_ctx_range_ptr(struct bpf_sock_ops, skb_data_end):
-> >  			if (size != sizeof(__u64))
-> >  				return false;
-> >  			info->reg_type = PTR_TO_PACKET_END;
-> 
-> I think this function is buggy for `skb_hwtstamp` as well.
-> The skb_hwtstamp field is u64, side_default is sizeof(u32).
-> So access at `offsetof(struct bpf_sock_ops, skb_hwtstamp) + 4` would
-> be permitted by the default branch. But this range is not handled by
-> accompanying sock_ops_convert_ctx_access().
-
-
-+1 looks that way to me.
-
-> 
-> 
-> > @@ -9417,7 +9417,7 @@ static bool sk_msg_is_valid_access(int off, int size,
-> >  		if (size != sizeof(__u64))
-> >  			return false;
-> >  		break;
-> > -	case offsetof(struct sk_msg_md, sk):
-> > +	case bpf_ctx_range_ptr(struct sk_msg_md, sk):
-> >  		if (size != sizeof(__u64))
-> >  			return false;
-> >  		info->reg_type = PTR_TO_SOCKET;
-> 
-> I don't think this change is necessary, the default branch rejects
-> access at any not matched offset. Otherwise `data` and `data_end`
-> should be converted for uniformity.
-
-I sort of like it if all the ptr types are referenced with
-bpf_ctx_range_ptr seems more consistent to me. So its it
-is a bpf-next change I would do data and data_end as well.
-
-
-> 
-> > @@ -11623,7 +11623,7 @@ static bool sk_lookup_is_valid_access(int off, int size,
-> >  		return false;
-> >  
-> >  	switch (off) {
-> > -	case offsetof(struct bpf_sk_lookup, sk):
-> > +	case bpf_ctx_range_ptr(struct bpf_sk_lookup, sk):
-> >  		info->reg_type = PTR_TO_SOCKET_OR_NULL;
-> >  		return size == sizeof(__u64);
-> >  
-> 
-> Same here, the default branch would reject access at the wrong offset already.
+在 2025/7/22 00:23, Quentin Monnet 写道:
+> Thanks a lot for this!
 > 
 
-Other than above patch LGTM.
+Hi Quenin,
+
+> 
+> 2025-07-21 01:33 UTC+0800 ~ Tao Chen <chen.dylane@linux.dev>
+>> Add `bpftool token show` command to get token info
+>> from bpf fs in /proc/mounts.
+>>
+>> Example plain output for `token show`:
+>> token_info:
+>>          /sys/fs/bpf/token
+>>
+>> allowed_cmds:
+>>          map_create          prog_load
+>>
+>> allowed_maps:
+>>
+>> allowed_progs:
+>>          kprobe
+>>
+>> allowed_attachs:
+>>          xdp
+>>
+>> Example json output for `token show`:
+>> {
+>>      "token_info": "/sys/fs/bpf/token",
+>>      "allowed_cmds": ["map_create","prog_load"
+>>      ],
+>>      "allowed_maps":
+> 
+> 
+> This is not valid JSON. You're missing a value for "allowed_maps" (here
+> it should likely be an empty array), and the comma:
+> 
+> 	"allowed_maps": [],
+> 
+> 
+>>      "allowed_progs": ["kprobe"
+>>      ],
+>>      "allowed_attachs": ["xdp"
+>>      ]
+>> }
+>>
+>> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+>> ---
+>>   tools/bpf/bpftool/main.c  |   3 +-
+>>   tools/bpf/bpftool/main.h  |   1 +
+>>   tools/bpf/bpftool/token.c | 229 ++++++++++++++++++++++++++++++++++++++
+>>   3 files changed, 232 insertions(+), 1 deletion(-)
+>>   create mode 100644 tools/bpf/bpftool/token.c
+>>
+>> diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+>> index 2b7f2bd3a7d..0f1183b2ed0 100644
+>> --- a/tools/bpf/bpftool/main.c
+>> +++ b/tools/bpf/bpftool/main.c
+>> @@ -61,7 +61,7 @@ static int do_help(int argc, char **argv)
+>>   		"       %s batch file FILE\n"
+>>   		"       %s version\n"
+>>   		"\n"
+>> -		"       OBJECT := { prog | map | link | cgroup | perf | net | feature | btf | gen | struct_ops | iter }\n"
+>> +		"       OBJECT := { prog | map | link | cgroup | perf | net | feature | btf | gen | struct_ops | iter | token }\n"
+>>   		"       " HELP_SPEC_OPTIONS " |\n"
+>>   		"                    {-V|--version} }\n"
+>>   		"",
+>> @@ -87,6 +87,7 @@ static const struct cmd commands[] = {
+>>   	{ "gen",	do_gen },
+>>   	{ "struct_ops",	do_struct_ops },
+>>   	{ "iter",	do_iter },
+>> +	{ "token",	do_token },
+>>   	{ "version",	do_version },
+>>   	{ 0 }
+>>   };
+>> diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
+>> index 6db704fda5c..a2bb0714b3d 100644
+>> --- a/tools/bpf/bpftool/main.h
+>> +++ b/tools/bpf/bpftool/main.h
+>> @@ -166,6 +166,7 @@ int do_tracelog(int argc, char **arg) __weak;
+>>   int do_feature(int argc, char **argv) __weak;
+>>   int do_struct_ops(int argc, char **argv) __weak;
+>>   int do_iter(int argc, char **argv) __weak;
+>> +int do_token(int argc, char **argv) __weak;
+>>   
+>>   int parse_u32_arg(int *argc, char ***argv, __u32 *val, const char *what);
+>>   int prog_parse_fd(int *argc, char ***argv);
+>> diff --git a/tools/bpf/bpftool/token.c b/tools/bpf/bpftool/token.c
+>> new file mode 100644
+>> index 00000000000..2fcaff4f2ba
+>> --- /dev/null
+>> +++ b/tools/bpf/bpftool/token.c
+>> @@ -0,0 +1,229 @@
+>> +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +
+>> +#ifndef _GNU_SOURCE
+>> +#define _GNU_SOURCE
+>> +#endif
+>> +#include <errno.h>
+>> +#include <fcntl.h>
+>> +#include <stdbool.h>
+>> +#include <stdio.h>
+>> +#include <stdlib.h>
+>> +#include <string.h>
+>> +#include <unistd.h>
+>> +#include <mntent.h>
+>> +#include <sys/types.h>
+>> +#include <sys/stat.h>
+>> +
+>> +#include "json_writer.h"
+>> +#include "main.h"
+>> +
+>> +#define MOUNTS_FILE "/proc/mounts"
+>> +
+>> +#define zclose(fd) do { if (fd >= 0) close(fd); fd = -1; } while (0)
+> 
+> 
+> Seems unused?
+> 
+My fault, will remove it in v2, thanks.
+
+> 
+>> +
+>> +static bool has_delegate_options(const char *mnt_ops)
+>> +{
+>> +	return strstr(mnt_ops, "delegate_cmds") != NULL ||
+>> +	       strstr(mnt_ops, "delegate_maps") != NULL ||
+>> +	       strstr(mnt_ops, "delegate_progs") != NULL ||
+>> +	       strstr(mnt_ops, "delegate_attachs") != NULL;
+>> +}
+>> +
+>> +static char *get_delegate_value(const char *opts, const char *key)
+>> +{
+>> +	char *token, *rest, *ret = NULL;
+>> +	char *opts_copy = strdup(opts);
+>> +
+>> +	if (!opts_copy)
+>> +		return NULL;
+>> +
+>> +	for (token = strtok_r(opts_copy, ",", &rest); token != NULL;
+>> +			token = strtok_r(NULL, ",", &rest)) {
+>> +		if (strncmp(token, key, strlen(key)) == 0 &&
+>> +				token[strlen(key)] == '=') {
+>> +			ret = token + strlen(key) + 1;
+>> +			break;
+>> +		}
+>> +	}
+>> +	free(opts_copy);
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static void print_items_per_line(const char *input, int items_per_line)
+>> +{
+>> +	char *str, *rest;
+>> +	int cnt = 0;
+>> +	char *strs = strdup(input);
+>> +
+>> +	if (!strs)
+>> +		return;
+>> +
+>> +	for (str = strtok_r(strs, ":", &rest); str != NULL;
+>> +			str = strtok_r(NULL, ":", &rest)) {
+>> +		if (cnt % items_per_line == 0)
+>> +			printf("\n\t");
+>> +
+>> +		printf("%-20s", str);
+>> +		cnt++;
+>> +	}
+>> +
+>> +	free(strs);
+>> +}
+>> +
+>> +#define ITEMS_PER_LINE 4
+>> +static void show_token_info_plain(struct mntent *mntent)
+>> +{
+>> +	char *value;
+>> +
+>> +	printf("\ntoken_info:");
+>> +	printf("\n\t%s\n", mntent->mnt_dir);
+>> +
+>> +	printf("\nallowed_cmds:");
+>> +	value = get_delegate_value(mntent->mnt_opts, "delegate_cmds");
+>> +	if (value)
+>> +		print_items_per_line(value, ITEMS_PER_LINE);
+>> +	printf("\n");
+>> +
+>> +	printf("\nallowed_maps:");
+>> +	value = get_delegate_value(mntent->mnt_opts, "delegate_maps");
+>> +	if (value)
+>> +		print_items_per_line(value, ITEMS_PER_LINE);
+>> +	printf("\n");
+>> +
+>> +	printf("\nallowed_progs:");
+>> +	value = get_delegate_value(mntent->mnt_opts, "delegate_progs");
+>> +	if (value)
+>> +		print_items_per_line(value, ITEMS_PER_LINE);
+>> +	printf("\n");
+>> +
+>> +	printf("\nallowed_attachs:");
+>> +	value = get_delegate_value(mntent->mnt_opts, "delegate_attachs");
+>> +	if (value)
+>> +		print_items_per_line(value, ITEMS_PER_LINE);
+>> +	printf("\n");
+>> +}
+>> +
+>> +static void __json_array_str(const char *input)
+> 
+> 
+> Nit: Why the double underscore in the function name? Let's use a more
+> explicit name also, maybe something like "split_to_json_array"?
+> 
+
+Well, it looks better, will change it in v2.
+
+> >> +{
+>> +	char *str, *rest;
+>> +	char *strs = strdup(input);
+>> +
+>> +	if (!strs)
+>> +		return;
+>> +
+>> +	jsonw_start_array(json_wtr);
+>> +	for (str = strtok_r(strs, ":", &rest); str != NULL;
+>> +			str = strtok_r(NULL, ":", &rest)) {
+>> +		jsonw_string(json_wtr, str);
+>> +	}
+>> +	jsonw_end_array(json_wtr);
+>> +
+>> +	free(strs);
+>> +}
+>> +
+>> +static void show_token_info_json(struct mntent *mntent)
+>> +{
+>> +	char *value;
+>> +
+>> +	jsonw_start_object(json_wtr);
+>> +
+>> +	jsonw_string_field(json_wtr, "token_info", mntent->mnt_dir);
+>> +
+>> +	jsonw_name(json_wtr, "allowed_cmds");
+>> +	value = get_delegate_value(mntent->mnt_opts, "delegate_cmds");
+>> +	if (value)
+>> +		__json_array_str(value);
+> 
+> 
+> As mentioned above, you need to change __json_array_str() to print
+> something when you don't get a "value" here - just have it print an
+> empty array.
+> 
+
+As you mentioned, the 'value' will be checked within the 
+__json_array_str, and print empty array if it is NULL in v2.
+
+> 
+>> +
+>> +	jsonw_name(json_wtr, "allowed_maps");
+>> +	value = get_delegate_value(mntent->mnt_opts, "delegate_maps");
+>> +	if (value)
+>> +		__json_array_str(value);
+>> +
+>> +	jsonw_name(json_wtr, "allowed_progs");
+>> +	value = get_delegate_value(mntent->mnt_opts, "delegate_progs");
+>> +	if (value)
+>> +		__json_array_str(value);
+>> +
+>> +	jsonw_name(json_wtr, "allowed_attachs");
+>> +	value = get_delegate_value(mntent->mnt_opts, "delegate_attachs");
+>> +	if (value)
+>> +		__json_array_str(value);
+>> +
+>> +	jsonw_end_object(json_wtr);
+>> +}
+>> +
+>> +static int __show_token_info(struct mntent *mntent)
+>> +{
+>> +
+>> +	if (json_output)
+>> +		show_token_info_json(mntent);
+>> +	else
+>> +		show_token_info_plain(mntent);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int show_token_info(void)
+>> +{
+>> +	FILE *fp;
+>> +	struct mntent *ent;
+>> +	bool hit = false;
+>> +
+>> +	fp = setmntent(MOUNTS_FILE, "r");
+>> +	if (!fp) {
+>> +		p_err("Failed to open:%s", MOUNTS_FILE);
+> 
+> 
+> Missing space after the colon, in the error message.
+> 
+
+will fix it in v2.
+
+> 
+>> +		return -1;
+>> +	}
+>> +
+>> +	while ((ent = getmntent(fp)) != NULL) {
+>> +		if (strcmp(ent->mnt_type, "bpf") == 0) {
+> 
+> 
+> File common.c has:
+> 
+> 		if (strncmp(mntent->mnt_type, "bpf", 3) != 0)
+> 			continue;
+> 
+> Maybe do the same for consistency, and to avoid indenting too far right?
+> 
+
+Yes, i will refrence that, thanks.
+
+> 
+>> +			if (has_delegate_options(ent->mnt_opts)) {
+>> +				hit = true;
+>> +				break;
+> 
+> 
+> Apologies, my knowledge of BPF tokens is limited. Can you have only one
+> token exposed through a bpffs at a time? Asking because I know you can
+> have several bpffs on your system, if each can have delegate options
+> then why stop after the first bpffs mount point you find?
+> 
+
+Yes it is, only the first bpffs with token info will be showed above.
+Actually, it will not be limited how many bpffs ceated in kernel, it 
+depends on the user scenarios. In most cases, only one will be created. 
+But, maybe it's better to show all. I will change it in v2.
+
+> 
+>> +			}
+>> +		}
+>> +	}
+>> +
+>> +	if (hit)
+>> +		__show_token_info(ent);
+> 
+> 
+> Maybe at least a p_info() message if you don't find anything to print?
+> 
+Ok, will add it in v2.
+
+> 
+>> +	endmntent(fp);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int do_show(int argc, char **argv)
+>> +{
+>> +	if (argc)
+>> +		return BAD_ARG();
+>> +
+>> +	return show_token_info();
+>> +}
+>> +
+>> +static int do_help(int argc, char **argv)
+>> +{
+>> +	if (json_output) {
+>> +		jsonw_null(json_wtr);
+>> +		return 0;
+>> +	}
+>> +
+>> +	fprintf(stderr,
+>> +		"Usage: %1$s %2$s { show | list }\n"
+>> +		"	%1$s %2$s help\n"
+>> +		"\n"
+>> +		"",
+>> +		bin_name, argv[-2]);
+>> +	return 0;
+>> +}
+>> +
+>> +static const struct cmd cmds[] = {
+>> +	{ "show",	do_show },
+>> +	{ "help",	do_help },
+>> +	{ "list",	do_show },
+> 
+> 
+> Nit: Can we have "help" coming third, below both "show" and "list" please?
+> 
+
+will change it in v2.
+
+> 
+>> +	{ 0 }
+>> +};
+>> +
+>> +int do_token(int argc, char **argv)
+>> +{
+>> +	return cmd_select(cmds, argc, argv, do_help);
+>> +}
+> 
+-- 
+Best Regards
+Tao Chen
 
