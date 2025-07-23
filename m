@@ -1,81 +1,81 @@
-Return-Path: <bpf+bounces-64195-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64196-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BC38B0F96D
-	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 19:42:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82555B0F95B
+	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 19:39:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 867D2179177
-	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 17:39:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1BD9B7B4920
+	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 17:38:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9271423BCF1;
-	Wed, 23 Jul 2025 17:36:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30E9523A997;
+	Wed, 23 Jul 2025 17:36:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="Ys+4YOLq"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="H3kc/zZb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04F9A23814C
-	for <bpf@vger.kernel.org>; Wed, 23 Jul 2025 17:36:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4A7C23AB94
+	for <bpf@vger.kernel.org>; Wed, 23 Jul 2025 17:36:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753292218; cv=none; b=pbP4z/5GgLxMi3zhv7j7sIDzg1z/hDK0uuZVxrXrvyWDpYf4/aDRtLfgv0btZ0CdJCuDsM8ZpOzs1T0yysxVRjXpiAnv626q5YskDcfBfo2kZo6rVCS2MhVOi29AyiIJaLcDyH4T/EE6R+J50UzSxnjWHiwG4thzsywVsShN7YE=
+	t=1753292218; cv=none; b=fLNt4Cb2vDpdMpk5bseIzephsBRclcKi/jAHN/81DlkCByI7q9XMpuZyrNazHp+UcL2DpkbXxd+SSmox4vRnhEZzuB5jGsQgAbTrXbAwjZVBGs4oJVkm43KT0B1+hJy1oyKc8udT8z8aZa4pcE/rOEF+6yN+BuxhLdj+rgUnaCc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1753292218; c=relaxed/simple;
-	bh=UrcEjAg7GAkkGyQDzwig33nkBHzaiJ8mDJM9SnuShQw=;
+	bh=w0dfzydpBGC2gtWUtICRP+6lG6+loY6ENR3ea2/UiCE=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=SwCVLDjpCpwlCBxw+HfYOsa3rh1TLYe991z4DXvUQ9Ow6I2q2laWIYs5Cj673oyOBqmQn3V6R95GOWFzfXgG2oayQVss0tnQ49oBrbcIo+6M/L9kngiT7hwehEEXHciR+xLQVtXxN0vzCn7AzXYDViZ/06F2dmuP8LNHWt+uw6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=Ys+4YOLq; arc=none smtp.client-ip=209.85.218.46
+	 In-Reply-To:To:Cc; b=Okl0KcROH4pT0mn48vZ+Z74HrU0gITzvuwunTaleTkYeARfmEUk31CMgyWh/Kcofluk7Cvik5BcBa5O+N/YveOtd9y+LgPO6NabxUcuKxUXTpIxSwASCRHTmue91g8XGAmFVqZT7EZQ2CLUephsLELCJlS7olHDxXsztr+gagRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=H3kc/zZb; arc=none smtp.client-ip=209.85.208.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-ae0dd7ac1f5so13936366b.2
-        for <bpf@vger.kernel.org>; Wed, 23 Jul 2025 10:36:54 -0700 (PDT)
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-61360453fa3so292705a12.0
+        for <bpf@vger.kernel.org>; Wed, 23 Jul 2025 10:36:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1753292213; x=1753897013; darn=vger.kernel.org;
+        d=cloudflare.com; s=google09082023; t=1753292215; x=1753897015; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=QLwPvI2GvffjhdIVFmDYNGuO77u+LYC11J3gQUdVDAE=;
-        b=Ys+4YOLqd1qswoeSDDIpvRdWMWmFM/C0sNMryFEiacpXlFONyFfishqKrj89HQPtEG
-         UeDAcn/Vs248SLjBibsHtjj+aD7wr9q/gBECBsxG+tnYIEuhQVznaieAsPzZGeU6XK5w
-         aF0+eoeOhY77cluoZJNmVYF3eVbsE79duJm3DvAKHmCCKs5/FjnxyY1x7YV8u1APkIzv
-         KSif+vx9pIC3+dUJhOTKxM02mUNkl6EhKjj9RaiuWUQpbQb3y8mXxnAWQICDT9gX6imH
-         xxiZTbHiaL7G0Hyjk8wz351oV4c6PMtrUOH/m7rZOPui0yccakFD1+Pm14Y+TUELqkeq
-         xDPA==
+        bh=adpqALW5OiJ/6KTKUpTR9nbyCqab9Z1fb73ApNAsl1M=;
+        b=H3kc/zZbjdRv16+lWuWCTPZwqgFgRV9h93IJtzn6/M5JLkMBys2awcSOKS2ea/3E2e
+         s99se90ZxF5GIl33IjCt85IwowyQjsKmQl30IWyJm7NkvVrLCEY3tyoZXbJT0byE2ub9
+         U1DUaz9oX5Fx9hJdLyYuGlShCr+T3a9c0s8lIX6XeSzWHqhIyU4eL4pZ1kTUwY1NRJDN
+         qkwQ3Imgq05fYNjuRcyd3uDxGngWopWn8orGOiz+B1daQVABQoRz6oNd7reaMTScdTHf
+         NKbTHLMTun5ramDRAlrErJJVgFgMxTvRn0DQDNnDu+95waMLzcKWSt2hmzKeuhE6xfki
+         Etfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753292213; x=1753897013;
+        d=1e100.net; s=20230601; t=1753292215; x=1753897015;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QLwPvI2GvffjhdIVFmDYNGuO77u+LYC11J3gQUdVDAE=;
-        b=T9ZuMt5u7ICyhVvhwWk7xrXRY91x0yAms2Ay+I/OlsncB2wecvF/Ft8AFjihGm4oHK
-         AlaHcysPiXlniEikgH6NszRTCS7Tzl8+g6Kg5QH9EMkOqTEJbe7DaFLM9noZKXFbqSRN
-         otxtbuQ+Pb2lUiLNJzwyFH9lYKq40dSbKKlfKnjmTzh/t3VIee1DO/xDbIhf46tFRtrN
-         hMJE3OI1PEO18d/HgjLCL9VHjTebuHiZwIDWTRHf5sm/JZlueLA25KkogFNrbsmqa4oo
-         WbIUnemmz51qjd+QzeEcg7jtYSkfOQNUqBzc0s1XWX+Hd5veJaFBX4Ex7xsciqgEcY5K
-         JRBQ==
-X-Gm-Message-State: AOJu0YxpIZ+5hmFMENV0w5UhxHz53gftnaFO9hroTJLqyyGZ2+n7fTG+
-	xB2jlzKU7e4d83UfhHyrWXwMiZkRamNs2j84sar0XqqDjzHqTMazPKY6esb5yRPH3g0=
-X-Gm-Gg: ASbGnctU4InOq/h7Z9SseCxKilCJugQmAw9yVE9bpwDMezYca71lS2vTfDdlbJv7YVU
-	OIXDzRTu4+XWTSz9jA4zAt7XAfT/qCocR4cjoVkSjIQDnukjBc0iuKWmHn4eBpyBmlZIidV73UG
-	/HPmOyMUEtIEasUHSO9qfBb2fEu3tuupg+G0VWaiIipQRP+tx8fEy822DV/wC+gKTOjheBHLu0/
-	sNR6i6YJBByV9RCWqKS5wit2zPW32ghI3ttZYLSpOqbG5SbhlB1u+0QKUNvGcLT8f1FfCzpixCn
-	4cRD+bO51puKL9vW+bJvlHOoMMUShVQJn8IWFz2faXhBI3pbfwOPrc2qidAOlqTleoYm+Ys5XaT
-	wYZFXQlmmJ9RlSeJfmVfbcCm7H+jCtIRsgmKcHhLhwgY/KufvkLE0AlcOCVrvofs71VgBIlM=
-X-Google-Smtp-Source: AGHT+IEKt1szq1AgthAoyHz3xsCLWcLUsOd2yTZiQRB78er7+8JcTBfOEed/FITXGWgXbiSpPnnW0Q==
-X-Received: by 2002:a17:907:6e8e:b0:ae8:476c:3b85 with SMTP id a640c23a62f3a-af2f66d4e72mr369058166b.8.1753292212965;
-        Wed, 23 Jul 2025 10:36:52 -0700 (PDT)
+        bh=adpqALW5OiJ/6KTKUpTR9nbyCqab9Z1fb73ApNAsl1M=;
+        b=qUDJkg1bAvMpHyo7DXQvRafTMImrpBekSCxKUnHk7ZSnF9F86eVS80ViRVPhTBNAX7
+         cmXOsaOp+BTi8njuh50BjBPnO2g9LMOZAeTz/vRyaDuKT+rhQW2nYW3tXVqJUn0OJJRZ
+         OZ/iDXjufg0lTPWo63naXEDNOVJ6twUSri81gPOxfn8PwhFMgS9kuF8aCeIoBIDPNlQN
+         meEHnVZbyCKhpBURpOmIEYijBq2EcUhs1DzEg9mKOdd0kNmZJ/FpuZNUy2VoMYQAyFaf
+         9bQUsKW0CyQ1vFPJdyFbr/Vw/C8k01bRfur1O/HWtvVUQnpCbyV50tAgm4genaTB9N1+
+         4FoQ==
+X-Gm-Message-State: AOJu0YzcbbbqpEnGaKmqN+1UTuBLejJmQikYdeiNdnOprfcWj9bmDkGJ
+	+E4BzkmCYYsNq4foE76mbRHOONhw6OYsCHinygkZz3Dl6p6lMOXCG66ILK1AjoJqr6E=
+X-Gm-Gg: ASbGncuxadr2Wx17b9e9r+BvdTi29GG1OLpXlff+fY0n3BmZ8f1rPBGEl89zz4ZeWvO
+	hH46eWyiIQrWria4UuoF2otXpQPMOYTIzWQv9cpR0KmvtdBs/HbXJJtpzJNEGDx2hb89bHXP7HL
+	yCeoXIQQv8wnYPWpeOx5nR22zyVO5uJIqEc2DfITT26CPA5IuEt63HrIHrP7LQtEZWBPTEUVtCq
+	uwUl/Cb2JEpifje4WPFoEs3loe2z3VjMsNm+YI8zjweRIXJgEJ7W/Y4F964PgeEoHhupwV3Df1o
+	UlDJIo6gJlrOfV5NyC1eCAwc/+0j2u+giWw4t0lCe27cNAm7GiJymceBrqzXFa9QKFeFWbaeCEw
+	hNTr5yu1srHdKu01wEU/36mF4iRsAt2bpOwUbYb1GChDSDYacogv/lqLluwllYbrBbrZGzj8=
+X-Google-Smtp-Source: AGHT+IHif332kh9PpOkUuzfuAAwnW5oMFJqU/JVtkUvfGgzmyB2TQ/Sf3Xhr14/ruuw/k6pljEHHwQ==
+X-Received: by 2002:a05:6402:312a:b0:604:e85d:8bb4 with SMTP id 4fb4d7f45d1cf-6149b58ce9cmr2379625a12.21.1753292214896;
+        Wed, 23 Jul 2025 10:36:54 -0700 (PDT)
 Received: from cloudflare.com (79.184.149.187.ipv4.supernova.orange.pl. [79.184.149.187])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-af23e1288f2sm266167866b.65.2025.07.23.10.36.52
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-612c8f3392csm8835193a12.19.2025.07.23.10.36.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jul 2025 10:36:52 -0700 (PDT)
+        Wed, 23 Jul 2025 10:36:54 -0700 (PDT)
 From: Jakub Sitnicki <jakub@cloudflare.com>
-Date: Wed, 23 Jul 2025 19:36:47 +0200
-Subject: [PATCH bpf-next v4 2/8] bpf: Enable read/write access to skb
- metadata through a dynptr
+Date: Wed, 23 Jul 2025 19:36:48 +0200
+Subject: [PATCH bpf-next v4 3/8] selftests/bpf: Cover verifier checks for
+ skb_meta dynptr type
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -84,7 +84,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250723-skb-metadata-thru-dynptr-v4-2-a0fed48bcd37@cloudflare.com>
+Message-Id: <20250723-skb-metadata-thru-dynptr-v4-3-a0fed48bcd37@cloudflare.com>
 References: <20250723-skb-metadata-thru-dynptr-v4-0-a0fed48bcd37@cloudflare.com>
 In-Reply-To: <20250723-skb-metadata-thru-dynptr-v4-0-a0fed48bcd37@cloudflare.com>
 To: bpf@vger.kernel.org
@@ -102,135 +102,389 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
  netdev@vger.kernel.org, Stanislav Fomichev <sdf@fomichev.me>
 X-Mailer: b4 0.15-dev-07fe9
 
-Now that we can create a dynptr to skb metadata, make reads to the metadata
-area possible with bpf_dynptr_read() or through a bpf_dynptr_slice(), and
-make writes to the metadata area possible with bpf_dynptr_write() or
-through a bpf_dynptr_slice_rdwr().
+dynptr for skb metadata behaves the same way as the dynptr for skb data
+with one exception - writes to skb_meta dynptr don't invalidate existing
+skb and skb_meta slices.
 
+Duplicate those the skb dynptr tests which we can, since
+bpf_dynptr_from_skb_meta kfunc can be called only from TC BPF, to cover the
+skb_meta dynptr verifier checks.
+
+Also add a couple of new tests (skb_data_valid_*) to ensure we don't
+invalidate the slices in the mentioned case, which are specific to skb_meta
+dynptr.
+
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 ---
- include/linux/filter.h | 18 ++++++++++++++++++
- kernel/bpf/helpers.c   |  6 +++---
- net/core/filter.c      | 39 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 60 insertions(+), 3 deletions(-)
+ tools/testing/selftests/bpf/prog_tests/dynptr.c    |   1 +
+ tools/testing/selftests/bpf/progs/dynptr_fail.c    | 258 +++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/dynptr_success.c |  22 ++
+ 3 files changed, 281 insertions(+)
 
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index eca229752cbe..d0f39bf6828c 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -1772,6 +1772,9 @@ int __bpf_xdp_store_bytes(struct xdp_buff *xdp, u32 offset, void *buf, u32 len);
- void *bpf_xdp_pointer(struct xdp_buff *xdp, u32 offset, u32 len);
- void bpf_xdp_copy_buf(struct xdp_buff *xdp, unsigned long off,
- 		      void *buf, unsigned long len, bool flush);
-+int bpf_skb_meta_load_bytes(const struct sk_buff *src, u32 off, void *dst, u32 len);
-+int bpf_skb_meta_store_bytes(struct sk_buff *dst, u32 off, const void *src, u32 len);
-+void *bpf_skb_meta_pointer(struct sk_buff *skb, u32 off, u32 len);
- #else /* CONFIG_NET */
- static inline int __bpf_skb_load_bytes(const struct sk_buff *skb, u32 offset,
- 				       void *to, u32 len)
-@@ -1806,6 +1809,21 @@ static inline void bpf_xdp_copy_buf(struct xdp_buff *xdp, unsigned long off, voi
- 				    unsigned long len, bool flush)
+diff --git a/tools/testing/selftests/bpf/prog_tests/dynptr.c b/tools/testing/selftests/bpf/prog_tests/dynptr.c
+index f2b65398afce..23455b8fd926 100644
+--- a/tools/testing/selftests/bpf/prog_tests/dynptr.c
++++ b/tools/testing/selftests/bpf/prog_tests/dynptr.c
+@@ -32,6 +32,7 @@ static struct {
+ 	{"test_ringbuf", SETUP_SYSCALL_SLEEP},
+ 	{"test_skb_readonly", SETUP_SKB_PROG},
+ 	{"test_dynptr_skb_data", SETUP_SKB_PROG},
++	{"test_dynptr_skb_meta_data", SETUP_SKB_PROG},
+ 	{"test_adjust", SETUP_SYSCALL_SLEEP},
+ 	{"test_adjust_err", SETUP_SYSCALL_SLEEP},
+ 	{"test_zero_size_dynptr", SETUP_SYSCALL_SLEEP},
+diff --git a/tools/testing/selftests/bpf/progs/dynptr_fail.c b/tools/testing/selftests/bpf/progs/dynptr_fail.c
+index bd8f15229f5c..136e382e913b 100644
+--- a/tools/testing/selftests/bpf/progs/dynptr_fail.c
++++ b/tools/testing/selftests/bpf/progs/dynptr_fail.c
+@@ -269,6 +269,26 @@ int data_slice_out_of_bounds_skb(struct __sk_buff *skb)
+ 	return SK_PASS;
+ }
+ 
++/* A metadata slice can't be accessed out of bounds */
++SEC("?tc")
++__failure __msg("value is outside of the allowed memory range")
++int data_slice_out_of_bounds_skb_meta(struct __sk_buff *skb)
++{
++	struct bpf_dynptr meta;
++	__u8 *md;
++
++	bpf_dynptr_from_skb_meta(skb, 0, &meta);
++
++	md = bpf_dynptr_slice_rdwr(&meta, 0, NULL, sizeof(*md));
++	if (!md)
++		return SK_DROP;
++
++	/* this should fail */
++	*(md + 1) = 42;
++
++	return SK_PASS;
++}
++
+ SEC("?raw_tp")
+ __failure __msg("value is outside of the allowed memory range")
+ int data_slice_out_of_bounds_map_value(void *ctx)
+@@ -1089,6 +1109,26 @@ int skb_invalid_slice_write(struct __sk_buff *skb)
+ 	return SK_PASS;
+ }
+ 
++/* bpf_dynptr_slice()s are read-only and cannot be written to */
++SEC("?tc")
++__failure __msg("R{{[0-9]+}} cannot write into rdonly_mem")
++int skb_meta_invalid_slice_write(struct __sk_buff *skb)
++{
++	struct bpf_dynptr meta;
++	__u8 *md;
++
++	bpf_dynptr_from_skb_meta(skb, 0, &meta);
++
++	md = bpf_dynptr_slice(&meta, 0, NULL, sizeof(*md));
++	if (!md)
++		return SK_DROP;
++
++	/* this should fail */
++	*md = 42;
++
++	return SK_PASS;
++}
++
+ /* The read-only data slice is invalidated whenever a helper changes packet data */
+ SEC("?tc")
+ __failure __msg("invalid mem access 'scalar'")
+@@ -1115,6 +1155,29 @@ int skb_invalid_data_slice1(struct __sk_buff *skb)
+ 	return SK_PASS;
+ }
+ 
++/* Read-only skb metadata slice is invalidated whenever a helper changes packet data */
++SEC("?tc")
++__failure __msg("invalid mem access 'scalar'")
++int skb_meta_invalid_data_slice1(struct __sk_buff *skb)
++{
++	struct bpf_dynptr meta;
++	__u8 *md;
++
++	bpf_dynptr_from_skb_meta(skb, 0, &meta);
++
++	md = bpf_dynptr_slice(&meta, 0, NULL, sizeof(*md));
++	if (!md)
++		return SK_DROP;
++
++	if (bpf_skb_pull_data(skb, skb->len))
++		return SK_DROP;
++
++	/* this should fail */
++	val = *md;
++
++	return SK_PASS;
++}
++
+ /* The read-write data slice is invalidated whenever a helper changes packet data */
+ SEC("?tc")
+ __failure __msg("invalid mem access 'scalar'")
+@@ -1141,6 +1204,29 @@ int skb_invalid_data_slice2(struct __sk_buff *skb)
+ 	return SK_PASS;
+ }
+ 
++/* Read-write skb metadata slice is invalidated whenever a helper changes packet data */
++SEC("?tc")
++__failure __msg("invalid mem access 'scalar'")
++int skb_meta_invalid_data_slice2(struct __sk_buff *skb)
++{
++	struct bpf_dynptr meta;
++	__u8 *md;
++
++	bpf_dynptr_from_skb_meta(skb, 0, &meta);
++
++	md = bpf_dynptr_slice_rdwr(&meta, 0, NULL, sizeof(*md));
++	if (!md)
++		return SK_DROP;
++
++	if (bpf_skb_pull_data(skb, skb->len))
++		return SK_DROP;
++
++	/* this should fail */
++	*md = 42;
++
++	return SK_PASS;
++}
++
+ /* The read-only data slice is invalidated whenever bpf_dynptr_write() is called */
+ SEC("?tc")
+ __failure __msg("invalid mem access 'scalar'")
+@@ -1167,6 +1253,74 @@ int skb_invalid_data_slice3(struct __sk_buff *skb)
+ 	return SK_PASS;
+ }
+ 
++/* Read-only skb metadata slice is invalidated on write to skb data */
++SEC("?tc")
++__failure __msg("invalid mem access 'scalar'")
++int skb_meta_invalid_data_slice3(struct __sk_buff *skb)
++{
++	struct bpf_dynptr data, meta;
++	__u8 *md;
++
++	bpf_dynptr_from_skb(skb, 0, &data);
++	bpf_dynptr_from_skb_meta(skb, 0, &meta);
++
++	md = bpf_dynptr_slice(&meta, 0, NULL, sizeof(*md));
++	if (!md)
++		return SK_DROP;
++
++	bpf_dynptr_write(&data, 0, "x", 1, 0);
++
++	/* this should fail */
++	val = *md;
++
++	return SK_PASS;
++}
++
++/* Read-only skb data slice is _not_ invalidated on write to skb metadata */
++SEC("?tc")
++__success
++int skb_valid_data_slice3(struct __sk_buff *skb)
++{
++	struct bpf_dynptr data, meta;
++	__u8 *d;
++
++	bpf_dynptr_from_skb(skb, 0, &data);
++	bpf_dynptr_from_skb_meta(skb, 0, &meta);
++
++	d = bpf_dynptr_slice(&data, 0, NULL, sizeof(*d));
++	if (!d)
++		return SK_DROP;
++
++	bpf_dynptr_write(&meta, 0, "x", 1, 0);
++
++	/* this should succeed */
++	val = *d;
++
++	return SK_PASS;
++}
++
++/* Read-only skb metadata slice is _not_ invalidated on write to skb metadata */
++SEC("?tc")
++__success
++int skb_meta_valid_data_slice3(struct __sk_buff *skb)
++{
++	struct bpf_dynptr meta;
++	__u8 *md;
++
++	bpf_dynptr_from_skb_meta(skb, 0, &meta);
++
++	md = bpf_dynptr_slice(&meta, 0, NULL, sizeof(*md));
++	if (!md)
++		return SK_DROP;
++
++	bpf_dynptr_write(&meta, 0, "x", 1, 0);
++
++	/* this should succeed */
++	val = *md;
++
++	return SK_PASS;
++}
++
+ /* The read-write data slice is invalidated whenever bpf_dynptr_write() is called */
+ SEC("?tc")
+ __failure __msg("invalid mem access 'scalar'")
+@@ -1192,6 +1346,74 @@ int skb_invalid_data_slice4(struct __sk_buff *skb)
+ 	return SK_PASS;
+ }
+ 
++/* Read-write skb metadata slice is invalidated on write to skb data slice */
++SEC("?tc")
++__failure __msg("invalid mem access 'scalar'")
++int skb_meta_invalid_data_slice4(struct __sk_buff *skb)
++{
++	struct bpf_dynptr data, meta;
++	__u8 *md;
++
++	bpf_dynptr_from_skb(skb, 0, &data);
++	bpf_dynptr_from_skb_meta(skb, 0, &meta);
++
++	md = bpf_dynptr_slice_rdwr(&meta, 0, NULL, sizeof(*md));
++	if (!md)
++		return SK_DROP;
++
++	bpf_dynptr_write(&data, 0, "x", 1, 0);
++
++	/* this should fail */
++	*md = 42;
++
++	return SK_PASS;
++}
++
++/* Read-write skb data slice is _not_ invalidated on write to skb metadata */
++SEC("?tc")
++__success
++int skb_valid_data_slice4(struct __sk_buff *skb)
++{
++	struct bpf_dynptr data, meta;
++	__u8 *d;
++
++	bpf_dynptr_from_skb(skb, 0, &data);
++	bpf_dynptr_from_skb_meta(skb, 0, &meta);
++
++	d = bpf_dynptr_slice_rdwr(&data, 0, NULL, sizeof(*d));
++	if (!d)
++		return SK_DROP;
++
++	bpf_dynptr_write(&meta, 0, "x", 1, 0);
++
++	/* this should succeed */
++	*d = 42;
++
++	return SK_PASS;
++}
++
++/* Read-write skb metadata slice is _not_ invalidated on write to skb metadata */
++SEC("?tc")
++__success
++int skb_meta_valid_data_slice4(struct __sk_buff *skb)
++{
++	struct bpf_dynptr meta;
++	__u8 *md;
++
++	bpf_dynptr_from_skb_meta(skb, 0, &meta);
++
++	md = bpf_dynptr_slice_rdwr(&meta, 0, NULL, sizeof(*md));
++	if (!md)
++		return SK_DROP;
++
++	bpf_dynptr_write(&meta, 0, "x", 1, 0);
++
++	/* this should succeed */
++	*md = 42;
++
++	return SK_PASS;
++}
++
+ /* The read-only data slice is invalidated whenever a helper changes packet data */
+ SEC("?xdp")
+ __failure __msg("invalid mem access 'scalar'")
+@@ -1255,6 +1477,19 @@ int skb_invalid_ctx(void *ctx)
+ 	return 0;
+ }
+ 
++/* Only supported prog type can create skb_meta-type dynptrs */
++SEC("?raw_tp")
++__failure __msg("calling kernel function bpf_dynptr_from_skb_meta is not allowed")
++int skb_meta_invalid_ctx(void *ctx)
++{
++	struct bpf_dynptr meta;
++
++	/* this should fail */
++	bpf_dynptr_from_skb_meta(ctx, 0, &meta);
++
++	return 0;
++}
++
+ SEC("fentry/skb_tx_error")
+ __failure __msg("must be referenced or trusted")
+ int BPF_PROG(skb_invalid_ctx_fentry, void *skb)
+@@ -1665,6 +1900,29 @@ int clone_skb_packet_data(struct __sk_buff *skb)
+ 	return 0;
+ }
+ 
++/* A skb clone's metadata slice becomes invalid anytime packet data changes */
++SEC("?tc")
++__failure __msg("invalid mem access 'scalar'")
++int clone_skb_packet_meta(struct __sk_buff *skb)
++{
++	struct bpf_dynptr clone, meta;
++	__u8 *md;
++
++	bpf_dynptr_from_skb_meta(skb, 0, &meta);
++	bpf_dynptr_clone(&meta, &clone);
++	md = bpf_dynptr_slice_rdwr(&clone, 0, NULL, sizeof(*md));
++	if (!md)
++		return SK_DROP;
++
++	if (bpf_skb_pull_data(skb, skb->len))
++		return SK_DROP;
++
++	/* this should fail */
++	*md = 42;
++
++	return 0;
++}
++
+ /* A xdp clone's data slices should be invalid anytime packet data changes */
+ SEC("?xdp")
+ __failure __msg("invalid mem access 'scalar'")
+diff --git a/tools/testing/selftests/bpf/progs/dynptr_success.c b/tools/testing/selftests/bpf/progs/dynptr_success.c
+index 7d7081d05d47..2d8ba076e37c 100644
+--- a/tools/testing/selftests/bpf/progs/dynptr_success.c
++++ b/tools/testing/selftests/bpf/progs/dynptr_success.c
+@@ -209,6 +209,28 @@ int test_dynptr_skb_data(struct __sk_buff *skb)
+ 	return 1;
+ }
+ 
++SEC("?tc")
++int test_dynptr_skb_meta_data(struct __sk_buff *skb)
++{
++	struct bpf_dynptr meta;
++	__u8 *md;
++	int ret;
++
++	err = 1;
++	ret = bpf_dynptr_from_skb_meta(skb, 0, &meta);
++	if (ret)
++		return 1;
++
++	/* This should return NULL. Must use bpf_dynptr_slice API */
++	err = 2;
++	md = bpf_dynptr_data(&meta, 0, sizeof(*md));
++	if (md)
++		return 1;
++
++	err = 0;
++	return 1;
++}
++
+ SEC("tp/syscalls/sys_enter_nanosleep")
+ int test_adjust(void *ctx)
  {
- }
-+
-+static inline int bpf_skb_meta_load_bytes(const struct sk_buff *src, u32 off, void *dst, u32 len)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static inline int bpf_skb_meta_store_bytes(struct sk_buff *dst, u32 off, const void *src, u32 len)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static inline void *bpf_skb_meta_pointer(struct sk_buff *skb, u32 off, u32 len)
-+{
-+	return NULL;
-+}
- #endif /* CONFIG_NET */
- 
- #endif /* __LINUX_FILTER_H__ */
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 9552b32208c5..237fb5f9d625 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1781,7 +1781,7 @@ static int __bpf_dynptr_read(void *dst, u32 len, const struct bpf_dynptr_kern *s
- 	case BPF_DYNPTR_TYPE_XDP:
- 		return __bpf_xdp_load_bytes(src->data, src->offset + offset, dst, len);
- 	case BPF_DYNPTR_TYPE_SKB_META:
--		return -EOPNOTSUPP; /* not implemented */
-+		return bpf_skb_meta_load_bytes(src->data, src->offset + offset, dst, len);
- 	default:
- 		WARN_ONCE(true, "bpf_dynptr_read: unknown dynptr type %d\n", type);
- 		return -EFAULT;
-@@ -1839,7 +1839,7 @@ int __bpf_dynptr_write(const struct bpf_dynptr_kern *dst, u32 offset, void *src,
- 			return -EINVAL;
- 		return __bpf_xdp_store_bytes(dst->data, dst->offset + offset, src, len);
- 	case BPF_DYNPTR_TYPE_SKB_META:
--		return -EOPNOTSUPP; /* not implemented */
-+		return bpf_skb_meta_store_bytes(dst->data, dst->offset + offset, src, len);
- 	default:
- 		WARN_ONCE(true, "bpf_dynptr_write: unknown dynptr type %d\n", type);
- 		return -EFAULT;
-@@ -2716,7 +2716,7 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr *p, u32 offset,
- 		return buffer__opt;
- 	}
- 	case BPF_DYNPTR_TYPE_SKB_META:
--		return NULL; /* not implemented */
-+		return bpf_skb_meta_pointer(ptr->data, ptr->offset + offset, len);
- 	default:
- 		WARN_ONCE(true, "unknown dynptr type %d\n", type);
- 		return NULL;
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 0755dfc0fc2f..cf095897d4c1 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -11978,6 +11978,45 @@ bpf_sk_base_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 	return func;
- }
- 
-+static void *skb_metadata_pointer(const struct sk_buff *skb, u32 off, u32 len)
-+{
-+	u32 meta_len = skb_metadata_len(skb);
-+
-+	if (len > meta_len || off > meta_len - len)
-+		return ERR_PTR(-E2BIG); /* out of bounds */
-+
-+	return skb_metadata_end(skb) - meta_len + off;
-+}
-+
-+int bpf_skb_meta_load_bytes(const struct sk_buff *src, u32 off, void *dst, u32 len)
-+{
-+	const void *p = skb_metadata_pointer(src, off, len);
-+
-+	if (IS_ERR(p))
-+		return PTR_ERR(p);
-+
-+	memmove(dst, p, len);
-+	return 0;
-+}
-+
-+int bpf_skb_meta_store_bytes(struct sk_buff *dst, u32 off, const void *src, u32 len)
-+{
-+	void *p = skb_metadata_pointer(dst, off, len);
-+
-+	if (IS_ERR(p))
-+		return PTR_ERR(p);
-+
-+	memmove(p, src, len);
-+	return 0;
-+}
-+
-+void *bpf_skb_meta_pointer(struct sk_buff *skb, u32 off, u32 len)
-+{
-+	void *p = skb_metadata_pointer(skb, off, len);
-+
-+	return IS_ERR(p) ? NULL : p;
-+}
-+
- __bpf_kfunc_start_defs();
- __bpf_kfunc int bpf_dynptr_from_skb(struct __sk_buff *s, u64 flags,
- 				    struct bpf_dynptr *ptr__uninit)
 
 -- 
 2.43.0
