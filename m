@@ -1,658 +1,273 @@
-Return-Path: <bpf+bounces-64205-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64206-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96FDDB0FA89
-	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 20:57:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8305CB0FA98
+	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 21:01:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CC331AA7441
-	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 18:57:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AAB7F587F8D
+	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 19:01:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BC52228CB8;
-	Wed, 23 Jul 2025 18:57:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE2F3204F73;
+	Wed, 23 Jul 2025 19:01:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="ggWql5De"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="glNOLmia";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="pjgU/EUt"
 X-Original-To: bpf@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C7301DE2DE;
-	Wed, 23 Jul 2025 18:57:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753297029; cv=none; b=l4hdQBp7J9OzJUjWqe13MdCmGl1GHWPYk5pe2tfUi907jSYxkmUOfjOaIJgzXwzCJxbUGSk0ty0fODzY+n4mBzONqc9GgmrCN5bZ7I0It31wPv7+mpbOwm70qsyETfemTmRLHMi2UCLeLTtiM/C2bznwKkcEISjq+MctInJW0p8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753297029; c=relaxed/simple;
-	bh=1pdO3xQX9ZiWPr/mrU+7/w8/Rw4NA64MEUh5HJsxIBQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ny5FwdHgblPNQbfih3pxnBdx7SnY/9UFFvXd4SyspJkS7v3lWji04KQuT7PVLV5BCKZzn3nqTtW0sioSi95i1SeQQNSSpEXG8zTlRMxIM4Wopa/QuXOdk8ucV+fDqbiIzF3hFQlHEX32I1yqNn6LxITVrspXlgOhLKeJgMT71Vo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=ggWql5De; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1204)
-	id 918A5201657D; Wed, 23 Jul 2025 11:57:06 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 918A5201657D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1753297026;
-	bh=fdUlepUEgkZhZD2V9VB8bb3OKlCd2kCf6lff3ztogl8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ggWql5DeForUtDzNIudbHl7Ej2o5uqXZBHIxrPv9IaevtdIjKGnJo7fj/NXvI4a6i
-	 ynYpzpdeC63dJ+9xzEF94LVR0ewKSRrOg3wCeJwXdBmeHYc+IUKQettO6WxgLNAf6V
-	 IXqeRoeNf2i867JBE9IhIg1uSQgGeZxZbaIx47EM=
-Date: Wed, 23 Jul 2025 11:57:06 -0700
-From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-To: Saurabh Singh Sengar <ssengar@linux.microsoft.com>
-Cc: kuba@kernel.org, kys@microsoft.com, haiyangz@microsoft.com,
-	wei.liu@kernel.org, decui@microsoft.com, andrew+netdev@lunn.ch,
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
-	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-	john.fastabend@gmail.com, sdf@fomichev.me, lorenzo@kernel.org,
-	michal.kubiak@intel.com, ernis@linux.microsoft.com,
-	shradhagupta@linux.microsoft.com, shirazsaleem@microsoft.com,
-	rosenp@gmail.com, netdev@vger.kernel.org,
-	linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH] net: mana: Use page pool fragments for RX buffers
- instead of full pages to improve memory efficiency and throughput.
-Message-ID: <20250723185706.GA31952@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <20250721101417.GA18873@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20250723073804.GA19640@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FBF9229B38;
+	Wed, 23 Jul 2025 19:00:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1753297264; cv=fail; b=FD1K9jdYbvaoEb6jncNQK/vzD9UuyljKzubQg/wi5Ytcq3teGMe5yFf+YkKd8zk/6cOyFA1Dff8wYdAJUofl489qPC22wp4/Im+EUud2z2rEMA7+oOEfl9zmgTHsBWUZxfxAkQuV3WFN+1yeZnB0tY3pYjulJbr0F55HMxhN/B0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1753297264; c=relaxed/simple;
+	bh=9jqTFl43oTEtBSFJFpFSsgwFBfgKxeu+PRiOVclHs/g=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=AeU0eSlwXVb+JACM2F45UND6MxKgsQcdgcRpiCc1E9vROiVPekGKnIwa5sZvnBtoa2f6rIyClN1PvVtVzR3zF2r3Gyr/6HkMRhYqSeTxhpVPaOIZnzwHt9Ut9h6edNwYOu+y8NGbGxW+U0WQs0vDO/LYr8UKU5uupS5FcVPeCYA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=glNOLmia; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=pjgU/EUt; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56NHts8k009413;
+	Wed, 23 Jul 2025 19:00:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	corp-2025-04-25; bh=n41CdZjS+k2cl2AYUmmN5v+Ib0cGNBbCo3IeWJv1fDs=; b=
+	glNOLmias4bjSVfK3dfb6vjTcR6pXrV0ieqZ1QD3wOxm+7L1cFtYPR/PId4/UHM4
+	BHVpIyiYiaalan5IgLtyvRGMGpf1T3EVBn7QxFFo4uNhyhM1wO/G1msYu5HtxXLC
+	UHi9mPXMHicSX/t7HgRzjg6GjJ4A2rP3cdH6V1nx+b+1rqLRy6ZnwKizt+0EAeOF
+	YWhV0Nga+YBds1H40L7HM2hPY37RiGWVlfnp8viWm3Xc0n4mswiYZk1L/MfM6tE5
+	Lkc9vttRubwmOWZPXJjj4tEE9WOfM0amQPuMTs76b4aSrDL+/DU86ZdGUWSqMdsb
+	dKA5Qfwy5TrucAxoq8A7Rw==
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4805e2g6fk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 23 Jul 2025 19:00:42 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 56NIZIdO011321;
+	Wed, 23 Jul 2025 19:00:41 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12on2087.outbound.protection.outlook.com [40.107.237.87])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 4801taxcqw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 23 Jul 2025 19:00:41 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=HMQ4plNbaWKsls/S/hiHxc1xSxi4mW+XYEqErADSHlpayUDRvAT9R7lltcoQAntWYyXOsNdQ0cER2jTqx7+1st7SCgXVsGh0wb8/jr7zfQCwpYckAG6kSHzSGGeGszpeAXcis+twYTWi8dffv+EMJwxHtDmQcGhvqdTPjLAxXdXNRF0axyie0R9DsLQ0ilNUVv3LyGZKScBMTm0WYj1XDO9z/oPjpSuOGoDo99TwYotTSXv3j/62CpSmLdS35Ew7TsKcIKwiYg+b10C2ychJNj+/2m0hTdiXENrq26GjVRVM/Zp6Sw1rmbNR8LIt8WdVsXC5XaazVX8RB21gXyQQAg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=n41CdZjS+k2cl2AYUmmN5v+Ib0cGNBbCo3IeWJv1fDs=;
+ b=KI196ul/z+O6WX4e8gmb0JtPOlPDEr7g03P4ahdqA5CrzgwjfUW52PRx1VfAVM4iiJrStBM7v9KHtZI/WgCjNmRIaaId5A43sXMLVct0h9KpsV09zuGFcdIgLdmyglFli3H2T4xlVNzJ4ncyUDC8qJygNYSgdZh/3jotcjr5TtbLXkIa3TTzUex6trrVkNH9zMroyOoZBa8iThZZrqKWXWkJ7TJzi+6ikBQWRrlaRjYewcZWaYwEcZPaUup5iDOiWxvMbSOpfcGfGPzz6BfOBU2M2cNxJFoQa9rWn7AT1OYDoImvTFU6dSBEE755GQWu4H7Q+4P6v+gFwAdOhgNr3g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n41CdZjS+k2cl2AYUmmN5v+Ib0cGNBbCo3IeWJv1fDs=;
+ b=pjgU/EUtRfiNrJ89XTG7NRi6yZeILL/q7z+5lJLYasAWTe2KXq/TRLLOmalWHKuGnxQVU2hkqyr+LL7Jrgks3fuKuCXmvPRL5JXzIrHnu0YbzLJG8CUdk6AcxPiS1f0iWsowAAfbKpFbVhys8lEtRK4jscJPTh1B2RzzYM0/aXU=
+Received: from DS0PR10MB6271.namprd10.prod.outlook.com (2603:10b6:8:d1::15) by
+ CO1PR10MB4579.namprd10.prod.outlook.com (2603:10b6:303:96::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8964.21; Wed, 23 Jul 2025 19:00:36 +0000
+Received: from DS0PR10MB6271.namprd10.prod.outlook.com
+ ([fe80::940b:88ca:dd2d:6b0c]) by DS0PR10MB6271.namprd10.prod.outlook.com
+ ([fe80::940b:88ca:dd2d:6b0c%6]) with mapi id 15.20.8964.019; Wed, 23 Jul 2025
+ 19:00:36 +0000
+Message-ID: <92260366-5a4f-42bb-8306-2d8e25aba4e8@oracle.com>
+Date: Wed, 23 Jul 2025 20:00:31 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] pahole: Don't fail when encoding BTF on an object
+ with no DWARF info
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: dwarves@vger.kernel.org, bpf@vger.kernel.org
+References: <aH-eo6xY98cxBT1-@x1>
+Content-Language: en-GB
+From: Alan Maguire <alan.maguire@oracle.com>
+In-Reply-To: <aH-eo6xY98cxBT1-@x1>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AS4P189CA0022.EURP189.PROD.OUTLOOK.COM
+ (2603:10a6:20b:5db::6) To DS0PR10MB6271.namprd10.prod.outlook.com
+ (2603:10b6:8:d1::15)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250723073804.GA19640@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR10MB6271:EE_|CO1PR10MB4579:EE_
+X-MS-Office365-Filtering-Correlation-Id: 530e4728-cd6d-4350-3a43-08ddca1b3508
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?YnpzeHlydXJnUkV3Q21LQzA4MjN1a2pNZlZXTlpTLzF2U2tKdnZ3ZzRCTUg4?=
+ =?utf-8?B?Z2NyTjNCekZKdGkyRzQyUU8yMGIydGZUalZBVEx4UzhBY0FqYytIKzM3dGVD?=
+ =?utf-8?B?OVRKOVhhRXJtRjJXdk4yVE5YMlZnZjBUbGZuYkpWZzJ5YjN2bzVGa0VKd2xE?=
+ =?utf-8?B?RmhOMHZQQ3A5RjAwQnhucXllRDZpemY0OXFWS0crWGx0Z01IeW1hSGRjOVVM?=
+ =?utf-8?B?NzQzT2lGSU9nNHJlbUVMaEtGNzJYcjIwVDJ2RmdKUmd0SGhIQVBjSkNpY2wv?=
+ =?utf-8?B?Y3dRWVMwRVBKSVl4UWp6WHY1VElwa2g5cTdPazNuN3BHR0tkakplOS81S0FD?=
+ =?utf-8?B?VFZWZFBIT1ZDQ2ZNTjZMZ2ZveFhRU3R3ejZMSjlrSXhQSWdjdVM3RDliWUQ2?=
+ =?utf-8?B?OXlFNE5WWDJOdkZPTHQva2M1dUR2VDRYRm1zVG1Fb2JiNEVlNmMvK0J2aUZW?=
+ =?utf-8?B?eS83MGVlZ3JlK1lKU2xQVytHdzQ0TURSTDNZVFFpWXRwaVNNMThoRFNBR1Bz?=
+ =?utf-8?B?K1YvcnIxdGhlNll0U2tJSHBsRi9QZ09BWDdQUjhsNmhEM2xreGk2YlR0cUtH?=
+ =?utf-8?B?MVNzbHNtMkJDVU11YkhaLzlWbjljWG1KblFIMFJhdk1vQTJIOXo2NkVabUNu?=
+ =?utf-8?B?L2NqaGhZSzBIaWlJMG03RDc5MkpZazRRR3EzcGlZL2FqYWVVdzYyajlxL1p0?=
+ =?utf-8?B?VXdycGJNRFYxQVZ0VDZjSXMzVWpHcjhRUVYyczE5dXkyU1BVYnF6NVJ5cFVZ?=
+ =?utf-8?B?cUNuRlR5ODJaQ1IrTE1icGZtbEdCVC9aRHpyKzdnMXRPM1NoQ3AyMTRGVmNk?=
+ =?utf-8?B?ejZVY0ZUOTRxWi81dDlMbk9HRXQ3TmNrNC9EMkNMOXlXY1ZmUWx4UjRvZ3FL?=
+ =?utf-8?B?OEJ3cGY2Smx4amNSV04ya0ZEQXhGdTBkR2hSdjJra0d1ZS9VV2NHY2JiTTdT?=
+ =?utf-8?B?MHJ5TW5FN1VEYUovMDZ4N0dEUXdBQmdjNytLQjgrNjVCZmUxeUdOTFE0eXJv?=
+ =?utf-8?B?OHRqN3JkRjdjNWlEWTdBV0l2cDFzMmhNVHdpL0Q5U1oyMzE1YWJrS3pFZUFQ?=
+ =?utf-8?B?VzBGVHZHR3IyYXpyWXBlVTBrbWo3cG5VYW53ZEdHeXpiK0IrWTBNdXlNYUZv?=
+ =?utf-8?B?dEYxcGxZMTA3Zm5aNVN2eC80WGhlOVBZK3U3aDdkTldUcllVbkM0L2IvMG5l?=
+ =?utf-8?B?MXcvMDdnMC9Sajlvd3JRTlVGY1d0blkrUWtBRnI2TG9qR1VnZXBYY2VmRWk0?=
+ =?utf-8?B?VlVuQkZzOHBmczZIMTZ1TFBVaE4rMStIcGtKNmdlV1ZZb0J0dlhCTjRURC94?=
+ =?utf-8?B?S1VSVU1iR0M4ZFdRZUlQZVFXb1BXR3BPWXY0Q1dzdGF1TXZhd1c1RW5WM1NW?=
+ =?utf-8?B?eHgwNTNacUp1ekU5aGxkR0V6ZEkwL1VpVXY1dHN4VUZLQ1VPenFWdzFLMmpP?=
+ =?utf-8?B?T2s4MzBwWkNlQmEzdE8yUmtJYzdNTXh3elNFSzRjd0IzZ1dUWUNqN21UbmRm?=
+ =?utf-8?B?NU5HSVN4UWF5QVdZTWgxQVQ4ODJpbFRRTUFoTlFDR2Y2NEdBdW5wV09pZ29X?=
+ =?utf-8?B?TGhOejVPcVZyeUVKMDR4a2dzT09OMk4zTUhaVkV0Y3ZRSUJBRUVOcTFJaDM5?=
+ =?utf-8?B?THpnTTl4d1pzblIyT1hvaW9Kc3dtN1MwVXRiVktuRVNMNVR4WmpxMTkxNTJD?=
+ =?utf-8?B?SFR5YXBZM3V4MmRTbnhWd0g4RDVlZWhUczhtU3crVnVPeXZoS1VubGxHb0xQ?=
+ =?utf-8?B?Yi9RNHFYM2NYWmlxd1A3NVE2WFVyNS9Kc0pvUzJPMlZURmZXQ0VScW1sQ0Z6?=
+ =?utf-8?B?NzlQV05GME5KNHUveHd1Q1VwM1dVY1VRckZ5R3BnV0wvb3VueUtid0w0VFFk?=
+ =?utf-8?B?N3FpdzBmbkNIaEJTb2huS2lCdWhyam4vWTBpRTJxcFNTeHVtbDQ4cVdxa2hy?=
+ =?utf-8?Q?CLT5wDVJbG8=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR10MB6271.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?MkhzbHBXMGZidXBmQVJhR0s4UDA0ekZOeFA5Y01sWEJqQXZlRkFyc2VJK3RS?=
+ =?utf-8?B?T2ZEUDhxRlRuaXZmN05iTmllaFpaNG8rckxjQjJxY2xObWpyTllYQi9vaXdt?=
+ =?utf-8?B?ZFkvQm5iV1I3cEhkbTlMSDlST3oybVdNSlk0aVlaaDRKOHNveCtlQnJsWWZN?=
+ =?utf-8?B?VkVQUnN0UjIyMDBLclN0azRJREo3QWlhWitxYzBVdDZYUEZCQ1Z3bllnOVFE?=
+ =?utf-8?B?bUJPMlpRbElNclJnZElYV1FodDhObUJxWXJubzQ1Z1RwQXA1dlRaV1FMcTcr?=
+ =?utf-8?B?dzZFUGl0SXZvWS9ROUVRd05Ya1ByRXhXcEJUQWI2cWNodjlUcCtZMU1ENEhX?=
+ =?utf-8?B?UGFtL2oxNFhSOVJUcXFPTi9KVjNkWTJoM1o5SVRFdXlzNXIvdEdDRWg1YTJT?=
+ =?utf-8?B?VHEyUVFTMUovaWZKK2NrYStjL3E3czFIcU83UHdRWEJlSWovWTdNbjVKMFR0?=
+ =?utf-8?B?cVJOb0VhVU1BWVREOFlhS1FjRk8wRldSSlBacUlvMXFFRmp2bklZR3RBL0Fx?=
+ =?utf-8?B?TUVHbFU4bHl2cUJiaWNNV05zbFBqMzYzYjh3Qk1mVU1pZU9pZE5wL3A4SDQ0?=
+ =?utf-8?B?NDlrdmk5Q3ppYmNFU1hOYmZwbWxXZXlLdHZZWXQ0L3dBMGM2TGtBNXp1U0d0?=
+ =?utf-8?B?S0I3aGtQZkJMbnpJN2FzZjcyc2Y0SytDZmk3YVZ6ejFBNFh1dHJmV28xZ3RQ?=
+ =?utf-8?B?a2tpMGdrS0w2UEM3RWZjOURvclZsZWM4RmJRdGtOUCs5T2R3YVhWcktmcTVy?=
+ =?utf-8?B?UlpFaUJxZk5xRklIWjdTTjlQa3l0Q0VzZldTbk9LQkNlVTkveUtoVFZjWEJT?=
+ =?utf-8?B?SzFnWDRoS21MVlZJTWU2bDJhYzdWUnlQOTU3djVvWXgrRG44YWkxVnVzckxP?=
+ =?utf-8?B?UnBJL084OUhwNzJjTHpoN1g4NmpVUjdPZ29VSFV6a2hhK0l2ZEpsL0NmWkF1?=
+ =?utf-8?B?UDlnWjE1a25US0t2K2xWT1dUZ2VBOTJEWVhJTlpTQ2xRTFVuRXpKZlpuWlVX?=
+ =?utf-8?B?YzEybWRVcGlKdUNYSW81Q3AzeCt5ZStLYStnMkx4T3V3SGw4MVhwb3FWeVJi?=
+ =?utf-8?B?TUhlTWRKWnE2N1pDTi9mSVUyVmYwb2tyVzJjNXQ1SW5QTEQ5QVBBQml0ZzNl?=
+ =?utf-8?B?RWVQeE5Cbk9NZWxFSmtTWE1qZnJRb1IyazZCSU9GUEpEVXlWT25Oc00xVWJW?=
+ =?utf-8?B?TWRLeHM2MTN1NVVqb3FqSi9RTnZ3Ynl3K2VCb3dYY2MydStJNWUraHY5dE5L?=
+ =?utf-8?B?RzBjeXNtOEdNaTlZTXRSakZNd1g4V29wdXk1ZW5rdkdPUFpIQndVdmR2cDhN?=
+ =?utf-8?B?QlFEaVhXcDUzVWtVeHdZVUdhaTR4dm9LWlRUTWkwdkNHaFR4dGZYeDlrM2lB?=
+ =?utf-8?B?ai9xRElCNy9YNVMxaFQrU2JmaGRqMUcxUmRsU1FIZ2I2cG9LbDJZbGJFOFFs?=
+ =?utf-8?B?cHFsbkN4TVMweWJmVm9oVDhrY0h2UDZVUzlPUmJ5SktwL2t4MVpEQXRQWFpE?=
+ =?utf-8?B?WE5hYkxxTVVWNUErTXlZOXNjTVJSTW5OZEJmeDdQR3ZzUEp1Y25jd3ppWXRk?=
+ =?utf-8?B?ZjNOdXdrNDBQTnU1YzloRzVocVlUK1gvdi9TWWFRNjBXT1UyY2pLcGZBeDh1?=
+ =?utf-8?B?TkdTNk1yYXQvNi9US2VvSlBvTy9jbzY4RGRqeWRHUWwzUG5TMzdzZktwU2pS?=
+ =?utf-8?B?SXBPM3ZobUJxMlZIb1psL1RYS3BscXhDMGFrbHhHbzRSRXNwZCtubldUSnFP?=
+ =?utf-8?B?S1cwMUtLYWh5dWViNzNaM3dNUHFFMkt2Rk1FYlc5K01od3hrZDl4NGgrMGFa?=
+ =?utf-8?B?czFzOEMzQUtrNHNZOFQvUzYySUtvazZiRDB6ZmRPcTdKWTJaSGlxVVp2c1Z6?=
+ =?utf-8?B?U2EvbjhzanhKS1lGN0JCUXRTcUFhNWpwMjFySytJNGRJVHpiSklMYStIbmRp?=
+ =?utf-8?B?ZkJZS29XUDRYbTlpSUtyUVVhUUVXejBKcmlUZ0lzYVRwd2x6WngrM2EwYUhK?=
+ =?utf-8?B?SzRoTWNoRTU5OEY1VU1jemJqNnFEeHk4WWRyT0h4WDFZNHZFVTNqNEZEcjdJ?=
+ =?utf-8?B?UlJsbUhxQ3hnMCtwOVJ1dUtiMVhiVk1SaHRKQzhWZTJpelQxTHUxMXNZWVRY?=
+ =?utf-8?B?TTRyWnQzeUtUYmZoQUFSd1FXU3dGT2xkWUNyTFdUU1FjL1NDVXZRSHdDOS8z?=
+ =?utf-8?B?NVE9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	Ym+ZpvhvCy/3UtpvNak+FSWmNRIbbpQ2WOwN2mCENQmoAF74eVKYHziWg57qeS8LEYp5+K6Ed+s6JT/Wsi+ikUOeJK4iTtepeSxLngIROg2eJJagx7wzIMNuAEbIJqqfKaesBnqVmkE+jkeWRqjfAjwXV5ZlAXZD4tPydUow9FOoobwhfdoWbsFoD6jdtUc4413RlTwYU4jSLLme4ftFuqCPBySrB7iINH+5M9Cp2ohpdaMEVqPadRp+iWyQ+LzPyAu7BiPIjPEREwFu0J16Hztv3XFDzSay6Rtdlglaco4Sr8DxsaEmCvXl7d8acx4mkOFzQ872ZfM4bz25wxPIFlEqOjiXyhlAb2qo2VoFmK4zG1vjZFZ21mq39gWgABTR9mjBPW+UG1hYaUGkzgWMLct6fxq1YuP8SRCukOaDQcLWFMvJxTtDYMzKubAKAnb4qcQGwNYshGa75ENPD3xR5HaIV3DzcWdtFniRcvnYx3YJw/ezgCFjYXEA+zmElvPlNjLieKzjmETfYWh+/z0IDanXAgH+mZ0ZbfNog+B4U3A6VbUabQM+tgh6o3uneRYmXAIE8JdSNZ56HnHo+2IWWgZHPh2Sq3HDyszsbHW+k/E=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 530e4728-cd6d-4350-3a43-08ddca1b3508
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR10MB6271.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jul 2025 19:00:36.3138
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: j4jnR3iGqgOy9Fdr3pLrRev/LO1XSoh1pFd5TgfEEpUXDOvydShCNseZg/Sx2fYSuTnTF+CLO+sutFLL1UyBVg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4579
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-07-23_03,2025-07-23_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0
+ mlxlogscore=999 bulkscore=0 adultscore=0 suspectscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2505160000 definitions=main-2507230161
+X-Authority-Analysis: v=2.4 cv=WaYMa1hX c=1 sm=1 tr=0 ts=6881315a b=1 cx=c_pps
+ a=WeWmnZmh0fydH62SvGsd2A==:117 a=WeWmnZmh0fydH62SvGsd2A==:17
+ a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19
+ a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19 a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19
+ a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10 a=Wb1JkmetP80A:10 a=GoEa3M9JfhUA:10
+ a=20KFwNOVAAAA:8 a=yPCof4ZbAAAA:8 a=MkEcOnKYNKi893rJUBMA:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-GUID: BZx7sGLHMuH6EzTdnabEd7lSC9Dsz8Cz
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzIzMDE2MSBTYWx0ZWRfXxVXtnD2I4k7Y
+ B+2pNxKs50pjW//ws3TVJ5RJ51wen5ulV6MarckbRLFXnXilfOZb9NeTqxSj3Fe9xkJepkW2d3y
+ 5cPxVZcq6WbFeU0s49aqA7BHS9TscexLZAMIXo18uf9RDkfm680lBKY2kCOO9orhmbiU6dtQ6CE
+ sc15WrgVccOhSbVQKar3OPc+/Bv6lP8LQl/CHCF2YMhO//s8Gy05PwOKe4TMvQvYfLCie/QEXF/
+ za8FX7uCAhSNHoF2lryeGyCWs8zm8CVDTp9XgZ7V7Fy4UWvgWP7/9zk/zbTImXYNVGEf14Ah/ip
+ pSk25rnqNqvSusR2OOYc/wIB2Zc1Zip/ei4OfVUW3J7GpsyFtVXp5uWt+fJ/wJFRwzriEcxLFTJ
+ m+wPU3Bqbtx2M29/Jn5Zgzhh3yokixIkDIaqURTfpHLbQy+IuN6xFpKZudbW0+pqllDWk9PT
+X-Proofpoint-ORIG-GUID: BZx7sGLHMuH6EzTdnabEd7lSC9Dsz8Cz
 
-Thanks Saurabh,
-I am sending a v2.
+On 22/07/2025 15:22, Arnaldo Carvalho de Melo wrote:
+> If pahole is asked to encode BTF for a file with no DWARF info, don't
+> fail, just skip it.
+> 
+> This is the case, for instance, in this file in a kernel build with
+> DWARF info generation enabled:
+> 
+>   $ pahole ../build/v6.15.0-rc4+/arch/x86/purgatory/purgatory.o
+>   libbpf: failed to find '.BTF' ELF section in ../build/v6.15.0-rc4+/arch/x86/purgatory/purgatory.o
+>   pahole: file '../build/v6.15.0-rc4+/arch/x86/purgatory/purgatory.o' has no supported type information.
+>   $
+> 
+> Before it was failing when encoding BTF for it, now:
+> 
+>   $ pahole --btf_encode ../build/v6.15.0-rc4+/arch/x86/purgatory/purgatory.o
+>   $ echo $?
+>   0
+>   $
+> 
+> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-Regards
-Dipayaan Roy
+Only potential issue I can see is that in the usual case of encoding BTF
+from DWARF in the kernel we'd probably like to fall over if we can't
+encode BTF due to DWARF absence. However current Kconfig dependencies of
+CONFIG_DEBUG_INFO_BTF mean this can't happen in practice I think so
 
-On Wed, Jul 23, 2025 at 12:38:04AM -0700, Saurabh Singh Sengar wrote:
-> On Mon, Jul 21, 2025 at 03:14:17AM -0700, Dipayaan Roy wrote:
-> > This patch enhances RX buffer handling in the mana driver by allocating
-> > pages from a page pool and slicing them into MTU-sized fragments, rather
-> > than dedicating a full page per packet. This approach is especially
-> > beneficial on systems with 64KB page sizes.
-> > 
-> > Key improvements:
-> > 
-> > - Proper integration of page pool for RX buffer allocations.
-> > - MTU-sized buffer slicing to improve memory utilization.
-> > - Reduce overall per Rx queue memory footprint.
-> > - Automatic fallback to full-page buffers when:
-> >    * Jumbo frames are enabled (MTU > PAGE_SIZE / 2).
-> >    * The XDP path is active, to avoid complexities with fragment reuse.
-> > - Removal of redundant pre-allocated RX buffers used in scenarios like MTU
-> >   changes, ensuring consistency in RX buffer allocation.
-> > 
-> > Testing on VMs with 64KB pages shows around 200% throughput improvement.
-> > Memory efficiency is significantly improved due to reduced wastage in page
-> > allocations. Example: We are now able to fit 35 Rx buffers in a single 64KB
-> > page for MTU size of 1500, instead of 1 Rx buffer per page previously.
-> > 
-> > Tested:
-> > 
-> > - iperf3, iperf2, and nttcp benchmarks.
-> > - Jumbo frames with MTU 9000.
-> > - Native XDP programs (XDP_PASS, XDP_DROP, XDP_TX, XDP_REDIRECT) for
-> >   testing the driver???s XDP path.
-> > - Page leak detection (kmemleak).
-> > - Driver load/unload, reboot, and stress scenarios.
-> > 
-> > Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-> > ---
-> >  .../net/ethernet/microsoft/mana/mana_bpf.c    |  22 +-
-> >  drivers/net/ethernet/microsoft/mana/mana_en.c | 284 ++++++------------
-> >  .../ethernet/microsoft/mana/mana_ethtool.c    |  13 -
-> >  include/net/mana/mana.h                       |  13 +-
-> >  4 files changed, 115 insertions(+), 217 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/microsoft/mana/mana_bpf.c b/drivers/net/ethernet/microsoft/mana/mana_bpf.c
-> > index d30721d4516f..96813b6c184f 100644
-> > --- a/drivers/net/ethernet/microsoft/mana/mana_bpf.c
-> > +++ b/drivers/net/ethernet/microsoft/mana/mana_bpf.c
-> > @@ -174,6 +174,7 @@ static int mana_xdp_set(struct net_device *ndev, struct bpf_prog *prog,
-> >  	struct mana_port_context *apc = netdev_priv(ndev);
-> >  	struct bpf_prog *old_prog;
-> >  	struct gdma_context *gc;
-> > +	int err;
-> >  
-> >  	gc = apc->ac->gdma_dev->gdma_context;
-> >  
-> > @@ -198,14 +199,33 @@ static int mana_xdp_set(struct net_device *ndev, struct bpf_prog *prog,
-> >  	if (old_prog)
-> >  		bpf_prog_put(old_prog);
-> >  
-> > -	if (apc->port_is_up)
-> > +	if (apc->port_is_up) {
-> > +		/* Re-create rxq's after xdp prog was loaded or unloaded.
-> > +		 * Ex: re create rxq's to switch from full pages to smaller
-> > +		 * size page fragments when xdp prog is unloaded and vice-versa.
-> > +		 */
-> > +
-> > +		err = mana_detach(ndev, false);
-> > +		if (err) {
-> > +			netdev_err(ndev, "mana_detach failed at xdp set: %d\n", err);
-> > +			goto out;
+Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+
+> ---
+>  pahole.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
-> You should return err. At out we are always returning 0 which is wrong.
-> 
-> > +		}
-> > +
-> > +		err = mana_attach(ndev);
-> > +		if (err) {
-> > +			netdev_err(ndev, "mana_attach failed at xdp set: %d\n", err);
-> > +			goto out;
-> 
-> same here.
-> 
-> > +		}
-> > +
-> >  		mana_chn_setxdp(apc, prog);
-> > +	}
-> >  
-> >  	if (prog)
-> >  		ndev->max_mtu = MANA_XDP_MTU_MAX;
-> >  	else
-> >  		ndev->max_mtu = gc->adapter_mtu - ETH_HLEN;
-> >  
-> > +out:
-> >  	return 0;
-> >  }
-> >  
-> > diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> > index a7973651ae51..a474c59c907c 100644
-> > --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> > +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> > @@ -548,171 +548,45 @@ static u16 mana_select_queue(struct net_device *ndev, struct sk_buff *skb,
-> >  	return txq;
-> >  }
-> >  
-> > -/* Release pre-allocated RX buffers */
-> > -void mana_pre_dealloc_rxbufs(struct mana_port_context *mpc)
-> > -{
-> > -	struct device *dev;
-> > -	int i;
-> > -
-> > -	dev = mpc->ac->gdma_dev->gdma_context->dev;
-> > -
-> > -	if (!mpc->rxbufs_pre)
-> > -		goto out1;
-> > -
-> > -	if (!mpc->das_pre)
-> > -		goto out2;
-> > -
-> > -	while (mpc->rxbpre_total) {
-> > -		i = --mpc->rxbpre_total;
-> > -		dma_unmap_single(dev, mpc->das_pre[i], mpc->rxbpre_datasize,
-> > -				 DMA_FROM_DEVICE);
-> > -		put_page(virt_to_head_page(mpc->rxbufs_pre[i]));
-> > -	}
-> > -
-> > -	kfree(mpc->das_pre);
-> > -	mpc->das_pre = NULL;
-> > -
-> > -out2:
-> > -	kfree(mpc->rxbufs_pre);
-> > -	mpc->rxbufs_pre = NULL;
-> > -
-> > -out1:
-> > -	mpc->rxbpre_datasize = 0;
-> > -	mpc->rxbpre_alloc_size = 0;
-> > -	mpc->rxbpre_headroom = 0;
-> > -}
-> > -
-> > -/* Get a buffer from the pre-allocated RX buffers */
-> > -static void *mana_get_rxbuf_pre(struct mana_rxq *rxq, dma_addr_t *da)
-> > -{
-> > -	struct net_device *ndev = rxq->ndev;
-> > -	struct mana_port_context *mpc;
-> > -	void *va;
-> > -
-> > -	mpc = netdev_priv(ndev);
-> > -
-> > -	if (!mpc->rxbufs_pre || !mpc->das_pre || !mpc->rxbpre_total) {
-> > -		netdev_err(ndev, "No RX pre-allocated bufs\n");
-> > -		return NULL;
-> > -	}
-> > -
-> > -	/* Check sizes to catch unexpected coding error */
-> > -	if (mpc->rxbpre_datasize != rxq->datasize) {
-> > -		netdev_err(ndev, "rxbpre_datasize mismatch: %u: %u\n",
-> > -			   mpc->rxbpre_datasize, rxq->datasize);
-> > -		return NULL;
-> > -	}
-> > -
-> > -	if (mpc->rxbpre_alloc_size != rxq->alloc_size) {
-> > -		netdev_err(ndev, "rxbpre_alloc_size mismatch: %u: %u\n",
-> > -			   mpc->rxbpre_alloc_size, rxq->alloc_size);
-> > -		return NULL;
-> > -	}
-> > -
-> > -	if (mpc->rxbpre_headroom != rxq->headroom) {
-> > -		netdev_err(ndev, "rxbpre_headroom mismatch: %u: %u\n",
-> > -			   mpc->rxbpre_headroom, rxq->headroom);
-> > -		return NULL;
-> > -	}
-> > -
-> > -	mpc->rxbpre_total--;
-> > -
-> > -	*da = mpc->das_pre[mpc->rxbpre_total];
-> > -	va = mpc->rxbufs_pre[mpc->rxbpre_total];
-> > -	mpc->rxbufs_pre[mpc->rxbpre_total] = NULL;
-> > -
-> > -	/* Deallocate the array after all buffers are gone */
-> > -	if (!mpc->rxbpre_total)
-> > -		mana_pre_dealloc_rxbufs(mpc);
-> > -
-> > -	return va;
-> > -}
-> > -
-> >  /* Get RX buffer's data size, alloc size, XDP headroom based on MTU */
-> > -static void mana_get_rxbuf_cfg(int mtu, u32 *datasize, u32 *alloc_size,
-> > -			       u32 *headroom)
-> > +static void mana_get_rxbuf_cfg(struct mana_port_context *apc,
-> > +			       int mtu, u32 *datasize, u32 *alloc_size,
-> > +			       u32 *headroom, u32 *frag_count)
-> >  {
-> > -	if (mtu > MANA_XDP_MTU_MAX)
-> > -		*headroom = 0; /* no support for XDP */
-> > -	else
-> > -		*headroom = XDP_PACKET_HEADROOM;
-> > -
-> > -	*alloc_size = SKB_DATA_ALIGN(mtu + MANA_RXBUF_PAD + *headroom);
-> > -
-> > -	/* Using page pool in this case, so alloc_size is PAGE_SIZE */
-> > -	if (*alloc_size < PAGE_SIZE)
-> > -		*alloc_size = PAGE_SIZE;
-> > -
-> > +	/* Calculate datasize first (consistent across all cases) */
-> >  	*datasize = mtu + ETH_HLEN;
-> > -}
-> > -
-> > -int mana_pre_alloc_rxbufs(struct mana_port_context *mpc, int new_mtu, int num_queues)
-> > -{
-> > -	struct device *dev;
-> > -	struct page *page;
-> > -	dma_addr_t da;
-> > -	int num_rxb;
-> > -	void *va;
-> > -	int i;
-> > -
-> > -	mana_get_rxbuf_cfg(new_mtu, &mpc->rxbpre_datasize,
-> > -			   &mpc->rxbpre_alloc_size, &mpc->rxbpre_headroom);
-> > -
-> > -	dev = mpc->ac->gdma_dev->gdma_context->dev;
-> > -
-> > -	num_rxb = num_queues * mpc->rx_queue_size;
-> > -
-> > -	WARN(mpc->rxbufs_pre, "mana rxbufs_pre exists\n");
-> > -	mpc->rxbufs_pre = kmalloc_array(num_rxb, sizeof(void *), GFP_KERNEL);
-> > -	if (!mpc->rxbufs_pre)
-> > -		goto error;
-> >  
-> > -	mpc->das_pre = kmalloc_array(num_rxb, sizeof(dma_addr_t), GFP_KERNEL);
-> > -	if (!mpc->das_pre)
-> > -		goto error;
-> > -
-> > -	mpc->rxbpre_total = 0;
-> > -
-> > -	for (i = 0; i < num_rxb; i++) {
-> > -		page = dev_alloc_pages(get_order(mpc->rxbpre_alloc_size));
-> > -		if (!page)
-> > -			goto error;
-> > -
-> > -		va = page_to_virt(page);
-> > -
-> > -		da = dma_map_single(dev, va + mpc->rxbpre_headroom,
-> > -				    mpc->rxbpre_datasize, DMA_FROM_DEVICE);
-> > -		if (dma_mapping_error(dev, da)) {
-> > -			put_page(page);
-> > -			goto error;
-> > +	/* For xdp and jumbo frames make sure only one packet fits per page */
-> > +	if (((mtu + MANA_RXBUF_PAD) > PAGE_SIZE / 2) || rcu_access_pointer(apc->bpf_prog)) {
-> > +		if (rcu_access_pointer(apc->bpf_prog)) {
-> > +			*headroom = XDP_PACKET_HEADROOM;
-> > +			*alloc_size = PAGE_SIZE;
-> > +		} else {
-> > +			*headroom = 0; /* no support for XDP */
-> > +			*alloc_size = SKB_DATA_ALIGN(mtu + MANA_RXBUF_PAD + *headroom);
-> >  		}
-> >  
-> > -		mpc->rxbufs_pre[i] = va;
-> > -		mpc->das_pre[i] = da;
-> > -		mpc->rxbpre_total = i + 1;
-> > +		*frag_count = 1;
-> > +		return;
-> >  	}
-> >  
-> > -	return 0;
-> > +	/* Standard MTU case - optimize for multiple packets per page */
-> > +	*headroom = 0;
-> >  
-> > -error:
-> > -	netdev_err(mpc->ndev, "Failed to pre-allocate RX buffers for %d queues\n", num_queues);
-> > -	mana_pre_dealloc_rxbufs(mpc);
-> > -	return -ENOMEM;
-> > +	/* Calculate base buffer size needed */
-> > +	u32 len = SKB_DATA_ALIGN(mtu + MANA_RXBUF_PAD + *headroom);
-> > +	u32 buf_size = ALIGN(len, MANA_RX_FRAG_ALIGNMENT);
-> 
-> its good to have all the declaration at start of function.
-> 
-> > +
-> > +	/* Calculate how many packets can fit in a page */
-> > +	*frag_count = PAGE_SIZE / buf_size;
-> > +	*alloc_size = buf_size;
-> >  }
-> >  
-> >  static int mana_change_mtu(struct net_device *ndev, int new_mtu)
-> >  {
-> > -	struct mana_port_context *mpc = netdev_priv(ndev);
-> >  	unsigned int old_mtu = ndev->mtu;
-> >  	int err;
-> >  
-> > -	/* Pre-allocate buffers to prevent failure in mana_attach later */
-> > -	err = mana_pre_alloc_rxbufs(mpc, new_mtu, mpc->num_queues);
-> > -	if (err) {
-> > -		netdev_err(ndev, "Insufficient memory for new MTU\n");
-> > -		return err;
-> > -	}
-> > -
-> >  	err = mana_detach(ndev, false);
-> >  	if (err) {
-> >  		netdev_err(ndev, "mana_detach failed: %d\n", err);
-> > @@ -728,7 +602,6 @@ static int mana_change_mtu(struct net_device *ndev, int new_mtu)
-> >  	}
-> >  
-> >  out:
-> > -	mana_pre_dealloc_rxbufs(mpc);
-> >  	return err;
-> >  }
-> >  
-> > @@ -1841,8 +1714,11 @@ static void mana_rx_skb(void *buf_va, bool from_pool,
-> >  
-> >  drop:
-> >  	if (from_pool) {
-> > -		page_pool_recycle_direct(rxq->page_pool,
-> > -					 virt_to_head_page(buf_va));
-> > +		if (rxq->frag_count == 1)
-> > +			page_pool_recycle_direct(rxq->page_pool,
-> > +						 virt_to_head_page(buf_va));
-> > +		else
-> > +			page_pool_free_va(rxq->page_pool, buf_va, true);
-> >  	} else {
-> >  		WARN_ON_ONCE(rxq->xdp_save_va);
-> >  		/* Save for reuse */
-> > @@ -1854,37 +1730,50 @@ static void mana_rx_skb(void *buf_va, bool from_pool,
-> >  	return;
-> >  }
-> >  
-> > -static void *mana_get_rxfrag(struct mana_rxq *rxq, struct device *dev,
-> > -			     dma_addr_t *da, bool *from_pool)
-> > +static void *mana_get_rxfrag(struct mana_rxq *rxq,
-> > +			     struct device *dev, dma_addr_t *da, bool *from_pool)
-> >  {
-> >  	struct page *page;
-> > +	u32 offset;
-> >  	void *va;
-> > -
-> >  	*from_pool = false;
-> >  
-> > -	/* Reuse XDP dropped page if available */
-> > -	if (rxq->xdp_save_va) {
-> > -		va = rxq->xdp_save_va;
-> > -		rxq->xdp_save_va = NULL;
-> > -	} else {
-> > -		page = page_pool_dev_alloc_pages(rxq->page_pool);
-> > -		if (!page)
-> > +	/* Don't use fragments for jumbo frames or XDP (i.e when fragment = 1 per page) */
-> > +	if (rxq->frag_count == 1) {
-> > +		/* Reuse XDP dropped page if available */
-> > +		if (rxq->xdp_save_va) {
-> > +			va = rxq->xdp_save_va;
-> > +			rxq->xdp_save_va = NULL;
-> > +		} else {
-> > +			page = page_pool_dev_alloc_pages(rxq->page_pool);
-> > +			if (!page)
-> > +				return NULL;
-> > +
-> > +			*from_pool = true;
-> > +			va = page_to_virt(page);
-> > +		}
-> > +
-> > +		*da = dma_map_single(dev, va + rxq->headroom, rxq->datasize,
-> > +				     DMA_FROM_DEVICE);
-> > +		if (dma_mapping_error(dev, *da)) {
-> > +			if (*from_pool)
-> > +				page_pool_put_full_page(rxq->page_pool, page, false);
-> > +			else
-> > +				put_page(virt_to_head_page(va));
-> > +
-> >  			return NULL;
-> > +		}
-> >  
-> > -		*from_pool = true;
-> > -		va = page_to_virt(page);
-> > +		return va;
-> >  	}
-> >  
-> > -	*da = dma_map_single(dev, va + rxq->headroom, rxq->datasize,
-> > -			     DMA_FROM_DEVICE);
-> > -	if (dma_mapping_error(dev, *da)) {
-> > -		if (*from_pool)
-> > -			page_pool_put_full_page(rxq->page_pool, page, false);
-> > -		else
-> > -			put_page(virt_to_head_page(va));
-> > -
-> > +	page =  page_pool_dev_alloc_frag(rxq->page_pool, &offset, rxq->alloc_size);
-> > +	if (!page)
-> >  		return NULL;
-> > -	}
-> > +
-> > +	va  = page_to_virt(page) + offset;
-> > +	*da = page_pool_get_dma_addr(page) + offset + rxq->headroom;
-> > +	*from_pool = true;
-> >  
-> >  	return va;
-> >  }
-> > @@ -1901,9 +1790,9 @@ static void mana_refill_rx_oob(struct device *dev, struct mana_rxq *rxq,
-> >  	va = mana_get_rxfrag(rxq, dev, &da, &from_pool);
-> >  	if (!va)
-> >  		return;
-> > -
-> > -	dma_unmap_single(dev, rxoob->sgl[0].address, rxq->datasize,
-> > -			 DMA_FROM_DEVICE);
-> > +	if (!rxoob->from_pool || rxq->frag_count == 1)
-> > +		dma_unmap_single(dev, rxoob->sgl[0].address, rxq->datasize,
-> > +				 DMA_FROM_DEVICE);
-> >  	*old_buf = rxoob->buf_va;
-> >  	*old_fp = rxoob->from_pool;
-> >  
-> > @@ -2314,15 +2203,19 @@ static void mana_destroy_rxq(struct mana_port_context *apc,
-> >  		if (!rx_oob->buf_va)
-> >  			continue;
-> >  
-> > -		dma_unmap_single(dev, rx_oob->sgl[0].address,
-> > -				 rx_oob->sgl[0].size, DMA_FROM_DEVICE);
-> > -
-> >  		page = virt_to_head_page(rx_oob->buf_va);
-> >  
-> > -		if (rx_oob->from_pool)
-> > -			page_pool_put_full_page(rxq->page_pool, page, false);
-> > -		else
-> > -			put_page(page);
-> > +		if (rxq->frag_count == 1) {
-> > +			dma_unmap_single(dev, rx_oob->sgl[0].address, rx_oob->sgl[0].size,
-> > +					 DMA_FROM_DEVICE);
-> > +
-> > +			if (rx_oob->from_pool)
-> > +				page_pool_put_full_page(rxq->page_pool, page, false);
-> > +			else
-> > +				put_page(page);
-> > +		} else {
-> > +			page_pool_free_va(rxq->page_pool, rx_oob->buf_va, true);
-> > +		}
-> >  
-> >  		rx_oob->buf_va = NULL;
-> >  	}
-> > @@ -2338,16 +2231,11 @@ static void mana_destroy_rxq(struct mana_port_context *apc,
-> >  static int mana_fill_rx_oob(struct mana_recv_buf_oob *rx_oob, u32 mem_key,
-> >  			    struct mana_rxq *rxq, struct device *dev)
-> >  {
-> > -	struct mana_port_context *mpc = netdev_priv(rxq->ndev);
-> >  	bool from_pool = false;
-> >  	dma_addr_t da;
-> >  	void *va;
-> >  
-> > -	if (mpc->rxbufs_pre)
-> > -		va = mana_get_rxbuf_pre(rxq, &da);
-> > -	else
-> > -		va = mana_get_rxfrag(rxq, dev, &da, &from_pool);
-> > -
-> > +	va = mana_get_rxfrag(rxq, dev, &da, &from_pool);
-> >  	if (!va)
-> >  		return -ENOMEM;
-> >  
-> > @@ -2428,11 +2316,22 @@ static int mana_create_page_pool(struct mana_rxq *rxq, struct gdma_context *gc)
-> >  	struct page_pool_params pprm = {};
-> >  	int ret;
-> >  
-> > -	pprm.pool_size = mpc->rx_queue_size;
-> > +	pprm.pool_size = mpc->rx_queue_size / rxq->frag_count + 1;
-> >  	pprm.nid = gc->numa_node;
-> >  	pprm.napi = &rxq->rx_cq.napi;
-> >  	pprm.netdev = rxq->ndev;
-> >  	pprm.order = get_order(rxq->alloc_size);
-> > +	pprm.queue_idx = rxq->rxq_idx;
-> > +	pprm.dev = gc->dev;
-> > +
-> > +	/* Let the page pool do the dma map when page sharing with multiple fragments
-> > +	 * enabled for rx buffers.
-> > +	 */
-> > +	if (rxq->frag_count > 1) {
-> > +		pprm.flags =  PP_FLAG_DMA_MAP | PP_FLAG_DMA_SYNC_DEV;
-> > +		pprm.max_len = PAGE_SIZE;
-> > +		pprm.dma_dir = DMA_FROM_DEVICE;
-> > +	}
-> >  
-> >  	rxq->page_pool = page_pool_create(&pprm);
-> >  
-> > @@ -2471,9 +2370,8 @@ static struct mana_rxq *mana_create_rxq(struct mana_port_context *apc,
-> >  	rxq->rxq_idx = rxq_idx;
-> >  	rxq->rxobj = INVALID_MANA_HANDLE;
-> >  
-> > -	mana_get_rxbuf_cfg(ndev->mtu, &rxq->datasize, &rxq->alloc_size,
-> > -			   &rxq->headroom);
-> > -
-> > +	mana_get_rxbuf_cfg(apc, ndev->mtu, &rxq->datasize, &rxq->alloc_size,
-> > +			   &rxq->headroom, &rxq->frag_count);
-> >  	/* Create page pool for RX queue */
-> >  	err = mana_create_page_pool(rxq, gc);
-> >  	if (err) {
-> > diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-> > index a1afa75a9463..7ede03c74fb9 100644
-> > --- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-> > +++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-> > @@ -396,12 +396,6 @@ static int mana_set_channels(struct net_device *ndev,
-> >  	unsigned int old_count = apc->num_queues;
-> >  	int err;
-> >  
-> > -	err = mana_pre_alloc_rxbufs(apc, ndev->mtu, new_count);
-> > -	if (err) {
-> > -		netdev_err(ndev, "Insufficient memory for new allocations");
-> > -		return err;
-> > -	}
-> > -
-> >  	err = mana_detach(ndev, false);
-> >  	if (err) {
-> >  		netdev_err(ndev, "mana_detach failed: %d\n", err);
-> > @@ -416,7 +410,6 @@ static int mana_set_channels(struct net_device *ndev,
-> >  	}
-> >  
-> >  out:
-> > -	mana_pre_dealloc_rxbufs(apc);
-> >  	return err;
-> >  }
-> >  
-> > @@ -465,12 +458,7 @@ static int mana_set_ringparam(struct net_device *ndev,
-> >  
-> >  	/* pre-allocating new buffers to prevent failures in mana_attach() later */
-> >  	apc->rx_queue_size = new_rx;
-> > -	err = mana_pre_alloc_rxbufs(apc, ndev->mtu, apc->num_queues);
-> >  	apc->rx_queue_size = old_rx;
-> > -	if (err) {
-> > -		netdev_err(ndev, "Insufficient memory for new allocations\n");
-> > -		return err;
-> > -	}
-> >  
-> >  	err = mana_detach(ndev, false);
-> >  	if (err) {
-> > @@ -488,7 +476,6 @@ static int mana_set_ringparam(struct net_device *ndev,
-> >  		apc->rx_queue_size = old_rx;
-> >  	}
-> >  out:
-> > -	mana_pre_dealloc_rxbufs(apc);
-> >  	return err;
-> >  }
-> >  
-> > diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-> > index e1030a7d2daa..99a3847b0f9d 100644
-> > --- a/include/net/mana/mana.h
-> > +++ b/include/net/mana/mana.h
-> > @@ -65,6 +65,8 @@ enum TRI_STATE {
-> >  #define MANA_STATS_RX_COUNT 5
-> >  #define MANA_STATS_TX_COUNT 11
-> >  
-> > +#define MANA_RX_FRAG_ALIGNMENT 64
-> > +
-> >  struct mana_stats_rx {
-> >  	u64 packets;
-> >  	u64 bytes;
-> > @@ -328,6 +330,7 @@ struct mana_rxq {
-> >  	u32 datasize;
-> >  	u32 alloc_size;
-> >  	u32 headroom;
-> > +	u32 frag_count;
-> >  
-> >  	mana_handle_t rxobj;
-> >  
-> > @@ -503,14 +506,6 @@ struct mana_port_context {
-> >  	/* This points to an array of num_queues of RQ pointers. */
-> >  	struct mana_rxq **rxqs;
-> >  
-> > -	/* pre-allocated rx buffer array */
-> > -	void **rxbufs_pre;
-> > -	dma_addr_t *das_pre;
-> > -	int rxbpre_total;
-> > -	u32 rxbpre_datasize;
-> > -	u32 rxbpre_alloc_size;
-> > -	u32 rxbpre_headroom;
-> > -
-> >  	struct bpf_prog *bpf_prog;
-> >  
-> >  	/* Create num_queues EQs, SQs, SQ-CQs, RQs and RQ-CQs, respectively. */
-> > @@ -574,8 +569,6 @@ int mana_query_link_cfg(struct mana_port_context *apc);
-> >  int mana_set_bw_clamp(struct mana_port_context *apc, u32 speed,
-> >  		      int enable_clamping);
-> >  void mana_query_phy_stats(struct mana_port_context *apc);
-> > -int mana_pre_alloc_rxbufs(struct mana_port_context *apc, int mtu, int num_queues);
-> > -void mana_pre_dealloc_rxbufs(struct mana_port_context *apc);
-> >  
-> >  extern const struct ethtool_ops mana_ethtool_ops;
-> >  extern struct dentry *mana_debugfs_root;
-> > -- 
-> > 2.43.0
-> 
-> 
-> Rest looks good. After fixing above,
-> Reviewed-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+> diff --git a/pahole.c b/pahole.c
+> index 333e71ab65924d2c..a001ec86ef1b0908 100644
+> --- a/pahole.c
+> +++ b/pahole.c
+> @@ -3659,6 +3659,13 @@ try_sole_arg_as_class_names:
+>  			remaining = argc;
+>  			goto try_sole_arg_as_class_names;
+>  		}
+> +
+> +		if (btf_encode || ctf_encode) {
+> +			// If encoding is asked for and there is no DEBUG info to encode from,
+> +			// there are no errors, continue...
+> +			goto out_ok;
+> +		}
+> +
+>  		if (argv[remaining] != NULL) {
+>  			cus__fprintf_load_files_err(cus, "pahole", argv + remaining, err, stderr);
+>  		} else {
+
 
