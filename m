@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-64170-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64171-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FE9AB0F52E
-	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 16:24:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77298B0F531
+	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 16:24:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AFA757AF4E9
-	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 14:22:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 820CCAC2764
+	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 14:23:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6E492EF676;
-	Wed, 23 Jul 2025 14:23:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C482F2F2C59;
+	Wed, 23 Jul 2025 14:23:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SIXRz6GV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XNi9bOfL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2227A2F234A;
-	Wed, 23 Jul 2025 14:23:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4E4F2EB5AD;
+	Wed, 23 Jul 2025 14:23:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753280625; cv=none; b=QTJ1hQGl2zrdWIoQldW/0eV8vMAFo9qIK2yLtntoBxSEIW3mR/f1zDvPEwQK8SXMp5E0Rj2m8F8IPDsAL2HSde2y3TGJsh/mxlJBQRqL9RRLIcTyoTLTp/Asri4pzlFXmc6BVmhbTVfMyi1/NvG5XoGROJwhHQGg6+V70/v0YmI=
+	t=1753280630; cv=none; b=D7L8N62TesTe0/ho9Wf1eUwfPfWdok7hyvL+sBgFQ1LKyUaNT1JgKtBbHrkouoXu+HF2i0SK226ouvC92FYCkOHL0v543yTpZ0DebXSEpcDxrKexvDP+Qy5Zio2vbM9rZ2BgAKddhmnw9bsBnq/Kadcj3VVzKGkQqVKGxdEcPI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753280625; c=relaxed/simple;
-	bh=jQuBTcFEbFY3C5WrbpT8N6fRotkgoLuGGHsQ/P9OI7w=;
+	s=arc-20240116; t=1753280630; c=relaxed/simple;
+	bh=8HpLv9pFF4CvinAT9nkSGAi4401wgJXV2r6HHkqEr8c=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=pAXQX1oErn0H0b1an7YJUtowwJFszAQ+X7TbN+A7O8VrMIkb8IWnMCHNehZKz99NTUAWx2UpS2Jlzn/UsmMCjsREGIVZ0QUryO3qmVOYWzYUk0jNl6NxId78KzrpMNhfGpxXwsQxG0piot/Y/gMI3rbcVoDVcGQHF89G1bnEFcI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SIXRz6GV; arc=none smtp.client-ip=209.85.214.177
+	 MIME-Version; b=ah79ADd7xeNkROvc4f2gT02PkXT5bXKbIuhHDNm5A/ho6YNkepvoGwB4HhIxCm70qHCkPG4/KwpPzgqYEBPRjGSX2asVRJDt2iuDKTOuHm87f2aNsu3znhfC13YCQSSWu+tU5XwyQFl+e7FbRYRXOIb2ew8TQBWVb2TKprzJfrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XNi9bOfL; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2349f096605so77471865ad.3;
-        Wed, 23 Jul 2025 07:23:42 -0700 (PDT)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-23f8d27eeeaso18495475ad.2;
+        Wed, 23 Jul 2025 07:23:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753280622; x=1753885422; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1753280628; x=1753885428; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KOntRSgVHCcFNpsuQ/f1gCdqRlv/yon0haOEPks1Dwc=;
-        b=SIXRz6GVidApQPrQBT4EuPRp31nuHuc1tSF+L2W/vABR9h6+Yv2qwODMtyd9bBTunN
-         QRqgnSe6LwQJrg/933q/H3WearkmRX3WjUu74cWVET6OQ+jUBC4OpFIrzwZp9g1LTYmf
-         uWnIhEXtAXKZy3akz+pLFs7vLpJkL8K6DQEuz30Zatj2d1HgMyh/MHGybr8pKLL/OC9B
-         zxRdhA729va2AlJv7fKozhgGwsqAMVNFYfu2Ldxdjq/m4dApd3MlCYLKZ2l3e9zT/Kgn
-         ymAA0d5QbLVLcbwVtzO2NOMEqNfpwOtIOCwVl4R8zA6uYysC+0up7am6ebv9GHH4L/wq
-         /W4w==
+        bh=Fj5WqG0SJ2Uu2EiwaVSrVFDSkAPLmbdJzZnTerK4rAc=;
+        b=XNi9bOfL6pAxHisX6ra4yHPe9R9V+F4hqMzpYF5qFEq3IQkPlSacG32rId00IQ9KZV
+         1BztaEjT9XoB80bRQXmD6OrI2A6YjdrMVDRN1/l1BhxlqWSQDIxemaio1i+uWOBTwsJ5
+         2Sa6vc33H/4Wx/dLbqG0YGBD/SrBzFDiUN9ROnMcEjkeDhZYsYRwraSfVgJF1FO46GNq
+         VntfGmryVAo46RAr+WNPe1MNKg/jANsA6BJaJA2hwTLMzNQ4CEPq8NjD4tT6xCCJ4PPi
+         Prf8mA/K6kFknSbhgNKJT3ZXoI99fLviXCrMLD+qQN5yzQvmW36Q2yyzCRPpnpemhgNM
+         GmFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753280622; x=1753885422;
+        d=1e100.net; s=20230601; t=1753280628; x=1753885428;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KOntRSgVHCcFNpsuQ/f1gCdqRlv/yon0haOEPks1Dwc=;
-        b=I8MO4mXM+jaHCSzVVaCPlmNMgYZUIpdhaRls8BxUjWKbnDxfEdSvp26bFI/PwxbDA0
-         Yz/6ssrA+L/5H330mE5fa/yzos4bHc2SqCeksGsa4C8nlW9DLrKj1Fzjzy9/Fop/d3ZJ
-         8nm4j19QJitrPwBwNXgyc5fCbP29+WNc7SJAHQCu3HL7qv9DiSDi//gfWbJrs/C9mVCZ
-         0vRqSINZR9Xb0z2hXwhF5IPdliKhtHaesq0BvZKf/l43aLyFdqQpP4HMSRz6HgvB9Y7H
-         MCBD7Gf1TsaF4Eh+8g6Z+MvwFcQImozBVNeOfP9hSgG9ftdJlu9fmqgJTcT0DGAniwAJ
-         V97A==
-X-Forwarded-Encrypted: i=1; AJvYcCXVKfbv4OQ5esW1hHpkRWmFkLWztlWoU6igLwowwLUOCPdOlmnUcuJfCNkyKRboB/WHevU=@vger.kernel.org, AJvYcCXxD2jLfWODDTmSJ8Qb5o1US051Lqgf2c4CGMb7RogWpl5AyNFnWzLGl6kvisgPKP7zHtYRDlU0@vger.kernel.org
-X-Gm-Message-State: AOJu0YyIB5QykxVl1km+S5LxVeT36+w4R1SdL9yL1EF37hPq8TCx3dCW
-	nCykJFG6+POFcbIKyHxbYusmyxojKr1xF5OTc+fBwM0y4zst7BRkYzT+
-X-Gm-Gg: ASbGnctEhncFB2J1QG3GIWDqWZvNUdP1yAk9GEC6qe37S0Xp29qeKaPxwSHNvWjYp1N
-	2JXdjSTCFnKi1d9DqYFAcpo/ICgbFnvfXfK2juFqnx2EB4J+n3cDS7dvLu9lxpL9bReulKeC3Xf
-	NUq70f5vLU19NX8iEQ6KlkGpueLAC+YMb0ad5Xt9m69SGWcCFpGqimFEtTtChy6+unF/J7W0VdK
-	II4tm5REbKdvdH3NjbSrXWq9+6/BammPwujS6w6KxzopYpvK+d3wFJhGfg47ShV4xL46jf9ucJc
-	7BCCir0Qcl+SnCFdP/U/tUOFZW/zVuAj/adW+LkL04uzDcfyRqEY2fMJjG72rHGVCJf1LgAP7xr
-	Re68JlbOGgiugDLzy5j/KT8NfvAbVp1opDAS21Ns85777kBi8ei7vdtQQxq4=
-X-Google-Smtp-Source: AGHT+IEMb3cIE20x0EQZMiLUrQDv3ie1esxuOFn0TXUcPb/jILtixQh8nGa/Jmj0cICBmpX2znYZ0A==
-X-Received: by 2002:a17:902:f707:b0:235:c781:c305 with SMTP id d9443c01a7336-23f981932f0mr50241695ad.24.1753280622164;
-        Wed, 23 Jul 2025 07:23:42 -0700 (PDT)
+        bh=Fj5WqG0SJ2Uu2EiwaVSrVFDSkAPLmbdJzZnTerK4rAc=;
+        b=F+hQipQxWPBf+hL/D5fqBhHGRUeFnOU/bafavTNP88y/C+A72SRxl2TzUDjwFbEDWB
+         VtZ7ek5YXuCIHD0sXrUzo6TPDCybBiGWNdytvOI77qUkl0HlhbIg+xJylt8ZBCRQzbIC
+         aUSGw/tcyapUFQjNoe/bqr5jbXqUukvk0qHEcAxtubbTVBsCXORDknUUIbwNWATGT04m
+         XH/bjBuBFCyXV1NYvXdzAfXMh2qHlUa40Oe9TCsikNMlyAoMyNNERiWHlci57rX1FSe5
+         JMxlPrbHWYz1Opl8Q3m+XHi1zNvwZPx+Dq5wexAQibts2HEv0D8UA0q5X+WHMYeknFnB
+         vm6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV16ssmk7oz8rHAH6m4A8pZZ5lLEd7ivmlybuwtk6dWM4HxkQKHG1in/I1mvULh/RjIXKo=@vger.kernel.org, AJvYcCXsdkXdegX1bBzdV8QxXd6HuXvIwMopA6oszqU9oqIFUTrtQnJ3u6l5iyCEqjkLwQ7XqDonJtOP@vger.kernel.org
+X-Gm-Message-State: AOJu0YzIgZv7KmueSgEPJ67kBCwTQd4DjpxEmk0x7YBAVm8H7MqlAJPq
+	qv5sXMfpWkk8TOC45xb3XWSR6z9m+ikv7XXLdntldu3ZfYxh6+afZ+Dj
+X-Gm-Gg: ASbGncsGrwaSm09UxI4ywzAxlbQLQtK+1Jw62qCcYzrmtGCj15NzABohnTS1HaH2QUl
+	kDvoW1Moeye2sbe6RFoOtehYJKzXZNgZ1lo8OdxON+jIMaNim+Un6rFcTYID2U/0tLD6dTHByBo
+	9YxQTrxVLI4f8aKqvWPJTN/RLCvvowBgKwOjW9Zo+WrLZa2SgDYks2pWiidDByhO/4zN+a7JNs6
+	2SLbiu8xN50VEq0GCcplD2vhV6PxPyJ1fVMbQJPDPnAYSrKOqiHGagLDRBz/ykdRO8dPVoY+uzK
+	gCeSvsU5DfNgKhdH3uRsrSc1H12VZRk0o3qufFQcIKndVZRZwQpFMJrguN3Y6ckeP/Cz/KgE+aD
+	k3ZMiNDHlsY60amXXUOlb/gdt79Yn7JHxuvYamtUca/SgVKRi3/tFSTpXdpU=
+X-Google-Smtp-Source: AGHT+IEnG0E7oKJq09UZhheN56FjJBTTkrONfklWiZ/yow6qAsYP7nD7qZdnI57JncC+db1EnBFkKA==
+X-Received: by 2002:a17:903:1aa6:b0:235:f3e6:467f with SMTP id d9443c01a7336-23f9812b4bamr50464715ad.2.1753280628189;
+        Wed, 23 Jul 2025 07:23:48 -0700 (PDT)
 Received: from KERNELXING-MC1.tencent.com ([111.201.28.60])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23e3b6b4a9esm97929595ad.93.2025.07.23.07.23.36
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23e3b6b4a9esm97929595ad.93.2025.07.23.07.23.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jul 2025 07:23:41 -0700 (PDT)
+        Wed, 23 Jul 2025 07:23:47 -0700 (PDT)
 From: Jason Xing <kerneljasonxing@gmail.com>
 To: anthony.l.nguyen@intel.com,
 	przemyslaw.kitszel@intel.com,
@@ -98,9 +98,9 @@ Cc: linux-stm32@st-md-mailman.stormreply.com,
 	netdev@vger.kernel.org,
 	Jason Xing <kernelxing@tencent.com>,
 	Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Subject: [PATCH net v3 1/2] stmmac: xsk: fix negative overflow of budget in zerocopy mode
-Date: Wed, 23 Jul 2025 22:23:26 +0800
-Message-Id: <20250723142327.85187-2-kerneljasonxing@gmail.com>
+Subject: [PATCH net v3 2/2] igb: xsk: solve negative overflow of nb_pkts in zerocopy mode
+Date: Wed, 23 Jul 2025 22:23:27 +0800
+Message-Id: <20250723142327.85187-3-kerneljasonxing@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20250723142327.85187-1-kerneljasonxing@gmail.com>
 References: <20250723142327.85187-1-kerneljasonxing@gmail.com>
@@ -114,18 +114,23 @@ Content-Transfer-Encoding: 8bit
 
 From: Jason Xing <kernelxing@tencent.com>
 
-A negative overflow can happen when the budget number of descs are
-consumed. as long as the budget is decreased to zero, it will again go
-into while (budget-- > 0) statement and get decreased by one, so the
-overflow issue can happen. It will lead to returning true whereas the
-expected value should be false.
+There is no break time in the while() loop, so every time at the end of
+igb_xmit_zc(), negative overflow of nb_pkts will occur, which renders
+the return value always false. But theoretically, the result should be
+set after calling xsk_tx_peek_release_desc_batch(). We can take
+i40e_xmit_zc() as a good example.
 
-In this case where all the budget is used up, it means zc function
-should return false to let the poll run again because normally we
-might have more data to process. Without this patch, zc function would
-return true instead.
+Returning false means we're not done with transmission and we need one
+more poll, which is exactly what igb_xmit_zc() always did before this
+patch. After this patch, the return value depends on the nb_pkts value.
+Two cases might happen then:
+1. if (nb_pkts < budget), it means we process all the possible data, so
+   return true and no more necessary poll will be triggered because of
+   this.
+2. if (nb_pkts == budget), it means we might have more data, so return
+   false to let another poll run again.
 
-Fixes: 132c32ee5bc0 ("net: stmmac: Add TX via XDP zero-copy socket")
+Fixes: f8e284a02afc ("igb: Add AF_XDP zero-copy Tx support")
 Signed-off-by: Jason Xing <kernelxing@tencent.com>
 Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
 ---
@@ -137,25 +142,32 @@ Link: https://lore.kernel.org/all/CAL+tcoAnB+8ZLPyWQ3XsvWTa=JO1yCKWvrKVp+2WCP=kG
 v2
 Link: https://lore.kernel.org/all/20250721083343.16482-1-kerneljasonxing@gmail.com/
 1. target net tree instead of net-next
-2. revise commit message
-3. use for loop to replace while loop
+2. use for loop instead
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/intel/igb/igb_xsk.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index f350a6662880..f1abf4242cd2 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -2596,7 +2596,7 @@ static bool stmmac_xdp_xmit_zc(struct stmmac_priv *priv, u32 queue, u32 budget)
+diff --git a/drivers/net/ethernet/intel/igb/igb_xsk.c b/drivers/net/ethernet/intel/igb/igb_xsk.c
+index 5cf67ba29269..30ce5fbb5b77 100644
+--- a/drivers/net/ethernet/intel/igb/igb_xsk.c
++++ b/drivers/net/ethernet/intel/igb/igb_xsk.c
+@@ -482,7 +482,7 @@ bool igb_xmit_zc(struct igb_ring *tx_ring, struct xsk_buff_pool *xsk_pool)
+ 	if (!nb_pkts)
+ 		return true;
  
- 	budget = min(budget, stmmac_tx_avail(priv, queue));
+-	while (nb_pkts-- > 0) {
++	for (; i < nb_pkts; i++) {
+ 		dma = xsk_buff_raw_get_dma(xsk_pool, descs[i].addr);
+ 		xsk_buff_raw_dma_sync_for_device(xsk_pool, dma, descs[i].len);
  
--	while (budget-- > 0) {
-+	for (; budget > 0; budget--) {
- 		struct stmmac_metadata_request meta_req;
- 		struct xsk_tx_metadata *meta = NULL;
- 		dma_addr_t dma_addr;
+@@ -512,7 +512,6 @@ bool igb_xmit_zc(struct igb_ring *tx_ring, struct xsk_buff_pool *xsk_pool)
+ 
+ 		total_bytes += descs[i].len;
+ 
+-		i++;
+ 		tx_ring->next_to_use++;
+ 		tx_buffer_info->next_to_watch = tx_desc;
+ 		if (tx_ring->next_to_use == tx_ring->count)
 -- 
 2.41.3
 
