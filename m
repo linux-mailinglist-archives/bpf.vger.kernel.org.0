@@ -1,172 +1,272 @@
-Return-Path: <bpf+bounces-64192-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64193-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D045B0F8B5
-	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 19:11:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 244F9B0F968
+	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 19:41:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 40CE4583AD8
-	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 17:11:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 25F4616EDAE
+	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 17:38:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1587E215055;
-	Wed, 23 Jul 2025 17:11:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 409AC1E5B63;
+	Wed, 23 Jul 2025 17:36:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="YY/QrJxF"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="bQDMlSKp"
 X-Original-To: bpf@vger.kernel.org
-Received: from lamorak.hansenpartnership.com (lamorak.hansenpartnership.com [198.37.111.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8E1217C91;
-	Wed, 23 Jul 2025 17:11:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.37.111.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83FE922836C
+	for <bpf@vger.kernel.org>; Wed, 23 Jul 2025 17:36:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753290677; cv=none; b=lqnvzJuANM3Yf+kVT0RK4pYmfw734bJeqGIXs9H0H08n5NgthmJXPfOuKotzG6EjTrHfumgwJ+o+XT5/3clNcBGxcBrFaX0BlYuXtJjnWJ9eVJyqFRs/oKynrWCdfxEawfBUZNU7g4yIZ09kibMC4h4xl1rAT5eEHvjSKm5RgyQ=
+	t=1753292213; cv=none; b=DBu877921/p2+hOVmOwSkvN9I4tTJACHCOzVl8zth7a+6X69ui+xESeOE2WfUZYf5RbP+LEfygoPn7n4s5ZvVsc+pqwAynom5FWflRAKSAhYINxygWIF6664BXHxDqGSlJD4nRPP1XBm2tB9yG450EjsYSLGpXbazSmQmZZOATA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753290677; c=relaxed/simple;
-	bh=FD9CM3pcDkPBmmVDRc3/f9Dd6klbjtJVYxz9qItX36Q=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=P4iXo8xvbPgeSg7vx5xXM3sJuL8TQaNY3Jkd/0dPW/yDoilEZDSNE969p5AU9e0JrS6vVtn0dMKdJoX2YQsvGMLSDpMKhMZ3kzqtPxKwBKHtatfHRDA5PK9A4MkqHBz/UwBwlf7ronoJkw+sc7oqjgioxTcv0yudve6L/DpIa5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=YY/QrJxF; arc=none smtp.client-ip=198.37.111.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1753290674;
-	bh=FD9CM3pcDkPBmmVDRc3/f9Dd6klbjtJVYxz9qItX36Q=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=YY/QrJxFK7Y4Qsb9K0hlmweu7Eax4MrSLEm1b+I48J5OafRNKnaiLtDQ9NeH8tGEk
-	 cl79/Irya3fd0a7z+wHaP+lUhiKjK9ij7xlS0PjIZQjz7tifTiSYSEAx30wFoPHArf
-	 jI7oBY1B0Za2byIG8ikJI+pCB0S13P0VSPj7SaqE=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::a774])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by lamorak.hansenpartnership.com (Postfix) with ESMTPSA id 520681C003D;
-	Wed, 23 Jul 2025 13:11:14 -0400 (EDT)
-Message-ID: <c6ed224b9fb5db2cfac2620c75a49fa22cbaf617.camel@HansenPartnership.com>
-Subject: Re: [PATCH v2 08/13] bpf: Implement signature verification for BPF
- programs
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org, 
-	linux-security-module@vger.kernel.org
-Cc: bboscaccy@linux.microsoft.com, paul@paul-moore.com, kys@microsoft.com, 
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Date: Wed, 23 Jul 2025 13:11:13 -0400
-In-Reply-To: <20250721211958.1881379-9-kpsingh@kernel.org>
-References: <20250721211958.1881379-1-kpsingh@kernel.org>
-	 <20250721211958.1881379-9-kpsingh@kernel.org>
-Autocrypt: addr=James.Bottomley@HansenPartnership.com;
- prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1753292213; c=relaxed/simple;
+	bh=BGm2ukabBejPap75JlSTwrFukpdyn3UUJRvuUCo/RHc=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=mM0lwsKaVt99KVqxsNL7Lz2Cy/bZIZe4bg+ri1X6mv1eXhTWF4VWd6EN3Z5mOydkPXTMwmvlQhv4sGOeT0sJFtdD166OB0wdLfumcLdNFxkYCf1lRQa3gNPtb6tZzUUAxMMuU5AoGkDF70PWqRZ09s1ygHZVDfUI2hF2FU4Tlis=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=bQDMlSKp; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-ae0dad3a179so15018766b.1
+        for <bpf@vger.kernel.org>; Wed, 23 Jul 2025 10:36:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1753292210; x=1753897010; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3OrkDHN4Pu3640RJe+OMQQn8FEQX+p7+yP0jdnsqDiw=;
+        b=bQDMlSKpIzBIqVQa/A+xTUOhPk+RyRHSDE05dYvk9iAHxUySGbEv5l3JKI/0wa+sSA
+         7HkOG9LiwSPVBiGpvQqwtCiYuUPBxNNw5LB0eU1JL5/W5/pnrPDrqh8aTVzpOT6tftK0
+         8bxAhXIPCCyBO46ZYkiluhZgW5k8Y2bMWGPAzzREq8/mfQR5STBnlWApJZP9Hh1mVsPc
+         8ulPDt5skEfD5MKs8qePXHYMmjBzgTgBU8he+oPCidFakKkzwBhhACmSyHG5zxJjFD99
+         k+hUNIhmuvpK17M0blSgWQHXc+2MaatKESQflB0V9XSJ66FTyHQQrNXAl5uFs6UsEawq
+         a7Qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753292210; x=1753897010;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3OrkDHN4Pu3640RJe+OMQQn8FEQX+p7+yP0jdnsqDiw=;
+        b=A48ELRul6XzGw+oAl5TTeUTZSqCGuBw7drmB4K3e8y/5yfwAu+1vTJsWv+0Vrgqcyf
+         q25eoeZvVmcLZZ9v54OK3T5GDPfiq2AP1nSgCfs66PZPVdexMDbwvob1M3tzVGPf86qu
+         u6XSHnHLpP5bEoMzDdKB3YEMSWMFnQrchbnKKYgo53rExiiMiu7oorPUpB18ESzyaulW
+         odVVJljxbrZk4CC3oZOZsIrbxD7yyvfqxXPHz5lTsBW5ntvdHIr+w/Dm3Q2anzSC5qOw
+         QuiXfe4uOXlI8fsinyh8NTOAElvOZyBFCnxv4rcu/Q4C+tlt9+aJKXDRS/wxlVWBMoBd
+         qnAg==
+X-Gm-Message-State: AOJu0YxNpDIc3iJYQvb0DpYXVH6vBtcm8kZHqM/GimGKHVIML085QcPg
+	v/4GvmOBcbFlMt/NntJ+CDQQ3+Itxequ9/+iETMSHqSQKYxOW21y6+ZuwR6FkLoE6RA=
+X-Gm-Gg: ASbGncv/z+zRnTyFkRZhpm1rDFOjs73Uv9VVnWUqJoL6qOx8WPRQXPV44Ta2sorV5hk
+	HRpGtsA5bckOM9Bwch1wS1LYH11w0P7OWE8FlvH/Pa4z+GgLnCMC+a28KGdEvEXQxRptS88t3ua
+	aZ2hwUmF+ZukiZ0F+LDx/4BcLvgFaIBQF3LauzwImHumDoDjYOlZoV4GN5Iizb8610HuYkhtDH3
+	fPjpwNr20AJ7bN4xBQUc45SwKIAIQtFoZMYzoIaGeVW547gXPgfVQqGcW1UjujUx3TkybB9NigE
+	yKPulAyKZnP2YPf9rq73UpYdyU/7VxL89jgXdpz0BqS/8ySSsxBA7/m/quvRdXnIxk4Phbf5lW1
+	2Y770o0pwHsK+rjPHSTNju4AZagaPLi22lmiVCg9EjLOYkmPSq+oCKElvfR5lPIZAO+ylQF0=
+X-Google-Smtp-Source: AGHT+IGdX1BtAcPU6NXapcTHJ4XJ3l3KZ7udHFpF/bYGsc+3o9bl8p1p/WT/ndlJtRRzjAI8J+Q4Uw==
+X-Received: by 2002:a17:907:c26:b0:ae3:d5f2:393a with SMTP id a640c23a62f3a-af2f8d4c052mr339922066b.44.1753292209720;
+        Wed, 23 Jul 2025 10:36:49 -0700 (PDT)
+Received: from cloudflare.com (79.184.149.187.ipv4.supernova.orange.pl. [79.184.149.187])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aec6ca2ec42sm1080623766b.78.2025.07.23.10.36.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jul 2025 10:36:49 -0700 (PDT)
+From: Jakub Sitnicki <jakub@cloudflare.com>
+Subject: [PATCH bpf-next v4 0/8] Add a dynptr type for skb metadata for TC
+ BPF
+Date: Wed, 23 Jul 2025 19:36:45 +0200
+Message-Id: <20250723-skb-metadata-thru-dynptr-v4-0-a0fed48bcd37@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAK0dgWgC/33OywrCMBAF0F+RrB3Js1FX/oe4SJuJDWpbkjQo0
+ n831IWCj+XlMufOnUQMHiPZLu4kYPbR910JcrkgTWu6I4K3JRNOuaIVqyCearhgMtYkA6kNI9h
+ bN6QAsjZK60ZYqiQp50NA568zvSf14KDDayKH0rQ+pj7c5s3M5v7JC/qbzwwoOKatYaLiyq53z
+ bkfrTubgKumv8xy5i9N/3s286Ipp9ZUSo3Muq+aeNM4+6OJouGG16iUkEzLD22apgdQDDdLawE
+ AAA==
+X-Change-ID: 20250616-skb-metadata-thru-dynptr-4ba577c3d054
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, 
+ Andrii Nakryiko <andrii@kernel.org>, Arthur Fabre <arthur@arthurfabre.com>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+ Jesse Brandeburg <jbrandeburg@cloudflare.com>, 
+ Joanne Koong <joannelkoong@gmail.com>, 
+ Lorenzo Bianconi <lorenzo@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <thoiland@redhat.com>, 
+ Yan Zhai <yan@cloudflare.com>, kernel-team@cloudflare.com, 
+ netdev@vger.kernel.org, Stanislav Fomichev <sdf@fomichev.me>
+X-Mailer: b4 0.15-dev-07fe9
 
-On Mon, 2025-07-21 at 23:19 +0200, KP Singh wrote:
-[...]
+TL;DR
+-----
 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index fd3b895ebebf..b42c3740e053 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -1607,6 +1607,16 @@ union bpf_attr {
-> =C2=A0		 * continuous.
-> =C2=A0		 */
-> =C2=A0		__u32		fd_array_cnt;
-> +		/* Pointer to a buffer containing the signature of
-> the BPF
-> +		 * program.
-> +		 */
-> +		__aligned_u64=C2=A0=C2=A0 signature;
-> +		/* Size of the signature buffer in bytes. */
-> +		__u32=C2=A0		signature_size;
-> +		/* ID of the kernel keyring to be used for signature
-> +		 * verification.
-> +		 */
-> +		__u32=C2=A0		keyring_id;
+This is the first step in an effort which aims to enable skb metadata
+access for all BPF programs which operate on an skb context.
 
-This should become __s32 to match the value passed in to
-bpf_lookup_user_key().
+By skb metadata we mean the custom metadata area which can be allocated
+from an XDP program with the bpf_xdp_adjust_meta helper [1]. Network stack
+code accesses it using the skb_metadata_* helpers.
 
-[...]
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 22fda92ab7ce..111f91a99166 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -2779,8 +2779,41 @@ static bool is_perfmon_prog_type(enum
-> bpf_prog_type prog_type)
-> =C2=A0	}
-> =C2=A0}
-> =C2=A0
-> +static noinline int bpf_prog_verify_signature(struct bpf_prog *prog,
-> +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 union bpf_attr *attr,
-> +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bool is_kernel)
-> +{
-> +	bpfptr_t usig =3D make_bpfptr(attr->signature, is_kernel);
-> +	struct bpf_dynptr_kern sig_ptr, insns_ptr;
-> +	struct bpf_key *key =3D NULL;
-> +	void *sig;
-> +	int err =3D 0;
-> +
-> +	key =3D bpf_lookup_user_key(attr->keyring_id, 0);
-> +	if (!key)
-> +		return -ENOKEY;
+Changelog
+---------
+Changes in v4:
+- Kill bpf_dynptr_from_skb_meta_rdonly. Not needed for now. (Marin)
+- Add a test to cover passing OOB offsets to dynptr ops. (Eduard)
+- Factor out bounds checks from bpf_dynptr_{read,write,slice}. (Eduard)
+- Squash patches:
+      bpf: Enable read access to skb metadata with bpf_dynptr_read
+      bpf: Enable write access to skb metadata with bpf_dynptr_write
+      bpf: Enable read-write access to skb metadata with dynptr slice
+- Kept Eduard's Acks for v3 on unchanged patches.
+- Link to v3: https://lore.kernel.org/r/20250721-skb-metadata-thru-dynptr-v3-0-e92be5534174@cloudflare.com
 
-This still only checks against user keyrings and not system trusted
-keyrings as was pointed out in v1.  Since user keyrings are negative
-and user key serials begin at 3 or more, there's no overlap with the
-system keyring specifiers and you can just overload attr->keyring_id,
-like the below.
+Changes in v3:
+- Add a kfunc set for skb metadata access. Limited to TC BPF. (Martin)
+- Drop patches related to skb metadata access outside of TC BPF:
+      net: Clear skb metadata on handover from device to protocol
+      selftests/bpf: Cover lack of access to skb metadata at ip layer
+      selftests/bpf: Count successful bpf program runs
+- Link to v2: https://lore.kernel.org/r/20250716-skb-metadata-thru-dynptr-v2-0-5f580447e1df@cloudflare.com
 
-Regards,
+Changes in v2:
+- Switch to a dedicated dynptr type for skb metadata (Andrii)
+- Add verifier test coverage since we now touch its code
+- Add missing test coverage for bpf_dynptr_adjust and access at an offset
+- Link to v1: https://lore.kernel.org/r/20250630-skb-metadata-thru-dynptr-v1-0-f17da13625d8@cloudflare.com
 
-James
+Overview
+--------
+
+Today, the skb metadata is accessible only by the BPF TC ingress programs
+through the __sk_buff->data_meta pointer. We propose a three step plan to
+make skb metadata available to all other BPF programs which operate on skb
+objects:
+
+ 1) Add a dynptr type for skb metadata (this patch set)
+
+    This is a preparatory step, but it also stands on its own. Here we
+    enable access to the skb metadata through a bpf_dynptr, the same way we
+    can already access the skb payload today.
+
+    As the next step (2), we want to relocate the metadata as skb travels
+    through the network stack in order to persist it. That will require a
+    safe way to access the metadata area irrespective of its location.
+
+    This is where the dynptr [2] comes into play. It solves exactly that
+    problem. A dynptr to skb metadata can be backed by a memory area that
+    resides in a different location depending on the code path.
+
+ 2) Persist skb metadata past the TC hook (future)
+
+    Having the metadata in front of the packet headers as the skb travels
+    through the network stack is problematic - see the discussion of
+    alternative approaches below. Hence, we plan to relocate it as
+    necessary past the TC hook.
+
+    Where to relocate it? We don't know yet. There are a couple of
+    options: (i) move it to the top of skb headroom, or (ii) allocate
+    dedicated memory for it.  They are not mutually exclusive. The right
+    solution might be a mix.
+
+    When to relocate it? That is also an open question. It could be done
+    during device to protocol handover or lazily when headers get pushed or
+    headroom gets resized.
+
+ 3) skb dynptr for sockops, sk_lookup, etc. (future)
+
+    There are BPF program types don't operate on __sk_buff context, but
+    either have, or could have, access to the skb itself. As a final touch,
+    we want to provide a way to create an skb metadata dynptr for these
+    program types.
+
+TIMTOWDI
+--------
+
+Alternative approaches which we considered:
+
+* Keep the metadata always in front of skb->data
+
+We think it is a bad idea for two reasons, outlined below. Nevertheless we
+are open to it, if necessary.
+
+ 1) Performance concerns
+
+    It would require the network stack to move the metadata on each header
+    pull/push - see skb_reorder_vlan_header() [3] for an example. While
+    doable, there is an expected performance overhead.
+
+ 2) Potential for bugs
+
+    In addition to updating skb_push/pull and pskp_expand_head, we would
+    need to audit any code paths which operate on skb->data pointer
+    directly without going through the helpers. This creates a "known
+    unknown" risk.
+
+* Design a new custom metadata area from scratch
+
+We have tried that in Arthur's patch set [4]. One of the outcomes of the
+discussion there was that we don't want to have two places to store custom
+metadata. Hence the change of approach to make the existing custom metadata
+area work.
+
+-jkbs
+
+[1] https://docs.ebpf.io/linux/helper-function/bpf_xdp_adjust_meta/
+[2] https://docs.ebpf.io/linux/concepts/dynptrs/
+[3] https://elixir.bootlin.com/linux/v6.16-rc6/source/net/core/skbuff.c#L6211
+[4] https://lore.kernel.org/all/20250422-afabre-traits-010-rfc2-v2-0-92bcc6b146c9@arthurfabre.com/
 
 ---
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Arthur Fabre <arthur@arthurfabre.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: Jesse Brandeburg <jbrandeburg@cloudflare.com>
+Cc: Joanne Koong <joannelkoong@gmail.com>
+Cc: Lorenzo Bianconi <lorenzo@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: Toke Høiland-Jørgensen <thoiland@redhat.com>
+Cc: Yan Zhai <yan@cloudflare.com>
+Cc: kernel-team@cloudflare.com
+Cc: netdev@vger.kernel.org
+Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 111f91a99166..10fd3ea5d91f 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -13,6 +13,7 @@
- #include <linux/slab.h>
- #include <linux/sched/signal.h>
- #include <linux/vmalloc.h>
-+#include <linux/verification.h>
- #include <linux/mmzone.h>
- #include <linux/anon_inodes.h>
- #include <linux/fdtable.h>
-@@ -2789,7 +2790,10 @@ static noinline int bpf_prog_verify_signature(struct=
- bpf_prog *prog,
- 	void *sig;
- 	int err =3D 0;
-=20
--	key =3D bpf_lookup_user_key(attr->keyring_id, 0);
-+	if (system_keyring_id_check(attr->keyring_id) =3D=3D 0)
-+		key =3D bpf_lookup_system_key(attr->keyring_id);
-+	else
-+		key =3D bpf_lookup_user_key(attr->keyring_id, 0);
- 	if (!key)
- 		return -ENOKEY;
-=20
+---
+Jakub Sitnicki (8):
+      bpf: Add dynptr type for skb metadata
+      bpf: Enable read/write access to skb metadata through a dynptr
+      selftests/bpf: Cover verifier checks for skb_meta dynptr type
+      selftests/bpf: Pass just bpf_map to xdp_context_test helper
+      selftests/bpf: Parametrize test_xdp_context_tuntap
+      selftests/bpf: Cover read access to skb metadata via dynptr
+      selftests/bpf: Cover write access to skb metadata via dynptr
+      selftests/bpf: Cover read/write to skb metadata at an offset
 
-
-
-
-
+ include/linux/bpf.h                                |   7 +-
+ include/linux/filter.h                             |  18 ++
+ kernel/bpf/helpers.c                               |   7 +
+ kernel/bpf/log.c                                   |   2 +
+ kernel/bpf/verifier.c                              |  12 +-
+ net/core/filter.c                                  |  66 ++++++
+ tools/testing/selftests/bpf/bpf_kfuncs.h           |   3 +
+ tools/testing/selftests/bpf/prog_tests/dynptr.c    |   1 +
+ .../bpf/prog_tests/xdp_context_test_run.c          |  97 ++++++--
+ tools/testing/selftests/bpf/progs/dynptr_fail.c    | 258 +++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/dynptr_success.c |  22 ++
+ tools/testing/selftests/bpf/progs/test_xdp_meta.c  | 228 ++++++++++++++++++
+ 12 files changed, 704 insertions(+), 17 deletions(-)
 
 
