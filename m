@@ -1,95 +1,125 @@
-Return-Path: <bpf+bounces-64168-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64169-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAE2BB0F4FA
-	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 16:13:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51CAFB0F529
+	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 16:23:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8B36AA7780
-	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 14:12:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 077A61CC1B33
+	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 14:24:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C56812E719B;
-	Wed, 23 Jul 2025 14:12:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 219FD2EF2BA;
+	Wed, 23 Jul 2025 14:23:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="STy9M1Ev"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JImctd1u"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FE2422F755;
-	Wed, 23 Jul 2025 14:12:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B3232E8DEE;
+	Wed, 23 Jul 2025 14:23:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753279976; cv=none; b=HZBhNv9rvUdKoNkb/Lp3sEAgq9U5QCndtdA1iPTLbXjZn2Ew1hTSbgZe51dnyvTffYp/bh6xvRsM30mPZVgr9vgF3QkO3FIUFKvgud/SLE14tNdrDgeh3wtYLzZg80iixYiu08BaEcVCrGumdvnLsJTX2sMun4YDc/WZ5V5troY=
+	t=1753280621; cv=none; b=SxeXmo2ukkHyqM8A0ZJje2V92bQmQIjW1YRlkhajUmd5f60TGmhFhtMc7C1ceXI5WNqCgRaikUiAf9zBjGtTjkh0ZTcswPAaIfZnfpCZrAcZefuroJyWKsfnZ+melVn4XbSo7zJk5rB/rHNw20U9G0PYe+AVMQvtVr3JwV4sdG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753279976; c=relaxed/simple;
-	bh=dcKCD/aF7xJwbKKl79LFdtsYfWfciBaVw1Uci7MOVO8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=b+p+kIYH8nsxxYBkQRpvjLMjNF+jMLXQgTnLgSOr3otlajL/TXToHUOCmO4rNxNqsPjfvHNIR7EXa0abkYfCpCGWG0qmGzG8M/3kSui6ngtRdGXWJjyvmSghp3xKQA34m+YsmfxgPt2ye+K6JiS5IToXuvfaev5sMJOjzHXzcUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=STy9M1Ev; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6D4DC4CEEF;
-	Wed, 23 Jul 2025 14:12:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753279975;
-	bh=dcKCD/aF7xJwbKKl79LFdtsYfWfciBaVw1Uci7MOVO8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=STy9M1EvNUe1+oGFgEUF9aZiKVHmPLZGiOOr/g2KMSC9iu+MX7aLfYDBAgaqg1IvE
-	 flypRPN/g5sFxt8ErJiLMvVxYc2z47IeC/iwXkn9ndjQtV8NNmP841hSx7ZyPCbuBC
-	 oIK0a2q1QIeIyXqNSYKkTZgOMXUS3tVV+2Duv+QFhW/aCwZq0r18giRlQuya2yZtr6
-	 uovy+UfNesOJK3RSdErTNxan3v+bxx04+P//0XfWlzV/D2G0CLFAt9xxHG7Woau5EC
-	 5l1crr3fM14jKNi3mMXmRgMBodJUsAeuQfIEbEQ1cBEoJD39AaubIE5x3+vwxURfpZ
-	 TApGW2ISFrCXA==
-Date: Wed, 23 Jul 2025 07:12:53 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Gal Pressman <gal@nvidia.com>
-Cc: andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
- pabeni@redhat.com, shuah@kernel.org, netdev@vger.kernel.org,
- horms@kernel.org, cratiu@nvidia.com, noren@nvidia.com, cjubran@nvidia.com,
- mbloch@nvidia.com, jdamato@fastly.com, sdf@fomichev.me, ast@kernel.org,
- daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
- nathan@kernel.org, nick.desaulniers+lkml@gmail.com, morbo@google.com,
- justinstitt@google.com, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, llvm@lists.linux.dev, Mohsin Bashir
- <mohsin.bashr@gmail.com>, patchwork-bot+netdevbpf@kernel.org
-Subject: Re: [PATCH net-next V6 0/5] selftests: drv-net: Test XDP native
- support
-Message-ID: <20250723071253.54a97c65@kernel.org>
-In-Reply-To: <48bb190e-073c-4ad8-841b-f6d0572cb0fd@nvidia.com>
-References: <20250719083059.3209169-1-mohsin.bashr@gmail.com>
-	<175323423849.1016544.9128937268934260157.git-patchwork-notify@kernel.org>
-	<48bb190e-073c-4ad8-841b-f6d0572cb0fd@nvidia.com>
+	s=arc-20240116; t=1753280621; c=relaxed/simple;
+	bh=AYIWRQVfnyvY6zSGhSziaclo7KTqM+c1AOB4JPzZWFE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=DHDlrrD+LHB1AH/rpMFP3jcx6LNi53CbvUAZYL8l66a9avRcNNgKHfJKE6u99W61JfpoEXJpM8a523K+LuS87GTtDPn5L9bwha5Eh+nEO1IShbl2myNSA1/tccY2qlJliW9PRNsJgWf3KrEzqwSzcocYJO8UFrPI4Qcl9mJvhnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JImctd1u; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-23c8a5053c2so64057695ad.1;
+        Wed, 23 Jul 2025 07:23:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1753280616; x=1753885416; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UxwHaK6YDUmdrsdUjFROIjJz+2g48h51kQ60Ua/P8/U=;
+        b=JImctd1uT0gNkbJXeSaAGlg0OhNmVN2sknQePO9STlt7MvPKF8bF/OrNPXI7fvWWL/
+         ykhww+ly2gQUjSQZuK/PIbGVBzLCIaIroMMJcKXQ0AyXUdfwLBUxxqYlMXpadBrmukxV
+         OcqOFNBpMYFFR8UDSGrVv9lp2BSmsQCVOFFHH3p+r/Y1LBk/+gX7ZDYRy8b9uBUE5y67
+         v7FGgC6DGfytSfpSuM5dddz37ajQrJgxc7SiwlzGrZfhBXdaceUtde4u79EFSt81QAYN
+         ACfwa/Uh9Cr95q/tB0c5rT6orFy2n4+HJq/tcmJnDenzARdTGmUxqeExuXyLjDthL9mG
+         adZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753280616; x=1753885416;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UxwHaK6YDUmdrsdUjFROIjJz+2g48h51kQ60Ua/P8/U=;
+        b=VLp7MEnpem9EncJyHN+e4G5r8qoMfyj02n4w54hQUUInZ84XI0ZSzlMyee27+LrVBp
+         /X73a6MSNoPo9VtW/Jy1huPi+ktczuSLYsFc6XWnuvvBkvE5PPAHNW0bVpV6po7Rtkc9
+         Jl7Yu4/7w0hzRZ/gvh30l/GYMuNRY8fKnZDIi5aBcLsJ/TQ1BJJ1LCeoJZjyySoBEhO4
+         5XblBEt5czxVL8DUDYEasTyylOqsNUoMqK2dG8i8wFYSf0HByEcm1dNwgwzwNDUwrDnU
+         +M3a+FAJe7K2wSAeer642ggR+VuPk/owqaCfxurUyrB6RQ8eHraoN2IM6rezzxcgi8uv
+         hdKw==
+X-Forwarded-Encrypted: i=1; AJvYcCV0d4eshuP0+FEpB21nai5gVcYxGG4Wly8L5fjRitYO0xPYqGcslC55KevO4iRE6baagl3oJAYL@vger.kernel.org, AJvYcCVMWiwufc2uNNskjqbdgBFvfHEMWQB3ejo7hPH0/N7MQQwv7Z/ll1ebV4qwSCcuHRijUbY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx2fGWPpTrx09TEMgxX8IBqFhNSp3I3jxN9wtl8VPWcof+DsY6i
+	JKH3eNgDWg4YPTQwovbqD5AipNmogXLZrTXXqsMrHN2VO6OJ806tlR6x
+X-Gm-Gg: ASbGncuPhqUhi8uB74eeLvZwGwlDTvPCiPyXB/ii/vSG5RSMGeGx/17He3pzLtAZqFi
+	BPPe3AJEAHXfRAc9qJUcOUuSpTK/aN7X61VjRC9LO+yEyRf0XsqdRpmWtMc5eJtQU5wHlY1jxbG
+	pd2Mxpt10YI21pVaxbnqnSg1NOrgmeALvS40ThgaAhHaOha4yuK5M4mlcZ70G/OksUNsYo3ocfN
+	aaaNXInJL1cLwtTlI2GcB+jHfFE9VTkk0rt8oor5GW7Ac87Dy7dpEzpeqvy46sO+OljMEn+8YPf
+	rCPQsAWloBeBSMvN7hhD2bXA9CF2vPS61hf0dms80VKPg2+NJ6fnJH7pQUoDGrzu9/r/zxiHBrn
+	VuQ0JLp8J8W0le9K+fqnn9b7EOGZtZxKfp65TyTF2yTWC2BXjNBXuGtmsQgmBrKeNo5WE+w==
+X-Google-Smtp-Source: AGHT+IEd0wy3eDFLecrSHW0WlQqhyyQ7MxV95sUDV+ufUcT8vx5C+vZm/dLJytY/egk/pAWS9HDwiA==
+X-Received: by 2002:a17:903:230c:b0:234:a66d:ccf5 with SMTP id d9443c01a7336-23f98235191mr55549135ad.49.1753280616283;
+        Wed, 23 Jul 2025 07:23:36 -0700 (PDT)
+Received: from KERNELXING-MC1.tencent.com ([111.201.28.60])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23e3b6b4a9esm97929595ad.93.2025.07.23.07.23.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jul 2025 07:23:35 -0700 (PDT)
+From: Jason Xing <kerneljasonxing@gmail.com>
+To: anthony.l.nguyen@intel.com,
+	przemyslaw.kitszel@intel.com,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	bjorn@kernel.org,
+	magnus.karlsson@intel.com,
+	maciej.fijalkowski@intel.com,
+	jonathan.lemon@gmail.com,
+	sdf@fomichev.me,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	mcoquelin.stm32@gmail.com,
+	alexandre.torgue@foss.st.com
+Cc: linux-stm32@st-md-mailman.stormreply.com,
+	bpf@vger.kernel.org,
+	intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org,
+	Jason Xing <kernelxing@tencent.com>
+Subject: [PATCH net v3 0/2] xsk: fix negative overflow issues in zerocopy xmit
+Date: Wed, 23 Jul 2025 22:23:25 +0800
+Message-Id: <20250723142327.85187-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Wed, 23 Jul 2025 10:11:57 +0300 Gal Pressman wrote:
-> On 23/07/2025 4:30, patchwork-bot+netdevbpf@kernel.org wrote:
-> > Hello:
-> > 
-> > This series was applied to netdev/net-next.git (main)
-> > by Jakub Kicinski <kuba@kernel.org>:  
-> 
-> Jakub, the test was still under active discussion, and you knowingly
-> merged it with buggy code, ignoring our comments.
-> 
-> This is *extremely disrespectful* towards people that spent time
-> reviewing, replying and participating in the netdev mailing list.
-> 
-> I expect better from you, and other netdev maintainers which allow this
-> to happen. Please uphold your responsibilities as maintainers towards
-> the community, this is unacceptable behavior.
+From: Jason Xing <kernelxing@tencent.com>
 
-Man, I just want tests upstream. How hard is this to understand.
+Fix two negative overflow issues around {stmmac_xdp|igb}_xmit_zc().
 
-These tests even work on mlx5, AFAIU, just not if LRO is enabled.
+Jason Xing (2):
+  stmmac: xsk: fix negative overflow of budget in zerocopy mode
+  igb: xsk: solve negative overflow of nb_pkts in zerocopy mode
 
-Please at least try to think about what's good for this community.
-At least try.
+ drivers/net/ethernet/intel/igb/igb_xsk.c          | 3 +--
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 2 +-
+ 2 files changed, 2 insertions(+), 3 deletions(-)
+
+-- 
+2.41.3
+
 
