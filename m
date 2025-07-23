@@ -1,380 +1,422 @@
-Return-Path: <bpf+bounces-64178-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64179-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BBB4B0F6DB
-	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 17:20:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78142B0F77E
+	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 17:52:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DD173A2BFB
-	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 15:15:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41952170771
+	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 15:52:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85ADC2F234A;
-	Wed, 23 Jul 2025 15:15:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E2EC1F0994;
+	Wed, 23 Jul 2025 15:52:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="dZHgTOKK"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aceyplc5"
 X-Original-To: bpf@vger.kernel.org
-Received: from CAN01-YT3-obe.outbound.protection.outlook.com (mail-yt3can01on2137.outbound.protection.outlook.com [40.107.115.137])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51BC3156CA;
-	Wed, 23 Jul 2025 15:15:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.115.137
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753283742; cv=fail; b=rNq2syR6P0a7pE3H2YR4QVl0VMGzsCvBlwZOTdNazS5JtAAwF8OI4xdZll3yHMcJyc8kgcgrkiy4AeTXLrX4cnYvAhsUpGTtNQHNXJY0tUqanhk4s1swriFE3U3M5Ztvdpl1cRHfCu03KOsUhPVGW0llFCopKG0qGvzlllSdhis=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753283742; c=relaxed/simple;
-	bh=KbrM3Kjt/jcJtTz6tsfp5TmdiKTpszZCgp5vB3Ys1Cg=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=iDs2oV2ih1uG3+ea6AZkEdorF+KM7QLu6CmQxZraL8Fg4nIRBDcEKsQ221Zg6muZj3Lh/meXMm10sHHPoW2MFdhx4DNZWWQbHwusEnr2ig2mBu1aZrAjz22SJLZdgJOyVq7XNpyeq+3CEURY5A4HDqyl+7Ewrut5gJDJ4znWXOY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=dZHgTOKK; arc=fail smtp.client-ip=40.107.115.137
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=nUfofwzLSl1Hv0bdaZx3kWzyq5oFnpUtyF5GaecVAsFjrL3KT35CH4FkPCKX7xAz5NZJxt0vEvCBWcsxRzyQtyu0uWIXN8k5btEthh+ouRAsnAxBJGiz7Zvk/VJ5xSiGy7B4c1rGkGG264VVpCzyB12npPSLF9clhik+xtjOCASWCJhW6G3PH34Cw3E4+hcreQi1RXecUzwM8tl97SlLlvaWYGH0IM9BAcH0SIVTImnc2OhUgDiSVLnIKMQKu5OrBixLFDWbY7sSXC+HkEA+zmCHkM35IjZTM2fDmzg45Xmfn4xM/HbjYJ1ZRLF0Ucr7Dl7z9F3wZ6Y1mw1GXi93Hw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nH5SLcqwKD4qIOL6nzAoM74NYEV8fYuR5stNO4ozmog=;
- b=g2fRb3+Un5mwtz8stjbdaZvyiEMKGKS1s0fBitOgtTKprArBJoXMxUI6O9ult740ZqtzlOYbG63cJW2Aw1igvNivQX/6pjNWw9ybPcuZ2OPPH0xd3BgdOr2bOsc+BlsiIwdHHYYL8wxiuqLP9O9MRWrTqTZQ4MpK/qcg3OnBaHeuj4Scoj103iOGYq3kJc/xtBSZfttXVvAZ6dZN4TVI7Ha2MgLu3TPx2g1TB7IDVlcEA7+3buYbH/1KkuXWzd0BL8xtYXRSD9UBl0GdYcM4qsO+sRuDqHr+/kWIoNBmDK69TII5YjOInAF2ckStUl/DOGG+WCLy9X0xK+FxjSCfHQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=efficios.com; dmarc=pass action=none header.from=efficios.com;
- dkim=pass header.d=efficios.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nH5SLcqwKD4qIOL6nzAoM74NYEV8fYuR5stNO4ozmog=;
- b=dZHgTOKK49/zM361aVVIPxtiX5uliAJiJVnLfIvosl7WDnc7RbjDY+phX3foqn1U8gl3WNIV8kNLBjP2/DO1iou23M/6vxaZwgd2dh+qCgpmKZkDLd4IocbU2Gry1UOFt3bFAWhhhaNr1hDI5Z8TLhxPMBlnfCQqsm+mKN7YKnS8tpc23arlbkbyeYbyzRt7cSlmQ+dA6awQUyPuSjNAKOkXypkgxn20vZM82HgqlPJs6NQ16YTdD/JtxRuV00edDFNsOgh68EAWdMg1R5yQVUrIdMN9qGJR59B+Nvt3LTE0ftCvGFu6/EsBHIaaKASFqs7iNgLaM7pdAIMRmeCm8A==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=efficios.com;
-Received: from YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:be::5)
- by YT3PR01MB6614.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:71::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8964.21; Wed, 23 Jul
- 2025 15:15:36 +0000
-Received: from YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
- ([fe80::50f1:2e3f:a5dd:5b4]) by YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
- ([fe80::50f1:2e3f:a5dd:5b4%3]) with mapi id 15.20.8964.019; Wed, 23 Jul 2025
- 15:15:36 +0000
-Message-ID: <2a85b4b4-a240-4e8b-b2f4-5eede3297082@efficios.com>
-Date: Wed, 23 Jul 2025 11:15:34 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] New codectl(2) system call for sframe registration
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org,
- Josh Poimboeuf <jpoimboe@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Andrii Nakryiko <andrii@kernel.org>, Indu Bhagat <indu.bhagat@oracle.com>,
- "Jose E. Marchesi" <jemarch@gnu.org>,
- Beau Belgrave <beaub@linux.microsoft.com>, Jens Remus
- <jremus@linux.ibm.com>, Linus Torvalds <torvalds@linux-foundation.org>,
- Andrew Morton <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>,
- Florian Weimer <fweimer@redhat.com>, Sam James <sam@gentoo.org>,
- Brian Robbins <brianrob@microsoft.com>,
- Elena Zannoni <elena.zannoni@oracle.com>
-References: <2fa31347-3021-4604-bec3-e5a2d57b77b5@efficios.com>
- <20250723092620.c208fc0d3b9d800c47f87556@kernel.org>
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Content-Language: en-US
-In-Reply-To: <20250723092620.c208fc0d3b9d800c47f87556@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: YQZPR01CA0131.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:87::19) To YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:be::5)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D9F71E1E00
+	for <bpf@vger.kernel.org>; Wed, 23 Jul 2025 15:52:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1753285958; cv=none; b=lT8F9+c724f4NZseDTVD09IhI+nj+PWnW7Xw4M8+sG0hRbLIKjG2GW6CjN9uK39SLSQUZqRV+u+KRSdrpLUUZoUh6Svb+LL0eZunp1yxl+sGW3glm2Lkvncae8th0qoNhMHVsFYgz9qh0uMMwFxtLWGlasFUKTHILJmTLhwH32w=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1753285958; c=relaxed/simple;
+	bh=ViuSl5cGk4og+qEq4ioF3jjulTVS4Mepxp2z5eDwG50=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nDnQG3wr8oRfYyZ77PG2uYk4AIKzJVe5Wvdi3OWeodVHnBhklL29WJfCRGhIQ/b8pUIFTqpBAZyR1AsizodRD9d+UdNXb5j/CX0Nv1NbzPbrfSS6DTeEwFQf0U2OOh87ETNM11M6AYh3aJNQMqMry0OZEJoiYa+pSG2R6G9p2VM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aceyplc5; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1753285956; x=1784821956;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ViuSl5cGk4og+qEq4ioF3jjulTVS4Mepxp2z5eDwG50=;
+  b=aceyplc5llyeuZxazM26jg2VuOnx9nrJmtGlCzRrpUOCiR6ieivjJqzT
+   GxpJ1eoJ9CyfBosM6FvKUGqbxSfkoSF5RRVVql8sEGC9cfp0lC9D0sMKG
+   MqebK5eioZAwc7JxqBbp74tTIw+LhehKc3Q3sSRqtHgD/iu1bxiFRohNm
+   DtfzK6OJQT3IaSWdaUTVesguwqy9lqoGoItqUsFLVb0n7NWnF/FKIAu34
+   HcslwZLbufSWoSoNjmBSb0LNBPZsMl3wSCsGtkKC8hRrJ6ngxE1PV8Gzt
+   G9YPK+nqs5O7aRljNF/5kf9BY/RFBQUJDp/kvlBA2LsJA49JRscj6/nub
+   A==;
+X-CSE-ConnectionGUID: OuaO4rziQGyuPwMB8iNvFQ==
+X-CSE-MsgGUID: bycZc0nyQneor3L6a2Akww==
+X-IronPort-AV: E=McAfee;i="6800,10657,11501"; a="55280712"
+X-IronPort-AV: E=Sophos;i="6.16,333,1744095600"; 
+   d="scan'208";a="55280712"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2025 08:52:35 -0700
+X-CSE-ConnectionGUID: oQVTBNiKR6CJzmMxZIULwQ==
+X-CSE-MsgGUID: Zt8zXrr6Tqezh85FlwTPRw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,333,1744095600"; 
+   d="scan'208";a="163847093"
+Received: from lkp-server01.sh.intel.com (HELO 9ee84586c615) ([10.239.97.150])
+  by fmviesa005.fm.intel.com with ESMTP; 23 Jul 2025 08:52:30 -0700
+Received: from kbuild by 9ee84586c615 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1ueblc-000JVJ-2M;
+	Wed, 23 Jul 2025 15:52:28 +0000
+Date: Wed, 23 Jul 2025 23:52:01 +0800
+From: kernel test robot <lkp@intel.com>
+To: Puranjay Mohan <puranjay@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Xu Kuohai <xukuohai@huaweicloud.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+	bpf@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH bpf-next] bpf, arm64: JIT support for private stack
+Message-ID: <202507232327.S1FR5cNc-lkp@intel.com>
+References: <20250722173254.3879-1-puranjay@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: YT2PR01MB9175:EE_|YT3PR01MB6614:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4833147d-d522-41c7-8f96-08ddc9fbc6a1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|366016|7416014|376014|13003099007;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?cVBwY1gxRk41YlZGbm9RdkF6YWRTY2lwU3k3d1EzRCtTRHJqM2ROTlZVbFpq?=
- =?utf-8?B?cDZod1YxQTVYTWk3OW5qWHRIdFVLQUpXWHpPTVBTQWJTR1BXNDNzY1dBVHgr?=
- =?utf-8?B?aXlCdjYyYVlDRGc2a3BSdEpHQjVrWjczcWFBeG5OTUhweVNJY2NzOGs4cFhu?=
- =?utf-8?B?Q29iaUx5R2FqUTJJdDdJZFNKVTQvak5mRGJEQ2RCMW5mbDBNSExGRzRBb2Ev?=
- =?utf-8?B?R2Y0QlpHZGU0MkMzM3RzWHVWZEtkNzN4dy8vN3ozSHpSQ1NhMVdIT3R1NVlN?=
- =?utf-8?B?SGxVT3VKWFdaK3lISjZ5bytkRVVrRmRQMUZJWEc3WW5kVWwyclZKa0xQaUJB?=
- =?utf-8?B?eW5TczNoVkNlVkFNOHYvcXB6djN0TXRXQkhXTC9VbzVxR2tLMS8wK2RKZkc1?=
- =?utf-8?B?RHYyOHpvYkl2YWpFcVZMcVpiQnpSTXU2alNoZ2V6WWptazlDcjdsYWtXK1lt?=
- =?utf-8?B?T2ZtSkl1QXlGQ0RyVmJBaFdjYkJrLyt0QTNkZExGRDJCUmVVa2REbDFpREVY?=
- =?utf-8?B?dWMvRnVRekRYa2ZBTklNVjI0bVE4R2lpcXVNSklqeXE4RU5RVGlmMmRxOVlV?=
- =?utf-8?B?NHJ2bFJIdFU2SUpDMWRFQ3NFTDdhdk9HVHplYmJacDluU2ViUTZFUGpMSnh4?=
- =?utf-8?B?T3FtcGJtLzAycytZVlpmdGJuRFdFYjBoMFFaOS9kYytwK3I0K0pVS1dkREo5?=
- =?utf-8?B?ZzA2WUxqNmlwTDNQZWR6blBTeDJZYmVoNTJrc282UVBZT3dNTGNJbXNwbG9S?=
- =?utf-8?B?WjNMVjhxcHBtdG1WRXAwK3ArQ0RLMm5JNkFGa2xNTld1TW1ZYy9qTGFDUWQ4?=
- =?utf-8?B?d0g3SGlJL2RSVzZFQi9aUTRlaUdvbStZTVJEVGMyanYyV2N6bStUbURaQkVQ?=
- =?utf-8?B?Yi9RY0JWK1dVcG1vUkhkdHRWNzdqVjR1TGxuSzU1TFV2bTVmejdpc1NNSHVC?=
- =?utf-8?B?SW56cnpSQnZLUkpTZUFzUm1uc0RqSldTMUh2ZzNpRnc0Ym9vYW14UXgyUXdO?=
- =?utf-8?B?Q29KME5DMFVpckhmQjhSSGx2QnBPUGRXeDVleGVHcUxKeGwrUHlvRjRBWExt?=
- =?utf-8?B?YUxKSHd5WnlldW9qMnNjUXFPNHpraTRMbGJoNjhMNGFBSTIxMXdIUVN2SWk0?=
- =?utf-8?B?NnVZaUN2QUROcHhRaFNXQzBXbk10M3pQN25IME4rRlYyM25IdkpjcGUwekpW?=
- =?utf-8?B?VW5tbVpzYll1bTQ1NmcwT0xWMnJyVjhJM1VOWUt6K3BER0RNRHk4WDNLelli?=
- =?utf-8?B?SWdmSHlFTitBaExVaHhkNDNxOWNFN29ReHUzK1k0K1VqYlpnSldHVU1UdXda?=
- =?utf-8?B?SVdpbXA0VGdtcURUS01SUExhNlJBQ0VubzY1ZkRjajRLQllqVHpUSTlFV3RI?=
- =?utf-8?B?bnRGU3RuaWxsMlBnTTVHOXhoNTZXTHVpYlR3dUE5MnQxdUtuU29hVkJxdXFS?=
- =?utf-8?B?TDV0a3NYSTR6MDZOb1EwNDl4TzJWSTdreFJ5S1hhWHRKb0tSOUZGYTZ2NzI1?=
- =?utf-8?B?Vm5PSk5ld1ZGbWc2Y3JSSGhZVmJ0UnMvRWVQclFxM3FQZ3U3N25teWdsYXg4?=
- =?utf-8?B?aTdLUCt0SG9xRGlWWnp0RXJqWDJOZFkwY2RMSzMwb05ZRkFPNkY3cEdkT3BW?=
- =?utf-8?B?cjlzZFU5eCszajFFL29xWVByUUZvWHJiY3M0NXNYKzhrT1BqdnE3S0Vjc1Bt?=
- =?utf-8?B?NmNYUDIzeHpjUlRGWU5YbTlQemdnRGxJcVFqcTlPWXc1TlA0cWhzbUdxWE9Y?=
- =?utf-8?B?RExSQkxsbEFKaTVWc200Yy8xWjg2U1pydG84MTFnbGJFK0E0TlU3bVhRS3dL?=
- =?utf-8?Q?nSPL9lX8+ebmyGQd5unN6W2KRFATx2VRxX3XY=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014)(13003099007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?RDV6QmpLRnY0dFpCWlJzb3ZtWkxKMEFlampZYnUyTjFnZVdEY1BpYzNQRHhD?=
- =?utf-8?B?ZjNPMWVoTU9RbW5SSUxqZ0lNSXQreUpnUTdUTkxxTGlOYXBIbzN5SE40TFY1?=
- =?utf-8?B?ZXAwZTcrTkRRRDNxVFNDS3Y5T1dBYjFKWVJiK2JlRDN1R3NLSlgxVnRQWnR0?=
- =?utf-8?B?M01jTjBaQ2l2K2RrcTRYUGY2US8zOFlnYmxqcmVTdEhDb2hlbkVFL3dQYXN6?=
- =?utf-8?B?enNzYWhTSnk2V0VvcDhndUpjNTF4dzc3K1Nnc3RWdzVUcnJtanNqVHdwYUl6?=
- =?utf-8?B?Z3VMZlhvRzBJMWZtVjlsSUZKbWlTaGlNZ2tqVTZ6b2FGTVpTZHdKMXVLNVVV?=
- =?utf-8?B?emZzbGt2WmZCMmNDN2lCbk0xOHlFYjFqOEF3SlB4bnJkS05vYTE4YmZEb3lG?=
- =?utf-8?B?b0UyZ2UzZVEvaERCaVc1VlNqNE1MSnEzcjAyZ2hsajBzbjRvMjZ5aEMrOEw0?=
- =?utf-8?B?SlF4LzRzVUwrYjdUNWxaQWo1MmdlbnUxYmFxalVVRk1BRGJZQTlTV0R2Qmk5?=
- =?utf-8?B?Tk1wa3RGV0Y5dmlTUGtVTFZKS2lZRDgrdVlyczhkTWY0YkxuVVY1aWhwbTVu?=
- =?utf-8?B?RDdWOXQ4YmttNFNpbldrVlBQYzVLbmd5d0M0L3JCSlhrN08wWXhoT1h3SWY1?=
- =?utf-8?B?S2VSQzh1WmZLYjMrWTV1dWFzWmRmLzVjYmxNcXovRnZBOEkraENYL2ExYUlF?=
- =?utf-8?B?YWl6VW1tbzRTNi9CZTBlc2lIM0ZCdWRJTmxZTUdRa2dqOXRqSnNId1dta00y?=
- =?utf-8?B?L0JaTzRpd1hyalJJNm1LaWV0VWRiZlhFK3pUVGRWVmk3eS85OEUyV2F6bXZP?=
- =?utf-8?B?UStEUW9OamVtb3R0Tyt4TkdDU0l4d2tpWE5nZEpyZmk2MFVVVlhLVThTTUxx?=
- =?utf-8?B?SDg1amVtTTFFOFI5QUpRa0xPRVcwL245TWFYK1VUM2VINnlhTHBIL1dIYSs3?=
- =?utf-8?B?N0JQdE9CSk11MkRZQXdUNXd6V2t5amZUNkRwNU0rK0NDMllOb1pGTnArVTFz?=
- =?utf-8?B?aTVKd1JHWEdaeWkwczU0UXNGT3pxKzVxNzEzQlNWelkzdXJkZitjT2w2SkNs?=
- =?utf-8?B?eHNXeUtjd3Brb09KRkdjaFIyOGlZUXpHZEhGNDFnR2tUaDV3bUJLNWxjWEY2?=
- =?utf-8?B?T01Udyt6YjJ4S3hZZFAyMXpHbzJVZmlCUll6TFFjMkN6U2NKQUJnQ3J0WTlz?=
- =?utf-8?B?RlpOcGZwTlQyVURxamttdk15TkdSdEw2aGFZd01NRWM3aDNvL2F1dDZEZzdU?=
- =?utf-8?B?VUdob2F4SDI2M1V3dWtZd081MHM3V3BTTmUvMHFZUjE0bTB6VUU3N3BHZG1C?=
- =?utf-8?B?WkxQWFdQdkVqY3I2d3RkU09mYUtjYitZS0lKbVJUVlFQRERnY2xRRmg0Mytv?=
- =?utf-8?B?cjc5d1hLdkxuaDJrYmloRlVET21NU2l5VlVqYTZ2bXhWK05ZdHF4RGgxODdP?=
- =?utf-8?B?NXd2V3M1Vi9PRFJBSVg0d3VzKzFaSlpHUS9CQ3hrQlBjQXBwN1FKMU1Ma3RR?=
- =?utf-8?B?Z2hHWmt5S0hlYzAxaks3engvQmJEWGhiSWlJc3U3VGwxTlNhL1M0MmtFK1g2?=
- =?utf-8?B?aEYzUE5sTzgvRzg1Z3VOeGlhWDR0S1RDU1IwSGZnTUVlekxNd0NhM08yYVlo?=
- =?utf-8?B?djU1YyszemQ1Sko1UWhZOHBDYzRiQzF1ekdWMFlGY0pleVpkU1dZanVvWnhF?=
- =?utf-8?B?dzRDcEd4ejF5cFprUjlaRlJFbXowRXpPL1NhLzh2RmYxMmErZHdKRFU4aFJu?=
- =?utf-8?B?cjhUL203UERSMFN5V3BXUjhjZ3JxQ3JtcGp2TFBJY2d0ay9TYjlacVNqQ2d3?=
- =?utf-8?B?cm1weU1aSklGanNIR0FlRVR5UnRyK09LbzZuQXRCbWdWSHpmVFhvNERWVFpT?=
- =?utf-8?B?SlVBMUxDbWtLK2ZmYWYyenhMdnpGR1RyRnVLTmZjaXFPWTZOZW5SZUJhYlhi?=
- =?utf-8?B?YkxkUXRMdTZXdHlFaFpvbTdLZEtCWFA0SGdDeW1OSXVGS1pCM09QWSt1eXFm?=
- =?utf-8?B?RStyN0lMVHlCWStITEhZcGVCdFBRemhubE0xZkRxdzErTEJkaExOcjdnK0Yx?=
- =?utf-8?B?WHBVcDhxdGk0akVGVHdCSkdDejkzQ3ZHUzl5R1BNVG1XVjQvNjQzZkw0ZURI?=
- =?utf-8?B?cUhDbTUrMGVIM3A4WDBxMFE5bXVkMkNTaThFZDFkVSsrNTZmU3RpZ3llZmd4?=
- =?utf-8?Q?FRRqgPWbKSCmdb2qLn7JUqE=3D?=
-X-OriginatorOrg: efficios.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4833147d-d522-41c7-8f96-08ddc9fbc6a1
-X-MS-Exchange-CrossTenant-AuthSource: YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jul 2025 15:15:36.4752
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4f278736-4ab6-415c-957e-1f55336bd31e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Js7XbUKuwx7+Wl0/5OdMicgWFmCvD2K4dFdLhUvYIvaHo3pVPZNLPUE6YXjszAYppoei2v+zEwGXKqUN00A/xGKRaKBEs9oXhc2IY3jYaWE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: YT3PR01MB6614
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250722173254.3879-1-puranjay@kernel.org>
 
-On 2025-07-22 20:26, Masami Hiramatsu (Google) wrote:
-> Hi Mathieu,
-> 
-> On Mon, 21 Jul 2025 11:20:34 -0400
-> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
-> 
->> Hi!
->>
->> I've written up an RFC for a new system call to handle sframe registration
->> for shared libraries. There has been interest to cover both sframe in
->> the short term, but also JIT use-cases in the long term, so I'm
->> covering both here in this RFC to provide the full context. Implementation
->> wise we could start by only covering the sframe use-case.
->>
->> I've called it "codectl(2)" for now, but I'm of course open to feedback.
-> 
-> Nice idea for JIT, but I doubt we need this for ELF.
-> 
->>
->> For ELF, I'm including the optional pathname, build id, and debug link
->> information which are really useful to translate from instruction pointers
->> to executable/library name, symbol, offset, source file, line number.
-> 
-> For ELF file, does the kernel already know how to parse the elf header?
-> I just wonder what happen if user sends different information to the
-> kernel.
+Hi Puranjay,
 
-AFAIU, the kernel has an elf parser that is uses on execve when it
-executes a program, but the dynamic linking use-case all happens in
-userspace. The kernel only maps memory and currently does not know that
-it contains an ELF file.
+kernel test robot noticed the following build warnings:
 
-The objective here is to allow registration of shared libraries sframe
-sections from the dynamic linker.
+[auto build test WARNING on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Puranjay-Mohan/bpf-arm64-JIT-support-for-private-stack/20250723-013449
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20250722173254.3879-1-puranjay%40kernel.org
+patch subject: [PATCH bpf-next] bpf, arm64: JIT support for private stack
+config: arm64-randconfig-001-20250723 (https://download.01.org/0day-ci/archive/20250723/202507232327.S1FR5cNc-lkp@intel.com/config)
+compiler: clang version 22.0.0git (https://github.com/llvm/llvm-project 853c343b45b3e83cc5eeef5a52fc8cc9d8a09252)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250723/202507232327.S1FR5cNc-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202507232327.S1FR5cNc-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> arch/arm64/net/bpf_jit_comp.c:2031:6: warning: variable 'ro_header' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
+    2031 |         if (build_body(&ctx, extra_pass)) {
+         |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   arch/arm64/net/bpf_jit_comp.c:2160:8: note: uninitialized use occurs here
+    2160 |                 if (!ro_header && priv_stack_ptr) {
+         |                      ^~~~~~~~~
+   arch/arm64/net/bpf_jit_comp.c:2031:2: note: remove the 'if' if its condition is always false
+    2031 |         if (build_body(&ctx, extra_pass)) {
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    2032 |                 prog = orig_prog;
+         |                 ~~~~~~~~~~~~~~~~~
+    2033 |                 goto out_off;
+         |                 ~~~~~~~~~~~~~
+    2034 |         }
+         |         ~
+   arch/arm64/net/bpf_jit_comp.c:2026:6: warning: variable 'ro_header' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
+    2026 |         if (build_prologue(&ctx, was_classic)) {
+         |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   arch/arm64/net/bpf_jit_comp.c:2160:8: note: uninitialized use occurs here
+    2160 |                 if (!ro_header && priv_stack_ptr) {
+         |                      ^~~~~~~~~
+   arch/arm64/net/bpf_jit_comp.c:2026:2: note: remove the 'if' if its condition is always false
+    2026 |         if (build_prologue(&ctx, was_classic)) {
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    2027 |                 prog = orig_prog;
+         |                 ~~~~~~~~~~~~~~~~~
+    2028 |                 goto out_off;
+         |                 ~~~~~~~~~~~~~
+    2029 |         }
+         |         ~
+   arch/arm64/net/bpf_jit_comp.c:2010:6: warning: variable 'ro_header' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
+    2010 |         if (ctx.offset == NULL) {
+         |             ^~~~~~~~~~~~~~~~~~
+   arch/arm64/net/bpf_jit_comp.c:2160:8: note: uninitialized use occurs here
+    2160 |                 if (!ro_header && priv_stack_ptr) {
+         |                      ^~~~~~~~~
+   arch/arm64/net/bpf_jit_comp.c:2010:2: note: remove the 'if' if its condition is always false
+    2010 |         if (ctx.offset == NULL) {
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~
+    2011 |                 prog = orig_prog;
+         |                 ~~~~~~~~~~~~~~~~~
+    2012 |                 goto out_off;
+         |                 ~~~~~~~~~~~~~
+    2013 |         }
+         |         ~
+   arch/arm64/net/bpf_jit_comp.c:1942:37: note: initialize the variable 'ro_header' to silence this warning
+    1942 |         struct bpf_binary_header *ro_header;
+         |                                            ^
+         |                                             = NULL
+   3 warnings generated.
 
 
-> 
->> This is what we are using in LTTng-UST and Babeltrace debug-info filter
->> plugin [1], and I think this would be relevant for kernel tracers as well
->> so they can make the resulting stack traces meaningful to users.
->>
->> sys_codectl(2)
->> =================
->>
->> * arg0: unsigned int @option:
->>
->> /* Additional labels can be added to enum code_opt, for extensibility. */
->>
->> enum code_opt {
->>       CODE_REGISTER_ELF,
->>       CODE_REGISTER_JIT,
->>       CODE_UNREGISTER,
->> };
->>
->> * arg1: void * @info
->>
->> /* if (@option == CODE_REGISTER_ELF) */
->>
->> /*
->>    * text_start, text_end, sframe_start, sframe_end allow unwinding of the
->>    * call stack.
->>    *
->>    * elf_start, elf_end, pathname, and either build_id or debug_link allows
->>    * mapping instruction pointers to file, symbol, offset, and source file
->>    * location.
->>    */
->> struct code_elf_info {
->> :   __u64 elf_start;
->>       __u64 elf_end;
->>       __u64 text_start;
->>       __u64 text_end;
-> 
-> What happen if there are multiple .text.* sections?
-> Or, does it used for each text section?
+vim +2031 arch/arm64/net/bpf_jit_comp.c
 
-That's a good point. I guess we could theoretically have a shared
-object that has more than one text range, in which case we'd want to
-register one sframe section for each of the text range. (let me know
-if I'm misunderstanding something here)
-
-This is an additional argument for having an sframe-specific
-registration rather than an "elf" registration for the sframe
-use-case.
-
-> 
->>       __u64 sframe_start;
->>       __u64 sframe_end;
->>       __u64 pathname;              /* char *, NULL if unavailable. */
->>
->>       __u64 build_id;              /* char *, NULL if unavailable. */
->>       __u64 debug_link_pathname;   /* char *, NULL if unavailable. */
->>       __u32 build_id_len;
->>       __u32 debug_link_crc;
->> };
->>
->>
->> /* if (@option == CODE_REGISTER_JIT) */
->>
->> /*
->>    * Registration of sorted JIT unwind table: The reserved memory area is
->>    * of size reserved_len. Userspace increases used_len as new code is
->>    * populated between text_start and text_end. This area is populated in
->>    * increasing address order, and its ABI requires to have no overlapping
->>    * fre. This fits the common use-case where JITs populate code into
->>    * a given memory area by increasing address order. The sorted unwind
->>    * tables can be chained with a singly-linked list as they become full.
->>    * Consecutive chained tables are also in sorted text address order.
->>    *
->>    * Note: if there is an eventual use-case for unsorted jit unwind table,
->>    * this would be introduced as a new "code option".
->>    */
->>
->> struct code_jit_info {
->>       __u64 text_start;      /* text_start >= addr */
->>       __u64 text_end;        /* addr < text_end */
->>       __u64 unwind_head;     /* struct code_jit_unwind_table * */
->> };
->>
->> struct code_jit_unwind_fre {
->>       /*
->>        * Contains info similar to sframe, allowing unwind for a given
-> 
-> Hmm, why not just the sframe?
-> (Is there any library to generate sframe online for JIT?)
-
-The layout and size of the sframe section is fixed after it's been
-registered. The jit unwind tables are meant to dynamically
-grow as the JIT populates additional code. The goal here is to make sure
-JITs don't have to issue a system call every time they add a few
-functions, otherwise the overhead becomes a significant bottleneck.
-
-Thanks,
-
-Mathieu
-
-> 
-> Thank you,
-> 
->>        * code address range.
->>        */
->>       __u32 size;
->>       __u32 ip_off;  /* offset from text_start */
->>       __s32 cfa_off;
->>       __s32 ra_off;
->>       __s32 fp_off;
->>       __u8 info;
->> };
->>
->> struct code_jit_unwind_table {
->>       __u64 reserved_len;
->>       __u64 used_len; /*
->>                        * Incremented by userspace (store-release), read by
->>                        * the kernel (load-acquire).
->>                        */
->>       __u64 next;     /* Chain with next struct code_jit_unwind_table. */
->>       struct code_jit_unwind_fre fre[];
->> };
->>
->> /* if (@option == CODE_UNREGISTER) */
->>
->> void *info
->>
->> * arg2: size_t info_size
->>
->> /*
->>    * Size of @info structure, allowing extensibility. See
->>    * copy_struct_from_user().
->>    */
->>
->> * arg3: unsigned int flags (0)
->>
->> /* Flags for extensibility. */
->>
->> Your feedback is welcome,
->>
->> Thanks,
->>
->> Mathieu
->>
->> [1] https://babeltrace.org/docs/v2.0/man7/babeltrace2-filter.lttng-utils.debug-info.7/
->>
->> -- 
->> Mathieu Desnoyers
->> EfficiOS Inc.
->> https://www.efficios.com
->>
-> 
-> 
-
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  1936  
+d1c55ab5e41fcd Daniel Borkmann       2016-05-13  1937  struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+e54bcde3d69d40 Zi Shen Lim           2014-08-26  1938  {
+b2ad54e1533e91 Xu Kuohai             2022-07-11  1939  	int image_size, prog_size, extable_size, extable_align, extable_offset;
+26eb042ee4c784 Daniel Borkmann       2016-05-13  1940  	struct bpf_prog *tmp, *orig_prog = prog;
+b569c1c622c5e6 Daniel Borkmann       2014-09-16  1941  	struct bpf_binary_header *header;
+1dad391daef129 Puranjay Mohan        2024-02-28  1942  	struct bpf_binary_header *ro_header;
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  1943  	struct arm64_jit_data *jit_data;
+291f131eb536b5 Puranjay Mohan        2025-07-22  1944  	void __percpu *priv_stack_ptr = NULL;
+56ea6a8b4949c6 Daniel Borkmann       2018-05-14  1945  	bool was_classic = bpf_prog_was_classic(prog);
+291f131eb536b5 Puranjay Mohan        2025-07-22  1946  	int priv_stack_alloc_sz;
+26eb042ee4c784 Daniel Borkmann       2016-05-13  1947  	bool tmp_blinded = false;
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  1948  	bool extra_pass = false;
+e54bcde3d69d40 Zi Shen Lim           2014-08-26  1949  	struct jit_ctx ctx;
+b569c1c622c5e6 Daniel Borkmann       2014-09-16  1950  	u8 *image_ptr;
+1dad391daef129 Puranjay Mohan        2024-02-28  1951  	u8 *ro_image_ptr;
+ddbe9ec55039dd Xu Kuohai             2024-09-03  1952  	int body_idx;
+ddbe9ec55039dd Xu Kuohai             2024-09-03  1953  	int exentry_idx;
+e54bcde3d69d40 Zi Shen Lim           2014-08-26  1954  
+60b58afc96c9df Alexei Starovoitov    2017-12-14  1955  	if (!prog->jit_requested)
+26eb042ee4c784 Daniel Borkmann       2016-05-13  1956  		return orig_prog;
+26eb042ee4c784 Daniel Borkmann       2016-05-13  1957  
+26eb042ee4c784 Daniel Borkmann       2016-05-13  1958  	tmp = bpf_jit_blind_constants(prog);
+26eb042ee4c784 Daniel Borkmann       2016-05-13  1959  	/* If blinding was requested and we failed during blinding,
+26eb042ee4c784 Daniel Borkmann       2016-05-13  1960  	 * we must fall back to the interpreter.
+26eb042ee4c784 Daniel Borkmann       2016-05-13  1961  	 */
+26eb042ee4c784 Daniel Borkmann       2016-05-13  1962  	if (IS_ERR(tmp))
+26eb042ee4c784 Daniel Borkmann       2016-05-13  1963  		return orig_prog;
+26eb042ee4c784 Daniel Borkmann       2016-05-13  1964  	if (tmp != prog) {
+26eb042ee4c784 Daniel Borkmann       2016-05-13  1965  		tmp_blinded = true;
+26eb042ee4c784 Daniel Borkmann       2016-05-13  1966  		prog = tmp;
+26eb042ee4c784 Daniel Borkmann       2016-05-13  1967  	}
+e54bcde3d69d40 Zi Shen Lim           2014-08-26  1968  
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  1969  	jit_data = prog->aux->jit_data;
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  1970  	if (!jit_data) {
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  1971  		jit_data = kzalloc(sizeof(*jit_data), GFP_KERNEL);
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  1972  		if (!jit_data) {
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  1973  			prog = orig_prog;
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  1974  			goto out;
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  1975  		}
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  1976  		prog->aux->jit_data = jit_data;
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  1977  	}
+291f131eb536b5 Puranjay Mohan        2025-07-22  1978  	priv_stack_ptr = prog->aux->priv_stack_ptr;
+291f131eb536b5 Puranjay Mohan        2025-07-22  1979  	if (!priv_stack_ptr && prog->aux->jits_use_priv_stack) {
+291f131eb536b5 Puranjay Mohan        2025-07-22  1980  		/* Allocate actual private stack size with verifier-calculated
+291f131eb536b5 Puranjay Mohan        2025-07-22  1981  		 * stack size plus two memory guards to protect overflow and
+291f131eb536b5 Puranjay Mohan        2025-07-22  1982  		 * underflow.
+291f131eb536b5 Puranjay Mohan        2025-07-22  1983  		 */
+291f131eb536b5 Puranjay Mohan        2025-07-22  1984  		priv_stack_alloc_sz = round_up(prog->aux->stack_depth, 16) +
+291f131eb536b5 Puranjay Mohan        2025-07-22  1985  				      2 * PRIV_STACK_GUARD_SZ;
+291f131eb536b5 Puranjay Mohan        2025-07-22  1986  		priv_stack_ptr = __alloc_percpu_gfp(priv_stack_alloc_sz, 16, GFP_KERNEL);
+291f131eb536b5 Puranjay Mohan        2025-07-22  1987  		if (!priv_stack_ptr) {
+291f131eb536b5 Puranjay Mohan        2025-07-22  1988  			prog = orig_prog;
+291f131eb536b5 Puranjay Mohan        2025-07-22  1989  			goto out_priv_stack;
+291f131eb536b5 Puranjay Mohan        2025-07-22  1990  		}
+291f131eb536b5 Puranjay Mohan        2025-07-22  1991  
+291f131eb536b5 Puranjay Mohan        2025-07-22  1992  		priv_stack_init_guard(priv_stack_ptr, priv_stack_alloc_sz);
+291f131eb536b5 Puranjay Mohan        2025-07-22  1993  		prog->aux->priv_stack_ptr = priv_stack_ptr;
+291f131eb536b5 Puranjay Mohan        2025-07-22  1994  	}
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  1995  	if (jit_data->ctx.offset) {
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  1996  		ctx = jit_data->ctx;
+1dad391daef129 Puranjay Mohan        2024-02-28  1997  		ro_image_ptr = jit_data->ro_image;
+1dad391daef129 Puranjay Mohan        2024-02-28  1998  		ro_header = jit_data->ro_header;
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  1999  		header = jit_data->header;
+1dad391daef129 Puranjay Mohan        2024-02-28  2000  		image_ptr = (void *)header + ((void *)ro_image_ptr
+1dad391daef129 Puranjay Mohan        2024-02-28  2001  						 - (void *)ro_header);
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  2002  		extra_pass = true;
+800834285361dc Jean-Philippe Brucker 2020-07-28  2003  		prog_size = sizeof(u32) * ctx.idx;
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  2004  		goto skip_init_ctx;
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  2005  	}
+e54bcde3d69d40 Zi Shen Lim           2014-08-26  2006  	memset(&ctx, 0, sizeof(ctx));
+e54bcde3d69d40 Zi Shen Lim           2014-08-26  2007  	ctx.prog = prog;
+e54bcde3d69d40 Zi Shen Lim           2014-08-26  2008  
+19f68ed6dc90c9 Aijun Sun             2022-08-04  2009  	ctx.offset = kvcalloc(prog->len + 1, sizeof(int), GFP_KERNEL);
+26eb042ee4c784 Daniel Borkmann       2016-05-13  2010  	if (ctx.offset == NULL) {
+26eb042ee4c784 Daniel Borkmann       2016-05-13  2011  		prog = orig_prog;
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  2012  		goto out_off;
+26eb042ee4c784 Daniel Borkmann       2016-05-13  2013  	}
+e54bcde3d69d40 Zi Shen Lim           2014-08-26  2014  
+4dd31243e30843 Puranjay Mohan        2024-03-25  2015  	ctx.user_vm_start = bpf_arena_get_user_vm_start(prog->aux->arena);
+5d4fa9ec5643a5 Xu Kuohai             2024-08-26  2016  	ctx.arena_vm_start = bpf_arena_get_kern_vm_start(prog->aux->arena);
+5b3d19b9bd4080 Xu Kuohai             2022-03-21  2017  
+291f131eb536b5 Puranjay Mohan        2025-07-22  2018  	if (priv_stack_ptr)
+291f131eb536b5 Puranjay Mohan        2025-07-22  2019  		ctx.priv_sp_used = true;
+291f131eb536b5 Puranjay Mohan        2025-07-22  2020  
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2021  	/* Pass 1: Estimate the maximum image size.
+68e4f238b0e9d3 Hou Tao               2022-02-26  2022  	 *
+68e4f238b0e9d3 Hou Tao               2022-02-26  2023  	 * BPF line info needs ctx->offset[i] to be the offset of
+68e4f238b0e9d3 Hou Tao               2022-02-26  2024  	 * instruction[i] in jited image, so build prologue first.
+68e4f238b0e9d3 Hou Tao               2022-02-26  2025  	 */
+5d4fa9ec5643a5 Xu Kuohai             2024-08-26  2026  	if (build_prologue(&ctx, was_classic)) {
+26eb042ee4c784 Daniel Borkmann       2016-05-13  2027  		prog = orig_prog;
+26eb042ee4c784 Daniel Borkmann       2016-05-13  2028  		goto out_off;
+26eb042ee4c784 Daniel Borkmann       2016-05-13  2029  	}
+e54bcde3d69d40 Zi Shen Lim           2014-08-26  2030  
+68e4f238b0e9d3 Hou Tao               2022-02-26 @2031  	if (build_body(&ctx, extra_pass)) {
+ddb55992b04d97 Zi Shen Lim           2016-06-08  2032  		prog = orig_prog;
+ddb55992b04d97 Zi Shen Lim           2016-06-08  2033  		goto out_off;
+ddb55992b04d97 Zi Shen Lim           2016-06-08  2034  	}
+51c9fbb1b146f3 Zi Shen Lim           2014-12-03  2035  
+51c9fbb1b146f3 Zi Shen Lim           2014-12-03  2036  	ctx.epilogue_offset = ctx.idx;
+0dfefc2ea2f29c James Morse           2021-12-09  2037  	build_epilogue(&ctx, was_classic);
+b2ad54e1533e91 Xu Kuohai             2022-07-11  2038  	build_plt(&ctx);
+e54bcde3d69d40 Zi Shen Lim           2014-08-26  2039  
+b2ad54e1533e91 Xu Kuohai             2022-07-11  2040  	extable_align = __alignof__(struct exception_table_entry);
+800834285361dc Jean-Philippe Brucker 2020-07-28  2041  	extable_size = prog->aux->num_exentries *
+800834285361dc Jean-Philippe Brucker 2020-07-28  2042  		sizeof(struct exception_table_entry);
+800834285361dc Jean-Philippe Brucker 2020-07-28  2043  
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2044  	/* Now we know the maximum image size. */
+800834285361dc Jean-Philippe Brucker 2020-07-28  2045  	prog_size = sizeof(u32) * ctx.idx;
+b2ad54e1533e91 Xu Kuohai             2022-07-11  2046  	/* also allocate space for plt target */
+b2ad54e1533e91 Xu Kuohai             2022-07-11  2047  	extable_offset = round_up(prog_size + PLT_TARGET_SIZE, extable_align);
+b2ad54e1533e91 Xu Kuohai             2022-07-11  2048  	image_size = extable_offset + extable_size;
+1dad391daef129 Puranjay Mohan        2024-02-28  2049  	ro_header = bpf_jit_binary_pack_alloc(image_size, &ro_image_ptr,
+1dad391daef129 Puranjay Mohan        2024-02-28  2050  					      sizeof(u32), &header, &image_ptr,
+1dad391daef129 Puranjay Mohan        2024-02-28  2051  					      jit_fill_hole);
+1dad391daef129 Puranjay Mohan        2024-02-28  2052  	if (!ro_header) {
+26eb042ee4c784 Daniel Borkmann       2016-05-13  2053  		prog = orig_prog;
+26eb042ee4c784 Daniel Borkmann       2016-05-13  2054  		goto out_off;
+26eb042ee4c784 Daniel Borkmann       2016-05-13  2055  	}
+e54bcde3d69d40 Zi Shen Lim           2014-08-26  2056  
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2057  	/* Pass 2: Determine jited position and result for each instruction */
+e54bcde3d69d40 Zi Shen Lim           2014-08-26  2058  
+1dad391daef129 Puranjay Mohan        2024-02-28  2059  	/*
+1dad391daef129 Puranjay Mohan        2024-02-28  2060  	 * Use the image(RW) for writing the JITed instructions. But also save
+1dad391daef129 Puranjay Mohan        2024-02-28  2061  	 * the ro_image(RX) for calculating the offsets in the image. The RW
+1dad391daef129 Puranjay Mohan        2024-02-28  2062  	 * image will be later copied to the RX image from where the program
+1dad391daef129 Puranjay Mohan        2024-02-28  2063  	 * will run. The bpf_jit_binary_pack_finalize() will do this copy in the
+1dad391daef129 Puranjay Mohan        2024-02-28  2064  	 * final step.
+1dad391daef129 Puranjay Mohan        2024-02-28  2065  	 */
+425e1ed73e6574 Luc Van Oostenryck    2017-06-28  2066  	ctx.image = (__le32 *)image_ptr;
+1dad391daef129 Puranjay Mohan        2024-02-28  2067  	ctx.ro_image = (__le32 *)ro_image_ptr;
+800834285361dc Jean-Philippe Brucker 2020-07-28  2068  	if (extable_size)
+1dad391daef129 Puranjay Mohan        2024-02-28  2069  		prog->aux->extable = (void *)ro_image_ptr + extable_offset;
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  2070  skip_init_ctx:
+e54bcde3d69d40 Zi Shen Lim           2014-08-26  2071  	ctx.idx = 0;
+800834285361dc Jean-Philippe Brucker 2020-07-28  2072  	ctx.exentry_idx = 0;
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2073  	ctx.write = true;
+b569c1c622c5e6 Daniel Borkmann       2014-09-16  2074  
+5d4fa9ec5643a5 Xu Kuohai             2024-08-26  2075  	build_prologue(&ctx, was_classic);
+e54bcde3d69d40 Zi Shen Lim           2014-08-26  2076  
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2077  	/* Record exentry_idx and body_idx before first build_body */
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2078  	exentry_idx = ctx.exentry_idx;
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2079  	body_idx = ctx.idx;
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2080  	/* Dont write body instructions to memory for now */
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2081  	ctx.write = false;
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2082  
+8c11ea5ce13da0 Daniel Borkmann       2018-11-26  2083  	if (build_body(&ctx, extra_pass)) {
+26eb042ee4c784 Daniel Borkmann       2016-05-13  2084  		prog = orig_prog;
+1dad391daef129 Puranjay Mohan        2024-02-28  2085  		goto out_free_hdr;
+60ef0494f197d4 Daniel Borkmann       2014-09-11  2086  	}
+e54bcde3d69d40 Zi Shen Lim           2014-08-26  2087  
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2088  	ctx.epilogue_offset = ctx.idx;
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2089  	ctx.exentry_idx = exentry_idx;
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2090  	ctx.idx = body_idx;
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2091  	ctx.write = true;
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2092  
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2093  	/* Pass 3: Adjust jump offset and write final image */
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2094  	if (build_body(&ctx, extra_pass) ||
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2095  		WARN_ON_ONCE(ctx.idx != ctx.epilogue_offset)) {
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2096  		prog = orig_prog;
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2097  		goto out_free_hdr;
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2098  	}
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2099  
+0dfefc2ea2f29c James Morse           2021-12-09  2100  	build_epilogue(&ctx, was_classic);
+b2ad54e1533e91 Xu Kuohai             2022-07-11  2101  	build_plt(&ctx);
+e54bcde3d69d40 Zi Shen Lim           2014-08-26  2102  
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2103  	/* Extra pass to validate JITed code. */
+efc9909fdce00a Xu Kuohai             2022-07-11  2104  	if (validate_ctx(&ctx)) {
+26eb042ee4c784 Daniel Borkmann       2016-05-13  2105  		prog = orig_prog;
+1dad391daef129 Puranjay Mohan        2024-02-28  2106  		goto out_free_hdr;
+42ff712bc0c3d7 Zi Shen Lim           2016-01-13  2107  	}
+42ff712bc0c3d7 Zi Shen Lim           2016-01-13  2108  
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2109  	/* update the real prog size */
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2110  	prog_size = sizeof(u32) * ctx.idx;
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2111  
+e54bcde3d69d40 Zi Shen Lim           2014-08-26  2112  	/* And we're done. */
+e54bcde3d69d40 Zi Shen Lim           2014-08-26  2113  	if (bpf_jit_enable > 1)
+800834285361dc Jean-Philippe Brucker 2020-07-28  2114  		bpf_jit_dump(prog->len, prog_size, 2, ctx.image);
+e54bcde3d69d40 Zi Shen Lim           2014-08-26  2115  
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  2116  	if (!prog->is_func || extra_pass) {
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2117  		/* The jited image may shrink since the jited result for
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2118  		 * BPF_CALL to subprog may be changed from indirect call
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2119  		 * to direct call.
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2120  		 */
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2121  		if (extra_pass && ctx.idx > jit_data->ctx.idx) {
+ddbe9ec55039dd Xu Kuohai             2024-09-03  2122  			pr_err_once("multi-func JIT bug %d > %d\n",
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  2123  				    ctx.idx, jit_data->ctx.idx);
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  2124  			prog->bpf_func = NULL;
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  2125  			prog->jited = 0;
+10f3b29c65bb2f Eric Dumazet          2022-05-31  2126  			prog->jited_len = 0;
+1dad391daef129 Puranjay Mohan        2024-02-28  2127  			goto out_free_hdr;
+1dad391daef129 Puranjay Mohan        2024-02-28  2128  		}
+9919c5c98cb25d Rafael Passos         2024-06-14  2129  		if (WARN_ON(bpf_jit_binary_pack_finalize(ro_header, header))) {
+1dad391daef129 Puranjay Mohan        2024-02-28  2130  			/* ro_header has been freed */
+1dad391daef129 Puranjay Mohan        2024-02-28  2131  			ro_header = NULL;
+1dad391daef129 Puranjay Mohan        2024-02-28  2132  			prog = orig_prog;
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  2133  			goto out_off;
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  2134  		}
+1dad391daef129 Puranjay Mohan        2024-02-28  2135  		/*
+1dad391daef129 Puranjay Mohan        2024-02-28  2136  		 * The instructions have now been copied to the ROX region from
+1dad391daef129 Puranjay Mohan        2024-02-28  2137  		 * where they will execute. Now the data cache has to be cleaned to
+1dad391daef129 Puranjay Mohan        2024-02-28  2138  		 * the PoU and the I-cache has to be invalidated for the VAs.
+1dad391daef129 Puranjay Mohan        2024-02-28  2139  		 */
+1dad391daef129 Puranjay Mohan        2024-02-28  2140  		bpf_flush_icache(ro_header, ctx.ro_image + ctx.idx);
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  2141  	} else {
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  2142  		jit_data->ctx = ctx;
+1dad391daef129 Puranjay Mohan        2024-02-28  2143  		jit_data->ro_image = ro_image_ptr;
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  2144  		jit_data->header = header;
+1dad391daef129 Puranjay Mohan        2024-02-28  2145  		jit_data->ro_header = ro_header;
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  2146  	}
+1dad391daef129 Puranjay Mohan        2024-02-28  2147  
+1dad391daef129 Puranjay Mohan        2024-02-28  2148  	prog->bpf_func = (void *)ctx.ro_image;
+a91263d520246b Daniel Borkmann       2015-09-30  2149  	prog->jited = 1;
+800834285361dc Jean-Philippe Brucker 2020-07-28  2150  	prog->jited_len = prog_size;
+26eb042ee4c784 Daniel Borkmann       2016-05-13  2151  
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  2152  	if (!prog->is_func || extra_pass) {
+dda7596c109fc3 Hou Tao               2022-02-26  2153  		int i;
+dda7596c109fc3 Hou Tao               2022-02-26  2154  
+dda7596c109fc3 Hou Tao               2022-02-26  2155  		/* offset[prog->len] is the size of program */
+dda7596c109fc3 Hou Tao               2022-02-26  2156  		for (i = 0; i <= prog->len; i++)
+dda7596c109fc3 Hou Tao               2022-02-26  2157  			ctx.offset[i] *= AARCH64_INSN_SIZE;
+32f6865c7aa3c4 Ilias Apalodimas      2020-09-17  2158  		bpf_prog_fill_jited_linfo(prog, ctx.offset + 1);
+26eb042ee4c784 Daniel Borkmann       2016-05-13  2159  out_off:
+291f131eb536b5 Puranjay Mohan        2025-07-22  2160  		if (!ro_header && priv_stack_ptr) {
+291f131eb536b5 Puranjay Mohan        2025-07-22  2161  			free_percpu(priv_stack_ptr);
+291f131eb536b5 Puranjay Mohan        2025-07-22  2162  			prog->aux->priv_stack_ptr = NULL;
+291f131eb536b5 Puranjay Mohan        2025-07-22  2163  		}
+19f68ed6dc90c9 Aijun Sun             2022-08-04  2164  		kvfree(ctx.offset);
+291f131eb536b5 Puranjay Mohan        2025-07-22  2165  out_priv_stack:
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  2166  		kfree(jit_data);
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  2167  		prog->aux->jit_data = NULL;
+db496944fdaaf2 Alexei Starovoitov    2017-12-14  2168  	}
+26eb042ee4c784 Daniel Borkmann       2016-05-13  2169  out:
+26eb042ee4c784 Daniel Borkmann       2016-05-13  2170  	if (tmp_blinded)
+26eb042ee4c784 Daniel Borkmann       2016-05-13  2171  		bpf_jit_prog_release_other(prog, prog == orig_prog ?
+26eb042ee4c784 Daniel Borkmann       2016-05-13  2172  					   tmp : orig_prog);
+d1c55ab5e41fcd Daniel Borkmann       2016-05-13  2173  	return prog;
+1dad391daef129 Puranjay Mohan        2024-02-28  2174  
+1dad391daef129 Puranjay Mohan        2024-02-28  2175  out_free_hdr:
+1dad391daef129 Puranjay Mohan        2024-02-28  2176  	if (header) {
+1dad391daef129 Puranjay Mohan        2024-02-28  2177  		bpf_arch_text_copy(&ro_header->size, &header->size,
+1dad391daef129 Puranjay Mohan        2024-02-28  2178  				   sizeof(header->size));
+1dad391daef129 Puranjay Mohan        2024-02-28  2179  		bpf_jit_binary_pack_free(ro_header, header);
+1dad391daef129 Puranjay Mohan        2024-02-28  2180  	}
+1dad391daef129 Puranjay Mohan        2024-02-28  2181  	goto out_off;
+e54bcde3d69d40 Zi Shen Lim           2014-08-26  2182  }
+91fc957c9b1d6c Ard Biesheuvel        2018-11-23  2183  
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
