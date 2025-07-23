@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-64128-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64129-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2FFBB0E79E
-	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 02:32:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08837B0E7A0
+	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 02:32:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D74A1565040
-	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 00:32:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A33053BE729
+	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 00:32:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E6323D561;
-	Wed, 23 Jul 2025 00:32:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACE337081F;
+	Wed, 23 Jul 2025 00:32:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZUHE+r8K"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l8lOm2fx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19F13EAE7;
-	Wed, 23 Jul 2025 00:32:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C40B61FB3;
+	Wed, 23 Jul 2025 00:32:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753230728; cv=none; b=ui2r0p4K7BlYnjXVacUMlLzrNvtph1RcxPdQEo4mmT37XH+Psq8WZSngH+9/ieG8/5OrOmHqetv2xKqPIVbEES+OUIVdXR1quKF2wFHHD1gU2FcMG78ozLoo41JjX8eZ2mjZmo24Q3lktWwMDUWQ+aYKfv205E0uhNgwLF3PLf8=
+	t=1753230755; cv=none; b=cSE8c6ON6+jy4rfeSbFciOPSQQuIktFz/mYQijo7czhgk3kidiJ0vUaQYVfeFbNwVYf/bgQxB3xGQLdAcZciKWOHfRvLwxJRuc0hb/kCLRIwjKCNzH2L4X5D2HTcAJgIzZxoIqqOKoa80MeWhxAv436ucQpVfvOcs6Sq8domhq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753230728; c=relaxed/simple;
-	bh=SYSdi3du8ITAdTHBIp7C9EzI48FMk+qX5T04k0JcsZw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=neThUYk74pTH4Ad15BSvzedflKc/J3sys+A3LO10yP3FqFOem+C8YBwAj/hD5tUhpgOTOJbdRdpxJsCPvrsYVC/JZF6kq7ktU5g4/dsxUswC+daFC2HMKdq3cut0DcxtJt6szQnzOHLgCqeTQDkEE3UzFLgfZyfnmU2/PFeFXVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZUHE+r8K; arc=none smtp.client-ip=209.85.219.50
+	s=arc-20240116; t=1753230755; c=relaxed/simple;
+	bh=6fx+GGKuy6dcG1wrAfwHf/rlE4Y6Olcz1t9HFTuQ01s=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=s94jv43z6utqjLwYNYko6MnPpSvuqpxNd/bvAUQzIAN8CsIyr5sNLdtK2lyFr1JDRtxe4hoJ4QVugTH6rE2lJYb9gXZUj4wFFRmND7mnnzQgW8VmOgSNfX1HsoJNJEQspeSKF4ez0TkfPzzNBIUuv01yDiNjfgVVeDcq75QMvME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l8lOm2fx; arc=none smtp.client-ip=209.85.219.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-6fad77c3ce1so12009666d6.2;
-        Tue, 22 Jul 2025 17:32:06 -0700 (PDT)
+Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-6fd5f08f2e6so13731656d6.0;
+        Tue, 22 Jul 2025 17:32:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753230726; x=1753835526; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1753230752; x=1753835552; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0HldBv8Q9BEoai7BLEFTDZXb6gDd1HAmd9oC25rqbNs=;
-        b=ZUHE+r8KhN/PLW4yVLs0OnChL0oSidff7J81hTWu33ww+Zkgg5rv+UgsORM6fUWdPO
-         BZO9Cgu7aU+1oU3N7PP/ZeXJkLaP7+4yYL7EyammhmNie9vCq1TSZ5GIFqBVYt0fAEGb
-         Oi4bNzU3uIiHarydmNQP8ncP+j2qER6twwHm70v4y3pi350TnCqyseYSy1PkJnhQQn40
-         TD3CSNNF7REWcqmrL6CX/CYOODILrCc5CQJkgXsjfua0LxiwOrs8gMhG5GXbwPNkxTy0
-         R2JH4EvHIN6AkaWWYCRWuKUGkW1/ZLVR2Q8Bq/zkkV25BvAlSKhiaDjOj/GM8af+JT4D
-         8SRQ==
+        bh=rVd0CKqFmawqkFyAQTrZsTyitqZ/Fc16HkypgrlA5Ps=;
+        b=l8lOm2fxO6TXpWIpT1ygjpYm3tXN8m8gq+I6ymzftSDx0PVmtPnyB/IortQ/eA6d6L
+         LEUTHUNL0VHzPjV0CNY23c654lRf4/Is/yQqWBGV/tXLAinJ0l++Xlhh2EjVvEMFj/0w
+         pNyNG/9VcOZUeInED7HspducnD1qIajWXeRp6oC2zKPxp1GCrkbqcbupr/rKGqm5nXXz
+         6IpuI0aoDz+aia6fFOBYc8hJRSJXEyM/HXPkFEOj2H7VzA4XoXAEisd6EuhJTQcP+r2r
+         ijMBFJ/jdShioCtymsZusdcONmu6NHjZxilVTg1BPkpk3U0ckDIwl3sz43vAEPe/xMNZ
+         TkLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753230726; x=1753835526;
+        d=1e100.net; s=20230601; t=1753230752; x=1753835552;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=0HldBv8Q9BEoai7BLEFTDZXb6gDd1HAmd9oC25rqbNs=;
-        b=KewRV0HLqrH0VBiC+sVWfndwNLEX4ghVETzxU17KQba9JBr8qVpN0qCml4IRxmQGuF
-         3OaSgdAi+Kc/DiQNHEGcswCehkv41ovJokmdywLxvSs/Qb/rPkkbBvVs1eEo5551zr8M
-         13JqmI97blAPvZLXJQDl3ECypTWgCUzxZBegFcOOL/Qnn7sWXcn5SqHVNvQrMOEhJe6M
-         wQhXfbQgpnlKsvq11VQFnooziyx6VBTc9gK0wGH4FduAmIVOQkjehkKRo4BMD8awiUPT
-         5psfNS5dyGFPyjcVrrPUFmAxCj+2g6exf5GWU6rBeks3uFFyP1gTzz5Z2tvbeJf7LAUK
-         98qg==
-X-Forwarded-Encrypted: i=1; AJvYcCVkCi/BRnEJl0bDCk3i3VQVziU8qPibnAkl+v4B+Ujk7N6fTbG5CALRfQvzYy1MHX7c0Hw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxA3XAWEf44P1naIlJ+f7J+/kQiB7I0N2UlZk7iaRKdQHixzoF3
-	OY7q6C3kR7RJk4CJwMT/8N3to6hGzd8FqJzSHhWo0RlnRArPtefgS7k/GJ8y
-X-Gm-Gg: ASbGncs7F4cQ0WKmnfH8ghkEfaQEFJkRYeNZC01NK/fBzuaAtx6xG0+VogG8A7zfDLH
-	z9Ma+Vj9Wvp7kbp968sgaC08kLZPFl+G+qgr5U8xIvFouBY/Zx0W/adSMWso8mfcx/vv0QwxjU8
-	7dwqkjsDwKyFnH9AyULc/tHMpEDhbt+ueTophzt8OuvDDi8GOBCkBibkxEz0MqPoU+a2G9PSOU2
-	0LxCqChBzWxv9/FT1jbNGG9j1aRMrYg0FTBrxdLw7BkrybHeAs1gluwi2NH659cMfz8GqF+3Ofr
-	PlCFJQ3NlbhS9ql2skFChhJaC+tcUtBMrXMuyYG7SWBK+qz5ClgAh8JoSKsGBnyEc97F5UtGpZC
-	AP+ZAuTr6gfhQow45pO1dP6CNwXJMPA==
-X-Google-Smtp-Source: AGHT+IFEqQvOeBCjZOc7gY+gzD2FAnrlv6LEsDA5HE5cb4PHs1RufPSD572pkKluvhC+3AneYC2rHA==
-X-Received: by 2002:a05:620a:7203:b0:7e6:2435:b69b with SMTP id af79cd13be357-7e62a1dc2b4mr74388985a.14.1753230725773;
-        Tue, 22 Jul 2025 17:32:05 -0700 (PDT)
+        bh=rVd0CKqFmawqkFyAQTrZsTyitqZ/Fc16HkypgrlA5Ps=;
+        b=iwCLBj35yh8K9TT9l9zrSL8z6ACT3dupYINLv9yoPEXG2mmsi059DGFJBZiyUIcSZH
+         9MJ9JvsK61p8q8O9RqnW5Dv8uJYFAvN1XDxzYNM7f2Q4e00Fd06udmbemgR91CXB1+X9
+         UlaEqKKjD/Nn8RjT8OZe7b5D35hP7ppiOWK6jm2B1N6rOcG8aqMu0NeX+87i3WJ9mSFH
+         C9kLBJegmgnZeVJtCN6zxreyM1A4fdkB5bgmrFWmSRY7XQOJ5uaiqgnwz96XqrFD50Ol
+         H3UZdPpFJfJ7GSx5ezWrSpEStDcDZ0dT7/pye3nnOF9fMUBZqaZ7cw9xU+MdopxoGceF
+         wvRA==
+X-Forwarded-Encrypted: i=1; AJvYcCUOGFhurMoiChk0UcAX2IxIswkiuN0dPG38mxFr+WCPeLyGlmlVcUwK3jrC/u5/c7GKNiE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyFxE6a0LJ6lgDsNGTh6ZRW5BEEr/4rn/JagDI+u0J3pG+T0N90
+	feqqmROHkedRVbcP6rwuCXspIOUnvS2u5BZ1QMWeQ822SQScIhLieR0=
+X-Gm-Gg: ASbGncshY21xm1lBZ7hQRE88RZYyM467Ww89XxeASnHICCcXzMmSQWSpVhZbozjEobm
+	wuvHDA/TKXnaAjdkkpStTApoeW8xlJzFqpsSKwTx7nmq6H11w+AdkxMs1Ch7jAxwwu4V3tCgYDd
+	q/utw/gor8kTwSzAFUv87YjmIl2frhY6xjsl+ZlgkRB/fUN25sttvSyh/mAIn3d866C0Z0hjv6S
+	AaYcjEHvdmoOOOFcild/932wbEhwIHBn0b7qY5mDBy6blgpmvLUYzxb6V4egNbwQduJqS2PPJXJ
+	XO7qupHv7BGMoEMFYO64xExllPbFD/Z5mb5gPzgutqTupKoA9UWciqkm0QDJG42woz4TmoV9Ro9
+	+fv+iVQLmSBB97WEfkdw=
+X-Google-Smtp-Source: AGHT+IGLDuMQzW1YPWsUkpnH3GIgGb7rdUVaWPFJ50xXz2fUzRP6ayhyV71LtM28sx0iCD7k5x6R4A==
+X-Received: by 2002:a05:622a:a15:b0:4ab:76d2:1981 with SMTP id d75a77b69052e-4ae6de814b1mr7548241cf.5.1753230752472;
+        Tue, 22 Jul 2025 17:32:32 -0700 (PDT)
 Received: from ise-alpha.. ([2620:0:e00:550a:642:1aff:fee8:511b])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-7051bab3782sm56728426d6.102.2025.07.22.17.32.04
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4abb4af44d7sm60462021cf.38.2025.07.22.17.32.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jul 2025 17:32:05 -0700 (PDT)
+        Tue, 22 Jul 2025 17:32:32 -0700 (PDT)
 From: Chenyuan Yang <chenyuan0y@gmail.com>
 To: ecree.xilinx@gmail.com,
 	andrew+netdev@lunn.ch,
@@ -83,15 +83,15 @@ To: ecree.xilinx@gmail.com,
 	hawk@kernel.org,
 	john.fastabend@gmail.com,
 	sdf@fomichev.me,
-	lorenzo@kernel.org
+	chenyuan0y@gmail.com,
+	martinh@xilinx.com
 Cc: netdev@vger.kernel.org,
 	linux-net-drivers@amd.com,
 	bpf@vger.kernel.org,
-	zzjas98@gmail.com,
-	Chenyuan Yang <chenyuan0y@gmail.com>
-Subject: [PATCH] sfc: handle NULL returned by xdp_convert_buff_to_frame()
-Date: Tue, 22 Jul 2025 19:32:03 -0500
-Message-Id: <20250723003203.1238480-1-chenyuan0y@gmail.com>
+	zzjas98@gmail.com
+Subject: [PATCH] sfc: siena: handle NULL returned by xdp_convert_buff_to_frame()
+Date: Tue, 22 Jul 2025 19:32:30 -0500
+Message-Id: <20250723003230.1243224-1-chenyuan0y@gmail.com>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -105,39 +105,36 @@ The xdp_convert_buff_to_frame() function can return NULL when there is
 insufficient headroom in the buffer to store the xdp_frame structure
 or when the driver didn't reserve enough tailroom for skb_shared_info.
 
-Currently, the sfc driver does not check for this NULL return value
-in the XDP_TX case within efx_do_xdp(). While the efx_xdp_tx_buffers()
-function has some defensive checks, passing a NULL xdpf can still lead
-to undefined behavior when the function tries to access xdpf->len and
-xdpf->data.
+Currently, the sfc siena driver does not check for this NULL return value
+in the XDP_TX case within efx_do_xdp().
 
 Fix by adding a proper NULL check in the XDP_TX case. If conversion
 fails, free the RX buffer and increment the bad drops counter, following
 the same pattern used for other XDP error conditions in this driver.
 
 Signed-off-by: Chenyuan Yang <chenyuan0y@gmail.com>
-Fixes: 1b698fa5d8ef ("xdp: Rename convert_to_xdp_frame in xdp_convert_buff_to_frame")
+Fixes: d48523cb88e0 ("sfc: Copy shared files needed for Siena (part 2)")
 ---
- drivers/net/ethernet/sfc/rx.c | 6 ++++++
+ drivers/net/ethernet/sfc/siena/rx.c | 6 ++++++
  1 file changed, 6 insertions(+)
 
-diff --git a/drivers/net/ethernet/sfc/rx.c b/drivers/net/ethernet/sfc/rx.c
-index ffca82207e47..6321ccd8c8fa 100644
---- a/drivers/net/ethernet/sfc/rx.c
-+++ b/drivers/net/ethernet/sfc/rx.c
-@@ -308,6 +308,12 @@ static bool efx_do_xdp(struct efx_nic *efx, struct efx_channel *channel,
+diff --git a/drivers/net/ethernet/sfc/siena/rx.c b/drivers/net/ethernet/sfc/siena/rx.c
+index 98d3c0743c0f..65f6daad3168 100644
+--- a/drivers/net/ethernet/sfc/siena/rx.c
++++ b/drivers/net/ethernet/sfc/siena/rx.c
+@@ -310,6 +310,12 @@ static bool efx_do_xdp(struct efx_nic *efx, struct efx_channel *channel,
  	case XDP_TX:
  		/* Buffer ownership passes to tx on success. */
  		xdpf = xdp_convert_buff_to_frame(&xdp);
 +		if (unlikely(!xdpf)) {
-+			efx_free_rx_buffers(rx_queue, rx_buf, 1);
++			efx_siena_free_rx_buffers(rx_queue, rx_buf, 1);
 +			channel->n_rx_xdp_bad_drops++;
 +			break;
 +		}
 +
- 		err = efx_xdp_tx_buffers(efx, 1, &xdpf, true);
+ 		err = efx_siena_xdp_tx_buffers(efx, 1, &xdpf, true);
  		if (unlikely(err != 1)) {
- 			efx_free_rx_buffers(rx_queue, rx_buf, 1);
+ 			efx_siena_free_rx_buffers(rx_queue, rx_buf, 1);
 -- 
 2.34.1
 
