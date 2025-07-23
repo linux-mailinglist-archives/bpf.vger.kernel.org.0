@@ -1,80 +1,80 @@
-Return-Path: <bpf+bounces-64193-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64194-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 244F9B0F968
-	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 19:41:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 959F7B0F96B
+	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 19:41:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 25F4616EDAE
-	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 17:38:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 124B41776A6
+	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 17:39:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 409AC1E5B63;
-	Wed, 23 Jul 2025 17:36:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4EBC23AB98;
+	Wed, 23 Jul 2025 17:36:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="bQDMlSKp"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="A7Ln79EF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83FE922836C
-	for <bpf@vger.kernel.org>; Wed, 23 Jul 2025 17:36:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4043F2367A8
+	for <bpf@vger.kernel.org>; Wed, 23 Jul 2025 17:36:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753292213; cv=none; b=DBu877921/p2+hOVmOwSkvN9I4tTJACHCOzVl8zth7a+6X69ui+xESeOE2WfUZYf5RbP+LEfygoPn7n4s5ZvVsc+pqwAynom5FWflRAKSAhYINxygWIF6664BXHxDqGSlJD4nRPP1XBm2tB9yG450EjsYSLGpXbazSmQmZZOATA=
+	t=1753292216; cv=none; b=Zp0WBIZZ1ZTKBcuffeXG/2KI6ZjPQYPxVUeNcwF2WA/BFmPMeLDj7vVYE1E4h88pdzrrkGE+ymIXX2SLbarWheowQFdztZw4KphMBb4RFX9hSjpRQqF7FuDCeyDiy8YY/UDXWD8j08kyUrEf8+wXLBvwLONIHe0uccEoxZg8S4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753292213; c=relaxed/simple;
-	bh=BGm2ukabBejPap75JlSTwrFukpdyn3UUJRvuUCo/RHc=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=mM0lwsKaVt99KVqxsNL7Lz2Cy/bZIZe4bg+ri1X6mv1eXhTWF4VWd6EN3Z5mOydkPXTMwmvlQhv4sGOeT0sJFtdD166OB0wdLfumcLdNFxkYCf1lRQa3gNPtb6tZzUUAxMMuU5AoGkDF70PWqRZ09s1ygHZVDfUI2hF2FU4Tlis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=bQDMlSKp; arc=none smtp.client-ip=209.85.218.45
+	s=arc-20240116; t=1753292216; c=relaxed/simple;
+	bh=0Kn6I3D3GbGg/thSU32On+20t2U6sz2BAcDAGROf6zU=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=g43Q6FMS/d8BVx7tzejiiK57mOJkdLl33UxNkPp/wmTAisuIsZ6kNSyOBs3ctY0L87r9tUENA6ihDq2eu3M2RqGV0DzFJbvUOzAFreaOXHCniL3n5gOUoYmMHM9Vn57f0xKJvp7oKcDIXMg0zgjpL7avyRQukuWzL36AO8cqtBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=A7Ln79EF; arc=none smtp.client-ip=209.85.208.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-ae0dad3a179so15018766b.1
-        for <bpf@vger.kernel.org>; Wed, 23 Jul 2025 10:36:51 -0700 (PDT)
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-611f74c1837so327146a12.3
+        for <bpf@vger.kernel.org>; Wed, 23 Jul 2025 10:36:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1753292210; x=1753897010; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3OrkDHN4Pu3640RJe+OMQQn8FEQX+p7+yP0jdnsqDiw=;
-        b=bQDMlSKpIzBIqVQa/A+xTUOhPk+RyRHSDE05dYvk9iAHxUySGbEv5l3JKI/0wa+sSA
-         7HkOG9LiwSPVBiGpvQqwtCiYuUPBxNNw5LB0eU1JL5/W5/pnrPDrqh8aTVzpOT6tftK0
-         8bxAhXIPCCyBO46ZYkiluhZgW5k8Y2bMWGPAzzREq8/mfQR5STBnlWApJZP9Hh1mVsPc
-         8ulPDt5skEfD5MKs8qePXHYMmjBzgTgBU8he+oPCidFakKkzwBhhACmSyHG5zxJjFD99
-         k+hUNIhmuvpK17M0blSgWQHXc+2MaatKESQflB0V9XSJ66FTyHQQrNXAl5uFs6UsEawq
-         a7Qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753292210; x=1753897010;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=cloudflare.com; s=google09082023; t=1753292211; x=1753897011; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=3OrkDHN4Pu3640RJe+OMQQn8FEQX+p7+yP0jdnsqDiw=;
-        b=A48ELRul6XzGw+oAl5TTeUTZSqCGuBw7drmB4K3e8y/5yfwAu+1vTJsWv+0Vrgqcyf
-         q25eoeZvVmcLZZ9v54OK3T5GDPfiq2AP1nSgCfs66PZPVdexMDbwvob1M3tzVGPf86qu
-         u6XSHnHLpP5bEoMzDdKB3YEMSWMFnQrchbnKKYgo53rExiiMiu7oorPUpB18ESzyaulW
-         odVVJljxbrZk4CC3oZOZsIrbxD7yyvfqxXPHz5lTsBW5ntvdHIr+w/Dm3Q2anzSC5qOw
-         QuiXfe4uOXlI8fsinyh8NTOAElvOZyBFCnxv4rcu/Q4C+tlt9+aJKXDRS/wxlVWBMoBd
-         qnAg==
-X-Gm-Message-State: AOJu0YxNpDIc3iJYQvb0DpYXVH6vBtcm8kZHqM/GimGKHVIML085QcPg
-	v/4GvmOBcbFlMt/NntJ+CDQQ3+Itxequ9/+iETMSHqSQKYxOW21y6+ZuwR6FkLoE6RA=
-X-Gm-Gg: ASbGncv/z+zRnTyFkRZhpm1rDFOjs73Uv9VVnWUqJoL6qOx8WPRQXPV44Ta2sorV5hk
-	HRpGtsA5bckOM9Bwch1wS1LYH11w0P7OWE8FlvH/Pa4z+GgLnCMC+a28KGdEvEXQxRptS88t3ua
-	aZ2hwUmF+ZukiZ0F+LDx/4BcLvgFaIBQF3LauzwImHumDoDjYOlZoV4GN5Iizb8610HuYkhtDH3
-	fPjpwNr20AJ7bN4xBQUc45SwKIAIQtFoZMYzoIaGeVW547gXPgfVQqGcW1UjujUx3TkybB9NigE
-	yKPulAyKZnP2YPf9rq73UpYdyU/7VxL89jgXdpz0BqS/8ySSsxBA7/m/quvRdXnIxk4Phbf5lW1
-	2Y770o0pwHsK+rjPHSTNju4AZagaPLi22lmiVCg9EjLOYkmPSq+oCKElvfR5lPIZAO+ylQF0=
-X-Google-Smtp-Source: AGHT+IGdX1BtAcPU6NXapcTHJ4XJ3l3KZ7udHFpF/bYGsc+3o9bl8p1p/WT/ndlJtRRzjAI8J+Q4Uw==
-X-Received: by 2002:a17:907:c26:b0:ae3:d5f2:393a with SMTP id a640c23a62f3a-af2f8d4c052mr339922066b.44.1753292209720;
-        Wed, 23 Jul 2025 10:36:49 -0700 (PDT)
+        bh=ZrjzRGrB9dP5LyoRHTg/j41WqS4k0TNvsR32BBSGXAM=;
+        b=A7Ln79EFAG8szQy5TAn5xnipTVgv7X5uJJrKKNFfWv/OhymDFYE6xj6J0dGtg4EPbR
+         M9ykX1YQ9POqTvBvB4LWRk4SUkOEdAH7ypOw7T+RKtewfxObpMxC4troqhu8yoodkx1/
+         pgFofcJqaOO4BNwIcVDHHm1NCzH5YTKlFoNmbbdOaYgTB6QfJM9qfjQG6ktDxljhXylx
+         pOxtsBCcXkVJBj/KNHYU3TL/EY235A4X6R/20bSf+gzaYRi+m5+Y9y25kWVKHM6fe/iz
+         1QwrK3TcZ3Wd5/okrbkHaXLvw0yxD6nFKpoWxNrAdMqKohBY8zRPaY8adEXIoci2ZCRi
+         GTaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753292211; x=1753897011;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZrjzRGrB9dP5LyoRHTg/j41WqS4k0TNvsR32BBSGXAM=;
+        b=isJy61PI6UIYsS34dWiqU5236LszTS3KHTDU+iYXVWu+GuLgKgpUgxjS8N7XBelDU1
+         YBIOQt77NdBszH7bL9HaNXyv5fHjR2Vfccw9dZcbQsYm/+Iq2CN9AQAIQSvwtKKR303H
+         FsfKur3PwteUdSBShwh3R220v6olQA0eoyX5GfMfR26d+TEvZMzMJh/7mwv3Ow8641fF
+         IpjaXsgSNQQ7Bp4YaaGHbE5ouRumqlh5/FJi66Ul8fTX2RtTYBMMidUsmFAoonzOAuKE
+         SctPZUyudJko/EIP0yt/DpSxb+z2UsK/oxEDPXvPBajgqddc1Lz4emPA0vTWALP+BVVI
+         kKZQ==
+X-Gm-Message-State: AOJu0YxjdXtfZnBN3tRSdMzg1RpO4xMxLxKcCvGPNSfaH2xYYoSF35u3
+	qgh2UmRPvqrk7lGS2GZKlUd9E1O0PIfk1ZbkeRicXXQxvHPgOymbCnPp6AgpMjALB0w=
+X-Gm-Gg: ASbGncsUfMSZTfQvcK8S4suIIv0kl/X/Gfz1Tes2C8UMkjPSiPkTjSxoCuMSTHDzxdb
+	6HSuL/aFuFgo6FL8JUUQHvClzBkgjeEtTSj5jpdZpqRQIJ1Cessc105frY3k6QtLh1u+je+Tunl
+	Y4CmuTj8EVJ9aWhqORRvosoFTe8imda3YJPDHwfVvVVOt1tLmQ+5bVaRnfhu9/tvRpfMBiFPpD2
+	JuAGYoF/cl/icPszWiCRLkw3KN3KNKjOOKUcgIlNho3OD3iXEbBBL0I5H+N4eNIyQC/zeMtCP6C
+	5TMqZbTAtYOi0twn9xXANe3D6RFjpfEX3YxayusH20Xarm+Eiq4Uz/3WrqzDGfWEn+w88eyYUl6
+	aJR4IkT6fCk0kcWSpsC1A3mwWqkvbekYdCi7QQroFAsJ8WWEKSoKIxwhjiyFcsYtkY0P7V+0=
+X-Google-Smtp-Source: AGHT+IHtgmcetgAasTjSGahfxTq8wxDbfKRmBm/6OyCSubibAd2apkjgr6mO63InzxT2J+IC7LhB/g==
+X-Received: by 2002:a05:6402:26c7:b0:602:1d01:286a with SMTP id 4fb4d7f45d1cf-6149b40cdb8mr3203669a12.6.1753292211357;
+        Wed, 23 Jul 2025 10:36:51 -0700 (PDT)
 Received: from cloudflare.com (79.184.149.187.ipv4.supernova.orange.pl. [79.184.149.187])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aec6ca2ec42sm1080623766b.78.2025.07.23.10.36.48
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-612c8f33964sm8728306a12.18.2025.07.23.10.36.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jul 2025 10:36:49 -0700 (PDT)
+        Wed, 23 Jul 2025 10:36:50 -0700 (PDT)
 From: Jakub Sitnicki <jakub@cloudflare.com>
-Subject: [PATCH bpf-next v4 0/8] Add a dynptr type for skb metadata for TC
- BPF
-Date: Wed, 23 Jul 2025 19:36:45 +0200
-Message-Id: <20250723-skb-metadata-thru-dynptr-v4-0-a0fed48bcd37@cloudflare.com>
+Date: Wed, 23 Jul 2025 19:36:46 +0200
+Subject: [PATCH bpf-next v4 1/8] bpf: Add dynptr type for skb metadata
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,13 +82,10 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIAK0dgWgC/33OywrCMBAF0F+RrB3Js1FX/oe4SJuJDWpbkjQo0
- n831IWCj+XlMufOnUQMHiPZLu4kYPbR910JcrkgTWu6I4K3JRNOuaIVqyCearhgMtYkA6kNI9h
- bN6QAsjZK60ZYqiQp50NA568zvSf14KDDayKH0rQ+pj7c5s3M5v7JC/qbzwwoOKatYaLiyq53z
- bkfrTubgKumv8xy5i9N/3s286Ipp9ZUSo3Muq+aeNM4+6OJouGG16iUkEzLD22apgdQDDdLawE
- AAA==
-X-Change-ID: 20250616-skb-metadata-thru-dynptr-4ba577c3d054
+Content-Transfer-Encoding: 7bit
+Message-Id: <20250723-skb-metadata-thru-dynptr-v4-1-a0fed48bcd37@cloudflare.com>
+References: <20250723-skb-metadata-thru-dynptr-v4-0-a0fed48bcd37@cloudflare.com>
+In-Reply-To: <20250723-skb-metadata-thru-dynptr-v4-0-a0fed48bcd37@cloudflare.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>, 
  Andrii Nakryiko <andrii@kernel.org>, Arthur Fabre <arthur@arthurfabre.com>, 
@@ -104,169 +101,243 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
  netdev@vger.kernel.org, Stanislav Fomichev <sdf@fomichev.me>
 X-Mailer: b4 0.15-dev-07fe9
 
-TL;DR
------
+Add a dynptr type, similar to skb dynptr, but for the skb metadata access.
 
-This is the first step in an effort which aims to enable skb metadata
-access for all BPF programs which operate on an skb context.
+The dynptr provides an alternative to __sk_buff->data_meta for accessing
+the custom metadata area allocated using the bpf_xdp_adjust_meta() helper.
 
-By skb metadata we mean the custom metadata area which can be allocated
-from an XDP program with the bpf_xdp_adjust_meta helper [1]. Network stack
-code accesses it using the skb_metadata_* helpers.
+More importantly, it abstracts away the fact where the storage for the
+custom metadata lives, which opens up the way to persist the metadata by
+relocating it as the skb travels through the network stack layers.
 
-Changelog
----------
-Changes in v4:
-- Kill bpf_dynptr_from_skb_meta_rdonly. Not needed for now. (Marin)
-- Add a test to cover passing OOB offsets to dynptr ops. (Eduard)
-- Factor out bounds checks from bpf_dynptr_{read,write,slice}. (Eduard)
-- Squash patches:
-      bpf: Enable read access to skb metadata with bpf_dynptr_read
-      bpf: Enable write access to skb metadata with bpf_dynptr_write
-      bpf: Enable read-write access to skb metadata with dynptr slice
-- Kept Eduard's Acks for v3 on unchanged patches.
-- Link to v3: https://lore.kernel.org/r/20250721-skb-metadata-thru-dynptr-v3-0-e92be5534174@cloudflare.com
+A notable difference between the skb and the skb_meta dynptr is that writes
+to the skb_meta dynptr don't invalidate either skb or skb_meta dynptr
+slices, since they cannot lead to a skb->head reallocation.
 
-Changes in v3:
-- Add a kfunc set for skb metadata access. Limited to TC BPF. (Martin)
-- Drop patches related to skb metadata access outside of TC BPF:
-      net: Clear skb metadata on handover from device to protocol
-      selftests/bpf: Cover lack of access to skb metadata at ip layer
-      selftests/bpf: Count successful bpf program runs
-- Link to v2: https://lore.kernel.org/r/20250716-skb-metadata-thru-dynptr-v2-0-5f580447e1df@cloudflare.com
+skb_meta dynptr ops are stubbed out and implemented by subsequent changes.
 
-Changes in v2:
-- Switch to a dedicated dynptr type for skb metadata (Andrii)
-- Add verifier test coverage since we now touch its code
-- Add missing test coverage for bpf_dynptr_adjust and access at an offset
-- Link to v1: https://lore.kernel.org/r/20250630-skb-metadata-thru-dynptr-v1-0-f17da13625d8@cloudflare.com
+Only the program types which can access __sk_buff->data_meta today are
+allowed to create a dynptr for skb metadata at the moment. We need to
+modify the network stack to persist the metadata across layers before
+opening up access to other BPF hooks.
 
-Overview
---------
+Once more BPF hooks gain access to skb_meta dynptr, we will also need to
+add a read-only variant of the helper similar to
+bpf_dynptr_from_skb_rdonly.
 
-Today, the skb metadata is accessible only by the BPF TC ingress programs
-through the __sk_buff->data_meta pointer. We propose a three step plan to
-make skb metadata available to all other BPF programs which operate on skb
-objects:
-
- 1) Add a dynptr type for skb metadata (this patch set)
-
-    This is a preparatory step, but it also stands on its own. Here we
-    enable access to the skb metadata through a bpf_dynptr, the same way we
-    can already access the skb payload today.
-
-    As the next step (2), we want to relocate the metadata as skb travels
-    through the network stack in order to persist it. That will require a
-    safe way to access the metadata area irrespective of its location.
-
-    This is where the dynptr [2] comes into play. It solves exactly that
-    problem. A dynptr to skb metadata can be backed by a memory area that
-    resides in a different location depending on the code path.
-
- 2) Persist skb metadata past the TC hook (future)
-
-    Having the metadata in front of the packet headers as the skb travels
-    through the network stack is problematic - see the discussion of
-    alternative approaches below. Hence, we plan to relocate it as
-    necessary past the TC hook.
-
-    Where to relocate it? We don't know yet. There are a couple of
-    options: (i) move it to the top of skb headroom, or (ii) allocate
-    dedicated memory for it.  They are not mutually exclusive. The right
-    solution might be a mix.
-
-    When to relocate it? That is also an open question. It could be done
-    during device to protocol handover or lazily when headers get pushed or
-    headroom gets resized.
-
- 3) skb dynptr for sockops, sk_lookup, etc. (future)
-
-    There are BPF program types don't operate on __sk_buff context, but
-    either have, or could have, access to the skb itself. As a final touch,
-    we want to provide a way to create an skb metadata dynptr for these
-    program types.
-
-TIMTOWDI
---------
-
-Alternative approaches which we considered:
-
-* Keep the metadata always in front of skb->data
-
-We think it is a bad idea for two reasons, outlined below. Nevertheless we
-are open to it, if necessary.
-
- 1) Performance concerns
-
-    It would require the network stack to move the metadata on each header
-    pull/push - see skb_reorder_vlan_header() [3] for an example. While
-    doable, there is an expected performance overhead.
-
- 2) Potential for bugs
-
-    In addition to updating skb_push/pull and pskp_expand_head, we would
-    need to audit any code paths which operate on skb->data pointer
-    directly without going through the helpers. This creates a "known
-    unknown" risk.
-
-* Design a new custom metadata area from scratch
-
-We have tried that in Arthur's patch set [4]. One of the outcomes of the
-discussion there was that we don't want to have two places to store custom
-metadata. Hence the change of approach to make the existing custom metadata
-area work.
-
--jkbs
-
-[1] https://docs.ebpf.io/linux/helper-function/bpf_xdp_adjust_meta/
-[2] https://docs.ebpf.io/linux/concepts/dynptrs/
-[3] https://elixir.bootlin.com/linux/v6.16-rc6/source/net/core/skbuff.c#L6211
-[4] https://lore.kernel.org/all/20250422-afabre-traits-010-rfc2-v2-0-92bcc6b146c9@arthurfabre.com/
-
----
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Arthur Fabre <arthur@arthurfabre.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: Jesse Brandeburg <jbrandeburg@cloudflare.com>
-Cc: Joanne Koong <joannelkoong@gmail.com>
-Cc: Lorenzo Bianconi <lorenzo@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Stanislav Fomichev <stfomichev@gmail.com>
-Cc: Toke Høiland-Jørgensen <thoiland@redhat.com>
-Cc: Yan Zhai <yan@cloudflare.com>
-Cc: kernel-team@cloudflare.com
-Cc: netdev@vger.kernel.org
 Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
-
 ---
-Jakub Sitnicki (8):
-      bpf: Add dynptr type for skb metadata
-      bpf: Enable read/write access to skb metadata through a dynptr
-      selftests/bpf: Cover verifier checks for skb_meta dynptr type
-      selftests/bpf: Pass just bpf_map to xdp_context_test helper
-      selftests/bpf: Parametrize test_xdp_context_tuntap
-      selftests/bpf: Cover read access to skb metadata via dynptr
-      selftests/bpf: Cover write access to skb metadata via dynptr
-      selftests/bpf: Cover read/write to skb metadata at an offset
+ include/linux/bpf.h   |  7 ++++++-
+ kernel/bpf/helpers.c  |  7 +++++++
+ kernel/bpf/log.c      |  2 ++
+ kernel/bpf/verifier.c | 12 +++++++++++-
+ net/core/filter.c     | 27 +++++++++++++++++++++++++++
+ 5 files changed, 53 insertions(+), 2 deletions(-)
 
- include/linux/bpf.h                                |   7 +-
- include/linux/filter.h                             |  18 ++
- kernel/bpf/helpers.c                               |   7 +
- kernel/bpf/log.c                                   |   2 +
- kernel/bpf/verifier.c                              |  12 +-
- net/core/filter.c                                  |  66 ++++++
- tools/testing/selftests/bpf/bpf_kfuncs.h           |   3 +
- tools/testing/selftests/bpf/prog_tests/dynptr.c    |   1 +
- .../bpf/prog_tests/xdp_context_test_run.c          |  97 ++++++--
- tools/testing/selftests/bpf/progs/dynptr_fail.c    | 258 +++++++++++++++++++++
- tools/testing/selftests/bpf/progs/dynptr_success.c |  22 ++
- tools/testing/selftests/bpf/progs/test_xdp_meta.c  | 228 ++++++++++++++++++
- 12 files changed, 704 insertions(+), 17 deletions(-)
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index f9cd2164ed23..49ddcf17fb4c 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -749,12 +749,15 @@ enum bpf_type_flag {
+ 	 */
+ 	MEM_WRITE		= BIT(18 + BPF_BASE_TYPE_BITS),
+ 
++	/* DYNPTR points to skb_metadata_end()-skb_metadata_len() */
++	DYNPTR_TYPE_SKB_META	= BIT(19 + BPF_BASE_TYPE_BITS),
++
+ 	__BPF_TYPE_FLAG_MAX,
+ 	__BPF_TYPE_LAST_FLAG	= __BPF_TYPE_FLAG_MAX - 1,
+ };
+ 
+ #define DYNPTR_TYPE_FLAG_MASK	(DYNPTR_TYPE_LOCAL | DYNPTR_TYPE_RINGBUF | DYNPTR_TYPE_SKB \
+-				 | DYNPTR_TYPE_XDP)
++				 | DYNPTR_TYPE_XDP | DYNPTR_TYPE_SKB_META)
+ 
+ /* Max number of base types. */
+ #define BPF_BASE_TYPE_LIMIT	(1UL << BPF_BASE_TYPE_BITS)
+@@ -1348,6 +1351,8 @@ enum bpf_dynptr_type {
+ 	BPF_DYNPTR_TYPE_SKB,
+ 	/* Underlying data is a xdp_buff */
+ 	BPF_DYNPTR_TYPE_XDP,
++	/* Points to skb_metadata_end()-skb_metadata_len() */
++	BPF_DYNPTR_TYPE_SKB_META,
+ };
+ 
+ int bpf_dynptr_check_size(u32 size);
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 6b4877e85a68..9552b32208c5 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -1780,6 +1780,8 @@ static int __bpf_dynptr_read(void *dst, u32 len, const struct bpf_dynptr_kern *s
+ 		return __bpf_skb_load_bytes(src->data, src->offset + offset, dst, len);
+ 	case BPF_DYNPTR_TYPE_XDP:
+ 		return __bpf_xdp_load_bytes(src->data, src->offset + offset, dst, len);
++	case BPF_DYNPTR_TYPE_SKB_META:
++		return -EOPNOTSUPP; /* not implemented */
+ 	default:
+ 		WARN_ONCE(true, "bpf_dynptr_read: unknown dynptr type %d\n", type);
+ 		return -EFAULT;
+@@ -1836,6 +1838,8 @@ int __bpf_dynptr_write(const struct bpf_dynptr_kern *dst, u32 offset, void *src,
+ 		if (flags)
+ 			return -EINVAL;
+ 		return __bpf_xdp_store_bytes(dst->data, dst->offset + offset, src, len);
++	case BPF_DYNPTR_TYPE_SKB_META:
++		return -EOPNOTSUPP; /* not implemented */
+ 	default:
+ 		WARN_ONCE(true, "bpf_dynptr_write: unknown dynptr type %d\n", type);
+ 		return -EFAULT;
+@@ -1882,6 +1886,7 @@ BPF_CALL_3(bpf_dynptr_data, const struct bpf_dynptr_kern *, ptr, u32, offset, u3
+ 		return (unsigned long)(ptr->data + ptr->offset + offset);
+ 	case BPF_DYNPTR_TYPE_SKB:
+ 	case BPF_DYNPTR_TYPE_XDP:
++	case BPF_DYNPTR_TYPE_SKB_META:
+ 		/* skb and xdp dynptrs should use bpf_dynptr_slice / bpf_dynptr_slice_rdwr */
+ 		return 0;
+ 	default:
+@@ -2710,6 +2715,8 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr *p, u32 offset,
+ 		bpf_xdp_copy_buf(ptr->data, ptr->offset + offset, buffer__opt, len, false);
+ 		return buffer__opt;
+ 	}
++	case BPF_DYNPTR_TYPE_SKB_META:
++		return NULL; /* not implemented */
+ 	default:
+ 		WARN_ONCE(true, "unknown dynptr type %d\n", type);
+ 		return NULL;
+diff --git a/kernel/bpf/log.c b/kernel/bpf/log.c
+index 38050f4ee400..e4983c1303e7 100644
+--- a/kernel/bpf/log.c
++++ b/kernel/bpf/log.c
+@@ -498,6 +498,8 @@ const char *dynptr_type_str(enum bpf_dynptr_type type)
+ 		return "skb";
+ 	case BPF_DYNPTR_TYPE_XDP:
+ 		return "xdp";
++	case BPF_DYNPTR_TYPE_SKB_META:
++		return "skb_meta";
+ 	case BPF_DYNPTR_TYPE_INVALID:
+ 		return "<invalid>";
+ 	default:
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index e2fcea860755..c21e2cd63c83 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -674,6 +674,8 @@ static enum bpf_dynptr_type arg_to_dynptr_type(enum bpf_arg_type arg_type)
+ 		return BPF_DYNPTR_TYPE_SKB;
+ 	case DYNPTR_TYPE_XDP:
+ 		return BPF_DYNPTR_TYPE_XDP;
++	case DYNPTR_TYPE_SKB_META:
++		return BPF_DYNPTR_TYPE_SKB_META;
+ 	default:
+ 		return BPF_DYNPTR_TYPE_INVALID;
+ 	}
+@@ -690,6 +692,8 @@ static enum bpf_type_flag get_dynptr_type_flag(enum bpf_dynptr_type type)
+ 		return DYNPTR_TYPE_SKB;
+ 	case BPF_DYNPTR_TYPE_XDP:
+ 		return DYNPTR_TYPE_XDP;
++	case BPF_DYNPTR_TYPE_SKB_META:
++		return DYNPTR_TYPE_SKB_META;
+ 	default:
+ 		return 0;
+ 	}
+@@ -2274,7 +2278,8 @@ static bool reg_is_pkt_pointer_any(const struct bpf_reg_state *reg)
+ static bool reg_is_dynptr_slice_pkt(const struct bpf_reg_state *reg)
+ {
+ 	return base_type(reg->type) == PTR_TO_MEM &&
+-		(reg->type & DYNPTR_TYPE_SKB || reg->type & DYNPTR_TYPE_XDP);
++	       (reg->type &
++		(DYNPTR_TYPE_SKB | DYNPTR_TYPE_XDP | DYNPTR_TYPE_SKB_META));
+ }
+ 
+ /* Unmodified PTR_TO_PACKET[_META,_END] register from ctx access. */
+@@ -12189,6 +12194,7 @@ enum special_kfunc_type {
+ 	KF_bpf_rbtree_right,
+ 	KF_bpf_dynptr_from_skb,
+ 	KF_bpf_dynptr_from_xdp,
++	KF_bpf_dynptr_from_skb_meta,
+ 	KF_bpf_dynptr_slice,
+ 	KF_bpf_dynptr_slice_rdwr,
+ 	KF_bpf_dynptr_clone,
+@@ -12238,9 +12244,11 @@ BTF_ID(func, bpf_rbtree_right)
+ #ifdef CONFIG_NET
+ BTF_ID(func, bpf_dynptr_from_skb)
+ BTF_ID(func, bpf_dynptr_from_xdp)
++BTF_ID(func, bpf_dynptr_from_skb_meta)
+ #else
+ BTF_ID_UNUSED
+ BTF_ID_UNUSED
++BTF_ID_UNUSED
+ #endif
+ BTF_ID(func, bpf_dynptr_slice)
+ BTF_ID(func, bpf_dynptr_slice_rdwr)
+@@ -13214,6 +13222,8 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+ 				dynptr_arg_type |= DYNPTR_TYPE_SKB;
+ 			} else if (meta->func_id == special_kfunc_list[KF_bpf_dynptr_from_xdp]) {
+ 				dynptr_arg_type |= DYNPTR_TYPE_XDP;
++			} else if (meta->func_id == special_kfunc_list[KF_bpf_dynptr_from_skb_meta]) {
++				dynptr_arg_type |= DYNPTR_TYPE_SKB_META;
+ 			} else if (meta->func_id == special_kfunc_list[KF_bpf_dynptr_clone] &&
+ 				   (dynptr_arg_type & MEM_UNINIT)) {
+ 				enum bpf_dynptr_type parent_type = meta->initialized_dynptr.type;
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 7a72f766aacf..0755dfc0fc2f 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -11995,6 +11995,22 @@ __bpf_kfunc int bpf_dynptr_from_skb(struct __sk_buff *s, u64 flags,
+ 	return 0;
+ }
+ 
++__bpf_kfunc int bpf_dynptr_from_skb_meta(struct __sk_buff *skb_, u64 flags,
++					 struct bpf_dynptr *ptr__uninit)
++{
++	struct bpf_dynptr_kern *ptr = (struct bpf_dynptr_kern *)ptr__uninit;
++	struct sk_buff *skb = (struct sk_buff *)skb_;
++
++	if (flags) {
++		bpf_dynptr_set_null(ptr);
++		return -EINVAL;
++	}
++
++	bpf_dynptr_init(ptr, skb, BPF_DYNPTR_TYPE_SKB_META, 0, skb_metadata_len(skb));
++
++	return 0;
++}
++
+ __bpf_kfunc int bpf_dynptr_from_xdp(struct xdp_md *x, u64 flags,
+ 				    struct bpf_dynptr *ptr__uninit)
+ {
+@@ -12169,6 +12185,10 @@ BTF_KFUNCS_START(bpf_kfunc_check_set_skb)
+ BTF_ID_FLAGS(func, bpf_dynptr_from_skb, KF_TRUSTED_ARGS)
+ BTF_KFUNCS_END(bpf_kfunc_check_set_skb)
+ 
++BTF_KFUNCS_START(bpf_kfunc_check_set_skb_meta)
++BTF_ID_FLAGS(func, bpf_dynptr_from_skb_meta, KF_TRUSTED_ARGS)
++BTF_KFUNCS_END(bpf_kfunc_check_set_skb_meta)
++
+ BTF_KFUNCS_START(bpf_kfunc_check_set_xdp)
+ BTF_ID_FLAGS(func, bpf_dynptr_from_xdp)
+ BTF_KFUNCS_END(bpf_kfunc_check_set_xdp)
+@@ -12190,6 +12210,11 @@ static const struct btf_kfunc_id_set bpf_kfunc_set_skb = {
+ 	.set = &bpf_kfunc_check_set_skb,
+ };
+ 
++static const struct btf_kfunc_id_set bpf_kfunc_set_skb_meta = {
++	.owner = THIS_MODULE,
++	.set = &bpf_kfunc_check_set_skb_meta,
++};
++
+ static const struct btf_kfunc_id_set bpf_kfunc_set_xdp = {
+ 	.owner = THIS_MODULE,
+ 	.set = &bpf_kfunc_check_set_xdp,
+@@ -12225,6 +12250,8 @@ static int __init bpf_kfunc_init(void)
+ 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_LWT_SEG6LOCAL, &bpf_kfunc_set_skb);
+ 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_NETFILTER, &bpf_kfunc_set_skb);
+ 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &bpf_kfunc_set_skb);
++	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &bpf_kfunc_set_skb_meta);
++	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_ACT, &bpf_kfunc_set_skb_meta);
+ 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP, &bpf_kfunc_set_xdp);
+ 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP_SOCK_ADDR,
+ 					       &bpf_kfunc_set_sock_addr);
+
+-- 
+2.43.0
 
 
