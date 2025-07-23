@@ -1,164 +1,112 @@
-Return-Path: <bpf+bounces-64130-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64131-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E93A4B0E7A2
-	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 02:32:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73DEAB0E7A3
+	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 02:37:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBBC71CC0BBA
-	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 00:33:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A1291C23ACF
+	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 00:37:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73B0177111;
-	Wed, 23 Jul 2025 00:32:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7A4C2F43;
+	Wed, 23 Jul 2025 00:37:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OXzwGZxH"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MrSMwD9h"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84A5823A6;
-	Wed, 23 Jul 2025 00:32:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46ACC23A6
+	for <bpf@vger.kernel.org>; Wed, 23 Jul 2025 00:37:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753230769; cv=none; b=dTbxcoklLTCHEd2J4WvmtubSkbARKdiI2qYUAKjXC2t2zk9bxVM7BEhQi0N2gJ9EzMZIvc3YzZKkXHYeOB8Qh2mgEx9sJ+zWn1ADbbPmunab9K2A1ftv3o9N7S7rojcT/0O9krJ0ndMKrRwsKHYE5/4aPTfAu71Mjon7BsWcnv4=
+	t=1753231043; cv=none; b=LmfhE9zNzhi2qps42STGEpfKXwn2AwbYFK0qipfRci3Z0gIU68uqAh9g5xEQrfZ9QENKnFkGFT7jVvhRnlk5zVIL2pIVVfVvQRCx3pDX+UfI6Fp/QmrNcwMTY6NSktHIK9GKBhV2IxEN0HWckjCAj/Sg7xegbfSFvbA2b1g3eHM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753230769; c=relaxed/simple;
-	bh=rJBNiG/ryj6/hcFNAkKhuPQLGu307Q2BMW1qygL3OAQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=GftL+m6C72i14wGcaIOdoSjHeBnXFcnZsezVtZ9433gJH0Ms4I34oc9uzAl/6ITn8lz2TTZIMa+snxaLHnHlYlrEyUu+QtipIxJS0Q7f36+od5Wm0oJUL/dugDkif5ssSHAiHSKLnoN+yeSPZPNmbO7zyBktHjC9PR2tDVInlbA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OXzwGZxH; arc=none smtp.client-ip=209.85.219.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-6fac4e2fcd1so4279626d6.0;
-        Tue, 22 Jul 2025 17:32:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753230766; x=1753835566; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nBo6ZocI/SyxB128ijhFKjoTdFjgSN64FOAnjb5ZeE8=;
-        b=OXzwGZxH+JV1bobmlHySU4+0Mx80wv6Pcaw0OUZ+LoEw7KwUUY33zi21XRTWDltvZM
-         EZuoeETjTZtKio1mcltqGld6DbVXL9A12YE0R9a4TAJzDNLlXKBZAcnwiLLKjW6fc4Y8
-         ALMBW/oaFbwVPUbbnDOL9zR5WlO0I5JmBkvXB/Vxo/x4zNNKAYFsTgRXgqMOWRAvqRlX
-         foynWLaiI6e+Ac1cHUS3SH5Dw0sHIUxHtdQwpav1ql6weaHgJKiEeNzYgeUy8Iju4kNX
-         TLjU30OBDnFoVrhFUn5gyt7X70D+rTmj7uST7DmuLhPqLSeGwho59mLwo80QO9TvDKlJ
-         dqpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753230766; x=1753835566;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nBo6ZocI/SyxB128ijhFKjoTdFjgSN64FOAnjb5ZeE8=;
-        b=At8rcMhsilFZm27viGkOj+6M/8s7k3Rc7n4C7slbmXoq1/+mHhflQQYsR5GzmALocL
-         ky2CSO4JLKybpYluUmWXVZwMwnsEb6WciZkLND6+9vFq0ezsZ/zdnt4E7KcuUBOEa4rr
-         fgrl4/uUJ2EkMRgwSYqYgZ6icCEC3nBSYk2YFE7SkioQI/uuzDKXx1Wbv/N6tJ2za7Gg
-         zLn3d4nGh4EVBjEbIVo0dSr7cVmOI6/LY2Fp+SyhD+if0IkxN11z6NMpg/EdgwotMe/w
-         1KNhV8oGAO5xLYhC9mEfJqBl7OgmMiej3Z8eb/zTCZynTMPysV7UG5o6uPM9aNw/gC+O
-         tBBw==
-X-Forwarded-Encrypted: i=1; AJvYcCXTiYyQgxqE8Y9HYggSRs4Gi34ngVgP1b5P9XUam6vhCq75zP4fKP3Sf9AisJ5i2erdYhg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzO8O+e1BmjlsH/5lfrXZvUpxOQDXEbbcAgMbd++ik9nEKuDCYN
-	Fqe2OlQHEqsbq4nFLvikevShHn4PQ+f7KvdySlDIjL3iPeVF0YpiBQw=
-X-Gm-Gg: ASbGnctMKDOePcy+a/MgwB9Fqu7PeKEtqCoxtg2m6dnp98juaAG2sPitIP4psKf1eAK
-	KPTBj+vLlSvRNMz0kqAG0meYK9RelkmekP10QnJy6JseJ7fFHZFKB13lrvtx/haveEPk6OXr4fq
-	RVv4giRoK7k6Da64zJxxsH6lFJTmnvPMi2nN/TLXvh1NqiZAc8qPSoihdmlQ60Lpq+tRw7qFIxT
-	tyCb6CA5o+7DUVNx2J4kN3VsZ5tcZahPciWn7JKkOlNMxmXAgaBynO81QYPamWXBKY+HdLvioaL
-	K0Z1ghUnzQ5s2SdNQxR8mbCcvXIeJMUw9eko918bpgmJ1wyXJdshFGkP6gBG2pkbLsbfqeYUMc5
-	l41GubQRZEitNirhBEV4=
-X-Google-Smtp-Source: AGHT+IGuLkq4Ph9x2OoVl4aLCJFpWtka6sStkiw5xmFos2ZDIqMdsMId/ZZs7RMAFSc5sG7bTdMNAA==
-X-Received: by 2002:a05:6214:260f:b0:705:b14:1a9c with SMTP id 6a1803df08f44-7070065fb12mr6390946d6.10.1753230765966;
-        Tue, 22 Jul 2025 17:32:45 -0700 (PDT)
-Received: from ise-alpha.. ([2620:0:e00:550a:642:1aff:fee8:511b])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-7051bac2c95sm56624186d6.106.2025.07.22.17.32.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jul 2025 17:32:45 -0700 (PDT)
-From: Chenyuan Yang <chenyuan0y@gmail.com>
-To: sgoutham@marvell.com,
-	gakula@marvell.com,
-	sbhatta@marvell.com,
-	hkelam@marvell.com,
-	bbhushan2@marvell.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	sdf@fomichev.me,
-	sumang@marvell.com
-Cc: netdev@vger.kernel.org,
-	bpf@vger.kernel.org,
-	zzjas98@gmail.com,
-	Chenyuan Yang <chenyuan0y@gmail.com>
-Subject: [PATCH] net: otx2: handle NULL returned by xdp_convert_buff_to_frame()
-Date: Tue, 22 Jul 2025 19:32:43 -0500
-Message-Id: <20250723003243.1245357-1-chenyuan0y@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1753231043; c=relaxed/simple;
+	bh=E0UPxY2Bh56RvJMoF0lZQ2lcY0O5+XW+alctZh4qnTE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UrXptIHiE0Tn5yBqGVAKihx4bs9aFuwA1QVp2vDb2O+qSMdHjAKJJgvz7lagcuS0JUmzb0OwSLfp1h3tdXVR8DxPenhIM/Lk90UzZ/wtB78+91rkqygfoE/E3bVS9pR+k7tOg6lW1M+hxWeQXZXwlUj7gMlGSDfEOqiWL1cyU/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MrSMwD9h; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <5a43d42d-375d-4a90-b5ee-8e8ed239cefd@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1753231039;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=j9HSIZ+/nil3w0TqqXcDvUAZwBf7JWFXYE5kn6ZSk3c=;
+	b=MrSMwD9hcHVHJriA0ySI/rTHkR0IePOHmAqYhQM0dBUeOd8rWYUWnZCsedxuolkSc41H/J
+	PxidM35k8jKnMorNYzKAK7jsk4GnYnBqDuwPB7dDUKyaqXESYGPbwIrJkMgmD54MKJeBXz
+	Y8GUhJQPomjpqyoyxoz1EnMXsAgJUkI=
+Date: Tue, 22 Jul 2025 17:37:03 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v3 01/10] bpf: Add dynptr type for skb metadata
+To: Jakub Sitnicki <jakub@cloudflare.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Arthur Fabre <arthur@arthurfabre.com>, Daniel Borkmann
+ <daniel@iogearbox.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
+ Jesse Brandeburg <jbrandeburg@cloudflare.com>,
+ Joanne Koong <joannelkoong@gmail.com>, Lorenzo Bianconi
+ <lorenzo@kernel.org>, =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?=
+ <thoiland@redhat.com>, Yan Zhai <yan@cloudflare.com>,
+ kernel-team@cloudflare.com, netdev@vger.kernel.org,
+ Stanislav Fomichev <sdf@fomichev.me>, bpf@vger.kernel.org
+References: <20250721-skb-metadata-thru-dynptr-v3-0-e92be5534174@cloudflare.com>
+ <20250721-skb-metadata-thru-dynptr-v3-1-e92be5534174@cloudflare.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Content-Language: en-US
+In-Reply-To: <20250721-skb-metadata-thru-dynptr-v3-1-e92be5534174@cloudflare.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-The xdp_convert_buff_to_frame() function can return NULL when there is
-insufficient headroom in the buffer to store the xdp_frame structure
-or when the driver didn't reserve enough tailroom for skb_shared_info.
+On 7/21/25 3:52 AM, Jakub Sitnicki wrote:
+> @@ -21788,12 +21798,17 @@ static void specialize_kfunc(struct bpf_verifier_env *env,
+>   	if (offset)
+>   		return;
+>   
+> -	if (func_id == special_kfunc_list[KF_bpf_dynptr_from_skb]) {
+> +	if (func_id == special_kfunc_list[KF_bpf_dynptr_from_skb] ||
+> +	    func_id == special_kfunc_list[KF_bpf_dynptr_from_skb_meta]) {
 
-Currently, the otx2 driver does not check for this NULL return value
-in two critical paths within otx2_xdp_rcv_pkt_handler():
+I don't think this check is needed. The skb_meta is writable to tc.
 
-1. XDP_TX case: Passes potentially NULL xdpf to otx2_xdp_sq_append_pkt()
-2. XDP_REDIRECT error path: Calls xdp_return_frame() with potentially NULL
+>   		seen_direct_write = env->seen_direct_write;
+>   		is_rdonly = !may_access_direct_pkt_data(env, NULL, BPF_WRITE);
 
-This can lead to kernel crashes due to NULL pointer dereference.
+is_rdonly is always false here.
 
-Fix by adding proper NULL checks in both paths. For XDP_TX, return false
-to indicate packet should be dropped. For XDP_REDIRECT error path, only
-call xdp_return_frame() if conversion succeeded, otherwise manually free
-the page.
+>   
+> -		if (is_rdonly)
+> -			*addr = (unsigned long)bpf_dynptr_from_skb_rdonly;
+> +		if (is_rdonly) {
+> +			if (func_id == special_kfunc_list[KF_bpf_dynptr_from_skb])
+> +				*addr = (unsigned long)bpf_dynptr_from_skb_rdonly;
+> +			else if (func_id == special_kfunc_list[KF_bpf_dynptr_from_skb_meta])
+> +				*addr = (unsigned long)bpf_dynptr_from_skb_meta_rdonly;
+> +		}
 
-Please correct me if any error path is incorrect.
+[ ... ]
 
-This is similar to the commit cc3628dcd851
-("xen-netfront: handle NULL returned by xdp_convert_buff_to_frame()").
+> +int bpf_dynptr_from_skb_meta_rdonly(struct __sk_buff *skb, u64 flags,
 
-Signed-off-by: Chenyuan Yang <chenyuan0y@gmail.com>
-Fixes: 94c80f748873 ("octeontx2-pf: use xdp_return_frame() to free xdp buffers")
----
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+so I suspect this is never used and not needed now. Please check.
+It can be revisited in the future when other hooks are supported. It will be a 
+useful comment in the commit message.
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-index 99ace381cc78..0c4c050b174a 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-@@ -1534,6 +1534,9 @@ static bool otx2_xdp_rcv_pkt_handler(struct otx2_nic *pfvf,
- 		qidx += pfvf->hw.tx_queues;
- 		cq->pool_ptrs++;
- 		xdpf = xdp_convert_buff_to_frame(&xdp);
-+		if (unlikely(!xdpf))
-+			return false;
-+
- 		return otx2_xdp_sq_append_pkt(pfvf, xdpf,
- 					      cqe->sg.seg_addr,
- 					      cqe->sg.seg_size,
-@@ -1558,7 +1561,10 @@ static bool otx2_xdp_rcv_pkt_handler(struct otx2_nic *pfvf,
- 		otx2_dma_unmap_page(pfvf, iova, pfvf->rbsize,
- 				    DMA_FROM_DEVICE);
- 		xdpf = xdp_convert_buff_to_frame(&xdp);
--		xdp_return_frame(xdpf);
-+		if (likely(xdpf))
-+			xdp_return_frame(xdpf);
-+		else
-+			put_page(page);
- 		break;
- 	default:
- 		bpf_warn_invalid_xdp_action(pfvf->netdev, prog, act);
--- 
-2.34.1
-
+> +				    struct bpf_dynptr *ptr__uninit)
+> +{
+> +	return dynptr_from_skb_meta(skb, flags, ptr__uninit, true);
+> +}
 
