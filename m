@@ -1,123 +1,175 @@
-Return-Path: <bpf+bounces-64150-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64151-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97611B0EC46
-	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 09:47:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FCF4B0EC53
+	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 09:49:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4472D3A5991
-	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 07:46:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A12CB56281B
+	for <lists+bpf@lfdr.de>; Wed, 23 Jul 2025 07:49:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73544278E63;
-	Wed, 23 Jul 2025 07:46:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F2F5277C8A;
+	Wed, 23 Jul 2025 07:49:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Ro1XGU8d"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CF9A27814A
-	for <bpf@vger.kernel.org>; Wed, 23 Jul 2025 07:46:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF2BE21B9C9
+	for <bpf@vger.kernel.org>; Wed, 23 Jul 2025 07:49:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753256805; cv=none; b=ooH4qqzzzTUuPvv8YYnzw03EMZE6NlHb+MSL5mRPuOhww9mqHhhCqhTw8VrkFElO1G0yVNW3Q/GCl8nYFC4YfxIncZbk8ys8AqTdiAued5M/A6H9PdQWa9lqdvNOwRGgGMPmKm9Iz9rTyIKiVmPS5Yp2VyKcZ/n5uhGkxUIvsZ0=
+	t=1753256980; cv=none; b=FpZzs0iadn2ab/c9Rmc1MoghEK+gVM5UN5us0/tFFX0sIVvRmvupIUGAG1878+tx1HVgAhQLpiuvZci9GwZM8fH+XFEwjQ5OHgNQ3sefCN34ZfwB0rQrr3Gtad9vb099DEEQMtZ4/WKNfy9LVWP6vFqrfvaTWZ2WJmzCG7gPrT0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753256805; c=relaxed/simple;
-	bh=I/G/lTidN4hUJDaTAXGz0hBBBM8ioX/BUtkqFsy/Gn4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=HOfmp+eF0m3KNPzrjwZ/w9I6J9W3asTk7mDDHCNp4hdIMq+hhZ7sJux4+QnbK2TyrmrEm4GwEdquCWamTleSH1QvfVO3ls8PZcOP3Tu/gEyRv16G/lJO4AqF24AzH+gH9ZNS3iKTwnrJFI/w2GNz+DfyecGlFwoteUlGJb+tHmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4bn5mv0JbGzYQtxq
-	for <bpf@vger.kernel.org>; Wed, 23 Jul 2025 15:46:39 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id BB0EF1A058E
-	for <bpf@vger.kernel.org>; Wed, 23 Jul 2025 15:46:37 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-	by APP2 (Coremail) with SMTP id Syh0CgAnM7Vck4BoYSS_BA--.22046S2;
-	Wed, 23 Jul 2025 15:46:37 +0800 (CST)
-Message-ID: <0ecabd7b-6bea-49fa-b19c-9474c6e14a87@huaweicloud.com>
-Date: Wed, 23 Jul 2025 15:46:36 +0800
+	s=arc-20240116; t=1753256980; c=relaxed/simple;
+	bh=rWXvTxAAj0Q/j54n3E/HhIZMoCjBxB8SNGipjeTofTU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=huTmlNfBzAUyh4EiTJiTmxOsAeLGoMn8EiTubrq48KC9lxuPNdA20WsPhPsi1EWVr6aE+/tU3DWPJsYDTczkPFLKATgC4j4bcnOnPeZEkL6ogHxACnv+X9rWCfb9AtuOsxDyY7FzngRAQlUrNC54UuOd0jO8SbrMZjP8RNIwX4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Ro1XGU8d; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3a57c8e247cso5948625f8f.1
+        for <bpf@vger.kernel.org>; Wed, 23 Jul 2025 00:49:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1753256977; x=1753861777; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=IBg2eK+LCZM08z5BSCoQ6ngGEgepLgpBsn+hhDdNAow=;
+        b=Ro1XGU8dAjl6/mAou7slsvDbDc9tA9dzHK7yz/AYcLWXJqkefy/ebGhLoDNhdEK/JE
+         LybErpRQuXuuk3d2zxBRS8SuhjtOgxNbyKdvMCxGSaQY2HeOcImZy6ylRzN2EdoF1oD/
+         1KLWQ8WdmpurmT7woqnRXO86/a5arLJPukEoI1gYpbVgw6MQeO9W47ClrLNfhSOLS4gf
+         ip2JyU11qEMeW5m8p476nfEYNNDKjHV89E+aSb8o0ahFU+D4VS5KXqvxmgCg8bDR5OvD
+         nD4A1D3YFYIEP6zcjY0bkALLW4uvqQLtpgbLBhX4U4+AO49fWkPKozIFJQUr1ySwP9nH
+         hIIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753256977; x=1753861777;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IBg2eK+LCZM08z5BSCoQ6ngGEgepLgpBsn+hhDdNAow=;
+        b=l/aB8zsjlBOJdnsPT4PYV9FJ0mVU0tX0bKQhvmnvr1lM0dDWOSpJ+RlmY5hoyg1JZt
+         p6dKt9GA73Ew0PZ+9EejIcMSwbPdrZg30Zss5c9ny8AfxKkOLbIKf2WeFOkQ4nh4lbHR
+         BaGW7/caIAI6TCi4r4wboubhqj71CcE/kxMW7koY4b42O1Zni1rdrqypJF/83tl54dUE
+         W3lva55XgjdQ4d4GAdayynC3Xk86zJ+LRm3PDoxFZOyJcgOuBk4kzdno5dti7KpJKcR8
+         QcCC1VI3xWjBH+I9OlVzPL5LnWhKYWowL131zOjZGlpsqT8h2OsHExDIvx3OYZME1mb2
+         c3ng==
+X-Gm-Message-State: AOJu0YwbZ8gJktxeYRL3Zp6WuJ4nWKpVCCBB0cK6zCgOrgBLzYqyf1Jb
+	iuR3XHAP4mtSvvd+x6LIVQqGBSAkcBiC/GXm19kX3w11PQZN2TEc7WozrsLDpv6/3wE=
+X-Gm-Gg: ASbGncv8i/v4B0eG1nm9qje+MOeKA1ctDycpthMMbIcrJHvO7SWtTiZd7oGxj6VMrzW
+	BiMcy9K+XXfo3WZ5NPMPrSeWEA7vnOwDu84nPQ17Z2x5TeTJStgY43iN59UgbDGPdwhYCkNAkeQ
+	KvqZY17Ex9evCT6IyXKivgmwGi5yK13B5dfp20OVDNTRnq81Kl5xQurhlrJ4Ouzq8PXprZAArh1
+	0hjAnQdCLCTfDS9cs1TNfNI8fyPufZebJOvIh79UQUbSXCyYT77Z4iBv54111KvWf/GBQwFVIov
+	ePqZK6+wlcBk1YZPRI1T3n6HQPIePmAQMtiKEAhnfgF7hTRlg6Co/VzF5m3wQH0mZq0LOWp6Z+x
+	xmRRY7Hy432QugKoDaw==
+X-Google-Smtp-Source: AGHT+IHu6MxDzuz5eVMTnO0s4ZXC+Gj/IilYdVW34mUX0DpyWkVsHHy6FQA2VtdU7rSDjXViW/HyIg==
+X-Received: by 2002:a05:6000:188b:b0:3a5:8934:4940 with SMTP id ffacd0b85a97d-3b768f2d2e0mr1641700f8f.50.1753256976977;
+        Wed, 23 Jul 2025 00:49:36 -0700 (PDT)
+Received: from u94a ([2401:e180:8d50:406f:55c6:314e:d27d:eda5])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31e519f4f0fsm1000543a91.10.2025.07.23.00.49.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jul 2025 00:49:36 -0700 (PDT)
+Date: Wed, 23 Jul 2025 15:49:28 +0800
+From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To: Paul Chaignon <paul.chaignon@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>
+Subject: Re: [PATCH bpf-next 1/4] bpf: Improve bounds when s64 crosses sign
+ boundary
+Message-ID: <gb6pjrnhdtj7fewfjqjiwc4x7n6mm2ndtfd7og5wwuznea2f5m@ndugzujnhr2w>
+References: <cover.1752934170.git.paul.chaignon@gmail.com>
+ <d5be66c893ee61f7ceb9ac576fd92a3ecf7d0fa1.1752934170.git.paul.chaignon@gmail.com>
+ <nlfoz2zdvtrkqlxgkuvltredidcisbkkojxrqdlcnazz2s2yrp@an6hfajlukx5>
+ <aIAMMHJaFG9bWxJC@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 1/1] bpf, arm64: fix fp initialization for
- exception boundary
-Content-Language: en-US
-To: Puranjay Mohan <puranjay@kernel.org>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
- Will Deacon <will@kernel.org>, bpf@vger.kernel.org
-References: <20250722133410.54161-1-puranjay@kernel.org>
- <20250722133410.54161-2-puranjay@kernel.org>
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <20250722133410.54161-2-puranjay@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgAnM7Vck4BoYSS_BA--.22046S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7trWUtr1xAw45JFy7KFyUJrb_yoW8WrW8pa
-	4fC3sakrZFqFyDCa40yw18Xr15Krs8XrW7CF15WrWay3ZIkFy0gryrKa98CrWDArWIkr45
-	ZrWUKr1fC3Z8Ja7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
-	7KsUUUUUU==
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aIAMMHJaFG9bWxJC@mail.gmail.com>
 
-On 7/22/2025 9:34 PM, Puranjay Mohan wrote:
-> In the ARM64 BPF JIT when prog->aux->exception_boundary is set for a BPF
-> program, find_used_callee_regs() is not called because for a program
-> acting as exception boundary, all callee saved registers are saved.
-> find_used_callee_regs() sets `ctx->fp_used = true;` when it sees FP
-> being used in any of the instructions.
-> 
-> For programs acting as exception boundary, ctx->fp_used remains false
-> even if frame pointer is used by the program and therefore, FP is not
-> set-up for such programs in the prologue. This can cause the kernel to
-> crash due to a pagefault.
-> 
-> Fix it by setting ctx->fp_used = true for exception boundary programs as
-> fp is always saved in such programs.
-> 
-> Fixes: 5d4fa9ec5643 ("bpf, arm64: Avoid blindly saving/restoring all callee-saved registers")
-> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> ---
->   arch/arm64/net/bpf_jit_comp.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-> index 89b1b8c248c62..97ab651c0bd5d 100644
-> --- a/arch/arm64/net/bpf_jit_comp.c
-> +++ b/arch/arm64/net/bpf_jit_comp.c
-> @@ -412,6 +412,7 @@ static void push_callee_regs(struct jit_ctx *ctx)
->   		emit(A64_PUSH(A64_R(23), A64_R(24), A64_SP), ctx);
->   		emit(A64_PUSH(A64_R(25), A64_R(26), A64_SP), ctx);
->   		emit(A64_PUSH(A64_R(27), A64_R(28), A64_SP), ctx);
-> +		ctx->fp_used = true;
->   	} else {
->   		find_used_callee_regs(ctx);
->   		for (i = 0; i + 1 < ctx->nr_used_callee_reg; i += 2) {
+On Wed, Jul 23, 2025 at 12:09:52AM +0200, Paul Chaignon wrote:
+> On Tue, Jul 22, 2025 at 03:32:03PM +0800, Shung-Hsi Yu wrote:
+> > On Sat, Jul 19, 2025 at 04:22:05PM +0200, Paul Chaignon wrote:
+> [...]
+> > > +		/* If the s64 range crosses the sign boundary, then it's split
+> > > +		 * between the beginning and end of the U64 domain. In that
+> > > +		 * case, we can derive new bounds if the u64 range overlaps
+> > > +		 * with only one end of the s64 range.
+> > > +		 *
+> > > +		 * In the following example, the u64 range overlaps only with
+> > > +		 * positive portion of the s64 range.
+> > > +		 *
+> > > +		 * 0                                                   U64_MAX
+> > > +		 * |  [xxxxxxxxxxxxxx u64 range xxxxxxxxxxxxxx]              |
+> > > +		 * |----------------------------|----------------------------|
+> > > +		 * |xxxxx s64 range xxxxxxxxx]                       [xxxxxxx|
+> > > +		 * 0                     S64_MAX S64_MIN                    -1
+> > > +		 *
+> > > +		 * We can thus derive the following new s64 and u64 ranges.
+> > > +		 *
+> > > +		 * 0                                                   U64_MAX
+> > > +		 * |  [xxxxxx u64 range xxxxx]                               |
+> > > +		 * |----------------------------|----------------------------|
+> > > +		 * |  [xxxxxx s64 range xxxxx]                               |
+> > > +		 * 0                     S64_MAX S64_MIN                    -1
+> > > +		 *
+> > > +		 * If they overlap in two places, we can't derive anything
+> > > +		 * because reg_state can't represent two ranges per numeric
+> > > +		 * domain.
+> > > +		 *
+> > > +		 * 0                                                   U64_MAX
+> > > +		 * |  [xxxxxxxxxxxxxxxxx u64 range xxxxxxxxxxxxxxxxx]        |
+> > > +		 * |----------------------------|----------------------------|
+> > > +		 * |xxxxx s64 range xxxxxxxxx]                    [xxxxxxxxxx|
+> > > +		 * 0                     S64_MAX S64_MIN                    -1
+> > > +		 *
+> > > +		 * The first condition below corresponds to the diagram above.
+> > > +		 * The second condition considers the case where the u64 range
+> > > +		 * overlaps with the negative porition of the s64 range.
+> > > +		 */
+> > > +		if (reg->umax_value < (u64)reg->smin_value) {
+> > > +			reg->smin_value = (s64)reg->umin_value;
+> > > +			reg->umax_value = min_t(u64, reg->umax_value, reg->smax_value);
+> > 
+> > Acked-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+> > 
+> > Just one question/comment: could the u64 and s64 ranges be disjoint? Say
+> > 
+> >    0                                                   U64_MAX
+> >    |                             [xxx u64 range xxx]         |
+> >    |----------------------------|----------------------------|
+> >    |xxxxx s64 range xxxxxxxxx]                       [xxxxxxx|
+> >    0                     S64_MAX S64_MIN                    -1
+> > 
+> > If such case this code still works as the s64 range gets a bit wider at
+> > the smin end (thus still safe), and u64 range stays unchanged.
+> > 
+> > That said if the u64 and s64 range always overlaps somewhere, it may be
+> > an invariant we want to check in reg_bounds_sanity_check(). I seems to
+> > have some vague memory that with conditionals jumps it may be possible
+> > to produce such disjoint signed & unsigned ranges, but I'm not sure if
+> > that is still true.
 
-Acked-by: Xu Kuohai <xukuohai@huawei.com>
+> My assumption is that the u64 and s64 ranges can't be disjoint or that
+> would mean the register can't have any value. As you noted, even if that
+> were to happen, we would only lose some precision, i.e. the refinement
+> stays sound.
+> 
+> I considered returning an error from __reg64_deduce_bounds if that
+> invariant doesn't hold, but propagating it gets a bit messy. Adding it
+> to reg_bounds_sanity_check would likely be cleaner. Though to be
+> honest, I was hoping to see the impact of the present changes on the
+> syzbot reports before adding even more opportunities for invariant
+> violation reports :)
 
+Make sense, that is the better plan :)
+
+...
 
