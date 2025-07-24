@@ -1,117 +1,111 @@
-Return-Path: <bpf+bounces-64238-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64239-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B9CFB10535
-	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 11:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2917FB1058E
+	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 11:17:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69BBC560FBD
-	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 09:05:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BE2C16BF49
+	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 09:17:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 928E8275106;
-	Thu, 24 Jul 2025 09:05:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1820F25949A;
+	Thu, 24 Jul 2025 09:17:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rziww67h"
+	dkim=pass (1024-bit key) header.d=zohomail.com header.i=safinaskar@zohomail.com header.b="W/4r17Ej"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from sender4-pp-o95.zoho.com (sender4-pp-o95.zoho.com [136.143.188.95])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 109D217996;
-	Thu, 24 Jul 2025 09:05:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753347938; cv=none; b=CIfM0ofON3g7FRQYZrb4fX6SI5pKJ7G3w+k6tbWG3uHHaNUoy/QLzzweaoQ8kNgnHawO9lWFaqTAi8VA0tXNOCeIIRpodUrg+QOYGqH2Zgtue9ONQIAVIjKAsDkLK1ooIe6x4a+fq+mArzRIYkg+x79+t34NgzeIniR24OlVcVQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753347938; c=relaxed/simple;
-	bh=J4vwdNi5yleEZTeJPm7mSZNO4fVrw9u1M3Z4zlbp8jw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IWxh9WCKE6tBf66WMSOmnbtYPNJg0RKWdi/+ox79qi7/ed8qg/wqA4hJkCAXahNrndHuUczsXRpbptM06FGypKcOmmCE/EyrcI5VM0Ro/E8foEr+zcUEdGdhdPz6h1ExcxWQ97sUqSqklcnRL1DFlndl+l0upAJyOAT987LXQ+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rziww67h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA5F3C4CEF5;
-	Thu, 24 Jul 2025 09:05:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753347935;
-	bh=J4vwdNi5yleEZTeJPm7mSZNO4fVrw9u1M3Z4zlbp8jw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rziww67hPlk79s+sXZK6KtR5arnh/MiMAKiYoP9LJNX1BQ7tcVgQS9qEnCZsFgX9U
-	 YRhq9AIFM6ZvnvtzdArV4bwRDOi8BOXB3GYw6p3z28h1I99xM/dokljTTwAly73OZV
-	 SQSo0sfWGPyQcrjFb2vHSXdWWJXZHpyNDQdo1inMjQpYH4Sq88wZkT+soDdMPuLKsN
-	 Fbrau4kueH1GPLNHxCrqb5I8DnCTylBPm2VGbOJRDtBTky97/8AgtJxxBXdyNKBxa+
-	 iT4g5AYVUlUjRq1V1xt3aiuuOw4z0PoNBa3bc6RrCEuYjNgdYQ8A0gE/8aUtabTQsC
-	 lFDJYlndMrqnA==
-Date: Thu, 24 Jul 2025 10:05:28 +0100
-From: Simon Horman <horms@kernel.org>
-To: Gal Pressman <gal@nvidia.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, andrew+netdev@lunn.ch,
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	shuah@kernel.org, netdev@vger.kernel.org, cratiu@nvidia.com,
-	noren@nvidia.com, cjubran@nvidia.com, mbloch@nvidia.com,
-	jdamato@fastly.com, sdf@fomichev.me, ast@kernel.org,
-	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-	nathan@kernel.org, nick.desaulniers+lkml@gmail.com,
-	morbo@google.com, justinstitt@google.com, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
-	Mohsin Bashir <mohsin.bashr@gmail.com>,
-	patchwork-bot+netdevbpf@kernel.org
-Subject: Re: [PATCH net-next V6 0/5] selftests: drv-net: Test XDP native
- support
-Message-ID: <20250724090528.GG1150792@horms.kernel.org>
-References: <20250719083059.3209169-1-mohsin.bashr@gmail.com>
- <175323423849.1016544.9128937268934260157.git-patchwork-notify@kernel.org>
- <48bb190e-073c-4ad8-841b-f6d0572cb0fd@nvidia.com>
- <20250723071253.54a97c65@kernel.org>
- <dc36ad04-c9ae-4e28-bb9e-c2670e5549ab@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F04CF23C4E9;
+	Thu, 24 Jul 2025 09:17:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.95
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1753348667; cv=pass; b=BHTgyPWJ8ahZE4IWa17mmlbE1qI0zFinOalyTsHZSUr1FMSk67eqc/37zWy/Au2BVfmHzx9e3IUqruIkawTP/tNwzFhWGGnkg/2ZGwo9la3c2GINNQwM/iPCJBm3/2mhYYftE2wVh+qZTA1AlHfeTCCAIGRCKLI8vysUS7lHRpg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1753348667; c=relaxed/simple;
+	bh=r4U4AlYanf8+Mm94ORgEbcJcvUtT1nMxCJY2bUMWIp4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=sma4Wf4OQuoWYpOJYKfojBea+Kje9I3J34HQPdhp+bvlbTxMjiEdpoZ4Ap1brUj+Z4Qz3gmz1nehSJ6bBBeqceoH9wfysT++gujNOSi6GIP3oawk8IhAWNv4Y+B7jxEZ2ufVbZFeFqLQ9YgLk2Pmi+6BpNyFkWrWw95MGf5HlPU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=zohomail.com; spf=pass smtp.mailfrom=zohomail.com; dkim=pass (1024-bit key) header.d=zohomail.com header.i=safinaskar@zohomail.com header.b=W/4r17Ej; arc=pass smtp.client-ip=136.143.188.95
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=zohomail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zohomail.com
+ARC-Seal: i=1; a=rsa-sha256; t=1753348578; cv=none; 
+	d=zohomail.com; s=zohoarc; 
+	b=c59k7OVc6GnzDLuO9f0SYKYKk/ERB/FbkKZ2QN6i8vKWQBq3ToRGQefdKm8z7I8BLAw9ExSwDRqcBQr8ZiuqcB/8Wjqjvk8cohPjySstEP1jRnULr4rGgOw3+znjq/SuUybg0BRGD6jyNFRjvKrKWgFKz8E1yvJcXansaapSwKA=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+	t=1753348578; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=r4U4AlYanf8+Mm94ORgEbcJcvUtT1nMxCJY2bUMWIp4=; 
+	b=eQ3bTifzakzOYvsdfM68sZVfZnObTipoKh7PiIcPRUNoIJe+V7E+jBZUMQ1/OjwayIbbsUcoBlO7Xm+oQYjD/6blKNCXh2zc6ytGF3LO5Z04HK/Q2S2xXB3ISduge4W8MDKqFyB1i3K9wVoX6jvGlkhrQTUSV67KzmOi3v0zNS4=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+	dkim=pass  header.i=zohomail.com;
+	spf=pass  smtp.mailfrom=safinaskar@zohomail.com;
+	dmarc=pass header.from=<safinaskar@zohomail.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1753348578;
+	s=zm2022; d=zohomail.com; i=safinaskar@zohomail.com;
+	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Feedback-ID:Message-Id:Reply-To;
+	bh=r4U4AlYanf8+Mm94ORgEbcJcvUtT1nMxCJY2bUMWIp4=;
+	b=W/4r17EjUz7tKHd+Dty3fw+oquEqIMNatmXI2xbx9oovhQ9FcH+JYdYr6SXW3UZr
+	44Hab9SNgc+Vyu5V/UwxKePkzp7AtuEF9Ns2E8cc7MW+54gCsY+ZLw3n05ChAnb9Grs
+	ZJffpQ33guGJ6BEVSZFZ9UsqOeIkAcpJJZaFp2Nc=
+Received: by mx.zohomail.com with SMTPS id 1753348576467207.84736617123485;
+	Thu, 24 Jul 2025 02:16:16 -0700 (PDT)
+From: Askar Safin <safinaskar@zohomail.com>
+To: bhupesh@igalia.com
+Cc: akpm@linux-foundation.org,
+	alexei.starovoitov@gmail.com,
+	andrii.nakryiko@gmail.com,
+	arnaldo.melo@gmail.com,
+	bpf@vger.kernel.org,
+	brauner@kernel.org,
+	bsegall@google.com,
+	david@redhat.com,
+	ebiederm@xmission.com,
+	jack@suse.cz,
+	juri.lelli@redhat.com,
+	kees@kernel.org,
+	keescook@chromium.org,
+	kernel-dev@igalia.com,
+	laoar.shao@gmail.com,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-perf-users@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	lkp@intel.com,
+	mathieu.desnoyers@efficios.com,
+	mgorman@suse.de,
+	mingo@redhat.com,
+	mirq-linux@rere.qmqm.pl,
+	oliver.sang@intel.com,
+	peterz@infradead.org,
+	pmladek@suse.com,
+	rostedt@goodmis.org,
+	torvalds@linux-foundation.org,
+	viro@zeniv.linux.org.uk,
+	vschneid@redhat.com,
+	willy@infradead.org
+Subject: Re: [PATCH v5 3/3] treewide: Switch from tsk->comm to tsk->comm_str which is 64 bytes long
+Date: Thu, 24 Jul 2025 12:16:04 +0300
+Message-ID: <20250724091604.2336532-1-safinaskar@zohomail.com>
+X-Mailer: git-send-email 2.47.2
+In-Reply-To: <20250716123916.511889-4-bhupesh@igalia.com>
+References: <20250716123916.511889-4-bhupesh@igalia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dc36ad04-c9ae-4e28-bb9e-c2670e5549ab@nvidia.com>
+Content-Transfer-Encoding: 8bit
+Feedback-ID: rr080112277386df9982d4a0a50fd484250000d6cf96b2b2dd89700b60bbfae778d9f00cbe3c5cd847bf7583:zu08011227d3545089dbbe7029f132e8e000006a667f2294f193b7a928dd1a40d92bdd2c006e7a20faa6ebe9:rf0801122cad691eaec5235a908425c52200009ab00d1523b423f07b85d4c3bb9302abf9c739cc073320d82c0c0bbc6e4a:ZohoMail
+X-ZohoMailClient: External
 
-On Wed, Jul 23, 2025 at 07:01:19PM +0300, Gal Pressman wrote:
-> On 23/07/2025 17:12, Jakub Kicinski wrote:
-> > On Wed, 23 Jul 2025 10:11:57 +0300 Gal Pressman wrote:
-> >> On 23/07/2025 4:30, patchwork-bot+netdevbpf@kernel.org wrote:
-> >>> Hello:
-> >>>
-> >>> This series was applied to netdev/net-next.git (main)
-> >>> by Jakub Kicinski <kuba@kernel.org>:  
-> >>
-> >> Jakub, the test was still under active discussion, and you knowingly
-> >> merged it with buggy code, ignoring our comments.
-> >>
-> >> This is *extremely disrespectful* towards people that spent time
-> >> reviewing, replying and participating in the netdev mailing list.
-> >>
-> >> I expect better from you, and other netdev maintainers which allow this
-> >> to happen. Please uphold your responsibilities as maintainers towards
-> >> the community, this is unacceptable behavior.
-> > 
-> > Man, I just want tests upstream. How hard is this to understand.
-> > 
-> > These tests even work on mlx5, AFAIU, just not if LRO is enabled.
-> 
-> Incorrect.
-> 
-> > 
-> > Please at least try to think about what's good for this community.
-> > At least try.
-> 
-> Blatantly disrespecting the community is not good, it is unprofessional.
-> Don't try to justify such actions.
+> where TASK_COMM_EXT_LEN is 64-bytes.
 
-All,
+Why 64? As well as I understand, comm is initialized from executable file name by default. And it is usually limited by 256 (or 255?) bytes. So, please, make limit 256 bytes.
 
-I'd like to ask everyone to take a step back and tone things down a couple
-of notches.
-
-Let's work towards improving the tests.
-Rather than pursuing the current line of discussion.
-
-Thanks!
+--
+Askar Safin
 
