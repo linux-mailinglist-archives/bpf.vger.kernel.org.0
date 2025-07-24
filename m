@@ -1,531 +1,93 @@
-Return-Path: <bpf+bounces-64289-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64290-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCDDFB11032
-	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 19:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 83252B1103E
+	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 19:13:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BAE5F3BAE81
-	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 17:07:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D549AA789A
+	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 17:13:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39B1D1E04BD;
-	Thu, 24 Jul 2025 17:07:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFD0B2EAD1C;
+	Thu, 24 Jul 2025 17:13:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K2jMW5dR"
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="FuUzY8ew"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lamorak.hansenpartnership.com (lamorak.hansenpartnership.com [198.37.111.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4A9E285045
-	for <bpf@vger.kernel.org>; Thu, 24 Jul 2025 17:07:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E1EF285045;
+	Thu, 24 Jul 2025 17:13:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.37.111.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753376866; cv=none; b=CJXF+bONqFLzwxHDuCusnJ3fBPm8ojXd8D6QtvcQsP6vAMLeYlVN8sX4f6tCnbUAnM9jk/hmepZnLykDodLBlymLambRsS5oDJc39f3FWFHRvlmOtcxaCTgYFeSPFI9hoZsKgTk07Tqgj8A7n9gQsbZ56zwVJg+pKzME0jxMjhg=
+	t=1753377227; cv=none; b=Mg5nD3ZQM9vknAM2D75E1tBQDQhRmgrfVv4PwNKyYv477BnCb3f0pIK5h4nJ6qj85PpEgcsTG+oKC2gfgZsHOYAnvwFFJprUZ++2Dtc4F6krLj6gbkCTJs08k1j1/YEECj1Lst/1/p0HiUkGdagRWaOlHh2PVX4KYN0s/2lk0Pg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753376866; c=relaxed/simple;
-	bh=nicIRBKxFKw7E80jPZgdjI0acmZZ08HdeRS3gowt0ro=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DK/tqDZhEFck1Yp2jB4Hk7NR8WkSsIT6+8QrjuIwE/bQUtSOmOzGUAGbcFHcUQ6eLYfDOAEv57rC/5ojtNOTZhStYrGzAbT1TUFpklBv66yjQlxbsBcepNyFPv2cRvwpOC6DIHgKfV8no/S201Jg67Psxgph2CGXUjlj3Fpdm+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K2jMW5dR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67140C4CEFA
-	for <bpf@vger.kernel.org>; Thu, 24 Jul 2025 17:07:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753376866;
-	bh=nicIRBKxFKw7E80jPZgdjI0acmZZ08HdeRS3gowt0ro=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=K2jMW5dRfrU714qoQbs0y8sYr/VXmvsJqoS8dan0P1Fz05zjE/RDz2t6V4cxqGZG5
-	 6qBfrXUGss6r4mlYo+NCG+jbCVnga/DXfng0NZjcXJdT9aOILD6qYGxIZs8jT0le71
-	 bi0z4mY6gXc9dyfYTtm7zfYll8mwQ4/fAeXpZhwAgIKi2Y1YFX658b5WtWGLwuTuc7
-	 QaDpB2TSNn0blhVXz1rHfPTuVwNymA39l+sIb82uoOKAelgV1gubjICyrozjX7NLcw
-	 7bMMkiUo1SWiGQbMJUH8oY/WIpiEHHootKuvMAqTggrA6cBJg7jZGwTQqfKH4mVRUA
-	 l5C+exGcyRHQQ==
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-606b58241c9so2037742a12.3
-        for <bpf@vger.kernel.org>; Thu, 24 Jul 2025 10:07:46 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzANY3VD+WI7sMoGx/z43vKu9YqwtnqKHjAVGitug+XL7+7MLMQ
-	sCVXNSmG4XhkxOSXBdS23NBz0h22RrNnjLYymmXpP5BGk/M9KWkN4nZ2PixOBltS3fnk7ydVC66
-	f1RvypviOCipsYWJ4YS1FupkjkL5qytFVbFQSOr/j
-X-Google-Smtp-Source: AGHT+IF2Vue6BO7JwUtnLZ7M+emDEAB3kSq607E1wII3+gtiS4w5AFc8kG4nDlDjw/G8zBpo+hKNGEIjfxc6f1xK7aI=
-X-Received: by 2002:a05:6402:2686:b0:60e:9e2:585f with SMTP id
- 4fb4d7f45d1cf-6149b598185mr7264540a12.27.1753376864569; Thu, 24 Jul 2025
- 10:07:44 -0700 (PDT)
+	s=arc-20240116; t=1753377227; c=relaxed/simple;
+	bh=Qtg5UGyO6Y18hRTnR7bi/ZD4wBTDna4Ut6X5jp4Awfo=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=f/dW6/LcWC9uvxA0KjKkcvagxIJlF4y2dZJh5bTc1udFGYaofX345kGg7vbLlEDluWgMtE7NVmvCwx3cJL/BOocSgsd8uKPmGo0cXYSUuIRrpW64YSvZ6zaN+nqFdvH+2Q1v7i0wf5RJMFuxc4+ozb3i7xnXIggz9xR9BvKyI3E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=FuUzY8ew; arc=none smtp.client-ip=198.37.111.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1753377224;
+	bh=Qtg5UGyO6Y18hRTnR7bi/ZD4wBTDna4Ut6X5jp4Awfo=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=FuUzY8ewaMpw2pPRwA5L8SIAgmDJrdOBM5liQh+280KI6Vi1g6f4g1q2K8XVpzWEY
+	 Dsl/gPAuq/guszQaSuIRAuZdlFYsEWUdVUcF91umL+nzUmSt8gmz06+nZFRErZ5jEz
+	 de35EseslboNO45Dhc8SFv/tSipv/VM4dckRBe8U=
+Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::a774])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by lamorak.hansenpartnership.com (Postfix) with ESMTPSA id 59D711C0102;
+	Thu, 24 Jul 2025 13:13:44 -0400 (EDT)
+Message-ID: <7af6cfa39c2282665c96c3a65653f36e50631e7e.camel@HansenPartnership.com>
+Subject: Re: [PATCH 0/3] bpf: tidy up internals of bpf key handling
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Cc: Roberto Sassu <roberto.sassu@huawei.com>
+Date: Thu, 24 Jul 2025 13:13:43 -0400
+In-Reply-To: <20250724143428.4416-1-James.Bottomley@HansenPartnership.com>
+References: <20250724143428.4416-1-James.Bottomley@HansenPartnership.com>
+Autocrypt: addr=James.Bottomley@HansenPartnership.com;
+ prefer-encrypt=mutual;
+ keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250721211958.1881379-1-kpsingh@kernel.org> <20250721211958.1881379-12-kpsingh@kernel.org>
- <2b417a1a-8f0b-4bca-ad44-aa4195040ef1@kernel.org>
-In-Reply-To: <2b417a1a-8f0b-4bca-ad44-aa4195040ef1@kernel.org>
-From: KP Singh <kpsingh@kernel.org>
-Date: Thu, 24 Jul 2025 19:07:33 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ42L-w_eXyc1k+E7yK4DGC3xjdiwjBAznYJdXWzuq4-jA@mail.gmail.com>
-X-Gm-Features: Ac12FXzzdbZEvdg3_1dY5UFtFYIEwiGEjnguNrZgICq0xTvlhOFU0ovm2Pw5gY4
-Message-ID: <CACYkzJ42L-w_eXyc1k+E7yK4DGC3xjdiwjBAznYJdXWzuq4-jA@mail.gmail.com>
-Subject: Re: [PATCH v2 11/13] bpftool: Add support for signing BPF programs
-To: Quentin Monnet <qmo@kernel.org>
-Cc: bpf@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	bboscaccy@linux.microsoft.com, paul@paul-moore.com, kys@microsoft.com, 
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 22, 2025 at 5:51=E2=80=AFPM Quentin Monnet <qmo@kernel.org> wro=
-te:
->
-> 2025-07-21 23:19 UTC+0200 ~ KP Singh <kpsingh@kernel.org>
-> > Two modes of operation being added:
-> >
-> > Add two modes of operation:
-> >
-> > * For prog load, allow signing a program immediately before loading. Th=
-is
-> >   is essential for command-line testing and administration.
-> >
-> >       bpftool prog load -S -k <private_key> -i <identity_cert> fentry_t=
-est.bpf.o
-> >
-> > * For gen skeleton, embed a pre-generated signature into the C skeleton
-> >   file. This supports the use of signed programs in compiled applicatio=
-ns.
-> >
-> >       bpftool gen skeleton -S -k <private_key> -i <identity_cert> fentr=
-y_test.bpf.o
-> >
-> > Generation of the loader program and its metadata map is implemented in
-> > libbpf (bpf_obj__gen_loader). bpftool generates a skeleton that loads
-> > the program and automates the required steps: freezing the map, creatin=
-g
-> > an exclusive map, loading, and running. Users can use standard libbpf
-> > APIs directly or integrate loader program generation into their own
-> > toolchains.
->
->
-> Thanks KP! Some bpftool-related comments below. Looks good overall, I
-> mostly have minor comments.
->
-> One concern might be the license for the new file, GPL-2.0 in your
-> patch, whereas bpftool is dual-licensed. I hope this is simply an oversig=
-ht?
+On Thu, 2025-07-24 at 10:34 -0400, James Bottomley wrote:
+> This patch series reduces the size of the implementing code and
+> eliminates allocations on the bpf_key_lookup paths.=C2=A0 There is no
+> externally visible change to the BPF API.
 
-An oversight, fixed.
+This last bit turns out to be slightly untrue because I've changed the
+bpf_lookup_system_key API to overload the NULL pointer: the
+builtin_trusted keyring is identified by a key id of 0 which is also a
+NULL pointer.  I could fix this by giving a special return (like -1) to
+the builtin_trusted keyring and swizzling it back in
+bpf_verify_pkcs7_signature(), or I could alter bpf_lookup_system_key to
+return ERR_PTR, which would be an API change.  The former is easier and
+maintains the API compatibilitys, it's just a bit icky.
 
->
->
-> >
-> > Signed-off-by: KP Singh <kpsingh@kernel.org>
-> > ---
-> >  .../bpf/bpftool/Documentation/bpftool-gen.rst |  12 +
-> >  .../bpftool/Documentation/bpftool-prog.rst    |  12 +
-> >  tools/bpf/bpftool/Makefile                    |   6 +-
-> >  tools/bpf/bpftool/cgroup.c                    |   5 +-
-> >  tools/bpf/bpftool/gen.c                       |  58 ++++-
-> >  tools/bpf/bpftool/main.c                      |  21 +-
-> >  tools/bpf/bpftool/main.h                      |  11 +
-> >  tools/bpf/bpftool/prog.c                      |  25 +++
-> >  tools/bpf/bpftool/sign.c                      | 210 ++++++++++++++++++
-> >  9 files changed, 352 insertions(+), 8 deletions(-)
-> >  create mode 100644 tools/bpf/bpftool/sign.c
-> >
-> > diff --git a/tools/bpf/bpftool/Documentation/bpftool-gen.rst b/tools/bp=
-f/bpftool/Documentation/bpftool-gen.rst
-> > index ca860fd97d8d..2997313003b1 100644
-> > --- a/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-> > +++ b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-> > @@ -185,6 +185,18 @@ OPTIONS
-> >      For skeletons, generate a "light" skeleton (also known as "loader"
-> >      skeleton). A light skeleton contains a loader eBPF program. It doe=
-s not use
-> >      the majority of the libbpf infrastructure, and does not need libel=
-f.
->
->
-> Blank line separator, please
+Regards,
 
-done
+James
 
->
->
-> > +-S, --sign
-> > +    For skeletons, generate a signed skeleton. This option must be use=
-d with
-> > +    **-k** and **-i**. Using this flag implicitly enables **--use-load=
-er**.
-> > +    See the "Signed Skeletons" section in the description of the
-> > +    **gen skeleton** command for more details.
-> > +
-> > +-k <private_key.pem>
-> > +    Path to the private key file in PEM format, required for signing.
-> > +
-> > +-i <certificate.x509>
-> > +    Path to the X.509 certificate file in PEM or DER format, required =
-for
-> > +    signing.
->
->
-> Please also update the options list in the SYNOPSIS section at the top
-> of the page; and the option list at the bottom of gen.c (just like for
-> "--use-loader").
-
-done also, isn't this the right formatting for the SYNOPSIS given that
-some of these are optional?
-
-**bpftool** [*OPTIONS*] **prog** *COMMAND*
-*OPTIONS* :=3D { |COMMON_OPTIONS| [ { **-f** | **--bpffs** } ] [ {
-**-m** | **--mapcompat** } ]
-[ { **-n** | **--nomount** } ] [ { **-L** | **--use-loader** } ]
-[ { { **-S** | **--sign** } **-k** <private_key.pem> **-i**
-<certificate.x509> } ] }
-
-not an expert here but I vaguely remember.
-
-Also do you think we need to:
-
-                { "use-loader", no_argument,    NULL,   'L' },
--               { "sign",       required_argument, NULL, 'S'},
-+               { "sign",       no_argument,    NULL,   'S' },
-
-
-Now that we don't use an argument blob for --sign?
-
-
->
-> Can you also please take a look at the bash completion update? It
-> shouldn't be too hard if you look at how it deals with other options, in
-> particular --base-btf that also takes one argument - and I can help if
-> necessary.
-
-I will give it a go.
-
->
->
-> >
-> >  EXAMPLES
-> >  =3D=3D=3D=3D=3D=3D=3D=3D
-> > diff --git a/tools/bpf/bpftool/Documentation/bpftool-prog.rst b/tools/b=
-pf/bpftool/Documentation/bpftool-prog.rst
-> > index f69fd92df8d8..dc2ca196137e 100644
-> > --- a/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-> > +++ b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-> > @@ -248,6 +248,18 @@ OPTIONS
-> >      creating the maps, and loading the programs (see **bpftool prog tr=
-acelog**
-> >      as a way to dump those messages).
-> >
-> > +-S, --sign
-> > +    Enable signing of the BPF program before loading. This option must=
- be
-> > +    used with **-k** and **-i**. Using this flag implicitly enables
-> > +    **--use-loader**.
-> > +
-> > +-k <private_key.pem>
-> > +    Path to the private key file in PEM format, required when signing.
-> > +
-> > +-i <certificate.x509>
-> > +    Path to the X.509 certificate file in PEM or DER format, required =
-when
-> > +    signing.
->
->
-> Same as for skeletons: please update the list of options in the synopsis
-> and at the bottom of prog.c (bash completion for skeletons' options
-> should also cover this case, so no additional work required here).
->
->
-> > +
-> >  EXAMPLES
-> >  =3D=3D=3D=3D=3D=3D=3D=3D
-> >  **# bpftool prog show**
-> > diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-> > index 9e9a5f006cd2..586d1b2595d1 100644
-> > --- a/tools/bpf/bpftool/Makefile
-> > +++ b/tools/bpf/bpftool/Makefile
-> > @@ -130,8 +130,8 @@ include $(FEATURES_DUMP)
-> >  endif
-> >  endif
-> >
-> > -LIBS =3D $(LIBBPF) -lelf -lz
-> > -LIBS_BOOTSTRAP =3D $(LIBBPF_BOOTSTRAP) -lelf -lz
-> > +LIBS =3D $(LIBBPF) -lelf -lz -lcrypto
-> > +LIBS_BOOTSTRAP =3D $(LIBBPF_BOOTSTRAP) -lelf -lz -lcrypto
-> >
-> >  ifeq ($(feature-libelf-zstd),1)
-> >  LIBS +=3D -lzstd
-> > @@ -194,7 +194,7 @@ endif
-> >
-> >  BPFTOOL_BOOTSTRAP :=3D $(BOOTSTRAP_OUTPUT)bpftool
-> >
-> > -BOOTSTRAP_OBJS =3D $(addprefix $(BOOTSTRAP_OUTPUT),main.o common.o jso=
-n_writer.o gen.o btf.o)
-> > +BOOTSTRAP_OBJS =3D $(addprefix $(BOOTSTRAP_OUTPUT),main.o common.o jso=
-n_writer.o gen.o btf.o sign.o)
-> >  $(BOOTSTRAP_OBJS): $(LIBBPF_BOOTSTRAP)
-> >
-> >  OBJS =3D $(patsubst %.c,$(OUTPUT)%.o,$(SRCS)) $(OUTPUT)disasm.o
-> > diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
-> > index 944ebe21a216..90c9aa297806 100644
-> > --- a/tools/bpf/bpftool/cgroup.c
-> > +++ b/tools/bpf/bpftool/cgroup.c
-> > @@ -1,7 +1,10 @@
-> >  // SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> >  // Copyright (C) 2017 Facebook
-> >  // Author: Roman Gushchin <guro@fb.com>
-> > -
->
->
-> Let's keep the blank line
-
-Done
-
->
->
-> > +#undef GCC_VERSION
-> > +#ifndef _GNU_SOURCE
-> > +#define _GNU_SOURCE
-> > +#endif
->
->
-> What are these for?
-
-kpsingh@kpsingh-genoa:~/projects/linux/tools/bpf/bpftool$ vmk
-
-Auto-detecting system features:
-...                         clang-bpf-co-re: [ on  ]
-...                                    llvm: [ on  ]
-...                                  libcap: [ on  ]
-...                                  libbfd: [ OFF ]
-
-In file included from cgroup.c:19:
-In file included from ./main.h:16:
-/home/kpsingh/projects/linux/tools/bpf/bpftool/libbpf/include/bpf/skel_inte=
-rnal.h:87:9:
-error: call to undeclared function 'syscall'; ISO C99 and later do not
-support implicit function declarations
-[-Wimplicit-function-declaration]
-   87 |         return syscall(__NR_bpf, cmd, attr, size);
-      |                ^
-1 error generated.
-
->
->
-> >  #define _XOPEN_SOURCE 500
-> >  #include <errno.h>
-> >  #include <fcntl.h>
->
-> [...]
->
-> > diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-> > index 2b7f2bd3a7db..fc25bb390ec7 100644
-> > --- a/tools/bpf/bpftool/main.c
-> > +++ b/tools/bpf/bpftool/main.c
-> > @@ -33,6 +33,9 @@ bool relaxed_maps;
-> >  bool use_loader;
-> >  struct btf *base_btf;
-> >  struct hashmap *refs_table;
-> > +bool sign_progs;
-> > +const char *private_key_path;
-> > +const char *cert_path;
-> >
-> >  static void __noreturn clean_and_exit(int i)
-> >  {
-> > @@ -447,6 +450,7 @@ int main(int argc, char **argv)
-> >               { "nomount",    no_argument,    NULL,   'n' },
-> >               { "debug",      no_argument,    NULL,   'd' },
-> >               { "use-loader", no_argument,    NULL,   'L' },
-> > +             { "sign",       required_argument, NULL, 'S'},
-> >               { "base-btf",   required_argument, NULL, 'B' },
-> >               { 0 }
-> >       };
-> > @@ -473,7 +477,7 @@ int main(int argc, char **argv)
-> >       bin_name =3D "bpftool";
-> >
-> >       opterr =3D 0;
-> > -     while ((opt =3D getopt_long(argc, argv, "VhpjfLmndB:l",
-> > +     while ((opt =3D getopt_long(argc, argv, "VhpjfLmndSi:k:B:l",
-> >                                 options, NULL)) >=3D 0) {
-> >               switch (opt) {
-> >               case 'V':
-> > @@ -519,6 +523,16 @@ int main(int argc, char **argv)
-> >               case 'L':
-> >                       use_loader =3D true;
-> >                       break;
-> > +             case 'S':
-> > +                     sign_progs =3D true;
-> > +                     use_loader =3D true;
-> > +                     break;
-> > +             case 'k':
-> > +                     private_key_path =3D optarg;
-> > +                     break;
-> > +             case 'i':
-> > +                     cert_path =3D optarg;
-> > +                     break;
-> >               default:
-> >                       p_err("unrecognized option '%s'", argv[optind - 1=
-]);
-> >                       if (json_output)
-> > @@ -533,6 +547,11 @@ int main(int argc, char **argv)
-> >       if (argc < 0)
-> >               usage();
-> >
-> > +     if (sign_progs && (private_key_path =3D=3D NULL || cert_path =3D=
-=3D NULL)) {
-> > +             p_err("-i <identity_x509_cert> and -k <private> key must =
-be supplied with -S for signing");
-> > +             return -EINVAL;
-> > +     }
->
->
-> What if -i and/or -k are passed without -S?
-
-We can either print a warning or error out
-
-A) User does not want to sign removes --sign and forgets to remove -i
--k (better with warning)
-B) User wants to sign but forgets to --sign (better with error)
-
-I'd say we print an error so that we don't accidentally not sign, WDYT?
-
-The reason why I think we should keep an explicit --sign is because we
-can also extend this to have e.g. --verify.
-
-- KP
-
->
->
-> > +
-> >       if (version_requested)
-> >               ret =3D do_version(argc, argv);
-> >       else
-> > diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-> > index 6db704fda5c0..f921af3cda87 100644
-> > --- a/tools/bpf/bpftool/main.h
-> > +++ b/tools/bpf/bpftool/main.h
-> > @@ -6,9 +6,14 @@
-> >
-> >  /* BFD and kernel.h both define GCC_VERSION, differently */
-> >  #undef GCC_VERSION
-> > +#ifndef _GNU_SOURCE
-> > +#define _GNU_SOURCE
-> > +#endif
-> >  #include <stdbool.h>
-> >  #include <stdio.h>
-> > +#include <errno.h>
-> >  #include <stdlib.h>
-> > +#include <bpf/skel_internal.h>
->
->
-> Wnat do you need these includes (and _GNU_SOURCE) in main.h for?
-
-Explained above, let me know if you have better ideas on where to place the=
-se.
-
->
->
-> >  #include <linux/bpf.h>
-> >  #include <linux/compiler.h>
-> >  #include <linux/kernel.h>
->
-> [...]
->
-> > diff --git a/tools/bpf/bpftool/sign.c b/tools/bpf/bpftool/sign.c
-> > new file mode 100644
-> > index 000000000000..f0b5dd10a46b
-> > --- /dev/null
-> > +++ b/tools/bpf/bpftool/sign.c
-> > @@ -0,0 +1,210 @@
-> > +// SPDX-License-Identifier: GPL-2.0
->
->
-> Please consider making this file dual-licensed like the rest of
-> bpftool's source code, "(GPL-2.0-only OR BSD-2-Clause)".
-
-Done.
-
->
->
-> > +
-> > +/*
-> > + * Copyright (C) 2022 Google LLC.
->
->
-> 2025?
-
-Let's keep it 2022, nah just kidding :) Thanks.
-
->
->
-> > + */
-> > +#define _GNU_SOURCE
->
->
-> Please guard this:
->
->         #ifndef _GNU_SOURCE
->         #define _GNU_SOURCE
->         #endif
->
-> This is because "llvm-config --cflags" passes -D_GNU_SOURCE and we may
-> end up with a duplicate definition, otherwise.
-
-ack, done.
-
->
->
-> > +#include <stdio.h>
-> > +#include <stdlib.h>
-> > +#include <stdint.h>
-> > +#include <stdbool.h>
-> > +#include <string.h>
-> > +#include <string.h>
-> > +#include <getopt.h>
-> > +#include <err.h>
-> > +#include <openssl/opensslv.h>
-> > +#include <openssl/bio.h>
-> > +#include <openssl/evp.h>
-> > +#include <openssl/pem.h>
-> > +#include <openssl/err.h>
-> > +#include <openssl/cms.h>
-> > +#include <linux/keyctl.h>
-> > +#include <errno.h>
-> > +
-> > +#include <bpf/skel_internal.h>
-> > +
-> > +#include "main.h"
-> > +
-> > +#define OPEN_SSL_ERR_BUF_LEN 256
-> > +
-> > +static void display_openssl_errors(int l)
-> > +{
-> > +     char buf[OPEN_SSL_ERR_BUF_LEN];
-> > +     const char *file;
-> > +     const char *data;
-> > +     unsigned long e;
-> > +     int flags;
-> > +     int line;
-> > +
-> > +     while ((e =3D ERR_get_error_all(&file, &line, NULL, &data, &flags=
-))) {
-> > +             ERR_error_string_n(e, buf, sizeof(buf));
-> > +             if (data && (flags & ERR_TXT_STRING)) {
-> > +                     p_err("OpenSSL %s: %s:%d: %s\n", buf, file, line,=
- data);
->
->
-> Please remove the trailing '\n', p_err() handles it already.
->
->
-> > +             } else {
-> > +                     p_err("OpenSSL %s: %s:%d\n", buf, file, line);
->
->
-> Same here.
-
-done.
-
-- KP
-
->
-> [...]
 
