@@ -1,111 +1,105 @@
-Return-Path: <bpf+bounces-64239-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64240-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2917FB1058E
-	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 11:17:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC850B10643
+	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 11:32:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BE2C16BF49
-	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 09:17:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3BA45A3D2E
+	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 09:31:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1820F25949A;
-	Thu, 24 Jul 2025 09:17:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0E9A28983F;
+	Thu, 24 Jul 2025 09:27:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=zohomail.com header.i=safinaskar@zohomail.com header.b="W/4r17Ej"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="B18hBf2u"
 X-Original-To: bpf@vger.kernel.org
-Received: from sender4-pp-o95.zoho.com (sender4-pp-o95.zoho.com [136.143.188.95])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f74.google.com (mail-ej1-f74.google.com [209.85.218.74])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F04CF23C4E9;
-	Thu, 24 Jul 2025 09:17:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.95
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753348667; cv=pass; b=BHTgyPWJ8ahZE4IWa17mmlbE1qI0zFinOalyTsHZSUr1FMSk67eqc/37zWy/Au2BVfmHzx9e3IUqruIkawTP/tNwzFhWGGnkg/2ZGwo9la3c2GINNQwM/iPCJBm3/2mhYYftE2wVh+qZTA1AlHfeTCCAIGRCKLI8vysUS7lHRpg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753348667; c=relaxed/simple;
-	bh=r4U4AlYanf8+Mm94ORgEbcJcvUtT1nMxCJY2bUMWIp4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sma4Wf4OQuoWYpOJYKfojBea+Kje9I3J34HQPdhp+bvlbTxMjiEdpoZ4Ap1brUj+Z4Qz3gmz1nehSJ6bBBeqceoH9wfysT++gujNOSi6GIP3oawk8IhAWNv4Y+B7jxEZ2ufVbZFeFqLQ9YgLk2Pmi+6BpNyFkWrWw95MGf5HlPU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=zohomail.com; spf=pass smtp.mailfrom=zohomail.com; dkim=pass (1024-bit key) header.d=zohomail.com header.i=safinaskar@zohomail.com header.b=W/4r17Ej; arc=pass smtp.client-ip=136.143.188.95
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=zohomail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zohomail.com
-ARC-Seal: i=1; a=rsa-sha256; t=1753348578; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=c59k7OVc6GnzDLuO9f0SYKYKk/ERB/FbkKZ2QN6i8vKWQBq3ToRGQefdKm8z7I8BLAw9ExSwDRqcBQr8ZiuqcB/8Wjqjvk8cohPjySstEP1jRnULr4rGgOw3+znjq/SuUybg0BRGD6jyNFRjvKrKWgFKz8E1yvJcXansaapSwKA=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1753348578; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=r4U4AlYanf8+Mm94ORgEbcJcvUtT1nMxCJY2bUMWIp4=; 
-	b=eQ3bTifzakzOYvsdfM68sZVfZnObTipoKh7PiIcPRUNoIJe+V7E+jBZUMQ1/OjwayIbbsUcoBlO7Xm+oQYjD/6blKNCXh2zc6ytGF3LO5Z04HK/Q2S2xXB3ISduge4W8MDKqFyB1i3K9wVoX6jvGlkhrQTUSV67KzmOi3v0zNS4=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=zohomail.com;
-	spf=pass  smtp.mailfrom=safinaskar@zohomail.com;
-	dmarc=pass header.from=<safinaskar@zohomail.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1753348578;
-	s=zm2022; d=zohomail.com; i=safinaskar@zohomail.com;
-	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Feedback-ID:Message-Id:Reply-To;
-	bh=r4U4AlYanf8+Mm94ORgEbcJcvUtT1nMxCJY2bUMWIp4=;
-	b=W/4r17EjUz7tKHd+Dty3fw+oquEqIMNatmXI2xbx9oovhQ9FcH+JYdYr6SXW3UZr
-	44Hab9SNgc+Vyu5V/UwxKePkzp7AtuEF9Ns2E8cc7MW+54gCsY+ZLw3n05ChAnb9Grs
-	ZJffpQ33guGJ6BEVSZFZ9UsqOeIkAcpJJZaFp2Nc=
-Received: by mx.zohomail.com with SMTPS id 1753348576467207.84736617123485;
-	Thu, 24 Jul 2025 02:16:16 -0700 (PDT)
-From: Askar Safin <safinaskar@zohomail.com>
-To: bhupesh@igalia.com
-Cc: akpm@linux-foundation.org,
-	alexei.starovoitov@gmail.com,
-	andrii.nakryiko@gmail.com,
-	arnaldo.melo@gmail.com,
-	bpf@vger.kernel.org,
-	brauner@kernel.org,
-	bsegall@google.com,
-	david@redhat.com,
-	ebiederm@xmission.com,
-	jack@suse.cz,
-	juri.lelli@redhat.com,
-	kees@kernel.org,
-	keescook@chromium.org,
-	kernel-dev@igalia.com,
-	laoar.shao@gmail.com,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-perf-users@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	lkp@intel.com,
-	mathieu.desnoyers@efficios.com,
-	mgorman@suse.de,
-	mingo@redhat.com,
-	mirq-linux@rere.qmqm.pl,
-	oliver.sang@intel.com,
-	peterz@infradead.org,
-	pmladek@suse.com,
-	rostedt@goodmis.org,
-	torvalds@linux-foundation.org,
-	viro@zeniv.linux.org.uk,
-	vschneid@redhat.com,
-	willy@infradead.org
-Subject: Re: [PATCH v5 3/3] treewide: Switch from tsk->comm to tsk->comm_str which is 64 bytes long
-Date: Thu, 24 Jul 2025 12:16:04 +0300
-Message-ID: <20250724091604.2336532-1-safinaskar@zohomail.com>
-X-Mailer: git-send-email 2.47.2
-In-Reply-To: <20250716123916.511889-4-bhupesh@igalia.com>
-References: <20250716123916.511889-4-bhupesh@igalia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8731728936F
+	for <bpf@vger.kernel.org>; Thu, 24 Jul 2025 09:27:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.74
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1753349231; cv=none; b=GzCyQKdtdOKbRjUpCGAzpMbCsnhO32rGQCeCtJCZqsVrP0TfU9PZHp7JRMTbSdwvv7LoDoqSPfpm3UdzbFBRu9UjXnTj0W0d9d7jEKKNlQ5I74ig/eRcWDoYlWEjKfJv4cey6qgVL2ZK3r4qEYCT1tHeDCnZgcUsIYPivmEgrs0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1753349231; c=relaxed/simple;
+	bh=oC2hiLR6kxwc1TU6xVigW4Srs1fTtT0IXKZJDJ8B1iU=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=FBHtWLsw50LQtsEk0ks1mr8UQgm1ztnLGkpLvidirgAmhmWiXaOi3YcOiA28RxZrFXRPQjmeAivkjf9FC6mo43S4BPeOWQvlNJRbWSCwW9fZmbSirB8Wq0hvKQqjJJEaA3p697EI8vwI1ButhaAsBWcc/bZFEExBhYnFlw1WSGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=B18hBf2u; arc=none smtp.client-ip=209.85.218.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
+Received: by mail-ej1-f74.google.com with SMTP id a640c23a62f3a-ae70ebad856so52057166b.2
+        for <bpf@vger.kernel.org>; Thu, 24 Jul 2025 02:27:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1753349228; x=1753954028; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=EWsmFNqMTJifoq1H166MjVpnMG97Pu9rGEwqko2e+Qs=;
+        b=B18hBf2ut+3HV5Vef0fuytkGPqHm+IIlkTtovyVhcs6KcrUB/sracrq+Za+C/iolWr
+         3RvN2c9dtTIc1kIVu7TNtOocRhgZydIcrRoU3++C/thKsdQyVMrnVrqjY8JYkAeHwzh2
+         aroEb7HQ97+hOcUwu0W3oFQtLlSjRSGjwQ9pPhPfobIbbVIg0/fwDpRqLHsCCTBP6WCN
+         8jKUrm/CqHzc9zk8dzJti+0dub3441tr5jSAuXfr4dh1y0dPCPhh9rq2S5sjeihob4vn
+         rTWEEbzx4bi64JvVo5uOFnTd5KpTtx8LhfEQ1q2SqA+yjBSB3qKDPSQEOU5RjsLjTO0/
+         3HRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753349228; x=1753954028;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EWsmFNqMTJifoq1H166MjVpnMG97Pu9rGEwqko2e+Qs=;
+        b=povAzigp8uJ2/SlJC3yyuncXVEfADBqjaXtmUVrFo45t3i1xacuK1ZSrMEmb0WgfUy
+         cjDwhWSpMJ7dGRVb8qoHxbqXbLUQcUL9ZzCzBWG76BHPlj56BSNFZljKfsSABqNrDD2f
+         398RFqe+JT3ClBRM0mk4JU4kMn9q3sqDJR+8yl0Dz4+xvAfvPGKMlb6BzIvcyDfSIEGH
+         wTcJ9pHMs7m5bMAB3n1xtbJq6FmF/PX+BmUGATisFvMYdc3QYyuIAa70bvRT9sPSGTDS
+         eSOT2qAt/jU21EcAljVPzmqYd8yrkBRlBBk7gJ7KCCpjSj7wGWDVrCaR0JI9m8ehzjoQ
+         H9cg==
+X-Forwarded-Encrypted: i=1; AJvYcCXaWVxI5YbvUXes+Yo0evepmOxak2FyfiGQ2Pjna2gzUvN7AqE9AUfTBYTlaO4rcMYKujY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzc8LBjv1o6HJaGPWnFwvdBtxkuZwuQ90LxvL25jCE1Ci1iho9I
+	ZI6XyoUM6fHE1gztvQsNoSWHs3bKnRm3q/Nc0Iwnb88Qq04ytz5qMGNE6ElgT9ulVgPERSL+uIl
+	9OyeithuvJM5rRu7HnQ==
+X-Google-Smtp-Source: AGHT+IGtDDoKDFdpf55RlRT16x/MrXLiY+iPYPhinM0WVwWZbH0DR7wxKq7NKGyO2VWyDlAiEA0xZK8qvSrqdQk=
+X-Received: from ejcvw7.prod.google.com ([2002:a17:907:a707:b0:adf:bef7:bcbf])
+ (user=aliceryhl job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a17:906:9fc6:b0:ae3:4f99:a5aa with SMTP id a640c23a62f3a-af2f64bcdf5mr605481366b.4.1753349227748;
+ Thu, 24 Jul 2025 02:27:07 -0700 (PDT)
+Date: Thu, 24 Jul 2025 09:27:06 +0000
+In-Reply-To: <20250715135827.2230267-1-vitaly.wool@konsulko.se>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Feedback-ID: rr080112277386df9982d4a0a50fd484250000d6cf96b2b2dd89700b60bbfae778d9f00cbe3c5cd847bf7583:zu08011227d3545089dbbe7029f132e8e000006a667f2294f193b7a928dd1a40d92bdd2c006e7a20faa6ebe9:rf0801122cad691eaec5235a908425c52200009ab00d1523b423f07b85d4c3bb9302abf9c739cc073320d82c0c0bbc6e4a:ZohoMail
-X-ZohoMailClient: External
+Mime-Version: 1.0
+References: <20250715135645.2230065-1-vitaly.wool@konsulko.se> <20250715135827.2230267-1-vitaly.wool@konsulko.se>
+Message-ID: <aIH8as4gSAJ1dTl2@google.com>
+Subject: Re: [PATCH v13 3/4] rust: add support for NUMA ids in allocations
+From: Alice Ryhl <aliceryhl@google.com>
+To: Vitaly Wool <vitaly.wool@konsulko.se>
+Cc: linux-mm@kvack.org, akpm@linux-foundation.org, 
+	linux-kernel@vger.kernel.org, Uladzislau Rezki <urezki@gmail.com>, 
+	Danilo Krummrich <dakr@kernel.org>, Vlastimil Babka <vbabka@suse.cz>, rust-for-linux@vger.kernel.org, 
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, "Liam R . Howlett" <Liam.Howlett@oracle.com>, 
+	Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org, 
+	bpf@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>, 
+	Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>
+Content-Type: text/plain; charset="utf-8"
 
-> where TASK_COMM_EXT_LEN is 64-bytes.
+On Tue, Jul 15, 2025 at 03:58:27PM +0200, Vitaly Wool wrote:
+> Add a new type to support specifying NUMA identifiers in Rust
+> allocators and extend the allocators to have NUMA id as a
+> parameter. Thus, modify ReallocFunc to use the new extended realloc
+> primitives from the C side of the kernel (i. e.
+> k[v]realloc_node_align/vrealloc_node_align) and add the new function
+> alloc_node to the Allocator trait while keeping the existing one
+> (alloc) for backward compatibility.
+> 
+> This will allow to specify node to use for allocation of e. g.
+> {KV}Box, as well as for future NUMA aware users of the API.
+> 
+> Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.se>
+> Acked-by: Danilo Krummrich <dakr@kernel.org>
 
-Why 64? As well as I understand, comm is initialized from executable file name by default. And it is usually limited by 256 (or 255?) bytes. So, please, make limit 256 bytes.
-
---
-Askar Safin
+Acked-by: Alice Ryhl <aliceryhl@google.com>
 
