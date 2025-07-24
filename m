@@ -1,93 +1,171 @@
-Return-Path: <bpf+bounces-64290-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64291-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83252B1103E
-	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 19:13:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E3F5B1104B
+	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 19:22:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D549AA789A
-	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 17:13:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D47D83B6CA2
+	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 17:22:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFD0B2EAD1C;
-	Thu, 24 Jul 2025 17:13:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44A5D2EB5A7;
+	Thu, 24 Jul 2025 17:22:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="FuUzY8ew"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YLveus91"
 X-Original-To: bpf@vger.kernel.org
-Received: from lamorak.hansenpartnership.com (lamorak.hansenpartnership.com [198.37.111.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E1EF285045;
-	Thu, 24 Jul 2025 17:13:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.37.111.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF5D02D97AB
+	for <bpf@vger.kernel.org>; Thu, 24 Jul 2025 17:22:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753377227; cv=none; b=Mg5nD3ZQM9vknAM2D75E1tBQDQhRmgrfVv4PwNKyYv477BnCb3f0pIK5h4nJ6qj85PpEgcsTG+oKC2gfgZsHOYAnvwFFJprUZ++2Dtc4F6krLj6gbkCTJs08k1j1/YEECj1Lst/1/p0HiUkGdagRWaOlHh2PVX4KYN0s/2lk0Pg=
+	t=1753377768; cv=none; b=PyYL3LNJajW3AXbn6iI7bCnLwBRWViyRA+s507bYqgfywGXXQzSTvHi+9w3l64J7C2mOy0lHna3PqMG20srn2MfipA6zGLe+Yi2jqPkCoTnvnsT9o5voHfB4b4Ml18S/uFiH60I9XfR2RB5MbiTfTtbCPqVIfZ9bbipQvSlsuHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753377227; c=relaxed/simple;
-	bh=Qtg5UGyO6Y18hRTnR7bi/ZD4wBTDna4Ut6X5jp4Awfo=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=f/dW6/LcWC9uvxA0KjKkcvagxIJlF4y2dZJh5bTc1udFGYaofX345kGg7vbLlEDluWgMtE7NVmvCwx3cJL/BOocSgsd8uKPmGo0cXYSUuIRrpW64YSvZ6zaN+nqFdvH+2Q1v7i0wf5RJMFuxc4+ozb3i7xnXIggz9xR9BvKyI3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=FuUzY8ew; arc=none smtp.client-ip=198.37.111.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1753377224;
-	bh=Qtg5UGyO6Y18hRTnR7bi/ZD4wBTDna4Ut6X5jp4Awfo=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=FuUzY8ewaMpw2pPRwA5L8SIAgmDJrdOBM5liQh+280KI6Vi1g6f4g1q2K8XVpzWEY
-	 Dsl/gPAuq/guszQaSuIRAuZdlFYsEWUdVUcF91umL+nzUmSt8gmz06+nZFRErZ5jEz
-	 de35EseslboNO45Dhc8SFv/tSipv/VM4dckRBe8U=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::a774])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by lamorak.hansenpartnership.com (Postfix) with ESMTPSA id 59D711C0102;
-	Thu, 24 Jul 2025 13:13:44 -0400 (EDT)
-Message-ID: <7af6cfa39c2282665c96c3a65653f36e50631e7e.camel@HansenPartnership.com>
-Subject: Re: [PATCH 0/3] bpf: tidy up internals of bpf key handling
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Cc: Roberto Sassu <roberto.sassu@huawei.com>
-Date: Thu, 24 Jul 2025 13:13:43 -0400
-In-Reply-To: <20250724143428.4416-1-James.Bottomley@HansenPartnership.com>
-References: <20250724143428.4416-1-James.Bottomley@HansenPartnership.com>
-Autocrypt: addr=James.Bottomley@HansenPartnership.com;
- prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1753377768; c=relaxed/simple;
+	bh=iHv6FcFr9ubdNqnfE/PzII/jmlXlOCHMeiqQyuRtKBc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VqElENRK0Xrndal48eRXxLNBvL6nXiUdeWIUHlKm1RtxMq1mWuUrD2AJqVmFlVkb+QtMFTn7uW34Ox3H+E5YCRNt0Qe+UqnlJK7457lgfenWaT05xkBNsiUmuycP4OY1iJfkB/zA+Sy6Y34M1l0MoFYEoseP3gaxPBKdkUB5tKs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YLveus91; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 405B2C4AF09
+	for <bpf@vger.kernel.org>; Thu, 24 Jul 2025 17:22:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753377768;
+	bh=iHv6FcFr9ubdNqnfE/PzII/jmlXlOCHMeiqQyuRtKBc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=YLveus919Jiz+6wpVXvrW/RMXmwrvYH9cnclPMpOeu6WkidDgCEhj/NRfI59kNlQL
+	 ePiufOE9Mv7XD7n5GhALyT9EqdGT4AzGQ7NRZVgSF2Gy551u+FOVkV2qfVMb+qtBsp
+	 39C2gEI5j91juKHL7OjN9gfkab+2ezjkZHOjJBd/kafDjAEy/DLn8XZB0UyMCLzPPv
+	 EoK+w6rhUSxq5Mllx8NcjwOgyTAF6eqgBQmAZNEjZUT8Wm2x8A1O2or1w6T/fMMS7t
+	 SyKCPqPg2k10u1/twpnuTp+ZjXYUoCzodMrAY1rElE/X+FbY2J17k9QmmVZfzQ9Lzx
+	 pSw41LcPCrEnA==
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-60700a745e5so2736448a12.3
+        for <bpf@vger.kernel.org>; Thu, 24 Jul 2025 10:22:48 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yw84mIDLwjaKj8GPsTXpXZBYU7V9fDI3+nJd11dUndJmu7CU41M
+	ZflPFuWJoYBaLHTsZbD5JUJy8K4KtY4zLyCGEhZPdS2h6j2KEFnS/ATk8dmQUT2fNkrC+6071z3
+	ePBkmy18s78IysJyc15IxJ47cgTaqr/uLFPTENysE
+X-Google-Smtp-Source: AGHT+IGRIfTM4kAibJSn6oNcZo9iTyHDOU/dXANlzSYv1+sBg7kSkBPEZA+rCTf9i2uBWVPcYtECBYeUY6b3Ob93eiU=
+X-Received: by 2002:a05:6402:2353:b0:607:f513:4808 with SMTP id
+ 4fb4d7f45d1cf-6149b409f40mr6227925a12.1.1753377766652; Thu, 24 Jul 2025
+ 10:22:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20250721211958.1881379-1-kpsingh@kernel.org> <20250721211958.1881379-9-kpsingh@kernel.org>
+ <c6ed224b9fb5db2cfac2620c75a49fa22cbaf617.camel@HansenPartnership.com>
+In-Reply-To: <c6ed224b9fb5db2cfac2620c75a49fa22cbaf617.camel@HansenPartnership.com>
+From: KP Singh <kpsingh@kernel.org>
+Date: Thu, 24 Jul 2025 19:22:35 +0200
+X-Gmail-Original-Message-ID: <CACYkzJ79h9G1gdxtS=H8oNoCTxCqsG0d+Ox5xfXx225_OtLfHQ@mail.gmail.com>
+X-Gm-Features: Ac12FXzPweP5i9EJaJM1of7IwHtvD9t_8b1buJnKLosF6lAT6MI2RoPdH3O8jeM
+Message-ID: <CACYkzJ79h9G1gdxtS=H8oNoCTxCqsG0d+Ox5xfXx225_OtLfHQ@mail.gmail.com>
+Subject: Re: [PATCH v2 08/13] bpf: Implement signature verification for BPF programs
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc: bpf@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	bboscaccy@linux.microsoft.com, paul@paul-moore.com, kys@microsoft.com, 
+	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2025-07-24 at 10:34 -0400, James Bottomley wrote:
-> This patch series reduces the size of the implementing code and
-> eliminates allocations on the bpf_key_lookup paths.=C2=A0 There is no
-> externally visible change to the BPF API.
+On Wed, Jul 23, 2025 at 7:11=E2=80=AFPM James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
+>
+> On Mon, 2025-07-21 at 23:19 +0200, KP Singh wrote:
+> [...]
+>
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index fd3b895ebebf..b42c3740e053 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -1607,6 +1607,16 @@ union bpf_attr {
+> >                * continuous.
+> >                */
+> >               __u32           fd_array_cnt;
+> > +             /* Pointer to a buffer containing the signature of
+> > the BPF
+> > +              * program.
+> > +              */
+> > +             __aligned_u64   signature;
+> > +             /* Size of the signature buffer in bytes. */
+> > +             __u32           signature_size;
+> > +             /* ID of the kernel keyring to be used for signature
+> > +              * verification.
+> > +              */
+> > +             __u32           keyring_id;
+>
+> This should become __s32 to match the value passed in to
+> bpf_lookup_user_key().
+>
+> [...]
+> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > index 22fda92ab7ce..111f91a99166 100644
+> > --- a/kernel/bpf/syscall.c
+> > +++ b/kernel/bpf/syscall.c
+> > @@ -2779,8 +2779,41 @@ static bool is_perfmon_prog_type(enum
+> > bpf_prog_type prog_type)
+> >       }
+> >  }
+> >
+> > +static noinline int bpf_prog_verify_signature(struct bpf_prog *prog,
+> > +                                           union bpf_attr *attr,
+> > +                                           bool is_kernel)
+> > +{
+> > +     bpfptr_t usig =3D make_bpfptr(attr->signature, is_kernel);
+> > +     struct bpf_dynptr_kern sig_ptr, insns_ptr;
+> > +     struct bpf_key *key =3D NULL;
+> > +     void *sig;
+> > +     int err =3D 0;
+> > +
+> > +     key =3D bpf_lookup_user_key(attr->keyring_id, 0);
+> > +     if (!key)
+> > +             return -ENOKEY;
+>
+> This still only checks against user keyrings and not system trusted
+> keyrings as was pointed out in v1.  Since user keyrings are negative
+> and user key serials begin at 3 or more, there's no overlap with the
+> system keyring specifiers and you can just overload attr->keyring_id,
+> like the below.
+>
+> Regards,
+>
+> James
+>
+> ---
+>
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 111f91a99166..10fd3ea5d91f 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/sched/signal.h>
+>  #include <linux/vmalloc.h>
+> +#include <linux/verification.h>
+>  #include <linux/mmzone.h>
+>  #include <linux/anon_inodes.h>
+>  #include <linux/fdtable.h>
+> @@ -2789,7 +2790,10 @@ static noinline int bpf_prog_verify_signature(stru=
+ct bpf_prog *prog,
+>         void *sig;
+>         int err =3D 0;
+>
+> -       key =3D bpf_lookup_user_key(attr->keyring_id, 0);
+> +       if (system_keyring_id_check(attr->keyring_id) =3D=3D 0)
+> +               key =3D bpf_lookup_system_key(attr->keyring_id);
+> +       else
+> +               key =3D bpf_lookup_user_key(attr->keyring_id, 0);
+>         if (!key)
+>                 return -ENOKEY;
+>
 
-This last bit turns out to be slightly untrue because I've changed the
-bpf_lookup_system_key API to overload the NULL pointer: the
-builtin_trusted keyring is identified by a key id of 0 which is also a
-NULL pointer.  I could fix this by giving a special return (like -1) to
-the builtin_trusted keyring and swizzling it back in
-bpf_verify_pkcs7_signature(), or I could alter bpf_lookup_system_key to
-return ERR_PTR, which would be an API change.  The former is easier and
-maintains the API compatibilitys, it's just a bit icky.
+Thanks James, updated.
 
-Regards,
+- KP
 
-James
-
+>
 
