@@ -1,80 +1,91 @@
-Return-Path: <bpf+bounces-64228-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64229-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E737AB0FE2B
-	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 02:30:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CFDEB0FE84
+	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 03:55:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9A995833C6
-	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 00:30:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 580E8189C1B5
+	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 01:55:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76C96347D5;
-	Thu, 24 Jul 2025 00:30:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 628377261B;
+	Thu, 24 Jul 2025 01:55:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rlRisgsX"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="W0esKhkm"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5F0717996;
-	Thu, 24 Jul 2025 00:30:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7B0C14286
+	for <bpf@vger.kernel.org>; Thu, 24 Jul 2025 01:55:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753317040; cv=none; b=OpdCSUtQ9N/up6MQGo3D7Vd7VWKIlrOHdwpF6ACs/BPBUqVE6VB+U9cEIooPF0r/XGTIHVVRcjmsFPi8RX3yOdQLfTPd/2LWV3SzpX6Z4PnXbabAxfZm7bxqPj+N9qE5U/WB5Rw8neAfbzrcFMzJp9CjToldX3w2vtjFEFfc3iM=
+	t=1753322108; cv=none; b=pyuQNkH0JR7MhiyvTW5cORQZQ1nNctEYnj3dMbwviEQzLz0yymhubnDy0Nk9LFlP2shgjFJMq2neVAqvjEGWDHIpQhiUO2wWrnGahhb1RJs1P/qBFkIQVhQM5KA05xhUkFhqu/8PQ1WYN731r4t2WYapcHDoj8mDZmTfKIZhOjA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753317040; c=relaxed/simple;
-	bh=XGZboLMQ3b5Ai4S4j+Ya+XOzglf9Zvxo7yDy4nIOKIQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NiEm+SHn/cU/8BPS4DFkNom4ETCg71Obqnxl7iGakalj00xoBhtYmdBZIQzPNF/hCkJAWMZfXBPIOe/8i57nUYDz80W2vNynaXqvqgtetRz0uKi1bpl/J9xF+Y+LZpTk64PTv6p57/1+mhjmRdg6TvOzFGaDSlq3F2fXYcyu3/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rlRisgsX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D922FC4CEE7;
-	Thu, 24 Jul 2025 00:30:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753317039;
-	bh=XGZboLMQ3b5Ai4S4j+Ya+XOzglf9Zvxo7yDy4nIOKIQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=rlRisgsXMCGjdQ+AoOOeRV46sZvbu6zFR0hseeM063slHXUz6bTiVPdS+SYs22fuZ
-	 uc0mU4zpEaqN8WqY0/yJpSaSb1eqCNVmTCYrUJ5StvbPiY4r9UP6zTQ7LDJv8rJd4m
-	 tc9X6pJwLT1fzpLDHbQn477BCDplm86FEgJtGo+Wb+12Fl8e9loEUf2b0aN9Pg94nS
-	 PLYHPAmVlS9SuSy8MrBCKvZWmUOVfiPqGDX8ns9Idd9vEYev39potQEsfOZmPDfioO
-	 xBflcw0B7tFVJSbEMHsrHtdu7KtGdPWl/hMMg0kuy27VUmZNqvgsaEVGAf4ds3K/dE
-	 OUCGIXrS8OwqA==
-Date: Wed, 23 Jul 2025 17:30:38 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Andrii
- Nakryiko <andrii@kernel.org>, Arthur Fabre <arthur@arthurfabre.com>, Daniel
- Borkmann <daniel@iogearbox.net>, Eduard Zingerman <eddyz87@gmail.com>, Eric
- Dumazet <edumazet@google.com>, Jesper Dangaard Brouer <hawk@kernel.org>,
- Jesse Brandeburg <jbrandeburg@cloudflare.com>, Joanne Koong
- <joannelkoong@gmail.com>, Lorenzo Bianconi <lorenzo@kernel.org>, Martin
- KaFai Lau <martin.lau@linux.dev>, Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNl?=
- =?UTF-8?B?bg==?= <thoiland@redhat.com>, Yan Zhai <yan@cloudflare.com>,
- kernel-team@cloudflare.com, netdev@vger.kernel.org, Stanislav Fomichev
- <sdf@fomichev.me>
-Subject: Re: [PATCH bpf-next v4 2/8] bpf: Enable read/write access to skb
- metadata through a dynptr
-Message-ID: <20250723173038.45cbaf01@kernel.org>
-In-Reply-To: <20250723-skb-metadata-thru-dynptr-v4-2-a0fed48bcd37@cloudflare.com>
-References: <20250723-skb-metadata-thru-dynptr-v4-0-a0fed48bcd37@cloudflare.com>
-	<20250723-skb-metadata-thru-dynptr-v4-2-a0fed48bcd37@cloudflare.com>
+	s=arc-20240116; t=1753322108; c=relaxed/simple;
+	bh=ERYptIooa6KVqJDSuiuJ1j1cS6DJrh2n44YU1dp15C8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RdflId4ndmbCMQZR9hI+BaHGgw1drPNHINL7Jeb3BEYEv3Vw/FyKiMQFv+raLzN05QwBi9lQ9JfwEiClRkxZMhNYuKMHDSfiC0kx9fAEBv7aPewpqd0r5/48yFU6JnEcZ4I+RCn0dURcGrzdAdqED8zKOu/2m06CRyOxfE75cPI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=W0esKhkm; arc=none smtp.client-ip=95.215.58.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <00a19156-cf90-48ca-be91-6c218b317044@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1753322101;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dKuQF9X8Irn5130fOMdphl2+d/j6lxb9FyrQnQYALog=;
+	b=W0esKhkm9fSTfe41Mh1DxLnwU5r7t+z2ExW+zg8kd3+CGZZQPRTQ2O1X9RQqkuHWru6Y/h
+	VryOgi/ZXU1TNbCpX265lteUjWp22o454H5dZs8a4wv7c6ViQaYbKba5qtv03E51FYKtAH
+	Gt6hyjRoj2HhoEVmj14mysWOqUgYPVU=
+Date: Wed, 23 Jul 2025 18:54:53 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: [PATCH bpf-next v4 1/8] bpf: Add dynptr type for skb metadata
+To: Jakub Sitnicki <jakub@cloudflare.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Arthur Fabre <arthur@arthurfabre.com>, Daniel Borkmann
+ <daniel@iogearbox.net>, Eduard Zingerman <eddyz87@gmail.com>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ Jesse Brandeburg <jbrandeburg@cloudflare.com>,
+ Joanne Koong <joannelkoong@gmail.com>, Lorenzo Bianconi
+ <lorenzo@kernel.org>, =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?=
+ <thoiland@redhat.com>, Yan Zhai <yan@cloudflare.com>,
+ kernel-team@cloudflare.com, netdev@vger.kernel.org,
+ Stanislav Fomichev <sdf@fomichev.me>, bpf@vger.kernel.org
+References: <20250723-skb-metadata-thru-dynptr-v4-0-a0fed48bcd37@cloudflare.com>
+ <20250723-skb-metadata-thru-dynptr-v4-1-a0fed48bcd37@cloudflare.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20250723-skb-metadata-thru-dynptr-v4-1-a0fed48bcd37@cloudflare.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, 23 Jul 2025 19:36:47 +0200 Jakub Sitnicki wrote:
-> Now that we can create a dynptr to skb metadata, make reads to the metadata
-> area possible with bpf_dynptr_read() or through a bpf_dynptr_slice(), and
-> make writes to the metadata area possible with bpf_dynptr_write() or
-> through a bpf_dynptr_slice_rdwr().
+On 7/23/25 10:36 AM, Jakub Sitnicki wrote:
+> More importantly, it abstracts away the fact where the storage for the
+> custom metadata lives, which opens up the way to persist the metadata by
+> relocating it as the skb travels through the network stack layers.
+> 
+> A notable difference between the skb and the skb_meta dynptr is that writes
+> to the skb_meta dynptr don't invalidate either skb or skb_meta dynptr
+> slices, since they cannot lead to a skb->head reallocation.
 
-What are the expectations around the writes? Presumably we could have
-two programs writing into the same metadata if the SKB is a clone, no?
+There is not much visibility on how the metadata will be relocated, so trying to 
+think out loud. The "no invalidation after bpf_dynptr_write(&meta_dynptr, ..." 
+behavior will be hard to change in the future. Will this still hold in the 
+future when the metadata can be preserved?
+
+Also, following up on Kuba's point about clone skb, what if the bpf prog wants 
+to write metadata to a clone skb in the future by using bpf_dynptr_write?
 
