@@ -1,103 +1,132 @@
-Return-Path: <bpf+bounces-64257-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64258-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1784B10A65
-	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 14:39:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0892AB10ABE
+	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 14:54:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B8711CE0435
-	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 12:39:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7956AC46C5
+	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 12:54:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDEFE2D373F;
-	Thu, 24 Jul 2025 12:38:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C77162D4B61;
+	Thu, 24 Jul 2025 12:54:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="XOhmip1v"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PmTD7YAr"
 X-Original-To: bpf@vger.kernel.org
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AECA22D23A8;
-	Thu, 24 Jul 2025 12:38:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53C882836BF
+	for <bpf@vger.kernel.org>; Thu, 24 Jul 2025 12:54:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753360707; cv=none; b=bAQXHy46eOSGykxCLHwRIumhCzT6kjHQFepmK9P16bFjaWcI0TlHp2+8/gchUxic4uxXi7mrn92AJy0WEKkRXMpcxP9v9AXjtN8tj68KPcEEhnGa1YMbByR4ht9iF/JIFFfyQJRseIaX6HnChzcwZeFG13mIPtbRjPeoLHCd0Gg=
+	t=1753361689; cv=none; b=l5DDMv5tCmGA+zce9O5/LEe2MagrRIP6NfzoS/bZ4OpPgD9RvaQOhbRqk+DHDiE/7Tjd4+a1LAnUmRDG71BuFYK5zkpbCLnEfiZB8w772Qr5VY3c7emx4M6X854LQMRDgwfSzAU1Gr8gDPP54t+XPs9mANbVmVznKLLbwmALkcI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753360707; c=relaxed/simple;
-	bh=oF1fjfkcVmB47jUFQZrbOFPuVcCIV0oFRtx6l9F7rNI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=p6ZhqEvOfUmWBH9x4B/LFceyg0n5fKXVysaDw/trd2U6enzzKvywSPFdpFyz8Ccr22UYSlgB7OdAroKNOeGdwAxL8c5rK8hx3WNbliiyMwsFs70s2xgUn2x+szLQeRDa+SdeEFYIKdQh7WoCt1164o7HhK743QOU/gfTXzHTmVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=XOhmip1v; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=OpVluK64wbdpkdLsO7dOz1cGp/QvzyiM9Vm+tiWw0F0=; b=XOhmip1vJ7HCfZq/ITREXL45gG
-	pvCRuaCPysU2hUV/3sUehtINSqAZG8zriQUe21ybHGtJuR6U40TwqytsHVuOom7ocx3cJRbeRkQbs
-	iCNxhS2Z+aSAH2qEJ1D/s1z5x5JiXExEWyzW15xE9bglEx92reIjlH5dvgQATLbXeiFLcVY5TgBWE
-	zwuG+P1xQuDzmtgPXUsJZ+87Wg9XMQA1Ebz19fnvSqYbpwkHtI4ZgoixG8KNMzEVK9lRB8PPZCxvw
-	soXVwtmRVoYvFW2IzHim4lwZm8Uo0JA1+RUaSl1uXkmfQyhdkGXVJkpttmCb0vNkLy3uoOJSNVrqX
-	BCbk9jzQ==;
-Received: from [223.233.78.24] (helo=[192.168.1.12])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1uevDH-003BUG-5O; Thu, 24 Jul 2025 14:38:19 +0200
-Message-ID: <6fec26c9-b240-6548-c970-882c0576ef33@igalia.com>
-Date: Thu, 24 Jul 2025 18:08:10 +0530
+	s=arc-20240116; t=1753361689; c=relaxed/simple;
+	bh=+9wf1dwnXePoVLI1ZZNmruynW1FsZaf+kHgnDe27s3Q=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=VPNTumJ6QQNcLDJ5oUjFE6Y0xwtWYDfiuWnrWI/YOh3zzJL2JS2537a/ojv7JCsCDfJjPojltbVhLyYpr5Sf6JvioDnQaOs45v/w6hFoxi1ukt/JlWQIx9VW5fSkV5U0hK1bPy/3+e83IpM83AYSh5Wf0DpEyVhSAAbeo5CqHlM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PmTD7YAr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83E03C4CEED;
+	Thu, 24 Jul 2025 12:54:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753361688;
+	bh=+9wf1dwnXePoVLI1ZZNmruynW1FsZaf+kHgnDe27s3Q=;
+	h=From:To:Subject:Date:From;
+	b=PmTD7YArB8BjDGFguLhLapEQ5nXTzmeOCcVg+DFlRfVpK5xspOjxuo8u+xLGkXNRU
+	 hcqquYtnccKNfcbrUlgthuTn3oZkisfRxSzdeLlIo1fu74KCDQxY2JfLzpqmQ1VnhU
+	 eauwGpTOpPmEv6ukGc4PsWhW/VFCazPjSK18UQbr2NGogU8hmd6qNJzoQUMwZ/8MUZ
+	 90GT8mNB3Dr08pkNkol0vf0/nW4cpG+BNc8wC9j67yKI9HcFOohCf1lbdIFSBD9cFm
+	 e4nyB56Eqml3qnzHbkwxQZjDvi4LNC+wZE4urxVmU9xNQUl010Xy61UniF/2hqDyp1
+	 R3TSBtCW3bxWA==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Puranjay Mohan <puranjay@kernel.org>,
+	Xu Kuohai <xukuohai@huaweicloud.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	bpf@vger.kernel.org
+Subject: [PATCH bpf-next 0/2] bpf, arm64: support for timed may_goto
+Date: Thu, 24 Jul 2025 12:54:38 +0000
+Message-ID: <20250724125443.26182-1-puranjay@kernel.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH v5 3/3] treewide: Switch from tsk->comm to tsk->comm_str
- which is 64 bytes long
-To: Askar Safin <safinaskar@zohomail.com>, bhupesh@igalia.com
-Cc: akpm@linux-foundation.org, alexei.starovoitov@gmail.com,
- andrii.nakryiko@gmail.com, arnaldo.melo@gmail.com, bpf@vger.kernel.org,
- brauner@kernel.org, bsegall@google.com, david@redhat.com,
- ebiederm@xmission.com, jack@suse.cz, juri.lelli@redhat.com, kees@kernel.org,
- keescook@chromium.org, kernel-dev@igalia.com, laoar.shao@gmail.com,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, lkp@intel.com,
- mathieu.desnoyers@efficios.com, mgorman@suse.de, mingo@redhat.com,
- mirq-linux@rere.qmqm.pl, oliver.sang@intel.com, peterz@infradead.org,
- pmladek@suse.com, rostedt@goodmis.org, torvalds@linux-foundation.org,
- viro@zeniv.linux.org.uk, vschneid@redhat.com, willy@infradead.org
-References: <20250716123916.511889-4-bhupesh@igalia.com>
- <20250724091604.2336532-1-safinaskar@zohomail.com>
-Content-Language: en-US
-From: Bhupesh Sharma <bhsharma@igalia.com>
-In-Reply-To: <20250724091604.2336532-1-safinaskar@zohomail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
+This set adds support for the timed may_goto instruction for the arm64.
+The timed may_goto instruction is implemented by the verifier by
+reserving 2 8byte slots in the program stack and then calling
+arch_bpf_timed_may_goto() in a loop with the stack offset of these two
+slots in BPF_REG_AX. It expects the function to put a timestamp in the
+first slot and the returned count in BPF_REG_AX is put into the second
+slot by a store instruction emitted by the verifier.
 
-On 7/24/25 2:46 PM, Askar Safin wrote:
->> where TASK_COMM_EXT_LEN is 64-bytes.
-> Why 64? As well as I understand, comm is initialized from executable file name by default. And it is usually limited by 256 (or 255?) bytes. So, please, make limit 256 bytes.
->
->
-Check existing users like proc_task_name(), which use 64-byte comm names:
+arch_bpf_timed_may_goto() is special as it receives the parameter in
+BPF_REG_AX and is expected to return the result in BPF_REG_AX as well.
+It can't clobber any caller saved registers because verifier doesn't
+save anything before emitting the call.
 
-void proc_task_name(struct seq_file *m, struct task_struct *p, bool escape)
-{
-        char tcomm[64];
-        ....
+So, arch_bpf_timed_may_goto() is implemented in assembly so the exact
+registers that are stored/restored can be controlled (BPF caller saved
+registers here) and it also needs to take care of moving arguments and
+return values to and from BPF_REG_AX <-> arm64 R0. 
 
+So, arch_bpf_timed_may_goto() acts as a trampoline to call
+bpf_check_timed_may_goto() which does the main logic of placing the
+timestamp and returning the count.
 
-Hence, it was decided not to change this and other similar existing 
-users and cap tsk->comm to 64-bytes.
+All tests that use may_goto instruction pass after the changing some of
+them in patch 2
 
-Thanks,
-Bhupesh
+ #404     stream_errors:OK
+ [...]
+ #406/2   stream_success/stream_cond_break:OK
+ [...]
+ #494/23  verifier_bpf_fastcall/may_goto_interaction_x86_64:SKIP
+ #494/24  verifier_bpf_fastcall/may_goto_interaction_arm64:OK
+ [...]
+ #539/1   verifier_may_goto_1/may_goto 0:OK
+ #539/2   verifier_may_goto_1/batch 2 of may_goto 0:OK
+ #539/3   verifier_may_goto_1/may_goto batch with offsets 2/1/0:OK
+ #539/4   verifier_may_goto_1/may_goto batch with offsets 2/0:OK
+ #539     verifier_may_goto_1:OK
+ #540/1   verifier_may_goto_2/C code with may_goto 0:OK
+ #540     verifier_may_goto_2:OK
+ Summary: 7/16 PASSED, 25 SKIPPED, 0 FAILED
+
+Puranjay Mohan (2):
+  bpf, arm64: Add JIT support for timed may_goto
+  selftests/bpf: Enable timed may_goto tests for arm64
+
+ arch/arm64/net/Makefile                       |  2 +-
+ arch/arm64/net/bpf_jit_comp.c                 | 13 ++++++-
+ arch/arm64/net/bpf_timed_may_goto.S           | 36 +++++++++++++++++++
+ .../testing/selftests/bpf/prog_tests/stream.c |  2 +-
+ .../bpf/progs/verifier_bpf_fastcall.c         | 27 ++++++++------
+ .../selftests/bpf/progs/verifier_may_goto_1.c | 34 ++++--------------
+ 6 files changed, 72 insertions(+), 42 deletions(-)
+ create mode 100644 arch/arm64/net/bpf_timed_may_goto.S
+
+-- 
+2.47.3
 
 
