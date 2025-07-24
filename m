@@ -1,45 +1,46 @@
-Return-Path: <bpf+bounces-64258-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64259-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0892AB10ABE
-	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 14:54:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2F04B10ABF
+	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 14:55:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7956AC46C5
-	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 12:54:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1CCD1C265C3
+	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 12:55:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C77162D4B61;
-	Thu, 24 Jul 2025 12:54:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BFE82D0C9F;
+	Thu, 24 Jul 2025 12:54:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PmTD7YAr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JIbL8Lb7"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53C882836BF
-	for <bpf@vger.kernel.org>; Thu, 24 Jul 2025 12:54:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16E7C2836BF
+	for <bpf@vger.kernel.org>; Thu, 24 Jul 2025 12:54:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753361689; cv=none; b=l5DDMv5tCmGA+zce9O5/LEe2MagrRIP6NfzoS/bZ4OpPgD9RvaQOhbRqk+DHDiE/7Tjd4+a1LAnUmRDG71BuFYK5zkpbCLnEfiZB8w772Qr5VY3c7emx4M6X854LQMRDgwfSzAU1Gr8gDPP54t+XPs9mANbVmVznKLLbwmALkcI=
+	t=1753361694; cv=none; b=oJV3p92XCn8RJWhN3cjku5kxFvO3e6sJLzpIH9fd86qdjKWJGxkPkH1mf9Ut7a6ErkMQaQlIewomeD1oJS1A4L8IArkhf8zwCct1t4z2s91LdWrJZRoARqnDlvDd+RA+/jyQAaYVvo94m8MXTJm6lpqGJeTgo6kklPquBYiJFTE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753361689; c=relaxed/simple;
-	bh=+9wf1dwnXePoVLI1ZZNmruynW1FsZaf+kHgnDe27s3Q=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=VPNTumJ6QQNcLDJ5oUjFE6Y0xwtWYDfiuWnrWI/YOh3zzJL2JS2537a/ojv7JCsCDfJjPojltbVhLyYpr5Sf6JvioDnQaOs45v/w6hFoxi1ukt/JlWQIx9VW5fSkV5U0hK1bPy/3+e83IpM83AYSh5Wf0DpEyVhSAAbeo5CqHlM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PmTD7YAr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83E03C4CEED;
-	Thu, 24 Jul 2025 12:54:48 +0000 (UTC)
+	s=arc-20240116; t=1753361694; c=relaxed/simple;
+	bh=+lMsOUuv4Am49zadYRXtVF17h+qizJudD0/nWPzHviI=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=C65o+ASyt3Vdwmc0I5FHMPsRD7rfBY4mJ9g2WMb86l9x2rl72o9y0rx8/smX+6KM1ldfJyazNY1w/90tbpL7GMqz6YQgvRZDusAnJAGCsDhUZbgkG7Jf0Hm18k/n4RkHnKfeWm0NyLS0O5yhBmNeeLNpQgV9CUlcfPsc2KEnUlI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JIbL8Lb7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CB1AC4CEEF;
+	Thu, 24 Jul 2025 12:54:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753361688;
-	bh=+9wf1dwnXePoVLI1ZZNmruynW1FsZaf+kHgnDe27s3Q=;
-	h=From:To:Subject:Date:From;
-	b=PmTD7YArB8BjDGFguLhLapEQ5nXTzmeOCcVg+DFlRfVpK5xspOjxuo8u+xLGkXNRU
-	 hcqquYtnccKNfcbrUlgthuTn3oZkisfRxSzdeLlIo1fu74KCDQxY2JfLzpqmQ1VnhU
-	 eauwGpTOpPmEv6ukGc4PsWhW/VFCazPjSK18UQbr2NGogU8hmd6qNJzoQUMwZ/8MUZ
-	 90GT8mNB3Dr08pkNkol0vf0/nW4cpG+BNc8wC9j67yKI9HcFOohCf1lbdIFSBD9cFm
-	 e4nyB56Eqml3qnzHbkwxQZjDvi4LNC+wZE4urxVmU9xNQUl010Xy61UniF/2hqDyp1
-	 R3TSBtCW3bxWA==
+	s=k20201202; t=1753361693;
+	bh=+lMsOUuv4Am49zadYRXtVF17h+qizJudD0/nWPzHviI=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=JIbL8Lb7fWD1PDLOb909TvJESCUC3Etw75Hzuz3SVBFfdrr/T5o7N7sjhuCIIADmf
+	 C1JbWC+o15EiufPabYaf6Hq8Ch6dyZyQlQgrDQuK0xWtBHLwH4rLDTbvpwNdIUdrcR
+	 JIdghK236QrlZNWtSTBK3vJSBYmQL8whKQJTik7fTCp6stAF1IZMwrSCy/xSqu/nqw
+	 1X26yfKKYumPNIQpzGgIjoBcfsSI3+Ghy1/vUZhw4Y7B5sc8NKAqELcoOaYmT37uyQ
+	 CGM91LBiwn1r14Gi2iVR8Urr0NJjupZc7ER41cWQekVPNQjZ1/X3b4GZEpUB7tYyrf
+	 1y/MM7gdsLJSA==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -60,10 +61,12 @@ To: Alexei Starovoitov <ast@kernel.org>,
 	Mykola Lysenko <mykolal@fb.com>,
 	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
 	bpf@vger.kernel.org
-Subject: [PATCH bpf-next 0/2] bpf, arm64: support for timed may_goto
-Date: Thu, 24 Jul 2025 12:54:38 +0000
-Message-ID: <20250724125443.26182-1-puranjay@kernel.org>
+Subject: [PATCH bpf-next 1/2] bpf, arm64: Add JIT support for timed may_goto
+Date: Thu, 24 Jul 2025 12:54:39 +0000
+Message-ID: <20250724125443.26182-2-puranjay@kernel.org>
 X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20250724125443.26182-1-puranjay@kernel.org>
+References: <20250724125443.26182-1-puranjay@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -72,60 +75,112 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This set adds support for the timed may_goto instruction for the arm64.
-The timed may_goto instruction is implemented by the verifier by
-reserving 2 8byte slots in the program stack and then calling
-arch_bpf_timed_may_goto() in a loop with the stack offset of these two
-slots in BPF_REG_AX. It expects the function to put a timestamp in the
-first slot and the returned count in BPF_REG_AX is put into the second
-slot by a store instruction emitted by the verifier.
+When verifier sees a timed may_goto instruction, it emits a call to
+arch_bpf_timed_may_goto() with a stack offset in BPF_REG_AX (arm64 r9)
+and expects a count value to be returned in the same register. The
+verifier doesn't save or restore any registers before emitting this
+call.
 
-arch_bpf_timed_may_goto() is special as it receives the parameter in
-BPF_REG_AX and is expected to return the result in BPF_REG_AX as well.
-It can't clobber any caller saved registers because verifier doesn't
-save anything before emitting the call.
+arch_bpf_timed_may_goto() should act as a trampoline to call
+bpf_check_timed_may_goto() with AAPCS64 calling convention.
 
-So, arch_bpf_timed_may_goto() is implemented in assembly so the exact
-registers that are stored/restored can be controlled (BPF caller saved
-registers here) and it also needs to take care of moving arguments and
-return values to and from BPF_REG_AX <-> arm64 R0. 
+To support this custom calling convention, implement
+arch_bpf_timed_may_goto() in assembly and make sure BPF caller saved
+registers are saved and restored, call bpf_check_timed_may_goto with
+arm64 calling convention where first argument and return value both are
+in x0, then put the result back into BPF_REG_AX before returning.
 
-So, arch_bpf_timed_may_goto() acts as a trampoline to call
-bpf_check_timed_may_goto() which does the main logic of placing the
-timestamp and returning the count.
-
-All tests that use may_goto instruction pass after the changing some of
-them in patch 2
-
- #404     stream_errors:OK
- [...]
- #406/2   stream_success/stream_cond_break:OK
- [...]
- #494/23  verifier_bpf_fastcall/may_goto_interaction_x86_64:SKIP
- #494/24  verifier_bpf_fastcall/may_goto_interaction_arm64:OK
- [...]
- #539/1   verifier_may_goto_1/may_goto 0:OK
- #539/2   verifier_may_goto_1/batch 2 of may_goto 0:OK
- #539/3   verifier_may_goto_1/may_goto batch with offsets 2/1/0:OK
- #539/4   verifier_may_goto_1/may_goto batch with offsets 2/0:OK
- #539     verifier_may_goto_1:OK
- #540/1   verifier_may_goto_2/C code with may_goto 0:OK
- #540     verifier_may_goto_2:OK
- Summary: 7/16 PASSED, 25 SKIPPED, 0 FAILED
-
-Puranjay Mohan (2):
-  bpf, arm64: Add JIT support for timed may_goto
-  selftests/bpf: Enable timed may_goto tests for arm64
-
- arch/arm64/net/Makefile                       |  2 +-
- arch/arm64/net/bpf_jit_comp.c                 | 13 ++++++-
- arch/arm64/net/bpf_timed_may_goto.S           | 36 +++++++++++++++++++
- .../testing/selftests/bpf/prog_tests/stream.c |  2 +-
- .../bpf/progs/verifier_bpf_fastcall.c         | 27 ++++++++------
- .../selftests/bpf/progs/verifier_may_goto_1.c | 34 ++++--------------
- 6 files changed, 72 insertions(+), 42 deletions(-)
+Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+---
+ arch/arm64/net/Makefile             |  2 +-
+ arch/arm64/net/bpf_jit_comp.c       | 13 ++++++++++-
+ arch/arm64/net/bpf_timed_may_goto.S | 36 +++++++++++++++++++++++++++++
+ 3 files changed, 49 insertions(+), 2 deletions(-)
  create mode 100644 arch/arm64/net/bpf_timed_may_goto.S
 
+diff --git a/arch/arm64/net/Makefile b/arch/arm64/net/Makefile
+index 5c540efb7d9b9..3ae382bfca879 100644
+--- a/arch/arm64/net/Makefile
++++ b/arch/arm64/net/Makefile
+@@ -2,4 +2,4 @@
+ #
+ # ARM64 networking code
+ #
+-obj-$(CONFIG_BPF_JIT) += bpf_jit_comp.o
++obj-$(CONFIG_BPF_JIT) += bpf_jit_comp.o bpf_timed_may_goto.o
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index 89b1b8c248c62..6c954b36f57ea 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -1505,7 +1505,13 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+ 		if (ret < 0)
+ 			return ret;
+ 		emit_call(func_addr, ctx);
+-		emit(A64_MOV(1, r0, A64_R(0)), ctx);
++		/*
++		 * Call to arch_bpf_timed_may_goto() is emitted by the
++		 * verifier and called with custom calling convention with
++		 * first argument and return value in BPF_REG_AX (x9).
++		 */
++		if (func_addr != (u64)arch_bpf_timed_may_goto)
++			emit(A64_MOV(1, r0, A64_R(0)), ctx);
+ 		break;
+ 	}
+ 	/* tail call */
+@@ -2914,6 +2920,11 @@ bool bpf_jit_bypass_spec_v4(void)
+ 	return true;
+ }
+ 
++bool bpf_jit_supports_timed_may_goto(void)
++{
++	return true;
++}
++
+ bool bpf_jit_inlines_helper_call(s32 imm)
+ {
+ 	switch (imm) {
+diff --git a/arch/arm64/net/bpf_timed_may_goto.S b/arch/arm64/net/bpf_timed_may_goto.S
+new file mode 100644
+index 0000000000000..45f80e752345c
+--- /dev/null
++++ b/arch/arm64/net/bpf_timed_may_goto.S
+@@ -0,0 +1,36 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/* Copyright (c) 2025 Puranjay Mohan <puranjay@kernel.org> */
++
++#include <linux/linkage.h>
++
++SYM_FUNC_START(arch_bpf_timed_may_goto)
++	/* Allocate stack space and emit frame record */
++	stp     x29, x30, [sp, #-64]!
++	mov     x29, sp
++
++	/* Save BPF registers R0 - R5 (x7, x0-x4)*/
++	stp	x7, x0, [sp, #16]
++	stp	x1, x2, [sp, #32]
++	stp	x3, x4, [sp, #48]
++
++	/*
++	 * Stack depth was passed in BPF_REG_AX (x9), add it to the BPF_FP
++	 * (x25) to get the pointer to count and timestamp and pass it as the
++	 * first argument in x0.
++	 */
++	add	x0, x9, x25
++	bl	bpf_check_timed_may_goto
++	/* BPF_REG_AX(x9) will be stored into count, so move return value to it. */
++	mov	x9, x0
++
++
++	/* Restore BPF registers R0 - R5 (x7, x0-x4) */
++	ldp	x7, x0, [sp, #16]
++	ldp	x1, x2, [sp, #32]
++	ldp	x3, x4, [sp, #48]
++
++	/* Restore FP and LR */
++	ldp     x29, x30, [sp], #64
++
++	ret
++SYM_FUNC_END(arch_bpf_timed_may_goto)
 -- 
 2.47.3
 
