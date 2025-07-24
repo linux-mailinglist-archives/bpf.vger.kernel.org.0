@@ -1,112 +1,185 @@
-Return-Path: <bpf+bounces-64267-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64268-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A68BFB10CBF
-	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 16:10:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0E71B10D3A
+	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 16:20:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CE60AC488E
-	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 14:04:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C6947B31D5
+	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 14:19:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A671A2E0B6E;
-	Thu, 24 Jul 2025 14:03:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OBr88x7T"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BD022E2652;
+	Thu, 24 Jul 2025 14:20:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C0A7254844
-	for <bpf@vger.kernel.org>; Thu, 24 Jul 2025 14:03:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F5EF2DCF50;
+	Thu, 24 Jul 2025 14:19:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753365820; cv=none; b=JsFo2PuRHRuVE+ZHLi92XrECZf9l42X+wV3on+vRDHnR7hiLFqnk3WK96fhwnX610MhdSKVLMqKvSrffAbSZ62hZ5GLrz9J5KhH8Sl7wktXK+rsr8EHmcdQe9Ys/8nNQWd2d3xFLONk5BINuKq7/Y+ykwSssYbvhG64czL2spaU=
+	t=1753366803; cv=none; b=GsK3Ne4UtnDUlOzA7IC82UNrAIDxUVT5FjwfRSDXUgaNYSO6qQ8G13FfnUDjtv3Z/aUseZCDfyKxMxUhQCpO4LoRMxiUORCMzf+eNxC0aE7rhX5tPzu7JzHW+ShxpJdiywlzMjI6I3ES7ZUqKfn5w7Mhr6ZICSYGDr8D82PhGNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753365820; c=relaxed/simple;
-	bh=0VIikj3yIUFdsJdgzNjAyqK7TQm1VH72hppv76TmtKI=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kHK8tDL3X5bZfTzarp8hCIqOC4NKaQeiNf95M/tmxiqDofg0fsMNEvLGxZqeYtL/wAqMAl7k1s4uVAM0LYEm4MSF7ZL54bStzd4mWupCb1hwXcbNQ/YTFfJn+bshEwZhgPE5iGjCm1WpdNgHnQlHJy0hgxQXppmDg3F+X2aGX1c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OBr88x7T; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-45619d70c72so18211705e9.0
-        for <bpf@vger.kernel.org>; Thu, 24 Jul 2025 07:03:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753365817; x=1753970617; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0VIikj3yIUFdsJdgzNjAyqK7TQm1VH72hppv76TmtKI=;
-        b=OBr88x7TF6rOKHmBmEEo6qC1X1d8v/6fuX6A419sMaQ+6KQ5bFOAT5KZThZ1dBlONn
-         SGzrbig1ndPan1uiHKq9hVUvE654b9WMpNoLCriirIhPKOZEhfmo9sJLGwcAF4BZAhp+
-         yZESH5XfySzx3+ehZdzIaHV1c0x18Bd9x1FWntuzU8ESLLQg04PjLBDBTGlpfI+sl7gt
-         EuRvQFp/JnwczbOC/yzt97x54xUA3dqf+lvqAvzoonKO2EddWvgwRH3UdY8ZBHTPZcEK
-         FPuXppbl8p46+73zEkqFgWlaNN0pDZLMsfWqngQplPUa2BB7ATQyA0Y2lmUhebgHU7Ma
-         A8BA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753365817; x=1753970617;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0VIikj3yIUFdsJdgzNjAyqK7TQm1VH72hppv76TmtKI=;
-        b=Ah99hriDKjtfGI8iCQmU2h76kkPLsr3/yfXlr1OHL7C+Q3209x/5VeOKfV6dddhsmf
-         jBcePDSlZCmGHA2nTj361SfG6KT+9wC2bH1QjCalM9We+GGgwrgwwfAYkLDusllz/9t6
-         vKCBFVGseXrUVnxHb37rhg5Q32eSv+F9NBdk6+4AuLLCQnJ++gye6aZosq5iepRC/iwn
-         RmS68rYAgVHvpQWir4f2AO7Qt2p1KUficnLKvJTIRc7uZAeiU9YwQDpCV6BOEzSEXR75
-         3ygYQMb5i3xbqhcQUbIFn1RoMBnkdJKKW9zNGXA/gVOQL+/1Wxnz+rgTEWNcUG4CxIm1
-         Zjcg==
-X-Gm-Message-State: AOJu0YwpXwXKZF6vT/dxRUCbOnquZO1ZZDLrXlfuo5SHcKkzBoyQcE3c
-	5sTgMhS+4s5eaWGgTtsJfgnoo59XejNveh38lNGx/GYrvYSkdBbIIRo2
-X-Gm-Gg: ASbGncvr/VSyoh37RV0k0Sb7HDbFjqOeGl2c7l2RpXlnDJUOg2ry+FPZMoryzg1XdPj
-	EkXUEoQqkwbzJwVY7p1fAM/+3KXAn99iLzfKDmPEuEGBndd9wlTFHe25fuUzKqspjx/ZLSG3PuQ
-	gx9mX5W19AirwpvogiWm/PrIixLQlxaIbsGLfGTGcvRsTH2VdE5R1jLQdEv7rAeW1WvWisYwTt7
-	RAxQ4psSca8RDgUrIf0mnkSrpak5KaRCSpA94wJM+VybzQRCtjReIvYBv/OCRKIxBuB8iTZx+o8
-	TqulKeNPm24IxvL6JkeoV4LEsXini6vavSVhN8B16EuAn9raKnFtHFf0m+cFat8pXHhOnY0iLq0
-	Jy3T5Nwl+U02Q/cM2MPeS27M2Kw+DRVrXOfltXFLygKkTC8oECNozpJK27JCIVHfjo/+G3SVPUp
-	78npcxgeUNkd8E5Q==
-X-Google-Smtp-Source: AGHT+IEzK9ndi7Z+A0TqmpDYLtMTRLT1Js20eu4ZO01cw36jVYxaXGbVDcZ3bgM/8l+SAoMSfu1qtQ==
-X-Received: by 2002:a05:600c:8b72:b0:455:efd7:17dc with SMTP id 5b1f17b1804b1-4587057590dmr21980555e9.11.1753365816416;
-        Thu, 24 Jul 2025 07:03:36 -0700 (PDT)
-Received: from mail.gmail.com (2a01cb0889497e00667e58c39c19dc02.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:667e:58c3:9c19:dc02])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4587054f27dsm21364575e9.11.2025.07.24.07.03.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jul 2025 07:03:35 -0700 (PDT)
-From: Paul Chaignon <paul.chaignon@gmail.com>
-X-Google-Original-From: Paul Chaignon <paul.chaignon@.com>
-Date: Thu, 24 Jul 2025 16:03:34 +0200
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [PATCH bpf-next 3/4] selftests/bpf: Test cross-sign 64bits range
- refinement
-Message-ID: <aII9NupeihYc0xHj@mail.gmail.com>
-References: <cover.1752934170.git.paul.chaignon@gmail.com>
- <7cf24829f55fac6eee2b43e09e78fc03f443c8e5.1752934170.git.paul.chaignon@gmail.com>
- <755dfeb5b02a1d3b5dd8b87a5aeb822628a93996.camel@gmail.com>
+	s=arc-20240116; t=1753366803; c=relaxed/simple;
+	bh=cyNGn80dJeZfZultJSI+UWEA3LsJ5S1jp5k1NmwyC4Y=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cV92+n+U7kH/cZ0IAygGJQZlNx6bMu4KPNhxJsHHENHCFHK2aD53/Gmseysp0YSBMEFJklDh3z7cLDY4xE79FJwTWMRWEnc/a0p03b1zNIVvH3Gwdy4xuORvdaA5X0Pqf9GOHnDqE3AYJ3SynISf0Yuaggg2S0xlbX/7L8ipZnY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 416f20fe689911f0b29709d653e92f7d-20250724
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NO_NAME, HR_CTE_8B, HR_CTT_MISS
+	HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_DIGIT_LEN
+	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
+	HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT, HR_TO_NO_NAME
+	IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_EXISTED, SN_EXISTED
+	SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS, CIE_BAD, CIE_GOOD_SPF
+	GTI_FG_BS, GTI_RG_INFO, GTI_C_BU, AMN_T1, AMN_GOOD
+	AMN_C_TI, AMN_C_BU, ABX_MISS_RDNS
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.45,REQID:e9160da6-4f30-4dc1-b2e6-749d6bf6be2b,IP:10,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:1
+X-CID-INFO: VERSION:1.1.45,REQID:e9160da6-4f30-4dc1-b2e6-749d6bf6be2b,IP:10,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:1
+X-CID-META: VersionHash:6493067,CLOUDID:5741ceabb9e06da0fd2c031729edb951,BulkI
+	D:250724221949QB0CY0WY,BulkQuantity:0,Recheck:0,SF:17|19|24|38|43|66|74|78
+	|102,TC:nil,Content:0|50,EDM:-3,IP:-2,URL:99|1,File:nil,RT:nil,Bulk:nil,QS
+	:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,A
+	RC:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,
+	TF_CID_SPAM_ULS
+X-UUID: 416f20fe689911f0b29709d653e92f7d-20250724
+X-User: duanchenghao@kylinos.cn
+Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
+	(envelope-from <duanchenghao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 1997826696; Thu, 24 Jul 2025 22:19:48 +0800
+From: Chenghao Duan <duanchenghao@kylinos.cn>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	yangtiezhu@loongson.cn,
+	hengqi.chen@gmail.com,
+	chenhuacai@kernel.org
+Cc: martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	kernel@xen0n.name,
+	linux-kernel@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	bpf@vger.kernel.org,
+	guodongtai@kylinos.cn,
+	duanchenghao@kylinos.cn,
+	youling.tang@linux.dev,
+	jianghaoran@kylinos.cn,
+	vincent.mc.li@gmail.com
+Subject: [PATCH v4 0/5] Support trampoline for LoongArch
+Date: Thu, 24 Jul 2025 22:19:24 +0800
+Message-Id: <20250724141929.691853-1-duanchenghao@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <755dfeb5b02a1d3b5dd8b87a5aeb822628a93996.camel@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jul 21, 2025 at 02:30:07PM -0700, Eduard Zingerman wrote:
-> On Sat, 2025-07-19 at 16:23 +0200, Paul Chaignon wrote:
+v4:
+1. Delete the #3 patch of version V3.
 
-[...]
+2. Add 5 NOP instructions in build_prologue().
+   Reserve space for the move_imm + jirl instruction.
 
-> I think two more test cases are needed:
-> - when intersection is on the other side of the interval;
-> - when signed and unsigned intervals overlap in two places.
+3. Differentiate between direct jumps and ftrace jumps of trampoline:
+   direct jumps skip 5 instructions.
+   ftrace jumps skip 2 instructions.
 
-Thanks for the review! I've added the two new tests in the v2, along
-with appropriate __msg checks. I also made sure the tests fail as
-expected without the first patch improving range refinement.
+4. Remove the generation of BL jump instructions in emit_jump_and_link().
+   After the trampoline ends, it will jump to the specified register.
+   The BL instruction writes PC+4 to r1 instead of allowing the
+   specification of rd.
+
+-----------------------------------------------------------------------
+Historical Version:
+v3:
+1. Patch 0003 adds EXECMEM_BPF memory type to the execmem subsystem.
+
+2. Align the size calculated by arch_bpf_trampoline_size to page
+boundaries.
+
+3. Add the flush icache operation to larch_insn_text_copy.
+
+4. Unify the implementation of bpf_arch_xxx into the patch
+"0004-LoongArch-BPF-Add-bpf_arch_xxxxx-support-for-Loong.patch".
+
+5. Change the patch order. Move the patch
+"0002-LoongArch-BPF-Update-the-code-to-rename-validate_.patch" before
+"0005-LoongArch-BPF-Add-bpf-trampoline-support-for-Loon.patch".
+
+URL for version v3:
+https://lore.kernel.org/all/20250709055029.723243-1-duanchenghao@kylinos.cn/
+---------
+v2:
+1. Change the fixmap in the instruction copy function to set_memory_xxx.
+
+2. Change the implementation method of the following code.
+	- arch_alloc_bpf_trampoline
+	- arch_free_bpf_trampoline
+	Use the BPF core's allocation and free functions.
+
+	- bpf_arch_text_invalidate
+	Operate with the function larch_insn_text_copy that carries
+	memory attribute modifications.
+
+3. Correct the incorrect code formatting.
+
+URL for version v2:
+https://lore.kernel.org/all/20250618105048.1510560-1-duanchenghao@kylinos.cn/
+---------
+v1:
+Support trampoline for LoongArch. The following feature tests have been
+completed:
+	1. fentry
+	2. fexit
+	3. fmod_ret
+
+TODO: The support for the struct_ops feature will be provided in
+subsequent patches.
+
+URL for version v1:
+https://lore.kernel.org/all/20250611035952.111182-1-duanchenghao@kylinos.cn/
+-----------------------------------------------------------------------
+
+Chenghao Duan (4):
+  LoongArch: Add larch_insn_gen_{beq,bne} helpers
+  LoongArch: BPF: Update the code to rename validate_code to
+    validate_ctx
+  LoongArch: BPF: Add bpf_arch_xxxxx support for Loongarch
+  LoongArch: BPF: Add bpf trampoline support for Loongarch
+
+Tiezhu Yang (1):
+  LoongArch: BPF: Add struct ops support for trampoline
+
+ arch/loongarch/include/asm/inst.h |   3 +
+ arch/loongarch/kernel/inst.c      |  60 ++++
+ arch/loongarch/net/bpf_jit.c      | 521 +++++++++++++++++++++++++++++-
+ arch/loongarch/net/bpf_jit.h      |   6 +
+ 4 files changed, 589 insertions(+), 1 deletion(-)
+
+-- 
+2.25.1
 
 
