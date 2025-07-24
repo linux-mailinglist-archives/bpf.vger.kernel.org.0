@@ -1,90 +1,91 @@
-Return-Path: <bpf+bounces-64266-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64267-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00D5FB10BCD
-	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 15:45:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A68BFB10CBF
+	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 16:10:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30BB7170AF6
-	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 13:45:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CE60AC488E
+	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 14:04:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF31B2D9EC5;
-	Thu, 24 Jul 2025 13:45:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A671A2E0B6E;
+	Thu, 24 Jul 2025 14:03:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f4RVA5q+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OBr88x7T"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A554A256C61
-	for <bpf@vger.kernel.org>; Thu, 24 Jul 2025 13:44:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C0A7254844
+	for <bpf@vger.kernel.org>; Thu, 24 Jul 2025 14:03:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753364700; cv=none; b=cUhFNgJjyS9MhTe4bIF3QpJP9ZsFbT1ayTcYYi97jnuoAtck5hAIg9B9jHQpfs+rajeQp0q3GJi0wKFMQwtePpxoFQcn2IvXO9Fg3fyXB3sDNKUbGsQpk6bh+/7+NVO8WyzD4bSXWpPGJ3bmAyiFnvylUTKBPj7uGkueDQXi/dg=
+	t=1753365820; cv=none; b=JsFo2PuRHRuVE+ZHLi92XrECZf9l42X+wV3on+vRDHnR7hiLFqnk3WK96fhwnX610MhdSKVLMqKvSrffAbSZ62hZ5GLrz9J5KhH8Sl7wktXK+rsr8EHmcdQe9Ys/8nNQWd2d3xFLONk5BINuKq7/Y+ykwSssYbvhG64czL2spaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753364700; c=relaxed/simple;
-	bh=OEw7mi5eq/LuOOK1i9iYt77cRFmYDG6YwGUeTC9YK0Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E9oPtrBFUCfAUfngjS32lh4qGDWTMLMeeOZQidQoWb+Km17FvHBudGOdBaUITjIFwGIQ6i65PgsOMZna3D6Dp906dIirO5jxZMwdNOqAyzNddkpEmkIv+WE4qYVJfarVON4zC99GFszxJWO896j/iK49zhX/ZXBzJOQHY5ofhKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f4RVA5q+; arc=none smtp.client-ip=209.85.221.43
+	s=arc-20240116; t=1753365820; c=relaxed/simple;
+	bh=0VIikj3yIUFdsJdgzNjAyqK7TQm1VH72hppv76TmtKI=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kHK8tDL3X5bZfTzarp8hCIqOC4NKaQeiNf95M/tmxiqDofg0fsMNEvLGxZqeYtL/wAqMAl7k1s4uVAM0LYEm4MSF7ZL54bStzd4mWupCb1hwXcbNQ/YTFfJn+bshEwZhgPE5iGjCm1WpdNgHnQlHJy0hgxQXppmDg3F+X2aGX1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OBr88x7T; arc=none smtp.client-ip=209.85.128.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3ab112dea41so591294f8f.1
-        for <bpf@vger.kernel.org>; Thu, 24 Jul 2025 06:44:58 -0700 (PDT)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-45619d70c72so18211705e9.0
+        for <bpf@vger.kernel.org>; Thu, 24 Jul 2025 07:03:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753364697; x=1753969497; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1753365817; x=1753970617; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KREhYxOitx97HGZj32SqoFx4vscJTdQ63UQMMm1OgOw=;
-        b=f4RVA5q+sg8qRCoq66W0bn87C+ejtwL9d/yd8zpT9hXzumE1IuYts9z3u6ZlxsIaJZ
-         bqir2r+6qfFU36AuNlt8EiA+mD6j8vT51mnsi/kChRxcWaojWCAl+3nT4Qqz/+lHF+EX
-         qfYATdGytY/8MKm/Jv4EB058HNeVqjkPRRyHeM5UCCOlAfiOKbjJ8ZmH4sL7l74OXSMO
-         NulA2bUIYFKPw5/NMOJxxQrAS/JsloHLOxYre8zjgZQiJE6eEQAbwb3JpBuoGcJTWnyJ
-         Gun12Stx2aAzX9AKLgGd24MpAHBAPKcMORCJv44kVxmfaDXHp9hbW6X/23LLduCtCbqy
-         uwhw==
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0VIikj3yIUFdsJdgzNjAyqK7TQm1VH72hppv76TmtKI=;
+        b=OBr88x7TF6rOKHmBmEEo6qC1X1d8v/6fuX6A419sMaQ+6KQ5bFOAT5KZThZ1dBlONn
+         SGzrbig1ndPan1uiHKq9hVUvE654b9WMpNoLCriirIhPKOZEhfmo9sJLGwcAF4BZAhp+
+         yZESH5XfySzx3+ehZdzIaHV1c0x18Bd9x1FWntuzU8ESLLQg04PjLBDBTGlpfI+sl7gt
+         EuRvQFp/JnwczbOC/yzt97x54xUA3dqf+lvqAvzoonKO2EddWvgwRH3UdY8ZBHTPZcEK
+         FPuXppbl8p46+73zEkqFgWlaNN0pDZLMsfWqngQplPUa2BB7ATQyA0Y2lmUhebgHU7Ma
+         A8BA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753364697; x=1753969497;
+        d=1e100.net; s=20230601; t=1753365817; x=1753970617;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KREhYxOitx97HGZj32SqoFx4vscJTdQ63UQMMm1OgOw=;
-        b=X52yoaovlX0I55Rf8zd/ZNeX8WD1asRuXqLWyoxSplUVQPdXGpUpnts0EpWhptcdGs
-         n1V1hHZynr7+Uqx0gmficXwJ0WNT2fSG52CKO4Tmu6CITIpLcZHglOZ59szJ4ugwG/x4
-         f/pbQBr+AzpY43b39V8+gmFNDlHAsteYWugW3rL/kfEPWh4/eRBT4O+A3mTKXUhSzf//
-         f/jWtWQ+Ke6Gx/ek10bBqDdH4ud2RXWFc1R+adE49G1J8lT01dpUbyWrnHG25v1LcYnC
-         85E+poGAMOwVO5NGlvrh6lXL4evpdjdWeOVE4gAFHAVB5fox75FxA8L8G/v/ZVVeqsV7
-         taZA==
-X-Gm-Message-State: AOJu0YziEuqqzekdG2cbOixEkIpO+vBFwm60O+DY76O5M2cpUn3iG8pG
-	VS+0ZegPmxPCdMfXJcswqjLbTKWzYlBh21FQzr8puqm38+ADzTrwjXkNurcShOBF
-X-Gm-Gg: ASbGncs7oUSV/YEUUMXH2XeSGp4WzzaTNbVS7ehcHvRivzxQdVe+Egt5Nx84J6P6hIj
-	5PWgdTMAt8vOT5LAbMDxC6CdOS9RnH/a0uODjYk2rtK5J8qwdVDkAyNcojo1m02Yx8sNL8uFpQU
-	DhSQl1RPgGod0bDYCBM6a019sJ4lVEplWBwBbdHejS4hGc98KGsCfdBJ1JRRf/f0d96+KfgKuz6
-	QnCz8EDyv8IO/Iue3k9Q415ZTbAGVbhTPGldzN9DuD2oc6ep6ChUjd2byjeW5VLrCdvcQpdJp97
-	0F/VY28ny3tc2/n9QH5dP4d+Z7dHFo/N9Mhf/o6U20+CLREoi/lTjGQFqlhMr0KwYfNRsc2rsK6
-	mPuYToG+AW49obL+Z5PIeFOCi4DfX1uElYQfgZtWgE34Awoy0ekeOTBBbvphwargJ+AlVT80kra
-	GRTC827SSx0KOaCAkACe14
-X-Google-Smtp-Source: AGHT+IFMcU3PVF0pMbfhbH90egpy4Uk4EsXarI1/8GsOzuFOKCwAqEFlyeHfUi56/LR0ssnws2bh7A==
-X-Received: by 2002:a05:6000:2087:b0:3a5:8a68:b815 with SMTP id ffacd0b85a97d-3b768f07996mr6509309f8f.46.1753364696756;
-        Thu, 24 Jul 2025 06:44:56 -0700 (PDT)
+        bh=0VIikj3yIUFdsJdgzNjAyqK7TQm1VH72hppv76TmtKI=;
+        b=Ah99hriDKjtfGI8iCQmU2h76kkPLsr3/yfXlr1OHL7C+Q3209x/5VeOKfV6dddhsmf
+         jBcePDSlZCmGHA2nTj361SfG6KT+9wC2bH1QjCalM9We+GGgwrgwwfAYkLDusllz/9t6
+         vKCBFVGseXrUVnxHb37rhg5Q32eSv+F9NBdk6+4AuLLCQnJ++gye6aZosq5iepRC/iwn
+         RmS68rYAgVHvpQWir4f2AO7Qt2p1KUficnLKvJTIRc7uZAeiU9YwQDpCV6BOEzSEXR75
+         3ygYQMb5i3xbqhcQUbIFn1RoMBnkdJKKW9zNGXA/gVOQL+/1Wxnz+rgTEWNcUG4CxIm1
+         Zjcg==
+X-Gm-Message-State: AOJu0YwpXwXKZF6vT/dxRUCbOnquZO1ZZDLrXlfuo5SHcKkzBoyQcE3c
+	5sTgMhS+4s5eaWGgTtsJfgnoo59XejNveh38lNGx/GYrvYSkdBbIIRo2
+X-Gm-Gg: ASbGncvr/VSyoh37RV0k0Sb7HDbFjqOeGl2c7l2RpXlnDJUOg2ry+FPZMoryzg1XdPj
+	EkXUEoQqkwbzJwVY7p1fAM/+3KXAn99iLzfKDmPEuEGBndd9wlTFHe25fuUzKqspjx/ZLSG3PuQ
+	gx9mX5W19AirwpvogiWm/PrIixLQlxaIbsGLfGTGcvRsTH2VdE5R1jLQdEv7rAeW1WvWisYwTt7
+	RAxQ4psSca8RDgUrIf0mnkSrpak5KaRCSpA94wJM+VybzQRCtjReIvYBv/OCRKIxBuB8iTZx+o8
+	TqulKeNPm24IxvL6JkeoV4LEsXini6vavSVhN8B16EuAn9raKnFtHFf0m+cFat8pXHhOnY0iLq0
+	Jy3T5Nwl+U02Q/cM2MPeS27M2Kw+DRVrXOfltXFLygKkTC8oECNozpJK27JCIVHfjo/+G3SVPUp
+	78npcxgeUNkd8E5Q==
+X-Google-Smtp-Source: AGHT+IEzK9ndi7Z+A0TqmpDYLtMTRLT1Js20eu4ZO01cw36jVYxaXGbVDcZ3bgM/8l+SAoMSfu1qtQ==
+X-Received: by 2002:a05:600c:8b72:b0:455:efd7:17dc with SMTP id 5b1f17b1804b1-4587057590dmr21980555e9.11.1753365816416;
+        Thu, 24 Jul 2025 07:03:36 -0700 (PDT)
 Received: from mail.gmail.com (2a01cb0889497e00667e58c39c19dc02.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:667e:58c3:9c19:dc02])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b7737ce62asm467454f8f.63.2025.07.24.06.44.56
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4587054f27dsm21364575e9.11.2025.07.24.07.03.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jul 2025 06:44:56 -0700 (PDT)
-Date: Thu, 24 Jul 2025 15:44:54 +0200
+        Thu, 24 Jul 2025 07:03:35 -0700 (PDT)
 From: Paul Chaignon <paul.chaignon@gmail.com>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
+X-Google-Original-From: Paul Chaignon <paul.chaignon@.com>
+Date: Thu, 24 Jul 2025 16:03:34 +0200
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Subject: [PATCH bpf-next v2 4/4] selftests/bpf: Test invariants on JSLT
- crossing sign
-Message-ID: <c1c843a647300feb510920c13d2d4d2003c56e0d.1753364265.git.paul.chaignon@gmail.com>
-References: <cover.1753364265.git.paul.chaignon@gmail.com>
+	Yonghong Song <yonghong.song@linux.dev>
+Subject: Re: [PATCH bpf-next 3/4] selftests/bpf: Test cross-sign 64bits range
+ refinement
+Message-ID: <aII9NupeihYc0xHj@mail.gmail.com>
+References: <cover.1752934170.git.paul.chaignon@gmail.com>
+ <7cf24829f55fac6eee2b43e09e78fc03f443c8e5.1752934170.git.paul.chaignon@gmail.com>
+ <755dfeb5b02a1d3b5dd8b87a5aeb822628a93996.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -93,34 +94,19 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1753364265.git.paul.chaignon@gmail.com>
+In-Reply-To: <755dfeb5b02a1d3b5dd8b87a5aeb822628a93996.camel@gmail.com>
 
-The improvement of the u64/s64 range refinement fixed the invariant
-violation that was happening on this test for BPF_JSLT when crossing the
-sign boundary.
+On Mon, Jul 21, 2025 at 02:30:07PM -0700, Eduard Zingerman wrote:
+> On Sat, 2025-07-19 at 16:23 +0200, Paul Chaignon wrote:
 
-After this patch, we have one test remaining with a known invariant
-violation. It's the same test as fixed here but for 32 bits ranges.
+[...]
 
-Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
----
- tools/testing/selftests/bpf/progs/verifier_bounds.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> I think two more test cases are needed:
+> - when intersection is on the other side of the interval;
+> - when signed and unsigned intervals overlap in two places.
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_bounds.c b/tools/testing/selftests/bpf/progs/verifier_bounds.c
-index dd4e3e9f41d3..85e488b27756 100644
---- a/tools/testing/selftests/bpf/progs/verifier_bounds.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_bounds.c
-@@ -1066,7 +1066,7 @@ l0_%=:	r0 = 0;						\
- SEC("xdp")
- __description("bound check with JMP_JSLT for crossing 64-bit signed boundary")
- __success __retval(0)
--__flag(!BPF_F_TEST_REG_INVARIANTS) /* known invariants violation */
-+__flag(BPF_F_TEST_REG_INVARIANTS)
- __naked void crossing_64_bit_signed_boundary_2(void)
- {
- 	asm volatile ("					\
--- 
-2.43.0
+Thanks for the review! I've added the two new tests in the v2, along
+with appropriate __msg checks. I also made sure the tests fail as
+expected without the first patch improving range refinement.
 
 
