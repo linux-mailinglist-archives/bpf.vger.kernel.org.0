@@ -1,234 +1,206 @@
-Return-Path: <bpf+bounces-64282-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64283-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18487B10E71
-	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 17:16:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10407B10EC0
+	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 17:30:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BE115689C7
-	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 15:16:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE4771D01328
+	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 15:31:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 649282EA493;
-	Thu, 24 Jul 2025 15:15:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42B8E2EA46F;
+	Thu, 24 Jul 2025 15:30:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="insiUJUl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H94zABVE"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ABAD2E9EB0
-	for <bpf@vger.kernel.org>; Thu, 24 Jul 2025 15:15:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F1AE2E36ED;
+	Thu, 24 Jul 2025 15:30:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753370147; cv=none; b=OdLWWzikVm0DHclpcLWPDZsjyYHti+b91gO9ECGI4Cqo9BZjQLsTSMcXugPvzrpxUOUfwJPQD5dNswvK+iF5WgBAI+NgXRU/GkfStgXSaVmaQ2RbnftLxcldmU9ivoB2ycgSuD1hDs+Fuf/Yvaw7F6uv74gRLsvI8cCd334WYs0=
+	t=1753371049; cv=none; b=b7jN/PqDnrtw3EHw4vapS8PFQo4XT6LpJIFsdtvTAArTNwwzy/1+j+XH/BkLwra7WK3FlxwlLdHoIoPrScdXgE5NKdghV3mysQGIuw5wFlAUucEUmpkzKQe8A3KuzbCiuuuWmQECvHl+QIpfGlSsjna5RMP05fCLJArkMRA19Pg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753370147; c=relaxed/simple;
-	bh=/NIRHWCCXgHb6aCTb4kYm2MLzgHd2qEAvK78b5KJlcg=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AnnbW/9VzC6Vedu5f+EYvF+InadetvcWlpjzuIkjb7afQHX8J9Zm3owZsStLc2pWmopOr0xWDo5/iyaP1uQqF+gskmlFcGdzWKgwLFtb7YlEmLqvQ5tdTMBeTOnlkCevEuJOIyBtkPzH4qzd8OkqG8AcIqhDsOKg6UwMDmxoW68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=insiUJUl; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1753370143;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xQOXoKnEuHVbdjAAxYfHbNY7Gd7B6m6xthVMZFBbn+E=;
-	b=insiUJUlANvhT46WT0RRVZjCoIp6wtsl6wok61NrYqCzlurvQrIn5iy+w1JHkY+ZZ+S/T6
-	3XNGEgNVmJUCXUo6Pi9tBucr7grNcVthaE6jWqsRUsIHMctKwI8RYgQiPTousymUhdkFba
-	P9LW3y+kJsgJFhwKejF80kVVD9WrWUY=
-From: KaFai Wan <kafai.wan@linux.dev>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	mykolal@fb.com,
-	shuah@kernel.org,
-	kafai.wan@linux.dev,
-	laoar.shao@gmail.com,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	leon.hwang@linux.dev
-Subject: [PATCH bpf-next v4 4/4] selftests/bpf: Migrate fexit_noreturns case into tracing_failure test suite
-Date: Thu, 24 Jul 2025 23:14:54 +0800
-Message-ID: <20250724151454.499040-5-kafai.wan@linux.dev>
-In-Reply-To: <20250724151454.499040-1-kafai.wan@linux.dev>
-References: <20250724151454.499040-1-kafai.wan@linux.dev>
+	s=arc-20240116; t=1753371049; c=relaxed/simple;
+	bh=s6n0+4J3j3E/bwSmPKHNNlPN0uXRfALwz6qCZuavh+M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=c0FRVgPwoTYM2AFJix7+46mr00iSCU/S8EREOGux1yH3eJmxMxujVUxEN6pizwtZf5sTGEu8FI7Gb/GN0siRF6UZlmfwUKPq+npUf0zHb8n8+sPIp7BfpVrkfoKotEPZaDRILRlaDXRM7QuavtvKCOEo8bxlbIGvR3Vku0QX4iQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H94zABVE; arc=none smtp.client-ip=209.85.160.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-4ab63f8fb91so9156571cf.0;
+        Thu, 24 Jul 2025 08:30:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1753371047; x=1753975847; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bns7Kk0Rpa4pq4zt0eqAHfJ1qsmgjPeI84GDNp5EYCw=;
+        b=H94zABVEXHxKIMJCrQBkxzt72LMwdnIDpYPLTS+q0fd0y8Ti6if0SaHkg+XRDcri7c
+         Z++nGEuvG8/3aUoYIYzBgh5/BUkSVrBBG6d4+cF+eofLgVcg0kUXydpPqo+fRqzSjnTi
+         HRYWOEY/FLF3v3qe+sHYegXDkcdVaykA1kUlHUywYA6oFB/KBOyU4ZAdPmXMjBzwwwJu
+         e9Wu5niOC3xWyxPxmHombGhHg5En3JLf43GPGGIof64GJZ1lEpQLCB+NqMBSGYemRBvJ
+         72vFyT/1EaZgB3MsSLPgRL9ztn1Yl5djwDjfDeZoXHcLq50GiNHktcSqkBt1fLH3W/+R
+         GTMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753371047; x=1753975847;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bns7Kk0Rpa4pq4zt0eqAHfJ1qsmgjPeI84GDNp5EYCw=;
+        b=YM06WEwLZdlB8KywtXlChw5FDPnAMLUl6yQcWVGoOE5RKBk35uAQmqRxSAL+aelx9a
+         HLLUzXt/1cOKBQS7JAQr67uqYjvGB83x4BNJq0IUFvM3tajeBGCEo0ZWrx8TSfbM8eV1
+         Lkv8Zre7CFTRzkK8L5vm1Qt005ko2A47+AKW/pwoNtDrwlQA1qAIshciH3HIHoWu8Jxx
+         B60hghWSMVvKRhr78jX/a9pZYtK3+Q02XS/OOPzVcoqe8slFLHeyFogt3aQwDzCgolgv
+         W7D76GEo1grmxlv7yIyolHSCRKNdv8gMRZQclfM06I4hUf1YUrU7nDbahE3eD3vmIWoI
+         yJMw==
+X-Forwarded-Encrypted: i=1; AJvYcCVKElG4POiazA2yJGT4U9hUd+CMIZnyJDqKtDFk/lfQrWcXOwCOKf6cABZ34mkS+jJciYHJkow3W+1VY5c3@vger.kernel.org, AJvYcCXZ/CdVVSn0B+4AzZa17Q8IPYKsubUGoYR8afOdzbAi0PO+Fehl2lt3khoDom64QCup09s=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxXge/FORnU6p1otbyOjmbjNaQLw93+ciqWLvjupPV8sppJL86E
+	G5tqMdrAigWW92xY3YotTQDtaA8Y3TbNEW0sXoOUdZD5ETBkSqoEqnXX1UFe836d3mvMXZXTYjD
+	Rgc8FDzSKPH2cFlTRoX2D+zjj9YCgXak=
+X-Gm-Gg: ASbGnctpCGAgudH9njojdoRKJrX4S/BnrvjlkuA+9UrGnIZ+Ei25yIEyPEdbvvWqums
+	yMXABW59l84l0Ysxo0O0P7reakz4i2pqqUqevQVEvGYcqMMa9KG1jwaN6ALytoPSzEDyTB6ejhb
+	+6rq6rc/ZWYZeRB9EuTPyFwftwbI71Ar5I0rM/yReiNG+6i0q00OTNZtpIHPK4Yxp4mj+Q9WLse
+	uONSYY=
+X-Google-Smtp-Source: AGHT+IFneajSujJFQ97vJcxifdOb9B3fL1wtrAniITfCV3VYjoOZ3QlmTUWuT4bgBenSgy2Gnd2jFCXUqEkPtzVI9bw=
+X-Received: by 2002:a05:622a:10e:b0:4ab:5429:f961 with SMTP id
+ d75a77b69052e-4ae6df467a1mr98689901cf.35.1753371046736; Thu, 24 Jul 2025
+ 08:30:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250724141929.691853-1-duanchenghao@kylinos.cn>
+In-Reply-To: <20250724141929.691853-1-duanchenghao@kylinos.cn>
+From: Vincent Li <vincent.mc.li@gmail.com>
+Date: Thu, 24 Jul 2025 08:30:35 -0700
+X-Gm-Features: Ac12FXzYVMc9LtJ5ub-Hay_uu6iwvZYf5WJFpfcdpSQsl15oaprz3hONyJyeCuw
+Message-ID: <CAK3+h2zirm6cV2tAbd38RSYSF3=B1qZ+9jm_GZPsAPrMtaozmg@mail.gmail.com>
+Subject: Re: [PATCH v4 0/5] Support trampoline for LoongArch
+To: Chenghao Duan <duanchenghao@kylinos.cn>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	yangtiezhu@loongson.cn, hengqi.chen@gmail.com, chenhuacai@kernel.org, 
+	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, kernel@xen0n.name, 
+	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, bpf@vger.kernel.org, 
+	guodongtai@kylinos.cn, youling.tang@linux.dev, jianghaoran@kylinos.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Delete fexit_noreturns.c files and migrate the cases into
-tracing_failure.c files.
+On Thu, Jul 24, 2025 at 7:19=E2=80=AFAM Chenghao Duan <duanchenghao@kylinos=
+.cn> wrote:
+>
+> v4:
+> 1. Delete the #3 patch of version V3.
+>
+> 2. Add 5 NOP instructions in build_prologue().
+>    Reserve space for the move_imm + jirl instruction.
+>
+> 3. Differentiate between direct jumps and ftrace jumps of trampoline:
+>    direct jumps skip 5 instructions.
+>    ftrace jumps skip 2 instructions.
+>
+> 4. Remove the generation of BL jump instructions in emit_jump_and_link().
+>    After the trampoline ends, it will jump to the specified register.
+>    The BL instruction writes PC+4 to r1 instead of allowing the
+>    specification of rd.
+>
+> -----------------------------------------------------------------------
+> Historical Version:
+> v3:
+> 1. Patch 0003 adds EXECMEM_BPF memory type to the execmem subsystem.
+>
+> 2. Align the size calculated by arch_bpf_trampoline_size to page
+> boundaries.
+>
+> 3. Add the flush icache operation to larch_insn_text_copy.
+>
+> 4. Unify the implementation of bpf_arch_xxx into the patch
+> "0004-LoongArch-BPF-Add-bpf_arch_xxxxx-support-for-Loong.patch".
+>
+> 5. Change the patch order. Move the patch
+> "0002-LoongArch-BPF-Update-the-code-to-rename-validate_.patch" before
+> "0005-LoongArch-BPF-Add-bpf-trampoline-support-for-Loon.patch".
+>
+> URL for version v3:
+> https://lore.kernel.org/all/20250709055029.723243-1-duanchenghao@kylinos.=
+cn/
+> ---------
+> v2:
+> 1. Change the fixmap in the instruction copy function to set_memory_xxx.
+>
+> 2. Change the implementation method of the following code.
+>         - arch_alloc_bpf_trampoline
+>         - arch_free_bpf_trampoline
+>         Use the BPF core's allocation and free functions.
+>
+>         - bpf_arch_text_invalidate
+>         Operate with the function larch_insn_text_copy that carries
+>         memory attribute modifications.
+>
+> 3. Correct the incorrect code formatting.
+>
+> URL for version v2:
+> https://lore.kernel.org/all/20250618105048.1510560-1-duanchenghao@kylinos=
+.cn/
+> ---------
+> v1:
+> Support trampoline for LoongArch. The following feature tests have been
+> completed:
+>         1. fentry
+>         2. fexit
+>         3. fmod_ret
+>
+> TODO: The support for the struct_ops feature will be provided in
+> subsequent patches.
+>
+> URL for version v1:
+> https://lore.kernel.org/all/20250611035952.111182-1-duanchenghao@kylinos.=
+cn/
+> -----------------------------------------------------------------------
+>
+> Chenghao Duan (4):
+>   LoongArch: Add larch_insn_gen_{beq,bne} helpers
+>   LoongArch: BPF: Update the code to rename validate_code to
+>     validate_ctx
+>   LoongArch: BPF: Add bpf_arch_xxxxx support for Loongarch
+>   LoongArch: BPF: Add bpf trampoline support for Loongarch
+>
+> Tiezhu Yang (1):
+>   LoongArch: BPF: Add struct ops support for trampoline
+>
+>  arch/loongarch/include/asm/inst.h |   3 +
+>  arch/loongarch/kernel/inst.c      |  60 ++++
+>  arch/loongarch/net/bpf_jit.c      | 521 +++++++++++++++++++++++++++++-
+>  arch/loongarch/net/bpf_jit.h      |   6 +
+>  4 files changed, 589 insertions(+), 1 deletion(-)
+>
+> --
+> 2.25.1
+>
 
-The result:
+Tested the whole patch series and it resolved the xdp-tool xdp-filter issue
 
- $ tools/testing/selftests/bpf/test_progs -t tracing_failure/fexit_noreturns
- #467/4   tracing_failure/fexit_noreturns:OK
- #467     tracing_failure:OK
- Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
+[root@fedora ~]# xdp-loader status
+CURRENT XDP PROGRAM STATUS:
 
-Signed-off-by: KaFai Wan <kafai.wan@linux.dev>
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
----
- .../bpf/prog_tests/fexit_noreturns.c          |  9 ----
- .../bpf/prog_tests/tracing_failure.c          | 47 +++++++++++++------
- .../selftests/bpf/progs/fexit_noreturns.c     | 15 ------
- .../selftests/bpf/progs/tracing_failure.c     |  6 +++
- 4 files changed, 39 insertions(+), 38 deletions(-)
- delete mode 100644 tools/testing/selftests/bpf/prog_tests/fexit_noreturns.c
- delete mode 100644 tools/testing/selftests/bpf/progs/fexit_noreturns.c
+Interface        Prio  Program name      Mode     ID   Tag
+  Chain actions
+---------------------------------------------------------------------------=
+-----------
+lo                     xdp_dispatcher    skb      53   4d7e87c0d30db711
+ =3D>              10     xdpfilt_alw_all           62
+320c53c06933a8fa  XDP_PASS
+dummy0                 <No XDP program loaded!>
+sit0                   <No XDP program loaded!>
+enp0s3f0               <No XDP program loaded!>
+wlp3s0                 <No XDP program loaded!>
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_noreturns.c b/tools/testing/selftests/bpf/prog_tests/fexit_noreturns.c
-deleted file mode 100644
-index 568d3aa48a78..000000000000
---- a/tools/testing/selftests/bpf/prog_tests/fexit_noreturns.c
-+++ /dev/null
-@@ -1,9 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--
--#include <test_progs.h>
--#include "fexit_noreturns.skel.h"
--
--void test_fexit_noreturns(void)
--{
--	RUN_TESTS(fexit_noreturns);
--}
-diff --git a/tools/testing/selftests/bpf/prog_tests/tracing_failure.c b/tools/testing/selftests/bpf/prog_tests/tracing_failure.c
-index 39b59276884a..10e231965589 100644
---- a/tools/testing/selftests/bpf/prog_tests/tracing_failure.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tracing_failure.c
-@@ -28,37 +28,54 @@ static void test_bpf_spin_lock(bool is_spin_lock)
- 	tracing_failure__destroy(skel);
- }
- 
--static void test_tracing_deny(void)
-+static void test_tracing_fail_prog(const char *prog_name, const char *exp_msg)
- {
- 	struct tracing_failure *skel;
-+	struct bpf_program *prog;
- 	char log_buf[256];
--	int btf_id, err;
--
--	/* __rcu_read_lock depends on CONFIG_PREEMPT_RCU */
--	btf_id = libbpf_find_vmlinux_btf_id("__rcu_read_lock", BPF_TRACE_FENTRY);
--	if (btf_id <= 0) {
--		test__skip();
--		return;
--	}
-+	int err;
- 
- 	skel = tracing_failure__open();
- 	if (!ASSERT_OK_PTR(skel, "tracing_failure__open"))
- 		return;
- 
--	bpf_program__set_autoload(skel->progs.tracing_deny, true);
--	bpf_program__set_log_buf(skel->progs.tracing_deny, log_buf, sizeof(log_buf));
-+	prog = bpf_object__find_program_by_name(skel->obj, prog_name);
-+	if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
-+		goto out;
-+
-+	bpf_program__set_autoload(prog, true);
-+	bpf_program__set_log_buf(prog, log_buf, sizeof(log_buf));
- 
- 	err = tracing_failure__load(skel);
- 	if (!ASSERT_ERR(err, "tracing_failure__load"))
- 		goto out;
- 
--	ASSERT_HAS_SUBSTR(log_buf,
--			  "Attaching tracing programs to function '__rcu_read_lock' is rejected.",
--			  "log_buf");
-+	ASSERT_HAS_SUBSTR(log_buf, exp_msg, "log_buf");
- out:
- 	tracing_failure__destroy(skel);
- }
- 
-+static void test_tracing_deny(void)
-+{
-+	int btf_id;
-+
-+	/* __rcu_read_lock depends on CONFIG_PREEMPT_RCU */
-+	btf_id = libbpf_find_vmlinux_btf_id("__rcu_read_lock", BPF_TRACE_FENTRY);
-+	if (btf_id <= 0) {
-+		test__skip();
-+		return;
-+	}
-+
-+	test_tracing_fail_prog("tracing_deny",
-+			       "Attaching tracing programs to function '__rcu_read_lock' is rejected.");
-+}
-+
-+static void test_fexit_noreturns(void)
-+{
-+	test_tracing_fail_prog("fexit_noreturns",
-+			       "Attaching fexit/fmod_ret to __noreturn function 'do_exit' is rejected.");
-+}
-+
- void test_tracing_failure(void)
- {
- 	if (test__start_subtest("bpf_spin_lock"))
-@@ -67,4 +84,6 @@ void test_tracing_failure(void)
- 		test_bpf_spin_lock(false);
- 	if (test__start_subtest("tracing_deny"))
- 		test_tracing_deny();
-+	if (test__start_subtest("fexit_noreturns"))
-+		test_fexit_noreturns();
- }
-diff --git a/tools/testing/selftests/bpf/progs/fexit_noreturns.c b/tools/testing/selftests/bpf/progs/fexit_noreturns.c
-deleted file mode 100644
-index b1c33d958ae2..000000000000
---- a/tools/testing/selftests/bpf/progs/fexit_noreturns.c
-+++ /dev/null
-@@ -1,15 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--
--#include <linux/bpf.h>
--#include <bpf/bpf_helpers.h>
--#include <bpf/bpf_tracing.h>
--#include "bpf_misc.h"
--
--char _license[] SEC("license") = "GPL";
--
--SEC("fexit/do_exit")
--__failure __msg("Attaching fexit/fmod_ret to __noreturn function 'do_exit' is rejected.")
--int BPF_PROG(noreturns)
--{
--	return 0;
--}
-diff --git a/tools/testing/selftests/bpf/progs/tracing_failure.c b/tools/testing/selftests/bpf/progs/tracing_failure.c
-index 58d2777014e1..65e485c4468c 100644
---- a/tools/testing/selftests/bpf/progs/tracing_failure.c
-+++ b/tools/testing/selftests/bpf/progs/tracing_failure.c
-@@ -24,3 +24,9 @@ int BPF_PROG(tracing_deny)
- {
- 	return 0;
- }
-+
-+SEC("?fexit/do_exit")
-+int BPF_PROG(fexit_noreturns)
-+{
-+	return 0;
-+}
--- 
-2.43.0
-
+you can add Tested-by: Vincent Li <vincent.mc.li@gmail.com>
 
