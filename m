@@ -1,225 +1,350 @@
-Return-Path: <bpf+bounces-64244-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64245-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C62CB10779
-	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 12:11:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6C2AB107C6
+	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 12:28:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C55803ADAE5
-	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 10:11:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2689916845A
+	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 10:28:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2DE525FA05;
-	Thu, 24 Jul 2025 10:11:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B42E264636;
+	Thu, 24 Jul 2025 10:28:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bTjpcpdW"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="gpCF89wS"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A9FC25F7BF
-	for <bpf@vger.kernel.org>; Thu, 24 Jul 2025 10:11:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F2721553A3;
+	Thu, 24 Jul 2025 10:28:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753351896; cv=none; b=F+qB2lcH5rQgxj1PO1cFNM9QFKh12wBnW4vFfJerPuvMl5quNBkYj2EYr6WtwKatuo1CgrT8eFmqf4nt6O+NFxIX07LvuxAi2EMX0q/t5L/cJhYpkLRqeU+EFgwvUdnVuUNa2sInFZaAoBpIZUGYktg5NLPd+cvVF4TNkVRF2jg=
+	t=1753352921; cv=none; b=iNWxIoTPAk7bsCgYrzOKPi2tfmXCVP2WqeG/yCHg54zDD/YZfpFkrCnpgZGZfNPVZrAgEFThGB0Hyt0eQnMBHvmj3ayoqQ31Woc1h7mKzZiYvXUkjuphA16RECRKKxfhYuvMxYLBDMem0TJQRFIGi/bI8+nCsChPZUc9pdzEjdQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753351896; c=relaxed/simple;
-	bh=X4LxTS5i+PxsXL1VybcAeYqmFr4xbvNvNF5oA121biY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FRtv8bofnL9xa0VxfibSW5A89itLJEQ5N+Adn2JP2kpx/opIbB0c9lqrj4p+p8UEeuzO7pUwTe8V9gZK8rkvRjUINdG4GIif2/cM5LBZl6lwy6ZK/iR1xFwmw+66uQVFLr2EWunyXcYw4uCA56IKOpL3PWtI6mBNZfWlsBWz0VE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bTjpcpdW; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1753351892;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pS9NCCf2Sfvw3i8ZJqrYBibPyYM/pNsOcOcTrtQHKAc=;
-	b=bTjpcpdW46GLbJsp9xV9qvxzf5eAKu0H4Yjjgy+SGXcuW1Tg5+Vyn7cI29czwMijtxUMfh
-	F0vSDJfbRp3grs1TOdn4g8Gsd4WiU8UcPksxKZk0GJIx6yvh+3xl+C9MxaYXjuhECU9J40
-	CwCbxHtSYyLOWEsgVO1hzDONcWZd51g=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-57-EC5wkThUNsS2CAaEMtnlmw-1; Thu, 24 Jul 2025 06:11:30 -0400
-X-MC-Unique: EC5wkThUNsS2CAaEMtnlmw-1
-X-Mimecast-MFC-AGG-ID: EC5wkThUNsS2CAaEMtnlmw_1753351890
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-43e9b0fd00cso5021485e9.0
-        for <bpf@vger.kernel.org>; Thu, 24 Jul 2025 03:11:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753351890; x=1753956690;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pS9NCCf2Sfvw3i8ZJqrYBibPyYM/pNsOcOcTrtQHKAc=;
-        b=vhjK3BFePVlzFv4mRGjp0ShkEgB8m7mnX8jo1rKYnQ2d0V+/hd4jhCuZlPLchXdnrK
-         kVA7YRwZEazJM0V0QvWlNuwbCx6YXmCCXo/sC9DeEit25ef/SpREUp3cXbOQ+amUOpCQ
-         tjm6bbNvwnJLfra2Vl+rasVcjhrAM8P/OSL6YGPyHrlrW372zo7D+P+oeR/bSNtJqVYX
-         1uzv2BQNHadLiDzbTOyX/nt3M99XLXurNUjGRu9VCWWg3QTJg1EwZ+u8WamtunEmCMIt
-         C6WjyRF0/ml4zS0TI6j3qXj3httLB0xKBxm+QXgUPG1nhp5OnBmCy4VFhMfSk++ZsHf+
-         Zy7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVDjJQOkohhdfzbCFi7c/EBppHlPmMRuPA3HAfOCa/DEaAJ2ZfbvdkCY9VT+hdrHOoHDIE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzOF8z8zf2WbTusnYvG28InBk5tK09eSYktVVlGlGhV42mv2Xq+
-	jcnOVw482TAe3h2Bgq4zJuH7ljlHEthap0MVp3ynWlrTjdwl+ki6jb2l9XWKodAxQS2Cf5B37tB
-	ETItwMVQXUGJnP8+nbAiipR0GU63ZFiXCNmwPrOazQHtaPHhniYC0ZQ==
-X-Gm-Gg: ASbGnct18I2wovWmeaimg4TTgXhBn8AFBUOYSc7DpzZwKrR+FOh9d80xdG3fG076/nz
-	U2tJKzxWlEI/7HLKN6s08miF96IOcPoejm9KUxdzvADyGIxzqRZg5Z+yLABB/FoRxT0gvS0DNnL
-	NBOghfEXJPPfsytwU5S9uFtT9Ot4wKMA+I8szLqSyKmcMgoa7EhF41cddMljPPqb5JU3K9u9p+I
-	e/yn56fZTrtfMgt1KhF9DYP57e7kdNe1dKDWS74MJzPeV3KhVFLM2QdoAStAbzC1vrazSHZGlDY
-	OiRRAtpMab8FBsZsxdl16DZP4ndSsBbFdxqYfUseSz7BiuuSB8q/a6YmW6gdxHE7z9Kv7RYDRTi
-	hhj/mmYhFoSQ=
-X-Received: by 2002:a05:600c:c170:b0:456:189e:223a with SMTP id 5b1f17b1804b1-45870550e93mr14438285e9.10.1753351889710;
-        Thu, 24 Jul 2025 03:11:29 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEBMjObt5JtHA4ACAHGVVyxZl3C3/PraQ2IGfSAMKpvhEeAUO7+x8UElb4i59tY0tQI1hNZGQ==
-X-Received: by 2002:a05:600c:c170:b0:456:189e:223a with SMTP id 5b1f17b1804b1-45870550e93mr14437705e9.10.1753351889187;
-        Thu, 24 Jul 2025 03:11:29 -0700 (PDT)
-Received: from ?IPV6:2a0d:3344:2712:7e10:4d59:d956:544f:d65c? ([2a0d:3344:2712:7e10:4d59:d956:544f:d65c])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45870568fb1sm14407255e9.27.2025.07.24.03.11.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jul 2025 03:11:28 -0700 (PDT)
-Message-ID: <77ce8301-38e5-4d13-9b76-0d731f8b6a7e@redhat.com>
-Date: Thu, 24 Jul 2025 12:11:25 +0200
+	s=arc-20240116; t=1753352921; c=relaxed/simple;
+	bh=jj/0BmB+B8j3Zeuc2p8c35sBALxZfgn/rN0S8ORXtHc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tI6apBHMHs0nGNu7xQurwSbVVeXeidsIl1HIavNaTED/Io/gTPbyZUEPzP/E/P/VY0d8DYr4kitSVG7YZyX1NV5S68ClAo43Wd0stGpTf1O6/+ilAvv2xVsdtXL1/PeJWWFAGoHpRAUWfsFl28iubxWFuT9cufTx8/qlDcqXVUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=gpCF89wS; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56O903hn013613;
+	Thu, 24 Jul 2025 10:28:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=IW0OO2vbd7Yt+fVJKmVhfh+MRawsOK
+	Z3s7Mh1qAcyUk=; b=gpCF89wSWC5hCyJ1x0NbaDxcFY5KNtRIh3h4BZXnjehhHi
+	ScuSrt1eUF4PNn0VPc4pAlez8/1bJBcUDGFIHofsXl7iVepayUu3LmKYxkvjbMnh
+	MdmWbpjDgtj70maJD1eUAo2SflIjJcJR3zAm01zCdEK/ekmU5wzns9AjH2Gny1y0
+	1wkQaqjCLFKZTTdRvr0m3t65RiYclvV4NhsgvlPqoeqWBLk1SonB26kWzXBNYwkS
+	3ldVdDbvXm7/ZXHGfNcHL48sgcwMj7LzuhgMFqOlge0921AZ9zPyL7tlMU5fxpJ0
+	DIpxJFpgZQb1clEBaPTKFUqufTAGLbGnBnjStD3g==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 482ffqj32v-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 24 Jul 2025 10:28:00 +0000 (GMT)
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 56OARxo7007806;
+	Thu, 24 Jul 2025 10:27:59 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 482ffqj32q-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 24 Jul 2025 10:27:59 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56O8Z3F8024744;
+	Thu, 24 Jul 2025 10:27:58 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 480rd2kuhj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 24 Jul 2025 10:27:58 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 56OARscI57540936
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 24 Jul 2025 10:27:54 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id A483E2004D;
+	Thu, 24 Jul 2025 10:27:54 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0672220040;
+	Thu, 24 Jul 2025 10:27:50 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.109.219.153])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Thu, 24 Jul 2025 10:27:49 +0000 (GMT)
+Date: Thu, 24 Jul 2025 15:57:47 +0530
+From: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+To: puranjay@kernel.org
+Cc: Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Hari Bathini <hbathini@linux.ibm.com>,
+        Naveen N Rao <naveen@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+        Peilin Ye <yepeilin@google.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, "Paul E . McKenney" <paulmck@kernel.org>,
+        lkmm@lists.linux.dev
+Subject: Re: [PATCH RESEND bpf-next 1/1] powerpc64/bpf: Add jit support for
+ load_acquire and store_release
+Message-ID: <aIIKo39dK22ew1T5@linux.ibm.com>
+References: <20250717202935.29018-1-puranjay@kernel.org>
+ <20250717202935.29018-2-puranjay@kernel.org>
+ <mb61pfreuy1rm.fsf@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [EXTERNAL] [PATCH] net: otx2: handle NULL returned by
- xdp_convert_buff_to_frame()
-To: Geethasowjanya Akula <gakula@marvell.com>,
- Chenyuan Yang <chenyuan0y@gmail.com>,
- Sunil Kovvuri Goutham <sgoutham@marvell.com>,
- Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
- Hariprasad Kelam <hkelam@marvell.com>, Bharat Bhushan
- <bbhushan2@marvell.com>, "andrew+netdev@lunn.ch" <andrew+netdev@lunn.ch>,
- "davem@davemloft.net" <davem@davemloft.net>,
- "edumazet@google.com" <edumazet@google.com>,
- "kuba@kernel.org" <kuba@kernel.org>, "ast@kernel.org" <ast@kernel.org>,
- "daniel@iogearbox.net" <daniel@iogearbox.net>,
- "hawk@kernel.org" <hawk@kernel.org>,
- "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
- "sdf@fomichev.me" <sdf@fomichev.me>, Suman Ghosh <sumang@marvell.com>
-Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- "zzjas98@gmail.com" <zzjas98@gmail.com>
-References: <20250723003243.1245357-1-chenyuan0y@gmail.com>
- <CH0PR18MB43399E06C1EDC7DE70AE7170CD5FA@CH0PR18MB4339.namprd18.prod.outlook.com>
- <CH0PR18MB4339EE7E08DBD7A4F6E3EA72CD5FA@CH0PR18MB4339.namprd18.prod.outlook.com>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <CH0PR18MB4339EE7E08DBD7A4F6E3EA72CD5FA@CH0PR18MB4339.namprd18.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <mb61pfreuy1rm.fsf@kernel.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzI0MDA3NSBTYWx0ZWRfXwpYsStwbaguj
+ MLZnE4B8pwCWmnyqwfAGsygQ+k4ngWMHO3Q2qMwk5h0bZKOxXabjEm3imY4Pl6LK+0JNlmHmiUX
+ RUoy3aCHkx2KfDTjP0VJ5DeqdPxAdnMJSe2Mp6lhv4ez6JqiFRcXRmuEr2Pnz+fJola8W7wni2l
+ LA9mBjOvse+z7yZQmT2FtPFgSpV2AB+ucLB2T2dVxG5oIt7tMrvBwUBNp18I5WqAyAcLBXw3ws3
+ y4QupxIw7Ckle3Wj601Kv0UbNJExe++xybZHYrGLQyXo3SyemDHUbMOMTTgZajiTIWkWte9q+WI
+ l3mr40WiB7Mlgh1M5gDLgaIN12/ubHSK5KRnrNsq9ul/Ut1a3tiF7UrN0hrimYKlDOUIR/PUmCQ
+ rfUlGtbl0cRbARFhv4dLWshPkvbxh1tw3F6mDRJCri6NRGsxBQ6IoXkhngCqURLj8SVSzYAn
+X-Proofpoint-ORIG-GUID: hsfdS3Djti54WQWz0Goe9_004e2_6AhU
+X-Proofpoint-GUID: 14fYURJF-xzHmQylf5GWj7RKAYiVY2n2
+X-Authority-Analysis: v=2.4 cv=eqvfzppX c=1 sm=1 tr=0 ts=68820ab0 cx=c_pps
+ a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
+ a=kj9zAlcOel0A:10 a=Wb1JkmetP80A:10 a=NEAV23lmAAAA:8 a=VwQbUJbxAAAA:8
+ a=VnNF1IyMAAAA:8 a=ilFHw0CSd9IqsmPWPxAA:9 a=CjuIK1q_8ugA:10
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-07-24_01,2025-07-24_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 mlxscore=0 spamscore=0 lowpriorityscore=0 malwarescore=0
+ phishscore=0 clxscore=1011 suspectscore=0 bulkscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
+ definitions=main-2507240075
 
-On 7/23/25 5:36 AM, Geethasowjanya Akula wrote:
->> -----Original Message-----
->> From: Geethasowjanya Akula
->> Sent: Wednesday, July 23, 2025 8:59 AM
->> To: Chenyuan Yang <chenyuan0y@gmail.com>; Sunil Kovvuri Goutham
->> <sgoutham@marvell.com>; Subbaraya Sundeep Bhatta
->> <sbhatta@marvell.com>; Hariprasad Kelam <hkelam@marvell.com>; Bharat
->> Bhushan <bbhushan2@marvell.com>; andrew+netdev@lunn.ch;
->> davem@davemloft.net; edumazet@google.com; kuba@kernel.org;
->> pabeni@redhat.com; ast@kernel.org; daniel@iogearbox.net;
->> hawk@kernel.org; john.fastabend@gmail.com; sdf@fomichev.me; Suman
->> Ghosh <sumang@marvell.com>
->> Cc: netdev@vger.kernel.org; bpf@vger.kernel.org; zzjas98@gmail.com
->> Subject: RE: [EXTERNAL] [PATCH] net: otx2: handle NULL returned by
->> xdp_convert_buff_to_frame()
->>
->>
->>
->>> -----Original Message-----
->>> From: Chenyuan Yang <chenyuan0y@gmail.com>
->>> Sent: Wednesday, July 23, 2025 6:03 AM
->>> To: Sunil Kovvuri Goutham <sgoutham@marvell.com>; Geethasowjanya
->> Akula
->>> <gakula@marvell.com>; Subbaraya Sundeep Bhatta <sbhatta@marvell.com>;
->>> Hariprasad Kelam <hkelam@marvell.com>; Bharat Bhushan
->>> <bbhushan2@marvell.com>; andrew+netdev@lunn.ch;
->> davem@davemloft.net;
->>> edumazet@google.com; kuba@kernel.org; pabeni@redhat.com;
->>> ast@kernel.org; daniel@iogearbox.net; hawk@kernel.org;
->>> john.fastabend@gmail.com; sdf@fomichev.me; Suman Ghosh
->>> <sumang@marvell.com>
->>> Cc: netdev@vger.kernel.org; bpf@vger.kernel.org; zzjas98@gmail.com;
->>> Chenyuan Yang <chenyuan0y@gmail.com>
->>> Subject: [EXTERNAL] [PATCH] net: otx2: handle NULL returned by
->>> xdp_convert_buff_to_frame()
->>>
->>> The xdp_convert_buff_to_frame() function can return NULL when there is
->>> insufficient headroom in the buffer to store the xdp_frame structure or
->>> when the driver didn't reserve enough tailroom for skb_shared_info.
->>>
->>> Currently, the otx2 driver does not check for this NULL return value in
->>> two critical paths within otx2_xdp_rcv_pkt_handler():
->>>
->>> 1. XDP_TX case: Passes potentially NULL xdpf to otx2_xdp_sq_append_pkt()
->> 2.
->>> XDP_REDIRECT error path: Calls xdp_return_frame() with potentially NULL
->>>
->>> This can lead to kernel crashes due to NULL pointer dereference.
->>>
->>> Fix by adding proper NULL checks in both paths. For XDP_TX, return
->>> false to indicate packet should be dropped. For XDP_REDIRECT error
->>> path, only call
->>> xdp_return_frame() if conversion succeeded, otherwise manually free the
->>> page.
->>>
->>> Please correct me if any error path is incorrect.
->>>
->>> This is similar to the commit cc3628dcd851
->>> ("xen-netfront: handle NULL returned by xdp_convert_buff_to_frame()").
->>>
->>> Signed-off-by: Chenyuan Yang <chenyuan0y@gmail.com>
->>> Fixes: 94c80f748873 ("octeontx2-pf: use xdp_return_frame() to free xdp
->>> buffers")
->>> ---
->>> drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c | 8 +++++++-
->>> 1 file changed, 7 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
->>> b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
->>> index 99ace381cc78..0c4c050b174a 100644
->>> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
->>> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
->>> @@ -1534,6 +1534,9 @@ static bool otx2_xdp_rcv_pkt_handler(struct
->>> otx2_nic *pfvf,
->>> 		qidx += pfvf->hw.tx_queues;
->>> 		cq->pool_ptrs++;
->>> 		xdpf = xdp_convert_buff_to_frame(&xdp);
->>> +		if (unlikely(!xdpf))
->>> +			return false;
->>> +
->>> 		return otx2_xdp_sq_append_pkt(pfvf, xdpf,
->>> 					      cqe->sg.seg_addr,
->>> 					      cqe->sg.seg_size,
->>> @@ -1558,7 +1561,10 @@ static bool otx2_xdp_rcv_pkt_handler(struct
->>> otx2_nic *pfvf,
->>> 		otx2_dma_unmap_page(pfvf, iova, pfvf->rbsize,
->>> 				    DMA_FROM_DEVICE);
->>> 		xdpf = xdp_convert_buff_to_frame(&xdp);
->>> -		xdp_return_frame(xdpf);
->>> +		if (likely(xdpf))
->>> +			xdp_return_frame(xdpf);
->>> +		else
->>> +			put_page(page);
->> Thanks for the fix. Given that the page is already freed, returning true in this
->> case makes sense.
-> This change might not be directly related to the current patch, though. You can either 
-> include it here or we can submit a follow-up patch to address it.
+On Thu, Jul 17, 2025 at 08:56:45PM +0000, puranjay@kernel.org wrote:
+> Puranjay Mohan <puranjay@kernel.org> writes:
+> 
+> Somehow the cover letter for this patch was missed, adding it here:
+> 
+> To test the functionality of these special instructions, a tool called
+> blitmus[0] was used to convert the following baseline litmus test[1] to bpf
+> programs:
+> 
+>  C MP+poonceonces
+> 
+>  (*
+>   * Result: Sometimes
+>   *
+>   * Can the counter-intuitive message-passing outcome be prevented with
+>   * no ordering at all?
+>   *)
+> 
+>  {}
+> 
+>  P0(int *buf, int *flag)
+>  {
+>          WRITE_ONCE(*buf, 1);
+>          WRITE_ONCE(*flag, 1);
+>  }
+> 
+>  P1(int *buf, int *flag)
+>  {
+>          int r0;
+>          int r1;
+> 
+>          r0 = READ_ONCE(*flag);
+>          r1 = READ_ONCE(*buf);
+>  }
+> 
+>  exists (1:r0=1 /\ 1:r1=0) (* Bad outcome. *)
+> 
+> Running the generated bpf program shows that the bad outcome is possible on
+> powerpc:
+> 
+>  [fedora@linux-kernel blitmus]$ sudo ./mp_poonceonces
+>  Starting litmus test with configuration:
+>    Test: MP+poonceonces
+>    Iterations: 4100
+> 
+>  Test MP+poonceonces Allowed
+>  Histogram (4 states)
+>  21548375 :>1:r0=0; 1:r1=0;
+>  301187   :>1:r0=0; 1:r1=1;
+>  337147   *>1:r0=1; 1:r1=0;
+>  18813291 :>1:r0=1; 1:r1=1;
+>  Ok
+> 
+>  Witnesses
+>  Positive: 337147, Negative: 40662853
+>  Condition exists (1:r0=1 /\ 1:r1=0) is validated
+>  Observation MP+poonceonces Sometimes 337147 40662853
+>  Time MP+poonceonces 13.48
+> 
+>  Thu Jul 17 18:12:51 UTC
+> 
+> Now the second write and the first read is converted to store_release and
+> load_acquire and it gives us the following litmus test[2]
+> 
+>  C MP+pooncerelease+poacquireonce
+> 
+>  (*
+>   * Result: Never
+>   *
+>   * This litmus test demonstrates that smp_store_release() and
+>   * smp_load_acquire() provide sufficient ordering for the message-passing
+>   * pattern.
+>   *)
+> 
+>  {}
+> 
+>  P0(int *buf, int *flag)
+>  {
+>          WRITE_ONCE(*buf, 1);
+>          smp_store_release(flag, 1);
+>  }
+> 
+>  P1(int *buf, int *flag)
+>  {
+>          int r0;
+>          int r1;
+> 
+>          r0 = smp_load_acquire(flag);
+>          r1 = READ_ONCE(*buf);
+>  }
+> 
+>  exists (1:r0=1 /\ 1:r1=0) (* Bad outcome. *)
+> 
+> 
+> Running the generated bpf program shows that the bad outcome is *not* possible
+> on powerpc with the implementation in this patch:
+> 
+>  [fedora@linux-kernel blitmus]$ sudo ./mp_pooncerelease_poacquireonce
+>  Starting litmus test with configuration:
+>    Test: MP+pooncerelease+poacquireonce
+>    Iterations: 4100
+> 
+>  Test MP+pooncerelease+poacquireonce Allowed
+>  Histogram (3 states)
+>  21036021 :>1:r0=0; 1:r1=0;
+>  14488694 :>1:r0=0; 1:r1=1;
+>  5475285  :>1:r0=1; 1:r1=1;
+>  No
+> 
+>  Witnesses
+>  Positive: 0, Negative: 41000000
+>  Condition exists (1:r0=1 /\ 1:r1=0) is NOT validated
+>  Observation MP+pooncerelease+poacquireonce Never 0 41000000
+>  Time MP+pooncerelease+poacquireonce 13.74
+> 
+>  Thu Jul 17 18:13:40 UTC
+> 
+> [0] https://github.com/puranjaymohan/blitmus
+> [1] https://github.com/puranjaymohan/blitmus/blob/main/litmus_tests/MP%2Bpoonceonces.litmus
+> [2] https://github.com/puranjaymohan/blitmus/blob/main/litmus_tests/MP%2Bpooncerelease%2Bpoacquireonce.litmus
 
-If I read correctly, returning false as the current patch is doing, will
-make the later code in otx2_rcv_pkt_handler() unconditionally use the
-just freed page.
+Hi Puranjay,
 
-I think returning true after put_page() is strictly necessary.
+Thanks for the patch. I applied the patch and tested it.
 
-/P
+Before this patch:
 
+# ./test_progs -a \
+  verifier_load_acquire,verifier_store_release,atomics
+#11/1    atomics/add:OK
+#11/2    atomics/sub:OK
+#11/3    atomics/and:OK
+#11/4    atomics/or:OK
+#11/5    atomics/xor:OK
+#11/6    atomics/cmpxchg:OK
+#11/7    atomics/xchg:OK
+#11      atomics:OK
+#528/1   verifier_load_acquire/Clang version < 18, ENABLE_ATOMICS_TESTS not defined, and/or JIT doesn't support load-acquire, use a dummy test:OK
+#528     verifier_load_acquire:OK
+#565/1   verifier_store_release/Clang version < 18, ENABLE_ATOMICS_TESTS not defined, and/or JIT doesn't support store-release, use a dummy test:OK
+#565     verifier_store_release:OK
+Summary: 3/9 PASSED, 0 SKIPPED, 0 FAILED
+
+After this patch:
+
+# ./test_progs -a \
+  verifier_load_acquire,verifier_store_release,atomics
+#11/1    atomics/add:OK
+#11/2    atomics/sub:OK
+#11/3    atomics/and:OK
+#11/4    atomics/or:OK
+#11/5    atomics/xor:OK
+#11/6    atomics/cmpxchg:OK
+#11/7    atomics/xchg:OK
+#11      atomics:OK
+#529/1   verifier_load_acquire/load-acquire, 8-bit:OK
+#529/2   verifier_load_acquire/load-acquire, 8-bit @unpriv:OK
+#529/3   verifier_load_acquire/load-acquire, 16-bit:OK
+#529/4   verifier_load_acquire/load-acquire, 16-bit @unpriv:OK
+#529/5   verifier_load_acquire/load-acquire, 32-bit:OK
+#529/6   verifier_load_acquire/load-acquire, 32-bit @unpriv:OK
+#529/7   verifier_load_acquire/load-acquire, 64-bit:OK
+#529/8   verifier_load_acquire/load-acquire, 64-bit @unpriv:OK
+#529/9   verifier_load_acquire/load-acquire with uninitialized src_reg:OK
+#529/10  verifier_load_acquire/load-acquire with uninitialized src_reg @unpriv:OK
+#529/11  verifier_load_acquire/load-acquire with non-pointer src_reg:OK
+#529/12  verifier_load_acquire/load-acquire with non-pointer src_reg @unpriv:OK
+#529/13  verifier_load_acquire/misaligned load-acquire:OK
+#529/14  verifier_load_acquire/misaligned load-acquire @unpriv:OK
+#529/15  verifier_load_acquire/load-acquire from ctx pointer:OK
+#529/16  verifier_load_acquire/load-acquire from ctx pointer @unpriv:OK
+#529/17  verifier_load_acquire/load-acquire with invalid register R15:OK
+#529/18  verifier_load_acquire/load-acquire with invalid register R15 @unpriv:OK
+#529/19  verifier_load_acquire/load-acquire from pkt pointer:OK
+#529/20  verifier_load_acquire/load-acquire from flow_keys pointer:OK
+#529/21  verifier_load_acquire/load-acquire from sock pointer:OK
+#529     verifier_load_acquire:OK
+#566/1   verifier_store_release/store-release, 8-bit:OK
+#566/2   verifier_store_release/store-release, 8-bit @unpriv:OK
+#566/3   verifier_store_release/store-release, 16-bit:OK
+#566/4   verifier_store_release/store-release, 16-bit @unpriv:OK
+#566/5   verifier_store_release/store-release, 32-bit:OK
+#566/6   verifier_store_release/store-release, 32-bit @unpriv:OK
+#566/7   verifier_store_release/store-release, 64-bit:OK
+#566/8   verifier_store_release/store-release, 64-bit @unpriv:OK
+#566/9   verifier_store_release/store-release with uninitialized src_reg:OK
+#566/10  verifier_store_release/store-release with uninitialized src_reg @unpriv:OK
+#566/11  verifier_store_release/store-release with uninitialized dst_reg:OK
+#566/12  verifier_store_release/store-release with uninitialized dst_reg @unpriv:OK
+#566/13  verifier_store_release/store-release with non-pointer dst_reg:OK
+#566/14  verifier_store_release/store-release with non-pointer dst_reg @unpriv:OK
+#566/15  verifier_store_release/misaligned store-release:OK
+#566/16  verifier_store_release/misaligned store-release @unpriv:OK
+#566/17  verifier_store_release/store-release to ctx pointer:OK
+#566/18  verifier_store_release/store-release to ctx pointer @unpriv:OK
+#566/19  verifier_store_release/store-release, leak pointer to stack:OK
+#566/20  verifier_store_release/store-release, leak pointer to stack @unpriv:OK
+#566/21  verifier_store_release/store-release, leak pointer to map:OK
+#566/22  verifier_store_release/store-release, leak pointer to map @unpriv:OK
+#566/23  verifier_store_release/store-release with invalid register R15:OK
+#566/24  verifier_store_release/store-release with invalid register R15 @unpriv:OK
+#566/25  verifier_store_release/store-release to pkt pointer:OK
+#566/26  verifier_store_release/store-release to flow_keys pointer:OK
+#566/27  verifier_store_release/store-release to sock pointer:OK
+#566     verifier_store_release:OK
+Summary: 3/55 PASSED, 0 SKIPPED, 0 FAILED
+
+Tested-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+
+Regards,
+Saket
 
