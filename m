@@ -1,418 +1,284 @@
-Return-Path: <bpf+bounces-64299-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64300-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A986B11214
-	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 22:15:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCE02B1121D
+	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 22:21:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC5B4169F2A
-	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 20:15:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE5CE5A79C2
+	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 20:21:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1167239567;
-	Thu, 24 Jul 2025 20:15:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6068239E97;
+	Thu, 24 Jul 2025 20:21:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="m83eFkuk"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g/ioImqT"
 X-Original-To: bpf@vger.kernel.org
-Received: from sonic307-21.consmr.mail.sg3.yahoo.com (sonic307-21.consmr.mail.sg3.yahoo.com [106.10.241.38])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF32A223DCC
-	for <bpf@vger.kernel.org>; Thu, 24 Jul 2025 20:15:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=106.10.241.38
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753388152; cv=none; b=Zh8Vulk5LEmy2qNJSAmV4lsGEUahgbpFTOa0vCiTazbm0lF29//dtqeGAuTN/jpRM6j1tLFad0o56GnwR6N58LiUO4QQS6/6k2oHWVPW0wxFEzWUPTFeWPeuo9BFWwKCSetQzwd4WoWF9rDnLVwQ8K+HnH4VJ99kRr3lCHHnM/8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753388152; c=relaxed/simple;
-	bh=S6ZDYt5O6xm5jRZ8gLx8OKGczxEr7L+6GVvi+61FWA8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bF8vesBwIG7xUSE10QZzRF61tcW19WYO0z423Vtksuy7g7I/ozkk7rFJYyCbdBKCpqTDU+QKxSLIkvqmTlraxBjNorxNrt13/A8nZM6WxxtY2TrCsqHo8Zo4bZ+7yolCbNQZ+Scw3tPXyzaGOjeORkKjvZ0PR2/x47XAYFQ9GDE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com; spf=pass smtp.mailfrom=yahoo.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=m83eFkuk; arc=none smtp.client-ip=106.10.241.38
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yahoo.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1753388140; bh=NGurmw6gZodHcnbTMwXOTOH3ALt8HpOyovrDsN5l9yo=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject:Reply-To; b=m83eFkuk1jVvzxa1uflmLNVuM/VJ3Ha3JdilAHSYyxbQaHjUIH9U75TemHCWd125je37yymPCAXSIVB8PprqX2/RDeYejzYx6Lfy6D6UyPjZ1f3jf2CkSs1n4zooHugTQYcGL7fWV7uk+XCh9CT/5g/aszS9FU+VPno/CQdFy2iTziuyblNFjGG5FktMnZbpl/HlQEYuPD5mZPIbmhGXzmvW1B89JoyZOUE0e5hAtO6+eFmk6gymtCtBaJbNeu/otzE/ggLTEMbryehkdW8YMhe8OaBSK0/fLkwzBGhlEMyv4EUzFim69mmu+pCfAvq4f0Bn7v3hcVnq6V/eus3uBQ==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1753388140; bh=/q5lxUxOrtsrsd43R6KDoxJn3VKwTNk0BDCP3p3LzRU=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=Ce1V5gC1u96cEvov/3Yy6w13+v8j+y7NuKdqyiD6RR7nux4D3a3OLKFDR207iaiDAGPn8HQOOAPpBwxW/JaAjp4kJbZww5NoxZEqDi9mLv7P8kkNCKTfjlg+6ulnMxPRL0xCdmem1I21SJVaD3oxkm9H18A5qScX8Uf22ZwwQdDCdDe0mIVl+GdlN4gIGxDBzNchMf9SuQ3hPDN12vikm1Ljk1KS+uNPvoQYKvff8IJNLV19s+j4KSM2rs1z20gQpMnUBetP5KzDRSPNQYvBfIrx5u5/65ylEv5Xk8jDyOIlvS4BC+DOhZFvd7MVBvcHfMAB4gdI5o6EHg9J7yZZUQ==
-X-YMail-OSG: YpIzeaAVM1kIbF2U2g7NWXcgrG1QItkbQ7NbKby3Xl1SNcSjZ4fHa.ybUbCE52X
- 2GOFg0lW7Jn_yKsyJi.H.GYx5aZ7mjouvtAJqufH1h7iC3_tFdIlikw8bnLiJPHbsuyLybpxB9jv
- gXKWKFrgQGbtJdA_S2OlPMRIjEIPl6hVDCyu3IYgbhPUrk0BOmBjRuksXwUBr8ogSqOet5LTkH8k
- EGknVYb2Skd39XujJUn.OHuRvVUYQzecN20haVTU78R.QGxUd6oqLWSEyXRYAQsj874d1Dmcso4G
- 9qUzpXggKAy4EuQ0wG5GsLFR2gdrigxb8maED8hh.BtSdDZEYLNBZ4B_ELRCm7VaQwakaPWqjqPR
- Vh4tRz0z6HQGDlX_w084BhrAUPn0.lq2_o3kgE.WpoJgtnTa4QbjSkCPndpfa01UWNahZuUxuzg8
- xLEl4RxZuV0_yoEhjbWmmrgJCVhNzhV.GzA1MFJV3H201wws1s8oRDQyK1FlcV7eht.YCE.f4KsA
- UKmH1iFCQXqYWXUgojW9v3ULii7bkEtyNOL0nIu21yEy0sSpM6bpUKbixSabqkIW8enNNSBtSdPI
- wO.dkBJTcnj02KYacr5XV.tZv0LNynDeHoDjcRVubbEjFFPR4i4b2OZafeV9_eGVT1vd2z1PKBru
- t6fVnN3g0v_3g2s9a2zHg_0TCTaceI7uVZuSclMQnvxu5cONs4LhosMVxNBv6sbe153CsJ5v0ftI
- Pvq93rIpn0MTlVOl09.ES4.0MoV5n8dN3NbkemhTM8Pn3beJVPwipmxEweW.YVP_FJzc2XiTiyK3
- kRZO9YKdUsR90RmCJCFPj_FniYSCJ0PvOg4KmAs_vCRWEwAYxqX46z01mvA_Pm4DxGxWgiTh2dXw
- u58n3x2kVatfeQWcpUGy6OGCsi3P5Y7ESAvSznevIbLvN7s9kJCYzKQu2vJZ4U2l6wkCAoWVo2rN
- HkDZdYkuxDRGKnrFcqrhv_c_tHabq0Kz_PeZMstgJnQt_xD80NyAX3uWV8rlZvcKksj1Z7Hbh2T5
- ljitfTCFhpKib2NVkZwqAoJCHuHsiMlc4AMQo3aLVEmEbA1Rl4L2z1aum03yt4naZLNMQLttKdBm
- 4tLm5xi25WypVlADPC3P9qaXar9V68MYtR3y_z6Dy1blKWREihRa6.jwdz_o56dOp6J0L7Lh1Ckd
- oXaD.HYWD7DZzLYnFCekZEO2rpfARs57tp8zELqhs.r3bTqQuDBz2gu23Az.ulIM2sQzJG4FFP0R
- SWIUum6bXCZo9MkhLMuAPme29TgIj03vzy0Z8XsRRPwnVGKzVX..5WasnQhdZeZyT3winPkWCxIF
- 69iMUQ4rM4lyyzD481CrtvrFhR9mK5SCjLQh1F66LIy4BOs2ViOpkX8P4QoaDKPcC71UptE6WYkI
- 6_itXcnjtAPOoHVeXg3T.6How_yKv59jbx_wGta2KN3NSnFNBqKNdC4dBHDFciznjQfC8dXrMF_h
- MxTFuRoWwI0GGDfdzO2k51Ouf74QxS.hAvbFWaAJLu6CdyZPSisUSzneJRgoPwk6zsDTiX1.XHcQ
- zN_tLlQ0XxzPnJeUkUXrfOzAIG9MK1FgQhjIhsEU4K7RGM8eyr1VQKcIKxGfUQljGD4jXuCkcECT
- oHCywpk_uVVzhMfvbFH4.5QE1JYnREGbZaxXfzUgti4N852piGl4RPi1nBfYhZg8St1thK1_7rpn
- NrYwvnHsB03XPU41EH5bXnwxH3HPeguzgskCn19gKzLNhp.7FCLdv7PJRjoz.ToojZJVpMJz3zb9
- 7ukX4Kl6LN9_ogLGLM0bicsQiGPT_sM4oE1lKq53qe0nO7mTnLASLs9GI0q5NZqcupyjYNsleGGF
- 8kFT634oymWFHTqG7SQsz9P_QMOXQEOYZWbFy0cB7Zaw4CMzdPtWV1whEHTr07ybe9wxQi4i.AL4
- uE8.gyHUYxfgp0kmAThwn2jDpBkF1EmVsfe9U_NxzgaELlwpdU2zgMBDOmE.tmgkETROm9IiB66q
- BuKzdZHgN3Sj4on_IIs3RjAsPpLclYX09HTmJTnBJ0Xxm86ybEtXQgYbYd6P8uvphNB.lZETM3Yb
- mkBn5bFZyqaP4Xwl7k8ZgtzneVXAz2n3TvgOo1ykMGNKfdJJw5kju2Hda_Xas9bezOHUJafe1Z6x
- 7TujpWD8IyFyEHTyjX7yvn2XAFpt1ruarwVa2sfpv7j71BQ.uWrg3KTxzYjLyF1fo94WHfO_0_QT
- ZM6MVWmZMbcIv3qAMG05sDS8adVIkuI7LADtVeFczNvLVXB4U4XoTBOg9EUTvORJg1C5e3kiNcm1
- lgHSkgK8Vwsyie8iQ_L31
-X-Sonic-MF: <sumanth.gavini@yahoo.com>
-X-Sonic-ID: d22fbf55-e853-4b46-a9b7-92f47fb303b9
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.sg3.yahoo.com with HTTP; Thu, 24 Jul 2025 20:15:40 +0000
-Received: by hermes--production-ne1-9495dc4d7-vm8nz (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID ba5944df1bf98b049dd2dbc2e489772b;
-          Thu, 24 Jul 2025 20:05:29 +0000 (UTC)
-From: Sumanth Gavini <sumanth.gavini@yahoo.com>
-To: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	yoshfuji@linux-ipv6.org,
-	dsahern@kernel.org,
-	steffen.klassert@secunet.com,
-	herbert@gondor.apana.org.au,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	sashal@kernel.org,
-	idosch@nvidia.com,
-	razor@blackwall.org,
-	petrm@nvidia.com,
-	kuniyu@amazon.com
-Cc: Sumanth Gavini <sumanth.gavini@yahoo.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	stable@vger.kernel.org,
-	skhan@linuxfoundation.org,
-	david.hunter.linux@gmail.com,
-	syzbot <syzkaller@googlegroups.com>
-Subject: [PATCH v2 6.1] net: add netdev_lockdep_set_classes() to virtual drivers
-Date: Thu, 24 Jul 2025 15:05:22 -0500
-Message-ID: <20250724200524.172820-1-sumanth.gavini@yahoo.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <1753367981-e2a8d101@stable.kernel.org>
-References: <1753367981-e2a8d101@stable.kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 714C4223DCC;
+	Thu, 24 Jul 2025 20:21:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.20
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1753388508; cv=fail; b=qfMZVTks+lhXPNA/qOu5VxyG03OHOcf00G1YRrwPeQc1oiYlGGfyBqJGPmw/qfEsS/m45pTnPh5WDect8kfUFal0IYhPdU6rW/6zdLEj51zS4QXQftQBbdDmrnZaZn320uhCl5Zkr8fUwhq9Ye+zGWJPf7mzsKK71rjZZruIArY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1753388508; c=relaxed/simple;
+	bh=R+89Ws0MwgTSJJVMN9D9vHOfa+rY0s0XUK64vTBhkvA=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=K0ZINhcYpQVEKdFw9fMUQ3UOR+bQZkfeH5Eias8zwIMRsrFratcbLuYAF2A8+ySu3bxl0kp89/lq8oPk72zfJzs+g3/w9bOQLAYs0f0IWN455atib1i7sQr1crNebCb6tGYu1TUQCsLeKUxpm/NFM/IMvtoh32tI0oOV5QCR1A0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g/ioImqT; arc=fail smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1753388507; x=1784924507;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=R+89Ws0MwgTSJJVMN9D9vHOfa+rY0s0XUK64vTBhkvA=;
+  b=g/ioImqTKhkT9HlteGtTw4lkuXIV1DIHHVVvevkPswPRL9DXWUNmbUpd
+   DhDxreuR0w7FlFDj3YtCECBWmKvb8OHub/ygpPFV4RFO/pYH7/s4ZQUUK
+   7FqbFGwzyZ0oz9MimexBCdq1E9buSLBPr9e7V8vYoktTP4nnCVE4Ij2L/
+   k6Apiuhw7xg2qA5p7TDvSdWbg2YlTnJ9CZ6C8FxMR/oVPjqJ5MQ30zcVf
+   zdMJzsPOvv7wBHg17WQbgBU9RkAi8H6buO3JeRpKzG1BAob3Aqx7goVS9
+   tUaVI5iNNYLROUoVIyePnRKjGVbxJ3o3sgrvT+P4zLnSAWCX0IESmreTu
+   w==;
+X-CSE-ConnectionGUID: kiBXLr2iTpSu/QMeY+JoQg==
+X-CSE-MsgGUID: PTdc8jpcSYyyBvpmMnv56g==
+X-IronPort-AV: E=McAfee;i="6800,10657,11501"; a="55421458"
+X-IronPort-AV: E=Sophos;i="6.16,337,1744095600"; 
+   d="scan'208";a="55421458"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2025 13:21:46 -0700
+X-CSE-ConnectionGUID: FEhsqT4TSh+x0YvTHTCfFw==
+X-CSE-MsgGUID: BhUwMbBrTMisD3ri6sUwMw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,337,1744095600"; 
+   d="scan'208";a="160773526"
+Received: from orsmsx901.amr.corp.intel.com ([10.22.229.23])
+  by fmviesa009.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2025 13:21:46 -0700
+Received: from ORSMSX903.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1748.26; Thu, 24 Jul 2025 13:21:44 -0700
+Received: from ORSEDG901.ED.cps.intel.com (10.7.248.11) by
+ ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1748.26 via Frontend Transport; Thu, 24 Jul 2025 13:21:44 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (40.107.236.43)
+ by edgegateway.intel.com (134.134.137.111) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1748.26; Thu, 24 Jul 2025 13:21:44 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=a6JGrmYpmTsYbqnwvcTSWxpOHn3ckNRTs+Xe4cr+VZk/+fi90AkQfJ74cmJyA+265GI/dOIta819iZJlqsdk2hIzCUOcRgKhI6Iv+cRSpnCqYXDUhP92PB8GJPL3oYjR5JF+0j/ug1tfGEMAyyP3CehG4dkCyFrLz5/JypaFyFna6dWvHs5Qq5XRGqum+ZR5QvHw283j/Jjtj674cot59w78E39YeAeAACdq0i9yLOUqkrxpa2+2KSjIJVHSsBS/+IL7xx/WoGBVo9wlMqNt/ssvyAhs2Q+DabCmL6Rau+YxjkuRU7luQHjeG0PBEXCrhl04nHjrNHnmpGAyDRkGQQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2IPF3nO/9tHyg8fS/CAEAXEkuHAGyEsqO1dXnaiLuTQ=;
+ b=b8D1GnFkXjNgXyK26hm6Exp3m4LVzPA2IrJtzwoiIoHCc89PWsDNplV3hNBO2IxrbD0TXWXp1dhX1Glo4wbwVIKPjivLCHReTGkQUQgtHcanYEBMgTKpBC1ZE7WZcjbdDfKL0wHYnczVgtNckJgVzUhxAQ7eBmWG/ZkL1l6V+BAm9rpKFIObTyXn+gKpE6OhgZsID5xMbZd75HcdJuD0trRhMLQBNJZ3RhFrN99s4Q62I1/haG397QajMcCwyhWaFrsa0oeSBcEbMbDCARyodmNVnn/BsH4RM7i6DUkBByUdAS4M5oWNU0DtH49GJKMeGPYIzd5JjUYpvQC4QmJ4bA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BL3PR11MB6435.namprd11.prod.outlook.com (2603:10b6:208:3bb::9)
+ by DS4PPFCAADA7A6C.namprd11.prod.outlook.com (2603:10b6:f:fc02::4d) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8943.28; Thu, 24 Jul
+ 2025 20:21:22 +0000
+Received: from BL3PR11MB6435.namprd11.prod.outlook.com
+ ([fe80::24ab:bc69:995b:e21]) by BL3PR11MB6435.namprd11.prod.outlook.com
+ ([fe80::24ab:bc69:995b:e21%4]) with mapi id 15.20.8943.028; Thu, 24 Jul 2025
+ 20:21:22 +0000
+Message-ID: <6ecfc595-04a8-42f4-b86d-fdaec793d4db@intel.com>
+Date: Thu, 24 Jul 2025 13:21:18 -0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 2/5] ixgbe: xsk: resolve the underflow of budget
+ in ixgbe_xmit_zc
+To: Jason Xing <kerneljasonxing@gmail.com>, <przemyslaw.kitszel@intel.com>,
+	<andrew+netdev@lunn.ch>, <davem@davemloft.net>, <edumazet@google.com>,
+	<kuba@kernel.org>, <pabeni@redhat.com>, <bjorn@kernel.org>,
+	<magnus.karlsson@intel.com>, <maciej.fijalkowski@intel.com>,
+	<jonathan.lemon@gmail.com>, <sdf@fomichev.me>, <ast@kernel.org>,
+	<daniel@iogearbox.net>, <hawk@kernel.org>, <john.fastabend@gmail.com>
+CC: <bpf@vger.kernel.org>, <intel-wired-lan@lists.osuosl.org>,
+	<netdev@vger.kernel.org>, Jason Xing <kernelxing@tencent.com>
+References: <20250720091123.474-1-kerneljasonxing@gmail.com>
+ <20250720091123.474-3-kerneljasonxing@gmail.com>
+Content-Language: en-US
+From: Tony Nguyen <anthony.l.nguyen@intel.com>
+In-Reply-To: <20250720091123.474-3-kerneljasonxing@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR03CA0269.namprd03.prod.outlook.com
+ (2603:10b6:303:b4::34) To BL3PR11MB6435.namprd11.prod.outlook.com
+ (2603:10b6:208:3bb::9)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL3PR11MB6435:EE_|DS4PPFCAADA7A6C:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7a123bbf-c9f8-48d3-a510-08ddcaefa838
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|366016|1800799024|921020|7053199007;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?MGc3ZWhJSmdPWkYxTUU1cHNDTTYwYmNiRTNaR0d6RmcwaitxcTlMVXQvTUlp?=
+ =?utf-8?B?MGdTVFQvRFZYNjlzUk1aY2llSi9LVEtIN05iYVh0YTh2SUppekZHT05RRWMv?=
+ =?utf-8?B?ODNWQ0NmN0VhNXIvajVzY2U5enRENjlkaGcwN3NMVnRuMWR1RG0rVmJ6NVRG?=
+ =?utf-8?B?UmlIbkhjdlFweUJuM2VFVG03U0RHcUZsZDlyV2lLbjlWY2hkOFRGWjdCTEdu?=
+ =?utf-8?B?UUErcDNFTVF6RTcvTHlzNzgyb0dwME0zUjY2QS96TXhKYmxaYjU1dmxjaXFC?=
+ =?utf-8?B?S21IR1p4N1drOE5qWHNYQTBMWWN2ekR1b3dBcSt3YXVBTHlhTDA1Qno0ejVy?=
+ =?utf-8?B?b296R09IcE41NDB6Um10YmJUdWpBSlhuRlJPRGlQRXJRcldEWm5JeG9RcUlR?=
+ =?utf-8?B?a0VKUXhBdFpscGJwUzdwSE1QbS9RcUxzRVVZNDQxNDBtTWUwc1g2YWZSQ0sy?=
+ =?utf-8?B?b3lGUkp4YmREeU5sUTA4QytBVk1JME9tSTNIZUJhQmN2VWMyN25ualNjUlRR?=
+ =?utf-8?B?azNYTEFMSFFUQnBlRC9jWWdKVlFEOGlhVENzajVyVWY1YTRtQVg4OFhDQUM2?=
+ =?utf-8?B?cWZ2WUN2UkRvek9yYUJZNlFkc1F2K1c1aWZqd2pkdVBMemtIWlNYSEhuSkdT?=
+ =?utf-8?B?YlFTV1hkaERQZXdlSytIcGNDbitxdHQrMk5tTVIrd1cyd0YyNWlNUlcvdEEv?=
+ =?utf-8?B?R1VETWxONDFrRU5XcjNUNWorZGhaZmk3MC9DMXlhZnZ0TURlcHJTU1IvME9o?=
+ =?utf-8?B?MG1rbFhxejNqc3cwNVFCWC8xUzRETm05VVBHd2RnVmZxdStNMDdQMXZtOGV4?=
+ =?utf-8?B?L3lIUm9oRGY1eHlOZWQ2aGJhSXBvYmFqZTgwTUdlT0lVTFNMMzdVcmpSK2t4?=
+ =?utf-8?B?b3RENWphV1E3T2tISDdSK245UGxZMkRwekxXR2tERmw3MlVhWVdaMjJmRnc2?=
+ =?utf-8?B?Mnc5NjIrZEMyNlUxUHpYN3o1NmlLRUZ4RUlMemJ6R2lUOXNucitoWUt5dTA5?=
+ =?utf-8?B?QmlQUEdaTldkck9uTk96dHFEdmxZUTBsRlhPb1BQTWs3Si8wWHg1S1VxeGoy?=
+ =?utf-8?B?aVZxVFZjQzkxTTkxQkl5ajM5UWZ1b2plZWt3NGxmaWhMRFV0SFNSUVV0STRJ?=
+ =?utf-8?B?OHNIQlZja0dKb1kxSXR2L1ROWVdCNVlIaHFKYS9TS0lzRXNNOUY4dHpKbTdL?=
+ =?utf-8?B?d2NOVkV6UlR4YlEzcXhHZVAzbEFHeFhyZmtEanZsZHYvQUsrSFZremlTc2Q3?=
+ =?utf-8?B?a21SeFRkN1BaUUdTM0QwVGQ2V2d4cERZMnhlTDBncXVvLzlYOEhRMWJJeXB6?=
+ =?utf-8?B?TkRiMTEzQlVLN3E1dytHV1FOUnFiaEkveUtpR1JtOG9RY1EzODVDK2FmUkJP?=
+ =?utf-8?B?SFJBajRqY05hVWgwRnJSTXVFVnFROEZrdDZUUTB2ZUJqaTF3VkZWZFJwaEM0?=
+ =?utf-8?B?bW45eStUc3VTNkwwUDg1bjJ5dDl4dVZpL2ZuUkhsNFZnb3QyL3pCSjRETHcv?=
+ =?utf-8?B?eVNDYU92Yzg0ajFFeWI5K3BraU93ZmE2cHFIa2lNVGVJeittMEtuZjRTOGVj?=
+ =?utf-8?B?b1hUZkd5VmY0TUJQM01zMTlPMEh5THo1a0VyVWdiYkhqSWlpNmhEVTZvaEFn?=
+ =?utf-8?B?ZmhYdmtjZThXQk10Q2ozNXJBQ09oTThBVnRhdzdHRVJMRjJwelEvZ3pSbXU1?=
+ =?utf-8?B?SUEvaGJHUEgyQVd3T3NjMGU2QjJuUS9ZQmF2MUJYUkEzVmpsakRGeVpNK2pt?=
+ =?utf-8?B?RmxrN3BsWlRVcll3RHNnaWMxVFEvLzMyWUtCZE4vUEh4anIyNnp6V2pJUExV?=
+ =?utf-8?B?cktDWE9KbVJLdjZlSkVvSjB4OHpoRWl4enlqTUk0RHRlL3d1b2FlRFYvRGRV?=
+ =?utf-8?B?VUc5Qzk3cWNGNzcrY3Nmb3lCZ1FyRFFTRm5TU2Urdk9hZVNzb0FWWFZiekxx?=
+ =?utf-8?B?Um1Vb2c5ZWgvbnVmeFBsQTh2Q2k1WmhUeHhOckJPRzlZMU1BUXZxQmQ1SG1j?=
+ =?utf-8?B?MDU5dE9xcTdBPT0=?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL3PR11MB6435.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024)(921020)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WHljUkFqNmpuTENPbmw0UUFzcEs4ZXpiTmVMVk9OTFFJUXU4VlA4U2N1dGRP?=
+ =?utf-8?B?eUpGWlUrVGd2L2ZKeDdDejNYTVYrVDZFaXZoNGNEd3d0cU5jaDBtMldaQVYx?=
+ =?utf-8?B?bXpkQ2dmemJ5Q0dnUHI0ckJiRVVXQ0podnVBcGoxc0ZrRzlweUFFSFpqRGxG?=
+ =?utf-8?B?bGhWY01PU01ZV2N1MU4xQlRDK0IvVzFpS2ZCdWIrZC9ZOW1zdWZuRE1WZDk3?=
+ =?utf-8?B?ei9XSENIMWI5Y2ZsOTFPRTB4ZnQ2bDNDQjlpaCszU0tjbTdlaUE0cEp3b0Fy?=
+ =?utf-8?B?TUpmM0NrVlBhWGxtLzFWclQ1OVc3djNQRUNBZ3dadGx1S2tjWTc5UEl3eXhs?=
+ =?utf-8?B?ditTSXZpWlpRY3dqNlRGU0tPdG1veGVsWkh1MnByNmZuZmw2d1VQZ0YwM1JH?=
+ =?utf-8?B?WkdNSFNSeUsyOXRLbXMzbHFaNzQ4Y0xNYVRoTEw4NDVObUhnYzRldWZOZXZ5?=
+ =?utf-8?B?REtBalU3eGN5bXF0L2lNQmFPSjRJT0pnNytqcDVGRmF2RTB2SHB4RVRyaXRl?=
+ =?utf-8?B?bFgvenh4eDNDYll4cDNSWWJqMitmYXFJZU1wVHp3bWhTem4ySEt4U2I5TGtX?=
+ =?utf-8?B?MEdhQ1FMTjM5MlB6Y29BZm5wSjdCcllSZjdRVWtaRlphNmtXcVpqeUs5YmpL?=
+ =?utf-8?B?Tkc0bGNqcEZIYlhUc2pISUJ3Tk1GOUZFRHBmZm15SkloVjc3K0hONXFKWDZB?=
+ =?utf-8?B?U0E1NW9Ob2V5T2lKYzNHYWpYTS9WN0pzOExZRG0zMG9LZ0hzWUZIU29OU1dj?=
+ =?utf-8?B?QVRlYktJbTRIRjlqVW11ZldHeWRjZU41NGMwd3BGMzBUWUtWS3o0aFREdUlO?=
+ =?utf-8?B?SHJnRWJVRU9lYWVFODBGMVVZcG5EQ0gzb05uN3plSG1McTlQeFdXTHFWT05M?=
+ =?utf-8?B?NWgxR3hyaG9NZGljVFB0UEhuQURIc0xOcjQxS3dXYWM0ekxlRURuOGcrWGY2?=
+ =?utf-8?B?Y0RuRDhqaGtiQjh4VGp4K01rdXYwOWJ4bmJVM3hVaFhFQlV3dlpwVlowQUwv?=
+ =?utf-8?B?RW1FZEFtSXdTbjJXVDd1cEt3Qy85U0dVRUhaMmRaQW15YzJOYVE1WmI4Z3lE?=
+ =?utf-8?B?TmxYdXd2R0tmc0ppaXhwd0lDNEkzUHFJUDRDTkNQaVo0ODJYdE5HeUxRYUIv?=
+ =?utf-8?B?NmpGWElZTkVERHZDSkw2SVJYRXpva05BNGJEVGZDMWNLUkhob1BUSjRzeUhU?=
+ =?utf-8?B?Sk9LWmpQanlLZnloR0ttdW53bEIxSkppT3o2NHJlN0NPbmcrMlhIKzVOZE5S?=
+ =?utf-8?B?TlZPbW1vc0ZmMUJCRDM1MVR1aUxoWmxTMVdRTnFxNEJaZlkzSHlEeCt4U3hG?=
+ =?utf-8?B?MGM2SXFsaGpRSUpSeXdyVnZPalNlNjkyWThuOXZXR0hPS3ZnR0hXcWhKTjBk?=
+ =?utf-8?B?Q0JVMVhUQ2VWUUxLR0hJWnJZeWpyUjNqcHNPUU11aVdKcDRFN2VkalNwam1G?=
+ =?utf-8?B?ZFd5SDBkVFZ4UThhRm1mRUxLcGF1UVhmRDJYNkpSTTZTbVhhTWlJYVJTVWdl?=
+ =?utf-8?B?aEp3M1c2MmVpS1JKM05WZGZnRklMTWxmRmtXRjl0R1VONmpFdmRKNm5CWmVS?=
+ =?utf-8?B?STRDenNrTldDZXA5d3RCUTd3Zm4rN3hEU0MyK1p6NURGMGZwbmlHWWVFSDlV?=
+ =?utf-8?B?ZU11ek9UNm9RUjNLQmZMNnRjeWI4KzEyTjErc2xGczlUVTF1cGxZTFlWbS80?=
+ =?utf-8?B?TkNMbFJOMmd2SlhnOUhIc2s1elhuamRFbGd6M2k1aHRtZHVaRW84OVJ1ZUdL?=
+ =?utf-8?B?d2s0b0JEMk1pRFdFQUEyRUJUVnhoS1EyeWpBRHJ4amFTWlB5MWVoSE9MalJS?=
+ =?utf-8?B?SDIyNDl4QlVKSEFnUHNXRGlQQmJKc1YwSTRocUVpNy8zekF3YmN3SFJOS09I?=
+ =?utf-8?B?MkZwYXBoSnNOd1NvWDkwVWxsbC9JTXo3YTFiTEV4TlVNK3V0eVJ0SHNxdHVQ?=
+ =?utf-8?B?b1ZCQTVpR1NHcWE5d3VEdWUvTVJpYkVSWWhwZFRhMFNzQVZ6Q2twdFhCTHZH?=
+ =?utf-8?B?OFYxVkRMRWRGWkRVcHpoTVJBK2kwVXFZeUFWdmN3MXBQSVV2TytBdTFNUWNn?=
+ =?utf-8?B?eGVvdlRwM2RvcVY1NStUNlpqbDhXTEJvTmpiUDFHTDI3SnNja1hKOUs2L2d4?=
+ =?utf-8?B?THJsVktSeUJKVEhtTWxSMnNudVpreFlKbEpRWW44bGJBZU13a0d0OHdPcWdR?=
+ =?utf-8?B?eXc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7a123bbf-c9f8-48d3-a510-08ddcaefa838
+X-MS-Exchange-CrossTenant-AuthSource: BL3PR11MB6435.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2025 20:21:22.6734
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oHgcfa923xX6Gn1st01fErMVjvdO83EClRqBdr4LVT9NdSHvsQMqmS5hajJsu+B6x/Fsbz4sbwVTNe5qvfoiuJrsYVb/NZDKNyuAtSoRPHA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS4PPFCAADA7A6C
+X-OriginatorOrg: intel.com
 
-commit 0bef512012b1cd8820f0c9ec80e5f8ceb43fdd59 upstream.
 
-Based on a syzbot report, it appears many virtual
-drivers do not yet use netdev_lockdep_set_classes(),
-triggerring lockdep false positives.
 
-WARNING: possible recursive locking detected
-6.8.0-rc4-next-20240212-syzkaller #0 Not tainted
+On 7/20/2025 2:11 AM, Jason Xing wrote:
+> From: Jason Xing <kernelxing@tencent.com>
+> 
+> Resolve the budget underflow which leads to returning true in ixgbe_xmit_zc
+> even when the budget of descs are thoroughly consumed.
+> 
+> Before this patch, when the budget is decreased to zero and finishes
+> sending the last allowed desc in ixgbe_xmit_zc, it will always turn back
+> and enter into the while() statement to see if it should keep processing
+> packets, but in the meantime it unexpectedly decreases the value again to
+> 'unsigned int (0--)', namely, UINT_MAX. Finally, the ixgbe_xmit_zc returns
+> true, showing 'we complete cleaning the budget'. That also means
+> 'clean_complete = true' in ixgbe_poll.
+> 
+> The true theory behind this is if that budget number of descs are consumed,
+> it implies that we might have more descs to be done. So we should return
+> false in ixgbe_xmit_zc to tell napi poll to find another chance to start
+> polling to handle the rest of descs. On the contrary, returning true here
+> means job done and we know we finish all the possible descs this time and
+> we don't intend to start a new napi poll.
+> 
+> It is apparently against our expectations. Please also see how
+> ixgbe_clean_tx_irq() handles the problem: it uses do..while() statement
+> to make sure the budget can be decreased to zero at most and the underflow
+> never happens.
+> 
+> Fixes: 8221c5eba8c1 ("ixgbe: add AF_XDP zero-copy Tx support")
 
-syz-executor.0/19016 is trying to acquire lock:
- ffff8880162cb298 (_xmit_ETHER#2){+.-.}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
- ffff8880162cb298 (_xmit_ETHER#2){+.-.}-{2:2}, at: __netif_tx_lock include/linux/netdevice.h:4452 [inline]
- ffff8880162cb298 (_xmit_ETHER#2){+.-.}-{2:2}, at: sch_direct_xmit+0x1c4/0x5f0 net/sched/sch_generic.c:340
+Hi Jason,
 
-but task is already holding lock:
- ffff8880223db4d8 (_xmit_ETHER#2){+.-.}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
- ffff8880223db4d8 (_xmit_ETHER#2){+.-.}-{2:2}, at: __netif_tx_lock include/linux/netdevice.h:4452 [inline]
- ffff8880223db4d8 (_xmit_ETHER#2){+.-.}-{2:2}, at: sch_direct_xmit+0x1c4/0x5f0 net/sched/sch_generic.c:340
+Seems like this one should be split off and go to iwl-net/net like the 
+other similar ones [1]? Also, some of the updates made to the other 
+series apply here as well?
 
-other info that might help us debug this:
- Possible unsafe locking scenario:
+Thanks,
+Tony
 
-       CPU0
-  lock(_xmit_ETHER#2);
-  lock(_xmit_ETHER#2);
+[1] 
+https://lore.kernel.org/netdev/20250723142327.85187-1-kerneljasonxing@gmail.com/
 
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-9 locks held by syz-executor.0/19016:
-  #0: ffffffff8f385208 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
-  #0: ffffffff8f385208 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x82c/0x1040 net/core/rtnetlink.c:6603
-  #1: ffffc90000a08c00 ((&in_dev->mr_ifc_timer)){+.-.}-{0:0}, at: call_timer_fn+0xc0/0x600 kernel/time/timer.c:1697
-  #2: ffffffff8e131520 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
-  #2: ffffffff8e131520 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
-  #2: ffffffff8e131520 (rcu_read_lock){....}-{1:2}, at: ip_finish_output2+0x45f/0x1360 net/ipv4/ip_output.c:228
-  #3: ffffffff8e131580 (rcu_read_lock_bh){....}-{1:2}, at: local_bh_disable include/linux/bottom_half.h:20 [inline]
-  #3: ffffffff8e131580 (rcu_read_lock_bh){....}-{1:2}, at: rcu_read_lock_bh include/linux/rcupdate.h:802 [inline]
-  #3: ffffffff8e131580 (rcu_read_lock_bh){....}-{1:2}, at: __dev_queue_xmit+0x2c4/0x3b10 net/core/dev.c:4284
-  #4: ffff8880416e3258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: spin_trylock include/linux/spinlock.h:361 [inline]
-  #4: ffff8880416e3258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: qdisc_run_begin include/net/sch_generic.h:195 [inline]
-  #4: ffff8880416e3258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: __dev_xmit_skb net/core/dev.c:3771 [inline]
-  #4: ffff8880416e3258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: __dev_queue_xmit+0x1262/0x3b10 net/core/dev.c:4325
-  #5: ffff8880223db4d8 (_xmit_ETHER#2){+.-.}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
-  #5: ffff8880223db4d8 (_xmit_ETHER#2){+.-.}-{2:2}, at: __netif_tx_lock include/linux/netdevice.h:4452 [inline]
-  #5: ffff8880223db4d8 (_xmit_ETHER#2){+.-.}-{2:2}, at: sch_direct_xmit+0x1c4/0x5f0 net/sched/sch_generic.c:340
-  #6: ffffffff8e131520 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
-  #6: ffffffff8e131520 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
-  #6: ffffffff8e131520 (rcu_read_lock){....}-{1:2}, at: ip_finish_output2+0x45f/0x1360 net/ipv4/ip_output.c:228
-  #7: ffffffff8e131580 (rcu_read_lock_bh){....}-{1:2}, at: local_bh_disable include/linux/bottom_half.h:20 [inline]
-  #7: ffffffff8e131580 (rcu_read_lock_bh){....}-{1:2}, at: rcu_read_lock_bh include/linux/rcupdate.h:802 [inline]
-  #7: ffffffff8e131580 (rcu_read_lock_bh){....}-{1:2}, at: __dev_queue_xmit+0x2c4/0x3b10 net/core/dev.c:4284
-  #8: ffff888014d9d258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: spin_trylock include/linux/spinlock.h:361 [inline]
-  #8: ffff888014d9d258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: qdisc_run_begin include/net/sch_generic.h:195 [inline]
-  #8: ffff888014d9d258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: __dev_xmit_skb net/core/dev.c:3771 [inline]
-  #8: ffff888014d9d258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: __dev_queue_xmit+0x1262/0x3b10 net/core/dev.c:4325
-
-stack backtrace:
-CPU: 1 PID: 19016 Comm: syz-executor.0 Not tainted 6.8.0-rc4-next-20240212-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-Call Trace:
- <IRQ>
-  __dump_stack lib/dump_stack.c:88 [inline]
-  dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
-  check_deadlock kernel/locking/lockdep.c:3062 [inline]
-  validate_chain+0x15c1/0x58e0 kernel/locking/lockdep.c:3856
-  __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
-  lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
-  __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
-  _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
-  spin_lock include/linux/spinlock.h:351 [inline]
-  __netif_tx_lock include/linux/netdevice.h:4452 [inline]
-  sch_direct_xmit+0x1c4/0x5f0 net/sched/sch_generic.c:340
-  __dev_xmit_skb net/core/dev.c:3784 [inline]
-  __dev_queue_xmit+0x1912/0x3b10 net/core/dev.c:4325
-  neigh_output include/net/neighbour.h:542 [inline]
-  ip_finish_output2+0xe66/0x1360 net/ipv4/ip_output.c:235
-  iptunnel_xmit+0x540/0x9b0 net/ipv4/ip_tunnel_core.c:82
-  ip_tunnel_xmit+0x20ee/0x2960 net/ipv4/ip_tunnel.c:831
-  erspan_xmit+0x9de/0x1460 net/ipv4/ip_gre.c:720
-  __netdev_start_xmit include/linux/netdevice.h:4989 [inline]
-  netdev_start_xmit include/linux/netdevice.h:5003 [inline]
-  xmit_one net/core/dev.c:3555 [inline]
-  dev_hard_start_xmit+0x242/0x770 net/core/dev.c:3571
-  sch_direct_xmit+0x2b6/0x5f0 net/sched/sch_generic.c:342
-  __dev_xmit_skb net/core/dev.c:3784 [inline]
-  __dev_queue_xmit+0x1912/0x3b10 net/core/dev.c:4325
-  neigh_output include/net/neighbour.h:542 [inline]
-  ip_finish_output2+0xe66/0x1360 net/ipv4/ip_output.c:235
-  igmpv3_send_cr net/ipv4/igmp.c:723 [inline]
-  igmp_ifc_timer_expire+0xb71/0xd90 net/ipv4/igmp.c:813
-  call_timer_fn+0x17e/0x600 kernel/time/timer.c:1700
-  expire_timers kernel/time/timer.c:1751 [inline]
-  __run_timers+0x621/0x830 kernel/time/timer.c:2038
-  run_timer_softirq+0x67/0xf0 kernel/time/timer.c:2051
-  __do_softirq+0x2bc/0x943 kernel/softirq.c:554
-  invoke_softirq kernel/softirq.c:428 [inline]
-  __irq_exit_rcu+0xf2/0x1c0 kernel/softirq.c:633
-  irq_exit_rcu+0x9/0x30 kernel/softirq.c:645
-  instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1076 [inline]
-  sysvec_apic_timer_interrupt+0xa6/0xc0 arch/x86/kernel/apic/apic.c:1076
- </IRQ>
- <TASK>
-  asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
- RIP: 0010:resched_offsets_ok kernel/sched/core.c:10127 [inline]
- RIP: 0010:__might_resched+0x16f/0x780 kernel/sched/core.c:10142
-Code: 00 4c 89 e8 48 c1 e8 03 48 ba 00 00 00 00 00 fc ff df 48 89 44 24 38 0f b6 04 10 84 c0 0f 85 87 04 00 00 41 8b 45 00 c1 e0 08 <01> d8 44 39 e0 0f 85 d6 00 00 00 44 89 64 24 1c 48 8d bc 24 a0 00
-RSP: 0018:ffffc9000ee069e0 EFLAGS: 00000246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff8880296a9e00
-RDX: dffffc0000000000 RSI: ffff8880296a9e00 RDI: ffffffff8bfe8fa0
-RBP: ffffc9000ee06b00 R08: ffffffff82326877 R09: 1ffff11002b5ad1b
-R10: dffffc0000000000 R11: ffffed1002b5ad1c R12: 0000000000000000
-R13: ffff8880296aa23c R14: 000000000000062a R15: 1ffff92001dc0d44
-  down_write+0x19/0x50 kernel/locking/rwsem.c:1578
-  kernfs_activate fs/kernfs/dir.c:1403 [inline]
-  kernfs_add_one+0x4af/0x8b0 fs/kernfs/dir.c:819
-  __kernfs_create_file+0x22e/0x2e0 fs/kernfs/file.c:1056
-  sysfs_add_file_mode_ns+0x24a/0x310 fs/sysfs/file.c:307
-  create_files fs/sysfs/group.c:64 [inline]
-  internal_create_group+0x4f4/0xf20 fs/sysfs/group.c:152
-  internal_create_groups fs/sysfs/group.c:192 [inline]
-  sysfs_create_groups+0x56/0x120 fs/sysfs/group.c:218
-  create_dir lib/kobject.c:78 [inline]
-  kobject_add_internal+0x472/0x8d0 lib/kobject.c:240
-  kobject_add_varg lib/kobject.c:374 [inline]
-  kobject_init_and_add+0x124/0x190 lib/kobject.c:457
-  netdev_queue_add_kobject net/core/net-sysfs.c:1706 [inline]
-  netdev_queue_update_kobjects+0x1f3/0x480 net/core/net-sysfs.c:1758
-  register_queue_kobjects net/core/net-sysfs.c:1819 [inline]
-  netdev_register_kobject+0x265/0x310 net/core/net-sysfs.c:2059
-  register_netdevice+0x1191/0x19c0 net/core/dev.c:10298
-  bond_newlink+0x3b/0x90 drivers/net/bonding/bond_netlink.c:576
-  rtnl_newlink_create net/core/rtnetlink.c:3506 [inline]
-  __rtnl_newlink net/core/rtnetlink.c:3726 [inline]
-  rtnl_newlink+0x158f/0x20a0 net/core/rtnetlink.c:3739
-  rtnetlink_rcv_msg+0x885/0x1040 net/core/rtnetlink.c:6606
-  netlink_rcv_skb+0x1e3/0x430 net/netlink/af_netlink.c:2543
-  netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
-  netlink_unicast+0x7ea/0x980 net/netlink/af_netlink.c:1367
-  netlink_sendmsg+0xa3c/0xd70 net/netlink/af_netlink.c:1908
-  sock_sendmsg_nosec net/socket.c:730 [inline]
-  __sock_sendmsg+0x221/0x270 net/socket.c:745
-  __sys_sendto+0x3a4/0x4f0 net/socket.c:2191
-  __do_sys_sendto net/socket.c:2203 [inline]
-  __se_sys_sendto net/socket.c:2199 [inline]
-  __x64_sys_sendto+0xde/0x100 net/socket.c:2199
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-RIP: 0033:0x7fc3fa87fa9c
-
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Link: https://lore.kernel.org/r/20240212140700.2795436-4-edumazet@google.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sumanth Gavini <sumanth.gavini@yahoo.com>
----
-Changes in v2:
-- With previous patch, Not able to apply on the 6.1 branch. Updated the
-  code changes in 6.1 branch. 
-- Link to v1:https://lore.kernel.org/all/20250724043010.129297-1-sumanth.gavini@yahoo.com/
----
- drivers/net/dummy.c            | 1 +
- drivers/net/geneve.c           | 1 +
- drivers/net/loopback.c         | 1 +
- drivers/net/veth.c             | 1 +
- drivers/net/vxlan/vxlan_core.c | 1 +
- net/ipv4/ip_tunnel.c           | 1 +
- net/ipv6/ip6_gre.c             | 2 ++
- net/ipv6/ip6_tunnel.c          | 1 +
- net/ipv6/ip6_vti.c             | 1 +
- net/ipv6/sit.c                 | 1 +
- 10 files changed, 11 insertions(+)
-
-diff --git a/drivers/net/dummy.c b/drivers/net/dummy.c
-index aa0fc00faecb..f05d4194eb09 100644
---- a/drivers/net/dummy.c
-+++ b/drivers/net/dummy.c
-@@ -71,6 +71,7 @@ static int dummy_dev_init(struct net_device *dev)
- 	if (!dev->lstats)
- 		return -ENOMEM;
- 
-+	netdev_lockdep_set_classes(dev);
- 	return 0;
- }
- 
-diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
-index 3dd5c69b05cb..b31441fc99fc 100644
---- a/drivers/net/geneve.c
-+++ b/drivers/net/geneve.c
-@@ -349,6 +349,7 @@ static int geneve_init(struct net_device *dev)
- 		gro_cells_destroy(&geneve->gro_cells);
- 		return err;
- 	}
-+	netdev_lockdep_set_classes(dev);
- 	return 0;
- }
- 
-diff --git a/drivers/net/loopback.c b/drivers/net/loopback.c
-index b213397672d2..8dc6a4df93c7 100644
---- a/drivers/net/loopback.c
-+++ b/drivers/net/loopback.c
-@@ -144,6 +144,7 @@ static int loopback_dev_init(struct net_device *dev)
- 	dev->lstats = netdev_alloc_pcpu_stats(struct pcpu_lstats);
- 	if (!dev->lstats)
- 		return -ENOMEM;
-+	netdev_lockdep_set_classes(dev);
- 	return 0;
- }
- 
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index e1e7df00e85c..ce90b093bb45 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -1373,6 +1373,7 @@ static void veth_free_queues(struct net_device *dev)
- 
- static int veth_dev_init(struct net_device *dev)
- {
-+	netdev_lockdep_set_classes(dev);
- 	return veth_alloc_queues(dev);
- }
- 
-diff --git a/drivers/net/vxlan/vxlan_core.c b/drivers/net/vxlan/vxlan_core.c
-index 747ce00dd321..50dacdc1b6a7 100644
---- a/drivers/net/vxlan/vxlan_core.c
-+++ b/drivers/net/vxlan/vxlan_core.c
-@@ -2998,6 +2998,7 @@ static int vxlan_init(struct net_device *dev)
- 	if (err)
- 		goto err_free_percpu;
- 
-+	netdev_lockdep_set_classes(dev);
- 	return 0;
- 
- err_free_percpu:
-diff --git a/net/ipv4/ip_tunnel.c b/net/ipv4/ip_tunnel.c
-index 73d7372afb43..90e55b9979e6 100644
---- a/net/ipv4/ip_tunnel.c
-+++ b/net/ipv4/ip_tunnel.c
-@@ -1298,6 +1298,7 @@ int ip_tunnel_init(struct net_device *dev)
- 
- 	if (tunnel->collect_md)
- 		netif_keep_dst(dev);
-+	netdev_lockdep_set_classes(dev);
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(ip_tunnel_init);
-diff --git a/net/ipv6/ip6_gre.c b/net/ipv6/ip6_gre.c
-index b3e2d658af80..718fcad69cf1 100644
---- a/net/ipv6/ip6_gre.c
-+++ b/net/ipv6/ip6_gre.c
-@@ -1537,6 +1537,7 @@ static int ip6gre_tunnel_init_common(struct net_device *dev)
- 	ip6gre_tnl_init_features(dev);
- 
- 	netdev_hold(dev, &tunnel->dev_tracker, GFP_KERNEL);
-+	netdev_lockdep_set_classes(dev);
- 	return 0;
- 
- cleanup_dst_cache_init:
-@@ -1929,6 +1930,7 @@ static int ip6erspan_tap_init(struct net_device *dev)
- 	ip6erspan_tnl_link_config(tunnel, 1);
- 
- 	netdev_hold(dev, &tunnel->dev_tracker, GFP_KERNEL);
-+	netdev_lockdep_set_classes(dev);
- 	return 0;
- 
- cleanup_dst_cache_init:
-diff --git a/net/ipv6/ip6_tunnel.c b/net/ipv6/ip6_tunnel.c
-index a82d382193e4..2a470c0c38ae 100644
---- a/net/ipv6/ip6_tunnel.c
-+++ b/net/ipv6/ip6_tunnel.c
-@@ -1902,6 +1902,7 @@ ip6_tnl_dev_init_gen(struct net_device *dev)
- 	dev->max_mtu = IP6_MAX_MTU - dev->hard_header_len - t_hlen;
- 
- 	netdev_hold(dev, &t->dev_tracker, GFP_KERNEL);
-+	netdev_lockdep_set_classes(dev);
- 	return 0;
- 
- destroy_dst:
-diff --git a/net/ipv6/ip6_vti.c b/net/ipv6/ip6_vti.c
-index cb71463bbbab..add7276986f1 100644
---- a/net/ipv6/ip6_vti.c
-+++ b/net/ipv6/ip6_vti.c
-@@ -937,6 +937,7 @@ static inline int vti6_dev_init_gen(struct net_device *dev)
- 	if (!dev->tstats)
- 		return -ENOMEM;
- 	netdev_hold(dev, &t->dev_tracker, GFP_KERNEL);
-+	netdev_lockdep_set_classes(dev);
- 	return 0;
- }
- 
-diff --git a/net/ipv6/sit.c b/net/ipv6/sit.c
-index cc24cefdb85c..eb4c8e2a2b12 100644
---- a/net/ipv6/sit.c
-+++ b/net/ipv6/sit.c
-@@ -1460,6 +1460,7 @@ static int ipip6_tunnel_init(struct net_device *dev)
- 		return err;
- 	}
- 	netdev_hold(dev, &tunnel->dev_tracker, GFP_KERNEL);
-+	netdev_lockdep_set_classes(dev);
- 	return 0;
- }
- 
--- 
-2.43.0
+> Signed-off-by: Jason Xing <kernelxing@tencent.com>
+> ---
+>   drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+> index 0ade15058d98..a463c5ac9c7c 100644
+> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+> @@ -398,7 +398,7 @@ static bool ixgbe_xmit_zc(struct ixgbe_ring *xdp_ring, unsigned int budget)
+>   	dma_addr_t dma;
+>   	u32 cmd_type;
+>   
+> -	while (budget-- > 0) {
+> +	while (likely(budget)) {
+>   		if (unlikely(!ixgbe_desc_unused(xdp_ring))) {
+>   			work_done = false;
+>   			break;
+> @@ -433,6 +433,8 @@ static bool ixgbe_xmit_zc(struct ixgbe_ring *xdp_ring, unsigned int budget)
+>   		xdp_ring->next_to_use++;
+>   		if (xdp_ring->next_to_use == xdp_ring->count)
+>   			xdp_ring->next_to_use = 0;
+> +
+> +		budget--;
+>   	}
+>   
+>   	if (tx_desc) {
 
 
