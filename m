@@ -1,156 +1,156 @@
-Return-Path: <bpf+bounces-64305-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64306-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E825EB1138C
-	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 00:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A02BEB11395
+	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 00:10:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D8AD3ABC79
-	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 22:01:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04D6A3A52A3
+	for <lists+bpf@lfdr.de>; Thu, 24 Jul 2025 22:10:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B8241E9B35;
-	Thu, 24 Jul 2025 22:01:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59B9A22A808;
+	Thu, 24 Jul 2025 22:10:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z6Jw+Ywm"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="FJUetJB8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 348424C8F
-	for <bpf@vger.kernel.org>; Thu, 24 Jul 2025 22:01:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDCB8237194
+	for <bpf@vger.kernel.org>; Thu, 24 Jul 2025 22:10:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753394509; cv=none; b=RC22nRLBes/5DCMRC2YCRyjg4dm1yoyIEYAfPN5ersQAJTGaWRYRVQlnyYoIwCDnNwz+WKmotg74uJy8cOPQo4Zz7J5ecst0JCb44WKDbM902OsYsh6PzVaEVWDPXOR+VMJhMMOq5M9jyHvAYeDfm+yCDdUMTrjbcOt4Sp24CqA=
+	t=1753395013; cv=none; b=eLyT6r9ELzYLFDHgijBEqEao1Itvys3GXd6/F4SjAobJS1xL1gUO8lEs4ChH9co8XXhMSTHAC0oOMfK8g+WNHULTNIvrB8MRpLr1UzEbmekC67EBBy5S4jDIimIoKd7QyYrabaC7WQ89BiapVQk0TuQ2NrvUrjfQo0MWiHTd7aw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753394509; c=relaxed/simple;
-	bh=85GMsWZeG2HvjY52q087EVPIDfeO9AgQEtU/E9u6BLE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iffWWn9XetnFEbGxuNAwHIYKMjL04PIilmWxJ15myhBiyDtCHvFSrJJtMIyXAa0Mfhu7EHg6lbulINFAYaoHeGBvQLy2oUy0+SlCw845JOH4ybXp7YxouKRI5DmbwnaQw+bYD6zEY3HcVbuLJJnhylevrcPVlw14EeMFFp2iyHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z6Jw+Ywm; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4550709f2c1so11955505e9.3
-        for <bpf@vger.kernel.org>; Thu, 24 Jul 2025 15:01:47 -0700 (PDT)
+	s=arc-20240116; t=1753395013; c=relaxed/simple;
+	bh=UdytL1FJTf9FaEisCwAkzanpYRlTkzs24z/QVlmQXW8=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=E+xiTnBS4uQVEcxyzW61ue0B59wjMCASBNUwEWuXzdTmLCU0qrxY2QGpoIwHarbxUE6FzuZo1cFPDB6R7S0Sz5wwM6cVbn4i8mAz0IrBRdITYwWgzg4R4NBJA+W6+PONAj0NBSf/badoj57bykIzckJMpblV4UN5PBU9MUb4wD0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=FJUetJB8; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3a4fb9c2436so839299f8f.1
+        for <bpf@vger.kernel.org>; Thu, 24 Jul 2025 15:10:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753394506; x=1753999306; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2Wb0AilMbYx1h8CRqWy/7I4sAvHg80BU1bie1HYzPPk=;
-        b=Z6Jw+YwmA+VBjnmDwo6l7epxQ1j0B/YzmMeWd/NChaYuc5nkwgiJ8ZOe6RKSbJXkV8
-         jkWMHgQQnBV/YXNrhwgyoNDW5BA9yVSdED+sRHNGpaWPW5GsuupFIjElX3BDoNwNQvAI
-         pqVXl6G11YRb/GndQkAuxJuyBbADOIRX/3Hm91wYUtJ12/lr/BjKNk6jQ5yUvx6U/Wvq
-         1570YwInG2TF7WT0MET4NbH9nQo6hs3PPC1bVxv4E8C0yVRl8clcH1qsAlv09xKI2tMH
-         Epv5HN5XGgDW+nv3wbucPvXlX63h9rMG//PyQD41quo05hOlc3lVFeMuhk70tAec0HIq
-         DB4g==
+        d=suse.com; s=google; t=1753395010; x=1753999810; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sQn8Lgb6ASas/h9P+50eo8xeiLL6WELb3IiOBUGM25U=;
+        b=FJUetJB8N3mH8L0DQhLsutp1Gy+jPQ/lfcO5Eu7eSp/om6498DACfuAhx5zbZbNSGW
+         JXMRR+Csllq9xeEyC8bQvxFH483jQ9tr9KTnyRjQEkTLYNtV2SsY8Y37aSYI3t8yW4jI
+         Uu2Lgo3fRieOs46D7Q+Y/UwX8HqhpmLr+3x4KQ2Ee1eXUzXZMyNQdx7sM0sQwLuEkfwN
+         S8DlNqDQKWZ/TPJDjDMxlz4XzZiO7XwfwH+oiv5T3Ce7Mrz/70Z/YQShibzcVOxTmM4h
+         zbn6vpHBGz8YeaU+3MeUEQ9xg1MLJMU6GKboNQnpGpwcmJT0pBOddWe7JmT0tT1Vcngp
+         j51A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753394506; x=1753999306;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2Wb0AilMbYx1h8CRqWy/7I4sAvHg80BU1bie1HYzPPk=;
-        b=m72CoXphbm/6+RUKff7KmBAIUx3zh5sqNPbj/X44OYnj7lxPPQRdJ1L8Ht5T0ivgPN
-         qi1ZmxXCXhRRLZ81AVlGHx0WVMz8A03V9RUw3/XP66zXGRGUdoJ+Wpk9PBOaNoGvOvLU
-         QSSzxo+3V9WRPrJOCymO3NUUCLOwMiRhEEoSn+OxVaItU3ZF6Fy75I1INokaLzMMC5zW
-         DIfn9V7Hfb9N/fAK/+S80lC6FbyMpKSk5vSjab0SYgJw2nz75wzMCH3Zrv2d5swGOvwH
-         JBxUMM/eHSazJuYyTaZTib1NJdxQ+Gwz6CGE4oP17YiDfU/0nvrX4v9oOz/4e24fG3nQ
-         M7nw==
-X-Gm-Message-State: AOJu0Yw4Gi3uf9GbSkblWyZ/sIQR8X7Kyua+X0TetH1DNhqbJHACBGUr
-	ZaS0RJUNmV+hg+085O7Kmpcpfm8zr0QlswcBwN5P7kjiwFMJ1q2NatyU
-X-Gm-Gg: ASbGncuZ98v89EFWz0WXIwr3JNH5URb04n1GDhzQ4M/84oj27wMwvGlHL6qNoIDXk+0
-	QiA2mTB2kfOsoOHqKT7ZHWc9uzqHWiIL+P4iZp7m+knjXF04oKSnO4wC/dnNdSQW/hT6EJD5aqQ
-	v9jJdGJRVkRRPfHt8rVS5jj2pY5ZueeOY225B+DL+Z8lSFkcew8b1bHH15hPRM14V4agMNTFvjM
-	6jinhWH2IU0RuZweEVjPdVt+0dtcU/73yhQblf3i5R3nKRWFQJ2XnX5z3ZVXIyy1JP8P+U/GN8d
-	w1FWlrUImY/Oc9cnmh2GAfcTBIJ5eBuxjp7X4AF4RZQKJdHMPuS9/7pvsXONg/oNUmQpGPUPIdp
-	OMQlI98xC3e1ySCGi52rTXcE3+rtACxrGoDRpnQaMxbhc4K5gLuQ5CN8RIrnL7s1/qt4VW6EqwS
-	IRNZybkvd1W9k7hP68U1+C
-X-Google-Smtp-Source: AGHT+IHbstsS9sGRTJC6IT8Jnh6dak3bh54LL2WTzxwMnBVrXH3vDCZ/H4+ho4mfpZGT7j9TWO+PDQ==
-X-Received: by 2002:a05:600c:46d2:b0:456:19b2:6aa8 with SMTP id 5b1f17b1804b1-45868d48911mr79224835e9.19.1753394506152;
-        Thu, 24 Jul 2025 15:01:46 -0700 (PDT)
-Received: from mail.gmail.com (2a01cb0889497e00667e58c39c19dc02.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:667e:58c3:9c19:dc02])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45870554a02sm33176885e9.21.2025.07.24.15.01.45
+        d=1e100.net; s=20230601; t=1753395010; x=1753999810;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sQn8Lgb6ASas/h9P+50eo8xeiLL6WELb3IiOBUGM25U=;
+        b=fh4MS/EAwIsMyeYhogDZ5nsXchfQSds6mbkFamJf7lI4RHyF5qOA0GMDnZaEAeTNNH
+         E3j+AUB62mvt6sNnb+QhHCDFB8VHGKCxSBIohPC2FAGSKVgEXSBLk0w5B4+XyIm81+t9
+         wFY07fpTsg03N+mqSr/ZrlRo8OjJiXkmOp939DaN6pFBk5kAlEoHirxaLaR0PC7Yji86
+         Xy4l5Ql+NBDRzKg3DZNTifW6TASs7IRsogTkh5X1z7k73eylpwfEXVjwaE7kznaK+Xqh
+         Cqar9bZuVVtioa0+kSb1E5pUBxerrhC2TV/nHktzgl408rhyrubaEDsm9stVLM1OZmo7
+         fS6g==
+X-Gm-Message-State: AOJu0YwumHQroTbQVyP1zPg2hUste7k0k1AbfzZje4hDV9P7xh0KrFSI
+	9ThADPJI2M5apVnW78ACrgiyahiLH//+f5zjl6anYZNcLOGLxAcMIUbreoknrWlF5Jo=
+X-Gm-Gg: ASbGncsmtr881vkehwzdntVW5pvHfSZJYz21zIbjv/zQGsONzei7oMRQ/Y+nYhwbp2R
+	J5BaBVfhjn5nNC5lpN9QK6WhFvHazPrPoLbH+inkACNSHEjSIgrUpzST6kQVAFgBp6UCL+LI3Kh
+	sWqG6Ad4s9ORvgj+asA3IB6edXyCw+mUte8xX728Vf+WI1gsd+4VoeHzA2VQwpdw9O0WoaxaY45
+	Bur3aSA6W2QpD4jmc3htCkslJFCj6GYOwafbyo567VlXolGf3lT8G+MRyB9iIDVTYj9ROSl63sK
+	XM/K1cSSfjQy7u2gMk1KEWlbf+7lbnBUQiSgXQ7c2rELn+tk+FOpBeGss7TO2zLHECjukcgYRlv
+	kPpQFX9zqOQ==
+X-Google-Smtp-Source: AGHT+IG4su4wyL8UbjfJS52FAtE34nXae6Z1/n7g4NnbDSzlRT3NDv3SYUXlGMG0qhso7NqgFWHkHg==
+X-Received: by 2002:a5d:5f89:0:b0:3a4:e841:b236 with SMTP id ffacd0b85a97d-3b768f1ab75mr7320147f8f.33.1753395010192;
+        Thu, 24 Jul 2025 15:10:10 -0700 (PDT)
+Received: from localhost ([177.45.162.214])
+        by smtp.gmail.com with UTF8SMTPSA id 41be03b00d2f7-b3f6c1177e9sm2012118a12.57.2025.07.24.15.10.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jul 2025 15:01:45 -0700 (PDT)
-Date: Fri, 25 Jul 2025 00:01:44 +0200
-From: Paul Chaignon <paul.chaignon@gmail.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Subject: Re: [PATCH bpf-next v2 3/4] selftests/bpf: Test cross-sign 64bits
- range refinement
-Message-ID: <aIKtSK9LjQXB8FLY@mail.gmail.com>
-References: <cover.1753364265.git.paul.chaignon@gmail.com>
- <8f1297bcbfaeebff55215d57f488570152ebb05f.1753364265.git.paul.chaignon@gmail.com>
- <905853bfc266a6969953b4de8433ef9ca7e7a34c.camel@gmail.com>
+        Thu, 24 Jul 2025 15:10:09 -0700 (PDT)
+From: =?utf-8?B?UmljYXJkbyBCLiBNYXJsacOocmU=?= <rbm@suse.com>
+Date: Thu, 24 Jul 2025 19:09:48 -0300
+Subject: [PATCH] selftests/bpf: Install test modules into $INSTALL_PATH
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <905853bfc266a6969953b4de8433ef9ca7e7a34c.camel@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20250724-bpf-next_for-next-v1-1-109f8d291080@suse.com>
+X-B4-Tracking: v=1; b=H4sIACuvgmgC/zXMwQqDMBCE4VeRPbtUo8XSV5FSkjjRvUTZSBHEd
+ 28UvM1/mG+nBBUkehc7KX6SZI456rIgP9k4gmXITaYyz6ozLbslcMS2fsOs1+BQD2jQOnj/ovx
+ bFEG2y+w/uZ1NYKc2+umUbuBxA3Qcf5CYGj6HAAAA
+X-Change-ID: 20250724-bpf-next_for-next-f1de3e4becc8
+To: Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
+ Shuah Khan <shuah@kernel.org>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Ricardo_B=2E_Marli=C3=A8re?= <rbm@suse.com>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1311; i=rbm@suse.com;
+ h=from:subject:message-id; bh=UdytL1FJTf9FaEisCwAkzanpYRlTkzs24z/QVlmQXW8=;
+ b=owEBbQKS/ZANAwAIAckLinxjhlimAcsmYgBogq8+XZdcMwhu+5M4LUywbP0HD/mlYec09Cjpr
+ 1977BFOpw+JAjMEAAEIAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCaIKvPgAKCRDJC4p8Y4ZY
+ pkGTD/4gZwZP0wf+mk7BXAxuzPyQna14XOcPfq+t82xaXJDRViY9f9Bow2n8yVv0m4KjSsEr4hm
+ nVWc6BP+0c/+WU92QVeTLL54Gcvcoc5Lh4gB1lRS7RUYVhN/787J6pJt8ta5MgtKDIfiuyoU3sU
+ PiEWdC8nEXft/Mcvw+ErgctUWdsqAOdf3gNBdDsv8TZUrYXvtaVtcHGa2uKz8HuU/7/H9FLxu1y
+ D3NFXtvOPSaIbjV+H8VPxP+c8rrE7gu+R+Y8P+AeNjQsoHd8R6Su8FliYUKyCPryUVLu9qQ6ovk
+ Ye0zTlWyFNKXncKzokiBjlISwe47ypCCYTqru2lyXg7nBpJhT7XKDLYNLTWEHFiXiTsGS4JSwJO
+ Lgl1rm3U9QVeMxo6P6e4NGrdFfZV3HC5iSas9iPA8pAlAVX/fuJFDtEGixP+u5yJ0YwSXucjGI7
+ tLV1cnH1Mw/uqd2bYrUgiCNmS6v0V5zaI/GmM9s7bQi+jQcvDHVuQ9/kGiBWjOpbtcSp2IMfyoE
+ CzcSNdxkkCpjZoHKUzEbNjI5wChyt2GQ2Kz1hD37rtOCtcPXv8Ik8gsbpUYa+RfQPfWxlZMVPEe
+ bTRr/r+kVrYc+NT4vZAnJv0lWQkMlim3pwscViYkz3EGNWCHBQD7S935J12/PgYtwFnd/bHNL72
+ FxHyRKqOigFoOcQ==
+X-Developer-Key: i=rbm@suse.com; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-On Thu, Jul 24, 2025 at 12:15:53PM -0700, Eduard Zingerman wrote:
-> On Thu, 2025-07-24 at 15:43 +0200, Paul Chaignon wrote:
+The tests expect the modules to be in the same working directory, but when
+using a different $INSTALL_PATH they are not copied over.
 
-[...]
+Signed-off-by: Ricardo B. Marlière <rbm@suse.com>
+---
+ # cd tools/testing/selftests/kselftest_install && ./run_kselftest.sh -t bpf:test_verifier
+TAP version 13
+1..1
+ # timeout set to 0
+ # selftests: bpf: test_verifier
+ # Can't find bpf_testmod.ko kernel module: -2
+not ok 1 selftests: bpf: test_verifier # exit=1
+---
+ tools/testing/selftests/bpf/Makefile | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> > +SEC("socket")
-> > +__description("bounds deduction cross sign boundary, negative overlap")
-> > +__success __log_level(2) __flag(BPF_F_TEST_REG_INVARIANTS)
-> > +__msg("7: (1f) r0 -= r6 {{.*}} R0=scalar(smin=-655,smax=smax32=-146,umin=0xfffffffffffffd71,umax=0xffffffffffffff6e,smin32=-783,umin32=0xfffffcf1,umax32=0xffffff6e,var_off=(0xfffffffffffffc00; 0x3ff))")
-> 
-> Interesting, note the difference: smin=-655, smin32=-783.
-> There is a code to infer s32 range from s46 range in this situation in
-> __reg32_deduce_bounds(), but it looks like a third __reg_deduce_bounds
-> call is needed to trigger it. E.g. the following patch removes the
-> difference for me:
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 4863106034dfbcd35f830432322f054d897bb406..56b0565af8a76a9e784836a836935dd22e814fc0 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -877,5 +877,7 @@ override define INSTALL_RULE
+ 	@for DIR in $(TEST_INST_SUBDIRS); do		  \
+ 		mkdir -p $(INSTALL_PATH)/$$DIR;   \
+ 		rsync -a $(OUTPUT)/$$DIR/*.bpf.o $(INSTALL_PATH)/$$DIR;\
++		rsync -a $(OUTPUT)/$$DIR/*.ko $(INSTALL_PATH)/$$DIR;\
++		rsync -a $(OUTPUT)/*.ko $(INSTALL_PATH);\
+ 	done
+ endef
 
-Hm, I can add the third __reg_deduce_bounds to the first patch in the
-series. That said, we may want to rethink and optimize reg_bounds_sync
-in a followup patchset. It's probably worth listing all the inferences
-we have and their dependencies and see if we can reorganize the
-subfunctions.
+---
+base-commit: f227e9ed4fe4f2fed40e4725d6c10860d30c2ea2
+change-id: 20250724-bpf-next_for-next-f1de3e4becc8
 
-> 
->   diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->   index f0a41f1596b6..87050d17baf9 100644
->   --- a/kernel/bpf/verifier.c
->   +++ b/kernel/bpf/verifier.c
->   @@ -2686,6 +2686,7 @@ static void reg_bounds_sync(struct bpf_reg_state *reg)
->           /* We might have learned something about the sign bit. */
->           __reg_deduce_bounds(reg);
->           __reg_deduce_bounds(reg);
->   +       __reg_deduce_bounds(reg);
->           /* We might have learned some bits from the bounds. */
->           __reg_bound_offset(reg);
->           /* Intersecting with the old var_off might have improved our bounds
-> 
-> > +__retval(0)
-> > +__naked void bounds_deduct_negative_overlap(void)
-> > +{
-> > +	asm volatile("			\
-> > +	call %[bpf_get_prandom_u32];	\
-> > +	w3 = w0;			\
-> > +	w6 = (s8)w0;			\
-> > +	r0 = (s8)r0;			\
-> > +	if w6 >= 0xf0000000 goto l0_%=;	\
-> > +	r0 += r6;			\
-> > +	r6 += 400;			\
-> > +	r0 -= r6;			\
-> > +	if r3 < r0 goto l0_%=;		\
-> > +l0_%=:	r0 = 0;				\
-> > +	exit;				\
-> > +"	:
-> > +	: __imm(bpf_get_prandom_u32)
-> > +	: __clobber_all);
-> > +}
-> 
-> [...]
+Best regards,
+-- 
+Ricardo B. Marlière <rbm@suse.com>
+
 
