@@ -1,201 +1,628 @@
-Return-Path: <bpf+bounces-64358-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64359-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8EE5B11C03
-	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 12:16:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73079B11C0E
+	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 12:17:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66F681CE4BF5
-	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 10:16:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62B98AE21D5
+	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 10:16:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D6592D9492;
-	Fri, 25 Jul 2025 10:11:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FFE12E3B15;
+	Fri, 25 Jul 2025 10:13:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="LHfD1J0V"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HdYpbayG"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2051.outbound.protection.outlook.com [40.107.101.51])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 706962E6108;
-	Fri, 25 Jul 2025 10:11:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.51
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753438314; cv=fail; b=EC0rCJhnOoVL3jemtaUBFagKaypuGBLCZYrTCmSVmp7sYAFYkhTuN0RpELIiqCck9yfgbmVo/AlsnkiNJiX9HD+5V1p7T5S9mWuOAyKtNAK6q5uroXCrNKeVQju5EYrxSejNnKXj6putiXd3xw/2gy1ywG7rxoIdYczc4VB0Gf0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753438314; c=relaxed/simple;
-	bh=1Ap8VQeTy/fiVwYtoxF6NuzGMf62si1Qh89OcEiywFA=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=U/HKeYvBgc8je3R2If7oLTUu/bKCwXIGNC3JM9ucjtn3WJppmSikYWQPmXQu6MTCI5XsfPD76P4QpmZ2QXT0407mBsDC1YF56CPhleFJLsOvhsvHzCiWEd2NN6WDKjtnfM56w5vpkRAjzJGW7wSU7oom2WBGLqXpshNN0CrsAKQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=LHfD1J0V; arc=fail smtp.client-ip=40.107.101.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=xunxnCpX3EhxfIsz/VnmuraehEwx+a+0sSaHVFDsnf9b2deri+rfa3y+w+9rEzMxFBANRtozcMIVcBZROsjmhxzOJm/G5JjRNEk2ATJAinCrbXL4cpWiB9Vg1EsRUSC+Qwa5/QvlsqHuQXEuu0WS6m3ERg4n0DEY9qA9iY2DmKDecvx/fseMcpFeeVqELrLSqq43x/f7x2CpRTnQTJvtpbJX5Bo7rk6GGfKjecSV8Yk0UH++CmD8E/3XRYsqEPNBo1Pnv88r+vdl13EsANXqGgbVefjGHuObgDAc+Vv8IOJnGBqDHCV0fc5ndw6/Sa7zkyCoLg0OubfASeLyyPqOeg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/PMp2y3/2s+F6g7ux2NuP+W0Odh/gPPTMoOHcyejMf8=;
- b=obtaraYN8G8urSvnLLpOdpW1kdTvmyVmyVNhlw3u9nUtleFDo6SFxdFTLz/xZE7Xn7QiNneSbD8uRv1CxKQC8d+wXUUnM7z0sxKCwtM1KDiQjcgcBG+MMDuZD9eGHPX3VR20U2VaRy5fj1irCi6621MRS5HZVrY6AZhV05JqS2y90T2u8iGHq3vSFMA2DAL5gosoSwdBGl2C8YkFeKnjk+swT7Fyd93f5u0tK8evNAQ5MrJyqa9iSaKNh8t3tjZWPYV5L7+il6xkZAF9MQ9Jg8BIw2ro75D30JgjaNlre4R2fpJhlXslymbX0B4qf6yDwo/JnnU3iHwZ6WhaA7Rg6Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/PMp2y3/2s+F6g7ux2NuP+W0Odh/gPPTMoOHcyejMf8=;
- b=LHfD1J0VMKBazFPk3+kHqdZZ2a5yDQijcOGzoAC1Ap0YOqBBnR42slnF/1c0DnBIyfZ/jzrGPJVkUes4nyZUDZw96i8i+gBT8xB+H7Y9YqJO7dp1xKHED55p4/B6WF6C9ASEfMqPjFmesHnrTWr/5W/G5NDK5nJ/squJvWhbUYM=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB6207.namprd12.prod.outlook.com (2603:10b6:8:a6::10) by
- CYXPR12MB9442.namprd12.prod.outlook.com (2603:10b6:930:e3::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8964.21; Fri, 25 Jul 2025 10:11:51 +0000
-Received: from DM4PR12MB6207.namprd12.prod.outlook.com
- ([fe80::6392:e010:ed54:1606]) by DM4PR12MB6207.namprd12.prod.outlook.com
- ([fe80::6392:e010:ed54:1606%4]) with mapi id 15.20.8964.019; Fri, 25 Jul 2025
- 10:11:50 +0000
-Message-ID: <de14f60e-b1f0-432c-80b4-a2f0453e0fe2@amd.com>
-Date: Fri, 25 Jul 2025 11:11:44 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] sfc: handle NULL returned by xdp_convert_buff_to_frame()
-Content-Language: en-GB
-To: Paolo Abeni <pabeni@redhat.com>, Chenyuan Yang <chenyuan0y@gmail.com>,
- ecree.xilinx@gmail.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
- hawk@kernel.org, john.fastabend@gmail.com, sdf@fomichev.me,
- lorenzo@kernel.org
-Cc: netdev@vger.kernel.org, linux-net-drivers@amd.com, bpf@vger.kernel.org,
- zzjas98@gmail.com
-References: <20250723003203.1238480-1-chenyuan0y@gmail.com>
- <045d1ff5-bb20-481d-a067-0a42345ab83d@redhat.com>
-From: Edward Cree <ecree@amd.com>
-In-Reply-To: <045d1ff5-bb20-481d-a067-0a42345ab83d@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM0PR10CA0085.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:15::38) To DM4PR12MB6207.namprd12.prod.outlook.com
- (2603:10b6:8:a6::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FBEC2E3B18;
+	Fri, 25 Jul 2025 10:13:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1753438404; cv=none; b=LGZ7wxKmL/NfsrAB/C4ATRHtQYqc3PbsCXATjkupxGWsnCVlSDgAr5jxhzmZrIFnpZdDxxWFW+0NLNVziUn2t1w3qtWtEQ23nf609heo+9Y5SiZr42UrTLaOQpvR9uxniQ8otQEQcN3WphkdVGfzm2lu1V+j61onxNRPVFZDiuo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1753438404; c=relaxed/simple;
+	bh=VkJ3AAh3kING/7y4TsNtFdlS+U8ybMtol8pJ1H48EF0=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=UjQ1DkJ1jF52d5YXfAfF/xeDbHLjzCfQe7WCREn6KPWV/IJqp2VxEK4sK3/s/Y1VSU0eFSDxKn2MnC6mLvQSxs8qJmclpWE6WlPqIA7VUbpcO27tFW4onE+id6it4c7N19ajhN8un7x1dcdqJBkIJOA2LZ1l/quLRL+y5Ly0MqY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HdYpbayG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EF26C4CEEF;
+	Fri, 25 Jul 2025 10:13:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753438404;
+	bh=VkJ3AAh3kING/7y4TsNtFdlS+U8ybMtol8pJ1H48EF0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=HdYpbayGUc4/+CpCU5CmvhZ1o3h2B8plcgGIQ9WRaTIVRTba5RhRd3soXiezMBC/u
+	 MazUOAk1LL5PYXsjwT3bp/vp7tvLxRa4HB8+YgO71HxN7s7CEa+QOzlaLXC9bl9mcR
+	 wAdcczbXE56bMkz+KA48NSmZuSAuuGDTtmm/23CQdhxkcEsbV7cnc+o3EIpDIoEya3
+	 jBOc+pBh72I8G7b0D3tPgjDENqfD/eNCHxLTz8b8D8jEErwvZESlnNwjfaO7AXhkth
+	 oFRK08FmYwF3pAj8v7GTyVEyhDwId5vGlQBaoDGx+lZsyZZvUaXGMTYngM9UbzGUyq
+	 hcHbs1KyZquow==
+Date: Fri, 25 Jul 2025 19:13:18 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ x86@kernel.org, Song Liu <songliubraving@fb.com>, Yonghong Song
+ <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, Hao Luo
+ <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, David Laight
+ <David.Laight@ACULAB.COM>, Thomas =?UTF-8?B?V2Vpw59zY2h1aA==?=
+ <thomas@t-8ch.de>, Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCHv6 perf/core 10/22] uprobes/x86: Add support to optimize
+ uprobes
+Message-Id: <20250725191318.554f2f3afe27584e03a0eaa2@kernel.org>
+In-Reply-To: <20250720112133.244369-11-jolsa@kernel.org>
+References: <20250720112133.244369-1-jolsa@kernel.org>
+	<20250720112133.244369-11-jolsa@kernel.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB6207:EE_|CYXPR12MB9442:EE_
-X-MS-Office365-Filtering-Correlation-Id: e7bc8b4f-fc30-436d-b4e4-08ddcb63abd7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|366016|7416014|376014|921020;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?Y1ZnZExsbkh0N3prVGM0VEVQcUxUK3ZMUzVYQ1A3YXpwZGJ3QzQ4R3dkMFRJ?=
- =?utf-8?B?UWNzTUNSV3RJK1pvMTJ0a0pSQUhCKzJFNitUeWVETHlBVXFwWWZDV1huZ0Qw?=
- =?utf-8?B?MThRT2p0UzhHRVdMMEpadFpBY3BPZVd4QWlYSDRMMG9kSFRkQldUK2dsV3BC?=
- =?utf-8?B?Qll3Y29QeFBNam1jNVRKanpsTTJJdzNFQnZPL2swUVhHY00wbWVXaFErNUlh?=
- =?utf-8?B?ZU5qK29XUVNXV0pqcDFvN0luZmNaamVOZEhmMVdPbXRQOXUwYkdhUUJrc0U0?=
- =?utf-8?B?aDJLcHVqR0Q5LzlhQXZnc2hXWmUrWitkaW5GR0NFMzFGS0liMjgrdU5EVkc4?=
- =?utf-8?B?QmtjY0pnbkliaWl1SUpXVHFoZFpFM3h4eHhoWnVoU1BGTHJrQW1OQTF6alZ4?=
- =?utf-8?B?c3NVNE95ZlAyR05naXpUTENLOTN6U0RlSThBSkFSQyt2bDZpQ1F3UDV3eC9N?=
- =?utf-8?B?VFpkcWFjZVV6eEgvSjBxelZCb2E2SzFTSDArK2szOHBBbUpxWVJSNit4Nnhq?=
- =?utf-8?B?eFlpVlp5T1QrNlJoQVg1RXUrbkh2NVk0cXF0amR2Nk9wZWg4aVFvU2dONWgz?=
- =?utf-8?B?dmtjQVFMeVZON3R3YkJuRFNKV293Rk1ZWlNPQm91cER3Sy9SMGd6N0pwclNy?=
- =?utf-8?B?c1NEZFIzNjFISm1RclQxUlRNYWRnMEZxU2YxelFrRy9vUldaTE5lbG1tQUhH?=
- =?utf-8?B?RVB6eWtXMm5hUnpQeC9DSXd6dmMxQkE5VFY0ZWdoTjFBdlozY3gyNERCdEZs?=
- =?utf-8?B?RFlBRVlTTmlDdWJ2d0d0K1FIUGRMUUFsSkxQa1FNelFodGdDUGwxZFljUVdV?=
- =?utf-8?B?aUQvZjJJbkZpUnJYcllLS0xwL2JQeDQxcnlvQkNhRGIydlhSMG1USmpZTVIz?=
- =?utf-8?B?VnlOT01zQTllSWVESW9KclltcWtnRlBzZTVyMzZsVFRvZ0l1YmlJN25UeVoy?=
- =?utf-8?B?RURHVnJCR0dYa2pnNWc2aHNWaEhjOFljejExTXJicUtCQmJENldRYXM3a2Mr?=
- =?utf-8?B?WEM4eFl0R3RoeGxrY3A2UG5RNWh2THo0R3hOY1l5cmV3TytRMWJ2WlIreE15?=
- =?utf-8?B?b0N3NFlrZVJJNDFrVU5icFpaSlZWcnp1S2FVVGVVQzJsS0VOV3FJZHVWMUtj?=
- =?utf-8?B?QnlRNW5vTzVSQ3pPZmNXaWJmZWxTWVI1c1hLMmxpRHMyNW5LMW1MaGxqR3Nq?=
- =?utf-8?B?eHp6OXI1TGNpR05yc2xHcnI4RHhEbFZyVEg4dFZLK1oyTHpPU3oxODFJYjNY?=
- =?utf-8?B?S0FqTlpyVlU3cG5ERzlTRVRGVC9GelIzSUhCb21RTitSaGZVYXhQMDg1SjUy?=
- =?utf-8?B?UW00NTNLT1lYd2hEODFaV0NoR1ZBNlU3US9nZTk5dnJSaUc0dHNFeEk4OEo1?=
- =?utf-8?B?b21EZ3MzdUYzRUNkU2R4ZWZsMkkzWlhCdmFZbjBsYlN6RTlaOFR3Ti8vb1Jq?=
- =?utf-8?B?TlB5N3FvcWN4OVZPMlZkU2ZuVndPVGxqWVZ0VjNyVFMzVDgyaFRKcVo4UDlz?=
- =?utf-8?B?eGwxRnN4aHZ1MDFrQVVJenUzM2pnWm9ZcVY5cWllY3NjVmgzZXhMZHpwejBi?=
- =?utf-8?B?NkhWR0xwbVhoUmhjaFhNRGdKQm5GVlVaNXlWay8vTjUxNTdmRm9UcUpQbXZU?=
- =?utf-8?B?cnk3QUZEb09DL0FtVFdVR3l4aFhick8xRnBJbVcwaW43ZXc2amdjWlBvaHV0?=
- =?utf-8?B?dTQ4LzFBbkl2VTY0TXErVVhZOFQ0bmIwSWNxZVpybUJ0YTQyUitKTXJqU1Mv?=
- =?utf-8?B?TjJQQjc0K1pQb2x3L09WYkxDNWc5cEVVVUpiaTMvTENCeWEwWjRER0RjYUx5?=
- =?utf-8?B?UXlVVFdZanJHZjR3RGRFWW1QdGNRUThpdDQxQjR5Zm9ZNVlWRDlENUpBeVo3?=
- =?utf-8?B?T1FNMDZubHovbkZHbDI4Tm1nQzg1MFBZeWkvRVJkZVgxWnhlWWdLVTluMktK?=
- =?utf-8?B?M0hrQlpzMVBuMXVUV2dkckk2NDNWVklnUjkweGNNanVXelVxdnFmQWRMcjJi?=
- =?utf-8?B?UUZVaDNPWStRPT0=?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6207.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014)(921020);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?TWJOUkNaYWhObkJac2R5VzBybzBBaWZpSUZJVHd5YWNqNnM2NEZaUjRkdURK?=
- =?utf-8?B?bituS3Ywc2U4YzhHQzczNWxJRnBMTmhNdU1YcjhSVEdyRXF5M2FIY1FrT25M?=
- =?utf-8?B?aTA1NWdMcWMzSjk2bjNTV1pLalE0bzBIVHRYZGhxZkNkOWVERXJIWEU1OWJw?=
- =?utf-8?B?dzhHemt3KzFjZTJLdDl0RlIvbEFKY2trMVV4OWdtRHBSL1lhSGpPSlBVNkEr?=
- =?utf-8?B?L000bXFIVU9VTVFWV0F5RkJhVFRZR1pRK2c4TXRJR2Z5cVBraFc2N2xFNXJZ?=
- =?utf-8?B?bGVsTHFKSmp2dzNQelYrMmRWTGlDT1lnYlBTTWl6aWpxd0VTRmNxam14NUxk?=
- =?utf-8?B?M2UyNVl4dmdjd1dZcy9FS1NMcUEyb3BrNjNRL2svN1djQ2hySVVBbU1OclBr?=
- =?utf-8?B?TmlOOHlBMzUyM0ZqV3RmdVM2Y3NjSURzdGljUFJBanpnTnp4MWFWUHlhbTVa?=
- =?utf-8?B?MnpYelR4VERzSXJDMXNacWhKUG1Sek0vK0FXZ3BJdXBSZjBuN0hsekNuOC8z?=
- =?utf-8?B?TVJaVXlJTkY1bmRVRGdJR015N1lkUFZtUzhpMTJOVEZqVFQyRlN0MW80aGwz?=
- =?utf-8?B?QXV0UmRJcTdTVmhCRjBHVXgzMzJ2RUtLQXM5NkU3RDBYdjZ5MHlvRXlDOEdQ?=
- =?utf-8?B?TnE5LzZWZysrSnlZdkl6R2x2MDlpN1JjOUFGMzZoZDdXamdlWjBRbXQ1dTcw?=
- =?utf-8?B?OE9hSjF1SG40dTc4N21Ea1ZXN1ZNL01yOXJkKzB3c1JJd2xMakZwOERrRm9j?=
- =?utf-8?B?MjdyM1o5aC9lYSs4ay84alVnUkxLeU9RcWdRbUtoRittUWZ4VHNJYmRzeG1s?=
- =?utf-8?B?YmZsejF4SzlYMXRubS9LREd2T0RHYlhwU3Y1ZzdHMnhDSDFHL0hlYVJWeThM?=
- =?utf-8?B?S2ZUZHJXc0daMG1Fa0tPR1hmeE1ndWZlVEF6R2ZOckVnZXRhTC9kUUNPVjBr?=
- =?utf-8?B?dWNxb29aaVJoWFhVWEV1STNXUXdQY0ZKaVBNbzhKbU9EYnRYZUpjcjBjVmZC?=
- =?utf-8?B?M2tiUWNiRHRFUnRneGRNMk50b0tzZzIxeVNtOGVsNlQ3Qm9BVExEWUxNbEVS?=
- =?utf-8?B?aTE4MVhMcDFkUUovY0xoSExvOERUVnY2amY0WjVmaEhLajI0MTBNVTkyMUwz?=
- =?utf-8?B?Yk43UjlLaHpac0x6N3BBdDFyQ2NRdzdSYzUyM1JnbFN1NXVKMWZiS0kvK1Qz?=
- =?utf-8?B?Zkl5M2YrOW9rNkpqU2hUYklGUFVwcEY3RGdXMGM2ckJVVFVZTkR4SzQ3c01n?=
- =?utf-8?B?SkczTjBCdi9lenp6VnAxMFdZeE41MlVGOWZDdFNGdGhaTm1Uc2pOcEJXQ2FG?=
- =?utf-8?B?a1cxaWV5MGhabEh2QVRIVVgyZDREVkJTSWVEQ3BMSlN3TDNGbmlRZ3RYQkla?=
- =?utf-8?B?RGF6eEpxcjY0SnFWSFV2R2FheExzSmtxU0s5bkRqTG1saEpUcER2WU4wb29j?=
- =?utf-8?B?ZHU0YWUrUmVJS1BEcFliY0RiR2VLNDFnMlFKUFoxOGVBRlJ4WWcrVkRRaE9E?=
- =?utf-8?B?emx5OE8vOFpScUh2OC9yTGxTSVgwWHk5TnB1aTlWSVRwcnBKSTY2bTkwNXJG?=
- =?utf-8?B?dXlqa2tlWDJ2RnhaQm1tc012QzhxaG5ZU0V0eUNrRi9icTN6bURPSFJocXBS?=
- =?utf-8?B?bDAzWFo2VjRraVBlTm53elYxMjdKa3dOcDVnOEpaYzhkZGhrRXRtKzdwUFlz?=
- =?utf-8?B?WndvSng1b3F3cUVnZks1NE9zcHdpR0ZmTWdodzZORG9iakNBZEpiWjFWMXkz?=
- =?utf-8?B?M2Q3cStGY1FraUxPekFmMnc3TWZrTFJzS091c0k5YWJDQUFDUUdlY3NpRnVV?=
- =?utf-8?B?VWJBa2t6MXFlWVlRVGROcVo2YkFGY3FhSzdNMlg5TFVYcGppVXl6dWI2VFht?=
- =?utf-8?B?RmxNNVBlVkJvaklCdG4xWUF4cnlpMWFFSXQxOUVIZVAybWpsZktRclRLc0xQ?=
- =?utf-8?B?MGtLTG9RY1ZOR29IdnJjZTIvNThHeGozVUJ3STNqS3M5cHgzTS9jRGZCNDhp?=
- =?utf-8?B?S3JVZVpldVM3MlNQczNFQitGVE0xd3FMZHB0cGtDQTRZWUx4NmlYTERWUU8z?=
- =?utf-8?B?a2Y5NDhpbGVXaHFldGpFYlZKM2RoMDRLWnFpOHNHTEJpYktrTHJyb3JCYU51?=
- =?utf-8?Q?lJK8=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e7bc8b4f-fc30-436d-b4e4-08ddcb63abd7
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6207.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2025 10:11:50.5640
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yxjDz7GjSdkto7FzSQKxTQBw51pMSuz+oSe5qnT+E4t2290KdRyxuGR0ZzsCsW8S
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYXPR12MB9442
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 7/24/25 10:57, Paolo Abeni wrote:
-> On 7/23/25 2:32 AM, Chenyuan Yang wrote:
->> The xdp_convert_buff_to_frame() function can return NULL when there is
->> insufficient headroom in the buffer to store the xdp_frame structure
->> or when the driver didn't reserve enough tailroom for skb_shared_info.
+On Sun, 20 Jul 2025 13:21:20 +0200
+Jiri Olsa <jolsa@kernel.org> wrote:
+
+> Putting together all the previously added pieces to support optimized
+> uprobes on top of 5-byte nop instruction.
 > 
-> AFAIC the sfc driver reserves both enough headroom and tailroom, but
-> this is after ebpf run, which in turn could consume enough headroom to
-> cause a failure, so I think this makes sense.
+> The current uprobe execution goes through following:
+> 
+>   - installs breakpoint instruction over original instruction
+>   - exception handler hit and calls related uprobe consumers
+>   - and either simulates original instruction or does out of line single step
+>     execution of it
+>   - returns to user space
+> 
+> The optimized uprobe path does following:
+> 
+>   - checks the original instruction is 5-byte nop (plus other checks)
+>   - adds (or uses existing) user space trampoline with uprobe syscall
+>   - overwrites original instruction (5-byte nop) with call to user space
+>     trampoline
+>   - the user space trampoline executes uprobe syscall that calls related uprobe
+>     consumers
+>   - trampoline returns back to next instruction
+> 
+> This approach won't speed up all uprobes as it's limited to using nop5 as
+> original instruction, but we plan to use nop5 as USDT probe instruction
+> (which currently uses single byte nop) and speed up the USDT probes.
+> 
+> The arch_uprobe_optimize triggers the uprobe optimization and is called after
+> first uprobe hit. I originally had it called on uprobe installation but then
+> it clashed with elf loader, because the user space trampoline was added in a
+> place where loader might need to put elf segments, so I decided to do it after
+> first uprobe hit when loading is done.
+> 
+> The uprobe is un-optimized in arch specific set_orig_insn call.
+> 
+> The instruction overwrite is x86 arch specific and needs to go through 3 updates:
+> (on top of nop5 instruction)
+> 
+>   - write int3 into 1st byte
+>   - write last 4 bytes of the call instruction
+>   - update the call instruction opcode
+> 
+> And cleanup goes though similar reverse stages:
+> 
+>   - overwrite call opcode with breakpoint (int3)
+>   - write last 4 bytes of the nop5 instruction
+>   - write the nop5 first instruction byte
+> 
+> We do not unmap and release uprobe trampoline when it's no longer needed,
+> because there's no easy way to make sure none of the threads is still
+> inside the trampoline. But we do not waste memory, because there's just
+> single page for all the uprobe trampoline mappings.
+> 
+> We do waste frame on page mapping for every 4GB by keeping the uprobe
+> trampoline page mapped, but that seems ok.
+> 
+> We take the benefit from the fact that set_swbp and set_orig_insn are
+> called under mmap_write_lock(mm), so we can use the current instruction
+> as the state the uprobe is in - nop5/breakpoint/call trampoline -
+> and decide the needed action (optimize/un-optimize) based on that.
+> 
+> Attaching the speed up from benchs/run_bench_uprobes.sh script:
+> 
+> current:
+>         usermode-count :  152.604 ± 0.044M/s
+>         syscall-count  :   13.359 ± 0.042M/s
+> -->     uprobe-nop     :    3.229 ± 0.002M/s
+>         uprobe-push    :    3.086 ± 0.004M/s
+>         uprobe-ret     :    1.114 ± 0.004M/s
+>         uprobe-nop5    :    1.121 ± 0.005M/s
+>         uretprobe-nop  :    2.145 ± 0.002M/s
+>         uretprobe-push :    2.070 ± 0.001M/s
+>         uretprobe-ret  :    0.931 ± 0.001M/s
+>         uretprobe-nop5 :    0.957 ± 0.001M/s
+> 
+> after the change:
+>         usermode-count :  152.448 ± 0.244M/s
+>         syscall-count  :   14.321 ± 0.059M/s
+>         uprobe-nop     :    3.148 ± 0.007M/s
+>         uprobe-push    :    2.976 ± 0.004M/s
+>         uprobe-ret     :    1.068 ± 0.003M/s
+> -->     uprobe-nop5    :    7.038 ± 0.007M/s
+>         uretprobe-nop  :    2.109 ± 0.004M/s
+>         uretprobe-push :    2.035 ± 0.001M/s
+>         uretprobe-ret  :    0.908 ± 0.001M/s
+>         uretprobe-nop5 :    3.377 ± 0.009M/s
+> 
+> I see bit more speed up on Intel (above) compared to AMD. The big nop5
+> speed up is partly due to emulating nop5 and partly due to optimization.
+> 
+> The key speed up we do this for is the USDT switch from nop to nop5:
+>         uprobe-nop     :    3.148 ± 0.007M/s
+>         uprobe-nop5    :    7.038 ± 0.007M/s
+> 
 
-Your reasoning seems plausible to me.
-However, I think the error path ought to more closely follow the existing
- error cases in logging a ratelimited message and calling the tracepoint.
-I think the cleanest way to do this would be:
-	if (unlikely(!xdpf))
-		err = -ENOBUFS;
-	else
-		err = efx_xdp_tx_buffers(efx, 1, &xdpf, true);
- so that it can make use of the existing failure path.
-Adding the check to efx_xdp_tx_buffers() is also an option.
+This also looks good to me.
 
--ed
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+Thanks!
+
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> Acked-by: Oleg Nesterov <oleg@redhat.com>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  arch/x86/include/asm/uprobes.h |   7 +
+>  arch/x86/kernel/uprobes.c      | 283 ++++++++++++++++++++++++++++++++-
+>  include/linux/uprobes.h        |   6 +-
+>  kernel/events/uprobes.c        |  16 +-
+>  4 files changed, 305 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/uprobes.h b/arch/x86/include/asm/uprobes.h
+> index 678fb546f0a7..1ee2e5115955 100644
+> --- a/arch/x86/include/asm/uprobes.h
+> +++ b/arch/x86/include/asm/uprobes.h
+> @@ -20,6 +20,11 @@ typedef u8 uprobe_opcode_t;
+>  #define UPROBE_SWBP_INSN		0xcc
+>  #define UPROBE_SWBP_INSN_SIZE		   1
+>  
+> +enum {
+> +	ARCH_UPROBE_FLAG_CAN_OPTIMIZE   = 0,
+> +	ARCH_UPROBE_FLAG_OPTIMIZE_FAIL  = 1,
+> +};
+> +
+>  struct uprobe_xol_ops;
+>  
+>  struct arch_uprobe {
+> @@ -45,6 +50,8 @@ struct arch_uprobe {
+>  			u8	ilen;
+>  		}			push;
+>  	};
+> +
+> +	unsigned long flags;
+>  };
+>  
+>  struct arch_uprobe_task {
+> diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
+> index d18e1ae59901..209ce74ab93f 100644
+> --- a/arch/x86/kernel/uprobes.c
+> +++ b/arch/x86/kernel/uprobes.c
+> @@ -18,6 +18,7 @@
+>  #include <asm/processor.h>
+>  #include <asm/insn.h>
+>  #include <asm/mmu_context.h>
+> +#include <asm/nops.h>
+>  
+>  /* Post-execution fixups. */
+>  
+> @@ -702,7 +703,6 @@ static struct uprobe_trampoline *create_uprobe_trampoline(unsigned long vaddr)
+>  	return tramp;
+>  }
+>  
+> -__maybe_unused
+>  static struct uprobe_trampoline *get_uprobe_trampoline(unsigned long vaddr, bool *new)
+>  {
+>  	struct uprobes_state *state = &current->mm->uprobes_state;
+> @@ -891,6 +891,280 @@ static int __init arch_uprobes_init(void)
+>  
+>  late_initcall(arch_uprobes_init);
+>  
+> +enum {
+> +	EXPECT_SWBP,
+> +	EXPECT_CALL,
+> +};
+> +
+> +struct write_opcode_ctx {
+> +	unsigned long base;
+> +	int expect;
+> +};
+> +
+> +static int is_call_insn(uprobe_opcode_t *insn)
+> +{
+> +	return *insn == CALL_INSN_OPCODE;
+> +}
+> +
+> +/*
+> + * Verification callback used by int3_update uprobe_write calls to make sure
+> + * the underlying instruction is as expected - either int3 or call.
+> + */
+> +static int verify_insn(struct page *page, unsigned long vaddr, uprobe_opcode_t *new_opcode,
+> +		       int nbytes, void *data)
+> +{
+> +	struct write_opcode_ctx *ctx = data;
+> +	uprobe_opcode_t old_opcode[5];
+> +
+> +	uprobe_copy_from_page(page, ctx->base, (uprobe_opcode_t *) &old_opcode, 5);
+> +
+> +	switch (ctx->expect) {
+> +	case EXPECT_SWBP:
+> +		if (is_swbp_insn(&old_opcode[0]))
+> +			return 1;
+> +		break;
+> +	case EXPECT_CALL:
+> +		if (is_call_insn(&old_opcode[0]))
+> +			return 1;
+> +		break;
+> +	}
+> +
+> +	return -1;
+> +}
+> +
+> +/*
+> + * Modify multi-byte instructions by using INT3 breakpoints on SMP.
+> + * We completely avoid using stop_machine() here, and achieve the
+> + * synchronization using INT3 breakpoints and SMP cross-calls.
+> + * (borrowed comment from smp_text_poke_batch_finish)
+> + *
+> + * The way it is done:
+> + *   - Add an INT3 trap to the address that will be patched
+> + *   - SMP sync all CPUs
+> + *   - Update all but the first byte of the patched range
+> + *   - SMP sync all CPUs
+> + *   - Replace the first byte (INT3) by the first byte of the replacing opcode
+> + *   - SMP sync all CPUs
+> + */
+> +static int int3_update(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
+> +		       unsigned long vaddr, char *insn, bool optimize)
+> +{
+> +	uprobe_opcode_t int3 = UPROBE_SWBP_INSN;
+> +	struct write_opcode_ctx ctx = {
+> +		.base = vaddr,
+> +	};
+> +	int err;
+> +
+> +	/*
+> +	 * Write int3 trap.
+> +	 *
+> +	 * The swbp_optimize path comes with breakpoint already installed,
+> +	 * so we can skip this step for optimize == true.
+> +	 */
+> +	if (!optimize) {
+> +		ctx.expect = EXPECT_CALL;
+> +		err = uprobe_write(auprobe, vma, vaddr, &int3, 1, verify_insn,
+> +				   true /* is_register */, false /* do_update_ref_ctr */,
+> +				   &ctx);
+> +		if (err)
+> +			return err;
+> +	}
+> +
+> +	smp_text_poke_sync_each_cpu();
+> +
+> +	/* Write all but the first byte of the patched range. */
+> +	ctx.expect = EXPECT_SWBP;
+> +	err = uprobe_write(auprobe, vma, vaddr + 1, insn + 1, 4, verify_insn,
+> +			   true /* is_register */, false /* do_update_ref_ctr */,
+> +			   &ctx);
+> +	if (err)
+> +		return err;
+> +
+> +	smp_text_poke_sync_each_cpu();
+> +
+> +	/*
+> +	 * Write first byte.
+> +	 *
+> +	 * The swbp_unoptimize needs to finish uprobe removal together
+> +	 * with ref_ctr update, using uprobe_write with proper flags.
+> +	 */
+> +	err = uprobe_write(auprobe, vma, vaddr, insn, 1, verify_insn,
+> +			   optimize /* is_register */, !optimize /* do_update_ref_ctr */,
+> +			   &ctx);
+> +	if (err)
+> +		return err;
+> +
+> +	smp_text_poke_sync_each_cpu();
+> +	return 0;
+> +}
+> +
+> +static int swbp_optimize(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
+> +			 unsigned long vaddr, unsigned long tramp)
+> +{
+> +	u8 call[5];
+> +
+> +	__text_gen_insn(call, CALL_INSN_OPCODE, (const void *) vaddr,
+> +			(const void *) tramp, CALL_INSN_SIZE);
+> +	return int3_update(auprobe, vma, vaddr, call, true /* optimize */);
+> +}
+> +
+> +static int swbp_unoptimize(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
+> +			   unsigned long vaddr)
+> +{
+> +	return int3_update(auprobe, vma, vaddr, auprobe->insn, false /* optimize */);
+> +}
+> +
+> +static int copy_from_vaddr(struct mm_struct *mm, unsigned long vaddr, void *dst, int len)
+> +{
+> +	unsigned int gup_flags = FOLL_FORCE|FOLL_SPLIT_PMD;
+> +	struct vm_area_struct *vma;
+> +	struct page *page;
+> +
+> +	page = get_user_page_vma_remote(mm, vaddr, gup_flags, &vma);
+> +	if (IS_ERR(page))
+> +		return PTR_ERR(page);
+> +	uprobe_copy_from_page(page, vaddr, dst, len);
+> +	put_page(page);
+> +	return 0;
+> +}
+> +
+> +static bool __is_optimized(uprobe_opcode_t *insn, unsigned long vaddr)
+> +{
+> +	struct __packed __arch_relative_insn {
+> +		u8 op;
+> +		s32 raddr;
+> +	} *call = (struct __arch_relative_insn *) insn;
+> +
+> +	if (!is_call_insn(insn))
+> +		return false;
+> +	return __in_uprobe_trampoline(vaddr + 5 + call->raddr);
+> +}
+> +
+> +static int is_optimized(struct mm_struct *mm, unsigned long vaddr, bool *optimized)
+> +{
+> +	uprobe_opcode_t insn[5];
+> +	int err;
+> +
+> +	err = copy_from_vaddr(mm, vaddr, &insn, 5);
+> +	if (err)
+> +		return err;
+> +	*optimized = __is_optimized((uprobe_opcode_t *)&insn, vaddr);
+> +	return 0;
+> +}
+> +
+> +static bool should_optimize(struct arch_uprobe *auprobe)
+> +{
+> +	return !test_bit(ARCH_UPROBE_FLAG_OPTIMIZE_FAIL, &auprobe->flags) &&
+> +		test_bit(ARCH_UPROBE_FLAG_CAN_OPTIMIZE, &auprobe->flags);
+> +}
+> +
+> +int set_swbp(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
+> +	     unsigned long vaddr)
+> +{
+> +	if (should_optimize(auprobe)) {
+> +		bool optimized = false;
+> +		int err;
+> +
+> +		/*
+> +		 * We could race with another thread that already optimized the probe,
+> +		 * so let's not overwrite it with int3 again in this case.
+> +		 */
+> +		err = is_optimized(vma->vm_mm, vaddr, &optimized);
+> +		if (err)
+> +			return err;
+> +		if (optimized)
+> +			return 0;
+> +	}
+> +	return uprobe_write_opcode(auprobe, vma, vaddr, UPROBE_SWBP_INSN,
+> +				   true /* is_register */);
+> +}
+> +
+> +int set_orig_insn(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
+> +		  unsigned long vaddr)
+> +{
+> +	if (test_bit(ARCH_UPROBE_FLAG_CAN_OPTIMIZE, &auprobe->flags)) {
+> +		struct mm_struct *mm = vma->vm_mm;
+> +		bool optimized = false;
+> +		int err;
+> +
+> +		err = is_optimized(mm, vaddr, &optimized);
+> +		if (err)
+> +			return err;
+> +		if (optimized) {
+> +			err = swbp_unoptimize(auprobe, vma, vaddr);
+> +			WARN_ON_ONCE(err);
+> +			return err;
+> +		}
+> +	}
+> +	return uprobe_write_opcode(auprobe, vma, vaddr, *(uprobe_opcode_t *)&auprobe->insn,
+> +				   false /* is_register */);
+> +}
+> +
+> +static int __arch_uprobe_optimize(struct arch_uprobe *auprobe, struct mm_struct *mm,
+> +				  unsigned long vaddr)
+> +{
+> +	struct uprobe_trampoline *tramp;
+> +	struct vm_area_struct *vma;
+> +	bool new = false;
+> +	int err = 0;
+> +
+> +	vma = find_vma(mm, vaddr);
+> +	if (!vma)
+> +		return -EINVAL;
+> +	tramp = get_uprobe_trampoline(vaddr, &new);
+> +	if (!tramp)
+> +		return -EINVAL;
+> +	err = swbp_optimize(auprobe, vma, vaddr, tramp->vaddr);
+> +	if (WARN_ON_ONCE(err) && new)
+> +		destroy_uprobe_trampoline(tramp);
+> +	return err;
+> +}
+> +
+> +void arch_uprobe_optimize(struct arch_uprobe *auprobe, unsigned long vaddr)
+> +{
+> +	struct mm_struct *mm = current->mm;
+> +	uprobe_opcode_t insn[5];
+> +
+> +	/*
+> +	 * Do not optimize if shadow stack is enabled, the return address hijack
+> +	 * code in arch_uretprobe_hijack_return_addr updates wrong frame when
+> +	 * the entry uprobe is optimized and the shadow stack crashes the app.
+> +	 */
+> +	if (shstk_is_enabled())
+> +		return;
+> +
+> +	if (!should_optimize(auprobe))
+> +		return;
+> +
+> +	mmap_write_lock(mm);
+> +
+> +	/*
+> +	 * Check if some other thread already optimized the uprobe for us,
+> +	 * if it's the case just go away silently.
+> +	 */
+> +	if (copy_from_vaddr(mm, vaddr, &insn, 5))
+> +		goto unlock;
+> +	if (!is_swbp_insn((uprobe_opcode_t*) &insn))
+> +		goto unlock;
+> +
+> +	/*
+> +	 * If we fail to optimize the uprobe we set the fail bit so the
+> +	 * above should_optimize will fail from now on.
+> +	 */
+> +	if (__arch_uprobe_optimize(auprobe, mm, vaddr))
+> +		set_bit(ARCH_UPROBE_FLAG_OPTIMIZE_FAIL, &auprobe->flags);
+> +
+> +unlock:
+> +	mmap_write_unlock(mm);
+> +}
+> +
+> +static bool can_optimize(struct arch_uprobe *auprobe, unsigned long vaddr)
+> +{
+> +	if (memcmp(&auprobe->insn, x86_nops[5], 5))
+> +		return false;
+> +	/* We can't do cross page atomic writes yet. */
+> +	return PAGE_SIZE - (vaddr & ~PAGE_MASK) >= 5;
+> +}
+>  #else /* 32-bit: */
+>  /*
+>   * No RIP-relative addressing on 32-bit
+> @@ -904,6 +1178,10 @@ static void riprel_pre_xol(struct arch_uprobe *auprobe, struct pt_regs *regs)
+>  static void riprel_post_xol(struct arch_uprobe *auprobe, struct pt_regs *regs)
+>  {
+>  }
+> +static bool can_optimize(struct arch_uprobe *auprobe, unsigned long vaddr)
+> +{
+> +	return false;
+> +}
+>  #endif /* CONFIG_X86_64 */
+>  
+>  struct uprobe_xol_ops {
+> @@ -1270,6 +1548,9 @@ int arch_uprobe_analyze_insn(struct arch_uprobe *auprobe, struct mm_struct *mm,
+>  	if (ret)
+>  		return ret;
+>  
+> +	if (can_optimize(auprobe, addr))
+> +		set_bit(ARCH_UPROBE_FLAG_CAN_OPTIMIZE, &auprobe->flags);
+> +
+>  	ret = branch_setup_xol_ops(auprobe, &insn);
+>  	if (ret != -ENOSYS)
+>  		return ret;
+> diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
+> index b6b077cc7d0f..08ef78439d0d 100644
+> --- a/include/linux/uprobes.h
+> +++ b/include/linux/uprobes.h
+> @@ -192,7 +192,7 @@ struct uprobes_state {
+>  };
+>  
+>  typedef int (*uprobe_write_verify_t)(struct page *page, unsigned long vaddr,
+> -				     uprobe_opcode_t *insn, int nbytes);
+> +				     uprobe_opcode_t *insn, int nbytes, void *data);
+>  
+>  extern void __init uprobes_init(void);
+>  extern int set_swbp(struct arch_uprobe *aup, struct vm_area_struct *vma, unsigned long vaddr);
+> @@ -204,7 +204,8 @@ extern unsigned long uprobe_get_trap_addr(struct pt_regs *regs);
+>  extern int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma, unsigned long vaddr, uprobe_opcode_t,
+>  			       bool is_register);
+>  extern int uprobe_write(struct arch_uprobe *auprobe, struct vm_area_struct *vma, const unsigned long opcode_vaddr,
+> -			uprobe_opcode_t *insn, int nbytes, uprobe_write_verify_t verify, bool is_register, bool do_update_ref_ctr);
+> +			uprobe_opcode_t *insn, int nbytes, uprobe_write_verify_t verify, bool is_register, bool do_update_ref_ctr,
+> +			void *data);
+>  extern struct uprobe *uprobe_register(struct inode *inode, loff_t offset, loff_t ref_ctr_offset, struct uprobe_consumer *uc);
+>  extern int uprobe_apply(struct uprobe *uprobe, struct uprobe_consumer *uc, bool);
+>  extern void uprobe_unregister_nosync(struct uprobe *uprobe, struct uprobe_consumer *uc);
+> @@ -240,6 +241,7 @@ extern void uprobe_copy_from_page(struct page *page, unsigned long vaddr, void *
+>  extern void arch_uprobe_clear_state(struct mm_struct *mm);
+>  extern void arch_uprobe_init_state(struct mm_struct *mm);
+>  extern void handle_syscall_uprobe(struct pt_regs *regs, unsigned long bp_vaddr);
+> +extern void arch_uprobe_optimize(struct arch_uprobe *auprobe, unsigned long vaddr);
+>  #else /* !CONFIG_UPROBES */
+>  struct uprobes_state {
+>  };
+> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> index cbba31c0495f..e54081beeab9 100644
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -192,7 +192,7 @@ static void copy_to_page(struct page *page, unsigned long vaddr, const void *src
+>  }
+>  
+>  static int verify_opcode(struct page *page, unsigned long vaddr, uprobe_opcode_t *insn,
+> -			 int nbytes)
+> +			 int nbytes, void *data)
+>  {
+>  	uprobe_opcode_t old_opcode;
+>  	bool is_swbp;
+> @@ -492,12 +492,13 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
+>  		bool is_register)
+>  {
+>  	return uprobe_write(auprobe, vma, opcode_vaddr, &opcode, UPROBE_SWBP_INSN_SIZE,
+> -			    verify_opcode, is_register, true /* do_update_ref_ctr */);
+> +			    verify_opcode, is_register, true /* do_update_ref_ctr */, NULL);
+>  }
+>  
+>  int uprobe_write(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
+>  		 const unsigned long insn_vaddr, uprobe_opcode_t *insn, int nbytes,
+> -		 uprobe_write_verify_t verify, bool is_register, bool do_update_ref_ctr)
+> +		 uprobe_write_verify_t verify, bool is_register, bool do_update_ref_ctr,
+> +		 void *data)
+>  {
+>  	const unsigned long vaddr = insn_vaddr & PAGE_MASK;
+>  	struct mm_struct *mm = vma->vm_mm;
+> @@ -531,7 +532,7 @@ int uprobe_write(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
+>  		goto out;
+>  	folio = page_folio(page);
+>  
+> -	ret = verify(page, insn_vaddr, insn, nbytes);
+> +	ret = verify(page, insn_vaddr, insn, nbytes, data);
+>  	if (ret <= 0) {
+>  		folio_put(folio);
+>  		goto out;
+> @@ -2697,6 +2698,10 @@ bool __weak arch_uretprobe_is_alive(struct return_instance *ret, enum rp_check c
+>  	return true;
+>  }
+>  
+> +void __weak arch_uprobe_optimize(struct arch_uprobe *auprobe, unsigned long vaddr)
+> +{
+> +}
+> +
+>  /*
+>   * Run handler and ask thread to singlestep.
+>   * Ensure all non-fatal signals cannot interrupt thread while it singlesteps.
+> @@ -2761,6 +2766,9 @@ static void handle_swbp(struct pt_regs *regs)
+>  
+>  	handler_chain(uprobe, regs);
+>  
+> +	/* Try to optimize after first hit. */
+> +	arch_uprobe_optimize(&uprobe->arch, bp_vaddr);
+> +
+>  	if (arch_uprobe_skip_sstep(&uprobe->arch, regs))
+>  		goto out;
+>  
+> -- 
+> 2.50.1
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
