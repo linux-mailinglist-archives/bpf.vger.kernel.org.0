@@ -1,353 +1,436 @@
-Return-Path: <bpf+bounces-64331-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64332-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 985C8B11A30
-	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 10:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CEC51B11ABF
+	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 11:21:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27E6D1CE0F97
-	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 08:47:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B15A91CC6ABA
+	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 09:22:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0200F23507E;
-	Fri, 25 Jul 2025 08:47:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 855742D0C75;
+	Fri, 25 Jul 2025 09:21:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OeLHhU5W";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="H6JB0ign";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OeLHhU5W";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="H6JB0ign"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Q4aklL5e"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-wr1-f68.google.com (mail-wr1-f68.google.com [209.85.221.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 009C82868B
-	for <bpf@vger.kernel.org>; Fri, 25 Jul 2025 08:47:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2348285053
+	for <bpf@vger.kernel.org>; Fri, 25 Jul 2025 09:21:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753433247; cv=none; b=GajIDqJX2rLTd1V+scMyBu476z+9SKkJZQry557RjZZs9IQrI7O8dRCZzziNdYRD20BXY5b0FAL6MDmNPGKKvGHt2ACXpY4v4xECpY8eBQpnh/xnQ1FxnRjT2aKtB3/9L8zcee5nkLLdzPokAtjgsxwULdjAUrnNeFR79l1TldQ=
+	t=1753435313; cv=none; b=Qf7BjtxVSXf3+iOQvwGNXRTRp/4BmKu2azDbx/K0U8w4X1oWEt91WZxCZxPz1oxH/jjSJlIblHOSWcrgfw7ai/KK/USfRJuvO8yI0Vr8fK6DuGoIcIYprhpwUYkjxfLkZiu82ZMXaar1G3R8nlX3IFAY4OD1ZkPjfvRWtyQrUuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753433247; c=relaxed/simple;
-	bh=Fr6pbPNTqNtu/JBIWN8m1RO42+2bWoh5lnnq0DAQ9Bs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VjJDyp5HOOcFN7ijJHoVPw1xtQ3sT8jFtWcYbocDW3C2/HvsgslpMa65FjdSAay/M37rIJK+B9FBpIeqR/5g09a5q2xD9ynB99x+SQWdgSK2vfBh4tzrJzAnWosCRd7Z2Cq8IBhiJnizEyYnJmTDZjJzzI6t25YHF8WKIcMUkUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=OeLHhU5W; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=H6JB0ign; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=OeLHhU5W; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=H6JB0ign; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1E36221A21;
-	Fri, 25 Jul 2025 08:47:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1753433243; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=b5mIeEJNHmWKWW6RsIhmAZfORXEks3eAgT6/5b1hJfA=;
-	b=OeLHhU5W7pddrGKH9n0Kw2zZThDZLvbNWRDl4To7QSqwXfFTxefGi8mlWjV/wVOb40ZxQD
-	Uuy3SSVDdQvYGIYSnjhl8dG6sUP0JitOGOC19IVUWWBGqAQp29dDTDrSMzlmDrdMsclsKZ
-	BDHXD+NcZr/g2luOiLGgRgecEW5dwjs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1753433243;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=b5mIeEJNHmWKWW6RsIhmAZfORXEks3eAgT6/5b1hJfA=;
-	b=H6JB0igneF3C7jdz8fjy5FGwvQ6PItTy1u2C5m8dgvpwJXQiWhAmCAuS3AAIQJgO+9l4r8
-	f6qn5+qnQVw79JDw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1753433243; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=b5mIeEJNHmWKWW6RsIhmAZfORXEks3eAgT6/5b1hJfA=;
-	b=OeLHhU5W7pddrGKH9n0Kw2zZThDZLvbNWRDl4To7QSqwXfFTxefGi8mlWjV/wVOb40ZxQD
-	Uuy3SSVDdQvYGIYSnjhl8dG6sUP0JitOGOC19IVUWWBGqAQp29dDTDrSMzlmDrdMsclsKZ
-	BDHXD+NcZr/g2luOiLGgRgecEW5dwjs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1753433243;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=b5mIeEJNHmWKWW6RsIhmAZfORXEks3eAgT6/5b1hJfA=;
-	b=H6JB0igneF3C7jdz8fjy5FGwvQ6PItTy1u2C5m8dgvpwJXQiWhAmCAuS3AAIQJgO+9l4r8
-	f6qn5+qnQVw79JDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F37FF134E8;
-	Fri, 25 Jul 2025 08:47:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id GFkLO5pEg2hKZAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Fri, 25 Jul 2025 08:47:22 +0000
-Message-ID: <dea8645f-9f2c-40f2-bf39-f51c767d07bc@suse.cz>
-Date: Fri, 25 Jul 2025 10:47:22 +0200
+	s=arc-20240116; t=1753435313; c=relaxed/simple;
+	bh=fHD0GDkTl2VPW8GotjbwI/iHR7726h2hQ9lvr/XGHCg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=edolvCQwtumoiUPdv33G+5a4NGB7rtORMvAwC9Eb/mQDZ4MqIPUcSyfFC3mxWBo16MR1qQea2IML4sv06isDR72fkshacLvOjEdQ8bnDeo+8rra76b25b9s8Q29chKgDtzuYqAyuqlJO0XiUH3wrCdAB1QaF/8rvpfVRHLAN4O4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Q4aklL5e; arc=none smtp.client-ip=209.85.221.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f68.google.com with SMTP id ffacd0b85a97d-3b77673fd78so282847f8f.0
+        for <bpf@vger.kernel.org>; Fri, 25 Jul 2025 02:21:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1753435309; x=1754040109; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Jns95K2CC9wrsrCmUf0a/beZ690kJlwnrWlOt/dNwE=;
+        b=Q4aklL5eKO2ruB+XTn5/Q7jDA83DjJpodUT7oUtLat2svPDGTHvmBcqAV0YOsFMvZR
+         3IWkihM3CalBlx3cPkIGrQR06grJXXuWsNl1LfOSY3jdnKchiQZmhJkHYvNoZdWBuxqK
+         05HiGaj6v9iWEQ5gevQLInD1/y7BrVn4hfr36xVYQagjoiQkLCbACbhJ7URq21Kzh1C6
+         l2xRH0U6/mXE9epsD+vg4usXSjbwD/7KYQlGfsVBA2SjC2nzU66EypNLm5Zemu+laDBW
+         yFgku1fsI4Z6j2XnT+NrUsw8F/zVHbREofCEV1wRkbZ57ZDQKoRmJtuehmk/TTK6pgeg
+         y/RA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753435309; x=1754040109;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+Jns95K2CC9wrsrCmUf0a/beZ690kJlwnrWlOt/dNwE=;
+        b=H1zCOqyS70T7riDDccM/bZMN5sjsB2xrpSSYneXNaZJ1Ehm22qWvVZ4JGbLH+pWmdv
+         jcnK41mQYN/zOrNdPPZ7WtbclQl4Y15E3FsiSnokauSg3Z4bMphSYAp+KAra5AFp9dfg
+         olLntvLmlWM2bgsxifT+Cdlw97MOOm1gLjQw4kS77D+J4xb+uptpTW0AG4u5m7/tQK1L
+         THXE4WkoTGkLPZNyWafAkP6VQrGU6uwvM82qsasTrwmcbXwSbzpMUflCAt1P48wiZl9y
+         EhkGwm0DGs5etbxajZk5czHwPLy02jRLLTeHHGFzUwmwO6agOF8gkuJNsQFoaG1171BL
+         DAEw==
+X-Gm-Message-State: AOJu0YzsCV028yfSBcslI+5UmKTslpf/BjoAqMcLINz/2OQNPnmSrnGm
+	Qwt2wLFiWJc/CJao96ttmE6eHb+FX5UoQUMM5kZS+qD8mY3uqPrie/HYif2tY9MeN1k=
+X-Gm-Gg: ASbGnctIdZ6iEgNri7nX6R+pUjxKQITmy2YJrea0mTZLO/lYS29C7nUywFlTdg1NDIQ
+	zYKQHeFYUj1ayOEfP+dHkdoeb97+TYZvalgWcz3uTZuFxamlKyUUzwAJ/LAgzX2KezrFKYAZhjM
+	7rVjqr5ISZVNDnRfuNKUYwiwON9fWHcqJzqeJOWGf4Eo1bk0tEHCNHwdjD+aqVNRwz5vRPlmEK/
+	cyEEuq2Al0chIqOvl/HAMFxt+hLjd9yguTjDAsvfznkA4NxISIZjjHefSBgov8rVKTA425lbnfN
+	S9b2aj73/PXlwTtn8nI0YaWrMYn35f2mk7HIczyvi2gcDXhwY89LJex+Ho934Gog/QlAR2akq2V
+	Btb1Seae41uDUxoARWGB8I1dzRojDCwFemP/o7flOGmMFcLSdHzu8xjrGkteWun+gKHTg5Eom4V
+	TPY5p7JuTmyR3tW7s=
+X-Google-Smtp-Source: AGHT+IGrhsMBBUSreh3QqHGNveTrC5nIQFDPjriVzudy6YLHQmHZSmhUrhTri0b49ys1ihH5beXiPw==
+X-Received: by 2002:a05:6000:40de:b0:3a5:8a09:70b7 with SMTP id ffacd0b85a97d-3b77663e8b8mr1257784f8f.38.1753435308686;
+        Fri, 25 Jul 2025 02:21:48 -0700 (PDT)
+Received: from u94a (2001-b011-fa04-d953-b2dc-efff-fee8-7e7a.dynamic-ip6.hinet.net. [2001:b011:fa04:d953:b2dc:efff:fee8:7e7a])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-761b06199a8sm3435466b3a.112.2025.07.25.02.21.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jul 2025 02:21:48 -0700 (PDT)
+Date: Fri, 25 Jul 2025 17:21:38 +0800
+From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To: Eduard Zingerman <eddyz87@gmail.com>, 
+	Paul Chaignon <paul.chaignon@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH bpf-next] bpf: Simplify bounds refinement from s32
+Message-ID: <nrsym2fuoeqoewmf7omq5dr2wtnq63bmivc2ndvkybi3xh4ger@7fenu3fa566i>
+References: <aIJwnFnFyUjNsCNa@mail.gmail.com>
+ <4da44707e926d2b2cb7e1d19572d006d7b7c06bd.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 2/4] mm/slub: allow to set node and align in
- k[v]realloc
-Content-Language: en-US
-To: Vitaly Wool <vitaly.wool@konsulko.se>, linux-mm@kvack.org
-Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
- Uladzislau Rezki <urezki@gmail.com>, Danilo Krummrich <dakr@kernel.org>,
- Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
- "Liam R . Howlett" <Liam.Howlett@oracle.com>,
- Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org,
- bpf@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
- Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>
-References: <20250715135645.2230065-1-vitaly.wool@konsulko.se>
- <20250715135815.2230224-1-vitaly.wool@konsulko.se>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
- KxRWDHX0R2tgpFDXHnzZcQywawu8eSq0LxzxFNYMvtB7sV1pxYwej2qx9B75qW2plBs+7+YB
- 87tMFA+u+L4Z5xAzIimfLD5EKC56kJ1CsXlM8S/LHcmdD9Ctkn3trYDNnat0eoAcfPIP2OZ+
- 9oe9IF/R28zmh0ifLXyJQQz5ofdj4bPf8ecEW0rhcqHfTD8k4yK0xxt3xW+6Exqp9n9bydiy
- tcSAw/TahjW6yrA+6JhSBv1v2tIm+itQc073zjSX8OFL51qQVzRFr7H2UQG33lw2QrvHRXqD
- Ot7ViKam7v0Ho9wEWiQOOZlHItOOXFphWb2yq3nzrKe45oWoSgkxKb97MVsQ+q2SYjJRBBH4
- 8qKhphADYxkIP6yut/eaj9ImvRUZZRi0DTc8xfnvHGTjKbJzC2xpFcY0DQbZzuwsIZ8OPJCc
- LM4S7mT25NE5kUTG/TKQCk922vRdGVMoLA7dIQrgXnRXtyT61sg8PG4wcfOnuWf8577aXP1x
- 6mzw3/jh3F+oSBHb/GcLC7mvWreJifUL2gEdssGfXhGWBo6zLS3qhgtwjay0Jl+kza1lo+Cv
- BB2T79D4WGdDuVa4eOrQ02TxqGN7G0Biz5ZLRSFzQSQwLn8fbwARAQABzSBWbGFzdGltaWwg
- QmFia2EgPHZiYWJrYUBzdXNlLmN6PsLBlAQTAQoAPgIbAwULCQgHAwUVCgkICwUWAgMBAAIe
- AQIXgBYhBKlA1DSZLC6OmRA9UCJPp+fMgqZkBQJnyBr8BQka0IFQAAoJECJPp+fMgqZkqmMQ
- AIbGN95ptUMUvo6aAdhxaOCHXp1DfIBuIOK/zpx8ylY4pOwu3GRe4dQ8u4XS9gaZ96Gj4bC+
- jwWcSmn+TjtKW3rH1dRKopvC07tSJIGGVyw7ieV/5cbFffA8NL0ILowzVg8w1ipnz1VTkWDr
- 2zcfslxJsJ6vhXw5/npcY0ldeC1E8f6UUoa4eyoskd70vO0wOAoGd02ZkJoox3F5ODM0kjHu
- Y97VLOa3GG66lh+ZEelVZEujHfKceCw9G3PMvEzyLFbXvSOigZQMdKzQ8D/OChwqig8wFBmV
- QCPS4yDdmZP3oeDHRjJ9jvMUKoYODiNKsl2F+xXwyRM2qoKRqFlhCn4usVd1+wmv9iLV8nPs
- 2Db1ZIa49fJet3Sk3PN4bV1rAPuWvtbuTBN39Q/6MgkLTYHb84HyFKw14Rqe5YorrBLbF3rl
- M51Dpf6Egu1yTJDHCTEwePWug4XI11FT8lK0LNnHNpbhTCYRjX73iWOnFraJNcURld1jL1nV
- r/LRD+/e2gNtSTPK0Qkon6HcOBZnxRoqtazTU6YQRmGlT0v+rukj/cn5sToYibWLn+RoV1CE
- Qj6tApOiHBkpEsCzHGu+iDQ1WT0Idtdynst738f/uCeCMkdRu4WMZjteQaqvARFwCy3P/jpK
- uvzMtves5HvZw33ZwOtMCgbpce00DaET4y/UzsBNBFsZNTUBCACfQfpSsWJZyi+SHoRdVyX5
- J6rI7okc4+b571a7RXD5UhS9dlVRVVAtrU9ANSLqPTQKGVxHrqD39XSw8hxK61pw8p90pg4G
- /N3iuWEvyt+t0SxDDkClnGsDyRhlUyEWYFEoBrrCizbmahOUwqkJbNMfzj5Y7n7OIJOxNRkB
- IBOjPdF26dMP69BwePQao1M8Acrrex9sAHYjQGyVmReRjVEtv9iG4DoTsnIR3amKVk6si4Ea
- X/mrapJqSCcBUVYUFH8M7bsm4CSxier5ofy8jTEa/CfvkqpKThTMCQPNZKY7hke5qEq1CBk2
- wxhX48ZrJEFf1v3NuV3OimgsF2odzieNABEBAAHCwXwEGAEKACYCGwwWIQSpQNQ0mSwujpkQ
- PVAiT6fnzIKmZAUCZ8gcVAUJFhTonwAKCRAiT6fnzIKmZLY8D/9uo3Ut9yi2YCuASWxr7QQZ
- lJCViArjymbxYB5NdOeC50/0gnhK4pgdHlE2MdwF6o34x7TPFGpjNFvycZqccSQPJ/gibwNA
- zx3q9vJT4Vw+YbiyS53iSBLXMweeVV1Jd9IjAoL+EqB0cbxoFXvnjkvP1foiiF5r73jCd4PR
- rD+GoX5BZ7AZmFYmuJYBm28STM2NA6LhT0X+2su16f/HtummENKcMwom0hNu3MBNPUOrujtW
- khQrWcJNAAsy4yMoJ2Lw51T/5X5Hc7jQ9da9fyqu+phqlVtn70qpPvgWy4HRhr25fCAEXZDp
- xG4RNmTm+pqorHOqhBkI7wA7P/nyPo7ZEc3L+ZkQ37u0nlOyrjbNUniPGxPxv1imVq8IyycG
- AN5FaFxtiELK22gvudghLJaDiRBhn8/AhXc642/Z/yIpizE2xG4KU4AXzb6C+o7LX/WmmsWP
- Ly6jamSg6tvrdo4/e87lUedEqCtrp2o1xpn5zongf6cQkaLZKQcBQnPmgHO5OG8+50u88D9I
- rywqgzTUhHFKKF6/9L/lYtrNcHU8Z6Y4Ju/MLUiNYkmtrGIMnkjKCiRqlRrZE/v5YFHbayRD
- dJKXobXTtCBYpLJM4ZYRpGZXne/FAtWNe4KbNJJqxMvrTOrnIatPj8NhBVI0RSJRsbilh6TE
- m6M14QORSWTLRg==
-In-Reply-To: <20250715135815.2230224-1-vitaly.wool@konsulko.se>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	ARC_NA(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,vger.kernel.org,gmail.com,kernel.org,google.com,oracle.com,linux.dev,gondor.apana.org.au,suse.de];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Spam-Score: -4.30
+Content-Type: multipart/mixed; boundary="awo2teqdyhaqjwfl"
+Content-Disposition: inline
+In-Reply-To: <4da44707e926d2b2cb7e1d19572d006d7b7c06bd.camel@gmail.com>
 
-On 7/15/25 15:58, Vitaly Wool wrote:
-> Reimplement k[v]realloc_node() to be able to set node and
-> alignment should a user need to do so. In order to do that while
-> retaining the maximal backward compatibility, add
-> k[v]realloc_node_align() functions and redefine the rest of API
-> using these new ones.
+
+--awo2teqdyhaqjwfl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Jul 24, 2025 at 02:49:47PM -0700, Eduard Zingerman wrote:
+> On Thu, 2025-07-24 at 19:42 +0200, Paul Chaignon wrote:
+> > During the bounds refinement, we improve the precision of various ranges
+> > by looking at other ranges. Among others, we improve the following in
+> > this order (other things happen between 1 and 2):
+> > 
+> >   1. Improve u32 from s32 in __reg32_deduce_bounds.
+> >   2. Improve s/u64 from u32 in __reg_deduce_mixed_bounds.
+> >   3. Improve s/u64 from s32 in __reg_deduce_mixed_bounds.
+> > 
+> > In particular, if the s32 range forms a valid u32 range, we will use it
+> > to improve the u32 range in __reg32_deduce_bounds. In
+> > __reg_deduce_mixed_bounds, under the same condition, we will use the s32
+> > range to improve the s/u64 ranges.
+> > 
+> > If at (1) we were able to learn from s32 to improve u32, we'll then be
+> > able to use that in (2) to improve s/u64. Hence, as (3) happens under
+> > the same precondition as (1), it won't improve s/u64 ranges further than
+> > (1)+(2) did. Thus, we can get rid of (3).
+> > 
+> > In addition to the extensive suite of selftests for bounds refinement,
+> > this patch was also tested with the Agni formal verification tool [1].
+> > 
+> > Link: https://github.com/bpfverif/agni [1]
+> > Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
+> > ---
 > 
-> While doing that, we also keep the number of  _noprof variants to a
-> minimum, which implies some changes to the existing users of older
-> _noprof functions, that basically being bcachefs.
+> So, the argument appears to be as follows:
 > 
-> With that change we also provide the ability for the Rust part of
-> the kernel to set node and alignment in its K[v]xxx
-> [re]allocations.
+> Under precondition `(u32)reg->s32_min <= (u32)reg->s32_max`
+> __reg32_deduce_bounds produces:
 > 
-> Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.se>
->  
->  /**
-> - * krealloc - reallocate memory. The contents will remain unchanged.
-> + * krealloc_node_align - reallocate memory. The contents will remain unchanged.
->   * @p: object to reallocate memory for.
->   * @new_size: how many bytes of memory are required.
-> + * @align: desired alignment.
+>   reg->u32_min = max_t(u32, reg->s32_min, reg->u32_min);
+>   reg->u32_max = min_t(u32, reg->s32_max, reg->u32_max);
+> 
+> And then first part of __reg_deduce_mixed_bounds assigns:
+> 
+>   a. reg->umin umax= (reg->umin & ~0xffffffffULL) | max_t(u32, reg->s32_min, reg->u32_min);
+>   b. reg->umax umin= (reg->umax & ~0xffffffffULL) | min_t(u32, reg->s32_max, reg->u32_max);
+> 
+> And then second part of __reg_deduce_mixed_bounds assigns:
+> 
+>   c. reg->umin umax= (reg->umin & ~0xffffffffULL) | (u32)reg->s32_min;
+>   d. reg->umax umin= (reg->umax & ~0xffffffffULL) | (u32)reg->s32_max;
+> 
+> But assignment (c) is a noop because:
+> 
+>    max_t(u32, reg->s32_min, reg->u32_min) >= (u32)reg->s32_min
+> 
+> Hence RHS(a) >= RHS(c) and umin= does nothing.
+> 
+> Also assignment (d) is a noop because:
+> 
+>   min_t(u32, reg->s32_max, reg->u32_max) <= (u32)reg->s32_max
+> 
+> Hence RHS(b) <= RHS(d) and umin= does nothing.
+> 
+> Plus the same reasoning for the part dealing with reg->s{min,max}_value:
+> 
+>   e. reg->smin_value smax= (reg->smin_value & ~0xffffffffULL) | max_t(u32, reg->s32_min_value, reg->u32_min_value);
+>   f. reg->smax_value smin= (reg->smax_value & ~0xffffffffULL) | min_t(u32, reg->s32_max_value, reg->u32_max_value);
+> 
+>     vs
+> 
+>   g. reg->smin_value smax= (reg->smin_value & ~0xffffffffULL) | (u32)reg->s32_min_value;
+>   h. reg->smax_value smin= (reg->smax_value & ~0xffffffffULL) | (u32)reg->s32_max_value;
+> 
+>     RHS(e) >= RHS(g) and RHS(f) <= RHS(h), hence smax=,smin= do nothing.
+> 
+> This appears to be correct.
+> 
+> Shung-Hsi, wdyt?
 
-It should be better noted that only alignments up to those guaranteed by
-kmalloc() (with a link to its doc where it's described) are expected and not
-arbitrary ones. So we don't give the wrong impression here.
+Agree with the reasoning above, it looks solid.
 
->   * @flags: the type of memory to allocate.
-> + * @nid: NUMA node or NUMA_NO_NODE
->   *
->   * If @p is %NULL, krealloc() behaves exactly like kmalloc().  If @new_size
->   * is 0 and @p is not a %NULL pointer, the object pointed to is freed.
-> @@ -4946,7 +4962,8 @@ __do_krealloc(const void *p, size_t new_size, gfp_t flags)
->   *
->   * Return: pointer to the allocated memory or %NULL in case of error
->   */
-> -void *krealloc_noprof(const void *p, size_t new_size, gfp_t flags)
-> +void *krealloc_node_align_noprof(const void *p, size_t new_size, unsigned long align,
-> +				 gfp_t flags, int nid)
->  {
->  	void *ret;
->  
-> @@ -4955,13 +4972,13 @@ void *krealloc_noprof(const void *p, size_t new_size, gfp_t flags)
->  		return ZERO_SIZE_PTR;
->  	}
->  
-> -	ret = __do_krealloc(p, new_size, flags);
-> +	ret = __do_krealloc(p, new_size, align, flags, nid);
->  	if (ret && kasan_reset_tag(p) != kasan_reset_tag(ret))
->  		kfree(p);
->  
->  	return ret;
->  }
-> -EXPORT_SYMBOL(krealloc_noprof);
-> +EXPORT_SYMBOL(krealloc_node_align_noprof);
->  
->  static gfp_t kmalloc_gfp_adjust(gfp_t flags, size_t size)
->  {
-> @@ -4992,6 +5009,7 @@ static gfp_t kmalloc_gfp_adjust(gfp_t flags, size_t size)
->   * failure, fall back to non-contiguous (vmalloc) allocation.
->   * @size: size of the request.
->   * @b: which set of kmalloc buckets to allocate from.
-> + * @align: desired alignment.
+Beside going through the reasoning, I also played with CBMC a bit to
+double check that as far as a single run of __reg_deduce_bounds() is
+concerned (and that the register state matches certain handwavy
+expectations), the change indeed still preserve the original behavior.
 
-I guess here we should say something similar to what I suggested to
-krealloc(). The "size >= align" check below doesn't mean the alignment can
-be arbitrary. It would be incompatible with how
-kvrealloc_node_align_noprof() works anyway.
+Reviewed-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 
->   * @flags: gfp mask for the allocation - must be compatible (superset) with GFP_KERNEL.
->   * @node: numa node to allocate from
->   *
-> @@ -5004,19 +5022,22 @@ static gfp_t kmalloc_gfp_adjust(gfp_t flags, size_t size)
->   *
->   * Return: pointer to the allocated memory of %NULL in case of failure
->   */
-> -void *__kvmalloc_node_noprof(DECL_BUCKET_PARAMS(size, b), gfp_t flags, int node)
-> +void *__kvmalloc_node_noprof(DECL_BUCKET_PARAMS(size, b), unsigned long align,
-> +			     gfp_t flags, int node)
->  {
->  	void *ret;
->  
->  	/*
->  	 * It doesn't really make sense to fallback to vmalloc for sub page
-> -	 * requests
-> +	 * requests and small alignments
->  	 */
-> -	ret = __do_kmalloc_node(size, PASS_BUCKET_PARAM(b),
-> -				kmalloc_gfp_adjust(flags, size),
-> -				node, _RET_IP_);
-> -	if (ret || size <= PAGE_SIZE)
-> -		return ret;
-> +	if (size >= align) {
+Simplification of bound deduction logic! \o/
 
-I think it's similar to the check in __do_krealloc() in v12 and not
-particularly useful. We don't need to support align > size for rust anyway?
-Does vmalloc even honor that?
 
-It would also be inconsistent that kvmalloc() would give you this
-possibility of size<align, but starting with a small size and size>=align
-and then kvrealloc() to size<align wouldn't actually work.
+--awo2teqdyhaqjwfl
+Content-Type: text/x-c; charset=us-ascii
+Content-Disposition: inline
 
-> +		ret = __do_kmalloc_node(size, PASS_BUCKET_PARAM(b),
-> +					kmalloc_gfp_adjust(flags, size),
-> +					node, _RET_IP_);
-> +		if (ret || size <= PAGE_SIZE)
-> +			return ret;
-> +	}
->  
->  	/* non-sleeping allocations are not supported by vmalloc */
->  	if (!gfpflags_allow_blocking(flags))
-> @@ -5034,7 +5055,7 @@ void *__kvmalloc_node_noprof(DECL_BUCKET_PARAMS(size, b), gfp_t flags, int node)
->  	 * about the resulting pointer, and cannot play
->  	 * protection games.
->  	 */
-> -	return __vmalloc_node_range_noprof(size, 1, VMALLOC_START, VMALLOC_END,
-> +	return __vmalloc_node_range_noprof(size, align, VMALLOC_START, VMALLOC_END,
->  			flags, PAGE_KERNEL, VM_ALLOW_HUGE_VMAP,
->  			node, __builtin_return_address(0));
->  }
-> @@ -5078,10 +5099,12 @@ void kvfree_sensitive(const void *addr, size_t len)
->  EXPORT_SYMBOL(kvfree_sensitive);
->  
->  /**
-> - * kvrealloc - reallocate memory; contents remain unchanged
-> + * kvrealloc_node_align - reallocate memory; contents remain unchanged
->   * @p: object to reallocate memory for
->   * @size: the size to reallocate
-> + * @align: desired alignment
+#include <stdint.h>
+#include <limits.h>
+#include <stdbool.h>
+#include <assert.h>
 
-Ditto.
+// Define Linux kernel types
+typedef uint64_t u64;
+typedef int64_t s64;
+typedef uint32_t u32;
+typedef int32_t s32;
+typedef uint8_t u8;
+typedef int8_t s8;
+typedef uint16_t u16;
+typedef int16_t s16;
 
->   * @flags: the flags for the page level allocator
-> + * @nid: NUMA node id
->   *
->   * If @p is %NULL, kvrealloc() behaves exactly like kvmalloc(). If @size is 0
->   * and @p is not a %NULL pointer, the object pointed to is freed.
-> @@ -5099,17 +5122,18 @@ EXPORT_SYMBOL(kvfree_sensitive);
->   *
->   * Return: pointer to the allocated memory or %NULL in case of error
->   */
-> -void *kvrealloc_noprof(const void *p, size_t size, gfp_t flags)
-> +void *kvrealloc_node_align_noprof(const void *p, size_t size, unsigned long align,
-> +				  gfp_t flags, int nid)
->  {
->  	void *n;
->  
->  	if (is_vmalloc_addr(p))
-> -		return vrealloc_noprof(p, size, flags);
-> +		return vrealloc_node_align_noprof(p, size, align, flags, nid);
->  
-> -	n = krealloc_noprof(p, size, kmalloc_gfp_adjust(flags, size));
-> +	n = krealloc_node_align_noprof(p, size, align, kmalloc_gfp_adjust(flags, size), nid);
->  	if (!n) {
->  		/* We failed to krealloc(), fall back to kvmalloc(). */
-> -		n = kvmalloc_noprof(size, flags);
-> +		n = kvmalloc_node_align_noprof(size, align, flags, nid);
->  		if (!n)
->  			return NULL;
->  
-> @@ -5125,7 +5149,7 @@ void *kvrealloc_noprof(const void *p, size_t size, gfp_t flags)
->  
->  	return n;
->  }
-> -EXPORT_SYMBOL(kvrealloc_noprof);
-> +EXPORT_SYMBOL(kvrealloc_node_align_noprof);
->  
->  struct detached_freelist {
->  	struct slab *slab;
+// Define limits
+#define S8_MIN  INT8_MIN
+#define S8_MAX  INT8_MAX
+#define S16_MIN INT16_MIN
+#define S16_MAX INT16_MAX
+#define S32_MIN INT32_MIN
+#define S32_MAX INT32_MAX
+#define U32_MAX UINT32_MAX
+#define S64_MIN INT64_MIN
+#define S64_MAX INT64_MAX
+#define U64_MAX UINT64_MAX
 
+/* Crude approximation of min_t() and max_t() */
+#define min_t(type, x, y) (((type) (x)) < ((type) (y)) ? ((type) (x)) : ((type) (y)))
+#define max_t(type, x, y) (((type) (x)) > ((type) (y)) ? ((type) (x)) : ((type) (y)))
+
+// Simplified version of bpf_reg_state with only field needed by
+// coerce_reg_to_size_sx
+struct bpf_reg_state {
+	s64 smin_value;
+	s64 smax_value;
+	u64 umin_value;
+	u64 umax_value;
+	s32 s32_min_value;
+	s32 s32_max_value;
+	u32 u32_min_value;
+	u32 u32_max_value;
+};
+
+static void __reg32_deduce_bounds(struct bpf_reg_state *reg)
+{
+	if ((reg->umin_value >> 32) == (reg->umax_value >> 32)) {
+		reg->u32_min_value = max_t(u32, reg->u32_min_value, (u32)reg->umin_value);
+		reg->u32_max_value = min_t(u32, reg->u32_max_value, (u32)reg->umax_value);
+
+		if ((s32)reg->umin_value <= (s32)reg->umax_value) {
+			reg->s32_min_value = max_t(s32, reg->s32_min_value, (s32)reg->umin_value);
+			reg->s32_max_value = min_t(s32, reg->s32_max_value, (s32)reg->umax_value);
+		}
+	}
+	if ((reg->smin_value >> 32) == (reg->smax_value >> 32)) {
+		if ((u32)reg->smin_value <= (u32)reg->smax_value) {
+			reg->u32_min_value = max_t(u32, reg->u32_min_value, (u32)reg->smin_value);
+			reg->u32_max_value = min_t(u32, reg->u32_max_value, (u32)reg->smax_value);
+		}
+		if ((s32)reg->smin_value <= (s32)reg->smax_value) {
+			reg->s32_min_value = max_t(s32, reg->s32_min_value, (s32)reg->smin_value);
+			reg->s32_max_value = min_t(s32, reg->s32_max_value, (s32)reg->smax_value);
+		}
+	}
+	if ((u32)(reg->umin_value >> 32) + 1 == (u32)(reg->umax_value >> 32) &&
+	    (s32)reg->umin_value < 0 && (s32)reg->umax_value >= 0) {
+		reg->s32_min_value = max_t(s32, reg->s32_min_value, (s32)reg->umin_value);
+		reg->s32_max_value = min_t(s32, reg->s32_max_value, (s32)reg->umax_value);
+	}
+	if ((u32)(reg->smin_value >> 32) + 1 == (u32)(reg->smax_value >> 32) &&
+	    (s32)reg->smin_value < 0 && (s32)reg->smax_value >= 0) {
+		reg->s32_min_value = max_t(s32, reg->s32_min_value, (s32)reg->smin_value);
+		reg->s32_max_value = min_t(s32, reg->s32_max_value, (s32)reg->smax_value);
+	}
+	if ((s32)reg->u32_min_value <= (s32)reg->u32_max_value) {
+		reg->s32_min_value = max_t(s32, reg->s32_min_value, reg->u32_min_value);
+		reg->s32_max_value = min_t(s32, reg->s32_max_value, reg->u32_max_value);
+	}
+	if ((u32)reg->s32_min_value <= (u32)reg->s32_max_value) {
+		reg->u32_min_value = max_t(u32, reg->s32_min_value, reg->u32_min_value);
+		reg->u32_max_value = min_t(u32, reg->s32_max_value, reg->u32_max_value);
+	}
+}
+
+static void __reg64_deduce_bounds(struct bpf_reg_state *reg)
+{
+	if ((s64)reg->umin_value <= (s64)reg->umax_value) {
+		reg->smin_value = max_t(s64, reg->smin_value, reg->umin_value);
+		reg->smax_value = min_t(s64, reg->smax_value, reg->umax_value);
+	}
+	if ((u64)reg->smin_value <= (u64)reg->smax_value) {
+		reg->umin_value = max_t(u64, reg->smin_value, reg->umin_value);
+		reg->umax_value = min_t(u64, reg->smax_value, reg->umax_value);
+	}
+}
+
+static void __reg_deduce_mixed_bounds_old(struct bpf_reg_state *reg)
+{
+	u64 new_umin, new_umax;
+	s64 new_smin, new_smax;
+
+	new_umin = (reg->umin_value & ~0xffffffffULL) | reg->u32_min_value;
+	new_umax = (reg->umax_value & ~0xffffffffULL) | reg->u32_max_value;
+	reg->umin_value = max_t(u64, reg->umin_value, new_umin);
+	reg->umax_value = min_t(u64, reg->umax_value, new_umax);
+	new_smin = (reg->smin_value & ~0xffffffffULL) | reg->u32_min_value;
+	new_smax = (reg->smax_value & ~0xffffffffULL) | reg->u32_max_value;
+	reg->smin_value = max_t(s64, reg->smin_value, new_smin);
+	reg->smax_value = min_t(s64, reg->smax_value, new_smax);
+
+	if ((u32)reg->s32_min_value <= (u32)reg->s32_max_value) {
+		new_umin = (reg->umin_value & ~0xffffffffULL) | (u32)reg->s32_min_value;
+		new_umax = (reg->umax_value & ~0xffffffffULL) | (u32)reg->s32_max_value;
+		reg->umin_value = max_t(u64, reg->umin_value, new_umin);
+		reg->umax_value = min_t(u64, reg->umax_value, new_umax);
+		new_smin = (reg->smin_value & ~0xffffffffULL) | (u32)reg->s32_min_value;
+		new_smax = (reg->smax_value & ~0xffffffffULL) | (u32)reg->s32_max_value;
+		reg->smin_value = max_t(s64, reg->smin_value, new_smin);
+		reg->smax_value = min_t(s64, reg->smax_value, new_smax);
+	}
+	if (reg->s32_min_value >= 0 && reg->smin_value >= S32_MIN && reg->smax_value <= S32_MAX) {
+		reg->smin_value = reg->s32_min_value;
+		reg->smax_value = reg->s32_max_value;
+		reg->umin_value = reg->s32_min_value;
+		reg->umax_value = reg->s32_max_value;
+		/* var_off update with tnum_intersect() removed, was the last
+		 * step, so shouldn't make a difference
+		 */
+	}
+}
+
+static void __reg_deduce_mixed_bounds_new(struct bpf_reg_state *reg)
+{
+	u64 new_umin, new_umax;
+	s64 new_smin, new_smax;
+
+	new_umin = (reg->umin_value & ~0xffffffffULL) | reg->u32_min_value;
+	new_umax = (reg->umax_value & ~0xffffffffULL) | reg->u32_max_value;
+	reg->umin_value = max_t(u64, reg->umin_value, new_umin);
+	reg->umax_value = min_t(u64, reg->umax_value, new_umax);
+	new_smin = (reg->smin_value & ~0xffffffffULL) | reg->u32_min_value;
+	new_smax = (reg->smax_value & ~0xffffffffULL) | reg->u32_max_value;
+	reg->smin_value = max_t(s64, reg->smin_value, new_smin);
+	reg->smax_value = min_t(s64, reg->smax_value, new_smax);
+
+	/* s32 -> u/s64 tightening removed */
+
+	if (reg->s32_min_value >= 0 && reg->smin_value >= S32_MIN && reg->smax_value <= S32_MAX) {
+		reg->smin_value = reg->s32_min_value;
+		reg->smax_value = reg->s32_max_value;
+		reg->umin_value = reg->s32_min_value;
+		reg->umax_value = reg->s32_max_value;
+		/* var_off update with tnum_intersect() removed, was the last
+		 * step, so shouldn't make a difference
+		 */
+	}
+}
+
+static void __reg_deduce_bounds_old(struct bpf_reg_state *reg)
+{
+	__reg32_deduce_bounds(reg);
+	__reg64_deduce_bounds(reg);
+	__reg_deduce_mixed_bounds_old(reg);
+}
+
+static void __reg_deduce_bounds_new(struct bpf_reg_state *reg)
+{
+	__reg32_deduce_bounds(reg);
+	__reg64_deduce_bounds(reg);
+	__reg_deduce_mixed_bounds_new(reg);
+}
+
+/* helper function to initialize 'struct bpf_reg_state' */
+static struct bpf_reg_state __bpf_reg_state_input(void)
+{
+	struct bpf_reg_state reg;
+	reg.smin_value = nondet_long_long_input();
+	reg.smax_value = nondet_long_long_input();
+	reg.umin_value = nondet_unsigned_long_long_input();
+	reg.umax_value = nondet_unsigned_long_long_input();
+	reg.s32_min_value = nondet_int_input();
+	reg.s32_max_value = nondet_int_input();
+	reg.u32_min_value = nondet_unsigned_int_input();
+	reg.u32_max_value = nondet_unsigned_int_input();
+	return reg;
+}
+
+/* helper function to ensure 'struct bpf_reg_state' is in a proper state */
+static bool valid_bpf_reg_state(struct bpf_reg_state *reg)
+{
+	bool ret = true;
+	/* Ensure maximum >= minimum for all ranges */
+	ret &= reg->umin_value <= reg->umax_value;
+	ret &= reg->smin_value <= reg->smax_value;
+	ret &= reg->u32_min_value <= reg->u32_max_value;
+	ret &= reg->s32_min_value <= reg->s32_max_value;
+	/* Ensure 64-bit bounds are consistent with 32-bit bounds */
+	ret &= reg->umin_value <= (u64)reg->u32_max_value;
+	ret &= reg->umax_value >= (u64)reg->u32_min_value;
+	ret &= (s64)reg->smin_value <= (s64)reg->s32_max_value;
+	ret &= (s64)reg->smax_value >= (s64)reg->s32_min_value;
+	return ret;
+}
+
+/* helper function to check whether 'struct bpf_reg_state' contains certain value */
+static bool val_in_reg(struct bpf_reg_state *reg, u64 val)
+{
+	bool ret = true;
+	ret &= reg->umin_value <= val;
+	ret &= val <= reg->umax_value;
+	ret &= reg->smin_value <= (s64)val;
+	ret &= (s64)val <= reg->smax_value;
+	ret &= reg->u32_min_value <= (u32)val;
+	ret &= (u32)val <= reg->u32_max_value;
+	ret &= reg->s32_min_value <= (s32)val;
+	ret &= (s32)val <= reg->s32_max_value;
+	return ret;
+}
+
+void main(void)
+{
+	/* ------------ Assumptions and Setup ------------ */
+
+	/* Input data structure that represents current knowledge of the possible
+	 * values in a register, as well as some possible value 'x', which could be
+	 * any value that is in the register right now.
+	 */
+	struct bpf_reg_state reg = __bpf_reg_state_input();
+	u64 x = nondet_unsigned_long_long_input();
+	__CPROVER_assume(valid_bpf_reg_state(&reg));
+	__CPROVER_assume(val_in_reg(&reg, x));
+
+	/* ------------- Operation to Check -------------- */
+	/* Data structure to store the new output */
+	struct bpf_reg_state new_reg;
+	/* Clone the register state since __reg_deduce_bounds() modifies it */
+	new_reg = reg;
+
+	__reg_deduce_bounds_old(&reg);
+	__reg_deduce_bounds_new(&new_reg);
+
+	/* -------------- Property Checking -------------- */
+	assert(new_reg == reg);
+}
+
+--awo2teqdyhaqjwfl--
 
