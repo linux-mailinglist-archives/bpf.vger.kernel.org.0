@@ -1,41 +1,41 @@
-Return-Path: <bpf+bounces-64354-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64355-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E316B11BE6
-	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 12:13:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F85EB11BEE
+	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 12:14:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FA66AA742B
-	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 10:12:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A567174527
+	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 10:13:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AF582EBBB5;
-	Fri, 25 Jul 2025 10:08:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C07822ECD3B;
+	Fri, 25 Jul 2025 10:08:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05CB62EB5B0;
-	Fri, 25 Jul 2025 10:08:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82B652EBDE5;
+	Fri, 25 Jul 2025 10:08:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753438132; cv=none; b=Lltz98Bd2ysP8Y2fukyZnCtzp+VUCylSCDyHcNoZrvG1IwB6xmO1lj/XZlfd7VJIqBLuLHv52RQ5SRCFv3HBDr6qrms4t2de+rHF8LKTUvZ8USLrND8KeP8n6J5lBB6g8lE5BZ7021+3KRfh2g5qDJ1dz9m+Ies2WmB2l0iSlSg=
+	t=1753438135; cv=none; b=NY0psA7UZ7Kl49WYu6NxiCkHCnxqVYr6OETe2Qy0vf8ry+9WC+34Jq/uvSylqU7JkuNjs3ledQw/9ZJ5B8ngGg6DA1k1vSxTlf6sd6c/R0vcqckc/+xc7QspAICoBoBPJkvEfZYKoS/at8V0r4UQf74WB64sZp9PWJHyrI6es7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753438132; c=relaxed/simple;
-	bh=ifOQzVmV3VBtSmlMlao+ybmiD4XeSzgUN/D+ollwJ44=;
+	s=arc-20240116; t=1753438135; c=relaxed/simple;
+	bh=+3gjGeeKe7DyZ3/goDLLn+ZLf1jbvy7KWHPofuCLFbE=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=JOhYm6ucFYFYvcN0qtxbc9+fs2CtlZdLzydLysZN/ieqLlmpW2nDxRNKJTI6/2vPg2/5U+dUr6vqvG8C3YnLQWpYLL5EIH3H0XK1nMQdunzIE1b7nX9Ds6oPhW5zywDkkME6EbRwlEegG768jps1EuH9UOFSrI3RpjkJnwHNCwA=
+	 In-Reply-To:To:Cc; b=SvggCN3j4h/mCve4/VnwZ8UadKnibgfdhB4Q2rsWTLIzothetg3ysL/TJPRxw3LrjX2KAVAOVC/Ya2o8MU1y7GfvNxf4BHi48XXEKj2EudIFlrFboTh628+XJGaC+FCeZmqpy9E5cQplbUMADiOI9t8v62GiZMtzL4qoGfFr7ns=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E0BF92C1E;
-	Fri, 25 Jul 2025 03:08:41 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 187C8176C;
+	Fri, 25 Jul 2025 03:08:46 -0700 (PDT)
 Received: from e132581.arm.com (e132581.arm.com [10.1.196.87])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A6F9B3F5A1;
-	Fri, 25 Jul 2025 03:08:44 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D64E03F5A1;
+	Fri, 25 Jul 2025 03:08:48 -0700 (PDT)
 From: Leo Yan <leo.yan@arm.com>
-Date: Fri, 25 Jul 2025 11:08:15 +0100
-Subject: [PATCH RESEND v3 5/6] perf record: Support AUX pause and resume
+Date: Fri, 25 Jul 2025 11:08:16 +0100
+Subject: [PATCH RESEND v3 6/6] perf docs: Document AUX pause and resume
  with BPF
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -45,7 +45,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250725-perf_aux_pause_resume_bpf_rebase-v3-5-ae21deb49d1a@arm.com>
+Message-Id: <20250725-perf_aux_pause_resume_bpf_rebase-v3-6-ae21deb49d1a@arm.com>
 References: <20250725-perf_aux_pause_resume_bpf_rebase-v3-0-ae21deb49d1a@arm.com>
 In-Reply-To: <20250725-perf_aux_pause_resume_bpf_rebase-v3-0-ae21deb49d1a@arm.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
@@ -70,122 +70,84 @@ Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
  bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
  Leo Yan <leo.yan@arm.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1753438103; l=4080;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1753438103; l=3165;
  i=leo.yan@arm.com; s=20250604; h=from:subject:message-id;
- bh=ifOQzVmV3VBtSmlMlao+ybmiD4XeSzgUN/D+ollwJ44=;
- b=m+cK9FnmZwIAI4vIv1MC3AUo27DgY1gTzcTlpM5EstdtWUeu7DzuE2d6h43FCgpjcClWx3YmU
- GBTPXPLl6U1AQk3FiwxmsmggR11FUifvP5Io0g2t3ppHzhONLti1qPX
+ bh=+3gjGeeKe7DyZ3/goDLLn+ZLf1jbvy7KWHPofuCLFbE=;
+ b=ZHE4FA41woUg35swf1zGO1DfYw6G1BriPf/uj6IYI7C//DMngby8Kr9fu8gtJjKssd1UjRItX
+ +n+fuanhJHoDixS9Q+H4a+W0T9jcO4FShVZwkr4pBdfoDFUyiFwzY+c
 X-Developer-Key: i=leo.yan@arm.com; a=ed25519;
  pk=k4BaDbvkCXzBFA7Nw184KHGP5thju8lKqJYIrOWxDhI=
 
-This commit introduces an option "--bpf-aux-pause" for loading BPF
-program to trigger AUX pause and resume.
-
-After:
-
-  perf record -e cs_etm/aux-action=start-paused/ \
-    --bpf-aux-pause="kretprobe:p:__arm64_sys_openat,kprobe:r:__arm64_sys_openat,tp:r:sched:sched_switch" \
-    -a -- ls
-
-  perf record -e cs_etm/aux-action=start-paused/ \
-    --bpf-aux-pause="kretprobe:p:__arm64_sys_openat,kprobe:r:__arm64_sys_openat,tp:r:sched:sched_switch" \
-    --per-thread -- ls
+Documents the usage of the --bpf-aux-pause option and provides
+examples.
 
 Signed-off-by: Leo Yan <leo.yan@arm.com>
 ---
- tools/perf/builtin-record.c | 20 +++++++++++++++++++-
- tools/perf/util/evsel.c     |  6 ++++++
- tools/perf/util/record.h    |  1 +
- 3 files changed, 26 insertions(+), 1 deletion(-)
+ tools/perf/Documentation/perf-record.txt | 51 ++++++++++++++++++++++++++++++++
+ 1 file changed, 51 insertions(+)
 
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 8059bce85a510b2dddc66f1b8b0013276840eddc..793609c0a59e8abcd248608f55e0af03a253138d 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -880,7 +880,12 @@ static int record__auxtrace_init(struct record *rec)
- 	if (err)
- 		return err;
+diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+index 612612fa2d8041b94860035ed9cb01557a20b6b7..5aee20bfd03bda72bddabf42005b9678309414ad 100644
+--- a/tools/perf/Documentation/perf-record.txt
++++ b/tools/perf/Documentation/perf-record.txt
+@@ -544,6 +544,57 @@ must be an AUX area event. Samples on other events will be created containing
+ data from the AUX area. Optionally sample size may be specified, otherwise it
+ defaults to 4KiB.
  
--	return auxtrace_parse_filters(rec->evlist);
-+	err = auxtrace_parse_filters(rec->evlist);
-+	if (err)
-+		return err;
++--bpf-aux-pause=[=OPTIONS]::
++Specify trace events for triggering AUX pause with a BPF program. A trace event
++can be static ftrace tracepoint, or dynamic tracepoint by using kprobe,
++kretprobe, uprobe or uretprobe. This option must be enabled in combination with
++the "aux-action=start-paused" configuration in an AUX event.
 +
-+	return auxtrace__prepare_bpf(rec->itr,
-+				     rec->opts.auxtrace_bpf_aux_pause_opts);
- }
- 
- #else
-@@ -2506,6 +2511,10 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 
- 	evlist__config(rec->evlist, opts, &callchain_param);
- 
-+	err = auxtrace__set_bpf_filter(rec->evlist, opts);
-+	if (err)
-+		goto out_free_threads;
++For attaching a kprobe or kretprobe event, the format is:
 +
- 	/* Debug message used by test scripts */
- 	pr_debug3("perf record opening and mmapping events\n");
- 	if (record__open(rec) != 0) {
-@@ -2579,6 +2588,9 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 	if (record__start_threads(rec))
- 		goto out_free_threads;
- 
-+	if (auxtrace__enable_bpf())
-+		goto out_free_threads;
++  {kprobe|kretprobe}:{p|r}:function_name
 +
- 	/*
- 	 * When perf is starting the traced process, all the events
- 	 * (apart from group members) have enable_on_exec=1 set,
-@@ -2907,6 +2919,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 	}
- 
- out_delete_session:
-+	auxtrace__cleanup_bpf();
- #ifdef HAVE_EVENTFD_SUPPORT
- 	if (done_fd >= 0) {
- 		fd = done_fd;
-@@ -3629,6 +3642,11 @@ static struct option __record_options[] = {
- 	OPT_CALLBACK(0, "off-cpu-thresh", &record.opts, "ms",
- 		     "Dump off-cpu samples if off-cpu time exceeds this threshold (in milliseconds). (Default: 500ms)",
- 		     record__parse_off_cpu_thresh),
-+	OPT_STRING_OPTARG(0, "bpf-aux-pause", &record.opts.auxtrace_bpf_aux_pause_opts,
-+			  "{kprobe|kretprobe}:{p|r}:function_name\n"
-+			  "\t\t\t  {uprobe|uretprobe}:{p|r}:executable:function_name\n"
-+			  "\t\t\t  {tp|tracepoint}:{p|r}:category:tracepoint\n",
-+			  "Enable AUX pause with BPF backend", ""),
- 	OPT_END()
- };
- 
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index d55482f094bf95ac7b5c5173c1341baeb0fa9c93..f240e48f41a3e7ca5ba81733efc58a25c5c829ba 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -2650,6 +2650,12 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
- 
- 			bpf_counter__install_pe(evsel, idx, fd);
- 
-+			/* Update event info into BPF map for AUX trace */
-+			if (auxtrace__update_bpf_map(evsel, idx, fd)) {
-+				err = -EINVAL;
-+				goto out_close;
-+			}
++The format for attaching a uprobe or uretprobe event is:
 +
- 			if (unlikely(test_attr__enabled())) {
- 				test_attr__open(&evsel->core.attr, pid, cpu,
- 						fd, group_fd, evsel->open_flags);
-diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
-index ea3a6c4657eefb743dc3d54b0b791ea39117cc10..1b1c2ed7fcadae8b56408b3b1b154faef3996eb3 100644
---- a/tools/perf/util/record.h
-+++ b/tools/perf/util/record.h
-@@ -65,6 +65,7 @@ struct record_opts {
- 	size_t	      auxtrace_snapshot_size;
- 	const char    *auxtrace_snapshot_opts;
- 	const char    *auxtrace_sample_opts;
-+	const char    *auxtrace_bpf_aux_pause_opts;
- 	bool	      sample_transaction;
- 	bool	      use_clockid;
- 	clockid_t     clockid;
++  {uprobe|uretprobe}:{p|r}:executable:function_name
++
++The format for attaching a tracepoint is:
++
++  {tp|tracepoint}:{p|r}:category:tracepint
++
++The first field is for the trace event type. It supports five types: kprobe,
++kretprobe, uprobe, uretprobe, and tracepoint ('tp' is also supported as an
++abbreviation for "tracepoint"). The second field specifies whether the action is
++pause ("p") or resume ("r").
++
++For probes, the "function_name" field is used to specify a function name. In
++particular, for a uprobe or uretprobe, an executable path must also be provided.
++In the case of a ftrace tracepoint, the "category" and "tracepoint" fields are
++used together to provide complete tracepoint information.
++
++The '--bpf-aux-pause' option does not support inherit mode.  In the default
++trace mode, it needs to be combined with the '-i' or '--no-inherit' option to
++disable inherit mode.
++
++The syntax supports multiple trace events, with each separated by a comma (,).
++For example, users can set up AUX pause on a kernel function with kretprobe and
++AUX resume on a tracepoint with the syntax below:
++
++  For default trace mode (with inherit mode disabled):
++  perf record -e cs_etm/aux-action=start-paused/ \
++    --bpf-aux-pause="kretprobe:p:__arm64_sys_openat,tp:r:sched:sched_switch" \
++    -i ...
++
++  For system wide trace mode:
++  perf record -e cs_etm/aux-action=start-paused/ \
++    --bpf-aux-pause="kretprobe:p:__arm64_sys_openat,tp:r:sched:sched_switch" \
++    -a ...
++
++  For trace with uprobe and uretprobe:
++  perf record -e cs_etm/aux-action=start-paused/ \
++    --bpf-aux-pause="uretprobe:p:~/sort:bubble_sort,uprobe:r:~/sort:bubble_sort" \
++    -i --per-thread -- ~/sort
++
+ --proc-map-timeout::
+ When processing pre-existing threads /proc/XXX/mmap, it may take a long time,
+ because the file may be huge. A time out is needed in such cases.
 
 -- 
 2.34.1
