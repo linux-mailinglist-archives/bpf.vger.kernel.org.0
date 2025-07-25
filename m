@@ -1,92 +1,139 @@
-Return-Path: <bpf+bounces-64377-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64378-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0477B1202D
-	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 16:34:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85C70B1216F
+	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 18:05:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8EB2F7AD48C
-	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 14:32:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 960931896A7F
+	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 16:06:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9263020110B;
-	Fri, 25 Jul 2025 14:34:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 764142EE971;
+	Fri, 25 Jul 2025 16:05:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cQdiR7R6"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MVHx51AG"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F00C1C6FE1;
-	Fri, 25 Jul 2025 14:34:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CDE52BB17
+	for <bpf@vger.kernel.org>; Fri, 25 Jul 2025 16:05:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753454056; cv=none; b=sC8hp6HPD1Ky9Pw4B26BMlR3jPDHNxXz3cqJAZXqliNuoNFVCEb2fXAEIhmAe8p/7Jpxv5RyQnUa6XKW1PyW2/1BjnGyNHQF/uz5lnJMMnmrQmcLywk7ZbsyQcTtlwmEtNtshxcR3E3e03x7wOVvewwp6DRP7gbk/tN4+1xN5K8=
+	t=1753459543; cv=none; b=oqHd7vCukDzHWjXbj8TY91CUr1mflNDAF3EWZJU5SP3qZprccDUyT1u3dfBI/eBDJ6gVURq9UkMbqIvT1FY4HXMlv+mIg594/y2fdbH0XL3dz5aXeKBww7ehi1S9sHlVB9uogWHuqEWWZPmPsrWlJsWNZxgW+PWp1ZVUoiw/Kws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753454056; c=relaxed/simple;
-	bh=vMHhOgqBPd2TX5wCHFG0OnlSnpKuD/lBiR+ayVD01QQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ghL86SOzW+rsJuFlbqxkijWsFl70qBatjUmX89LkOLu8+lMeTd151RyQYfp0UKb08Ntz7K9cje4wPB2cbJ5M9voEx2SxwlVP8QPxDbPjSE7siVZxt04ZeDtljEs6fO4MxgfRrRh1AWn1hi0HMRAykrj52QK5b4mDUxz6QtluDTY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cQdiR7R6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F4CDC4CEE7;
-	Fri, 25 Jul 2025 14:34:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753454055;
-	bh=vMHhOgqBPd2TX5wCHFG0OnlSnpKuD/lBiR+ayVD01QQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=cQdiR7R6SIyiDfhBrjO0sUZvPs7RV0NITwQoemxP5Lqb4wn7yMzDOQND8TMvcTEf7
-	 9z39SL6Em7AWEwlJucngVA09I+QL6Vf4OOtY2cJxxLbJUxgMA7rArwVz00r6hAx3rq
-	 n97WZyz+wMf2vcjyPB6YJ+95d920l6Mkwm6UgjZer+AHyNhOYFO06FkfPoO72nWGNs
-	 mGSU/tQgeK7aJr5TvJbMd0yx3nOFKDnsXuukrM80qBYhf5dSXEKRKrlYNBqVDprL8W
-	 kf+2He2tJ/KZYbunf9lJZGk8GqqJxJUTDRiJNb5oCmm4XQABs018PO/gL20COehWm6
-	 0AFmsJiBmxsAg==
-Date: Fri, 25 Jul 2025 07:34:14 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Andrii
- Nakryiko <andrii@kernel.org>, Arthur Fabre <arthur@arthurfabre.com>, Daniel
- Borkmann <daniel@iogearbox.net>, Eduard Zingerman <eddyz87@gmail.com>, Eric
- Dumazet <edumazet@google.com>, Jesper Dangaard Brouer <hawk@kernel.org>,
- Jesse Brandeburg <jbrandeburg@cloudflare.com>, Joanne Koong
- <joannelkoong@gmail.com>, Lorenzo Bianconi <lorenzo@kernel.org>, Martin
- KaFai Lau <martin.lau@linux.dev>, Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNl?=
- =?UTF-8?B?bg==?= <thoiland@redhat.com>, Yan Zhai <yan@cloudflare.com>,
- kernel-team@cloudflare.com, netdev@vger.kernel.org, Stanislav Fomichev
- <sdf@fomichev.me>
-Subject: Re: [PATCH bpf-next v4 2/8] bpf: Enable read/write access to skb
- metadata through a dynptr
-Message-ID: <20250725073414.649ec615@kernel.org>
-In-Reply-To: <87frekwqq0.fsf@cloudflare.com>
-References: <20250723-skb-metadata-thru-dynptr-v4-0-a0fed48bcd37@cloudflare.com>
-	<20250723-skb-metadata-thru-dynptr-v4-2-a0fed48bcd37@cloudflare.com>
-	<20250723173038.45cbaf01@kernel.org>
-	<87tt31x0sb.fsf@cloudflare.com>
-	<87frekwqq0.fsf@cloudflare.com>
+	s=arc-20240116; t=1753459543; c=relaxed/simple;
+	bh=YgPAnx9vFCwOx9iFj2kTW3xM7JALaN+r1UZ4mK4q20g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fnoIUvRaF8PM3HPbv/2SOx2K7iAlureCVYxfSMywAfLtrBtFspy58EafksSygsThUtcDIW+KWSzxgpu8FyMzDow/hK/xxqOKqUVeCQv4CnNc1g1ZGVqDK4yj4PRx9MDv2xMl/aaooN6+vYNvfJVBCbhCfrbrrFNQzNlXsL8yGs8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MVHx51AG; arc=none smtp.client-ip=91.218.175.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <c7241cc9-2b20-4f32-8ae2-93f40d12fc85@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1753459538;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3g87AqOwyJOiheBSqVuAlI8MtvTXH78Z8e5bHHseWHY=;
+	b=MVHx51AGl+3SbE3RFIiWpv1PxlGsaOafEwYgmp3ig5tdja/tjCdzHveO9mLfKnEH7O/yUy
+	mFgJ1jvmGvH0iQRAKqGYOK/16t3rYgdgVXYqDGF3jo2+UIViufvlLh6mfD0Gk2eEQPF2rJ
+	4RG5WA/L41c8YRSuxajkw/Ui4DEbCQQ=
+Date: Fri, 25 Jul 2025 09:05:31 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next 0/4] Use correct destructor kfunc types
+Content-Language: en-GB
+To: Sami Tolvanen <samitolvanen@google.com>, bpf@vger.kernel.org
+Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>,
+ Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20250724223225.1481960-6-samitolvanen@google.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20250724223225.1481960-6-samitolvanen@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, 25 Jul 2025 11:43:19 +0200 Jakub Sitnicki wrote:
-> > Taking about the next step, once skb metadata is preserved past the TC
-> > hook - here my impression from Netdev was that the least suprising thing
-> > to do will be to copy-on-clone or copy-on-write (if we can pull it off)=
-. =20
->=20
-> Now that Martin has enlightened me [1] how things work today for skb
-> payload dynptr's, I will first try to follow the same approach, that is:
->=20
-> Make a copy of skb metadata before the BPF program runs, if the program
-> may write to the metadata.
 
-=F0=9F=91=8D=EF=B8=8F
 
-On the pskb_expand_head() behavior we should probably ask Daniel?
-I suspect it's just to "fail closed". But as you said we can follow
-up on that later, not a blocker in practice on Rx.
+On 7/24/25 3:32 PM, Sami Tolvanen wrote:
+> Hi folks,
+>
+> While running BPF self-tests with CONFIG_CFI_CLANG (Clang Control
+> Flow Integrity) enabled, I ran into a couple of CFI failures
+> in bpf_obj_free_fields() caused by type mismatches between
+> the btf_dtor_kfunc_t function pointer type and the registered
+> destructor functions.
+>
+> It looks like we can't change the argument type for these
+> functions to match btf_dtor_kfunc_t because the verifier doesn't
+> like void pointer arguments for functions used in BPF programs,
+> so this series fixes the issue by adding stubs with correct types
+> to use as destructors for each instance of this I found in the
+> kernel tree.
+>
+> The last patch changes btf_check_dtor_kfuncs() to enforce the
+> function type when CFI is enabled, so we don't end up registering
+> destructors that panic the kernel. Perhaps this is something we
+> could enforce even without CONFIG_CFI_CLANG?
+
+I tried your patch set on top of latest bpf-next. The problem
+still exists with the following error:
+
+[   71.976265] CFI failure at bpf_obj_free_fields+0x298/0x620 (target: __bpf_crypto_ctx_release+0x0/0x10; expected type: 0xc1113566)
+[   71.980134] Oops: invalid opcode: 0000 [#1] SMP KASAN NOPTI
+...
+
+
+The following is the CFI related config items:
+
+$ grep CFI .config
+CONFIG_CFI_AUTO_DEFAULT=y
+CONFIG_FUNCTION_PADDING_CFI=11
+CONFIG_ARCH_SUPPORTS_CFI_CLANG=y
+CONFIG_ARCH_USES_CFI_TRAPS=y
+CONFIG_CFI_CLANG=y
+# CONFIG_CFI_ICALL_NORMALIZE_INTEGERS is not set
+CONFIG_HAVE_CFI_ICALL_NORMALIZE_INTEGERS_CLANG=y
+CONFIG_HAVE_CFI_ICALL_NORMALIZE_INTEGERS_RUSTC=y
+# CONFIG_CFI_PERMISSIVE is not set
+
+Did I miss anything?
+
+>
+> Sami
+>
+> ---
+>
+> Sami Tolvanen (4):
+>    bpf: crypto: Use the correct destructor kfunc type
+>    bpf: net_sched: Use the correct destructor kfunc type
+>    selftests/bpf: Use the correct destructor kfunc type
+>    bpf, btf: Enforce destructor kfunc type with CFI
+>
+>   kernel/bpf/btf.c                                     | 7 +++++++
+>   kernel/bpf/crypto.c                                  | 7 ++++++-
+>   net/sched/bpf_qdisc.c                                | 7 ++++++-
+>   tools/testing/selftests/bpf/test_kmods/bpf_testmod.c | 7 ++++++-
+>   4 files changed, 25 insertions(+), 3 deletions(-)
+>
+>
+> base-commit: 95993dc3039e29dabb9a50d074145d4cb757b08b
+
 
