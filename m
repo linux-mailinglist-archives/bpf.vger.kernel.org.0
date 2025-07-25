@@ -1,36 +1,36 @@
-Return-Path: <bpf+bounces-64324-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64326-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B113B11775
-	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 06:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CFCAEB11777
+	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 06:34:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE6CE1CE074B
-	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 04:35:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D936E1CE06EB
+	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 04:35:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F93923C50A;
-	Fri, 25 Jul 2025 04:34:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E87323F412;
+	Fri, 25 Jul 2025 04:34:45 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from 66-220-144-178.mail-mxout.facebook.com (66-220-144-178.mail-mxout.facebook.com [66.220.144.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3116618BBAE
-	for <bpf@vger.kernel.org>; Fri, 25 Jul 2025 04:34:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17C8423B63B
+	for <bpf@vger.kernel.org>; Fri, 25 Jul 2025 04:34:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.144.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753418083; cv=none; b=D1ql4FbYm+4NNr4wHbppgkeoM547IGiNnsJ44krwW68PSVDYfwe115sZPfbU3H80+36oBjXFaMKOwYM64NEr5fgj03ERsw9IT299+ssBlPU/Cn3NHBKPp4JL6hHeOfcbnjb8MK2ETjfgIgXdhqqgLefoAYKOilFuRH7DFBFWhVA=
+	t=1753418084; cv=none; b=meqOcsFXK40Tchc8y28GnfFrR55284hw15CGPmJAAVsVR8UBcuQwrkxgYDkxu3OWC6BvllK0YR2ciA9DUH3oCPZoZuNyqGHMZb0O2iRwZEYOwuvD/aE2NeNidMHB0GN9M9yyTco+Uhj3agWRKTCfGpHLXQwBtAf2/Z+Ig1gbUO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753418083; c=relaxed/simple;
-	bh=DaMG/r65719Nw2Om2znT75jlHD1MlbnwdZtfCkU7E88=;
+	s=arc-20240116; t=1753418084; c=relaxed/simple;
+	bh=dLvJFapkl/9Ii+9bFVeUE1Zm7UW6Xkrs2Cm3Zx0/tjM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=k8i209ju5ZRgLPhT3XdklWUfQE2PK/070NCSTvEHeqUOC/Qh3Zrj/5ok3n1eBEaLpK8fSy1uE+tOol+DUk3sNW5gDKvDpIY1WN/lz4DpP80v6hRIxjzWYn2DmxlqPx6z9ZihzHQcSJQSsuAxFe5UKSB6vQ1qCNcSEGDPeSPp+aU=
+	 MIME-Version; b=i+MJclxf+uaX0D5KWg5N7ytIFWv2gZBUTHS6SvCAebXtrXYa1OWShMUHBhnXT/U+7jd/lxOjhRJWhrrX10gSdRjcrwwxOL0bv1rWGP5tm99GqcmDBmHYfO7Hi6Hb8jq3VAUMbTRX+SBoLvtBdDTTCg2H2M/9X/3XneaCvpI2h0g=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.144.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
 Received: by devvm16039.vll0.facebook.com (Postfix, from userid 128203)
-	id 85801C48A525; Thu, 24 Jul 2025 21:34:35 -0700 (PDT)
+	id 9E564C48A546; Thu, 24 Jul 2025 21:34:40 -0700 (PDT)
 From: Yonghong Song <yonghong.song@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -38,9 +38,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	kernel-team@fb.com,
 	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next 2/3] selftests/bpf: Fix test dynptr/test_dynptr_copy_xdp failure
-Date: Thu, 24 Jul 2025 21:34:35 -0700
-Message-ID: <20250725043435.208974-1-yonghong.song@linux.dev>
+Subject: [PATCH bpf-next 3/3] selftests/bpf: Fix test dynptr/test_dynptr_memset_xdp_chunks failure
+Date: Thu, 24 Jul 2025 21:34:40 -0700
+Message-ID: <20250725043440.209266-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20250725043425.208128-1-yonghong.song@linux.dev>
 References: <20250725043425.208128-1-yonghong.song@linux.dev>
@@ -52,47 +52,51 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-For arm64 64K page size, the bpf_dynptr_copy() in test dynptr/test_dynptr=
-_copy_xdp
-will succeed, but the test will failure with 4K page size. This patch mad=
-e a change
-so the test will fail expectedly for both 4K and 64K page sizes.
+For arm64 64K page size, the xdp data size was set to be more than 64K
+in one of previous patches. This will cause failure for bpf_dynptr_memset=
+().
+Since the failure of bpf_dynptr_memset() is expected with 64K page size,
+return success.
 
 Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 ---
- tools/testing/selftests/bpf/progs/dynptr_success.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ tools/testing/selftests/bpf/progs/dynptr_success.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
 diff --git a/tools/testing/selftests/bpf/progs/dynptr_success.c b/tools/t=
 esting/selftests/bpf/progs/dynptr_success.c
-index 7d7081d05d47..3094a1e4ee91 100644
+index 3094a1e4ee91..8315273cb900 100644
 --- a/tools/testing/selftests/bpf/progs/dynptr_success.c
 +++ b/tools/testing/selftests/bpf/progs/dynptr_success.c
-@@ -611,11 +611,12 @@ int test_dynptr_copy_xdp(struct xdp_md *xdp)
- 	struct bpf_dynptr ptr_buf, ptr_xdp;
- 	char data[] =3D "qwertyuiopasdfghjkl";
- 	char buf[32] =3D {'\0'};
--	__u32 len =3D sizeof(data);
-+	__u32 len =3D sizeof(data), xdp_data_size;
- 	int i, chunks =3D 200;
+@@ -9,6 +9,8 @@
+ #include "bpf_misc.h"
+ #include "errno.h"
 =20
- 	/* ptr_xdp is backed by non-contiguous memory */
- 	bpf_dynptr_from_xdp(xdp, 0, &ptr_xdp);
-+	xdp_data_size =3D bpf_dynptr_size(&ptr_xdp);
- 	bpf_ringbuf_reserve_dynptr(&ringbuf, len * chunks, 0, &ptr_buf);
++#define PAGE_SIZE_64K 65536
++
+ char _license[] SEC("license") =3D "GPL";
 =20
- 	/* Destination dynptr is backed by non-contiguous memory */
-@@ -673,7 +674,7 @@ int test_dynptr_copy_xdp(struct xdp_md *xdp)
- 			goto out;
- 	}
+ int pid, err, val;
+@@ -821,8 +823,17 @@ int test_dynptr_memset_xdp_chunks(struct xdp_md *xdp=
+)
+ 	data_sz =3D bpf_dynptr_size(&ptr_xdp);
 =20
--	if (bpf_dynptr_copy(&ptr_xdp, 2000, &ptr_xdp, 0, len * chunks) !=3D -E2=
-BIG)
-+	if (bpf_dynptr_copy(&ptr_xdp, xdp_data_size - 3000, &ptr_xdp, 0, len * =
-chunks) !=3D -E2BIG)
- 		err =3D 1;
+ 	err =3D bpf_dynptr_memset(&ptr_xdp, 0, data_sz, DYNPTR_MEMSET_VAL);
+-	if (err)
++	if (err) {
++		/* bpf_dynptr_memset() eventually called bpf_xdp_pointer()
++		 * where if data_sz is greater than 0xffff, -EFAULT will be
++		 * returned. For 64K page size, data_sz is greater than
++		 * 64K, so error is expected and let us zero out error and
++		 * return success.
++		 */
++		if (data_sz >=3D PAGE_SIZE_64K)
++			err =3D 0;
+ 		goto out;
++	}
 =20
- out:
+ 	bpf_for(i, 0, max_chunks) {
+ 		offset =3D i * sizeof(buf);
 --=20
 2.47.3
 
