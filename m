@@ -1,42 +1,42 @@
-Return-Path: <bpf+bounces-64353-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64354-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19A79B11BE4
-	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 12:13:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E316B11BE6
+	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 12:13:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEB9F5A494B
-	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 10:12:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FA66AA742B
+	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 10:12:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 458672EAD09;
-	Fri, 25 Jul 2025 10:08:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AF582EBBB5;
+	Fri, 25 Jul 2025 10:08:52 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C78EC2EA729;
-	Fri, 25 Jul 2025 10:08:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05CB62EB5B0;
+	Fri, 25 Jul 2025 10:08:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753438127; cv=none; b=r16gftUjgXWKB4A4N1+2v2osomGFEVuLWPW/JaAFp2Y5nRJ275Gp2ELn9VU1Tc5M7o2HyZmYxObBLMscCXjPQj6hwOXMfaSpHEKNbRC6NYqqXkJEPuRI2GD63V+SaOndZkwAlbEkKyhj7nq1ADMz/cFhwaBywLqQsDkzAVzS8L0=
+	t=1753438132; cv=none; b=Lltz98Bd2ysP8Y2fukyZnCtzp+VUCylSCDyHcNoZrvG1IwB6xmO1lj/XZlfd7VJIqBLuLHv52RQ5SRCFv3HBDr6qrms4t2de+rHF8LKTUvZ8USLrND8KeP8n6J5lBB6g8lE5BZ7021+3KRfh2g5qDJ1dz9m+Ies2WmB2l0iSlSg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753438127; c=relaxed/simple;
-	bh=OwmCar/KYMErQOlBy3AccdX0oNiUo/QTaV+xvmFAxKw=;
+	s=arc-20240116; t=1753438132; c=relaxed/simple;
+	bh=ifOQzVmV3VBtSmlMlao+ybmiD4XeSzgUN/D+ollwJ44=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=VV4HjT44smPM+3x/Pz+px0OnyiGhobIrhGGiWYJymB7ddryHhfhSFPDU2S61YUFM8TxpyW2B1VTInzskpc9zyAi8oN6IhZ6bbpq7k01G+/8QUDWXwZP7OzqzWFjSpq7DK/TU7MQrEBImnaLK7+bfpzPgd85lMAQd6QYZ0VVhkJo=
+	 In-Reply-To:To:Cc; b=JOhYm6ucFYFYvcN0qtxbc9+fs2CtlZdLzydLysZN/ieqLlmpW2nDxRNKJTI6/2vPg2/5U+dUr6vqvG8C3YnLQWpYLL5EIH3H0XK1nMQdunzIE1b7nX9Ds6oPhW5zywDkkME6EbRwlEegG768jps1EuH9UOFSrI3RpjkJnwHNCwA=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B15E31A00;
-	Fri, 25 Jul 2025 03:08:37 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E0BF92C1E;
+	Fri, 25 Jul 2025 03:08:41 -0700 (PDT)
 Received: from e132581.arm.com (e132581.arm.com [10.1.196.87])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 590B73F5A1;
-	Fri, 25 Jul 2025 03:08:40 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A6F9B3F5A1;
+	Fri, 25 Jul 2025 03:08:44 -0700 (PDT)
 From: Leo Yan <leo.yan@arm.com>
-Date: Fri, 25 Jul 2025 11:08:14 +0100
-Subject: [PATCH RESEND v3 4/6] perf: auxtrace: Add BPF userspace program
- for AUX pause and resume
+Date: Fri, 25 Jul 2025 11:08:15 +0100
+Subject: [PATCH RESEND v3 5/6] perf record: Support AUX pause and resume
+ with BPF
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -45,7 +45,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250725-perf_aux_pause_resume_bpf_rebase-v3-4-ae21deb49d1a@arm.com>
+Message-Id: <20250725-perf_aux_pause_resume_bpf_rebase-v3-5-ae21deb49d1a@arm.com>
 References: <20250725-perf_aux_pause_resume_bpf_rebase-v3-0-ae21deb49d1a@arm.com>
 In-Reply-To: <20250725-perf_aux_pause_resume_bpf_rebase-v3-0-ae21deb49d1a@arm.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
@@ -70,512 +70,122 @@ Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
  bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
  Leo Yan <leo.yan@arm.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1753438103; l=13437;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1753438103; l=4080;
  i=leo.yan@arm.com; s=20250604; h=from:subject:message-id;
- bh=OwmCar/KYMErQOlBy3AccdX0oNiUo/QTaV+xvmFAxKw=;
- b=jGJ4P6jo8OV4kkKh90zidmGGLSq1iL5WRc92wzR9lwWTEbWSBIwC3qfkU72b4FLHWkpFN0gex
- UOj3tnBXbk0AOmRmf1NcpcnTmyvylhs9pNU+fqlTcC3kHWl92HUM7hu
+ bh=ifOQzVmV3VBtSmlMlao+ybmiD4XeSzgUN/D+ollwJ44=;
+ b=m+cK9FnmZwIAI4vIv1MC3AUo27DgY1gTzcTlpM5EstdtWUeu7DzuE2d6h43FCgpjcClWx3YmU
+ GBTPXPLl6U1AQk3FiwxmsmggR11FUifvP5Io0g2t3ppHzhONLti1qPX
 X-Developer-Key: i=leo.yan@arm.com; a=ed25519;
  pk=k4BaDbvkCXzBFA7Nw184KHGP5thju8lKqJYIrOWxDhI=
 
-This commit adds support for the BPF userspace program for AUX pause and
-resume. A list is maintained to track trigger points; each trigger
-point attaches to BPF programs when a session is opened and detaches
-when the session is closed.
+This commit introduces an option "--bpf-aux-pause" for loading BPF
+program to trigger AUX pause and resume.
 
-auxtrace__update_bpf_map() updates the AUX perf event pointer in the BPF
-map. The BPF kernel program then retrieves the event handler from the
-map to control AUX tracing. The auxtrace__set_bpf_filter() function
-updates the CPU and task filters for the BPF kernel program.
+After:
+
+  perf record -e cs_etm/aux-action=start-paused/ \
+    --bpf-aux-pause="kretprobe:p:__arm64_sys_openat,kprobe:r:__arm64_sys_openat,tp:r:sched:sched_switch" \
+    -a -- ls
+
+  perf record -e cs_etm/aux-action=start-paused/ \
+    --bpf-aux-pause="kretprobe:p:__arm64_sys_openat,kprobe:r:__arm64_sys_openat,tp:r:sched:sched_switch" \
+    --per-thread -- ls
 
 Signed-off-by: Leo Yan <leo.yan@arm.com>
 ---
- tools/perf/util/Build                |   4 +
- tools/perf/util/auxtrace.h           |  43 ++++
- tools/perf/util/bpf_auxtrace_pause.c | 408 +++++++++++++++++++++++++++++++++++
- 3 files changed, 455 insertions(+)
+ tools/perf/builtin-record.c | 20 +++++++++++++++++++-
+ tools/perf/util/evsel.c     |  6 ++++++
+ tools/perf/util/record.h    |  1 +
+ 3 files changed, 26 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-index 7910d908c814feec5e5e008f3a8b45384d796432..8ab29136344c3d37178f94aa1bd4b70ab54a7ab4 100644
---- a/tools/perf/util/Build
-+++ b/tools/perf/util/Build
-@@ -186,6 +186,10 @@ ifeq ($(CONFIG_LIBTRACEEVENT),y)
-   perf-util-$(CONFIG_PERF_BPF_SKEL) += bpf_kwork_top.o
- endif
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 8059bce85a510b2dddc66f1b8b0013276840eddc..793609c0a59e8abcd248608f55e0af03a253138d 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -880,7 +880,12 @@ static int record__auxtrace_init(struct record *rec)
+ 	if (err)
+ 		return err;
  
-+ifeq ($(CONFIG_AUXTRACE),y)
-+  perf-util-$(CONFIG_PERF_BPF_SKEL) += bpf_auxtrace_pause.o
-+endif
+-	return auxtrace_parse_filters(rec->evlist);
++	err = auxtrace_parse_filters(rec->evlist);
++	if (err)
++		return err;
 +
- perf-util-$(CONFIG_LIBELF) += symbol-elf.o
- perf-util-$(CONFIG_LIBELF) += probe-file.o
- perf-util-$(CONFIG_LIBELF) += probe-event.o
-diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
-index b0db84d27b255dc2f1aff446012598b045bbd5d3..52831e501dea1ebe476aed103a920b77d400e5f7 100644
---- a/tools/perf/util/auxtrace.h
-+++ b/tools/perf/util/auxtrace.h
-@@ -907,4 +907,47 @@ void itrace_synth_opts__clear_time_range(struct itrace_synth_opts *opts
++	return auxtrace__prepare_bpf(rec->itr,
++				     rec->opts.auxtrace_bpf_aux_pause_opts);
+ }
  
- #endif
+ #else
+@@ -2506,6 +2511,10 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
  
-+#if defined(HAVE_AUXTRACE_SUPPORT) && defined(HAVE_BPF_SKEL)
+ 	evlist__config(rec->evlist, opts, &callchain_param);
+ 
++	err = auxtrace__set_bpf_filter(rec->evlist, opts);
++	if (err)
++		goto out_free_threads;
 +
-+int auxtrace__prepare_bpf(struct auxtrace_record *itr, const char *str);
-+int auxtrace__set_bpf_filter(struct evlist *evlist, struct record_opts *opts);
-+int auxtrace__enable_bpf(void);
-+int auxtrace__cleanup_bpf(void);
-+int auxtrace__update_bpf_map(struct evsel *evsel, int cpu_map_idx, int fd);
+ 	/* Debug message used by test scripts */
+ 	pr_debug3("perf record opening and mmapping events\n");
+ 	if (record__open(rec) != 0) {
+@@ -2579,6 +2588,9 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 	if (record__start_threads(rec))
+ 		goto out_free_threads;
+ 
++	if (auxtrace__enable_bpf())
++		goto out_free_threads;
 +
-+#else	/* HAVE_AUXTRACE_SUPPORT && HAVE_BPF_SKEL */
-+
-+static inline int auxtrace__prepare_bpf(struct auxtrace_record *itr
-+					__maybe_unused,
-+					const char *str __maybe_unused)
-+{
-+	return -EINVAL;
-+}
-+
-+static inline int auxtrace__set_bpf_filter(struct evlist *evlist __maybe_unused,
-+					   struct record_opts *opts
-+					   __maybe_unused)
-+{
-+	return -EINVAL;
-+}
-+
-+static inline int auxtrace__enable_bpf(void)
-+{
-+	return -EINVAL;
-+}
-+
-+static inline int auxtrace__cleanup_bpf(void)
-+{
-+	return -EINVAL;
-+}
-+
-+static int auxtrace__update_bpf_map(struct evsel *evsel __maybe_unused,
-+				    int cpu_map_idx __maybe_unused,
-+				    int fd __maybe_unused)
-+{
-+	return -EINVAL;
-+}
-+
-+#endif
-+
- #endif
-diff --git a/tools/perf/util/bpf_auxtrace_pause.c b/tools/perf/util/bpf_auxtrace_pause.c
-new file mode 100644
-index 0000000000000000000000000000000000000000..ed77b1e19dcf9da65cacf98def349c0ce9f83d46
---- /dev/null
-+++ b/tools/perf/util/bpf_auxtrace_pause.c
-@@ -0,0 +1,408 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/* Copyright 2024 Arm Limited */
-+
-+#include <stdio.h>
-+#include <fcntl.h>
-+#include <stdint.h>
-+#include <stdlib.h>
-+
-+#include <linux/err.h>
-+
-+#include "util/auxtrace.h"
-+#include "util/cpumap.h"
-+#include "util/thread_map.h"
-+#include "util/debug.h"
-+#include "util/evlist.h"
-+#include "util/bpf_counter.h"
-+#include "util/record.h"
-+#include "util/target.h"
-+
-+#include "util/bpf_skel/auxtrace_pause.skel.h"
-+
-+/* The valid controlling type is "p" (pause) and "r" (resume) */
-+#define is_attach_kprobe(str)		\
-+	(!strcmp((str), "kprobe") || !strcmp((str), "kretprobe"))
-+#define is_attach_uprobe(str)		\
-+	(!strcmp((str), "uprobe") || !strcmp((str), "uretprobe"))
-+#define is_attach_tracepoint(str)	\
-+	(!strcmp((str), "tp") || !strcmp((str), "tracepoint"))
-+
-+/* The valid controlling type is "p" (pause) and "r" (resume) */
-+#define is_valid_ctrl_type(str)	\
-+	(!strcmp((str), "p") || !strcmp((str), "r"))
-+
-+static struct auxtrace_pause_bpf *skel;
-+
-+struct trigger_entry {
-+	struct list_head list;
-+	char *arg0;
-+	char *arg1;
-+	char *arg2;
-+	char *arg3;
-+};
-+
-+static int trigger_entry_num;
-+static LIST_HEAD(trigger_list);
-+static struct bpf_link **trigger_links;
-+
-+static void auxtrace__free_bpf_trigger_list(void)
-+{
-+	struct trigger_entry *entry, *next;
-+
-+	list_for_each_entry_safe(entry, next, &trigger_list, list) {
-+		free(entry->arg0);
-+		free(entry->arg1);
-+		free(entry->arg2);
-+		free(entry->arg3);
-+		free(entry);
-+	}
-+
-+	trigger_entry_num = 0;
-+}
-+
-+static int auxtrace__alloc_bpf_trigger_list(const char *str)
-+{
-+	char *cmd_str;
-+	char *substr, *saveptr1;
-+	struct trigger_entry *entry;
-+	int ret = 0;
-+
-+	if (!str)
-+		return -EINVAL;
-+
-+	cmd_str = strdup(str);
-+	if (!cmd_str)
-+		return -ENOMEM;
-+
-+	substr = strtok_r(cmd_str, ",", &saveptr1);
-+	for ( ; substr != NULL; substr = strtok_r(NULL, ",", &saveptr1)) {
-+		char *fmt1_str, *fmt2_str, *fmt3_str, *fmt4_str, *fmt;
-+
-+		entry = zalloc(sizeof(*entry));
-+		if (!entry) {
-+			ret = -ENOMEM;
-+			goto out;
-+		}
-+
-+		/*
-+		 * A trigger is expressed with several fields with separator ":".
-+		 * The first field is specified for attach types, it can be one
-+		 * of types listed below:
-+		 *   kprobe / kretprobe
-+		 *   uprobe / uretprobe
-+		 *   tp / tracepoint
-+		 *
-+		 * The kprobe and kretprobe trigger format is:
-+		 *   {kprobe|kretprobe}:{p|r}:function_name
-+		 *
-+		 * The uprobe and uretprobe trigger format is:
-+		 *   {uprobe|uretprobe}:{p|r}:executable:function_name
-+		 *
-+		 * Tracepoint trigger format is:
-+		 *   {tp|tracepoint}:{p|r}:category:tracepint_name
-+		 *
-+		 * The last field is used to express the controlling type: "p"
-+		 * means aux pause and "r" is for aux resume.
-+		 */
-+		fmt1_str = strtok_r(substr, ":", &fmt);
-+		fmt2_str = strtok_r(NULL, ":", &fmt);
-+		fmt3_str = strtok_r(NULL, ":", &fmt);
-+		if (!fmt1_str || !fmt2_str || !fmt3_str) {
-+			pr_err("Failed to parse bpf aux pause string: %s\n",
-+				substr);
-+			ret = -EINVAL;
-+			goto out;
-+		}
-+
-+		entry->arg0 = strdup(fmt1_str);
-+		entry->arg1 = strdup(fmt2_str);
-+		entry->arg2 = strdup(fmt3_str);
-+		if (!entry->arg0 || !entry->arg1 || !entry->arg2) {
-+			ret = -ENOMEM;
-+			goto out;
-+		}
-+
-+		if (!is_attach_kprobe(entry->arg0) &&
-+		    !is_attach_uprobe(entry->arg0) &&
-+		    !is_attach_tracepoint(entry->arg0)) {
-+			pr_err("Failed to support bpf aux pause attach: %s\n",
-+			       entry->arg0);
-+			ret = -EINVAL;
-+			goto out;
-+		}
-+
-+		if (!is_valid_ctrl_type(entry->arg1)) {
-+			pr_err("Failed to support bpf aux pause ctrl: %s\n",
-+			       entry->arg1);
-+			ret = -EINVAL;
-+			goto out;
-+		}
-+
-+		if (!is_attach_kprobe(entry->arg0)) {
-+			fmt4_str = strtok_r(NULL, ":", &fmt);
-+			if (!fmt4_str) {
-+				ret = -ENOMEM;
-+				goto out;
+ 	/*
+ 	 * When perf is starting the traced process, all the events
+ 	 * (apart from group members) have enable_on_exec=1 set,
+@@ -2907,6 +2919,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 	}
+ 
+ out_delete_session:
++	auxtrace__cleanup_bpf();
+ #ifdef HAVE_EVENTFD_SUPPORT
+ 	if (done_fd >= 0) {
+ 		fd = done_fd;
+@@ -3629,6 +3642,11 @@ static struct option __record_options[] = {
+ 	OPT_CALLBACK(0, "off-cpu-thresh", &record.opts, "ms",
+ 		     "Dump off-cpu samples if off-cpu time exceeds this threshold (in milliseconds). (Default: 500ms)",
+ 		     record__parse_off_cpu_thresh),
++	OPT_STRING_OPTARG(0, "bpf-aux-pause", &record.opts.auxtrace_bpf_aux_pause_opts,
++			  "{kprobe|kretprobe}:{p|r}:function_name\n"
++			  "\t\t\t  {uprobe|uretprobe}:{p|r}:executable:function_name\n"
++			  "\t\t\t  {tp|tracepoint}:{p|r}:category:tracepoint\n",
++			  "Enable AUX pause with BPF backend", ""),
+ 	OPT_END()
+ };
+ 
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index d55482f094bf95ac7b5c5173c1341baeb0fa9c93..f240e48f41a3e7ca5ba81733efc58a25c5c829ba 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -2650,6 +2650,12 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
+ 
+ 			bpf_counter__install_pe(evsel, idx, fd);
+ 
++			/* Update event info into BPF map for AUX trace */
++			if (auxtrace__update_bpf_map(evsel, idx, fd)) {
++				err = -EINVAL;
++				goto out_close;
 +			}
 +
-+			entry->arg3 = strdup(fmt4_str);
-+			if (!entry->arg3) {
-+				ret = -ENOMEM;
-+				goto out;
-+			}
-+		}
-+
-+		if (ret)
-+			goto out;
-+
-+		list_add(&entry->list, &trigger_list);
-+		trigger_entry_num++;
-+	}
-+
-+	free(cmd_str);
-+	return 0;
-+
-+out:
-+	free(cmd_str);
-+	if (entry) {
-+		free(entry->arg0);
-+		free(entry->arg1);
-+		free(entry->arg2);
-+		free(entry->arg3);
-+		free(entry);
-+	}
-+	auxtrace__free_bpf_trigger_list();
-+	return ret;
-+}
-+
-+int auxtrace__prepare_bpf(struct auxtrace_record *itr, const char *str)
-+{
-+	int ret;
-+
-+	if (!itr || !str)
-+		return 0;
-+
-+	skel = auxtrace_pause_bpf__open();
-+	if (!skel) {
-+		pr_err("Failed to open func latency skeleton\n");
-+		return -1;
-+	}
-+
-+	ret = auxtrace__alloc_bpf_trigger_list(str);
-+	if (ret) {
-+		auxtrace_pause_bpf__destroy(skel);
-+		skel = NULL;
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static struct bpf_link *auxtrace__attach_bpf_prog(struct trigger_entry *entry)
-+{
-+	struct bpf_link *link = NULL;
-+	LIBBPF_OPTS(bpf_uprobe_opts, uprobe_opts);
-+
-+	if (!strcmp(entry->arg0, "kprobe")) {
-+		if (!strcmp(entry->arg1, "p")) {
-+			link = bpf_program__attach_kprobe(
-+					skel->progs.kprobe_event_pause,
-+					false, entry->arg2);
-+		} else if (!strcmp(entry->arg1, "r")) {
-+			link = bpf_program__attach_kprobe(
-+					skel->progs.kprobe_event_resume,
-+					false, entry->arg2);
-+		}
-+	} else if (!strcmp(entry->arg0, "kretprobe")) {
-+		if (!strcmp(entry->arg1, "p")) {
-+			link = bpf_program__attach_kprobe(
-+					skel->progs.kretprobe_event_pause,
-+					true, entry->arg2);
-+		} else if (!strcmp(entry->arg1, "r")) {
-+			link = bpf_program__attach_kprobe(
-+					skel->progs.kretprobe_event_resume,
-+					true, entry->arg2);
-+		}
-+	} else if (!strcmp(entry->arg0, "uprobe")) {
-+		uprobe_opts.func_name = entry->arg3;
-+		uprobe_opts.retprobe = false;
-+		if (!strcmp(entry->arg1, "p")) {
-+			link = bpf_program__attach_uprobe_opts(
-+					skel->progs.uprobe_event_pause,
-+					-1, entry->arg2, 0, &uprobe_opts);
-+		} else if (!strcmp(entry->arg1, "r")) {
-+			link = bpf_program__attach_uprobe_opts(
-+					skel->progs.uprobe_event_resume,
-+					-1, entry->arg2, 0, &uprobe_opts);
-+		}
-+	} else if (!strcmp(entry->arg0, "uretprobe")) {
-+		uprobe_opts.func_name = entry->arg3;
-+		uprobe_opts.retprobe = true;
-+		if (!strcmp(entry->arg1, "p")) {
-+			link = bpf_program__attach_uprobe_opts(
-+					skel->progs.uretprobe_event_pause,
-+					-1, entry->arg2, 0, &uprobe_opts);
-+		} else if (!strcmp(entry->arg1, "r")) {
-+			link = bpf_program__attach_uprobe_opts(
-+					skel->progs.uretprobe_event_resume,
-+					-1, entry->arg2, 0, &uprobe_opts);
-+		}
-+
-+	} else if (is_attach_tracepoint(entry->arg0)) {
-+		if (!strcmp(entry->arg1, "p")) {
-+			link = bpf_program__attach_tracepoint(
-+					skel->progs.tp_event_pause,
-+					entry->arg2, entry->arg3);
-+		} else if (!strcmp(entry->arg1, "r")) {
-+			link = bpf_program__attach_tracepoint(
-+					skel->progs.tp_event_resume,
-+					entry->arg2, entry->arg3);
-+		}
-+	}
-+
-+	return link;
-+}
-+
-+int auxtrace__set_bpf_filter(struct evlist *evlist, struct record_opts *opts)
-+{
-+	int fd, err;
-+	int i, ncpus = 1, ntasks = 1;
-+	struct trigger_entry *trigger_entry;
-+	struct target *target;
-+
-+	if (!skel)
-+		return 0;
-+
-+	if (!opts)
-+		return -EINVAL;
-+
-+	target = &opts->target;
-+
-+	if (target__has_cpu(target)) {
-+		ncpus = perf_cpu_map__nr(evlist->core.user_requested_cpus);
-+		bpf_map__set_max_entries(skel->maps.cpu_filter, ncpus);
-+		skel->rodata->has_cpu = 1;
-+	}
-+
-+	if (target__has_task(target) || target__none(target)) {
-+		ntasks = perf_thread_map__nr(evlist->core.threads);
-+		bpf_map__set_max_entries(skel->maps.task_filter, ntasks);
-+		skel->rodata->has_task = 1;
-+	}
-+
-+	if (target->per_thread)
-+		skel->rodata->per_thread = 1;
-+
-+	bpf_map__set_max_entries(skel->maps.events, libbpf_num_possible_cpus());
-+
-+	err = auxtrace_pause_bpf__load(skel);
-+	if (err) {
-+		pr_err("Failed to load func latency skeleton: %d\n", err);
-+		goto out;
-+	}
-+
-+	if (target__has_cpu(target)) {
-+		u32 cpu;
-+		u8 val = 1;
-+
-+		fd = bpf_map__fd(skel->maps.cpu_filter);
-+
-+		for (i = 0; i < ncpus; i++) {
-+			cpu = perf_cpu_map__cpu(evlist->core.user_requested_cpus, i).cpu;
-+			bpf_map_update_elem(fd, &cpu, &val, BPF_ANY);
-+		}
-+	}
-+
-+	if (target__has_task(target) || target__none(target)) {
-+		u32 pid;
-+		u8 val = 1;
-+
-+		fd = bpf_map__fd(skel->maps.task_filter);
-+
-+		for (i = 0; i < ntasks; i++) {
-+			pid = perf_thread_map__pid(evlist->core.threads, i);
-+			bpf_map_update_elem(fd, &pid, &val, BPF_ANY);
-+		}
-+	}
-+
-+	trigger_links = zalloc(sizeof(*trigger_links) * trigger_entry_num);
-+	if (!trigger_links)
-+		return -ENOMEM;
-+
-+	i = 0;
-+	list_for_each_entry(trigger_entry, &trigger_list, list) {
-+		trigger_links[i] = auxtrace__attach_bpf_prog(trigger_entry);
-+		err = libbpf_get_error(trigger_links[i]);
-+		if (err) {
-+			pr_err("Failed to attach bpf program to aux pause entry\n");
-+			pr_err("  arg0=%s arg1=%s arg2=%s arg3=%s\n",
-+			       trigger_entry->arg0, trigger_entry->arg1,
-+			       trigger_entry->arg2, trigger_entry->arg3);
-+			trigger_links[i] = NULL;
-+			goto out;
-+		}
-+		i++;
-+	}
-+
-+	return 0;
-+
-+out:
-+	for (i = 0; i < trigger_entry_num; i++) {
-+		if (!trigger_links[i])
-+			continue;
-+		bpf_link__destroy(trigger_links[i]);
-+	}
-+
-+	return err;
-+}
-+
-+int auxtrace__enable_bpf(void)
-+{
-+	if (!skel)
-+		return 0;
-+
-+	skel->bss->enabled = 1;
-+	return 0;
-+}
-+
-+int auxtrace__cleanup_bpf(void)
-+{
-+	int i;
-+
-+	if (!skel)
-+		return 0;
-+
-+	for (i = 0; i < trigger_entry_num; i++) {
-+		if (!trigger_links[i])
-+			continue;
-+		bpf_link__destroy(trigger_links[i]);
-+	}
-+
-+	auxtrace__free_bpf_trigger_list();
-+	auxtrace_pause_bpf__destroy(skel);
-+	return 0;
-+}
-+
-+int auxtrace__update_bpf_map(struct evsel *evsel, int cpu_map_idx, int fd)
-+{
-+	int ret;
-+
-+	if (!skel)
-+		return 0;
-+
-+	if (!evsel->needs_auxtrace_mmap)
-+		return 0;
-+
-+	ret = bpf_map_update_elem(bpf_map__fd(skel->maps.events),
-+				  &cpu_map_idx, &fd, BPF_ANY);
-+	if (ret) {
-+		pr_err("Failed to update BPF map for auxtrace: %s.\n",
-+			strerror(errno));
-+		if (errno == EOPNOTSUPP)
-+			pr_err("  Try to disable inherit mode with option '-i'.\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
+ 			if (unlikely(test_attr__enabled())) {
+ 				test_attr__open(&evsel->core.attr, pid, cpu,
+ 						fd, group_fd, evsel->open_flags);
+diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
+index ea3a6c4657eefb743dc3d54b0b791ea39117cc10..1b1c2ed7fcadae8b56408b3b1b154faef3996eb3 100644
+--- a/tools/perf/util/record.h
++++ b/tools/perf/util/record.h
+@@ -65,6 +65,7 @@ struct record_opts {
+ 	size_t	      auxtrace_snapshot_size;
+ 	const char    *auxtrace_snapshot_opts;
+ 	const char    *auxtrace_sample_opts;
++	const char    *auxtrace_bpf_aux_pause_opts;
+ 	bool	      sample_transaction;
+ 	bool	      use_clockid;
+ 	clockid_t     clockid;
 
 -- 
 2.34.1
