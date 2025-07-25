@@ -1,162 +1,118 @@
-Return-Path: <bpf+bounces-64419-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64420-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40DF8B1271F
-	for <lists+bpf@lfdr.de>; Sat, 26 Jul 2025 01:12:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B0B3B1277B
+	for <lists+bpf@lfdr.de>; Sat, 26 Jul 2025 01:30:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 476943B4D4A
-	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 23:11:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 37B577BBBB7
+	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 23:28:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A97C25A63D;
-	Fri, 25 Jul 2025 23:11:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 041A125F97E;
+	Fri, 25 Jul 2025 23:29:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sjh/y5yV"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YKGHnROh"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C59FD259CA1
-	for <bpf@vger.kernel.org>; Fri, 25 Jul 2025 23:11:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6810E2580CB
+	for <bpf@vger.kernel.org>; Fri, 25 Jul 2025 23:29:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753485109; cv=none; b=FY9p1/vLBHrAVicSX5/8mCukZ3aixs6DDjUcehRqYCG6YS1UZLiuubjC+RM94spQgHvLd8AsNGgvjI2dCHm/8f7X4bAu+ap+a7zCQSZEZYDT38XEf/UCjmkSDuZO9m2FNppIhuC68ymhri/Jymj3Kxg2gmWNCC+fD/Bstnrywsw=
+	t=1753486194; cv=none; b=D4Pz0Rgny8TH+frHsVgJAugOaSaY25x1/BgPDRvadPA1radwcAimvwO4NlQpEgi0i8Ad6VHEgNM4Xo7J4hvJOlM7YSj0H43YMMkk5rxBrXBQrHgmldOWRNZkozlFlL0L8Zg1Ekzk5C+9hepiH087xZe9+3ZysN4373xFXPi5IGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753485109; c=relaxed/simple;
-	bh=IXkJNk6afU6gWW1EIchhvOKGzqQ7V9PRE3PFU/v204c=;
+	s=arc-20240116; t=1753486194; c=relaxed/simple;
+	bh=MSnwXae7PvSbdrSd8BTyH5IoGtxlk9BOVOOLem9FNMA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CMxW0LRhWgmwrdzDiSI+Qhtz9LyssVQ4J5HYzyOSD6ttK2+2t6ZlTz5r6JtDy0bgAc67MWiNeiCBCdaDGD1GiDTb/rl0zjHmBcgFV8Ns4V2GUmELhLcnp/IFwaHloJkn/71L5zpsXoSTSd5arAEDJAbJOpHuw3GHadB7g6YoxSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sjh/y5yV; arc=none smtp.client-ip=91.218.175.182
+	 In-Reply-To:Content-Type; b=d7laNJUxmdlf22Aa3lDymcYOyJiOIqMtesyXqJ5l5qvlVTQVKSoc7XDkA/4LfXmO2MRyQQuOTBFyrQPhCf3J7HhZsJndY9Dgx94vRlKPfPkXTP3aP0jJwdVkKNr8Fh1K6ofbnhNCzc0dsywVRBP/zIx1gYm3NvYGx1rI3gN64x8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YKGHnROh; arc=none smtp.client-ip=91.218.175.185
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <932a6a4d-d30b-4b85-b6a9-2eabeb5eaf2e@linux.dev>
+Message-ID: <3c145192-122d-46fc-8567-be30a2694a4d@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1753485095;
+	t=1753486190;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vQRz5jGRtVRmnbmD+RJSpwn39XGxG33xPSgLoIzuVnI=;
-	b=sjh/y5yVn7VP408JwIB0FZXLlq5c6ou7dox1+ek5j3rK3FShuNkMI47wztrk6ZnEverdie
-	t5rBIe6rqMa9KvQ79lknL4SZnpJs9E6TqWEZnGTGpxzbSbGB2wU6JrGN/QZAo+jvpH1rP5
-	4ObXP8+JyuR0rD0KetdiH+JvlLcHAsg=
-Date: Fri, 25 Jul 2025 16:11:27 -0700
+	bh=LrSfoK72C3hoJ9bWqoMm3Qmta43jY20IJhfJ91SpOy0=;
+	b=YKGHnROhJXM86ZOpGmyIAyZiGzspZIM5zUM+I+sTR5lPnZbp7la55+/u0FMr3QSyKn1utJ
+	aC9mGjG2zOnrzilM7Tav6n70YBofLUFwfUMKJfYZLorHiVL7LDzTNVWVYrui5dF7mIJdCd
+	2rFE2U50h42tv8qZk/3PGXnR3RWrNiQ=
+Date: Fri, 25 Jul 2025 16:29:44 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 1/4] bpf: crypto: Use the correct destructor
- kfunc type
-Content-Language: en-GB
-To: Sami Tolvanen <samitolvanen@google.com>, bpf@vger.kernel.org
-Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>,
- Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250725214401.1475224-6-samitolvanen@google.com>
- <20250725214401.1475224-7-samitolvanen@google.com>
+Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: Fix test
+ dynptr/test_dynptr_memset_xdp_chunks failure
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+ Martin KaFai Lau <martin.lau@kernel.org>, bpf@vger.kernel.org
+References: <20250725043425.208128-1-yonghong.song@linux.dev>
+ <20250725043440.209266-1-yonghong.song@linux.dev>
+Content-Language: en-US
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20250725214401.1475224-7-samitolvanen@google.com>
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20250725043440.209266-1-yonghong.song@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
-
-
-On 7/25/25 2:44 PM, Sami Tolvanen wrote:
-> With CONFIG_CFI_CLANG enabled, the kernel strictly enforces that
-> indirect function calls use a function pointer type that matches the
-> target function. I ran into the following type mismatch when running
-> BPF self-tests:
->
->    CFI failure at bpf_obj_free_fields+0x190/0x238 (target:
->      bpf_crypto_ctx_release+0x0/0x94; expected type: 0xa488ebfc)
->    Internal error: Oops - CFI: 00000000f2008228 [#1]  SMP
->    ...
->
-> As bpf_crypto_ctx_release() is also used in BPF programs and using
-> a void pointer as the argument would make the verifier unhappy, add
-> a simple stub function with the correct type and register it as the
-> destructor kfunc instead.
->
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+On 7/24/25 9:34 PM, Yonghong Song wrote:
+> For arm64 64K page size, the xdp data size was set to be more than 64K
+> in one of previous patches. This will cause failure for bpf_dynptr_memset().
+> Since the failure of bpf_dynptr_memset() is expected with 64K page size,
+> return success.
+> 
+> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 > ---
->   kernel/bpf/crypto.c | 9 ++++++++-
->   1 file changed, 8 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/crypto.c b/kernel/bpf/crypto.c
-> index 94854cd9c4cc..f44aa454826b 100644
-> --- a/kernel/bpf/crypto.c
-> +++ b/kernel/bpf/crypto.c
-> @@ -261,6 +261,13 @@ __bpf_kfunc void bpf_crypto_ctx_release(struct bpf_crypto_ctx *ctx)
->   		call_rcu(&ctx->rcu, crypto_free_cb);
->   }
+>   tools/testing/selftests/bpf/progs/dynptr_success.c | 13 ++++++++++++-
+>   1 file changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/progs/dynptr_success.c b/tools/testing/selftests/bpf/progs/dynptr_success.c
+> index 3094a1e4ee91..8315273cb900 100644
+> --- a/tools/testing/selftests/bpf/progs/dynptr_success.c
+> +++ b/tools/testing/selftests/bpf/progs/dynptr_success.c
+> @@ -9,6 +9,8 @@
+>   #include "bpf_misc.h"
+>   #include "errno.h"
 >   
-> +__used __retain void __bpf_crypto_ctx_release(void *ctx)
-> +{
-> +	bpf_crypto_ctx_release(ctx);
-> +}
+> +#define PAGE_SIZE_64K 65536
 > +
-> +CFI_NOSEAL(__bpf_crypto_ctx_release);
-
-Okay, looks like Peter has made similar changes before.
-See https://lore.kernel.org/all/20231215092707.799451071@infradead.org/
-
-To be consistent with existing code base, I think the following
-change is better:
-
-diff --git a/kernel/bpf/crypto.c b/kernel/bpf/crypto.c
-index 94854cd9c4cc..a267d9087d40 100644
---- a/kernel/bpf/crypto.c
-+++ b/kernel/bpf/crypto.c
-@@ -261,6 +261,12 @@ __bpf_kfunc void bpf_crypto_ctx_release(struct bpf_crypto_ctx *ctx)
-                 call_rcu(&ctx->rcu, crypto_free_cb);
-  }
-  
-+__bpf_kfunc void bpf_crypto_ctx_release_dtor(void *ctx)
-+{
-+       bpf_crypto_ctx_release(ctx);
-+}
-+CFI_NOSEAL(bpf_crypto_ctx_release_dtor);
-+
-  static int bpf_crypto_crypt(const struct bpf_crypto_ctx *ctx,
-                             const struct bpf_dynptr_kern *src,
-                             const struct bpf_dynptr_kern *dst,
-@@ -368,7 +374,7 @@ static const struct btf_kfunc_id_set crypt_kfunc_set = {
-  
-  BTF_ID_LIST(bpf_crypto_dtor_ids)
-  BTF_ID(struct, bpf_crypto_ctx)
--BTF_ID(func, bpf_crypto_ctx_release)
-+BTF_ID(func, bpf_crypto_ctx_release_dtor)
-  
-  static int __init crypto_kfunc_init(void)
-  {
-
-The same code pattern can be done for patch 2 and patch 3.
-
-> +
->   static int bpf_crypto_crypt(const struct bpf_crypto_ctx *ctx,
->   			    const struct bpf_dynptr_kern *src,
->   			    const struct bpf_dynptr_kern *dst,
-> @@ -368,7 +375,7 @@ static const struct btf_kfunc_id_set crypt_kfunc_set = {
+>   char _license[] SEC("license") = "GPL";
 >   
->   BTF_ID_LIST(bpf_crypto_dtor_ids)
->   BTF_ID(struct, bpf_crypto_ctx)
-> -BTF_ID(func, bpf_crypto_ctx_release)
-> +BTF_ID(func, __bpf_crypto_ctx_release)
+>   int pid, err, val;
+> @@ -821,8 +823,17 @@ int test_dynptr_memset_xdp_chunks(struct xdp_md *xdp)
+>   	data_sz = bpf_dynptr_size(&ptr_xdp);
 >   
->   static int __init crypto_kfunc_init(void)
->   {
+>   	err = bpf_dynptr_memset(&ptr_xdp, 0, data_sz, DYNPTR_MEMSET_VAL);
+> -	if (err)
+> +	if (err) {
+> +		/* bpf_dynptr_memset() eventually called bpf_xdp_pointer()
+
+I don't think I understand why the test fixed in patch 1 (e.g. 
+test_probe_read_user_dynptr) can pass the bpf_xdp_pointer test on 0xffff. I 
+thought the bpf_probe_read_user_str_dynptr will eventually call the 
+__bpf_xdp_store_bytes which also does a bpf_xdp_pointer?
+
+> +		 * where if data_sz is greater than 0xffff, -EFAULT will be
+> +		 * returned. For 64K page size, data_sz is greater than
+> +		 * 64K, so error is expected and let us zero out error and
+> +		 * return success.
+> +		 */
+> +		if (data_sz >= PAGE_SIZE_64K)
+> +			err = 0;
+>   		goto out;
+> +	}
+>   
+>   	bpf_for(i, 0, max_chunks) {
+>   		offset = i * sizeof(buf);
 
 
