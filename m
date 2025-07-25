@@ -1,436 +1,257 @@
-Return-Path: <bpf+bounces-64332-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64333-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEC51B11ABF
-	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 11:21:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0DD1B11AC5
+	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 11:23:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B15A91CC6ABA
-	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 09:22:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6201416FDCD
+	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 09:23:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 855742D0C75;
-	Fri, 25 Jul 2025 09:21:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5D9B2D0C88;
+	Fri, 25 Jul 2025 09:23:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Q4aklL5e"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="oI4tBzpL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f68.google.com (mail-wr1-f68.google.com [209.85.221.68])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2348285053
-	for <bpf@vger.kernel.org>; Fri, 25 Jul 2025 09:21:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.68
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753435313; cv=none; b=Qf7BjtxVSXf3+iOQvwGNXRTRp/4BmKu2azDbx/K0U8w4X1oWEt91WZxCZxPz1oxH/jjSJlIblHOSWcrgfw7ai/KK/USfRJuvO8yI0Vr8fK6DuGoIcIYprhpwUYkjxfLkZiu82ZMXaar1G3R8nlX3IFAY4OD1ZkPjfvRWtyQrUuI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753435313; c=relaxed/simple;
-	bh=fHD0GDkTl2VPW8GotjbwI/iHR7726h2hQ9lvr/XGHCg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=edolvCQwtumoiUPdv33G+5a4NGB7rtORMvAwC9Eb/mQDZ4MqIPUcSyfFC3mxWBo16MR1qQea2IML4sv06isDR72fkshacLvOjEdQ8bnDeo+8rra76b25b9s8Q29chKgDtzuYqAyuqlJO0XiUH3wrCdAB1QaF/8rvpfVRHLAN4O4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Q4aklL5e; arc=none smtp.client-ip=209.85.221.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f68.google.com with SMTP id ffacd0b85a97d-3b77673fd78so282847f8f.0
-        for <bpf@vger.kernel.org>; Fri, 25 Jul 2025 02:21:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1753435309; x=1754040109; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+Jns95K2CC9wrsrCmUf0a/beZ690kJlwnrWlOt/dNwE=;
-        b=Q4aklL5eKO2ruB+XTn5/Q7jDA83DjJpodUT7oUtLat2svPDGTHvmBcqAV0YOsFMvZR
-         3IWkihM3CalBlx3cPkIGrQR06grJXXuWsNl1LfOSY3jdnKchiQZmhJkHYvNoZdWBuxqK
-         05HiGaj6v9iWEQ5gevQLInD1/y7BrVn4hfr36xVYQagjoiQkLCbACbhJ7URq21Kzh1C6
-         l2xRH0U6/mXE9epsD+vg4usXSjbwD/7KYQlGfsVBA2SjC2nzU66EypNLm5Zemu+laDBW
-         yFgku1fsI4Z6j2XnT+NrUsw8F/zVHbREofCEV1wRkbZ57ZDQKoRmJtuehmk/TTK6pgeg
-         y/RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753435309; x=1754040109;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+Jns95K2CC9wrsrCmUf0a/beZ690kJlwnrWlOt/dNwE=;
-        b=H1zCOqyS70T7riDDccM/bZMN5sjsB2xrpSSYneXNaZJ1Ehm22qWvVZ4JGbLH+pWmdv
-         jcnK41mQYN/zOrNdPPZ7WtbclQl4Y15E3FsiSnokauSg3Z4bMphSYAp+KAra5AFp9dfg
-         olLntvLmlWM2bgsxifT+Cdlw97MOOm1gLjQw4kS77D+J4xb+uptpTW0AG4u5m7/tQK1L
-         THXE4WkoTGkLPZNyWafAkP6VQrGU6uwvM82qsasTrwmcbXwSbzpMUflCAt1P48wiZl9y
-         EhkGwm0DGs5etbxajZk5czHwPLy02jRLLTeHHGFzUwmwO6agOF8gkuJNsQFoaG1171BL
-         DAEw==
-X-Gm-Message-State: AOJu0YzsCV028yfSBcslI+5UmKTslpf/BjoAqMcLINz/2OQNPnmSrnGm
-	Qwt2wLFiWJc/CJao96ttmE6eHb+FX5UoQUMM5kZS+qD8mY3uqPrie/HYif2tY9MeN1k=
-X-Gm-Gg: ASbGnctIdZ6iEgNri7nX6R+pUjxKQITmy2YJrea0mTZLO/lYS29C7nUywFlTdg1NDIQ
-	zYKQHeFYUj1ayOEfP+dHkdoeb97+TYZvalgWcz3uTZuFxamlKyUUzwAJ/LAgzX2KezrFKYAZhjM
-	7rVjqr5ISZVNDnRfuNKUYwiwON9fWHcqJzqeJOWGf4Eo1bk0tEHCNHwdjD+aqVNRwz5vRPlmEK/
-	cyEEuq2Al0chIqOvl/HAMFxt+hLjd9yguTjDAsvfznkA4NxISIZjjHefSBgov8rVKTA425lbnfN
-	S9b2aj73/PXlwTtn8nI0YaWrMYn35f2mk7HIczyvi2gcDXhwY89LJex+Ho934Gog/QlAR2akq2V
-	Btb1Seae41uDUxoARWGB8I1dzRojDCwFemP/o7flOGmMFcLSdHzu8xjrGkteWun+gKHTg5Eom4V
-	TPY5p7JuTmyR3tW7s=
-X-Google-Smtp-Source: AGHT+IGrhsMBBUSreh3QqHGNveTrC5nIQFDPjriVzudy6YLHQmHZSmhUrhTri0b49ys1ihH5beXiPw==
-X-Received: by 2002:a05:6000:40de:b0:3a5:8a09:70b7 with SMTP id ffacd0b85a97d-3b77663e8b8mr1257784f8f.38.1753435308686;
-        Fri, 25 Jul 2025 02:21:48 -0700 (PDT)
-Received: from u94a (2001-b011-fa04-d953-b2dc-efff-fee8-7e7a.dynamic-ip6.hinet.net. [2001:b011:fa04:d953:b2dc:efff:fee8:7e7a])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-761b06199a8sm3435466b3a.112.2025.07.25.02.21.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jul 2025 02:21:48 -0700 (PDT)
-Date: Fri, 25 Jul 2025 17:21:38 +0800
-From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-To: Eduard Zingerman <eddyz87@gmail.com>, 
-	Paul Chaignon <paul.chaignon@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH bpf-next] bpf: Simplify bounds refinement from s32
-Message-ID: <nrsym2fuoeqoewmf7omq5dr2wtnq63bmivc2ndvkybi3xh4ger@7fenu3fa566i>
-References: <aIJwnFnFyUjNsCNa@mail.gmail.com>
- <4da44707e926d2b2cb7e1d19572d006d7b7c06bd.camel@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93046253B5C;
+	Fri, 25 Jul 2025 09:23:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.12
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1753435410; cv=fail; b=rxU+KiYfvmC/elSTOKIwYFoN1+OehZ160R0bnxd7ZGAGdwqDEhkPeEo7WjdZeV3HuR5X1U+6cpcvx8wlfshw7bK5NuXMTzKRb4uTae6ZdROIbA5AotKsfeCbzSHYOuKzcsOf5ITbDzO/QQydv3Btb2/k7iUy2uHSLazwOysdhHg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1753435410; c=relaxed/simple;
+	bh=FZAKFTdqmAJv9CwQozyyaKAXX1mDo8jCU/fEZpYax+4=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=BZ/iSzEO7Pi7JDjelGOnvwX4sn6z5UJU623hmiNn/uewZMYNwAIHGZqnzvhUaoW4Nw4yl8Pys5Trf0wyOt4cYML+vNo7Z9SlxHO8CKzbjGWSj3xZ95tYUeJOKZ0QNbfa5Nme4vCma8O7ErZjCzNrrP7/vu25otgCRWdVxwbiqJc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=oI4tBzpL; arc=fail smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1753435408; x=1784971408;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=FZAKFTdqmAJv9CwQozyyaKAXX1mDo8jCU/fEZpYax+4=;
+  b=oI4tBzpLxfB4iiFwFUMHFnLs1vA94ZOCq4jFPsX2qQV30Z10TxQGNlv3
+   8S1Ub/jhVILyKb/IWoYfGE+IwUFz167Z2J1/bKwiAYNM2ZtUhYnqaBSob
+   yxk6jjOr5J6rjK7i+Dbv57LTjZ071tRYWZrC6lT95veII+8vGjqrWP95E
+   mZ0A4YEq67puJDT2efWt/B2WWBfSIe6fxaWLNvQjLbiORPWotva4BEQ2u
+   uDMHjUFrnVVSqSGgj5q91RkdlU9Au4gBgQZAovO4qeujP89tUBfA6vA9I
+   2oFldrudpM5Okv3ZkfjKaiPscaL9HzwmqeEjzaLaJpHC4AYeFXGQ6xMSy
+   Q==;
+X-CSE-ConnectionGUID: Ez8Y5bi0QCqqouMWzWVe3w==
+X-CSE-MsgGUID: ix3DeSpEQh6OPDtukKVqZQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11501"; a="59585477"
+X-IronPort-AV: E=Sophos;i="6.16,339,1744095600"; 
+   d="scan'208";a="59585477"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2025 02:23:23 -0700
+X-CSE-ConnectionGUID: DMpSxmumRV6RdfctOl0Zeg==
+X-CSE-MsgGUID: 9/j67cQPT4KVGhNuav1d8g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,339,1744095600"; 
+   d="scan'208";a="165059864"
+Received: from orsmsx902.amr.corp.intel.com ([10.22.229.24])
+  by fmviesa005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2025 02:23:24 -0700
+Received: from ORSMSX902.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1748.26; Fri, 25 Jul 2025 02:23:22 -0700
+Received: from ORSEDG901.ED.cps.intel.com (10.7.248.11) by
+ ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1748.26 via Frontend Transport; Fri, 25 Jul 2025 02:23:22 -0700
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (40.107.101.68)
+ by edgegateway.intel.com (134.134.137.111) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1748.26; Fri, 25 Jul 2025 02:23:22 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=cSOuuesVob6YtIe3fUqFTZ1uJXBmMStmMxn2fPjXRULLMwy+8YgGNvVewy0CvpKyIkYUmZ/xrLmDgx4tS0B5suziOD43TJ0hjotmbnmCDB4JnrgvNcGOrB0mcNkb7vP2osIgdigWpLXpXFz/q4lKBVSA5MCJ9hQkJvTgLHdocnxAt82cszH0kIGdBdI+qBMqxYmQ3teJKHGfM0QwW59auBjjV9w/V3ax7IrLoRzHuy0HMfKBoSPEGVa6PuIi46wspDM+yBvF7jzhLcUwv1aj2OkVNYTGkEBsHH1HKYnlvLYv4zj58vJ3qXpRg8rTCGs5vCFoVQ+qPDxuefj17Oa/jg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HdT9lfCKH60llpypo1mN7DS7sEhI3Ps65SiyyPl7pB4=;
+ b=FhIc6dPoso948lBXbaBrS3eCww/+fbXr4YmOHWWGc2EAsvI4bqHxNKc5sqPnY9aG59Nrb080wNkCDts4J0pgq9ZCu5Hv2VpfCzBOUPjbpapl28hBxx1KB9orl0LffQJPFXRfJKdoMM/n+rfdz4NPVozwJONLcGqXNyW0sDJPelJv1VMQFx6lFkgXlk4o0KA79c9YRIBMmTWxhmNPJxG2h3jCxHgM+oxZ8rAf3T0lUhMr5TGwrZkaHHvjy7uoNsyL+i6XfN/z2iWidB1q5KryvYWEZ9ZcVd12f13GmQfdu/pzAMNW6Y+v9yqDkob9HiW/NrQUvZIxsdUh6a9JEFTzzA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SN7PR11MB7540.namprd11.prod.outlook.com (2603:10b6:806:340::7)
+ by PH7PR11MB6857.namprd11.prod.outlook.com (2603:10b6:510:1ed::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8964.21; Fri, 25 Jul
+ 2025 09:23:06 +0000
+Received: from SN7PR11MB7540.namprd11.prod.outlook.com
+ ([fe80::399f:ff7c:adb2:8d29]) by SN7PR11MB7540.namprd11.prod.outlook.com
+ ([fe80::399f:ff7c:adb2:8d29%4]) with mapi id 15.20.8964.021; Fri, 25 Jul 2025
+ 09:23:06 +0000
+Date: Fri, 25 Jul 2025 11:22:57 +0200
+From: Larysa Zaremba <larysa.zaremba@intel.com>
+To: Jason Xing <kerneljasonxing@gmail.com>
+CC: <anthony.l.nguyen@intel.com>, <przemyslaw.kitszel@intel.com>,
+	<andrew+netdev@lunn.ch>, <davem@davemloft.net>, <edumazet@google.com>,
+	<kuba@kernel.org>, <pabeni@redhat.com>, <bjorn@kernel.org>,
+	<magnus.karlsson@intel.com>, <maciej.fijalkowski@intel.com>,
+	<jonathan.lemon@gmail.com>, <sdf@fomichev.me>, <ast@kernel.org>,
+	<daniel@iogearbox.net>, <hawk@kernel.org>, <john.fastabend@gmail.com>,
+	<bpf@vger.kernel.org>, <intel-wired-lan@lists.osuosl.org>,
+	<netdev@vger.kernel.org>, Jason Xing <kernelxing@tencent.com>
+Subject: Re: [PATCH net-next 1/5] ixgbe: xsk: remove budget from
+ ixgbe_clean_xdp_tx_irq
+Message-ID: <aINM8UdNOjqqdLHw@soc-5CG4396X81.clients.intel.com>
+References: <20250720091123.474-1-kerneljasonxing@gmail.com>
+ <20250720091123.474-2-kerneljasonxing@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20250720091123.474-2-kerneljasonxing@gmail.com>
+X-ClientProxiedBy: WA2P291CA0017.POLP291.PROD.OUTLOOK.COM
+ (2603:10a6:1d0:1e::17) To SN7PR11MB7540.namprd11.prod.outlook.com
+ (2603:10b6:806:340::7)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="awo2teqdyhaqjwfl"
-Content-Disposition: inline
-In-Reply-To: <4da44707e926d2b2cb7e1d19572d006d7b7c06bd.camel@gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN7PR11MB7540:EE_|PH7PR11MB6857:EE_
+X-MS-Office365-Filtering-Correlation-Id: 25865a5d-cdcd-4f2e-662e-08ddcb5cdd3c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|366016|7416014|1800799024|10070799003;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?TxEU1IThRexEnZteQ/ZhxvYri9NduhxS8QS1/cDPB9ndMCrb6wnzkuHuBqad?=
+ =?us-ascii?Q?tzeY1KoZkgos+Qs1aRGnsGfPi9K3e/B9YTn9ACmL+l+WY5fGZgEoCcgQnopn?=
+ =?us-ascii?Q?XZGXy23kTt74IuStmDC2eWcSyKWUvpWOmYwa98HIOpRSm3UbOleG7StyRK/Z?=
+ =?us-ascii?Q?5xCIC3oMxob8fv5ITaS1ssB/txz1FKQ31GE6XXLzlr5k1cYCN9E2t+Wr4vxA?=
+ =?us-ascii?Q?LcMDMyjxbIq+JVMMpFBhAFMh0J1FxA2kJGf2AZH7g1WXTOA4uEc48v6T354r?=
+ =?us-ascii?Q?GUWmn759anpslUNs6ygq/IkIiPilBiVa4PqKgm9bKSIhDTU9K0+sfDvOkAmI?=
+ =?us-ascii?Q?gEcxjeFfd0hc1kM6cwmGJ4/i4IXdkiqdRXk46QvxEf3PgGy3vaR85E1JxR0J?=
+ =?us-ascii?Q?kS3tkj3CRt4GxuM8vsBj/tMY36fY2ZqBzJT5YYc4hXVMA/4xBdbVSjaDaxqv?=
+ =?us-ascii?Q?bAzOKo8raBLYmQKB1/51zIMX/wS8ZQrSEpW/pdlSMhJcjZ9b62BBdUn8yL8T?=
+ =?us-ascii?Q?MI+d1kMXiMYwLjy+5cU4miiupApx87xhGo/pt+R26jVoq0JkvITvCZM0PV43?=
+ =?us-ascii?Q?UWsHbAuxgyRzzAAvDGI7MigvuvL5ZSF79B9191kCN+YyiswRPSkzntlulgRM?=
+ =?us-ascii?Q?xD6bJUSr2cNsdlxpe58hnsMOYWdsnuQGobgmhkAQmPjzG4Hkcnb6y7O2LHc4?=
+ =?us-ascii?Q?/LkS1BL0DrPoBUYnYHAk9OXrzoVVzR3ynDsfu7iTJuJCM7pVFkoy9Lq2RXYq?=
+ =?us-ascii?Q?xJ3NbWPeeywsjtEKue1KyI7dfE9oc715m8RPKS5clm8jhFHrMJZ/vCOkBsYx?=
+ =?us-ascii?Q?d/ZaqUdITfYCCf89hiaLSGak0O61z4O4Szf7RAzqmVqbmLs6ze4YPefeHeln?=
+ =?us-ascii?Q?i7OXwKVz9ovQhXfQcKUftSHBqdeB38igR5R4AAmad8wSVKV4X2xXEBdg1U5H?=
+ =?us-ascii?Q?KjKKEyQ12OdCe0UQ2OsfOSCx/bE/MtPF5EIFPNrVd0uHvYhnb6vWcOgDsuEL?=
+ =?us-ascii?Q?k0vKqmYXwyfO8mLwELbWX68PwW1BpmJEk8Vt2e5zXFDhWJjOj+oIjarQ3z4j?=
+ =?us-ascii?Q?CK0pdQzr5A0WILcPW8JSuwsPyaBP9kDrsssxFwZZ4IFrmNcX/HJ0fZA1Mi0x?=
+ =?us-ascii?Q?gz09lHi3zWOnbON4f412cC1XXEtUGMwRV4yHQExqfByvByf4h6v+T/+Ifit5?=
+ =?us-ascii?Q?il/oqYqu5hxmk7rvx/sz1AMk375oG9Y+9yE13tHhZ8KS7xGvpRJaG6TIiGz0?=
+ =?us-ascii?Q?EfLJM54+1BVapNhP3jZ5S/zCpWY/9QiY7ntDlnbh8BOvFJMaznKmnAf8Bvcl?=
+ =?us-ascii?Q?orT/ArMzhDcbF6JP3rBckpzMHUX3Wd+liRWfburJz4gK9JKaBX1RR5uDC5jc?=
+ =?us-ascii?Q?Dab3OIeZG+6aUl63bNxt3V6yOOkKc1kePgzbjmHsu82Z+7dsIKzPFo4Hcr0S?=
+ =?us-ascii?Q?TEpMnBh0QGU=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR11MB7540.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(7416014)(1800799024)(10070799003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3jkqkT+o7fhCTj7vQ64MhpCAZINdG0bY2ANqf+EvZV3bo2yrVl3VFFcHEyd0?=
+ =?us-ascii?Q?GlZgAm9TzzLB2kAbSXFI8fRbjjm3TxgCZ06956L2I0PdrntSWG5M/x1mL5mY?=
+ =?us-ascii?Q?t6bpV8g5G/skifKis6WRMiqo6hH1gQnUS9QuZJut3TFymz0NhRIeyvXtmXEI?=
+ =?us-ascii?Q?0LtCYzFzOfSZzSMmbPmtdJ+7/G76LXdVvl7T5M7kgr0iDKnOn2i/oSIUCLSu?=
+ =?us-ascii?Q?6Dq9MlBmjpOoOP47mmPG2TWH3L4G9qF50maPCoFemGujfpejH5VJ63ACv3Dp?=
+ =?us-ascii?Q?8EdmlkUBaXkoiZADooN4ir0ja8m1z1UjfV8Wdn/wM473tOpob9qZWPAvAGe5?=
+ =?us-ascii?Q?UhVdFgtS35+u8UJw9nCM0zbHNuTmQaCJSuA3CSngsHzOxR+0ivQw2czhiVZz?=
+ =?us-ascii?Q?uutqBwdzcixYgFRztqqSiF6JH/RkvBy2sET7DaxrZDdoj9eZdvB+NJqs+pmj?=
+ =?us-ascii?Q?tyvZp1wct3mbVmj22pwVzWjzOaop1ptrCIKLmqQOyR4iGQDvNjeo6AGbGCYT?=
+ =?us-ascii?Q?WQL876Qe1R3RzH798FCJE877aFt2mIeDbks34YtC1tWowvVhxgnPsye8jcOh?=
+ =?us-ascii?Q?g4A3SZvisJtOfXEstwkL9FfAQmdT48fTSvXljRyM2rT1xQMjnE/kXD6gV3/N?=
+ =?us-ascii?Q?AazaTFyLAK3AtChQ0lnOzj2kbayWwAT7a3cF00QUR+nIvLiuAhmr60wg9SyQ?=
+ =?us-ascii?Q?Spcrg1+igwEDpfY2qh7Vi8rZqBfrZEKsAb7zFvDqXTGOsqThs/75oQIktRKk?=
+ =?us-ascii?Q?Ars5HUYvi/8ZDvcZ2THEYGfSgfyJwZWcd3SCT7SrU1fdaDu7JXezjrX6eZtu?=
+ =?us-ascii?Q?qjmHkbRQkhVHtFL6Qt0CEOF9s5yqV2OAHQ5JYKQkzAB2hQXLVSrsQIhYnwNl?=
+ =?us-ascii?Q?5pVhcjvyhZMdr07LhIvSle/FQh/ppStpsQSWW47Qy+pQV3+KtcoeA2Z3osvc?=
+ =?us-ascii?Q?WG+icNmY3RvrGIcLO+NFHp12z2Xbrjn9xVE6TCLgFJBwYWrQS63aQhEPDlpa?=
+ =?us-ascii?Q?G2+wEWRAqIWXPRmhZMCzYHRwu785noFDqpG6CAbCGnPFzwoTORw4GkiOSRzB?=
+ =?us-ascii?Q?W3K/Su9BkBlfH1526AH9YtBRYQqaYF1/iiT95usefMAzK9opQvbOJryLRHc4?=
+ =?us-ascii?Q?iaf+wIKtnGyTi+wmEjNNhO+CjeItZh9wwTBgqEWxcuvfRqYWAXtr81TqQn2j?=
+ =?us-ascii?Q?UP4p0vEA+t0Y5kV39iyzhd5y0GrizzkFrgiDgzjxQI4DK0O1K2u9SOzLLPeE?=
+ =?us-ascii?Q?HuTGO+cU9MlTRpX9JvEJ6fFYVXKu9WJ1ylx61fcEuISsQ7gaMnlA63sbbwoy?=
+ =?us-ascii?Q?LK5YJbz02Xt9Nxv2eL+PTxyh1HlUpRVsjveEN3g/hWCwOSNyhLSffcb9UupL?=
+ =?us-ascii?Q?8AYwMmu6TAU9De4bqnNY3MmV4yyHYUEwujYYCieNljj+omcIpTOeJi8i9gIe?=
+ =?us-ascii?Q?7t/6fSXu7z0+hqigeZcZ0la8zDn6MZIQoqZqCbCn5a9+KePE64a4fTQJWcMR?=
+ =?us-ascii?Q?NEgUWx6f8cJEgd1J6GWOTD1QkT6KMHPY7agBdzV2H3s53REWwpB5Wa7Fokpk?=
+ =?us-ascii?Q?M2aH8nsbDeSTSDSbn/x3ef8RMApaJFV/nNxTTputNq458/saUP34rZ52Mejb?=
+ =?us-ascii?Q?2+K/fOCiNstvFDoKRv3CpVguIyqLg5MiXpmUr11miMGFlwSd0tpmyV1emuKd?=
+ =?us-ascii?Q?FPtlGA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 25865a5d-cdcd-4f2e-662e-08ddcb5cdd3c
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR11MB7540.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2025 09:23:06.7514
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fBgXAVa82tMbkUM31D4odcoe+sOtlzJ4B7DqPtEvi716JxJVbzNTkWcYstX5EJfb6wxGnmHG+fNSx20JTwUxywyllXGLhi4OhobXHOlNUAw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6857
+X-OriginatorOrg: intel.com
 
-
---awo2teqdyhaqjwfl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Jul 24, 2025 at 02:49:47PM -0700, Eduard Zingerman wrote:
-> On Thu, 2025-07-24 at 19:42 +0200, Paul Chaignon wrote:
-> > During the bounds refinement, we improve the precision of various ranges
-> > by looking at other ranges. Among others, we improve the following in
-> > this order (other things happen between 1 and 2):
-> > 
-> >   1. Improve u32 from s32 in __reg32_deduce_bounds.
-> >   2. Improve s/u64 from u32 in __reg_deduce_mixed_bounds.
-> >   3. Improve s/u64 from s32 in __reg_deduce_mixed_bounds.
-> > 
-> > In particular, if the s32 range forms a valid u32 range, we will use it
-> > to improve the u32 range in __reg32_deduce_bounds. In
-> > __reg_deduce_mixed_bounds, under the same condition, we will use the s32
-> > range to improve the s/u64 ranges.
-> > 
-> > If at (1) we were able to learn from s32 to improve u32, we'll then be
-> > able to use that in (2) to improve s/u64. Hence, as (3) happens under
-> > the same precondition as (1), it won't improve s/u64 ranges further than
-> > (1)+(2) did. Thus, we can get rid of (3).
-> > 
-> > In addition to the extensive suite of selftests for bounds refinement,
-> > this patch was also tested with the Agni formal verification tool [1].
-> > 
-> > Link: https://github.com/bpfverif/agni [1]
-> > Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
-> > ---
+On Sun, Jul 20, 2025 at 05:11:19PM +0800, Jason Xing wrote:
+> From: Jason Xing <kernelxing@tencent.com>
 > 
-> So, the argument appears to be as follows:
+> Since 'budget' parameter in ixgbe_clean_xdp_tx_irq() takes no effect,
+> the patch removes it. No functional change here.
 > 
-> Under precondition `(u32)reg->s32_min <= (u32)reg->s32_max`
-> __reg32_deduce_bounds produces:
+> Signed-off-by: Jason Xing <kernelxing@tencent.com>
+
+Should target iwl-next, but otherwise fine.
+
+Reviewed-by: Larysa Zaremba <larysa.zaremba@intel.com>
+
+> ---
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c        | 2 +-
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h | 2 +-
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c         | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
 > 
->   reg->u32_min = max_t(u32, reg->s32_min, reg->u32_min);
->   reg->u32_max = min_t(u32, reg->s32_max, reg->u32_max);
+> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> index 6122a0abb41f..a59fd8f74b5e 100644
+> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> @@ -3591,7 +3591,7 @@ int ixgbe_poll(struct napi_struct *napi, int budget)
+>  
+>  	ixgbe_for_each_ring(ring, q_vector->tx) {
+>  		bool wd = ring->xsk_pool ?
+> -			  ixgbe_clean_xdp_tx_irq(q_vector, ring, budget) :
+> +			  ixgbe_clean_xdp_tx_irq(q_vector, ring) :
+>  			  ixgbe_clean_tx_irq(q_vector, ring, budget);
+>  
+>  		if (!wd)
+> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h b/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
+> index 78deea5ec536..788722fe527a 100644
+> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
+> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
+> @@ -42,7 +42,7 @@ int ixgbe_clean_rx_irq_zc(struct ixgbe_q_vector *q_vector,
+>  			  const int budget);
+>  void ixgbe_xsk_clean_rx_ring(struct ixgbe_ring *rx_ring);
+>  bool ixgbe_clean_xdp_tx_irq(struct ixgbe_q_vector *q_vector,
+> -			    struct ixgbe_ring *tx_ring, int napi_budget);
+> +			    struct ixgbe_ring *tx_ring);
+>  int ixgbe_xsk_wakeup(struct net_device *dev, u32 queue_id, u32 flags);
+>  void ixgbe_xsk_clean_tx_ring(struct ixgbe_ring *tx_ring);
+>  
+> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+> index ac58964b2f08..0ade15058d98 100644
+> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+> @@ -454,7 +454,7 @@ static void ixgbe_clean_xdp_tx_buffer(struct ixgbe_ring *tx_ring,
+>  }
+>  
+>  bool ixgbe_clean_xdp_tx_irq(struct ixgbe_q_vector *q_vector,
+> -			    struct ixgbe_ring *tx_ring, int napi_budget)
+> +			    struct ixgbe_ring *tx_ring)
+>  {
+>  	u16 ntc = tx_ring->next_to_clean, ntu = tx_ring->next_to_use;
+>  	unsigned int total_packets = 0, total_bytes = 0;
+> -- 
+> 2.41.3
 > 
-> And then first part of __reg_deduce_mixed_bounds assigns:
 > 
->   a. reg->umin umax= (reg->umin & ~0xffffffffULL) | max_t(u32, reg->s32_min, reg->u32_min);
->   b. reg->umax umin= (reg->umax & ~0xffffffffULL) | min_t(u32, reg->s32_max, reg->u32_max);
-> 
-> And then second part of __reg_deduce_mixed_bounds assigns:
-> 
->   c. reg->umin umax= (reg->umin & ~0xffffffffULL) | (u32)reg->s32_min;
->   d. reg->umax umin= (reg->umax & ~0xffffffffULL) | (u32)reg->s32_max;
-> 
-> But assignment (c) is a noop because:
-> 
->    max_t(u32, reg->s32_min, reg->u32_min) >= (u32)reg->s32_min
-> 
-> Hence RHS(a) >= RHS(c) and umin= does nothing.
-> 
-> Also assignment (d) is a noop because:
-> 
->   min_t(u32, reg->s32_max, reg->u32_max) <= (u32)reg->s32_max
-> 
-> Hence RHS(b) <= RHS(d) and umin= does nothing.
-> 
-> Plus the same reasoning for the part dealing with reg->s{min,max}_value:
-> 
->   e. reg->smin_value smax= (reg->smin_value & ~0xffffffffULL) | max_t(u32, reg->s32_min_value, reg->u32_min_value);
->   f. reg->smax_value smin= (reg->smax_value & ~0xffffffffULL) | min_t(u32, reg->s32_max_value, reg->u32_max_value);
-> 
->     vs
-> 
->   g. reg->smin_value smax= (reg->smin_value & ~0xffffffffULL) | (u32)reg->s32_min_value;
->   h. reg->smax_value smin= (reg->smax_value & ~0xffffffffULL) | (u32)reg->s32_max_value;
-> 
->     RHS(e) >= RHS(g) and RHS(f) <= RHS(h), hence smax=,smin= do nothing.
-> 
-> This appears to be correct.
-> 
-> Shung-Hsi, wdyt?
-
-Agree with the reasoning above, it looks solid.
-
-Beside going through the reasoning, I also played with CBMC a bit to
-double check that as far as a single run of __reg_deduce_bounds() is
-concerned (and that the register state matches certain handwavy
-expectations), the change indeed still preserve the original behavior.
-
-Reviewed-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-
-Simplification of bound deduction logic! \o/
-
-
---awo2teqdyhaqjwfl
-Content-Type: text/x-c; charset=us-ascii
-Content-Disposition: inline
-
-#include <stdint.h>
-#include <limits.h>
-#include <stdbool.h>
-#include <assert.h>
-
-// Define Linux kernel types
-typedef uint64_t u64;
-typedef int64_t s64;
-typedef uint32_t u32;
-typedef int32_t s32;
-typedef uint8_t u8;
-typedef int8_t s8;
-typedef uint16_t u16;
-typedef int16_t s16;
-
-// Define limits
-#define S8_MIN  INT8_MIN
-#define S8_MAX  INT8_MAX
-#define S16_MIN INT16_MIN
-#define S16_MAX INT16_MAX
-#define S32_MIN INT32_MIN
-#define S32_MAX INT32_MAX
-#define U32_MAX UINT32_MAX
-#define S64_MIN INT64_MIN
-#define S64_MAX INT64_MAX
-#define U64_MAX UINT64_MAX
-
-/* Crude approximation of min_t() and max_t() */
-#define min_t(type, x, y) (((type) (x)) < ((type) (y)) ? ((type) (x)) : ((type) (y)))
-#define max_t(type, x, y) (((type) (x)) > ((type) (y)) ? ((type) (x)) : ((type) (y)))
-
-// Simplified version of bpf_reg_state with only field needed by
-// coerce_reg_to_size_sx
-struct bpf_reg_state {
-	s64 smin_value;
-	s64 smax_value;
-	u64 umin_value;
-	u64 umax_value;
-	s32 s32_min_value;
-	s32 s32_max_value;
-	u32 u32_min_value;
-	u32 u32_max_value;
-};
-
-static void __reg32_deduce_bounds(struct bpf_reg_state *reg)
-{
-	if ((reg->umin_value >> 32) == (reg->umax_value >> 32)) {
-		reg->u32_min_value = max_t(u32, reg->u32_min_value, (u32)reg->umin_value);
-		reg->u32_max_value = min_t(u32, reg->u32_max_value, (u32)reg->umax_value);
-
-		if ((s32)reg->umin_value <= (s32)reg->umax_value) {
-			reg->s32_min_value = max_t(s32, reg->s32_min_value, (s32)reg->umin_value);
-			reg->s32_max_value = min_t(s32, reg->s32_max_value, (s32)reg->umax_value);
-		}
-	}
-	if ((reg->smin_value >> 32) == (reg->smax_value >> 32)) {
-		if ((u32)reg->smin_value <= (u32)reg->smax_value) {
-			reg->u32_min_value = max_t(u32, reg->u32_min_value, (u32)reg->smin_value);
-			reg->u32_max_value = min_t(u32, reg->u32_max_value, (u32)reg->smax_value);
-		}
-		if ((s32)reg->smin_value <= (s32)reg->smax_value) {
-			reg->s32_min_value = max_t(s32, reg->s32_min_value, (s32)reg->smin_value);
-			reg->s32_max_value = min_t(s32, reg->s32_max_value, (s32)reg->smax_value);
-		}
-	}
-	if ((u32)(reg->umin_value >> 32) + 1 == (u32)(reg->umax_value >> 32) &&
-	    (s32)reg->umin_value < 0 && (s32)reg->umax_value >= 0) {
-		reg->s32_min_value = max_t(s32, reg->s32_min_value, (s32)reg->umin_value);
-		reg->s32_max_value = min_t(s32, reg->s32_max_value, (s32)reg->umax_value);
-	}
-	if ((u32)(reg->smin_value >> 32) + 1 == (u32)(reg->smax_value >> 32) &&
-	    (s32)reg->smin_value < 0 && (s32)reg->smax_value >= 0) {
-		reg->s32_min_value = max_t(s32, reg->s32_min_value, (s32)reg->smin_value);
-		reg->s32_max_value = min_t(s32, reg->s32_max_value, (s32)reg->smax_value);
-	}
-	if ((s32)reg->u32_min_value <= (s32)reg->u32_max_value) {
-		reg->s32_min_value = max_t(s32, reg->s32_min_value, reg->u32_min_value);
-		reg->s32_max_value = min_t(s32, reg->s32_max_value, reg->u32_max_value);
-	}
-	if ((u32)reg->s32_min_value <= (u32)reg->s32_max_value) {
-		reg->u32_min_value = max_t(u32, reg->s32_min_value, reg->u32_min_value);
-		reg->u32_max_value = min_t(u32, reg->s32_max_value, reg->u32_max_value);
-	}
-}
-
-static void __reg64_deduce_bounds(struct bpf_reg_state *reg)
-{
-	if ((s64)reg->umin_value <= (s64)reg->umax_value) {
-		reg->smin_value = max_t(s64, reg->smin_value, reg->umin_value);
-		reg->smax_value = min_t(s64, reg->smax_value, reg->umax_value);
-	}
-	if ((u64)reg->smin_value <= (u64)reg->smax_value) {
-		reg->umin_value = max_t(u64, reg->smin_value, reg->umin_value);
-		reg->umax_value = min_t(u64, reg->smax_value, reg->umax_value);
-	}
-}
-
-static void __reg_deduce_mixed_bounds_old(struct bpf_reg_state *reg)
-{
-	u64 new_umin, new_umax;
-	s64 new_smin, new_smax;
-
-	new_umin = (reg->umin_value & ~0xffffffffULL) | reg->u32_min_value;
-	new_umax = (reg->umax_value & ~0xffffffffULL) | reg->u32_max_value;
-	reg->umin_value = max_t(u64, reg->umin_value, new_umin);
-	reg->umax_value = min_t(u64, reg->umax_value, new_umax);
-	new_smin = (reg->smin_value & ~0xffffffffULL) | reg->u32_min_value;
-	new_smax = (reg->smax_value & ~0xffffffffULL) | reg->u32_max_value;
-	reg->smin_value = max_t(s64, reg->smin_value, new_smin);
-	reg->smax_value = min_t(s64, reg->smax_value, new_smax);
-
-	if ((u32)reg->s32_min_value <= (u32)reg->s32_max_value) {
-		new_umin = (reg->umin_value & ~0xffffffffULL) | (u32)reg->s32_min_value;
-		new_umax = (reg->umax_value & ~0xffffffffULL) | (u32)reg->s32_max_value;
-		reg->umin_value = max_t(u64, reg->umin_value, new_umin);
-		reg->umax_value = min_t(u64, reg->umax_value, new_umax);
-		new_smin = (reg->smin_value & ~0xffffffffULL) | (u32)reg->s32_min_value;
-		new_smax = (reg->smax_value & ~0xffffffffULL) | (u32)reg->s32_max_value;
-		reg->smin_value = max_t(s64, reg->smin_value, new_smin);
-		reg->smax_value = min_t(s64, reg->smax_value, new_smax);
-	}
-	if (reg->s32_min_value >= 0 && reg->smin_value >= S32_MIN && reg->smax_value <= S32_MAX) {
-		reg->smin_value = reg->s32_min_value;
-		reg->smax_value = reg->s32_max_value;
-		reg->umin_value = reg->s32_min_value;
-		reg->umax_value = reg->s32_max_value;
-		/* var_off update with tnum_intersect() removed, was the last
-		 * step, so shouldn't make a difference
-		 */
-	}
-}
-
-static void __reg_deduce_mixed_bounds_new(struct bpf_reg_state *reg)
-{
-	u64 new_umin, new_umax;
-	s64 new_smin, new_smax;
-
-	new_umin = (reg->umin_value & ~0xffffffffULL) | reg->u32_min_value;
-	new_umax = (reg->umax_value & ~0xffffffffULL) | reg->u32_max_value;
-	reg->umin_value = max_t(u64, reg->umin_value, new_umin);
-	reg->umax_value = min_t(u64, reg->umax_value, new_umax);
-	new_smin = (reg->smin_value & ~0xffffffffULL) | reg->u32_min_value;
-	new_smax = (reg->smax_value & ~0xffffffffULL) | reg->u32_max_value;
-	reg->smin_value = max_t(s64, reg->smin_value, new_smin);
-	reg->smax_value = min_t(s64, reg->smax_value, new_smax);
-
-	/* s32 -> u/s64 tightening removed */
-
-	if (reg->s32_min_value >= 0 && reg->smin_value >= S32_MIN && reg->smax_value <= S32_MAX) {
-		reg->smin_value = reg->s32_min_value;
-		reg->smax_value = reg->s32_max_value;
-		reg->umin_value = reg->s32_min_value;
-		reg->umax_value = reg->s32_max_value;
-		/* var_off update with tnum_intersect() removed, was the last
-		 * step, so shouldn't make a difference
-		 */
-	}
-}
-
-static void __reg_deduce_bounds_old(struct bpf_reg_state *reg)
-{
-	__reg32_deduce_bounds(reg);
-	__reg64_deduce_bounds(reg);
-	__reg_deduce_mixed_bounds_old(reg);
-}
-
-static void __reg_deduce_bounds_new(struct bpf_reg_state *reg)
-{
-	__reg32_deduce_bounds(reg);
-	__reg64_deduce_bounds(reg);
-	__reg_deduce_mixed_bounds_new(reg);
-}
-
-/* helper function to initialize 'struct bpf_reg_state' */
-static struct bpf_reg_state __bpf_reg_state_input(void)
-{
-	struct bpf_reg_state reg;
-	reg.smin_value = nondet_long_long_input();
-	reg.smax_value = nondet_long_long_input();
-	reg.umin_value = nondet_unsigned_long_long_input();
-	reg.umax_value = nondet_unsigned_long_long_input();
-	reg.s32_min_value = nondet_int_input();
-	reg.s32_max_value = nondet_int_input();
-	reg.u32_min_value = nondet_unsigned_int_input();
-	reg.u32_max_value = nondet_unsigned_int_input();
-	return reg;
-}
-
-/* helper function to ensure 'struct bpf_reg_state' is in a proper state */
-static bool valid_bpf_reg_state(struct bpf_reg_state *reg)
-{
-	bool ret = true;
-	/* Ensure maximum >= minimum for all ranges */
-	ret &= reg->umin_value <= reg->umax_value;
-	ret &= reg->smin_value <= reg->smax_value;
-	ret &= reg->u32_min_value <= reg->u32_max_value;
-	ret &= reg->s32_min_value <= reg->s32_max_value;
-	/* Ensure 64-bit bounds are consistent with 32-bit bounds */
-	ret &= reg->umin_value <= (u64)reg->u32_max_value;
-	ret &= reg->umax_value >= (u64)reg->u32_min_value;
-	ret &= (s64)reg->smin_value <= (s64)reg->s32_max_value;
-	ret &= (s64)reg->smax_value >= (s64)reg->s32_min_value;
-	return ret;
-}
-
-/* helper function to check whether 'struct bpf_reg_state' contains certain value */
-static bool val_in_reg(struct bpf_reg_state *reg, u64 val)
-{
-	bool ret = true;
-	ret &= reg->umin_value <= val;
-	ret &= val <= reg->umax_value;
-	ret &= reg->smin_value <= (s64)val;
-	ret &= (s64)val <= reg->smax_value;
-	ret &= reg->u32_min_value <= (u32)val;
-	ret &= (u32)val <= reg->u32_max_value;
-	ret &= reg->s32_min_value <= (s32)val;
-	ret &= (s32)val <= reg->s32_max_value;
-	return ret;
-}
-
-void main(void)
-{
-	/* ------------ Assumptions and Setup ------------ */
-
-	/* Input data structure that represents current knowledge of the possible
-	 * values in a register, as well as some possible value 'x', which could be
-	 * any value that is in the register right now.
-	 */
-	struct bpf_reg_state reg = __bpf_reg_state_input();
-	u64 x = nondet_unsigned_long_long_input();
-	__CPROVER_assume(valid_bpf_reg_state(&reg));
-	__CPROVER_assume(val_in_reg(&reg, x));
-
-	/* ------------- Operation to Check -------------- */
-	/* Data structure to store the new output */
-	struct bpf_reg_state new_reg;
-	/* Clone the register state since __reg_deduce_bounds() modifies it */
-	new_reg = reg;
-
-	__reg_deduce_bounds_old(&reg);
-	__reg_deduce_bounds_new(&new_reg);
-
-	/* -------------- Property Checking -------------- */
-	assert(new_reg == reg);
-}
-
---awo2teqdyhaqjwfl--
 
