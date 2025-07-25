@@ -1,152 +1,205 @@
-Return-Path: <bpf+bounces-64371-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64372-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59D17B11E10
-	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 14:03:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8FE3B11E22
+	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 14:09:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0864F3BE49E
-	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 12:02:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CD32170FB9
+	for <lists+bpf@lfdr.de>; Fri, 25 Jul 2025 12:09:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1141224293C;
-	Fri, 25 Jul 2025 12:02:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED156245023;
+	Fri, 25 Jul 2025 12:08:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="L4HzcPLa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EQLQK/+m"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f169.google.com (mail-il1-f169.google.com [209.85.166.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC129241668
-	for <bpf@vger.kernel.org>; Fri, 25 Jul 2025 12:02:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08170244684;
+	Fri, 25 Jul 2025 12:08:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753444976; cv=none; b=hqRA2uR2N4Ee9rwjRTzgLTfSU0LIZkFoKdhjEIoYuNCcvekkfGz7LAMYkIVAE4hp/w0YLXZL7Hs9KoEDY3g3mDYwVhZ6iCGAGC/uLnnhIFZtZJR7/LVTeEBBXTZAUnXmALHX2IalkZXSFEZc820AFMtOD9lsERiEDFJkPOEbG5k=
+	t=1753445332; cv=none; b=hs6JAELQvnRZ/XFA+DV8uayeKujG/KSTk+oFdCMm3KARtflpowJ8Okeu4GXWxGIyoD3uFIQTwuckVZ7SXLRe2mMxJTdR9fQD/nn7fYO+5QKOX2mUrrFWZA9aa29+G3tkKoMH6atbWMSlr11aN8/Vbz/ZUM8UPtrlthZP8vFNU8w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753444976; c=relaxed/simple;
-	bh=fqZHebi6Bkb5eNifT3yZFGVku7zV66aFMdE+I3t/4aM=;
+	s=arc-20240116; t=1753445332; c=relaxed/simple;
+	bh=TG2LtX3donk6Ed77YQCRqF6WJ6SVdooidmIVvg9rxNc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CB1HBVdx3sv+q6wlHm5h1Ns4BoHtgAqJ+BOYewaz5bFVm51jkI1SzxwfN64kwOxZhBwUTL7mvPoz4uCwKgDOG+GsEBeHPzq/RF+HIMj7yYUCf8BnqXVyonr2hihdYzF4KOf7RmPI+eI8FOJFHHkesv07Cmb66GTwdM/Uav6sqH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=L4HzcPLa; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1753444973;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DbQ/CoKfRcOyF5XiIEBvtnbaZCP8pb630WPcqbF6yL0=;
-	b=L4HzcPLaXVETLVdu5Q1GBPjyLXP9NDB0FfTQvi61YI6CHXPLbldl8vXQq/YnOnQlJCTRGn
-	phat4HHJJMJ9wbEwVWVf/m6xsBmHe4kHyJNzs/G+jhBDNS/rhnbOOmCBN5iLSQDwbXlVv2
-	oUXUJMHJO658vhF3YTRBIQ5pNkDjXls=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-286-kS9jXdJpPje-5sdCUtJmVA-1; Fri, 25 Jul 2025 08:02:52 -0400
-X-MC-Unique: kS9jXdJpPje-5sdCUtJmVA-1
-X-Mimecast-MFC-AGG-ID: kS9jXdJpPje-5sdCUtJmVA_1753444971
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-ae6ee7602c7so212834066b.0
-        for <bpf@vger.kernel.org>; Fri, 25 Jul 2025 05:02:52 -0700 (PDT)
+	 To:Cc:Content-Type; b=UJlssFOrC+zIib3uDCJT88vj1oN1O93T38f2eEOf/yxJI9MlvFg/Z8BiAFuBLCZrmmReTNnZb2ba+bpiKnANOkhAoMFCuaxu5xigSnSGmY4FZrAsTC2Dpde4A9RMI3KLBS65JBcV+n+F3CfiPiEoFObjCsVKZMIwxs4sl5pdB7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EQLQK/+m; arc=none smtp.client-ip=209.85.166.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f169.google.com with SMTP id e9e14a558f8ab-3df303e45d3so6651335ab.0;
+        Fri, 25 Jul 2025 05:08:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1753445330; x=1754050130; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TG2LtX3donk6Ed77YQCRqF6WJ6SVdooidmIVvg9rxNc=;
+        b=EQLQK/+m3nWA8nFlWyeAHeIDxL70tpy6Krkj3Tu2bUaGw+jmCiXG+cpNc9goEMMm7D
+         OhMScZsEKO7XZxFOfDdd7rT6eJrREa0qP3rRO9jr3+kuOoyCrjriy/BqQQOp8qSXo3WO
+         OB0MTyDvLEqVMTIFWOF3aoXOyZAZegyP49rB+ZkxyRVC2GlZkssH43sl8RlEibjGVvNR
+         F9SFnbpVP3G5l5Nu+oW+5Inf2OffK2xLdOn7NdvLO4MFgErdqiJmFrxt9pICHTqeWSfV
+         l2D6FR0JG66pJyh0oZvuO0LFtLIcD4IHO62FXMIemAtg69azpqLNnupNCUvSfRGC66qU
+         aGNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753444971; x=1754049771;
+        d=1e100.net; s=20230601; t=1753445330; x=1754050130;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DbQ/CoKfRcOyF5XiIEBvtnbaZCP8pb630WPcqbF6yL0=;
-        b=joBQMgMR/6hjtYDqTGnrq0Ep8HsRbNKQb0vJ+nOOjV/iphl6Gz0Pkxk61JE2e7gBQq
-         aWTg0mHBYzIPjeV6xfOgcSjxTqP/LtoU/TFIfGLUcs+sMa6ClftKi/1ZKGLEws5kdKCi
-         fMs722D2bK/5zy6hAe5bbRowelH25HdbJiK1OAyPvZgUKoicVJGGkstiJBCzYGWloNAM
-         Azt2tyfhJbQ9s9TIOnqLHUdNf0Zrdn/UaQSJYyx94Jv4TQnMkh9fNg7GZUOq8COP0vqr
-         xYC/tnmKLhQOgVhDIuzAVsgMLbgalICrTuC4jnWmNxRf4Tj55K2BD3hs5qsX+0/coGMe
-         OUPg==
-X-Forwarded-Encrypted: i=1; AJvYcCVUBHlVBbwI/FC06Nm+UvkBzlSkuL2ne3eQveohA2Tu5RDP9q1GFWYCs7AiX3z65eyiYnA=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz2nm440i/oaQr5cEk02mti+Ic9C50PzzeYoTYNEsFTF5TdPNih
-	bQBrI7+F2hMDuHSMoPnjTvhawjD2WSycxL/1OHwONquaryldEaJB68CSWKfhrEkGZhzBqAGLhqS
-	WTO/lTKpxRYREDTsiUpDlNYlEegYdCX5c9v1/QD6ok4WU8muNpkFpbj0snKPUh7tIk9BoHD4fAh
-	f7mRFLcYmPm7QyYV/RaLIJPC5p31/d
-X-Gm-Gg: ASbGncuW8txLxtp6VfPzcYRLWUqYaFe3mkJ/meaccvFJXMHZY3VKFTVpS4LTNb2CpyO
-	MhkiAtmAI7yddyyRr91CF5hG4n/jgWUhsdaq/miunIgCdOzWNoSrwQ5hJQ2bmRLb3clx61KOGpb
-	ZMUlsfQzfY3iGTZaYT1zFyPliVQy6oCuGV44D4h5qLpEq/XN+RK1s=
-X-Received: by 2002:a17:906:9fcf:b0:ae4:1149:2cbc with SMTP id a640c23a62f3a-af6191fff1bmr211863566b.46.1753444971179;
-        Fri, 25 Jul 2025 05:02:51 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGa3CxGIXlbxFP3lOtiuZkdJlIwaUJx81JfXJ3+HOkhXlu3QfRGy7bD/MWcI9pNg2Pb+acrpaFHuNWexg0NHk0=
-X-Received: by 2002:a17:906:9fcf:b0:ae4:1149:2cbc with SMTP id
- a640c23a62f3a-af6191fff1bmr211838966b.46.1753444969189; Fri, 25 Jul 2025
- 05:02:49 -0700 (PDT)
+        bh=TG2LtX3donk6Ed77YQCRqF6WJ6SVdooidmIVvg9rxNc=;
+        b=cg2IXH/gI+p8Fg9Jb5wPwoCtjLoUOUNZPKh/OuI24Lhv5He7ZXxUHWs8QuxNR/rwbP
+         6JvXcJBpwbvqtGlyX2XjvmHe9syO/DXjrl1rluTA0ABqITeVlmuT2havb2N9qeJdAFsk
+         ig3s9Sth8wS2MZRu4VpegoRiDyr7UeQGnZPR7xV0wiIxKT5XvNWMY8jJfFUnIfeMf2KT
+         cJDwRP0cGR9BzLyDDMHeryuiKOI5MJNBw7/SqO3a21wTs4WbFUZ5mMTlkLQVGSeMboqr
+         NXHvhAHV6IWmsOZelpu/YuKotfajmj2Cl5OudgfJt7SXbtwvKOSdl5ICEHjxGj3Qjsj5
+         /yZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV0m2ypUrxcgCQ2xqYeWuurfzdc1YecvrHH1wSoilShxHHyX6Cr2SE3uNNzFsk+LDo9mxyM9v+s@vger.kernel.org, AJvYcCXE7EgnosnoV2MPmc6ZcknJO4LZYW49zLXGNGcCOQyOLknHObnf+wyBSX9GhDSvfglbDoQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxW4yPLmB+NOd8qN/H6CgqbzqaSs1UynVgD1viG0Ovx7JqSb41I
+	z+Zf9r9iSOI4dpKmbOPWILD1ZVFQOcmuPqPQy3fKeUHaY5A6WcJfW9koa1seUOM0D1lUNxOGw90
+	7IeqoCwkoxa5rQhM+ZZuvqvhxBIXvclQ=
+X-Gm-Gg: ASbGnctKGKCxFbKwGV332T/cViSWiEf8YYjdGWNo0f4MfPc5cIHGq77ROvWx5GfJUy/
+	FtRfyqmqQ500M4LiEbHFhhboKxto+U+0OiS18HF/dpKvFEQNkx1/qmUYAHCz2STcf3eq9wHhSg1
+	AuXoCmxpX7MyxmQ9Gkn8yvh4HOkQ7bXD3R3rL0gojvDryHIX2B3sSqSoSIzitgHr4o2jlsgjnxY
+	seyjhr7U+W+lsJK
+X-Google-Smtp-Source: AGHT+IFTe1aGWEP1F2o5nZ8tomsl7n6MwFk0t5nMbJXavVUgt2Ch/wAgCL0LtA8gvNir66KP4ln8muVPeiyM0kbkd5w=
+X-Received: by 2002:a05:6e02:3f0e:b0:3dd:f1bb:da0b with SMTP id
+ e9e14a558f8ab-3e3c527d13dmr24001305ab.7.1753445329820; Fri, 25 Jul 2025
+ 05:08:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250701060337.648475-1-costa.shul@redhat.com>
-In-Reply-To: <20250701060337.648475-1-costa.shul@redhat.com>
-From: Tomas Glozar <tglozar@redhat.com>
-Date: Fri, 25 Jul 2025 14:02:37 +0200
-X-Gm-Features: Ac12FXwuR1pQjDETnTbqboRWzFRIjKwg3JsbDbHR5v4frWCm-lEfoXogMPmmqq8
-Message-ID: <CAP4=nvQMyBMay9unMuz0TmkF7pSmHV39iwinSnc3UbuLvOVa=Q@mail.gmail.com>
-Subject: Re: [PATCH v1] tools/rtla: Consolidate common parameters into shared structure
-To: Costa Shulyupin <costa.shul@redhat.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, John Kacur <jkacur@redhat.com>, 
-	Eder Zulian <ezulian@redhat.com>, Dan Carpenter <dan.carpenter@linaro.org>, 
-	Gabriele Monaco <gmonaco@redhat.com>, Jan Stancek <jstancek@redhat.com>, 
-	linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
+References: <20250720091123.474-1-kerneljasonxing@gmail.com>
+ <20250720091123.474-3-kerneljasonxing@gmail.com> <6ecfc595-04a8-42f4-b86d-fdaec793d4db@intel.com>
+ <CAL+tcoBTejWSmv6XTpFqvgy4Qk4c39-OJm8Vqcwraa0cAST=sw@mail.gmail.com> <aINjHQU7Uwz_ZThs@soc-5CG4396X81.clients.intel.com>
+In-Reply-To: <aINjHQU7Uwz_ZThs@soc-5CG4396X81.clients.intel.com>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Fri, 25 Jul 2025 20:08:13 +0800
+X-Gm-Features: Ac12FXwtJZ9cIf9K60HL09QtqGDJ69_VP6hWxr5eIBL5FKMs6zgs-l1bssv_1Ug
+Message-ID: <CAL+tcoD8BHkRhzqi2pcYYmYP-qaxQN9JMfEMAW6xwqvCiEpwGw@mail.gmail.com>
+Subject: Re: [PATCH net-next 2/5] ixgbe: xsk: resolve the underflow of budget
+ in ixgbe_xmit_zc
+To: Larysa Zaremba <larysa.zaremba@intel.com>
+Cc: Tony Nguyen <anthony.l.nguyen@intel.com>, przemyslaw.kitszel@intel.com, 
+	andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, pabeni@redhat.com, bjorn@kernel.org, 
+	magnus.karlsson@intel.com, maciej.fijalkowski@intel.com, 
+	jonathan.lemon@gmail.com, sdf@fomichev.me, ast@kernel.org, 
+	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com, 
+	bpf@vger.kernel.org, intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org, 
+	Jason Xing <kernelxing@tencent.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-=C3=BAt 1. 7. 2025 v 8:04 odes=C3=ADlatel Costa Shulyupin <costa.shul@redha=
-t.com> napsal:
+On Fri, Jul 25, 2025 at 6:58=E2=80=AFPM Larysa Zaremba <larysa.zaremba@inte=
+l.com> wrote:
 >
-> timerlat_params and osnoise_params structures contain 17 identical
-> fields.
+> On Fri, Jul 25, 2025 at 07:18:11AM +0800, Jason Xing wrote:
+> > Hi Tony,
+> >
+> > On Fri, Jul 25, 2025 at 4:21=E2=80=AFAM Tony Nguyen <anthony.l.nguyen@i=
+ntel.com> wrote:
+> > >
+> > >
+> > >
+> > > On 7/20/2025 2:11 AM, Jason Xing wrote:
+> > > > From: Jason Xing <kernelxing@tencent.com>
+> > > >
+> > > > Resolve the budget underflow which leads to returning true in ixgbe=
+_xmit_zc
+> > > > even when the budget of descs are thoroughly consumed.
+> > > >
+> > > > Before this patch, when the budget is decreased to zero and finishe=
+s
+> > > > sending the last allowed desc in ixgbe_xmit_zc, it will always turn=
+ back
+> > > > and enter into the while() statement to see if it should keep proce=
+ssing
+> > > > packets, but in the meantime it unexpectedly decreases the value ag=
+ain to
+> > > > 'unsigned int (0--)', namely, UINT_MAX. Finally, the ixgbe_xmit_zc =
+returns
+> > > > true, showing 'we complete cleaning the budget'. That also means
+> > > > 'clean_complete =3D true' in ixgbe_poll.
+> > > >
+> > > > The true theory behind this is if that budget number of descs are c=
+onsumed,
+> > > > it implies that we might have more descs to be done. So we should r=
+eturn
+> > > > false in ixgbe_xmit_zc to tell napi poll to find another chance to =
+start
+> > > > polling to handle the rest of descs. On the contrary, returning tru=
+e here
+> > > > means job done and we know we finish all the possible descs this ti=
+me and
+> > > > we don't intend to start a new napi poll.
+> > > >
+> > > > It is apparently against our expectations. Please also see how
+> > > > ixgbe_clean_tx_irq() handles the problem: it uses do..while() state=
+ment
+> > > > to make sure the budget can be decreased to zero at most and the un=
+derflow
+> > > > never happens.
+> > > >
+> > > > Fixes: 8221c5eba8c1 ("ixgbe: add AF_XDP zero-copy Tx support")
+> > >
+> > > Hi Jason,
+> > >
+> > > Seems like this one should be split off and go to iwl-net/net like th=
+e
+> > > other similar ones [1]? Also, some of the updates made to the other
+> > > series apply here as well?
+> >
+> > The other three patches are built on top of this one. If without the
+> > patch, the whole series will be warned because of build failure. I was
+> > thinking we could backport this patch that will be backported to the
+> > net branch after the whole series goes into the net-next branch.
+> >
+> > Or you expect me to cook four patches without this one first so that
+> > you could easily cherry pick this one then without building conflict?
+> >
+> > >
+> > > Thanks,
+> > > Tony
+> > >
+> > > [1]
+> > > https://lore.kernel.org/netdev/20250723142327.85187-1-kerneljasonxing=
+@gmail.com/
+> >
+> > Regarding this one, should I send a v4 version with the current patch
+> > included? And target [iwl-net/net] explicitly as well?
+> >
+> > I'm not sure if I follow you. Could you instruct me on how to proceed
+> > next in detail?
+> >
 >
-> Introduce a common_params structure and move those fields into it to
-> eliminate the code duplication and improve maintainability.
+> What I usually do is send the fix as soon as I have it. While I prepare a=
+nd test
+> the series, the fix usually manages to get into the tree. Advise you do t=
+he
+
+I see, but this series is built on top of this patch, so in V2 I
+should still cook these three patches based on the current patch?
+
+> same, given you have things to change in v2, but the fix can be resent al=
+most
+> as it is now (just change the tree).
+
+Got it, I will send it soon as a standalone patch.
+
+Thanks,
+Jason
+
 >
-> Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
-> ---
-
-Thank you for the patch.
-
-> +struct common_params {
-> +       /* trace configuration */
-> +       char                    *cpus;
-> +       cpu_set_t               monitored_cpus;
-> +       struct trace_events     *events;
-> +       int                     buffer_size;
-> +       char                    *trace_output;
-> +
-> +       /* Timing parameters */
-> +       int                     warmup;
-> +       unsigned long long      runtime;
-> +       long long               stop_us;
-> +       long long               stop_total_us;
-> +       int                     sleep_time;
-> +       int                     duration;
-> +
-> +       /* Scheduling parameters */
-> +       int                     set_sched;
-> +       struct sched_attr       sched_param;
-> +       int                     cgroup;
-> +       char                    *cgroup_name;
-> +       int                     hk_cpus;
-> +       cpu_set_t               hk_cpu_set;
-> +};
-
-Some of these could be cleaned up further. E.g. "runtime" is actually
-only used by osnoise, even though it is declared in timerlat, too, and
-"period" is also used by timerlat, but it's called
-"timerlat_period_us" there.
-
-Nevertheless, that is directly not related to this patch, and tests
-pass. We can fix that later.
-
-Reviewed-by: Tomas Glozar <tglozar@redhat.com>
-
-
-Tomas
-
+> Tony can have a different opinion though.
+>
+> > Thanks,
+> > Jason
+> >
 
