@@ -1,83 +1,98 @@
-Return-Path: <bpf+bounces-64443-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64444-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B04A8B12BFA
-	for <lists+bpf@lfdr.de>; Sat, 26 Jul 2025 21:05:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC6E5B12BFB
+	for <lists+bpf@lfdr.de>; Sat, 26 Jul 2025 21:10:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 514BD4E48F1
-	for <lists+bpf@lfdr.de>; Sat, 26 Jul 2025 19:04:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C738A189A070
+	for <lists+bpf@lfdr.de>; Sat, 26 Jul 2025 19:10:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 071CC289349;
-	Sat, 26 Jul 2025 19:05:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 549FA289355;
+	Sat, 26 Jul 2025 19:09:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="exYFZq/j"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MG2Wqa4Q"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E621205E25;
-	Sat, 26 Jul 2025 19:05:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C192263CF;
+	Sat, 26 Jul 2025 19:09:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753556701; cv=none; b=WTd1cvBCdI41wqwpiA5ZgozBPa/p7ERA/x34ePo7FCyTfIRveNhVa9aOejx7eZ4SogPi/Z2YzU3CECLVHjJWge1SRJHS7QmH+JitQVbhDrQFqrmmrOOCdwz3LRklo7dBwA/106hxUxUsB796XOKLIttYipBfaNO5yqdHEkpSFfE=
+	t=1753556991; cv=none; b=ngsBqtftwYNnL+MnsjVC9DonS+t3/Wy0kQWD3eEcE+cDSkw7gMyz4UF6Auc95h+0AcO2hoOPVMb/wNaCqrVsQfohD4OpDpg1rGx5J7+nXWNbSptBWpyHVkhchBUQYrE0hPaJXbEKzNXSHQ6T1EroWbCp1U6MjBqBvWo1A2wGBgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753556701; c=relaxed/simple;
-	bh=yy6cnTwBnCXmwWO3MHjMEhHRrAAkWwy77MMk1Vy+NxE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IIdXS2B5+F3ztOUvVa5hD4HlMzW49eaDU46FDjQpq53/dhh1XZBBLHYj/jcbObl63OkioxhZ6/0UMspPRK1w8iTbMx8Z534dPMmMybL6i6uQeqXmwFnt+hGF7ewFCHPPHWzJB4R+ROW/L54GAcQvy4RgzajZQd7ZQ+wHKkDej0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=exYFZq/j; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E237C4CEED;
-	Sat, 26 Jul 2025 19:04:59 +0000 (UTC)
+	s=arc-20240116; t=1753556991; c=relaxed/simple;
+	bh=em1H+20/3NrGcJeuw0quGahnh/fyWgetY87ezgSJ6fA=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=Lrm5+NEX55o6XofgEhn4J8MIWFnvf4z5oIzVH6nx6jsyZkXiFxeSqciwZR5SnGazFig3mudfsrwGFZKgLIxFOkgZ9rTrsbANsP6XEi2M9wYUvSUgH3NKOZTYRtPu5EKX731sQnQ+20VAfznkCA0Vnf5DJZyQ2RMiasTYJkggRN8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MG2Wqa4Q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 496C9C4CEED;
+	Sat, 26 Jul 2025 19:09:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753556701;
-	bh=yy6cnTwBnCXmwWO3MHjMEhHRrAAkWwy77MMk1Vy+NxE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=exYFZq/jxGPb59AlOyb8xRihdk/qpCpv8/nIJsn0oHjxk57XSUPYVBtBof395L9jZ
-	 nf4wkJdDAlhXUBzPOat7bgUHOUxHDRr7gDbtSbmeCRQo2g2gb2r9JAtumqriBltlxb
-	 o75lnH0VpC4AUIbedKQqTBhPLE5nw3DXe8GB/1wcYsbHxZm+S3ypib80zQ+xSfBA9g
-	 3yln1rPFtoQ5Dpn0OOXvMKPJXenqfj2zsFyTXsOeLj3dYNNhB0kulEtevXL3RRrU0e
-	 Bvjv48s6ykEt9aPloLNjgK7t3YJqgcxs4td+c/biTlpUUXkCR/xp7cgr0MvYelTzyQ
-	 tdqeUSohvW6hQ==
-Date: Sat, 26 Jul 2025 12:04:58 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
- pabeni@redhat.com, andrew+netdev@lunn.ch, horms@kernel.org, ast@kernel.org,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com,
- song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
- kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
- mykolal@fb.com, shuah@kernel.org, pablo@netfilter.org,
- bigeasy@linutronix.de, fw@strlen.de, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH net-next] selftests: bpf: fix legacy netfilter options
-Message-ID: <20250726120458.4aa17989@kernel.org>
-In-Reply-To: <e691eb39-e13a-4558-8f62-6a1fd98382f1@iogearbox.net>
-References: <20250726155349.1161845-1-kuba@kernel.org>
-	<e691eb39-e13a-4558-8f62-6a1fd98382f1@iogearbox.net>
+	s=k20201202; t=1753556991;
+	bh=em1H+20/3NrGcJeuw0quGahnh/fyWgetY87ezgSJ6fA=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=MG2Wqa4QTZemGTLnkK/mpXvprVu0w0Tg/M4kHIZU3IZjUcvGPXbCa2uPq8pDT9bwA
+	 0Maz4d+V9ug65iUfQSuUc6rDIxOaKuRHNXdba1fLQdvfTYIOMDgLO7Wj1P2SUmY+Lc
+	 RIjj4+gL8iSdkQb/FBg8E3sO44UB1sm2B/cIwlCVDMsGKnQA/EfQIPUvTCveAfQfwT
+	 1RwKvdF/5mQ7d3dV2HWLXpHOnqANmRya5VYS/+93FlPMffWSbTKgI7JAbhzAzwJne1
+	 G8l/Hh75y05xnm01r+cUnpI7UD+KhuI9sm10ULVdlbOdIY2RVymnhWSoSFS/V4t2oL
+	 u5ggY0oJH/Rpg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADF91383BF4E;
+	Sat, 26 Jul 2025 19:10:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next 0/2] umd: Remove usermode driver framework
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175355700852.3670812.12053972332203864390.git-patchwork-notify@kernel.org>
+Date: Sat, 26 Jul 2025 19:10:08 +0000
+References: <20250721-remove-usermode-driver-v1-0-0d0083334382@linutronix.de>
+In-Reply-To: <20250721-remove-usermode-driver-v1-0-0d0083334382@linutronix.de>
+To: =?utf-8?q?Thomas_Wei=C3=9Fschuh_=3Cthomas=2Eweissschuh=40linutronix=2Ede=3E?=@codeaurora.org
+Cc: viro@zeniv.linux.org.uk, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, ebiederm@xmission.com,
+ hch@lst.de, linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 
-On Sat, 26 Jul 2025 20:54:33 +0200 Daniel Borkmann wrote:
-> On 7/26/25 5:53 PM, Jakub Kicinski wrote:
-> > Recent commit to add NETFILTER_XTABLES_LEGACY missed setting
-> > a couple of configs to y. They are still enabled but as modules
-> > which appears to have upset BPF CI, e.g.:
-> > 
-> >     test_bpf_nf_ct:FAIL:iptables-legacy -t raw -A PREROUTING -j CONNMARK --set-mark 42/0 unexpected error: 768 (errno 0)
-> > 
-> > Fixes: 3c3ab65f00eb ("selftests: net: Enable legacy netfilter legacy options.")
-> > Signed-off-by: Jakub Kicinski <kuba@kernel.org>  
+Hello:
+
+This series was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Mon, 21 Jul 2025 11:04:40 +0200 you wrote:
+> The code is unused, remove it.
 > 
-> Acked-by: Daniel Borkmann <daniel@iogearbox.net>
+> Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
+> ---
+> Thomas Weißschuh (2):
+>       bpf/preload: Don't select USERMODE_DRIVER
+>       umd: Remove usermode driver framework
+> 
+> [...]
 
-Thank you for the quick ack!
+Here is the summary with links:
+  - [bpf-next,1/2] bpf/preload: Don't select USERMODE_DRIVER
+    https://git.kernel.org/bpf/bpf-next/c/2b03164eee20
+  - [bpf-next,2/2] umd: Remove usermode driver framework
+    https://git.kernel.org/bpf/bpf-next/c/b7b3500bd4ee
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
