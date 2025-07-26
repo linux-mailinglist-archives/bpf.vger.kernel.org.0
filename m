@@ -1,139 +1,98 @@
-Return-Path: <bpf+bounces-64448-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64449-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 956E5B12C0D
-	for <lists+bpf@lfdr.de>; Sat, 26 Jul 2025 21:20:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CE2DB12C0E
+	for <lists+bpf@lfdr.de>; Sat, 26 Jul 2025 21:30:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C2B53A6F60
-	for <lists+bpf@lfdr.de>; Sat, 26 Jul 2025 19:19:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA7EF7A41C9
+	for <lists+bpf@lfdr.de>; Sat, 26 Jul 2025 19:28:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B71DA28935E;
-	Sat, 26 Jul 2025 19:20:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BFB928A1CD;
+	Sat, 26 Jul 2025 19:29:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="YAx7HAxR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UzZOMhvj"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E231C1B85FD;
-	Sat, 26 Jul 2025 19:19:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3E23288525
+	for <bpf@vger.kernel.org>; Sat, 26 Jul 2025 19:29:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753557600; cv=none; b=tXFlA5LZhQz3pXAXZYQ0xumJK+5k0EAD7HcLw8IsSpE+k6818MAH8aIMfOM5+/caSP4hS0IK9Qn8yP5L83it74tu3NYARYNGQsfsMlcWxwREk+WsxfpLwzpszNueJlDsWvm7Cq7DJH3A4EvcXQFQ7BTU1tACIM6nrREBEy+4vLU=
+	t=1753558193; cv=none; b=O1nFS/XrkQQnP2mYLAnIddpZlpaU1vk7JrOc3NQ6oVAzPmn5ZuyfhEJfwR4dRZREjMQcnHIHd/CJ/Lowlsiolt5us+0emcrJTQFBaYnufo/ISoRhzKFX8YVRnoWDBFaFqWnyZ7+eB1LRmH+X3YagpfNST+PWkbYQSYTAJzGiaxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753557600; c=relaxed/simple;
-	bh=ejUPB+SXuu2nQSPPNszkSk8hWnRKdD1HE9yeHEv+dTo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=prjEqMnhj2PaE5nRgx8x/IeqZLKGWd4Tlu0kVEEJvwSOP2wRlCjTAZYuLC3npb/ZwlQuwk07l9mBSUG5gP3lHpWG4nmMBszeBTc8o1/fAb1coKYybs/+D7jjC+XFB0vOK7wuIA/OdNpNzLavkuSA2L8GCJFT279cL8ACUxlkWN8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=YAx7HAxR; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=q9X/hN1QzRJKye8BRA40DMBxtEO4Nmsm3xPqIazwALU=; b=YAx7HAxRsg9wWPKaxYunm2vdbb
-	WrftboTrbZboSHa0R0ykL5zFhz0j0QeU6yolvjlrByOn3yE5N68B1f3EinhBMFFCY+ZBo6g4Xg8Xf
-	cV8AGTp0Wup/+aQkDd65ro6INZ6y/yIFETu9AgzvDI1fOLj+LU9oC8tWhyvipk1w8TkUrNEpy6hSD
-	6FjxVoUW3QzcCJZz9eqIsLn4xwtYY6CIlIJVWk7+DQAu5EFUrqGe7OWtGIXl9ufwD+xZP8Ep5QqKm
-	fN5P4MMGx4m05LXr94O7fllvHFmVjeD2sWR5n+l4yZRgZCgvgz1Bhmn7UuBdCnyEHRy9kOc50OgO4
-	jeV0XF2Q==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1ufkQs-0000yn-02;
-	Sat, 26 Jul 2025 21:19:46 +0200
-Received: from localhost ([127.0.0.1])
-	by sslproxy05.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1ufkQr-0005wO-0M;
-	Sat, 26 Jul 2025 21:19:45 +0200
-Message-ID: <61c20b77-b664-46dd-8555-9142f6d647da@iogearbox.net>
-Date: Sat, 26 Jul 2025 21:19:44 +0200
+	s=arc-20240116; t=1753558193; c=relaxed/simple;
+	bh=x14oK8XD0Bcqdszl2Pwmn4QVSNyPmPDigIMZEMDPrr4=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=lSPcczrxemHeD6IK4bLcjYOLyuRMgNSMQhTGjdoTWoV0m1g3A7zvnIrViq8SCZCyf8wzp280mGP5zPWV4KgTut/54psdF0leCT+Dts7qLmsx3T0NHmyn8RnUOAjveMbvvOez7mfAbBlIGBPkuNxN4wEoB9WJAEt7TA7iCsfeKkk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UzZOMhvj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 420FFC4CEED;
+	Sat, 26 Jul 2025 19:29:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753558193;
+	bh=x14oK8XD0Bcqdszl2Pwmn4QVSNyPmPDigIMZEMDPrr4=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=UzZOMhvjXIiH/jQUVlXtqxVXGwy9f/2dICBsVELAU+ynVYSVEypzSdrDKuVjLTiKA
+	 FWExspOeAXDcLIX5uI0xAaw/gcX528D9ba4o7QsHNGEpxQHdX1XefyO7oWg6vxKTwP
+	 kby+dVH5uA2j6q13Xpv2Ajaqu4oFjoyaDGXhVQrr0aME+vpOnzyiHtIzCjk9zRYnUZ
+	 NUFOuEwZXXBR6r7O209VG2pkMIXnMc6Zj7wxDHqh8X4OmCbEV6s+uMIz/n7+zKcebt
+	 hahfSYliflaQlLcszF0GSyOlRXO2J0dewQFCEuOFnYnvRj+weEKkl9BezpuSk+3/Rd
+	 YDUofmog5YR5A==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADBF1383BF4E;
+	Sat, 26 Jul 2025 19:30:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 0/2] Fix two tailcall-related issues
-To: Haoran Jiang <jianghaoran@kylinos.cn>, loongarch@lists.linux.dev
-Cc: bpf@vger.kernel.org, kernel@xen0n.name, chenhuacai@kernel.org,
- hengqi.chen@gmail.com, yangtiezhu@loongson.cn, jolsa@kernel.org,
- haoluo@google.com, sdf@fomichev.me, kpsingh@kernel.org,
- john.fastabend@gmail.com, yonghong.song@linux.dev, song@kernel.org,
- eddyz87@gmail.com, martin.lau@linux.dev, andrii@kernel.org, ast@kernel.org
-References: <20250725102307.1026434-1-jianghaoran@kylinos.cn>
-Content-Language: en-US
-From: Daniel Borkmann <daniel@iogearbox.net>
-Autocrypt: addr=daniel@iogearbox.net; keydata=
- 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
-In-Reply-To: <20250725102307.1026434-1-jianghaoran@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: Clear (ClamAV 1.0.7/27711/Sat Jul 26 10:35:43 2025)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next 0/1] bpf,
+ arm64: fix fp initialization for exception boundary
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175355821051.3674813.11697788265095490964.git-patchwork-notify@kernel.org>
+Date: Sat, 26 Jul 2025 19:30:10 +0000
+References: <20250722133410.54161-1-puranjay@kernel.org>
+In-Reply-To: <20250722133410.54161-1-puranjay@kernel.org>
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+ xukuohai@huaweicloud.com, catalin.marinas@arm.com, will@kernel.org,
+ bpf@vger.kernel.org
 
-On 7/25/25 12:23 PM, Haoran Jiang wrote:
-> v4:
-> 1,There is a conflict when merging these two patches on the basis of the trampoline series patches, resolve the conflict issue
-[...]
-> Haoran Jiang (2):
->    LoongArch: BPF: Fix jump offset calculation in tailcall
->    LoongArch: BPF: Fix tailcall hierarchy
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Tue, 22 Jul 2025 13:34:08 +0000 you wrote:
+> In the ARM64 BPF JIT when prog->aux->exception_boundary is set for a BPF
+> program, find_used_callee_regs() is not called because for a program acting
+> as exception boundary, all callee saved registers are saved.
+> find_used_callee_regs() sets `ctx->fp_used = true;` when it sees FP being
+> used in any of the instructions.
+> For programs acting as exception boundary, ctx->fp_used always remains
+> false and therefore, BPF frame pointer is never set-up for such programs in
+> the prologue.
 > 
->   arch/loongarch/net/bpf_jit.c | 181 +++++++++++++++++++++++------------
->   1 file changed, 119 insertions(+), 62 deletions(-)
+> [...]
 
-Same here, I presume Huacai will pick these up.
+Here is the summary with links:
+  - [bpf-next,1/1] bpf, arm64: fix fp initialization for exception boundary
+    https://git.kernel.org/bpf/bpf-next/c/b114fcee766d
 
-Thanks,
-Daniel
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
