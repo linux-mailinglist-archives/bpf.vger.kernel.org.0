@@ -1,168 +1,269 @@
-Return-Path: <bpf+bounces-64452-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64453-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC8DBB12C1F
-	for <lists+bpf@lfdr.de>; Sat, 26 Jul 2025 21:57:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2F43B12C2D
+	for <lists+bpf@lfdr.de>; Sat, 26 Jul 2025 22:21:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 001887B1BE6
-	for <lists+bpf@lfdr.de>; Sat, 26 Jul 2025 19:55:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1854954215D
+	for <lists+bpf@lfdr.de>; Sat, 26 Jul 2025 20:21:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FE6C213E7B;
-	Sat, 26 Jul 2025 19:57:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CA8D21883F;
+	Sat, 26 Jul 2025 20:21:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RTbjJ3Dg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LJaahnJa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47])
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com [209.85.222.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EA721401B;
-	Sat, 26 Jul 2025 19:57:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEF821E9B31;
+	Sat, 26 Jul 2025 20:21:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753559822; cv=none; b=LPBlknboFCUlgbPcAS0RMVBtQd7pLRsk9xozqE4SSKu7ZSfnkaXzAFoeIpgI3X6wdI9myr6/lfE+GCmf5ywf+Zr1uaLfzVTAglX1OmSJEy9u/Gu9d9ThZpgm25k2Jzsz+4V5Wcs/eVPpmynsNwZqkpWIeiB0wY5z7RSwE9NW1Qg=
+	t=1753561275; cv=none; b=rfRy9GdvbnrWckuqKKVgCUOTiSXpiiOoQURlSaLsxt/DWVPF6hKFCn7xPeymxN4WjqFXJwCwfq+n8Nw7cE7jVOFllQ98Xvmi49OIowgSGf+F3k04cgGhlRCLYHyepX/SlHV/lUANqzAz4EMn1cbUNx5ucrsTpU/WjXzBRWynQIQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753559822; c=relaxed/simple;
-	bh=ZZJS8vmyBJ54WEVUEJMgCAOohs70QF5H7BRFzIbEGP8=;
+	s=arc-20240116; t=1753561275; c=relaxed/simple;
+	bh=d+vV1+uKtYMWXcbh44yagActClKJSUheJd8jSiDKL+0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pMig3kiEJKHEIMO17XSOUWl4PhHt4dQk+g8KN2EoKMN5zOesuq5OGOGfdj9dKAAYpz3RjQf322e3z2BNCDKpzXMu5L0kOQoED6UOhbIiC3Y/+MZWLZHGw3whk/hC/An7cX0LwI4DBD9z0+MmP++qm3/prW+eCXHJIVXJjSML9Ls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RTbjJ3Dg; arc=none smtp.client-ip=209.85.222.47
+	 To:Cc:Content-Type; b=ZSOOT3VWHeLS3IM+X0+ny7cdQ9YMDgJqB7kfdK4KVWOd6w7Ohndwu0YZiFxYpFcNsOVQF7pPkrj/ddlqM/eHOO7X3aegI2XS7fvhH0bFED8x4MdGCj/IDpltMClYjn0L2vLSxDc2vOcOJGeYZaG8/Ek7SMrWJWdQ5GR53+n74Xs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LJaahnJa; arc=none smtp.client-ip=209.85.222.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-884f22d91f9so41886241.1;
-        Sat, 26 Jul 2025 12:57:00 -0700 (PDT)
+Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-88ba15145ebso3479241.3;
+        Sat, 26 Jul 2025 13:21:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753559820; x=1754164620; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1753561272; x=1754166072; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bjzLMbzT1iVYkNvHW3G4OLXlODM2cB+ZOhaGwXMVBN4=;
-        b=RTbjJ3DgTBqabNaJiaycGvxMKeJg6yOJbPnAflUhUDm7fpQdJDW/3dBqoPesksNHxR
-         LqwDK8Ag9aSW4QyPH8LlaoHP71qxfv8KNcxE8MwRMLsMVPEhfR1jAFEW4s6YN2cLQuEu
-         oMw+M+zJ40Y16HTWSL+e1/TlSqTcWj9OW3onKAalA2iVbYT22fxlcw0dwa7EJjb9FZwo
-         35vK6UtYMwp4a67J6Tg8/lL6NWr+Q3pHdCfxGLCuDo2ifL8g+Aywb8EQ/XMPJNWEUUYD
-         +y/ql0YIO6WP78fwHD3/xoqRIu8okuEQFJS0qROTY902cdXZfl4J6FVU5DZ62BWdutDx
-         ADIw==
+        bh=SXLBNhhIuqv2H8ECnNNfixwBrZQbdtcl0QtjSkHV3yc=;
+        b=LJaahnJaMz2thxtOUN9vV11Noev/+R7UShpfkemKPq/C2Xu5JO0XReec3FWXUmkkAn
+         atZOcBt7lSBenzwxUwz22ejpTQ+t6LCLCd0bJd5EEBu1Q+C0F7YBKfHIWQmf0qIM3gi8
+         2/IRDnp1fgLutyicSEAdd+Pw6rvDvGcmoBXXa8QrDwVp1WUq9YYjPxmrMbWcLHFJ+w7X
+         EYdFQFEjxSd72tPqMEybgFiJFwqsE8mRrqaklE4B5+RaMoGLb6Ysx7l4FMI1FyiwBi3j
+         dam7jYcj5LhvuV58SqHGa4UuqZMjm6H4T9uRxIpkLYB3BVhEotMx025MArfUEfPFpZEq
+         +LQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753559820; x=1754164620;
+        d=1e100.net; s=20230601; t=1753561272; x=1754166072;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bjzLMbzT1iVYkNvHW3G4OLXlODM2cB+ZOhaGwXMVBN4=;
-        b=uDZ6hY4esFU7QrWWGC7u+73Einvy1qdJ2jW7OEkoingNyBOxPyaAh6hUJaTBjnVore
-         BI8mjfGEm95suTlez7Bsf30WMSZ0Yilrird98a9I/UJ2Ft/LUDsYLvRdN1tcAForBVy4
-         iPn44gnQPulYfxQL3odMUdw1Tz0Pwg5FFD3WzFVoaKnAr189B+1xudbOOwbN3l2fUjGR
-         BW65owXXLwvicFwYxSK5Ld6yHBId078vuLSfwAAUvNkXRJgn53fWkgCrogVVyY5lCdr1
-         JO/LVV11jMre+pTnhs2Cd2s89xCfN0Gia4OfE3OuxmFglrkjppKG51sDU+FHXhs8DjJx
-         QRvQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW1EaXpt8ZsfQ7bkFBV5gvNypyUb0wLhi6nN3cdZUg8BR8LMLtloHN0Lsu8/HdXzzr4WQ4u3OP0@vger.kernel.org, AJvYcCWeKNrkTZ43kbESNdjMZIACus3QhbzsxSZx5YjzVQ66CfHQXymoOrD3dtFDxLhp+K0Y+Lw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxTYcSROffcqeCGA0iHTrhbxMeBozOt59EYDaO6LyQsLe/HMcxz
-	5FGSt5Vac7FPA9V7em5nvGv/ed++cecFvCH+gsA39Z+4gfhOlB+NcKcnYpmi3lN0gUsOrtUZL9n
-	Os9VCW4xezAJEc/G+UWvIDjfC4a0wqw==
-X-Gm-Gg: ASbGncs1m1kY2//fHTLOkO02ZZE0mbeQAUnRvp08KH/sW/UuzxVNCspzNqcta4SIFi2
-	DvGYrJt78BKN3iQt4ZxFrPWwQpA0/uqwsQqcdta4khtemQGcg4eBdEZryqIXS5W+WijUdLL9nP6
-	saPlXrLZsQePfZiEBq+DnyHfFbAi/FlWQ25s0oazSwBJ4+Lf6q9SAOuL4iieHyZMkdQdTywK5tf
-	PgZJo1wIatQuqNcR/FIZmp+DJEg6ylDo0wz2B8=
-X-Google-Smtp-Source: AGHT+IEGoIe0zXdy01wXvFWgnYCfeCXxZhSWf9e9c06WXVTpVKkcc+4LK3K0swXZerq8I4zvSkJqmOByl30bpONImXI=
-X-Received: by 2002:a05:6102:3589:b0:4f1:7ed8:9e0a with SMTP id
- ada2fe7eead31-4fa3f8a46cbmr897542137.0.1753559819808; Sat, 26 Jul 2025
- 12:56:59 -0700 (PDT)
+        bh=SXLBNhhIuqv2H8ECnNNfixwBrZQbdtcl0QtjSkHV3yc=;
+        b=p7Svql6lAXFuJ+9IPgQEfvwrpMTCwSVzlBJy7XsRRxZrx1Sfpo84Y6/wLtXiHkeYvg
+         CSQo0OUPIzjRVq98zcX0q42rBkM7blebgtgo2R83PBENMt7HdOzqdU+k3DypfBhJJ4rZ
+         GgavvUda0S5AohpJSRXM6/z5nQkHq36oLisp2iv9y4jn8zowwM4NcFg+jbvEO2pjCC4N
+         J7V7mzFOHer2VFzHcrubSpqif1CuDm47ja7MvWo1esSpEb6lz00yfvtD9LVTjkADrRSZ
+         Xvk0kt6ADhDkFhJ5oTecf8MaIDMRpZdIk8BqPIH/ma6f3WNdd6Smd1HC8hYNLIUo3OBI
+         tMag==
+X-Forwarded-Encrypted: i=1; AJvYcCWEmZNy2bHBQFobvAsojFtXVbpipqsp1SJWuzysiITTCC62mhN0Jm1irEN8sywcwGoxa7nTOX6R@vger.kernel.org, AJvYcCXu/APrf7YW9W8pOe5TKgTiXLh5Gvlza1HITvvUWEZCqzUpkQS4O1xIiPop+WJX+wH37M8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwGVK9r+Tc8ThGzcMEsB7kgaCVU7SXyVJHr/VrJFoOZl9ovZW8Q
+	4tYXatIhMoPcMMvESvGHyhcaeueu5PmPV+iGCrgOt0hTL9lYvmChQEIfzWbBywV27MZ/fqBMipE
+	i13ESAW94Q6cA7wfYhdJ4NqzDhHgcGfLFRr4=
+X-Gm-Gg: ASbGncvL88iTJ6xxnAr74/vdPUsUxjLXdrsqjJHg5OqOlXi2oNpeZdLXL5bLm4GIcA/
+	dlzu0X3gOnDvXEtNDMaYNCIZXiHRsEh3bDxBbzgP5M9hU/6paBRWUkgUMAncX8+Op7SBVzKjF5s
+	QhMqQKUbP5IubmCnsPXkjzcf42P09qsT8kKuT+va17+NerHNVbP019tCp5Rf5aHIB2fU9Zvscr4
+	BQIDZnDFcNpzHXuzinhOYkGAzpzj1kGakejj8g=
+X-Google-Smtp-Source: AGHT+IFNLNMDTQWY4EvOAlwWXTUT6KX8JXIB4fcRrEIADD/aI5lf2ybeDeP2tJyVUvOtFWNH6H2kJwAZdltYUL1t7BQ=
+X-Received: by 2002:a05:6102:3750:b0:4ec:c510:e014 with SMTP id
+ ada2fe7eead31-4fa3f7ed87amr977132137.0.1753561271666; Sat, 26 Jul 2025
+ 13:21:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250723003203.1238480-1-chenyuan0y@gmail.com>
- <045d1ff5-bb20-481d-a067-0a42345ab83d@redhat.com> <de14f60e-b1f0-432c-80b4-a2f0453e0fe2@amd.com>
- <8d987133-0e22-4aa8-bf2e-57ef105c8db8@linux.dev>
-In-Reply-To: <8d987133-0e22-4aa8-bf2e-57ef105c8db8@linux.dev>
+References: <20250723003243.1245357-1-chenyuan0y@gmail.com>
+ <CH0PR18MB43399E06C1EDC7DE70AE7170CD5FA@CH0PR18MB4339.namprd18.prod.outlook.com>
+ <CH0PR18MB4339EE7E08DBD7A4F6E3EA72CD5FA@CH0PR18MB4339.namprd18.prod.outlook.com>
+ <77ce8301-38e5-4d13-9b76-0d731f8b6a7e@redhat.com>
+In-Reply-To: <77ce8301-38e5-4d13-9b76-0d731f8b6a7e@redhat.com>
 From: Chenyuan Yang <chenyuan0y@gmail.com>
-Date: Sat, 26 Jul 2025 12:56:48 -0700
-X-Gm-Features: Ac12FXzDvgLq0UlhRr_NSb5IuTbpazmORXx3QtkaaYw6NWkZT7fSnZHSSIS1E1Y
-Message-ID: <CALGdzuquTFAgnKyPKBs2v4YwaPafzkVyt7qpXG3H0TKYj0-zPw@mail.gmail.com>
-Subject: Re: [PATCH] sfc: handle NULL returned by xdp_convert_buff_to_frame()
-To: Kunwu Chan <kunwu.chan@linux.dev>
-Cc: Edward Cree <ecree@amd.com>, Paolo Abeni <pabeni@redhat.com>, ecree.xilinx@gmail.com, 
-	andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
-	john.fastabend@gmail.com, sdf@fomichev.me, lorenzo@kernel.org, 
-	netdev@vger.kernel.org, linux-net-drivers@amd.com, bpf@vger.kernel.org, 
-	zzjas98@gmail.com
+Date: Sat, 26 Jul 2025 13:21:00 -0700
+X-Gm-Features: Ac12FXxZ6pVQjpRhqcV4h6SdOY9AloO0UjbjNUhKYKzbM-CYTWDy9-t80fd4-qE
+Message-ID: <CALGdzuq5D9=HFBwVDxpJm2MULo-Q4qkQuUfZmEHBrpnNJpefXw@mail.gmail.com>
+Subject: Re: [EXTERNAL] [PATCH] net: otx2: handle NULL returned by xdp_convert_buff_to_frame()
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: Geethasowjanya Akula <gakula@marvell.com>, Sunil Kovvuri Goutham <sgoutham@marvell.com>, 
+	Subbaraya Sundeep Bhatta <sbhatta@marvell.com>, Hariprasad Kelam <hkelam@marvell.com>, 
+	Bharat Bhushan <bbhushan2@marvell.com>, "andrew+netdev@lunn.ch" <andrew+netdev@lunn.ch>, 
+	"davem@davemloft.net" <davem@davemloft.net>, "edumazet@google.com" <edumazet@google.com>, 
+	"kuba@kernel.org" <kuba@kernel.org>, "ast@kernel.org" <ast@kernel.org>, 
+	"daniel@iogearbox.net" <daniel@iogearbox.net>, "hawk@kernel.org" <hawk@kernel.org>, 
+	"john.fastabend@gmail.com" <john.fastabend@gmail.com>, "sdf@fomichev.me" <sdf@fomichev.me>, 
+	Suman Ghosh <sumang@marvell.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "zzjas98@gmail.com" <zzjas98@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Thanks so much for your suggestion! I just submitted the v2 based on
-your comments for this issue :)
-
-On Fri, Jul 25, 2025 at 5:39=E2=80=AFAM Kunwu Chan <kunwu.chan@linux.dev> w=
-rote:
+On Thu, Jul 24, 2025 at 3:11=E2=80=AFAM Paolo Abeni <pabeni@redhat.com> wro=
+te:
 >
-> On 2025/7/25 18:11, Edward Cree wrote:
-> > On 7/24/25 10:57, Paolo Abeni wrote:
-> >> On 7/23/25 2:32 AM, Chenyuan Yang wrote:
+> On 7/23/25 5:36 AM, Geethasowjanya Akula wrote:
+> >> -----Original Message-----
+> >> From: Geethasowjanya Akula
+> >> Sent: Wednesday, July 23, 2025 8:59 AM
+> >> To: Chenyuan Yang <chenyuan0y@gmail.com>; Sunil Kovvuri Goutham
+> >> <sgoutham@marvell.com>; Subbaraya Sundeep Bhatta
+> >> <sbhatta@marvell.com>; Hariprasad Kelam <hkelam@marvell.com>; Bharat
+> >> Bhushan <bbhushan2@marvell.com>; andrew+netdev@lunn.ch;
+> >> davem@davemloft.net; edumazet@google.com; kuba@kernel.org;
+> >> pabeni@redhat.com; ast@kernel.org; daniel@iogearbox.net;
+> >> hawk@kernel.org; john.fastabend@gmail.com; sdf@fomichev.me; Suman
+> >> Ghosh <sumang@marvell.com>
+> >> Cc: netdev@vger.kernel.org; bpf@vger.kernel.org; zzjas98@gmail.com
+> >> Subject: RE: [EXTERNAL] [PATCH] net: otx2: handle NULL returned by
+> >> xdp_convert_buff_to_frame()
+> >>
+> >>
+> >>
+> >>> -----Original Message-----
+> >>> From: Chenyuan Yang <chenyuan0y@gmail.com>
+> >>> Sent: Wednesday, July 23, 2025 6:03 AM
+> >>> To: Sunil Kovvuri Goutham <sgoutham@marvell.com>; Geethasowjanya
+> >> Akula
+> >>> <gakula@marvell.com>; Subbaraya Sundeep Bhatta <sbhatta@marvell.com>;
+> >>> Hariprasad Kelam <hkelam@marvell.com>; Bharat Bhushan
+> >>> <bbhushan2@marvell.com>; andrew+netdev@lunn.ch;
+> >> davem@davemloft.net;
+> >>> edumazet@google.com; kuba@kernel.org; pabeni@redhat.com;
+> >>> ast@kernel.org; daniel@iogearbox.net; hawk@kernel.org;
+> >>> john.fastabend@gmail.com; sdf@fomichev.me; Suman Ghosh
+> >>> <sumang@marvell.com>
+> >>> Cc: netdev@vger.kernel.org; bpf@vger.kernel.org; zzjas98@gmail.com;
+> >>> Chenyuan Yang <chenyuan0y@gmail.com>
+> >>> Subject: [EXTERNAL] [PATCH] net: otx2: handle NULL returned by
+> >>> xdp_convert_buff_to_frame()
+> >>>
 > >>> The xdp_convert_buff_to_frame() function can return NULL when there i=
 s
-> >>> insufficient headroom in the buffer to store the xdp_frame structure
-> >>> or when the driver didn't reserve enough tailroom for skb_shared_info=
+> >>> insufficient headroom in the buffer to store the xdp_frame structure =
+or
+> >>> when the driver didn't reserve enough tailroom for skb_shared_info.
+> >>>
+> >>> Currently, the otx2 driver does not check for this NULL return value =
+in
+> >>> two critical paths within otx2_xdp_rcv_pkt_handler():
+> >>>
+> >>> 1. XDP_TX case: Passes potentially NULL xdpf to otx2_xdp_sq_append_pk=
+t()
+> >> 2.
+> >>> XDP_REDIRECT error path: Calls xdp_return_frame() with potentially NU=
+LL
+> >>>
+> >>> This can lead to kernel crashes due to NULL pointer dereference.
+> >>>
+> >>> Fix by adding proper NULL checks in both paths. For XDP_TX, return
+> >>> false to indicate packet should be dropped. For XDP_REDIRECT error
+> >>> path, only call
+> >>> xdp_return_frame() if conversion succeeded, otherwise manually free t=
+he
+> >>> page.
+> >>>
+> >>> Please correct me if any error path is incorrect.
+> >>>
+> >>> This is similar to the commit cc3628dcd851
+> >>> ("xen-netfront: handle NULL returned by xdp_convert_buff_to_frame()")=
 .
-> >> AFAIC the sfc driver reserves both enough headroom and tailroom, but
-> >> this is after ebpf run, which in turn could consume enough headroom to
-> >> cause a failure, so I think this makes sense.
-> > Your reasoning seems plausible to me.
-> > However, I think the error path ought to more closely follow the existi=
-ng
-> >   error cases in logging a ratelimited message and calling the tracepoi=
-nt.
-> > I think the cleanest way to do this would be:
-> >       if (unlikely(!xdpf))
-> >               err =3D -ENOBUFS;
-> >       else
-> >               err =3D efx_xdp_tx_buffers(efx, 1, &xdpf, true);
-> >   so that it can make use of the existing failure path.
-> > Adding the check to efx_xdp_tx_buffers() is also an option.
-> >
-> > -ed
-> >
-> Hi Chenyuan,
+> >>>
+> >>> Signed-off-by: Chenyuan Yang <chenyuan0y@gmail.com>
+> >>> Fixes: 94c80f748873 ("octeontx2-pf: use xdp_return_frame() to free xd=
+p
+> >>> buffers")
+> >>> ---
+> >>> drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c | 8 +++++++-
+> >>> 1 file changed, 7 insertions(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+> >>> b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+> >>> index 99ace381cc78..0c4c050b174a 100644
+> >>> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+> >>> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+> >>> @@ -1534,6 +1534,9 @@ static bool otx2_xdp_rcv_pkt_handler(struct
+> >>> otx2_nic *pfvf,
+> >>>             qidx +=3D pfvf->hw.tx_queues;
+> >>>             cq->pool_ptrs++;
+> >>>             xdpf =3D xdp_convert_buff_to_frame(&xdp);
+> >>> +           if (unlikely(!xdpf))
+> >>> +                   return false;
+> >>> +
+> >>>             return otx2_xdp_sq_append_pkt(pfvf, xdpf,
+> >>>                                           cqe->sg.seg_addr,
+> >>>                                           cqe->sg.seg_size,
+> >>> @@ -1558,7 +1561,10 @@ static bool otx2_xdp_rcv_pkt_handler(struct
+> >>> otx2_nic *pfvf,
+> >>>             otx2_dma_unmap_page(pfvf, iova, pfvf->rbsize,
+> >>>                                 DMA_FROM_DEVICE);
+> >>>             xdpf =3D xdp_convert_buff_to_frame(&xdp);
+> >>> -           xdp_return_frame(xdpf);
+> >>> +           if (likely(xdpf))
+> >>> +                   xdp_return_frame(xdpf);
+> >>> +           else
+> >>> +                   put_page(page);
+> >> Thanks for the fix. Given that the page is already freed, returning tr=
+ue in this
+> >> case makes sense.
+> > This change might not be directly related to the current patch, though.=
+ You can either
+> > include it here or we can submit a follow-up patch to address it.
 >
-> THX for addressing this edge case. I concur with Edward's suggestion to
-> integrate this with the existing error handling flow. This will ensure:
-> Consistent observability (ratelimited logs + tracepoints)
-> Centralized resource cleanup
-> Clear error type differentiation via -ENOBUFS
+> If I read correctly, returning false as the current patch is doing, will
+> make the later code in otx2_rcv_pkt_handler() unconditionally use the
+> just freed page.
 >
-> Proposed refinement:
+> I think returning true after put_page() is strictly necessary.
+
+Thanks for the review and for catching that issue. You're right,
+returning false would cause a use-after-free, as the caller would
+proceed to use the already freed page.
+
+I've updated the patch to return true in the XDP_TX failure case. I
+also adjusted the XDP_REDIRECT error path to do the same after calling
+put_page(), preventing a fall-through.
+
+Does the updated patch below look correct? If so, I'll send out a formal v2=
+.
+
+---
+ drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+index 99ace381cc78..4e1b9a3f6e51 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+@@ -1534,6 +1534,9 @@ static bool otx2_xdp_rcv_pkt_handler(struct
+otx2_nic *pfvf,
+  qidx +=3D pfvf->hw.tx_queues;
+  cq->pool_ptrs++;
+  xdpf =3D xdp_convert_buff_to_frame(&xdp);
++ if (unlikely(!xdpf))
++ return true;
++
+  return otx2_xdp_sq_append_pkt(pfvf, xdpf,
+        cqe->sg.seg_addr,
+        cqe->sg.seg_size,
+@@ -1558,7 +1561,12 @@ static bool otx2_xdp_rcv_pkt_handler(struct
+otx2_nic *pfvf,
+  otx2_dma_unmap_page(pfvf, iova, pfvf->rbsize,
+      DMA_FROM_DEVICE);
+  xdpf =3D xdp_convert_buff_to_frame(&xdp);
+- xdp_return_frame(xdpf);
++ if (likely(xdpf)) {
++ xdp_return_frame(xdpf);
++ } else {
++ put_page(page);
++ return true;
++ }
+  break;
+  default:
+  bpf_warn_invalid_xdp_action(pfvf->netdev, prog, act);
+---
+
+
+> /P
 >
-> diff
->   case XDP_TX:
->       /* Buffer ownership passes to tx on success. */
->       xdpf =3D xdp_convert_buff_to_frame(&xdp);
-> +    if (unlikely(!xdpf)) {
-> +        err =3D -ENOBUFS;
-> +    } else {
-> +        err =3D efx_siena_xdp_tx_buffers(efx, 1, &xdpf, true);
-> +    }
->
-> -    err =3D efx_siena_xdp_tx_buffers(efx, 1, &xdpf, true);
->       if (unlikely(err !=3D 1)) {
->           efx_siena_free_rx_buffers(rx_queue, rx_buf, 1);
->           if (net_ratelimit())
->               netif_err(efx, rx_err, efx->net_dev,
-> -                  "XDP TX failed (%d)\n", err);
-> +                  "XDP TX failed (%d)%s\n", err,
-> +                  err =3D=3D -ENOBUFS ? " [frame conversion]" : "");
->           channel->n_rx_xdp_bad_drops++;
-> -        trace_xdp_exception(efx->net_dev, xdp_prog, xdp_act);
-> +        if (err !=3D -ENOBUFS)
-> +            trace_xdp_exception(efx->net_dev, xdp_prog, xdp_act);
->       } else {
->           channel->n_rx_xdp_tx++;
->       }
->       break;
->
->
-> -- Thanks, TAO. --- =E2=80=9CLife finds a way.=E2=80=9D
 
