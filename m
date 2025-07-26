@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-64446-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64448-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C56C0B12C03
-	for <lists+bpf@lfdr.de>; Sat, 26 Jul 2025 21:14:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 956E5B12C0D
+	for <lists+bpf@lfdr.de>; Sat, 26 Jul 2025 21:20:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D92757A68EB
-	for <lists+bpf@lfdr.de>; Sat, 26 Jul 2025 19:12:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C2B53A6F60
+	for <lists+bpf@lfdr.de>; Sat, 26 Jul 2025 19:19:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAA8C289355;
-	Sat, 26 Jul 2025 19:14:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B71DA28935E;
+	Sat, 26 Jul 2025 19:20:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="kwWvBdgx"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="YAx7HAxR"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22367288C93;
-	Sat, 26 Jul 2025 19:14:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E231C1B85FD;
+	Sat, 26 Jul 2025 19:19:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753557258; cv=none; b=JKCn9l+1W8dF/KigZfmG5Ti5LwbPT11hqsSDQH4JqiIpEy7FP+Q4uILf6KbcwhhCXCoI+uQkg1+1ztO1D2AdVGgOBPUX45Jl6hpGsl8jQqNAdQJzus04XsDCIOr+6iAhOZgiLTiRcZaoG8jGJ0T6fPqfHSb7aTfhrLwEw1pL7FU=
+	t=1753557600; cv=none; b=tXFlA5LZhQz3pXAXZYQ0xumJK+5k0EAD7HcLw8IsSpE+k6818MAH8aIMfOM5+/caSP4hS0IK9Qn8yP5L83it74tu3NYARYNGQsfsMlcWxwREk+WsxfpLwzpszNueJlDsWvm7Cq7DJH3A4EvcXQFQ7BTU1tACIM6nrREBEy+4vLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753557258; c=relaxed/simple;
-	bh=dCCYcb3UvTArvkXljVmXdw7tO+ynw48FiObqCacVNUU=;
+	s=arc-20240116; t=1753557600; c=relaxed/simple;
+	bh=ejUPB+SXuu2nQSPPNszkSk8hWnRKdD1HE9yeHEv+dTo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aYDXF/b0nE3UYFOQtVtfy335NKfGFjqpOtAentaBAXM3bNGQU8T0+4SBU5kdrNEKYRnji0rOUsX+TvAnps4CYP9gu+R7nupQ6bGNltVLZvQye3QnB2W1AlPPcxudqFIAAA0+boK4LOib4s9hyyxy2rQynp/z0qNakIo1KZhFvnE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=kwWvBdgx; arc=none smtp.client-ip=213.133.104.62
+	 In-Reply-To:Content-Type; b=prjEqMnhj2PaE5nRgx8x/IeqZLKGWd4Tlu0kVEEJvwSOP2wRlCjTAZYuLC3npb/ZwlQuwk07l9mBSUG5gP3lHpWG4nmMBszeBTc8o1/fAb1coKYybs/+D7jjC+XFB0vOK7wuIA/OdNpNzLavkuSA2L8GCJFT279cL8ACUxlkWN8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=YAx7HAxR; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,26 +36,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=XWUou2efvAlWAEjRwH8gexVt2F0I9SXQQfpMgUqKfjY=; b=kwWvBdgxftZfz0jSRoSqBlUyl/
-	C2oVF4AJ/EVFdHW6v0tyzHklJoqm55c1tThbAyRFAhmWQ5V8R93VC1lXZd5YgJ0N8QKb2vNdS3zW3
-	6+wVkN/BJSBoxWXX0s34LMWp7mijS+fNsTc7akeL80FapKf23lC/JoEe+3Jf0QQZ5eM2qCuV94dFT
-	Gir614J1ByOHVk2RC0Ry9CkKlma4XLH00wQRGGSqPQFQAv91PwnNS5dnqZrjAC19P2hP7QLEjsOXm
-	7jyk86LOPORBmWhmx6Tz3K/6q4Qc9R1eGdI9EZsMMPlbWxLx/ovFIdefalJ2Xa0SvCR2ZE4kkn6pm
-	4OUEUDbQ==;
+	bh=q9X/hN1QzRJKye8BRA40DMBxtEO4Nmsm3xPqIazwALU=; b=YAx7HAxRsg9wWPKaxYunm2vdbb
+	WrftboTrbZboSHa0R0ykL5zFhz0j0QeU6yolvjlrByOn3yE5N68B1f3EinhBMFFCY+ZBo6g4Xg8Xf
+	cV8AGTp0Wup/+aQkDd65ro6INZ6y/yIFETu9AgzvDI1fOLj+LU9oC8tWhyvipk1w8TkUrNEpy6hSD
+	6FjxVoUW3QzcCJZz9eqIsLn4xwtYY6CIlIJVWk7+DQAu5EFUrqGe7OWtGIXl9ufwD+xZP8Ep5QqKm
+	fN5P4MMGx4m05LXr94O7fllvHFmVjeD2sWR5n+l4yZRgZCgvgz1Bhmn7UuBdCnyEHRy9kOc50OgO4
+	jeV0XF2Q==;
 Received: from sslproxy05.your-server.de ([78.46.172.2])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1ufkLL-000PkK-24;
-	Sat, 26 Jul 2025 21:14:03 +0200
+	id 1ufkQs-0000yn-02;
+	Sat, 26 Jul 2025 21:19:46 +0200
 Received: from localhost ([127.0.0.1])
 	by sslproxy05.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1ufkLK-0001eW-1Z;
-	Sat, 26 Jul 2025 21:14:02 +0200
-Message-ID: <dbba4e43-c32d-4430-b3e5-7711f24ea4e3@iogearbox.net>
-Date: Sat, 26 Jul 2025 21:14:00 +0200
+	id 1ufkQr-0005wO-0M;
+	Sat, 26 Jul 2025 21:19:45 +0200
+Message-ID: <61c20b77-b664-46dd-8555-9142f6d647da@iogearbox.net>
+Date: Sat, 26 Jul 2025 21:19:44 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,20 +63,14 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 0/5] Support trampoline for LoongArch
-To: Chenghao Duan <duanchenghao@kylinos.cn>,
- Vincent Li <vincent.mc.li@gmail.com>
-Cc: ast@kernel.org, andrii@kernel.org, yangtiezhu@loongson.cn,
- hengqi.chen@gmail.com, chenhuacai@kernel.org, martin.lau@linux.dev,
- eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, kernel@xen0n.name,
- linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
- bpf@vger.kernel.org, guodongtai@kylinos.cn, youling.tang@linux.dev,
- jianghaoran@kylinos.cn
-References: <20250724141929.691853-1-duanchenghao@kylinos.cn>
- <CAK3+h2zirm6cV2tAbd38RSYSF3=B1qZ+9jm_GZPsAPrMtaozmg@mail.gmail.com>
- <20250725101857.GA20688@chenghao-pc>
+Subject: Re: [PATCH v4 0/2] Fix two tailcall-related issues
+To: Haoran Jiang <jianghaoran@kylinos.cn>, loongarch@lists.linux.dev
+Cc: bpf@vger.kernel.org, kernel@xen0n.name, chenhuacai@kernel.org,
+ hengqi.chen@gmail.com, yangtiezhu@loongson.cn, jolsa@kernel.org,
+ haoluo@google.com, sdf@fomichev.me, kpsingh@kernel.org,
+ john.fastabend@gmail.com, yonghong.song@linux.dev, song@kernel.org,
+ eddyz87@gmail.com, martin.lau@linux.dev, andrii@kernel.org, ast@kernel.org
+References: <20250725102307.1026434-1-jianghaoran@kylinos.cn>
 Content-Language: en-US
 From: Daniel Borkmann <daniel@iogearbox.net>
 Autocrypt: addr=daniel@iogearbox.net; keydata=
@@ -122,125 +116,23 @@ Autocrypt: addr=daniel@iogearbox.net; keydata=
  rUD9YI1Je/WifL/HbIubHCCdK8/N7rblgUrZJMG3W+7vAvZsOh/6VTZeP4wCe7Gs/cJhE2gI
  DmGcR+7rQvbFQC4zQxEjo8fNaTwjpzLM9NIp4vG9SDIqAm20MXzLBAeVkofixCsosUWUODxP
  owLbpg7pFRJGL9YyEHpS7MGPb3jSLzucMAFXgoI8rVqoq6si2sxr2l0VsNH5o3NgoAgJNIg=
-In-Reply-To: <20250725101857.GA20688@chenghao-pc>
+In-Reply-To: <20250725102307.1026434-1-jianghaoran@kylinos.cn>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Virus-Scanned: Clear (ClamAV 1.0.7/27711/Sat Jul 26 10:35:43 2025)
 
-On 7/25/25 12:18 PM, Chenghao Duan wrote:
-> On Thu, Jul 24, 2025 at 08:30:35AM -0700, Vincent Li wrote:
->> On Thu, Jul 24, 2025 at 7:19 AM Chenghao Duan <duanchenghao@kylinos.cn> wrote:
->>>
->>> v4:
->>> 1. Delete the #3 patch of version V3.
->>>
->>> 2. Add 5 NOP instructions in build_prologue().
->>>     Reserve space for the move_imm + jirl instruction.
->>>
->>> 3. Differentiate between direct jumps and ftrace jumps of trampoline:
->>>     direct jumps skip 5 instructions.
->>>     ftrace jumps skip 2 instructions.
->>>
->>> 4. Remove the generation of BL jump instructions in emit_jump_and_link().
->>>     After the trampoline ends, it will jump to the specified register.
->>>     The BL instruction writes PC+4 to r1 instead of allowing the
->>>     specification of rd.
->>>
->>> -----------------------------------------------------------------------
->>> Historical Version:
->>> v3:
->>> 1. Patch 0003 adds EXECMEM_BPF memory type to the execmem subsystem.
->>>
->>> 2. Align the size calculated by arch_bpf_trampoline_size to page
->>> boundaries.
->>>
->>> 3. Add the flush icache operation to larch_insn_text_copy.
->>>
->>> 4. Unify the implementation of bpf_arch_xxx into the patch
->>> "0004-LoongArch-BPF-Add-bpf_arch_xxxxx-support-for-Loong.patch".
->>>
->>> 5. Change the patch order. Move the patch
->>> "0002-LoongArch-BPF-Update-the-code-to-rename-validate_.patch" before
->>> "0005-LoongArch-BPF-Add-bpf-trampoline-support-for-Loon.patch".
->>>
->>> URL for version v3:
->>> https://lore.kernel.org/all/20250709055029.723243-1-duanchenghao@kylinos.cn/
->>> ---------
->>> v2:
->>> 1. Change the fixmap in the instruction copy function to set_memory_xxx.
->>>
->>> 2. Change the implementation method of the following code.
->>>          - arch_alloc_bpf_trampoline
->>>          - arch_free_bpf_trampoline
->>>          Use the BPF core's allocation and free functions.
->>>
->>>          - bpf_arch_text_invalidate
->>>          Operate with the function larch_insn_text_copy that carries
->>>          memory attribute modifications.
->>>
->>> 3. Correct the incorrect code formatting.
->>>
->>> URL for version v2:
->>> https://lore.kernel.org/all/20250618105048.1510560-1-duanchenghao@kylinos.cn/
->>> ---------
->>> v1:
->>> Support trampoline for LoongArch. The following feature tests have been
->>> completed:
->>>          1. fentry
->>>          2. fexit
->>>          3. fmod_ret
->>>
->>> TODO: The support for the struct_ops feature will be provided in
->>> subsequent patches.
->>>
->>> URL for version v1:
->>> https://lore.kernel.org/all/20250611035952.111182-1-duanchenghao@kylinos.cn/
->>> -----------------------------------------------------------------------
->>>
->>> Chenghao Duan (4):
->>>    LoongArch: Add larch_insn_gen_{beq,bne} helpers
->>>    LoongArch: BPF: Update the code to rename validate_code to
->>>      validate_ctx
->>>    LoongArch: BPF: Add bpf_arch_xxxxx support for Loongarch
->>>    LoongArch: BPF: Add bpf trampoline support for Loongarch
->>>
->>> Tiezhu Yang (1):
->>>    LoongArch: BPF: Add struct ops support for trampoline
->>>
->>>   arch/loongarch/include/asm/inst.h |   3 +
->>>   arch/loongarch/kernel/inst.c      |  60 ++++
->>>   arch/loongarch/net/bpf_jit.c      | 521 +++++++++++++++++++++++++++++-
->>>   arch/loongarch/net/bpf_jit.h      |   6 +
->>>   4 files changed, 589 insertions(+), 1 deletion(-)
->>>
->>> --
->>> 2.25.1
->>>
->>
->> Tested the whole patch series and it resolved the xdp-tool xdp-filter issue
->>
->> [root@fedora ~]# xdp-loader status
->> CURRENT XDP PROGRAM STATUS:
->>
->> Interface        Prio  Program name      Mode     ID   Tag
->>    Chain actions
->> --------------------------------------------------------------------------------------
->> lo                     xdp_dispatcher    skb      53   4d7e87c0d30db711
->>   =>              10     xdpfilt_alw_all           62
->> 320c53c06933a8fa  XDP_PASS
->> dummy0                 <No XDP program loaded!>
->> sit0                   <No XDP program loaded!>
->> enp0s3f0               <No XDP program loaded!>
->> wlp3s0                 <No XDP program loaded!>
->>
->> you can add Tested-by: Vincent Li <vincent.mc.li@gmail.com>
+On 7/25/25 12:23 PM, Haoran Jiang wrote:
+> v4:
+> 1,There is a conflict when merging these two patches on the basis of the trampoline series patches, resolve the conflict issue
+[...]
+> Haoran Jiang (2):
+>    LoongArch: BPF: Fix jump offset calculation in tailcall
+>    LoongArch: BPF: Fix tailcall hierarchy
 > 
-> Hi Vincent,
-> 
-> Okay, thank you very much for your support. The existing patch has
-> included "Tested-by: Vincent Li vincent.mc.li@gmail.com".
+>   arch/loongarch/net/bpf_jit.c | 181 +++++++++++++++++++++++------------
+>   1 file changed, 119 insertions(+), 62 deletions(-)
 
-Huacai, I presume you'll route this series to Linus, correct?
+Same here, I presume Huacai will pick these up.
 
 Thanks,
 Daniel
