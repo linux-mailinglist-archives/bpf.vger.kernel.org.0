@@ -1,164 +1,229 @@
-Return-Path: <bpf+bounces-64459-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64461-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16002B12E71
-	for <lists+bpf@lfdr.de>; Sun, 27 Jul 2025 10:18:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAE63B130EC
+	for <lists+bpf@lfdr.de>; Sun, 27 Jul 2025 19:30:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9648F3BDBB7
-	for <lists+bpf@lfdr.de>; Sun, 27 Jul 2025 08:17:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 609AE1895D65
+	for <lists+bpf@lfdr.de>; Sun, 27 Jul 2025 17:30:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 731A21E32A3;
-	Sun, 27 Jul 2025 08:18:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D80C2206B2;
+	Sun, 27 Jul 2025 17:30:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Lv1tHGXx"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="WU3f25Wn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D3923B7A8;
-	Sun, 27 Jul 2025 08:18:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64CE41D88D0;
+	Sun, 27 Jul 2025 17:29:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753604289; cv=none; b=klk9ChsYy2g/dHehEZLNrcvlw2ZvMsIUqP7aBATtCaGJ13oWi+ZSk1U3TfenRAjhL8tNDMa1rnCXEqvqBzHReYKgQO66I33BmnErQMCYDZxZMT/hn9rmEx3gd7nx+75d75x/FQ3ciGH0BHq9FnKjNxJ5nDWX3S5doICsfKV6hNI=
+	t=1753637404; cv=none; b=L7vqh5PDrfB767jBtItGuaYy7k0MaDJhjMYk8MZzMhPDTH/yNkB+LJwgd4dQKzYMznHOR8sjAoV68vkT2qAupI4zM1VjAuij0TE8E9NC2X/8ylaOjozUMqDeJY8Oi1cDvsTqYsdfKgzhNVGcIPpxScGgPphD7zB0kKZ9MrgmHFk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753604289; c=relaxed/simple;
-	bh=h2x6vdv/JzyV9NCqHup4antc8GUh2Fc+FuFK5KC/RRU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QM+WTRgDBCYADdnofoKS8vI2sTB7/gPp/zAvdZOFxN7mOO3vLJOHekZwiicBJdSZFFyLsawdoH6+RrwIimvieE0FBBP/04qVqNDCShEHI/ExE93JZSmRVZNNT8mCbFje4AXF/9VVJnEPhmlMdT++9L4QDb/ngNaWmZrrjUuKUOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Lv1tHGXx; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-749248d06faso3011291b3a.2;
-        Sun, 27 Jul 2025 01:18:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753604287; x=1754209087; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4w3nvIifgn0iSMKuiOg/hmSn/FEUf3sNnbRx7riRRJg=;
-        b=Lv1tHGXxpGsHUh5ZlxkISH1rSrnfCGqikTKZS1kd7ZsiVlebGCzilHPHDyQJZQUaxQ
-         RJZKOVSAV7RRjsvcTqbeNo4eONRa2lryZHZ/h0tTnZoqRfP7xGRYzoeBuKheGLi07dxm
-         EHXqgG1xnJFTeSBkg5oNphtSt08TS2hYjbaeCKu/7Y+EApV9GfmP6Bh7h6GEwKjDEEd9
-         03JUK8+6OErKaGoYTYeIqxMK3JMwRsIr0y91jRtF6mK5FgARKw+QqJf2VaADSVtyX+qo
-         YLw4Lh6kqLzym5UzGNVvoB4dcQv9CfgDMQl9EIh+y9ScLCgaAvpnG5c21k18DP6RLei6
-         IH3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753604287; x=1754209087;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4w3nvIifgn0iSMKuiOg/hmSn/FEUf3sNnbRx7riRRJg=;
-        b=E+eSLcoOJgPs+oUL+rR30YgG/JzWanc1xDhRRdEVroIwWYkeGyJli9tI3QDMjdcgGK
-         e7lBmW/wKrIdkSUUc6abbwqPxAg+bZGZHMamQg3lVGRBovKXoV1sgqBvtKxXvT7x1tQc
-         PFKy+9hbgoGvNUDrJ4RQRlOk5dbK5r0OUJyuBsEAgMlvT5f2WNeXdg58xS8iNZ6/sQ1X
-         Cc4zFway80EfAUcsjlxK1Rp3D3EUuPZ7f5tIjBzUxBT773uzU83BkujeRqjmodDgfUQO
-         hMf6xKpgA0mHB5xbHbx7N+9ZL6Xid0+tvi51V8OGj6BuDw4/95e/+te/QXQDKU34/flt
-         zf7w==
-X-Forwarded-Encrypted: i=1; AJvYcCUMbY7df2/4XW07HOx39wNyyadnPEi7BvggCSI4SknC/3LxMXg6xSEFry8i4j//6tq2ieY=@vger.kernel.org, AJvYcCVJCU7fyFCvWrXK2OydGiXR7OeCGYWzLYXZkYiNwk4/MC5b0AHVHLoAZjpu0c/kkKP4I6WhrAJkN9z6peh8@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy7fFlF//qlvW9CMzS2Q4sJ1MRlO3OvoCabymzX3o+OZ731gBx6
-	hMmPcG3p6VGpihVbXmnHsa+CMNTqKiow2AXabnF56XQk04uz1rPmMO/b
-X-Gm-Gg: ASbGncuInCHbAbaxbGdYJGlWQnfPnqO2m2epzgRn0lOTvlQh/sddWYdOyc/1gEnqZyi
-	oRKrCf+qNYckK9CZQPsTyHBjnF1i3xHO/wRiZYWLW/32i4cdNhGEvQaCwJsb9jO4Vsz90vhILY2
-	cUhyV2DhH4AI2T3MGF5w49YuoS9YAqmFG7uW2ta+Uw3aHdeuUfpZS6FdNWsYPNUTT49SyhdkaT+
-	bAD1xzA9ePYjeeWVZDMAvjGR8/Ue7mHEWLhVmuiqp1uwo4qj0rQBs7L047usekEjncDcFrAR5Ut
-	x1A612vCbfabywjK9/Sd8H5FSDr/VSsNicVwWMiG4Uf6Sld77XzlhcSP5qzzi17C/DyiRPutRPv
-	IB3tr+AuuR/Gybmv2iJ7Z+RO3wEAk0cg=
-X-Google-Smtp-Source: AGHT+IERtAcA1hASNVnSuyLgCZuySFIDgpHVod4VMFHMhTbjWTMV5KfmnnO/eqKIF5S6h8aYQR0OlQ==
-X-Received: by 2002:a05:6a00:1741:b0:736:4644:86ee with SMTP id d2e1a72fcca58-763343da65dmr10726993b3a.14.1753604286599;
-        Sun, 27 Jul 2025 01:18:06 -0700 (PDT)
-Received: from archlinux ([205.254.163.108])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7640863503csm3085296b3a.5.2025.07.27.01.17.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Jul 2025 01:18:06 -0700 (PDT)
-From: Suchit Karunakaran <suchitkarunakaran@gmail.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	bpf@vger.kernel.org
-Cc: skhan@linuxfoundation.org,
-	linux-kernel-mentees@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Suchit Karunakaran <suchitkarunakaran@gmail.com>
-Subject: [PATCH] bpf: fix various typos in verifier.c comments
-Date: Sun, 27 Jul 2025 13:47:54 +0530
-Message-ID: <20250727081754.15986-1-suchitkarunakaran@gmail.com>
-X-Mailer: git-send-email 2.50.1
+	s=arc-20240116; t=1753637404; c=relaxed/simple;
+	bh=YN4OUMEmYYlsvg3YJWY6SJd2TltixNw6QFJIBCSUVNQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ewFAfT9vzMvsoJTqIm5J1Hd3LIhRgYqvMsOoyiX+wVR0EL035swTjuAE2KVUSZD2ODtZ6DQX+K1LTgQinAKKnUtSo5T0hUnQ5AOvkccc0gp5r16yiV4YnDXIjOIog1R+xDXL6aIjR6+UoL4raa6I669cROy+cOy3kUFVJBdHS7U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=WU3f25Wn; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=LyRwSo6shZlwP9Bgfh1wxu4NA1objl4EP4vyfCXNCPI=; b=WU3f25WniMySsz82S2k2K/Z/lT
+	auUGAjSv7EWRJIxDjirhtvu0WDt6OOO24M7iHBIe+J9M6NjCLdiHOvbngsoPQMVofE8YwmuASiZ6Z
+	IKTpLS8uLY2MpL6U+T1lWIBo+5yn4wozM0kb9dtGdZu++vqafN20nh5lgUvGHwcLuEBj7azUIRaGP
+	yLmPQGzJGvglVSIjvFMeL76BVmGsISyXsW3d6JRdV+IS9x8dOPszy11cczi4eJZnsDS4OYoWeMgmj
+	f5qa5PLAq3lrl3D1EbBYcgTozLKfLQlswkcCtDiE9bVcePh40ncichPGLt60BiUwNHBq+0TNcdgrE
+	tMcO2v2w==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1ug5C6-000FGM-1S;
+	Sun, 27 Jul 2025 19:29:54 +0200
+Received: from localhost ([127.0.0.1])
+	by sslproxy05.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1ug5C4-000E4z-3D;
+	Sun, 27 Jul 2025 19:29:53 +0200
+Message-ID: <c3eff304-8dd3-418d-afa9-eaf91020c535@iogearbox.net>
+Date: Sun, 27 Jul 2025 19:29:52 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RESEND bpf-next 1/1] powerpc64/bpf: Add jit support for
+ load_acquire and store_release
+To: Saket Kumar Bhaskar <skb99@linux.ibm.com>, puranjay@kernel.org
+Cc: Madhavan Srinivasan <maddy@linux.ibm.com>,
+ Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Hari Bathini <hbathini@linux.ibm.com>,
+ Naveen N Rao <naveen@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Peilin Ye <yepeilin@google.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+ linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, "Paul E . McKenney" <paulmck@kernel.org>,
+ lkmm@lists.linux.dev
+References: <20250717202935.29018-1-puranjay@kernel.org>
+ <20250717202935.29018-2-puranjay@kernel.org> <mb61pfreuy1rm.fsf@kernel.org>
+ <aIIKo39dK22ew1T5@linux.ibm.com>
+Content-Language: en-US
+From: Daniel Borkmann <daniel@iogearbox.net>
+Autocrypt: addr=daniel@iogearbox.net; keydata=
+ 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
+In-Reply-To: <aIIKo39dK22ew1T5@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: Clear (ClamAV 1.0.7/27712/Sun Jul 27 10:35:17 2025)
 
-This patch fixes several minor typos in comments within the BPF verifier.
-No changes in functionality.
+On 7/24/25 12:27 PM, Saket Kumar Bhaskar wrote:
+[...]
+> Thanks for the patch. I applied the patch and tested it.
+> 
+> Before this patch:
+> 
+> # ./test_progs -a \
+>    verifier_load_acquire,verifier_store_release,atomics
+> #11/1    atomics/add:OK
+> #11/2    atomics/sub:OK
+> #11/3    atomics/and:OK
+> #11/4    atomics/or:OK
+> #11/5    atomics/xor:OK
+> #11/6    atomics/cmpxchg:OK
+> #11/7    atomics/xchg:OK
+> #11      atomics:OK
+> #528/1   verifier_load_acquire/Clang version < 18, ENABLE_ATOMICS_TESTS not defined, and/or JIT doesn't support load-acquire, use a dummy test:OK
+> #528     verifier_load_acquire:OK
+> #565/1   verifier_store_release/Clang version < 18, ENABLE_ATOMICS_TESTS not defined, and/or JIT doesn't support store-release, use a dummy test:OK
+> #565     verifier_store_release:OK
+> Summary: 3/9 PASSED, 0 SKIPPED, 0 FAILED
+> 
+> After this patch:
+> 
+> # ./test_progs -a \
+>    verifier_load_acquire,verifier_store_release,atomics
+> #11/1    atomics/add:OK
+> #11/2    atomics/sub:OK
+> #11/3    atomics/and:OK
+> #11/4    atomics/or:OK
+> #11/5    atomics/xor:OK
+> #11/6    atomics/cmpxchg:OK
+> #11/7    atomics/xchg:OK
+> #11      atomics:OK
+> #529/1   verifier_load_acquire/load-acquire, 8-bit:OK
+> #529/2   verifier_load_acquire/load-acquire, 8-bit @unpriv:OK
+> #529/3   verifier_load_acquire/load-acquire, 16-bit:OK
+> #529/4   verifier_load_acquire/load-acquire, 16-bit @unpriv:OK
+> #529/5   verifier_load_acquire/load-acquire, 32-bit:OK
+> #529/6   verifier_load_acquire/load-acquire, 32-bit @unpriv:OK
+> #529/7   verifier_load_acquire/load-acquire, 64-bit:OK
+> #529/8   verifier_load_acquire/load-acquire, 64-bit @unpriv:OK
+> #529/9   verifier_load_acquire/load-acquire with uninitialized src_reg:OK
+> #529/10  verifier_load_acquire/load-acquire with uninitialized src_reg @unpriv:OK
+> #529/11  verifier_load_acquire/load-acquire with non-pointer src_reg:OK
+> #529/12  verifier_load_acquire/load-acquire with non-pointer src_reg @unpriv:OK
+> #529/13  verifier_load_acquire/misaligned load-acquire:OK
+> #529/14  verifier_load_acquire/misaligned load-acquire @unpriv:OK
+> #529/15  verifier_load_acquire/load-acquire from ctx pointer:OK
+> #529/16  verifier_load_acquire/load-acquire from ctx pointer @unpriv:OK
+> #529/17  verifier_load_acquire/load-acquire with invalid register R15:OK
+> #529/18  verifier_load_acquire/load-acquire with invalid register R15 @unpriv:OK
+> #529/19  verifier_load_acquire/load-acquire from pkt pointer:OK
+> #529/20  verifier_load_acquire/load-acquire from flow_keys pointer:OK
+> #529/21  verifier_load_acquire/load-acquire from sock pointer:OK
+> #529     verifier_load_acquire:OK
+> #566/1   verifier_store_release/store-release, 8-bit:OK
+> #566/2   verifier_store_release/store-release, 8-bit @unpriv:OK
+> #566/3   verifier_store_release/store-release, 16-bit:OK
+> #566/4   verifier_store_release/store-release, 16-bit @unpriv:OK
+> #566/5   verifier_store_release/store-release, 32-bit:OK
+> #566/6   verifier_store_release/store-release, 32-bit @unpriv:OK
+> #566/7   verifier_store_release/store-release, 64-bit:OK
+> #566/8   verifier_store_release/store-release, 64-bit @unpriv:OK
+> #566/9   verifier_store_release/store-release with uninitialized src_reg:OK
+> #566/10  verifier_store_release/store-release with uninitialized src_reg @unpriv:OK
+> #566/11  verifier_store_release/store-release with uninitialized dst_reg:OK
+> #566/12  verifier_store_release/store-release with uninitialized dst_reg @unpriv:OK
+> #566/13  verifier_store_release/store-release with non-pointer dst_reg:OK
+> #566/14  verifier_store_release/store-release with non-pointer dst_reg @unpriv:OK
+> #566/15  verifier_store_release/misaligned store-release:OK
+> #566/16  verifier_store_release/misaligned store-release @unpriv:OK
+> #566/17  verifier_store_release/store-release to ctx pointer:OK
+> #566/18  verifier_store_release/store-release to ctx pointer @unpriv:OK
+> #566/19  verifier_store_release/store-release, leak pointer to stack:OK
+> #566/20  verifier_store_release/store-release, leak pointer to stack @unpriv:OK
+> #566/21  verifier_store_release/store-release, leak pointer to map:OK
+> #566/22  verifier_store_release/store-release, leak pointer to map @unpriv:OK
+> #566/23  verifier_store_release/store-release with invalid register R15:OK
+> #566/24  verifier_store_release/store-release with invalid register R15 @unpriv:OK
+> #566/25  verifier_store_release/store-release to pkt pointer:OK
+> #566/26  verifier_store_release/store-release to flow_keys pointer:OK
+> #566/27  verifier_store_release/store-release to sock pointer:OK
+> #566     verifier_store_release:OK
+> Summary: 3/55 PASSED, 0 SKIPPED, 0 FAILED
+> 
+> Tested-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
 
-Signed-off-by: Suchit Karunakaran <suchitkarunakaran@gmail.com>
----
- kernel/bpf/verifier.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Michael/Madhavan, I presume you'll pick this patch up?
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index e2fcea860755..4f13cce28815 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -4518,7 +4518,7 @@ static int backtrack_insn(struct bpf_verifier_env *env, int idx, int subseq_idx,
-  *   . if (scalar cond K|scalar)
-  *   .  helper_call(.., scalar, ...) where ARG_CONST is expected
-  *   backtrack through the verifier states and mark all registers and
-- *   stack slots with spilled constants that these scalar regisers
-+ *   stack slots with spilled constants that these scalar registers
-  *   should be precise.
-  * . during state pruning two registers (or spilled stack slots)
-  *   are equivalent if both are not precise.
-@@ -18450,7 +18450,7 @@ static void clean_verifier_state(struct bpf_verifier_env *env,
- /* the parentage chains form a tree.
-  * the verifier states are added to state lists at given insn and
-  * pushed into state stack for future exploration.
-- * when the verifier reaches bpf_exit insn some of the verifer states
-+ * when the verifier reaches bpf_exit insn some of the verifier states
-  * stored in the state lists have their final liveness state already,
-  * but a lot of states will get revised from liveness point of view when
-  * the verifier explores other branches.
-@@ -19166,7 +19166,7 @@ static bool is_iter_next_insn(struct bpf_verifier_env *env, int insn_idx)
-  * terminology) calls specially: as opposed to bounded BPF loops, it *expects*
-  * states to match, which otherwise would look like an infinite loop. So while
-  * iter_next() calls are taken care of, we still need to be careful and
-- * prevent erroneous and too eager declaration of "ininite loop", when
-+ * prevent erroneous and too eager declaration of "infinite loop", when
-  * iterators are involved.
-  *
-  * Here's a situation in pseudo-BPF assembly form:
-@@ -19208,7 +19208,7 @@ static bool is_iter_next_insn(struct bpf_verifier_env *env, int insn_idx)
-  *
-  * This approach allows to keep infinite loop heuristic even in the face of
-  * active iterator. E.g., C snippet below is and will be detected as
-- * inifintely looping:
-+ * infinitely looping:
-  *
-  *   struct bpf_iter_num it;
-  *   int *p, x;
-@@ -24449,7 +24449,7 @@ static int compute_scc(struct bpf_verifier_env *env)
- 	 *        if pre[i] == 0:
- 	 *            recur(i)
- 	 *
--	 * Below implementation replaces explicit recusion with array 'dfs'.
-+	 * Below implementation replaces explicit recursion with array 'dfs'.
- 	 */
- 	for (i = 0; i < insn_cnt; i++) {
- 		if (pre[i])
--- 
-2.50.1
-
+Thanks,
+Daniel
 
