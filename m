@@ -1,154 +1,172 @@
-Return-Path: <bpf+bounces-64456-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64457-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D57FBB12D1A
-	for <lists+bpf@lfdr.de>; Sun, 27 Jul 2025 01:38:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CE68B12D47
+	for <lists+bpf@lfdr.de>; Sun, 27 Jul 2025 03:00:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B8E317CE9B
-	for <lists+bpf@lfdr.de>; Sat, 26 Jul 2025 23:38:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA8E11897E13
+	for <lists+bpf@lfdr.de>; Sun, 27 Jul 2025 01:01:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5978D22CBFE;
-	Sat, 26 Jul 2025 23:37:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 403F372633;
+	Sun, 27 Jul 2025 01:00:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="eTLtIXgT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ae1MjPUZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B28922B8A6
-	for <bpf@vger.kernel.org>; Sat, 26 Jul 2025 23:37:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B327413AF2;
+	Sun, 27 Jul 2025 01:00:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753573074; cv=none; b=OaHlB4JxVfoLf6UmabYEAOG7opvWDZLjYqkpUzebJp1zH6RvJLJJj9IpyzxNxwjZiGpUtwo1LSyyVUUDRnDcdu9xtROsrvNA48r7+7rOF+ZTmCaYuQqTUZ4qBgckl65MZ9dh2tBLXEC7+VriSYRd4yv31Nmb4hXTAJG+jzQk7AY=
+	t=1753578051; cv=none; b=P15xlYB/VF6XHMzoPWxKITAtUzkIi3GioNtN+k6eujbl4DxF8tyTe6lsp+KklPj1eXaGPDC0LRL8pOLrMEOUoRdJA0aO95ElvJcHI+h36VslLf9eVt/ubg8+DmELMEd7OB9C9gM630UNwH15tUghu50W8lx7jUJ8eujR60XwCpk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753573074; c=relaxed/simple;
-	bh=7B24QJDsbG9O9xyrIOj7H/k5Wjt7NkdzQ2ZYcADPiko=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KQbknXTmRx1uIsMnN9F2yOMbFt/xCfVDPe/f7IFhSehY470K1nXPAqoA2PCHZU8TxjCjB+LtI2L5GkVFN3SLJ+hZJM8yxNDv1J6Lhq5CE+VoAjvUx+acpGwwMmW2noyytiHIfBJR2q7UqWTfcy5ab3pNgSUcSeYgArWbX3I0O8Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=eTLtIXgT; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-60c4f796446so5444083a12.1
-        for <bpf@vger.kernel.org>; Sat, 26 Jul 2025 16:37:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1753573071; x=1754177871; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=1tHg+Y1g27jBmEKsSCwCSS49UstWUnsuEvPhc+oks0Q=;
-        b=eTLtIXgT0zbAfXDRgiRTBv4ioN1hvrP4L3ImXMowXnQYMmK1QSZmAjXbhCEFTdXOl/
-         /GJmCRliQD056zT9kndf+Rp2cdmHgFIk32h6uXtxTqC/K9PediVqd7r8GY/V6vitgVWM
-         7Vin2WRj12D5Zz7ws8u9Cb9vHk6ehzko0+1HI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753573071; x=1754177871;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1tHg+Y1g27jBmEKsSCwCSS49UstWUnsuEvPhc+oks0Q=;
-        b=OkaMlVjlnXXh/MszLDDO8cQD++Zmbm+SAKijZs5QZd7EsVjVIIAxcGajc8CcYXDTDX
-         VjEXH/VMIZzT2FQkMOO6sdrZk3iA4J58JYfthTiJnNZngKZnpGWsgYk8c7v6lc1TJ9Ac
-         +55WFuZm1edQMaAOuseA8UoKPmIQTQnGFJmGhVPvOlb9uC63P7Vsymtvpdhb84zmXvU6
-         1dqH8MvlbryczHp563lTkl8Yb4UoW4uk5rsSf8i7p4+agGllbI+SgouZY+cijAiX34YE
-         e86atAa+GVEelv82o9mHkABUcJ7wlU7mth5kY87GHaxcjWiYHN5yz3cn1H83Sj6mT3lV
-         CYTg==
-X-Forwarded-Encrypted: i=1; AJvYcCX+38nhYulhr+gG15hY1/9Ff55I5MRdbBL34QOwIO3WevvtGHj1O07wJ4L7C0/audhS2YU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyN41hmYN5ZAQlKjkWH+AekbasUQf2KzPhPS9kUJSwz61lpygDu
-	7ONRSvITrzjC0n9WUnFmRJH7SsHVTzpTCRkJO5LelDi8vTbtuiHX5LJTNJs/FDLfnwrUT9wXnGu
-	nT7NAdg2tFA==
-X-Gm-Gg: ASbGncuNiuxqO0c8bQjByzN7tWSxHufJH7iOlMcNTMbo4X64QujGfAH5NNECMlT3XK0
-	zmxWnJCUZLBNhlLH5q1F0xO4ot8CdOI9FtjYEetjGUMyRNIQ3FsbJYaGTHMLOD4Vbs3EDHHpU2y
-	v3AZ9V+ur1cpG5YLGicdWrG4nFoeITAjd8MVTm1aoHa1XSN8RcHS1bsOFknjN3i23lAnDaoDnrk
-	llvMvCbjqO+hPIEJXF/qcRB4Z+U28e+88QWhwzkc46z1rqCBaxtnE23B03EJ+Q+FIYr/eWHFo4c
-	l7DwXjgTxLkL5IjffvrkU4qauIuv4KbdgG3swgHWanwJw1bPz21KuUR/HQvgTSAl5xkarhFBMOZ
-	RNsfaT8EbNnNENNtVbKuPkdxwakNE6jGIdM52TZDuvoQ5ftciW2t3VOcqqtM+JJPkQdkNIi57
-X-Google-Smtp-Source: AGHT+IG24cKFfwtpGOqBCOt9iZV25P8tm0BgvDJdPm5iDHaaKC3XdbVV2D7MVl9Ip6CLMEMpV37nDA==
-X-Received: by 2002:a17:906:fd86:b0:ad8:85df:865b with SMTP id a640c23a62f3a-af61e14609cmr698836766b.33.1753573070798;
-        Sat, 26 Jul 2025 16:37:50 -0700 (PDT)
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com. [209.85.208.51])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-af635b02a4fsm201179766b.137.2025.07.26.16.37.50
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Jul 2025 16:37:50 -0700 (PDT)
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-60780d74c85so5555773a12.2
-        for <bpf@vger.kernel.org>; Sat, 26 Jul 2025 16:37:50 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXQ76CfBT5Qbv6aXr0FrmniZiXa/tkxuf7tVmYJdP6juLxaRXW2AwAMCNbyj4qTbOz+OIU=@vger.kernel.org
-X-Received: by 2002:a05:6402:483:b0:611:f4b2:379c with SMTP id
- 4fb4d7f45d1cf-614f1dced8amr5514831a12.20.1753573070075; Sat, 26 Jul 2025
- 16:37:50 -0700 (PDT)
+	s=arc-20240116; t=1753578051; c=relaxed/simple;
+	bh=i04joahZ7AlXGF/TYePnuX2oiqMpq4D4TwWOHYF//Ac=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=lsWCdQ7jv+S5fblPPBkki2pnVUA7JmxgRr8kVLDSMXKJ0f6Y8LtvyfXnhnIgHagQ5+ekWeuFLWIIDkWJ0tJLszzyPBHnFDo0egtAjhTBlrjtDRwV2zBdo2SkDSUXbvNN6PwiftpLNEc4h4W02zGhplPAOKzOckYCO4TVzwtej8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ae1MjPUZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9F68C4CEED;
+	Sun, 27 Jul 2025 01:00:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753578051;
+	bh=i04joahZ7AlXGF/TYePnuX2oiqMpq4D4TwWOHYF//Ac=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=Ae1MjPUZLc9E5viz7ZJ3lHJaqmHt0f1OmsK5o5DOi5OmHQtWlvck2OCHuKHBWUSer
+	 CdygWA4v0OCmd3ToI16uJ6XdDjZZH53QW/RfB82f1vX96OXes34slei/LQqvM4+KcV
+	 q5/CEBXRoAubZMzCJThSFSzW6wZmmh5PRxXNqg0CLqc7vaiSE5wOjzo5p+ehwev477
+	 H0P5K05TbW0QEOw9nQGqrbYrLmIqJJMh++NqYYdTUX+r0YDp2pVwHspY/af6lbYc6N
+	 zi6ghsvSlEG9ULL9E41qOk/Qsa8k++o+nbC9Cbim2sTHMLgB2c1AfNHKGB1QVgMIgG
+	 2t1jP/GqbckWQ==
+Message-ID: <c4bf63161e13ce1b51a288b1fd0f3fb0b1170f22.camel@kernel.org>
+Subject: Re: [PATCH v4 0/5] Support trampoline for LoongArch
+From: Geliang Tang <geliang@kernel.org>
+To: Chenghao Duan <duanchenghao@kylinos.cn>, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, yangtiezhu@loongson.cn, 
+	hengqi.chen@gmail.com, chenhuacai@kernel.org
+Cc: martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, kernel@xen0n.name, 
+	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
+ bpf@vger.kernel.org, 	guodongtai@kylinos.cn, youling.tang@linux.dev,
+ jianghaoran@kylinos.cn, 	vincent.mc.li@gmail.com
+Date: Sun, 27 Jul 2025 09:00:43 +0800
+In-Reply-To: <20250724141929.691853-1-duanchenghao@kylinos.cn>
+References: <20250724141929.691853-1-duanchenghao@kylinos.cn>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.56.0-1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250724123612.206110-1-bhupesh@igalia.com> <20250724123612.206110-3-bhupesh@igalia.com>
- <202507241640.572BF86C70@keescook> <CAHk-=wi5c=_-FBGo_88CowJd_F-Gi6Ud9d=TALm65ReN7YjrMw@mail.gmail.com>
- <B9C50D0B-DCD9-41A2-895D-4899728AF605@kernel.org>
-In-Reply-To: <B9C50D0B-DCD9-41A2-895D-4899728AF605@kernel.org>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sat, 26 Jul 2025 16:37:33 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wixR7ZR+aebFsWX4qWZ84tMTmyNWLUPmTy3YvaNJGqd-Q@mail.gmail.com>
-X-Gm-Features: Ac12FXwLhT2VoOEv9kNeOdgouvN4zZ9YLvHzVMPIsLMuRmQFnkSkLFn13r5tjO0
-Message-ID: <CAHk-=wixR7ZR+aebFsWX4qWZ84tMTmyNWLUPmTy3YvaNJGqd-Q@mail.gmail.com>
-Subject: Re: [PATCH v6 2/3] treewide: Switch memcpy() users of 'task->comm' to
- a more safer implementation
-To: Kees Cook <kees@kernel.org>
-Cc: Bhupesh <bhupesh@igalia.com>, akpm@linux-foundation.org, kernel-dev@igalia.com, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-mm@kvack.org, oliver.sang@intel.com, lkp@intel.com, 
-	laoar.shao@gmail.com, pmladek@suse.com, rostedt@goodmis.org, 
-	mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com, 
-	alexei.starovoitov@gmail.com, andrii.nakryiko@gmail.com, 
-	mirq-linux@rere.qmqm.pl, peterz@infradead.org, willy@infradead.org, 
-	david@redhat.com, viro@zeniv.linux.org.uk, ebiederm@xmission.com, 
-	brauner@kernel.org, jack@suse.cz, mingo@redhat.com, juri.lelli@redhat.com, 
-	bsegall@google.com, mgorman@suse.de, vschneid@redhat.com, 
-	linux-trace-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Sat, 26 Jul 2025 at 16:19, Kees Cook <kees@kernel.org> wrote:
->
-> That works for me! I just get twitchy around seeing memcpy used for strings. :) if we're gonna NUL after the memcpy, just use strscpy_pad().
+Hi Chenghao, Huacai, Tuezhu,
 
-I do worry a tiny bit about performance.
+I first discovered this Loongarch BPF trampoline issue when debugging
+MPTCP BPF selftests on a Loongarch machine last June (see my commit
+eef0532e900c "selftests/bpf: Null checks for links in bpf_tcp_ca"), and
+reported it to Huachui. Tiezhu and I started implementing BPF
+trampoline last June. I also called on more Chinese kernel engineers to
+participate in the development of the Loongarch BPF trampoline at the
+openEuler Developer Day 2024 and CLSF 2024 conferences. Although this
+work was finally handed over to Chenghao, it is also necessary to
+mention me as the reporter and our early developers in the commit log.
 
-Because 'memcpy+set last byte to NUL' really is just a couple of
-instructions when we're talking small constant-sized arrays.
+Thanks,
+-Geliang
 
-strscpy_pad() isn't horrible, but it's still at another level. And
-most of the cost is that "return the length" which people often don't
-care about.
-
-Dang, I wish we had some compiler trick to say "if the value isn't
-used, do X, if it _is_ used do Y".
-
-It's such a trivial thing in the compiler itself, and the information
-is there, but I don't think it is exposed in any useful way.
-
-In fact, it *is* exposed in one way I can think of:
-
-   __attribute__((__warn_unused_result__))
-
-but not in a useful form for actually generating different code.
-
-Some kind of "__builtin_if_used(x,y)" where it picks 'x' if the value
-is used, and 'y' if it isn't would be lovely for this.
-
-Then you could do things like
-
-    #define my_helper(x) \
-        __builtin_if_used( \
-                full_semantics(x), \
-                simpler_version(x))
-
-when having a return value means extra work and most people don't care.
-
-Maybe it exists in some form that I haven't thought of?
-
-Any compiler people around?
-
-                 Linus
+On Thu, 2025-07-24 at 22:19 +0800, Chenghao Duan wrote:
+> v4:
+> 1. Delete the #3 patch of version V3.
+> 
+> 2. Add 5 NOP instructions in build_prologue().
+>    Reserve space for the move_imm + jirl instruction.
+> 
+> 3. Differentiate between direct jumps and ftrace jumps of trampoline:
+>    direct jumps skip 5 instructions.
+>    ftrace jumps skip 2 instructions.
+> 
+> 4. Remove the generation of BL jump instructions in
+> emit_jump_and_link().
+>    After the trampoline ends, it will jump to the specified register.
+>    The BL instruction writes PC+4 to r1 instead of allowing the
+>    specification of rd.
+> 
+> ---------------------------------------------------------------------
+> --
+> Historical Version:
+> v3:
+> 1. Patch 0003 adds EXECMEM_BPF memory type to the execmem subsystem.
+> 
+> 2. Align the size calculated by arch_bpf_trampoline_size to page
+> boundaries.
+> 
+> 3. Add the flush icache operation to larch_insn_text_copy.
+> 
+> 4. Unify the implementation of bpf_arch_xxx into the patch
+> "0004-LoongArch-BPF-Add-bpf_arch_xxxxx-support-for-Loong.patch".
+> 
+> 5. Change the patch order. Move the patch
+> "0002-LoongArch-BPF-Update-the-code-to-rename-validate_.patch" before
+> "0005-LoongArch-BPF-Add-bpf-trampoline-support-for-Loon.patch".
+> 
+> URL for version v3:
+> https://lore.kernel.org/all/20250709055029.723243-1-duanchenghao@kylinos.cn/
+> ---------
+> v2:
+> 1. Change the fixmap in the instruction copy function to
+> set_memory_xxx.
+> 
+> 2. Change the implementation method of the following code.
+> 	- arch_alloc_bpf_trampoline
+> 	- arch_free_bpf_trampoline
+> 	Use the BPF core's allocation and free functions.
+> 
+> 	- bpf_arch_text_invalidate
+> 	Operate with the function larch_insn_text_copy that carries
+> 	memory attribute modifications.
+> 
+> 3. Correct the incorrect code formatting.
+> 
+> URL for version v2:
+> https://lore.kernel.org/all/20250618105048.1510560-1-duanchenghao@kylinos.cn/
+> ---------
+> v1:
+> Support trampoline for LoongArch. The following feature tests have
+> been
+> completed:
+> 	1. fentry
+> 	2. fexit
+> 	3. fmod_ret
+> 
+> TODO: The support for the struct_ops feature will be provided in
+> subsequent patches.
+> 
+> URL for version v1:
+> https://lore.kernel.org/all/20250611035952.111182-1-duanchenghao@kylinos.cn/
+> ---------------------------------------------------------------------
+> --
+> 
+> Chenghao Duan (4):
+>   LoongArch: Add larch_insn_gen_{beq,bne} helpers
+>   LoongArch: BPF: Update the code to rename validate_code to
+>     validate_ctx
+>   LoongArch: BPF: Add bpf_arch_xxxxx support for Loongarch
+>   LoongArch: BPF: Add bpf trampoline support for Loongarch
+> 
+> Tiezhu Yang (1):
+>   LoongArch: BPF: Add struct ops support for trampoline
+> 
+>  arch/loongarch/include/asm/inst.h |   3 +
+>  arch/loongarch/kernel/inst.c      |  60 ++++
+>  arch/loongarch/net/bpf_jit.c      | 521
+> +++++++++++++++++++++++++++++-
+>  arch/loongarch/net/bpf_jit.h      |   6 +
+>  4 files changed, 589 insertions(+), 1 deletion(-)
 
