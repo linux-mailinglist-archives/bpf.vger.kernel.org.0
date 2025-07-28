@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-64491-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64492-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3694EB1380B
-	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 11:48:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 692CBB1380F
+	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 11:49:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8936417C67A
-	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 09:46:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6566F1686A8
+	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 09:46:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB8E9263C90;
-	Mon, 28 Jul 2025 09:44:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B686C25B1C5;
+	Mon, 28 Jul 2025 09:44:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ORYZUtll"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pw9Oo3aE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78CB92571B0;
-	Mon, 28 Jul 2025 09:44:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26188255F25;
+	Mon, 28 Jul 2025 09:44:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753695844; cv=none; b=lPGK/ZXnBJxfoWmfstSsJU/KWFH70TMioje45YQIlIGw62ooJ18E6rv2AFwLpwB+cqEsMsUoPEKjO1twzFYQ7Oy+3dDPY0X8vRBttMrkLX1WwgxPOkS40dpnnN5NfJeYnSpU95H99uxjHHljCy3jseAh9yWnJicpSTVX7iIVrZQ=
+	t=1753695846; cv=none; b=SQnwpvEy53/2w0l127mCaBZ+swuWd3ZQXG/vl+YO+bIfP71eE3XmFYx/khHT4/U6gZbgH1iAd7VBeFX/aC01EwUc4eqMoGejfFbFaT9g4cgOvP/x5/cGC3fUki3Fr0f7OTh9IVYEmjpwe9trQveh7onQeW6R/XqyWuiSaIpR6J8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753695844; c=relaxed/simple;
-	bh=QwvRXzFZogKebxw5m6w84tCyPvrj+Mj2jXrz70Fx9zU=;
+	s=arc-20240116; t=1753695846; c=relaxed/simple;
+	bh=NFOgSnhWffWrZX8FrBFj28AxcRs4yHqlVKQ/Dmxu3T0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JlrwaKEiH3j/8noVb+cjyQfWrL1WbnRBzYrIMoSCOmOSi1RbRJINoZ6cvvv1qrxihhc6OPStaYpsdnn6pf6yKbmXkCmRh19g4PNmodas5Lz2OV11uvikJe/04/NDSrbKfgbTvO3FwKbCKD+yu/YzHFx0c/IQIb+9xGALinzeNI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ORYZUtll; arc=none smtp.client-ip=209.85.128.47
+	 MIME-Version; b=UUQjBrnvV0engjg11Uec5pNMxiIwTIEFiyuTxwsxLbuLeJ1fALG1TaGoZV4Mt8sNHNe8QWs88JfhjlzijGLDqrh5OmQgMpkDv9HZeaYO79V3zGviE9yVTvAuX2mYcwn/f1s5ZkBk3dIl02mwCI41TCMaPu3NGA2fsClwML1ycFQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pw9Oo3aE; arc=none smtp.client-ip=209.85.128.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-45619d70c72so37892915e9.0;
-        Mon, 28 Jul 2025 02:44:02 -0700 (PDT)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4537edf2c3cso44079925e9.3;
+        Mon, 28 Jul 2025 02:44:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753695841; x=1754300641; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1753695842; x=1754300642; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DpZDkIwSNXAkfznm1ocUN63CgTKXhTTLgm3bOfdy+mQ=;
-        b=ORYZUtllT5ji0QwzjdGjfcEUkkz1a0r5ngyWUXrq0RMg+jsZFGAZxe2niKlLHbAXSZ
-         poLeIQeC0EfD29IEJXxOuoqiKORbyx6Oc6uQMdDdg9aSeD7y2XiH6QBjjNxAx1QICZBr
-         cg5smCCDmCTYb4EsLpbZuFetYbIDPZJRsTw5+EF+HxuUVfhKM9ibBsdkt1uSGTHjfC/q
-         7tz1IJAqvdFSspZsr8kqcnkDXufpdMH07a0OU33WpmzcP+AZmHfoLg3WmOu4mR+Ug6HM
-         RUKiM7KVEmlZJYIwC9Y7+vit5FxDLvCJxQcGEtEX+Dii0J6j3o3MDYm/ZyBC/NrX+pWM
-         DDKQ==
+        bh=LQpbll3w5pfASYo5OCw14NJ6BKOsZ4svkyx7C0I92c8=;
+        b=Pw9Oo3aEM2UshMkzob5uX02cU40BbdEMT4/JiwXKHyOri4nYyrrAFrBUedbxeAteFJ
+         e/k9ytdlNyjHkrmj7PHdk3VoEpW6N+X0TTIJkog5mmQ73FTKezv9s+MwuGltSU2I3T6c
+         t3LkRM8TIq/1mueTn+WrTVAS+zJT7AoKLrzMyNuW3JKhxeFjjm9//Le8M0v5t3vv835S
+         Hu8Hu3w2LGbHtgXBD7O1oNmHL7xM5yAAWdt7Nz0A36pUEAUniH0bYlResZJtImXgQz3B
+         VIXtcT9kN2yBj4+t81VXEigKCMWNrB2qLv6Q25yMMaztXqV+1jzLcxQjXQkmLs8NdQns
+         a7HQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753695841; x=1754300641;
+        d=1e100.net; s=20230601; t=1753695842; x=1754300642;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DpZDkIwSNXAkfznm1ocUN63CgTKXhTTLgm3bOfdy+mQ=;
-        b=PA709fgoPJX6UKOkTOMkHUDPE2WiV6k6rFUtbMcDaeRQ+7wanm3lEU9OT1JUN7uqoh
-         HSZMljndlSoEPU9yQvJnHgJvyzbomIEVTNB2QAc1aC+mmq16WvAJD1XK2ZYtK1XnUjzE
-         zqG/CuoO0N0Drs++vAwGuTSN6b6Z/O1hg5R6gWbfhgWGLAjgXZomQVo83mJvn7pSubxK
-         spK2ZeZv+VjgtVkf66I3DsnRg6RxoRIr8gJ56+lHGiU2TEZBWnKQxvjxSwT6BcIeirT3
-         /jNJbrJfdtChnCAc63CkMZRcPUK/VcRenl+s59lu9BjNxfrgh9v+cs6UlM2hr/YJUJQH
-         noPw==
-X-Forwarded-Encrypted: i=1; AJvYcCUOl31/WcrRAjYEaWsdZqTw07b/iXbtcQ01Hxf4a64iNpqSaModVY1BbvTnun812+Pbljo=@vger.kernel.org, AJvYcCUT5CQrvKKmi2hQDaQFtJ8zLDmuVmTXRakL8yaVN8zHGx3budD1nmkSy3fjABIozrA07d6pDcFq4yCY87qK/0SA@vger.kernel.org, AJvYcCV4yFvw11d1Lq6q788kp0fKvqNAjIzJC1v+Ca7TC5lqGuXbVl9oXAoyV0f8QPZyBHhIvp3sB/DJ@vger.kernel.org
-X-Gm-Message-State: AOJu0YxFC0NZze0vVaraqAA5WeVIX9bKhHYdNAOoyk0BONzGGmmKi5dp
-	UOGGQ2tU92Qyx4AwIDGGcBYMihTt+YmI8ZkS5mDqI0IiarDVL9l+kTNs
-X-Gm-Gg: ASbGncsGsMp+U2Q5q8FvxQhmmJ2FtwWp3hyhvOCCPapmuaFp1yHdoj/ijqJf/Rh6zQa
-	52bPTzcNEJyftjFaGC9Eimu2h8ljSr8BVz7SunJXXIWB4D0s9QoSYVg4+ztbeuo89wIg94ztrka
-	oJIoRyTdaMHPFC9lZ9jj/vq2i9/W5y21SthniKyErQd1Ig5WGUwPawSmSJuH/muy7YUtclZSQyL
-	uqmPSjRU03MxusqDSpY5SmfvbWsCoZNJhsQdZ+a7xf+fzDBWSayAmzef/T0cWn0qV5biMfoZ5F2
-	+YdZloujIGCQqvN+ZypQbBwCCEGzXMyFW+uff0E8tk6G0Lyh/rRihPQ1E0TUvZq1NyNQAtefM6w
-	jIO14GnFlT3LCnvQqkRpyJ0v89ddjM5i7l7cHJD7azr6EfBLUbTSWhB1kQRY=
-X-Google-Smtp-Source: AGHT+IG5YcJv7gRPiLUXWoPYJT12uySQOIVS9lPTpxptOjBAj2UVXqoD1tWPU/3FVsEas2UhJ6xBsQ==
-X-Received: by 2002:a05:600c:8882:b0:456:1146:5c01 with SMTP id 5b1f17b1804b1-458705801acmr86122455e9.12.1753695840650;
-        Mon, 28 Jul 2025 02:44:00 -0700 (PDT)
+        bh=LQpbll3w5pfASYo5OCw14NJ6BKOsZ4svkyx7C0I92c8=;
+        b=dg5afP5+QOCK0fmwmpGMjFyLr2yHOLV0Dfjso+HIDLcw5R2XXSGH5lgg3b+dTaPsiW
+         mrsf6Rljm4sk+MOT2zSDZAHfCuFeklVdJ85GG4GneWutUFfjDUx8i8Da1y+8x/rg3QQ7
+         fs1wGWBDlFfMIhMGl/oxZJxjcrHhxSpDPCvEylfz6Dh8AkmpvZIhCGpmcexCFw5q7+Oh
+         iaUlgFBWs+Jg1HTTMwu/06VC6P6HJz/5i7suqKwpwREdjKFfOiO7flmbpwgJ2vi2Z+qW
+         GUOsIvTPQp5IC8e5aKxfZlUGZeYWmSIWuIeC4WRzvgpkpM2HkFp//QEgi8SXyX10eY0Z
+         KH3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUpxJyv8aDfOrZSfXDcwMyHkcU2AZnJ0Ryt04x65KYKUk++rDaRiJEN3JTc8w65Srq/cQ4=@vger.kernel.org, AJvYcCVzWTMKAlyzOm2yOgIOicHz8yFtgUQaPycNDO+Qa5ZwuwYnixynvqpt1kPb6RCwCne3PxX7qK65SOQzChAUHZbx@vger.kernel.org, AJvYcCXPFhIrk9doqNjJe+aRHmLdFIAaFW8dKo+NAnAaAmi9DvAcNKLszsDAG7oniRVudZkCZCBK9Y83@vger.kernel.org
+X-Gm-Message-State: AOJu0YwJP+4fBFe6jBlL6LtbTXGxhIFknP2Os6hOs50UszOFM8AAdbRZ
+	whTq4A5XVX+9QpiGwaViy4YypZ1r/9DB1qjx4lfj12m2H5r4v3TyT0P7
+X-Gm-Gg: ASbGncuGQwlf7tJUnO9YJtCa/ROcqPoh0S6s/TkojjEpOESaZy6d8ZmJY4SBVajVhRC
+	hZfv1wQ9cDepjKkrQlkQdeSWw74DD3Frk4ZXPSxWPD8GC5ZpFHF7v84NmCZab9WUG+jAIkF9FEe
+	WA3rk7r4iV659b8g1dTtxaQJiX6YwraOBhzNjtsPj5sbB+iQgi/aBzAs+kq4DMyQ6sHs6Sdi8hZ
+	vrFN/SD3U8BTdjK5gf6WSYLurEb/PlgpfnfZU6h7zh+SZUx2jJVGz+4rqLm2/siHZZ4Uhb+koVf
+	RqRMHUFu4/WnzArKGm2UdZ6XQIfCbuOmeRdOueYCMWV3H/4HyAMzETbRD/Y43uAE/wSDZ8xLH2w
+	ejzPSnyMb4YKJ4DYnUMh7KeYSYs+26rRO6k4F0M4cLFSsSOmr
+X-Google-Smtp-Source: AGHT+IG7zoWXd3OhLpG3IH76xQg5CAOEMoO/I41EqW5cLVt/mpUHo/XgN6ZnZgHSxF7JODuJNO8BfA==
+X-Received: by 2002:a05:600c:a0c:b0:456:1923:7549 with SMTP id 5b1f17b1804b1-4587655b790mr81378335e9.26.1753695841875;
+        Mon, 28 Jul 2025 02:44:01 -0700 (PDT)
 Received: from mtardy-friendly-lvh-runner.c.cilium-dev.internal ([2600:1900:4010:1a8::])
-        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-458705bcbfbsm153422725e9.16.2025.07.28.02.43.59
+        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-458705bcbfbsm153422725e9.16.2025.07.28.02.44.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jul 2025 02:43:59 -0700 (PDT)
+        Mon, 28 Jul 2025 02:44:00 -0700 (PDT)
 From: Mahe Tardy <mahe.tardy@gmail.com>
 To: lkp@intel.com
 Cc: alexei.starovoitov@gmail.com,
@@ -89,12 +89,13 @@ Cc: alexei.starovoitov@gmail.com,
 	netfilter-devel@vger.kernel.org,
 	oe-kbuild-all@lists.linux.dev,
 	pablo@netfilter.org
-Subject: [PATCH bpf-next v3 0/4] bpf: add icmp_send_unreach kfunc
-Date: Mon, 28 Jul 2025 09:43:41 +0000
-Message-Id: <20250728094345.46132-1-mahe.tardy@gmail.com>
+Subject: [PATCH bpf-next v3 1/4] net: move netfilter nf_reject_fill_skb_dst to core ipv4
+Date: Mon, 28 Jul 2025 09:43:42 +0000
+Message-Id: <20250728094345.46132-2-mahe.tardy@gmail.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <202507270940.kXGmRbg5-lkp@intel.com>
+In-Reply-To: <20250728094345.46132-1-mahe.tardy@gmail.com>
 References: <202507270940.kXGmRbg5-lkp@intel.com>
+ <20250728094345.46132-1-mahe.tardy@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -103,68 +104,103 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hello,
+Move and rename nf_reject_fill_skb_dst from
+ipv4/netfilter/nf_reject_ipv4 to ip_route_reply_fetch_dst in
+ipv4/route.c so that it can be reused in the following patches by BPF
+kfuncs.
 
-This is v3 of adding the icmp_send_unreach kfunc, as suggested during
-LSF/MM/BPF 2025[^1]. The goal is to allow cgroup_skb programs to
-actively reject east-west traffic, similarly to what is possible to do
-with netfilter reject target.
+Netfilter uses nf_ip_route that is almost a transparent wrapper around
+ip_route_output_key so this patch inlines it.
 
-The first step to implement this is using ICMP control messages, with
-the ICMP_DEST_UNREACH type with various code ICMP_NET_UNREACH,
-ICMP_HOST_UNREACH, ICMP_PROT_UNREACH, etc. This is easier to implement
-than a TCP RST reply and will already hint the client TCP stack to abort
-the connection and not retry extensively.
+Signed-off-by: Mahe Tardy <mahe.tardy@gmail.com>
+---
+ include/net/route.h                 |  1 +
+ net/ipv4/netfilter/nf_reject_ipv4.c | 19 ++-----------------
+ net/ipv4/route.c                    | 15 +++++++++++++++
+ 3 files changed, 18 insertions(+), 17 deletions(-)
 
-Note that this is different than the sock_destroy kfunc, that along
-calls tcp_abort and thus sends a reset, destroying the underlying
-socket.
+diff --git a/include/net/route.h b/include/net/route.h
+index 8e39aa822cf9..1f032f768d52 100644
+--- a/include/net/route.h
++++ b/include/net/route.h
+@@ -173,6 +173,7 @@ struct rtable *ip_route_output_flow(struct net *, struct flowi4 *flp,
+ 				    const struct sock *sk);
+ struct dst_entry *ipv4_blackhole_route(struct net *net,
+ 				       struct dst_entry *dst_orig);
++int ip_route_reply_fetch_dst(struct sk_buff *skb);
 
-Caveats of this kfunc design are that a cgroup_skb program can call this
-function N times, thus send N ICMP unreach control messages and that the
-program can return from the BPF filter with SK_PASS leading to a
-potential confusing situation where the TCP connection was established
-while the client received ICMP_DEST_UNREACH messages.
+ static inline struct rtable *ip_route_output_key(struct net *net, struct flowi4 *flp)
+ {
+diff --git a/net/ipv4/netfilter/nf_reject_ipv4.c b/net/ipv4/netfilter/nf_reject_ipv4.c
+index 87fd945a0d27..76beb78f556a 100644
+--- a/net/ipv4/netfilter/nf_reject_ipv4.c
++++ b/net/ipv4/netfilter/nf_reject_ipv4.c
+@@ -220,21 +220,6 @@ void nf_reject_ip_tcphdr_put(struct sk_buff *nskb, const struct sk_buff *oldskb,
+ }
+ EXPORT_SYMBOL_GPL(nf_reject_ip_tcphdr_put);
 
-Another more sophisticated design idea would be for the kfunc to set the
-kernel to send an ICMP_HOST_UNREACH control message with the appropriate
-code when the cgroup_skb program terminates with SK_DROP. Creating a new
-'SK_REJECT' return code for cgroup_skb program was generally rejected
-and would be too limited for other program types support.
+-static int nf_reject_fill_skb_dst(struct sk_buff *skb_in)
+-{
+-	struct dst_entry *dst = NULL;
+-	struct flowi fl;
+-
+-	memset(&fl, 0, sizeof(struct flowi));
+-	fl.u.ip4.daddr = ip_hdr(skb_in)->saddr;
+-	nf_ip_route(dev_net(skb_in->dev), &dst, &fl, false);
+-	if (!dst)
+-		return -1;
+-
+-	skb_dst_set(skb_in, dst);
+-	return 0;
+-}
+-
+ /* Send RST reply */
+ void nf_send_reset(struct net *net, struct sock *sk, struct sk_buff *oldskb,
+ 		   int hook)
+@@ -248,7 +233,7 @@ void nf_send_reset(struct net *net, struct sock *sk, struct sk_buff *oldskb,
+ 		return;
 
-We should bear in mind that we want to add a TCP reset kfunc next and
-also could extend this kfunc to other program types if wanted.
+ 	if ((hook == NF_INET_PRE_ROUTING || hook == NF_INET_INGRESS) &&
+-	    nf_reject_fill_skb_dst(oldskb) < 0)
++	    ip_route_reply_fetch_dst(oldskb) < 0)
+ 		return;
 
-v2 updates:
-- fix a build error from a missing function call rename;
-- avoid changing return line in bpf_kfunc_init;
-- return SK_DROP from the kfunc (similarly to bpf_redirect);
-- check the return value in the selftest.
+ 	if (skb_rtable(oldskb)->rt_flags & (RTCF_BROADCAST | RTCF_MULTICAST))
+@@ -322,7 +307,7 @@ void nf_send_unreach(struct sk_buff *skb_in, int code, int hook)
+ 		return;
 
-v3 update:
-- fix an undefined reference build error.
+ 	if ((hook == NF_INET_PRE_ROUTING || hook == NF_INET_INGRESS) &&
+-	    nf_reject_fill_skb_dst(skb_in) < 0)
++	    ip_route_reply_fetch_dst(skb_in) < 0)
+ 		return;
 
-[^1]: https://lwn.net/Articles/1022034/
+ 	if (skb_csum_unnecessary(skb_in) ||
+diff --git a/net/ipv4/route.c b/net/ipv4/route.c
+index fccb05fb3a79..59b8fc3c01c0 100644
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -2934,6 +2934,21 @@ struct rtable *ip_route_output_flow(struct net *net, struct flowi4 *flp4,
+ }
+ EXPORT_SYMBOL_GPL(ip_route_output_flow);
 
-Mahe Tardy (4):
-  net: move netfilter nf_reject_fill_skb_dst to core ipv4
-  net: move netfilter nf_reject6_fill_skb_dst to core ipv6
-  bpf: add bpf_icmp_send_unreach cgroup_skb kfunc
-  selftests/bpf: add icmp_send_unreach kfunc tests
-
- include/net/ip6_route.h                       |  2 +
- include/net/route.h                           |  1 +
- net/core/filter.c                             | 61 ++++++++++++
- net/ipv4/netfilter/nf_reject_ipv4.c           | 19 +---
- net/ipv4/route.c                              | 15 +++
- net/ipv6/netfilter/nf_reject_ipv6.c           | 17 +---
- net/ipv6/route.c                              | 18 ++++
- .../bpf/prog_tests/icmp_send_unreach_kfunc.c  | 99 +++++++++++++++++++
- .../selftests/bpf/progs/icmp_send_unreach.c   | 36 +++++++
- 9 files changed, 235 insertions(+), 33 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/icmp_send_unreach_kfunc.c
- create mode 100644 tools/testing/selftests/bpf/progs/icmp_send_unreach.c
-
++int ip_route_reply_fetch_dst(struct sk_buff *skb)
++{
++	struct rtable *rt;
++	struct flowi4 fl4 = {
++		.daddr = ip_hdr(skb)->saddr
++	};
++
++	rt = ip_route_output_key(dev_net(skb->dev), &fl4);
++	if (IS_ERR(rt))
++		return PTR_ERR(rt);
++	skb_dst_set(skb, &rt->dst);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(ip_route_reply_fetch_dst);
++
+ /* called with rcu_read_lock held */
+ static int rt_fill_info(struct net *net, __be32 dst, __be32 src,
+ 			struct rtable *rt, u32 table_id, dscp_t dscp,
 --
 2.34.1
 
