@@ -1,392 +1,249 @@
-Return-Path: <bpf+bounces-64486-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64487-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51245B13636
-	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 10:20:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E68B3B13647
+	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 10:21:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00F843B8934
-	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 08:20:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A4441899AF5
+	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 08:22:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 414E822F76C;
-	Mon, 28 Jul 2025 08:20:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E56E231A4D;
+	Mon, 28 Jul 2025 08:21:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b="gp72qQo3"
 X-Original-To: bpf@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20723223335;
-	Mon, 28 Jul 2025 08:20:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753690827; cv=none; b=i7rxSz4i3JjJ5ThlIBRRF1LKPBIO3DCugzV6pFMZ9dlw+PfQC7J/ii6+m6v0817tymZ7RBYLmHP1q1Pzy7a5Qa735tAuSdQ4Wj1FpZiwlYeTUvcHGxIhQyzICimoN30f2QvmBRu92efjqs0iDNx1eFY23B0fNs20YtP/yk+ZxSg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753690827; c=relaxed/simple;
-	bh=952470Bh2x0ElBhbqrd+qI3pgSq55U4sbWS7Uq/2cRg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=ug0Y/Dvj0Y3zrYfSqvYtU8Eqy1+IQ4tN0EMibe2OzhwN+0/suTjmxjZScwrXg0hYyb/W9bdKkKrZvx4RFJqUJDm+6Pq8U53vO2wQHwSRQsgiJ2+DiKliGaq7rqmicG+2eSjosg65FWrg2OJv9gdzffMWhherwFWkZWWNPIufUHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-681ff7000002311f-1a-688732c3f9fa
-From: Byungchul Park <byungchul@sk.com>
-To: linux-mm@kvack.org,
-	netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel_team@skhynix.com,
-	harry.yoo@oracle.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	davem@davemloft.net,
-	kuba@kernel.org,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	sdf@fomichev.me,
-	saeedm@nvidia.com,
-	leon@kernel.org,
-	tariqt@nvidia.com,
-	mbloch@nvidia.com,
-	andrew+netdev@lunn.ch,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	akpm@linux-foundation.org,
-	david@redhat.com,
-	lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com,
-	vbabka@suse.cz,
-	rppt@kernel.org,
-	surenb@google.com,
-	mhocko@suse.com,
-	horms@kernel.org,
-	jackmanb@google.com,
-	hannes@cmpxchg.org,
-	ziy@nvidia.com,
-	ilias.apalodimas@linaro.org,
-	willy@infradead.org,
-	brauner@kernel.org,
-	kas@kernel.org,
-	yuzhao@google.com,
-	usamaarif642@gmail.com,
-	baolin.wang@linux.alibaba.com,
-	almasrymina@google.com,
-	toke@redhat.com,
-	asml.silence@gmail.com,
-	bpf@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH v2 rebase as of Jul 28] mm, page_pool: introduce a new page type for page pool in page type
-Date: Mon, 28 Jul 2025 17:20:08 +0900
-Message-Id: <20250728082008.34091-1-byungchul@sk.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20250728052742.81294-1-byungchul@sk.com>
-References: <20250728052742.81294-1-byungchul@sk.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAAzWSa0hTcRjG+++cnXMcrg5T6qRQMenCpDSxes0IMag/hFD0JTKokYe2vI15
-	SaPLUtGSXFIZpQu2TJ2Xsma5KWq1LdOiknlhdvGySrp4KTVvs2xN+vbjfX7P8+llCMkYGcAo
-	k1J5dZI8QUqJSNGIr2GjLSxPEWrWLQVdbQ0F1TMZUDFgEYKuqh7B5Ow7GhaaWxFM2J9T8N02
-	jqDUMEWA7k0OCb9q5wj43OqiodoUA/3lQyQ05ZkJcF1uo6Agx01A8+woDVkWowB0dRoaOuq1
-	Qrg2V0aAWTNAQ2ejjoK+mgUhDFkLSGgvriThR5GdgH5tFLTql8PUy2EE9lqzAKYu3aKg+2aj
-	AK469BR8zOlH4LC5SCiav0BByXktAveMZ220cFIIJc/66CgZtg2PEfhhZa8AO1teCHBD8Qca
-	601puM4ow/lOB4FNVRcpbBq/QuP3PU0UbrvhJnHDYARusEwIcEH2KIV/fn5L4rGWbmqf3yHR
-	jjg+QZnOq0N2HhUpCt02QjW9P6PZwGvQp+h85MNwbDh3zzAk/M+/dTYvU+x6zumcJf6xPxvK
-	GYsmPSxiCPYhzdXUOr2BHxvPafsrvQWSXctVPDB7Wcxu4TTuV4LF0dVc9f0nXt+H3cpVtP/x
-	OhKP05A1TS46ZQzXOKhe5JXcU6OTLERiPVpShSTKpPREuTIhfJMiM0mZselYcqIJed6g/Mx8
-	rAWNdxywIpZBUl/xl225ColQnp6SmWhFHENI/cWqMs9JHCfPPMWrk4+o0xL4FCsKZEjpCnHY
-	1Mk4CXtcnsrH87yKV/9PBYxPgAbdGVqoGfk4H3m4LXl7z5t410hacJeq+va6XY8MRV1Wvw2r
-	ItqD9/aqHkfpZT+T3crru/0U0THOcw7lMp+Q3kjjuRNpedldgb6J/gXP7EHdnfLTmTsrcl27
-	Y3Uo6Kzp0d0InBH57TAtazlqfm2esFu0w47GNS/2Or6W1u+pMx6sF0vJFIV8s4xQp8j/Anxe
-	LVYCAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAAzWRa0hTcRjG/e+cnbONJodlddIPwSAGRmZR+UYRXelP0A2EKJBaeWhLN8em
-	MoNi5ciKXCszSpdNSuemZS2bl1Jkm6sl3WbWuk7tQpGpuaXp7LIWffvxPr/n+fIKCEmATBYo
-	1fmcVi3PlVIiUrR5efF896ISRXqXC8DS2EBB/Q892Ppa+GBxuBBEJl7R8LvdhyDsvUvBF88o
-	gsvVYwRYHhlJ+N44ScAH3wAN9c5NEKr9SMKdkmYCBk7do6DUGCWgfWKIhiMtdTyw3DTQ4Lno
-	58Njl4kPZydrCGg29NHQ02ah4G3Dbz58dJeS4K+wkzBS7iUgZFoFPutMGOseROBtbObB2MmL
-	FPReaONBWcBKwTtjCEHAM0BC+dQxCioPmxBEf8TWhswRPlR2vaVXzcOewWECN9lf8HCw4z4P
-	t1a8obHVWYBv1qXiE8EAgZ2O4xR2jp6h8etndyh873yUxK39y3BrS5iHS4uHKPztw0sSD3f0
-	UluTdopWZHO5ykJOu2DlbpHCHPUQmvFt+vZqzoDerzmBhAKWWcz+tHj4f5liZGwwOEH85SQm
-	na0rj8RYJCCYJpptaAzGg+lMDmsK2eMFkpnL2m40x1nMLGEN0Qe8f6Nz2PrrnXFfyCxlbf5f
-	cUcSc1qPjJNmJLKiBAdKUqoLVXJl7pI0XY6iSK3Up+3NUzlR7NO1B6dOt6BIzwY3YgRIOk38
-	KeOoQsKXF+qKVG7ECghpklhTEzuJs+VFBzht3i5tQS6nc6MUASmdJd64ndstYfbJ87kcjtNw
-	2v8pTyBMNqC0gWjWmS94jl6onbFuvyzTYc/yLht5nulre9pruzW23vUs5XZJvezkZ+naSmL2
-	CrlR5thYd727yXzWHEhMdIRMq88llnVem5VcHN7RY0yIqisaFrV7XTeudrsKrnzN7O9Kq+oO
-	75EKD9lVpq1PHo769VsuVdGadxmvtujLCkuXS0mdQr4wldDq5H8AhTp9/OUCAAA=
-X-CFilter-Loop: Reflected
+Received: from OSPPR02CU001.outbound.protection.outlook.com (mail-norwayeastazon11013063.outbound.protection.outlook.com [40.107.159.63])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9A11231858;
+	Mon, 28 Jul 2025 08:21:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.159.63
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1753690893; cv=fail; b=uxq/Ir9k5dM4SG/D31SgSEGzUTJseO4YBWa2cX5YTNjMq8OvvhIaDMPkvq3aZ1xx7h0UNx6Q4KWEhP1y/zDu10yT7grddyiVJu6lu4+7q4/AVaeZvZrkvNjBxxtQdlolgPCXJYOVcpybqO7WAkW3UddyV0huyLienNQT05Wv8vE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1753690893; c=relaxed/simple;
+	bh=39sbgf+SXcHpXnHPuINj18OH5LmhvFUgpjMoPYgKgZ4=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=cLxdv5fR9ItLICvUsEDqcMz//YYJzoJdQ6Xtwr3ikThLiSGRvUnm63/jYE+p4jA3A4SsZjuN3XzQLaoW/ALOGVgyFjD9weavTOLwbHqe2HKgW6EWqaFvcmdMtQKpBOGE75GJ42s3vVYgl1S3qQ6bnBvAF3k/gC18RCxCs1rUuOg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com; spf=fail smtp.mailfrom=nokia-bell-labs.com; dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b=gp72qQo3; arc=fail smtp.client-ip=40.107.159.63
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nokia-bell-labs.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=gmLxqYK6O/JyBCERrV2YDMrJn5aWxIX+oEbnW0YfcyFcim3g+knG3VpmbgEYR/ueHMINp8Z5fY/aXEgzsZ9AV1HCdHm6jy3xfqRKgssKUZscru7bhwLttsTZjR2S0qiD9Lf+m3Gmm8CMNV+JAKv3IAdPuYAeVe3N0uHGKCNO9U/mKvR0ZVJg1BioXD+BomSfvIJZxzfBLmMMFDB0rqNGY2x6awEhKwAlPGzG+dkbmtj5BlRQkdtjCkixEy/oA7WrL4PbcULom9orfAE6YquKtDggIvLkNgvYXaZI7vpRuYEgqz1wgNW5YBpqXTF9c2II9NeIhcMlOTq3WFe9mjdJRA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=39sbgf+SXcHpXnHPuINj18OH5LmhvFUgpjMoPYgKgZ4=;
+ b=lqWOYyqMQyMjsnES2TU2AZ7capgDyWO6wCy70uLzcDjJrU1Nw3S1mFWhn9xFVm1mTIK88HsmtX6GDNfdShpsUsfzKYN6nVL1Dq/vMTlsMiQ4XbJdqGNSb3ofsxZvzjlEmXcv3fZ6TamLDsuJaZfQYAoROwUJcS4dJOyrN4Hdj5sH4xdjZmYkxDEp8codU86tu9/EtWyX7i6v3tJTIKSNm2cMtXckGuHrQvFcv4j5RUNqtkSqSUQfnkGAHQor/YY9srwAZroxDuB9vtvFtXI5Sn6Q7JbSOdP828N2dTkvJMWopyVah24e2jN9Oz+Fuij6Sks3vo8XcovMZqXXSv836Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nokia-bell-labs.com; dmarc=pass action=none
+ header.from=nokia-bell-labs.com; dkim=pass header.d=nokia-bell-labs.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia-bell-labs.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=39sbgf+SXcHpXnHPuINj18OH5LmhvFUgpjMoPYgKgZ4=;
+ b=gp72qQo3Z8EW20U9JmcDMumaa4tM1dKll7P6Qd3yqDJfBug4JQTuSRScDpoVuXjj1a8HWMdPVl40s42dFW0kKV2VrgQtypU9j1SS/Tj/KPH71TDga0RX2vUNB3hmvitnH8peKjJAW6yPk7KMstc5mD74+uyAlWL8DwEseQMkzg6r1Ql13PTzElabjvIEupYcJwQ/+1BcJP7g8ezxWXyLhH+R5PY2r1ETj2qn7JVoekgXFbgLQ8LN4srKCfC8UOB2U3GGiE8WeUApYOelDTwE3z9yLbvybUCWtjQveJHJ8c1gMLlvEPmgtu/U0JqGR+/OYCMQbQKN69e/hIpaJZZs8w==
+Received: from PAXPR07MB7984.eurprd07.prod.outlook.com (2603:10a6:102:133::12)
+ by PAXPR07MB9601.eurprd07.prod.outlook.com (2603:10a6:102:247::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8964.26; Mon, 28 Jul
+ 2025 08:21:27 +0000
+Received: from PAXPR07MB7984.eurprd07.prod.outlook.com
+ ([fe80::b7f8:dc0a:7e8d:56]) by PAXPR07MB7984.eurprd07.prod.outlook.com
+ ([fe80::b7f8:dc0a:7e8d:56%6]) with mapi id 15.20.8964.025; Mon, 28 Jul 2025
+ 08:21:27 +0000
+From: "Chia-Yu Chang (Nokia)" <chia-yu.chang@nokia-bell-labs.com>
+To: Paolo Abeni <pabeni@redhat.com>, "edumazet@google.com"
+	<edumazet@google.com>, "linux-doc@vger.kernel.org"
+	<linux-doc@vger.kernel.org>, "corbet@lwn.net" <corbet@lwn.net>,
+	"horms@kernel.org" <horms@kernel.org>, "dsahern@kernel.org"
+	<dsahern@kernel.org>, "kuniyu@amazon.com" <kuniyu@amazon.com>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, "dave.taht@gmail.com" <dave.taht@gmail.com>,
+	"jhs@mojatatu.com" <jhs@mojatatu.com>, "kuba@kernel.org" <kuba@kernel.org>,
+	"stephen@networkplumber.org" <stephen@networkplumber.org>,
+	"xiyou.wangcong@gmail.com" <xiyou.wangcong@gmail.com>, "jiri@resnulli.us"
+	<jiri@resnulli.us>, "davem@davemloft.net" <davem@davemloft.net>,
+	"andrew+netdev@lunn.ch" <andrew+netdev@lunn.ch>, "donald.hunter@gmail.com"
+	<donald.hunter@gmail.com>, "ast@fiberby.net" <ast@fiberby.net>,
+	"liuhangbin@gmail.com" <liuhangbin@gmail.com>, "shuah@kernel.org"
+	<shuah@kernel.org>, "linux-kselftest@vger.kernel.org"
+	<linux-kselftest@vger.kernel.org>, "ij@kernel.org" <ij@kernel.org>,
+	"ncardwell@google.com" <ncardwell@google.com>, "Koen De Schepper (Nokia)"
+	<koen.de_schepper@nokia-bell-labs.com>, "g.white@cablelabs.com"
+	<g.white@cablelabs.com>, "ingemar.s.johansson@ericsson.com"
+	<ingemar.s.johansson@ericsson.com>, "mirja.kuehlewind@ericsson.com"
+	<mirja.kuehlewind@ericsson.com>, "cheshire@apple.com" <cheshire@apple.com>,
+	"rs.ietf@gmx.at" <rs.ietf@gmx.at>, "Jason_Livingood@comcast.com"
+	<Jason_Livingood@comcast.com>, "vidhi_goel@apple.com" <vidhi_goel@apple.com>
+Subject: RE: [PATCH v14 net-next 00/14] AccECN protocol patch series
+Thread-Topic: [PATCH v14 net-next 00/14] AccECN protocol patch series
+Thread-Index: AQHb+u9Wsvbmfakbnk6OyT7s46V2OLRBQusAgAX3ioA=
+Date: Mon, 28 Jul 2025 08:21:27 +0000
+Message-ID:
+ <PAXPR07MB798417C584E5949EB903B8E0A35AA@PAXPR07MB7984.eurprd07.prod.outlook.com>
+References: <20250722095931.24510-1-chia-yu.chang@nokia-bell-labs.com>
+ <e79b4382-9421-498d-8b8c-6157ff070a34@redhat.com>
+In-Reply-To: <e79b4382-9421-498d-8b8c-6157ff070a34@redhat.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nokia-bell-labs.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PAXPR07MB7984:EE_|PAXPR07MB9601:EE_
+x-ms-office365-filtering-correlation-id: 454a58ba-ea40-46cc-cb9b-08ddcdafbf95
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|376014|7416014|366016|1800799024|921020|38070700018;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?OOq2TRMwA4CfN1u3Tx8MAPn6It781Uxv+Fq31nNAa1wskO/fHLHDV4Tk42Zq?=
+ =?us-ascii?Q?sKXWPoNkoqhH172Js6MMESFop7vA8NrZFBfJSsAu7Zt/ijyjO7lVldAi/+Sa?=
+ =?us-ascii?Q?bq3w87WKv9RE9whzYzTu3sKNtURv9hIBlVqFweLXpyIEXalanj2P0NUNAMpn?=
+ =?us-ascii?Q?wuexoQO9Zy010PGN2s0TDefLGN6D94pRoYBkvAtEgDPwVBNQEKW7SzGQ1o62?=
+ =?us-ascii?Q?ix4aFiGVfVfo4HmwqgQuVy5RO+ypzFJpYznWCGfzgsl6xqF27CGePzXnb/Bs?=
+ =?us-ascii?Q?4uh0Q1+ZEl0wutPjbBITJ99wWzgywV3DTdNb+vdzl9WNy7hljy0eZyn7sfWz?=
+ =?us-ascii?Q?m67HsoLtzoUjZbrQG6Jghl2YLS37knVlvJKYA3wU5z+RdnJfwviGFdhna280?=
+ =?us-ascii?Q?IMjQ+j8dZItPcDtZXCZ5FxDaWvDGBECeGHFHL5hh8Y7ldvnBA0woqWyWvzAq?=
+ =?us-ascii?Q?rth5L2w1FC0FJMOhV49CHDm2Rhhap13x52IYWqIXv+YQF3b2zcPXbl4wPFb1?=
+ =?us-ascii?Q?eUVu1XB6ZF2LVTX16g7MQ3KO720tt6wqF5Aik5IfmTEy+s6sgBml0ELKpmC6?=
+ =?us-ascii?Q?X9Uqdhjto5u++1LHnQL02Q5pAXQYbZW2DQ6o0pgrs83rZIVAW1d9VRmigyct?=
+ =?us-ascii?Q?mFT8n02BOQp4PXLNPuXH20NAtMcT71RKkkuVnSiItNWIBFukpRay6N3k/m12?=
+ =?us-ascii?Q?nvYzzxnpznEC4vpxMXOEAukiuDx/nhcWyEsQCz1AhnjOZXN/yxU42yb+QnKU?=
+ =?us-ascii?Q?5bZLSNiIXEjnnUuQl92nwlOEMUwwdhOJWTsKy/NLphjFm0J9IJOb21jRethe?=
+ =?us-ascii?Q?27rNZV8YD5yP0ETmJpUF7v0i6cTGhbQVukOSg7mOUM+N8jSfvGmv9uyAeBYq?=
+ =?us-ascii?Q?aG+ie/rmRg8q/fSu312jaic6SX1dXfuJpg5uNmQBnHc/aEU5olOdjLs1Pdbk?=
+ =?us-ascii?Q?+luJJl9M8wBpngBFZxmlerynfxIOTwkFX9mGNPGOvkPZ6389brGVIKicGvx2?=
+ =?us-ascii?Q?zCDxyAfMByASnyNs84PI5FOlrKxj8vPvRv6onRv3EycRruPegbTkPbUAXy3P?=
+ =?us-ascii?Q?d8esL1kHOS58ttcQr2FPRbxBERls6B78PrGompZOz2rDX2LQvdw4jAePRrlE?=
+ =?us-ascii?Q?2hC/MmkznEaUfUoN1HnKPBL05TI81v2S9fTl3QTlqTl7vp0krEhpxYGhqQmG?=
+ =?us-ascii?Q?rC6uKd/e+ajmjGXFCFu/Dx1NQ5unRAMolREICvUrSlaZacD0c+rNf3lt+Csw?=
+ =?us-ascii?Q?JmIfMszm9TteV1YEemzMA9nfs6mM2uDAot0ZYal7BYCgG8gr355JDQ3Y5knU?=
+ =?us-ascii?Q?kE7OPnyQXsHOR7jrj+V6fIhhfgUhelp8Cfcrj0pZe2JbQBrJa3jTVBp0WXZy?=
+ =?us-ascii?Q?W5odPj8LN69OMY1IviOz383Yzn6AUVNttHJkMfSiDABavOqwoPgKD6CcPlv2?=
+ =?us-ascii?Q?mlW6EIGtwEURPGzTT4GXy7xfsmZ9Q33m5WewqfIAnZZewya+NcVwxOjG/Sv7?=
+ =?us-ascii?Q?BAc5aUxJ6S/Z3GtA9Jlgb6dVrddZNXzqKT3L?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR07MB7984.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024)(921020)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?WTnBcm3fhV6ejKuSAl5ZkplOnKj10mPsrkhkrTLjbjj+5c8rVOxLwmLRvN8o?=
+ =?us-ascii?Q?0/J78p0EVneNtr/onwNO4WQqCnub1rbrQ3tu9CliNAf/KvriEcY/Gap9Zyco?=
+ =?us-ascii?Q?QTkYNx6tdGnaFRdf2HFs6Bk8XtykaM3t9SU1xBRGvIsE1mCeOKX0XnLnvCd0?=
+ =?us-ascii?Q?BFscvsVjywvxssHMFelP1/6JvMFpxXVpG/+m0v9VDbXgHn798fxkK2viPJtv?=
+ =?us-ascii?Q?PYPeHG1Jwzyz8ho2ZBnzKrbqu8cSYOJMFpEVISOH+7xTM4ckF5gPoYdDiLnE?=
+ =?us-ascii?Q?j/1dlvT/nmC7ui+mw3kJoaCRpyQAxGb0RWxQcP/lQaGsUkCIckeGMD8yLWK/?=
+ =?us-ascii?Q?UGwdRRSTAB+2F0zrISVKPeuL1095PSyKcU+7LfTQLvzUvDcCMjBuUVYRAy4V?=
+ =?us-ascii?Q?PSwRUfc7XpELYQqeYtXB3ic/rF2/t7O6nesB0fSd6cCHHd7jGqfCLlL9bKpV?=
+ =?us-ascii?Q?9VEyAK2FgdEGNXJSh87yJpIjBzSofjON1piovW6640XgzMHc5lSBSljYjoM4?=
+ =?us-ascii?Q?LSwy8twV3eo+bg4xz8cOLPV1cYZMqKxKRSn5z+w3/EL8VN//Dy6mim7ZwJwu?=
+ =?us-ascii?Q?1I9VHFTUSKMvRX5ih1WxiDdoLyPN6+UI33lS8OqNma74L/Tbk4tBzW+TFae1?=
+ =?us-ascii?Q?13LWjg91OkGGjoTykVUBvge4gsFxOfp2Pe1mUt4e/nbe62x1bgP0UCzysFNc?=
+ =?us-ascii?Q?JESTWj6XL4kCj44WQHT/DkyYTwE1Qlev20Mb2SAZh13QKvvDkDcb/n+pjwvo?=
+ =?us-ascii?Q?oWmZIPbRoUVqnrQYyltYmAsji1N39ZkJUIFFgyf2CyYK14Pf1tyAEb46JUbI?=
+ =?us-ascii?Q?KHYm/GLqEsmW+HnsL4v8CDl2YI/eF/hCQvP4KxefzlYsZR6pvOOzlc9ODVhh?=
+ =?us-ascii?Q?sNmPgwmGfvsXub+1yF1lpMML6nALJue8ld27dZ/hJpzOt2BSGrbkRytoDfUU?=
+ =?us-ascii?Q?uIBTwMZAeVkHQ5fxapar2Zotzp7m6uw/ok6DETjIwU3DAJvrPXJvCmvQr7aM?=
+ =?us-ascii?Q?dDGCmqA5lLrr3lec4E66A3cmvZr9HRFrpzgPLqY4Mo6aFq98lUIseUjD1H45?=
+ =?us-ascii?Q?1vgxFbVDMO4M5tx8Vd1BseHB0UtvGooQcsID/JxVsUfqSAPxDCxmoSt+qkiq?=
+ =?us-ascii?Q?jJG9TACXmYr89H8Ns0lT4PFdnnXhcj6dDLglAlrslKfAOCc+kroUtV/KxkIE?=
+ =?us-ascii?Q?/PUTyMvYU0+blcxc8SUIGlAXS49WCtxs3kNeNu8JfQCpQGOrIwH0po6Ck6wm?=
+ =?us-ascii?Q?ME6ASEodr5llnWU7HHMbaFjLHKDRge1ayE9N/LFzYVQKVdTOuFYEMt3clCTd?=
+ =?us-ascii?Q?aiMQMO7zntl8QbMGjKLXs9jRgtSjYj97Zr4f2K99jpNtuwZg6u349wptFZCG?=
+ =?us-ascii?Q?jH5m2OuBwqJjdoSAlgIFatYIhm+ICI07wc8Fm4FKGKThnHCMFjubo+c6UTUz?=
+ =?us-ascii?Q?I8RstHUmSmTclmuqI/pe/DNBNDwAtIAGbdlcF4QKAIk2AVvcx1GzATFoz4ns?=
+ =?us-ascii?Q?rFOLM47d/iV1qNC9b1HFdc/usYOOjnINCyBzsh8htzzvxX75Vl1rF9PIBVFs?=
+ =?us-ascii?Q?KXdqm03oJX7TYZgWWw78ckGx6nP/sBUSzbu8qIfA4jw4zIyXqTTwd6d1B229?=
+ =?us-ascii?Q?ImT+cXl4Rb4Wbdec49zw9C8=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-OriginatorOrg: nokia-bell-labs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR07MB7984.eurprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 454a58ba-ea40-46cc-cb9b-08ddcdafbf95
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jul 2025 08:21:27.3638
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: P2PbMLI00ns+8EokD8rBEDw9so1TFMw2UlEl0+jV+Mn0BmWWMEX+GC04fIr99lX9MKaztwSFRZSR+lrkzrXngNfoEBHao5VgjxkWXmLZsWP66Oz+ljAW1VftJrVPBoga
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR07MB9601
 
-Rebasing on the latest linux-next/master is required.  Otherwise, a
-build fail is observed.  Sorry about the noise.
+> -----Original Message-----
+> From: Paolo Abeni <pabeni@redhat.com>=20
+> Sent: Thursday, July 24, 2025 3:11 PM
+> To: Chia-Yu Chang (Nokia) <chia-yu.chang@nokia-bell-labs.com>; edumazet@g=
+oogle.com; linux-doc@vger.kernel.org; corbet@lwn.net; horms@kernel.org; dsa=
+hern@kernel.org; kuniyu@amazon.com; bpf@vger.kernel.org; netdev@vger.kernel=
+.org; dave.taht@gmail.com; jhs@mojatatu.com; kuba@kernel.org; stephen@netwo=
+rkplumber.org; xiyou.wangcong@gmail.com; jiri@resnulli.us; davem@davemloft.=
+net; andrew+netdev@lunn.ch; donald.hunter@gmail.com; ast@fiberby.net; liuha=
+ngbin@gmail.com; shuah@kernel.org; linux-kselftest@vger.kernel.org; ij@kern=
+el.org; ncardwell@google.com; Koen De Schepper (Nokia) <koen.de_schepper@no=
+kia-bell-labs.com>; g.white@cablelabs.com; ingemar.s.johansson@ericsson.com=
+; mirja.kuehlewind@ericsson.com; cheshire@apple.com; rs.ietf@gmx.at; Jason_=
+Livingood@comcast.com; vidhi_goel@apple.com
+> Subject: Re: [PATCH v14 net-next 00/14] AccECN protocol patch series
+>=20
+>=20
+> CAUTION: This is an external email. Please be very careful when clicking =
+links or opening attachments. See the URL nok.it/ext for additional informa=
+tion.
+>=20
+>=20
+>=20
+> Hi,
+>=20
+> On 7/22/25 11:59 AM, chia-yu.chang@nokia-bell-labs.com wrote:
+> > From: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
+> >
+> > Please find the v14 AccECN protocol patch series, which covers the=20
+> > core functionality of Accurate ECN, AccECN negotiation, AccECN TCP=20
+> > options, and AccECN failure handling. The Accurate ECN draft can be=20
+> > found in
+> > https://datatracker.ietf.org/doc/html/draft-ietf-tcpm-accurate-ecn-28
+> >
+> > This patch series is part of the full AccECN patch series, which is=20
+> > available at
+> > https://eur03.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fgit=
+h
+> > ub.com%2FL4STeam%2Flinux-net-next%2Fcommits%2Fupstream_l4steam%2F&data
+> > =3D05%7C02%7Cchia-yu.chang%40nokia-bell-labs.com%7Cdea2afda16db47bac335=
+0
+> > 8ddcab38c99%7C5d4717519675428d917b70f44f9630b0%7C0%7C0%7C6388895946950
+> > 64349%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAw
+> > MCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdat
+> > a=3D31iNaKPYVFldNPeSytOPmepH4K4TebzVzevkuiPwV70%3D&reserved=3D0
+>=20
+> I don't have any additional comments, but let's wait for Eric's review.
+>=20
+> Also we are very far in the development cycle, likely this will have to b=
+e postponed to the next cycle.
+>=20
+> Thanks,
+>=20
+> Paolo
 
-Changes from v1:
-	1. Rebase on linux-next.
-	2. Initialize net_iov->pp = NULL when allocating net_iov in
-	   net_devmem_bind_dmabuf() and io_zcrx_create_area().
-	3. Use ->pp for net_iov to identify if it's pp rather than
-	   always consider net_iov as pp.
-	4. Add Suggested-by: David Hildenbrand <david@redhat.com>.
+Hi,
 
----8<---
-From 26c9a731f388b788d6ea972c313bc8da8831412b Mon Sep 17 00:00:00 2001
-From: Byungchul Park <byungchul@sk.com>
-Date: Mon, 28 Jul 2025 17:09:20 +0900
-Subject: [PATCH v2 rebase as of Jul 28] mm, page_pool: introduce a new page type for page pool in page type
+Thanks for the feedback, and I see this patch series is now marked as "defe=
+rred".
 
-->pp_magic field in struct page is current used to identify if a page
-belongs to a page pool.  However, ->pp_magic will be removed and page
-type bit in struct page e.i. PGTY_netpp can be used for that purpose.
+May I ask what shall I do (or just wait for the announcement of the next cy=
+cle) to proceed?
 
-Introduce and use the page type APIs e.g. PageNetpp(), __SetPageNetpp(),
-and __ClearPageNetpp() instead, and remove the existing APIs accessing
-->pp_magic e.g. page_pool_page_is_pp(), netmem_or_pp_magic(), and
-netmem_clear_pp_magic().
-
-For net_iov, use ->pp to identify if it's pp, with making sure that ->pp
-is NULL for non-pp net_iov.
-
-This work was inspired by the following link:
-
-[1] https://lore.kernel.org/all/582f41c0-2742-4400-9c81-0d46bf4e8314@gmail.com/
-
-While at it, move the sanity check for page pool to on free.
-
-Suggested-by: David Hildenbrand <david@redhat.com>
-Signed-off-by: Byungchul Park <byungchul@sk.com>
----
- .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  2 +-
- include/linux/mm.h                            | 27 +++----------------
- include/linux/page-flags.h                    |  6 +++++
- include/net/netmem.h                          |  2 +-
- io_uring/zcrx.c                               |  1 +
- mm/page_alloc.c                               |  7 +++--
- net/core/devmem.c                             |  1 +
- net/core/netmem_priv.h                        | 23 +++++++---------
- net/core/page_pool.c                          | 10 +++++--
- 9 files changed, 34 insertions(+), 45 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-index 5d51600935a6..def274f5c1ca 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-@@ -707,7 +707,7 @@ static void mlx5e_free_xdpsq_desc(struct mlx5e_xdpsq *sq,
- 				xdpi = mlx5e_xdpi_fifo_pop(xdpi_fifo);
- 				page = xdpi.page.page;
- 
--				/* No need to check page_pool_page_is_pp() as we
-+				/* No need to check PageNetpp() as we
- 				 * know this is a page_pool page.
- 				 */
- 				page_pool_recycle_direct(pp_page_to_nmdesc(page)->pp,
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 0d4ee569aa6b..d01b296e7184 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -4171,10 +4171,9 @@ int arch_lock_shadow_stack_status(struct task_struct *t, unsigned long status);
-  * DMA mapping IDs for page_pool
-  *
-  * When DMA-mapping a page, page_pool allocates an ID (from an xarray) and
-- * stashes it in the upper bits of page->pp_magic. We always want to be able to
-- * unambiguously identify page pool pages (using page_pool_page_is_pp()). Non-PP
-- * pages can have arbitrary kernel pointers stored in the same field as pp_magic
-- * (since it overlaps with page->lru.next), so we must ensure that we cannot
-+ * stashes it in the upper bits of page->pp_magic. Non-PP pages can have
-+ * arbitrary kernel pointers stored in the same field as pp_magic (since
-+ * it overlaps with page->lru.next), so we must ensure that we cannot
-  * mistake a valid kernel pointer with any of the values we write into this
-  * field.
-  *
-@@ -4205,26 +4204,6 @@ int arch_lock_shadow_stack_status(struct task_struct *t, unsigned long status);
- #define PP_DMA_INDEX_MASK GENMASK(PP_DMA_INDEX_BITS + PP_DMA_INDEX_SHIFT - 1, \
- 				  PP_DMA_INDEX_SHIFT)
- 
--/* Mask used for checking in page_pool_page_is_pp() below. page->pp_magic is
-- * OR'ed with PP_SIGNATURE after the allocation in order to preserve bit 0 for
-- * the head page of compound page and bit 1 for pfmemalloc page, as well as the
-- * bits used for the DMA index. page_is_pfmemalloc() is checked in
-- * __page_pool_put_page() to avoid recycling the pfmemalloc page.
-- */
--#define PP_MAGIC_MASK ~(PP_DMA_INDEX_MASK | 0x3UL)
--
--#ifdef CONFIG_PAGE_POOL
--static inline bool page_pool_page_is_pp(const struct page *page)
--{
--	return (page->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE;
--}
--#else
--static inline bool page_pool_page_is_pp(const struct page *page)
--{
--	return false;
--}
--#endif
--
- #define PAGE_SNAPSHOT_FAITHFUL (1 << 0)
- #define PAGE_SNAPSHOT_PG_BUDDY (1 << 1)
- #define PAGE_SNAPSHOT_PG_IDLE  (1 << 2)
-diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-index 8d3fa3a91ce4..84247e39e9e7 100644
---- a/include/linux/page-flags.h
-+++ b/include/linux/page-flags.h
-@@ -933,6 +933,7 @@ enum pagetype {
- 	PGTY_zsmalloc		= 0xf6,
- 	PGTY_unaccepted		= 0xf7,
- 	PGTY_large_kmalloc	= 0xf8,
-+	PGTY_netpp		= 0xf9,
- 
- 	PGTY_mapcount_underflow = 0xff
- };
-@@ -1077,6 +1078,11 @@ PAGE_TYPE_OPS(Zsmalloc, zsmalloc, zsmalloc)
- PAGE_TYPE_OPS(Unaccepted, unaccepted, unaccepted)
- FOLIO_TYPE_OPS(large_kmalloc, large_kmalloc)
- 
-+/*
-+ * Marks page_pool allocated pages.
-+ */
-+PAGE_TYPE_OPS(Netpp, netpp, netpp)
-+
- /**
-  * PageHuge - Determine if the page belongs to hugetlbfs
-  * @page: The page to test.
-diff --git a/include/net/netmem.h b/include/net/netmem.h
-index f7dacc9e75fd..3667334e16e7 100644
---- a/include/net/netmem.h
-+++ b/include/net/netmem.h
-@@ -298,7 +298,7 @@ static inline struct net_iov *__netmem_clear_lsb(netmem_ref netmem)
-  */
- #define pp_page_to_nmdesc(p)						\
- ({									\
--	DEBUG_NET_WARN_ON_ONCE(!page_pool_page_is_pp(p));		\
-+	DEBUG_NET_WARN_ON_ONCE(!PageNetpp(p));				\
- 	__pp_page_to_nmdesc(p);						\
- })
- 
-diff --git a/io_uring/zcrx.c b/io_uring/zcrx.c
-index e5ff49f3425e..4cceb97ca26a 100644
---- a/io_uring/zcrx.c
-+++ b/io_uring/zcrx.c
-@@ -444,6 +444,7 @@ static int io_zcrx_create_area(struct io_zcrx_ifq *ifq,
- 		area->freelist[i] = i;
- 		atomic_set(&area->user_refs[i], 0);
- 		niov->type = NET_IOV_IOURING;
-+		niov->pp = NULL;
- 	}
- 
- 	area->free_count = nr_iovs;
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index d1d037f97c5f..2f6a55fab942 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1042,7 +1042,6 @@ static inline bool page_expected_state(struct page *page,
- #ifdef CONFIG_MEMCG
- 			page->memcg_data |
- #endif
--			page_pool_page_is_pp(page) |
- 			(page->flags & check_flags)))
- 		return false;
- 
-@@ -1069,8 +1068,6 @@ static const char *page_bad_reason(struct page *page, unsigned long flags)
- 	if (unlikely(page->memcg_data))
- 		bad_reason = "page still charged to cgroup";
- #endif
--	if (unlikely(page_pool_page_is_pp(page)))
--		bad_reason = "page_pool leak";
- 	return bad_reason;
- }
- 
-@@ -1379,9 +1376,11 @@ __always_inline bool free_pages_prepare(struct page *page,
- 		mod_mthp_stat(order, MTHP_STAT_NR_ANON, -1);
- 		folio->mapping = NULL;
- 	}
--	if (unlikely(page_has_type(page)))
-+	if (unlikely(page_has_type(page))) {
-+		WARN_ON_ONCE(PageNetpp(page));
- 		/* Reset the page_type (which overlays _mapcount) */
- 		page->page_type = UINT_MAX;
-+	}
- 
- 	if (is_check_pages_enabled()) {
- 		if (free_page_is_bad(page))
-diff --git a/net/core/devmem.c b/net/core/devmem.c
-index b3a62ca0df65..40e7a4ec9009 100644
---- a/net/core/devmem.c
-+++ b/net/core/devmem.c
-@@ -285,6 +285,7 @@ net_devmem_bind_dmabuf(struct net_device *dev,
- 			niov = &owner->area.niovs[i];
- 			niov->type = NET_IOV_DMABUF;
- 			niov->owner = &owner->area;
-+			niov->pp = NULL;
- 			page_pool_set_dma_addr_netmem(net_iov_to_netmem(niov),
- 						      net_devmem_get_dma_addr(niov));
- 			if (direction == DMA_TO_DEVICE)
-diff --git a/net/core/netmem_priv.h b/net/core/netmem_priv.h
-index cd95394399b4..4b90332d6c64 100644
---- a/net/core/netmem_priv.h
-+++ b/net/core/netmem_priv.h
-@@ -8,21 +8,18 @@ static inline unsigned long netmem_get_pp_magic(netmem_ref netmem)
- 	return __netmem_clear_lsb(netmem)->pp_magic & ~PP_DMA_INDEX_MASK;
- }
- 
--static inline void netmem_or_pp_magic(netmem_ref netmem, unsigned long pp_magic)
--{
--	__netmem_clear_lsb(netmem)->pp_magic |= pp_magic;
--}
--
--static inline void netmem_clear_pp_magic(netmem_ref netmem)
--{
--	WARN_ON_ONCE(__netmem_clear_lsb(netmem)->pp_magic & PP_DMA_INDEX_MASK);
--
--	__netmem_clear_lsb(netmem)->pp_magic = 0;
--}
--
- static inline bool netmem_is_pp(netmem_ref netmem)
- {
--	return (netmem_get_pp_magic(netmem) & PP_MAGIC_MASK) == PP_SIGNATURE;
-+	/* Use ->pp for net_iov to identify if it's pp, which requires
-+	 * that non-pp net_iov should have ->pp NULL'd.
-+	 */
-+	if (netmem_is_net_iov(netmem))
-+		return !!__netmem_clear_lsb(netmem)->pp;
-+
-+	/* For system memory, page type bit in struct page can be used
-+	 * to identify if it's pp.
-+	 */
-+	return PageNetpp(__netmem_to_page(netmem));
- }
- 
- static inline void netmem_set_pp(netmem_ref netmem, struct page_pool *pool)
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index 05e2e22a8f7c..0a10f3026faa 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -654,7 +654,6 @@ s32 page_pool_inflight(const struct page_pool *pool, bool strict)
- void page_pool_set_pp_info(struct page_pool *pool, netmem_ref netmem)
- {
- 	netmem_set_pp(netmem, pool);
--	netmem_or_pp_magic(netmem, PP_SIGNATURE);
- 
- 	/* Ensuring all pages have been split into one fragment initially:
- 	 * page_pool_set_pp_info() is only called once for every page when it
-@@ -665,12 +664,19 @@ void page_pool_set_pp_info(struct page_pool *pool, netmem_ref netmem)
- 	page_pool_fragment_netmem(netmem, 1);
- 	if (pool->has_init_callback)
- 		pool->slow.init_callback(netmem, pool->slow.init_arg);
-+
-+	if (netmem_is_net_iov(netmem))
-+		return;
-+	__SetPageNetpp(__netmem_to_page(netmem));
- }
- 
- void page_pool_clear_pp_info(netmem_ref netmem)
- {
--	netmem_clear_pp_magic(netmem);
- 	netmem_set_pp(netmem, NULL);
-+
-+	if (netmem_is_net_iov(netmem))
-+		return;
-+	__ClearPageNetpp(__netmem_to_page(netmem));
- }
- 
- static __always_inline void __page_pool_release_netmem_dma(struct page_pool *pool,
-
-base-commit: 0b90c3b6d76ea512dc3dac8fb30215e175b0019a
--- 
-2.17.1
-
+Best Regards,
+Chia-Yu
 
