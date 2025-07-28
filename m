@@ -1,180 +1,108 @@
-Return-Path: <bpf+bounces-64517-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64518-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8080B13C8A
-	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 16:12:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63A67B13D05
+	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 16:24:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61D6C3BB668
-	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 14:04:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F9C0188F5DD
+	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 14:25:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10C92271A84;
-	Mon, 28 Jul 2025 14:00:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78A6226CE39;
+	Mon, 28 Jul 2025 14:24:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vt2LJpxY"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sG9k7a57"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBAED27055A;
-	Mon, 28 Jul 2025 14:00:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CED526CE2E
+	for <bpf@vger.kernel.org>; Mon, 28 Jul 2025 14:24:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753711203; cv=none; b=o2cmsl7u1cdbb5OTxXYMHr4G0aQtfCwwnDmuQKflg4Pjr0BDe3z6Rew5AGP+sVO/iDHVXFcnH2OXCSP3Y9qWXbheGvHAsInyyXQ0jmZoj/KCqn4UCTCx5db12KTDTkWS3YDZTBYOZc/yCKDBNaLoDnr1OJyyoJ8hSd+z97bFRQo=
+	t=1753712682; cv=none; b=UiU9d8XyWScNLc5ZSPc1HwXrGEd664VmIp6obS0NbWdNco/c62cxM7dsUkDWsq/ssLx1vOAY9fxHor/hz7pU1rBBFvSc+Ghk+wY++8mw8teGTHVX0iF+M7Ha0GL2pcK1p/2CyBYpwRcE0Fv1EsTRnu0MQic7bmVjVt/zQPbOBuo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753711203; c=relaxed/simple;
-	bh=JbeopiAbZcPaAcCpKxOESHE/FDaZhg0e8FGhB3O3s6w=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JK1fes7EwlW0SeGTd/Vp1oNXEn6zM6RBATwVjmrJwXwBpeYApO55Xl+mUNwbVouZfSertPTBmTFXKR43jJu8bRhc9vzxDBrRCVao7k8GjpkCdA6bua1z5Xm9+xGennDQQGdcPCxpI+DMZB9ku5C0qcD63pXUtwqcOPQgQgby8iE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vt2LJpxY; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-ae0bde4d5c9so863619166b.3;
-        Mon, 28 Jul 2025 07:00:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753711200; x=1754316000; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=vbKAM48vOaxD+dObHxjlFAKhkqjJBfV01Aey6Sw0Mms=;
-        b=Vt2LJpxYrw/ycC/ECUx189XSpG5xGqvp6ceRrvG2r0MzHJzSHruvSo5BjQTnIV44c/
-         30ct1VYsOtYGZ6ruuG2uqsSIKATMzw6opC0C+2Y96RFUkuv/ofcBIq+P9ooKPy4BV8lo
-         8z+thjFfxRwnJSWNgMGwb8MqqBPkJgk3aaixj4UPfqpo6pLZdXMUGotyDVrHYlyp/Cd4
-         rQDiTyCDFiJeTvyl+3jnSVaGbB4pKvaCy0LXEJ1R+3M23IwdmXYN4pEP+jzvTZ/XpH5s
-         V1rf5LTKRuWAdL7Qxlk8RngLKacJdUF+ImmwzE3LDhJVTltw4ZJHOL3uPOtZUIg3YIEF
-         HgKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753711200; x=1754316000;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vbKAM48vOaxD+dObHxjlFAKhkqjJBfV01Aey6Sw0Mms=;
-        b=QIcSYYUyQ4QMQLpbpD7EKcJeRIzA4lbbrWDPO7aOXYCdVdkVQ7wLw+GA/t1pstdkV6
-         H2A5K5C/PXBuSPC/FL99M8bZAKbF5iXKPPPArZiJY5eYSMRbLLOobOs6SLz+MNpEdvcK
-         49oDNAToUgxxcUM8nFQVaXBWEXJqdaOqqnt9ES3P9026y5Auxr+AGq+Qh5Ch3l+QAgzr
-         OODIJQtStwkyfpgCa5+u40+6C3Oy9jJndwzrvYPYiYT2wwQjZh4ZIdanApnw4hTFTWR7
-         JQ3xlJovP6Ntjx3JJGu2N3eHRgNfP1Qr8mDdqWnhlq3af4jDyCr3jIVGacWcsaTGThGY
-         1c7A==
-X-Forwarded-Encrypted: i=1; AJvYcCU/pinexkWvbT4/cOGXQUPJxqeVxCLnIHDKYdzRHGTXm4id/liPKJutCKL7Fi6w6TrfBfjj1jBUIvW8PUsh6ZjZ5/CH@vger.kernel.org, AJvYcCVVV84PJjvcDwG7ou2BJU3Qfpyy6j1UYFVr/X9GnWiTkw5wimmUps32FAxJNhnhK2zRvXs=@vger.kernel.org, AJvYcCWEVFqGMPE1Hu4mEbl/Cbrk8Kw/Snw3EmldF3u1FLJQ7gcPHmTwnI0nGIH75XrYr96IV4TMNCO2uULh5Sv0@vger.kernel.org
-X-Gm-Message-State: AOJu0YwovhKonTz8kUvw2k5CvgWKT9nw7I3Cx1TC6Oqw9+t/iW8RR3bg
-	RwYSP6y+4oZhhVHWx1waOqwHlHFBTVM7pWkJTerTmd6RNhMo0Rvpnv1N
-X-Gm-Gg: ASbGncsLrY5BfLVyFUW4W9AUv/Sd7J/VqtoS60ryZeMmeDPZTyDWYRWhrw5fMDZi6Cn
-	xc6t82lwogtowkNx/UQt9NwuH3dpjwOgcOYx3yxqbouFCcJ7j3lmBTtyOW5vKtY6RXY/APYQtNd
-	ceORk+Us2vC1g0u75I1y2VPXBeLRv1l+Rd9c5BEHU+2PeLINBM4Pai2NQCNcmo66DHKXCWez7uF
-	NRVIlF+iOUz8pcE6nWJYEDAFNdCSG9jcKo4XxmX1nKkB+4RKD0P5/w9bhw45NAUrJ6sCiSHoKJ8
-	uxmpF2WTx8wVxJGjfZ8MQurUr0HZwJdTa8Uieeki423aIaF2SRhqWb8JAitzFwkv/tEOOoOpJrp
-	tpJZuFmua
-X-Google-Smtp-Source: AGHT+IFVTL3fAEvq/jzmKu7AjMnnGytTquy+ggLQ1Z+9x0Rt3o7F2rrj+eJ3kjJ+wxDHUGg0gVpqRw==
-X-Received: by 2002:a17:907:1c11:b0:ae3:bb0a:1cc6 with SMTP id a640c23a62f3a-af617704cdfmr1388490666b.16.1753711198944;
-        Mon, 28 Jul 2025 06:59:58 -0700 (PDT)
-Received: from krava ([173.38.220.53])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-af635a62ab9sm430203666b.86.2025.07.28.06.59.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jul 2025 06:59:58 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 28 Jul 2025 15:59:57 +0200
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: alexei.starovoitov@gmail.com, mhiramat@kernel.org, rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com, hca@linux.ibm.com,
-	revest@chromium.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH RFC bpf-next v2 0/4] fprobe: use rhashtable for
- fprobe_ip_table
-Message-ID: <aIeCXbpno1y3Aio1@krava>
-References: <20250728072637.1035818-1-dongml2@chinatelecom.cn>
+	s=arc-20240116; t=1753712682; c=relaxed/simple;
+	bh=rsB+CDMuMHxnnv5pphBkln7FnrHs2hhJH9UNqi/vYlA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dBcFq6s6UIm+Sf5JI5hwtXxsdEqFGU3Y4p9VwQ9L1sjaWdFJ7vdnMEzyJkicoeetxN/EslObQkcU4O5AdL45y19Z7+isPDrqmZkh9LFzx031XsZVoNyxjWOXe5juDgnTqFYOqIjVeBGsaOOsoE1BldJKivswyfQfxy1Qn7jTlDY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sG9k7a57; arc=none smtp.client-ip=95.215.58.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1753712677;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=QPiM/QhSx+glHiddBkbYNHkB7padNNwqam/AbgHmLtI=;
+	b=sG9k7a57flcKuQh5nbdJavXaxBGfhDv/wwplVfuJZjqLNQuJnafgiJyRy6m68W+CNoeVcD
+	8NPXZ4wMA9IuP1Yf7t0oZp/LDJlRWh1ynstUjtWM+dTBnRrdLpBoI/DZdFOuZbLJZdn6qJ
+	hzYU8+Cn/knu0mfNmt3izOLpmyfzlC8=
+From: Leon Hwang <leon.hwang@linux.dev>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	menglong8.dong@gmail.com,
+	Leon Hwang <leon.hwang@linux.dev>
+Subject: [RFC PATCH bpf-next 0/5] bpf: Extend bpf syscall with common attributes support
+Date: Mon, 28 Jul 2025 22:23:41 +0800
+Message-ID: <20250728142346.95681-1-leon.hwang@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250728072637.1035818-1-dongml2@chinatelecom.cn>
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Jul 28, 2025 at 03:22:49PM +0800, Menglong Dong wrote:
-> For now, the budget of the hash table that is used for fprobe_ip_table is
-> fixed, which is 256, and can cause huge overhead when the hooked functions
-> is a huge quantity.
-> 
-> In this series, we use rhltable for fprobe_ip_table to reduce the
-> overhead.
-> 
-> Meanwhile, we also add the benchmark testcase "kprobe-multi-all", which
-> will hook all the kernel functions during the testing. Before this series,
-> the performance is:
->   usermode-count :  875.380 ± 0.366M/s 
->   kernel-count   :  435.924 ± 0.461M/s 
->   syscall-count  :   31.004 ± 0.017M/s 
->   fentry         :  134.076 ± 1.752M/s 
->   fexit          :   68.319 ± 0.055M/s 
->   fmodret        :   71.530 ± 0.032M/s 
->   rawtp          :  202.751 ± 0.138M/s 
->   tp             :   79.562 ± 0.084M/s 
->   kprobe         :   55.587 ± 0.028M/s 
->   kprobe-multi   :   56.481 ± 0.043M/s 
->   kprobe-multi-all:    6.283 ± 0.005M/s << look this
->   kretprobe      :   22.378 ± 0.028M/s 
->   kretprobe-multi:   28.205 ± 0.025M/s
-> 
-> With this series, the performance is:
->   usermode-count :  902.387 ± 0.762M/s 
->   kernel-count   :  427.356 ± 0.368M/s 
->   syscall-count  :   30.830 ± 0.016M/s 
->   fentry         :  135.554 ± 0.064M/s 
->   fexit          :   68.317 ± 0.218M/s 
->   fmodret        :   70.633 ± 0.275M/s 
->   rawtp          :  193.404 ± 0.346M/s 
->   tp             :   80.236 ± 0.068M/s 
->   kprobe         :   55.200 ± 0.359M/s 
->   kprobe-multi   :   54.304 ± 0.092M/s 
->   kprobe-multi-all:   54.487 ± 0.035M/s << look this
+This proposal builds upon the discussion in
+"[PATCH bpf-next v4 0/4] bpf: Improve error reporting for freplace attachment failure"[1],
+and is also relevant to ongoing efforts such as tracing multi-link attach
+failures[2].
 
-I meassured bit less speed up, but still great
+This patch set introduces support for *common attributes* in the 'bpf()'
+syscall, providing a unified mechanism for passing shared metadata across
+all BPF commands.
 
-kprobe-multi-all:    3.565 ± 0.047M/s
-kprobe-multi-all:   11.553 ± 0.458M/s
+The initial set of common attributes includes:
 
-could you add kretprobe-multi-all bench as well?
+1. 'log_buf': User-provided buffer for storing log output.
+2. 'log_size': Size of the provided log buffer.
+3. 'log_level': Verbosity level for logging.
 
-thanks,
-jirka
+With this extension, the 'bpf()' syscall will be able to return meaningful
+error messages (e.g., when a 'freplace' program fails to attach),
+improving debuggability and user experience.
 
+Links:
+[1] https://lore.kernel.org/bpf/20250224153352.64689-1-leon.hwang@linux.dev/
+[2] https://lore.kernel.org/bpf/20250703121521.1874196-1-dongml2@chinatelecom.cn/
 
->   kretprobe      :   22.381 ± 0.075M/s 
->   kretprobe-multi:   27.926 ± 0.034M/s
-> 
-> The benchmark of "kprobe-multi-all" increase from 6.283M/s to 54.487M/s.
-> 
-> The locking is not handled properly in the first patch. In the
-> fprobe_entry, we should use RCU when we access the rhlist_head. However,
-> we can't use RCU for __fprobe_handler, as it can sleep. In the origin
-> logic, it seems that the usage of hlist_for_each_entry_from_rcu() is not
-> protected by rcu_read_lock neither, isn't it? I don't know how to handle
-> this part ;(
-> 
-> Menglong Dong (4):
->   fprobe: use rhltable for fprobe_ip_table
->   selftests/bpf: move get_ksyms and get_addrs to trace_helpers.c
->   selftests/bpf: skip recursive functions for kprobe_multi
->   selftests/bpf: add benchmark testing for kprobe-multi-all
-> 
->  include/linux/fprobe.h                        |   2 +-
->  kernel/trace/fprobe.c                         | 141 ++++++-----
->  tools/testing/selftests/bpf/bench.c           |   2 +
->  .../selftests/bpf/benchs/bench_trigger.c      |  30 +++
->  .../selftests/bpf/benchs/run_bench_trigger.sh |   2 +-
->  .../bpf/prog_tests/kprobe_multi_test.c        | 220 +----------------
->  tools/testing/selftests/bpf/trace_helpers.c   | 230 ++++++++++++++++++
->  tools/testing/selftests/bpf/trace_helpers.h   |   3 +
->  8 files changed, 348 insertions(+), 282 deletions(-)
-> 
-> -- 
-> 2.50.1
-> 
-> 
+Leon Hwang (5):
+  bpf: Extend bpf syscall with common attributes support
+  libbpf: Add support for extended bpf syscall
+  bpf: Report freplace attach failure reason via extended syscall
+  libbpf: Capture error message on freplace attach failure
+  selftests/bpf: Add case to test freplace attach failure log
+
+ include/uapi/linux/bpf.h                      |  7 +++
+ kernel/bpf/syscall.c                          | 58 +++++++++++++++----
+ tools/include/uapi/linux/bpf.h                |  7 +++
+ tools/lib/bpf/bpf.c                           | 58 ++++++++++++++++++-
+ tools/lib/bpf/bpf.h                           |  3 +
+ tools/lib/bpf/features.c                      |  8 +++
+ tools/lib/bpf/libbpf.c                        | 18 ++++--
+ tools/lib/bpf/libbpf.h                        |  4 ++
+ tools/lib/bpf/libbpf.map                      |  3 +
+ tools/lib/bpf/libbpf_internal.h               |  2 +
+ .../bpf/prog_tests/tracing_failure.c          | 43 ++++++++++++++
+ 11 files changed, 193 insertions(+), 18 deletions(-)
+
+--
+2.50.1
+
 
