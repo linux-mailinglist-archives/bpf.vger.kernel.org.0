@@ -1,88 +1,87 @@
-Return-Path: <bpf+bounces-64530-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64531-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 731F1B13D8D
-	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 16:45:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EEC1B13DAF
+	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 16:52:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D84C188C461
-	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 14:45:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FF09189A4CB
+	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 14:52:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE5F926F467;
-	Mon, 28 Jul 2025 14:44:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 521DE26FA60;
+	Mon, 28 Jul 2025 14:52:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IUo020F/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O1pisBoP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f195.google.com (mail-yb1-f195.google.com [209.85.219.195])
+Received: from mail-yb1-f193.google.com (mail-yb1-f193.google.com [209.85.219.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D74F125C809;
-	Mon, 28 Jul 2025 14:44:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EC2B282EB;
+	Mon, 28 Jul 2025 14:52:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753713860; cv=none; b=KfArT2KJo9zYL4T7v0mjZ7YyX+kUaLVsQIURWQZDqS7TueOTX0T8hEltLgdcJFHgPV0QcQgwtXzEYr6NhgRMKp4R2HCHk/0ZZ+dHqKF49/MMbLtUpGTFf4VA80B2EwYnDJXLXNUMjAgq09BmzPaoCF1tG9AIYW4NSEqnqylrrQw=
+	t=1753714341; cv=none; b=YVO6HgEF7BQhMI/BbQlv2Kz6GGXDMKZf/hTzppf5xTdJxT54jTXuz8un0tw8f3xJdXiPJyxJw/Zo211zN8XDMqa76apWiUtWFj0yqb0/qFHbxVa0C4eHQfh9MlLGQLugyg20bCNuQbP1lCXllb9KkppN8ih4UoMMSd6t5jL5I/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753713860; c=relaxed/simple;
-	bh=wsr1LSR7+n0Itpa/QPxmLvKnRmNsZ0SzdvviS0DEzA8=;
+	s=arc-20240116; t=1753714341; c=relaxed/simple;
+	bh=kTRQbcgLyj+VUuMJrJexSb4xNkNCabbT9Sjs2M+Ff8A=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hAYxHJxC4TcJgJ/JFNfdmlnGRP2EWkAuJ5qPOdyeTiZZHBYwdLEyoh81YsXEtVNAziNBBhKaeYdrG3aY9erC65MHsC6pAEebfmxyHUJ4BGizXobeer3bzpRdvmXzCz4HFeVN1p/m7wTQhhqGHqd3Hb5yThrMfvbSwC/6REgG9SA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IUo020F/; arc=none smtp.client-ip=209.85.219.195
+	 To:Cc:Content-Type; b=mR3Ic9CVPwBHQEtQ4uRe4KheTBke3Ne5bm1oAIYDShFDRQC0teXqP7V/rVcaAs5XfjsM6dQE63Fq/J6WVrTf6zsd25E26MQf2o84NIOMybF1VAJP5LxXH7qALWG6lm8fdAMFOLl2yX2ADWenWVgb/ZXwm+S6Aq9tHixRfB+dCR8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O1pisBoP; arc=none smtp.client-ip=209.85.219.193
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f195.google.com with SMTP id 3f1490d57ef6-e8986a25cbfso2966072276.0;
-        Mon, 28 Jul 2025 07:44:18 -0700 (PDT)
+Received: by mail-yb1-f193.google.com with SMTP id 3f1490d57ef6-e8da9b7386dso4598555276.1;
+        Mon, 28 Jul 2025 07:52:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753713858; x=1754318658; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1753714339; x=1754319139; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hkhIo9S2NuUPn8Ju9aHWFElGQrfosb66aaSoTyONGdM=;
-        b=IUo020F/qNkTExkXPuZcrT/9u1gBl9tFCmi/43wxYWMSZu84U68m71GIU41HicOuHa
-         B3btFkW/Hxt791uhKF8udjO0zKKgck4RgHkhgI0POLuUT0/qSaRFhQfs053dhR1J+Xtj
-         nl4xD+TWE0co3uvIA/LDZe0/1BJbYgKtKs5XLeGWdRlUw7kQs7GgDHWjW2AbLFWAMfTU
-         uQPjut7CeetkRZ60i5wumUCdfrpDOuG/brKix56LrQUSVu22LFugJ+IqjPtzAhG/cJvI
-         c/W8JozHdj9gGpYm98pynZXuqqgT5nnB/dMlgqV22bAGSmGK3OW0OMB5G1MGbewbM5M8
-         mjCA==
+        bh=HR5e6wlz6AVvzPEaOIlAqPusXTRc+DVg0GPemULlSoA=;
+        b=O1pisBoPhcasRG2CpMoucRH1S74T9GKm3gkEZPYAXhoHYcMhj/f8rcdp7e93UFLCpN
+         Fpo8qaH0kfCtzN3i39tPaeVW8L9C07uhroaGW8R4g/5oGosLjY8umY+Cba4V8tY/eLiH
+         NDqZ25ysVJw/Tg+NeWwxD2nJJAn1NIWQg06pYcdPT9Yhs1epKe4k+FHYM2Nt1ZJg95Eu
+         VpVf3HC3T8QG9Aegk2UWPA+TAVvCEF1w7/0S8Z9nf2V1o02AGdENuwLRa80Vmqsb/Qyw
+         RuaY7dGbSNMuIT7l7Em+U/JPlMDTKz682aVF+JpWFG9OV/4tdqB1fD01+fHGE0tzviPF
+         3Kyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753713858; x=1754318658;
+        d=1e100.net; s=20230601; t=1753714339; x=1754319139;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hkhIo9S2NuUPn8Ju9aHWFElGQrfosb66aaSoTyONGdM=;
-        b=U3cTYzwjBgOVd0cz/+qev2GNMbj96D49Lhev3zDWPeBbTkYH4UVnymGZFMQAsvZGEu
-         UbVStN/T7RohUOP8FsAiXQSV1+hOSt+7lcHqjO2VlqFdueslQ9fvexrEVfhQuVobUkp2
-         VqxvPxLL2e314tjhzWhD5JygT1k6ysybI6NIZdraO81q8Mj3QYIqWlc5IoHOFLnPH0bh
-         EB6aH+92TSDPlh0P4/CjDA0XjsxFLVtElc9mHdQYhCkPeLDUcJ+itHw+BKyhd91IUwiU
-         9l5xDiLeAAi1juY9SLkjqtF8PmbvszQEccfy3Nxbe8q8reEzWIonw3JycKDfkce0Nzwh
-         +i4w==
-X-Forwarded-Encrypted: i=1; AJvYcCU8x6s/x5YSktFPYCeBMNCUViffA1gz554zkxHjCTChvNI5ze29xmrJ9den9Qcvxm+/RqdWeFjkx/aU3ClHAjqm/2qM@vger.kernel.org, AJvYcCUZywvVKqBK6VxJeowAWCY39QG8HwGv+lFKG3EiTa34OcwyaKkTgpHW+oOB2NrWSOOQhEk=@vger.kernel.org, AJvYcCV89/uMVOqIg49JQeCwOGrVRTQI924obGX48gUf15dKKuxp0Zw8CtmE5+fpg4eMcKLIMf8qrWOMB/5LJ/dO@vger.kernel.org
-X-Gm-Message-State: AOJu0YzU2nblYTczp9f10WVuyHoUgedAu2ce4eRUzew/01bOTy+j/gUn
-	kikhSknTLrFC1kpRT+0tdrSek8bnEtjCdbTHsGEsQU7eLeClJt1BTn5VWWGsXrIvwOtwocySu38
-	cqybmiit8oe3B6flvPnq++Buvo3CYuis=
-X-Gm-Gg: ASbGncsGFBzIBneECNZNTtqRyFn/qsmxLknrVpA+y99m6hMvj5adiFkpYmgxji9wmM+
-	wVWL1CpF60IXMVrdblPqX5vtQE0I8222k3CHXb/wB6U3V6TLmqqItqsak4eXhxb6Dk/EszijGj2
-	kX2hj+/sqDbfdAWL6t7SvhAxxUZ7JFQ+Qkccl6Tvkk7kITOJvrONn53bmmEU8r2TDG5TmX+aaA9
-	Q7hbeo=
-X-Google-Smtp-Source: AGHT+IGw+BV5iIkJd0xeq+J18BCm8tecXqc78tbEg2RaKDEo5C3nuDCIfgSCSjMoVOvoKdgqUIpwPyRO/aa0OjrYd+I=
-X-Received: by 2002:a05:6902:701:b0:e8b:cf19:6675 with SMTP id
- 3f1490d57ef6-e8df12529f5mr13184248276.33.1753713857691; Mon, 28 Jul 2025
- 07:44:17 -0700 (PDT)
+        bh=HR5e6wlz6AVvzPEaOIlAqPusXTRc+DVg0GPemULlSoA=;
+        b=c3qfRQFNBG/kR7FBCmqtIBZzTexNH2eH0TwLEtDcffwQDq78RrP5aXX5CUeANGgrYQ
+         cLAPT6iUnxhw0NOWuVmQheto3R4smf0GC20HkJ+aX+4TGDYH9mRf366wN3dbJssu3/qT
+         6gWXIHpD7l6jzJSPk8wwoZ4Pp5zEkrLYLuEHD0H9kCGA2BS88oykK+mtLcmUTHzD3wo9
+         NhPhQLHvV2fjCLhag/2pKj+0S54rfVthWEYU9yqDkEyFp4iujJRD8nqN/FIHkaSIArWi
+         Z+ef1us7GYiApKIDMUOxu5h6L/tqvLuinoqIwDm/U3liOJlPES+l77xB9q9ExHjb0VGb
+         a/xA==
+X-Forwarded-Encrypted: i=1; AJvYcCVWO2HZkNiE0TJbsLBfSc0IciQ4GAsxply/2CZtegVTMQAA7my7muifkS7UBUUH7AJASmIS55AJTJRVcfM7@vger.kernel.org, AJvYcCWNKQEJnuFy3VqnEgpah/oNOOfzhW2c46qRS1+vS18TGOEbvkt+b8yUFe3SMnx9R+vbsBg=@vger.kernel.org, AJvYcCWRmNkRdRqIG/zS9xZ7Oos7gxj6Udue8lwyDoYETpWrsvXgivz83+NsyN1TuiF1B3b93nwTX9Fad+mgqjCvwpmW1Lea@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy+vYz3mQ973u2hOUvY6QzPbCmPdFs82V8nTWMxpKTu1LYwZRy+
+	pRBUvXgNbm1zW3tyWDiS6mVc3sSGGl6RZAY7kUFs7+hSTq84WWcBC11+/WlH0Q290sMATeX6N9z
+	tunYAFlh/QoxzIoecbuAhg5brGWViosHJtMWjk5IvOA==
+X-Gm-Gg: ASbGncsV8+K0dUvIDwE8o9c2aNKYs1mfU5OWjdoc/qUj/Bi0ac2TDhQMsLN0MwtHS3B
+	bin9WDo2me/q9Ywo84X0Kc1oXQq7tKBfL33c0kH9lNVh65gL2h8kyztq0BkXTNJYHlpguVxrOZV
+	D00T/kEjR23nnxkhSD0ZDCNqxglAnNTX1MPnDTw1GYVT72IipAmkXDwuR1vbXJDGthK8n/BR2Fp
+	2hEAMBD97rqitkkkA==
+X-Google-Smtp-Source: AGHT+IEJ+MbNyihtp+y3X0o//CRISdwd0P3r79GZY1d1LCu5rmd63vQG25kotL9DOxstM3NqiH1CncGK8N6v/9QM7NY=
+X-Received: by 2002:a05:6902:4203:b0:e8e:187:c237 with SMTP id
+ 3f1490d57ef6-e8e0187c7e5mr8627313276.20.1753714338866; Mon, 28 Jul 2025
+ 07:52:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250728041252.441040-1-dongml2@chinatelecom.cn>
- <20250728041252.441040-2-dongml2@chinatelecom.cn> <aId3ZSnlZRzoDUHC@krava>
-In-Reply-To: <aId3ZSnlZRzoDUHC@krava>
+References: <20250728072637.1035818-1-dongml2@chinatelecom.cn> <aIeCXbpno1y3Aio1@krava>
+In-Reply-To: <aIeCXbpno1y3Aio1@krava>
 From: Menglong Dong <menglong8.dong@gmail.com>
-Date: Mon, 28 Jul 2025 22:44:07 +0800
-X-Gm-Features: Ac12FXz9yDuGxyUUvq1yq2Xivxcq9LfAFipWjSp370RUODg_l7KddnP3JNIeLfk
-Message-ID: <CADxym3YdOkcr-Jr-NkDUu4HqU7x_5Rwgiz6PS32BktGuLcBJRw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/4] fprobe: use rhashtable
+Date: Mon, 28 Jul 2025 22:52:08 +0800
+X-Gm-Features: Ac12FXxV4A8XVDQJos8i1CZqd-Y32v0lK_Pq8bjGXT8ngNVst3H9HYsa8hDzmjg
+Message-ID: <CADxym3ZgqgAv1zkU6=+8OShxd_d8gHrikvNG=YeGFsUYUdHaUw@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next v2 0/4] fprobe: use rhashtable for fprobe_ip_table
 To: Jiri Olsa <olsajiri@gmail.com>
 Cc: alexei.starovoitov@gmail.com, mhiramat@kernel.org, rostedt@goodmis.org, 
 	mathieu.desnoyers@efficios.com, hca@linux.ibm.com, revest@chromium.org, 
@@ -91,85 +90,104 @@ Cc: alexei.starovoitov@gmail.com, mhiramat@kernel.org, rostedt@goodmis.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 28, 2025 at 9:13=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> wrot=
-e:
+On Mon, Jul 28, 2025 at 10:00=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> wro=
+te:
 >
-> On Mon, Jul 28, 2025 at 12:12:48PM +0800, Menglong Dong wrote:
->
-> SNIP
->
-> > +static const struct rhashtable_params fprobe_rht_params =3D {
-> > +     .head_offset            =3D offsetof(struct fprobe_hlist_node, hl=
-ist),
-> > +     .key_offset             =3D offsetof(struct fprobe_hlist_node, ad=
-dr),
-> > +     .key_len                =3D sizeof_field(struct fprobe_hlist_node=
-, addr),
-> > +     .hashfn                 =3D fprobe_node_hashfn,
-> > +     .obj_hashfn             =3D fprobe_node_obj_hashfn,
-> > +     .obj_cmpfn              =3D fprobe_node_cmp,
-> > +     .automatic_shrinking    =3D true,
-> > +};
+> On Mon, Jul 28, 2025 at 03:22:49PM +0800, Menglong Dong wrote:
+> > For now, the budget of the hash table that is used for fprobe_ip_table =
+is
+> > fixed, which is 256, and can cause huge overhead when the hooked functi=
+ons
+> > is a huge quantity.
 > >
-> >  /* Node insertion and deletion requires the fprobe_mutex */
-> >  static void insert_fprobe_node(struct fprobe_hlist_node *node)
-> >  {
-> > -     unsigned long ip =3D node->addr;
-> > -     struct fprobe_hlist_node *next;
-> > -     struct hlist_head *head;
-> > -
-> >       lockdep_assert_held(&fprobe_mutex);
+> > In this series, we use rhltable for fprobe_ip_table to reduce the
+> > overhead.
 > >
-> > -     next =3D find_first_fprobe_node(ip);
-> > -     if (next) {
-> > -             hlist_add_before_rcu(&node->hlist, &next->hlist);
-> > -             return;
-> > -     }
-> > -     head =3D &fprobe_ip_table[hash_ptr((void *)ip, FPROBE_IP_HASH_BIT=
-S)];
-> > -     hlist_add_head_rcu(&node->hlist, head);
-> > +     rhashtable_insert_fast(&fprobe_ip_table, &node->hlist,
-> > +                            fprobe_rht_params);
->
-> onw that rhashtable_insert_fast can fail, I think insert_fprobe_node
-> needs to be able to fail as well
-
-You are right, the insert_fprobe_node should return a error and
-be handled properly.
-
->
-> >  }
+> > Meanwhile, we also add the benchmark testcase "kprobe-multi-all", which
+> > will hook all the kernel functions during the testing. Before this seri=
+es,
+> > the performance is:
+> >   usermode-count :  875.380 =C2=B1 0.366M/s
+> >   kernel-count   :  435.924 =C2=B1 0.461M/s
+> >   syscall-count  :   31.004 =C2=B1 0.017M/s
+> >   fentry         :  134.076 =C2=B1 1.752M/s
+> >   fexit          :   68.319 =C2=B1 0.055M/s
+> >   fmodret        :   71.530 =C2=B1 0.032M/s
+> >   rawtp          :  202.751 =C2=B1 0.138M/s
+> >   tp             :   79.562 =C2=B1 0.084M/s
+> >   kprobe         :   55.587 =C2=B1 0.028M/s
+> >   kprobe-multi   :   56.481 =C2=B1 0.043M/s
+> >   kprobe-multi-all:    6.283 =C2=B1 0.005M/s << look this
+> >   kretprobe      :   22.378 =C2=B1 0.028M/s
+> >   kretprobe-multi:   28.205 =C2=B1 0.025M/s
 > >
-> >  /* Return true if there are synonims */
-> > @@ -92,9 +93,11 @@ static bool delete_fprobe_node(struct fprobe_hlist_n=
-ode *node)
-> >       /* Avoid double deleting */
-> >       if (READ_ONCE(node->fp) !=3D NULL) {
-> >               WRITE_ONCE(node->fp, NULL);
-> > -             hlist_del_rcu(&node->hlist);
-> > +             rhashtable_remove_fast(&fprobe_ip_table, &node->hlist,
-> > +                                    fprobe_rht_params);
+> > With this series, the performance is:
+> >   usermode-count :  902.387 =C2=B1 0.762M/s
+> >   kernel-count   :  427.356 =C2=B1 0.368M/s
+> >   syscall-count  :   30.830 =C2=B1 0.016M/s
+> >   fentry         :  135.554 =C2=B1 0.064M/s
+> >   fexit          :   68.317 =C2=B1 0.218M/s
+> >   fmodret        :   70.633 =C2=B1 0.275M/s
+> >   rawtp          :  193.404 =C2=B1 0.346M/s
+> >   tp             :   80.236 =C2=B1 0.068M/s
+> >   kprobe         :   55.200 =C2=B1 0.359M/s
+> >   kprobe-multi   :   54.304 =C2=B1 0.092M/s
+> >   kprobe-multi-all:   54.487 =C2=B1 0.035M/s << look this
 >
-> I guess this one can't fail in here.. ?
+> I meassured bit less speed up, but still great
+>
+> kprobe-multi-all:    3.565 =C2=B1 0.047M/s
+> kprobe-multi-all:   11.553 =C2=B1 0.458M/s
 
-Yeah, the only failure is the entry doesn't exist in the hash
-table.
+BTW, the mitigations is disabled in my testing to show
+the overhead distinction. With mitigations enabled,
+all the performance suffers from it, and the overhead is
+not obvious :/
 
-BTW, the usage of rhltable is similar to rhashtable, and the
-comment here is valid in the V2 too.
-
-Thanks!
-Menglong Dong
+I'll add the "mitigations is disabled" information to the
+commit log too.
 
 >
+> could you add kretprobe-multi-all bench as well?
+>
+> thanks,
 > jirka
 >
-> >       }
-> > -     return !!find_first_fprobe_node(node->addr);
-> > +     return !!rhashtable_lookup_fast(&fprobe_ip_table, &node->addr,
-> > +                                     fprobe_rht_params);
-> >  }
-> >
 >
-> SNIP
+> >   kretprobe      :   22.381 =C2=B1 0.075M/s
+> >   kretprobe-multi:   27.926 =C2=B1 0.034M/s
+> >
+> > The benchmark of "kprobe-multi-all" increase from 6.283M/s to 54.487M/s=
+.
+> >
+> > The locking is not handled properly in the first patch. In the
+> > fprobe_entry, we should use RCU when we access the rhlist_head. However=
+,
+> > we can't use RCU for __fprobe_handler, as it can sleep. In the origin
+> > logic, it seems that the usage of hlist_for_each_entry_from_rcu() is no=
+t
+> > protected by rcu_read_lock neither, isn't it? I don't know how to handl=
+e
+> > this part ;(
+> >
+> > Menglong Dong (4):
+> >   fprobe: use rhltable for fprobe_ip_table
+> >   selftests/bpf: move get_ksyms and get_addrs to trace_helpers.c
+> >   selftests/bpf: skip recursive functions for kprobe_multi
+> >   selftests/bpf: add benchmark testing for kprobe-multi-all
+> >
+> >  include/linux/fprobe.h                        |   2 +-
+> >  kernel/trace/fprobe.c                         | 141 ++++++-----
+> >  tools/testing/selftests/bpf/bench.c           |   2 +
+> >  .../selftests/bpf/benchs/bench_trigger.c      |  30 +++
+> >  .../selftests/bpf/benchs/run_bench_trigger.sh |   2 +-
+> >  .../bpf/prog_tests/kprobe_multi_test.c        | 220 +----------------
+> >  tools/testing/selftests/bpf/trace_helpers.c   | 230 ++++++++++++++++++
+> >  tools/testing/selftests/bpf/trace_helpers.h   |   3 +
+> >  8 files changed, 348 insertions(+), 282 deletions(-)
+> >
+> > --
+> > 2.50.1
+> >
+> >
 
