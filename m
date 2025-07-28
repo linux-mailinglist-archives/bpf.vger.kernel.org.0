@@ -1,116 +1,99 @@
-Return-Path: <bpf+bounces-64524-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64525-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7D7EB13D11
-	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 16:26:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77DD0B13D19
+	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 16:27:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 575F13A5A5F
-	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 14:26:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 743CD18924BF
+	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 14:27:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AF1926E6EB;
-	Mon, 28 Jul 2025 14:26:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A849326E6F1;
+	Mon, 28 Jul 2025 14:27:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jd622B/o"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BE0xy8ZC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f194.google.com (mail-yb1-f194.google.com [209.85.219.194])
+Received: from mail-yb1-f195.google.com (mail-yb1-f195.google.com [209.85.219.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41D24212B3D;
-	Mon, 28 Jul 2025 14:26:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6E9825B31D;
+	Mon, 28 Jul 2025 14:27:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753712800; cv=none; b=DdZEEaSnDZcZROF201LX5PpdtK4v6vSo0QUeXDVZefZQpgKQBtkdms0Yu3j88NNuGvFARfQpXWiuKf876JobPfYEe7YSgw5WI1Yp0vWnakVvtONKk5ABSqZwQHyZ+GauqltO2hOAD2zK+cOuqiOe7mZLfcXPxKlzZWBRyIUCX2A=
+	t=1753712849; cv=none; b=mUItTLVw8UnU55954RSI9cpwOhnLR76CLhEQUArYFRJjk6dWSeZwSotmBW0jZqCjejGKlI4JkHx1ZTODSyhx2J/94oW0BfH2OKqU9fOs2iLPIJIV+KB9YPRYA/YD7/l9ACI41T871kvQx2TYnNTlpUaDvXpFTyDyCQezU/KyGb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753712800; c=relaxed/simple;
-	bh=eyUD4zVX3UqOFr/Qm++GfTVu2nBcqq2i0qsiYTDDWAw=;
+	s=arc-20240116; t=1753712849; c=relaxed/simple;
+	bh=7zm2FGQ9vOOvJIm2tvtvlk80cBSBd801PEC0N1SnLDA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Cv3c+FtHAukzqjTzBKu1ebolh7qde5pfZSJ78AN0kcYbvD8r6yGdkG51EQvLfRemYuFRV+0MAfqpPJVQiQM+M9YQQL2cMbXAqa5bi7q0TvEJWK9VBor31xAGyKOGWy2USNYYrgzoTnyBPjAxv8x5CXvX9zmfcyzaFrGNSvrQSIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jd622B/o; arc=none smtp.client-ip=209.85.219.194
+	 To:Cc:Content-Type; b=ElBHY5542/cgT2h+5Q3UBnjR6nFG9m37zzbUFGVxhyvqTRy233e6wQAY4zGAYYXiH7qloB3/Gp6Fv8kp5y14UGWrcX9LVn46/UKDFcu80GjgCST5rqRiHTwGZQnATIr1+XLgpzGdarrYfUN1zy85RWn7xXCeG7oOk9MBLSWN89M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BE0xy8ZC; arc=none smtp.client-ip=209.85.219.195
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f194.google.com with SMTP id 3f1490d57ef6-e8bbb605530so4260314276.0;
-        Mon, 28 Jul 2025 07:26:39 -0700 (PDT)
+Received: by mail-yb1-f195.google.com with SMTP id 3f1490d57ef6-e8e0762f77dso1358689276.1;
+        Mon, 28 Jul 2025 07:27:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753712798; x=1754317598; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1753712847; x=1754317647; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LG4Q2CXpb5TPSjLW0g9Uo8USQ0VGQIBOukvZjuFnm+I=;
-        b=jd622B/oGnoDJSiInyMsbkg1ZZUbA8SBJs/P7KyVakYxu49noZOUQ4VNklGsxZKYE6
-         xMNVUxRm0XoRhcFV1Dtnrxv8Tm044rqihUZHpCo+pqroFYqoYKFyKNPmcbU9Ei20iW90
-         cjFoPRu+4oOjd+YJSiiTLuc0d+yUyB6nfILzfhqMofUL46uUBk4vPVeVeuBbJQ809c8v
-         pQ3ZzJZgFD9Gss+I9ZGykJj2eX84jcNG+PqFTPLf96DThXisNrNwZLH78k/lOTOznjfD
-         UnoRAkOFbL8IPrCoRrFjvsh83UDXC46yUr9HhtaArx4G/TD/LE0JtjSnJJEPGRd4hjXm
-         VWTQ==
+        bh=w9KSB2FjmxT/5yB3jtGtNbbQBs9Hk1mlNkL6Fggc0dU=;
+        b=BE0xy8ZCXKpFTajEO6c/x7pnlfy8pGddE0VKGHWdBGZgQ2lYe2AVhhFUAoruwktfxX
+         I8ouljpHVRyE7U0dJ7jVfW+XNDzIfNkBjX3YthQkYfcj6BPTqHQnS/yIjV2HcYDPmt4q
+         AjuvESkv7GRiLdqaIXhYZQZ+PWvtcrKPPtwuUoDv2HT99mq1Aiu/CPnNviEkVjXTHRZ4
+         dMjdarszfQ4iNRvXpNYsGp9zs52BQkuOBWQsG2jil0gx2TgKJgRxoTPPMDl7kZOULc/1
+         ogrYSEL+rx1m036up+Lh7QptkdKbFo7HVy1M54XbDJfc/+EILTEOOCB1IHAPWexNTvOu
+         aRug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753712798; x=1754317598;
+        d=1e100.net; s=20230601; t=1753712847; x=1754317647;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LG4Q2CXpb5TPSjLW0g9Uo8USQ0VGQIBOukvZjuFnm+I=;
-        b=wGue5b2+AlykGMVzJao3v7ghODuh6DAdoEAjmu2v6oCi63efOOkD50Vm1oaaEyN9G5
-         j/PrvVkd/r7+j3zcxYU4MHlUvkowVAd1jlpfOZTNWMiYT7TDmzcnaaP3Omn5wPMvcZEE
-         Aeebwrt82dCgE/cGwEtP9BGsSCZR9xNwTO/RR+4OIEQH6ykGuTpxNLGNrK66se0Dc2NI
-         6eWSYVxTEZNcsH1OKkgbKUllck4Nc7P4zV/FgjimqjkzlA55YMc18S8+Po+YlmHT40V4
-         C5KSNU1utGF3eBH7oqCWgKZ85Wozo0wN8RbAp85y0AmsFGXLHrmEcl+OqlBJ+6MqdYRN
-         zaJw==
-X-Forwarded-Encrypted: i=1; AJvYcCUdAJXQxHJic2pcotCyxSVbPunQh7kN5jweXeRJPy/XsefHUCrEqdl1EbLn73yQnLAmIH4=@vger.kernel.org, AJvYcCVfTxN2UokS3OmIB0JXa5OyYSOzFvpLCc6jHiWerOZEgrB9oiVSk7bQrvj94n3V1UjrRExS93lmI75KyjnK@vger.kernel.org, AJvYcCW7ayZt8kDiBhzczMidVj5bH+RSKkpV0OtukFkYoJnEx+GF3o524fS2PlsL2+XsrcUC4iIlYFLRuMLfvqKONsehSM7L@vger.kernel.org
-X-Gm-Message-State: AOJu0YxQBSgbqGAq17aa62s0xcze/74pnRaERJb3aQ+TToJVQP7G+SJV
-	pLmWOmhzFu9geUO93mrMmYN+F+8lH6ddi8BrSt3qfBJKLkH6Bgp1WdVy7+2tw5GuoJNPmglnbEu
-	2XfXjuc1XmpQgKiNqwn0oZ+3VjXFUQyTwXO2KP/s=
-X-Gm-Gg: ASbGncvtWAJ29bmv7nK4h4YgT2hyJF5/Ykc0dYlSKRS2NoGMu9dTMYM1d6D30szWxn3
-	AK0BX/t6lWXv7l+vI453kp0wNTm0XCRs+xYMGXhqSc8sYwrqTATJLnaYchSNCOQaOX7ZSrTVbxI
-	uJEaZlKaXaAMmmY7cn/nJrpHGRkop+U/0IOn6VgISrnx0X6fR8Be8Bw2ITl1M/TXlyZfizvW0BC
-	+Dx80o=
-X-Google-Smtp-Source: AGHT+IF7oO3TKRzzMn/elYJeaf3mlB7NM77NoxnnINrb5WH9Df+24p7rSMGC4b1KHp+hZLSJDPdQOOITwpwGWQ1FN9g=
-X-Received: by 2002:a05:6902:160e:b0:e87:a1f2:5ccb with SMTP id
- 3f1490d57ef6-e8de2113acemr17709352276.19.1753712798175; Mon, 28 Jul 2025
- 07:26:38 -0700 (PDT)
+        bh=w9KSB2FjmxT/5yB3jtGtNbbQBs9Hk1mlNkL6Fggc0dU=;
+        b=JDtNrVJ+oCXIVBEL4b2daTlVspl7dYnImatshIndyuyzNLca8ahewlKFN26x5oCrEn
+         V3SphOaGbiIvfsblz3derwd1anBGa0IAy6OHLCkUqZ2yy/DkU51ApvCaky8rcYK/9/1t
+         OJQFxMYRWzLllNrwSZEnl3QjRwf+66IyyipmhAX+1s7WFxdAx4x2XrN64GxoQfHI1eOA
+         IbiFdyPGYdme9J9j2xfQxPk3GkiW965XehPswTTA9pQHjztFA77PxYJN3vcIImLpYULz
+         vFjkmhCdm9da7Sb6HT/RcsYA3PPfg++KV78UfOaV1S0JA8tkEXqOLIcY2om/t4gPrbHi
+         7KJg==
+X-Forwarded-Encrypted: i=1; AJvYcCUAF9iT82p4XIr07nn8QP3FPAvgoJBnCYnqJuv9iMIUnvUi5jwBvBf6fZc9x9QOmsKjKb2TrPhS5K+c8du2iLtwo6Bs@vger.kernel.org, AJvYcCWJNE5DsK11whJMETzQGr85Ik4VIS+oCH/C2AH2xUEQAOguk+UdXvqO9Xx+G4RbN/e22xk=@vger.kernel.org, AJvYcCXioyKngtgRuhjlbwEuGc6HQ5MjzvkPvLcxy9VRTKdUZHPdjP273SHtk1cuKN1a/S6ly1qqta/OXEs5Rwqv@vger.kernel.org
+X-Gm-Message-State: AOJu0YwbyPCTRV/KUArXfgEPvDdBNogk9sDohvmlFWhEg2suf1yqCDuF
+	hk8NgDc2C+PIJxBBaKdUqLVSkfjPvT193JG7CLzbPWwPR7683J/7Oeqi83Vv29E4IgBHqPCLqCZ
+	NGwok34MVHGWDjn/FRE+bJn7FLIgebiJyiaPzH2s=
+X-Gm-Gg: ASbGncsRHaZ/gcxiDqrD7fbQe50WCANJ8eJc2TE5sw3DpN4Tv0NRi6v7MFX6sZflVLy
+	5v6QJE3UiNuuNZZPGg4uX1WqnkTsOGhJmnG6phK4wA6YP1nLaMcr5dvIcLN2iMjwAb66MuxKsXV
+	3Jah0h7QiIFt5pp9s7DMjtm/vQbQFM48GCSmMaCPJozjSphp7PbDaigWwF+1dvAWJomct6hzjQI
+	0UBslQ=
+X-Google-Smtp-Source: AGHT+IGMEJ2WWAOV8Jxci9Mfk3A0Vg2xFzCUM7JtAJ/6n5EiB6/2omL1KiQH8FSJfDvSMaAUZCztdnMLOHMvBT1+Gk0=
+X-Received: by 2002:a05:6902:2208:b0:e8e:1776:5167 with SMTP id
+ 3f1490d57ef6-e8e177661a1mr3523595276.7.1753712845861; Mon, 28 Jul 2025
+ 07:27:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250728072637.1035818-1-dongml2@chinatelecom.cn> <20250728213502.df49c01629de5fe9b6f15632@kernel.org>
-In-Reply-To: <20250728213502.df49c01629de5fe9b6f15632@kernel.org>
+References: <20250728072637.1035818-1-dongml2@chinatelecom.cn> <aIeCXbpno1y3Aio1@krava>
+In-Reply-To: <aIeCXbpno1y3Aio1@krava>
 From: Menglong Dong <menglong8.dong@gmail.com>
-Date: Mon, 28 Jul 2025 22:26:27 +0800
-X-Gm-Features: Ac12FXzloI0foczJuPDfIn9760hHJBVVEX7jn-psOfa7NR9BMDir5SdN42uxhOU
-Message-ID: <CADxym3b=-tGOVqnoPeDb0q3EZZ-DMjkM0fiaSS6=Q+y07azYMg@mail.gmail.com>
+Date: Mon, 28 Jul 2025 22:27:15 +0800
+X-Gm-Features: Ac12FXzE3AQuXqXUlz6stm45SI_Q39R_hBGKLYojd2mUoDDNfo5676mrYSsqtNU
+Message-ID: <CADxym3bTqABn=Q+khg6rDQEGdZxGxLZ4WjEBHc4HFbSJtPj+=A@mail.gmail.com>
 Subject: Re: [PATCH RFC bpf-next v2 0/4] fprobe: use rhashtable for fprobe_ip_table
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: alexei.starovoitov@gmail.com, rostedt@goodmis.org, 
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: alexei.starovoitov@gmail.com, mhiramat@kernel.org, rostedt@goodmis.org, 
 	mathieu.desnoyers@efficios.com, hca@linux.ibm.com, revest@chromium.org, 
 	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
 	bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 28, 2025 at 8:35=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.o=
-rg> wrote:
+On Mon, Jul 28, 2025 at 10:00=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> wro=
+te:
 >
-> Hi Menglong,
->
-> What are the updates from v1? Just adding RFC?
-
-No, the V1 uses rhashtable, which is wrong, and makes the
-function address unique in the hash table.
-
-And in the V2, I use rhltable instead, which supports duplicate
-keys.
-
-Sorry that I forgot to add the changelog :/
-
->
-> Thanks,
->
-> On Mon, 28 Jul 2025 15:22:49 +0800
-> Menglong Dong <menglong8.dong@gmail.com> wrote:
->
+> On Mon, Jul 28, 2025 at 03:22:49PM +0800, Menglong Dong wrote:
 > > For now, the budget of the hash table that is used for fprobe_ip_table =
 is
 > > fixed, which is 256, and can cause huge overhead when the hooked functi=
@@ -150,6 +133,21 @@ es,
 > >   kprobe         :   55.200 =C2=B1 0.359M/s
 > >   kprobe-multi   :   54.304 =C2=B1 0.092M/s
 > >   kprobe-multi-all:   54.487 =C2=B1 0.035M/s << look this
+>
+> I meassured bit less speed up, but still great
+>
+> kprobe-multi-all:    3.565 =C2=B1 0.047M/s
+> kprobe-multi-all:   11.553 =C2=B1 0.458M/s
+>
+> could you add kretprobe-multi-all bench as well?
+
+OK, I'll add it.
+
+>
+> thanks,
+> jirka
+>
+>
 > >   kretprobe      :   22.381 =C2=B1 0.075M/s
 > >   kretprobe-multi:   27.926 =C2=B1 0.034M/s
 > >
@@ -185,8 +183,5 @@ e
 > > --
 > > 2.50.1
 > >
->
->
-> --
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> >
 
