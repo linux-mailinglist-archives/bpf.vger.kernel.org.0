@@ -1,157 +1,155 @@
-Return-Path: <bpf+bounces-64468-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64469-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6965BB13241
-	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 00:32:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 030B4B132C9
+	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 03:32:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E5A3189413E
-	for <lists+bpf@lfdr.de>; Sun, 27 Jul 2025 22:33:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02D511721B7
+	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 01:32:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 967F42512C3;
-	Sun, 27 Jul 2025 22:32:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E50A2BD04;
+	Mon, 28 Jul 2025 01:32:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="o7MJK0Ao"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mwEBu+cy"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FB8E22424E
-	for <bpf@vger.kernel.org>; Sun, 27 Jul 2025 22:32:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F985137E
+	for <bpf@vger.kernel.org>; Mon, 28 Jul 2025 01:32:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753655555; cv=none; b=SP0J3O8YKv7M2o//UzlpO6zRwdlsdiZ7nwVzZAEjI9aDyWtjb2WACjsJyw0kk7b1k9FbzIDb4OpxtPZPB3t5rmyCMD4sWJUZXW24EtRs+DP8xL5WOGH8I2PaR7Il3UVoBqbzrIovQDzzEoa/CT5dQ1+LiIi6wQnXe+IJuZTt/ro=
+	t=1753666323; cv=none; b=XtNoX4DLZ/eHNhBwtL2ZYLTvg7hgAZ2m17W6eWOwxBNLsXo49FukLJXcIzVdX4pWdfaRxTT6Xj3LdH+KM+/egF+qE25+FsIgjwj+lFR5jZHkRq6z//3U7zqQKT/+VZmS+HU/5c1xbp8LkA2hG+XtYfDkEjjLK/wmM9cSwBaohQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753655555; c=relaxed/simple;
-	bh=nWS8Ccu89/p6O4ob9ijbGBAQ6WjTKbMjX9dyjcA8Mrk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Zx4yP+j4Hc0Krty6rHMgyQiXtpb02s8JnURjPfvla1Q0bCwOsj6mka8ZppnwuvZa5xRdg/uFFJ8Qk60/pzaLqKEjSFDQIDmtW89QYblXJ7a48qPa0F/fwSR/TlLY/iL666/frvIE9I+65KiaUirU0bWeKD0irN1aE+hDjDKkI1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=o7MJK0Ao; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=AaI7KSQYYjXv4QOiqz483XldhKZK4GGXOWpyz3BSQy0=; b=o7MJK0Aob2FJMe13C3OktEyiPt
-	287Df7mo0otDj6Gu53euPvXOHtzh4AvhM2cWv3yCPlS7JIigyrKjvzdeaoR76d+D5T+3xjuofXs2U
-	iLMFoYZ8pjBWJ2tIoXza2CieKMzbcrq9maTgzEqxmG+KcYjc+31OpvBf1J9R53yU1p2RVNGWu7Ito
-	VWdT9wBOPJ0kn8r2JuhfvDGVO65MOKiGFwbcWc5ISbu3zHhXh8++1WSPYtKfMCG6Tqpk0SmKbKeok
-	SGpgjtz2jQc+RwL1+dfISLd+Mogqt3tukSk3DGTPTBgfjk6OROIGITYFC7IwigiPwTdISZF9ik2Oz
-	W+4AOghQ==;
-Received: from localhost ([127.0.0.1])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1ug9us-000NM4-0V;
-	Mon, 28 Jul 2025 00:32:26 +0200
-From: Daniel Borkmann <daniel@iogearbox.net>
-To: ast@kernel.org
-Cc: andrii@kernel.org,
-	bpf@vger.kernel.org,
-	Lonial Con <kongln9170@gmail.com>
-Subject: [PATCH bpf-next 4/4] bpf: Fix oob access in cgroup local storage
-Date: Mon, 28 Jul 2025 00:32:23 +0200
-Message-ID: <20250727223223.510058-4-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250727223223.510058-1-daniel@iogearbox.net>
-References: <20250727223223.510058-1-daniel@iogearbox.net>
+	s=arc-20240116; t=1753666323; c=relaxed/simple;
+	bh=1+JKE2iPg0Q81HZUjpfT6uxTsIImsKvoEz92D3a/8L4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kk/9rrPyCQslwCytGT4XZBwj+zGNTwgm0maF0beTBK9u33/YrNMv7ZxFPRJvSShWVPCstvCqKuT37BJbhJqMhIdgabIpDYBXCEnRUINP7DixbXerGPenarFqLcidYF9KDB56v3ppmcJPf2t7s0GXL9Z8SKrGwD0Kgsz09VzIgR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mwEBu+cy; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1753666322; x=1785202322;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=1+JKE2iPg0Q81HZUjpfT6uxTsIImsKvoEz92D3a/8L4=;
+  b=mwEBu+cyOEEcraxCJ/YApN8fqEeUAL83dmLkAOQ9Rp7rLsLIdx6CAT/m
+   BQYYkV7wmR5OO2pkO1loJNgDa0sncx21e/X2hxG58xy7qUi2YPknYmbAn
+   Sl3mblHkD6YpxdsN2TJL+fDxV5Hxbeegmn5WUI4y+gpq4zd+yFK1fpcm3
+   8I/upm+RNzY2XKoZBdMcDETdRUAvqXo+lghB1IxxiBwUYeuFiroMD7pA6
+   PJ0bAp6q6Co7DjpMMCszKd/VY4TBjl4Uf/NLojCbe2XPg0fKwDbll0K46
+   hlaUxtL0xx0/daOaPNM2h7A1prrl/hsAVcW2zmti/ivW3RmV2IoItXbYj
+   A==;
+X-CSE-ConnectionGUID: PUHGu3paSs+JK7rYR0q4zg==
+X-CSE-MsgGUID: r5n9bVWiTTCv9BQONokbGw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11504"; a="66176910"
+X-IronPort-AV: E=Sophos;i="6.16,339,1744095600"; 
+   d="scan'208";a="66176910"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2025 18:32:01 -0700
+X-CSE-ConnectionGUID: n0RcUT1rQb6jF1SEzpIjnQ==
+X-CSE-MsgGUID: RilZvfzJTxix+hnUEmtrTA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,339,1744095600"; 
+   d="scan'208";a="162344083"
+Received: from lkp-server01.sh.intel.com (HELO 160750d4a34c) ([10.239.97.150])
+  by orviesa007.jf.intel.com with ESMTP; 27 Jul 2025 18:32:00 -0700
+Received: from kbuild by 160750d4a34c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1ugCib-000075-2Z;
+	Mon, 28 Jul 2025 01:31:57 +0000
+Date: Mon, 28 Jul 2025 09:31:32 +0800
+From: kernel test robot <lkp@intel.com>
+To: Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, andrii@kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next 3/4] bpf: Move cgroup iterator helpers to bpf.h
+Message-ID: <202507280945.m9sXKC5J-lkp@intel.com>
+References: <20250727223223.510058-3-daniel@iogearbox.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: Clear (ClamAV 1.0.7/27712/Sun Jul 27 10:35:17 2025)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250727223223.510058-3-daniel@iogearbox.net>
 
-Lonial reported that an out-of-bounds access in cgroup local storage
-can be crafted via tail calls. Given two programs each utilizing a
-cgroup local storage with a different value size, and one program
-doing a tail call into the other. The verifier will validate each of
-the indivial programs just fine. However, in the runtime context
-the bpf_cg_run_ctx holds an bpf_prog_array_item which contains the
-BPF program as well as any cgroup local storage flavor the program
-uses. Helpers such as bpf_get_local_storage() pick this up from the
-runtime context:
+Hi Daniel,
 
-  ctx = container_of(current->bpf_ctx, struct bpf_cg_run_ctx, run_ctx);
-  storage = ctx->prog_item->cgroup_storage[stype];
+kernel test robot noticed the following build warnings:
 
-  if (stype == BPF_CGROUP_STORAGE_SHARED)
-    ptr = &READ_ONCE(storage->buf)->data[0];
-  else
-    ptr = this_cpu_ptr(storage->percpu_buf);
+[auto build test WARNING on bpf-next/master]
 
-For the second program which was called from the originally attached
-one, this means bpf_get_local_storage() will pick up the former
-program's map, not its own. With mismatching sizes, this can result
-in an unintended out-of-bounds access.
+url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Borkmann/bpf-Move-bpf-map-owner-out-of-common-struct/20250728-063408
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20250727223223.510058-3-daniel%40iogearbox.net
+patch subject: [PATCH bpf-next 3/4] bpf: Move cgroup iterator helpers to bpf.h
+config: hexagon-randconfig-001-20250728 (https://download.01.org/0day-ci/archive/20250728/202507280945.m9sXKC5J-lkp@intel.com/config)
+compiler: clang version 22.0.0git (https://github.com/llvm/llvm-project 853c343b45b3e83cc5eeef5a52fc8cc9d8a09252)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250728/202507280945.m9sXKC5J-lkp@intel.com/reproduce)
 
-To fix this issue, we need to extend bpf_map_owner with an array of
-storage_cookie[] to match on i) the exact maps from the original
-program if the second program was using bpf_get_local_storage(), or
-ii) allow the tail call combination if the second program was not
-using any of the cgroup local storage maps.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202507280945.m9sXKC5J-lkp@intel.com/
 
-Fixes: 7d9c3427894f ("bpf: Make cgroup storages shared between programs on the same cgroup")
-Reported-by: Lonial Con <kongln9170@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
----
- include/linux/bpf.h |  1 +
- kernel/bpf/core.c   | 11 +++++++++++
- 2 files changed, 12 insertions(+)
+All warnings (new ones prefixed by >>):
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index a41dff574327..63169b1611cc 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -281,6 +281,7 @@ struct bpf_map_owner {
- 	enum bpf_prog_type type;
- 	bool jited;
- 	bool xdp_has_frags;
-+	u64 storage_cookie[MAX_BPF_CGROUP_STORAGE_TYPE];
- 	const struct btf_type *attach_func_proto;
- };
- 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 666d4019d87f..7a8201763936 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -2371,6 +2371,7 @@ static bool __bpf_prog_map_compatible(struct bpf_map *map,
- {
- 	enum bpf_prog_type prog_type = resolve_prog_type(fp);
- 	struct bpf_prog_aux *aux = fp->aux;
-+	enum bpf_cgroup_storage_type i;
- 	bool ret = false;
- 
- 	if (fp->kprobe_override)
-@@ -2386,11 +2387,21 @@ static bool __bpf_prog_map_compatible(struct bpf_map *map,
- 		map->owner->jited = fp->jited;
- 		map->owner->xdp_has_frags = aux->xdp_has_frags;
- 		map->owner->attach_func_proto = aux->attach_func_proto;
-+		for_each_cgroup_storage_type(i) {
-+			map->owner->storage_cookie[i] =
-+				aux->cgroup_storage[i] ?
-+				aux->cgroup_storage[i]->cookie : 0;
-+		}
- 		ret = true;
- 	} else {
- 		ret = map->owner->type  == prog_type &&
- 		      map->owner->jited == fp->jited &&
- 		      map->owner->xdp_has_frags == aux->xdp_has_frags;
-+		for_each_cgroup_storage_type_cond(i, ret) {
-+			u64 cookie = aux->cgroup_storage[i] ?
-+				     aux->cgroup_storage[i]->cookie : 0;
-+			ret = map->owner->storage_cookie[i] == cookie || !cookie;
-+		}
- 		if (ret &&
- 		    map->owner->attach_func_proto != aux->attach_func_proto) {
- 			switch (prog_type) {
+   In file included from net/socket.c:55:
+>> include/linux/bpf-cgroup.h:510:9: warning: 'for_each_cgroup_storage_type' macro redefined [-Wmacro-redefined]
+     510 | #define for_each_cgroup_storage_type(stype) for (; false; )
+         |         ^
+   include/linux/bpf.h:218:9: note: previous definition is here
+     218 | #define for_each_cgroup_storage_type(stype) \
+         |         ^
+   1 warning generated.
+
+
+vim +/for_each_cgroup_storage_type +510 include/linux/bpf-cgroup.h
+
+de9cbbaadba5ad Roman Gushchin     2018-08-02  477  
+6fc88c354f3af8 Dave Marchevsky    2021-08-19  478  #define cgroup_bpf_enabled(atype) (0)
+fefba7d1ae198d Daan De Meyer      2023-10-11  479  #define BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, uaddrlen, atype, t_ctx) ({ 0; })
+fefba7d1ae198d Daan De Meyer      2023-10-11  480  #define BPF_CGROUP_RUN_SA_PROG(sk, uaddr, uaddrlen, atype) ({ 0; })
+d74bad4e74ee37 Andrey Ignatov     2018-03-30  481  #define BPF_CGROUP_PRE_CONNECT_ENABLED(sk) (0)
+3007098494bec6 Daniel Mack        2016-11-23  482  #define BPF_CGROUP_RUN_PROG_INET_INGRESS(sk,skb) ({ 0; })
+3007098494bec6 Daniel Mack        2016-11-23  483  #define BPF_CGROUP_RUN_PROG_INET_EGRESS(sk,skb) ({ 0; })
+61023658760032 David Ahern        2016-12-01  484  #define BPF_CGROUP_RUN_PROG_INET_SOCK(sk) ({ 0; })
+f5836749c9c04a Stanislav Fomichev 2020-07-06  485  #define BPF_CGROUP_RUN_PROG_INET_SOCK_RELEASE(sk) ({ 0; })
+fefba7d1ae198d Daan De Meyer      2023-10-11  486  #define BPF_CGROUP_RUN_PROG_INET_BIND_LOCK(sk, uaddr, uaddrlen, atype, flags) ({ 0; })
+aac3fc320d9404 Andrey Ignatov     2018-03-30  487  #define BPF_CGROUP_RUN_PROG_INET4_POST_BIND(sk) ({ 0; })
+aac3fc320d9404 Andrey Ignatov     2018-03-30  488  #define BPF_CGROUP_RUN_PROG_INET6_POST_BIND(sk) ({ 0; })
+fefba7d1ae198d Daan De Meyer      2023-10-11  489  #define BPF_CGROUP_RUN_PROG_INET4_CONNECT(sk, uaddr, uaddrlen) ({ 0; })
+fefba7d1ae198d Daan De Meyer      2023-10-11  490  #define BPF_CGROUP_RUN_PROG_INET4_CONNECT_LOCK(sk, uaddr, uaddrlen) ({ 0; })
+fefba7d1ae198d Daan De Meyer      2023-10-11  491  #define BPF_CGROUP_RUN_PROG_INET6_CONNECT(sk, uaddr, uaddrlen) ({ 0; })
+fefba7d1ae198d Daan De Meyer      2023-10-11  492  #define BPF_CGROUP_RUN_PROG_INET6_CONNECT_LOCK(sk, uaddr, uaddrlen) ({ 0; })
+859051dd165ec6 Daan De Meyer      2023-10-11  493  #define BPF_CGROUP_RUN_PROG_UNIX_CONNECT_LOCK(sk, uaddr, uaddrlen) ({ 0; })
+fefba7d1ae198d Daan De Meyer      2023-10-11  494  #define BPF_CGROUP_RUN_PROG_UDP4_SENDMSG_LOCK(sk, uaddr, uaddrlen, t_ctx) ({ 0; })
+fefba7d1ae198d Daan De Meyer      2023-10-11  495  #define BPF_CGROUP_RUN_PROG_UDP6_SENDMSG_LOCK(sk, uaddr, uaddrlen, t_ctx) ({ 0; })
+859051dd165ec6 Daan De Meyer      2023-10-11  496  #define BPF_CGROUP_RUN_PROG_UNIX_SENDMSG_LOCK(sk, uaddr, uaddrlen, t_ctx) ({ 0; })
+fefba7d1ae198d Daan De Meyer      2023-10-11  497  #define BPF_CGROUP_RUN_PROG_UDP4_RECVMSG_LOCK(sk, uaddr, uaddrlen) ({ 0; })
+fefba7d1ae198d Daan De Meyer      2023-10-11  498  #define BPF_CGROUP_RUN_PROG_UDP6_RECVMSG_LOCK(sk, uaddr, uaddrlen) ({ 0; })
+859051dd165ec6 Daan De Meyer      2023-10-11  499  #define BPF_CGROUP_RUN_PROG_UNIX_RECVMSG_LOCK(sk, uaddr, uaddrlen) ({ 0; })
+40304b2a1567fe Lawrence Brakmo    2017-06-30  500  #define BPF_CGROUP_RUN_PROG_SOCK_OPS(sock_ops) ({ 0; })
+6fc88c354f3af8 Dave Marchevsky    2021-08-19  501  #define BPF_CGROUP_RUN_PROG_DEVICE_CGROUP(atype, major, minor, access) ({ 0; })
+32927393dc1ccd Christoph Hellwig  2020-04-24  502  #define BPF_CGROUP_RUN_PROG_SYSCTL(head,table,write,buf,count,pos) ({ 0; })
+0d01da6afc5402 Stanislav Fomichev 2019-06-27  503  #define BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock, level, optname, optval, \
+0d01da6afc5402 Stanislav Fomichev 2019-06-27  504  				       optlen, max_optlen, retval) ({ retval; })
+9cacf81f816111 Stanislav Fomichev 2021-01-15  505  #define BPF_CGROUP_RUN_PROG_GETSOCKOPT_KERN(sock, level, optname, optval, \
+9cacf81f816111 Stanislav Fomichev 2021-01-15  506  					    optlen, retval) ({ retval; })
+0d01da6afc5402 Stanislav Fomichev 2019-06-27  507  #define BPF_CGROUP_RUN_PROG_SETSOCKOPT(sock, level, optname, optval, optlen, \
+0d01da6afc5402 Stanislav Fomichev 2019-06-27  508  				       kernel_optval) ({ 0; })
+3007098494bec6 Daniel Mack        2016-11-23  509  
+8bad74f9840f87 Roman Gushchin     2018-09-28 @510  #define for_each_cgroup_storage_type(stype) for (; false; )
+8bad74f9840f87 Roman Gushchin     2018-09-28  511  
+
 -- 
-2.43.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
