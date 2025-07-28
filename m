@@ -1,431 +1,239 @@
-Return-Path: <bpf+bounces-64547-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64548-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B3CFB1416B
-	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 19:51:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81E78B141B8
+	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 20:05:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 655F14E0E9D
-	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 17:50:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE4C07A73DC
+	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 18:00:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3939C27587E;
-	Mon, 28 Jul 2025 17:51:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 902C726463A;
+	Mon, 28 Jul 2025 18:00:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DZ+KRn4y"
+	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="NriczTb3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05D87273D8C
-	for <bpf@vger.kernel.org>; Mon, 28 Jul 2025 17:51:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 302C421D3D6
+	for <bpf@vger.kernel.org>; Mon, 28 Jul 2025 18:00:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753725073; cv=none; b=uKK1oeTHg7IzbBZQAQNnUqz7MLmZpCWa/NSLa6Ir7kO4sicpqxIShhNHhz8L2ooXSuJDJ+/Ciz0i+dPq+94hw9Ori4XhRXLJVwI5d2aY1JbV7NI1nl3rNTUGKA5uPIcnjslIBewqDJhheiKUcTV0IsHcrx6wzY4ldnfRVgAjf7A=
+	t=1753725611; cv=none; b=HKtH7galb5MaQANA6b3J8Ky0psQC3S78SVgPzrurS0f5QZfgeL2vyD7UXAJSLDblqnqgq35df5xa2BbMB6YPKJGGiw6HxFuMnfM7fqZgyOJz0ODTRBM6o1XbsAIDmOkTdeb0MCJcku8PiWnyDghjNClg0bsrzY12xCxWl+2goN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753725073; c=relaxed/simple;
-	bh=vOmFchgkQyEQ+7SGTx8BojdlIqRNaIQQqGvyMI05+8Q=;
+	s=arc-20240116; t=1753725611; c=relaxed/simple;
+	bh=iKYYXYU3kztPrvshqIoQqsBr9Q3R9Rjku5p1Xr/11eI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tNaQAunR2r0X9Q827ujJBdwaRiCMXB8X7nfKUtmHP6hkr5rJ3c65deyXHEAsahuUyASlQt6IM6iEpTQPMgFgRhTI9+DJciOPOE32V3UwsgbEQCV9WNdoWfWqKH7b41px1NnhLQhq3JZckyWNhjFE9234GZuf2j0q/TqcbARIO9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DZ+KRn4y; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-237f18108d2so20005ad.0
-        for <bpf@vger.kernel.org>; Mon, 28 Jul 2025 10:51:10 -0700 (PDT)
+	 To:Cc:Content-Type; b=A7rHhES/Jca2A8KUlpcwDbsW06h4BqjmVaIuTeGi8qEqJlJBLJrUifF+42At6WFQ1OSydTtgV3sVI5SYx+m4i57vLJs/dOYhmJUMSs/SjquACbZWrdAwMTpuJbdUDpSL50H4+gyVSrf5o8fRxa3gYdnXudSQW3EnH+ognyl3y88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=NriczTb3; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-718389fb988so41870417b3.1
+        for <bpf@vger.kernel.org>; Mon, 28 Jul 2025 11:00:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1753725070; x=1754329870; darn=vger.kernel.org;
+        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1753725608; x=1754330408; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DBKeku6zVO55K67MLztQ2tt1Uyve6xAQKNrkkCjEuZI=;
-        b=DZ+KRn4yri2ntC5ftorXZQdkJw0s497yIfCelXQ3V2ohVdtCdXILMCgMTXogXIs5yB
-         B6cM4Gj7lnaqdLdHljd4HmgdR/M9wyh1V9BXeeKtrzTMm/jZy+3w+6JKuPzDPnsWFeyc
-         R/+9v+fzlgyVqFDdhlKoJNu6tvGX+4V2yRXBGUYHQiVX9pFkdu8aVIrevV0yyZ3jKzZB
-         Gg/glpNq1zqp/Q+SaTvD5QqixetZxktrR1GhRIM4agVH3FoJZJA+gxrtQXxdHfE/GyPm
-         Sr1iTOleog4qXQnGuHiFv+i6/GbXFU1m0YSWJ8XCCZu0Tx4vadGi6BuViH6pS21zKJdo
-         xPeA==
+        bh=kPYhbPyoxtTqfzZvkF/q/aqSvB2qPK5VJT7HARAmoyA=;
+        b=NriczTb3ply7dUQir392gfobkXeh6MIRLHZvk7+8OFaImvMZ41OsQqi1zoOnIDU7ei
+         wNQAdOjdRLNU9DCgZ2lQLzgIWtc2u5jdYkUOnGF0thQzNgJ7oJrZulXA4sbkUWHnoSlJ
+         nlEH5Erhjaz/Tnt0MxPv70/qEs5KUfzTE2kuu6ebx/6b2xfQ83RnazEXZy+FQvsu0bxR
+         8+iXLl1jUaqF3rETGdDkWb02jqacdmNonp2gAop6yO4ONH80j0KhA2Nd14i+NhTj91QV
+         qbAo86HffFxmvLv67j8GYp0aWkUu8zSPq9nx8/MKvjDDqrLLjWaKLJoVNldsG72R/m0H
+         BQpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753725070; x=1754329870;
+        d=1e100.net; s=20230601; t=1753725608; x=1754330408;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DBKeku6zVO55K67MLztQ2tt1Uyve6xAQKNrkkCjEuZI=;
-        b=LH/j9Z/mkMzPyoiY4gKkLrqT4Ocnr/iMpMz/fwoJdGVMsh824p5aOssPkA7p6yGPdN
-         fDT4IN4LNYUPyeteiXlykV0rgyxngG1OaM7BztosFF6nLqEjtoQb3Ox/76Go2Gnu6CoX
-         Hs7ESyfJcFz4QSkuoGC0Q9J+1P7Zux11RIyKIMN81eaZbWzFNDqoLECngWmOkk/br4rx
-         HQVxL/aNwBBU1iWrwPqNGRubSxNor9l66mLFgePBSJhhEq7T2Om+WfQ2Fhpz/pRt+U9Q
-         hSsTHx/ltEXi1o3WFcaIDDMhYD7Lq3gYOcozJ6p1OHn5FM29evZOVOeQ2j7Gn88IPg7Z
-         6iCA==
-X-Forwarded-Encrypted: i=1; AJvYcCX41xV0/UbLaLFk2vrtAvQYAWS0gvD7nRDUcfqZ7MDazagux+4Izuun/oZmcPkiUDSevgA=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyh6BN0NgGJ4P2t7CsyZqI1AGHaawQ25BHL6chxjP+7aP3by8YU
-	hd74rpN1KUg5OT/h+yLO0NePO+5YlOnPJ5JrGzwiyhLarRgmAncmvQzPEY6pVsfQQXC7f+/ayqy
-	o/sM+9P3nEacPhyaGRH436MecljkgRpzavi/S6y4t
-X-Gm-Gg: ASbGncsEd93h2EsZGQfoByBr32HKuGEw+S8VbyCwwraGwcGNgnoZXrRpz/B734zboek
-	09uSuML0w+BzGOSIw37gwGN5gk4o098hJ8Jl5ZSgpIJo/AQeaE55zYtd4Sr39d53yKix5aOhfB/
-	23g9dD/KT9APvdBRWwKM1oDZ3Pn/6FBQ0PvryCpvI45gZpnPCWB0qAeWYLyJB9hasGgqQBOciLV
-	7d5FmKmCU7keywdz8iDPmlu7EK7GF0Z1glNUA==
-X-Google-Smtp-Source: AGHT+IHcYeKC05850F4TTaw5KxBzxMXvA6FA4+SMB9VpNRlorOlyAj+f8QimcI7qy9S+bhrDnuKB9SXXwdjOVkm0pSM=
-X-Received: by 2002:a17:903:94c:b0:240:58bd:11ba with SMTP id
- d9443c01a7336-24058cc56cemr1345875ad.23.1753725069763; Mon, 28 Jul 2025
- 10:51:09 -0700 (PDT)
+        bh=kPYhbPyoxtTqfzZvkF/q/aqSvB2qPK5VJT7HARAmoyA=;
+        b=kwSX/N0Ys/dqx1ctUHpy1rzItqHW8ED9kHoRScYSVuKxYsxh45EUrJqgrM/PJw3S6x
+         WnkjY1OjbOj/vjWchwGUKA0AkKF2TP6ibnk1HSiNE3gsDRrMsvEGnC7hm7dBlZGOZhS/
+         i48F7muQiXsbdY+XtNSri9g9gafrpqP6cN9IR6cR/FPZ6jq1lXYHi1JJTwhbbCbRLw4T
+         61ZCPcLpmy+qDpP+fwaHdfhTOnbR+D5wPtXapOnM3f7X4svvJxyCyPU8vNn2gH/KEnvI
+         I1kI20cjmmIjMd6FYe1+zdTNJLtWvdQoE6eg6XkQXYKA7OLei2H1NHZ1lR5SCJ50RNzk
+         vokA==
+X-Gm-Message-State: AOJu0YxhEM3k1SWJwum3r1jlw5p6jpt151DXeRlR2sskncL3qV4uFl/l
+	gPlNovBwkw+2ntqpUotVlqK92ZDsOjU4+BSFyql+C2ReU/KItibF8UeucBj5l8ugJmgIOM0jUYI
+	y49yknojc0Omtdi5J3y0CAQp/B6Ot07/AtXrxgZC26g==
+X-Gm-Gg: ASbGnct6S8ghujYUEy9XHxhNnNOF7UvBRezcJNrjt0mIk9BTIBt+A34v/1Nn7UDUhHD
+	NvGA7PvJXCid6VwoWicnmK4LOBbch86CvypMEihLVPQOc7WVCJNozzI3AOkFUi6UZJnZ+bLapsn
+	ChoTBoX/qeUoMq0bty6V4OXAd0s6Q+WdcjCl2XukT1e48MrVzuPM1jGmFKI1BFHF3Tk4FNQPGPp
+	Nf3QEGxj529qrcF6lY=
+X-Google-Smtp-Source: AGHT+IFPQMTCbUXEGoNyCs6Sgj4JWecmHBMzlLFFRut2vE4mH8TAAmDpOQ+7bsQ0M3GoHloxaGBllF8iFenr6u3msSw=
+X-Received: by 2002:a05:690c:6f08:b0:71a:3437:af45 with SMTP id
+ 00721157ae682-71a3437b484mr9121217b3.25.1753725607990; Mon, 28 Jul 2025
+ 11:00:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250728052742.81294-1-byungchul@sk.com> <20250728082008.34091-1-byungchul@sk.com>
-In-Reply-To: <20250728082008.34091-1-byungchul@sk.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Mon, 28 Jul 2025 10:50:55 -0700
-X-Gm-Features: Ac12FXxVdVrRJS8-nghy7iGoNOdvPeYRQkCbX14O9WycDp4E_Y6QBKwCNMt-Clw
-Message-ID: <CAHS8izPTLSdN7uqPN7n97ovkdvc1vLc46EgyxDYSbAM6bdLUjg@mail.gmail.com>
-Subject: Re: [PATCH v2 rebase as of Jul 28] mm, page_pool: introduce a new
- page type for page pool in page type
-To: Byungchul Park <byungchul@sk.com>
-Cc: linux-mm@kvack.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	kernel_team@skhynix.com, harry.yoo@oracle.com, ast@kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org, hawk@kernel.org, 
-	john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com, leon@kernel.org, 
-	tariqt@nvidia.com, mbloch@nvidia.com, andrew+netdev@lunn.ch, 
-	edumazet@google.com, pabeni@redhat.com, akpm@linux-foundation.org, 
-	david@redhat.com, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, 
-	vbabka@suse.cz, rppt@kernel.org, surenb@google.com, mhocko@suse.com, 
-	horms@kernel.org, jackmanb@google.com, hannes@cmpxchg.org, ziy@nvidia.com, 
-	ilias.apalodimas@linaro.org, willy@infradead.org, brauner@kernel.org, 
-	kas@kernel.org, yuzhao@google.com, usamaarif642@gmail.com, 
-	baolin.wang@linux.alibaba.com, toke@redhat.com, asml.silence@gmail.com, 
-	bpf@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <20250717164842.1848817-1-ameryhung@gmail.com> <20250717164842.1848817-4-ameryhung@gmail.com>
+In-Reply-To: <20250717164842.1848817-4-ameryhung@gmail.com>
+From: Emil Tsalapatis <linux-lists@etsalapatis.com>
+Date: Mon, 28 Jul 2025 13:59:56 -0400
+X-Gm-Features: Ac12FXyQuNO7tHXoWijJr4Od2sdtWGv39lNKiLZRs78lxqDqNW1mw0ex6fe6PrI
+Message-ID: <CABFh=a75g_EUwEq_3PA+K4O6CPR9HnCq28xU7XY=-VcBknB5DA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 3/3] selftests/bpf: Test concurrent task local
+ data key creation
+To: Amery Hung <ameryhung@gmail.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
+	andrii@kernel.org, daniel@iogearbox.net, tj@kernel.org, memxor@gmail.com, 
+	martin.lau@kernel.org, kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 28, 2025 at 1:20=E2=80=AFAM Byungchul Park <byungchul@sk.com> w=
+On Thu, Jul 17, 2025 at 12:49=E2=80=AFPM Amery Hung <ameryhung@gmail.com> w=
 rote:
 >
-> Rebasing on the latest linux-next/master is required.  Otherwise, a
-> build fail is observed.  Sorry about the noise.
+> Test thread-safety of tld_create_key(). Since tld_create_key() does
+> not rely on locks but memory barriers and atomic operations to protect
+> the shared metadata, the thread-safety of the function is non-trivial.
+> Make sure concurrent tld_key_create(), both valid and invalid, can not
+> race and corrupt metatada, which may leads to TLDs not being thread-
+> specific or duplicate TLDs with the same name.
 >
-> Changes from v1:
->         1. Rebase on linux-next.
->         2. Initialize net_iov->pp =3D NULL when allocating net_iov in
->            net_devmem_bind_dmabuf() and io_zcrx_create_area().
->         3. Use ->pp for net_iov to identify if it's pp rather than
->            always consider net_iov as pp.
->         4. Add Suggested-by: David Hildenbrand <david@redhat.com>.
->
-> ---8<---
-> From 26c9a731f388b788d6ea972c313bc8da8831412b Mon Sep 17 00:00:00 2001
-> From: Byungchul Park <byungchul@sk.com>
-> Date: Mon, 28 Jul 2025 17:09:20 +0900
-> Subject: [PATCH v2 rebase as of Jul 28] mm, page_pool: introduce a new pa=
-ge type for page pool in page type
->
-> ->pp_magic field in struct page is current used to identify if a page
-> belongs to a page pool.  However, ->pp_magic will be removed and page
-> type bit in struct page e.i. PGTY_netpp can be used for that purpose.
->
-> Introduce and use the page type APIs e.g. PageNetpp(), __SetPageNetpp(),
-> and __ClearPageNetpp() instead, and remove the existing APIs accessing
-> ->pp_magic e.g. page_pool_page_is_pp(), netmem_or_pp_magic(), and
-> netmem_clear_pp_magic().
->
-> For net_iov, use ->pp to identify if it's pp, with making sure that ->pp
-> is NULL for non-pp net_iov.
->
-> This work was inspired by the following link:
->
-> [1] https://lore.kernel.org/all/582f41c0-2742-4400-9c81-0d46bf4e8314@gmai=
-l.com/
->
-> While at it, move the sanity check for page pool to on free.
->
-> Suggested-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Byungchul Park <byungchul@sk.com>
+> Signed-off-by: Amery Hung <ameryhung@gmail.com>
+
+Reviewed-by: Emil Tsalapatis <emil@etsalapatis.com>
+
 > ---
->  .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  2 +-
->  include/linux/mm.h                            | 27 +++----------------
->  include/linux/page-flags.h                    |  6 +++++
->  include/net/netmem.h                          |  2 +-
->  io_uring/zcrx.c                               |  1 +
->  mm/page_alloc.c                               |  7 +++--
->  net/core/devmem.c                             |  1 +
->  net/core/netmem_priv.h                        | 23 +++++++---------
->  net/core/page_pool.c                          | 10 +++++--
->  9 files changed, 34 insertions(+), 45 deletions(-)
+>  .../bpf/prog_tests/test_task_local_data.c     | 105 ++++++++++++++++++
+>  1 file changed, 105 insertions(+)
 >
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/n=
-et/ethernet/mellanox/mlx5/core/en/xdp.c
-> index 5d51600935a6..def274f5c1ca 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-> @@ -707,7 +707,7 @@ static void mlx5e_free_xdpsq_desc(struct mlx5e_xdpsq =
-*sq,
->                                 xdpi =3D mlx5e_xdpi_fifo_pop(xdpi_fifo);
->                                 page =3D xdpi.page.page;
->
-> -                               /* No need to check page_pool_page_is_pp(=
-) as we
-> +                               /* No need to check PageNetpp() as we
->                                  * know this is a page_pool page.
->                                  */
->                                 page_pool_recycle_direct(pp_page_to_nmdes=
-c(page)->pp,
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 0d4ee569aa6b..d01b296e7184 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -4171,10 +4171,9 @@ int arch_lock_shadow_stack_status(struct task_stru=
-ct *t, unsigned long status);
->   * DMA mapping IDs for page_pool
->   *
->   * When DMA-mapping a page, page_pool allocates an ID (from an xarray) a=
-nd
-> - * stashes it in the upper bits of page->pp_magic. We always want to be =
-able to
-> - * unambiguously identify page pool pages (using page_pool_page_is_pp())=
-. Non-PP
-> - * pages can have arbitrary kernel pointers stored in the same field as =
-pp_magic
-> - * (since it overlaps with page->lru.next), so we must ensure that we ca=
-nnot
-> + * stashes it in the upper bits of page->pp_magic. Non-PP pages can have
-> + * arbitrary kernel pointers stored in the same field as pp_magic (since
-> + * it overlaps with page->lru.next), so we must ensure that we cannot
->   * mistake a valid kernel pointer with any of the values we write into t=
-his
->   * field.
->   *
-> @@ -4205,26 +4204,6 @@ int arch_lock_shadow_stack_status(struct task_stru=
-ct *t, unsigned long status);
->  #define PP_DMA_INDEX_MASK GENMASK(PP_DMA_INDEX_BITS + PP_DMA_INDEX_SHIFT=
- - 1, \
->                                   PP_DMA_INDEX_SHIFT)
->
-> -/* Mask used for checking in page_pool_page_is_pp() below. page->pp_magi=
-c is
-> - * OR'ed with PP_SIGNATURE after the allocation in order to preserve bit=
- 0 for
-> - * the head page of compound page and bit 1 for pfmemalloc page, as well=
- as the
-> - * bits used for the DMA index. page_is_pfmemalloc() is checked in
-> - * __page_pool_put_page() to avoid recycling the pfmemalloc page.
-> - */
-> -#define PP_MAGIC_MASK ~(PP_DMA_INDEX_MASK | 0x3UL)
-> -
-> -#ifdef CONFIG_PAGE_POOL
-> -static inline bool page_pool_page_is_pp(const struct page *page)
-> -{
-> -       return (page->pp_magic & PP_MAGIC_MASK) =3D=3D PP_SIGNATURE;
-> -}
-> -#else
-> -static inline bool page_pool_page_is_pp(const struct page *page)
-> -{
-> -       return false;
-> -}
-> -#endif
-> -
->  #define PAGE_SNAPSHOT_FAITHFUL (1 << 0)
->  #define PAGE_SNAPSHOT_PG_BUDDY (1 << 1)
->  #define PAGE_SNAPSHOT_PG_IDLE  (1 << 2)
-> diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-> index 8d3fa3a91ce4..84247e39e9e7 100644
-> --- a/include/linux/page-flags.h
-> +++ b/include/linux/page-flags.h
-> @@ -933,6 +933,7 @@ enum pagetype {
->         PGTY_zsmalloc           =3D 0xf6,
->         PGTY_unaccepted         =3D 0xf7,
->         PGTY_large_kmalloc      =3D 0xf8,
-> +       PGTY_netpp              =3D 0xf9,
->
->         PGTY_mapcount_underflow =3D 0xff
->  };
-> @@ -1077,6 +1078,11 @@ PAGE_TYPE_OPS(Zsmalloc, zsmalloc, zsmalloc)
->  PAGE_TYPE_OPS(Unaccepted, unaccepted, unaccepted)
->  FOLIO_TYPE_OPS(large_kmalloc, large_kmalloc)
->
-> +/*
-> + * Marks page_pool allocated pages.
-> + */
-> +PAGE_TYPE_OPS(Netpp, netpp, netpp)
-> +
->  /**
->   * PageHuge - Determine if the page belongs to hugetlbfs
->   * @page: The page to test.
-> diff --git a/include/net/netmem.h b/include/net/netmem.h
-> index f7dacc9e75fd..3667334e16e7 100644
-> --- a/include/net/netmem.h
-> +++ b/include/net/netmem.h
-> @@ -298,7 +298,7 @@ static inline struct net_iov *__netmem_clear_lsb(netm=
-em_ref netmem)
->   */
->  #define pp_page_to_nmdesc(p)                                           \
->  ({                                                                     \
-> -       DEBUG_NET_WARN_ON_ONCE(!page_pool_page_is_pp(p));               \
-> +       DEBUG_NET_WARN_ON_ONCE(!PageNetpp(p));                          \
->         __pp_page_to_nmdesc(p);                                         \
->  })
->
-> diff --git a/io_uring/zcrx.c b/io_uring/zcrx.c
-> index e5ff49f3425e..4cceb97ca26a 100644
-> --- a/io_uring/zcrx.c
-> +++ b/io_uring/zcrx.c
-> @@ -444,6 +444,7 @@ static int io_zcrx_create_area(struct io_zcrx_ifq *if=
-q,
->                 area->freelist[i] =3D i;
->                 atomic_set(&area->user_refs[i], 0);
->                 niov->type =3D NET_IOV_IOURING;
-> +               niov->pp =3D NULL;
->         }
->
->         area->free_count =3D nr_iovs;
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index d1d037f97c5f..2f6a55fab942 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -1042,7 +1042,6 @@ static inline bool page_expected_state(struct page =
-*page,
->  #ifdef CONFIG_MEMCG
->                         page->memcg_data |
->  #endif
-> -                       page_pool_page_is_pp(page) |
->                         (page->flags & check_flags)))
->                 return false;
->
-> @@ -1069,8 +1068,6 @@ static const char *page_bad_reason(struct page *pag=
-e, unsigned long flags)
->         if (unlikely(page->memcg_data))
->                 bad_reason =3D "page still charged to cgroup";
->  #endif
-> -       if (unlikely(page_pool_page_is_pp(page)))
-> -               bad_reason =3D "page_pool leak";
->         return bad_reason;
+> diff --git a/tools/testing/selftests/bpf/prog_tests/test_task_local_data.=
+c b/tools/testing/selftests/bpf/prog_tests/test_task_local_data.c
+> index fde4a030ab42..1d3ccb98b5db 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/test_task_local_data.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/test_task_local_data.c
+> @@ -185,8 +185,113 @@ static void test_task_local_data_basic(void)
+>         test_task_local_data__destroy(skel);
 >  }
 >
-> @@ -1379,9 +1376,11 @@ __always_inline bool free_pages_prepare(struct pag=
-e *page,
->                 mod_mthp_stat(order, MTHP_STAT_NR_ANON, -1);
->                 folio->mapping =3D NULL;
->         }
-> -       if (unlikely(page_has_type(page)))
-> +       if (unlikely(page_has_type(page))) {
-> +               WARN_ON_ONCE(PageNetpp(page));
->                 /* Reset the page_type (which overlays _mapcount) */
->                 page->page_type =3D UINT_MAX;
+> +#define TEST_RACE_THREAD_NUM (TLD_MAX_DATA_CNT - 3)
+> +
+> +void *test_task_local_data_race_thread(void *arg)
+> +{
+> +       int err =3D 0, id =3D (intptr_t)arg;
+> +       char key_name[32];
+> +       tld_key_t key;
+> +
+> +       key =3D tld_create_key("value_not_exist", TLD_PAGE_SIZE + 1);
+> +       if (tld_key_err_or_zero(key) !=3D -E2BIG) {
+> +               err =3D 1;
+> +               goto out;
 > +       }
->
->         if (is_check_pages_enabled()) {
->                 if (free_page_is_bad(page))
-> diff --git a/net/core/devmem.c b/net/core/devmem.c
-> index b3a62ca0df65..40e7a4ec9009 100644
-> --- a/net/core/devmem.c
-> +++ b/net/core/devmem.c
-> @@ -285,6 +285,7 @@ net_devmem_bind_dmabuf(struct net_device *dev,
->                         niov =3D &owner->area.niovs[i];
->                         niov->type =3D NET_IOV_DMABUF;
->                         niov->owner =3D &owner->area;
-> +                       niov->pp =3D NULL;
->                         page_pool_set_dma_addr_netmem(net_iov_to_netmem(n=
-iov),
->                                                       net_devmem_get_dma_=
-addr(niov));
->                         if (direction =3D=3D DMA_TO_DEVICE)
-> diff --git a/net/core/netmem_priv.h b/net/core/netmem_priv.h
-> index cd95394399b4..4b90332d6c64 100644
-> --- a/net/core/netmem_priv.h
-> +++ b/net/core/netmem_priv.h
-> @@ -8,21 +8,18 @@ static inline unsigned long netmem_get_pp_magic(netmem_=
-ref netmem)
->         return __netmem_clear_lsb(netmem)->pp_magic & ~PP_DMA_INDEX_MASK;
->  }
->
-> -static inline void netmem_or_pp_magic(netmem_ref netmem, unsigned long p=
-p_magic)
-> -{
-> -       __netmem_clear_lsb(netmem)->pp_magic |=3D pp_magic;
-> -}
-> -
-> -static inline void netmem_clear_pp_magic(netmem_ref netmem)
-> -{
-> -       WARN_ON_ONCE(__netmem_clear_lsb(netmem)->pp_magic & PP_DMA_INDEX_=
-MASK);
-> -
-> -       __netmem_clear_lsb(netmem)->pp_magic =3D 0;
-> -}
-> -
->  static inline bool netmem_is_pp(netmem_ref netmem)
->  {
-> -       return (netmem_get_pp_magic(netmem) & PP_MAGIC_MASK) =3D=3D PP_SI=
-GNATURE;
-> +       /* Use ->pp for net_iov to identify if it's pp, which requires
-> +        * that non-pp net_iov should have ->pp NULL'd.
-> +        */
-> +       if (netmem_is_net_iov(netmem))
-> +               return !!__netmem_clear_lsb(netmem)->pp;
 > +
-> +       /* For system memory, page type bit in struct page can be used
-> +        * to identify if it's pp.
-> +        */
-> +       return PageNetpp(__netmem_to_page(netmem));
->  }
->
->  static inline void netmem_set_pp(netmem_ref netmem, struct page_pool *po=
-ol)
-> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> index 05e2e22a8f7c..0a10f3026faa 100644
-> --- a/net/core/page_pool.c
-> +++ b/net/core/page_pool.c
-> @@ -654,7 +654,6 @@ s32 page_pool_inflight(const struct page_pool *pool, =
-bool strict)
->  void page_pool_set_pp_info(struct page_pool *pool, netmem_ref netmem)
->  {
->         netmem_set_pp(netmem, pool);
-> -       netmem_or_pp_magic(netmem, PP_SIGNATURE);
->
->         /* Ensuring all pages have been split into one fragment initially=
-:
->          * page_pool_set_pp_info() is only called once for every page whe=
-n it
-> @@ -665,12 +664,19 @@ void page_pool_set_pp_info(struct page_pool *pool, =
-netmem_ref netmem)
->         page_pool_fragment_netmem(netmem, 1);
->         if (pool->has_init_callback)
->                 pool->slow.init_callback(netmem, pool->slow.init_arg);
+> +       /* Only one thread will succeed in creating value1 */
+> +       key =3D tld_create_key("value1", sizeof(int));
+> +       if (!tld_key_is_err(key))
+> +               tld_keys[1] =3D key;
 > +
-> +       if (netmem_is_net_iov(netmem))
+> +       /* Only one thread will succeed in creating value2 */
+> +       key =3D tld_create_key("value2", sizeof(struct test_tld_struct));
+> +       if (!tld_key_is_err(key))
+> +               tld_keys[2] =3D key;
+> +
+> +       snprintf(key_name, 32, "thread_%d", id);
+> +       tld_keys[id] =3D tld_create_key(key_name, sizeof(int));
+> +       if (tld_key_is_err(tld_keys[id]))
+> +               err =3D 2;
+> +out:
+> +       return (void *)(intptr_t)err;
+> +}
+> +
+> +static void test_task_local_data_race(void)
+> +{
+> +       LIBBPF_OPTS(bpf_test_run_opts, opts);
+> +       pthread_t thread[TEST_RACE_THREAD_NUM];
+> +       struct test_task_local_data *skel;
+> +       int fd, i, j, err, *data;
+> +       void *ret =3D NULL;
+> +
+> +       skel =3D test_task_local_data__open_and_load();
+> +       if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
 > +               return;
-> +       __SetPageNetpp(__netmem_to_page(netmem));
-
-nit:
-
-if (!netmem_is_net_iov(netmem))
-  __SetPageNetpp(__netmem_to_page(netmem));
-
-i.e. no need for the early return. I would also move the diff to
-replace netmem_or_pp_magic.
-
->  }
->
->  void page_pool_clear_pp_info(netmem_ref netmem)
->  {
-> -       netmem_clear_pp_magic(netmem);
->         netmem_set_pp(netmem, NULL);
 > +
-> +       if (netmem_is_net_iov(netmem))
-> +               return;
-> +       __ClearPageNetpp(__netmem_to_page(netmem));
-
-Same here. I would do:
-
-if (!netmem_is_net_iov(netmem))
-  __ClearPageNetpp(__netmem_to_page(netmem));
-
-and no need for the early return.
-
-Reviewed-by: Mina Almasry <almasrymina@google.com>
-
-
---=20
-Thanks,
-Mina
+> +       tld_keys =3D calloc(TLD_MAX_DATA_CNT, sizeof(tld_key_t));
+> +       if (!ASSERT_OK_PTR(tld_keys, "calloc tld_keys"))
+> +               goto out;
+> +
+> +       fd =3D bpf_map__fd(skel->maps.tld_data_map);
+> +
+> +       ASSERT_FALSE(tld_key_is_err(value0_key), "TLD_DEFINE_KEY");
+> +       tld_keys[0] =3D value0_key;
+> +
+> +       for (j =3D 0; j < 100; j++) {
+> +               reset_tld();
+> +
+> +               for (i =3D 0; i < TEST_RACE_THREAD_NUM; i++) {
+> +                       /*
+> +                        * Try to make tld_create_key() race with each ot=
+her. Call
+> +                        * tld_create_key(), both valid and invalid, from=
+ different threads.
+> +                        */
+> +                       err =3D pthread_create(&thread[i], NULL, test_tas=
+k_local_data_race_thread,
+> +                                            (void *)(intptr_t)(i + 3));
+> +                       if (CHECK_FAIL(err))
+> +                               break;
+> +               }
+> +
+> +               /* Wait for all tld_create_key() to return */
+> +               for (i =3D 0; i < TEST_RACE_THREAD_NUM; i++) {
+> +                       pthread_join(thread[i], &ret);
+> +                       if (CHECK_FAIL(ret))
+> +                               break;
+> +               }
+> +
+> +               /* Write a unique number to each TLD */
+> +               for (i =3D 0; i < TLD_MAX_DATA_CNT; i++) {
+> +                       data =3D tld_get_data(fd, tld_keys[i]);
+> +                       if (CHECK_FAIL(!data))
+> +                               break;
+> +                       *data =3D i;
+> +               }
+> +
+> +               /* Read TLDs and check the value to see if any address co=
+llides with another */
+> +               for (i =3D 0; i < TLD_MAX_DATA_CNT; i++) {
+> +                       data =3D tld_get_data(fd, tld_keys[i]);
+> +                       if (CHECK_FAIL(*data !=3D i))
+> +                               break;
+> +               }
+> +
+> +               /* Run task_main to make sure no invalid TLDs are added *=
+/
+> +               err =3D bpf_prog_test_run_opts(bpf_program__fd(skel->prog=
+s.task_main), &opts);
+> +               ASSERT_OK(err, "run task_main");
+> +               ASSERT_OK(opts.retval, "task_main retval");
+> +       }
+> +out:
+> +       if (tld_keys) {
+> +               free(tld_keys);
+> +               tld_keys =3D NULL;
+> +       }
+> +       tld_free();
+> +       test_task_local_data__destroy(skel);
+> +}
+> +
+>  void test_task_local_data(void)
+>  {
+>         if (test__start_subtest("task_local_data_basic"))
+>                 test_task_local_data_basic();
+> +       if (test__start_subtest("task_local_data_race"))
+> +               test_task_local_data_race();
+>  }
+> --
+> 2.47.1
+>
+>
 
