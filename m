@@ -1,179 +1,210 @@
-Return-Path: <bpf+bounces-64534-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64535-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53803B13E63
-	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 17:32:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DDEAB13F01
+	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 17:44:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A328D177198
-	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 15:30:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF6FB4E27C4
+	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 15:41:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC34B271A84;
-	Mon, 28 Jul 2025 15:30:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F770273D96;
+	Mon, 28 Jul 2025 15:41:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="DOWAuPOM"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EZZO6WEp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07DEB270EA8;
-	Mon, 28 Jul 2025 15:30:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9FDF1D6AA;
+	Mon, 28 Jul 2025 15:41:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753716624; cv=none; b=KwWRbcrjfFmI3g9gjXvDGNtROQ1eD+CuNObc7LLr4e71kQrV6kFHm0JWubl1tSoDb7vSw2CxBh9VT1sU6cNdDF1rkW9IHbLXxJBcxNSuIOVWNj4xPaB4QUFo5A0FwlKEZNy/kZTln0MObmSfvq8XQrA4shwWVn+Uaz1ph9bKVtE=
+	t=1753717271; cv=none; b=axYN9KAdMRe0iRraphhTzcyXJ2eUvruFhQfa+NJ0heySppuWIfEk4DF7+GC5SSrClz09aSDlhC2UkEoFuGDLraudfQKmmp5lYhuBRtsk0HRtxvNcB7VFNCm4x1uu4PCOYmQwFh5SMyFiLrpxZ/zff/corQde+dDgAS/9YewTIeQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753716624; c=relaxed/simple;
-	bh=VkaP8RJYaVAqoCKO4BcCLTGsDJ5m9AlMPtxi1310e3Q=;
+	s=arc-20240116; t=1753717271; c=relaxed/simple;
+	bh=2+Yrpurr159V+PWP6gA7KCnz3U/Uvt1diPHivVM8w8M=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eOt/MfES8376xfApQ1ZWudvT1PtmQCNS/HGpujKw6VdEBvxlaBkxnKhsqe7dxarg61F8HFHgn6XCW+V4z6C+RiO6/vAbM9XqWSCuwa8wG0bi0G5hruZDHDdMQmv+vTlccEu25D12hEl5EUIYqOe64qr2Fx/DswWgtFkpziFKk/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=DOWAuPOM; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56S9XLZN011939;
-	Mon, 28 Jul 2025 15:29:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=SilKQp
-	ImhNSS4CiOyf4st+Mp/LFTtQ0Rl5UKzOJiEUs=; b=DOWAuPOMnk1cD9MTQoexOz
-	mqR3TmoC2UCpa8w+bWxzjIE/01XKmvixc6quyYfX5hAlI69UPTdEQEyx3mg5DafI
-	0RPM41tn+tOAcoiJ4vwHBwZbub2ZLr5l4pWpvtnRrxe9yXuoAhrKYyCVyDT286iz
-	MFdLidp+CVrfEeXjA1XTjVyTVq5a1OBIsdcSdqBMmWY0l+Klf0uJI6pfw/k/T8/z
-	4PXD09UoZYp9z4F1uYzcj1Q86WrK8aUXaoo4uz/sKaR9vdUSIdo58hiWRyiIeChc
-	bNesfTGP8zoF14+fdicy3xpwJP4b7UPhMkt2L7ocQQlt8y4atlWhtCONOS4YmqJA
-	==
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 484qemhvky-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 28 Jul 2025 15:29:36 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56SDgLTW017949;
-	Mon, 28 Jul 2025 15:29:35 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4859btehd0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 28 Jul 2025 15:29:35 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 56SFTXCH40370484
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 28 Jul 2025 15:29:33 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6EB6420043;
-	Mon, 28 Jul 2025 15:29:33 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 610F42004E;
-	Mon, 28 Jul 2025 15:29:32 +0000 (GMT)
-Received: from [9.111.164.146] (unknown [9.111.164.146])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 28 Jul 2025 15:29:32 +0000 (GMT)
-Message-ID: <a47d0d23-8518-4146-b97a-bf18753bc483@linux.ibm.com>
-Date: Mon, 28 Jul 2025 17:29:31 +0200
+	 In-Reply-To:Content-Type; b=seBXYu/azis4jv1N3CkZ4vjmBstOP5Gli0tok1A97EBEXpvqi/44t6KRBGKrFonNLdppngPnDTZZ0DJodwbKNsIJqKKq5AFWZX2uqE+uNXJsAzadMHeocOYuvP1cs8vt0ozNg+YkH1WSbk80WoIiwCE0p7+SwrN2ma1Nb1K/Vio=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=EZZO6WEp; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <356fe0b5-b66e-475b-b914-919339bb441a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1753717257;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3P5d/fh6qV7y811Tr+D1Od6XgOnz0idhvbTB8C4epYE=;
+	b=EZZO6WEpjfZHdNVXRxYJJpR23h6oploTAX0MJXz2v47dmSFJnpHYiplZ29VMjTnwkFxZxH
+	eYyI2ELRx0dIRleA5/78kroc0TAM+bkb1/xj1FyqKsrU92Z2vj+CjDtC/TtRArFK0Gw7R1
+	0BAQCQRkkZo0RKNlBk2Gzxkeg4d1ic0=
+Date: Mon, 28 Jul 2025 08:40:49 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v15 02/10] unwind_user/deferred: Add
- unwind_user_faultable()
-To: Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        x86@kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Indu Bhagat <indu.bhagat@oracle.com>,
-        "Jose E. Marchesi" <jemarch@gnu.org>,
-        Beau Belgrave <beaub@linux.microsoft.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>,
-        Sam James <sam@gentoo.org>
-References: <20250725185512.673587297@kernel.org>
- <20250725185739.399622407@kernel.org>
-Content-Language: en-US
-From: Jens Remus <jremus@linux.ibm.com>
-Organization: IBM Deutschland Research & Development GmbH
-In-Reply-To: <20250725185739.399622407@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: IZGNr6x1cRlhLPn8r90kOmdFEzSgFX2k
-X-Proofpoint-GUID: IZGNr6x1cRlhLPn8r90kOmdFEzSgFX2k
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzI4MDExMSBTYWx0ZWRfX8XORDaXjFQ8x
- gcUXv44p4X7hS4w99a41wvuMB1UHvFH4bY6ziI4UxFjCmmZpr7jFe93aSjSawTVWvEwRN4D74+7
- iHDFv46BJ7ldPMDX+lxDD68DQdwkwqpE4WJYkQOH5XMfaDWVkjQnh0PNR8gn7VlM+67Z/rhwEm0
- +Ed+EljwEg6YE6Ytn8HF/vMSos1PWLIWLT4miLorIllqWiGr3y+rXISMGQ319gwkZiRnkfS5yNF
- Z7GrVRr6CUxyuNyHNpo4Lb0UjzncRqXb6AgEahpb6RwLHlqbDVm6bCPZMXxHxfsftVu0upS+qnQ
- LRQ000WcW1Lr11UbJCTJ1JiVPP8j+oTeDFHCYzNkAuuUqer+M1MNIgvgG3X8yj7ocM9+sQU4lcW
- OT8M/DRnjC8x+stTOWStPYWEguB4zN7PAC0xajYvtXxbg8n0WTgHukZ30avloyDTW28xWw2C
-X-Authority-Analysis: v=2.4 cv=BJOzrEQG c=1 sm=1 tr=0 ts=68879760 cx=c_pps
- a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
- a=IkcTkHD0fZMA:10 a=Wb1JkmetP80A:10 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
- a=meVymXHHAAAA:8 a=m_9FHJPNDCkT60rRepgA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
- a=2JgSa4NbpEOStq-L5dxp:22
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-07-28_03,2025-07-28_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 phishscore=0 suspectscore=0 spamscore=0 lowpriorityscore=0
- mlxlogscore=999 priorityscore=1501 malwarescore=0 mlxscore=0 bulkscore=0
- adultscore=0 clxscore=1015 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
- definitions=main-2507280111
+Subject: Re: [PATCH bpf-next v3 4/4] selftests/bpf: add icmp_send_unreach
+ kfunc tests
+Content-Language: en-GB
+To: Mahe Tardy <mahe.tardy@gmail.com>, lkp@intel.com
+Cc: alexei.starovoitov@gmail.com, andrii@kernel.org, ast@kernel.org,
+ bpf@vger.kernel.org, coreteam@netfilter.org, daniel@iogearbox.net,
+ fw@strlen.de, john.fastabend@gmail.com, martin.lau@linux.dev,
+ netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+ oe-kbuild-all@lists.linux.dev, pablo@netfilter.org
+References: <202507270940.kXGmRbg5-lkp@intel.com>
+ <20250728094345.46132-1-mahe.tardy@gmail.com>
+ <20250728094345.46132-5-mahe.tardy@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20250728094345.46132-5-mahe.tardy@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On 25.07.2025 20:55, Steven Rostedt wrote:
-> From: Steven Rostedt <rostedt@goodmis.org>
-> 
-> Add a new API to retrieve a user space callstack called
-> unwind_user_faultable(). The difference between this user space stack
-> tracer from the current user space stack tracer is that this must be
-> called from faultable context as it may use routines to access user space
-> data that needs to be faulted in.
-> 
-> It can be safely called from entering or exiting a system call as the code
-> can still be faulted in there.
-> 
-> This code is based on work by Josh Poimboeuf's deferred unwinding code:
-> 
-> Link: https://lore.kernel.org/all/6052e8487746603bdb29b65f4033e739092d9925.1737511963.git.jpoimboe@kernel.org/
-> 
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-Reviewed-by: Jens Remus <jremus@linux.ibm.com>
 
+On 7/28/25 2:43 AM, Mahe Tardy wrote:
+> This test opens a server and client, attach a cgroup_skb program on
+> egress and calls the icmp_send_unreach function from the client egress
+> so that an ICMP unreach control message is sent back to the client.
+> It then fetches the message from the error queue to confirm the correct
+> ICMP unreach code has been sent.
+>
+> Note that the BPF program returns SK_PASS to let the connection being
+> established to finish the test cases quicker. Otherwise, you have to
+> wait for the TCP three-way handshake to timeout in the kernel and
+> retrieve the errno translated from the unreach code set by the ICMP
+> control message.
+>
+> Signed-off-by: Mahe Tardy <mahe.tardy@gmail.com>
 > ---
->  include/linux/sched.h                 |  5 +++
->  include/linux/unwind_deferred.h       | 24 +++++++++++
->  include/linux/unwind_deferred_types.h |  9 ++++
->  kernel/fork.c                         |  4 ++
->  kernel/unwind/Makefile                |  2 +-
->  kernel/unwind/deferred.c              | 60 +++++++++++++++++++++++++++
->  6 files changed, 103 insertions(+), 1 deletion(-)
->  create mode 100644 include/linux/unwind_deferred.h
->  create mode 100644 include/linux/unwind_deferred_types.h
->  create mode 100644 kernel/unwind/deferred.c
+>   .../bpf/prog_tests/icmp_send_unreach_kfunc.c  | 99 +++++++++++++++++++
+>   .../selftests/bpf/progs/icmp_send_unreach.c   | 36 +++++++
+>   2 files changed, 135 insertions(+)
+>   create mode 100644 tools/testing/selftests/bpf/prog_tests/icmp_send_unreach_kfunc.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/icmp_send_unreach.c
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/icmp_send_unreach_kfunc.c b/tools/testing/selftests/bpf/prog_tests/icmp_send_unreach_kfunc.c
+> new file mode 100644
+> index 000000000000..414c1ed8ced3
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/icmp_send_unreach_kfunc.c
+> @@ -0,0 +1,99 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <test_progs.h>
+> +#include <network_helpers.h>
+> +#include <linux/errqueue.h>
+> +#include "icmp_send_unreach.skel.h"
+> +
+> +#define TIMEOUT_MS 1000
+> +#define SRV_PORT 54321
+> +
+> +#define ICMP_DEST_UNREACH 3
+> +
+> +#define ICMP_FRAG_NEEDED 4
+> +#define NR_ICMP_UNREACH 15
+> +
+> +static void read_icmp_errqueue(int sockfd, int expected_code)
+> +{
+> +	ssize_t n;
+> +	struct sock_extended_err *sock_err;
+> +	struct cmsghdr *cm;
+> +	char ctrl_buf[512];
+> +	struct msghdr msg = {
+> +		.msg_control = ctrl_buf,
+> +		.msg_controllen = sizeof(ctrl_buf),
+> +	};
+> +
+> +	n = recvmsg(sockfd, &msg, MSG_ERRQUEUE);
+> +	if (!ASSERT_GE(n, 0, "recvmsg_errqueue"))
+> +		return;
+> +
+> +	for (cm = CMSG_FIRSTHDR(&msg); cm; cm = CMSG_NXTHDR(&msg, cm)) {
+> +		if (!ASSERT_EQ(cm->cmsg_level, IPPROTO_IP, "cmsg_type") ||
+> +		    !ASSERT_EQ(cm->cmsg_type, IP_RECVERR, "cmsg_level"))
+> +			continue;
+> +
+> +		sock_err = (struct sock_extended_err *)CMSG_DATA(cm);
+> +
+> +		if (!ASSERT_EQ(sock_err->ee_origin, SO_EE_ORIGIN_ICMP,
+> +			       "sock_err_origin_icmp"))
+> +			return;
+> +		if (!ASSERT_EQ(sock_err->ee_type, ICMP_DEST_UNREACH,
+> +			       "sock_err_type_dest_unreach"))
+> +			return;
+> +		ASSERT_EQ(sock_err->ee_code, expected_code, "sock_err_code");
+> +	}
+> +}
+> +
+> +void test_icmp_send_unreach_kfunc(void)
+> +{
+> +	struct icmp_send_unreach *skel;
+> +	int cgroup_fd = -1, client_fd = 1, srv_fd = -1;
 
-Regards,
-Jens
--- 
-Jens Remus
-Linux on Z Development (D3303)
-+49-7031-16-1128 Office
-jremus@de.ibm.com
+Should set client_fd = -1? See below ...
 
-IBM
+> +	int *code;
+> +
+> +	skel = icmp_send_unreach__open_and_load();
+> +	if (!ASSERT_OK_PTR(skel, "skel_open"))
+> +		goto cleanup;
+> +
+> +	cgroup_fd = test__join_cgroup("/icmp_send_unreach_cgroup");
+> +	if (!ASSERT_GE(cgroup_fd, 0, "join_cgroup"))
+> +		goto cleanup;
+> +
+> +	skel->links.egress =
+> +		bpf_program__attach_cgroup(skel->progs.egress, cgroup_fd);
+> +	if (!ASSERT_OK_PTR(skel->links.egress, "prog_attach_cgroup"))
+> +		goto cleanup;
+> +
+> +	code = &skel->bss->unreach_code;
+> +
+> +	for (*code = 0; *code <= NR_ICMP_UNREACH; (*code)++) {
+> +		// The TCP stack reacts differently when asking for
+> +		// fragmentation, let's ignore it for now
+> +		if (*code == ICMP_FRAG_NEEDED)
+> +			continue;
+> +
+> +		skel->bss->kfunc_ret = -1;
+> +
+> +		srv_fd = start_server(AF_INET, SOCK_STREAM, "127.0.0.1",
+> +				      SRV_PORT, TIMEOUT_MS);
+> +		if (!ASSERT_GE(srv_fd, 0, "start_server"))
+> +			goto for_cleanup;
 
-IBM Deutschland Research & Development GmbH; Vorsitzender des Aufsichtsrats: Wolfgang Wendt; Geschäftsführung: David Faller; Sitz der Gesellschaft: Böblingen; Registergericht: Amtsgericht Stuttgart, HRB 243294
-IBM Data Privacy Statement: https://www.ibm.com/privacy/
+Otherwise if client_fd = 1, goto for_cleanup will close(1).
 
+> +
+> +		client_fd = socket(AF_INET, SOCK_STREAM, 0);
+> +		ASSERT_GE(client_fd, 0, "client_socket");
+
+The above two lines are not necessary since client_fd is
+actually set in the below.
+
+> +
+> +		client_fd = connect_to_fd(srv_fd, 0);
+> +		if (!ASSERT_GE(client_fd, 0, "client_connect"))
+> +			goto for_cleanup;
+> +
+> +		read_icmp_errqueue(client_fd, *code);
+> +
+> +		ASSERT_EQ(skel->bss->kfunc_ret, SK_DROP, "kfunc_ret");
+> +for_cleanup:
+> +		close(client_fd);
+> +		close(srv_fd);
+> +	}
+> +
+> +cleanup:
+> +	icmp_send_unreach__destroy(skel);
+> +	close(cgroup_fd);
+> +}
+[...]
 
