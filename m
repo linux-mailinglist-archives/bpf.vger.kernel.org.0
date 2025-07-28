@@ -1,155 +1,288 @@
-Return-Path: <bpf+bounces-64505-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64506-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E658B13944
-	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 12:53:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2FB0B13958
+	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 12:56:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DC0A18997C5
-	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 10:53:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 890323B9C71
+	for <lists+bpf@lfdr.de>; Mon, 28 Jul 2025 10:55:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2E2324DD12;
-	Mon, 28 Jul 2025 10:53:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A1D2254876;
+	Mon, 28 Jul 2025 10:56:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J8jZ0Hv2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zt1A3njm"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24421248F7F;
-	Mon, 28 Jul 2025 10:53:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5B3824DD18;
+	Mon, 28 Jul 2025 10:56:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753699985; cv=none; b=C9Qredrd3U40BJVTfSMapz5Ki7gRgxRPmZeIAW1IFOW+m1UTaRJ0fETOPi/TsXi4a2vjWE7niaqr1G61oPf9dChaR/Ck4c40EuauJ+RHCbbCGiHcKrgNxPx18dymFM6kAvdK2rk0nK0Q9/Nw9s2L80w2s+fGQtpDTLWfi7mqLgM=
+	t=1753700166; cv=none; b=mx2MEY7d3Ce28eV02kEqquoILc1OewU0snx57XgxdyJ+DlAmB2lui6cM/8+tnnXOC8dUiglPw8TSZvkRcWXqk0QOTLXIwnIJnca7KRwxzyQbrkdHrOcB2LA2r2DTDdhV0QTYFt5U212iXmWhVVj4WZMM6jE8lW7lxFgGX4qTkLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753699985; c=relaxed/simple;
-	bh=YzxlFFzWPN1YfBjAA8t6TNM4BqaZ5QzVVLh16SHHCw4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=estW61RUIS108imqUI4aSaKW62cO9KZBAezw8BdObsf9w3GDxirjO/wkTwpAFpaecbTmig8sx8n9SHYXCd9BdJF0m1grvWOF3byMl5MlbENNp6XW9JUTWG0U2uchvRIl9LP74eO4RqFWkxbKeZIhk7KCi5pbdd8eshA/Sfx7vjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J8jZ0Hv2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C3EDC4CEE7;
-	Mon, 28 Jul 2025 10:53:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753699984;
-	bh=YzxlFFzWPN1YfBjAA8t6TNM4BqaZ5QzVVLh16SHHCw4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=J8jZ0Hv29q7w3cy//eaHdJ7LcWmSQy8i4vYeHxiCy6d3G3kp3Pau9kT3HI7AIWWys
-	 eytN7VEXLw2xnXJSD8//wGe0ev78JDuhEcCY2cplTjidmQFec+62gkzk+5g0OCXo42
-	 qpPjzgDcvWX9PQ5Z6r0wKult5vZMbzlH3BnVKz5XxJA/++oonQ+tWzKWYbgFBldHa/
-	 Q39EmV+Tqh1LYP0lgSF/9l8DAYAZAU5Qc4ALioaVFN6XMZgGRYWknJbq2AClymm+7h
-	 5FQOru7c9+OphqVyrK8w2AMzRikvFkTR8YUyOvwrtnGyneS2iJmY0qNZoTDjEq+3GP
-	 uwFLuBKkQHjZQ==
-Date: Mon, 28 Jul 2025 12:53:01 +0200
-From: Lorenzo Bianconi <lorenzo@kernel.org>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>,
-	Stanislav Fomichev <stfomichev@gmail.com>, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <borkmann@iogearbox.net>,
-	Eric Dumazet <eric.dumazet@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Paolo Abeni <pabeni@redhat.com>, sdf@fomichev.me,
-	kernel-team@cloudflare.com, arthur@arthurfabre.com,
-	jakub@cloudflare.com, Jesse Brandeburg <jbrandeburg@cloudflare.com>
-Subject: Re: [PATCH bpf-next V2 0/7] xdp: Allow BPF to set RX hints for
- XDP_REDIRECTed packets
-Message-ID: <aIdWjTCM1nOjiWfC@lore-desk>
-References: <b1873a92-747d-4f32-91f8-126779947e42@kernel.org>
- <aGvcb53APFXR8eJb@mini-arch>
- <aG427EcHHn9yxaDv@lore-desk>
- <aHE2F1FJlYc37eIz@mini-arch>
- <aHeKYZY7l2i1xwel@lore-desk>
- <20250716142015.0b309c71@kernel.org>
- <fbb026f9-54cf-49ba-b0dc-0df0f54c6961@kernel.org>
- <20250717182534.4f305f8a@kernel.org>
- <ebc18aba-d832-4eb6-b626-4ca3a2f27fe2@kernel.org>
- <20250721181344.24d47fa3@kernel.org>
+	s=arc-20240116; t=1753700166; c=relaxed/simple;
+	bh=YGleY+BTac5R9ZvEJZtBBPaOkPgNhDZgmq3t8OTsKFU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iUYkZrWZYVRvZ1SdmffdIxediFw9vSaiIyeYX5yvzhvysBd8ALzplU5f9DsQW2rReKUrKky6i+sJfaCDRTWZVX4zJ6nvUXO41G/OH//yHJfGK6f+K6NkJgpwvhy0ib5nHW23bWIWlpBzwlEGSnj58ldTZ+k47wzuqPz2JAcTyLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zt1A3njm; arc=none smtp.client-ip=209.85.167.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-41cd87eff4dso2745888b6e.2;
+        Mon, 28 Jul 2025 03:56:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1753700164; x=1754304964; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IWL1xu7848dX7PG0tXdUa0Ie1a9/Le0YZIKNkJPCEek=;
+        b=Zt1A3njmWGLLFqFhdEM2dgpa5zYUIAL3qu5MJ15L8LJvO2tevlIOzjaZcdYTGHqEhh
+         XB5QSCm10v0/nUCInCO7HWjz+VncwPJFLqvvfTZgPOykOHeUAITJmxjgvJoh6V2NXLoZ
+         19M22iW1ezKGHz0L/5Hq5qZFg6Tv/J5nzOp6aqimb972FFn//N8Y4fI7/RyHsgIN2d+m
+         vONnZjoXT/ycEuz1408Jz1yO3Vigfhe3TWkxfPZONtzWRbJWUhCaOWjseE/pQnzvv5uQ
+         kRkJUa3yEetIchuGYRb+P+DrD2wH98xDNX9A+mxdI7U9+53S+k8GBbCbu2f5SdzvcNKU
+         Ox6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753700164; x=1754304964;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IWL1xu7848dX7PG0tXdUa0Ie1a9/Le0YZIKNkJPCEek=;
+        b=bTwDlA0LPxZaoP2YQCjD5yBYm9kr/v3Cc/cYwCVl1pjFAIQ3KkAmutuwLStneWCC84
+         AvWhkyhYMhEIw1sP9anzqRYC7lrBPya2sX2xMVcipZq261V6rKLl/N2K7r6udq+tc4ns
+         ULc400yAxR62un0HpO2PeOtJeEMZxDhEu2cD3FhktawabokVSYdT/0VMy0fNNQr1hz/3
+         gXtq70ZRs71XOw5Fibwe48Mmwz8QbpGk9PEIr1O4aqTWB095PKNuqbkeg3GZjjft6iZo
+         8TLYxqaGmo0InIxFSlx+ZpWFc451SXmRglOINzOC6veH+AsLNKTW/+pm5PmrHtx3lGl7
+         eGUg==
+X-Forwarded-Encrypted: i=1; AJvYcCV88wSFlk+VdhWu5SIUdyRL1R4LPVEiChIuj8MbdKFExHGR+t0dCnsBah07ST/W4RyyUdw=@vger.kernel.org, AJvYcCXfpVIo76/J6lLkJfBuFCzWd2aMVvSfbK6zp9/CKXJTRetsz63W9fPG5/syCh59XD6+Az1O3zW/J0Fw4LE9@vger.kernel.org
+X-Gm-Message-State: AOJu0YzTLWKvwBbFC2YcshL9sD2yL+/LUiGNhiI5myX1O2aG6M/TF+T0
+	xZykX0GehyJxGOrcCznPO194iefg2Gl7GyL0xjC4D21AlixY5koA9qYRhHeGVfio340Gplx179i
+	ZEv9qnNZmSDeAwROyEKqmfAsTkbhUdU8=
+X-Gm-Gg: ASbGnct/VJ+t3IrxD9YLcHEjJAMzIWcgvF7qOOmbukEYKxHeD+G12gnndlb8Zn1oGdU
+	QUM43746E5r+vmJ2NlrNB40as7W8RYI688Y6wjkN2JFGEgXT+dGT5hyT53GdVnMMinwsSgw+Xb4
+	GqtSgJXNdBL4Skyok5U4npCJpQlMr/XLhrTJlsY71EInlmtRDXB16jWuSodrQiL2NXPYRgOGn4c
+	lfI2QY=
+X-Google-Smtp-Source: AGHT+IGARqiTWQTPDrhfm8cwnocnmRpP9f+DBFyblxvpuVCcS8LapX/WdvEguEftXmefu5EyqAQ3TzJmMAo2H63z4jI=
+X-Received: by 2002:a05:6808:308b:b0:41c:45e4:6c4c with SMTP id
+ 5614622812f47-42bb9e01655mr6828338b6e.39.1753700163813; Mon, 28 Jul 2025
+ 03:56:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="FO0y4WtgO5PCdobH"
-Content-Disposition: inline
-In-Reply-To: <20250721181344.24d47fa3@kernel.org>
-
-
---FO0y4WtgO5PCdobH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20250724141929.691853-1-duanchenghao@kylinos.cn> <20250724141929.691853-6-duanchenghao@kylinos.cn>
+In-Reply-To: <20250724141929.691853-6-duanchenghao@kylinos.cn>
+From: Hengqi Chen <hengqi.chen@gmail.com>
+Date: Mon, 28 Jul 2025 18:55:52 +0800
+X-Gm-Features: Ac12FXzP_XUDs2XhXziuxv8yd0WOVmTcIPNArR6GVihQbnffbAuPDxb0KuZCKMA
+Message-ID: <CAEyhmHQKBQbidX_SpUF1ZPv7vkkhSR_UuRvxznyb6y5GYQS3qw@mail.gmail.com>
+Subject: Re: [PATCH v4 5/5] LoongArch: BPF: Add struct ops support for trampoline
+To: Chenghao Duan <duanchenghao@kylinos.cn>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	yangtiezhu@loongson.cn, chenhuacai@kernel.org, martin.lau@linux.dev, 
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, kernel@xen0n.name, 
+	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, bpf@vger.kernel.org, 
+	guodongtai@kylinos.cn, youling.tang@linux.dev, jianghaoran@kylinos.cn, 
+	vincent.mc.li@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-> On Fri, 18 Jul 2025 12:56:46 +0200 Jesper Dangaard Brouer wrote:
-> > >> Thanks for the feedback. I can see why you'd be concerned about addi=
-ng
-> > >> another adhoc scheme or making xdp_frame grow into a "para-skb".
-> > >>
-> > >> However, I'd like to frame this as part of a long-term plan we've be=
-en
-> > >> calling the "mini-SKB" concept. This isn't a new idea, but a
-> > >> continuation of architectural discussions from as far back as [2016]=
-=2E =20
-> > >=20
-> > > My understanding is that while this was floated as a plan by some,
-> > > nobody came up with a clean way of implementing it. =20
-> >=20
-> > I can see why you might think that, but from my perspective, the
-> > xdp_frame *is* the implementation of the mini-SKB concept. We've been
-> > building it incrementally for years. It started as the most minimal
-> > structure possible and has gradually gained more context (e.g. dev_rx,
-> > mem_info/rxq_info, flags, and also uses skb_shared_info with same layout
-> > as SKB).
->=20
-> My understanding was that just adding all the fields to xdp_frame was
-> considered too wasteful. Otherwise we would have done something along
-> those lines ~10 years ago :S
+On Thu, Jul 24, 2025 at 10:22=E2=80=AFPM Chenghao Duan <duanchenghao@kylino=
+s.cn> wrote:
+>
+> From: Tiezhu Yang <yangtiezhu@loongson.cn>
+>
+> Use BPF_TRAMP_F_INDIRECT flag to detect struct ops and emit proper
+> prologue and epilogue for this case.
+>
+> With this patch, all of the struct_ops related testcases (except
+> struct_ops_multi_pages) passed on LoongArch.
+>
+> The testcase struct_ops_multi_pages failed is because the actual
+> image_pages_cnt is 40 which is bigger than MAX_TRAMP_IMAGE_PAGES.
+>
+> Before:
+>
+>   $ sudo ./test_progs -t struct_ops -d struct_ops_multi_pages
+>   ...
+>   WATCHDOG: test case struct_ops_module/struct_ops_load executes for 10 s=
+econds...
+>
+> After:
+>
+>   $ sudo ./test_progs -t struct_ops -d struct_ops_multi_pages
+>   ...
+>   #15      bad_struct_ops:OK
+>   ...
+>   #399     struct_ops_autocreate:OK
+>   ...
+>   #400     struct_ops_kptr_return:OK
+>   ...
+>   #401     struct_ops_maybe_null:OK
+>   ...
+>   #402     struct_ops_module:OK
+>   ...
+>   #404     struct_ops_no_cfi:OK
+>   ...
+>   #405     struct_ops_private_stack:SKIP
+>   ...
+>   #406     struct_ops_refcounted:OK
+>   Summary: 8/25 PASSED, 3 SKIPPED, 0 FAILED
+>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  arch/loongarch/net/bpf_jit.c | 71 ++++++++++++++++++++++++------------
+>  1 file changed, 47 insertions(+), 24 deletions(-)
+>
+> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
+> index ac5ce3a28..6a84fb104 100644
+> --- a/arch/loongarch/net/bpf_jit.c
+> +++ b/arch/loongarch/net/bpf_jit.c
+> @@ -1603,6 +1603,7 @@ static int __arch_prepare_bpf_trampoline(struct jit=
+_ctx *ctx, struct bpf_tramp_i
+>         struct bpf_tramp_links *fentry =3D &tlinks[BPF_TRAMP_FENTRY];
+>         struct bpf_tramp_links *fexit =3D &tlinks[BPF_TRAMP_FEXIT];
+>         struct bpf_tramp_links *fmod_ret =3D &tlinks[BPF_TRAMP_MODIFY_RET=
+URN];
+> +       bool is_struct_ops =3D flags & BPF_TRAMP_F_INDIRECT;
+>         int ret, save_ret;
+>         void *orig_call =3D func_addr;
+>         u32 **branches =3D NULL;
+> @@ -1678,18 +1679,31 @@ static int __arch_prepare_bpf_trampoline(struct j=
+it_ctx *ctx, struct bpf_tramp_i
+>
+>         stack_size =3D round_up(stack_size, 16);
+>
+> -       /* For the trampoline called from function entry */
+> -       /* RA and FP for parent function*/
+> -       emit_insn(ctx, addid, LOONGARCH_GPR_SP, LOONGARCH_GPR_SP, -16);
+> -       emit_insn(ctx, std, LOONGARCH_GPR_RA, LOONGARCH_GPR_SP, 8);
+> -       emit_insn(ctx, std, LOONGARCH_GPR_FP, LOONGARCH_GPR_SP, 0);
+> -       emit_insn(ctx, addid, LOONGARCH_GPR_FP, LOONGARCH_GPR_SP, 16);
+> -
+> -       /* RA and FP for traced function*/
+> -       emit_insn(ctx, addid, LOONGARCH_GPR_SP, LOONGARCH_GPR_SP, -stack_=
+size);
+> -       emit_insn(ctx, std, LOONGARCH_GPR_T0, LOONGARCH_GPR_SP, stack_siz=
+e - 8);
+> -       emit_insn(ctx, std, LOONGARCH_GPR_FP, LOONGARCH_GPR_SP, stack_siz=
+e - 16);
+> -       emit_insn(ctx, addid, LOONGARCH_GPR_FP, LOONGARCH_GPR_SP, stack_s=
+ize);
+> +       if (!is_struct_ops) {
+> +               /*
+> +                * For the trampoline called from function entry,
+> +                * the frame of traced function and the frame of
+> +                * trampoline need to be considered.
+> +                */
+> +               emit_insn(ctx, addid, LOONGARCH_GPR_SP, LOONGARCH_GPR_SP,=
+ -16);
+> +               emit_insn(ctx, std, LOONGARCH_GPR_RA, LOONGARCH_GPR_SP, 8=
+);
+> +               emit_insn(ctx, std, LOONGARCH_GPR_FP, LOONGARCH_GPR_SP, 0=
+);
+> +               emit_insn(ctx, addid, LOONGARCH_GPR_FP, LOONGARCH_GPR_SP,=
+ 16);
+> +
+> +               emit_insn(ctx, addid, LOONGARCH_GPR_SP, LOONGARCH_GPR_SP,=
+ -stack_size);
+> +               emit_insn(ctx, std, LOONGARCH_GPR_T0, LOONGARCH_GPR_SP, s=
+tack_size - 8);
+> +               emit_insn(ctx, std, LOONGARCH_GPR_FP, LOONGARCH_GPR_SP, s=
+tack_size - 16);
+> +               emit_insn(ctx, addid, LOONGARCH_GPR_FP, LOONGARCH_GPR_SP,=
+ stack_size);
+> +       } else {
+> +               /*
+> +                * For the trampoline called directly, just handle
+> +                * the frame of trampoline.
+> +                */
+> +               emit_insn(ctx, addid, LOONGARCH_GPR_SP, LOONGARCH_GPR_SP,=
+ -stack_size);
+> +               emit_insn(ctx, std, LOONGARCH_GPR_RA, LOONGARCH_GPR_SP, s=
+tack_size - 8);
+> +               emit_insn(ctx, std, LOONGARCH_GPR_FP, LOONGARCH_GPR_SP, s=
+tack_size - 16);
+> +               emit_insn(ctx, addid, LOONGARCH_GPR_FP, LOONGARCH_GPR_SP,=
+ stack_size);
+> +       }
+>
 
-Hi Jakub,
+The diff removes code added in patch 4/5, this should be squashed to
+the trampoline patch if possible.
 
-sorry for the late reply.
-I am completely fine to redesign the solution to overcome the problem but I
-guess this feature will allow us to improve XDP performance in a common/real
-use-case. Let's consider we want to redirect a packet into a veth and then =
-into
-a container. Preserving the hw metadata performing XDP_REDIRECT will allow =
-us
-to avoid recalculating the checksum creating the skb. This will result in a
-very nice performance improvement.
-So I guess we should really come up with some idea to add this missing feat=
-ure.
-
-Regards,
-Lorenzo
-
->=20
-> > This patch is simply the next logical step in that existing evolution:
-> > adding hardware metadata to make it more capable, starting with enabling
-> > XDP_REDIRECT offloads. The xdp_frame is our mini-SKB, and this patchset
-> > continues its evolution.
->=20
-> I thought one of the goals for mini-skb was to move the skb allocation
-> out of the drivers. The patches as posted seem to make it the
-> responsibility of the XDP program to save the metadata. If you're
-> planning to make drivers populate this metadata by default - why add
-> the helpers.
->=20
-> Again, I just don't understand how these logically fit into place
-> vis-a-vis the existing metadata "get" callbacks.
-
---FO0y4WtgO5PCdobH
-Content-Type: application/pgp-signature; name=signature.asc
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCaIdWjQAKCRA6cBh0uS2t
-rI6CAP4g67FRjB85fO3H1vEP36zjvQfC+Edmr1E5mCbKq+CWvAD+PSVrVL1WZ7i8
-sm+VfKIzYnP4zmg3VK2Ths+LoOTZdwU=
-=CXBx
------END PGP SIGNATURE-----
-
---FO0y4WtgO5PCdobH--
+>         /* callee saved register S1 to pass start time */
+>         emit_insn(ctx, std, LOONGARCH_GPR_S1, LOONGARCH_GPR_FP, -sreg_off=
+);
+> @@ -1779,21 +1793,30 @@ static int __arch_prepare_bpf_trampoline(struct j=
+it_ctx *ctx, struct bpf_tramp_i
+>
+>         emit_insn(ctx, ldd, LOONGARCH_GPR_S1, LOONGARCH_GPR_FP, -sreg_off=
+);
+>
+> -       /* trampoline called from function entry */
+> -       emit_insn(ctx, ldd, LOONGARCH_GPR_T0, LOONGARCH_GPR_SP, stack_siz=
+e - 8);
+> -       emit_insn(ctx, ldd, LOONGARCH_GPR_FP, LOONGARCH_GPR_SP, stack_siz=
+e - 16);
+> -       emit_insn(ctx, addid, LOONGARCH_GPR_SP, LOONGARCH_GPR_SP, stack_s=
+ize);
+> +       if (!is_struct_ops) {
+> +               /* trampoline called from function entry */
+> +               emit_insn(ctx, ldd, LOONGARCH_GPR_T0, LOONGARCH_GPR_SP, s=
+tack_size - 8);
+> +               emit_insn(ctx, ldd, LOONGARCH_GPR_FP, LOONGARCH_GPR_SP, s=
+tack_size - 16);
+> +               emit_insn(ctx, addid, LOONGARCH_GPR_SP, LOONGARCH_GPR_SP,=
+ stack_size);
+> +
+> +               emit_insn(ctx, ldd, LOONGARCH_GPR_RA, LOONGARCH_GPR_SP, 8=
+);
+> +               emit_insn(ctx, ldd, LOONGARCH_GPR_FP, LOONGARCH_GPR_SP, 0=
+);
+> +               emit_insn(ctx, addid, LOONGARCH_GPR_SP, LOONGARCH_GPR_SP,=
+ 16);
+>
+> -       emit_insn(ctx, ldd, LOONGARCH_GPR_RA, LOONGARCH_GPR_SP, 8);
+> -       emit_insn(ctx, ldd, LOONGARCH_GPR_FP, LOONGARCH_GPR_SP, 0);
+> -       emit_insn(ctx, addid, LOONGARCH_GPR_SP, LOONGARCH_GPR_SP, 16);
+> +               if (flags & BPF_TRAMP_F_SKIP_FRAME)
+> +                       /* return to parent function */
+> +                       emit_insn(ctx, jirl, LOONGARCH_GPR_ZERO, LOONGARC=
+H_GPR_RA, 0);
+> +               else
+> +                       /* return to traced function */
+> +                       emit_insn(ctx, jirl, LOONGARCH_GPR_ZERO, LOONGARC=
+H_GPR_T0, 0);
+> +       } else {
+> +               /* trampoline called directly */
+> +               emit_insn(ctx, ldd, LOONGARCH_GPR_RA, LOONGARCH_GPR_SP, s=
+tack_size - 8);
+> +               emit_insn(ctx, ldd, LOONGARCH_GPR_FP, LOONGARCH_GPR_SP, s=
+tack_size - 16);
+> +               emit_insn(ctx, addid, LOONGARCH_GPR_SP, LOONGARCH_GPR_SP,=
+ stack_size);
+>
+> -       if (flags & BPF_TRAMP_F_SKIP_FRAME)
+> -               /* return to parent function */
+>                 emit_insn(ctx, jirl, LOONGARCH_GPR_ZERO, LOONGARCH_GPR_RA=
+, 0);
+> -       else
+> -               /* return to traced function */
+> -               emit_insn(ctx, jirl, LOONGARCH_GPR_ZERO, LOONGARCH_GPR_T0=
+, 0);
+> +       }
+>
+>         ret =3D ctx->idx;
+>  out:
+> --
+> 2.25.1
+>
 
