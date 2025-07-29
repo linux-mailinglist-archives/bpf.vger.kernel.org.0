@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-64599-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64600-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 741B0B14B08
-	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 11:18:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 459EEB14B09
+	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 11:19:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 942B61AA2B12
-	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 09:19:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 700753B5D41
+	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 09:18:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65E58233721;
-	Tue, 29 Jul 2025 09:18:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08E4822FDFA;
+	Tue, 29 Jul 2025 09:18:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lrLnc94w"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eV7HWQJV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88E36230BCE
-	for <bpf@vger.kernel.org>; Tue, 29 Jul 2025 09:18:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FDFF22A4D5
+	for <bpf@vger.kernel.org>; Tue, 29 Jul 2025 09:18:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753780727; cv=none; b=A/7UvHDGMw32fLpTL5mE88fAv3G6fPbwOR7sKrRbA+A7zMdwxaUgndO1AiNc39p+1BgybAx8aY0Rqdtj119NzUyWYwBK9fcCYOCsat7EyM79zuMyAXkmREtPo4wnakRj2kIToHBZCSFWEniKH/3wsDjDXR+b41hXkcquVWx354A=
+	t=1753780736; cv=none; b=dGN6FNADTBtrt/bzOLlmO5Y+z61UKK0BZRNkMGad2Rl9jzJFPs/+eftD1JBriSN3QHy4vk4lPvYyJojYss1yPFq4zE+AKTBUPptd3I00vHv5FCNXLyZxeKCwugns96AEBGPuWOhAmrqAQgzINtu589a79c8J8Cd8/iS8GHu3ok4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753780727; c=relaxed/simple;
-	bh=H7ULst5Qlz51PURJjSOSbL3onhC9YReI0X7YJO7knS4=;
+	s=arc-20240116; t=1753780736; c=relaxed/simple;
+	bh=zUf/SsAIFDLNk6vKT7sEkMt1jisqymKPxSqhlLNvi4A=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=P02EO4NCt/ElELsZQNybA35/x8flRrHim5ufdilYr3nbCjgJQ6oVcQArKohF1yOPDsyJPgZ2P6HVIFhBdUWSl1Koj9m+M0BVWLrsYuCU1LcLTC33T2r6nr+6yii1xPcBMXKpA7eZj4J2/jLuWpm8+RD4uFs+dckKkTNorPfPWek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lrLnc94w; arc=none smtp.client-ip=209.85.214.174
+	 MIME-Version; b=D1mvxkym59z0dIdJM7xxH978tNQQD61lgduvW2c6RFYCl4QMeovxdEcHvQ5EQO+z6O1FwkAfBuqQGzQsTz2UKojd8EYhzZOX3XQ9lDFZpI/Jbx6jTieCEB8W/IsRQjor0MQO5e7Eztqu8L54AYPLKSUvZaHjFTfgejV6lm2VX+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eV7HWQJV; arc=none smtp.client-ip=209.85.214.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-23aeac7d77aso49455235ad.3
-        for <bpf@vger.kernel.org>; Tue, 29 Jul 2025 02:18:45 -0700 (PDT)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-24009eeb2a7so18957245ad.0
+        for <bpf@vger.kernel.org>; Tue, 29 Jul 2025 02:18:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753780725; x=1754385525; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1753780735; x=1754385535; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=h4wuSHp5MgGj5X4uVUc86dlTYO+Bq0AoM4t6bSoJim8=;
-        b=lrLnc94w0LZJtC2K7srM7uA7FIKWRmKUWwEtyqSHPTdmrBK+gA619rBcBx9VEo8DgW
-         hkc7g+2jaKjVqzyzeCnjKs7C7ta7LWJLi3CZ706oes45pG58MCBXxOAPA/SOyeDddvUe
-         A3kbLdh6jlWAIY+hK8n2To3M6FEtmSXYSvJWwHYhaN6sbJcmB6pWbEX1s89VcneU/A9X
-         51/AehnEeAGSNfjUxuG8J0iJvIVvU622w2E8jQAm3AkD9nVToB2QsOGYZwDcl5bhGf0k
-         FRhRQ+jmFbLPU61Ua4SYfJEC8PCjYJghhUKnH3cSD2mZZjYCKRR5dgd13k48fm4FNBTu
-         v1Wg==
+        bh=kHc/ChzXX4pKy3XoznGpzP7XumeUqYKz1lD0ZucY3MQ=;
+        b=eV7HWQJVoerrKcZ/TRTs2hQggrloLuG0Nz4Q2YeHHpcKlvXInC3nS0RY93EHjA4LhS
+         ITIm5ufwuRw1BD4gn7lp85aK5eEZZ8llk9yfP82CNIBHhc+PvI/KtlLO/9v7H6ZoxNkM
+         a1zu4wipKB5lBlXEj1wdDpai/fkxRvEQoA1YlkmbKRIwSpLTdIZrJ6x4LbXQQLOt736t
+         pGFMrgU+mlzy3Xi4DbBwmCVsX9Q/uFhy+HyR6usYtGfkDzzqW2/r4T3aABcYxGgsRYNG
+         cLz+QODRz9bJIOBC0/QGvj+9SmVGKwfMImp/cRneCyCsygIL3tGhYDzJXvLooVAORCw1
+         I/Gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753780725; x=1754385525;
+        d=1e100.net; s=20230601; t=1753780735; x=1754385535;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=h4wuSHp5MgGj5X4uVUc86dlTYO+Bq0AoM4t6bSoJim8=;
-        b=cbbQ+ihJUxQkbvuMw0AvN+FAoq3mPPCPYmEkRZGN9c40Y1312hEKsixFOLlddvMCtP
-         g9vxs7QYl3gvgjwULFHAN9w1jNsOYFkHSTaDScckNaXBWvu8STOigSZRdVUtGp4Hb5Fj
-         uzrKHoo+5tKHPmVN+OyT9p8kVmufr0g5w0agqtrZrqyxm2al4678yqWQk34oem6naJwR
-         I3QXSxfeNiEs06xX9SEGKHrn07NbsVaw8p/ORgtwFqrA61GT+I+nYgHT+ApWsmPFNife
-         n8GpR6vsh89q0ZHea97E6+EurLv0mjed98HevIi1ErcrYAzcB3JPpsUdTpUWYptUxhl+
-         kIOQ==
-X-Gm-Message-State: AOJu0YyuQ7wihxp563fXkwDGu2N94n3EXegJRmV2QWbS/wW4/ssrvEC9
-	qn/UXzHbgIeFzXS01vS5zwmV318cTBTX+WvAXxo3eQiWCS6OkWYligbH
-X-Gm-Gg: ASbGncs9brKLoSaVpRA8185ZTtYu7odpRj77zUtwiHRc+W/5ftAy0j7Apkb1b/W4ueT
-	TTiIeAcm6sLJJbCUHnF0vx79DWE+bjXPSxrWGs3Srv4WQk/MegJ9sgP2+6wBbW7wuffjDERYPvd
-	jZydSVZ+0ZhChq/5fajpIq2tZZPvtliu5QYRkQoiCgIVEm5ZY9jE97tCM9nm5v+gJms9I/5ERq9
-	MqugsBKJZl/4ibdKgO+Sy0r9YP0uf71URHB9mPFyEdQUxNOTLyqp/9QayOSKqfFdx9Gt01cSPI2
-	dMe4JOXE5sMyOGk2plR/mtIIBRMkbItnC/VsxFAU+rj48Op3Q4jt/kOdjJB+dABwNcNVDscQCAF
-	mT4z/ITw9Wh/3KeJxf6oFZdb87DKcvTBVtl/qviF6GXNv5pDS
-X-Google-Smtp-Source: AGHT+IHImCx59GtUTMVH5evvVf6lAb6VeAEl4nWfKJH/fqFebPmYqu8OpPSeco+MQCs7mhFBgOKpmw==
-X-Received: by 2002:a17:903:903:b0:237:e696:3d56 with SMTP id d9443c01a7336-23fb3126909mr242761875ad.32.1753780724700;
-        Tue, 29 Jul 2025 02:18:44 -0700 (PDT)
+        bh=kHc/ChzXX4pKy3XoznGpzP7XumeUqYKz1lD0ZucY3MQ=;
+        b=LRykNhOnHKbvvcmWXVRky99dlZXECir4Il61Nf+SkpNffhR0vYSXw2aAWkw/xOiPDv
+         rhUiNydTlyqlMx4fYBqo+HDBY2zxem31nOhrsOg2MplLH4VD7q1bbQGdGcctoLEaDIvt
+         AHVQR1E5PDEPQaTeXM5USYtQyoOtDL12yObwLIAK8HPQdJO5RlcPkAXoJ7WedaUxevVQ
+         aeCi8fD6NcjndOcn4wDt4JtKAib1TsdgA0OcEFKCq09GQLnJBc/M3Yjnqq4yPveBwezy
+         f9dyAs665qUnCvyjhFMzeQfwRqzWKQ5PMteMVOYJYS0AJGWmvyyxtpAn4HPyChqDcbOA
+         97Hw==
+X-Gm-Message-State: AOJu0YwMWL24xzZdgOf7o8HpfaEc9GOBtNrn9lezgrg6LZMhLhTiYmSB
+	atKMUGZaE8vjiXGhHCF4Xy74OGZ5op208+FG95dmEVdiyX9GIhU0xolP
+X-Gm-Gg: ASbGncu7CNIeunqvdUi39NX+0RXm4A0mzf+v3Z3/QQRwCB5CooEFQCm8gZwoQfNqJRW
+	LGMk+HQi+2Q1MT2cyiGx3LOBHrxln0CMdZUPrFfnUl+pTZr9FUqQ3XS/jx02GhtlhWh56n0aoWx
+	XsdKHvPrchxnBqrOQzZq9AucbfhoIpaTdPbcmuKIynLgxg4ItukSPZ0cJdv6vcm/bcf2n5yVrAT
+	7hxU7DZuccAAnbTB4MoOsyWnzWHuqG3jco0c9BtWW2m1aKSUxp/34FyvMmHTLwTX4mX4TyE4fud
+	eEFHqmAru/EgMMpqZKDX1E1mUDvbeXtuH+ZX9hyE2a3QYq+MdfSqmvyhlWepjqpdyFMY16a5ybb
+	AXIM61hwBzUIeXaHNAj7lF05YV9wVTgO8hVqNBmJyitMCaA6p
+X-Google-Smtp-Source: AGHT+IEwNw6iWdRG92+MOtfdkpGPTDLwGGyBzjfG9IcNP6NgCSwLOpYypWU0d+qgja6a81bzLFBFKA==
+X-Received: by 2002:a17:903:2345:b0:235:e1d6:4e22 with SMTP id d9443c01a7336-23fb3040f6cmr190837245ad.18.1753780734575;
+        Tue, 29 Jul 2025 02:18:54 -0700 (PDT)
 Received: from localhost.localdomain ([101.82.174.171])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23fbe30be01sm74337015ad.39.2025.07.29.02.18.33
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23fbe30be01sm74337015ad.39.2025.07.29.02.18.45
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 29 Jul 2025 02:18:44 -0700 (PDT)
+        Tue, 29 Jul 2025 02:18:53 -0700 (PDT)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: akpm@linux-foundation.org,
 	david@redhat.com,
@@ -93,9 +93,9 @@ To: akpm@linux-foundation.org,
 Cc: bpf@vger.kernel.org,
 	linux-mm@kvack.org,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH v4 2/4] mm: thp: add a new kfunc bpf_mm_get_mem_cgroup()
-Date: Tue, 29 Jul 2025 17:18:05 +0800
-Message-Id: <20250729091807.84310-3-laoar.shao@gmail.com>
+Subject: [RFC PATCH v4 3/4] mm: thp: add a new kfunc bpf_mm_get_task()
+Date: Tue, 29 Jul 2025 17:18:06 +0800
+Message-Id: <20250729091807.84310-4-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 In-Reply-To: <20250729091807.84310-1-laoar.shao@gmail.com>
 References: <20250729091807.84310-1-laoar.shao@gmail.com>
@@ -107,80 +107,65 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-We will utilize this new kfunc bpf_mm_get_mem_cgroup() to retrieve the
-associated mem_cgroup from the given @mm. The obtained mem_cgroup must
-be released by calling bpf_put_mem_cgroup() as a paired operation.
+We will utilize this new kfunc bpf_mm_get_task() to retrieve the
+associated task_struct from the given @mm. The obtained task_struct must
+be released by calling bpf_task_release() as a paired operation.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- mm/bpf_thp.c | 51 ++++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 50 insertions(+), 1 deletion(-)
+ mm/bpf_thp.c | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
 diff --git a/mm/bpf_thp.c b/mm/bpf_thp.c
-index 10b486dd8bc4..040f988dbdbd 100644
+index 040f988dbdbd..3b10a97acc31 100644
 --- a/mm/bpf_thp.c
 +++ b/mm/bpf_thp.c
-@@ -161,10 +161,59 @@ static struct bpf_struct_ops bpf_bpf_thp_ops = {
- 	.name = "bpf_thp_ops",
- };
+@@ -191,11 +191,45 @@ __bpf_kfunc void bpf_put_mem_cgroup(struct mem_cgroup *memcg)
+ #endif
+ }
  
-+__bpf_kfunc_start_defs();
-+
 +/**
-+ * bpf_mm_get_mem_cgroup - Get the memory cgroup associated with a mm_struct.
++ * bpf_mm_get_task - Get the task struct associated with a mm_struct.
 + * @mm: The mm_struct to query
 + *
-+ * The obtained mem_cgroup must be released by calling bpf_put_mem_cgroup().
++ * The obtained task_struct must be released by calling bpf_task_release().
 + *
-+ * Return: The associated mem_cgroup on success, or NULL on failure. Note that
++ * Return: The associated task_struct on success, or NULL on failure. Note that
 + * this function depends on CONFIG_MEMCG being enabled - it will always return
 + * NULL if CONFIG_MEMCG is not configured.
 + */
-+__bpf_kfunc struct mem_cgroup *bpf_mm_get_mem_cgroup(struct mm_struct *mm)
-+{
-+	return get_mem_cgroup_from_mm(mm);
-+}
-+
-+/**
-+ * bpf_put_mem_cgroup - Release a memory cgroup obtained from bpf_mm_get_mem_cgroup()
-+ * @memcg: The memory cgroup to release
-+ */
-+__bpf_kfunc void bpf_put_mem_cgroup(struct mem_cgroup *memcg)
++__bpf_kfunc struct task_struct *bpf_mm_get_task(struct mm_struct *mm)
 +{
 +#ifdef CONFIG_MEMCG
-+	if (!memcg)
-+		return;
-+	css_put(&memcg->css);
++	struct task_struct *task;
++
++	if (!mm)
++		return NULL;
++	rcu_read_lock();
++	task = rcu_dereference(mm->owner);
++	if (!task)
++		goto out;
++	if (!refcount_inc_not_zero(&task->rcu_users))
++		goto out;
++
++	rcu_read_unlock();
++	return task;
++
++out:
++	rcu_read_unlock();
 +#endif
++	return NULL;
 +}
 +
-+__bpf_kfunc_end_defs();
-+
-+BTF_KFUNCS_START(bpf_thp_ids)
-+BTF_ID_FLAGS(func, bpf_mm_get_mem_cgroup, KF_TRUSTED_ARGS | KF_ACQUIRE | KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_put_mem_cgroup, KF_RELEASE)
-+BTF_KFUNCS_END(bpf_thp_ids)
-+
-+static const struct btf_kfunc_id_set bpf_thp_set = {
-+	.owner = THIS_MODULE,
-+	.set = &bpf_thp_ids,
-+};
-+
- static int __init bpf_thp_ops_init(void)
- {
--	int err = register_bpf_struct_ops(&bpf_bpf_thp_ops, bpf_thp_ops);
-+	int err;
-+
-+	err = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS, &bpf_thp_set);
-+	if (err) {
-+		pr_err("bpf_thp: Failed to register kfunc sets (%d)\n", err);
-+		return err;
-+	}
+ __bpf_kfunc_end_defs();
  
-+	err = register_bpf_struct_ops(&bpf_bpf_thp_ops, bpf_thp_ops);
- 	if (err)
- 		pr_err("bpf_thp: Failed to register struct_ops (%d)\n", err);
- 	return err;
+ BTF_KFUNCS_START(bpf_thp_ids)
+ BTF_ID_FLAGS(func, bpf_mm_get_mem_cgroup, KF_TRUSTED_ARGS | KF_ACQUIRE | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_put_mem_cgroup, KF_RELEASE)
++BTF_ID_FLAGS(func, bpf_mm_get_task, KF_TRUSTED_ARGS | KF_ACQUIRE | KF_RET_NULL)
+ BTF_KFUNCS_END(bpf_thp_ids)
+ 
+ static const struct btf_kfunc_id_set bpf_thp_set = {
 -- 
 2.43.5
 
