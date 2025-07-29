@@ -1,333 +1,324 @@
-Return-Path: <bpf+bounces-64623-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64624-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E115FB14D41
-	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 13:57:10 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F2C0B14DC9
+	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 14:41:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 15A56545495
-	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 11:57:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0E1E7A917E
+	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 12:39:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14AEF28F53B;
-	Tue, 29 Jul 2025 11:57:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9292291C19;
+	Tue, 29 Jul 2025 12:41:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MXzWKvF6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93C8C28F520;
-	Tue, 29 Jul 2025 11:56:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87E86291166
+	for <bpf@vger.kernel.org>; Tue, 29 Jul 2025 12:40:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753790223; cv=none; b=NhuiSa7nZN6MUsMokNqOx1ivSpNgMEAS+0jhf8LqqKs5F3YB8YmVvQLGG4sua6ix/KmQM1yESeeESCw05OPlMvSJaRDjJSxsFTmdu0CESBvR62A41bTmrsME4yD9JalUTJWY89J0lfJRYJejJblYKgAH6rKspMwmVkIcMb+KeTw=
+	t=1753792861; cv=none; b=AYZX3KKViIzak4vWR/7R6KUQTVoL1LFQOIGlvQc03OwYygcPB49h80AXDcjy3s79B0XJfINbfjPL71+Q74DA3ESQaNyrDPCAeKWr6y2fT+CsOig+gV/wAvDBRlB3fCnYgCGy47j7u3l/ndHlNDf1Ohth9Llc9U4iWZMXQjCPOGQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753790223; c=relaxed/simple;
-	bh=sgBWE9aRoVb2GUaP6hlYxqwMo2c5HnxPRxEthjGG4JQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LFl5mddq1cQr7H6HK3piEfeIiK5YBHzvaD5Mh52YO2M9NOGzhkho0Ow4X0h0i+xRmGDKxMAGYVpjCbElEwUkjpC9mfL1MvuU7jg2AQp/HGLUj37oC/ILhPM3FNo7mWgodvLTiRL4G0ux1Fjro55qRdI88uLM06rNd3QH3EKspw4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 195775fc6c7311f0b29709d653e92f7d-20250729
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NO_NAME, HR_CTE_8B, HR_CTT_TXT
-	HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_DIGIT_LEN
-	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
-	HR_SJ_PHRASE_LEN, HR_SJ_PRE_RE, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
-	HR_TO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_EXISTED
-	SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS, CIE_BAD
-	CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO, GTI_C_BU, AMN_T1
-	AMN_GOOD, AMN_C_TI, AMN_C_BU, ABX_MISS_RDNS
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.45,REQID:f757bc24-5074-47c4-83e1-596935bb0909,IP:15,
-	URL:0,TC:0,Content:9,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:15
-X-CID-INFO: VERSION:1.1.45,REQID:f757bc24-5074-47c4-83e1-596935bb0909,IP:15,UR
-	L:0,TC:0,Content:9,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:15
-X-CID-META: VersionHash:6493067,CLOUDID:43c9a2aa86b11cb7553a8327b43a864f,BulkI
-	D:250728103101KH33AOP9,BulkQuantity:10,Recheck:0,SF:17|19|24|43|64|66|74|7
-	8|80|81|82|83|102|841,TC:nil,Content:4|50,EDM:-3,IP:-2,URL:0,File:nil,RT:n
-	il,Bulk:40,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,
-	BRR:0,BRE:0,ARC:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_OBB,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,
-	TF_CID_SPAM_FSD
-X-UUID: 195775fc6c7311f0b29709d653e92f7d-20250729
-X-User: duanchenghao@kylinos.cn
-Received: from localhost [(116.128.244.171)] by mailgw.kylinos.cn
-	(envelope-from <duanchenghao@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 712775828; Tue, 29 Jul 2025 19:56:45 +0800
-Date: Tue, 29 Jul 2025 19:56:20 +0800
-From: Chenghao Duan <duanchenghao@kylinos.cn>
-To: Hengqi Chen <hengqi.chen@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-	yangtiezhu@loongson.cn, chenhuacai@kernel.org, martin.lau@linux.dev,
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
-	haoluo@google.com, jolsa@kernel.org, kernel@xen0n.name,
-	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
-	bpf@vger.kernel.org, guodongtai@kylinos.cn, youling.tang@linux.dev,
-	jianghaoran@kylinos.cn, vincent.mc.li@gmail.com
-Subject: Re: [PATCH v4 3/5] LoongArch: BPF: Add bpf_arch_xxxxx support for
- Loongarch
-Message-ID: <20250729115620.GA1584398@chenghao-pc>
-References: <20250724141929.691853-1-duanchenghao@kylinos.cn>
- <20250724141929.691853-4-duanchenghao@kylinos.cn>
- <CAEyhmHREKJ7WQ+SYiGTX+zypeZYcUdPNKtHu6cPxqb1wid7TtQ@mail.gmail.com>
- <20250728132125.GB1439240@chenghao-pc>
+	s=arc-20240116; t=1753792861; c=relaxed/simple;
+	bh=UZDGhd/+rLzayX5aZ+vg8gEPGLMCsevSY+i2MYFbMCQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OzfzPyhwS9UgrIgNFt9UWkN+q997pAfdQ34qNvaq78sGq3m1ZB+hY8ZTRAQOpSwuZIiV1F7VFrZw94jd/5MsZ6zsf+/6QDry1p2LD/RtVIooBORyDdZ+jcwP77o5kKExxn95xB1VPAg2aDSxIAgSkv7Fm7Ii0AbHTtbKUzE9G6g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MXzWKvF6; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1753792858;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZV5EUUEtu0wYoF6c14HgKdxGyYYQj0FRgNzMPWXQSQ8=;
+	b=MXzWKvF6KE6l6WFxC8CEMS9sVhfmkCKYpj9eElvAnnyZU2k7NpJLxLcbxY5uX+AdRLxoiF
+	5o7W0fR3NVGxS2mINiLClAwFj21XhlM1L1y/ATn9qxUXtxJmvIGPQwKOyeWymrGW5jM2QT
+	8WRHImFOpDxzGJPRU4MooWLf1+lw92M=
+Received: from mail-yw1-f199.google.com (mail-yw1-f199.google.com
+ [209.85.128.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-352-5s3jiAHHPbSqS6wGuu9F3w-1; Tue, 29 Jul 2025 08:40:57 -0400
+X-MC-Unique: 5s3jiAHHPbSqS6wGuu9F3w-1
+X-Mimecast-MFC-AGG-ID: 5s3jiAHHPbSqS6wGuu9F3w_1753792857
+Received: by mail-yw1-f199.google.com with SMTP id 00721157ae682-711136ed77fso73951857b3.0
+        for <bpf@vger.kernel.org>; Tue, 29 Jul 2025 05:40:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753792857; x=1754397657;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZV5EUUEtu0wYoF6c14HgKdxGyYYQj0FRgNzMPWXQSQ8=;
+        b=QEY/lntx//7TgxVdo8S4lw5UKjT0Z1Z3d7+nXko1Mzc2BnRnLizeGmbFn/h6ecjt4I
+         5+QdgLcyDOpzvXnJgK5j0+BJyAJtUF1XwpsiRqUnmSgMA/pYC/0QVWnsJ4pvBugzrAFf
+         DMo0nwUFUIRmDp1rcbH+YaxexOCUvrPALf2RmICJpKDq1G1Z/d0zVGv75P4G9L68H1ja
+         ITAPNeQloT4OXYMvkdRYszvcmrceK1EIiUTr1K9zLAf0lzI+OBlLc+mOlcF3ni4n5cb8
+         8P1CF5ZokZnUgoIX2arhuTYVdVqP4u+7lPFQKiYmUs9xB4evQaGaMpl6VixDXyDpmq3a
+         EfgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUcwE8UqtgRZ4lTHysYsnCIAX9L2xPiyOW6Dvks+bIEb68Q5xcguPwdbS9eETetzupNRrs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzpiPwxh/TayOeFqnLMVkRT6ZglYKJtC45Gd3GMu+D6goVpFnvq
+	/x73+ZcHeHLd++jm6ewtvkp7ZSL82weqjvFXjrfLfJI4tpBQgqiWDBW14/KxKe4QIqp6JnBgCIy
+	BsbZVA1ZHxdi7bOWtOk+0RUEdkMwPXubBvc+uTtMO2R5WNkMSWqgGQMK6uG7DKkijC7jxMnEQlB
+	CmfOXUA5V2cLgjwb4e7hkg/ykg25yp
+X-Gm-Gg: ASbGnctBScXvQ37xySpKRl0pjo8lCx5pSCKKOQUWSTg54wl7eP+2vjYV96qXDoGJF4P
+	fTygVlTnm8eg3vBzNOJaF7LW/jsrqpfyFsmKlaNAJOavrZrEpoICpCKzlz1/RTHEWwpKpDVpuou
+	+vBv3b0ThVBhO2w9KJITxs
+X-Received: by 2002:a05:690c:4b0a:b0:71a:41be:133 with SMTP id 00721157ae682-71a41be022dmr9013037b3.14.1753792856409;
+        Tue, 29 Jul 2025 05:40:56 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IExzXD78VZ4NrcWcboXVLgFWfObrbN+8Z2f+u0nM+qzWO61wtyD3iImlO5JbXTPxUvCLloIIb5LOzY9XjoHDwo=
+X-Received: by 2002:a05:690c:4b0a:b0:71a:41be:133 with SMTP id
+ 00721157ae682-71a41be022dmr9012387b3.14.1753792855972; Tue, 29 Jul 2025
+ 05:40:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250728132125.GB1439240@chenghao-pc>
+References: <20240710212555.1617795-1-amery.hung@bytedance.com>
+ <dsamf7k2byoflztkwya3smj7jyczyq7aludvd36lufdrboxdqk@u73iwrcyb5am> <CAMB2axNKxW4gnd6qiSNYdm2zPxJkbbLgZz9P-Kh7SS0Sb1Yw=Q@mail.gmail.com>
+In-Reply-To: <CAMB2axNKxW4gnd6qiSNYdm2zPxJkbbLgZz9P-Kh7SS0Sb1Yw=Q@mail.gmail.com>
+From: Stefano Garzarella <sgarzare@redhat.com>
+Date: Tue, 29 Jul 2025 14:40:44 +0200
+X-Gm-Features: Ac12FXx0AfUlrxkGal_IZT1J3PL02_FYYzLBRvPuEGsCQYHWQt-envTrILmUXG4
+Message-ID: <CAGxU2F6aObcrixKnbp2PthJDpeQyhzVXwXtfkkQm-8Ni4xenTg@mail.gmail.com>
+Subject: Re: [RFC PATCH net-next v6 00/14] virtio/vsock: support datagrams
+To: Amery Hung <ameryhung@gmail.com>, Sergio Lopez Pascual <slp@redhat.com>, 
+	Tyler Fanelli <tfanelli@redhat.com>
+Cc: stefanha@redhat.com, mst@redhat.com, jasowang@redhat.com, 
+	xuanzhuo@linux.alibaba.com, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, pabeni@redhat.com, kys@microsoft.com, haiyangz@microsoft.com, 
+	wei.liu@kernel.org, decui@microsoft.com, bryantan@vmware.com, 
+	vdasa@vmware.com, pv-drivers@vmware.com, dan.carpenter@linaro.org, 
+	simon.horman@corigine.com, oxffffaa@gmail.com, kvm@vger.kernel.org, 
+	virtualization@lists.linux-foundation.org, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, 
+	bpf@vger.kernel.org, bobby.eshleman@bytedance.com, jiang.wang@bytedance.com, 
+	amery.hung@bytedance.com, xiyou.wangcong@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 28, 2025 at 09:21:52PM +0800, Chenghao Duan wrote:
-> On Mon, Jul 28, 2025 at 06:47:03PM +0800, Hengqi Chen wrote:
-> > On Thu, Jul 24, 2025 at 10:21 PM Chenghao Duan <duanchenghao@kylinos.cn> wrote:
-> > >
-> > > Implement the functions of bpf_arch_text_poke, bpf_arch_text_copy, and
-> > > bpf_arch_text_invalidate on the LoongArch architecture.
-> > >
-> > > On LoongArch, since symbol addresses in the direct mapping
-> > > region cannot be reached via relative jump instructions from the paged
-> > > mapping region, we use the move_imm+jirl instruction pair as absolute
-> > > jump instructions. These require 2-5 instructions, so we reserve 5 NOP
-> > > instructions in the program as placeholders for function jumps.
-> > >
-> > > larch_insn_text_copy is solely used for BPF. The use of
-> > > larch_insn_text_copy() requires page_size alignment. Currently, only
-> > > the size of the trampoline is page-aligned.
-> > >
-> > > Co-developed-by: George Guo <guodongtai@kylinos.cn>
-> > > Signed-off-by: George Guo <guodongtai@kylinos.cn>
-> > > Signed-off-by: Chenghao Duan <duanchenghao@kylinos.cn>
-> > > Reviewed-by: Hengqi Chen <hengqi.chen@gmail.com>
-> > > Reviewed-by: Huacai Chen <chenhuacai@kernel.org>
-> > > ---
-> > >  arch/loongarch/include/asm/inst.h |  1 +
-> > >  arch/loongarch/kernel/inst.c      | 32 ++++++++++
-> > >  arch/loongarch/net/bpf_jit.c      | 97 +++++++++++++++++++++++++++++++
-> > >  3 files changed, 130 insertions(+)
-> > >
-> > > diff --git a/arch/loongarch/include/asm/inst.h b/arch/loongarch/include/asm/inst.h
-> > > index 2ae96a35d..88bb73e46 100644
-> > > --- a/arch/loongarch/include/asm/inst.h
-> > > +++ b/arch/loongarch/include/asm/inst.h
-> > > @@ -497,6 +497,7 @@ void arch_simulate_insn(union loongarch_instruction insn, struct pt_regs *regs);
-> > >  int larch_insn_read(void *addr, u32 *insnp);
-> > >  int larch_insn_write(void *addr, u32 insn);
-> > >  int larch_insn_patch_text(void *addr, u32 insn);
-> > > +int larch_insn_text_copy(void *dst, void *src, size_t len);
-> > >
-> > >  u32 larch_insn_gen_nop(void);
-> > >  u32 larch_insn_gen_b(unsigned long pc, unsigned long dest);
-> > > diff --git a/arch/loongarch/kernel/inst.c b/arch/loongarch/kernel/inst.c
-> > > index 674e3b322..8d6594968 100644
-> > > --- a/arch/loongarch/kernel/inst.c
-> > > +++ b/arch/loongarch/kernel/inst.c
-> > > @@ -4,6 +4,7 @@
-> > >   */
-> > >  #include <linux/sizes.h>
-> > >  #include <linux/uaccess.h>
-> > > +#include <linux/set_memory.h>
-> > >
-> > >  #include <asm/cacheflush.h>
-> > >  #include <asm/inst.h>
-> > > @@ -218,6 +219,37 @@ int larch_insn_patch_text(void *addr, u32 insn)
-> > >         return ret;
-> > >  }
-> > >
-> > > +int larch_insn_text_copy(void *dst, void *src, size_t len)
-> > > +{
-> > > +       unsigned long flags;
-> > > +       size_t wlen = 0;
-> > > +       size_t size;
-> > > +       void *ptr;
-> > > +       int ret = 0;
-> > > +
-> > > +       set_memory_rw((unsigned long)dst, round_up(len, PAGE_SIZE) / PAGE_SIZE);
-> > > +       raw_spin_lock_irqsave(&patch_lock, flags);
-> > > +       while (wlen < len) {
-> > > +               ptr = dst + wlen;
-> > > +               size = min_t(size_t, PAGE_SIZE - offset_in_page(ptr),
-> > > +                            len - wlen);
-> > > +
-> > > +               ret = copy_to_kernel_nofault(ptr, src + wlen, size);
-> > > +               if (ret) {
-> > > +                       pr_err("%s: operation failed\n", __func__);
-> > > +                       break;
-> > > +               }
-> > > +               wlen += size;
-> > > +       }
-> > > +       raw_spin_unlock_irqrestore(&patch_lock, flags);
-> > > +       set_memory_rox((unsigned long)dst, round_up(len, PAGE_SIZE) / PAGE_SIZE);
-> > > +
-> > > +       if (!ret)
-> > > +               flush_icache_range((unsigned long)dst, (unsigned long)dst + len);
-> > > +
-> > > +       return ret;
-> > > +}
-> > > +
-> > >  u32 larch_insn_gen_nop(void)
-> > >  {
-> > >         return INSN_NOP;
-> > > diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
-> > > index 7032f11d3..86504e710 100644
-> > > --- a/arch/loongarch/net/bpf_jit.c
-> > > +++ b/arch/loongarch/net/bpf_jit.c
-> > > @@ -4,8 +4,12 @@
-> > >   *
-> > >   * Copyright (C) 2022 Loongson Technology Corporation Limited
-> > >   */
-> > > +#include <linux/memory.h>
-> > >  #include "bpf_jit.h"
-> > >
-> > > +#define LOONGARCH_LONG_JUMP_NINSNS 5
-> > > +#define LOONGARCH_LONG_JUMP_NBYTES (LOONGARCH_LONG_JUMP_NINSNS * 4)
-> > > +
-> > >  #define REG_TCC                LOONGARCH_GPR_A6
-> > >  #define TCC_SAVED      LOONGARCH_GPR_S5
-> > >
-> > > @@ -88,6 +92,7 @@ static u8 tail_call_reg(struct jit_ctx *ctx)
-> > >   */
-> > >  static void build_prologue(struct jit_ctx *ctx)
-> > >  {
-> > > +       int i;
-> > >         int stack_adjust = 0, store_offset, bpf_stack_adjust;
-> > >
-> > >         bpf_stack_adjust = round_up(ctx->prog->aux->stack_depth, 16);
-> > > @@ -98,6 +103,10 @@ static void build_prologue(struct jit_ctx *ctx)
-> > >         stack_adjust = round_up(stack_adjust, 16);
-> > >         stack_adjust += bpf_stack_adjust;
-> > >
-> > > +       /* Reserve space for the move_imm + jirl instruction */
-> > > +       for (i = 0; i < LOONGARCH_LONG_JUMP_NINSNS; i++)
-> > > +               emit_insn(ctx, nop);
-> > > +
-> > >         /*
-> > >          * First instruction initializes the tail call count (TCC).
-> > >          * On tail call we skip this instruction, and the TCC is
-> > > @@ -1367,3 +1376,91 @@ bool bpf_jit_supports_subprog_tailcalls(void)
-> > >  {
-> > >         return true;
-> > >  }
-> > > +
-> > > +static int emit_jump_and_link(struct jit_ctx *ctx, u8 rd, u64 target)
-> > > +{
-> > > +       if (!target) {
-> > > +               pr_err("bpf_jit: jump target address is error\n");
-> > 
-> > is error ? is NULL ?
-> 
-> What I mean is: This is an illegal target address.
-> 
-> > 
-> > > +               return -EFAULT;
-> > > +       }
-> > > +
-> > > +       move_imm(ctx, LOONGARCH_GPR_T1, target, false);
-> > > +       emit_insn(ctx, jirl, rd, LOONGARCH_GPR_T1, 0);
-> > > +
-> > > +       return 0;
-> > > +}
-> > > +
-> > > +static int gen_jump_or_nops(void *target, void *ip, u32 *insns, bool is_call)
-> > > +{
-> > > +       struct jit_ctx ctx;
-> > > +
-> > > +       ctx.idx = 0;
-> > > +       ctx.image = (union loongarch_instruction *)insns;
-> > > +
-> > > +       if (!target) {
-> > > +               emit_insn((&ctx), nop);
-> > > +               emit_insn((&ctx), nop);
-> > > +               return 0;
-> > > +       }
-> > > +
-> > > +       return emit_jump_and_link(&ctx, is_call ? LOONGARCH_GPR_T0 : LOONGARCH_GPR_ZERO,
-> > > +                                 (unsigned long)target);
-> > > +}
-> > > +
-> > > +int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
-> > > +                      void *old_addr, void *new_addr)
-> > > +{
-> > > +       u32 old_insns[LOONGARCH_LONG_JUMP_NINSNS] = {[0 ... 4] = INSN_NOP};
-> > > +       u32 new_insns[LOONGARCH_LONG_JUMP_NINSNS] = {[0 ... 4] = INSN_NOP};
-> > > +       bool is_call = poke_type == BPF_MOD_CALL;
-> > > +       int ret;
-> > > +
-> > > +       if (!is_kernel_text((unsigned long)ip) &&
-> > > +               !is_bpf_text_address((unsigned long)ip))
-> > > +               return -ENOTSUPP;
-> > > +
-> > > +       ret = gen_jump_or_nops(old_addr, ip, old_insns, is_call);
-> > > +       if (ret)
-> > > +               return ret;
-> > > +
-> > > +       if (memcmp(ip, old_insns, LOONGARCH_LONG_JUMP_NBYTES))
-> > > +               return -EFAULT;
-> > > +
-> > > +       ret = gen_jump_or_nops(new_addr, ip, new_insns, is_call);
-> > > +       if (ret)
-> > > +               return ret;
-> > > +
-> > > +       mutex_lock(&text_mutex);
-> > > +       if (memcmp(ip, new_insns, LOONGARCH_LONG_JUMP_NBYTES))
-> > > +               ret = larch_insn_text_copy(ip, new_insns, LOONGARCH_LONG_JUMP_NBYTES);
-> > > +       mutex_unlock(&text_mutex);
-> > > +       return ret;
-> > > +}
-> > > +
-> > > +int bpf_arch_text_invalidate(void *dst, size_t len)
-> > > +{
-> > > +       int i;
-> > > +       int ret = 0;
-> > > +       u32 *inst;
-> > > +
-> > > +       inst = kvmalloc(len, GFP_KERNEL);
-> > > +       if (!inst)
-> > > +               return -ENOMEM;
-> > > +
-> > > +       for (i = 0; i < (len/sizeof(u32)); i++)
-> > > +               inst[i] = INSN_BREAK;
-> > > +
-> > > +       if (larch_insn_text_copy(dst, inst, len))
-> > 
-> > Do we need text_mutex here and below for larch_insn_text_copy() ?
-> 
-> As a matter of fact, my use of text_mutex is modeled after the arm64
-> code. Arm64 also only adds text_mutex to bpf_arch_text_poke. Therefore,
-> I have only added text_mutex to bpf_arch_text_poke as well.
-> 
-> In the next version of the code, I will try to add text_mutex to all
-> contexts where larch_insn_text_copy is used and conduct tests accordingly.
+Hi Amery,
 
-Adding text_mutex tests in all contexts of larch_insn_text_copy passed.
-
-> > 
-> > > +               ret = -EINVAL;
-> > > +
-> > > +       kvfree(inst);
-> > > +       return ret;
-> > > +}
-> > > +
-> > > +void *bpf_arch_text_copy(void *dst, void *src, size_t len)
-> > > +{
-> > > +       if (larch_insn_text_copy(dst, src, len))
-> > > +               return ERR_PTR(-EINVAL);
-> > > +
-> > > +       return dst;
-> > > +}
-> > > --
-> > > 2.25.1
+On Sat, 26 Jul 2025 at 07:53, Amery Hung <ameryhung@gmail.com> wrote:
+>
+> On Tue, Jul 22, 2025 at 7:35=E2=80=AFAM Stefano Garzarella <sgarzare@redh=
+at.com> wrote:
+> >
+> > Hi Amery,
+> >
+> > On Wed, Jul 10, 2024 at 09:25:41PM +0000, Amery Hung wrote:
+> > >Hey all!
 > > >
+> > >This series introduces support for datagrams to virtio/vsock.
+> >
+> > any update on v7 of this series?
+> >
+>
+> Hi Stefano,
+>
+> Sorry that I don't have personal time to work on v7. Since I don't
+> think people involved in this set are still working on it, I am
+> posting my v7 WIP here to see if anyone is interested in finishing it.
+> Would greatly appreciate any help.
+>
+> Link: https://github.com/ameryhung/linux/tree/vsock-dgram-v7
+>
+> Here are the things that I haven't address in the WIP:
+>
+> 01/14
+> - Arseniy suggested doing skb_put(dg->payload_size) and memcpy(dg->payloa=
+d_size)
+>
+> 07/14
+> - Remove the double transport lookup in the send path by passing
+> transport to dgram_enqueue
+> - Address Arseniy's comment about updating vsock_virtio_transport_common.=
+h
+>
+> 14/14
+> - Split test/vsock into smaller patches
+>
+> Finally the spec change discussion also needs to happen.
+
+Thanks for the update!
+I CCed Sergio and Tyler that may be interested on completing this for
+libkrun use case.
+
+Thanks,
+Stefano
+
+>
+>
+>
+> > Thanks,
+> > Stefano
+> >
+> > >
+> > >It is a spin-off (and smaller version) of this series from the summer:
+> > >  https://lore.kernel.org/all/cover.1660362668.git.bobby.eshleman@byte=
+dance.com/
+> > >
+> > >Please note that this is an RFC and should not be merged until
+> > >associated changes are made to the virtio specification, which will
+> > >follow after discussion from this series.
+> > >
+> > >Another aside, the v4 of the series has only been mildly tested with a
+> > >run of tools/testing/vsock/vsock_test. Some code likely needs cleaning
+> > >up, but I'm hoping to get some of the design choices agreed upon befor=
+e
+> > >spending too much time making it pretty.
+> > >
+> > >This series first supports datagrams in a basic form for virtio, and
+> > >then optimizes the sendpath for all datagram transports.
+> > >
+> > >The result is a very fast datagram communication protocol that
+> > >outperforms even UDP on multi-queue virtio-net w/ vhost on a variety
+> > >of multi-threaded workload samples.
+> > >
+> > >For those that are curious, some summary data comparing UDP and VSOCK
+> > >DGRAM (N=3D5):
+> > >
+> > >       vCPUS: 16
+> > >       virtio-net queues: 16
+> > >       payload size: 4KB
+> > >       Setup: bare metal + vm (non-nested)
+> > >
+> > >       UDP: 287.59 MB/s
+> > >       VSOCK DGRAM: 509.2 MB/s
+> > >
+> > >Some notes about the implementation...
+> > >
+> > >This datagram implementation forces datagrams to self-throttle accordi=
+ng
+> > >to the threshold set by sk_sndbuf. It behaves similar to the credits
+> > >used by streams in its effect on throughput and memory consumption, bu=
+t
+> > >it is not influenced by the receiving socket as credits are.
+> > >
+> > >The device drops packets silently.
+> > >
+> > >As discussed previously, this series introduces datagrams and defers
+> > >fairness to future work. See discussion in v2 for more context around
+> > >datagrams, fairness, and this implementation.
+> > >
+> > >Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
+> > >Signed-off-by: Amery Hung <amery.hung@bytedance.com>
+> > >---
+> > >Changes in v6:
+> > >- allow empty transport in datagram vsock
+> > >- add empty transport checks in various paths
+> > >- transport layer now saves source cid and port to control buffer of s=
+kb
+> > >  to remove the dependency of transport in recvmsg()
+> > >- fix virtio dgram_enqueue() by looking up the transport to be used wh=
+en
+> > >  using sendto(2)
+> > >- fix skb memory leaks in two places
+> > >- add dgram auto-bind test
+> > >- Link to v5: https://lore.kernel.org/r/20230413-b4-vsock-dgram-v5-0-5=
+81bd37fdb26@bytedance.com
+> > >
+> > >Changes in v5:
+> > >- teach vhost to drop dgram when a datagram exceeds the receive buffer
+> > >  - now uses MSG_ERRQUEUE and depends on Arseniy's zerocopy patch:
+> > >       "vsock: read from socket's error queue"
+> > >- replace multiple ->dgram_* callbacks with single ->dgram_addr_init()
+> > >  callback
+> > >- refactor virtio dgram skb allocator to reduce conflicts w/ zerocopy =
+series
+> > >- add _fallback/_FALLBACK suffix to dgram transport variables/macros
+> > >- add WARN_ONCE() for table_size / VSOCK_HASH issue
+> > >- add static to vsock_find_bound_socket_common
+> > >- dedupe code in vsock_dgram_sendmsg() using module_got var
+> > >- drop concurrent sendmsg() for dgram and defer to future series
+> > >- Add more tests
+> > >  - test EHOSTUNREACH in errqueue
+> > >  - test stream + dgram address collision
+> > >- improve clarity of dgram msg bounds test code
+> > >- Link to v4: https://lore.kernel.org/r/20230413-b4-vsock-dgram-v4-0-0=
+cebbb2ae899@bytedance.com
+> > >
+> > >Changes in v4:
+> > >- style changes
+> > >  - vsock: use sk_vsock(vsk) in vsock_dgram_recvmsg instead of
+> > >    &sk->vsk
+> > >  - vsock: fix xmas tree declaration
+> > >  - vsock: fix spacing issues
+> > >  - virtio/vsock: virtio_transport_recv_dgram returns void because err
+> > >    unused
+> > >- sparse analysis warnings/errors
+> > >  - virtio/vsock: fix unitialized skerr on destroy
+> > >  - virtio/vsock: fix uninitialized err var on goto out
+> > >  - vsock: fix declarations that need static
+> > >  - vsock: fix __rcu annotation order
+> > >- bugs
+> > >  - vsock: fix null ptr in remote_info code
+> > >  - vsock/dgram: make transport_dgram a fallback instead of first
+> > >    priority
+> > >  - vsock: remove redundant rcu read lock acquire in getname()
+> > >- tests
+> > >  - add more tests (message bounds and more)
+> > >  - add vsock_dgram_bind() helper
+> > >  - add vsock_dgram_connect() helper
+> > >
+> > >Changes in v3:
+> > >- Support multi-transport dgram, changing logic in connect/bind
+> > >  to support VMCI case
+> > >- Support per-pkt transport lookup for sendto() case
+> > >- Fix dgram_allow() implementation
+> > >- Fix dgram feature bit number (now it is 3)
+> > >- Fix binding so dgram and connectible (cid,port) spaces are
+> > >  non-overlapping
+> > >- RCU protect transport ptr so connect() calls never leave
+> > >  a lockless read of the transport and remote_addr are always
+> > >  in sync
+> > >- Link to v2: https://lore.kernel.org/r/20230413-b4-vsock-dgram-v2-0-0=
+79cc7cee62e@bytedance.com
+> > >
+> > >
+> > >Bobby Eshleman (14):
+> > >  af_vsock: generalize vsock_dgram_recvmsg() to all transports
+> > >  af_vsock: refactor transport lookup code
+> > >  af_vsock: support multi-transport datagrams
+> > >  af_vsock: generalize bind table functions
+> > >  af_vsock: use a separate dgram bind table
+> > >  virtio/vsock: add VIRTIO_VSOCK_TYPE_DGRAM
+> > >  virtio/vsock: add common datagram send path
+> > >  af_vsock: add vsock_find_bound_dgram_socket()
+> > >  virtio/vsock: add common datagram recv path
+> > >  virtio/vsock: add VIRTIO_VSOCK_F_DGRAM feature bit
+> > >  vhost/vsock: implement datagram support
+> > >  vsock/loopback: implement datagram support
+> > >  virtio/vsock: implement datagram support
+> > >  test/vsock: add vsock dgram tests
+> > >
+> > > drivers/vhost/vsock.c                   |   62 +-
+> > > include/linux/virtio_vsock.h            |    9 +-
+> > > include/net/af_vsock.h                  |   24 +-
+> > > include/uapi/linux/virtio_vsock.h       |    2 +
+> > > net/vmw_vsock/af_vsock.c                |  343 ++++++--
+> > > net/vmw_vsock/hyperv_transport.c        |   13 -
+> > > net/vmw_vsock/virtio_transport.c        |   24 +-
+> > > net/vmw_vsock/virtio_transport_common.c |  188 ++++-
+> > > net/vmw_vsock/vmci_transport.c          |   61 +-
+> > > net/vmw_vsock/vsock_loopback.c          |    9 +-
+> > > tools/testing/vsock/util.c              |  177 +++-
+> > > tools/testing/vsock/util.h              |   10 +
+> > > tools/testing/vsock/vsock_test.c        | 1032 ++++++++++++++++++++--=
+-
+> > > 13 files changed, 1638 insertions(+), 316 deletions(-)
+> > >
+> > >--
+> > >2.20.1
+> > >
+> >
+>
+
 
