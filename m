@@ -1,116 +1,132 @@
-Return-Path: <bpf+bounces-64640-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64641-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1F32B151BC
-	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 18:57:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8ECBB15265
+	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 19:55:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2AD518A40AE
-	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 16:57:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 003555430B0
+	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 17:55:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ACA32951DD;
-	Tue, 29 Jul 2025 16:56:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C3D6299922;
+	Tue, 29 Jul 2025 17:54:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nyMNSaUn"
 X-Original-To: bpf@vger.kernel.org
-Received: from plesk.hostmyservers.fr (plesk.hostmyservers.fr [45.145.164.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E736265CC8;
-	Tue, 29 Jul 2025 16:56:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.145.164.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB7EC2980B8;
+	Tue, 29 Jul 2025 17:54:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753808201; cv=none; b=DyeyNoHWnETuj50xeP4p6LsA5zevpCrMC5dcPeMT63+VM74FXqW1eHqJeu9s6gGuwRL6awZ/EzCnmf2hGkB1vG5C0pitDTAknqH3cGTENyp/CF3VxxZbVyUAfwO+V2bKnDN9Ydm8wfhCI0wSXAXADb0PZq4vFN6gK9mwFfAmi54=
+	t=1753811696; cv=none; b=D+zF634Z964o6V1tisz4ikVFoHJivqXRCsqAmGWuAYLl7OYpse8Ch4Kc5KUdESrUKNL9on7m5g5N6jDG3asOjIqwTRnk3OczJvjMZJOqkAV/gJoYb9we8pDOWODHNSKbPeckigHuXGcfJ3KxrdJDKg5j0X4R1z+2FVhOJcCUO7Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753808201; c=relaxed/simple;
-	bh=gkHE6WyHWyPUujbv/s/TY/7ZFHN9NyQ8MiG7C3d14zo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=K753pTRi/Vu1HKe97H8YPuSYopsPN5x+HVAXJBm4qB5fbqTdjzKdguDKwhIPnsoMvzH3W2FXgqgd05INUHCdRlBGHCGj2bSSaJoUaYfd+nDTBmP9hdU54hHqOXQ2mv7JC8j2IG12t2U+nXXPgiTjD4LL/WZLHbc546tGEJSTaAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com; spf=pass smtp.mailfrom=arnaud-lcm.com; arc=none smtp.client-ip=45.145.164.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arnaud-lcm.com
-Received: from arnaudlcm-X570-UD.. (unknown [IPv6:2a02:8084:255b:aa00:d071:2bab:ab9:4510])
-	by plesk.hostmyservers.fr (Postfix) with ESMTPSA id A76F540420;
-	Tue, 29 Jul 2025 16:56:37 +0000 (UTC)
-Authentication-Results: Plesk;
-	spf=pass (sender IP is 2a02:8084:255b:aa00:d071:2bab:ab9:4510) smtp.mailfrom=contact@arnaud-lcm.com smtp.helo=arnaudlcm-X570-UD..
-Received-SPF: pass (Plesk: connection is authenticated)
-From: Arnaud Lecomte <contact@arnaud-lcm.com>
-To: song@kernel.org,
-	jolsa@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com,
-	Arnaud Lecomte <contact@arnaud-lcm.com>
-Subject: [PATCH v2] bpf: fix stackmap overflow check in __bpf_get_stackid()
-Date: Tue, 29 Jul 2025 17:56:22 +0100
-Message-ID: <20250729165622.13794-1-contact@arnaud-lcm.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1753811696; c=relaxed/simple;
+	bh=6KIbPA/EaHB5zy//h0D6S9v9PCr7IQU7sflH936pN20=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VtJxw9t8hQJuejIAGKFbZiu29FGttZMeYoj9rDjXCsxHa5OepCVrB9TcUD7SW41ie6DIEEjvnJUDF6C6s3WF0HPYMZnspi0UywXtXikjFtXVbFLjIeM1l/WbCSBA1xxqnPib/ULzrHW9fY4rGZRKZkZtk+v919N9Sid+kgP7skg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nyMNSaUn; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1753811694; x=1785347694;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=6KIbPA/EaHB5zy//h0D6S9v9PCr7IQU7sflH936pN20=;
+  b=nyMNSaUn3cD3nq7d/BnNoBGWyQpqcgZFPyIov0ACIoZXj413Hn0xHWex
+   EUcXm1RTo7K5Kx+9Vw+b7Uexg234rjMEN9KUjG4oiA6i/xka2xaunVq1S
+   gy7C4xEpAOYHjLPjiQdQsx/eWBZxVgGnL8nfCyWqSOBEJJirvjNgvbjV0
+   dPluybak/ZKPoR/1P28rMvL3KPOMtc5o4/ez9tyRw2J2RCkmHye9ZA2aG
+   /ncUPsZtouvdNYc0P1XxVJHNOotsTk2D2NsHGCT0XEzvI+5kRIuGCQjYb
+   e0SIEGfOaPn2+4SRaTFniWTZlNmSbQH22zL2QxfT0lz2B0rnd2f8q4DCd
+   Q==;
+X-CSE-ConnectionGUID: ZpOnOSJaTCGMgWtVeUSXpA==
+X-CSE-MsgGUID: 6XwnpZgmQpyR8zYXKANtsw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11506"; a="58719600"
+X-IronPort-AV: E=Sophos;i="6.16,350,1744095600"; 
+   d="scan'208";a="58719600"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2025 10:54:53 -0700
+X-CSE-ConnectionGUID: hKsGkZjiR5yd2xZ2OXwKsg==
+X-CSE-MsgGUID: NIeHohyJTjWA/hm3kYBUAw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,350,1744095600"; 
+   d="scan'208";a="167024455"
+Received: from lkp-server01.sh.intel.com (HELO 160750d4a34c) ([10.239.97.150])
+  by fmviesa005.fm.intel.com with ESMTP; 29 Jul 2025 10:54:49 -0700
+Received: from kbuild by 160750d4a34c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1ugoXG-0001XT-2S;
+	Tue, 29 Jul 2025 17:54:46 +0000
+Date: Wed, 30 Jul 2025 01:54:21 +0800
+From: kernel test robot <lkp@intel.com>
+To: Sami Tolvanen <samitolvanen@google.com>, bpf@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev,
+	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Jamal Hadi Salim <jhs@mojatatu.com>,
+	Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Sami Tolvanen <samitolvanen@google.com>
+Subject: Re: [PATCH bpf-next v3 1/4] bpf: crypto: Use the correct destructor
+ kfunc type
+Message-ID: <202507300122.RpqIKqFR-lkp@intel.com>
+References: <20250728202656.559071-7-samitolvanen@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-PPP-Message-ID: <175380819860.18739.12641251852562863575@Plesk>
-X-PPP-Vhost: arnaud-lcm.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250728202656.559071-7-samitolvanen@google.com>
 
-Syzkaller reported a KASAN slab-out-of-bounds write in __bpf_get_stackid()
-when copying stack trace data. The issue occurs when the perf trace
- contains more stack entries than the stack map bucket can hold,
- leading to an out-of-bounds write in the bucket's data array.
-For build_id mode, we use sizeof(struct bpf_stack_build_id)
- to determine capacity, and for normal mode we use sizeof(u64).
+Hi Sami,
 
-Reported-by: syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=c9b724fbb41cf2538b7b
-Tested-by: syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com
-Signed-off-by: Arnaud Lecomte <contact@arnaud-lcm.com>
----
-Changes in v2:
- - Use utilty stack_map_data_size to compute map stack map size
----
- kernel/bpf/stackmap.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+kernel test robot noticed the following build warnings:
 
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index 3615c06b7dfa..6f225d477f07 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -230,7 +230,7 @@ static long __bpf_get_stackid(struct bpf_map *map,
- 	struct bpf_stack_map *smap = container_of(map, struct bpf_stack_map, map);
- 	struct stack_map_bucket *bucket, *new_bucket, *old_bucket;
- 	u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
--	u32 hash, id, trace_nr, trace_len, i;
-+	u32 hash, id, trace_nr, trace_len, i, max_depth;
- 	bool user = flags & BPF_F_USER_STACK;
- 	u64 *ips;
- 	bool hash_matches;
-@@ -241,6 +241,12 @@ static long __bpf_get_stackid(struct bpf_map *map,
- 
- 	trace_nr = trace->nr - skip;
- 	trace_len = trace_nr * sizeof(u64);
-+
-+	/* Clamp the trace to max allowed depth */
-+	max_depth = smap->map.value_size / stack_map_data_size(map);
-+	if (trace_nr > max_depth)
-+		trace_nr = max_depth;
-+
- 	ips = trace->ip + skip;
- 	hash = jhash2((u32 *)ips, trace_len / sizeof(u32), 0);
- 	id = hash & (smap->n_buckets - 1);
+[auto build test WARNING on 5b4c54ac49af7f486806d79e3233fc8a9363961c]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Sami-Tolvanen/bpf-crypto-Use-the-correct-destructor-kfunc-type/20250729-042936
+base:   5b4c54ac49af7f486806d79e3233fc8a9363961c
+patch link:    https://lore.kernel.org/r/20250728202656.559071-7-samitolvanen%40google.com
+patch subject: [PATCH bpf-next v3 1/4] bpf: crypto: Use the correct destructor kfunc type
+config: alpha-randconfig-r111-20250729 (https://download.01.org/0day-ci/archive/20250730/202507300122.RpqIKqFR-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 8.5.0
+reproduce: (https://download.01.org/0day-ci/archive/20250730/202507300122.RpqIKqFR-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202507300122.RpqIKqFR-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+>> kernel/bpf/crypto.c:264:18: sparse: sparse: symbol 'bpf_crypto_ctx_release_dtor' was not declared. Should it be static?
+
+vim +/bpf_crypto_ctx_release_dtor +264 kernel/bpf/crypto.c
+
+   263	
+ > 264	__bpf_kfunc void bpf_crypto_ctx_release_dtor(void *ctx)
+   265	{
+   266		bpf_crypto_ctx_release(ctx);
+   267	}
+   268	CFI_NOSEAL(bpf_crypto_ctx_release_dtor);
+   269	
+
 -- 
-2.43.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
