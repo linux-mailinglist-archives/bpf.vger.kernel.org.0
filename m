@@ -1,110 +1,113 @@
-Return-Path: <bpf+bounces-64577-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64578-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24FF7B145BA
-	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 03:22:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F042B145EE
+	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 03:43:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 74F4C1AA1F02
-	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 01:22:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4B347A1F5D
+	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 01:41:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF8711DFDAB;
-	Tue, 29 Jul 2025 01:22:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E2F91F4621;
+	Tue, 29 Jul 2025 01:42:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WgE/WML7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DRD04GHS"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD68F1D8A0A
-	for <bpf@vger.kernel.org>; Tue, 29 Jul 2025 01:22:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0E061F237A;
+	Tue, 29 Jul 2025 01:42:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753752130; cv=none; b=MIP8KPvRfYGDxnTSdhh2q48j9l8gwQYYv7gEv6//adzWbqsQ+1wCwBw0LWsBjvQ1qjvSdYhCkVn7N+ic7qPJSPJdMrOMmEA3F9AS48MKNfH1yM+q+K8Hg1GbDUIDR+wgbing5C/HcfzMOxme1t0TI3Ie9UTcSOE+cCRpdyhTvdo=
+	t=1753753377; cv=none; b=k1hQil1iJaJWFzmF0pGPW/s1eYPXxnscf8ZfKmPsx0XDVmKceS/+U+1qzAmLpjfqr2hSm1DCBzDJZsuxEZuRYLxU/WVV/sYuFRi7mWxjzi8vQwUBeCdGRs5/CJV17iJ3DYC03vIa/1nC+c5DdwUaxtNPVbsAdYnZAt3SoryjeVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753752130; c=relaxed/simple;
-	bh=IyWVg6fv6jorhhnIZt/1wvfudukMy1aGNscDyyEBtYE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qiFcvGO1uoLmKVMX6Jr6PLpuWTWzW1zfynmomAucjRi6DeBKF9yRHV0D/Kh1pQKsFOBUCpxNh8CTk43rAInVDvVpjgC9klFOByGx9GUNiKvJvfl1klVf+U2/PyDMbNlPFOKXsK52LpaX3Nk+oQAVrwzLJ1/IwVD0DS1BlFWwxCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WgE/WML7; arc=none smtp.client-ip=91.218.175.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <b36532a2-506b-4ba5-b6a3-a089386a190e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1753752116;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GWpYFOkLsYnJ9p2ZFvtVNIwL5tEHltSN8BWwkp1apnw=;
-	b=WgE/WML74rD1+eaiOmDCUACg4lRY0yiI97gO1U4BTY+WlYmnjBk9GHu9qMOaIEi7E9661E
-	S6cdKz7drn5/cAPiiOk2+WOqIqzMlsmvrqZ57k2/fAFBTZcCx12xuwzV1XRIYMfDmU4xlF
-	Y08DWk+rPUj6rmDlY7FOadBKFtCNm+s=
-Date: Mon, 28 Jul 2025 18:21:50 -0700
+	s=arc-20240116; t=1753753377; c=relaxed/simple;
+	bh=3g5GSCZ8bX42LsW/E2GOnhRkur95yaR7z21LAmkOLGs=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=cWekOgGkTCnZQvejfv0C9S+1YqMcH8SCi+k8jJn/guPmz5rMjMlMB9FxEWLIX2OeUcQMG0NBgquF79GmzFnI60umnWLlSW8OQNza8cK3C+mHuRnJfTTo8vUrFBkkJYzVj/GBSAkeGFft5d9I2yzz54zF0CD30aeFlzJPKQHFAgc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DRD04GHS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E85D4C4CEE7;
+	Tue, 29 Jul 2025 01:42:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753753377;
+	bh=3g5GSCZ8bX42LsW/E2GOnhRkur95yaR7z21LAmkOLGs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=DRD04GHSOGvW1QJ6BvYPIDL1ETlt92y/qD/ALuIR9jFHTdLIkz+VclMFMSejp6Bry
+	 kc/+M8L+hb1A7qwExi5ejuQo+QJUzfIO2yyqYau2mEy3dmbMaZ0yk7S261XaZ0e9E/
+	 8X3NMGNLZMQTVlT9aT2HCouedrElyNFRd+SDqPiUdFlva7GDGCFUZrcV+3bWdpEjXH
+	 wkkoUWQRMC6jmPdQbeYU5BBxZyEnocjlUL3lf0bhP4cJpzN5Hc6lYrRxH4BM7OZfpm
+	 vQgqKe/aMRrPPt6POcPxvkWJaykI+FuJFb4DX7iSnu6x8wddkiF4hceN1Xjb8uMJlo
+	 mf79qyyxxikOQ==
+Date: Tue, 29 Jul 2025 10:42:54 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: alexei.starovoitov@gmail.com, rostedt@goodmis.org,
+ mathieu.desnoyers@efficios.com, hca@linux.ibm.com, revest@chromium.org,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org
+Subject: Re: [PATCH RFC bpf-next v2 1/4] fprobe: use rhltable for
+ fprobe_ip_table
+Message-Id: <20250729104254.560beac056de20d6aebe1d55@kernel.org>
+In-Reply-To: <20250728072637.1035818-2-dongml2@chinatelecom.cn>
+References: <20250728072637.1035818-1-dongml2@chinatelecom.cn>
+	<20250728072637.1035818-2-dongml2@chinatelecom.cn>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v3 0/4] bpf: add icmp_send_unreach kfunc
-To: Mahe Tardy <mahe.tardy@gmail.com>
-Cc: alexei.starovoitov@gmail.com, andrii@kernel.org, ast@kernel.org,
- bpf@vger.kernel.org, coreteam@netfilter.org, daniel@iogearbox.net,
- fw@strlen.de, john.fastabend@gmail.com, netdev@vger.kernel.org,
- netfilter-devel@vger.kernel.org, oe-kbuild-all@lists.linux.dev,
- pablo@netfilter.org, lkp@intel.com
-References: <202507270940.kXGmRbg5-lkp@intel.com>
- <20250728094345.46132-1-mahe.tardy@gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20250728094345.46132-1-mahe.tardy@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
-On 7/28/25 2:43 AM, Mahe Tardy wrote:
-> Hello,
-> 
-> This is v3 of adding the icmp_send_unreach kfunc, as suggested during
-> LSF/MM/BPF 2025[^1]. The goal is to allow cgroup_skb programs to
-> actively reject east-west traffic, similarly to what is possible to do
-> with netfilter reject target.
-> 
-> The first step to implement this is using ICMP control messages, with
-> the ICMP_DEST_UNREACH type with various code ICMP_NET_UNREACH,
-> ICMP_HOST_UNREACH, ICMP_PROT_UNREACH, etc. This is easier to implement
-> than a TCP RST reply and will already hint the client TCP stack to abort
-> the connection and not retry extensively.
-> 
-> Note that this is different than the sock_destroy kfunc, that along
-> calls tcp_abort and thus sends a reset, destroying the underlying
-> socket.
-> 
-> Caveats of this kfunc design are that a cgroup_skb program can call this
-> function N times, thus send N ICMP unreach control messages and that the
-> program can return from the BPF filter with SK_PASS leading to a
-> potential confusing situation where the TCP connection was established
-> while the client received ICMP_DEST_UNREACH messages.
-> 
-> Another more sophisticated design idea would be for the kfunc to set the
-> kernel to send an ICMP_HOST_UNREACH control message with the appropriate
-> code when the cgroup_skb program terminates with SK_DROP. Creating a new
-> 'SK_REJECT' return code for cgroup_skb program was generally rejected
-> and would be too limited for other program types support.
-> 
-> We should bear in mind that we want to add a TCP reset kfunc next and
-> also could extend this kfunc to other program types if wanted.
+Hi,
 
-Some high level questions.
+I'll check it deeper, but 2 nits I found.
 
-Which other program types do you need this kfunc to send icmp and the future tcp 
-rst?
+On Mon, 28 Jul 2025 15:22:50 +0800
+Menglong Dong <menglong8.dong@gmail.com> wrote:
 
-This cover letter mentioned sending icmp unreach is easier than sending tcp rst. 
-What problems do you see in sending tcp rst?
+> diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
+> index ba7ff14f5339..640a0c47fc76 100644
+> --- a/kernel/trace/fprobe.c
+> +++ b/kernel/trace/fprobe.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/mutex.h>
+>  #include <linux/slab.h>
+>  #include <linux/sort.h>
+> +#include <linux/rhashtable.h>
 
+nit: Can you sort this alphabetically?
+
+[...]
+> @@ -249,9 +251,10 @@ static inline int __fprobe_kprobe_handler(unsigned long ip, unsigned long parent
+>  static int fprobe_entry(struct ftrace_graph_ent *trace, struct fgraph_ops *gops,
+>  			struct ftrace_regs *fregs)
+>  {
+> -	struct fprobe_hlist_node *node, *first;
+> +	struct fprobe_hlist_node *node;
+>  	unsigned long *fgraph_data = NULL;
+>  	unsigned long func = trace->func;
+> +	struct rhlist_head *head, *pos;
+
+nit: Can you sort this as reverse Christmas tree? (like as below)
+
+>  	unsigned long *fgraph_data = NULL;
+>  	unsigned long func = trace->func;
+> +	struct fprobe_hlist_node *node;
+> +	struct rhlist_head *head, *pos;
+
+
+>  	unsigned long ret_ip;
+>  	int reserved_words;
+>  	struct fprobe *fp;
+
+Thank you,
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
