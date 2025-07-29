@@ -1,53 +1,53 @@
-Return-Path: <bpf+bounces-64654-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64653-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D59AAB152AD
+	by mail.lfdr.de (Postfix) with ESMTPS id BA34BB152AC
 	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 20:24:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A1957A83B2
-	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 18:23:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B89C97A7A24
+	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 18:23:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49DD424EF90;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4691024EAB1;
 	Tue, 29 Jul 2025 18:23:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YD8CSHz3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rB2bwMk5"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9798242928;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9942223F40E;
 	Tue, 29 Jul 2025 18:23:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753813431; cv=none; b=JUy6492r4hAcbCxnmbSqaR/T2+4iEhS5m5JDW0Y9gATQBojlzCOyoP7/QJvMyfrhj0Dep2qIOB0c/6L/p5Dl1MA3NnZNJZ3T6c7NHGfRi4PPzl/9XYL+nwM5TnwX8KVGzHTgRwm7HTvtH4VVCyKlAEpomoqs6/oZBh5uA8WFB6w=
+	t=1753813431; cv=none; b=NV9cUT7QNtstmFgPV5IWMj/Gzb1Q8X36WeZXjOpy28F1UGA3CxBIpF/1lCPNL6Z8kjxC9oE6ZSByFfzoq9gDJdKZfolVF3RvMndZFYAgMhKoitFIejuJCYGFWLCTdxwAJjTffBV65kVPxSgBhvM0SMgvCDqVHo6n71NqNvjOiQU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1753813431; c=relaxed/simple;
-	bh=Wq6u8PYGkAyQl/xVgbmkj6KCcF4ZvUyT5Z2nnZPFToQ=;
+	bh=NZ3Qj0P/JmSkdjneYYfwWdzG1XP1ccqyAKp67DKOm9o=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=ck7hWpmUVunOeeKm15OKOnbz5RdbUONCd6NnUll/b7zN3Vh/Jc4+WzAjFUKrRagCoXQOK3t7TahXBnrJ4IAVoMYhtqvKkmefF4lI2YpQpT1t4PdcwLYERTwIrsO6BR/PvoK3eG2rndCBgyMdcE7rpIuMv9xI4WimUTIJvejiE9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YD8CSHz3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46D11C4CEF9;
+	 Content-Type; b=EDK1ZvdvxJzKIgxlCrIljlaLCKy5BWS9maNes3Asxvz5KGzK5e56LgprPQ70RWDym/VMRjCv2vn06dRr+r87GDuKhNURdPpg5JpVXpjdseNySxiYRcfuCSp8fnG5Ati0A9v7kqdvLZswbtC+tWH2NUheRkTUJUwzeCUndjwuzwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rB2bwMk5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70DBAC4CEFD;
 	Tue, 29 Jul 2025 18:23:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1753813431;
-	bh=Wq6u8PYGkAyQl/xVgbmkj6KCcF4ZvUyT5Z2nnZPFToQ=;
+	bh=NZ3Qj0P/JmSkdjneYYfwWdzG1XP1ccqyAKp67DKOm9o=;
 	h=Date:From:To:Cc:Subject:References:From;
-	b=YD8CSHz3r/JW1vFaJ4a2esv5dY9rrxYzv39ogVUKSPRo5t3XyAgQPhXFyrVALBi2V
-	 dWiH1jZzYR19C0A8ZVrenPv0toLyUz9UnlVp/50z1VOy6Z7tur6pxRRzcekMOmLRFw
-	 ngb6zDDTpdx4g0F4sB7T/AjMJRD3AgS/IUZPF4PcjVZirZRCNkN/xJRvAqSIHNAeSw
-	 5nUBqcM5RV2fDLj7oOAc1SeS0WSk5L+MVOqjBgAA0cCwyTkZS2d/lZUDvVFyBi1vd8
-	 7AH3RD5zdOBorgJSB5y94iSm1K4l10s1Tq9YduqrCcnbipC6nwicS7+3gHzK6g6Q5b
-	 Y60fm7Cd74b6A==
+	b=rB2bwMk503JQpZLqFwjTM8fH8PZx4bhDE8zvlioQ5bIR8YfYxoYbM1pMUPMz7FjNZ
+	 jAlGY6Us/QxzLfE0g5anh83tNUvotsPuHyZqp5FhJ7SPi/pNOk5QvpkMwJPG5zb8cj
+	 FX4k8a7NHPwFU9RWhLnTKomHrQoNhvakZ6SEAmEWm9uhrWImtpfE4AMiDkcHJzBN8R
+	 6sauifCRQegDcEo+A6yFVaGzFiNOlHQ55QHwT5QxegJK2/bAYY87vjfUULyQBRj661
+	 OVTPf1+X+MRy25snOoLsWHkWDvN7EkAaym+vylpaLETFrPPCKJWoamBA9YcYUVkIyL
+	 JasLWpQzOP1dg==
 Received: from rostedt by gandalf with local (Exim 4.98.2)
 	(envelope-from <rostedt@kernel.org>)
-	id 1ugoze-0000000551P-0Ysy;
+	id 1ugoze-0000000551x-1HBh;
 	Tue, 29 Jul 2025 14:24:06 -0400
-Message-ID: <20250729182405.989222722@kernel.org>
+Message-ID: <20250729182406.155422551@kernel.org>
 User-Agent: quilt/0.68
-Date: Tue, 29 Jul 2025 14:23:11 -0400
+Date: Tue, 29 Jul 2025 14:23:12 -0400
 From: Steven Rostedt <rostedt@kernel.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org,
@@ -71,7 +71,8 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Jens Axboe <axboe@kernel.dk>,
  Florian Weimer <fweimer@redhat.com>,
  Sam James <sam@gentoo.org>
-Subject: [PATCH v16 07/10] unwind deferred: Add unwind_completed mask to stop spurious callbacks
+Subject: [PATCH v16 08/10] unwind: Add USED bit to only have one conditional on way back to user
+ space
 References: <20250729182304.965835871@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -83,139 +84,88 @@ Content-Type: text/plain; charset=UTF-8
 
 From: Steven Rostedt <rostedt@goodmis.org>
 
-If there's more than one registered tracer to the unwind deferred
-infrastructure, it is currently possible that one tracer could cause extra
-callbacks to happen for another tracer if the former requests a deferred
-stacktrace after the latter's callback was executed and before the task
-went back to user space.
+On the way back to user space, the function unwind_reset_info() is called
+unconditionally (but always inlined). It currently has two conditionals.
+One that checks the unwind_mask which is set whenever a deferred trace is
+called and is used to know that the mask needs to be cleared. The other
+checks if the cache has been allocated, and if so, it resets the
+nr_entries so that the unwinder knows it needs to do the work to get a new
+user space stack trace again (it only does it once per entering the
+kernel).
 
-Here's an example of how this could occur:
-
-  [Task enters kernel]
-    tracer 1 request -> add cookie to its buffer
-    tracer 1 request -> add cookie to its buffer
-    <..>
-    [ task work executes ]
-    tracer 1 callback -> add trace + cookie to its buffer
-
-    [tracer 2 requests and triggers the task work again]
-    [ task work executes again ]
-    tracer 1 callback -> add trace + cookie to its buffer
-    tracer 2 callback -> add trace + cookie to its buffer
- [Task exits back to user space]
-
-This is because the bit for tracer 1 gets set in the task's unwind_mask
-when it did its request and does not get cleared until the task returns
-back to user space. But if another tracer were to request another deferred
-stacktrace, then the next task work will executed all tracer's callbacks
-that have their bits set in the task's unwind_mask.
-
-To fix this issue, add another mask called unwind_completed and place it
-into the task's info->cache structure. The cache structure is allocated
-on the first occurrence of a deferred stacktrace and this unwind_completed
-mask is not needed until then. It's better to have it in the cache than to
-permanently waste space in the task_struct.
-
-After a tracer's callback is executed, it's bit gets set in this
-unwind_completed mask. When the task_work enters, it will AND the task's
-unwind_mask with the inverse of the unwind_completed which will eliminate
-any work that already had its callback executed since the task entered the
-kernel.
-
-When the task leaves the kernel, it will reset this unwind_completed mask
-just like it resets the other values as it enters user space.
-
-Link: https://lore.kernel.org/all/20250716142609.47f0e4a5@batman.local.home/
+Use one of the bits in the unwind mask as a "USED" bit that gets set
+whenever a trace is created. This will make it possible to only check the
+unwind_mask in the unwind_reset_info() to know if it needs to do work or
+not and eliminates a conditional that happens every time the task goes
+back to user space.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- include/linux/unwind_deferred.h       |  4 +++-
- include/linux/unwind_deferred_types.h |  1 +
- kernel/unwind/deferred.c              | 19 +++++++++++++++----
- 3 files changed, 19 insertions(+), 5 deletions(-)
+ include/linux/unwind_deferred.h | 18 +++++++++---------
+ kernel/unwind/deferred.c        |  5 ++++-
+ 2 files changed, 13 insertions(+), 10 deletions(-)
 
 diff --git a/include/linux/unwind_deferred.h b/include/linux/unwind_deferred.h
-index 337ead927d4d..b9ec4c8515c7 100644
+index b9ec4c8515c7..2efbda01e959 100644
 --- a/include/linux/unwind_deferred.h
 +++ b/include/linux/unwind_deferred.h
-@@ -55,8 +55,10 @@ static __always_inline void unwind_reset_info(void)
- 	 * depends on nr_entries being cleared on exit to user,
- 	 * this needs to be a separate conditional.
- 	 */
--	if (unlikely(info->cache))
-+	if (unlikely(info->cache)) {
- 		info->cache->nr_entries = 0;
-+		info->cache->unwind_completed = 0;
-+	}
- }
+@@ -20,10 +20,14 @@ struct unwind_work {
  
- #else /* !CONFIG_UNWIND_USER */
-diff --git a/include/linux/unwind_deferred_types.h b/include/linux/unwind_deferred_types.h
-index 5dc9cda141ff..33b62ac25c86 100644
---- a/include/linux/unwind_deferred_types.h
-+++ b/include/linux/unwind_deferred_types.h
-@@ -3,6 +3,7 @@
- #define _LINUX_UNWIND_USER_DEFERRED_TYPES_H
- 
- struct unwind_cache {
-+	unsigned long		unwind_completed;
- 	unsigned int		nr_entries;
- 	unsigned long		entries[];
+ enum {
+ 	UNWIND_PENDING_BIT = 0,
++	UNWIND_USED_BIT,
  };
-diff --git a/kernel/unwind/deferred.c b/kernel/unwind/deferred.c
-index e19f02ef416d..a3d26014a2e6 100644
---- a/kernel/unwind/deferred.c
-+++ b/kernel/unwind/deferred.c
-@@ -166,12 +166,18 @@ static void unwind_deferred_task_work(struct callback_head *head)
  
- 	unwind_user_faultable(&trace);
- 
-+	if (info->cache)
-+		bits &= ~(info->cache->unwind_completed);
+ enum {
+ 	UNWIND_PENDING		= BIT(UNWIND_PENDING_BIT),
 +
- 	cookie = info->id.id;
++	/* Set if the unwinding was used (directly or deferred) */
++	UNWIND_USED		= BIT(UNWIND_USED_BIT)
+ };
  
- 	guard(mutex)(&callback_mutex);
- 	list_for_each_entry(work, &callbacks, list) {
--		if (test_bit(work->bit, &bits))
-+		if (test_bit(work->bit, &bits)) {
- 			work->func(work, &trace, cookie);
-+			if (info->cache)
-+				info->cache->unwind_completed |= BIT(work->bit);
+ void unwind_task_init(struct task_struct *task);
+@@ -49,15 +53,11 @@ static __always_inline void unwind_reset_info(void)
+ 				return;
+ 		} while (!try_cmpxchg(&info->unwind_mask, &bits, 0UL));
+ 		current->unwind_info.id.id = 0;
+-	}
+-	/*
+-	 * As unwind_user_faultable() can be called directly and
+-	 * depends on nr_entries being cleared on exit to user,
+-	 * this needs to be a separate conditional.
+-	 */
+-	if (unlikely(info->cache)) {
+-		info->cache->nr_entries = 0;
+-		info->cache->unwind_completed = 0;
++
++		if (unlikely(info->cache)) {
++			info->cache->nr_entries = 0;
++			info->cache->unwind_completed = 0;
 +		}
  	}
  }
  
-@@ -260,23 +266,28 @@ int unwind_deferred_request(struct unwind_work *work, u64 *cookie)
- void unwind_deferred_cancel(struct unwind_work *work)
- {
- 	struct task_struct *g, *t;
-+	int bit;
+diff --git a/kernel/unwind/deferred.c b/kernel/unwind/deferred.c
+index a3d26014a2e6..2311b725d691 100644
+--- a/kernel/unwind/deferred.c
++++ b/kernel/unwind/deferred.c
+@@ -45,7 +45,7 @@ static inline bool try_assign_cnt(struct unwind_task_info *info, u32 cnt)
+ static DEFINE_MUTEX(callback_mutex);
+ static LIST_HEAD(callbacks);
  
- 	if (!work)
- 		return;
+-#define RESERVED_BITS	(UNWIND_PENDING)
++#define RESERVED_BITS	(UNWIND_PENDING | UNWIND_USED)
  
-+	bit = work->bit;
+ /* Zero'd bits are available for assigning callback users */
+ static unsigned long unwind_mask = RESERVED_BITS;
+@@ -140,6 +140,9 @@ int unwind_user_faultable(struct unwind_stacktrace *trace)
+ 
+ 	cache->nr_entries = trace->nr;
+ 
++	/* Clear nr_entries on way back to user space */
++	set_bit(UNWIND_USED_BIT, &info->unwind_mask);
 +
- 	/* No work should be using a reserved bit */
--	if (WARN_ON_ONCE(BIT(work->bit) & RESERVED_BITS))
-+	if (WARN_ON_ONCE(BIT(bit) & RESERVED_BITS))
- 		return;
- 
- 	guard(mutex)(&callback_mutex);
- 	list_del(&work->list);
- 
--	__clear_bit(work->bit, &unwind_mask);
-+	__clear_bit(bit, &unwind_mask);
- 
- 	guard(rcu)();
- 	/* Clear this bit from all threads */
- 	for_each_process_thread(g, t) {
--		clear_bit(work->bit, &t->unwind_info.unwind_mask);
-+		clear_bit(bit, &t->unwind_info.unwind_mask);
-+		if (t->unwind_info.cache)
-+			clear_bit(bit, &t->unwind_info.cache->unwind_completed);
- 	}
+ 	return 0;
  }
  
 -- 
