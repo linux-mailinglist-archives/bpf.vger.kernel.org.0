@@ -1,207 +1,292 @@
-Return-Path: <bpf+bounces-64625-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64626-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F1D4B14DE4
-	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 14:51:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E02BB14E0B
+	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 15:04:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77A7F18A34ED
-	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 12:51:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C12C3AA6A6
+	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 13:04:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9D1828DD0;
-	Tue, 29 Jul 2025 12:51:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A7D6145B3E;
+	Tue, 29 Jul 2025 13:04:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PdU9v6hs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PjhV/PyY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99FB0208CA
-	for <bpf@vger.kernel.org>; Tue, 29 Jul 2025 12:51:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E76D1758B;
+	Tue, 29 Jul 2025 13:04:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753793487; cv=none; b=plva5614laOyv2lE2oG1d7o22oC3MDLtmoHv7pMFVAKFPvZquoAeUSVRlFfg+oqji60e2960SqTDsCF2maJgYTjs3VtqyIYhKwuLpZWPYFB0SHGb4KUQ8V/UEr+Wxw3Mm56wU31jpHfUWe4rbYZ9dAnKwcqBZtR5QzwwV0KcaYU=
+	t=1753794281; cv=none; b=mIwgH9WHYprngDe9ccbrUS2prsycV31MZKDnEeL7Hj56hX5YMCLB6R80Yy1pfCZtaKN4/8lrOBJuLbTTvvxbZMOdbyRn+GHkTdK4N8Oqkjw6MIHr+7THChQ9P8zhCWLl9mu1udsOIm7wEFqpUWuArzjA/VfLfor36rBpnwuF0QE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753793487; c=relaxed/simple;
-	bh=CtMKtoP4iIfLhIvwT5OnuV5uj6TY0U7rqvzubUtNL+U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ApT6EFvnIsgLJOm2K8dUgSdPJ/3yD+56SwlwmqII5v8zpVO25wcO6hxZKN8KbwJWzHLYyymFxWT30jp4UtMlY/jSoCvesT0xuYXoPtcEqYK/PzRQqX4g2+APQsMXNqBWdgmnkZrqLtoKzspZ1mxbWG+AR2eSABArn0u2iRqB8wQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PdU9v6hs; arc=none smtp.client-ip=209.85.128.47
+	s=arc-20240116; t=1753794281; c=relaxed/simple;
+	bh=q9XcOaXmn9wB9mHkwgwnoVjDE+ud+VPbABLrXLB26og=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lpspPuaeHHwLM1FvvOSYsx6U/X+schBMH+lFtnOgp40cC3q4TlmoePuCtQwkzY3vciI1WbiMME1RRblHCpkrax4g1J5jioTUAjsRfqjVu1AeHZ/GUkTo17xtiibodREbu15FiW/yudGUsoQLM3QLYCwwrRRkTuv/cP+wrs077mk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PjhV/PyY; arc=none smtp.client-ip=209.85.128.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-45600581226so55039695e9.1
-        for <bpf@vger.kernel.org>; Tue, 29 Jul 2025 05:51:25 -0700 (PDT)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-451d3f72391so51465385e9.3;
+        Tue, 29 Jul 2025 06:04:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753793484; x=1754398284; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=X5MmN7P3nXqKqtvgr/GbRPj+8jtqVKEWRu5Mm0lBoyk=;
-        b=PdU9v6hsRj3M8asggQTjql8fbwNWYc14q/INULrAG5f2h5Z2Tcehybr0FPESqRav4J
-         d70pQfy9aC9mWLmAyp8bLAul7R1jJrp+FMVf9SHyEpsuX6GSr1ZUgFfuToM/Rf1f3a/p
-         0KvrtBfn63hbiX+yuAfE+ehwlCUUIGp1PJmdxVhvuNqai2IwTTAdOWE/QCRsujQT9o4W
-         pXk8Py4v6oT1QyYoSCgIXAXGeaKdul9/vgzkbD0rQy+4WqLUoaVdPVh4DWVN1EIALefL
-         n6sliMVhJrRZIEqH5d0I68YCBqpyf6g0ta/khIIVFFNj5Z7trC1cR/mymwXokDwcQbZ5
-         j+eA==
+        d=gmail.com; s=20230601; t=1753794277; x=1754399077; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ix14CESA9kHg0m61f4E3nGpbISmReGVmm6+MjRVF5hM=;
+        b=PjhV/PyYJv6b9F1v64aWxLyumI9j9lxYlkqbp9ne3nO34zrMVNKqSfgxHQgl2diqlz
+         eq/WR5xy5KHg7ZpT5dqSV6Q1ayakkb7hwfOmvmufQz6ASQm3Lr4qkGogqijGH2dSzbY6
+         vGbJyLFteCT2k2TF310y9RhAdMdmuznEf//lXu10HDFT5Mgcy1hU2hrgWnDGLs0MLCNa
+         DvOFY5Crn8F4hY+nTniOs5rz4VFTa6r0RR1z7/rjeFNmVOSJ7/KbJiuBCipvUjIJ1viF
+         7ygAKPX1ZSNku+u19QxV7rNev4/Kz/lWrH/ARO+8BbswRAM5naLr0gkjJ09HFr5LiO/d
+         qK0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753793484; x=1754398284;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=X5MmN7P3nXqKqtvgr/GbRPj+8jtqVKEWRu5Mm0lBoyk=;
-        b=hREDFOhOk18X74FJL/YoAp9TYi8vivUEABVONQwldakOmjefvkPmBWNKMy/yzuM3vC
-         eOhdr++YUzQgPEn8W1MMIGTurZbxQLvuvQWOreo3bk/NqQlgsfeiw6zMLnnUgMqT/D+e
-         KXa9yw9oRgS+nuvXApBQ33cg+/PRjNYB0QjR6DdutZnCYyTitWvsymrznPLS5YzvfVr+
-         bgdXRrZkgcyrwP6brjac7KGohZLUN4oY3TmB2B7Jg8sCuQtUtC6HObvJFOd11zoJBLnT
-         V+qWDnTHyV2sUEyZvmKayEdH4kOSg+nW0b0hf/uPSuQ0JRCHntdYcYVdrmUBzT6DqajG
-         zIMA==
-X-Forwarded-Encrypted: i=1; AJvYcCVKVu5BhJBGMNtipX8ILzt21mx2iIrg8WHqBHuWYpk3EtFVTYJVGToqHuhHIYSwfFy2Zsg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzFR+fzNz/kHJVuo5vjDjUeLUT+PKeUXjSkE79yYvWVpMC4LIpk
-	zDogaZALzRt9B5XHeJHZf0AVcRZjTblv777HdcDGbjje5TTygU8QuM13
-X-Gm-Gg: ASbGncsttdlqD9MsSCBimSyGH0Z8QA2k+6zgyGb9LMsFY4ANGNb4ba4YOW2J4IjiZAh
-	7VckEke1t/UWFJfE5NYbRwTZPQfVOnPeU1HY/6ge8ObW2AzMlA/1kO86TzXuWkolALgVmW+FC1r
-	9dxDhuTWoLjUUAYqGZcH4V24OT6I8MNIk+/TTzmuKcIVVpk8XAGjQxnYlEtQrAkOWkDsOCzCOol
-	J4sGGFmXNnYeNOSBhtsQYUuXTFS4XJjcWZjgYEL4yDvMb2ruZ8qAu3qGgzK5ov9grSWnviE4W1O
-	VbJsMF6J7azdbLsC1ifY3TCX4sE41WkvjUdFfE0ZEwyLolte6zCxRUkSuAD6INopgeE2+LDBaP2
-	2kqDb3x07n9mr0QP2LwUfqQDj3maMupI2CUS4DE9rhy+SVU8aneAtw+pVntUa/qerT3N1MRRNiX
-	z0m1T5uUvWcXV0ehG6Zyqy
-X-Google-Smtp-Source: AGHT+IHIDJCzghYzPtyUHDTvve9cjG+OP70TzvLp7RJR272jyETb56xCaSR9A4AyiFwv1Ln8/HWUlQ==
-X-Received: by 2002:a05:600c:810c:b0:442:f97f:8174 with SMTP id 5b1f17b1804b1-458765475bcmr137637865e9.18.1753793483504;
-        Tue, 29 Jul 2025 05:51:23 -0700 (PDT)
-Received: from mail.gmail.com (2a01cb0889497e001f3a1d19b7d62baa.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:1f3a:1d19:b7d6:2baa])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45870555065sm202333125e9.15.2025.07.29.05.51.22
+        d=1e100.net; s=20230601; t=1753794277; x=1754399077;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ix14CESA9kHg0m61f4E3nGpbISmReGVmm6+MjRVF5hM=;
+        b=SN8gQPySlX1MrUk958haufSij5O3CFQ3nfAU4rnh0p3qajhMQWbXrwX7CIuTgHEyow
+         2JuwDMvpOA0pFMj+U63cJpEfIiPao1RiOxHr9J01BQCkRtBcTr4aY43f8bNskpdhIk60
+         WDgtoTJDmUjZpp0tBb+RkUzDRqHPdhyAj9pS/k30jFdFldpshcypZxTxtSEl8a8T5E8U
+         jR73Y0uEr0YeOB4ehExLxQ833SVDqFM/pfuh/WcrqHu/qdN5vWiqpzZtZmmH5iT3aNXk
+         BsoEGHALtVI3a09i55b2k2rX8KiOsccNJGjnuNVq1Not0RW9xzCmG2D+snqVZkOiZXiX
+         NSpw==
+X-Forwarded-Encrypted: i=1; AJvYcCVqa6Ku7uyM+27EZF99qjNVk2ynF28pMGtSKBdPZFrMhy2EqONr/+grPs70VRpBoFlQvBM=@vger.kernel.org, AJvYcCW8jG0oY1NyjK4TqKE/LRk0SVVac1m5CJBhHvHxmYn2wJwPMO1OjGJY45Wk537H86NU3KbxZCz++w==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyAJye8tJg0LHX0HJp7I00BHNHocTskkDpSOfcNsbaNRK1+6tkU
+	S5NJwSkbhzMlx2PBgZLnFc+Rw2i/61mPYYCxpGz73WQy7VsrLaUxTNRU
+X-Gm-Gg: ASbGnctoZr5Ivh7m899m9PC3TVNQCwtqyaRJQemAH8+GoOtNdTZWiif4Yp5ZgTWlReK
+	A+ECmPAr1bUXB1F7uzoqIxyQ47Jtyv4+hqmONW8TIG1+k5YZSaj+Lb3Gsn48USPa+h8/+KaSGYu
+	ah9jsZzRqfpn2pAlTAf22Jqoknv/yMC/1A9cQzYZ0XGhauB5NUAhpsHxA+bxXWokxA5QPyOSTHB
+	n5IQp0ei7ob5sYubE2LbKQoTBV7R3usabfeuNZZVAl2WA3BQ6f21ysDK2wMrHmrjlNtVZIpfllE
+	g76m4Kt9e2HOibYYFiGtJnA85YAciz3dj+AGf8FYch4tK1T2qkvVj9HNhv+71hS8ZGCBFmh1O7t
+	VYqG50XxmuQ==
+X-Google-Smtp-Source: AGHT+IF+DR3PyvqH8kcTTECuIOvI8t45eIIaw39S1Hsw+BgCKJs/pdqIGXADQlm7IdG0IdpyCpFEqg==
+X-Received: by 2002:a05:600c:8b11:b0:456:1d34:97a with SMTP id 5b1f17b1804b1-4587631561fmr143174525e9.9.1753794276870;
+        Tue, 29 Jul 2025 06:04:36 -0700 (PDT)
+Received: from krava ([176.74.159.170])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b778eb27besm12308757f8f.9.2025.07.29.06.04.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jul 2025 05:51:22 -0700 (PDT)
-Date: Tue, 29 Jul 2025 14:51:20 +0200
-From: Paul Chaignon <paul.chaignon@gmail.com>
-To: Tao Lyu <tao.lyu@epfl.ch>
-Cc: Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Dimitar Kanaliev <dimitar.kanaliev@siteground.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: A summary of usability issues in the current verifier
-Message-ID: <aIjDyJj2ihnn7AFv@mail.gmail.com>
-References: <2eb5612b88b04587af00394606021972@epfl.ch>
- <tkwmhg2u6qjjqkncnem3vzpprsnisdoh7ycpxtsstlry45vtjp@wvsve7i2hjtg>
+        Tue, 29 Jul 2025 06:04:36 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 29 Jul 2025 15:04:34 +0200
+To: ihor.solodrai@linux.dev
+Cc: alan.maguire@oracle.com, olsajiri@gmail.com, dwarves@vger.kernel.org,
+	bpf@vger.kernel.org, acme@kernel.org, andrii@kernel.org,
+	ast@kernel.org, eddyz87@gmail.com, menglong8.dong@gmail.com,
+	song@kernel.org, yonghong.song@linux.dev, kernel-team@meta.com
+Subject: Re: [PATCH dwarves v2] btf_encoder: group all function ELF syms by
+ function name
+Message-ID: <aIjG4q6oirhi4pN1@krava>
+References: <20250729020308.103139-1-isolodrai@meta.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <tkwmhg2u6qjjqkncnem3vzpprsnisdoh7ycpxtsstlry45vtjp@wvsve7i2hjtg>
+In-Reply-To: <20250729020308.103139-1-isolodrai@meta.com>
 
-On Tue, Jul 29, 2025 at 03:52:35PM +0800, Shung-Hsi Yu wrote:
-> Cc Dimitar (worked on coerce_reg_to_size_sx, point 1), Paul & Eduard
-> (maybe point 1 will eventually lead to invariant violation?), and other
-> BPF maintainers (point 2, 3, and 4).
+On Mon, Jul 28, 2025 at 07:03:08PM -0700, Ihor Solodrai wrote:
+> btf_encoder collects function ELF symbols into a table, which is later
+> used for processing DWARF data and determining whether a function can
+> be added to BTF.
 > 
-> On Wed, Apr 16, 2025 at 01:52:09PM +0000, Tao Lyu wrote:
-> > Hi,
-> > 
-> > I found the following usability issues; kindly write them here to see if the community is willing to solve them.
-> > If yes, I could write patches for them gradually.
+> So far the ELF symbol name was used as a key for search in this table,
+> and a search by prefix match was attempted in cases when ELF symbol
+> name has a compiler-generated suffix.
+> 
+> This implementation has bugs [1][2], causing some functions to be
+> inappropriately excluded from (or included into) BTF.
+> 
+> Rework the implementation of the ELF functions table. Use a name of a
+> function without any suffix - symbol name before the first occurrence
+> of '.' - as a key. This way btf_encoder__find_function() always
+> returns a valid elf_function object (or NULL).
+> 
+> Collect an array of symbol name + address pairs from GElf_Sym for each
+> elf_function when building the elf_functions table.
+> 
+> Introduce ambiguous_addr flag to the btf_encoder_func_state. It is set
+> when the function is saved by examining the array of ELF symbols in
+> elf_function__has_ambiguous_address(). It tests whether there is only
+> one unique address for this function name, taking into account that
+> some addresses associated with it are not relevant:
+>   * ".cold" suffix indicates a piece of hot/cold split
+>   * ".part" suffix indicates a piece of partial inline
+> 
+> When inspecting symbol name we have to search for any occurrence of
+> the target suffix, as opposed to testing the entire suffix, or the end
+> of a string. This is because suffixes may be combined by the compiler,
+> for example producing ".isra0.cold", and the conclusion will be
+> incorrect.
+> 
+> In saved_functions_combine() check ambiguous_addr when deciding
+> whether a function should be included in BTF.
+> 
+> Successful CI run: https://github.com/acmel/dwarves/pull/68/checks
+> 
+> I manually spot checked some of the ~200 functions from vmlinux (BPF
+> CI-like kconfig) that are now excluded: all of those that I checked
+> had multiple addresses, and some where static functions from different
+> files with the same name.
 
-Hi,
+in my config the change removed 464, did the same check and all of them
+had more different addresses
 
-I'm curious how you found those false positives. Am I guessing correctly
-that the programs were generated by a fuzzer or something similar?
+couple nits below, but feel free to ignore
 
-I think that matters because there will always be false positives.
-Addressing them usually makes the verifier's logic more complex, so we
-probably want to focus on issues that are affecting users. Or at least,
-we may want to balance the complexity of the changes with the
-likelihood of a user hitting the false positives.
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
-> > 
-> > 1. Inaccurate tracking of arithmetic instruction results.
-> > 
-> > There are many inaccurate arithmetic computation results.
-> > For example, like below:
-> > r0 should be 0 after `r0 = (s16)r3`.
-> > However, due to the inaccurate range track in eBPF at (coerce_reg_to_size_sx and set_sext64_default_val),
-> > the lower 16-bit of r0 becomes unknown, leading to false negatives when exit.
-> > 
-> > func#0 @0
-> > 0: R1=ctx() R10=fp0
-> > 0: (b7) r6 = -657948387               ; R6_w=0xffffffffd8c8811d
-> > 1: (94) w6 s%= 16                     ; R6_w=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff))
-> > 2: (18) r8 = 0xff11000279981800       ; R8_w=map_ptr(ks=4,vs=8)
-> > 4: (18) r9 = 0x19556057               ; R9_w=0x19556057
-> > 6: (bf) r3 = r10                      ; R3_w=fp0 R10=fp0
-> > 7: (bf) r3 = r6                       ; R3_w=scalar(id=1,smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff)) R6_w=scalar(id=1,smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff))
-> > 8: (67) r3 <<= 38                     ; R3_w=scalar(smax=0x7fffffc000000000,umax=0xffffffc000000000,smin32=0,smax32=umax32=0,var_off=(0x0; 0xffffffc000000000))
-> > 9: (bf) r0 = r6                       ; R0_w=scalar(id=1,smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff)) R6_w=scalar(id=1,smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff))
-> > 10: (bc) w0 = (s16)w3                 ; R0_w=0 R3_w=scalar(smax=0x7fffffc000000000,umax=0xffffffc000000000,smin32=0,smax32=umax32=0,var_off=(0x0; 0xffffffc000000000))
-> > 11: (bf) r0 = (s16)r3                 ; R0_w=scalar(smin=smin32=-32768,smax=smax32=32767) R3_w=scalar(smax=0x7fffffc000000000,umax=0xffffffc000000000,smin32=0,smax32=umax32=0,var_off=(0x0; 0xffffffc000000000))
-> 
-> I would say it is just not as precise, rather than inaccurate. But your
-> point remain, the verifier was not able to come up with [0, 0] as the
-> range after instruction 11, and we end up with [S16_MIN, S16_MAX]
-> instead.
-> 
-> Dimitar has a patchset[1] that make better use of tnum for sign
-> extension, which should address this.
-> 
-> 1: https://lore.kernel.org/all/20250130112342.69843-1-dimitar.kanaliev@siteground.com/
-> 
-> Can't comment on point 2 and 3, and unsure about point 4.
-> 
-> > 2. Unnecessary atomic instructions operating on private memory (e.g, stack).
-> > 
-> > Since atomic instructions are only useful on the shared memory,
-> > it is unnecessary to allow them on the private memory like stack,
-> > which was discussed long time ago in this commit:
-> > https://github.com/torvalds/linux/commit/ca36960211eb228bcbc7aaebfa0d027368a94c60
-> > 
-> > Moreover, allowing atomic instruction also introduce another usability bugs,
-> > which was reported here: https://lore.kernel.org/bpf/20231020172941.155388-1-tao.lyu@epfl.ch/
-> > 
-> > 
-> > 3. Inconsistent constraints on instructions involving pointer type transitions.
-> > 
-> > Most bitwise instructions, such as and and xor are disallowed on pointers,
-> > but negation and bitwise swap are allowed.
-> > Moreover, negation and bitwise swap are permitted in atomic instructions,
-> > such as atomic_and and atomic_xor.
-> > 
-> > 
-> > 4. Coarse-grained pointer comparison.
-> > 
-> > Pointers pointing to the same memory region can infer more pointer range information. 
-> > For example, comparing two stack pointers (one with a constant range, while the other with a variable range) can help infer the variable range,
-> > as shown in the code below.
-> > 
-> > 11: R0=map_value(map=array_map3,ks=4,vs=8) R9=ctx() R10=fp0 fp-8=mmmmmmmm
-> > 11: (61) r6 = *(u32 *)(r0 +0)         ; R0=map_value(map=array_map3,ks=4,vs=8) R6_w=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff))
-> > 12: (bf) r1 = r10                     ; R1_w=fp0 R10=fp0
-> > 13: (0f) r1 += r6
-> > mark_precise: frame0: last_idx 13 first_idx 11 subseq_idx -1
-> > mark_precise: frame0: regs=r6 stack= before 12: (bf) r1 = r10
-> > mark_precise: frame0: regs=r6 stack= before 11: (61) r6 = *(u32 *)(r0 +0)
-> > 14: R1_w=fp(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff)) R6_w=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff))
-> > 14: (bf) r2 = r10                     ; R2_w=fp0 R10=fp0
-> > 15: (07) r2 += -512                   ; R2_w=fp-512
-> > 16: (ad) if r1 < r2 goto pc+2         ; R1_w=fp(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff)) R2_w=fp-512
-> > 17: (3d) if r1 >= r10 goto pc+1       ; R1_w=fp(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff)) R10=fp0
-> > 18: (71) r3 = *(u8 *)(r1 +0)
-> > invalid unbounded variable-offset read from stack R1
-> 
-> I really have no idea whether compilers produce this kind of pattern,
-> but if there is some chance, then it does seem reasonable to have this
-> implemented. Seems like much existing code for scalar can be reused.
+thanks,
+jirka
 
-I tried playing with stack pointers a bit, but I'm so far unable to get
-the compiler to generate this kind of code. It always gets optimized to
-scalar comparisons.
 
+> 
+> [1] https://lore.kernel.org/bpf/2f8c792e-9675-4385-b1cb-10266c72bd45@linux.dev/
+> [2] https://lore.kernel.org/dwarves/6b4fda90fbf8f6aeeb2732bbfb6e81ba5669e2f3@linux.dev/
+> 
+> v1: https://lore.kernel.org/dwarves/98f41eaf6dd364745013650d58c5f254a592221c@linux.dev/
+> Signed-off-by: Ihor Solodrai <isolodrai@meta.com>
+> ---
+>  btf_encoder.c | 250 ++++++++++++++++++++++++++++++++------------------
+>  1 file changed, 162 insertions(+), 88 deletions(-)
+> 
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index 0bc2334..0aa94ae 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -87,16 +87,22 @@ struct btf_encoder_func_state {
+>  	uint8_t optimized_parms:1;
+>  	uint8_t unexpected_reg:1;
+>  	uint8_t inconsistent_proto:1;
+> +	uint8_t ambiguous_addr:1;
+>  	int ret_type_id;
+>  	struct btf_encoder_func_parm *parms;
+>  	struct btf_encoder_func_annot *annots;
+>  };
+>  
+> +struct elf_function_sym {
+> +	const char *name;
+> +	uint64_t addr;
+> +};
+> +
+>  struct elf_function {
+> -	const char	*name;
+> -	char		*alias;
+> -	size_t		prefixlen;
+> -	bool		kfunc;
+> +	char		*name;
+> +	struct elf_function_sym *syms;
+> +	uint8_t 	sym_cnt;
+
+should we make this bigger, or at least check the overflow
+
+256 dups are probably not possible, but with all those different
+suffixes we might get close soon ;-)
+
+> +	uint8_t		kfunc:1;
+>  	uint32_t	kfunc_flags;
+>  };
+>  
+> @@ -115,7 +121,6 @@ struct elf_functions {
+>  	struct elf_symtab *symtab;
+>  	struct elf_function *entries;
+>  	int cnt;
+> -	int suffix_cnt; /* number of .isra, .part etc */
+>  };
+>  
+>  /*
+> @@ -161,10 +166,18 @@ struct btf_kfunc_set_range {
+>  	uint64_t end;
+>  };
+>  
+> +static inline void elf_function__free_content(struct elf_function *func) {
+
+elf_function__clear ?
+
+> +	free(func->name);
+> +	if (func->sym_cnt)
+> +		free(func->syms);
+> +	memset(func, 0, sizeof(*func));
+> +}
+> +
+>  static inline void elf_functions__delete(struct elf_functions *funcs)
+>  {
+> -	for (int i = 0; i < funcs->cnt; i++)
+> -		free(funcs->entries[i].alias);
+> +	for (int i = 0; i < funcs->cnt; i++) {
+> +		elf_function__free_content(&funcs->entries[i]);
+> +	}
+>  	free(funcs->entries);
+>  	elf_symtab__delete(funcs->symtab);
+>  	list_del(&funcs->node);
+> @@ -981,8 +994,7 @@ static void btf_encoder__log_func_skip(struct btf_encoder *encoder, struct elf_f
+>  
+>  	if (!encoder->verbose)
+>  		return;
+> -	printf("%s (%s): skipping BTF encoding of function due to ",
+> -	       func->alias ?: func->name, func->name);
+> +	printf("%s : skipping BTF encoding of function due to ", func->name);
+>  	va_start(ap, fmt);
+>  	vprintf(fmt, ap);
+>  	va_end(ap);
+> @@ -1176,6 +1188,48 @@ static struct btf_encoder_func_state *btf_encoder__alloc_func_state(struct btf_e
+>  	return state;
+>  }
+>  
+> +/* some "." suffixes do not correspond to real functions;
+> + * - .part for partial inline
+> + * - .cold for rarely-used codepath extracted for better code locality
+> + */
+> +static bool str_contains_non_fn_suffix(const char *str) {
+> +	static const char *skip[] = {
+> +		".cold",
+> +		".part"
+> +	};
+> +	char *suffix = strchr(str, '.');
+> +	int i;
+> +
+> +	if (!suffix)
+> +		return false;
+> +	for (i = 0; i < ARRAY_SIZE(skip); i++) {
+> +		if (strstr(suffix, skip[i]))
+> +			return true;
+> +	}
+> +	return false;
+> +}
+> +
+> +static bool elf_function__has_ambiguous_address(struct elf_function *func) {
+> +	struct elf_function_sym *sym;
+> +	uint64_t addr;
+> +
+> +	if (func->sym_cnt <= 1)
+> +		return false;
+> +
+> +	addr = 0;
+> +	for (int i = 0; i < func->sym_cnt; i++) {
+> +		sym = &func->syms[i];
+> +		if (!str_contains_non_fn_suffix(sym->name)) {
+> +			if (addr && addr != sym->addr)
+> +				return true;
+> +			else
+> +			 	addr = sym->addr;
+
+nit extra space ' '    ^^^
+
+> +		}
+> +	}
+> +
+> +	return false;
+> +}
+> +
+
+SNIP
 
