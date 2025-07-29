@@ -1,95 +1,80 @@
-Return-Path: <bpf+bounces-64590-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64591-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78B4BB14906
-	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 09:22:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D796EB1493B
+	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 09:37:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F18F17F2B1
-	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 07:22:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88D9117908B
+	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 07:37:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB793262FD7;
-	Tue, 29 Jul 2025 07:22:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D80AF265288;
+	Tue, 29 Jul 2025 07:37:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from plesk.hostmyservers.fr (plesk.hostmyservers.fr [45.145.164.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ACD1EEBD;
-	Tue, 29 Jul 2025 07:22:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.145.164.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 839D3263C8E;
+	Tue, 29 Jul 2025 07:37:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753773767; cv=none; b=RNt6A/ixNLmsEMLHeFqlPhfGaraYY4xdS7/TYWGKQ0gphA35eNMtjj61M+cqjpaTQY36Is16ohdHW2yL+fRHrVjzYOVdPiYM/25uJoYnZBKMk1Kyo5GoyAnsKiEnwH6EOQsOsIVTQ0+z0aGSG0S3hFFQW6PYv/wdcPvKbJ2PyPw=
+	t=1753774637; cv=none; b=FePKkkaEi9ja80yttS+rdVtsSeGWI3ywdKjKl8npo+PVJzdyWteN038VlG4Fh0Jo6d12BI8fAWh41UysOY4bkUQTJlffCU7zdVjst0sSD+x6a/NeQ5UgdEF9D4iQ2zP4AmbZMSKpdx/qP+FoApXrvpBEhz3MYByEsg+wr9wkElI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753773767; c=relaxed/simple;
-	bh=GwFSsAnn5e/gFzfmxnEwurhex/jDUSBm0oFAOSEuKvE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AUkXasv04pv7C1aZbdvJHWVUTr177fP0MunZOmNNQCJKG1c9HfEWjDB8TwecKWUM4O87PKLfzNqvl13ltMezNhP7iA+sUnQGlKsTEosvW+n6hFFJQOgRaIKDWwp6w933WK4Cri8G1o4zrgwpbqJM0+ecFwiuBut/vI+/i2C3Xno=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com; spf=pass smtp.mailfrom=arnaud-lcm.com; arc=none smtp.client-ip=45.145.164.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arnaud-lcm.com
-Received: from arnaudlcm-X570-UD.. (unknown [IPv6:2a02:8084:255b:aa00:b0f6:f50b:6492:2c39])
-	by plesk.hostmyservers.fr (Postfix) with ESMTPSA id B81F940B15;
-	Tue, 29 Jul 2025 07:22:40 +0000 (UTC)
-Authentication-Results: Plesk;
-	spf=pass (sender IP is 2a02:8084:255b:aa00:b0f6:f50b:6492:2c39) smtp.mailfrom=contact@arnaud-lcm.com smtp.helo=arnaudlcm-X570-UD..
-Received-SPF: pass (Plesk: connection is authenticated)
-From: Arnaud Lecomte <contact@arnaud-lcm.com>
-To: syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: syztest
-Date: Tue, 29 Jul 2025 08:22:34 +0100
-Message-ID: <20250729072234.90576-1-contact@arnaud-lcm.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <688809c1.a00a0220.b12ec.00b7.GAE@google.com>
-References: <688809c1.a00a0220.b12ec.00b7.GAE@google.com>
+	s=arc-20240116; t=1753774637; c=relaxed/simple;
+	bh=IRL+AIb+PgL86fQmIw3gkXVr2HFb4vgb5D10T6r0CC4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gPuCXGGcTjEWofm+xZzhBZKsgOmvWFAnBcYn7PUC55BbCM0W02BMRrAwIrf+Z2GxfgfiyjkqZJ6LGZwX9a5s0163zicJ6FzcVD8yDllGOJayU3CrjPSedy4xOhoTYfNCek7LeWwnO8cGJGEtQXcGNa8HqOBntHDEkHhwpBzLAPk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 072BF68BFE; Tue, 29 Jul 2025 09:37:02 +0200 (CEST)
+Date: Tue, 29 Jul 2025 09:37:01 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas.weissschuh@linutronix.de>
+Cc: Christoph Hellwig <hch@lst.de>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next 2/2] umd: Remove usermode driver framework
+Message-ID: <20250729073701.GA23423@lst.de>
+References: <20250721-remove-usermode-driver-v1-0-0d0083334382@linutronix.de> <20250721-remove-usermode-driver-v1-2-0d0083334382@linutronix.de> <20250722063411.GC15403@lst.de> <20250723090039-b619abd2-ecd2-4e40-aef9-d0bbb1e5875e@linutronix.de> <20250724072918.GA29512@lst.de> <20250724103305-c034585a-d090-4998-a40e-af3b5cca5ef6@linutronix.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-PPP-Message-ID: <175377376123.12091.12839028667260881757@Plesk>
-X-PPP-Vhost: arnaud-lcm.com
+In-Reply-To: <20250724103305-c034585a-d090-4998-a40e-af3b5cca5ef6@linutronix.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-#syz test
+On Thu, Jul 24, 2025 at 10:38:19AM +0200, Thomas Weißschuh wrote:
+> Documentation/process/submitting-patches.rst:
+> 
+> 	The canonical patch message body contains the following:
+> 
+> 	  (...)
+> 
+> 	  - The body of the explanation, line wrapped at 75 columns, which will
+> 	    be copied to the permanent changelog to describe this patch.
 
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -230,7 +230,7 @@ static long __bpf_get_stackid(struct bpf_map *map,
- 	struct bpf_stack_map *smap = container_of(map, struct bpf_stack_map, map);
- 	struct stack_map_bucket *bucket, *new_bucket, *old_bucket;
- 	u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
--	u32 hash, id, trace_nr, trace_len, i;
-+	u32 hash, id, trace_nr, trace_len, i, max_depth;
- 	bool user = flags & BPF_F_USER_STACK;
- 	u64 *ips;
- 	bool hash_matches;
-@@ -241,6 +241,19 @@ static long __bpf_get_stackid(struct bpf_map *map,
- 
- 	trace_nr = trace->nr - skip;
- 	trace_len = trace_nr * sizeof(u64);
-+
-+	/* Clamp the trace to max allowed depth */
-+	if (stack_map_use_build_id(map))
-+		max_depth = smap->map.value_size / sizeof(struct bpf_stack_build_id);
-+	else
-+		max_depth = smap->map.value_size / sizeof(u64);
-+
-+	if (trace_nr > max_depth)
-+		trace_nr = max_depth;
-+
-+ 	ips = trace->ip + skip;
-+
-+
- 	ips = trace->ip + skip;
- 	hash = jhash2((u32 *)ips, trace_len / sizeof(u32), 0);
- 	id = hash & (smap->n_buckets - 1);
--- 
+Hmm, weird.  I always through we stuck to the usual email length,
+because in the end that's what commit messages actually are.
 
+But I guess I was wrong, at least since people added this.
 
