@@ -1,89 +1,58 @@
-Return-Path: <bpf+bounces-64641-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64642-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8ECBB15265
-	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 19:55:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75CC8B15267
+	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 19:58:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 003555430B0
-	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 17:55:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D1F53BE7D7
+	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 17:57:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C3D6299922;
-	Tue, 29 Jul 2025 17:54:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nyMNSaUn"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0F38298CA5;
+	Tue, 29 Jul 2025 17:58:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB7EC2980B8;
-	Tue, 29 Jul 2025 17:54:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE1E3204863;
+	Tue, 29 Jul 2025 17:58:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753811696; cv=none; b=D+zF634Z964o6V1tisz4ikVFoHJivqXRCsqAmGWuAYLl7OYpse8Ch4Kc5KUdESrUKNL9on7m5g5N6jDG3asOjIqwTRnk3OczJvjMZJOqkAV/gJoYb9we8pDOWODHNSKbPeckigHuXGcfJ3KxrdJDKg5j0X4R1z+2FVhOJcCUO7Y=
+	t=1753811884; cv=none; b=clSY8IBpHcGKsBmNGtBqyfjxkxGGEwnDBCXUYXz0UOcIOxFqdhCflWNy1OpnQV2ijNRYhGspsBmB7zl/UmwxQUt7+ifZSagARXJlbSW5JGmg9VN6QxdKyIKZMAFNduL7R5MagYEVfn/fFwBZBLJa2+bMOg9wq19Besnv+/LBMhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753811696; c=relaxed/simple;
-	bh=6KIbPA/EaHB5zy//h0D6S9v9PCr7IQU7sflH936pN20=;
+	s=arc-20240116; t=1753811884; c=relaxed/simple;
+	bh=U/74mzNRUhQ2kOiWIB9iaSqV9T8z0T7jtPCPSrkVAsA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VtJxw9t8hQJuejIAGKFbZiu29FGttZMeYoj9rDjXCsxHa5OepCVrB9TcUD7SW41ie6DIEEjvnJUDF6C6s3WF0HPYMZnspi0UywXtXikjFtXVbFLjIeM1l/WbCSBA1xxqnPib/ULzrHW9fY4rGZRKZkZtk+v919N9Sid+kgP7skg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nyMNSaUn; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1753811694; x=1785347694;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=6KIbPA/EaHB5zy//h0D6S9v9PCr7IQU7sflH936pN20=;
-  b=nyMNSaUn3cD3nq7d/BnNoBGWyQpqcgZFPyIov0ACIoZXj413Hn0xHWex
-   EUcXm1RTo7K5Kx+9Vw+b7Uexg234rjMEN9KUjG4oiA6i/xka2xaunVq1S
-   gy7C4xEpAOYHjLPjiQdQsx/eWBZxVgGnL8nfCyWqSOBEJJirvjNgvbjV0
-   dPluybak/ZKPoR/1P28rMvL3KPOMtc5o4/ez9tyRw2J2RCkmHye9ZA2aG
-   /ncUPsZtouvdNYc0P1XxVJHNOotsTk2D2NsHGCT0XEzvI+5kRIuGCQjYb
-   e0SIEGfOaPn2+4SRaTFniWTZlNmSbQH22zL2QxfT0lz2B0rnd2f8q4DCd
-   Q==;
-X-CSE-ConnectionGUID: ZpOnOSJaTCGMgWtVeUSXpA==
-X-CSE-MsgGUID: 6XwnpZgmQpyR8zYXKANtsw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11506"; a="58719600"
-X-IronPort-AV: E=Sophos;i="6.16,350,1744095600"; 
-   d="scan'208";a="58719600"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2025 10:54:53 -0700
-X-CSE-ConnectionGUID: hKsGkZjiR5yd2xZ2OXwKsg==
-X-CSE-MsgGUID: NIeHohyJTjWA/hm3kYBUAw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,350,1744095600"; 
-   d="scan'208";a="167024455"
-Received: from lkp-server01.sh.intel.com (HELO 160750d4a34c) ([10.239.97.150])
-  by fmviesa005.fm.intel.com with ESMTP; 29 Jul 2025 10:54:49 -0700
-Received: from kbuild by 160750d4a34c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1ugoXG-0001XT-2S;
-	Tue, 29 Jul 2025 17:54:46 +0000
-Date: Wed, 30 Jul 2025 01:54:21 +0800
-From: kernel test robot <lkp@intel.com>
-To: Sami Tolvanen <samitolvanen@google.com>, bpf@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev,
-	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=U7lpVe2l/DjMNXAilYUL1fAbYhV/47ys3mtVGyth5XbP/5WP/4zDmYNw5fP6dsmzJ+inhsXwGdi3rqVusoDVAmo+wFg1V7rECgjg6OM1c43hEf6PnXS6zQ5ZI/yHERNvNkSBDshOdp/kKRIXoRN57/7f3FtgDFOzN95JZKC/8hc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D24E61516;
+	Tue, 29 Jul 2025 10:57:52 -0700 (PDT)
+Received: from J2N7QTR9R3.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DA4C33F5A1;
+	Tue, 29 Jul 2025 10:57:57 -0700 (PDT)
+Date: Tue, 29 Jul 2025 18:57:40 +0100
+From: Mark Rutland <mark.rutland@arm.com>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Steven Rostedt <rostedt@kernel.org>, Florent Revest <revest@google.com>,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Jamal Hadi Salim <jhs@mojatatu.com>,
-	Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Sami Tolvanen <samitolvanen@google.com>
-Subject: Re: [PATCH bpf-next v3 1/4] bpf: crypto: Use the correct destructor
- kfunc type
-Message-ID: <202507300122.RpqIKqFR-lkp@intel.com>
-References: <20250728202656.559071-7-samitolvanen@google.com>
+	Menglong Dong <menglong8.dong@gmail.com>,
+	Naveen N Rao <naveen@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
+	Andy Chiu <andybnac@gmail.com>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>
+Subject: Re: [RFC 00/10] ftrace,bpf: Use single direct ops for bpf trampolines
+Message-ID: <aIkLlB7Z7V--BeGi@J2N7QTR9R3.cambridge.arm.com>
+References: <20250729102813.1531457-1-jolsa@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -92,41 +61,101 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250728202656.559071-7-samitolvanen@google.com>
+In-Reply-To: <20250729102813.1531457-1-jolsa@kernel.org>
 
-Hi Sami,
+Hi Jiri,
 
-kernel test robot noticed the following build warnings:
+[adding some powerpc and riscv folk, see below]
 
-[auto build test WARNING on 5b4c54ac49af7f486806d79e3233fc8a9363961c]
+On Tue, Jul 29, 2025 at 12:28:03PM +0200, Jiri Olsa wrote:
+> hi,
+> while poking the multi-tracing interface I ended up with just one
+> ftrace_ops object to attach all trampolines.
+> 
+> This change allows to use less direct API calls during the attachment
+> changes in the future code, so in effect speeding up the attachment.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Sami-Tolvanen/bpf-crypto-Use-the-correct-destructor-kfunc-type/20250729-042936
-base:   5b4c54ac49af7f486806d79e3233fc8a9363961c
-patch link:    https://lore.kernel.org/r/20250728202656.559071-7-samitolvanen%40google.com
-patch subject: [PATCH bpf-next v3 1/4] bpf: crypto: Use the correct destructor kfunc type
-config: alpha-randconfig-r111-20250729 (https://download.01.org/0day-ci/archive/20250730/202507300122.RpqIKqFR-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 8.5.0
-reproduce: (https://download.01.org/0day-ci/archive/20250730/202507300122.RpqIKqFR-lkp@intel.com/reproduce)
+How important is that, and what sort of speedup does this result in? I
+ask due to potential performance hits noted below, and I'm lacking
+context as to why we want to do this in the first place -- what is this
+intended to enable/improve?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202507300122.RpqIKqFR-lkp@intel.com/
+> However having just single ftrace_ops object removes direct_call
+> field from direct_call, which is needed by arm, so I'm not sure
+> it's the right path forward.
 
-sparse warnings: (new ones prefixed by >>)
->> kernel/bpf/crypto.c:264:18: sparse: sparse: symbol 'bpf_crypto_ctx_release_dtor' was not declared. Should it be static?
+It's also needed by powerpc and riscv since commits:
 
-vim +/bpf_crypto_ctx_release_dtor +264 kernel/bpf/crypto.c
+  a52f6043a2238d65 ("powerpc/ftrace: Add support for DYNAMIC_FTRACE_WITH_DIRECT_CALLS")
+  b21cdb9523e5561b ("riscv: ftrace: support direct call using call_ops")
 
-   263	
- > 264	__bpf_kfunc void bpf_crypto_ctx_release_dtor(void *ctx)
-   265	{
-   266		bpf_crypto_ctx_release(ctx);
-   267	}
-   268	CFI_NOSEAL(bpf_crypto_ctx_release_dtor);
-   269	
+> Mark, Florent,
+> any idea how hard would it be to for arm to get rid of direct_call field?
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+For architectures which follow the arm64 style of implementation, it's
+pretty hard to get rid of it without introducing a performance hit to
+the call and/or a hit to attachment/detachment/modification. It would
+also end up being a fair amount more complicated.
+
+There's some historical rationale at:
+
+  https://lore.kernel.org/lkml/ZfBbxPDd0rz6FN2T@FVFF77S0Q05N/
+
+... but the gist is that for several reasons we want the ops pointer in
+the callsite, and for atomic modification of this to switch everything
+dependent on that ops atomically, as this keeps the call logic and
+attachment/detachment/modification logic simple and pretty fast.
+
+If we remove the direct_call pointer from the ftrace_ops, then IIUC our
+options include:
+
+* Point the callsite pointer at some intermediate structure which points
+  to the ops (e.g. the dyn_ftrace for the callsite). That introduces an
+  additional dependent load per call that needs the ops, and introduces
+  potential incoherency with other fields in that structure, requiring
+  more synchronization overhead for attachment/detachment/modification.
+
+* Point the callsite pointer at a trampoline which can generate the ops
+  pointer. This requires that every ops has a trampoline even for
+  non-direct usage, which then requires more memory / I$, has more
+  potential failure points, and is generally more complicated. The
+  performance here will vary by architecture and platform, on some this
+  might be faster, on some it might be slower.
+
+  Note that we probably still need to bounce through an intermediary
+  trampoline here to actually load from the callsite pointer and
+  indirectly branch to it.
+
+... but I'm not really keen on either unless we really have to remove 
+the ftrace_ops::direct_call field, since they come with a substantial
+jump in complexity.
+
+Mark.
+
+
+> 
+> thougts? thanks,
+> jirka
+> 
+> 
+> ---
+> Jiri Olsa (10):
+>       ftrace: Make alloc_and_copy_ftrace_hash direct friendly
+>       ftrace: Add register_ftrace_direct_hash function
+>       ftrace: Add unregister_ftrace_direct_hash function
+>       ftrace: Add modify_ftrace_direct_hash function
+>       ftrace: Export some of hash related functions
+>       ftrace: Use direct hash interface in direct functions
+>       bpf: Add trampoline ip hash table
+>       ftrace: Factor ftrace_ops ops_func interface
+>       bpf: Remove ftrace_ops from bpf_trampoline object
+>       Revert "ftrace: Store direct called addresses in their ops"
+> 
+>  include/linux/bpf.h           |   8 +-
+>  include/linux/ftrace.h        |  51 ++++++++++---
+>  kernel/bpf/trampoline.c       |  94 +++++++++++++-----------
+>  kernel/trace/ftrace.c         | 481 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----------------------------------------------
+>  kernel/trace/trace.h          |   8 --
+>  kernel/trace/trace_selftest.c |   5 +-
+>  6 files changed, 395 insertions(+), 252 deletions(-)
 
