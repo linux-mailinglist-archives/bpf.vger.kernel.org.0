@@ -1,292 +1,214 @@
-Return-Path: <bpf+bounces-64626-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64627-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E02BB14E0B
-	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 15:04:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75F85B14EDA
+	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 15:56:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C12C3AA6A6
-	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 13:04:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E13E417A2E5
+	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 13:56:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A7D6145B3E;
-	Tue, 29 Jul 2025 13:04:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B26241C2324;
+	Tue, 29 Jul 2025 13:56:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PjhV/PyY"
+	dkim=pass (2048-bit key) header.d=readmodwrite-com.20230601.gappssmtp.com header.i=@readmodwrite-com.20230601.gappssmtp.com header.b="PTA1ouYO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E76D1758B;
-	Tue, 29 Jul 2025 13:04:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBA0D1A238A
+	for <bpf@vger.kernel.org>; Tue, 29 Jul 2025 13:56:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753794281; cv=none; b=mIwgH9WHYprngDe9ccbrUS2prsycV31MZKDnEeL7Hj56hX5YMCLB6R80Yy1pfCZtaKN4/8lrOBJuLbTTvvxbZMOdbyRn+GHkTdK4N8Oqkjw6MIHr+7THChQ9P8zhCWLl9mu1udsOIm7wEFqpUWuArzjA/VfLfor36rBpnwuF0QE=
+	t=1753797381; cv=none; b=Bse87K8fiOunelXLzj3Q4CZv655O08P1V/2vEecpM+6wmsECngJ/LrhoANpEdFdipco0Fjgm5wGXzBAbIEOe5DanHyJscuA9lB9q0zwsL0EVNcDGvj9FC6B1fyLWPw/BVBfByVWv5jPL6er+9FeP4akGfQWJPC1byVX6zerfzs8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753794281; c=relaxed/simple;
-	bh=q9XcOaXmn9wB9mHkwgwnoVjDE+ud+VPbABLrXLB26og=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lpspPuaeHHwLM1FvvOSYsx6U/X+schBMH+lFtnOgp40cC3q4TlmoePuCtQwkzY3vciI1WbiMME1RRblHCpkrax4g1J5jioTUAjsRfqjVu1AeHZ/GUkTo17xtiibodREbu15FiW/yudGUsoQLM3QLYCwwrRRkTuv/cP+wrs077mk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PjhV/PyY; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-451d3f72391so51465385e9.3;
-        Tue, 29 Jul 2025 06:04:38 -0700 (PDT)
+	s=arc-20240116; t=1753797381; c=relaxed/simple;
+	bh=5l+kX3TlXyRbsgOTyGA3oWiH4eVSrFAAaoihgsCn8ek=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=K1FnRTo2YcpqVGW8v7Bn14I651W8hz+SdTpyebED1XjClsS8Vwp5wHiwQZ6tbb+d0z0vlkc1T13AJTPi6JVJqj92Ql9PsVA7hB2ip07UNTe5eznwC3LVbV4IU7Zgqm7PzRs1M7SMjoURBmHwrv41TPOFDey8jrDhBGvrNePr/jQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=readmodwrite.com; spf=none smtp.mailfrom=readmodwrite.com; dkim=pass (2048-bit key) header.d=readmodwrite-com.20230601.gappssmtp.com header.i=@readmodwrite-com.20230601.gappssmtp.com header.b=PTA1ouYO; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=readmodwrite.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=readmodwrite.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-23aeac7d77aso52222865ad.3
+        for <bpf@vger.kernel.org>; Tue, 29 Jul 2025 06:56:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753794277; x=1754399077; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ix14CESA9kHg0m61f4E3nGpbISmReGVmm6+MjRVF5hM=;
-        b=PjhV/PyYJv6b9F1v64aWxLyumI9j9lxYlkqbp9ne3nO34zrMVNKqSfgxHQgl2diqlz
-         eq/WR5xy5KHg7ZpT5dqSV6Q1ayakkb7hwfOmvmufQz6ASQm3Lr4qkGogqijGH2dSzbY6
-         vGbJyLFteCT2k2TF310y9RhAdMdmuznEf//lXu10HDFT5Mgcy1hU2hrgWnDGLs0MLCNa
-         DvOFY5Crn8F4hY+nTniOs5rz4VFTa6r0RR1z7/rjeFNmVOSJ7/KbJiuBCipvUjIJ1viF
-         7ygAKPX1ZSNku+u19QxV7rNev4/Kz/lWrH/ARO+8BbswRAM5naLr0gkjJ09HFr5LiO/d
-         qK0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753794277; x=1754399077;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=readmodwrite-com.20230601.gappssmtp.com; s=20230601; t=1753797379; x=1754402179; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ix14CESA9kHg0m61f4E3nGpbISmReGVmm6+MjRVF5hM=;
-        b=SN8gQPySlX1MrUk958haufSij5O3CFQ3nfAU4rnh0p3qajhMQWbXrwX7CIuTgHEyow
-         2JuwDMvpOA0pFMj+U63cJpEfIiPao1RiOxHr9J01BQCkRtBcTr4aY43f8bNskpdhIk60
-         WDgtoTJDmUjZpp0tBb+RkUzDRqHPdhyAj9pS/k30jFdFldpshcypZxTxtSEl8a8T5E8U
-         jR73Y0uEr0YeOB4ehExLxQ833SVDqFM/pfuh/WcrqHu/qdN5vWiqpzZtZmmH5iT3aNXk
-         BsoEGHALtVI3a09i55b2k2rX8KiOsccNJGjnuNVq1Not0RW9xzCmG2D+snqVZkOiZXiX
-         NSpw==
-X-Forwarded-Encrypted: i=1; AJvYcCVqa6Ku7uyM+27EZF99qjNVk2ynF28pMGtSKBdPZFrMhy2EqONr/+grPs70VRpBoFlQvBM=@vger.kernel.org, AJvYcCW8jG0oY1NyjK4TqKE/LRk0SVVac1m5CJBhHvHxmYn2wJwPMO1OjGJY45Wk537H86NU3KbxZCz++w==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyAJye8tJg0LHX0HJp7I00BHNHocTskkDpSOfcNsbaNRK1+6tkU
-	S5NJwSkbhzMlx2PBgZLnFc+Rw2i/61mPYYCxpGz73WQy7VsrLaUxTNRU
-X-Gm-Gg: ASbGnctoZr5Ivh7m899m9PC3TVNQCwtqyaRJQemAH8+GoOtNdTZWiif4Yp5ZgTWlReK
-	A+ECmPAr1bUXB1F7uzoqIxyQ47Jtyv4+hqmONW8TIG1+k5YZSaj+Lb3Gsn48USPa+h8/+KaSGYu
-	ah9jsZzRqfpn2pAlTAf22Jqoknv/yMC/1A9cQzYZ0XGhauB5NUAhpsHxA+bxXWokxA5QPyOSTHB
-	n5IQp0ei7ob5sYubE2LbKQoTBV7R3usabfeuNZZVAl2WA3BQ6f21ysDK2wMrHmrjlNtVZIpfllE
-	g76m4Kt9e2HOibYYFiGtJnA85YAciz3dj+AGf8FYch4tK1T2qkvVj9HNhv+71hS8ZGCBFmh1O7t
-	VYqG50XxmuQ==
-X-Google-Smtp-Source: AGHT+IF+DR3PyvqH8kcTTECuIOvI8t45eIIaw39S1Hsw+BgCKJs/pdqIGXADQlm7IdG0IdpyCpFEqg==
-X-Received: by 2002:a05:600c:8b11:b0:456:1d34:97a with SMTP id 5b1f17b1804b1-4587631561fmr143174525e9.9.1753794276870;
-        Tue, 29 Jul 2025 06:04:36 -0700 (PDT)
-Received: from krava ([176.74.159.170])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b778eb27besm12308757f8f.9.2025.07.29.06.04.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jul 2025 06:04:36 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 29 Jul 2025 15:04:34 +0200
-To: ihor.solodrai@linux.dev
-Cc: alan.maguire@oracle.com, olsajiri@gmail.com, dwarves@vger.kernel.org,
-	bpf@vger.kernel.org, acme@kernel.org, andrii@kernel.org,
-	ast@kernel.org, eddyz87@gmail.com, menglong8.dong@gmail.com,
-	song@kernel.org, yonghong.song@linux.dev, kernel-team@meta.com
-Subject: Re: [PATCH dwarves v2] btf_encoder: group all function ELF syms by
- function name
-Message-ID: <aIjG4q6oirhi4pN1@krava>
-References: <20250729020308.103139-1-isolodrai@meta.com>
+        bh=Mv8soW1s35ahL418D8VF6q42tDzqNXV2suiJtYXndw0=;
+        b=PTA1ouYOCta6b9E2k13otpsr1iRxjwhcz9xBk5iuvLUR2TdBxwGpU2kyo9RS2gM3cQ
+         hfE/EERq9kzJltnYLeDIaoveE6nTXYG/21mXimsgKRVL7t5MDADKPBmrcwtaDsEz64Xm
+         6/djBTZMN2XfljN7PYi+70GdCCRJMa13+jsTL+5IBJl8Fo4I0/dHumNgcWKYsYXwArle
+         CZs7gIYEsV/bvIk3yIxMRbICV4kAoaPs5c3EBtyvYmshMCv1q7OvKtfITx9cib4oOmhx
+         0J6QIFbjaBUtetMlc+OQR8ak6BhksrOdb+OoxRJ4et5quIXpzLlfHmbcWqsBRllQbPFS
+         RvZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753797379; x=1754402179;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Mv8soW1s35ahL418D8VF6q42tDzqNXV2suiJtYXndw0=;
+        b=cTGMsu7/QB/KYQG8yG2yE/PlpKTpzi8/FugI9AcszG3BDNns4BlptM3ZJfaFJQDG13
+         gn2BXomFzPW2TJ999CEoRCwc5S3v8urEg5q4E40fV6S6aNKlKN3x5Unk2rIyz7pYUZjT
+         6/wEQFFLsxN6Y36GcOQa+sRdGrk8CS4lzX7Tmpy33Ppn0GN9YRTDErBYAm2N9E47CVy/
+         KZv7D9/hPYbXiCXNNOjl8GY5P2Lzl5IPB969WJjZ4ZDBaz0LCXnjfilNA3EjclJ3Qo/b
+         7RFduX7spejGhdzw/r52JpfpI3036DnGYLCEwMP2mIQkGzc1JYjOD/VMyENrQNA8kQoY
+         92CA==
+X-Forwarded-Encrypted: i=1; AJvYcCXH3LLcD34jLaUPO83O1D59JCf31o6WrGR9LGElA4OHDQWAXKyB8xHYOSMKUSlLzkJWF4E=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxYijlFni+XGqhTM08Yyn2jP6O0xqWUfw+82lHrMEEynCeMnV7n
+	m/S1QisT3u3RZ9Jvb9blXjE+GCTF0cU10oVzjpx6NfdyaczhWNy39zRiwbP8Gf3yTTUbPyrx2y1
+	uBv8gZcHkM21qHmVlfF5nDnwaHBSQ5QuItKyrHdTh7w==
+X-Gm-Gg: ASbGncudEpgRPVqcX5JNmNI2nbr4uUlUsWIx8jdPVBg5yNU9UGJujyFZ6xb5jYlKfTL
+	LLXpjhJJJ1bXbL1CRPsXu5zn9HK1l0ikvXnl5W9yxa2GfEKaKfudm/Ly8lt4Sgdriuy2xfIy9Dv
+	ygox5DTrHz20ERtu1U5nd5SijbwQYtm1GJlIdsvLzBRBDg/O3mf3dmSthGtOPCgiRcsh0+JAVW/
+	3tZm1KdRxbJ4opsv+pL5SU=
+X-Google-Smtp-Source: AGHT+IF6uEUYENM3G9dCl88PHF00oq2dRXfczisPYmPfnfZrmOLAxA2y+iiVlrzNEWcQwWHX0TDJK6HbPzYzjVZQifM=
+X-Received: by 2002:a17:902:e0d2:b0:23f:ed09:f7b with SMTP id
+ d9443c01a7336-23fed091110mr101344245ad.48.1753797378920; Tue, 29 Jul 2025
+ 06:56:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250729020308.103139-1-isolodrai@meta.com>
+References: <20250722150152.1158205-1-matt@readmodwrite.com> <CAADnVQ+rLJwKVbhd6LyGxDQwGUfg9EANcA5wOpA3C3pjaLdRQw@mail.gmail.com>
+In-Reply-To: <CAADnVQ+rLJwKVbhd6LyGxDQwGUfg9EANcA5wOpA3C3pjaLdRQw@mail.gmail.com>
+From: Matt Fleming <matt@readmodwrite.com>
+Date: Tue, 29 Jul 2025 14:56:07 +0100
+X-Gm-Features: Ac12FXxSY86YYUNk9ahjFEIXjGzaAjdeUoQ5VugkiuP2RpgzCdnBA11sRvUpiYc
+Message-ID: <CAENh_SS2R3aQByV_=WRCO=ZHknk_+pV7RhXA4qx5OGMBN1SnOA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3] selftests/bpf: Add LPM trie microbenchmarks
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	kernel-team <kernel-team@cloudflare.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, Network Development <netdev@vger.kernel.org>, 
+	Matt Fleming <mfleming@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 28, 2025 at 07:03:08PM -0700, Ihor Solodrai wrote:
-> btf_encoder collects function ELF symbols into a table, which is later
-> used for processing DWARF data and determining whether a function can
-> be added to BTF.
-> 
-> So far the ELF symbol name was used as a key for search in this table,
-> and a search by prefix match was attempted in cases when ELF symbol
-> name has a compiler-generated suffix.
-> 
-> This implementation has bugs [1][2], causing some functions to be
-> inappropriately excluded from (or included into) BTF.
-> 
-> Rework the implementation of the ELF functions table. Use a name of a
-> function without any suffix - symbol name before the first occurrence
-> of '.' - as a key. This way btf_encoder__find_function() always
-> returns a valid elf_function object (or NULL).
-> 
-> Collect an array of symbol name + address pairs from GElf_Sym for each
-> elf_function when building the elf_functions table.
-> 
-> Introduce ambiguous_addr flag to the btf_encoder_func_state. It is set
-> when the function is saved by examining the array of ELF symbols in
-> elf_function__has_ambiguous_address(). It tests whether there is only
-> one unique address for this function name, taking into account that
-> some addresses associated with it are not relevant:
->   * ".cold" suffix indicates a piece of hot/cold split
->   * ".part" suffix indicates a piece of partial inline
-> 
-> When inspecting symbol name we have to search for any occurrence of
-> the target suffix, as opposed to testing the entire suffix, or the end
-> of a string. This is because suffixes may be combined by the compiler,
-> for example producing ".isra0.cold", and the conclusion will be
-> incorrect.
-> 
-> In saved_functions_combine() check ambiguous_addr when deciding
-> whether a function should be included in BTF.
-> 
-> Successful CI run: https://github.com/acmel/dwarves/pull/68/checks
-> 
-> I manually spot checked some of the ~200 functions from vmlinux (BPF
-> CI-like kconfig) that are now excluded: all of those that I checked
-> had multiple addresses, and some where static functions from different
-> files with the same name.
+On Mon, Jul 28, 2025 at 3:35=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> Please make a full description of what the test does,
+> since it's not trivial to decipher from the code.
+> If I'm reading it correctly, first, the user space
+> makes the LPM completely full and then lookup/update
+> use random key-s within range.
 
-in my config the change removed 464, did the same check and all of them
-had more different addresses
+Yep, that's correct. I'll provide a more comprehensive description in v4.
 
-couple nits below, but feel free to ignore
+> But delete looks different. It seems the kernel delete
+> operation can interleave with user space refilling the LPM,
+> so ...
+>
+> >   lookup: throughput    7.423 =C2=B1 0.023 M ops/s (  7.423M ops/prod),=
+ latency  134.710 ns/op
+> >   update: throughput    2.643 =C2=B1 0.015 M ops/s (  2.643M ops/prod),=
+ latency  378.310 ns/op
+> >   delete: throughput    0.712 =C2=B1 0.008 M ops/s (  0.712M ops/prod),=
+ latency 1405.152 ns/op
+>
+> this comparison doesn't look like apples to apples,
+> since delete will include user space refill time.
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+Yeah, you're right. Though we only measure the delete time from in the
+BPF prog, delete throughput is essentially blocked while the refill
+happens and because things are measured with a 1-second timer
+(bench.c:sigalarm_handler) the refill time gets accounted for anyway.
+I could try extrapolating the delete time like I've done for the free
+op, i.e. we calculate how many ops were completed in what fraction of
+a second.
 
-thanks,
-jirka
+> >     free: throughput    0.574 =C2=B1 0.003 K ops/s (  0.574K ops/prod),=
+ latency    1.743 ms/op
+>
+> Does this measure the free-ing of full LPM ?
 
+Yes, this measures the total time to free every element in the trie.
 
-> 
-> [1] https://lore.kernel.org/bpf/2f8c792e-9675-4385-b1cb-10266c72bd45@linux.dev/
-> [2] https://lore.kernel.org/dwarves/6b4fda90fbf8f6aeeb2732bbfb6e81ba5669e2f3@linux.dev/
-> 
-> v1: https://lore.kernel.org/dwarves/98f41eaf6dd364745013650d58c5f254a592221c@linux.dev/
-> Signed-off-by: Ihor Solodrai <isolodrai@meta.com>
-> ---
->  btf_encoder.c | 250 ++++++++++++++++++++++++++++++++------------------
->  1 file changed, 162 insertions(+), 88 deletions(-)
-> 
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index 0bc2334..0aa94ae 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -87,16 +87,22 @@ struct btf_encoder_func_state {
->  	uint8_t optimized_parms:1;
->  	uint8_t unexpected_reg:1;
->  	uint8_t inconsistent_proto:1;
-> +	uint8_t ambiguous_addr:1;
->  	int ret_type_id;
->  	struct btf_encoder_func_parm *parms;
->  	struct btf_encoder_func_annot *annots;
->  };
->  
-> +struct elf_function_sym {
-> +	const char *name;
-> +	uint64_t addr;
-> +};
-> +
->  struct elf_function {
-> -	const char	*name;
-> -	char		*alias;
-> -	size_t		prefixlen;
-> -	bool		kfunc;
-> +	char		*name;
-> +	struct elf_function_sym *syms;
-> +	uint8_t 	sym_cnt;
+> > +static void __lpm_validate(void)
+>
+> why double underscore ?
+> Just lpm_validate() ?
 
-should we make this bigger, or at least check the overflow
+The double underscore is used for the common validation parts, but
+I'll rename this to include "_common()" (along with all other uses of
+__).
 
-256 dups are probably not possible, but with all those different
-suffixes we might get close soon ;-)
+> > +       /*
+> > +        * Ideally we'd have access to the map ID but that's already
+> > +        * freed before we enter trie_free().
+> > +        */
+> > +       BPF_CORE_READ_STR_INTO(&name, map, name);
+> > +       if (bpf_strncmp(name, BPF_OBJ_NAME_LEN, "trie_free_map"))
+> > +               return 0;
+> > +
+> > +       val =3D bpf_ktime_get_ns();
+> > +       bpf_map_update_elem(&latency_free_start, &map, &val, BPF_ANY);
+>
+> Looks like there is only one lpm map.
+> What's the point of that extra map ?
+> Just have a global var for start time ?
 
-> +	uint8_t		kfunc:1;
->  	uint32_t	kfunc_flags;
->  };
->  
-> @@ -115,7 +121,6 @@ struct elf_functions {
->  	struct elf_symtab *symtab;
->  	struct elf_function *entries;
->  	int cnt;
-> -	int suffix_cnt; /* number of .isra, .part etc */
->  };
->  
->  /*
-> @@ -161,10 +166,18 @@ struct btf_kfunc_set_range {
->  	uint64_t end;
->  };
->  
-> +static inline void elf_function__free_content(struct elf_function *func) {
+Sure, I can make this a global variable for the start time instead.
 
-elf_function__clear ?
+> bpf_get_prandom_u32() is not free
+> and modulo operation isn't free either.
+> The benchmark includes their time.
+> It's ok to have it, but add a mode where the bench
+> tests linear lookup/update too with simple key.data++
 
-> +	free(func->name);
-> +	if (func->sym_cnt)
-> +		free(func->syms);
-> +	memset(func, 0, sizeof(*func));
-> +}
-> +
->  static inline void elf_functions__delete(struct elf_functions *funcs)
->  {
-> -	for (int i = 0; i < funcs->cnt; i++)
-> -		free(funcs->entries[i].alias);
-> +	for (int i = 0; i < funcs->cnt; i++) {
-> +		elf_function__free_content(&funcs->entries[i]);
-> +	}
->  	free(funcs->entries);
->  	elf_symtab__delete(funcs->symtab);
->  	list_del(&funcs->node);
-> @@ -981,8 +994,7 @@ static void btf_encoder__log_func_skip(struct btf_encoder *encoder, struct elf_f
->  
->  	if (!encoder->verbose)
->  		return;
-> -	printf("%s (%s): skipping BTF encoding of function due to ",
-> -	       func->alias ?: func->name, func->name);
-> +	printf("%s : skipping BTF encoding of function due to ", func->name);
->  	va_start(ap, fmt);
->  	vprintf(fmt, ap);
->  	va_end(ap);
-> @@ -1176,6 +1188,48 @@ static struct btf_encoder_func_state *btf_encoder__alloc_func_state(struct btf_e
->  	return state;
->  }
->  
-> +/* some "." suffixes do not correspond to real functions;
-> + * - .part for partial inline
-> + * - .cold for rarely-used codepath extracted for better code locality
-> + */
-> +static bool str_contains_non_fn_suffix(const char *str) {
-> +	static const char *skip[] = {
-> +		".cold",
-> +		".part"
-> +	};
-> +	char *suffix = strchr(str, '.');
-> +	int i;
-> +
-> +	if (!suffix)
-> +		return false;
-> +	for (i = 0; i < ARRAY_SIZE(skip); i++) {
-> +		if (strstr(suffix, skip[i]))
-> +			return true;
-> +	}
-> +	return false;
-> +}
-> +
-> +static bool elf_function__has_ambiguous_address(struct elf_function *func) {
-> +	struct elf_function_sym *sym;
-> +	uint64_t addr;
-> +
-> +	if (func->sym_cnt <= 1)
-> +		return false;
-> +
-> +	addr = 0;
-> +	for (int i = 0; i < func->sym_cnt; i++) {
-> +		sym = &func->syms[i];
-> +		if (!str_contains_non_fn_suffix(sym->name)) {
-> +			if (addr && addr != sym->addr)
-> +				return true;
-> +			else
-> +			 	addr = sym->addr;
+Good idea.
 
-nit extra space ' '    ^^^
+> Since the map suppose to full before we start all keys
+> should be there, right?
 
-> +		}
-> +	}
-> +
-> +	return false;
-> +}
-> +
+Yes.
 
-SNIP
+> Let's add a sanity check that update() succeeds.
+
+Will do.
+
+> > +static int delete (__u32 index, bool *need_refill)
+> > +{
+> > +       struct trie_key key =3D {
+> > +               .data =3D deleted_entries,
+> > +               .prefixlen =3D prefixlen,
+> > +       };
+> > +
+> > +       bpf_map_delete_elem(&trie_map, &key);
+> > +
+> > +       /* Do we need to refill the map? */
+> > +       if (++deleted_entries =3D=3D nr_entries) {
+> > +               /*
+> > +                * Atomicity isn't required because DELETE only support=
+s
+> > +                * one producer running concurrently. What we need is a
+> > +                * way to track how many entries have been deleted from
+> > +                * the trie between consecutive invocations of the BPF
+> > +                * prog because a single bpf_loop() call might not
+> > +                * delete all entries, e.g. when NR_LOOPS < nr_entries.
+> > +                */
+> > +               deleted_entries =3D 0;
+> > +               *need_refill =3D true;
+> > +               return 1;
+>
+> This early break is another reason that makes
+> 'delete' op different from 'lookup/update'.
+> Pls make all 3 consistent, so they can be compared to each other.
+
+Hmm.. I'm not quite sure how to do that. lookup/update don't modify
+the number of entries in the map whereas delete does (update only
+updates existing entries, it doesn't create new ones). So when the map
+is empty it needs to be refilled. You're right that somehow the time
+to refill needs to be removed from the delete throughput/latency
+numbers but fundamentally these 3 ops are not the same and I don't see
+how to treat them as such.
 
