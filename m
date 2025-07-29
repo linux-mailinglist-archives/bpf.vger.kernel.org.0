@@ -1,101 +1,205 @@
-Return-Path: <bpf+bounces-64634-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64635-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48807B1504B
-	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 17:41:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24FF6B1511B
+	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 18:17:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2F61546FB5
-	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 15:41:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BAFE1895785
+	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 16:18:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0211929824B;
-	Tue, 29 Jul 2025 15:40:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA6CF223335;
+	Tue, 29 Jul 2025 16:17:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="Xg8OHYx8"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B3792980AA;
-	Tue, 29 Jul 2025 15:40:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.17
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E125520ED
+	for <bpf@vger.kernel.org>; Tue, 29 Jul 2025 16:17:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753803623; cv=none; b=F/fq3SQtl/ADIN22BDmCk2zmBDBi8sQ7kPXinjB/3nja/LLGgjf0voAro2hqGLTIn7I+akCm9WNO6CMe7t1flzjzwYEAteAqM6LWmxAQK68WlDU8CcKphQOnSadtqdxijVjf06db2xVkks+NCIGPLiqeX5DxySm2e2XxJ8WRL6A=
+	t=1753805869; cv=none; b=EO43ly7Ni8x08Ot0AB6nLxqjE7mgZ9jAOP7DQnYDBu2m5T9MTsnWecMTzh++tf6b9nAyh5pBXBuUkbH+59goqFLcIL2yTMMMN8TeZZUhRfwh/SAouxfEtUONVLLUlYrwXfbdGwYc3anb1ht9xyx3gsY+uCsZ6aK0aEKo0rIQfbg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753803623; c=relaxed/simple;
-	bh=OlRedFDxrkWC3m2IN07auHwrhh2BPsnAqUm1Ne3uE0k=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=meBEiGf9P56drt3oe9BzWY2zvDC/1beds4O09ku3NMlhBiS8TPFgmjQ0CRjy3ulJ0Arne2JOeYWwtkvhuM1MJPyXP3yQsBTn0KQE/y50uAqyBSSphkWcAYrMZSvjYpV/8KgrPtGQQnBmTshmalmbc3OU19Ann/iinRrEtqUkSvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf08.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay09.hostedemail.com (Postfix) with ESMTP id 18C94801A9;
-	Tue, 29 Jul 2025 15:40:19 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf08.hostedemail.com (Postfix) with ESMTPA id D2B8220028;
-	Tue, 29 Jul 2025 15:40:15 +0000 (UTC)
-Date: Tue, 29 Jul 2025 11:40:14 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux trace kernel
- <linux-trace-kernel@vger.kernel.org>, bpf@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Mark Rutland <mark.rutland@arm.com>,
- Peter Zijlstra <peterz@infradead.org>, Namhyung Kim <namhyung@kernel.org>,
- Takaya Saeki <takayas@google.com>, Douglas Raillard
- <douglas.raillard@arm.com>, Tom Zanussi <zanussi@kernel.org>, Andrew Morton
- <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, Ian
- Rogers <irogers@google.com>, aahringo@redhat.com
-Subject: Re: [PATCH] tracing/probes: Allow use of BTF names to dereference
- pointers
-Message-ID: <20250729114014.22bf17c8@batman.local.home>
-In-Reply-To: <20250729113335.2e4f087d@batman.local.home>
-References: <20250729113335.2e4f087d@batman.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1753805869; c=relaxed/simple;
+	bh=QWpQU8PGPd2HQ6A9+gfoqjTiX83hg+ouG6zZsfgMAbw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eMBk710U/pKuDMwdPsOZ5pXbaBeafN9+Y8OTELnzXM2weInuGNTS3Dv+dfXEtET4C7M1qQVmtljnBIYY4v2619SKrZbeyttqPkVpUcBlMAYuo+CdMK2QmI8/EOQT6HKMG9AE8qpNI/JwZIcNYMjdK1pYWDzxcMVOS9/dLir21KE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=Xg8OHYx8; arc=none smtp.client-ip=220.197.31.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=vo
+	+yuRPeTOKA3B4bTARvY/owZt75ycTxjJsk8f2iSM8=; b=Xg8OHYx8TsuZi/Qceq
+	sWzsFWtlC2JJhJxeVokAKIu+nCHWRZcR652NIxiNKpPWoJMZlIsXJKPfqjGzL0mn
+	e8l3UnrgC3Ae7v2CQgwPZIOkmbMZ26d2Q77bfQP4hv+Kc1uY063pEPwn0Ucjx7t0
+	IlydruwuOZ8MxsYU9ZBPaQwPE=
+Received: from localhost.localdomain (unknown [])
+	by gzga-smtp-mtada-g0-1 (Coremail) with SMTP id _____wD3v5kS9IhoAZXtIA--.34400S2;
+	Wed, 30 Jul 2025 00:17:24 +0800 (CST)
+From: Jiawei Zhao <Phoenix500526@163.com>
+To: andrii@kernel.org
+Cc: bpf@vger.kernel.org
+Subject: [PATCH v3] libbpf: fix USDT SIB argument handling causing unrecognized register error
+Date: Wed, 30 Jul 2025 00:17:22 +0800
+Message-Id: <20250729161722.35462-1-Phoenix500526@163.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: q6zgjy7nn1jg6bj3g7b74oqsemuc4oo8
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: D2B8220028
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX186VMlIHneOuF/AgDag7l28Zac1Ill4rOU=
-X-HE-Tag: 1753803615-805169
-X-HE-Meta: U2FsdGVkX18Ow2xrPCJGOeQK7rQx+7+poyxBDd9bSNtdYHYpRa3MVczA9S65ndXqbb3GA+6mzA6r+qkbWevrB5tE+F1PvOEtM057N/MyPBmnzUOxPmBh9HPy2cSP2fnCdxnAMputoO/rxWgKhPpkrUYL4RwVOEaH1N8HfS6c5QlSk86/CKou/mT9a7uxU8wXUShTy/jdZzkNTb6b61R6BFfO9TMRNH57k62hKk2+lk/zT2lf3PCp+35rxrEDTfIsL7JUJgbMcLgxH1qLDOG2LP/gMnEZeD3okATbqhLTajifi8xglTGXG08dMYlgA35fvTWbpBuj07aaRFsjJZXHzzIAoeTbMlgVwfJUt9qUL/LlZfQCmNlsgPIy23K8lSXK
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wD3v5kS9IhoAZXtIA--.34400S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxtryfArWkXF4kJr4rXFyUtrb_yoW7Gw45pa
+	y0gwnayr18tr4SvFn3WF10ya9Ikws7JF48Zr4xJa45ZFWxWr4rJryfKF1ayrn8Ga9FyF13
+	ZF4a9rWfCa4xur7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UD-BiUUUUU=
+X-CM-SenderInfo: pskrv0dl0viiqvswqiywtou0bp/1tbiFAeZiGiI5xDLqwAAs1
 
-On Tue, 29 Jul 2025 11:33:35 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On x86-64, USDT arguments can be specified using Scale-Index-Base (SIB)
+addressing, e.g. "1@-96(%rbp,%rax,8)". The current USDT implementation
+in libbpf cannot parse this format, causing `bpf_program__attach_usdt()`
+to fail with -ENOENT (unrecognized register).
 
-> Anonymous structures are also handled:
-> 
->   # echo 'e:xmit net.net_dev_xmit +net_device.name(+sk_buff.dev($skbaddr)):string' >> dynamic_events
-> 
-> Where "+net_device.name(+sk_buff.dev($skbaddr))" is equivalent to:
-> 
->   (*(struct net_device *)((*(struct sk_buff *)($skbaddr))->dev)->name)
+This patch fixes this by implementing the necessary changes:
+- add correct handling for SIB-addressed arguments in `bpf_usdt_arg`.
+- add adaptive support to `__bpf_usdt_arg_type` and
+`__bpf_usdt_arg_spec` to represent SIB addressing parameters.
 
-The above in wrong. It is equivalent to:
+Change since v1(https://lore.kernel.org/lkml/20250729125244.28364-1-Phoenix500526@163.com/):
+- refactor the code to make it more readable
+- modify the commit message to explain why and how
 
-  (*(struct net_device *)((*(struct sk_buff *)($skbaddr)).dev).name)
+Change since v2:
+- fix the `scale` uninitialized error
 
-I purposely tried to not use "->" but then failed to do so :-p
+Signed-off-by: Jiawei Zhao <Phoenix500526@163.com>
+---
+ tools/lib/bpf/usdt.bpf.h | 33 ++++++++++++++++++++++++++++++++-
+ tools/lib/bpf/usdt.c     | 26 +++++++++++++++++++++++---
+ 2 files changed, 55 insertions(+), 4 deletions(-)
 
-> 
-> And nested structures can be found by adding more members to the arg:
-> 
->   # echo 'f:read filemap_readahead.isra.0 file=+0(+dentry.d_name.name(+file.f_path.dentry($arg2))):string' >> dynamic_events
-> 
-> The above is equivalent to:
-> 
->   *((*(struct dentry *)(*(struct file *)$arg2)->f_path.dentry)->d_name.name)
+diff --git a/tools/lib/bpf/usdt.bpf.h b/tools/lib/bpf/usdt.bpf.h
+index 2a7865c8e3fe..246513088c3a 100644
+--- a/tools/lib/bpf/usdt.bpf.h
++++ b/tools/lib/bpf/usdt.bpf.h
+@@ -34,6 +34,7 @@ enum __bpf_usdt_arg_type {
+ 	BPF_USDT_ARG_CONST,
+ 	BPF_USDT_ARG_REG,
+ 	BPF_USDT_ARG_REG_DEREF,
++	BPF_USDT_ARG_SIB,
+ };
+ 
+ struct __bpf_usdt_arg_spec {
+@@ -43,6 +44,10 @@ struct __bpf_usdt_arg_spec {
+ 	enum __bpf_usdt_arg_type arg_type;
+ 	/* offset of referenced register within struct pt_regs */
+ 	short reg_off;
++	/* offset of index register in pt_regs, only used in SIB mode */
++	short idx_reg_off;
++	/* scale factor for index register, only used in SIB mode */
++	short scale;
+ 	/* whether arg should be interpreted as signed value */
+ 	bool arg_signed;
+ 	/* number of bits that need to be cleared and, optionally,
+@@ -149,7 +154,7 @@ int bpf_usdt_arg(struct pt_regs *ctx, __u64 arg_num, long *res)
+ {
+ 	struct __bpf_usdt_spec *spec;
+ 	struct __bpf_usdt_arg_spec *arg_spec;
+-	unsigned long val;
++	unsigned long val, idx;
+ 	int err, spec_id;
+ 
+ 	*res = 0;
+@@ -202,6 +207,32 @@ int bpf_usdt_arg(struct pt_regs *ctx, __u64 arg_num, long *res)
+ 			return err;
+ #if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+ 		val >>= arg_spec->arg_bitshift;
++#endif
++		break;
++	case BPF_USDT_ARG_SIB:
++		/* Arg is in memory addressed by SIB (Scale-Index-Base) mode
++		 * (e.g., "-1@-96(%rbp,%rax,8)" in USDT arg spec). Register
++		 * is identified like with BPF_USDT_ARG_SIB case, the offset
++		 * is in arg_spec->val_off, the scale factor is in arg_spec->scale.
++		 * Firstly, we fetch the base register contents and the index
++		 * register contents from pt_regs. Secondly, we multiply the
++		 * index register contents by the scale factor, then add the
++		 * base address and the offset to get the final address. Finally,
++		 * we do another user-space probe read to fetch argument value
++		 * itself.
++		 */
++		err = bpf_probe_read_kernel(&val, sizeof(val), (void *)ctx + arg_spec->reg_off);
++		if (err)
++			return err;
++		err = bpf_probe_read_kernel(&idx, sizeof(idx), (void *)ctx + arg_spec->idx_reg_off);
++		if (err)
++			return err;
++		err = bpf_probe_read_user(&val, sizeof(val),
++				(void *)val + idx * arg_spec->scale + arg_spec->val_off);
++		if (err)
++			return err;
++#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
++		val >>= arg_spec->arg_bitshift;
+ #endif
+ 		break;
+ 	default:
+diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
+index 4e4a52742b01..260211e896d5 100644
+--- a/tools/lib/bpf/usdt.c
++++ b/tools/lib/bpf/usdt.c
+@@ -200,6 +200,7 @@ enum usdt_arg_type {
+ 	USDT_ARG_CONST,
+ 	USDT_ARG_REG,
+ 	USDT_ARG_REG_DEREF,
++	USDT_ARG_SIB,
+ };
+ 
+ /* should match exactly struct __bpf_usdt_arg_spec from usdt.bpf.h */
+@@ -207,6 +208,8 @@ struct usdt_arg_spec {
+ 	__u64 val_off;
+ 	enum usdt_arg_type arg_type;
+ 	short reg_off;
++	short idx_reg_off;
++	short scale;
+ 	bool arg_signed;
+ 	char arg_bitshift;
+ };
+@@ -1283,11 +1286,28 @@ static int calc_pt_regs_off(const char *reg_name)
+ 
+ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec *arg, int *arg_sz)
+ {
+-	char reg_name[16];
+-	int len, reg_off;
++	char reg_name[16], idx_reg_off, idx_reg_name[16];
++	int len, reg_off, scale;
+ 	long off;
+ 
+-	if (sscanf(arg_str, " %d @ %ld ( %%%15[^)] ) %n", arg_sz, &off, reg_name, &len) == 3) {
++	if (sscanf(arg_str, " %d @ %ld ( %%%15[^,] , %%%15[^,] , %d ) %n",
++				arg_sz, &off, reg_name, idx_reg_name, &scale, &len) == 5) {
++		/* Scale Index Base case, e.g., 1@-96(%rbp,%rax,8)*/
++		arg->arg_type = USDT_ARG_SIB;
++		arg->val_off = off;
++		arg->scale = scale;
++
++		reg_off = calc_pt_regs_off(reg_name);
++		if (reg_off < 0)
++			return reg_off;
++		arg->reg_off = reg_off;
++
++		idx_reg_off = calc_pt_regs_off(idx_reg_name);
++		if (idx_reg_off < 0)
++			return idx_reg_off;
++		arg->idx_reg_off = idx_reg_off;
++	} else if (sscanf(arg_str, " %d @ %ld ( %%%15[^)] ) %n",
++				arg_sz, &off, reg_name, &len) == 3) {
+ 		/* Memory dereference case, e.g., -4@-20(%rbp) */
+ 		arg->arg_type = USDT_ARG_REG_DEREF;
+ 		arg->val_off = off;
+-- 
+2.39.5 (Apple Git-154)
 
-And this is supposed to be:
-
-   *((*(struct dentry *)(*(struct file *)$arg2).f_path.dentry).d_name.name)
-
--- Steve
 
