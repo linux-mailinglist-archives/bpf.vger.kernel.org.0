@@ -1,89 +1,81 @@
-Return-Path: <bpf+bounces-64628-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64629-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3DE1B14F29
-	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 16:21:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92FFAB14FFC
+	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 17:08:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23A5C3B4129
-	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 14:20:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC91116CB3B
+	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 15:08:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9311B1DE4C9;
-	Tue, 29 Jul 2025 14:20:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1933212FAD;
+	Tue, 29 Jul 2025 15:08:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ChnBxp4w"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="O5mN8mlx"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2067.outbound.protection.outlook.com [40.107.237.67])
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2070.outbound.protection.outlook.com [40.107.95.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E15241760;
-	Tue, 29 Jul 2025 14:20:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A385C1F5E6
+	for <bpf@vger.kernel.org>; Tue, 29 Jul 2025 15:08:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.70
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753798852; cv=fail; b=vGhOb2qgiXMiwvw8jKdk5KowZy6bbbo0KpUgRbM5US9Ixa34CW43cB1e4Y4xjqLgQNWBdK/Jx1WNNzTv7USxvRCwL38Kno+uTgtVKnNQ1o6q83cXPM/XOm3P8fJ7gwZWJEMJ2YyC1h281uVO3nM6i6oA0swbwE0wg1NWI8Jf2/g=
+	t=1753801682; cv=fail; b=HXHTZW815Z6AaLLxUmEEhv8f63IE8DH8LkmHjDoU3NkknC4m0GrrsxqRaY1uWXE4Vp/3LWS1Yqt1MQGVv1BbU3l1QZvDq/5jLhZ2v1sTehM+RP4Swp5loIvRP2IUNo8T2BQT8SzcJqrlofu7RZIsjNCU8aOrYcHvAiSJx+wBYVY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753798852; c=relaxed/simple;
-	bh=m3+jswGwY5Fi4tLVK7/mtc8GdWVQthV0uRuip6lkqB0=;
+	s=arc-20240116; t=1753801682; c=relaxed/simple;
+	bh=6V7AVFbJI7fN7DYsS8xBmejeqzJ/bhYCaXw0rz2poX8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ss7f2MKrotPbb6xdPHgE/txBm85Fe26CbAfV+eANPsJp63BA+vhaatug/+eT6BRJ/baONgcRHLEqioNClW7BnoFR3CIJRi8MzrNv6qEZ0SqvkDbcMdPAGd3u4S1mJTl6aJ1pyZUDuPy7H2HCJKWPjEzQ2hvOUGZVCbz8V2nQyqw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ChnBxp4w; arc=fail smtp.client-ip=40.107.237.67
+	 Content-Type:MIME-Version; b=sfWMlPVS+iXLnzUosSW30DiHWZujiSgtoRLC9RIrL1KbMwyszPZzMlwvkd2KdBo0+LyO58nBhXJA+TQOi8b9fgvTklZikb7qZyf6CcqOZdHnK1rTF4nriKqeV0NV3RhnVBucdh+hqzO9W6DA+hsSrWKwZ8sEyiuo2NbWxARasPc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=O5mN8mlx; arc=fail smtp.client-ip=40.107.95.70
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=CSTDryfN7J1dQ1PceNU6iGaUsVrZAamgAF6nB7BnrV4cyAY2rqJtD6azxoIkrOFfmtwncRnOs5Td5MJr0m6Y1a5rYMRXeWV75fywYt9y/H0kdAakW3G/9OAOJsLDNyXJLt1Eqkc/LYdg+JW06sQ9Xd0IvMTxVDlGRo62J0HzrI6UgZ8hlf71Yj1wLgfXOywLu10IBg5XKT0hsWPk9L1PcrvvuKPBvGRoeLVVlj8+xbn7dwLsvrxiT8bY7p8Mm+pcfotnao1RAfIETGpA3PMA7SkIcxNygUSxWb/IKCJZDpGaPV3vruUPK4+lFasW4UrRsYHIGmY92PHr2gnhvQKWTQ==
+ b=o7qWNurtZdRbOXkAL9g5FnbQvUZ6beACDJcr3kkca7cZv2UwOOufA5zlpVVmSRH0jBaDEF7HxEyYHXHu6czau1EFq5iWQgQA4IUY1WgCJv40GN33FLHx6035fwGatxvLZ6bbkh3QBe8oUxAz7+IYpzWEjq2cFXo3Kc7Y+QQ2ZscxBwZTbIPCk6bOr3fBuwYhLyG+RS8nFj5FY6k1eXO3sU6v4go1YTmk/IEaHgkdE6k0NDYBL59HAtSDutm3r46hTK4K4Ctb/DAWRmFIf1dm8vqajlAlV7e04HKMUdX1r0ixIa9fqqwV2XBxJKgVVOpBrdlQlaUSWJsU4D+BSh4Flw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wYE7ct58X0Smp5OfRwpbUhsbcptrI0nm1gCaj/eVpw0=;
- b=UJbTpadqH+wLvsNDUFdlE4LQCrH9Ucg5Ql/UIL9+HNG4/yw66lc3VUGvQ/YU+hbxRuVomzyj8MoJywNKLS0m5LfRe6phVTUnm0l+C3vUv4FeXmS37g5j6O0ODCvtMFlcz135DwDyzeqyDEFtVhM6GUMATp1UxgkT+M6spK/h0/Xvp6iRD3ZN2qJIMAXSPhRoCQKCYXrcThM00eDB6vqgizAC/SiR/okH2LDhCH5NsyU6nrwQ7QbDSiNW4R1eVtOP9vZLKOP+IP42QTKgb9JIs5iMblXwKWifdHrAg0aGvx7Li0hraa8jM1FpHoUloMwjpTHC8cfPJG/aCObyb6ipfQ==
+ bh=xgQ6Q101bjf+9aMsyBEe0HD9e9PsDRi+fUIiYOHpkcA=;
+ b=ajXmJ1YBVfw/n8Yp03EWredNL5ueOra9biKzgicNPJsxu3SY5AtJZZvODGdbmmc3SvgoFR7WOzPa/hbs6ViwUlmFCMBdT9RtHiQh6epM+O6LJm8kfu+SIyuehmNEfz2y6M8Bewrc0RCR3VKSEoV828EjxQitXuruVeTg9+nKw2jYlJ2IZlrApdJ4iE7RXEgerijO+yIsNpogc1IfAXIk5bOJwelTnNpobgDXyZJyPj1MqmuBNpnQqz8yBfsKlIPB+zf/TLs2frcqCoJzSGAseS1w6YWZzeO3k3zDdkizpWlsG1rTCJPAsjvWOnAYNu9P0VnyfmMLrqXgMnW3ZPiYHA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wYE7ct58X0Smp5OfRwpbUhsbcptrI0nm1gCaj/eVpw0=;
- b=ChnBxp4wfwPIil1M3r+zIkLFQ3YJvWfx09gWD+Q+8orCQ19AmM3jHkRec+iy2oXLjTPNsapxj02hJ1KT63WqdGv5OQERD2JP0PRVGHglPWaT2eYbWXPksnbfBMSj/UorE0/7aL0h4TPyvedcqzuneEdJ3vTixPsKfAkUazFnAGAbt5rdpg5Cj7fG+2Fn2NhiKeUaHZmhRPy0ThPFaeJ3cXGdd9s9OOGMbc6/dneUSUsNQh+55j7Uu7ppkzOLrV3tbQXbov89IqgfwOBqOMP1QFGQDrH++CqR0D7HUCz4doyetr3iV0Wz0CqGovu+WOj0OnqEmHa6VB6PQ+Hsq30f2g==
+ bh=xgQ6Q101bjf+9aMsyBEe0HD9e9PsDRi+fUIiYOHpkcA=;
+ b=O5mN8mlxw634TpNulKs4iIIWiC/+KX6TI5/f4ATM6Wfy/y8ZrmhlI2ky8DEOSQSNH8X4UNqcY1OwyeIO5CEdpKng6U2nqnnN2WkueSIxOTTQXQ7kcQXs60/M8CIRLCvzHe6/DbcMRpBOry/7XsscmwBwGorUQeUlKKv1QGc+EAuBx2YLtYppsnAotlG96o/n48dimsmWGWJU87hsOR8Z4IqS2ZPrAPulFxthihoK8wfTlhz74WKFFU63jpNe/Y5et70+Nt8h5E/Z6KtYbgeQfXS9vsBp4L2j/TJQW/oCWrXxCqnX/XX3eW4h4c5WkKcdukT3gx/Qnz2sM/LtHb8ylQ==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from BL4PR12MB9478.namprd12.prod.outlook.com (2603:10b6:208:58e::9)
- by SA5PPF530AE3851.namprd12.prod.outlook.com (2603:10b6:80f:fc04::8c9) with
+ by SJ2PR12MB8718.namprd12.prod.outlook.com (2603:10b6:a03:540::6) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8943.29; Tue, 29 Jul
- 2025 14:20:38 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8964.26; Tue, 29 Jul
+ 2025 15:07:54 +0000
 Received: from BL4PR12MB9478.namprd12.prod.outlook.com
  ([fe80::b90:212f:996:6eb9]) by BL4PR12MB9478.namprd12.prod.outlook.com
  ([fe80::b90:212f:996:6eb9%4]) with mapi id 15.20.8964.026; Tue, 29 Jul 2025
- 14:20:37 +0000
+ 15:07:54 +0000
 From: Zi Yan <ziy@nvidia.com>
-To: Byungchul Park <byungchul@sk.com>
-Cc: linux-mm@kvack.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel_team@skhynix.com, harry.yoo@oracle.com, ast@kernel.org,
- daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
- john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com,
- leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com, andrew+netdev@lunn.ch,
- edumazet@google.com, pabeni@redhat.com, akpm@linux-foundation.org,
- david@redhat.com, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
- vbabka@suse.cz, rppt@kernel.org, surenb@google.com, mhocko@suse.com,
- horms@kernel.org, jackmanb@google.com, hannes@cmpxchg.org,
- ilias.apalodimas@linaro.org, willy@infradead.org, brauner@kernel.org,
- kas@kernel.org, yuzhao@google.com, usamaarif642@gmail.com,
- baolin.wang@linux.alibaba.com, almasrymina@google.com, toke@redhat.com,
- asml.silence@gmail.com, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
- sfr@canb.auug.org.au
-Subject: Re: [PATCH linux-next v3] mm, page_pool: introduce a new page type
- for page pool in page type
-Date: Tue, 29 Jul 2025 10:20:22 -0400
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: akpm@linux-foundation.org, david@redhat.com,
+ baolin.wang@linux.alibaba.com, lorenzo.stoakes@oracle.com,
+ Liam.Howlett@oracle.com, npache@redhat.com, ryan.roberts@arm.com,
+ dev.jain@arm.com, hannes@cmpxchg.org, usamaarif642@gmail.com,
+ gutierrez.asier@huawei-partners.com, willy@infradead.org, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, ameryhung@gmail.com,
+ bpf@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v4 0/4] mm, bpf: BPF based THP order selection
+Date: Tue, 29 Jul 2025 11:07:46 -0400
 X-Mailer: MailMate (2.0r6272)
-Message-ID: <951BA2D7-E220-4F41-BE16-C4C10318A627@nvidia.com>
-In-Reply-To: <20250729110210.48313-1-byungchul@sk.com>
-References: <20250729110210.48313-1-byungchul@sk.com>
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: PH7P220CA0012.NAMP220.PROD.OUTLOOK.COM
- (2603:10b6:510:326::19) To BL4PR12MB9478.namprd12.prod.outlook.com
+Message-ID: <08D7155B-84F0-4575-B192-96901CFE690A@nvidia.com>
+In-Reply-To: <20250729091807.84310-1-laoar.shao@gmail.com>
+References: <20250729091807.84310-1-laoar.shao@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SJ0PR03CA0065.namprd03.prod.outlook.com
+ (2603:10b6:a03:331::10) To BL4PR12MB9478.namprd12.prod.outlook.com
  (2603:10b6:208:58e::9)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -92,275 +84,218 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL4PR12MB9478:EE_|SA5PPF530AE3851:EE_
-X-MS-Office365-Filtering-Correlation-Id: 313bb7fa-8144-4260-7dfc-08ddceab16db
+X-MS-TrafficTypeDiagnostic: BL4PR12MB9478:EE_|SJ2PR12MB8718:EE_
+X-MS-Office365-Filtering-Correlation-Id: dfcd67b4-ecc4-433a-c118-08ddceb1b16c
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|376014|1800799024|366016|7053199007;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|366016|7416014;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?AkX296tD2Y5wdAtjbafbXTPKOeVZsSFmcMgiWoflwwL1r5zlpF03Y6NPLmbA?=
- =?us-ascii?Q?fD2CB7PSe431EmYN1LuqOwfJvgzNvYgNj370CX+8//XDREKol7Mh4AbYvQRT?=
- =?us-ascii?Q?Wu65pL4f2nJmcZ2dz6TEanhXIx+/BYQTsTtEVDKie8hm4pf+GjvVn42C5EqC?=
- =?us-ascii?Q?VpfwBXVsGh2JDreNf8xHpqx4/MZ/m7g4HwEsC5PVJ+luFxcnGte5ZXCLA7yw?=
- =?us-ascii?Q?e/1t0yLFLzVQKStcXRi7vp5f7SqxuNid1FCdOBN9G7HlgD24A8TQiZe6MfdC?=
- =?us-ascii?Q?yY3M8WbkNtifi8gBHEWH5JP1YwMIy+gebhWc61qQvdJqzHnrh5eQcZDYVSWw?=
- =?us-ascii?Q?yLwVRIe0SPWaE/6pWNf9DBZCg6+UgV95D12vfEJYh650vU0udMf4MH45EBg/?=
- =?us-ascii?Q?RSty4FP9/50DWd6YE+rtkY8vvHhqVPm4UgEZbV3BSr93ufUQfaOcdEV8GlG7?=
- =?us-ascii?Q?fRRMDsz8MiPjIBryU8jgAhXz5UQAwHJ8c9xabA1bM7ELox7tG5ZmokMXx5KN?=
- =?us-ascii?Q?6BOr2iyGZeMVK1jSSiYguUfWagV7bOOiPQSJ0kEZC+ix7F2DG9V9t0QY9YrI?=
- =?us-ascii?Q?AFRddAY4GHT0D5cwTzF16j2Vtyi2z3e/z4oYLFWQbgsa2GQ44r+pzuMiAq/1?=
- =?us-ascii?Q?U7KHAc36wNdo+Iv61fAfnr86U3a0E6xt2MFvSTlC0TuQkehNF7UtcPbx7f5K?=
- =?us-ascii?Q?xvbpmHud8Mg8o5UtHEZF8QsGQIL5fRp2B4dOe66HZG53AxskqDq79NdLbsIT?=
- =?us-ascii?Q?P6xDjICH6Z6mn7mFk0h0biDOoR6hjmMigzaEjpfXU9rv2GhGpxkCM4R1jVp2?=
- =?us-ascii?Q?KzkP8B0pqkCMBGlHB16wIbnr+ACvs7K/bL5hv2UUxvsC1XU8BJetul4/XEe3?=
- =?us-ascii?Q?iAQF51d44k5QrJ4hHb0tATh6W4htgaIJhFDEtD3Z2dvMkxfGvp1uzquBMDww?=
- =?us-ascii?Q?1tJp8lEQ/zCWR6DBsQG5FcpxjeNZttAMM0E3ZB4fs9TAw1LKEpJhAXH7YnnY?=
- =?us-ascii?Q?K3lqQoISLxrAoOvI+mAasnBRP3azIUBOSotTRIvrgCVUBUqAeuE+bWt3SVjN?=
- =?us-ascii?Q?bQpRN2WJtkppdnbPS0hOodtRjMaVZNTlLQz1efZsqJKwKG5HbwOfbhtR/ZEN?=
- =?us-ascii?Q?+CTMJxn0pOES3jaXW4IzfXyPvPbfQ49sAt/wYvOglpBh1udzhwoJpRXS5IFn?=
- =?us-ascii?Q?wkQb3HEqMYQay/mm7OFzk+HWXoGZAratzQlP3sNs+RF691ILEwyTuZdWBl5v?=
- =?us-ascii?Q?zn27IHxzuIzDcE4jJtLAeLsTfOqXEMA3pBOvJEpIHGy9bGH3O1GGWS3rNjge?=
- =?us-ascii?Q?TrlnyRLZ5QTIX6qCRy1SQcs7XwnOqdrdTiwje/eW8egl7tFhykJR5CGwHP0y?=
- =?us-ascii?Q?k0AdvdS0TCZCz7p5UeP1xiv49ozmQfU6AuHYPpTZ46NYSLTToaC/tDb/Du0w?=
- =?us-ascii?Q?o7wOc9QNv+U=3D?=
+	=?utf-8?B?OUxkWWw1ckNPT1ZaL0w1blExVm1Hbks1RlI0MzRsamk5Z2xjMC8rV2ppL0JW?=
+ =?utf-8?B?YXVza3dZWVVkaG5YSVdXVUduTG1VUVE0Q2tMM0t3ejBxNk1GUlhPQmlvZlor?=
+ =?utf-8?B?OHB4VmljZSt5ejJwNWZnUm5OdEtYUjhFMS9naTlWc09GdVdhN21JcWRrU0tT?=
+ =?utf-8?B?TjZxaEFiZnByb01uU1JZNE9ENVVCblVFaE1JQkoxMXhLeGthMkZ6cWpCYWkx?=
+ =?utf-8?B?ck9qT2J3TlpGV0lDQk0yNDJBRnZCVGhqSmJQUCs5M2NCK3pFRjB0N3BlSDZL?=
+ =?utf-8?B?U0FHTHRTcThsaG5vYWtIUFliU1Vhc3FGdFg3bHpJZ2hDU3FQU3lkTWlvc3Fs?=
+ =?utf-8?B?OVF1ZWp4eHd2Z0ZLV1NLN2VoS1lldkVKZmlqS29leFlGQmtCdWM2R29reDB3?=
+ =?utf-8?B?N2VVbmFmZDZrUGI4eW9vUjB6dHdQaUczMjRJV2pYVFBQS3BWUkpOQm51L2hP?=
+ =?utf-8?B?Zml6UHV4aVJvSVBRTEN3b2RUdVl1N1JtdW16ZmJHOHN5Q1pJSEEwVEM4NnVz?=
+ =?utf-8?B?WnV4UThWRGxXM2pMRXlsbTU5NjNldU9jcDJYWmo2ZU1PU3JyZ2RjM2pPbGVX?=
+ =?utf-8?B?Z25TeWwyQWhITE44R2pQSnVjQUtuT2tsQ0VGQk5PWGgwNjlxN3FtbGZ0OWt0?=
+ =?utf-8?B?UnN6SFU4OEJmRzZmV3VFSFdqTEtBbHllTWJQbStrZkRweDU0d0lIT25md1N3?=
+ =?utf-8?B?SXZoMEQzUTRUS1loSkhaT1pvREhlcFhReU9ObnlsVVpOVTJBa2pSNlcweVJh?=
+ =?utf-8?B?VG9QVGZiV0x1aEVNSnUwaCtlVEowQStlVFBvRUhEVDlEM0ZNWXJmT1lzaGh6?=
+ =?utf-8?B?YTREZ3I1bWlJRmtvdEM0ZG81b1hLRHFnWFpiZ0YzQ0k4K21NMEJ1ODVrb2tO?=
+ =?utf-8?B?Vmg1VEQwa0VjUVNGMTNndmJ2SEJWTGdoaDdOUlFFYkZBNHNCbG9nY0lHTFlu?=
+ =?utf-8?B?SG1NSXNXMUd0K2o4dWtmOE10THR5dXdGaHd1Mm9FcFhMTFNTRnA4RDAzVWxi?=
+ =?utf-8?B?YWF5MVlYL3dpaE9pN2Z6TzZJVjc1K3E3SWxtN0kxV2RrbjExYS9TSGl5b1Av?=
+ =?utf-8?B?Y2lCQ2txU1g4QVFUVTFGNUpaTDRuWG9lMDhTQU1EcTRXLzVjZ1VzTWorUmdY?=
+ =?utf-8?B?TURkK3htaXlETGlxSDRhLzJIVHdaN2p0RDBUYmRKMzdRMVk5SFJEQ3I0UUxK?=
+ =?utf-8?B?V3dsT3BSTWg3SWRGS3JXSUVHeFFnV2ZBN0lLOFVvSm9lb0IrMitraTVZeWh0?=
+ =?utf-8?B?RHZKYkZXTEV6cmxoWXRoV3piN3ltbFhWdDdoU1V4bWU5YkRSa3YybEdpaUZ1?=
+ =?utf-8?B?R21LdHpRZ0sxdFZtU3BPcHpLbW5UM0E1YU9XMWtTNkkxSGVTa0RlNFJBaU0z?=
+ =?utf-8?B?bHEwZUFSQ21aZytkbUpHa2Ewb3E4c2R5Z1duK1l5WHRtUU9VUW56NnJVWll6?=
+ =?utf-8?B?SS90WVBiN093WS9FenFrblExRHc1T2dlTXdHNytmcVVzTnNQeVdoV1FGb0Uw?=
+ =?utf-8?B?YzF6NDJYOEM0YzN3aVp6OWtIcjdzSVRRWTIzNUV1NWFja0d0cllsM2VlRGJ1?=
+ =?utf-8?B?R2VUbVpGUFU3MlhRY3dWKzFGbTVPMklJRnhsZ200ODFSUkZ3ajQxcm1OcE9T?=
+ =?utf-8?B?U3ovS25ETDhJQXZsWUNoTHN5ZGRpclpLbENIaHd0MFVZQ0FWd0RrNWN5cFNP?=
+ =?utf-8?B?d0VPK3JPeE1lcUZMTlBqUFAzcUQ4YkM0VTU1MmdJUVlGQXovQ0NnYmtRR0RO?=
+ =?utf-8?B?N0N1MXlVMVlTR1h4a1VwL1pidmtXa0hPbVlDSkNmY3lTQm5rc3U3YVIwSnhs?=
+ =?utf-8?B?QVltWDZRME5aTEhSaWFiQytqVzBMRmRTbDZQVnkxZ25EUTFHMmQ4enJHVDJM?=
+ =?utf-8?B?SUtMckhxaEhoZ1pWcXhsMFBIaFRsaFVBOTcrMFFlY0hqYmsybUFyVE9NUWUz?=
+ =?utf-8?Q?tupE9lh/Hy0=3D?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL4PR12MB9478.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(366016)(7053199007);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL4PR12MB9478.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016)(7416014);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?BrFkZz7efWdGhqyAdOwuZGXDcdDZKKejN6/OBLlLBaRFRvnBKs52DKVcgduC?=
- =?us-ascii?Q?8GIaOCu0+PbRAl2BaTP9UTkH2Wo7FWsk6d7OpyO+OGqjQiB0QdONKWQbS09R?=
- =?us-ascii?Q?WzzQlwsy2mz+UIcSa871cXM8tiLsVk65RGyEh4DUFUhweEA0o14gCDxEl8D6?=
- =?us-ascii?Q?B2Ud6HhQcQ0vuqaXteArTJHI9sIncTJdPCh5+P2Ygx/bQ41auPPyNrKghhJv?=
- =?us-ascii?Q?dqY3DJfjhKXHabHgM1rhbe4qvNsWzA4Ln4o52tgQ33jBGjiRFHBE+KHfbgWP?=
- =?us-ascii?Q?iW5+qt5vcfWofriDDKQfRfjZSqN/4gs2gNfJy8znXxeUSOEnOXboIntse+tQ?=
- =?us-ascii?Q?AYuIjGktiTy51idw8rByaWHCSv4XrJMYpPZCaagcI+853r6zsbwaw39Z/I4V?=
- =?us-ascii?Q?x+wTZxMJ8nPyxhxkp0QWvKDXREcyNYQZY6Qh1lqeguEuos97qzIQR4E6SKvW?=
- =?us-ascii?Q?HD343BOuVbGuRjlzscvXHj+KJRJrdhmrWxrlOIoNhj8lSngHmayH3MJUj/Oi?=
- =?us-ascii?Q?zjjXItY0t7YSU9shDHMKOy/NNUjFMVhw137PoyHebot4ahHaAPWmL/7z3x1X?=
- =?us-ascii?Q?ptgkrpDAYScdni02Z93ITuBA7yf4jZTkQID25Uo5xMsaW1Gji/kr8d+OSMss?=
- =?us-ascii?Q?dO7rKV8kOn1w0drlLtDbu8PsR3Zdv+qqhvsD9Ht+9QInQMOV/ACB5y37keAQ?=
- =?us-ascii?Q?hVSvO9Lt7oTT3TmYjAdM9jlMoLmrlaAputGyVN67orTV+KfHTO85gywizZMB?=
- =?us-ascii?Q?mnXlri8DX4nOozH0CppWle8yoKyzNXsdwVcL4VGGHCLkHY79C5bqK0Rgq2YB?=
- =?us-ascii?Q?Su0lFZ1LU+LcpeTNTi+BJQTqQNzBuUlwF1+TsaDbM3xiBwyBtavxVQsLIEid?=
- =?us-ascii?Q?yC9gcLkaq9DNSNYi95yKzEf34FxTirv3qixav00jMAfZV0BD1VhpbcosUkxy?=
- =?us-ascii?Q?b7R3UrIhXCHOcHoSi0FODrSky5OqebB9pdHleHixCp8Jt3lGP/W5EfEvVp40?=
- =?us-ascii?Q?rhicWazvZFOhSliUWciYULPiXncyeRWmfxT5NGrHvFhQ4jzofDatCQDxx83x?=
- =?us-ascii?Q?iXegzwlWgLd0OOpeIZzXpVqpzjHVAcVjesDX+olDVO0RTUMoBUE5V1uOlwFq?=
- =?us-ascii?Q?p+eD3AqN/8JVsY94iO820M0Ca7rN1UCakpstqK288cSKbRceD1Xkt38R59Gz?=
- =?us-ascii?Q?pl+9kUrzgOoQcLEAJnLEF5a0QJoNCOCzK3ComJIi0vMHN7D4EGk/ZSiblxKb?=
- =?us-ascii?Q?qrXwqA+vjf3js8EF9FQtCr/FGZ720H0xjzg8xRHQ6P1+LTKV7c2IjmQ7BQ4m?=
- =?us-ascii?Q?syp9DjGJ4Mb31mUzqXfB99tGiJ5l8nqw/NE68Oh63LdSb2B4t55So9XkXIt+?=
- =?us-ascii?Q?Wk6/4mCJq1juKKPOj8wUgQA3rNkJLX4y5y5TxAz2Pr7W0zHrJFCFNijQUpQ3?=
- =?us-ascii?Q?B9MLYceu2TOxp6Y1m6ghtfZAErj+kG4M+q2sKKIJOpLUfEGXJw8G5mvOkM+J?=
- =?us-ascii?Q?7fT0iUG6IVQg1cLPjxBO3+mozQLeF6GnscMZzLeFh19ks8asKBLHpdu83Mcq?=
- =?us-ascii?Q?o+55w/U12ZZKWp53m3s=3D?=
+	=?utf-8?B?ZjROS2YzM054TFU1eTBaT25OUTVLVjdCcCt2NTBTbDZvWnlTZVpwTUUrYWxz?=
+ =?utf-8?B?R0tKamxPTnVZYXRRdFJVWm9ITkJLa0JkSWFXcjl1TDJ5cVJSVnpFbWMxeHNZ?=
+ =?utf-8?B?Vy9YVW5aYkJFSm9kcnpqRlBrYllwU3Z6WnZ5Y3prU2Ercy9VZWZONzFtV0kr?=
+ =?utf-8?B?cDlweEVUa0QvQTltR25rajJhR0N5dnB3U09GNjBBUTlvWEUrWHBIRVNTek9M?=
+ =?utf-8?B?Qmlzck5oVko2c3J3cUlSYVZaT3k1SW1USzVlckdEbkY2U1ZZYVJsMVVJN2Vn?=
+ =?utf-8?B?Q2k1QmNHWEU2N1NQUHlrV0p6Z0c0MVFsOWdQalROYVczUzNINU44Q0Q0TTE2?=
+ =?utf-8?B?ZE83RitFU2F5U2hibTNuSmkzOUo2bE1OQjBaTXpPYW5QejlYdDFqSkxZaHJt?=
+ =?utf-8?B?WUhhRHh3U2Ura3BWb3dnZytYTDNGQ0JNdi9Xb292dmJVWDdUdGdDSVVCcmdq?=
+ =?utf-8?B?bzJWSVRIMkhGTUdGQ1dRMmxQQXhtQS9OeEIrOVJpQU0vQjlsQ0FGdjBkWmlk?=
+ =?utf-8?B?TTlSdXFXSnVlWlBOV1dXQldFUXBqeXBFY1ErZHFRRjVFL3FkMmhqYzJialRX?=
+ =?utf-8?B?YVNxbXJacWRhVGNTWlhlRk4zdjdudFYwbnQ0UDJXd25aek04L1hEVHl0TjZB?=
+ =?utf-8?B?STNQQmNFbkFONXlnQ1pSbUtSUmE1dGVqWXU0ZWk5aWZMVVMrc1JZa3F4WVhY?=
+ =?utf-8?B?alorQnpJT1ExeTdpQndGSi9COUxBOVJtQTVmY25aRFZrOWV5Sm1vOGJOblMz?=
+ =?utf-8?B?T0RxNUllQkRrUGxaSzZEdXp4b3pyUEkyTmx1OWppa3NDQTdvbEFQM0JnTUJw?=
+ =?utf-8?B?MVQyZy8xbXJTbDNpQlFyb0taVlJ2OUpOWVZwNnZCVDZQTStFMDc0ZFlvblcz?=
+ =?utf-8?B?MW5kRUdac1U3bHVzVlNzS08rR3k3RnFCcHpPYXZPMkFsV0VJRzdaNXllN2Zm?=
+ =?utf-8?B?VmJ4aCtCYTYzeEFYaGd2OUJBNWhhMzVUcWpTMm1aZzJxRzdzVG14UCtWNmZY?=
+ =?utf-8?B?dnhTOUFFUXVuSkl2M3JtZTlrQ1NtdDJET21oQzFqaWpTaVBmaEVMRUpENnNG?=
+ =?utf-8?B?RGZrdk1NMlhFdzU5bFhxMERsWi9TUDBIUHU2VXN2bmEyZUF5L0czdlNVa1py?=
+ =?utf-8?B?UW1JWVpLZmMwWGxla2VWbm5uWlhwY0svMjJzZzd1Zk43c3ZqR0U4UElOaFRW?=
+ =?utf-8?B?cmZvaGJpbGh2TU5ERGJsS2hFblMxSklIU0pBVUtMSDRBZEYxSjFUN1lPYk1L?=
+ =?utf-8?B?NGZwc3dCbnJsUmpwL1ZtTm1JWUdsazZlaDEwR2VIaFpuUEZDUkhCNUJxRmUz?=
+ =?utf-8?B?WnpGNENKU2ZtRkQ0dWRvbnFVamczV1c4UEFhYVJVR1d6aDlYMFRxUXJyTjM3?=
+ =?utf-8?B?bGR2emFIUUNrSkZJaE1pc2QrZjFzWW1HbHc2T0RLd2NXR1o4TTVPVms4QXJF?=
+ =?utf-8?B?OVNTNHdtREtrVllDMEVUMXE1Y2hoNzZGeVZZVGRQZzdDbmZtalZxWm5xZ1ly?=
+ =?utf-8?B?VFd4eXY5WjdmV3ZQSE5ETnNab3RBbEtHbGpNQnRsbjhva1FBS1R0TGVTZjQ3?=
+ =?utf-8?B?Qk5HN2UrcE9TdXAwTHZZL01hU3F0Q2N5dE51SXQ1WTRtOUNmbkZPdWxvelp4?=
+ =?utf-8?B?MDZYV2ZZM1p0KzE0U3JGSG1SS3RYc3FYcStsZHZUTmZyNEh6OVJQc0FtMlJs?=
+ =?utf-8?B?SXdaSHVlZnZHQ3lwNWtySlgvakZXdzd5cnp5ZDRXWGxwUWNJVkVadE5LOEFN?=
+ =?utf-8?B?eERTdTdsNlpoUmIxeXVJd1RRUWI4MXkxaWVDVzRkT2NwMFIrWWJwR3UxVDFI?=
+ =?utf-8?B?Q3ZyQ25wMkY2KzdRT3dLallLTlB2cHpqVHllVmlMbVBYWDh3QXg3OHJsVFhY?=
+ =?utf-8?B?M1lsZW9iUkFmS2tZcCtHZEw5Q0tZSzBHalRNQk1JMERhV0k4bFlPWlMyUlJV?=
+ =?utf-8?B?emFScDQ0eEsvVDNYVGNHb2d6ODltbm92ZDNReU5UTFlxMG0wTTlYc1lHbjdT?=
+ =?utf-8?B?UHl1aEszaXlvbldhZW44akxFckZrUFJObnh6RlQxNGFvbWk3cUtSZFJuNnFh?=
+ =?utf-8?B?ZURKMjFUNVkrbVFhdWI3NnhMTHk3d0JzVy9FMmpId3g3dlk1V0ZnOUt1QlU1?=
+ =?utf-8?Q?PJrc=3D?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 313bb7fa-8144-4260-7dfc-08ddceab16db
+X-MS-Exchange-CrossTenant-Network-Message-Id: dfcd67b4-ecc4-433a-c118-08ddceb1b16c
 X-MS-Exchange-CrossTenant-AuthSource: BL4PR12MB9478.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jul 2025 14:20:37.6349
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jul 2025 15:07:53.9745
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: m3Xg0U4L5jpzDOU9XQCP/FnYkytBziabkusMrcbnsqfWosQMM2Sl398dqVlcyCbb
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA5PPF530AE3851
+X-MS-Exchange-CrossTenant-UserPrincipalName: ayvl+6sLzPIAgE8ylyicmtxSw44pMeCVrZ9Aqw5CxkgmkptBg5nARFe9Tk3AOt7D
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8718
 
-On 29 Jul 2025, at 7:02, Byungchul Park wrote:
+On 29 Jul 2025, at 5:18, Yafang Shao wrote:
 
-> Changes from v2:
-> 	1. Rebase on linux-next as of Jul 29.
-> 	2. Skip 'niov->pp =3D NULL' when it's allocated using __GFP_ZERO.
-> 	3. Change trivial coding style. (feedbacked by Mina)
-> 	4. Add Co-developed-by, Acked-by, and Reviewed-by properly.
-> 	   Thanks to all.
+> Background
+> ----------
 >
-> Changes from v1:
-> 	1. Rebase on linux-next.
-> 	2. Initialize net_iov->pp =3D NULL when allocating net_iov in
-> 	   net_devmem_bind_dmabuf() and io_zcrx_create_area().
-> 	3. Use ->pp for net_iov to identify if it's pp rather than
-> 	   always consider net_iov as pp.
-> 	4. Add Suggested-by: David Hildenbrand <david@redhat.com>.
+> Our production servers consistently configure THP to "never" due to
+> historical incidents caused by its behavior. Key issues include:
+> - Increased Memory Consumption
+>   THP significantly raises overall memory usage, reducing available memory
+>   for workloads.
 >
-> ---8<---
-> From 88bcb9907a0cef65a9c0adf35e144f9eb67e0542 Mon Sep 17 00:00:00 2001
-> From: Byungchul Park <byungchul@sk.com>
-> Date: Tue, 29 Jul 2025 19:49:44 +0900
-> Subject: [PATCH linux-next v3] mm, page_pool: introduce a new page type=
- for page pool in page type
+> - Latency Spikes
+>   Random latency spikes occur due to frequent memory compaction triggered
+>   by THP.
 >
-> ->pp_magic field in struct page is current used to identify if a page
-> belongs to a page pool.  However, ->pp_magic will be removed and page
-> type bit in struct page e.i. PGTY_netpp can be used for that purpose.
+> - Lack of Fine-Grained Control
+>   THP tuning is globally configured, making it unsuitable for containerized
+>   environments. When multiple workloads share a host, enabling THP without
+>   per-workload control leads to unpredictable behavior.
 >
-> Introduce and use the page type APIs e.g. PageNetpp(), __SetPageNetpp()=
-,
-> and __ClearPageNetpp() instead, and remove the existing APIs accessing
-> ->pp_magic e.g. page_pool_page_is_pp(), netmem_or_pp_magic(), and
-> netmem_clear_pp_magic().
+> Due to these issues, administrators avoid switching to madvise or always
+> modes—unless per-workload THP control is implemented.
 >
-> For net_iov, use ->pp to identify if it's pp, with making sure that ->p=
-p
-> is NULL for non-pp net_iov.
->
-> This work was inspired by the following link:
->
-> [1] https://lore.kernel.org/all/582f41c0-2742-4400-9c81-0d46bf4e8314@gm=
-ail.com/
->
-> While at it, move the sanity check for page pool to on free.
->
-> Suggested-by: David Hildenbrand <david@redhat.com>
-> Co-developed-by: Pavel Begunkov <asml.silence@gmail.com>
-> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-> Signed-off-by: Byungchul Park <byungchul@sk.com>
-> Acked-by: David Hildenbrand <david@redhat.com>
-> Reviewed-by: Mina Almasry <almasrymina@google.com>
-> ---
->  .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  2 +-
->  include/linux/mm.h                            | 27 +++----------------=
+> To address this, we propose BPF-based THP policy for flexible adjustment.
+> Additionally, as David mentioned [0], this mechanism can also serve as a
 
->  include/linux/page-flags.h                    |  6 +++++
->  include/net/netmem.h                          |  2 +-
->  io_uring/zcrx.c                               |  4 +++
->  mm/page_alloc.c                               |  7 +++--
->  net/core/devmem.c                             |  1 +
->  net/core/netmem_priv.h                        | 23 +++++++---------
->  net/core/page_pool.c                          | 10 +++++--
->  9 files changed, 37 insertions(+), 45 deletions(-)
->
+The link to [0] is missing. :)
 
-<snip>
+> policy prototyping tool (test policies via BPF before upstreaming them).
+>
+> Proposed Solution
+> -----------------
+>
+> As suggested by David [0], we introduce a new BPF interface:
+>
+> /**
+>  * @get_suggested_order: Get the suggested highest THP order for allocation
+>  * @mm: mm_struct associated with the THP allocation
+>  * @tva_flags: TVA flags for current context
+>  *             %TVA_IN_PF: Set when in page fault context
+>  *             Other flags: Reserved for future use
+>  * @order: The highest order being considered for this THP allocation.
+>  *         %PUD_ORDER for PUD-mapped allocations
 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 0d4ee569aa6b..d01b296e7184 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -4171,10 +4171,9 @@ int arch_lock_shadow_stack_status(struct task_st=
-ruct *t, unsigned long status);
->   * DMA mapping IDs for page_pool
->   *
->   * When DMA-mapping a page, page_pool allocates an ID (from an xarray)=
- and
-> - * stashes it in the upper bits of page->pp_magic. We always want to b=
-e able to
-> - * unambiguously identify page pool pages (using page_pool_page_is_pp(=
-)). Non-PP
-> - * pages can have arbitrary kernel pointers stored in the same field a=
-s pp_magic
-> - * (since it overlaps with page->lru.next), so we must ensure that we =
-cannot
-> + * stashes it in the upper bits of page->pp_magic. Non-PP pages can ha=
-ve
-> + * arbitrary kernel pointers stored in the same field as pp_magic (sin=
-ce
-> + * it overlaps with page->lru.next), so we must ensure that we cannot
->   * mistake a valid kernel pointer with any of the values we write into=
- this
->   * field.
->   *
-> @@ -4205,26 +4204,6 @@ int arch_lock_shadow_stack_status(struct task_st=
-ruct *t, unsigned long status);
->  #define PP_DMA_INDEX_MASK GENMASK(PP_DMA_INDEX_BITS + PP_DMA_INDEX_SHI=
-FT - 1, \
->  				  PP_DMA_INDEX_SHIFT)
->
-> -/* Mask used for checking in page_pool_page_is_pp() below. page->pp_ma=
-gic is
-> - * OR'ed with PP_SIGNATURE after the allocation in order to preserve b=
-it 0 for
-> - * the head page of compound page and bit 1 for pfmemalloc page, as we=
-ll as the
-> - * bits used for the DMA index. page_is_pfmemalloc() is checked in
-> - * __page_pool_put_page() to avoid recycling the pfmemalloc page.
-> - */
-> -#define PP_MAGIC_MASK ~(PP_DMA_INDEX_MASK | 0x3UL)
-> -
-> -#ifdef CONFIG_PAGE_POOL
-> -static inline bool page_pool_page_is_pp(const struct page *page)
-> -{
-> -	return (page->pp_magic & PP_MAGIC_MASK) =3D=3D PP_SIGNATURE;
-> -}
-> -#else
-> -static inline bool page_pool_page_is_pp(const struct page *page)
-> -{
-> -	return false;
-> -}
-> -#endif
-> -
->  #define PAGE_SNAPSHOT_FAITHFUL (1 << 0)
->  #define PAGE_SNAPSHOT_PG_BUDDY (1 << 1)
->  #define PAGE_SNAPSHOT_PG_IDLE  (1 << 2)
-> diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-> index 8d3fa3a91ce4..84247e39e9e7 100644
-> --- a/include/linux/page-flags.h
-> +++ b/include/linux/page-flags.h
-> @@ -933,6 +933,7 @@ enum pagetype {
->  	PGTY_zsmalloc		=3D 0xf6,
->  	PGTY_unaccepted		=3D 0xf7,
->  	PGTY_large_kmalloc	=3D 0xf8,
-> +	PGTY_netpp		=3D 0xf9,
->
->  	PGTY_mapcount_underflow =3D 0xff
->  };
-> @@ -1077,6 +1078,11 @@ PAGE_TYPE_OPS(Zsmalloc, zsmalloc, zsmalloc)
->  PAGE_TYPE_OPS(Unaccepted, unaccepted, unaccepted)
->  FOLIO_TYPE_OPS(large_kmalloc, large_kmalloc)
->
-> +/*
-> + * Marks page_pool allocated pages.
-> + */
-> +PAGE_TYPE_OPS(Netpp, netpp, netpp)
-> +
->  /**
->   * PageHuge - Determine if the page belongs to hugetlbfs
->   * @page: The page to test.
+There is no PUD THP yet and the highest THP order is PMD_ORDER. It is better
+to remove the line above to avoid confusion.
 
-<snip>
-
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index d1d037f97c5f..2f6a55fab942 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -1042,7 +1042,6 @@ static inline bool page_expected_state(struct pag=
-e *page,
->  #ifdef CONFIG_MEMCG
->  			page->memcg_data |
->  #endif
-> -			page_pool_page_is_pp(page) |
->  			(page->flags & check_flags)))
->  		return false;
+>  *         %PMD_ORDER for PMD-mapped allocations
+>  *         %PMD_ORDER - 1 for mTHP allocations
+>  *
+>  * Rerurn: Suggested highest THP order to use for allocation. The returned
+>  * order will never exceed the input @order value.
+>  */
+> int (*get_suggested_order)(struct mm_struct *mm, unsigned long tva_flags, int order);
 >
-> @@ -1069,8 +1068,6 @@ static const char *page_bad_reason(struct page *p=
-age, unsigned long flags)
->  	if (unlikely(page->memcg_data))
->  		bad_reason =3D "page still charged to cgroup";
->  #endif
-> -	if (unlikely(page_pool_page_is_pp(page)))
-> -		bad_reason =3D "page_pool leak";
->  	return bad_reason;
->  }
->
-> @@ -1379,9 +1376,11 @@ __always_inline bool free_pages_prepare(struct p=
-age *page,
->  		mod_mthp_stat(order, MTHP_STAT_NR_ANON, -1);
->  		folio->mapping =3D NULL;
->  	}
-> -	if (unlikely(page_has_type(page)))
-> +	if (unlikely(page_has_type(page))) {
-> +		WARN_ON_ONCE(PageNetpp(page));
->  		/* Reset the page_type (which overlays _mapcount) */
->  		page->page_type =3D UINT_MAX;
-> +	}
->
->  	if (is_check_pages_enabled()) {
->  		if (free_page_is_bad(page))
+> This interface:
+> - Supports both use cases (per-workload tuning + policy prototyping).
+> - Can be extended with BPF helpers (e.g., for memory pressure awareness).
 
-The mm part looks good to me.
+IIRC, your initial RFC works at VMA level, but this patch targets mm level.
+Is mm sufficient for your use case? Are you planning to extend the
+BFP interface to VMA in the future? Just curious.
 
-Acked-by: Zi Yan <ziy@nvidia.com>
+>
+> This is an experimental feature. To use it, you must enable
+> CONFIG_EXPERIMENTAL_BPF_ORDER_SELECTION.
+>
+> Warning:
+> - The interface may change
+> - Behavior may differ in future kernel versions
+> - We might remove it in the future
+>
+> A simple test case is included in Patch #4.
+>
+> Changes:
+> RFC v3->v4:
+> - Use a new interface get_suggested_order() (David)
+> - Mark it as experimental (David, Lorenzo)
+> - Code improvement in THP (Usama)
+> - Code improvement in BPF struct ops (Amery)
+>
+> RFC v2->v3: https://lwn.net/Articles/1024545/
+> - Finer-graind tuning based on madvise or always mode (David, Lorenzo)
+> - Use BPF to write more advanced policies logic (David, Lorenzo)
+>
+> RFC v1->v2: https://lwn.net/Articles/1021783/
+> The main changes are as follows,
+> - Use struct_ops instead of fmod_ret (Alexei)
+> - Introduce a new THP mode (Johannes)
+> - Introduce new helpers for BPF hook (Zi)
+> - Refine the commit log
+>
+> RFC v1: https://lwn.net/Articles/1019290/
+>
+> Yafang Shao (4):
+>   mm: thp: add support for BPF based THP order selection
+>   mm: thp: add a new kfunc bpf_mm_get_mem_cgroup()
+>   mm: thp: add a new kfunc bpf_mm_get_task()
+>   selftest/bpf: add selftest for BPF based THP order seletection
+>
+>  include/linux/huge_mm.h                       |  13 +
+>  include/linux/khugepaged.h                    |  12 +-
+>  mm/Kconfig                                    |  12 +
+>  mm/Makefile                                   |   1 +
+>  mm/bpf_thp.c                                  | 255 ++++++++++++++++++
+>  mm/huge_memory.c                              |   9 +
+>  mm/khugepaged.c                               |  18 +-
+>  mm/memory.c                                   |  14 +-
+>  tools/testing/selftests/bpf/config            |   2 +
+>  .../selftests/bpf/prog_tests/thp_adjust.c     | 183 +++++++++++++
+>  .../selftests/bpf/progs/test_thp_adjust.c     |  69 +++++
+>  .../bpf/progs/test_thp_adjust_failure.c       |  24 ++
+>  12 files changed, 605 insertions(+), 7 deletions(-)
+>  create mode 100644 mm/bpf_thp.c
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/thp_adjust.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust_failure.c
+>
+> -- 
+> 2.43.5
+
 
 Best Regards,
 Yan, Zi
