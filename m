@@ -1,87 +1,140 @@
-Return-Path: <bpf+bounces-64595-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64596-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36E64B14A86
-	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 10:56:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F3CEB14ACF
+	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 11:10:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77EF84E156F
-	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 08:56:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0B0616EABA
+	for <lists+bpf@lfdr.de>; Tue, 29 Jul 2025 09:10:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F0FD287266;
-	Tue, 29 Jul 2025 08:56:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1466A2874F0;
+	Tue, 29 Jul 2025 09:10:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AYZKIDnd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A4D6286402
-	for <bpf@vger.kernel.org>; Tue, 29 Jul 2025 08:56:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFF3327A123;
+	Tue, 29 Jul 2025 09:10:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753779364; cv=none; b=I8mG4oC0GH/CUZMYRtT5Z9WeNSreZxlDEbaCExADA+tUA/Q77gvzxfkej8GDxvYJuelH+VkZBq/zohyjcqkI82jtNZKX8U9Agfp3Qve9Gs8VrgMnjUpwnyAwPceaHl2UINsA9MNdPzOWtn1TP3OvqCXxrBGfwCh+fd9Bd3EYChQ=
+	t=1753780204; cv=none; b=pPy0DJdqTx2vO3Eg0ADTyEIBQJdwW5LEzSiujjwd6ouIcLZA/7+QjeEkTXxK30EXQedvR7fXLkp/Yg9/A1mFXfghg6v9gwbl8A8qLEci2Z6f5XQm8PVpAqBfcv6e7s3E6TYnIZ1gXND5ieXjpX1fX2RJLdztMxk8SQi8xc3K/fU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753779364; c=relaxed/simple;
-	bh=uBjlPTSujMJnq+adL8AQHG9GvvL9ojVDTJ8XvBEl+Ig=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=bXJeZ8ANTtK9CoTrY14ok/8/ZCL+FRTWDnkMoej8pLzAGrTK/rSWSG0j/rvbvUodfxNx/dn7yGMYDyyGulKY+jL8z598g+YTBNh/6TI6nAbUMFk3414pEY5eOs5wQ9SK7i7CipJ2UslnoAumtwIFe9vLQdpl/hbjZRyyNwJlY8Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-87c29bef96cso961341739f.0
-        for <bpf@vger.kernel.org>; Tue, 29 Jul 2025 01:56:03 -0700 (PDT)
+	s=arc-20240116; t=1753780204; c=relaxed/simple;
+	bh=9LilFwsyzXEBNISNDgSQr3EDtxWlqZW1O/7Hpct2THM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=S9MvwYNc0oHDzMQsxzxxDI1LDKAYrxgTYDqcRW0QGA5YuUJGatNo/JWbGGYAqXaXbkLwjD8G4DOyVy1TUC3nVO7KmgofGDm1pDdcqeXPA8HEmP17INsplDs6OA7kxGPU2KA9xqeiZKj2VhOWSFiUgQ2CmfLG9QVu1acNNxiI5uo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AYZKIDnd; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3b782cca9a0so1841129f8f.1;
+        Tue, 29 Jul 2025 02:10:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1753780201; x=1754385001; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WDxjHKxEk4bzUf242dYSPxRTJXLTbFhf7MDZw//NVfw=;
+        b=AYZKIDndn/BeyVBnC1LqL5KfNdQ0m9YBUDRW1Oy3spsdy7bMrRg2vB1A4zixw2R2+y
+         qu15Upi2cpl9wBejFxE88wmzYW/LwHpQe5eIJFbU0PPXYSQTWuyLPoxd8L0Y/oSZtfmQ
+         iUkvHlL3IbmQ3DO+DK+tqS1WBVJjrUPmds02hyTOHMY/h5zRQoVu+o8j+Stq9+zbQTHf
+         OHkOQG6vNZGKMhdGsBdzTPpUurs6vDjLZe/6YHzoHpNDs28A7pSs9NdvG47TenD+94+N
+         lCh+OQHzaIXr/HVjRQAlJsBuseOBvSeoS7nQ4EuPQJOjLaf1Au/NWBb8FqwznugBfINZ
+         CuvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753779362; x=1754384162;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jlHNxi6fbgmpncRlD4B+e2NWpW9TaER/WSxCeS0bgh0=;
-        b=JoQ+LDMw0UEDgOYjtJhZ3idKuUGukIlxwWXoDmsrxaIAXptylSfx6Ho6JsHTZTA9/R
-         GXxEAoVDQ/dR3Gced2GDY9yftveYmJoFEKy1tNjBIdJwNsBenHxOkG2hfjQltJd5HKCB
-         1ZuK8yoYDake57S9+4osmXUNJMvATbaOFh9dzPqH8qNj40gBZCIL1Sbek1iwtaOYs6qE
-         VDbhl6JEOxwwJFU1u7OShHmcAkfw8/kIy4ZvnTwnPmtpMHmQ042AG3zu0CFN6JB6lmio
-         G1CcmX+61UzaHPurNkZbwx2zTXXnbXrElwzl5e9EFt+0EuH0Tc3c/DrROgH+RArkd3CC
-         udNQ==
-X-Gm-Message-State: AOJu0Yzjd8IJRTMWq5Zk4gBPgXG6i55aK5sI6r85bAAuLoVW8FSh41Qc
-	I4Fq9WDJ4l5FPfObS0GMGIVy4yg4o9PvvNMAxdl1Q0mrgh24RHLawEvFmuIcunJ6f+JB4CxZsWl
-	UMM3s1v3Wx/wI4NN2U2173Hq4WR3IpkPpVlXgGfItbQQTb3DXchj632wz1j0=
-X-Google-Smtp-Source: AGHT+IEDK/1RkYgL4GVGXQltD8EKmq+l5LGMj/Z/HdZqdOw9HDMwzpgSQ4PEQ5MKZoIuzzePtUJqsR/qq6gvOPv5MKRU/3ZdTqq8
+        d=1e100.net; s=20230601; t=1753780201; x=1754385001;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WDxjHKxEk4bzUf242dYSPxRTJXLTbFhf7MDZw//NVfw=;
+        b=r5fcRbFxeorw5pHeRSeIRiPPbL0sAuKN2FQMJLKQY0/U5QPy17JdgwcuNWg/iVoSRl
+         1Dz0yPF4pcXhiyb9f2aH3DzB0+Nul0K0Eb+BLZjlYkQGMKeiimVqa0piKqHVUzflQh0Z
+         APT1MNqpUtFpnn3N3mCUNH1fNZv2BP8/0XbAgCfP6aI73deK8S6m8J5QWSHsiL6+saLv
+         VZ/bI97w2ObS+hTO5PxG265amrwD3/FkMyKChx+cNB1O2CeUxXdSqffXkN8EIY/sXO9o
+         fBd6tbVdLR1YLb3IrDHTB1a3SwRsBGB3z6fANWOeZp2l4KJMavWnR75zTN83wDssLzZk
+         k0jQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUobXvRdIUYkmsr+Z73tg/CO8eqYupjt3W2bCzArUdsDRX5mL663dUKvagl6mqG5f4qndg5HZyz@vger.kernel.org, AJvYcCWHScNOgNOHw0g7LqtP8BMnK+/5PrLYqCmFY/UbViYzgRIEUMhvpkpJnvOibIeKsu5vTJ1l8hzi2l5yfoPcyuNn@vger.kernel.org, AJvYcCWx9dkwrcYNVwmNYx/13XTEtXBelYMaCQylQj3Eabr7jWmFVyUuKu4tMVTG2x0f6dFwBW8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxQ4QmeJ+ijMOaQL/75S0yIlsh5HCJiWAI40WVQoZJZMscMZ2th
+	IDFQBaVsCW/ffRSvele1oByRnsUJwGcWBLsOhND6N/nxUY7h4g/TjDwI
+X-Gm-Gg: ASbGncv9uMZpxHkvYRY/AKO43Bw6MsCia/L/NZpPW7u4U3mfVyRf03XftIVEHCZ6s7a
+	8cm5rMF+sogxXZsvnFE0/ol6oasFw9aOfpkASyHl1B9dRhQHOVqeM0NtL2zPKLUiXGG84d+D/WI
+	RC7uznSb3cyIZjmliDeST3/kwax2zhAmpCMUMMwSGG3Zx4nmouhbT3j4+pVWFFU0JJeQRPsLTol
+	yKOzTT+juC0CdRbU7jsAMaNQmn4FyQ/lg72NSB3XVutFlXZuGaAyV3SILbnEdGKhhtl7xuNqhDa
+	u04lbRsnUNQeGU0z8AS2QWHNHQPt5KjqHxn78f+QopbpBirRdwazLauxHHSZ43CMhbWzlRUB9r/
+	nw9FZ+VtA+PkE0VkLVgkCdaRX5TR7vr79Wru7xBfLxxH8qNo6wPY4r5o+O4hpjIUcYQ==
+X-Google-Smtp-Source: AGHT+IHH8+al9qv6iocTAD7WJesBvsnSwWK7+DrhIw3/VbdqC+a5NBS2dU6E/8+5gIjse9mgfZInQg==
+X-Received: by 2002:a05:6000:4a1b:b0:3b7:78c8:93d1 with SMTP id ffacd0b85a97d-3b778c89877mr11705436f8f.21.1753780200926;
+        Tue, 29 Jul 2025 02:10:00 -0700 (PDT)
+Received: from gmail.com (deskosmtp.auranext.com. [195.134.167.217])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b78dd6cb0fsm2373722f8f.29.2025.07.29.02.10.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Jul 2025 02:10:00 -0700 (PDT)
+Date: Tue, 29 Jul 2025 11:09:58 +0200
+From: Mahe Tardy <mahe.tardy@gmail.com>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: alexei.starovoitov@gmail.com, andrii@kernel.org, ast@kernel.org,
+	bpf@vger.kernel.org, coreteam@netfilter.org, daniel@iogearbox.net,
+	fw@strlen.de, john.fastabend@gmail.com, netdev@vger.kernel.org,
+	netfilter-devel@vger.kernel.org, oe-kbuild-all@lists.linux.dev,
+	pablo@netfilter.org, lkp@intel.com
+Subject: Re: [PATCH bpf-next v3 4/4] selftests/bpf: add icmp_send_unreach
+ kfunc tests
+Message-ID: <aIiP5l24ihrS2x-u@gmail.com>
+References: <202507270940.kXGmRbg5-lkp@intel.com>
+ <20250728094345.46132-1-mahe.tardy@gmail.com>
+ <20250728094345.46132-5-mahe.tardy@gmail.com>
+ <382ff228-704c-4e0c-9df3-2eb178adcba8@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:1408:b0:87c:49fe:cafe with SMTP id
- ca18e2360f4ac-8802298192emr2690950839f.11.1753779362649; Tue, 29 Jul 2025
- 01:56:02 -0700 (PDT)
-Date: Tue, 29 Jul 2025 01:56:02 -0700
-In-Reply-To: <20250729072234.90576-1-contact@arnaud-lcm.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68888ca2.a70a0220.13df61.0000.GAE@google.com>
-Subject: Re: [syzbot] [bpf?] KASAN: slab-out-of-bounds Write in __bpf_get_stackid
-From: syzbot <syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com>
-To: bpf@vger.kernel.org, contact@arnaud-lcm.com, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <382ff228-704c-4e0c-9df3-2eb178adcba8@linux.dev>
 
-Hello,
+On Mon, Jul 28, 2025 at 06:18:11PM -0700, Martin KaFai Lau wrote:
+> On 7/28/25 2:43 AM, Mahe Tardy wrote:
+> > +SEC("cgroup_skb/egress")
+> > +int egress(struct __sk_buff *skb)
+> > +{
+> > +	void *data = (void *)(long)skb->data;
+> > +	void *data_end = (void *)(long)skb->data_end;
+> > +	struct iphdr *iph;
+> > +	struct tcphdr *tcph;
+> > +
+> > +	iph = data;
+> > +	if ((void *)(iph + 1) > data_end || iph->version != 4 ||
+> > +	    iph->protocol != IPPROTO_TCP || iph->daddr != bpf_htonl(SERVER_IP))
+> > +		return SK_PASS;
+> > +
+> > +	tcph = (void *)iph + iph->ihl * 4;
+> > +	if ((void *)(tcph + 1) > data_end ||
+> > +	    tcph->dest != bpf_htons(SERVER_PORT))
+> > +		return SK_PASS;
+> > +
+> > +	kfunc_ret = bpf_icmp_send_unreach(skb, unreach_code);
+> > +
+> > +	/* returns SK_PASS to execute the test case quicker */
+> 
+> Do you know why the user space is slower if 0 (SK_DROP) is used?
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+I tried to write my understanding of this in the commit description:
 
-Reported-by: syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com
-Tested-by: syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com
+"Note that the BPF program returns SK_PASS to let the connection being
+established to finish the test cases quicker. Otherwise, you have to
+wait for the TCP three-way handshake to timeout in the kernel and
+retrieve the errno translated from the unreach code set by the ICMP
+control message."
 
-Tested on:
+I added this comment because I already had some (offline) feedback that
+this looked off, maybe I should develop and put this here directly.
 
-commit:         cd7c97f4 Merge branch 'bpf-show-precise-rejected-funct..
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15fe44a2580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=934611ae034ab218
-dashboard link: https://syzkaller.appspot.com/bug?extid=c9b724fbb41cf2538b7b
-compiler:       Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=11bbb4a2580000
-
-Note: testing is done by a robot and is best-effort only.
+> 
+> > +	return SK_PASS;
+> 
 
