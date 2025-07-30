@@ -1,136 +1,82 @@
-Return-Path: <bpf+bounces-64731-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64732-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8008DB16578
-	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 19:26:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87569B1657E
+	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 19:27:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89EDF5670DC
-	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 17:26:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E956D1AA453C
+	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 17:28:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FE0C2E06E4;
-	Wed, 30 Jul 2025 17:26:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB69E24B26;
+	Wed, 30 Jul 2025 17:27:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=konsulko.se header.i=@konsulko.se header.b="bphNS+XV";
-	dkim=permerror (0-bit key) header.d=konsulko.se header.i=@konsulko.se header.b="6Af2hm4y"
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="PA8dEPdm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailrelay-egress16.pub.mailoutpod3-cph3.one.com (mailrelay-egress16.pub.mailoutpod3-cph3.one.com [46.30.212.3])
+Received: from lamorak.hansenpartnership.com (lamorak.hansenpartnership.com [198.37.111.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52AA772616
-	for <bpf@vger.kernel.org>; Wed, 30 Jul 2025 17:26:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.212.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3014B173;
+	Wed, 30 Jul 2025 17:27:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.37.111.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753896388; cv=none; b=ptmWuv9FKDAHtDvflgm2dX0MQvhDjfwUEDxUXbBGvrozchNG7b4oLfXFoGB/IkX90nZSGddw7MvepBXtd0irgivGQBH1N3sXtFJD9bGIrJajfpHiXIT7ZiaAT/G5ToVW/KwYVqhEfXhUy3fNgCbWAazbY4cbzW0CV2H5lnQKQEo=
+	t=1753896475; cv=none; b=KIoAHRmcFlfxJKW9CYk5Y5k8/JmCd4pdPTjw9zr1wEszyNPXqTzHJ0bp/ZfmY4MocoptcPRHW7QlspRof8IqA8JtjnbehRitZMKJWYg9s/qud0yI/bIZo2/eGUWoJ9jHpd2T673jrXYOjX4myUu5SKfEPOAKLR6VodamJNH/WBw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753896388; c=relaxed/simple;
-	bh=PGi2Cbl4x5cWD0I2ITAY/N2F9HJW2syAJhuk1NYiQAY=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=ejYetAht0Fat891UvYXdOtKegE6oJFLfPojZfUAwIr8pFWxD02veCl92yDWM7cA9qvCKwWgHmFC1GCbCYVlD+CnylVqeqFnGK92fvetvehYoDbRXHP5H748JxMZOKNnnqTP4uQcPGEJ64DXP5i2vg+Ij6AMVZppXkA/7SpE/6Rs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=konsulko.se; spf=none smtp.mailfrom=konsulko.se; dkim=pass (2048-bit key) header.d=konsulko.se header.i=@konsulko.se header.b=bphNS+XV; dkim=permerror (0-bit key) header.d=konsulko.se header.i=@konsulko.se header.b=6Af2hm4y; arc=none smtp.client-ip=46.30.212.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=konsulko.se
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=konsulko.se
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1753896317; x=1754501117;
-	d=konsulko.se; s=rsa1;
-	h=to:references:message-id:content-transfer-encoding:cc:date:in-reply-to:from:
-	 subject:mime-version:content-type:from;
-	bh=PGi2Cbl4x5cWD0I2ITAY/N2F9HJW2syAJhuk1NYiQAY=;
-	b=bphNS+XVZXoX9g07m5+NodI8iBOu6iCZe9qsYu9hHOvQTKaIzlhzzUQUED7XQoyqJxC+tL7sgGcEa
-	 kFrKiQLtjdEWpHN18pKT0HFWZgYq1bbGQLXO/J6P86Lv8MVWqW2GTLshgF3eGaaOt4Uvt7yC1jLF1p
-	 r+813EgTmpNicMprW1wyH9yq5Ul2LpQZgZT2fva3wx0Pj1nj6xBbMz+KvJFCfEqMt+NKIWw1n49zQH
-	 1QdAlPPrlaK+rPo/FtDeo4VzniYkixsNODYSAqLiGGhV+aVoSF13JWDOg5WB/4NPeSGGF1an7ApX9Z
-	 vVF4cGW3eZTre/4hY5gWeDzCXg9XRvw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1753896317; x=1754501117;
-	d=konsulko.se; s=ed1;
-	h=to:references:message-id:content-transfer-encoding:cc:date:in-reply-to:from:
-	 subject:mime-version:content-type:from;
-	bh=PGi2Cbl4x5cWD0I2ITAY/N2F9HJW2syAJhuk1NYiQAY=;
-	b=6Af2hm4yEUeE/Oyl9MPj99Eu4MG7asvfvhfFyRnp28rv0ioRog4XZlBcGDfZGbuAOpPFeijWrfKWl
-	 0lE/kdVAg==
-X-HalOne-ID: 27e5fc15-6d6a-11f0-98dc-c9fa7b04d629
-Received: from smtpclient.apple (unknown [2a01:cb1d:9264:6f00:8e8:6eed:ae4e:a087])
-	by mailrelay1.pub.mailoutpod3-cph3.one.com (Halon) with ESMTPSA
-	id 27e5fc15-6d6a-11f0-98dc-c9fa7b04d629;
-	Wed, 30 Jul 2025 17:25:16 +0000 (UTC)
-Content-Type: text/plain;
-	charset=utf-8
+	s=arc-20240116; t=1753896475; c=relaxed/simple;
+	bh=qTGOnG+4FbEQWLabid6wEdaHLc0aXLp7YO0vAo8EkOc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cjOQwANns+rDPs5NmwK6sDbFYpIXkUQ7rVmiyqJ6O6ltq99cuKfqm9MMBhonExCs84op1DOluAl61xoJEn+IAAVy/PnfjGbBJSvYppRMnpsbsE30FmublyZ15XzuHI7kpNlqXcRjOYaK30wH0u3x+BikH6vMAtr8o3iGsTstN1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=PA8dEPdm; arc=none smtp.client-ip=198.37.111.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1753896471;
+	bh=qTGOnG+4FbEQWLabid6wEdaHLc0aXLp7YO0vAo8EkOc=;
+	h=From:To:Subject:Date:Message-ID:From;
+	b=PA8dEPdmkxMNPrIYpl18aYJzPDaOg4w6nGj1nX1qZ8r6aYhTHrvBG6fJoq+LQni96
+	 /SFsk3eRA44vT+v5NvtrMNe2sWFo8z+jiatJfaENEfkrpCyWMCCGunbQsB8yCnxywT
+	 N4xMol5ETEINWlvHtwg7pC0B8IZQgdqQWx8YX0vY=
+Received: from lingrow.int.hansenpartnership.com (unknown [153.66.160.227])
+	by lamorak.hansenpartnership.com (Postfix) with ESMTP id F0FD61C0248;
+	Wed, 30 Jul 2025 13:27:50 -0400 (EDT)
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: bpf@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org
+Cc: Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH v2 0/3] bpf: tidy up internals of bpf key handling
+Date: Wed, 30 Jul 2025 13:27:42 -0400
+Message-ID: <20250730172745.8480-1-James.Bottomley@HansenPartnership.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.200.121\))
-Subject: Re: [PATCH v13 1/4] :mm/vmalloc: allow to set node and align in
- vrealloc
-From: Vitaly Wool <vitaly.wool@konsulko.se>
-In-Reply-To: <aHZnmevtRYt26LBE@casper.infradead.org>
-Date: Wed, 30 Jul 2025 19:25:05 +0200
-Cc: linux-mm@kvack.org,
- akpm@linux-foundation.org,
- linux-kernel@vger.kernel.org,
- Uladzislau Rezki <urezki@gmail.com>,
- Danilo Krummrich <dakr@kernel.org>,
- Alice Ryhl <aliceryhl@google.com>,
- Vlastimil Babka <vbabka@suse.cz>,
- rust-for-linux@vger.kernel.org,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
- "Liam R . Howlett" <Liam.Howlett@oracle.com>,
- Kent Overstreet <kent.overstreet@linux.dev>,
- linux-bcachefs@vger.kernel.org,
- bpf@vger.kernel.org,
- Herbert Xu <herbert@gondor.apana.org.au>,
- Jann Horn <jannh@google.com>,
- Pedro Falcato <pfalcato@suse.de>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <B851D9FB-3745-4923-B196-C4D0C618DBF5@konsulko.se>
-References: <20250715135645.2230065-1-vitaly.wool@konsulko.se>
- <20250715135724.2230116-1-vitaly.wool@konsulko.se>
- <aHZnmevtRYt26LBE@casper.infradead.org>
-To: Matthew Wilcox <willy@infradead.org>
-X-Mailer: Apple Mail (2.3826.200.121)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
+This patch series reduces the size of the implementing code and
+eliminates allocations on the bpf_key_lookup paths.  There is no
+externally visible change to the BPF API.
 
+v2 fixes the test failures by keeping an empty bpf_key structure and
+differentiating between failure and builtin key returns.
 
-> On Jul 15, 2025, at 4:37=E2=80=AFPM, Matthew Wilcox =
-<willy@infradead.org> wrote:
->=20
-> On Tue, Jul 15, 2025 at 03:57:24PM +0200, Vitaly Wool wrote:
->> +void *__must_check vrealloc_node_align_noprof(const void *p, size_t =
-size,
->> + unsigned long align, gfp_t flags, int nid) __realloc_size(2);
->> +#define vrealloc_node_noprof(_p, _s, _f, _nid) \
->> + vrealloc_node_align_noprof(_p, _s, 1, _f, _nid)
->> +#define vrealloc_noprof(_p, _s, _f) \
->> + vrealloc_node_align_noprof(_p, _s, 1, _f, NUMA_NO_NODE)
->> +#define vrealloc_node_align(...) =
-alloc_hooks(vrealloc_node_align_noprof(__VA_ARGS__))
->> +#define vrealloc_node(...) =
-alloc_hooks(vrealloc_node_noprof(__VA_ARGS__))
->> +#define vrealloc(...) alloc_hooks(vrealloc_noprof(__VA_ARGS__))
->=20
-> I think we can simplify all of this.
->=20
-> void *__must_check vrealloc_noprof(const void *p, size_t size,
-> unsigned long align, gfp_t flags, int nid) __realloc_size(2);
-> #define vrealloc_node_align(...) \
-> alloc_hooks(vrealloc_noprof(__VA_ARGS__))
-> #define vrealloc_node(p, s, f, nid) \
-> alloc_hooks(vrealloc_noprof(p, s, 1, f, nid))
-> #define vrealloc(p, s, f) \
-> alloc_hooks(vrealloc_noprof(p, s, 1, f, NUMA_NO_NODE))
->=20
->=20
+Regards,
 
-In this case, to keep things buildable an each step we will need to =
-modify slub.c in this patch. Since we change slub.c in the next patch in =
-the series I would suggest that we keep things simple (=3D=3D as they =
-are now, even if it means some redundant macros have to stay). I can =
-come up with a macro simplification like yours when this series is =
-accepted.
+James
 
-Thanks,
-Vitaly
+James Bottomley (3):
+  bpf: make bpf_key an opaque type
+  bpf: remove bpf_key reference
+  bpf: eliminate the allocation of an intermediate struct bpf_key
+
+ include/linux/bpf.h      |  5 +----
+ kernel/trace/bpf_trace.c | 47 ++++++++++++++++------------------------
+ 2 files changed, 20 insertions(+), 32 deletions(-)
+
+-- 
+2.43.0
 
 
