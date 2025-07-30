@@ -1,123 +1,123 @@
-Return-Path: <bpf+bounces-64754-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64755-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B20C9B16941
-	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 01:19:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A21BB16974
+	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 01:48:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0929165849
-	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 23:19:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B16AA18C7F3A
+	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 23:48:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B00122CBD9;
-	Wed, 30 Jul 2025 23:19:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6895823BCEB;
+	Wed, 30 Jul 2025 23:47:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OqrsQlqt"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="pT+PmoF8"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3C9C84D13;
-	Wed, 30 Jul 2025 23:19:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 953EB2264B0
+	for <bpf@vger.kernel.org>; Wed, 30 Jul 2025 23:47:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753917565; cv=none; b=rmevvHkS7OxWqtEPu4RrCi+Q2t4KTAB297E6D2T/bAF+7tw4H1xNxhheavEi3Fb4VaRg2ZJnWRzUlwaCvLrpAq+h5EkZX228Mq04WivvX6xRRkIkVW8wjEVi7/Egumylz33++IwNQByZM5lZAzFSj6BXWg4xnIOiH7Kgx2/2bws=
+	t=1753919264; cv=none; b=YKAxLvB3FQu7mRCp7/D5IrkDZZFQIFI0QnhqNhYhJzlUlavMyBccmwMgbuYRj1sgJvsEQiuVkBTR20ZaA8GS11Xqo+5BgsOwnAHXfh33Jkcl+kwUaRi1tCKmXKxg+N1oa6DNxRQkipn+Ad0NaWXSGTmUspAjBR8mxcev6QySCDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753917565; c=relaxed/simple;
-	bh=TdwkDPId7wYFe/ttb+9uYm/jPwmfM95FDQAoEbN0O/k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c4K4OHVyDiC6Wr0sU5+q3DkqwcXhoU64QHOZQE6vv9W6C3PsKJAvjOn2F0+OEa4iGErfh7AAuINy2GaK0HMaMls21zPtMxti485byeoiIKUUi95xfwWU4pgItIFLytpzIkgSkgdcOOj3YOxmM+gIfuI+mWQT6zJo7LQWsbIjeig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OqrsQlqt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D913C4CEEB;
-	Wed, 30 Jul 2025 23:19:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753917564;
-	bh=TdwkDPId7wYFe/ttb+9uYm/jPwmfM95FDQAoEbN0O/k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OqrsQlqtsobMlGsKf8PggnusesVb+0dPxdxMrt2rP34ch9qvfpfZYJ0+wvGe3ISK8
-	 dHSjYNfmFMd9G0aj4R2BFesYEsB6E4TUmVe3FK8VwS/m2mFdeZHJY99koiC/Dzuwr0
-	 b6aVXT3arzenWvswzTcFS2w3T+ycUqoqsMY2AHiu4qbBd+S4qcRIxo3BglZZ/MeTDl
-	 xdpoE9T6cFv9dAHDHRyGjaKgzlaSiVUeE1Hvx+maljzWanjddQo27LkRQ4UGh1i6Qp
-	 4bWZdtgEzj6bDkl2apMkpQk5IOEcOJ1yjlQxIx/8AecAG9H6aRvU7U00Jr7z6H3Tjo
-	 fG/RPninnk55A==
-Date: Wed, 30 Jul 2025 16:19:23 -0700
-From: Kees Cook <kees@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf <bpf@vger.kernel.org>,
-	Emil Tsalapatis <emil@etsalapatis.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Barret Rhoden <brho@google.com>,
-	Matt Bobrowski <mattbobrowski@google.com>, kkd@meta.com,
-	Kernel Team <kernel-team@meta.com>, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH bpf-next v5 08/12] bpf: Report rqspinlock
- deadlocks/timeout to BPF stderr
-Message-ID: <202507301618.ABE8A9BB23@keescook>
-References: <20250703204818.925464-1-memxor@gmail.com>
- <20250703204818.925464-9-memxor@gmail.com>
- <202507301559.C832A9C@keescook>
- <CAADnVQ+n-o2qeoLqvfJgY4wf9Ms-xs_SyEZhtfgkidqjX=u3qg@mail.gmail.com>
- <202507301608.C939FE7D9@keescook>
- <CAADnVQLbgXxUROzhKhdK8v+2Z4f5nqV34rHMn2Q0PebUo+VqyQ@mail.gmail.com>
+	s=arc-20240116; t=1753919264; c=relaxed/simple;
+	bh=MDrsAPi/6KYaY23TYNsTBKt/8NaTbyULeZdZgCep01U=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WDkQhHmfZr+lgdgwpnDPa8QxZHRiH/7S+0jl/qJSOE3EqQKx9UsboQsYAO15OR5jUQaQiEZ4JmRYctfqmSRyPe4RBnfeluNtVu5Ow3jET1WJx4+6Iqe3E6/LOfnDpXUroU8ib7NmQqUhqVqfiPH/CeUyuq0demhWceBRNRSNHKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=pT+PmoF8; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References;
+	bh=LlGBIfXbRqR8Orle/Qb0WRK8vIfzdoZNvBUL6/jJpMA=; b=pT+PmoF8xWorrUyUEbL271FGc1
+	AdGeoKabcY8m7ADPdNpOWKLZLcRMqxj9+XspN1aQHXR1yUtdy4lazY8ajVlQ93e0Is5zvf9I9Ssyh
+	9Mtt15s7WwuYWch5Yv/chrnyiJlfsXSwFuMxuE1fJlJsp1XieyItt0uIY1xt31la5ZO7g5pnXYnxe
+	UDT+0NM9IumRckRdXOiIdRf5xfud7+U6TymWZDOGmEnfoJ2DGonP8YNeYervz0YNg27XUrQoyAhfq
+	QH7k4G5DrJnMqZyYSNxTXnZ1rTPvDsLYXdQt36oLD9RbaSZFcJ1a2+PNoq2fpD0CmzMvNQhS+e/A1
+	/mjqg18Q==;
+Received: from localhost ([127.0.0.1])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1uhGWE-0008QI-08;
+	Thu, 31 Jul 2025 01:47:34 +0200
+From: Daniel Borkmann <daniel@iogearbox.net>
+To: ast@kernel.org
+Cc: andrii@kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH bpf v2 1/4] bpf: Add cookie object to bpf maps
+Date: Thu, 31 Jul 2025 01:47:30 +0200
+Message-ID: <20250730234733.530041-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQLbgXxUROzhKhdK8v+2Z4f5nqV34rHMn2Q0PebUo+VqyQ@mail.gmail.com>
+X-Virus-Scanned: Clear (ClamAV 1.0.7/27717/Wed Jul 30 18:34:37 2025)
 
-On Wed, Jul 30, 2025 at 04:13:25PM -0700, Alexei Starovoitov wrote:
-> On Wed, Jul 30, 2025 at 4:09 PM Kees Cook <kees@kernel.org> wrote:
-> >
-> > On Wed, Jul 30, 2025 at 04:07:33PM -0700, Alexei Starovoitov wrote:
-> > > On Wed, Jul 30, 2025 at 4:02 PM Kees Cook <kees@kernel.org> wrote:
-> > > >
-> > > > On Thu, Jul 03, 2025 at 01:48:14PM -0700, Kumar Kartikeya Dwivedi wrote:
-> > > > > +static void bpf_prog_report_rqspinlock_violation(const char *str, void *lock, bool irqsave)
-> > > > > +{
-> > > > > +     struct rqspinlock_held *rqh = this_cpu_ptr(&rqspinlock_held_locks);
-> > > > > +     struct bpf_stream_stage ss;
-> > > > > +     struct bpf_prog *prog;
-> > > > > +
-> > > > > +     prog = bpf_prog_find_from_stack();
-> > > > > +     if (!prog)
-> > > > > +             return;
-> > > > > +     bpf_stream_stage(ss, prog, BPF_STDERR, ({
-> > > > > +             bpf_stream_printk(ss, "ERROR: %s for bpf_res_spin_lock%s\n", str, irqsave ? "_irqsave" : "");
-> > > > > +             bpf_stream_printk(ss, "Attempted lock   = 0x%px\n", lock);
-> > > > > +             bpf_stream_printk(ss, "Total held locks = %d\n", rqh->cnt);
-> > > > > +             for (int i = 0; i < min(RES_NR_HELD, rqh->cnt); i++)
-> > > > > +                     bpf_stream_printk(ss, "Held lock[%2d] = 0x%px\n", i, rqh->locks[i]);
-> > > > > +             bpf_stream_dump_stack(ss);
-> > > >
-> > > > Please don't include %px in stuff going back to userspace in standard
-> > > > error reporting. That's a kernel address leak:
-> > > > https://docs.kernel.org/process/deprecated.html#p-format-specifier
-> > > >
-> > > > I don't see any justification here, please remove the lock address or
-> > > > use regular %p to get a hashed value.
-> > >
-> > > There is no leak here.
-> > > The prog was loaded by root and error is read by root.
-> >
-> > uid has nothing to do with it. Leaking addresses needs the right
-> > capability set. Is that always true here?
-> 
-> yes. For bpf prog to use this kfunc it needs CAP_BPF and CAP_PERMON.
-> What's allowed under them is described in include/uapi/linux/capability.h
+Add a cookie to BPF maps to uniquely identify BPF maps for the timespan
+when the node is up. This is different to comparing a pointer or BPF map
+id which could get rolled over and reused.
 
-Okay, thanks! That wasn't detailed in the commit log (for folks like me
-with less familiarity with BPF), so I just got worried when I saw
-"stderr" mentioned. :)
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+---
+ include/linux/bpf.h  | 1 +
+ kernel/bpf/syscall.c | 6 ++++++
+ 2 files changed, 7 insertions(+)
 
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index f9cd2164ed23..308530c8326b 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -310,6 +310,7 @@ struct bpf_map {
+ 	bool free_after_rcu_gp;
+ 	atomic64_t sleepable_refcnt;
+ 	s64 __percpu *elem_count;
++	u64 cookie; /* write-once */
+ };
+ 
+ static inline const char *btf_field_type_name(enum btf_field_type type)
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index e63039817af3..7a814e98d5f5 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -37,6 +37,7 @@
+ #include <linux/trace_events.h>
+ #include <linux/tracepoint.h>
+ #include <linux/overflow.h>
++#include <linux/cookie.h>
+ 
+ #include <net/netfilter/nf_bpf_link.h>
+ #include <net/netkit.h>
+@@ -53,6 +54,7 @@
+ #define BPF_OBJ_FLAG_MASK   (BPF_F_RDONLY | BPF_F_WRONLY)
+ 
+ DEFINE_PER_CPU(int, bpf_prog_active);
++DEFINE_COOKIE(bpf_map_cookie);
+ static DEFINE_IDR(prog_idr);
+ static DEFINE_SPINLOCK(prog_idr_lock);
+ static DEFINE_IDR(map_idr);
+@@ -1487,6 +1489,10 @@ static int map_create(union bpf_attr *attr, bool kernel)
+ 	if (err < 0)
+ 		goto free_map;
+ 
++	preempt_disable();
++	map->cookie = gen_cookie_next(&bpf_map_cookie);
++	preempt_enable();
++
+ 	atomic64_set(&map->refcnt, 1);
+ 	atomic64_set(&map->usercnt, 1);
+ 	mutex_init(&map->freeze_mutex);
 -- 
-Kees Cook
+2.43.0
+
 
