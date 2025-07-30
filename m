@@ -1,393 +1,181 @@
-Return-Path: <bpf+bounces-64705-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64706-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CB52B161F2
-	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 15:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CBE31B16208
+	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 15:56:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E8B81893EF0
-	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 13:55:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EE641885813
+	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 13:57:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF8802D9EEF;
-	Wed, 30 Jul 2025 13:53:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kQhdQ2qO"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 196E22D8763;
+	Wed, 30 Jul 2025 13:56:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 426DC2D948C;
-	Wed, 30 Jul 2025 13:53:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ADBB29A9D3;
+	Wed, 30 Jul 2025 13:56:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753883626; cv=none; b=L+R2/GcDCNGKx7SZ9gZee6/sHj3tI7xV5fEXXwBwIw8qtHmxAUapMx9+k9O19ZDIJ+3RP7wBusj8CdDgY/oRt3+eBD8JIlkV6bGxuSn/UzaRv6TVK/tQt2wZBvSIYSR4jc+wIt91s81jnvz+5vE6rMVO4EnRJ4XRIFk6oo0wbyE=
+	t=1753883800; cv=none; b=UNc5O419biy1y/6RCWn53xYJAuDMRqIQLDseXUqsQaPrT5XQm/R1HyWlUsmWTK2DBW0Id6MSh86ZvQw9L8WsY6zCpGaSFwltv++tUI+8mmCq6SZucM4GaUuW36ECZwTClCUSW+0nRQ6DetXgLeZqW4oUa8qnRti40cQDAaQ7HTY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753883626; c=relaxed/simple;
-	bh=FrY1tORaOz9Dh269bjvURkmvNtbx8l98ZBz+dBh1xJ8=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=NKhRQkgt/Y46IzvHgtXIiLZlvpSx/EnRep3Q6wlv43los/BDafwQ+zb4t7YwrJBeF2IAAFKIIm0andz8ff/KZngDCZnKgRsobAkyo2+GjzOebWXgGGrk5wFbzSDfm6hN/L7RVsyhkzSf+biFvVzWkJNJmEVgeeEJ/1JXQOmp3+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kQhdQ2qO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B650DC4CEE7;
-	Wed, 30 Jul 2025 13:53:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753883626;
-	bh=FrY1tORaOz9Dh269bjvURkmvNtbx8l98ZBz+dBh1xJ8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=kQhdQ2qOBWXpkE1DrU/4qU/yR5lIzJ9aclPd5lCBmAQktWViebMW9IuzuE/gkD/pC
-	 6YoJrIWRVbbCc1OYox8y+/GKsMWNHSQ97CpTCHyHzAgFxteIafr5rVkamodRWV5Npt
-	 /cl/BY3jIZgZdtSbanADTKh6wAoCo8M+pCW26YlRaukJm1Lu2jdbeWMa17QwK9i5re
-	 qTREek1c7yVZTpxv7yW33j0WF/nUkHuEHIksQ7cHFNy7vVAPIZEQITRAupL8Jhrps4
-	 jSWhXeGogfSJvC4K9hvY7QE0zVH84b3uROEM3c7XkkbUCrq/eIuafl2Z+mvDR3ygaJ
-	 g5fb57FTkpb9g==
-Date: Wed, 30 Jul 2025 22:53:40 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux trace kernel
- <linux-trace-kernel@vger.kernel.org>, bpf@vger.kernel.org, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>,
- Namhyung Kim <namhyung@kernel.org>, Takaya Saeki <takayas@google.com>,
- Douglas Raillard <douglas.raillard@arm.com>, Tom Zanussi
- <zanussi@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Thomas
- Gleixner <tglx@linutronix.de>, Ian Rogers <irogers@google.com>,
- aahringo@redhat.com
-Subject: Re: [PATCH] tracing/probes: Allow use of BTF names to dereference
- pointers
-Message-Id: <20250730225340.92ead36268880e0bc098f12e@kernel.org>
-In-Reply-To: <20250729113335.2e4f087d@batman.local.home>
-References: <20250729113335.2e4f087d@batman.local.home>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1753883800; c=relaxed/simple;
+	bh=eOMWDKHUmy1gD0Z7poNwDp33IXetjz2L4RUzoqiHY7I=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Gu9lMPd4Z+IEHCKygHZdTC6vZ/ymtQ65q6Q3EoYxOg5sJl82gQrqrQzJN9XiJRCTG1D0/msnRdiCe8s1sRc5r9UT+lLynGgJXyPG8YETjrrxIEYBxzwJv0K5nwzaMAy//ZvlfP2OyEw2em1xokwH9reI0xmG4E7VWL2U3wZQxpQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf01.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay01.hostedemail.com (Postfix) with ESMTP id 5A0C41DA394;
+	Wed, 30 Jul 2025 13:56:29 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf01.hostedemail.com (Postfix) with ESMTPA id B003A6000C;
+	Wed, 30 Jul 2025 13:56:25 +0000 (UTC)
+Date: Wed, 30 Jul 2025 09:56:41 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, Steven Rostedt
+ <rostedt@kernel.org>, Florent Revest <revest@google.com>,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Menglong Dong
+ <menglong8.dong@gmail.com>, Naveen N Rao <naveen@kernel.org>, Michael
+ Ellerman <mpe@ellerman.id.au>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@rivosinc.com>, Andy Chiu <andybnac@gmail.com>, Alexandre Ghiti
+ <alexghiti@rivosinc.com>, Palmer Dabbelt <palmer@dabbelt.com>
+Subject: Re: [RFC 00/10] ftrace,bpf: Use single direct ops for bpf
+ trampolines
+Message-ID: <20250730095641.660800b1@gandalf.local.home>
+In-Reply-To: <aIn_12KHz7ikF2t1@krava>
+References: <20250729102813.1531457-1-jolsa@kernel.org>
+	<aIkLlB7Z7V--BeGi@J2N7QTR9R3.cambridge.arm.com>
+	<aIn_12KHz7ikF2t1@krava>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: B003A6000C
+X-Stat-Signature: 7a4jg1qcadtiqm5ucfmr9eog7prsws1c
+X-Rspamd-Server: rspamout02
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1+GT+298XNw3sUtH/KUCJiMoJtrK0AAras=
+X-HE-Tag: 1753883785-400689
+X-HE-Meta: U2FsdGVkX18Y/wSr2PULlU+lJxRhXXAG/s/Ujl4zZXjBJpuMO1KJcwBl6CXFVM4KjGtjbyoRKGWOanlXAYGH35krn+qg641/t3dLIKJfubRLoHassBCAHH6NHSYjV/xU5DlgyPLzrruf7cTfAVQU9yhZdLOm/GBzFYd+mN3oTIa+0e7LTcEeMguNJfkLqAD2pGsjrgYJ3s851UwStnvdSsq4aYxwsejKlXtgRJJeRLAs7eeWOr/Tg2BKayY4NyeqP1CBq5OgEApEpQE0HhY/LrzaUzbgxIIpBzuhqDSUWNpJUT/neq02SIPkdVnRkvuWsVLeU+OMwlHlphB1TE8cvDSNbsG80ko4
 
-On Tue, 29 Jul 2025 11:33:35 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Wed, 30 Jul 2025 13:19:51 +0200
+Jiri Olsa <olsajiri@gmail.com> wrote:
 
-> From: Steven Rostedt <rostedt@goodmis.org>
-> 
-> Add syntax to the FETCHARGS parsing of probes to allow the use of
-> structure and member names to get the offsets to dereference pointers.
-> 
-> Currently, a dereference must be a number, where the user has to figure
-> out manually the offset of a member of a structure that they want to
-> reference. For example, to get the size of a kmem_cache that was passed to
-> the function kmem_cache_alloc_noprof, one would need to do:
-> 
->  # cd /sys/kernel/tracing
->  # echo 'f:cache kmem_cache_alloc_noprof size=+0x18($arg1):u32' >> dynamic_events
-> 
-> This requires knowing that the offset of size is 0x18, which can be found
-> with gdb:
-> 
->   (gdb) p &((struct kmem_cache *)0)->size
->   $1 = (unsigned int *) 0x18
-> 
-> If BTF is in the kernel, it can be used to find this with names, where the
-> user doesn't need to find the actual offset:
-> 
->  # echo 'f:cache kmem_cache_alloc_noprof size=+kmem_cache.size($arg1):u32' >> dynamic_events
+> so it's all work on PoC stage, the idea is to be able to attach many
+> (like 20,30,40k) functions to their trampolines quickly, which at the
+> moment is slow because all the involved interfaces work with just single
+> function/tracempoline relation
 
-Great! This is something like a evolution of assembler to "symbolic"
-assembler. ;)
-
-> 
-> Instead of the "+0x18", it would have "+kmem_cache.size" where the format is:
-> 
->   +STRUCT.MEMBER[.MEMBER[..]]
-
-Yeah, and using '.' delimiter looks nice to me.
-
-> 
-> The delimiter is '.' and the first item is the structure name. Then the
-> member of the structure to get the offset of. If that member is an
-> embedded structure, another '.MEMBER' may be added to get the offset of
-> its members with respect to the original value.
-> 
->   "+kmem_cache.size($arg1)" is equivalent to:
-> 
->   (*(struct kmem_cache *)$arg1).size
-> 
-> Anonymous structures are also handled:
-> 
->   # echo 'e:xmit net.net_dev_xmit +net_device.name(+sk_buff.dev($skbaddr)):string' >> dynamic_events
-
-So this only replaces the "offset" part. So we still need to use
-+OFFS() syntax for dereferencing the pointer.
-
-> 
-> Where "+net_device.name(+sk_buff.dev($skbaddr))" is equivalent to:
-> 
->   (*(struct net_device *)((*(struct sk_buff *)($skbaddr))->dev)->name)
-> 
-> Note that "dev" of struct sk_buff is inside an anonymous structure:
-> 
-> struct sk_buff {
-> 	union {
-> 		struct {
-> 			/* These two members must be first to match sk_buff_head. */
-> 			struct sk_buff		*next;
-> 			struct sk_buff		*prev;
-> 
-> 			union {
-> 				struct net_device	*dev;
-> 				[..]
-> 			};
-> 		};
-> 		[..]
-> 	};
-> 
-> This will allow up to three deep of anonymous structures before it will
-> fail to find a member.
-> 
-> The above produces:
-> 
->     sshd-session-1080    [000] b..5.  1526.337161: xmit: (net.net_dev_xmit) arg1="enp7s0"
-> 
-> And nested structures can be found by adding more members to the arg:
-> 
->   # echo 'f:read filemap_readahead.isra.0 file=+0(+dentry.d_name.name(+file.f_path.dentry($arg2))):string' >> dynamic_events
-> 
-> The above is equivalent to:
-> 
->   *((*(struct dentry *)(*(struct file *)$arg2)->f_path.dentry)->d_name.name)
-> 
-> And produces:
-> 
->        trace-cmd-1381    [002] ...1.  2082.676268: read: (filemap_readahead.isra.0+0x0/0x150) file="trace.dat"
-> 
-
-OK, the desgin looks good to me. I have some comments below.
+Sounds like you are reinventing the ftrace mechanism itself. Which I warned
+against when I first introduced direct trampolines, which were purposely
+designed to do a few functions, not thousands. But, oh well.
 
 
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
->  Documentation/trace/kprobetrace.rst |   3 +
->  kernel/trace/trace_btf.c            | 106 ++++++++++++++++++++++++++++
->  kernel/trace/trace_btf.h            |  10 +++
->  kernel/trace/trace_probe.c          |   7 +-
->  4 files changed, 124 insertions(+), 2 deletions(-)
+> Steven, please correct me if/when I'm wrong ;-)
 > 
-> diff --git a/Documentation/trace/kprobetrace.rst b/Documentation/trace/kprobetrace.rst
-> index 3b6791c17e9b..00273157100c 100644
-> --- a/Documentation/trace/kprobetrace.rst
-> +++ b/Documentation/trace/kprobetrace.rst
-> @@ -54,6 +54,8 @@ Synopsis of kprobe_events
->    $retval	: Fetch return value.(\*2)
->    $comm		: Fetch current task comm.
->    +|-[u]OFFS(FETCHARG) : Fetch memory at FETCHARG +|- OFFS address.(\*3)(\*4)
-> +  +STRUCT.MEMBER[.MEMBER[..]](FETCHARG) : If BTF is supported, Fetch memory
-> +		  at FETCHARG + the offset of MEMBER inside of STRUCT.(\*5)
->    \IMM		: Store an immediate value to the argument.
->    NAME=FETCHARG : Set NAME as the argument name of FETCHARG.
->    FETCHARG:TYPE : Set TYPE as the type of FETCHARG. Currently, basic types
-> @@ -70,6 +72,7 @@ Synopsis of kprobe_events
->          accesses one register.
->    (\*3) this is useful for fetching a field of data structures.
->    (\*4) "u" means user-space dereference. See :ref:`user_mem_access`.
-> +  (\*5) +STRUCT.MEMBER(FETCHARG) is equivalent to (*(struct STRUCT *)(FETCHARG)).MEMBER
->  
->  Function arguments at kretprobe
->  -------------------------------
-> diff --git a/kernel/trace/trace_btf.c b/kernel/trace/trace_btf.c
-> index 5bbdbcbbde3c..b69404451410 100644
-> --- a/kernel/trace/trace_btf.c
-> +++ b/kernel/trace/trace_btf.c
-> @@ -120,3 +120,109 @@ const struct btf_member *btf_find_struct_member(struct btf *btf,
->  	return member;
->  }
->  
-> +#define BITS_ROUNDDOWN_BYTES(bits) ((bits) >> 3)
-> +
-> +static int find_member(const char *ptr, struct btf *btf,
-> +		       const struct btf_type **type, int level)
-> +{
-> +	const struct btf_member *member;
-> +	const struct btf_type *t = *type;
-> +	int i;
-> +
-> +	/* Max of 3 depth of anonymous structures */
-> +	if (level > 3)
-> +		return -1;
-
-Please return an error code, maybe this is -E2BIG?
-
-> +
-> +	for_each_member(i, t, member) {
-> +		const char *tname = btf_name_by_offset(btf, member->name_off);
-> +
-> +		if (strcmp(ptr, tname) == 0) {
-> +			*type = btf_type_by_id(btf, member->type);
-> +			return BITS_ROUNDDOWN_BYTES(member->offset);
-> +		}
-> +
-> +		/* Handle anonymous structures */
-> +		if (strlen(tname))
-> +			continue;
-> +
-> +		*type = btf_type_by_id(btf, member->type);
-> +		if (btf_type_is_struct(*type)) {
-> +			int offset = find_member(ptr, btf, type, level + 1);
-> +
-> +			if (offset < 0)
-> +				continue;
-> +
-> +			return offset + BITS_ROUNDDOWN_BYTES(member->offset);
-> +		}
-> +	}
-> +
-> +	return -1;
-
-	return -ENOENT;
-
-> +}
-> +
-> +/**
-> + * btf_find_offset - Find an offset of a member for a structure
-> + * @arg: A structure name followed by one or more members
-> + * @offset_p: A pointer to where to store the offset
-> + *
-> + * Will parse @arg with the expected format of: struct.member[[.member]..]
-> + * It is delimited by '.'. The first item must be a structure type.
-> + * The next are its members. If the member is also of a structure type it
-> + * another member may follow ".member".
-> + *
-> + * Note, @arg is modified but will be put back to what it was on return.
-> + *
-> + * Returns: 0 on success and -EINVAL if no '.' is present
-> + *    or -ENXIO if the structure or member is not found.
-> + *    Returns -EINVAL if BTF is not defined.
-> + *  On success, @offset_p will contain the offset of the member specified
-> + *    by @arg.
-> + */
-> +int btf_find_offset(char *arg, long *offset_p)
-> +{
-> +	const struct btf_type *t;
-> +	struct btf *btf;
-> +	long offset = 0;
-> +	char *ptr;
-> +	int ret;
-> +	s32 id;
-> +
-> +	ptr = strchr(arg, '.');
-> +	if (!ptr)
-> +		return -EINVAL;
-
-Instead of just returning error, can't we log an error for helping user?
-
-trace_probe_log_err(BYTE_OFFSET, ERROR_CODE);
-
-The base offset is stored in ctx->offset, so you can use it.
-ERROR_CODE is defined in trace_probe.h. 
-
-Maybe you can add something like
-
-	C(BAD_STRUCT_FMT,		"Symbolic offset must be +STRUCT.MEMBER format"),\
-
-And for other cases, you can use
-
-	C(BAD_BTF_TID,		"Failed to get BTF type info."),\
-
-> +
-> +	*ptr = '\0';
-> +
-> +	id = bpf_find_btf_id(arg, BTF_KIND_STRUCT, &btf);
-> +	if (id < 0)
-> +		goto error;
-> +
-> +	/* Get BTF_KIND_FUNC type */
-> +	t = btf_type_by_id(btf, id);
-> +
-> +	/* May allow more than one member, as long as they are structures */
-> +	do {
-> +		if (!t || !btf_type_is_struct(t))
-> +			goto error;
-> +
-> +		*ptr++ = '.';
-> +		arg = ptr;
-> +		ptr = strchr(ptr, '.');
-> +		if (ptr)
-> +			*ptr = '\0';
-> +
-> +		ret = find_member(arg, btf, &t, 0);
-> +		if (ret < 0)
-> +			goto error;
-> +
-> +		offset += ret;
-> +
-> +	} while (ptr);
-> +
-> +	*offset_p = offset;
-> +	return 0;
-> +
-> +error:
-> +	if (ptr)
-> +		*ptr = '.';
-> +	return -ENXIO;
-> +}
-> diff --git a/kernel/trace/trace_btf.h b/kernel/trace/trace_btf.h
-> index 4bc44bc261e6..7b0797a6050b 100644
-> --- a/kernel/trace/trace_btf.h
-> +++ b/kernel/trace/trace_btf.h
-> @@ -9,3 +9,13 @@ const struct btf_member *btf_find_struct_member(struct btf *btf,
->  						const struct btf_type *type,
->  						const char *member_name,
->  						u32 *anon_offset);
-> +
-> +#ifdef CONFIG_PROBE_EVENTS_BTF_ARGS
-> +/* Will modify arg, but will put it back before returning. */
-> +int btf_find_offset(char *arg, long *offset);
-> +#else
-> +static inline int btf_find_offset(char *arg, long *offset)
-> +{
-
-Here also should use 
-
-	C(NOSUP_BTFARG,		"BTF is not available or not supported"),	\
-
-
-Thank you,
-
-> +	return -EINVAL;
-> +}
-> +#endif
-> diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
-> index 424751cdf31f..4c13e51ea481 100644
-> --- a/kernel/trace/trace_probe.c
-> +++ b/kernel/trace/trace_probe.c
-> @@ -1137,7 +1137,7 @@ parse_probe_arg(char *arg, const struct fetch_type *type,
->  
->  	case '+':	/* deref memory */
->  	case '-':
-> -		if (arg[1] == 'u') {
-> +		if (arg[1] == 'u' && isdigit(arg[2])) {
->  			deref = FETCH_OP_UDEREF;
->  			arg[1] = arg[0];
->  			arg++;
-> @@ -1150,7 +1150,10 @@ parse_probe_arg(char *arg, const struct fetch_type *type,
->  			return -EINVAL;
->  		}
->  		*tmp = '\0';
-> -		ret = kstrtol(arg, 0, &offset);
-> +		if (arg[0] != '-' && !isdigit(*arg))
-> +			ret = btf_find_offset(arg, &offset);
-> +		else
-> +			ret = kstrtol(arg, 0, &offset);
->  		if (ret) {
->  			trace_probe_log_err(ctx->offset, BAD_DEREF_OFFS);
->  			break;
-> -- 
-> 2.47.2
+> IIUC in x86_64, IF there's just single ftrace_ops defined for the function,
+> it will bypass ftrace trampoline and call directly the direct trampoline
+> for the function, like:
 > 
+>    <foo>:
+>      call direct_trampoline
+>      ...
 
+Yes.
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+And it will also do the same for normal ftrace functions. If you have:
+
+struct ftrace_ops {
+	.func = myfunc;
+};
+
+It will create a trampoline that has:
+
+      <tramp>
+	...
+	call myfunc
+	...
+	ret
+
+On x86, I believe the ftrace_ops for myfunc is added to the trampoline,
+where as in arm, it's part of the function header. To modify it, it
+requires converting to the list operation (which ignores the ops
+parameter), then the ops at the function gets changed before it goes to the
+new function.
+
+And if it is the only ops attached to a function foo, the function foo
+would have:
+
+      <foo>
+	call tramp
+	...
+
+But what's nice about this is that if you have 12 different ftrace_ops that
+each attach to a 1000 different functions, but no two ftrace_ops attach to
+the same function, they all do the above. No hash needed!
+
+> 
+> IF there are other ftrace_ops 'users' on the same function, we execute
+> each of them like:
+> 
+>   <foo>:
+>     call ftrace_trampoline
+>       call ftrace_ops_1->func
+>       call ftrace_ops_2->func
+>       ...
+> 
+> with our direct ftrace_ops->func currently using ftrace_ops->direct_call
+> to return direct trampoline for the function:
+> 
+> 	-static void call_direct_funcs(unsigned long ip, unsigned long pip,
+> 	-                             struct ftrace_ops *ops, struct ftrace_regs *fregs)
+> 	-{
+> 	-       unsigned long addr = READ_ONCE(ops->direct_call);
+> 	-
+> 	-       if (!addr)
+> 	-               return;
+> 	-
+> 	-       arch_ftrace_set_direct_caller(fregs, addr);
+> 	-}
+> 
+> in the new changes it will do hash lookup (based on ip) for the direct
+> trampoline we want to execute:
+> 
+> 	+static void call_direct_funcs_hash(unsigned long ip, unsigned long pip,
+> 	+                                  struct ftrace_ops *ops, struct ftrace_regs *fregs)
+> 	+{
+> 	+       unsigned long addr;
+> 	+
+> 	+       addr = ftrace_find_rec_direct(ip);
+> 	+       if (!addr)
+> 	+               return;
+> 	+
+> 	+       arch_ftrace_set_direct_caller(fregs, addr);
+> 	+}
+
+I think the above will work.
+
+> 
+> still this is the slow path for the case where multiple ftrace_ops objects use
+> same function.. for the fast path we have the direct attachment as described above
+> 
+> sorry I probably forgot/missed discussion on this, but doing the fast path like in
+> x86_64 is not an option in arm, right?
+
+That's a question for Mark, right?
+
+-- Steve
 
