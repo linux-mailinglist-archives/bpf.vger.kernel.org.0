@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-64720-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64721-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4AF0B16440
-	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 18:12:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 642EDB16442
+	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 18:12:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A7BD1AA4F5F
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C960E581235
 	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 16:10:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EEC12E3AEE;
-	Wed, 30 Jul 2025 16:08:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52DAA2E4273;
+	Wed, 30 Jul 2025 16:08:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="boIUKiAf"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Q2vPn/qa"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CED12DC345;
-	Wed, 30 Jul 2025 16:08:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4867E2E337E;
+	Wed, 30 Jul 2025 16:08:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753891706; cv=none; b=acJp4sXY2DHgaisxPYUWHsUYXl17vUKez16bF8qvJle2xt8ucBo+klIzpRyzHN4/d8I7Gf/za2Kf/NX9EpAB4QHrL5fb9Axr73bFGdBWj1rQt5SjCFOrjJ75WYP97wUpzw+l8H2i7/z+BNytpS1cPJ7q3HGstOPTKbaautFGls4=
+	t=1753891710; cv=none; b=cYvxT9KTLE1Z90CHRVclpPGeZHRhSU7Ex0gVsCWhvqB1MXviARvzpxGKY1kSe4XRVUZ0zQUxp86onHg7YNTXxMqKZ5GMiVp1QBSbblWWS6ZRXUIAlzqm6aMtNez4j6nO0loueLPNrxHw7rILopX+8N4p1x2nMz8HS1MXEOOqzcE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753891706; c=relaxed/simple;
-	bh=H43ww09ZmCHzRwuAlYMfQwD23pYFtFUIwyAKN9Ge4Tc=;
+	s=arc-20240116; t=1753891710; c=relaxed/simple;
+	bh=jURueI/QgGrZ6um0yH99F1lStbRfGYLvaLrbClFpun0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=G3RncwH9UJn7j1DXjmF0GWzsc+OBbQIybvJ7QWleA0Jv+SSLNwSWa7CP64ubySTnc5JnzA3+IdVremaGy8j989QHUBQVkUIPGxkBAiChTEvKN8p0O+U7UOlzlWNKfDpKhoOLZv0Fy3I0yMdTr5PYE212+gC74XGPwmEbM4cfnCk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=boIUKiAf; arc=none smtp.client-ip=198.175.65.13
+	 MIME-Version; b=Lv/7B6ekRJBIWEX+ECh74r26cvRZWQ7L0lk3SHcDkWjItiI5ez4N7kJk57yztbTKCd0yrNnTJ+Bzt6l41pnp1LL/u7RyWhW/EuKsmPr+T/cwjHZdjhZgh9EKgcWWO1CpRIM4KPyztMtnwjJqvykTP0iumtJ4htUeQpbt8xs1FE4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Q2vPn/qa; arc=none smtp.client-ip=198.175.65.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1753891706; x=1785427706;
+  t=1753891709; x=1785427709;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=H43ww09ZmCHzRwuAlYMfQwD23pYFtFUIwyAKN9Ge4Tc=;
-  b=boIUKiAf6l5MKkFr6x2poTszHcwz9Pfcgh4R+gSVGEFktf8mDZyu4Cv4
-   h2lPS2vgt0GFpLR8Q07Dd9t0ibw7mC0u849ZYn+33aHjDvRgSeoXvVTc3
-   LJ3hpYOKYosv2ckraYEePVcXOgi4n3WEStAYhPeI+E5tTFce58HzWcJpV
-   doOOnEUBSx7c/gS3xrRe0WWymHZ/cl6SEOdRG4WMscQYgZ12YOrY+jlnf
-   Q+1JG7KRR27AZwRZdgzBBsvqJxt9Dj4i56JvauhPAAdRGaK6MGdEutlqi
-   6/LOWRo4/ZzsIFbbRoBWDw767Rp31kH+TfyghdwNltzSMmu0o1S2nfKpn
-   A==;
-X-CSE-ConnectionGUID: rwZNx4BBSg6Ax+ZD1J2sJw==
-X-CSE-MsgGUID: UV5Xe+MNSSOD7Ys/AB+mzQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11507"; a="67278874"
+  bh=jURueI/QgGrZ6um0yH99F1lStbRfGYLvaLrbClFpun0=;
+  b=Q2vPn/qaPen1KqbZDumNeA6sBBd9uOhgJzZ53ZAKDPHwCZ67Ohvc6Wtd
+   EEO5u7R8i7qBSreH0pNZws5oe459SkKU52zIvgVBAebfO+sGzGqm8laIx
+   mgYVxxcxMq2UvAuL75vP4VeZvzH+awHOuHdAAsBjKya+kho7RKN8L9ECI
+   hSOAJ7136NdFO60zNNJUB3TZ/USg+oMfDuz/M2xHLsu4qnFYkG0eCb9tc
+   AHu9CVHcmgCoXVbjRXJz8dF3GvkBKq5mPniHxolLFulIA3cF/FXlKEjsc
+   58YMWJ7N0ROdSQh4g+W9dYRNLFOikryLDkNM0Jk6xnntURopPpa6Qt+zk
+   w==;
+X-CSE-ConnectionGUID: YXRTWFOsQxO+VhQZw7rz3w==
+X-CSE-MsgGUID: FfcmKh6qR76V8MzWBLwpDw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11507"; a="67278887"
 X-IronPort-AV: E=Sophos;i="6.16,350,1744095600"; 
-   d="scan'208";a="67278874"
+   d="scan'208";a="67278887"
 Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2025 09:08:25 -0700
-X-CSE-ConnectionGUID: 1W/gIVKyTz+lOxPL3lnjzg==
-X-CSE-MsgGUID: HUzJeLrtSkygfDS+z8zicA==
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2025 09:08:29 -0700
+X-CSE-ConnectionGUID: K4R7QIh3SealjWAvN2yBMw==
+X-CSE-MsgGUID: dtq0yOO9Q4KLR47Eb1dY+w==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.16,350,1744095600"; 
-   d="scan'208";a="163812960"
+   d="scan'208";a="163812986"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmviesa010.fm.intel.com with ESMTP; 30 Jul 2025 09:08:21 -0700
+  by fmviesa010.fm.intel.com with ESMTP; 30 Jul 2025 09:08:25 -0700
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: intel-wired-lan@lists.osuosl.org
 Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
@@ -77,9 +77,9 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH iwl-next v3 09/18] idpf: link NAPIs to queues
-Date: Wed, 30 Jul 2025 18:07:08 +0200
-Message-ID: <20250730160717.28976-10-aleksander.lobakin@intel.com>
+Subject: [PATCH iwl-next v3 10/18] idpf: add 4-byte completion descriptor definition
+Date: Wed, 30 Jul 2025 18:07:09 +0200
+Message-ID: <20250730160717.28976-11-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20250730160717.28976-1-aleksander.lobakin@intel.com>
 References: <20250730160717.28976-1-aleksander.lobakin@intel.com>
@@ -91,220 +91,163 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add the missing linking of NAPIs to netdev queues when enabling
-interrupt vectors in order to support NAPI configuration and
-interfaces requiring get_rx_queue()->napi to be set (like XSk
-busy polling).
+From: Michal Kubiak <michal.kubiak@intel.com>
 
-As currently, idpf_vport_{start,stop}() is called from several flows
-with inconsistent RTNL locking, we need to synchronize them to avoid
-runtime assertions. Notably:
+In the queue-based scheduling mode, Tx completion descriptor is 4 bytes
+comparing to 8 bytes in flow-based.
+Add definition for it and allocate the corresponding amount of memory
+for the descriptors during the completion queue creation.
+This does not include handling 4-byte completions during Tx polling, as
+for now, the only user of QB will be XDP, which has its own routines.
 
-* idpf_{open,stop}() -- regular NDOs, RTNL is always taken;
-* idpf_initiate_soft_reset() -- usually called under RTNL;
-* idpf_init_task -- called from the init work, needs RTNL;
-* idpf_vport_dealloc -- called without RTNL taken, needs it.
-
-Expand common idpf_vport_{start,stop}() to take an additional bool
-telling whether we need to manually take the RTNL lock.
-
-Suggested-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com> # helper
+Signed-off-by: Michal Kubiak <michal.kubiak@intel.com>
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- drivers/net/ethernet/intel/idpf/idpf_lib.c  | 38 +++++++++++++++------
- drivers/net/ethernet/intel/idpf/idpf_txrx.c | 17 +++++++++
- 2 files changed, 45 insertions(+), 10 deletions(-)
+ .../net/ethernet/intel/idpf/idpf_lan_txrx.h   |  6 +++-
+ drivers/net/ethernet/intel/idpf/idpf_txrx.h   | 11 ++++--
+ drivers/net/ethernet/intel/idpf/idpf_txrx.c   | 34 +++++++++++--------
+ 3 files changed, 33 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_lib.c b/drivers/net/ethernet/intel/idpf/idpf_lib.c
-index 2c2a3e85d693..da588d78846e 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_lib.c
-+++ b/drivers/net/ethernet/intel/idpf/idpf_lib.c
-@@ -883,14 +883,18 @@ static void idpf_remove_features(struct idpf_vport *vport)
+diff --git a/drivers/net/ethernet/intel/idpf/idpf_lan_txrx.h b/drivers/net/ethernet/intel/idpf/idpf_lan_txrx.h
+index 7492d1713243..20d5af64e750 100644
+--- a/drivers/net/ethernet/intel/idpf/idpf_lan_txrx.h
++++ b/drivers/net/ethernet/intel/idpf/idpf_lan_txrx.h
+@@ -186,13 +186,17 @@ struct idpf_base_tx_desc {
+ 	__le64 qw1; /* type_cmd_offset_bsz_l2tag1 */
+ }; /* read used with buffer queues */
+ 
+-struct idpf_splitq_tx_compl_desc {
++struct idpf_splitq_4b_tx_compl_desc {
+ 	/* qid=[10:0] comptype=[13:11] rsvd=[14] gen=[15] */
+ 	__le16 qid_comptype_gen;
+ 	union {
+ 		__le16 q_head; /* Queue head */
+ 		__le16 compl_tag; /* Completion tag */
+ 	} q_head_compl_tag;
++}; /* writeback used with completion queues */
++
++struct idpf_splitq_tx_compl_desc {
++	struct idpf_splitq_4b_tx_compl_desc common;
+ 	u8 ts[3];
+ 	u8 rsvd; /* Reserved */
+ }; /* writeback used with completion queues */
+diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.h b/drivers/net/ethernet/intel/idpf/idpf_txrx.h
+index 52753dff381c..11a318fd48d4 100644
+--- a/drivers/net/ethernet/intel/idpf/idpf_txrx.h
++++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.h
+@@ -728,7 +728,9 @@ libeth_cacheline_set_assert(struct idpf_buf_queue, 64, 24, 32);
+ 
  /**
-  * idpf_vport_stop - Disable a vport
-  * @vport: vport to disable
-+ * @rtnl: whether to take RTNL lock
+  * struct idpf_compl_queue - software structure representing a completion queue
+- * @comp: completion descriptor array
++ * @comp: 8-byte completion descriptor array
++ * @comp_4b: 4-byte completion descriptor array
++ * @desc_ring: virtual descriptor ring address
+  * @txq_grp: See struct idpf_txq_group
+  * @flags: See enum idpf_queue_flags_t
+  * @desc_count: Number of descriptors
+@@ -748,7 +750,12 @@ libeth_cacheline_set_assert(struct idpf_buf_queue, 64, 24, 32);
   */
--static void idpf_vport_stop(struct idpf_vport *vport)
-+static void idpf_vport_stop(struct idpf_vport *vport, bool rtnl)
- {
- 	struct idpf_netdev_priv *np = netdev_priv(vport->netdev);
- 
- 	if (np->state <= __IDPF_VPORT_DOWN)
- 		return;
- 
-+	if (rtnl)
-+		rtnl_lock();
+ struct idpf_compl_queue {
+ 	__cacheline_group_begin_aligned(read_mostly);
+-	struct idpf_splitq_tx_compl_desc *comp;
++	union {
++		struct idpf_splitq_tx_compl_desc *comp;
++		struct idpf_splitq_4b_tx_compl_desc *comp_4b;
 +
- 	netif_carrier_off(vport->netdev);
- 	netif_tx_disable(vport->netdev);
++		void *desc_ring;
++	};
+ 	struct idpf_txq_group *txq_grp;
  
-@@ -912,6 +916,9 @@ static void idpf_vport_stop(struct idpf_vport *vport)
- 	idpf_vport_queues_rel(vport);
- 	idpf_vport_intr_rel(vport);
- 	np->state = __IDPF_VPORT_DOWN;
-+
-+	if (rtnl)
-+		rtnl_unlock();
- }
- 
- /**
-@@ -935,7 +942,7 @@ static int idpf_stop(struct net_device *netdev)
- 	idpf_vport_ctrl_lock(netdev);
- 	vport = idpf_netdev_to_vport(netdev);
- 
--	idpf_vport_stop(vport);
-+	idpf_vport_stop(vport, false);
- 
- 	idpf_vport_ctrl_unlock(netdev);
- 
-@@ -1028,7 +1035,7 @@ static void idpf_vport_dealloc(struct idpf_vport *vport)
- 	idpf_idc_deinit_vport_aux_device(vport->vdev_info);
- 
- 	idpf_deinit_mac_addr(vport);
--	idpf_vport_stop(vport);
-+	idpf_vport_stop(vport, true);
- 
- 	if (!test_bit(IDPF_HR_RESET_IN_PROG, adapter->flags))
- 		idpf_decfg_netdev(vport);
-@@ -1369,8 +1376,9 @@ static void idpf_rx_init_buf_tail(struct idpf_vport *vport)
- /**
-  * idpf_vport_open - Bring up a vport
-  * @vport: vport to bring up
-+ * @rtnl: whether to take RTNL lock
-  */
--static int idpf_vport_open(struct idpf_vport *vport)
-+static int idpf_vport_open(struct idpf_vport *vport, bool rtnl)
- {
- 	struct idpf_netdev_priv *np = netdev_priv(vport->netdev);
- 	struct idpf_adapter *adapter = vport->adapter;
-@@ -1380,6 +1388,9 @@ static int idpf_vport_open(struct idpf_vport *vport)
- 	if (np->state != __IDPF_VPORT_DOWN)
- 		return -EBUSY;
- 
-+	if (rtnl)
-+		rtnl_lock();
-+
- 	/* we do not allow interface up just yet */
- 	netif_carrier_off(vport->netdev);
- 
-@@ -1387,7 +1398,7 @@ static int idpf_vport_open(struct idpf_vport *vport)
- 	if (err) {
- 		dev_err(&adapter->pdev->dev, "Failed to allocate interrupts for vport %u: %d\n",
- 			vport->vport_id, err);
--		return err;
-+		goto err_rtnl_unlock;
- 	}
- 
- 	err = idpf_vport_queues_alloc(vport);
-@@ -1474,6 +1485,9 @@ static int idpf_vport_open(struct idpf_vport *vport)
- 		goto deinit_rss;
- 	}
- 
-+	if (rtnl)
-+		rtnl_unlock();
-+
- 	return 0;
- 
- deinit_rss:
-@@ -1491,6 +1505,10 @@ static int idpf_vport_open(struct idpf_vport *vport)
- intr_rel:
- 	idpf_vport_intr_rel(vport);
- 
-+err_rtnl_unlock:
-+	if (rtnl)
-+		rtnl_unlock();
-+
- 	return err;
- }
- 
-@@ -1571,7 +1589,7 @@ void idpf_init_task(struct work_struct *work)
- 	np = netdev_priv(vport->netdev);
- 	np->state = __IDPF_VPORT_DOWN;
- 	if (test_and_clear_bit(IDPF_VPORT_UP_REQUESTED, vport_config->flags))
--		idpf_vport_open(vport);
-+		idpf_vport_open(vport, true);
- 
- 	/* Spawn and return 'idpf_init_task' work queue until all the
- 	 * default vports are created
-@@ -1961,7 +1979,7 @@ int idpf_initiate_soft_reset(struct idpf_vport *vport,
- 		idpf_send_delete_queues_msg(vport);
- 	} else {
- 		set_bit(IDPF_VPORT_DEL_QUEUES, vport->flags);
--		idpf_vport_stop(vport);
-+		idpf_vport_stop(vport, false);
- 	}
- 
- 	idpf_deinit_rss(vport);
-@@ -1991,7 +2009,7 @@ int idpf_initiate_soft_reset(struct idpf_vport *vport,
- 		goto err_open;
- 
- 	if (current_state == __IDPF_VPORT_UP)
--		err = idpf_vport_open(vport);
-+		err = idpf_vport_open(vport, false);
- 
- 	goto free_vport;
- 
-@@ -2001,7 +2019,7 @@ int idpf_initiate_soft_reset(struct idpf_vport *vport,
- 
- err_open:
- 	if (current_state == __IDPF_VPORT_UP)
--		idpf_vport_open(vport);
-+		idpf_vport_open(vport, false);
- 
- free_vport:
- 	kfree(new_vport);
-@@ -2239,7 +2257,7 @@ static int idpf_open(struct net_device *netdev)
- 	if (err)
- 		goto unlock;
- 
--	err = idpf_vport_open(vport);
-+	err = idpf_vport_open(vport, false);
- 
- unlock:
- 	idpf_vport_ctrl_unlock(netdev);
+ 	DECLARE_BITMAP(flags, __IDPF_Q_FLAGS_NBITS);
 diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-index e0b0a05c998f..34dc12cf5b21 100644
+index 34dc12cf5b21..8a7b58ae05d4 100644
 --- a/drivers/net/ethernet/intel/idpf/idpf_txrx.c
 +++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-@@ -3508,6 +3508,20 @@ void idpf_vport_intr_rel(struct idpf_vport *vport)
- 	vport->q_vectors = NULL;
+@@ -95,8 +95,8 @@ static void idpf_compl_desc_rel(struct idpf_compl_queue *complq)
+ 		return;
+ 
+ 	dma_free_coherent(complq->netdev->dev.parent, complq->size,
+-			  complq->comp, complq->dma);
+-	complq->comp = NULL;
++			  complq->desc_ring, complq->dma);
++	complq->desc_ring = NULL;
+ 	complq->next_to_use = 0;
+ 	complq->next_to_clean = 0;
  }
+@@ -225,12 +225,16 @@ static int idpf_tx_desc_alloc(const struct idpf_vport *vport,
+ static int idpf_compl_desc_alloc(const struct idpf_vport *vport,
+ 				 struct idpf_compl_queue *complq)
+ {
+-	complq->size = array_size(complq->desc_count, sizeof(*complq->comp));
++	u32 desc_size;
  
-+static void idpf_q_vector_set_napi(struct idpf_q_vector *q_vector, bool link)
-+{
-+	struct napi_struct *napi = link ? &q_vector->napi : NULL;
-+	struct net_device *dev = q_vector->vport->netdev;
+-	complq->comp = dma_alloc_coherent(complq->netdev->dev.parent,
+-					  complq->size, &complq->dma,
+-					  GFP_KERNEL);
+-	if (!complq->comp)
++	desc_size = idpf_queue_has(FLOW_SCH_EN, complq) ?
++		    sizeof(*complq->comp) : sizeof(*complq->comp_4b);
++	complq->size = array_size(complq->desc_count, desc_size);
 +
-+	for (u32 i = 0; i < q_vector->num_rxq; i++)
-+		netif_queue_set_napi(dev, q_vector->rx[i]->idx,
-+				     NETDEV_QUEUE_TYPE_RX, napi);
-+
-+	for (u32 i = 0; i < q_vector->num_txq; i++)
-+		netif_queue_set_napi(dev, q_vector->tx[i]->idx,
-+				     NETDEV_QUEUE_TYPE_TX, napi);
-+}
-+
- /**
-  * idpf_vport_intr_rel_irq - Free the IRQ association with the OS
-  * @vport: main vport structure
-@@ -3528,6 +3542,7 @@ static void idpf_vport_intr_rel_irq(struct idpf_vport *vport)
- 		vidx = vport->q_vector_idxs[vector];
- 		irq_num = adapter->msix_entries[vidx].vector;
++	complq->desc_ring = dma_alloc_coherent(complq->netdev->dev.parent,
++					       complq->size, &complq->dma,
++					       GFP_KERNEL);
++	if (!complq->desc_ring)
+ 		return -ENOMEM;
  
-+		idpf_q_vector_set_napi(q_vector, false);
- 		kfree(free_irq(irq_num, q_vector));
- 	}
- }
-@@ -3715,6 +3730,8 @@ static int idpf_vport_intr_req_irq(struct idpf_vport *vport)
- 				   "Request_irq failed, error: %d\n", err);
- 			goto free_q_irqs;
- 		}
-+
-+		idpf_q_vector_set_napi(q_vector, true);
- 	}
+ 	complq->next_to_use = 0;
+@@ -1738,7 +1742,7 @@ static void idpf_tx_handle_rs_completion(struct idpf_tx_queue *txq,
+ 	/* RS completion contains queue head for queue based scheduling or
+ 	 * completion tag for flow based scheduling.
+ 	 */
+-	u16 rs_compl_val = le16_to_cpu(desc->q_head_compl_tag.q_head);
++	u16 rs_compl_val = le16_to_cpu(desc->common.q_head_compl_tag.q_head);
  
- 	return 0;
+ 	if (!idpf_queue_has(FLOW_SCH_EN, txq)) {
+ 		idpf_tx_splitq_clean(txq, rs_compl_val, budget, cleaned, false);
+@@ -1773,19 +1777,19 @@ static bool idpf_tx_clean_complq(struct idpf_compl_queue *complq, int budget,
+ 	do {
+ 		struct libeth_sq_napi_stats cleaned_stats = { };
+ 		struct idpf_tx_queue *tx_q;
++		__le16 hw_head;
+ 		int rel_tx_qid;
+-		u16 hw_head;
+ 		u8 ctype;	/* completion type */
+ 		u16 gen;
+ 
+ 		/* if the descriptor isn't done, no work yet to do */
+-		gen = le16_get_bits(tx_desc->qid_comptype_gen,
++		gen = le16_get_bits(tx_desc->common.qid_comptype_gen,
+ 				    IDPF_TXD_COMPLQ_GEN_M);
+ 		if (idpf_queue_has(GEN_CHK, complq) != gen)
+ 			break;
+ 
+ 		/* Find necessary info of TX queue to clean buffers */
+-		rel_tx_qid = le16_get_bits(tx_desc->qid_comptype_gen,
++		rel_tx_qid = le16_get_bits(tx_desc->common.qid_comptype_gen,
+ 					   IDPF_TXD_COMPLQ_QID_M);
+ 		if (rel_tx_qid >= complq->txq_grp->num_txq ||
+ 		    !complq->txq_grp->txqs[rel_tx_qid]) {
+@@ -1795,14 +1799,14 @@ static bool idpf_tx_clean_complq(struct idpf_compl_queue *complq, int budget,
+ 		tx_q = complq->txq_grp->txqs[rel_tx_qid];
+ 
+ 		/* Determine completion type */
+-		ctype = le16_get_bits(tx_desc->qid_comptype_gen,
++		ctype = le16_get_bits(tx_desc->common.qid_comptype_gen,
+ 				      IDPF_TXD_COMPLQ_COMPL_TYPE_M);
+ 		switch (ctype) {
+ 		case IDPF_TXD_COMPLT_RE:
+-			hw_head = le16_to_cpu(tx_desc->q_head_compl_tag.q_head);
++			hw_head = tx_desc->common.q_head_compl_tag.q_head;
+ 
+-			idpf_tx_splitq_clean(tx_q, hw_head, budget,
+-					     &cleaned_stats, true);
++			idpf_tx_splitq_clean(tx_q, le16_to_cpu(hw_head),
++					     budget, &cleaned_stats, true);
+ 			break;
+ 		case IDPF_TXD_COMPLT_RS:
+ 			idpf_tx_handle_rs_completion(tx_q, tx_desc,
 -- 
 2.50.1
 
