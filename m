@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-64743-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64742-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AD0DB166A7
-	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 20:59:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA615B166A6
+	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 20:59:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E6AC4E6C53
-	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 18:59:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D7CE11889B7F
+	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 18:59:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 313242E4276;
-	Wed, 30 Jul 2025 18:59:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9335F2E3B0D;
+	Wed, 30 Jul 2025 18:59:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BjjukA+T"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KB9t3eVK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C56E42E2F1F;
-	Wed, 30 Jul 2025 18:59:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A93B52E0400;
+	Wed, 30 Jul 2025 18:59:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753901951; cv=none; b=lFLyCfp2KruJ4/Bl5EczI2ionEAO2oC27mpnZPROQ99JjjSrqVQhpWkx9wDp1JSJRxqySA2b8fm88jH7wBsZqylfvQSWARl1EM7idfl4wtr7FbF8RhxH60+kFOXjso2XDo79+ykgpBuRJ9Ifjfv+r8q6GgxYNROjo1XafQh2YKM=
+	t=1753901951; cv=none; b=eE2Ox6kdsjrRCfxGiOHBr0BjXj2ACh0X0NG1ul0fLlU9IFOMKoSZzpFa3plwVJuslrTBdeKGPiz4jM5OjbV5Y4xqxdLj0RaTYkMQGeFJxcQiCbqMhK9qXwdxZpByEXNrnMc2deu2tjuGzX98SOZ/mG24ayFLyL2v8PY4zC3f7tM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1753901951; c=relaxed/simple;
-	bh=5gyh9zJYLUsjxLjKeucQeZqy1TvhSuu/jJ+ZSIAore0=;
+	bh=rvlI8d5DANTyLXYwEkRLTEYIhsqYoYxm1irjYuIbdlA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VZhgfZAzmeVPUG/oNZlPk9F5iTNh0Un2mWpKrmwdMcz4nFDFXkSoWyrskesPt4BRDabaUr3wH5kxdah70ghdV93N2uF+TwFGkwH4nKoqgbxkrbUUUAtdflco3T7UhCxic0j8bQ7fgaOxKIXYVX6P0tY155org+pfnZSMQRNsaU4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BjjukA+T; arc=none smtp.client-ip=209.85.214.170
+	 MIME-Version; b=Z8WV6DMmJyqcPx8rSD9/B2c5/e1xinpr7uqHi1sFHrcAgJ8s72URipt0ZOoND07B3QEC74Wcgt+XY6LDzHjzq6r8LTcKcg0TlKHgzHl5d0zMP2ctSYv/wdg/0Yq8HxQkD//xqWx8fyMB8FsMitEBM++AetSs6O1CEpCoLxMmqLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KB9t3eVK; arc=none smtp.client-ip=209.85.214.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-23ffdea3575so1490775ad.2;
-        Wed, 30 Jul 2025 11:59:08 -0700 (PDT)
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-23ffa7b3b30so2443055ad.1;
+        Wed, 30 Jul 2025 11:59:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753901948; x=1754506748; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1753901949; x=1754506749; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=F65HxIstaWwrs7zVvIf1P3cX1istjVMzDxwPl7tdrzQ=;
-        b=BjjukA+TpwjDF6aBhLokOnILB3SxVZIFSuT/696LFBZN2PNXcPhHNLPDxGCRAT9l37
-         zBZN7GQkFmDtTBRVhWrHUE2/u/7yhYcVegonQ57Y5x4aDngcSHRkgUl/xq6Y2YK84Od+
-         3fKFPdNNh2yNsxK/hB0Y+uaqiR8mdupyYMaddV52/OeiezYYXB/fLWfWzm/t2HcKlzbE
-         +Ka/yhFsr6mkSJlHSa8Hhi9Cp5ecI4BwvrFwTSPG3BYlZHUS93yh7dsAQrL55788F7N0
-         s6ZGU9k6ECoMQPgAcvB/W0pL8Bb4xkMOFSlCDOvkIB27DYqpa19/AvTrLtFz9lXrD9eO
-         1QMg==
+        bh=VDWH1zRu6JQl7B7QrSY/f/7bYFARwqxp6h969F7hTj4=;
+        b=KB9t3eVK1F7kAKSi4UJfKSUb7SkYpwv2B5VLDd1B53Bj9yAyDrvsThFN9BnbOFPNS1
+         Z8O5WGg+xQJBOPkFMmOdLbvyUKegM+KgXhsbX4qhW9epsuS9cW1yEAibLac2FYIb6WMm
+         hJRKYirh9+vzK2ZK5KSpqh+DEJH7YgLi9VUr2NsYvhSfxGACcn2VmWuyGr4k4XxPGkly
+         4p3/GkTtYDNFjoWEaMvdFwOerAjg4YzySghLp/YRaulD6DgMbUQlt0XeKvcBS9Wh66OW
+         i+mY9bmJMMan1jX5ltOV/J8lcOTHywCWa1J4bmIXJvH1nW+Y5vv9GgqTykZgyUnBhFjD
+         gRRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753901948; x=1754506748;
+        d=1e100.net; s=20230601; t=1753901949; x=1754506749;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=F65HxIstaWwrs7zVvIf1P3cX1istjVMzDxwPl7tdrzQ=;
-        b=eumpE412IjdahcZaOHTKRrrnGUvTdVou+d4ViAy4cKukOH8qXWeGwmEaOlD9FNuhyi
-         XvUUa+25NobyVzPNYO7+syjBfsbOUP06p/Opil5TiT4waWdn5QBTlDjD1E4wbdYWhiKK
-         RRyQkG7y7SQ6sBKVnqrkTFVMd2MYDbuTvAOM3IzQIqT1aq7ocRP/bP4ZxoNQuSQ119sB
-         byCPEcyXcU32VMcr9o3oQEfEkIy4wC5XaRtOdZs1XtCNK0lnzNeT7/KzFMs+ID+6BqP9
-         cq5odA4Hn9IrVTPDeBeD2IH284D9qTH0bLHFgzo5WuzPYpWrd29ZGCg9h/9T10G2LG76
-         f4Dw==
-X-Gm-Message-State: AOJu0Yy2HUVPaWoq8SFJLVn6GxhIrJJn+aiVifpTOHltkzQGR+Glh9rP
-	ZooOr4q76JdOHyc09T/fivgtCBhlfG16uWdA0yYvdKElzTkaYP7LARr4o/N03w==
-X-Gm-Gg: ASbGncuJMJwzFI8CjCYQ5KU0Fr44ImsxO2pXPfiFpj/F0vTHZdTworoStwSXp/+CZo3
-	+R3HgC6yrWl2Br/+pOOU4riAL5bDu4RN4bI6i1r/X7/DezN8557Pll5L9ZGwM3mBPwNuASHhAnH
-	o2Tmmq4ko8t9Na2SDQhgLmgtwyFDt3z+CBQ87ytAJNJk+LSezwDyGZjfTBg1cVcIz2ibVDDOvxi
-	QPKjfivmP/ISjQF/9pDaXDpDfP+QLH48+Jxazxu0Ms9gGGzg9eYrmYAFOBcEzuknCrfqUeeQPpW
-	TrGJ8RILoBBI3h22RnVP5JQvhIkZCr/3hbsrmxaVhByltN2KY5bytIVK1E0Mdt5vWGZptYGbS55
-	7K1A73ZWO/cO7
-X-Google-Smtp-Source: AGHT+IEh0oMKwntL2fz2sR+gTycIorb87OmZ9qbHlFhaWCcdMYfR8ExryN5msJn+d3tfORKgRvdpdA==
-X-Received: by 2002:a17:903:32d0:b0:240:3ed3:13f6 with SMTP id d9443c01a7336-24096a87440mr62456465ad.18.1753901947763;
-        Wed, 30 Jul 2025 11:59:07 -0700 (PDT)
-Received: from localhost ([2a03:2880:ff:8::])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2408fe58baasm29925255ad.189.2025.07.30.11.59.07
+        bh=VDWH1zRu6JQl7B7QrSY/f/7bYFARwqxp6h969F7hTj4=;
+        b=hrCHf7f5wx/Ng2nV7jSPYdWhWbYhgZMVRKF904R94O6NeqbdeMyjoJxkktKcK9O8dj
+         YzdpI6p8cV6iwX1Ltl58NzCab+P5txi3+U4ZGcquktJX2K1BTyEJs2RX71ls5lj9yED7
+         WttWFxwQVJEizpjwL49T4C7t3U5t//oq9lV+b7bzVpcIR89F/ShmpvDrz8NbNMQTpi3A
+         uxIwDjiTf4cSE40Ua7EnOQ4pe7YUwYNoQFcSRITilT+zRhE3p2Qiq60rlo4mi0HtMbpG
+         HdvPhSTlYPE8FwxFZZrBmnxIG39lzkLtcT1PJmaAWe2q+pnLUCKEGXxRgpxMNZ4C1bmC
+         JQXQ==
+X-Gm-Message-State: AOJu0YzbiuYL+SwImusmWMC1VdKkpzw1xQYoR/5ozl3asKtnFFtOIY1R
+	WrYPkf9N78a6ICYf72fdlCZ7T4rGzY9cZ+4gmpc14+fPVfKgNiCi/dXMR3ZD+g==
+X-Gm-Gg: ASbGncsLweJl+dcpEORyUH911MtynYzqvqVaH9UPXXJbv9gsCS0rDdNBbaNi4ea8X/Q
+	eu+REn0DHOImgw9Utmybbiqk/zNJr9p3zpf3rhM2B1VeYSJPci9v4NlvHPwORKTM7pM9WGS7S7E
+	W9cYsQxeEOkIATODw9UyBtnAf2j7Oz8+aYpqvM4MfDgyCzC5XKKJkwDwPNpdnMcng6v0OEybaCS
+	oSPbAfDencqCsrXYlUSN2OHWvlt40mt/P5DArP8SfLX3QgdehqW02wjLUmd70u9Bty3BtCwrw0n
+	SbguATOJADujwzOZgu9Xyyl9Q6UfHvYzcpKJ7sseezhie/mY/AcdINHEwinZGtEMNv3JBKxsvlH
+	N6GVSZp+tkGJCLA==
+X-Google-Smtp-Source: AGHT+IGZLzLVn1tdggCunsQhWzdct3HGJDpnQzCrGPseMuIFd+duLUWoFSVekNX46GaBAikBuHd/Lg==
+X-Received: by 2002:a17:903:289:b0:240:418c:b9f6 with SMTP id d9443c01a7336-24096b56b5emr62999175ad.49.1753901948752;
+        Wed, 30 Jul 2025 11:59:08 -0700 (PDT)
+Received: from localhost ([2a03:2880:ff:44::])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23ffa37f13bsm89314095ad.172.2025.07.30.11.59.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jul 2025 11:59:07 -0700 (PDT)
+        Wed, 30 Jul 2025 11:59:08 -0700 (PDT)
 From: Amery Hung <ameryhung@gmail.com>
 To: bpf@vger.kernel.org
 Cc: netdev@vger.kernel.org,
@@ -84,9 +84,9 @@ Cc: netdev@vger.kernel.org,
 	linux-lists@etsalapatis.com,
 	ameryhung@gmail.com,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v7 3/4] selftests/bpf: Test basic task local data operations
-Date: Wed, 30 Jul 2025 11:58:54 -0700
-Message-ID: <20250730185903.3574598-4-ameryhung@gmail.com>
+Subject: [PATCH bpf-next v7 4/4] selftests/bpf: Test concurrent task local data key creation
+Date: Wed, 30 Jul 2025 11:58:55 -0700
+Message-ID: <20250730185903.3574598-5-ameryhung@gmail.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20250730185903.3574598-1-ameryhung@gmail.com>
 References: <20250730185903.3574598-1-ameryhung@gmail.com>
@@ -98,167 +98,65 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Test basic operations of task local data with valid and invalid
-tld_create_key().
-
-For invalid calls, make sure they return the right error code and check
-that the TLDs are not inserted by running tld_get_data("
-value_not_exists") on the bpf side. The call should a null pointer.
-
-For valid calls, first make sure the TLDs are created by calling
-tld_get_data() on the bpf side. The call should return a valid pointer.
-
-Finally, verify that the TLDs are indeed task-specific (i.e., their
-addresses do not overlap) with multiple user threads. This done by
-writing values unique to each thread, reading them from both user space
-and bpf, and checking if the value read back matches the value written.
+Test thread-safety of tld_create_key(). Since tld_create_key() does
+not rely on locks but memory barriers and atomic operations to protect
+the shared metadata, the thread-safety of the function is non-trivial.
+Make sure concurrent tld_key_create(), both valid and invalid, can not
+race and corrupt metatada, which may leads to TLDs not being thread-
+specific or duplicate TLDs with the same name.
 
 Signed-off-by: Amery Hung <ameryhung@gmail.com>
 ---
- .../bpf/prog_tests/test_task_local_data.c     | 192 ++++++++++++++++++
- .../bpf/progs/test_task_local_data.c          |  65 ++++++
- 2 files changed, 257 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_task_local_data.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_task_local_data.c
+ .../bpf/prog_tests/test_task_local_data.c     | 105 ++++++++++++++++++
+ 1 file changed, 105 insertions(+)
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/test_task_local_data.c b/tools/testing/selftests/bpf/prog_tests/test_task_local_data.c
-new file mode 100644
-index 000000000000..2e77d3fa2534
---- /dev/null
+index 2e77d3fa2534..3b5cd2cd89c7 100644
+--- a/tools/testing/selftests/bpf/prog_tests/test_task_local_data.c
 +++ b/tools/testing/selftests/bpf/prog_tests/test_task_local_data.c
-@@ -0,0 +1,192 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <pthread.h>
-+#include <bpf/btf.h>
-+#include <test_progs.h>
+@@ -185,8 +185,113 @@ static void test_task_local_data_basic(void)
+ 	test_task_local_data__destroy(skel);
+ }
+ 
++#define TEST_RACE_THREAD_NUM (TLD_MAX_DATA_CNT - 3)
 +
-+#define TLD_FREE_DATA_ON_THREAD_EXIT
-+#define TLD_DYN_DATA_SIZE 4096
-+#include "task_local_data.h"
-+
-+struct test_tld_struct {
-+	__u64 a;
-+	__u64 b;
-+	__u64 c;
-+	__u64 d;
-+};
-+
-+#include "test_task_local_data.skel.h"
-+
-+TLD_DEFINE_KEY(value0_key, "value0", sizeof(int));
-+
-+/*
-+ * Reset task local data between subtests by clearing metadata other
-+ * than the statically defined value0. This is safe as subtests run
-+ * sequentially. Users of task local data library should not touch
-+ * library internal.
-+ */
-+static void reset_tld(void)
++void *test_task_local_data_race_thread(void *arg)
 +{
-+	if (TLD_READ_ONCE(tld_meta_p)) {
-+		/* Remove TLDs created by tld_create_key() */
-+		tld_meta_p->cnt = 1;
-+		tld_meta_p->size = TLD_DYN_DATA_SIZE;
-+		memset(&tld_meta_p->metadata[1], 0,
-+		       (TLD_MAX_DATA_CNT - 1) * sizeof(struct tld_metadata));
++	int err = 0, id = (intptr_t)arg;
++	char key_name[32];
++	tld_key_t key;
++
++	key = tld_create_key("value_not_exist", TLD_PAGE_SIZE + 1);
++	if (tld_key_err_or_zero(key) != -E2BIG) {
++		err = 1;
++		goto out;
 +	}
++
++	/* Only one thread will succeed in creating value1 */
++	key = tld_create_key("value1", sizeof(int));
++	if (!tld_key_is_err(key))
++		tld_keys[1] = key;
++
++	/* Only one thread will succeed in creating value2 */
++	key = tld_create_key("value2", sizeof(struct test_tld_struct));
++	if (!tld_key_is_err(key))
++		tld_keys[2] = key;
++
++	snprintf(key_name, 32, "thread_%d", id);
++	tld_keys[id] = tld_create_key(key_name, sizeof(int));
++	if (tld_key_is_err(tld_keys[id]))
++		err = 2;
++out:
++	return (void *)(intptr_t)err;
 +}
 +
-+/* Serialize access to bpf program's global variables */
-+static pthread_mutex_t global_mutex;
-+
-+static tld_key_t *tld_keys;
-+
-+#define TEST_BASIC_THREAD_NUM 32
-+
-+void *test_task_local_data_basic_thread(void *arg)
++static void test_task_local_data_race(void)
 +{
 +	LIBBPF_OPTS(bpf_test_run_opts, opts);
-+	struct test_task_local_data *skel = (struct test_task_local_data *)arg;
-+	int fd, err, tid, *value0, *value1;
-+	struct test_tld_struct *value2;
-+
-+	fd = bpf_map__fd(skel->maps.tld_data_map);
-+
-+	value0 = tld_get_data(fd, value0_key);
-+	if (!ASSERT_OK_PTR(value0, "tld_get_data"))
-+		goto out;
-+
-+	value1 = tld_get_data(fd, tld_keys[1]);
-+	if (!ASSERT_OK_PTR(value1, "tld_get_data"))
-+		goto out;
-+
-+	value2 = tld_get_data(fd, tld_keys[2]);
-+	if (!ASSERT_OK_PTR(value2, "tld_get_data"))
-+		goto out;
-+
-+	tid = gettid();
-+
-+	*value0 = tid + 0;
-+	*value1 = tid + 1;
-+	value2->a = tid + 2;
-+	value2->b = tid + 3;
-+	value2->c = tid + 4;
-+	value2->d = tid + 5;
-+
-+	pthread_mutex_lock(&global_mutex);
-+	/* Run task_main that read task local data and save to global variables */
-+	err = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.task_main), &opts);
-+	ASSERT_OK(err, "run task_main");
-+	ASSERT_OK(opts.retval, "task_main retval");
-+
-+	ASSERT_EQ(skel->bss->test_value0, tid + 0, "tld_get_data value0");
-+	ASSERT_EQ(skel->bss->test_value1, tid + 1, "tld_get_data value1");
-+	ASSERT_EQ(skel->bss->test_value2.a, tid + 2, "tld_get_data value2.a");
-+	ASSERT_EQ(skel->bss->test_value2.b, tid + 3, "tld_get_data value2.b");
-+	ASSERT_EQ(skel->bss->test_value2.c, tid + 4, "tld_get_data value2.c");
-+	ASSERT_EQ(skel->bss->test_value2.d, tid + 5, "tld_get_data value2.d");
-+	pthread_mutex_unlock(&global_mutex);
-+
-+	/* Make sure valueX are indeed local to threads */
-+	ASSERT_EQ(*value0, tid + 0, "value0");
-+	ASSERT_EQ(*value1, tid + 1, "value1");
-+	ASSERT_EQ(value2->a, tid + 2, "value2.a");
-+	ASSERT_EQ(value2->b, tid + 3, "value2.b");
-+	ASSERT_EQ(value2->c, tid + 4, "value2.c");
-+	ASSERT_EQ(value2->d, tid + 5, "value2.d");
-+
-+	*value0 = tid + 5;
-+	*value1 = tid + 4;
-+	value2->a = tid + 3;
-+	value2->b = tid + 2;
-+	value2->c = tid + 1;
-+	value2->d = tid + 0;
-+
-+	/* Run task_main again */
-+	pthread_mutex_lock(&global_mutex);
-+	err = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.task_main), &opts);
-+	ASSERT_OK(err, "run task_main");
-+	ASSERT_OK(opts.retval, "task_main retval");
-+
-+	ASSERT_EQ(skel->bss->test_value0, tid + 5, "tld_get_data value0");
-+	ASSERT_EQ(skel->bss->test_value1, tid + 4, "tld_get_data value1");
-+	ASSERT_EQ(skel->bss->test_value2.a, tid + 3, "tld_get_data value2.a");
-+	ASSERT_EQ(skel->bss->test_value2.b, tid + 2, "tld_get_data value2.b");
-+	ASSERT_EQ(skel->bss->test_value2.c, tid + 1, "tld_get_data value2.c");
-+	ASSERT_EQ(skel->bss->test_value2.d, tid + 0, "tld_get_data value2.d");
-+	pthread_mutex_unlock(&global_mutex);
-+
-+out:
-+	pthread_exit(NULL);
-+}
-+
-+static void test_task_local_data_basic(void)
-+{
++	pthread_t thread[TEST_RACE_THREAD_NUM];
 +	struct test_task_local_data *skel;
-+	pthread_t thread[TEST_BASIC_THREAD_NUM];
-+	char dummy_key_name[TLD_NAME_LEN];
-+	tld_key_t key;
-+	int i, err;
-+
-+	reset_tld();
-+
-+	ASSERT_OK(pthread_mutex_init(&global_mutex, NULL), "pthread_mutex_init");
++	int fd, i, j, err, *data;
++	void *ret = NULL;
 +
 +	skel = test_task_local_data__open_and_load();
 +	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
@@ -268,44 +166,53 @@ index 000000000000..2e77d3fa2534
 +	if (!ASSERT_OK_PTR(tld_keys, "calloc tld_keys"))
 +		goto out;
 +
++	fd = bpf_map__fd(skel->maps.tld_data_map);
++
 +	ASSERT_FALSE(tld_key_is_err(value0_key), "TLD_DEFINE_KEY");
-+	tld_keys[1] = tld_create_key("value1", sizeof(int));
-+	ASSERT_FALSE(tld_key_is_err(tld_keys[1]), "tld_create_key");
-+	tld_keys[2] = tld_create_key("value2", sizeof(struct test_tld_struct));
-+	ASSERT_FALSE(tld_key_is_err(tld_keys[2]), "tld_create_key");
++	tld_keys[0] = value0_key;
 +
-+	/*
-+	 * Shouldn't be able to store data exceed a page. Create a TLD just big
-+	 * enough to exceed a page. TLDs already created are int value0, int
-+	 * value1, and struct test_tld_struct value2.
-+	 */
-+	key = tld_create_key("value_not_exist",
-+			     TLD_PAGE_SIZE - 2 * sizeof(int) - sizeof(struct test_tld_struct) + 1);
-+	ASSERT_EQ(tld_key_err_or_zero(key), -E2BIG, "tld_create_key");
++	for (j = 0; j < 100; j++) {
++		reset_tld();
 +
-+	key = tld_create_key("value2", sizeof(struct test_tld_struct));
-+	ASSERT_EQ(tld_key_err_or_zero(key), -EEXIST, "tld_create_key");
++		for (i = 0; i < TEST_RACE_THREAD_NUM; i++) {
++			/*
++			 * Try to make tld_create_key() race with each other. Call
++			 * tld_create_key(), both valid and invalid, from different threads.
++			 */
++			err = pthread_create(&thread[i], NULL, test_task_local_data_race_thread,
++					     (void *)(intptr_t)(i + 3));
++			if (CHECK_FAIL(err))
++				break;
++		}
 +
-+	/* Shouldn't be able to create the (TLD_MAX_DATA_CNT+1)-th TLD */
-+	for (i = 3; i < TLD_MAX_DATA_CNT; i++) {
-+		snprintf(dummy_key_name, TLD_NAME_LEN, "dummy_value%d", i);
-+		tld_keys[i] = tld_create_key(dummy_key_name, sizeof(int));
-+		ASSERT_FALSE(tld_key_is_err(tld_keys[i]), "tld_create_key");
++		/* Wait for all tld_create_key() to return */
++		for (i = 0; i < TEST_RACE_THREAD_NUM; i++) {
++			pthread_join(thread[i], &ret);
++			if (CHECK_FAIL(ret))
++				break;
++		}
++
++		/* Write a unique number to each TLD */
++		for (i = 0; i < TLD_MAX_DATA_CNT; i++) {
++			data = tld_get_data(fd, tld_keys[i]);
++			if (CHECK_FAIL(!data))
++				break;
++			*data = i;
++		}
++
++		/* Read TLDs and check the value to see if any address collides with another */
++		for (i = 0; i < TLD_MAX_DATA_CNT; i++) {
++			data = tld_get_data(fd, tld_keys[i]);
++			if (CHECK_FAIL(*data != i))
++				break;
++		}
++
++		/* Run task_main to make sure no invalid TLDs are added */
++		err = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.task_main), &opts);
++		ASSERT_OK(err, "run task_main");
++		ASSERT_OK(opts.retval, "task_main retval");
 +	}
-+	key = tld_create_key("value_not_exist", sizeof(struct test_tld_struct));
-+	ASSERT_EQ(tld_key_err_or_zero(key), -ENOSPC, "tld_create_key");
-+
-+	/* Access TLDs from multiple threads and check if they are thread-specific */
-+	for (i = 0; i < TEST_BASIC_THREAD_NUM; i++) {
-+		err = pthread_create(&thread[i], NULL, test_task_local_data_basic_thread, skel);
-+		if (!ASSERT_OK(err, "pthread_create"))
-+			goto out;
-+	}
-+
 +out:
-+	for (i = 0; i < TEST_BASIC_THREAD_NUM; i++)
-+		pthread_join(thread[i], NULL);
-+
 +	if (tld_keys) {
 +		free(tld_keys);
 +		tld_keys = NULL;
@@ -314,82 +221,13 @@ index 000000000000..2e77d3fa2534
 +	test_task_local_data__destroy(skel);
 +}
 +
-+void test_task_local_data(void)
-+{
-+	if (test__start_subtest("task_local_data_basic"))
-+		test_task_local_data_basic();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_task_local_data.c b/tools/testing/selftests/bpf/progs/test_task_local_data.c
-new file mode 100644
-index 000000000000..fffafc013044
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_task_local_data.c
-@@ -0,0 +1,65 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <vmlinux.h>
-+#include <errno.h>
-+#include <bpf/bpf_helpers.h>
-+
-+#include "task_local_data.bpf.h"
-+
-+struct tld_keys {
-+	tld_key_t value0;
-+	tld_key_t value1;
-+	tld_key_t value2;
-+	tld_key_t value_not_exist;
-+};
-+
-+struct test_tld_struct {
-+	__u64 a;
-+	__u64 b;
-+	__u64 c;
-+	__u64 d;
-+};
-+
-+int test_value0;
-+int test_value1;
-+struct test_tld_struct test_value2;
-+
-+SEC("syscall")
-+int task_main(void *ctx)
-+{
-+	struct tld_object tld_obj;
-+	struct test_tld_struct *struct_p;
-+	struct task_struct *task;
-+	int err, *int_p;
-+
-+	task = bpf_get_current_task_btf();
-+	err = tld_object_init(task, &tld_obj);
-+	if (err)
-+		return 1;
-+
-+	int_p = tld_get_data(&tld_obj, value0, "value0", sizeof(int));
-+	if (int_p)
-+		test_value0 = *int_p;
-+	else
-+		return 2;
-+
-+	int_p = tld_get_data(&tld_obj, value1, "value1", sizeof(int));
-+	if (int_p)
-+		test_value1 = *int_p;
-+	else
-+		return 3;
-+
-+	struct_p = tld_get_data(&tld_obj, value2, "value2", sizeof(struct test_tld_struct));
-+	if (struct_p)
-+		test_value2 = *struct_p;
-+	else
-+		return 4;
-+
-+	int_p = tld_get_data(&tld_obj, value_not_exist, "value_not_exist", sizeof(int));
-+	if (int_p)
-+		return 5;
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+ void test_task_local_data(void)
+ {
+ 	if (test__start_subtest("task_local_data_basic"))
+ 		test_task_local_data_basic();
++	if (test__start_subtest("task_local_data_race"))
++		test_task_local_data_race();
+ }
 -- 
 2.47.3
 
