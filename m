@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-64758-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64756-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CDC7B16977
-	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 01:49:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4349B16975
+	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 01:48:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38B6D620C78
-	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 23:48:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD10018C7720
+	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 23:48:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23CD023C8B3;
-	Wed, 30 Jul 2025 23:47:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A107A23C4FB;
+	Wed, 30 Jul 2025 23:47:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="rjAOJHZG"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="MCS6Mgj8"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9545023816A
-	for <bpf@vger.kernel.org>; Wed, 30 Jul 2025 23:47:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A23A823A993
+	for <bpf@vger.kernel.org>; Wed, 30 Jul 2025 23:47:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753919265; cv=none; b=UgWoIpWRIDAIH9JeNjyZigAtQqN74qTJPkee+qlQQs13fIMNLVnSycRix5ZirsPc3SyBsDIkJRkiQVn5Vfy4b46OFmSV07brbeU65E/9YyBDwJ92w1fydp8X4wSx6j3lDrgxWiaVA4j01Iuf5b//MfIyuJWW8Ch0W7CI7AZAv6A=
+	t=1753919265; cv=none; b=NgVafnYswQIv2Ig3HE3xLV5XXOAtc70d3ZFZiY1o2VL/kAyQaWBRYEprT/YpfTatZt6dDBfHqkSaXBT/XV0O6qU7V3AtBi+DzAhSiq4Nawp5hrEWJUi/BXgzOd2RoAS0iD1uppbESlnp1ZXdS3+T282g6VWUKkQ6iPOHaYhu5gQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1753919265; c=relaxed/simple;
-	bh=q7y31iMGnD16AYfkl+OyLK+F+svQgD1qDvOcUwMPTwo=;
+	bh=QkYo5w2FDAhqeGytZ3n57e5O1HJcdaXWxi4YhWWsSfQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PQ4OlrL1evdhpzAaCBC64jktI9kNvewgf8Iqv+4U//Saokdj59Cn8KaIfTfugILMagrzc/uDaKc7Mj9AdORipcnici2CxXXOMZuck8NJgevZlzGsYee35VbeDSl5OqhpuK3VVZ6xdxYVqHJb/R5PEFbtKjjxQC5Hh4l4b297MSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=rjAOJHZG; arc=none smtp.client-ip=213.133.104.62
+	 MIME-Version; b=pa6i04v36ng9SAgDuEXoqB4ODzn2ZY2Sm1VvKQkUDXcGjN8T3G0mw9+6QOHruKOFadNJEQI+tTsb7WKwL0Dc5ra7VWJlEzH2qYTpGch3A5m1DBT0yGFmV3FnCOS3H7dCy1psbRfPBK9YpgY75itYlQi4dgBeDetdespZPKU6CpM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=MCS6Mgj8; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,25 +36,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=e312suXBh/igw7KUUwy0JvoC/TuVq9e+OgccfbaZiCo=; b=rjAOJHZGRVEbi0Tyn+yI9nQY2f
-	KyNbXxlWLIxyNW/JeRaOappBkwmxEshtIzUAdICF0NyhDJpEuACuXVHZD4hCjpC4GuqfmMu3eXbEx
-	XU++BTashwG88QRKYpR6RRrGjuRZU8giY24uBa8q6jLG7mUXi8nLuAIStdgMV4F4a8bL9hxlpXtLl
-	Mg5qoyqJwda7z1wFStPbsWq3L38ChXciF821ar3NTKI/mYvRimoep8MlaKH5JZeRLrkc+4JbS1ItR
-	avVS84paeDLDmXMd7a5LM/O9v2z1VhIYvGkwVSg0JqHJ4bgyqfY5GqS7HZx+tj3lZUKYTKcIKw1Rk
-	1hbcgZRg==;
+	bh=jJyCnqLxuYt2NpMzZxCc65Zf0RIZLZaobXIPZzcBBkg=; b=MCS6Mgj8StaJ7B5MkvGJNy9pSC
+	AeU0xpDtlAPditQrfRTCbzv+IRyKQlbxN8A/CMk5axm0XFldt/l8GxI+1awvJr0y73JkwSlpkBIn9
+	vd1NCbMkyE4R8tVBuooedBALc9QuTkI2yuYJ0eXKLn3IYcgBXdAVewxjEa/ruLQB5AjNSswevpn/q
+	d27MlHf1g9zJwepVOrnLOzWCG9UdlEkIZ6WKQmLx6bPdpnWY+csk057Xp8gi01UQKH4IL6RZCw65k
+	5YiHd9iEc7rtXgn4EfLzmYTv5bpsOHwWrOqemMR06clOaOyYijG2lzDu8xnxdB08mm56UHbeUux7U
+	dUgvWWVw==;
 Received: from localhost ([127.0.0.1])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1uhGWE-0008QO-2p;
-	Thu, 31 Jul 2025 01:47:34 +0200
+	id 1uhGWF-0008QU-1t;
+	Thu, 31 Jul 2025 01:47:35 +0200
 From: Daniel Borkmann <daniel@iogearbox.net>
 To: ast@kernel.org
 Cc: andrii@kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH bpf v2 2/4] bpf: Move bpf map owner out of common struct
-Date: Thu, 31 Jul 2025 01:47:31 +0200
-Message-ID: <20250730234733.530041-2-daniel@iogearbox.net>
+Subject: [PATCH bpf v2 3/4] bpf: Move cgroup iterator helpers to bpf.h
+Date: Thu, 31 Jul 2025 01:47:32 +0200
+Message-ID: <20250730234733.530041-3-daniel@iogearbox.net>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250730234733.530041-1-daniel@iogearbox.net>
 References: <20250730234733.530041-1-daniel@iogearbox.net>
@@ -67,178 +67,83 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Virus-Scanned: Clear (ClamAV 1.0.7/27717/Wed Jul 30 18:34:37 2025)
 
-Given this is only relevant for BPF tail call maps, it is adding up space
-and penalizing other map types. We also need to extend this with further
-objects to track / compare to. Therefore, lets move this out into a separate
-structure and dynamically allocate it only for BPF tail call maps.
+Move them into bpf.h given we also need them in core code.
 
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 ---
- include/linux/bpf.h  | 36 ++++++++++++++++++++++++------------
- kernel/bpf/core.c    | 35 ++++++++++++++++++-----------------
- kernel/bpf/syscall.c | 13 +++++++------
- 3 files changed, 49 insertions(+), 35 deletions(-)
+ v1 -> v2:
+  - Fixed kbuild bot for !CONFIG_CGROUP_BPF. Removing the
+    defione for_each_cgroup_storage_type for this case I
+    left for a future series.
+  - Removed for_each_cgroup_storage_type_cond
 
+ include/linux/bpf-cgroup.h |  5 -----
+ include/linux/bpf.h        | 22 ++++++++++++++--------
+ 2 files changed, 14 insertions(+), 13 deletions(-)
+
+diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+index 082ccd8ad96b..aedf573bdb42 100644
+--- a/include/linux/bpf-cgroup.h
++++ b/include/linux/bpf-cgroup.h
+@@ -77,9 +77,6 @@ to_cgroup_bpf_attach_type(enum bpf_attach_type attach_type)
+ extern struct static_key_false cgroup_bpf_enabled_key[MAX_CGROUP_BPF_ATTACH_TYPE];
+ #define cgroup_bpf_enabled(atype) static_branch_unlikely(&cgroup_bpf_enabled_key[atype])
+ 
+-#define for_each_cgroup_storage_type(stype) \
+-	for (stype = 0; stype < MAX_BPF_CGROUP_STORAGE_TYPE; stype++)
+-
+ struct bpf_cgroup_storage_map;
+ 
+ struct bpf_storage_buffer {
+@@ -510,8 +507,6 @@ static inline int bpf_percpu_cgroup_storage_update(struct bpf_map *map,
+ #define BPF_CGROUP_RUN_PROG_SETSOCKOPT(sock, level, optname, optval, optlen, \
+ 				       kernel_optval) ({ 0; })
+ 
+-#define for_each_cgroup_storage_type(stype) for (; false; )
+-
+ #endif /* CONFIG_CGROUP_BPF */
+ 
+ #endif /* _BPF_CGROUP_H */
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 308530c8326b..a87646cc5398 100644
+index a87646cc5398..02aa41e301a5 100644
 --- a/include/linux/bpf.h
 +++ b/include/linux/bpf.h
-@@ -260,6 +260,18 @@ struct bpf_list_node_kern {
- 	void *owner;
- } __attribute__((aligned(8)));
+@@ -208,6 +208,20 @@ enum btf_field_type {
+ 	BPF_RES_SPIN_LOCK = (1 << 12),
+ };
  
-+/* 'Ownership' of program-containing map is claimed by the first program
-+ * that is going to use this map or by the first program which FD is
-+ * stored in the map to make sure that all callers and callees have the
-+ * same prog type, JITed flag and xdp_has_frags flag.
-+ */
-+struct bpf_map_owner {
-+	enum bpf_prog_type type;
-+	bool jited;
-+	bool xdp_has_frags;
-+	const struct btf_type *attach_func_proto;
++enum bpf_cgroup_storage_type {
++	BPF_CGROUP_STORAGE_SHARED,
++	BPF_CGROUP_STORAGE_PERCPU,
++	__BPF_CGROUP_STORAGE_MAX
++#define MAX_BPF_CGROUP_STORAGE_TYPE __BPF_CGROUP_STORAGE_MAX
 +};
 +
- struct bpf_map {
- 	const struct bpf_map_ops *ops;
- 	struct bpf_map *inner_map_meta;
-@@ -292,18 +304,8 @@ struct bpf_map {
- 		struct rcu_head rcu;
- 	};
- 	atomic64_t writecnt;
--	/* 'Ownership' of program-containing map is claimed by the first program
--	 * that is going to use this map or by the first program which FD is
--	 * stored in the map to make sure that all callers and callees have the
--	 * same prog type, JITed flag and xdp_has_frags flag.
--	 */
--	struct {
--		const struct btf_type *attach_func_proto;
--		spinlock_t lock;
--		enum bpf_prog_type type;
--		bool jited;
--		bool xdp_has_frags;
--	} owner;
-+	spinlock_t owner_lock;
-+	struct bpf_map_owner *owner;
- 	bool bypass_spec_v1;
- 	bool frozen; /* write-once; write-protected by freeze_mutex */
- 	bool free_after_mult_rcu_gp;
-@@ -2109,6 +2111,16 @@ static inline bool bpf_map_flags_access_ok(u32 access_flags)
- 	       (BPF_F_RDONLY_PROG | BPF_F_WRONLY_PROG);
- }
- 
-+static inline struct bpf_map_owner *bpf_map_owner_alloc(struct bpf_map *map)
-+{
-+	return kzalloc(sizeof(*map->owner), GFP_ATOMIC);
-+}
++#ifdef CONFIG_CGROUP_BPF
++# define for_each_cgroup_storage_type(stype) \
++	for (stype = 0; stype < MAX_BPF_CGROUP_STORAGE_TYPE; stype++)
++#else
++# define for_each_cgroup_storage_type(stype) for (; false; )
++#endif /* CONFIG_CGROUP_BPF */
 +
-+static inline void bpf_map_owner_free(struct bpf_map *map)
-+{
-+	kfree(map->owner);
-+}
-+
- struct bpf_event_entry {
- 	struct perf_event *event;
- 	struct file *perf_file;
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 09dde5b00d0c..6e5b3a67e87f 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -2377,28 +2377,29 @@ static bool __bpf_prog_map_compatible(struct bpf_map *map,
- 				      const struct bpf_prog *fp)
- {
- 	enum bpf_prog_type prog_type = resolve_prog_type(fp);
--	bool ret;
- 	struct bpf_prog_aux *aux = fp->aux;
-+	bool ret = false;
+ typedef void (*btf_dtor_kfunc_t)(void *);
  
- 	if (fp->kprobe_override)
--		return false;
-+		return ret;
+ struct btf_field_kptr {
+@@ -1085,14 +1099,6 @@ struct bpf_prog_offload {
+ 	u32			jited_len;
+ };
  
--	spin_lock(&map->owner.lock);
--	if (!map->owner.type) {
--		/* There's no owner yet where we could check for
--		 * compatibility.
--		 */
--		map->owner.type  = prog_type;
--		map->owner.jited = fp->jited;
--		map->owner.xdp_has_frags = aux->xdp_has_frags;
--		map->owner.attach_func_proto = aux->attach_func_proto;
-+	spin_lock(&map->owner_lock);
-+	/* There's no owner yet where we could check for compatibility. */
-+	if (!map->owner) {
-+		map->owner = bpf_map_owner_alloc(map);
-+		if (!map->owner)
-+			goto err;
-+		map->owner->type  = prog_type;
-+		map->owner->jited = fp->jited;
-+		map->owner->xdp_has_frags = aux->xdp_has_frags;
-+		map->owner->attach_func_proto = aux->attach_func_proto;
- 		ret = true;
- 	} else {
--		ret = map->owner.type  == prog_type &&
--		      map->owner.jited == fp->jited &&
--		      map->owner.xdp_has_frags == aux->xdp_has_frags;
-+		ret = map->owner->type  == prog_type &&
-+		      map->owner->jited == fp->jited &&
-+		      map->owner->xdp_has_frags == aux->xdp_has_frags;
- 		if (ret &&
--		    map->owner.attach_func_proto != aux->attach_func_proto) {
-+		    map->owner->attach_func_proto != aux->attach_func_proto) {
- 			switch (prog_type) {
- 			case BPF_PROG_TYPE_TRACING:
- 			case BPF_PROG_TYPE_LSM:
-@@ -2411,8 +2412,8 @@ static bool __bpf_prog_map_compatible(struct bpf_map *map,
- 			}
- 		}
- 	}
--	spin_unlock(&map->owner.lock);
+-enum bpf_cgroup_storage_type {
+-	BPF_CGROUP_STORAGE_SHARED,
+-	BPF_CGROUP_STORAGE_PERCPU,
+-	__BPF_CGROUP_STORAGE_MAX
+-};
 -
-+err:
-+	spin_unlock(&map->owner_lock);
- 	return ret;
- }
- 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 7a814e98d5f5..0fbfa8532c39 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -887,6 +887,7 @@ static void bpf_map_free_deferred(struct work_struct *work)
- 
- 	security_bpf_map_free(map);
- 	bpf_map_release_memcg(map);
-+	bpf_map_owner_free(map);
- 	bpf_map_free(map);
- }
- 
-@@ -981,12 +982,12 @@ static void bpf_map_show_fdinfo(struct seq_file *m, struct file *filp)
- 	struct bpf_map *map = filp->private_data;
- 	u32 type = 0, jited = 0;
- 
--	if (map_type_contains_progs(map)) {
--		spin_lock(&map->owner.lock);
--		type  = map->owner.type;
--		jited = map->owner.jited;
--		spin_unlock(&map->owner.lock);
-+	spin_lock(&map->owner_lock);
-+	if (map->owner) {
-+		type  = map->owner->type;
-+		jited = map->owner->jited;
- 	}
-+	spin_unlock(&map->owner_lock);
- 
- 	seq_printf(m,
- 		   "map_type:\t%u\n"
-@@ -1496,7 +1497,7 @@ static int map_create(union bpf_attr *attr, bool kernel)
- 	atomic64_set(&map->refcnt, 1);
- 	atomic64_set(&map->usercnt, 1);
- 	mutex_init(&map->freeze_mutex);
--	spin_lock_init(&map->owner.lock);
-+	spin_lock_init(&map->owner_lock);
- 
- 	if (attr->btf_key_type_id || attr->btf_value_type_id ||
- 	    /* Even the map's value is a kernel's struct,
+-#define MAX_BPF_CGROUP_STORAGE_TYPE __BPF_CGROUP_STORAGE_MAX
+-
+ /* The longest tracepoint has 12 args.
+  * See include/trace/bpf_probe.h
+  */
 -- 
 2.43.0
 
