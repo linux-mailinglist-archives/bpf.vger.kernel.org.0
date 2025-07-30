@@ -1,125 +1,175 @@
-Return-Path: <bpf+bounces-64691-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64692-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF15BB159B4
-	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 09:38:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD6A7B15DBA
+	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 11:59:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99849175B06
-	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 07:38:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09951188390D
+	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 09:58:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3F1C28FFE5;
-	Wed, 30 Jul 2025 07:38:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34798277804;
+	Wed, 30 Jul 2025 09:58:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aU7PY2Ak"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Yrula0RN"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3BE535953
-	for <bpf@vger.kernel.org>; Wed, 30 Jul 2025 07:38:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BA77256C70
+	for <bpf@vger.kernel.org>; Wed, 30 Jul 2025 09:58:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753861127; cv=none; b=kbp24HrG0HdmML/uSwluI2ClsqKf56oK2QAPFXMAkAruSlr1J6B4InLt1NoN5T6fq1Fyqh2xuquPzdjB7Jc+Ms1HzLw5f2If3W5FETTsIVXIMpbQaqomvI8lUPYHrrZd7i+/yKEvhjYIEn4xanpmEZFE7IgKuADG/H92qrbl3l8=
+	t=1753869511; cv=none; b=S4n5amAT+cD4n3XYFHq8T5M4U4gQSVFoTU+wBLpHHUSMatnEmUTlsQnlJI9+9xY4c5ozuqM9MJFe0+p+pyIBLNycOAB3L2pkDe8EaZbGM4tFKAoE2OARqk0bbWna7GHaYFHOYdeNn3JbkF3JGH7YfpgPrdTj0OI6dNqjQVs4F9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753861127; c=relaxed/simple;
-	bh=h7jIvo3oBpFJTxJeqGtcO58heYhHZbJ7NLsydcxpTyE=;
+	s=arc-20240116; t=1753869511; c=relaxed/simple;
+	bh=3iNlG97SCh9umC6TNetVd730/bt+JlP4b+sEfzLpuIc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZkfcN6LXVMX8XxpTELDcoDH1rjuxRwzzSBakxR7iuRdGKyHX8z/V2QhDjBSBj4f0t9aDiHs2mrmfqYPf4iC7es47kXScGDdhapi7Pt3h+8UiJzsyL18GIKwMgZXkD8tpgDDhKLCBfSANhDwZs442vMdjfmEgyaK8JKUl+zsfHNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aU7PY2Ak; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <0b43ded0-701c-475b-99af-72612a8afc3d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1753861122;
+	 In-Reply-To:Content-Type; b=bez1m6js+2XL2mY8IWVn5aPNdNSaX/1yu2VYwwJv285r2K2ltF8DC5IA1JVlX6chuksxm1edBgmzfLTnnKdhbk/R8GWJNzAMqAjfdB5jFBq1gfv43lLxVDbdvy0W5zVpg3qesyrJZ4c0FMTY+sbfMidlSP/SPblb3p853T/9W9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Yrula0RN; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1753869509;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Po4ue1cXy37/7/gAauR9DhGJcWlPu0T+MCiLfbuelR0=;
-	b=aU7PY2AkkgzPaF77XfS8NH8hS4R0k9q2e0FSwx8SW3u1xKTJSoEczngVpqkqRrhLzO/Ylk
-	RAJbSKdU7xs4+ADrOPayPIAQEaUrsL/ZcvUwujfbgXZom5d7zXYAWsHBDrR7vMldwRUSjM
-	GXmrFHymkBBojgP923bJ2mc4Eol1sME=
-Date: Wed, 30 Jul 2025 15:38:00 +0800
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=qVzaspBXmBeFOC5r4SwHbIYNhPqgXvGTcIV+/8vKIhQ=;
+	b=Yrula0RN8P4iQJZn9VyvBH/8zQxHG+6HRohXM533I4JDEN0dH9L28GCtTyD+bZuT5Lb7Xq
+	RVWRdL6bB0T8a0n8SMIu69zYXQp1sGQg+yTONIz0Th9OowtwrVLzFkVHLktP7R+VXJ7j+9
+	kURm2gb6DRENzg0sJFw0BBCbvDzUH3s=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-381-_Eo62qirNj-nwHJoaCiiiw-1; Wed, 30 Jul 2025 05:58:27 -0400
+X-MC-Unique: _Eo62qirNj-nwHJoaCiiiw-1
+X-Mimecast-MFC-AGG-ID: _Eo62qirNj-nwHJoaCiiiw_1753869507
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-7e36e4467e3so143111585a.0
+        for <bpf@vger.kernel.org>; Wed, 30 Jul 2025 02:58:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753869507; x=1754474307;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=qVzaspBXmBeFOC5r4SwHbIYNhPqgXvGTcIV+/8vKIhQ=;
+        b=kULXuLoTMjOSNNZMeDRta+BqdO2UDGoOOxCeK69twHFIpV7uMR8TxRnTpWzXi6YiPz
+         unwDhIPbjm/V+3gyPz5a0IQjcj/nq5HUg+nkgiVAV8Ehd3y99EvoXlmldiUOnkcGRqBh
+         AVuVZBEuJyeIF+1WRWqZcroccyhfDfeQ/KJJBOR22hFs9q1frlRlUsA9LG+h5zLPdUWT
+         5ZmGtfCuHwmrx7JPThRyA7g4blA2Vh+oseENycqUzwuA/Z6XYZKpbYHrtq8tuSQC2bJC
+         1lr7PNSQDdhwSO83Fw01uyMaSmtRVfWFO1yi737tV0yiFEB1ZKf9NVJTbS7VWrG+xJDN
+         1I6A==
+X-Forwarded-Encrypted: i=1; AJvYcCUJSYip0X9FaGu4ozEE+Z9peuSgv0RWgp/ECAQwb20b9oaHWmve/JWA/ashlbHMYi4XqIQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxhBd0Z6xXSoejDT+F0diZOVZAzGJ5sC4oTKGbnJ17brexoJCzH
+	wfSqzloa2ar1JSWN/IoMMBLwfiKdo+q1ihesaLthkL1arR0Ghp087veUuOixEslthvJqqbXCwLt
+	+GladQH9rm4C5QoWLAWRZ2uzBxDYfKm1DCpu0QFeV4h0uweJ5tTQ8fg==
+X-Gm-Gg: ASbGncvzyhv4iOp9QZGgWbsTl+fGmTYKDLtveNpajTjcBSP1dZm7kMNdWVpbGNlxvUt
+	mmZlKGG8+mQ/LHVZaLI6wGFJbhxfAQOiHfmqLBMbFBGWm05ba0s391bsKPa663f4vqbyAzm/IIC
+	ydUJxEXr+X2G/OsNyW8YQZCS1DHivF9jQwY7d5eHDQD5cHlWEEXvVfBthaCj1lHxtRza74ubJZu
+	4CQj6zBhX5YTgrwWK8Sh82hOVkd0JhD5fBuKfu6nU6LdFONz5LsANzgUzNSgatXbT2D+IyXEi9P
+	xIGf7Czq79aPThEBa40HGMEeQK8qhwh2SjH5tEndLV8ci4w3E7SzcI/gmMyxmA==
+X-Received: by 2002:a05:6214:5689:b0:707:612d:3adb with SMTP id 6a1803df08f44-707612d4f30mr42041366d6.18.1753869507074;
+        Wed, 30 Jul 2025 02:58:27 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGyWF8t+GU9zMFLmNowgI1RoDyKgjAESlOjsdZQY4VaxzWNfocJJTSSNXHGRxG4wRuu7bvYRA==
+X-Received: by 2002:a05:6214:5689:b0:707:612d:3adb with SMTP id 6a1803df08f44-707612d4f30mr42041136d6.18.1753869506628;
+        Wed, 30 Jul 2025 02:58:26 -0700 (PDT)
+Received: from [10.32.64.156] (nat-pool-muc-t.redhat.com. [149.14.88.26])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-70729a9cadasm57161066d6.34.2025.07.30.02.58.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Jul 2025 02:58:26 -0700 (PDT)
+Message-ID: <65e9ee9a-3b64-4efc-ade0-83990de7af91@redhat.com>
+Date: Wed, 30 Jul 2025 11:58:22 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] sfc: handle NULL returned by xdp_convert_buff_to_frame()
-To: Edward Cree <ecree.xilinx@gmail.com>, Edward Cree <ecree@amd.com>,
- Paolo Abeni <pabeni@redhat.com>, Chenyuan Yang <chenyuan0y@gmail.com>,
- andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
- john.fastabend@gmail.com, sdf@fomichev.me, lorenzo@kernel.org
-Cc: netdev@vger.kernel.org, linux-net-drivers@amd.com, bpf@vger.kernel.org,
- zzjas98@gmail.com
-References: <20250723003203.1238480-1-chenyuan0y@gmail.com>
- <045d1ff5-bb20-481d-a067-0a42345ab83d@redhat.com>
- <de14f60e-b1f0-432c-80b4-a2f0453e0fe2@amd.com>
- <8d987133-0e22-4aa8-bf2e-57ef105c8db8@linux.dev>
- <4169cfd4-2231-417f-b091-d8fa2f73f176@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v4 0/4] mm, bpf: BPF based THP order selection
+To: Yafang Shao <laoar.shao@gmail.com>, Zi Yan <ziy@nvidia.com>
+Cc: akpm@linux-foundation.org, baolin.wang@linux.alibaba.com,
+ lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, npache@redhat.com,
+ ryan.roberts@arm.com, dev.jain@arm.com, hannes@cmpxchg.org,
+ usamaarif642@gmail.com, gutierrez.asier@huawei-partners.com,
+ willy@infradead.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, ameryhung@gmail.com, bpf@vger.kernel.org,
+ linux-mm@kvack.org
+References: <20250729091807.84310-1-laoar.shao@gmail.com>
+ <08D7155B-84F0-4575-B192-96901CFE690A@nvidia.com>
+ <CALOAHbDRBs8bdXB_LJjx-7gALOCLvmMxFD+c7MbHAiQ3htXawA@mail.gmail.com>
+From: David Hildenbrand <david@redhat.com>
 Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kunwu Chan <kunwu.chan@linux.dev>
-In-Reply-To: <4169cfd4-2231-417f-b091-d8fa2f73f176@gmail.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ g3eXuA==
+Organization: Red Hat
+In-Reply-To: <CALOAHbDRBs8bdXB_LJjx-7gALOCLvmMxFD+c7MbHAiQ3htXawA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-
-On 2025/7/28 22:28, Edward Cree wrote:
-> On 25/07/2025 13:38, Kunwu Chan wrote:
->> Proposed refinement:
-> ...
->>           if (net_ratelimit())
->>               netif_err(efx, rx_err, efx->net_dev,
->> -                  "XDP TX failed (%d)\n", err);
->> +                  "XDP TX failed (%d)%s\n", err,
->> +                  err == -ENOBUFS ? " [frame conversion]" : "");
-> Unnecessary, since efx_xdp_tx_buffers() never returns ENOBUFS.
-
-You're correct that efx_siena_xdp_tx_buffers() never returns -ENOBUFS,
-
-and xdp_convert_buff_to_frame() returns NULL on failure.
-
-Whether we need a log to distinguish where the errors come from?
-
-  +   if (unlikely(!xdpf))
-
-  +          err = -ENOBUFS;
-
-  +   else
-
-  +      err = efx_xdp_tx_buffers(efx, 1, &xdpf, true);
-
-  -    err = efx_siena_xdp_tx_buffers(efx, 1, &xdpf, true);
-       if (unlikely(err != 1)) {
-           efx_siena_free_rx_buffers(rx_queue, rx_buf, 1);
-           if (net_ratelimit())
-               netif_err(efx, rx_err, efx->net_dev,
--                  "XDP TX failed (%d)\n", err);
-+                  "XDP TX failed (%d)%s\n", err,
-+                  err == -ENOBUFS ? " [xdp_convert_buff_to_frame]" : 
-"efx_siena_xdp_tx_buffers");
-
-Just a personal thought.
 
 
->
->>           channel->n_rx_xdp_bad_drops++;
->> -        trace_xdp_exception(efx->net_dev, xdp_prog, xdp_act);
->> +        if (err != -ENOBUFS)
->> +            trace_xdp_exception(efx->net_dev, xdp_prog, xdp_act);
-> Why prevent the tracepoint in this case??
-You're correct, my mistake.
+> 
+> Yes, mm is sufficient for our use cases.
+> We've already deployed a variant of this patchset in our production
+> environment, and it has been performing well under our workloads.
+> 
+>> Are you planning to extend the
+>> BFP interface to VMA in the future? Just curious.
+> 
+> Our use cases don’t currently require the VMA.
+> We can add it later if a clear need arises.
+
+We should start immediately with a VMA-based approach as discussed 
+previously.
 
 -- 
-Thanks,
-        TAO.
----
-“Life finds a way.”
+Cheers,
+
+David / dhildenb
 
 
