@@ -1,226 +1,137 @@
-Return-Path: <bpf+bounces-64729-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64730-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B00D9B16460
-	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 18:16:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF4D1B16474
+	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 18:18:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 33AF45826E0
-	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 16:13:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20DD3622075
+	for <lists+bpf@lfdr.de>; Wed, 30 Jul 2025 16:14:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 888BD2DE6E7;
-	Wed, 30 Jul 2025 16:09:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4024C2DE71B;
+	Wed, 30 Jul 2025 16:13:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="do8ofpoy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ISdH6fY/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B6DC2E7645;
-	Wed, 30 Jul 2025 16:09:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AAC12D8368;
+	Wed, 30 Jul 2025 16:13:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753891743; cv=none; b=BlBYCIh/KJzIYQP6hvc0nW3ZETZzlZiEpbJqo3e0TDiUP6CZNKONzsC0W+a5lWK1unA2zsj1P+xzCFasgsKvzyqCEMsCNccYhEcRS0VacuPDmiNd4ynBQ151M6j4UXOpemMFcMbsdqsRUlW9IQIYlla+llKkh7euht2vBIrBU1g=
+	t=1753892016; cv=none; b=qMnhroOWiM8ZNguxhOPpx00/QRcfLjlEM4oMcoqToAhyNqbX1mY3S/L+6NhBzw+Yxx4lLRaH+/ZaH2F+mbxJ9TnXzeqqpswU8yDloTLJk4wQtVFwrxU7GhbwMS63DPW0DwpP2ryz0yDr1HKiWo2zCL6GIBFz42/9DRiCxhysbJ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753891743; c=relaxed/simple;
-	bh=CjvGV5hPrqqR5jpzUsV/mVpTr+53npZ/zD34Fh+5nM0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XtAiPh6X3ntH/rdmjux5pp9vnyiKXUmVp8JOH5nom3cr4KsW54DdYC5aiZXAeF7krueFP3z4bA2m+iPVQKq0Og4ew8tgMnoboqvrD/YFwBDBfRVUVMnXxBKnlKjgjyhQ0iLNbsoQYFkBmFyXPK8xUdGFHVYdw8R2xIAH1ZboZ18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=do8ofpoy; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1753891742; x=1785427742;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=CjvGV5hPrqqR5jpzUsV/mVpTr+53npZ/zD34Fh+5nM0=;
-  b=do8ofpoyZ/nF6SWnR6zGuQNEOeAGCpclPRt8OE3n1NjtBhd8IXrRWTCl
-   wIZVXL5Epo0E6miRYm0+0FP7bnztj5h5lHoJpMfLkWqJ9Gbcw6pcWT193
-   2DzimdGljK2Nzwav+lnGWIVjAAHVTpE/fuMdueoGsCaolMXPNnwsPsNPR
-   CWTq1Ve6K00eEXOI3yKzCCJK1O57O7XaO9FhjHdVrlT9ZE6NisAKroQUR
-   EQLU3XmiXqtqR+rO+0EOXhfuGJyu18LOwm08qjinKOFE300Zhpw46yksM
-   DomqX/e+z8T2qUT//seVQIeiyhLkaoFIjfGmopOoy4J4pVeWJxDk2QFCj
-   g==;
-X-CSE-ConnectionGUID: WrNMIJP7SOOHjy9YvEwuUQ==
-X-CSE-MsgGUID: C0D9pOMkTXSuyjIbQOJoFg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11507"; a="67279008"
-X-IronPort-AV: E=Sophos;i="6.16,350,1744095600"; 
-   d="scan'208";a="67279008"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2025 09:09:01 -0700
-X-CSE-ConnectionGUID: yYCfxNg6T667veVV8q54tA==
-X-CSE-MsgGUID: 3/6sTqFyS9S0zSBvEZRNSg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,350,1744095600"; 
-   d="scan'208";a="163813094"
-Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmviesa010.fm.intel.com with ESMTP; 30 Jul 2025 09:08:57 -0700
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-To: intel-wired-lan@lists.osuosl.org
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Michal Kubiak <michal.kubiak@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Simon Horman <horms@kernel.org>,
-	nxne.cnse.osdt.itp.upstreaming@intel.com,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH iwl-next v3 18/18] idpf: add XDP RSS hash hint
-Date: Wed, 30 Jul 2025 18:07:17 +0200
-Message-ID: <20250730160717.28976-19-aleksander.lobakin@intel.com>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20250730160717.28976-1-aleksander.lobakin@intel.com>
-References: <20250730160717.28976-1-aleksander.lobakin@intel.com>
+	s=arc-20240116; t=1753892016; c=relaxed/simple;
+	bh=0PF5NUEd0WyI2Xp2HpSr440L/r7appM8CdBDYgI55iM=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=SkfNHGGPponLm7aLNkP8/E8wIGw3c+KKqiH24NNulA2GirWjpry9gduVSijRXKyz2LtmP6SmcHQTzXc7Rxdit5FJuFSd5CeRt/wPDrKJ4xCI8cOKp4xsjiREOhjYSX0eUsfwChTTyfn9noWTm+L/r4gsFanAX46H1DWKuotgCfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ISdH6fY/; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-23fe2be6061so9605215ad.0;
+        Wed, 30 Jul 2025 09:13:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1753892014; x=1754496814; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=dQUCXzvYt5b3ohSOIHozCTQslzQ/AVFvh6qH07LQ54U=;
+        b=ISdH6fY/BcimD01z+0ACrvXiutCu7kwLBF/V4gIswJz7aDd+QRn8Npq7sz6d46nRTz
+         DPgh0GGqLGgTdk0oVbjj2vuRzGCoN2c4wL32OF1UsT9puRTyeW9srpAA4LjuiMtsj8kX
+         flS1/JzdPvXHWbIbbY8iHOs9zropAxQopYvnw6AmijJAQpeAsApdf7YEwERh5+S1k/I0
+         HRLnEAvJoTfuICpL4q+B/Cn0FPvUmARlG/qtRvIYmgVgvMK88jGInVu71Mo5gva84u9T
+         TLCxVjAomzBUUprgwUbxwmaynrr/Y4HGomdMIeUsCjljOxtMLNcOR6dTWnE2128hjpS1
+         Ng7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753892014; x=1754496814;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dQUCXzvYt5b3ohSOIHozCTQslzQ/AVFvh6qH07LQ54U=;
+        b=gL9T2+3coqJJIENuxF/K984HT+Z2RKe99NL6c8vVKEJu75BNDtAFo46kGVc17q2dWA
+         OYgRXRbiLHDylBVQ2vDCnqQnuOp5Jry3irugSMs+Eu9ZelYsky7vyWVku0avABJldQDi
+         pMPYFbvnBjpHUqPDfb+BGuk1XlEyDjKbM9NpwdikYc4TezYxOfOlmXtqWSls3HhQ2m5c
+         O6L2YctrkHQY+5vs7NuJax2KluOD+LX5yzN+A0jgDBlFaQguqZfNSf9ubn/RwnQhMF8W
+         B/oC5+KZuw5+bVqogVOQkbSCWforzvDCWCwOWKsB56GPKOnayZdPd7h+xfgDO31oxgVn
+         hUXw==
+X-Forwarded-Encrypted: i=1; AJvYcCXLnzs+NdU/L/l84cnULd7cXSFKzZJP/bF4LCiKqV/ynEn0nAuh1nSKicrM7DX9IJUxBRg=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw+3uWIZ/L8oTyBsX0wDUS95lXTOsGFwUKxQZpcU4LQNBLy2yen
+	HN71Q8YHWKF7h1iLt7ZiBk2Hq3+9N6vnsCSU/TPIKcyoeuqlLIRB/6RO
+X-Gm-Gg: ASbGncspuiwHTfmYM2SNJlsYHM+vo5tKBwVW4Baf2kmfYI4QswRFjI8ImplE0Wre9jQ
+	wHf3MMTlgloKE+Lsw0eYA64swzTQHmAOzxYwRA8NQxd24S3CFePMZIRutGgdnN034TpoL7jSoeY
+	iCQyfJmipFR4GMyKLL2qt9vNjLGDk1C6CF5OakeS2+yhnPXTqE5TE7i4r4cx0eJ4D+Dk2BMCf1e
+	Jy1mtKnxAHCqg7+y9LpgqkwPLV+pOY8k/rVvKEiHowLMz3ZM6YnPfFe4wwvrzHyKukIZtarPddu
+	LTDANPHVq1cn98IQvS/rTIBEKOhQLj1r5gBicmJ/TJ7Y+PjNXsUeT2lfRcYo6P0F8Y5ufl4Y7CT
+	5kxa0Gt/Xyw1lX6kkJe++fVK1aP5d7fFMiIXE57A=
+X-Google-Smtp-Source: AGHT+IGeFSOw+/X0Z7X4n9ogZ/o87Th6ejMZXu2HkaiuIh3jZZvvHw0QjHjI57QITzDcg0qs70orEw==
+X-Received: by 2002:a17:902:fc50:b0:240:20a8:cc22 with SMTP id d9443c01a7336-240967c5fb9mr54261485ad.4.1753892014219;
+        Wed, 30 Jul 2025 09:13:34 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c096:14a::1cf? ([2620:10d:c090:600::1:f0da])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23ff71916f0sm87534415ad.147.2025.07.30.09.13.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jul 2025 09:13:33 -0700 (PDT)
+Message-ID: <a74ec917c2e3bf4d756a5ce2745f0f0a2970805a.camel@gmail.com>
+Subject: Re: [PATCH] libbpf: avoid possible use of uninitialized mod_len
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Yonghong Song <yonghong.song@linux.dev>, Achill Gilgenast
+	 <fossdd@pwned.life>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+	 <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Viktor Malik
+	 <vmalik@redhat.com>, bpf@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>, 
+ Song Liu <song@kernel.org>, John Fastabend <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>,  Stanislav Fomichev	 <sdf@fomichev.me>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 30 Jul 2025 09:13:32 -0700
+In-Reply-To: <49c6b3ba-7860-4b13-944f-5f503eb201fd@linux.dev>
+References: <20250729094611.2065713-1-fossdd@pwned.life>
+	 <49c6b3ba-7860-4b13-944f-5f503eb201fd@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Add &xdp_metadata_ops with a callback to get RSS hash hint from the
-descriptor. Declare the splitq 32-byte descriptor as 4 u64s to parse
-them more efficiently when possible.
+On Tue, 2025-07-29 at 09:17 -0700, Yonghong Song wrote:
+>=20
+> On 7/29/25 2:45 AM, Achill Gilgenast wrote:
+> > If not fn_name, mod_len does never get initialized which fails now with
+> > gcc15 on Alpine Linux edge:
+> >=20
+> > 	libbpf.c: In function 'find_kernel_btf_id.constprop':
+> > 	libbpf.c:10100:33: error: 'mod_len' may be used uninitialized [-Werror=
+=3Dmaybe-uninitialized]
+> > 	10100 |                 if (mod_name && strncmp(mod->name, mod_name, m=
+od_len) !=3D 0)
+> > 	      |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~~~~
+> > 	libbpf.c:10070:21: note: 'mod_len' was declared here
+> > 	10070 |         int ret, i, mod_len;
+> > 	      |                     ^~~~~~~
+> >=20
+> > Fixes: 8f8a024272f3 ("libbpf: support "module: Function" syntax for tra=
+cing programs")
+> > Signed-off-by: Achill Gilgenast <fossdd@pwned.life>
+>=20
+> The code itself is actually okay. The error is triggered due to'maybe-uni=
+nitialized'.
+> To silence the compilation error, I think this change is okay.
+>=20
+> Acked-by: Yonghong Song <yonghong.song@linux.dev>
 
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
----
- drivers/net/ethernet/intel/idpf/xdp.h | 64 +++++++++++++++++++++++++++
- drivers/net/ethernet/intel/idpf/xdp.c | 28 +++++++++++-
- 2 files changed, 91 insertions(+), 1 deletion(-)
+I agree with Yonghong, `mod_len` is only read if mod_name !=3D NULL,
+meaning that "if (fn_name) { ... mod_name =3D ...; mod_len =3D ... }"
+block was executed.
 
-diff --git a/drivers/net/ethernet/intel/idpf/xdp.h b/drivers/net/ethernet/intel/idpf/xdp.h
-index db8ecc1843fe..66ad83a0e85e 100644
---- a/drivers/net/ethernet/intel/idpf/xdp.h
-+++ b/drivers/net/ethernet/intel/idpf/xdp.h
-@@ -99,6 +99,70 @@ static inline void idpf_xdp_tx_finalize(void *_xdpsq, bool sent, bool flush)
- 	libeth_xdpsq_unlock(&xdpsq->xdp_lock);
- }
- 
-+struct idpf_xdp_rx_desc {
-+	aligned_u64		qw0;
-+#define IDPF_XDP_RX_BUFQ	BIT_ULL(47)
-+#define IDPF_XDP_RX_GEN		BIT_ULL(46)
-+#define IDPF_XDP_RX_LEN		GENMASK_ULL(45, 32)
-+#define IDPF_XDP_RX_PT		GENMASK_ULL(25, 16)
-+
-+	aligned_u64		qw1;
-+#define IDPF_XDP_RX_BUF		GENMASK_ULL(47, 32)
-+#define IDPF_XDP_RX_EOP		BIT_ULL(1)
-+
-+	aligned_u64		qw2;
-+#define IDPF_XDP_RX_HASH	GENMASK_ULL(31, 0)
-+
-+	aligned_u64		qw3;
-+} __aligned(4 * sizeof(u64));
-+static_assert(sizeof(struct idpf_xdp_rx_desc) ==
-+	      sizeof(struct virtchnl2_rx_flex_desc_adv_nic_3));
-+
-+#define idpf_xdp_rx_bufq(desc)	!!((desc)->qw0 & IDPF_XDP_RX_BUFQ)
-+#define idpf_xdp_rx_gen(desc)	!!((desc)->qw0 & IDPF_XDP_RX_GEN)
-+#define idpf_xdp_rx_len(desc)	FIELD_GET(IDPF_XDP_RX_LEN, (desc)->qw0)
-+#define idpf_xdp_rx_pt(desc)	FIELD_GET(IDPF_XDP_RX_PT, (desc)->qw0)
-+#define idpf_xdp_rx_buf(desc)	FIELD_GET(IDPF_XDP_RX_BUF, (desc)->qw1)
-+#define idpf_xdp_rx_eop(desc)	!!((desc)->qw1 & IDPF_XDP_RX_EOP)
-+#define idpf_xdp_rx_hash(desc)	FIELD_GET(IDPF_XDP_RX_HASH, (desc)->qw2)
-+
-+static inline void
-+idpf_xdp_get_qw0(struct idpf_xdp_rx_desc *desc,
-+		 const struct virtchnl2_rx_flex_desc_adv_nic_3 *rxd)
-+{
-+#ifdef __LIBETH_WORD_ACCESS
-+	desc->qw0 = ((const typeof(desc))rxd)->qw0;
-+#else
-+	desc->qw0 = ((u64)le16_to_cpu(rxd->pktlen_gen_bufq_id) << 32) |
-+		    ((u64)le16_to_cpu(rxd->ptype_err_fflags0) << 16);
-+#endif
-+}
-+
-+static inline void
-+idpf_xdp_get_qw1(struct idpf_xdp_rx_desc *desc,
-+		 const struct virtchnl2_rx_flex_desc_adv_nic_3 *rxd)
-+{
-+#ifdef __LIBETH_WORD_ACCESS
-+	desc->qw1 = ((const typeof(desc))rxd)->qw1;
-+#else
-+	desc->qw1 = ((u64)le16_to_cpu(rxd->buf_id) << 32) |
-+		    rxd->status_err0_qw1;
-+#endif
-+}
-+
-+static inline void
-+idpf_xdp_get_qw2(struct idpf_xdp_rx_desc *desc,
-+		 const struct virtchnl2_rx_flex_desc_adv_nic_3 *rxd)
-+{
-+#ifdef __LIBETH_WORD_ACCESS
-+	desc->qw2 = ((const typeof(desc))rxd)->qw2;
-+#else
-+	desc->qw2 = ((u64)rxd->hash3 << 24) |
-+		    ((u64)rxd->ff2_mirrid_hash2.hash2 << 16) |
-+		    le16_to_cpu(rxd->hash1);
-+#endif
-+}
-+
- void idpf_xdp_set_features(const struct idpf_vport *vport);
- 
- int idpf_xdp(struct net_device *dev, struct netdev_bpf *xdp);
-diff --git a/drivers/net/ethernet/intel/idpf/xdp.c b/drivers/net/ethernet/intel/idpf/xdp.c
-index d2549f8b8e24..c143b5dc9e2b 100644
---- a/drivers/net/ethernet/intel/idpf/xdp.c
-+++ b/drivers/net/ethernet/intel/idpf/xdp.c
-@@ -340,12 +340,38 @@ int idpf_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
- 				       idpf_xdp_tx_finalize);
- }
- 
-+static int idpf_xdpmo_rx_hash(const struct xdp_md *ctx, u32 *hash,
-+			      enum xdp_rss_hash_type *rss_type)
-+{
-+	const struct libeth_xdp_buff *xdp = (typeof(xdp))ctx;
-+	struct idpf_xdp_rx_desc desc __uninitialized;
-+	const struct idpf_rx_queue *rxq;
-+	struct libeth_rx_pt pt;
-+
-+	rxq = libeth_xdp_buff_to_rq(xdp, typeof(*rxq), xdp_rxq);
-+
-+	idpf_xdp_get_qw0(&desc, xdp->desc);
-+
-+	pt = rxq->rx_ptype_lkup[idpf_xdp_rx_pt(&desc)];
-+	if (!libeth_rx_pt_has_hash(rxq->xdp_rxq.dev, pt))
-+		return -ENODATA;
-+
-+	idpf_xdp_get_qw2(&desc, xdp->desc);
-+
-+	return libeth_xdpmo_rx_hash(hash, rss_type, idpf_xdp_rx_hash(&desc),
-+				    pt);
-+}
-+
-+static const struct xdp_metadata_ops idpf_xdpmo = {
-+	.xmo_rx_hash		= idpf_xdpmo_rx_hash,
-+};
-+
- void idpf_xdp_set_features(const struct idpf_vport *vport)
- {
- 	if (!idpf_is_queue_model_split(vport->rxq_model))
- 		return;
- 
--	libeth_xdp_set_features_noredir(vport->netdev);
-+	libeth_xdp_set_features_noredir(vport->netdev, &idpf_xdpmo);
- }
- 
- static int idpf_xdp_setup_prog(struct idpf_vport *vport,
--- 
-2.50.1
+Please drop the "Fixes" tag.
 
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+
+[...]
 
