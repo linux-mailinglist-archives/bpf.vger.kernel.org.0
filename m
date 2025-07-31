@@ -1,173 +1,150 @@
-Return-Path: <bpf+bounces-64809-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64810-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A1EDB17210
-	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 15:29:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCB86B17226
+	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 15:36:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6710A3AA75F
-	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 13:29:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48BCD1C210F9
+	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 13:36:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FEB22C327E;
-	Thu, 31 Jul 2025 13:29:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACAA52C3761;
+	Thu, 31 Jul 2025 13:36:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j9cu3POg"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E02BE2BE633;
-	Thu, 31 Jul 2025 13:29:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B5652C08C5;
+	Thu, 31 Jul 2025 13:36:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753968583; cv=none; b=SkYG1w60V4ib7mDOcPQH66q0aNPqdlej5dMqRq9/FcdUeQhDUsjZL31sxPMICxnANT7E+1V1W1TLNuM1mMmWtAf8PP2xy7KdFnVwEdaN3NpraR3YClL1Q8EvRBkNths2SEq6SofGYaqpEcDYlOUWKgSx4gf1PuutUZV0wQAOL+U=
+	t=1753968963; cv=none; b=WE4dxLp9ER6YKKurneIocbXEs6A9RvJimaC3ZnlAxIWUEWgX8gU8SfagredxFq+5s7ao+CrwwLTIJ44kiUt2pIuo7QeGtNdaJ9IDRbStR8TgYy336VoBNMoi1ioFMV7BIue5/kmxYCiKA70rlOFI28Lsz08GIo5BRL57xsbyUlM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753968583; c=relaxed/simple;
-	bh=EWZ6pgYKok987NH2oz9xI9u+YMbPGCsIzCxP5dd9HKI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fnYR4Ukul/kU1/3pMIqRg1N38W/3KiT2kXUhvwInkBim1x2Ld9dmA7F1jbUYx/QVaByCluSxyF3lmRBEOSaWQICg8+lR0t73TuNjpTElYLJwK7ACHv6+xv8ihRpht5qcH3xkwK6sE/uO88cN+eqY5H8YZ95VcOUzKyFUy7kLJuI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf06.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay08.hostedemail.com (Postfix) with ESMTP id 869231406C8;
-	Thu, 31 Jul 2025 13:29:38 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf06.hostedemail.com (Postfix) with ESMTPA id 6DE2B2000F;
-	Thu, 31 Jul 2025 13:29:35 +0000 (UTC)
-Date: Thu, 31 Jul 2025 09:29:53 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Douglas Raillard <douglas.raillard@arm.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux trace kernel
- <linux-trace-kernel@vger.kernel.org>, bpf@vger.kernel.org, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>,
- Namhyung Kim <namhyung@kernel.org>, Takaya Saeki <takayas@google.com>, Tom
- Zanussi <zanussi@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ian Rogers <irogers@google.com>,
- aahringo@redhat.com
-Subject: Re: [PATCH] tracing/probes: Allow use of BTF names to dereference
- pointers
-Message-ID: <20250731092953.2d8eea47@gandalf.local.home>
-In-Reply-To: <dc817ce7-9551-4365-bd94-3c102a6acda8@arm.com>
-References: <20250729113335.2e4f087d@batman.local.home>
-	<dc817ce7-9551-4365-bd94-3c102a6acda8@arm.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1753968963; c=relaxed/simple;
+	bh=KyS0YK7eZU4aWlqqSlmnifoI1DVY+qASIuVMpm0Wk8M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SF5HA9YxFbU19V9mtbzqOG9NlqtfDq7SJxFF8WzGL+uZv63KcLpKbv4c1whgG3g7muQpMWUPi3r9qEqEKjZs1kVI8jOSYRRDeDMAmu3KiygrZne3/1fmVFySb8WOoagNBCJHS4AjHQzIRRp/NT13tDtxiWNsfY0YHIRNZHygew8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j9cu3POg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8990CC4CEF7;
+	Thu, 31 Jul 2025 13:35:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753968962;
+	bh=KyS0YK7eZU4aWlqqSlmnifoI1DVY+qASIuVMpm0Wk8M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=j9cu3POghgzQfUtBUIplaBzrzNwhGOc6oVLq0yV0K73DS8+xpLh1WGipIheNSEisW
+	 gtaZXhKmUx1YU/UAxlykG793eGPQ6+biMr8w3ElbP2um4WUO7y6muSOoXlPRcn8wfb
+	 PI7fVO5IDluDRqPdQ/jlzm1w3KfxU3j9hn3VMJKjT0es0CxNOfPWUv+oVss251A/f7
+	 vTbIuWvqZ0HtEX2T1K6KURzm9/r8ZG+Vj+4oU5X+92zc3DMJVV1sKsX7drkww4jNZP
+	 /aVpVdG1J0jG9ETgKRb07YclTpS6VYcnBBD+Tl/UVaE8rmnLF3SkZ7INeLcmoJoz38
+	 IbQmg5FEdwA8g==
+Date: Thu, 31 Jul 2025 14:35:57 +0100
+From: Simon Horman <horms@kernel.org>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: intel-wired-lan@lists.osuosl.org,
+	Michal Kubiak <michal.kubiak@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	nxne.cnse.osdt.itp.upstreaming@intel.com, bpf@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH iwl-next v3 16/18] idpf: add support for XDP on Rx
+Message-ID: <20250731133557.GB8494@horms.kernel.org>
+References: <20250730160717.28976-1-aleksander.lobakin@intel.com>
+ <20250730160717.28976-17-aleksander.lobakin@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 6DE2B2000F
-X-Stat-Signature: bw8ibe9b7c4kmub1p7k63nj1y9jnbfk4
-X-Rspamd-Server: rspamout06
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1+L8H5s3fdXXyd6+hVzM+9/MXwV9vc+1vc=
-X-HE-Tag: 1753968575-312415
-X-HE-Meta: U2FsdGVkX1/sB+1YBbj7sOeT7/ppwTtWX8fJq/gHqBP+1upiwecpSHNCj+rKik7kiR3DvZ6o7wjwaxBH+W0qcaErSKH2GWFRHUt93RP8s03VfapcEoU3sUzpWLuXxu2NzuWEah3X0v8NQArwY23fJBmVXZHjKNRuKwee9I3Ppc/h/yAD1ZZ7u7zl5kPnZP0UrnD7nUIa/F+maaM1Tzznhashi7FKbnho11NbLc1FYhAFmA5hiJ1pzyxOY1YXLjp6u7sCUexh1CtiPH+/DP3rZBLHdqeAdG714auqmmY514yn/MEEj+l5vCGkPEBOx1MpjP2RFA5+AZlA5YeBg10j3TN7iSCiWca7Neje6Z7mwYtMlexnsrEZ6A7T4iOe7gcz/RfvDyPL+YoojjFSPKLjlPOuc4bf+GFEOknrrUMFbeg+5HexO9M3HEQG0ZGQC3BEh+5yzQbwlYURZXkA52ZFuRljCMqacBiqdmWVf65fFo8=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250730160717.28976-17-aleksander.lobakin@intel.com>
 
-On Thu, 31 Jul 2025 12:44:49 +0100
-Douglas Raillard <douglas.raillard@arm.com> wrote:
-
-> > The delimiter is '.' and the first item is the structure name. Then the
-> > member of the structure to get the offset of. If that member is an
-> > embedded structure, another '.MEMBER' may be added to get the offset of
-> > its members with respect to the original value.
-> > 
-> >    "+kmem_cache.size($arg1)" is equivalent to:
-> > 
-> >    (*(struct kmem_cache *)$arg1).size
-> > 
-> > Anonymous structures are also handled:
-> > 
-> >    # echo 'e:xmit net.net_dev_xmit +net_device.name(+sk_buff.dev($skbaddr)):string' >> dynamic_events  
+On Wed, Jul 30, 2025 at 06:07:15PM +0200, Alexander Lobakin wrote:
+> Use libeth XDP infra to support running XDP program on Rx polling.
+> This includes all of the possible verdicts/actions.
+> XDP Tx queues are cleaned only in "lazy" mode when there are less than
+> 1/4 free descriptors left on the ring. libeth helper macros to define
+> driver-specific XDP functions make sure the compiler could uninline
+> them when needed.
+> Use __LIBETH_WORD_ACCESS to parse descriptors more efficiently when
+> applicable. It really gives some good boosts and code size reduction
+> on x86_64.
 > 
-> Not sure how hard that would be but the type of the expression could probably be inferred from
-> BTF as well in some cases. Some cases may be ambiguous (like char* that could be either a buffer
-> to display as hex or a null-terminated ASCII string) but BTF would still allow to restrict
-> to something sensible (e.g. prevent u32 for a char*).
+> Co-developed-by: Michal Kubiak <michal.kubiak@intel.com>
+> Signed-off-by: Michal Kubiak <michal.kubiak@intel.com>
+> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 
-Hmm, should be possible, but would require passing that information back to
-the caller of the BTF lookup function.
+...
 
+> diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
 
+...
 
-> > diff --git a/kernel/trace/trace_btf.c b/kernel/trace/trace_btf.c
-> > index 5bbdbcbbde3c..b69404451410 100644
-> > --- a/kernel/trace/trace_btf.c
-> > +++ b/kernel/trace/trace_btf.c
-> > @@ -120,3 +120,109 @@ const struct btf_member *btf_find_struct_member(struct btf *btf,
-> >   	return member;
-> >   }
-> >   
-> > +#define BITS_ROUNDDOWN_BYTES(bits) ((bits) >> 3)
-> > +
-> > +static int find_member(const char *ptr, struct btf *btf,
-> > +		       const struct btf_type **type, int level)
-> > +{
-> > +	const struct btf_member *member;
-> > +	const struct btf_type *t = *type;
-> > +	int i;
-> > +
-> > +	/* Max of 3 depth of anonymous structures */
-> > +	if (level > 3)
-> > +		return -1;
-> > +
-> > +	for_each_member(i, t, member) {
-> > +		const char *tname = btf_name_by_offset(btf, member->name_off);
-> > +
-> > +		if (strcmp(ptr, tname) == 0) {
-> > +			*type = btf_type_by_id(btf, member->type);
-> > +			return BITS_ROUNDDOWN_BYTES(member->offset);  
-> 
-> member->offset does not only contain the offset, and the offset may not be
-> a multiple of 8:
-> https://elixir.bootlin.com/linux/v6.16/source/include/uapi/linux/btf.h#L126
-> 
->  From the BTF spec (https://docs.kernel.org/bpf/btf.html):
-> 
-> If the kind_flag is set, the btf_member.offset contains
-> both member bitfield size and bit offset.
-> The bitfield size and bit offset are calculated as below.:
-> 
-> #define BTF_MEMBER_BITFIELD_SIZE(val)   ((val) >> 24)
-> #define BTF_MEMBER_BIT_OFFSET(val)      ((val) & 0xffffff)
+> @@ -3127,14 +3125,12 @@ static bool idpf_rx_process_skb_fields(struct sk_buff *skb,
+>  	return !__idpf_rx_process_skb_fields(rxq, skb, xdp->desc);
+>  }
+>  
+> -static void
+> -idpf_xdp_run_pass(struct libeth_xdp_buff *xdp, struct napi_struct *napi,
+> -		  struct libeth_rq_napi_stats *ss,
+> -		  const struct virtchnl2_rx_flex_desc_adv_nic_3 *desc)
+> -{
+> -	libeth_xdp_run_pass(xdp, NULL, napi, ss, desc, NULL,
+> -			    idpf_rx_process_skb_fields);
+> -}
+> +LIBETH_XDP_DEFINE_START();
+> +LIBETH_XDP_DEFINE_RUN(static idpf_xdp_run_pass, idpf_xdp_run_prog,
+> +		      idpf_xdp_tx_flush_bulk, idpf_rx_process_skb_fields);
+> +LIBETH_XDP_DEFINE_FINALIZE(static idpf_xdp_finalize_rx, idpf_xdp_tx_flush_bulk,
+> +			   idpf_xdp_tx_finalize);
+> +LIBETH_XDP_DEFINE_END();
+>  
+>  /**
+>   * idpf_rx_hsplit_wa - handle header buffer overflows and split errors
+> @@ -3222,7 +3218,10 @@ static int idpf_rx_splitq_clean(struct idpf_rx_queue *rxq, int budget)
+>  	struct libeth_rq_napi_stats rs = { };
+>  	u16 ntc = rxq->next_to_clean;
+>  	LIBETH_XDP_ONSTACK_BUFF(xdp);
+> +	LIBETH_XDP_ONSTACK_BULK(bq);
+>  
+> +	libeth_xdp_tx_init_bulk(&bq, rxq->xdp_prog, rxq->xdp_rxq.dev,
+> +				rxq->xdpsqs, rxq->num_xdp_txq);
+>  	libeth_xdp_init_buff(xdp, &rxq->xdp, &rxq->xdp_rxq);
+>  
+>  	/* Process Rx packets bounded by budget */
+> @@ -3318,11 +3317,13 @@ static int idpf_rx_splitq_clean(struct idpf_rx_queue *rxq, int budget)
+>  		if (!idpf_rx_splitq_is_eop(rx_desc) || unlikely(!xdp->data))
+>  			continue;
+>  
+> -		idpf_xdp_run_pass(xdp, rxq->napi, &rs, rx_desc);
+> +		idpf_xdp_run_pass(xdp, &bq, rxq->napi, &rs, rx_desc);
+>  	}
+>  
+>  	rxq->next_to_clean = ntc;
+> +
+>  	libeth_xdp_save_buff(&rxq->xdp, xdp);
+> +	idpf_xdp_finalize_rx(&bq);
 
-So basically just need to change that to:
+This will call __libeth_xdp_finalize_rx(), which calls rcu_read_unlock().
+But there doesn't seem to be a corresponding call to rcu_read_lock()
 
-		if (strcmp(ptr, tname) == 0) {
-			int offset = BTF_MEMBER_BIT_OFFSET(member->offset);
-			*type = btf_type_by_id(btf, member->type);
-			return BITS_ROUNDDOWN_BYTES(offset);
+Flagged by Sparse.
 
-?
+>  
+>  	u64_stats_update_begin(&rxq->stats_sync);
+>  	u64_stats_add(&rxq->q_stats.packets, rs.packets);
 
-> 
-> > +		}
-> > +
-> > +		/* Handle anonymous structures */
-> > +		if (strlen(tname))
-> > +			continue;
-> > +
-> > +		*type = btf_type_by_id(btf, member->type);
-> > +		if (btf_type_is_struct(*type)) {
-> > +			int offset = find_member(ptr, btf, type, level + 1);
-> > +
-> > +			if (offset < 0)
-> > +				continue;
-> > +
-> > +			return offset + BITS_ROUNDDOWN_BYTES(member->offset);
-
-And here too.
-
--- Steve
-
-> > +		}
-> > +	}
-> > +
-> > +	return -1;
-> > +}
-> > +
+...
 
