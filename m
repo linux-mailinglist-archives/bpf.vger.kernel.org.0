@@ -1,220 +1,145 @@
-Return-Path: <bpf+bounces-64838-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64840-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D88E6B17744
-	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 22:40:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68B01B177D7
+	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 23:10:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BEBC5862CA
-	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 20:40:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 255CE3B34C4
+	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 21:10:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CE2E256C60;
-	Thu, 31 Jul 2025 20:40:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 107BF25A2C7;
+	Thu, 31 Jul 2025 21:09:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PssxvYfD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X2UjzXWT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B1D021D3F8;
-	Thu, 31 Jul 2025 20:40:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28BD2153598;
+	Thu, 31 Jul 2025 21:09:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753994413; cv=none; b=o0aYk4Nv8D2eM2ODZ9YgLOuijyLb/ba4GUup76IdqiZhZmpXPeFuSJ2okLenmeP49NXf57AQ6DFVwt/JfAWDcm4N7NBYuXpnsWOqmJzH2eGtAcSaPThjI3tzC94TYfYR34P9ARqhXCevwJxgllsorSlGyaMWsyL4ziwPbO0ygRs=
+	t=1753996194; cv=none; b=d9XgD6+dtEZl5AA/VbZEI6q5YUGFRsfa9XPGyKBYfMYzWdo/qbiiPGDgMhX+SLyzl2hCpQuPYbAhfmTtDVmHC0MnolRR/qZ9HmetPe9FZb+Itbw4KQz8R0EKnVF2sgW7v/DxLJf4IgcM7sjsuojYvJcEq3JSz8/2VhIoN5qvdjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753994413; c=relaxed/simple;
-	bh=inVa1LGB4oH7vDHQdafLXK3uqBgxi40KPmhmoCIdyGk=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m7NU9MtwPOH9eAhmsqKfchq+e6mj05D/FrfWZSFPC2JzLJ8sgZW9uIwB8YhM5XfPkVrc4FHH3AFI0RDuLy3VzeZ2dBPHLNhKF/MphkaFhtJ40cq3KVTGBauE3/ZX0WOgZ+LSSJQ4PNm5yksX7ezhN/lP5WXH3fwHfb//Ccm4aBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PssxvYfD; arc=none smtp.client-ip=209.85.218.43
+	s=arc-20240116; t=1753996194; c=relaxed/simple;
+	bh=tZPLyp9ccd9CeEjm37KnDGPEJS3ru0ZoESdHAVSjkyo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=q9V5Y/ZgYv/7Z1oN45xLywDU5EGkFR2mwUHgreV2urXITWMCzIIJEd0HkspFLlFPHaXW1+WQw1jy7vg026eMmMDXzahU/daaVKY9trIRniYknC0Ie6ZgbWbnDSuuPdjW34VjgfMP4X99nG6L22YjJBMcOt//ftNIENjwYnP2JJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X2UjzXWT; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-af66d49daffso33435166b.1;
-        Thu, 31 Jul 2025 13:40:11 -0700 (PDT)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-240763b322fso9535545ad.0;
+        Thu, 31 Jul 2025 14:09:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753994410; x=1754599210; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/AAkvvpbQOhTuAwe9EJHG3ghOkBXusQx1F2hWyP1fLc=;
-        b=PssxvYfDdq9l2hRGv9uXkVK/TAfyK+6YPFOKy7GbGpyHsyOH44okqEIsGfxDUQM9Bu
-         vVW3n1KXlLu9NWHioDNm2N6yOxrQDCXwoGkmSsHeRzsw55O7luf4gEzM04cpvaCo4zSB
-         A/K3pg2jk3GzBXXQXizTe3tIYzLEJDOIg+XSu8amSV7MCzrfX+b9UN9G+aykK1lTDveg
-         ap/d80qFOyzlEAPgPHnEsrWOt4vHm2KrOb57nAeDUjRp1Bi9gKNeKyMrpcDTSvL15Ers
-         cK3pIN9yDWqdeEc1P2ibpJYTZ7OmhqDku3RhUqk1OL86gOKt0vlfv83u5xxFQCKLf+Po
-         wpnw==
+        d=gmail.com; s=20230601; t=1753996191; x=1754600991; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7sZuqmuyXQoISyl7ZKxyRSc3le5zu2GDSfJ7Az4I2pg=;
+        b=X2UjzXWTW7XOGRIJMNF7yqWrXFKJf1az5q+0IHV91uXyN+fCdz2JMzQZpe9O8lN6jI
+         XDWVgvOoD7U/GZcceT3FmLbXzxpR1gEp/50y1myr/9Eo9kQ/OFKzcxBTpDT7Vgg1ZaoE
+         7bPajmEVFjE/9K4tMAR4gYza/eps2BM5GxjsAaDmesIjaoX/ir1PoASDHgwcg91XAmjl
+         p7bCoBjrLWH0y+qMfSNCUACTLxDB16hYlfE0TD8vg71oA9hZLzte4Xx8RFz5udosVWaS
+         HvN4GgNXP5o8l5eDr4qJMH/3x/4EUv2uMTIoCo0yG8D3YUTexvjdY2ijYZiF9J8scduq
+         DNVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753994410; x=1754599210;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/AAkvvpbQOhTuAwe9EJHG3ghOkBXusQx1F2hWyP1fLc=;
-        b=NUzgyHDFqZ+itxQHtvDi6h0Bi8sPFL7ViackubyReOYvpe2w1nq/7roy6rVPhvOFOA
-         2vGVRoJbNVhcdRlN4RGs4DTIAZJViTlIDd/cN4mDUgrpzYrmnA/ahtdS4HFvnOXKTqPk
-         U/f/D4j0LMUKk/zpy0vltFNXxKOgIxz+Z8/NmGn8N2ktpbAJCn35p33SbBSQ/8Q/0Syl
-         8wHlcr0KlPnt8xoEqVtZebAhRvOWw+iFaXfikAo61UniYjBdYhAOAQZJmBq10XvC7SaT
-         UrOXYJqim1MlYJkOh5WAdnIT+3MQe3jetG/ee0qfOeATvLONt109Ves8V/nHdbD0sAmF
-         tSUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVBcyTPMT3eseb4UXFcTkSASzCQgd8B2to4hE0IUls8rspJKXEreiHNJD83g4ypwa1EhfM=@vger.kernel.org, AJvYcCVcp5xyn5TpcjKlXj2MdlRchIk1QE8ctx22HeIaln31VHiMrZ2ebvndrBCxwIEIYpNzKjYB0WocPWwXN9vwkhsaHnux@vger.kernel.org, AJvYcCXHUL6pYaSZjPx30ZY+afcILjxC4Q1SQSeMu0dKlMVQGkXW0v0wxyY3h0ftzKtkjnM+EsImojgIYXc3nhAy@vger.kernel.org
-X-Gm-Message-State: AOJu0YwxP8iP9XMsMrptuha4FbL5Fs5fyMAHsp1gvNHC4L1r/2raNkjW
-	qmkUnnBV1PSjKpa5Fn2Rulf7kiGtTZoDvYF2Bt2+araWCePmQoj7Q++u
-X-Gm-Gg: ASbGncuOOvkoSZ394w/JbWs5txQlf088QWefgS+uLu5ftzYi2JRnkBZDi1c3v24UuB2
-	VPgwWWWi66Q6biNyBugvAw6xricXejuLT5Q8O2EM0tZ+82pTCm1UP5fmrqLJ6WbbereGZPjRvEv
-	0nFNtKcyFt8F0SUzumPtpsqBMfMgxt5qfyxqqWQ+T96EQIyOyFK2W7F3x1W9hO+DDVApOkRIrHG
-	E8a+4mm0wTrIOhwzgMqRsNZm6TiLttZyohwLX2gS5GTUYWHhFxErccfOjw2nCAI+ZoWfc7uq2ev
-	j4sGt6RdEnoojiQiJxy8kiWeX21pR/+4kzEFoD+YagJVQiw5T6UavmBdIMjrB1A69k7FTee3IcC
-	2yEiywR01fA==
-X-Google-Smtp-Source: AGHT+IH35GZfVfrFy+4u5JJvJfBMXKVCGrjrhAiwGxS9sqsd6tRiJOQQ6uPYqZ73ZuJ5boDADFvL5w==
-X-Received: by 2002:a17:907:3cca:b0:aec:f8bb:abeb with SMTP id a640c23a62f3a-af8fd9a5c45mr987006766b.42.1753994409970;
-        Thu, 31 Jul 2025 13:40:09 -0700 (PDT)
-Received: from krava ([176.74.159.170])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-af91a1e8359sm166233666b.89.2025.07.31.13.40.08
+        d=1e100.net; s=20230601; t=1753996191; x=1754600991;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7sZuqmuyXQoISyl7ZKxyRSc3le5zu2GDSfJ7Az4I2pg=;
+        b=Zcf3+me/eUUMPqSy58KDlBRUudVWQOMNdOGsEUDPRcwQwzGy41CftKCgK52djuuyHI
+         YADDXQhmFa+j0jsKYPx6Q2WTfXYxmFKeyEhLtdSyEPWS679+zLj8G2G2vIDWo8IzjR+N
+         Z4t4DzuDK5ru/LSpxOXUIDo7oml/SPUszzujT74wXWJh50/Y9D82NA3yFoFKX545F8+N
+         Ers6YE2sIF2kxVSq13c0uCkZVcdcX5VOWU7i+MAKr2H7Dbj/Pd7n7QuL1DnI4KNuxSxc
+         BTU7ctsjC+lq6paOCWF5cmchf9Sq3SLqAutF5GUHSTkyCFisIvf3S9xSxFuYWJ0SGlW0
+         c0/A==
+X-Gm-Message-State: AOJu0YzpHWkPtsbe7dvOXSg3dI2Fw51UYqK1lTkozG9qo25elUKurKJI
+	5R7fxktOB77siF+cmpXIIvfQIp8Vfypoj/LSWYvSkCLix8Q/PvtEDFHn1iURGg==
+X-Gm-Gg: ASbGnctsvVf7eIrCGnTEZoVLmgXUXOpU4lT3YzcCUOW+SLMaJUIZXWeUXVRASqwogkx
+	PpS8+wBhjz5qsRH9bldB7Z8dUOyhV2oyp/pyQ7g8yLbW9IKyHjgNF/D8q3xdsjOOR5AYCfXZvds
+	yuE0CWLhWkV8jNUvPHp0HXAsu6ffuRmjW2AmbuiYGdzdBCSMxfmW9HIoQNibbr+F1ymsy5LuPKu
+	E0aiHuyY7iLAyDmSuNwhHYPZdsqXvwwFUH8oH6C7YpXgJFRq1HHUMiWFtxae5VK+rhFwsvroQ1L
+	zNkYpiuP2bD+DFI2PBZmz34FwI3hhKxq8z4VXKfIcZmCfjfkTPtvHXg+jfrWnWcnb68P9ZJpZar
+	7cKg0YWFtX7mf6w==
+X-Google-Smtp-Source: AGHT+IFYv6eba3WJObd64sCwSu99uz3WdC2j1Vga5hEuFpajyfyMkaHH7H1fOclc6PRwkqf/x52t8g==
+X-Received: by 2002:a17:902:db09:b0:240:b3dd:9eeb with SMTP id d9443c01a7336-240b3dda073mr105333945ad.36.1753996191041;
+        Thu, 31 Jul 2025 14:09:51 -0700 (PDT)
+Received: from localhost ([2a03:2880:ff:41::])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-241e8976a11sm26207325ad.86.2025.07.31.14.09.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Jul 2025 13:40:09 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 31 Jul 2025 22:40:07 +0200
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
-	Steven Rostedt <rostedt@kernel.org>,
-	Florent Revest <revest@google.com>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Menglong Dong <menglong8.dong@gmail.com>,
-	Naveen N Rao <naveen@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
-	Andy Chiu <andybnac@gmail.com>,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>
-Subject: Re: [RFC 00/10] ftrace,bpf: Use single direct ops for bpf trampolines
-Message-ID: <aIvUp_88v84Uw-lQ@krava>
-References: <20250729102813.1531457-1-jolsa@kernel.org>
- <aIkLlB7Z7V--BeGi@J2N7QTR9R3.cambridge.arm.com>
- <aIn_12KHz7ikF2t1@krava>
- <20250730095641.660800b1@gandalf.local.home>
+        Thu, 31 Jul 2025 14:09:50 -0700 (PDT)
+From: Amery Hung <ameryhung@gmail.com>
+To: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org,
+	alexei.starovoitov@gmail.com,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	tj@kernel.org,
+	memxor@gmail.com,
+	martin.lau@kernel.org,
+	ameryhung@gmail.com,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next v1 0/3] Allow struct_ops to get bpf_map during
+Date: Thu, 31 Jul 2025 14:09:47 -0700
+Message-ID: <20250731210950.3927649-1-ameryhung@gmail.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250730095641.660800b1@gandalf.local.home>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jul 30, 2025 at 09:56:41AM -0400, Steven Rostedt wrote:
-> On Wed, 30 Jul 2025 13:19:51 +0200
-> Jiri Olsa <olsajiri@gmail.com> wrote:
-> 
-> > so it's all work on PoC stage, the idea is to be able to attach many
-> > (like 20,30,40k) functions to their trampolines quickly, which at the
-> > moment is slow because all the involved interfaces work with just single
-> > function/tracempoline relation
-> 
-> Sounds like you are reinventing the ftrace mechanism itself. Which I warned
-> against when I first introduced direct trampolines, which were purposely
-> designed to do a few functions, not thousands. But, oh well.
-> 
-> 
-> > Steven, please correct me if/when I'm wrong ;-)
-> > 
-> > IIUC in x86_64, IF there's just single ftrace_ops defined for the function,
-> > it will bypass ftrace trampoline and call directly the direct trampoline
-> > for the function, like:
-> > 
-> >    <foo>:
-> >      call direct_trampoline
-> >      ...
-> 
-> Yes.
-> 
-> And it will also do the same for normal ftrace functions. If you have:
-> 
-> struct ftrace_ops {
-> 	.func = myfunc;
-> };
-> 
-> It will create a trampoline that has:
-> 
->       <tramp>
-> 	...
-> 	call myfunc
-> 	...
-> 	ret
-> 
-> On x86, I believe the ftrace_ops for myfunc is added to the trampoline,
-> where as in arm, it's part of the function header. To modify it, it
-> requires converting to the list operation (which ignores the ops
-> parameter), then the ops at the function gets changed before it goes to the
-> new function.
-> 
-> And if it is the only ops attached to a function foo, the function foo
-> would have:
-> 
->       <foo>
-> 	call tramp
-> 	...
-> 
-> But what's nice about this is that if you have 12 different ftrace_ops that
-> each attach to a 1000 different functions, but no two ftrace_ops attach to
-> the same function, they all do the above. No hash needed!
-> 
-> > 
-> > IF there are other ftrace_ops 'users' on the same function, we execute
-> > each of them like:
-> > 
-> >   <foo>:
-> >     call ftrace_trampoline
-> >       call ftrace_ops_1->func
-> >       call ftrace_ops_2->func
-> >       ...
-> > 
-> > with our direct ftrace_ops->func currently using ftrace_ops->direct_call
-> > to return direct trampoline for the function:
-> > 
-> > 	-static void call_direct_funcs(unsigned long ip, unsigned long pip,
-> > 	-                             struct ftrace_ops *ops, struct ftrace_regs *fregs)
-> > 	-{
-> > 	-       unsigned long addr = READ_ONCE(ops->direct_call);
-> > 	-
-> > 	-       if (!addr)
-> > 	-               return;
-> > 	-
-> > 	-       arch_ftrace_set_direct_caller(fregs, addr);
-> > 	-}
-> > 
-> > in the new changes it will do hash lookup (based on ip) for the direct
-> > trampoline we want to execute:
-> > 
-> > 	+static void call_direct_funcs_hash(unsigned long ip, unsigned long pip,
-> > 	+                                  struct ftrace_ops *ops, struct ftrace_regs *fregs)
-> > 	+{
-> > 	+       unsigned long addr;
-> > 	+
-> > 	+       addr = ftrace_find_rec_direct(ip);
-> > 	+       if (!addr)
-> > 	+               return;
-> > 	+
-> > 	+       arch_ftrace_set_direct_caller(fregs, addr);
-> > 	+}
-> 
-> I think the above will work.
-> 
-> > 
-> > still this is the slow path for the case where multiple ftrace_ops objects use
-> > same function.. for the fast path we have the direct attachment as described above
-> > 
-> > sorry I probably forgot/missed discussion on this, but doing the fast path like in
-> > x86_64 is not an option in arm, right?
-> 
-> That's a question for Mark, right?
+This patchset allows struct_ops implementors to access bpf_map during
+reg() and unreg() so that they can create an id to struct_ops instance
+mapping. This in turn allows struct_ops kfuncs to refer to the instance
+without passing a pointer to the struct_ops. The selftest provides an
+end-to-end example.
 
-yes, thanks for the other details
+Some struct_ops users extend themselves with other bpf programs, which
+also need to call struct_ops kfuncs. For example, scx_layered uses
+syscall bpf programs as a scx_layered specific control plane and uses
+tracing programs to get additional information for scheduling [0].
+The kfuncs may need to refer to the struct_ops instance and perform
+jobs accordingly. To allow calling struct_ops kfuncs referring to
+specific instances from different program types and context (e.g.,
+struct_ops, tracing, async callbacks), the traditional way is to pass
+the struct_ops pointer to kfuncs.
 
-jirka
+This patchset provides an alternative way, through a combination of
+bpf map id and global variable. First, a struct_ops implementor will
+use the map id of the struct_ops map as the id of an instance. Then, 
+it needs to maintain an id to instance mapping: inserting a new mapping
+during reg() and removing it during unreg(). The map id can be acquired
+by calling bpf_struct_ops_get(), which is tweaked to return bpf_map
+instead of bool.
+
+[0] https://github.com/sched-ext/scx/blob/main/scheds/rust/scx_layered/src/bpf/main.bpf.c
+
+
+Amery Hung (3):
+  bpf: Allow getting bpf_map from struct_ops kdata
+  selftests/bpf: Add multi_st_ops that supports multiple instances
+  selftests/bpf: Test multi_st_ops and calling kfuncs from different
+    programs
+
+ include/linux/bpf.h                           |   4 +-
+ kernel/bpf/bpf_struct_ops.c                   |   7 +-
+ .../test_struct_ops_id_ops_mapping.c          |  77 ++++++++++++
+ .../bpf/progs/struct_ops_id_ops_mapping1.c    |  57 +++++++++
+ .../bpf/progs/struct_ops_id_ops_mapping2.c    |  57 +++++++++
+ .../selftests/bpf/test_kmods/bpf_testmod.c    | 112 ++++++++++++++++++
+ .../selftests/bpf/test_kmods/bpf_testmod.h    |   8 ++
+ .../bpf/test_kmods/bpf_testmod_kfunc.h        |   2 +
+ 8 files changed, 319 insertions(+), 5 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_id_ops_mapping.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_id_ops_mapping1.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_id_ops_mapping2.c
+
+-- 
+2.47.3
+
 
