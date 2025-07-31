@@ -1,193 +1,150 @@
-Return-Path: <bpf+bounces-64815-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64816-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 644F8B1740F
-	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 17:43:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01FACB17462
+	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 17:57:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60869A80AC6
-	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 15:42:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54301188BB9C
+	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 15:58:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60CCF1DDA15;
-	Thu, 31 Jul 2025 15:43:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D156620C00D;
+	Thu, 31 Jul 2025 15:57:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uQCpaCeu"
 X-Original-To: bpf@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8A96D515;
-	Thu, 31 Jul 2025 15:42:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64B231E7C32
+	for <bpf@vger.kernel.org>; Thu, 31 Jul 2025 15:57:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753976581; cv=none; b=hGPf/Mu2vw+YTakbekoYzBEx5JgegT04vb+tkK8Cyp9K8sEOEmYO74k9QNwC2OO7/9FLDzflAqwDVZzb46QXovROV0vE4pvA3Etr16/+yqHul0laCfwtTFYeKoQYNuPKCUHJ8PSIJ5oXUN8PphWBqPFqore2Pf393ndy1oS5++g=
+	t=1753977465; cv=none; b=teWVlGqbqzTyE1JMZI4WArfHADxsTRLbXhvX1zelFgGlqejLLr0msvgpZH1LQGConzZMWtXVP1zWvU/H5mIphsGqUTbInfSV1Mf1xY2WTaCqHKkqp4Qh4CuFtr6QQADG7ZZEcp0xNdcPueVW5EBx3UbH5hK5r3iATCK4tuIkiJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753976581; c=relaxed/simple;
-	bh=1WWG3Zuv514jM/ZH3hlMOl2lhe3oKQ046ntFyv4CX4Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DQYU2gq4uKDZTC5ZEK/pLjVuC2ypmZEibG+wuUK0YRAn/YXLJDQUq4LW9Tx1E2m4LZkHe9cT4X5tvEyUQj5TlgEogWD88Fr+bxOqjIsDsNqOl0tFgi0hCkdoth0MWRdrKji8Z9iMGE3Zx9kwiB2GclBEJpbITZb9hMfw6XQoroY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 01A141BF7;
-	Thu, 31 Jul 2025 08:42:50 -0700 (PDT)
-Received: from [192.168.1.127] (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C46A23F66E;
-	Thu, 31 Jul 2025 08:42:54 -0700 (PDT)
-Message-ID: <d887e166-0fd8-4b70-b6b7-6d3c0138d87b@arm.com>
-Date: Thu, 31 Jul 2025 16:42:52 +0100
+	s=arc-20240116; t=1753977465; c=relaxed/simple;
+	bh=zXqYwYUo5V5xtf38XeLw47tBDZGEMXc9yoHG17JPGAs=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=pishGBiuXrX9ZmVMhK4hDjc+cAGWGajU3Zxk10EOZyWV0E/4FFdYajwWIhAkvjOmhCD4amWPONOeHleBWc5LLepZdMXOGKktf0lEGL0rsbf1CXT8l/WdpptdXUOqDXDvlMs81UNICdxr5QaNxU3cGGPHHRadAkR6O9rrEY0Z6h0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uQCpaCeu; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3b78127c5d1so482686f8f.3
+        for <bpf@vger.kernel.org>; Thu, 31 Jul 2025 08:57:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1753977462; x=1754582262; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mwEehyIvfFZxsxz6xG2f5ye6bcAONjKwPvSd6npT8hI=;
+        b=uQCpaCeu488YzeJaqdtnpSe9JwJPNqEpBRpSw7umCywMzJkQaArjkMboySJ+37y7eX
+         3l74AeaBFzWbTS8Q3oiaVX6FqmIypchnDkF5Tza5s+9z+BKDqvBDfSLAkTKDswMi2EHh
+         rVOnMimM1pTDg20/rFX/WPG+s+cUQJ2vi8hksg7plziau4Ln+DkmVqtC1thMLLlXM/5d
+         LQel6Op+cTuent21fKW7sWRUzh8Szmy40ynmhaBlseV9aJvcpbgx+Re+eYmpFc7lt/D2
+         AyHDLvb+V1NE+SmqriJFPWVtEZ8c5gHGvGWBz/V9CJVCSCLsD+RlLGxUMqFV7Jp/+T1M
+         YEuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753977462; x=1754582262;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mwEehyIvfFZxsxz6xG2f5ye6bcAONjKwPvSd6npT8hI=;
+        b=qi4fhPK3ScQ71YcnIQUWj6c2CGh7RDlI3kJ6NbOy8imH0FJZR81V+eqkYah6JAppNo
+         a6VkE7dr0+6XhtgFt3nZDRwyTPoU199owFK09o7GYwbL5Fhz8ksKbu2WYAjW8Cms102F
+         sNGNbYpO+jzhYe2XeADzkFZsiSQ8dhtUUc4irFy/sb6l/SAtLomk577xP1S0hbpCyjx8
+         Kwzu4aCxI40mspoAmIUd+PhO0sb0VIGqL3pJwxzAwwcsGZy1eCVBAn1EzDlvwEbUJs+h
+         jodGwKCGajpSuGWu9rblzlvZsiIYdz4QHcHGB9sPDduWRidFZMWGDGm8n9wjxVTx1d60
+         kggw==
+X-Forwarded-Encrypted: i=1; AJvYcCUYfQP1VNsyfCFNLdOHg3cz0tVh+PbGLfsCORaiku/Qh0g+V8g11jVN5FWJZ9a/menqqMs=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yws9ASoV8rImUb5xDbtbnfmQhfSEhc/TiC0Yj7AchTmoMLLdjFE
+	c28sizO8Y39Tx+OGHfc4vVZZJYd25sQK+jYzr69ufNC1L4wcJFRuP2UG7xsmsW552TI=
+X-Gm-Gg: ASbGncs2im6PQSEJkByOV0XVhIh9O4kCUZ5Uk+S4Z7IQf3HXAk1JiD2jWWQr5Vk/tFn
+	ld5GrCeCPlLVTwtUyfISDscOolPjY0XB/JpJKR7ffd2Jb8/xYLjSu+FvcUkrjhjKmKy6Kr1DKDj
+	POoIVj7iOk9qu2tDTXGaoNXpImDID5KCbzjlABxVilZ3eFqSD6ACZYLwQo06JwS2P2Ngc9YgM+p
+	ycPi9QGLJbEBXcWBt+tdt+qpfOXaBDVMeK7n4HG61R7bx1M7fCHxSU85+RcvMd4mL2VOmUvNif+
+	LfKoNSi4qz6oEakViGJGA311ZLFQHv/fabDPrIQaKda5Bs3bTUB1Auy6HtvcJ8a3sBkuHE93/Pd
+	ezHjSpxYayALIPWTqLvD7oMKiuyU=
+X-Google-Smtp-Source: AGHT+IEJypDs3Srfs5Ta2SryXW3PqrPZ2bjD8Bn1TfOmElhJKEUhoyptNdeCt1IpSC2bX7kUHiSQGg==
+X-Received: by 2002:a05:6000:2f85:b0:3a6:d93e:5282 with SMTP id ffacd0b85a97d-3b79501dd3fmr7085161f8f.59.1753977461645;
+        Thu, 31 Jul 2025 08:57:41 -0700 (PDT)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4589edfcdf4sm32052495e9.11.2025.07.31.08.57.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Jul 2025 08:57:41 -0700 (PDT)
+Date: Thu, 31 Jul 2025 18:57:38 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: oe-kbuild@lists.linux.dev, KP Singh <kpsingh@kernel.org>,
+	bpf@vger.kernel.org, linux-security-module@vger.kernel.org
+Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+	bboscaccy@linux.microsoft.com, paul@paul-moore.com,
+	kys@microsoft.com, ast@kernel.org, daniel@iogearbox.net,
+	andrii@kernel.org, KP Singh <kpsingh@kernel.org>
+Subject: Re: [PATCH v2 08/13] bpf: Implement signature verification for BPF
+ programs
+Message-ID: <0b060832-4f55-486a-8994-f52d84c39e38@suswa.mountain>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] tracing/probes: Allow use of BTF names to dereference
- pointers
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Linux trace kernel <linux-trace-kernel@vger.kernel.org>,
- bpf@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>,
- Namhyung Kim <namhyung@kernel.org>, Takaya Saeki <takayas@google.com>,
- Tom Zanussi <zanussi@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ian Rogers <irogers@google.com>,
- aahringo@redhat.com
-References: <20250729113335.2e4f087d@batman.local.home>
- <dc817ce7-9551-4365-bd94-3c102a6acda8@arm.com>
- <20250731092953.2d8eea47@gandalf.local.home>
-Content-Language: en-US
-From: Douglas Raillard <douglas.raillard@arm.com>
-In-Reply-To: <20250731092953.2d8eea47@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250721211958.1881379-9-kpsingh@kernel.org>
 
-On 31-07-2025 14:29, Steven Rostedt wrote:
-> On Thu, 31 Jul 2025 12:44:49 +0100
-> Douglas Raillard <douglas.raillard@arm.com> wrote:
-> 
->>> The delimiter is '.' and the first item is the structure name. Then the
->>> member of the structure to get the offset of. If that member is an
->>> embedded structure, another '.MEMBER' may be added to get the offset of
->>> its members with respect to the original value.
->>>
->>>     "+kmem_cache.size($arg1)" is equivalent to:
->>>
->>>     (*(struct kmem_cache *)$arg1).size
->>>
->>> Anonymous structures are also handled:
->>>
->>>     # echo 'e:xmit net.net_dev_xmit +net_device.name(+sk_buff.dev($skbaddr)):string' >> dynamic_events
->>
->> Not sure how hard that would be but the type of the expression could probably be inferred from
->> BTF as well in some cases. Some cases may be ambiguous (like char* that could be either a buffer
->> to display as hex or a null-terminated ASCII string) but BTF would still allow to restrict
->> to something sensible (e.g. prevent u32 for a char*).
-> 
-> Hmm, should be possible, but would require passing that information back to
-> the caller of the BTF lookup function.
-> 
-> 
-> 
->>> diff --git a/kernel/trace/trace_btf.c b/kernel/trace/trace_btf.c
->>> index 5bbdbcbbde3c..b69404451410 100644
->>> --- a/kernel/trace/trace_btf.c
->>> +++ b/kernel/trace/trace_btf.c
->>> @@ -120,3 +120,109 @@ const struct btf_member *btf_find_struct_member(struct btf *btf,
->>>    	return member;
->>>    }
->>>    
->>> +#define BITS_ROUNDDOWN_BYTES(bits) ((bits) >> 3)
->>> +
->>> +static int find_member(const char *ptr, struct btf *btf,
->>> +		       const struct btf_type **type, int level)
->>> +{
->>> +	const struct btf_member *member;
->>> +	const struct btf_type *t = *type;
->>> +	int i;
->>> +
->>> +	/* Max of 3 depth of anonymous structures */
->>> +	if (level > 3)
->>> +		return -1;
->>> +
->>> +	for_each_member(i, t, member) {
->>> +		const char *tname = btf_name_by_offset(btf, member->name_off);
->>> +
->>> +		if (strcmp(ptr, tname) == 0) {
->>> +			*type = btf_type_by_id(btf, member->type);
->>> +			return BITS_ROUNDDOWN_BYTES(member->offset);
->>
->> member->offset does not only contain the offset, and the offset may not be
->> a multiple of 8:
->> https://elixir.bootlin.com/linux/v6.16/source/include/uapi/linux/btf.h#L126
->>
->>   From the BTF spec (https://docs.kernel.org/bpf/btf.html):
->>
->> If the kind_flag is set, the btf_member.offset contains
->> both member bitfield size and bit offset.
->> The bitfield size and bit offset are calculated as below.:
->>
->> #define BTF_MEMBER_BITFIELD_SIZE(val)   ((val) >> 24)
->> #define BTF_MEMBER_BIT_OFFSET(val)      ((val) & 0xffffff)
-> 
-> So basically just need to change that to:
-> 
-> 		if (strcmp(ptr, tname) == 0) {
-> 			int offset = BTF_MEMBER_BIT_OFFSET(member->offset);
-> 			*type = btf_type_by_id(btf, member->type);
-> 			return BITS_ROUNDDOWN_BYTES(offset);
-> 
-> ?
+Hi KP,
 
-This would work in practice for now, but strictly speaking you should check
-the kind_flag field in btf_type.info (bit 31) of the parent struct/union:
-https://elixir.bootlin.com/linux/v6.16/source/include/uapi/linux/btf.h#L38
-  __btf_member_bit_offset() seems to do exactly that.
+kernel test robot noticed the following build warnings:
 
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-While writing that, I realized there is another subtlety: BTF encodes int member offsets in 2 different ways:
-1. Either their bit offset is encoded struct btf_member, and the btf_type of the member is an integer type with no leading padding bits.
-2. Or the rounded-down offset is encoded in struct btf_member and the integer type contains some leading padding bits information:
-https://docs.kernel.org/bpf/btf.html#btf-kind-int
+url:    https://github.com/intel-lab-lkp/linux/commits/KP-Singh/bpf-Update-the-bpf_prog_calc_tag-to-use-SHA256/20250722-052316
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20250721211958.1881379-9-kpsingh%40kernel.org
+patch subject: [PATCH v2 08/13] bpf: Implement signature verification for BPF programs
+config: m68k-randconfig-r073-20250723 (https://download.01.org/0day-ci/archive/20250723/202507231202.8rYZJ8D1-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 14.3.0
 
-The 2nd case is somewhat surprising but BTF_KIND_INT has 3 pieces of information:
-1. The C signedness of the type.
-2. The number of value bits of the type.
-3. The offset of the 1st bit to interpret as being the value. Anything before is leading padding.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+| Closes: https://lore.kernel.org/r/202507231202.8rYZJ8D1-lkp@intel.com/
 
-That means that the actual bit offset of an int member's value in a parent struct is:
+smatch warnings:
+kernel/bpf/syscall.c:2797 bpf_prog_verify_signature() warn: 'sig' is an error pointer or valid
 
-   <offset of the member> + <offset of the type of the member>
+vim +/sig +2797 kernel/bpf/syscall.c
 
-You could technically have all members with btf_member.offset == 0 and then encode the actual values offsets in the btf_type of the members.
+c83b0ba795b625 KP Singh           2025-07-21  2782  static noinline int bpf_prog_verify_signature(struct bpf_prog *prog,
+c83b0ba795b625 KP Singh           2025-07-21  2783  					      union bpf_attr *attr,
+c83b0ba795b625 KP Singh           2025-07-21  2784  					      bool is_kernel)
+c83b0ba795b625 KP Singh           2025-07-21  2785  {
+c83b0ba795b625 KP Singh           2025-07-21  2786  	bpfptr_t usig = make_bpfptr(attr->signature, is_kernel);
+c83b0ba795b625 KP Singh           2025-07-21  2787  	struct bpf_dynptr_kern sig_ptr, insns_ptr;
+c83b0ba795b625 KP Singh           2025-07-21  2788  	struct bpf_key *key = NULL;
+c83b0ba795b625 KP Singh           2025-07-21  2789  	void *sig;
+c83b0ba795b625 KP Singh           2025-07-21  2790  	int err = 0;
+c83b0ba795b625 KP Singh           2025-07-21  2791  
+c83b0ba795b625 KP Singh           2025-07-21  2792  	key = bpf_lookup_user_key(attr->keyring_id, 0);
+c83b0ba795b625 KP Singh           2025-07-21  2793  	if (!key)
+c83b0ba795b625 KP Singh           2025-07-21  2794  		return -ENOKEY;
+c83b0ba795b625 KP Singh           2025-07-21  2795  
+c83b0ba795b625 KP Singh           2025-07-21  2796  	sig = kvmemdup_bpfptr(usig, attr->signature_size);
+c83b0ba795b625 KP Singh           2025-07-21 @2797  	if (!sig) {
 
-> 
->>
->>> +		}
->>> +
->>> +		/* Handle anonymous structures */
->>> +		if (strlen(tname))
->>> +			continue;
->>> +
->>> +		*type = btf_type_by_id(btf, member->type);
->>> +		if (btf_type_is_struct(*type)) {
->>> +			int offset = find_member(ptr, btf, type, level + 1);
->>> +
->>> +			if (offset < 0)
->>> +				continue;
->>> +
->>> +			return offset + BITS_ROUNDDOWN_BYTES(member->offset);
-> 
-> And here too.
-> 
-> -- Steve
-> 
->>> +		}
->>> +	}
->>> +
->>> +	return -1;
->>> +}
->>> +
+This should be an if (!IS_ERR(sig)) { check.
+
+c83b0ba795b625 KP Singh           2025-07-21  2798  		bpf_key_put(key);
+c83b0ba795b625 KP Singh           2025-07-21  2799  		return -ENOMEM;
+c83b0ba795b625 KP Singh           2025-07-21  2800  	}
+c83b0ba795b625 KP Singh           2025-07-21  2801  
+c83b0ba795b625 KP Singh           2025-07-21  2802  	bpf_dynptr_init(&sig_ptr, sig, BPF_DYNPTR_TYPE_LOCAL, 0,
+c83b0ba795b625 KP Singh           2025-07-21  2803  			attr->signature_size);
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 
