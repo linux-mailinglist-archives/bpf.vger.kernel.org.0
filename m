@@ -1,163 +1,135 @@
-Return-Path: <bpf+bounces-64806-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64807-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37794B17161
-	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 14:37:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B87DB1718F
+	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 14:53:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89BAD1899AFE
-	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 12:38:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACD88A822CB
+	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 12:53:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D590239E9F;
-	Thu, 31 Jul 2025 12:37:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D43D2C08CF;
+	Thu, 31 Jul 2025 12:53:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JXoftS7d"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="GR1me3hd"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F39322A7EF;
-	Thu, 31 Jul 2025 12:37:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 532FB1E50E;
+	Thu, 31 Jul 2025 12:53:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753965460; cv=none; b=gjINg2WgXxzMYK6t7Z4Ty+5mIoDrz2sC5JiGVqwct+cpNvYSaL9fDyYS0LE4FuwfqcJXOeNZ2gndr0qtPR1L5QQ3BJQUTDRNmoWh1op7xslY6TIboZ4e8bhPxGYwW/3J92aNiUiRHJFabTvbT3cg4GdDfEZeSOzQwai792dBzqI=
+	t=1753966425; cv=none; b=X278fBs1EEC3dOma+qrflpOlSTQPgYCq6EZRheC5hC3W5YFFVNepANemTPDXe5dIrA2m9KErv0JEEeT2EwAO5B1gOLGjE1AFRW/Lhf2gAhTVCjyHT43Y0NeIziBOTSzXyaIH+i//Tdc7a8CPp36jBBZ51qqdn+5f4kq0Udgh0+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753965460; c=relaxed/simple;
-	bh=F4N7j7/R3qLxjx+q87bCvU+pu2qGV4lJnYfHs/FMkUE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cuGmyncbkkYcxJpKD1JnaXPDlGf7q0dxROZaT4XBFWGVu98VeIP+qX1yXSmqQM2K5quQSEifDT6sl20pe5BrNfTN0TmfPt9fy6vgaitfqJCguDLkQzTHF3Kg/F1v7LgSI5Jn49/01OQfUkpMsZxkv5FZzDStZ9jGQr6W6wx+tPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JXoftS7d; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F192C4CEEF;
-	Thu, 31 Jul 2025 12:37:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753965459;
-	bh=F4N7j7/R3qLxjx+q87bCvU+pu2qGV4lJnYfHs/FMkUE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JXoftS7d09eZDDde0RkubC0VZ4i2xxqIuOF6q5qj6gKuaj4qQULek3H0nC+TRCw7h
-	 mpmzhVdFQbqqNryB8UMw19P4ZXimeqkuL/x+WWKXSsDQYnaNAFA0xcG+SxQ9SQeDL6
-	 jt9KNxFBXbNn0zJE94zFraiz2qqztJSCsY8XVMHsBqGn+VPrEZXLcW/zCWM2DEwHeD
-	 w/sT+a2v54oKoLYPDDOEsQ4qOhudihIDk/hFVjum3UrRfL/YmbskI7NoPxzgFvHfNN
-	 sSJ4GV1poAd4kYFa7O/NMpLlHkXxr9yrQ73sNlAvnIpi30ge4kQOJrj5ne6yWmG+nj
-	 WuDhERQm2e0JA==
-Date: Thu, 31 Jul 2025 13:37:34 +0100
-From: Simon Horman <horms@kernel.org>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: intel-wired-lan@lists.osuosl.org,
-	Michal Kubiak <michal.kubiak@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	nxne.cnse.osdt.itp.upstreaming@intel.com, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Kees Cook <kees@kernel.org>, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH iwl-next v3 16/18] idpf: add support for XDP on Rx
-Message-ID: <20250731123734.GA8494@horms.kernel.org>
-References: <20250730160717.28976-1-aleksander.lobakin@intel.com>
- <20250730160717.28976-17-aleksander.lobakin@intel.com>
+	s=arc-20240116; t=1753966425; c=relaxed/simple;
+	bh=s4YdXOtKR27UpYUWeQeXa6d3+zCAUyQ9i7IHE8ZOwWA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rDGpkRvPvOsT9oirPejSgbphcMIvIQz/bUAd1BOka4yG7XGfpu0KkL5NA5zNES71EHAowi7VnLSVGJ20/QTYbg5Z3aNzpB5LLefBpI8r7FI4xCnBxx40+78XviegGOsqAaX/xMRBMRKlnhjdEdGXA9KCM0ER+wAm0v8VXmEmFhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=GR1me3hd; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 56V8hlKU009401;
+	Thu, 31 Jul 2025 12:53:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=s4YdXO
+	tKR27UpYUWeQeXa6d3+zCAUyQ9i7IHE8ZOwWA=; b=GR1me3hdYnbeVBiHO75PDs
+	y6MyeYO8wDHQ5txCTlPe44kzjIX4Mom+Hucs4jeQXQh7kSMkRVlcLmt8E7UTSKYj
+	bnUto+cpt4F+Lt6C6WBYzK1HQnXr21r2bcEfLd04I/w7cxJIqqLR6vnYkSGPTSA1
+	/LTSYVsvd1wYCLZodJdcmEEnIeUsVOVbtKnxvO0kiX8ZRntw38YPT58KxhwaSVEl
+	r7Q0YWf1eGKOgAjUVnsiFFMVDBCBnTJQ7jFHQV8dQwhqb36j8ty/BEVrlRsu2jhb
+	VuBToFzNSGk2SwFU6bBGiR1EF1AdOb5uH7R/amXWoJvm0kOW04QBSea+IvRuuVfQ
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 484qcgapvu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 31 Jul 2025 12:53:17 +0000 (GMT)
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 56VCaLUb018698;
+	Thu, 31 Jul 2025 12:53:16 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 484qcgapvn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 31 Jul 2025 12:53:16 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 56VCgQa1006242;
+	Thu, 31 Jul 2025 12:53:15 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 485bjmc96t-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 31 Jul 2025 12:53:15 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 56VCr9KV56295902
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 31 Jul 2025 12:53:09 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6219F20043;
+	Thu, 31 Jul 2025 12:53:09 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 013E120040;
+	Thu, 31 Jul 2025 12:53:09 +0000 (GMT)
+Received: from [9.152.224.240] (unknown [9.152.224.240])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 31 Jul 2025 12:53:08 +0000 (GMT)
+Message-ID: <62dbceb4-caaa-4f49-a251-0e2143cd90ac@linux.ibm.com>
+Date: Thu, 31 Jul 2025 14:53:08 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250730160717.28976-17-aleksander.lobakin@intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 1/5] bpf: export necessary sympols for modules
+ with struct_ops
+To: "D. Wythe" <alibuda@linux.alibaba.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        pabeni@redhat.com, song@kernel.org, sdf@google.com, haoluo@google.com,
+        yhs@fb.com, edumazet@google.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, jolsa@kernel.org, Mahanta.Jambigi@ibm.com,
+        Sidraya.Jayagond@ibm.com, wenjia@linux.ibm.com,
+        dust.li@linux.alibaba.com, tonylu@linux.alibaba.com,
+        guwen@linux.alibaba.com
+Cc: bpf@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, jaka@linux.ibm.com
+References: <20250731084240.86550-1-alibuda@linux.alibaba.com>
+ <20250731084240.86550-2-alibuda@linux.alibaba.com>
+Content-Language: en-US
+From: Alexandra Winter <wintera@linux.ibm.com>
+In-Reply-To: <20250731084240.86550-2-alibuda@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzMxMDA4OCBTYWx0ZWRfXzPkfWdTkOuI9
+ s9FAy8/mdlGjzibI2YzUHAPq0IZfIH0O4rOs+5P6WeUsjprp/Kr7I8DAZ3fOGmgpWT/1noLORK9
+ MQ2S57U9FLHEXZskOCf502+6qjS04dL1q/br5Us+6ys8Xnx0EVswT82uwYHK4xm+dJvElL4GQms
+ oWX5yMWXcKdBVY7SobSQNwBTzUGm8PeIQUadIzNUVURlHWxOXq4YArslXNXRkPGMmDrgs2N0DWP
+ rCU5AE0vL5FeAf9hihIRfKiQh7ukq0ZpaPmQeQ6wqM7fuXD5QGl7jc3REl8xyGgPP22ZOspLRrM
+ YxH1Qj30a5IAsZaP47/Iok7r9zh1qZrxSkxYhc3CARNsnaPp4cyYLmgFTtRwE65EJzNi9IDzoEN
+ CJtHtvoVtcLEtec4nYykf4zU3dgnIuOZ1CVCv0C4MeoxJk7moZ5gUDWPu4+skVjeqWXTYamj
+X-Proofpoint-ORIG-GUID: LZG7dvTOEJj1J0AeG2hphw1UoqmWR8FF
+X-Authority-Analysis: v=2.4 cv=Lp2Symdc c=1 sm=1 tr=0 ts=688b673d cx=c_pps
+ a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
+ a=IkcTkHD0fZMA:10 a=Wb1JkmetP80A:10 a=oj6qtssYHHDMG0MRSskA:9
+ a=QEXdDO2ut3YA:10
+X-Proofpoint-GUID: vRYlUuW1GGuYRwxkXfUENMSboo81WiXt
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-07-31_02,2025-07-31_02,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0 bulkscore=0 impostorscore=0 mlxscore=0 priorityscore=1501
+ adultscore=0 clxscore=1011 lowpriorityscore=0 malwarescore=0 suspectscore=0
+ mlxlogscore=446 spamscore=0 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
+ definitions=main-2507310088
 
-+ Kees, linux-hardening
-
-On Wed, Jul 30, 2025 at 06:07:15PM +0200, Alexander Lobakin wrote:
-> Use libeth XDP infra to support running XDP program on Rx polling.
-> This includes all of the possible verdicts/actions.
-> XDP Tx queues are cleaned only in "lazy" mode when there are less than
-> 1/4 free descriptors left on the ring. libeth helper macros to define
-> driver-specific XDP functions make sure the compiler could uninline
-> them when needed.
-> Use __LIBETH_WORD_ACCESS to parse descriptors more efficiently when
-> applicable. It really gives some good boosts and code size reduction
-> on x86_64.
-> 
-> Co-developed-by: Michal Kubiak <michal.kubiak@intel.com>
-> Signed-off-by: Michal Kubiak <michal.kubiak@intel.com>
-> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-
-Hi Alexander, all,
-
-Sorry for providing review of __LIBETH_WORD_ACCESS[1] after the fact.
-I had missed it earlier.
-
-While I appreciate the desire for improved performance and nicer code
-generation. I think the idea of writing 64 bits of data to the
-address of a 32 bit member of a structure goes against the direction
-of hardening work by Kees and others.
-
-Indeed, it seems to me this is the kind of thing that struct_group()
-aims to avoid.
-
-In this case struct group() doesn't seem like the best option,
-because it would provide a 64-bit buffer that we can memcpy into.
-But it seems altogether better to simply assign u64 value to a u64 member.
-
-So I'm wondering if an approach along the following lines is appropriate
-(Very lightly compile tested only!).
-
-And yes, there is room for improvement of the wording of the comment
-I included below.
-
-diff --git a/include/net/libeth/xdp.h b/include/net/libeth/xdp.h
-index f4880b50e804..a7d3d8e44aa6 100644
---- a/include/net/libeth/xdp.h
-+++ b/include/net/libeth/xdp.h
-@@ -1283,11 +1283,7 @@ static inline void libeth_xdp_prepare_buff(struct libeth_xdp_buff *xdp,
- 	const struct page *page = __netmem_to_page(fqe->netmem);
- 
- #ifdef __LIBETH_WORD_ACCESS
--	static_assert(offsetofend(typeof(xdp->base), flags) -
--		      offsetof(typeof(xdp->base), frame_sz) ==
--		      sizeof(u64));
--
--	*(u64 *)&xdp->base.frame_sz = fqe->truesize;
-+	xdp->base.frame_sz_le_qword = fqe->truesize;
- #else
- 	xdp_init_buff(&xdp->base, fqe->truesize, xdp->base.rxq);
- #endif
-diff --git a/include/net/xdp.h b/include/net/xdp.h
-index b40f1f96cb11..b5eedeb82c9b 100644
---- a/include/net/xdp.h
-+++ b/include/net/xdp.h
-@@ -85,8 +85,19 @@ struct xdp_buff {
- 	void *data_hard_start;
- 	struct xdp_rxq_info *rxq;
- 	struct xdp_txq_info *txq;
--	u32 frame_sz; /* frame size to deduce data_hard_end/reserved tailroom*/
--	u32 flags; /* supported values defined in xdp_buff_flags */
-+	union {
-+		/* Allow setting frame_sz and flags as a single u64 on
-+		 * little endian systems. This may may give optimal
-+		 * performance. */
-+		u64 frame_sz_le_qword;
-+		struct {
-+			/* Frame size to deduce data_hard_end/reserved
-+			 * tailroom. */
-+			u32 frame_sz;
-+			/* Supported values defined in xdp_buff_flags. */
-+			u32 flags;
-+		};
-+	};
- };
- 
- static __always_inline bool xdp_buff_has_frags(const struct xdp_buff *xdp)
-
-[1] https://git.kernel.org/torvalds/c/80bae9df2108
+typo in commit message title? s/sympols/symbols/g
 
 
-...
+
+
 
