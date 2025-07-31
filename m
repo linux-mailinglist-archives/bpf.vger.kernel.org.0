@@ -1,186 +1,147 @@
-Return-Path: <bpf+bounces-64844-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64845-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1BBDB17876
-	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 23:53:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61066B17898
+	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 23:58:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 62F361C25831
-	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 21:53:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84566581E8F
+	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 21:58:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 392A526A095;
-	Thu, 31 Jul 2025 21:53:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0976526A095;
+	Thu, 31 Jul 2025 21:58:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kcy/Y9je"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ar2q53Ks"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A39625A620;
-	Thu, 31 Jul 2025 21:52:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9315A921;
+	Thu, 31 Jul 2025 21:58:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753998780; cv=none; b=gDBtUkKvXVZcagInw6NN6z2nfKcAZZRwECz7f3Mol2j7JJHG0YJvVZKHe+Iqr8hMjPRl0tntPgkJuYRRnnEonQXqYOsMhr+PihXaUUE7GqxrhmhsD7Fe1pUu6jyoYTVkWwgISe/Vg1jMmL4R0ZH6C0O7P0ou1szL0GIdOHqqFSE=
+	t=1753999087; cv=none; b=W8vhTdK5b5BWpImGXEskhW7agwOTqGbJKnWQfQ4hSPJy1qxDtnGpRobaU7gwnt5MaCLEzcIN+APIz0r6laxKOGAa+DWKxXKeaOvjGF+rR+ivQCq/0f4oK3Rv8Oc1O+1P6h55sEUBZwl3eb37+DJ4wiKvd2PpAA5kADS3Fn/WEec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753998780; c=relaxed/simple;
-	bh=vXRT0yl7XFxzR3VfyXSij8tuXcLpumLPbwXPAN3BWtk=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GmtsyDh/M4fXj2nn9EdXKjhJOsDM5JPfW3V0RD3/s3IJ7Xu5Q+XkUU6S2eMI6GVX/YLzlY/DWuBNdQ7ONDcOz004GsCiGP1KgngTMll7gfHc3U4sfjGHZkYwlsUWUI5D/LpGtHQ4rOfKzxEee7nJOhPrcSovgkoHtPBQP3hDQDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kcy/Y9je; arc=none smtp.client-ip=209.85.218.43
+	s=arc-20240116; t=1753999087; c=relaxed/simple;
+	bh=8p0do9kr39Ovsj1Jt2Ef988sMv48J4IdqOMy8NWH3eg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dzHe8/ahXi5BPNb0MEoWmNX28/2+oNnJ4fptb6tV6uNvaeuo8f0Yxqj9l6zSwIfoE4lxQm17azciblnH37NJVDZhn/jJzmB/JLAAdpSiItl6HAqQwjMBgzxCXdoJ5rD2Snhn9WGVxBa1CU1XkrpB7ZgTfJytdChozIMSoW5GB9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ar2q53Ks; arc=none smtp.client-ip=209.85.221.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-ae0bde4d5c9so204947466b.3;
-        Thu, 31 Jul 2025 14:52:58 -0700 (PDT)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3b794a013bcso234976f8f.2;
+        Thu, 31 Jul 2025 14:58:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753998777; x=1754603577; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pH7sz35AtHRlCnrQDCM7yIzOahLIxp4d2PNik5qtm/A=;
-        b=Kcy/Y9je4Q1/gzimyr7+hdRJN9lIpCg/2YYJ1iCtAqNlWGaJhvG7HDDp4MqhiH00jZ
-         vUtDUMq+5B0C7/lSrQawZi57MwxLxRm1+KQN4GbmRxgcRj4rO9K/s02oUafRKdyufTP1
-         kyNLU20pjWRE7IVUo1aGnKhiXPPMbzl+Rz9AiIZ2/5tH4c8+UqIUHqVi1XeU4JXcCJZ3
-         85kKW32eBGWqJ7EEw6Qm7lOEg1FXFliJrAiKrHbAo2rCYlWXw9S6IzeQr9mIEMjFITcG
-         /p3FNPPMWPlPPp6nKdtiSDFdtfUJhcwj/w+vF1Zgy+5DMFh2YabWqlc9g+DQ+GMCyNzT
-         0VOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753998777; x=1754603577;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1753999084; x=1754603884; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pH7sz35AtHRlCnrQDCM7yIzOahLIxp4d2PNik5qtm/A=;
-        b=F8xuJHN2z7BBVgBr9ak109E7iHyvYOrmYQesQWXhzsG1npb3H6mXFIRS738XbtCIp3
-         F9iKiFpAa5WrrqBkufWq6E/uS52vY/sh8RwHQDT1oWalfmvfCYh/2RtTYXFNHXeeucl7
-         55fB9yluvGCNCEBkKswIkeyWh9P+9t0yNhm0BFo4CS0KlSYSrlsRNSamWJdOOrGe9jrL
-         BhXacreyTZY+JYtVg+bX7wgC+U0rCAr4fJFkH0ikT48sWNNJlfPzTMNMwv4AyepiIImM
-         In7YXw8OBYku7J564tetyiWzGwfJWCptP3QaRFkudN/R1ueaH0B66e1ZzsWqHwA5Cyb5
-         j01g==
-X-Forwarded-Encrypted: i=1; AJvYcCVSpNAM5aPpWuSkxmELsIBWCOJoOfXnQFC32/YIhn2tVVSOucxcpL/i4oDO9i3+RFlJrSI=@vger.kernel.org, AJvYcCXJSNDv/kTLxPtDy5Wpjmk1dxdqYSl/W5UqyGD/HhvZ8gWgwDKW9KIp1zN5SWesQHLWXf0AURj05TzL7/7scjJmYsJm@vger.kernel.org
-X-Gm-Message-State: AOJu0YxlF4DKnDiBeprQJLqArdiHiuzKaJ3fo1vI0HMyf5tCUHWA8Qm5
-	On6Yd9BEL5xlHxZpNpGgsoAlIB32A3Z63o16rwHb9xoopOSs9W+zpPc8
-X-Gm-Gg: ASbGncvOQV+PZXtPiUEt/X2H09Tqq6yk3dAstMzbltmIyTYBgvQxluh+FmtNJT91y7w
-	Ds7qw70r4gJV1hngmlFz2WTvucNVknJRNhQ47l7rmORJteleZ/OyH1su2mfzePtiw4c5Kted3Vs
-	r2q3ARv8xfCC4cfd+VyGPDXkvduECkVnfrXEVrTd/hR6l1v82AWKfPYb0KNMXuhM4RhaOCl3EoU
-	AQiIy/g+pS5fbhujn9dK0JsodwTXIQQn46+xFe6Os9eDRAVSfk4iu4OYCfJ+fCs50H7CL31L8fb
-	5oYlu0rv3dmaB5jXEdo3KTu2BostqdZE+I8SkcJhzygIpVWY5qi5A8qTOAoAvdnZx/0ErvgSbC2
-	HrV/C19I5pw==
-X-Google-Smtp-Source: AGHT+IGL82FtrUt1Nixu5effk/DO8t4E+terwhdFNL5pzS7lkcztjIWv5o9YiO3+h9HkpAhB7y45qQ==
-X-Received: by 2002:a17:907:7f8c:b0:ae0:35fb:5c83 with SMTP id a640c23a62f3a-af8fd940ebfmr1002527266b.28.1753998772766;
-        Thu, 31 Jul 2025 14:52:52 -0700 (PDT)
-Received: from krava ([176.74.159.170])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-af91a0a396fsm182284766b.42.2025.07.31.14.52.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Jul 2025 14:52:52 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 31 Jul 2025 23:52:45 +0200
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Linux trace kernel <linux-trace-kernel@vger.kernel.org>,
-	bpf@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Takaya Saeki <takayas@google.com>,
-	Douglas Raillard <douglas.raillard@arm.com>,
-	Tom Zanussi <zanussi@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ian Rogers <irogers@google.com>, aahringo@redhat.com
-Subject: Re: [PATCH] tracing/probes: Allow use of BTF names to dereference
- pointers
-Message-ID: <aIvlrQEZQ6OTZxAY@krava>
-References: <20250729113335.2e4f087d@batman.local.home>
+        bh=8p0do9kr39Ovsj1Jt2Ef988sMv48J4IdqOMy8NWH3eg=;
+        b=ar2q53KsMve0gOZ8i5NFj2T3qT962EzZS2QlBTdUywXBTHmLPPdJSHQ0+ecK77xllM
+         7FOYZtYgyV9a+EFahnjSoWUmiga8chJeoTO0EWGGkRwnxPbbJ1MeQAMm22veu2IAWdOY
+         aqhg0TAcvr8O/geyqHQshEJne/KerWOmEV0ETIbvXEEkq4Vj/x6drfop21xDcLaa5j0P
+         /uFWxvnup1e1QPtsSKfXDcAX71KtmnRKy6dm7L/3/KvsqTA7BwepNlFwH4cQLb2CR1Hu
+         4Q1BUhqfONCHmpL/nBPaK0Q9hkOZE/kg8+FRWbB+gKQv203/ttowRfGjnvrSwcimjODs
+         8ipg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753999084; x=1754603884;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8p0do9kr39Ovsj1Jt2Ef988sMv48J4IdqOMy8NWH3eg=;
+        b=VH5+U3UVchpc+FPFfjxWlYh/9JxBXqJhcG6ZDeHFrbLPyiCj1ZZL8vhu/h6NB6vzbg
+         lmJuPno8ynGiOVlf+L+nyR3z1oJLwaeLfNIQhb1faO6Qb/oqBMXdc0etVge0/1T3ECG6
+         RgqUlB5XkGcNzt6e/e+PXCLgBVOggnTRJ5Xf38LUkJEMacxioXTmlpAdbDwB/9YAkKaH
+         ZyulfrxpwpRY51fJb7jNxsE2KXWxnYWZoSwYx+rnpl9+dUthZzBsPI2ro9K5fphbwtIi
+         83A7E8qDTuyblFs32fDwMhaT2RQFWe9+TEHLXr9YOnRKAY9knutsCpSaYQD4rpARCO9z
+         VcVg==
+X-Forwarded-Encrypted: i=1; AJvYcCVP1uqtr3m073HrqXWQXlUGYuNB7SiSByWd+UXwDp6zAwa0V4/hIeZi2p1ALQ4K/VY5/7o=@vger.kernel.org, AJvYcCVu0LbDziW5Q3qucS3Tnsixj+ULQGAgGur9SDjcfNY4VcpyP3+MKcFSInEDbCt6FfPQPRdiqVFL726ETYdcqw==@vger.kernel.org, AJvYcCWOk6t7tivWDAmNpTmP20ZxjeWbGHj3OlgFZoGdz8I72zrc2XycLvdy/MIsfHCnTUJmD2660LV0YrA+UzaW@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzb1mb950xUlyhTXljUtaXsH81PonjJ02VkKKOBJUj9dIjDnrax
+	7G7sMFIFPqvs4vSYb2tSSwEXzAX18xB+rL9HbU7l8GU+9wbOdyRRSSkfNKm9rxCZv3b0hZqw9u6
+	qCcjs/5fmlEo/p6/aGaeltmoO4e6MkZQ=
+X-Gm-Gg: ASbGncsb1MQJNHs6kM5O3SI4peyIN7dPMRsJ4IpjYZ4VUrfgaP+/4csyAp59/LO2KYs
+	RoUqtRRDbc9B0Zq/BrqD3tYo8Ahi5ClAwYT3HbVEZSrUnReZgoXfV9ekk7xEg2R5C+0ZSXeIZ7i
+	CktFppFqjF9Q5Fe1G4vlz9Yh/uH9KiYazMwSeDtujrBUABwrEOXi6g9U4x9Url1hO1+GU2h1WlV
+	Z9xg0EU2eyTPIy0e3oOFlokc/hfHXX1tZBEh7u7OSjvxj0=
+X-Google-Smtp-Source: AGHT+IG0e711nCZBo0LFDgFsHLegSjodIkLZxadsTGsG22z/JROwQjnbFz1X9q67z+tQ3FIhJavxLLOe2qR0sWT1Zio=
+X-Received: by 2002:a05:6000:2908:b0:3b7:83c0:a9e0 with SMTP id
+ ffacd0b85a97d-3b794fde526mr6033980f8f.25.1753999083973; Thu, 31 Jul 2025
+ 14:58:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250729113335.2e4f087d@batman.local.home>
+References: <20250725-vfs-617-1bcbd4ae2ea6@brauner> <20250725-vfs-bpf-a1ee4bf91435@brauner>
+ <ysgjztjbsmjae3g4jybuzlmfljq5zog3eja7augtrjmji5pqw4@n3sc37ynny3t> <20250731-matrosen-zugluft-12a865db6ccb@brauner>
+In-Reply-To: <20250731-matrosen-zugluft-12a865db6ccb@brauner>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 31 Jul 2025 14:57:52 -0700
+X-Gm-Features: Ac12FXxHt58_Mh-eFyJd7LrI0WHgpz0ZviNHWw7vHHaiCNzygl-NAmedsTDIJCw
+Message-ID: <CAADnVQKMNq3vWDzYocS6QojBDXDzC2RdE=VzTnd7C_SN6Jhn_g@mail.gmail.com>
+Subject: Re: [GIT PULL 09/14 for v6.17] vfs bpf
+To: Christian Brauner <brauner@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 29, 2025 at 11:33:35AM -0400, Steven Rostedt wrote:
+On Thu, Jul 31, 2025 at 1:28=E2=80=AFAM Christian Brauner <brauner@kernel.o=
+rg> wrote:
+>
+> It's been in -next a few days. Instead of slapping some hotfix on top
+> that leaves the tree in a broken state the fix was squashed. In other
+> words you would have to reapply the series anyway.
 
-SNIP
+That's not how stable branches work. The whole point of a stable
+branch is that sha-s should not change. You don't squash things
+after a branch is created.
+That extra fix could have been easily added on top.
 
-> +/**
-> + * btf_find_offset - Find an offset of a member for a structure
-> + * @arg: A structure name followed by one or more members
-> + * @offset_p: A pointer to where to store the offset
-> + *
-> + * Will parse @arg with the expected format of: struct.member[[.member]..]
-> + * It is delimited by '.'. The first item must be a structure type.
-> + * The next are its members. If the member is also of a structure type it
-> + * another member may follow ".member".
-> + *
-> + * Note, @arg is modified but will be put back to what it was on return.
-> + *
-> + * Returns: 0 on success and -EINVAL if no '.' is present
-> + *    or -ENXIO if the structure or member is not found.
-> + *    Returns -EINVAL if BTF is not defined.
-> + *  On success, @offset_p will contain the offset of the member specified
-> + *    by @arg.
-> + */
-> +int btf_find_offset(char *arg, long *offset_p)
-> +{
-> +	const struct btf_type *t;
-> +	struct btf *btf;
-> +	long offset = 0;
-> +	char *ptr;
-> +	int ret;
-> +	s32 id;
-> +
-> +	ptr = strchr(arg, '.');
-> +	if (!ptr)
-> +		return -EINVAL;
-> +
-> +	*ptr = '\0';
-> +
-> +	id = bpf_find_btf_id(arg, BTF_KIND_STRUCT, &btf);
+> I mean, your mail is very short of "Linus, I'm subtly telling you what
+> mean Christian did wrong and that he's rebased, which I know you hate
+> and you have to resolve merge conflicts so please yell at him.". Come
+> on.
 
-hi,
-I think you need to call btf_put(btf) before return
+Not subtly. You made a mistake and instead of admitting it
+you're doubling down on your wrong git process.
 
-jirka
+> I work hard to effectively cooperate with you but until there is a
+> good-faith mutual relationship on-list I don't want meaningful VFS work
+> going through the bpf tree. You can take it or leave it and I would
+> kindly ask Linus to respect that if he agrees.
 
+Look, you took bpf patches that BPF CI flagged as broken
+and bpf maintainers didn't even ack.
+Out of 4 patches that you applied one was yours that
+touched VFS and 3 were bpf related.
+That was a wtf moment, but we didn't complain,
+since the feature is useful, so we were happy to see
+it land even in this half broken form.
+We applied your "stable" branch to bpf-next and added fixes on top.
+Then you squashed "hotfix".
+That made all of our fixes in bpf-next to become conflicts.
+We cannot reapply your branch. We don't rebase the trees.
+That was the policy for years. Started long ago during
+net-next era and now in bpf-next too.
+This time we were lucky that conflicts were not that bad
+and it was easy enough for Linus to deal with them,
+but that must not repeat.
 
-> +	if (id < 0)
-> +		goto error;
-> +
-> +	/* Get BTF_KIND_FUNC type */
-> +	t = btf_type_by_id(btf, id);
-> +
-> +	/* May allow more than one member, as long as they are structures */
-> +	do {
-> +		if (!t || !btf_type_is_struct(t))
-> +			goto error;
-> +
-> +		*ptr++ = '.';
-> +		arg = ptr;
-> +		ptr = strchr(ptr, '.');
-> +		if (ptr)
-> +			*ptr = '\0';
-> +
-> +		ret = find_member(arg, btf, &t, 0);
-> +		if (ret < 0)
-> +			goto error;
-> +
-> +		offset += ret;
-> +
-> +	} while (ptr);
-> +
-> +	*offset_p = offset;
-> +	return 0;
-> +
-> +error:
-> +	if (ptr)
-> +		*ptr = '.';
-> +	return -ENXIO;
-> +}
-
-SNIP
+Do not touch bpf patches if you refuse to follow
+stable branch process that everyone else does.
+And it's not VFS. It's really just you, Christian.
+Back in August 2024 Al created a true stable branch
+vfs/stable-struct_fd. We pulled it into bpf-next
+in commit 50470d3899cd ("Merge remote-tracking branch 'vfs/stable-struct_fd=
+'")
+While Al sent a PR for it during the merge window:
+https://lore.kernel.org/all/20240923034731.GF3413968@ZenIV/
+On the kernel/bpf/* side we added more changes on top of Al's work,
+and, surprise, there were no conflicts during the merge window.
+That's how stable branches meant to work.
 
