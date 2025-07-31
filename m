@@ -1,150 +1,96 @@
-Return-Path: <bpf+bounces-64810-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64811-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCB86B17226
-	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 15:36:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3556EB17240
+	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 15:43:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48BCD1C210F9
-	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 13:36:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28DE03ACDF9
+	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 13:42:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACAA52C3761;
-	Thu, 31 Jul 2025 13:36:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j9cu3POg"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC3AC2D0C60;
+	Thu, 31 Jul 2025 13:43:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B5652C08C5;
-	Thu, 31 Jul 2025 13:36:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2C3116419
+	for <bpf@vger.kernel.org>; Thu, 31 Jul 2025 13:43:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753968963; cv=none; b=WE4dxLp9ER6YKKurneIocbXEs6A9RvJimaC3ZnlAxIWUEWgX8gU8SfagredxFq+5s7ao+CrwwLTIJ44kiUt2pIuo7QeGtNdaJ9IDRbStR8TgYy336VoBNMoi1ioFMV7BIue5/kmxYCiKA70rlOFI28Lsz08GIo5BRL57xsbyUlM=
+	t=1753969387; cv=none; b=hZ2aYYhimeqiM6/X/cZx0KiGPiWs9RhOu9zFSADd0GVRJKvUkYDZev/6zRPLuxafO3cidLjmNqQ4Pbmem8UksfMPhOeADMcfMqaqDXtifMKR/Pd3HoLrSo9fh1b9yy9M3heZsHhbBMX4GGyjEz3+WKct3LmO5M2k3dcx+3CRU/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753968963; c=relaxed/simple;
-	bh=KyS0YK7eZU4aWlqqSlmnifoI1DVY+qASIuVMpm0Wk8M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SF5HA9YxFbU19V9mtbzqOG9NlqtfDq7SJxFF8WzGL+uZv63KcLpKbv4c1whgG3g7muQpMWUPi3r9qEqEKjZs1kVI8jOSYRRDeDMAmu3KiygrZne3/1fmVFySb8WOoagNBCJHS4AjHQzIRRp/NT13tDtxiWNsfY0YHIRNZHygew8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j9cu3POg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8990CC4CEF7;
-	Thu, 31 Jul 2025 13:35:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753968962;
-	bh=KyS0YK7eZU4aWlqqSlmnifoI1DVY+qASIuVMpm0Wk8M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=j9cu3POghgzQfUtBUIplaBzrzNwhGOc6oVLq0yV0K73DS8+xpLh1WGipIheNSEisW
-	 gtaZXhKmUx1YU/UAxlykG793eGPQ6+biMr8w3ElbP2um4WUO7y6muSOoXlPRcn8wfb
-	 PI7fVO5IDluDRqPdQ/jlzm1w3KfxU3j9hn3VMJKjT0es0CxNOfPWUv+oVss251A/f7
-	 vTbIuWvqZ0HtEX2T1K6KURzm9/r8ZG+Vj+4oU5X+92zc3DMJVV1sKsX7drkww4jNZP
-	 /aVpVdG1J0jG9ETgKRb07YclTpS6VYcnBBD+Tl/UVaE8rmnLF3SkZ7INeLcmoJoz38
-	 IbQmg5FEdwA8g==
-Date: Thu, 31 Jul 2025 14:35:57 +0100
-From: Simon Horman <horms@kernel.org>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: intel-wired-lan@lists.osuosl.org,
-	Michal Kubiak <michal.kubiak@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	nxne.cnse.osdt.itp.upstreaming@intel.com, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH iwl-next v3 16/18] idpf: add support for XDP on Rx
-Message-ID: <20250731133557.GB8494@horms.kernel.org>
-References: <20250730160717.28976-1-aleksander.lobakin@intel.com>
- <20250730160717.28976-17-aleksander.lobakin@intel.com>
+	s=arc-20240116; t=1753969387; c=relaxed/simple;
+	bh=kx5UBa/rUKpCxax1gh5Ps5wlCy/DVnwNhn9buNehuFE=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=q5BLI9f7BjyBLKX2npRNXS2ldvf0o/zZck8qFzKSa4MzCAEW0NcUD5nhff1RzjTWu0K3I1FGRtbcQmB1g2aCfCLtu7mkur0BanGOQ4KSeiC0Ac4siIE1HvyWrV4ZlqsHWgnPrdK02y9jAt2qkxQrPOYOsGohfwfBup81CLHSXWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-87c73fe3121so81633239f.3
+        for <bpf@vger.kernel.org>; Thu, 31 Jul 2025 06:43:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753969385; x=1754574185;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ndZt07l6ODlNg9Eyb1VPeXSebetlFLG+Q/xDsuh5QtU=;
+        b=XHoLDwl3SSzS9fs3ToCr/QAz2kOcyBSETxZx7rVFbqFv5mDWXcltFAt+5HfVQF9Jm2
+         l+3bqDiCftYwa3wKRgWwsDT5yqKNikF/kqw7e8JRBs3HRbrGwd8P22ZrB8SbIK/d4+85
+         b3H0+lIm6pVti48fva4ODc2OImSg1D0fhloX/M8/aiVYOPV95VjIo4+oNfZFABtt7Z5S
+         RIriQ8mOSmrL8UcfkxdRYvxC/3r9XKZJt2t3+fBR1uq2ms8nr8W1NJw/5/32bLJ81kpW
+         BgkQ3CRiOKoUK/02NCQ4n2NBWW/bx51TOKZxB4LmICNKxq3EDw20g0Zt+4yoMHcV7U4R
+         EFtA==
+X-Forwarded-Encrypted: i=1; AJvYcCVCBLaq7vcREApxvqiup149OSG04LqAkYnOkXijrFyQKOeCFzPRklFse6QGNzNVX2XSOC0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxrmGZf3tRCvAR+eEu39iFClq+lImfXVnY9PcSCr89jlO1Q4I8h
+	WNhEUHFKgk8nxcNocZxf3obFgEhqXATqS4CzGYUtxEY4z7zOIPJHfoZhT3fLljuz+gEmkOu7uvT
+	6ZCVXbp3lwEEVsnCC0nLEt24XnRWyGVdDn4SpKZZrF/E7HNwmxCdqVPs8OHI=
+X-Google-Smtp-Source: AGHT+IG7a22P54eB4UEoXzr0FAh4e0qa0CWa28Cd5Dwml2c1EWeCPmY9UJ+C086GKeXQ53ArF6VNZiT4F/nuHaB62ulyeCkYa1lo
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250730160717.28976-17-aleksander.lobakin@intel.com>
+X-Received: by 2002:a05:6602:2b13:b0:86c:cf7e:d85d with SMTP id
+ ca18e2360f4ac-88138c1bed6mr1356042439f.12.1753969385155; Thu, 31 Jul 2025
+ 06:43:05 -0700 (PDT)
+Date: Thu, 31 Jul 2025 06:43:05 -0700
+In-Reply-To: <688ae0bf.050a0220.5d226.0011.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <688b72e9.050a0220.5d226.0018.GAE@google.com>
+Subject: Re: [syzbot] [bpf?] WARNING in convert_ctx_accesses
+From: syzbot <syzbot+ccac90e482b2a81d74aa@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, paul.chaignon@gmail.com, 
+	sdf@fomichev.me, song@kernel.org, syzkaller-bugs@googlegroups.com, 
+	yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Jul 30, 2025 at 06:07:15PM +0200, Alexander Lobakin wrote:
-> Use libeth XDP infra to support running XDP program on Rx polling.
-> This includes all of the possible verdicts/actions.
-> XDP Tx queues are cleaned only in "lazy" mode when there are less than
-> 1/4 free descriptors left on the ring. libeth helper macros to define
-> driver-specific XDP functions make sure the compiler could uninline
-> them when needed.
-> Use __LIBETH_WORD_ACCESS to parse descriptors more efficiently when
-> applicable. It really gives some good boosts and code size reduction
-> on x86_64.
-> 
-> Co-developed-by: Michal Kubiak <michal.kubiak@intel.com>
-> Signed-off-by: Michal Kubiak <michal.kubiak@intel.com>
-> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+syzbot has bisected this issue to:
 
-...
+commit 0df1a55afa832f463f9ad68ddc5de92230f1bc8a
+Author: Paul Chaignon <paul.chaignon@gmail.com>
+Date:   Tue Jul 1 18:36:15 2025 +0000
 
-> diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+    bpf: Warn on internal verifier errors
 
-...
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17d6aca2580000
+start commit:   e8d780dcd957 Merge tag 'slab-for-6.17' of git://git.kernel..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1436aca2580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1036aca2580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d32de89be62206c8
+dashboard link: https://syzkaller.appspot.com/bug?extid=ccac90e482b2a81d74aa
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=131049bc580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11cc2cf0580000
 
-> @@ -3127,14 +3125,12 @@ static bool idpf_rx_process_skb_fields(struct sk_buff *skb,
->  	return !__idpf_rx_process_skb_fields(rxq, skb, xdp->desc);
->  }
->  
-> -static void
-> -idpf_xdp_run_pass(struct libeth_xdp_buff *xdp, struct napi_struct *napi,
-> -		  struct libeth_rq_napi_stats *ss,
-> -		  const struct virtchnl2_rx_flex_desc_adv_nic_3 *desc)
-> -{
-> -	libeth_xdp_run_pass(xdp, NULL, napi, ss, desc, NULL,
-> -			    idpf_rx_process_skb_fields);
-> -}
-> +LIBETH_XDP_DEFINE_START();
-> +LIBETH_XDP_DEFINE_RUN(static idpf_xdp_run_pass, idpf_xdp_run_prog,
-> +		      idpf_xdp_tx_flush_bulk, idpf_rx_process_skb_fields);
-> +LIBETH_XDP_DEFINE_FINALIZE(static idpf_xdp_finalize_rx, idpf_xdp_tx_flush_bulk,
-> +			   idpf_xdp_tx_finalize);
-> +LIBETH_XDP_DEFINE_END();
->  
->  /**
->   * idpf_rx_hsplit_wa - handle header buffer overflows and split errors
-> @@ -3222,7 +3218,10 @@ static int idpf_rx_splitq_clean(struct idpf_rx_queue *rxq, int budget)
->  	struct libeth_rq_napi_stats rs = { };
->  	u16 ntc = rxq->next_to_clean;
->  	LIBETH_XDP_ONSTACK_BUFF(xdp);
-> +	LIBETH_XDP_ONSTACK_BULK(bq);
->  
-> +	libeth_xdp_tx_init_bulk(&bq, rxq->xdp_prog, rxq->xdp_rxq.dev,
-> +				rxq->xdpsqs, rxq->num_xdp_txq);
->  	libeth_xdp_init_buff(xdp, &rxq->xdp, &rxq->xdp_rxq);
->  
->  	/* Process Rx packets bounded by budget */
-> @@ -3318,11 +3317,13 @@ static int idpf_rx_splitq_clean(struct idpf_rx_queue *rxq, int budget)
->  		if (!idpf_rx_splitq_is_eop(rx_desc) || unlikely(!xdp->data))
->  			continue;
->  
-> -		idpf_xdp_run_pass(xdp, rxq->napi, &rs, rx_desc);
-> +		idpf_xdp_run_pass(xdp, &bq, rxq->napi, &rs, rx_desc);
->  	}
->  
->  	rxq->next_to_clean = ntc;
-> +
->  	libeth_xdp_save_buff(&rxq->xdp, xdp);
-> +	idpf_xdp_finalize_rx(&bq);
+Reported-by: syzbot+ccac90e482b2a81d74aa@syzkaller.appspotmail.com
+Fixes: 0df1a55afa83 ("bpf: Warn on internal verifier errors")
 
-This will call __libeth_xdp_finalize_rx(), which calls rcu_read_unlock().
-But there doesn't seem to be a corresponding call to rcu_read_lock()
-
-Flagged by Sparse.
-
->  
->  	u64_stats_update_begin(&rxq->stats_sync);
->  	u64_stats_add(&rxq->q_stats.packets, rs.packets);
-
-...
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
