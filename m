@@ -1,133 +1,131 @@
-Return-Path: <bpf+bounces-64818-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64819-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECFA7B174E5
-	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 18:27:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1710B174FB
+	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 18:32:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69A551C24E93
-	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 16:27:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11149546D25
+	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 16:32:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1AF523B61D;
-	Thu, 31 Jul 2025 16:27:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 139401E5B90;
+	Thu, 31 Jul 2025 16:32:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AZaMgvHN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HjW+4ZFp"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5312E4689;
-	Thu, 31 Jul 2025 16:27:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F344FBA33
+	for <bpf@vger.kernel.org>; Thu, 31 Jul 2025 16:32:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753979234; cv=none; b=d2sijG5e0W+0Q6UIEmCBhQHcG5phMuaOXApPcAQufknarJF929CixIqO4MhINlLnmHuxpWfEk2wwughiRYsutOtE75piGaa/yTUaecx3E8tiD1ncwsWhh1a9gFSy5NnxzLZ691RuB6fu100X0sBD6LmGnT08I8QqwnFBWbkBf34=
+	t=1753979542; cv=none; b=fY84MQkddVPAYymNJVKUjQyCbBJSmy3TNGLMaXWkpV2wGLZP6/VtUKNbMb4UEDeM86lEaR9R4IqgPeWpORA38FYElmSsjgy+Ck7A14ACAGBncDH25RvPuF9oKct7LllTScVe6b2S1gSUvhkOWVLouYKEub0TYAcT0SCzzuXp0zc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753979234; c=relaxed/simple;
-	bh=w8zPghMey97QS1cCGTZoq+bYPBtjBu/Irw/E7uwtxjE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mX0HkYX2ZQ3ywj1FiSPwx7mijYUkflh/bEvPtqLSbku18kXcwUTqPRzuTTeShPSDAWibC4/I6+whpNlVovSPtYUiu3OY+C/c38C00IEbH93FoONZT9OVnQPJ53UcTxipsz/oqIX997wdRdD2UNC7hgDJVeSFF+4VNf2YpLmx21c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AZaMgvHN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C75F1C4CEEF;
-	Thu, 31 Jul 2025 16:27:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753979233;
-	bh=w8zPghMey97QS1cCGTZoq+bYPBtjBu/Irw/E7uwtxjE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=AZaMgvHNy8dOaTLmR7dcuJ2FOna+aMEalh6SYCWIfiTL9eEFW7RqfBi59jkDq6fEp
-	 ROVt0Cq1TSrd8kHF9tbnBl60WAZv3a7FfqeWME1//swwKlcCKQ8S3IYg3fOg7YV5Sy
-	 YisMJiGt7uLWb0cQnyHly2SBZFOADCnCIuFOUs0fh5icablGNdggbJs/gfhbyHx9mb
-	 hr8lNvZWwIYic9+cmIh1M/Z+aA09kQquv2ap74zoeWqbqc848/ZFSPyKij/fIFJ1PA
-	 ianyPzRXNxYn6eOe4mgowoWngiiDc4BCP5CJybpvuV1p0drt7W3CMvQ7uVB2+3hFS0
-	 XvnTItm42vQug==
-Message-ID: <21f4ee22-84f0-4d5e-8630-9a889ca11e31@kernel.org>
-Date: Thu, 31 Jul 2025 18:27:07 +0200
+	s=arc-20240116; t=1753979542; c=relaxed/simple;
+	bh=NC1NlJZiCelLyYiFLVn3ElnN10TyyIDQ86freCW5uIo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FMlNufQH9tYQMqabOPGhcXLW6sgjpBOfCIR/5fYBZvACCUPI4bEBhY4pIYKmGkqnxMOg77TOxyNlj3rsuifX48fOiTiIiq8kSm0W5ECJjBxZA2AIH+LeL9thqF4b4Dz/tYsAHWzO7kqpYR0zEo20rLpc3EH49jVw+AayZKjSknw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HjW+4ZFp; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3b8d0f1fb49so248974f8f.2
+        for <bpf@vger.kernel.org>; Thu, 31 Jul 2025 09:32:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1753979538; x=1754584338; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FQni+teR8ROHoN9i8omMpiApwkx6Sa16nz/vwobeUlA=;
+        b=HjW+4ZFpC94+NKYrrahddcEuuUKAd/WeE1qF7Z0v9++TBREqu/puseD1rY9IN2UnGO
+         tKh7dYldnC5Tb5/dyd2uyyGuy/l/Nx7+NxJx/Bil8eqcGekL7krvdAl5Vmk/7sJ/Ky4i
+         PRPEpwKhPtU4ZUwTzTN7D9QJHRrjasUD3WLlwBw+DtceZvMoNBf9jZky/fbRUhSrDueF
+         wWLOqU/Z5wo9xxlLLkagn0wm2CtV+tPkqscSpXrQ6UGcQkhgOwwij547PuYSmAxVz7UG
+         dVdY2JK9e+x77NODh8mzlpwcDbDvPQEws7i23GUFo6efZjtHKZuy2EoCYtNWsBKxlVzZ
+         Ig7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753979538; x=1754584338;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FQni+teR8ROHoN9i8omMpiApwkx6Sa16nz/vwobeUlA=;
+        b=Hf62xUcsQIdJmNi+4oCvgOCLxbD+ToN9JiMfN8goltxqAPGglohHpP0YIjc0382uZY
+         R8OqoIlTg0l4TSNxt0fzThlneo/8qdPhjqkcbu/EzmvNjPJCyVwfZDs/1x0MJn4PUyw3
+         cAMblX396clSXAUH9QF+7pynDVYOfcm7S6v+HbVDnv1DwioF2GbSmHKWgegiVVcK7Z5N
+         I7TBRpDn01hcx0F7mlc0TwsVqVb19Hzc0+9ssa6TCdUzZbU9xLM4/wJd3/yVajAFJrEp
+         rMo9dVCzQQBThZY4JkqvZGnlBqKv0dYOfgUrqNq3bjy68WpsBag1UIkJyI1UpQfe5t5D
+         hqKQ==
+X-Gm-Message-State: AOJu0Yxm4ieyzbANb8VK/cw3dPeWUOsUItKxLjJoBO9cR8X/6/+Rgu1q
+	eaXRaSi78dJx71B6wYSmWPxDwHgWYe22rsgix7f+1fdL7vOPCbqpYdnoWwZGwrR+NL8KEJF63Df
+	qcQBeyA+FIlvVHtOwC6onBuJXvLf9PRC8Zf8A
+X-Gm-Gg: ASbGncvLmj4axqobBhsT6mWIkE+V50eHg5fLJqL3VtsUWn5mQhDop4iDHDMy+FKmBO8
+	tlptlrLUeHQfgM6fKYafOEBrXnZhD3wzW43wMlo6yeIEtvSyzd2bof0kmogKuc3BdSGm80IJ+yD
+	hhwcy/Cs5/ZWJv8rqhEet5igsN8xJqn7hHLH0KJumT2dn8uslgAIPRhhEjwUtvbtZA9js5rjxu9
+	2qd610mgUspJ2IgJlRPvgI=
+X-Google-Smtp-Source: AGHT+IGcwAw7O7iBLZM6EP1IpsgklgkXW8JRUzM8zkP6hrB2IgTxOc3sFBQ3vYoLW+QHhKkvXZN/nT25ChVx7jpW5/Q=
+X-Received: by 2002:a05:6000:22c7:b0:3b7:dd87:d730 with SMTP id
+ ffacd0b85a97d-3b7dd87d8femr1705482f8f.52.1753979538188; Thu, 31 Jul 2025
+ 09:32:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next V2 0/7] xdp: Allow BPF to set RX hints for
- XDP_REDIRECTed packets
-To: Martin KaFai Lau <martin.lau@linux.dev>, Jakub Kicinski
- <kuba@kernel.org>, Lorenzo Bianconi <lorenzo@kernel.org>
-Cc: Stanislav Fomichev <stfomichev@gmail.com>, bpf@vger.kernel.org,
- netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <borkmann@iogearbox.net>,
- Eric Dumazet <eric.dumazet@gmail.com>, "David S. Miller"
- <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>, sdf@fomichev.me,
- kernel-team@cloudflare.com, arthur@arthurfabre.com, jakub@cloudflare.com,
- Jesse Brandeburg <jbrandeburg@cloudflare.com>,
- Andrew Rzeznik <arzeznik@cloudflare.com>
-References: <b1873a92-747d-4f32-91f8-126779947e42@kernel.org>
- <aGvcb53APFXR8eJb@mini-arch> <aG427EcHHn9yxaDv@lore-desk>
- <aHE2F1FJlYc37eIz@mini-arch> <aHeKYZY7l2i1xwel@lore-desk>
- <20250716142015.0b309c71@kernel.org>
- <fbb026f9-54cf-49ba-b0dc-0df0f54c6961@kernel.org>
- <20250717182534.4f305f8a@kernel.org>
- <ebc18aba-d832-4eb6-b626-4ca3a2f27fe2@kernel.org>
- <20250721181344.24d47fa3@kernel.org> <aIdWjTCM1nOjiWfC@lore-desk>
- <20250728092956.24a7d09b@kernel.org>
- <b23ed0e2-05cf-454b-bf7a-a637c9bb48e8@kernel.org>
- <4eaf6d02-6b4e-4713-a8f8-6b00a031d255@linux.dev>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <4eaf6d02-6b4e-4713-a8f8-6b00a031d255@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20250728142346.95681-1-leon.hwang@linux.dev> <20250728142346.95681-4-leon.hwang@linux.dev>
+In-Reply-To: <20250728142346.95681-4-leon.hwang@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 31 Jul 2025 09:32:03 -0700
+X-Gm-Features: Ac12FXyxrrPKFH4NHVouNMYfPo1hX-aO0LhA5q5o1v6FnD8OGOHN13SQObR1Z_4
+Message-ID: <CAADnVQJ-wC5kpGZMzU5O7cd-m_4hKA-tjkAm42xEqh2Lu_v_hw@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 3/5] bpf: Report freplace attach failure
+ reason via extended syscall
+To: Leon Hwang <leon.hwang@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Menglong Dong <menglong8.dong@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Jul 28, 2025 at 7:24=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> w=
+rote:
+>
+> This patch enables detailed error reporting when a freplace program fails
+> to attach to its target.
+>
+> By leveraging the extended 'bpf()' syscall with common attributes, users
+> can now retrieve the failure reason through the provided log buffer.
+>
+> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+> ---
+>  kernel/bpf/syscall.c | 39 +++++++++++++++++++++++++++++++--------
+>  1 file changed, 31 insertions(+), 8 deletions(-)
+>
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index ca7ce8474812..4d1f58b14a0a 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -3446,7 +3446,8 @@ static int bpf_tracing_prog_attach(struct bpf_prog =
+*prog,
+>                                    int tgt_prog_fd,
+>                                    u32 btf_id,
+>                                    u64 bpf_cookie,
+> -                                  enum bpf_attach_type attach_type)
+> +                                  enum bpf_attach_type attach_type,
+> +                                  struct bpf_verifier_log *log)
 
+Same issue as before.
+Nack on adding new uapi for the sole purpose of freplace.
 
-On 29/07/2025 21.47, Martin KaFai Lau wrote:
-> On 7/29/25 4:15 AM, Jesper Dangaard Brouer wrote:
->> That idea has been considered before, but it unfortunately doesn't work
->> from a performance angle. The performance model of XDP_REDIRECT into
->> CPUMAP relies on moving the expensive SKB allocation+init to a remote
->> CPU. This keeps the ingress CPU free to process packets at near line
->> rate (our DDoS use-case). If we allocate the SKB on the ingress-CPU
->> before the redirect, we destroy this load-balancing model and create the
->> exact bottleneck we designed CPUMAP to avoid.
-> 
-> iirc, a xdp prog can be attached to a cpumap. The skb can be created by 
-> that xdp prog running on the remote cpu. It should be like a xdp prog 
-> returning a XDP_PASS + an optional skb. The xdp prog can set some fields 
-> in the skb. Other than setting fields in the skb, something else may be 
-> also possible in the future, e.g. look up sk, earlier demux ...etc.
-> 
-
-I have strong reservations about having the BPF program itself trigger
-the SKB allocation. I believe this would fundamentally break the
-performance model that makes cpumap redirect so effective.
-
-The key to XDP's high performance lies in processing a bulk of
-xdp_frames in a tight loop to amortize costs. The existing cpumap code
-on the remote CPU is already highly optimized for this: it performs bulk
-allocation of SKBs and uses careful prefetching to hide the memory
-latency. Allowing a BPF program to sometimes trigger a heavyweight SKB
-alloc+init (4 cache-line misses) would bypass all these existing
-optimizations. It would introduce significant jitter into the pipeline
-and disrupt the entire bulk-processing model we rely on for performance.
-
-This performance is not just theoretical; we rely on it for DDoS
-protection. For example, our plan is to use the XDP program on the
-cpumap hook to run secondary DDoS mitigation rules that currently use
-iptables (funny, many rules are actually BPF program snippets today).
-
-Architecturally, there is a clean separation today: the BPF program
-makes a decision, and the highly-optimized cpumap or core kernel code
-acts on it (build_skb, napi_gro_receive, etc). Your proposal blurs this
-line significantly. Our patch, in contrast, preserves this model. It
-simply provides the necessary data (the hash, vlan and timestamp) to the
-existing cpumap/veth skb path via the xdp_frame.
-
-While more advanced capabilities are an interesting topic for the
-future, my goal here is to solve the immediate, concrete problem of
-transferring metadata cleanly, without disrupting the performance
-architecture we rely on for use cases like DDoS mitigation.
-
---Jesper
-
+Patches 1 and 2 are fine, but must follow with patch(es) that
+make common_attrs usable for existing commands like prog_load and btf_load.
+We need to decide what to do when prog_load's log_buf conflicts
+with common_attrs.log_buf.
+I think it's ok if they both specified and are exactly the same.
+If one of them is specified and another is zero it's also ok.
+When they conflict it's an EINVAL or, maybe, EUSERS to make it distinct.
+After that map_create cmd should adopt log and disambiguate all EINVAL-s
+into human readable messages.
 
