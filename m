@@ -1,164 +1,150 @@
-Return-Path: <bpf+bounces-64825-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64826-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDF70B1755E
-	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 19:03:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1EC0B1756A
+	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 19:05:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B0767ADCE9
-	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 17:02:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2690318C524D
+	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 17:06:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3D142397BE;
-	Thu, 31 Jul 2025 17:03:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C37C6241663;
+	Thu, 31 Jul 2025 17:05:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eRBCbek+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G0ZCTUEK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA55072637;
-	Thu, 31 Jul 2025 17:03:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EC991DE8A8;
+	Thu, 31 Jul 2025 17:05:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753981414; cv=none; b=f9fqzySSLbkxT0pxH3UCo6idRcC8vBiu4Z582gPR/fJpTWdAhBEFqDetRLPrghQJWvdyF7LHsUCs/112NusJ4hdFz8G5srsLBtQjTtgWgKjBR+id1lWtmR8P4foClvgdCgRabqUP3MiEqqss5q5MJdZLXa1n2OvuXKVNA4AZaL8=
+	t=1753981548; cv=none; b=XPZQXVKqzxxm0cKZRz+oGZ/8413KNN0ZsLsuaoZX3SKlZ3Wl2P+moBhKS8cjTfgrv+jmYCY8FA6sklRqezGajkPuRIrnu1R3rrjjpfWCifJa+97s75l925hBUIyoC4g50d8zrr3Kag5oyEuty+PULI5BCNBtrRPV4pg/J1wMCwc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753981414; c=relaxed/simple;
-	bh=7vdU2nzIlB0cH7WoyqZ34N9wygjHGM2SndCa4WqN494=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BgYq137J8/lYe0cuL2tmxRaHGnuwDBKUrX4zjbPMC3xB6ElAtBnmX1GeP8JeXflR1u5qq7rB9EuOp/UsQc9DsrrdlMYwjAkrlS4lmmjAVkMgV4DojVEOn9wzRx+MShSDYW3Ub5bDsYYnkq6gkZpD+bNPND5H2GYu8K3lS30yuS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eRBCbek+; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4589180b266so6414355e9.3;
-        Thu, 31 Jul 2025 10:03:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753981411; x=1754586211; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xEpBFSQ0HXzud7IO5DhdcLDekO1YKRMjZmaFWgvgSc8=;
-        b=eRBCbek+hHIdnz3alR4L3EcDC0qBZIz7l9HBC5MSNadDakfQphhWAeI9pak2DKXRHP
-         05UF6iU/gF34o4FwWQ3GmJF6wC0zxJZZA3xEvtRxwnEOV+K3vqdSB+GMPKBQ8Vi016v4
-         cs5Z4kg9UttfWuHyJwD7ZTOpkKweFiUFToG+t2spYrQDcYlMl6fzhlnd4PUVmsF34l1s
-         0T/inqwPctGGqZs5eaP9jJmH1e4TGdXNcoMcu0Z5ZhXW9/sXWg002cHosZw4NFqAT2r3
-         BfmWqYqNslztfpvHR2mrmKIJQhHTYctMHrQRqcTxJvCABWnxknhYhqZCV6a56wxNWmhk
-         wSAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753981411; x=1754586211;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xEpBFSQ0HXzud7IO5DhdcLDekO1YKRMjZmaFWgvgSc8=;
-        b=GaADsaBTRgKkjSlgQzIx6s8eqpGk+ULc/Gjc0NIGvOThBwp2i22bNFbVu2IEKKH6ZM
-         QvCpuXoiolWqRupq91ay5I1uT727pCZyxAKa+uSgCw831WqCPKkAfEAunRR0O0hSAnnO
-         YR6oOQ4qufmeaqZyIGSTtCCUCKGrCEitpCFL7eN4zUGesQ3m0jR5S2gVL71MCKRk5Rfn
-         BaAXPQCv1AGoObrx4T4+b/wUj5LYt9pyhHufz8FXsvK5pP69zwLmxxxXqc50Eil7YVPU
-         1gyXPqbwCESYFUHYaT8culIy53IwKoQjNIRppZ5WPrd66EKYL8NJMXNlDhrzC6Z32rvy
-         Wf0g==
-X-Forwarded-Encrypted: i=1; AJvYcCU8/vcgJWgA1NXT+zO+dHbmlq5LV/nNRiRo7WYUoeY/s7MSfrECO0GQnwNc683z7lvU6cB5WHQK1fBTu7cR1ennoHo=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy4x11cpkny9OqfxsM/2aoieBNTNo+DYWpQHEX86/D0X/ReaLik
-	vEQe0jHvxHvPoSZkG9EJ4++n4A7Oz3CEyqytT6AUDKYV1+cb94P0w+hMtQBwm+81lUVsiiC+fBh
-	ruJXeXTiLJYJrH3m/3DS/qT4xrvBV7bs=
-X-Gm-Gg: ASbGnct/AY89yBTs01q56DGlQS4VHP9DNcbMDCF5ZaQIAogggLdqj3gOrZb5C8kJVgM
-	MyAUgXx6QQJP+MxhwOnXprZ/zlHGPneMtCRbsaFvesazGuiv7MHeX0KbwUmqp00BbSZISVagwrv
-	fRer5CNdoVYaey/09GZ4V2HAlFucIVvNSxXC5IHm8AcOs1puCeklSTg7jiMkGY6ps/kdq+2ytjs
-	0RnblUz9XrwbS0CZ9RmFHY=
-X-Google-Smtp-Source: AGHT+IFpRBawkvMo/n1r3ipVeiq0Qvriz2CEYDNLPJeGzKOkQWguv/EPcTJlUcFU4BXghx9xLYi/TOsk1XlpNYDXT84=
-X-Received: by 2002:a05:6000:2483:b0:3b7:899c:e87c with SMTP id
- ffacd0b85a97d-3b794fb2209mr7161449f8f.2.1753981410719; Thu, 31 Jul 2025
- 10:03:30 -0700 (PDT)
+	s=arc-20240116; t=1753981548; c=relaxed/simple;
+	bh=cygdeMZgK8iW3+xuI2Q01zkcGjAmxwn4nIdnViALepc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tZyIcWKnBUqXTqeQKca8D7WnEWOPNaJxpEzMq6ODgPQNqUyMnq3/TrX2lSvXOZY3Srk97ql4AqyyLieEVKzIWIPmZ0JZz3vpxrgBvkOjDEYlf+Et2Yy8A6fvXAlUltnWUhhGLuUoQrMWIndc2Ql5TF0MBuqUyZTP5QTKpzZ1eM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G0ZCTUEK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09D6BC4CEEF;
+	Thu, 31 Jul 2025 17:05:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753981548;
+	bh=cygdeMZgK8iW3+xuI2Q01zkcGjAmxwn4nIdnViALepc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=G0ZCTUEKD9dun9DBxQYzx4GHq2lIpW/KDI9pFeE32zJIBNpUzP/FFvrdecrjwQf84
+	 Snz90sAhbikpsX3fCAvtqQoNR3Yl8YuLiqUxPCciFpUuiRnX08tO6sxyKF7IpEYKay
+	 f3yvKnhu01DA9k4hwPs81dSCklqesFppVvmDhkQAKiugR48zYm890ZcmMWfHmLW+NS
+	 VnJc2mvnvy986vxxBto1dpRoyZH7KTIYtRUSqgVcoU6RknqiBrdTIanBJb7FM5aYIq
+	 OLyH7s5ANotGLlkRTto+hjErAZ07bXo2z5GGSRUYFjEfgGYMosqxpw43tMZzhRXjjI
+	 0NwDzzdyIGzhA==
+Date: Thu, 31 Jul 2025 10:05:47 -0700
+From: Kees Cook <kees@kernel.org>
+To: Simon Horman <horms@kernel.org>
+Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
+	intel-wired-lan@lists.osuosl.org,
+	Michal Kubiak <michal.kubiak@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	nxne.cnse.osdt.itp.upstreaming@intel.com, bpf@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH iwl-next v3 16/18] idpf: add support for XDP on Rx
+Message-ID: <202507310955.03E47CFA4@keescook>
+References: <20250730160717.28976-1-aleksander.lobakin@intel.com>
+ <20250730160717.28976-17-aleksander.lobakin@intel.com>
+ <20250731123734.GA8494@horms.kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250730172745.8480-1-James.Bottomley@HansenPartnership.com> <20250730172745.8480-3-James.Bottomley@HansenPartnership.com>
-In-Reply-To: <20250730172745.8480-3-James.Bottomley@HansenPartnership.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 31 Jul 2025 10:03:17 -0700
-X-Gm-Features: Ac12FXyiNA3gXOAh4AjOrsVUaR2uwglIAPRIY0vYqTLm0IIPd0Jo4Jom8wXsUCQ
-Message-ID: <CAADnVQJd0zwSnepH=1f6mwnd-1oFF8gkuCFnEgbMVE8pZ3qz0g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] bpf: remove bpf_key reference
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc: bpf <bpf@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, 
-	Roberto Sassu <roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250731123734.GA8494@horms.kernel.org>
 
-On Wed, Jul 30, 2025 at 10:32=E2=80=AFAM James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
->
-> bpf_key.has_ref is used to distinguish between real key pointers and
-> the fake key pointers that are used for system keyrings (to ensure the
-> actual pointers to system keyrings are never visible outside
-> certs/system_keyring.c).  The keyrings subsystem has an exported
-> function to do this, so use that in the bpf keyring code eliminating
-> the need to store has_ref.
->
-> Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
->
-> ---
-> v2: use unsigned long for pointer to int conversion
-> ---
->  kernel/trace/bpf_trace.c | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
->
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index e7bf00d1cd05..c0ccd55a4d91 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -1244,7 +1244,6 @@ static const struct bpf_func_proto bpf_get_func_arg=
-_cnt_proto =3D {
->  #ifdef CONFIG_KEYS
->  struct bpf_key {
->         struct key *key;
-> -       bool has_ref;
+On Thu, Jul 31, 2025 at 01:37:34PM +0100, Simon Horman wrote:
+> While I appreciate the desire for improved performance and nicer code
+> generation. I think the idea of writing 64 bits of data to the
+> address of a 32 bit member of a structure goes against the direction
+> of hardening work by Kees and others.
+
+Agreed: it's better to avoid obscuring these details from the compiler
+so it can have an "actual" view of the object sizes involved.
+
+> Indeed, it seems to me this is the kind of thing that struct_group()
+> aims to avoid.
+> 
+> In this case struct group() doesn't seem like the best option,
+> because it would provide a 64-bit buffer that we can memcpy into.
+> But it seems altogether better to simply assign u64 value to a u64 member.
+
+Agreed: with struct_group you get a sized pointer, and while you can
+provide a struct tag to make it an assignable object, it doesn't make
+too much sense here.
+
+> So I'm wondering if an approach along the following lines is appropriate
+> (Very lightly compile tested only!).
+> 
+> And yes, there is room for improvement of the wording of the comment
+> I included below.
+> 
+> diff --git a/include/net/libeth/xdp.h b/include/net/libeth/xdp.h
+> index f4880b50e804..a7d3d8e44aa6 100644
+> --- a/include/net/libeth/xdp.h
+> +++ b/include/net/libeth/xdp.h
+> @@ -1283,11 +1283,7 @@ static inline void libeth_xdp_prepare_buff(struct libeth_xdp_buff *xdp,
+>  	const struct page *page = __netmem_to_page(fqe->netmem);
+>  
+>  #ifdef __LIBETH_WORD_ACCESS
+> -	static_assert(offsetofend(typeof(xdp->base), flags) -
+> -		      offsetof(typeof(xdp->base), frame_sz) ==
+> -		      sizeof(u64));
+> -
+> -	*(u64 *)&xdp->base.frame_sz = fqe->truesize;
+> +	xdp->base.frame_sz_le_qword = fqe->truesize;
+>  #else
+>  	xdp_init_buff(&xdp->base, fqe->truesize, xdp->base.rxq);
+>  #endif
+> diff --git a/include/net/xdp.h b/include/net/xdp.h
+> index b40f1f96cb11..b5eedeb82c9b 100644
+> --- a/include/net/xdp.h
+> +++ b/include/net/xdp.h
+> @@ -85,8 +85,19 @@ struct xdp_buff {
+>  	void *data_hard_start;
+>  	struct xdp_rxq_info *rxq;
+>  	struct xdp_txq_info *txq;
+> -	u32 frame_sz; /* frame size to deduce data_hard_end/reserved tailroom*/
+> -	u32 flags; /* supported values defined in xdp_buff_flags */
+> +	union {
+> +		/* Allow setting frame_sz and flags as a single u64 on
+> +		 * little endian systems. This may may give optimal
+> +		 * performance. */
+> +		u64 frame_sz_le_qword;
+> +		struct {
+> +			/* Frame size to deduce data_hard_end/reserved
+> +			 * tailroom. */
+> +			u32 frame_sz;
+> +			/* Supported values defined in xdp_buff_flags. */
+> +			u32 flags;
+> +		};
+> +	};
 >  };
->
->  __bpf_kfunc_start_defs();
-> @@ -1297,7 +1296,6 @@ __bpf_kfunc struct bpf_key *bpf_lookup_user_key(s32=
- serial, u64 flags)
->         }
->
->         bkey->key =3D key_ref_to_ptr(key_ref);
-> -       bkey->has_ref =3D true;
->
->         return bkey;
->  }
-> @@ -1335,7 +1333,6 @@ __bpf_kfunc struct bpf_key *bpf_lookup_system_key(u=
-64 id)
->                 return NULL;
->
->         bkey->key =3D (struct key *)(unsigned long)id;
-> -       bkey->has_ref =3D false;
->
->         return bkey;
->  }
-> @@ -1349,7 +1346,7 @@ __bpf_kfunc struct bpf_key *bpf_lookup_system_key(u=
-64 id)
->   */
->  __bpf_kfunc void bpf_key_put(struct bpf_key *bkey)
->  {
-> -       if (bkey->has_ref)
-> +       if (system_keyring_id_check((unsigned long)bkey->key) < 0)
->                 key_put(bkey->key);
 
-Should be (u64) to avoid truncation ?
+Yeah, this looks like a nice way to express this, and is way more
+descriptive than "(u64 *)&xdp->base.frame_sz" :)
 
-But is it really the case that id=3D=3D1 and id=3D=3D2 are exposed to UAPI =
-already?
-
-As far as I can see lookup_user_key() does:
-        default:
-                key_ref =3D ERR_PTR(-EINVAL);
-                if (id < 1)
-                        goto error;
-
-                key =3D key_lookup(id);
-
-so only id=3D=3D0 is invalid, but id=3D1 can be a valid user key, no?
+-- 
+Kees Cook
 
