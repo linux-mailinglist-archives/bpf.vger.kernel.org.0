@@ -1,131 +1,165 @@
-Return-Path: <bpf+bounces-64819-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64820-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1710B174FB
-	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 18:32:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF500B17509
+	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 18:36:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11149546D25
-	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 16:32:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82F3417EE74
+	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 16:36:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 139401E5B90;
-	Thu, 31 Jul 2025 16:32:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FAAE23D2BD;
+	Thu, 31 Jul 2025 16:36:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HjW+4ZFp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sxd4EsMD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F344FBA33
-	for <bpf@vger.kernel.org>; Thu, 31 Jul 2025 16:32:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14507BA33;
+	Thu, 31 Jul 2025 16:36:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753979542; cv=none; b=fY84MQkddVPAYymNJVKUjQyCbBJSmy3TNGLMaXWkpV2wGLZP6/VtUKNbMb4UEDeM86lEaR9R4IqgPeWpORA38FYElmSsjgy+Ck7A14ACAGBncDH25RvPuF9oKct7LllTScVe6b2S1gSUvhkOWVLouYKEub0TYAcT0SCzzuXp0zc=
+	t=1753979782; cv=none; b=ag7h5K/y87NrTNdh/zPz8yGxV0TKS+Rl0zmbJz0JQiXS+lChSPgD5fP1x/Y0xRHaOH6c55Tz6PGiY1znDluScydt/embvimHqxAFqHtqU9JvRem1+uoh99peMfsJexB/CjQNpJkwvk+kE3R8uZ9JgKl1vvClDLeGzF7SS6+g4dc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753979542; c=relaxed/simple;
-	bh=NC1NlJZiCelLyYiFLVn3ElnN10TyyIDQ86freCW5uIo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FMlNufQH9tYQMqabOPGhcXLW6sgjpBOfCIR/5fYBZvACCUPI4bEBhY4pIYKmGkqnxMOg77TOxyNlj3rsuifX48fOiTiIiq8kSm0W5ECJjBxZA2AIH+LeL9thqF4b4Dz/tYsAHWzO7kqpYR0zEo20rLpc3EH49jVw+AayZKjSknw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HjW+4ZFp; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3b8d0f1fb49so248974f8f.2
-        for <bpf@vger.kernel.org>; Thu, 31 Jul 2025 09:32:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753979538; x=1754584338; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FQni+teR8ROHoN9i8omMpiApwkx6Sa16nz/vwobeUlA=;
-        b=HjW+4ZFpC94+NKYrrahddcEuuUKAd/WeE1qF7Z0v9++TBREqu/puseD1rY9IN2UnGO
-         tKh7dYldnC5Tb5/dyd2uyyGuy/l/Nx7+NxJx/Bil8eqcGekL7krvdAl5Vmk/7sJ/Ky4i
-         PRPEpwKhPtU4ZUwTzTN7D9QJHRrjasUD3WLlwBw+DtceZvMoNBf9jZky/fbRUhSrDueF
-         wWLOqU/Z5wo9xxlLLkagn0wm2CtV+tPkqscSpXrQ6UGcQkhgOwwij547PuYSmAxVz7UG
-         dVdY2JK9e+x77NODh8mzlpwcDbDvPQEws7i23GUFo6efZjtHKZuy2EoCYtNWsBKxlVzZ
-         Ig7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753979538; x=1754584338;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FQni+teR8ROHoN9i8omMpiApwkx6Sa16nz/vwobeUlA=;
-        b=Hf62xUcsQIdJmNi+4oCvgOCLxbD+ToN9JiMfN8goltxqAPGglohHpP0YIjc0382uZY
-         R8OqoIlTg0l4TSNxt0fzThlneo/8qdPhjqkcbu/EzmvNjPJCyVwfZDs/1x0MJn4PUyw3
-         cAMblX396clSXAUH9QF+7pynDVYOfcm7S6v+HbVDnv1DwioF2GbSmHKWgegiVVcK7Z5N
-         I7TBRpDn01hcx0F7mlc0TwsVqVb19Hzc0+9ssa6TCdUzZbU9xLM4/wJd3/yVajAFJrEp
-         rMo9dVCzQQBThZY4JkqvZGnlBqKv0dYOfgUrqNq3bjy68WpsBag1UIkJyI1UpQfe5t5D
-         hqKQ==
-X-Gm-Message-State: AOJu0Yxm4ieyzbANb8VK/cw3dPeWUOsUItKxLjJoBO9cR8X/6/+Rgu1q
-	eaXRaSi78dJx71B6wYSmWPxDwHgWYe22rsgix7f+1fdL7vOPCbqpYdnoWwZGwrR+NL8KEJF63Df
-	qcQBeyA+FIlvVHtOwC6onBuJXvLf9PRC8Zf8A
-X-Gm-Gg: ASbGncvLmj4axqobBhsT6mWIkE+V50eHg5fLJqL3VtsUWn5mQhDop4iDHDMy+FKmBO8
-	tlptlrLUeHQfgM6fKYafOEBrXnZhD3wzW43wMlo6yeIEtvSyzd2bof0kmogKuc3BdSGm80IJ+yD
-	hhwcy/Cs5/ZWJv8rqhEet5igsN8xJqn7hHLH0KJumT2dn8uslgAIPRhhEjwUtvbtZA9js5rjxu9
-	2qd610mgUspJ2IgJlRPvgI=
-X-Google-Smtp-Source: AGHT+IGcwAw7O7iBLZM6EP1IpsgklgkXW8JRUzM8zkP6hrB2IgTxOc3sFBQ3vYoLW+QHhKkvXZN/nT25ChVx7jpW5/Q=
-X-Received: by 2002:a05:6000:22c7:b0:3b7:dd87:d730 with SMTP id
- ffacd0b85a97d-3b7dd87d8femr1705482f8f.52.1753979538188; Thu, 31 Jul 2025
- 09:32:18 -0700 (PDT)
+	s=arc-20240116; t=1753979782; c=relaxed/simple;
+	bh=qKFf5+2hfKxNT4Eb5ZEf5XOsgGj5gNPOaqPmRXy42VY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=um0pzvvz4q/iuTRbYIJoIQPFekXR+Dcs/v8JOu9BACKFh237qIMz2WSBWhrluhOW2oZd5HLQ4xQCu5DHE2mzj1xuObLZ5U+OcUM50f+AqwV2WZ3PZN6+Z1uttXU3zKK1XVjNDqC+3Jx/JLK/1de35ICuFlnKkDlEwU6pzN+WF0Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sxd4EsMD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A06EC4CEEF;
+	Thu, 31 Jul 2025 16:36:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753979780;
+	bh=qKFf5+2hfKxNT4Eb5ZEf5XOsgGj5gNPOaqPmRXy42VY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=sxd4EsMDqnU2bvLSbW+BpwloOtQPP6fzTXv61Wri/xhJvXH5I8EgOG7Xm+TwDTT+y
+	 rAzGCsroB6tjTg6Bnr0P9MKB7vukziqS4p7JnPGEmCRC9CjLjfllhG97nKzXVZ19gu
+	 6/W5ZfSfGIqz9keIjnSBJ2+/UAdC0+8Sno6Rk9ptuviRhR7hKujE44BAqQwDxE8B8F
+	 atveE2SvOOjASYKPceDvkBvdilfAQIJLZh4AHN8dBS0bevxS6pfn+N0m9bg4emfl1N
+	 Fe9DLe8yz4rbR2KaVZC5wBb8a4I4Adk5qtMpcNx+S+iRtvhpuAQFtQFCMybd7fn/lN
+	 yfANoDibolWeA==
+Message-ID: <01c9284d-58c2-4a90-8833-67439a28e541@kernel.org>
+Date: Thu, 31 Jul 2025 18:36:04 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250728142346.95681-1-leon.hwang@linux.dev> <20250728142346.95681-4-leon.hwang@linux.dev>
-In-Reply-To: <20250728142346.95681-4-leon.hwang@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 31 Jul 2025 09:32:03 -0700
-X-Gm-Features: Ac12FXyxrrPKFH4NHVouNMYfPo1hX-aO0LhA5q5o1v6FnD8OGOHN13SQObR1Z_4
-Message-ID: <CAADnVQJ-wC5kpGZMzU5O7cd-m_4hKA-tjkAm42xEqh2Lu_v_hw@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 3/5] bpf: Report freplace attach failure
- reason via extended syscall
-To: Leon Hwang <leon.hwang@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Menglong Dong <menglong8.dong@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] net: mana: Use page pool fragments for RX buffers
+ instead of full pages to improve memory efficiency.
+To: Dragos Tatulea <dtatulea@nvidia.com>,
+ Dipayaan Roy <dipayanroy@linux.microsoft.com>
+Cc: horms@kernel.org, kuba@kernel.org, kys@microsoft.com,
+ haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+ pabeni@redhat.com, longli@microsoft.com, kotaranov@microsoft.com,
+ ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+ sdf@fomichev.me, lorenzo@kernel.org, michal.kubiak@intel.com,
+ ernis@linux.microsoft.com, shradhagupta@linux.microsoft.com,
+ shirazsaleem@microsoft.com, rosenp@gmail.com, netdev@vger.kernel.org,
+ linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ ssengar@linux.microsoft.com, dipayanroy@microsoft.com,
+ Chris Arges <carges@cloudflare.com>, kernel-team
+ <kernel-team@cloudflare.com>, Tariq Toukan <tariqt@nvidia.com>,
+ Saeed Mahameed <saeedm@nvidia.com>, Yunsheng Lin <linyunsheng@huawei.com>
+References: <20250723190706.GA5291@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <73add9b2-2155-4c4f-92bb-8166138b226b@kernel.org>
+ <20250729202007.GA6615@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <i5o2nzwpd5ommosp4ci5edrozci34v6lfljteldyilsfe463xd@6qts2hifezz3>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <i5o2nzwpd5ommosp4ci5edrozci34v6lfljteldyilsfe463xd@6qts2hifezz3>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jul 28, 2025 at 7:24=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> w=
-rote:
->
-> This patch enables detailed error reporting when a freplace program fails
-> to attach to its target.
->
-> By leveraging the extended 'bpf()' syscall with common attributes, users
-> can now retrieve the failure reason through the provided log buffer.
->
-> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
-> ---
->  kernel/bpf/syscall.c | 39 +++++++++++++++++++++++++++++++--------
->  1 file changed, 31 insertions(+), 8 deletions(-)
->
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index ca7ce8474812..4d1f58b14a0a 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -3446,7 +3446,8 @@ static int bpf_tracing_prog_attach(struct bpf_prog =
-*prog,
->                                    int tgt_prog_fd,
->                                    u32 btf_id,
->                                    u64 bpf_cookie,
-> -                                  enum bpf_attach_type attach_type)
-> +                                  enum bpf_attach_type attach_type,
-> +                                  struct bpf_verifier_log *log)
 
-Same issue as before.
-Nack on adding new uapi for the sole purpose of freplace.
 
-Patches 1 and 2 are fine, but must follow with patch(es) that
-make common_attrs usable for existing commands like prog_load and btf_load.
-We need to decide what to do when prog_load's log_buf conflicts
-with common_attrs.log_buf.
-I think it's ok if they both specified and are exactly the same.
-If one of them is specified and another is zero it's also ok.
-When they conflict it's an EINVAL or, maybe, EUSERS to make it distinct.
-After that map_create cmd should adopt log and disambiguate all EINVAL-s
-into human readable messages.
+On 30/07/2025 09.31, Dragos Tatulea wrote:
+> On Tue, Jul 29, 2025 at 01:20:07PM -0700, Dipayaan Roy wrote:
+>> On Tue, Jul 29, 2025 at 12:15:23PM +0200, Jesper Dangaard Brouer wrote:
+>>>
+>>>
+>>> On 23/07/2025 21.07, Dipayaan Roy wrote:
+>>>> This patch enhances RX buffer handling in the mana driver by allocating
+>>>> pages from a page pool and slicing them into MTU-sized fragments, rather
+>>>> than dedicating a full page per packet. This approach is especially
+>>>> beneficial on systems with large page sizes like 64KB.
+>>>>
+>>>> Key improvements:
+>>>>
+>>>> - Proper integration of page pool for RX buffer allocations.
+>>>> - MTU-sized buffer slicing to improve memory utilization.
+>>>> - Reduce overall per Rx queue memory footprint.
+>>>> - Automatic fallback to full-page buffers when:
+>>>>     * Jumbo frames are enabled (MTU > PAGE_SIZE / 2).
+>>>>     * The XDP path is active, to avoid complexities with fragment reuse.
+>>>> - Removal of redundant pre-allocated RX buffers used in scenarios like MTU
+>>>>    changes, ensuring consistency in RX buffer allocation.
+>>>>
+>>>> Testing on VMs with 64KB pages shows around 200% throughput improvement.
+>>>> Memory efficiency is significantly improved due to reduced wastage in page
+>>>> allocations. Example: We are now able to fit 35 rx buffers in a single 64kb
+>>>> page for MTU size of 1500, instead of 1 rx buffer per page previously.
+>>>>
+>>>> Tested:
+>>>>
+>>>> - iperf3, iperf2, and nttcp benchmarks.
+>>>> - Jumbo frames with MTU 9000.
+>>>> - Native XDP programs (XDP_PASS, XDP_DROP, XDP_TX, XDP_REDIRECT) for
+>>>>    testing the XDP path in driver.
+>>>> - Page leak detection (kmemleak).
+>>>> - Driver load/unload, reboot, and stress scenarios.
+>>>
+>>> Chris (Cc) discovered a crash/bug[1] with page pool fragments used
+>>> from the mlx5 driver.
+>>> He put together a BPF program that reproduces the issue here:
+>>> - [2] https://github.com/arges/xdp-redirector
+>>>
+>>> Can I ask you to test that your driver against this reproducer?
+>>>
+>>>
+>>> [1] https://lore.kernel.org/all/aIEuZy6fUj_4wtQ6@861G6M3/
+>>>
+>>> --Jesper
+>>>
+>>
+>> Hi Jesper,
+>>
+>> I was unable to reproduce this issue on mana driver.
+>>
+> Please note that I had to make a few adjustments to get reprodduction on
+> mlx5:
+> 
+> - Make sure that the veth MACs are recognized by the device. Otherwise
+>    traffic might be dropped by the device.
+> 
+> - Enable GRO on the veth device. Otherwise packets get dropped before
+>    they reach the devmap BPF program.
+> 
+> Try starting the test program with one thread and see if you see packets
+> coming through veth1-ns1 end of the veth pair.
+> 
+
+Hi Dipayaan,
+
+Enabling GRO on the veth device is quite important for the test to be valid.
+
+I've asked Chris to fix this in the reproducer. He can report back when
+he have done this, so you can re-run the test.  It is also good advice
+from Dragos that you should check packets are coming through the veth
+pair, to make sure the test is working.
+
+The setup.sh script also need to be modified, as it is loading xdp on a
+net_device called "ext0" [0], which is specific to our systems (which
+default also have GRO enabled for veth).
+
+[0] https://github.com/arges/xdp-redirector/blob/main/setup.sh#L28
+
+--Jesper
 
