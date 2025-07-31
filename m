@@ -1,121 +1,113 @@
-Return-Path: <bpf+bounces-64781-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64782-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0F31B16E17
-	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 11:03:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B054B16E34
+	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 11:12:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 555321C205FC
-	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 09:03:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8EBA1C208AB
+	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 09:12:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3269128E5F3;
-	Thu, 31 Jul 2025 09:03:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=konsulko.se header.i=@konsulko.se header.b="e/0ZkerW";
-	dkim=permerror (0-bit key) header.d=konsulko.se header.i=@konsulko.se header.b="24f4CS50"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D8F52BDC0F;
+	Thu, 31 Jul 2025 09:11:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mailrelay-egress16.pub.mailoutpod3-cph3.one.com (mailrelay-egress16.pub.mailoutpod3-cph3.one.com [46.30.212.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28B9C28D8E1
-	for <bpf@vger.kernel.org>; Thu, 31 Jul 2025 09:02:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.212.3
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 142A1299928;
+	Thu, 31 Jul 2025 09:11:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753952584; cv=none; b=P1JGtpXY6QONOSVXo21GRB3E/s+dvd6HCupowe6XQmZPHkksna0xvSBz6Wap5FmM4XFiz2mwNARxXJ8Gc+Ua0HVmPBTenEgyJWtjTTHQnxERriHp803KsG7O+okUTbkNdiW8szMnGSPLzZf50u2dKcNwSOZlqfR1Kb2BweNzkbM=
+	t=1753953112; cv=none; b=KZaNXPFggjNkK4N4EdrY172gWMBcYX4jrTHDwWU0DmwkFIH+LRp1eYPF9cMcftFB42DaTdWbRKKAcYgLBk73I2GirsUSt8IGZG2VwMYzPYzL6esr6t26fzR7qx6ihSXTL3uArM/piPO1+e8K0cdm5PoyIc5pu/GiGfSY0xREnAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753952584; c=relaxed/simple;
-	bh=aGrAH/Tbb6SSGgZDJ06gVdgOyL4PKYXs6RPb1SJ9MZU=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=TobmFO+GXpWH9/cTgPp72O0bXzr8bis9vFP9yK7oL82pyk46JCc0KU2e1LCQpw36g4c/88nDrpHTDZOlXFJgGDPAlmfA5ElVS/7WyRMaM8Y9y1QJltry03yeaQqyaZh1AEmvodrWRWZggzi8rMaPFBg09XONdmusJeOTINd+TJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=konsulko.se; spf=none smtp.mailfrom=konsulko.se; dkim=pass (2048-bit key) header.d=konsulko.se header.i=@konsulko.se header.b=e/0ZkerW; dkim=permerror (0-bit key) header.d=konsulko.se header.i=@konsulko.se header.b=24f4CS50; arc=none smtp.client-ip=46.30.212.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=konsulko.se
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=konsulko.se
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1753952578; x=1754557378;
-	d=konsulko.se; s=rsa1;
-	h=to:references:message-id:content-transfer-encoding:cc:date:in-reply-to:from:
-	 subject:mime-version:content-type:from;
-	bh=8BwiugyGiIx5huwWXGhp1Gaxm7XgAQiVNO4WhfBafE8=;
-	b=e/0ZkerWldZOJhyo3/TNKzQlyQwDWSN/m8zXlitwCXnrR+wG+qmSEqSaHodl8x+XmshVpWl4zg6DU
-	 Jf1Rb6ChBQ8hoVKTkpzYFz29jcnxVQ+9Xoh0CemHD+keH9kdizHHIsPh+KTfqEiIHl1uOrqhO50bxJ
-	 REYRelU9ufsTV7QIVSiqII3DTovBqwLvZIF5yTvR+ZFkd1XdlfnaJx4L6TtVy50eV/+WO1lXvd1g7x
-	 CZOmMHmOID250oilyVtZgMagshmylzUruRzOzhkbPRBIbpR1VmSiTrx0RCcQWVbw55ZnASQ3TZN8YG
-	 vxwXpZ8Bk4lYEXJuR40QklGd6jlpolA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1753952578; x=1754557378;
-	d=konsulko.se; s=ed1;
-	h=to:references:message-id:content-transfer-encoding:cc:date:in-reply-to:from:
-	 subject:mime-version:content-type:from;
-	bh=8BwiugyGiIx5huwWXGhp1Gaxm7XgAQiVNO4WhfBafE8=;
-	b=24f4CS50xBjUkRcbBmrVztFzUeo6tMFD47Di0TF9dCJJwkK5aDnTsR71NoAxweYI7Q+NCT9HWK1vM
-	 x30J+0ZCw==
-X-HalOne-ID: 25f7a752-6ded-11f0-b15b-d510462faafc
-Received: from smtpclient.apple (unknown [2a01:cb1d:9264:6f00:816e:7fc8:3908:5295])
-	by mailrelay4.pub.mailoutpod3-cph3.one.com (Halon) with ESMTPSA
-	id 25f7a752-6ded-11f0-b15b-d510462faafc;
-	Thu, 31 Jul 2025 09:02:57 +0000 (UTC)
-Content-Type: text/plain;
-	charset=utf-8
+	s=arc-20240116; t=1753953112; c=relaxed/simple;
+	bh=Ni8Oy89hfU/Fa4xHF9Z6/77l7w9qX7lOD/bBloWQE68=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZPD3U3F35s9G4PC/kQf9T+yHcmyb05eETM7MJBPIHOJG0DsUc1HSe9Q4ZpuLBAwYcmyGUyOZAnpvYvQnMJJMsMfeUPBbU4caFMKEr1ftYXv2IY97yEVMyyirYeRod5uwvY1XzDROP9BGNm1bl/clTg0UhtIbZLLxsMI0+SsfHfE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7795E1D13;
+	Thu, 31 Jul 2025 02:11:42 -0700 (PDT)
+Received: from localhost (e132581.arm.com [10.1.196.87])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 06B493F66E;
+	Thu, 31 Jul 2025 02:11:50 -0700 (PDT)
+Date: Thu, 31 Jul 2025 10:11:48 +0100
+From: Leo Yan <leo.yan@arm.com>
+To: kernel test robot <oliver.sang@intel.com>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Matt Bobrowski <mattbobrowski@google.com>,
+	Song Liu <song@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	James Clark <james.clark@linaro.org>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Mike Leach <mike.leach@linaro.org>, bpf@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND v3 5/6] perf record: Support AUX pause and resume
+ with BPF
+Message-ID: <20250731091148.GF143191@e132581.arm.com>
+References: <202507310818.a05d2380-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.200.121\))
-Subject: Re: [PATCH v14 4/4] rust: support large alignments in allocations
-From: Vitaly Wool <vitaly.wool@konsulko.se>
-In-Reply-To: <DBPO1RQMZDH2.2WFOZO0X4DODN@kernel.org>
-Date: Thu, 31 Jul 2025 11:02:45 +0200
-Cc: linux-mm@kvack.org,
- akpm@linux-foundation.org,
- linux-kernel@vger.kernel.org,
- Uladzislau Rezki <urezki@gmail.com>,
- Alice Ryhl <aliceryhl@google.com>,
- Vlastimil Babka <vbabka@suse.cz>,
- rust-for-linux@vger.kernel.org,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
- "Liam R . Howlett" <Liam.Howlett@oracle.com>,
- Kent Overstreet <kent.overstreet@linux.dev>,
- linux-bcachefs@vger.kernel.org,
- bpf@vger.kernel.org,
- Herbert Xu <herbert@gondor.apana.org.au>,
- Jann Horn <jannh@google.com>,
- Pedro Falcato <pfalcato@suse.de>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <933C4F7E-0E14-4C6A-AA18-ADB21CE1953F@konsulko.se>
-References: <20250730191921.352591-1-vitaly.wool@konsulko.se>
- <20250730192101.358943-1-vitaly.wool@konsulko.se>
- <DBPO1RQMZDH2.2WFOZO0X4DODN@kernel.org>
-To: Danilo Krummrich <dakr@kernel.org>
-X-Mailer: Apple Mail (2.3826.200.121)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202507310818.a05d2380-lkp@intel.com>
 
+Hi,
 
+On Thu, Jul 31, 2025 at 03:26:01PM +0800, kernel test robot wrote:
 
-> On Jul 30, 2025, at 10:18=E2=80=AFPM, Danilo Krummrich =
-<dakr@kernel.org> wrote:
->=20
-> On Wed Jul 30, 2025 at 9:21 PM CEST, Vitaly Wool wrote:
->> diff --git a/rust/kernel/alloc/allocator_test.rs =
-b/rust/kernel/alloc/allocator_test.rs
->> index d19c06ef0498..17b27c6e9e37 100644
->> --- a/rust/kernel/alloc/allocator_test.rs
->> +++ b/rust/kernel/alloc/allocator_test.rs
->> @@ -40,6 +40,7 @@ unsafe fn realloc(
->>         layout: Layout,
->>         old_layout: Layout,
->>         flags: Flags,
->> +        nid: NumaNode,
->>     ) -> Result<NonNull<[u8]>, AllocError> {
->>         let src =3D match ptr {
->>             Some(src) =3D> {
->=20
-> I think this hunk should be on patch 3.
->=20
-> Also, don't you see a warning when running the rusttest target? I =
-think it has
-> to be _nid, given that the argument is unused.
+[...]
 
-Indeed, thanks. I=E2=80=99ll respin the patchset shortly.
+> 2025-07-30 19:06:25 sudo /usr/src/linux-perf-x86_64-rhel-9.4-bpf-e350af63969b875598f0656a20d801bbcaa7bd76/tools/perf/perf test 64 -v
+>  64: Convert perf time to TSC                                        :
+>  64.1: TSC support                                                   : Running (2 active)
+>  64.1: TSC support                                                   : Ok
+> --- start ---
+> test child forked, pid 7359
+> Using CPUID GenuineIntel-6-9E-D
+> evlist__open() failed
+> ---- end(-1) ----
+>  64.2: Perf time to TSC                                              : FAILED!
 
-~Vitaly=
+I roughly read the job.yaml file, seems it does not install clang.
+Thus, the building will not enalbe the option BUILD_BPF_SKEL=1.
+
+As a result, auxtrace__update_bpf_map() will return a failure. I will
+fix this issue in next spin.
+
+Thanks for test and reporting.
+
+Leo
+
+> The kernel config and materials to reproduce are available at:
+> https://download.01.org/0day-ci/archive/20250731/202507310818.a05d2380-lkp@intel.com
+> 
+> 
+> 
+> -- 
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
+> 
 
