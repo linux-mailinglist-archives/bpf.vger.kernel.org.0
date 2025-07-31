@@ -1,113 +1,99 @@
-Return-Path: <bpf+bounces-64782-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64783-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B054B16E34
-	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 11:12:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2293B16E43
+	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 11:14:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8EBA1C208AB
-	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 09:12:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BBD45832BE
+	for <lists+bpf@lfdr.de>; Thu, 31 Jul 2025 09:14:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D8F52BDC0F;
-	Thu, 31 Jul 2025 09:11:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25FB5299928;
+	Thu, 31 Jul 2025 09:14:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZxEqLmhS"
 X-Original-To: bpf@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 142A1299928;
-	Thu, 31 Jul 2025 09:11:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EC8C1D618A;
+	Thu, 31 Jul 2025 09:14:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753953112; cv=none; b=KZaNXPFggjNkK4N4EdrY172gWMBcYX4jrTHDwWU0DmwkFIH+LRp1eYPF9cMcftFB42DaTdWbRKKAcYgLBk73I2GirsUSt8IGZG2VwMYzPYzL6esr6t26fzR7qx6ihSXTL3uArM/piPO1+e8K0cdm5PoyIc5pu/GiGfSY0xREnAk=
+	t=1753953260; cv=none; b=lZSFniUyrOAibAo8BbVO987A3UI1viF/wA5WtW1/3C3Qa0dF5Y0HGmHxLwzbpHf67Yrnabo5BFDgZV7MJwWxVnGmidluKrhmXEawKrzhoy9SjDmKhzgCHqmEJfwLvHPfUVKUBWDGBJ0Jp9Og2i5syLhtM4l0geoXkyRHgkil+mY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753953112; c=relaxed/simple;
-	bh=Ni8Oy89hfU/Fa4xHF9Z6/77l7w9qX7lOD/bBloWQE68=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZPD3U3F35s9G4PC/kQf9T+yHcmyb05eETM7MJBPIHOJG0DsUc1HSe9Q4ZpuLBAwYcmyGUyOZAnpvYvQnMJJMsMfeUPBbU4caFMKEr1ftYXv2IY97yEVMyyirYeRod5uwvY1XzDROP9BGNm1bl/clTg0UhtIbZLLxsMI0+SsfHfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7795E1D13;
-	Thu, 31 Jul 2025 02:11:42 -0700 (PDT)
-Received: from localhost (e132581.arm.com [10.1.196.87])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 06B493F66E;
-	Thu, 31 Jul 2025 02:11:50 -0700 (PDT)
-Date: Thu, 31 Jul 2025 10:11:48 +0100
-From: Leo Yan <leo.yan@arm.com>
-To: kernel test robot <oliver.sang@intel.com>
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Matt Bobrowski <mattbobrowski@google.com>,
-	Song Liu <song@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	James Clark <james.clark@linaro.org>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Mike Leach <mike.leach@linaro.org>, bpf@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND v3 5/6] perf record: Support AUX pause and resume
- with BPF
-Message-ID: <20250731091148.GF143191@e132581.arm.com>
-References: <202507310818.a05d2380-lkp@intel.com>
+	s=arc-20240116; t=1753953260; c=relaxed/simple;
+	bh=o1GnT/mv5uDo9vZxctWYqJZ/ZVlGC9o4m7b8LxI/dKs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UV1T4xUsa/QzeUoTyrQuXiNG1Z3HQjazUyvIut7XBZ3nckraVbBzZ3aRRJliUnaVFCNt27A0bWOUeK+bMibMiSl+9t8MXVp5E8bxxTs1ODCj7jtH74QJMvkcxI0LA5SgnDl5REZvokhNlAHUEo1QLJiA7xpNzagRD2suc4DcmPw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZxEqLmhS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B322C4CEEF;
+	Thu, 31 Jul 2025 09:14:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753953260;
+	bh=o1GnT/mv5uDo9vZxctWYqJZ/ZVlGC9o4m7b8LxI/dKs=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ZxEqLmhSyJL5s1N7GWltmF+Q9EcbntivFSJS0yqhCHVIu1W76AONTUf2xfJJnmtpT
+	 wzbi7WPDgIdp+YX/M8luyen2O6LTkvIt9plT3bPpk73dKKIvzhtmO4XXcsU68eKeKM
+	 tyHfMQ+k2IhQT12huuVhfvAhC7kthQZK5aHNCMLchCL5Q3Vk6RvVrU5EBOnrEeWtkx
+	 hYlDAA8uJorci4yykWwiWFluwohVErV/NcQL6YklY2Yzw2LWvMJ1dg8VuZl9wmK1Yp
+	 ZOaYflUoPkOp3BvTbUzzJ5aeg/+S+GDn5r31pBIIaTqxyyy0ZsnOs7hbuKghrHLZdz
+	 3OG/PTC2iCByg==
+Message-ID: <a13646af-78f7-4ba7-9767-41d598222b1d@kernel.org>
+Date: Thu, 31 Jul 2025 11:14:14 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202507310818.a05d2380-lkp@intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] sfc: handle NULL returned by xdp_convert_buff_to_frame()
+To: Edward Cree <ecree@amd.com>, Paolo Abeni <pabeni@redhat.com>,
+ Chenyuan Yang <chenyuan0y@gmail.com>, ecree.xilinx@gmail.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ john.fastabend@gmail.com, sdf@fomichev.me, lorenzo@kernel.org
+Cc: netdev@vger.kernel.org, linux-net-drivers@amd.com, bpf@vger.kernel.org,
+ zzjas98@gmail.com
+References: <20250723003203.1238480-1-chenyuan0y@gmail.com>
+ <045d1ff5-bb20-481d-a067-0a42345ab83d@redhat.com>
+ <de14f60e-b1f0-432c-80b4-a2f0453e0fe2@amd.com>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <de14f60e-b1f0-432c-80b4-a2f0453e0fe2@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi,
 
-On Thu, Jul 31, 2025 at 03:26:01PM +0800, kernel test robot wrote:
 
-[...]
-
-> 2025-07-30 19:06:25 sudo /usr/src/linux-perf-x86_64-rhel-9.4-bpf-e350af63969b875598f0656a20d801bbcaa7bd76/tools/perf/perf test 64 -v
->  64: Convert perf time to TSC                                        :
->  64.1: TSC support                                                   : Running (2 active)
->  64.1: TSC support                                                   : Ok
-> --- start ---
-> test child forked, pid 7359
-> Using CPUID GenuineIntel-6-9E-D
-> evlist__open() failed
-> ---- end(-1) ----
->  64.2: Perf time to TSC                                              : FAILED!
-
-I roughly read the job.yaml file, seems it does not install clang.
-Thus, the building will not enalbe the option BUILD_BPF_SKEL=1.
-
-As a result, auxtrace__update_bpf_map() will return a failure. I will
-fix this issue in next spin.
-
-Thanks for test and reporting.
-
-Leo
-
-> The kernel config and materials to reproduce are available at:
-> https://download.01.org/0day-ci/archive/20250731/202507310818.a05d2380-lkp@intel.com
+On 25/07/2025 12.11, Edward Cree wrote:
+> On 7/24/25 10:57, Paolo Abeni wrote:
+>> On 7/23/25 2:32 AM, Chenyuan Yang wrote:
+>>> The xdp_convert_buff_to_frame() function can return NULL when there is
+>>> insufficient headroom in the buffer to store the xdp_frame structure
+>>> or when the driver didn't reserve enough tailroom for skb_shared_info.
+>>
+>> AFAIC the sfc driver reserves both enough headroom and tailroom, but
+>> this is after ebpf run, which in turn could consume enough headroom to
+>> cause a failure, so I think this makes sense.
 > 
-> 
-> 
-> -- 
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
-> 
+> Your reasoning seems plausible to me.
+
+Hmm... have you actually tested that XDP/BPF can adjust headroom so much
+that xdp_convert_buff_to_frame() function fails?
+
+I really doubt this possible for BPF-progs to violate this.
+
+The XDP BPF-prog can only adjust the headroom via the helpers
+bpf_xdp_adjust_head() and bpf_xdp_adjust_meta().  These helpers reserve
+room for sizeof(struct xdp_frame).
+
+The tailroom can be adjusted via helper bpf_xdp_adjust_tail() and it
+also reserve room for sizeof(struct skb_shared_info) such that BPF-progs
+cannot get access to this area. See define for xdp_data_hard_end.
+
+--Jesper
 
