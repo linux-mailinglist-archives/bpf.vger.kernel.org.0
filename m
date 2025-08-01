@@ -1,125 +1,91 @@
-Return-Path: <bpf+bounces-64898-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64899-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEA74B184CB
-	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 17:17:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E54CEB184D5
+	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 17:19:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0C507A2ED0
-	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 15:15:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90B8C3B319B
+	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 15:19:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C499270ED7;
-	Fri,  1 Aug 2025 15:17:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R+4ZHJHK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5103B27146A;
+	Fri,  1 Aug 2025 15:19:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 000AD1D7E37;
-	Fri,  1 Aug 2025 15:17:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4689E1D7E37;
+	Fri,  1 Aug 2025 15:19:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754061424; cv=none; b=ZUjSOvDFaE8RRXTdEq0FkQsRskZ0aJA4Q90vb0on7JstbEDwbI35LuuR9uNEi+wizo+x4L5WrcJmcWquUv3CUnq1y4QENBGCzmsUeOwz5Y+m912oDO+gR/TU6O1KcgjDnpsdLviL+Ds4itidKC1sjfheLrmAwivA43Avm1wXBw8=
+	t=1754061545; cv=none; b=fUoVsbiR+VaqvXRzIcvXBYPQNVVqQR2uc/vL803upE0vGMgNcJsiFmpvHScP/XoVSXtxRvtXDmEmSoXNEojvMvAYXldb2teVivZrTFI3gWsi3DsPb/gK7R+wiLVZUciA2Empb80kNzwIAyWR3fz7XXr2pGXzPbdr9LfTZcI5r/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754061424; c=relaxed/simple;
-	bh=MsPgRvxsTeA8WXRTPFeQLzwhhk5sgNkvZmNvduGJY/U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lF49XclwDVzwqwLyh207hH2u+H4WgsvMTtqIbj7dbAbnfDZ4xJsLE5oaViZQMJRkHgZd2fFR7dpSqX9yjWpcvxHkL55gzCyOPtJj4ul5swELGzrs9Eb0T4twEWT8NZspuuo2SSvsKnKuoR37OJ2lNitTgmD+LAp/jwKmnvKjYWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R+4ZHJHK; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-ae35f36da9dso363494366b.0;
-        Fri, 01 Aug 2025 08:17:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754061421; x=1754666221; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2/x0ffNYo475efv7vKzA7UPyOtES3df4ghjY5sd6gc0=;
-        b=R+4ZHJHKfYYHf9Ic3455x4RkqPQtqIeXjXWz8P+MnXF/SyuFrCCBk9rLqTlTGsEX2K
-         vTr7YvXiUJqsrIQgL10WCt8ZVQVLgqj8yLSO3JcK21JF0MQyG2bOnj1SMvZgcOns2EW1
-         X/lnNAVZqx8E5gOT/myEgsntByhSRUKN84+/HLx1ND3RsT8eSFJGMmIkGva0EguH+5JJ
-         o4A4u+9s/Q10dOjDPh9XlqaaO/IpDGcM5gmQInvCPSWwnyGBrNX0ukKroljDp2pp9FRO
-         Eca+YCwlwj1kjADk+xDFBT+Uh5CXwPADtoVue+ClJsjyplb5KmtpgyYt+bVAhznbaHiO
-         tuYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754061421; x=1754666221;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2/x0ffNYo475efv7vKzA7UPyOtES3df4ghjY5sd6gc0=;
-        b=jNd4yQ8jysCu1T0rvCQvsHUwmbKHVPcRSbr/YEhXJowFcPUARi+xkcfGenh4aEQ1CF
-         fEyMX3JFsgqVHFD4vUTRhkrZ5P7nlhvGCGinNQvabbxOV5x0elf/lpuw1mVAzUMvQ7Cq
-         FuAyi3C9bq/6u7Mbl5WwvvTHiAjapN2qH4Rk8QgTx9o5KePYE74XDzvPj/q3sseEv4Gd
-         +qlREFenDLbAN1y5yeT+zSIFnhkC/6KuyjCpDTcDnXB6MmGTRqNjlu3+i/x4BnlswBwp
-         4bnlvs71Vw800QB1wWmqVGpBZ/agiS3yGFCnwACiHgguSk7TlsG0af1kyjNZsYWTjgbd
-         hXlw==
-X-Forwarded-Encrypted: i=1; AJvYcCVQM2q3qHNWaC7yaqxLz1Z0J5JN0bYEk9M/ayTfsbjIFRzNfGfgs4VDGXmUHw6CKlxV6x8=@vger.kernel.org, AJvYcCVR/mlqm7KzAiQNLMvpUBns5EGlag6gvHxX6TaLi93q3LFmHkTWbxyrTG3sBhybj95XatPW5BLrLm4Y2bzb@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx6PO8/jIkoSTecHQE8bqkRrPRCfhQnxSs+o2NEzlz2lZYOuz8D
-	U5cPdgkOlwc+X9QN5jS+YqjBumrUEPeGdUMEvjqsYksbpLZg4J3yfW5Tb3uytJFSJxvha2ezMGU
-	8fvV64+tC9IL+wbBaONO3IyfO3t/zhvI=
-X-Gm-Gg: ASbGncuC7ttzyNWBneCQ0M6W7jWII9TFohqc9giUFcIC6Bw7G71dsN8VA91IqXtRl5I
-	8DNTQR5GVooKAKt75lkqqphO9laBfs96SGvHzxPjudD4YflnR/Wa2H/xyKxNmmKvOzBRVK0ozhE
-	Ibq50A1Y+eFMD9bbJ5QDHhfjsXFygjYelKI4FP44ounUdnZ0hwIvlnsDXA+xcrRy/zXAi9Cbc9P
-	7aDz6IZuZWTKDLa4EKKIz5mT93dw4J/9x3TuFBrOiT18FI=
-X-Google-Smtp-Source: AGHT+IGFOniBjmATFa5PgurgWfkgChIIWQF4xndns27DvuDCapJKWzARsy+Zv8ucWc8WO2SKnbyOoOZEC871jCzRBbY=
-X-Received: by 2002:a17:907:97c5:b0:ae3:67c7:54a6 with SMTP id
- a640c23a62f3a-af9401bb6b4mr15306166b.34.1754061420974; Fri, 01 Aug 2025
- 08:17:00 -0700 (PDT)
+	s=arc-20240116; t=1754061545; c=relaxed/simple;
+	bh=MJt1O5PgGCgdKLxzhcyGpMTDCKhMZs8K5bnjRub5LYs=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=CgqMRf6uqcsk7dK1LQirfTfkC8WDwMDyzQLcxw6aEcx/Yz1DzPOy08PiqlrxAizqEuF1sgrMwPCix3kYJcmPsTA1moE0xVHls5VYGdwRKmu+VrJQEAUOJ6n90EpYml2vL4mrPfIy84bfufnYGZcC4cZXs65NRGQ65t/87WOSji0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf09.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay06.hostedemail.com (Postfix) with ESMTP id 6FC801139E9;
+	Fri,  1 Aug 2025 15:19:01 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf09.hostedemail.com (Postfix) with ESMTPA id 98F5120024;
+	Fri,  1 Aug 2025 15:18:58 +0000 (UTC)
+Date: Fri, 1 Aug 2025 11:19:19 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, Masami
+ Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
+ <song@kernel.org>, KP Singh <kpsingh@kernel.org>
+Subject: Re: [PATCH] btf: Simplify BTF logic with use of __free(btf_put)
+Message-ID: <20250801111919.13c0620e@gandalf.local.home>
+In-Reply-To: <CAADnVQLFLSwrnHKZUtUpwQ1tst71AfYCcbbtK2haxF=R9StpSw@mail.gmail.com>
+References: <20250801071622.63dc9b78@gandalf.local.home>
+	<CAADnVQLky+R-tfkGaDo-R_-tJ8E3bmWz8Ug7etgTKsCpfXTSKw@mail.gmail.com>
+	<20250801110705.373c69b4@gandalf.local.home>
+	<CAADnVQLFLSwrnHKZUtUpwQ1tst71AfYCcbbtK2haxF=R9StpSw@mail.gmail.com>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <a74ec917c2e3bf4d756a5ce2745f0f0a2970805a.camel@gmail.com>
- <20250801114613.610070-1-fossdd@pwned.life> <DBR2SLKGO5OO.276GT83Y3D6DA@pwned.life>
-In-Reply-To: <DBR2SLKGO5OO.276GT83Y3D6DA@pwned.life>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 1 Aug 2025 08:16:48 -0700
-X-Gm-Features: Ac12FXxqZjxWs6k4GSfDil-aZokpSz36tVU27Eqtg8mMKeKCtpe2poPJpM6wpzc
-Message-ID: <CAADnVQKfTgPmuOcGHsQyLdCeVi9hucyQVkfZLeAxDrSbc8_Xmg@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: avoid possible use of uninitialized mod_len
-To: Achill Gilgenast <fossdd@pwned.life>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Viktor Malik <vmalik@redhat.com>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Song Liu <song@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: uh8zk8moytwqhj6gqjk57ygys15kzhr8
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: 98F5120024
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1/C2s2qNC4iOOfdt7rTFaR3WFgLRxItvbM=
+X-HE-Tag: 1754061538-639185
+X-HE-Meta: U2FsdGVkX1+Qh4hk+SHCZoUjeaYpTw1e78S+soH8knU75LmgkQQkfwOhuLesDj8onmziu/yPQb5SiRixNA/AoOjU2YoHOTaXWFHkwokG7hoRNbHdhKHZ72XCxiNJJDi83wAjHtZx/CeF4x2JvxB3DQ7fGofSjvHQPjJQ6RcTJIUUz7z1Hrb5oynfKt034Cd6nf53OCIW915lJ+urdM6zdVFBqke6OFSvpV1BxFNKhiRoYQeV4WBUKhbciHPmVJ+0mXtSwhNNoQpzyZYJkM8QK3PJUh51Hn4Hozt8RFtib1GOY5YkrzmmIp3at5zaQ0VYGGX8QmM14mH6DxufsZcYrdFvu1iBwBmj
 
-On Fri, Aug 1, 2025 at 5:05=E2=80=AFAM Achill Gilgenast <fossdd@pwned.life>=
- wrote:
->
-> On Fri Aug 1, 2025 at 1:46 PM CEST, Achill Gilgenast wrote:
-> > If not fn_name, mod_len does never get initialized which fails now with
-> > gcc15 on Alpine Linux edge:
-> >
-> >       libbpf.c: In function 'find_kernel_btf_id.constprop':
-> >       libbpf.c:10100:33: error: 'mod_len' may be used uninitialized [-W=
-error=3Dmaybe-uninitialized]
-> >       10100 |                 if (mod_name && strncmp(mod->name, mod_na=
-me, mod_len) !=3D 0)
-> >             |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~~~~~~~~~~
-> >       libbpf.c:10070:21: note: 'mod_len' was declared here
-> >       10070 |         int ret, i, mod_len;
-> >             |                     ^~~~~~~
-> >
-> > Signed-off-by: Achill Gilgenast <fossdd@pwned.life>
-> > Acked-by: Yonghong Song <yonghong.song@linux.dev>
-> > Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-> > Link: https://lore.kernel.org/bpf/20250729094611.2065713-1-fossdd@pwned=
-.life/
->
-> Oops, the subject should've been v2. I forgot to pass -v2 to git
-> send-email.
+On Fri, 1 Aug 2025 08:12:08 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-No. It was already applied.
+> 
+> You can use it in kernel/trace/trace_output.c, of course,
+
+I guess that means I should just use the DEFINE_FREE() in that file
+directly and not in the btf.h header file?
+
+> but I really think it's a step back in maintainability.
+> All this cleanup.h is not a silver bullet. It needs to be used sparingly.
+
+I have my reservations about the cleanup.h code too. But the more I use it,
+the more I like it. My biggest worry is guard() leak. That is, having a
+lock or interrupt/preemption disabled for longer than they need to be,
+because code was added at the end of the function after the protection is
+needed.
+
+-- Steve
 
