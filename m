@@ -1,275 +1,146 @@
-Return-Path: <bpf+bounces-64875-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64876-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97F78B17FA7
-	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 11:50:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2DD7B17FEB
+	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 12:08:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59CC03AD6DA
-	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 09:50:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5249A1C20B42
+	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 10:09:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85680235355;
-	Fri,  1 Aug 2025 09:50:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8810F233155;
+	Fri,  1 Aug 2025 10:08:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38A30231A51;
-	Fri,  1 Aug 2025 09:50:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B186C1C3306
+	for <bpf@vger.kernel.org>; Fri,  1 Aug 2025 10:08:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754041806; cv=none; b=WU66GBwlsgmrRTNU3+EoimnuaebFENiHzxZy0htM4bMoimZf7xJwEmElhB7FU/92yMfaIZdo0aFPqlWkEJmUgbUq3qqvNZSO0pGA1Pbtz3R3y5Pb7TzslSUGtVqOBnqgOlusb3F47GOxM7sGDElNijVoOvevHL5pFKkZbGw4jx8=
+	t=1754042918; cv=none; b=rppHmodkUI3pjRppa1S7IDGj32pBw5PhcB92WcUF98abpSWdyrmSHRhRd07dBdD/72L9Dj0rcC4e7ApIhuj19QwbRwmSESCho5gsAr5DAibjMyIOa2XcW4g//2Ir50krW+IXIEkCMkxvKI55euhP/AjSNIjcSRVahlYK2h4z/bA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754041806; c=relaxed/simple;
-	bh=+8YKkvy7AZVkeSk4edfgOVhSuHUD6b2Rg/Zla9A+Jkc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=MCmHxqgij/R+FrmvIs+bafCPINNDE9M9Bi585TWleZ/t+ZTlPxSiV8tpIIE9xGxRAhshW4y+ATdpQwEAdgxM/zNTG1YljKMCYifC+0Fj2IHDF19hce6EWuZnUycrcx4WA4u3JXNYfGfOP8CLTMhoEhAMrT42Gxiz9YGUvYq668o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8E059150C;
-	Fri,  1 Aug 2025 02:49:55 -0700 (PDT)
-Received: from J2N7QTR9R3 (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 268A03F66E;
-	Fri,  1 Aug 2025 02:50:01 -0700 (PDT)
-Date: Fri, 1 Aug 2025 10:49:56 +0100
-From: Mark Rutland <mark.rutland@arm.com>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Steven Rostedt <rostedt@kernel.org>, Florent Revest <revest@google.com>,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Menglong Dong <menglong8.dong@gmail.com>,
-	Naveen N Rao <naveen@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
-	Andy Chiu <andybnac@gmail.com>,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>
-Subject: Re: [RFC 00/10] ftrace,bpf: Use single direct ops for bpf trampolines
-Message-ID: <aIyNOd18TRLu8EpY@J2N7QTR9R3>
+	s=arc-20240116; t=1754042918; c=relaxed/simple;
+	bh=k00Wu+AKjQQdOE/pjpz5y5D2HK7NNRH2IVBzpOeN6yo=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=J8wh4UHKnmy29O5/nNMQv5nYg24ygAhns5IIuS99nwoiJFAXzpw8baREQ+89IWi80CG8V8H/fGnOTA0DW2sApu76JczZWqG+PUSADRpc/IEksc7DZ+xXRs69p/m2lCKm0bq6Jrgg7/0zXZHfmYKuFDQ1DXG5CGdscaVJ5cKtxIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-87c7aacf746so107334839f.3
+        for <bpf@vger.kernel.org>; Fri, 01 Aug 2025 03:08:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754042916; x=1754647716;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7w7rtn71IA3v6fWvnpRTNyOOQWiNby/MER9Gaoys718=;
+        b=eN13Vr0X492xHT0tJ5cZ7ZMwrGm16dJEKBDBkIGO+Ko23vZ3LvwDo3Cx7LBWMusq+v
+         +XnSgqRuHpaL/FJvUljZFUCFR2TDqD4wtwOlEUr198L4EmKBt9cOCZXzVf4Lu54ppvVE
+         u4OXK1KufH7wuskQWXuub6srgXL0uF7Jy+Obr7oG8yK3j4IeXFNYN5jW2TiRVrwfW/lO
+         IXb02qf+UDj8y43G6FuhKqmoSUNzhyPC6qUkmbrsf/N3Sx1thYpZjzvVAbzLca+dOl0q
+         7SVCgZ3GfFyaCC73ZApcwa3Moll7fojPn88As9UK7j+HgUyrPRkLojl7+nt7EFqwR9UT
+         w4yA==
+X-Forwarded-Encrypted: i=1; AJvYcCW4B8YfZTXO/RrJv9MZqVr4QSX+5xCwqWwdSfcEg9Y8valgzjd0EFlqA5L1hZwJI0GrPQ4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyETbQd7yu6XjDOcqbA9SrBYEZxW3M6r8et4xuR05Moj+ChQxlZ
+	+6IohcdlALnMAPSnBXj06dWq6aVsd2Xxqk43uEIQBBGfWZEz38ivBx0BAvHqng2NO439D4/Lvfq
+	ABSfXiV7eNOnrIz2v3B4fPeGIXYkzkdw7VfzxN5zG0B1SKDl+BJJuxBIImS8=
+X-Google-Smtp-Source: AGHT+IEcCOZ1M5lbEw3vt0apHj5RxEq0/i9/RDLxOMwkyUCYyuVOVJgI+Nmoj/lU+criLegiKyakG8fk/nWWAYPgvsN+vbwhBNEW
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aIn_12KHz7ikF2t1@krava>
+X-Received: by 2002:a05:6e02:178d:b0:3e3:fd04:5768 with SMTP id
+ e9e14a558f8ab-3e40d65443cmr40280935ab.5.1754042915829; Fri, 01 Aug 2025
+ 03:08:35 -0700 (PDT)
+Date: Fri, 01 Aug 2025 03:08:35 -0700
+In-Reply-To: <688b8332.a00a0220.26d0e1.0044.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <688c9223.a00a0220.26d0e1.0068.GAE@google.com>
+Subject: Re: [syzbot] [mm?] WARNING in trace_suspend_resume
+From: syzbot <syzbot+99d4fec338b62b703891@syzkaller.appspotmail.com>
+To: Liam.Howlett@oracle.com, akpm@linux-foundation.org, andrii@kernel.org, 
+	ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net, david@redhat.com, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, lorenzo.stoakes@oracle.com, 
+	mhocko@suse.com, rppt@kernel.org, surenb@google.com, 
+	syzkaller-bugs@googlegroups.com, vbabka@suse.cz
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Jul 30, 2025 at 01:19:51PM +0200, Jiri Olsa wrote:
-> On Tue, Jul 29, 2025 at 06:57:40PM +0100, Mark Rutland wrote:
-> > Hi Jiri,
-> > 
-> > [adding some powerpc and riscv folk, see below]
-> > 
-> > On Tue, Jul 29, 2025 at 12:28:03PM +0200, Jiri Olsa wrote:
-> > > hi,
-> > > while poking the multi-tracing interface I ended up with just one
-> > > ftrace_ops object to attach all trampolines.
-> > > 
-> > > This change allows to use less direct API calls during the attachment
-> > > changes in the future code, so in effect speeding up the attachment.
-> > 
-> > How important is that, and what sort of speedup does this result in? I
-> > ask due to potential performance hits noted below, and I'm lacking
-> > context as to why we want to do this in the first place -- what is this
-> > intended to enable/improve?
-> 
-> so it's all work on PoC stage, the idea is to be able to attach many
-> (like 20,30,40k) functions to their trampolines quickly, which at the
-> moment is slow because all the involved interfaces work with just single
-> function/tracempoline relation
+syzbot has found a reproducer for the following issue on:
 
-Do you know which aspect of that is slow? e.g. is that becuase you have
-to update each ftrace_ops independently, and pay the synchronization
-overhead per-ops?
+HEAD commit:    f2d282e1dfb3 Merge tag 'bitmap-for-6.17' of https://github..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11709cf0580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c686e0c98d241433
+dashboard link: https://syzkaller.appspot.com/bug?extid=99d4fec338b62b703891
+compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15e0e2a2580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12a439bc580000
 
-I ask because it might be possible to do some more batching there, at
-least for architectures like arm64 that use the CALL_OPS approach.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/98a89b9f34e4/non_bootable_disk-f2d282e1.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/25cab46afcee/vmlinux-f2d282e1.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/77cd04442f1b/zImage-f2d282e1.xz
 
-> there's ongoing development by Menglong [1] to organize such attachment
-> for multiple functions and trampolines, but still at the end we have to use
-> ftrace direct interface to do the attachment for each involved ftrace_ops 
-> 
-> so at the point of attachment it helps to have as few ftrace_ops objects
-> as possible, in my test code I ended up with just single ftrace_ops object
-> and I see attachment time for 20k functions to be around 3 seconds
-> 
-> IIUC Menglong's change needs 12 ftrace_ops objects so we need to do around
-> 12 direct ftrace_ops direct calls .. so probably not that bad, but still
-> it would be faster with just single ftrace_ops involved
-> 
-> [1] https://lore.kernel.org/bpf/20250703121521.1874196-1-dongml2@chinatelecom.cn/
-> 
-> > 
-> > > However having just single ftrace_ops object removes direct_call
-> > > field from direct_call, which is needed by arm, so I'm not sure
-> > > it's the right path forward.
-> > 
-> > It's also needed by powerpc and riscv since commits:
-> > 
-> >   a52f6043a2238d65 ("powerpc/ftrace: Add support for DYNAMIC_FTRACE_WITH_DIRECT_CALLS")
-> >   b21cdb9523e5561b ("riscv: ftrace: support direct call using call_ops")
-> > 
-> > > Mark, Florent,
-> > > any idea how hard would it be to for arm to get rid of direct_call field?
-> > 
-> > For architectures which follow the arm64 style of implementation, it's
-> > pretty hard to get rid of it without introducing a performance hit to
-> > the call and/or a hit to attachment/detachment/modification. It would
-> > also end up being a fair amount more complicated.
-> > 
-> > There's some historical rationale at:
-> > 
-> >   https://lore.kernel.org/lkml/ZfBbxPDd0rz6FN2T@FVFF77S0Q05N/
-> > 
-> > ... but the gist is that for several reasons we want the ops pointer in
-> > the callsite, and for atomic modification of this to switch everything
-> > dependent on that ops atomically, as this keeps the call logic and
-> > attachment/detachment/modification logic simple and pretty fast.
-> > 
-> > If we remove the direct_call pointer from the ftrace_ops, then IIUC our
-> > options include:
-> > 
-> > * Point the callsite pointer at some intermediate structure which points
-> >   to the ops (e.g. the dyn_ftrace for the callsite). That introduces an
-> >   additional dependent load per call that needs the ops, and introduces
-> >   potential incoherency with other fields in that structure, requiring
-> >   more synchronization overhead for attachment/detachment/modification.
-> > 
-> > * Point the callsite pointer at a trampoline which can generate the ops
-> >   pointer. This requires that every ops has a trampoline even for
-> >   non-direct usage, which then requires more memory / I$, has more
-> >   potential failure points, and is generally more complicated. The
-> >   performance here will vary by architecture and platform, on some this
-> >   might be faster, on some it might be slower.
-> > 
-> >   Note that we probably still need to bounce through an intermediary
-> >   trampoline here to actually load from the callsite pointer and
-> >   indirectly branch to it.
-> > 
-> > ... but I'm not really keen on either unless we really have to remove 
-> > the ftrace_ops::direct_call field, since they come with a substantial
-> > jump in complexity.
-> 
-> ok, that sounds bad.. thanks for the details
-> 
-> Steven, please correct me if/when I'm wrong ;-)
-> 
-> IIUC in x86_64, IF there's just single ftrace_ops defined for the function,
-> it will bypass ftrace trampoline and call directly the direct trampoline
-> for the function, like:
-> 
->    <foo>:
->      call direct_trampoline
->      ...
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+99d4fec338b62b703891@syzkaller.appspotmail.com
 
-More details at the end of this reply; arm64 can sometimes do this, but
-not always, and even when there's a single ftrace_ops we may need to
-bounce through a common trampoline (which can still be cheap).
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 4155 at mm/highmem.c:622 kunmap_local_indexed+0x20c/0x224 mm/highmem.c:622
+Modules linked in:
+Kernel panic - not syncing: kernel: panic_on_warn set ...
+CPU: 0 UID: 0 PID: 4155 Comm: syz.1.17 Not tainted 6.16.0-syzkaller #0 PREEMPT 
+Hardware name: ARM-Versatile Express
+Call trace: 
+[<80201a24>] (dump_backtrace) from [<80201b20>] (show_stack+0x18/0x1c arch/arm/kernel/traps.c:257)
+ r7:00000000 r6:8281f77c r5:00000000 r4:8224bc00
+[<80201b08>] (show_stack) from [<8021fb00>] (__dump_stack lib/dump_stack.c:94 [inline])
+[<80201b08>] (show_stack) from [<8021fb00>] (dump_stack_lvl+0x54/0x7c lib/dump_stack.c:120)
+[<8021faac>] (dump_stack_lvl) from [<8021fb40>] (dump_stack+0x18/0x1c lib/dump_stack.c:129)
+ r5:00000000 r4:82a76d18
+[<8021fb28>] (dump_stack) from [<80202624>] (vpanic+0x10c/0x360 kernel/panic.c:440)
+[<80202518>] (vpanic) from [<802028ac>] (trace_suspend_resume+0x0/0xd8 kernel/panic.c:574)
+ r7:804be014
+[<80202878>] (panic) from [<802548c4>] (check_panic_on_warn kernel/panic.c:333 [inline])
+[<80202878>] (panic) from [<802548c4>] (get_taint+0x0/0x1c kernel/panic.c:328)
+ r3:8280c684 r2:00000001 r1:822326d8 r0:8223a0a0
+[<80254850>] (check_panic_on_warn) from [<80254a28>] (__warn+0x80/0x188 kernel/panic.c:845)
+[<802549a8>] (__warn) from [<80254ca8>] (warn_slowpath_fmt+0x178/0x1f4 kernel/panic.c:872)
+ r8:00000009 r7:82266338 r6:df985d14 r5:840d5400 r4:00000000
+[<80254b34>] (warn_slowpath_fmt) from [<804be014>] (kunmap_local_indexed+0x20c/0x224 mm/highmem.c:622)
+ r10:00000000 r9:ded86c30 r8:deb6caa4 r7:00a00000 r6:00000003 r5:840d5400
+ r4:ffefd000
+[<804bde08>] (kunmap_local_indexed) from [<8053ace8>] (__kunmap_local include/linux/highmem-internal.h:102 [inline])
+[<804bde08>] (kunmap_local_indexed) from [<8053ace8>] (move_pages_pte mm/userfaultfd.c:1457 [inline])
+[<804bde08>] (kunmap_local_indexed) from [<8053ace8>] (move_pages+0xb1c/0x1a00 mm/userfaultfd.c:1860)
+ r7:00a00000 r6:00000000 r5:8490d6ac r4:ffefb000
+[<8053a1cc>] (move_pages) from [<805c401c>] (userfaultfd_move fs/userfaultfd.c:1923 [inline])
+[<8053a1cc>] (move_pages) from [<805c401c>] (userfaultfd_ioctl+0x1254/0x2408 fs/userfaultfd.c:2046)
+ r10:8425d6c0 r9:df985e98 r8:00000001 r7:21000000 r6:00000000 r5:20000040
+ r4:8486d000
+[<805c2dc8>] (userfaultfd_ioctl) from [<8056c4d4>] (vfs_ioctl fs/ioctl.c:51 [inline])
+[<805c2dc8>] (userfaultfd_ioctl) from [<8056c4d4>] (do_vfs_ioctl fs/ioctl.c:552 [inline])
+[<805c2dc8>] (userfaultfd_ioctl) from [<8056c4d4>] (__do_sys_ioctl fs/ioctl.c:596 [inline])
+[<805c2dc8>] (userfaultfd_ioctl) from [<8056c4d4>] (sys_ioctl+0x130/0xba0 fs/ioctl.c:584)
+ r10:840d5400 r9:00000003 r8:8572d780 r7:20000040 r6:8572d780 r5:00000000
+ r4:c028aa05
+[<8056c3a4>] (sys_ioctl) from [<80200060>] (ret_fast_syscall+0x0/0x1c arch/arm/mm/proc-v7.S:67)
+Exception stack(0xdf985fa8 to 0xdf985ff0)
+5fa0:                   00000000 00000000 00000003 c028aa05 20000040 00000000
+5fc0: 00000000 00000000 002f6300 00000036 00000000 002f62d4 00000938 00000000
+5fe0: 7eb28780 7eb28770 000193dc 001321f0
+ r10:00000036 r9:840d5400 r8:8020029c r7:00000036 r6:002f6300 r5:00000000
+ r4:00000000
+Rebooting in 86400 seconds..
 
-> IF there are other ftrace_ops 'users' on the same function, we execute
-> each of them like:
-> 
->   <foo>:
->     call ftrace_trampoline
->       call ftrace_ops_1->func
->       call ftrace_ops_2->func
->       ...
 
-More details at the end of this reply; arm64 does essentially the same
-thing via the ftrace_list_ops and ftrace_ops_list_func().
-
-> with our direct ftrace_ops->func currently using ftrace_ops->direct_call
-> to return direct trampoline for the function:
-> 
-> 	-static void call_direct_funcs(unsigned long ip, unsigned long pip,
-> 	-                             struct ftrace_ops *ops, struct ftrace_regs *fregs)
-> 	-{
-> 	-       unsigned long addr = READ_ONCE(ops->direct_call);
-> 	-
-> 	-       if (!addr)
-> 	-               return;
-> 	-
-> 	-       arch_ftrace_set_direct_caller(fregs, addr);
-> 	-}
-
-More details at the end of this reply; at present, when an instrumented
-function has a single ops, arm64 can call ops->direct_call directly from
-the common trampoline, and only needs to fall back to
-call_direct_funcs() when there are multiple ops.
-
-> in the new changes it will do hash lookup (based on ip) for the direct
-> trampoline we want to execute:
-> 
-> 	+static void call_direct_funcs_hash(unsigned long ip, unsigned long pip,
-> 	+                                  struct ftrace_ops *ops, struct ftrace_regs *fregs)
-> 	+{
-> 	+       unsigned long addr;
-> 	+
-> 	+       addr = ftrace_find_rec_direct(ip);
-> 	+       if (!addr)
-> 	+               return;
-> 	+
-> 	+       arch_ftrace_set_direct_caller(fregs, addr);
-> 	+}
-> 
-> still this is the slow path for the case where multiple ftrace_ops objects use
-> same function.. for the fast path we have the direct attachment as described above
-> 
-> sorry I probably forgot/missed discussion on this, but doing the fast path like in
-> x86_64 is not an option in arm, right?
-
-On arm64 we have a fast path, BUT branch range limitations means that we
-cannot always branch directly from the instrumented function to the
-direct func with a single branch instruction. We use ops->direct_call to
-handle that case within a common trampoline, which is significantly
-cheaper that iterating over the ops and/or looking up the direct func
-from a hash.
-
-With CALL_OPS, we place a pointer to the ops immediately before the
-instrumented function, and have the instrumented function branch to a
-common trampoline which can load that pointer (and can then branch to
-any direct func as necessary).
-
-The instrumented function looks like:
-
-	# Aligned to 8 bytes
-	func - 8:
-		< pointer to ops >
-	func:
-		BTI		// optional
-		MOV	X9, LR	// save original return address
-		NOP		// patched to `BL ftrace_caller`
-	func_body:
-
-... and then in ftrace_caller we can recover the 'ops' pointer with:
-
-	BIC	<tmp>, LR, 0x7					// align down (skips BTI)
-	LDR	<ops>, [<tmp>, #-16]				// load ops pointer
-
-	LDR	<direct>, [<ops>, #FTRACE_OPS_DIRECT_CALL]	// load ops->direct_call
-	CBNZ	<direct>, ftrace_caller_direct			// if !NULL, make direct call
-
-	< fall through to non-direct func case here >
-
-Having the ops (and ops->direct_call) means that getting to the direct
-func is significantly cheaper than having to lookup the direct func via
-the hash.
-
-Where an instrumented function has a single ops, this can get to the
-direct func with a low constant overhead, significantly cheaper than
-looking up the direct func via the hash.
-
-Where an instrumented function has multiple ops, the ops pointer is
-pointed at a common ftrace_list_ops, where ftrace_ops_list_func()
-iterates over all the other relevant ops.
-
-Mark.
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
