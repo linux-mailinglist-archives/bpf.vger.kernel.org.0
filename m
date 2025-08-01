@@ -1,119 +1,158 @@
-Return-Path: <bpf+bounces-64890-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64891-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9447B182A9
-	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 15:45:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A8ACB18433
+	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 16:50:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E675458787E
-	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 13:45:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7161C6264DE
+	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 14:50:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E38FA35977;
-	Fri,  1 Aug 2025 13:45:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EAE326E6E3;
+	Fri,  1 Aug 2025 14:50:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nXyaf3ov"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HYkklHo/"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59000C120
-	for <bpf@vger.kernel.org>; Fri,  1 Aug 2025 13:45:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FA7F26D4F9
+	for <bpf@vger.kernel.org>; Fri,  1 Aug 2025 14:50:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754055919; cv=none; b=izYyT/ECY8CuLg+O9xhzXMuzqXzSZ1nwRwQ7fH0khsWeHKCdcGug4HtJOSIDOVjPgpwAI+BDjvO/Y8TKXObQXtKasfRtF9i0bArS1um80dD7F0QystRsBp78ATcN6JmllONudYi8hVBbDmZIlv6scKYvJBrGrLJEby3HD5rUweE=
+	t=1754059813; cv=none; b=HD8h9rcW5M+QMJX6sS4Mk2GRaHDZay7rI1YgoyUbqz3oiiEAneUnw2fyRn3YZ9Ci5Fqm08oJtszEfxeHlbZgVb4MBej3HRPNP+7SX3rq57wEQz9KuWLFjBgyQVW5HIImbltD+mmAS7giwlO6A5LhJ5FjqVrcI/iBfo9ac5b67tU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754055919; c=relaxed/simple;
-	bh=mxge1jlAUG/BZkEXjp9pgZDdbKB/vSC7My7DMAp18EQ=;
+	s=arc-20240116; t=1754059813; c=relaxed/simple;
+	bh=3x2WSU5tShhnaeGf2R++yN8NTbuM1u7Sz8hBqev70/M=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EzMEMTaKa0BmrPFJIzQBQa/wZHP26RXESFh8iHmTG3GbNjTrh5IuYadDwSWjJuni/62te6U6u9emXnlrspYRmP2qsDUe2BAVPF9iHdRNHghK6QVqaJRWq5jL+DCsHIGRwIrf0MPg3Z5I5GC6usgAR7wV+myvS6b62B9cce5Qtv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nXyaf3ov; arc=none smtp.client-ip=95.215.58.171
+	 In-Reply-To:Content-Type; b=ZZxhL6kysXeuWDq6hu/Qg+gxxM+qpwQemiLAU8s81WowRV+BvCbP+oUll9h8/QS+aVTC0h9WsmcinneJWVQAFgWBij+jy8vBHvrKjROFViaRy0AASFvDmZpeXgAz5wCwOwv5hxRdZRxAoNXQ+GuQXQKLqanzE1n5d4jjVguas1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HYkklHo/; arc=none smtp.client-ip=95.215.58.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <90775658-23ad-42cd-b75e-ecbb1b62fde5@linux.dev>
+Message-ID: <9bfa8866-a90f-41bf-8b22-bf704c01a2e5@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1754055914;
+	t=1754059798;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/H7/Ty3nv35C0axWz0MFUkj1hZQGQFCdJbwNOFbL/YM=;
-	b=nXyaf3ovQu5n6Sp5TcLmMNRfOEi71Vflf/j74jifWVN/pd6Dd/ujgE3N/h0+uBgN/j5kzv
-	TCci4zfjlhG8sq7hK373tm/LrMTRsgJ61O9jNU5dTMl28Qr2OOTvdvg1EiiM7inbzJffMw
-	RF/FdxCH8NiSL/0S1mhmYk8Ne3TqL3I=
-Date: Fri, 1 Aug 2025 21:45:06 +0800
+	bh=kK5yweiPTMZrq6GkWQNhJfrmVEH0GQuE8rqp8Hc+11k=;
+	b=HYkklHo/orcX7L1b93efOOUr9L5f8VGX6WzRJINCCLIfU8KTSoQBYkdgioQD6bjCsO2n2r
+	22aMtxQ5IpaRct2qlZhmyJsz9LdCMHizpmOwGN+mCm6hjzSgyWqNK2baTEwK2XpxLh00aw
+	6NDraVcYNGcDX5uiqd5o/zIyhz8m7Us=
+Date: Fri, 1 Aug 2025 07:49:53 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next 3/5] bpf: Report freplace attach failure
- reason via extended syscall
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Menglong Dong <menglong8.dong@gmail.com>
-References: <20250728142346.95681-1-leon.hwang@linux.dev>
- <20250728142346.95681-4-leon.hwang@linux.dev>
- <CAADnVQJ-wC5kpGZMzU5O7cd-m_4hKA-tjkAm42xEqh2Lu_v_hw@mail.gmail.com>
-Content-Language: en-US
+Subject: Re: [PATCH] tracing: Have unsigned int function args displayed as
+ hexadecimal
+Content-Language: en-GB
+To: Steven Rostedt <rostedt@goodmis.org>, LKML
+ <linux-kernel@vger.kernel.org>,
+ Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, bpf@vger.kernel.org,
+ Douglas Raillard <douglas.raillard@arm.com>
+References: <20250731193126.2eeb21c6@gandalf.local.home>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Leon Hwang <leon.hwang@linux.dev>
-In-Reply-To: <CAADnVQJ-wC5kpGZMzU5O7cd-m_4hKA-tjkAm42xEqh2Lu_v_hw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20250731193126.2eeb21c6@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
 
 
-On 2025/8/1 00:32, Alexei Starovoitov wrote:
-> On Mon, Jul 28, 2025 at 7:24 AM Leon Hwang <leon.hwang@linux.dev> wrote:
->>
->> This patch enables detailed error reporting when a freplace program fails
->> to attach to its target.
->>
->> By leveraging the extended 'bpf()' syscall with common attributes, users
->> can now retrieve the failure reason through the provided log buffer.
->>
->> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
->> ---
->>  kernel/bpf/syscall.c | 39 +++++++++++++++++++++++++++++++--------
->>  1 file changed, 31 insertions(+), 8 deletions(-)
->>
->> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
->> index ca7ce8474812..4d1f58b14a0a 100644
->> --- a/kernel/bpf/syscall.c
->> +++ b/kernel/bpf/syscall.c
->> @@ -3446,7 +3446,8 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
->>                                    int tgt_prog_fd,
->>                                    u32 btf_id,
->>                                    u64 bpf_cookie,
->> -                                  enum bpf_attach_type attach_type)
->> +                                  enum bpf_attach_type attach_type,
->> +                                  struct bpf_verifier_log *log)
-> 
-> Same issue as before.
-> Nack on adding new uapi for the sole purpose of freplace.
-> 
+On 7/31/25 4:31 PM, Steven Rostedt wrote:
+> From: Steven Rostedt <rostedt@goodmis.org>
+>
+> Most function arguments that are passed in as unsigned int or unsigned
+> long are better displayed as hexadecimal than normal integer. For example,
+> the functions:
+>
+> static void __create_object(unsigned long ptr, size_t size,
+> 				int min_count, gfp_t gfp, unsigned int objflags);
+>
+> static bool stack_access_ok(struct unwind_state *state, unsigned long _addr,
+> 			    size_t len);
+>
+> void __local_bh_disable_ip(unsigned long ip, unsigned int cnt);
+>
+> Show up in the trace as:
+>
+>      __create_object(ptr=-131387050520576, size=4096, min_count=1, gfp=3264, objflags=0) <-kmem_cache_alloc_noprof
+>      stack_access_ok(state=0xffffc9000233fc98, _addr=-60473102566256, len=8) <-unwind_next_frame
+>      __local_bh_disable_ip(ip=-2127311112, cnt=256) <-handle_softirqs
+>
+> Instead, by displaying unsigned as hexadecimal, they look more like this:
+>
+>      __create_object(ptr=0xffff8881028d2080, size=0x280, min_count=1, gfp=0x82820, objflags=0x0) <-kmem_cache_alloc_node_noprof
+>      stack_access_ok(state=0xffffc90000003938, _addr=0xffffc90000003930, len=0x8) <-unwind_next_frame
+>      __local_bh_disable_ip(ip=0xffffffff8133cef8, cnt=0x100) <-handle_softirqs
+>
+> Which is much easier to understand as most unsigned longs are usually just
+> pointers. Even the "unsigned int cnt" in __local_bh_disable_ip() looks
+> better as hexadecimal as a lot of flags are passed as unsigned.
+>
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-Got it.
+LGTM. But it seems some format issue. See below.
 
-> Patches 1 and 2 are fine, but must follow with patch(es) that
-> make common_attrs usable for existing commands like prog_load and btf_load.
-> We need to decide what to do when prog_load's log_buf conflicts
-> with common_attrs.log_buf.
-> I think it's ok if they both specified and are exactly the same.
-> If one of them is specified and another is zero it's also ok.
-> When they conflict it's an EINVAL or, maybe, EUSERS to make it distinct.
-> After that map_create cmd should adopt log and disambiguate all EINVAL-s
-> into human readable messages.
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
 
-Let me have a try.
+> ---
+>   kernel/trace/trace_output.c | 17 ++++++++++++++++-
+>   1 file changed, 16 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+> index 0b3db02030a7..b18393d66a7f 100644
+> --- a/kernel/trace/trace_output.c
+> +++ b/kernel/trace/trace_output.c
+> @@ -690,6 +690,12 @@ int trace_print_lat_context(struct trace_iterator *iter)
+>   }
+>   
+>   #ifdef CONFIG_FUNCTION_TRACE_ARGS
+> +
+> +static u32 btf_type_int(const struct btf_type *t)
+> +{
+> +	return *(u32 *)(t + 1);
+> +}
+> +
+>   void print_function_args(struct trace_seq *s, unsigned long *args,
+>   			 unsigned long func)
+>   {
+> @@ -701,6 +707,8 @@ void print_function_args(struct trace_seq *s, unsigned long *args,
+>   	struct btf *btf;
+>   	s32 tid, nr = 0;
+>   	int a, p, x;
+> +	int int_data;
+> +	u16 encode;
+>   
+>   	trace_seq_printf(s, "(");
+>   
+> @@ -744,7 +752,14 @@ void print_function_args(struct trace_seq *s, unsigned long *args,
+>   			trace_seq_printf(s, "0x%lx", arg);
+>   			break;
+>   		case BTF_KIND_INT:
+> -			trace_seq_printf(s, "%ld", arg);
+> +			/* Get the INT encodoing */
+> +			int_data = btf_type_int(t);
+> +                        encode = BTF_INT_ENCODING(int_data);
 
-Thanks,
-Leon
+See different identation between above 'int_data' and 'encode'. The same as below.
 
+> +                        /* Print unsigned ints as hex */
+> +                        if (encode & BTF_INT_SIGNED)
+> +				trace_seq_printf(s, "%ld", arg);
+> +                        else
+> +                                trace_seq_printf(s, "0x%lx", arg);
+>   			break;
+>   		case BTF_KIND_ENUM:
+>   			trace_seq_printf(s, "%ld", arg);
 
 
