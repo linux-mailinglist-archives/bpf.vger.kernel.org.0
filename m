@@ -1,81 +1,80 @@
-Return-Path: <bpf+bounces-64908-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64909-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6C31B18563
-	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 18:05:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C7B9B18568
+	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 18:07:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77208A838CF
-	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 16:05:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB81517F076
+	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 16:07:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1533428C5B1;
-	Fri,  1 Aug 2025 16:04:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0416128C5BE;
+	Fri,  1 Aug 2025 16:06:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hFZ6F8x4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YSWeQlVi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 508C226B756;
-	Fri,  1 Aug 2025 16:04:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48FA426C39B;
+	Fri,  1 Aug 2025 16:06:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754064298; cv=none; b=tknuGFaPgyr/QYRwSltjeeZsg26hfJaqXR+Y06fnWw8dLy9l21EBxKNXRiyokhe2zSAqy8/jA6Tii7X+n2qTqKWXF6zbzv6OxSaK5fkxhxKl6WPthDkGFznrKuO6NchqgUuHUqtjg9w+C3bx/2MMT157Ikhl5VrmgKH2vMN8lC8=
+	t=1754064414; cv=none; b=DtX1fp0aW3Eg9VmmLCX/c2Hz63XR+F5XVuLqURjCLhtMMbU7aQdeZZFYmXNP0uwey19rtw6HHEbLp+YkKUV5n8QA9iWfxFeStNAWrBopFLcPY0NP8TeOMsMtppSUOAUYS/VG1gle/+DpsfEVsdjmOwg4OvOS26+9DkTct0Qxt1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754064298; c=relaxed/simple;
-	bh=sT5+gILX75jE9nEmMDlp+Prtc6kUT11BXMxfsofp9Dk=;
+	s=arc-20240116; t=1754064414; c=relaxed/simple;
+	bh=BLBbGDOgRCwdneiecp/lgqL24quNqRqqK+Dryg8GYHQ=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=rh9Hxqp/QtYYpP65ZI63TnlV61ElKwdnLuov+puL4o76Q0RmzhpqffMT9406lxDloh9VLkkqL2d7xQDd70LOGKwbJNLOyrjiyNYqYWese1kgLDrJd5F3dQ5E47Vdhs/DBQJMDZd3jTsT/nvMfK2I5eoqdRooXjsBiojbieUxHAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hFZ6F8x4; arc=none smtp.client-ip=209.85.214.170
+	 Content-Type:MIME-Version; b=iyeKvzeQOReoMLwMr1UpPXOOiekMyVNsO4BoPflUp83RvKguRBB931ouQLm4i7a8ujGkWnWZnquHsj45P8l70pgySQGtZyguwL8gjCHEJaw8O7cYn4RpzQr79fTAj8tyE62EXrmGYXCUtYz/3L68eaLZJC3TucipUfIh+dTq/+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YSWeQlVi; arc=none smtp.client-ip=209.85.216.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-24014cd385bso13677505ad.0;
-        Fri, 01 Aug 2025 09:04:57 -0700 (PDT)
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-320dfa8cfa3so1646786a91.3;
+        Fri, 01 Aug 2025 09:06:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754064296; x=1754669096; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1754064412; x=1754669212; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=sT5+gILX75jE9nEmMDlp+Prtc6kUT11BXMxfsofp9Dk=;
-        b=hFZ6F8x4MBQPVTN+dlewpvH4Atujj31xZ2jBomRycMAjhqNKfO4gdzk2MHslUuxl3O
-         BIYtHeygfhOEZKvBxHAJjpQWHcdrKRhbTaLDvVVW2ic78BzUUGxljrCZi0Zt6/f6XY2d
-         E/Tt9akdsHIae6J4ZIN+udiI2OixvmMaJ1suLz8ztndeY0BBA7p1cmsr9XTz2bhGScnS
-         sNCdaaFwQD0w4Xxq0LcouTPrZtMTQ+SpbjVGGkjVaXm2wYbWQXETsOz7NwJnCmisVKjd
-         yLwd1YdXo3t7suD3M6P9mR12vF3Cavyz1A+Yzh3cQU29edibQ0O4Qkk+ZSh08Xe5bgPJ
-         4V0w==
+        bh=BLBbGDOgRCwdneiecp/lgqL24quNqRqqK+Dryg8GYHQ=;
+        b=YSWeQlViz1fZZPFSf5iT/BrLFgmxukSzEsJbS61cFL7YrpaJbD0A6sNm3zxlrI/9L5
+         6Lp5riL0LdfVCRBO8WGe5NYI5uHCOnLYanDsPp0TkWa3CPQ8bt/I3cVlyicXdW/fA4bc
+         AOj5RJhurZlOwHldmqBktX82irL3bOXk17NyhzcepsSX9nuNINSh57bpg27QuKgItD4+
+         p4xP2xpKYyCbT9P+CXnn92xtqBvPADiEdTwFx1/CAOkIY9v5yjIC9jnpcGYY3FAmlQkx
+         p0tFeKIU9xXGHETPys5kgsWils+zEVMD8VILzGWN8TLVmeTZOshz0Q/yJzpdTT0Tq6oP
+         TUYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754064296; x=1754669096;
+        d=1e100.net; s=20230601; t=1754064412; x=1754669212;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=sT5+gILX75jE9nEmMDlp+Prtc6kUT11BXMxfsofp9Dk=;
-        b=bViqw+hEIHQktMfXtKEu1llDP5f+1DFgBmAzuFLp84DZt/avsCV/TZqFTjOWvI7qxB
-         kyabnYZVsDuF+2tuFUhroHS5MilUVwZJ3cWdFsC+vDO5KyFnBxrRRhBRPgsf9Uk7zAPX
-         ESKkur1Qbtd0hHorwLagn4RqSgqj1p2Wia2ckS6Jz10JJ3Y9xs5b/pxDfoo/WMAmdvJh
-         efpmxsh8dFD3f+0935BzDczFs1Byf7vTJwuWjltCR6QL2bg3iSsKs01kxBPlaKAG6Sc8
-         qzrM7UPy1gq0klHXS1PVN5QfYZm8Yrex75lHS0LXomiN2vCUZCCJVsn4bpsCsJrn1stX
-         TUYg==
-X-Forwarded-Encrypted: i=1; AJvYcCVuA4ZH+TNrFSac2FvfcCBorBtwoc+v4U44b5rxcX/Gv9In08mbvkBQiUwKhuKooWkwEDM=@vger.kernel.org, AJvYcCWqom99GPYP09DiLxhinAaX12Lnb4kR1ijdVmsL4B6HZAfKF0gLH0cGZzSSWTPCu89dvA2wQ5S/Q99NfaxsulW0@vger.kernel.org
-X-Gm-Message-State: AOJu0YxX7fmm5SVtK3JCExbr3fCL3mIQ1WmzDUjdDUgP7xZHl9/Uaw0Q
-	JeZ1qIPz4SGNasyb6e5y0ZypAWF9AXv9kclDBpAaUJtYi/4qcTH3kPEohBAQ8nnK
-X-Gm-Gg: ASbGnctWiAqI7mvYgOwJdS6PbMWQGBKWwK6bZziKd0MXTkkA/s79XRvWbXaQMnw26uO
-	l+ORcG17jZTl+uWxSxDUfDhI5Fea7EZfHCBa9Zcw+RPfhqBKlwvbBpCigOeVkpB1Y2G8S4gOZdJ
-	3Ym4NtcGDU68cyaD7Cv5bHFabiqDWw57KgNuq6NH43jGxyrhxP6S6XTQPL9SIb91Ggk2sUqrFz0
-	RXPF4NCDBP5NvJ83BlIMFywGWqMSuwTvEQrgzp1kL6JcS2L/dxhY0gFQF2X+170pnqSHrAJ1f/G
-	FuIA+jOJhiehM1RDdHo8dxg4IdU0unpAOwHHn5pkaRaOLEDkkGX686dRqJeEQtCfUc1Huby6bXm
-	nKdKCv7BKK2oeJK+BNKiJdojcuc0hNA==
-X-Google-Smtp-Source: AGHT+IHJIXdii0rMJAwRu8YRujpMl0HWhvsGcyk6u7NuEINtRVlgj2la7H3O2AZgdDxJNYOVVECIEg==
-X-Received: by 2002:a17:902:f705:b0:240:80f:228e with SMTP id d9443c01a7336-2424705d7c1mr669335ad.52.1754064296464;
-        Fri, 01 Aug 2025 09:04:56 -0700 (PDT)
+        bh=BLBbGDOgRCwdneiecp/lgqL24quNqRqqK+Dryg8GYHQ=;
+        b=Ov0fWBMiZCvvRcFHNojhwCv4IIVU0+bA20ZCYOgcuasq71gn5xKViYu2+gb7DAFyGO
+         Dr/HWs9Z3OEne8CcfXzKWk2IwG0F0pd3QtUr6SQzVytIkS3zL9bmhZgMYcUGA5+JuB85
+         P8m9qzw+V3hqfSP3koVcoHhl30VqzolKmLY5TdEf+sbPOmAt3+qykIaa9axXQnDYxZbw
+         LSFMibwQgi5u1vBXoI5B+CXqUI2AXHQGI70FLPvy4DZ8ur7VJ9cNZoYvWIvWlXkqqwv1
+         w51FQywFMDjlu1htLZRJh92tpy4pJdyDLx2dDrC6xa1MrmQBirQkRd3snwE4XNhoU8cI
+         maTw==
+X-Forwarded-Encrypted: i=1; AJvYcCX9PXMdIQS7Km1f3C9zm3BU/PjHJHDRsTQcxxQ5/vNQB3hn9Zqs4Viaj2I3f35qGIm7FDc=@vger.kernel.org, AJvYcCXvKL1osI3oxw0ZFA6t0bF2KqMblAypHgiv+/kJWdtMaCVMPjrMqG2AbFEy6/+GyVf8wMhluO5ojhASFpQj2dPd@vger.kernel.org
+X-Gm-Message-State: AOJu0YxRFDmPFCGeDNzrn+SPknYYY5U8khJLG7P9Oy/5BNIn7opU2kvV
+	uz30eWSr2NV7Nj0lX6ebcGvsev8G7sCGes6RrBkOMzcH5KvgiVFnu2OK
+X-Gm-Gg: ASbGncs9ZHQUOF+hlVDvHmoUVbInxwLC4VAIud2+/OFXilZcYm0YW0RrFKb2PRN8Ux/
+	Zu27koM/evwyDniOU+VkgpPNT3AYIt9hCJOvVLgiyZqVHuD8Jl+zOubbvrL2lXUNiOhnSn+rX7q
+	E3SUyIrH0x0Co9B+GCS+kxA+QitB8orJSs7kSjCsqR6gWPoz5tayLg64mVJnRXcRzih+mn8gUND
+	1N8MLsodiAb0n2eW7vlKFRR6kB+TkhYM9m5TVrxY3pLQ2W7B6u63g3y8vouI8I1eaNFLLhxtlDx
+	/JhE2/Vz0YTvYbKzBKL9PKlGyu5tD//buyMvUIlPx49pHNdai1xEsOo+IQAP/zJirhXhqVUitQ6
+	YFGxAW0sXeEncU7jofYyyJniw9UNxhw==
+X-Google-Smtp-Source: AGHT+IE5SK5KHSlfLB8JD7zCHmB/5KNe8gE6VFfLbNuBWEgWobeTX2hE4Dljm07wtgCeA3VeQqkSaA==
+X-Received: by 2002:a17:90b:1c10:b0:31e:d643:6cb9 with SMTP id 98e67ed59e1d1-321161dd4d0mr346222a91.1.1754064412260;
+        Fri, 01 Aug 2025 09:06:52 -0700 (PDT)
 Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b422bae3036sm4052572a12.45.2025.08.01.09.04.55
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31f63f0b04dsm7843547a91.25.2025.08.01.09.06.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Aug 2025 09:04:56 -0700 (PDT)
-Message-ID: <271c59f8837ed5a077aacc062d8c7e79712f75e0.camel@gmail.com>
-Subject: Re: [PATCH bpf 1/4] bpf: Check flow_dissector ctx accesses are
- aligned
+        Fri, 01 Aug 2025 09:06:51 -0700 (PDT)
+Message-ID: <772b48dcee4b6daaa0b7156b1a2d73e67cd08ee5.camel@gmail.com>
+Subject: Re: [PATCH bpf 2/4] bpf: Check netfilter ctx accesses are aligned
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: Paul Chaignon <paul.chaignon@gmail.com>, bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
@@ -83,10 +82,11 @@ Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
  Lau <martin.lau@linux.dev>, netfilter-devel@vger.kernel.org,  Pablo Neira
  Ayuso <pablo@netfilter.org>, Jozsef Kadlecsik <kadlec@netfilter.org>, Petar
  Penkov <ppenkov@google.com>,  Florian Westphal	 <fw@strlen.de>
-Date: Fri, 01 Aug 2025 09:04:52 -0700
-In-Reply-To: <cc1b036be484c99be45eddf48bd78cc6f72839b1.1754039605.git.paul.chaignon@gmail.com>
+Date: Fri, 01 Aug 2025 09:06:48 -0700
+In-Reply-To: <853ae9ed5edaa5196e8472ff0f1bb1cc24059214.1754039605.git.paul.chaignon@gmail.com>
 References: 
 	<cc1b036be484c99be45eddf48bd78cc6f72839b1.1754039605.git.paul.chaignon@gmail.com>
+	 <853ae9ed5edaa5196e8472ff0f1bb1cc24059214.1754039605.git.paul.chaignon@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
@@ -97,20 +97,15 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Fri, 2025-08-01 at 11:47 +0200, Paul Chaignon wrote:
-> flow_dissector_is_valid_access doesn't check that the context access is
-> aligned. As a consequence, an unaligned access within one of the exposed
-> field is considered valid and later rejected by
-> flow_dissector_convert_ctx_access when we try to convert it.
+On Fri, 2025-08-01 at 11:48 +0200, Paul Chaignon wrote:
+> Similarly to the previous patch fixing the flow_dissector ctx accesses,
+> nf_is_valid_access also doesn't check that ctx accesses are aligned.
+> Contrary to flow_dissector programs, netfilter programs don't have
+> context conversion. The unaligned ctx accesses are therefore allowed by
+> the verifier.
 >=20
-> The later rejection is problematic because it's reported as a verifier
-> bug with a kernel warning and doesn't point to the right instruction in
-> verifier logs.
->=20
-> Fixes: d58e468b1112 ("flow_dissector: implements flow dissector BPF hook"=
-)
-> Reported-by: syzbot+ccac90e482b2a81d74aa@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=3Dccac90e482b2a81d74aa
+> Fixes: fd9c663b9ad6 ("bpf: minimal support for programs hooked into netfi=
+lter framework")
 > Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
 > ---
 
