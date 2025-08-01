@@ -1,263 +1,145 @@
-Return-Path: <bpf+bounces-64927-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64928-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4BD5B18852
-	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 22:51:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E3D5B18866
+	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 22:55:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D09717003C
-	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 20:51:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE0AA3AEADA
+	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 20:55:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C268233715;
-	Fri,  1 Aug 2025 20:51:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vCGIGBaL"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 235D928CF6D;
+	Fri,  1 Aug 2025 20:55:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DD411EA65
-	for <bpf@vger.kernel.org>; Fri,  1 Aug 2025 20:51:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44CA01A01C6;
+	Fri,  1 Aug 2025 20:55:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754081487; cv=none; b=tEnEXDo1XK3+b+KuudCQvAkAuejzyMRn0E32pkS1qHfYF7Dx0W+PwJ+xQlAoSABPqEZF6JOSkJGk88ScsW5HTMv5Sh3YLKiiaMhXWH7ub5l+MQ1m5pIWCVTPAt8FTRMfaXh25UJNcAUl9C6WOK8VrZL4x1djqDpbTTx64V1KxXs=
+	t=1754081746; cv=none; b=rqEp8MEHTNg9mvefd1QcQKjkejGvlg6EpBcW9s613paSRqb+3B8e17R8RrRANV082YpqaIwu3mp3Vn4VMG9a/kxNr0dMoCwudPYr1tFyqWgIjK5DcAeqyyPXMloax50YyB9aPKt6h3cPJKRjEavSfAKvZGt670y3HOf123Tmg8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754081487; c=relaxed/simple;
-	bh=xZY6tZ/JyKDsNBQGe75fO8GtzU+6bYkqRIj9ncMVh/I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kAYb+wcNlJzNQOz0ZyJ5UGxDm9fLbUystd2mdST5kVij349eXNuNtfKzy8dvtyUIXur+PiL9epop2IeAHl5/veqRxVswDBYLoeVD/PX53uGvhZUBC1APVj2RZY5qNkBfLEsQPLFjwnZHi4tGHcnPDTJNggIFYe1pM6HTNnF0IS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vCGIGBaL; arc=none smtp.client-ip=91.218.175.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <3dcf7a0d-4a65-43d9-8fe8-34c7e0e20d62@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1754081473;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=m+9hVMDZmK83QyLC/NMYHf69dl60DSRclAxc+B/DOOw=;
-	b=vCGIGBaLufM1ORltm6UV0QOakyJyKdwMXieFD/FxFUZEDxnV4xBivpR9iHMoqm+cK8ZbfH
-	tJaaBSEHu15znf4CUXBjmwOhGHZgPDSJZYeuBiwweZNH50zK0iBxikr4lyr0iplQAZIxZU
-	YLr9Eoc0EVcJ60S2yfCNIQGw2b/X7Ck=
-Date: Fri, 1 Aug 2025 13:51:06 -0700
+	s=arc-20240116; t=1754081746; c=relaxed/simple;
+	bh=YKoSvIfIZ7AfnVI0xRJuSnbZ0NUlNJsWfV+lTb4X1ME=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=RtCiv1M8Jq3E2f3wdjNUZ7SO12G3El1VhJ5ozsqJhIGF1lS46B/y4w9M4ydR1M6/5+Jd550h4oSHeFbX7uT3eIBO9ihooQsuPzexxmhosUqG11Vf4wiUNFpk0tOu6vqA5b2304jHoYaqs9aTS7b+Uw3JSMPr6YgYq0RwKcyg25U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf06.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay10.hostedemail.com (Postfix) with ESMTP id 52F62C02E9;
+	Fri,  1 Aug 2025 20:55:42 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf06.hostedemail.com (Postfix) with ESMTPA id 455F82000F;
+	Fri,  1 Aug 2025 20:55:40 +0000 (UTC)
+Date: Fri, 1 Aug 2025 16:56:01 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, bpf@vger.kernel.org, Douglas Raillard 
+ <douglas.raillard@arm.com>, Yonghong Song <yonghong.song@linux.dev>, Martin
+ KaFai Lau <martin.lau@linux.dev>
+Subject: [PATCH v3] tracing: Have unsigned int function args displayed as
+ hexadecimal
+Message-ID: <20250801165601.7770d65c@gandalf.local.home>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH dwarves v2] btf_encoder: group all function ELF syms by
- function name
-To: Alan Maguire <alan.maguire@oracle.com>, olsajiri@gmail.com,
- dwarves@vger.kernel.org
-Cc: bpf@vger.kernel.org, acme@kernel.org, andrii@kernel.org, ast@kernel.org,
- eddyz87@gmail.com, menglong8.dong@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, kernel-team@meta.com
-References: <20250729020308.103139-1-isolodrai@meta.com>
- <79a329ef-9bb3-454e-9135-731f2fd51951@oracle.com>
- <647eb60a-c8f2-4ad3-ad98-b49b6e713402@oracle.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-In-Reply-To: <647eb60a-c8f2-4ad3-ad98-b49b6e713402@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Queue-Id: 455F82000F
+X-Stat-Signature: 4rgkmjttq7tus4ozhrsxm3tdjtfistk7
+X-Rspamd-Server: rspamout06
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1+toM6PJ9IUUVVrvcyW7KbjTmf3peylLOQ=
+X-HE-Tag: 1754081740-584668
+X-HE-Meta: U2FsdGVkX19Fm/hcv1qlHgsYskUR6qWw97KTHYFsmgwN52SRvUQc5kPI93X08cMuGbEtEF+3ByRMMXt7Nxc/YgO6of4iMd4wFR5zdfCqzAsmm34El8qxMZfVdJ/GCdGl5cvQkAf285LnVZFTiQDpoTqdl961kG1YXBR1gSezBFe8zfUOrct9E/LLqRxkolXa30B9axNSwGDNJPD6r40GEyvOgs88jMP2zfuRnrHp8GE+eG4clHZMvhPADo9chazNxv6hXEaUQZe6tw3UaKeGiJzbldaxRlu6TFxJ5X7rYji6+1EJPANmi9aRqUTPh/6x7K9KokdNNnIQVM0H8pDNguJ5ZCm+i32Z8WYUQ0tmJ3jwJygQV34jNV+fONAp3j/kDpb3imCWbvvTPsQ8UhfMgQ==
 
-On 7/31/25 11:57 AM, Alan Maguire wrote:
-> On 31/07/2025 15:16, Alan Maguire wrote:
->> On 29/07/2025 03:03, Ihor Solodrai wrote:
->>> btf_encoder collects function ELF symbols into a table, which is later
->>> used for processing DWARF data and determining whether a function can
->>> be added to BTF.
->>>
->>> So far the ELF symbol name was used as a key for search in this table,
->>> and a search by prefix match was attempted in cases when ELF symbol
->>> name has a compiler-generated suffix.
->>>
->>> This implementation has bugs [1][2], causing some functions to be
->>> inappropriately excluded from (or included into) BTF.
->>>
->>> Rework the implementation of the ELF functions table. Use a name of a
->>> function without any suffix - symbol name before the first occurrence
->>> of '.' - as a key. This way btf_encoder__find_function() always
->>> returns a valid elf_function object (or NULL).
->>>
->>> Collect an array of symbol name + address pairs from GElf_Sym for each
->>> elf_function when building the elf_functions table.
->>>
->>> Introduce ambiguous_addr flag to the btf_encoder_func_state. It is set
->>> when the function is saved by examining the array of ELF symbols in
->>> elf_function__has_ambiguous_address(). It tests whether there is only
->>> one unique address for this function name, taking into account that
->>> some addresses associated with it are not relevant:
->>>    * ".cold" suffix indicates a piece of hot/cold split
->>>    * ".part" suffix indicates a piece of partial inline
->>>
->>> When inspecting symbol name we have to search for any occurrence of
->>> the target suffix, as opposed to testing the entire suffix, or the end
->>> of a string. This is because suffixes may be combined by the compiler,
->>> for example producing ".isra0.cold", and the conclusion will be
->>> incorrect.
->>>
->>> In saved_functions_combine() check ambiguous_addr when deciding
->>> whether a function should be included in BTF.
->>>
->>> Successful CI run: https://github.com/acmel/dwarves/pull/68/checks
->>>
->>> I manually spot checked some of the ~200 functions from vmlinux (BPF
->>> CI-like kconfig) that are now excluded: all of those that I checked
->>> had multiple addresses, and some where static functions from different
->>> files with the same name.
->>>
->>> [1] https://lore.kernel.org/bpf/2f8c792e-9675-4385-b1cb-10266c72bd45@linux.dev/
->>> [2] https://lore.kernel.org/dwarves/6b4fda90fbf8f6aeeb2732bbfb6e81ba5669e2f3@linux.dev/
->>>
->>> v1: https://lore.kernel.org/dwarves/98f41eaf6dd364745013650d58c5f254a592221c@linux.dev/
->>> Signed-off-by: Ihor Solodrai <isolodrai@meta.com>
->>
->> Thanks for doing this Ihor! Apologies for just thinking of this now, but
->> why don't we filter out the .cold and .part functions earlier, not even
->> adding them to the ELF functions list? Something like this on top of
->> your patch:
->>
->> $ git diff
->> diff --git a/btf_encoder.c b/btf_encoder.c
->> index 0aa94ae..f61db0f 100644
->> --- a/btf_encoder.c
->> +++ b/btf_encoder.c
->> @@ -1188,27 +1188,6 @@ static struct btf_encoder_func_state
->> *btf_encoder__alloc_func_state(struct btf_e
->>          return state;
->>   }
->>
->> -/* some "." suffixes do not correspond to real functions;
->> - * - .part for partial inline
->> - * - .cold for rarely-used codepath extracted for better code locality
->> - */
->> -static bool str_contains_non_fn_suffix(const char *str) {
->> -       static const char *skip[] = {
->> -               ".cold",
->> -               ".part"
->> -       };
->> -       char *suffix = strchr(str, '.');
->> -       int i;
->> -
->> -       if (!suffix)
->> -               return false;
->> -       for (i = 0; i < ARRAY_SIZE(skip); i++) {
->> -               if (strstr(suffix, skip[i]))
->> -                       return true;
->> -       }
->> -       return false;
->> -}
->> -
->>   static bool elf_function__has_ambiguous_address(struct elf_function
->> *func) {
->>          struct elf_function_sym *sym;
->>          uint64_t addr;
->> @@ -1219,12 +1198,10 @@ static bool
->> elf_function__has_ambiguous_address(struct elf_function *func) {
->>          addr = 0;
->>          for (int i = 0; i < func->sym_cnt; i++) {
->>                  sym = &func->syms[i];
->> -               if (!str_contains_non_fn_suffix(sym->name)) {
->> -                       if (addr && addr != sym->addr)
->> -                               return true;
->> -                       else
->> +               if (addr && addr != sym->addr)
->> +                       return true;
->> +               else
->>                                  addr = sym->addr;
->> -               }
->>          }
->>
->>
->>          return false;
->> @@ -2208,9 +2185,12 @@ static int elf_functions__collect(struct
->> elf_functions *functions)
->>                  func = &functions->entries[functions->cnt];
->>
->>                  suffix = strchr(sym_name, '.');
->> -               if (suffix)
->> +               if (suffix) {
->> +                       if (strstr(suffix, ".part") ||
->> +                           strstr(suffix, ".cold"))
->> +                               continue;
->>                          func->name = strndup(sym_name, suffix - sym_name);
->> -               else
->> +               } else
->>                          func->name = strdup(sym_name);
->>
->>                  if (!func->name) {
->>
->> I think that would work and saves later string comparisons, what do you
->> think?
->>
-> 
-> Apologies, this isn't sufficient. Considering cases like objpool_free(),
-> the problem is it has two entries in ELF for objpool_free and
-> objpool_free.part.0. So let's say we exclude objpool_free.part.0 from
-> the ELF representation, then we could potentially end up excluding
-> objpool_free as inconsistent if the DWARF for objpool_free.part.0
-> doesn't match that of objpool_free. It would appear to be inconsistent
-> but isn't really.
+=46rom aff4ac7a3e0bc7e7db72a0fae52f1a8b06e415f0 Mon Sep 17 00:00:00 2001
+From: Steven Rostedt <rostedt@goodmis.org>
+Date: Fri, 1 Aug 2025 11:14:53 -0400
+Subject: [PATCH] tracing: Have unsigned int function args displayed as
+ hexadecimal
 
-Alan, as far as I can tell, in your example the function would be
-considered inconsistent independent of whether .part is included in
-elf_function->syms or not. We determine argument inconsistency based
-on DWARF data (struct function) passed into btf_encoder__save_func().
+Most function arguments that are passed in as unsigned int or unsigned
+long are better displayed as hexadecimal than normal integer. For example,
+the functions:
 
-So if there is a difference in arguments between objpool_free.part.0
-and objpool_free, it will be detected anyways.
+static void __create_object(unsigned long ptr, size_t size,
+				int min_count, gfp_t gfp, unsigned int objflags);
 
-A significant difference between v2 and v3 (just sent [1]) is in that
-if there is *only* "foo.part.0" symbol but no "foo", then it will not
-be included in v3 (because it's not in the elf_functions table), but
-would be in v2 (because there is only one address). And the correct
-behavior from the BTF encoding point of view is v3.
+static bool stack_access_ok(struct unwind_state *state, unsigned long _addr,
+			    size_t len);
 
-[1] 
-https://lore.kernel.org/dwarves/20250801202009.3942492-1-ihor.solodrai@linux.dev/
+void __local_bh_disable_ip(unsigned long ip, unsigned int cnt);
 
+Show up in the trace as:
 
-> 
-> I think the best thing might be to retain the .part/.cold repesentations
-> in the ELF table but perhaps mark them with a flag (non_fn for
-> non-function or similar?) at creation time to avoid expensive string
-> comparisons later.
+    __create_object(ptr=3D-131387050520576, size=3D4096, min_count=3D1, gfp=
+=3D3264, objflags=3D0) <-kmem_cache_alloc_noprof
+    stack_access_ok(state=3D0xffffc9000233fc98, _addr=3D-60473102566256, le=
+n=3D8) <-unwind_next_frame
+    __local_bh_disable_ip(ip=3D-2127311112, cnt=3D256) <-handle_softirqs
 
-That's a good point. In v3 I exclude .part and .cold from the table,
-and store ambiguous_addr flag in elf_function. If anything, we should
-be doing less string comparisons now.
+Instead, by displaying unsigned as hexadecimal, they look more like this:
 
-> 
-> On the subject of improving matching, we do have address info for DWARF
-> functions in many cases like this, and that can help guide DWARF->ELF
-> mapping. I have a patch that helps collect function address info in
-> dwarf_loader.c; perhaps we could make use of it in doing more accurate
-> matching? In the above case for example, we actually have DWARF function
-> addresses for both objpool_free and objpool_free.part.0 so we could in
-> that case figure out the DWARF-ELF mapping even though there are
-> multiple ELF addresses and multiple DWARF representations.
-> 
-> Haven't thought it through fully to be honest, but I think we want to
-> avoid edge cases like the above where we either label a function as
-> inconsistent or ambiguous unnecessarily. I'll try to come up with a
-> rough proof-of-concept that weaves address-based matching into the
-> approach you have here, since what you've done is a huge improvement.
-> Again sorry for the noise here, I struggle to think through all the
-> permutations we have to consider here to be honest.
-> 
-> Thanks!
-> 
-> Alan
-> 
-> 
-> [...]
-> 
+    __create_object(ptr=3D0xffff8881028d2080, size=3D0x280, min_count=3D1, =
+gfp=3D0x82820, objflags=3D0x0) <-kmem_cache_alloc_node_noprof
+    stack_access_ok(state=3D0xffffc90000003938, _addr=3D0xffffc90000003930,=
+ len=3D0x8) <-unwind_next_frame
+    __local_bh_disable_ip(ip=3D0xffffffff8133cef8, cnt=3D0x100) <-handle_so=
+ftirqs
+
+Which is much easier to understand as most unsigned longs are usually just
+pointers. Even the "unsigned int cnt" in __local_bh_disable_ip() looks
+better as hexadecimal as a lot of flags are passed as unsigned.
+
+Changes since v2: https://lore.kernel.org/20250801111453.01502861@gandalf.l=
+ocal.home
+
+- Use btf_int_encoding() instead of open coding it (Martin KaFai Lau)
+
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ kernel/trace/trace_output.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+index 0b3db02030a7..97db0b0ccf3e 100644
+--- a/kernel/trace/trace_output.c
++++ b/kernel/trace/trace_output.c
+@@ -701,6 +701,7 @@ void print_function_args(struct trace_seq *s, unsigned =
+long *args,
+ 	struct btf *btf;
+ 	s32 tid, nr =3D 0;
+ 	int a, p, x;
++	u16 encode;
+=20
+ 	trace_seq_printf(s, "(");
+=20
+@@ -744,7 +745,12 @@ void print_function_args(struct trace_seq *s, unsigned=
+ long *args,
+ 			trace_seq_printf(s, "0x%lx", arg);
+ 			break;
+ 		case BTF_KIND_INT:
+-			trace_seq_printf(s, "%ld", arg);
++			encode =3D btf_int_encoding(t);
++			/* Print unsigned ints as hex */
++			if (encode & BTF_INT_SIGNED)
++				trace_seq_printf(s, "%ld", arg);
++			else
++				trace_seq_printf(s, "0x%lx", arg);
+ 			break;
+ 		case BTF_KIND_ENUM:
+ 			trace_seq_printf(s, "%ld", arg);
+--=20
+2.47.2
 
 
