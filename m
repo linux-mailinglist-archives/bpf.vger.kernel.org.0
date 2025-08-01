@@ -1,125 +1,148 @@
-Return-Path: <bpf+bounces-64896-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64897-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80C53B184B6
-	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 17:12:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B83D3B184C1
+	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 17:14:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA36D5A140E
-	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 15:12:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE5BA1C22CF5
+	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 15:15:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24CAF270568;
-	Fri,  1 Aug 2025 15:12:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GgvVSAGQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E41127056B;
+	Fri,  1 Aug 2025 15:14:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay.hostedemail.com (smtprelay0012.hostedemail.com [216.40.44.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08F744690;
-	Fri,  1 Aug 2025 15:12:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39AB826FA7B;
+	Fri,  1 Aug 2025 15:14:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754061143; cv=none; b=STW5z6bxkEWH9F+xUEjD3uoF7XHDwInreL1gFKxhYq/bUcnmoaSCPiLMftqHvFAIwPYuQX/ZWbHvA4wKGlxTOJuL0/Fn9jj3F1jQtl84s4bR20lb9fN/t+AUDWUHNjbupp9SVpb7Q45ZSzvgLPsw7WX9Ch5Xsh/iS7fTECPqvyI=
+	t=1754061284; cv=none; b=gg6l0t7hjFKDmFBiSEy2lHrzf4BrA4PygPRNX44CzCMNwc0qCPXZ95W2q/21EJAdSHWF3oBAsi13mRR8vJUXZvTp6S3E/KmdAmV4KtGRY1o7bFWDjsFC09+ANdcm/97yBJu9GaLygBEhRGmk8wtNKj6OJ+ViYCiV28p/FOsFDtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754061143; c=relaxed/simple;
-	bh=up37njGM55h6zlnSPBzTNA2fMrAPj9VC3rLYcGVqHIM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KVJ/5Uph25kLWiCdoOe76v4wUcNO0//u5oohIDq4R9Gfi1kgiIJFPNwl2Xvih7syUC9F9nYM335tr/rimCxDADbEIlZOC/JDLbaT1Amr0jcBbQz8zHyvNlU9oZupA41vO0SrTzECbI50rrg15xyjlrFE8QN4fMV1nIbaZO4hMRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GgvVSAGQ; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-604bff84741so3158218a12.2;
-        Fri, 01 Aug 2025 08:12:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754061140; x=1754665940; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IX57p1s+aHvjNHq+6BNN3HJIwDEa6YesJfqdZLL2vcA=;
-        b=GgvVSAGQprrk2LQQ0dZPM2kaxQHhC50RI4Rw3iaL4iJRJLumIfyOLQFL53zbS7avpd
-         NxZLLDRbSM6Ci36zDvcMekOaYjlUMkI1/dcOGaakbiiDXAUaAOwZ6z0a+wUrBy/1RDnS
-         6bIk9iA6VzPzdTDC3yXmd3gzAf6Vqyvh7LurNBjJniQsxgKt+UfbA1UYwj2AmmM5UW16
-         WTw2/S3SqfCb+xRltT3V0fODmKIZ6hARxWQKpxY3PdGbPvwMaEP8zAEHZ1OuFE7TvTqH
-         tr3G/ckbF8S+jOn9ATADOzXD51oL+YI+gPolOrs4xbnd479UCO83GnqrNv0FBlbxj91U
-         TN5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754061140; x=1754665940;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IX57p1s+aHvjNHq+6BNN3HJIwDEa6YesJfqdZLL2vcA=;
-        b=Y1JVNc2jiy7UxllK6ewBtgbjsZ7xaE3yD1x6xuHwuvE+qzf8M1wo6lOAQ9K79E1mrV
-         n1YGbMIBRsudOUmybK2spyCC1q46v8zfmBMaiDb8Ihb/p/e5i2oMdah7u2YvkwkIMKH1
-         H9L3n5G2iPNC7ZK3Eo4Xoyuwi/zU8oR5wygpjaZmAw+N6cxziXST7Wei4j0s9s9d195O
-         /NdwVDB+ahXvtA/7CAHbTDpCE1COL/KpZKpFOy+lfsNVePXxocoEle8vc/UMwq4Gfe3J
-         5vTyDtJyCPsTxvpiQlkacYWoUFnnbUk9fjZHVmwtCXlbEG0nl6KDhkmFS8c2FbbaOxAM
-         omdg==
-X-Forwarded-Encrypted: i=1; AJvYcCUOXGs4VZ5Ee972XRXBkF+SEFUuTCWZw5j23VK20/RzgTIJaM5OAPe9LhOsrwgMyaGSg2jQWFdozyG1tqwFhiT+IGYM@vger.kernel.org, AJvYcCWBIiRcDiVTnaXAWpjKURk6PrP+21Dzpk4l4Y1CNC9POK3tzUO6+sKWOGoIXwE4vLThal8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz/esBm5g8L9fP9ND8Kjo8pm0KJTYMVcC74xGiF8PLwuLZAW9tI
-	iX5Tk+ruFdn1/yWdOiftsIgcxIQsbxCyy4ItMkXy+ndBeCRM2Uuy52ILgrYiqpMAqX1Q3nECLVo
-	EqotpgukmawMt3+UBsiPwhm8FIJwCDa8=
-X-Gm-Gg: ASbGncuhpWUPDepG0SxRLDu16SKEuFbioZgIekkjjZDOjxaghJgcCxG1xOMx9jP8z3I
-	ntrpe/Atx2U8Nk8dZ+DvjLPuMHxEjG5E026eIABLwpJI5jZFLPGPQnn0bgTRTUXl92PcQnXf+BV
-	GHbGEUu5oa7mIw5I90vYzjRVaPnbmaTEprru5UIQHnPY8DI+f9Ue6HZ6/+ODFYW9+kFJ8C/1lbP
-	qpMLKobBLDCsfj6GQs8aqNfyOKSD2Mcm8Xm
-X-Google-Smtp-Source: AGHT+IHwMXL4bCFWlIeW4xEjTCAGPTpPLNjiGQiRY67a8rrv6vJY77mjY27ayvHs+TQKA0LjCoYDjEF0ExxRcptdrT4=
-X-Received: by 2002:a17:907:7b85:b0:ad5:2e5b:d16b with SMTP id
- a640c23a62f3a-af94005a96cmr18419766b.27.1754061140097; Fri, 01 Aug 2025
- 08:12:20 -0700 (PDT)
+	s=arc-20240116; t=1754061284; c=relaxed/simple;
+	bh=z/VXTL9XJ4xncPDLbz2NCbekM9lyeRi/bg0hzGvJNV0=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=ZyN6UibjAbdFtMquNaaIt5wySqYaNVaNRPT4Awof19C1SsN0AcNNAeuuGOQvkigLClOQBwA03gTcflDJR9oBdX9nNx2ViSjb0lwOiInyO11iqo7XpWlanHBPOil1aLtnA8FCQlQdGY1BengIOEomsKmdZYXJEBZkkApHlLmL//A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf13.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay04.hostedemail.com (Postfix) with ESMTP id 5F2501A012E;
+	Fri,  1 Aug 2025 15:14:34 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf13.hostedemail.com (Postfix) with ESMTPA id 8C44420011;
+	Fri,  1 Aug 2025 15:14:32 +0000 (UTC)
+Date: Fri, 1 Aug 2025 11:14:53 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, bpf@vger.kernel.org, Douglas Raillard
+ <douglas.raillard@arm.com>, Yonghong Song <yonghong.song@linux.dev>
+Subject: [PATCH v2] tracing: Have unsigned int function args displayed as 
+ hexadecimal
+Message-ID: <20250801111453.01502861@gandalf.local.home>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250801071622.63dc9b78@gandalf.local.home> <CAADnVQLky+R-tfkGaDo-R_-tJ8E3bmWz8Ug7etgTKsCpfXTSKw@mail.gmail.com>
- <20250801110705.373c69b4@gandalf.local.home>
-In-Reply-To: <20250801110705.373c69b4@gandalf.local.home>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 1 Aug 2025 08:12:08 -0700
-X-Gm-Features: Ac12FXxAXaVLcHJDVLjSbuFqvBIHP6rgpMD_N7t53ru5wlGGsIp8MTsg3-UuCIA
-Message-ID: <CAADnVQLFLSwrnHKZUtUpwQ1tst71AfYCcbbtK2haxF=R9StpSw@mail.gmail.com>
-Subject: Re: [PATCH] btf: Simplify BTF logic with use of __free(btf_put)
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, 
-	Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	KP Singh <kpsingh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: iyzrnr6w4pjc1djibas7in4xd3rr8x5q
+X-Rspamd-Server: rspamout07
+X-Rspamd-Queue-Id: 8C44420011
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX18xssWv1N8xOSx5bKZvuO7jwFLxY1ftaow=
+X-HE-Tag: 1754061272-841103
+X-HE-Meta: U2FsdGVkX1+lplGtHrEAOkWKXPskBQQAellZmOYwCbwAU98pNAaFo31+QYlRNB/tKE+WEwWhpUmiSmvXvt5kQWhomZcmMfOoLL1FETZ66ZZ8uuEiM/VEYynAVv77VYUXoFgbpuLNRNmzpRfn57FZxLWZtpO0T50W2sxzpm9vLjcjno8w+oh+ilaiKzMJpefGec0I1qO5vuUo23L2wTiYuRS3lDvooqx9lgsixZ8quEO16HXPR+RTMAJNk1NX7F+x5V15U/TXlT1HJCgjBRo5FxXbMAEMQ5t0cC+hm4WSBpYp7tm5dNzkrvwoLn2jd9Ho/muqSrZWt4h7cGk8+tOcG6cO6VVzibYWBSF5h2EiuQhvjFFaKZ6L07pgIm9eXGqQvRVIzTkW4HY3TvRf9KYXUA==
 
-On Fri, Aug 1, 2025 at 8:06=E2=80=AFAM Steven Rostedt <rostedt@goodmis.org>=
- wrote:
->
-> On Fri, 1 Aug 2025 08:02:24 -0700
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
->
-> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > > index 1d2cf898e21e..480657912c96 100644
-> > > --- a/kernel/bpf/btf.c
-> > > +++ b/kernel/bpf/btf.c
-> > > @@ -3788,7 +3788,7 @@ static int btf_parse_kptr(const struct btf *btf=
-, struct btf_field *field,
-> > >         /* If a matching btf type is found in kernel or module BTFs, =
-kptr_ref
-> > >          * is that BTF, otherwise it's program BTF
-> > >          */
-> > > -       struct btf *kptr_btf;
-> > > +       struct btf *kptr_btf __free(btf_put) =3D NULL;
-> >
-> > Sorry I hate this __free() style.
-> > It's not a simplification, but an obfuscation of code and logic.
->
-> Well, it's becoming more common. But you are in control of this, so it's
-> your decision. I wanted this just to get rid of the gotos in my code.
+From: Steven Rostedt <rostedt@goodmis.org>
 
-You can use it in kernel/trace/trace_output.c, of course,
-but I really think it's a step back in maintainability.
-All this cleanup.h is not a silver bullet. It needs to be used sparingly.
+Most function arguments that are passed in as unsigned int or unsigned
+long are better displayed as hexadecimal than normal integer. For example,
+the functions:
+
+static void __create_object(unsigned long ptr, size_t size,
+				int min_count, gfp_t gfp, unsigned int objflags);
+
+static bool stack_access_ok(struct unwind_state *state, unsigned long _addr,
+			    size_t len);
+
+void __local_bh_disable_ip(unsigned long ip, unsigned int cnt);
+
+Show up in the trace as:
+
+    __create_object(ptr=-131387050520576, size=4096, min_count=1, gfp=3264, objflags=0) <-kmem_cache_alloc_noprof
+    stack_access_ok(state=0xffffc9000233fc98, _addr=-60473102566256, len=8) <-unwind_next_frame
+    __local_bh_disable_ip(ip=-2127311112, cnt=256) <-handle_softirqs
+
+Instead, by displaying unsigned as hexadecimal, they look more like this:
+
+    __create_object(ptr=0xffff8881028d2080, size=0x280, min_count=1, gfp=0x82820, objflags=0x0) <-kmem_cache_alloc_node_noprof
+    stack_access_ok(state=0xffffc90000003938, _addr=0xffffc90000003930, len=0x8) <-unwind_next_frame
+    __local_bh_disable_ip(ip=0xffffffff8133cef8, cnt=0x100) <-handle_softirqs
+
+Which is much easier to understand as most unsigned longs are usually just
+pointers. Even the "unsigned int cnt" in __local_bh_disable_ip() looks
+better as hexadecimal as a lot of flags are passed as unsigned.
+
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+Changes since v1: https://lore.kernel.org/20250731193126.2eeb21c6@gandalf.local.home
+
+- Fixed whitespace issues (Yonghong Song)
+
+ kernel/trace/trace_output.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+index 0b3db02030a7..fe54003de860 100644
+--- a/kernel/trace/trace_output.c
++++ b/kernel/trace/trace_output.c
+@@ -690,6 +690,12 @@ int trace_print_lat_context(struct trace_iterator *iter)
+ }
+ 
+ #ifdef CONFIG_FUNCTION_TRACE_ARGS
++
++static u32 btf_type_int(const struct btf_type *t)
++{
++	return *(u32 *)(t + 1);
++}
++
+ void print_function_args(struct trace_seq *s, unsigned long *args,
+ 			 unsigned long func)
+ {
+@@ -701,6 +707,8 @@ void print_function_args(struct trace_seq *s, unsigned long *args,
+ 	struct btf *btf;
+ 	s32 tid, nr = 0;
+ 	int a, p, x;
++	int int_data;
++	u16 encode;
+ 
+ 	trace_seq_printf(s, "(");
+ 
+@@ -744,7 +752,14 @@ void print_function_args(struct trace_seq *s, unsigned long *args,
+ 			trace_seq_printf(s, "0x%lx", arg);
+ 			break;
+ 		case BTF_KIND_INT:
+-			trace_seq_printf(s, "%ld", arg);
++			/* Get the INT encodoing */
++			int_data = btf_type_int(t);
++			encode = BTF_INT_ENCODING(int_data);
++			/* Print unsigned ints as hex */
++			if (encode & BTF_INT_SIGNED)
++				trace_seq_printf(s, "%ld", arg);
++			else
++				trace_seq_printf(s, "0x%lx", arg);
+ 			break;
+ 		case BTF_KIND_ENUM:
+ 			trace_seq_printf(s, "%ld", arg);
+-- 
+2.47.2
+
 
