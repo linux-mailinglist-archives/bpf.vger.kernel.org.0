@@ -1,123 +1,135 @@
-Return-Path: <bpf+bounces-64862-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64863-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 385F1B17AB3
-	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 03:06:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9ADBFB17ABC
+	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 03:11:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE65C1C27F1A
-	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 01:06:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C60CA3B33A9
+	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 01:11:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61A462AE72;
-	Fri,  1 Aug 2025 01:06:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EFC078F5D;
+	Fri,  1 Aug 2025 01:11:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="j22yoF36"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rN8YOyx2"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51BC020326
-	for <bpf@vger.kernel.org>; Fri,  1 Aug 2025 01:06:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EDA4224D6;
+	Fri,  1 Aug 2025 01:11:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754010368; cv=none; b=bXLDtVo7aCnR79Doo0pPwyh1zPQ6TvI6YmfbXrj9sx/mUQomvXPeN1wU1glkcK7DrI+8ePA+WpaWCCoGyGFcNMdzYwe41Au+Yak19sFnf4INeFYlayKk/hRVfgbXUfzpz43XLqr5qCRomNM2AMSOKNU3ht7EBnxNk7R5nCKRDXk=
+	t=1754010711; cv=none; b=p+TCVfXEEIeekUmspnzRNeBYGSNnWxJJbvCDkLLYhOlxYrhZp9VkWmru/vI59m2HwXwi+0fm76vU16hLUzNyVE5ML2ykN6T0u2UGaaUQKYi/hUZvyNucmIZGbH8auMgjChWC0HM+whaRlbIl2/LqaoPYQXC1tdJ/JRTzrFEtBFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754010368; c=relaxed/simple;
-	bh=CrqopOqnETrha7sxDqw5g7Qbwci0R9pf8ZjfuY374Gk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dL4HT7LY+MDiEGN0v4xF+y4q991Okc+FPkFwdcYJadoIvgJEu3nqmt2xYzAbBTqQFjBtDLyNpWG3udtPtusoCoevi1bN43GFnVtdd+P0xD3iaT7lmN6y0LPY9ARH/Yka+XdPvvssW57exiqT99MjYjbxpSLxQJgyFFd2etmDw2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=j22yoF36; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <cd6155cf-f1e0-4d6b-98af-a53c4999c5a3@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1754010351;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mWnfPBYlK3FgFXB+auPIsaTZOIy8G/auRktChN5Wm1g=;
-	b=j22yoF36O7Wl/CWBmjIegSyfMPObwfQUWyL5Alo/iYKLFO7Kj8IDQYfA61MGWRgqI0VcMD
-	/BhGqCqX0miqVasDbasMRXhQNSWG6+tu8s4fznPVgYELQYkV/yMuuJWX2OXdv0CrSANp+w
-	kt18UwdyFUgHgNNnSmH2frTb37SiMfc=
-Date: Thu, 31 Jul 2025 18:05:45 -0700
+	s=arc-20240116; t=1754010711; c=relaxed/simple;
+	bh=YV9Bekb3nRJvWiUStA1Mo4OC6Y4BeSo9oE0wxKzf1/c=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=T4IsqUdQgdmw5kZV6CUflk8H2MTCs/F5QWNP8k7N+frbELMR5/P4cU3M+JSyx5415l4wQAiHt0z9Viqn9fab6k+8IybSPOSnhUbUs/xCeckIlAlo/ARgxUTn70kmUUIAnBXfSdT77MVpeyaLAypFV7n9Pkl3ckbbMCbDr6IagC4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rN8YOyx2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79D12C4CEEF;
+	Fri,  1 Aug 2025 01:11:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1754010711;
+	bh=YV9Bekb3nRJvWiUStA1Mo4OC6Y4BeSo9oE0wxKzf1/c=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=rN8YOyx2OxFDyZmvIJapDZVmsdQj1ngKhCYcnxpr2fzl8KP1SZ8eLTgad++E8Ww2k
+	 bZaV7ILZ03wqNzxNn1e3zUEEGLjGwncoolNzOWOLWD98fAj5wm32aVlq4QOqrJHv5R
+	 hd1syiInW7CYyiyUmvUElcygn+n6dh2/6P3QY3SdMgu9GjJ9vjPeX7oIsbRKquPUhJ
+	 IJsoiR1OvqehBkBJK78MmDSt5lO63TA5nLYbO+ZXUPH3+iRRjF4lFUA72D4xfaKSVq
+	 L7zuCJyXo/6WEVjAuWF6RKu4O34ilChUhrV6+UnZ9ZQEeTT7xsO7cBE9VpjBoejDoL
+	 2ZjgVDvZQJnvg==
+Date: Thu, 31 Jul 2025 21:11:46 -0400
+From: Steven Rostedt <rostedt@kernel.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu
+ Desnoyers <mathieu.desnoyers@efficios.com>, Josh Poimboeuf
+ <jpoimboe@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar
+ <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo
+ <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner
+ <tglx@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, Indu Bhagat
+ <indu.bhagat@oracle.com>, "Jose E. Marchesi" <jemarch@gnu.org>, Beau
+ Belgrave <beaub@linux.microsoft.com>, Jens Remus <jremus@linux.ibm.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton
+ <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>, Florian Weimer
+ <fweimer@redhat.com>, Sam James <sam@gentoo.org>
+Subject: Re: [PATCH v16 09/10] unwind deferred: Use SRCU
+ unwind_deferred_task_work()
+Message-ID: <20250731211146.508d8387@batman.local.home>
+In-Reply-To: <21c67d70-d8c2-4d6b-99d8-2de8f2966621@paulmck-laptop>
+References: <20250729182304.965835871@kernel.org>
+	<20250729182406.331548065@kernel.org>
+	<21c67d70-d8c2-4d6b-99d8-2de8f2966621@paulmck-laptop>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next v1 01/11] bpf: Convert bpf_selem_unlink_map
- to failable
-To: Amery Hung <ameryhung@gmail.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
- alexei.starovoitov@gmail.com, andrii@kernel.org, daniel@iogearbox.net,
- memxor@gmail.com, kpsingh@kernel.org, martin.lau@kernel.org,
- yonghong.song@linux.dev, song@kernel.org, haoluo@google.com,
- kernel-team@meta.com
-References: <20250729182550.185356-1-ameryhung@gmail.com>
- <20250729182550.185356-2-ameryhung@gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20250729182550.185356-2-ameryhung@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
-On 7/29/25 11:25 AM, Amery Hung wrote:
-> - bpf_local_storage_update()
+On Thu, 31 Jul 2025 17:29:44 -0700
+"Paul E. McKenney" <paulmck@kernel.org> wrote:
+
+> > @@ -281,10 +291,15 @@ void unwind_deferred_cancel(struct unwind_work *work)
+> >  		return;
+> >  
+> >  	guard(mutex)(&callback_mutex);
+> > -	list_del(&work->list);  
 > 
->    The three step update process: link_map(new_selem),
->    link_storage(new_selem), and unlink_map(old_selem) should not fail in
->    the middle. Hence, lock both b->lock before the update process starts.
+> What happens if unwind_deferred_task_work() finds this item right here...
+
+Should be fine.
+
 > 
->    While locking two different buckets decided by the hash function
->    introduces different locking order, this will not cause ABBA deadlock
->    since this is performed under local_storage->lock.
+> > +	list_del_rcu(&work->list);  
+> 
+> ...and then unwind_deferred_request() does its WARN_ON_ONCE() check
+> against -1 right here?
 
-I am not sure it is always true. e.g. two threads running in different cores can 
-do bpf_local_storage_update() for two different sk, then it will be two 
-different local_storage->lock.
+If unwind_deferred_request() is called after unwind_deferred_cancel()
+then that's a bug. As both functions are called by the tracer. The
+cancel() function is for the tracer to tell this infrastructure that
+it's done with the deferred tracing. If it calls a request() function
+after (or during) the call to cancel(), then it's a bug in the tracer.
+The tracer is responsible for making sure it will not do any more
+requests before calling the cancel() function.
 
-My current thought is to change the select_bucket() to depend on the owner 
-pointer (e.g. *sk, *task...) or the local_storage pointer instead. The intuitive 
-thinking is the owner pointer is easier to understand than the local_storage 
-pointer. Then the same owner always hash to the same bucket of a map.
+But what the tracer can't do is to know if there's a pending request
+still happening and this has to handle that.
 
-I am not sure the owner pointer is always available in the current setup during 
-delete. This needs to check. iirc, the current setup is that local_storage->lock 
-and bucket lock are not always acquired together. It seems the patch set now 
-needs to acquire both of them together if possible. With this, I suspect 
-something else can be simplified here and also make the owner pointer available 
-during delete (if it is indeed missing in some cases now). Not very sure yet. I 
-need a bit more time to take a closer look.
+> 
+> Can't that cause UAF?
+> 
+> This is quite possibly a stupid question because I am not seeing where to
+> apply this patch, so I don't know what other mechanisms might be in place.
 
-Thanks for working on this! I think it can simplify the local storage.
+Yeah, you were only Cc'd on this patch because it was the only one that
+uses RCU. You can see the entire series here:
 
-[ ... ]
+  https://lore.kernel.org/all/20250729182304.965835871@kernel.org/
 
-> @@ -560,8 +595,9 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
->   	struct bpf_local_storage_data *old_sdata = NULL;
->   	struct bpf_local_storage_elem *alloc_selem, *selem = NULL;
->   	struct bpf_local_storage *local_storage;
-> +	struct bpf_local_storage_map_bucket *b, *old_b;
->   	HLIST_HEAD(old_selem_free_list);
-> -	unsigned long flags;
-> +	unsigned long flags, b_flags, old_b_flags;
->   	int err;
->   
->   	/* BPF_EXIST and BPF_NOEXIST cannot be both set */
-> @@ -645,20 +681,31 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
->   		goto unlock;
->   	}
->   
-> +	b = select_bucket(smap, selem);
-> +	old_b = old_sdata ? select_bucket(smap, SELEM(old_sdata)) : b;
-> +
-> +	raw_spin_lock_irqsave(&b->lock, b_flags);
-> +	if (b != old_b)
-> +		raw_spin_lock_irqsave(&old_b->lock, old_b_flags);
+Or in patchwork:
+
+  https://patchwork.kernel.org/project/linux-trace-kernel/list/?series=986813
+
+-- Steve
+
+
+> 
+> > +	/* Do not allow any more requests and prevent callbacks */
+> > +	work->bit = -1;
+> >  
+> >  	__clear_bit(bit, &unwind_mask);
+> >  
+> > +	synchronize_srcu(&unwind_srcu);
+> > +
+> >  	guard(rcu)();
+> >  	/* Clear this bit from all threads */
+> >  	for_each_process_thread(g, t) {
 
