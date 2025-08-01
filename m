@@ -1,127 +1,104 @@
-Return-Path: <bpf+bounces-64913-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64914-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C5CEB185AA
-	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 18:24:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5F1FB185CC
+	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 18:30:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D51CA877B6
-	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 16:24:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80BDFA87C1A
+	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 16:29:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A3EF28CF40;
-	Fri,  1 Aug 2025 16:24:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EC4528CF64;
+	Fri,  1 Aug 2025 16:29:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Uv/cTzVZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HUalUtem"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8273328C871;
-	Fri,  1 Aug 2025 16:24:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89C7228C87E;
+	Fri,  1 Aug 2025 16:29:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754065472; cv=none; b=OKNoq3Yi7tvDnv6LBeiOJH2EdPvll+cEe2MByMErGaiZFZFnznI1A0gbjGYCLfscpThcNicfqzDEjEU4Q8m0bo4/X69SmhSkTQ2w3k5m0wZ7BS8tzZU/ivallgeQl3U952TAgTJpU1aIOaKnqeOuvR8bF9I6dbDUWqL1Sc14CI0=
+	t=1754065794; cv=none; b=JCji3udxtHARPM6gAGhCJ7ypG84YEyWsxp6DECKPHnGUQo2+pu4lPuV5EUjrlsqcsfhgAHNZpolT1ApVRcAA0xnY0dkY8YZ8RpV8JKQ6bTG2yVHUub6b6lC9w/oYqD3K7t2VtXPd9PlW5S84UG25bDbsHfKlAsmLxbCioUkIiU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754065472; c=relaxed/simple;
-	bh=cJDWvFXmksu3eXeiSRm2D4LtywUxqHA5CdeKE+97npI=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=jMB6exPoJg41KHzRpwAVRaUWu3jsX8puGcfuwrUzq8XUc3M10t+6lXlEzqwcqB4STAsQwzlZO3S6lNvIfIy5ee1uTwjdjQdyevKHIYTynCOcDU6EAXwVG6LrQSyiWFSAtvgDMpPgIi4Z4zQgzMzEQPUDucMtXcc/eAekYxRR0zA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Uv/cTzVZ; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-748e63d4b05so683621b3a.2;
-        Fri, 01 Aug 2025 09:24:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754065471; x=1754670271; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=WfOr68nFi7RZ75J6VereNbDc1xtULTqyasJ/724p6zI=;
-        b=Uv/cTzVZcjCXw4NukrvkzUiDAlKCMc8YiDisPyuNUDaFkyRMEHguZNzRBRSP8H3Cdu
-         fCrLYqXpRv0HKEIY39xVmMkuSuxPMM4uTRCxuoX3UfzYLYHGkOLJ78bXZkWPZtBRMEjM
-         64GbooTQ94wYotkyazY2VJKa+iIXcD5/sTPL9XDEPVYoJCWBjDf0k21W9akLXxqs9okX
-         BPMaJX9kfTPRXHEekByCLUDRYjHZ5PaOfXzmAv8bWXXK4C0tIm1Igr5zgfwcfvHQtPoK
-         UvIYtQMqNuxBIDEeiqPG9SWV1Dv/4ncLm6XXRXPQlivBtmpK2cyDCmNC2zEOoaPfa8+p
-         68nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754065471; x=1754670271;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WfOr68nFi7RZ75J6VereNbDc1xtULTqyasJ/724p6zI=;
-        b=k9FryFKp5QThsZ3Ysu0PrUT3aQLSXIqJKZyol5a+VlH69DLHDJA0FI+9RqyDgqSHlF
-         36wtWKLgMGf4rj8W7FKEuSefswgz8+pPCF8Ggsft/k4g+YKs6VNpwWeW7cX5IhrIxc+j
-         Zi/VvmhQ98qLYTOM8v4xzG3Jj42dHBhwFQDOc1W0CRmBrPtJmklWiih1DXu2XoSPj1Zy
-         ZQI3TSEwpV9woaTegE7cju2G1VeGsDjQA/JyGNV6Ml23Sb0uvEXzj+ECIzE/Hqju02uO
-         AyLqCNYgkLYps0bnF+Psuw62sYzaFmF2SggiSDdr/iXteGnTWHm5l7jHDV3HNtVDGWrr
-         4Q6A==
-X-Forwarded-Encrypted: i=1; AJvYcCUq2jfvdEjIvEc/XpFBSmiPQ3aoxMahpmcumI2gW42RO1LGmM0nBRY++4dkKoE5HYo+PoOOu7c2FSevVecYz4E=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxOGRoicMLr6f9SC4jBDgXBo6N4JZwD2W/c3rZiXdaGhmpCWuiV
-	IP+nR5RkPspHuTsn+UxziuevcoO1jQsu5twxtkoIQrgOPhkMyET8785U
-X-Gm-Gg: ASbGncsOyMlqqwX9acvf8rb8qpUFgW2vwEaatMZvUncTtg0bhmA1qw6E3Tj3y0nzqOt
-	sapbQI6lj3eorAa/IIACR2ffbdoabWTgmQePwJX9zh4GLHvU2GAuLnpxLes43wyME4mE8F9vz3v
-	sRQp1xaf5B+SJmM7moPYLD2+DwbAJioS+4pEBpvtIQOoil563OtCYTMOIxWFZyDdrQgYh8aQxMz
-	nXXQy4vu0zw0d3fHbDkWf3qwLQdMttnLH8qDoTrQdp3B0wx+4MI0I98JR4m0r5Og7XWBmdFCnKl
-	a9hliNCzTVsNeknx69+KEvmjeskXIXOMwqRJXw+g8tdngjY/IQeioFGR0odCe85ydAl1armmPpC
-	bIJykFm8cbS3Rh+W1z+Y=
-X-Google-Smtp-Source: AGHT+IHy5TrgS2VCjYWkDpAA2RBcH5M444iKyKHRsYBHp4pDeIKtU/5mdDRlG0F9pqQGtjY711VrEw==
-X-Received: by 2002:a05:6a00:2351:b0:740:aa31:fe66 with SMTP id d2e1a72fcca58-76bec2fb5camr2155b3a.4.1754065470598;
-        Fri, 01 Aug 2025 09:24:30 -0700 (PDT)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-76bccfbcfa0sm4477502b3a.75.2025.08.01.09.24.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Aug 2025 09:24:30 -0700 (PDT)
-Message-ID: <85804ed8118715985eb484d3d649b77d754df598.camel@gmail.com>
-Subject: Re: [PATCH bpf 3/4] bpf: Improve ctx access verifier error message
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Paul Chaignon <paul.chaignon@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann	 <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau	 <martin.lau@linux.dev>, netfilter-devel@vger.kernel.org,
- Pablo Neira Ayuso	 <pablo@netfilter.org>, Jozsef Kadlecsik
- <kadlec@netfilter.org>, Petar Penkov	 <ppenkov@google.com>, Florian
- Westphal <fw@strlen.de>
-Date: Fri, 01 Aug 2025 09:24:26 -0700
-In-Reply-To: <aIzpKu2PChlhVGsq@mail.gmail.com>
-References: 
-	<cc1b036be484c99be45eddf48bd78cc6f72839b1.1754039605.git.paul.chaignon@gmail.com>
-	 <cc94316c30dd76fae4a75a664b61a2dbfe68e205.1754039605.git.paul.chaignon@gmail.com>
-	 <5e7b3c728c88b238224d3dffde4abbd7567b8d1c.camel@gmail.com>
-	 <aIzpKu2PChlhVGsq@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1754065794; c=relaxed/simple;
+	bh=IxVnmA/66Ivgx/vn2+/QIYuiaXylBMGDjN6i0YCSXxg=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=i9v87FwaMhcWQupmBFWp9w5qyWCJjOSVFCPjRV7IXv5ncDW6NL0cSiG8kYInQcRsuB+pyBm9XEpJHsGMGmemN7efPx5P8nDs9Ef6g0TIUNEEaVTSYK6+QXWZGdEycAQyX902YX78v4E5MxYm3nODOMPmM4WtgXB5nQWROhe58sY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HUalUtem; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F5D4C4CEE7;
+	Fri,  1 Aug 2025 16:29:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1754065794;
+	bh=IxVnmA/66Ivgx/vn2+/QIYuiaXylBMGDjN6i0YCSXxg=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=HUalUtemtv0yPC4/vv/LH2sZllOmkSGA2IwkjeF/DqVvoLByFc70JD0iDJ5Gi+fMf
+	 JzmSHrevNrQVL1JnY1W3fJ7R67cjwXiAq0wBHN7tf3pil5j3KjL60+jGoIkIV1Ij/H
+	 /srwvjMytHNkjj9t51BrfFoR7pUJLbNy3TdErZbkqLfgXUY+Er3FA/ZbtQ1nc4SeVv
+	 AvvssTYezUJ756C0kyfHGWWebuwbWvZ/ree9rGZyHK9mUoLbEo4iORc/qXgyVRcl07
+	 ZPRJ2jAPkt6YClXWCPG98UZANV+WGV7f8Jn/QwRUELBSS9CNrCOlWaIY2Sik+QFDL2
+	 PnzwJmNJ8w5mA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB194383BF63;
+	Fri,  1 Aug 2025 16:30:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf 1/4] bpf: Check flow_dissector ctx accesses are
+ aligned
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175406580976.3993724.623782984870385125.git-patchwork-notify@kernel.org>
+Date: Fri, 01 Aug 2025 16:30:09 +0000
+References: 
+ <cc1b036be484c99be45eddf48bd78cc6f72839b1.1754039605.git.paul.chaignon@gmail.com>
+In-Reply-To: 
+ <cc1b036be484c99be45eddf48bd78cc6f72839b1.1754039605.git.paul.chaignon@gmail.com>
+To: Paul Chaignon <paul.chaignon@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, eddyz87@gmail.com, martin.lau@linux.dev,
+ netfilter-devel@vger.kernel.org, pablo@netfilter.org, kadlec@netfilter.org,
+ ppenkov@google.com, fw@strlen.de
 
-On Fri, 2025-08-01 at 18:19 +0200, Paul Chaignon wrote:
+Hello:
 
-[...]
+This series was applied to bpf/bpf.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-> > > @@ -21445,7 +21445,7 @@ static int convert_ctx_accesses(struct bpf_ve=
-rifier_env *env)
-> > >  					 &target_size);
-> > >  		if (cnt =3D=3D 0 || cnt >=3D INSN_BUF_SIZE ||
-> > >  		    (ctx_field_size && !target_size)) {
-> > > -			verifier_bug(env, "error during ctx access conversion");
-> > > +			verifier_bug(env, "error during ctx access conversion (%d)", cnt)=
-;
-> >=20
-> > Nit: maybe print the rest of the fields as well?
->=20
-> I considered it but didn't want to unnecessarily bloat the message.
-> Knowing cnt is enough to know which of the three conditions is true. If
-> the last one is true, then knowing the values of ctx_field_size and
-> target_size doesn't really help us because the issue is just that one is
-> set (ctx_field_size in _is_valid_access) while the other wasn't
-> (target_size in _convert_ctx_accesses). That indicates a mismatch
-> between the two functions for that particular program type.
+On Fri, 1 Aug 2025 11:47:23 +0200 you wrote:
+> flow_dissector_is_valid_access doesn't check that the context access is
+> aligned. As a consequence, an unaligned access within one of the exposed
+> field is considered valid and later rejected by
+> flow_dissector_convert_ctx_access when we try to convert it.
+> 
+> The later rejection is problematic because it's reported as a verifier
+> bug with a kernel warning and doesn't point to the right instruction in
+> verifier logs.
+> 
+> [...]
 
-Ack, makes sense. Thank you for explaining.
+Here is the summary with links:
+  - [bpf,1/4] bpf: Check flow_dissector ctx accesses are aligned
+    https://git.kernel.org/bpf/bpf/c/ead3d7b2b6af
+  - [bpf,2/4] bpf: Check netfilter ctx accesses are aligned
+    https://git.kernel.org/bpf/bpf/c/9e6448f7b1ef
+  - [bpf,3/4] bpf: Improve ctx access verifier error message
+    https://git.kernel.org/bpf/bpf/c/f914876eec9e
+  - [bpf,4/4] selftests/bpf: Test for unaligned flow_dissector ctx access
+    https://git.kernel.org/bpf/bpf/c/3fea6d121b56
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
