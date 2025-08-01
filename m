@@ -1,93 +1,328 @@
-Return-Path: <bpf+bounces-64879-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64880-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F287B18055
-	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 12:43:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E3E8B180C6
+	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 13:16:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52D655839B0
-	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 10:43:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E9E6545B1A
+	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 11:16:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0CCD239E78;
-	Fri,  1 Aug 2025 10:43:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01AA424336B;
+	Fri,  1 Aug 2025 11:16:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay.hostedemail.com (smtprelay0010.hostedemail.com [216.40.44.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D2B7235355
-	for <bpf@vger.kernel.org>; Fri,  1 Aug 2025 10:43:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDEA81E9B0B;
+	Fri,  1 Aug 2025 11:16:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754044987; cv=none; b=X0XihONb3uT1HG8r8mnX7bikVxORt5W5BtwU0DQ6JzSkygDKnRqWfE0UJd6NysSULLr7uU8KtItlQ+s4cJICRjYPybH+FMGa4xPvSctjLIDk3johSXPqdUxyVol8hz16Z+EMGzAh/XBOdnYlvJdpmAX2+iEINZQBQ1CrudoozBE=
+	t=1754046975; cv=none; b=JGH68CMnHkwL7chUqqLvXxKk4kSe1nNJp/tmTXpLzOXQTO5Qou3HZ9rmbikes+7MWJ4lq+Oempm3qER+Zuls5ruP1Zwa9upAunE6snHZWn4asQ0WlB2HK9ugnfIZgD7M1aumMgIopUQme85SQhjDxFJAxHdQkWSZHczL9/BcjAw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754044987; c=relaxed/simple;
-	bh=zjyj9ZoVbLtOedm3SnSBw1q0yHuF8I7QpJ+Senhv4wk=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Qvng+DQfgwzy2uqpPyelkd2+5Ezyy7XuXXJ2YPK035EegD4liIsEDxwnyZ96I06RLBrDN/MzvnXUh1x3JpKf4x46DMzG/8kHg7NbcNI8gYWjlmFAFz2xSA6xg0ghuHGiDS5EBAq4Gzn2m54uyBpbRYmJ+PxrwY5eJ/wzQWJVl/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3e3f75449b4so11344285ab.2
-        for <bpf@vger.kernel.org>; Fri, 01 Aug 2025 03:43:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754044985; x=1754649785;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PoQsNyoD90if1Yi5tS33Af8CsMkfK/KVVhqGF8eskKg=;
-        b=k7oFt/RUKW7WcQtTNZB/SAud6pAhEZR0RGE1BDK1BnpXXGpLU+jpJU3f9bkLazDvOs
-         /LM1VvkJKUUGlp2aFzWisMUZGpMGCmI88KHgK6M2GAwK937N4F7HWu4tu3xNG5ln/XaB
-         dpvCmr4eQ6iEXKg1yRqCM7bPoRDdFq6WK6ZMaIYr2ujWIQIHyEoh2cCFarjGJVjkbGYU
-         OuPsZCjBMzYvjtyZiN1+FQ8sd6ZXhYV6yfAWC8zuob64J8EspZndfk8J/Qa8UHW7QYtt
-         BMG5Z7WQBh4/Wj8TjdRSzWG/5VarEH5t/XsFOb1pDbj8Too8nPcekQRPxccLVK+AvLPq
-         IhWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXGr+2/B4DkT6PvgjLeRTWFVtqpQPhTVaxqyYR37CHohwJYu6XUknCNYiW8mDi93zfpxFs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwDHG64DhczFIIqVr3gzK+WjFVH5+kQR3MiCY4+Kys5pcCq97rX
-	iA7GIB0C8cvCUFFVqT5IscJj5uWYZ8u2opt92gfC3i8H/tnGvUeJ+nBWBBwJvTNAih8AKxeXaYG
-	/plUtm3ADyHWectFa9RR0TLwn4Inn5x5JhJW2NxB9OpscprIWxouBjI/MZng=
-X-Google-Smtp-Source: AGHT+IFn3GqlqczW8Kp3yLnyoOXYouUB0OgxOv/K5MuUj3oqnh8jvj0ofAx18tw0dUCUJ0q0ldnZ1QbnYxPuSzxZXHmarLSHq4TC
+	s=arc-20240116; t=1754046975; c=relaxed/simple;
+	bh=895DmzIvkAkJACwuR0P+3vYkOCgV1Hvq83mSQh5+cic=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=MDW/0+WTeipBkf0Y0rTFmzNerK52vNZrJYmL/h4IvO5iKHc+fXF9L0ihrqhjfJ0xio7bxy56RN4ypkfHLx5ql5ZFSb0OXHMqqblkU+xVJX+ByABBno2BTuliGeYTL7OWnuqqfQslG41gA9EFc4FLTfIeTbYRwO3rEe31hNPbQTA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf20.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay10.hostedemail.com (Postfix) with ESMTP id 07EF6C0864;
+	Fri,  1 Aug 2025 11:16:05 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf20.hostedemail.com (Postfix) with ESMTPA id 5BC0720027;
+	Fri,  1 Aug 2025 11:16:02 +0000 (UTC)
+Date: Fri, 1 Aug 2025 07:16:22 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>, bpf@vger.kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
+ <song@kernel.org>, KP Singh <kpsingh@kernel.org>
+Subject: [PATCH] btf: Simplify BTF logic with use of __free(btf_put)
+Message-ID: <20250801071622.63dc9b78@gandalf.local.home>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c243:0:b0:3e2:a749:250b with SMTP id
- e9e14a558f8ab-3e3f625d741mr152096705ab.14.1754044984117; Fri, 01 Aug 2025
- 03:43:04 -0700 (PDT)
-Date: Fri, 01 Aug 2025 03:43:04 -0700
-In-Reply-To: <e9f2e391-5c83-481a-9fa4-727c25922f1c@redhat.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <688c9a38.a00a0220.26d0e1.0069.GAE@google.com>
-Subject: Re: [syzbot] [mm?] WARNING in trace_suspend_resume
-From: syzbot <syzbot+99d4fec338b62b703891@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org, 
-	bpf@vger.kernel.org, daniel@iogearbox.net, david@redhat.com, 
-	liam.howlett@oracle.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	lorenzo.stoakes@oracle.com, mhocko@suse.com, rppt@kernel.org, 
-	sashal@kernel.org, surenb@google.com, syzkaller-bugs@googlegroups.com, 
-	vbabka@suse.cz
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 5BC0720027
+X-Stat-Signature: r885e1gxarcgwca95nai6nym1cmctzrd
+X-Rspamd-Server: rspamout06
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1+4n/QKaqyoYGyfjacsZcrVAV2Huyn0Z90=
+X-HE-Tag: 1754046962-677079
+X-HE-Meta: U2FsdGVkX1/zT8lg7h+Hd4MDDXRzm+LC+aJYQ3GqiTesuaBUg1icgTMWei6jSsgtKIuwevJ0VmygGtQZPLn9bbP/s/LsxI9lyoDQe4Oxsf1Tked37WZEZCLDau/7n9XfwOMwmT+OaJNhTB7Y43XxFcIZ503U5rABaCkEJqnjCEY0KpGVYND4JdroRBiTOsAGLMBk+4fYpCNB7lAjQouPFgw2baX57hYwI2/ECzqpkb+lgUzE2jw3qAsWkXvW0VbRru62D8hwrKmaoQ+W6uPtyHtBHqREQ9wIbYqEJkgWynhDT/oe5zhihswecFtFiG0FlwVIBtlceXRwyQNSeI3OBPwVaYivyiVrQrfMorqgLVe0koZVRGrQSZsztwAZHQET
 
-Hello,
+From: Steven Rostedt <rostedt@goodmis.org>
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Several functions need to call btf_put() on the btf pointer before it
+returns leading to using "goto" branches to jump to the end to call
+btf_put(btf). This can be simplified by introducing DEFINE_FREE() to allow
+functions to define the btf descriptor with:
 
-Reported-by: syzbot+99d4fec338b62b703891@syzkaller.appspotmail.com
-Tested-by: syzbot+99d4fec338b62b703891@syzkaller.appspotmail.com
+   struct btf *btf __free(btf_put) = NULL;
 
-Tested on:
+Then the btf descriptor will always have btf_put() called on it if it
+isn't NULL or ERR before exiting the function.
 
-commit:         89748acd Merge tag 'drm-next-2025-08-01' of https://gi..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=114c39bc580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e4e0e50eb954bc80
-dashboard link: https://syzkaller.appspot.com/bug?extid=99d4fec338b62b703891
-compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=135daf82580000
+Where needed, no_free_ptr(btf) is used to assign the btf descriptor to a
+pointer that will be used outside the function.
 
-Note: testing is done by a robot and is best-effort only.
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ include/linux/btf.h         |  4 +++
+ kernel/bpf/btf.c            | 56 +++++++++++--------------------------
+ kernel/trace/trace_btf.c    | 15 +++++-----
+ kernel/trace/trace_output.c |  8 ++----
+ 4 files changed, 31 insertions(+), 52 deletions(-)
+
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index b2983706292f..e118c69c4996 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -8,6 +8,7 @@
+ #include <linux/bpfptr.h>
+ #include <linux/bsearch.h>
+ #include <linux/btf_ids.h>
++#include <linux/cleanup.h>
+ #include <uapi/linux/btf.h>
+ #include <uapi/linux/bpf.h>
+ 
+@@ -150,6 +151,9 @@ struct btf *btf_get_by_fd(int fd);
+ int btf_get_info_by_fd(const struct btf *btf,
+ 		       const union bpf_attr *attr,
+ 		       union bpf_attr __user *uattr);
++
++DEFINE_FREE(btf_put, struct btf *, if (!IS_ERR_OR_NULL(_T)) btf_put(_T))
++
+ /* Figure out the size of a type_id.  If type_id is a modifier
+  * (e.g. const), it will be resolved to find out the type with size.
+  *
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 1d2cf898e21e..480657912c96 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -3788,7 +3788,7 @@ static int btf_parse_kptr(const struct btf *btf, struct btf_field *field,
+ 	/* If a matching btf type is found in kernel or module BTFs, kptr_ref
+ 	 * is that BTF, otherwise it's program BTF
+ 	 */
+-	struct btf *kptr_btf;
++	struct btf *kptr_btf __free(btf_put) = NULL;
+ 	int ret;
+ 	s32 id;
+ 
+@@ -3827,23 +3827,17 @@ static int btf_parse_kptr(const struct btf *btf, struct btf_field *field,
+ 		 * the same time.
+ 		 */
+ 		dtor_btf_id = btf_find_dtor_kfunc(kptr_btf, id);
+-		if (dtor_btf_id < 0) {
+-			ret = dtor_btf_id;
+-			goto end_btf;
+-		}
++		if (dtor_btf_id < 0)
++			return dtor_btf_id;
+ 
+ 		dtor_func = btf_type_by_id(kptr_btf, dtor_btf_id);
+-		if (!dtor_func) {
+-			ret = -ENOENT;
+-			goto end_btf;
+-		}
++		if (!dtor_func)
++			return -ENOENT;
+ 
+ 		if (btf_is_module(kptr_btf)) {
+ 			mod = btf_try_get_module(kptr_btf);
+-			if (!mod) {
+-				ret = -ENXIO;
+-				goto end_btf;
+-			}
++			if (!mod)
++				return -ENXIO;
+ 		}
+ 
+ 		/* We already verified dtor_func to be btf_type_is_func
+@@ -3860,13 +3854,11 @@ static int btf_parse_kptr(const struct btf *btf, struct btf_field *field,
+ 
+ found_dtor:
+ 	field->kptr.btf_id = id;
+-	field->kptr.btf = kptr_btf;
++	field->kptr.btf = no_free_ptr(kptr_btf);
+ 	field->kptr.module = mod;
+ 	return 0;
+ end_mod:
+ 	module_put(mod);
+-end_btf:
+-	btf_put(kptr_btf);
+ 	return ret;
+ }
+ 
+@@ -8699,7 +8691,7 @@ u32 *btf_kfunc_is_modify_return(const struct btf *btf, u32 kfunc_btf_id,
+ static int __register_btf_kfunc_id_set(enum btf_kfunc_hook hook,
+ 				       const struct btf_kfunc_id_set *kset)
+ {
+-	struct btf *btf;
++	struct btf *btf __free(btf_put) = NULL;
+ 	int ret, i;
+ 
+ 	btf = btf_get_module_btf(kset->owner);
+@@ -8712,14 +8704,10 @@ static int __register_btf_kfunc_id_set(enum btf_kfunc_hook hook,
+ 		ret = btf_check_kfunc_protos(btf, btf_relocate_id(btf, kset->set->pairs[i].id),
+ 					     kset->set->pairs[i].flags);
+ 		if (ret)
+-			goto err_out;
++			return ret;
+ 	}
+ 
+-	ret = btf_populate_kfunc_set(btf, hook, kset);
+-
+-err_out:
+-	btf_put(btf);
+-	return ret;
++	return btf_populate_kfunc_set(btf, hook, kset);
+ }
+ 
+ /* This function must be invoked only from initcalls/module init functions */
+@@ -8807,7 +8795,7 @@ int register_btf_id_dtor_kfuncs(const struct btf_id_dtor_kfunc *dtors, u32 add_c
+ 				struct module *owner)
+ {
+ 	struct btf_id_dtor_kfunc_tab *tab;
+-	struct btf *btf;
++	struct btf *btf __free(btf_put) = NULL;
+ 	u32 tab_cnt, i;
+ 	int ret;
+ 
+@@ -8873,7 +8861,6 @@ int register_btf_id_dtor_kfuncs(const struct btf_id_dtor_kfunc *dtors, u32 add_c
+ end:
+ 	if (ret)
+ 		btf_free_dtor_kfunc_tab(btf);
+-	btf_put(btf);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(register_btf_id_dtor_kfuncs);
+@@ -9484,9 +9471,8 @@ bpf_struct_ops_find(struct btf *btf, u32 type_id)
+ 
+ int __register_bpf_struct_ops(struct bpf_struct_ops *st_ops)
+ {
+-	struct bpf_verifier_log *log;
+-	struct btf *btf;
+-	int err = 0;
++	struct bpf_verifier_log *log __free(kfree) = NULL;
++	struct btf *btf __free(btf_put) = NULL;
+ 
+ 	btf = btf_get_module_btf(st_ops->owner);
+ 	if (!btf)
+@@ -9495,20 +9481,12 @@ int __register_bpf_struct_ops(struct bpf_struct_ops *st_ops)
+ 		return PTR_ERR(btf);
+ 
+ 	log = kzalloc(sizeof(*log), GFP_KERNEL | __GFP_NOWARN);
+-	if (!log) {
+-		err = -ENOMEM;
+-		goto errout;
+-	}
++	if (!log)
++		return -ENOMEM;
+ 
+ 	log->level = BPF_LOG_KERNEL;
+ 
+-	err = btf_add_struct_ops(btf, st_ops, log);
+-
+-errout:
+-	kfree(log);
+-	btf_put(btf);
+-
+-	return err;
++	return btf_add_struct_ops(btf, st_ops, log);
+ }
+ EXPORT_SYMBOL_GPL(__register_bpf_struct_ops);
+ #endif
+diff --git a/kernel/trace/trace_btf.c b/kernel/trace/trace_btf.c
+index 5bbdbcbbde3c..1c9111ab538b 100644
+--- a/kernel/trace/trace_btf.c
++++ b/kernel/trace/trace_btf.c
+@@ -13,26 +13,25 @@
+ const struct btf_type *btf_find_func_proto(const char *func_name, struct btf **btf_p)
+ {
+ 	const struct btf_type *t;
++	struct btf *btf __free(btf_put) = NULL;
+ 	s32 id;
+ 
+-	id = bpf_find_btf_id(func_name, BTF_KIND_FUNC, btf_p);
++	id = bpf_find_btf_id(func_name, BTF_KIND_FUNC, &btf);
+ 	if (id < 0)
+ 		return NULL;
+ 
+ 	/* Get BTF_KIND_FUNC type */
+-	t = btf_type_by_id(*btf_p, id);
++	t = btf_type_by_id(btf, id);
+ 	if (!t || !btf_type_is_func(t))
+-		goto err;
++		return NULL;
+ 
+ 	/* The type of BTF_KIND_FUNC is BTF_KIND_FUNC_PROTO */
+-	t = btf_type_by_id(*btf_p, t->type);
++	t = btf_type_by_id(btf, t->type);
+ 	if (!t || !btf_type_is_func_proto(t))
+-		goto err;
++		return NULL;
+ 
++	*btf_p = no_free_ptr(btf);
+ 	return t;
+-err:
+-	btf_put(*btf_p);
+-	return NULL;
+ }
+ 
+ /*
+diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+index 0b3db02030a7..c11adfa83d5c 100644
+--- a/kernel/trace/trace_output.c
++++ b/kernel/trace/trace_output.c
+@@ -698,7 +698,7 @@ void print_function_args(struct trace_seq *s, unsigned long *args,
+ 	const char *param_name;
+ 	char name[KSYM_NAME_LEN];
+ 	unsigned long arg;
+-	struct btf *btf;
++	struct btf *btf __free(btf_put) = NULL;
+ 	s32 tid, nr = 0;
+ 	int a, p, x;
+ 
+@@ -716,7 +716,7 @@ void print_function_args(struct trace_seq *s, unsigned long *args,
+ 
+ 	param = btf_get_func_param(t, &nr);
+ 	if (!param)
+-		goto out_put;
++		goto out;
+ 
+ 	for (a = 0, p = 0; p < nr; a++, p++) {
+ 		if (p)
+@@ -756,7 +756,7 @@ void print_function_args(struct trace_seq *s, unsigned long *args,
+ 				trace_seq_putc(s, ':');
+ 				if (++a == FTRACE_REGS_MAX_ARGS) {
+ 					trace_seq_puts(s, "...]");
+-					goto out_put;
++					goto out;
+ 				}
+ 				trace_seq_printf(s, "0x%lx", args[a]);
+ 			}
+@@ -764,8 +764,6 @@ void print_function_args(struct trace_seq *s, unsigned long *args,
+ 			break;
+ 		}
+ 	}
+-out_put:
+-	btf_put(btf);
+ out:
+ 	trace_seq_printf(s, ")");
+ }
+-- 
+2.47.2
+
 
