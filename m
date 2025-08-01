@@ -1,227 +1,147 @@
-Return-Path: <bpf+bounces-64853-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64854-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C83CB17A60
-	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 02:10:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94556B17A63
+	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 02:12:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 874CF7AC98E
-	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 00:09:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFF2016858C
+	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 00:12:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0376C1DFFC;
-	Fri,  1 Aug 2025 00:10:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CE1A2E3709;
+	Fri,  1 Aug 2025 00:12:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="sMEVM6f7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pkbOXKNu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0328EC148
-	for <bpf@vger.kernel.org>; Fri,  1 Aug 2025 00:10:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 996ACBA4A;
+	Fri,  1 Aug 2025 00:12:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754007016; cv=none; b=nK/HtVJLOd0SlPyRJ0s+HW/cZ+KWpta4OkPwXsVhPgUV+WUdzQ8jQ3X7iND7E0Ro1fGN5Htmu+Xoe0Rt50B4XXgIZXI+2Hda4e57koOI2ONmVD229fQAenNDmLy0ja8hghp5bJtounlDarp1S165BVht0XObTtioWM2xfe8Jkco=
+	t=1754007158; cv=none; b=P1TeIz46DWV5Vh+SHyUPU6fWtJtJgEHA23FzR89PAZ8ZjkCYtPvBgC/AcY1dgFquLm8dTvfKilskeWEccA24YJ7X/S0hP+AOW0Q494zFtD0bmGEZMzsolrSMCzFeJmulCWdmLKcdeUFNJQCRYTQkSmSAD8RifmiFPZo8wvA0zGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754007016; c=relaxed/simple;
-	bh=PuRe2nGj0EpdYZQrojmZRs4VS2y7HRUovorqQS5Ex3w=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=DW/99zHxcSxxAEZX934z9kHeoWsU0vuQV5G+GjPWlTgugHYHS3IiW2XzFohik8HiBKh33yY8CwJAGYRFGSzix6GZqs9YgQkPFLd89aTNS04t4bBhGTxOAoKJLQt5oYvrwtXHBE47MI+xqdXySgWxFMG+BefSJM58oufsnZBQNLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--samitolvanen.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=sMEVM6f7; arc=none smtp.client-ip=209.85.216.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--samitolvanen.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-31366819969so1775969a91.0
-        for <bpf@vger.kernel.org>; Thu, 31 Jul 2025 17:10:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1754007014; x=1754611814; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=f5uDl85wDGhTjSIRJ3MDpBVcbv+/o9QKj57RG6DGCPk=;
-        b=sMEVM6f7jcWDlIiMk1LjPmnnlnQpwhkmdbsrc9F61847XP669mRqvQs8RZv0EMOA+a
-         SyBl24gOTZwScae4FbmtA3b4MnZMrHJIU8juX/Q6BgGiTxhPemsVdKuPo4DQ8xY9HB8I
-         shzGsssUflLOazdINXuVYnK1z5CMN2bB6JiYiutDFWGGBPMIHeygMHkiUkDIPkLc6c1w
-         +t2lIhgmg7qvMBgvQb7Ly28RPC0F2yLS62n/zpDdrhDK6farJvTB2dyo9wCbeti7dhJd
-         JMAYD8jkD0tGoGD3C/bytP7S5vw/wATxU0SA1Xtz6Om7Oy4oIE1XFgaSlgwKKS7D07M5
-         yTDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754007014; x=1754611814;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=f5uDl85wDGhTjSIRJ3MDpBVcbv+/o9QKj57RG6DGCPk=;
-        b=Mlj584M45n2v4pw3D83kYoVowxgq94V2o/kAm6wDj+ZAKWx+PQqo3uby8gVLrA9ML8
-         Fhm4rAtv4PpZTPgcunCPoZsPehyS06meZLd7F5pjUR50pLDvrkif5QaXRmDp3FzvCObd
-         kq6B/gQtV5IvtqqmfG2u8SSw0H3O7Jd3AfipdLa+tlJJoy5CtJjt9XcwJBFECH7T+/la
-         0JVWfnX0iKq978WUVCC4U6pqGYu17dc5S9q3ouTj2ufLvQkWNg5QLq8DWOCeYBQ97e6N
-         2YxYIjEpIwckJM17x5kyCMxvkAB/ZHxPArpI0iznF07BRY4YQ+D6mC0gblH28YbUFC8p
-         chMg==
-X-Gm-Message-State: AOJu0YzTOBTIkcDf9GYevql3LTOy9BBnbI9+lWP0vvfnAAkrT0HVKEn7
-	Vvuswe/ArPjiisHwO03sJz1j/7T551CnflZ30omfvF/DcXw8IAl0q3OR+1VuQg1iNv1dweRKG6d
-	VoH4ny2itQkNYIOAWS/dStQPQzF9zYxNy5Xan4PHapz6zT97bgyWlOgKr3Xwv5YY+6BRC7VaDmY
-	lng28Rr8y8J7kcJDwUhSw+JNSjiahyqtbsEgSpxkVjq7XyhIdKlxs3mHkb9Ec1iSvf
-X-Google-Smtp-Source: AGHT+IGe6iTItosrIYdSiu53+Ci7qA2QFXWZJ90ywhAykW0k2WhvUSTmqFJV6z+v+U/Hxqi/jtBom1ufe6Z6w654MMc=
-X-Received: from pjx3.prod.google.com ([2002:a17:90b:5683:b0:311:6040:2c7a])
- (user=samitolvanen job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:90b:35d1:b0:312:e6f1:c05d with SMTP id 98e67ed59e1d1-31f5dd891dcmr12128094a91.2.1754007014453;
- Thu, 31 Jul 2025 17:10:14 -0700 (PDT)
-Date: Fri,  1 Aug 2025 00:10:08 +0000
-In-Reply-To: <20250801001004.1859976-5-samitolvanen@google.com>
+	s=arc-20240116; t=1754007158; c=relaxed/simple;
+	bh=bLAjkr0rM9XAbo8UHtiwK4eJ6EnmjrJMGttjy+b6bi8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=mmH3/APilnnL1aDEdrPhHJd8xLdBwv/zwjZXN2i1KChRoFP65KEIgL0LzMQSSh4Po9pFcyDpjXIq+EF44NL9IfgIFIOZnhKfUy4QQ2We0hmMadiJm+nj6jqTOhQc58Kbq8U7lpfF2sv9/u4EMXe5PblfGkMU/G6tQGl4yfPbYA4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pkbOXKNu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EBBCC4CEEF;
+	Fri,  1 Aug 2025 00:12:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1754007158;
+	bh=bLAjkr0rM9XAbo8UHtiwK4eJ6EnmjrJMGttjy+b6bi8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=pkbOXKNuvnDWTQKF4c7jLuX6Tch5m1OIWPf9pK0N6XicmokAnjqXuCz1m+CVAAk10
+	 53I6mB0UkbaxezMjpAope/oHo/5IC53irHycZWbtLfpZJlnw8qVhhdZT0TfTlZ0aTY
+	 iMMNr2zAsXTOHRFhj/FX9PnYcNOqhFLaxm7MUxeV+tXfG+pESZJjEVg6ByBG5y7XWF
+	 /zYKBt4DRXkLAkL3GDqGjsRRj2e/JTGhvjcWRTGFhJO2lLTnki59HOTjtXsNJ1ittk
+	 Se6ZIuYbm4DGOvLN2nO8nm9u/RK/s2INL1RWqKhEB17NkIpxM6h3Csu5gGITsZfO2/
+	 3B0/lQzJDoAuA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 24731CE0A73; Thu, 31 Jul 2025 17:12:38 -0700 (PDT)
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: rcu@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	rostedt@goodmis.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	bpf@vger.kernel.org
+Subject: [PATCH v5 1/6] srcu: Move rcu_is_watching() checks to srcu_read_{,un}lock_fast()
+Date: Thu, 31 Jul 2025 17:12:31 -0700
+Message-Id: <20250801001236.4091760-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <c8842c55-faf8-4cde-89bf-da77d91eadcb@paulmck-laptop>
+References: <c8842c55-faf8-4cde-89bf-da77d91eadcb@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250801001004.1859976-5-samitolvanen@google.com>
-X-Developer-Key: i=samitolvanen@google.com; a=openpgp; fpr=35CCFB63B283D6D3AEB783944CB5F6848BBC56EE
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4507; i=samitolvanen@google.com;
- h=from:subject; bh=hZabVFFCxKVAeJdp4nYEgQjtD7vc/y+UZPfwjcPcYes=;
- b=owGbwMvMwCUWxa662nLh8irG02pJDBk9rPdi03WyDi2s+j2TLXrpqwQv4byFyydv75kopqocs
- DiXUWVmRykLgxgXg6yYIkvL19Vbd393Sn31uUgCZg4rE8gQBi5OAZjI5U0M/+sPv9nwy1tTa8sK
- 7+iJU/REprzNuvh764M2XiPGqQp7Xrsz/JVLcNrHEN/pst8r23nVypj3X66827fl0ElBj7VHOT6 /cmcHAA==
-X-Mailer: git-send-email 2.50.1.565.gc32cd1483b-goog
-Message-ID: <20250801001004.1859976-8-samitolvanen@google.com>
-Subject: [PATCH bpf-next v14 3/3] arm64/cfi,bpf: Support kCFI + BPF on arm64
-From: Sami Tolvanen <samitolvanen@google.com>
-To: bpf@vger.kernel.org, Puranjay Mohan <puranjay@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	Maxwell Bland <mbland@motorola.com>, Puranjay Mohan <puranjay12@gmail.com>, 
-	Sami Tolvanen <samitolvanen@google.com>, Dao Huang <huangdao1@oppo.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-From: Puranjay Mohan <puranjay12@gmail.com>
+The rcu_is_watching() warnings are currently in the SRCU-tree
+implementations of __srcu_read_lock_fast() and __srcu_read_unlock_fast().
+However, this makes it difficult to create _notrace variants of
+srcu_read_lock_fast() and srcu_read_unlock_fast().  This commit therefore
+moves these checks to srcu_read_lock_fast(), srcu_read_unlock_fast(),
+srcu_down_read_fast(), and srcu_up_read_fast().
 
-Currently, bpf_dispatcher_*_func() is marked with `__nocfi` therefore
-calling BPF programs from this interface doesn't cause CFI warnings.
-
-When BPF programs are called directly from C: from BPF helpers or
-struct_ops, CFI warnings are generated.
-
-Implement proper CFI prologues for the BPF programs and callbacks and
-drop __nocfi for arm64. Fix the trampoline generation code to emit kCFI
-prologue when a struct_ops trampoline is being prepared.
-
-Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-Co-developed-by: Maxwell Bland <mbland@motorola.com>
-Signed-off-by: Maxwell Bland <mbland@motorola.com>
-Co-developed-by: Sami Tolvanen <samitolvanen@google.com>
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Tested-by: Dao Huang <huangdao1@oppo.com>
-Acked-by: Will Deacon <will@kernel.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: <bpf@vger.kernel.org>
 ---
- arch/arm64/include/asm/cfi.h  |  7 +++++++
- arch/arm64/net/bpf_jit_comp.c | 30 +++++++++++++++++++++++++++---
- 2 files changed, 34 insertions(+), 3 deletions(-)
- create mode 100644 arch/arm64/include/asm/cfi.h
+ include/linux/srcu.h     | 4 ++++
+ include/linux/srcutree.h | 2 --
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/include/asm/cfi.h b/arch/arm64/include/asm/cfi.h
-new file mode 100644
-index 000000000000..ab90f0351b7a
---- /dev/null
-+++ b/arch/arm64/include/asm/cfi.h
-@@ -0,0 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_ARM64_CFI_H
-+#define _ASM_ARM64_CFI_H
-+
-+#define __bpfcall
-+
-+#endif /* _ASM_ARM64_CFI_H */
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 97dfd5432809..52ffe115a8c4 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -10,6 +10,7 @@
- #include <linux/arm-smccc.h>
- #include <linux/bitfield.h>
- #include <linux/bpf.h>
-+#include <linux/cfi.h>
- #include <linux/filter.h>
- #include <linux/memory.h>
- #include <linux/printk.h>
-@@ -114,6 +115,14 @@ static inline void emit(const u32 insn, struct jit_ctx *ctx)
- 	ctx->idx++;
- }
- 
-+static inline void emit_u32_data(const u32 data, struct jit_ctx *ctx)
-+{
-+	if (ctx->image != NULL && ctx->write)
-+		ctx->image[ctx->idx] = data;
-+
-+	ctx->idx++;
-+}
-+
- static inline void emit_a64_mov_i(const int is64, const int reg,
- 				  const s32 val, struct jit_ctx *ctx)
+diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+index f179700fecafb..478c73d067f7d 100644
+--- a/include/linux/srcu.h
++++ b/include/linux/srcu.h
+@@ -275,6 +275,7 @@ static inline struct srcu_ctr __percpu *srcu_read_lock_fast(struct srcu_struct *
  {
-@@ -174,6 +183,12 @@ static inline void emit_bti(u32 insn, struct jit_ctx *ctx)
- 		emit(insn, ctx);
+ 	struct srcu_ctr __percpu *retval;
+ 
++	RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_lock_fast().");
+ 	srcu_check_read_flavor_force(ssp, SRCU_READ_FLAVOR_FAST);
+ 	retval = __srcu_read_lock_fast(ssp);
+ 	rcu_try_lock_acquire(&ssp->dep_map);
+@@ -295,6 +296,7 @@ static inline struct srcu_ctr __percpu *srcu_read_lock_fast(struct srcu_struct *
+ static inline struct srcu_ctr __percpu *srcu_down_read_fast(struct srcu_struct *ssp) __acquires(ssp)
+ {
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && in_nmi());
++	RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_down_read_fast().");
+ 	srcu_check_read_flavor_force(ssp, SRCU_READ_FLAVOR_FAST);
+ 	return __srcu_read_lock_fast(ssp);
+ }
+@@ -389,6 +391,7 @@ static inline void srcu_read_unlock_fast(struct srcu_struct *ssp, struct srcu_ct
+ 	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_FAST);
+ 	srcu_lock_release(&ssp->dep_map);
+ 	__srcu_read_unlock_fast(ssp, scp);
++	RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_unlock_fast().");
  }
  
-+static inline void emit_kcfi(u32 hash, struct jit_ctx *ctx)
-+{
-+	if (IS_ENABLED(CONFIG_CFI_CLANG))
-+		emit_u32_data(hash, ctx);
-+}
-+
- /*
-  * Kernel addresses in the vmalloc space use at most 48 bits, and the
-  * remaining bits are guaranteed to be 0x1. So we can compose the address
-@@ -503,7 +518,6 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
- 	const u8 arena_vm_base = bpf2a64[ARENA_VM_START];
- 	const u8 priv_sp = bpf2a64[PRIVATE_SP];
- 	void __percpu *priv_stack_ptr;
--	const int idx0 = ctx->idx;
- 	int cur_offset;
+ /**
+@@ -405,6 +408,7 @@ static inline void srcu_up_read_fast(struct srcu_struct *ssp, struct srcu_ctr __
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && in_nmi());
+ 	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_FAST);
+ 	__srcu_read_unlock_fast(ssp, scp);
++	RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_up_read_fast().");
+ }
  
- 	/*
-@@ -529,6 +543,9 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
- 	 *
- 	 */
+ /**
+diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+index bf44d8d1e69ea..043b5a67ef71e 100644
+--- a/include/linux/srcutree.h
++++ b/include/linux/srcutree.h
+@@ -244,7 +244,6 @@ static inline struct srcu_ctr __percpu *__srcu_read_lock_fast(struct srcu_struct
+ {
+ 	struct srcu_ctr __percpu *scp = READ_ONCE(ssp->srcu_ctrp);
  
-+	emit_kcfi(is_main_prog ? cfi_bpf_hash : cfi_bpf_subprog_hash, ctx);
-+	const int idx0 = ctx->idx;
-+
- 	/* bpf function may be invoked by 3 instruction types:
- 	 * 1. bl, attached via freplace to bpf prog via short jump
- 	 * 2. br, attached via freplace to bpf prog via long jump
-@@ -2146,9 +2163,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 		jit_data->ro_header = ro_header;
- 	}
+-	RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_lock_fast().");
+ 	if (!IS_ENABLED(CONFIG_NEED_SRCU_NMI_SAFE))
+ 		this_cpu_inc(scp->srcu_locks.counter); /* Y */
+ 	else
+@@ -275,7 +274,6 @@ static inline void __srcu_read_unlock_fast(struct srcu_struct *ssp, struct srcu_
+ 		this_cpu_inc(scp->srcu_unlocks.counter);  /* Z */
+ 	else
+ 		atomic_long_inc(raw_cpu_ptr(&scp->srcu_unlocks));  /* Z */
+-	RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_unlock_fast().");
+ }
  
--	prog->bpf_func = (void *)ctx.ro_image;
-+	prog->bpf_func = (void *)ctx.ro_image + cfi_get_offset();
- 	prog->jited = 1;
--	prog->jited_len = prog_size;
-+	prog->jited_len = prog_size - cfi_get_offset();
- 
- 	if (!prog->is_func || extra_pass) {
- 		int i;
-@@ -2527,6 +2544,12 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
- 	/* return address locates above FP */
- 	retaddr_off = stack_size + 8;
- 
-+	if (flags & BPF_TRAMP_F_INDIRECT) {
-+		/*
-+		 * Indirect call for bpf_struct_ops
-+		 */
-+		emit_kcfi(cfi_get_func_hash(func_addr), ctx);
-+	}
- 	/* bpf trampoline may be invoked by 3 instruction types:
- 	 * 1. bl, attached to bpf prog or kernel function via short jump
- 	 * 2. br, attached to bpf prog or kernel function via long jump
-@@ -3045,6 +3068,7 @@ void bpf_jit_free(struct bpf_prog *prog)
- 					   sizeof(jit_data->header->size));
- 			kfree(jit_data);
- 		}
-+		prog->bpf_func -= cfi_get_offset();
- 		hdr = bpf_jit_binary_pack_hdr(prog);
- 		bpf_jit_binary_pack_free(hdr, NULL);
- 		priv_stack_ptr = prog->aux->priv_stack_ptr;
+ void __srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor);
 -- 
-2.50.1.565.gc32cd1483b-goog
+2.40.1
 
 
