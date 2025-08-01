@@ -1,144 +1,103 @@
-Return-Path: <bpf+bounces-64940-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64941-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9380B18968
-	for <lists+bpf@lfdr.de>; Sat,  2 Aug 2025 01:24:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11154B18969
+	for <lists+bpf@lfdr.de>; Sat,  2 Aug 2025 01:26:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C132AA5547
-	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 23:24:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CB525A1AA9
+	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 23:26:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73BF82367A3;
-	Fri,  1 Aug 2025 23:24:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F7DF24169F;
+	Fri,  1 Aug 2025 23:26:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X7As4OZl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FLIOjx1G"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DA191917E3
-	for <bpf@vger.kernel.org>; Fri,  1 Aug 2025 23:23:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76F581917E3;
+	Fri,  1 Aug 2025 23:26:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754090640; cv=none; b=uOHo/9vx1bbxguZR2TCNXmRmfOOeICD03BWKFxOjJ/aCo7vm6iRR4LyZPNXzKvaS9rUCx3Gh5841z4/VMbLR8JcnQabocX20LVYrikrOeWqq/AJhGZPansRCgQavzL1vsVbhVn7Ver5a+DTlZ6iEL0UgJujuv5CjBpufGu1xxUw=
+	t=1754090810; cv=none; b=rq6yk+803YVhCPPJAV3YDvU32MchyXJvUHa79c/JMIWa1uLU61lpX60w7nA3ea1eOcqIbPyuieH/459c/Kc0R5ALadylKNjby9wnCFD4FNPzZ25DEBWWekzYCg5Sy/TJzSoH9JJV499SnZbytONIf6gAbBpm70eQMyLOVbCQXs4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754090640; c=relaxed/simple;
-	bh=3OqKsAZ8iWja4FLE6EDULOk3Eo96bs+uHL2zoAiuPu8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TYz3Co7d5sofuMuYeo6N9cUxge40RsxvNNEDv3bNUzin0hGoUpBpyCE/LrC0Qw0B1DGJWmgAXlV38En98G/jMx9/ieAbXfViYaav6vAmHRT1Msn7bSVeKng/MSgotYm16nLOfyFYBKQyeiuJwO8TW+kAlTNjCrxttziCAgnyDVw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X7As4OZl; arc=none smtp.client-ip=209.85.210.171
+	s=arc-20240116; t=1754090810; c=relaxed/simple;
+	bh=CjsEjwLKMohIY6SiNqukeS4bVku8l/Rw19rjVinTH/w=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Gx/61ZZntiRVRMxv5/DnFsRzosTtnWMcH5DUftvVhmbuLiUbsb80fVh1o99+ct5GMlTVnQ4DFpZOrl30SZGRI21UmPeYS5xXn11u+/9NbONWNXoo0GaTe0vHc+9TW7JGpgtxr6uNmjMrvdLl0Xdz3KEbr0e0t2HLRh4qa2foRnQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FLIOjx1G; arc=none smtp.client-ip=209.85.214.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-76b0724d64bso2471486b3a.1
-        for <bpf@vger.kernel.org>; Fri, 01 Aug 2025 16:23:58 -0700 (PDT)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-23fd3fe0d81so22142145ad.3;
+        Fri, 01 Aug 2025 16:26:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754090638; x=1754695438; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jUUA+TycWzgKUxSRYa5Uyh/xLusmCjTnVEZqEIU8/no=;
-        b=X7As4OZlwjiBmMR3W+DRXwshIkH9Ozgk8VyiaOrWxS6mEQmVuHLsdSDQYSQiHlRWPO
-         8BXg/r+jW9rnjKG9EE02GtIT9Jb9E6jmfsZv3lNumnRrxIIeZ3N0KmGUP1+Qxb0p0h3l
-         XTXhyLdjnlMm6ApHOitmwmXBbZcnEqJpyjqHsj7N8MxPjanDMXQPX66oeWUCRmfJtTX3
-         p6JsxSt8I4RbyGqWvAUWr45ZyWSdd2p+FZZVoDarWDiUBzAt2sUzK9Aoalk+oH5EapLZ
-         q6TMEgfsjjnDFpWsPqciV4pZ1WMKnO+MWOATvYd5EHFJ+TyHV0Ym6sKqsOk6D9qT/nEw
-         efGQ==
+        d=gmail.com; s=20230601; t=1754090809; x=1754695609; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=CjsEjwLKMohIY6SiNqukeS4bVku8l/Rw19rjVinTH/w=;
+        b=FLIOjx1GpV8hVPnG0dUiJbj19duRdU+Ytb6bj5W9FCdarLZqnBWUTD5JFjmbwrXDr2
+         c0SaLsP0xlMD4bgavqm5ECRew1R9KWyqvsnGVMg/fMN1H0Rr6P9jRh7J9hDK2zY9AOlG
+         wLuNG/SrtSk0e51DBI2i1CJO8N235vxsHxK/OaA88x66+gXOGnemXLc0gnomeaDmpa9s
+         em4FxT7I/8YFbpYxffeJ3Ow6qx0RVCoKSveEBT0Y0aTeIBRqEzPn8S5ij7GUpLvKXKIJ
+         cEwyxmxuSpL9SOHe58tv+6IlVObiZbobI8aP/ej41P3RgFCKstqDlT4+0tA+zvSZ2VHB
+         xdOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754090638; x=1754695438;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jUUA+TycWzgKUxSRYa5Uyh/xLusmCjTnVEZqEIU8/no=;
-        b=UWtjJcPdszN5FhPQPD9QkAqyNDf2RX5+mIxOgUnUsPMlNVE2PEVyydyyvXt9Ueftny
-         2xFhjA7l5y3RSTQCS3hYriiZXjkNBV2DV3cyb8Z6uFoBcESxwFnIBhi00/3ibsWkeUNH
-         DAvDitJeWVdw4qzlYbPXhDgVnOtsbp89fSRvK0ZFrgpg1zGyuB2IsOOArUHpt8fFRO+y
-         ccbwkQpp5rzjiInxf4hn1+hvJlpej5ZfL4MJW/Ikl6/Cy1dkPTKrNRskqcID1ELDhzIu
-         BffeTdD6fE40buPxQ2sgiQbUnWsaQ8BQQjSYYx6Qo2YEdfFGnzhRVt51RCdfZEoDU9mj
-         eV1Q==
-X-Gm-Message-State: AOJu0Yzmz6PiJ5x2CelFTsAtRXXtZjAM1UroenYIUyYK1habXBpWMAYf
-	gxz+Uvck6X9KV3AH6P/I+fAO4bRIXY+pi/UKJSlX1trEQVg3cKmpayZj7KyXZb04
-X-Gm-Gg: ASbGncsgWcgzxtViPeaVDiABqu3czlxgJJNW8XKgrwPbR7Km82p/oIWW74pbe8cXaEX
-	DwjC7OK2Y+AFv3AJ0iPrPvHlz1Nt5xgtJ3DZLtXQ6Ovm3PEu7r72vlwZPu2rS3EvLiS2PLUPitu
-	E6ThFp6GixD8V5YYZhO6b0AgB9+ilft89jKFZgKEOQX+R6jz+bLi5r7VANkdGJIFXv7y1xZlAUe
-	tlwygJyWl3DJINExOFYnD9ZKIIEAwAMVOQ/zT72y6g7n8/aOS2GFRJtltxcEdDDCiubfU9lWWNC
-	3t6n5sLc3WEBIyPj/NwQENyZ8umbqbTEEnv8QHZZ/SZRyiEVBXWmiorYJfgNz10x2AFN3vGyE/m
-	CxOtPvUfo7Mup+JY=
-X-Google-Smtp-Source: AGHT+IHqoqFZGrA2ESdWIoPh6SDs7Jetpxgm+nGhLOY4lrqSI3oooggT4pmkRPPwo2r4Sg2S3f5hDQ==
-X-Received: by 2002:a05:6a20:9154:b0:220:396b:991e with SMTP id adf61e73a8af0-23df90d1e42mr2091186637.32.1754090637697;
-        Fri, 01 Aug 2025 16:23:57 -0700 (PDT)
-Received: from honey-badger ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b422b7e4b75sm4281685a12.27.2025.08.01.16.23.56
+        d=1e100.net; s=20230601; t=1754090809; x=1754695609;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CjsEjwLKMohIY6SiNqukeS4bVku8l/Rw19rjVinTH/w=;
+        b=oFmqaNRv481WFcVS5OhrZVmXEseVgF/7No/wRbXLtx+m9b5f8w2Ssf3VHCPieqxcbK
+         0cbeyKCylDApziUkThoz9C/BiR9WIzIY3gbHicwzeIG7WWC+v5jDwvGzFbrg8H9o3DYh
+         HDX+OqqDIPFg2l+bdnP8ZFpN9Vq1SoGHjr8KWPzhrLnaI9pT9KW2uHEkg0D98R2/e/2J
+         YzKkYfPDYLwAYelRELjMnCNT9dQVl4uW9h0hJMdjkGSu53P3YqbTxglVSIKEbA4RvRYV
+         mXEwVsC5mqGtt44LzhFWfWFaZwcEvf/lcE7+A65q9ZDoyrLYt8vEAf2Qs6M6QfXKG0/f
+         AwOA==
+X-Forwarded-Encrypted: i=1; AJvYcCV+tojIuYaV/cLJ5qY3ACBJnsn+l/1fUP9j75vGRon508UNdS3qTZC64lYWanp7jsL4GRY=@vger.kernel.org, AJvYcCXsgO1d1VYwxZjdfDYweahCOYx5T9C4Ttyldn2jeIzKcNsoy11gH70s4+tuE5TsUPyGCxLLZLAsSG9oaeVh@vger.kernel.org
+X-Gm-Message-State: AOJu0YwOvCgTLfcgPzoNhJF1L1wgPonxHklDEwbH/4+PXxuK3RPILmXY
+	5joQrRAclRdcxgaRNRcKpyOuhPTPrIjXtb9aPM1Qil8ojL+0AR8K8ADI
+X-Gm-Gg: ASbGncvQUr3lfsBv726QkUQ67t3VbIEmOEzbBs0d1VDmrhC1WGDaGPJehY6kTi6sj0q
+	ixn0tEw5ip7VRsAhURdhyfLIztcY473hrbze5WPXLJy01BlciDxnHJsjj4OepGwGzgjIV47ifYz
+	yEP3dwet/A9hGIsQvGsXqIDw7qiJbQ3kvUuBWahDfD9lTSkhCver18syXKuFDxBIHfQNgzBAj43
+	G1MW6crDsQrF28oHELiGO6sf16SNSncdJdPHE9tN40UVc7gLWZqbw/t1sMksgq3tElCgr9Rgpp4
+	nnBo3PHxsQsPI8KSv25OJm2iHmMfMXGrts+uSpLBuE7+1nlFZc8r3R0Gm+aktmgdpgYLJlBJmkz
+	YJtWhAdeWChQQslD8IQ==
+X-Google-Smtp-Source: AGHT+IHO9jIrv2kAux0MKbScAbQT+1RyScN/wJO8AjoqAkeoU07vc0oTFKhW0hqJ4pde5HjVgKyBwg==
+X-Received: by 2002:a17:903:2b10:b0:240:1bca:54 with SMTP id d9443c01a7336-2424701a079mr16921255ad.35.1754090808753;
+        Fri, 01 Aug 2025 16:26:48 -0700 (PDT)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-241e899b491sm52621405ad.131.2025.08.01.16.26.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Aug 2025 16:23:57 -0700 (PDT)
+        Fri, 01 Aug 2025 16:26:48 -0700 (PDT)
+Message-ID: <64519e18c688d063c26a42788feec2bc0172ce52.camel@gmail.com>
+Subject: Re: bpf leaking memory
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org
-Cc: andrii@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	kernel-team@fb.com,
-	yonghong.song@linux.dev,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Jens Axboe <axboe@kernel.dk>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Subject: [PATCH bpf v1] bpf: correctly free bpf_scc_info objects referenced in env->scc_info
-Date: Fri,  1 Aug 2025 16:23:30 -0700
-Message-ID: <20250801232330.1800436-1-eddyz87@gmail.com>
-X-Mailer: git-send-email 2.50.1
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Jens Axboe
+	 <axboe@kernel.dk>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>,  "open list:XDP SOCKETS (AF_XDP)"	
+ <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Date: Fri, 01 Aug 2025 16:26:45 -0700
+In-Reply-To: <CAADnVQKXUWg9uRCPD5ebRXwN4dmBCRUFFM7kN=GxymYz3zU25A@mail.gmail.com>
+References: <97100307-8297-45b2-8f0b-d3b7ef109805@kernel.dk>
+	 <CAADnVQKXUWg9uRCPD5ebRXwN4dmBCRUFFM7kN=GxymYz3zU25A@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-env->scc_info array contains references to bpf_scc_info objects
-allocated lazily in verifier.c:scc_visit_alloc().
-env->scc_cnt was supposed to track env->scc_info array size
-in order to free referenced objects in verifier.c:free_states().
-Initialization of env->scc_cnt was omitted in
-verifier.c:compute_scc(), which is fixed by this commit.
+Hi Jens, Alexei,
 
-To reproduce the bug:
-- build with CONFIG_DEBUG_KMEMLEAK
-- boot and load bpf program with loops, e.g.:
-  ./veristat -q pyperf180.bpf.o
-- initiate memleak scan and check results:
-  echo scan > /sys/kernel/debug/kmemleak
-  cat /sys/kernel/debug/kmemleak
-
-Fixes: c9e31900b54c ("bpf: propagate read/precision marks over state graph backedges")
-Reported-by: Jens Axboe <axboe@kernel.dk>
-Closes: https://lore.kernel.org/bpf/CAADnVQKXUWg9uRCPD5ebRXwN4dmBCRUFFM7kN=GxymYz3zU25A@mail.gmail.com/T/
-Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
----
- kernel/bpf/verifier.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 0806295945e4..c4f69a9e9af6 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -23114,6 +23114,8 @@ static void free_states(struct bpf_verifier_env *env)
- 
- 	for (i = 0; i < env->scc_cnt; ++i) {
- 		info = env->scc_info[i];
-+		if (!info)
-+			continue;
- 		for (j = 0; j < info->num_visits; j++)
- 			free_backedges(&info->visits[j]);
- 		kvfree(info);
-@@ -24554,6 +24556,7 @@ static int compute_scc(struct bpf_verifier_env *env)
- 		err = -ENOMEM;
- 		goto exit;
- 	}
-+	env->scc_cnt = next_scc_id;
- exit:
- 	kvfree(stack);
- 	kvfree(pre);
--- 
-2.50.1
-
+Thank you for the report, I've reproduced the issue and sent a fix:
+https://lore.kernel.org/bpf/20250801232330.1800436-1-eddyz87@gmail.com/T/
+This is an embarrassing bug :(
 
