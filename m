@@ -1,148 +1,125 @@
-Return-Path: <bpf+bounces-64897-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64898-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B83D3B184C1
-	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 17:14:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEA74B184CB
+	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 17:17:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE5BA1C22CF5
-	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 15:15:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0C507A2ED0
+	for <lists+bpf@lfdr.de>; Fri,  1 Aug 2025 15:15:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E41127056B;
-	Fri,  1 Aug 2025 15:14:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C499270ED7;
+	Fri,  1 Aug 2025 15:17:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R+4ZHJHK"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0012.hostedemail.com [216.40.44.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39AB826FA7B;
-	Fri,  1 Aug 2025 15:14:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 000AD1D7E37;
+	Fri,  1 Aug 2025 15:17:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754061284; cv=none; b=gg6l0t7hjFKDmFBiSEy2lHrzf4BrA4PygPRNX44CzCMNwc0qCPXZ95W2q/21EJAdSHWF3oBAsi13mRR8vJUXZvTp6S3E/KmdAmV4KtGRY1o7bFWDjsFC09+ANdcm/97yBJu9GaLygBEhRGmk8wtNKj6OJ+ViYCiV28p/FOsFDtY=
+	t=1754061424; cv=none; b=ZUjSOvDFaE8RRXTdEq0FkQsRskZ0aJA4Q90vb0on7JstbEDwbI35LuuR9uNEi+wizo+x4L5WrcJmcWquUv3CUnq1y4QENBGCzmsUeOwz5Y+m912oDO+gR/TU6O1KcgjDnpsdLviL+Ds4itidKC1sjfheLrmAwivA43Avm1wXBw8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754061284; c=relaxed/simple;
-	bh=z/VXTL9XJ4xncPDLbz2NCbekM9lyeRi/bg0hzGvJNV0=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=ZyN6UibjAbdFtMquNaaIt5wySqYaNVaNRPT4Awof19C1SsN0AcNNAeuuGOQvkigLClOQBwA03gTcflDJR9oBdX9nNx2ViSjb0lwOiInyO11iqo7XpWlanHBPOil1aLtnA8FCQlQdGY1BengIOEomsKmdZYXJEBZkkApHlLmL//A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf13.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay04.hostedemail.com (Postfix) with ESMTP id 5F2501A012E;
-	Fri,  1 Aug 2025 15:14:34 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf13.hostedemail.com (Postfix) with ESMTPA id 8C44420011;
-	Fri,  1 Aug 2025 15:14:32 +0000 (UTC)
-Date: Fri, 1 Aug 2025 11:14:53 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, bpf@vger.kernel.org, Douglas Raillard
- <douglas.raillard@arm.com>, Yonghong Song <yonghong.song@linux.dev>
-Subject: [PATCH v2] tracing: Have unsigned int function args displayed as 
- hexadecimal
-Message-ID: <20250801111453.01502861@gandalf.local.home>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1754061424; c=relaxed/simple;
+	bh=MsPgRvxsTeA8WXRTPFeQLzwhhk5sgNkvZmNvduGJY/U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lF49XclwDVzwqwLyh207hH2u+H4WgsvMTtqIbj7dbAbnfDZ4xJsLE5oaViZQMJRkHgZd2fFR7dpSqX9yjWpcvxHkL55gzCyOPtJj4ul5swELGzrs9Eb0T4twEWT8NZspuuo2SSvsKnKuoR37OJ2lNitTgmD+LAp/jwKmnvKjYWU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R+4ZHJHK; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-ae35f36da9dso363494366b.0;
+        Fri, 01 Aug 2025 08:17:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1754061421; x=1754666221; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2/x0ffNYo475efv7vKzA7UPyOtES3df4ghjY5sd6gc0=;
+        b=R+4ZHJHKfYYHf9Ic3455x4RkqPQtqIeXjXWz8P+MnXF/SyuFrCCBk9rLqTlTGsEX2K
+         vTr7YvXiUJqsrIQgL10WCt8ZVQVLgqj8yLSO3JcK21JF0MQyG2bOnj1SMvZgcOns2EW1
+         X/lnNAVZqx8E5gOT/myEgsntByhSRUKN84+/HLx1ND3RsT8eSFJGMmIkGva0EguH+5JJ
+         o4A4u+9s/Q10dOjDPh9XlqaaO/IpDGcM5gmQInvCPSWwnyGBrNX0ukKroljDp2pp9FRO
+         Eca+YCwlwj1kjADk+xDFBT+Uh5CXwPADtoVue+ClJsjyplb5KmtpgyYt+bVAhznbaHiO
+         tuYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754061421; x=1754666221;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2/x0ffNYo475efv7vKzA7UPyOtES3df4ghjY5sd6gc0=;
+        b=jNd4yQ8jysCu1T0rvCQvsHUwmbKHVPcRSbr/YEhXJowFcPUARi+xkcfGenh4aEQ1CF
+         fEyMX3JFsgqVHFD4vUTRhkrZ5P7nlhvGCGinNQvabbxOV5x0elf/lpuw1mVAzUMvQ7Cq
+         FuAyi3C9bq/6u7Mbl5WwvvTHiAjapN2qH4Rk8QgTx9o5KePYE74XDzvPj/q3sseEv4Gd
+         +qlREFenDLbAN1y5yeT+zSIFnhkC/6KuyjCpDTcDnXB6MmGTRqNjlu3+i/x4BnlswBwp
+         4bnlvs71Vw800QB1wWmqVGpBZ/agiS3yGFCnwACiHgguSk7TlsG0af1kyjNZsYWTjgbd
+         hXlw==
+X-Forwarded-Encrypted: i=1; AJvYcCVQM2q3qHNWaC7yaqxLz1Z0J5JN0bYEk9M/ayTfsbjIFRzNfGfgs4VDGXmUHw6CKlxV6x8=@vger.kernel.org, AJvYcCVR/mlqm7KzAiQNLMvpUBns5EGlag6gvHxX6TaLi93q3LFmHkTWbxyrTG3sBhybj95XatPW5BLrLm4Y2bzb@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx6PO8/jIkoSTecHQE8bqkRrPRCfhQnxSs+o2NEzlz2lZYOuz8D
+	U5cPdgkOlwc+X9QN5jS+YqjBumrUEPeGdUMEvjqsYksbpLZg4J3yfW5Tb3uytJFSJxvha2ezMGU
+	8fvV64+tC9IL+wbBaONO3IyfO3t/zhvI=
+X-Gm-Gg: ASbGncuC7ttzyNWBneCQ0M6W7jWII9TFohqc9giUFcIC6Bw7G71dsN8VA91IqXtRl5I
+	8DNTQR5GVooKAKt75lkqqphO9laBfs96SGvHzxPjudD4YflnR/Wa2H/xyKxNmmKvOzBRVK0ozhE
+	Ibq50A1Y+eFMD9bbJ5QDHhfjsXFygjYelKI4FP44ounUdnZ0hwIvlnsDXA+xcrRy/zXAi9Cbc9P
+	7aDz6IZuZWTKDLa4EKKIz5mT93dw4J/9x3TuFBrOiT18FI=
+X-Google-Smtp-Source: AGHT+IGFOniBjmATFa5PgurgWfkgChIIWQF4xndns27DvuDCapJKWzARsy+Zv8ucWc8WO2SKnbyOoOZEC871jCzRBbY=
+X-Received: by 2002:a17:907:97c5:b0:ae3:67c7:54a6 with SMTP id
+ a640c23a62f3a-af9401bb6b4mr15306166b.34.1754061420974; Fri, 01 Aug 2025
+ 08:17:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: iyzrnr6w4pjc1djibas7in4xd3rr8x5q
-X-Rspamd-Server: rspamout07
-X-Rspamd-Queue-Id: 8C44420011
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX18xssWv1N8xOSx5bKZvuO7jwFLxY1ftaow=
-X-HE-Tag: 1754061272-841103
-X-HE-Meta: U2FsdGVkX1+lplGtHrEAOkWKXPskBQQAellZmOYwCbwAU98pNAaFo31+QYlRNB/tKE+WEwWhpUmiSmvXvt5kQWhomZcmMfOoLL1FETZ66ZZ8uuEiM/VEYynAVv77VYUXoFgbpuLNRNmzpRfn57FZxLWZtpO0T50W2sxzpm9vLjcjno8w+oh+ilaiKzMJpefGec0I1qO5vuUo23L2wTiYuRS3lDvooqx9lgsixZ8quEO16HXPR+RTMAJNk1NX7F+x5V15U/TXlT1HJCgjBRo5FxXbMAEMQ5t0cC+hm4WSBpYp7tm5dNzkrvwoLn2jd9Ho/muqSrZWt4h7cGk8+tOcG6cO6VVzibYWBSF5h2EiuQhvjFFaKZ6L07pgIm9eXGqQvRVIzTkW4HY3TvRf9KYXUA==
+References: <a74ec917c2e3bf4d756a5ce2745f0f0a2970805a.camel@gmail.com>
+ <20250801114613.610070-1-fossdd@pwned.life> <DBR2SLKGO5OO.276GT83Y3D6DA@pwned.life>
+In-Reply-To: <DBR2SLKGO5OO.276GT83Y3D6DA@pwned.life>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 1 Aug 2025 08:16:48 -0700
+X-Gm-Features: Ac12FXxqZjxWs6k4GSfDil-aZokpSz36tVU27Eqtg8mMKeKCtpe2poPJpM6wpzc
+Message-ID: <CAADnVQKfTgPmuOcGHsQyLdCeVi9hucyQVkfZLeAxDrSbc8_Xmg@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: avoid possible use of uninitialized mod_len
+To: Achill Gilgenast <fossdd@pwned.life>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Viktor Malik <vmalik@redhat.com>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Song Liu <song@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Steven Rostedt <rostedt@goodmis.org>
+On Fri, Aug 1, 2025 at 5:05=E2=80=AFAM Achill Gilgenast <fossdd@pwned.life>=
+ wrote:
+>
+> On Fri Aug 1, 2025 at 1:46 PM CEST, Achill Gilgenast wrote:
+> > If not fn_name, mod_len does never get initialized which fails now with
+> > gcc15 on Alpine Linux edge:
+> >
+> >       libbpf.c: In function 'find_kernel_btf_id.constprop':
+> >       libbpf.c:10100:33: error: 'mod_len' may be used uninitialized [-W=
+error=3Dmaybe-uninitialized]
+> >       10100 |                 if (mod_name && strncmp(mod->name, mod_na=
+me, mod_len) !=3D 0)
+> >             |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~~~~~~~~~
+> >       libbpf.c:10070:21: note: 'mod_len' was declared here
+> >       10070 |         int ret, i, mod_len;
+> >             |                     ^~~~~~~
+> >
+> > Signed-off-by: Achill Gilgenast <fossdd@pwned.life>
+> > Acked-by: Yonghong Song <yonghong.song@linux.dev>
+> > Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> > Link: https://lore.kernel.org/bpf/20250729094611.2065713-1-fossdd@pwned=
+.life/
+>
+> Oops, the subject should've been v2. I forgot to pass -v2 to git
+> send-email.
 
-Most function arguments that are passed in as unsigned int or unsigned
-long are better displayed as hexadecimal than normal integer. For example,
-the functions:
-
-static void __create_object(unsigned long ptr, size_t size,
-				int min_count, gfp_t gfp, unsigned int objflags);
-
-static bool stack_access_ok(struct unwind_state *state, unsigned long _addr,
-			    size_t len);
-
-void __local_bh_disable_ip(unsigned long ip, unsigned int cnt);
-
-Show up in the trace as:
-
-    __create_object(ptr=-131387050520576, size=4096, min_count=1, gfp=3264, objflags=0) <-kmem_cache_alloc_noprof
-    stack_access_ok(state=0xffffc9000233fc98, _addr=-60473102566256, len=8) <-unwind_next_frame
-    __local_bh_disable_ip(ip=-2127311112, cnt=256) <-handle_softirqs
-
-Instead, by displaying unsigned as hexadecimal, they look more like this:
-
-    __create_object(ptr=0xffff8881028d2080, size=0x280, min_count=1, gfp=0x82820, objflags=0x0) <-kmem_cache_alloc_node_noprof
-    stack_access_ok(state=0xffffc90000003938, _addr=0xffffc90000003930, len=0x8) <-unwind_next_frame
-    __local_bh_disable_ip(ip=0xffffffff8133cef8, cnt=0x100) <-handle_softirqs
-
-Which is much easier to understand as most unsigned longs are usually just
-pointers. Even the "unsigned int cnt" in __local_bh_disable_ip() looks
-better as hexadecimal as a lot of flags are passed as unsigned.
-
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
-Changes since v1: https://lore.kernel.org/20250731193126.2eeb21c6@gandalf.local.home
-
-- Fixed whitespace issues (Yonghong Song)
-
- kernel/trace/trace_output.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
-index 0b3db02030a7..fe54003de860 100644
---- a/kernel/trace/trace_output.c
-+++ b/kernel/trace/trace_output.c
-@@ -690,6 +690,12 @@ int trace_print_lat_context(struct trace_iterator *iter)
- }
- 
- #ifdef CONFIG_FUNCTION_TRACE_ARGS
-+
-+static u32 btf_type_int(const struct btf_type *t)
-+{
-+	return *(u32 *)(t + 1);
-+}
-+
- void print_function_args(struct trace_seq *s, unsigned long *args,
- 			 unsigned long func)
- {
-@@ -701,6 +707,8 @@ void print_function_args(struct trace_seq *s, unsigned long *args,
- 	struct btf *btf;
- 	s32 tid, nr = 0;
- 	int a, p, x;
-+	int int_data;
-+	u16 encode;
- 
- 	trace_seq_printf(s, "(");
- 
-@@ -744,7 +752,14 @@ void print_function_args(struct trace_seq *s, unsigned long *args,
- 			trace_seq_printf(s, "0x%lx", arg);
- 			break;
- 		case BTF_KIND_INT:
--			trace_seq_printf(s, "%ld", arg);
-+			/* Get the INT encodoing */
-+			int_data = btf_type_int(t);
-+			encode = BTF_INT_ENCODING(int_data);
-+			/* Print unsigned ints as hex */
-+			if (encode & BTF_INT_SIGNED)
-+				trace_seq_printf(s, "%ld", arg);
-+			else
-+				trace_seq_printf(s, "0x%lx", arg);
- 			break;
- 		case BTF_KIND_ENUM:
- 			trace_seq_printf(s, "%ld", arg);
--- 
-2.47.2
-
+No. It was already applied.
 
