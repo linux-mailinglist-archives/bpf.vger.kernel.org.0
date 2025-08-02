@@ -1,130 +1,120 @@
-Return-Path: <bpf+bounces-64959-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64960-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 669C1B18DF6
-	for <lists+bpf@lfdr.de>; Sat,  2 Aug 2025 12:36:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 820A1B18ECA
+	for <lists+bpf@lfdr.de>; Sat,  2 Aug 2025 15:54:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 523951AA0A34
-	for <lists+bpf@lfdr.de>; Sat,  2 Aug 2025 10:36:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A99CB16571E
+	for <lists+bpf@lfdr.de>; Sat,  2 Aug 2025 13:54:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D382220F25;
-	Sat,  2 Aug 2025 10:35:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AACE23D291;
+	Sat,  2 Aug 2025 13:54:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ErExNi2l"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="TCQWu93P"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C239E1E98E6
-	for <bpf@vger.kernel.org>; Sat,  2 Aug 2025 10:35:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E74F41A316C
+	for <bpf@vger.kernel.org>; Sat,  2 Aug 2025 13:54:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754130953; cv=none; b=qOCjs6elLufHmqyVNvTZEnh/InDo9GWXYHTxU6siooBua7q/p0qpYkR+JMI8RBDy5cc6T6X//DOKzMd8qwuH6QWRP2w08fUy8Wff7mnEYySgpu8BezfVqH3oZonx4da476ovmc+aJv90upIvpVoonbi1sAVcpeTGNKr4xbbrtx8=
+	t=1754142876; cv=none; b=aREjimGNuCD3ENDBfn5YPl5XZjOuadBvG1OxZyhDMCc2hCU7Q1S6K+ANotfafCkHP3NhKGfl6QLtHJJyrRZCYAHmyLqiU3UbnMRS2l/Xsqoz6+xUd59G78pky2lQcVNhlv4EdYBc7pF1NXgDFbL/JSYO+KNrr7bJ8h8ILZVPfQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754130953; c=relaxed/simple;
-	bh=1Uj13WzecZIDJ4INt1Rw447b+I7X9TTWD1JGhKjVzXA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n0zwX5ACHJzQoSri4uqEjlYgozZBOdowCU/NYq+ZhP+n3fjJPPVp7hpyBKihjG28yuvqJFNU9s8gS7hwoitGujGX/9hD2GXByR5scVatz8oq5iF68fHq9Vv8KorH1piDhoTEHmjpZu98KMbODxct/sFAl1c+YHN8A/y5l2VGCPo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ErExNi2l; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1754130950;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZDacmucnw23kEnOX8217Q3tfUEPnn76onGyj7DcVKiI=;
-	b=ErExNi2lsT4s0d0+SFisyplFkGQe7PSdsnT3yakJo8qw7uER+E+O5/bUeHwIbqQ/7oPRLY
-	/F9DnEMIUcgCpPIun+kJja5SeR7kK51eL+U1GA870GaZix+SAPMrSjBQzau3chs7HanJSC
-	ng6VkxjW03CVL2Zo+WaeGLQ3pjRQ7x4=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-189-QpngofaIPa6G3Qs7PgEIZA-1; Sat,
- 02 Aug 2025 06:35:46 -0400
-X-MC-Unique: QpngofaIPa6G3Qs7PgEIZA-1
-X-Mimecast-MFC-AGG-ID: QpngofaIPa6G3Qs7PgEIZA_1754130944
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 643FB180045B;
-	Sat,  2 Aug 2025 10:35:43 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.25])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 38D8719373D9;
-	Sat,  2 Aug 2025 10:35:37 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Sat,  2 Aug 2025 12:34:33 +0200 (CEST)
-Date: Sat, 2 Aug 2025 12:34:27 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	x86@kernel.org, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
-	Ingo Molnar <mingo@kernel.org>
-Subject: Re: [RFC 1/4] uprobe: Do not emulate/sstep original instruction when
- ip is changed
-Message-ID: <20250802103426.GC31711@redhat.com>
-References: <20250801210238.2207429-1-jolsa@kernel.org>
- <20250801210238.2207429-2-jolsa@kernel.org>
+	s=arc-20240116; t=1754142876; c=relaxed/simple;
+	bh=jNu4z5LlkFnuZWJ51rGZZ5XmCwlEwXOl8Nta3Z3Wvn8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OTYu28OUQ1c+7OhxVGH0PAT+rfNxRHEZlzIeVfg+hhK3LCCz1rOj9MNYAab9VnrE/2fU9Ylbel92X/Yh6ObRlZ5UrGOVlWaWl7KFfJZmdVR6RGBYziwxzMnriEmzVQBOotmwpzapG3N96kDLNnWES789fL4HXPfWNL75MvOjPKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=TCQWu93P; arc=none smtp.client-ip=209.85.166.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-3e40ac40940so10649915ab.0
+        for <bpf@vger.kernel.org>; Sat, 02 Aug 2025 06:54:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1754142872; x=1754747672; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qt3QMnbQi4N+EycuZl75D2uXQiTKPfngptfcrsgcbKY=;
+        b=TCQWu93P+Bc9lUktai1qbvpnzHzdqP47vkMY/gvodXsEXDeG/BVPMabTiNyIZshUgp
+         H8oXxsVgtPkVYvJky4af/cBuV91M48zSAL2Bgdc5KUbY0/Aq/quEdQDTm6NHejSUOBu7
+         OBHbeb9vOVyKu8yDek8uU7NvWo35D2HCDT36dNJQPltQOmoRgfzfno5z5FO9ZkCFBIfr
+         8TrVZ78LKuhosoDDmEzuOaHw8PZRl+0DQHK4L1RTLhCOh7jXgyooG+p6qWsr3Xn03C9M
+         vXEJPj7jYX9Wq9Rto+hb8H/FLbGHNWo9lrslN+TvTAM9o5T6/0IuZBg586aGEAeielzj
+         HOgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754142872; x=1754747672;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qt3QMnbQi4N+EycuZl75D2uXQiTKPfngptfcrsgcbKY=;
+        b=QohJSV6UiKTdR84205kp+3I/MfX5vVViNsPTupLSuw51LRfyrPTDyVhDjMxTansfjC
+         vgobkazI+OQ8HD7Ct4g2dvt9tADdiELGnetGjAwsBmEzbftlnZfOhye38TNzwZZj2b3P
+         bl6dVQEZK02HiK+Kr1x9SGeLZBfHPkGVTzPw/GgNpmYzAkbvo43Jddpa2vx/FAntlZkN
+         +T5oTI43W/DT3e84yOvXm6ysmqz/h2EuwowXVo333vr4aS681NG5EUgaDE7FSnqmG4wn
+         rKDmFcIn9k63ugyYBxYgsMrp02Di6qW/YQU9jZmkoW7qclxGUskgQEjRDKhmIPtRes3h
+         QHqg==
+X-Forwarded-Encrypted: i=1; AJvYcCUymG0MFmb4Zb4/3LcEAoElrMPpsMiigVJPOSNfUmB+VCHFxNQzmBe+jcshErg2RAk763k=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywl+HZCJMW2O01C15amMyPZt+yAd+ed9ppC1ZLan8SArGK/CyOz
+	Vy8jPR2Uvs8zQEnQe2ZodxSH9URRYyXYHsEJx3uwSJBddiBuY4lVmL5TRFuYOH5WjFQ=
+X-Gm-Gg: ASbGncvMLYYW3WaC1i1MK2y0+4IQzF4lbvjVH5yysjFV7zp4vJt1eP5ov5q3taDV5Vy
+	l+okTYBX+AMzYf16rWgqEBuFQZnoHFp7XbMimQP90cEsQwqiShjpSyv9nRIT/CjrkxeLZAGy88z
+	+5wbEf4ySl/AlV4/6ZGXAPxiW+DEaNkDJrZgIkvLENnhUlq8KGR5FVoVkh8Fa4qsNkb0fQAEIr5
+	YJOdSMXiH+Qi2QJHztoT4JxZcfTXoiD2p93YxqPY6ZokbRiOOjWepFqSOClvS5SlIIFRcbJikZg
+	y3pRGtJiOpipFwoFLEvSCqhbeY09axHh1P9J3SpUQBPkXUBpCnA6HzxkAQrrn317Y2SpwkPg+L3
+	MW4H36wdb2c+CGp22zUPfivLIGdpzJw==
+X-Google-Smtp-Source: AGHT+IH/LPOY6EdLpQ4WZyr4CFwwWgcwPIfhph7cY1yr7qBNUx6wNAaF1jfUGY6TXLaEzfxnRy9LdQ==
+X-Received: by 2002:a05:6e02:3f08:b0:3e3:d822:f180 with SMTP id e9e14a558f8ab-3e415c763a9mr66919595ab.0.1754142872030;
+        Sat, 02 Aug 2025 06:54:32 -0700 (PDT)
+Received: from [192.168.1.150] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id e9e14a558f8ab-3e4029a2ad8sm25556635ab.15.2025.08.02.06.54.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 02 Aug 2025 06:54:31 -0700 (PDT)
+Message-ID: <96de1bd4-2272-42ef-a1b5-1c944c3da988@kernel.dk>
+Date: Sat, 2 Aug 2025 07:54:30 -0600
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250801210238.2207429-2-jolsa@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf v1] bpf: correctly free bpf_scc_info objects
+ referenced in env->scc_info
+To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, ast@kernel.org
+Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+ kernel-team@fb.com, yonghong.song@linux.dev,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+References: <20250801232330.1800436-1-eddyz87@gmail.com>
+Content-Language: en-US
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20250801232330.1800436-1-eddyz87@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 08/01, Jiri Olsa wrote:
->
-> If uprobe handler changes instruction pointer we still execute single
-> step) or emulate the original instruction and increment the (new) ip
-> with its length.
-
-Yes... but what if we there are multiple consumers? The 1st one changes
-instruction_pointer, the next is unaware. Or it may change regs->ip too...
-
-Oleg.
-
-> This makes the new instruction pointer bogus and application will
-> likely crash on illegal instruction execution.
+On 8/1/25 5:23 PM, Eduard Zingerman wrote:
+> env->scc_info array contains references to bpf_scc_info objects
+> allocated lazily in verifier.c:scc_visit_alloc().
+> env->scc_cnt was supposed to track env->scc_info array size
+> in order to free referenced objects in verifier.c:free_states().
+> Initialization of env->scc_cnt was omitted in
+> verifier.c:compute_scc(), which is fixed by this commit.
 > 
-> If user decided to take execution elsewhere, it makes little sense
-> to execute the original instruction, so let's skip it.
-> 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  kernel/events/uprobes.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> index 4c965ba77f9f..dff5509cde67 100644
-> --- a/kernel/events/uprobes.c
-> +++ b/kernel/events/uprobes.c
-> @@ -2742,6 +2742,9 @@ static void handle_swbp(struct pt_regs *regs)
->  
->  	handler_chain(uprobe, regs);
->  
-> +	if (instruction_pointer(regs) != bp_vaddr)
-> +		goto out;
-> +
->  	if (arch_uprobe_skip_sstep(&uprobe->arch, regs))
->  		goto out;
->  
-> -- 
-> 2.50.1
-> 
+> To reproduce the bug:
+> - build with CONFIG_DEBUG_KMEMLEAK
+> - boot and load bpf program with loops, e.g.:
+>   ./veristat -q pyperf180.bpf.o
+> - initiate memleak scan and check results:
+>   echo scan > /sys/kernel/debug/kmemleak
+>   cat /sys/kernel/debug/kmemleak
 
+Thanks for fixing this. Even though it's already applied, I did test it:
+
+Tested-by: Jens Axboe <axboe@kernel.dk>
+
+-- 
+Jens Axboe
 
