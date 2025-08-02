@@ -1,89 +1,126 @@
-Return-Path: <bpf+bounces-64951-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64953-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FD02B18A22
-	for <lists+bpf@lfdr.de>; Sat,  2 Aug 2025 03:47:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D089B18A4D
+	for <lists+bpf@lfdr.de>; Sat,  2 Aug 2025 03:54:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B004D1698D9
-	for <lists+bpf@lfdr.de>; Sat,  2 Aug 2025 01:47:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CC00AA5343
+	for <lists+bpf@lfdr.de>; Sat,  2 Aug 2025 01:54:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C966841C72;
-	Sat,  2 Aug 2025 01:47:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28CFA161302;
+	Sat,  2 Aug 2025 01:54:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aV479sjJ"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="PtHKbAuy"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C6DE14AA9;
-	Sat,  2 Aug 2025 01:47:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4E9841C72;
+	Sat,  2 Aug 2025 01:54:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754099231; cv=none; b=cB9t09PWBVVWxAKc1gQk8Ag4TF2ZK2bB7GQBeMLzf1wGc6tvrrrzx51X3qgr0rzpqi3Ox53TixcSJx1a7A2bpGDwfBvKEcRQqAayZSrZAnHByPG+QG2xfwcIq1MGooj7+x/0+Xtz/+whL/fQyFSR77Mt9Nq+Ty4U/VYZF7U2HRw=
+	t=1754099667; cv=none; b=jT9KvBG5Xi4C5wM5JvxAma4dIxWUPbRy1Knalzp9Plx0lgXTRL4fmx1LegkIPJxrL8SqN+07c4PVBoOm4RnKivqNVk5U+u/d5KzEkbY4EM4yE/wPePtWeG6qzoDDadSSz0TWTJmx9+pqzWJ38Phqr6XzT3YitxaVCbYoQnkHavA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754099231; c=relaxed/simple;
-	bh=M4FIp6gDAq6LOPcZohH8l8bZz1AozZyZU0aoqGzdwhY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BbOYQbLs1A8CEMZEStHUPOQFFxlYuzQnuRXA3w2HqPXuXiMlNr5stdXMDpmNmnIa8ZNFFfIXVrocdH4kL+rmjxdV7C2AVpP3bRJCSIehMIX9jKm2Kt/x6vA4HVWbIq+uuKh8VmePrg/auTtbzw99dXSZs31YQ+ujXmbMVcDR2lo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aV479sjJ; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <1365e2a1-dda9-4aa3-9658-cc34a9bb3137@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1754099226;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XZx6mqK72vsgBMJWtFA5R42V5D4hVz9KqrDuBiEte2k=;
-	b=aV479sjJ7283YcsVqPKAXntC5xs1aYri+Scs/nYhT+3zQvMWdFF7ahBm6Jm2YUBDAlQ9Md
-	ycT6wa2552yypBUwMF3iRw4RAsNxCSmfzJphO1fXS7ZYXaT4tcFMARVvBzymVeVTX4WiiR
-	5w+BAQVy7i7gQhql9OG9+x7drho/pko=
-Date: Fri, 1 Aug 2025 18:46:59 -0700
+	s=arc-20240116; t=1754099667; c=relaxed/simple;
+	bh=YLHOKuGfZu3vREHo+0w4CEBCbzZhDkckOW2LcFryUUM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=C1NTbcKK4SahHpoGyJMeT05jG0XuOtw6/0+5l0C8U0vd1A8XELK5yjYbP09c2KXNg/rgWR3NrQWF2XKC42ceJDSZEtox/KVcz2bCRL7y/wDai8j6wloVjLrok627qUzvLqux/KpJoPU0KBHGkHYI9TmVDmNZtd/GhmXr1VwB3JQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=PtHKbAuy; arc=none smtp.client-ip=117.135.210.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=3W
+	svc3m2ST0JMIIEnY4LvKx4YmcyVEzHJONNtMWgZZI=; b=PtHKbAuymPnb4nFECp
+	/H6G0snFv+bQh0CccH2s/Vc2iOQlwjj8+XO43r2v06DOIrJJOlWhbkBsVacI+4J/
+	2K5lQh8UR/3A65aQIYHzfwK66xnsyVgbr5NCSl+y0vDPlYLtLtZjn2g6WqorP6pH
+	myvb9Slnc0yfjcEPsA4VGKRxA=
+Received: from phoenix.. (unknown [])
+	by gzga-smtp-mtada-g1-2 (Coremail) with SMTP id _____wAn9dGhb41owA7sJQ--.1054S2;
+	Sat, 02 Aug 2025 09:53:39 +0800 (CST)
+From: Jiawei Zhao <phoenix500526@163.com>
+To: ast@kernel.org
+Cc: daniel@iogearbox.net,
+	andrii@kernel.org,
+	yonghong.song@linux.dev,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/2] libbpf: fix USDT SIB argument handling causing unrecognized register error
+Date: Sat,  2 Aug 2025 01:53:33 +0000
+Message-ID: <20250802015336.823054-1-phoenix500526@163.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next v1 00/11] Remove task and cgroup local
-To: Amery Hung <ameryhung@gmail.com>, memxor@gmail.com
-Cc: netdev@vger.kernel.org, alexei.starovoitov@gmail.com, andrii@kernel.org,
- daniel@iogearbox.net, kpsingh@kernel.org, martin.lau@kernel.org,
- yonghong.song@linux.dev, song@kernel.org, haoluo@google.com,
- kernel-team@meta.com, bpf@vger.kernel.org
-References: <20250729182550.185356-1-ameryhung@gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20250729182550.185356-1-ameryhung@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wAn9dGhb41owA7sJQ--.1054S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxJrWxGr13ZF17Cw1UKr4xXrb_yoW8tr1xpF
+	WrKwn8KFWDKa43GFsxXrsFyrWfWFs5JF4UCF17Xw1YyF4rGFnrZrWxK3y3CF9xGas3Xay3
+	ZF12yF98G3WrA3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jopBfUUUUU=
+X-CM-SenderInfo: pskrv0dl0viiqvswqiywtou0bp/xtbBgAOdiGiNYdH4yQAAsy
 
-On 7/29/25 11:25 AM, Amery Hung wrote:
-> Question:
-> 
-> - In bpf_local_storage_destroy() and bpf_local_storage_map_free(), where
->    it is not allow to fail, I assert that the lock acquisition always
->    succeeds based on the fact that 1) these paths cannot run recursively
->    causing AA deadlock and 2) local_storage->lock and b->lock are always
->    acquired in the same order, but I also notice that rqspinlock has
->    a timeout fallback. Is this assertion an okay thing to do?
+When using GCC on x86-64 to compile an usdt prog with -O1 or higher
+optimization, the compiler will generate SIB addressing mode for global
+array and PC-relative addressing mode for global variable,
+e.g. "1@-96(%rbp,%rax,8)" and "-1@4+t1(%rip)".
 
-At bpf_local_storage_destroy, the task is going away.
-At bpf_local_storage_map_free, the map is going away.
-A bpf prog needs to have both task ptr and map ptr to be able to do 
-bpf_task_storage_get(+create) and bpf_task_storage_delete().
+The current USDT implementation in libbpf cannot parse these two formats,
+causing `bpf_program__attach_usdt()` to fail with -ENOENT
+(unrecognized register).
 
-The bpf_local_storage_destroy and bpf_local_storage_map_free can run in 
-parallel, and you mentioned there is lock ordering. Not sure how the timeout 
-fallback is (Kumar ?) but I don't think either of the two functions will hold a 
-lock for a very long time before releasing it.
+This patch series adds support for SIB addressing mode in USDT probes.
+The main changes include:
+- add correct handling logic for SIB-addressed arguments in
+  `parse_usdt_arg`.
+- force -O2 optimization for usdt.test.o to generate SIB addressing usdt
+  argument spec.
+- change the global variable t1 to a local variable, to avoid compiler
+  generating PC-relative addressing mode for it.
 
-I also think bpf_local_storage_destroy and bpf_local_storage_map_free should not 
-fail. It is good to keep the WARN_ON but I would change it to WARN_ON_ONCE.
+Testing shows that the SIB probe correctly generates 8@(%rcx,%rax,8) 
+argument spec and passes all validation checks.
+
+The modification history of this patch series:
+Change since v1:
+- refactor the code to make it more readable
+- modify the commit message to explain why and how
+
+Change since v2:
+- fix the `scale` uninitialized error
+
+Change since v3:
+- force -O2 optimization for usdt.test.o to generate SIB addressing usdt
+  and pass all test cases.
+
+Change since v4:
+- split the patch into two parts, one for the fix and the other for the
+  test
+
+
+Do we need to add support for PC-relative USDT argument spec handling in
+libbpf? I have some interest in this question, but currently have no 
+ideas. Getting offsets based on symbols requires dependency on the symbol
+table. However, once the binary file is stripped, the symtab will also be
+removed, which will cause this approach to fail. Does anyone have any
+thoughts on this?
+
+Jiawei Zhao (2):
+  libbpf: fix USDT SIB argument handling causing unrecognized register
+    error
+  selftests/bpf: Force -O2 for USDT selftests to cover SIB handling
+    logic
+
+ tools/lib/bpf/usdt.bpf.h                      | 33 +++++++++++++-
+ tools/lib/bpf/usdt.c                          | 43 ++++++++++++++++---
+ tools/testing/selftests/bpf/Makefile          |  5 +++
+ tools/testing/selftests/bpf/prog_tests/usdt.c | 18 +++++---
+ 4 files changed, 86 insertions(+), 13 deletions(-)
+
+-- 
+2.43.0
+
 
