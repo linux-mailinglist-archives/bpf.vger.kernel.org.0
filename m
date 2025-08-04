@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-65016-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65017-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8033DB1AA24
-	for <lists+bpf@lfdr.de>; Mon,  4 Aug 2025 22:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B1E50B1AA27
+	for <lists+bpf@lfdr.de>; Mon,  4 Aug 2025 22:32:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F94D3ADD01
-	for <lists+bpf@lfdr.de>; Mon,  4 Aug 2025 20:32:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 605AB623291
+	for <lists+bpf@lfdr.de>; Mon,  4 Aug 2025 20:32:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 354ED21B9C3;
-	Mon,  4 Aug 2025 20:32:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67912224B1B;
+	Mon,  4 Aug 2025 20:32:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JQXUKdMw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="poAF1fWY"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADC7443ABC;
-	Mon,  4 Aug 2025 20:32:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E198F1514DC;
+	Mon,  4 Aug 2025 20:32:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754339529; cv=none; b=FxIJ+hfg+LiMx9aLaSWOOlk4JMCYqT+/ENnsKgmCM5Yus9nHuCjnnAv7i4yN07jAyOQrskucAgySx/qvAT68yYAdq/zJX0DGsfijeLEqMcVt4c6HF01zMrQgU4R3NKLTCqbWOJL8TQMdOVS6gb0iMPlO7P/dFC4Ruxeqehj1CUk=
+	t=1754339572; cv=none; b=h2SU1F35LLV3N082ztlnlSUDM5BRlm4Bj8uUcP1vB/19dwhHNBbsRbjcKLN8hHBljEEoBS+ElbXQAV9fzxjss8uUaQAFKGHK0rrSRy5UF+HSs3sXnDK3Y5W1uQqTJgq/xuA2fPyy1w7HjqLVyRkw5EJhGR6ju7tJJdl5oYLC31s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754339529; c=relaxed/simple;
-	bh=40RPmmhgenS++dUjxETl8DxV/XFXspYQo4HXXmsrhls=;
+	s=arc-20240116; t=1754339572; c=relaxed/simple;
+	bh=Oz3qdUQptaVyyIeecrQbI/P2BVjPtce/YqRDIENIsn4=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=qhMk/YO7bg+o3mJLb5oSwoXiF3A3owGHG5ku6PALPQtsSBfyMLnGe3NCqZp+WnocYRZVSTlR2/C8htQFxkjxLOQmT/vA19AGB1p6iMF0uh1O9WZZFgCkFVH7f3BO+4D/MrR5TlM0K0py7IHBzW2wjOuLOHSaVNRNQLCakkwiZko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JQXUKdMw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7F95C4CEE7;
-	Mon,  4 Aug 2025 20:32:08 +0000 (UTC)
+	 MIME-Version:Content-Type; b=tRMw09CpIYh5ygfqmN48HxcftQokVRgPZs1LyCbZS0xRnVBUHWoZdA+elI4aP9TyroEiC0D+LwV7A17iWOTo+5AEwbEFZckKCAvvYKxB008ag5q3b8LUdUTXnbbn8r9EtfvU9ZdRuZx9RKb67P3xYT2u1+o2QtovQHjKn055ROY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=poAF1fWY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4675C4CEF0;
+	Mon,  4 Aug 2025 20:32:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754339529;
-	bh=40RPmmhgenS++dUjxETl8DxV/XFXspYQo4HXXmsrhls=;
+	s=k20201202; t=1754339571;
+	bh=Oz3qdUQptaVyyIeecrQbI/P2BVjPtce/YqRDIENIsn4=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=JQXUKdMwFWEh72JN1E6XzW9gB6pcSUBn7mgP4hBUHV2TpolWdTSfQw4mCxYy4Zy3E
-	 lUtaIyYa44cze8FqCym9EpaeMrWsTATwoH27xF95eprgUJJmuX8DtRZ/QiocXQ8aIA
-	 jc4t2gY8jGLgkj3U/lrseTF3ovLDIfeRF/v10YguErQe6smk0ksBMrsbOIRzb55XFY
-	 28W/sTdccRNJl6jdGHkTr0BO8ndO2VYz/Ani6KoevoXAVgowgiDbhXZFgVj5gAS4iR
-	 Enk6figXDmKEHpnxpASTpbq88kekHHfDpVfBD7xWDRHwvW+N9ywUM1E/OOSiU10oIJ
-	 LNeyo9+ssoqnQ==
+	b=poAF1fWYETD5JZJ5G3g6mEJv/elwzab8VawLlayZjSMUerd5gLQ+8Y1fj1r0PEGkO
+	 9LYL75KrXjcAk7jLr1wuMuhNTzy+NR+D3cTYjQanlmG3xOd8M0QMielTy4ILBgkzpO
+	 CiHZzot+4rXhnbgxYIzZCNHwYhzV764yPJUj+R3P4wPpaEA53uDropOJ98TqD8NAYh
+	 jwnlyMBlTdotRtbn406xtAOHgARV+kWYRFcYykGMf0YlaUt9/d24BPv4QQ7BP5+htz
+	 r0fFSo2gAN50OhZdMM8cQC0vlc0cv8XY/VbPn2HXLBFrQYXD+KuuDQJa4fRkqw85iO
+	 HyLpYYSQljhiw==
 From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
 To: Pu Lehui <pulehui@huaweicloud.com>, bpf@vger.kernel.org,
  linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
@@ -53,13 +53,12 @@ Cc: Puranjay Mohan <puranjay@kernel.org>, Palmer Dabbelt
  Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo
  <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Pu Lehui
  <pulehui@huawei.com>
-Subject: Re: [PATCH bpf-next 05/10] riscv, bpf: Add rv_ext_enabled macro for
- runtime detection extentsion
-In-Reply-To: <20250719091730.2660197-6-pulehui@huaweicloud.com>
+Subject: Re: [PATCH bpf-next 06/10] riscv, bpf: Add Zacas instructions
+In-Reply-To: <20250719091730.2660197-7-pulehui@huaweicloud.com>
 References: <20250719091730.2660197-1-pulehui@huaweicloud.com>
- <20250719091730.2660197-6-pulehui@huaweicloud.com>
-Date: Mon, 04 Aug 2025 22:32:06 +0200
-Message-ID: <87ms8e3k1l.fsf@all.your.base.are.belong.to.us>
+ <20250719091730.2660197-7-pulehui@huaweicloud.com>
+Date: Mon, 04 Aug 2025 22:32:48 +0200
+Message-ID: <87ikj23k0f.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -69,15 +68,15 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-Nit: Subject: s/extentsion/extension/
-
 Pu Lehui <pulehui@huaweicloud.com> writes:
 
 > From: Pu Lehui <pulehui@huawei.com>
 >
-> Add rv_ext_enabled macro to check whether the runtime detection
-> extension is enabled.
+> Add Zacas instructions introduced by [0] to reduce code size and
+> improve performance of RV64 JIT.
 >
+> Link: https://github.com/riscvarchive/riscv-zacas/releases/download/v1.0/=
+riscv-zacas.pdf [0]
 > Signed-off-by: Pu Lehui <pulehui@huawei.com>
 
 Reviewed-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
