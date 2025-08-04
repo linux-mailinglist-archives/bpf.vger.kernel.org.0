@@ -1,157 +1,347 @@
-Return-Path: <bpf+bounces-65003-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65004-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E046AB1A321
-	for <lists+bpf@lfdr.de>; Mon,  4 Aug 2025 15:21:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D656B1A331
+	for <lists+bpf@lfdr.de>; Mon,  4 Aug 2025 15:27:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 023871887C88
-	for <lists+bpf@lfdr.de>; Mon,  4 Aug 2025 13:22:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C09717004D
+	for <lists+bpf@lfdr.de>; Mon,  4 Aug 2025 13:27:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3294B266B6F;
-	Mon,  4 Aug 2025 13:21:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C69026A0DB;
+	Mon,  4 Aug 2025 13:26:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aO7MnoiW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OFTgkCyN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 228C51D6187;
-	Mon,  4 Aug 2025 13:21:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBBD3267F48;
+	Mon,  4 Aug 2025 13:26:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754313692; cv=none; b=V+WuYY/LtCf3p0iTZ9nHJUbnGUpvE34ZuSOuNA+KCRuYhrXBCSUUdfvDMnDqyl7AZA8oYOt1GhfbZ2h5ASrkRI+GVBrgeOm4pI5VVCrK+KzXShtri9/wOqfH8FSmZ+QbEmaP66lUwD5rnbMJtVpb01YuH855/Z5OMsxjef73F50=
+	t=1754314011; cv=none; b=ZdQMZIyEfslS3z4JaC16WLurVhuRnsFdyfvQXvQt26KOMoj05ZwCinoUysmR3ZI/Bj/DKnr8NtSvzLyeB7hCapZc8ADRmYgwidD4iMzbtY/x4g4C88BQuraS/Wm3SBQueXyndopWv3GsyfcbPROmVceOlC9Fsdfnf3b7Uy09Fmc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754313692; c=relaxed/simple;
-	bh=g2sA1Fds1nlSJJEi/ElywiQ6C4KqAI+ujifxQCtypGg=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A83hleVIxIzcaifBr1M3AR6BfEj2o7cnGveU6rOsezyHaxY2RTcwCWG9oJNrGXUFGwQrmyy88dfLgwdm1BGlDWfzCLLBN07Kscdb/0LXYNQHmZWo+ibFjqES47CLRkDcbqNsJgEf5D1tnaa9SY5IrdjlH+EUk4awwWiLrfMXj8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aO7MnoiW; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-af8fd1b80e5so729473866b.2;
-        Mon, 04 Aug 2025 06:21:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754313689; x=1754918489; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4HeCvEqJ9PJPJxZO6EghnJ727smuSZ/NKLaIR+eVjtM=;
-        b=aO7MnoiW5Ul/EgbI9wmG8qZG+qsjYhkJzBsLMTKKKAgCpgOR5RO8f0PUpGP8+QPacB
-         YzAWpUPxYtdCPeFirNzEdy4ddaH+zmZud9FBhVpQHkwNY9M/MSpRDan1mzcrdtFbIWqj
-         4Fq42eezmbuSIUnRqgKIycV8daa+S6LTeA3r0RjMFXYfAXKtJjFPXRr1Hkpy9UKqPy+a
-         r7K5FEk7Y+pxihqg6poG0AvTRE9u7/JZxE8U/Z0w6Z4ApyNGw99v40vxSBvyI5Y57fui
-         e4YZBj/6oiNyb7f44pr86gTwodsHeq8TNtQ74Xs5yRJqI6VEZa/iUEkpJM6iwtskeGZ7
-         vMbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754313689; x=1754918489;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4HeCvEqJ9PJPJxZO6EghnJ727smuSZ/NKLaIR+eVjtM=;
-        b=SXuYZrp1SYWwN1vKPkGqnZwqsV0qjvarjbdAfKTlNmr2P/jGnNJaBz0/3vzSzn5MIr
-         kSXXm0ERNCfCaHqf1YLFmgEiAYJjYmxcbo4JJkO6EvAf/hhM7OkR1vxRTXh5tP6sjATW
-         cMlt8h8zNayQiRFwqaVcEYQEPbXqHQZ+tkeY+1iXK/sYV1Gp3Xd6vLB+LCducCNROccL
-         e8ctIxSqv6BC3tucHGLoL3U4eU9ia6Y3iAlPOTm9obz61ORyYRvHMJOPm1CGP/Ini9hD
-         oN91LjFBG1/mCfiw5UIamXuDHeelQXE9P5DMgZ+MBeiNE+FlijSk9jQ63fOtfpOu+hVO
-         hsBA==
-X-Forwarded-Encrypted: i=1; AJvYcCWXQLFUcuvDXrT0mNUVUKJ3BFzhp0A8OX5wAbcNm6wAB4NGnzCmJlJzf2tap3VO9OVN+WA=@vger.kernel.org, AJvYcCXHBk9sz+l12iDpJb8Qx009s+fK0sPDTcgfwWS7c9hWX20qoQrF7Yy8YEI1SMLOCwFUfU8lfR/8@vger.kernel.org, AJvYcCXHiyMEnzaEcuR6sMoF9DarHzmwJgMYDd2vP9wpNlRDY03o2mwBntgfxCkhB7PgIOZE42/l4vMptnXRGvuR@vger.kernel.org
-X-Gm-Message-State: AOJu0YxTZCAkLVAc/9IEMpkGf5LW6PgptvVhbtVByuxUZd0gWx7fsNzB
-	xMrGMO/K+oVTlDOaOk9NsD8Sbf8fo+o4p5QLFR7OY+Jv3jUlBvaXnWNC
-X-Gm-Gg: ASbGncuGk0xVMVlkNsya+d29L1q+6nzjGgu9/+OcS7VFNm8IIF1gb8dcFcAEYOM+aT3
-	3gtnssJvNxXHSXL4aSV1Ff0t3pMwcWOQrFyryFcEO5c8LhKzVbKEZKj72GA+kksKXTnVn4R3+Zr
-	gsKyR6mEYwECTf0Qb4sxHnSXDqT04P/2DXO0txKtxwL4gUxYeOihZClBa8UGD7+EpyEfLP3XZtn
-	/t+9wmymCuRYGCwObef4k2CthFnTiXrBEUvLdHB6DZb654yQt68SUS/+9ypwPPaw5QQmLX7bhqM
-	JEIicYbx47zW+CAFGrgJJtd4Zbjb2WG6cpTpV8YZSW1eX2bMeF8Lxy1vbzCGFTu5Gl6ChR00mQk
-	5RM/yNiHk
-X-Google-Smtp-Source: AGHT+IEqQQxYJKlfzPoqMUFgHU6zIROEhRJl3hS7d/QAoZRcIhvjAFJTl85oWEYcXxqL2Ug3uv6Oaw==
-X-Received: by 2002:a17:907:1c12:b0:af8:f9e8:6fae with SMTP id a640c23a62f3a-af9402077e3mr996033666b.46.1754313688819;
-        Mon, 04 Aug 2025 06:21:28 -0700 (PDT)
-Received: from krava ([173.38.220.40])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-af91a1e89a6sm732669466b.73.2025.08.04.06.21.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Aug 2025 06:21:27 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 4 Aug 2025 15:21:25 +0200
-To: Qianfeng Rong <rongqianfeng@vivo.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-	netdev@vger.kernel.org, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bpf: Remove redundant __GFP_NOWARN
-Message-ID: <aJCz1cRFjEo-Jm1-@krava>
-References: <20250804122731.460158-1-rongqianfeng@vivo.com>
+	s=arc-20240116; t=1754314011; c=relaxed/simple;
+	bh=t7ETmf0H+nvKvs92jN/VK1JNsQL7CVr5t2gKdQ0ASWk=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=Qp1P6qcUe4SIjP7NxGa1aeLc74esQq3D3HWX+3SXZ108UlerRls+6TGwYWAwXU7G/1csWrkldOTFpKFdhQXt7RLs+FWlznWt3D2Pmv9WJc4MaGJx9m6OWtw7csRGDBR9Kcc0zydI9c0IvdktBH+05AyztiyxHXXbgHYt2DzIXPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OFTgkCyN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 801D0C4CEF0;
+	Mon,  4 Aug 2025 13:26:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1754314010;
+	bh=t7ETmf0H+nvKvs92jN/VK1JNsQL7CVr5t2gKdQ0ASWk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=OFTgkCyNVCh3tv4xzled9DizoEOdY1JikSnh0CHzGZC5fSSEuxzy+hkKpyqOi26bj
+	 i/w8M32m4K/CtToIU/jEhnbzeMoWIjZGwe1VIUBpBbHHI6FPT5JwkLwI+USzXiVWzl
+	 j2XBUaQDrG0Oo77+CRcCj4rOEfpFv+RBuy8WaOlq0Xzbh0Wa/eO0xZQpXSQixd1VLK
+	 A6cN5xsWSwXRrPKvJXhpneI8r7H6NWiij/UiZ97Y4MRDPGgPHbLF9rRGRgLV8S2WQM
+	 VuC4KdMVnIhUOnzUp3ff2qt4ea5Gtj0Vuuc8JLcz9dFEDZtvBql2FDCedC2WVPxhs2
+	 ItgB/2SNGLwMQ==
+Date: Mon, 4 Aug 2025 22:26:45 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>, bpf@vger.kernel.org, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa
+ <jolsa@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard
+ Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, KP Singh
+ <kpsingh@kernel.org>
+Subject: Re: [PATCH] btf: Simplify BTF logic with use of __free(btf_put)
+Message-Id: <20250804222645.5d8dd9895812b31e7a6963e9@kernel.org>
+In-Reply-To: <20250801071622.63dc9b78@gandalf.local.home>
+References: <20250801071622.63dc9b78@gandalf.local.home>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250804122731.460158-1-rongqianfeng@vivo.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Aug 04, 2025 at 08:27:30PM +0800, Qianfeng Rong wrote:
-> Commit 16f5dfbc851b ("gfp: include __GFP_NOWARN in GFP_NOWAIT")
-> made GFP_NOWAIT implicitly include __GFP_NOWARN.
+On Fri, 1 Aug 2025 07:16:22 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> From: Steven Rostedt <rostedt@goodmis.org>
 > 
-> Therefore, explicit __GFP_NOWARN combined with GFP_NOWAIT
-> (e.g., `GFP_NOWAIT | __GFP_NOWARN`) is now redundant. Let's clean
-> up these redundant flags across subsystems.
+> Several functions need to call btf_put() on the btf pointer before it
+> returns leading to using "goto" branches to jump to the end to call
+> btf_put(btf). This can be simplified by introducing DEFINE_FREE() to allow
+> functions to define the btf descriptor with:
 > 
-> No functional changes.
+>    struct btf *btf __free(btf_put) = NULL;
 > 
-> Signed-off-by: Qianfeng Rong <rongqianfeng@vivo.com>
+> Then the btf descriptor will always have btf_put() called on it if it
+> isn't NULL or ERR before exiting the function.
+> 
+> Where needed, no_free_ptr(btf) is used to assign the btf descriptor to a
+> pointer that will be used outside the function.
+> 
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+Yeah, this looks good to me.
 
-jirka
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+Thank you,
 
 
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 > ---
->  kernel/bpf/devmap.c        | 2 +-
->  kernel/bpf/local_storage.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+>  include/linux/btf.h         |  4 +++
+>  kernel/bpf/btf.c            | 56 +++++++++++--------------------------
+>  kernel/trace/trace_btf.c    | 15 +++++-----
+>  kernel/trace/trace_output.c |  8 ++----
+>  4 files changed, 31 insertions(+), 52 deletions(-)
 > 
-> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-> index 482d284a1553..2625601de76e 100644
-> --- a/kernel/bpf/devmap.c
-> +++ b/kernel/bpf/devmap.c
-> @@ -865,7 +865,7 @@ static struct bpf_dtab_netdev *__dev_map_alloc_node(struct net *net,
->  	struct bpf_dtab_netdev *dev;
+> diff --git a/include/linux/btf.h b/include/linux/btf.h
+> index b2983706292f..e118c69c4996 100644
+> --- a/include/linux/btf.h
+> +++ b/include/linux/btf.h
+> @@ -8,6 +8,7 @@
+>  #include <linux/bpfptr.h>
+>  #include <linux/bsearch.h>
+>  #include <linux/btf_ids.h>
+> +#include <linux/cleanup.h>
+>  #include <uapi/linux/btf.h>
+>  #include <uapi/linux/bpf.h>
 >  
->  	dev = bpf_map_kmalloc_node(&dtab->map, sizeof(*dev),
-> -				   GFP_NOWAIT | __GFP_NOWARN,
-> +				   GFP_NOWAIT,
->  				   dtab->map.numa_node);
->  	if (!dev)
->  		return ERR_PTR(-ENOMEM);
-> diff --git a/kernel/bpf/local_storage.c b/kernel/bpf/local_storage.c
-> index 632d51b05fe9..c93a756e035c 100644
-> --- a/kernel/bpf/local_storage.c
-> +++ b/kernel/bpf/local_storage.c
-> @@ -165,7 +165,7 @@ static long cgroup_storage_update_elem(struct bpf_map *map, void *key,
+> @@ -150,6 +151,9 @@ struct btf *btf_get_by_fd(int fd);
+>  int btf_get_info_by_fd(const struct btf *btf,
+>  		       const union bpf_attr *attr,
+>  		       union bpf_attr __user *uattr);
+> +
+> +DEFINE_FREE(btf_put, struct btf *, if (!IS_ERR_OR_NULL(_T)) btf_put(_T))
+> +
+>  /* Figure out the size of a type_id.  If type_id is a modifier
+>   * (e.g. const), it will be resolved to find out the type with size.
+>   *
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 1d2cf898e21e..480657912c96 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -3788,7 +3788,7 @@ static int btf_parse_kptr(const struct btf *btf, struct btf_field *field,
+>  	/* If a matching btf type is found in kernel or module BTFs, kptr_ref
+>  	 * is that BTF, otherwise it's program BTF
+>  	 */
+> -	struct btf *kptr_btf;
+> +	struct btf *kptr_btf __free(btf_put) = NULL;
+>  	int ret;
+>  	s32 id;
+>  
+> @@ -3827,23 +3827,17 @@ static int btf_parse_kptr(const struct btf *btf, struct btf_field *field,
+>  		 * the same time.
+>  		 */
+>  		dtor_btf_id = btf_find_dtor_kfunc(kptr_btf, id);
+> -		if (dtor_btf_id < 0) {
+> -			ret = dtor_btf_id;
+> -			goto end_btf;
+> -		}
+> +		if (dtor_btf_id < 0)
+> +			return dtor_btf_id;
+>  
+>  		dtor_func = btf_type_by_id(kptr_btf, dtor_btf_id);
+> -		if (!dtor_func) {
+> -			ret = -ENOENT;
+> -			goto end_btf;
+> -		}
+> +		if (!dtor_func)
+> +			return -ENOENT;
+>  
+>  		if (btf_is_module(kptr_btf)) {
+>  			mod = btf_try_get_module(kptr_btf);
+> -			if (!mod) {
+> -				ret = -ENXIO;
+> -				goto end_btf;
+> -			}
+> +			if (!mod)
+> +				return -ENXIO;
+>  		}
+>  
+>  		/* We already verified dtor_func to be btf_type_is_func
+> @@ -3860,13 +3854,11 @@ static int btf_parse_kptr(const struct btf *btf, struct btf_field *field,
+>  
+>  found_dtor:
+>  	field->kptr.btf_id = id;
+> -	field->kptr.btf = kptr_btf;
+> +	field->kptr.btf = no_free_ptr(kptr_btf);
+>  	field->kptr.module = mod;
+>  	return 0;
+>  end_mod:
+>  	module_put(mod);
+> -end_btf:
+> -	btf_put(kptr_btf);
+>  	return ret;
+>  }
+>  
+> @@ -8699,7 +8691,7 @@ u32 *btf_kfunc_is_modify_return(const struct btf *btf, u32 kfunc_btf_id,
+>  static int __register_btf_kfunc_id_set(enum btf_kfunc_hook hook,
+>  				       const struct btf_kfunc_id_set *kset)
+>  {
+> -	struct btf *btf;
+> +	struct btf *btf __free(btf_put) = NULL;
+>  	int ret, i;
+>  
+>  	btf = btf_get_module_btf(kset->owner);
+> @@ -8712,14 +8704,10 @@ static int __register_btf_kfunc_id_set(enum btf_kfunc_hook hook,
+>  		ret = btf_check_kfunc_protos(btf, btf_relocate_id(btf, kset->set->pairs[i].id),
+>  					     kset->set->pairs[i].flags);
+>  		if (ret)
+> -			goto err_out;
+> +			return ret;
 >  	}
 >  
->  	new = bpf_map_kmalloc_node(map, struct_size(new, data, map->value_size),
-> -				   __GFP_ZERO | GFP_NOWAIT | __GFP_NOWARN,
-> +				   __GFP_ZERO | GFP_NOWAIT,
->  				   map->numa_node);
->  	if (!new)
->  		return -ENOMEM;
+> -	ret = btf_populate_kfunc_set(btf, hook, kset);
+> -
+> -err_out:
+> -	btf_put(btf);
+> -	return ret;
+> +	return btf_populate_kfunc_set(btf, hook, kset);
+>  }
+>  
+>  /* This function must be invoked only from initcalls/module init functions */
+> @@ -8807,7 +8795,7 @@ int register_btf_id_dtor_kfuncs(const struct btf_id_dtor_kfunc *dtors, u32 add_c
+>  				struct module *owner)
+>  {
+>  	struct btf_id_dtor_kfunc_tab *tab;
+> -	struct btf *btf;
+> +	struct btf *btf __free(btf_put) = NULL;
+>  	u32 tab_cnt, i;
+>  	int ret;
+>  
+> @@ -8873,7 +8861,6 @@ int register_btf_id_dtor_kfuncs(const struct btf_id_dtor_kfunc *dtors, u32 add_c
+>  end:
+>  	if (ret)
+>  		btf_free_dtor_kfunc_tab(btf);
+> -	btf_put(btf);
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(register_btf_id_dtor_kfuncs);
+> @@ -9484,9 +9471,8 @@ bpf_struct_ops_find(struct btf *btf, u32 type_id)
+>  
+>  int __register_bpf_struct_ops(struct bpf_struct_ops *st_ops)
+>  {
+> -	struct bpf_verifier_log *log;
+> -	struct btf *btf;
+> -	int err = 0;
+> +	struct bpf_verifier_log *log __free(kfree) = NULL;
+> +	struct btf *btf __free(btf_put) = NULL;
+>  
+>  	btf = btf_get_module_btf(st_ops->owner);
+>  	if (!btf)
+> @@ -9495,20 +9481,12 @@ int __register_bpf_struct_ops(struct bpf_struct_ops *st_ops)
+>  		return PTR_ERR(btf);
+>  
+>  	log = kzalloc(sizeof(*log), GFP_KERNEL | __GFP_NOWARN);
+> -	if (!log) {
+> -		err = -ENOMEM;
+> -		goto errout;
+> -	}
+> +	if (!log)
+> +		return -ENOMEM;
+>  
+>  	log->level = BPF_LOG_KERNEL;
+>  
+> -	err = btf_add_struct_ops(btf, st_ops, log);
+> -
+> -errout:
+> -	kfree(log);
+> -	btf_put(btf);
+> -
+> -	return err;
+> +	return btf_add_struct_ops(btf, st_ops, log);
+>  }
+>  EXPORT_SYMBOL_GPL(__register_bpf_struct_ops);
+>  #endif
+> diff --git a/kernel/trace/trace_btf.c b/kernel/trace/trace_btf.c
+> index 5bbdbcbbde3c..1c9111ab538b 100644
+> --- a/kernel/trace/trace_btf.c
+> +++ b/kernel/trace/trace_btf.c
+> @@ -13,26 +13,25 @@
+>  const struct btf_type *btf_find_func_proto(const char *func_name, struct btf **btf_p)
+>  {
+>  	const struct btf_type *t;
+> +	struct btf *btf __free(btf_put) = NULL;
+>  	s32 id;
+>  
+> -	id = bpf_find_btf_id(func_name, BTF_KIND_FUNC, btf_p);
+> +	id = bpf_find_btf_id(func_name, BTF_KIND_FUNC, &btf);
+>  	if (id < 0)
+>  		return NULL;
+>  
+>  	/* Get BTF_KIND_FUNC type */
+> -	t = btf_type_by_id(*btf_p, id);
+> +	t = btf_type_by_id(btf, id);
+>  	if (!t || !btf_type_is_func(t))
+> -		goto err;
+> +		return NULL;
+>  
+>  	/* The type of BTF_KIND_FUNC is BTF_KIND_FUNC_PROTO */
+> -	t = btf_type_by_id(*btf_p, t->type);
+> +	t = btf_type_by_id(btf, t->type);
+>  	if (!t || !btf_type_is_func_proto(t))
+> -		goto err;
+> +		return NULL;
+>  
+> +	*btf_p = no_free_ptr(btf);
+>  	return t;
+> -err:
+> -	btf_put(*btf_p);
+> -	return NULL;
+>  }
+>  
+>  /*
+> diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+> index 0b3db02030a7..c11adfa83d5c 100644
+> --- a/kernel/trace/trace_output.c
+> +++ b/kernel/trace/trace_output.c
+> @@ -698,7 +698,7 @@ void print_function_args(struct trace_seq *s, unsigned long *args,
+>  	const char *param_name;
+>  	char name[KSYM_NAME_LEN];
+>  	unsigned long arg;
+> -	struct btf *btf;
+> +	struct btf *btf __free(btf_put) = NULL;
+>  	s32 tid, nr = 0;
+>  	int a, p, x;
+>  
+> @@ -716,7 +716,7 @@ void print_function_args(struct trace_seq *s, unsigned long *args,
+>  
+>  	param = btf_get_func_param(t, &nr);
+>  	if (!param)
+> -		goto out_put;
+> +		goto out;
+>  
+>  	for (a = 0, p = 0; p < nr; a++, p++) {
+>  		if (p)
+> @@ -756,7 +756,7 @@ void print_function_args(struct trace_seq *s, unsigned long *args,
+>  				trace_seq_putc(s, ':');
+>  				if (++a == FTRACE_REGS_MAX_ARGS) {
+>  					trace_seq_puts(s, "...]");
+> -					goto out_put;
+> +					goto out;
+>  				}
+>  				trace_seq_printf(s, "0x%lx", args[a]);
+>  			}
+> @@ -764,8 +764,6 @@ void print_function_args(struct trace_seq *s, unsigned long *args,
+>  			break;
+>  		}
+>  	}
+> -out_put:
+> -	btf_put(btf);
+>  out:
+>  	trace_seq_printf(s, ")");
+>  }
 > -- 
-> 2.34.1
+> 2.47.2
 > 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
