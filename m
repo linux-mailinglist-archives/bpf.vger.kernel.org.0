@@ -1,282 +1,288 @@
-Return-Path: <bpf+bounces-64986-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64987-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 037A4B19F1B
-	for <lists+bpf@lfdr.de>; Mon,  4 Aug 2025 11:58:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CED36B19FA9
+	for <lists+bpf@lfdr.de>; Mon,  4 Aug 2025 12:24:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B00D73BDAD1
-	for <lists+bpf@lfdr.de>; Mon,  4 Aug 2025 09:58:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6092A189A7A0
+	for <lists+bpf@lfdr.de>; Mon,  4 Aug 2025 10:24:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 101D32459FE;
-	Mon,  4 Aug 2025 09:58:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D353E248F64;
+	Mon,  4 Aug 2025 10:24:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EsiXLQIJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U83iXZpO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB98623C8C7;
-	Mon,  4 Aug 2025 09:58:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6982D4A07;
+	Mon,  4 Aug 2025 10:24:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754301502; cv=none; b=fp6DLGBkD9etUfyZ1VaY0ZDGBZ5DI6Y/JlQftUfO7c5O6ceF+WlNBH7eaKVf8c/+hKmwlwuVCgOoC5W7hZHmI8WcU/XgZN5rx9bKkYBycS80DPv1y5x/TpWIrE9x6JpqLmWtlu1dWV25bwrqT0i5tP4OkcDRCzZxzSYNRQkjmDI=
+	t=1754303045; cv=none; b=dMQcbHO4jrnfrY82GYKOE8/ooI5tH6X+0EQzw6bWh2t2+6gGCXHOR/zhgIEIaNZmQCYqb7ZIsHHzRadXoHxMYADh/O1WofEsP8WJb/Q7bQmDqFouf8+Vrtm01JuwT01jeNRBvuzvmI0oMeq/FJUp281niRkG+EdMpSkCquY3yB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754301502; c=relaxed/simple;
-	bh=kUYQOYR8dh/UoKUnw0E24TPo6+iffC0MXNyqhVOjEfM=;
+	s=arc-20240116; t=1754303045; c=relaxed/simple;
+	bh=w6peR6m+7jZbZfFC9MGuKD7AYm9oxWmlaVTj3ejKf/w=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F2PObBxnJ4fJ07zmIfjFbHTUNDOc1/D4AKBOiZ9UrgnloL07q+3F257tj5TXoPHGe2A96TLMcDqoc+zo3kDWPkKu7N63kBIltFE2ZZWBi1E4NyX+CAXy9slEl5dOfZ3d+Boup9Ys075Xm0OcRNoX66YC56+ik7pGtkVHZNpDrVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EsiXLQIJ; arc=none smtp.client-ip=209.85.208.52
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZdK+Epe1K4ZeGzg426zUsEDdT0rqPOMXP7NDIPvcSFLTIHUmzE9rpxxzu+TniwkgLIv1zH7p9wr+yJnDe8MQpCWo81WtGxuobCmqOEqh4mUF6l5NtHOr7VqdLuF3SDZe6RYsHSWsZeGy/QhFxQAJTFdVFm48bSUA+4dgdOg9E7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U83iXZpO; arc=none smtp.client-ip=209.85.208.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-61580eb7995so9268555a12.0;
-        Mon, 04 Aug 2025 02:58:19 -0700 (PDT)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-605b9488c28so7434382a12.2;
+        Mon, 04 Aug 2025 03:24:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754301498; x=1754906298; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=2Tr8e+hsd8h1T2kog2UG0sY/rx+VLRnDE1612Udpcys=;
-        b=EsiXLQIJ8AfFh8Lf1mXKcWgTwa7XvPwn6wpRoL5ZHU5Es0fcm+b1UgvcvRUu/Nc1+V
-         yXM1pwU4Kyds2XSlO0L9gMRPs7iEpsUOT7vLg19QVDj93YdyO32Ea3TfhVZW8g2tuEpL
-         Q0/QFK+1xOmnaCCtPyzxwwyov3rAyOoQ3TC4OooAqumsYSk0w+KuQif0jPClX0e8oZO7
-         dAcnd0gj4kbIYmxwK/vR0m1U7q73XOjTFCJeSRcvdsalabJ6S8bEuWteYM69YRMd5P17
-         n1qwJyy6QLxq1SNTWWETSlHQkQMo8DRJXDyhaRosI7GghnrsVISX5+lVb8jVb35P2uEq
-         4HxQ==
+        d=gmail.com; s=20230601; t=1754303042; x=1754907842; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ODqZllmQ7MG6tJZiiLCQv7qmnxSWZfG+uWxo/YH5lb8=;
+        b=U83iXZpO16R0CDvkY1xh8UzdpytEse6GmR7BG8pnJ0/kLspmHXOIza05IEmNEogG1e
+         LgEBzgFVjoCJUfTMDqzWqzqjEt3f832gRMvK7jpmcjPkXQnfMrM4athyrGE4GtHOkHK/
+         tzD4O1k6LeoetilyDA4t+z8xfzAf3yEgJ4ktCduGzQEUX8k0Ff8Xg8N2DbBoShhVSteD
+         n6issCzj3tLtVE6jZNPE6/DYovtFVe/FZYsWbA7VYFnUvHKrTGNC/Rhd90YXgoOK6R65
+         dkGxAbpNmkp1fszr/GLIjzsaecPIleGYKvhZLxabKJkDP/R7gShYoWWQILaYh8jKfJ2k
+         zQYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754301498; x=1754906298;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2Tr8e+hsd8h1T2kog2UG0sY/rx+VLRnDE1612Udpcys=;
-        b=Ks7RJ3NFzdtkKwrm+DfPlXRd+/apLWx5WYPcoA6uf8Ac32PCXpRJM4cHfXnYNrys7s
-         yfNL465m4npqNmcTVMpk0dFc8StkpiN6xWtrq+ljN7LQqm3febBdsT7+35HZ3XqEz58X
-         xXMYqQRln32/sPlujsWGho0Kcv6WUkylZohQ2FdsjpTa7haAUlWEUcBU/UMUpNCApGoG
-         rnFokQcegoAkrD1+jcbyLoAeTiBYJ27IJG1MpCG7MEA7GmA2mbnKbjnw0Mc294CxsqYX
-         NrO2x0xNFWfGeHrIoH6RtNdm+7mvPRl0xqeRTOrz/fwcZpohDPpb4U6h6zUdLKl+Ctm1
-         JTdg==
-X-Forwarded-Encrypted: i=1; AJvYcCXdWw/Gxn8bpV/SCad1Ao5qGtatsy2wuaB/hWYnt+kvOBWjM8YHHfX/oUe26v+px0LB6bk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzph2uVZR5+Jhd6h6eOB8ufS6cU75X2gfiNvNPX840sS5hYKRh6
-	Bh2mxSqqTXtCNWNXDCv8oTDMRuNc0z7cYGGv7SH9kHgynUJogxEI0uPj6Pq2nh36
-X-Gm-Gg: ASbGnctwlhK+FW8U245zG3DWv3acXPAbKVgGqHdej8u7bzos/7R8tN2960WeXdOF/nN
-	ZRnrtBuFNZntMB7buLS0Qux97YIhOJxCzwDiQyQsaQFwEq9qJ+M81mYc49sz7rrKDX4tSvIooY/
-	xfDzKhTTB4JmKGqr2/mjIbKPd1a1RoPWwqUU629DGRb/l9VnbcshQB/Dzq3M147Ys3pTuVkpe+K
-	OL6TaHmxFJZ4FsGGZB5h7BY5u0pvCg2bMisFKGSTJubRrRXwIeMYffeGvrRdy0/HYFMipsD21P3
-	ywPNlfwXIsHQKduAGWa6LMZ4SzoZnkemvPDkPgl03KTW1NPUX85Ms3WEn5tqHq9hkzAYOnwuELo
-	Q5vZenqLc
-X-Google-Smtp-Source: AGHT+IH3bZbk/enzyPqacVG4XWtUUE0EIqip+49gzXx3ZNomPEWb3qYxEIIN3/PxNi1pVgOI8C2wNQ==
-X-Received: by 2002:a05:6402:5210:b0:615:705:274e with SMTP id 4fb4d7f45d1cf-615e5dbc49dmr8209483a12.4.1754301497585;
-        Mon, 04 Aug 2025 02:58:17 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1754303042; x=1754907842;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ODqZllmQ7MG6tJZiiLCQv7qmnxSWZfG+uWxo/YH5lb8=;
+        b=JYhGyIxm7Ao0cUZBl4UA/U69W+Kg7Y0dA8K8KmPzSzQw0dIMDc7VLz616JHebF/XS7
+         T7I8eZcMJkfAW63I1FpQCjy1r3koN09vCEeTxzLtG1IA+lqT/krJ8PtsIylEnaW72/r3
+         anQnKEWBmUomtBDo18Myc7GcAAb3V4MRYVT7rqnExuu1rF6S4Ad2EkxluA3vvPMuNZLQ
+         r9ipEk0f6NTt7ek9NDH6TSdwJ5QkDRCLoYBqdP3S4b/UbZcluSHE6RtPJgK4thrHpypK
+         tFQo2k/waHgOfgWM8VK1t1B6T/qFFIwnpsLMvED+4HszhTZRNL5SfwiS/liHEbp9SX/u
+         G2SA==
+X-Forwarded-Encrypted: i=1; AJvYcCVHFdOzEw+ipDDXUWb4/magcuqe7mspUC12c+4TS1VZ6N8XLzAh5EekGNngr7fdueFo1fJ5X9ktIOUYU/I2@vger.kernel.org, AJvYcCVX0Rtjv0a0MAXf5jNqvTSJMXBLfK62b0viMqcdQrwLIjAG+eubF/uhWn0y6AYu97SU+aUPjv4dcS6fM875y7wC@vger.kernel.org, AJvYcCXQcRq5OsfP49gs3brj5+KN5rj4QaqjNyqA3O4SQf9Z6T3c8xTL3r7UXgNCWy5wsaUzxd8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzQiUePvpoXvxxY1ICNc36Uq/xC4dgo6sFCZm6gPps7qc9lJOrR
+	kv89sgAsaS3DoEcgKh1Tt7OAmF+35MQ95xRA44KaZ4Heh5yON3VaBr4R
+X-Gm-Gg: ASbGncvVHru8FEKxjjtoUlYu+Ru1fBn7Ck2P1sIxEf39B7OUrCfryMYwfMHanrWmjzW
+	D0ZsKPIOSDpwldLwke+Mndj3yCK5UDVBgCbGbCLldp7QOGrmUZ5jelX88UgiG9y1UPVmi8Og4tl
+	3Nf12F3bEcEZ0BTuoxQPEwVCpkHtrEqu1RR6bp6JuAaN4R6PXgNgcw/nq+HfCePSJhYysHlv9v7
+	qODFAl/2ml09YBPkRbwjyAFxG9gliJInDRHuYPYZ+WHVJip6Rpn7t6lAYnZFR6iHyj6wSyahuxM
+	xZr26703ubtSUma+TZ8RfdgL89yeV/fYEMXLkI8vdpmL4D9PjUnV6b3sNlZ3f5liqlNZyftw9Cs
+	D5uRjhdKl
+X-Google-Smtp-Source: AGHT+IHb0ZITpm6CBI91qSNUMi1uKmXv5hmfMz1eldIsixXme+2JH3CntR+FJ0kHEOADsOvE8Dpmxg==
+X-Received: by 2002:a05:6402:84a:b0:615:b6b9:d87c with SMTP id 4fb4d7f45d1cf-615e6eb5fbamr8145984a12.3.1754303041267;
+        Mon, 04 Aug 2025 03:24:01 -0700 (PDT)
 Received: from krava ([173.38.220.40])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-615a8fe79a0sm6644195a12.39.2025.08.04.02.58.16
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-615a8ffb8d7sm6701166a12.47.2025.08.04.03.24.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Aug 2025 02:58:17 -0700 (PDT)
+        Mon, 04 Aug 2025 03:24:00 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 4 Aug 2025 11:58:15 +0200
-To: Alexis =?iso-8859-1?Q?Lothor=E9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Cc: dwarves@vger.kernel.org, bpf@vger.kernel.org,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Alexei Starovoitov <ast@fb.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Bastien Curutchet <bastien.curutchet@bootlin.com>,
-	ebpf@linuxfoundation.org
-Subject: Re: [PATCH v3 1/3] btf_encoder: skip functions consuming packed
- structs passed by value on stack
-Message-ID: <aJCEN3AD1dt8nlcz@krava>
-References: <20250707-btf_skip_structs_on_stack-v3-0-29569e086c12@bootlin.com>
- <20250707-btf_skip_structs_on_stack-v3-1-29569e086c12@bootlin.com>
+Date: Mon, 4 Aug 2025 12:23:59 +0200
+To: Jiawei Zhao <phoenix500526@163.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+	yonghong.song@linux.dev, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 1/2] libbpf: fix USDT SIB argument handling causing
+ unrecognized register error
+Message-ID: <aJCKP1Cja3DCm0EG@krava>
+References: <20250802084803.108777-1-phoenix500526@163.com>
+ <20250802084803.108777-2-phoenix500526@163.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250707-btf_skip_structs_on_stack-v3-1-29569e086c12@bootlin.com>
+In-Reply-To: <20250802084803.108777-2-phoenix500526@163.com>
 
-On Mon, Jul 07, 2025 at 04:02:03PM +0200, Alexis Lothoré (eBPF Foundation) wrote:
-> Most ABIs allow functions to receive structs passed by value, if they
-> fit in a register or a pair of registers, depending on the exact ABI.
-> However, when there is a struct passed by value but all registers are
-> already used for parameters passing, the struct is still passed by value
-> but on the stack. This becomes an issue if the passed struct is defined
-> with some attributes like __attribute__((packed)) or
-> __attribute__((aligned(X)), as its location on the stack is altered, but
-> this change is not reflected in dwarf information. The corresponding BTF
-> data generated from this can lead to incorrect BPF trampolines
-> generation (eg to attach bpf tracing programs to kernel functions) in
-> the Linux kernel.
+On Sat, Aug 02, 2025 at 08:48:02AM +0000, Jiawei Zhao wrote:
+> On x86-64, USDT arguments can be specified using Scale-Index-Base (SIB)
+> addressing, e.g. "1@-96(%rbp,%rax,8)". The current USDT implementation
+> in libbpf cannot parse this format, causing `bpf_program__attach_usdt()`
+> to fail with -ENOENT (unrecognized register).
 > 
-> Prevent those wrong cases by not encoding functions consuming structs
-> passed by value on stack, when those structs do not have the expected
-> alignment due to some attribute usage.
+> This patch fixes this by implementing the necessary changes:
+> - add correct handling for SIB-addressed arguments in `bpf_usdt_arg`.
+> - add adaptive support to `__bpf_usdt_arg_type` and
+>   `__bpf_usdt_arg_spec` to represent SIB addressing parameters.
 > 
-> Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
+> Signed-off-by: Jiawei Zhao <phoenix500526@163.com>
 > ---
-> Changes in v3:
-> - remove unneeded class__find_holes (already done by
->   class__infer_packed_attributes)
-> - add uncertain parm loc in saved_functions_combine
+>  tools/lib/bpf/usdt.bpf.h | 33 +++++++++++++++++++++++++++++-
+>  tools/lib/bpf/usdt.c     | 43 ++++++++++++++++++++++++++++++++++------
+>  2 files changed, 69 insertions(+), 7 deletions(-)
+> 
+> diff --git a/tools/lib/bpf/usdt.bpf.h b/tools/lib/bpf/usdt.bpf.h
+> index 2a7865c8e3fe..246513088c3a 100644
+> --- a/tools/lib/bpf/usdt.bpf.h
+> +++ b/tools/lib/bpf/usdt.bpf.h
+> @@ -34,6 +34,7 @@ enum __bpf_usdt_arg_type {
+>  	BPF_USDT_ARG_CONST,
+>  	BPF_USDT_ARG_REG,
+>  	BPF_USDT_ARG_REG_DEREF,
+> +	BPF_USDT_ARG_SIB,
+>  };
+>  
+>  struct __bpf_usdt_arg_spec {
+> @@ -43,6 +44,10 @@ struct __bpf_usdt_arg_spec {
+>  	enum __bpf_usdt_arg_type arg_type;
+>  	/* offset of referenced register within struct pt_regs */
+>  	short reg_off;
+> +	/* offset of index register in pt_regs, only used in SIB mode */
+> +	short idx_reg_off;
+> +	/* scale factor for index register, only used in SIB mode */
+> +	short scale;
+>  	/* whether arg should be interpreted as signed value */
+>  	bool arg_signed;
+>  	/* number of bits that need to be cleared and, optionally,
+> @@ -149,7 +154,7 @@ int bpf_usdt_arg(struct pt_regs *ctx, __u64 arg_num, long *res)
+>  {
+>  	struct __bpf_usdt_spec *spec;
+>  	struct __bpf_usdt_arg_spec *arg_spec;
+> -	unsigned long val;
+> +	unsigned long val, idx;
+>  	int err, spec_id;
+>  
+>  	*res = 0;
+> @@ -202,6 +207,32 @@ int bpf_usdt_arg(struct pt_regs *ctx, __u64 arg_num, long *res)
+>  			return err;
+>  #if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+>  		val >>= arg_spec->arg_bitshift;
+> +#endif
+> +		break;
+> +	case BPF_USDT_ARG_SIB:
+> +		/* Arg is in memory addressed by SIB (Scale-Index-Base) mode
+> +		 * (e.g., "-1@-96(%rbp,%rax,8)" in USDT arg spec). Register
+> +		 * is identified like with BPF_USDT_ARG_SIB case, the offset
+> +		 * is in arg_spec->val_off, the scale factor is in arg_spec->scale.
+> +		 * Firstly, we fetch the base register contents and the index
+> +		 * register contents from pt_regs. Secondly, we multiply the
+> +		 * index register contents by the scale factor, then add the
+> +		 * base address and the offset to get the final address. Finally,
+> +		 * we do another user-space probe read to fetch argument value
+> +		 * itself.
+> +		 */
+> +		err = bpf_probe_read_kernel(&val, sizeof(val), (void *)ctx + arg_spec->reg_off);
+> +		if (err)
+> +			return err;
+> +		err = bpf_probe_read_kernel(&idx, sizeof(idx), (void *)ctx + arg_spec->idx_reg_off);
+> +		if (err)
+> +			return err;
+> +		err = bpf_probe_read_user(&val, sizeof(val),
+> +				(void *)val + idx * arg_spec->scale + arg_spec->val_off);
+> +		if (err)
+> +			return err;
+> +#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+> +		val >>= arg_spec->arg_bitshift;
+>  #endif
+>  		break;
+>  	default:
+> diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
+> index 4e4a52742b01..1f8b9e1c9819 100644
+> --- a/tools/lib/bpf/usdt.c
+> +++ b/tools/lib/bpf/usdt.c
+> @@ -200,6 +200,7 @@ enum usdt_arg_type {
+>  	USDT_ARG_CONST,
+>  	USDT_ARG_REG,
+>  	USDT_ARG_REG_DEREF,
+> +	USDT_ARG_SIB,
+>  };
+>  
+>  /* should match exactly struct __bpf_usdt_arg_spec from usdt.bpf.h */
+> @@ -207,6 +208,8 @@ struct usdt_arg_spec {
+>  	__u64 val_off;
+>  	enum usdt_arg_type arg_type;
+>  	short reg_off;
+> +	short idx_reg_off;
+> +	short scale;
+>  	bool arg_signed;
+>  	char arg_bitshift;
+>  };
+> @@ -1283,11 +1286,39 @@ static int calc_pt_regs_off(const char *reg_name)
+>  
+>  static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec *arg, int *arg_sz)
+>  {
+> -	char reg_name[16];
+> -	int len, reg_off;
+> -	long off;
+> +	char reg_name[16] = {0}, idx_reg_name[16] = {0};
+> +	int len, reg_off, idx_reg_off, scale = 1;
+> +	long off = 0;
+> +
+> +	if (sscanf(arg_str, " %d @ %ld ( %%%15[^,] , %%%15[^,] , %d ) %n",
+> +				arg_sz, &off, reg_name, idx_reg_name, &scale, &len) == 5 ||
+> +		sscanf(arg_str, " %d @ ( %%%15[^,] , %%%15[^,] , %d ) %n",
+> +				arg_sz, reg_name, idx_reg_name, &scale, &len) == 4 ||
+> +		sscanf(arg_str, " %d @ %ld ( %%%15[^,] , %%%15[^)] ) %n",
+> +				arg_sz, &off, reg_name, idx_reg_name, &len) == 4 ||
+> +		sscanf(arg_str, " %d @ ( %%%15[^,] , %%%15[^)] ) %n",
+> +				arg_sz, reg_name, idx_reg_name, &len) == 3
+> +		) {
+> +		/* Scale Index Base case, e.g., 1@-96(%rbp,%rax,8)
+> +		 * 1@(%rbp,%rax,8)
+> +		 * 1@-96(%rbp,%rax)
+> +		 * 1@(%rbp,%rax)
+> +		 */
 
-lgtm, no change in functions on my setup
+hi,
+I'm getting following error from the test:
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+subtest_multispec_usdt:PASS:skel_open 0 nsec
+libbpf: usdt: unrecognized arg #10 spec '-2@nums(%rax,%rax) -1@$-127'
+libbpf: prog 'usdt12': failed to auto-attach: -EINVAL
+subtest_multispec_usdt:FAIL:skel_attach unexpected error: -22 (errno 22)
+#480/2   usdt/multispec:FAIL
 
+arguments look like:
+    Arguments: -4@$3 -4@$4 -8@$42 -8@$45 -4@$5 -8@$6 8@%rdx 8@%rsi -4@$-9 -2@%cx -2@nums(%rax,%rax) -1@$-127
+
+not sure why there's variable name in the arg10 definition
+
+gcc (GCC) 15.1.1 20250521 (Red Hat 15.1.1-2)
+clang version 20.1.8 (Fedora 20.1.8-3.fc42)
+
+thanks,
 jirka
 
 
-> Changes in v2:
-> - do not deny any struct passed by value, only those passed on stack AND
->   with some attribute alteration
-> - use the existing class__infer_packed_attributes to deduce is a struct
->   is "altered". As a consequence, move the function filtering from
->   parameter__new to btf_encoder__encode_cu, to make sure that all the
->   needed data has been parsed from debug info
-> ---
->  btf_encoder.c | 53 ++++++++++++++++++++++++++++++++++++++++++++++++++---
->  dwarves.h     |  1 +
->  2 files changed, 51 insertions(+), 3 deletions(-)
-> 
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index 0bc23349b5d740c3ddab8208b2e15cdbdd139b9d..3f040fe03d7a208aa742914513bacde9782aabcf 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -87,6 +87,7 @@ struct btf_encoder_func_state {
->  	uint8_t optimized_parms:1;
->  	uint8_t unexpected_reg:1;
->  	uint8_t inconsistent_proto:1;
-> +	uint8_t uncertain_parm_loc:1;
->  	int ret_type_id;
->  	struct btf_encoder_func_parm *parms;
->  	struct btf_encoder_func_annot *annots;
-> @@ -1203,6 +1204,7 @@ static int32_t btf_encoder__save_func(struct btf_encoder *encoder, struct functi
->  	state->inconsistent_proto = ftype->inconsistent_proto;
->  	state->unexpected_reg = ftype->unexpected_reg;
->  	state->optimized_parms = ftype->optimized_parms;
-> +	state->uncertain_parm_loc = ftype->uncertain_parm_loc;
->  	ftype__for_each_parameter(ftype, param) {
->  		const char *name = parameter__name(param) ?: "";
+> +		arg->arg_type = USDT_ARG_SIB;
+> +		arg->val_off = off;
+> +		arg->scale = scale;
+> +
+> +		reg_off = calc_pt_regs_off(reg_name);
+> +		if (reg_off < 0)
+> +			return reg_off;
+> +		arg->reg_off = reg_off;
 >  
-> @@ -1365,7 +1367,7 @@ static int saved_functions_cmp(const void *_a, const void *_b)
+> -	if (sscanf(arg_str, " %d @ %ld ( %%%15[^)] ) %n", arg_sz, &off, reg_name, &len) == 3) {
+> +		idx_reg_off = calc_pt_regs_off(idx_reg_name);
+> +		if (idx_reg_off < 0)
+> +			return idx_reg_off;
+> +		arg->idx_reg_off = idx_reg_off;
+> +	} else if (sscanf(arg_str, " %d @ %ld ( %%%15[^)] ) %n",
+> +				arg_sz, &off, reg_name, &len) == 3) {
+>  		/* Memory dereference case, e.g., -4@-20(%rbp) */
+>  		arg->arg_type = USDT_ARG_REG_DEREF;
+>  		arg->val_off = off;
+> @@ -1298,7 +1329,7 @@ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec
+>  	} else if (sscanf(arg_str, " %d @ ( %%%15[^)] ) %n", arg_sz, reg_name, &len) == 2) {
+>  		/* Memory dereference case without offset, e.g., 8@(%rsp) */
+>  		arg->arg_type = USDT_ARG_REG_DEREF;
+> -		arg->val_off = 0;
+> +		arg->val_off = off;
+>  		reg_off = calc_pt_regs_off(reg_name);
+>  		if (reg_off < 0)
+>  			return reg_off;
+> @@ -1306,7 +1337,7 @@ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec
+>  	} else if (sscanf(arg_str, " %d @ %%%15s %n", arg_sz, reg_name, &len) == 2) {
+>  		/* Register read case, e.g., -4@%eax */
+>  		arg->arg_type = USDT_ARG_REG;
+> -		arg->val_off = 0;
+> +		arg->val_off = off;
 >  
->  static int saved_functions_combine(struct btf_encoder_func_state *a, struct btf_encoder_func_state *b)
->  {
-> -	uint8_t optimized, unexpected, inconsistent;
-> +	uint8_t optimized, unexpected, inconsistent, uncertain_parm_loc;
->  	int ret;
->  
->  	ret = strncmp(a->elf->name, b->elf->name,
-> @@ -1375,11 +1377,13 @@ static int saved_functions_combine(struct btf_encoder_func_state *a, struct btf_
->  	optimized = a->optimized_parms | b->optimized_parms;
->  	unexpected = a->unexpected_reg | b->unexpected_reg;
->  	inconsistent = a->inconsistent_proto | b->inconsistent_proto;
-> +	uncertain_parm_loc = a->uncertain_parm_loc | b->uncertain_parm_loc;
->  	if (!unexpected && !inconsistent && !funcs__match(a, b))
->  		inconsistent = 1;
->  	a->optimized_parms = b->optimized_parms = optimized;
->  	a->unexpected_reg = b->unexpected_reg = unexpected;
->  	a->inconsistent_proto = b->inconsistent_proto = inconsistent;
-> +	a->uncertain_parm_loc = b->uncertain_parm_loc = uncertain_parm_loc;
->  
->  	return 0;
->  }
-> @@ -1430,9 +1434,15 @@ static int btf_encoder__add_saved_funcs(struct btf_encoder *encoder, bool skip_e
->  		/* do not exclude functions with optimized-out parameters; they
->  		 * may still be _called_ with the right parameter values, they
->  		 * just do not _use_ them.  Only exclude functions with
-> -		 * unexpected register use or multiple inconsistent prototypes.
-> +		 * unexpected register use, multiple inconsistent prototypes or
-> +		 * uncertain parameters location
->  		 */
-> -		add_to_btf |= !state->unexpected_reg && !state->inconsistent_proto;
-> +		add_to_btf |= !state->unexpected_reg && !state->inconsistent_proto && !state->uncertain_parm_loc;
-> +
-> +		if (state->uncertain_parm_loc)
-> +			btf_encoder__log_func_skip(encoder, saved_fns[i].elf,
-> +					"uncertain parameter location\n",
-> +					0, 0);
->  
->  		if (add_to_btf) {
->  			err = btf_encoder__add_func(state->encoder, state);
-> @@ -2553,6 +2563,38 @@ void btf_encoder__delete(struct btf_encoder *encoder)
->  	free(encoder);
->  }
->  
-> +static bool ftype__has_uncertain_arg_loc(struct cu *cu, struct ftype *ftype)
-> +{
-> +	struct parameter *param;
-> +	int param_idx = 0;
-> +
-> +	if (ftype->nr_parms < cu->nr_register_params)
-> +		return false;
-> +
-> +	ftype__for_each_parameter(ftype, param) {
-> +		if (param_idx++ < cu->nr_register_params)
-> +			continue;
-> +
-> +		struct tag *type = cu__type(cu, param->tag.type);
-> +
-> +		if (type == NULL || !tag__is_struct(type))
-> +			continue;
-> +
-> +		struct type *ctype = tag__type(type);
-> +		if (ctype->namespace.name == 0)
-> +			continue;
-> +
-> +		struct class *class = tag__class(type);
-> +
-> +		class__infer_packed_attributes(class, cu);
-> +
-> +		if (class->is_packed)
-> +			return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +
->  int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct conf_load *conf_load)
->  {
->  	struct llvm_annotation *annot;
-> @@ -2647,6 +2689,8 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
->  		 * Skip functions that:
->  		 *   - are marked as declarations
->  		 *   - do not have full argument names
-> +		 *   - have arguments with uncertain locations, e.g packed
-> +		 *   structs passed by value on stack
->  		 *   - are not in ftrace list (if it's available)
->  		 *   - are not external (in case ftrace filter is not available)
->  		 */
-> @@ -2693,6 +2737,9 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
->  		if (!func)
->  			continue;
->  
-> +		if (ftype__has_uncertain_arg_loc(cu, &fn->proto))
-> +			fn->proto.uncertain_parm_loc = 1;
-> +
->  		err = btf_encoder__save_func(encoder, fn, func);
->  		if (err)
->  			goto out;
-> diff --git a/dwarves.h b/dwarves.h
-> index 36c689847ebf29a1ab9936f9d0f928dd46514547..d689aee5910f4b40dc13b3e9dc596dfbe6a2c3d0 100644
-> --- a/dwarves.h
-> +++ b/dwarves.h
-> @@ -1021,6 +1021,7 @@ struct ftype {
->  	uint8_t		 unexpected_reg:1;
->  	uint8_t		 processed:1;
->  	uint8_t		 inconsistent_proto:1;
-> +	uint8_t		 uncertain_parm_loc:1;
->  	struct list_head template_type_params;
->  	struct list_head template_value_params;
->  	struct template_parameter_pack *template_parameter_pack;
-> 
+>  		reg_off = calc_pt_regs_off(reg_name);
+>  		if (reg_off < 0)
 > -- 
-> 2.50.0
+> 2.43.0
 > 
 > 
 
