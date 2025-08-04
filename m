@@ -1,155 +1,165 @@
-Return-Path: <bpf+bounces-64981-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64982-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAD40B19AFC
-	for <lists+bpf@lfdr.de>; Mon,  4 Aug 2025 07:08:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EFFDB19B89
+	for <lists+bpf@lfdr.de>; Mon,  4 Aug 2025 08:22:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2715517594A
-	for <lists+bpf@lfdr.de>; Mon,  4 Aug 2025 05:08:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16E83189812E
+	for <lists+bpf@lfdr.de>; Mon,  4 Aug 2025 06:22:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1859E221555;
-	Mon,  4 Aug 2025 05:08:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE90522FAFD;
+	Mon,  4 Aug 2025 06:22:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VFpTr7z4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f77.google.com (mail-io1-f77.google.com [209.85.166.77])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39D4386328
-	for <bpf@vger.kernel.org>; Mon,  4 Aug 2025 05:08:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A428F22B5B8
+	for <bpf@vger.kernel.org>; Mon,  4 Aug 2025 06:22:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754284114; cv=none; b=ueyh1+Lalq9+ul1A5GY1+CQcZUjpwnCdLzzRiSfJzzVTQxIa5tzKBKxnfz5whxRma/G6KR7eFn23NAoj3YPJUE4U5GUz6YTyJH1ZiIj1qFxwAtWz6BzKYjIdjl0PKv24mVvfcBTCZyqK1FhpsS1GAUjw8P3F2+0l/IrQnyiXGRs=
+	t=1754288525; cv=none; b=mhTJNvdKtuBUbfOcYt7dKDnwegcjvT6K0tR+4IuNWbYOqxftLcj5534vsmdA6XuYjgvGZaTXxVXJSvTEsL164Q7wm6QUhVeAUoDG26ASpiCKTuyg9W/jBZ+SyPyYYGw8cqyrWeHChdyCW+ybYHe0E/HCrrLpw4dqOZJIKIDG8B8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754284114; c=relaxed/simple;
-	bh=ZLBP3RUIikByUa7KPtiF0g+jtRkXsaeIPURdK5TfryI=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=lzxvxr1csqqjpFepJyxdxxgXunBOpbwQnsd46EhVo3Tff3++fxbwQBRNp4iKyHwkfoJcuZvjbapT8nTBpD5vwkXga+35JNCD0509ItMzkAF4+Or/4JiKLlNCOUW4Ol15iZ8UAZkHxK9qVGXJCH62s4IUWWgBZ7bgEhFiZtwAPRQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f77.google.com with SMTP id ca18e2360f4ac-88170a3e085so125057039f.1
-        for <bpf@vger.kernel.org>; Sun, 03 Aug 2025 22:08:33 -0700 (PDT)
+	s=arc-20240116; t=1754288525; c=relaxed/simple;
+	bh=ZVTBW5jom+wDo14xqU/nVDagKZZ7c7CrXYvPIvLZROc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=auLH5nHyM1nFcXgBoxJiGMcJ9O9PS8US+kB3NGTNQ2Twp69ukq6z2qCmGDg16zTJWDucEwlER/jryeF+F71L1/DTU3I6MFAGQii7Vyg1OTztSEKRTHu/vi15+6oTRqOvJnVRhUpupShmuxyDfYRwcxqG6wrr5slQ9+1dozG2n5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VFpTr7z4; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-459d7726ee6so4590705e9.2
+        for <bpf@vger.kernel.org>; Sun, 03 Aug 2025 23:22:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1754288521; x=1754893321; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YeEcVaPruyFJjHGwTwns3V0T483/MZqGWdfOA8z6Bjg=;
+        b=VFpTr7z4lSDl+YfvurNCmckFom/oz2xyIMvZ0gd+Hrj+q/CwX7LA8Wv2aWp20BUmsc
+         F57UuHJ7mP+ZPOh96rfKGN1e9itJSwJaqb3Idw8jaz88CMwXQz7ksDIhIVYLHFxqbJtF
+         N68x/1GyeeSXALygyLIQhwsviGnoiBoDEBcLyTPSrEzQxOfgYIDWz20i/+nVOqptkraJ
+         Pnxz3DQ3xt+b2tju6lGLoSIAUChWXgbRIw4QCvV/YOwezbrnBuO4BzWaWY6a4/MrgoLO
+         4zOtZ81Wo5RMYvcy8iQfTDF/vibhanXtjFetQUP0N6eYa11u0hD/NOkdEYaLfdHUPVB4
+         0p4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754284112; x=1754888912;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hHDuSz8uOADbevwcrJx5h2+exfV1RPbCBux+vztrfZg=;
-        b=jtreSrtCq46NcXXjtB5Zg+sXicZllq6yJthnKszsVBWwcd5JYrWZTjx00Qjue0+zyo
-         yC/DxyMt4YzDpSxlctqCv+LzeJ4q73Rtp7EMMg0zfMxvWMFVKtHJrSKWy/QByokRk2ny
-         fjnR/aONnmQzch00i3mc1gJyIsVN0ZJOXKIrdh9/GsOyLev92mON3kNGfiq1+hnYKbgO
-         nvbxahGrGPCXOv4nyI14RnuDOg6sLYbWwy8avy+/9pfMNYKWypBKsBD2FTyfcrSnn1YH
-         cNqyu6norEeNoPGasqCY17180rvbNCXkrvWfg6TvfIFapnDz9dpP1FlBrxMlCslb5Z64
-         lDLA==
-X-Forwarded-Encrypted: i=1; AJvYcCW5srUxQGH143wC+vCRtujvobvvBsT9jhYFx7AppENbHiXBoeKJBIgU1eG/HHueaOrQd2U=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzQ7v4EtU0ycK0D0l6AbSFmTM4vpz+qQn0RaISFygzVj4m9RBUB
-	gvokq43hXCt6b60Wb1M9L5Dp7D6DU6kE7Z/Gsmh1TRnb1Z8zVbN/2Oqji1Gd4SBWeYIQQfgeqdo
-	eIuh1tI+3wHIeLktKS2ob168I1sl7PsGJtBMdI1JgDDt6x5Og2/SnGNuKSLE=
-X-Google-Smtp-Source: AGHT+IEfhL5kxH+ViRn+tjSPehb7rvgtjFomaPJY2Ou1a+LpGpm0byaDKQUUxSxBQ91TiRJ+aGH7Z/6kNNBRvcF/PmYwOB1Je311
+        d=1e100.net; s=20230601; t=1754288521; x=1754893321;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YeEcVaPruyFJjHGwTwns3V0T483/MZqGWdfOA8z6Bjg=;
+        b=D6cLyvkNOrG7Rk++9Mvot9h/LLGJVwyO7ukN5DpXx2T7Y+ZLjVZj4j43HDUU3Qap9j
+         CuKDhGHjwfXujhEJrwE7BvyiWyNn07+0rPFp1V5wtnbKe/6iIVJidKavP9v+qGo1PHcT
+         9M/EuN4nGIEHjyWUixxuhBv5cDdArspwQ/rCRa3oUbR1RQHmRqhtHe207E/auXTRO4nJ
+         7U4sB/d88kyU0NZvpqQ8gmDr7AWaw7OxZKgKgf7CWzaAZDAvBvjxqUrO+FEiKlWiox3h
+         jGQ5nau/3nzXrA7hSPsdd3tAi4XLXIutu98NPhnM+rL3Dro6PZbnHzOlJuU8lK0nCikZ
+         W32Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUfZGRRxnruZiWjd/51Wln/fJw5oJVYDGOD0vcLDpkc+Dh6SBO8ob+1X6Qr2QoslHxqODw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxBhrHkL0sE2ispmnVYHMMCrDlKjXD+HkJNWQs0Pt/snVueP1Lu
+	631zX2+tBDITLuA1dG9RVX2WAFsserwBy4Vr/eVNvrqU7g2T/qLiSSE0r4OLewRswQw=
+X-Gm-Gg: ASbGnctAPxmkf7F90Z35NUlDCiazJzEKdfaE9dAFsL4ii6ngaxkiJb3e22ZOzjq/Li3
+	lhZTEOK07GOJsd2jZOl7g5WIG+owXhITJOu7e0G/7wb1yslPG/fwKErozL8/7nhXxVMTECY4ZrR
+	xJ/uXzJWRODYZ1dttXq+RA2FAtiAUjh0eIAyYIAWNfbSWy4WxxGeVOz9mn11ksJYZ2CUjwFEl0W
+	BpeCZvm7FqAoEMkHIGEN2+IQN2Uwep8c6dJWxs/Do9e5IVCQkdiOJNu20C1zpk2iAIud3JnR84w
+	c4HEzE0UMz2csNTgf1tL5iE9mWgp52tf8IiCl6H8rsv6PnocYKZvubLKNgNkmmGPEZKu14dLM1F
+	DhjATyB4raIbc2XyOZbAbZm9C5ro=
+X-Google-Smtp-Source: AGHT+IH2T/8BuRm1IuYQ8ZzUxeJrK/gX8hiqAWQjPLCDcfQbPMq9lk1U66LzhxKbxgNFFI75QhHvNg==
+X-Received: by 2002:a05:600c:4692:b0:456:133f:a02d with SMTP id 5b1f17b1804b1-458b6b312d9mr64383135e9.17.1754288520939;
+        Sun, 03 Aug 2025 23:22:00 -0700 (PDT)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-459db3048bdsm21955145e9.29.2025.08.03.23.21.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Aug 2025 23:22:00 -0700 (PDT)
+Date: Mon, 4 Aug 2025 09:21:56 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: oe-kbuild@lists.linux.dev,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+	Roberto Sassu <roberto.sassu@huawei.com>
+Subject: Re: [PATCH v2 3/3] bpf: eliminate the allocation of an intermediate
+ struct bpf_key
+Message-ID: <df5a917b-fa24-42b7-8d71-b70e5156528e@suswa.mountain>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:6b81:b0:881:419d:4a31 with SMTP id
- ca18e2360f4ac-8816830d61bmr1261736839f.3.1754284112354; Sun, 03 Aug 2025
- 22:08:32 -0700 (PDT)
-Date: Sun, 03 Aug 2025 22:08:32 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68904050.050a0220.7f033.0001.GAE@google.com>
-Subject: [syzbot] [bpf?] WARNING in do_misc_fixups
-From: syzbot <syzbot+a9ed3d9132939852d0df@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me, 
-	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250730172745.8480-4-James.Bottomley@HansenPartnership.com>
 
-Hello,
+Hi James,
 
-syzbot found the following issue on:
+kernel test robot noticed the following build warnings:
 
-HEAD commit:    a6923c06a3b2 Merge tag 'bpf-fixes' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1561dcf0580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f89bb9497754f485
-dashboard link: https://syzkaller.appspot.com/bug?extid=a9ed3d9132939852d0df
-compiler:       aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=165d0aa2580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=117bd834580000
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/fa3fbcfdac58/non_bootable_disk-a6923c06.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/9862ca8219e0/vmlinux-a6923c06.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/042ebe320cfd/Image-a6923c06.gz.xz
+url:    https://github.com/intel-lab-lkp/linux/commits/James-Bottomley/bpf-make-bpf_key-an-opaque-type/20250731-013040
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20250730172745.8480-4-James.Bottomley%40HansenPartnership.com
+patch subject: [PATCH v2 3/3] bpf: eliminate the allocation of an intermediate struct bpf_key
+config: i386-randconfig-141-20250803 (https://download.01.org/0day-ci/archive/20250804/202508040803.nwExqJWe-lkp@intel.com/config)
+compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a9ed3d9132939852d0df@syzkaller.appspotmail.com
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+| Closes: https://lore.kernel.org/r/202508040803.nwExqJWe-lkp@intel.com/
 
-------------[ cut here ]------------
-verifier bug: not inlined functions bpf_probe_read_kernel_str#115 is missing func(1)
-WARNING: CPU: 1 PID: 3594 at kernel/bpf/verifier.c:22838 do_misc_fixups+0x1784/0x1ab4 kernel/bpf/verifier.c:22838
-Modules linked in:
-CPU: 1 UID: 0 PID: 3594 Comm: syz.2.17 Not tainted 6.16.0-syzkaller-11105-ga6923c06a3b2 #0 PREEMPT 
-Hardware name: linux,dummy-virt (DT)
-pstate: 61402009 (nZCv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
-pc : do_misc_fixups+0x1784/0x1ab4 kernel/bpf/verifier.c:22838
-lr : do_misc_fixups+0x1784/0x1ab4 kernel/bpf/verifier.c:22838
-sp : ffff80008936b9a0
-x29: ffff80008936b9a0 x28: f5ff8000832f5000 x27: 000000000000000a
-x26: f8f0000007ba8000 x25: 0000000000000000 x24: f8f0000007bae200
-x23: 000000000000f0ff x22: 000000000000000a x21: f8f0000007bae128
-x20: f8f0000007ba8aa8 x19: ffff80008243e828 x18: 0000000000000000
-x17: 0000000000000000 x16: 0000000000000000 x15: ffff800081b73b80
-x14: 0000000000000342 x13: 0000000000000000 x12: 0000000000000002
-x11: 00000000000000c0 x10: 646e0773d90f24cc x9 : 73727a981a23afd7
-x8 : fcf0000007bb36f8 x7 : 0000000000000190 x6 : 0000003978391654
-x5 : 0000000000000001 x4 : fbffff3fffffffff x3 : 000000000000ffff
-x2 : 0000000000000000 x1 : 0000000000000000 x0 : fcf0000007bb2500
-Call trace:
- do_misc_fixups+0x1784/0x1ab4 kernel/bpf/verifier.c:22838 (P)
- bpf_check+0x1308/0x2a8c kernel/bpf/verifier.c:24739
- bpf_prog_load+0x634/0xb74 kernel/bpf/syscall.c:2979
- __sys_bpf+0x2e0/0x1a3c kernel/bpf/syscall.c:6029
- __do_sys_bpf kernel/bpf/syscall.c:6139 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:6137 [inline]
- __arm64_sys_bpf+0x24/0x34 kernel/bpf/syscall.c:6137
- __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
- invoke_syscall+0x48/0x110 arch/arm64/kernel/syscall.c:49
- el0_svc_common.constprop.0+0x40/0xe0 arch/arm64/kernel/syscall.c:132
- do_el0_svc+0x1c/0x28 arch/arm64/kernel/syscall.c:151
- el0_svc+0x34/0x10c arch/arm64/kernel/entry-common.c:879
- el0t_64_sync_handler+0xa0/0xe4 arch/arm64/kernel/entry-common.c:898
- el0t_64_sync+0x1a4/0x1a8 arch/arm64/kernel/entry.S:596
----[ end trace 0000000000000000 ]---
+smatch warnings:
+kernel/trace/bpf_trace.c:1364 bpf_verify_pkcs7_signature() warn: impossible condition '(key == BUILTIN_KEY) => (0-u32max == u64max)'
 
+vim +1364 kernel/trace/bpf_trace.c
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+cce4c40b960673 Daniel Xu       2024-06-12  1353  __bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_p,
+cce4c40b960673 Daniel Xu       2024-06-12  1354  			       struct bpf_dynptr *sig_p,
+865b0566d8f1a0 Roberto Sassu   2022-09-20  1355  			       struct bpf_key *trusted_keyring)
+865b0566d8f1a0 Roberto Sassu   2022-09-20  1356  {
+cce4c40b960673 Daniel Xu       2024-06-12  1357  	struct bpf_dynptr_kern *data_ptr = (struct bpf_dynptr_kern *)data_p;
+cce4c40b960673 Daniel Xu       2024-06-12  1358  	struct bpf_dynptr_kern *sig_ptr = (struct bpf_dynptr_kern *)sig_p;
+9cc2aa8d6b5c93 James Bottomley 2025-07-30  1359  	struct key *key = (struct key *)trusted_keyring;
+74523c06ae20b8 Song Liu        2023-11-06  1360  	const void *data, *sig;
+74523c06ae20b8 Song Liu        2023-11-06  1361  	u32 data_len, sig_len;
+865b0566d8f1a0 Roberto Sassu   2022-09-20  1362  	int ret;
+865b0566d8f1a0 Roberto Sassu   2022-09-20  1363  
+9cc2aa8d6b5c93 James Bottomley 2025-07-30 @1364  	if ((unsigned long)key == BUILTIN_KEY)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+BUILTIN_KEY should be changed to -1L so that this works on 32bit
+systems.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+9cc2aa8d6b5c93 James Bottomley 2025-07-30  1365  		key = NULL;
+9cc2aa8d6b5c93 James Bottomley 2025-07-30  1366  
+9cc2aa8d6b5c93 James Bottomley 2025-07-30  1367  	if (system_keyring_id_check((unsigned long)key) < 0) {
+865b0566d8f1a0 Roberto Sassu   2022-09-20  1368  		/*
+865b0566d8f1a0 Roberto Sassu   2022-09-20  1369  		 * Do the permission check deferred in bpf_lookup_user_key().
+865b0566d8f1a0 Roberto Sassu   2022-09-20  1370  		 * See bpf_lookup_user_key() for more details.
+865b0566d8f1a0 Roberto Sassu   2022-09-20  1371  		 *
+865b0566d8f1a0 Roberto Sassu   2022-09-20  1372  		 * A call to key_task_permission() here would be redundant, as
+865b0566d8f1a0 Roberto Sassu   2022-09-20  1373  		 * it is already done by keyring_search() called by
+865b0566d8f1a0 Roberto Sassu   2022-09-20  1374  		 * find_asymmetric_key().
+865b0566d8f1a0 Roberto Sassu   2022-09-20  1375  		 */
+9cc2aa8d6b5c93 James Bottomley 2025-07-30  1376  		ret = key_validate(key);
+865b0566d8f1a0 Roberto Sassu   2022-09-20  1377  		if (ret < 0)
+865b0566d8f1a0 Roberto Sassu   2022-09-20  1378  			return ret;
+865b0566d8f1a0 Roberto Sassu   2022-09-20  1379  	}
+865b0566d8f1a0 Roberto Sassu   2022-09-20  1380  
+74523c06ae20b8 Song Liu        2023-11-06  1381  	data_len = __bpf_dynptr_size(data_ptr);
+74523c06ae20b8 Song Liu        2023-11-06  1382  	data = __bpf_dynptr_data(data_ptr, data_len);
+74523c06ae20b8 Song Liu        2023-11-06  1383  	sig_len = __bpf_dynptr_size(sig_ptr);
+74523c06ae20b8 Song Liu        2023-11-06  1384  	sig = __bpf_dynptr_data(sig_ptr, sig_len);
+74523c06ae20b8 Song Liu        2023-11-06  1385  
+9cc2aa8d6b5c93 James Bottomley 2025-07-30  1386  	return verify_pkcs7_signature(data, data_len, sig, sig_len, key,
+865b0566d8f1a0 Roberto Sassu   2022-09-20  1387  				      VERIFYING_UNSPECIFIED_SIGNATURE, NULL,
+865b0566d8f1a0 Roberto Sassu   2022-09-20  1388  				      NULL);
+865b0566d8f1a0 Roberto Sassu   2022-09-20  1389  }
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
