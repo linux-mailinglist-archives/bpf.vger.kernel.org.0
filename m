@@ -1,154 +1,179 @@
-Return-Path: <bpf+bounces-65000-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65001-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46F7FB1A2D0
-	for <lists+bpf@lfdr.de>; Mon,  4 Aug 2025 15:08:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 432D2B1A317
+	for <lists+bpf@lfdr.de>; Mon,  4 Aug 2025 15:18:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FCA218A18AE
-	for <lists+bpf@lfdr.de>; Mon,  4 Aug 2025 13:06:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6E9F3B03E9
+	for <lists+bpf@lfdr.de>; Mon,  4 Aug 2025 13:18:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E7E3267B7F;
-	Mon,  4 Aug 2025 13:02:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0050C265637;
+	Mon,  4 Aug 2025 13:18:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lbDQgVrM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cO/bTQ82"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B07123D295;
-	Mon,  4 Aug 2025 13:02:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BCCB26136D;
+	Mon,  4 Aug 2025 13:18:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754312555; cv=none; b=pGnZaO9+r+vzADfc8ZRVeX9dXayt6QsRZNr5bRVaG/zPf5e/J91YnzHA88oP3gkSvufii3+Ci/JR6oOAYSLGDT09ehFVBBmh2zKzLciq9ugX+fw16ED5tfOHOtMtzVdMjCoxT6NcHm4SaabPbmLqbixMRJ+wxZIYkRB/27jXfXc=
+	t=1754313521; cv=none; b=r3qeTLk5xoL7GlAq6WkBAgt4YFvXcfTst06ZOFY+QLyISUDAQ9O31F04ORMb4pj02byqXsCxYgU5V3jwuDR/rIyKKYJjF+cxb/MIOWxvhMVATmtDs7Zs7xe86zXOztydzXULd5lupmZZxTsemZVaFOM8dUr49mKGuJ9M/qS20zU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754312555; c=relaxed/simple;
-	bh=KJ/UgFDqRbxBwDKBasxWHrD/lJ88LOWc5cck1Eyrlko=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LM2jVUqTX4DWRMMgkxBToMTA8xPy8a7DRHI4HBaIEsRRAZt99/FbC5zkSdcX22LNK+RSuMZYmJ1pMWO4LiDxFEzzc2IxJr3Skqyh3BAY70Tuu+PxUkMhQJmZnb/HZyDv/qtCQMojflEfTjMGqsCF7GXyZInBMV/5BJGsBQvweE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lbDQgVrM; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-61571192ba5so6383530a12.2;
-        Mon, 04 Aug 2025 06:02:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754312552; x=1754917352; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qeIilQ03OODqPPS1A7gu4nmzTbwmTDY7BMwLvZtC32M=;
-        b=lbDQgVrMofk+U9pHHF01HqTi+PVB3UVZDH+nAuS7/FKvkf44ajy3aLRgBn18icwtLc
-         EGrzkJtXXgyJXUryu5b8XH9MgmAfYxgYN7cxPynJzkOUr713Tjde2SODmX/1lS9CBiun
-         zFYM6CtQw3AK2VF12pPby3F0M4pXOqXvbonKstEyJt5qtEPwRDITqkPIpb5cGYpuBru/
-         feuEIK6YMlBxdZ6H1XBHVLstXnPsLnhxo8/oW+tn1l250qwkuaUzHHTTqVzO9nlN++qh
-         o2D+NDd80DzfBKH6y24rQCLhBXVwHnDoc8xPBNDB4SznCwfkoMsAbmgRFgkL/zum7E5f
-         kcQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754312552; x=1754917352;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qeIilQ03OODqPPS1A7gu4nmzTbwmTDY7BMwLvZtC32M=;
-        b=aZXXN6oqkHIY8q/dMpV6kOb544cmTmzg4X3roE6vz7yU4VrQkIzyNdG4+ApHsK47aE
-         PQUVj/1oHFJ5jQVtIjSJr8Igwe4LUGEh9PkiYBfIyGNmhJuEvS2p7G89oa0cH1kN/RgO
-         TMzmnqBIPR7zWJKB9lQBmebR8eDuLmz2VC+XbpkXLNjEEwaqnWWWiRkTrztVTod3yJr2
-         m1QtNJWIgn3jqyTrlRhqttBLHQtRachxemV4pODd0BJk03xol/rSSVLnQv7bh4JBhBO1
-         s9qsizsuxAkVm9TmWqcnB7gYcx+eqexaik8S/aFxn3smM4bEW9MCnWP3D4pqgdCXJ86h
-         3ZLg==
-X-Forwarded-Encrypted: i=1; AJvYcCUKLDLAL1Mrd/j0ObC4TDiCE4WTWKlOgn883jHyqg4uDjOtKoDWSLycWyH7ubzoKDMK6x7YaT6sAQUreZywSQaP9IYl@vger.kernel.org, AJvYcCUQ0l1B1aTeg7oO095/srlf4zVtLAUll2k6U+snffX2lcyGdQ/6aPN/duvsrrmTbd5qbuAn/NAWRTxpDMbI@vger.kernel.org, AJvYcCVdegalTKzyDNEzSdsYUoBfgY0/o4Gup8WFDSmGusuZ9sOrUSqZXkT9JWYJksKkbH+Wryg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy7MSZ+puxtyvPASwKfZQP37cdmp7C46qleDOVfBYxvYvyIw/aq
-	+ixQNfkxW8WJ2XPWdqqHEifhJ+q3kgCJx+yJ67s7Kk7tpANjTrfUA4N4
-X-Gm-Gg: ASbGncvrJyL6zDDXmPePIGM/VVSyxoN9E571/89E+zwvMvQTSWgbd7bNqAvMl7+32zr
-	NHTXJuuJfreoV2tRLyqpSXEp48mJz9LaRXrwL6WhNbQij5Eb4NzRvAOF3FLlCuBJOTZ2BhutSV0
-	+CjmwwIIpdaiMF7TolIXYPzww3La90sldj9ZT4c0ZngPpKeVWgi2fmVomyOcsxUnANCoYwAk1wa
-	CWgoIJxZ09/3MJr9QJuBWftnkAZNUQK9nvMn+RnPsvXoLXOfcfAz0oBcPH7ZLwV06F+Y3yrg2H0
-	MsVFfmsa41WWQw1o/PPqhnGyHS1BFn9rV1369yN8+SdMO4DQRTjj1zpoOO3Ych49DRvpHZL7MaT
-	YbC/wPy/2AsSGbHhYBBo=
-X-Google-Smtp-Source: AGHT+IGwC42uDRuXfuDzfKGa7qC/PmM3hiopRQT50RbwaPKdEWGITvtAYzH5iixwAJHfvqgey5SbKA==
-X-Received: by 2002:a05:6402:3553:b0:615:9c3b:17f with SMTP id 4fb4d7f45d1cf-615e6ef235cmr8220200a12.15.1754312551017;
-        Mon, 04 Aug 2025 06:02:31 -0700 (PDT)
-Received: from krava ([173.38.220.40])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-615a8f25739sm6920530a12.21.2025.08.04.06.02.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Aug 2025 06:02:30 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 4 Aug 2025 15:02:27 +0200
-To: Tao Chen <chen.dylane@linux.dev>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
-	yonghong.song@linux.dev, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
-	mattbobrowski@google.com, rostedt@goodmis.org, mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next] bpf: Disable migrate when kprobe_multi attach
- to access bpf_prog_active
-Message-ID: <aJCvY7G-gVR8taLh@krava>
-References: <20250804121615.1843956-1-chen.dylane@linux.dev>
+	s=arc-20240116; t=1754313521; c=relaxed/simple;
+	bh=Tkk4+t+dFqTOZm++s1naWey6M4k5HYMwzIAi/9j7gf0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=O8WSsL/uGCRwYjJwE3a3aqXU/Ny2hi+aEb9U96iUdxPhQ880X7AzEBJ5giaBbI2iCnzW9wP9cmVAOLjTUAqM3QGCIM8JlJ1Csbvus7nGQAC8BCVVWD2/NWQ+EHf3uZu5IKzPOr3QE8DBBGKj7zJQmw4L39C2vJ8Cj7qS0UJuYKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cO/bTQ82; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40E68C4CEE7;
+	Mon,  4 Aug 2025 13:18:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1754313520;
+	bh=Tkk4+t+dFqTOZm++s1naWey6M4k5HYMwzIAi/9j7gf0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=cO/bTQ82xs8gpbUVqYV4dsg6q8+tweO2XuaoGVVDRv04gznO58G40gRTpe02ud6da
+	 YaKLwBhyNOJC7ccSBuDi92PpdtZIyX8FJ1AXluHXL50HJTccIsESg32lIccEp0ocRW
+	 EreleFElajIdHRm73hj/X/Qi2c6MT8SP6PBoKdOwlBHeEluTObp/jEE/3ZY1DwlZn0
+	 +3wTKuyJM63RhrZiWPt4h/RTpikIFOND9hQYxK/a1h26bq0mIikmF1L1QTOv9whudt
+	 Wci98ZlxRLQuXDOqtWelg+CO4w6ahYNK68ts8lwlu9hbjORfnC5+ZHz6H979W8RUpQ
+	 1aTg8qJ4l/f3A==
+Message-ID: <de68b1d7-86cd-4280-af6a-13f0751228c4@kernel.org>
+Date: Mon, 4 Aug 2025 15:18:35 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250804121615.1843956-1-chen.dylane@linux.dev>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next V2 0/7] xdp: Allow BPF to set RX hints for
+ XDP_REDIRECTed packets
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+ Lorenzo Bianconi <lorenzo@kernel.org>,
+ Stanislav Fomichev <stfomichev@gmail.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <borkmann@iogearbox.net>,
+ Eric Dumazet <eric.dumazet@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>, sdf@fomichev.me,
+ kernel-team@cloudflare.com, arthur@arthurfabre.com, jakub@cloudflare.com,
+ Jesse Brandeburg <jbrandeburg@cloudflare.com>,
+ Andrew Rzeznik <arzeznik@cloudflare.com>
+References: <b1873a92-747d-4f32-91f8-126779947e42@kernel.org>
+ <aGvcb53APFXR8eJb@mini-arch> <aG427EcHHn9yxaDv@lore-desk>
+ <aHE2F1FJlYc37eIz@mini-arch> <aHeKYZY7l2i1xwel@lore-desk>
+ <20250716142015.0b309c71@kernel.org>
+ <fbb026f9-54cf-49ba-b0dc-0df0f54c6961@kernel.org>
+ <20250717182534.4f305f8a@kernel.org>
+ <ebc18aba-d832-4eb6-b626-4ca3a2f27fe2@kernel.org>
+ <20250721181344.24d47fa3@kernel.org> <aIdWjTCM1nOjiWfC@lore-desk>
+ <20250728092956.24a7d09b@kernel.org>
+ <b23ed0e2-05cf-454b-bf7a-a637c9bb48e8@kernel.org>
+ <4eaf6d02-6b4e-4713-a8f8-6b00a031d255@linux.dev>
+ <21f4ee22-84f0-4d5e-8630-9a889ca11e31@kernel.org>
+ <20250801133803.7570a6fd@kernel.org>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <20250801133803.7570a6fd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Aug 04, 2025 at 08:16:15PM +0800, Tao Chen wrote:
-> The syscall link_create not protected by bpf_disable_instrumentation,
-> accessing percpu data bpf_prog_active should use cpu local_lock when
-> kprobe_multi program attach.
+
+
+On 01/08/2025 22.38, Jakub Kicinski wrote:
+> On Thu, 31 Jul 2025 18:27:07 +0200 Jesper Dangaard Brouer wrote:
+>>> iirc, a xdp prog can be attached to a cpumap. The skb can be created by
+>>> that xdp prog running on the remote cpu. It should be like a xdp prog
+>>> returning a XDP_PASS + an optional skb. The xdp prog can set some fields
+>>> in the skb. Other than setting fields in the skb, something else may be
+>>> also possible in the future, e.g. look up sk, earlier demux ...etc.
+>>
+>> I have strong reservations about having the BPF program itself trigger
+>> the SKB allocation. I believe this would fundamentally break the
+>> performance model that makes cpumap redirect so effective.
 > 
-> Fixes: 0dcac2725406 ("bpf: Add multi kprobe link")
-> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
-> ---
->  kernel/trace/bpf_trace.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> See, I have similar concerns about growing struct xdp_frame.
 > 
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 3ae52978cae..f6762552e8e 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -2728,23 +2728,23 @@ kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
->  	struct pt_regs *regs;
->  	int err;
->  
-> +	migrate_disable();
->  	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
 
-this is called all the way from graph tracer, which disables preemption in
-function_graph_enter_regs, so I think we can safely use __this_cpu_inc_return
+IMHO there is a huge difference in doing memory allocs+init vs. growing
+struct xdp_frame.
+
+It very is important to notice that patchset is actually not growing
+xdp_frame, in the traditional sense, instead we are adding an optional
+area to xdp_frame (plus some flags to tell if area is in-use).  Remember
+the xdp_frame area is not allocated or mem-zeroed (except flags).  If
+not used, the members in struct xdp_rx_meta are never touched. Thus,
+there is actually no performance impact in growing struct xdp_frame in
+this way. Do you still have concerns?
 
 
->  		bpf_prog_inc_misses_counter(link->link.prog);
->  		err = 1;
->  		goto out;
->  	}
->  
-> -	migrate_disable();
+> That's why the guiding principle for me would be to make sure that
+> the features we add, beyond "classic XDP" as needed by DDoS, are
+> entirely optional. 
 
-hum, but now I'm not sure why we disable migration in here then
+Exactly, we agree.  What we do in this patchset is entirely optional.
+These changes does not slowdown "classic XDP" and our DDoS use-case.
 
-jirka
 
->  	rcu_read_lock();
->  	regs = ftrace_partial_regs(fregs, bpf_kprobe_multi_pt_regs_ptr());
->  	old_run_ctx = bpf_set_run_ctx(&run_ctx.session_ctx.run_ctx);
->  	err = bpf_prog_run(link->link.prog, regs);
->  	bpf_reset_run_ctx(old_run_ctx);
->  	rcu_read_unlock();
-> -	migrate_enable();
->  
->   out:
->  	__this_cpu_dec(bpf_prog_active);
-> +	migrate_enable();
->  	return err;
->  }
->  
-> -- 
-> 2.48.1
+> And if we include the goal of moving skb allocation
+> out of the driver to the xdp_frame growth, the drivers will sooner or
+> later unconditionally populate the xdp_frame. Decreasing performance
+> of "classic XDP"?
+>
+
+No, that is the beauty of this solution, it will not decrease the
+performance of "classic XDP".
+
+Do keep-in-mind that "moving skb allocation out of the driver" is not
+part of this patchset and a moonshot goal that will take a long time
+(but we are already "simulation" this via XDP-redirect for years now).
+Drivers should obviously not unconditionally populate the xdp_frame's
+rx_meta area.  It is first time to populate rx_meta, once driver reach
+XDP_PASS case (normal netstack delivery). Today all drivers will at this
+stage populate the SKB metadata (e.g. rx-hash + vlan) from the RX-
+descriptor anyway.  Thus, I don't see how replacing those writes will
+decrease performance.
+
+
+>> The key to XDP's high performance lies in processing a bulk of
+>> xdp_frames in a tight loop to amortize costs. The existing cpumap code
+>> on the remote CPU is already highly optimized for this: it performs bulk
+>> allocation of SKBs and uses careful prefetching to hide the memory
+>> latency. Allowing a BPF program to sometimes trigger a heavyweight SKB
+>> alloc+init (4 cache-line misses) would bypass all these existing
+>> optimizations. It would introduce significant jitter into the pipeline
+>> and disrupt the entire bulk-processing model we rely on for performance.
+>>
+>> This performance is not just theoretical;
 > 
+> Somewhat off-topic for the architecture, I think, but do you happen
+> to have any real life data for that? IIRC the "listification" was a
+> moderate success for the skb path.. Or am I misreading and you have
+> other benefits of a tight processing loop in mind?
+
+Our "tight processing loop" for NAPI (net_rx_action/napi_pool) is not
+performing as well as we want. One major reason is that the CPU is being
+stalled each time in the loop when the NIC driver needs to clear the 4
+cache-lines for the SKB.  XDP have shown us that avoiding these steps is
+a huge performance boost.  The "moving skb allocation out of the driver"
+is one step towards improving the NAPI loop. As you hint we also need
+some bulking or "listification".  I'm not a huge fan of SKB
+"listification". XDP-redirect devmap/cpumap uses an array for creating
+an RX bulk "stage".  The SKB listification work was never fully
+completed IMHO.  Back then, I was working on getting PoC for SKB
+forwarding working, but as soon as we reached any of the netfilter hooks
+points the SKB list would get split into individual SKBs. IIRC SKB
+listification only works for the first part of netstack SKB input code
+path. And "late" part of qdisc TX layer, but the netstack code in-
+between will always cause the SKB list would get split into individual
+SKBs.  IIRC only back-pressure during qdisc TX will cause listification
+to be used. It would be great if someone have cycles to work on
+completing more of the SKB listification.
+
+--Jesper
+
 
