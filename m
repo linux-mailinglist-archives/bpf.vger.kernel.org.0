@@ -1,251 +1,334 @@
-Return-Path: <bpf+bounces-64980-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-64975-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E313B19A36
-	for <lists+bpf@lfdr.de>; Mon,  4 Aug 2025 04:28:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56AE5B19A24
+	for <lists+bpf@lfdr.de>; Mon,  4 Aug 2025 04:25:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AC3418976CC
-	for <lists+bpf@lfdr.de>; Mon,  4 Aug 2025 02:28:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DEF1174097
+	for <lists+bpf@lfdr.de>; Mon,  4 Aug 2025 02:25:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B48C4219A8B;
-	Mon,  4 Aug 2025 02:27:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A845C1F4CAE;
+	Mon,  4 Aug 2025 02:24:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AQ1w2wLV"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8464720127B;
-	Mon,  4 Aug 2025 02:27:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76A691DE3BB;
+	Mon,  4 Aug 2025 02:24:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754274434; cv=none; b=t1b154R4ebf4qmJSin6gzLCGDn2ViZ/6xJlIilQWuzWVfW5Cpzl600eAoGocceBalOmqCRE74W33Nvwy492YKa1XeIobgbJMf1bCkjsOBzKmPlrGu5BDPyqFiyoqppti1L+19FWQifAlMPF8sc0DUxnHjSd6+N9fhFqzbCNpbv4=
+	t=1754274297; cv=none; b=h86HaUMeByJj0Hjsb2a6NRUuXljyNyKnjI3a1yr3HbUwJ2sLNjpuNzNOxkUmXz3+DCUlt3wOgz/qfMwYQkUZZlY6NO/yQcES59JPXsPWprVaOjHBs90tGY9iUVv7wHR5aAWfHo2QpXJY05VYG/ngSb24BbUAbDsunelbin+jTCU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754274434; c=relaxed/simple;
-	bh=UW1WmWLA5hqVf8AQJiB3mCG4tYSWQTkhlPbwBNCJnik=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Iuok66QA+f2LhF5SjZayj2h+mpq/9E+baDJ8OIk6tkgGGzTnSW1xKUEFRmRpdYLGV1WxrYvDYTQbWvAQ+y6hqbI690OFNXSJn6HRwA8bqIq/nwGGlNNPN/TMeWDYji5TpA3U/SJuaLKHq6gLXGk+poqOdEDuUku7XYMwYkurQ78=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4bwL6k4KDNzYQtxF;
-	Mon,  4 Aug 2025 10:27:10 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 40CCA1A018D;
-	Mon,  4 Aug 2025 10:27:09 +0800 (CST)
-Received: from k-arm6401.huawei.com (unknown [7.217.19.243])
-	by APP4 (Coremail) with SMTP id gCh0CgAX4BBsGpBoTUL9CQ--.242S6;
-	Mon, 04 Aug 2025 10:27:08 +0800 (CST)
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-To: bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Yonghong Song <yhs@fb.com>,
-	Song Liu <song@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Willem de Bruijn <willemb@google.com>,
-	Jason Xing <kerneljasonxing@gmail.com>,
-	Paul Chaignon <paul.chaignon@gmail.com>,
-	Tao Chen <chen.dylane@linux.dev>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Martin Kelly <martin.kelly@crowdstrike.com>
-Subject: [PATCH bpf-next 4/4] selftests/bpf/benchs: Add overwrite mode bench for rb-libbpf
-Date: Mon,  4 Aug 2025 10:21:00 +0800
-Message-ID: <20250804022101.2171981-5-xukuohai@huaweicloud.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250804022101.2171981-1-xukuohai@huaweicloud.com>
-References: <20250804022101.2171981-1-xukuohai@huaweicloud.com>
+	s=arc-20240116; t=1754274297; c=relaxed/simple;
+	bh=vIoLQAriU9QLyBP+GEsvN1SPVlN57wrfxtqM44gQ6uA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZfQ5NB3uWJt3Juv8mnvV1iVQAGeIjvJw1KP4QDiJlE0lu8vP2ajS58ZZwovAJ1Jdx59I8XFm3g0FSYBAdxmYpGBU2U5oTrCKCErDWMmXmtNC0PsifVuyWxdFvNXjya2jT5yZSK9eHx/i7d5b8VDULAS+WEdUkzQ2M73bIR5C7UE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AQ1w2wLV; arc=none smtp.client-ip=209.85.167.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-433f3bc84e0so1114030b6e.3;
+        Sun, 03 Aug 2025 19:24:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1754274294; x=1754879094; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BnRa1JA/UK/K7tosARzyACz2l637qczjgSNLiyAn2po=;
+        b=AQ1w2wLVBmsYVEFyk5FcWKoUvUCnjjZ5Xv+8lw7AaoueaWCICHekR9BYLrQ5TcMkdO
+         Hpij31COwzvyMux02/zV3boGSS13TkXqMJggGO7qe1Bgsxbz6NRPApsvRo8QaJQwmKQt
+         V1aDvBf0kR1RVZqchWcNqToDLfAzcXeSJ0d+GQ/ZHKffMVW09flPQYedDsQBVXPTmf+M
+         JId7e8CDmxJJf/cFRwEMxz7IrF1f6FjT9o7GuGSGnsu18k/vRQRx7Lif00HaWqB1yT3T
+         qkyGhJ1ATwDAfZzvmVCwInrlPFFqj+emmK3bJDnydkpR8y+W3hj0N33gO499aJEhuztJ
+         oeFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754274294; x=1754879094;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BnRa1JA/UK/K7tosARzyACz2l637qczjgSNLiyAn2po=;
+        b=khYxAWISO3hKjZId9HTvvMdK9fWcYf7j1zfVkW+l1AIx5Gd+4ZscBdo50MqDYGvcMm
+         TANekx7D8dIqi2q9WOyzwZwJKDZj5Yy7iewv/ckHFhvp4Tb/c1tSYTwbXhEO0RzOZF48
+         8eD/sFaIk1TMRYkCqPHAb+qnw8KJMSvyvZ71VYrP53Dkt10Mk7m+24Rj+praS5jLa2Ot
+         PqI1Me7Inhu4FeCK4Pf0Pc1Fc0kTdsYY5kdqPpNUBhTNSmfvGobQnBFrDWyvd/E9P2aA
+         HE2huwfF1CGulBUF88yhw1qsNLK6yWchqrGXWiPLl7HuS65mHxcRDy++qb1d0U5YTwBU
+         MFZw==
+X-Forwarded-Encrypted: i=1; AJvYcCWbgIx5Af4Zt+IeDKAQgeAim0uxVIQHu090hCAK/becFx74+ta6hAq/qAQiAuiKciOKRkc/c6KAQF5aohTx@vger.kernel.org, AJvYcCWshtaBgWD6l3Uk7gW9J/dkIqQfYt7qwbipv8NT+SZ4vVvc8kjEAHkYeFJCUJOvR37J9ok=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywk46qH6ms2a3W9WG34AS0FWs+ZtKfyJj3AmhEIoNRIhoEea7ny
+	7N4nW74wB69YvySAE6IkSV9KGQuN0vYINBkvFMNEQ0FVNQidhgo8fddsEos1nPwuc73SQLPihdS
+	81STTKScl99l5dE6JTx48xnXZjnNsslg=
+X-Gm-Gg: ASbGnctctjPa3eKJYXcRpAuIjQlsRJ7bX9Q+xUCt1F5/vmU8Nf7yqCDl2fcM743SA56
+	1P8X1lmqCbR2Hta8hGs5wYEhw0S0c3/y++fhaQJHgrVh3cROvbVznEhHNd5+khxiMnO/W3oD5LS
+	q9PgwEbT6HGLYb1ys48XsGetC7RxgudTW3DNjP46KxMvAqy5s5ilyDnbrHLLYIq0AEMCag6sy6F
+	7oauqc=
+X-Google-Smtp-Source: AGHT+IHhH1YIlg21cr4MIGPuqerm1W25W6/jSAdfR4y9B8Edf1oakdGia3Vc0Pk46NXYA8Hkr1xOm7gYnffSPLFPPZ0=
+X-Received: by 2002:a05:6808:1910:b0:433:ff53:1b7e with SMTP id
+ 5614622812f47-433ff532639mr2765208b6e.11.1754274294309; Sun, 03 Aug 2025
+ 19:24:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgAX4BBsGpBoTUL9CQ--.242S6
-X-Coremail-Antispam: 1UD129KBjvJXoW3Xw45ZrWUAr45urWDtw4xWFg_yoWxGF4fpF
-	WDCFWfCw1xtr93XF1vkw48JrW7ZrnrZ3W5CFyfta17Zw1xWan0q3yxK3yUt3Z8G348C3WS
-	v34ktryrGw1UJwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUQvb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-	AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
-	14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
-	xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
-	z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2
-	AFwI0_GFv_Wrylc7CjxVAKzI0EY4vE52x082I5MxkIecxEwVCI4VW8JwCF04k20xvY0x0E
-	wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
-	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0
-	I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42IY6x
-	AIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
-	1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07jtsqXUUUUU=
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+References: <20250730131257.124153-1-duanchenghao@kylinos.cn> <20250730131257.124153-4-duanchenghao@kylinos.cn>
+In-Reply-To: <20250730131257.124153-4-duanchenghao@kylinos.cn>
+From: Hengqi Chen <hengqi.chen@gmail.com>
+Date: Mon, 4 Aug 2025 10:24:43 +0800
+X-Gm-Features: Ac12FXw54_4HRJNzwKhuZVYGpesI_S2zavu44x_15b5aAywWy_Y1r58SRvoBSUo
+Message-ID: <CAEyhmHQOeKmQZnq9RvaPANdLfcsAJX=xU+nL+p4=sPwcYPOfGw@mail.gmail.com>
+Subject: Re: [PATCH v5 3/5] LoongArch: BPF: Implement dynamic code
+ modification support
+To: Chenghao Duan <duanchenghao@kylinos.cn>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	yangtiezhu@loongson.cn, chenhuacai@kernel.org, martin.lau@linux.dev, 
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, kernel@xen0n.name, 
+	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, bpf@vger.kernel.org, 
+	guodongtai@kylinos.cn, youling.tang@linux.dev, jianghaoran@kylinos.cn, 
+	vincent.mc.li@gmail.com, geliang@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Xu Kuohai <xukuohai@huawei.com>
+On Wed, Jul 30, 2025 at 9:13=E2=80=AFPM Chenghao Duan <duanchenghao@kylinos=
+.cn> wrote:
+>
+> This commit adds support for BPF dynamic code modification on the
+> LoongArch architecture.:
+> 1. Implement bpf_arch_text_poke() for runtime instruction patching.
+> 2. Add bpf_arch_text_copy() for instruction block copying.
+> 3. Create bpf_arch_text_invalidate() for code invalidation.
+>
+> On LoongArch, since symbol addresses in the direct mapping
+> region cannot be reached via relative jump instructions from the paged
+> mapping region, we use the move_imm+jirl instruction pair as absolute
+> jump instructions. These require 2-5 instructions, so we reserve 5 NOP
+> instructions in the program as placeholders for function jumps.
+>
+> larch_insn_text_copy is solely used for BPF. The use of
+> larch_insn_text_copy() requires page_size alignment. Currently, only
+> the size of the trampoline is page-aligned.
+>
+> Co-developed-by: George Guo <guodongtai@kylinos.cn>
+> Signed-off-by: George Guo <guodongtai@kylinos.cn>
+> Signed-off-by: Chenghao Duan <duanchenghao@kylinos.cn>
+> ---
+>  arch/loongarch/include/asm/inst.h |   1 +
+>  arch/loongarch/kernel/inst.c      |  27 ++++++++
+>  arch/loongarch/net/bpf_jit.c      | 104 ++++++++++++++++++++++++++++++
+>  3 files changed, 132 insertions(+)
+>
+> diff --git a/arch/loongarch/include/asm/inst.h b/arch/loongarch/include/a=
+sm/inst.h
+> index 2ae96a35d..88bb73e46 100644
+> --- a/arch/loongarch/include/asm/inst.h
+> +++ b/arch/loongarch/include/asm/inst.h
+> @@ -497,6 +497,7 @@ void arch_simulate_insn(union loongarch_instruction i=
+nsn, struct pt_regs *regs);
+>  int larch_insn_read(void *addr, u32 *insnp);
+>  int larch_insn_write(void *addr, u32 insn);
+>  int larch_insn_patch_text(void *addr, u32 insn);
+> +int larch_insn_text_copy(void *dst, void *src, size_t len);
+>
+>  u32 larch_insn_gen_nop(void);
+>  u32 larch_insn_gen_b(unsigned long pc, unsigned long dest);
+> diff --git a/arch/loongarch/kernel/inst.c b/arch/loongarch/kernel/inst.c
+> index 674e3b322..7df63a950 100644
+> --- a/arch/loongarch/kernel/inst.c
+> +++ b/arch/loongarch/kernel/inst.c
+> @@ -4,6 +4,7 @@
+>   */
+>  #include <linux/sizes.h>
+>  #include <linux/uaccess.h>
+> +#include <linux/set_memory.h>
+>
+>  #include <asm/cacheflush.h>
+>  #include <asm/inst.h>
+> @@ -218,6 +219,32 @@ int larch_insn_patch_text(void *addr, u32 insn)
+>         return ret;
+>  }
+>
+> +int larch_insn_text_copy(void *dst, void *src, size_t len)
+> +{
+> +       int ret;
+> +       unsigned long flags;
+> +       unsigned long dst_start, dst_end, dst_len;
+> +
+> +       dst_start =3D round_down((unsigned long)dst, PAGE_SIZE);
+> +       dst_end =3D round_up((unsigned long)dst + len, PAGE_SIZE);
+> +       dst_len =3D dst_end - dst_start;
+> +
+> +       set_memory_rw(dst_start, dst_len / PAGE_SIZE);
+> +       raw_spin_lock_irqsave(&patch_lock, flags);
+> +
+> +       ret =3D copy_to_kernel_nofault(dst, src, len);
+> +       if (ret)
+> +               pr_err("%s: operation failed\n", __func__);
+> +
+> +       raw_spin_unlock_irqrestore(&patch_lock, flags);
+> +       set_memory_rox(dst_start, dst_len / PAGE_SIZE);
+> +
+> +       if (!ret)
+> +               flush_icache_range((unsigned long)dst, (unsigned long)dst=
+ + len);
+> +
+> +       return ret;
+> +}
+> +
+>  u32 larch_insn_gen_nop(void)
+>  {
+>         return INSN_NOP;
+> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
+> index 7032f11d3..5e6ae7e0e 100644
+> --- a/arch/loongarch/net/bpf_jit.c
+> +++ b/arch/loongarch/net/bpf_jit.c
+> @@ -4,8 +4,12 @@
+>   *
+>   * Copyright (C) 2022 Loongson Technology Corporation Limited
+>   */
+> +#include <linux/memory.h>
+>  #include "bpf_jit.h"
+>
+> +#define LOONGARCH_LONG_JUMP_NINSNS 5
+> +#define LOONGARCH_LONG_JUMP_NBYTES (LOONGARCH_LONG_JUMP_NINSNS * 4)
+> +
+>  #define REG_TCC                LOONGARCH_GPR_A6
+>  #define TCC_SAVED      LOONGARCH_GPR_S5
+>
+> @@ -88,6 +92,7 @@ static u8 tail_call_reg(struct jit_ctx *ctx)
+>   */
+>  static void build_prologue(struct jit_ctx *ctx)
+>  {
+> +       int i;
+>         int stack_adjust =3D 0, store_offset, bpf_stack_adjust;
+>
+>         bpf_stack_adjust =3D round_up(ctx->prog->aux->stack_depth, 16);
+> @@ -98,6 +103,10 @@ static void build_prologue(struct jit_ctx *ctx)
+>         stack_adjust =3D round_up(stack_adjust, 16);
+>         stack_adjust +=3D bpf_stack_adjust;
+>
+> +       /* Reserve space for the move_imm + jirl instruction */
+> +       for (i =3D 0; i < LOONGARCH_LONG_JUMP_NINSNS; i++)
+> +               emit_insn(ctx, nop);
+> +
+>         /*
+>          * First instruction initializes the tail call count (TCC).
+>          * On tail call we skip this instruction, and the TCC is
+> @@ -1367,3 +1376,98 @@ bool bpf_jit_supports_subprog_tailcalls(void)
+>  {
+>         return true;
+>  }
+> +
+> +static int emit_jump_and_link(struct jit_ctx *ctx, u8 rd, u64 target)
+> +{
+> +       if (!target) {
+> +               pr_err("bpf_jit: jump target address is error\n");
+> +               return -EFAULT;
+> +       }
+> +
+> +       move_imm(ctx, LOONGARCH_GPR_T1, target, false);
+> +       emit_insn(ctx, jirl, rd, LOONGARCH_GPR_T1, 0);
+> +
+> +       return 0;
+> +}
+> +
+> +static int gen_jump_or_nops(void *target, void *ip, u32 *insns, bool is_=
+call)
+> +{
+> +       struct jit_ctx ctx;
+> +
+> +       ctx.idx =3D 0;
+> +       ctx.image =3D (union loongarch_instruction *)insns;
+> +
+> +       if (!target) {
+> +               emit_insn((&ctx), nop);
+> +               emit_insn((&ctx), nop);
+> +               return 0;
+> +       }
+> +
+> +       return emit_jump_and_link(&ctx, is_call ? LOONGARCH_GPR_T0 : LOON=
+GARCH_GPR_ZERO,
+> +                                 (unsigned long)target);
+> +}
+> +
+> +int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
+> +                      void *old_addr, void *new_addr)
+> +{
+> +       u32 old_insns[LOONGARCH_LONG_JUMP_NINSNS] =3D {[0 ... 4] =3D INSN=
+_NOP};
+> +       u32 new_insns[LOONGARCH_LONG_JUMP_NINSNS] =3D {[0 ... 4] =3D INSN=
+_NOP};
+> +       bool is_call =3D poke_type =3D=3D BPF_MOD_CALL;
+> +       int ret;
+> +
+> +       if (!is_kernel_text((unsigned long)ip) &&
+> +               !is_bpf_text_address((unsigned long)ip))
+> +               return -ENOTSUPP;
+> +
+> +       ret =3D gen_jump_or_nops(old_addr, ip, old_insns, is_call);
+> +       if (ret)
+> +               return ret;
+> +
+> +       if (memcmp(ip, old_insns, LOONGARCH_LONG_JUMP_NBYTES))
+> +               return -EFAULT;
+> +
+> +       ret =3D gen_jump_or_nops(new_addr, ip, new_insns, is_call);
+> +       if (ret)
+> +               return ret;
+> +
+> +       mutex_lock(&text_mutex);
+> +       if (memcmp(ip, new_insns, LOONGARCH_LONG_JUMP_NBYTES))
+> +               ret =3D larch_insn_text_copy(ip, new_insns, LOONGARCH_LON=
+G_JUMP_NBYTES);
+> +       mutex_unlock(&text_mutex);
 
-Add overwrite mode bench for ring buffer.
+The text_mutex and patch_lock inside larch_insn_text_copy() ONLY
+prevent concurrent modifications.
+You may need stop_machine() to prevent concurrent modifications/executions.
 
-For reference, below are bench numbers collected from x86_64 and arm64.
-
-- x86_64 (AMD EPYC 9654)
-
-  Ringbuf, multi-producer contention, overwrite mode
-  ==================================================
-  rb-libbpf nr_prod 1  14.970 ± 0.012M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 2  14.064 ± 0.007M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 3  7.493 ± 0.003M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 4  6.575 ± 0.001M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 8  3.696 ± 0.011M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 12 2.612 ± 0.012M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 16 2.335 ± 0.005M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 20 2.079 ± 0.005M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 24 1.965 ± 0.004M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 28 1.846 ± 0.004M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 32 1.790 ± 0.002M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 36 1.735 ± 0.002M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 40 1.701 ± 0.002M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 44 1.669 ± 0.001M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 48 1.749 ± 0.001M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 52 1.709 ± 0.001M/s (drops 0.000 ± 0.000M/s)
-
-- arm64 (HiSilicon Kunpeng 920)
-
-  Ringbuf, multi-producer contention, overwrite mode
-  ==================================================
-  rb-libbpf nr_prod 1  10.319 ± 0.231M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 2  9.219 ± 0.006M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 3  6.699 ± 0.013M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 4  4.608 ± 0.001M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 8  3.905 ± 0.001M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 12 3.282 ± 0.004M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 16 3.182 ± 0.008M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 20 3.029 ± 0.006M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 24 3.116 ± 0.004M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 28 2.869 ± 0.005M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 32 3.075 ± 0.010M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 36 2.795 ± 0.003M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 40 2.947 ± 0.005M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 44 2.748 ± 0.006M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 48 2.767 ± 0.003M/s (drops 0.000 ± 0.000M/s)
-  rb-libbpf nr_prod 52 2.858 ± 0.002M/s (drops 0.000 ± 0.000M/s)
-
-Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
----
- .../selftests/bpf/benchs/bench_ringbufs.c     | 22 ++++++++++++++++++-
- .../bpf/benchs/run_bench_ringbufs.sh          |  4 ++++
- 2 files changed, 25 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/benchs/bench_ringbufs.c b/tools/testing/selftests/bpf/benchs/bench_ringbufs.c
-index e1ee979e6acc..6fdfc61c721b 100644
---- a/tools/testing/selftests/bpf/benchs/bench_ringbufs.c
-+++ b/tools/testing/selftests/bpf/benchs/bench_ringbufs.c
-@@ -19,6 +19,7 @@ static struct {
- 	int ringbuf_sz; /* per-ringbuf, in bytes */
- 	bool ringbuf_use_output; /* use slower output API */
- 	int perfbuf_sz; /* per-CPU size, in pages */
-+	bool overwrite_mode;
- } args = {
- 	.back2back = false,
- 	.batch_cnt = 500,
-@@ -27,6 +28,7 @@ static struct {
- 	.ringbuf_sz = 512 * 1024,
- 	.ringbuf_use_output = false,
- 	.perfbuf_sz = 128,
-+	.overwrite_mode = false,
- };
- 
- enum {
-@@ -35,6 +37,7 @@ enum {
- 	ARG_RB_BATCH_CNT = 2002,
- 	ARG_RB_SAMPLED = 2003,
- 	ARG_RB_SAMPLE_RATE = 2004,
-+	ARG_RB_OVERWRITE = 2005,
- };
- 
- static const struct argp_option opts[] = {
-@@ -43,6 +46,7 @@ static const struct argp_option opts[] = {
- 	{ "rb-batch-cnt", ARG_RB_BATCH_CNT, "CNT", 0, "Set BPF-side record batch count"},
- 	{ "rb-sampled", ARG_RB_SAMPLED, NULL, 0, "Notification sampling"},
- 	{ "rb-sample-rate", ARG_RB_SAMPLE_RATE, "RATE", 0, "Notification sample rate"},
-+	{ "rb-overwrite", ARG_RB_OVERWRITE, NULL, 0, "overwrite mode"},
- 	{},
- };
- 
-@@ -72,6 +76,9 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state)
- 			argp_usage(state);
- 		}
- 		break;
-+	case ARG_RB_OVERWRITE:
-+		args.overwrite_mode = true;
-+		break;
- 	default:
- 		return ARGP_ERR_UNKNOWN;
- 	}
-@@ -104,6 +111,11 @@ static void bufs_validate(void)
- 		fprintf(stderr, "back-to-back mode makes sense only for single-producer case!\n");
- 		exit(1);
- 	}
-+
-+	if (args.overwrite_mode && strcmp(env.bench_name, "rb-libbpf") != 0) {
-+		fprintf(stderr, "rb-overwrite mode only supports rb-libbpf!\n");
-+		exit(1);
-+	}
- }
- 
- static void *bufs_sample_producer(void *input)
-@@ -134,6 +146,8 @@ static void ringbuf_libbpf_measure(struct bench_res *res)
- 
- static struct ringbuf_bench *ringbuf_setup_skeleton(void)
- {
-+	__u32 flags;
-+	struct bpf_map *ringbuf;
- 	struct ringbuf_bench *skel;
- 
- 	setup_libbpf();
-@@ -151,7 +165,13 @@ static struct ringbuf_bench *ringbuf_setup_skeleton(void)
- 		/* record data + header take 16 bytes */
- 		skel->rodata->wakeup_data_size = args.sample_rate * 16;
- 
--	bpf_map__set_max_entries(skel->maps.ringbuf, args.ringbuf_sz);
-+	ringbuf = skel->maps.ringbuf;
-+	if (args.overwrite_mode) {
-+		flags = bpf_map__map_flags(ringbuf) | BPF_F_OVERWRITE;
-+		bpf_map__set_map_flags(ringbuf,  flags);
-+	}
-+
-+	bpf_map__set_max_entries(ringbuf, args.ringbuf_sz);
- 
- 	if (ringbuf_bench__load(skel)) {
- 		fprintf(stderr, "failed to load skeleton\n");
-diff --git a/tools/testing/selftests/bpf/benchs/run_bench_ringbufs.sh b/tools/testing/selftests/bpf/benchs/run_bench_ringbufs.sh
-index 91e3567962ff..4e758bc52b73 100755
---- a/tools/testing/selftests/bpf/benchs/run_bench_ringbufs.sh
-+++ b/tools/testing/selftests/bpf/benchs/run_bench_ringbufs.sh
-@@ -49,3 +49,7 @@ for b in 1 2 3 4 8 12 16 20 24 28 32 36 40 44 48 52; do
- 	summarize "rb-libbpf nr_prod $b" "$($RUN_RB_BENCH -p$b --rb-batch-cnt 50 rb-libbpf)"
- done
- 
-+header "Ringbuf, multi-producer contention, overwrite mode"
-+for b in 1 2 3 4 8 12 16 20 24 28 32 36 40 44 48 52; do
-+	summarize "rb-libbpf nr_prod $b" "$($RUN_RB_BENCH -p$b --rb-overwrite --rb-batch-cnt 50 rb-libbpf)"
-+done
--- 
-2.43.0
-
+> +       return ret;
+> +}
+> +
+> +int bpf_arch_text_invalidate(void *dst, size_t len)
+> +{
+> +       int i;
+> +       int ret =3D 0;
+> +       u32 *inst;
+> +
+> +       inst =3D kvmalloc(len, GFP_KERNEL);
+> +       if (!inst)
+> +               return -ENOMEM;
+> +
+> +       for (i =3D 0; i < (len/sizeof(u32)); i++)
+> +               inst[i] =3D INSN_BREAK;
+> +
+> +       mutex_lock(&text_mutex);
+> +       if (larch_insn_text_copy(dst, inst, len))
+> +               ret =3D -EINVAL;
+> +       mutex_unlock(&text_mutex);
+> +
+> +       kvfree(inst);
+> +       return ret;
+> +}
+> +
+> +void *bpf_arch_text_copy(void *dst, void *src, size_t len)
+> +{
+> +       int ret;
+> +
+> +       mutex_lock(&text_mutex);
+> +       ret =3D larch_insn_text_copy(dst, src, len);
+> +       mutex_unlock(&text_mutex);
+> +       if (ret)
+> +               return ERR_PTR(-EINVAL);
+> +
+> +       return dst;
+> +}
+> --
+> 2.25.1
+>
 
