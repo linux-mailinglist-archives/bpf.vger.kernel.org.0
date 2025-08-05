@@ -1,475 +1,160 @@
-Return-Path: <bpf+bounces-65085-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65086-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42675B1BA0F
-	for <lists+bpf@lfdr.de>; Tue,  5 Aug 2025 20:28:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4C3FB1BABA
+	for <lists+bpf@lfdr.de>; Tue,  5 Aug 2025 21:10:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D0DE184A02
-	for <lists+bpf@lfdr.de>; Tue,  5 Aug 2025 18:28:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE70A18A5A8C
+	for <lists+bpf@lfdr.de>; Tue,  5 Aug 2025 19:10:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85FA2298994;
-	Tue,  5 Aug 2025 18:28:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4ACB274FD5;
+	Tue,  5 Aug 2025 19:06:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="ADh+JXQA"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ZTtrDN2l"
 X-Original-To: bpf@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B62F2951DD;
-	Tue,  5 Aug 2025 18:28:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAC41295DBE;
+	Tue,  5 Aug 2025 19:06:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754418504; cv=none; b=G31v3ytwvpZx8Oqo+LN2L8Y1yE4+yAFrAoey1V4Wo08eZrqVZz+u7dV7Z3UIyJErKbg9bp3ieUsJ4MLqhv9uUw6nnnp/KqbRmBxq9fCIm/3C9NBUlH4RleOqOQ5fFnLDM0kV8ae0/pFejo1kw598LXuIyrwaTLugQKqk4sq+/Xo=
+	t=1754420789; cv=none; b=OBTxXBqgXz0lgMV1U1j2/BISpYBuDndWBLgUsMbKxe+qUEjMLChy9ckm0ubo4sd3yt5i8w9du6KR7tteRUapyzFhWe892M4i7p+ZEdpwL9doskV8NHvU6lb4fWu2gRUIytEdT2bHSX/GwipSvNEXMirlGTQl0H3mDdulaBcW5xo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754418504; c=relaxed/simple;
-	bh=f/UM9JLqI2Jc4ZU+EZVhHs5u5pZuurKc9RQzZPhr+fM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=FfQXxcDZ9NWmcX4tuCIRq/XGR/8N1GSSJQGwZGoGMU8rVn9VRNEPimAxYv+JCi1MD9vOmqqVOnkVlymMpQDCDW8A3fy6sqzbNtWsXSFNq1BJPk9PTcKGiWb/CF7T4tiSPK8gCegfRnvbRD+rLTtXmQRCpY3elb2Zkw5byl93JeY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=ADh+JXQA; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from narnia (unknown [40.118.131.60])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 9D9F3202189A;
-	Tue,  5 Aug 2025 11:28:21 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9D9F3202189A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1754418502;
-	bh=3KeCsWFKQKXPFRMBs18dddePu2U+xw5tInmf8PLQlAM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=ADh+JXQAARJkGxcYgiul0PAr6Ei2X6T0AaklgXhRHEJRqfTSPaueM4NH77gDpei2T
-	 9TkO6tUBTJBTy9W0LEBWd2R+9K/j2WuWskVn0m+MLNKw0FnslGAIizmrf3Re9x+uYx
-	 032JJgaBHLfHbJUDs2u48ZIvNocy+oa7a3hcyK2E=
-From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
-To: KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
- linux-security-module@vger.kernel.org
-Cc: paul@paul-moore.com, kys@microsoft.com, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, KP Singh <kpsingh@kernel.org>,
- James.Bottomley@HansenPartnership.com, wufan@kernel.org
-Subject: Re: [PATCH v2 08/13] bpf: Implement signature verification for BPF
- programs
-In-Reply-To: <20250721211958.1881379-9-kpsingh@kernel.org>
-References: <20250721211958.1881379-1-kpsingh@kernel.org>
- <20250721211958.1881379-9-kpsingh@kernel.org>
-Date: Tue, 05 Aug 2025 11:28:20 -0700
-Message-ID: <87sei58vy3.fsf@microsoft.com>
+	s=arc-20240116; t=1754420789; c=relaxed/simple;
+	bh=nrAvltDYbzBkxbVa6V/3Tw3DlFmX7Tq89RALXk/upTU=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:From:To:
+	 References:In-Reply-To; b=s5uR6ubpDdQ5dx3ZkxZabR6FiD2t6MwbUKB/Y3SN2FVdswHQVyP4mn8KAHHg2gWtMm/rNtVVyWEeD/XVfDKZPp81oYu5GVOtL4aKKCjFw4hnZtoelorgQGaLe9cU02TXmnQNRpBxZB5FHp169pJ00D83mrLyFB7Nu8+9SVhzti4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ZTtrDN2l; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 29AA344475;
+	Tue,  5 Aug 2025 19:06:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1754420784;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AmMUXGQraACpFWQnGleevRjMeW7mTnPC6+SvsPYG2qI=;
+	b=ZTtrDN2lK4L3thiSZP4Pki3bQZiRJBmlfVU9SyoiCjsX04tGD4lKcHe8XywEsqo6XuDVWJ
+	2ZOyfyd2LervVkmXQnIAYv4tYQHy8dy7J+4eNn92HO3Ycj4oVjniSvG0tqLpzgKBXbXO5t
+	9SQ9tji2iniOf+VQvh0CvKBRq9/hgJ8g1wUCDTgb/Dshr6ElvX43TAboKS95CqKjIlFm+F
+	Sk2wqAtGke4OaUEos4wYh/lKdHmHTNHpLRbBMrMigq4DtV2QZak18qP2vZ00j28+b0M8j4
+	Hg7VHz3dvu3xOma33+GmvgfDFdNz3BoNglsje0xe4oacJBEhgbObDVZ8W70ubA==
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 05 Aug 2025 21:06:23 +0200
+Message-Id: <DBUQ9HK08HSW.182155MPSBZJM@bootlin.com>
+Subject: Re: [PATCH v3 2/3] tests: add some tests validating skipped
+ functions due to uncertain arg location
+Cc: <bpf@vger.kernel.org>, "Arnaldo Carvalho de Melo" <acme@kernel.org>,
+ "Alexei Starovoitov" <ast@fb.com>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Bastien Curutchet"
+ <bastien.curutchet@bootlin.com>, <ebpf@linuxfoundation.org>
+From: =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+To: "Alan Maguire" <alan.maguire@oracle.com>, <dwarves@vger.kernel.org>
+X-Mailer: aerc 0.20.1-0-g2ecb8770224a-dirty
+References: <20250707-btf_skip_structs_on_stack-v3-0-29569e086c12@bootlin.com> <20250707-btf_skip_structs_on_stack-v3-2-29569e086c12@bootlin.com> <7201b814-aeb1-4f1d-b5f8-3178be1e29bd@oracle.com>
+In-Reply-To: <7201b814-aeb1-4f1d-b5f8-3178be1e29bd@oracle.com>
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdduudehleeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpegggfgtfffkufevhffvofhfjgesthhqredtredtjeenucfhrhhomheptehlvgigihhsucfnohhthhhorhoruceorghlvgigihhsrdhlohhthhhorhgvsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeduveelieduffeklefghfekveekvdelvdevheejkeekkeejtdeludejuddugfehffenucffohhmrghinhepsghoohhtlhhinhdrtghomhenucfkphepvdgrtddvmeekgedvkeemfhelgegtmegvtddtmeemfhekheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvrgdtvdemkeegvdekmehfleegtgemvgdttdemmehfkeehpdhhvghloheplhhotggrlhhhohhsthdpmhgrihhlfhhrohhmpegrlhgvgihishdrlhhothhhohhrvgessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepkedprhgtphhtthhopegrlhgrnhdrmhgrghhuihhrvgesohhrrggtlhgvrdgtohhmpdhrtghpthhtohepugifrghrvhgvshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegsphhfsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprggtmhgvsehkvghrnhgvl
+ hdrohhrghdprhgtphhtthhopegrshhtsehfsgdrtghomhdprhgtphhtthhopehthhhomhgrshdrphgvthgriiiiohhnihessghoohhtlhhinhdrtghomhdprhgtphhtthhopegsrghsthhivghnrdgtuhhruhhttghhvghtsegsohhothhlihhnrdgtohhmpdhrtghpthhtohepvggsphhfsehlihhnuhigfhhouhhnuggrthhiohhnrdhorhhg
+X-GND-Sasl: alexis.lothore@bootlin.com
 
-KP Singh <kpsingh@kernel.org> writes:
+Hi Alan,
 
-> This patch extends the BPF_PROG_LOAD command by adding three new fields
-> to `union bpf_attr` in the user-space API:
+On Tue Aug 5, 2025 at 5:09 PM CEST, Alan Maguire wrote:
+> On 07/07/2025 15:02, Alexis Lothor=C3=A9 (eBPF Foundation) wrote:
+>> Add a small binary representing specific cases likely absent from
+>> standard vmlinux or kernel modules files. As a starter, the introduced
+>> binary exposes a few functions consuming structs passed by value, some
+>> passed by register, some passed on the stack:
+>>=20
+>>   int main(void);
+>>   int test_bin_func_struct_on_stack_ko(int, void *, char, short int, int=
+, \
+>>     void *, char, short int, struct test_bin_struct_packed);
+>>   int test_bin_func_struct_on_stack_ok(int, void *, char, short int, int=
+, \
+>>     void *, char, short int, struct test_bin_struct);
+>>   int test_bin_func_struct_ok(int, void *, char, struct test_bin_struct)=
+;
+>>   int test_bin_func_ok(int, void *, char, short int);
+>>=20
+>> Then enrich btf_functions.sh to make it perform the following steps:
+>> - build the binary
+>> - generate BTF info and pfunct listing, both with dwarf and the
+>>   generated BTF
+>> - check that any function encoded in BTF is found in DWARF
+>> - check that any function announced as skipped is indeed absent from BTF
+>> - check that any skipped function has been skipped due to uncertain
+>>   parameter location
+>>=20
+>> Example of the new test execution:
+>>   Encoding...Matched 4 functions exactly.
+>>   Ok
+>>   Validation of skipped function logic...
+>>   Skipped encoding 1 functions in BTF.
+>>   Ok
+>>   Validating skipped functions have uncertain parameter location...
+>>   pahole: /home/alexis/src/pahole/tests/bin/test_bin: Invalid argument
+>>   Found 1 legitimately skipped function due to uncertain loc
+>>   Ok
+>>=20
+>> Signed-off-by: Alexis Lothor=C3=A9 (eBPF Foundation) <alexis.lothore@boo=
+tlin.com>
 >
->   - signature: A pointer to the signature blob.
->   - signature_size: The size of the signature blob.
->   - keyring_id: The serial number of a loaded kernel keyring (e.g.,
->     the user or session keyring) containing the trusted public keys.
+> Thanks for the updated changes+test. I think it'd be good to have this
+> be less verbose in successful case. Currently I see:
 >
-> When a BPF program is loaded with a signature, the kernel:
+>   1: Validation of BTF encoding of functions; this may take some time: Ok
+> Validation of BTF encoding corner cases with test_bin functions; this
+> may take some time: make: Entering directory
+> '/home/almagui/src/github/dwarves/tests/bin'
+> gcc test_bin.c -Wall -Wextra -Werror -g -o test_bin
+> make: Leaving directory '/home/almagui/src/github/dwarves/tests/bin'
+> No skipped functions.  Done.
 >
-> 1.  Retrieves the trusted keyring using the provided `keyring_id`.
-> 2.  Verifies the supplied signature against the BPF program's
->     instruction buffer.
-> 3.  If the signature is valid and was generated by a key in the trusted
->     keyring, the program load proceeds.
-> 4.  If no signature is provided, the load proceeds as before, allowing
->     for backward compatibility. LSMs can chose to restrict unsigned
->     programs and implement a security policy.
-> 5.  If signature verification fails for any reason,
->     the program is not loaded.
-[...]
+> Ideally we just want the "Ok" for success in non-vebose mode. I'd
+> propose making the following changes in order to support that; if these
+> are okay by you there's no need to send another revision.
 
-The following is what we propose to build on top of this to implement
-in-kernel hash chain verification. This allows for signature
-verification of arbitrary maps and isn't coupled to light-skeletons or
-any specific implementation.
+I'm perfeclty fine with the idea, thanks for handling it. Just a
+comment/question below
 
+> diff --git a/tests/btf_functions.sh b/tests/btf_functions.sh
+> index f97bdf5..a4ab67e 100755
+> --- a/tests/btf_functions.sh
+> +++ b/tests/btf_functions.sh
+> @@ -110,7 +110,6 @@ skipped_cnt=3D$(wc -l ${outdir}/skipped_fns | awk '{
+> print $1}')
+>
+>  if [[ "$skipped_cnt" =3D=3D "0" ]]; then
+>         echo "No skipped functions.  Done."
+> -       exit 0
+>  fi
 
-From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
-Date: Mon, 28 Jul 2025 08:14:57 -0700
-Subject: bpf: Add hash chain signature support for arbitrary maps
+Shouldn't we get rid of this whole if block then, similarly to what you
+have done with the other one below ?
 
-This patch introduces hash chain support for signature verification of
-arbitrary bpf map objects which was described here:
-https://lore.kernel.org/linux-security-module/20250721211958.1881379-1-kpsingh@kernel.org/
+Thanks,
 
-The UAPI is extended to allow for in-kernel checking of maps passed in
-via the fd_array. A hash chain is constructed from the maps, in order
-specified by the signature_maps field. The hash chain is terminated
-with the hash of the program itself.
+Alexis
 
-Signed-off-by: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
----
- include/uapi/linux/bpf.h       |  6 +++
- kernel/bpf/syscall.c           | 75 ++++++++++++++++++++++++++++++++--
- tools/include/uapi/linux/bpf.h |  6 +++
- 3 files changed, 83 insertions(+), 4 deletions(-)
+--=20
+Alexis Lothor=C3=A9, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index b42c3740e053e..c83f2a34674fd 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1617,6 +1617,12 @@ union bpf_attr {
- 		 * verification.
- 		 */
- 		__u32 		keyring_id;
-+		/* Pointer to a buffer containing the maps used in the signature
-+		 * hash chain of the BPF program.
-+		 */
-+		__aligned_u64   signature_maps;
-+		/* Size of the signature maps buffer. */
-+		__u32		signature_maps_size;
- 	};
- 
- 	struct { /* anonymous struct used by BPF_OBJ_* commands */
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 10fd3ea5d91fd..f7e9bcabd9dcc 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2780,15 +2780,36 @@ static bool is_perfmon_prog_type(enum bpf_prog_type prog_type)
- 	}
- }
- 
-+static inline int bpf_map_get_hash(int map_fd, void *buffer)
-+{
-+	struct bpf_map *map;
-+
-+	CLASS(fd, f)(map_fd);
-+	map = __bpf_map_get(f);
-+	if (IS_ERR(map))
-+		return PTR_ERR(map);
-+
-+	if (!map->ops->map_get_hash)
-+		return -EINVAL;
-+
-+	return map->ops->map_get_hash(map, SHA256_DIGEST_SIZE, buffer);
-+}
-+
- static noinline int bpf_prog_verify_signature(struct bpf_prog *prog,
- 					      union bpf_attr *attr,
- 					      bool is_kernel)
- {
- 	bpfptr_t usig = make_bpfptr(attr->signature, is_kernel);
--	struct bpf_dynptr_kern sig_ptr, insns_ptr;
-+	bpfptr_t umaps;
-+	struct bpf_dynptr_kern sig_ptr, insns_ptr, hash_ptr;
- 	struct bpf_key *key = NULL;
- 	void *sig;
-+	int *maps;
-+	int map_fd;
- 	int err = 0;
-+	u64 buffer[8];
-+	u64 hash[4];
-+	int n;
- 
- 	if (system_keyring_id_check(attr->keyring_id) == 0)
- 		key = bpf_lookup_system_key(attr->keyring_id);
-@@ -2808,16 +2829,62 @@ static noinline int bpf_prog_verify_signature(struct bpf_prog *prog,
- 	bpf_dynptr_init(&insns_ptr, prog->insnsi, BPF_DYNPTR_TYPE_LOCAL, 0,
- 			prog->len * sizeof(struct bpf_insn));
- 
--	err = bpf_verify_pkcs7_signature((struct bpf_dynptr *)&insns_ptr,
--					 (struct bpf_dynptr *)&sig_ptr, key);
-+	if (!attr->signature_maps_size) {
-+		err = bpf_verify_pkcs7_signature((struct bpf_dynptr *)&insns_ptr,
-+						 (struct bpf_dynptr *)&sig_ptr, key);
-+	} else {
-+		bpf_dynptr_init(&hash_ptr, hash, BPF_DYNPTR_TYPE_LOCAL, 0,
-+				sizeof(hash));
-+		umaps = make_bpfptr(attr->signature_maps, is_kernel);
-+		maps = kvmemdup_bpfptr(umaps, attr->signature_maps_size * sizeof(*maps));
-+		if (!maps) {
-+			err = -ENOMEM;
-+			goto out;
-+		}
-+		n = attr->signature_maps_size - 1;
-+		err = copy_from_bpfptr_offset(&map_fd, make_bpfptr(attr->fd_array, is_kernel),
-+					      maps[n] * sizeof(map_fd),
-+					      sizeof(map_fd));
-+		if (err < 0)
-+			goto free_maps;
-+
-+		err = bpf_map_get_hash(map_fd, hash);
-+		if (err != 0)
-+			goto free_maps;
-+
-+		n--;
-+		while (n >= 0) {
-+			memcpy(buffer, hash, sizeof(hash));
-+			err = copy_from_bpfptr_offset(&map_fd,
-+						      make_bpfptr(attr->fd_array, is_kernel),
-+						      maps[n] * sizeof(map_fd),
-+						      sizeof(map_fd));
-+			if (err < 0)
-+				goto free_maps;
-+
-+			err = bpf_map_get_hash(map_fd, buffer+4);
-+			if (err != 0)
-+				goto free_maps;
-+			sha256((u8 *)buffer, sizeof(buffer), (u8 *)&hash);
-+			n--;
-+		}
-+		sha256((u8 *)prog->insnsi, prog->len * sizeof(struct bpf_insn), (u8 *)&buffer);
-+		memcpy(buffer+4, hash, sizeof(hash));
-+		sha256((u8 *)buffer, sizeof(buffer), (u8 *)&hash);
-+		err = bpf_verify_pkcs7_signature((struct bpf_dynptr *)&hash_ptr,
-+						 (struct bpf_dynptr *)&sig_ptr, key);
- 
-+free_maps:
-+		kvfree(maps);
-+	}
-+out:
- 	bpf_key_put(key);
- 	kvfree(sig);
- 	return err;
- }
- 
- /* last field in 'union bpf_attr' used by this command */
--#define BPF_PROG_LOAD_LAST_FIELD keyring_id
-+#define BPF_PROG_LOAD_LAST_FIELD signature_maps_size
- 
- static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
- {
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index b42c3740e053e..c83f2a34674fd 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -1617,6 +1617,12 @@ union bpf_attr {
- 		 * verification.
- 		 */
- 		__u32 		keyring_id;
-+		/* Pointer to a buffer containing the maps used in the signature
-+		 * hash chain of the BPF program.
-+		 */
-+		__aligned_u64   signature_maps;
-+		/* Size of the signature maps buffer. */
-+		__u32		signature_maps_size;
- 	};
- 
- 	struct { /* anonymous struct used by BPF_OBJ_* commands */
--- 
-2.48.1
-
-
-And here is a reference usage implementation:
-
-From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
-Date: Mon, 28 Jul 2025 21:30:56 -0700
-Subject: libbpf: Add hash chain signing support to light  skeletons.
-
-This patch introduces a hash chain signing support for light-skeleton
-assets. A new flag '-M' is added which constructs a hash chain with
-the loader program and the target payload.
-
-Signed-off-by: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
----
- tools/bpf/bpftool/gen.c       | 25 +++++++++++++++++++++++++
- tools/bpf/bpftool/main.c      |  8 +++++++-
- tools/bpf/bpftool/main.h      |  1 +
- tools/bpf/bpftool/sign.c      | 17 ++++++++++++++---
- tools/lib/bpf/libbpf.h        |  3 ++-
- tools/lib/bpf/skel_internal.h |  6 +++++-
- 6 files changed, 54 insertions(+), 6 deletions(-)
-
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index ab6fc86598ad3..e660fbc701c5d 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -699,6 +699,9 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- 	if (sign_progs)
- 		opts.gen_hash = true;
- 
-+	if (sign_maps)
-+		opts.sign_maps = true;
-+
- 	err = bpf_object__gen_loader(obj, &opts);
- 	if (err)
- 		return err;
-@@ -793,6 +796,8 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- 	if (sign_progs) {
- 		sopts.insns = opts.insns;
- 		sopts.insns_sz = opts.insns_sz;
-+		sopts.data = opts.data;
-+		sopts.data_sz = opts.data_sz;
- 		sopts.excl_prog_hash = prog_sha;
- 		sopts.excl_prog_hash_sz = sizeof(prog_sha);
- 		sopts.signature = sig_buf;
-@@ -821,6 +826,13 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- 		\n\
- 		\";\n");
- 
-+		if (sign_maps) {
-+			codegen("\
-+			\n\
-+				static const int opts_signature_maps[1] __attribute__((__aligned__(8))) = {0}; \n\
-+			");
-+		}
-+
- 		codegen("\
- 		\n\
- 			opts.signature = (void *)opts_sig;			\n\
-@@ -829,6 +841,19 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- 			opts.excl_prog_hash_sz = sizeof(opts_excl_hash) - 1;	\n\
- 			opts.keyring_id = KEY_SPEC_SESSION_KEYRING;		\n\
- 		");
-+		if (sign_maps) {
-+			codegen("\
-+			\n\
-+				opts.signature_maps = (void *)opts_signature_maps;	\n\
-+				opts.signature_maps_sz = 1; 				\n\
-+			");
-+		} else {
-+			codegen("\
-+			\n\
-+				opts.signature_maps = (void *)NULL;		\n\
-+				opts.signature_maps_sz = 0;			\n\
-+			");
-+		}
- 	}
- 
- 	codegen("\
-diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-index fc25bb390ec71..287e8205494cb 100644
---- a/tools/bpf/bpftool/main.c
-+++ b/tools/bpf/bpftool/main.c
-@@ -34,6 +34,7 @@ bool use_loader;
- struct btf *base_btf;
- struct hashmap *refs_table;
- bool sign_progs;
-+bool sign_maps;
- const char *private_key_path;
- const char *cert_path;
- 
-@@ -477,7 +478,7 @@ int main(int argc, char **argv)
- 	bin_name = "bpftool";
- 
- 	opterr = 0;
--	while ((opt = getopt_long(argc, argv, "VhpjfLmndSi:k:B:l",
-+	while ((opt = getopt_long(argc, argv, "VhpjfLmndSMi:k:B:l",
- 				  options, NULL)) >= 0) {
- 		switch (opt) {
- 		case 'V':
-@@ -527,6 +528,11 @@ int main(int argc, char **argv)
- 			sign_progs = true;
- 			use_loader = true;
- 			break;
-+		case 'M':
-+			sign_maps = true;
-+			sign_progs = true;
-+			use_loader = true;
-+			break;
- 		case 'k':
- 			private_key_path = optarg;
- 			break;
-diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-index f921af3cda87f..805c3d87a1330 100644
---- a/tools/bpf/bpftool/main.h
-+++ b/tools/bpf/bpftool/main.h
-@@ -92,6 +92,7 @@ extern bool use_loader;
- extern struct btf *base_btf;
- extern struct hashmap *refs_table;
- extern bool sign_progs;
-+extern bool sign_maps;
- extern const char *private_key_path;
- extern const char *cert_path;
- 
-diff --git a/tools/bpf/bpftool/sign.c b/tools/bpf/bpftool/sign.c
-index f0b5dd10a46b2..d5514b7d2b82d 100644
---- a/tools/bpf/bpftool/sign.c
-+++ b/tools/bpf/bpftool/sign.c
-@@ -22,6 +22,7 @@
- #include <errno.h>
- 
- #include <bpf/skel_internal.h>
-+#include <bpf/libbpf_internal.h>
- 
- #include "main.h"
- 
-@@ -129,8 +130,18 @@ int bpftool_prog_sign(struct bpf_load_and_run_opts *opts)
- 	long actual_sig_len = 0;
- 	X509 *x509 = NULL;
- 	int err = 0;
--
--	bd_in = BIO_new_mem_buf(opts->insns, opts->insns_sz);
-+	unsigned char hash[SHA256_DIGEST_LENGTH  * 2];
-+	unsigned char term[SHA256_DIGEST_LENGTH];
-+
-+	if (sign_maps) {
-+		libbpf_sha256(opts->insns, opts->insns_sz, hash, SHA256_DIGEST_LENGTH);
-+		libbpf_sha256(opts->data, opts->data_sz, hash + SHA256_DIGEST_LENGTH,
-+			      SHA256_DIGEST_LENGTH);
-+		libbpf_sha256(hash, sizeof(hash), term, sizeof(term));
-+		bd_in = BIO_new_mem_buf(term, sizeof(term));
-+	} else {
-+		bd_in = BIO_new_mem_buf(opts->insns, opts->insns_sz);
-+	}
- 	if (!bd_in) {
- 		err = -ENOMEM;
- 		goto cleanup;
-@@ -171,7 +182,7 @@ int bpftool_prog_sign(struct bpf_load_and_run_opts *opts)
- 	EVP_Digest(opts->insns, opts->insns_sz, opts->excl_prog_hash,
- 		   &opts->excl_prog_hash_sz, EVP_sha256(), NULL);
- 
--		bd_out = BIO_new(BIO_s_mem());
-+	bd_out = BIO_new(BIO_s_mem());
- 	if (!bd_out) {
- 		err = -ENOMEM;
- 		goto cleanup;
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 7cad8470d9ebe..aad0288cd05e3 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -1827,9 +1827,10 @@ struct gen_loader_opts {
- 	__u32 data_sz;
- 	__u32 insns_sz;
- 	bool gen_hash;
-+	bool sign_maps;
- };
- 
--#define gen_loader_opts__last_field gen_hash
-+#define gen_loader_opts__last_field sign_maps
- LIBBPF_API int bpf_object__gen_loader(struct bpf_object *obj,
- 				      struct gen_loader_opts *opts);
- 
-diff --git a/tools/lib/bpf/skel_internal.h b/tools/lib/bpf/skel_internal.h
-index 5b6d1b09dc8a6..c25a4f1308e44 100644
---- a/tools/lib/bpf/skel_internal.h
-+++ b/tools/lib/bpf/skel_internal.h
-@@ -74,6 +74,8 @@ struct bpf_load_and_run_opts {
- 	__u32 keyring_id;
- 	void * excl_prog_hash;
- 	__u32 excl_prog_hash_sz;
-+	const int *signature_maps;
-+	__u32 signature_maps_sz;
- };
- 
- long kern_sys_bpf(__u32 cmd, void *attr, __u32 attr_size);
-@@ -351,7 +353,7 @@ static inline int skel_map_freeze(int fd)
- 
- static inline int bpf_load_and_run(struct bpf_load_and_run_opts *opts)
- {
--	const size_t prog_load_attr_sz = offsetofend(union bpf_attr, keyring_id);
-+	const size_t prog_load_attr_sz = offsetofend(union bpf_attr, signature_maps_size);
- 	const size_t test_run_attr_sz = offsetofend(union bpf_attr, test);
- 	int map_fd = -1, prog_fd = -1, key = 0, err;
- 	union bpf_attr attr;
-@@ -394,6 +396,8 @@ static inline int bpf_load_and_run(struct bpf_load_and_run_opts *opts)
- #ifndef __KERNEL__
- 	attr.signature = (long) opts->signature;
- 	attr.signature_size = opts->signature_sz;
-+	attr.signature_maps = (long) opts->signature_maps;
-+	attr.signature_maps_size = opts->signature_maps_sz;
- #else
- 	if (opts->signature || opts->signature_sz)
- 		pr_warn("signatures are not supported from bpf_preload\n");
--- 
-2.48.1
-
--blaise
 
