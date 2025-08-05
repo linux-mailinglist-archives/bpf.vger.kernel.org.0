@@ -1,155 +1,186 @@
-Return-Path: <bpf+bounces-65060-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65061-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F27DB1B4D3
-	for <lists+bpf@lfdr.de>; Tue,  5 Aug 2025 15:23:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E525B1B4F3
+	for <lists+bpf@lfdr.de>; Tue,  5 Aug 2025 15:34:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACF573ADE59
-	for <lists+bpf@lfdr.de>; Tue,  5 Aug 2025 13:23:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D89753BDCFE
+	for <lists+bpf@lfdr.de>; Tue,  5 Aug 2025 13:34:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F32B275113;
-	Tue,  5 Aug 2025 13:23:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B3A4274FF0;
+	Tue,  5 Aug 2025 13:33:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="U2lNUL9v"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="oAkINR46"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5892E274B29;
-	Tue,  5 Aug 2025 13:23:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D10EC8CE;
+	Tue,  5 Aug 2025 13:33:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754400201; cv=none; b=G4a51Y3hcNhuw+kY6sbiud2QzI1aXYSFdxYBrmLd0Pybo074goUDZ6pjzc1IrpjE8j/VQ25c0oZiYgBGwAUD1KP8bHu9r+JQ6NeYZhzmVtSJyVDdaSh7SP6HNgqN1eRH4trtNJZmc5Bk5e7e8YMcm/88kIVbWUqtqS8nUn05A3M=
+	t=1754400833; cv=none; b=DU7NYE7/ahZygckJopbzOnxVRKGlcSF3F0TE2OtD7yG1YLRwd1Fm4Fht+2A2wYiM2DzsHVaOipujia+kNKWeko7Plao7/zmiqjQSSOPKLipagQLpLzlFc6M4ZIwqEATZjXvz1wZaTRqMxOI+PsckGnz8UNc7Jgh9m+uEwL98zKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754400201; c=relaxed/simple;
-	bh=Zk5egdCsb360flUD1N8NGncqCRIR4Mj9JAMrkJp+34o=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=VJL8N98u4fd7PNhGlHMHTXOPST5oqvrAalq+0Sj09fu1J617QahCXpQ5FCaOIgyr8McO3BApSCmH3Q0Z/Sgb7S0pVyvJclfXk7+U39+g2b+rSTXFL6x+N1wPAYPDy3bPH27b4YXm3cqPeBXVVPJsWFzxQdGHCK02EFFv0IC0vIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=U2lNUL9v; arc=none smtp.client-ip=148.163.156.1
+	s=arc-20240116; t=1754400833; c=relaxed/simple;
+	bh=DEFJA60kumZI0YtSbx1qJXlNprOBiPmPzEw3oho+OCk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Cj3s7jJ4k04HmTY/b+qObvhScI9YYKrt1VrNg+biI9oCgjOM+X+ZYQCdg2WYBAhujfbSkTlHTxZEpXuuuFb3Go3U0UbXku9CsdbEAj/wgn5FBUhwhQFwywvRRRBZ2+5g4u6cPr/qC3zBHGoUzsbVJxDs526+TvfkrAEO/q83qmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=oAkINR46; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 575CwNM8030778;
-	Tue, 5 Aug 2025 13:23:05 GMT
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5754twbW000914;
+	Tue, 5 Aug 2025 13:33:38 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=Zk5egd
-	Csb360flUD1N8NGncqCRIR4Mj9JAMrkJp+34o=; b=U2lNUL9veAHJhvCpSNnkE4
-	/8hkplRF1DvEX/l6M/buR7UKGqQ9UV3oLL0HJ0oN4/M7+FjMByjC6lnS1BIkkDKN
-	Q4gwXd8cluYl7Le0eDo/qRpaDGfehGKyiBVr7oNSGg8nCzJibFzp6vTmlBIC5A3i
-	xOa88XE8SDjxjKmxZ/gJ56hd3fZMulDfNmc1TUKBxh9vhzx610Y0q7nI5PsFq4JD
-	QY2XSxmNcAfHlHvLepX6Lyi/vHgBYfFdquGyikHbARTwNP/L/jecqPq9VqRhkbXr
-	GX4AmRjVKq5uyVsFRw1QtM2dbMAQaAfKhbGdAuX3N5peawvdRL8fgHLCE5Q2f1Fw
+	:message-id:mime-version:references:subject:to; s=pp1; bh=p7L4Ik
+	JD9FFc3zVVbfHWu61nAW81Sk3m8x2IHO+EuyI=; b=oAkINR468G3F9cWdtsppYt
+	5Urbk9PQPZZaCUEPzgFJbUYBbWjXdJfG+YCQ/9z4/D9FDSMK43OSnK+E9VHN8dM0
+	r1lfTq8M0kkzRLJYRCuv2aSSg0EkeXaXKp4xufpyk4K0IWywZtB1GWJvTArerbRy
+	BROAaC0fTVIFdXmBIIcAqG0EzhlhsQ7+E+jtuRUY/ZrMRCkPo00N/aP26BJ/2rVJ
+	p4I5Y308qsxC+uL+CpxdjHktBCRV3o+JUVCjMR2L76m93Dsmum0mHnr9xcc8UNNR
+	yQL6cZ7IIaRFBWXGjOGC4LXaOXn/utHqpH2MUmW0HPjzUCiW6w+t3rnhAQlLNEpQ
 	==
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48b6keb3r3-1
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48bbbq2755-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 05 Aug 2025 13:23:05 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 575Ct3bZ001890;
-	Tue, 5 Aug 2025 13:23:03 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 489wd02ngb-1
+	Tue, 05 Aug 2025 13:33:38 +0000 (GMT)
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 575DUVNo005378;
+	Tue, 5 Aug 2025 13:33:37 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48bbbq2753-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 05 Aug 2025 13:23:03 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 575DMxga54133052
+	Tue, 05 Aug 2025 13:33:37 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 575D54pR009562;
+	Tue, 5 Aug 2025 13:33:37 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 489x0p2jy7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 05 Aug 2025 13:33:37 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 575DXXLR51511586
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 5 Aug 2025 13:22:59 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id ACDF02004E;
-	Tue,  5 Aug 2025 13:22:59 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E408F2004B;
-	Tue,  5 Aug 2025 13:22:58 +0000 (GMT)
-Received: from [127.0.0.1] (unknown [9.152.108.100])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue,  5 Aug 2025 13:22:58 +0000 (GMT)
-Message-ID: <8a20f7ba33426bb6ced600f97f5f67e9d67ea503.camel@linux.ibm.com>
-Subject: Re: [PATCH 0/2] scripts/gdb/symbols: make BPF debug info available
- to GDB
-From: Ilya Leoshkevich <iii@linux.ibm.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann
- <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jan Kiszka
- <jan.kiszka@siemens.com>,
-        Kieran Bingham <kbingham@kernel.org>
-Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Heiko Carstens
-	 <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev
-	 <agordeev@linux.ibm.com>
-Date: Tue, 05 Aug 2025 15:22:58 +0200
-In-Reply-To: <20250710115920.47740-1-iii@linux.ibm.com>
-References: <20250710115920.47740-1-iii@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	Tue, 5 Aug 2025 13:33:33 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 28F0820040;
+	Tue,  5 Aug 2025 13:33:33 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D1ECE20043;
+	Tue,  5 Aug 2025 13:33:32 +0000 (GMT)
+Received: from [9.152.212.130] (unknown [9.152.212.130])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue,  5 Aug 2025 13:33:32 +0000 (GMT)
+Message-ID: <ad5dda3a-0398-45d3-8f10-ef0097604fee@linux.ibm.com>
+Date: Tue, 5 Aug 2025 15:33:32 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/2] perf/s390: Regression: Move uid filtering to BPF
+ filters
+To: Ilya Leoshkevich <iii@linux.ibm.com>, Alexei Starovoitov
+ <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Ian Rogers <irogers@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        Jiri Olsa <jolsa@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>
+References: <20250805130346.1225535-1-iii@linux.ibm.com>
+Content-Language: en-US
+From: Thomas Richter <tmricht@linux.ibm.com>
+Organization: IBM
+In-Reply-To: <20250805130346.1225535-1-iii@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: mN_RglAhD4otnhK8CcEMfIj8drI5NE98
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODA1MDA5OCBTYWx0ZWRfX/YPWw9KDd4bm
- f+eEsye8/Gp/CTmjQSGAIeTZXohSu3WxAufqx7uJCzRSFiERTLOdvuZrw7VLKOYwsSsqPfNgCKP
- oz4TgxrOKSxaOWbHNdDCxJILaaXz9g0H8pmQ2PWrt+95WAY0RsVJak6RFaPHjQij8O7D/QxUQPv
- vvLXU62AEcx+PMlx9ztz/BLODd19jX69tVDH4RlQriabLQ4be5P48wXi86G/P//4ENQVttvnQDb
- VTQjW8TbDMe75WiJJxbottsVm+jEZ7130a0yOaNTj1sGyl8WRIePOe8zeysEj/Zstsw3CXZO2pA
- nulmXmKgz0uDDKalXS89P6bGn4OKt1m/HE7oi/iJkSvg/hF2xYe6yZ/TZqIyztDC6QGvb8zgufj
- mNvxE0bRBSTmK0IgTGToQ9hKcmi+RpzL7548fIrcRKHI9yJ8KFVUPULYh2wDkSdbmxPlduv+
-X-Authority-Analysis: v=2.4 cv=eLATjGp1 c=1 sm=1 tr=0 ts=689205b9 cx=c_pps
- a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
- a=IkcTkHD0fZMA:10 a=2OwXVqhp2XgA:10 a=NR5_5KzkQmZuu3-uLU0A:9
- a=QEXdDO2ut3YA:10
-X-Proofpoint-GUID: mN_RglAhD4otnhK8CcEMfIj8drI5NE98
+X-Proofpoint-GUID: VzYPxEk3MH6z5mhoijh3zxHoZBxHj3A1
+X-Authority-Analysis: v=2.4 cv=M65NKzws c=1 sm=1 tr=0 ts=68920832 cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+ a=IkcTkHD0fZMA:10 a=2OwXVqhp2XgA:10 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
+ a=x4kxwI2lhZTCVj833_4A:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+X-Proofpoint-ORIG-GUID: lFywGRcWcmvqzRw6TgqJnpF-1_omxDDx
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODA1MDA5OCBTYWx0ZWRfX/JUmhlJGaScL
+ JmIS897DyYzSl5vniS0kcdEOvvfuXm/rNxL9WWj3zfsbIuUuAvrYi2sxdUgMnmJNpQ+wIltZaOc
+ LpFxeGSm1LUsARqQ9a38rvITQnAFj94LS0kmJ3Pz+frmA+SuZV0n/U+eTchgCjT5wtDAl2g3md1
+ EvQ8cDyjqcizOQntII/s0MKQ5cxv0TkQbzf1zJo1YvujEcnjtCRRjlmRVjg2ljO4g8Q6gkkcXtP
+ MjTH5vNmUzeG1D+1SIHUyRK2iSuBwEDCKeCAIfNAexWJru4eq0onAE9puB14GAYmvlMjOvfttq0
+ JhbVNH29ra7i3dCQPZ07cyYtOBi7jyDmvXrt0eeYiEk7+8OvJy+iZ5S74G9isYWG/JAfU5iy26E
+ 7e5As72B0pLwSzWnDo7y+Go8Z3nu2qIr/CfyTSUTiRlP/dCJYdKSVBIYd2zLZoGd4iZa101z
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
  definitions=2025-08-05_03,2025-08-04_01,2025-03-28_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- mlxlogscore=517 adultscore=0 clxscore=1015 malwarescore=0 suspectscore=0
- mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0 priorityscore=1501
- bulkscore=0 phishscore=0 classifier=spam authscore=0 authtc=n/a authcc=
+ impostorscore=0 malwarescore=0 spamscore=0 bulkscore=0 lowpriorityscore=0
+ suspectscore=0 clxscore=1011 mlxscore=0 phishscore=0 priorityscore=1501
+ mlxlogscore=999 adultscore=0 classifier=spam authscore=0 authtc=n/a authcc=
  route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
  definitions=main-2508050098
 
-On Thu, 2025-07-10 at 13:53 +0200, Ilya Leoshkevich wrote:
+On 8/5/25 14:54, Ilya Leoshkevich wrote:
+> v2: https://lore.kernel.org/bpf/20250728144340.711196-1-tmricht@linux.ibm.com/
+> v2 -> v3: Use no_ioctl_enable in perf.
+> 
+> v1: https://lore.kernel.org/bpf/20250725093405.3629253-1-tmricht@linux.ibm.com/
+> v1 -> v2: Introduce no_ioctl_enable (Jiri).
+> 
 > Hi,
->=20
-> This series greatly simplifies debugging BPF progs when using QEMU
-> gdbstub by providing symbol names, sizes, and line numbers to GDB.
->=20
-> Patch 1 adds radix tree iteration, which is necessary for parsing
-> prog_idr. Patch 2 is the actual implementation; its description
-> contains some details on how to use this.
->=20
+> 
+> This series fixes a regression caused by moving UID filtering to BPF.
+> The regression affects all events that support auxiliary data, most
+> notably, "cycles" events on s390, but also PT events on Intel. The
+> symptom is missing events when UID filtering is enabled.
+> 
+> Patch 1 introduces a new option for the
+> bpf_program__attach_perf_event_opts() function.
+> Ppatch 2 makes use of it in perf, and also contains a lot of technical
+
+Typo Patch
+
+> details of why exactly the prolblem is occurring.
+
+Typo problem
+
+> 
+> Thanks to Thomas Richter for the investigation and the initial version
+> of this fix, and to Jiri Olsa for suggestions.
+> 
 > Best regards,
 > Ilya
->=20
+> 
 > Ilya Leoshkevich (2):
-> =C2=A0 scripts/gdb/radix-tree: add lx-radix-tree-command
-> =C2=A0 scripts/gdb/symbols: make BPF debug info available to GDB
->=20
-> =C2=A0scripts/gdb/linux/bpf.py=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 | 253
-> ++++++++++++++++++++++++++++++
-> =C2=A0scripts/gdb/linux/constants.py.in |=C2=A0=C2=A0 3 +
-> =C2=A0scripts/gdb/linux/radixtree.py=C2=A0=C2=A0=C2=A0 | 139 ++++++++++++=
-+++-
-> =C2=A0scripts/gdb/linux/symbols.py=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 =
-77 ++++++++-
-> =C2=A04 files changed, 462 insertions(+), 10 deletions(-)
-> =C2=A0create mode 100644 scripts/gdb/linux/bpf.py
+>   libbpf: Add the ability to suppress perf event enablement
+>   perf bpf-filter: Enable events manually
+> 
+>  tools/lib/bpf/libbpf.c       | 13 ++++++++-----
+>  tools/lib/bpf/libbpf.h       |  4 +++-
+>  tools/perf/util/bpf-filter.c |  5 ++++-
+>  3 files changed, 15 insertions(+), 7 deletions(-)
+> 
 
-Gentle ping. Any opinions on whether this is valuable? Personally I've
-been using this for quite some time, and having source level debugging
-for BPF progs (even if variables can't be inspected) feels really nice.
+Thanks for taking over!!!
+For the whole series
+
+Tested-by: Thomas Richter <tmricht@linux.ibm.com>
+
+-- 
+Thomas Richter, Dept 3303, IBM s390 Linux Development, Boeblingen, Germany
+--
+IBM Deutschland Research & Development GmbH
+
+Vorsitzender des Aufsichtsrats: Wolfgang Wendt
+
+Geschäftsführung: David Faller
+
+Sitz der Gesellschaft: Böblingen / Registergericht: Amtsgericht Stuttgart, HRB 243294
 
