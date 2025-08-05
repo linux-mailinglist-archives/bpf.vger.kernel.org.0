@@ -1,69 +1,60 @@
-Return-Path: <bpf+bounces-65074-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65075-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53F78B1B87E
-	for <lists+bpf@lfdr.de>; Tue,  5 Aug 2025 18:28:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A43BB1B886
+	for <lists+bpf@lfdr.de>; Tue,  5 Aug 2025 18:30:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B44186216F5
-	for <lists+bpf@lfdr.de>; Tue,  5 Aug 2025 16:28:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2D5618A6B70
+	for <lists+bpf@lfdr.de>; Tue,  5 Aug 2025 16:30:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D53D3292B54;
-	Tue,  5 Aug 2025 16:28:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D0201EA7DB;
+	Tue,  5 Aug 2025 16:30:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ot62REN9"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Y05xnUi0"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DA68292B22
-	for <bpf@vger.kernel.org>; Tue,  5 Aug 2025 16:28:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 454FF191F92
+	for <bpf@vger.kernel.org>; Tue,  5 Aug 2025 16:30:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754411290; cv=none; b=aFClKq1PUHzlxscbnwVWbWmBhvZlIfQNAYoZMqb0p6zaAsYihEhigh0btR1E7PvcaZTgD6bA6kxLG9Q72XZVxNfX8Wf1Rz4NXwthDqd3Sw0507tclanUDElCBMXY3f96OJQ2El9ArApENtpsmi+79Yrph5iXBZEkhv5WJ/Xsa3A=
+	t=1754411431; cv=none; b=QU/1lC/EGGS5fwk6bSlVGWKKYtoKkvr6znRtvNi6hKH3clTsEzDsjptMscmY8TBC757ktNlgC6D2RYZUvix4ed8S0Mwcr9KgLGpIBEO15fUOnVknI9VcPE4d3VcB/mNypPu1M/A80ZFedHyHIJMmP3RcNccvgW4gxEXm96f1V+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754411290; c=relaxed/simple;
-	bh=0THvNMFdfFhOxdvVstvFWtM+3I1dikuGop1BGeqltLE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=n8ILFXLlLhXj/b3xMzQe8KdPOvjzNJHIHCgPQExx3DFBIrZ1BbPct3EkRCfdV9QdGKNk/ele6ON8j60Q9cB9fffFH8DsOUyjQ0FJLzEse439zBr3bbNHTcbecrmrIH+0nvtm62Dkl9POFTf7jV9t+9fwxutFrAlTWqdC+Nqkz9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ot62REN9; arc=none smtp.client-ip=95.215.58.178
+	s=arc-20240116; t=1754411431; c=relaxed/simple;
+	bh=k7Q+IPuqWzRt9hmBMV/+HueWOtnbK4STrKz8u9OCqok=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XfEMNd1mByVfeTb2yFLRfjOAe1NZVn+7T5lOUuszg7b8cN4qXzryIJGGyBpbsSK0QHoi19gZffl2PrLH/Wfa2cItwm/hg6HgDqxyUmtvfZg87GAdbwPk7T7lZumplcrBeNjd2LbOdA2srRUMrE35ETsRChmAM5Ne6jZkVVu38p8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Y05xnUi0; arc=none smtp.client-ip=91.218.175.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1754411276;
+	t=1754411427;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding;
-	bh=/Z7pYFfWoLH1aXLvPg1vJ4VkW5EEtjCy8xcya4QuHqA=;
-	b=ot62REN9lJLUGMUhPDjXjgTP+uLp3mM3Db4gCSkY2RqjkRUfLZV0puuIP/Bho6hsSGO8A6
-	H/FE3iatZ/u503Z47D6V/MbWu89/sPL0z0j3LKxmn4KFzTw1R6m16es9txHzcRdMKKUzEk
-	D1KujsxdypwmivC2GlxbwvX+ujsN490=
-From: Tao Chen <chen.dylane@linux.dev>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
+	bh=tayzkUBhwRhOA634CV9rRuf2MeOAVoZCJihPh/Y3DZc=;
+	b=Y05xnUi0U7D6UIZ/ir0v1pp0hMehvxDWSMKRnQTKdzWxzJP33TdYB4OWeygk5uyN0PSrhW
+	x1XAqooKYNKboUf96huwb6h3xkzaDjthIZPx2DHer0qC48MLb+k4T8+T7/N/SZ0zCR37yC
+	FeGVsYeEiJp4+Pq8t/lmInmA+PBCtCA=
+From: Leon Hwang <leon.hwang@linux.dev>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
 	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
+	daniel@iogearbox.net,
 	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	mattbobrowski@google.com,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	Tao Chen <chen.dylane@linux.dev>
-Subject: [PATCH bpf-next v2] bpf: Remove migrate_disable in kprobe_multi_link_prog_run
-Date: Wed,  6 Aug 2025 00:27:32 +0800
-Message-ID: <20250805162732.1896687-1-chen.dylane@linux.dev>
+	song@kernel.org,
+	eddyz87@gmail.com,
+	dxu@dxuuu.xyz,
+	deso@posteo.net,
+	leon.hwang@linux.dev,
+	kernel-patches-bot@fb.com
+Subject: [PATCH bpf-next v2 0/3] bpf: Introduce BPF_F_CPU flag for percpu_array maps
+Date: Wed,  6 Aug 2025 00:30:14 +0800
+Message-ID: <20250805163017.17015-1-leon.hwang@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -73,52 +64,77 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-bpf program should run under migration disabled, kprobe_multi_link_prog_run
-called all the way from graph tracer, which disables preemption in
-function_graph_enter_regs, as Jiri and Yonghong suggested, there is no
-need to use migrate_disable. As a result, some overhead maybe will be
-reduced.
+This patch set introduces the BPF_F_CPU flag for percpu_array maps, as
+discussed in the thread of
+"[PATCH bpf-next v3 0/4] bpf: Introduce global percpu data"[1].
 
-Fixes: 0dcac2725406 ("bpf: Add multi kprobe link")
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Tao Chen <chen.dylane@linux.dev>
----
- kernel/trace/bpf_trace.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+The goal is to reduce data caching overhead in light skeletons by allowing
+a single value to be reused across all CPUs. This avoids the M:N problem
+where M cached values are used to update a map on N CPUs kernel.
 
-Change list:
- v1 -> v2:
-  - s/called the way/called all the way/.(Jiri)
- v1: https://lore.kernel.org/bpf/f7acfd22-bcf3-4dff-9a87-7c1e6f84ce9c@linux.dev
+The BPF_F_CPU flag is accompanied by *flags*-embedded cpu info, which
+specifies the target CPUs for the operation:
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 3ae52978cae..5701791e3cb 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -2734,14 +2734,19 @@ kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
- 		goto out;
- 	}
- 
--	migrate_disable();
-+	/*
-+	 * bpf program should run under migration disabled, kprobe_multi_link_prog_run
-+	 * called all the way from graph tracer, which disables preemption in
-+	 * function_graph_enter_regs, so there is no need to use migrate_disable.
-+	 * Accessing the above percpu data bpf_prog_active is also safe for the same
-+	 * reason.
-+	 */
- 	rcu_read_lock();
- 	regs = ftrace_partial_regs(fregs, bpf_kprobe_multi_pt_regs_ptr());
- 	old_run_ctx = bpf_set_run_ctx(&run_ctx.session_ctx.run_ctx);
- 	err = bpf_prog_run(link->link.prog, regs);
- 	bpf_reset_run_ctx(old_run_ctx);
- 	rcu_read_unlock();
--	migrate_enable();
- 
-  out:
- 	__this_cpu_dec(bpf_prog_active);
--- 
-2.48.1
+* For lookup operations: the flag field alongside cpu info enable querying
+  a value on the specified CPU.
+* For update operations:
+  * If cpu == (u32)~0, the provided value is copied to all CPUs.
+  * Otherwise, the value is copied to the specified CPU only.
+
+Currently, this functionality is only supported for percpu_array maps.
+
+Links:
+[1] https://lore.kernel.org/bpf/20250526162146.24429-1-leon.hwang@linux.dev/
+
+Changes:
+v1 -> v2:
+* Address comments from Andrii:
+  * Embed cpu info as high 32 bits of *flags* totally.
+  * Use ERANGE instead of E2BIG.
+  * Few format issues.
+
+RFC v2 -> v1:
+* Address comments from Andrii:
+  * Use '&=' and '|='.
+  * Replace 'reuse_value' with simpler and less duplication code.
+  * Replace 'ASSERT_FALSE' with two 'ASSERT_OK_PTR's in self test.
+
+RFC v1 -> RFC v2:
+* Address comments from Andrii:
+  * Embed cpu to flags on kernel side.
+  * Change BPF_ALL_CPU macro to BPF_ALL_CPUS enum.
+  * Copy/update element within RCU protection.
+  * Update bpf_map_value_size() including BPF_F_CPU case.
+  * Use zero as default value to get cpu option.
+  * Update documents of APIs to be generic.
+  * Add size_t:0 to opts definitions.
+  * Update validate_map_op() including BPF_F_CPU case.
+  * Use LIBBPF_OPTS instead of DECLARE_LIBBPF_OPTS.
+
+Leon Hwang (3):
+  bpf: Introduce BPF_F_CPU flag for percpu_array maps
+  libbpf: Support BPF_F_CPU for percpu_array maps
+  selftests/bpf: Add case to test BPF_F_CPU
+
+Leon Hwang (3):
+  bpf: Introduce BPF_F_CPU flag for percpu_array maps
+  libbpf: Support BPF_F_CPU for percpu_array maps
+  selftests/bpf: Add case to test BPF_F_CPU
+
+ include/linux/bpf.h                           |   3 +-
+ include/uapi/linux/bpf.h                      |   6 +
+ kernel/bpf/arraymap.c                         |  54 +++++--
+ kernel/bpf/syscall.c                          |  77 +++++----
+ tools/include/uapi/linux/bpf.h                |   6 +
+ tools/lib/bpf/bpf.h                           |   5 +
+ tools/lib/bpf/libbpf.c                        |  28 +++-
+ tools/lib/bpf/libbpf.h                        |  17 +-
+ .../selftests/bpf/prog_tests/percpu_alloc.c   | 149 ++++++++++++++++++
+ .../selftests/bpf/progs/percpu_array_flag.c   |  24 +++
+ 10 files changed, 309 insertions(+), 60 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/percpu_array_flag.c
+
+--
+2.50.1
 
 
