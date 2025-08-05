@@ -1,136 +1,122 @@
-Return-Path: <bpf+bounces-65037-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65038-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9A74B1AECB
-	for <lists+bpf@lfdr.de>; Tue,  5 Aug 2025 08:52:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 717C9B1AF19
+	for <lists+bpf@lfdr.de>; Tue,  5 Aug 2025 09:04:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1EE43B1B1C
-	for <lists+bpf@lfdr.de>; Tue,  5 Aug 2025 06:52:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8DB116B054
+	for <lists+bpf@lfdr.de>; Tue,  5 Aug 2025 07:04:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4809E221287;
-	Tue,  5 Aug 2025 06:52:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38E38224B1B;
+	Tue,  5 Aug 2025 07:04:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Rs9mahRf"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E442A927;
-	Tue,  5 Aug 2025 06:52:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15DB0218AB3
+	for <bpf@vger.kernel.org>; Tue,  5 Aug 2025 07:04:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754376741; cv=none; b=nHyIrOUApjlmH43E8FrDL/JY3UsvL/5lrcUzt11uzUX0DwANzjbIL32/3MFHwVsRegvocGmmIe3KRyrMHhz0pIRQeR8KKy7IEIE2+AVX/LF5sC0s+B++RoGuec+d1EMF0TbDuJHRZ2Jmn8jsXkTf0B8nhIMNvYcdv1f8VzkS6EU=
+	t=1754377462; cv=none; b=ok4IAKmX1NFAH2uP4fn/zDyindvR2inydvKJFweBazo6jGRbRw1R4A60/tV+p5tzkbkKfdV4hH15SQON3NF0WI1lKgULAwe84PYE+2eE+hLEaWsCOgErSIY6FwrdyFrTx63wKx2DrCPqqypzDYUHy+H3rioGjIOwszPQ18g73eA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754376741; c=relaxed/simple;
-	bh=EMxtRogzgzHl8PxCqJ7f7I6y9Kp68vv7fhkSHUskZEA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qmdUvBRS9MWo+DZqMUQoNMtBDGws8Hlrb/PDXPzbvSwfbTPpKrVv8jp/787RiA+9/rY5yxCRU9jvxIFXFgcVIGihhqV4zjRhoSnGW9gY2de00mvetHTTkkpY0LvUlCNORnLzdIHEfVZIJUTq7SwNDwgcE9Ie2q/hpNDM/GsCgQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4bx3y70j70zYQtdx;
-	Tue,  5 Aug 2025 14:52:15 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id B7EB61A018D;
-	Tue,  5 Aug 2025 14:52:13 +0800 (CST)
-Received: from [10.67.109.184] (unknown [10.67.109.184])
-	by APP2 (Coremail) with SMTP id Syh0CgB3N7kdqpFoblJfCg--.48321S2;
-	Tue, 05 Aug 2025 14:52:13 +0800 (CST)
-Message-ID: <00538107-08e3-4ba3-a11a-19fa9fd0a496@huaweicloud.com>
-Date: Tue, 5 Aug 2025 14:52:13 +0800
+	s=arc-20240116; t=1754377462; c=relaxed/simple;
+	bh=PGYonKGyaMFSCfv/S5Qgyq0Ie5dVTihFme0wevOqbyo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hUHH4bFuDExNLlq+tNVhlAQx5LbL/sMBb1ne/Nh3bsQUANvaMpVGAxoxS6n4EWXI5c8JkAhaXVRxxg3OJoiEqqrANeqYAlYW5C5GMr5C+f9r2Mg7UBzCsmG0xI49frX3QYz21aHv3u+xNTn+bj3Vj7xVCeO0Xp8TlPIoTEFNHV0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Rs9mahRf; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1754377460;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PGYonKGyaMFSCfv/S5Qgyq0Ie5dVTihFme0wevOqbyo=;
+	b=Rs9mahRflMIyhhWasKmqNofwe9iQ+9C7NMU+H2CW1MLHcvb+X9wnUEg8Ip+DIQQmQzHgJf
+	LHLNuALKdzC7u0k7C8E+/tYfK7fnUdiSx22dxeahaxpH3ASMe3uRBQNC/J7SwnHg9VGYN4
+	X3K1IYGQCsV46zSV/Y7MFFB2Y6cxWDc=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-515-Se0RRjT1PeOfgFR3sFeCFA-1; Tue, 05 Aug 2025 03:04:18 -0400
+X-MC-Unique: Se0RRjT1PeOfgFR3sFeCFA-1
+X-Mimecast-MFC-AGG-ID: Se0RRjT1PeOfgFR3sFeCFA_1754377458
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-adb32dbf60bso464004466b.1
+        for <bpf@vger.kernel.org>; Tue, 05 Aug 2025 00:04:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754377457; x=1754982257;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PGYonKGyaMFSCfv/S5Qgyq0Ie5dVTihFme0wevOqbyo=;
+        b=NjgTldhULn5RzktkFaIlbtO5He6JMfYTh9x+5cfp4jUFoLLRH2XTKIB9mZhBijNssj
+         77Dl9gutE4IaxgIonIoSqq7Ht3WXvWI5cTDpggMXVlOcijVxWTpUXmbUAKXdgqIetsKf
+         u6WOX0vhRnl5MSD6m6OId6MNd0BXz98su84fn/AH99/kA9Q6ctTE3lW0CVHO6xDfv+E0
+         LxU9KAtCEwK7PnWbNAVqfeawwYAWtnO8ZqeodlcW8HkAcjBvm4DNWHn1//lRLDmJ0YI6
+         RQHhXopEjbvT2sO6GFHCsnVEnsEOhmMG6xYs02GsRI4HhHYaAVb4AptOhLBIhTvCPfAq
+         Xqmw==
+X-Forwarded-Encrypted: i=1; AJvYcCWf3vpkD3fqbDkeFaMgzJC1jgM8+LQfMaWxMezc/CgasUuxKLgSZ8TiX/Fh4o7KFCcISTo=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz9K5AO25wggT1UI6uLZr9Nw+MLg/yYhN4qmIhFMFhOP/JJiVs8
+	Lh684C5vjr86MvCbloMTbF5/UY1CpHTgpNDpCkpDviUpXFli05c8n46u6rM98NKko3jBCbTXl3P
+	OGxTV/Op2e1Wpo1Frd7qFN3+/4/7RR70IEZKWfUukqB9lJKqDbNqMZS6DlVkMTdhHHGPcAug3Zo
+	RuMm68OvOHgsf7BDoHb0dhgdNjOuvI
+X-Gm-Gg: ASbGnct2TaeH+FawZtdipkZrajuu0iSk1Oeu5n9/VACh9vLrJKsOwQQ7g9f5aMgSpt3
+	n80EJohMvcg5BB6/zKGN14FvMvFgXPQ3FfHKzkPd2n/7uAvKdqgzbT1SrK1YJez+xR/+jK8O0i8
+	YicsdTSn3hICT2ymWw0VzFf2Fb8Xsvaa4059p2ozUF1PU2LtaPWG7LvL4=
+X-Received: by 2002:a17:907:3f2a:b0:ae3:8c9b:bd61 with SMTP id a640c23a62f3a-af93ffa2d63mr1238256066b.12.1754377457468;
+        Tue, 05 Aug 2025 00:04:17 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGMbyK9gScuElH5NpUEMJ41EUPRyaWEQ72uvHWKJnSabm/rqvUckY7aYInaqvU/TD5yzgsTDQ1Qxrs3ymnlCVE=
+X-Received: by 2002:a17:907:3f2a:b0:ae3:8c9b:bd61 with SMTP id
+ a640c23a62f3a-af93ffa2d63mr1238253166b.12.1754377457043; Tue, 05 Aug 2025
+ 00:04:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 00/10] Add support arena atomics for RV64
-Content-Language: en-US
-To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, bpf@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: Puranjay Mohan <puranjay@kernel.org>, Palmer Dabbelt
- <palmer@dabbelt.com>, Alexandre Ghiti <alex@ghiti.fr>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Pu Lehui <pulehui@huawei.com>
-References: <20250719091730.2660197-1-pulehui@huaweicloud.com>
- <87v7n21deu.fsf@all.your.base.are.belong.to.us>
-From: Pu Lehui <pulehui@huaweicloud.com>
-In-Reply-To: <87v7n21deu.fsf@all.your.base.are.belong.to.us>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgB3N7kdqpFoblJfCg--.48321S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJr1UZw43tw13uFWUJF1xAFb_yoW8Ary7pa
-	1rC3ZIkrWrGryxCasFqrW2vFyfKrs5C343Xw1DJ3yayF1jqrW2kFn7Ka48uF98AFZ3Xr1U
-	C3Wjkry3Aw1rZFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
-	bAw3UUUUU==
-X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
+References: <20250726072455.289445-1-costa.shul@redhat.com> <0faa958ef9cc4b834a5ecdc92acd89520f522d44.camel@redhat.com>
+In-Reply-To: <0faa958ef9cc4b834a5ecdc92acd89520f522d44.camel@redhat.com>
+From: Costa Shulyupin <costa.shul@redhat.com>
+Date: Tue, 5 Aug 2025 10:03:40 +0300
+X-Gm-Features: Ac12FXzlcHTYAnu-YG9PepEFtGlUSJiRNcUXl9U2QsYIFClYRFSRgHj4wuksd2s
+Message-ID: <CADDUTFzWBkrKx6=fOMXp=y5cyecOvWLx5jZG6m3BMTAvL067Wg@mail.gmail.com>
+Subject: Re: [PATCH v2] tools/rtla: Consolidate common parameters into shared structure
+To: Crystal Wood <crwood@redhat.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Tomas Glozar <tglozar@redhat.com>, 
+	John Kacur <jkacur@redhat.com>, Eder Zulian <ezulian@redhat.com>, 
+	Dan Carpenter <dan.carpenter@linaro.org>, Jan Stancek <jstancek@redhat.com>, 
+	linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, 4 Aug 2025 at 21:18, Crystal Wood <crwood@redhat.com> wrote:
+> If you want, I could rebase that on this and use container_of() to for to=
+ol-
+> specific params... but then that adds complexity with the top and hist-
+> specific params, most of which are common between timerlat and osnoise
+> (and not merged by this patch).
+I=E2=80=99d appreciate it if you could rebase your patchset on top of this =
+one.
+This patch is just the first; I=E2=80=99ve intentionally kept it minimal to
+ease integration.
+My goal is to refactor rtla and submit a series of follow-up patches
+to reduce code duplication.
 
+> So we might want to just keep it simple with one big struct.
+This is a god object anti-pattern.
 
-On 2025/8/5 14:38, Björn Töpel wrote:
-> Pu Lehui <pulehui@huaweicloud.com> writes:
-> 
->> From: Pu Lehui <pulehui@huawei.com>
->>
->> patch 1-3 refactor redundant load and store operations.
->> patch 4-7 add Zacas instructions for cmpxchg.
->> patch 8 optimizes exception table handling.
->> patch 9-10 add support arena atomics for RV64.
->>
->> Tests `test_progs -t atomic,arena` have passed as shown bellow,
->> as well as `test_verifier` and `test_bpf.ko` have passed.
-> 
-> [...]
-> 
->> Pu Lehui (10):
->>    riscv, bpf: Extract emit_stx() helper
->>    riscv, bpf: Extract emit_st() helper
->>    riscv, bpf: Extract emit_ldx() helper
->>    riscv: Separate toolchain support dependency from RISCV_ISA_ZACAS
->>    riscv, bpf: Add rv_ext_enabled macro for runtime detection extentsion
->>    riscv, bpf: Add Zacas instructions
->>    riscv, bpf: Optimize cmpxchg insn with Zacas support
->>    riscv, bpf: Add ex_insn_off and ex_jmp_off for exception table
->>      handling
->>    riscv, bpf: Add support arena atomics for RV64
->>    selftests/bpf: Enable arena atomics tests for RV64
->>
->>   arch/riscv/Kconfig                            |   1 -
->>   arch/riscv/include/asm/cmpxchg.h              |   6 +-
->>   arch/riscv/kernel/setup.c                     |   1 +
->>   arch/riscv/net/bpf_jit.h                      |  70 ++-
->>   arch/riscv/net/bpf_jit_comp64.c               | 516 +++++-------------
->>   .../selftests/bpf/progs/arena_atomics.c       |   9 +-
->>   6 files changed, 214 insertions(+), 389 deletions(-)
-> 
-> What a nice series! The best kind of changeset -- new feature, less
-> code! Thank you, Lehui! Again, apologies for the horrible SLA. The
-> weather in Sweden was simply Too Good this summer!
+> new common.h if we want to keep the actual-osnoise-tracer stuff
+> separate
+I agree with the new common.h and separating things out.
 
-Sounds like a great vacation!
-
-> 
-> Tested-by: Björn Töpel <bjorn@rivosinc.com> # QEMU only
-> Acked-by: Björn Töpel <bjorn@kernel.org>
+-Costa
 
 
