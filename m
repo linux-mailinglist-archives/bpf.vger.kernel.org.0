@@ -1,224 +1,216 @@
-Return-Path: <bpf+bounces-65024-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65025-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5ECACB1AD10
-	for <lists+bpf@lfdr.de>; Tue,  5 Aug 2025 06:16:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23B73B1AD31
+	for <lists+bpf@lfdr.de>; Tue,  5 Aug 2025 06:41:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DA1C3BAFCE
-	for <lists+bpf@lfdr.de>; Tue,  5 Aug 2025 04:16:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C63C17DBB0
+	for <lists+bpf@lfdr.de>; Tue,  5 Aug 2025 04:41:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 484C220B7EE;
-	Tue,  5 Aug 2025 04:16:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49153217F34;
+	Tue,  5 Aug 2025 04:41:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=163.com header.i=@163.com header.b="GumbmVYV"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GI1qxTS8"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1BB814885D;
-	Tue,  5 Aug 2025 04:16:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.3
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32BF2156C6F
+	for <bpf@vger.kernel.org>; Tue,  5 Aug 2025 04:41:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754367373; cv=none; b=kvzJXGm3McC+sBXFMm6AsKT6OucsUPYWSG7pBcZwCXK5nSBIKP4NLeNl2ajeuII835G95G+0vnBs5cHowo1a9Bmka3H6UvFqN0zzAPW9pbc/rWrK6q7gRGT4Qu7XUvlJ48r5y2vXAA1i/uaSx9dqtVvQPwoZaAPxGr9epb9Ez/Y=
+	t=1754368890; cv=none; b=ciCpPCK2qJuMlrPVpFCr7DMdV9vPkAfJeANlLXzgAn74DRKCr/GzweWEncgNGTjXj+5KFAjOSUauXOIpSkhFmChO7tGZEeAqU2E7t0qSMOvrpB67uen1/3FbPZJeziVhVYPPAompzydmTh5LqJRr+NPsoyha7mvvbe9Oam2BsMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754367373; c=relaxed/simple;
-	bh=o+ssrMN3R0tCneTP8BnCsRalwo0Dtmpy4cR5Pmqs5sI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
-	 MIME-Version:Message-ID; b=FDOda5/qAiFX70CeM4M8TTz09kAFnajM64WZvSaoMJAAh4rIRWON8BebpxbHtV27B+XRgSue3K42up9cv/KTWoJEaR0PNR+rIir7++vKQlVwc31uv0ZDN9o3p+Bu3TAs29kFW3erg+WZQ9vrRYMp2HdSiS/ANMluoYsLnilC8P0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=fail (1024-bit key) header.d=163.com header.i=@163.com header.b=GumbmVYV reason="signature verification failed"; arc=none smtp.client-ip=220.197.31.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Date:From:To:Subject:Content-Type:MIME-Version:
-	Message-ID; bh=XNQY0F1vHSHGHdNRVjDBV2xfDzvJgmJgDnLk3c/SAKI=; b=G
-	umbmVYVdRPM5VwJoVbCWvFxFw/VDISpq11H+ZhiAJBLYBhvOCZgXIi3uhzpQNyx5
-	wEw/7IMWYPfUuc4e7E/84GMHw/PFxWqQZXP9nVlKJdKprHHJOpEkBW2lmYP2Xm9j
-	+txvebo+VO5dx2yF4TSXP4XDaqaUswaDNzOlOstE/k=
-Received: from phoenix500526$163.com ( [120.230.124.59] ) by
- ajax-webmail-wmsvr-40-129 (Coremail) ; Tue, 5 Aug 2025 12:15:42 +0800 (CST)
-Date: Tue, 5 Aug 2025 12:15:42 +0800 (CST)
-From: =?UTF-8?B?6LW15L2z54Kc?= <phoenix500526@163.com>
-To: "Jiri Olsa" <olsajiri@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-	yonghong.song@linux.dev, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re:Re: [PATCH v6 1/2] libbpf: fix USDT SIB argument handling
- causing unrecognized register error
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20250519(9504565a)
- Copyright (c) 2002-2025 www.mailtech.cn 163com
-In-Reply-To: <aJCKP1Cja3DCm0EG@krava>
-References: <20250802084803.108777-1-phoenix500526@163.com>
- <20250802084803.108777-2-phoenix500526@163.com> <aJCKP1Cja3DCm0EG@krava>
-X-NTES-SC: AL_Qu2eBv+duEsv5CaaYekfmUsVh+o9X8K1vfsk3oZfPJp+jADp9CwiW3RSBEbQ+ca0ExCMmgmGbjRU8cFlcrthXJwxtWFWB3UVc5R65qJB/oQR/A==
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+	s=arc-20240116; t=1754368890; c=relaxed/simple;
+	bh=XwifHaAO0FULAMmR+Jx8W/aCkqRF+Sul8FdJA0pQOsY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=LXpgIN4fDGuHyOzX/QD3396rB+w9y1wZg1cM309uUuDpRWu8oQ2Xz7Ff6O4C2uXgRb+ijRM630gOGDIRZmii0o4+sL5gbexGTmZkfPKUhAjua9hEjEzgZB7vleKb9n04q2NJa1luDivRqPzvG7gXlZFeth1y++oX62/EnwXZuK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GI1qxTS8; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <d534be54-3631-45e3-8b85-267b6736c4ca@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1754368874;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8nQSypsZIGHauePRJUfyaGkbslrvQlPDQeZECMJjgZk=;
+	b=GI1qxTS8gqSpK/NSyc8cffrPM2ennJCr3fwhKyxMScibDVRQloNKFqu5QSZW+9tldwF0KY
+	0EvFrlrUDpD5phKkHGfeDMY+e22cmnYkAYZBojfHYXHXxiqPYgynrD5LwnznaC8dxXbsnL
+	7TwAbiGWGFNC7mPWoEoKtsWk5c2no58=
+Date: Mon, 4 Aug 2025 21:41:07 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <2a70a21a.3e23.19878713825.Coremail.phoenix500526@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:gSgvCgDHT6luhZFoI8gSAA--.42683W
-X-CM-SenderInfo: pskrv0dl0viiqvswqiywtou0bp/xtbBaxqgiGiRbW-uWQALse
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+Subject: Re: [syzbot] [trace?] [bpf?] possible deadlock in down_trylock (3)
+Content-Language: en-GB
+To: syzbot <syzbot+c3740bc819eb55460ec3@syzkaller.appspotmail.com>,
+ andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
+ john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ martin.lau@linux.dev, mathieu.desnoyers@efficios.com,
+ mattbobrowski@google.com, mhiramat@kernel.org, rostedt@goodmis.org,
+ sdf@fomichev.me, song@kernel.org, syzkaller-bugs@googlegroups.com
+References: <6890e4d6.050a0220.7f033.000e.GAE@google.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <6890e4d6.050a0220.7f033.000e.GAE@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-SGnCoEppcmksCgpVbmZvcnR1bmF0ZWx5LMKgScKgY291bGRuJ3TCoHJlcHJvZHVjZcKgdGhpc8Kg
-aXNzdWXCoG9uwqBtecKgbWFjaGluZS4KSG93ZXZlcizCoHRoZcKgZ29vZMKgbmV3c8KgaXPCoHRo
-YXTCoGl0J3PCoHNpbWlsYXLCoHRvwqB0aGXCoFBDLXJlbGF0aXZlwqBVU0RUwqBhcmd1bWVudMKg
-c3BlYyzCoGFuZMKgScKgd2FzwqBhYmxlwqB0b8KgY29uc3RydWN0wqBhwqBtaW5pbWFswqBleGFt
-cGxlwqB0aGF0wqByZXByb2R1Y2VzwqB0aGXCoGlzc3VlwqByZWxpYWJseS4KCkluwqBib3RowqBj
-YXNlcyzCoHdlwqBuZWVkwqB0b8KgcmVzb2x2ZcKgdGhlwqBhZGRyZXNzwqBvcsKgb2Zmc2V0wqBm
-b3LCoHRoZcKgZ2l2ZW7CoHN5bWJvbC4KSSdtwqBjdXJyZW50bHnCoGV4cGxvcmluZ8Kgd2hldGhl
-csKgdGhlwqBhZGRyZXNzwqBvcsKgb2Zmc2V0wqBjYW7CoGJlwqByZXNvbHZlZMKgZnJvbcKgdGhl
-wqBEV0FSRsKgaW5mb3JtYXRpb24uCklmwqB0aGlzwqBhcHByb2FjaMKgd29ya3MswqBJ4oCZbGzC
-oGFwcGVuZMKgbXnCoG1vZGlmaWNhdGlvbnPCoHRvwqB0aGlzwqBwYXRjaC4KCgpBdMKgMjAyNS0w
-OC0wNMKgMTg6MjM6NTkswqAiSmlyacKgT2xzYSLCoDxvbHNhamlyaUBnbWFpbC5jb20+wqB3cm90
-ZToKPk9uwqBTYXQswqBBdWfCoDAyLMKgMjAyNcKgYXTCoDA4OjQ4OjAyQU3CoCswMDAwLMKgSmlh
-d2VpwqBaaGFvwqB3cm90ZToKPj7CoE9uwqB4ODYtNjQswqBVU0RUwqBhcmd1bWVudHPCoGNhbsKg
-YmXCoHNwZWNpZmllZMKgdXNpbmfCoFNjYWxlLUluZGV4LUJhc2XCoChTSUIpCj4+wqBhZGRyZXNz
-aW5nLMKgZS5nLsKgIjFALTk2KCVyYnAsJXJheCw4KSIuwqBUaGXCoGN1cnJlbnTCoFVTRFTCoGlt
-cGxlbWVudGF0aW9uCj4+wqBpbsKgbGliYnBmwqBjYW5ub3TCoHBhcnNlwqB0aGlzwqBmb3JtYXQs
-wqBjYXVzaW5nwqBgYnBmX3Byb2dyYW1fX2F0dGFjaF91c2R0KClgCj4+wqB0b8KgZmFpbMKgd2l0
-aMKgLUVOT0VOVMKgKHVucmVjb2duaXplZMKgcmVnaXN0ZXIpLgo+PsKgCj4+wqBUaGlzwqBwYXRj
-aMKgZml4ZXPCoHRoaXPCoGJ5wqBpbXBsZW1lbnRpbmfCoHRoZcKgbmVjZXNzYXJ5wqBjaGFuZ2Vz
-Ogo+PsKgLcKgYWRkwqBjb3JyZWN0wqBoYW5kbGluZ8KgZm9ywqBTSUItYWRkcmVzc2VkwqBhcmd1
-bWVudHPCoGluwqBgYnBmX3VzZHRfYXJnYC4KPj7CoC3CoGFkZMKgYWRhcHRpdmXCoHN1cHBvcnTC
-oHRvwqBgX19icGZfdXNkdF9hcmdfdHlwZWDCoGFuZAo+PsKgwqDCoGBfX2JwZl91c2R0X2FyZ19z
-cGVjYMKgdG/CoHJlcHJlc2VudMKgU0lCwqBhZGRyZXNzaW5nwqBwYXJhbWV0ZXJzLgo+PsKgCj4+
-wqBTaWduZWQtb2ZmLWJ5OsKgSmlhd2VpwqBaaGFvwqA8cGhvZW5peDUwMDUyNkAxNjMuY29tPgo+
-PsKgLS0tCj4+wqDCoHRvb2xzL2xpYi9icGYvdXNkdC5icGYuaMKgfMKgMzPCoCsrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrLQo+PsKgwqB0b29scy9saWIvYnBmL3VzZHQuY8KgwqDCoMKgwqB8
-wqA0M8KgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLQo+PsKgwqAywqBm
-aWxlc8KgY2hhbmdlZCzCoDY5wqBpbnNlcnRpb25zKCspLMKgN8KgZGVsZXRpb25zKC0pCj4+wqAK
-Pj7CoGRpZmbCoC0tZ2l0wqBhL3Rvb2xzL2xpYi9icGYvdXNkdC5icGYuaMKgYi90b29scy9saWIv
-YnBmL3VzZHQuYnBmLmgKPj7CoGluZGV4wqAyYTc4NjVjOGUzZmUuLjI0NjUxMzA4OGMzYcKgMTAw
-NjQ0Cj4+wqAtLS3CoGEvdG9vbHMvbGliL2JwZi91c2R0LmJwZi5oCj4+wqArKyvCoGIvdG9vbHMv
-bGliL2JwZi91c2R0LmJwZi5oCj4+wqBAQMKgLTM0LDbCoCszNCw3wqBAQMKgZW51bcKgX19icGZf
-dXNkdF9hcmdfdHlwZcKgewo+PsKgwqAJQlBGX1VTRFRfQVJHX0NPTlNULAo+PsKgwqAJQlBGX1VT
-RFRfQVJHX1JFRywKPj7CoMKgCUJQRl9VU0RUX0FSR19SRUdfREVSRUYsCj4+wqArCUJQRl9VU0RU
-X0FSR19TSUIsCj4+wqDCoH07Cj4+wqDCoAo+PsKgwqBzdHJ1Y3TCoF9fYnBmX3VzZHRfYXJnX3Nw
-ZWPCoHsKPj7CoEBAwqAtNDMsNsKgKzQ0LDEwwqBAQMKgc3RydWN0wqBfX2JwZl91c2R0X2FyZ19z
-cGVjwqB7Cj4+wqDCoAllbnVtwqBfX2JwZl91c2R0X2FyZ190eXBlwqBhcmdfdHlwZTsKPj7CoMKg
-CS8qwqBvZmZzZXTCoG9mwqByZWZlcmVuY2VkwqByZWdpc3RlcsKgd2l0aGluwqBzdHJ1Y3TCoHB0
-X3JlZ3PCoCovCj4+wqDCoAlzaG9ydMKgcmVnX29mZjsKPj7CoCsJLyrCoG9mZnNldMKgb2bCoGlu
-ZGV4wqByZWdpc3RlcsKgaW7CoHB0X3JlZ3MswqBvbmx5wqB1c2VkwqBpbsKgU0lCwqBtb2RlwqAq
-Lwo+PsKgKwlzaG9ydMKgaWR4X3JlZ19vZmY7Cj4+wqArCS8qwqBzY2FsZcKgZmFjdG9ywqBmb3LC
-oGluZGV4wqByZWdpc3RlcizCoG9ubHnCoHVzZWTCoGluwqBTSULCoG1vZGXCoCovCj4+wqArCXNo
-b3J0wqBzY2FsZTsKPj7CoMKgCS8qwqB3aGV0aGVywqBhcmfCoHNob3VsZMKgYmXCoGludGVycHJl
-dGVkwqBhc8Kgc2lnbmVkwqB2YWx1ZcKgKi8KPj7CoMKgCWJvb2zCoGFyZ19zaWduZWQ7Cj4+wqDC
-oAkvKsKgbnVtYmVywqBvZsKgYml0c8KgdGhhdMKgbmVlZMKgdG/CoGJlwqBjbGVhcmVkwqBhbmQs
-wqBvcHRpb25hbGx5LAo+PsKgQEDCoC0xNDksN8KgKzE1NCw3wqBAQMKgaW50wqBicGZfdXNkdF9h
-cmcoc3RydWN0wqBwdF9yZWdzwqAqY3R4LMKgX191NjTCoGFyZ19udW0swqBsb25nwqAqcmVzKQo+
-PsKgwqB7Cj4+wqDCoAlzdHJ1Y3TCoF9fYnBmX3VzZHRfc3BlY8KgKnNwZWM7Cj4+wqDCoAlzdHJ1
-Y3TCoF9fYnBmX3VzZHRfYXJnX3NwZWPCoCphcmdfc3BlYzsKPj7CoC0JdW5zaWduZWTCoGxvbmfC
-oHZhbDsKPj7CoCsJdW5zaWduZWTCoGxvbmfCoHZhbCzCoGlkeDsKPj7CoMKgCWludMKgZXJyLMKg
-c3BlY19pZDsKPj7CoMKgCj4+wqDCoAkqcmVzwqA9wqAwOwo+PsKgQEDCoC0yMDIsNsKgKzIwNywz
-MsKgQEDCoGludMKgYnBmX3VzZHRfYXJnKHN0cnVjdMKgcHRfcmVnc8KgKmN0eCzCoF9fdTY0wqBh
-cmdfbnVtLMKgbG9uZ8KgKnJlcykKPj7CoMKgCQkJcmV0dXJuwqBlcnI7Cj4+wqDCoCNpZsKgX19C
-WVRFX09SREVSX1/CoD09wqBfX09SREVSX0JJR19FTkRJQU5fXwo+PsKgwqAJCXZhbMKgPj49wqBh
-cmdfc3BlYy0+YXJnX2JpdHNoaWZ0Owo+PsKgKyNlbmRpZgo+PsKgKwkJYnJlYWs7Cj4+wqArCWNh
-c2XCoEJQRl9VU0RUX0FSR19TSUI6Cj4+wqArCQkvKsKgQXJnwqBpc8KgaW7CoG1lbW9yecKgYWRk
-cmVzc2VkwqBiecKgU0lCwqAoU2NhbGUtSW5kZXgtQmFzZSnCoG1vZGUKPj7CoCsJCcKgKsKgKGUu
-Zy4swqAiLTFALTk2KCVyYnAsJXJheCw4KSLCoGluwqBVU0RUwqBhcmfCoHNwZWMpLsKgUmVnaXN0
-ZXIKPj7CoCsJCcKgKsKgaXPCoGlkZW50aWZpZWTCoGxpa2XCoHdpdGjCoEJQRl9VU0RUX0FSR19T
-SULCoGNhc2UswqB0aGXCoG9mZnNldAo+PsKgKwkJwqAqwqBpc8KgaW7CoGFyZ19zcGVjLT52YWxf
-b2ZmLMKgdGhlwqBzY2FsZcKgZmFjdG9ywqBpc8KgaW7CoGFyZ19zcGVjLT5zY2FsZS4KPj7CoCsJ
-CcKgKsKgRmlyc3RseSzCoHdlwqBmZXRjaMKgdGhlwqBiYXNlwqByZWdpc3RlcsKgY29udGVudHPC
-oGFuZMKgdGhlwqBpbmRleAo+PsKgKwkJwqAqwqByZWdpc3RlcsKgY29udGVudHPCoGZyb23CoHB0
-X3JlZ3MuwqBTZWNvbmRseSzCoHdlwqBtdWx0aXBsecKgdGhlCj4+wqArCQnCoCrCoGluZGV4wqBy
-ZWdpc3RlcsKgY29udGVudHPCoGJ5wqB0aGXCoHNjYWxlwqBmYWN0b3IswqB0aGVuwqBhZGTCoHRo
-ZQo+PsKgKwkJwqAqwqBiYXNlwqBhZGRyZXNzwqBhbmTCoHRoZcKgb2Zmc2V0wqB0b8KgZ2V0wqB0
-aGXCoGZpbmFswqBhZGRyZXNzLsKgRmluYWxseSwKPj7CoCsJCcKgKsKgd2XCoGRvwqBhbm90aGVy
-wqB1c2VyLXNwYWNlwqBwcm9iZcKgcmVhZMKgdG/CoGZldGNowqBhcmd1bWVudMKgdmFsdWUKPj7C
-oCsJCcKgKsKgaXRzZWxmLgo+PsKgKwkJwqAqLwo+PsKgKwkJZXJywqA9wqBicGZfcHJvYmVfcmVh
-ZF9rZXJuZWwoJnZhbCzCoHNpemVvZih2YWwpLMKgKHZvaWTCoCopY3R4wqArwqBhcmdfc3BlYy0+
-cmVnX29mZik7Cj4+wqArCQlpZsKgKGVycikKPj7CoCsJCQlyZXR1cm7CoGVycjsKPj7CoCsJCWVy
-csKgPcKgYnBmX3Byb2JlX3JlYWRfa2VybmVsKCZpZHgswqBzaXplb2YoaWR4KSzCoCh2b2lkwqAq
-KWN0eMKgK8KgYXJnX3NwZWMtPmlkeF9yZWdfb2ZmKTsKPj7CoCsJCWlmwqAoZXJyKQo+PsKgKwkJ
-CXJldHVybsKgZXJyOwo+PsKgKwkJZXJywqA9wqBicGZfcHJvYmVfcmVhZF91c2VyKCZ2YWwswqBz
-aXplb2YodmFsKSwKPj7CoCsJCQkJKHZvaWTCoCopdmFswqArwqBpZHjCoCrCoGFyZ19zcGVjLT5z
-Y2FsZcKgK8KgYXJnX3NwZWMtPnZhbF9vZmYpOwo+PsKgKwkJaWbCoChlcnIpCj4+wqArCQkJcmV0
-dXJuwqBlcnI7Cj4+wqArI2lmwqBfX0JZVEVfT1JERVJfX8KgPT3CoF9fT1JERVJfQklHX0VORElB
-Tl9fCj4+wqArCQl2YWzCoD4+PcKgYXJnX3NwZWMtPmFyZ19iaXRzaGlmdDsKPj7CoMKgI2VuZGlm
-Cj4+wqDCoAkJYnJlYWs7Cj4+wqDCoAlkZWZhdWx0Ogo+PsKgZGlmZsKgLS1naXTCoGEvdG9vbHMv
-bGliL2JwZi91c2R0LmPCoGIvdG9vbHMvbGliL2JwZi91c2R0LmMKPj7CoGluZGV4wqA0ZTRhNTI3
-NDJiMDEuLjFmOGI5ZTFjOTgxOcKgMTAwNjQ0Cj4+wqAtLS3CoGEvdG9vbHMvbGliL2JwZi91c2R0
-LmMKPj7CoCsrK8KgYi90b29scy9saWIvYnBmL3VzZHQuYwo+PsKgQEDCoC0yMDAsNsKgKzIwMCw3
-wqBAQMKgZW51bcKgdXNkdF9hcmdfdHlwZcKgewo+PsKgwqAJVVNEVF9BUkdfQ09OU1QsCj4+wqDC
-oAlVU0RUX0FSR19SRUcsCj4+wqDCoAlVU0RUX0FSR19SRUdfREVSRUYsCj4+wqArCVVTRFRfQVJH
-X1NJQiwKPj7CoMKgfTsKPj7CoMKgCj4+wqDCoC8qwqBzaG91bGTCoG1hdGNowqBleGFjdGx5wqBz
-dHJ1Y3TCoF9fYnBmX3VzZHRfYXJnX3NwZWPCoGZyb23CoHVzZHQuYnBmLmjCoCovCj4+wqBAQMKg
-LTIwNyw2wqArMjA4LDjCoEBAwqBzdHJ1Y3TCoHVzZHRfYXJnX3NwZWPCoHsKPj7CoMKgCV9fdTY0
-wqB2YWxfb2ZmOwo+PsKgwqAJZW51bcKgdXNkdF9hcmdfdHlwZcKgYXJnX3R5cGU7Cj4+wqDCoAlz
-aG9ydMKgcmVnX29mZjsKPj7CoCsJc2hvcnTCoGlkeF9yZWdfb2ZmOwo+PsKgKwlzaG9ydMKgc2Nh
-bGU7Cj4+wqDCoAlib29swqBhcmdfc2lnbmVkOwo+PsKgwqAJY2hhcsKgYXJnX2JpdHNoaWZ0Owo+
-PsKgwqB9Owo+PsKgQEDCoC0xMjgzLDExwqArMTI4NiwzOcKgQEDCoHN0YXRpY8KgaW50wqBjYWxj
-X3B0X3JlZ3Nfb2ZmKGNvbnN0wqBjaGFywqAqcmVnX25hbWUpCj4+wqDCoAo+PsKgwqBzdGF0aWPC
-oGludMKgcGFyc2VfdXNkdF9hcmcoY29uc3TCoGNoYXLCoCphcmdfc3RyLMKgaW50wqBhcmdfbnVt
-LMKgc3RydWN0wqB1c2R0X2FyZ19zcGVjwqAqYXJnLMKgaW50wqAqYXJnX3N6KQo+PsKgwqB7Cj4+
-wqAtCWNoYXLCoHJlZ19uYW1lWzE2XTsKPj7CoC0JaW50wqBsZW4swqByZWdfb2ZmOwo+PsKgLQls
-b25nwqBvZmY7Cj4+wqArCWNoYXLCoHJlZ19uYW1lWzE2XcKgPcKgezB9LMKgaWR4X3JlZ19uYW1l
-WzE2XcKgPcKgezB9Owo+PsKgKwlpbnTCoGxlbizCoHJlZ19vZmYswqBpZHhfcmVnX29mZizCoHNj
-YWxlwqA9wqAxOwo+PsKgKwlsb25nwqBvZmbCoD3CoDA7Cj4+wqArCj4+wqArCWlmwqAoc3NjYW5m
-KGFyZ19zdHIswqAiwqAlZMKgQMKgJWxkwqAowqAlJSUxNVteLF3CoCzCoCUlJTE1W14sXcKgLMKg
-JWTCoCnCoCVuIiwKPj7CoCsJCQkJYXJnX3N6LMKgJm9mZizCoHJlZ19uYW1lLMKgaWR4X3JlZ19u
-YW1lLMKgJnNjYWxlLMKgJmxlbinCoD09wqA1wqB8fAo+PsKgKwkJc3NjYW5mKGFyZ19zdHIswqAi
-wqAlZMKgQMKgKMKgJSUlMTVbXixdwqAswqAlJSUxNVteLF3CoCzCoCVkwqApwqAlbiIsCj4+wqAr
-CQkJCWFyZ19zeizCoHJlZ19uYW1lLMKgaWR4X3JlZ19uYW1lLMKgJnNjYWxlLMKgJmxlbinCoD09
-wqA0wqB8fAo+PsKgKwkJc3NjYW5mKGFyZ19zdHIswqAiwqAlZMKgQMKgJWxkwqAowqAlJSUxNVte
-LF3CoCzCoCUlJTE1W14pXcKgKcKgJW4iLAo+PsKgKwkJCQlhcmdfc3oswqAmb2ZmLMKgcmVnX25h
-bWUswqBpZHhfcmVnX25hbWUswqAmbGVuKcKgPT3CoDTCoHx8Cj4+wqArCQlzc2NhbmYoYXJnX3N0
-cizCoCLCoCVkwqBAwqAowqAlJSUxNVteLF3CoCzCoCUlJTE1W14pXcKgKcKgJW4iLAo+PsKgKwkJ
-CQlhcmdfc3oswqByZWdfbmFtZSzCoGlkeF9yZWdfbmFtZSzCoCZsZW4pwqA9PcKgMwo+PsKgKwkJ
-KcKgewo+PsKgKwkJLyrCoFNjYWxlwqBJbmRleMKgQmFzZcKgY2FzZSzCoGUuZy4swqAxQC05Nigl
-cmJwLCVyYXgsOCkKPj7CoCsJCcKgKsKgMUAoJXJicCwlcmF4LDgpCj4+wqArCQnCoCrCoDFALTk2
-KCVyYnAsJXJheCkKPj7CoCsJCcKgKsKgMUAoJXJicCwlcmF4KQo+PsKgKwkJwqAqLwo+Cj5oaSwK
-PkknbcKgZ2V0dGluZ8KgZm9sbG93aW5nwqBlcnJvcsKgZnJvbcKgdGhlwqB0ZXN0Ogo+Cj5zdWJ0
-ZXN0X211bHRpc3BlY191c2R0OlBBU1M6c2tlbF9vcGVuwqAwwqBuc2VjCj5saWJicGY6wqB1c2R0
-OsKgdW5yZWNvZ25pemVkwqBhcmfCoCMxMMKgc3BlY8KgJy0yQG51bXMoJXJheCwlcmF4KcKgLTFA
-JC0xMjcnCj5saWJicGY6wqBwcm9nwqAndXNkdDEyJzrCoGZhaWxlZMKgdG/CoGF1dG8tYXR0YWNo
-OsKgLUVJTlZBTAo+c3VidGVzdF9tdWx0aXNwZWNfdXNkdDpGQUlMOnNrZWxfYXR0YWNowqB1bmV4
-cGVjdGVkwqBlcnJvcjrCoC0yMsKgKGVycm5vwqAyMikKPiM0ODAvMsKgwqDCoHVzZHQvbXVsdGlz
-cGVjOkZBSUwKPgo+YXJndW1lbnRzwqBsb29rwqBsaWtlOgo+wqDCoMKgwqBBcmd1bWVudHM6wqAt
-NEAkM8KgLTRAJDTCoC04QCQ0MsKgLThAJDQ1wqAtNEAkNcKgLThAJDbCoDhAJXJkeMKgOEAlcnNp
-wqAtNEAkLTnCoC0yQCVjeMKgLTJAbnVtcyglcmF4LCVyYXgpwqAtMUAkLTEyNwo+Cj5ub3TCoHN1
-cmXCoHdoecKgdGhlcmUnc8KgdmFyaWFibGXCoG5hbWXCoGluwqB0aGXCoGFyZzEwwqBkZWZpbml0
-aW9uCj4KPmdjY8KgKEdDQynCoDE1LjEuMcKgMjAyNTA1MjHCoChSZWTCoEhhdMKgMTUuMS4xLTIp
-Cj5jbGFuZ8KgdmVyc2lvbsKgMjAuMS44wqAoRmVkb3JhwqAyMC4xLjgtMy5mYzQyKQo+Cj50aGFu
-a3MsCj5qaXJrYQo+Cj4KPj7CoCsJCWFyZy0+YXJnX3R5cGXCoD3CoFVTRFRfQVJHX1NJQjsKPj7C
-oCsJCWFyZy0+dmFsX29mZsKgPcKgb2ZmOwo+PsKgKwkJYXJnLT5zY2FsZcKgPcKgc2NhbGU7Cj4+
-wqArCj4+wqArCQlyZWdfb2ZmwqA9wqBjYWxjX3B0X3JlZ3Nfb2ZmKHJlZ19uYW1lKTsKPj7CoCsJ
-CWlmwqAocmVnX29mZsKgPMKgMCkKPj7CoCsJCQlyZXR1cm7CoHJlZ19vZmY7Cj4+wqArCQlhcmct
-PnJlZ19vZmbCoD3CoHJlZ19vZmY7Cj4+wqDCoAo+PsKgLQlpZsKgKHNzY2FuZihhcmdfc3RyLMKg
-IsKgJWTCoEDCoCVsZMKgKMKgJSUlMTVbXildwqApwqAlbiIswqBhcmdfc3oswqAmb2ZmLMKgcmVn
-X25hbWUswqAmbGVuKcKgPT3CoDMpwqB7Cj4+wqArCQlpZHhfcmVnX29mZsKgPcKgY2FsY19wdF9y
-ZWdzX29mZihpZHhfcmVnX25hbWUpOwo+PsKgKwkJaWbCoChpZHhfcmVnX29mZsKgPMKgMCkKPj7C
-oCsJCQlyZXR1cm7CoGlkeF9yZWdfb2ZmOwo+PsKgKwkJYXJnLT5pZHhfcmVnX29mZsKgPcKgaWR4
-X3JlZ19vZmY7Cj4+wqArCX3CoGVsc2XCoGlmwqAoc3NjYW5mKGFyZ19zdHIswqAiwqAlZMKgQMKg
-JWxkwqAowqAlJSUxNVteKV3CoCnCoCVuIiwKPj7CoCsJCQkJYXJnX3N6LMKgJm9mZizCoHJlZ19u
-YW1lLMKgJmxlbinCoD09wqAzKcKgewo+PsKgwqAJCS8qwqBNZW1vcnnCoGRlcmVmZXJlbmNlwqBj
-YXNlLMKgZS5nLizCoC00QC0yMCglcmJwKcKgKi8KPj7CoMKgCQlhcmctPmFyZ190eXBlwqA9wqBV
-U0RUX0FSR19SRUdfREVSRUY7Cj4+wqDCoAkJYXJnLT52YWxfb2ZmwqA9wqBvZmY7Cj4+wqBAQMKg
-LTEyOTgsN8KgKzEzMjksN8KgQEDCoHN0YXRpY8KgaW50wqBwYXJzZV91c2R0X2FyZyhjb25zdMKg
-Y2hhcsKgKmFyZ19zdHIswqBpbnTCoGFyZ19udW0swqBzdHJ1Y3TCoHVzZHRfYXJnX3NwZWMKPj7C
-oMKgCX3CoGVsc2XCoGlmwqAoc3NjYW5mKGFyZ19zdHIswqAiwqAlZMKgQMKgKMKgJSUlMTVbXild
-wqApwqAlbiIswqBhcmdfc3oswqByZWdfbmFtZSzCoCZsZW4pwqA9PcKgMinCoHsKPj7CoMKgCQkv
-KsKgTWVtb3J5wqBkZXJlZmVyZW5jZcKgY2FzZcKgd2l0aG91dMKgb2Zmc2V0LMKgZS5nLizCoDhA
-KCVyc3ApwqAqLwo+PsKgwqAJCWFyZy0+YXJnX3R5cGXCoD3CoFVTRFRfQVJHX1JFR19ERVJFRjsK
-Pj7CoC0JCWFyZy0+dmFsX29mZsKgPcKgMDsKPj7CoCsJCWFyZy0+dmFsX29mZsKgPcKgb2ZmOwo+
-PsKgwqAJCXJlZ19vZmbCoD3CoGNhbGNfcHRfcmVnc19vZmYocmVnX25hbWUpOwo+PsKgwqAJCWlm
-wqAocmVnX29mZsKgPMKgMCkKPj7CoMKgCQkJcmV0dXJuwqByZWdfb2ZmOwo+PsKgQEDCoC0xMzA2
-LDfCoCsxMzM3LDfCoEBAwqBzdGF0aWPCoGludMKgcGFyc2VfdXNkdF9hcmcoY29uc3TCoGNoYXLC
-oCphcmdfc3RyLMKgaW50wqBhcmdfbnVtLMKgc3RydWN0wqB1c2R0X2FyZ19zcGVjCj4+wqDCoAl9
-wqBlbHNlwqBpZsKgKHNzY2FuZihhcmdfc3RyLMKgIsKgJWTCoEDCoCUlJTE1c8KgJW4iLMKgYXJn
-X3N6LMKgcmVnX25hbWUswqAmbGVuKcKgPT3CoDIpwqB7Cj4+wqDCoAkJLyrCoFJlZ2lzdGVywqBy
-ZWFkwqBjYXNlLMKgZS5nLizCoC00QCVlYXjCoCovCj4+wqDCoAkJYXJnLT5hcmdfdHlwZcKgPcKg
-VVNEVF9BUkdfUkVHOwo+PsKgLQkJYXJnLT52YWxfb2ZmwqA9wqAwOwo+PsKgKwkJYXJnLT52YWxf
-b2ZmwqA9wqBvZmY7Cj4+wqDCoAo+PsKgwqAJCXJlZ19vZmbCoD3CoGNhbGNfcHRfcmVnc19vZmYo
-cmVnX25hbWUpOwo+PsKgwqAJCWlmwqAocmVnX29mZsKgPMKgMCkKPj7CoC0twqAKPj7CoDIuNDMu
-MAo+PsKgCj4+wqAK
+
+
+On 8/4/25 9:50 AM, syzbot wrote:
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    84b92a499e7e Add linux-next specific files for 20250731
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=11065aa2580000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=b335f01a07f73eac
+> dashboard link: https://syzkaller.appspot.com/bug?extid=c3740bc819eb55460ec3
+> compiler:       Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14167834580000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16f27cf0580000
+>
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/97d9ce461c85/disk-84b92a49.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/0ca812ed76e7/vmlinux-84b92a49.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/0959d28a047f/bzImage-84b92a49.xz
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+c3740bc819eb55460ec3@syzkaller.appspotmail.com
+>
+> FAULT_INJECTION: forcing a failure.
+> name fail_usercopy, interval 1, probability 0, space 0, times 0
+> ============================================
+> WARNING: possible recursive locking detected
+> 6.16.0-next-20250731-syzkaller #0 Not tainted
+> --------------------------------------------
+> syz.3.22/6137 is trying to acquire lock:
+> ffffffff8e12e278 ((console_sem).lock){-...}-{2:2}, at: down_trylock+0x20/0xb0 kernel/locking/semaphore.c:176
+>
+> but task is already holding lock:
+> ffffffff8e12e278 ((console_sem).lock){-...}-{2:2}, at: down+0x39/0xd0 kernel/locking/semaphore.c:96
+
+There is a similar discussion in the following old thread:
+    https://lore.kernel.org/bpf/345098dc-8cb4-4808-98cf-fa9ab3af4fc4@I-love.SAKURA.ne.jp/
+
+In that case, the recursive lock is rq lock. Looks like there is no good solution for
+that thread.
+
+Not sure how this semaphore deadlock could be resolved.
+
+>
+> other info that might help us debug this:
+>   Possible unsafe locking scenario:
+>
+>         CPU0
+>         ----
+>    lock((console_sem).lock);
+>    lock((console_sem).lock);
+>
+>   *** DEADLOCK ***
+>
+>   May be due to missing lock nesting notation
+>
+> 2 locks held by syz.3.22/6137:
+>   #0: ffffffff8e12e278 ((console_sem).lock){-...}-{2:2}, at: down+0x39/0xd0 kernel/locking/semaphore.c:96
+>   #1: ffffffff8e139f20 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire include/linux/rcupdate.h:331 [inline]
+>   #1: ffffffff8e139f20 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock include/linux/rcupdate.h:841 [inline]
+>   #1: ffffffff8e139f20 (rcu_read_lock){....}-{1:3}, at: __bpf_trace_run kernel/trace/bpf_trace.c:2256 [inline]
+>   #1: ffffffff8e139f20 (rcu_read_lock){....}-{1:3}, at: bpf_trace_run2+0x186/0x4b0 kernel/trace/bpf_trace.c:2298
+>
+> stack backtrace:
+> CPU: 0 UID: 0 PID: 6137 Comm: syz.3.22 Not tainted 6.16.0-next-20250731-syzkaller #0 PREEMPT(full)
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2025
+> Call Trace:
+>   <TASK>
+>   dump_stack_lvl+0x189/0x250 lib/dump_stack.c:120
+>   print_deadlock_bug+0x28b/0x2a0 kernel/locking/lockdep.c:3041
+>   check_deadlock kernel/locking/lockdep.c:3093 [inline]
+>   validate_chain+0x1a3f/0x2140 kernel/locking/lockdep.c:3895
+>   __lock_acquire+0xab9/0xd20 kernel/locking/lockdep.c:5237
+>   lock_acquire+0x120/0x360 kernel/locking/lockdep.c:5868
+>   __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+>   _raw_spin_lock_irqsave+0xa7/0xf0 kernel/locking/spinlock.c:162
+>   down_trylock+0x20/0xb0 kernel/locking/semaphore.c:176
+>   __down_trylock_console_sem+0xd0/0x1e0 kernel/printk/printk.c:326
+>   console_trylock kernel/printk/printk.c:2868 [inline]
+>   console_trylock_spinning kernel/printk/printk.c:2009 [inline]
+>   vprintk_emit+0x320/0x7a0 kernel/printk/printk.c:2449
+>   _printk+0xcf/0x120 kernel/printk/printk.c:2475
+>   fail_dump lib/fault-inject.c:66 [inline]
+>   should_fail_ex+0x3f5/0x560 lib/fault-inject.c:174
+>   strncpy_from_user+0x36/0x290 lib/strncpy_from_user.c:118
+>   strncpy_from_user_nofault+0x72/0x150 mm/maccess.c:192
+>   bpf_trace_copy_string kernel/bpf/helpers.c:755 [inline]
+>   bpf_bprintf_prepare+0xbbc/0x13d0 kernel/bpf/helpers.c:976
+>   ____bpf_trace_printk kernel/trace/bpf_trace.c:373 [inline]
+>   bpf_trace_printk+0xdb/0x190 kernel/trace/bpf_trace.c:363
+>   bpf_prog_7c77c7e0f6645ad8+0x3e/0x44
+>   bpf_dispatcher_nop_func include/linux/bpf.h:1322 [inline]
+>   __bpf_prog_run include/linux/filter.h:718 [inline]
+>   bpf_prog_run include/linux/filter.h:725 [inline]
+>   __bpf_trace_run kernel/trace/bpf_trace.c:2257 [inline]
+>   bpf_trace_run2+0x284/0x4b0 kernel/trace/bpf_trace.c:2298
+>   __bpf_trace_contention_begin+0xdc/0x130 include/trace/events/lock.h:95
+>   __do_trace_contention_begin include/trace/events/lock.h:95 [inline]
+>   trace_contention_begin include/trace/events/lock.h:95 [inline]
+>   __down_common+0x5ad/0x6a0 kernel/locking/semaphore.c:292
+>   down+0x80/0xd0 kernel/locking/semaphore.c:100
+>   console_lock+0x145/0x1b0 kernel/printk/printk.c:2849
+>   do_fb_ioctl+0x509/0x750 drivers/video/fbdev/core/fb_chrdev.c:123
+>   vfs_ioctl fs/ioctl.c:51 [inline]
+>   __do_sys_ioctl fs/ioctl.c:598 [inline]
+>   __se_sys_ioctl+0xf9/0x170 fs/ioctl.c:584
+>   do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+>   do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+>   entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> RIP: 0033:0x7f92c678eb69
+> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ffda68c54f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> RAX: ffffffffffffffda RBX: 00007f92c69b5fa0 RCX: 00007f92c678eb69
+> RDX: 0000200000000080 RSI: 0000000000004606 RDI: 0000000000000005
+> RBP: 00007ffda68c5550 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+> R13: 00007f92c69b5fa0 R14: 00007f92c69b5fa0 R15: 0000000000000003
+>   </TASK>
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+>
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+>
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+>
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+>
+> If you want to undo deduplication, reply with:
+> #syz undup
+
 
