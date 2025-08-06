@@ -1,233 +1,352 @@
-Return-Path: <bpf+bounces-65165-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65166-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3640B1CF8D
-	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 01:54:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4517B1CF8E
+	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 01:57:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DA347226A4
-	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 23:54:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52CD2621B86
+	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 23:57:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66448277CBC;
-	Wed,  6 Aug 2025 23:54:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22668277CAB;
+	Wed,  6 Aug 2025 23:57:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jqRQA8NK"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Af2B8AW/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 763EC277803
-	for <bpf@vger.kernel.org>; Wed,  6 Aug 2025 23:54:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C91D27470
+	for <bpf@vger.kernel.org>; Wed,  6 Aug 2025 23:57:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754524456; cv=none; b=NEzzcfE32vk0l3TkFJ2zEaYBTfv9zUdGHLM5ID4nNzOvfm5XrA8E15AP7SlVhy3wPtqIz8GTkuGs3vzdqjnRJpRYXJlDiagiJ1LpgylxgKT8Ul5UQabQ89GO88vV/CYMvI6uWTu8VUwgaD/NnYYgvgh3/oknobreUYrVjrKrEcE=
+	t=1754524672; cv=none; b=YLZZIUTePC6Q4xudp+8wsHoUfbNTAHEshap14OIss0I3sHUXiFdGn4hDOi1yNxDmpQ9jhU5yxIzaQc+ZaTPjyBp6RZO2WbtXg4eebcBUhoS7lm3z3LLkvyrVg6l83Hfgw7ir4iC+on3xqix1KDK27YJtTsjuMdIM23lp17RQ01s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754524456; c=relaxed/simple;
-	bh=y8JixcSmy36bpJSoSPVqtgm1o4E8OzgMnIjom8bHdiA=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=HQnZkEbA5GFBC46u+8EmK4KwbllaWqWA4zgEjPa1KgpnmFZx8o/fWhlMfYzMmNcT46BCJm7GY7M9NqjlDaOVHVQQhib+fDhthNwDUleQmldfFvuD2VOfat9Jufs5FFCfqflXDVfTxGaG1RnunhtNGRWz8MkTCXVWfZQ5RrgDN7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jqRQA8NK; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-76bdce2ee10so428772b3a.2
-        for <bpf@vger.kernel.org>; Wed, 06 Aug 2025 16:54:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754524454; x=1755129254; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=1A7GfvLr7Gjjji9uWYRZJc+ld+L8P9jqpBJtWNspOec=;
-        b=jqRQA8NKOaBrkWhv7jDB90MGJftdibshFvAwrP7H6JlGmuaMUDtJCGHbkC/1Jredzz
-         vh0cFtKqi/547SPnjP9rg5zJF9K1fGmVwVO+C2SV8pr17LGrpWcW/SzZqt2d4IJ0s2cy
-         6jj4lyZ/wjjn5kaBQqbTgPVWEvbnfR1EQJS59i70G6vAH+Ikv9nIwV7cyJ/toQu1v/Lp
-         DuLzjFiA4idJzXZvTtytJn5wsUnxHpPNJ48xJ7n24Z23C+Tm7zdnMCjhe4JeXBCLvRzz
-         HAoi/RHbMFzFAPTTK51bQKmK8/uFuDeeoSdBZaJqw2bDG+EHKqMVmBnEiNv7WC5EMiIb
-         gLAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754524454; x=1755129254;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1A7GfvLr7Gjjji9uWYRZJc+ld+L8P9jqpBJtWNspOec=;
-        b=lrwD3VsvV0w5qpjJ5H6cErHOubLTFBPDD14oiGDjh3T1IDgp6kDeRcCjIcTQIv3yCy
-         K/uXKo6OZiP8V5mZd3MQlll6W8kLAkBfgMTByLckCy6SPh77IPJC1yPRsSdSptp5qKGD
-         lQ4no3qJEIxoOEAwsIajIQenGAstNQ0dTgyM0l+vKqJwaY8VCBlgXyJg9QvMHDpcr8S1
-         b6UT4f31EY0s2bDSCDHEfEsDvgHR3+cDxWkSu/myIY3yETZN7bFZ+dXKeaPC9U02SkgL
-         4mCiVjDp8/R1U2mx0/Cw9rOuolNQcfBzfF4v1fqETpcdh7gWleAJcfmRK4b4riVlzqnu
-         cm/w==
-X-Gm-Message-State: AOJu0Yw8f7a16qQOVkigKUckrBs807e+I7WNmts6t3KtPssv6IHbx9n7
-	u9lWwvg1hBMaR69Zw86xfbJ5TXyCkugLxqwnTQpUFJwQXnEtA9MDjghrJnr2xz4d
-X-Gm-Gg: ASbGncvNMa8gSia6G9M7q8vvDGBIEei+Cpav6JLCWpX22okdctlyYwk7VHR4hL30TLL
-	E93qp1wmmvd+eo7X4C3MNxKu4IgP9041HUJxuNv4e9ROsMrm4ZSjrA+DmQzotygEv0pTv5P6sQg
-	R4KjOjxGila4+tfbFF439GWl7jlN66ESEubW7223GNMrhNBZZTxPrE99e2mbanUOiQYwG5G8HqS
-	2L5AZli7mpT+36QqReA4CBBX33vM7knJAzKXEAYGDL7IeChNca7MrmbcTmieScCmwdnldpCuIj0
-	UdnIQ/7L3obdjuPhs/oF0Y2+/V1saiSzGX5gRGZwGAObwUoVGtaEpe3tSl53W3DKp6sGuRIXIV2
-	C01z95wuo7SsYn91Z20KE46//
-X-Google-Smtp-Source: AGHT+IGOrKwrKYO1PY2AY1yYxQFzsTQyaAGUuYmIHb7bQ86s9v/GBDLYcNeJajXlXV72Yoh+Ulk+GQ==
-X-Received: by 2002:a05:6a00:8d1:b0:76b:fb4a:118c with SMTP id d2e1a72fcca58-76c2b001490mr6300179b3a.18.1754524454391;
-        Wed, 06 Aug 2025 16:54:14 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c096:14a::6? ([2620:10d:c090:600::1:e57])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-76bdbda5f23sm14131283b3a.112.2025.08.06.16.54.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Aug 2025 16:54:13 -0700 (PDT)
-Message-ID: <28f5fbaa5703e1ba2f4bb1648962aeb045f7b985.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v1 2/2] bpf: use realloc in bpf_patch_insn_data
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org
-Cc: daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
-	yonghong.song@linux.dev, Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 06 Aug 2025 16:54:12 -0700
-In-Reply-To: <4ad7e189907669e140553fba42759e97c691bfa0.camel@gmail.com>
-References: <20250806200928.3080531-1-eddyz87@gmail.com>
-		 <20250806200928.3080531-2-eddyz87@gmail.com>
-	 <4ad7e189907669e140553fba42759e97c691bfa0.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1754524672; c=relaxed/simple;
+	bh=EUqOgeiSsqWTvOA0qd3WbiH2JVpsweRk4A9vh1NJ/6A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=UWbyAre2nr5jA2DuVbYj+M8bRRCtXzt5SHgeLXL8h/15wL3ojYEYtvYuFERuY0LAa4tmWO6na/tHhBA9RrQSMMdgv8zd0JmdLhM7cHSnVI3a8doYoD7jyBQ2Q+5vhQ2qrdRPjNdMFY2XTqVYII3tvs8SutDiOlXs5+H7YgVYhxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Af2B8AW/; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <b34dea3f-33b0-429d-9a64-c6305e2df397@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1754524668;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=h1Pgk0MY7Om85mMg+vEHuwwza2h0W0pIThPPnm5lb7U=;
+	b=Af2B8AW/S1b0gR5Z7IyucKqYU+OGvt4adTxUEwyXzskYxHhcqr9F1Fgpk++ZPR2qo9DSnr
+	6fizzv5W5sw8u2isFmuoZpcXjRpcNMOXMd7r3ZAd7d+1bslttUmjwt/m6mupiovY+t92GG
+	3tBO7Ilbo8sgSkK5Ywuv4WyYmxiOoYs=
+Date: Wed, 6 Aug 2025 16:57:42 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next 2/3] bpf: Report arena faults to BPF stderr
+Content-Language: en-GB
+To: Puranjay Mohan <puranjay@kernel.org>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Xu Kuohai <xukuohai@huaweicloud.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
+References: <20250806085847.18633-1-puranjay@kernel.org>
+ <20250806085847.18633-3-puranjay@kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20250806085847.18633-3-puranjay@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, 2025-08-06 at 16:04 -0700, Eduard Zingerman wrote:
-> On Wed, 2025-08-06 at 13:09 -0700, Eduard Zingerman wrote:
+
+
+On 8/6/25 1:58 AM, Puranjay Mohan wrote:
+> Begin reporting arena page faults and the faulting address to BPF
+> program's stderr, this patch adds support in the arm64 and x86-64 JITs,
+> support for other archs can be added later.
 >
-> [...]
+> The fault handlers receive the 32 bit address in the arena region so
+> the upper 32 bits of user_vm_start is added to it before printing the
+> address. This is what the user would expect to see as this is what is
+> printed by bpf_printk() is you pass it an address returned by
+> bpf_arena_alloc_pages();
 >
-> > @@ -20712,22 +20711,19 @@ static void adjust_insn_aux_data(struct bpf_v=
-erifier_env *env,
-> >  	 * (cnt =3D=3D 1) is taken or not. There is no guarantee INSN at OFF =
-is the
-> >  	 * original insn at old prog.
-> >  	 */
-> > -	old_data[off].zext_dst =3D insn_has_def32(insn + off + cnt - 1);
-> > +	data[off].zext_dst =3D insn_has_def32(insn + off + cnt - 1);
-> >
-> >  	if (cnt =3D=3D 1)
-> >  		return;
-> >  	prog_len =3D new_prog->len;
-> >
-> > -	memcpy(new_data, old_data, sizeof(struct bpf_insn_aux_data) * off);
-> > -	memcpy(new_data + off + cnt - 1, old_data + off,
-> > -	       sizeof(struct bpf_insn_aux_data) * (prog_len - off - cnt + 1))=
-;
-> > +	memmove(data + off + cnt - 1, data + off,
-> > +		sizeof(struct bpf_insn_aux_data) * (prog_len - off - cnt + 1));
-> >  	for (i =3D off; i < off + cnt - 1; i++) {
-> >  		/* Expand insni[off]'s seen count to the patched range. */
-> > -		new_data[i].seen =3D old_seen;
-> > -		new_data[i].zext_dst =3D insn_has_def32(insn + i);
-> > +		data[i].seen =3D old_seen;
-> > +		data[i].zext_dst =3D insn_has_def32(insn + i);
-> >  	}
-> > -	env->insn_aux_data =3D new_data;
-> > -	vfree(old_data);
-> >  }
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+
+LGTM with some nits below.
+
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+
+> ---
+>   arch/arm64/net/bpf_jit_comp.c | 31 ++++++++++++++
+>   arch/x86/net/bpf_jit_comp.c   | 80 +++++++++++++++++++++++++++++++++--
+>   include/linux/bpf.h           |  1 +
+>   kernel/bpf/arena.c            | 20 +++++++++
+>   4 files changed, 128 insertions(+), 4 deletions(-)
 >
-> veristat-meta job failed on the CI [1] because the following piece is mis=
-sing:
->
->   @@ -20719,6 +20719,7 @@ static void adjust_insn_aux_data(struct bpf_ver=
-ifier_env *env,
->
->           memmove(data + off + cnt - 1, data + off,
->                   sizeof(struct bpf_insn_aux_data) * (prog_len - off - cn=
-t + 1));
->   +       memset(data + off, 0, sizeof(struct bpf_insn_aux_data) * (cnt -=
- 1));
->           for (i =3D off; i < off + cnt - 1; i++) {
->                   /* Expand insni[off]'s seen count to the patched range.=
- */
->                   data[i].seen =3D old_seen;
->
-> I'm trying to figure out if I can add a selftest for this.
->
-> [1] https://github.com/kernel-patches/bpf/actions/runs/16787563163/job/47=
-542309875
->
-> [...]
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+> index 42643fd9168fc..5680c7cd8932f 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -1066,6 +1066,9 @@ static void build_epilogue(struct jit_ctx *ctx, bool was_classic)
+>   	emit(A64_RET(A64_LR), ctx);
+>   }
+>   
+> +#define BPF_FIXUP_LOAD_OFFSET_MASK GENMASK(15, 0)
+> +#define BPF_FIXUP_ARENA_REG_MASK   GENMASK(20, 16)
+> +#define BPF_ARENA_ACCESS	   BIT(21)
+>   #define BPF_FIXUP_REG_MASK	GENMASK(31, 27)
+>   #define DONT_CLEAR 5 /* Unused ARM64 register from BPF's POV */
+>   
+> @@ -1073,11 +1076,22 @@ bool ex_handler_bpf(const struct exception_table_entry *ex,
+>   		    struct pt_regs *regs)
+>   {
+>   	int dst_reg = FIELD_GET(BPF_FIXUP_REG_MASK, ex->fixup);
+> +	s16 off = FIELD_GET(BPF_FIXUP_LOAD_OFFSET_MASK, ex->fixup);
+> +	int arena_reg = FIELD_GET(BPF_FIXUP_ARENA_REG_MASK, ex->fixup);
+> +	bool is_arena = !!(ex->fixup & BPF_ARENA_ACCESS);
+> +	bool is_write = (dst_reg == DONT_CLEAR);
+> +	unsigned long addr;
+>   
+>   	if (dst_reg != DONT_CLEAR)
+>   		regs->regs[dst_reg] = 0;
+>   	/* Skip the faulting instruction */
+>   	regs->pc += AARCH64_INSN_SIZE;
+> +
+> +	if (is_arena) {
+> +		addr = regs->regs[arena_reg] + off;
+> +		bpf_prog_report_arena_violation(is_write, addr);
+> +	}
+> +
+>   	return true;
+>   }
+>   
+> @@ -1087,6 +1101,9 @@ static int add_exception_handler(const struct bpf_insn *insn,
+>   				 int dst_reg)
+>   {
+>   	off_t ins_offset;
+> +	s16 load_off = insn->off;
 
-The error reported by verifier is "verifier bug: error during ctx access co=
-nversion (0)",
-signaled from convert_ctx_accesses(). The rewrite is attempted because
-`env->insn_aux_data[i + delta].ptr_type` is set to 12 (PTR_TO_SOCK_COMMON).
-The instruction for which rewrite is attempted is a load or store
-instruction introduced as a result of inline_bpf_loop() call.
-It has a wrong offset for bpf_sock_convert_ctx_access() rewrite,
-hence rewrite attempt is unsuccessful and the above mentioned error is repo=
-rted.
-`env->insn_aux_data[i + delta].ptr_type` is set for the instruction in ques=
-tion
-because of missing memset(0). It is a value of the insn_aux_data inherited
-from an instruction occurring at a small offset after bpf_loop call.
+Change 'load_off' to 'off' so it matches the usage in ex_handler_bpf().
+Also 'off' could mean the off for a store insn, right?
 
-Here is a similar reproducer, but for PTR_TO_CTX (=3D=3D 2):
+> +	bool is_arena;
+> +	int arena_reg;
+>   	unsigned long pc;
+>   	struct exception_table_entry *ex;
+>   
+> @@ -1100,6 +1117,9 @@ static int add_exception_handler(const struct bpf_insn *insn,
+>   				BPF_MODE(insn->code) != BPF_PROBE_ATOMIC)
+>   		return 0;
+>   
+> +	is_arena = (BPF_MODE(insn->code) == BPF_PROBE_MEM32) ||
+> +		   (BPF_MODE(insn->code) == BPF_PROBE_ATOMIC);
+> +
+>   	if (!ctx->prog->aux->extable ||
+>   	    WARN_ON_ONCE(ctx->exentry_idx >= ctx->prog->aux->num_exentries))
+>   		return -EINVAL;
+> @@ -1131,6 +1151,17 @@ static int add_exception_handler(const struct bpf_insn *insn,
+>   
+>   	ex->fixup = FIELD_PREP(BPF_FIXUP_REG_MASK, dst_reg);
+>   
+> +	if (is_arena) {
+> +		ex->fixup |= BPF_ARENA_ACCESS;
+> +		if (BPF_CLASS(insn->code) == BPF_LDX)
+> +			arena_reg = bpf2a64[insn->src_reg];
+> +		else
+> +			arena_reg = bpf2a64[insn->dst_reg];
+> +
+> +		ex->fixup |=  FIELD_PREP(BPF_FIXUP_LOAD_OFFSET_MASK, load_off) |
+> +			      FIELD_PREP(BPF_FIXUP_ARENA_REG_MASK, arena_reg);
+> +	}
+> +
+>   	ex->type = EX_TYPE_BPF;
+>   
+>   	ctx->exentry_idx++;
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index 7e3fca1646203..c8d99375e6de7 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -8,6 +8,7 @@
+>   #include <linux/netdevice.h>
+>   #include <linux/filter.h>
+>   #include <linux/if_vlan.h>
+> +#include <linux/bitfield.h>
+>   #include <linux/bpf.h>
+>   #include <linux/memory.h>
+>   #include <linux/sort.h>
+> @@ -1388,16 +1389,67 @@ static int emit_atomic_ld_st_index(u8 **pprog, u32 atomic_op, u32 size,
+>   	return 0;
+>   }
+>   
+> +/*
+> + * Metadata encoding for exception handling in JITed code.
+> + *
+> + * Format of `fixup` and `data` fields in `struct exception_table_entry`:
+> + *
+> + * Bit layout of `fixup` (32-bit):
+> + *
+> + * +-----------+--------+-----------+---------+----------+
+> + * | 31        | 30-24  |   23-16   |   15-8  |    7-0   |
+> + * |           |        |           |         |          |
+> + * | ARENA_ACC | Unused | ARENA_REG | DST_REG | INSN_LEN |
+> + * +-----------+--------+-----------+---------+----------+
+> + *
+> + * - INSN_LEN (8 bits): Length of faulting insn (max x86 insn = 15 bytes (fits in 8 bits)).
+> + * - DST_REG  (8 bits): Offset of dst_reg from reg2pt_regs[] (max offset = 112 (fits in 8 bits)).
+> + *                      This is set to DONT_CLEAR if the insn is a store.
+> + * - ARENA_REG (8 bits): Offset of the register that is used to calculate the
+> + *                       address for load/store when accessing the arena region.
+> + * - ARENA_ACCESS (1 bit): This bit is set when the faulting instruction accessed the arena region.
+> + *
+> + * Bit layout of `data` (32-bit):
+> + *
+> + * +--------------+--------+--------------+
+> + * |	31-16	  |  15-8  |     7-0      |
+> + * |              |	   |              |
+> + * | ARENA_OFFSET | Unused |  EX_TYPE_BPF |
+> + * +--------------+--------+--------------+
+> + *
+> + * - ARENA_OFFSET (16 bits): Offset used to calculate the address for load/store when
+> + *                           accessing the arena region.
+> + */
+> +
+>   #define DONT_CLEAR 1
+> +#define FIXUP_OFFSET_MASK	GENMASK(7, 0)
 
-  struct { ... } map0 SEC(".maps"); // any valid map definition
-  struct { ... } map1 SEC(".maps");
-  struct { ... } map2 SEC(".maps");
- =20
-  SEC("xdp")
-  __success
-  __naked void bug1(void)
-  {
-          asm volatile ("                                 \
-          r0 =3D %[map0] ll;       /* 0 */                  \
-          r0 =3D %[map1] ll;       /* 2 */                  \
-          r1 =3D 1;                /* 4 */                  \
-          r2 =3D dummy ll;         /* 5 */                  \
-          r3 =3D 0;                /* 7 */                  \
-          r4 =3D 0;                /* 8 */                  \
-          call %[bpf_loop];      /* 9 */                  \
-          r0 =3D 0;                /* 10 */                 \
-          r0 =3D 0;                /* 11 */                 \
-          r0 =3D %[map2] ll;       /* 12 */                 \
-          exit;                                           \
-  "       :
-          : __imm(bpf_loop),
-            __imm_addr(map0),
-            __imm_addr(map1),
-            __imm_addr(map2)
-          : __clobber_all);
-  }
+Maybe FIXUP_INSN_LEN_MASK?
 
-Instruction `call %[bpf_loop]` is replaced by a sequence:
+> +#define FIXUP_REG_MASK		GENMASK(15, 8)
+> +#define FIXUP_ARENA_REG_MASK	GENMASK(23, 16)
+> +#define FIXUP_ARENA_ACCESS	BIT(31)
+> +#define DATA_ARENA_OFFSET_MASK	GENMASK(31, 16)
+>   
+>   bool ex_handler_bpf(const struct exception_table_entry *x, struct pt_regs *regs)
+>   {
+> -	u32 reg = x->fixup >> 8;
+> +	u32 reg = FIELD_GET(FIXUP_REG_MASK, x->fixup);
+> +	off_t offset = FIELD_GET(FIXUP_OFFSET_MASK, x->fixup);
 
-  9:  if r1 <=3D 0x800000 goto pc+2
-  10: w0 =3D -7
-  11: goto pc+16
-  12: *(u64 *)(r10 -24) =3D r6
-  ...
+insn_len = ...
 
-Note the store at offset (12). Because of the missing memset(0) it
-inherits insn_aux_data fields from original instruction #12: `r0 =3D %[map2=
-] ll`.
-`struct bpf_insn_aux_data` is defined as follows:
+> +	bool is_arena = !!(x->fixup & FIXUP_ARENA_ACCESS);
+> +	bool is_write = (reg == DONT_CLEAR);
+> +	unsigned long addr;
+> +	s16 arena_offset;
 
-   struct bpf_insn_aux_data {
-         union {
-                 enum bpf_reg_type ptr_type;
-				 ...
-                 struct {
-                         u32 map_index;          /* index into used_maps[] =
-*/
-                         ...
-                 };
-				 ...
-         };
-   }
+This should be just 'off', right? It would be good if the terminology is consistent
+between different architectures.
 
-Here fields .ptr_type and .map_index have same offset.
-The example above forces convert_ctx_accesses() to interpret .map_index as =
-a .ptr_type.
-The .map_index at offset 12 happens to be 2, which corresponds to PTR_TO_CT=
-X.
-convert_ctx_accesses() attempts to rewrite `12: *(u64 *)(r10 -24) =3D r6` a=
-nd fails.
+> +	u32 arena_reg;
+>   
+>   	/* jump over faulting load and clear dest register */
+>   	if (reg != DONT_CLEAR)
+>   		*(unsigned long *)((void *)regs + reg) = 0;
+> -	regs->ip += x->fixup & 0xff;
+> +	regs->ip += offset;
+> +
+> +	if (is_arena) {
+> +		arena_reg = FIELD_GET(FIXUP_ARENA_REG_MASK, x->data);
+> +		arena_offset = FIELD_GET(DATA_ARENA_OFFSET_MASK, x->data);
+> +		addr = *(unsigned long *)((void *)regs + arena_reg) + arena_offset;
+> +		bpf_prog_report_arena_violation(is_write, addr);
+> +	}
+> +
+>   	return true;
+>   }
+>   
+> @@ -2070,6 +2122,9 @@ st:			if (is_imm8(insn->off))
+>   			{
+>   				struct exception_table_entry *ex;
+>   				u8 *_insn = image + proglen + (start_of_ldx - temp);
+> +				bool is_arena;
+> +				u32 fixup_reg;
+> +				u32 arena_reg;
 
-All in all, I think this test is fragile, so I'll post v2 w/o a selftest.
+the above two variables can be in the same line and can before 'is_arena'.
+
+>   				s64 delta;
+>   
+>   				if (!bpf_prog->aux->extable)
+> @@ -2089,8 +2144,25 @@ st:			if (is_imm8(insn->off))
+>   
+>   				ex->data = EX_TYPE_BPF;
+>   
+> -				ex->fixup = (prog - start_of_ldx) |
+> -					((BPF_CLASS(insn->code) == BPF_LDX ? reg2pt_regs[dst_reg] : DONT_CLEAR) << 8);
+> +				is_arena = (BPF_MODE(insn->code) == BPF_PROBE_MEM32) ||
+> +					   (BPF_MODE(insn->code) == BPF_PROBE_ATOMIC);
+> +
+> +				fixup_reg = (BPF_CLASS(insn->code) == BPF_LDX) ?
+> +					    reg2pt_regs[dst_reg] : DONT_CLEAR;
+> +
+> +				ex->fixup = FIELD_PREP(FIXUP_OFFSET_MASK, prog - start_of_ldx) |
+> +					    FIELD_PREP(FIXUP_REG_MASK, fixup_reg);
+> +
+> +				if (is_arena) {
+> +					ex->fixup |= FIXUP_ARENA_ACCESS;
+> +					if (BPF_CLASS(insn->code) == BPF_LDX)
+> +						arena_reg = reg2pt_regs[src_reg];
+> +					else
+> +						arena_reg = reg2pt_regs[dst_reg];
+> +
+> +					ex->fixup |= FIELD_PREP(FIXUP_ARENA_REG_MASK, arena_reg);
+> +					ex->data |= FIELD_PREP(DATA_ARENA_OFFSET_MASK, insn->off);
+> +				}
+>   			}
+>   			break;
+>   
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index cc700925b802f..3e62834726a97 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -3653,6 +3653,7 @@ int bpf_stream_stage_printk(struct bpf_stream_stage *ss, const char *fmt, ...);
+>   int bpf_stream_stage_commit(struct bpf_stream_stage *ss, struct bpf_prog *prog,
+>   			    enum bpf_stream_id stream_id);
+>   int bpf_stream_stage_dump_stack(struct bpf_stream_stage *ss);
+> +void bpf_prog_report_arena_violation(bool write, unsigned long addr);
+>   
+>   #define bpf_stream_printk(ss, ...) bpf_stream_stage_printk(&ss, __VA_ARGS__)
+>   #define bpf_stream_dump_stack(ss) bpf_stream_stage_dump_stack(&ss)
+> diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
+> index 5b37753799d20..a1653d1c04ca5 100644
+> --- a/kernel/bpf/arena.c
+> +++ b/kernel/bpf/arena.c
+> @@ -633,3 +633,23 @@ static int __init kfunc_init(void)
+>   	return register_btf_kfunc_id_set(BPF_PROG_TYPE_UNSPEC, &common_kfunc_set);
+>   }
+>   late_initcall(kfunc_init);
+> +
+> +void bpf_prog_report_arena_violation(bool write, unsigned long addr)
+> +{
+> +	struct bpf_stream_stage ss;
+> +	struct bpf_prog *prog;
+> +	u64 user_vm_start;
+> +
+> +	prog = bpf_prog_find_from_stack();
+> +	if (!prog)
+> +		return;
+> +
+> +	user_vm_start = bpf_arena_get_user_vm_start(prog->aux->arena);
+> +	addr += (user_vm_start >> 32) << 32;
+> +
+> +	bpf_stream_stage(ss, prog, BPF_STDERR, ({
+> +		bpf_stream_printk(ss, "ERROR: Arena %s access at unmapped address 0x%lx\n",
+> +				  write ? "WRITE" : "READ", addr);
+> +		bpf_stream_dump_stack(ss);
+> +	}));
+> +}
+
 
