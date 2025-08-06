@@ -1,379 +1,265 @@
-Return-Path: <bpf+bounces-65144-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65145-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A817B1C9E9
-	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 18:44:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E991DB1CB16
+	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 19:38:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C78218C354D
-	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 16:44:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D286168AFA
+	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 17:38:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2816A29AB1B;
-	Wed,  6 Aug 2025 16:43:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F5A229B204;
+	Wed,  6 Aug 2025 17:37:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rd+Rmgbx"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="M0EpK8Vv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1082DBA34;
-	Wed,  6 Aug 2025 16:43:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 036EB299952
+	for <bpf@vger.kernel.org>; Wed,  6 Aug 2025 17:37:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754498637; cv=none; b=UxLIaeq8WRu2bMP0/y5dU1vuXyBs3NiX9jWBkwj44L19FDThnprXom0E8Fz9jDmk0U4xWOk94J8bfZI4oeau+DBfhFyrojWDPgtzXeEtGYuRS+dxriPIJvVQZ7gc9RbY2yNi1fagERzmArNHu+uXKpvqcfzgWyYqyMFf0glSdbs=
+	t=1754501878; cv=none; b=sy3YwhD5aWhBKjS4XmQ3DXAavHdBspU140c6kXUuSZ7lb0cDvDYFcs8qjlRcfTJI8khggRZGp1USnxnNC85qNP5WRcYC9NEAD5s2L8uuuRQmUnwaK4RTIkFgTD48QwNHUhMJwhza96yBjMUKotxna5yZUd0TYWBQjOdxfgiQTXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754498637; c=relaxed/simple;
-	bh=fwNXRzzwx26MnUn9YOuIa7ICL97IcaPFC9UinTlhcuI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nQb0WBTUBDdoR1V4EJ5P/siDVWNws1UweeP/lDpdTPvAcdiULsdh61lelkzqx8p8C+4eXhBw1X84PwP9RaN2X8KlEi5qyut2D66cte/+PhUYM3RPeYsa+P2Z9YPLfMrAMS3JkAqyJ6875fvE/0IOCHllTnKe78/FGtace3XjtC0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rd+Rmgbx; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-76be8e4b59aso173970b3a.1;
-        Wed, 06 Aug 2025 09:43:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754498635; x=1755103435; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jlrxxs62qjQ/IMYZlKLwt6zju+JyzoTVTYBouxofy4k=;
-        b=Rd+RmgbxiBqGB8zBoWzA5Vs9xYWT148Oq5aC0vrE9JKr+BuSiuhgv4oyNDAHTUsWMS
-         ttoebr3GNk8Ld3vPe6dR8rGQZt4lOYs5QInbrUZOpVhn3qLA0uoFWxXzDozQLhi52PsL
-         6TEFBQ+oChoMHHGC3YaBGRMKiziy/MRTw7eLduw+q92VhyixzHK/ZRA7vYOc1MWgHATG
-         v5xkEE69kBL3qsQ83VPauSxbM9ChWfLcedAviY+pE3krvHJoiM2wx7+o0cbL8h5vxSrr
-         Y3qQTN9/tbDWz2fryWztvItQ6Of02DDMnDc1aFg8LTrPVFzBX0VsQdnDjv5DMw+Pg+c9
-         /ctw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754498635; x=1755103435;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jlrxxs62qjQ/IMYZlKLwt6zju+JyzoTVTYBouxofy4k=;
-        b=VtjHOaEcElv/y4QeAhcDvAqyWUfuAeh7nDu8+AtvvAJFpLsW2om/igGo7y6RMIUuSm
-         2VpYnBMTiYJA6+cvugioe7LU57Ts2FmBJ2ghOSHM6CMNEmeU4an0Oc9sI5RWT5dr1jAv
-         SE/0WUoDb+g2BOKqsy1WSHGyEPYY0qnhTg5dcAhnnevlObGSDsKYtr4nm3BtOkWQ5/Gp
-         lPw0UxShqpYmLGb/mD7jYAj3oPOpFINU7Pah4UKT+VWclvXAuwsJsD1cHzvQDHdOrzRB
-         7G9JKhqU4is8qxgdyP3u4ttdBfuw+SPdTFfvb9q9uPZ6FdpZCzN22tU905DoV9KCEoUH
-         oc7A==
-X-Forwarded-Encrypted: i=1; AJvYcCV3ctpat1nLtHVihXpJw8KKNTPldt7jj7n81YzJ7PySq8Xu/dV1iVayliSxg4P2SmH6q2lTNbs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzkJKVD1ibLII508hdZ32WpU/DwFjtU/uWFvnpbFLL3OXal2Fos
-	20PlT/Ef6ktWUWiTRR5aD1Yw2M67qbHW/q04lWlzF2kY9ZLdIXYyUCM=
-X-Gm-Gg: ASbGncuUdG2UT8bS0kAgIenSjzpnhLew0vNwB66UI2aNLFHp8egYvkFGSM1+OXQu07R
-	sSiatSAa2vvsqJ96SpBcI5w7IZFuiWMHiRl7OUIrvwoqHZFZibMlr2P4zSBQaaPhfK1bOL2+o02
-	h1HeyYe45kgBU4vJjhKVudblVDo9gQZ104ObEuHCGzrocjbuk9Ll9EaHnGwARmk/RHbnJ4AGtv5
-	bdssf0/KaPvwdPDwBMMfa8PHK4sGHrB4zc1OBXL2luRSxnN6soaLqgngYf/JXF628+2G1VmXeYH
-	nsgdPV3BX1DbogdhSqN4AVX7CgwFh3C1nH72yKrvWB8KrgQq6nrG1Y2MGxipqwjma2EsMlkkHnA
-	rS2Gk116EXIFePCQCAtYdtOh+znOn7i4J82yIIYWI+ALGhxWur+dbD0/mZa8=
-X-Google-Smtp-Source: AGHT+IERlJW0XjTH6g0fG5m/lo6IJb+eGUqeEGFGdT3gjFVKOMnPZ8WhzwMQof+ZzxSfQr9exKb9+w==
-X-Received: by 2002:a05:6a00:1952:b0:76b:ef8f:c292 with SMTP id d2e1a72fcca58-76c2b000abfmr4057878b3a.16.1754498634963;
-        Wed, 06 Aug 2025 09:43:54 -0700 (PDT)
-Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
-        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-76bccfbd22csm16048834b3a.65.2025.08.06.09.43.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Aug 2025 09:43:54 -0700 (PDT)
-Date: Wed, 6 Aug 2025 09:43:53 -0700
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, netdev@vger.kernel.org,
-	magnus.karlsson@intel.com, aleksander.lobakin@intel.com,
-	Eryk Kubanski <e.kubanski@partner.samsung.com>
-Subject: Re: [PATCH v3 bpf] xsk: fix immature cq descriptor production
-Message-ID: <aJOGSRsXic53tkH7@mini-arch>
-References: <20250806154127.2161434-1-maciej.fijalkowski@intel.com>
+	s=arc-20240116; t=1754501878; c=relaxed/simple;
+	bh=BGlX4F9TBCHgFRucEjmJBusZHbT1xWjudfuQYsuta5w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=t6uTGirfAcUlyRWckvnVVpgyc7IqXaLXQBi2B+y+o1hryTJnD9UoyX/TfvLWUiv6PcaFVZ8+CL+h745SLaTiO51mQOuILzwnhNZRlLSQKMF8Rm3QLYZfFiiy9sQhYSF+Wb6z+9zA7V5K60w7pcRV4IxVpIgkYfmX9dC3QdHJChE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=M0EpK8Vv; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <9b96d710-8e21-4d32-9229-30bc99dfb4f4@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1754501874;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rpaIec0lLYYHJNdH90u7GIDmuDoXJeli/3yE7bAIPLA=;
+	b=M0EpK8Vv2vUInyGaHvRGVAJawNEBO6XPrKkhtL0YCoO+EnafCR9kCJteb3TiMnf/XIhdtM
+	HuffmvN2rB4C9gmHXiPms0RgY4kZIcZ/6B3ywv2fv7F3NBfLou6ofl7yIYhm6mvQvYXAH/
+	RyWPqu9q93ZuPfGSotatdNg7b0WVvAU=
+Date: Wed, 6 Aug 2025 10:37:47 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250806154127.2161434-1-maciej.fijalkowski@intel.com>
+Subject: Re: [PATCH bpf-next 1/1] bpf: Allow fall back to interpreter for
+ programs with stack size <= 512
+Content-Language: en-GB
+To: KaFai Wan <kafai.wan@linux.dev>, ast@kernel.org, daniel@iogearbox.net,
+ john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, mrpre@163.com, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: Felix Fietkau <nbd@nbd.name>
+References: <20250805115513.4018532-1-kafai.wan@linux.dev>
+ <401418b7-248c-42a3-ba74-9b2b2959e36c@linux.dev>
+ <c8c870e25c07aee5c84c84aa62cebd655ff53f50.camel@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <c8c870e25c07aee5c84c84aa62cebd655ff53f50.camel@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 08/06, Maciej Fijalkowski wrote:
-> Eryk reported an issue that I have put under Closes: tag, related to
-> umem addrs being prematurely produced onto pool's completion queue.
-> Let us make the skb's destructor responsible for producing all addrs
-> that given skb used.
-> 
-> Introduce struct xsk_addrs which will carry descriptor count with array
-> of addresses taken from processed descriptors that will be carried via
-> skb_shared_info::destructor_arg. This way we can refer to it within
-> xsk_destruct_skb(). In order to mitigate the overhead that will be
-> coming from memory allocations, let us introduce kmem_cache of xsk_addrs
-> onto xdp_sock. Utilize the existing struct hole in xdp_sock for that.
-> 
-> Commit from fixes tag introduced the buggy behavior, it was not broken
-> from day 1, but rather when xsk multi-buffer got introduced.
-> 
-> Fixes: b7f72a30e9ac ("xsk: introduce wrappers and helpers for supporting multi-buffer in Tx path")
-> Reported-by: Eryk Kubanski <e.kubanski@partner.samsung.com>
-> Closes: https://lore.kernel.org/netdev/20250530103456.53564-1-e.kubanski@partner.samsung.com/
-> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> ---
-> v1:
-> https://lore.kernel.org/bpf/20250702101648.1942562-1-maciej.fijalkowski@intel.com/
-> v2:
-> https://lore.kernel.org/bpf/20250705135512.1963216-1-maciej.fijalkowski@intel.com/
-> 
-> v1->v2:
-> * store addrs in array carried via destructor_arg instead having them
->   stored in skb headroom; cleaner and less hacky approach;
-> v2->v3:
-> * use kmem_cache for xsk_addrs allocation (Stan/Olek)
-> * set err when xsk_addrs allocation fails (Dan)
-> * change xsk_addrs layout to avoid holes
-> * free xsk_addrs on error path
-> * rebase
-> ---
->  include/net/xdp_sock.h |  1 +
->  net/xdp/xsk.c          | 94 ++++++++++++++++++++++++++++++++++--------
->  net/xdp/xsk_queue.h    | 12 ++++++
->  3 files changed, 89 insertions(+), 18 deletions(-)
-> 
-> diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-> index ce587a225661..5ba9ad4c110f 100644
-> --- a/include/net/xdp_sock.h
-> +++ b/include/net/xdp_sock.h
-> @@ -61,6 +61,7 @@ struct xdp_sock {
->  		XSK_BOUND,
->  		XSK_UNBOUND,
->  	} state;
-> +	struct kmem_cache *xsk_addrs_cache;
->  
->  	struct xsk_queue *tx ____cacheline_aligned_in_smp;
->  	struct list_head tx_list;
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index 9c3acecc14b1..d77cde0131be 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -36,6 +36,11 @@
->  #define TX_BATCH_SIZE 32
->  #define MAX_PER_SOCKET_BUDGET 32
->  
-> +struct xsk_addrs {
-> +	u64 addrs[MAX_SKB_FRAGS + 1];
-> +	u32 num_descs;
-> +};
-> +
->  void xsk_set_rx_need_wakeup(struct xsk_buff_pool *pool)
->  {
->  	if (pool->cached_need_wakeup & XDP_WAKEUP_RX)
-> @@ -532,25 +537,39 @@ static int xsk_wakeup(struct xdp_sock *xs, u8 flags)
->  	return dev->netdev_ops->ndo_xsk_wakeup(dev, xs->queue_id, flags);
->  }
->  
-> -static int xsk_cq_reserve_addr_locked(struct xsk_buff_pool *pool, u64 addr)
-> +static int xsk_cq_reserve_locked(struct xsk_buff_pool *pool)
->  {
->  	unsigned long flags;
->  	int ret;
->  
->  	spin_lock_irqsave(&pool->cq_lock, flags);
-> -	ret = xskq_prod_reserve_addr(pool->cq, addr);
-> +	ret = xskq_prod_reserve(pool->cq);
->  	spin_unlock_irqrestore(&pool->cq_lock, flags);
->  
->  	return ret;
->  }
->  
-> -static void xsk_cq_submit_locked(struct xsk_buff_pool *pool, u32 n)
-> +static void xsk_cq_submit_addr_locked(struct xdp_sock *xs,
-> +				      struct sk_buff *skb)
->  {
-> +	struct xsk_buff_pool *pool = xs->pool;
-> +	struct xsk_addrs *xsk_addrs;
->  	unsigned long flags;
-> +	u32 num_desc, i;
-> +	u32 idx;
-> +
-> +	xsk_addrs = (struct xsk_addrs *)skb_shinfo(skb)->destructor_arg;
-> +	num_desc = xsk_addrs->num_descs;
->  
->  	spin_lock_irqsave(&pool->cq_lock, flags);
-> -	xskq_prod_submit_n(pool->cq, n);
-> +	idx = xskq_get_prod(pool->cq);
-> +
-> +	for (i = 0; i < num_desc; i++, idx++)
-> +		xskq_prod_write_addr(pool->cq, idx, xsk_addrs->addrs[i]);
 
-optional nit: maybe do xskq_prod_write_addr(, idx+i, ) instead of 'idx++'
-in the loop? I got a bit confused here until I spotted that idx++..
-But up to you, feel free to ignore, maybe it's just me.
 
-> +	xskq_prod_submit_n(pool->cq, num_desc);
-> +
->  	spin_unlock_irqrestore(&pool->cq_lock, flags);
-> +	kmem_cache_free(xs->xsk_addrs_cache, xsk_addrs);
->  }
->  
->  static void xsk_cq_cancel_locked(struct xsk_buff_pool *pool, u32 n)
-> @@ -562,35 +581,45 @@ static void xsk_cq_cancel_locked(struct xsk_buff_pool *pool, u32 n)
->  	spin_unlock_irqrestore(&pool->cq_lock, flags);
->  }
->  
-> -static u32 xsk_get_num_desc(struct sk_buff *skb)
-> -{
-> -	return skb ? (long)skb_shinfo(skb)->destructor_arg : 0;
-> -}
-> -
->  static void xsk_destruct_skb(struct sk_buff *skb)
->  {
->  	struct xsk_tx_metadata_compl *compl = &skb_shinfo(skb)->xsk_meta;
->  
+On 8/6/25 3:57 AM, KaFai Wan wrote:
+> On Tue, 2025-08-05 at 10:45 -0700, Yonghong Song wrote:
+>>
+>> On 8/5/25 4:55 AM, KaFai Wan wrote:
+>>> OpenWRT users reported regression on ARMv6 devices after updating
+>>> to latest
+>>> HEAD, where tcpdump filter:
+>>>
+>>> tcpdump -i mon1 \
+>>> "not wlan addr3 3c37121a2b3c and not wlan addr2 184ecbca2a3a \
+>>> and not wlan addr2 14130b4d3f47 and not wlan addr2 f0f61cf440b7 \
+>>> and not wlan addr3 a84b4dedf471 and not wlan addr3 d022be17e1d7 \
+>>> and not wlan addr3 5c497967208b and not wlan addr2 706655784d5b"
+>>>
+>>> fails with warning: "Kernel filter failed: No error information"
+>>> when using config:
+>>>    # CONFIG_BPF_JIT_ALWAYS_ON is not set
+>>>    CONFIG_BPF_JIT_DEFAULT_ON=y
+>>>
+>>> The issue arises because commits:
+>>> 1. "bpf: Fix array bounds error with may_goto" changed default
+>>> runtime to
+>>>      __bpf_prog_ret0_warn when jit_requested = 1
+>>> 2. "bpf: Avoid __bpf_prog_ret0_warn when jit fails" returns error
+>>> when
+>>>      jit_requested = 1 but jit fails
+>>>
+>>> This change restores interpreter fallback capability for BPF
+>>> programs with
+>>> stack size <= 512 bytes when jit fails.
+>>>
+>>> Reported-by: Felix Fietkau <nbd@nbd.name>
+>>> Closes:
+>>> https://lore.kernel.org/bpf/2e267b4b-0540-45d8-9310-e127bf95fc63@nbd.name/
+>>> Fixes: 6ebc5030e0c5 ("bpf: Fix array bounds error with may_goto")
+>>> Fixes: 86bc9c742426 ("bpf: Avoid __bpf_prog_ret0_warn when jit
+>>> fails")
+>>> Signed-off-by: KaFai Wan <kafai.wan@linux.dev>
+>>> ---
+>>>    kernel/bpf/core.c | 12 +++++++-----
+>>>    1 file changed, 7 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+>>> index 5d1650af899d..2d86bd4b0b97 100644
+>>> --- a/kernel/bpf/core.c
+>>> +++ b/kernel/bpf/core.c
+>>> @@ -2366,8 +2366,8 @@ static unsigned int
+>>> __bpf_prog_ret0_warn(const void *ctx,
+>>>    					 const struct bpf_insn
+>>> *insn)
+>>>    {
+>>>    	/* If this handler ever gets executed, then
+>>> BPF_JIT_ALWAYS_ON
+>>> -	 * is not working properly, or interpreter is being used
+>>> when
+>>> -	 * prog->jit_requested is not 0, so warn about it!
+>>> +	 * or may_goto may cause stack size > 512 is not working
+>>> properly,
+>>> +	 * so warn about it!
+>>>    	 */
+>>>    	WARN_ON_ONCE(1);
+>>>    	return 0;
+>>> @@ -2478,10 +2478,10 @@ static void bpf_prog_select_func(struct
+>>> bpf_prog *fp)
+>>>    	 * But for non-JITed programs, we don't need bpf_func, so
+>>> no bounds
+>>>    	 * check needed.
+>>>    	 */
+>>> -	if (!fp->jit_requested &&
+>>> -	    !WARN_ON_ONCE(idx >= ARRAY_SIZE(interpreters))) {
+>>> +	if (idx < ARRAY_SIZE(interpreters)) {
+>>>    		fp->bpf_func = interpreters[idx];
+>>>    	} else {
+>>> +		WARN_ON_ONCE(!fp->jit_requested);
+>>>    		fp->bpf_func = __bpf_prog_ret0_warn;
+>>>    	}
+>> Your logic here is to do interpreter even if fp->jit_requested is
+>> true.
+>> This is different from the current implementation.
+>>
+>> Also see below code:
+>>
+>> static unsigned int __bpf_prog_ret0_warn(const void *ctx,
+>>                                            const struct bpf_insn
+>> *insn)
+>> {
+>>           /* If this handler ever gets executed, then
+>> BPF_JIT_ALWAYS_ON
+>>            * is not working properly, or interpreter is being used
+>> when
+>>            * prog->jit_requested is not 0, so warn about it!
+>>            */
+>>           WARN_ON_ONCE(1);
+>>           return 0;
+>> }
+>>
+>>
+>> It mentions to warn if the interpreter is being used when
+>> prog->jit_requested is not 0.
+>>
+>> So if prog->jit_requested is not 0, it is expected not to use
+>> interpreter.
+>>
+> The commit 6ebc5030e0c5 ("bpf: Fix array bounds error with may_goto")
+> [1] this patch fix change the code to that, before this commit it was:
+>
+> static unsigned int __bpf_prog_ret0_warn(const void *ctx,
+> 					 const struct bpf_insn *insn)
+> {
+> 	/* If this handler ever gets executed, then BPF_JIT_ALWAYS_ON
+> 	 * is not working properly, so warn about it!
+> 	 */
+> 	WARN_ON_ONCE(1);
+> 	return 0;
+> }
+>
+> And
+>
+> static void bpf_prog_select_func(struct bpf_prog *fp)
+> {
+> #ifndef CONFIG_BPF_JIT_ALWAYS_ON
+> 	u32 stack_depth = max_t(u32, fp->aux->stack_depth, 1);
+>
+> 	fp->bpf_func = interpreters[(round_up(stack_depth, 32) / 32) -
+> 1];
+> #else
+> 	fp->bpf_func = __bpf_prog_ret0_warn;
+> #endif
+> }
+>
+> so it can fall back to the interpreter when jit fails. And this fit the
+> intent of bpf_prog_select_runtime(), see comment:
+>
+> /**
+>   *	bpf_prog_select_runtime - select exec runtime for BPF program
+>   *	@fp: bpf_prog populated with BPF program
+>   *	@err: pointer to error variable
+>   *
+>   * Try to JIT eBPF program, if JIT is not available, use interpreter.
+>   * The BPF program will be executed via bpf_prog_run() function.
+>   *
+>   * Return: the &fp argument along with &err set to 0 for success or
+>   * a negative errno code on failure
+>   */
+> struct bpf_prog *bpf_prog_select_runtime(struct bpf_prog *fp, int *err)
+>
+>
+> And this:
+>
+> 	bpf_prog_select_func(fp);
+>
+> 	/* eBPF JITs can rewrite the program in case constant
+> 	 * blinding is active. However, in case of error during
+> 	 * blinding, bpf_int_jit_compile() must always return a
+> 	 * valid program, which in this case would simply not
+> 	 * be JITed, but falls back to the interpreter.
+> 	 */
+> 	if (!bpf_prog_is_offloaded(fp->aux)) {
+>
+>
+> The commit [1] mismatch the intent of bpf_prog_select_runtime(), so it
+> should be fixed.
+>
+>
+> [1] https://lore.kernel.org/all/20250214091823.46042-2-mrpre@163.com/
 
-[..]
+Okay, indeed the above [1] changed the behavior. Maybe Alexei can
+comment whether we should restore to the behavior before [1].
 
-> -	if (compl->tx_timestamp) {
-> +	if (compl->tx_timestamp)
->  		/* sw completion timestamp, not a real one */
->  		*compl->tx_timestamp = ktime_get_tai_fast_ns();
-> -	}
+>
+>>>    #else
+>>> @@ -2505,7 +2505,7 @@ struct bpf_prog
+>>> *bpf_prog_select_runtime(struct bpf_prog *fp, int *err)
+>>>    	/* In case of BPF to BPF calls, verifier did all the prep
+>>>    	 * work with regards to JITing, etc.
+>>>    	 */
+>>> -	bool jit_needed = fp->jit_requested;
+>>> +	bool jit_needed = false;
+>>>    
+>>>    	if (fp->bpf_func)
+>>>    		goto finalize;
+>>> @@ -2515,6 +2515,8 @@ struct bpf_prog
+>>> *bpf_prog_select_runtime(struct bpf_prog *fp, int *err)
+>>>    		jit_needed = true;
+>>>    
+>>>    	bpf_prog_select_func(fp);
+>>> +	if (fp->bpf_func == __bpf_prog_ret0_warn)
+>>> +		jit_needed = true;
+>>>    
+>>>    	/* eBPF JITs can rewrite the program in case constant
+>>>    	 * blinding is active. However, in case of error during
 
-Seems to be unrelated, can probably drop if you happen to respin?
-
-> -	xsk_cq_submit_locked(xdp_sk(skb->sk)->pool, xsk_get_num_desc(skb));
-> +	xsk_cq_submit_addr_locked(xdp_sk(skb->sk), skb);
->  	sock_wfree(skb);
->  }
->  
-> -static void xsk_set_destructor_arg(struct sk_buff *skb)
-> +static u32 xsk_get_num_desc(struct sk_buff *skb)
-> +{
-> +	struct xsk_addrs *addrs;
-> +
-> +	addrs = (struct xsk_addrs *)skb_shinfo(skb)->destructor_arg;
-> +	return addrs->num_descs;
-> +}
-> +
-> +static void xsk_set_destructor_arg(struct sk_buff *skb, struct xsk_addrs *addrs)
->  {
-> -	long num = xsk_get_num_desc(xdp_sk(skb->sk)->skb) + 1;
-> +	skb_shinfo(skb)->destructor_arg = (void *)addrs;
-> +}
-> +
-> +static void xsk_inc_skb_descs(struct sk_buff *skb)
-> +{
-> +	struct xsk_addrs *addrs;
->  
-> -	skb_shinfo(skb)->destructor_arg = (void *)num;
-> +	addrs = (struct xsk_addrs *)skb_shinfo(skb)->destructor_arg;
-> +	addrs->num_descs++;
->  }
->  
->  static void xsk_consume_skb(struct sk_buff *skb)
->  {
->  	struct xdp_sock *xs = xdp_sk(skb->sk);
->  
-> +	kmem_cache_free(xs->xsk_addrs_cache,
-> +			(struct xsk_addrs *)skb_shinfo(skb)->destructor_arg);
->  	skb->destructor = sock_wfree;
->  	xsk_cq_cancel_locked(xs->pool, xsk_get_num_desc(skb));
->  	/* Free skb without triggering the perf drop trace */
-> @@ -609,6 +638,7 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
->  {
->  	struct xsk_buff_pool *pool = xs->pool;
->  	u32 hr, len, ts, offset, copy, copied;
-> +	struct xsk_addrs *addrs = NULL;
->  	struct sk_buff *skb = xs->skb;
->  	struct page *page;
->  	void *buffer;
-> @@ -623,6 +653,12 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
->  			return ERR_PTR(err);
->  
->  		skb_reserve(skb, hr);
-> +
-> +		addrs = kmem_cache_zalloc(xs->xsk_addrs_cache, GFP_KERNEL);
-> +		if (!addrs)
-> +			return ERR_PTR(-ENOMEM);
-> +
-> +		xsk_set_destructor_arg(skb, addrs);
->  	}
->  
->  	addr = desc->addr;
-> @@ -662,6 +698,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
->  {
->  	struct xsk_tx_metadata *meta = NULL;
->  	struct net_device *dev = xs->dev;
-> +	struct xsk_addrs *addrs = NULL;
->  	struct sk_buff *skb = xs->skb;
->  	bool first_frag = false;
->  	int err;
-> @@ -694,6 +731,15 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
->  			err = skb_store_bits(skb, 0, buffer, len);
->  			if (unlikely(err))
->  				goto free_err;
-> +
-> +			addrs = kmem_cache_zalloc(xs->xsk_addrs_cache, GFP_KERNEL);
-> +			if (!addrs) {
-> +				err = -ENOMEM;
-> +				goto free_err;
-> +			}
-> +
-> +			xsk_set_destructor_arg(skb, addrs);
-> +
->  		} else {
->  			int nr_frags = skb_shinfo(skb)->nr_frags;
->  			struct page *page;
-> @@ -759,7 +805,9 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
->  	skb->mark = READ_ONCE(xs->sk.sk_mark);
->  	skb->destructor = xsk_destruct_skb;
->  	xsk_tx_metadata_to_compl(meta, &skb_shinfo(skb)->xsk_meta);
-> -	xsk_set_destructor_arg(skb);
-> +
-> +	addrs = (struct xsk_addrs *)skb_shinfo(skb)->destructor_arg;
-> +	addrs->addrs[addrs->num_descs++] = desc->addr;
->  
->  	return skb;
->  
-> @@ -769,7 +817,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
->  
->  	if (err == -EOVERFLOW) {
->  		/* Drop the packet */
-> -		xsk_set_destructor_arg(xs->skb);
-> +		xsk_inc_skb_descs(xs->skb);
->  		xsk_drop_skb(xs->skb);
->  		xskq_cons_release(xs->tx);
->  	} else {
-> @@ -812,7 +860,7 @@ static int __xsk_generic_xmit(struct sock *sk)
->  		 * if there is space in it. This avoids having to implement
->  		 * any buffering in the Tx path.
->  		 */
-> -		err = xsk_cq_reserve_addr_locked(xs->pool, desc.addr);
-> +		err = xsk_cq_reserve_locked(xs->pool);
->  		if (err) {
->  			err = -EAGAIN;
->  			goto out;
-> @@ -1122,6 +1170,7 @@ static int xsk_release(struct socket *sock)
->  	xskq_destroy(xs->tx);
->  	xskq_destroy(xs->fq_tmp);
->  	xskq_destroy(xs->cq_tmp);
-> +	kmem_cache_destroy(xs->xsk_addrs_cache);
->  
->  	sock_orphan(sk);
->  	sock->sk = NULL;
-> @@ -1765,6 +1814,15 @@ static int xsk_create(struct net *net, struct socket *sock, int protocol,
->  
->  	sock_prot_inuse_add(net, &xsk_proto, 1);
->  
-
-[..]
-
-> +	xs->xsk_addrs_cache = kmem_cache_create("xsk_generic_xmit_cache",
-> +						sizeof(struct xsk_addrs), 0,
-> +						SLAB_HWCACHE_ALIGN, NULL);
-> +
-> +	if (!xs->xsk_addrs_cache) {
-> +		sk_free(sk);
-> +		return -ENOMEM;
-> +	}
-
-Should we move this up to happen before sk_add_node_rcu? Otherwise we
-also have to do sk_del_node_init_rcu on !xs->xsk_addrs_cache here?
-
-Btw, alternatively, why not make this happen at bind time when we know
-whether the socket is gonna be copy or zc? And do it only for the copy
-mode?
 
