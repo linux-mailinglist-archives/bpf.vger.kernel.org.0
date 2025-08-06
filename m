@@ -1,229 +1,183 @@
-Return-Path: <bpf+bounces-65110-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65112-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E28E7B1C346
-	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 11:26:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5F63B1C358
+	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 11:29:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BDBB3A83CE
-	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 09:26:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3FA3174564
+	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 09:29:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F9B128A706;
-	Wed,  6 Aug 2025 09:25:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B31CC28A3EF;
+	Wed,  6 Aug 2025 09:29:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="nyud2KCz"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="fjqQ76cf"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD229288CA1;
-	Wed,  6 Aug 2025 09:25:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF7D22E370A;
+	Wed,  6 Aug 2025 09:29:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754472350; cv=none; b=UdTzaUDBJ96SXFxeLFI+HzxN9+WX0DVhmcO9ccyBq8dg6pczhUS/ceBIe5+At4T3HJWqLs0Pu2VPgF7b5ht6N5DF9cniD4YkGT9WgHdyldqUXc9NZ4fh8zVRMXnYv54PuxXlwgXCg7G0Lr59XlgLnjJTVccuI2RIxX76u3zGaLc=
+	t=1754472586; cv=none; b=byMSZvjAIFD7KirLFux5owMsixv9SaWvVCgXqV1orpEhCr3LYjnyY3ftE1Uy+TiCQG1iGu3nG6fVcDySzSLxP/zjfQriBtu/LSbLf6/hmmxzBEvOC6qWV0yHodX3Pzpe5r+4YfT0UVZoVAo4Hq3WEJMt5rvaYBFIUYNzwONCQ4o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754472350; c=relaxed/simple;
-	bh=nieYC9c+249BW7EG1qD6ENgERSYGNbMzbTwbnbkvNmA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dcYT1foRyX06y/E8yichg/4B1A3S+WbXDpQdtt9YsFZV5TFd52gOHWTL+ZBcFfGlYb4syiZtoEp5ezsUJ8izzoaXQz7Fx4LSa1qFiqTkAvDfYK8D0yMQNKDCYwniKpL7RFpNHqHQgvpl7K+C3tzwdk62DMyvMZv2TG/azK7EOL8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=nyud2KCz; arc=none smtp.client-ip=220.197.31.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=mL
-	R5OmI3/KOhZo6YRssu1xcudMwJC+vZQUkPh7Xha2c=; b=nyud2KCzUs/hwXRWi3
-	xEJ1DYlPPeJyZlDMSWlMjxVtxbyvKlEJ4oIQGGvPsdkIOY1V+OJIbEfX9La99yMP
-	IpCzq3RnuMDyVsotGK3fFdFo8KY3KPa24Viu14aKcbE1DHN0VLEN1S0aJfuiFPWX
-	XyotWvJXULSy3Bd2NRj0/s9Ek=
-Received: from phoenix.. (unknown [])
-	by gzga-smtp-mtada-g1-4 (Coremail) with SMTP id _____wDnD0ZrH5NoufpdAA--.11721S4;
-	Wed, 06 Aug 2025 17:25:03 +0800 (CST)
-From: Jiawei Zhao <phoenix500526@163.com>
-To: ast@kernel.org
-Cc: daniel@iogearbox.net,
-	andrii@kernel.org,
-	yonghong.song@linux.dev,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v7 2/2] selftests/bpf: Force -O2 for USDT selftests to cover SIB handling logic
-Date: Wed,  6 Aug 2025 09:24:58 +0000
-Message-ID: <20250806092458.111972-3-phoenix500526@163.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250806092458.111972-1-phoenix500526@163.com>
-References: <20250806092458.111972-1-phoenix500526@163.com>
+	s=arc-20240116; t=1754472586; c=relaxed/simple;
+	bh=ES0F2THCOf5A+FV6j3r4XDV+ugLcrg5Fj4j2x6zvoVI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OYVXZF72Hni4UtBqPxNtbhrw/c02tNAYcWZ26HmeVycW2gojy1h34msFe3D93l14Rt+uaqkNY4jQ8WZ3x3UagC9AKo9diYhgecsnV/0G/cQA7tyW5HbKXpQRknl2dRxVTyYOIc5Q0eRU8rd9GBkBCj+RiZkY9+FNcUVjIurFMSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=fjqQ76cf; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5766tFcu019444;
+	Wed, 6 Aug 2025 09:29:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=B1T9N3
+	DRA/VCZIWhWg7LmWynZ3xyLENJ07dyfWBpZFU=; b=fjqQ76cf2x2t4NVcP8fgzr
+	LaFBEfj+UCr8zHPImEuVsbHeOalOMu7aLBkm6TUNQc72ofXUewOMuhoZpohnvs5n
+	blW8Y59qJ7dCaz8L9JV/B9Wp6GQoTjETd8edxIPnYoo/6y78owXPHvq/Hkqr+0Rv
+	+LnW63jcH7yYToeHn0HUkyWF+7jiczBzFK+cnnRcJqHGPvhFQMYjKBAh4JY0tREc
+	i1k0UdKdYrXY9P8cIzjQnBbZnJRH3DnlQz3cf5/FmVEk3XmkckAic5WNoGDfgHSX
+	A44dxVr/6XizSN0aNtD13z8c/CJYL4SOPGYXrIykeOq1IAZGz+iVHnsCOD1dCZFg
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48c26trn1y-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 Aug 2025 09:29:31 +0000 (GMT)
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5769SaT4007367;
+	Wed, 6 Aug 2025 09:29:30 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48c26trn1x-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 Aug 2025 09:29:30 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5767vKZK020600;
+	Wed, 6 Aug 2025 09:29:29 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 48bpwmty5h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 Aug 2025 09:29:29 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5769TPs950069950
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 6 Aug 2025 09:29:25 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 554962004B;
+	Wed,  6 Aug 2025 09:29:25 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1D41F20049;
+	Wed,  6 Aug 2025 09:29:25 +0000 (GMT)
+Received: from [9.152.212.130] (unknown [9.152.212.130])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed,  6 Aug 2025 09:29:25 +0000 (GMT)
+Message-ID: <1094385e-6f86-453f-a48e-fa284dcae385@linux.ibm.com>
+Date: Wed, 6 Aug 2025 11:29:24 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/2] perf bpf-filter: Enable events manually
+To: Alexander Gordeev <agordeev@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Ian Rogers <irogers@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>
+References: <20250805130346.1225535-1-iii@linux.ibm.com>
+ <20250805130346.1225535-3-iii@linux.ibm.com>
+ <4a7fc5ab-682d-4fac-a547-9e4b1263dba7-agordeev@linux.ibm.com>
+Content-Language: en-US
+From: Thomas Richter <tmricht@linux.ibm.com>
+Organization: IBM
+In-Reply-To: <4a7fc5ab-682d-4fac-a547-9e4b1263dba7-agordeev@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDnD0ZrH5NoufpdAA--.11721S4
-X-Coremail-Antispam: 1Uf129KBjvJXoWxKF15CryUAFWrXry5CF43GFg_yoW7Gw1xpa
-	48Xw1YkrWIqF43Kr1SqF4Utr4rKanayrW8JFykXFyavr48JF92qr1xKry7Kas3G395XF1r
-	A39xtan8Gr48Jw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jzUDJUUUUU=
-X-CM-SenderInfo: pskrv0dl0viiqvswqiywtou0bp/xtbBaxChiGiTHQJCqwAAsf
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: kp9R7gzU3Zi2X7pQoZH8W3IiFwi5wq4p
+X-Authority-Analysis: v=2.4 cv=F/xXdrhN c=1 sm=1 tr=0 ts=6893207b cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+ a=IkcTkHD0fZMA:10 a=2OwXVqhp2XgA:10 a=G2SI-qYk9hsPBJNDFb0A:9
+ a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+X-Proofpoint-GUID: ByIXSOgnBIEuNgtdSnszCEELpYo7LbV2
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODA2MDA1NyBTYWx0ZWRfX9KfYdHqR9GDI
+ Y2nmdZvmxcwpHVRRulqqUvZ/FZDuaJdIwkz0Y49tMESj0+S4foX1OPBQODR/GBsGCZiZWOV83Jg
+ 4MHJtU0tnHYnzRRqTJxPTRZN+NjejH5JlO9TvxoSeHdc6/WUj8mVU4OgiY0TY4dHbytC31VHenu
+ bYuRTzMeoeEDlHNUrDA4hkTZhGd39n5xvGIjh/ZGyzl04OEiQCaPQrKRTyuWo17nLwvgCtOYF0N
+ sEHjrwGYun/eXu5tzHekJbAV/DBJcI5YBrrYPqdMVS0+8GH9BjY8kdR3yIfi1v5OyJPkb9WJoRy
+ FEMzme1beyqrWepAiCHI5tZ1QpcRJYMegIKnaw8U+b1R3CdW0cle3VuL+zbG/9q9uOplNJFgC9x
+ 9U2fWXqD1febnrQrbnHXJe87s6Mcmf51xTteJ7roawXuUuJ1AYu83JtOdAuwAnedbXSFWubo
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-08-06_02,2025-08-04_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ mlxscore=0 lowpriorityscore=0 priorityscore=1501 impostorscore=0
+ clxscore=1015 spamscore=0 bulkscore=0 adultscore=0 mlxlogscore=999
+ malwarescore=0 phishscore=0 suspectscore=0 classifier=spam authscore=0
+ authtc=n/a authcc= route=outbound adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2507300000 definitions=main-2508060057
 
-When using GCC on x86-64 to compile an usdt prog with -O1 or higher
-optimization, the compiler will generate SIB addressing mode for global
-array and PC-relative addressing mode for global variable,
-e.g. "1@-96(%rbp,%rax,8)" and "-1@4+t1(%rip)".
+On 8/5/25 16:14, Alexander Gordeev wrote:
+> On Tue, Aug 05, 2025 at 02:54:05PM +0200, Ilya Leoshkevich wrote:
+> 
+> Hi Thomas,
+> 
+> The below comments date to the initial version, so the question is
+> rather to you:
+> 
+>> On linux-next
+> 
+> This line is extra.
 
-In this patch:
-- add usdt_o2 test case to cover SIB addressing usdt argument spec
-  handling logic
+I just wanted to let readers know which repo to look at.
 
-Signed-off-by: Jiawei Zhao <phoenix500526@163.com>
----
- tools/testing/selftests/bpf/Makefile          |  8 +++
- .../selftests/bpf/prog_tests/usdt_o2.c        | 71 +++++++++++++++++++
- .../selftests/bpf/progs/test_usdt_o2.c        | 37 ++++++++++
- 3 files changed, 116 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/usdt_o2.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_usdt_o2.c
+> 
+>> commit b4c658d4d63d61 ("perf target: Remove uid from target")
+>> introduces a regression on s390. In fact the regression exists
+>> on all platforms when the event supports auxiliary data gathering.
+> 
+> So which commit it actually fixes: the above, the below or the both?
+> 
+>> Fixes: 63f2f5ee856ba ("libbpf: add ability to attach/detach BPF program to perf event")
+> 
+> Thanks!
+> 
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 910d8d6402ef..68cf6a9cf05f 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -759,6 +759,14 @@ TRUNNER_BPF_BUILD_RULE := $$(error no BPF objects should be built)
- TRUNNER_BPF_CFLAGS :=
- $(eval $(call DEFINE_TEST_RUNNER,test_maps))
- 
-+# Use -O2 optimization to generate SIB addressing usdt argument spec
-+# Only apply on x86 architecture where SIB addressing is relevant
-+ifeq ($(ARCH), x86)
-+$(OUTPUT)/usdt_o2.test.o: CFLAGS:=$(subst O0,O2,$(CFLAGS))
-+$(OUTPUT)/cpuv4/usdt_o2.test.o: CFLAGS:=$(subst O0,O2,$(CFLAGS))
-+$(OUTPUT)/no_alu32/usdt_o2.test.o: CFLAGS:=$(subst O0,O2,$(CFLAGS))
-+endif
-+
- # Define test_verifier test runner.
- # It is much simpler than test_maps/test_progs and sufficiently different from
- # them (e.g., test.h is using completely pattern), that it's worth just
-diff --git a/tools/testing/selftests/bpf/prog_tests/usdt_o2.c b/tools/testing/selftests/bpf/prog_tests/usdt_o2.c
-new file mode 100644
-index 000000000000..f04b756b3640
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/usdt_o2.c
-@@ -0,0 +1,71 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Jiawei Zhao <phoenix500526@163.com>. */
-+#include <test_progs.h>
-+
-+#define _SDT_HAS_SEMAPHORES 1
-+#include "../sdt.h"
-+#include "test_usdt_o2.skel.h"
-+
-+int lets_test_this(int);
-+
-+#define test_value 0xFEDCBA9876543210ULL
-+#define SEC(name) __attribute__((section(name), used))
-+
-+
-+static volatile __u64 array[1] = {test_value};
-+unsigned short test_usdt1_semaphore SEC(".probes");
-+
-+static __always_inline void trigger_func(void)
-+{
-+	/* Base address + offset + (index * scale) */
-+	if (test_usdt1_semaphore) {
-+		for (volatile int i = 0; i <= 0; i++)
-+			STAP_PROBE1(test, usdt1, array[i]);
-+	}
-+}
-+
-+static void basic_sib_usdt(void)
-+{
-+	LIBBPF_OPTS(bpf_usdt_opts, opts);
-+	struct test_usdt_o2 *skel;
-+	struct test_usdt_o2__bss *bss;
-+	int err;
-+
-+	skel = test_usdt_o2__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
-+
-+	bss = skel->bss;
-+	bss->my_pid = getpid();
-+
-+	err = test_usdt_o2__attach(skel);
-+	if (!ASSERT_OK(err, "skel_attach"))
-+		goto cleanup;
-+
-+	/* usdt1 won't be auto-attached */
-+	opts.usdt_cookie = 0xcafedeadbeeffeed;
-+	skel->links.usdt1 = bpf_program__attach_usdt(skel->progs.usdt1,
-+						     0 /*self*/, "/proc/self/exe",
-+						     "test", "usdt1", &opts);
-+	if (!ASSERT_OK_PTR(skel->links.usdt1, "usdt1_link"))
-+		goto cleanup;
-+
-+	trigger_func();
-+
-+	ASSERT_EQ(bss->usdt1_called, 1, "usdt1_called");
-+	ASSERT_EQ(bss->usdt1_cookie, 0xcafedeadbeeffeed, "usdt1_cookie");
-+	ASSERT_EQ(bss->usdt1_arg_cnt, 1, "usdt1_arg_cnt");
-+	ASSERT_EQ(bss->usdt1_arg, test_value, "usdt1_arg");
-+	ASSERT_EQ(bss->usdt1_arg_ret, 0, "usdt1_arg_ret");
-+	ASSERT_EQ(bss->usdt1_arg_size, sizeof(array[0]), "usdt1_arg_size");
-+
-+cleanup:
-+	test_usdt_o2__destroy(skel);
-+}
-+
-+
-+
-+void test_usdt_o2(void)
-+{
-+	basic_sib_usdt();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_usdt_o2.c b/tools/testing/selftests/bpf/progs/test_usdt_o2.c
-new file mode 100644
-index 000000000000..14602aa54578
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_usdt_o2.c
-@@ -0,0 +1,37 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/usdt.bpf.h>
-+
-+int my_pid;
-+
-+int usdt1_called;
-+u64 usdt1_cookie;
-+int usdt1_arg_cnt;
-+int usdt1_arg_ret;
-+u64 usdt1_arg;
-+int usdt1_arg_size;
-+
-+SEC("usdt")
-+int usdt1(struct pt_regs *ctx)
-+{
-+	long tmp;
-+
-+	if (my_pid != (bpf_get_current_pid_tgid() >> 32))
-+		return 0;
-+
-+	__sync_fetch_and_add(&usdt1_called, 1);
-+
-+	usdt1_cookie = bpf_usdt_cookie(ctx);
-+	usdt1_arg_cnt = bpf_usdt_arg_cnt(ctx);
-+
-+	usdt1_arg_ret = bpf_usdt_arg(ctx, 0, &tmp);
-+	usdt1_arg = (u64)tmp;
-+	usdt1_arg_size = bpf_usdt_arg_size(ctx, 0);
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+Good question!  Pick what you like... :-)
+
+The issue in question originates from a patch set of 10 patches.
+The patch set rebuilds event sample with filtering and migrates
+from perf tool's selective process picking to more generic eBPF
+filtering using eBPF programs hooked to perf events.
+
+To be precise, the issue Ilya's  patch fixes is this:
+Fixes: 63f2f5ee856ba ("libbpf: add ability to attach/detach BPF program to perf event")
+
+However the issue (perf failure) does *NOT* show up until this patch is applied:
+commit b4c658d4d63d61 ("perf target: Remove uid from target")
+
+There are some patches in between the two (when you look at the complete patch set),
+but they do not affect the result.
+
+Hope that helps.
 -- 
-2.43.0
+Thomas Richter, Dept 3303, IBM s390 Linux Development, Boeblingen, Germany
+--
+IBM Deutschland Research & Development GmbH
 
+Vorsitzender des Aufsichtsrats: Wolfgang Wendt
+
+Geschäftsführung: David Faller
+
+Sitz der Gesellschaft: Böblingen / Registergericht: Amtsgericht Stuttgart, HRB 243294
 
