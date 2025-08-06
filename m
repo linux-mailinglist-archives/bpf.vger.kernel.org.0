@@ -1,141 +1,135 @@
-Return-Path: <bpf+bounces-65134-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65135-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0DC1B1C8A7
-	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 17:25:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CD39B1C8AA
+	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 17:25:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7240B5647DF
-	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 15:25:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C26436265D2
+	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 15:25:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FB3F291882;
-	Wed,  6 Aug 2025 15:25:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1178291C0B;
+	Wed,  6 Aug 2025 15:25:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FwfM+kmF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L/pKhilf"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64EE528FFDA
-	for <bpf@vger.kernel.org>; Wed,  6 Aug 2025 15:25:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC678290BAB;
+	Wed,  6 Aug 2025 15:25:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754493929; cv=none; b=nHVEmCWrMerU8RqopIaZlXXDGJ8hG7BLS0UUIDyzvLCS/yKURhWwUhPxhGhDOBEXULq+1Vwc1hq2NsZDZhVovx0MXQvDMskWJn10Eij2DGu7T5j1aOchSN4Z66yAHHZXZzjYYZ4ZOPvWX5Oz6TYcktzDqUQFOfXTj6qBTBe24zU=
+	t=1754493947; cv=none; b=fngdYKyL2ujs2nm0LKO6e9XXeYMrtnO/0gGunXvdx7PIMmga0PeWfZCO3kExliFgF7RFrvs+ONz8Wrg/HpF2E7E1Com+QcsWhw0SdOPxU6BIpgzAvMyEfbqUiwGkWlpzRIapuGBLy4f9374B9QgHktzqOoVo03QvUOOLOhk6Ka0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754493929; c=relaxed/simple;
-	bh=ULcIH6BVggBswLQbNkZJSrb/oMgsGp5NCCrIzHSDbOo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kCG26Xm0Wf5ml5crzfymL5E/o1ZizSa33rWCsec7EuKyx990P9F6jaRDtAawlf9wiqgTjpoCPj5XyCjLzmWmGQoKgP3a+w/N9lQ91BrT+5z/uNvvGouMiZm1D0gLCmvnLE6H3fs4cmF0Xycj0Zo7SgNo4TNtuOmpBNOdFuhbfmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FwfM+kmF; arc=none smtp.client-ip=95.215.58.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d6cf6faf-f6bf-41f6-b2fd-2694bc62753e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1754493915;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+Q5/YSD3ttDTfg15v6aPsPKmNRREHnIKb5KKPhEjA5M=;
-	b=FwfM+kmFqPhFxjT2oEfZtDKcoTmexlOlozpqKwp+AepwL+qgle74fQYK8CdA5OXa0L/x6u
-	H9BTZFkTtHDQJEFdXfDpnEyk786eSmY81nkgWbSb6h6iYCG6MuEFdKYKlCnxoPWKHXYdRt
-	JW/xQk5eQHvgPRSTtxkadtcAiQsEmc0=
-Date: Wed, 6 Aug 2025 08:25:01 -0700
+	s=arc-20240116; t=1754493947; c=relaxed/simple;
+	bh=mKodv+sKlayKFfKvzNuhrQzdX3PKR6NGBRJMnFiQnVw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qQyeGqyX10KX8NlF7HTpSV+GLH33Ql0UNvman0keh+9hDZPtN8iY2anjOQsyiYHZJM7YGxPeyY5lyvesmrrPjQ2lVEmz442x6MOVYH8A3uCHB9VPbZGsePlowGmUd5BQe1EcnxQMiSNinxXwUrwKyuT+JH8pA+3psbvtL6uv+88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L/pKhilf; arc=none smtp.client-ip=209.85.167.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-55b79ea50f8so2953e87.0;
+        Wed, 06 Aug 2025 08:25:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1754493944; x=1755098744; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0Ak6kkG0Gr5ILhCz9qlDe4Tz2QPMgdqhFKKAgptHzkg=;
+        b=L/pKhilf9irSpygotaDCsaM/tcGbqCXD60babCIKq/vtquCAqJNckxjtqEwGt+aHy9
+         1YV9Lq4g3zGiE0AeQ5g3SQUNoqCn9Xv9YQUBB7heYnuAdSjk0k3cM6bXXBys6t3IL3HK
+         xmr/qyeTSe8Q7fFHm8iiN9f8SaVVcqaWSNCLyxmti4YNGX/BMT/zBpxzdXopRcy89wf0
+         Nwd/b1hJnBRgziogttQxPLtXOaEcXEkS2i357SDzF7usMD4sV7JzqqA584A1JJEJzIbL
+         Lvfz0RpIILxua1TCvR2n8OY1VD5yo9q123CZMWGBVITEtFCj3h/ueTopTgQ6NkIoWyxO
+         JTPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754493944; x=1755098744;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0Ak6kkG0Gr5ILhCz9qlDe4Tz2QPMgdqhFKKAgptHzkg=;
+        b=HAZUPS0GzryJRJ0usX7mW6zzyyJL7B1WoyCnl0FuziHyzyC+UmBHkxQVCXC6W4HoHa
+         vRaaaK8wsdyuAe2GXCYVf4YYpK+QsA33Fm9HY5buc7gL2HmrYPlaqc/wfiFPXB3B/6xX
+         RCL4cLh98Bfb/pyfax652jd5xW/ONpMUquFnz9QFQOLPEzuyxm6gr01HPpTwuq6fdmKP
+         67/2Xv3RAEgb34x/4LMo57XkpIOohHJc3739l7gWTPjQj37u8A7NBl3R1LRqRklJqaKS
+         JZHadEvo93mLVEuimIHKpHFGAtMZHBs4ZnJLw6ZCUptQt3fJAAKxbO7Z4AAzwjHK1q2s
+         6K/A==
+X-Forwarded-Encrypted: i=1; AJvYcCVrB2+OESANrEUplQhDIzMIMGXw/yFw+vCG43gHlklHXPPN2nAHPeZO7FK0OYaTP9TUAr+Stz2Z@vger.kernel.org, AJvYcCX6hKlW0XX4+DnIIemF4bkv7pDtw1fxQ5BzVZh6rlT6LJJ6I1/xsl8quT/GM4suHtk4+j8=@vger.kernel.org, AJvYcCXCk/5Fo8hXdkCOwDqmcsfkX03W5PPOex26SInLUEFAhxxZ2N5aF2+6OjZM/LqQMtzKdLoEloKm4sM8bt2y@vger.kernel.org, AJvYcCXGg3rolZlhXZX6HSGKf0HKsPEotFVyT9fmx2+jTypK7qKNelewoliSOiHDOebxppJB9IoRPS9Cp1xnVT7TN1mY@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx9kn5B2jKAFs5jDLkdFRohWi4QOa3pM5lFbm3dL1lH786IBAN+
+	GleUcbCWCcF7EZX6xalL5tY7jGVxgcdjOA4G0ednyr4KDGW0EEY0MvGaYpNPx71bwNxnE0pawWc
+	cetCz1lx7/znaPTRunXgRVhuVwTDpy80=
+X-Gm-Gg: ASbGncvNsNv6Zkw3pBiF8QAjRxHwbCrNKb6+HQILW3Ov58+JJCrx5ZwBvzORMUPeHP3
+	+3KwnpHpJyjE8GVVwFsXvwB4qslN03WGIuRMV6gUaF/+2uGHpWzIjBbMJDK8UmxOuAjzjJz2DqF
+	NPe4rwkveu8NUy1V7Vr9g2AHGEzLJuti+BOnp6d9QRcdMQuka9wP10cx5L7wwyVyQTx+uQbZxxn
+	pDOxGAlA8uZSP4TR6LADzw+Pqy0PMOfDc+R2Xit2w==
+X-Google-Smtp-Source: AGHT+IFuXucBMEFtpCtDsz4YxIbE8W+P3+as9anTHGHj6dyv4YdatbL3BW3rJ6ST71SpMX9C+9AlGI3nNgbMQZCuM6E=
+X-Received: by 2002:a05:6512:1589:b0:55b:920c:33eb with SMTP id
+ 2adb3069b0e04-55caf35898amr981949e87.42.1754493943616; Wed, 06 Aug 2025
+ 08:25:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 1/2] libbpf: Add the ability to suppress perf event
- enablement
-Content-Language: en-GB
-To: Ilya Leoshkevich <iii@linux.ibm.com>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Ian Rogers <irogers@google.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
- Thomas Richter <tmricht@linux.ibm.com>, Jiri Olsa <jolsa@kernel.org>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Eduard Zingerman <eddyz87@gmail.com>
-References: <20250806114227.14617-1-iii@linux.ibm.com>
- <20250806114227.14617-2-iii@linux.ibm.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20250806114227.14617-2-iii@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250806110230.23949-1-pranav.tyagi03@gmail.com> <CAADnVQJQV5Z_LsrBCa2=UwQ9NhPbkpNvZ9N7nf1sv-QunEj1FQ@mail.gmail.com>
+In-Reply-To: <CAADnVQJQV5Z_LsrBCa2=UwQ9NhPbkpNvZ9N7nf1sv-QunEj1FQ@mail.gmail.com>
+From: Pranav Tyagi <pranav.tyagi03@gmail.com>
+Date: Wed, 6 Aug 2025 20:55:31 +0530
+X-Gm-Features: Ac12FXz2S0kDjSFEJFEpV8_XL9LeoNM4mZxNsuwnlSJbqILHu0d2FLO1xgfQ7Tw
+Message-ID: <CAH4c4jKvMBfaRaAoHbBn45vKzCHMBRjJ7UCOqa8FDXXQ7c_L2w@mail.gmail.com>
+Subject: Re: [PATCH] selftests/bpf/progs: use __auto_type in swap() macro
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eduard <eddyz87@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Mykola Lysenko <mykolal@fb.com>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-kernel-mentees@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-
-On 8/6/25 4:40 AM, Ilya Leoshkevich wrote:
-> Automatically enabling a perf event after attaching a BPF prog to it is
-> not always desirable.
+On Wed, Aug 6, 2025 at 8:33=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> Add a new no_ioctl_enable field to struct bpf_perf_event_opts. While
-
-no_ioctl_enable =>  dont_enable
-
-> introducing ioctl_enable instead would be nicer in that it would avoid
-> a double negation in the implementation, it would make
-> DECLARE_LIBBPF_OPTS() less efficient.
+> On Wed, Aug 6, 2025 at 4:02=E2=80=AFAM Pranav Tyagi <pranav.tyagi03@gmail=
+.com> wrote:
+> >
+> > Replace typeof() with __auto_type in xdp_synproxy_kern.c.
+> > __auto_type was introduced in GCC 4.9 and reduces the compile time for
+> > all compilers. No functional changes intended.
+> >
+> > Signed-off-by: Pranav Tyagi <pranav.tyagi03@gmail.com>
+> > ---
+> >  tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c b/to=
+ols/testing/selftests/bpf/progs/xdp_synproxy_kern.c
+> > index 62b8e29ced9f..b08738f9a0e6 100644
+> > --- a/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
+> > +++ b/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
+> > @@ -58,7 +58,7 @@
+> >  #define MAX_PACKET_OFF 0xffff
+> >
+> >  #define swap(a, b) \
+> > -       do { typeof(a) __tmp =3D (a); (a) =3D (b); (b) =3D __tmp; } whi=
+le (0)
+> > +       do { __auto_type __tmp =3D (a); (a) =3D (b); (b) =3D __tmp; } w=
+hile (0)
 >
-> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-> Suggested-by: Jiri Olsa <jolsa@kernel.org>
-> Tested-by: Thomas Richter <tmricht@linux.ibm.com>
-> Co-developed-by: Thomas Richter <tmricht@linux.ibm.com>
-> Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
->   tools/lib/bpf/libbpf.c | 13 ++++++++-----
->   tools/lib/bpf/libbpf.h |  4 +++-
->   2 files changed, 11 insertions(+), 6 deletions(-)
+> Sorry, not doing this churn. The code is fine as-is.
 >
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index fb4d92c5c339..8f5a81b672e1 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -10965,11 +10965,14 @@ struct bpf_link *bpf_program__attach_perf_event_opts(const struct bpf_program *p
->   		}
->   		link->link.fd = pfd;
->   	}
-> -	if (ioctl(pfd, PERF_EVENT_IOC_ENABLE, 0) < 0) {
-> -		err = -errno;
-> -		pr_warn("prog '%s': failed to enable perf_event FD %d: %s\n",
-> -			prog->name, pfd, errstr(err));
-> -		goto err_out;
-> +
-> +	if (!OPTS_GET(opts, dont_enable, false)) {
-> +		if (ioctl(pfd, PERF_EVENT_IOC_ENABLE, 0) < 0) {
-> +			err = -errno;
-> +			pr_warn("prog '%s': failed to enable perf_event FD %d: %s\n",
-> +				prog->name, pfd, errstr(err));
-> +			goto err_out;
-> +		}
->   	}
->   
->   	return &link->link;
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index d1cf813a057b..455a957cb702 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -499,9 +499,11 @@ struct bpf_perf_event_opts {
->   	__u64 bpf_cookie;
->   	/* don't use BPF link when attach BPF program */
->   	bool force_ioctl_attach;
-> +	/* don't automatically enable the event */
-> +	bool dont_enable;
->   	size_t :0;
->   };
-> -#define bpf_perf_event_opts__last_field force_ioctl_attach
-> +#define bpf_perf_event_opts__last_field dont_enable
->   
->   LIBBPF_API struct bpf_link *
->   bpf_program__attach_perf_event(const struct bpf_program *prog, int pfd);
+> --
+> pw-bot: cr
 
+I understand. Thanks
 
