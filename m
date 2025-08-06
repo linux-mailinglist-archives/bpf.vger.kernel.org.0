@@ -1,126 +1,175 @@
-Return-Path: <bpf+bounces-65113-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65114-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73C87B1C3B3
-	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 11:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AC26BB1C41C
+	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 12:20:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC9663B73ED
-	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 09:48:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C78E3BDECF
+	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 10:20:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20DE8256C89;
-	Wed,  6 Aug 2025 09:48:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=163.com header.i=@163.com header.b="c54s3wP2"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD07B28A738;
+	Wed,  6 Aug 2025 10:20:19 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69C422904;
-	Wed,  6 Aug 2025 09:48:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 916BE1922C0;
+	Wed,  6 Aug 2025 10:20:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754473693; cv=none; b=KJbauVr0/45K7y/otp38O7Lky2BkWIGJ5KYQZ2tDdHork6lQ9foO9uhsLvltJe2g66i0jQUx9nHaHFUQhJtHCZlFDaKeOlfiPlmV6Zl3UQoYScRku5eoY7qI1UFNsRwjDKB89d+AxNhUZUX8IyFZezeg9Pt7ar9muiXoy3E69sI=
+	t=1754475619; cv=none; b=OriULYYK4vDFCB9VKH9LoUmN60IFA8xvkDGiRvYix+7b1rsIvtPZUy4McDx/KGjES39cH/4d9dN148Yz3ve3OoiwiB9st7xFHbJi75NFyVm/9FU4Af+7+0PdvwShnF5WOplecjTrmftJNLrZdIgRL+q5egILC4J3zuNd5kB4ZCw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754473693; c=relaxed/simple;
-	bh=L18x3n0Qgl4lVs+Z9ZFglVRU0vLUp/CruW8wFiT1QfI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
-	 MIME-Version:Message-ID; b=IQjo/uIqepo7chE6EFgeggo1KO2/UGnO9UiUk0txRVKigGCEhXJS9d6J+qQ7cLcTqyj2YZ9oh+348tHCFp3tmXkTra//0WoID6kS/utbNa26DUJ/bu/bp/5SxE4mHRcDl+wOCTA4IEOBzhQuwsGLrBOe0nuhdEHkcseiqxDK4r8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=fail (1024-bit key) header.d=163.com header.i=@163.com header.b=c54s3wP2 reason="signature verification failed"; arc=none smtp.client-ip=220.197.31.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Date:From:To:Subject:Content-Type:MIME-Version:
-	Message-ID; bh=QzKGHkQdK0bBRBUTozmgAfsqu4s3xVI4zk+6kEWtcVQ=; b=c
-	54s3wP2ww5tR5bh9A31RvZAgGZpX10TLpTSyUMkPuHwHnB2Kc6YCAp6jFJvr1WKA
-	/LM7BrelO+XRPYYa1dJL4aiQeE1gT1FCq0OF0P11za+iEimD9QPncHtRjEUen5Tr
-	xguMl/NG3alS2l6UjMv9OfslXGo9mBO5JpI2y6HksE=
-Received: from phoenix500526$163.com ( [120.230.124.59] ) by
- ajax-webmail-wmsvr-40-108 (Coremail) ; Wed, 6 Aug 2025 17:47:36 +0800 (CST)
-Date: Wed, 6 Aug 2025 17:47:36 +0800 (CST)
-From: =?UTF-8?B?6LW15L2z54Kc?= <phoenix500526@163.com>
-To: "Yonghong Song" <yonghong.song@linux.dev>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re:Re: [PATCH v6 2/2] selftests/bpf: Force -O2 for USDT selftests
- to cover SIB handling logic
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20250519(9504565a)
- Copyright (c) 2002-2025 www.mailtech.cn 163com
-In-Reply-To: <058d4d74-23ff-444b-a773-9d45204900f2@linux.dev>
-References: <20250802084803.108777-1-phoenix500526@163.com>
- <20250802084803.108777-3-phoenix500526@163.com>
- <058d4d74-23ff-444b-a773-9d45204900f2@linux.dev>
-X-NTES-SC: AL_Qu2eBvicvE4u4CSdbOkfmUsVh+o9X8K1vfsk3oZfPJp+jCLp1yY+THNTMH/b4cWDNTqunQiHQiJp+uZHV6V3YawLZvTuhmOs4NaAknJTr1/35Q==
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+	s=arc-20240116; t=1754475619; c=relaxed/simple;
+	bh=COvGXp7LtjUshMDg0yELE6cQAN8nXPTRktokIYkICsc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=F5ZKHf4DjDqeLzfdg+8W1CoIG7DyPTymTxm1aKGcuNlhDSLuotGWABS/UEdQyEYmOsqV/+XHQf+Y4N1wGo33JbzupgT46JndKOhXJxRT3Y9G9mU3L2J9Ld+xMV/g0g9UEUheyHY/1YIEk3z3R88w6BroseZar6PsETeyQwik7Ow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CE8981E8D;
+	Wed,  6 Aug 2025 03:20:08 -0700 (PDT)
+Received: from J2N7QTR9R3 (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 115603F738;
+	Wed,  6 Aug 2025 03:20:13 -0700 (PDT)
+Date: Wed, 6 Aug 2025 11:20:08 +0100
+From: Mark Rutland <mark.rutland@arm.com>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Steven Rostedt <rostedt@kernel.org>, Florent Revest <revest@google.com>,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Menglong Dong <menglong8.dong@gmail.com>,
+	Naveen N Rao <naveen@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
+	Andy Chiu <andybnac@gmail.com>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>
+Subject: Re: [RFC 00/10] ftrace,bpf: Use single direct ops for bpf trampolines
+Message-ID: <aJMsWB2Sxb7-66zs@J2N7QTR9R3>
+References: <aIn_12KHz7ikF2t1@krava>
+ <aIyNOd18TRLu8EpY@J2N7QTR9R3>
+ <aI6CltnCRbVXwyfm@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <393dae7e.9b04.1987ec77091.Coremail.phoenix500526@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:bCgvCgD313O5JJNoRQoUAA--.51653W
-X-CM-SenderInfo: pskrv0dl0viiqvswqiywtou0bp/1tbiFAOhiGiTGhWjkQABs5
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aI6CltnCRbVXwyfm@krava>
 
-CgpPSywgSeKAmXZlIGFscmVhZHkgYWRkZWQgYW4gdXNkdF9vMiB0ZXN0IGFuZCBwYXNzZWQgaXQu
-wqAKCgoKCkF0IDIwMjUtMDgtMDYgMDM6NDI6MjIsICJZb25naG9uZyBTb25nIiA8eW9uZ2hvbmcu
-c29uZ0BsaW51eC5kZXY+IHdyb3RlOgo+Cj4KPk9uIDgvMi8yNSAxOjQ4IEFNLCBKaWF3ZWkgWmhh
-byB3cm90ZToKPj4gV2hlbiB1c2luZyBHQ0Mgb24geDg2LTY0IHRvIGNvbXBpbGUgYW4gdXNkdCBw
-cm9nIHdpdGggLU8xIG9yIGhpZ2hlcgo+PiBvcHRpbWl6YXRpb24sIHRoZSBjb21waWxlciB3aWxs
-IGdlbmVyYXRlIFNJQiBhZGRyZXNzaW5nIG1vZGUgZm9yIGdsb2JhbAo+PiBhcnJheSBhbmQgUEMt
-cmVsYXRpdmUgYWRkcmVzc2luZyBtb2RlIGZvciBnbG9iYWwgdmFyaWFibGUsCj4+IGUuZy4gIjFA
-LTk2KCVyYnAsJXJheCw4KSIgYW5kICItMUA0K3QxKCVyaXApIi4KPj4KPj4gSW4gdGhpcyBwYXRj
-aDoKPj4gLSBmb3JjZSAtTzIgb3B0aW1pemF0aW9uIGZvciB1c2R0LnRlc3QubyB0byBnZW5lcmF0
-ZSBTSUIgYWRkcmVzc2luZyB1c2R0Cj4+ICAgIGFyZ3VtZW50IHNwZWMuCj4+IC0gY2hhbmdlIHRo
-ZSBnbG9iYWwgdmFyaWFibGUgdDEgdG8gYSBsb2NhbCB2YXJpYWJsZSwgdG8gYXZvaWQgY29tcGls
-ZXIKPj4gICAgZ2VuZXJhdGluZyBQQy1yZWxhdGl2ZSBhZGRyZXNzaW5nIG1vZGUgZm9yIGl0Lgo+
-Pgo+PiBTaWduZWQtb2ZmLWJ5OiBKaWF3ZWkgWmhhbyA8cGhvZW5peDUwMDUyNkAxNjMuY29tPgo+
-PiAtLS0KPj4gICB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvTWFrZWZpbGUgICAgICAgICAg
-fCAgOCArKysrKysrKwo+PiAgIHRvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9nX3Rlc3Rz
-L3VzZHQuYyB8IDE4ICsrKysrKysrKysrKy0tLS0tLQo+PiAgIDIgZmlsZXMgY2hhbmdlZCwgMjAg
-aW5zZXJ0aW9ucygrKSwgNiBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBhL3Rvb2xzL3Rl
-c3Rpbmcvc2VsZnRlc3RzL2JwZi9NYWtlZmlsZSBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2Jw
-Zi9NYWtlZmlsZQo+PiBpbmRleCA5MTBkOGQ2NDAyZWYuLjRiNzdkMDZkNWM0MiAxMDA2NDQKPj4g
-LS0tIGEvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL01ha2VmaWxlCj4+ICsrKyBiL3Rvb2xz
-L3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9NYWtlZmlsZQo+PiBAQCAtNzU5LDYgKzc1OSwxNCBAQCBU
-UlVOTkVSX0JQRl9CVUlMRF9SVUxFIDo9ICQkKGVycm9yIG5vIEJQRiBvYmplY3RzIHNob3VsZCBi
-ZSBidWlsdCkKPj4gICBUUlVOTkVSX0JQRl9DRkxBR1MgOj0KPj4gICAkKGV2YWwgJChjYWxsIERF
-RklORV9URVNUX1JVTk5FUix0ZXN0X21hcHMpKQo+PiAgIAo+PiArIyBGb3JjZSB1c2R0LmMgdG8g
-dXNlIC1PMiBvcHRpbWl6YXRpb24gdG8gZ2VuZXJhdGUgU0lCIGFkZHJlc3NpbmcKPj4gKyMgT25s
-eSBhcHBseSBvbiB4ODYgYXJjaGl0ZWN0dXJlIHdoZXJlIFNJQiBhZGRyZXNzaW5nIGlzIHJlbGV2
-YW50Cj4+ICtpZmVxICgkKEFSQ0gpLCB4ODYpCj4+ICskKE9VVFBVVCkvdXNkdC50ZXN0Lm86IENG
-TEFHUzo9JChzdWJzdCBPMCxPMiwkKENGTEFHUykpCj4+ICskKE9VVFBVVCkvY3B1djQvdXNkdC50
-ZXN0Lm86IENGTEFHUzo9JChzdWJzdCBPMCxPMiwkKENGTEFHUykpCj4+ICskKE9VVFBVVCkvbm9f
-YWx1MzIvdXNkdC50ZXN0Lm86IENGTEFHUzo9JChzdWJzdCBPMCxPMiwkKENGTEFHUykpCj4+ICtl
-bmRpZgo+Cj5UaGlzIGlzIG5vIGdvb2QuIFlvdSBzaG91bGQgbm90IGNoYW5nZSBmcm9tIC1PMCB0
-byAtTzIuIFRoZSBleGlzdGluZyB1c2R0LmMKPnRlc3Qgc2hvdWxkIGJlIGtlcHQuIEkgYXNzdW1l
-IGF0IC1PMCBsZXZlbCwgdGhlIGNvbXBpbGVyIHByb2JhYmx5Cj53b24ndCBnZW5lcmF0ZSBTSUIg
-cGF0dGVybi4KPgo+WW91IGNvdWxkIGFkZCBhbm90aGVyIHVzZHQgdGVzdCBlLmcuIHVzZHRfbzIu
-YyBhbmQgZm9yY2UKPnVzZHRfbzIgaXMgY29tcGlsZWQgd2l0aCAtTzIgb3B0aW1pemF0aW9ucyBh
-bmQgaW4gdXNkdF9vMiBmb2N1c2luZyBvbgo+U0lCIHByb2JlLgo+Cj4+ICsKPj4gICAjIERlZmlu
-ZSB0ZXN0X3ZlcmlmaWVyIHRlc3QgcnVubmVyLgo+PiAgICMgSXQgaXMgbXVjaCBzaW1wbGVyIHRo
-YW4gdGVzdF9tYXBzL3Rlc3RfcHJvZ3MgYW5kIHN1ZmZpY2llbnRseSBkaWZmZXJlbnQgZnJvbQo+
-PiAgICMgdGhlbSAoZS5nLiwgdGVzdC5oIGlzIHVzaW5nIGNvbXBsZXRlbHkgcGF0dGVybiksIHRo
-YXQgaXQncyB3b3J0aCBqdXN0Cj4+IGRpZmYgLS1naXQgYS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0
-cy9icGYvcHJvZ190ZXN0cy91c2R0LmMgYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvcHJv
-Z190ZXN0cy91c2R0LmMKPj4gaW5kZXggNDk1ZDY2NDE0YjU3Li44NmYzNTRkMjVhZWYgMTAwNjQ0
-Cj4+IC0tLSBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9nX3Rlc3RzL3VzZHQuYwo+
-PiArKysgYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvcHJvZ190ZXN0cy91c2R0LmMKPj4g
-QEAgLTE0LDEwICsxNCwxNSBAQCBzdGF0aWMgdm9sYXRpbGUgaW50IGlkeCA9IDI7Cj4+ICAgc3Rh
-dGljIHZvbGF0aWxlIF9fdTY0IGJsYSA9IDB4RkVEQ0JBOTg3NjU0MzIxMFVMTDsKPj4gICBzdGF0
-aWMgdm9sYXRpbGUgc2hvcnQgbnVtc1tdID0gey0xLCAtMiwgLTMsIC00fTsKPj4gICAKPj4gLXN0
-YXRpYyB2b2xhdGlsZSBzdHJ1Y3Qgewo+PiAtCWludCB4Owo+PiAtCXNpZ25lZCBjaGFyIHk7Cj4+
-IC19IHQxID0geyAxLCAtMTI3IH07Cj4+ICsvKgo+PiArICogVE9ETzogIEF0IE8yIG9wdGltaXph
-dGlvbiBsZXZlbCwgdDEncyBVU0RUIGFyZ3VtZW50IHNwZWMgYmVjb21lcyAtMUA0K3QxKCVyaXAp
-Lgo+PiArICogU2luY2UgbGliYnBmIGRvZXNuJ3Qgc3VwcG9ydCBSSVAgYWRkcmVzc2luZyBtb2Rl
-IHlldCwgdGhpcyBjYXVzZXMgInVucmVjb2duaXplZCByZWdpc3RlciIgZXJyb3JzLgo+PiArICog
-VGhpcyB0ZXN0IHdpbGwgYmUgcmUtZW5hYmxlZCBvbmNlIGxpYmJwZiBzdXBwb3J0cyBSSVAgYWRk
-cmVzc2luZyBtb2RlLgo+PiArICovCj4+ICsvLyBzdGF0aWMgdm9sYXRpbGUgc3RydWN0IHsKPj4g
-Ky8vCWludCB4Owo+PiArLy8Jc2lnbmVkIGNoYXIgeTsKPj4gKy8vIH0gdDEgPSB7IDEsIC0xMjcg
-fTsKPj4gICAKPgo+Wy4uLl0K
+On Sat, Aug 02, 2025 at 11:26:46PM +0200, Jiri Olsa wrote:
+> On Fri, Aug 01, 2025 at 10:49:56AM +0100, Mark Rutland wrote:
+> > On Wed, Jul 30, 2025 at 01:19:51PM +0200, Jiri Olsa wrote:
+> > > On Tue, Jul 29, 2025 at 06:57:40PM +0100, Mark Rutland wrote:
+> > > > 
+> > > > On Tue, Jul 29, 2025 at 12:28:03PM +0200, Jiri Olsa wrote:
+> > > > > hi,
+> > > > > while poking the multi-tracing interface I ended up with just one
+> > > > > ftrace_ops object to attach all trampolines.
+> > > > > 
+> > > > > This change allows to use less direct API calls during the attachment
+> > > > > changes in the future code, so in effect speeding up the attachment.
+> > > > 
+> > > > How important is that, and what sort of speedup does this result in? I
+> > > > ask due to potential performance hits noted below, and I'm lacking
+> > > > context as to why we want to do this in the first place -- what is this
+> > > > intended to enable/improve?
+> > > 
+> > > so it's all work on PoC stage, the idea is to be able to attach many
+> > > (like 20,30,40k) functions to their trampolines quickly, which at the
+> > > moment is slow because all the involved interfaces work with just single
+> > > function/tracempoline relation
+> > 
+> > Do you know which aspect of that is slow? e.g. is that becuase you have
+> > to update each ftrace_ops independently, and pay the synchronization
+> > overhead per-ops?
+> > 
+> > I ask because it might be possible to do some more batching there, at
+> > least for architectures like arm64 that use the CALL_OPS approach.
+> 
+> IIRC it's the rcu sync in register_ftrace_direct and ftrace_shutdown
+> I'll try to profile that case again, there  might have been changes
+> since the last time we did that
+
+Do you mean synchronize_rcu_tasks()?
+
+The call in register_ftrace_direct() was removed in commit:
+
+  33f137143e651321 ("ftrace: Use asynchronous grace period for register_ftrace_direct()")
+
+... but in ftrace_shutdown() we still have a call to synchronize_rcu_tasks(),
+and to synchronize_rcu_tasks_rude().
+
+The call to synchronize_rcu_tasks() is still necessary, but we might be
+abel to batch that better with API changes.
+
+I think we might be able to remove the call to
+synchronize_rcu_tasks_rude() on architectures with ARCH_WANTS_NO_INSTR,
+since there shouldn't be any instrumentable functions called with RCU
+not watching. That'd need to be checked.
+
+[...]
+
+> > > sorry I probably forgot/missed discussion on this, but doing the fast path like in
+> > > x86_64 is not an option in arm, right?
+> > 
+> > On arm64 we have a fast path, BUT branch range limitations means that we
+> > cannot always branch directly from the instrumented function to the
+> > direct func with a single branch instruction. We use ops->direct_call to
+> > handle that case within a common trampoline, which is significantly
+> > cheaper that iterating over the ops and/or looking up the direct func
+> > from a hash.
+> > 
+> > With CALL_OPS, we place a pointer to the ops immediately before the
+> > instrumented function, and have the instrumented function branch to a
+> > common trampoline which can load that pointer (and can then branch to
+> > any direct func as necessary).
+> > 
+> > The instrumented function looks like:
+> > 
+> > 	# Aligned to 8 bytes
+> > 	func - 8:
+> > 		< pointer to ops >
+> 
+> stupid question.. so there's ftrace_ops pointer stored for each function at
+> 'func - 8` ?  why not store the func's direct trampoline address in there?
+
+Once reason is that today we don't have trampolines for all ops. Since
+branch range limitations can require bouncing through the common ops,
+it's simpler/better to bounce from that to the regular call than to
+bounce from that to a trampoline which makes the regular call.
+
+We *could* consider adding trampolines, but that comes with a jump in
+complexity that we originally tried to avoid, and a potential
+performance hit for regular ftrace calls. IIUC that will require similar
+synchronization to what we have today, so it's not clearly a win
+generally.
+
+I'd like to better understand what the real bottleneck is; AFAICT it's
+the tasks-rcu synchronization, and sharing the hash means that you only
+need to do that once. I think that it should be possible to share that
+synchronization across multiple ops updates with some API changes (e.g.
+something like the batching of text_poke on x86).
+
+If we can do that, it might benefit other users too (e.g.
+live-patching), even if trampolines aren't being used, and would keep
+the arch bits simple/maintainable.
+
+[...]
+
+> thanks for all the details, I'll check if both the new change and ops->direct_call
+> could live together for x86 and other arch, but it will probably complicate
+> things a lot more
+
+Thanks; please let me know if there's any challenges there!
+
+Mark.
 
