@@ -1,272 +1,135 @@
-Return-Path: <bpf+bounces-65115-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65116-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34939B1C492
-	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 12:58:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87808B1C499
+	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 13:02:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C489A3B8F4E
-	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 10:58:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A11FF560804
+	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 11:02:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E93D28AAED;
-	Wed,  6 Aug 2025 10:58:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA9B728B3E7;
+	Wed,  6 Aug 2025 11:02:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="q95c3k26"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lNJk+oys"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E352C23C8AE
-	for <bpf@vger.kernel.org>; Wed,  6 Aug 2025 10:57:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1396920F067;
+	Wed,  6 Aug 2025 11:02:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754477881; cv=none; b=ZCZpVMEtKedlcnUWFkYyL/YyLubRtldtABzC6Po3ClrvhkV0y1WaEasNWXkAb+S/l6ws7AHvVZkuWOn2VIW/aTLLLjQtkTa7Py/Y1bEmGu4t+XhYcBqR38tomOs7ZLckOXXzedY+5SmZzVJYix94JlHsFxm4U9LBujcO6dRcVS0=
+	t=1754478165; cv=none; b=oefTkx52x15YBEdp04xrT/jyQR2KJyZjbiRTWkKILB2vYZ3J1Nm8hut0FhCslOeSVhRs5M4aarfx9GDi4wxwlqka8cfU1G+Ac+tCbHqRwOZs7SQhyGWFwUyEMpaMZ7zw7FKgUMGe+kt5pQeVHxoLcwqv9dxTT9Uvk8Am+6xvcvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754477881; c=relaxed/simple;
-	bh=z8GYCyAVv8Y4wWeN8izDuoifjHdbxLP+rh9guv80GFA=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=oDZuPIbgRo1hQnHcgORjvQDHzWUwXCvZRWaJ0ZTC8CIWtvKxqLNSeW1yzo907sSvSjVJj3fo6C3OBPK/8vRa/BOHq4BrUKL5BSD18nXT+ffx55lqkwmBzz19PLNR/q2xNI7le0QLUYfQhgnrvtS5rWUCitTCh9Gy0Of7zlHlIoY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=q95c3k26; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <c8c870e25c07aee5c84c84aa62cebd655ff53f50.camel@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1754477876;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vNROiky5WQWNyX8i1Lin0xM/vtQO7Q82V16OYUAfCxM=;
-	b=q95c3k26iia3cRM0I4Dnd1gzmoM0yr3JevffrUOq3zzpvwP3oUQCTV7e/0YGWFwH/5Udom
-	+h7mr6nGUUItZ6F5kVhkdrShJgExBu/VjapfObHQ5+E0ydcoLxWFtQiahF4kEJjCCB+Tfn
-	f4OIxcQSb1WL/Ar4A9hy/a31I1RDwww=
-Subject: Re: [PATCH bpf-next 1/1] bpf: Allow fall back to interpreter for
- programs with stack size <= 512
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: KaFai Wan <kafai.wan@linux.dev>
-To: Yonghong Song <yonghong.song@linux.dev>, ast@kernel.org, 
- daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org, 
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- kpsingh@kernel.org,  sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
- mrpre@163.com,  bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Felix Fietkau <nbd@nbd.name>
-Date: Wed, 06 Aug 2025 18:57:43 +0800
-In-Reply-To: <401418b7-248c-42a3-ba74-9b2b2959e36c@linux.dev>
-References: <20250805115513.4018532-1-kafai.wan@linux.dev>
-	 <401418b7-248c-42a3-ba74-9b2b2959e36c@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1754478165; c=relaxed/simple;
+	bh=fGwQvuZekVYWNVp+xHF2By/+OhCeDXLdr6UFjCBMrmU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Tl9xh8+4IAabuAyuimm/B8qyenuV+41KEgEeScupcGc3FPnj+B7K0Z/+KSSmAQhEP3P7otfmFTnUlpJS96z+MmjRnsjHTF9/HnTQRoT//uk8omVOVXr1wvsWg8P2dbMVkLN572g+LkCekXEkzDzryVBuwU2tsQhi+y7FAQ66VcU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lNJk+oys; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-7426c44e014so5901751b3a.3;
+        Wed, 06 Aug 2025 04:02:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1754478163; x=1755082963; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rnS6VYdGfdFt/krsus/FgbrkiOQovzavFwfxL0kycI4=;
+        b=lNJk+oysPEIxA2BkMzFeaDgFAnNLy1VegqLvjQLQUv4ML6OCkKxR6Z0tE0WYxH9teh
+         awzT/PVAdhbcYmzhhcMA9sqn49bnnDRSJqO2IPEnFm8yhfb21Woc7mDGiNyhyIVeiOG2
+         1lsQUFUM+B/VZrr+KptSJFOoAD+tMFrxhEZJ/0/hMqfUAfj5LKq7qNTIFQqjv5ox8dbT
+         IFkrNzaCfWAcDx7BoGQUmkLF7yn4YXaIJ/Rhj7PkrUjfap6yrsAeaZ0sSfBSn5+dBL7a
+         lyTvL+GKoEn71az9Ypx1JceA3h6Z9SdQpz6T06B/k2vXwo3PkPWiUcXW+KhonjdBX5q3
+         x6Bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754478163; x=1755082963;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rnS6VYdGfdFt/krsus/FgbrkiOQovzavFwfxL0kycI4=;
+        b=cQ/EzbnW8yb9NIB6rsNikuzqmsXS98m0WLl4l9iac8f4IaE7rg4hHFHrE0CG7YcZ1W
+         WfJV94zhb0ctiShxaRNiSCjr/Kwo5bIdtY9sLBW7RMnxR6WB3tgEJjDUvVgz0lblEPj3
+         aaou0JDk2DwR9jHzxwWESnPPbPudtvpoxMVPnOPetuNKM7vDQYZL6c8Z/bTjwxiAlwXI
+         K5E6MWBWVEkaICBhj7nJCqUIY2uKdbhXFZMp+NrojSIUloWEOSl8bv327Y0dVS+YTu/Z
+         tIUKrDnLQ9UQZi6cJxF2dmDntojbSBvadTWxlVSVyFkLBUaftsT4+WPKnj8V3vUh6is4
+         SKFA==
+X-Forwarded-Encrypted: i=1; AJvYcCUvs13vFN0mswKy7LTkRToB7o4XxsqQ0LTUR2iUCrqT7jXU9+R7TzlmfUIhEPY1G8ggBZXqKMeFjVrpn9Va73VI@vger.kernel.org, AJvYcCWsrQ2QLJlQgtDvQgTlc/hZIegceYCCvgMrPVWqhxSktFIaqE4ar53ke0CKKIAVlNX9chHhkSty@vger.kernel.org, AJvYcCXZ1kjUXjXXIqQooEBCMFksND6oPm3UHXL6zDBtR+wDy8H6SB4L3JZr0Ed948hdZaQ7avU8TQ5JrMpwDGH8@vger.kernel.org, AJvYcCXgCuAwuTDiuNllIY72F1It56AYXwyDT5S3SAqy9zdwNmpUHFW1dXc0U6AhU1Zm9oo8Jcc=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz0lI/HWcLmPJZKejlsEIjvKvxiVmOJnEYLMYMEyMcI0qO8ttDl
+	aRxYtR+UBpvr25XLe/S01THwW7735yoQdVH4xCxL3DIy5RlF06gojdEw
+X-Gm-Gg: ASbGncs55/BlIDlCD0m/iT1y2aVC0LCJHYHehAkxBNoUmidLhj9lrTuE+QuQLxY6Smd
+	jfoglMYiSUXyLACDJM4fCLUudYYCvJhOgtMNHemcKJf+Eo33e+BJB+2uxH2YjnEyMTzJekCAhOg
+	v5roVJ/mp+LweQOtkWBtud8xmC+RfzhgpLISj3MZ4zeZkDFqp1WNjd8FPvaw//mPBQHWGcqUQbp
+	V1jFXiEZqa9aPUt4xCenyAvDpNG5p6CRThUSqFNxkRDQGXISWRmvjvxkmnnVtpDkLJsBoe9VAOS
+	XjaMhGO/zAWhpFgqS29jFAY/bQxhP9XwmVrXGRSDSjPvAsixIN02lCpuZgnJ+1B0mHJ8jKPS+CL
+	dI/YJxC9RN8dSUpwbfyGxrKpiZ1yDPt7t8yfZqNYhE0M=
+X-Google-Smtp-Source: AGHT+IFjR517vCAUNyZmP/NtQ6JbvJmH4KhkzCA3/4f876CAu+LnOExtfNWpNrpMCkeAqIM3e2h6Sw==
+X-Received: by 2002:a05:6a20:7487:b0:240:30c:276a with SMTP id adf61e73a8af0-24031463e79mr4059373637.39.1754478163258;
+        Wed, 06 Aug 2025 04:02:43 -0700 (PDT)
+Received: from manjaro.domain.name ([2401:4900:1c30:7b0d:6527:282d:9edd:5f40])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-76bcce8de28sm15074948b3a.39.2025.08.06.04.02.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Aug 2025 04:02:42 -0700 (PDT)
+From: Pranav Tyagi <pranav.tyagi03@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	davem@davemloft.net,
+	kuba@kernel.org,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	shuah@kernel.org
+Cc: sdf@fomichev.me,
+	mykolal@fb.com,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kernel-mentees@lists.linux.dev,
+	Pranav Tyagi <pranav.tyagi03@gmail.com>
+Subject: [PATCH] selftests/bpf/progs: use __auto_type in swap() macro
+Date: Wed,  6 Aug 2025 16:32:30 +0530
+Message-ID: <20250806110230.23949-1-pranav.tyagi03@gmail.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Tue, 2025-08-05 at 10:45 -0700, Yonghong Song wrote:
->=20
->=20
-> On 8/5/25 4:55 AM, KaFai Wan wrote:
-> > OpenWRT users reported regression on ARMv6 devices after updating
-> > to latest
-> > HEAD, where tcpdump filter:
-> >=20
-> > tcpdump -i mon1 \
-> > "not wlan addr3 3c37121a2b3c and not wlan addr2 184ecbca2a3a \
-> > and not wlan addr2 14130b4d3f47 and not wlan addr2 f0f61cf440b7 \
-> > and not wlan addr3 a84b4dedf471 and not wlan addr3 d022be17e1d7 \
-> > and not wlan addr3 5c497967208b and not wlan addr2 706655784d5b"
-> >=20
-> > fails with warning: "Kernel filter failed: No error information"
-> > when using config:
-> > =C2=A0 # CONFIG_BPF_JIT_ALWAYS_ON is not set
-> > =C2=A0 CONFIG_BPF_JIT_DEFAULT_ON=3Dy
-> >=20
-> > The issue arises because commits:
-> > 1. "bpf: Fix array bounds error with may_goto" changed default
-> > runtime to
-> > =C2=A0=C2=A0=C2=A0 __bpf_prog_ret0_warn when jit_requested =3D 1
-> > 2. "bpf: Avoid __bpf_prog_ret0_warn when jit fails" returns error
-> > when
-> > =C2=A0=C2=A0=C2=A0 jit_requested =3D 1 but jit fails
-> >=20
-> > This change restores interpreter fallback capability for BPF
-> > programs with
-> > stack size <=3D 512 bytes when jit fails.
-> >=20
-> > Reported-by: Felix Fietkau <nbd@nbd.name>
-> > Closes:
-> > https://lore.kernel.org/bpf/2e267b4b-0540-45d8-9310-e127bf95fc63@nbd.na=
-me/
-> > Fixes: 6ebc5030e0c5 ("bpf: Fix array bounds error with may_goto")
-> > Fixes: 86bc9c742426 ("bpf: Avoid __bpf_prog_ret0_warn when jit
-> > fails")
-> > Signed-off-by: KaFai Wan <kafai.wan@linux.dev>
-> > ---
-> > =C2=A0 kernel/bpf/core.c | 12 +++++++-----
-> > =C2=A0 1 file changed, 7 insertions(+), 5 deletions(-)
-> >=20
-> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> > index 5d1650af899d..2d86bd4b0b97 100644
-> > --- a/kernel/bpf/core.c
-> > +++ b/kernel/bpf/core.c
-> > @@ -2366,8 +2366,8 @@ static unsigned int
-> > __bpf_prog_ret0_warn(const void *ctx,
-> > =C2=A0=C2=A0					 const struct bpf_insn
-> > *insn)
-> > =C2=A0 {
-> > =C2=A0=C2=A0	/* If this handler ever gets executed, then
-> > BPF_JIT_ALWAYS_ON
-> > -	 * is not working properly, or interpreter is being used
-> > when
-> > -	 * prog->jit_requested is not 0, so warn about it!
-> > +	 * or may_goto may cause stack size > 512 is not working
-> > properly,
-> > +	 * so warn about it!
-> > =C2=A0=C2=A0	 */
-> > =C2=A0=C2=A0	WARN_ON_ONCE(1);
-> > =C2=A0=C2=A0	return 0;
-> > @@ -2478,10 +2478,10 @@ static void bpf_prog_select_func(struct
-> > bpf_prog *fp)
-> > =C2=A0=C2=A0	 * But for non-JITed programs, we don't need bpf_func, so
-> > no bounds
-> > =C2=A0=C2=A0	 * check needed.
-> > =C2=A0=C2=A0	 */
-> > -	if (!fp->jit_requested &&
-> > -	=C2=A0=C2=A0=C2=A0 !WARN_ON_ONCE(idx >=3D ARRAY_SIZE(interpreters))) =
-{
-> > +	if (idx < ARRAY_SIZE(interpreters)) {
-> > =C2=A0=C2=A0		fp->bpf_func =3D interpreters[idx];
-> > =C2=A0=C2=A0	} else {
-> > +		WARN_ON_ONCE(!fp->jit_requested);
-> > =C2=A0=C2=A0		fp->bpf_func =3D __bpf_prog_ret0_warn;
-> > =C2=A0=C2=A0	}
->=20
-> Your logic here is to do interpreter even if fp->jit_requested is
-> true.
-> This is different from the current implementation.
->=20
-> Also see below code:
->=20
-> static unsigned int __bpf_prog_ret0_warn(const void *ctx,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 const struct bpf_insn
-> *insn)
-> {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* If this handler ever =
-gets executed, then
-> BPF_JIT_ALWAYS_ON
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * is not working p=
-roperly, or interpreter is being used
-> when
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * prog->jit_reques=
-ted is not 0, so warn about it!
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 WARN_ON_ONCE(1);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
-> }
->=20
->=20
-> It mentions to warn if the interpreter is being used when
-> prog->jit_requested is not 0.
->=20
-> So if prog->jit_requested is not 0, it is expected not to use
-> interpreter.
->=20
+Replace typeof() with __auto_type in xdp_synproxy_kern.c.
+__auto_type was introduced in GCC 4.9 and reduces the compile time for
+all compilers. No functional changes intended.
 
-The commit 6ebc5030e0c5 ("bpf: Fix array bounds error with may_goto")
-[1] this patch fix change the code to that, before this commit it was:
+Signed-off-by: Pranav Tyagi <pranav.tyagi03@gmail.com>
+---
+ tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-static unsigned int __bpf_prog_ret0_warn(const void *ctx,
-					 const struct bpf_insn *insn)
-{
-	/* If this handler ever gets executed, then BPF_JIT_ALWAYS_ON
-	 * is not working properly, so warn about it!
-	 */
-	WARN_ON_ONCE(1);
-	return 0;
-}
+diff --git a/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c b/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
+index 62b8e29ced9f..b08738f9a0e6 100644
+--- a/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
++++ b/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
+@@ -58,7 +58,7 @@
+ #define MAX_PACKET_OFF 0xffff
+ 
+ #define swap(a, b) \
+-	do { typeof(a) __tmp = (a); (a) = (b); (b) = __tmp; } while (0)
++	do { __auto_type __tmp = (a); (a) = (b); (b) = __tmp; } while (0)
+ 
+ #define __get_unaligned_t(type, ptr) ({						\
+ 	const struct { type x; } __attribute__((__packed__)) *__pptr = (typeof(__pptr))(ptr); \
+-- 
+2.49.0
 
-And=20
-
-static void bpf_prog_select_func(struct bpf_prog *fp)
-{
-#ifndef CONFIG_BPF_JIT_ALWAYS_ON
-	u32 stack_depth =3D max_t(u32, fp->aux->stack_depth, 1);
-
-	fp->bpf_func =3D interpreters[(round_up(stack_depth, 32) / 32) -
-1];
-#else
-	fp->bpf_func =3D __bpf_prog_ret0_warn;
-#endif
-}
-
-so it can fall back to the interpreter when jit fails. And this fit the
-intent of bpf_prog_select_runtime(), see comment:
-
-/**
- *	bpf_prog_select_runtime - select exec runtime for BPF program
- *	@fp: bpf_prog populated with BPF program
- *	@err: pointer to error variable
- *
- * Try to JIT eBPF program, if JIT is not available, use interpreter.
- * The BPF program will be executed via bpf_prog_run() function.
- *
- * Return: the &fp argument along with &err set to 0 for success or
- * a negative errno code on failure
- */
-struct bpf_prog *bpf_prog_select_runtime(struct bpf_prog *fp, int *err)
-
-
-And this:
-
-	bpf_prog_select_func(fp);
-
-	/* eBPF JITs can rewrite the program in case constant
-	 * blinding is active. However, in case of error during
-	 * blinding, bpf_int_jit_compile() must always return a
-	 * valid program, which in this case would simply not
-	 * be JITed, but falls back to the interpreter.
-	 */
-	if (!bpf_prog_is_offloaded(fp->aux)) {
-
-
-The commit [1] mismatch the intent of bpf_prog_select_runtime(), so it
-should be fixed.
-
-
-[1] https://lore.kernel.org/all/20250214091823.46042-2-mrpre@163.com/
-
->=20
-> > =C2=A0 #else
-> > @@ -2505,7 +2505,7 @@ struct bpf_prog
-> > *bpf_prog_select_runtime(struct bpf_prog *fp, int *err)
-> > =C2=A0=C2=A0	/* In case of BPF to BPF calls, verifier did all the prep
-> > =C2=A0=C2=A0	 * work with regards to JITing, etc.
-> > =C2=A0=C2=A0	 */
-> > -	bool jit_needed =3D fp->jit_requested;
-> > +	bool jit_needed =3D false;
-> > =C2=A0=20
-> > =C2=A0=C2=A0	if (fp->bpf_func)
-> > =C2=A0=C2=A0		goto finalize;
-> > @@ -2515,6 +2515,8 @@ struct bpf_prog
-> > *bpf_prog_select_runtime(struct bpf_prog *fp, int *err)
-> > =C2=A0=C2=A0		jit_needed =3D true;
-> > =C2=A0=20
-> > =C2=A0=C2=A0	bpf_prog_select_func(fp);
-> > +	if (fp->bpf_func =3D=3D __bpf_prog_ret0_warn)
-> > +		jit_needed =3D true;
-> > =C2=A0=20
-> > =C2=A0=C2=A0	/* eBPF JITs can rewrite the program in case constant
-> > =C2=A0=C2=A0	 * blinding is active. However, in case of error during
->=20
-
---=20
-Thanks,
-KaFai
 
