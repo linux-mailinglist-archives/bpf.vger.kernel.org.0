@@ -1,71 +1,101 @@
-Return-Path: <bpf+bounces-65107-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65108-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FDE4B1C28F
-	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 10:59:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DF23B1C33B
+	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 11:23:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C26423A64AC
-	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 08:59:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BDD03BC046
+	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 09:23:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CF1528935D;
-	Wed,  6 Aug 2025 08:59:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C2F228A415;
+	Wed,  6 Aug 2025 09:23:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uabQIIK8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U2VAy91S"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1940D223311
-	for <bpf@vger.kernel.org>; Wed,  6 Aug 2025 08:59:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6955B289375;
+	Wed,  6 Aug 2025 09:23:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754470755; cv=none; b=IvVKbdUa65PRtyDnb+VsPUjuspOsPJ6m/KeMXRyyNyM2uWOHJZujNuB07ab3O3rNlhbQOBO01BXpVgqlgXpz8u+Rrv8fTdQtC030scYpqlIMe3UTd4Fj66IyNSciesdC6dxCOnuxoi8BKa9ahtTcp7/YQYEIsCRdMSgPqb2ck+s=
+	t=1754472212; cv=none; b=dDmjqO5bLRbxan3VI2w/D6cMPbyHHTFGGrT6vriEmLcnZ6h19xWnj3C7yP/05GTlIfJYtw9fe1qlUWaLO3PkppLoecX3WNjEjhmb+V/pSr4XRN+BcU54FBqopcgsGHERMNNjQ0w+CXJCpNY6mvvKbfXcamYUzfOFW0aK1qNzGC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754470755; c=relaxed/simple;
-	bh=R8DY7B1C60z8T7w/qiuv9BCN8CkV414G/UiSJLimdJs=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ecgMRt9v7l83Xum1RqdC+UIOilOClcci2ndp1wz5V/3DsN8Yk7R/p9xwoKAriC2i0FauoW2aKG8x/rDa3SzX3/gm2PYgNSo2+53zJAKQIjm2CekBWKJueNgok2Knas4jFdRaL/HNe3Xzb+UDwItrVjBZ2o3MwW97EB7hnRDjb6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uabQIIK8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E003C4CEE7;
-	Wed,  6 Aug 2025 08:59:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754470754;
-	bh=R8DY7B1C60z8T7w/qiuv9BCN8CkV414G/UiSJLimdJs=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=uabQIIK8pIywLp3HWWMF61WHDETtShZ3nz3uvtTCS5m4UomMCIWq/UtlVbEnPlnVE
-	 kDgvwXg6vJfUf8LqAljnacby4hGdufos78+2cQqeAOZQrlZbG63crTU5mkr0qoXy7A
-	 ql8WvHXv+OYD+Cc87ArrTRSSBSk/iPexk2B/v8HUcFSqmIQURQmwH1FLUtFqDu1BD+
-	 /c9pmDierzSUHyV+9lJtE1jOtfwggPJke74tEwBPVCDvjKFAApknFkXF/s2jcjZAqA
-	 VX2/vzYCSZ/S9izorvd6xcXqcQWmdcfxr4yyS22HS2Mc/x6RrFL6E9wtnGLp/uA+k3
-	 jDA1AY9SQ4OQw==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Xu Kuohai <xukuohai@huaweicloud.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	bpf@vger.kernel.org
-Subject: [PATCH bpf-next 3/3] selftests/bpf: Add tests for arena fault reporting
-Date: Wed,  6 Aug 2025 08:58:36 +0000
-Message-ID: <20250806085847.18633-4-puranjay@kernel.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20250806085847.18633-1-puranjay@kernel.org>
-References: <20250806085847.18633-1-puranjay@kernel.org>
+	s=arc-20240116; t=1754472212; c=relaxed/simple;
+	bh=Ti+S8H4iibQEtSi03TyOntCoD3rVLVhIDywWJ5k2hN0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Z5wEvD7+PJC1bsewfBo+GLcOiF1P5GgF2zaUVdAh1RTPqDZEeMr+Z2xFuM8w0rQHHQPDjzfPzU2ukJLLaw2jRcWxXzcnhnSNZQhzDOkVXmZTPwk6v+0/LQNkbV/3mKxiLhdUs00VjiUMEYqPVa/0uTM6XzLauq3MpshYkHDUFwM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U2VAy91S; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-af51596da56so3964975a12.0;
+        Wed, 06 Aug 2025 02:23:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1754472210; x=1755077010; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/8Z6UwM41h5NiICvVTC04LVNDedMghhwc5qhkKPNiEU=;
+        b=U2VAy91SWV19+nYDEuzgAdNirmAoyD9XuplFN1ubiyP0Eq48JAdw/hZt1i7jex8WeR
+         GET2AOKKcwLsEH974OlXsHCll1AHpzhx2Oec2NkyXneuNdLVR5Ue5BwNIh4CAuIHn1Rr
+         67NWLaQ5xOmzj+rzoz6Pjjx+RAFO0NdERNYxCtZs3IRj/OtDlAZAN7pp+lS+uSIOJ/wI
+         9KwPPOykiFj0iUxDhOy11NewfbAPMSzSf2my/7RnpKWGu9cgLWGCetEIWMQhcxoVLtCp
+         PCsZSQcJNm1WZLfcThFLpF6LCpm2u5GLWY6EKpUL+SS+pQNpxvHzn6YK/PfF5FJsTuz/
+         ZWvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754472210; x=1755077010;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/8Z6UwM41h5NiICvVTC04LVNDedMghhwc5qhkKPNiEU=;
+        b=iL38nCo4EzFYE2LZkUV6umNFIWlCl4mA5sgIuHtuu83CVTGnj0NV+GkXp1EhNV0DeT
+         m55BgmqW87IKn2OIlVjzLKs8SM8buvcekdIJkV9Kg99c4VYdMBndjzhfsrNu9FM69+Ed
+         OGa0wlboysB85zMpOeokesLRHguEhJpNjJ3izZ150Ix3vYDxCcx5ljfTostFU8mIW5BU
+         7Z9y5yureXp1oiNVie3ZiPIuxlVzKmz8S6PEYOkNNMBMF/3g4BWeFKoqUPmwvAubK0o+
+         5aXxtFBtOK/oSpfq/+KKw7DWfZyn5ScfBaGdk98mFeNniZDnoYI7+IDPznOT0mMSzI90
+         0L7w==
+X-Forwarded-Encrypted: i=1; AJvYcCVBB2b4GHPpIYnnDdOO328MoEYNj7mQ7vDUiuUhCu68exAa1ipxLFz9S2NqKm2GZFfbhvI=@vger.kernel.org, AJvYcCVkhjJ3J8sWZr6C+htvRFLiKVIey4pNouFNDSKRbjiVw+SzvuhncO7L4bliXo4pP5uJ7tvST4PtWpAwKoPv@vger.kernel.org, AJvYcCXm2PioVtA0wegm1nnuSHRRzwYs9f6uGeL3Bvw3+gCX9NBiiUMahiazr9/nBBOBj8jqwkt4wq3ql/g6Qc1YrCnc@vger.kernel.org
+X-Gm-Message-State: AOJu0YybSIR+czYVd6hq0OrPJ6JNi9cEhEkUFwbGON4t1c/HalK1nxGp
+	w/gZ5S0AFATnrN+0kLNA0rs/1bWynaFoDHJSXYukZKpdeC1YAe0ZJg+a
+X-Gm-Gg: ASbGncuCiysLFNWyeK6+8XUaM0qmUzHW5UGA6CQ23RHxxCoLfg7faSRk9r+3Ip/beHM
+	Iru+J1eGjIHQZTAxJ/Gg8PyjvYdu99+hdqggtTQkXQhyHpb4kTru+CKiOwdYmXAp2C4VfRYxU24
+	te54SCXSQxnIp9UFG9p8qFQB2r7Q1LwcvRx9rI8mUSzEz9bmaz8TNoVgjlmoh7txoF4R779RIJR
+	ypg3aqEvZ1mj60PZM8G/KoEtjsUFX/JD0Ge8OYiAdvIRbUzCn0CrzB+BlwTI+zRsyGxMr+vwLV3
+	FqhYuXShmIg82XkSJT6jFqy8pV0AVUuf/69zjewcft2F8JJXIVRBxo0hDjfKUHWt8esSzLLzvFe
+	jkHe7N7RPTfLQj8TMbp0y/L348UIPCLm0Jpwnm/lMwAg=
+X-Google-Smtp-Source: AGHT+IGFX5j5TbK6+REGB7qpAdkI35mGyzu2adIblYzRFaNPFutxs11NcuUBdGHRwwHLVgd7NS8hWQ==
+X-Received: by 2002:a17:903:4b30:b0:235:779:edf0 with SMTP id d9443c01a7336-242a0be49b5mr22875205ad.50.1754472210416;
+        Wed, 06 Aug 2025 02:23:30 -0700 (PDT)
+Received: from manjaro.domain.name ([2401:4900:1c30:7b0d:6527:282d:9edd:5f40])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-241e899a8cdsm152807015ad.121.2025.08.06.02.23.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Aug 2025 02:23:30 -0700 (PDT)
+From: Pranav Tyagi <pranav.tyagi03@gmail.com>
+To: andrii@kernel.org,
+	eddyz87@gmail.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	shuah@kernel.org
+Cc: mykolal@fb.com,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	pulehui@huawei.com,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kernel-mentees@lists.linux.dev,
+	Pranav Tyagi <pranav.tyagi03@gmail.com>
+Subject: [PATCH] selftests/bpf/progs: replace typeof() with __auto_type
+Date: Wed,  6 Aug 2025 14:53:11 +0530
+Message-ID: <20250806092311.17719-1-pranav.tyagi03@gmail.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -74,124 +104,31 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add selftests for testing the reporting of arena page faults through BPF
-streams. Two new bpf programs are added that read and write to an
-unmapped arena address and the fault reporting is verified in the
-userspace through streams.
+Replace typeof() with __auto_type in bpf_dctcp.c.
+__auto_type was introduced in GCC 4.9 and reduces the compile time for
+all compilers. No functional changes intended.
 
-Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+Signed-off-by: Pranav Tyagi <pranav.tyagi03@gmail.com>
 ---
- .../testing/selftests/bpf/prog_tests/stream.c | 24 ++++++++++++
- tools/testing/selftests/bpf/progs/stream.c    | 37 +++++++++++++++++++
- 2 files changed, 61 insertions(+)
+ tools/testing/selftests/bpf/progs/bpf_dctcp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/stream.c b/tools/testing/selftests/bpf/prog_tests/stream.c
-index d9f0185dca61b..4bdde56de35b1 100644
---- a/tools/testing/selftests/bpf/prog_tests/stream.c
-+++ b/tools/testing/selftests/bpf/prog_tests/stream.c
-@@ -41,6 +41,22 @@ struct {
- 		"([a-zA-Z_][a-zA-Z0-9_]*\\+0x[0-9a-fA-F]+/0x[0-9a-fA-F]+\n"
- 		"|[ \t]+[^\n]+\n)*",
- 	},
-+	{
-+		offsetof(struct stream, progs.stream_arena_read_fault),
-+		"ERROR: Arena READ access at unmapped address 0x.*\n"
-+		"CPU: [0-9]+ UID: 0 PID: [0-9]+ Comm: .*\n"
-+		"Call trace:\n"
-+		"([a-zA-Z_][a-zA-Z0-9_]*\\+0x[0-9a-fA-F]+/0x[0-9a-fA-F]+\n"
-+		"|[ \t]+[^\n]+\n)*",
-+	},
-+	{
-+		offsetof(struct stream, progs.stream_arena_write_fault),
-+		"ERROR: Arena WRITE access at unmapped address 0x.*\n"
-+		"CPU: [0-9]+ UID: 0 PID: [0-9]+ Comm: .*\n"
-+		"Call trace:\n"
-+		"([a-zA-Z_][a-zA-Z0-9_]*\\+0x[0-9a-fA-F]+/0x[0-9a-fA-F]+\n"
-+		"|[ \t]+[^\n]+\n)*",
-+	},
- };
- 
- static int match_regex(const char *pattern, const char *string)
-@@ -85,6 +101,14 @@ void test_stream_errors(void)
- 			continue;
- 		}
- #endif
-+#if !defined(__x86_64__) && !defined(__aarch64__)
-+		ASSERT_TRUE(1, "Arena fault reporting unsupported, skip.");
-+		if (i == 2 || i == 3) {
-+			ret = bpf_prog_stream_read(prog_fd, 2, buf, sizeof(buf), &ropts);
-+			ASSERT_EQ(ret, 0, "stream read");
-+			continue;
-+		}
-+#endif
- 
- 		ret = bpf_prog_stream_read(prog_fd, BPF_STREAM_STDERR, buf, sizeof(buf), &ropts);
- 		ASSERT_GT(ret, 0, "stream read");
-diff --git a/tools/testing/selftests/bpf/progs/stream.c b/tools/testing/selftests/bpf/progs/stream.c
-index 35790897dc879..58ebff60cd96a 100644
---- a/tools/testing/selftests/bpf/progs/stream.c
-+++ b/tools/testing/selftests/bpf/progs/stream.c
-@@ -1,10 +1,15 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+#define BPF_NO_KFUNC_PROTOTYPES
- #include <vmlinux.h>
- #include <bpf/bpf_tracing.h>
- #include <bpf/bpf_helpers.h>
- #include "bpf_misc.h"
- #include "bpf_experimental.h"
-+#include "bpf_arena_common.h"
-+
-+extern int bpf_res_spin_lock(struct bpf_res_spin_lock *lock) __weak __ksym;
-+extern void bpf_res_spin_unlock(struct bpf_res_spin_lock *lock) __weak __ksym;
- 
- struct arr_elem {
- 	struct bpf_res_spin_lock lock;
-@@ -17,6 +22,12 @@ struct {
- 	__type(value, struct arr_elem);
- } arrmap SEC(".maps");
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARENA);
-+	__uint(map_flags, BPF_F_MMAPABLE);
-+	__uint(max_entries, 1); /* number of pages */
-+} arena SEC(".maps");
-+
- #define ENOSPC 28
- #define _STR "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
- 
-@@ -76,4 +87,30 @@ int stream_syscall(void *ctx)
- 	return 0;
- }
- 
-+SEC("syscall")
-+__success __retval(0)
-+int stream_arena_write_fault(void *ctx)
-+{
-+	unsigned char __arena *page;
-+
-+	page = bpf_arena_alloc_pages(&arena, NULL, 1, NUMA_NO_NODE, 0);
-+	bpf_arena_free_pages(&arena, page, 1);
-+
-+	*(page + 0xbeef) = 1;
-+
-+	return 0;
-+}
-+
-+SEC("syscall")
-+__success __retval(0)
-+int stream_arena_read_fault(void *ctx)
-+{
-+	unsigned char __arena *page;
-+
-+	page = bpf_arena_alloc_pages(&arena, NULL, 1, NUMA_NO_NODE, 0);
-+	bpf_arena_free_pages(&arena, page, 1);
-+
-+	return *(page + 0xbeef);
-+}
-+
- char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/bpf_dctcp.c b/tools/testing/selftests/bpf/progs/bpf_dctcp.c
+index 7cd73e75f52a..0bab6cec6bbc 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_dctcp.c
++++ b/tools/testing/selftests/bpf/progs/bpf_dctcp.c
+@@ -16,8 +16,8 @@
+ #define min(a, b) ((a) < (b) ? (a) : (b))
+ #define max(a, b) ((a) > (b) ? (a) : (b))
+ #define min_not_zero(x, y) ({			\
+-	typeof(x) __x = (x);			\
+-	typeof(y) __y = (y);			\
++	__auto_type __x = (x);			\
++	__auto_type __y = (y);			\
+ 	__x == 0 ? __y : ((__y == 0) ? __x : min(__x, __y)); })
+ static bool before(__u32 seq1, __u32 seq2)
+ {
 -- 
-2.47.3
+2.49.0
 
 
