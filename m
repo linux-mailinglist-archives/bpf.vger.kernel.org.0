@@ -1,120 +1,113 @@
-Return-Path: <bpf+bounces-65118-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65119-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD000B1C4EE
-	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 13:30:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2D21B1C51E
+	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 13:43:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81995625D1B
-	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 11:30:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F9C1561F20
+	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 11:43:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7673C28A414;
-	Wed,  6 Aug 2025 11:30:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2589828C017;
+	Wed,  6 Aug 2025 11:42:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="fJBEF5vG"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="KUJtUYt/"
 X-Original-To: bpf@vger.kernel.org
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43D3925B66A;
-	Wed,  6 Aug 2025 11:29:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0586628AAE9;
+	Wed,  6 Aug 2025 11:42:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754479800; cv=none; b=CTKam3yYB9sn3qh3htSq2uX9Xxvww0+BLffEMXO3YDH8gXvIa3bvdqNdazvjcezhbtEFk6XOdubMMBqgnEW5S8oZqyW63ZFqdHzKAeUpiqZdogPgdetPRBqHTVQwsHFNMV+naN9R7vnboChCADosO5gn63cugNi5xhl/CKMFPdE=
+	t=1754480570; cv=none; b=MFkfa3awBoLcAXxfPVkL3HtYqI0cWpiLBeYilWOqDRvW/c1+HwHJGC+l2dQLVQ5wUvS4cLOlkXEMesHWdTPxnYsMCmTPj5BpUVHRL0eYAfZ3fhckbHggdC4kXAVZ3lIaVCRhSue0Bi2roYRfn3JHgM6QkH+MNgqyqzHmVPpEWaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754479800; c=relaxed/simple;
-	bh=lXxGjaqxd4CR1EycdnQYnZEdyBTLW4aFYI0WMkr8IDU=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=G607ycwe1eUtIymLh/MgrJEUjmRSvw48HxFtEywamdwOXnJ19viEvT2ywq8PNXmlYmRDP6cjrhuS9JOVSsaV9rDtXVXP7GNapiBW5I0aSb0b7Ps04BBD5TZ0WyJOImy78RDMS/Mz29AVm0e1cL10XYE5feESPvUQ7mbXmp3v8Yo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=fJBEF5vG; arc=none smtp.client-ip=148.163.156.1
+	s=arc-20240116; t=1754480570; c=relaxed/simple;
+	bh=DmlWK5XP3VTxgWXBVY5e2iY/5JchBSJpmtZ02GwEt8U=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YWKQJoYZgf0VSIV9crFh9RvomP7QZx+G69ZByT8PwePUFEKm0Z6QRePBLVWVQePcwnkxc+uL5oZ+7Uc5fieu82a76E/pdL6NRBmlL5DIt05gS+W9TWf+CWtqAQYDP5w/girJFgyof5V3RV69gIUrZkmUAySM9tJAkBP9LCHczno=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=KUJtUYt/; arc=none smtp.client-ip=148.163.156.1
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
 Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 57684lUB028218;
-	Wed, 6 Aug 2025 11:29:58 GMT
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5767nXHO028370;
+	Wed, 6 Aug 2025 11:42:36 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=lXxGja
-	qxd4CR1EycdnQYnZEdyBTLW4aFYI0WMkr8IDU=; b=fJBEF5vGQYKG9qB/YDwoxM
-	MNTHafF3RQ24jE+uO1aYs4jhjNxqk7fSpBfJXmuc6kCY3J+VfRUWvikreZbScDBY
-	5EwrJdTsplilqYw5WqWNYr8jSW8eqYAbCGf80RRJJF3CZHnan1357YPoAfTIRJyB
-	7Lk4JTfiNXdmr1Hk5bLQbk2WxPfoV61+67JYev9d6NCETCNKvsX2pXVDDhu6UTSr
-	pC43DOduP49IIpEXvk+m6Duk7A1dogU2eQeMw+VsQkman1BF+BXP+Ugh/LF6BXsA
-	QpFH2bgjPuyL0PZcaeQ/sIiLig1d/dR7NjgNTLH8mVDRwJH+6+gZCKePFj0OWDeA
-	==
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48bq60uva4-1
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=iJDTnPTBjgGUX1kzI3i6BqQ9bjChyy+Bctj8juao3
+	d8=; b=KUJtUYt/7dffa0PtjdXiPePkYfoWvmQah3JzDeaU9t3JJdEq5fuDO5Y/h
+	d7Jb90BQYf2NzmweH3yK/s1pG6otCZQdsfOdej2RxPxaB2ZIkI/pjh4zdFdP4lk5
+	pMwK9cebDCKMow6frqgfxPkoSPTF7OybULtvm9ASSSLiPn6nMS2VTtLMp5b3kq9b
+	Jm2jK0sQCcYQuCi9Tv00bM5CJNg1GS47zdFYZTTM9dhmnNM8r1DG/2rCQ/mUacaH
+	9umcRURbALRBjnQN8KYwfAaTuVwWhx7959+eIsE0sGYsoEXMSGDeQqYiq4A//HbL
+	N0N5Gqqo/d0NDE9+aJQ4Ac2is3hcw==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48bq60uwpq-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 06 Aug 2025 11:29:58 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 576805q6001574;
-	Wed, 6 Aug 2025 11:29:57 GMT
+	Wed, 06 Aug 2025 11:42:36 +0000 (GMT)
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 576BgZhZ014007;
+	Wed, 6 Aug 2025 11:42:35 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48bq60uwpk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 Aug 2025 11:42:35 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5767sg3C007970;
+	Wed, 6 Aug 2025 11:42:34 GMT
 Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 48bpwqubmt-1
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 48bpwmucth-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 06 Aug 2025 11:29:57 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 576BTrIf46465348
+	Wed, 06 Aug 2025 11:42:34 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 576BgVXt50397508
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 6 Aug 2025 11:29:53 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E28C820040;
-	Wed,  6 Aug 2025 11:29:52 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 035DF2004B;
-	Wed,  6 Aug 2025 11:29:52 +0000 (GMT)
-Received: from [127.0.0.1] (unknown [9.152.108.100])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed,  6 Aug 2025 11:29:51 +0000 (GMT)
-Message-ID: <560548ac0ca1f7be7cfb77e34745f86075df2f41.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 2/2] perf bpf-filter: Enable events manually
+	Wed, 6 Aug 2025 11:42:31 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 03F3E20043;
+	Wed,  6 Aug 2025 11:42:31 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 42D4D20040;
+	Wed,  6 Aug 2025 11:42:30 +0000 (GMT)
+Received: from heavy.ibm.com (unknown [9.111.29.38])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed,  6 Aug 2025 11:42:30 +0000 (GMT)
 From: Ilya Leoshkevich <iii@linux.ibm.com>
-To: Thomas Richter <tmricht@linux.ibm.com>,
-        Alexander Gordeev
-	 <agordeev@linux.ibm.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann
- <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Ian Rogers
- <irogers@google.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>, bpf@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, Jiri Olsa	
- <jolsa@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik	
- <gor@linux.ibm.com>
-Date: Wed, 06 Aug 2025 13:29:51 +0200
-In-Reply-To: <1094385e-6f86-453f-a48e-fa284dcae385@linux.ibm.com>
-References: <20250805130346.1225535-1-iii@linux.ibm.com>
-	 <20250805130346.1225535-3-iii@linux.ibm.com>
-	 <4a7fc5ab-682d-4fac-a547-9e4b1263dba7-agordeev@linux.ibm.com>
-	 <1094385e-6f86-453f-a48e-fa284dcae385@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+To: Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Ian Rogers <irogers@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        Thomas Richter <tmricht@linux.ibm.com>, Jiri Olsa <jolsa@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH v4 0/2] perf/s390: Regression: Move uid filtering to BPF filters
+Date: Wed,  6 Aug 2025 13:40:33 +0200
+Message-ID: <20250806114227.14617-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 97x1FuJDSp1d4OU08MjnD0Zz4dogtLNu
-X-Proofpoint-ORIG-GUID: 97x1FuJDSp1d4OU08MjnD0Zz4dogtLNu
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODA2MDA3MSBTYWx0ZWRfXx+1Jgl1bZtfN
- hWg/n2yPk9ikIhV+KpGJ833xX4WNg3Kp2YSdQrRUUs7Q92zj+5mi2RWcBfioY+v73fwIetdTMDq
- jKUJblciv6aeQRVvTF1uIim2ofNEaeC5yA+FNnjuEy548DLc4MyYLuM8n+HlQMSGNQWC2vLUVzt
- +MHgL38uStopU1+L1vNFso33RxiODnEM1a5rpOXr4Q7JO+vN5VIQ4eFH0shI03jKbctdSuwRgIE
- JJq59ZE1XDR2MQDQCkuNRIL0qL+xwHkQnnEWnq44mrg7ZOxzoFpGqDuRPXd9n4My/o8TLu3EIFN
- xaE1mZCUAm7lm6MCI+766TGNSAyo4oyDppdwDDrw/jq2PhCRoIAlbC9l5Tj3PxUw4YgHJyA2bZ0
- bI0Jp0rsfytdp1I3xMjaz2eWlGHNUBl3LLU92dXesUGZWitpNU37TuXDrZd+AUL5vfA0Yoqy
-X-Authority-Analysis: v=2.4 cv=TayWtQQh c=1 sm=1 tr=0 ts=68933cb6 cx=c_pps
- a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
- a=IkcTkHD0fZMA:10 a=2OwXVqhp2XgA:10 a=UvtTZARwlCIvicOQcdAA:9
- a=QEXdDO2ut3YA:10
+X-Proofpoint-GUID: p9Pd6M3I1pDpc5uSAjDg9e_j1r7F3RlZ
+X-Proofpoint-ORIG-GUID: lqdZYBVbBVV5kYSC6eSA7D3qN5LX-CnL
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODA2MDA3MSBTYWx0ZWRfX9mSmrUNfSAMr
+ F+1yfFkrXJUJud2nOwOSK/zOtm+BowMYweM6tL53gpzUHd9QSYKmop61NhTN0mJuFB7faj2FeZ0
+ olSZKkI+hqLY2VpKT5k184QNbnjPAL9PmD8lcxp/MaON/QC2vW8F8nCZ+CTQoNOtUdyDgAIfwO8
+ EPTyYUAV4eKAYXCX+olk+nD572rebm/zqtGve1aae6iEmutEc5SIm3bS/Tz1EYV1RwsMJfSCSzT
+ vbLe+ilSUolIeYrEAM401x9DRuSwwEOaRYd9EbqoRklKhcm8/CwobJR8vAAKjOeZx42nain+NLq
+ JFz3F1Pl6zsDKMbCnkYVQ6aIagzHZppH8vAvAJnsLvceDc0j49h0G/lqHqH0X1XxaCCFlfaKyds
+ ni0IrV3aA6fnpoQvj8cNJ+PDqQNRwF21dcVAj4uv8UssbCwsolp92B0XAQOeVSyqh+ig1TOm
+X-Authority-Analysis: v=2.4 cv=TayWtQQh c=1 sm=1 tr=0 ts=68933fac cx=c_pps
+ a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
+ a=2OwXVqhp2XgA:10 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=8VANnnlgz3Se4JOSuVMA:9
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
  definitions=2025-08-06_03,2025-08-06_01,2025-03-28_01
@@ -125,58 +118,45 @@ X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
  route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2507300000
  definitions=main-2508060071
 
-On Wed, 2025-08-06 at 11:29 +0200, Thomas Richter wrote:
-> On 8/5/25 16:14, Alexander Gordeev wrote:
-> > On Tue, Aug 05, 2025 at 02:54:05PM +0200, Ilya Leoshkevich wrote:
-> >=20
-> > Hi Thomas,
-> >=20
-> > The below comments date to the initial version, so the question is
-> > rather to you:
-> >=20
-> > > On linux-next
-> >=20
-> > This line is extra.
->=20
-> I just wanted to let readers know which repo to look at.
->=20
-> >=20
-> > > commit b4c658d4d63d61 ("perf target: Remove uid from target")
-> > > introduces a regression on s390. In fact the regression exists
-> > > on all platforms when the event supports auxiliary data
-> > > gathering.
-> >=20
-> > So which commit it actually fixes: the above, the below or the
-> > both?
-> >=20
-> > > Fixes: 63f2f5ee856ba ("libbpf: add ability to attach/detach BPF
-> > > program to perf event")
-> >=20
-> > Thanks!
-> >=20
->=20
-> Good question!=C2=A0 Pick what you like... :-)
->=20
-> The issue in question originates from a patch set of 10 patches.
-> The patch set rebuilds event sample with filtering and migrates
-> from perf tool's selective process picking to more generic eBPF
-> filtering using eBPF programs hooked to perf events.
->=20
-> To be precise, the issue Ilya's=C2=A0 patch fixes is this:
-> Fixes: 63f2f5ee856ba ("libbpf: add ability to attach/detach BPF
-> program to perf event")
->=20
-> However the issue (perf failure) does *NOT* show up until this patch
-> is applied:
-> commit b4c658d4d63d61 ("perf target: Remove uid from target")
+v3: https://lore.kernel.org/bpf/20250805130346.1225535-1-iii@linux.ibm.com/
+v3 -> v4: Rename the new field to dont_enable (Alexei, Eduard).
+          Switch the Fixes: tag in patch 2 (Alexander, Thomas).
+          Fix typos in the cover letter (Thomas).
 
-I think I will switch the Fixes: tag to b4c658d4d63d61 then, because
-IIUC it is one of the factors that drives backporting decisions, and
-it does not make too much sense to backport it to earlier kernels.
+v2: https://lore.kernel.org/bpf/20250728144340.711196-1-tmricht@linux.ibm.com/
+v2 -> v3: Use no_ioctl_enable in perf.
 
-> There are some patches in between the two (when you look at the
-> complete patch set),
-> but they do not affect the result.
->=20
-> Hope that helps.
+v1: https://lore.kernel.org/bpf/20250725093405.3629253-1-tmricht@linux.ibm.com/
+v1 -> v2: Introduce no_ioctl_enable (Jiri).
+
+Hi,
+
+This series fixes a regression caused by moving UID filtering to BPF.
+The regression affects all events that support auxiliary data, most
+notably, "cycles" events on s390, but also PT events on Intel. The
+symptom is missing events when UID filtering is enabled.
+
+Patch 1 introduces a new option for the
+bpf_program__attach_perf_event_opts() function.
+Patch 2 makes use of it in perf, and also contains a lot of technical
+details of why exactly the problem is occurring.
+
+Thanks to Thomas Richter for the investigation and the initial version
+of this fix, and to Jiri Olsa for suggestions.
+
+Best regards,
+Ilya
+
+Ilya Leoshkevich (2):
+  libbpf: Add the ability to suppress perf event enablement
+  perf bpf-filter: Enable events manually
+
+ tools/lib/bpf/libbpf.c       | 13 ++++++++-----
+ tools/lib/bpf/libbpf.h       |  4 +++-
+ tools/perf/util/bpf-filter.c |  5 ++++-
+ 3 files changed, 15 insertions(+), 7 deletions(-)
+
+-- 
+2.50.1
+
 
