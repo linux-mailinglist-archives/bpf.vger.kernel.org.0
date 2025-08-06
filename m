@@ -1,252 +1,100 @@
-Return-Path: <bpf+bounces-65147-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65148-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A71DAB1CBC8
-	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 20:18:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26EE6B1CC0C
+	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 20:39:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E28DD7AB8AC
-	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 18:16:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E02E17E046
+	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 18:39:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA17129AB1A;
-	Wed,  6 Aug 2025 18:17:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EOSBM5z3"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBD0D29CB48;
+	Wed,  6 Aug 2025 18:39:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+Received: from mx.der-flo.net (mx.der-flo.net [193.160.39.236])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 289D428B51F
-	for <bpf@vger.kernel.org>; Wed,  6 Aug 2025 18:17:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC61E29A9C3;
+	Wed,  6 Aug 2025 18:39:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.160.39.236
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754504274; cv=none; b=jbV+fSntnftunJYzoyKrtlExWOQutqMQGhxRiuYF87Btk3wYNHJIJim4QZ64cNuhXniQrIUbnnLaorKVwbT5SrItiXCwSqmiItGG7EF1pcBVLhhF6XbNuSQxBxFpNhDSWkNKjjCNY3KECShYl/clsLkN11EqF8lrWcRl60QTEZQ=
+	t=1754505554; cv=none; b=DVFFWgkAB2y/QUnFzkG+PgQ54OERKoZNbVH2evv3zlpi0YYKIhugwgwrjF5zNp8VqvHpEauNVDPz2XZ90TqoM4SghPpu59NaTzGT2vmXEmfOtKh69KKezrVZ78oE73mOSo6bj26EjWPMWG7h1umNYoxui72+OXqKksD0sS4+ptc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754504274; c=relaxed/simple;
-	bh=3FKNH/2j/7yu+W35gTHHG3ks/5yRV+BkQeegHY/jpjU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bNRo6a6W4cIe6B7w8l1v8Rks6PByPI+9K17XZB9xTP/6Up7hBB7j72IZMxR1xN7YKf19hPUZ8yHdRJIVJ3e/fA36xFkS69Fkj4rtzItVajoHeY9tebK3FwPL85mfuP5FJc/ty+pGa/tKRCUVYV05X8UnKeefhLh4JxbYjD+IqEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=EOSBM5z3; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <f5d8d886-1de3-4521-917a-e98b645b987e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1754504259;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OhCFOoWcGKQbx95VvRl2b6bWCAnvya8JVL9ii3cAoDE=;
-	b=EOSBM5z3ZJOmEo9Ixd9QAEvaEPUKcZfPlRtc+NfPXufXiYchRCLelhonbA7+Q6stWN31n3
-	L6cY8LibCK76zwAVQXfYFdmVXcZ9kbQ5hP+H96hD4EDn7giULPUOG8jDB7jgxCoqA3VU43
-	tmZvRZoTMZos8h5DeBY6UiA5YqbntRM=
-Date: Wed, 6 Aug 2025 11:17:34 -0700
+	s=arc-20240116; t=1754505554; c=relaxed/simple;
+	bh=YMlQV3K+pJen1PR4TEtvm9pYP0XGyd6K7N7luLSCKSA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d8PyhQ6NL+mAkiBOq1vDQ8pwu6motHu4A0C5Eq6mzDnpOXD7j869OphAudQgH1xFOIIWAoR3lQxTEuKqk2fPQE3WX5diZ8FQtOafuvk+OPTvzTwMhC+0f54zjr743y6oIg7XAyDzUbRbHWB4d8JyJHa369zoq8I+5RPtPdfuQ/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=der-flo.net; spf=pass smtp.mailfrom=der-flo.net; arc=none smtp.client-ip=193.160.39.236
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=der-flo.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=der-flo.net
+Date: Wed, 6 Aug 2025 20:38:54 +0200
+From: Florian Lehner <dev@der-flo.net>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com,
+	song@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org,
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+	davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next] bpf: Add LINK_DETACH for iter and perf links
+Message-ID: <aJOhPoTLdYnZmHYA@der-flo.net>
+References: <20250801121053.7495-1-dev@der-flo.net>
+ <f871d538-31b8-437a-b838-900836e13eb8@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v7 2/2] selftests/bpf: Force -O2 for USDT selftests to
- cover SIB handling logic
-Content-Language: en-GB
-To: Jiawei Zhao <phoenix500526@163.com>, ast@kernel.org
-Cc: daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20250806092458.111972-1-phoenix500526@163.com>
- <20250806092458.111972-3-phoenix500526@163.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20250806092458.111972-3-phoenix500526@163.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <f871d538-31b8-437a-b838-900836e13eb8@linux.dev>
 
+On Tue, Aug 05, 2025 at 02:07:20PM -0700, Yonghong Song wrote:
+> 
+> 
+> On 8/1/25 5:10 AM, Florian Lehner wrote:
+> > 73b11c2a introduced LINK_DETACH and implemented it for some link types,
+> > like xdp, netns and others.
+> > 
+> > This patch implements LINK_DETACH for perf and iter links, re-using
+> > existing link release handling code.
+[..]
+> >   static void bpf_iter_link_dealloc(struct bpf_link *link)
+> >   {
+> >   	struct bpf_iter_link *iter_link =
+> > @@ -490,6 +496,7 @@ static int bpf_iter_link_fill_link_info(const struct bpf_link *link,
+> >   static const struct bpf_link_ops bpf_iter_link_lops = {
+> >   	.release = bpf_iter_link_release,
+> > +	.detach = bpf_iter_link_detach,
+> 
+> Not sure how useful for this one. For bpf_iter programs,
+> the loaded prog will expect certain bpt_iter (e.g., bpf_map_elem, bpf_map, ...).
+> So even if you have detach, you won't be able to attach to a different
+> bpf_iter flavor.
+> 
+> Do you have a use case for this one?
+> 
 
+A key reason for adding this was to enable the temporary disabling and re-enabling of
+an attached BPF program while keeping the same bpf_iter flavor. If you don't think
+this is a strong enough use case, I'm open to removing this from the patch.
 
-On 8/6/25 2:24 AM, Jiawei Zhao wrote:
-> When using GCC on x86-64 to compile an usdt prog with -O1 or higher
-> optimization, the compiler will generate SIB addressing mode for global
-> array and PC-relative addressing mode for global variable,
-> e.g. "1@-96(%rbp,%rax,8)" and "-1@4+t1(%rip)".
+> >   static void bpf_perf_link_dealloc(struct bpf_link *link)
+> >   {
+> >   	struct bpf_perf_link *perf_link = container_of(link, struct bpf_perf_link, link);
+> > @@ -4027,6 +4033,7 @@ static void bpf_perf_link_show_fdinfo(const struct bpf_link *link,
+> >   static const struct bpf_link_ops bpf_perf_link_lops = {
+> >   	.release = bpf_perf_link_release,
+> > +	.detach = bpf_perf_link_detach,
+> 
+> This one may be possible. You might be able to e.g., try a different bpf_cookie, or
+> different perf event.
 >
-> In this patch:
-> - add usdt_o2 test case to cover SIB addressing usdt argument spec
->    handling logic
->
-> Signed-off-by: Jiawei Zhao <phoenix500526@163.com>
-> ---
->   tools/testing/selftests/bpf/Makefile          |  8 +++
->   .../selftests/bpf/prog_tests/usdt_o2.c        | 71 +++++++++++++++++++
->   .../selftests/bpf/progs/test_usdt_o2.c        | 37 ++++++++++
->   3 files changed, 116 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/usdt_o2.c
->   create mode 100644 tools/testing/selftests/bpf/progs/test_usdt_o2.c
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index 910d8d6402ef..68cf6a9cf05f 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -759,6 +759,14 @@ TRUNNER_BPF_BUILD_RULE := $$(error no BPF objects should be built)
->   TRUNNER_BPF_CFLAGS :=
->   $(eval $(call DEFINE_TEST_RUNNER,test_maps))
->   
-> +# Use -O2 optimization to generate SIB addressing usdt argument spec
-> +# Only apply on x86 architecture where SIB addressing is relevant
-> +ifeq ($(ARCH), x86)
-> +$(OUTPUT)/usdt_o2.test.o: CFLAGS:=$(subst O0,O2,$(CFLAGS))
-> +$(OUTPUT)/cpuv4/usdt_o2.test.o: CFLAGS:=$(subst O0,O2,$(CFLAGS))
-> +$(OUTPUT)/no_alu32/usdt_o2.test.o: CFLAGS:=$(subst O0,O2,$(CFLAGS))
-> +endif
 
-I tried your selftest with gcc14 and llvm20 in my environment. See below:
-
-llvm20:
-Displaying notes found in: .note.stapsdt
-   Owner                Data size        Description
-   stapsdt              0x0000002f       NT_STAPSDT (SystemTap probe descriptors)
-     Provider: test
-     Name: usdt1
-     Location: 0x00000000000003ac, Base: 0x0000000000000000, Semaphore: 0x0000000000000000
-     Arguments: 8@-64(%rbp)
-
-gcc14:
-Displaying notes found in: .note.stapsdt
-   Owner                Data size        Description
-   stapsdt              0x00000034       NT_STAPSDT (SystemTap probe descriptors)
-     Provider: test
-     Name: usdt1
-     Location: 0x0000000000000334, Base: 0x0000000000000000, Semaphore: 0x0000000000000000
-     Arguments: 8@array(,%rax,8)
-
-llvm20 and gcc14 generate different usdt patterns. '8@-64(%rbp)' already supports so
-with SIB support, the test should pass CI, I think.
-
-> +
->   # Define test_verifier test runner.
->   # It is much simpler than test_maps/test_progs and sufficiently different from
->   # them (e.g., test.h is using completely pattern), that it's worth just
-> diff --git a/tools/testing/selftests/bpf/prog_tests/usdt_o2.c b/tools/testing/selftests/bpf/prog_tests/usdt_o2.c
-> new file mode 100644
-> index 000000000000..f04b756b3640
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/usdt_o2.c
-> @@ -0,0 +1,71 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2025 Jiawei Zhao <phoenix500526@163.com>. */
-> +#include <test_progs.h>
-> +
-> +#define _SDT_HAS_SEMAPHORES 1
-> +#include "../sdt.h"
-> +#include "test_usdt_o2.skel.h"
-> +
-> +int lets_test_this(int);
-> +
-> +#define test_value 0xFEDCBA9876543210ULL
-> +#define SEC(name) __attribute__((section(name), used))
-> +
-> +
-> +static volatile __u64 array[1] = {test_value};
-> +unsigned short test_usdt1_semaphore SEC(".probes");
-> +
-> +static __always_inline void trigger_func(void)
-> +{
-> +	/* Base address + offset + (index * scale) */
-> +	if (test_usdt1_semaphore) {
-> +		for (volatile int i = 0; i <= 0; i++)
-> +			STAP_PROBE1(test, usdt1, array[i]);
-> +	}
-> +}
-> +
-> +static void basic_sib_usdt(void)
-> +{
-> +	LIBBPF_OPTS(bpf_usdt_opts, opts);
-> +	struct test_usdt_o2 *skel;
-> +	struct test_usdt_o2__bss *bss;
-> +	int err;
-> +
-> +	skel = test_usdt_o2__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "skel_open"))
-> +		return;
-> +
-> +	bss = skel->bss;
-> +	bss->my_pid = getpid();
-> +
-> +	err = test_usdt_o2__attach(skel);
-> +	if (!ASSERT_OK(err, "skel_attach"))
-> +		goto cleanup;
-> +
-> +	/* usdt1 won't be auto-attached */
-> +	opts.usdt_cookie = 0xcafedeadbeeffeed;
-> +	skel->links.usdt1 = bpf_program__attach_usdt(skel->progs.usdt1,
-> +						     0 /*self*/, "/proc/self/exe",
-> +						     "test", "usdt1", &opts);
-> +	if (!ASSERT_OK_PTR(skel->links.usdt1, "usdt1_link"))
-> +		goto cleanup;
-> +
-> +	trigger_func();
-> +
-> +	ASSERT_EQ(bss->usdt1_called, 1, "usdt1_called");
-> +	ASSERT_EQ(bss->usdt1_cookie, 0xcafedeadbeeffeed, "usdt1_cookie");
-> +	ASSERT_EQ(bss->usdt1_arg_cnt, 1, "usdt1_arg_cnt");
-> +	ASSERT_EQ(bss->usdt1_arg, test_value, "usdt1_arg");
-> +	ASSERT_EQ(bss->usdt1_arg_ret, 0, "usdt1_arg_ret");
-> +	ASSERT_EQ(bss->usdt1_arg_size, sizeof(array[0]), "usdt1_arg_size");
-> +
-> +cleanup:
-> +	test_usdt_o2__destroy(skel);
-> +}
-> +
-> +
-> +
-> +void test_usdt_o2(void)
-> +{
-> +	basic_sib_usdt();
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/test_usdt_o2.c b/tools/testing/selftests/bpf/progs/test_usdt_o2.c
-> new file mode 100644
-> index 000000000000..14602aa54578
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_usdt_o2.c
-> @@ -0,0 +1,37 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-> +
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/usdt.bpf.h>
-> +
-> +int my_pid;
-> +
-> +int usdt1_called;
-> +u64 usdt1_cookie;
-> +int usdt1_arg_cnt;
-> +int usdt1_arg_ret;
-> +u64 usdt1_arg;
-> +int usdt1_arg_size;
-> +
-> +SEC("usdt")
-> +int usdt1(struct pt_regs *ctx)
-> +{
-> +	long tmp;
-> +
-> +	if (my_pid != (bpf_get_current_pid_tgid() >> 32))
-> +		return 0;
-> +
-> +	__sync_fetch_and_add(&usdt1_called, 1);
-> +
-> +	usdt1_cookie = bpf_usdt_cookie(ctx);
-> +	usdt1_arg_cnt = bpf_usdt_arg_cnt(ctx);
-> +
-> +	usdt1_arg_ret = bpf_usdt_arg(ctx, 0, &tmp);
-> +	usdt1_arg = (u64)tmp;
-> +	usdt1_arg_size = bpf_usdt_arg_size(ctx, 0);
-> +
-> +	return 0;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
+The primary use case for this feature is to allow for the temporary disabling of
+uprobes that are attached using bpf_perf_links.
 
 
