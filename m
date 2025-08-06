@@ -1,183 +1,126 @@
-Return-Path: <bpf+bounces-65112-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65113-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5F63B1C358
-	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 11:29:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73C87B1C3B3
+	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 11:48:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3FA3174564
-	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 09:29:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC9663B73ED
+	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 09:48:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B31CC28A3EF;
-	Wed,  6 Aug 2025 09:29:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20DE8256C89;
+	Wed,  6 Aug 2025 09:48:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="fjqQ76cf"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=163.com header.i=@163.com header.b="c54s3wP2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF7D22E370A;
-	Wed,  6 Aug 2025 09:29:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69C422904;
+	Wed,  6 Aug 2025 09:48:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754472586; cv=none; b=byMSZvjAIFD7KirLFux5owMsixv9SaWvVCgXqV1orpEhCr3LYjnyY3ftE1Uy+TiCQG1iGu3nG6fVcDySzSLxP/zjfQriBtu/LSbLf6/hmmxzBEvOC6qWV0yHodX3Pzpe5r+4YfT0UVZoVAo4Hq3WEJMt5rvaYBFIUYNzwONCQ4o=
+	t=1754473693; cv=none; b=KJbauVr0/45K7y/otp38O7Lky2BkWIGJ5KYQZ2tDdHork6lQ9foO9uhsLvltJe2g66i0jQUx9nHaHFUQhJtHCZlFDaKeOlfiPlmV6Zl3UQoYScRku5eoY7qI1UFNsRwjDKB89d+AxNhUZUX8IyFZezeg9Pt7ar9muiXoy3E69sI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754472586; c=relaxed/simple;
-	bh=ES0F2THCOf5A+FV6j3r4XDV+ugLcrg5Fj4j2x6zvoVI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OYVXZF72Hni4UtBqPxNtbhrw/c02tNAYcWZ26HmeVycW2gojy1h34msFe3D93l14Rt+uaqkNY4jQ8WZ3x3UagC9AKo9diYhgecsnV/0G/cQA7tyW5HbKXpQRknl2dRxVTyYOIc5Q0eRU8rd9GBkBCj+RiZkY9+FNcUVjIurFMSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=fjqQ76cf; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5766tFcu019444;
-	Wed, 6 Aug 2025 09:29:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=B1T9N3
-	DRA/VCZIWhWg7LmWynZ3xyLENJ07dyfWBpZFU=; b=fjqQ76cf2x2t4NVcP8fgzr
-	LaFBEfj+UCr8zHPImEuVsbHeOalOMu7aLBkm6TUNQc72ofXUewOMuhoZpohnvs5n
-	blW8Y59qJ7dCaz8L9JV/B9Wp6GQoTjETd8edxIPnYoo/6y78owXPHvq/Hkqr+0Rv
-	+LnW63jcH7yYToeHn0HUkyWF+7jiczBzFK+cnnRcJqHGPvhFQMYjKBAh4JY0tREc
-	i1k0UdKdYrXY9P8cIzjQnBbZnJRH3DnlQz3cf5/FmVEk3XmkckAic5WNoGDfgHSX
-	A44dxVr/6XizSN0aNtD13z8c/CJYL4SOPGYXrIykeOq1IAZGz+iVHnsCOD1dCZFg
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48c26trn1y-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 06 Aug 2025 09:29:31 +0000 (GMT)
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5769SaT4007367;
-	Wed, 6 Aug 2025 09:29:30 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48c26trn1x-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 06 Aug 2025 09:29:30 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5767vKZK020600;
-	Wed, 6 Aug 2025 09:29:29 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 48bpwmty5h-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 06 Aug 2025 09:29:29 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5769TPs950069950
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 6 Aug 2025 09:29:25 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 554962004B;
-	Wed,  6 Aug 2025 09:29:25 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1D41F20049;
-	Wed,  6 Aug 2025 09:29:25 +0000 (GMT)
-Received: from [9.152.212.130] (unknown [9.152.212.130])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed,  6 Aug 2025 09:29:25 +0000 (GMT)
-Message-ID: <1094385e-6f86-453f-a48e-fa284dcae385@linux.ibm.com>
-Date: Wed, 6 Aug 2025 11:29:24 +0200
+	s=arc-20240116; t=1754473693; c=relaxed/simple;
+	bh=L18x3n0Qgl4lVs+Z9ZFglVRU0vLUp/CruW8wFiT1QfI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
+	 MIME-Version:Message-ID; b=IQjo/uIqepo7chE6EFgeggo1KO2/UGnO9UiUk0txRVKigGCEhXJS9d6J+qQ7cLcTqyj2YZ9oh+348tHCFp3tmXkTra//0WoID6kS/utbNa26DUJ/bu/bp/5SxE4mHRcDl+wOCTA4IEOBzhQuwsGLrBOe0nuhdEHkcseiqxDK4r8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=fail (1024-bit key) header.d=163.com header.i=@163.com header.b=c54s3wP2 reason="signature verification failed"; arc=none smtp.client-ip=220.197.31.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=Date:From:To:Subject:Content-Type:MIME-Version:
+	Message-ID; bh=QzKGHkQdK0bBRBUTozmgAfsqu4s3xVI4zk+6kEWtcVQ=; b=c
+	54s3wP2ww5tR5bh9A31RvZAgGZpX10TLpTSyUMkPuHwHnB2Kc6YCAp6jFJvr1WKA
+	/LM7BrelO+XRPYYa1dJL4aiQeE1gT1FCq0OF0P11za+iEimD9QPncHtRjEUen5Tr
+	xguMl/NG3alS2l6UjMv9OfslXGo9mBO5JpI2y6HksE=
+Received: from phoenix500526$163.com ( [120.230.124.59] ) by
+ ajax-webmail-wmsvr-40-108 (Coremail) ; Wed, 6 Aug 2025 17:47:36 +0800 (CST)
+Date: Wed, 6 Aug 2025 17:47:36 +0800 (CST)
+From: =?UTF-8?B?6LW15L2z54Kc?= <phoenix500526@163.com>
+To: "Yonghong Song" <yonghong.song@linux.dev>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re:Re: [PATCH v6 2/2] selftests/bpf: Force -O2 for USDT selftests
+ to cover SIB handling logic
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20250519(9504565a)
+ Copyright (c) 2002-2025 www.mailtech.cn 163com
+In-Reply-To: <058d4d74-23ff-444b-a773-9d45204900f2@linux.dev>
+References: <20250802084803.108777-1-phoenix500526@163.com>
+ <20250802084803.108777-3-phoenix500526@163.com>
+ <058d4d74-23ff-444b-a773-9d45204900f2@linux.dev>
+X-NTES-SC: AL_Qu2eBvicvE4u4CSdbOkfmUsVh+o9X8K1vfsk3oZfPJp+jCLp1yY+THNTMH/b4cWDNTqunQiHQiJp+uZHV6V3YawLZvTuhmOs4NaAknJTr1/35Q==
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] perf bpf-filter: Enable events manually
-To: Alexander Gordeev <agordeev@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Ian Rogers <irogers@google.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>, bpf@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>
-References: <20250805130346.1225535-1-iii@linux.ibm.com>
- <20250805130346.1225535-3-iii@linux.ibm.com>
- <4a7fc5ab-682d-4fac-a547-9e4b1263dba7-agordeev@linux.ibm.com>
-Content-Language: en-US
-From: Thomas Richter <tmricht@linux.ibm.com>
-Organization: IBM
-In-Reply-To: <4a7fc5ab-682d-4fac-a547-9e4b1263dba7-agordeev@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: kp9R7gzU3Zi2X7pQoZH8W3IiFwi5wq4p
-X-Authority-Analysis: v=2.4 cv=F/xXdrhN c=1 sm=1 tr=0 ts=6893207b cx=c_pps
- a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
- a=IkcTkHD0fZMA:10 a=2OwXVqhp2XgA:10 a=G2SI-qYk9hsPBJNDFb0A:9
- a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-GUID: ByIXSOgnBIEuNgtdSnszCEELpYo7LbV2
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODA2MDA1NyBTYWx0ZWRfX9KfYdHqR9GDI
- Y2nmdZvmxcwpHVRRulqqUvZ/FZDuaJdIwkz0Y49tMESj0+S4foX1OPBQODR/GBsGCZiZWOV83Jg
- 4MHJtU0tnHYnzRRqTJxPTRZN+NjejH5JlO9TvxoSeHdc6/WUj8mVU4OgiY0TY4dHbytC31VHenu
- bYuRTzMeoeEDlHNUrDA4hkTZhGd39n5xvGIjh/ZGyzl04OEiQCaPQrKRTyuWo17nLwvgCtOYF0N
- sEHjrwGYun/eXu5tzHekJbAV/DBJcI5YBrrYPqdMVS0+8GH9BjY8kdR3yIfi1v5OyJPkb9WJoRy
- FEMzme1beyqrWepAiCHI5tZ1QpcRJYMegIKnaw8U+b1R3CdW0cle3VuL+zbG/9q9uOplNJFgC9x
- 9U2fWXqD1febnrQrbnHXJe87s6Mcmf51xTteJ7roawXuUuJ1AYu83JtOdAuwAnedbXSFWubo
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-08-06_02,2025-08-04_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- mlxscore=0 lowpriorityscore=0 priorityscore=1501 impostorscore=0
- clxscore=1015 spamscore=0 bulkscore=0 adultscore=0 mlxlogscore=999
- malwarescore=0 phishscore=0 suspectscore=0 classifier=spam authscore=0
- authtc=n/a authcc= route=outbound adjust=0 reason=mlx scancount=1
- engine=8.19.0-2507300000 definitions=main-2508060057
+Message-ID: <393dae7e.9b04.1987ec77091.Coremail.phoenix500526@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:bCgvCgD313O5JJNoRQoUAA--.51653W
+X-CM-SenderInfo: pskrv0dl0viiqvswqiywtou0bp/1tbiFAOhiGiTGhWjkQABs5
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 
-On 8/5/25 16:14, Alexander Gordeev wrote:
-> On Tue, Aug 05, 2025 at 02:54:05PM +0200, Ilya Leoshkevich wrote:
-> 
-> Hi Thomas,
-> 
-> The below comments date to the initial version, so the question is
-> rather to you:
-> 
->> On linux-next
-> 
-> This line is extra.
-
-I just wanted to let readers know which repo to look at.
-
-> 
->> commit b4c658d4d63d61 ("perf target: Remove uid from target")
->> introduces a regression on s390. In fact the regression exists
->> on all platforms when the event supports auxiliary data gathering.
-> 
-> So which commit it actually fixes: the above, the below or the both?
-> 
->> Fixes: 63f2f5ee856ba ("libbpf: add ability to attach/detach BPF program to perf event")
-> 
-> Thanks!
-> 
-
-Good question!  Pick what you like... :-)
-
-The issue in question originates from a patch set of 10 patches.
-The patch set rebuilds event sample with filtering and migrates
-from perf tool's selective process picking to more generic eBPF
-filtering using eBPF programs hooked to perf events.
-
-To be precise, the issue Ilya's  patch fixes is this:
-Fixes: 63f2f5ee856ba ("libbpf: add ability to attach/detach BPF program to perf event")
-
-However the issue (perf failure) does *NOT* show up until this patch is applied:
-commit b4c658d4d63d61 ("perf target: Remove uid from target")
-
-There are some patches in between the two (when you look at the complete patch set),
-but they do not affect the result.
-
-Hope that helps.
--- 
-Thomas Richter, Dept 3303, IBM s390 Linux Development, Boeblingen, Germany
---
-IBM Deutschland Research & Development GmbH
-
-Vorsitzender des Aufsichtsrats: Wolfgang Wendt
-
-Geschäftsführung: David Faller
-
-Sitz der Gesellschaft: Böblingen / Registergericht: Amtsgericht Stuttgart, HRB 243294
+CgpPSywgSeKAmXZlIGFscmVhZHkgYWRkZWQgYW4gdXNkdF9vMiB0ZXN0IGFuZCBwYXNzZWQgaXQu
+wqAKCgoKCkF0IDIwMjUtMDgtMDYgMDM6NDI6MjIsICJZb25naG9uZyBTb25nIiA8eW9uZ2hvbmcu
+c29uZ0BsaW51eC5kZXY+IHdyb3RlOgo+Cj4KPk9uIDgvMi8yNSAxOjQ4IEFNLCBKaWF3ZWkgWmhh
+byB3cm90ZToKPj4gV2hlbiB1c2luZyBHQ0Mgb24geDg2LTY0IHRvIGNvbXBpbGUgYW4gdXNkdCBw
+cm9nIHdpdGggLU8xIG9yIGhpZ2hlcgo+PiBvcHRpbWl6YXRpb24sIHRoZSBjb21waWxlciB3aWxs
+IGdlbmVyYXRlIFNJQiBhZGRyZXNzaW5nIG1vZGUgZm9yIGdsb2JhbAo+PiBhcnJheSBhbmQgUEMt
+cmVsYXRpdmUgYWRkcmVzc2luZyBtb2RlIGZvciBnbG9iYWwgdmFyaWFibGUsCj4+IGUuZy4gIjFA
+LTk2KCVyYnAsJXJheCw4KSIgYW5kICItMUA0K3QxKCVyaXApIi4KPj4KPj4gSW4gdGhpcyBwYXRj
+aDoKPj4gLSBmb3JjZSAtTzIgb3B0aW1pemF0aW9uIGZvciB1c2R0LnRlc3QubyB0byBnZW5lcmF0
+ZSBTSUIgYWRkcmVzc2luZyB1c2R0Cj4+ICAgIGFyZ3VtZW50IHNwZWMuCj4+IC0gY2hhbmdlIHRo
+ZSBnbG9iYWwgdmFyaWFibGUgdDEgdG8gYSBsb2NhbCB2YXJpYWJsZSwgdG8gYXZvaWQgY29tcGls
+ZXIKPj4gICAgZ2VuZXJhdGluZyBQQy1yZWxhdGl2ZSBhZGRyZXNzaW5nIG1vZGUgZm9yIGl0Lgo+
+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBKaWF3ZWkgWmhhbyA8cGhvZW5peDUwMDUyNkAxNjMuY29tPgo+
+PiAtLS0KPj4gICB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvTWFrZWZpbGUgICAgICAgICAg
+fCAgOCArKysrKysrKwo+PiAgIHRvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9nX3Rlc3Rz
+L3VzZHQuYyB8IDE4ICsrKysrKysrKysrKy0tLS0tLQo+PiAgIDIgZmlsZXMgY2hhbmdlZCwgMjAg
+aW5zZXJ0aW9ucygrKSwgNiBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBhL3Rvb2xzL3Rl
+c3Rpbmcvc2VsZnRlc3RzL2JwZi9NYWtlZmlsZSBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2Jw
+Zi9NYWtlZmlsZQo+PiBpbmRleCA5MTBkOGQ2NDAyZWYuLjRiNzdkMDZkNWM0MiAxMDA2NDQKPj4g
+LS0tIGEvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL01ha2VmaWxlCj4+ICsrKyBiL3Rvb2xz
+L3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9NYWtlZmlsZQo+PiBAQCAtNzU5LDYgKzc1OSwxNCBAQCBU
+UlVOTkVSX0JQRl9CVUlMRF9SVUxFIDo9ICQkKGVycm9yIG5vIEJQRiBvYmplY3RzIHNob3VsZCBi
+ZSBidWlsdCkKPj4gICBUUlVOTkVSX0JQRl9DRkxBR1MgOj0KPj4gICAkKGV2YWwgJChjYWxsIERF
+RklORV9URVNUX1JVTk5FUix0ZXN0X21hcHMpKQo+PiAgIAo+PiArIyBGb3JjZSB1c2R0LmMgdG8g
+dXNlIC1PMiBvcHRpbWl6YXRpb24gdG8gZ2VuZXJhdGUgU0lCIGFkZHJlc3NpbmcKPj4gKyMgT25s
+eSBhcHBseSBvbiB4ODYgYXJjaGl0ZWN0dXJlIHdoZXJlIFNJQiBhZGRyZXNzaW5nIGlzIHJlbGV2
+YW50Cj4+ICtpZmVxICgkKEFSQ0gpLCB4ODYpCj4+ICskKE9VVFBVVCkvdXNkdC50ZXN0Lm86IENG
+TEFHUzo9JChzdWJzdCBPMCxPMiwkKENGTEFHUykpCj4+ICskKE9VVFBVVCkvY3B1djQvdXNkdC50
+ZXN0Lm86IENGTEFHUzo9JChzdWJzdCBPMCxPMiwkKENGTEFHUykpCj4+ICskKE9VVFBVVCkvbm9f
+YWx1MzIvdXNkdC50ZXN0Lm86IENGTEFHUzo9JChzdWJzdCBPMCxPMiwkKENGTEFHUykpCj4+ICtl
+bmRpZgo+Cj5UaGlzIGlzIG5vIGdvb2QuIFlvdSBzaG91bGQgbm90IGNoYW5nZSBmcm9tIC1PMCB0
+byAtTzIuIFRoZSBleGlzdGluZyB1c2R0LmMKPnRlc3Qgc2hvdWxkIGJlIGtlcHQuIEkgYXNzdW1l
+IGF0IC1PMCBsZXZlbCwgdGhlIGNvbXBpbGVyIHByb2JhYmx5Cj53b24ndCBnZW5lcmF0ZSBTSUIg
+cGF0dGVybi4KPgo+WW91IGNvdWxkIGFkZCBhbm90aGVyIHVzZHQgdGVzdCBlLmcuIHVzZHRfbzIu
+YyBhbmQgZm9yY2UKPnVzZHRfbzIgaXMgY29tcGlsZWQgd2l0aCAtTzIgb3B0aW1pemF0aW9ucyBh
+bmQgaW4gdXNkdF9vMiBmb2N1c2luZyBvbgo+U0lCIHByb2JlLgo+Cj4+ICsKPj4gICAjIERlZmlu
+ZSB0ZXN0X3ZlcmlmaWVyIHRlc3QgcnVubmVyLgo+PiAgICMgSXQgaXMgbXVjaCBzaW1wbGVyIHRo
+YW4gdGVzdF9tYXBzL3Rlc3RfcHJvZ3MgYW5kIHN1ZmZpY2llbnRseSBkaWZmZXJlbnQgZnJvbQo+
+PiAgICMgdGhlbSAoZS5nLiwgdGVzdC5oIGlzIHVzaW5nIGNvbXBsZXRlbHkgcGF0dGVybiksIHRo
+YXQgaXQncyB3b3J0aCBqdXN0Cj4+IGRpZmYgLS1naXQgYS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0
+cy9icGYvcHJvZ190ZXN0cy91c2R0LmMgYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvcHJv
+Z190ZXN0cy91c2R0LmMKPj4gaW5kZXggNDk1ZDY2NDE0YjU3Li44NmYzNTRkMjVhZWYgMTAwNjQ0
+Cj4+IC0tLSBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9nX3Rlc3RzL3VzZHQuYwo+
+PiArKysgYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvcHJvZ190ZXN0cy91c2R0LmMKPj4g
+QEAgLTE0LDEwICsxNCwxNSBAQCBzdGF0aWMgdm9sYXRpbGUgaW50IGlkeCA9IDI7Cj4+ICAgc3Rh
+dGljIHZvbGF0aWxlIF9fdTY0IGJsYSA9IDB4RkVEQ0JBOTg3NjU0MzIxMFVMTDsKPj4gICBzdGF0
+aWMgdm9sYXRpbGUgc2hvcnQgbnVtc1tdID0gey0xLCAtMiwgLTMsIC00fTsKPj4gICAKPj4gLXN0
+YXRpYyB2b2xhdGlsZSBzdHJ1Y3Qgewo+PiAtCWludCB4Owo+PiAtCXNpZ25lZCBjaGFyIHk7Cj4+
+IC19IHQxID0geyAxLCAtMTI3IH07Cj4+ICsvKgo+PiArICogVE9ETzogIEF0IE8yIG9wdGltaXph
+dGlvbiBsZXZlbCwgdDEncyBVU0RUIGFyZ3VtZW50IHNwZWMgYmVjb21lcyAtMUA0K3QxKCVyaXAp
+Lgo+PiArICogU2luY2UgbGliYnBmIGRvZXNuJ3Qgc3VwcG9ydCBSSVAgYWRkcmVzc2luZyBtb2Rl
+IHlldCwgdGhpcyBjYXVzZXMgInVucmVjb2duaXplZCByZWdpc3RlciIgZXJyb3JzLgo+PiArICog
+VGhpcyB0ZXN0IHdpbGwgYmUgcmUtZW5hYmxlZCBvbmNlIGxpYmJwZiBzdXBwb3J0cyBSSVAgYWRk
+cmVzc2luZyBtb2RlLgo+PiArICovCj4+ICsvLyBzdGF0aWMgdm9sYXRpbGUgc3RydWN0IHsKPj4g
+Ky8vCWludCB4Owo+PiArLy8Jc2lnbmVkIGNoYXIgeTsKPj4gKy8vIH0gdDEgPSB7IDEsIC0xMjcg
+fTsKPj4gICAKPgo+Wy4uLl0K
 
