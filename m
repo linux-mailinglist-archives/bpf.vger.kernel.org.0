@@ -1,144 +1,240 @@
-Return-Path: <bpf+bounces-65156-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65157-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33FB4B1CE8C
-	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 23:37:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 226E7B1CF37
+	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 00:53:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD4D418C6179
-	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 21:38:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2A963AB13F
+	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 22:53:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08AC4230D2B;
-	Wed,  6 Aug 2025 21:37:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 511612356BA;
+	Wed,  6 Aug 2025 22:53:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FIM0ppN8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C64C21FF51;
-	Wed,  6 Aug 2025 21:37:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2A1D13A3F2;
+	Wed,  6 Aug 2025 22:53:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754516250; cv=none; b=Wd6Ud9JmTdYRkAmI2JbdHPwu9Plyf53e7bdd0nCbrMgvq+m7jGlkRB8d3kXSYQIaGGMoEiVy0CYWDdFw03PP9QPIpiC6fGWid2sCOlfhN5KcPbaOqBTyiJvwpcNbDx+QYqHjvHGew0S07VwwRH4huWQKlWoriJu3LJgcwELutg8=
+	t=1754520794; cv=none; b=TAzR9fBYvllJZ09sbu+bWizZAaHWNZhDiZPz/+Jd2RMLjkiCazarZSp9e53fgf0r+VND2q2a3rtVyfzeOaOfe4WQxWNxhA408vkaeI6z+FLG0uxj60fsY0jjnIuOynAd9p9o+QRE5lZmQ2PFskOp1l5OMKPtSLWuRU4e1/D0ezg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754516250; c=relaxed/simple;
-	bh=l68yX9XCt9xjplg3S6TYYqYUUcYJiocfrGN5djxO4Sc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YwYfcrXBn2wiGpg3OvuePO8py/seHBsZXwJboBGDIr3MxadVWH+Z46A356nWi8cBGUh1ryrsqDtn1FH1b7wkqljhayVcm0U2GhlksuSnBmfyCt2OMnvFcqvvfO045oo41Jkwtiwpjnt5VdEefP9rC0nxXlgmOc5nAcCqL8rZhQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-23dc5bcf49eso3396945ad.2;
-        Wed, 06 Aug 2025 14:37:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754516248; x=1755121048;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uHAk47okoxBth3gGPZaSdIJjGXtD5du61Fs+eKgB9kY=;
-        b=P8iOGW+Cr4U9+yeXPQ2mZ4GMuXxuZzZ8AqlpSbrXZUwCuzGz7NKCTk4yq5JwxuIHux
-         ruHdXXfVHYulEDEmIQnlFTOpKUKlZ5aXTnsBkKzF2LQ0uNNFnyvrcW00UP0SmxjBQkog
-         EH7UYQpzFYJr5fXUOZJTiObHnnr7wA7M0zEzTrmorzrJTdY7ITN7kw25PXgKIwivUnGM
-         z7FeV94Uc4JkaAag8b1VnF5MGskhA8h2z6iYCYwq1++WRRf9JsqCLe8rtnztZ+oKRGLi
-         Og9BPSKOgLmgvpLMzemMk0GJ9mk+r0k3m15tgs7ahXp4uxW3bXmU/RiZ2YczziJAez7T
-         gxKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCULPB99k3xE07d3KiRid8++FfrB17myC/K60AXEbyuuSKtHjYNa8xJ+zKoarTlKL1/yyVY=@vger.kernel.org, AJvYcCVevN4M3zSMO4YCS0U0lz6wh9fCup2KxaYWkm9G8hHmlm+jrlAFfoWq/lHQ9B3FpAjb1lKZ83kKWZBvilvV@vger.kernel.org, AJvYcCW6hzIfsP3swrznPD26u+XcK5UVCSPzeOdxdmYrS73oG8gN+bH4iYd6VtK9m1JTsWyxoc4k7HqBUXyE@vger.kernel.org
-X-Gm-Message-State: AOJu0YzdFZbJdeg27WOSOuOS/2ZPs45ugs6Gs/mpchy/n4fAC2zlWvmW
-	bs9KNXjcVCF+IxOVbrIZESMFY00Xfo2Sgmi9gS+SvYB43Z8iT30LCcE5VSbr
-X-Gm-Gg: ASbGncu1aV3W3riYRv23esUFxM7vTFLw5BgMtPwJvIN4uGWvtO1NDKhLC7EQc/bsSYa
-	pgtNdyY7UThRjdqui2b4bRHoHDaLPDvAEZwHmT70c1VgRdlXqM+ipWpWeZduVZgbo87zfMR1tC+
-	Rfqda1yymcRa8A/X4otzmCqFm2CvUezYWaVN3V03NqQW41xm/5Lotj0CztpkIX3K1Gv8u9wO1gR
-	bzo3O9TnQjVao5MlR09cNajTF8SUoeawmXIaHMaxDjQBLb9UZvnS4ubjySaU75KuLQeglzl1gX7
-	9mX9IM5BP/JTy05PnGnQTmwjFlV2iX0YlYtfGy7peDVXVTE+Vz8NSu16F2JE4gJOe5F5PLao/Il
-	uCo9ueqx6haHaia7Gxj3jt4Ni9T4fc3GGPP56OSvQm+xvoGm9YF24IhgGTl6So2xcKI/Ffg==
-X-Google-Smtp-Source: AGHT+IFL+0woOMjMEF8qQN0+gX0EkdLMDv79kTC4v0Jsuu5q3EIeBo/u+nVFxb8gPQ0yY5YIzwDwbw==
-X-Received: by 2002:a17:902:fc8f:b0:240:6d9b:59ff with SMTP id d9443c01a7336-2429f5339b5mr60521305ad.33.1754516248349;
-        Wed, 06 Aug 2025 14:37:28 -0700 (PDT)
-Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
-        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-241e899a48esm168509125ad.114.2025.08.06.14.37.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Aug 2025 14:37:27 -0700 (PDT)
-From: Stanislav Fomichev <sdf@fomichev.me>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	andrew+netdev@lunn.ch,
-	ms@dev.tdt.de,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	sdf@fomichev.me,
-	aleksander.lobakin@intel.com,
-	linux-kernel@vger.kernel.org,
-	linux-x25@vger.kernel.org,
-	bpf@vger.kernel.org,
-	syzbot+e6300f66a999a6612477@syzkaller.appspotmail.com
-Subject: [PATCH net 2/2] hamradio: ignore ops-locked netdevs
-Date: Wed,  6 Aug 2025 14:37:26 -0700
-Message-ID: <20250806213726.1383379-2-sdf@fomichev.me>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20250806213726.1383379-1-sdf@fomichev.me>
-References: <20250806213726.1383379-1-sdf@fomichev.me>
+	s=arc-20240116; t=1754520794; c=relaxed/simple;
+	bh=aQ/0Dh3y8KRuO5nNN3e4yGDJrs5zHxpjrom8VAttomI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=F6tF1Fcnxvx+RhuSL/swA8l9oua6pyJ4MTXKhNLbdLJTH70QbITMptP37Q3Kb+lH1ZhVRSvrJyjA0VkOmRtZg0txE80V4CTBqxMbh2WdtF9ZPS+5Ns5rUTJ1dWyce0XKw/WDhyT1Y1o3DvFgsP18ijSM59RALIMytv2jJIVYJp8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FIM0ppN8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C1FEC4CEE7;
+	Wed,  6 Aug 2025 22:53:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1754520794;
+	bh=aQ/0Dh3y8KRuO5nNN3e4yGDJrs5zHxpjrom8VAttomI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FIM0ppN88Z7flsAgbKGOZcK6GIwviab7UaqjGLaSnHIRa1Yup7lsN5JZzecYTk/7j
+	 OcxABp1dPJ4Iw7UTtcHJCYD4eWVhHBvZwljJAH+ntNK1xpKRatojIViTxBKtKBV4+C
+	 np8iZu46T7YEkqoZgPMBC/Neb19nESIsqf5GB5IZkLd1dpvK3m7BNVB3shuSRR1MS+
+	 82CG69YMAAFg37R6qV6tp1X2aXm7Nm4VNyoif9+WxUGwsBLDl+G4e5DVb3EESqvD6q
+	 K/cq/0R/XJXpGMDOtdmqDqKkG7+EvG444pIHwJCXL4H9DG9Qy1PVgiL8eEVm8M3UpE
+	 k5CI8GNw/nqOg==
+Date: Wed, 6 Aug 2025 15:53:12 -0700
+From: Namhyung Kim <namhyung@kernel.org>
+To: Ilya Leoshkevich <iii@linux.ibm.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>, bpf@vger.kernel.org,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-s390@vger.kernel.org, Thomas Richter <tmricht@linux.ibm.com>,
+	Jiri Olsa <jolsa@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>
+Subject: Re: [PATCH v4 2/2] perf bpf-filter: Enable events manually
+Message-ID: <aJPc2NvJqLOGaIKl@google.com>
+References: <20250806114227.14617-1-iii@linux.ibm.com>
+ <20250806114227.14617-3-iii@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250806114227.14617-3-iii@linux.ibm.com>
 
-Syzkaller managed to trigger lock dependency in xsk_notify via
-register_netdevice. As discussed in [0], using register_netdevice
-in the notifiers is problematic so skip adding hamradio for ops-locked
-devices.
+Hello,
 
-       xsk_notifier+0x89/0x230 net/xdp/xsk.c:1664
-       notifier_call_chain+0x1b6/0x3e0 kernel/notifier.c:85
-       call_netdevice_notifiers_extack net/core/dev.c:2267 [inline]
-       call_netdevice_notifiers net/core/dev.c:2281 [inline]
-       unregister_netdevice_many_notify+0x14d7/0x1ff0 net/core/dev.c:12156
-       unregister_netdevice_many net/core/dev.c:12219 [inline]
-       unregister_netdevice_queue+0x33c/0x380 net/core/dev.c:12063
-       register_netdevice+0x1689/0x1ae0 net/core/dev.c:11241
-       bpq_new_device drivers/net/hamradio/bpqether.c:481 [inline]
-       bpq_device_event+0x491/0x600 drivers/net/hamradio/bpqether.c:523
-       notifier_call_chain+0x1b6/0x3e0 kernel/notifier.c:85
-       call_netdevice_notifiers_extack net/core/dev.c:2267 [inline]
-       call_netdevice_notifiers net/core/dev.c:2281 [inline]
-       __dev_notify_flags+0x18d/0x2e0 net/core/dev.c:-1
-       netif_change_flags+0xe8/0x1a0 net/core/dev.c:9608
-       dev_change_flags+0x130/0x260 net/core/dev_api.c:68
-       devinet_ioctl+0xbb4/0x1b50 net/ipv4/devinet.c:1200
-       inet_ioctl+0x3c0/0x4c0 net/ipv4/af_inet.c:1001
+On Wed, Aug 06, 2025 at 01:40:35PM +0200, Ilya Leoshkevich wrote:
+> On s390, and, in general, on all platforms where the respective event
+> supports auxiliary data gathering, the command:
+> 
+>    # ./perf record -u 0 -aB --synth=no -- ./perf test -w thloop
+>    [ perf record: Woken up 1 times to write data ]
+>    [ perf record: Captured and wrote 0.011 MB perf.data ]
+>    # ./perf report --stats | grep SAMPLE
+>    #
+> 
+> does not generate samples in the perf.data file. On x86 the command:
+> 
+>   # sudo perf record -e intel_pt// -u 0 ls
+> 
+> is broken too.
+> 
+> Looking at the sequence of calls in 'perf record' reveals this
+> behavior:
+> 
+> 1. The event 'cycles' is created and enabled:
+> 
+>    record__open()
+>    +-> evlist__apply_filters()
+>        +-> perf_bpf_filter__prepare()
+> 	   +-> bpf_program.attach_perf_event()
+> 	       +-> bpf_program.attach_perf_event_opts()
+> 	           +-> __GI___ioctl(..., PERF_EVENT_IOC_ENABLE, ...)
+> 
+>    The event 'cycles' is enabled and active now. However the event's
+>    ring-buffer to store the samples generated by hardware is not
+>    allocated yet.
+> 
+> 2. The event's fd is mmap()ed to create the ring buffer:
+> 
+>    record__open()
+>    +-> record__mmap()
+>        +-> record__mmap_evlist()
+> 	   +-> evlist__mmap_ex()
+> 	       +-> perf_evlist__mmap_ops()
+> 	           +-> mmap_per_cpu()
+> 	               +-> mmap_per_evsel()
+> 	                   +-> mmap__mmap()
+> 	                       +-> perf_mmap__mmap()
+> 	                           +-> mmap()
+> 
+>    This allocates the ring buffer for the event 'cycles'. With mmap()
+>    the kernel creates the ring buffer:
+> 
+>    perf_mmap(): kernel function to create the event's ring
+>    |            buffer to save the sampled data.
+>    |
+>    +-> ring_buffer_attach(): Allocates memory for ring buffer.
+>        |        The PMU has auxiliary data setup function. The
+>        |        has_aux(event) condition is true and the PMU's
+>        |        stop() is called to stop sampling. It is not
+>        |        restarted:
+>        |
+>        |        if (has_aux(event))
+>        |                perf_event_stop(event, 0);
+>        |
+>        +-> cpumsf_pmu_stop():
+> 
+>    Hardware sampling is stopped. No samples are generated and saved
+>    anymore.
+> 
+> 3. After the event 'cycles' has been mapped, the event is enabled a
+>    second time in:
+> 
+>    __cmd_record()
+>    +-> evlist__enable()
+>        +-> __evlist__enable()
+> 	   +-> evsel__enable_cpu()
+> 	       +-> perf_evsel__enable_cpu()
+> 	           +-> perf_evsel__run_ioctl()
+> 	               +-> perf_evsel__ioctl()
+> 	                   +-> __GI___ioctl(., PERF_EVENT_IOC_ENABLE, .)
+> 
+>    The second
+> 
+>       ioctl(fd, PERF_EVENT_IOC_ENABLE, 0);
+> 
+>    is just a NOP in this case. The first invocation in (1.) sets the
+>    event::state to PERF_EVENT_STATE_ACTIVE. The kernel functions
+> 
+>    perf_ioctl()
+>    +-> _perf_ioctl()
+>        +-> _perf_event_enable()
+>            +-> __perf_event_enable()
+> 
+>    return immediately because event::state is already set to
+>    PERF_EVENT_STATE_ACTIVE.
+> 
+> This happens on s390, because the event 'cycles' offers the possibility
+> to save auxilary data. The PMU callbacks setup_aux() and free_aux() are
+> defined. Without both callback functions, cpumsf_pmu_stop() is not
+> invoked and sampling continues.
+> 
+> To remedy this, remove the first invocation of
+> 
+>    ioctl(..., PERF_EVENT_IOC_ENABLE, ...).
+> 
+> in step (1.) Create the event in step (1.) and enable it in step (3.)
+> after the ring buffer has been mapped.
+> 
+> Output after:
+> 
+>  # ./perf record -aB --synth=no -u 0 -- ./perf test -w thloop 2
+>  [ perf record: Woken up 3 times to write data ]
+>  [ perf record: Captured and wrote 0.876 MB perf.data ]
+>  # ./perf  report --stats | grep SAMPLE
+>               SAMPLE events:      16200  (99.5%)
+>               SAMPLE events:      16200
+>  #
+> 
+> The software event succeeded both before and after the patch:
+> 
+>  # ./perf record -e cpu-clock -aB --synth=no -u 0 -- \
+> 					  ./perf test -w thloop 2
+>  [ perf record: Woken up 7 times to write data ]
+>  [ perf record: Captured and wrote 2.870 MB perf.data ]
+>  # ./perf  report --stats | grep SAMPLE
+>               SAMPLE events:      53506  (99.8%)
+>               SAMPLE events:      53506
+>  #
+> 
+> Fixes: b4c658d4d63d61 ("perf target: Remove uid from target")
+> Suggested-by: Jiri Olsa <jolsa@kernel.org>
+> Tested-by: Thomas Richter <tmricht@linux.ibm.com>
+> Co-developed-by: Thomas Richter <tmricht@linux.ibm.com>
+> Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 
-0: https://lore.kernel.org/netdev/20250625140357.6203d0af@kernel.org/
-Fixes: 4c975fd70002 ("net: hold instance lock during NETDEV_REGISTER/UP")
-Suggested-by: Jakub Kicinski <kuba@kernel.org>
-Reported-by: syzbot+e6300f66a999a6612477@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=e6300f66a999a6612477
-Signed-off-by: Stanislav Fomichev <sdf@fomichev.me>
----
- drivers/net/hamradio/bpqether.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-diff --git a/drivers/net/hamradio/bpqether.c b/drivers/net/hamradio/bpqether.c
-index 0e0fe32d2da4..045c5177262e 100644
---- a/drivers/net/hamradio/bpqether.c
-+++ b/drivers/net/hamradio/bpqether.c
-@@ -138,7 +138,7 @@ static inline struct net_device *bpq_get_ax25_dev(struct net_device *dev)
- 
- static inline int dev_is_ethdev(struct net_device *dev)
- {
--	return dev->type == ARPHRD_ETHER && strncmp(dev->name, "dummy", 5);
-+	return dev->type == ARPHRD_ETHER && !netdev_need_ops_lock(dev);
- }
- 
- /* ------------------------------------------------------------------------ */
--- 
-2.50.1
+Thanks,
+Namhyung
 
+> ---
+>  tools/perf/util/bpf-filter.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/util/bpf-filter.c b/tools/perf/util/bpf-filter.c
+> index d0e013eeb0f7..a0b11f35395f 100644
+> --- a/tools/perf/util/bpf-filter.c
+> +++ b/tools/perf/util/bpf-filter.c
+> @@ -451,6 +451,8 @@ int perf_bpf_filter__prepare(struct evsel *evsel, struct target *target)
+>  	struct bpf_link *link;
+>  	struct perf_bpf_filter_entry *entry;
+>  	bool needs_idx_hash = !target__has_cpu(target);
+> +	DECLARE_LIBBPF_OPTS(bpf_perf_event_opts, pe_opts,
+> +			    .dont_enable = true);
+>  
+>  	entry = calloc(MAX_FILTERS, sizeof(*entry));
+>  	if (entry == NULL)
+> @@ -522,7 +524,8 @@ int perf_bpf_filter__prepare(struct evsel *evsel, struct target *target)
+>  	prog = skel->progs.perf_sample_filter;
+>  	for (x = 0; x < xyarray__max_x(evsel->core.fd); x++) {
+>  		for (y = 0; y < xyarray__max_y(evsel->core.fd); y++) {
+> -			link = bpf_program__attach_perf_event(prog, FD(evsel, x, y));
+> +			link = bpf_program__attach_perf_event_opts(prog, FD(evsel, x, y),
+> +								   &pe_opts);
+>  			if (IS_ERR(link)) {
+>  				pr_err("Failed to attach perf sample-filter program\n");
+>  				ret = PTR_ERR(link);
+> -- 
+> 2.50.1
+> 
 
