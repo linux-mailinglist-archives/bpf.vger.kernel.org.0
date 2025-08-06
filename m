@@ -1,94 +1,122 @@
-Return-Path: <bpf+bounces-65094-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65095-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9529BB1BD9B
-	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 01:54:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32C08B1BDAB
+	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 02:03:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C23B51673A3
-	for <lists+bpf@lfdr.de>; Tue,  5 Aug 2025 23:54:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03BDA18A66AF
+	for <lists+bpf@lfdr.de>; Wed,  6 Aug 2025 00:03:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE69E2BDC24;
-	Tue,  5 Aug 2025 23:54:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YV++HVao"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 980423C1F;
+	Wed,  6 Aug 2025 00:03:29 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp.gentoo.org (woodpecker.gentoo.org [140.211.166.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 651C623C8AA;
-	Tue,  5 Aug 2025 23:54:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3E8D36B;
+	Wed,  6 Aug 2025 00:03:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754438057; cv=none; b=YiKkEY9oEfAqXB0GQZPUjdhaHlo5WTXGktlXFXYM9YjkYBGV0oywc9mCFrwoxexW+uOODTdYr6UAQBjZ9pRx6iZisDanwujwYdHW0xb9cBKSb3fNIzKpS9EEf1VRXd65yKEV4REVVSW32+EpRzjlyYygeBJuOt7xqFpkz6bNi3c=
+	t=1754438609; cv=none; b=IeOa0sN0KFsLOOLxJ0S62BMvTZBqZbqqP+HVI/o807RJzQy5IT8kHsiACvYsfSGClzSdZBDku3JuKKxRN9qNkDop9/7Lnz85RD/nytywks06nNiSWmKNYgG2+1aMDHJWh6AheJYB2Cf2rDwRfn4WzyL6ICQeVMUS5iEhERjN0KY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754438057; c=relaxed/simple;
-	bh=7X9W3We3NWsmY4+eufCtinLLAGXHGhJ5FW/kGMQbtPY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iwXet49caF+fV7xxsm9ATZhogI5B46CAz9MBvNbZHKAxJCVCTCWpud4mc9+g6SqS/NXTR9nw+0zlsxkASy4a0t+WSkCEY1w227Lc3Kr8dJhzRw+mr7llJuLXHW07zR+VvkqkbXiIH7pmFQLoRbUNeU+2OfYEAzYmG/nj6Ln3wXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YV++HVao; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EC31C4CEF0;
-	Tue,  5 Aug 2025 23:54:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754438056;
-	bh=7X9W3We3NWsmY4+eufCtinLLAGXHGhJ5FW/kGMQbtPY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=YV++HVaomwhS7PiSRdY+TWh8cEcAh6VOJfdA3SdtEuGw0YYhE+TbkaDYgnPeWbCOR
-	 tqvDMMx2p7PIoM4STIxgye9b8PCMxbnM/WQZfo5lkaHuqPJ2SrBKZ6f9b5yKMeAwHP
-	 beN2YprFySqA2ut7+bSED319ff7+BM9/ReQYi57jBR8vNDHdWoGfKxFODhJmPO4xoX
-	 NRVZOlPtMI8fLUaJwo+ekTFWG6cGlb4y9a9d3O+hqNuY8YWVIOP4LA2Ebi1NsHCo5q
-	 AuiApcVgl0wL3MzukEnE8x34Pmnja3tu9yp0YBRJiJlkBP3snUWAuVh5Wp0CFSSt3L
-	 703oUiTWUGVEQ==
-Date: Tue, 5 Aug 2025 16:54:14 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Lorenzo Bianconi <lorenzo@kernel.org>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, Stanislav Fomichev
- <stfomichev@gmail.com>, bpf@vger.kernel.org, netdev@vger.kernel.org, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <borkmann@iogearbox.net>,
- Eric Dumazet <eric.dumazet@gmail.com>, "David S. Miller"
- <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>, sdf@fomichev.me,
- kernel-team@cloudflare.com, arthur@arthurfabre.com, jakub@cloudflare.com,
- Jesse Brandeburg <jbrandeburg@cloudflare.com>
-Subject: Re: [PATCH bpf-next V2 0/7] xdp: Allow BPF to set RX hints for
- XDP_REDIRECTed packets
-Message-ID: <20250805165414.032db0b1@kernel.org>
-In-Reply-To: <aJIEvK0CU_BqqgPQ@lore-rh-laptop>
-References: <aHeKYZY7l2i1xwel@lore-desk>
-	<20250716142015.0b309c71@kernel.org>
-	<fbb026f9-54cf-49ba-b0dc-0df0f54c6961@kernel.org>
-	<20250717182534.4f305f8a@kernel.org>
-	<ebc18aba-d832-4eb6-b626-4ca3a2f27fe2@kernel.org>
-	<20250721181344.24d47fa3@kernel.org>
-	<aIdWjTCM1nOjiWfC@lore-desk>
-	<20250728092956.24a7d09b@kernel.org>
-	<aIvdlJts5JQLuzLE@lore-rh-laptop>
-	<20250801134045.4344cb44@kernel.org>
-	<aJIEvK0CU_BqqgPQ@lore-rh-laptop>
+	s=arc-20240116; t=1754438609; c=relaxed/simple;
+	bh=LMWsAMqznkxjuzCZXSV6yTT0L9mx/2Ia2i/1IF+r/js=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HxulRKkUG9tAAKlaExbBk2dYO+pq9hrOYOJjlswHkNh/g063dJ8fz3kD07eNpXQt6Ekb1EnkP/u63bazK/2wQUPJTWSK4OzK1DZKxjr+Dv+mwI+3lAMKezRputD+6zqknBDtT2SUvAjOXoCEZe26OQkxvYQl+jMK1U9nJDn6wL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gentoo.org; spf=pass smtp.mailfrom=gentoo.org; arc=none smtp.client-ip=140.211.166.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gentoo.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gentoo.org
+Received: from localhost (unknown [82.8.138.118])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sam@gentoo.org)
+	by smtp.gentoo.org (Postfix) with ESMTPSA id 2E682335D8D;
+	Wed, 06 Aug 2025 00:03:24 +0000 (UTC)
+From: Sam James <sam@gentoo.org>
+To: Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	"Liang, Kan" <kan.liang@linux.intel.com>
+Cc: Sam James <sam@gentoo.org>,
+	Andrew Pinski <quic_apinski@quicinc.com>,
+	linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH] perf: use __builtin_preserve_field_info for GCC compatibility
+Date: Wed,  6 Aug 2025 01:03:01 +0100
+Message-ID: <fea380fb0934d039d19821bba88130e632bbfe8d.1754438581.git.sam@gentoo.org>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Tue, 5 Aug 2025 15:18:52 +0200 Lorenzo Bianconi wrote:
-> > I was thinking of doing the SET on the veth side. Basically the
-> > metadata has to be understood by the stack only at the xdp->skb
-> > transition point. So we can delay the SET until that moment, carrying
-> > the information in program-specific format.  
-> 
-> ack, I am fine to delay the translation of the HW metadata from a HW
-> specific format (the one contained in the DMA descriptor) to the network one
-> when they are consumed to create the SKB (the veth driver in this case) but I
-> guess we need to copy the info contained in the DMA descriptor into a buffer
-> that is still valid when veth driver consumes them since the DMA descriptor
-> can be no longer available at that time. Do you agree or am I missing
-> something?
+When exploring building bpf_skel with GCC's BPF support, there was a
+buid failure because of bpf_core_field_exists vs the mem_hops bitfield:
+```
+ In file included from util/bpf_skel/sample_filter.bpf.c:6:
+util/bpf_skel/sample_filter.bpf.c: In function 'perf_get_sample':
+tools/perf/libbpf/include/bpf/bpf_core_read.h:169:42: error: cannot take address of bit-field 'mem_hops'
+  169 | #define ___bpf_field_ref1(field)        (&(field))
+      |                                          ^
+tools/perf/libbpf/include/bpf/bpf_helpers.h:222:29: note: in expansion of macro '___bpf_field_ref1'
+  222 | #define ___bpf_concat(a, b) a ## b
+      |                             ^
+tools/perf/libbpf/include/bpf/bpf_helpers.h:225:29: note: in expansion of macro '___bpf_concat'
+  225 | #define ___bpf_apply(fn, n) ___bpf_concat(fn, n)
+      |                             ^~~~~~~~~~~~~
+tools/perf/libbpf/include/bpf/bpf_core_read.h:173:9: note: in expansion of macro '___bpf_apply'
+  173 |         ___bpf_apply(___bpf_field_ref, ___bpf_narg(args))(args)
+      |         ^~~~~~~~~~~~
+tools/perf/libbpf/include/bpf/bpf_core_read.h:188:39: note: in expansion of macro '___bpf_field_ref'
+  188 |         __builtin_preserve_field_info(___bpf_field_ref(field), BPF_FIELD_EXISTS)
+      |                                       ^~~~~~~~~~~~~~~~
+util/bpf_skel/sample_filter.bpf.c:167:29: note: in expansion of macro 'bpf_core_field_exists'
+  167 |                         if (bpf_core_field_exists(data->mem_hops))
+      |                             ^~~~~~~~~~~~~~~~~~~~~
+cc1: error: argument is not a field access
+```
 
-That's right, we need to carry the metadata we need with the packet
-(in an XDP program-specific md prepend, presumably).
+___bpf_field_ref1 was adapted for GCC in 12bbcf8e840f40b82b02981e96e0a5fbb0703ea9
+but the trick added for compatibility in 3a8b8fc3174891c4c12f5766d82184a82d4b2e3e
+isn't compatible with that as an address is used as an argument.
+
+Workaround this by calling __builtin_preserve_field_info directly as the
+bpf_core_field_exists macro does, but without the ___bpf_field_ref use.
+
+Link: https://gcc.gnu.org/PR121420
+Co-authored-by: Andrew Pinski <quic_apinski@quicinc.com>
+Signed-off-by: Sam James <sam@gentoo.org>
+---
+ tools/perf/util/bpf_skel/sample_filter.bpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/perf/util/bpf_skel/sample_filter.bpf.c b/tools/perf/util/bpf_skel/sample_filter.bpf.c
+index b195e6efeb8be..e5666d4c17228 100644
+--- a/tools/perf/util/bpf_skel/sample_filter.bpf.c
++++ b/tools/perf/util/bpf_skel/sample_filter.bpf.c
+@@ -164,7 +164,7 @@ static inline __u64 perf_get_sample(struct bpf_perf_event_data_kern *kctx,
+ 		if (entry->part == 8) {
+ 			union perf_mem_data_src___new *data = (void *)&kctx->data->data_src;
+ 
+-			if (bpf_core_field_exists(data->mem_hops))
++			if (__builtin_preserve_field_info(data->mem_hops, BPF_FIELD_EXISTS))
+ 				return data->mem_hops;
+ 
+ 			return 0;
+-- 
+2.50.1
+
 
