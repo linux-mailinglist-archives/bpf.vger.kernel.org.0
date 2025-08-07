@@ -1,164 +1,131 @@
-Return-Path: <bpf+bounces-65221-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65222-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3612FB1DC60
-	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 19:20:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44C12B1DC71
+	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 19:28:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E10AC3B3C8E
-	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 17:20:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C8135809EF
+	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 17:28:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B08A526656F;
-	Thu,  7 Aug 2025 17:20:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 317E6273D8E;
+	Thu,  7 Aug 2025 17:27:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q9mzTMAM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Trf7IV+n"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F3533208
-	for <bpf@vger.kernel.org>; Thu,  7 Aug 2025 17:20:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 419D226FA5A
+	for <bpf@vger.kernel.org>; Thu,  7 Aug 2025 17:27:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754587239; cv=none; b=cQu8iu5l+XZdoi7rjZKIiEBqvABH/st/Ba/tjRq435Hvt9tPsrih8Da4l7YLoUCYFkv5X+ir0ZVauO3SVLgt5Qioirt030YFu7UHdJMKuoLJtVlQYTMvf+mSYPSqFmoBwSyBu8IU1IFOCO/f6F1jyGW/wz0ujDkuoeJQOBvWLYk=
+	t=1754587678; cv=none; b=WYGvVBDpfFb7X5LocvoXnsW/6jDVPE1ls9FxJ2W6vbHy6T0CTUaVDRPZYl5e9eGhOPZkRqGHV2+STBrzUCYG5FVC6mJRZZWSW+WaotZUiwTlAcZvRGYoJS2yxflJyAIrPJuajIFG3n2WJQtivlvaTaUC7Ihb7ayNKW1BuZ9Rlwo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754587239; c=relaxed/simple;
-	bh=pul/qZfzpGcmPXy8T2jFD05YNGx6E1CjiTABbhn+TwQ=;
+	s=arc-20240116; t=1754587678; c=relaxed/simple;
+	bh=i8iqz0ameMlIuvIUImuxAEg9/PZ5tSkWPhcqw0lCiak=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Nwps52gPcBSIAb32c7oPnu5wo7l2kutFPGj8cc9l+AJx9bQd4xr0YvNVOUddlohRSTpk3ckfk9I5aEy5Hin8rgFl32XPK7nKk0/Iu5F4UDnYorD1ALDZ844BlFowhqECK/6O5bIEDZ5Oa92EMV6PeXSCuMvi1bLh7CQ/VwMnI+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q9mzTMAM; arc=none smtp.client-ip=209.85.221.45
+	 To:Cc:Content-Type; b=c+xkhowkbctZD3TlLwzX52QTNeRX5VRuB07APMua9XdME5d6SyarayN4lLIDdqb4anAXwCZzbMqsbHymtm2zrldmpi7ucJSd1+ycoEDmPIdu30cJqm3Xg69a4GZq8D+cTTKhBMtGVcVpEllS5eQgk36ngXD9hgX7UqlO40MyeJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Trf7IV+n; arc=none smtp.client-ip=209.85.221.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3b783d851e6so1078065f8f.0
-        for <bpf@vger.kernel.org>; Thu, 07 Aug 2025 10:20:36 -0700 (PDT)
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3b78315ff04so966625f8f.0
+        for <bpf@vger.kernel.org>; Thu, 07 Aug 2025 10:27:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754587235; x=1755192035; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1754587676; x=1755192476; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hr8uFrlDKDGq3EowuOTZke3ijneQpOh/y+YAjT0MaH4=;
-        b=Q9mzTMAM5z0RkwdR9tQpZN4zQzMOgUarAkSFY0EkdSk4RuzZRsQA/qrVwLb406c4g5
-         MrqUmAlNP0DW9Wqyqus3X8hURarVYkQJRUPqA4HNOD+zLCY0D6uHGZKiG0OKLGzti1Wo
-         Y6mSsyPExyiqoExk1lU+fz5c7y1LTquewUPswvKBKPtZxElkY2ONs853ZAlT9Kz2whUN
-         f5r0NDNtkDO6RAVXNK+FOGosiVubslXPPGIV2F7og/oxxDKWQb94fa+SG1mdJqUjMbZA
-         YEUkTeUoZn8iqYcQwqLJ8vZeqYO+LdFJSbpiW8Q79a9cZ2LePGU3Z96g86aX1L9ElM0m
-         vhbQ==
+        bh=ZPnWA+65HwIfpm2luHDdDCgy4lTx/1nb52TRk16aSl4=;
+        b=Trf7IV+nAb3FKKY5s2eK0WOCA/HDipVpIPowT4DyP2qCHlyUpujZ0pMB4xEnB0w1wq
+         D8dTqj5bgPifmVsUh1vtQNH10nN9C8TUYzgFxWZbWKhoaw15ICPjVkw1nwciJxdFBaFn
+         HUeHoAvtVz9jvFgqmO0s7QEjROIVskuJRBPHIf4x2GYxvZcNLJc4RJuxmV5+kXCfUO1S
+         hD5cj2mjNLaS7Fz1J6Ktesy8qrb5F2hdgcugKzUB4Dxn1QyA4p+ar5bBpfBXRg7NOEQk
+         m7VVAouuWy6u5Hb0Uc0vp+vhqesrAuAS1nzDBWlTl2f7ESddSX44Q83fZkqq9V63hKMv
+         cs9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754587235; x=1755192035;
+        d=1e100.net; s=20230601; t=1754587676; x=1755192476;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hr8uFrlDKDGq3EowuOTZke3ijneQpOh/y+YAjT0MaH4=;
-        b=vEYqXYeqR4YnvQE2n5rJkObrWGKsMQKFDH3nsBb5XwnSeDQ2HOO1tQgN/3iogAC/xm
-         iO8KMx6ogzKvowZc3lE4YAblonDPle6EVTomqHOW6B8UohuK4SCCRAygwBldTnphZPbX
-         J4YpUXOBL8vrfnqwbg3b1cwWZDH67aktBKmYWyzqrEVu8xNBbGsb5mZpfTeM57yVo2ZL
-         8QK/bjzDRB6P1xwfFqEyE9kL8RvWOT93xYlJC0WlFJz8N+woANLNon4c6j5OwX1thN/f
-         3hN/dClq7o9jfE4WIYNQeN7TutloY77VAGvcO+V+8sdk9yJTag0g/dx5EGTPo9lmak8x
-         SO+A==
-X-Gm-Message-State: AOJu0YxT0CwUIIU8dRTjZX1YCKLgI3aRapEQnjZiCPxWKDydg/qiIFMz
-	JL7avdrjeZspn5SDKxGx/18M2ROcvP2xKGL6Kxe96TCTcygR5C/UZHN+iK6yMQKi7DdGCxdp0hp
-	Tr4qYbmrDxRp0VBRnuiu5BJBMI3lTc5U=
-X-Gm-Gg: ASbGncspIeUDV3AHhJcMWA/VkKBuxzyIThxDjqDDDYOKKc17ArGjP+djrtTTrB2ihsS
-	rhawqaFLUx29I48AL7CqOAfRvgpdI3DzN0bKk178nz67+Fg67I2f/vPZSWMQT+GYUhS9IGbPVr0
-	g/sLpojInBx8DtrDhbu+wgtgNguQa0t7I2N7EzBwU4IekXf3we6rjL8W5dOUeEpL42zpL8Td78u
-	dP0G1l58K1ocyY6WzC7Z9NwTMyw/q0X7w==
-X-Google-Smtp-Source: AGHT+IEBPUqxPQHrZrDCUrrmCfWkmXnfcqQU12YSNsF5NSHgt/VLEe+p95xwvc6HYr1DQI05Kcbc+TX4Sk8stGtfwWE=
-X-Received: by 2002:a05:6000:2502:b0:3a6:f2d7:e22b with SMTP id
- ffacd0b85a97d-3b900b4f08fmr39661f8f.18.1754587234645; Thu, 07 Aug 2025
- 10:20:34 -0700 (PDT)
+        bh=ZPnWA+65HwIfpm2luHDdDCgy4lTx/1nb52TRk16aSl4=;
+        b=NB8q/On/hBX7pxStpftWr3AlbgvUNK9FZe6g9q5/w1Pn1uwAq00OBYX8cJ136erDpW
+         bYetmrP09ZVPZF/N5Vr0kA/JlbzmjugapX56+ELtfTKZ5OjDdaItqNY49hbnGlDvlb+n
+         YIc1TjTcnK2AYsncQ68W7Fj8kJDv7lgBlfzptApsDzFmeGQvM7h3Df4asxBWs3PPDclX
+         mJdns9atvKdbm4CVe0PSZNl4nz1YD6Dxwjc/u+JCztQfz9ZCXGdyPZGti01RZH/D59Ab
+         pMdpWouhwK8tsbHv0mh/BgyNa/8M1hyhe9SOeu0bDqr1/7CgH3kpoQvv8oUaAQ+d0/fT
+         WuDw==
+X-Gm-Message-State: AOJu0YxjG/HW10/QGjEjbEbcOevD1TmR4s6yWaUHohebsB+TMGFQzx47
+	FBvkUzfqEEQlC2/vRMt2dYzyIeClnAFNPBfzMuBF+oNkNQqXxd08Is+Jnwe5WfqsfHvC/c3RdMa
+	gPgV1rUjM7mSyCND9GvKycg67PSYbmt0=
+X-Gm-Gg: ASbGncsUhQpr15VIEZfh8TA9mn/tId/1Lo2SnoCh0fyk6v0Abej80bwAYWHZ6ZqE39Z
+	DQTtKccuHfqDSGQjzNYMJn/Zh4M+MWpS4/Ey9TRPU/iWQHQrkVBP74Kzh/gFY9i5ADX3FPcTST5
+	7PcYKUKm2NONor3W9mUROA0yKHeN7Zt711orgu+WE/P+tgR4tlOj1VzCu5a0YvJ72bWbndthnZE
+	In6PxDy/vl7k6e/Qkzcs2M=
+X-Google-Smtp-Source: AGHT+IEq9fABCFfiJjsUJAgkeb49Wll1XHDoYD14/OAMnkUHjxvxmCXXcpP1ohxvb//IZ8ZJ13GZBox4m5GiCy27MKo=
+X-Received: by 2002:a05:6000:1448:b0:3b8:d0bb:7541 with SMTP id
+ ffacd0b85a97d-3b900b783d1mr43384f8f.40.1754587675426; Thu, 07 Aug 2025
+ 10:27:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250805163017.17015-1-leon.hwang@linux.dev> <20250805163017.17015-2-leon.hwang@linux.dev>
-In-Reply-To: <20250805163017.17015-2-leon.hwang@linux.dev>
+References: <20250806144554.576706-1-mykyta.yatsenko5@gmail.com> <20250806144554.576706-4-mykyta.yatsenko5@gmail.com>
+In-Reply-To: <20250806144554.576706-4-mykyta.yatsenko5@gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 7 Aug 2025 10:20:20 -0700
-X-Gm-Features: Ac12FXwAF5nhQdeo2zSzCJTKP7y1Q1e8VhD3njF8WanrD5-pK9S7I71Hqp7ujoE
-Message-ID: <CAADnVQ+Mkmy+9WnepShLsQtMWceFUpfsV-Tw=dMaXP-B15R2yQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/3] bpf: Introduce BPF_F_CPU flag for
- percpu_array maps
-To: Leon Hwang <leon.hwang@linux.dev>
+Date: Thu, 7 Aug 2025 10:27:42 -0700
+X-Gm-Features: Ac12FXz7k8ssJ8m9SMGnb-sTEpErLt6uB0O_VKLLr9kcBexP0VvHRX1iJCv6ZLs
+Message-ID: <CAADnVQJy0tAj9jkLrD1cBFkLK-DayjG6uNGZ3OBQh4V5Zt=WnQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/4] bpf: task work scheduling kfuncs
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
 Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>, Eduard <eddyz87@gmail.com>, 
-	Daniel Xu <dxu@dxuuu.xyz>, =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>, 
-	kernel-patches-bot@fb.com
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin Lau <kafai@meta.com>, 
+	Kernel Team <kernel-team@meta.com>, Eduard <eddyz87@gmail.com>, 
+	Mykyta Yatsenko <yatsenko@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 5, 2025 at 9:30=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> wr=
-ote:
->
-> Introduce support for the BPF_F_CPU flag in percpu_array maps to allow
-> updating values for specified CPU or for all CPUs with a single value.
->
-> This enhancement enables:
->
-> * Efficient update of all CPUs using a single value when cpu =3D=3D (u32)=
-~0.
-> * Targeted update or lookup for a specified CPU otherwise.
->
-> The flag is passed via:
->
-> * map_flags in bpf_percpu_array_update() along with embedded cpu field.
-> * elem_flags in generic_map_update_batch() along with embedded cpu field.
->
-> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
-> ---
->  include/linux/bpf.h            |  3 +-
->  include/uapi/linux/bpf.h       |  6 +++
->  kernel/bpf/arraymap.c          | 54 ++++++++++++++++++------
->  kernel/bpf/syscall.c           | 77 +++++++++++++++++++++-------------
->  tools/include/uapi/linux/bpf.h |  6 +++
->  5 files changed, 103 insertions(+), 43 deletions(-)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index cc700925b802f..c17c45f797ed9 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -2691,7 +2691,8 @@ int map_set_for_each_callback_args(struct bpf_verif=
-ier_env *env,
->                                    struct bpf_func_state *callee);
->
->  int bpf_percpu_hash_copy(struct bpf_map *map, void *key, void *value);
-> -int bpf_percpu_array_copy(struct bpf_map *map, void *key, void *value);
-> +int bpf_percpu_array_copy(struct bpf_map *map, void *key, void *value,
-> +                         u64 flags);
->  int bpf_percpu_hash_update(struct bpf_map *map, void *key, void *value,
->                            u64 flags);
->  int bpf_percpu_array_update(struct bpf_map *map, void *key, void *value,
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 233de8677382e..67bc35e4d6a8d 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -1372,6 +1372,12 @@ enum {
->         BPF_NOEXIST     =3D 1, /* create new element if it didn't exist *=
-/
->         BPF_EXIST       =3D 2, /* update existing element */
->         BPF_F_LOCK      =3D 4, /* spin_lock-ed map_lookup/map_update */
-> +       BPF_F_CPU       =3D 8, /* map_update for percpu_array */
-
-only percpu_array?!
-Aren't you doing it for percpu_hash too?
-
-The comment should also say that upper 32-bit of flags is a cpu number.
-
-> +};
+On Wed, Aug 6, 2025 at 7:46=E2=80=AFAM Mykyta Yatsenko
+<mykyta.yatsenko5@gmail.com> wrote:
 > +
-> +enum {
-> +       /* indicate updating value across all CPUs for percpu maps. */
-> +       BPF_ALL_CPUS    =3D (__u32)~0,
->  };
+> +struct bpf_task_work_context {
+> +       /* map that contains this structure in a value */
+> +       struct bpf_map *map;
+> +       /* bpf_task_work_state value, representing the state */
+> +       atomic_t state;
 
-The name is inconsistent with BPF_F_ that was adopted long ago.
+a hole
 
-Also looking at the implementation that ~0 looks too magical.
-imo it's cleaner to add another BPF_F_ALL_CPUS flag.
-BPF_F_CPU =3D 8 and upper 32-bit select a cpu.
-BPF_F_ALL_CPUS =3D 16 -> all cpus.
+> +       /* bpf_prog that schedules task work */
+> +       struct bpf_prog *prog;
+> +       /* task for which callback is scheduled */
+> +       struct task_struct *task;
+> +       /* notification mode for task work scheduling */
+> +       enum task_work_notify_mode mode;
+
+another hole
+
+> +       /* callback to call from task work */
+> +       bpf_task_work_callback_t callback_fn;
+> +       struct callback_head work;
+> +       struct irq_work irq_work;
+> +} __aligned(8);
+
+and
++struct bpf_task_work {
++       __u64 __opaque[16];
++} __attribute__((aligned(8)));
+
+This is way too fragile.
+A bunch of data structures in above are not in our control
+and might be changed without any one mentioning anything
+on the bpf mailing list, and things will break.
+If all of the fields were plain pointers we could consider
+placing bpf_task_work inline in the map value,
+but with inlined irq_work is imo no go.
+Indirection is the only option here.
 
