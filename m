@@ -1,226 +1,145 @@
-Return-Path: <bpf+bounces-65219-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65220-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C50BCB1DBFE
-	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 18:51:27 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 333F8B1DC56
+	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 19:13:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 833E41AA3070
-	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 16:51:46 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1EAF14E0592
+	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 17:12:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C8CC273D6E;
-	Thu,  7 Aug 2025 16:51:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27D212737E2;
+	Thu,  7 Aug 2025 17:12:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Aiztritw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZaHIhE/p"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F16CF1E832E;
-	Thu,  7 Aug 2025 16:50:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0843226AAAA;
+	Thu,  7 Aug 2025 17:12:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754585460; cv=none; b=gDZMYSxSZbtqa+2AyLYMDIzR0sbumSaKL7Scw0UGBwobl07FVzD82mbsW6efuoDqT7TfsCmZMenivsc3DMLX0UN1kodKVk1ffDoL+Jj4wn1EASTCUz4gX8YR+/6K6BSuIqeVl90fkuqO1txbRMxqeoyBx4VbPuiTNcdIzEiRm0k=
+	t=1754586773; cv=none; b=RSEqBkl//PxL1PFBxWPIYSJW+LjnNpOa6zxzpCrqJOCn8WqMugPi8T/pd4z02LBmTfNRszUp2dtxTJak8dbbACOwLCk0J4CqhbcqojQ4uPWl4fdxRk3O8zGLRb43Gzuyt+GGbNFCYy22NtfEZXx/cJKtMJ+UiqZ/mWnOHHhucKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754585460; c=relaxed/simple;
-	bh=rvHzHNNeX42Ajw+oPnvddqWVsP011jQpeQ76XsjgJjY=;
+	s=arc-20240116; t=1754586773; c=relaxed/simple;
+	bh=Fj71PEO4dM4Lux5BcNeBRjWoGCp6u1gp22HpMb/7bQ0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=es+sHrMvbxLFy2skIIlJkKzw9yCnbcpSQSCVUtZPicIPxDNiz/qBTGKbpu0/zHZxlrHHuwDdn8riXykkXORBP7Z7BHOZcFGk0M4b84KEc24Iupb1j1crpOjbIPEMmoM16aXHGHwwJ63CwazmkwCWO1iEF5PLED+fOby5Dffp+Gw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Aiztritw; arc=none smtp.client-ip=209.85.221.49
+	 To:Cc:Content-Type; b=W5B7y6OJzZ5QTW3HYQu92ocZ6dNV6S+29A/m3lTVtv5kxle4ApLK951oEAqacwi3em7WrU4mzUY9ofqkFmkikXlKBVZmzlO2rCg8q244KmGhB92UttxMuvOCcNCe/9aOrWwUf0jb2keq5b43jjumqRlErSgdJ9EFDVAi9CKx6A4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZaHIhE/p; arc=none smtp.client-ip=209.85.128.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3b783ea5014so645549f8f.0;
-        Thu, 07 Aug 2025 09:50:57 -0700 (PDT)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-459eb4ae596so11538005e9.1;
+        Thu, 07 Aug 2025 10:12:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754585456; x=1755190256; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1754586770; x=1755191570; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BI+CDnO3S/HRsnMbehWHSmPi1UCDpaAWXx0mQumQV1k=;
-        b=Aiztritw9v4+tpsmzFwFTRRbi+GnbOMWKtnXixfTZ22lPVNg+YepO4A2dEk2QpWt9n
-         fOI9xp3YEe7NRhFcNzYKVSDiH5l0bD73RKNFUbaLtdggh3mxN67ulo7bdMKgc2rvLXD0
-         rm8iWSgKF7L8Pwut4v+rPRE3S21RFVlrUrIhPw8v5TqDrHQ+EqlP3rmAyBnnUrgITfn3
-         j3axnt035ISz3f+unlVu5o8iK25/f+X1sOSiQtWAMkwnpvv93R1H2+oqhv5N5fT6VR7p
-         20sypjSH5gY4jEY7PgrOkTgzK4N4J4OsUbJlw5ZcGrjlUyd/doXf0acCVhwSxxx5YAis
-         9ZPA==
+        bh=DRVAwrPbu6MCTQqLTx2zOHegUxATEEXt5vwLpcnAdlk=;
+        b=ZaHIhE/pKbMUm3NQQLgYR4u6+/OAce406bSlIdrGKrtH+nL0w+KSGbQj0MWY2zF6nR
+         lBv5tOo5mX9UsrT7cs3RI/bFTzAgWjwpb0U7WLOwdbcJhMy6xPIfra30xDMNNV6vjq9l
+         Nbf7XxHmTtNO2AljrUXI/7w3csTG1WFmSOATix2JII38BlHOF4Tcco6Sx1A+PRhjX6wU
+         QWR6A5AEqTjrw2Q9FRBXTJUDSzYBmjysQdjc0kJBhysQE1UyrxcK3grj1R+Xv7M/ugrT
+         mZ6FaqOZyOGdnDAdGFOZ1ztRLepCFTf4vGh8BJkBOJ3tIYS+gS1OsTq6W8EgpySoGXlm
+         B3ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754585456; x=1755190256;
+        d=1e100.net; s=20230601; t=1754586770; x=1755191570;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BI+CDnO3S/HRsnMbehWHSmPi1UCDpaAWXx0mQumQV1k=;
-        b=mHgAO6ApiC7XeL7OF9kIV80z7cZ38YZ0cEdjtEINGO3nIfDEvUZ98Y+pJWjYFN9gBw
-         vF8NOo8ENHQ5wt6yqDrltX8U+cniscKOkMBN9sGU5MWlWvD+319Pz+KlaJZK5T/WjjW0
-         oMi8fH5qMdTZvW1NloCmNhiBNOF/H8zOhUqN9Bi/NZ8ncF7mOr/1ct2MQpytIKZLJVJq
-         p2DIgUw2bCH1TNcsp1jxW7/Y5jQbxJS4uS+PelSp5ORrj3MBdNuD7PMVsTR0Qt9JKtXB
-         ImSo8BdkTFR9cHZcmE8pvwWWz8IWB8I2GZHK1e9/+zHr2Ez6IsMCJAQlQ6JeBKPV96gi
-         A/2g==
-X-Forwarded-Encrypted: i=1; AJvYcCUP9iQ8CV/oWvyBjFMZM5pj+XLq3Sjz59+sXpHeTPkJ5qrZo4S5G73lDqR9YaMbUOvFn6o=@vger.kernel.org, AJvYcCWCoBvKmb4Re2XQqVo30Cy6kvRmzq3AXdYtepIJqGeNJ8iVUFPqx38HFgUjJrWMlk8p73GiOzXF2oamwZyU@vger.kernel.org
-X-Gm-Message-State: AOJu0YzAQDYrZmDaN1StPTzVeQo16PWwlfl1oqOXy2hbdZICmycbhguv
-	JML1RcCM60Z8u5ro7+UJlcRgGRV9xUoGxV4SG9Q2eS/c2t3VVysqxsy+1LZLWXySWOhKCoXltKZ
-	wJkM/d/zlN3xLQ8Vn4SdpawwhlrjPpqs=
-X-Gm-Gg: ASbGncs0xwcLbc4HCFJ/ktATyn20MChz0yqhPbEFE4U2xcKUA0X12pdjE+g0qxfTYnQ
-	+KXqhbyYVm/l9u9uzHVUIuO0T+ZKpJe83aiEAEBVz4LjSx07ev24DLxZT+ddchIWLql28jGC9ay
-	Zr+Tl4xA1iHUwDg3IXtaROcJ2nBdCjComWIZAcP/kh1jPWIH4NfnHz3frwFgFu6fAq1Xdh4YANE
-	T09iHpV5hT1u5CARX4uIQc=
-X-Google-Smtp-Source: AGHT+IGq3jfQ2I7+YTZKWmezts8ksMJtEUFLNuu7yd4Jw8iw8OJixukAUDSMkhzOoJ9jzYlKEOSlPd43kV56ZahM0w8=
-X-Received: by 2002:a05:6000:2003:b0:3b7:820b:a830 with SMTP id
- ffacd0b85a97d-3b8f48f66aemr6042295f8f.25.1754585455883; Thu, 07 Aug 2025
- 09:50:55 -0700 (PDT)
+        bh=DRVAwrPbu6MCTQqLTx2zOHegUxATEEXt5vwLpcnAdlk=;
+        b=YGhExwffYie/zDFbHSwJTz1Z+GFGcotP5UyoCA7DnEP/IZqaZ2AVHZSPcKF+/oMib8
+         BBzeiN8dsF8UsUBF3XsXp2zPUFqlOM+AY69GoX616y32zCacjZY7Enb+lf94klhp0Uca
+         eRxDhmFHNoJn+teCWZibmSr8ONhojHDboUhIOwRbn5y6UT9NVINYbKMA4XC+FK7WfMH9
+         NkCkuC/nSMscFKT6yLYfbGNZh1AGUXsw47aqprCh5VNVD9pXz7yGZn2HjnOvdWhA6EQe
+         O1EGPLwrPSpvPaS92dAT1U8l+chFDFreAw4nVPDGmc30XDT0VjRe8vFumOXCrUoyxiyR
+         6Hxw==
+X-Forwarded-Encrypted: i=1; AJvYcCUSzO7NgP5vBbQe0EXbj1OFmZpdamfYB6w/Q3e7u7fjNRsHXLebE/Ai9zr+7vm9Ebh0gKo=@vger.kernel.org, AJvYcCV03bv6zPTPH5EV8JYAoWSc1lCrVgiBewRpbBsmd05jEql0YRkfWpSb2jMb6MSK9H4OB5SOqGduvg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyIW/JOmJjHXuEvgS1iojAsQASJP/fQe1mVmLNIOpuy1ZYvqZ6D
+	xQ8rgfZ72puvWuGPpwFM6s1B68yGAONDYpNjMJ5ycowZvXcB51hWgtMeaIHMag78Ff3181uOz4y
+	7JP9Oogr4OxN5F74nBIHZGcqmOJVMqS0=
+X-Gm-Gg: ASbGncshvqV5+bxQI21ZKf1qW1FK1b+nioogvb+2c3BsyhNg0fd7YSad8QuidxUalxh
+	o7E/79MgBodAOtX4beunIjKqpTxvPdLFbO9ioe6brpMhlRvdtj2XnjTAPEuwW8f4IsEPs6UBD4z
+	AiG1+53VTNd7tPyoQV/a9orXiNG2k5ne63CcnP9mRUPG34tYXIIGdSzjJXKl5xF6hvhom3zVWEL
+	u0T4eWto3/i1gzQgcFow6E=
+X-Google-Smtp-Source: AGHT+IHceuxlybd1/oSTiVximsKFKDLC/Anw97lhTwmc7uYTV5yPnM358U5mdLsFqc5wSMDYsCt7Zdqj3shqjm8ZspM=
+X-Received: by 2002:a5d:5f85:0:b0:3b8:d2d1:5c02 with SMTP id
+ ffacd0b85a97d-3b8f4925aadmr5688315f8f.49.1754586770230; Thu, 07 Aug 2025
+ 10:12:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250805115513.4018532-1-kafai.wan@linux.dev>
-In-Reply-To: <20250805115513.4018532-1-kafai.wan@linux.dev>
+References: <20250807144209.1845760-1-alan.maguire@oracle.com>
+ <20250807144209.1845760-6-alan.maguire@oracle.com> <CAADnVQK38yk3XO9cebrXhMUSK10bH2LVPvs6W4e168x3mGpTWA@mail.gmail.com>
+ <87cy972imt.fsf@oracle.com>
+In-Reply-To: <87cy972imt.fsf@oracle.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 7 Aug 2025 09:50:42 -0700
-X-Gm-Features: Ac12FXwDvr7D5yeAtsPz6ePp67cc_tchJz2vkfuTXMoJDP0gbWSavjnd2i11164
-Message-ID: <CAADnVQLecBEmQzxOzUwv_2mO9BDrKSp1xiC4WY8-gL2w4OaxaQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/1] bpf: Allow fall back to interpreter for
- programs with stack size <= 512
-To: KaFai Wan <kafai.wan@linux.dev>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Jiayuan Chen <mrpre@163.com>, KaFai Wan <mannkafai@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, Felix Fietkau <nbd@nbd.name>
+Date: Thu, 7 Aug 2025 10:12:37 -0700
+X-Gm-Features: Ac12FXww09XlzEa_L3CcSbesQlsv9BQhdsq8ZCK_LUMn9tmEAJpxWsBDLDkjc58
+Message-ID: <CAADnVQ+x3Jir0s=nsvw7eV54FJjFkfwx=+xWMM4bFHHmwD5ORw@mail.gmail.com>
+Subject: Re: [RFC dwarves 5/6] btf_encoder: Do not error out if BTF is not
+ found in some input files
+To: "Jose E. Marchesi" <jose.marchesi@oracle.com>, Yonghong Song <yonghong.song@linux.dev>
+Cc: Alan Maguire <alan.maguire@oracle.com>, dwarves <dwarves@vger.kernel.org>, 
+	bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 5, 2025 at 4:55=E2=80=AFAM KaFai Wan <kafai.wan@linux.dev> wrot=
-e:
+On Thu, Aug 7, 2025 at 9:37=E2=80=AFAM Jose E. Marchesi
+<jose.marchesi@oracle.com> wrote:
 >
-> OpenWRT users reported regression on ARMv6 devices after updating to late=
-st
-> HEAD, where tcpdump filter:
 >
-> tcpdump -i mon1 \
-> "not wlan addr3 3c37121a2b3c and not wlan addr2 184ecbca2a3a \
-> and not wlan addr2 14130b4d3f47 and not wlan addr2 f0f61cf440b7 \
-> and not wlan addr3 a84b4dedf471 and not wlan addr3 d022be17e1d7 \
-> and not wlan addr3 5c497967208b and not wlan addr2 706655784d5b"
+> > On Thu, Aug 7, 2025 at 7:42=E2=80=AFAM Alan Maguire <alan.maguire@oracl=
+e.com> wrote:
+> >>
+> >> This is no substitute for link-time BTF deduplication of course, but
+> >> it does provide a simple way to see the BTF that gcc generates for vml=
+inux.
+> >>
+> >> The idea is that we can explore differences in BTF generation across
+> >> the various combinations
+> >>
+> >> 1. debug info source: DWARF; dedup done via pahole (traditional)
+> >> 2. debug info source: compiler-generated BTF; dedup done via pahole (a=
+bove)
+> >> 3. debug info source: compiler-generated BTF; dedup done via linker (T=
+BD)
+> >>
+> >> Handling 3 - linker-based dedup - will require BTF archives so that is=
+ the
+> >> next step we need to explore.
+> >
+> > Overall, the patch set makes sense and we need to make this step in pah=
+ole,
+> > but before we start any discussion about 3 and BTF archives
+> > the 1 and 2 above need to reach parity.
+> > Not just being close enough, but an exact equivalence.
+> >
+> > But, frankly, gcc support for btf_decl_tags is much much higher priorit=
+y
+> > than any of this.
+> >
+> > We're tired of adding hacks through the bpf subsystem, because
+> > gcc cannot do decl_tags.
+> > Here are the hacks that will be removed:
+> > 1. BTF_TYPE_SAFE*
+> > 2. raw_tp_null_args[]
+> > 3. KF_ARENA_ARG
+> > and probably other cases.
 >
-> fails with warning: "Kernel filter failed: No error information"
-> when using config:
->  # CONFIG_BPF_JIT_ALWAYS_ON is not set
->  CONFIG_BPF_JIT_DEFAULT_ON=3Dy
+> We are getting there.  The C front-end maintainer just looked at the
+> latest version of the series [1] and, other than a small observation
+> concerning wide char strings, he seems to be ok with the attributes.
 >
-> The issue arises because commits:
-> 1. "bpf: Fix array bounds error with may_goto" changed default runtime to
->    __bpf_prog_ret0_warn when jit_requested =3D 1
-> 2. "bpf: Avoid __bpf_prog_ret0_warn when jit fails" returns error when
->    jit_requested =3D 1 but jit fails
->
-> This change restores interpreter fallback capability for BPF programs wit=
-h
-> stack size <=3D 512 bytes when jit fails.
->
-> Reported-by: Felix Fietkau <nbd@nbd.name>
-> Closes: https://lore.kernel.org/bpf/2e267b4b-0540-45d8-9310-e127bf95fc63@=
-nbd.name/
-> Fixes: 6ebc5030e0c5 ("bpf: Fix array bounds error with may_goto")
+> [1] https://gcc.gnu.org/pipermail/gcc-patches/2025-August/692057.html
 
-This commit looks fine.
+Good to know.
 
-> Fixes: 86bc9c742426 ("bpf: Avoid __bpf_prog_ret0_warn when jit fails")
-
-But this one is indeed problematic.
-But before we revert, please provide a selftest that is causing
-valid classic bpf prog to fail JITing on arm,
-because it has to be fixed as well.
-
-Sounds like OpenWRT was suffering performance loss due to the interpreter.
-
-> Signed-off-by: KaFai Wan <kafai.wan@linux.dev>
-> ---
->  kernel/bpf/core.c | 12 +++++++-----
->  1 file changed, 7 insertions(+), 5 deletions(-)
->
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 5d1650af899d..2d86bd4b0b97 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -2366,8 +2366,8 @@ static unsigned int __bpf_prog_ret0_warn(const void=
- *ctx,
->                                          const struct bpf_insn *insn)
->  {
->         /* If this handler ever gets executed, then BPF_JIT_ALWAYS_ON
-> -        * is not working properly, or interpreter is being used when
-> -        * prog->jit_requested is not 0, so warn about it!
-> +        * or may_goto may cause stack size > 512 is not working properly=
-,
-> +        * so warn about it!
-
-We shouldn't have touched this comment. Let's not do it again.
-
->          */
->         WARN_ON_ONCE(1);
->         return 0;
-> @@ -2478,10 +2478,10 @@ static void bpf_prog_select_func(struct bpf_prog =
-*fp)
->          * But for non-JITed programs, we don't need bpf_func, so no boun=
-ds
->          * check needed.
->          */
-> -       if (!fp->jit_requested &&
-> -           !WARN_ON_ONCE(idx >=3D ARRAY_SIZE(interpreters))) {
-> +       if (idx < ARRAY_SIZE(interpreters)) {
->                 fp->bpf_func =3D interpreters[idx];
-
-this is fine.
-
->         } else {
-> +               WARN_ON_ONCE(!fp->jit_requested);
-
-drop it. Let's not give syzbot more opportunities
-to spam us again with fault injection -like corner cases.
-
->                 fp->bpf_func =3D __bpf_prog_ret0_warn;
->         }
->  #else
-> @@ -2505,7 +2505,7 @@ struct bpf_prog *bpf_prog_select_runtime(struct bpf=
-_prog *fp, int *err)
->         /* In case of BPF to BPF calls, verifier did all the prep
->          * work with regards to JITing, etc.
->          */
-> -       bool jit_needed =3D fp->jit_requested;
-> +       bool jit_needed =3D false;
-
-ok
-
->
->         if (fp->bpf_func)
->                 goto finalize;
-> @@ -2515,6 +2515,8 @@ struct bpf_prog *bpf_prog_select_runtime(struct bpf=
-_prog *fp, int *err)
->                 jit_needed =3D true;
->
->         bpf_prog_select_func(fp);
-> +       if (fp->bpf_func =3D=3D __bpf_prog_ret0_warn)
-> +               jit_needed =3D true;
-
-This is too hacky.
-Change bpf_prog_select_func() to return bool and
-rename it bpf_prog_select_func/bpf_prog_select_interpreter()
-
-true on success, false on when interpreter is impossible.
-
-And target bpf tree.
-
---
-pw-bot: cr
-
->
->         /* eBPF JITs can rewrite the program in case constant
->          * blinding is active. However, in case of error during
-> --
-> 2.43.0
->
+Yonghong, what does llvm do with wchar?
 
