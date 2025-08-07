@@ -1,127 +1,329 @@
-Return-Path: <bpf+bounces-65224-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65225-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19DCCB1DC7A
-	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 19:33:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB582B1DCA1
+	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 19:46:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2693F56460A
-	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 17:33:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F06AA000DA
+	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 17:46:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D6E626E6F1;
-	Thu,  7 Aug 2025 17:32:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 116451FCF41;
+	Thu,  7 Aug 2025 17:46:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sDwP1c/I"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="J//AvZZE"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55AB6199FB0
-	for <bpf@vger.kernel.org>; Thu,  7 Aug 2025 17:32:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFD8113E02D
+	for <bpf@vger.kernel.org>; Thu,  7 Aug 2025 17:46:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754587975; cv=none; b=I70gbANBpCNSUsN5hL22+B1hSwV6W2V8idXqzWvIdn0PIJ0WLF2G9UQ3/KmleJdhNexzuK+FMKYIfCRy7HZoKmQppFPMs17i2o2h+rU1yk0A9pLS2KPxGsIHq5RvS54g8FZ/trxe4P9qKk953jRz6OXVB59taMjumr9sDRM3Gz4=
+	t=1754588782; cv=none; b=CdZ1HXrlaj3wc0y1iZIa5FaCu0xaRHKpFkbMihZB+Xz925jCNsgiDaAEoCHDy/6P3cafC9qaAu+ERUiwk1Q3akR01evxXLCS/faJZK1osBJMG/VLkUniqOMPimHzF6Gs+6aj9V0eZDt6NVyLYHyFZhz4M8koDVkXjBULk1N1w58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754587975; c=relaxed/simple;
-	bh=QuH8GceveWdfU4PoJeVHSeg1WJpUaCGKZqwJCRzCJxE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=arOYXh9KFae9UdYalUFyKBITSlQ1HHCtSJu6hQtPr/OaXH2qtYTy75mPfK1J7j4nn3hK1zloQe7ZY/3ncFW++GL3hMROXX/cNLGgdH7vKlRUeFktQhPAhuUQ/ygYoNIlt+sz0NYIW3qufMglB/MFXOeClAVD5veLHLEDo9S1QA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sDwP1c/I; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <32abd47f-0b8e-4fff-9844-9770c4b11d38@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1754587971;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9vDEMnL+3gm71xDcSDgz/RwdC9cLHzDOBedjkd64HJU=;
-	b=sDwP1c/IpuYXJwtU0w9vfj57SX+9Q/huwdMlCrEr7C1XFC2oLmkg6SRakDlSAKViE0PVsS
-	Q6T1W137kO3pQ7OOlSkY3qikbuGHdvghht3EsZqBG91lBs8egSYleDAj+Zm/rUBG8heJUq
-	6Y70Hbs+2pEQPFFX661eJtRssg/bZno=
-Date: Thu, 7 Aug 2025 10:32:47 -0700
+	s=arc-20240116; t=1754588782; c=relaxed/simple;
+	bh=Uq3iiNUU91g4FQyKlsdBmM5MGVUlLCvmUTwzVzeS5m4=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=BcPU/dqlKbKox4mH8XsDg0gkkx7MpAygdPJDOjGc9swT5nci+gwYQjhTYVY1c73Dzl8cUawlzZ8ElwQ0rQI5R4KAnLR+cWC9+tZujsGkkMC97Er14TFd9JIzRuhL92DK2ZdX3izZZTubIoZ++XcGV0RdDx3rBEvBlR8baNd3fRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--wakel.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=J//AvZZE; arc=none smtp.client-ip=209.85.216.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--wakel.bounces.google.com
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-3217aae3f90so831905a91.0
+        for <bpf@vger.kernel.org>; Thu, 07 Aug 2025 10:46:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1754588779; x=1755193579; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=HcLjrOeqCd02Abu900eKiNp/ETH9Nin2wL4rT1C33Uc=;
+        b=J//AvZZEJXTa8GGXdPyNl6KeQd0LEgrzxnFZW3Sm6sm9TPcoPEsJ8J6qTDCOzmT5Dx
+         sKIAAR6Irar6VNpyveYuHkitULpD95EiHIzc6L2/qGtkHRiYXExhdLRUY3tWBk5RX4GW
+         u7loULwp6GdvOjhqvv6Z0D1cSainGMnwkh1DkYp1DSMGgSx8REUwtF7BU0V/2JO4Z7z9
+         67BcNj3GISt9p0Z4cFskxSWRZ7lTWdO4KNoySKLi1cBa0RRkE+Y4GpzbTFqFVeNGqNgl
+         ycgVr4Xw6a5T03LgW0/6tokNMQ/bQyfoP6036U+67aeTjM7pTmUdUElqU3ydVxcoqp03
+         /VPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754588779; x=1755193579;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HcLjrOeqCd02Abu900eKiNp/ETH9Nin2wL4rT1C33Uc=;
+        b=bVUdAHyN8n/jw4EAtLazBsihByFVtVQagKyNy20HVdx+UOyg+cNQR8hsySSXPpwdGF
+         nYO4bPTXRkga9FeMVRqxsuqcV+vOMuhxMNYt8yXrl3AF1LtYL0HbcPb3LwTWaFOuBXwh
+         OHv8LjqGIP/+UutjKLOYZIGQDzZ3UEC5KKESReFkbk11kPhl0y0UO+22gN+n/74dSQ8v
+         LAhERbvr5wyjjoyXp9tHzCP3TnqMkp09O6N+8wLTIbNyohK3SFRzNmCmTJjluwMSanfG
+         SFBIXBYWv0m1VjIm4Ykx7xyTdDObAKARuhh11pqaMhsdS/bWjIENxtnfIsHUMO8sZWVn
+         UUew==
+X-Forwarded-Encrypted: i=1; AJvYcCXGI2+Msn8kC9swqg90G6h/pq0xTBJ1x/5x+J6zeYA63OCzQSbPCk8xoloCf1SAetZLyn8=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy13QknURlnv7pQYX1xmZ1edK7tRF1bcwPgSyDGDrn7TbrNgAhm
+	lvrv4BGFKrHnlsqwvJGKEIiVl4gNu/Ix2NdD/izmqDbA6rKqnOMBk0YbgBMFPNRQPWW7wXgFLhG
+	Acw==
+X-Google-Smtp-Source: AGHT+IH1TzamuhyocWAYv+jV0O95ZvaImp1W99Xp6lTkB1S1QMyzi0Kp+GJq5+BauORZKHrne7YiZLn0Zg==
+X-Received: from pjbsk13.prod.google.com ([2002:a17:90b:2dcd:b0:321:78e7:57fb])
+ (user=wakel job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:55ce:b0:320:ff84:ceb5
+ with SMTP id 98e67ed59e1d1-32182692d5emr600569a91.16.1754588779321; Thu, 07
+ Aug 2025 10:46:19 -0700 (PDT)
+Date: Fri,  8 Aug 2025 01:46:13 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Subject: Re: [PATCH] bpf: fix memory leak in SCC management
-Content-Language: en-GB
-To: Dmitry Antipov <dmantipov@yandex.ru>, Eduard Zingerman <eddyz87@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- bpf@vger.kernel.org
-References: <20250807123433.7868-1-dmantipov@yandex.ru>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20250807123433.7868-1-dmantipov@yandex.ru>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.50.1.703.g449372360f-goog
+Message-ID: <20250807174613.1895006-1-wakel@google.com>
+Subject: [PATCH] selftests/seccomp: improve backwards compatibility for older kernels
+From: Wake Liu <wakel@google.com>
+To: Kees Cook <kees@kernel.org>, Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, 
+	Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Cc: wakel@google.com
+Content-Type: text/plain; charset="UTF-8"
 
+This commit introduces checks for kernel version and seccomp filter flag
+support to the seccomp selftests. It also includes conditional header
+inclusions using __GLIBC_PREREQ.
 
+Some tests were gated by kernel version, and adjustments were made for
+flags introduced after kernel 5.4. This ensures the selftests can run
+and pass correctly on kernel versions 5.4 and later, preventing failures
+due to features not present in older kernels.
 
-On 8/7/25 5:34 AM, Dmitry Antipov wrote:
-> Running with CONFIG_DEBUG_KMEMLEAK enabled, I've noticed a few memory
-> leaks reported as follows:
->
-> unreferenced object 0xffff8881ce3bd080 (size 64):
->    comm "systemd", pid 3524, jiffies 4294789711
->    hex dump (first 32 bytes):
->      01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->      00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->    backtrace (crc 8c5ed7af):
->      __kmalloc_node_track_caller_noprof+0x25e/0x4e0
->      krealloc_noprof+0xe8/0x2f0
->      kvrealloc_noprof+0x65/0xe0
->      do_check+0x3ef1/0xcd10
->      do_check_common+0x1631/0x2110
->      bpf_check+0x3686/0x1e430
->      bpf_prog_load+0xda2/0x13f0
->      __sys_bpf+0x374/0x5b0
->      __x64_sys_bpf+0x7c/0x90
->      do_syscall_64+0x8a/0x220
->      entry_SYSCALL_64_after_hwframe+0x76/0x7e
->
-> Wnen an array of SCC slots is allocated in 'compute_scc()', 'scc_cnt' of
-> the corresponding environment should be adjusted to match the size of this
-> array. Otherwise an array members (re)assigned in 'scc_visit_alloc()' will
-> be unreachable from the freeing loop in 'free_states()'.
->
-> Fixes: c9e31900b54c ("bpf: propagate read/precision marks over state graph backedges")
-> Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
+The use of __GLIBC_PREREQ ensures proper compilation and functionality
+across different glibc versions in a mainline Linux kernel context.
+While it might appear redundant in specific build environments due to
+global overrides, it is crucial for upstream correctness and portability.
 
-This one has been fixed in
-   https://lore.kernel.org/all/20250801232330.1800436-1-eddyz87@gmail.com/
+Signed-off-by: Wake Liu <wakel@google.com>
+---
+ tools/testing/selftests/seccomp/seccomp_bpf.c | 108 ++++++++++++++++--
+ 1 file changed, 99 insertions(+), 9 deletions(-)
 
-> ---
->   kernel/bpf/verifier.c | 3 +++
->   1 file changed, 3 insertions(+)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 0806295945e4..c4f69a9e9af6 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -23114,6 +23114,8 @@ static void free_states(struct bpf_verifier_env *env)
->   
->   	for (i = 0; i < env->scc_cnt; ++i) {
->   		info = env->scc_info[i];
-> +		if (!info)
-> +			continue;
->   		for (j = 0; j < info->num_visits; j++)
->   			free_backedges(&info->visits[j]);
->   		kvfree(info);
-> @@ -24554,6 +24556,7 @@ static int compute_scc(struct bpf_verifier_env *env)
->   		err = -ENOMEM;
->   		goto exit;
->   	}
-> +	env->scc_cnt = next_scc_id;
->   exit:
->   	kvfree(stack);
->   	kvfree(pre);
+diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+index 61acbd45ffaa..9b660cff5a4a 100644
+--- a/tools/testing/selftests/seccomp/seccomp_bpf.c
++++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+@@ -13,12 +13,14 @@
+  * we need to use the kernel's siginfo.h file and trick glibc
+  * into accepting it.
+  */
++#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
+ #if !__GLIBC_PREREQ(2, 26)
+ # include <asm/siginfo.h>
+ # define __have_siginfo_t 1
+ # define __have_sigval_t 1
+ # define __have_sigevent_t 1
+ #endif
++#endif
+ 
+ #include <errno.h>
+ #include <linux/filter.h>
+@@ -300,6 +302,26 @@ int seccomp(unsigned int op, unsigned int flags, void *args)
+ }
+ #endif
+ 
++int seccomp_flag_supported(int flag)
++{
++	/*
++	 * Probes if a seccomp filter flag is supported by the kernel.
++	 *
++	 * When an unsupported flag is passed to seccomp(SECCOMP_SET_MODE_FILTER, ...),
++	 * the kernel returns EINVAL.
++	 *
++	 * When a supported flag is passed, the kernel proceeds to validate the
++	 * filter program pointer. By passing NULL for the filter program,
++	 * the kernel attempts to dereference a bad address, resulting in EFAULT.
++	 *
++	 * Therefore, checking for EFAULT indicates that the flag itself was
++	 * recognized and supported by the kernel.
++	 */
++	if (seccomp(SECCOMP_SET_MODE_FILTER, flag, NULL) == -1 && errno == EFAULT)
++		return 1;
++	return 0;
++}
++
+ #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+ #define syscall_arg(_n) (offsetof(struct seccomp_data, args[_n]))
+ #elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+@@ -2436,13 +2458,12 @@ TEST(detect_seccomp_filter_flags)
+ 		ASSERT_NE(ENOSYS, errno) {
+ 			TH_LOG("Kernel does not support seccomp syscall!");
+ 		}
+-		EXPECT_EQ(-1, ret);
+-		EXPECT_EQ(EFAULT, errno) {
+-			TH_LOG("Failed to detect that a known-good filter flag (0x%X) is supported!",
+-			       flag);
+-		}
+ 
+-		all_flags |= flag;
++		if (seccomp_flag_supported(flag))
++			all_flags |= flag;
++		else
++			TH_LOG("Filter flag (0x%X) is not found to be supported!",
++			       flag);
+ 	}
+ 
+ 	/*
+@@ -2870,6 +2891,12 @@ TEST_F(TSYNC, two_siblings_with_one_divergence)
+ 
+ TEST_F(TSYNC, two_siblings_with_one_divergence_no_tid_in_err)
+ {
++	/* Depends on 5189149 (seccomp: allow TSYNC and USER_NOTIF together) */
++	if (!seccomp_flag_supported(SECCOMP_FILTER_FLAG_TSYNC_ESRCH)) {
++		SKIP(return, "Kernel does not support SECCOMP_FILTER_FLAG_TSYNC_ESRCH");
++		return;
++	}
++
+ 	long ret, flags;
+ 	void *status;
+ 
+@@ -3475,6 +3502,11 @@ TEST(user_notification_basic)
+ 
+ TEST(user_notification_with_tsync)
+ {
++	/* Depends on 5189149 (seccomp: allow TSYNC and USER_NOTIF together) */
++	if (!seccomp_flag_supported(SECCOMP_FILTER_FLAG_TSYNC_ESRCH)) {
++		SKIP(return, "Kernel does not support SECCOMP_FILTER_FLAG_TSYNC_ESRCH");
++		return;
++	}
+ 	int ret;
+ 	unsigned int flags;
+ 
+@@ -3966,6 +3998,13 @@ TEST(user_notification_filter_empty)
+ 
+ TEST(user_ioctl_notification_filter_empty)
+ {
++	/* Depends on 95036a7 (seccomp: interrupt SECCOMP_IOCTL_NOTIF_RECV
++	 * when all users have exited) */
++	if (!ksft_min_kernel_version(6, 11)) {
++		SKIP(return, "Kernel version < 6.11");
++		return;
++	}
++
+ 	pid_t pid;
+ 	long ret;
+ 	int status, p[2];
+@@ -4119,6 +4158,12 @@ int get_next_fd(int prev_fd)
+ 
+ TEST(user_notification_addfd)
+ {
++	/* Depends on 0ae71c7 (seccomp: Support atomic "addfd + send reply") */
++	if (!ksft_min_kernel_version(5, 14)) {
++		SKIP(return, "Kernel version < 5.14");
++		return;
++	}
++
+ 	pid_t pid;
+ 	long ret;
+ 	int status, listener, memfd, fd, nextfd;
+@@ -4281,6 +4326,12 @@ TEST(user_notification_addfd)
+ 
+ TEST(user_notification_addfd_rlimit)
+ {
++	/* Depends on 7cf97b1 (seccomp: Introduce addfd ioctl to seccomp user notifier) */
++	if (!ksft_min_kernel_version(5, 9)) {
++		SKIP(return, "Kernel version < 5.9");
++		return;
++	}
++
+ 	pid_t pid;
+ 	long ret;
+ 	int status, listener, memfd;
+@@ -4326,9 +4377,12 @@ TEST(user_notification_addfd_rlimit)
+ 	EXPECT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD, &addfd), -1);
+ 	EXPECT_EQ(errno, EMFILE);
+ 
+-	addfd.flags = SECCOMP_ADDFD_FLAG_SEND;
+-	EXPECT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD, &addfd), -1);
+-	EXPECT_EQ(errno, EMFILE);
++	/* Depends on 0ae71c7 (seccomp: Support atomic "addfd + send reply") */
++	if (ksft_min_kernel_version(5, 14)) {
++		addfd.flags = SECCOMP_ADDFD_FLAG_SEND;
++		EXPECT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD, &addfd), -1);
++		EXPECT_EQ(errno, EMFILE);
++	}
+ 
+ 	addfd.newfd = 100;
+ 	addfd.flags = SECCOMP_ADDFD_FLAG_SETFD;
+@@ -4356,6 +4410,12 @@ TEST(user_notification_addfd_rlimit)
+ 
+ TEST(user_notification_sync)
+ {
++	/* Depends on 48a1084 (seccomp: add the synchronous mode for seccomp_unotify) */
++	if (!ksft_min_kernel_version(6, 6)) {
++		SKIP(return, "Kernel version < 6.6");
++		return;
++	}
++
+ 	struct seccomp_notif req = {};
+ 	struct seccomp_notif_resp resp = {};
+ 	int status, listener;
+@@ -4520,6 +4580,12 @@ static char get_proc_stat(struct __test_metadata *_metadata, pid_t pid)
+ 
+ TEST(user_notification_fifo)
+ {
++	/* Depends on 4cbf6f6 (seccomp: Use FIFO semantics to order notifications) */
++	if (!ksft_min_kernel_version(5, 19)) {
++		SKIP(return, "Kernel version < 5.19");
++		return;
++	}
++
+ 	struct seccomp_notif_resp resp = {};
+ 	struct seccomp_notif req = {};
+ 	int i, status, listener;
+@@ -4623,6 +4689,12 @@ static long get_proc_syscall(struct __test_metadata *_metadata, int pid)
+ /* Ensure non-fatal signals prior to receive are unmodified */
+ TEST(user_notification_wait_killable_pre_notification)
+ {
++	/* Depends on c2aa2df (seccomp: Add wait_killable semantic to seccomp user notifier) */
++	if (!ksft_min_kernel_version(5, 19)) {
++		SKIP(return, "Kernel version < 5.19");
++		return;
++	}
++
+ 	struct sigaction new_action = {
+ 		.sa_handler = signal_handler,
+ 	};
+@@ -4693,6 +4765,12 @@ TEST(user_notification_wait_killable_pre_notification)
+ /* Ensure non-fatal signals after receive are blocked */
+ TEST(user_notification_wait_killable)
+ {
++	/* Depends on c2aa2df (seccomp: Add wait_killable semantic to seccomp user notifier) */
++	if (!ksft_min_kernel_version(5, 19)) {
++		SKIP(return, "Kernel version < 5.19");
++		return;
++	}
++
+ 	struct sigaction new_action = {
+ 		.sa_handler = signal_handler,
+ 	};
+@@ -4772,6 +4850,12 @@ TEST(user_notification_wait_killable)
+ /* Ensure fatal signals after receive are not blocked */
+ TEST(user_notification_wait_killable_fatal)
+ {
++	/* Depends on c2aa2df (seccomp: Add wait_killable semantic to seccomp user notifier) */
++	if (!ksft_min_kernel_version(5, 19)) {
++		SKIP(return, "Kernel version < 5.19");
++		return;
++	}
++
+ 	struct seccomp_notif req = {};
+ 	int listener, status;
+ 	pid_t pid;
+@@ -4854,6 +4938,12 @@ static void *tsync_vs_dead_thread_leader_sibling(void *_args)
+  */
+ TEST(tsync_vs_dead_thread_leader)
+ {
++	/* Depends on bfafe5e (seccomp: release task filters when the task exits) */
++	if (!ksft_min_kernel_version(6, 11)) {
++		SKIP(return, "Kernel version < 6.11");
++		return;
++	}
++
+ 	int status;
+ 	pid_t pid;
+ 	long ret;
+-- 
+2.50.1.703.g449372360f-goog
 
 
