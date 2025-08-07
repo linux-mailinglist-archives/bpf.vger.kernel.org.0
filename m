@@ -1,261 +1,288 @@
-Return-Path: <bpf+bounces-65195-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65196-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A7F5B1D8CD
-	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 15:18:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52F0CB1D8E5
+	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 15:22:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 671B67AC702
-	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 13:16:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F12418C5BE4
+	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 13:23:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65E2D252900;
-	Thu,  7 Aug 2025 13:18:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B7DC255F3F;
+	Thu,  7 Aug 2025 13:22:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="iME6Fw4Q"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TOUX3uqd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 724184A0C;
-	Thu,  7 Aug 2025 13:18:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB45A136E
+	for <bpf@vger.kernel.org>; Thu,  7 Aug 2025 13:22:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754572693; cv=none; b=qEmHWG/3k92xnLTv+0AfgSUUD2zPih6e7eqjq437xzF3rsuIv2Fied3HCabN41zTa7bhNaoJNcMZAPpY4+w1fs/h6+0kyLivj539LpcFjQCgoe1tLMYI0R1qzzu8858STCYBScToXY6bME/WetJDfSjdcHldPZisFMc8grOxlfg=
+	t=1754572967; cv=none; b=sZzgFvOMwDqS8qP4gZUr5UplhYnsl+JmiWP1exR4pH4Cb947rm5mF1MoP6Wxlbc8XwlcXgQu0KZWBx3uGwvQZGzeuqVfgrAf0neMcn9MSwsogED3jjpC5lE6pXFnihKSilp+my72p2hnFw5W0viOuk0H4YGAW8GlhcT9LOLl5Fk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754572693; c=relaxed/simple;
-	bh=wYwiqpDIRB6YC0o8erHDDUs4XVbsYNSvbHFyw8ZnKps=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hHG4aUOrsPVTNswWdcckWAJSenPwq32NaXILrcYr7LEheLwkZIgQfgxX6bIgBZAozl1faar7sZ5V3/Ses3kF1EkVmX0FfDOVx2ToOWVYZ9Wtm5X8nNyd2sMLuE07RB0ggld+veZ7ITUrAC1J1iDUMonxWhP6UWTFMld+jVrBjdk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=iME6Fw4Q; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 577Cmb0p019634;
-	Thu, 7 Aug 2025 13:17:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=ReRMI1
-	w5O5kV+P3X1vvXZsrm2JTNYKpxE8su60j9QmI=; b=iME6Fw4Q2AlpWBaRqruKU0
-	/GUbmKqw2xwrh/F0+EI0Dco3u13BS6bex2gFBJwzTRgAtBBWHEk2ogIY1FajKvNC
-	s2HHB8rzH+e9Eaa8ppYyLisNVMV5yiNYtVGJ7nYcZ+uO0+4Rs64UfQFJD73MsRTw
-	kSUZbdv4cDY/7gB4ur++wcS7fza48BngaDpm47myHNy8mDmdt/WAFKUCymWiZ96w
-	Z689RwinbhzWd1DyRYS4ibGuBdQj70dZrYpS+zXd0n7MGiEn+Gd0kNAlnxwxumee
-	L8i0FsL5Fct/0eb8FoyTeNGAkjxt3Ug5zura4qow9J+PrighkNiI9of5zGfulfMA
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48c26tynbf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 07 Aug 2025 13:17:32 +0000 (GMT)
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 577DHVaX002921;
-	Thu, 7 Aug 2025 13:17:31 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48c26tynb9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 07 Aug 2025 13:17:31 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5779vWDG007960;
-	Thu, 7 Aug 2025 13:17:30 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 48bpwn0r16-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 07 Aug 2025 13:17:30 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 577DHQf450594166
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 7 Aug 2025 13:17:27 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id DBEC620040;
-	Thu,  7 Aug 2025 13:17:26 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C35DA20043;
-	Thu,  7 Aug 2025 13:17:19 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.43.75.32])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Thu,  7 Aug 2025 13:17:19 +0000 (GMT)
-Date: Thu, 7 Aug 2025 18:47:16 +0530
-From: Saket Kumar Bhaskar <skb99@linux.ibm.com>
-To: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-Cc: bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hbathini@linux.ibm.com, sachinpb@linux.ibm.com, andrii@kernel.org,
-        eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org,
-        daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
-        yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
-        christophe.leroy@csgroup.eu, naveen@kernel.org, maddy@linux.ibm.com,
-        mpe@ellerman.id.au, npiggin@gmail.com, memxor@gmail.com,
-        iii@linux.ibm.com, shuah@kernel.org
-Subject: Re: [bpf-next 0/6] bpf,powerpc: Add support for bpf arena and arena
- atomics
-Message-ID: <aJSnXO62QRglnNsw@linux.ibm.com>
-References: <20250805062747.3479221-1-skb99@linux.ibm.com>
- <e918bef7-5f9b-4591-b671-fe3c0f681862@linux.ibm.com>
+	s=arc-20240116; t=1754572967; c=relaxed/simple;
+	bh=cyOs0V2AMpn6HW4EPfw3AuKhhAL1ywkVjoYHdfDYUM8=;
+	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=rQgBGzclF0fm5sWWOhMHMGnk/N3BScogak6Lobebdm1gJCOIa93ZS6z955POrufpGR4ESn2oH3MCdWR9DbtHdG/C44G9oNA+oh0V6tNvxF//T3Avw3KUZUSEsfHV8euRs6QbA0IZS+43ZgZ/36wHPueWV874fZ1itWVKRp5Ttt0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TOUX3uqd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F21FFC4CEEB;
+	Thu,  7 Aug 2025 13:22:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1754572967;
+	bh=cyOs0V2AMpn6HW4EPfw3AuKhhAL1ywkVjoYHdfDYUM8=;
+	h=From:To:Subject:In-Reply-To:References:Date:From;
+	b=TOUX3uqd7T6WRO4bSGnLNTDg944qI3RSZTxezElSuefwnmOJJ8F+s92FufYeIq2aH
+	 uermrDB8q7k2hlMY5MHRI+/ccx1bIfmli3u9t4LGWMKtToEAM1dFQb8mKD4Wsajh7t
+	 e0yGPQC5A0s/huWj4l+hF7RDY7xc0MCpkSEXAjS4IOPVx2wT+hTj/Cobg9MqWqn/As
+	 YOkRhwxFz+cnGZCp9CL6X+XBqp6mIASFObK9hfgD6i+ir9m3TbR5++F1TClk/QJ2K/
+	 UH/lRWFzLewux9uO6kspfkDmAfvIklZx2+qeiSRNcOlSf0qPL0OyYGoqxIYsXAShiy
+	 jBPYpV0Bqt4xg==
+From: <puranjay@kernel.org>
+To: Yonghong Song <yonghong.song@linux.dev>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard
+ Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Xu Kuohai <xukuohai@huaweicloud.com>, Catalin Marinas
+ <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Kumar Kartikeya
+ Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next 2/3] bpf: Report arena faults to BPF stderr
+In-Reply-To: <b34dea3f-33b0-429d-9a64-c6305e2df397@linux.dev>
+References: <20250806085847.18633-1-puranjay@kernel.org>
+ <20250806085847.18633-3-puranjay@kernel.org>
+ <b34dea3f-33b0-429d-9a64-c6305e2df397@linux.dev>
+Date: Thu, 07 Aug 2025 13:22:43 +0000
+Message-ID: <mb61pjz3fgtb0.fsf@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e918bef7-5f9b-4591-b671-fe3c0f681862@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: YXGzjED4pJhXligsrAzBvBlxy0HdLnrb
-X-Authority-Analysis: v=2.4 cv=F/xXdrhN c=1 sm=1 tr=0 ts=6894a76c cx=c_pps
- a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
- a=8nJEP1OIZ-IA:10 a=2OwXVqhp2XgA:10 a=VwQbUJbxAAAA:8 a=NEAV23lmAAAA:8
- a=alihBsh1ZAGIVrIkydwA:9 a=3ZKOabzyN94A:10 a=wPNLvfGTeEIA:10
-X-Proofpoint-GUID: 6kbce07YtCxIaLhugwtQhO4aIFlYDmMx
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODA3MDEwMyBTYWx0ZWRfX4IsiQ9WBU6y2
- 730rC1TJZQZvrnmYLmcctkvELPG9Ir9+k1xV0LCmmDwFZPHtUJQVUFuotTz0tkwZJTROc1TnoMO
- mqeXIuP2v8cgnspXRlQzjrKT3ZV/DyHY7uMJmyNQ0GaR7r0XTfCYS3zxykukzQsIb21U/E7LEU9
- h5vcEDlvr1rWF/wViHhmEEH9eIb22oAXPCPI/OeYJhmQAxjQcgloGRNdbwAjccQLaynVLE+UQi+
- aPuG2RSH71pzS2DOfEIwjbhsdzI2jc8+56bPCZPaHnrbxkC3uoe4uyNbjDgWXamUZ3yMxkfwfTD
- kF4YG+5AMOpmuOMoKcLqIv5VM9zXwwsEdkoCynpBBDwHsyWQeydAL2Y8adqd02yJT8xS2/n9C2N
- WYMm/vBkT9JSDhz1Ww2dQnUmvU39rGXpO2SULE+ZdoOILjjCtwdHOQnI0GssfxeZNWwALFPI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-08-07_02,2025-08-06_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- mlxscore=0 lowpriorityscore=0 priorityscore=1501 impostorscore=0
- clxscore=1015 spamscore=0 bulkscore=0 adultscore=0 mlxlogscore=999
- malwarescore=0 phishscore=0 suspectscore=0 classifier=spam authscore=0
- authtc=n/a authcc= route=outbound adjust=0 reason=mlx scancount=1
- engine=8.19.0-2507300000 definitions=main-2508070103
+Content-Type: text/plain
 
-On Tue, Aug 05, 2025 at 05:37:00PM +0530, Venkat Rao Bagalkote wrote:
-> 
-> On 05/08/25 11:57 am, Saket Kumar Bhaskar wrote:
-> > This patch series introduces support for the PROBE_MEM32,
-> > bpf_addr_space_cast and PROBE_ATOMIC instructions in the powerpc BPF JIT,
-> > facilitating the implementation of BPF arena and arena atomics.
-> > 
-> > The last patch in the series has fix for arena spinlock selftest
-> > failure.
-> > 
-> > This series is rebased on top of:
-> > https://lore.kernel.org/bpf/20250717202935.29018-2-puranjay@kernel.org/
-> > 
-> > All selftests related to bpf_arena, bpf_arena_atomic(except
-> > load_acquire/store_release) enablement are passing:
-> 
-> 
-> Hello Saket,
-> 
-> 
-> I see couple of selftests are failing on my set up.
-> 
-> > 
-> > # ./test_progs -t arena_list
-> > #5/1     arena_list/arena_list_1:OK
-> > #5/2     arena_list/arena_list_1000:OK
-> > #5       arena_list:OK
-> > Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
-> > 
-> > # ./test_progs -t arena_htab
-> > #4/1     arena_htab/arena_htab_llvm:OK
-> > #4/2     arena_htab/arena_htab_asm:OK
-> > #4       arena_htab:OK
-> > Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
-> > 
-> > # ./test_progs -t verifier_arena
-> > #464/1   verifier_arena/basic_alloc1:OK
-> > #464/2   verifier_arena/basic_alloc2:OK
-> > #464/3   verifier_arena/basic_alloc3:OK
-> > #464/4   verifier_arena/iter_maps1:OK
-> > #464/5   verifier_arena/iter_maps2:OK
-> > #464/6   verifier_arena/iter_maps3:OK
-> > #464     verifier_arena:OK
-> > #465/1   verifier_arena_large/big_alloc1:OK
-> > #465/2   verifier_arena_large/big_alloc2:OK
-> > #465     verifier_arena_large:OK
-> > Summary: 2/8 PASSED, 0 SKIPPED, 0 FAILED
-> 
-> 
-> All error logs:
-> tester_init:PASS:tester_log_buf 0 nsec
-> process_subtest:PASS:obj_open_mem 0 nsec
-> process_subtest:PASS:specs_alloc 0 nsec
-> run_subtest:PASS:obj_open_mem 0 nsec
-> run_subtest:PASS:unexpected_load_failure 0 nsec
-> do_prog_test_run:PASS:bpf_prog_test_run 0 nsec
-> run_subtest:FAIL:1103 Unexpected retval: 4 != 0
-> #513/7   verifier_arena/reserve_invalid_region:FAIL
-> #513     verifier_arena:FAIL
-> Summary: 1/14 PASSED, 0 SKIPPED, 1 FAILED
-> 
-> 
-Hi Venkat,
+Yonghong Song <yonghong.song@linux.dev> writes:
 
-It is known failure. This selftest was added recently. We are working on it to
-fix this. Will post the fix for this selftest separately.
-> > 
-> > # ./test_progs -t arena_atomics
-> > #3/1     arena_atomics/add:OK
-> > #3/2     arena_atomics/sub:OK
-> > #3/3     arena_atomics/and:OK
-> > #3/4     arena_atomics/or:OK
-> > #3/5     arena_atomics/xor:OK
-> > #3/6     arena_atomics/cmpxchg:OK
-> > #3/7     arena_atomics/xchg:OK
-> > #3/8     arena_atomics/uaf:OK
-> > #3/9     arena_atomics/load_acquire:SKIP
-> > #3/10    arena_atomics/store_release:SKIP
-> > #3       arena_atomics:OK (SKIP: 2/10)
-> > Summary: 1/8 PASSED, 2 SKIPPED, 0 FAILED
-> > 
-> > All selftests related to arena_spin_lock are passing:
-> > 
-> > # ./test_progs -t arena_spin_lock
-> > #6/1     arena_spin_lock/arena_spin_lock_1:OK
-> > #6/2     arena_spin_lock/arena_spin_lock_1000:OK
-> > #6/3     arena_spin_lock/arena_spin_lock_50000:OK
-> > #6       arena_spin_lock:OK
-> > Summary: 1/3 PASSED, 0 SKIPPED, 0 FAILED
-> test_arena_spin_lock_size:FAIL:check counter value unexpected check counter
-> value: actual 15999 != expected 16000
-> #6/1     arena_spin_lock/arena_spin_lock_1:FAIL
-> #6       arena_spin_lock:FAIL
-> Summary: 0/2 PASSED, 0 SKIPPED, 1 FAILED
+> On 8/6/25 1:58 AM, Puranjay Mohan wrote:
+>> Begin reporting arena page faults and the faulting address to BPF
+>> program's stderr, this patch adds support in the arm64 and x86-64 JITs,
+>> support for other archs can be added later.
+>>
+>> The fault handlers receive the 32 bit address in the arena region so
+>> the upper 32 bits of user_vm_start is added to it before printing the
+>> address. This is what the user would expect to see as this is what is
+>> printed by bpf_printk() is you pass it an address returned by
+>> bpf_arena_alloc_pages();
+>>
+>> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+>
+> LGTM with some nits below.
+>
+> Acked-by: Yonghong Song <yonghong.song@linux.dev>
+>
+>> ---
+>>   arch/arm64/net/bpf_jit_comp.c | 31 ++++++++++++++
+>>   arch/x86/net/bpf_jit_comp.c   | 80 +++++++++++++++++++++++++++++++++--
+>>   include/linux/bpf.h           |  1 +
+>>   kernel/bpf/arena.c            | 20 +++++++++
+>>   4 files changed, 128 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+>> index 42643fd9168fc..5680c7cd8932f 100644
+>> --- a/arch/arm64/net/bpf_jit_comp.c
+>> +++ b/arch/arm64/net/bpf_jit_comp.c
+>> @@ -1066,6 +1066,9 @@ static void build_epilogue(struct jit_ctx *ctx, bool was_classic)
+>>   	emit(A64_RET(A64_LR), ctx);
+>>   }
+>>   
+>> +#define BPF_FIXUP_LOAD_OFFSET_MASK GENMASK(15, 0)
+>> +#define BPF_FIXUP_ARENA_REG_MASK   GENMASK(20, 16)
+>> +#define BPF_ARENA_ACCESS	   BIT(21)
+>>   #define BPF_FIXUP_REG_MASK	GENMASK(31, 27)
+>>   #define DONT_CLEAR 5 /* Unused ARM64 register from BPF's POV */
+>>   
+>> @@ -1073,11 +1076,22 @@ bool ex_handler_bpf(const struct exception_table_entry *ex,
+>>   		    struct pt_regs *regs)
+>>   {
+>>   	int dst_reg = FIELD_GET(BPF_FIXUP_REG_MASK, ex->fixup);
+>> +	s16 off = FIELD_GET(BPF_FIXUP_LOAD_OFFSET_MASK, ex->fixup);
+>> +	int arena_reg = FIELD_GET(BPF_FIXUP_ARENA_REG_MASK, ex->fixup);
+>> +	bool is_arena = !!(ex->fixup & BPF_ARENA_ACCESS);
+>> +	bool is_write = (dst_reg == DONT_CLEAR);
+>> +	unsigned long addr;
+>>   
+>>   	if (dst_reg != DONT_CLEAR)
+>>   		regs->regs[dst_reg] = 0;
+>>   	/* Skip the faulting instruction */
+>>   	regs->pc += AARCH64_INSN_SIZE;
+>> +
+>> +	if (is_arena) {
+>> +		addr = regs->regs[arena_reg] + off;
+>> +		bpf_prog_report_arena_violation(is_write, addr);
+>> +	}
+>> +
+>>   	return true;
+>>   }
+>>   
+>> @@ -1087,6 +1101,9 @@ static int add_exception_handler(const struct bpf_insn *insn,
+>>   				 int dst_reg)
+>>   {
+>>   	off_t ins_offset;
+>> +	s16 load_off = insn->off;
+>
+> Change 'load_off' to 'off' so it matches the usage in ex_handler_bpf().
+> Also 'off' could mean the off for a store insn, right?
 
-This too, with llvm-19 the failure is known to us, where llvm doesn't have support for
-may_goto insn https://github.com/llvm/llvm-project/commit/0e0bfacff71859d1f9212205f8f873d47029d3fb.
-Though, there is else condition which is envoked incase llvm doesn't have support for may_goto insn,
-which we are looking into.
+Yes, this is for both load and store, I will fix it in next version.
 
-Since llvm-20 has support for may_goto, we are not seeing this failure there(the selftest passes).
-So we are planning to fix this in separate patch for llvm-19 for now.
+>> +	bool is_arena;
+>> +	int arena_reg;
+>>   	unsigned long pc;
+>>   	struct exception_table_entry *ex;
+>>   
+>> @@ -1100,6 +1117,9 @@ static int add_exception_handler(const struct bpf_insn *insn,
+>>   				BPF_MODE(insn->code) != BPF_PROBE_ATOMIC)
+>>   		return 0;
+>>   
+>> +	is_arena = (BPF_MODE(insn->code) == BPF_PROBE_MEM32) ||
+>> +		   (BPF_MODE(insn->code) == BPF_PROBE_ATOMIC);
+>> +
+>>   	if (!ctx->prog->aux->extable ||
+>>   	    WARN_ON_ONCE(ctx->exentry_idx >= ctx->prog->aux->num_exentries))
+>>   		return -EINVAL;
+>> @@ -1131,6 +1151,17 @@ static int add_exception_handler(const struct bpf_insn *insn,
+>>   
+>>   	ex->fixup = FIELD_PREP(BPF_FIXUP_REG_MASK, dst_reg);
+>>   
+>> +	if (is_arena) {
+>> +		ex->fixup |= BPF_ARENA_ACCESS;
+>> +		if (BPF_CLASS(insn->code) == BPF_LDX)
+>> +			arena_reg = bpf2a64[insn->src_reg];
+>> +		else
+>> +			arena_reg = bpf2a64[insn->dst_reg];
+>> +
+>> +		ex->fixup |=  FIELD_PREP(BPF_FIXUP_LOAD_OFFSET_MASK, load_off) |
+>> +			      FIELD_PREP(BPF_FIXUP_ARENA_REG_MASK, arena_reg);
+>> +	}
+>> +
+>>   	ex->type = EX_TYPE_BPF;
+>>   
+>>   	ctx->exentry_idx++;
+>> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+>> index 7e3fca1646203..c8d99375e6de7 100644
+>> --- a/arch/x86/net/bpf_jit_comp.c
+>> +++ b/arch/x86/net/bpf_jit_comp.c
+>> @@ -8,6 +8,7 @@
+>>   #include <linux/netdevice.h>
+>>   #include <linux/filter.h>
+>>   #include <linux/if_vlan.h>
+>> +#include <linux/bitfield.h>
+>>   #include <linux/bpf.h>
+>>   #include <linux/memory.h>
+>>   #include <linux/sort.h>
+>> @@ -1388,16 +1389,67 @@ static int emit_atomic_ld_st_index(u8 **pprog, u32 atomic_op, u32 size,
+>>   	return 0;
+>>   }
+>>   
+>> +/*
+>> + * Metadata encoding for exception handling in JITed code.
+>> + *
+>> + * Format of `fixup` and `data` fields in `struct exception_table_entry`:
+>> + *
+>> + * Bit layout of `fixup` (32-bit):
+>> + *
+>> + * +-----------+--------+-----------+---------+----------+
+>> + * | 31        | 30-24  |   23-16   |   15-8  |    7-0   |
+>> + * |           |        |           |         |          |
+>> + * | ARENA_ACC | Unused | ARENA_REG | DST_REG | INSN_LEN |
+>> + * +-----------+--------+-----------+---------+----------+
+>> + *
+>> + * - INSN_LEN (8 bits): Length of faulting insn (max x86 insn = 15 bytes (fits in 8 bits)).
+>> + * - DST_REG  (8 bits): Offset of dst_reg from reg2pt_regs[] (max offset = 112 (fits in 8 bits)).
+>> + *                      This is set to DONT_CLEAR if the insn is a store.
+>> + * - ARENA_REG (8 bits): Offset of the register that is used to calculate the
+>> + *                       address for load/store when accessing the arena region.
+>> + * - ARENA_ACCESS (1 bit): This bit is set when the faulting instruction accessed the arena region.
+>> + *
+>> + * Bit layout of `data` (32-bit):
+>> + *
+>> + * +--------------+--------+--------------+
+>> + * |	31-16	  |  15-8  |     7-0      |
+>> + * |              |	   |              |
+>> + * | ARENA_OFFSET | Unused |  EX_TYPE_BPF |
+>> + * +--------------+--------+--------------+
+>> + *
+>> + * - ARENA_OFFSET (16 bits): Offset used to calculate the address for load/store when
+>> + *                           accessing the arena region.
+>> + */
+>> +
+>>   #define DONT_CLEAR 1
+>> +#define FIXUP_OFFSET_MASK	GENMASK(7, 0)
+>
+> Maybe FIXUP_INSN_LEN_MASK?
 
-Regards,
-Saket
-> > Saket Kumar Bhaskar (6):
-> >    bpf,powerpc: Introduce bpf_jit_emit_probe_mem_store() to emit store
-> >      instructions
-> >    bpf,powerpc: Implement PROBE_MEM32 pseudo instructions
-> >    bpf,powerpc: Implement bpf_addr_space_cast instruction
-> >    bpf,powerpc: Introduce bpf_jit_emit_atomic_ops() to emit atomic
-> >      instructions
-> >    bpf,powerpc: Implement PROBE_ATOMIC instructions
-> >    selftests/bpf: Fix arena_spin_lock selftest failure
-> > 
-> >   arch/powerpc/net/bpf_jit.h                    |   6 +-
-> >   arch/powerpc/net/bpf_jit_comp.c               |  32 +-
-> >   arch/powerpc/net/bpf_jit_comp32.c             |   2 +-
-> >   arch/powerpc/net/bpf_jit_comp64.c             | 378 +++++++++++++-----
-> >   .../bpf/prog_tests/arena_spin_lock.c          |  23 +-
-> >   .../selftests/bpf/progs/arena_spin_lock.c     |   8 +-
-> >   .../selftests/bpf/progs/bpf_arena_spin_lock.h |   4 +-
-> >   7 files changed, 348 insertions(+), 105 deletions(-)
-> > 
-> > base-commit: ea2aecdf7a954a8c0015e185cc870c4191d1d93f
-> 
-> 
-> Regards,
-> 
-> Venkat.
-> 
+Will change in next version.
+
+>> +#define FIXUP_REG_MASK		GENMASK(15, 8)
+>> +#define FIXUP_ARENA_REG_MASK	GENMASK(23, 16)
+>> +#define FIXUP_ARENA_ACCESS	BIT(31)
+>> +#define DATA_ARENA_OFFSET_MASK	GENMASK(31, 16)
+>>   
+>>   bool ex_handler_bpf(const struct exception_table_entry *x, struct pt_regs *regs)
+>>   {
+>> -	u32 reg = x->fixup >> 8;
+>> +	u32 reg = FIELD_GET(FIXUP_REG_MASK, x->fixup);
+>> +	off_t offset = FIELD_GET(FIXUP_OFFSET_MASK, x->fixup);
+>
+> insn_len = ...
+>
+>> +	bool is_arena = !!(x->fixup & FIXUP_ARENA_ACCESS);
+>> +	bool is_write = (reg == DONT_CLEAR);
+>> +	unsigned long addr;
+>> +	s16 arena_offset;
+>
+> This should be just 'off', right? It would be good if the terminology is consistent
+> between different architectures.
+
+Yes,
+
+>
+>> +	u32 arena_reg;
+>>   
+>>   	/* jump over faulting load and clear dest register */
+>>   	if (reg != DONT_CLEAR)
+>>   		*(unsigned long *)((void *)regs + reg) = 0;
+>> -	regs->ip += x->fixup & 0xff;
+>> +	regs->ip += offset;
+>> +
+>> +	if (is_arena) {
+>> +		arena_reg = FIELD_GET(FIXUP_ARENA_REG_MASK, x->data);
+>> +		arena_offset = FIELD_GET(DATA_ARENA_OFFSET_MASK, x->data);
+>> +		addr = *(unsigned long *)((void *)regs + arena_reg) + arena_offset;
+>> +		bpf_prog_report_arena_violation(is_write, addr);
+>> +	}
+>> +
+>>   	return true;
+>>   }
+>>   
+>> @@ -2070,6 +2122,9 @@ st:			if (is_imm8(insn->off))
+>>   			{
+>>   				struct exception_table_entry *ex;
+>>   				u8 *_insn = image + proglen + (start_of_ldx - temp);
+>> +				bool is_arena;
+>> +				u32 fixup_reg;
+>> +				u32 arena_reg;
+>
+> the above two variables can be in the same line and can before 'is_arena'.
+>
+
+Will change in next version.
+
+Thanks,
+Puranjay
 
