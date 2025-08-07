@@ -1,43 +1,43 @@
-Return-Path: <bpf+bounces-65177-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65178-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66311B1D0E9
-	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 04:35:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E5C0B1D0EC
+	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 04:35:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CB9D1891503
-	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 02:35:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F068563ACD
+	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 02:35:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 254251C4A13;
-	Thu,  7 Aug 2025 02:35:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 007DC1D6DDD;
+	Thu,  7 Aug 2025 02:35:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="j71oCll4"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="bwRWMUSf"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.2])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAAC3524F;
-	Thu,  7 Aug 2025 02:35:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.2
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.3])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B879A1FC3;
+	Thu,  7 Aug 2025 02:35:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754534104; cv=none; b=LmxeIVhSJnJATUTIfpPLGXscWYHNMO4dWCOoKuIlA6RREywi5IpldGzMZCMVlKcyteoWqWzn7K+SzfRGsKlcp/hin89YXTEERTl5fjzmEyX38JPTlEDiBzslyFCnJCypWOM0X5x3ebLmD9hfkygm+fwQz94+1hZqzuSCQldFHbA=
+	t=1754534105; cv=none; b=TG/i8V3YaYmJRDkNIKwUUE6/xywqbJAYaVO5VW2cdj9tCJQqO/11fqJfV/ROa+V6oL+aa6oc9yIAzl7xXfzXbbqRPJxBNztd0a+GJdajr6GBAyQb1bJppa0Z4S82sSxLAzdqWX2tndXIVcUI1VCHpsjtTOsHYKfDLrZ06/9jkB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754534104; c=relaxed/simple;
+	s=arc-20240116; t=1754534105; c=relaxed/simple;
 	bh=nieYC9c+249BW7EG1qD6ENgERSYGNbMzbTwbnbkvNmA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HnguGhV3zNLPbz5RDFGdFgkvPfugw7aPdvP+gsd7Q49uUwVC/nPJ5+lBKDNP7nQawVIYxUK6pqmIatxrOD4jMHpaJsjTo6niy15kZYyYu8JZl9HPI90UUvDzDb2A7GT3ebFNr+VKeuB1YwF8CBUN1WOVkgGSZ3YjT6369Lf3Bys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=j71oCll4; arc=none smtp.client-ip=117.135.210.2
+	 MIME-Version; b=MhX3eA1WgxTW7IefOtoPm5DtREFGu8u8ZyY3v62hxVm0ocVYREwDDmR3Cc2L2pO134pQtBMfx+ZpKYVMdD1tUGxJnNykpXAaZNhShCgPAz1M8IkFUAKh2DFdhPgo8AxH+AiHK3+/KtfQCRZwazi8+Orss23/656D93a0SCPvzjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=bwRWMUSf; arc=none smtp.client-ip=117.135.210.3
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
 	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=mL
-	R5OmI3/KOhZo6YRssu1xcudMwJC+vZQUkPh7Xha2c=; b=j71oCll4LiTEQFOOrl
-	tqVEgvhdWtyq6XH3wtrvXCv8GkLhRZllRBF/22nZR3yRlqyxdJJ+CDIpWvLgmPq5
-	SYS5XOHgI3o9OYSZ4a2wuQ9N0Oj8qjTOr9SnRGvjYXLjJE2g7MER0Dz3cEWRJC2Y
-	FpYrxbhAmcI+beKreIP9fNPFI=
+	R5OmI3/KOhZo6YRssu1xcudMwJC+vZQUkPh7Xha2c=; b=bwRWMUSfIPsfZo4U77
+	8YOscmRMIS+RRoY57b1tO5SWKUkwptTdmyVbbEulYBK+s4Fbnlq6BL5ZlI7CajFd
+	W/OX1tuHYS9g5oe/kIcSEv08Srqa1aq+r5BKNQQwtvdwyc+7VMflAtmXoDqtSTAl
+	w5i412mZa7OzTe8u3yz2t6TJ8=
 Received: from phoenix.. (unknown [])
-	by gzga-smtp-mtada-g1-4 (Coremail) with SMTP id _____wD331O2EJRoF+MEAQ--.33482S4;
-	Thu, 07 Aug 2025 10:34:32 +0800 (CST)
+	by gzga-smtp-mtada-g1-4 (Coremail) with SMTP id _____wD331O2EJRoF+MEAQ--.33482S5;
+	Thu, 07 Aug 2025 10:34:33 +0800 (CST)
 From: Jiawei Zhao <phoenix500526@163.com>
 To: ast@kernel.org
 Cc: daniel@iogearbox.net,
@@ -46,9 +46,9 @@ Cc: daniel@iogearbox.net,
 	bpf@vger.kernel.org,
 	linux-kselftest@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v8 2/2] selftests/bpf: Add an usdt_o2 test case in selftests to cover SIB handling logic
-Date: Thu,  7 Aug 2025 02:34:28 +0000
-Message-ID: <20250807023430.4566-3-phoenix500526@163.com>
+Subject: [PATCH bpf-next v7 2/2] selftests/bpf: Force -O2 for USDT selftests to cover SIB handling logic
+Date: Thu,  7 Aug 2025 02:34:29 +0000
+Message-ID: <20250807023430.4566-4-phoenix500526@163.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250807023430.4566-1-phoenix500526@163.com>
 References: <20250807023430.4566-1-phoenix500526@163.com>
@@ -59,12 +59,12 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD331O2EJRoF+MEAQ--.33482S4
+X-CM-TRANSID:_____wD331O2EJRoF+MEAQ--.33482S5
 X-Coremail-Antispam: 1Uf129KBjvJXoWxKF15CryUAFWrXry5CF43GFg_yoW7Gw1xpa
 	48Xw1YkrWIqF43Kr1SqF4Utr4rKanayrW8JFykXFyavr48JF92qr1xKry7Kas3G395XF1r
 	A39xtan8Gr48Jw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jqeHDUUUUU=
-X-CM-SenderInfo: pskrv0dl0viiqvswqiywtou0bp/xtbBgA+iiGiUDBSB4AAAsg
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j-F4_UUUUU=
+X-CM-SenderInfo: pskrv0dl0viiqvswqiywtou0bp/xtbBgA+iiGiUDBSB4AABsh
 
 When using GCC on x86-64 to compile an usdt prog with -O1 or higher
 optimization, the compiler will generate SIB addressing mode for global
