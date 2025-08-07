@@ -1,230 +1,150 @@
-Return-Path: <bpf+bounces-65184-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65185-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B0D2B1D1CB
-	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 07:02:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD532B1D3FD
+	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 10:07:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1377626DE8
-	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 05:02:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A19E1883D1D
+	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 08:07:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E11CA1EDA02;
-	Thu,  7 Aug 2025 05:02:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CaBceNuY"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63EC82494F8;
+	Thu,  7 Aug 2025 08:06:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 526A93208;
-	Thu,  7 Aug 2025 05:02:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92D592236F4
+	for <bpf@vger.kernel.org>; Thu,  7 Aug 2025 08:06:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754542961; cv=none; b=fc1/5b5iBZJXfekC7xT9wn0ow6VcAjad4LZ67YLnO1hITVrqUr469Tt7rgDd273GFfP2lgz1QFJhXASlNf1CUeWXrhPJAszqCfpJBz6o96AFUFIHwO6ccAkYjP0ldoY1sCqE6MqttOQCgYAf4f/A/Pm/0UAhc7SQnJE08usgi40=
+	t=1754554016; cv=none; b=qtXTbguIB9pOoK9H6lMPzJ+eF9+n/M8c2bD6yKfzf7xVezIFXB4OVZg65ZSUmYy54c7KmKciGqiF6ngDOiuk83PwbKuBgfKfNOtMuE2I3Zqi5MIK0gI3NnPEbIpQg/uv3UC+VGnCKORzeaXj/sYwomYsucZMiVi2I0S6JiNH9Es=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754542961; c=relaxed/simple;
-	bh=iLPBsrHPqBLwygLabAH3oPQ7LeYJ3hzY3ZqvBa5reBo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kfWuMDZEdhDl77N4/phLff/UtcVRnnImHvEPvf5eBj68eNS0sqk2TxP7sE/Qkp48h/mvetxFrtcy8eYexGNpPwjWJ58he+kFu9o0BrFsO2gdLrVOyZKgoKaZgdFg/lu+yek8E5zgFDynbJGQb7jk8AhEEGePrltXrFK+JBMAumY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CaBceNuY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4929BC4CEEB;
-	Thu,  7 Aug 2025 05:02:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754542960;
-	bh=iLPBsrHPqBLwygLabAH3oPQ7LeYJ3hzY3ZqvBa5reBo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CaBceNuYPPe3whqcuZMdpvOiHx3vzbPyxVVozyRKnXOer4DMe3lomi2J7AnglQ23j
-	 zw7bsRNnCajR8+8mdSH4g0+ENpqD20WIg8oZaqJ7TcDFgVBUK8aeLRR5cKGxeLPf06
-	 Rq0YgoBGH43GkhfZRJrHj1evJhu+NvO94Lh5SrmrbhZrQ8aDJBkNBptjqBBIWS3Ifc
-	 adwQPtqElmJ4XwE16IgL3LkROF+xp7HrC9lYNQRbm4yXY6ak4irfDsPffKhmSBdssv
-	 0zrZj5gctdt68kVjiG817/B0qrkPW0UWHnct6rT6qyzyELeoIm32AdfKMiWT2I9Uic
-	 i4XIRlUdPU2xA==
-Date: Wed, 6 Aug 2025 22:02:38 -0700
-From: Namhyung Kim <namhyung@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Ilya Leoshkevich <iii@linux.ibm.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	bpf <bpf@vger.kernel.org>,
-	"linux-perf-use." <linux-perf-users@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-s390 <linux-s390@vger.kernel.org>,
-	Thomas Richter <tmricht@linux.ibm.com>,
-	Jiri Olsa <jolsa@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>
-Subject: Re: [PATCH v4 2/2] perf bpf-filter: Enable events manually
-Message-ID: <aJQzbpV_NXCD5-Ob@google.com>
-References: <20250806114227.14617-1-iii@linux.ibm.com>
- <20250806114227.14617-3-iii@linux.ibm.com>
- <aJPc2NvJqLOGaIKl@google.com>
- <CAADnVQJG6U6X1qarpbdXra12m-PhNJK5f-jyw695osnOm6AZnQ@mail.gmail.com>
+	s=arc-20240116; t=1754554016; c=relaxed/simple;
+	bh=nyJwpKcflWB6KyyIOeLQAdbgo2iU7AbYDHvpbDdnGgs=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
+	 Content-Type; b=rLwtoSFs7fHM7WbzdNnYJBBhOxqFVf1D3c5+yR/7+ExyKv7AloA77ncCQ8qTXN/YeXOM1Jzn+Uuvgb/h7ot+q0L4s3qU4ndEY+LQQPFJrayzxiC3uoaGfefEpPPpfeF4tW0oQtK97b2zu2CdOCNdZ2K6hY/HOa67q8rQFvqsV8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-8818f0fd38cso73250339f.0
+        for <bpf@vger.kernel.org>; Thu, 07 Aug 2025 01:06:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754554014; x=1755158814;
+        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y8p3scDZixEMjVu2rPlXknNZevyfYlJKLq4iu1bGSzA=;
+        b=LAeFA436F89ZSrfNGK33j90vVI+IkWAqubQMMN7gvB0yImSrvNnLPcXoQC1XGV9tVu
+         xJ69TJdk8i0JoVIWA1NiOUdZbvTlQ15zl1TobDkyIaMQwuIkOBSeKky3tEw7dgJrPZCc
+         9OrY9zPpTWJHTBngsvM6jqIWBVSRc/WzBUD7jEuCLzuz4HyOFEBEn9pYrl5073FOY5so
+         sfF51q3nWUSrFmm2fKlOmZtjavkepVXNwO91oRGvbPSXFoGwb1InYz5TcKCW1Glba+Cf
+         wmzedZpXTNoPOar1jDe2ho8zcj9zXitqoqQJNuXFYtIczDux77MFH8OfSJ0m2C6sXP38
+         UDZA==
+X-Forwarded-Encrypted: i=1; AJvYcCVIMbQZgnP47ZCZ7U7CGn6lr8FH43z4F9L8QEBuvZ39UdoRQbM7RKgaG1tiP3nysAM+mQ0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzObWUc+D68VT6L/TgYLXIaluPG9N7WhKz2/yoydyK9l/9+5qJb
+	qFSF/mx549KUWEOssndnI53PL7uTQ8MNakiaBu4I7gOjtcjSJz7Cymwe2K7ncvuT+w+uled+VQ1
+	zN/G9mbPByzEjhoGKGrGrmvn7xnDd4FWczujFHyyZyaL+F8uNyYbglFvomdk=
+X-Google-Smtp-Source: AGHT+IFcXOTEo+xm8RJP/u+XlmuT3WzDuANaV73aw2YJGkMV2whuVQ7VV3FiCdxL0Nv6/hCTT0qs7uhnGcjRsHcz75dLqmbnBDfK
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQJG6U6X1qarpbdXra12m-PhNJK5f-jyw695osnOm6AZnQ@mail.gmail.com>
+X-Received: by 2002:a05:6602:3c4:b0:881:983d:dd7b with SMTP id
+ ca18e2360f4ac-8819f33b7f1mr1088746039f.8.1754554013618; Thu, 07 Aug 2025
+ 01:06:53 -0700 (PDT)
+Date: Thu, 07 Aug 2025 01:06:53 -0700
+In-Reply-To: <20250806154127.2161434-1-maciej.fijalkowski@intel.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68945e9d.050a0220.7f033.0041.GAE@google.com>
+Subject: [syzbot ci] Re: xsk: fix immature cq descriptor production
+From: syzbot ci <syzbot+ci0a6ec7a9d4421fcc@syzkaller.appspotmail.com>
+To: aleksander.lobakin@intel.com, andrii@kernel.org, ast@kernel.org, 
+	bpf@vger.kernel.org, daniel@iogearbox.net, e.kubanski@partner.samsung.com, 
+	maciej.fijalkowski@intel.com, magnus.karlsson@intel.com, 
+	netdev@vger.kernel.org
+Cc: syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Alexei,
+syzbot ci has tested the following series
 
-On Wed, Aug 06, 2025 at 04:38:09PM -0700, Alexei Starovoitov wrote:
-> On Wed, Aug 6, 2025 at 3:53 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > Hello,
-> >
-> > On Wed, Aug 06, 2025 at 01:40:35PM +0200, Ilya Leoshkevich wrote:
-> > > On s390, and, in general, on all platforms where the respective event
-> > > supports auxiliary data gathering, the command:
-> > >
-> > >    # ./perf record -u 0 -aB --synth=no -- ./perf test -w thloop
-> > >    [ perf record: Woken up 1 times to write data ]
-> > >    [ perf record: Captured and wrote 0.011 MB perf.data ]
-> > >    # ./perf report --stats | grep SAMPLE
-> > >    #
-> > >
-> > > does not generate samples in the perf.data file. On x86 the command:
-> > >
-> > >   # sudo perf record -e intel_pt// -u 0 ls
-> > >
-> > > is broken too.
-> > >
-> > > Looking at the sequence of calls in 'perf record' reveals this
-> > > behavior:
-> > >
-> > > 1. The event 'cycles' is created and enabled:
-> > >
-> > >    record__open()
-> > >    +-> evlist__apply_filters()
-> > >        +-> perf_bpf_filter__prepare()
-> > >          +-> bpf_program.attach_perf_event()
-> > >              +-> bpf_program.attach_perf_event_opts()
-> > >                  +-> __GI___ioctl(..., PERF_EVENT_IOC_ENABLE, ...)
-> > >
-> > >    The event 'cycles' is enabled and active now. However the event's
-> > >    ring-buffer to store the samples generated by hardware is not
-> > >    allocated yet.
-> > >
-> > > 2. The event's fd is mmap()ed to create the ring buffer:
-> > >
-> > >    record__open()
-> > >    +-> record__mmap()
-> > >        +-> record__mmap_evlist()
-> > >          +-> evlist__mmap_ex()
-> > >              +-> perf_evlist__mmap_ops()
-> > >                  +-> mmap_per_cpu()
-> > >                      +-> mmap_per_evsel()
-> > >                          +-> mmap__mmap()
-> > >                              +-> perf_mmap__mmap()
-> > >                                  +-> mmap()
-> > >
-> > >    This allocates the ring buffer for the event 'cycles'. With mmap()
-> > >    the kernel creates the ring buffer:
-> > >
-> > >    perf_mmap(): kernel function to create the event's ring
-> > >    |            buffer to save the sampled data.
-> > >    |
-> > >    +-> ring_buffer_attach(): Allocates memory for ring buffer.
-> > >        |        The PMU has auxiliary data setup function. The
-> > >        |        has_aux(event) condition is true and the PMU's
-> > >        |        stop() is called to stop sampling. It is not
-> > >        |        restarted:
-> > >        |
-> > >        |        if (has_aux(event))
-> > >        |                perf_event_stop(event, 0);
-> > >        |
-> > >        +-> cpumsf_pmu_stop():
-> > >
-> > >    Hardware sampling is stopped. No samples are generated and saved
-> > >    anymore.
-> > >
-> > > 3. After the event 'cycles' has been mapped, the event is enabled a
-> > >    second time in:
-> > >
-> > >    __cmd_record()
-> > >    +-> evlist__enable()
-> > >        +-> __evlist__enable()
-> > >          +-> evsel__enable_cpu()
-> > >              +-> perf_evsel__enable_cpu()
-> > >                  +-> perf_evsel__run_ioctl()
-> > >                      +-> perf_evsel__ioctl()
-> > >                          +-> __GI___ioctl(., PERF_EVENT_IOC_ENABLE, .)
-> > >
-> > >    The second
-> > >
-> > >       ioctl(fd, PERF_EVENT_IOC_ENABLE, 0);
-> > >
-> > >    is just a NOP in this case. The first invocation in (1.) sets the
-> > >    event::state to PERF_EVENT_STATE_ACTIVE. The kernel functions
-> > >
-> > >    perf_ioctl()
-> > >    +-> _perf_ioctl()
-> > >        +-> _perf_event_enable()
-> > >            +-> __perf_event_enable()
-> > >
-> > >    return immediately because event::state is already set to
-> > >    PERF_EVENT_STATE_ACTIVE.
-> > >
-> > > This happens on s390, because the event 'cycles' offers the possibility
-> > > to save auxilary data. The PMU callbacks setup_aux() and free_aux() are
-> > > defined. Without both callback functions, cpumsf_pmu_stop() is not
-> > > invoked and sampling continues.
-> > >
-> > > To remedy this, remove the first invocation of
-> > >
-> > >    ioctl(..., PERF_EVENT_IOC_ENABLE, ...).
-> > >
-> > > in step (1.) Create the event in step (1.) and enable it in step (3.)
-> > > after the ring buffer has been mapped.
-> > >
-> > > Output after:
-> > >
-> > >  # ./perf record -aB --synth=no -u 0 -- ./perf test -w thloop 2
-> > >  [ perf record: Woken up 3 times to write data ]
-> > >  [ perf record: Captured and wrote 0.876 MB perf.data ]
-> > >  # ./perf  report --stats | grep SAMPLE
-> > >               SAMPLE events:      16200  (99.5%)
-> > >               SAMPLE events:      16200
-> > >  #
-> > >
-> > > The software event succeeded both before and after the patch:
-> > >
-> > >  # ./perf record -e cpu-clock -aB --synth=no -u 0 -- \
-> > >                                         ./perf test -w thloop 2
-> > >  [ perf record: Woken up 7 times to write data ]
-> > >  [ perf record: Captured and wrote 2.870 MB perf.data ]
-> > >  # ./perf  report --stats | grep SAMPLE
-> > >               SAMPLE events:      53506  (99.8%)
-> > >               SAMPLE events:      53506
-> > >  #
-> > >
-> > > Fixes: b4c658d4d63d61 ("perf target: Remove uid from target")
-> > > Suggested-by: Jiri Olsa <jolsa@kernel.org>
-> > > Tested-by: Thomas Richter <tmricht@linux.ibm.com>
-> > > Co-developed-by: Thomas Richter <tmricht@linux.ibm.com>
-> > > Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
-> > > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> >
-> > Acked-by: Namhyung Kim <namhyung@kernel.org>
-> 
-> Do you mind if I take the whole set through the bpf tree ?
-> 
-> I'm planning to send bpf PR in a couple days, so by -rc1
-> all trees will see the fix.
+[v3] xsk: fix immature cq descriptor production
+https://lore.kernel.org/all/20250806154127.2161434-1-maciej.fijalkowski@intel.com
+* [PATCH v3 bpf] xsk: fix immature cq descriptor production
 
-Sure, I don't think we have conflicting changes and we'll sync
-perf-tools-next once -rc1 is released.
+and found the following issue:
+WARNING in xsk_create
 
-Thanks,
-Namhyung
+Full report is available here:
+https://ci.syzbot.org/series/ed9b41fb-c772-4c8d-ab6b-07919dac7f3f
 
+***
+
+WARNING in xsk_create
+
+tree:      bpf
+URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/bpf/bpf.git
+base:      e8d780dcd957d80725ad5dd00bab53b856429bc0
+arch:      amd64
+compiler:  Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
+config:    https://ci.syzbot.org/builds/ac640846-151f-4c3e-8a63-10a1d56881e1/config
+syz repro: https://ci.syzbot.org/findings/34ebabe4-f302-4e4b-9951-0a44d704970a/syz_repro
+
+------------[ cut here ]------------
+kmem_cache of name 'xsk_generic_xmit_cache' already exists
+WARNING: CPU: 1 PID: 6031 at mm/slab_common.c:110 kmem_cache_sanity_check mm/slab_common.c:109 [inline]
+WARNING: CPU: 1 PID: 6031 at mm/slab_common.c:110 __kmem_cache_create_args+0xa3/0x320 mm/slab_common.c:307
+Modules linked in:
+CPU: 1 UID: 0 PID: 6031 Comm: syz.2.21 Not tainted 6.16.0-syzkaller-06699-ge8d780dcd957-dirty #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:kmem_cache_sanity_check mm/slab_common.c:109 [inline]
+RIP: 0010:__kmem_cache_create_args+0xa3/0x320 mm/slab_common.c:307
+Code: 81 fc 58 a5 22 8e 74 26 49 8b 7c 24 f8 48 89 de e8 32 81 67 09 85 c0 75 e2 90 48 c7 c7 f2 e1 98 8d 48 89 de e8 5e 00 7f ff 90 <0f> 0b 90 90 48 89 df be 20 00 00 00 e8 cc 82 67 09 48 85 c0 0f 85
+RSP: 0018:ffffc90002dffcc8 EFLAGS: 00010246
+RAX: 2d59588130194a00 RBX: ffffffff8cb69260 RCX: ffff888105d20000
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000002
+RBP: 0000000000000010 R08: ffffc90002dff9e7 R09: 1ffff920005bff3c
+R10: dffffc0000000000 R11: fffff520005bff3d R12: ffff88801fde6928
+R13: 0000607e5bfbe4c0 R14: ffffc90002dffd60 R15: 0000000000000098
+FS:  00007f455d4c26c0(0000) GS:ffff8881a3c7e000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f455c7b7dac CR3: 0000000106b38000 CR4: 00000000000006f0
+Call Trace:
+ <TASK>
+ __kmem_cache_create include/linux/slab.h:353 [inline]
+ xsk_create+0x67e/0x8d0 net/xdp/xsk.c:1817
+ __sock_create+0x4b3/0x9f0 net/socket.c:1589
+ sock_create net/socket.c:1647 [inline]
+ __sys_socket_create net/socket.c:1684 [inline]
+ __sys_socket+0xd7/0x1b0 net/socket.c:1731
+ __do_sys_socket net/socket.c:1745 [inline]
+ __se_sys_socket net/socket.c:1743 [inline]
+ __x64_sys_socket+0x7a/0x90 net/socket.c:1743
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f455c58ebe9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f455d4c2038 EFLAGS: 00000246 ORIG_RAX: 0000000000000029
+RAX: ffffffffffffffda RBX: 00007f455c7b5fa0 RCX: 00007f455c58ebe9
+RDX: 0000000000000000 RSI: 0000000000000003 RDI: 000000000000002c
+RBP: 00007f455c611e19 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f455c7b6038 R14: 00007f455c7b5fa0 R15: 00007ffd678e28c8
+ </TASK>
+
+
+***
+
+If these findings have caused you to resend the series or submit a
+separate fix, please add the following tag to your commit message:
+Tested-by: syzbot@syzkaller.appspotmail.com
+
+---
+This report is generated by a bot. It may contain errors.
+syzbot ci engineers can be reached at syzkaller@googlegroups.com.
 
