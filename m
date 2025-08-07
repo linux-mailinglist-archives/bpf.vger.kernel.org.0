@@ -1,150 +1,226 @@
-Return-Path: <bpf+bounces-65218-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65219-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 940F7B1DBEC
-	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 18:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C50BCB1DBFE
+	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 18:51:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 680D91AA1543
-	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 16:46:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 833E41AA3070
+	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 16:51:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09DD6272805;
-	Thu,  7 Aug 2025 16:45:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C8CC273D6E;
+	Thu,  7 Aug 2025 16:51:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="HZjUotyy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Aiztritw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 217BE194A65
-	for <bpf@vger.kernel.org>; Thu,  7 Aug 2025 16:45:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F16CF1E832E;
+	Thu,  7 Aug 2025 16:50:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754585145; cv=none; b=qsnf5LPBw7m19LkhczBZ+Y+XLW5ksKSHbJy+j/COyxHvNeJg0ITXXsc/ugJJ0RFPWmdnd/aIuekFdfd3tcCCvFzN0ucwIeXmeWwZ/Enpo0gI5mVNaqecVZ5yaqvt8VTTHG0FQ45KXIkKoUgBMepVfVb+8P3nmISwKRaiyKKollU=
+	t=1754585460; cv=none; b=gDZMYSxSZbtqa+2AyLYMDIzR0sbumSaKL7Scw0UGBwobl07FVzD82mbsW6efuoDqT7TfsCmZMenivsc3DMLX0UN1kodKVk1ffDoL+Jj4wn1EASTCUz4gX8YR+/6K6BSuIqeVl90fkuqO1txbRMxqeoyBx4VbPuiTNcdIzEiRm0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754585145; c=relaxed/simple;
-	bh=CnCcxSc5PyfZpc2RaREPR93y6r5jTf/jZooMWVREm6g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h79d9f2GPVeoTyjFbv4pWT7eQohrkBIXYDYT9Ofn2j1UD4jovXgzSETi9zdxXUAPfo7V1rUwJ2kF1n4N95qapVkDv/TWGACPKHY/fDfzuy7cdyawSMgmIcgXtaYy5vbG9Lu8rtwVxNTT851tZpdpzQLcEDsggVQEBlEwhdSV1x8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=HZjUotyy; arc=none smtp.client-ip=209.85.167.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-433f78705b3so907285b6e.2
-        for <bpf@vger.kernel.org>; Thu, 07 Aug 2025 09:45:43 -0700 (PDT)
+	s=arc-20240116; t=1754585460; c=relaxed/simple;
+	bh=rvHzHNNeX42Ajw+oPnvddqWVsP011jQpeQ76XsjgJjY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=es+sHrMvbxLFy2skIIlJkKzw9yCnbcpSQSCVUtZPicIPxDNiz/qBTGKbpu0/zHZxlrHHuwDdn8riXykkXORBP7Z7BHOZcFGk0M4b84KEc24Iupb1j1crpOjbIPEMmoM16aXHGHwwJ63CwazmkwCWO1iEF5PLED+fOby5Dffp+Gw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Aiztritw; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3b783ea5014so645549f8f.0;
+        Thu, 07 Aug 2025 09:50:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1754585143; x=1755189943; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zSPhIT8x221qe9Xtn++QCR/NM+n6LYzd3EnXHKIl8rI=;
-        b=HZjUotyy4QfMHoakY6sOTCcI/cCKM453RDgUQXATVAIgLB33jvsuNnq/r+H9KpMm0Z
-         FT4/IhkdXOhwiPc+aqxkWBDtYMQMCw3UjVGc1yiIrTEIciYcjULmwqePXHqEFdDGfMBS
-         S5NidSrCszfU5kozHWRF35ChvvkIab8A6oO3QONgTG/ibgZboEszVdJHNYyN9XCqTLkt
-         xN10YWaFZ1ftXV2FSFonJiGpxXK6XDZEB2cziNlTFq5cuOL0BhRuJDMMSaB0OmZ0MfoT
-         AqRQ0Dpy7BAzIzqFJ2xLBsH3fu+XV7neqJQ4lYiv1kSkjGo0k1xZ9RFf1JsUtd/QbL5O
-         3k/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754585143; x=1755189943;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1754585456; x=1755190256; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zSPhIT8x221qe9Xtn++QCR/NM+n6LYzd3EnXHKIl8rI=;
-        b=OhYTqANHDfM7b0VJ4HujJS3Yv1AA46aVlbreCoXQvCUrIzGT3mtrLkn9i2fec5rP8C
-         I7HMwZKJ0rooeM6hsGK4oYgCE/jYfXqGFhYtRQYMGf3GUAjBj3aymKWNQc8aZ0LI0N7k
-         er4oqdIlXuAYEQ1xLnqVlolMhBatmvMEWGJbD3jVCUJGalOYDV0CkaBx/mFCWiu6CcXH
-         0XkFQ4rsNKU+J/rWxSf7HImnrnoQMxOV5IZAPV+QS0kGhiOm7sYLM60wWhyuFcbJY9Pp
-         vwHaPQN+w1TCR4p3pAaLUiFwOGjLTSJ+dsYRCxfBJhSiUpLtBqAFWZznRYM/q/Td54Fm
-         HOMw==
-X-Forwarded-Encrypted: i=1; AJvYcCWESIqoQjxOZScwjVBymIV0cIKB0ih0WY4A99euOfSxkC2uheD9zJSSuUmaMnXkDt3oP2Y=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwTqdVFA6qeii3t8vcQpPq8i0Q4ctkzNGM+AnDcCZKv2tJBp7i2
-	TODDMOuGoF6Ga6JbuVjhvKAFJtosDfDu1t0MW6QYtRnCZ0MtcTdqY+DXtQH9Wj2on3k=
-X-Gm-Gg: ASbGncvI3+RS2jOC4KE3hpqX7KU0M5nQsR8ZbcZ/esdfoyytlDROsvybqAeEUeH0aT2
-	Utx+OsMJM7WhUY+QzVIcnL0w1NPcvQ67s63nrHf08+y7bLDPsym7p42PgX4U6nUMAEAgjcw8XQX
-	EjXNaB2P26F+anD3Cut0EWgX42bxB2xv8K0ue/uKZ7uf96E6bZx4tdwnNMcgkuC4/V42tFEgpd+
-	UqZGVw87QQQVMO1FYBzn+tk4kW2sW+ZqCU/bGw30NXGziURjsKGvcTJDXFB27SKY0R4WrSysOff
-	Esk0ar0NAyvbaPcPjAVk/Jc6N4m8i9Upq3Ah9jyem+JJdCqk5DAJa6VBP8tvMoUwPYj1ppbFqh1
-	vnONWDg==
-X-Google-Smtp-Source: AGHT+IEoPnNiQABRJDDD+catLqplRdC9PpEz+vHd9z1lMFuvZdMmuQHXf9lqya9dZt+r1C+IumFskA==
-X-Received: by 2002:a05:6808:1929:b0:434:8f2:d95 with SMTP id 5614622812f47-4357c616d71mr3729812b6e.33.1754585142979;
-        Thu, 07 Aug 2025 09:45:42 -0700 (PDT)
-Received: from 861G6M3 ([2a09:bac1:76a0:540::22d:91])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-30b93b644d9sm3171722fac.30.2025.08.07.09.45.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Aug 2025 09:45:42 -0700 (PDT)
-Date: Thu, 7 Aug 2025 11:45:40 -0500
-From: Chris Arges <carges@cloudflare.com>
-To: Dragos Tatulea <dtatulea@nvidia.com>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
-	kernel-team <kernel-team@cloudflare.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>, tariqt@nvidia.com,
-	saeedm@nvidia.com, Leon Romanovsky <leon@kernel.org>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Simon Horman <horms@kernel.org>,
-	Andrew Rzeznik <arzeznik@cloudflare.com>,
-	Yan Zhai <yan@cloudflare.com>
-Subject: Re: [BUG] mlx5_core memory management issue
-Message-ID: <aJTYNG1AroAnvV31@861G6M3>
-References: <CAFzkdvi4BTXb5zrjpwae2dF5--d2qwVDCKDCFnGyeV40S_6o3Q@mail.gmail.com>
- <dhqeshvesjhyxeimyh6nttlkrrhoxwpmjpn65tesani3tmne5v@msusvzdhuuin>
- <aIEuZy6fUj_4wtQ6@861G6M3>
- <jlvrzm6q7dnai6nf5v3ifhtwqlnvvrdg5driqomnl5q4lzfxmk@tmwaadjob5yd>
+        bh=BI+CDnO3S/HRsnMbehWHSmPi1UCDpaAWXx0mQumQV1k=;
+        b=Aiztritw9v4+tpsmzFwFTRRbi+GnbOMWKtnXixfTZ22lPVNg+YepO4A2dEk2QpWt9n
+         fOI9xp3YEe7NRhFcNzYKVSDiH5l0bD73RKNFUbaLtdggh3mxN67ulo7bdMKgc2rvLXD0
+         rm8iWSgKF7L8Pwut4v+rPRE3S21RFVlrUrIhPw8v5TqDrHQ+EqlP3rmAyBnnUrgITfn3
+         j3axnt035ISz3f+unlVu5o8iK25/f+X1sOSiQtWAMkwnpvv93R1H2+oqhv5N5fT6VR7p
+         20sypjSH5gY4jEY7PgrOkTgzK4N4J4OsUbJlw5ZcGrjlUyd/doXf0acCVhwSxxx5YAis
+         9ZPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754585456; x=1755190256;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BI+CDnO3S/HRsnMbehWHSmPi1UCDpaAWXx0mQumQV1k=;
+        b=mHgAO6ApiC7XeL7OF9kIV80z7cZ38YZ0cEdjtEINGO3nIfDEvUZ98Y+pJWjYFN9gBw
+         vF8NOo8ENHQ5wt6yqDrltX8U+cniscKOkMBN9sGU5MWlWvD+319Pz+KlaJZK5T/WjjW0
+         oMi8fH5qMdTZvW1NloCmNhiBNOF/H8zOhUqN9Bi/NZ8ncF7mOr/1ct2MQpytIKZLJVJq
+         p2DIgUw2bCH1TNcsp1jxW7/Y5jQbxJS4uS+PelSp5ORrj3MBdNuD7PMVsTR0Qt9JKtXB
+         ImSo8BdkTFR9cHZcmE8pvwWWz8IWB8I2GZHK1e9/+zHr2Ez6IsMCJAQlQ6JeBKPV96gi
+         A/2g==
+X-Forwarded-Encrypted: i=1; AJvYcCUP9iQ8CV/oWvyBjFMZM5pj+XLq3Sjz59+sXpHeTPkJ5qrZo4S5G73lDqR9YaMbUOvFn6o=@vger.kernel.org, AJvYcCWCoBvKmb4Re2XQqVo30Cy6kvRmzq3AXdYtepIJqGeNJ8iVUFPqx38HFgUjJrWMlk8p73GiOzXF2oamwZyU@vger.kernel.org
+X-Gm-Message-State: AOJu0YzAQDYrZmDaN1StPTzVeQo16PWwlfl1oqOXy2hbdZICmycbhguv
+	JML1RcCM60Z8u5ro7+UJlcRgGRV9xUoGxV4SG9Q2eS/c2t3VVysqxsy+1LZLWXySWOhKCoXltKZ
+	wJkM/d/zlN3xLQ8Vn4SdpawwhlrjPpqs=
+X-Gm-Gg: ASbGncs0xwcLbc4HCFJ/ktATyn20MChz0yqhPbEFE4U2xcKUA0X12pdjE+g0qxfTYnQ
+	+KXqhbyYVm/l9u9uzHVUIuO0T+ZKpJe83aiEAEBVz4LjSx07ev24DLxZT+ddchIWLql28jGC9ay
+	Zr+Tl4xA1iHUwDg3IXtaROcJ2nBdCjComWIZAcP/kh1jPWIH4NfnHz3frwFgFu6fAq1Xdh4YANE
+	T09iHpV5hT1u5CARX4uIQc=
+X-Google-Smtp-Source: AGHT+IGq3jfQ2I7+YTZKWmezts8ksMJtEUFLNuu7yd4Jw8iw8OJixukAUDSMkhzOoJ9jzYlKEOSlPd43kV56ZahM0w8=
+X-Received: by 2002:a05:6000:2003:b0:3b7:820b:a830 with SMTP id
+ ffacd0b85a97d-3b8f48f66aemr6042295f8f.25.1754585455883; Thu, 07 Aug 2025
+ 09:50:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <jlvrzm6q7dnai6nf5v3ifhtwqlnvvrdg5driqomnl5q4lzfxmk@tmwaadjob5yd>
+References: <20250805115513.4018532-1-kafai.wan@linux.dev>
+In-Reply-To: <20250805115513.4018532-1-kafai.wan@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 7 Aug 2025 09:50:42 -0700
+X-Gm-Features: Ac12FXwDvr7D5yeAtsPz6ePp67cc_tchJz2vkfuTXMoJDP0gbWSavjnd2i11164
+Message-ID: <CAADnVQLecBEmQzxOzUwv_2mO9BDrKSp1xiC4WY8-gL2w4OaxaQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/1] bpf: Allow fall back to interpreter for
+ programs with stack size <= 512
+To: KaFai Wan <kafai.wan@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Jiayuan Chen <mrpre@163.com>, KaFai Wan <mannkafai@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Felix Fietkau <nbd@nbd.name>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2025-07-24 17:01:16, Dragos Tatulea wrote:
-> On Wed, Jul 23, 2025 at 01:48:07PM -0500, Chris Arges wrote:
-> > 
-> > Ok, we can reproduce this problem!
-> > 
-> > I tried to simplify this reproducer, but it seems like what's needed is:
-> > - xdp program attached to mlx5 NIC
-> > - cpumap redirect
-> > - device redirect (map or just bpf_redirect)
-> > - frame gets turned into an skb
-> > Then from another machine send many flows of UDP traffic to trigger the problem.
-> > 
-> > I've put together a program that reproduces the issue here:
-> > - https://github.com/arges/xdp-redirector
-> >
-> Much appreciated! I fumbled around initially, not managing to get
-> traffic to the xdp_devmap stage. But further debugging revealed that GRO
-> needs to be enabled on the veth devices for XDP redir to work to the
-> xdp_devmap. After that I managed to reproduce your issue.
-> 
-> Now I can start looking into it.
-> 
+On Tue, Aug 5, 2025 at 4:55=E2=80=AFAM KaFai Wan <kafai.wan@linux.dev> wrot=
+e:
+>
+> OpenWRT users reported regression on ARMv6 devices after updating to late=
+st
+> HEAD, where tcpdump filter:
+>
+> tcpdump -i mon1 \
+> "not wlan addr3 3c37121a2b3c and not wlan addr2 184ecbca2a3a \
+> and not wlan addr2 14130b4d3f47 and not wlan addr2 f0f61cf440b7 \
+> and not wlan addr3 a84b4dedf471 and not wlan addr3 d022be17e1d7 \
+> and not wlan addr3 5c497967208b and not wlan addr2 706655784d5b"
+>
+> fails with warning: "Kernel filter failed: No error information"
+> when using config:
+>  # CONFIG_BPF_JIT_ALWAYS_ON is not set
+>  CONFIG_BPF_JIT_DEFAULT_ON=3Dy
+>
+> The issue arises because commits:
+> 1. "bpf: Fix array bounds error with may_goto" changed default runtime to
+>    __bpf_prog_ret0_warn when jit_requested =3D 1
+> 2. "bpf: Avoid __bpf_prog_ret0_warn when jit fails" returns error when
+>    jit_requested =3D 1 but jit fails
+>
+> This change restores interpreter fallback capability for BPF programs wit=
+h
+> stack size <=3D 512 bytes when jit fails.
+>
+> Reported-by: Felix Fietkau <nbd@nbd.name>
+> Closes: https://lore.kernel.org/bpf/2e267b4b-0540-45d8-9310-e127bf95fc63@=
+nbd.name/
+> Fixes: 6ebc5030e0c5 ("bpf: Fix array bounds error with may_goto")
 
-Dragos,
+This commit looks fine.
 
-There was a similar reference counting issue identified in:
-https://lore.kernel.org/all/20250801170754.2439577-1-kuba@kernel.org/
+> Fixes: 86bc9c742426 ("bpf: Avoid __bpf_prog_ret0_warn when jit fails")
 
-Part of the commit message mentioned:
-> Unfortunately for fbnic since commit f7dc3248dcfb ("skbuff: Optimization
-> of SKB coalescing for page pool") core _may_ actually take two extra
-> pp refcounts, if one of them is returned before driver gives up the bias
-> the ret < 0 check in page_pool_unref_netmem() will trigger.
+But this one is indeed problematic.
+But before we revert, please provide a selftest that is causing
+valid classic bpf prog to fail JITing on arm,
+because it has to be fixed as well.
 
-In order to help debug the mlx5 issue caused by xdp redirection, I built a
-kernel with commit f7dc3248dcfb reverted, but unfortunately I was still able
-to reproduce the issue.
+Sounds like OpenWRT was suffering performance loss due to the interpreter.
 
-I am happy to try some other experiments, or if there are other ideas you have.
+> Signed-off-by: KaFai Wan <kafai.wan@linux.dev>
+> ---
+>  kernel/bpf/core.c | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
+>
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 5d1650af899d..2d86bd4b0b97 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -2366,8 +2366,8 @@ static unsigned int __bpf_prog_ret0_warn(const void=
+ *ctx,
+>                                          const struct bpf_insn *insn)
+>  {
+>         /* If this handler ever gets executed, then BPF_JIT_ALWAYS_ON
+> -        * is not working properly, or interpreter is being used when
+> -        * prog->jit_requested is not 0, so warn about it!
+> +        * or may_goto may cause stack size > 512 is not working properly=
+,
+> +        * so warn about it!
 
-Thanks,
---chris
+We shouldn't have touched this comment. Let's not do it again.
+
+>          */
+>         WARN_ON_ONCE(1);
+>         return 0;
+> @@ -2478,10 +2478,10 @@ static void bpf_prog_select_func(struct bpf_prog =
+*fp)
+>          * But for non-JITed programs, we don't need bpf_func, so no boun=
+ds
+>          * check needed.
+>          */
+> -       if (!fp->jit_requested &&
+> -           !WARN_ON_ONCE(idx >=3D ARRAY_SIZE(interpreters))) {
+> +       if (idx < ARRAY_SIZE(interpreters)) {
+>                 fp->bpf_func =3D interpreters[idx];
+
+this is fine.
+
+>         } else {
+> +               WARN_ON_ONCE(!fp->jit_requested);
+
+drop it. Let's not give syzbot more opportunities
+to spam us again with fault injection -like corner cases.
+
+>                 fp->bpf_func =3D __bpf_prog_ret0_warn;
+>         }
+>  #else
+> @@ -2505,7 +2505,7 @@ struct bpf_prog *bpf_prog_select_runtime(struct bpf=
+_prog *fp, int *err)
+>         /* In case of BPF to BPF calls, verifier did all the prep
+>          * work with regards to JITing, etc.
+>          */
+> -       bool jit_needed =3D fp->jit_requested;
+> +       bool jit_needed =3D false;
+
+ok
+
+>
+>         if (fp->bpf_func)
+>                 goto finalize;
+> @@ -2515,6 +2515,8 @@ struct bpf_prog *bpf_prog_select_runtime(struct bpf=
+_prog *fp, int *err)
+>                 jit_needed =3D true;
+>
+>         bpf_prog_select_func(fp);
+> +       if (fp->bpf_func =3D=3D __bpf_prog_ret0_warn)
+> +               jit_needed =3D true;
+
+This is too hacky.
+Change bpf_prog_select_func() to return bool and
+rename it bpf_prog_select_func/bpf_prog_select_interpreter()
+
+true on success, false on when interpreter is impossible.
+
+And target bpf tree.
+
+--
+pw-bot: cr
+
+>
+>         /* eBPF JITs can rewrite the program in case constant
+>          * blinding is active. However, in case of error during
+> --
+> 2.43.0
+>
 
