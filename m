@@ -1,93 +1,100 @@
-Return-Path: <bpf+bounces-65174-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65175-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1A11B1D00A
-	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 03:19:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AB7FB1D0C1
+	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 03:56:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB888564C7C
-	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 01:19:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D16B1893500
+	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 01:55:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D15DB192B84;
-	Thu,  7 Aug 2025 01:19:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D0321E1A3F;
+	Thu,  7 Aug 2025 01:54:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="K9Jq0zlY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.hallyn.com (mail.hallyn.com [178.63.66.53])
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00B6F33086;
-	Thu,  7 Aug 2025 01:18:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.63.66.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EA281B4F1F;
+	Thu,  7 Aug 2025 01:54:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.112
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754529540; cv=none; b=ONkCo9d6gQfCPFx+vJN6Y9G45VwQWifLvXjbkBA0p88uRu/h0ue7RlsLdDt55Mi77tCuyzXOgXgfaZxzVaaJWuxkXEWIbTD9fSeiHCxv9FoheBQBD8ZpqVonMgnWpbcb2WLd6j4HWOALphd1ON7NzLTFN0ngMY55SpF5PJcZIio=
+	t=1754531678; cv=none; b=SwTmsuHOgfcdAT/d+qgCsdqKE+FTGbIfWzyucYVSBAGD6GNOWioC7gNfotmcvXYtx8csKVaXLAaNuHacR8Tv0rP/j2M2Z18DuNk39WsukHvbsO4ZKUytL3+s0Wv1GC+/9Bh/u9IKRnRg8piTmgr97clEzRlSp0pUQo2hTClRjKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754529540; c=relaxed/simple;
-	bh=sjGdSJg31+LrX/xww66nsqAGYZC6lRh/yOAl/7S3yo0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aJo8NseoTI1ZMurOQO8htgZqzNJOPwYV27frD9UNVA03P1cWuDxJBnCHnXCNz4h1WavoYDtjQ/Oq61LEZ36nXqirvfHv7PpmHFQ1FSIfnsnL/PhXnG0w0rVXK/IJnaJ8iiRwZJZDwqFXO0DPkpue2ZdlYQNPMLJYK4rWWF5CXsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hallyn.com; spf=pass smtp.mailfrom=mail.hallyn.com; arc=none smtp.client-ip=178.63.66.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hallyn.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mail.hallyn.com
-Received: by mail.hallyn.com (Postfix, from userid 1001)
-	id 20C53E98; Wed,  6 Aug 2025 20:18:55 -0500 (CDT)
-Date: Wed, 6 Aug 2025 20:18:55 -0500
-From: "Serge E. Hallyn" <serge@hallyn.com>
-To: Ondrej Mosnacek <omosnace@redhat.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-	selinux@vger.kernel.org, linux-security-module@vger.kernel.org
-Subject: Re: [PATCH] x86/bpf: use bpf_capable() instead of
- capable(CAP_SYS_ADMIN)
-Message-ID: <aJP+/1VGbe1EcgKz@mail.hallyn.com>
-References: <20250806143105.915748-1-omosnace@redhat.com>
+	s=arc-20240116; t=1754531678; c=relaxed/simple;
+	bh=8zC61z4U9KElmgz30gZnNvjJ3tnPPtWqljpucyYSXLc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fGFsqsjGhrlOv9N7xf/8bHt1dXCA3h5Wm2NBo4pHmDuuYwKdTwsApZpdbGF1wuT13dJWD3Qdy+yoS03xaPCKwDkR0MaHJAxNZhgKUpwNqsw3/u5PmWAZnEk0AcBJOezcYGUlCEDeqmlVNM9sTdfMEB9r43tklxpHbesxS3JF1ns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=K9Jq0zlY; arc=none smtp.client-ip=115.124.30.112
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1754531667; h=From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=CIZ7WXF5g1l9+Jlu+gqBRIGXy+7NQPiv2Cz5OL0cXzs=;
+	b=K9Jq0zlYuAHu28flBlk8tVPovJ1g0NvG8TMUisdbUHDquGePHyPp03h2QhMzW/cVNqOH256z/Mb13UiBEkqmTF9qqx53NSNg+iLxriQrVvut0zbAvNC4E5BCKqp8KH7O4dXFCkftgBmyL925mcClfxXjmYghWGQUOesI33ndiow=
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0WlCEkul_1754531656 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Thu, 07 Aug 2025 09:54:26 +0800
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To: ast@kernel.org
+Cc: daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	mykolal@fb.com,
+	shuah@kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+	Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH -next] selftests/bpf: Fix warning comparing pointer to 0
+Date: Thu,  7 Aug 2025 09:54:15 +0800
+Message-ID: <20250807015415.2406263-1-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250806143105.915748-1-omosnace@redhat.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Aug 06, 2025 at 04:31:05PM +0200, Ondrej Mosnacek wrote:
-> Don't check against the overloaded CAP_SYS_ADMINin do_jit(), but instead
-> use bpf_capable(), which checks against the more granular CAP_BPF first.
-> Going straight to CAP_SYS_ADMIN may cause unnecessary audit log spam
-> under SELinux, as privileged domains using BPF would usually only be
-> allowed CAP_BPF and not CAP_SYS_ADMIN.
-> 
-> Link: https://bugzilla.redhat.com/show_bug.cgi?id=2369326
-> Fixes: d4e89d212d40 ("x86/bpf: Call branch history clearing sequence on exit")
-> Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+Avoid pointer type value compared with 0 to make code clear.
 
-So this seems correct, *provided* that we consider it within the purview of
-CAP_BPF to be able to avoid clearing the branch history buffer.
+./tools/testing/selftests/bpf/progs/mem_rdonly_untrusted.c:221:10-11: WARNING comparing pointer to 0.
 
-I suspect that's the case, but it might warrant discussion.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=23403
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ tools/testing/selftests/bpf/progs/mem_rdonly_untrusted.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Serge Hallyn <serge@hallyn.com>
+diff --git a/tools/testing/selftests/bpf/progs/mem_rdonly_untrusted.c b/tools/testing/selftests/bpf/progs/mem_rdonly_untrusted.c
+index 4f94c971ae86..6b725725b2bf 100644
+--- a/tools/testing/selftests/bpf/progs/mem_rdonly_untrusted.c
++++ b/tools/testing/selftests/bpf/progs/mem_rdonly_untrusted.c
+@@ -218,7 +218,7 @@ int null_check(void *ctx)
+ 	int *p;
+ 
+ 	p = bpf_rdonly_cast(0, 0);
+-	if (p == 0)
++	if (!p)
+ 		/* make this a function call to avoid compiler
+ 		 * moving r0 assignment before check.
+ 		 */
+-- 
+2.43.5
 
-> ---
->  arch/x86/net/bpf_jit_comp.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index 15672cb926fc1..2a825e5745ca1 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -2591,8 +2591,7 @@ emit_jmp:
->  			seen_exit = true;
->  			/* Update cleanup_addr */
->  			ctx->cleanup_addr = proglen;
-> -			if (bpf_prog_was_classic(bpf_prog) &&
-> -			    !capable(CAP_SYS_ADMIN)) {
-> +			if (bpf_prog_was_classic(bpf_prog) && !bpf_capable()) {
->  				u8 *ip = image + addrs[i - 1];
->  
->  				if (emit_spectre_bhb_barrier(&prog, ip, bpf_prog))
-> -- 
-> 2.50.1
-> 
 
