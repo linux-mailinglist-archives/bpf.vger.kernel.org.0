@@ -1,223 +1,150 @@
-Return-Path: <bpf+bounces-65170-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65171-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23827B1CFCD
-	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 02:27:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47457B1CFFA
+	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 03:02:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18B85567CEC
-	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 00:27:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D43CB3B7B04
+	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 01:02:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90DDC35897;
-	Thu,  7 Aug 2025 00:27:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3809678F24;
+	Thu,  7 Aug 2025 01:02:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="O/PySFgx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DK6nJuGB"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9DAF1FC3
-	for <bpf@vger.kernel.org>; Thu,  7 Aug 2025 00:27:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6789A1F95C
+	for <bpf@vger.kernel.org>; Thu,  7 Aug 2025 01:02:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754526436; cv=none; b=CqLL75qDLmJMH2Jxs66XhHTwSe6mgmmSyZo3cAj7ZX4UfSotqRgBEyMcEw4riONffjVkqz794Y+TWT28SZzA2b3laZ4KSO3rL2As9fbIP1e2V55oUwWI+ZhpnbiAy8j1B+/bZnLq71JrZx8ZkKblxuBqxButLBkWnMOMg+VgePc=
+	t=1754528542; cv=none; b=Sg9mHNyt9yivxpMQmJOKcLomqexSM0CTEdr7xlvrjjrj/GV43mpjm0s1Fy1wseiZWRsOBoqNmGwOmx75+asm4A12llr81QtMnJVtyGjao67mKNAfkM4ZTB+mn7IuDo7FkDnGlX6GnJplBDI6ZiOUHJunnZpGiH9gB3dfoZ9RmMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754526436; c=relaxed/simple;
-	bh=E87G1zLOwbPcAnGSMTjOVAAtq+Pi735ZazHspvk88Rg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=X5QkoC80Il7XSZQvUlMznijH68qII6vKs8Ltyxq1ZYECjCOKf8LCUWfPtiOCWhXkYAEkbSWd1umtF1XlSyksbVyfB0ebm+bJTnjQ5KV3Piqct0hpJUs0HsRxuOzHy0WZsn3NL61X1iFlWYIIQasbRL0EHBBNla1/ed7WOYR/Czo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=O/PySFgx; arc=none smtp.client-ip=95.215.58.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <043721e8-a38e-419d-b9b9-2dad33e267a0@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1754526431;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dcp05K9GYJzNReXXgEaFxPEQD8/k4GX8YFFxozr1JYw=;
-	b=O/PySFgxLk50ZVnk1G6yi0CcOpV/M7wBsBYJ3GS+mqBidZOjBvqJVjtMIrVrpvjWBuxuyy
-	v797FBJYTubG8lf7tdfAlY4f8dfNxS/HmRLcZ/Jfj6KpmsdA7T6lgU3TNHNgjI3kUmNOhY
-	o5yvT8R4iq1cd0I4GmbYdJcvI6wfSwI=
-Date: Wed, 6 Aug 2025 17:27:02 -0700
+	s=arc-20240116; t=1754528542; c=relaxed/simple;
+	bh=+b8v73mSkuKQY+B6Eid5doLON3Gsblh0LL0hIp+Fu74=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=is1incWqbKixHvOhcWoqirXQ50TkalVSEagL7FaAeB5BPUVqQ2vRusx7x+rZYFKFKijsM11yhasxuiG5Xt75XITBkl/BXhzu1XLib6sLiRrzJbY4AxXgwpVPUOSTH66daA2Qw95Lu+18m5rLmU6tzSeqELdq+VlnxeKBNP29MgM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DK6nJuGB; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-31f325c1bc1so504315a91.1
+        for <bpf@vger.kernel.org>; Wed, 06 Aug 2025 18:02:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1754528539; x=1755133339; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aRTN25qSRzglQmQ9CA1ITNchv+NdEx13TqUaapLSAlk=;
+        b=DK6nJuGB/5qSQefW/Q/3KqicoedNYneGNSOhwDJBBHti1SRFRVLUEch7uvLxpZMx6J
+         s2JKaQ6mThYXShKJHPmJdwqBdmkriTwJBP7QGcgdom4rMqi6QBf2p3DEWEO+EwDvho7v
+         pY/QYWDwTrAgpYnLxHcn3e66fCOaYggw/osfAeFUKum+q2yn4EnY5Bg+V/QX/DQJPJ7j
+         OtZmv+hjI3jer7TIJP+u/X2LFL9wKgKiuy5hIZeOo0UmgcM56ILmhH/jRmTRD97aVXMA
+         Ewmw+/DpunuNlN8i9ju1blOIJudbH2vNfxBV7vdEjHKwPWeU3E1e2CdMJneEpQWoKIEz
+         XqBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754528539; x=1755133339;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aRTN25qSRzglQmQ9CA1ITNchv+NdEx13TqUaapLSAlk=;
+        b=r7jB+FORRVBzjenPnr8RbCs9m8FeYS4GPjUBF6oEe/snGdd0ZE+0VprqXOPH53ThDA
+         R7Bp8p57lJv+MbRL49qVHW/tspGJNAlw8lCOByPO+WZXSgfuDDMnD+0ovD5Lko3n5t1s
+         E9zoCnCHMCZL0GU4x9EAYjOyqFpdaoUoYhCkGp0qFv4xP4w66kf/hyYMXKf7rYL15GAj
+         EDSryrzXoeXK32AMwtXa32AUKY7aehrPeEg8vK0gskV/kPseDiu7ILMvnFnlnoUlVT2o
+         WE2CgMA69n4sKgdQCFwm6rGvNLPPHASgiAwBE8NUvjsNtmKEqlN9vXA2XFwGZr+H/FFz
+         bSUw==
+X-Gm-Message-State: AOJu0YwqvNjnJg3A8sPU+0+nH+ojve7B4BVdsTKWa/cEs9xFxHa8z7EH
+	ALfzceCSNwuiay4WhrBIhu27aD/fBwYdBl3IzpFFPtez3FdPHZ15t2FaWtTp2ZmZ
+X-Gm-Gg: ASbGncvHYaC9S7EspSP3pW4Nliho6ybFgg8qRx/JLQsZ7WezPnLs7oNnAVKZCcltDRm
+	Kg7agKy/UPs8QvR1anP+Q7y9K9ZLiWhltdNTQw55Zb+nC90CgCpIdzmO2/h7BcCY5FV+Ij2oh4b
+	1fHq7ytgVPP5bz+4l2aVZyURnhhhh6H/aTq4kTgGlJsVbgRn/H/NlmGMOoDhPGfUp9qZOTNocXr
+	P6XB3sbfZvPmiMlt+Xcx/PVYf1l93wnZUObtw/C/ON9yKfCaSaYT+ZdIgUDOWCtWCS4Sh1UfVka
+	niY4uETVBHQHbeNTTSFhlp+AEGoYpvW3yxjzt8Sbg1Aqg1cxJWthaCKJFU8fHShstdyotOuVqzF
+	oedR5v11WGw6Jqu8bv9ECTICNaxnyWChj1HtXJyJqtnnCkBL2/vCAY7o=
+X-Google-Smtp-Source: AGHT+IHN8/Nb7/k1uUmre/sVgRwCWhEF92khxoCIhMe7Eggz+yfbxprboLiFsbOgIezQ4eHSqWMezQ==
+X-Received: by 2002:a17:90b:1a8b:b0:31f:12f:ffaa with SMTP id 98e67ed59e1d1-32166dfaea0mr5772336a91.6.1754528539280;
+        Wed, 06 Aug 2025 18:02:19 -0700 (PDT)
+Received: from ezingerman-fedora-PF4V722J.thefacebook.com ([2620:10d:c090:600::1:e57])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b422b7828a0sm14483348a12.2.2025.08.06.18.02.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Aug 2025 18:02:18 -0700 (PDT)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	andrii@kernel.org
+Cc: daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	kernel-team@fb.com,
+	yonghong.song@linux.dev,
+	eddyz87@gmail.com
+Subject: [PATCH bpf-next v2 0/2] bpf: use vrealloc() in bpf_patch_insn_data()
+Date: Wed,  6 Aug 2025 18:02:03 -0700
+Message-ID: <20250807010205.3210608-1-eddyz87@gmail.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] perf: use __builtin_preserve_field_info for GCC
- compatibility
-Content-Language: en-GB
-To: Andrew Pinski <quic_apinski@quicinc.com>,
- Namhyung Kim <namhyung@kernel.org>, Sam James <sam@gentoo.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- "Liang, Kan" <kan.liang@linux.intel.com>,
- "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-References: <fea380fb0934d039d19821bba88130e632bbfe8d.1754438581.git.sam@gentoo.org>
- <aJPmX8xc5x0W_r0y@google.com>
- <CO1PR02MB8460C81562C4608B036F36A5B82DA@CO1PR02MB8460.namprd02.prod.outlook.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CO1PR02MB8460C81562C4608B036F36A5B82DA@CO1PR02MB8460.namprd02.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
+Function bpf_patch_insn_data() uses vzalloc/vfree pair to allocate
+memory for updated insn_aux_data. These operations are expensive for
+big programs where a lot of rewrites happen, e.g. for pyperf180 test
+case. The pair can be replaced with a call to vrealloc in order to
+reduce the number of actual memory allocations.
 
+Perf stat w/o this patch:
 
-On 8/6/25 4:57 PM, Andrew Pinski wrote:
->
->> -----Original Message-----
->> From: Namhyung Kim <namhyung@kernel.org>
->> Sent: Wednesday, August 6, 2025 4:34 PM
->> To: Sam James <sam@gentoo.org>
->> Cc: Peter Zijlstra <peterz@infradead.org>; Ingo Molnar
->> <mingo@redhat.com>; Arnaldo Carvalho de Melo
->> <acme@kernel.org>; Mark Rutland
->> <mark.rutland@arm.com>; Alexander Shishkin
->> <alexander.shishkin@linux.intel.com>; Jiri Olsa
->> <jolsa@kernel.org>; Ian Rogers <irogers@google.com>; Adrian
->> Hunter <adrian.hunter@intel.com>; Liang, Kan
->> <kan.liang@linux.intel.com>; Andrew Pinski
->> <quic_apinski@quicinc.com>; linux-perf-
->> users@vger.kernel.org; linux-kernel@vger.kernel.org;
->> bpf@vger.kernel.org
->> Subject: Re: [PATCH] perf: use __builtin_preserve_field_info
->> for GCC compatibility
->>
->> Hello,
->>
->> On Wed, Aug 06, 2025 at 01:03:01AM +0100, Sam James
->> wrote:
->>> When exploring building bpf_skel with GCC's BPF support,
->> there was a
->>> buid failure because of bpf_core_field_exists vs the
->> mem_hops bitfield:
->>> ```
->>>   In file included from util/bpf_skel/sample_filter.bpf.c:6:
->>> util/bpf_skel/sample_filter.bpf.c: In function
->> 'perf_get_sample':
->>> tools/perf/libbpf/include/bpf/bpf_core_read.h:169:42:
->> error: cannot take address of bit-field 'mem_hops'
->>>    169 | #define ___bpf_field_ref1(field)        (&(field))
->>>        |                                          ^
->>> tools/perf/libbpf/include/bpf/bpf_helpers.h:222:29: note: in
->> expansion of macro '___bpf_field_ref1'
->>>    222 | #define ___bpf_concat(a, b) a ## b
->>>        |                             ^
->>> tools/perf/libbpf/include/bpf/bpf_helpers.h:225:29: note: in
->> expansion of macro '___bpf_concat'
->>>    225 | #define ___bpf_apply(fn, n) ___bpf_concat(fn, n)
->>>        |                             ^~~~~~~~~~~~~
->>> tools/perf/libbpf/include/bpf/bpf_core_read.h:173:9: note:
->> in expansion of macro '___bpf_apply'
->>>    173 |         ___bpf_apply(___bpf_field_ref,
->> ___bpf_narg(args))(args)
->>>        |         ^~~~~~~~~~~~
->>> tools/perf/libbpf/include/bpf/bpf_core_read.h:188:39: note:
->> in expansion of macro '___bpf_field_ref'
->>>    188 |
->> __builtin_preserve_field_info(___bpf_field_ref(field),
->> BPF_FIELD_EXISTS)
->>>        |                                       ^~~~~~~~~~~~~~~~
->>> util/bpf_skel/sample_filter.bpf.c:167:29: note: in expansion
->> of macro 'bpf_core_field_exists'
->>>    167 |                         if (bpf_core_field_exists(data-
->>> mem_hops))
->>>        |                             ^~~~~~~~~~~~~~~~~~~~~
->>> cc1: error: argument is not a field access ```
->>>
->>> ___bpf_field_ref1 was adapted for GCC in
->>> 12bbcf8e840f40b82b02981e96e0a5fbb0703ea9
->>> but the trick added for compatibility in
->>> 3a8b8fc3174891c4c12f5766d82184a82d4b2e3e
->>> isn't compatible with that as an address is used as an
->> argument.
->>> Workaround this by calling __builtin_preserve_field_info
->> directly as
->>> the bpf_core_field_exists macro does, but without the
->> ___bpf_field_ref use.
->>
->> IIUC GCC doesn't support bpf_core_fields_exists() for bitfield
->> members, right?  Is it gonna change in the future?
-> Let's discuss how __builtin_preserve_field_info is handled in the first place for BPF. Right now it seems it is passed some expression as the first argument is never evaluated.
-> The problem is GCC's implementation of __builtin_preserve_field_info is all in the backend and the front end does not understand of the special rules here.
->
-> GCC implements some "special" builtins in the front-end but not by the normal function call rules but parsing them separately; this is how __builtin_offsetof and a few others are implemented in both the C and C++ front-ends (and implemented separately). Now we could have add a hook to allow a backend to something similar and maybe that is the best way forward here.
-> But it won't be __builtin_preserve_field_info but rather `__builtin_preserve_field_type_info(type,field,kind)` instead.
->
-> __builtin_preserve_enum_type_value would also be added with the following:
-> __builtin_preserve_enum_type_value(enum_type, enum_value, kind)
->
-> And change all of the rest of the builtins to accept a true type argument rather than having to cast an null pointer to that type.
->
-> Will clang implement a similar builtin?
-
-The clang only has one builtin for some related relocations:
-    
-    __builtin_preserve_field_info(..., BPF_FIELD_EXISTS)
-    __builtin_preserve_field_info(..., BPF_FIELD_BYTE_OFFSET)
+  $ perf stat -B --all-kernel -r10 -- ./veristat -q pyperf180.bpf.o
     ...
-They are all used in bpf_core_read.h.
+           2201.25 msec task-clock                       #    0.973 CPUs utilized               ( +-  2.20% )
+               188      context-switches                 #   85.406 /sec                        ( +-  9.29% )
+                15      cpu-migrations                   #    6.814 /sec                        ( +-  5.64% )
+                 5      page-faults                      #    2.271 /sec                        ( +-  3.27% )
+        4315057974      instructions                     #    1.28  insn per cycle
+                                                  #    0.33  stalled cycles per insn     ( +-  0.03% )
+        3366141387      cycles                           #    1.529 GHz                         ( +-  0.21% )
+        1420810964      stalled-cycles-frontend          #   42.21% frontend cycles idle        ( +-  0.23% )
+        1049956791      branches                         #  476.981 M/sec                       ( +-  0.03% )
+          60591781      branch-misses                    #    5.77% of all branches             ( +-  0.07% )
 
->
-> Note this won't be done until at least GCC 16; maybe not until GCC 17 depending on if I or someone else gets time to implement the front-end parts which is acceptable to both the C and C++ front-ends.
->
-> Thanks,
-> Andrew Pinski
->
->>> Link: https://gcc.gnu.org/PR121420
->>> Co-authored-by: Andrew Pinski
->> <quic_apinski@quicinc.com>
->>> Signed-off-by: Sam James <sam@gentoo.org>
->>> ---
->>>   tools/perf/util/bpf_skel/sample_filter.bpf.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/tools/perf/util/bpf_skel/sample_filter.bpf.c
->>> b/tools/perf/util/bpf_skel/sample_filter.bpf.c
->>> index b195e6efeb8be..e5666d4c17228 100644
->>> --- a/tools/perf/util/bpf_skel/sample_filter.bpf.c
->>> +++ b/tools/perf/util/bpf_skel/sample_filter.bpf.c
->>> @@ -164,7 +164,7 @@ static inline __u64
->> perf_get_sample(struct bpf_perf_event_data_kern *kctx,
->>>                if (entry->part == 8) {
->>>                        union perf_mem_data_src___new *data = (void
->>> *)&kctx->data->data_src;
->>>
->>> -                     if (bpf_core_field_exists(data->mem_hops))
->>> +                     if
->>> + (__builtin_preserve_field_info(data->mem_hops,
->> BPF_FIELD_EXISTS))
->>
->> I believe those two are equivalent (maybe worth a
->> comment?).  But it'd be great if BPF/clang folks can review if
->> it's ok.
->>
->> Anyway, I can build it with clang.
->>
->> Tested-by: Namhyung Kim <namhyung@kernel.org>
->>
->> Thanks,
->> Namhyung
->>
->>
->>>                                return data->mem_hops;
->>>
->>>                        return 0;
->>> --
->>> 2.50.1
->>>
+            2.2632 +- 0.0527 seconds time elapsed  ( +-  2.33% )
+
+Perf stat with this patch:
+
+           1227.15 msec task-clock                       #    0.963 CPUs utilized               ( +-  2.27% )
+               170      context-switches                 #  138.532 /sec                        ( +-  5.62% )
+                 2      cpu-migrations                   #    1.630 /sec                        ( +- 33.37% )
+                 5      page-faults                      #    4.074 /sec                        ( +-  4.47% )
+        3312254304      instructions                     #    2.17  insn per cycle
+                                                  #    0.15  stalled cycles per insn     ( +-  0.03% )
+        1528944717      cycles                           #    1.246 GHz                         ( +-  0.31% )
+         501475146      stalled-cycles-frontend          #   32.80% frontend cycles idle        ( +-  0.50% )
+         730426891      branches                         #  595.222 M/sec                       ( +-  0.03% )
+          17372363      branch-misses                    #    2.38% of all branches             ( +-  0.16% )
+
+            1.2744 +- 0.0301 seconds time elapsed  ( +-  2.36% )
+
+Changelog:
+v1: https://lore.kernel.org/bpf/20250806200928.3080531-1-eddyz87@gmail.com/T/#t
+v1 -> v2:
+- added missing memset(0) in adjust_insn_aux_data(),
+  this fixes CI failure reported in [1].
+
+[1] https://github.com/kernel-patches/bpf/actions/runs/16787563163/job/47542309875
+
+Eduard Zingerman (2):
+  bpf: removed unused 'env' parameter from is_reg64 and insn_has_def32
+  bpf: use realloc in bpf_patch_insn_data
+
+ kernel/bpf/verifier.c | 39 ++++++++++++++++++++-------------------
+ 1 file changed, 20 insertions(+), 19 deletions(-)
+
+-- 
+2.47.3
 
 
