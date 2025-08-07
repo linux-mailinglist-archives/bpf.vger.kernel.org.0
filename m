@@ -1,146 +1,213 @@
-Return-Path: <bpf+bounces-65187-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65188-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C124B1D4B2
-	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 11:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9305FB1D5C5
+	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 12:25:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4256C1760DB
-	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 09:28:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B066A17A666
+	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 10:25:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A6B9222565;
-	Thu,  7 Aug 2025 09:28:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6183E262FD4;
+	Thu,  7 Aug 2025 10:25:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c05AShnw"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="SIkY1pPY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 855D21400C;
-	Thu,  7 Aug 2025 09:28:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 604D92512FC;
+	Thu,  7 Aug 2025 10:25:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754558892; cv=none; b=s44PJqTpqjjPd0aHEFqfn1zIDPBbuRryu83MIXi3lb1/vvQPuwR9DR4TwdrmFSr3NQadff9cj1PbOWtXaW3SFFJKsjsj4tc0V0PsK0Ye76kdhQJOB9Ry3i43JVyH+Nrp1hvm6W1GDjDRU1o6PfDwYkV88hhIiWBV2Bom9n3qaPM=
+	t=1754562342; cv=none; b=eOMuCFY2J0AObwRTL2saqIAoIVWfB0gtls2a+LlRgbqXgJrqhlaiZBtADaovIUc9A8Vns8YDHgblxqPp3mHywl+4yQasqABhuWcWWsrMLXd3nB6rjP3V6DwcMU5MAiAyWsrhHEGLNq0NpnMnWHDddLZYcA5bWKU/8lUF53B5esk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754558892; c=relaxed/simple;
-	bh=Yl5x0Nwg2DhAn2nbN0TQj9k3Qhmh9DLffzUJV0AnZT0=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EH3oUL9HiYFc7ygILAjYLotOBdqKTGVf8Gw6HvXTOuo7u0Oln25rM/N9e40DwsnLEsMMfoKc34xXzRQt7ezUsgBnAIO/iCvbtQ4IfqVyJgNx6ugg65xg/3xKWQnvY6vLKemvJIKKuPJmBr4APgbAP8iekZJUmTeGgfBZHcpTGyc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c05AShnw; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-ae9c2754a00so154613566b.2;
-        Thu, 07 Aug 2025 02:28:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754558888; x=1755163688; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=uCS58Sug0FEcTzFQ9KU19iod2XYp/UwC4MrLuOBM+qY=;
-        b=c05AShnwpUFXfRF01GDpFvInPXBStESeRMYV2EfgnysLWewiJQA4QIUP/6u+jSfffj
-         +BV+G9pKs1hdUtfwIJZ1LlB3IbMo00sPFr1yY3BvoFUTY2tnaCiqKsHrk2qyYQuXH8Ow
-         RB3gOdPsIgteKUrQJB/R2i9paAiyoEcrf9VcQSaEASNXMimNxPR90mdShEcaHWvXx8Ex
-         X+RmgIiYBqgUi1ucByj6vOkt0pdQFpzUdfJRCK6AXMqX8q5d0ZjKCjU5QnZAQ7cfBPCL
-         mxq43E2+ECoLKVouRhJ/Xq9ShdrRrMQBY/HElv9eVvui3FQMRMOReVg7CVlnpcVVeumz
-         KiIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754558888; x=1755163688;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uCS58Sug0FEcTzFQ9KU19iod2XYp/UwC4MrLuOBM+qY=;
-        b=pL2SLuF17B8982fhrm6UCeJNRD18ULcGoHmflgvpn30BxAialOhGp1b15hs0Xi0Wtg
-         GGzPzpime2RmG68IicTL/6rfJejRV68EkxzCyLh1+sqpRFb5+YcYo0LKFD7JRDjzzKha
-         ilK1UcZ7jQaRn/rQaTNqg+jTP+QpWh+ZD4egG47WPjjZ20JawwRUtpn6Oya/JbdfxDdq
-         sQsTB2fTVW9nHJNXGSVCI2uI9MU70FfTpz05WJv+EQGvw9gW93BV+MBVFX++KI1mKkmY
-         MeYtaRPzT3YQAFeuilpGaqmdd+Xgg8WRZQv90zRseru1JHzHgfd0gTxn/r2/g+Rxolbe
-         WJ5A==
-X-Forwarded-Encrypted: i=1; AJvYcCU1u/TOnsqibwgvT2zd7xdIL6dBjZVPZnZ14YtBlic14lQaebz8/aPpS1z8Xru3Yd77D23+9H7Cdh0GdHUentbs@vger.kernel.org, AJvYcCVCXHyiCiJg8ceELgf4MaVG/J4pu/n4En566DLycoKC1rjiLqrokcEWQWHgLElKInzW9d0=@vger.kernel.org, AJvYcCVfizZucq4ZF5/RfbjrXhv5DGRcgJD8kP1tw/jW+3/0JQFEAt8PofVh2evMavl9unusq0r52hTc6JCis2QK@vger.kernel.org
-X-Gm-Message-State: AOJu0YwhGQmP964tUJEJqQCdrux/5W8Fxag+XlyL0tFFhBGEEybESTTm
-	HkdJswQVPQ+1KB+weR/0bdxltJRn1gpK0n6ZvK57My7dcwFUvRd/JRFq
-X-Gm-Gg: ASbGncsoi3IGuhLj33qq2Xh9bd5+2NeMT6RIWxQ5PaoEHaWJ28fEN8Iqw1sT6LNk+t7
-	SOWn9JIXFjDhgqANoih6vx/GsCMf7oAGSia6OY/sDAsn3iNoRxPdTqav2WD7FxJ5bxFJykGmLRo
-	6Pz8U6W+dtiKb2VzMadia2k6kIP7wcAEvzV0pknZrNrS5vd1in3QzZTm5jOdp+h2yIJfnkiRFx6
-	Q/ajfggACuAmPJp/7YkD9pqUkRzC46yka7UJTny2nbx/33mSI+2+NVRb5lj06hufrnVee1hzV6s
-	6DqFpw55zGbSzga7y33zxpIvXsUOuPGLfxDPYZZg3qKauWLIzz6c9QjTIO92Xbf/+ozNqvbnZN8
-	Re8O6Mzko
-X-Google-Smtp-Source: AGHT+IHmLsGb/acbO5xIQF3vjzibLDgF5Z0N88FYm1WOJGw2qm8TL38U7kcaSCPcx4JEnPkZIjiZEQ==
-X-Received: by 2002:a17:907:94d6:b0:af2:5229:bd74 with SMTP id a640c23a62f3a-af990344c44mr499202266b.26.1754558887632;
-        Thu, 07 Aug 2025 02:28:07 -0700 (PDT)
-Received: from krava ([173.38.220.55])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-af928c84154sm1187605866b.84.2025.08.07.02.28.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Aug 2025 02:28:07 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 7 Aug 2025 11:28:05 +0200
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: Jiawei Zhao <phoenix500526@163.com>, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 2/2] selftests/bpf: Force -O2 for USDT selftests to
- cover SIB handling logic
-Message-ID: <aJRxpUrUJwn0lyOY@krava>
-References: <20250806092458.111972-1-phoenix500526@163.com>
- <20250806092458.111972-3-phoenix500526@163.com>
- <f5d8d886-1de3-4521-917a-e98b645b987e@linux.dev>
+	s=arc-20240116; t=1754562342; c=relaxed/simple;
+	bh=snKSvW25hHXDdjSinl1Mu+gMA4jqOCqdHtVgELHSusM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=F0rN2iyZzJcEX/QhMdOBxNsZR5mVzVgSG+OmiPaTIjuD0K6by17m/tuKLFXiABJs9au2AtPXGk7LB1U5TBIk0RIfVm/lNF4rIWsYjOnlM1xpB0yZZdujV4SyDGdB94tDXaBPfsn6E2xzjnDDLm4rC4jGJnSdEK6JAnOJJ4P2Lns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=SIkY1pPY; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5772hmhH017964;
+	Thu, 7 Aug 2025 10:25:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=q/n9IO
+	oKSeE8+THMQcptmNLhqb7HZ1tOw0supiHJzNM=; b=SIkY1pPYn9+X0G1rNERlQk
+	v42Rkt6lR4IzfGcvV1otHLv+cotW2HNqsaQmx3ZChzvC0UvmJ9/7nqEd7/shOZQc
+	dL5H1e9qD8VOawQOKmd5swBJF/7Ty8Q1yvxBXkZsd1S9RlR/AsRZ5kDw4UvimY6E
+	NNFxpWSE5NTiggkkd/zIVWu5Hhx2dT7x5njURQPMiZl4IDLkqUz4tYul47TrDeiG
+	D/V9fCQaGlSJ8uN+MlqHEFRwYbsUYXCk01W261afZXdCbVYj90/FjUSOVkJa2Zjo
+	ZETDe2qebEJj6AA+wpCC104J3XTdXaAD3G4DS53eCJ6T6zDM5zvWGGP0ud594Bqg
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48bq639chs-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Aug 2025 10:25:03 +0000 (GMT)
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 577ANGww023432;
+	Thu, 7 Aug 2025 10:25:02 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48bq639chk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Aug 2025 10:25:02 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5779UA6A007973;
+	Thu, 7 Aug 2025 10:25:01 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 48bpwn03mk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Aug 2025 10:25:01 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 577AOv0o38863326
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 7 Aug 2025 10:24:57 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9C21820087;
+	Thu,  7 Aug 2025 10:24:57 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E3F4E20089;
+	Thu,  7 Aug 2025 10:24:52 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.109.219.153])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Thu,  7 Aug 2025 10:24:52 +0000 (GMT)
+Date: Thu, 7 Aug 2025 15:54:50 +0530
+From: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hbathini@linux.ibm.com, sachinpb@linux.ibm.com, venkat88@linux.ibm.com,
+        andrii@kernel.org, eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+        yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+        naveen@kernel.org, maddy@linux.ibm.com, mpe@ellerman.id.au,
+        npiggin@gmail.com, memxor@gmail.com, iii@linux.ibm.com,
+        shuah@kernel.org
+Subject: Re: [bpf-next 3/6] bpf,powerpc: Implement bpf_addr_space_cast
+ instruction
+Message-ID: <aJR+8t1CnEig3exH@linux.ibm.com>
+References: <20250805062747.3479221-1-skb99@linux.ibm.com>
+ <20250805062747.3479221-4-skb99@linux.ibm.com>
+ <bc6ef2d1-da06-4b29-a0ec-67549074bc0b@csgroup.eu>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <f5d8d886-1de3-4521-917a-e98b645b987e@linux.dev>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bc6ef2d1-da06-4b29-a0ec-67549074bc0b@csgroup.eu>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODA3MDA4MiBTYWx0ZWRfX4X8+b7TBCu10
+ v2FCM2q/D7IdqTTAEakrGIKjyOEKAyfJyz4xOc3naRg72vBrs4oX23mnL/+aPQPyWrCZ7UzX1gT
+ PrgAjOcFAJmuXXs1dCyEZQlbpZA5TRMYa9vGGbPE989pS6o6AVwLdkLL9noesgPwUtdQa7mLvLW
+ LXKPBZ8TI+dnot0xrOpKMO1YxoiQxfraoDKDidsFfC2A8o7ARgyTXIu9xTz84glEvWWzryX1A+S
+ TtxbHCOeRqaJ/TvfUeRDcEW2ugQcxNm/p4jBCuwjU15knWhLo1SsSdvWP/UGiH6/gPJ2J14mBBF
+ eCfOMcQTmKcDS76nd+QHUv0+ApCsXGY8pHr5J4J8SvGWtKrD9ADMbnPBdkzCAVHy8Npooq233t0
+ aK/PkLvhooFW2z/b1C9wCa1lwyFsU8Zng5Ptq1nH6o3/VcPStExn+XqkTqDK4rpEq7vQnPkw
+X-Proofpoint-GUID: aA2OhVPsH9My90VlPxNb2NK2hg2CIuoO
+X-Authority-Analysis: v=2.4 cv=PoCTbxM3 c=1 sm=1 tr=0 ts=68947eff cx=c_pps
+ a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
+ a=8nJEP1OIZ-IA:10 a=2OwXVqhp2XgA:10 a=VnNF1IyMAAAA:8 a=hIbISvocxoUqj33YnGsA:9
+ a=3ZKOabzyN94A:10 a=wPNLvfGTeEIA:10
+X-Proofpoint-ORIG-GUID: gG9yARwJAw8rtXy6ojXK43-BLELMc_XA
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-08-07_01,2025-08-06_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ suspectscore=0 malwarescore=0 adultscore=0 clxscore=1015 bulkscore=0
+ priorityscore=1501 impostorscore=0 mlxlogscore=944 mlxscore=0 phishscore=0
+ lowpriorityscore=0 spamscore=0 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2507300000
+ definitions=main-2508070082
 
-On Wed, Aug 06, 2025 at 11:17:34AM -0700, Yonghong Song wrote:
-
-SNIP
-
-> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> > index 910d8d6402ef..68cf6a9cf05f 100644
-> > --- a/tools/testing/selftests/bpf/Makefile
-> > +++ b/tools/testing/selftests/bpf/Makefile
-> > @@ -759,6 +759,14 @@ TRUNNER_BPF_BUILD_RULE := $$(error no BPF objects should be built)
-> >   TRUNNER_BPF_CFLAGS :=
-> >   $(eval $(call DEFINE_TEST_RUNNER,test_maps))
-> > +# Use -O2 optimization to generate SIB addressing usdt argument spec
-> > +# Only apply on x86 architecture where SIB addressing is relevant
-> > +ifeq ($(ARCH), x86)
-> > +$(OUTPUT)/usdt_o2.test.o: CFLAGS:=$(subst O0,O2,$(CFLAGS))
-> > +$(OUTPUT)/cpuv4/usdt_o2.test.o: CFLAGS:=$(subst O0,O2,$(CFLAGS))
-> > +$(OUTPUT)/no_alu32/usdt_o2.test.o: CFLAGS:=$(subst O0,O2,$(CFLAGS))
-> > +endif
+On Tue, Aug 05, 2025 at 09:29:07AM +0200, Christophe Leroy wrote:
 > 
-> I tried your selftest with gcc14 and llvm20 in my environment. See below:
 > 
-> llvm20:
-> Displaying notes found in: .note.stapsdt
->   Owner                Data size        Description
->   stapsdt              0x0000002f       NT_STAPSDT (SystemTap probe descriptors)
->     Provider: test
->     Name: usdt1
->     Location: 0x00000000000003ac, Base: 0x0000000000000000, Semaphore: 0x0000000000000000
->     Arguments: 8@-64(%rbp)
+> Le 05/08/2025 à 08:27, Saket Kumar Bhaskar a écrit :
+> > LLVM generates bpf_addr_space_cast instruction while translating
+> > pointers between native (zero) address space and
+> > __attribute__((address_space(N))). The addr_space=0 is reserved as
+> > bpf_arena address space.
+> > 
+> > rY = addr_space_cast(rX, 0, 1) is processed by the verifier and
+> > converted to normal 32-bit move: wX = wY.
+> > 
+> > rY = addr_space_cast(rX, 1, 0) : used to convert a bpf arena pointer to
+> > a pointer in the userspace vma. This has to be converted by the JIT.
+> > 
+> > Signed-off-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+> > ---
+> >   arch/powerpc/net/bpf_jit.h        |  1 +
+> >   arch/powerpc/net/bpf_jit_comp.c   |  6 ++++++
+> >   arch/powerpc/net/bpf_jit_comp64.c | 11 +++++++++++
+> >   3 files changed, 18 insertions(+)
+> > 
+> > diff --git a/arch/powerpc/net/bpf_jit.h b/arch/powerpc/net/bpf_jit.h
+> > index 2d095a873305..748e30e8b5b4 100644
+> > --- a/arch/powerpc/net/bpf_jit.h
+> > +++ b/arch/powerpc/net/bpf_jit.h
+> > @@ -165,6 +165,7 @@ struct codegen_context {
+> >   	unsigned int exentry_idx;
+> >   	unsigned int alt_exit_addr;
+> >   	u64 arena_vm_start;
+> > +	u64 user_vm_start;
+> >   };
+> >   #define bpf_to_ppc(r)	(ctx->b2p[r])
+> > diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
+> > index 35bfdf4d8785..2b3f90930c27 100644
+> > --- a/arch/powerpc/net/bpf_jit_comp.c
+> > +++ b/arch/powerpc/net/bpf_jit_comp.c
+> > @@ -205,6 +205,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+> >   	/* Make sure that the stack is quadword aligned. */
+> >   	cgctx.stack_size = round_up(fp->aux->stack_depth, 16);
+> >   	cgctx.arena_vm_start = bpf_arena_get_kern_vm_start(fp->aux->arena);
+> > +	cgctx.user_vm_start = bpf_arena_get_user_vm_start(fp->aux->arena);
+> >   	/* Scouting faux-generate pass 0 */
+> >   	if (bpf_jit_build_body(fp, NULL, NULL, &cgctx, addrs, 0, false)) {
+> > @@ -441,6 +442,11 @@ bool bpf_jit_supports_kfunc_call(void)
+> >   	return true;
+> >   }
+> > +bool bpf_jit_supports_arena(void)
+> > +{
+> > +	return IS_ENABLED(CONFIG_PPC64);
+> > +}
+> > +
+> >   bool bpf_jit_supports_far_kfunc_call(void)
+> >   {
+> >   	return IS_ENABLED(CONFIG_PPC64);
+> > diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
+> > index 16e62766c757..d4fe4dacf2d6 100644
+> > --- a/arch/powerpc/net/bpf_jit_comp64.c
+> > +++ b/arch/powerpc/net/bpf_jit_comp64.c
+> > @@ -812,6 +812,17 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct code
+> >   		 */
+> >   		case BPF_ALU | BPF_MOV | BPF_X: /* (u32) dst = src */
+> >   		case BPF_ALU64 | BPF_MOV | BPF_X: /* dst = src */
+> > +
+> > +			if (insn_is_cast_user(&insn[i])) {
+> > +				EMIT(PPC_RAW_RLDICL(tmp1_reg, src_reg, 0, 32));
 > 
-> gcc14:
-> Displaying notes found in: .note.stapsdt
->   Owner                Data size        Description
->   stapsdt              0x00000034       NT_STAPSDT (SystemTap probe descriptors)
->     Provider: test
->     Name: usdt1
->     Location: 0x0000000000000334, Base: 0x0000000000000000, Semaphore: 0x0000000000000000
->     Arguments: 8@array(,%rax,8)
+> Define and use PPC_RAW_RLDICL_DOT to avoid the CMPDI below.
 > 
-> llvm20 and gcc14 generate different usdt patterns. '8@-64(%rbp)' already supports so
-> with SIB support, the test should pass CI, I think.
-
-I see the same with gcc 15 and clang 20
-
-    Arguments: 8@array(,%rax,8)
-
-
-jirka
+Alright Chris, will define and implement it here.
+> > +				PPC_LI64(dst_reg, (ctx->user_vm_start & 0xffffffff00000000UL));
+> > +				EMIT(PPC_RAW_CMPDI(tmp1_reg, 0));
+> > +				PPC_BCC_SHORT(COND_EQ, (ctx->idx + 2) * 4);
+> > +				EMIT(PPC_RAW_OR(tmp1_reg, dst_reg, tmp1_reg));
+> > +				EMIT(PPC_RAW_MR(dst_reg, tmp1_reg));
+> > +				break;
+> > +			}
+> > +
+> >   			if (imm == 1) {
+> >   				/* special mov32 for zext */
+> >   				EMIT(PPC_RAW_RLWINM(dst_reg, dst_reg, 0, 0, 31));
+> 
 
