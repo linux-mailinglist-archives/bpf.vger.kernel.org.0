@@ -1,329 +1,160 @@
-Return-Path: <bpf+bounces-65225-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65226-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB582B1DCA1
-	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 19:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C049B1DCA4
+	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 19:51:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F06AA000DA
-	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 17:46:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7B5C3AF03C
+	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 17:51:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 116451FCF41;
-	Thu,  7 Aug 2025 17:46:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="J//AvZZE"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63C881F8677;
+	Thu,  7 Aug 2025 17:51:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+Received: from plesk.hostmyservers.fr (plesk.hostmyservers.fr [45.145.164.37])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFD8113E02D
-	for <bpf@vger.kernel.org>; Thu,  7 Aug 2025 17:46:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98DE043146;
+	Thu,  7 Aug 2025 17:50:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.145.164.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754588782; cv=none; b=CdZ1HXrlaj3wc0y1iZIa5FaCu0xaRHKpFkbMihZB+Xz925jCNsgiDaAEoCHDy/6P3cafC9qaAu+ERUiwk1Q3akR01evxXLCS/faJZK1osBJMG/VLkUniqOMPimHzF6Gs+6aj9V0eZDt6NVyLYHyFZhz4M8koDVkXjBULk1N1w58=
+	t=1754589060; cv=none; b=mPiF4kUdpYnBQQcdTQjfdkMevONXxbVmCvF3lXX96AHTsnSMZjv3h362VegaFltF5lWQVi42pvh8RvTleT4xiyKln/P9TWu5wRzY5O2tNfox71iG6XvB7bC6owdyuxC2uvW5/UkoQTp9K1m+mduWB8qozKJI8wkCKnt+wxthkUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754588782; c=relaxed/simple;
-	bh=Uq3iiNUU91g4FQyKlsdBmM5MGVUlLCvmUTwzVzeS5m4=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=BcPU/dqlKbKox4mH8XsDg0gkkx7MpAygdPJDOjGc9swT5nci+gwYQjhTYVY1c73Dzl8cUawlzZ8ElwQ0rQI5R4KAnLR+cWC9+tZujsGkkMC97Er14TFd9JIzRuhL92DK2ZdX3izZZTubIoZ++XcGV0RdDx3rBEvBlR8baNd3fRY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--wakel.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=J//AvZZE; arc=none smtp.client-ip=209.85.216.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--wakel.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-3217aae3f90so831905a91.0
-        for <bpf@vger.kernel.org>; Thu, 07 Aug 2025 10:46:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1754588779; x=1755193579; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=HcLjrOeqCd02Abu900eKiNp/ETH9Nin2wL4rT1C33Uc=;
-        b=J//AvZZEJXTa8GGXdPyNl6KeQd0LEgrzxnFZW3Sm6sm9TPcoPEsJ8J6qTDCOzmT5Dx
-         sKIAAR6Irar6VNpyveYuHkitULpD95EiHIzc6L2/qGtkHRiYXExhdLRUY3tWBk5RX4GW
-         u7loULwp6GdvOjhqvv6Z0D1cSainGMnwkh1DkYp1DSMGgSx8REUwtF7BU0V/2JO4Z7z9
-         67BcNj3GISt9p0Z4cFskxSWRZ7lTWdO4KNoySKLi1cBa0RRkE+Y4GpzbTFqFVeNGqNgl
-         ycgVr4Xw6a5T03LgW0/6tokNMQ/bQyfoP6036U+67aeTjM7pTmUdUElqU3ydVxcoqp03
-         /VPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754588779; x=1755193579;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HcLjrOeqCd02Abu900eKiNp/ETH9Nin2wL4rT1C33Uc=;
-        b=bVUdAHyN8n/jw4EAtLazBsihByFVtVQagKyNy20HVdx+UOyg+cNQR8hsySSXPpwdGF
-         nYO4bPTXRkga9FeMVRqxsuqcV+vOMuhxMNYt8yXrl3AF1LtYL0HbcPb3LwTWaFOuBXwh
-         OHv8LjqGIP/+UutjKLOYZIGQDzZ3UEC5KKESReFkbk11kPhl0y0UO+22gN+n/74dSQ8v
-         LAhERbvr5wyjjoyXp9tHzCP3TnqMkp09O6N+8wLTIbNyohK3SFRzNmCmTJjluwMSanfG
-         SFBIXBYWv0m1VjIm4Ykx7xyTdDObAKARuhh11pqaMhsdS/bWjIENxtnfIsHUMO8sZWVn
-         UUew==
-X-Forwarded-Encrypted: i=1; AJvYcCXGI2+Msn8kC9swqg90G6h/pq0xTBJ1x/5x+J6zeYA63OCzQSbPCk8xoloCf1SAetZLyn8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy13QknURlnv7pQYX1xmZ1edK7tRF1bcwPgSyDGDrn7TbrNgAhm
-	lvrv4BGFKrHnlsqwvJGKEIiVl4gNu/Ix2NdD/izmqDbA6rKqnOMBk0YbgBMFPNRQPWW7wXgFLhG
-	Acw==
-X-Google-Smtp-Source: AGHT+IH1TzamuhyocWAYv+jV0O95ZvaImp1W99Xp6lTkB1S1QMyzi0Kp+GJq5+BauORZKHrne7YiZLn0Zg==
-X-Received: from pjbsk13.prod.google.com ([2002:a17:90b:2dcd:b0:321:78e7:57fb])
- (user=wakel job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:55ce:b0:320:ff84:ceb5
- with SMTP id 98e67ed59e1d1-32182692d5emr600569a91.16.1754588779321; Thu, 07
- Aug 2025 10:46:19 -0700 (PDT)
-Date: Fri,  8 Aug 2025 01:46:13 +0800
+	s=arc-20240116; t=1754589060; c=relaxed/simple;
+	bh=1o0vrAIQ1W715Aw5aPOYj6eRINnrgXR0qNF+4qLde/A=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=AwB8Wwwnt25sREAVGtxBOh/kxBai3M2msRmk+1DKgUSVAW+n31hDdO9Pk5K0fTfx4LuZkfNrYCVd2Xlw4kFWdOKtOy0t1ZWD71SpYHPE1hOGrf0egYzIqUyAelPcXlIiEBGJH9NGyoiWwRkCY0Qsd04PcAidYgH6gmylVv8gAvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com; spf=pass smtp.mailfrom=arnaud-lcm.com; arc=none smtp.client-ip=45.145.164.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arnaud-lcm.com
+Received: from arnaudlcm-X570-UD.. (unknown [IPv6:2a02:8084:255b:aa00:ce11:d0e1:e548:b0a5])
+	by plesk.hostmyservers.fr (Postfix) with ESMTPSA id 5B51A41E1A;
+	Thu,  7 Aug 2025 17:50:49 +0000 (UTC)
+Authentication-Results: Plesk;
+	spf=pass (sender IP is 2a02:8084:255b:aa00:ce11:d0e1:e548:b0a5) smtp.mailfrom=contact@arnaud-lcm.com smtp.helo=arnaudlcm-X570-UD..
+Received-SPF: pass (Plesk: connection is authenticated)
+From: Arnaud Lecomte <contact@arnaud-lcm.com>
+To: yonghong.song@linux.dev
+Cc: andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	contact@arnaud-lcm.com,
+	daniel@iogearbox.net,
+	eddyz87@gmail.com,
+	haoluo@google.com,
+	john.fastabend@gmail.com,
+	jolsa@kernel.org,
+	kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org,
+	martin.lau@linux.dev,
+	sdf@fomichev.me,
+	song@kernel.org,
+	syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com,
+	syzkaller-bugs@googlegroups.com
+Subject: [PATCH 1/2] bpf: refactor max_depth computation in bpf_get_stack()
+Date: Thu,  7 Aug 2025 18:50:32 +0100
+Message-ID: <20250807175032.7381-1-contact@arnaud-lcm.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <6cc26e1f-6ad6-44cd-a049-c4e7af9a229a@linux.dev>
+References: <6cc26e1f-6ad6-44cd-a049-c4e7af9a229a@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.50.1.703.g449372360f-goog
-Message-ID: <20250807174613.1895006-1-wakel@google.com>
-Subject: [PATCH] selftests/seccomp: improve backwards compatibility for older kernels
-From: Wake Liu <wakel@google.com>
-To: Kees Cook <kees@kernel.org>, Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, 
-	Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc: wakel@google.com
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-PPP-Message-ID: <175458905029.16977.15328068061933544080@Plesk>
+X-PPP-Vhost: arnaud-lcm.com
 
-This commit introduces checks for kernel version and seccomp filter flag
-support to the seccomp selftests. It also includes conditional header
-inclusions using __GLIBC_PREREQ.
+A new helper function stack_map_calculate_max_depth() that
+computes the max depth for a stackmap.
 
-Some tests were gated by kernel version, and adjustments were made for
-flags introduced after kernel 5.4. This ensures the selftests can run
-and pass correctly on kernel versions 5.4 and later, preventing failures
-due to features not present in older kernels.
-
-The use of __GLIBC_PREREQ ensures proper compilation and functionality
-across different glibc versions in a mainline Linux kernel context.
-While it might appear redundant in specific build environments due to
-global overrides, it is crucial for upstream correctness and portability.
-
-Signed-off-by: Wake Liu <wakel@google.com>
+Signed-off-by: Arnaud Lecomte <contact@arnaud-lcm.com>
 ---
- tools/testing/selftests/seccomp/seccomp_bpf.c | 108 ++++++++++++++++--
- 1 file changed, 99 insertions(+), 9 deletions(-)
+ kernel/bpf/stackmap.c | 38 ++++++++++++++++++++++++++++++--------
+ 1 file changed, 30 insertions(+), 8 deletions(-)
 
-diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index 61acbd45ffaa..9b660cff5a4a 100644
---- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-+++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -13,12 +13,14 @@
-  * we need to use the kernel's siginfo.h file and trick glibc
-  * into accepting it.
-  */
-+#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
- #if !__GLIBC_PREREQ(2, 26)
- # include <asm/siginfo.h>
- # define __have_siginfo_t 1
- # define __have_sigval_t 1
- # define __have_sigevent_t 1
- #endif
-+#endif
- 
- #include <errno.h>
- #include <linux/filter.h>
-@@ -300,6 +302,26 @@ int seccomp(unsigned int op, unsigned int flags, void *args)
+diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+index 3615c06b7dfa..14e034045310 100644
+--- a/kernel/bpf/stackmap.c
++++ b/kernel/bpf/stackmap.c
+@@ -42,6 +42,31 @@ static inline int stack_map_data_size(struct bpf_map *map)
+ 		sizeof(struct bpf_stack_build_id) : sizeof(u64);
  }
- #endif
  
-+int seccomp_flag_supported(int flag)
++/**
++ * stack_map_calculate_max_depth - Calculate maximum allowed stack trace depth
++ * @map_size:        Size of the buffer/map value in bytes
++ * @elem_size:       Size of each stack trace element
++ * @map_flags:       BPF stack trace flags (BPF_F_USER_STACK, BPF_F_USER_BUILD_ID, ...)
++ *
++ * Return: Maximum number of stack trace entries that can be safely stored,
++ * or -EINVAL if size is not a multiple of elem_size
++ */
++static u32 stack_map_calculate_max_depth(u32 map_size, u32 map_elem_size, u64 map_flags)
 +{
-+	/*
-+	 * Probes if a seccomp filter flag is supported by the kernel.
-+	 *
-+	 * When an unsupported flag is passed to seccomp(SECCOMP_SET_MODE_FILTER, ...),
-+	 * the kernel returns EINVAL.
-+	 *
-+	 * When a supported flag is passed, the kernel proceeds to validate the
-+	 * filter program pointer. By passing NULL for the filter program,
-+	 * the kernel attempts to dereference a bad address, resulting in EFAULT.
-+	 *
-+	 * Therefore, checking for EFAULT indicates that the flag itself was
-+	 * recognized and supported by the kernel.
-+	 */
-+	if (seccomp(SECCOMP_SET_MODE_FILTER, flag, NULL) == -1 && errno == EFAULT)
-+		return 1;
-+	return 0;
++	u32 max_depth;
++	u32 skip = map_flags & BPF_F_SKIP_FIELD_MASK;
++
++	if (unlikely(map_size%map_elem_size))
++		return -EINVAL;
++
++	max_depth = map_size / map_elem_size;
++	max_depth += skip;
++	if (max_depth > sysctl_perf_event_max_stack)
++		return sysctl_perf_event_max_stack;
++
++	return max_depth;
 +}
 +
- #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
- #define syscall_arg(_n) (offsetof(struct seccomp_data, args[_n]))
- #elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
-@@ -2436,13 +2458,12 @@ TEST(detect_seccomp_filter_flags)
- 		ASSERT_NE(ENOSYS, errno) {
- 			TH_LOG("Kernel does not support seccomp syscall!");
- 		}
--		EXPECT_EQ(-1, ret);
--		EXPECT_EQ(EFAULT, errno) {
--			TH_LOG("Failed to detect that a known-good filter flag (0x%X) is supported!",
--			       flag);
--		}
+ static int prealloc_elems_and_freelist(struct bpf_stack_map *smap)
+ {
+ 	u64 elem_size = sizeof(struct stack_map_bucket) +
+@@ -406,7 +431,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+ 			    struct perf_callchain_entry *trace_in,
+ 			    void *buf, u32 size, u64 flags, bool may_fault)
+ {
+-	u32 trace_nr, copy_len, elem_size, num_elem, max_depth;
++	u32 trace_nr, copy_len, elem_size, max_depth;
+ 	bool user_build_id = flags & BPF_F_USER_BUILD_ID;
+ 	bool crosstask = task && task != current;
+ 	u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
+@@ -423,8 +448,6 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+ 		goto clear;
  
--		all_flags |= flag;
-+		if (seccomp_flag_supported(flag))
-+			all_flags |= flag;
-+		else
-+			TH_LOG("Filter flag (0x%X) is not found to be supported!",
-+			       flag);
+ 	elem_size = user_build_id ? sizeof(struct bpf_stack_build_id) : sizeof(u64);
+-	if (unlikely(size % elem_size))
+-		goto clear;
+ 
+ 	/* cannot get valid user stack for task without user_mode regs */
+ 	if (task && user && !user_mode(regs))
+@@ -438,10 +461,9 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+ 		goto clear;
  	}
  
- 	/*
-@@ -2870,6 +2891,12 @@ TEST_F(TSYNC, two_siblings_with_one_divergence)
+-	num_elem = size / elem_size;
+-	max_depth = num_elem + skip;
+-	if (sysctl_perf_event_max_stack < max_depth)
+-		max_depth = sysctl_perf_event_max_stack;
++	max_depth = stack_map_calculate_max_depth(size, elem_size, flags);
++	if (max_depth < 0)
++		goto err_fault;
  
- TEST_F(TSYNC, two_siblings_with_one_divergence_no_tid_in_err)
- {
-+	/* Depends on 5189149 (seccomp: allow TSYNC and USER_NOTIF together) */
-+	if (!seccomp_flag_supported(SECCOMP_FILTER_FLAG_TSYNC_ESRCH)) {
-+		SKIP(return, "Kernel does not support SECCOMP_FILTER_FLAG_TSYNC_ESRCH");
-+		return;
-+	}
-+
- 	long ret, flags;
- 	void *status;
+ 	if (may_fault)
+ 		rcu_read_lock(); /* need RCU for perf's callchain below */
+@@ -461,7 +483,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+ 	}
  
-@@ -3475,6 +3502,11 @@ TEST(user_notification_basic)
+ 	trace_nr = trace->nr - skip;
+-	trace_nr = (trace_nr <= num_elem) ? trace_nr : num_elem;
++	trace_nr = min(trace_nr, max_depth - skip);
+ 	copy_len = trace_nr * elem_size;
  
- TEST(user_notification_with_tsync)
- {
-+	/* Depends on 5189149 (seccomp: allow TSYNC and USER_NOTIF together) */
-+	if (!seccomp_flag_supported(SECCOMP_FILTER_FLAG_TSYNC_ESRCH)) {
-+		SKIP(return, "Kernel does not support SECCOMP_FILTER_FLAG_TSYNC_ESRCH");
-+		return;
-+	}
- 	int ret;
- 	unsigned int flags;
- 
-@@ -3966,6 +3998,13 @@ TEST(user_notification_filter_empty)
- 
- TEST(user_ioctl_notification_filter_empty)
- {
-+	/* Depends on 95036a7 (seccomp: interrupt SECCOMP_IOCTL_NOTIF_RECV
-+	 * when all users have exited) */
-+	if (!ksft_min_kernel_version(6, 11)) {
-+		SKIP(return, "Kernel version < 6.11");
-+		return;
-+	}
-+
- 	pid_t pid;
- 	long ret;
- 	int status, p[2];
-@@ -4119,6 +4158,12 @@ int get_next_fd(int prev_fd)
- 
- TEST(user_notification_addfd)
- {
-+	/* Depends on 0ae71c7 (seccomp: Support atomic "addfd + send reply") */
-+	if (!ksft_min_kernel_version(5, 14)) {
-+		SKIP(return, "Kernel version < 5.14");
-+		return;
-+	}
-+
- 	pid_t pid;
- 	long ret;
- 	int status, listener, memfd, fd, nextfd;
-@@ -4281,6 +4326,12 @@ TEST(user_notification_addfd)
- 
- TEST(user_notification_addfd_rlimit)
- {
-+	/* Depends on 7cf97b1 (seccomp: Introduce addfd ioctl to seccomp user notifier) */
-+	if (!ksft_min_kernel_version(5, 9)) {
-+		SKIP(return, "Kernel version < 5.9");
-+		return;
-+	}
-+
- 	pid_t pid;
- 	long ret;
- 	int status, listener, memfd;
-@@ -4326,9 +4377,12 @@ TEST(user_notification_addfd_rlimit)
- 	EXPECT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD, &addfd), -1);
- 	EXPECT_EQ(errno, EMFILE);
- 
--	addfd.flags = SECCOMP_ADDFD_FLAG_SEND;
--	EXPECT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD, &addfd), -1);
--	EXPECT_EQ(errno, EMFILE);
-+	/* Depends on 0ae71c7 (seccomp: Support atomic "addfd + send reply") */
-+	if (ksft_min_kernel_version(5, 14)) {
-+		addfd.flags = SECCOMP_ADDFD_FLAG_SEND;
-+		EXPECT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD, &addfd), -1);
-+		EXPECT_EQ(errno, EMFILE);
-+	}
- 
- 	addfd.newfd = 100;
- 	addfd.flags = SECCOMP_ADDFD_FLAG_SETFD;
-@@ -4356,6 +4410,12 @@ TEST(user_notification_addfd_rlimit)
- 
- TEST(user_notification_sync)
- {
-+	/* Depends on 48a1084 (seccomp: add the synchronous mode for seccomp_unotify) */
-+	if (!ksft_min_kernel_version(6, 6)) {
-+		SKIP(return, "Kernel version < 6.6");
-+		return;
-+	}
-+
- 	struct seccomp_notif req = {};
- 	struct seccomp_notif_resp resp = {};
- 	int status, listener;
-@@ -4520,6 +4580,12 @@ static char get_proc_stat(struct __test_metadata *_metadata, pid_t pid)
- 
- TEST(user_notification_fifo)
- {
-+	/* Depends on 4cbf6f6 (seccomp: Use FIFO semantics to order notifications) */
-+	if (!ksft_min_kernel_version(5, 19)) {
-+		SKIP(return, "Kernel version < 5.19");
-+		return;
-+	}
-+
- 	struct seccomp_notif_resp resp = {};
- 	struct seccomp_notif req = {};
- 	int i, status, listener;
-@@ -4623,6 +4689,12 @@ static long get_proc_syscall(struct __test_metadata *_metadata, int pid)
- /* Ensure non-fatal signals prior to receive are unmodified */
- TEST(user_notification_wait_killable_pre_notification)
- {
-+	/* Depends on c2aa2df (seccomp: Add wait_killable semantic to seccomp user notifier) */
-+	if (!ksft_min_kernel_version(5, 19)) {
-+		SKIP(return, "Kernel version < 5.19");
-+		return;
-+	}
-+
- 	struct sigaction new_action = {
- 		.sa_handler = signal_handler,
- 	};
-@@ -4693,6 +4765,12 @@ TEST(user_notification_wait_killable_pre_notification)
- /* Ensure non-fatal signals after receive are blocked */
- TEST(user_notification_wait_killable)
- {
-+	/* Depends on c2aa2df (seccomp: Add wait_killable semantic to seccomp user notifier) */
-+	if (!ksft_min_kernel_version(5, 19)) {
-+		SKIP(return, "Kernel version < 5.19");
-+		return;
-+	}
-+
- 	struct sigaction new_action = {
- 		.sa_handler = signal_handler,
- 	};
-@@ -4772,6 +4850,12 @@ TEST(user_notification_wait_killable)
- /* Ensure fatal signals after receive are not blocked */
- TEST(user_notification_wait_killable_fatal)
- {
-+	/* Depends on c2aa2df (seccomp: Add wait_killable semantic to seccomp user notifier) */
-+	if (!ksft_min_kernel_version(5, 19)) {
-+		SKIP(return, "Kernel version < 5.19");
-+		return;
-+	}
-+
- 	struct seccomp_notif req = {};
- 	int listener, status;
- 	pid_t pid;
-@@ -4854,6 +4938,12 @@ static void *tsync_vs_dead_thread_leader_sibling(void *_args)
-  */
- TEST(tsync_vs_dead_thread_leader)
- {
-+	/* Depends on bfafe5e (seccomp: release task filters when the task exits) */
-+	if (!ksft_min_kernel_version(6, 11)) {
-+		SKIP(return, "Kernel version < 6.11");
-+		return;
-+	}
-+
- 	int status;
- 	pid_t pid;
- 	long ret;
+ 	ips = trace->ip + skip;
 -- 
-2.50.1.703.g449372360f-goog
+2.43.0
 
 
