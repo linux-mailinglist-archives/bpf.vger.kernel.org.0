@@ -1,241 +1,245 @@
-Return-Path: <bpf+bounces-65231-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65232-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B5DFB1DCFF
-	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 20:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 710DDB1DD04
+	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 20:27:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2151D188C03C
-	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 18:26:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DDED1897E48
+	for <lists+bpf@lfdr.de>; Thu,  7 Aug 2025 18:27:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAD31271A84;
-	Thu,  7 Aug 2025 18:25:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ACA827380E;
+	Thu,  7 Aug 2025 18:27:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PERlr31y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="djfWU8sz"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F95A35959;
-	Thu,  7 Aug 2025 18:25:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2A8F27147B;
+	Thu,  7 Aug 2025 18:26:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754591147; cv=none; b=oplSpBzxcMZdt+MzPFtbeWMbzIce9c55W6Nqoh6GetL7sFxbfiLNDXBlgkuce1zyztIRrojmZwjpSmWo3UmdUJ36cZCYbpuoMU+dirxzz/3UaUEOK8Awt8CUvIoacPCm6lW7bC3wJxWdBcaNjBxr8r8A6tIOtOPG0Gv9BbNPngc=
+	t=1754591219; cv=none; b=XS2VDA2DuLxhBcaCd1nsz+q2i/qX8x83BtQxwjgsiiD34tT80t8FYYiXWyLLFamti+IdEbCCoVxxqAFZhim1yJkcQl8B3i9Om58477Df7Vj8L6S1KwLXd+3pVmg+fqixlWLHb96ge3/sIAQsLvIrpnxUj/RW485pa0LUlbcrKzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754591147; c=relaxed/simple;
-	bh=OHO6xVgW3Pw/rD/Z9iMH+AsmXVHleO02+C54j6OEd5E=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DvI16CIcOh0CHLDStpqMhBTBL0nW3Y3PZ5GQVcnVit8DNddW1TX2qHDhm7ZGvAFjXtTTqOqdZrAZkc+7BpRheZv5Oako1ousXAuxVfuwiq9hFELBp/4a+vr2gYlWJ63a99yIf4qmjh6uydnWu7JxXDpoM2aDccL0XRqyq5IWaS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PERlr31y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6F3EC4CEED;
-	Thu,  7 Aug 2025 18:25:42 +0000 (UTC)
+	s=arc-20240116; t=1754591219; c=relaxed/simple;
+	bh=Ouux2wY7O8BLulvkoxhFQ8eQo7ttiYWTtXZ5SxKgbm8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=At6OmTUoL8k6wr8nQQM6jl1H3InZ+rvEQbjFigUuwbi/aUT2WmMIGlq3rR0ZnTnWnIefcX5L4TXby11FdgdtBpxbz4Lp6+aj9kglC1YxIzNoh1JoaZpkuVQ35NIAWqgJHvENAngowKHRqk914zkDjiK55RvglD8x4NKxy4DZqQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=djfWU8sz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3786CC4CEEB;
+	Thu,  7 Aug 2025 18:26:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754591146;
-	bh=OHO6xVgW3Pw/rD/Z9iMH+AsmXVHleO02+C54j6OEd5E=;
-	h=From:To:Cc:Subject:Date:From;
-	b=PERlr31yZKL3r3r5LIfjmt/IDg7C2S8OxTXlQWMVN8o12cfZqQUHh2JIpavoyQNYP
-	 +H+P0S9hhwhYSVVYbhehcFT9NkE6ovnnCwLntlzumP0K+o7FuiDZCjd+b5Qwe2Leod
-	 uV7krlomx822WAgt+56rGgxuTBeB0BYA51o2ZMPAgk/xWy5o52MRlG9gT0jUJyeLc3
-	 lAIm4qW0gy05cgpoBlhFM6Ps/NnCyBK0mMqYEPBNRDAC2Xk6DfyKoEJislabQpTxye
-	 qjIKBZ+1CI1v/4N+gcyx8hKkbcIpX9BEq4pFh4SLV7MwzjlbiIhNqLv+T5wFUm9uuO
-	 RRCqJQ3397VBg==
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: Jiri Olsa <jolsa@kernel.org>,
-	Clark Williams <williams@redhat.com>,
-	Kate Carcia <kcarcia@redhat.com>,
-	dwarves@vger.kernel.org,
-	Arnaldo Carvalho de Melo <acme@redhat.com>,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	"Jose E. Marchesi" <jose.marchesi@oracle.com>,
-	Nick Alcock <nick.alcock@oracle.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	bpf@vger.kernel.org
-Subject: [RFC 0/4] BTF archive with unmodified pahole+toolchain
-Date: Thu,  7 Aug 2025 15:25:34 -0300
-Message-ID: <20250807182538.136498-1-acme@kernel.org>
-X-Mailer: git-send-email 2.50.1
+	s=k20201202; t=1754591219;
+	bh=Ouux2wY7O8BLulvkoxhFQ8eQo7ttiYWTtXZ5SxKgbm8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=djfWU8szI6B6tFffWQkhNltE+wo21qSOUZUXo3jdE7xOw02+0xL0pcI99/AI95+EE
+	 ikBf3RDWaTnGICnJSC8OzcDyY66ZKGXYVlLN8Oz5zjjB/bgT0GigVmHRDl47/38+1A
+	 eGnUJoMfkVZsTtsmATxEWDZ1VgZH69Oig44qtflX9c+VdTiIBxzP1H9vFmWX3I9YuK
+	 xvotG5WnDMf0By5yIaXnpP5e8LeXgAzKZgZx3G0hyxqe/NtYzyKGilPSoB51w9kSVW
+	 PvIvQHgA5rZsF61RHdHRuR7ujLPpLBuoIwxxYaU+lPK23H5hQ+mA00PZ+PkBkDcTeS
+	 uqeB/QTYvcJQg==
+Message-ID: <17cfcb03-62bb-40e4-991b-78b743329ca8@kernel.org>
+Date: Thu, 7 Aug 2025 20:26:53 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next V2 0/7] xdp: Allow BPF to set RX hints for
+ XDP_REDIRECTed packets
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+ Lorenzo Bianconi <lorenzo@kernel.org>,
+ Stanislav Fomichev <stfomichev@gmail.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <borkmann@iogearbox.net>,
+ Eric Dumazet <eric.dumazet@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>, sdf@fomichev.me,
+ kernel-team@cloudflare.com, arthur@arthurfabre.com, jakub@cloudflare.com,
+ Jesse Brandeburg <jbrandeburg@cloudflare.com>,
+ Andrew Rzeznik <arzeznik@cloudflare.com>
+References: <b1873a92-747d-4f32-91f8-126779947e42@kernel.org>
+ <aGvcb53APFXR8eJb@mini-arch> <aG427EcHHn9yxaDv@lore-desk>
+ <aHE2F1FJlYc37eIz@mini-arch> <aHeKYZY7l2i1xwel@lore-desk>
+ <20250716142015.0b309c71@kernel.org>
+ <fbb026f9-54cf-49ba-b0dc-0df0f54c6961@kernel.org>
+ <20250717182534.4f305f8a@kernel.org>
+ <ebc18aba-d832-4eb6-b626-4ca3a2f27fe2@kernel.org>
+ <20250721181344.24d47fa3@kernel.org> <aIdWjTCM1nOjiWfC@lore-desk>
+ <20250728092956.24a7d09b@kernel.org>
+ <b23ed0e2-05cf-454b-bf7a-a637c9bb48e8@kernel.org>
+ <4eaf6d02-6b4e-4713-a8f8-6b00a031d255@linux.dev>
+ <21f4ee22-84f0-4d5e-8630-9a889ca11e31@kernel.org>
+ <20250801133803.7570a6fd@kernel.org>
+ <de68b1d7-86cd-4280-af6a-13f0751228c4@kernel.org>
+ <20250805172831.213ddd8d@kernel.org>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <20250805172831.213ddd8d@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-Hi,
 
-	I've finally managed to act on some idea I shared with a few
-folks while in Montreal, namely using unmodified pahole to generate BTF
-for each .o right after it is produced, i.e. with this patch:
+On 06/08/2025 02.28, Jakub Kicinski wrote:
+> On Mon, 4 Aug 2025 15:18:35 +0200 Jesper Dangaard Brouer wrote:
+>> On 01/08/2025 22.38, Jakub Kicinski wrote:
+>>> On Thu, 31 Jul 2025 18:27:07 +0200 Jesper Dangaard Brouer wrote:
+>>>> I have strong reservations about having the BPF program itself trigger
+>>>> the SKB allocation. I believe this would fundamentally break the
+>>>> performance model that makes cpumap redirect so effective.
+>>>
+>>> See, I have similar concerns about growing struct xdp_frame.
+>>>    
+>>
+>> IMHO there is a huge difference in doing memory allocs+init vs. growing
+>> struct xdp_frame.
+>>
+>> It very is important to notice that patchset is actually not growing
+>> xdp_frame, in the traditional sense, instead we are adding an optional
+>> area to xdp_frame (plus some flags to tell if area is in-use).  Remember
+>> the xdp_frame area is not allocated or mem-zeroed (except flags).  If
+>> not used, the members in struct xdp_rx_meta are never touched.
+> 
+> Yes, I get all that.
+> 
+>> Thus, there is actually no performance impact in growing struct
+>> xdp_frame in this way. Do you still have concerns?
+> 
+> You're adding code in a number of paths, I don't think it's fair to
+> claim that there is *no* performance impact. Maybe no impact of
+> XDP_DROP from the patches themselves, assuming driver doesn't
+> pre-populate.
+> 
 
-  acme@number:~/git/linux$ git diff
-  diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-  index 1d581ba5df66f2b5..ad9e788910636715 100644
-  --- a/scripts/Makefile.lib
-  +++ b/scripts/Makefile.lib
-  @@ -240,7 +240,7 @@ cmd_ld_single = $(if $(objtool-enabled)$(is-single-obj-m), ; $(LD) $(ld_flags) -
-   endif
-   
-   quiet_cmd_cc_o_c = CC $(quiet_modtag)  $@
-  -      cmd_cc_o_c = $(CC) $(c_flags) -c -o $@ $< \
-  +      cmd_cc_o_c = $(CC) $(c_flags) -c -o $@ $< && ${PAHOLE} --btf_encode ${PAHOLE_FLAGS} $@ \
-                  $(cmd_ld_single) \
-                  $(cmd_objtool)
-   
-  acme@number:~/git/linux$
+I feel a need to state this.  The purpose of this patchset is to
+increase the performance, by providing access to offload hints.  The
+common theme is that these offload hints can help us avoid data cache-
+misses and/or avoid some steps in software.  Setting VLAN
+(__vlan_hwaccel_put_tag) avoids an extra trip through the RX-handler.
+Setting RX-hash avoids this calling into flow_dissector to SW calc. The
+RX-hash is an extended type, that already knows the packet type IPv4/
+IPv6 and UDP/TCP, thus it can simplify BPF-code needed.  We are missing 
+checksum offload, as Lorenzo mentions, but that is the plan, as it has 
+the most gain (for TCP csum_partial is in perf top for cpumap).
 
-A kernel built with this ends up with a vmlinux with a .BTF section that
-has all the .o .BTF sections concatenated.
 
-This (the series of .BTF concatenated by the unmodified linker) somehow
-survives the pre-existing pahole call to generate BTF from DWARF and we
-end up with this "BTF archive".
+> Do you have any idea how well this approach will scale to all the fields
+> people will need in the future to xdp_frame? The nice thing about the
+> SET ops is that the driver can define whatever ops it supports,
+> including things not supported by skb (or supported thru skb_ext),
+> at zero cost to the common stack. If we define the fields in the core
+> we're back to the inflexibility of the skb world..
+> 
 
-With the minimal set of changes in this series:
+This is where traits come in. For now the struct has static members, but
+we want to convert this to a dynamic struct based on traits, if demand
+for more members is proposed. The patchset API allows us to change to
+this approach later.
 
- tools/lib/bpf/btf.c | 91 ++++++++++++++++++++++++++++++++++++++-------
- tools/lib/bpf/btf.h |  3 ++
- 2 files changed, 81 insertions(+), 13 deletions(-)
+The SET ops API requires two XDP program, one at physical NIC, and one 
+at veth, and agreement for side-band layout for transferring e.g RX-hash 
+and timestamp.  The veth XDP-prog need to run on the peer-device, for 
+containers this is the veth device inside the container. If veth 
+XDP-prog doesn't clear data_meta area, then GRO aggregation breaks (e.g 
+for timestamp usage).
+Good luck getting this to work for containers.
 
-With the first patch being just a trivial error handling simplification,
-we end up being able to get the same vmlinux.h result from bpftool built
-with this libbpf:
+Our solution works out-of-the-box for containers. We only need one 
+XDP-prog on at physical NIC, that will supply missing hardware offload 
+for XDP-redirect into the veth device.
 
-  acme@number:~/git/bpf-next$ tools/bpf/bpftool/bpftool btf dump file ~/vmlinux-v6.16.0+.btf_archive format c >
-  +from_archive_combined+dedup_in_libbpf
-  acme@number:~/git/bpf-next$ tools/bpf/bpftool/bpftool btf dump file ../build/v6.16.0+/vmlinux format c >
-  +from_unmodified_pahole_DWARF2BTF+dedup_in_libbpf
-  acme@number:~/git/bpf-next$ diff -u from_archive_combined+dedup_in_libbpf from_unmodified_pahole_DWARF2BTF+dedup_in_libbpf | head
-  acme@number:~/git/bpf-next$ wc -l from_archive_combined+dedup_in_libbpf from_unmodified_pahole_DWARF2BTF+dedup_in_libbpf
-   161588 from_archive_combined+dedup_in_libbpf
-   161588 from_unmodified_pahole_DWARF2BTF+dedup_in_libbpf
-   323176 total
-  acme@number:~/git/bpf-next$
 
-If we use completely unmodified libbpf, bpftool, etc, the "BTF archive"
-in the resulting vmlinux .BTF ELF section is still consumable, but just
-the first "CU" (the first .o .BTF ELF section) is visible, the one for
-init/main.o:
+>>> That's why the guiding principle for me would be to make sure that
+>>> the features we add, beyond "classic XDP" as needed by DDoS, are
+>>> entirely optional.
+>>
+>> Exactly, we agree.  What we do in this patchset is entirely optional.
+>> These changes does not slowdown "classic XDP" and our DDoS use-case.
+>>
+>>> And if we include the goal of moving skb allocation
+>>> out of the driver to the xdp_frame growth, the drivers will sooner or
+>>> later unconditionally populate the xdp_frame. Decreasing performance
+>>> of "classic XDP"?
+>>
+>> No, that is the beauty of this solution, it will not decrease the
+>> performance of "classic XDP".
+>>
+>> Do keep-in-mind that "moving skb allocation out of the driver" is not
+>> part of this patchset and a moonshot goal that will take a long time
+>> (but we are already "simulation" this via XDP-redirect for years now).
+>> Drivers should obviously not unconditionally populate the xdp_frame's
+>> rx_meta area.  It is first time to populate rx_meta, once driver reach
+>> XDP_PASS case (normal netstack delivery). Today all drivers will at this
+>> stage populate the SKB metadata (e.g. rx-hash + vlan) from the RX-
+>> descriptor anyway.  Thus, I don't see how replacing those writes will
+>> decrease performance.
+> 
+> I don't think it's at all obvious that the driver should not
+> unconditionally populate the xdp_frame.It seems like the logical
+> direction to me, TBH. Driver pre-populates, then the conversion
+> and GET callbacks become trivial and generic..
+> 
 
-acme@number:~/git/linux$ bpftool version
-bpftool v7.5.0
-using libbpf v1.5
-features: llvm, skeletons
-acme@number:~/git/linux$
+This is related to when cache-lines are ready.  All XDP drivers
+prefetchw the xdp_frame area before starting XDP-prog.  Thus, driver
+want to delay writing until this cache-line is ready.
 
-acme@number:~/git/bpf-next$ bpftool btf dump file ~/vmlinux-v6.16.0+.btf_archive format c | wc -l
-11361
-acme@number:~/git/linux$ bpftool btf dump file ../build/v6.16.0+/init/main.o format c | wc -l
-11361
-acme@number:~/git/linux$
+> Perhaps we should try to convert a real driver in this series.
+> 
 
-Furthermore:
+What do you mean?
+This series is about the XDP_REDIRECT case, so we don't need to modify
+any physical NIC driver.
 
-acme@number:~/git/linux$ bpftool btf dump file ../build/v6.16.0+/init/main.o format c > a
-acme@number:~/git/linux$ bpftool btf dump file ~/vmlinux-v6.16.0+.btf_archive format c > b
-acme@number:~/git/linux$
+Do you want this series to include the ability to XDP-override the
+hardware offloads for RX-hash and VLAN for the XDP_PASS case for a real
+physical NIC driver?
 
-Each patch has extra explanations of the process.
 
-This is complementary to today's series from Alan Maguire, as we can use
-the one liner for the kernel build process to test his series without
-requiring installing a toolchain that generates BTF for each .o file
-that will result in vmlinux.
+>>>> The key to XDP's high performance lies in processing a bulk of
+>>>> xdp_frames in a tight loop to amortize costs. The existing cpumap code
+>>>> on the remote CPU is already highly optimized for this: it performs bulk
+>>>> allocation of SKBs and uses careful prefetching to hide the memory
+>>>> latency. Allowing a BPF program to sometimes trigger a heavyweight SKB
+>>>> alloc+init (4 cache-line misses) would bypass all these existing
+>>>> optimizations. It would introduce significant jitter into the pipeline
+>>>> and disrupt the entire bulk-processing model we rely on for performance.
+>>>>
+>>>> This performance is not just theoretical;
+>>>
+>>> Somewhat off-topic for the architecture, I think, but do you happen
+>>> to have any real life data for that? IIRC the "listification" was a
+>>> moderate success for the skb path.. Or am I misreading and you have
+>>> other benefits of a tight processing loop in mind?
+>>
+>> Our "tight processing loop" for NAPI (net_rx_action/napi_pool) is not
+>> performing as well as we want. One major reason is that the CPU is being
+>> stalled each time in the loop when the NIC driver needs to clear the 4
+>> cache-lines for the SKB.  XDP have shown us that avoiding these steps is
+>> a huge performance boost.
+> 
+> Do you know what uarch resource it's stalling on?
+> It's been on my minder whether in the attempts to zero out as
+> little as possible we didn't defeat CPU optimization for clearing
+> full cache lines.
+>
 
-Next steps on my side are to:
+The main performance stall problem with zeroing is the 'rep
+stos' (repeated string store) operation.
+See comments in this memset micro benchmark [1]
+  [1] 
+https://github.com/netoptimizer/prototype-kernel/blob/master/kernel/lib/time_bench_memset.c
 
-1. change pahole for when it receives --format_path=btf check if
-btf__is_archive(btf) is true, then just replace the current vmlinux .BTF
-contents with the raw data in this just loaded BTF, short circuiting
-the whole process.
+Memset of 32 bytes (or less) will result in MOVQ instructions, which is
+really fast. Large sizes the compiler usually creates 'rep stos'
+instructions, which have high "startup" cost.
 
-2. the kernel build process should be changed to allow one to ask for
-just BTF, not DWARF, and if so, using the above method, strip the DWARF
-info after using it to generate BTF.
-
-Then when compilers are producing BTF, we switch to that, falling back
-to the above method when a compiler is known to generate buggy BTF.
-
-And also to use in CIs, to compare the output generated by the various
-methods in the various components.
-
-3. In 2 we can even use the same scheme we use for parallelizing DWARF
-loading when loading all the BTF archive members concatenated in vmlinux
-to dedup them.
-
-BTW, this is the size of a vmlinux ELF .BTF section with an BTF archive:
-
-acme@number:~/git/linux$ readelf -SW ../build/v6.16.0+/vmlinux | grep BTF
-  [15] .BTF        PROGBITS   ffffffff82ff2000  21f2000 16db5976 00   A  0   0  1
-  [16] .BTF_ids    PROGBITS   ffffffff99da8000 18fa8000   001238 00   A  0   0  1
-acme@number:~/git/linux$
-
-~365 MiB
-
-While the DWARF for that file is at:
-
-  [44] .debug_aranges    PROGBITS  0000000000000000 1aa00000   03bfb0 00      0   0 16
-  [45] .debug_info       PROGBITS  0000000000000000 1aa3bfb0 1154b512 00      0   0  1
-  [46] .debug_abbrev     PROGBITS  0000000000000000 2bf874c2   81492f 00      0   0  1
-  [47] .debug_line       PROGBITS  0000000000000000 2c79bdf1  1ec4abd 00      0   0  1
-  [48] .debug_frame      PROGBITS  0000000000000000 2e6608b0   3fd470 00      0   0  8
-  [49] .debug_str        PROGBITS  0000000000000000 2ea5dd20   59bbe8 01  MS  0   0  1
-  [50] .debug_line_str   PROGBITS  0000000000000000 2eff9908   02de43 01  MS  0   0  1
-  [51] .debug_loclists   PROGBITS  0000000000000000 2f02774b  2683cbb 00      0   0  1
-  [52] .debug_rnglists   PROGBITS  0000000000000000 316ab406   4f875b 00      0   0  1
-
->>> 0x1154b512 + 0x81492f + 0x1ec4abd + 0x3fd470 + 0x59bbe8
-341563734
-
-~325 MiB
-
-But then BTF, when dedup'ed gets down to:
-
-acme@number:~/git/linux$ readelf -SW ../build/v6.16.0+.no-btf_archive/vmlinux | grep BTF
-  [15] .BTF              PROGBITS        ffffffff82fef000 21ef000 64fb32 00   A  0   0  1
-  [16] .BTF_ids          PROGBITS        ffffffff8363f000 283f000 001238 00   A  0   0  1
-acme@number:~/git/linux$ 
-
-~6.3 MiB
-
-And also BTF has some info generated from other sources besides DWARF,
-like kfuncs, per cpu, etc.
-
-Also an observation: for distros the optimal way to produce BTF _and_
-DWARF seems to be is the one we have now, don't bother generating .BTF
-for all .o, just generate DWARF and at the end generate BTF from it 8-)
-
-For developers not needing DWARF and not caring about reproducible
-builds then there are other clever tricks to use like go on adding each
-generated BTF using the technique in this patchset, i.e. using
-btf__add_btf() and trowing away the just generated BTF to then at the end
-do the btf__archive_dedup() (also introduced in this patchset) to have
-the end result dropped to disk. But I'm getting carried away, sry.
-
-There are many other details that need to be double checked but I think
-the current status is good enough for experimentation.
-
-Cheers,
-
-- Arnaldo
-
-Arnaldo Carvalho de Melo (4):
-  libbpf: Simplify error handling removing needless repeated err checks
-  libbpf: Check if there is extra data at the end of a BTF
-  libbpf: Add support for detecting and dedup'ing a BTF archive
-  libbpf: Check if an ELF .BTF section is an archive and combine/dedup
-
- tools/lib/bpf/btf.c | 91 ++++++++++++++++++++++++++++++++++++++-------
- tools/lib/bpf/btf.h |  3 ++
- 2 files changed, 81 insertions(+), 13 deletions(-)
-
--- 
-2.50.1
+--Jesper
 
 
