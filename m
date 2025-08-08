@@ -1,210 +1,172 @@
-Return-Path: <bpf+bounces-65261-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65262-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6A7FB1E6D0
-	for <lists+bpf@lfdr.de>; Fri,  8 Aug 2025 12:52:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E068B1E78D
+	for <lists+bpf@lfdr.de>; Fri,  8 Aug 2025 13:42:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F04C565B69
-	for <lists+bpf@lfdr.de>; Fri,  8 Aug 2025 10:52:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B8911AA58EE
+	for <lists+bpf@lfdr.de>; Fri,  8 Aug 2025 11:43:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 580022517B9;
-	Fri,  8 Aug 2025 10:52:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2514C274FE0;
+	Fri,  8 Aug 2025 11:42:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="cxWbsLsD"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F282A5695;
-	Fri,  8 Aug 2025 10:52:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E43DD274B5C
+	for <bpf@vger.kernel.org>; Fri,  8 Aug 2025 11:42:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754650322; cv=none; b=KEoUyRLDJ++/+nIl0fR0kAN9Np/i2eGdcqKd0D6vM41dd19NdYUgpFB8b551pmeWWCqMWvA0rf/NB8LHlJsJuv06yWzXlLqzWR6ePE4sHQwhmPkdj5kmYTzCr6LiCUV0+2axdI/RZnCx/kmKRDgMLpwdvuUZjFGY7vluczKlgE4=
+	t=1754653323; cv=none; b=hXybvQZutsUCFaZaVNQutU6n0syKJS55VQz8xsbdYr4g57KhFLRdExwK82zfJVhQ3LDe6xvIyaEFtd4yNoQrNRc6lzL11ncn9+7cmsTqKwRiFTYM6Qe9M/Rgf9OCpNWbLx5KoS3hRka9S0IBV2Rs/oJr7QiJpYFFnXVF+rtP2NE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754650322; c=relaxed/simple;
-	bh=KesZR+F59DfKiQMTTe/qycskddKZgXqP+OvKbQU0IZQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=izK5HpFA/3aEZLWD8OkjUj3/bGayfxlvz9CZmffYxc7GFxT8UqyVcgeBUX1btP94n1LbqvIjZ8QmfVUTqg89/g3RJaBv45YE+q4MkCqg9itE1UNJl3KBLd2M0e8Q/u5LJ9OLZsrb4MwYjOVBrH4W+uPG07qxhdFSoiWbM8GPGN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48690C4CEED;
-	Fri,  8 Aug 2025 10:51:58 +0000 (UTC)
-Date: Fri, 8 Aug 2025 11:51:55 +0100
-From: Catalin Marinas <catalin.marinas@arm.com>
-To: Ankur Arora <ankur.a.arora@oracle.com>
-Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org,
-	arnd@arndb.de, will@kernel.org, peterz@infradead.org,
-	akpm@linux-foundation.org, mark.rutland@arm.com,
-	harisokn@amazon.com, cl@gentwo.org, ast@kernel.org,
-	memxor@gmail.com, zhenglifeng1@huawei.com,
-	xueshuai@linux.alibaba.com, joao.m.martins@oracle.com,
-	boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
-Subject: Re: [PATCH v3 1/5] asm-generic: barrier: Add
- smp_cond_load_relaxed_timewait()
-Message-ID: <aJXWyxzkA3x61fKA@arm.com>
-References: <20250627044805.945491-1-ankur.a.arora@oracle.com>
- <20250627044805.945491-2-ankur.a.arora@oracle.com>
+	s=arc-20240116; t=1754653323; c=relaxed/simple;
+	bh=IFJJRBw+9oHEIebrI+O4dWEY1tf+7aWKEfUWfiwgwPI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Yj5BKE63pEC6FF6PAyWcspJYFzliKKp4ipB8hIeiXGDFA8SoO7uZjrtog4rtt54MbdDu90tgmpHSAv5NbZcdnatfkgJ/pllP9TWxK6iswTRiqpnfhJpfI4Nr06TpdNZUUJN1GfBw+poDNjdNO7P/BoJGMNVvLxXojOhhpjeO5Xo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=cxWbsLsD; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-af95525bac4so390333666b.0
+        for <bpf@vger.kernel.org>; Fri, 08 Aug 2025 04:42:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1754653320; x=1755258120; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BMb9m3VLCQ1bgs63e85F6NbEdzA1hg8PJ5Yy7EGRKnQ=;
+        b=cxWbsLsDRN1OAMaop0mvlafbuBowL94WWheqiYHftE2xg3QaAeNyTN6OTgnmjkZO9r
+         77OwLnXWTJevCdAYitsiQ0gCmrjgqaV8lvqzZCglJkJi2j7G8zA9WUUq+kkjqY+szJxs
+         mpUAdT1j6s0JxbIGJCoaUkKTqRQItAbf1UmH026CdGxxskAEzHhCTDdtOH1hOf+7er16
+         jwMqsn4P58FpGEpepYNujAkTtdYm+C0nHupeLxyLp0FfuyY1h5LI0sUDjBxQHLv4oaIQ
+         FaMNqwdHMlzXGhdnYQU89eFm+cYDt24IplCXZ3dIIX+/kbwwwRFuK/ZOvMWqt8HwOHi+
+         xCbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754653320; x=1755258120;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BMb9m3VLCQ1bgs63e85F6NbEdzA1hg8PJ5Yy7EGRKnQ=;
+        b=J3+A1ipPGp4Rk86otIZzFpd5ueAWXIgSuCC/gAkfL/8mLQu1zmkIX8Qeitqk0QVyK+
+         rzOV8JzhD5jZRLMbl7n6Jg5DTuq3BNla9qz+ceQYc5mkOdG4Utw3AVNGLHjiowPFomjV
+         6qh6KiRwFOnI9JHblqVC5rZZEb9m3OESG1rDoTR8YN0LRXBUejGiQdvXA9pt9n5ZOgKj
+         SgHoQZ+7IyogV2u+ZoTV4DoSLa3O+GLOGWu8+9xlOZZyZYWkd1Cb1EmSQHd7ieX82phW
+         YgrN8K3Q84/U5eCCiQQVJB3qH+uvCO0NPcYj4+G7VlY0RaKshnrb4U5CwLcsSfsSYtbh
+         iJEg==
+X-Forwarded-Encrypted: i=1; AJvYcCU/enQsTNoBrAZnJmB1XyHBS8EU9BORq9X9RqhSvrQQf1kYrW6kAgdpQxgkb3Z/rnwcPIs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwhTpeATrxriP9QhtthCJLGIqu1V4drZkFGwhvVcOaRMB/IwBoo
+	jyoccaax0ctlP/Frle1vR6LAI+hYXuycFFZs0l7AhPkXlMIsUdrGR7MxNNjtQ9aC2nU=
+X-Gm-Gg: ASbGncvtYrrIWInPU3OWwAAKJOSETRbfLZa8Z3FFoZ/PEPCB4BZ5qORRXbgTVnOEhF7
+	tZziBqnh8KUzXQ3BKSHgsCLU3c0SvvqVQRCqnB5nUbmpaogZq28Y5cxEF8ROQ+igUa3YgvCaPcU
+	+0q1XaJH+mbeAXcdCtuy0Bv+nl/E2YZQasUHB6wMO2Q8fa/EsAvsXyIuiW30x46GqofMQDQCXRG
+	Yph1HDk4b/s1R7kRunUvz1sI2yWIJN5/unra7IZygDYrxTP0iUA6CjHP9sk55QyRS0nns21gtYy
+	KhMmG2hcLw2dv1UH6NQ15Jo8sJU9WPhscqCyzTegg+McTPDGnZZpHmOcZpWCNfPzRU3TLxqt5bB
+	bA7aD8uRKDka5ILY=
+X-Google-Smtp-Source: AGHT+IHeczUL7oSEmBMSThziAzNDX9koz3AI45mChEQtGKYTeLIZaWza/AaAYPTWCdEljwBraeoIRQ==
+X-Received: by 2002:a17:906:6a07:b0:ade:44f8:569 with SMTP id a640c23a62f3a-af9c653e5admr171028266b.42.1754653319998;
+        Fri, 08 Aug 2025 04:41:59 -0700 (PDT)
+Received: from cloudflare.com ([2a09:bac5:5063:2432::39b:9d])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-af91a0a3b77sm1482297666b.51.2025.08.08.04.41.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Aug 2025 04:41:59 -0700 (PDT)
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>,  Andrii Nakryiko
+ <andrii@kernel.org>,  Arthur Fabre <arthur@arthurfabre.com>,  Daniel
+ Borkmann <daniel@iogearbox.net>,  Eduard Zingerman <eddyz87@gmail.com>,
+  Eric Dumazet <edumazet@google.com>,  Jakub Kicinski <kuba@kernel.org>,
+  Jesper Dangaard Brouer <hawk@kernel.org>,  Jesse Brandeburg
+ <jbrandeburg@cloudflare.com>,  Joanne Koong <joannelkoong@gmail.com>,
+  Lorenzo Bianconi <lorenzo@kernel.org>,  Toke =?utf-8?Q?H=C3=B8iland-J?=
+ =?utf-8?Q?=C3=B8rgensen?=
+ <thoiland@redhat.com>,  Yan Zhai <yan@cloudflare.com>,
+  kernel-team@cloudflare.com,  netdev@vger.kernel.org,
+  bpf@vger.kernel.org,  Stanislav Fomichev <sdf@fomichev.me>
+Subject: Re: [PATCH bpf-next v6 9/9] selftests/bpf: Cover metadata access
+ from a modified skb clone
+In-Reply-To: <7a73fb00-9433-40d7-acb7-691f32f198ff@linux.dev> (Martin KaFai
+	Lau's message of "Thu, 7 Aug 2025 17:33:43 -0700")
+References: <20250804-skb-metadata-thru-dynptr-v6-0-05da400bfa4b@cloudflare.com>
+	<20250804-skb-metadata-thru-dynptr-v6-9-05da400bfa4b@cloudflare.com>
+	<7a73fb00-9433-40d7-acb7-691f32f198ff@linux.dev>
+Date: Fri, 08 Aug 2025 13:41:58 +0200
+Message-ID: <87h5yi82gp.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250627044805.945491-2-ankur.a.arora@oracle.com>
+Content-Type: text/plain
 
-On Thu, Jun 26, 2025 at 09:48:01PM -0700, Ankur Arora wrote:
-> diff --git a/include/asm-generic/barrier.h b/include/asm-generic/barrier.h
-> index d4f581c1e21d..d33c2701c9ee 100644
-> --- a/include/asm-generic/barrier.h
-> +++ b/include/asm-generic/barrier.h
-> @@ -273,6 +273,101 @@ do {									\
->  })
->  #endif
->  
-> +#ifndef SMP_TIMEWAIT_SPIN_BASE
-> +#define SMP_TIMEWAIT_SPIN_BASE		16
-> +#endif
-> +
-> +/*
-> + * Policy handler that adjusts the number of times we spin or
-> + * wait for cacheline to change before evaluating the time-expr.
-> + *
-> + * The generic version only supports spinning.
-> + */
-> +static inline u64 ___smp_cond_spinwait(u64 now, u64 prev, u64 end,
-> +				       u32 *spin, bool *wait, u64 slack)
-> +{
-> +	if (now >= end)
-> +		return 0;
-> +
-> +	*spin = SMP_TIMEWAIT_SPIN_BASE;
-> +	*wait = false;
-> +	return now;
-> +}
-> +
-> +#ifndef __smp_cond_policy
-> +#define __smp_cond_policy ___smp_cond_spinwait
-> +#endif
-> +
-> +/*
-> + * Non-spin primitive that allows waiting for stores to an address,
-> + * with support for a timeout. This works in conjunction with an
-> + * architecturally defined policy.
-> + */
-> +#ifndef __smp_timewait_store
-> +#define __smp_timewait_store(ptr, val)	do { } while (0)
-> +#endif
-> +
-> +#ifndef __smp_cond_load_relaxed_timewait
-> +#define __smp_cond_load_relaxed_timewait(ptr, cond_expr, policy,	\
-> +					 time_expr, time_end,		\
-> +					 slack) ({			\
-> +	typeof(ptr) __PTR = (ptr);					\
-> +	__unqual_scalar_typeof(*ptr) VAL;				\
-> +	u32 __n = 0, __spin = SMP_TIMEWAIT_SPIN_BASE;			\
-> +	u64 __prev = 0, __end = (time_end);				\
-> +	u64 __slack = slack;						\
-> +	bool __wait = false;						\
-> +									\
-> +	for (;;) {							\
-> +		VAL = READ_ONCE(*__PTR);				\
-> +		if (cond_expr)						\
-> +			break;						\
-> +		cpu_relax();						\
-> +		if (++__n < __spin)					\
-> +			continue;					\
-> +		if (!(__prev = policy((time_expr), __prev, __end,	\
-> +					  &__spin, &__wait, __slack)))	\
-> +			break;						\
-> +		if (__wait)						\
-> +			__smp_timewait_store(__PTR, VAL);		\
-> +		__n = 0;						\
-> +	}								\
-> +	(typeof(*ptr))VAL;						\
-> +})
-> +#endif
+On Thu, Aug 07, 2025 at 05:33 PM -07, Martin KaFai Lau wrote:
+> On 8/4/25 5:52 AM, Jakub Sitnicki wrote:
+>> +/* Check that skb_meta dynptr is empty */
+>> +SEC("tc")
+>> +int ing_cls_dynptr_empty(struct __sk_buff *ctx)
+>> +{
+>> +	struct bpf_dynptr data, meta;
+>> +	struct ethhdr *eth;
+>> +
+>> +	bpf_dynptr_from_skb(ctx, 0, &data);
+>> +	eth = bpf_dynptr_slice_rdwr(&data, 0, NULL, sizeof(*eth));
+>
+> If this is bpf_dynptr_slice() instead of bpf_dynptr_slice_rdwr() and...
+>
+>> +	if (!eth)
+>> +		goto out;
+>> +	/* Ignore non-test packets */
+>> +	if (eth->h_proto != 0)
+>> +		goto out;
+>> +	/* Packet write to trigger unclone in prologue */
+>> +	eth->h_proto = 42;
+>
+> ... remove this eth->h_proto write.
+>
+> Then bpf_dynptr_write() will succeed. like,
+>
+>         bpf_dynptr_from_skb(ctx, 0, &data);
+>         eth = bpf_dynptr_slice(&data, 0, NULL, sizeof(*eth));
+> 	if (!eth)
+>                 goto out;
+>
+> 	/* Ignore non-test packets */
+>         if (eth->h_proto != 0)
+> 		goto out;
+>
+>         bpf_dynptr_from_skb_meta(ctx, 0, &meta);
+>         /* Expect write to fail because skb is a clone. */
+>         err = bpf_dynptr_write(&meta, 0, (void *)eth, sizeof(*eth), 0);
+>
+> The bpf_dynptr_write for a skb dynptr will do the pskb_expand_head(). The
+> skb_meta dynptr write is only a memmove. It probably can also do
+> pskb_expand_head() and change it to keep the data_meta.
+>
+> Another option is to set the DYNPTR_RDONLY_BIT in bpf_dynptr_from_skb_meta() for
+> a clone skb. This restriction can be removed in the future.
 
-TBH, this still looks over-engineered to me, especially with the second
-patch trying to reduce the spin loops based on the remaining time. Does
-any of the current users of this interface need it to get more precise?
+Ah, crap. Forgot that bpf_dynptr_write->bpf_skb_store_bytes calls
+bpf_try_make_writable(skb) behind the scenes.
 
-Also I feel the spinning added to poll_idle() is more of an architecture
-choice as some CPUs could not cope with local_clock() being called too
-frequently. The above generic implementation takes a spin into
-consideration even if an arch implementation doesn't need it (e.g. WFET
-or WFE). Yes, the arch policy could set a spin of 0 but it feels overly
-complicated for the generic implementation.
+OK, so the head page copy for skb clone happens either in BPF prologue
+or lazily inside bpf_dynptr_write() call today.
 
-Can we instead have the generic implementation without any spinning?
-Just polling a variable with cpu_relax() like
-smp_cond_load_acquire/relaxed() with the additional check for time. We
-redefine it in the arch code.
+Best if I make it consistent for skb_meta from the start, no?
 
-> +#define __check_time_types(type, a, b)			\
-> +		(__same_type(typeof(a), type) &&	\
-> +		 __same_type(typeof(b), type))
-> +
-> +/**
-> + * smp_cond_load_relaxed_timewait() - (Spin) wait for cond with no ordering
-> + * guarantees until a timeout expires.
-> + * @ptr: pointer to the variable to wait on
-> + * @cond: boolean expression to wait for
-> + * @time_expr: monotonic expression that evaluates to the current time
-> + * @time_end: end time, compared against time_expr
-> + * @slack: how much timer overshoot can the caller tolerate?
-> + * Useful for when we go into wait states. A value of 0 indicates a high
-> + * tolerance.
-> + *
-> + * Note that all times (time_expr, time_end, and slack) are in microseconds,
-> + * with no mandated precision.
-> + *
-> + * Equivalent to using READ_ONCE() on the condition variable.
-> + */
-> +#define smp_cond_load_relaxed_timewait(ptr, cond_expr, time_expr,	\
-> +				       time_end, slack) ({		\
-> +	__unqual_scalar_typeof(*ptr) _val;				\
-> +	BUILD_BUG_ON_MSG(!__check_time_types(u64, time_expr, time_end),	\
-> +			 "incompatible time units");			\
-> +	_val = __smp_cond_load_relaxed_timewait(ptr, cond_expr,		\
-> +						__smp_cond_policy,	\
-> +						time_expr, time_end,	\
-> +						slack);			\
-> +	(typeof(*ptr))_val;						\
-> +})
+Happy to take a shot at tweaking pskb_expand_head() to keep the metadata
+in tact, while at it.
 
-Looking at the current user of the acquire variant - rqspinlock, it does
-not even bother with a time_expr but rather added the time condition to
-cond_expr. I don't think it has any "slack" requirements, only that
-there's no deadlock eventually.
-
-About poll_idle(), are there any slack requirement or we get away
-without?
-
-I think we have two ways forward (well, at least):
-
-1. Clearly define what time_end is and we won't need a time_expr at all.
-   This may work for poll_idle(), not sure about rqspinlock. The
-   advantage is that we can drop the 'slack' argument since none of the
-   current users seem to need it. The downside is that we need to know
-   exactly what this time_end is to convert it to timer cycles for a
-   WFET implementation on arm64.
-
-2. Drop time_end and only leave time_expr as a bool (we don't care
-   whether it uses ns, jiffies or whatever underneath, it's just a
-   bool). In this case, we could use a 'slack' argument mostly to make a
-   decision on whether we use WFET, WFE or just polling with
-   cpu_relax(). For WFET, the wait time would be based on the slack
-   value rather than some absolute end time which we won't have.
-
-I'd go with (2), it looks simpler. Maybe even drop the 'slack' argument
-for the time being until we have a clear user. The fallback on arm64
-would be from wfe (if event streaming available), wfet with the same
-period as the event stream (in the absence of a slack argument) or
-cpu_relax().
-
--- 
-Catalin
+>
+>> +
+>> +	/* Expect no metadata */
+>> +	bpf_dynptr_from_skb_meta(ctx, 0, &meta);
+>> +	if (bpf_dynptr_size(&meta) > 0)
+>> +		goto out;
+>> +
+>> +	test_pass = true;
+>> +out:
+>> +	return TC_ACT_SHOT;
+>> +}
 
