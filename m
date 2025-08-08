@@ -1,234 +1,120 @@
-Return-Path: <bpf+bounces-65258-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65259-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B56CB1E585
-	for <lists+bpf@lfdr.de>; Fri,  8 Aug 2025 11:19:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7755B1E5B2
+	for <lists+bpf@lfdr.de>; Fri,  8 Aug 2025 11:38:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4CD47A3649
-	for <lists+bpf@lfdr.de>; Fri,  8 Aug 2025 09:18:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACA921AA3F60
+	for <lists+bpf@lfdr.de>; Fri,  8 Aug 2025 09:39:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6A2526CE3D;
-	Fri,  8 Aug 2025 09:19:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sDNNwmSz"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BEF726D4F7;
+	Fri,  8 Aug 2025 09:38:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18C772AE74;
-	Fri,  8 Aug 2025 09:19:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 065F71E379B;
+	Fri,  8 Aug 2025 09:38:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754644772; cv=none; b=lX7FpA1jIg+llP4HikmzKgn5BjtEVvx4lWJKEcVWi339qqG8nT4XXFoF+WLDBFwzeahJCAGbMuCEw/oedNNBV2J7n7O40MQ1XFX9fzi2W0d2RNW6nOnDr2TGRRfdaGDGKYZBWmaxNq1UEbV4gl5VnQTMJliEW62PY4GH7ocHmcY=
+	t=1754645931; cv=none; b=l12WWQwUJ91e6FainDJtS8OKKjJz/WIh3oSpWPmXP0P0om0vKpk+Iue6KUFy7CpG81khrZFaWPfM37NrvGxreKjuNIZz84ar2Ph/oH/a+WhqTfDgITDZOOp4CsKzB0ZL+L7E34DAN49trfCY93kfLVK0E6NM87Lycc6u3VBMgCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754644772; c=relaxed/simple;
-	bh=UNGRcrHpudJn0w1urLqBMR5FBKNY7aoHD0a4DiJoAxo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BftaOc3j+Cc632tTQx8EWqlV4Hw5J+6Qu+RhmWN/HuVcbCWcgU6eNBHot93G5nx5EY+ufyXpqHeBNV7PenX9AE7gR9vY0OB08pZwzQWjeszrfCTktVoW4flsAHiAfVGqw8yivOalOH0wRVrHyDkqNp+R3gehAZNnFUxVDshXbnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sDNNwmSz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42DACC4CEED;
-	Fri,  8 Aug 2025 09:19:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754644771;
-	bh=UNGRcrHpudJn0w1urLqBMR5FBKNY7aoHD0a4DiJoAxo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=sDNNwmSzuV6K6E49l6/7w4x04nxM8m2PFrSfClS/AKcLclw41aWIzJeT6INSUiv4P
-	 kDl9RhCjOmWJ4EzxRuwRe2IGBGYrAGOvj+vEpV3gloJdycaCgkIqw83wf729wcUPjj
-	 OQ7hAsJ3REkLl3SqY6EAIg0l6W7sibBMmOWyHMNuj3ZA8Z12zjDljCvu4Nt8SV1jui
-	 ke6aHNILH2np4asSUv7VBMd9XceFW4OZYdFlYVdnQ0DujaMyo0To8ZK2vFlFDFhDl2
-	 P3kyYXdEZQB91ROboSPaoyzcU2Y0XgJmdH7Gn/mgKlVPFku8dRurU1AAK7VrIjhxOp
-	 AaSn0a9hSAVFQ==
-Message-ID: <af73992f-e683-4ccd-9ff5-28f6147ea43e@kernel.org>
-Date: Fri, 8 Aug 2025 11:19:23 +0200
+	s=arc-20240116; t=1754645931; c=relaxed/simple;
+	bh=RdyVEV9witUQiWCKmjvS5s5+mAuLhEZqVQa9JqDWC0s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NNmkGEtzlNfgA093d/7sOW2U1YYSZOxfMQIGkEieP0vBPpg/O2w2C68NNruEFiresNpbMp/myvCwIz7/FS6X6was50dxQ//i13vwUHAappHg4wZHG4nO8aE43whi/6b/bcg8Ei71sYyZ8NWBsCeWiYi4DWuHdyewFB6S9Wix+gw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB714C4CEED;
+	Fri,  8 Aug 2025 09:38:47 +0000 (UTC)
+Date: Fri, 8 Aug 2025 10:38:44 +0100
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Ankur Arora <ankur.a.arora@oracle.com>
+Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org,
+	arnd@arndb.de, will@kernel.org, peterz@infradead.org,
+	akpm@linux-foundation.org, mark.rutland@arm.com,
+	harisokn@amazon.com, cl@gentwo.org, ast@kernel.org,
+	memxor@gmail.com, zhenglifeng1@huawei.com,
+	xueshuai@linux.alibaba.com, joao.m.martins@oracle.com,
+	boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
+Subject: Re: [PATCH v3 3/5] asm-generic: barrier: Add
+ smp_cond_load_acquire_timewait()
+Message-ID: <aJXFpKEm7-abCAFc@arm.com>
+References: <20250627044805.945491-1-ankur.a.arora@oracle.com>
+ <20250627044805.945491-4-ankur.a.arora@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: BPF selftest: mptcp subtest failing
-Content-Language: en-GB, fr-BE
-To: Harshvardhan Jha <harshvardhan.j.jha@oracle.com>,
- Mat Martineau <martineau@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>
-Cc: Geliang Tang <geliang@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- mptcp@lists.linux.dev, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- stable@vger.kernel.org
-References: <b1f933f6-545d-4f2e-a006-4e5568656c38@oracle.com>
- <da46ad00-910f-4eb1-9b74-14bd76fc8910@kernel.org>
- <84125c5e-ed99-4158-9a59-e1a97435c626@oracle.com>
-From: Matthieu Baerts <matttbe@kernel.org>
-Autocrypt: addr=matttbe@kernel.org; keydata=
- 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
- lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
-Organization: NGI0 Core
-In-Reply-To: <84125c5e-ed99-4158-9a59-e1a97435c626@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250627044805.945491-4-ankur.a.arora@oracle.com>
 
-Hi Harshvardhan,
+On Thu, Jun 26, 2025 at 09:48:03PM -0700, Ankur Arora wrote:
+> diff --git a/arch/arm64/include/asm/rqspinlock.h b/arch/arm64/include/asm/rqspinlock.h
+> index 9ea0a74e5892..f1b6a428013e 100644
+> --- a/arch/arm64/include/asm/rqspinlock.h
+> +++ b/arch/arm64/include/asm/rqspinlock.h
+> @@ -86,7 +86,7 @@
+>  
+>  #endif
+>  
+> -#define res_smp_cond_load_acquire(v, c) smp_cond_load_acquire_timewait(v, c, 0, 1)
+> +#define res_smp_cond_load_acquire(v, c) smp_cond_load_acquire_timewait(v, c, 0ULL, 1ULL, 0)
+>  
+>  #include <asm-generic/rqspinlock.h>
+>  
+> diff --git a/include/asm-generic/barrier.h b/include/asm-generic/barrier.h
+> index 8299c57d1110..dd7c9ca2dff3 100644
+> --- a/include/asm-generic/barrier.h
+> +++ b/include/asm-generic/barrier.h
+> @@ -388,6 +388,28 @@ static inline u64 ___smp_cond_spinwait(u64 now, u64 prev, u64 end,
+>  	(typeof(*ptr))_val;						\
+>  })
+>  
+> +/**
+> + * smp_cond_load_acquire_timewait() - (Spin) wait for cond with ACQUIRE ordering
+> + * until a timeout expires.
+> + *
+> + * Arguments: same as smp_cond_load_relaxed_timeout().
+> + *
+> + * Equivalent to using smp_cond_load_acquire() on the condition variable with
+> + * a timeout.
+> + */
+> +#ifndef smp_cond_load_acquire_timewait
+> +#define smp_cond_load_acquire_timewait(ptr, cond_expr,			\
+> +				       time_expr, time_end,		\
+> +				       slack) ({			\
+> +	__unqual_scalar_typeof(*ptr) _val;				\
+> +	_val = smp_cond_load_relaxed_timewait(ptr, cond_expr,		\
+> +					      time_expr, time_end,	\
+> +					      slack);			\
+> +	/* Depends on the control dependency of the wait above. */	\
+> +	smp_acquire__after_ctrl_dep();					\
+> +	(typeof(*ptr))_val;						\
+> +})
+> +#endif
 
-On 08/08/2025 09:00, Harshvardhan Jha wrote:
-> Hi Matthieu,
-> 
-> On 07/08/25 7:51 PM, Matthieu Baerts wrote:
->> Hi Harshvardhan,
->>
->> On 07/08/2025 05:50, Harshvardhan Jha wrote:
->>> Hi there,
->>> I have explicitly disabled mptpcp by default on my custom kernel and
->>> this seems to be causing the test case to fail. Even after enabling
->>> mtpcp via sysctl command or adding an entry to /etc/sysctl.conf this
->>> fails. I don't think this test should be failing and should account for
->>> cases where mptcp has not been enabled by default?
->> It looks like the test is failing because it expects MPTCP to be enabled
->> by default. Or, said differently, it doesn't expect the kernel to be
->> modified without adapting the corresponding tests :)
->>
->>> This is the custom patch I had applied on the LTS v6.12.36 kernel and
->>> tested it:
->>>
->>> diff --git a/net/mptcp/ctrl.c b/net/mptcp/ctrl.c
->>> index dd595d9b5e50c..bdcc4136e92ef 100644
->>> --- a/net/mptcp/ctrl.c
->>> +++ b/net/mptcp/ctrl.c
->>> @@ -89,7 +89,7 @@ const char *mptcp_get_scheduler(const struct net *net)
->>>  
->>>  static void mptcp_pernet_set_defaults(struct mptcp_pernet *pernet)
->>>  {
->>> -	pernet->mptcp_enabled = 1;
->>> +	pernet->mptcp_enabled = 0;
->>>  	pernet->add_addr_timeout = TCP_RTO_MAX;
->>>  	pernet->blackhole_timeout = 3600;
->>>  	atomic_set(&pernet->active_disable_times, 0);
->> First, I have the same question as the one I asked to RedHat devs: do
->> you still need to keep MPTCP disabled by default? If I remember well, on
->> RHEL side, they started to do that when they backported MPTCP on a
->> previous stable version, as an experimental feature. They left it like
->> that later mostly for internal process reasons I think. But honestly,
->> today, it no longer makes sense to do that and annoys users: all other
->> Linux distributions enable MPTCP by default without patching the kernel
->> like you did.
-> 
-> We had observed issues with mptcpd daemon failing before when we had
-> this enabled by default. The mtpcpd userspace fix is yet to be integrated.
+Using #ifndef in the generic file is the correct thing to do, it allows
+architectures to redefine it. Why we have a similar #ifndef in the arm64
+rqspinlock.h, no idea, none of the arm64 maintainers acked that patch
+(shouldn't have gone in really, we were still discussing the
+implementation at the time; I also think it's slightly wrong).
 
-If net.mptcp.enabled is set to 0 by default, I guess most mptcpd unit
-tests will be skipped. If you have issues when MPTCP is enabled by
-default, there might be real issues in mptcpd that would need to be
-fixed (or more likely, RHEL devs didn't noticed most tests were skipped,
-and there are probably some dependences missing for these tests).
+Your change above to rqspinlock.h makes this even more confusing when
+you look at the overall result with all the patches applied. We end up
+with the same macro in asm/rqspinlock.h but with different number of
+arguments.
 
-But that's a different topic.
+I'd start with ripping out the current arm64 implementation, add a
+generic implementation to barrier.h and then override it in the arch
+code.
 
-> However, shouldn't the testcase be robust enough to handle that scenario
-> regardless?
-
-It should not be needed: these tests run in a dedicated netns where it
-expects the kernel to have MPTCP enabled by default. If this behaviour
-is changed without adapting the tests, that's normal to have issues.
-This is not an issue with the upstream kernel.
-
->> If you don't want to revert this patch, I guess you can modify the BPF
->> selftests in 'prog_tests/mptcp.c' to set 'sysctl net.mptcp.enabled=1' in
->> each netns created by the test. But again, not changing the default
->> kernel behaviour sounds like a better solution.
-> 
-> Even after changing /etc/sysctl.conf which is supposed to keep mptcp
-> enabled across reboots this issue occurs.
-
-/etc/sysctl.conf needs a userspace daemon to load it and apply the
-changes. In these tests, dedicated netns are created, and this file is
-not read. That's the whole purpose of using netns: not to have to handle
-default config changed on the host, just use the default values from the
-kernel. Plus, it is cleaner to use netns: no need to revert changes
-after, tests can be executed in parallel without impacting others, etc.
-
-> I agree with what you have stated, mptcp should be enabled by default
-> and the userspace fix should be incorporated ideally, however I still
-> believe that the test case shouldn't be giving a false negative as it is
-> in this case.
-
-I don't think these tests have to handle every possible modifications
-done by a custom kernel. If you have to modify the behaviour, then you
-also need to adapt everything related to that. That's why I don't
-recommend to change the behaviour.
-
-> The false negatives seem to be occurring since this commit I believe:
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?id=df8d3ba55b4fa1d6aed8449971ee50757cb0732f
-
-I don't think so, this commit changes MPTCP selftests, not the BPF ones
-you have issues with. I guess you wanted to refer to this commit:
-
-  02d6a057c7be ("selftests/bpf: run mptcp in a dedicated netns")
-
-> This does the opposite of you have mentioned in certain functions.
-
-The MPTCP selftests are setting net.mptcp.enabled=1, because RHEL devs
-added them a while ago, while it was making sense, and we lefted them
-there, even after the refactoring you mentioned. But we should probably
-remove them indeed, because it is not needed.
-> I suppose adding all these lines back might do the trick:
-> 
-> ip netns exec $netns sysctl -q net.mptcp.enabled=1
-
-For your issue, yes. But again, not changing the default kernel
-behaviour sounds like a better solution.
-
-Cheers,
-Matt
 -- 
-Sponsored by the NGI0 Core fund.
-
+Catalin
 
