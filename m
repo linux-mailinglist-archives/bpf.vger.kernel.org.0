@@ -1,139 +1,117 @@
-Return-Path: <bpf+bounces-65269-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65270-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D8E6B1EC4D
-	for <lists+bpf@lfdr.de>; Fri,  8 Aug 2025 17:47:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6DB7B1EC5E
+	for <lists+bpf@lfdr.de>; Fri,  8 Aug 2025 17:50:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5B99565C22
-	for <lists+bpf@lfdr.de>; Fri,  8 Aug 2025 15:47:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 858503ADE0C
+	for <lists+bpf@lfdr.de>; Fri,  8 Aug 2025 15:50:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85C17280004;
-	Fri,  8 Aug 2025 15:47:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6716F286413;
+	Fri,  8 Aug 2025 15:49:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cD/0dcXA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cAfjK+tL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CDAD7FD;
-	Fri,  8 Aug 2025 15:47:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4812285CBB
+	for <bpf@vger.kernel.org>; Fri,  8 Aug 2025 15:49:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754668041; cv=none; b=STDMzkcJsHNUas5i0KKYSnVIHhn74RGSurSG6sT9KJWnaUgdgOK+JclZA+2SmPhPgwv2WLtndgOrJX/v7d0+ULkRXthqJGo1Q3AP9sdbmSE1jJHpfnHuq4Du1Vx/ZCJvpwR5RPhO6AM06VHJcvFJi+6EgO+UgSlX7NRV1LQ4mIk=
+	t=1754668183; cv=none; b=cqHq+h6n6yLY5+a3edvqtInx6WcLzaw8Cqp5fdx0QCtG/UyV0Zjyl8GHsO00VhDLMaAYYLjqgxpB3pJLno0s3pkT/mPXD4WIMvaCqGup1Qm2nQoFA2nUeGT+KrIeaZfuLFRaSiZCYUOgQVulxVWGP3bLHDmK+cLsd1dS9oSJWnA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754668041; c=relaxed/simple;
-	bh=nmnDbiwZkr2/9FT78hG2hwnwzQER2I3Sap4n4j/fqKY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VlyHQpDJYAl1On4SdSzSihHhul+ShF87y5+o/Utpw0KUBmHBGPWrQZbOt6Z7RoJYQ+vEtDSp4G2cfX1Z1TyfZM02Pj3DnZMLeqWZ+7NXWThW42z63fYWYkkH1Xn2U/hzPGFxCTw6MRUIZP4HD4l5BPd+3HrtiN8ai0/wHtd1DNs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cD/0dcXA; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3a6cd1a6fecso1644981f8f.3;
-        Fri, 08 Aug 2025 08:47:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754668038; x=1755272838; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g8xJFRNG4FHGw7rctRWT/NqPWTXzZS9VVVxqgWaZipA=;
-        b=cD/0dcXAkw6oUjVtbRHNVCulQ5grl+HlIvVluOjCeCcs/mbyRkGIViloufsDs7QpPc
-         ZS4oiHSnhK47yMCfr3pXs1OtY3f0z01WwFC9gK6xM2yKE/9FbeW95beSq3KaVk6s6UFB
-         8K1vP6A8DyzcIMwPPT6QcAEcB5SuBFS1K0sMLPvPWTiJO/N5vRJnte3jIqAG/lpoZNVr
-         9n7WSIRck/hfVbEjTaMjqaxQ5RI3RXKPEvhCRkojIcs84EbjjUcQxy3BMiyDqdNFDt5O
-         W01EspicfBY2FvlQ9ZRb6OLKTAvsKrIzxBH8sfC7JEVSY39RvQ+OAKE/h0wcmN2EUxWj
-         NYEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754668038; x=1755272838;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=g8xJFRNG4FHGw7rctRWT/NqPWTXzZS9VVVxqgWaZipA=;
-        b=HGGXfdzFkxp5jQFOWNO1fKSk5bQTu2+V6OcfDhvihGUFUMs4cRJaGGPBOyOYOUf3hR
-         2jM5qHucl2aFgFQ2AMrGE3H12MOdaZNAGO54TrYKht/TeeUE/XNwkd0YG6PscxcbkVxN
-         hCBWARqwu07R8R7W7DlGca+nilo2bsTQrkoj+I7yPWS3Sai/Kd2Fu2hGgXDtQ4gZyKbT
-         ARCrwm1bGHIIG1iMmSiEPHGWtwC3VOOJcex0D+XdovDmJnrcyU51FSjJKvAFFh/to4be
-         p4lHBQagOljGAmQFa9a+ApAZuCHxO5+CIezcCtAAnNZz8GBktnNGWnxFggDlrmMgkryJ
-         1irw==
-X-Forwarded-Encrypted: i=1; AJvYcCUUGPo/lJ1ATYe/K34lufCNg6ZCunXWxsNyQf5ej/dU67J2jL0j9W/Wr15RbyZZI2bUEHNHs9g5OwQ8gZB8@vger.kernel.org, AJvYcCVtixLB/aWEypZqBPOyowFOGSc3+yT30mot/gnYXry/Z8gYxM6HUyc+sGU46JK6QZ9xheM=@vger.kernel.org, AJvYcCWzg4wDkyJN/0dEM/qO/HwvYIqfh38FSghhrjfYBLbSPlqZnH7S+Gv/Ejybu4sa+PeDg6HAFQI9@vger.kernel.org
-X-Gm-Message-State: AOJu0YypZnU8WCu19vwxswJzg/ZJ2CViUIzT5jCRCmAwM4/eoeeha5IS
-	xqIEZo+OfiuG7KyuUzMm4uWoSDoswggAHr5CXTwKYmDMRhYJBkTiPuENiVEt5cx1EhxUNX1Vn5Z
-	tsuMM5C6uxg5dSWPlmYbunAbzqeSbvHc=
-X-Gm-Gg: ASbGncvj/lbBMHbMOOB2rEGoR90cGO2+npyTZ/KUHjamUQ84FN5/Lt94a+hGQ/kH2YF
-	2/wqFNarDBwJFY9xibN4AfhOxmQP3t8s5mC8JXURljBmWq4U09FTSOzFK//7Yv00UMynEMGbwRh
-	NCrrEK3/NchNiL3gQjpSYrpTeolOJMzU+lHwmcNVcgkfOtO0J9JP5GN4aUWAaeoDf1SVANBtYSi
-	8TtDfZVlBAVwxlhvqQ184H6jd0IO4N+7/nE
-X-Google-Smtp-Source: AGHT+IEyIVSPkWoRZqRrJMUNTA4hK1n6Pjx0KnD0HgmaWTZ/J+Ytq6admCq0l9lj2d/GE43RnUIWvYqx/wATcTlXs/U=
-X-Received: by 2002:adf:fc87:0:b0:3b7:9aff:db60 with SMTP id
- ffacd0b85a97d-3b900b4bcccmr2381593f8f.10.1754668037517; Fri, 08 Aug 2025
- 08:47:17 -0700 (PDT)
+	s=arc-20240116; t=1754668183; c=relaxed/simple;
+	bh=MSb5SkgCd8iSMQd5UP+wi++y4niZdmYrKxpxpnm/U3Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=YWNQowfzUJTa5WA7zewypOqQaODccR+ztrx6KuY4LzvyKAmY0K/YqutZTBuecajPL6n5DYbwZPg/tEDwoDDssTf5IRKXm2PvpyAfudZG9mE7klgIJHIkcD0tPFkS+3FlI5R79umMyYeLKNhxVXDIFx86jDRzDau155WJv8k2Vv8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cAfjK+tL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1AF4C4CEED;
+	Fri,  8 Aug 2025 15:49:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1754668183;
+	bh=MSb5SkgCd8iSMQd5UP+wi++y4niZdmYrKxpxpnm/U3Q=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=cAfjK+tLnKKvMcZ0xk23BUIo+iCfYZfmThZHQQTIvnrTz+Dy3kuoF2Lj35i45j0s/
+	 af+paKeKBww3XBE5Sjq84bQLRlviF57fw6EfjhtBBRnGC2Rjwb1jcg138HXfpVzB9l
+	 hqORSPGXgMFIlthDFiTqO+nUcw5nTKuSxQnhvKcWGF/DR61e8Pw6IbP6o1zcBZUVQT
+	 zu7mDBje8GAIn5/MLTfb6hGuuQWDITyVML8mWkzHoYXPyaxgVeSiob8e5GYQk714/1
+	 wQqR/6mBOzTUwdITCFy65Ln/ug5eD8B+n6ULnT2MbU+/OUclh32YfTqUO0980XQMNa
+	 fEtdwKB7nHsbA==
+Message-ID: <d9e524a6-6296-4a5a-941e-65cca7d72bcd@kernel.org>
+Date: Fri, 8 Aug 2025 16:49:41 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250703121521.1874196-1-dongml2@chinatelecom.cn>
- <20250703121521.1874196-3-dongml2@chinatelecom.cn> <CAADnVQKP1-gdmq1xkogFeRM6o3j2zf0Q8Atz=aCEkB0PkVx++A@mail.gmail.com>
- <45f4d349-7b08-45d3-9bec-3ab75217f9b6@linux.dev> <3bccb986-bea1-4df0-a4fe-1e668498d5d5@linux.dev>
- <CAADnVQ+Afov4E=9t=3M=zZmO9z4ZqT6imWD5xijDHshTf3J=RA@mail.gmail.com>
- <20250716182414.GI4105545@noisy.programming.kicks-ass.net>
- <CAADnVQ+5sEDKHdsJY5ZsfGDO_1SEhhQWHrt2SMBG5SYyQ+jt7w@mail.gmail.com>
- <CADxym3Za-zShEUyoVE7OoODKYXc1nghD63q2xv_wtHAyT2-Z-Q@mail.gmail.com>
- <CAADnVQ+XGYp=ORtA730u7WQKqSGGH6R4=9CtYOPP_uHuJrYAkQ@mail.gmail.com>
- <CADxym3YMaz8_YkOidJVbKYAXiFLKp4KvYopR3rJRYkiYJvenWw@mail.gmail.com>
- <CAADnVQL_tMbi-xh_znjGwvvY1GkMTUm6EvOUU1x7rNPx53eePQ@mail.gmail.com> <CADxym3ZeuoSXDS3j+Sv-Au-FbJzKjkh7TPmM619gRODuRCKzJw@mail.gmail.com>
-In-Reply-To: <CADxym3ZeuoSXDS3j+Sv-Au-FbJzKjkh7TPmM619gRODuRCKzJw@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 8 Aug 2025 08:47:04 -0700
-X-Gm-Features: Ac12FXwcfqiqCSdbZK-fZSyrPFgi9QJvGofkcCNexe6aHx4JPbA8kUshVJpVeD4
-Message-ID: <CAADnVQLjRVdGHF9Tzgmpf2LHZc2p1fXgneUNbMOhT42GQPCS0g@mail.gmail.com>
-Subject: Re: Inlining migrate_disable/enable. Was: [PATCH bpf-next v2 02/18]
- x86,bpf: add bpf_global_caller for global trampoline
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Menglong Dong <menglong.dong@linux.dev>, 
-	Steven Rostedt <rostedt@goodmis.org>, Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, 
-	LKML <linux-kernel@vger.kernel.org>, Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bpftool: add kernel.kptr_restrict hint for no
+ instructions
+To: Vincent Li <vincent.mc.li@gmail.com>, bpf@vger.kernel.org,
+ Daniel Borkmann <daniel@iogearbox.net>
+References: <20250808145133.404799-1-vincent.mc.li@gmail.com>
+From: Quentin Monnet <qmo@kernel.org>
+Content-Language: en-GB
+In-Reply-To: <20250808145133.404799-1-vincent.mc.li@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Aug 7, 2025 at 11:32=E2=80=AFPM Menglong Dong <menglong8.dong@gmail=
-.com> wrote:
->
-> On Fri, Aug 8, 2025 at 8:58=E2=80=AFAM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> [......]
-> > > +{
-> > > +    DEFINE(RQ_nr_pinned, offsetof(struct rq, nr_pinned));
-> >
-> > This part looks nice and sweet. Not sure what you were concerned about.
-> >
-> > Respin it as a proper patch targeting tip tree.
-> >
-> > And explain the motivation in commit log with detailed
-> > 'perf report' before/after along with 111M/s to 121M/s speed up,
-> >
-> > I suspect with my other __set_cpus_allowed_ptr() suggestion
-> > the speed up should be even bigger.
->
-> Much better.
->
-> Before:
-> fentry         :  113.030 =C2=B1 0.149M/s
-> fentry         :  112.501 =C2=B1 0.187M/s
-> fentry         :  112.828 =C2=B1 0.267M/s
-> fentry         :  115.287 =C2=B1 0.241M/s
->
-> After:
-> fentry         :  143.644 =C2=B1 0.670M/s
-> fentry         :  149.764 =C2=B1 0.362M/s
-> fentry         :  149.642 =C2=B1 0.156M/s
-> fentry         :  145.263 =C2=B1 0.221M/s
-> fentry         :  145.558 =C2=B1 0.145M/s
+Please run ./scripts/get_maintainer.pl and Cc all maintainers for your
+future submissions, in this case: all BPF maintainers/reviewers.
 
-Nice!
+On 08/08/2025 15:51, Vincent Li wrote:
+> from bpftool github repo issue [0], when Linux distribution
+> kernel.kptr_restrict is set to 2, bpftool prog dump jited returns "no
+> instructions returned", this message can be puzzling to bpftool users
+> who is not familiar with kernel BPF internal, so add small hint for
+> bpftool users to check kernel.kptr_restrict setting. Set
+> kernel.kptr_restrict to expose kernel address to allow bpftool prog
+> dump jited to dump the jited bpf program instructions.
+> 
+> [0]: https://github.com/libbpf/bpftool/issues/184
+> 
+> Signed-off-by: Vincent Li <vincent.mc.li@gmail.com.
+> ---
+>  tools/bpf/bpftool/prog.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+> index 9722d841abc0..7d2337511284 100644
+> --- a/tools/bpf/bpftool/prog.c
+> +++ b/tools/bpf/bpftool/prog.c
+> @@ -714,7 +714,7 @@ prog_dump(struct bpf_prog_info *info, enum dump_mode mode,
+>  
+>  	if (mode == DUMP_JITED) {
+>  		if (info->jited_prog_len == 0 || !info->jited_prog_insns) {
+> -			p_info("no instructions returned");
+> +			p_info("no instructions returned: set kernel.kptr_restrict to expose kernel addresses");
+>  			return -1;
+>  		}
+>  		buf = u64_to_ptr(info->jited_prog_insns);
+
+
+Thank you Vincent!
+
+We have the same hint for the xlated dump some 7 lines further in the
+file. As we discussed off-list, this hint was initially printed for both
+cases, JITed and xlated dump, since commit 7105e828c087 ("bpf: allow for
+correlation of maps and helpers in dump") from Daniel, back in 2017. It
+was kept for the xlated dump only after commit cae73f233923 ("bpftool:
+use bpf_program__get_prog_info_linear() in prog.c:do_dump()"), I believe
+by accident.
+
+From what I understand, the kptr restriction should not be relevant in
+the case of xlated dump (it does change the information we can print -
+it prevents us from retrieving __bpf_call_base from ksyms - but should
+not prevent bpftool from retrieving instructions entirely). Daniel, it's
+been a while, but do you remember why you printed it for xlated dumps
+too? If not, we should probably just keep the hint for the JITed case.
+
+Thanks,
+Quentin
 
