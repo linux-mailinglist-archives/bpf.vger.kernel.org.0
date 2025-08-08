@@ -1,131 +1,132 @@
-Return-Path: <bpf+bounces-65263-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65264-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9475B1E7AC
-	for <lists+bpf@lfdr.de>; Fri,  8 Aug 2025 13:48:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0864FB1EA42
+	for <lists+bpf@lfdr.de>; Fri,  8 Aug 2025 16:21:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8531623A53
-	for <lists+bpf@lfdr.de>; Fri,  8 Aug 2025 11:48:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EB5D3B4B85
+	for <lists+bpf@lfdr.de>; Fri,  8 Aug 2025 14:21:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01FE0275AE0;
-	Fri,  8 Aug 2025 11:47:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6A9827EFFD;
+	Fri,  8 Aug 2025 14:21:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=readmodwrite-com.20230601.gappssmtp.com header.i=@readmodwrite-com.20230601.gappssmtp.com header.b="PZj0p3P5"
 X-Original-To: bpf@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 852262750E5;
-	Fri,  8 Aug 2025 11:47:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19FFA246BCD
+	for <bpf@vger.kernel.org>; Fri,  8 Aug 2025 14:21:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754653660; cv=none; b=UeL7F5nAH77wMORWhbkpm2nTUF8bQMdPhm0mLW/tzAEOXwvYCPFwoXccGM9VNYeBlX9e5WurSH4tSzGb3AOhGOgpAxHRmFcIPQ0Iyulr6LT90qU0/xbkDJxj5+3cdC4BVLdoIIOqo7Chmf0ygN9AyXz0cIGbKygtnT4MUgYR86k=
+	t=1754662888; cv=none; b=dHHhH0YCq60bo5IfIbctaRdqGX8PP/birnJnWZ9MHpY0RKJLlNoNih2PsJKDPSH/0vzbYRd2u8I8oBC/bSb91xuD6htozHtMwGG9o2bNCRBZTE8+tQ6MmuJsgm8kgyl2LpO3jagfnp8duRi+rpIb5upEVmZJHZcOgQdoFhzW5ac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754653660; c=relaxed/simple;
-	bh=fw0LMFAx6/CelKIeGgsPTOu4keOgrwh72hmn0s1QYnE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iAMsMJey+xauUicgPRJndYf+xF6GA2omgsqjK1/H1QXrZDB/0t+auhvXEkY+8WS1kLCh42of82mknYI1hOI+TkUH3okuThBdaguOzQ8FK9ROIBvbaZeS5WN7JGg4P9KcB1u4DCZNd6Vbdcj8FOZUF+M3Q6A2fAOPXVIeRYze1ig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 72FF016F8;
-	Fri,  8 Aug 2025 04:47:28 -0700 (PDT)
-Received: from localhost (e132581.arm.com [10.1.196.87])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 290483F673;
-	Fri,  8 Aug 2025 04:47:36 -0700 (PDT)
-Date: Fri, 8 Aug 2025 12:47:34 +0100
-From: Leo Yan <leo.yan@arm.com>
-To: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-	Ian Rogers <irogers@google.com>, KP Singh <kpsingh@kernel.org>,
-	Matt Bobrowski <mattbobrowski@google.com>,
-	Song Liu <song@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	James Clark <james.clark@linaro.org>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Mike Leach <mike.leach@linaro.org>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/6] perf auxtrace: Support AUX pause and resume with
- BPF
-Message-ID: <20250808114734.GB3420125@e132581.arm.com>
-References: <20250725-perf_aux_pause_resume_bpf_rebase-v3-0-9fc84c0f4b3a@arm.com>
- <fd7c39d2-64b4-480e-8a29-abefcdc7d10a@intel.com>
- <20250730182623.GE143191@e132581.arm.com>
- <0a0ed9d4-6511-4f0b-868f-22a3f95697f8@intel.com>
+	s=arc-20240116; t=1754662888; c=relaxed/simple;
+	bh=guHzSvaBeM/USIv5SatPspIVxLVMpHFVg5Q5uwqdIbc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mjEm2wqEJUQpfH4kHubgl5xP2MMMLHwmykGFBWRWwOFQQcnQZxsJoER/MqJuDbEEgb1ikk2r+s0Ellp1gmqU4kuPHEVv6iufE7fCe02wWb4dZg3YVkSXc61i65LrD/YjzmxebPjrV+Mp8CNGvQVuH6v1vcqgwrEVE23zhjDk2UQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=readmodwrite.com; spf=none smtp.mailfrom=readmodwrite.com; dkim=pass (2048-bit key) header.d=readmodwrite-com.20230601.gappssmtp.com header.i=@readmodwrite-com.20230601.gappssmtp.com header.b=PZj0p3P5; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=readmodwrite.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=readmodwrite.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-23ffdea3575so15041925ad.2
+        for <bpf@vger.kernel.org>; Fri, 08 Aug 2025 07:21:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=readmodwrite-com.20230601.gappssmtp.com; s=20230601; t=1754662886; x=1755267686; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=guHzSvaBeM/USIv5SatPspIVxLVMpHFVg5Q5uwqdIbc=;
+        b=PZj0p3P5CBkpC1ECOz705VGFb8J6RNwNlXIudjLxUC7dW8mRAUK741EnSstTlbl79W
+         j2NuDXxtVb8wAAe+GsljSTGc4JNhg6tPJeXLJCSena9bj7oR0yHhOE6HjwvNCLwXxlGt
+         XNxUUza85f4MQBE+tnGrqiY1/yolvyryy19/SZLwUaO6ouNfZTRp060znR6ZEqaW3oCz
+         SdYFPb2g3pG1LyChwiQH+E1pEv1MEOtlzlub24n7r6YCH7Eav0NRMK9iWCX3BgiD/Yrt
+         SrOA6FqtAqE2j4dI06vYGeY4frLBiBLjCUC3VEzzMuRUUBQ8TjKxRud0ctjHkrH7aqWK
+         /XBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754662886; x=1755267686;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=guHzSvaBeM/USIv5SatPspIVxLVMpHFVg5Q5uwqdIbc=;
+        b=TKm+Tufq9ADn5jDcvHXYpYlOkteZYZul4eMqBna877afoUWiXpcblhA/yVPC8a+5nL
+         6tIGkhvcpgHgdvucfUVktDJk9TU36JP0u4ZlQ4qiPCkPeLNit4+pViPf2fRe7yW4Bgus
+         49J8T+32AHgGyBgwYxP6s0YpD7otyik1eyCXJTzumoPGXmm4XSodsdvJjW/viPL5BxF9
+         7Br6HjPn3fwmeLz6t64/ufy/y2QOzyJ1bm56hoP+yxva2MB2zpqahsPtmc9hj//CeQVp
+         wt16jH847knSptA3Pzzqxj88zdXrOUkDOhPcF48r6jndG4wMOoG5U318jdeVkLH+q8mm
+         mTWw==
+X-Forwarded-Encrypted: i=1; AJvYcCVQvUT8gayXMELvmlMcDsyODsYZpTZyGGpEioScVewliXOnn8QbEqhrJIR43MmYOZQx3yc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YziqyHn5hCVv27ErdSzAoHvQ/Zt0a9yZQ6TLK3vVEL+EbAUR2vA
+	XRyGE5lte7z5R+x4hJ0ZCWqTbgVImWxGk0euOEp9uj/j2wbbDjpzVAQVrnpd8BOQUKbOKZI4Cy/
+	PJrGmgJQNSE7qY/qIFMdkvh4T2MouAfLGwbcOud/zMQ==
+X-Gm-Gg: ASbGnct6K31pMhrP7kUGLJ/AUQ1Hum99KO8NKcYxxaukudHmccKu7S4zvrpoabNWFrP
+	HgojHf1dTV9P8/jZMXoay/J8E0bKqYqrodrukfr7FwLKUXQdcfppgSYUVbL7G60UKtffrjXrmyx
+	UY6NxrNvy/w922LDvz9poah4fQzDbJmAJb7/5mZjKK+FHGXwOKHoikc55rqCzwvHUEz9EmyhJO1
+	+cKTBe22PfF9MAXIJ6+Y8ooCL94fhbvMw==
+X-Google-Smtp-Source: AGHT+IFmZBg5ZwAP49VEb5vbGDIowxD/ct5MdC1b9On5aGdv3/h76JvUwtRiU/cQG4Jpl3vV708BLdqG7GyflYMwLpo=
+X-Received: by 2002:a17:902:fc8f:b0:242:b42b:1335 with SMTP id
+ d9443c01a7336-242c2059ca6mr52927975ad.22.1754662886384; Fri, 08 Aug 2025
+ 07:21:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0a0ed9d4-6511-4f0b-868f-22a3f95697f8@intel.com>
+References: <20250722150152.1158205-1-matt@readmodwrite.com>
+ <CAADnVQ+rLJwKVbhd6LyGxDQwGUfg9EANcA5wOpA3C3pjaLdRQw@mail.gmail.com>
+ <CAENh_SS2R3aQByV_=WRCO=ZHknk_+pV7RhXA4qx5OGMBN1SnOA@mail.gmail.com> <CAADnVQLnicTicjJhH8gUJK+mpngg5rVoJuQGMiypwtmyC01ZOw@mail.gmail.com>
+In-Reply-To: <CAADnVQLnicTicjJhH8gUJK+mpngg5rVoJuQGMiypwtmyC01ZOw@mail.gmail.com>
+From: Matt Fleming <matt@readmodwrite.com>
+Date: Fri, 8 Aug 2025 15:21:15 +0100
+X-Gm-Features: Ac12FXx7v-SSukGf47arwGF9TbWihsALELCDJDlaUcJ6XfDaJwfnJlT_e7TVQHE
+Message-ID: <CAENh_SRxK56Xr1=4MX4GhZuc0GF4z5+Q8VueTK0LDLj3wg_zXg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3] selftests/bpf: Add LPM trie microbenchmarks
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	kernel-team <kernel-team@cloudflare.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, Network Development <netdev@vger.kernel.org>, 
+	Matt Fleming <mfleming@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 05, 2025 at 10:16:29PM +0300, Adrian Hunter wrote:
-> On 30/07/2025 21:26, Leo Yan wrote:
-> > Hi Adrian,
-> > 
-> > On Mon, Jul 28, 2025 at 08:02:51PM +0300, Adrian Hunter wrote:
-> >> On 25/07/2025 12:59, Leo Yan wrote:
-> >>> This series extends Perf for fine-grained tracing by using BPF program
-> >>> to pause and resume AUX tracing. The BPF program can be attached to
-> >>> tracepoints (including ftrace tracepoints and dynamic tracepoints, like
-> >>> kprobe, kretprobe, uprobe and uretprobe).
-> >>
-> >> Using eBPF to pause/resume AUX tracing seems like a great idea.
-> >>
-> >> AFAICT with this patch set, there is just support for pause/resume
-> >> much like what could be done directly without eBPF, so I wonder if you
-> >> could share a bit more on how you see this evolving, and what your
-> >> future plans are?
-> > 
-> > IIUC, here you mean the tool can use `perf probe` to firstly create
-> > probes, then enable tracepoints as PMU event for AUX pause and resume.
-> 
-> Yes, like:
-> 
-> $ sudo perf probe 'do_sys_openat2 how->flags how->mode'
-> Added new event:
->   probe:do_sys_openat2 (on do_sys_openat2 with flags=how->flags mode=how->mode)
-> 
-> You can now use it in all perf tools, such as:
-> 
->         perf record -e probe:do_sys_openat2 -aR sleep 1
-> 
-> $ sudo perf probe do_sys_openat2%return
-> Added new event:
->   probe:do_sys_openat2__return (on do_sys_openat2%return)
-> 
-> You can now use it in all perf tools, such as:
-> 
->         perf record -e probe:do_sys_openat2__return -aR sleep 1
-> 
-> $ sudo perf record --kcore -e intel_pt/aux-action=start-paused/k -e probe:do_sys_openat2/aux-action=resume/ --filter='flags==0x98800' -e probe:do_sys_openat2__return/aux-action=pause/ -- ls
+On Thu, Jul 31, 2025 at 5:41=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> well, random-key update when the map is full is also quite different from
+> random-key update when the map is empty.
+>
+> Instead doing an update from user space do timed ops:
+> 1 start with empty map, update (aka insert) all keys sequentially
+> 2 lookup all sequentially
+> 3 delete all sequentially
+> 4 update (aka insert) all sequentially
+> 5 lookup random
+> 6 update random
+> 7 delete all random
+>
+> The elapsed time for 1 and 4 should be exactly the same.
+> While all others might have differences,
+> but all can be compared to each other and reasoned about.
 
-Thanks a lot for sharing the commands. I was able to replicate them
-using CoreSight.
+Having both sequential and random access for the benchmarks is fine,
+but as far as I can tell the scheme you propose is not how the bpf
+bench framework is implemented.
 
-Given that we can achieve the same result without using BPF, I am not
-sure how useful this series is. It may give us a base for exploring
-profiling that combines AUX trace and BPF, but I am fine with holding
-on until we have clear requirements for it.
+Plus, handing off a map between subtests is brittle and prone to
+error. What if I just want to investigate the sequential access update
+time? The cost of the most expensive op (probably delete) is going to
+dwarf all over timings making it difficult to separate them and this
+scheme is going to be susceptible to noise if I can't crank up the
+number of iterations without altering the number of entries in the
+map. Microbenchmarks mitigate noise/run-to-run variance by doing a
+single op over and over again.
 
-I would get suggestion from you and maintainers before proceeding
-further.
-
-Thanks,
-Leo
+I agree we need a better approach to timing deletes than what I
+suggested but I don't think is it.
 
