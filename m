@@ -1,220 +1,154 @@
-Return-Path: <bpf+bounces-65277-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65278-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F010B1EDFE
-	for <lists+bpf@lfdr.de>; Fri,  8 Aug 2025 19:44:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8825B1EE5D
+	for <lists+bpf@lfdr.de>; Fri,  8 Aug 2025 20:28:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDE3B3ACBDC
-	for <lists+bpf@lfdr.de>; Fri,  8 Aug 2025 17:44:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A90861C204CB
+	for <lists+bpf@lfdr.de>; Fri,  8 Aug 2025 18:28:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D574E1E9B2D;
-	Fri,  8 Aug 2025 17:44:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7823218EBF;
+	Fri,  8 Aug 2025 18:28:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rv3DNxZu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kCDYOHAa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A14B676410;
-	Fri,  8 Aug 2025 17:44:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26E7521E0AF;
+	Fri,  8 Aug 2025 18:28:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754675077; cv=none; b=I4pdtTSOCkcKoJuVWCaHYf4DeCrfIYDLVsZleDjDIYL0D9MqYNIF1PldE75CeqOz9JyZJggKcF46hUpb4RAWwfVFxiwg5wM7smR/NsEhf/rj+7ABv5KqGEYq+muOEcaHbjPvw/qTzenh/mEi9BSE5HpAAMkkN0Ke0/lD4dmIQtU=
+	t=1754677699; cv=none; b=jeB1qWC8XUWdmA/CdV6u+zCgOQNWBj88oX0M7Rgec7XxryFEv3w4x1VdxsX1muLWrfAtzhqECUW1ZfDQfqhJ87OxNg+4H/B/0RVcQrRw/H4nikd4aSktOhgKTrx+xSf+zUOxQPSG1UTl9lk18eS/XYEbqpK4kAeEVaRqXnyxRso=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754675077; c=relaxed/simple;
-	bh=s+LBECE+2LzYLSmkDOJlVd7/BbbnwCvUyReHbQDf/Fk=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sqltoji1ZIMQMdzKWMR16pwwKUXJZdBE0OkCT5KyOQYOAiwbp3kbU0ZpYhsgHrrKWEqAveibafATqZ7+CaifxxqGivFMMoqxvbFqXMpuPhHB3jyqx6S1nRmq14wDFSseb2IBemD5HbQfwDZbr00qQ4zhD8cEs7OZ5nS7AbH5YTE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rv3DNxZu; arc=none smtp.client-ip=209.85.218.43
+	s=arc-20240116; t=1754677699; c=relaxed/simple;
+	bh=IU/5ZcYtXMbWk4ywHw4XgakQiLLgS8g9FlS5re02SXc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=NGO4MMLyQ+LvdQtZwYgrzEQqgrV/Akn27z80xuy9pIwkhZCW9MNvvqUM9CcMDxlkr2/URjzWJumG4sVZLK+JNCISg9FO/kUXHNzol5h+j9bFeBL0kK8OyyhAC3AP0NRM5rQu80z6PbiQa4NCT7GTmvGQ7c+Yv9Q0kvlKJjvKdG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kCDYOHAa; arc=none smtp.client-ip=209.85.215.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-af96524c5a9so334583866b.1;
-        Fri, 08 Aug 2025 10:44:35 -0700 (PDT)
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-b429b2470b7so1358402a12.3;
+        Fri, 08 Aug 2025 11:28:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754675074; x=1755279874; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=3bf5nYdMvJMDEHtJmd0hkQpyGsljs8nCBx7SGOq0gFM=;
-        b=Rv3DNxZuhILjZodS3jBgXh/WAnN++7pEsDhl1n1GKR3ngKhQ8l7Qz0+U8zDZI2Mhrd
-         GT3XorkfBtjJ2iBcjDZvSrL/r5fzRnjpdg5Y9j9g0ag0A3KWWkqKilHw6YuL1RWRqWj8
-         FLx24zq/QP52TFidudn9XZcpFRSTZxbUn8/LLFo5hGi/UupiKTp/z5aVg27IWytAkZiH
-         iAbfX4mwhG71uH/ReQwli7FjC4Ctxli2mll6uYvt0jz33ecSbXp7AfjBkys3P1/GG2Fl
-         PLyi1K2dir+b+f6Zl/iomKez/KKyPMMh029qEOXoygl4FFOAxlyr5an5bw8Wj63neBHX
-         carw==
+        d=gmail.com; s=20230601; t=1754677697; x=1755282497; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=5HSh4b6bYfxkbXoMTmNogaldVZD/3Anv8CmkH0YyIYI=;
+        b=kCDYOHAapLRq602rk8KJIB5FGTA5eSspMzOO1zYAIf8QXAcCCSixxsEfPeZ79SvNbI
+         5eZMOVvAxqKGxqXf553rsxPX0nXvd0LgDPX+xXROktrlY2xJzqEWBiKZjuL7xU0Xooyd
+         oAhy95TL+YWliOHlHS+GmneRNzkfdgKMPbSPfDEQBOdjV7xIpi/Chr4FuhJr5IHxjDB5
+         i9ebqL4av7yE01L9vRl6mG4TQTWBBCTFPrgbX3v56RFKHhgqnbatG9/Z7A4MNFFiW1Nn
+         3Oj9T+DUC6AZvcL75kq9MP1MicjxQNGZHV2TrZmFNhAXAkxzYgoV8T710Pe/07uxLjQg
+         4C+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754675074; x=1755279874;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3bf5nYdMvJMDEHtJmd0hkQpyGsljs8nCBx7SGOq0gFM=;
-        b=gTRSnM4f7I+Ht5HM3jxWF9tQ5nuSH2yBOXHS4Qxt4f9sSbMqpDFOindH4dcoevM8Lj
-         qA4Zyg3VyZV3q4sAofbGI8w6AecOaif1wLugqIyS3/3n8Tk0d+LPV51oWeK+1z6z1eJM
-         2MWuqKGW5qXNI3O4g6WmE3lISXlvuQWB/sLy4RWG8FmI65wPdILhoDoU7J91bygMX6jB
-         KFT6TUiekr/e4VSyYZL39cNvuFurQq6pD7Vh0h+S5N/eTXYokDENU2x0RtB1+k74P1Ti
-         Af/m+a5Fpt9+9+e5cZFpcukD4LF2CZ5IdEPCvyaNoTTmm2pk7RAkm0yTz9CDEBe/WD8p
-         PNqw==
-X-Forwarded-Encrypted: i=1; AJvYcCUyHGIUqPKT9VNogI3Schs+TWtOwFi/RuGM8jh4QIUucNBMymdw+qclcVTeejyRpvqyVIFfCfmheNWZB8oDJKg3eqTQ@vger.kernel.org, AJvYcCVYZuXzh+uNKAZsotY3m4zuYkYVm4zZXzH1A2USJyQjaYYd83KwUpE4FSVsat+Z2xPH4r6d9y1h2kJsMzyO@vger.kernel.org, AJvYcCVvLoN32KUYCHRAmVmN2sWRaUUHyt72V8OQEUDnWTQDLh2vmukHjxIUjsIKr+qfcVzRac0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxQB8PnfJU/o1Zl2T0TjIakN0lXGNRXbrfNjqCgKVuTeyVLuF2P
-	enhW+ksibUKCyScjk61PgqjsnjbSUm/LgXOQrLYlDlJv9+PIXa5bvjju
-X-Gm-Gg: ASbGnctwXhCORcRakM9Wl+97F7GbsXr7EX82yXSnmg/wRx67REgnSmYXIrQGOSrVwRH
-	I8a1h8sODsysozcDTtJhgROBS3Vs0Sp62h1SFQt91clv8/qlHcVIKAMOITU5fv8w6zNbwulJnuA
-	tldKJWqyMiodQ8YIgiHWNAvRNJ1qKjimrG3TcgEz8uuS7Ws1vWm7nLEGKl26PQSvT+sqCH3jEr+
-	JdGKi/pUfFmY+HMh1hU2Wv0qB20xtznJ6CrA1NdVtusmZtEG1SERcg8JEh/ijTRMngDZyAco2rl
-	OnGHG8zoHEpZuyaGxCfhPKG1SuuyA9Jj5TXHKhYEokvGTuQvydVoNV38Dk/gPNwSbNX3r+g/mV2
-	8dzEx5LAinF322A==
-X-Google-Smtp-Source: AGHT+IEdQTZfGPAfeBpMEHztO58s9jOjbs9/AN6r5ls0Ur7sxq/Pp19NE99l/pTadKgrKQ13wTytEA==
-X-Received: by 2002:a17:906:f59f:b0:af9:1be8:c2aa with SMTP id a640c23a62f3a-af9c6506ab9mr365820666b.45.1754675073582;
-        Fri, 08 Aug 2025 10:44:33 -0700 (PDT)
-Received: from krava ([2a00:102a:406f:c1c4:19f6:67fa:c879:8862])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-af91a076aecsm1518238066b.9.2025.08.08.10.44.31
+        d=1e100.net; s=20230601; t=1754677697; x=1755282497;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5HSh4b6bYfxkbXoMTmNogaldVZD/3Anv8CmkH0YyIYI=;
+        b=hkNOuE51Ws9LkGP2Y7D70JtpzzsodXRVyo6WL2LoRzW2r3mAKZT/Q6iHUA2i2p43HP
+         rkm7foDCfro/vvLR0oxb4cAhICzGGcXP0y3ggnVS2p1JMruUdUYGFSNSkjNCxQKr20DJ
+         txlT3hRBqmHYMIBCx8rUwkWPeFmCJE8cYFp8truIZq/RCIAFVX+vhEu374yVCWNxOaLn
+         PUywZcRiNXGiYw7VA86YSTG6UWLuLnA6uJmIGeXM/v3VnbiEtKfxzS+dYiecQCVaZ5BH
+         Owqq+E7UBRHekgIMmA3Rpa1bu1lZl1kdRdFwdSqFcYdXKMCCyWIsL+Tgfr5L0pdt1d03
+         a/qg==
+X-Forwarded-Encrypted: i=1; AJvYcCWRIQIs5GHALuDrtqzN8BZp0aqEwiqMNfV2v6lGC59U+bnGFHAHOXLHW2P5ymEnJmdt3wWrlxP8hA==@vger.kernel.org, AJvYcCXQMFh6RKBTEFHAGZXMWpg5W9JOAuqEf/NA99f4T+zXUVTD20zfLvnP1ct+QLsH/JmbMbI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy2Pkk46gCMpPulV5+r2HHlrkujr4tlgrIMMfilpn/A+hd7wD+j
+	476InSlquezt0PXPIpG+ZEMfUmAB9Ldcwn4RJHq0QMQpzBjZQsYBAUGI
+X-Gm-Gg: ASbGncvfXjUNmfZkjUAjADtl5Elbev9ZegbvNgAxlg6dCe6UNumsjhAHrxr6nYXzfjX
+	yCnCdbyOrzdmTI0AjDdWxUCz6wyInz9r2xLh1Ea4N0lSVpqbYxYUQMvDT+lsbI+4oUMSo/dndDC
+	1GPjSE5Q4D00ymQfhp7TirsDEkBuedJgml/sR5Bi73Kk2cSF5p54IBON21vZ/YEIr/+z6a/v/kG
+	/6ZtV9KE7nImAJ0Jpn/qrwRXlRFjCDrPMQkvk++tls54P881GeohesRKBkgvWuwRyd8oBAFRwef
+	kYxLwk2cw81URLSV/560l67xEFuAqVoTWJ6heN8/qG51RR6V0dnjFfm3UnYjvpdzWoJy5NCTa1f
+	7srZMM9aq0nBl67xLVO4=
+X-Google-Smtp-Source: AGHT+IFPWI1jcoxgfjLC5ivAgojhXJ9IG0X4OQUpiKffiSyKGn7PRM9NLv/NgFtqbeR4eVYdMSjo/Q==
+X-Received: by 2002:a17:903:4b43:b0:240:25f3:2115 with SMTP id d9443c01a7336-242c1ff406cmr61292295ad.12.1754677697342;
+        Fri, 08 Aug 2025 11:28:17 -0700 (PDT)
+Received: from [192.168.0.226] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-241d1ef5934sm214251505ad.21.2025.08.08.11.28.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Aug 2025 10:44:33 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 8 Aug 2025 19:44:29 +0200
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Jiri Olsa <olsajiri@gmail.com>,
-	Oleg Nesterov <oleg@redhat.com>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	x86@kernel.org, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	David Laight <David.Laight@aculab.com>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
-	Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCHv6 perf/core 10/22] uprobes/x86: Add support to optimize
- uprobes
-Message-ID: <aJY3fXqnD7MkxDMm@krava>
-References: <20250720112133.244369-1-jolsa@kernel.org>
- <20250720112133.244369-11-jolsa@kernel.org>
- <20250725191318.554f2f3afe27584e03a0eaa2@kernel.org>
- <aIftAJg1hZGYp4NF@krava>
+        Fri, 08 Aug 2025 11:28:16 -0700 (PDT)
+Message-ID: <b297444e23c42caeab254c90fa91f46f75212e29.camel@gmail.com>
+Subject: Re: [RFC 0/4] BTF archive with unmodified pahole+toolchain
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Arnaldo Carvalho de
+ Melo <acme@kernel.org>, nick.alcock@oracle.com, Alan Maguire
+ <alan.maguire@oracle.com>
+Cc: Jiri Olsa <jolsa@kernel.org>, Clark Williams <williams@redhat.com>, Kate
+ Carcia <kcarcia@redhat.com>, dwarves <dwarves@vger.kernel.org>, Arnaldo
+ Carvalho de Melo	 <acme@redhat.com>, Andrii Nakryiko
+ <andrii.nakryiko@gmail.com>, Yonghong Song	 <yonghong.song@linux.dev>,
+ "Jose E. Marchesi" <jose.marchesi@oracle.com>,  Nick Alcock
+ <nick.alcock@oracle.com>, Namhyung Kim <namhyung@kernel.org>, bpf
+ <bpf@vger.kernel.org>
+Date: Fri, 08 Aug 2025 11:28:13 -0700
+In-Reply-To: <CAADnVQ+cvvHN9CunLP03yRFKz2YJirmF0j80-fZ0A-8aVVopPg@mail.gmail.com>
+References: <20250807182538.136498-1-acme@kernel.org>
+	 <CAADnVQ+cvvHN9CunLP03yRFKz2YJirmF0j80-fZ0A-8aVVopPg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aIftAJg1hZGYp4NF@krava>
 
-ping, thanks
+On Thu, 2025-08-07 at 19:09 -0700, Alexei Starovoitov wrote:
 
-On Mon, Jul 28, 2025 at 11:34:56PM +0200, Jiri Olsa wrote:
-> On Fri, Jul 25, 2025 at 07:13:18PM +0900, Masami Hiramatsu wrote:
-> > On Sun, 20 Jul 2025 13:21:20 +0200
-> > Jiri Olsa <jolsa@kernel.org> wrote:
-> > 
-> > > Putting together all the previously added pieces to support optimized
-> > > uprobes on top of 5-byte nop instruction.
-> > > 
-> > > The current uprobe execution goes through following:
-> > > 
-> > >   - installs breakpoint instruction over original instruction
-> > >   - exception handler hit and calls related uprobe consumers
-> > >   - and either simulates original instruction or does out of line single step
-> > >     execution of it
-> > >   - returns to user space
-> > > 
-> > > The optimized uprobe path does following:
-> > > 
-> > >   - checks the original instruction is 5-byte nop (plus other checks)
-> > >   - adds (or uses existing) user space trampoline with uprobe syscall
-> > >   - overwrites original instruction (5-byte nop) with call to user space
-> > >     trampoline
-> > >   - the user space trampoline executes uprobe syscall that calls related uprobe
-> > >     consumers
-> > >   - trampoline returns back to next instruction
-> > > 
-> > > This approach won't speed up all uprobes as it's limited to using nop5 as
-> > > original instruction, but we plan to use nop5 as USDT probe instruction
-> > > (which currently uses single byte nop) and speed up the USDT probes.
-> > > 
-> > > The arch_uprobe_optimize triggers the uprobe optimization and is called after
-> > > first uprobe hit. I originally had it called on uprobe installation but then
-> > > it clashed with elf loader, because the user space trampoline was added in a
-> > > place where loader might need to put elf segments, so I decided to do it after
-> > > first uprobe hit when loading is done.
-> > > 
-> > > The uprobe is un-optimized in arch specific set_orig_insn call.
-> > > 
-> > > The instruction overwrite is x86 arch specific and needs to go through 3 updates:
-> > > (on top of nop5 instruction)
-> > > 
-> > >   - write int3 into 1st byte
-> > >   - write last 4 bytes of the call instruction
-> > >   - update the call instruction opcode
-> > > 
-> > > And cleanup goes though similar reverse stages:
-> > > 
-> > >   - overwrite call opcode with breakpoint (int3)
-> > >   - write last 4 bytes of the nop5 instruction
-> > >   - write the nop5 first instruction byte
-> > > 
-> > > We do not unmap and release uprobe trampoline when it's no longer needed,
-> > > because there's no easy way to make sure none of the threads is still
-> > > inside the trampoline. But we do not waste memory, because there's just
-> > > single page for all the uprobe trampoline mappings.
-> > > 
-> > > We do waste frame on page mapping for every 4GB by keeping the uprobe
-> > > trampoline page mapped, but that seems ok.
-> > > 
-> > > We take the benefit from the fact that set_swbp and set_orig_insn are
-> > > called under mmap_write_lock(mm), so we can use the current instruction
-> > > as the state the uprobe is in - nop5/breakpoint/call trampoline -
-> > > and decide the needed action (optimize/un-optimize) based on that.
-> > > 
-> > > Attaching the speed up from benchs/run_bench_uprobes.sh script:
-> > > 
-> > > current:
-> > >         usermode-count :  152.604 ± 0.044M/s
-> > >         syscall-count  :   13.359 ± 0.042M/s
-> > > -->     uprobe-nop     :    3.229 ± 0.002M/s
-> > >         uprobe-push    :    3.086 ± 0.004M/s
-> > >         uprobe-ret     :    1.114 ± 0.004M/s
-> > >         uprobe-nop5    :    1.121 ± 0.005M/s
-> > >         uretprobe-nop  :    2.145 ± 0.002M/s
-> > >         uretprobe-push :    2.070 ± 0.001M/s
-> > >         uretprobe-ret  :    0.931 ± 0.001M/s
-> > >         uretprobe-nop5 :    0.957 ± 0.001M/s
-> > > 
-> > > after the change:
-> > >         usermode-count :  152.448 ± 0.244M/s
-> > >         syscall-count  :   14.321 ± 0.059M/s
-> > >         uprobe-nop     :    3.148 ± 0.007M/s
-> > >         uprobe-push    :    2.976 ± 0.004M/s
-> > >         uprobe-ret     :    1.068 ± 0.003M/s
-> > > -->     uprobe-nop5    :    7.038 ± 0.007M/s
-> > >         uretprobe-nop  :    2.109 ± 0.004M/s
-> > >         uretprobe-push :    2.035 ± 0.001M/s
-> > >         uretprobe-ret  :    0.908 ± 0.001M/s
-> > >         uretprobe-nop5 :    3.377 ± 0.009M/s
-> > > 
-> > > I see bit more speed up on Intel (above) compared to AMD. The big nop5
-> > > speed up is partly due to emulating nop5 and partly due to optimization.
-> > > 
-> > > The key speed up we do this for is the USDT switch from nop to nop5:
-> > >         uprobe-nop     :    3.148 ± 0.007M/s
-> > >         uprobe-nop5    :    7.038 ± 0.007M/s
-> > > 
-> > 
-> > This also looks good to me.
-> > 
-> > Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> 
-> thanks!
-> 
-> Peter, do you have more comments?
-> 
-> thanks,
-> jirka
+[...]
+
+> Before you jump into 1,2,3 let's discuss the end goal.
+> I think the assumption here is that this btf-for-each-.o approach
+> is supposed to speed up the build, right ?
+> pahole step on vmlinux is noticeable, but it's still a fraction
+> of three vmlinux linking steps.
+> How much are we realistically thinking to shave off of that pahole dedup =
+time?
+
+Hi Alan, Arnaldo, Nick,
+
+I'd like to second Alexei's question.
+In the cover letter Arnaldo points out that un-deduplicated BTF
+amounts for 325Mb, while total DWARF size is 365Mb.
+I tried measuring total amount of DWARF in my kernel building directory:
+
+  for f in $(find . -name "*.o" | grep -Ev '(scripts|vmlinux|tools|module-c=
+ommon)'); do \
+    readelf -SW $f | grep "\.debug";
+  done \
+  | awk 'BEGIN {val=3D0} {val +=3D strtonum("0x"$6)} END {printf("%d", val)=
+}' \
+  | numfmt --to=3Dsi
+
+And it says 845M.
+The size of DWARF sections in the final vmlinux is comparable to yours: 307=
+Mb.
+The total size of the generated binaries is 905Mb.
+So, unless the above calculations are messed up, the total gain here is:
+- save ~500Mb generated during build
+- save some time on pahole not needing to parse/convert DWARF
+
+Is this is what you are trying to achieve?
+
+In theory, having BTF handled completely by compiler and linker makes
+sense to me.  However, pahole is already here and it does the job.
+So, I see several drawbacks:
+- As you note, there would be two avenues to generate BTF now:
+  - DWARF + pahole
+  - BTF + pahole (replaced by BTF + ld at some point?)
+  This is a potential source of bugs.
+  Is the goal to forgo DWARF+pahole at some point in the future?
+- I assume that it is much faster to land changes in pahole compared
+  to changes in gcc, so future btf modifications/features might be a
+  bit harder to execute. Wdyt?
+
+Thanks,
+Eduard
 
