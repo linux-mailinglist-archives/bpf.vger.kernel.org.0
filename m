@@ -1,63 +1,69 @@
-Return-Path: <bpf+bounces-65298-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65299-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B832B1F5DC
-	for <lists+bpf@lfdr.de>; Sat,  9 Aug 2025 20:48:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80A7FB1F5EC
+	for <lists+bpf@lfdr.de>; Sat,  9 Aug 2025 20:51:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E4BD189A968
-	for <lists+bpf@lfdr.de>; Sat,  9 Aug 2025 18:48:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9549462560F
+	for <lists+bpf@lfdr.de>; Sat,  9 Aug 2025 18:50:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 077261F4621;
-	Sat,  9 Aug 2025 18:48:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 993232C08AB;
+	Sat,  9 Aug 2025 18:48:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="PeynmFru"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Zh+Nga31"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2043.outbound.protection.outlook.com [40.107.223.43])
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2044.outbound.protection.outlook.com [40.107.220.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E63701B3937;
-	Sat,  9 Aug 2025 18:48:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DF452D0C68;
+	Sat,  9 Aug 2025 18:48:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.44
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754765302; cv=fail; b=SdKFkK9z22oWxMwxaZ+vxOzf4/+iCLLt7yziUAYEQdDxTZHRkeJ1ad/ppVK/vazug/5/PQ3mq0+3ed39zP8r7lDxeqSep9aibQ7etbe1zrU/zXe4/xLMONrdb4ine5sseDo49KI8CwaRA8WLx7TeW+UBzqvauz8P6b3FM3BTTmQ=
+	t=1754765336; cv=fail; b=hNaWC/YS9V4qBPukeUb/L4rDH00Wlr8XAAUuTLBL+B1SUXx2mNellIcnPbNbj7kVJAhnBJkTghrqDiKQVQA4YFx2uINPzHQaTPNMwzKHQ/1h1VVRgF/q+3sXYh/hpNqf0F2IIx7zP9p3LL1yR67o2vcMCSr/5Hjmbj+L68yHPiM=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754765302; c=relaxed/simple;
-	bh=16qRD0VzOoftNGdcYp9e/G3Fdz5aDOO2u1EA5L6LRwI=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=dib8D0rBvLNMnqs+d0jSClYRwZhVE/O6rxwhuj6Q//rss09pbmkMSrcllHReD542gkXnMf29L7q/F4w9My+26LdOzs8y0vgx+WzIP85Hy0/r+XSFUE9R0X9JtIGJAVBkRlggiDlDrwqwUGzXVCs4Jcip3jXMYaWQxUyi1J70WSE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=PeynmFru; arc=fail smtp.client-ip=40.107.223.43
+	s=arc-20240116; t=1754765336; c=relaxed/simple;
+	bh=Ebev+Z60KYQfu49sWa+QTYaf7qEFeHBbLA8GNlPJ1g0=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=KLv7dPewVSHwk4cKAUso0Dxt6CvJAIbDedzvRzC4g4o0faKik/nbsT9pyUVJ5nDpbSqdCnqBGA855mFmTRyNJdyRB+TJ4L6tMQPb5Zs5cou1cmIaxkXQ4J3I2Y86ZnrjfymZyvLkX8NC30S/hYDLcz5GtngrKTE++LXdQcE7skQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Zh+Nga31; arc=fail smtp.client-ip=40.107.220.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=DVdh6LMbTEn5CGToiYFJY1KiPGW00RwY+tYP6gP+yP2DGi40cwtv+xSmck94meuXNWfVzu0PEJHomBVEJKM8ZINK4/mIzCus0jhGau3n4DFv6sfTkt/eN3yBjZbmy6+6D2k0VmD6GWl+Tc4U7pzxfpf6CofFmmHvk3oRBPea7iO9IPc1rodUawhPQeIuB/EhygsG5xAnMDrgKIqrf6zkTtP2eJSUkA2Lu6jpzogdP8ffEYb/QM62VdJhCFd9Zsg3qlk9nKiGKZ39fblbvwUsW6symHqA4ZQbw7osva63gOeh8D25PdWn7tpYk2TaE5XWWgLEhVDccw78EjktbeOTWg==
+ b=nwf8eJVcNFZ5Or6lrEjPB0/+WEdmmFxSvDadQHT6GaJdVTbOH5usP7pCV8WtDgbBUPhKnTcmeAQrFhqjTczbU0EGkx0I0WyYYmoBnrY6g1KTHmkpYp3l1pyub4tUPyc0wbd6Nq9cUNTeAKwCwphgTzQLmLg8XFKmhykQHaIyuwuRlCq3tmSWU+eXhK29iyY2SL4Ho/cpQ72iM3Ev72tRVer7yrYp8sj1U+N9z4EFW5uly98FUZDctIKyDu00vZkvZgusv7V28eBmSkpMxn7ppkT2fapBq9NCyVX0XD6/I1qWplUoBE7zRw0ryTjCmCdK1/cfbcNS9O1/WOp068d1gg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kVVkWBb9SNxh7a5/sR3lgKIDb/roxMJjlHgT66xk27g=;
- b=qdy6g7A1dr2pINQb6g7QGrv42bkK1HDGDZgMsqsDCexK/llnfbkRsgZQ8aF7FbnxGh8EUhQACJiLtw7RQVqPfCk+WudVFZykwOrGe+m6gMjIauXIienwNhe3TQp7w60kh3+/fD3c1tg5lMms4ketnJqeo7N8NgTKFBW7buKFswTlI1Yr9pUdqWZFkfUFxacDC8FX8VybncsbmKh2oiGh5Gah/J9UYK9gd0AkJ4D63KcxHDKFwM/JY28G3wF2aYjkVbUUYO3wgGCp3KzIvbckmix/FYcL4rAauuszT/TdfLMNqgH3ak2ezpGZuAMcRqKCw1bVTz3LxDkwIovG4WFomA==
+ bh=M5WUGDKZ/pwPNdpsepCF7GR1khVjxjyfRTqSzHam+eA=;
+ b=sUlvFoEs6jMMA/OebZuoKEHKrPFLjtOVHrutcSmpKcMxHAAwW3rPf9Q6LjeMdRU6wP18NWqr5abPSuSv/8r3bOczPZCB/JKKofhRz2xNyq19yMBrwaMJCnE7PZnJSGtMih/4T2m82WY2yGigKRaj+NVw0YJ0lpO8X4gopfKKdktJU5j+5u1/0Lszjiqkn4MDz7u5T3QDsMtxOiDpQVFSfxV3qZVtXuo5D4pb3I0lQzziBWKH2sgWJWV3W4g10CQ0X9RSV0Wtrew8pNs2bVBvNGxQBFO1eQ6Zv6nF8FOlEEs+7SWWesTBv7pueYuP21YUQAmMerDHoGvL9l5KNz5Ixg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kVVkWBb9SNxh7a5/sR3lgKIDb/roxMJjlHgT66xk27g=;
- b=PeynmFruFgdJvxUIJpKs/yY5jvEtwjPK2sDpoGuAsU5ydLhrliD6VXDecYfOdN+TaxP9nqX7ZHEKyO0azJHuIKEws8/Q9wsFU18LXgDw+4oyeLjJT0cu/S9tPNVMGl4WSqhSXh3A9NG+y4E9p6ZlXekdx+GEOIXOMfkclkWmeI0LOuOF2LT2anUVy27eW60HIIwXTsKvG7UAtEu3ozNCb+oQBV+pXBc+WbLCOFR87uckd+8SIkAaU7zb37kuRXG5EqxcUsyqU/KuS1943dKUpssQtKYHkRJuY+/Gx6MQJAmrZZmOC0P6vMjxfCdRVvfOxLvFFnMhOmwqe79Otqriwg==
+ bh=M5WUGDKZ/pwPNdpsepCF7GR1khVjxjyfRTqSzHam+eA=;
+ b=Zh+Nga31Gt2lDgRx/vjeFKL5GM8R3kXnme3K9kSEg7YGGFjcasIf3mbatte1BNzlHtKpU8xpTmrqdclZTY3MsnVzu0RXe3g9ZSGjr3QDjeRfkSxkjGqSIRzdhG4mEsCeBy9rCsEL45W+cLQOiDesJ+9yQ2vnDci2lf8bLl8R2j64b8FssvNKEBm/PHSKyD9sm/xQIc7UWkthBS0e8dALd21BykyY1H09+52yLLBrmU/zN01guQD0WZExEoPhag1sx06rL0M0FuIC6/TMNfR3vhLu92FB7R2Opgf56XPjf/p0bBUCTOl8CMpOrwoLPhQyOftmgCT1DGsN64IEVJSk2w==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
  by MW4PR12MB7310.namprd12.prod.outlook.com (2603:10b6:303:22c::15) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9009.20; Sat, 9 Aug
- 2025 18:48:16 +0000
+ 2025 18:48:51 +0000
 Received: from SN7PR12MB8059.namprd12.prod.outlook.com
  ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
  ([fe80::4ee2:654e:1fe8:4b91%7]) with mapi id 15.20.9009.017; Sat, 9 Aug 2025
- 18:48:16 +0000
+ 18:48:51 +0000
 From: Joel Fernandes <joelagnelf@nvidia.com>
-To: linux-kernel@vger.kernel.org
+To: linux-kernel@vger.kernel.org,
+	Tejun Heo <tj@kernel.org>,
+	David Vernet <void@manifault.com>,
+	Andrea Righi <arighi@nvidia.com>,
+	Changwoo Min <changwoo@igalia.com>,
+	Shuah Khan <shuah@kernel.org>
 Cc: Joel Fernandes <joelagnelf@nvidia.com>,
 	Ingo Molnar <mingo@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -68,19 +74,19 @@ Cc: Joel Fernandes <joelagnelf@nvidia.com>,
 	Ben Segall <bsegall@google.com>,
 	Mel Gorman <mgorman@suse.de>,
 	Valentin Schneider <vschneid@redhat.com>,
-	Tejun Heo <tj@kernel.org>,
-	David Vernet <void@manifault.com>,
-	Andrea Righi <arighi@nvidia.com>,
-	Changwoo Min <changwoo@igalia.com>,
+	sched-ext@lists.linux.dev,
+	linux-kselftest@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH -rebased 00/15] Add a deadline server for sched_ext tasks
-Date: Sat,  9 Aug 2025 14:47:45 -0400
-Message-Id: <20250809184800.129831-1-joelagnelf@nvidia.com>
+Subject: [PATCH -rebased 14/15] selftests/sched_ext: Add test for sched_ext dl_server
+Date: Sat,  9 Aug 2025 14:47:59 -0400
+Message-Id: <20250809184800.129831-15-joelagnelf@nvidia.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250809184800.129831-1-joelagnelf@nvidia.com>
+References: <20250809184800.129831-1-joelagnelf@nvidia.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: MN2PR10CA0027.namprd10.prod.outlook.com
- (2603:10b6:208:120::40) To SN7PR12MB8059.namprd12.prod.outlook.com
+X-ClientProxiedBy: BL1PR13CA0233.namprd13.prod.outlook.com
+ (2603:10b6:208:2bf::28) To SN7PR12MB8059.namprd12.prod.outlook.com
  (2603:10b6:806:32b::7)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -90,134 +96,356 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|MW4PR12MB7310:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3082cbc7-ad7f-49be-1d35-08ddd7754d2a
+X-MS-Office365-Filtering-Correlation-Id: 508eec35-919a-4b2a-0ce1-08ddd7756240
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014|7416014;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?U+6rykBa3Gv7/h9PWmx4SvJq68QsnIOcPtJEYSwc8eUuEdQI9l88Pz/K+o2s?=
- =?us-ascii?Q?uVnn3ne1B8t3SohzoOHE1/xSzsm5Ekh0ou19A7XMzgI1wO/FnJeP0/iUURz3?=
- =?us-ascii?Q?u7JoPaYEhrzrGHIo/jz+Fdk+Ku+xxtnA/ecJqBAsgp/YlEFxlCi7DsBdIjFa?=
- =?us-ascii?Q?TRipK1rOtymfoN3a7hdIyO+UTHn4iLbHUBXqRYIRYXM0HtFfvzGGQB1kPjbJ?=
- =?us-ascii?Q?XWCFTvE6B609bM5hRnPyWos70alU0/cBs8TzaX+WpaQPNFy9hYtPQESauGW7?=
- =?us-ascii?Q?yvdNLKQ04NHoTmVxkBCbyO3rBt2ajK0K3k+vT87FKJNdJVy/W9SYNMVWe7jq?=
- =?us-ascii?Q?3+RvJSYQaF55mAGIs6599ZZ7oAqnv4UFFQjVIFiSXNvC+N7LmFHx1BneriAE?=
- =?us-ascii?Q?saJsa/t+Wu9FKIVqUk0KSGue2EZ0d8CEB2YRtEQbdKfGdJyWKvtAWD+TUpst?=
- =?us-ascii?Q?sag78y8Z5H7zdYcA6thVr38KnwcrpjbNV61H6uBSEqrXmzAssal18bbKXTn5?=
- =?us-ascii?Q?iGvzvbMzVb+S/XDFvIvrEfcLtBUD/qDzULKwPBgptz+eRolZIcVaePB6VIwf?=
- =?us-ascii?Q?x2gckqz7j6ZndbxjHa2Uo7Zd0BvqkLYyUWXrva3LmZNEGxgWNuxMVgrsI+8Q?=
- =?us-ascii?Q?Y/RTPp7ldRLLXioIml1RG3Qn0YqhD942bLAyxZeVKPS5skJiqgEHYoe3/RuJ?=
- =?us-ascii?Q?CVNHacA2NOBT+DcGgnsbw8yYu5oRcZdpYX+Fk0vBRl/ky9TRCU0dOJjh/BBr?=
- =?us-ascii?Q?DG7xRxtafWPs+TU90EI0fRvw6eBTOojdZE2bZA8CIVpTTiieZc0LSygX7sjD?=
- =?us-ascii?Q?C8vAYsON7+RAlD6N4/pgy1Z0sT92eBte/BmgYMfXGafkpHvyXkPhkYf9bovK?=
- =?us-ascii?Q?x5HGTs8S27+OqMyLiT8FvTAafPowGQMelEkaEm6nXzzsrWF+opVZBs2lN0vT?=
- =?us-ascii?Q?s4GqHnSBqUufqTtqthZqR5MINNxe8BMvTtRkEasoSOghTTQye+5GdQloZ6gD?=
- =?us-ascii?Q?rLYtRJpmj8xQbXPjM4wp11vD5HsA/BpyScj8Kkujzif2H8uatihTlQ2yzBp8?=
- =?us-ascii?Q?BfJVGALksBYhWjmhzyBgNb7WyY7rWgIteMZ2qUfYNjfXZvJ0keN4gV7rJlwg?=
- =?us-ascii?Q?QRL2q7rt6+ZEP+bWmt/c4bC7cmzKy4v2ky8gPDcQCPSCkuIvYmScSz3BmGTa?=
- =?us-ascii?Q?KgsREOAJ+rRLaaDz2Y0Mb4lkA1HhIsvcK2wJlOXuBKYN87jSJZarmrrugIrG?=
- =?us-ascii?Q?wzw4orbayaDhSYRUJB5i064D7gHGya+sh3KG/mrWpLgSyXC+QOmCdCjWpMjd?=
- =?us-ascii?Q?7ifAIiPVV4z49/E4LOvRdmCZzmm4xE7Ifi7bFgzmiqzVHhrSilp9unitPCQL?=
- =?us-ascii?Q?PevBcpSJ2jl1skPDeof9U8zzr+J6QqMf2SZqzqNYxbwxyLrQHU1B+3y9RIB/?=
- =?us-ascii?Q?3L9Wkig9siU=3D?=
+	=?us-ascii?Q?RKdqxuRvnWg6C9e4J1LiQcpmchorlbqHTsB35iT5mWbSNRqncfTdLU2RlE2W?=
+ =?us-ascii?Q?rl3eTJSrcf+wnMvfmSHNlQdAmhAQ5odCztywyafyi7itlEoAcEs/4TnGW3tF?=
+ =?us-ascii?Q?a8Kj2igq1H/rBI87K2Ps6ot/OXqc6grHVJMVQPcD0xLUZod8gbMtoEp7vjA0?=
+ =?us-ascii?Q?DMtp41ZfTDLmQfR16b8Yhb2jyBK/D+whwnuCJJXTGYx/fbAIQ48YKAiPijTB?=
+ =?us-ascii?Q?jRdGlicgsM4eSj33cMNaD2OrSs3x/N0xWcP8ujnyAIuoRsIYFjCNCMczQTje?=
+ =?us-ascii?Q?KtffQBeYze0o3VvT8kWzfEwHV3XgSFJ/PlsUagsoCl+ea/KD3tvxCN4/HDKD?=
+ =?us-ascii?Q?372wLPwirkvaBuqCYzR3YwtjUijlvsuiY9QBNOst3oiVFbjiOu+gTSPorXse?=
+ =?us-ascii?Q?GOBi5qmVLxll0oE8/V1A9CJbC4m7rFFETMUgWwsmQOuS5bG/k8kwDNcSZxhb?=
+ =?us-ascii?Q?jQOXV9jdpokWpapfcU5k9it3RhHCZfJTlMtBT8iAcLHGMukJsLvL8/u1emTe?=
+ =?us-ascii?Q?dfzUXZmdIuu7OCsfSx6/VBILFLDyRtcy1PiC4GtMtjKt9+Qzw2eyB0WV6k/e?=
+ =?us-ascii?Q?MykX2ZuAWlm9ZbP+f3pFxbZreeSq62dGpvJ+jS0N95/uW1876njdSZ2RGlkB?=
+ =?us-ascii?Q?+x7T31W38vYtiMyRP1g46O2VEorYyXBbJF/nUD3yA+d9MySWN3OhjIr9lTVB?=
+ =?us-ascii?Q?+elSzgK+ZoUB72uvEH7qzS7gLQa3tfFjghkw0AawKY4S1g0nxpz7uJwG6e2L?=
+ =?us-ascii?Q?GBVSUUHA5j+ICHdWi2mFfuumFNb3pGxehFcD2poh1KtUnkxNVzjtC/sTh6ZC?=
+ =?us-ascii?Q?56eK0hh9C1NNMEMGF3df/Ffa6D4DpmMfu6hvynwu7CKvFwgQyFMJpHK/T9Xe?=
+ =?us-ascii?Q?j5m3UUgguQe5Zv0I9VaFP5Vqe9mPR4Cv2sTmF12iD7kgS6JBLAopJyDdPLJM?=
+ =?us-ascii?Q?UnFdyc3sfEXbn0z61LMBRG2P9XF/FeqJAr50VLRctaZ8p0X9s4i8IUf+LGRr?=
+ =?us-ascii?Q?9G2VOHfH00n3KjLWjwhKg24CVSNrtSoDJpzVBQ4J8FavcZs378wGpsTbETq7?=
+ =?us-ascii?Q?5CKbQNsnp+B5/qiMutq+q57cDV6Vjb49+CVRqPT9LgNA773YcALITnwXrLec?=
+ =?us-ascii?Q?UD02smRRW+w6vajeQppLyLIG59Ln3ezX+sMaty6KR0rOjWDNfB+jIdYkvTmZ?=
+ =?us-ascii?Q?iY77yLiawHgcVzgaVzw6fE5Tb6njDTWy72eKtCiQ7kvOjuSJM5wexvAVz5EA?=
+ =?us-ascii?Q?eHOE6SntF9DUx7us42jq0vAyFFbmNWyQlI0RvCnUGdAg8E2CUB7i/Zf4Xxpm?=
+ =?us-ascii?Q?88sJuv8hjpTR4C3xXWoOphUYOdwElLwJC4OmtrNsbciVEmc/G6RFSbFDHEZS?=
+ =?us-ascii?Q?eu0RCYx/OGzIvO9yremltFNJQS6slgWtYNj1BrxKoD+1jKhkcCDnVLfZC+P7?=
+ =?us-ascii?Q?klx9ECQZ4Zw=3D?=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?zMHfZFD9GQKrMEJxH8f32SPdgZ2JTw4QILYfidk6/V6IXCnVPq/xkPYOHXW2?=
- =?us-ascii?Q?zFfUHr8FvH6GMsRdDyoykxuwwGPa+xwXjgLC0Fr8kT1nh/HcHOdvcR50Z+S0?=
- =?us-ascii?Q?V8+jrd5Uaq21qepEtJCn+i3J6aGQKtnaf2HEq21HNMCLgMT0YB+M8Vqfleqa?=
- =?us-ascii?Q?Wbc9yBzf5S/eb6gGLZiO370YSD+37GJ2kW3mNLjBMz+GT1nSLSEB9RP4JOwj?=
- =?us-ascii?Q?xQ1P7qAjy5r2CJ9BZLain+xFnANXHkKc2t5JIFxTcv/fkl6m1C99Q7Ba9JNA?=
- =?us-ascii?Q?9hAOgVChEfRR4xHeSEBJENoZ0lRpcIQvC71XUlx1Z5X36KMNOWMs2pHJrf/H?=
- =?us-ascii?Q?pY1OGEn6zY6gycz+fnU5qgY4MaLeAOpjyRCSwE3qzaleUrW5L0eHPh4ykCQm?=
- =?us-ascii?Q?CTM/KSdx4FdSRZYcVhUAuis08caALrDIFOysqh5IZ1N5rk8QuEzEls6B9zal?=
- =?us-ascii?Q?UeVUJb0kcPdHjHUz168RkTePoDPhlnNUIthA5OXiqdz5pKQp3bImYYzs9KTT?=
- =?us-ascii?Q?cYaxWra4vnYCnhS4FrRwj1RPgXjUiK5vZZjVwbB4xsipctYpGoG+m+3s353X?=
- =?us-ascii?Q?rrsANJ8wsOVgLEnw/8JsYM08e1SYHtXeG9JEjh3jFaLc9mrqKrB8V9pfMuPq?=
- =?us-ascii?Q?RMSslkFy5J5L1T7t7j7fGRBDj5wi5Ef+15bRohdNhAySMO0hvj1WOfiBnJHn?=
- =?us-ascii?Q?UPNsZvHvE4FW/TAAU9dAqNL8rz0jRMeMGT4w8tzBsY0eNlEC9rs+TrT75ckJ?=
- =?us-ascii?Q?nDpYCixeWQH9BuvKuDdAainXkk/pJ18mIIYctVsYTmH2se1Hk86/UEiOYKEB?=
- =?us-ascii?Q?Y+k0NJyUjVNYjU3FMyVEtVbU0nvlmwDWVVsYwcprfT08ivsvjQIsLVcjJjfr?=
- =?us-ascii?Q?MfnsqyGvxUn1q/UOX3r2g8YHYQGgI+NpF5W+CLo8I4iy3qxY9Byh/vNsGcaK?=
- =?us-ascii?Q?NfwJiwpPqzojDNQYDaI4nk1djuotOdzTmNaTYCfA2dRR4M1AwCGbvT8OJp4G?=
- =?us-ascii?Q?bd+WbXsgKMt67tniqTbPLVwKl/AUo4KmIIIDLsOudtHh6MJB00N4IapwweW7?=
- =?us-ascii?Q?zv/DrYi5FQVLRh86gUA5RNnDYw+vKP4YxwftXMQnzDg1m+IYRX7zz8fW4IAD?=
- =?us-ascii?Q?DL0G/q14tTenCPwNBXV37Q8fsiTzV8z/+1K6Zpq3aaX48w4PsTEnIQfUJWjR?=
- =?us-ascii?Q?c4Nrq4ruGp0d35YgXXrgHxrclC/cnvwLa5lksrwYhkFJ1TOBxhcHsSVNpxQB?=
- =?us-ascii?Q?KLjb5f1/Utb2i/LMKNl/jRgIzxIEJx8u2uX7lsDY4d91pIjCRZTkLqqZPiE6?=
- =?us-ascii?Q?geFnW/dnac82FPZmSzaRO/4T9m03u9FATDqgN0z9FCH6SEHLt0nIhQfz2kac?=
- =?us-ascii?Q?GZbmX1W5kOJIedlK9sI5ABjYvC+VKeljhAhm6N52Hl9754+vUv2l+YNfKy2/?=
- =?us-ascii?Q?9+q22YG9BHYD3UORHsG170xqYkcZT/+wqj/pKpSdWlDTwNsUlAmRJ2VkQSG4?=
- =?us-ascii?Q?80RTQfpXNEC25DU1E19hCjbMnt172UNUP+ZIkPMQ9bBGJFfTcewtdUsj/Y1h?=
- =?us-ascii?Q?L+wxghKkOhDWkPvigpt653B2i6u57Mrlg0Itk2Th?=
+	=?us-ascii?Q?uGJjaUUUkjzJ92f4NpCPGI4VU45AY9AfLPObdevypWqKhEYgXdYMCElpJIyi?=
+ =?us-ascii?Q?jmcvjI38nc1JVh8RT/9a3L9yWwnZ0Gk6hi5orD3UE08baemIIvNct5du3dkZ?=
+ =?us-ascii?Q?OpIXtsYILX0AYB8x8K9lmlU9TaQnA5WRhoTMZB4jtIzvp9ozxoFyBmpIWOiS?=
+ =?us-ascii?Q?l4NxtVPdJK70M6sCJToOhL5PaBlS4Bj7768L1SFDC4rTXAexIxvTdM8S4OjV?=
+ =?us-ascii?Q?+VtJRpTu16KfuBCge/r5EqPTcIGn6fOKHkBNMKF4fQAPcUdfoo4KwlUmLdp3?=
+ =?us-ascii?Q?tGq59RqN+5Kwn1+DJTPbgp3/A2eUnRdG+Bp+uEQCMzjCvWw1LXtx2XZAc5Vj?=
+ =?us-ascii?Q?JEeZ/EzjEbhdJdPsypDSpblFxDSnjoPUhFaHgExO/dAIvVq3kbt+00ts9jC4?=
+ =?us-ascii?Q?/erk4BqVSYLFvM1GNg3unzPzrNCva9OQmBuNmjxFTXZDLAOyqU9jv14vwAEv?=
+ =?us-ascii?Q?IvdpIAq4TQgbNI3EB8orinHSedgYut6LdDXE84fqiLhkiyJl2sWjQxzsx178?=
+ =?us-ascii?Q?TipBhdvPh/gHh5+o8B5DfvIZXt4bNkk3uoreO6ALRxY9Dh9pKvZWF0Issnlr?=
+ =?us-ascii?Q?CNjinfeSBVLCHKbA20xiB0ygK7zfcdD6DxlUPLJPkEjnB8TOGfQZ5ytorBgl?=
+ =?us-ascii?Q?kFBn6bYvHxRzID39jnIoYPGfSUdwQKVNtC75HsuVkbjZ9gfCA5NmSWCRdFC+?=
+ =?us-ascii?Q?JHhyrHu/zLWMtxsruK0vkYuuRFGJt8LwFKSDFafHqcTEDKyR4/NuxaWivSs6?=
+ =?us-ascii?Q?6cmqXVsYBFUxF84mmwbIAJ9E/wpNwkmUKr1h5/kAEpQFgaO5vGhF1jiAOFnD?=
+ =?us-ascii?Q?G5YIdelhxZvG7KyygiYZBvoyTslZs/mU0CzHajMisyi1N2GibCcuJrhCpSqt?=
+ =?us-ascii?Q?KEM4pDFH4wp63WDT/OicPGMYcCxbk/64YyBNYfzemawNaqKmLHZPa1mUm8WM?=
+ =?us-ascii?Q?DYpciv8mvHEfqDuxrPWe3vFNzR3gHhLlduVt59iW3cxWqQwwnGjp8y1pUz1U?=
+ =?us-ascii?Q?1dptdhJg9xnpwz1rDyLO9FTMVpf0ZdG2ib/eJczM9f+I9MAdPKjhE/A6RNSj?=
+ =?us-ascii?Q?ZtFkeof2kJANwQXvVqWNXyFoNR7jrpRetKLh0VrdgFEXuySDAGJFaaPSHs2B?=
+ =?us-ascii?Q?KHtRNB2VootE7s2HRtc0v6RAqJXa1pZYeSDahOuU2Fl5iemIMqG0u8Vq4cDg?=
+ =?us-ascii?Q?0B8T4IonK5nVFxgTtGIVTwmz637RPQ1yRRizrpWm0Q4sVnLC1IMW3rcYmyTH?=
+ =?us-ascii?Q?pgi6VgVB00NhT/YGIVd25yxzZT/U27aX4rV4ihvBiDsL3CVRWquYc0+cRTr5?=
+ =?us-ascii?Q?U5i1mBcKAOz6is0wDraNyL3MYJ3s+ya9TbwGyhRi764eYROC+9M/60A7IGrr?=
+ =?us-ascii?Q?BTknIxZUCXIUpgGL8iJfJrfZW1/SktqAXGBLWI87K2h5UTWs1ACtGWqsErvr?=
+ =?us-ascii?Q?lPCEu8ihZdasJdcja1AbEgex1oO7C9a3BSod0iaMqyXdxrNkWB/Rr2RYKror?=
+ =?us-ascii?Q?O5mjK4TmDgVC+SFqvlw2omrAZl72dc15vFtcPtxY1Fky09sHk4uCWv/Frtjk?=
+ =?us-ascii?Q?PKsVs+IoyosFZhsQx5haK6c98DJmUhx7D9sLqZYS?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3082cbc7-ad7f-49be-1d35-08ddd7754d2a
+X-MS-Exchange-CrossTenant-Network-Message-Id: 508eec35-919a-4b2a-0ce1-08ddd7756240
 X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2025 18:48:16.3225
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2025 18:48:51.6879
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: c7vyni/CevRoB+9AdBaP9i9Wf/jshqloyjXz2haz3HV27HIyjUvcy9A+ESSbFHdrgFGC+DIfZ1g9ax+t7MtcwA==
+X-MS-Exchange-CrossTenant-UserPrincipalName: PKjC8oco1fGvPdvIFShZPWU08PKYHQExPuRVNj+YcyTBU373AYTch4TwY6LUVUrA9WLuUyh4n689uUWAMhQkjg==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7310
 
-Just rebased on Linus's master and made adjustments. These patches have been
-complete for some time without any issues. I am hoping they are merged for 6.18.
+From: Andrea Righi <arighi@nvidia.com>
 
-sched_ext tasks currently are starved by RT hoggers especially since RT
-throttling was replaced by deadline servers to boost only CFS tasks. Several
-users in the community have reported issues with RT stalling sched_ext tasks.
-Add a sched_ext deadline server as well so that sched_ext tasks are also
-boosted and do not suffer starvation.
+Add a selftest to validate the correct behavior of the deadline server
+for the ext_sched_class.
 
-2 kselftest are provided to verify the starvation fixes and bandwidth
-allocation is looking correct.
+[ Joel: Replaced occurences of CFS in the test with EXT. ]
 
-Previous series:
-https://lore.kernel.org/all/20250702232944.3221001-1-joelagnelf@nvidia.com/
-
-Andrea Righi (4):
-  sched/deadline: Add support to remove DL server's bandwidth
-    contribution
-  sched/deadline: Account ext server bandwidth
-  sched/deadline: Allow to initialize DL server when needed
-  selftests/sched_ext: Add test for sched_ext dl_server
-
-Joel Fernandes (11):
-  sched/debug: Fix updating of ppos on server write ops
-  sched/debug: Stop and start server based on if it was active
-  sched/deadline: Clear the defer params
-  sched/deadline: Return EBUSY if dl_bw_cpus is zero
-  sched: Add support to pick functions to take rf
-  sched: Add a server arg to dl_server_update_idle_time()
-  sched_ext: Add a DL server for sched_ext tasks
-  sched/debug: Add support to change sched_ext server params
-  sched_ext: Selectively enable ext and fair DL servers
-  sched/deadline: Fix DL server crash in inactive_timer callback
-  selftests/sched_ext: Add test for DL server total_bw consistency
-
- include/linux/sched.h                         |   2 +-
- kernel/sched/core.c                           |  19 +-
- kernel/sched/deadline.c                       | 144 +++++++--
- kernel/sched/debug.c                          | 161 ++++++++--
- kernel/sched/ext.c                            | 161 +++++++++-
- kernel/sched/fair.c                           |  15 +-
- kernel/sched/idle.c                           |   4 +-
- kernel/sched/rt.c                             |   2 +-
- kernel/sched/sched.h                          |  17 +-
- kernel/sched/stop_task.c                      |   2 +-
- kernel/sched/topology.c                       |   5 +
- tools/testing/selftests/sched_ext/Makefile    |   2 +
+Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+Signed-off-by: Andrea Righi <arighi@nvidia.com>
+---
+ tools/testing/selftests/sched_ext/Makefile    |   1 +
  .../selftests/sched_ext/rt_stall.bpf.c        |  23 ++
- tools/testing/selftests/sched_ext/rt_stall.c  | 213 +++++++++++++
- tools/testing/selftests/sched_ext/total_bw.c  | 282 ++++++++++++++++++
- 15 files changed, 955 insertions(+), 97 deletions(-)
+ tools/testing/selftests/sched_ext/rt_stall.c  | 213 ++++++++++++++++++
+ 3 files changed, 237 insertions(+)
  create mode 100644 tools/testing/selftests/sched_ext/rt_stall.bpf.c
  create mode 100644 tools/testing/selftests/sched_ext/rt_stall.c
- create mode 100644 tools/testing/selftests/sched_ext/total_bw.c
 
+diff --git a/tools/testing/selftests/sched_ext/Makefile b/tools/testing/selftests/sched_ext/Makefile
+index 9d9d6b4c38b0..f0a8cba3a99f 100644
+--- a/tools/testing/selftests/sched_ext/Makefile
++++ b/tools/testing/selftests/sched_ext/Makefile
+@@ -182,6 +182,7 @@ auto-test-targets :=			\
+ 	select_cpu_dispatch_bad_dsq	\
+ 	select_cpu_dispatch_dbl_dsp	\
+ 	select_cpu_vtime		\
++	rt_stall			\
+ 	test_example			\
+ 
+ testcase-targets := $(addsuffix .o,$(addprefix $(SCXOBJ_DIR)/,$(auto-test-targets)))
+diff --git a/tools/testing/selftests/sched_ext/rt_stall.bpf.c b/tools/testing/selftests/sched_ext/rt_stall.bpf.c
+new file mode 100644
+index 000000000000..80086779dd1e
+--- /dev/null
++++ b/tools/testing/selftests/sched_ext/rt_stall.bpf.c
+@@ -0,0 +1,23 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * A scheduler that verified if RT tasks can stall SCHED_EXT tasks.
++ *
++ * Copyright (c) 2025 NVIDIA Corporation.
++ */
++
++#include <scx/common.bpf.h>
++
++char _license[] SEC("license") = "GPL";
++
++UEI_DEFINE(uei);
++
++void BPF_STRUCT_OPS(rt_stall_exit, struct scx_exit_info *ei)
++{
++	UEI_RECORD(uei, ei);
++}
++
++SEC(".struct_ops.link")
++struct sched_ext_ops rt_stall_ops = {
++	.exit			= (void *)rt_stall_exit,
++	.name			= "rt_stall",
++};
+diff --git a/tools/testing/selftests/sched_ext/rt_stall.c b/tools/testing/selftests/sched_ext/rt_stall.c
+new file mode 100644
+index 000000000000..d4cb545ebfd8
+--- /dev/null
++++ b/tools/testing/selftests/sched_ext/rt_stall.c
+@@ -0,0 +1,213 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2025 NVIDIA Corporation.
++ */
++#define _GNU_SOURCE
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <sched.h>
++#include <sys/prctl.h>
++#include <sys/types.h>
++#include <sys/wait.h>
++#include <time.h>
++#include <linux/sched.h>
++#include <signal.h>
++#include <bpf/bpf.h>
++#include <scx/common.h>
++#include <sys/wait.h>
++#include <unistd.h>
++#include "rt_stall.bpf.skel.h"
++#include "scx_test.h"
++#include "../kselftest.h"
++
++#define CORE_ID		0	/* CPU to pin tasks to */
++#define RUN_TIME        5	/* How long to run the test in seconds */
++
++/* Simple busy-wait function for test tasks */
++static void process_func(void)
++{
++	while (1) {
++		/* Busy wait */
++		for (volatile unsigned long i = 0; i < 10000000UL; i++);
++	}
++}
++
++/* Set CPU affinity to a specific core */
++static void set_affinity(int cpu)
++{
++	cpu_set_t mask;
++
++	CPU_ZERO(&mask);
++	CPU_SET(cpu, &mask);
++	if (sched_setaffinity(0, sizeof(mask), &mask) != 0) {
++		perror("sched_setaffinity");
++		exit(EXIT_FAILURE);
++	}
++}
++
++/* Set task scheduling policy and priority */
++static void set_sched(int policy, int priority)
++{
++	struct sched_param param;
++
++	param.sched_priority = priority;
++	if (sched_setscheduler(0, policy, &param) != 0) {
++		perror("sched_setscheduler");
++		exit(EXIT_FAILURE);
++	}
++}
++
++/* Get process runtime from /proc/<pid>/stat */
++static float get_process_runtime(int pid)
++{
++	char path[256];
++	FILE *file;
++	long utime, stime;
++	int fields;
++
++	snprintf(path, sizeof(path), "/proc/%d/stat", pid);
++	file = fopen(path, "r");
++	if (file == NULL) {
++		perror("Failed to open stat file");
++		return -1;
++	}
++
++	/* Skip the first 13 fields and read the 14th and 15th */
++	fields = fscanf(file,
++			"%*d %*s %*c %*d %*d %*d %*d %*d %*u %*u %*u %*u %*u %lu %lu",
++			&utime, &stime);
++	fclose(file);
++
++	if (fields != 2) {
++		fprintf(stderr, "Failed to read stat file\n");
++		return -1;
++	}
++
++	/* Calculate the total time spent in the process */
++	long total_time = utime + stime;
++	long ticks_per_second = sysconf(_SC_CLK_TCK);
++	float runtime_seconds = total_time * 1.0 / ticks_per_second;
++
++	return runtime_seconds;
++}
++
++static enum scx_test_status setup(void **ctx)
++{
++	struct rt_stall *skel;
++
++	skel = rt_stall__open();
++	SCX_FAIL_IF(!skel, "Failed to open");
++	SCX_ENUM_INIT(skel);
++	SCX_FAIL_IF(rt_stall__load(skel), "Failed to load skel");
++
++	*ctx = skel;
++
++	return SCX_TEST_PASS;
++}
++
++static bool sched_stress_test(void)
++{
++	float cfs_runtime, rt_runtime;
++	int cfs_pid, rt_pid;
++	float expected_min_ratio = 0.04; /* 4% */
++
++	ksft_print_header();
++	ksft_set_plan(1);
++
++	/* Create and set up a EXT task */
++	cfs_pid = fork();
++	if (cfs_pid == 0) {
++		set_affinity(CORE_ID);
++		process_func();
++		exit(0);
++	} else if (cfs_pid < 0) {
++		perror("fork for EXT task");
++		ksft_exit_fail();
++	}
++
++	/* Create an RT task */
++	rt_pid = fork();
++	if (rt_pid == 0) {
++		set_affinity(CORE_ID);
++		set_sched(SCHED_FIFO, 50);
++		process_func();
++		exit(0);
++	} else if (rt_pid < 0) {
++		perror("fork for RT task");
++		ksft_exit_fail();
++	}
++
++	/* Let the processes run for the specified time */
++	sleep(RUN_TIME);
++
++	/* Get runtime for the EXT task */
++	cfs_runtime = get_process_runtime(cfs_pid);
++	if (cfs_runtime != -1)
++		ksft_print_msg("Runtime of EXT task (PID %d) is %f seconds\n", cfs_pid, cfs_runtime);
++	else
++		ksft_exit_fail_msg("Error getting runtime for EXT task (PID %d)\n", cfs_pid);
++
++	/* Get runtime for the RT task */
++	rt_runtime = get_process_runtime(rt_pid);
++	if (rt_runtime != -1)
++		ksft_print_msg("Runtime of RT task (PID %d) is %f seconds\n", rt_pid, rt_runtime);
++	else
++		ksft_exit_fail_msg("Error getting runtime for RT task (PID %d)\n", rt_pid);
++
++	/* Kill the processes */
++	kill(cfs_pid, SIGKILL);
++	kill(rt_pid, SIGKILL);
++	waitpid(cfs_pid, NULL, 0);
++	waitpid(rt_pid, NULL, 0);
++
++	/* Verify that the scx task got enough runtime */
++	float actual_ratio = cfs_runtime / (cfs_runtime + rt_runtime);
++	ksft_print_msg("EXT task got %.2f%% of total runtime\n", actual_ratio * 100);
++
++	if (actual_ratio >= expected_min_ratio) {
++		ksft_test_result_pass("PASS: EXT task got more than %.2f%% of runtime\n",
++				      expected_min_ratio * 100);
++		return true;
++	} else {
++		ksft_test_result_fail("FAIL: EXT task got less than %.2f%% of runtime\n",
++				      expected_min_ratio * 100);
++		return false;
++	}
++}
++
++static enum scx_test_status run(void *ctx)
++{
++	struct rt_stall *skel = ctx;
++	struct bpf_link *link;
++	bool res;
++
++	link = bpf_map__attach_struct_ops(skel->maps.rt_stall_ops);
++	SCX_FAIL_IF(!link, "Failed to attach scheduler");
++
++	res = sched_stress_test();
++
++	SCX_EQ(skel->data->uei.kind, EXIT_KIND(SCX_EXIT_NONE));
++	bpf_link__destroy(link);
++
++	if (!res)
++		ksft_exit_fail();
++
++	return SCX_TEST_PASS;
++}
++
++static void cleanup(void *ctx)
++{
++	struct rt_stall *skel = ctx;
++
++	rt_stall__destroy(skel);
++}
++
++struct scx_test rt_stall = {
++	.name = "rt_stall",
++	.description = "Verify that RT tasks cannot stall SCHED_EXT tasks",
++	.setup = setup,
++	.run = run,
++	.cleanup = cleanup,
++};
++REGISTER_SCX_TEST(&rt_stall)
 -- 
 2.34.1
 
