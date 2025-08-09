@@ -1,79 +1,145 @@
-Return-Path: <bpf+bounces-65293-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65294-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0620B1F282
-	for <lists+bpf@lfdr.de>; Sat,  9 Aug 2025 08:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A168B1F476
+	for <lists+bpf@lfdr.de>; Sat,  9 Aug 2025 13:57:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC7C118C79B9
-	for <lists+bpf@lfdr.de>; Sat,  9 Aug 2025 06:07:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C50E18C2CBC
+	for <lists+bpf@lfdr.de>; Sat,  9 Aug 2025 11:57:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C321264630;
-	Sat,  9 Aug 2025 06:06:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="maOscEoX"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A64527FB07;
+	Sat,  9 Aug 2025 11:56:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from plesk.hostmyservers.fr (plesk.hostmyservers.fr [45.145.164.37])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA825BA36
-	for <bpf@vger.kernel.org>; Sat,  9 Aug 2025 06:06:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C2A418FC92;
+	Sat,  9 Aug 2025 11:56:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.145.164.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754719598; cv=none; b=M6cK/rRAhAEQMiVWiGRbkMBbOzTWPmCGnKc8GYb+7mjiOpVSO2tjfhc9J3XL2AaA0nwy7N/43c2IroGJNfYA1ve0NZ0YAfgb/IRz9J1mw3W4ZNdwxZakDp1aJvaKlu5R674x2ILLSfl/IN1SXpds2OcMp5IOCYQO3c28Ops08lo=
+	t=1754740615; cv=none; b=HUPB0P4reD2pAeXwGzHr3wdyQVHbf7JLdfwiYQ/MpKCENGgP0QXU3a6YtwO8X+ECWdgrhq2uCJ0SL97KP7TPmG8a6LafVdcGIpgSaBuF2OZhpmcAjlhunH8zUkBdfw80T24mKBOcOtEbmEwr2DLARx1sSFrKuBH8VBM8hZTTzik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754719598; c=relaxed/simple;
-	bh=e7VyWCMctx+DB7iJsAKe9TltSsO8QtqpkIMHCFSaea0=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=KQ1BSHLuJHW53lxTVFweYRefUCB6mhMUmHheT4Gptvke+aLOVDtLopmK/neAZHMEczxi8+dYa6IpsMElzYTWj3bzDEJX7hYjN97tnVMe6vM7u6CTUZGbKlaJOupefcWiu3ejgMIk1O86b07n5KSN9g/+y3XcJ9TYNYKVjncl7X0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=maOscEoX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22B3DC4CEE7;
-	Sat,  9 Aug 2025 06:06:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754719596;
-	bh=e7VyWCMctx+DB7iJsAKe9TltSsO8QtqpkIMHCFSaea0=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=maOscEoXr8X1AS4sgQpMOygIjpC/4RSwsZQcr3sXgRopsgXr88tBFFbx7CoRiIxJM
-	 wvCyE12a62sBLPFz/Wc19+Y6xlFnCQmVoyXV4SwFDjrd4cESig5BIBq3JU3m3/aMDS
-	 IPvs3lckEKy58QwhF1IDHOUmvvV/V1nuyVPrPn9OiW1hr4RibgzFh5rtMDfxPKnN9R
-	 30LdduWU7GaMpwIxmVR9Dwlv2kLwTktGG9RmxgXWL5xGabJ/tLHaYbzNVhCpAZyLjG
-	 e+SZXlhOIjOXrg6+HvsS9Vlp44ttxW5/ff/iYpDCN9aZsHvBeyjZDPZ0vKa08I+Xxx
-	 MMA4A4F2jAseQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70EC6383BF5A;
-	Sat,  9 Aug 2025 06:06:50 +0000 (UTC)
-Subject: Re: [GIT PULL] BPF fixes for 6.17-rc1
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20250808165513.23952-1-alexei.starovoitov@gmail.com>
-References: <20250808165513.23952-1-alexei.starovoitov@gmail.com>
-X-PR-Tracked-List-Id: <bpf.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20250808165513.23952-1-alexei.starovoitov@gmail.com>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/bpf-fixes
-X-PR-Tracked-Commit-Id: 0e260fc798bfef6b0dd24627afa01879f901e23e
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c30a13538d9f8b2a60b2f6b26abe046dea10aa12
-Message-Id: <175471960907.394704.5163849537119256053.pr-tracker-bot@kernel.org>
-Date: Sat, 09 Aug 2025 06:06:49 +0000
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: torvalds@linux-foundation.org, bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org
+	s=arc-20240116; t=1754740615; c=relaxed/simple;
+	bh=4rAT3KfGVqPHQTA7SxZPwEn/jA7WeiYvZlLVWr4aAGU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=kZMNudaHlIdq+2MmPl4igL96egmqx719JsAOVMTUSkHExoOHUZ6oZwy+qrMlS/4W7GtjKMTmKpwUu1vtMMxPbpwIQ2/XENpkcTN6y4PahpyOA2uJlkenpsnPKVhJwJW7/e8jU/fxbH7gXdTBmW9SD30/ZPb5dLE9EaV5opyl3qE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com; spf=pass smtp.mailfrom=arnaud-lcm.com; arc=none smtp.client-ip=45.145.164.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arnaud-lcm.com
+Received: from arnaudlcm-X570-UD.. (unknown [IPv6:2a02:8084:255b:aa00:f24d:f84c:98a:7e26])
+	by plesk.hostmyservers.fr (Postfix) with ESMTPSA id 1494141835;
+	Sat,  9 Aug 2025 11:56:44 +0000 (UTC)
+Authentication-Results: Plesk;
+	spf=pass (sender IP is 2a02:8084:255b:aa00:f24d:f84c:98a:7e26) smtp.mailfrom=contact@arnaud-lcm.com smtp.helo=arnaudlcm-X570-UD..
+Received-SPF: pass (Plesk: connection is authenticated)
+From: Arnaud Lecomte <contact@arnaud-lcm.com>
+To: yonghong.song@linux.dev
+Cc: andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	contact@arnaud-lcm.com,
+	daniel@iogearbox.net,
+	eddyz87@gmail.com,
+	haoluo@google.com,
+	john.fastabend@gmail.com,
+	jolsa@kernel.org,
+	kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org,
+	martin.lau@linux.dev,
+	sdf@fomichev.me,
+	song@kernel.org,
+	syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com,
+	syzkaller-bugs@googlegroups.com
+Subject: [PATCH v2 1/2] bpf: refactor max_depth computation in bpf_get_stack()
+Date: Sat,  9 Aug 2025 12:56:36 +0100
+Message-ID: <20250809115636.86856-1-contact@arnaud-lcm.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <1797f2fd-2b34-4c6b-bc61-043e01fde417@linux.dev>
+References: <1797f2fd-2b34-4c6b-bc61-043e01fde417@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-PPP-Message-ID: <175474060494.29492.1981260016976444026@Plesk>
+X-PPP-Vhost: arnaud-lcm.com
 
-The pull request you sent on Fri,  8 Aug 2025 09:55:13 -0700:
+A new helper function stack_map_calculate_max_depth() that
+computes the max depth for a stackmap.
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/bpf-fixes
+Signed-off-by: Arnaud Lecomte <contact@arnaud-lcm.com>
+---
+ kernel/bpf/stackmap.c | 30 ++++++++++++++++++++++++------
+ 1 file changed, 24 insertions(+), 6 deletions(-)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c30a13538d9f8b2a60b2f6b26abe046dea10aa12
-
-Thank you!
-
+diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+index 3615c06b7dfa..532447606532 100644
+--- a/kernel/bpf/stackmap.c
++++ b/kernel/bpf/stackmap.c
+@@ -42,6 +42,27 @@ static inline int stack_map_data_size(struct bpf_map *map)
+ 		sizeof(struct bpf_stack_build_id) : sizeof(u64);
+ }
+ 
++/**
++ * stack_map_calculate_max_depth - Calculate maximum allowed stack trace depth
++ * @map_size:        Size of the buffer/map value in bytes
++ * @elem_size:       Size of each stack trace element
++ * @flags:       BPF stack trace flags (BPF_F_USER_STACK, BPF_F_USER_BUILD_ID, ...)
++ *
++ * Return: Maximum number of stack trace entries that can be safely stored
++ */
++static u32 stack_map_calculate_max_depth(u32 map_size, u32 elem_size, u64 flags)
++{
++	u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
++	u32 max_depth;
++
++	max_depth = map_size / elem_size;
++	max_depth += skip;
++	if (max_depth > sysctl_perf_event_max_stack)
++		return sysctl_perf_event_max_stack;
++
++	return max_depth;
++}
++
+ static int prealloc_elems_and_freelist(struct bpf_stack_map *smap)
+ {
+ 	u64 elem_size = sizeof(struct stack_map_bucket) +
+@@ -406,7 +427,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+ 			    struct perf_callchain_entry *trace_in,
+ 			    void *buf, u32 size, u64 flags, bool may_fault)
+ {
+-	u32 trace_nr, copy_len, elem_size, num_elem, max_depth;
++	u32 trace_nr, copy_len, elem_size, max_depth;
+ 	bool user_build_id = flags & BPF_F_USER_BUILD_ID;
+ 	bool crosstask = task && task != current;
+ 	u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
+@@ -438,10 +459,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+ 		goto clear;
+ 	}
+ 
+-	num_elem = size / elem_size;
+-	max_depth = num_elem + skip;
+-	if (sysctl_perf_event_max_stack < max_depth)
+-		max_depth = sysctl_perf_event_max_stack;
++	max_depth = stack_map_calculate_max_depth(size, elem_size, flags);
+ 
+ 	if (may_fault)
+ 		rcu_read_lock(); /* need RCU for perf's callchain below */
+@@ -461,7 +479,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+ 	}
+ 
+ 	trace_nr = trace->nr - skip;
+-	trace_nr = (trace_nr <= num_elem) ? trace_nr : num_elem;
++	trace_nr = min(trace_nr, max_depth - skip);
+ 	copy_len = trace_nr * elem_size;
+ 
+ 	ips = trace->ip + skip;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.43.0
+
 
