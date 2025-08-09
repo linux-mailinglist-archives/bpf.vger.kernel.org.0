@@ -1,225 +1,386 @@
-Return-Path: <bpf+bounces-65291-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65292-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2A47B1F1EF
-	for <lists+bpf@lfdr.de>; Sat,  9 Aug 2025 04:24:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BF5AB1F1FB
+	for <lists+bpf@lfdr.de>; Sat,  9 Aug 2025 05:05:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB1EF56152B
-	for <lists+bpf@lfdr.de>; Sat,  9 Aug 2025 02:24:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7235C56812A
+	for <lists+bpf@lfdr.de>; Sat,  9 Aug 2025 03:05:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D63F275112;
-	Sat,  9 Aug 2025 02:24:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D863275B17;
+	Sat,  9 Aug 2025 03:04:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X6xWengS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EYLcoxaO"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f67.google.com (mail-ej1-f67.google.com [209.85.218.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1BA3C2FB;
-	Sat,  9 Aug 2025 02:24:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EE58376F1
+	for <bpf@vger.kernel.org>; Sat,  9 Aug 2025 03:04:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754706248; cv=none; b=q23kk4nsOivSt7R1B4wP/72GWcEbsYuEhXlKp2vR4xg8BrPey19VRWDWB8GzXCElNOIkjG3sfAZmb29FMvNj7oITxMX45LjddwnA+JYsnnsziA5tMYcH08mD53D/5Y50lzPES2qg/IwpB+zqm0+ElxrCf1wxk/OLsYg5tLr/aqs=
+	t=1754708699; cv=none; b=FeWJ7H0xuBZ+jEoY0ZPPLo//yyg8hukxpGeldURI7no5uHECYM8X156qz1+k2RmfYgAuZWfxNWx3jF0eja0AEje+Soynk/9O1uVfBFUGtlGaEixXeEjFHudAZhoB+7ldMqvtbN7AxFQBq+hs4Oi7XCTMeAz4rl+Fj/AA4PMF9Ho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754706248; c=relaxed/simple;
-	bh=oG/gs0IIq/R05gYX+mXbeKSOc+H5ut11vppSDkHojUc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iQewh029EUE9J2a/9+n917Q3/KtEyGUvsfepy9S7Raf7YfV2S2c5QRWIXxwUGWVHWWhKtbLELIWtvhxWbNel7QRYLX0Q3w2VMqUq/M+u+oTr9olXybc+RGwSFDddr6chmxFpIvy0aT3Ta6r76iCltHPSY8CiDENWa8vFuVYra1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X6xWengS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A696C4CEED;
-	Sat,  9 Aug 2025 02:24:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754706247;
-	bh=oG/gs0IIq/R05gYX+mXbeKSOc+H5ut11vppSDkHojUc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=X6xWengSOLiD7r74p7CJMMKTHCqElz6amQ5SN59+PDUpxHAMC3CJINWjDQZHmiIfL
-	 QOY/81Yy5eA2e1LBhSC+Ks9bb8678Ce0ZuvvB+gPAFRjJ17Hm1T9uR4zfarThtAbPz
-	 MCttIFUaIJcciUAD4dpNjnZBRzGhcM4qdCBtfTP8Di1hTnlkZJmiIXs3200sOOYbam
-	 Dqu5KsZZkAAnN+PSzBLIyG247b2AYFExjwJ4NAnw10EVRVrlarhI1GPDpsquGRbHUa
-	 DXloZuLk/i52Aj9sibc+M03+pSTSdrt2WS/gTIzY7w0v4ve2OeJUj37znpPxkb7wtN
-	 ReN1aFMpys5hg==
-Date: Fri, 8 Aug 2025 22:24:05 -0400
-From: Sasha Levin <sashal@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-	Donglin Peng <dolinux.peng@gmail.com>,
-	Zheng Yejian <zhengyejian@huaweicloud.com>
-Subject: Re: [PATCH v4 2/4] ftrace: Add support for function argument to
- graph tracer
-Message-ID: <aJaxRVKverIjF4a6@lappy>
-References: <20250227185804.639525399@goodmis.org>
- <20250227185822.810321199@goodmis.org>
+	s=arc-20240116; t=1754708699; c=relaxed/simple;
+	bh=IXLHf6W+IAKwUQxhmqECFx+jZbyb0eLsuap+uUTaM2E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Y9A/4+IZNjaOKYJzoYeVsquxonwc0+WTScqOJIxIzVQntxqblo2Z2aK3Z0AD/ZBW7dBffz4OI3UZqsTtitpoJrqAl4NAqaa1lSirAxEH1NWW96MgwYe9wUEjg06/hhVAZ96s1qQPvXDJY8/YY+qJEJ2iw2wiWYt5ZdO8M1B05Cg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EYLcoxaO; arc=none smtp.client-ip=209.85.218.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f67.google.com with SMTP id a640c23a62f3a-ae9c2754a00so530185766b.2
+        for <bpf@vger.kernel.org>; Fri, 08 Aug 2025 20:04:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1754708695; x=1755313495; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wnfWUCWhBML6gyi3XE9KepaEeqDbgdYhgzIG+DcsPmg=;
+        b=EYLcoxaO/W/lFlMp8mpVry43QX8osmKzsQSpj7WjR1m6fo2HEU8AiIS9TZ1EIZF0gJ
+         omgYNxl/ukELtoeWlZteMB0CcPM2M1LxZyGfzwIgbltNCr5jzU35gVJITFQpiC3lw0RF
+         +0P1njQcbBik0cOxMlyg+8ZVLrGn/KLGMzJDTpY/gv9YidYyVqZU6+WHh5coC9TOdwjM
+         gR3kGUIGDvBvBrv2gaTXtZd9+SI69dGRsDtCNfBw6kXCCpLkImrk9xRfUj+0vrhctUiF
+         /K85kSOopmdiytZmc1VUHBND1tqPdqt1dlqBJPaath4CJeqcVkkXahQcnQpBytsfPpfH
+         tDbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754708695; x=1755313495;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wnfWUCWhBML6gyi3XE9KepaEeqDbgdYhgzIG+DcsPmg=;
+        b=tmOsl9KbnvDKLf5NGdjy0TmpEwpDNTW0TowgZu3IGotUw28mnf34qpEqCHLIO/ZlQw
+         IrP3vU/5R8jArdhNojeJfRmVFE+jq85GfpVBO0OYhQkT+33F8VopSBWd0k4FfXbBZcyY
+         BGM/mnKG9Kb2hLWFF4kQb949pJQgw5mK/1Lb2SHXdOEimlMTKxgrYw0I9EMEoUkrEI0x
+         V07Wjpusd4OXUPiT8OYZW/Zds35bJ0jQf6Ec9mUe3yHHfftZ9A76ZyhrbZ8TNoW/P8uC
+         zIeAQ80PGtanKv9RzIYa7OMcGA/Jot9y+78PPEvAviFxDsE3srg2uOmwZGIG01QLKUje
+         Mnow==
+X-Gm-Message-State: AOJu0Yx8Dz6W9XmdRBk199yM2HUluztlLd+Rm9pHUM5v9174o7IKsuu0
+	mf2djWjYhLiNhMD6rhMuG+Xsi1lgkdroC0F1StMsjSsZamIZ86h0V8Df4Q2oFqPRQrz8H3r73qg
+	1/u0FgDYzDETWs1KKn1HW0YX8b6Ac2q8b8sPv
+X-Gm-Gg: ASbGncu4vQ088Zblvd3Q1V/yf9fLXbW4604fmWUWdXVh1wN/Dv0UwPIRUvBxAV2TrAX
+	BoYh4p6mcZROsGeT+6sT/6/LIBdv5DwZx4C6sXrW0m/6zebbMVo1NIQ+78rB3c4S8dJjhJw+MpY
+	Fl4E1PvlTXJhV6opquPdJuu/RpRuDB++9hk8oH0N2YKI1HULwbVQk2QaQ7pHxVnOYVnheSj/6sg
+	PqtrSKSbe+sj7Kv6FdB1KkdI4H4QoOfUh+5/ZUs
+X-Google-Smtp-Source: AGHT+IHmbhc6GECPNEwUHjw4QQU9yrw9xW1S2CCyoFq/it5QBBC3DFCEznlHIakt6Yo5GR+mZ7/xwL658D8lvoa9bF4=
+X-Received: by 2002:a17:907:2d1e:b0:ae0:a483:39bc with SMTP id
+ a640c23a62f3a-af9c6542749mr467030466b.46.1754708694835; Fri, 08 Aug 2025
+ 20:04:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20250227185822.810321199@goodmis.org>
+References: <20250806144554.576706-1-mykyta.yatsenko5@gmail.com>
+ <20250806144554.576706-4-mykyta.yatsenko5@gmail.com> <CAP01T76ZArSz8r8z2q3J-76N=cQrPh_YBcyMog6VVHcfUNssJg@mail.gmail.com>
+ <b4f88016-8eaa-4297-9816-e2855817aa8a@gmail.com>
+In-Reply-To: <b4f88016-8eaa-4297-9816-e2855817aa8a@gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Sat, 9 Aug 2025 05:04:18 +0200
+X-Gm-Features: Ac12FXygi_T0eN0EZrq2XM6U8dSsGk5lytGKesR9WkNYR8eEpfRGfwwsb6OYDQ4
+Message-ID: <CAP01T74foMvntpkj9iTE38WRgiCpGWMK_5XQStb+qkDuv=YMYA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/4] bpf: task work scheduling kfuncs
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, eddyz87@gmail.com, 
+	Mykyta Yatsenko <yatsenko@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi folks,
-
-I've been trying to track down an issue that started appearing a while
-back:
-
-[   73.078526] ------------[ cut here ]------------
-[   73.083194] WARNING: CPU: 2 PID: 4002 at kernel/trace/trace_functions_graph.c:991 print_graph_entry+0x579/0x590
-[   73.093544] Modules linked in: x86_pkg_temp_thermal fuse
-[   73.098939] CPU: 2 UID: 0 PID: 4002 Comm: cat Tainted: G S                  6.16.0 #1 PREEMPT(voluntary)
-[   73.108587] Tainted: [S]=CPU_OUT_OF_SPEC
-[   73.112664] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS 2.7 12/07/2021
-[   73.120126] RIP: 0010:print_graph_entry+0x579/0x590
-[   73.125198] Code: 49 89 40 20 49 8b 46 08 49 89 40 28 49 8b 46 10 49 89 40 30 49 8b 46 18 49 89 40 38 49 8b 46 20 49 89 40 40 e9 27 fe ff ff 90 <0f> 0b 90 e9 e2 fe ff ff 90 0f 0b 90 e9 8e fc ff ff e8 91 d8 10 01
-[   73.144001] RSP: 0018:ffffa6af02d37c58 EFLAGS: 00010282
-[   73.149369] RAX: ffffc6aeffd986f0 RBX: ffff9d70c83b0000 RCX: 00000000fefefefe
-[   73.156621] RDX: ffffffffbb374080 RSI: 0000000000000001 RDI: ffffffffbaf773ea
-[   73.163839] RBP: ffffa6af02d37cf0 R08: ffff9d70c1790cc0 R09: 0000000000000020
-[   73.171023] R10: 0000000000000000 R11: 0000000000000004 R12: ffff9d70c83b2090
-[   73.178216] R13: 0000000000000003 R14: ffff9d70c83b0000 R15: ffff9d70c1790cc0
-[   73.185412] FS:  00007fd8c6872740(0000) GS:ffff9d72741a9000(0000) knlGS:0000000000000000
-[   73.193584] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   73.199391] CR2: 00007ffedaf50fbc CR3: 00000001049f4006 CR4: 00000000003726f0
-[   73.206570] Call Trace:
-[   73.209086]  <TASK>
-[   73.211313]  ? trace_event_raw_event_preemptirq_template+0x66/0xc0
-[   73.217573]  ? __pfx_put_cpu_partial+0x10/0x10
-[   73.222093]  ? __pfx_put_cpu_partial+0x10/0x10
-[   73.226635]  print_graph_function_flags+0x27c/0x530
-[   73.231607]  ? peek_next_entry+0x9d/0xb0
-[   73.235618]  print_graph_function+0x13/0x20
-[   73.239895]  print_trace_line+0xbb/0x530
-[   73.243909]  tracing_read_pipe+0x1d6/0x380
-[   73.248121]  vfs_read+0xbb/0x380
-[   73.251495]  ? vfs_read+0x9/0x380
-[   73.254929]  ksys_read+0x7b/0xf0
-[   73.258258]  __x64_sys_read+0x1d/0x30
-[   73.261995]  x64_sys_call+0x1ada/0x20d0
-[   73.265936]  do_syscall_64+0xb2/0x2b0
-[   73.269694]  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-[   73.274818] RIP: 0033:0x7fd8c6904687
-[   73.278491] Code: 48 89 fa 4c 89 df e8 58 b3 00 00 8b 93 08 03 00 00 59 5e 48 83 f8 fc 74 1a 5b c3 0f 1f 84 00 00 00 00 00 48 8b 44 24 10 0f 05 <5b> c3 0f 1f 80 00 00 00 00 83 e2 39 83 fa 08 75 de e8 23 ff ff ff
-[   73.297320] RSP: 002b:00007ffe8bb08e60 EFLAGS: 00000202 ORIG_RAX: 0000000000000000
-[   73.304974] RAX: ffffffffffffffda RBX: 00007fd8c6872740 RCX: 00007fd8c6904687
-[   73.312185] RDX: 0000000000040000 RSI: 00007fd8c6831000 RDI: 0000000000000003
-[   73.319369] RBP: 0000000000040000 R08: 0000000000000000 R09: 0000000000000000
-[   73.326588] R10: 0000000000000000 R11: 0000000000000202 R12: 00007fd8c6831000
-[   73.333801] R13: 0000000000000003 R14: 0000000000000000 R15: 0000000000040000
-[   73.341050]  </TASK>
-[   73.343324] ---[ end trace 0000000000000000 ]---
-[   73.804718] ------------[ cut here ]------------
-[   73.809372] WARNING: CPU: 1 PID: 4002 at kernel/trace/trace_functions_graph.c:933 print_graph_entry+0x582/0x590
-[   73.819492] Modules linked in: x86_pkg_temp_thermal fuse
-[   73.824888] CPU: 1 UID: 0 PID: 4002 Comm: cat Tainted: G S      W           6.16.0 #1 PREEMPT(voluntary)
-[   73.834477] Tainted: [S]=CPU_OUT_OF_SPEC, [W]=WARN
-[   73.839314] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS 2.7 12/07/2021
-[   73.846739] RIP: 0010:print_graph_entry+0x582/0x590
-[   73.851662] Code: 89 40 28 49 8b 46 10 49 89 40 30 49 8b 46 18 49 89 40 38 49 8b 46 20 49 89 40 40 e9 27 fe ff ff 90 0f 0b 90 e9 e2 fe ff ff 90 <0f> 0b 90 e9 8e fc ff ff e8 91 d8 10 01 90 90 90 90 90 90 90 90 90
-[   73.870458] RSP: 0018:ffffa6af02d37c58 EFLAGS: 00010282
-[   73.875733] RAX: ffffc6aeffd186f0 RBX: ffff9d70c83b0000 RCX: 00000011792c5f40
-[   73.882906] RDX: ffffffffbb374080 RSI: 00000000fefefefd RDI: 00000011792c5ff6
-[   73.890079] RBP: ffffa6af02d37cf0 R08: ffff9d70c1790cc0 R09: 0000000000000020
-[   73.897249] R10: 00000000fefefefe R11: 0000000000000004 R12: ffff9d70c83b2090
-[   73.904424] R13: 0000000000000001 R14: ffff9d70c1790ce0 R15: ffff9d70c1790cc0
-[   73.911609] FS:  00007fd8c6872740(0000) GS:ffff9d7274129000(0000) knlGS:0000000000000000
-[   73.919740] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   73.925528] CR2: 0000559a316ca3c0 CR3: 00000001049f4003 CR4: 00000000003726f0
-[   73.932705] Call Trace:
-[   73.935200]  <TASK>
-[   73.937350]  ? __legitimize_mnt+0x4/0xb0
-[   73.941342]  print_graph_function_flags+0x27c/0x530
-[   73.946269]  ? trace_hardirqs_on+0x2f/0x90
-[   73.950401]  ? ring_buffer_empty_cpu+0x86/0xd0
-[   73.954912]  print_graph_function+0x13/0x20
-[   73.959149]  print_trace_line+0xbb/0x530
-[   73.963135]  tracing_read_pipe+0x1d6/0x380
-[   73.967291]  vfs_read+0xbb/0x380
-[   73.970580]  ? vfs_read+0x9/0x380
-[   73.973954]  ksys_read+0x7b/0xf0
-[   73.977244]  __x64_sys_read+0x1d/0x30
-[   73.980952]  x64_sys_call+0x1ada/0x20d0
-[   73.984839]  do_syscall_64+0xb2/0x2b0
-[   73.988558]  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-[   73.993657] RIP: 0033:0x7fd8c6904687
-[   73.997278] Code: 48 89 fa 4c 89 df e8 58 b3 00 00 8b 93 08 03 00 00 59 5e 48 83 f8 fc 74 1a 5b c3 0f 1f 84 00 00 00 00 00 48 8b 44 24 10 0f 05 <5b> c3 0f 1f 80 00 00 00 00 83 e2 39 83 fa 08 75 de e8 23 ff ff ff
-[   74.016084] RSP: 002b:00007ffe8bb08e60 EFLAGS: 00000202 ORIG_RAX: 0000000000000000
-[   74.023743] RAX: ffffffffffffffda RBX: 00007fd8c6872740 RCX: 00007fd8c6904687
-[   74.030920] RDX: 0000000000040000 RSI: 00007fd8c6831000 RDI: 0000000000000003
-[   74.038101] RBP: 0000000000040000 R08: 0000000000000000 R09: 0000000000000000
-[   74.045277] R10: 0000000000000000 R11: 0000000000000202 R12: 00007fd8c6831000
-[   74.052484] R13: 0000000000000003 R14: 0000000000000000 R15: 0000000000040000
-[   74.059724]  </TASK>
-[   74.061974] ---[ end trace 0000000000000000 ]---
-
-This patch was within the window where the issue started happening, and
-on inspection I found something suspicious (but couldn't verify since
-I'm traveling).
-
-On Thu, Feb 27, 2025 at 01:58:06PM -0500, Steven Rostedt wrote:
->diff --git a/kernel/trace/trace_entries.h b/kernel/trace/trace_entries.h
->index fbfb396905a6..77a8ba3bc1e3 100644
->--- a/kernel/trace/trace_entries.h
->+++ b/kernel/trace/trace_entries.h
->@@ -72,17 +72,18 @@ FTRACE_ENTRY_REG(function, ftrace_entry,
-> );
+On Fri, 8 Aug 2025 at 02:44, Mykyta Yatsenko <mykyta.yatsenko5@gmail.com> w=
+rote:
 >
-> /* Function call entry */
->-FTRACE_ENTRY_PACKED(funcgraph_entry, ftrace_graph_ent_entry,
->+FTRACE_ENTRY(funcgraph_entry, ftrace_graph_ent_entry,
+> On 8/7/25 19:55, Kumar Kartikeya Dwivedi wrote:
+> > On Wed, 6 Aug 2025 at 16:46, Mykyta Yatsenko <mykyta.yatsenko5@gmail.co=
+m> wrote:
+> >> From: Mykyta Yatsenko <yatsenko@meta.com>
+> >>
+> >> Implementation of the bpf_task_work_schedule kfuncs.
+> >>
+> >> Main components:
+> >>   * struct bpf_task_work_context =E2=80=93 Metadata and state manageme=
+nt per task
+> >> work.
+> >>   * enum bpf_task_work_state =E2=80=93 A state machine to serialize wo=
+rk
+> >>   scheduling and execution.
+> >>   * bpf_task_work_schedule() =E2=80=93 The central helper that initiat=
+es
+> >> scheduling.
+> >>   * bpf_task_work_callback() =E2=80=93 Invoked when the actual task_wo=
+rk runs.
+> >>   * bpf_task_work_irq() =E2=80=93 An intermediate step (runs in softir=
+q context)
+> >> to enqueue task work.
+> >>   * bpf_task_work_cancel_and_free() =E2=80=93 Cleanup for deleted BPF =
+map entries.
+> >>
+> >> Flow of task work scheduling
+> >>   1) bpf_task_work_schedule_* is called from BPF code.
+> >>   2) Transition state from STANDBY to PENDING.
+> >>   3) irq_work_queue() schedules bpf_task_work_irq().
+> >>   4) Transition state from PENDING to SCHEDULING.
+> >>   4) bpf_task_work_irq() attempts task_work_add(). If successful, stat=
+e
+> >>   transitions to SCHEDULED.
+> >>   5) Task work calls bpf_task_work_callback(), which transition state =
+to
+> >>   RUNNING.
+> >>   6) BPF callback is executed
+> >>   7) Context is cleaned up, refcounts released, state set back to
+> >>   STANDBY.
+> >>
+> >> Map value deletion
+> >> If map value that contains bpf_task_work_context is deleted, BPF map
+> >> implementation calls bpf_task_work_cancel_and_free().
+> >> Deletion is handled by atomically setting state to FREED and
+> >> releasing references or letting scheduler do that, depending on the
+> >> last state before the deletion:
+> >>   * SCHEDULING: release references in bpf_task_work_cancel_and_free(),
+> >>   expect bpf_task_work_irq() to cancel task work.
+> >>   * SCHEDULED: release references and try to cancel task work in
+> >>   bpf_task_work_cancel_and_free().
+> >>    * other states: one of bpf_task_work_irq(), bpf_task_work_schedule(=
+),
+> >>    bpf_task_work_callback() should cleanup upon detecting the state
+> >>    switching to FREED.
+> >>
+> >> The state transitions are controlled with atomic_cmpxchg, ensuring:
+> >>   * Only one thread can successfully enqueue work.
+> >>   * Proper handling of concurrent deletes (BPF_TW_FREED).
+> >>   * Safe rollback if task_work_add() fails.
+> >>
+> > In general I am not sure why we need so many acquire/release pairs.
+> > Why not use test_and_set_bit etc.? Or simply cmpxchg?
+> > What ordering of stores are we depending on that merits
+> > acquire/release ordering?
+> > We should probably document explicitly.
+> >
+> >> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> >> ---
+> >>   kernel/bpf/helpers.c | 188 +++++++++++++++++++++++++++++++++++++++++=
++-
+> >>   1 file changed, 186 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> >> index 516286f67f0d..4c8b1c9be7aa 100644
+> >> --- a/kernel/bpf/helpers.c
+> >> +++ b/kernel/bpf/helpers.c
+> >> @@ -25,6 +25,8 @@
+> >>   #include <linux/kasan.h>
+> >>   #include <linux/bpf_verifier.h>
+> >>   #include <linux/uaccess.h>
+> >> +#include <linux/task_work.h>
+> >> +#include <linux/irq_work.h>
+> >>
+> >>   #include "../../lib/kstrtox.h"
+> >>
+> >> @@ -3702,6 +3704,160 @@ __bpf_kfunc int bpf_strstr(const char *s1__ign=
+, const char *s2__ign)
+> >>
+> >>   typedef void (*bpf_task_work_callback_t)(struct bpf_map *, void *, v=
+oid *);
+> >>
+> >> +enum bpf_task_work_state {
+> >> +       /* bpf_task_work is ready to be used */
+> >> +       BPF_TW_STANDBY =3D 0,
+> >> +       /* bpf_task_work is getting scheduled into irq_work */
+> >> +       BPF_TW_PENDING,
+> >> +       /* bpf_task_work is in irq_work and getting scheduled into tas=
+k_work */
+> >> +       BPF_TW_SCHEDULING,
+> >> +       /* bpf_task_work is scheduled into task_work successfully */
+> >> +       BPF_TW_SCHEDULED,
+> >> +       /* callback is running */
+> >> +       BPF_TW_RUNNING,
+> >> +       /* BPF map value storing this bpf_task_work is deleted */
+> >> +       BPF_TW_FREED,
+> >> +};
+> >> +
+> >> +struct bpf_task_work_context {
+> >> +       /* map that contains this structure in a value */
+> >> +       struct bpf_map *map;
+> >> +       /* bpf_task_work_state value, representing the state */
+> >> +       atomic_t state;
+> >> +       /* bpf_prog that schedules task work */
+> >> +       struct bpf_prog *prog;
+> >> +       /* task for which callback is scheduled */
+> >> +       struct task_struct *task;
+> >> +       /* notification mode for task work scheduling */
+> >> +       enum task_work_notify_mode mode;
+> >> +       /* callback to call from task work */
+> >> +       bpf_task_work_callback_t callback_fn;
+> >> +       struct callback_head work;
+> >> +       struct irq_work irq_work;
+> >> +} __aligned(8);
+> > I will echo Alexei's comments about the layout. We cannot inline all
+> > this in map value.
+> > Allocation using an init function or in some control function is
+> > probably the only way.
+> >
+> >> +
+> >> +static bool task_work_match(struct callback_head *head, void *data)
+> >> +{
+> >> +       struct bpf_task_work_context *ctx =3D container_of(head, struc=
+t bpf_task_work_context, work);
+> >> +
+> >> +       return ctx =3D=3D data;
+> >> +}
+> >> +
+> >> +static void bpf_reset_task_work_context(struct bpf_task_work_context =
+*ctx)
+> >> +{
+> >> +       bpf_prog_put(ctx->prog);
+> >> +       bpf_task_release(ctx->task);
+> >> +       rcu_assign_pointer(ctx->map, NULL);
+> >> +}
+> >> +
+> >> +static void bpf_task_work_callback(struct callback_head *cb)
+> >> +{
+> >> +       enum bpf_task_work_state state;
+> >> +       struct bpf_task_work_context *ctx;
+> >> +       struct bpf_map *map;
+> >> +       u32 idx;
+> >> +       void *key;
+> >> +       void *value;
+> >> +
+> >> +       rcu_read_lock_trace();
+> >> +       ctx =3D container_of(cb, struct bpf_task_work_context, work);
+> >> +
+> >> +       state =3D atomic_cmpxchg_acquire(&ctx->state, BPF_TW_SCHEDULIN=
+G, BPF_TW_RUNNING);
+> >> +       if (state =3D=3D BPF_TW_SCHEDULED)
+> >> +               state =3D atomic_cmpxchg_acquire(&ctx->state, BPF_TW_S=
+CHEDULED, BPF_TW_RUNNING);
+> >> +       if (state =3D=3D BPF_TW_FREED)
+> >> +               goto out;
+> > I am leaving out commenting on this, since I expect it to change per
+> > later comments.
+> >
+> >> +
+> >> +       map =3D rcu_dereference(ctx->map);
+> >> +       if (!map)
+> >> +               goto out;
+> >> +
+> >> +       value =3D (void *)ctx - map->record->task_work_off;
+> >> +       key =3D (void *)map_key_from_value(map, value, &idx);
+> >> +
+> >> +       migrate_disable();
+> >> +       ctx->callback_fn(map, key, value);
+> >> +       migrate_enable();
+> >> +
+> >> +       /* State is running or freed, either way reset. */
+> >> +       bpf_reset_task_work_context(ctx);
+> >> +       atomic_cmpxchg_release(&ctx->state, BPF_TW_RUNNING, BPF_TW_STA=
+NDBY);
+> >> +out:
+> >> +       rcu_read_unlock_trace();
+> >> +}
+> >> +
+> >> +static void bpf_task_work_irq(struct irq_work *irq_work)
+> >> +{
+> >> +       struct bpf_task_work_context *ctx;
+> >> +       enum bpf_task_work_state state;
+> >> +       int err;
+> >> +
+> >> +       ctx =3D container_of(irq_work, struct bpf_task_work_context, i=
+rq_work);
+> >> +
+> >> +       rcu_read_lock_trace();
+> > What's the idea behind rcu_read_lock_trace? Let's add a comment.
+> >
+> >> +       state =3D atomic_cmpxchg_release(&ctx->state, BPF_TW_PENDING, =
+BPF_TW_SCHEDULING);
+> >> +       if (state =3D=3D BPF_TW_FREED) {
+> >> +               bpf_reset_task_work_context(ctx);
+> >> +               goto out;
+> >> +       }
+> >> +
+> >> +       err =3D task_work_add(ctx->task, &ctx->work, ctx->mode);
+> > Racy, SCHEDULING->FREE state claim from cancel_and_free will release ct=
+x->task.
+> Thanks for pointing this out, I missed that case.
+> >
+> >> +       if (err) {
+> >> +               state =3D atomic_cmpxchg_acquire(&ctx->state, BPF_TW_S=
+CHEDULING, BPF_TW_PENDING);
+> > Races here look fine, since we don't act on FREED (for this block
+> > atleast), cancel_and_free doesn't act on seeing PENDING,
+> > so there is interlocking.
+> >
+> >> +               if (state =3D=3D BPF_TW_SCHEDULING) {
+> >> +                       bpf_reset_task_work_context(ctx);
+> >> +                       atomic_cmpxchg_release(&ctx->state, BPF_TW_PEN=
+DING, BPF_TW_STANDBY);
+> >> +               }
+> >> +               goto out;
+> >> +       }
+> >> +       state =3D atomic_cmpxchg_release(&ctx->state, BPF_TW_SCHEDULIN=
+G, BPF_TW_SCHEDULED);
+> >> +       if (state =3D=3D BPF_TW_FREED)
+> >> +               task_work_cancel_match(ctx->task, task_work_match, ctx=
+);
+> > It looks like there is a similar race condition here.
+> > If BPF_TW_SCHEDULING is set, cancel_and_free may invoke and attempt
+> > bpf_task_release() from bpf_reset_task_work_context().
+> > Meanwhile, we will access ctx->task here directly after seeing BPF_TW_F=
+REED.
+> Yeah, we should release task_work in this function in case SCHEDULING
+> gets transitioned into FREED.
+> >
+> >> +out:
+> >> +       rcu_read_unlock_trace();
+> >> +}
+> >> +
+> >> +static int bpf_task_work_schedule(struct task_struct *task, struct bp=
+f_task_work_context *ctx,
+> >> +                                 struct bpf_map *map, bpf_task_work_c=
+allback_t callback_fn,
+> >> +                                 struct bpf_prog_aux *aux, enum task_=
+work_notify_mode mode)
+> >> +{
+> >> +       struct bpf_prog *prog;
+> >> +
+> >> +       BTF_TYPE_EMIT(struct bpf_task_work);
+> >> +
+> >> +       prog =3D bpf_prog_inc_not_zero(aux->prog);
+> >> +       if (IS_ERR(prog))
+> >> +               return -EPERM;
+> >> +
+> >> +       if (!atomic64_read(&map->usercnt)) {
+> >> +               bpf_prog_put(prog);
+> >> +               return -EPERM;
+> >> +       }
+> >> +       task =3D bpf_task_acquire(task);
+> >> +       if (!task) {
+> >> +               bpf_prog_put(prog);
+> >> +               return -EPERM;
+> >> +       }
+> >> +
+> >> +       if (atomic_cmpxchg_acquire(&ctx->state, BPF_TW_STANDBY, BPF_TW=
+_PENDING) !=3D BPF_TW_STANDBY) {
+> > If we are reusing map values, wouldn't a freed state stay perpetually f=
+reed?
+> > I.e. after the first delete of array elements etc. it becomes useless.
+> > Every array map update would invoke a cancel_and_free.
+> > Who resets it?
+> I'm not sure I understand the question, the idea is that if element is
+> deleted from map, we
+> transition state to FREED and make sure refcounts of the task and prog
+> are released.
 >
-> 	TRACE_GRAPH_ENT,
->
-> 	F_STRUCT(
-> 		__field_struct(	struct ftrace_graph_ent,	graph_ent	)
-> 		__field_packed(	unsigned long,	graph_ent,	func		)
->-		__field_packed(	int,		graph_ent,	depth		)
->+		__field_packed(	unsigned long,	graph_ent,	depth		)
->+		__dynamic_array(unsigned long,	args				)
+> An element is returned into STANDBY state after task_work is completed
+> or failed, so it can be reused.
+> Could you please elaborate on the scenario you have in mind?
 
-So we've added a dynamically sized array to the end of
-ftrace_graph_ent_entry, but in struct fgraph_data, the saved entry is
-defined as:
-
-   struct fgraph_data {
-       ...
-       union {
-           struct ftrace_graph_ent_entry ent;
-           struct fgraph_retaddr_ent_entry rent;
-       } ent;
-       ...
-   }
-
-Which doesn't seem to have room for args?
-
-The code in get_return_for_leaf() does:
-
-   data->ent.ent = *curr;
-
-This copies the struct, but curr points to a larger entry with args
-data. The copy operation only copies sizeof(struct
-ftrace_graph_ent_entry) bytes, which doesn't include the dynamic args
-array.
-
-And then later functions (like print_graph_entry()) would go ahead and
-assume that iter->ent_size is sane and make a mess out of everything.
-
-I can't test right now whether this actually fixes the issues or not,
-but I wanted to bring this up as this looks somewhat odd and I'm not too
-familiar with this code.
-
--- 
-Thanks,
-Sasha
+I guess I am confused about where we will go from FREED to STANDBY, if
+we set it to BPF_TW_FREED in cancel_and_free.
+When you update an array map element, we always do
+bpf_obj_free_fields. Typically, this operation leaves the field in a
+reusable state.
+I don't see a FREED->STANDBY transition (after going from
+[SCHEDULED|SCHEDULING]->FREED, only RUNNING->STANDBY in the callback.
 
