@@ -1,177 +1,136 @@
-Return-Path: <bpf+bounces-65307-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65308-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46AB8B1F838
-	for <lists+bpf@lfdr.de>; Sun, 10 Aug 2025 05:05:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01DC3B1F868
+	for <lists+bpf@lfdr.de>; Sun, 10 Aug 2025 06:53:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AB9917AB38
-	for <lists+bpf@lfdr.de>; Sun, 10 Aug 2025 03:05:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18DFE189B52F
+	for <lists+bpf@lfdr.de>; Sun, 10 Aug 2025 04:54:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED7B819F40B;
-	Sun, 10 Aug 2025 03:05:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D41261C7013;
+	Sun, 10 Aug 2025 04:53:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="exYXhdii"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DxJbrZCJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f196.google.com (mail-pf1-f196.google.com [209.85.210.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BFAE17333F;
-	Sun, 10 Aug 2025 03:05:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B61ACA4E;
+	Sun, 10 Aug 2025 04:53:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754795150; cv=none; b=tmq/2pDoSR/NbuWfmDO8hheQeEbsaLhlr8x03eW+OlNUcQx4All0P+nbDNA7UlH79opiTEZUuEVjcJYsV8GDFCf+GMX229B4kHH7ND8u/1kTmjJi3EuVWoumYwxiiPH4h2MnkTMjnBtZsuzy3WLYktWAY/r0HFqDFbFhUGrzI8k=
+	t=1754801624; cv=none; b=VtYnAxzjLcZkpoy4B3Pez/9pk+kWy+vMxz851ohSSBcFR8Hg68L8rs9+qfcodOji/FlkyHG8Oka0z994fd0ByGffRjqXCbrAvQR3Lu91F1SMf84UDSOJG4uZ+8DqNiTdsIRH6IrWzR2uuKcra1Mo6z+7ziLXmRDy0BkH/5xefrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754795150; c=relaxed/simple;
-	bh=kVXO32XWFGFryq+9u4jMGw/2BQMQgJzRVyV+Y/D478Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QfNyBD0WsRuFRIhv3a8LWM0uAyYfw5ogyk05XSwmWnsVUJT5USv4lpt61hqAQgyFCGr5lBpHP07sY0zQRpD+xxRIb60YfsED/vQFimzGfvwYQk9x31ZiK57aaZAWdBUffdkm2Q5dYlSETEtpBA1Qb2P3L7DFExT6YeXrbWnEVKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=exYXhdii; arc=none smtp.client-ip=209.85.210.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f196.google.com with SMTP id d2e1a72fcca58-7698e914cd2so4385353b3a.3;
-        Sat, 09 Aug 2025 20:05:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754795148; x=1755399948; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z/lWdjE3fEvYN7U+VU8qdCr2mZquMa68Yf5oLPz/zjM=;
-        b=exYXhdii9sU3dH8OXIsCfC8jSw1z4/SZDe7d7ICOBLgKGe5D8XS7i79z+v9MqrQwPm
-         8+EqjvaVnv+qMtURWVYy4LpZMv+AkiSVTkVHeYVOjd5cU+c4edIClzLA3IQ+KK4EnYrK
-         CCBG5QiC5948kCOq+22hgXXa+hfrUbyAFawpSn1C7O0+/2Tsq/94v0iMj8MRpCRuge+S
-         I8naxgO+DTFab3bCFjsqCSILBOuCx5EIZq2rHpacJOdNaDSkp/n955nnUdE8RIiR52P8
-         O6Pxk1WSk7YmlQz23YefTaaag50TV3RkcaDP/1klNvVQTKq2kGLvszHCI7uMe1pA1iqO
-         5nuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754795148; x=1755399948;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z/lWdjE3fEvYN7U+VU8qdCr2mZquMa68Yf5oLPz/zjM=;
-        b=V8oxCkJ6a+vq5tels9NC4KZcIfHMcM2qXsH2Fa9LhllmCMf8g/FYPGNg9MTBKT/Y0t
-         /rjP/Aw8U79bBN0yJCNy3xS1k8Y+f5oXQCJ2W6K0ClX7ySfo5s+Na0z+d2t/Kz3qRZpc
-         qkWfcy+G6IwlJJ6M09MujHhl2V0Cr3Qs4C2xpCMGX4xqS9U283dnQMIBovgiuslaGGoJ
-         PZnT4rKT26jaydM51feybdJkVvIVoMQwie4ivAIu3Iwt8fi3ea6Vl+obHiR3a4mjmjBx
-         H17+e9ZKSpdAt9TSJIwUTNVnefoWPZnPtGrLhFmamvSo/KlC0oXUpky3oRQgQhNc1ooo
-         hixw==
-X-Forwarded-Encrypted: i=1; AJvYcCUgEDxS5n+kYrlTjfi7WGNiIZsCX+lgPPgAlVdX6fHB+QSQNWx0/uVJ6Sbv58uKENErJG0=@vger.kernel.org, AJvYcCVSWvG/1e1kkLxLSiJcWh0k+lQE4bEQ9Id7bO9C81/gw8tIoDM8e8wbNSzvOZSZASYgLQjDVW7qKBTegDNS@vger.kernel.org
-X-Gm-Message-State: AOJu0YwLdkkzRxRUiIwGNI4fO7JbRefURS02qg+T+FERtxwtH7JBc978
-	52xF/ZcCzwy9chPtLrIb3/+/mmSic8xg+ujdR46zRkQpoIrutSq7aimc
-X-Gm-Gg: ASbGnctef11rl2s/MpAeWlB/i3HcW+NN9D16wDpb2D+sAuxaDIdydwNM7A9w53QBZ91
-	xkWDakumvCtEN4PzHJWD9N2kG18sWCr03fwJxKBIGAJKGpYmiDGpwTRbNZobKXkSrbT2yaNbPiI
-	6ZdIHKR83TUXrWFXqiGSjS7k2iNXz26mIEf5skRk/mZ4tnZP8pEAs7HosHVaoIyuh+ExILnU3LV
-	HRceCsN8kCbPnDXSvXY6Htx3//07aVUpHOlA2nEQNmlmK1CrRidsXzsF2nfOlIKAcrfSIRXRroL
-	Me1SfGycHtqoROKktoOD/1zu7j0CRjUaPaaZkv/cFn9j5tUb0lc0HpzkznyFHrjalmD9nY7HEDL
-	41tulaClU8QDWSNAuNa8=
-X-Google-Smtp-Source: AGHT+IGpQgcJ07Rb0COrFVRfwZ1+k4jjANaMerJrGc10MFgaKDK94feNSeCO72ZP1Id+CGk4jqhMnw==
-X-Received: by 2002:a05:6a00:2d14:b0:76b:caa2:5bd8 with SMTP id d2e1a72fcca58-76c4617fc32mr12233675b3a.13.1754795148132;
-        Sat, 09 Aug 2025 20:05:48 -0700 (PDT)
-Received: from 7950hx ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-76bdd2725c9sm21276265b3a.6.2025.08.09.20.05.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Aug 2025 20:05:47 -0700 (PDT)
-From: Menglong Dong <menglong8.dong@gmail.com>
-X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
-To: peterz@infradead.org,
-	alexei.starovoitov@gmail.com
-Cc: mingo@redhat.com,
-	juri.lelli@redhat.com,
-	vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com,
-	rostedt@goodmis.org,
-	bsegall@google.com,
-	mgorman@suse.de,
-	vschneid@redhat.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	jani.nikula@intel.com,
-	simona.vetter@ffwll.ch,
-	tzimmermann@suse.de,
-	linux-kernel@vger.kernel.org,
+	s=arc-20240116; t=1754801624; c=relaxed/simple;
+	bh=3lGbStlu8yMmhRhoMabgr57jQSN1KJvUT8IV+PChT00=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qiYkyUHjWAn5cBkTvYlXbxRH2ExPQS4r4ax2GBhwpGXa4grXG0qxYG8HS1G4h52IwuJkd3kmjmsZizeNIuVORfovuq8zbZwCdplVlV7wmVf7ySHoPAA3Evt/9GqM3voCEYJblCMfWjLggrmDcjbm4mqb4cv/Qpg4FrNYytEkans=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DxJbrZCJ; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1754801623; x=1786337623;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=3lGbStlu8yMmhRhoMabgr57jQSN1KJvUT8IV+PChT00=;
+  b=DxJbrZCJNoIha3IyR0U8bOA2cMgQi5/o+suVNqj7bihpsE1KunKv3NjS
+   qU8aOlA07+iVQ3bZ/DEUzpVREd8IpWmheyhwE5R/H0buzOSUu4YOX4wf6
+   g/O+zqu4nTYPN1yJ6F3kHciCnwIOu7NeCFYYx9Up6M5wm/eOOLBXT1e8w
+   dBBizs9qKWvNLWzG+igrgEIW2dy7Ok8BtHVWfuZESD4GFKjH5zg+B9DSP
+   ehL+1XwGtEyBe4cxJxkZQNqYsxB8HjevE94jzGOn/drdOYjTSUXEELIIp
+   yRdYOpyvb/2GfVvqavyN8dn+FJScXgmhhgtLwJtT1kxjh1BqYFb4zbyVo
+   Q==;
+X-CSE-ConnectionGUID: fEZUPJmBQp6q8VV9WY7XgA==
+X-CSE-MsgGUID: xywdxMidS2a94nq+K0FSVw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11516"; a="60937692"
+X-IronPort-AV: E=Sophos;i="6.17,278,1747724400"; 
+   d="scan'208";a="60937692"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2025 21:53:42 -0700
+X-CSE-ConnectionGUID: x47SEqisQNKcU/UXGw+X3w==
+X-CSE-MsgGUID: vN/EfR04RhGvXrtVCgkhUQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.17,278,1747724400"; 
+   d="scan'208";a="169862035"
+Received: from lkp-server02.sh.intel.com (HELO 4ea60e6ab079) ([10.239.97.151])
+  by fmviesa005.fm.intel.com with ESMTP; 09 Aug 2025 21:53:36 -0700
+Received: from kbuild by 4ea60e6ab079 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1uky3p-0005AC-2A;
+	Sun, 10 Aug 2025 04:53:33 +0000
+Date: Sun, 10 Aug 2025 12:52:43 +0800
+From: kernel test robot <lkp@intel.com>
+To: Menglong Dong <menglong8.dong@gmail.com>, alexei.starovoitov@gmail.com
+Cc: oe-kbuild-all@lists.linux.dev, mingo@redhat.com, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	vschneid@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+	john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
+	jolsa@kernel.org, jani.nikula@intel.com, simona.vetter@ffwll.ch,
+	tzimmermann@suse.de, linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH tip 3/3] sched: fix some typos in include/linux/preempt.h
-Date: Sun, 10 Aug 2025 11:04:42 +0800
-Message-ID: <20250810030442.246974-4-dongml2@chinatelecom.cn>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20250810030442.246974-1-dongml2@chinatelecom.cn>
-References: <20250810030442.246974-1-dongml2@chinatelecom.cn>
+Subject: Re: [PATCH tip 2/3] sched: make migrate_enable/migrate_disable inline
+Message-ID: <202508101230.2KBZa0Ql-lkp@intel.com>
+References: <20250810030442.246974-3-dongml2@chinatelecom.cn>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250810030442.246974-3-dongml2@chinatelecom.cn>
 
-There are some typos in the comments of migrate in
-include/linux/preempt.h:
+Hi Menglong,
 
-  elegible -> eligible
-  it's -> its
-  migirate_disable -> migrate_disable
-  abritrary -> arbitrary
+kernel test robot noticed the following build warnings:
 
-Just fix them.
+[auto build test WARNING on tip/master]
 
-Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
----
- include/linux/preempt.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+url:    https://github.com/intel-lab-lkp/linux/commits/Menglong-Dong/arch-add-the-macro-COMPILE_OFFSETS-to-all-the-asm-offsets-c/20250810-110846
+base:   tip/master
+patch link:    https://lore.kernel.org/r/20250810030442.246974-3-dongml2%40chinatelecom.cn
+patch subject: [PATCH tip 2/3] sched: make migrate_enable/migrate_disable inline
+config: arc-randconfig-001-20250810 (https://download.01.org/0day-ci/archive/20250810/202508101230.2KBZa0Ql-lkp@intel.com/config)
+compiler: arc-linux-gcc (GCC) 8.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250810/202508101230.2KBZa0Ql-lkp@intel.com/reproduce)
 
-diff --git a/include/linux/preempt.h b/include/linux/preempt.h
-index 92237c319035..102202185d7a 100644
---- a/include/linux/preempt.h
-+++ b/include/linux/preempt.h
-@@ -372,7 +372,7 @@ static inline void preempt_notifier_init(struct preempt_notifier *notifier,
- /*
-  * Migrate-Disable and why it is undesired.
-  *
-- * When a preempted task becomes elegible to run under the ideal model (IOW it
-+ * When a preempted task becomes eligible to run under the ideal model (IOW it
-  * becomes one of the M highest priority tasks), it might still have to wait
-  * for the preemptee's migrate_disable() section to complete. Thereby suffering
-  * a reduction in bandwidth in the exact duration of the migrate_disable()
-@@ -387,7 +387,7 @@ static inline void preempt_notifier_init(struct preempt_notifier *notifier,
-  * - a lower priority tasks; which under preempt_disable() could've instantly
-  *   migrated away when another CPU becomes available, is now constrained
-  *   by the ability to push the higher priority task away, which might itself be
-- *   in a migrate_disable() section, reducing it's available bandwidth.
-+ *   in a migrate_disable() section, reducing its available bandwidth.
-  *
-  * IOW it trades latency / moves the interference term, but it stays in the
-  * system, and as long as it remains unbounded, the system is not fully
-@@ -399,7 +399,7 @@ static inline void preempt_notifier_init(struct preempt_notifier *notifier,
-  * PREEMPT_RT breaks a number of assumptions traditionally held. By forcing a
-  * number of primitives into becoming preemptible, they would also allow
-  * migration. This turns out to break a bunch of per-cpu usage. To this end,
-- * all these primitives employ migirate_disable() to restore this implicit
-+ * all these primitives employ migrate_disable() to restore this implicit
-  * assumption.
-  *
-  * This is a 'temporary' work-around at best. The correct solution is getting
-@@ -407,7 +407,7 @@ static inline void preempt_notifier_init(struct preempt_notifier *notifier,
-  * per-cpu locking or short preempt-disable regions.
-  *
-  * The end goal must be to get rid of migrate_disable(), alternatively we need
-- * a schedulability theory that does not depend on abritrary migration.
-+ * a schedulability theory that does not depend on arbitrary migration.
-  *
-  *
-  * Notes on the implementation.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202508101230.2KBZa0Ql-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> kernel/sched/core.c:2385:6: warning: no previous prototype for '__migrate_enable' [-Wmissing-prototypes]
+    void __migrate_enable(void)
+         ^~~~~~~~~~~~~~~~
+
+
+vim +/__migrate_enable +2385 kernel/sched/core.c
+
+  2384	
+> 2385	void __migrate_enable(void)
+  2386	{
+  2387		struct task_struct *p = current;
+  2388		struct affinity_context ac = {
+  2389			.new_mask  = &p->cpus_mask,
+  2390			.flags     = SCA_MIGRATE_ENABLE,
+  2391		};
+  2392	
+  2393		__set_cpus_allowed_ptr(p, &ac);
+  2394	}
+  2395	EXPORT_SYMBOL_GPL(__migrate_enable);
+  2396	
+
 -- 
-2.50.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
