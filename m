@@ -1,197 +1,239 @@
-Return-Path: <bpf+bounces-65329-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65330-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2683DB2075D
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 13:19:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF903B20793
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 13:26:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E80F3B1449
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 11:18:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 862A57A63AE
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 11:25:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31BAB2BF006;
-	Mon, 11 Aug 2025 11:18:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BD162D29AC;
+	Mon, 11 Aug 2025 11:26:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FviwdgLD"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YjJGXcdx"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEFAB2BEC27
-	for <bpf@vger.kernel.org>; Mon, 11 Aug 2025 11:18:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAA202D2387;
+	Mon, 11 Aug 2025 11:26:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754911125; cv=none; b=k2mVks6SXlQBfGgmd5beHOTKbHNk5uOU4f8KN4ZChutxcw6bd39Nk3K6+9RLxI9eumN3N9GqHdQnV7PwLrqZLmGRkEh3p+PZ+yqvt1e80cCx5ALoHu9SiIPOBHZDEf1OVEhsEpbkSqWRaeM7knb01Y69pX6jO+XcYy3DBONI254=
+	t=1754911588; cv=none; b=WayCHd7fL/crFC0in0rxmPgtOeTxPLqEHziYKFzN7JhoOLMdQeO3+Znmy+8gO+IYnqNlBPPz8nRt4Ml/NTkpk+TtOVLMHLnzkWjrajMWl1kJef8+/RLNQvH6vioc6+rEA57ZfKFNBVz3rBleCeZNueMz+qxVcBh6SbgF1AS4WXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754911125; c=relaxed/simple;
-	bh=R8DY7B1C60z8T7w/qiuv9BCN8CkV414G/UiSJLimdJs=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gAsl6E9DVFI9brnpVNWvWe6hBjA2lmxwV5eYIBK0tBrsPnclgI8cU0+Kr8KcgR8JEt27W+uy5gpB3zdZn8Oh3amZj+ymV+tFYAgsRnffB6dW3ZuTRKa6da4N2ucr1fSHZX9FJs4nSUbWMFIKrVvEhLAe8u34lvrqzKwo4l5tfcE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FviwdgLD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4B4DC4CEED;
-	Mon, 11 Aug 2025 11:18:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754911125;
-	bh=R8DY7B1C60z8T7w/qiuv9BCN8CkV414G/UiSJLimdJs=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=FviwdgLDpH6GgSm+UcfcBAxxf8jc1BlMDD4BTgB8Qm0Ukl224lIVQgCGH1NeC6vLv
-	 jfpvPoWSh88XbQHViutZYdueTAGmXgsDwuWfQZ08CgHJHpH+1IwU6lgs2RINuhx5pE
-	 i4GaFXGtwnpUCwyEhAE/Vkr6MpOo0MJNMcCo/P59Z2iBZ48WMDAC5r/fXJCVW6+hr1
-	 eFn67ndaqp5sFwwJwr6c+5NUAzAC/Bdfh+6JwCQjbqjhv4cNL0s+tfI38S6dL/si4S
-	 ec5wdVpnAijH9VIWWi7XQlgI7/oihsJC43Hrt2w09NS6C2XG3911TAO1dlojTQQrO0
-	 V2ljPwC9YWvBg==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Xu Kuohai <xukuohai@huaweicloud.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	bpf@vger.kernel.org
-Subject: [PATCH bpf-next v2 3/3] selftests/bpf: Add tests for arena fault reporting
-Date: Mon, 11 Aug 2025 11:18:24 +0000
-Message-ID: <20250811111828.13836-4-puranjay@kernel.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20250811111828.13836-1-puranjay@kernel.org>
-References: <20250811111828.13836-1-puranjay@kernel.org>
+	s=arc-20240116; t=1754911588; c=relaxed/simple;
+	bh=TDDUh3YZA77tPJQoxh3MNl7VnFCf8Gr5sBYtPCwEosw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VI2ySLhJh7qtvh7uIC+9Zmh0GElsZ97IeAruYvw9eGYNrrFC7I5Qmk+XwEyVdDhrKvqkq9W5gVV6iT39ApQG7d3YEkYnU7tDRk7HN00qLenjVv6dfZdYpFxwMJmQ1IH29guModv4s6pjVOUyMU2x/S2ZBd5b5QRDfIOJDXJeCyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YjJGXcdx; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1754911587; x=1786447587;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=TDDUh3YZA77tPJQoxh3MNl7VnFCf8Gr5sBYtPCwEosw=;
+  b=YjJGXcdxL5zQSExJWrtTsNozjS9Hogm3eiXSygXbJXpDjSJ/fgoQJ4o5
+   e9mKCucVL5JySP+dwMcgcwV52LRLNbToxlYIy3/tP+vB25U7yIatDxaqx
+   E2NUyMVigt/xJ/PZ3W08bHPWj9DHcNPjkmCfDDixmFl4CXf5RZKap7hAe
+   Ip1oSA1zAHjjFdF4hhFZxI4yhtm3+ozwIBH9KGTUxT0/x2GNeoIVJOXJ7
+   VjKhm5zF6YxzNxfAfzeOrEfwTHDLrKBJMi0KmeyEFqlsKAvFMiAb+Ucjx
+   d9VEF0N10HPl2gQ75iLHw/sWw1a7nHuK4U1ZiQjlA4gUVag2gn8SYX5mr
+   g==;
+X-CSE-ConnectionGUID: voZBCBAmRC6Hf4fakHTmjA==
+X-CSE-MsgGUID: 3AplfPQlSn+PjkJd5sl1JQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11518"; a="56367441"
+X-IronPort-AV: E=Sophos;i="6.17,278,1747724400"; 
+   d="scan'208";a="56367441"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2025 04:26:26 -0700
+X-CSE-ConnectionGUID: XMSe7Xf8Rv6ifGt2ii8ehQ==
+X-CSE-MsgGUID: GliJBp2qTrqFhVTD6cagFA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.17,278,1747724400"; 
+   d="scan'208";a="166251272"
+Received: from lkp-server02.sh.intel.com (HELO 4ea60e6ab079) ([10.239.97.151])
+  by fmviesa009.fm.intel.com with ESMTP; 11 Aug 2025 04:26:19 -0700
+Received: from kbuild by 4ea60e6ab079 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1ulQfQ-0005oq-2S;
+	Mon, 11 Aug 2025 11:26:16 +0000
+Date: Mon, 11 Aug 2025 19:25:40 +0800
+From: kernel test robot <lkp@intel.com>
+To: Bhupesh <bhupesh@igalia.com>, akpm@linux-foundation.org
+Cc: oe-kbuild-all@lists.linux.dev, bhupesh@igalia.com,
+	kernel-dev@igalia.com, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	oliver.sang@intel.com, lkp@intel.com, laoar.shao@gmail.com,
+	pmladek@suse.com, rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
+	alexei.starovoitov@gmail.com, andrii.nakryiko@gmail.com,
+	mirq-linux@rere.qmqm.pl, peterz@infradead.org, willy@infradead.org,
+	david@redhat.com, viro@zeniv.linux.org.uk, keescook@chromium.org,
+	ebiederm@xmission.com, brauner@kernel.org, jack@suse.cz,
+	mingo@redhat.com, juri.lelli@redhat.com, bsegall@google.com,
+	mgorman@suse.de
+Subject: Re: [PATCH v7 3/4] treewide: Replace 'get_task_comm()' with
+ 'strscpy_pad()'
+Message-ID: <202508111835.JFL8DgKY-lkp@intel.com>
+References: <20250811064609.918593-4-bhupesh@igalia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250811064609.918593-4-bhupesh@igalia.com>
 
-Add selftests for testing the reporting of arena page faults through BPF
-streams. Two new bpf programs are added that read and write to an
-unmapped arena address and the fault reporting is verified in the
-userspace through streams.
+Hi Bhupesh,
 
-Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
----
- .../testing/selftests/bpf/prog_tests/stream.c | 24 ++++++++++++
- tools/testing/selftests/bpf/progs/stream.c    | 37 +++++++++++++++++++
- 2 files changed, 61 insertions(+)
+kernel test robot noticed the following build errors:
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/stream.c b/tools/testing/selftests/bpf/prog_tests/stream.c
-index d9f0185dca61b..4bdde56de35b1 100644
---- a/tools/testing/selftests/bpf/prog_tests/stream.c
-+++ b/tools/testing/selftests/bpf/prog_tests/stream.c
-@@ -41,6 +41,22 @@ struct {
- 		"([a-zA-Z_][a-zA-Z0-9_]*\\+0x[0-9a-fA-F]+/0x[0-9a-fA-F]+\n"
- 		"|[ \t]+[^\n]+\n)*",
- 	},
-+	{
-+		offsetof(struct stream, progs.stream_arena_read_fault),
-+		"ERROR: Arena READ access at unmapped address 0x.*\n"
-+		"CPU: [0-9]+ UID: 0 PID: [0-9]+ Comm: .*\n"
-+		"Call trace:\n"
-+		"([a-zA-Z_][a-zA-Z0-9_]*\\+0x[0-9a-fA-F]+/0x[0-9a-fA-F]+\n"
-+		"|[ \t]+[^\n]+\n)*",
-+	},
-+	{
-+		offsetof(struct stream, progs.stream_arena_write_fault),
-+		"ERROR: Arena WRITE access at unmapped address 0x.*\n"
-+		"CPU: [0-9]+ UID: 0 PID: [0-9]+ Comm: .*\n"
-+		"Call trace:\n"
-+		"([a-zA-Z_][a-zA-Z0-9_]*\\+0x[0-9a-fA-F]+/0x[0-9a-fA-F]+\n"
-+		"|[ \t]+[^\n]+\n)*",
-+	},
- };
- 
- static int match_regex(const char *pattern, const char *string)
-@@ -85,6 +101,14 @@ void test_stream_errors(void)
- 			continue;
- 		}
- #endif
-+#if !defined(__x86_64__) && !defined(__aarch64__)
-+		ASSERT_TRUE(1, "Arena fault reporting unsupported, skip.");
-+		if (i == 2 || i == 3) {
-+			ret = bpf_prog_stream_read(prog_fd, 2, buf, sizeof(buf), &ropts);
-+			ASSERT_EQ(ret, 0, "stream read");
-+			continue;
-+		}
-+#endif
- 
- 		ret = bpf_prog_stream_read(prog_fd, BPF_STREAM_STDERR, buf, sizeof(buf), &ropts);
- 		ASSERT_GT(ret, 0, "stream read");
-diff --git a/tools/testing/selftests/bpf/progs/stream.c b/tools/testing/selftests/bpf/progs/stream.c
-index 35790897dc879..58ebff60cd96a 100644
---- a/tools/testing/selftests/bpf/progs/stream.c
-+++ b/tools/testing/selftests/bpf/progs/stream.c
-@@ -1,10 +1,15 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+#define BPF_NO_KFUNC_PROTOTYPES
- #include <vmlinux.h>
- #include <bpf/bpf_tracing.h>
- #include <bpf/bpf_helpers.h>
- #include "bpf_misc.h"
- #include "bpf_experimental.h"
-+#include "bpf_arena_common.h"
-+
-+extern int bpf_res_spin_lock(struct bpf_res_spin_lock *lock) __weak __ksym;
-+extern void bpf_res_spin_unlock(struct bpf_res_spin_lock *lock) __weak __ksym;
- 
- struct arr_elem {
- 	struct bpf_res_spin_lock lock;
-@@ -17,6 +22,12 @@ struct {
- 	__type(value, struct arr_elem);
- } arrmap SEC(".maps");
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARENA);
-+	__uint(map_flags, BPF_F_MMAPABLE);
-+	__uint(max_entries, 1); /* number of pages */
-+} arena SEC(".maps");
-+
- #define ENOSPC 28
- #define _STR "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
- 
-@@ -76,4 +87,30 @@ int stream_syscall(void *ctx)
- 	return 0;
- }
- 
-+SEC("syscall")
-+__success __retval(0)
-+int stream_arena_write_fault(void *ctx)
-+{
-+	unsigned char __arena *page;
-+
-+	page = bpf_arena_alloc_pages(&arena, NULL, 1, NUMA_NO_NODE, 0);
-+	bpf_arena_free_pages(&arena, page, 1);
-+
-+	*(page + 0xbeef) = 1;
-+
-+	return 0;
-+}
-+
-+SEC("syscall")
-+__success __retval(0)
-+int stream_arena_read_fault(void *ctx)
-+{
-+	unsigned char __arena *page;
-+
-+	page = bpf_arena_alloc_pages(&arena, NULL, 1, NUMA_NO_NODE, 0);
-+	bpf_arena_free_pages(&arena, page, 1);
-+
-+	return *(page + 0xbeef);
-+}
-+
- char _license[] SEC("license") = "GPL";
+[auto build test ERROR on next-20250808]
+[cannot apply to trace/for-next tip/sched/core brauner-vfs/vfs.all linus/master v6.17-rc1 v6.16 v6.16-rc7 v6.17-rc1]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Bhupesh/exec-Remove-obsolete-comments/20250811-144920
+base:   next-20250808
+patch link:    https://lore.kernel.org/r/20250811064609.918593-4-bhupesh%40igalia.com
+patch subject: [PATCH v7 3/4] treewide: Replace 'get_task_comm()' with 'strscpy_pad()'
+config: sh-randconfig-002-20250811 (https://download.01.org/0day-ci/archive/20250811/202508111835.JFL8DgKY-lkp@intel.com/config)
+compiler: sh4-linux-gcc (GCC) 15.1.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250811/202508111835.JFL8DgKY-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202508111835.JFL8DgKY-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from include/linux/bitmap.h:13,
+                    from include/linux/cpumask.h:12,
+                    from include/linux/smp.h:13,
+                    from include/linux/lockdep.h:14,
+                    from include/linux/spinlock.h:63,
+                    from include/linux/mmzone.h:8,
+                    from include/linux/gfp.h:7,
+                    from include/linux/umh.h:4,
+                    from include/linux/kmod.h:9,
+                    from include/linux/module.h:18,
+                    from net/netfilter/nf_tables_api.c:8:
+   net/netfilter/nf_tables_api.c: In function 'nf_tables_fill_gen_info':
+>> include/linux/string.h:116:50: error: passing argument 3 of 'nla_put_string' makes pointer from integer without a cast [-Wint-conversion]
+     116 | #define sized_strscpy_pad(dest, src, count)     ({                      \
+         |                                                 ~^~~~~~~~~~~~~~~~~~~~~~~~
+         |                                                  |
+         |                                                  ssize_t {aka int}
+     117 |         char *__dst = (dest);                                           \
+         |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     118 |         const char *__src = (src);                                      \
+         |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     119 |         const size_t __count = (count);                                 \
+         |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     120 |         ssize_t __wrote;                                                \
+         |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     121 |                                                                         \
+         |                                                                         ~
+     122 |         __wrote = sized_strscpy(__dst, __src, __count);                 \
+         |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     123 |         if (__wrote >= 0 && __wrote < __count)                          \
+         |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     124 |                 memset(__dst + __wrote + 1, 0, __count - __wrote - 1);  \
+         |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     125 |         __wrote;                                                        \
+         |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     126 | })
+         | ~~                                                
+   include/linux/string.h:86:9: note: in expansion of macro 'sized_strscpy_pad'
+      86 |         sized_strscpy_pad(dst, src, sizeof(dst) + __must_be_array(dst) +        \
+         |         ^~~~~~~~~~~~~~~~~
+   include/linux/args.h:25:24: note: in expansion of macro '__strscpy_pad0'
+      25 | #define __CONCAT(a, b) a ## b
+         |                        ^
+   include/linux/args.h:26:27: note: in expansion of macro '__CONCAT'
+      26 | #define CONCATENATE(a, b) __CONCAT(a, b)
+         |                           ^~~~~~~~
+   include/linux/string.h:149:9: note: in expansion of macro 'CONCATENATE'
+     149 |         CONCATENATE(__strscpy_pad, COUNT_ARGS(__VA_ARGS__))(dst, src, __VA_ARGS__)
+         |         ^~~~~~~~~~~
+   net/netfilter/nf_tables_api.c:9661:53: note: in expansion of macro 'strscpy_pad'
+    9661 |             nla_put_string(skb, NFTA_GEN_PROC_NAME, strscpy_pad(buf, current->comm)))
+         |                                                     ^~~~~~~~~~~
+   In file included from include/linux/netfilter/nfnetlink.h:7,
+                    from net/netfilter/nf_tables_api.c:17:
+   include/net/netlink.h:1655:46: note: expected 'const char *' but argument is of type 'ssize_t' {aka 'int'}
+    1655 |                                  const char *str)
+         |                                  ~~~~~~~~~~~~^~~
+
+
+vim +/nla_put_string +116 include/linux/string.h
+
+e6584c3964f2ff Kees Cook        2023-09-20   74  
+e6584c3964f2ff Kees Cook        2023-09-20   75  /*
+e6584c3964f2ff Kees Cook        2023-09-20   76   * The 2 argument style can only be used when dst is an array with a
+e6584c3964f2ff Kees Cook        2023-09-20   77   * known size.
+e6584c3964f2ff Kees Cook        2023-09-20   78   */
+e6584c3964f2ff Kees Cook        2023-09-20   79  #define __strscpy0(dst, src, ...)	\
+559048d156ff33 Kees Cook        2024-08-05   80  	sized_strscpy(dst, src, sizeof(dst) + __must_be_array(dst) +	\
+559048d156ff33 Kees Cook        2024-08-05   81  				__must_be_cstr(dst) + __must_be_cstr(src))
+559048d156ff33 Kees Cook        2024-08-05   82  #define __strscpy1(dst, src, size)	\
+559048d156ff33 Kees Cook        2024-08-05   83  	sized_strscpy(dst, src, size + __must_be_cstr(dst) + __must_be_cstr(src))
+e6584c3964f2ff Kees Cook        2023-09-20   84  
+8366d124ec937c Kees Cook        2024-02-02   85  #define __strscpy_pad0(dst, src, ...)	\
+559048d156ff33 Kees Cook        2024-08-05   86  	sized_strscpy_pad(dst, src, sizeof(dst) + __must_be_array(dst) +	\
+559048d156ff33 Kees Cook        2024-08-05   87  				    __must_be_cstr(dst) + __must_be_cstr(src))
+559048d156ff33 Kees Cook        2024-08-05   88  #define __strscpy_pad1(dst, src, size)	\
+559048d156ff33 Kees Cook        2024-08-05   89  	sized_strscpy_pad(dst, src, size + __must_be_cstr(dst) + __must_be_cstr(src))
+458a3bf82df4fe Tobin C. Harding 2019-04-05   90  
+e6584c3964f2ff Kees Cook        2023-09-20   91  /**
+e6584c3964f2ff Kees Cook        2023-09-20   92   * strscpy - Copy a C-string into a sized buffer
+e6584c3964f2ff Kees Cook        2023-09-20   93   * @dst: Where to copy the string to
+e6584c3964f2ff Kees Cook        2023-09-20   94   * @src: Where to copy the string from
+e6584c3964f2ff Kees Cook        2023-09-20   95   * @...: Size of destination buffer (optional)
+e6584c3964f2ff Kees Cook        2023-09-20   96   *
+e6584c3964f2ff Kees Cook        2023-09-20   97   * Copy the source string @src, or as much of it as fits, into the
+e6584c3964f2ff Kees Cook        2023-09-20   98   * destination @dst buffer. The behavior is undefined if the string
+e6584c3964f2ff Kees Cook        2023-09-20   99   * buffers overlap. The destination @dst buffer is always NUL terminated,
+e6584c3964f2ff Kees Cook        2023-09-20  100   * unless it's zero-sized.
+e6584c3964f2ff Kees Cook        2023-09-20  101   *
+e6584c3964f2ff Kees Cook        2023-09-20  102   * The size argument @... is only required when @dst is not an array, or
+e6584c3964f2ff Kees Cook        2023-09-20  103   * when the copy needs to be smaller than sizeof(@dst).
+e6584c3964f2ff Kees Cook        2023-09-20  104   *
+e6584c3964f2ff Kees Cook        2023-09-20  105   * Preferred to strncpy() since it always returns a valid string, and
+e6584c3964f2ff Kees Cook        2023-09-20  106   * doesn't unnecessarily force the tail of the destination buffer to be
+e6584c3964f2ff Kees Cook        2023-09-20  107   * zero padded. If padding is desired please use strscpy_pad().
+e6584c3964f2ff Kees Cook        2023-09-20  108   *
+e6584c3964f2ff Kees Cook        2023-09-20  109   * Returns the number of characters copied in @dst (not including the
+e6584c3964f2ff Kees Cook        2023-09-20  110   * trailing %NUL) or -E2BIG if @size is 0 or the copy from @src was
+e6584c3964f2ff Kees Cook        2023-09-20  111   * truncated.
+e6584c3964f2ff Kees Cook        2023-09-20  112   */
+e6584c3964f2ff Kees Cook        2023-09-20  113  #define strscpy(dst, src, ...)	\
+e6584c3964f2ff Kees Cook        2023-09-20  114  	CONCATENATE(__strscpy, COUNT_ARGS(__VA_ARGS__))(dst, src, __VA_ARGS__)
+458a3bf82df4fe Tobin C. Harding 2019-04-05  115  
+8366d124ec937c Kees Cook        2024-02-02 @116  #define sized_strscpy_pad(dest, src, count)	({			\
+8366d124ec937c Kees Cook        2024-02-02  117  	char *__dst = (dest);						\
+8366d124ec937c Kees Cook        2024-02-02  118  	const char *__src = (src);					\
+8366d124ec937c Kees Cook        2024-02-02  119  	const size_t __count = (count);					\
+8366d124ec937c Kees Cook        2024-02-02  120  	ssize_t __wrote;						\
+8366d124ec937c Kees Cook        2024-02-02  121  									\
+8366d124ec937c Kees Cook        2024-02-02  122  	__wrote = sized_strscpy(__dst, __src, __count);			\
+8366d124ec937c Kees Cook        2024-02-02  123  	if (__wrote >= 0 && __wrote < __count)				\
+8366d124ec937c Kees Cook        2024-02-02  124  		memset(__dst + __wrote + 1, 0, __count - __wrote - 1);	\
+8366d124ec937c Kees Cook        2024-02-02  125  	__wrote;							\
+8366d124ec937c Kees Cook        2024-02-02  126  })
+8366d124ec937c Kees Cook        2024-02-02  127  
+
 -- 
-2.47.3
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
