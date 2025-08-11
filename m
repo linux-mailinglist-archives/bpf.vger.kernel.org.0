@@ -1,159 +1,203 @@
-Return-Path: <bpf+bounces-65381-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65382-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 247EDB2164E
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 22:15:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E900B21659
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 22:18:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 221FF4641FC
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 20:15:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38DA73AECE4
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 20:17:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE3A42D9EE3;
-	Mon, 11 Aug 2025 20:15:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 733A62D9EE4;
+	Mon, 11 Aug 2025 20:17:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UkOQww5W"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xd676GSC"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D2BB205E25;
-	Mon, 11 Aug 2025 20:15:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB9C32C21D8;
+	Mon, 11 Aug 2025 20:17:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754943315; cv=none; b=TLDBV0ebytbVQvQiY8zdakfdLFaLhgDKsGXkU2ssOVpVCsxf/g4btW8YX0S+lL4ZzSrsMHLU/I7PxFEGjqUzT0abXHb1vhuqswVKFCfBTV+Qfwh40HKjZnM8tmJwD+Ey8EalrAS9EeIsos2LeMHTkn2k4ccQsBFdUtGt2OX7b6U=
+	t=1754943464; cv=none; b=A5bG0NMiPPPSfC42NULTr2wrnMNF8570/ktjTPERRoG/4vMFDPyh6AHMx9h8rdiKKbFCoyLUfuA8EdkBfpTq5gkw7ntJEZeujmKvyPd/oTRBM59XrRT6uZ83BHHUYjDXh+PjAAbuTf0zrgykXbq6VzvnNN9tTxyjhPIADi/w0cY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754943315; c=relaxed/simple;
-	bh=gZ8lo32or50HycBX+l6zXrHMnUI5M8PsnJpxtgBY1DE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VWePppcQspuiGLMped/uNpBEGdqjRV7PPN2F9/1uUqQradFFZ9YRbYqt9yrNnUqQHP1W1nDW16W0pjaz3Fl3xZQSej+08FLYyDM0N+f4l2d+HlGClES01Pt9Y0ZxyrrhKNWXrkRy078htLmuE6JdhGVqnmId5MqcdrVRM4sFTS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UkOQww5W; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14E16C4CEED;
-	Mon, 11 Aug 2025 20:15:14 +0000 (UTC)
+	s=arc-20240116; t=1754943464; c=relaxed/simple;
+	bh=DOwmxNLZI60agFmstZolEJAAmbCBbJ+wc74CSz5vleQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MyQCG1yNSBWD+udcLfw/vVixH92w0YaY7eJSgzxQVnGebzpSoXxgXSFlKDOUXj5EWE2fuVWqz7zHsYXFMa3X7Yn1hDudvYxTZ70b639MTxMSLIF7cbdS9QWx/yk3WQI+eYeeTdyVYGXL5SEsICsL/IJivwB4ayAsCIFU/6+gGEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xd676GSC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03C3BC4CEF1;
+	Mon, 11 Aug 2025 20:17:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754943314;
-	bh=gZ8lo32or50HycBX+l6zXrHMnUI5M8PsnJpxtgBY1DE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UkOQww5WuQcXnvgRkZLJ2XhT5ssk7lvZ8U5wym923AU2YWOVaDr/ZVC3QjqFPKqEq
-	 WFfUc8pob2rHKmHbHHYttgo2o8V/F5vX6TJb3xOzMlUylbjuLrLOOyzqYYWWPdMdJm
-	 3dT7dYbqhwJlqMBqwao6I8hpISjctcmidl2Fk2Ams3LxcnEnOo1bvLe1fvKq81iGZ5
-	 MOk+pOiskOqnq4tt4ur9mzDZXtvNqvTI8HQuxKDYi2824RnBp8xJfwRSrf6rbCIeEV
-	 Sjw4ajEuMseXaHOFAyD1DU6VaBBODc0nF8zMh+A95l829+5X+FLB0q9fB18TpMvNz2
-	 eFhCL4lGBfCVg==
-Date: Mon, 11 Aug 2025 13:15:12 -0700
-From: Namhyung Kim <namhyung@kernel.org>
-To: Howard Chu <howardchu95@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, acme@kernel.org,
-	mingo@redhat.com, mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com, irogers@google.com,
-	adrian.hunter@intel.com, peterz@infradead.org,
-	kan.liang@linux.intel.com, linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Song Liu <song@kernel.org>,
-	bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [RFC PATCH v1] perf trace: Mitigate failures in parallel perf
- trace instances
-Message-ID: <aJpPUHUEJ7cLKd8e@google.com>
-References: <20250529065537.529937-1-howardchu95@gmail.com>
- <aDpBTLoeOJ3NAw_-@google.com>
- <CAH0uvojGoLX6mpK9wA1cw-EO-y_fUmdndAU8eZ1pa70Lc_rvvw@mail.gmail.com>
- <20250602181743.1c3dabea@gandalf.local.home>
- <aEAfHYLEyc7xGy7E@krava>
- <CAH0uvogvkRoHc6jWYSJHLenaRMru23YaGfA1i_vWZ6eF9LwVzw@mail.gmail.com>
+	s=k20201202; t=1754943463;
+	bh=DOwmxNLZI60agFmstZolEJAAmbCBbJ+wc74CSz5vleQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Xd676GSClTBFKmiUZ+BLn/TqzHYhI0mRLyIJuf9rAjC5uXrtBFGn0qnDptl1RyhWv
+	 phxmHFjiRxpRMNs/CiS3Khqc+u0Op+lDwYl1gTXdDpnFurWrRh45GgLfUDhh/EKe3K
+	 QGFsiN6jjbdlQ+W1Pk6Szp2fiMVUTlhN/L9+OoPILX7Qb3unImXNO4ChjjqCE6kRRc
+	 8vicbgOYEZ9D4ixmRSm0lmfg6sGobaBnsthYM+Zg6+LgI4YBovRoXzabtuPsk7bpki
+	 v5eoqrDY4aA1ZqWS2sWTgx1E4gNSrOw9iabFCnmSmQjMJjkNv8Y3ozzlugoiza6Mc2
+	 TQdDDsxJWLuBg==
+From: Eric Biggers <ebiggers@kernel.org>
+To: bpf@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>
+Cc: linux-crypto@vger.kernel.org,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Eric Biggers <ebiggers@kernel.org>
+Subject: [PATCH bpf-next] bpf: Use sha1() instead of sha1_transform() in bpf_prog_calc_tag()
+Date: Mon, 11 Aug 2025 13:16:15 -0700
+Message-ID: <20250811201615.564461-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAH0uvogvkRoHc6jWYSJHLenaRMru23YaGfA1i_vWZ6eF9LwVzw@mail.gmail.com>
 
-Hello,
+Now that there's a proper SHA-1 library API, just use that instead of
+the low-level SHA-1 compression function.  This eliminates the need for
+bpf_prog_calc_tag() to implement the SHA-1 padding itself.  No
+functional change; the computed tags remain the same.
 
-Sorry for the late reply.
+Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+---
+ include/linux/filter.h |  6 -----
+ kernel/bpf/core.c      | 50 ++++++++----------------------------------
+ 2 files changed, 9 insertions(+), 47 deletions(-)
 
-On Mon, Jun 09, 2025 at 11:38:00AM -0700, Howard Chu wrote:
-> Hi Jiri,
-> 
-> On Wed, Jun 4, 2025 at 3:25 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> >
-> > On Mon, Jun 02, 2025 at 06:17:43PM -0400, Steven Rostedt wrote:
-> > > On Fri, 30 May 2025 17:00:38 -0700
-> > > Howard Chu <howardchu95@gmail.com> wrote:
-> > >
-> > > > Hello Namhyung,
-> > > >
-> > > > On Fri, May 30, 2025 at 4:37 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> > > > > On Wed, May 28, 2025 at 11:55:36PM -0700, Howard Chu wrote:
-> > > > > > perf trace utilizes the tracepoint utility, the only filter in perf
-> > > > > > trace is a filter on syscall type. For example, if perf traces only
-> > > > > > openat, then it filters all the other syscalls, such as readlinkat,
-> > > > > > readv, etc.
-> > > > > >
-> > > > > > This filtering is flawed. Consider this case: two perf trace
-> > > > > > instances are running at the same time, trace instance A tracing
-> > > > > > readlinkat, trace instance B tracing openat. When an openat syscall
-> > > > > > enters, it triggers both BPF programs (sys_enter) in both perf trace
-> > > > > > instances, these kernel functions will be executed:
-> > > > > >
-> > > > > > perf_syscall_enter
-> > > > > >   perf_call_bpf_enter
-> > > > > >     trace_call_bpf
-> > > > > >       bpf_prog_run_array
-> > > > > >
-> > > > > > In bpf_prog_run_array:
-> > > > > > ~~~
-> > > > > > while ((prog = READ_ONCE(item->prog))) {
-> > > > > >       run_ctx.bpf_cookie = item->bpf_cookie;
-> > > > > >       ret &= run_prog(prog, ctx);
-> > > > > >       item++;
-> > > > > > }
-> > > > > > ~~~
-> > > > > >
-> > > > > > I'm not a BPF expert, but by tinkering I found that if one of the BPF
-> > > > > > programs returns 0, there will be no tracepoint sample. That is,
-> > > > > >
-> > > > > > (Is there a sample?) = ProgRetA & ProgRetB & ProgRetC
-> > > > > >
-> > > > > > Where ProgRetA is the return value of one of the BPF programs in the BPF
-> > > > > > program array.
-> > > > > >
-> > > > > > Go back to the case, when two perf trace instances are tracing two
-> > > > > > different syscalls, again, A is tracing readlinkat, B is tracing openat,
-> > > > > > when an openat syscall enters, it triggers the sys_enter program in
-> > > > > > instance A, call it ProgA, and the sys_enter program in instance B,
-> > > > > > ProgB, now ProgA will return 0 because ProgA cares about readlinkat only,
-> > > > > > even though ProgB returns 1; (Is there a sample?) = ProgRetA (0) &
-> > > > > > ProgRetB (1) = 0. So there won't be a tracepoint sample in B's output,
-> > > > > > when there really should be one.
-> > > > >
-> > > > > Sounds like a bug.  I think it should run bpf programs attached to the
-> > > > > current perf_event only.  Isn't it the case for tracepoint + perf + bpf?
-> > > >
-> > > > I really can't answer that question.
-> >
-> > bpf programs for tracepoint are executed before the perf event specific
-> > check/trigger in perf_trace_run_bpf_submit
-> >
-> > bpf programs array is part of struct trace_event_call so it's global per
-> > tracepoint, not per perf event
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 1e7fd3ee759e0..1bcc81ab32273 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -995,16 +995,10 @@ void bpf_prog_change_xdp(struct bpf_prog *prev_prog, struct bpf_prog *prog);
+ static inline u32 bpf_prog_insn_size(const struct bpf_prog *prog)
+ {
+ 	return prog->len * sizeof(struct bpf_insn);
+ }
+ 
+-static inline u32 bpf_prog_tag_scratch_size(const struct bpf_prog *prog)
+-{
+-	return round_up(bpf_prog_insn_size(prog) +
+-			sizeof(__be64) + 1, SHA1_BLOCK_SIZE);
+-}
+-
+ static inline unsigned int bpf_prog_size(unsigned int proglen)
+ {
+ 	return max(sizeof(struct bpf_prog),
+ 		   offsetof(struct bpf_prog, insns[proglen]));
+ }
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 5d1650af899d0..ef01cc644a965 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -16,10 +16,11 @@
+  * Andi Kleen - Fix a few bad bugs and races.
+  * Kris Katterjohn - Added many additional checks in bpf_check_classic()
+  */
+ 
+ #include <uapi/linux/btf.h>
++#include <crypto/sha1.h>
+ #include <linux/filter.h>
+ #include <linux/skbuff.h>
+ #include <linux/vmalloc.h>
+ #include <linux/prandom.h>
+ #include <linux/bpf.h>
+@@ -291,32 +292,23 @@ void __bpf_prog_free(struct bpf_prog *fp)
+ 	vfree(fp);
+ }
+ 
+ int bpf_prog_calc_tag(struct bpf_prog *fp)
+ {
+-	const u32 bits_offset = SHA1_BLOCK_SIZE - sizeof(__be64);
+-	u32 raw_size = bpf_prog_tag_scratch_size(fp);
+-	u32 digest[SHA1_DIGEST_WORDS];
+-	u32 ws[SHA1_WORKSPACE_WORDS];
+-	u32 i, bsize, psize, blocks;
++	size_t size = bpf_prog_insn_size(fp);
++	u8 digest[SHA1_DIGEST_SIZE];
+ 	struct bpf_insn *dst;
+ 	bool was_ld_map;
+-	u8 *raw, *todo;
+-	__be32 *result;
+-	__be64 *bits;
++	u32 i;
+ 
+-	raw = vmalloc(raw_size);
+-	if (!raw)
++	dst = vmalloc(size);
++	if (!dst)
+ 		return -ENOMEM;
+ 
+-	sha1_init_raw(digest);
+-	memset(ws, 0, sizeof(ws));
+-
+ 	/* We need to take out the map fd for the digest calculation
+ 	 * since they are unstable from user space side.
+ 	 */
+-	dst = (void *)raw;
+ 	for (i = 0, was_ld_map = false; i < fp->len; i++) {
+ 		dst[i] = fp->insnsi[i];
+ 		if (!was_ld_map &&
+ 		    dst[i].code == (BPF_LD | BPF_IMM | BPF_DW) &&
+ 		    (dst[i].src_reg == BPF_PSEUDO_MAP_FD ||
+@@ -332,37 +324,13 @@ int bpf_prog_calc_tag(struct bpf_prog *fp)
+ 			dst[i].imm = 0;
+ 		} else {
+ 			was_ld_map = false;
+ 		}
+ 	}
+-
+-	psize = bpf_prog_insn_size(fp);
+-	memset(&raw[psize], 0, raw_size - psize);
+-	raw[psize++] = 0x80;
+-
+-	bsize  = round_up(psize, SHA1_BLOCK_SIZE);
+-	blocks = bsize / SHA1_BLOCK_SIZE;
+-	todo   = raw;
+-	if (bsize - psize >= sizeof(__be64)) {
+-		bits = (__be64 *)(todo + bsize - sizeof(__be64));
+-	} else {
+-		bits = (__be64 *)(todo + bsize + bits_offset);
+-		blocks++;
+-	}
+-	*bits = cpu_to_be64((psize - 1) << 3);
+-
+-	while (blocks--) {
+-		sha1_transform(digest, todo, ws);
+-		todo += SHA1_BLOCK_SIZE;
+-	}
+-
+-	result = (__force __be32 *)digest;
+-	for (i = 0; i < SHA1_DIGEST_WORDS; i++)
+-		result[i] = cpu_to_be32(digest[i]);
+-	memcpy(fp->tag, result, sizeof(fp->tag));
+-
+-	vfree(raw);
++	sha1((const u8 *)dst, size, digest);
++	memcpy(fp->tag, digest, sizeof(fp->tag));
++	vfree(dst);
+ 	return 0;
+ }
+ 
+ static int bpf_adj_delta_to_imm(struct bpf_insn *insn, u32 pos, s32 end_old,
+ 				s32 end_new, s32 curr, const bool probe_pass)
 
-Right, I think we need a way to attach a BPF program to perf_event (as
-an overflow handler), not to the trace_event_call, when it comes to a
-tracepoint event.  So that it can only affect behaviors of the calling
-thread.  It would access the trace data as sample raw data from ctx.
-
-Maybe it needs new link_create flags and requires BPF_PROG_TYPE_PERF_EVENT.
-
-Wdyt?
-
-Thanks,
-Namhyung
+base-commit: 8f5ae30d69d7543eee0d70083daf4de8fe15d585
+-- 
+2.50.1
 
 
