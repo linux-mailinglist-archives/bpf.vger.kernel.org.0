@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-65328-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65329-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65716B2075B
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 13:18:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2683DB2075D
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 13:19:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66F7C18C240D
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 11:19:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E80F3B1449
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 11:18:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D54452BEFE2;
-	Mon, 11 Aug 2025 11:18:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31BAB2BF006;
+	Mon, 11 Aug 2025 11:18:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LMKTECyc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FviwdgLD"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DF7E188A0C
-	for <bpf@vger.kernel.org>; Mon, 11 Aug 2025 11:18:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEFAB2BEC27
+	for <bpf@vger.kernel.org>; Mon, 11 Aug 2025 11:18:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754911122; cv=none; b=i5Hj/Wt0vah6kexWof4/iWs7hlZROpOvN3UxJoBgs3h+dzbx5+4M9W9cZGZgFGCWuQIJszgGO7RQTV4x8m5nq+AelZMJoGB3mXx6vD3H2ELhvZVyDbG/f6AAxesLpx0ttS9wUckmzk8qQVJz9Z/cTXFtbduGfK2FIOXQAsLVlNo=
+	t=1754911125; cv=none; b=k2mVks6SXlQBfGgmd5beHOTKbHNk5uOU4f8KN4ZChutxcw6bd39Nk3K6+9RLxI9eumN3N9GqHdQnV7PwLrqZLmGRkEh3p+PZ+yqvt1e80cCx5ALoHu9SiIPOBHZDEf1OVEhsEpbkSqWRaeM7knb01Y69pX6jO+XcYy3DBONI254=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754911122; c=relaxed/simple;
-	bh=q6awZ+ruY0g05+agravsJOsSu5qJSe0lTvLlEqIC/54=;
+	s=arc-20240116; t=1754911125; c=relaxed/simple;
+	bh=R8DY7B1C60z8T7w/qiuv9BCN8CkV414G/UiSJLimdJs=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=A8LZ3C12M0ydB4q74V5bLOTqv6L2TT2jx9RG9MEoB0urx9BHfEUSvvQVSkcwUMWFmC4taBO/4fw6Fg9I3nwZOEnDOQr2QnzV89Nh09+dfCrchQDseJE3teRariWlPNIY5VE0b+bJUFZ42x7KraTkzZtD2cKSysxomwUa+SdJtJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LMKTECyc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4E00C4CEED;
-	Mon, 11 Aug 2025 11:18:40 +0000 (UTC)
+	 MIME-Version; b=gAsl6E9DVFI9brnpVNWvWe6hBjA2lmxwV5eYIBK0tBrsPnclgI8cU0+Kr8KcgR8JEt27W+uy5gpB3zdZn8Oh3amZj+ymV+tFYAgsRnffB6dW3ZuTRKa6da4N2ucr1fSHZX9FJs4nSUbWMFIKrVvEhLAe8u34lvrqzKwo4l5tfcE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FviwdgLD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4B4DC4CEED;
+	Mon, 11 Aug 2025 11:18:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754911121;
-	bh=q6awZ+ruY0g05+agravsJOsSu5qJSe0lTvLlEqIC/54=;
+	s=k20201202; t=1754911125;
+	bh=R8DY7B1C60z8T7w/qiuv9BCN8CkV414G/UiSJLimdJs=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=LMKTECyc3yCesQVLOy994iFZaqCRDUmlP/+RjW0B5+RHF5qruHtoqSIyG9ctnOCJz
-	 k3COjEIJwEQTPB8AGQxG9NPLMcANreUxW3sQoflpVXnKa+8ia2AVMS7Zd7K2jRy+K9
-	 PNBbuJf/AJ3lafse8RO5eXbBvktSnGL9mzGmxUFruigpzv5/FDFxI4sOYecBkEhswg
-	 AAtJTokA2gFlVSBgLCEuWlBaUGnV+PR7g6S69CLw1Y5s7e+1ZLFy3KP3aOTLukPSAM
-	 jg3h0kgSXNkn26gv0KCo9KySGJOyyTWmVMPvnilSXaQQXAsjjx5jXl8RdZ+3zZp36F
-	 Eqwqetp+6qhTQ==
+	b=FviwdgLDpH6GgSm+UcfcBAxxf8jc1BlMDD4BTgB8Qm0Ukl224lIVQgCGH1NeC6vLv
+	 jfpvPoWSh88XbQHViutZYdueTAGmXgsDwuWfQZ08CgHJHpH+1IwU6lgs2RINuhx5pE
+	 i4GaFXGtwnpUCwyEhAE/Vkr6MpOo0MJNMcCo/P59Z2iBZ48WMDAC5r/fXJCVW6+hr1
+	 eFn67ndaqp5sFwwJwr6c+5NUAzAC/Bdfh+6JwCQjbqjhv4cNL0s+tfI38S6dL/si4S
+	 ec5wdVpnAijH9VIWWi7XQlgI7/oihsJC43Hrt2w09NS6C2XG3911TAO1dlojTQQrO0
+	 V2ljPwC9YWvBg==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -60,9 +60,9 @@ To: Alexei Starovoitov <ast@kernel.org>,
 	Will Deacon <will@kernel.org>,
 	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
 	bpf@vger.kernel.org
-Subject: [PATCH bpf-next v2 2/3] bpf: Report arena faults to BPF stderr
-Date: Mon, 11 Aug 2025 11:18:23 +0000
-Message-ID: <20250811111828.13836-3-puranjay@kernel.org>
+Subject: [PATCH bpf-next v2 3/3] selftests/bpf: Add tests for arena fault reporting
+Date: Mon, 11 Aug 2025 11:18:24 +0000
+Message-ID: <20250811111828.13836-4-puranjay@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20250811111828.13836-1-puranjay@kernel.org>
 References: <20250811111828.13836-1-puranjay@kernel.org>
@@ -74,259 +74,123 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Begin reporting arena page faults and the faulting address to BPF
-program's stderr, this patch adds support in the arm64 and x86-64 JITs,
-support for other archs can be added later.
-
-The fault handlers receive the 32 bit address in the arena region so
-the upper 32 bits of user_vm_start is added to it before printing the
-address. This is what the user would expect to see as this is what is
-printed by bpf_printk() is you pass it an address returned by
-bpf_arena_alloc_pages();
+Add selftests for testing the reporting of arena page faults through BPF
+streams. Two new bpf programs are added that read and write to an
+unmapped arena address and the fault reporting is verified in the
+userspace through streams.
 
 Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
 ---
- arch/arm64/net/bpf_jit_comp.c | 31 ++++++++++++++
- arch/x86/net/bpf_jit_comp.c   | 79 +++++++++++++++++++++++++++++++++--
- include/linux/bpf.h           |  1 +
- kernel/bpf/arena.c            | 20 +++++++++
- 4 files changed, 127 insertions(+), 4 deletions(-)
+ .../testing/selftests/bpf/prog_tests/stream.c | 24 ++++++++++++
+ tools/testing/selftests/bpf/progs/stream.c    | 37 +++++++++++++++++++
+ 2 files changed, 61 insertions(+)
 
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 42643fd9168fc..ce3b49fc0a1b1 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -1066,6 +1066,9 @@ static void build_epilogue(struct jit_ctx *ctx, bool was_classic)
- 	emit(A64_RET(A64_LR), ctx);
- }
+diff --git a/tools/testing/selftests/bpf/prog_tests/stream.c b/tools/testing/selftests/bpf/prog_tests/stream.c
+index d9f0185dca61b..4bdde56de35b1 100644
+--- a/tools/testing/selftests/bpf/prog_tests/stream.c
++++ b/tools/testing/selftests/bpf/prog_tests/stream.c
+@@ -41,6 +41,22 @@ struct {
+ 		"([a-zA-Z_][a-zA-Z0-9_]*\\+0x[0-9a-fA-F]+/0x[0-9a-fA-F]+\n"
+ 		"|[ \t]+[^\n]+\n)*",
+ 	},
++	{
++		offsetof(struct stream, progs.stream_arena_read_fault),
++		"ERROR: Arena READ access at unmapped address 0x.*\n"
++		"CPU: [0-9]+ UID: 0 PID: [0-9]+ Comm: .*\n"
++		"Call trace:\n"
++		"([a-zA-Z_][a-zA-Z0-9_]*\\+0x[0-9a-fA-F]+/0x[0-9a-fA-F]+\n"
++		"|[ \t]+[^\n]+\n)*",
++	},
++	{
++		offsetof(struct stream, progs.stream_arena_write_fault),
++		"ERROR: Arena WRITE access at unmapped address 0x.*\n"
++		"CPU: [0-9]+ UID: 0 PID: [0-9]+ Comm: .*\n"
++		"Call trace:\n"
++		"([a-zA-Z_][a-zA-Z0-9_]*\\+0x[0-9a-fA-F]+/0x[0-9a-fA-F]+\n"
++		"|[ \t]+[^\n]+\n)*",
++	},
+ };
  
-+#define BPF_FIXUP_OFFSET_MASK      GENMASK(15, 0)
-+#define BPF_FIXUP_ARENA_REG_MASK   GENMASK(20, 16)
-+#define BPF_ARENA_ACCESS           BIT(21)
- #define BPF_FIXUP_REG_MASK	GENMASK(31, 27)
- #define DONT_CLEAR 5 /* Unused ARM64 register from BPF's POV */
+ static int match_regex(const char *pattern, const char *string)
+@@ -85,6 +101,14 @@ void test_stream_errors(void)
+ 			continue;
+ 		}
+ #endif
++#if !defined(__x86_64__) && !defined(__aarch64__)
++		ASSERT_TRUE(1, "Arena fault reporting unsupported, skip.");
++		if (i == 2 || i == 3) {
++			ret = bpf_prog_stream_read(prog_fd, 2, buf, sizeof(buf), &ropts);
++			ASSERT_EQ(ret, 0, "stream read");
++			continue;
++		}
++#endif
  
-@@ -1073,11 +1076,22 @@ bool ex_handler_bpf(const struct exception_table_entry *ex,
- 		    struct pt_regs *regs)
- {
- 	int dst_reg = FIELD_GET(BPF_FIXUP_REG_MASK, ex->fixup);
-+	s16 off = FIELD_GET(BPF_FIXUP_OFFSET_MASK, ex->fixup);
-+	int arena_reg = FIELD_GET(BPF_FIXUP_ARENA_REG_MASK, ex->fixup);
-+	bool is_arena = !!(ex->fixup & BPF_ARENA_ACCESS);
-+	bool is_write = (dst_reg == DONT_CLEAR);
-+	unsigned long addr;
- 
- 	if (dst_reg != DONT_CLEAR)
- 		regs->regs[dst_reg] = 0;
- 	/* Skip the faulting instruction */
- 	regs->pc += AARCH64_INSN_SIZE;
+ 		ret = bpf_prog_stream_read(prog_fd, BPF_STREAM_STDERR, buf, sizeof(buf), &ropts);
+ 		ASSERT_GT(ret, 0, "stream read");
+diff --git a/tools/testing/selftests/bpf/progs/stream.c b/tools/testing/selftests/bpf/progs/stream.c
+index 35790897dc879..58ebff60cd96a 100644
+--- a/tools/testing/selftests/bpf/progs/stream.c
++++ b/tools/testing/selftests/bpf/progs/stream.c
+@@ -1,10 +1,15 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
++#define BPF_NO_KFUNC_PROTOTYPES
+ #include <vmlinux.h>
+ #include <bpf/bpf_tracing.h>
+ #include <bpf/bpf_helpers.h>
+ #include "bpf_misc.h"
+ #include "bpf_experimental.h"
++#include "bpf_arena_common.h"
 +
-+	if (is_arena) {
-+		addr = regs->regs[arena_reg] + off;
-+		bpf_prog_report_arena_violation(is_write, addr);
-+	}
++extern int bpf_res_spin_lock(struct bpf_res_spin_lock *lock) __weak __ksym;
++extern void bpf_res_spin_unlock(struct bpf_res_spin_lock *lock) __weak __ksym;
+ 
+ struct arr_elem {
+ 	struct bpf_res_spin_lock lock;
+@@ -17,6 +22,12 @@ struct {
+ 	__type(value, struct arr_elem);
+ } arrmap SEC(".maps");
+ 
++struct {
++	__uint(type, BPF_MAP_TYPE_ARENA);
++	__uint(map_flags, BPF_F_MMAPABLE);
++	__uint(max_entries, 1); /* number of pages */
++} arena SEC(".maps");
 +
- 	return true;
- }
+ #define ENOSPC 28
+ #define _STR "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
  
-@@ -1087,6 +1101,9 @@ static int add_exception_handler(const struct bpf_insn *insn,
- 				 int dst_reg)
- {
- 	off_t ins_offset;
-+	s16 off = insn->off;
-+	bool is_arena;
-+	int arena_reg;
- 	unsigned long pc;
- 	struct exception_table_entry *ex;
- 
-@@ -1100,6 +1117,9 @@ static int add_exception_handler(const struct bpf_insn *insn,
- 				BPF_MODE(insn->code) != BPF_PROBE_ATOMIC)
- 		return 0;
- 
-+	is_arena = (BPF_MODE(insn->code) == BPF_PROBE_MEM32) ||
-+		   (BPF_MODE(insn->code) == BPF_PROBE_ATOMIC);
-+
- 	if (!ctx->prog->aux->extable ||
- 	    WARN_ON_ONCE(ctx->exentry_idx >= ctx->prog->aux->num_exentries))
- 		return -EINVAL;
-@@ -1131,6 +1151,17 @@ static int add_exception_handler(const struct bpf_insn *insn,
- 
- 	ex->fixup = FIELD_PREP(BPF_FIXUP_REG_MASK, dst_reg);
- 
-+	if (is_arena) {
-+		ex->fixup |= BPF_ARENA_ACCESS;
-+		if (BPF_CLASS(insn->code) == BPF_LDX)
-+			arena_reg = bpf2a64[insn->src_reg];
-+		else
-+			arena_reg = bpf2a64[insn->dst_reg];
-+
-+		ex->fixup |=  FIELD_PREP(BPF_FIXUP_OFFSET_MASK, off) |
-+			      FIELD_PREP(BPF_FIXUP_ARENA_REG_MASK, arena_reg);
-+	}
-+
- 	ex->type = EX_TYPE_BPF;
- 
- 	ctx->exentry_idx++;
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 7e3fca1646203..1a8cb91649224 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -8,6 +8,7 @@
- #include <linux/netdevice.h>
- #include <linux/filter.h>
- #include <linux/if_vlan.h>
-+#include <linux/bitfield.h>
- #include <linux/bpf.h>
- #include <linux/memory.h>
- #include <linux/sort.h>
-@@ -1388,16 +1389,67 @@ static int emit_atomic_ld_st_index(u8 **pprog, u32 atomic_op, u32 size,
+@@ -76,4 +87,30 @@ int stream_syscall(void *ctx)
  	return 0;
  }
  
-+/*
-+ * Metadata encoding for exception handling in JITed code.
-+ *
-+ * Format of `fixup` and `data` fields in `struct exception_table_entry`:
-+ *
-+ * Bit layout of `fixup` (32-bit):
-+ *
-+ * +-----------+--------+-----------+---------+----------+
-+ * | 31        | 30-24  |   23-16   |   15-8  |    7-0   |
-+ * |           |        |           |         |          |
-+ * | ARENA_ACC | Unused | ARENA_REG | DST_REG | INSN_LEN |
-+ * +-----------+--------+-----------+---------+----------+
-+ *
-+ * - INSN_LEN (8 bits): Length of faulting insn (max x86 insn = 15 bytes (fits in 8 bits)).
-+ * - DST_REG  (8 bits): Offset of dst_reg from reg2pt_regs[] (max offset = 112 (fits in 8 bits)).
-+ *                      This is set to DONT_CLEAR if the insn is a store.
-+ * - ARENA_REG (8 bits): Offset of the register that is used to calculate the
-+ *                       address for load/store when accessing the arena region.
-+ * - ARENA_ACCESS (1 bit): This bit is set when the faulting instruction accessed the arena region.
-+ *
-+ * Bit layout of `data` (32-bit):
-+ *
-+ * +--------------+--------+--------------+
-+ * |	31-16	  |  15-8  |     7-0      |
-+ * |              |	   |              |
-+ * | ARENA_OFFSET | Unused |  EX_TYPE_BPF |
-+ * +--------------+--------+--------------+
-+ *
-+ * - ARENA_OFFSET (16 bits): Offset used to calculate the address for load/store when
-+ *                           accessing the arena region.
-+ */
-+
- #define DONT_CLEAR 1
-+#define FIXUP_INSN_LEN_MASK	GENMASK(7, 0)
-+#define FIXUP_REG_MASK		GENMASK(15, 8)
-+#define FIXUP_ARENA_REG_MASK	GENMASK(23, 16)
-+#define FIXUP_ARENA_ACCESS	BIT(31)
-+#define DATA_ARENA_OFFSET_MASK	GENMASK(31, 16)
- 
- bool ex_handler_bpf(const struct exception_table_entry *x, struct pt_regs *regs)
- {
--	u32 reg = x->fixup >> 8;
-+	u32 reg = FIELD_GET(FIXUP_REG_MASK, x->fixup);
-+	u32 insn_len = FIELD_GET(FIXUP_INSN_LEN_MASK, x->fixup);
-+	bool is_arena = !!(x->fixup & FIXUP_ARENA_ACCESS);
-+	bool is_write = (reg == DONT_CLEAR);
-+	unsigned long addr;
-+	s16 off;
-+	u32 arena_reg;
- 
- 	/* jump over faulting load and clear dest register */
- 	if (reg != DONT_CLEAR)
- 		*(unsigned long *)((void *)regs + reg) = 0;
--	regs->ip += x->fixup & 0xff;
-+	regs->ip += insn_len;
-+
-+	if (is_arena) {
-+		arena_reg = FIELD_GET(FIXUP_ARENA_REG_MASK, x->data);
-+		off = FIELD_GET(DATA_ARENA_OFFSET_MASK, x->data);
-+		addr = *(unsigned long *)((void *)regs + arena_reg) + off;
-+		bpf_prog_report_arena_violation(is_write, addr);
-+	}
-+
- 	return true;
- }
- 
-@@ -2070,6 +2122,8 @@ st:			if (is_imm8(insn->off))
- 			{
- 				struct exception_table_entry *ex;
- 				u8 *_insn = image + proglen + (start_of_ldx - temp);
-+				u32 arena_reg, fixup_reg;
-+				bool is_arena;
- 				s64 delta;
- 
- 				if (!bpf_prog->aux->extable)
-@@ -2089,8 +2143,25 @@ st:			if (is_imm8(insn->off))
- 
- 				ex->data = EX_TYPE_BPF;
- 
--				ex->fixup = (prog - start_of_ldx) |
--					((BPF_CLASS(insn->code) == BPF_LDX ? reg2pt_regs[dst_reg] : DONT_CLEAR) << 8);
-+				is_arena = (BPF_MODE(insn->code) == BPF_PROBE_MEM32) ||
-+					   (BPF_MODE(insn->code) == BPF_PROBE_ATOMIC);
-+
-+				fixup_reg = (BPF_CLASS(insn->code) == BPF_LDX) ?
-+					    reg2pt_regs[dst_reg] : DONT_CLEAR;
-+
-+				ex->fixup = FIELD_PREP(FIXUP_INSN_LEN_MASK, prog - start_of_ldx) |
-+					    FIELD_PREP(FIXUP_REG_MASK, fixup_reg);
-+
-+				if (is_arena) {
-+					ex->fixup |= FIXUP_ARENA_ACCESS;
-+					if (BPF_CLASS(insn->code) == BPF_LDX)
-+						arena_reg = reg2pt_regs[src_reg];
-+					else
-+						arena_reg = reg2pt_regs[dst_reg];
-+
-+					ex->fixup |= FIELD_PREP(FIXUP_ARENA_REG_MASK, arena_reg);
-+					ex->data |= FIELD_PREP(DATA_ARENA_OFFSET_MASK, insn->off);
-+				}
- 			}
- 			break;
- 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index e7ee089e8a31a..9187765c6f704 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -3654,6 +3654,7 @@ int bpf_stream_stage_printk(struct bpf_stream_stage *ss, const char *fmt, ...);
- int bpf_stream_stage_commit(struct bpf_stream_stage *ss, struct bpf_prog *prog,
- 			    enum bpf_stream_id stream_id);
- int bpf_stream_stage_dump_stack(struct bpf_stream_stage *ss);
-+void bpf_prog_report_arena_violation(bool write, unsigned long addr);
- 
- #define bpf_stream_printk(ss, ...) bpf_stream_stage_printk(&ss, __VA_ARGS__)
- #define bpf_stream_dump_stack(ss) bpf_stream_stage_dump_stack(&ss)
-diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
-index 5b37753799d20..a1653d1c04ca5 100644
---- a/kernel/bpf/arena.c
-+++ b/kernel/bpf/arena.c
-@@ -633,3 +633,23 @@ static int __init kfunc_init(void)
- 	return register_btf_kfunc_id_set(BPF_PROG_TYPE_UNSPEC, &common_kfunc_set);
- }
- late_initcall(kfunc_init);
-+
-+void bpf_prog_report_arena_violation(bool write, unsigned long addr)
++SEC("syscall")
++__success __retval(0)
++int stream_arena_write_fault(void *ctx)
 +{
-+	struct bpf_stream_stage ss;
-+	struct bpf_prog *prog;
-+	u64 user_vm_start;
++	unsigned char __arena *page;
 +
-+	prog = bpf_prog_find_from_stack();
-+	if (!prog)
-+		return;
++	page = bpf_arena_alloc_pages(&arena, NULL, 1, NUMA_NO_NODE, 0);
++	bpf_arena_free_pages(&arena, page, 1);
 +
-+	user_vm_start = bpf_arena_get_user_vm_start(prog->aux->arena);
-+	addr += (user_vm_start >> 32) << 32;
++	*(page + 0xbeef) = 1;
 +
-+	bpf_stream_stage(ss, prog, BPF_STDERR, ({
-+		bpf_stream_printk(ss, "ERROR: Arena %s access at unmapped address 0x%lx\n",
-+				  write ? "WRITE" : "READ", addr);
-+		bpf_stream_dump_stack(ss);
-+	}));
++	return 0;
 +}
++
++SEC("syscall")
++__success __retval(0)
++int stream_arena_read_fault(void *ctx)
++{
++	unsigned char __arena *page;
++
++	page = bpf_arena_alloc_pages(&arena, NULL, 1, NUMA_NO_NODE, 0);
++	bpf_arena_free_pages(&arena, page, 1);
++
++	return *(page + 0xbeef);
++}
++
+ char _license[] SEC("license") = "GPL";
 -- 
 2.47.3
 
