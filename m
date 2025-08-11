@@ -1,226 +1,116 @@
-Return-Path: <bpf+bounces-65361-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65362-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4ECDCB211F0
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 18:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D69B9B2124F
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 18:40:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F13F2190094E
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 16:21:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 449A1189D9C1
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 16:36:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99BF12C21D4;
-	Mon, 11 Aug 2025 16:13:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A07B2296BBF;
+	Mon, 11 Aug 2025 16:34:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HuEhd+hF"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="etmL1eJv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A45602E62C3;
-	Mon, 11 Aug 2025 16:13:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 474E82472BD
+	for <bpf@vger.kernel.org>; Mon, 11 Aug 2025 16:34:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754928823; cv=none; b=ZEhLf5XllMU6PztpFVs1UxrZnKIkTYASvJTSx/So6oWp/snmOYzWl2l1fH34Dol6BAkiDzpcEfoHungsuGO29NodS2KpPUemLs4M+cVy0zATaTYp8KcKjMMsACfhnvvT1t5QAmik2nv02czt+J10cBu/kn4J2CjEwRbMPec5258=
+	t=1754930082; cv=none; b=cAGjfrGzRj+DgLTG+kdfdA55Rx5MFOdvXwHq47O5fV5p7cZws4PjKNCKgSeS6KdH8R8Z8tqPwudLdFZlq0bJG2G4bWZMgJCNtVbU5DwcXb3pDn0F6n7MxSXTVva3I4+pFLBBmr4Xeype0blthXGaz9W+VveP5Fp1Ig4LaOHZ6kk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754928823; c=relaxed/simple;
-	bh=CjvGV5hPrqqR5jpzUsV/mVpTr+53npZ/zD34Fh+5nM0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lPhRpixG/RZemMxelYXlpqa+zCj5pfOsS19pqtBl83w13DIDdi+wSKa2sI+RX3xHHK8oVgq218siMNR4TdO+wcI7aUpJG2HXDtjbR3olhhfbVlqlgSHT5lnsndlGkRDiFY2m+TJzxJ6rMvXwh31/UWDt5r+HiCA/5Lxkuz93yx8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HuEhd+hF; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1754928822; x=1786464822;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=CjvGV5hPrqqR5jpzUsV/mVpTr+53npZ/zD34Fh+5nM0=;
-  b=HuEhd+hFhe9kVFmmUMNtbBPXcnmn+Cri8yG9QBRcXwxjK0hb17F+WwKp
-   HPxx/MCPAdihzWPIZU/ZvjWEtUPfAdEIvnSp0ZPOEsKeROe13QcbCKO/D
-   6DYhGmGd09kZde4aLCWq/5fLXZ4ik/2YBgY3C3wQRqL+wXWSUjTkiVKjW
-   Itxk5JJbR2BoFRd8gZH3iMBJ0d6Uak/5wmA4fseJD1WY3h11wRUg8v7MH
-   i/DXBh5C7nYFzbvv3UGx2GiURkP1mINQ6xQ1DV5qvNgYtzP9Mq0qCA/mA
-   0WVUWRcLw2ruq6uH3LjXiZojI0poRZu5ARij2yUfuH+he+WhUStqdkOIs
-   Q==;
-X-CSE-ConnectionGUID: diny5ZeNRkWCqTE+0FKUUw==
-X-CSE-MsgGUID: P6FJWFLnTmuwftP52kF2tw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11518"; a="56899737"
-X-IronPort-AV: E=Sophos;i="6.17,278,1747724400"; 
-   d="scan'208";a="56899737"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2025 09:13:41 -0700
-X-CSE-ConnectionGUID: MwvZxrYnQ+eXfLz7etPE7g==
-X-CSE-MsgGUID: lYtQkMqMQ+yHvXWeVGkifA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.17,278,1747724400"; 
-   d="scan'208";a="165163259"
-Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa006.jf.intel.com with ESMTP; 11 Aug 2025 09:13:37 -0700
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-To: intel-wired-lan@lists.osuosl.org
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Michal Kubiak <michal.kubiak@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Simon Horman <horms@kernel.org>,
-	nxne.cnse.osdt.itp.upstreaming@intel.com,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH iwl-next v4 13/13] idpf: add XDP RSS hash hint
-Date: Mon, 11 Aug 2025 18:10:44 +0200
-Message-ID: <20250811161044.32329-14-aleksander.lobakin@intel.com>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20250811161044.32329-1-aleksander.lobakin@intel.com>
-References: <20250811161044.32329-1-aleksander.lobakin@intel.com>
+	s=arc-20240116; t=1754930082; c=relaxed/simple;
+	bh=A0fQUFrh5CKZY2qb1RZMZpnR8CB+0gdEKlqL3rSdRfU=;
+	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
+	 References:In-Reply-To; b=b+Tc8kmP7rwZAznYES9LFhPkqluZfhRGDjpJzhNPlQMQ6i75WIIBcz1NMubOW94ICiBafHf/dl5AcJHMk8MpvltugrvQXBGZ0+zPE40b8xNCpb909MNf3VEPGfDxsj7dzZY4ioYjzF+PZpUtraLyzuyqdJ/+HKIJ0TnZlenqfQM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=etmL1eJv; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1754930077;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6BVDNftn7hDQP+70b/7pwzBphYCpqICAbVF+DfJVGeg=;
+	b=etmL1eJvnqp+9iTppDrznl5rvtCSJE6Pgt0yTSQm5IN35DvarXb7Kr2zZoNk6WPJCQAVUn
+	fro1ZZBZz3o+GX9SlHIYdewCwXGlMcQdO/DJG6AS8zsKtQ/+f8esNd8QFirvd1EpG2K/fW
+	5vmy9uxwSGScVkQWGV9f0Q+1q68Lq3A=
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 12 Aug 2025 00:34:23 +0800
+Message-Id: <DBZQSD9VQH74.2QI9A7CK5GM3Z@linux.dev>
+To: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
+Cc: "bpf" <bpf@vger.kernel.org>, "Alexei Starovoitov" <ast@kernel.org>,
+ "Andrii Nakryiko" <andrii@kernel.org>, "Daniel Borkmann"
+ <daniel@iogearbox.net>, "Yonghong Song" <yonghong.song@linux.dev>, "Song
+ Liu" <song@kernel.org>, "Eduard" <eddyz87@gmail.com>, "Daniel Xu"
+ <dxu@dxuuu.xyz>, =?utf-8?q?Daniel_M=C3=BCller?= <deso@posteo.net>,
+ <kernel-patches-bot@fb.com>
+Subject: Re: [PATCH bpf-next v2 1/3] bpf: Introduce BPF_F_CPU flag for
+ percpu_array maps
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Leon Hwang" <leon.hwang@linux.dev>
+References: <20250805163017.17015-1-leon.hwang@linux.dev>
+ <20250805163017.17015-2-leon.hwang@linux.dev>
+ <CAADnVQ+Mkmy+9WnepShLsQtMWceFUpfsV-Tw=dMaXP-B15R2yQ@mail.gmail.com>
+ <DBX6F51OAZSO.3OKUPR14AGTSI@linux.dev>
+ <CAADnVQK7N2HpHsbNgfot02zF0yak4F=gqcWw1cJqB7kRyK9yMg@mail.gmail.com>
+In-Reply-To: <CAADnVQK7N2HpHsbNgfot02zF0yak4F=gqcWw1cJqB7kRyK9yMg@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-Add &xdp_metadata_ops with a callback to get RSS hash hint from the
-descriptor. Declare the splitq 32-byte descriptor as 4 u64s to parse
-them more efficiently when possible.
+On Sat Aug 9, 2025 at 12:23 AM +08, Alexei Starovoitov wrote:
+> On Fri, Aug 8, 2025 at 9:11=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> =
+wrote:
+>>
+>> On Fri Aug 8, 2025 at 1:20 AM +08, Alexei Starovoitov wrote:
+>> > On Tue, Aug 5, 2025 at 9:30=E2=80=AFAM Leon Hwang <leon.hwang@linux.de=
+v> wrote:
+>> >>
 
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
----
- drivers/net/ethernet/intel/idpf/xdp.h | 64 +++++++++++++++++++++++++++
- drivers/net/ethernet/intel/idpf/xdp.c | 28 +++++++++++-
- 2 files changed, 91 insertions(+), 1 deletion(-)
+[...]
 
-diff --git a/drivers/net/ethernet/intel/idpf/xdp.h b/drivers/net/ethernet/intel/idpf/xdp.h
-index db8ecc1843fe..66ad83a0e85e 100644
---- a/drivers/net/ethernet/intel/idpf/xdp.h
-+++ b/drivers/net/ethernet/intel/idpf/xdp.h
-@@ -99,6 +99,70 @@ static inline void idpf_xdp_tx_finalize(void *_xdpsq, bool sent, bool flush)
- 	libeth_xdpsq_unlock(&xdpsq->xdp_lock);
- }
- 
-+struct idpf_xdp_rx_desc {
-+	aligned_u64		qw0;
-+#define IDPF_XDP_RX_BUFQ	BIT_ULL(47)
-+#define IDPF_XDP_RX_GEN		BIT_ULL(46)
-+#define IDPF_XDP_RX_LEN		GENMASK_ULL(45, 32)
-+#define IDPF_XDP_RX_PT		GENMASK_ULL(25, 16)
-+
-+	aligned_u64		qw1;
-+#define IDPF_XDP_RX_BUF		GENMASK_ULL(47, 32)
-+#define IDPF_XDP_RX_EOP		BIT_ULL(1)
-+
-+	aligned_u64		qw2;
-+#define IDPF_XDP_RX_HASH	GENMASK_ULL(31, 0)
-+
-+	aligned_u64		qw3;
-+} __aligned(4 * sizeof(u64));
-+static_assert(sizeof(struct idpf_xdp_rx_desc) ==
-+	      sizeof(struct virtchnl2_rx_flex_desc_adv_nic_3));
-+
-+#define idpf_xdp_rx_bufq(desc)	!!((desc)->qw0 & IDPF_XDP_RX_BUFQ)
-+#define idpf_xdp_rx_gen(desc)	!!((desc)->qw0 & IDPF_XDP_RX_GEN)
-+#define idpf_xdp_rx_len(desc)	FIELD_GET(IDPF_XDP_RX_LEN, (desc)->qw0)
-+#define idpf_xdp_rx_pt(desc)	FIELD_GET(IDPF_XDP_RX_PT, (desc)->qw0)
-+#define idpf_xdp_rx_buf(desc)	FIELD_GET(IDPF_XDP_RX_BUF, (desc)->qw1)
-+#define idpf_xdp_rx_eop(desc)	!!((desc)->qw1 & IDPF_XDP_RX_EOP)
-+#define idpf_xdp_rx_hash(desc)	FIELD_GET(IDPF_XDP_RX_HASH, (desc)->qw2)
-+
-+static inline void
-+idpf_xdp_get_qw0(struct idpf_xdp_rx_desc *desc,
-+		 const struct virtchnl2_rx_flex_desc_adv_nic_3 *rxd)
-+{
-+#ifdef __LIBETH_WORD_ACCESS
-+	desc->qw0 = ((const typeof(desc))rxd)->qw0;
-+#else
-+	desc->qw0 = ((u64)le16_to_cpu(rxd->pktlen_gen_bufq_id) << 32) |
-+		    ((u64)le16_to_cpu(rxd->ptype_err_fflags0) << 16);
-+#endif
-+}
-+
-+static inline void
-+idpf_xdp_get_qw1(struct idpf_xdp_rx_desc *desc,
-+		 const struct virtchnl2_rx_flex_desc_adv_nic_3 *rxd)
-+{
-+#ifdef __LIBETH_WORD_ACCESS
-+	desc->qw1 = ((const typeof(desc))rxd)->qw1;
-+#else
-+	desc->qw1 = ((u64)le16_to_cpu(rxd->buf_id) << 32) |
-+		    rxd->status_err0_qw1;
-+#endif
-+}
-+
-+static inline void
-+idpf_xdp_get_qw2(struct idpf_xdp_rx_desc *desc,
-+		 const struct virtchnl2_rx_flex_desc_adv_nic_3 *rxd)
-+{
-+#ifdef __LIBETH_WORD_ACCESS
-+	desc->qw2 = ((const typeof(desc))rxd)->qw2;
-+#else
-+	desc->qw2 = ((u64)rxd->hash3 << 24) |
-+		    ((u64)rxd->ff2_mirrid_hash2.hash2 << 16) |
-+		    le16_to_cpu(rxd->hash1);
-+#endif
-+}
-+
- void idpf_xdp_set_features(const struct idpf_vport *vport);
- 
- int idpf_xdp(struct net_device *dev, struct netdev_bpf *xdp);
-diff --git a/drivers/net/ethernet/intel/idpf/xdp.c b/drivers/net/ethernet/intel/idpf/xdp.c
-index d2549f8b8e24..c143b5dc9e2b 100644
---- a/drivers/net/ethernet/intel/idpf/xdp.c
-+++ b/drivers/net/ethernet/intel/idpf/xdp.c
-@@ -340,12 +340,38 @@ int idpf_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
- 				       idpf_xdp_tx_finalize);
- }
- 
-+static int idpf_xdpmo_rx_hash(const struct xdp_md *ctx, u32 *hash,
-+			      enum xdp_rss_hash_type *rss_type)
-+{
-+	const struct libeth_xdp_buff *xdp = (typeof(xdp))ctx;
-+	struct idpf_xdp_rx_desc desc __uninitialized;
-+	const struct idpf_rx_queue *rxq;
-+	struct libeth_rx_pt pt;
-+
-+	rxq = libeth_xdp_buff_to_rq(xdp, typeof(*rxq), xdp_rxq);
-+
-+	idpf_xdp_get_qw0(&desc, xdp->desc);
-+
-+	pt = rxq->rx_ptype_lkup[idpf_xdp_rx_pt(&desc)];
-+	if (!libeth_rx_pt_has_hash(rxq->xdp_rxq.dev, pt))
-+		return -ENODATA;
-+
-+	idpf_xdp_get_qw2(&desc, xdp->desc);
-+
-+	return libeth_xdpmo_rx_hash(hash, rss_type, idpf_xdp_rx_hash(&desc),
-+				    pt);
-+}
-+
-+static const struct xdp_metadata_ops idpf_xdpmo = {
-+	.xmo_rx_hash		= idpf_xdpmo_rx_hash,
-+};
-+
- void idpf_xdp_set_features(const struct idpf_vport *vport)
- {
- 	if (!idpf_is_queue_model_split(vport->rxq_model))
- 		return;
- 
--	libeth_xdp_set_features_noredir(vport->netdev);
-+	libeth_xdp_set_features_noredir(vport->netdev, &idpf_xdpmo);
- }
- 
- static int idpf_xdp_setup_prog(struct idpf_vport *vport,
--- 
-2.50.1
+>> >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>> >> index 233de8677382e..67bc35e4d6a8d 100644
+>> >> --- a/include/uapi/linux/bpf.h
+>> >> +++ b/include/uapi/linux/bpf.h
+>> >> @@ -1372,6 +1372,12 @@ enum {
+>> >>         BPF_NOEXIST     =3D 1, /* create new element if it didn't exi=
+st */
+>> >>         BPF_EXIST       =3D 2, /* update existing element */
+>> >>         BPF_F_LOCK      =3D 4, /* spin_lock-ed map_lookup/map_update =
+*/
+>> >> +       BPF_F_CPU       =3D 8, /* map_update for percpu_array */
+>> >
+>> > only percpu_array?!
+>> > Aren't you doing it for percpu_hash too?
+>> >
+>>
+>> Only percpu_array in this patchset.
+>>
+>> I have no need to do it for percpu_hash.
+>
+> You're missing the point. If we're adding the flag it should
+> work for all per-cpu maps. Both array and hash.
+>
+> Same issue as with your other patch with common_attr.
+> We're not adding a feature that works for 1 out 10
+> commands/map types/whatever and doesn't work for the rest.
+> Flags/features have to be generic and consistent.
 
+Get it. I'll do it for other percpu maps in next revision.
+
+Thanks,
+Leon
 
