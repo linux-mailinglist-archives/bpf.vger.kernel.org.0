@@ -1,116 +1,382 @@
-Return-Path: <bpf+bounces-65362-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65363-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D69B9B2124F
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 18:40:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07EBBB21254
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 18:41:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 449A1189D9C1
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 16:36:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 948993A35D6
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 16:38:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A07B2296BBF;
-	Mon, 11 Aug 2025 16:34:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC885296BCD;
+	Mon, 11 Aug 2025 16:38:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="etmL1eJv"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mMYdM3t0"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 474E82472BD
-	for <bpf@vger.kernel.org>; Mon, 11 Aug 2025 16:34:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63D661A9F9D;
+	Mon, 11 Aug 2025 16:38:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754930082; cv=none; b=cAGjfrGzRj+DgLTG+kdfdA55Rx5MFOdvXwHq47O5fV5p7cZws4PjKNCKgSeS6KdH8R8Z8tqPwudLdFZlq0bJG2G4bWZMgJCNtVbU5DwcXb3pDn0F6n7MxSXTVva3I4+pFLBBmr4Xeype0blthXGaz9W+VveP5Fp1Ig4LaOHZ6kk=
+	t=1754930293; cv=none; b=jezYlWODb6GAjRsMGIIijo8wMuIPyknWo5OvI2deK/Y+EtQ2nCfDcDA3iOKyampsKU3yu20yUIHB57RLO1NG6LkQrpv8/0pTeaEbV2ucM4bYRkVlG5Y+4ikKtZmwC+YwwcxBqEW05yRp69n6s/aSziniYPF2liVjPq8qvL3SsEs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754930082; c=relaxed/simple;
-	bh=A0fQUFrh5CKZY2qb1RZMZpnR8CB+0gdEKlqL3rSdRfU=;
-	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
-	 References:In-Reply-To; b=b+Tc8kmP7rwZAznYES9LFhPkqluZfhRGDjpJzhNPlQMQ6i75WIIBcz1NMubOW94ICiBafHf/dl5AcJHMk8MpvltugrvQXBGZ0+zPE40b8xNCpb909MNf3VEPGfDxsj7dzZY4ioYjzF+PZpUtraLyzuyqdJ/+HKIJ0TnZlenqfQM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=etmL1eJv; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1754930293; c=relaxed/simple;
+	bh=BbTuVHr+iVlQaDazHxjBuHQ4kO0f2OoDYdK/7dg5KIc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kHHrG9Rsl0B+q7S7swmPhdxtFldh0nrlVjlkbA3JE8u7lc6QrIdzcAuqiV0aZkDLWPHMXIcwgwke7uJdONJlz+y78H9BAGhphk7Yp0zhzaJ3Z6au/2BxrbEQmWQUW167oWEBdpwK5VUXj/NqafvxDf2u5wnMnQkBJPHAWGG85SM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mMYdM3t0; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1754930292; x=1786466292;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=BbTuVHr+iVlQaDazHxjBuHQ4kO0f2OoDYdK/7dg5KIc=;
+  b=mMYdM3t0Gh5Koy4glT88Pn4EsA1xtPm7zx3522azmGbP+PQH2QdpoUBi
+   LKlMEOWxELAN0cvMODrTKZ/2DUSCNy+z7UPFY3h19S5YPv3O+FxVS0JtL
+   GKGX5iXJAORsVl3/7l8YL+OrvKWDd9pn/gFbTMbBlQyHLYhxxu1ltnmur
+   IfmGZtm0M9PkI1J90OgKGeXXKip8pvetxLPucuRaoYjGeiSwokvw4xi8e
+   tJb5gXmYjJOOQJp+G+cmQ/VKWMe+En6s8wMTUHQLv5RMBMTdQoJPLBjTU
+   8wKHviS3wxM85xlwzbD5O5R04SKtcorP0deyug7k1k+UElDXhrb10eyQH
+   Q==;
+X-CSE-ConnectionGUID: B9SLNVPNTd+1nsAVg2p+rA==
+X-CSE-MsgGUID: A2BFXJyMSW219L1hjEvr5g==
+X-IronPort-AV: E=McAfee;i="6800,10657,11518"; a="79758161"
+X-IronPort-AV: E=Sophos;i="6.17,278,1747724400"; 
+   d="scan'208";a="79758161"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2025 09:38:11 -0700
+X-CSE-ConnectionGUID: TDP4/e4EQrSWCi7i04h+1A==
+X-CSE-MsgGUID: 9c0zMKftRGWOAK/zIJc8KA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.17,278,1747724400"; 
+   d="scan'208";a="170164645"
+Received: from lkp-server02.sh.intel.com (HELO 4ea60e6ab079) ([10.239.97.151])
+  by orviesa003.jf.intel.com with ESMTP; 11 Aug 2025 09:38:04 -0700
+Received: from kbuild by 4ea60e6ab079 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1ulVWy-00062G-2H;
+	Mon, 11 Aug 2025 16:37:55 +0000
+Date: Tue, 12 Aug 2025 00:37:42 +0800
+From: kernel test robot <lkp@intel.com>
+To: Bhupesh <bhupesh@igalia.com>, akpm@linux-foundation.org
+Cc: oe-kbuild-all@lists.linux.dev, bhupesh@igalia.com,
+	kernel-dev@igalia.com, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	oliver.sang@intel.com, lkp@intel.com, laoar.shao@gmail.com,
+	pmladek@suse.com, rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
+	alexei.starovoitov@gmail.com, andrii.nakryiko@gmail.com,
+	mirq-linux@rere.qmqm.pl, peterz@infradead.org, willy@infradead.org,
+	david@redhat.com, viro@zeniv.linux.org.uk, keescook@chromium.org,
+	ebiederm@xmission.com, brauner@kernel.org, jack@suse.cz,
+	mingo@redhat.com, juri.lelli@redhat.com, bsegall@google.com,
+	mgorman@suse.de
+Subject: Re: [PATCH v7 4/4] treewide: Switch memcpy() users of 'task->comm'
+ to a more safer implementation
+Message-ID: <202508120011.j4Pmr6Rf-lkp@intel.com>
+References: <20250811064609.918593-5-bhupesh@igalia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1754930077;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6BVDNftn7hDQP+70b/7pwzBphYCpqICAbVF+DfJVGeg=;
-	b=etmL1eJvnqp+9iTppDrznl5rvtCSJE6Pgt0yTSQm5IN35DvarXb7Kr2zZoNk6WPJCQAVUn
-	fro1ZZBZz3o+GX9SlHIYdewCwXGlMcQdO/DJG6AS8zsKtQ/+f8esNd8QFirvd1EpG2K/fW
-	5vmy9uxwSGScVkQWGV9f0Q+1q68Lq3A=
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 12 Aug 2025 00:34:23 +0800
-Message-Id: <DBZQSD9VQH74.2QI9A7CK5GM3Z@linux.dev>
-To: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
-Cc: "bpf" <bpf@vger.kernel.org>, "Alexei Starovoitov" <ast@kernel.org>,
- "Andrii Nakryiko" <andrii@kernel.org>, "Daniel Borkmann"
- <daniel@iogearbox.net>, "Yonghong Song" <yonghong.song@linux.dev>, "Song
- Liu" <song@kernel.org>, "Eduard" <eddyz87@gmail.com>, "Daniel Xu"
- <dxu@dxuuu.xyz>, =?utf-8?q?Daniel_M=C3=BCller?= <deso@posteo.net>,
- <kernel-patches-bot@fb.com>
-Subject: Re: [PATCH bpf-next v2 1/3] bpf: Introduce BPF_F_CPU flag for
- percpu_array maps
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Leon Hwang" <leon.hwang@linux.dev>
-References: <20250805163017.17015-1-leon.hwang@linux.dev>
- <20250805163017.17015-2-leon.hwang@linux.dev>
- <CAADnVQ+Mkmy+9WnepShLsQtMWceFUpfsV-Tw=dMaXP-B15R2yQ@mail.gmail.com>
- <DBX6F51OAZSO.3OKUPR14AGTSI@linux.dev>
- <CAADnVQK7N2HpHsbNgfot02zF0yak4F=gqcWw1cJqB7kRyK9yMg@mail.gmail.com>
-In-Reply-To: <CAADnVQK7N2HpHsbNgfot02zF0yak4F=gqcWw1cJqB7kRyK9yMg@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250811064609.918593-5-bhupesh@igalia.com>
 
-On Sat Aug 9, 2025 at 12:23 AM +08, Alexei Starovoitov wrote:
-> On Fri, Aug 8, 2025 at 9:11=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> =
-wrote:
->>
->> On Fri Aug 8, 2025 at 1:20 AM +08, Alexei Starovoitov wrote:
->> > On Tue, Aug 5, 2025 at 9:30=E2=80=AFAM Leon Hwang <leon.hwang@linux.de=
-v> wrote:
->> >>
+Hi Bhupesh,
 
-[...]
+kernel test robot noticed the following build errors:
 
->> >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->> >> index 233de8677382e..67bc35e4d6a8d 100644
->> >> --- a/include/uapi/linux/bpf.h
->> >> +++ b/include/uapi/linux/bpf.h
->> >> @@ -1372,6 +1372,12 @@ enum {
->> >>         BPF_NOEXIST     =3D 1, /* create new element if it didn't exi=
-st */
->> >>         BPF_EXIST       =3D 2, /* update existing element */
->> >>         BPF_F_LOCK      =3D 4, /* spin_lock-ed map_lookup/map_update =
-*/
->> >> +       BPF_F_CPU       =3D 8, /* map_update for percpu_array */
->> >
->> > only percpu_array?!
->> > Aren't you doing it for percpu_hash too?
->> >
->>
->> Only percpu_array in this patchset.
->>
->> I have no need to do it for percpu_hash.
->
-> You're missing the point. If we're adding the flag it should
-> work for all per-cpu maps. Both array and hash.
->
-> Same issue as with your other patch with common_attr.
-> We're not adding a feature that works for 1 out 10
-> commands/map types/whatever and doesn't work for the rest.
-> Flags/features have to be generic and consistent.
+[auto build test ERROR on next-20250808]
+[cannot apply to trace/for-next tip/sched/core brauner-vfs/vfs.all linus/master v6.17-rc1 v6.16 v6.16-rc7 v6.17-rc1]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Get it. I'll do it for other percpu maps in next revision.
+url:    https://github.com/intel-lab-lkp/linux/commits/Bhupesh/exec-Remove-obsolete-comments/20250811-144920
+base:   next-20250808
+patch link:    https://lore.kernel.org/r/20250811064609.918593-5-bhupesh%40igalia.com
+patch subject: [PATCH v7 4/4] treewide: Switch memcpy() users of 'task->comm' to a more safer implementation
+config: x86_64-buildonly-randconfig-001-20250811 (https://download.01.org/0day-ci/archive/20250812/202508120011.j4Pmr6Rf-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14+deb12u1) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250812/202508120011.j4Pmr6Rf-lkp@intel.com/reproduce)
 
-Thanks,
-Leon
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202508120011.j4Pmr6Rf-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from include/trace/define_trace.h:132,
+                    from include/trace/events/sched.h:901,
+                    from kernel/sched/core.c:85:
+   include/trace/events/sched.h: In function 'do_trace_event_raw_event_sched_skip_cpuset_numa':
+>> include/trace/events/sched.h:796:39: error: passing argument 1 of '__cstr_array_copy' from incompatible pointer type [-Werror=incompatible-pointer-types]
+     796 |                 get_task_array(__entry->mem_allowed, mem_allowed_ptr->bits);
+   include/trace/trace_events.h:427:11: note: in definition of macro '__DECLARE_EVENT_CLASS'
+     427 |         { assign; }                                                     \
+         |           ^~~~~~
+   include/trace/trace_events.h:435:23: note: in expansion of macro 'PARAMS'
+     435 |                       PARAMS(assign), PARAMS(print))                    \
+         |                       ^~~~~~
+   include/trace/trace_events.h:40:9: note: in expansion of macro 'DECLARE_EVENT_CLASS'
+      40 |         DECLARE_EVENT_CLASS(name,                              \
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/trace/trace_events.h:44:30: note: in expansion of macro 'PARAMS'
+      44 |                              PARAMS(assign),                   \
+         |                              ^~~~~~
+   include/trace/events/sched.h:775:1: note: in expansion of macro 'TRACE_EVENT'
+     775 | TRACE_EVENT(sched_skip_cpuset_numa,
+         | ^~~~~~~~~~~
+   include/trace/events/sched.h:789:9: note: in expansion of macro 'TP_fast_assign'
+     789 |         TP_fast_assign(
+         |         ^~~~~~~~~~~~~~
+   include/trace/events/sched.h:796:17: note: in expansion of macro 'get_task_array'
+     796 |                 get_task_array(__entry->mem_allowed, mem_allowed_ptr->bits);
+         |                 ^~~~~~~~~~~~~~
+   In file included from include/linux/percpu.h:12,
+                    from arch/x86/include/asm/msr.h:16,
+                    from arch/x86/include/asm/tsc.h:11,
+                    from arch/x86/include/asm/timex.h:6,
+                    from include/linux/timex.h:67,
+                    from include/linux/time32.h:13,
+                    from include/linux/time.h:60,
+                    from include/linux/stat.h:19,
+                    from include/linux/fs.h:11,
+                    from include/linux/highmem.h:5,
+                    from kernel/sched/core.c:10:
+   include/linux/sched.h:1991:33: note: expected 'char *' but argument is of type 'long unsigned int *'
+    1991 |         __cstr_array_copy(char *dst, const char *src,
+         |                           ~~~~~~^~~
+   include/trace/events/sched.h:796:69: error: passing argument 2 of '__cstr_array_copy' from incompatible pointer type [-Werror=incompatible-pointer-types]
+     796 |                 get_task_array(__entry->mem_allowed, mem_allowed_ptr->bits);
+         |                                                      ~~~~~~~~~~~~~~~^~~~~~
+         |                                                                     |
+         |                                                                     long unsigned int *
+   include/trace/trace_events.h:427:11: note: in definition of macro '__DECLARE_EVENT_CLASS'
+     427 |         { assign; }                                                     \
+         |           ^~~~~~
+   include/trace/trace_events.h:435:23: note: in expansion of macro 'PARAMS'
+     435 |                       PARAMS(assign), PARAMS(print))                    \
+         |                       ^~~~~~
+   include/trace/trace_events.h:40:9: note: in expansion of macro 'DECLARE_EVENT_CLASS'
+      40 |         DECLARE_EVENT_CLASS(name,                              \
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/trace/trace_events.h:44:30: note: in expansion of macro 'PARAMS'
+      44 |                              PARAMS(assign),                   \
+         |                              ^~~~~~
+   include/trace/events/sched.h:775:1: note: in expansion of macro 'TRACE_EVENT'
+     775 | TRACE_EVENT(sched_skip_cpuset_numa,
+         | ^~~~~~~~~~~
+   include/trace/events/sched.h:789:9: note: in expansion of macro 'TP_fast_assign'
+     789 |         TP_fast_assign(
+         |         ^~~~~~~~~~~~~~
+   include/trace/events/sched.h:796:17: note: in expansion of macro 'get_task_array'
+     796 |                 get_task_array(__entry->mem_allowed, mem_allowed_ptr->bits);
+         |                 ^~~~~~~~~~~~~~
+   include/linux/sched.h:1991:50: note: expected 'const char *' but argument is of type 'long unsigned int *'
+    1991 |         __cstr_array_copy(char *dst, const char *src,
+         |                                      ~~~~~~~~~~~~^~~
+   In file included from include/trace/define_trace.h:133:
+   include/trace/events/sched.h: In function 'do_perf_trace_sched_skip_cpuset_numa':
+>> include/trace/events/sched.h:796:39: error: passing argument 1 of '__cstr_array_copy' from incompatible pointer type [-Werror=incompatible-pointer-types]
+     796 |                 get_task_array(__entry->mem_allowed, mem_allowed_ptr->bits);
+   include/trace/perf.h:51:11: note: in definition of macro '__DECLARE_EVENT_CLASS'
+      51 |         { assign; }                                                     \
+         |           ^~~~~~
+   include/trace/perf.h:67:23: note: in expansion of macro 'PARAMS'
+      67 |                       PARAMS(assign), PARAMS(print))                    \
+         |                       ^~~~~~
+   include/trace/trace_events.h:40:9: note: in expansion of macro 'DECLARE_EVENT_CLASS'
+      40 |         DECLARE_EVENT_CLASS(name,                              \
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/trace/trace_events.h:44:30: note: in expansion of macro 'PARAMS'
+      44 |                              PARAMS(assign),                   \
+         |                              ^~~~~~
+   include/trace/events/sched.h:775:1: note: in expansion of macro 'TRACE_EVENT'
+     775 | TRACE_EVENT(sched_skip_cpuset_numa,
+         | ^~~~~~~~~~~
+   include/trace/events/sched.h:789:9: note: in expansion of macro 'TP_fast_assign'
+     789 |         TP_fast_assign(
+         |         ^~~~~~~~~~~~~~
+   include/trace/events/sched.h:796:17: note: in expansion of macro 'get_task_array'
+     796 |                 get_task_array(__entry->mem_allowed, mem_allowed_ptr->bits);
+         |                 ^~~~~~~~~~~~~~
+   include/linux/sched.h:1991:33: note: expected 'char *' but argument is of type 'long unsigned int *'
+    1991 |         __cstr_array_copy(char *dst, const char *src,
+         |                           ~~~~~~^~~
+   include/trace/events/sched.h:796:69: error: passing argument 2 of '__cstr_array_copy' from incompatible pointer type [-Werror=incompatible-pointer-types]
+     796 |                 get_task_array(__entry->mem_allowed, mem_allowed_ptr->bits);
+         |                                                      ~~~~~~~~~~~~~~~^~~~~~
+         |                                                                     |
+         |                                                                     long unsigned int *
+   include/trace/perf.h:51:11: note: in definition of macro '__DECLARE_EVENT_CLASS'
+      51 |         { assign; }                                                     \
+         |           ^~~~~~
+   include/trace/perf.h:67:23: note: in expansion of macro 'PARAMS'
+      67 |                       PARAMS(assign), PARAMS(print))                    \
+         |                       ^~~~~~
+   include/trace/trace_events.h:40:9: note: in expansion of macro 'DECLARE_EVENT_CLASS'
+      40 |         DECLARE_EVENT_CLASS(name,                              \
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/trace/trace_events.h:44:30: note: in expansion of macro 'PARAMS'
+      44 |                              PARAMS(assign),                   \
+         |                              ^~~~~~
+   include/trace/events/sched.h:775:1: note: in expansion of macro 'TRACE_EVENT'
+     775 | TRACE_EVENT(sched_skip_cpuset_numa,
+         | ^~~~~~~~~~~
+   include/trace/events/sched.h:789:9: note: in expansion of macro 'TP_fast_assign'
+     789 |         TP_fast_assign(
+         |         ^~~~~~~~~~~~~~
+   include/trace/events/sched.h:796:17: note: in expansion of macro 'get_task_array'
+     796 |                 get_task_array(__entry->mem_allowed, mem_allowed_ptr->bits);
+         |                 ^~~~~~~~~~~~~~
+   include/linux/sched.h:1991:50: note: expected 'const char *' but argument is of type 'long unsigned int *'
+    1991 |         __cstr_array_copy(char *dst, const char *src,
+         |                                      ~~~~~~~~~~~~^~~
+   cc1: some warnings being treated as errors
+
+
+vim +/__cstr_array_copy +796 include/trace/events/sched.h
+
+   776	
+   777		TP_PROTO(struct task_struct *tsk, nodemask_t *mem_allowed_ptr),
+   778	
+   779		TP_ARGS(tsk, mem_allowed_ptr),
+   780	
+   781		TP_STRUCT__entry(
+   782			__array( char,		comm,		TASK_COMM_LEN		)
+   783			__field( pid_t,		pid					)
+   784			__field( pid_t,		tgid					)
+   785			__field( pid_t,		ngid					)
+   786			__array( unsigned long, mem_allowed, BITS_TO_LONGS(MAX_NUMNODES))
+   787		),
+   788	
+   789		TP_fast_assign(
+   790			get_task_array(__entry->comm, tsk->comm);
+   791			__entry->pid		 = task_pid_nr(tsk);
+   792			__entry->tgid		 = task_tgid_nr(tsk);
+   793			__entry->ngid		 = task_numa_group_id(tsk);
+   794			BUILD_BUG_ON(sizeof(nodemask_t) != \
+   795				     BITS_TO_LONGS(MAX_NUMNODES) * sizeof(long));
+ > 796			get_task_array(__entry->mem_allowed, mem_allowed_ptr->bits);
+   797		),
+   798	
+   799		TP_printk("comm=%s pid=%d tgid=%d ngid=%d mem_nodes_allowed=%*pbl",
+   800			  __entry->comm,
+   801			  __entry->pid,
+   802			  __entry->tgid,
+   803			  __entry->ngid,
+   804			  MAX_NUMNODES, __entry->mem_allowed)
+   805	);
+   806	#endif /* CONFIG_NUMA_BALANCING */
+   807	
+   808	/*
+   809	 * Tracepoint for waking a polling cpu without an IPI.
+   810	 */
+   811	TRACE_EVENT(sched_wake_idle_without_ipi,
+   812	
+   813		TP_PROTO(int cpu),
+   814	
+   815		TP_ARGS(cpu),
+   816	
+   817		TP_STRUCT__entry(
+   818			__field(	int,	cpu	)
+   819		),
+   820	
+   821		TP_fast_assign(
+   822			__entry->cpu	= cpu;
+   823		),
+   824	
+   825		TP_printk("cpu=%d", __entry->cpu)
+   826	);
+   827	
+   828	/*
+   829	 * Following tracepoints are not exported in tracefs and provide hooking
+   830	 * mechanisms only for testing and debugging purposes.
+   831	 */
+   832	DECLARE_TRACE(pelt_cfs,
+   833		TP_PROTO(struct cfs_rq *cfs_rq),
+   834		TP_ARGS(cfs_rq));
+   835	
+   836	DECLARE_TRACE(pelt_rt,
+   837		TP_PROTO(struct rq *rq),
+   838		TP_ARGS(rq));
+   839	
+   840	DECLARE_TRACE(pelt_dl,
+   841		TP_PROTO(struct rq *rq),
+   842		TP_ARGS(rq));
+   843	
+   844	DECLARE_TRACE(pelt_hw,
+   845		TP_PROTO(struct rq *rq),
+   846		TP_ARGS(rq));
+   847	
+   848	DECLARE_TRACE(pelt_irq,
+   849		TP_PROTO(struct rq *rq),
+   850		TP_ARGS(rq));
+   851	
+   852	DECLARE_TRACE(pelt_se,
+   853		TP_PROTO(struct sched_entity *se),
+   854		TP_ARGS(se));
+   855	
+   856	DECLARE_TRACE(sched_cpu_capacity,
+   857		TP_PROTO(struct rq *rq),
+   858		TP_ARGS(rq));
+   859	
+   860	DECLARE_TRACE(sched_overutilized,
+   861		TP_PROTO(struct root_domain *rd, bool overutilized),
+   862		TP_ARGS(rd, overutilized));
+   863	
+   864	DECLARE_TRACE(sched_util_est_cfs,
+   865		TP_PROTO(struct cfs_rq *cfs_rq),
+   866		TP_ARGS(cfs_rq));
+   867	
+   868	DECLARE_TRACE(sched_util_est_se,
+   869		TP_PROTO(struct sched_entity *se),
+   870		TP_ARGS(se));
+   871	
+   872	DECLARE_TRACE(sched_update_nr_running,
+   873		TP_PROTO(struct rq *rq, int change),
+   874		TP_ARGS(rq, change));
+   875	
+   876	DECLARE_TRACE(sched_compute_energy,
+   877		TP_PROTO(struct task_struct *p, int dst_cpu, unsigned long energy,
+   878			 unsigned long max_util, unsigned long busy_time),
+   879		TP_ARGS(p, dst_cpu, energy, max_util, busy_time));
+   880	
+   881	DECLARE_TRACE(sched_entry,
+   882		TP_PROTO(bool preempt),
+   883		TP_ARGS(preempt));
+   884	
+   885	DECLARE_TRACE(sched_exit,
+   886		TP_PROTO(bool is_switch),
+   887		TP_ARGS(is_switch));
+   888	
+   889	DECLARE_TRACE_CONDITION(sched_set_state,
+   890		TP_PROTO(struct task_struct *tsk, int state),
+   891		TP_ARGS(tsk, state),
+   892		TP_CONDITION(!!(tsk->__state) != !!state));
+   893	
+   894	DECLARE_TRACE(sched_set_need_resched,
+   895		TP_PROTO(struct task_struct *tsk, int cpu, int tif),
+   896		TP_ARGS(tsk, cpu, tif));
+   897	
+   898	#endif /* _TRACE_SCHED_H */
+   899	
+   900	/* This part must be outside protection */
+ > 901	#include <trace/define_trace.h>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
