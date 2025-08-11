@@ -1,57 +1,63 @@
-Return-Path: <bpf+bounces-65312-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65313-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C235B1FD73
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 03:09:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40B37B1FD8F
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 03:55:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15AD8188F522
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 01:10:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 849FB3B8C2B
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 01:55:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E19C019F111;
-	Mon, 11 Aug 2025 01:09:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 204B2248F6A;
+	Mon, 11 Aug 2025 01:55:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="egAtIAwp"
 X-Original-To: bpf@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4DA22E401;
-	Mon, 11 Aug 2025 01:09:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7923B13A86C;
+	Mon, 11 Aug 2025 01:54:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.119
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754874578; cv=none; b=nTyX1Jfp9HFmtdCI6ZOndHiAWGToH1eH4Sdp4Gi6cfZlckcFo9inO4/NX6gov5vKJGkc0cXr+P9R5H/d6UJIgmGEqplMefBjJBqiTITOe1jeNAYfDbQxXfT+/cknBw7rIlzwurVw0ZcNWQOColkQApCFzUWjzrDK5QzUqa7pY2g=
+	t=1754877299; cv=none; b=trQbbgXoqJIji8iku2r+mIZmqv2C+FZQkVZdNnRVgI7Br3/Z9Jaxa4PIVFSr1Phm+Kux+1InHmjnGZ7NWKQARwpw0iw7YMy+ZpFypx5wGS+2EboMg5Ap8zKzHicYFr7EjgdarRG0k+Q+SIWL13puU4BKx1ryBZXQ2bUQMqMI1dE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754874578; c=relaxed/simple;
-	bh=edK6wfe82+a1zI95IT4725tatobF5C9KlGS4WvUMtzs=;
+	s=arc-20240116; t=1754877299; c=relaxed/simple;
+	bh=MsW5iFYmDRDqqZxzzTPiA4jhts6VKYHuqBPN+ILaagI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KOQ1jri43BGhRkFowd0ZaSW08ZC7L1rubyEb0XfFPmOPwOB/kFGMIzGua5QrcUgDIWtf1nkKahTNXJqm39BoFsjIRNlDWdj2VPY7YeTPW9wWWBwqtNGQHsdUXpDtgu7pV4EdRLHNX9jXqq+AqTKSbTbXaHITcJPvMtQZntfjm7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-681ff7000002311f-f7-689942c2df79
-Date: Mon, 11 Aug 2025 10:09:17 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: linux-mm@kvack.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
-	harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
-	davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
-	john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com,
-	leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
-	andrew+netdev@lunn.ch, edumazet@google.com, pabeni@redhat.com,
-	akpm@linux-foundation.org, david@redhat.com,
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
-	rppt@kernel.org, surenb@google.com, mhocko@suse.com,
-	horms@kernel.org, jackmanb@google.com, hannes@cmpxchg.org,
-	ziy@nvidia.com, ilias.apalodimas@linaro.org, willy@infradead.org,
-	brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
-	usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
-	almasrymina@google.com, toke@redhat.com, bpf@vger.kernel.org,
-	linux-rdma@vger.kernel.org, sfr@canb.auug.org.au
-Subject: Re: [PATCH linux-next v3] mm, page_pool: introduce a new page type
- for page pool in page type
-Message-ID: <20250811010917.GB28363@system.software.com>
-References: <20250729110210.48313-1-byungchul@sk.com>
- <757b3268-43ab-41bf-88fa-4730089721f3@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=JhZy5wbyQnx4srb6V2k2HFx/q3W19hYMVG2qsJd3GWf9iTkSaeygxbbzHL6C+2+nJzbxqybn+XnV+zZQsd5U2eARBHy6tyKC4mhrOpMFInwnj5Zl5Fl9NJHogU0FY1avp13hkI6CqYOeObelg6lN5WzJEFbl18MhmvKkCbMJ5lk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=egAtIAwp; arc=none smtp.client-ip=115.124.30.119
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1754877294; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	bh=VuAw+i/G0I3oN3Fd4kbgStHeR75gs940OMeQdyhmo7Q=;
+	b=egAtIAwp6wuNZV5syh/e/R2Oawfe7paNkoEMiNjD/HXThNNULQ0D8Y3x3xIrH5DJ3dt6dR+791kIFB0HtYNdqOmy/q/JK3lTFZvM0r5yVxlnpg2g5m2OBrcDpIAGmStQBIZ0gXXmldR26COXCleHqzBnIizoMVNb/o1h26xrAcc=
+Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WlNSY4J_1754877292 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Mon, 11 Aug 2025 09:54:52 +0800
+Date: Mon, 11 Aug 2025 09:54:52 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com    >
+To: Alexandra Winter <wintera@linux.ibm.com>
+Cc: "D. Wythe" <alibuda@linux.alibaba.com>, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+	pabeni@redhat.com, song@kernel.org, sdf@google.com,
+	haoluo@google.com, yhs@fb.com, edumazet@google.com,
+	john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
+	Mahanta.Jambigi@ibm.com, Sidraya.Jayagond@ibm.com,
+	wenjia@linux.ibm.com, dust.li@linux.alibaba.com,
+	tonylu@linux.alibaba.com, guwen@linux.alibaba.com,
+	bpf@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+	netdev@vger.kernel.org, jaka@linux.ibm.com
+Subject: Re: [PATCH bpf-next 2/5] net/smc: fix UAF on smcsk after
+ smc_listen_out()
+Message-ID: <20250811015452.GB19346@j66a10360.sqa.eu95>
+References: <20250731084240.86550-1-alibuda@linux.alibaba.com>
+ <20250731084240.86550-3-alibuda@linux.alibaba.com>
+ <174ccf57-6e7c-4dab-8743-33989829de01@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -60,73 +66,54 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <757b3268-43ab-41bf-88fa-4730089721f3@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRjG+Z9zds5xOTotzX8GfViUYHSl4A1Kutr/SxEUBRrUcic3mlrT
-	vHSBaXbTZmLXLQvLMnWSMO+XSW3LS7EuRrUsnVlJstS8JN6oNkXq2/P+3pfneT68PC2vkwTz
-	mtgEURer1CpYKSPt9b+3zL7ZqF5Z7pRAbmkJC+bRZHjYWe2diisRDI995OCPtRHBkKOJBY99
-	EEH+3REacl+mM/CrdJyGb41dHJgtO8Bd0M1A/fkqGrouN7NgSJ+gwTrWx0FadSEFuWV6Dl5V
-	Zkng6vgDGqr0nRy8qc1loaPkjwS6bQYGWkxFDPy85qDBnbURGvPmwcjzHwgcpVUUjFy6zcJb
-	Yy0FFda3HFxpzWPhS7obQau9i4FrkxdYuJWahWBi1GvZlz0sgVtPO7iNS0mqy8US+49+mpQX
-	faCIq+EZRWpM7RzJsxwnZYWhJMPVShNL8UWWWAZzOPLpXT1Lmm9OMKTm8zpSUz1EEcOZPpYM
-	fGtjdgVESNerRK0mUdStCDsoVRsqJyRHW2clN9l7OT3q5zOQH4+FNdj5vYOd0e7757gMxPOM
-	sBi/NCf4MCuEYJdrjPbpAGEp9ry3eU+kPC2UcNj4IgP5FnMFNS6784XyaZkAONvTw/i03Mvf
-	nC2STPM5uMX4dYrTQih2/e6hfFm0sAA//D1Vx0/YgB1DDVNZgcIi/LiyifJlYeErjwusPdR0
-	z/n4SaGLyUaC6T9b03+2pn+2eYguRnJNbGKMUqNds1ydEqtJXh4VF2NB3pcqOD0ZWY0GX+22
-	IYFHCn9Z54ObarlEmRifEmNDmKcVAbJu9Q21XKZSppwQdXEHdMe1YrwNLeAZRZBs9UiSSi5E
-	KxPEI6J4VNTNbCneL1iP7mTLQ+K25ndcD3tdnunZdCr6UE7vnKQoZ1qtJku7Ihzr98iMpuGg
-	oDZb2d4tH5dlUmReWEXiWPPkbEf5vpz9SdZHgcau9UERhWu3UeK4s31Wt8ps1sSVslrDsfpI
-	D7ezPXq77GRE2lV7xEDkFpuzbdvwQvfBlNkF4YfriGqJUcHEq5WrQmldvPIvSa6EKU4DAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0iTcRTG+b93V4u3qfmiXWBRgZVlJB27IUH1J7p9CIoIdeiLG84pm4oG
-	habdrJndKNcMrTQvC2Oam6YSm01NyFDMmeVMTTAvZV5oahdnRH17+D3nOc/5cDhSlkf7cypN
-	oqjVKNRyRkJJDu/I2Gjbk6vcnFG4GYzlJgbKvqfA414rDcbSKgST7m4WftU5EEw0NDIwbP+G
-	4GHBNAnG1kwKpspnSPjk6GOhzHwIXEWDFNRetJDQd62JAX3mLAl17jEWzlmLCTBWpLFgz2um
-	4U1VNg23ZgpJsKT1stBeY2Sgx/SLhkGbnoJmQwkFX283kODKDgNH/jKYbhlB0FBuIWD6ah4D
-	Hbk1BDyr62DhZls+A/2ZLgRt9j4Kbs9dYuBeejaC2e/zK8dyJmm497KHDduA051OBttHvpC4
-	sqSLwM76VwSuNnxgcb45CVcUB+IsZxuJzaWXGWz+doPF79/WMrjp7iyFqz+G4mrrBIH1GWMM
-	Hv/0jjrqe1KyM1pUq5JF7abdkRKlvmqWTmhblNJoH2XT0BcuC3lxAr9VcD26wGYhjqP4NUJr
-	WaIHM/w6wel0kx7tw68Xhjtt8yMSjuRNrJD7Ogt5DG9eKVTc7yc8WsqDkDM8RHm0bJ63ny+h
-	//ClQnPuwAIn+UDB+XOI8HSRfIDw+OfCCV78LqFhon6hy5dfLbyoaiRykNTwX9rwX9rwL52P
-	yFLko9IkxylU6pAgXawyVaNKCYqKjzOj+acpOjN33Yom2/fbEM8h+WJpb+FdpYxWJOtS42xI
-	4Ei5j3RQeUcpk0YrUk+L2vgIbZJa1NlQAEfJ/aQHjouRMj5GkSjGimKCqP3rEpyXfxrSdq7C
-	jugmvzsPHk6dq4hypY9WBv+QrWjRHywb6DxyP+SzumhskHN5q84mbWskhsb7R5rrVh4zFew9
-	sSRi35WnYeNXmrbv9dKGJjrGwy17YgItGVu63N3WA6clcTPPTaHhr1KiAlpifPffmjbHXpKc
-	Gjnsq3EPrHXt3rSrMuhJumK5nNIpFcGBpFan+A1UN4MuMAMAAA==
-X-CFilter-Loop: Reflected
+In-Reply-To: <174ccf57-6e7c-4dab-8743-33989829de01@linux.ibm.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Sun, Aug 10, 2025 at 09:21:45PM +0100, Pavel Begunkov wrote:
-> On 7/29/25 12:02, Byungchul Park wrote:
-> > Changes from v2:
-> >       1. Rebase on linux-next as of Jul 29.
-> >       2. Skip 'niov->pp = NULL' when it's allocated using __GFP_ZERO.
-> >       3. Change trivial coding style. (feedbacked by Mina)
-> >       4. Add Co-developed-by, Acked-by, and Reviewed-by properly.
-> >          Thanks to all.
-> > 
-> > Changes from v1:
-> >       1. Rebase on linux-next.
-> >       2. Initialize net_iov->pp = NULL when allocating net_iov in
-> >          net_devmem_bind_dmabuf() and io_zcrx_create_area().
-> >       3. Use ->pp for net_iov to identify if it's pp rather than
-> >          always consider net_iov as pp.
-> >       4. Add Suggested-by: David Hildenbrand <david@redhat.com>.
-> > 
-> > ---8<---
-> >  From 88bcb9907a0cef65a9c0adf35e144f9eb67e0542 Mon Sep 17 00:00:00 2001
-> > From: Byungchul Park <byungchul@sk.com>
-> > Date: Tue, 29 Jul 2025 19:49:44 +0900
-> > Subject: [PATCH linux-next v3] mm, page_pool: introduce a new page type for page pool in page type
+On Thu, Jul 31, 2025 at 02:57:31PM +0200, Alexandra Winter wrote:
 > 
-> That will conflict with "netmem: replace __netmem_clear_lsb() with
-> netmem_to_nmdesc()", it'll need some coordination.
-
-Indeed.  It'd better work on top of "netmem: replace __netmem_clear_lsb()
-with netmem_to_nmdesc()" then.  You said you are going to take the patch.
-Please lemme know the progress so that I can track and re-work on this.
-
-	Byungchul
-
-> --
-> Pavel Begunkov
 > 
+> On 31.07.25 10:42, D. Wythe wrote:
+> > BPF CI testing report a UAF issue:
+> > 
+> [..]
+> > 
+> > Fixes: 3b2dec2603d5 ("net/smc: restructure client and server code in af_smc")
+> > Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+> > Reviewed-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
+> > ---
+> >  net/smc/af_smc.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+> > index 1882bab8e00e..dc72ff353813 100644
+> > --- a/net/smc/af_smc.c
+> > +++ b/net/smc/af_smc.c
+> > @@ -2568,8 +2568,9 @@ static void smc_listen_work(struct work_struct *work)
+> >  			goto out_decl;
+> >  	}
+> >  
+> > -	smc_listen_out_connected(new_smc);
+> >  	SMC_STAT_SERV_SUCC_INC(sock_net(newclcsock->sk), ini);
+> > +	/* smc_listen_out() will release smcsk */
+> > +	smc_listen_out_connected(new_smc);
+> >  	goto out_free;
+> >  
+> >  out_unlock:
+> 
+> 
+> As this is a problem fix, you could send it directly to 'net'
+> instead of including it to this series.
+>
+
+Hi Alexandra,
+
+Yes, it should be sent to net. But the problem is that if I don't carry
+this patch, the BPF CI test will always crash. Maybe I should send a
+copy to both net and bpf-next? Do you have any suggestions?
+
+Best wishes,
+D. Wythe
+
+
+> Reviewed-by: Alexandra Winter <wintera@linux.ibm.com>
 
