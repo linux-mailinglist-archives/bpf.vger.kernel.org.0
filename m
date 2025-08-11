@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-65360-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65361-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E3FFB211EE
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 18:29:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4ECDCB211F0
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 18:29:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E32AE626B24
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 16:20:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F13F2190094E
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 16:21:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DA662E6138;
-	Mon, 11 Aug 2025 16:13:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99BF12C21D4;
+	Mon, 11 Aug 2025 16:13:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kzNRIYUb"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HuEhd+hF"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FA472E54B5;
-	Mon, 11 Aug 2025 16:13:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A45602E62C3;
+	Mon, 11 Aug 2025 16:13:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754928819; cv=none; b=AwwZzMW5/ifu8Y0wy0bCWwBRDmG5KazwSYL/bpk4biO4lwicJB+XBblnLslxLHWbV4PphgV7qjdE01bHAYt3BYYxrIRkb6W66RTxDA9TdNzJh1Qi9AYPJn2oQrukLKFlCutjkBtaDocgxoKArtr1jfjNRG9spxbsBFQD8bxbSfA=
+	t=1754928823; cv=none; b=ZEhLf5XllMU6PztpFVs1UxrZnKIkTYASvJTSx/So6oWp/snmOYzWl2l1fH34Dol6BAkiDzpcEfoHungsuGO29NodS2KpPUemLs4M+cVy0zATaTYp8KcKjMMsACfhnvvT1t5QAmik2nv02czt+J10cBu/kn4J2CjEwRbMPec5258=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754928819; c=relaxed/simple;
-	bh=W8iajtxQR5EvXVvoBEguC35xUz0udGCfNW9PJAuo4MQ=;
+	s=arc-20240116; t=1754928823; c=relaxed/simple;
+	bh=CjvGV5hPrqqR5jpzUsV/mVpTr+53npZ/zD34Fh+5nM0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SpXDk0cgOPfHQrIXFG5ok6rZfLrtqy8H6nwppAmxMfioOE8OK44IDl3eEcKibi2yiGuIi3xkiqwfjN0A4wSYL+UlZYuKAK8BAlGKqctqzOHrADoCmysB37v3wXxulDn6Iu7ldnqfRjaLq1ON5Z6qA/NbmzzSd+kDbnPJ/YPANKw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kzNRIYUb; arc=none smtp.client-ip=198.175.65.20
+	 MIME-Version; b=lPhRpixG/RZemMxelYXlpqa+zCj5pfOsS19pqtBl83w13DIDdi+wSKa2sI+RX3xHHK8oVgq218siMNR4TdO+wcI7aUpJG2HXDtjbR3olhhfbVlqlgSHT5lnsndlGkRDiFY2m+TJzxJ6rMvXwh31/UWDt5r+HiCA/5Lxkuz93yx8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HuEhd+hF; arc=none smtp.client-ip=198.175.65.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1754928817; x=1786464817;
+  t=1754928822; x=1786464822;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=W8iajtxQR5EvXVvoBEguC35xUz0udGCfNW9PJAuo4MQ=;
-  b=kzNRIYUbYjvYgohLw9QMO6kNVwgaOfA2PnqcX8WveswMIzMZqhER8cLt
-   Fjgo+345feJKoBd1rXJD6ECK9eWSBDUHW1WcgXFY//Qw0eZUefTDdZX+Y
-   gAHx6WYODOGKulP7vAZSMHOSiRhwURG6MHxUilyP0g09Hn/BKlxBZmGxH
-   aZU3+WqoJUXFP5qANsCxxofzKtpMfkN3mkXsUkmmWivpRWVOEsMIQRo2x
-   9EEkj67wSKSxS9jFbn7FUp0l2mhhavAOnz/9iuT/NxRsCsLq+WdhHV6yk
-   dTlrXRJ2ijsmF+AxiqfEb3YyM2TM05pGaNE9AzB6P5R90HKMRgld8bG5x
-   w==;
-X-CSE-ConnectionGUID: fr1pbcH8SJi03LURRZhGdQ==
-X-CSE-MsgGUID: J+E0cEqbTHqIbqSvClETEQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11518"; a="56899722"
+  bh=CjvGV5hPrqqR5jpzUsV/mVpTr+53npZ/zD34Fh+5nM0=;
+  b=HuEhd+hFhe9kVFmmUMNtbBPXcnmn+Cri8yG9QBRcXwxjK0hb17F+WwKp
+   HPxx/MCPAdihzWPIZU/ZvjWEtUPfAdEIvnSp0ZPOEsKeROe13QcbCKO/D
+   6DYhGmGd09kZde4aLCWq/5fLXZ4ik/2YBgY3C3wQRqL+wXWSUjTkiVKjW
+   Itxk5JJbR2BoFRd8gZH3iMBJ0d6Uak/5wmA4fseJD1WY3h11wRUg8v7MH
+   i/DXBh5C7nYFzbvv3UGx2GiURkP1mINQ6xQ1DV5qvNgYtzP9Mq0qCA/mA
+   0WVUWRcLw2ruq6uH3LjXiZojI0poRZu5ARij2yUfuH+he+WhUStqdkOIs
+   Q==;
+X-CSE-ConnectionGUID: diny5ZeNRkWCqTE+0FKUUw==
+X-CSE-MsgGUID: P6FJWFLnTmuwftP52kF2tw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11518"; a="56899737"
 X-IronPort-AV: E=Sophos;i="6.17,278,1747724400"; 
-   d="scan'208";a="56899722"
+   d="scan'208";a="56899737"
 Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2025 09:13:37 -0700
-X-CSE-ConnectionGUID: NHqslrRbR6uQVT53x8sBCg==
-X-CSE-MsgGUID: OiXv2TsPTwGHRWkpDfHwUg==
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2025 09:13:41 -0700
+X-CSE-ConnectionGUID: MwvZxrYnQ+eXfLz7etPE7g==
+X-CSE-MsgGUID: lYtQkMqMQ+yHvXWeVGkifA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.17,278,1747724400"; 
-   d="scan'208";a="165163249"
+   d="scan'208";a="165163259"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa006.jf.intel.com with ESMTP; 11 Aug 2025 09:13:33 -0700
+  by orviesa006.jf.intel.com with ESMTP; 11 Aug 2025 09:13:37 -0700
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: intel-wired-lan@lists.osuosl.org
 Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
@@ -77,9 +77,9 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH iwl-next v4 12/13] idpf: add support for .ndo_xdp_xmit()
-Date: Mon, 11 Aug 2025 18:10:43 +0200
-Message-ID: <20250811161044.32329-13-aleksander.lobakin@intel.com>
+Subject: [PATCH iwl-next v4 13/13] idpf: add XDP RSS hash hint
+Date: Mon, 11 Aug 2025 18:10:44 +0200
+Message-ID: <20250811161044.32329-14-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20250811161044.32329-1-aleksander.lobakin@intel.com>
 References: <20250811161044.32329-1-aleksander.lobakin@intel.com>
@@ -91,81 +91,135 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Use libeth XDP infra to implement .ndo_xdp_xmit() in idpf.
-The Tx callbacks are reused from XDP_TX code. XDP redirect target
-feature is set/cleared depending on the XDP prog presence, as for now
-we still don't allocate XDP Tx queues when there's no program.
+Add &xdp_metadata_ops with a callback to get RSS hash hint from the
+descriptor. Declare the splitq 32-byte descriptor as 4 u64s to parse
+them more efficiently when possible.
 
-Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- drivers/net/ethernet/intel/idpf/xdp.h      |  2 ++
- drivers/net/ethernet/intel/idpf/idpf_lib.c |  1 +
- drivers/net/ethernet/intel/idpf/xdp.c      | 20 ++++++++++++++++++++
- 3 files changed, 23 insertions(+)
+ drivers/net/ethernet/intel/idpf/xdp.h | 64 +++++++++++++++++++++++++++
+ drivers/net/ethernet/intel/idpf/xdp.c | 28 +++++++++++-
+ 2 files changed, 91 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/ethernet/intel/idpf/xdp.h b/drivers/net/ethernet/intel/idpf/xdp.h
-index 986156162e2d..db8ecc1843fe 100644
+index db8ecc1843fe..66ad83a0e85e 100644
 --- a/drivers/net/ethernet/intel/idpf/xdp.h
 +++ b/drivers/net/ethernet/intel/idpf/xdp.h
-@@ -102,5 +102,7 @@ static inline void idpf_xdp_tx_finalize(void *_xdpsq, bool sent, bool flush)
+@@ -99,6 +99,70 @@ static inline void idpf_xdp_tx_finalize(void *_xdpsq, bool sent, bool flush)
+ 	libeth_xdpsq_unlock(&xdpsq->xdp_lock);
+ }
+ 
++struct idpf_xdp_rx_desc {
++	aligned_u64		qw0;
++#define IDPF_XDP_RX_BUFQ	BIT_ULL(47)
++#define IDPF_XDP_RX_GEN		BIT_ULL(46)
++#define IDPF_XDP_RX_LEN		GENMASK_ULL(45, 32)
++#define IDPF_XDP_RX_PT		GENMASK_ULL(25, 16)
++
++	aligned_u64		qw1;
++#define IDPF_XDP_RX_BUF		GENMASK_ULL(47, 32)
++#define IDPF_XDP_RX_EOP		BIT_ULL(1)
++
++	aligned_u64		qw2;
++#define IDPF_XDP_RX_HASH	GENMASK_ULL(31, 0)
++
++	aligned_u64		qw3;
++} __aligned(4 * sizeof(u64));
++static_assert(sizeof(struct idpf_xdp_rx_desc) ==
++	      sizeof(struct virtchnl2_rx_flex_desc_adv_nic_3));
++
++#define idpf_xdp_rx_bufq(desc)	!!((desc)->qw0 & IDPF_XDP_RX_BUFQ)
++#define idpf_xdp_rx_gen(desc)	!!((desc)->qw0 & IDPF_XDP_RX_GEN)
++#define idpf_xdp_rx_len(desc)	FIELD_GET(IDPF_XDP_RX_LEN, (desc)->qw0)
++#define idpf_xdp_rx_pt(desc)	FIELD_GET(IDPF_XDP_RX_PT, (desc)->qw0)
++#define idpf_xdp_rx_buf(desc)	FIELD_GET(IDPF_XDP_RX_BUF, (desc)->qw1)
++#define idpf_xdp_rx_eop(desc)	!!((desc)->qw1 & IDPF_XDP_RX_EOP)
++#define idpf_xdp_rx_hash(desc)	FIELD_GET(IDPF_XDP_RX_HASH, (desc)->qw2)
++
++static inline void
++idpf_xdp_get_qw0(struct idpf_xdp_rx_desc *desc,
++		 const struct virtchnl2_rx_flex_desc_adv_nic_3 *rxd)
++{
++#ifdef __LIBETH_WORD_ACCESS
++	desc->qw0 = ((const typeof(desc))rxd)->qw0;
++#else
++	desc->qw0 = ((u64)le16_to_cpu(rxd->pktlen_gen_bufq_id) << 32) |
++		    ((u64)le16_to_cpu(rxd->ptype_err_fflags0) << 16);
++#endif
++}
++
++static inline void
++idpf_xdp_get_qw1(struct idpf_xdp_rx_desc *desc,
++		 const struct virtchnl2_rx_flex_desc_adv_nic_3 *rxd)
++{
++#ifdef __LIBETH_WORD_ACCESS
++	desc->qw1 = ((const typeof(desc))rxd)->qw1;
++#else
++	desc->qw1 = ((u64)le16_to_cpu(rxd->buf_id) << 32) |
++		    rxd->status_err0_qw1;
++#endif
++}
++
++static inline void
++idpf_xdp_get_qw2(struct idpf_xdp_rx_desc *desc,
++		 const struct virtchnl2_rx_flex_desc_adv_nic_3 *rxd)
++{
++#ifdef __LIBETH_WORD_ACCESS
++	desc->qw2 = ((const typeof(desc))rxd)->qw2;
++#else
++	desc->qw2 = ((u64)rxd->hash3 << 24) |
++		    ((u64)rxd->ff2_mirrid_hash2.hash2 << 16) |
++		    le16_to_cpu(rxd->hash1);
++#endif
++}
++
  void idpf_xdp_set_features(const struct idpf_vport *vport);
  
  int idpf_xdp(struct net_device *dev, struct netdev_bpf *xdp);
-+int idpf_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
-+		  u32 flags);
- 
- #endif /* _IDPF_XDP_H_ */
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_lib.c b/drivers/net/ethernet/intel/idpf/idpf_lib.c
-index 371fd40356c4..d41ffcefe544 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_lib.c
-+++ b/drivers/net/ethernet/intel/idpf/idpf_lib.c
-@@ -2522,4 +2522,5 @@ static const struct net_device_ops idpf_netdev_ops = {
- 	.ndo_hwtstamp_get = idpf_hwtstamp_get,
- 	.ndo_hwtstamp_set = idpf_hwtstamp_set,
- 	.ndo_bpf = idpf_xdp,
-+	.ndo_xdp_xmit = idpf_xdp_xmit,
- };
 diff --git a/drivers/net/ethernet/intel/idpf/xdp.c b/drivers/net/ethernet/intel/idpf/xdp.c
-index d7ba2848148e..d2549f8b8e24 100644
+index d2549f8b8e24..c143b5dc9e2b 100644
 --- a/drivers/net/ethernet/intel/idpf/xdp.c
 +++ b/drivers/net/ethernet/intel/idpf/xdp.c
-@@ -320,8 +320,26 @@ LIBETH_XDP_DEFINE_START();
- LIBETH_XDP_DEFINE_TIMER(static idpf_xdp_tx_timer, idpf_xdpsq_complete);
- LIBETH_XDP_DEFINE_FLUSH_TX(idpf_xdp_tx_flush_bulk, idpf_xdp_tx_prep,
- 			   idpf_xdp_tx_xmit);
-+LIBETH_XDP_DEFINE_FLUSH_XMIT(static idpf_xdp_xmit_flush_bulk, idpf_xdp_tx_prep,
-+			     idpf_xdp_tx_xmit);
- LIBETH_XDP_DEFINE_END();
+@@ -340,12 +340,38 @@ int idpf_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
+ 				       idpf_xdp_tx_finalize);
+ }
  
-+int idpf_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
-+		  u32 flags)
++static int idpf_xdpmo_rx_hash(const struct xdp_md *ctx, u32 *hash,
++			      enum xdp_rss_hash_type *rss_type)
 +{
-+	const struct idpf_netdev_priv *np = netdev_priv(dev);
-+	const struct idpf_vport *vport = np->vport;
++	const struct libeth_xdp_buff *xdp = (typeof(xdp))ctx;
++	struct idpf_xdp_rx_desc desc __uninitialized;
++	const struct idpf_rx_queue *rxq;
++	struct libeth_rx_pt pt;
 +
-+	if (unlikely(!netif_carrier_ok(dev) || !vport->link_up))
-+		return -ENETDOWN;
++	rxq = libeth_xdp_buff_to_rq(xdp, typeof(*rxq), xdp_rxq);
 +
-+	return libeth_xdp_xmit_do_bulk(dev, n, frames, flags,
-+				       &vport->txqs[vport->xdp_txq_offset],
-+				       vport->num_xdp_txq,
-+				       idpf_xdp_xmit_flush_bulk,
-+				       idpf_xdp_tx_finalize);
++	idpf_xdp_get_qw0(&desc, xdp->desc);
++
++	pt = rxq->rx_ptype_lkup[idpf_xdp_rx_pt(&desc)];
++	if (!libeth_rx_pt_has_hash(rxq->xdp_rxq.dev, pt))
++		return -ENODATA;
++
++	idpf_xdp_get_qw2(&desc, xdp->desc);
++
++	return libeth_xdpmo_rx_hash(hash, rss_type, idpf_xdp_rx_hash(&desc),
++				    pt);
 +}
++
++static const struct xdp_metadata_ops idpf_xdpmo = {
++	.xmo_rx_hash		= idpf_xdpmo_rx_hash,
++};
 +
  void idpf_xdp_set_features(const struct idpf_vport *vport)
  {
  	if (!idpf_is_queue_model_split(vport->rxq_model))
-@@ -376,6 +394,8 @@ static int idpf_xdp_setup_prog(struct idpf_vport *vport,
- 	if (old)
- 		bpf_prog_put(old);
+ 		return;
  
-+	libeth_xdp_set_redirect(vport->netdev, vport->xdp_prog);
-+
- 	return ret;
+-	libeth_xdp_set_features_noredir(vport->netdev);
++	libeth_xdp_set_features_noredir(vport->netdev, &idpf_xdpmo);
  }
  
+ static int idpf_xdp_setup_prog(struct idpf_vport *vport,
 -- 
 2.50.1
 
