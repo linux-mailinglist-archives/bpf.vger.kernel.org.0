@@ -1,61 +1,85 @@
-Return-Path: <bpf+bounces-65371-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65372-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DBF9B213B6
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 19:53:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40F7AB21502
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 20:58:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B1593A4788
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 17:52:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6910627067
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 18:58:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9785C2D4B40;
-	Mon, 11 Aug 2025 17:52:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFC3E2E2DD0;
+	Mon, 11 Aug 2025 18:58:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="adziF4GV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BrVb/sau"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F2722D47EF
-	for <bpf@vger.kernel.org>; Mon, 11 Aug 2025 17:52:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C16DF7081F
+	for <bpf@vger.kernel.org>; Mon, 11 Aug 2025 18:58:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754934765; cv=none; b=HzcZjKWW933272Lu/dm5nGBAeVTM243eC0dzid6+rglDlx1l6Dp4CQ21b8ao1SNDUOh0MnnGuYrw0lu0I5OVFmq0EsUicxngII/h154UqOg9uZLs9DsMIDB+VliMkL5pQVvg6mLRlWRg6zY0rxR6Ju1cF81gjgGAF8XqFK0ZFz4=
+	t=1754938706; cv=none; b=aA4W+vxCXRNCqdH7cJLxJBh+jyhOeYOBhlzC+FstEU49tZ1Dp/WmteZsVB2TRwzcXbC7HH5RaMEln0ikNcJ6lr9/e7ZBKA72b8S+HsUZbJ7L7K/vYvY2pyHJVRwzozQQu9x0+yE85/C3tJEao2/oBU9u5IMO4HA/6o0nXnGRpKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754934765; c=relaxed/simple;
-	bh=yBLBMLW6+l27DOoMFsKKpjIE/tDJSobklk7EOGKkgsg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y1ndzuiOgg/34i7ig0iU2r0zynmV/SYSKUrxw+iamOVJRYsuXKKY3idUqitCpOBiUz6C00J9eRXCfxp4n4DxV3PJnevcSXkqE+ggGpOXMywWLEdLXIh07IgvlAebuNR6Ffv3aJImWKi7nqSNy27n3oq9yP6hJsdhmSqQL96cGkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=adziF4GV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 164A3C4CEED;
-	Mon, 11 Aug 2025 17:52:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754934765;
-	bh=yBLBMLW6+l27DOoMFsKKpjIE/tDJSobklk7EOGKkgsg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=adziF4GV0bTcVueq8pDGX1TnqpWhK9fHuq2WXGVvEq6KhoAgPtlVjMgeJ1zRgmV4d
-	 N8k44YTsucPuCNtg6sQbHll2+5Cl7yg4CLDcH+95Kr8CVVdSS1pnUq697GsJjeIHxb
-	 lxHtyOsJJtmsidWFhTKZYXIZIZEOGya1FbwWyP5da+qMfXFcA1iev3k5nztTi3WjCp
-	 Yk+fjY0eoLYNe6bkEE0/NGkeg88ptYcQ/9Vvz9PDFpVBCRR5uylVsWwy487vS+3s+p
-	 q5gWU/HI08C7KonemJ+o6w814oO7Ka5JQZ8i6Qse8k8fE4n5wzBiR5gI8xsWgfzMWM
-	 KCFvD0nA6KpTQ==
-Date: Mon, 11 Aug 2025 07:52:44 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org, Dan Schatzberg <dschatzberg@meta.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
+	s=arc-20240116; t=1754938706; c=relaxed/simple;
+	bh=g4HuACcTWPhSeL+B5E+pWvj6Q0IqGwfs2lLgCXcrYGw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=HOqgQz/EKgaGVkhsViw+HGQkfUZyCuCTQyEmz1iH/FCXSvVt8P1rrIL1jOOoZ15HbqBKuM5TtB45PDeJfjLxfw/Zju5ruo+kRjCf+YPRH3EDMf/FnyeR3RdBG4ayG9P1HmJcEAAkjKAF6Be3hO+XMg9w2K41R5GhQmAe1Ev0Vfg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BrVb/sau; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3b77b8750acso2870823f8f.0
+        for <bpf@vger.kernel.org>; Mon, 11 Aug 2025 11:58:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1754938703; x=1755543503; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nDimzsHBzaF1bpfrpQ+H2ZQ4cEId6zLzgkyK2UidYfc=;
+        b=BrVb/sauIz+lgZPfwQvF5CsaeUMQr0mNGPAeTUsvHkCnBbOSx9xIfxLxzGSdGHN2AT
+         IO3d0aeESNLp/y9HyxTp7dWALdsVANUUpOkPPFuPtIDfhFYdVqGMRZdEAqpXPFKcrSsV
+         3h2i62gXb4o3QC4gLrhT5Q1Nw7eGjyQWBiXWeZVDv6/HM1HzZbnTFQkbjsynxLB/71Y8
+         +xvlI0FGDpqXSclvJ8i44mMfWFCPnixoYoFd1w4kNfA4bBQsvkbzgZLTJ6uZ3Vb7PxCb
+         fR9gYsedNOfIg2BAXvtGA6V512oBwtrTiXljpdeUKSwRbGCV5y897H7JC8ioM1zVeCCH
+         7bYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754938703; x=1755543503;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nDimzsHBzaF1bpfrpQ+H2ZQ4cEId6zLzgkyK2UidYfc=;
+        b=rRPQ0qX6IuyhB6JjmlkqMSKA0ldzPvVtd0hu/0FNpnmuoSZfo1X4BM0QLakxXkfb1L
+         +zBmETlWv13+GxfholydJEo5j35I5zfmgH7mJlHW1r/iOagVScNTkOoF1cQeyBeHGa8e
+         vmVy5t6QvR8G3S1NXSdEHmprxIVmF0J72ch+U43tkiSw3nGCiV7ibu/MnKAB+kEamdYZ
+         6S9CgHk49wZRk6LPlJOXHtjMwXnQdLW4wDpYAss1XTMgowz1nl8epE1bR++NfvOj9RV6
+         gsM0ztpwlvWnNihAoTxeTGEN5jgWDVzw7WYtSp5/Y6XyARFaeSVmucwfb+5fi1Zi5Je2
+         yLBQ==
+X-Gm-Message-State: AOJu0YxJ7VQwitCrYOP/YKuDhVMlwPYEUNKNMykrgBNWW38qnxv3wM8X
+	k+0gT7B9io8OrMWj8BrMuxm0D2ySdtgTAt5IYdSHi+ME5BSmBhweEOxL4xMcdw==
+X-Gm-Gg: ASbGnctmr0YWg4wziz7amM+gTau0L4un+wW20IhI7+gc4gcahhl48ECD9asTxnHC/h1
+	1Is3Yy+WLiH/1NwTI5uOfifNtaRu9j0aVFaicJoo72Ge8wbxvGJvGOD9ro3Votv799HaiQnkCpr
+	goE9XgL+9cH/UpG+M1o0Pm94lbWNaAFDC7Sn3yMTbAICXeM9yp7Eh1QyMTNpoFnlAyI5zJKpd5T
+	mYMUi0H4ez0ybiM4kNJnRVccqTmciuGNuG3uLDliqPEwKndRQ6E6jlmwxOVIkCv1htY1jYYAbQa
+	8OSh4k+zfUACpTHVy+6dXhnt/wIJHjE1vuNQVPQ/6HzLZdhidh61TW/C+fwkowqDMBnwCnC1jpS
+	qiIWwdniVrOTePUQ28wc8vCU+anbsQ5RChMGEDmdvhWHAjzmG8Xx38q1FWMTdl0sac9Yqe2TKow
+	o3Bcg83L/mqoYS7RFXyieQaDq70Iy7vw==
+X-Google-Smtp-Source: AGHT+IHGVIQ3hqBZWQxI+YBRoqVJW57piYwmky2s78j3NsZWM0Gs5LeCPpfN3epL/rgrs/CLxHNiqA==
+X-Received: by 2002:a05:6000:2203:b0:3b8:d8d1:1e72 with SMTP id ffacd0b85a97d-3b911196bbbmr577642f8f.19.1754938702677;
+        Mon, 11 Aug 2025 11:58:22 -0700 (PDT)
+Received: from mail.gmail.com (2a01cb0889497e000ad9dfde2319be05.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:ad9:dfde:2319:be05])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b79c3ac51asm42488282f8f.1.2025.08.11.11.58.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Aug 2025 11:58:22 -0700 (PDT)
+Date: Mon, 11 Aug 2025 20:58:20 +0200
+From: Paul Chaignon <paul.chaignon@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>, kkd@meta.com,
-	kernel-team@meta.com
-Subject: Re: [PATCH bpf-next v1 1/2] bpf: Do not limit bpf_cgroup_from_id to
- current's namespace
-Message-ID: <aJot7CDxQvULurvK@slm.duckdns.org>
-References: <20250811175045.1055202-1-memxor@gmail.com>
- <20250811175045.1055202-2-memxor@gmail.com>
+	Andrii Nakryiko <andrii@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>
+Subject: [PATCH bpf-next] bpf: Tidy verifier bug message
+Message-ID: <aJo9THBrzo8jFXsh@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -64,33 +88,49 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250811175045.1055202-2-memxor@gmail.com>
 
-On Mon, Aug 11, 2025 at 10:50:44AM -0700, Kumar Kartikeya Dwivedi wrote:
-> The bpf_cgroup_from_id kfunc relies on cgroup_get_from_id to obtain the
-> cgroup corresponding to a given cgroup ID. This helper can be called in
-> a lot of contexts where the current thread can be random. A recent
-> example was its use in sched_ext's ops.tick(), to obtain the root cgroup
-> pointer. Since the current task can be whatever random user space task
-> preempted by the timer tick, this makes the behavior of the helper
-> unreliable.
-> 
-> Resolve this by refactoring cgroup_get_from_id to take a parameter to
-> elide the cgroup_is_descendant check when root_cgns parameter is set to
-> true.
-> 
-> There is no compatibility breakage here, since changing the namespace
-> against which the lookup is being done to the root cgroup namespace only
-> permits a wider set of lookups to succeed now. The cgroup IDs across
-> namespaces are globally unique, and thus don't need to be retranslated.
-> 
-> Reported-by: Dan Schatzberg <dschatzberg@meta.com>
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Yonghong noticed that error messages for potential verifier bugs often
+have a '(1)' at the end. This is happening because verifier_bug_if(cond,
+env, fmt, args...) prints "(" #cond ")\n" as part of the message and
+verifier_bug() is defined as:
 
-Acked-by: Tejun Heo <tj@kernel.org>
+  #define verifier_bug(env, fmt, args...) verifier_bug_if(1, env, fmt, ##args)
 
-Thanks.
+Hence, verifier_bug() always ends up displaying '(1)'. This small patch
+fixes it by having verifier_bug_if conditionally call verifier_bug
+instead of the other way around.
 
+Fixes: 1cb0f56d9618 ("bpf: WARN_ONCE on verifier bugs")
+Reported-by: Yonghong Song <yonghong.song@linux.dev>
+Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
+---
+ include/linux/bpf_verifier.h | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index c823f8efe3ed..d38b5ac6a191 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -876,12 +876,15 @@ __printf(3, 4) void verbose_linfo(struct bpf_verifier_env *env,
+ 	({											\
+ 		bool __cond = (cond);								\
+ 		if (unlikely(__cond)) {								\
+-			BPF_WARN_ONCE(1, "verifier bug: " fmt "(" #cond ")\n", ##args);		\
+-			bpf_log(&env->log, "verifier bug: " fmt "(" #cond ")\n", ##args);	\
++			verifier_bug(env, fmt " (" #cond ")", ##args);				\
+ 		}										\
+ 		(__cond);									\
+ 	})
+-#define verifier_bug(env, fmt, args...) verifier_bug_if(1, env, fmt, ##args)
++#define verifier_bug(env, fmt, args...)					\
++	({								\
++		BPF_WARN_ONCE(1, "verifier bug: " fmt "\n", ##args);	\
++		bpf_log(&env->log, "verifier bug: " fmt "\n", ##args);	\
++	})
+ 
+ static inline struct bpf_func_state *cur_func(struct bpf_verifier_env *env)
+ {
 -- 
-tejun
+2.43.0
+
 
