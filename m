@@ -1,425 +1,223 @@
-Return-Path: <bpf+bounces-65319-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65320-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A67DDB1FF91
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 08:48:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5340B201F3
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 10:38:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B873517AAB5
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 06:48:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F2983BD9CE
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 08:38:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21B102D979B;
-	Mon, 11 Aug 2025 06:46:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B8EE2DC350;
+	Mon, 11 Aug 2025 08:38:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="r1W/3gWT"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="glSMtn4X"
 X-Original-To: bpf@vger.kernel.org
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2049.outbound.protection.outlook.com [40.107.92.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A2822D77F1;
-	Mon, 11 Aug 2025 06:46:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754894817; cv=none; b=J7JPoO/vAgLcJaO2AmkOKQc0dj8LgdGynwAUortArmcqW3o7dSW88CnF1x9f7wu1gfHQ0zlCWq7ticSKRy/PsZlmkDfOCu2JIyObo6jGeNmRwE5PJFZv/Z6B3srYkNyw2Kn+6ejYSxciazADkTREVbi6bHJn+bI46XLDrG01c08=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754894817; c=relaxed/simple;
-	bh=rc1bITCVNlHfS8AG5qXT+5Kgla+zoPabCKwl8khR1yY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QxG9yKMsmVpqjbwdyCddfp0VqGfbKw6SobR3XnVfGN1qoIOypMSrYsY+bKUTIt2VEoDUclAFU2SGiCBrc1dEyAJrIYj+egl0hMXESvt/Wf2OJTccMmWP4/SQdJSHeXw/h2+egZ2cjCPIjOmVF1yPyA5aufEwkRjYYrdhoPX3sek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=r1W/3gWT; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=YI8nSK3pDhA4y88O+/crLV9isyigf3E4ksFRw5WalPw=; b=r1W/3gWTqyRMMsqIbXnpvu1YTY
-	mNvmj0N2p3h4VAZzTA+RZ19LCE03vksvNVDVp5zcLVVn+H4oB4BZiVliZg/XFrvWv3a+iPSamfQDd
-	RX8xUNIrQeyl4Dwm2A8QLn37dej56rc9LlXJdRuKsafh4EoZOIhuspusfQc8DCHKBLd8KrmTrbUON
-	Ja9kjwDxGbcRpOxvYBYnyuz/yfzfNQn/Y8BomNw7/nekO1khxzIWn+1CZJ+3bHc0F4oDbKQGCPoZT
-	ihzvyiyvGsYPRcgpzrj7nyGrUBXcEzAim0ahM8F8xDEgyr59H0ZloFDe9p3QgbHeNqopYh+RF1uNP
-	3q/3e8qg==;
-Received: from [223.233.69.163] (helo=localhost.localdomain)
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1ulMJ1-00Cdun-TF; Mon, 11 Aug 2025 08:46:52 +0200
-From: Bhupesh <bhupesh@igalia.com>
-To: akpm@linux-foundation.org
-Cc: bhupesh@igalia.com,
-	kernel-dev@igalia.com,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-perf-users@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org,
-	oliver.sang@intel.com,
-	lkp@intel.com,
-	laoar.shao@gmail.com,
-	pmladek@suse.com,
-	rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com,
-	arnaldo.melo@gmail.com,
-	alexei.starovoitov@gmail.com,
-	andrii.nakryiko@gmail.com,
-	mirq-linux@rere.qmqm.pl,
-	peterz@infradead.org,
-	willy@infradead.org,
-	david@redhat.com,
-	viro@zeniv.linux.org.uk,
-	keescook@chromium.org,
-	ebiederm@xmission.com,
-	brauner@kernel.org,
-	jack@suse.cz,
-	mingo@redhat.com,
-	juri.lelli@redhat.com,
-	bsegall@google.com,
-	mgorman@suse.de,
-	vschneid@redhat.com,
-	linux-trace-kernel@vger.kernel.org,
-	kees@kernel.org,
-	torvalds@linux-foundation.org
-Subject: [PATCH v7 4/4] treewide: Switch memcpy() users of 'task->comm' to a more safer implementation
-Date: Mon, 11 Aug 2025 12:16:09 +0530
-Message-Id: <20250811064609.918593-5-bhupesh@igalia.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20250811064609.918593-1-bhupesh@igalia.com>
-References: <20250811064609.918593-1-bhupesh@igalia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 674E52DC34D;
+	Mon, 11 Aug 2025 08:38:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.49
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1754901482; cv=fail; b=ZsjF4QaTCw9kZH+Zjx6EPxkPn6wvMSfFnH439ADLDKVILK4OzEW9wr488fSDl5cQ3ZwULEMMKP0abjZIZsJ5Lui2Rtf2wJPR29ff91EYA3LyKSgBbewkrSSNaiqX3WZhLzYDHmNlOZzLlKaxo8m40D0PahF0fEpE8tKlkbhLdGI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1754901482; c=relaxed/simple;
+	bh=iKHlnywyvJCroPTe+jLLHE8FOjJMrB+oixSb6F/oZUQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=L4CzQthLMQHPIybYHqf2R5k3n13fD4sQb8cEK+eUds6NrY+o/aRHkGeQOO6N7fsPlPRMI3SBgB7iLUwjlHv4d/Pm/N24ohokOfUpkZLePybWU9DG3EB7RY0hulhosA75mtq/waPe3IDtaRkA6olGg+D3Lxa4UqVwldgxnb+Alco=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=glSMtn4X; arc=fail smtp.client-ip=40.107.92.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=yTSYIKnF9cQemFHN6yQC8TzFkX2ZmoCpWhvWkFeRU7316sqYG0nsaQpghntlNGM2nvsDzjVrARoSYSyMtLJtQ7seNudweW1TlS0qUigWQ0t2voMUmikeEQiwn6kDgAJpqNJLAwbkWhXQc8CEEJd+EiHqItXZhRotx8lqYMH9J622mvh9HkPR0qMB3gQuHfqFdaT5w0O8krMOio7U4izk+i4vNG6XrX3ubn9tR0IxbucPIXqXOspzgLxexxgZpbpccg1IDvwXXdCt5RKwz2lxFZ5dfdp7KkZ6rOETJY1RlpOjz1L6bBoWziyoFH0arIlG01ih5jM6DnZi8jo0mIBaLg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yKU2OoyQhjsTpX6T88qdxM2DanZX5xIU8gWnxajpDRY=;
+ b=oN4V/uZJzywjLlrIRo99P1SW2nNA4iaIAmmk9VX8qcRgJTM6fNHVxSQutgr3ir541JeLtMj95bH9IuktZkVfdr8AGZ7s7SPx9VkLJ0p2shPP6DRLs47hBr1hFIxTHnI5K3czDUFo5ZkRYVu3meQuVHxqQ6tZLbWuDGfGxxIubSz538c2tzmek3SU/chosg6YxMGDxlC2eOhWqODAbEo7ishCPkbUnI16lSF1s7nWGFExCv0O4sTNFhuxTFmCXBEJJUoiaN+ft88UDaW4UPp8b81OOl+u5Spa+BM4yjpQLt6EXyAAa6OOlIkFsXVanT61bwKeWexfouoi+ia5wsBzJw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yKU2OoyQhjsTpX6T88qdxM2DanZX5xIU8gWnxajpDRY=;
+ b=glSMtn4X29ZsSGucfsnOZaz9tdthuTEhTs9AkGx5wnLwq3HIChjvpWYZens3/yu3tEzT3H6lc8iBFyqey5xYX55+Wnir81N90bK4ph2D4+wWryA0WkVZIK1/jLUgCUzJ9WbG+VC1F+PQ+jCGwkInvZmvtqvLlcehn7rlIDglcGlxmyX+rpk31nvCSmKStCRkbF2K3bpmi8VI848/t5FJvasNFr0Dfjli5BGI3ooGT1Q/TnN6ZkVKceiG6sRXiYjZvG+Hunb5BG/ZfQw9i4TmYnb0AsRZTm7WWqqWaTUfq+cmIuojy+84gSgCot2BjC3I/DkOP/0xONV1/Pm9PGYlfw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from IA1PR12MB9031.namprd12.prod.outlook.com (2603:10b6:208:3f9::19)
+ by IA0PR12MB7750.namprd12.prod.outlook.com (2603:10b6:208:431::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9009.21; Mon, 11 Aug
+ 2025 08:37:58 +0000
+Received: from IA1PR12MB9031.namprd12.prod.outlook.com
+ ([fe80::1fb7:5076:77b5:559c]) by IA1PR12MB9031.namprd12.prod.outlook.com
+ ([fe80::1fb7:5076:77b5:559c%6]) with mapi id 15.20.9009.018; Mon, 11 Aug 2025
+ 08:37:58 +0000
+Date: Mon, 11 Aug 2025 08:37:56 +0000
+From: Dragos Tatulea <dtatulea@nvidia.com>
+To: Chris Arges <carges@cloudflare.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, 
+	kernel-team <kernel-team@cloudflare.com>, Jesper Dangaard Brouer <hawk@kernel.org>, tariqt@nvidia.com, 
+	saeedm@nvidia.com, Leon Romanovsky <leon@kernel.org>, 
+	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Simon Horman <horms@kernel.org>, Andrew Rzeznik <arzeznik@cloudflare.com>, 
+	Yan Zhai <yan@cloudflare.com>
+Subject: Re: [BUG] mlx5_core memory management issue
+Message-ID: <hlsks2646fmhbnhxwuihheri2z4ymldtqlca6fob7rmvzncpat@gljjmlorugzw>
+References: <CAFzkdvi4BTXb5zrjpwae2dF5--d2qwVDCKDCFnGyeV40S_6o3Q@mail.gmail.com>
+ <dhqeshvesjhyxeimyh6nttlkrrhoxwpmjpn65tesani3tmne5v@msusvzdhuuin>
+ <aIEuZy6fUj_4wtQ6@861G6M3>
+ <jlvrzm6q7dnai6nf5v3ifhtwqlnvvrdg5driqomnl5q4lzfxmk@tmwaadjob5yd>
+ <aJTYNG1AroAnvV31@861G6M3>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aJTYNG1AroAnvV31@861G6M3>
+X-ClientProxiedBy: TL2P290CA0030.ISRP290.PROD.OUTLOOK.COM
+ (2603:1096:950:3::16) To IA1PR12MB9031.namprd12.prod.outlook.com
+ (2603:10b6:208:3f9::19)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR12MB9031:EE_|IA0PR12MB7750:EE_
+X-MS-Office365-Filtering-Correlation-Id: d9937156-15c6-422d-fa8e-08ddd8b25f9e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|7416014|1800799024|366016|27256017;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?a4GECyGTdrnTjvfwT0+/VkBoccZJirusmOs2oRrZPmejPOgk4HBEZ9NPop/b?=
+ =?us-ascii?Q?sxsvVadOnpPf+Wp4Enu7okoNQODIYDqVtyBZVpRY7GGt+ECC0rweKXEbx1fR?=
+ =?us-ascii?Q?MWruXFYRUWY72BF7jAj2lOxmwjDhj8tFexu6k9z6HXzVZ0ZQdcGbvVcxYrYw?=
+ =?us-ascii?Q?tz9TwKTtevxrSbXNRQDAbHqCpaqrBQ2sF7ftA6X2vbxNKeomcCDk0OewVaD8?=
+ =?us-ascii?Q?wh7lmTMjs8Or+sjoxJico6IYlg8ZwOdKB2QnA79SBwlyzfSDktVZLhIq8x0M?=
+ =?us-ascii?Q?3IbcnC4GKiZ30ECyhRxbyFXhXtLD2EdU3liLhqmwmd7QZA04ujcyNR8hH9/y?=
+ =?us-ascii?Q?cneepfn9tbKbCI8hd+WMzNvq5ZAi7/2ITeHbQCBVqeWaCo8tfnqf7b5CQCAR?=
+ =?us-ascii?Q?+Lsj8kUDCTc8SZ3C++uXh+cK5yBjtceHn65lGXyrFyWM/tcVZlGx8pZ0OszN?=
+ =?us-ascii?Q?dtWlaU4HcpwtNdKrDciMn0dQviAkGohwiu5ZkwP+aXtCuToxhIae1JhBjlq3?=
+ =?us-ascii?Q?S9fQ407hqEK2Uw848zBtp/hcjzHpJxZvFYux0TpwqxT0rRPGSFSRJsd70MH7?=
+ =?us-ascii?Q?mapxV4pfIJgk7SjHjjh9GjXs8qtMRyDQrTmq64y5+xUKJ7eH6wWecr/ji0S9?=
+ =?us-ascii?Q?NsF+XZ4A+Pfh3ZhJaxO/y+k0ZENeLl1tn3Nj3KztjCfF9vMXVFa81LwD+idO?=
+ =?us-ascii?Q?nVfjC+szJxo3dtPqL9fEoBY3jemhf6DoIokjzEjbYfs3DwOO7vtMbPEzYqGP?=
+ =?us-ascii?Q?i2IdyA7JB3EleOBMK1yPajLDOEomdQZMdcOndTXNLdLl64XVt+pojm4zeNiD?=
+ =?us-ascii?Q?O2nOPae1G+kXccwuGFaH5ao49yDJPRrYEp+8kwzKOpENH1ueL9OAmpY9U+p8?=
+ =?us-ascii?Q?riliucAjmudpEVqoc8OQkFq/mpw5DJWUoRjI3bW/nlX37cxYPdWKEPaJg21m?=
+ =?us-ascii?Q?LlSVcPeT0+pA2ay683gSF1IWCfUNvk5s7OtyXCofvCEcKn31hWWbQ6qcUeBa?=
+ =?us-ascii?Q?tbtQkvnStli8OeL0cE2QwfHH+meyCoSPEOjW7F8nkpWBLchCo7mumIKotOnn?=
+ =?us-ascii?Q?SdwEpb4VddzrQU2CjYXmb9lUFgZI+HX8x4IaSwpbi/mf1fhgN2ETqCh0PZXx?=
+ =?us-ascii?Q?EOXQfvhb0JGBkcJBDziDiTwaRyuxGEQzv0TKaNx3tehIPadjcLaVnCc8mSyf?=
+ =?us-ascii?Q?Zfk25YmuDDuOSX8UWRvriU5GNocAdzTs4jzvPdKDilYXg2hv128EV/gdKdR/?=
+ =?us-ascii?Q?Ss3EQNh0JJsN9GVn5hrn2Ys/ttX/zwWyPucDf9uyTsToU+nM/wdN3dmQTr3V?=
+ =?us-ascii?Q?USxPY9t3W84i9TyIJ9ZUZCJCj5bWuqS6CxU8RtDHpL3SbkZ2TiGujfyHDmOb?=
+ =?us-ascii?Q?S5JczHzgmKcHGCelDOEX6x90facYkZ93a2s3c+3TPcVFmRHCKhid604jE+d3?=
+ =?us-ascii?Q?ENMFbTuqqTeyIN80GCHpJK0jbI4topF1SpkwkhjMdHwe/0ibU4SN8KmZucIT?=
+ =?us-ascii?Q?NBMVu4/Rw6eniMQ=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB9031.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016)(27256017);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?ay1qd7n+obFbE7LuwGHXm/vQty3uYrVKX4GGaFLSPmUEOXseIXd/N+A3jDnm?=
+ =?us-ascii?Q?F/VM9sk0VnzhK3KBgKfGBsas5rqdpTOY/kpUPhB6eSQnC4k4SQ6U0EUnv0xI?=
+ =?us-ascii?Q?UUgzUJCyzkCs8cc7K7JJ++0/B9jSaVHuSLg70J6rTpyGaAuVajE6GQp+9tCQ?=
+ =?us-ascii?Q?FrWQtzHi+l5pPuSOCS1Aa0ecSJ8kFhwvtcBeXjOVnuvKqZhGyYPEDekcvwHr?=
+ =?us-ascii?Q?rmG9iu9jfsHe+B6phAnolSYKn67fuWsOC7UYbIH5PxmeHNWlUSdzoZ3GYvAB?=
+ =?us-ascii?Q?H27mJmgTlI0dYcea2TpPjmITCHurUu+L1A/c4u9tRpJGxXPCNVm1iU32bu75?=
+ =?us-ascii?Q?x+X4wK6cUHNXjDI21tBWtCu37pxJOUH6jiUf91ZdtS/tbtLjAQ9iGd50L1L9?=
+ =?us-ascii?Q?l/3C5UGU6FN+7J04EDRy8cTA51QAd5j6G2qnb64g5jBpt1ZAL47lRWkpT/DK?=
+ =?us-ascii?Q?5YKpSN+WGk8jui7lwhg8U6ZGv2+HWJhVEcNuRsLxLlsQ/qF1ANFnrEF5yO6x?=
+ =?us-ascii?Q?XS0pwtGNLKlRq60FLj91uYgtGgoLtKGW5dCH9wzkUEw8jNtPu/F9NXdrS+ZL?=
+ =?us-ascii?Q?TQPVAohl7iScNylgNIJZHz5tlxD2czED/Qa0Atm29y4pngRvq9PFygpPsLfc?=
+ =?us-ascii?Q?dHfEcHNO+rRXjEyJYIV1bIyeiFHaDQ/cUsMuMtLXBoQuPbN1E6xL8EeQr3QS?=
+ =?us-ascii?Q?Vhh5ukEKb8dAl1gF+/TD7Q1kuByzzJKZESKOUBnqoljBmz3NnnO0vpdIfXTC?=
+ =?us-ascii?Q?kLdcu1zAS7+as+WRDe3AasGi0turkhpWzbMdF0ZxgJhKqzjmIJMr7j1NG/pB?=
+ =?us-ascii?Q?aKvOPXYAvPzZfihJoe7xw4XOrIYAMCBUzrMpDLFTHWu6VJ/5+qpcae+k6ER7?=
+ =?us-ascii?Q?/FPkOKyuNtoVLk/Y/zvoJKJ/vI3w8ZiAjQFsAnj+QTFcbBo4qqm+It7c1wAe?=
+ =?us-ascii?Q?gndMqui1unVRFSZyZNYqtSFn0ODd1lbBi85/Wzr4x8Y7J6zCPD7ePdLlRVNw?=
+ =?us-ascii?Q?YjgmgNs97gW/C5e5PLjjiIGavkVhWf+C0fK8uIM9Lrs1GElZ4JDdI6n/5q6n?=
+ =?us-ascii?Q?mQouCdERmcCnzRMTMk73opVtAtbf9R61sqUb6+BeRD95fvAn9cyFsdoSFfdj?=
+ =?us-ascii?Q?3SCueYWM2ruJdvM0HaI8y7H0IRDyc3UP67viN+2V0ksW76vOTacpyb+/B+fB?=
+ =?us-ascii?Q?6CZ1VNkK5fZwOvsuQ2fYpWjjUNmxDfcc/Os8Q/rfWCJwejL8scRYYlFFUMW6?=
+ =?us-ascii?Q?elO8+XDzyr1XUZtq31vjNJ5JM5XMBGCaYPZOdcqqtAUgVz0j4HrnoNhCXYTq?=
+ =?us-ascii?Q?dm2grZ0tcnaJpWLzLKo3TlgWYg7n1d+7XmZO+y9PXeSI95NA8Ee+Fw1RI9Pt?=
+ =?us-ascii?Q?HvxTF/5EaklZuwRWhM0Ef+uG9FA5aVP0YGHfeX6l0H4wf4jIf2YHTR/tePXS?=
+ =?us-ascii?Q?PmtGLhAZi6/P8KjhkJjVhAejgoGRGudtfVOeukm/SpQIdPBNFPxZl5+cbjqr?=
+ =?us-ascii?Q?8ybmMCAmn4uVLoY6hlKVdYlqDlPyIAcIFeRChtRQqf6vHpBimtleLyTZzqrU?=
+ =?us-ascii?Q?ugcnriRtPOErA7DyBNjeN6aq2lAohf3lBvANUVl0?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d9937156-15c6-422d-fa8e-08ddd8b25f9e
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB9031.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2025 08:37:57.9810
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mhmpqibLdJdIi3otZHymLopxcTw6yADvPz8NTQlksq7cUpVZ+lGOpMwr09fAubLpg2kB8ugNPUMALtwczvH0SQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB7750
 
-As Linus mentioned in [1], currently we have several memcpy() use-cases
-which use 'current->comm' to copy the task name over to local copies.
-For an example:
+Hi Chris,
 
- ...
- char comm[TASK_COMM_LEN];
- memcpy(comm, current->comm, TASK_COMM_LEN);
- ...
+Sorry for the late reply, I was on holiday.
 
-These should be rather calling a wrappper like "get_task_array()",
-which is implemented as:
+On Thu, Aug 07, 2025 at 11:45:40AM -0500, Chris Arges wrote:
+> On 2025-07-24 17:01:16, Dragos Tatulea wrote:
+> > On Wed, Jul 23, 2025 at 01:48:07PM -0500, Chris Arges wrote:
+> > > 
+> > > Ok, we can reproduce this problem!
+> > > 
+> > > I tried to simplify this reproducer, but it seems like what's needed is:
+> > > - xdp program attached to mlx5 NIC
+> > > - cpumap redirect
+> > > - device redirect (map or just bpf_redirect)
+> > > - frame gets turned into an skb
+> > > Then from another machine send many flows of UDP traffic to trigger the problem.
+> > > 
+> > > I've put together a program that reproduces the issue here:
+> > > - https://github.com/arges/xdp-redirector
+> > >
+> > Much appreciated! I fumbled around initially, not managing to get
+> > traffic to the xdp_devmap stage. But further debugging revealed that GRO
+> > needs to be enabled on the veth devices for XDP redir to work to the
+> > xdp_devmap. After that I managed to reproduce your issue.
+> > 
+> > Now I can start looking into it.
+> > 
+> 
+> Dragos,
+> 
+> There was a similar reference counting issue identified in:
+> https://lore.kernel.org/all/20250801170754.2439577-1-kuba@kernel.org/
+> 
+> Part of the commit message mentioned:
+> > Unfortunately for fbnic since commit f7dc3248dcfb ("skbuff: Optimization
+> > of SKB coalescing for page pool") core _may_ actually take two extra
+> > pp refcounts, if one of them is returned before driver gives up the bias
+> > the ret < 0 check in page_pool_unref_netmem() will trigger.
+> 
+> In order to help debug the mlx5 issue caused by xdp redirection, I built a
+> kernel with commit f7dc3248dcfb reverted, but unfortunately I was still able
+> to reproduce the issue.
+Thanks for trying this.
 
-   static __always_inline void
-       __cstr_array_copy(char *dst,
-            const char *src, __kernel_size_t size)
-   {
-        memcpy(dst, src, size);
-        dst[size] = 0;
-   }
+> 
+> I am happy to try some other experiments, or if there are other ideas you have.
+>
+I am actively debugging the issue but progress is slow as it is not an
+easy one. So far I have been able to trace it back to the fact that the
+page_pool is returning the same page twice on allocation without having a
+release in between. As this is quite weird, I think I still have to
+trace it back a few more steps to find the actual issue.
 
-   #define get_task_array(dst,src) \
-      __cstr_array_copy(dst, src, __must_be_array(dst))
-
-The relevant 'memcpy()' users were identified using the following search
-pattern:
- $ git grep 'memcpy.*->comm\>'
-
-[1]. https://lore.kernel.org/all/CAHk-=wi5c=_-FBGo_88CowJd_F-Gi6Ud9d=TALm65ReN7YjrMw@mail.gmail.com/
-
-Signed-off-by: Bhupesh <bhupesh@igalia.com>
----
- include/linux/coredump.h                      |  2 +-
- include/linux/sched.h                         | 32 +++++++++++++++++++
- include/linux/tracepoint.h                    |  4 +--
- include/trace/events/block.h                  | 10 +++---
- include/trace/events/oom.h                    |  2 +-
- include/trace/events/osnoise.h                |  2 +-
- include/trace/events/sched.h                  | 13 ++++----
- include/trace/events/signal.h                 |  2 +-
- include/trace/events/task.h                   |  4 +--
- tools/bpf/bpftool/pids.c                      |  6 ++--
- .../bpf/test_kmods/bpf_testmod-events.h       |  2 +-
- 11 files changed, 54 insertions(+), 25 deletions(-)
-
-diff --git a/include/linux/coredump.h b/include/linux/coredump.h
-index 68861da4cf7c..bcee0afc5eaf 100644
---- a/include/linux/coredump.h
-+++ b/include/linux/coredump.h
-@@ -54,7 +54,7 @@ extern void vfs_coredump(const kernel_siginfo_t *siginfo);
- 	do {	\
- 		char comm[TASK_COMM_LEN];	\
- 		/* This will always be NUL terminated. */ \
--		memcpy(comm, current->comm, sizeof(comm)); \
-+		get_task_array(comm, current->comm); \
- 		printk_ratelimited(Level "coredump: %d(%*pE): " Format "\n",	\
- 			task_tgid_vnr(current), (int)strlen(comm), comm, ##__VA_ARGS__);	\
- 	} while (0)	\
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 97ea2ac2a97a..6602ec132297 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1960,12 +1960,44 @@ extern void wake_up_new_task(struct task_struct *tsk);
- 
- extern void kick_process(struct task_struct *tsk);
- 
-+/*
-+ * - Why not use task_lock()?
-+ *   User space can randomly change their names anyway, so locking for readers
-+ *   doesn't make sense. For writers, locking is probably necessary, as a race
-+ *   condition could lead to long-term mixed results.
-+ *   The logic inside __set_task_comm() should ensure that the task comm is
-+ *   always NUL-terminated and zero-padded. Therefore the race condition between
-+ *   reader and writer is not an issue.
-+ */
-+
- extern void __set_task_comm(struct task_struct *tsk, const char *from, bool exec);
- #define set_task_comm(tsk, from) ({			\
- 	BUILD_BUG_ON(sizeof(from) < TASK_COMM_LEN);	\
- 	__set_task_comm(tsk, from, false);		\
- })
- 
-+/*
-+ * 'get_task_array' can be 'data-racy' in the destination and
-+ * should not be used for cases where a 'stable NUL at the end'
-+ * is needed. Its better to use strscpy and friends for such
-+ * use-cases.
-+ *
-+ * It is suited mainly for a 'just copy comm to a constant-sized
-+ * array' case - especially in performance sensitive use-cases,
-+ * like tracing.
-+ */
-+
-+static __always_inline void
-+	__cstr_array_copy(char *dst, const char *src,
-+			  __kernel_size_t size)
-+{
-+	memcpy(dst, src, size);
-+	dst[size] = 0;
-+}
-+
-+#define get_task_array(dst, src) \
-+	__cstr_array_copy(dst, src, __must_be_array(dst))
-+
- static __always_inline void scheduler_ipi(void)
- {
- 	/*
-diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
-index 826ce3f8e1f8..40e04cb660ce 100644
---- a/include/linux/tracepoint.h
-+++ b/include/linux/tracepoint.h
-@@ -570,10 +570,10 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
-  *	*
-  *
-  *	TP_fast_assign(
-- *		memcpy(__entry->next_comm, next->comm, TASK_COMM_LEN);
-+ *		get_task_array(__entry->next_comm, next->comm);
-  *		__entry->prev_pid	= prev->pid;
-  *		__entry->prev_prio	= prev->prio;
-- *		memcpy(__entry->prev_comm, prev->comm, TASK_COMM_LEN);
-+ *		get_task_array(__entry->prev_comm, prev->comm);
-  *		__entry->next_pid	= next->pid;
-  *		__entry->next_prio	= next->prio;
-  *	),
-diff --git a/include/trace/events/block.h b/include/trace/events/block.h
-index 6aa79e2d799c..de1fe35333fc 100644
---- a/include/trace/events/block.h
-+++ b/include/trace/events/block.h
-@@ -213,7 +213,7 @@ DECLARE_EVENT_CLASS(block_rq,
- 
- 		blk_fill_rwbs(__entry->rwbs, rq->cmd_flags);
- 		__get_str(cmd)[0] = '\0';
--		memcpy(__entry->comm, current->comm, TASK_COMM_LEN);
-+		get_task_array(__entry->comm, current->comm);
- 	),
- 
- 	TP_printk("%d,%d %s %u (%s) %llu + %u %s,%u,%u [%s]",
-@@ -351,7 +351,7 @@ DECLARE_EVENT_CLASS(block_bio,
- 		__entry->sector		= bio->bi_iter.bi_sector;
- 		__entry->nr_sector	= bio_sectors(bio);
- 		blk_fill_rwbs(__entry->rwbs, bio->bi_opf);
--		memcpy(__entry->comm, current->comm, TASK_COMM_LEN);
-+		get_task_array(__entry->comm, current->comm);
- 	),
- 
- 	TP_printk("%d,%d %s %llu + %u [%s]",
-@@ -434,7 +434,7 @@ TRACE_EVENT(block_plug,
- 	),
- 
- 	TP_fast_assign(
--		memcpy(__entry->comm, current->comm, TASK_COMM_LEN);
-+		get_task_array(__entry->comm, current->comm);
- 	),
- 
- 	TP_printk("[%s]", __entry->comm)
-@@ -453,7 +453,7 @@ DECLARE_EVENT_CLASS(block_unplug,
- 
- 	TP_fast_assign(
- 		__entry->nr_rq = depth;
--		memcpy(__entry->comm, current->comm, TASK_COMM_LEN);
-+		get_task_array(__entry->comm, current->comm);
- 	),
- 
- 	TP_printk("[%s] %d", __entry->comm, __entry->nr_rq)
-@@ -504,7 +504,7 @@ TRACE_EVENT(block_split,
- 		__entry->sector		= bio->bi_iter.bi_sector;
- 		__entry->new_sector	= new_sector;
- 		blk_fill_rwbs(__entry->rwbs, bio->bi_opf);
--		memcpy(__entry->comm, current->comm, TASK_COMM_LEN);
-+		get_task_array(__entry->comm, current->comm);
- 	),
- 
- 	TP_printk("%d,%d %s %llu / %llu [%s]",
-diff --git a/include/trace/events/oom.h b/include/trace/events/oom.h
-index 9f0a5d1482c4..31e5b7295188 100644
---- a/include/trace/events/oom.h
-+++ b/include/trace/events/oom.h
-@@ -23,7 +23,7 @@ TRACE_EVENT(oom_score_adj_update,
- 
- 	TP_fast_assign(
- 		__entry->pid = task->pid;
--		memcpy(__entry->comm, task->comm, TASK_COMM_LEN);
-+		get_task_array(__entry->comm, task->comm);
- 		__entry->oom_score_adj = task->signal->oom_score_adj;
- 	),
- 
-diff --git a/include/trace/events/osnoise.h b/include/trace/events/osnoise.h
-index 3f4273623801..f67f8b5eca75 100644
---- a/include/trace/events/osnoise.h
-+++ b/include/trace/events/osnoise.h
-@@ -116,7 +116,7 @@ TRACE_EVENT(thread_noise,
- 	),
- 
- 	TP_fast_assign(
--		memcpy(__entry->comm, t->comm, TASK_COMM_LEN);
-+		get_task_array(__entry->comm, t->comm);
- 		__entry->pid = t->pid;
- 		__entry->start = start;
- 		__entry->duration = duration;
-diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
-index 7b2645b50e78..66fe808f2654 100644
---- a/include/trace/events/sched.h
-+++ b/include/trace/events/sched.h
-@@ -152,7 +152,7 @@ DECLARE_EVENT_CLASS(sched_wakeup_template,
- 	),
- 
- 	TP_fast_assign(
--		memcpy(__entry->comm, p->comm, TASK_COMM_LEN);
-+		get_task_array(__entry->comm, p->comm);
- 		__entry->pid		= p->pid;
- 		__entry->prio		= p->prio; /* XXX SCHED_DEADLINE */
- 		__entry->target_cpu	= task_cpu(p);
-@@ -237,11 +237,11 @@ TRACE_EVENT(sched_switch,
- 	),
- 
- 	TP_fast_assign(
--		memcpy(__entry->prev_comm, prev->comm, TASK_COMM_LEN);
-+		get_task_array(__entry->prev_comm, prev->comm);
- 		__entry->prev_pid	= prev->pid;
- 		__entry->prev_prio	= prev->prio;
- 		__entry->prev_state	= __trace_sched_switch_state(preempt, prev_state, prev);
--		memcpy(__entry->next_comm, next->comm, TASK_COMM_LEN);
-+		get_task_array(__entry->next_comm, next->comm);
- 		__entry->next_pid	= next->pid;
- 		__entry->next_prio	= next->prio;
- 		/* XXX SCHED_DEADLINE */
-@@ -346,7 +346,7 @@ TRACE_EVENT(sched_process_exit,
- 	),
- 
- 	TP_fast_assign(
--		memcpy(__entry->comm, p->comm, TASK_COMM_LEN);
-+		get_task_array(__entry->comm, p->comm);
- 		__entry->pid		= p->pid;
- 		__entry->prio		= p->prio; /* XXX SCHED_DEADLINE */
- 		__entry->group_dead	= group_dead;
-@@ -787,14 +787,13 @@ TRACE_EVENT(sched_skip_cpuset_numa,
- 	),
- 
- 	TP_fast_assign(
--		memcpy(__entry->comm, tsk->comm, TASK_COMM_LEN);
-+		get_task_array(__entry->comm, tsk->comm);
- 		__entry->pid		 = task_pid_nr(tsk);
- 		__entry->tgid		 = task_tgid_nr(tsk);
- 		__entry->ngid		 = task_numa_group_id(tsk);
- 		BUILD_BUG_ON(sizeof(nodemask_t) != \
- 			     BITS_TO_LONGS(MAX_NUMNODES) * sizeof(long));
--		memcpy(__entry->mem_allowed, mem_allowed_ptr->bits,
--		       sizeof(__entry->mem_allowed));
-+		get_task_array(__entry->mem_allowed, mem_allowed_ptr->bits);
- 	),
- 
- 	TP_printk("comm=%s pid=%d tgid=%d ngid=%d mem_nodes_allowed=%*pbl",
-diff --git a/include/trace/events/signal.h b/include/trace/events/signal.h
-index 1db7e4b07c01..0681dc5ab1de 100644
---- a/include/trace/events/signal.h
-+++ b/include/trace/events/signal.h
-@@ -67,7 +67,7 @@ TRACE_EVENT(signal_generate,
- 	TP_fast_assign(
- 		__entry->sig	= sig;
- 		TP_STORE_SIGINFO(__entry, info);
--		memcpy(__entry->comm, task->comm, TASK_COMM_LEN);
-+		get_task_array(__entry->comm, task->comm);
- 		__entry->pid	= task->pid;
- 		__entry->group	= group;
- 		__entry->result	= result;
-diff --git a/include/trace/events/task.h b/include/trace/events/task.h
-index af535b053033..9553946943a6 100644
---- a/include/trace/events/task.h
-+++ b/include/trace/events/task.h
-@@ -21,7 +21,7 @@ TRACE_EVENT(task_newtask,
- 
- 	TP_fast_assign(
- 		__entry->pid = task->pid;
--		memcpy(__entry->comm, task->comm, TASK_COMM_LEN);
-+		get_task_array(__entry->comm, task->comm);
- 		__entry->clone_flags = clone_flags;
- 		__entry->oom_score_adj = task->signal->oom_score_adj;
- 	),
-@@ -44,7 +44,7 @@ TRACE_EVENT(task_rename,
- 	),
- 
- 	TP_fast_assign(
--		memcpy(entry->oldcomm, task->comm, TASK_COMM_LEN);
-+		get_task_array(entry->oldcomm, task->comm);
- 		strscpy(entry->newcomm, comm, TASK_COMM_LEN);
- 		__entry->oom_score_adj = task->signal->oom_score_adj;
- 	),
-diff --git a/tools/bpf/bpftool/pids.c b/tools/bpf/bpftool/pids.c
-index 23f488cf1740..a5d339cb8ca3 100644
---- a/tools/bpf/bpftool/pids.c
-+++ b/tools/bpf/bpftool/pids.c
-@@ -53,8 +53,7 @@ static void add_ref(struct hashmap *map, struct pid_iter_entry *e)
- 		refs->refs = tmp;
- 		ref = &refs->refs[refs->ref_cnt];
- 		ref->pid = e->pid;
--		memcpy(ref->comm, e->comm, sizeof(ref->comm));
--		ref->comm[sizeof(ref->comm) - 1] = '\0';
-+		get_task_array(ref->comm, e->comm);
- 		refs->ref_cnt++;
- 
- 		return;
-@@ -77,8 +76,7 @@ static void add_ref(struct hashmap *map, struct pid_iter_entry *e)
- 	}
- 	ref = &refs->refs[0];
- 	ref->pid = e->pid;
--	memcpy(ref->comm, e->comm, sizeof(ref->comm));
--	ref->comm[sizeof(ref->comm) - 1] = '\0';
-+	get_task_array(ref->comm, e->comm);
- 	refs->ref_cnt = 1;
- 	refs->has_bpf_cookie = e->has_bpf_cookie;
- 	refs->bpf_cookie = e->bpf_cookie;
-diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_testmod-events.h b/tools/testing/selftests/bpf/test_kmods/bpf_testmod-events.h
-index aeef86b3da74..81880748550f 100644
---- a/tools/testing/selftests/bpf/test_kmods/bpf_testmod-events.h
-+++ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod-events.h
-@@ -20,7 +20,7 @@ TRACE_EVENT(bpf_testmod_test_read,
- 	),
- 	TP_fast_assign(
- 		__entry->pid = task->pid;
--		memcpy(__entry->comm, task->comm, TASK_COMM_LEN);
-+		get_task_array(__entry->comm, task->comm);
- 		__entry->off = ctx->off;
- 		__entry->len = ctx->len;
- 	),
--- 
-2.38.1
-
+Thanks,
+Dragos
 
