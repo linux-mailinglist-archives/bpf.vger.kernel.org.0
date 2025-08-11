@@ -1,127 +1,97 @@
-Return-Path: <bpf+bounces-65346-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65347-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61782B20D30
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 17:12:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A058B210A8
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 18:01:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44BFB1883B7F
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 15:10:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0659A17ED0B
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 15:53:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D6532DFA34;
-	Mon, 11 Aug 2025 15:10:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37E142D4816;
+	Mon, 11 Aug 2025 15:34:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lubqyM0K"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ExP9PM6G"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C4A32DECA1;
-	Mon, 11 Aug 2025 15:10:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B00D1296BAF;
+	Mon, 11 Aug 2025 15:33:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754925016; cv=none; b=Jf4XLMLCLk7lG9rPrTjDR3x/lOciNhmYCz6HExoWa96T6gqz5DOE323fLwnNIDKzsP2FTVAN6IBGHTxKAbR53HelJnzAYtK7z1LwlJyIrldhePtQFza5tdbsxVjQAdy6nzCFB2lOMLRDAc9weqzdmdmEo+ZcK1eyC/UGggGeQVk=
+	t=1754926439; cv=none; b=t3kg4gD+8s4ecBOQrv0slFBH7f2KI5dlU7OW0cWK58i7XRRb4V7KjnrY0OdxNDwBVCJlePViuFtTfI4bDwr/fVhyS5vhZV8u/EtKdPyJQnevSU8GWiUP2lwEBobzSTSALWyTrX9yjcdmBvsI+Wc2LPrSKWaWdPetPqQTFWBQTQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754925016; c=relaxed/simple;
-	bh=5zT1AiufQmdFoxK3k4uUGhgeuApkAvlocyRFSIML/z4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uBtbenPHhK8GaCMytd7Xhrme3iEf6KPxacF/2PR0vcWwSPpPNkQVCliMPjRqUZTWDJW7OoTJPJMc345OM3//VcPv5/XQldVde30FncqGlpZRwWgOT3L6KgXTkoJt7BG3wfAYUyQiBGwTelHjDQGqP91lfPgm0ewgWLQbghdtKlI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lubqyM0K; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1754925014; x=1786461014;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=5zT1AiufQmdFoxK3k4uUGhgeuApkAvlocyRFSIML/z4=;
-  b=lubqyM0KlyyjmZVNC30EW66JOTrX7NyvDT+kb0ECsynZxrEZ7DicDVP3
-   K8PzZD4UPJMyi4oUFnjvt1Not0/4+oZPksjcn2CZ1yQFhS5F9JrQ2F6cC
-   iV/h/lwTwWtnU5fFb4sQWwYaQ9ThYMAQy7A0G6gNYROTH8MLUsnAodF4d
-   IHGjzQdejyuhbINvfKz8n9MULGX3ddRE7KasFCdhG1TlboCxqSepp7Tab
-   tNrep54xj/48c4BkL66xNOoIsessnt37Pu5S/3RuUC5/xjYz213Gd0d9t
-   /NHPwLqX7vsSLSzgMbwe2RAOl7HrwL8RG7fBIFfFOZzVOryRDgIG0HuQf
-   g==;
-X-CSE-ConnectionGUID: izh6LzfZTVikTHurpwkHAw==
-X-CSE-MsgGUID: y/sdhqaMSFy62tOumpV65g==
-X-IronPort-AV: E=McAfee;i="6800,10657,11518"; a="79750521"
-X-IronPort-AV: E=Sophos;i="6.17,278,1747724400"; 
-   d="scan'208";a="79750521"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2025 08:10:14 -0700
-X-CSE-ConnectionGUID: e80qHBrnQ3+4tIioB2Gvuw==
-X-CSE-MsgGUID: gQ9FGlJyQies9g8Zki86eg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.17,278,1747724400"; 
-   d="scan'208";a="171290349"
-Received: from black.igk.intel.com ([10.91.253.5])
-  by orviesa005.jf.intel.com with ESMTP; 11 Aug 2025 08:10:07 -0700
-Received: by black.igk.intel.com (Postfix, from userid 1003)
-	id 7E14494; Mon, 11 Aug 2025 17:10:05 +0200 (CEST)
-Date: Mon, 11 Aug 2025 17:10:05 +0200
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Bhupesh <bhupesh@igalia.com>
-Cc: akpm@linux-foundation.org, kernel-dev@igalia.com,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org, oliver.sang@intel.com, lkp@intel.com,
-	laoar.shao@gmail.com, pmladek@suse.com, rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
-	alexei.starovoitov@gmail.com, andrii.nakryiko@gmail.com,
-	mirq-linux@rere.qmqm.pl, peterz@infradead.org, willy@infradead.org,
-	david@redhat.com, viro@zeniv.linux.org.uk, keescook@chromium.org,
-	ebiederm@xmission.com, brauner@kernel.org, jack@suse.cz,
-	mingo@redhat.com, juri.lelli@redhat.com, bsegall@google.com,
-	mgorman@suse.de, vschneid@redhat.com,
-	linux-trace-kernel@vger.kernel.org, kees@kernel.org,
-	torvalds@linux-foundation.org
-Subject: Re: [PATCH v7 2/4] include: Set tsk->comm length to 64 bytes
-Message-ID: <aJoHzTKO9xw2CANn@black.igk.intel.com>
-References: <20250811064609.918593-1-bhupesh@igalia.com>
- <20250811064609.918593-3-bhupesh@igalia.com>
+	s=arc-20240116; t=1754926439; c=relaxed/simple;
+	bh=eSOlRImoJ/oBZHOPhHvF814nt3A8TimrFqSk62iMgWc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=sja6aaV5Ipw62QcpyYUdiIqMvrj7/bxtER5P3631OY8W+M26xGLCnnnB2IDpbUsJyWW7CfQd2kcu72gfoR2FE9B/Vr/52zOHe/xQjmyP+NHI6UhKK4K6AOldVxfhsTyTv2eOMZ9ct6HcgOQ/zVPMzuluNl6wSWmB7R+Nog6Qsuc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ExP9PM6G; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50EF4C4CEED;
+	Mon, 11 Aug 2025 15:33:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1754926439;
+	bh=eSOlRImoJ/oBZHOPhHvF814nt3A8TimrFqSk62iMgWc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=ExP9PM6GyoBntsw8j/7UMxlugkpwGspZqQmchPNhLluIzjqBN1WDBmHIzSmm3ouHr
+	 xt7FZdmUQiRUdaIuwyxsvhnDVJ5xnM4d7XLWKY5gHCnTRj/eXYwb/NoHaeTPwRrY7m
+	 XGvzNmWq89/m77cqF2k4hsKgq3ihiytBGPWmQ8YVewP5ppZNqUxHU48cGWN+ubIHMa
+	 NN6fdRHH4bDpKuPMU4FIvUC4Mt1DcNxzC5yjlSji6B+9dySQdw4AxXnVZARzqAM25q
+	 IinlDi2VlASpX1KNBa0AJgcRtnTR1wrOBEN+ERq3Xiv6QNLqRTbXJVo8tc1UATJM1T
+	 Edex4OXyt/KbA==
+Date: Mon, 11 Aug 2025 08:33:56 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Alexandra Winter <wintera@linux.ibm.com>
+Cc: "D. Wythe" <alibuda@linux.alibaba.com>, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+ pabeni@redhat.com, song@kernel.org, sdf@google.com, haoluo@google.com,
+ yhs@fb.com, edumazet@google.com, john.fastabend@gmail.com,
+ kpsingh@kernel.org, jolsa@kernel.org, Mahanta.Jambigi@ibm.com,
+ Sidraya.Jayagond@ibm.com, wenjia@linux.ibm.com, dust.li@linux.alibaba.com,
+ tonylu@linux.alibaba.com, guwen@linux.alibaba.com, bpf@vger.kernel.org,
+ davem@davemloft.net, netdev@vger.kernel.org, jaka@linux.ibm.com
+Subject: Re: [PATCH bpf-next 2/5] net/smc: fix UAF on smcsk after
+ smc_listen_out()
+Message-ID: <20250811083356.7911039b@kernel.org>
+In-Reply-To: <14ec76a2-e80e-44a8-a775-ebd4668959c4@linux.ibm.com>
+References: <20250731084240.86550-1-alibuda@linux.alibaba.com>
+	<20250731084240.86550-3-alibuda@linux.alibaba.com>
+	<174ccf57-6e7c-4dab-8743-33989829de01@linux.ibm.com>
+	<20250811015452.GB19346@j66a10360.sqa.eu95>
+	<14ec76a2-e80e-44a8-a775-ebd4668959c4@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250811064609.918593-3-bhupesh@igalia.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Aug 11, 2025 at 12:16:07PM +0530, Bhupesh wrote:
-> Historically due to the 16-byte length of TASK_COMM_LEN, the
-> users of 'tsk->comm' are restricted to use a fixed-size target
-> buffer also of TASK_COMM_LEN for 'memcpy()' like use-cases.
+On Mon, 11 Aug 2025 11:24:50 +0200 Alexandra Winter wrote:
+> > Yes, it should be sent to net. But the problem is that if I don't carry
+> > this patch, the BPF CI test will always crash. Maybe I should send a
+> > copy to both net and bpf-next? Do you have any suggestions?
 > 
-> To fix the same, we now use a 64-byte TASK_COMM_EXT_LEN and
-> set the comm element inside 'task_struct' to the same length:
->        struct task_struct {
-> 	       .....
->                char    comm[TASK_COMM_EXT_LEN];
-> 	       .....
->        };
-> 
->        where TASK_COMM_EXT_LEN is 64-bytes.
-> 
-> Note, that the existing users have not been modified to migrate to
-> 'TASK_COMM_EXT_LEN', in case they have hard-coded expectations of
-> dealing with only a 'TASK_COMM_LEN' long 'tsk->comm'.
+> I do not have any experience with bpf-next. But typically patches
+> to 'net' are taken after one or two days, if there are no issues.
+> I'd assume they are then picked to net-next and bpf-next(?) almost instantly.
+> Then you would not need it in your bpf series anymore.
 
-...
-
-> -	BUILD_BUG_ON(sizeof(from) != TASK_COMM_LEN);	\
-> +	BUILD_BUG_ON(sizeof(from) < TASK_COMM_LEN);	\
-
-Wondering if we may convert this to static_assert().
-(rather in a separate patch)
-
--- 
-With Best Regards,
-Andy Shevchenko
+AFAIU the patches which land in net will make it to -next trees after
+respective PR with fixes. So
 
 
+ patch -> 
+          net ->
+                 [next Thu] Linus ->
+                                      [same day] net-next
+                                      [at some point] bpf PR ->
+                                                                 Linux
+                                                                        -> bpf-next
+
+What gets applied to net should be in net-next in a week,
+and most -next trees within 2 weeks.
 
