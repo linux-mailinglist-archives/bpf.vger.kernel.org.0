@@ -1,66 +1,66 @@
-Return-Path: <bpf+bounces-65344-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65345-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0ADDB20CFD
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 17:05:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D320B20D24
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 17:11:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 94D084E2A69
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 15:05:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BADA02A4B9D
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 15:09:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62D2A2DEA9B;
-	Mon, 11 Aug 2025 15:05:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB04B2DFA25;
+	Mon, 11 Aug 2025 15:09:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eDoBwKKF"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OSkIOWZQ"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FE041B041A;
-	Mon, 11 Aug 2025 15:05:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFF026A8D2;
+	Mon, 11 Aug 2025 15:09:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754924748; cv=none; b=K/JSuhBFysyMinjn7svvbO/U2Ep8F6yTI5JiCP5Axb7G5Q+xQtxSJ+jpDDaESvSczbypiXZ2tfC3yQv377uVTd49yYU+XsBM+AVl5hkmEcmze5kU00KX9Yumv2c0jv7uuVEgIe9VjfT43J1L3LJQIvBtaiENiNeBiveCH7FtT80=
+	t=1754924943; cv=none; b=WCcctqupjB2Xt+G3+nGLzN7AgeckrsE/iOGWC/rJ1GAtC7YB9WWNDRT6wzPQlWUdsjTxVA8cFwg7KkGuLC9JreQ9vQ2E9MXy+nqG42svSykZ4Snz3dBc27pZ/mXo1tI+0YfbOLm5NDkIDg3+sqhoJsT6goQuJ/eCGiB6CvVVGB0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754924748; c=relaxed/simple;
-	bh=i/ALEUiI1jcKPez1nkMbsZV3bmmUIaCULP31iZ/ovAw=;
+	s=arc-20240116; t=1754924943; c=relaxed/simple;
+	bh=Fos2Bc+psd2wDnxAA9C+5WvzOAyECbjI1HOkUcLQeFQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QSJC7F2h5/kNTDLqKBEsqMd6+19LLTS3sQTEIZNCU+6R+TJb5pu8KlRK8d6rv1PXzJYq6hh8+q6fl6FKpR54mFrtL5GAZE+4LRjYArz9RRxY5cSm+7wg66tbkgz/LIkMEZdpKouaQG2+/OkPlVxVTZZqdwOMbeHmlqdpbU4sbXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eDoBwKKF; arc=none smtp.client-ip=192.198.163.19
+	 Content-Type:Content-Disposition:In-Reply-To; b=r7KN4WeZeXrrIxXZZZU3dkcur+XdhmMGW4fTXvZinh+BgIwsfXXEpY4g3f1KXyivf9bu2PClEJQNVK9/fl4Oj45SFGE+nPc3u25g/7nElTRGS91O/zFkwKFLjrtPnLfETOBRK7ALtfUNn3ptUgsFTKsAgxiGaaQWYY+y97Goqd0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OSkIOWZQ; arc=none smtp.client-ip=192.198.163.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1754924744; x=1786460744;
+  t=1754924942; x=1786460942;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=i/ALEUiI1jcKPez1nkMbsZV3bmmUIaCULP31iZ/ovAw=;
-  b=eDoBwKKFTOUnjUhPoxEG7MQKe0xagBusWNZY1RVcsffuhRVRsWANru5E
-   N/LypkBnwCODWzQ7uIumVwB3oIQviYxjLZhOef6i0YmP4siCDOsRXIXMJ
-   gIfZaS8ZzG7XQj50nc2/jGzi+bLgaLeqwvArTU1fxwmd4ytN48Y8me9Hl
-   xYTMbE65VKZi88cMLuOyLnk2YuUG0+j1zri3IIVXfI1b3ruy1Xg693Um1
-   1RxYacXyVOaiM3ZrJTt9u5KOfenF21N8+h+8O5paAtoqGO6kiDllMPMHz
-   tEs0QpJk9ujC0BJLfZKKGpGdjl4BVlX3/4DVA0df89VrnY1LmA5+qARGx
+  bh=Fos2Bc+psd2wDnxAA9C+5WvzOAyECbjI1HOkUcLQeFQ=;
+  b=OSkIOWZQdF4WtXR4yJZiaP3h23HctK9rnOKF1o7Qb3VJCkjDNp/sVvlh
+   0/5dws5yWSHVGIlTmDvk9g+G0tIVp0+7DW8vhnG1euLCaeveL/HavAhA5
+   rAWmFjC/varyuoQ+1WIuxEw2pZKeeQZXWOKVjkULo5DoNDAgjEJyjLcwW
+   1f56TEmT8wZ1OGAhBYt2i4sfmimZDpjKGT+KqDXv3Wn2rICJZyJj8XOJq
+   UMKkIWh3SzlN3plekBzSoBNO9L3BgnG+s0jr4Xc6F/ElYXZXbHEfPltiW
+   bykYBad6lQosEIFYLL0+hazpPvwJcBqzsVVVn3Z3evaFfs0qezrr0hLuI
    w==;
-X-CSE-ConnectionGUID: ztqBbe78TYqntgBlkG12bA==
-X-CSE-MsgGUID: 1g6tCo+aTNiKPveI7kHbsA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11518"; a="56208639"
+X-CSE-ConnectionGUID: mSaDRsO4SlSBuZuzlSp5ig==
+X-CSE-MsgGUID: 7HHEZe00QPukYZVI0tIWUA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11518"; a="56209114"
 X-IronPort-AV: E=Sophos;i="6.17,278,1747724400"; 
-   d="scan'208";a="56208639"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2025 08:05:43 -0700
-X-CSE-ConnectionGUID: nOIz8zmnS3q0/SNtukrWfQ==
-X-CSE-MsgGUID: jQdLgscnT9ud1YMXf+61aw==
+   d="scan'208";a="56209114"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2025 08:09:01 -0700
+X-CSE-ConnectionGUID: 6HXLT3G1QeCd5htSdOz7vw==
+X-CSE-MsgGUID: viOw19WfRZm7kbZL2ZA/7A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.17,278,1747724400"; 
-   d="scan'208";a="165571264"
+   d="scan'208";a="165831059"
 Received: from black.igk.intel.com ([10.91.253.5])
-  by orviesa009.jf.intel.com with ESMTP; 11 Aug 2025 08:05:37 -0700
+  by fmviesa006.fm.intel.com with ESMTP; 11 Aug 2025 08:08:54 -0700
 Received: by black.igk.intel.com (Postfix, from userid 1003)
-	id CAC0494; Mon, 11 Aug 2025 17:05:34 +0200 (CEST)
-Date: Mon, 11 Aug 2025 17:05:34 +0200
+	id D6F1B94; Mon, 11 Aug 2025 17:08:52 +0200 (CEST)
+Date: Mon, 11 Aug 2025 17:08:52 +0200
 From: Andy Shevchenko <andriy.shevchenko@intel.com>
 To: Bhupesh <bhupesh@igalia.com>
 Cc: akpm@linux-foundation.org, kernel-dev@igalia.com,
@@ -77,11 +77,11 @@ Cc: akpm@linux-foundation.org, kernel-dev@igalia.com,
 	mgorman@suse.de, vschneid@redhat.com,
 	linux-trace-kernel@vger.kernel.org, kees@kernel.org,
 	torvalds@linux-foundation.org
-Subject: Re: [PATCH v7 3/4] treewide: Replace 'get_task_comm()' with
- 'strscpy_pad()'
-Message-ID: <aJoGvv5TEfl1liSm@black.igk.intel.com>
+Subject: Re: [PATCH v7 4/4] treewide: Switch memcpy() users of 'task->comm'
+ to a more safer implementation
+Message-ID: <aJoHhDIL6T0Zo-nB@black.igk.intel.com>
 References: <20250811064609.918593-1-bhupesh@igalia.com>
- <20250811064609.918593-4-bhupesh@igalia.com>
+ <20250811064609.918593-5-bhupesh@igalia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -90,29 +90,42 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250811064609.918593-4-bhupesh@igalia.com>
+In-Reply-To: <20250811064609.918593-5-bhupesh@igalia.com>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Mon, Aug 11, 2025 at 12:16:08PM +0530, Bhupesh wrote:
-> As Linus mentioned in [1], we should get rid of 'get_task_comm()'
-> entirely and replace it with 'strscpy_pad()' implementation.
+On Mon, Aug 11, 2025 at 12:16:09PM +0530, Bhupesh wrote:
+> As Linus mentioned in [1], currently we have several memcpy() use-cases
+> which use 'current->comm' to copy the task name over to local copies.
+> For an example:
 > 
-> 'strscpy_pad()' will already make sure comm is NUL-terminated, so
-> we won't need the explicit final byte termination done in
-> 'get_task_comm()'.
+>  ...
+>  char comm[TASK_COMM_LEN];
+>  memcpy(comm, current->comm, TASK_COMM_LEN);
+>  ...
 > 
-> The relevant 'get_task_comm()' users were identified using the
-> following search pattern:
->  $ git grep 'get_task_comm*'
+> These should be rather calling a wrappper like "get_task_array()",
+> which is implemented as:
+> 
+>    static __always_inline void
+>        __cstr_array_copy(char *dst,
+>             const char *src, __kernel_size_t size)
+>    {
+>         memcpy(dst, src, size);
+>         dst[size] = 0;
+>    }
+> 
+>    #define get_task_array(dst,src) \
+>       __cstr_array_copy(dst, src, __must_be_array(dst))
+> 
+> The relevant 'memcpy()' users were identified using the following search
+> pattern:
+>  $ git grep 'memcpy.*->comm\>'
 
 > [1]. https://lore.kernel.org/all/CAHk-=wi5c=_-FBGo_88CowJd_F-Gi6Ud9d=TALm65ReN7YjrMw@mail.gmail.com/
 > 
 > Signed-off-by: Bhupesh <bhupesh@igalia.com>
 
-Make that a Link tag?
-
-  Link: https://lore.kernel.org/all/CAHk-=wi5c=_-FBGo_88CowJd_F-Gi6Ud9d=TALm65ReN7YjrMw@mail.gmail.com/ #1
-  Signed-off-by: Bhupesh <bhupesh@igalia.com>
+Same suggestion, make it a Link tag.
 
 -- 
 With Best Regards,
