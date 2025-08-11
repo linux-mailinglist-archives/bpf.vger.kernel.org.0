@@ -1,119 +1,123 @@
-Return-Path: <bpf+bounces-65367-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65368-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04C1BB2132C
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 19:29:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B410B213A2
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 19:50:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CB611A219BD
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 17:30:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 737293E4B57
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 17:50:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E51152D3EC7;
-	Mon, 11 Aug 2025 17:29:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C2F02D47EF;
+	Mon, 11 Aug 2025 17:50:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hBOQs3UF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nMSj+sZ8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+Received: from mail-ej1-f68.google.com (mail-ej1-f68.google.com [209.85.218.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29D121F3FF8;
-	Mon, 11 Aug 2025 17:29:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 829E44414
+	for <bpf@vger.kernel.org>; Mon, 11 Aug 2025 17:50:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754933385; cv=none; b=har6e66LQBdhHtsJW+2cY2tu39oBkg0GHC0HWSlEVN7DBamZhsSRWSjkSfLGbe4QoyNz8lGM8SG2qoSHf/b/3wwCqNfmDgkmqEfZrnfmyIxlAesoIgCkqNGVdjBJb1CEnwj5fZa19jeCUoSa450yRImwkp+E69/XUxlH/OMJzIY=
+	t=1754934650; cv=none; b=XA4GhTZRUkvzgtN7YZ66sXtKwXXKhZo+xV9+MkRqGxQ8y/h2Ww2uhf/XC9+5bcudv1ryicDI4tyfMuc5IvOiiDEuOY23ZnPH8RjKE/UEs2kXEEVqqE15RnKo8rZ7euL8jPxQkwua44HhFlO3E9IvE+BsYqdi5OL7GKuf6IP0olI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754933385; c=relaxed/simple;
-	bh=/2ShzW/WUuLy/OiwRAPyuou+grVkG/G7LG9IZQ96NwE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=W2EEJKMbsvT+UrSuNXOiXVWwSFiFCkSK4h5/fv5D+hL7QX3aLzZS6ey0ep4uV3EAsOvk1p7X/5r7gGH5y6HapvsKDr9a3zd8GPQjUJvb8lS8WvoWmoA7sTlqIBxXqWvogqqdmUERdIDw4sjl6akfQM6bIIDeiuZAah7WHIZxD+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hBOQs3UF; arc=none smtp.client-ip=209.85.215.170
+	s=arc-20240116; t=1754934650; c=relaxed/simple;
+	bh=EZq7lWrygOhlm2f+TPuXNAMJAlhS2MDJ+aHGni2Jgd0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NyIX13UxIR4khsXVkTZJlgXiuzf8OxM46KptlyKO1La4drFYIydReZtkrfBENL3k+kFL2DESB9Tu0MApCoXg61cEKo/i9LJr0Y9SZOLbRnU5tkQekUxQ1y9u1hu9HBZssgWpr4ltoTnlFM8ZH8ljOHIr+J8iJrRcNcp8YpJIkVc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nMSj+sZ8; arc=none smtp.client-ip=209.85.218.68
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-b4209a0d426so4624026a12.1;
-        Mon, 11 Aug 2025 10:29:43 -0700 (PDT)
+Received: by mail-ej1-f68.google.com with SMTP id a640c23a62f3a-af93150f7c2so709731966b.3
+        for <bpf@vger.kernel.org>; Mon, 11 Aug 2025 10:50:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754933383; x=1755538183; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=/2ShzW/WUuLy/OiwRAPyuou+grVkG/G7LG9IZQ96NwE=;
-        b=hBOQs3UFafU4zeWYoH0xwtAmlvTUws1os8fgmwQ1IjralEZukIB8oY2+NqJQml/40x
-         OAl2lOcR0HSVp2GUS9J2bqC8l5g0ACCZvEGNzLhxXKXw6evjHZ1Vdn9Te7cmtfTxtpE3
-         OkGL8rRyF7OiVGYxckApKoVit77+lYAHl5/ingQ0+fX/4jmZUrR5B1E1uaMCAlVDzk5m
-         qyOPGOe+hQ6txQQjk4zIWXVV3cPr1kbFTHrzDc0qtUdZ7IBbwcxJIXbPZut6rf5ODR4l
-         dMBmLU+b75eAkR90KWrLsV31JEttrDfJwmJlypXHOVNItLKb+uPJ4QaA7pNAckVGb9Ia
-         3uAA==
+        d=gmail.com; s=20230601; t=1754934646; x=1755539446; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=52MQYDD4l6bv1T5mHrKA87gxIZoxp22FfKGw/21gYWU=;
+        b=nMSj+sZ8LK6aGTenb1EMqkmfDcaLyY9ppoOif+iUflV9wWI0gGHbu+j7aQVnr5jj/r
+         NilqDy8s433qXJAGLPPD4NOAc5zNtiyzuSa/HdT4AqFrlq2IymTuJLgQJFQ1UGFmQqPU
+         Lf7xAaMNqraZLlHcECht+I712xmnsovdhlgdGdovdTgqsmyeaGr9hlx4lbeJ7hJTrvGU
+         vdP3p10t56t21+fs8m10Z3wnKM2lcYK/17DPn+g0Ep1zTzDc5OZBvfnIQL9DAgO4zcJ3
+         xTTn52Pb17IGLa3Of6sO51c00uk3tmNsvgxuJNuXKbq8bn8fEUbEmOfqJitOb2XIpxb8
+         hCDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754933383; x=1755538183;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/2ShzW/WUuLy/OiwRAPyuou+grVkG/G7LG9IZQ96NwE=;
-        b=Pf22I9Ipzj/XXe0rU4Mznt44ZtzIngQWS2i/Al0q6n1FJTsRLD87QBvVOyOGro9cYJ
-         6sRkZP6ltas3/1IZOQx0Z7/bPOBvZNoU/i8CZBp/PlQoec/RzY5YibzIAgCrZbZRWjKb
-         EWkCqK8CNo0wqfxkI1QZBbhaTpwobblRs7JqGVqyzU5TLO7ZCOi/GXyuseAfn3vrz6Me
-         6eoZ+GZ1PYf/H7o39vBzZQHaRquYm3A6KYr9zJzHJ7lsWFAr7dAuEdUhNbtvV+WcirWN
-         gMqF19fAsJW2+8ae+7zzSCfZEQnV3tneoYTTL2/D1vYi3aFt4Ap3JA+5EOzFskpFDYdu
-         lb5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW8ns64/S1YcMnBkUrA3r7x+mGWgSqsyaYuojSy2kOd9gc/zwrb5CP7x1z5Qqs//2dS8rtjtnfNo6eAZHA=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy4HEn0Fl9vIdjmHjg4PIgdkY6+5OgSjHXKJzIPEbkXKdGhP48S
-	3OpCIvLPxHpiqQdsnGTnKUPBbd1Kg0R3FpxtOv9zzJcM2jSBPdQmVOAotvwC2zCZ
-X-Gm-Gg: ASbGncupAjBXsfHjPCXb89XpTbU8JC9ndR31jegC1skmDTWPVvb1FFn4PQr4hREgxqW
-	ZB/bUIz+eVRBVZ44b1KaIHuCcoKGolpCe9Ni5TB5JaxHm5PPo0Adf5mtSARsywhNR+HxoUc/zay
-	YJJPLE/68L/BeJsSemeWtWB//yqP4eIoHrQrB0mywWpBEcSRRCpvd2EXIbTOVF+HdoFNj+kYPav
-	uhF907UEztkqnUvnCT2pJ9P8315Idek5yR+DkUcnE8cm6BNzEHKfgXc58XipZ946tdBljerzbvI
-	3pJ+NvD8/pk+F4zEmbm0wbZUNX1PE4C6sbIaGErQNvec6htP/vrlcDYYxpihlkVLngR7C7HkjRq
-	thD41XEHzxj9It6ZdplKElDvzupU=
-X-Google-Smtp-Source: AGHT+IFjgykEGq2OvWiHCETc4+d7Jrzw7+wf1/Rp6hxWBxQPIvb+9EM2FzGSsqyhlg1GmjPZ2vYMkQ==
-X-Received: by 2002:a17:902:d486:b0:242:abc2:7f32 with SMTP id d9443c01a7336-242fc210059mr5813885ad.3.1754933383353;
-        Mon, 11 Aug 2025 10:29:43 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c096:14a::17? ([2620:10d:c090:600::1:56e6])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31f63f36311sm32008340a91.34.2025.08.11.10.29.41
+        d=1e100.net; s=20230601; t=1754934646; x=1755539446;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=52MQYDD4l6bv1T5mHrKA87gxIZoxp22FfKGw/21gYWU=;
+        b=lJat+qNOzTo+eEDjN9twb26L0i8lIjaitJVaNXmULllxXfNKZ1fWNZIWjk+tcfqQJO
+         X0zomfDHTqL9FjaP78DyFGxF5i6KqNKDUqSE9C9HTu8lAurVwP9PauhSbpdbmsAxrxFs
+         /h0u58KWtb1Hw1RX5MRqHwCEjN6grHGXaQTwZAG0tu3TFlpoLMrbAthjgCENSFYAwc4n
+         p0iUsIbfhxBvI/sqEUKaBGyCATc7leVnuLj0YSOIJ4LB3V9fK+CqG1u4iwJByw29GuOS
+         WVcWOSkWrkuXVMb2IZGKxkYfHH4XENt/YJU5et6eN9G7NM+bi4xVS7B+GzmRpzW/3dia
+         ZNbQ==
+X-Gm-Message-State: AOJu0YxM439wyfLFemFgQPBJCZYTyttpXWGhqmszcivVKzQlGWQfGgCk
+	gLBvdOUHw87bZjofzNIwk8EzZ63/Cqhaa+sMoaYM5n16fJmpe+Bfs3bQKvC8eix6
+X-Gm-Gg: ASbGncuO9ZPwO5/oJTmCv9pyiqsxS2NZMvzVoN51ePQQ4jsjVxOu6viHn/rbQM+EQxe
+	Tkp3I3fK6i0uLNztC/w/fCJaFUC6+sWCf/9UBPox1FfZ7P204dPM4Satk8AD8XaCTCZd373UgFX
+	2JadzyYOTV+XSM9o9paSsBeDnHSeejgvP9z3E+LeBAjm/mD13ZAm5+zi2LBVbzC4Sxtjppbl7rv
+	IU9f3yh+n+5kCR89Zi/n9geFcwcG+4U0JiafJdo+1VqwKtMM8kS+2T0lq5LVZos7FJ6XU8DSbct
+	4BDag1heZ4mP46RYIC4iRPfUKomDNyx6Smhe3/UHdQJFhCOEE6cnfWVW4sSBJ0fFAw6V1om53VJ
+	FzCtyFeVY+k0=
+X-Google-Smtp-Source: AGHT+IGutcfpe9iWh/ZBr4mGYLIx9E8hs+XWgyKYFNukib+PnKbb8djc673jracC3yEgf4O3IaBuUw==
+X-Received: by 2002:a17:907:9625:b0:ad5:d597:561e with SMTP id a640c23a62f3a-afa1e22776emr29025666b.56.1754934646352;
+        Mon, 11 Aug 2025 10:50:46 -0700 (PDT)
+Received: from localhost ([2a03:2880:30ff:5::])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-af91a1e8359sm2047249166b.89.2025.08.11.10.50.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Aug 2025 10:29:42 -0700 (PDT)
-Message-ID: <a94bafca6b9a03be3d09b76341c89ddef6ce9bbb.camel@gmail.com>
-Subject: Re: [PATCH] bpf: fix reuse of DEVMAP
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Yureka Lilian <yuka@yuka.dev>, Andrii Nakryiko <andrii@kernel.org>, 
- Alexei Starovoitov	 <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Martin KaFai Lau	 <martin.lau@linux.dev>, Song Liu
- <song@kernel.org>, Yonghong Song	 <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh	 <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@fomichev.me>, Hao Luo	 <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Mon, 11 Aug 2025 10:29:41 -0700
-In-Reply-To: <20250811093945.41028-1-yuka@yuka.dev>
-References: <20250811091046.35696-1-yuka@yuka.dev>
-	 <20250811093945.41028-1-yuka@yuka.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        Mon, 11 Aug 2025 10:50:45 -0700 (PDT)
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To: bpf@vger.kernel.org,
+	tj@kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Dan Schatzberg <dschatzberg@meta.com>,
+	kkd@meta.com,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next v1 0/2] Remove use of current->cgns bpf_cgroup_from_id
+Date: Mon, 11 Aug 2025 10:50:43 -0700
+Message-ID: <20250811175045.1055202-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1083; h=from:subject; bh=EZq7lWrygOhlm2f+TPuXNAMJAlhS2MDJ+aHGni2Jgd0=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBomizLkZz7HfFrcZy/5CVhIzmUqbF3f9qF+j2vptqz L+PXCoeJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCaJosywAKCRBM4MiGSL8RyqrvD/ 96bw8KTuZh4jgU9b+wpHb0AaYuprUCiKf+iftEHOJUaqrzvU0qbf/D9MBEnasnuFa+frFrWr/sLqmE moypbXqmzBd3cS/YUcQ1AUV0wkO3A1yxR+jzlJ2j/fabIj2wO1dgB6GQAoqAz+Ijra3KRT/R8FVbf1 /aEdqYjXkpWS2HJ758g2ZO5aeOFtRkU01JFr7G/0/nAaE22K6EwAyEphFE4ozMCm00afAVziuqGdwa aj28pzjh9XQ5msnWtk3DrJnoghhKj8j8F5K6ZBw3brTjwRjZdyLWzYtv+etUg1fbxSAEGZJPyn9aBF Ab5coamj0dikktdlJOLTph/dPr9TFDTIp4m0WWdj//Apf01mFuRQSC3kqoGpa70vTijmApGDllD04W T6MnjfuFyK+14FUqQBM9WXnPhDp1hfZ6HAo+SgCbeRV3QMZDu8xtdujADfbpFTCqYat66ecTCIcOfF 7Z/V6RRKmY/T7uY1V3syh0Z2wZeHLbokzlPvixFhAXWos9IeYJIkxaGq/QKbTfPGpkd0VgEpmaXOpJ 6uyhr6Mx6ncIEe76SlgPjrE379iCfxs3m+kYtKXhwEYC0k2dyZcxWZBFengzp94/cQO6Bza3e95rqn tG98gXN5VuFmI008mEpKv8RRrSYiMqNPFjf2yLMKnUwcYLi4Rq69+C8KBV6w==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Transfer-Encoding: 8bit
 
-On Mon, 2025-08-11 at 11:39 +0200, Yureka Lilian wrote:
-> Previously, re-using pinned DEVMAP maps would always fail, because
-> get_map_info on a DEVMAP always returns flags with BPF_F_RDONLY_PROG set,
-> it BPF_F_RDONLY_PROG being set on a map being created is invalid.
->=20
-> Thus, match the BPF_F_RDONLY_PROG flag being set on the new map when
-> checking for compatibility with an existing DEVMAP
->=20
-> The same problem is handled in third-party ebpf library:
-> - https://github.com/cilium/ebpf/issues/925
-> - https://github.com/cilium/ebpf/pull/930
->=20
-> Signed-off-by: Yureka Lilian <yuka@yuka.dev>
-> ---
+bpf_cgroup_from_id currently ends up doing a check on whether the cgroup
+being looked up is a descendant of the root cgroup of the current task's
+cgroup namespace. This leads to unreliable results since this kfunc can
+be invoked from any arbitrary context, for any arbitrary value of
+current. Fix this by removing namespace-awarness in the kfunc, and
+include a test that detects such a case and fails without the fix.
 
-The change makes sense to me, could you please add a selftest?
+Kumar Kartikeya Dwivedi (2):
+  bpf: Do not limit bpf_cgroup_from_id to current's namespace
+  selftests/bpf: Add a test for bpf_cgroup_from_id lookup in non-root
+    cgns
 
-[...]
+ include/linux/cgroup.h                        |  2 +-
+ kernel/bpf/cgroup_iter.c                      |  2 +-
+ kernel/bpf/helpers.c                          |  2 +-
+ kernel/cgroup/cgroup.c                        |  7 ++-
+ .../selftests/bpf/prog_tests/cgrp_kfunc.c     | 48 +++++++++++++++++++
+ .../selftests/bpf/progs/cgrp_kfunc_success.c  | 12 +++++
+ 6 files changed, 69 insertions(+), 4 deletions(-)
+
+
+base-commit: fa479132845e94b60068fad01c2a9979b3efe2dc
+-- 
+2.47.3
+
 
