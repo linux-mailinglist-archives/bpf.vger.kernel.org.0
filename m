@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-65351-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65352-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76FD6B211AE
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 18:23:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B99CB211BA
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 18:24:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C75B36E259C
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 16:16:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AFD2518919C7
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 16:17:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E8EE2E2640;
-	Mon, 11 Aug 2025 16:13:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 627992E2831;
+	Mon, 11 Aug 2025 16:13:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JAMhJcfo"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="O4Udj4aY"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF8452E1C63;
-	Mon, 11 Aug 2025 16:12:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ABCC2E2668;
+	Mon, 11 Aug 2025 16:13:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754928779; cv=none; b=RA9RhvCB5Jg1IkXG4Z+CZZxSBzI194VfA1FNU6Nwg9JxOuHbRaaeeIqZ+cGFgiexUj0+VYRnvE1BwvSkJFVSR8RWNZZN3FBBwNdveNURudChiX3U4Ru7LEEg7K3VSpv/hY7dawWDJS9IOJqiE8GnenEh0v5FjVjV5/TZiQbnVVw=
+	t=1754928783; cv=none; b=HUxLgbcmHpLPSwWbSN+UmdfCJmMj6FSJhrggr8Sn7yTjdxP6aqnuX8T4xLHFoleJ9j6Gt50dSRQYlx7MIIe9okzVYpRrh0Yq9x0O3SLgZJxGT14/uKMVlP3igzLBDseLUU0fTixylfaGwom1yYmvA2bV6JCxzXDG+H9fp30kjwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754928779; c=relaxed/simple;
-	bh=CC9d7WC4+Te5ZfQXopBgOyRl9Lm7CEFBOkkDDZhPbEY=;
+	s=arc-20240116; t=1754928783; c=relaxed/simple;
+	bh=nmI0TFRXNzS5ENdMywUSJ4MERcvVq4X6PgXUFbNdSu8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=P54BtO/Fj+FGIFmpdPstTm2xw5bYT4oDReAOF/VYGb5P75Oc7aR7VvjUBmMpGVxrBvE5Gasg51wtrfRI/u5e4ldPE5gmL1sz6TJWZ0ASiloMvsrQuEf7yvBDIs86a0VvJ+8+HzsKkmu7EEDHDqofXbdz/O1nFGZdFqS5I7oJrEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JAMhJcfo; arc=none smtp.client-ip=198.175.65.20
+	 MIME-Version; b=G9HXIVkSsJMb2f4iDYblW0W+BH0zG4Eo91ry4D83oRZeMJR9f7+j+4qsbLokhUgTpyDJ05VmkQfV8yAMIC4AoJmUAhluQCNS7vqve3bnA1m9g7Eo4MSqpGpSEO4nPiJINt6l/lPpl4biZCSHZgsQgrEfv4OTep7D1nR3EmczdII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=O4Udj4aY; arc=none smtp.client-ip=198.175.65.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1754928778; x=1786464778;
+  t=1754928782; x=1786464782;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=CC9d7WC4+Te5ZfQXopBgOyRl9Lm7CEFBOkkDDZhPbEY=;
-  b=JAMhJcfo0iTtxzR7GiNj7Q1cZ9YYY7kLecaOOYwrxiw7zn2LheLj2Hgc
-   /0Ny2UIQMljFFdF4TEZ1qfXc6LtnINcb72YtC8FNWiB2oVhFIk34DvBCt
-   9XsqTOBSJQEVaJY9hZbNLSo4ypu9CpMAHzU5OlO5Eph26jIgEjBb7vpty
-   34JBD/c32+v5ALOcXslFhIqEkMgAF0CquAhk4dOcnIgGHrHIWvBIhcvRL
-   LXMezOjeuVn/cqOUn6vw+gttkXdSdCk/wx6N4WYa1HVZLqwun9pQgWKOV
-   0mGZaBSqoRKaqu2YBNbNbhHX1QBsQPN3SIr4OCZ6y2FZ4pdskVC9+JozL
-   w==;
-X-CSE-ConnectionGUID: mYD5/WK7QBy2MuYU7d15NA==
-X-CSE-MsgGUID: YwY6W7FkRhC358+GVhZckw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11518"; a="56899568"
+  bh=nmI0TFRXNzS5ENdMywUSJ4MERcvVq4X6PgXUFbNdSu8=;
+  b=O4Udj4aYK1Ub0vLWU4Qh8t5GmndkXNuRPCjI21RHiDxhyMF18l0UaaOv
+   c1pJTqJNVUydQteV8r+j2YuZg2/y8RCHiQ+WSgDLi3oGU8veQpa0Jzxyv
+   4L7tO5UMPbYuB8MOpFUbNxFTVUZRWH9zAA6kF3s3tRrkWgWZrRuczfAyr
+   G/EaA3CWhbHLOZavaNrsQVQCKtY9WfV+efWKAAoVO2Nqt9/t7WgSVxhXz
+   D1nbXCBXfbkvLHr4axct2mRnOqi+kL/ek+ZzAapQNsKFzhYTddrdRPIZi
+   Hgwl/Q0iYZQ5VFWoWA3HMJqwXCNDiDFfGQ3t7OHsMbpkQze7zM2q+ucqx
+   Q==;
+X-CSE-ConnectionGUID: mVGQxOPEQ3G4MMDG2CJW7w==
+X-CSE-MsgGUID: gEKjKAMKQhakViMnj3rylA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11518"; a="56899589"
 X-IronPort-AV: E=Sophos;i="6.17,278,1747724400"; 
-   d="scan'208";a="56899568"
+   d="scan'208";a="56899589"
 Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2025 09:12:58 -0700
-X-CSE-ConnectionGUID: g/ORk++fQW+ungA0WjHuqA==
-X-CSE-MsgGUID: xLcbOmokRN6x/t46kKl+gQ==
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2025 09:13:02 -0700
+X-CSE-ConnectionGUID: wot9GlcPT22CQ0FtpwTNxg==
+X-CSE-MsgGUID: epYe4Tg7R3Cpb3F54EmtOQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.17,278,1747724400"; 
-   d="scan'208";a="165163177"
+   d="scan'208";a="165163189"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa006.jf.intel.com with ESMTP; 11 Aug 2025 09:12:53 -0700
+  by orviesa006.jf.intel.com with ESMTP; 11 Aug 2025 09:12:58 -0700
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: intel-wired-lan@lists.osuosl.org
 Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
@@ -77,9 +77,9 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH iwl-next v4 03/13] idpf: use a saner limit for default number of queues to allocate
-Date: Mon, 11 Aug 2025 18:10:34 +0200
-Message-ID: <20250811161044.32329-4-aleksander.lobakin@intel.com>
+Subject: [PATCH iwl-next v4 04/13] idpf: link NAPIs to queues
+Date: Mon, 11 Aug 2025 18:10:35 +0200
+Message-ID: <20250811161044.32329-5-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20250811161044.32329-1-aleksander.lobakin@intel.com>
 References: <20250811161044.32329-1-aleksander.lobakin@intel.com>
@@ -91,213 +91,220 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently, the maximum number of queues available for one vport is 16.
-This is hardcoded, but then the function calculating the optimal number
-of queues takes min(16, num_online_cpus()).
-In order to be able to allocate more queues, which will be then used for
-XDP, stop hardcoding 16 and rely on what the device gives us[*]. Instead
-of num_online_cpus(), which is considered suboptimal since at least 2013,
-use netif_get_num_default_rss_queues() to still have free queues in the
-pool.
+Add the missing linking of NAPIs to netdev queues when enabling
+interrupt vectors in order to support NAPI configuration and
+interfaces requiring get_rx_queue()->napi to be set (like XSk
+busy polling).
 
-[*] With the note:
+As currently, idpf_vport_{start,stop}() is called from several flows
+with inconsistent RTNL locking, we need to synchronize them to avoid
+runtime assertions. Notably:
 
-Currently, idpf always allocates `IDPF_MAX_BUFQS_PER_RXQ_GRP` (== 2)
-buffer queues for each Rx queue and one completion queue for each Tx for
-best performance. But there was no check whether such number is availabe,
-IOW the assumption was not backed by any "harmonizing" / actual checks.
-Fix this while at it.
+* idpf_{open,stop}() -- regular NDOs, RTNL is always taken;
+* idpf_initiate_soft_reset() -- usually called under RTNL;
+* idpf_init_task -- called from the init work, needs RTNL;
+* idpf_vport_dealloc -- called without RTNL taken, needs it.
 
-nr_cpu_ids number of Tx queues are needed only for lockless XDP sending,
-the regular stack doesn't benefit from that anyhow.
-On a 128-thread Xeon, this now gives me 32 regular Tx queues and leaves
-224 free for XDP (128 of which will handle XDP_TX, .ndo_xdp_xmit(), and
-XSk xmit when enabled).
+Expand common idpf_vport_{start,stop}() to take an additional bool
+telling whether we need to manually take the RTNL lock.
 
-Note 2:
-
-Unfortunately, some CP/FW versions are not able to
-reconfigure/enable/disable large amount of queues within the minimum
-timeout (2 seconds). For now, fall back to the default timeout for
-every operation until this is resolved.
-
+Suggested-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com> # helper
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- .../net/ethernet/intel/idpf/idpf_virtchnl.h   |  1 -
- drivers/net/ethernet/intel/idpf/idpf_txrx.c   |  8 +--
- .../net/ethernet/intel/idpf/idpf_virtchnl.c   | 62 +++++++++++--------
- 3 files changed, 38 insertions(+), 33 deletions(-)
+ drivers/net/ethernet/intel/idpf/idpf_lib.c  | 38 +++++++++++++++------
+ drivers/net/ethernet/intel/idpf/idpf_txrx.c | 17 +++++++++
+ 2 files changed, 45 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_virtchnl.h b/drivers/net/ethernet/intel/idpf/idpf_virtchnl.h
-index 86f30f0db07a..d714ff0eaca0 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_virtchnl.h
-+++ b/drivers/net/ethernet/intel/idpf/idpf_virtchnl.h
-@@ -4,7 +4,6 @@
- #ifndef _IDPF_VIRTCHNL_H_
- #define _IDPF_VIRTCHNL_H_
+diff --git a/drivers/net/ethernet/intel/idpf/idpf_lib.c b/drivers/net/ethernet/intel/idpf/idpf_lib.c
+index 228991ac4271..8c4114473f29 100644
+--- a/drivers/net/ethernet/intel/idpf/idpf_lib.c
++++ b/drivers/net/ethernet/intel/idpf/idpf_lib.c
+@@ -883,14 +883,18 @@ static void idpf_remove_features(struct idpf_vport *vport)
+ /**
+  * idpf_vport_stop - Disable a vport
+  * @vport: vport to disable
++ * @rtnl: whether to take RTNL lock
+  */
+-static void idpf_vport_stop(struct idpf_vport *vport)
++static void idpf_vport_stop(struct idpf_vport *vport, bool rtnl)
+ {
+ 	struct idpf_netdev_priv *np = netdev_priv(vport->netdev);
  
--#define IDPF_VC_XN_MIN_TIMEOUT_MSEC	2000
- #define IDPF_VC_XN_DEFAULT_TIMEOUT_MSEC	(60 * 1000)
- #define IDPF_VC_XN_IDX_M		GENMASK(7, 0)
- #define IDPF_VC_XN_SALT_M		GENMASK(15, 8)
+ 	if (np->state <= __IDPF_VPORT_DOWN)
+ 		return;
+ 
++	if (rtnl)
++		rtnl_lock();
++
+ 	netif_carrier_off(vport->netdev);
+ 	netif_tx_disable(vport->netdev);
+ 
+@@ -912,6 +916,9 @@ static void idpf_vport_stop(struct idpf_vport *vport)
+ 	idpf_vport_queues_rel(vport);
+ 	idpf_vport_intr_rel(vport);
+ 	np->state = __IDPF_VPORT_DOWN;
++
++	if (rtnl)
++		rtnl_unlock();
+ }
+ 
+ /**
+@@ -935,7 +942,7 @@ static int idpf_stop(struct net_device *netdev)
+ 	idpf_vport_ctrl_lock(netdev);
+ 	vport = idpf_netdev_to_vport(netdev);
+ 
+-	idpf_vport_stop(vport);
++	idpf_vport_stop(vport, false);
+ 
+ 	idpf_vport_ctrl_unlock(netdev);
+ 
+@@ -1028,7 +1035,7 @@ static void idpf_vport_dealloc(struct idpf_vport *vport)
+ 	idpf_idc_deinit_vport_aux_device(vport->vdev_info);
+ 
+ 	idpf_deinit_mac_addr(vport);
+-	idpf_vport_stop(vport);
++	idpf_vport_stop(vport, true);
+ 
+ 	if (!test_bit(IDPF_HR_RESET_IN_PROG, adapter->flags))
+ 		idpf_decfg_netdev(vport);
+@@ -1369,8 +1376,9 @@ static void idpf_rx_init_buf_tail(struct idpf_vport *vport)
+ /**
+  * idpf_vport_open - Bring up a vport
+  * @vport: vport to bring up
++ * @rtnl: whether to take RTNL lock
+  */
+-static int idpf_vport_open(struct idpf_vport *vport)
++static int idpf_vport_open(struct idpf_vport *vport, bool rtnl)
+ {
+ 	struct idpf_netdev_priv *np = netdev_priv(vport->netdev);
+ 	struct idpf_adapter *adapter = vport->adapter;
+@@ -1380,6 +1388,9 @@ static int idpf_vport_open(struct idpf_vport *vport)
+ 	if (np->state != __IDPF_VPORT_DOWN)
+ 		return -EBUSY;
+ 
++	if (rtnl)
++		rtnl_lock();
++
+ 	/* we do not allow interface up just yet */
+ 	netif_carrier_off(vport->netdev);
+ 
+@@ -1387,7 +1398,7 @@ static int idpf_vport_open(struct idpf_vport *vport)
+ 	if (err) {
+ 		dev_err(&adapter->pdev->dev, "Failed to allocate interrupts for vport %u: %d\n",
+ 			vport->vport_id, err);
+-		return err;
++		goto err_rtnl_unlock;
+ 	}
+ 
+ 	err = idpf_vport_queues_alloc(vport);
+@@ -1474,6 +1485,9 @@ static int idpf_vport_open(struct idpf_vport *vport)
+ 		goto deinit_rss;
+ 	}
+ 
++	if (rtnl)
++		rtnl_unlock();
++
+ 	return 0;
+ 
+ deinit_rss:
+@@ -1491,6 +1505,10 @@ static int idpf_vport_open(struct idpf_vport *vport)
+ intr_rel:
+ 	idpf_vport_intr_rel(vport);
+ 
++err_rtnl_unlock:
++	if (rtnl)
++		rtnl_unlock();
++
+ 	return err;
+ }
+ 
+@@ -1571,7 +1589,7 @@ void idpf_init_task(struct work_struct *work)
+ 	np = netdev_priv(vport->netdev);
+ 	np->state = __IDPF_VPORT_DOWN;
+ 	if (test_and_clear_bit(IDPF_VPORT_UP_REQUESTED, vport_config->flags))
+-		idpf_vport_open(vport);
++		idpf_vport_open(vport, true);
+ 
+ 	/* Spawn and return 'idpf_init_task' work queue until all the
+ 	 * default vports are created
+@@ -1961,7 +1979,7 @@ int idpf_initiate_soft_reset(struct idpf_vport *vport,
+ 		idpf_send_delete_queues_msg(vport);
+ 	} else {
+ 		set_bit(IDPF_VPORT_DEL_QUEUES, vport->flags);
+-		idpf_vport_stop(vport);
++		idpf_vport_stop(vport, false);
+ 	}
+ 
+ 	idpf_deinit_rss(vport);
+@@ -1991,7 +2009,7 @@ int idpf_initiate_soft_reset(struct idpf_vport *vport,
+ 		goto err_open;
+ 
+ 	if (current_state == __IDPF_VPORT_UP)
+-		err = idpf_vport_open(vport);
++		err = idpf_vport_open(vport, false);
+ 
+ 	goto free_vport;
+ 
+@@ -2001,7 +2019,7 @@ int idpf_initiate_soft_reset(struct idpf_vport *vport,
+ 
+ err_open:
+ 	if (current_state == __IDPF_VPORT_UP)
+-		idpf_vport_open(vport);
++		idpf_vport_open(vport, false);
+ 
+ free_vport:
+ 	kfree(new_vport);
+@@ -2239,7 +2257,7 @@ static int idpf_open(struct net_device *netdev)
+ 	if (err)
+ 		goto unlock;
+ 
+-	err = idpf_vport_open(vport);
++	err = idpf_vport_open(vport, false);
+ 
+ unlock:
+ 	idpf_vport_ctrl_unlock(netdev);
 diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-index 72459fc1af79..26dde653587d 100644
+index 26dde653587d..834ff436d852 100644
 --- a/drivers/net/ethernet/intel/idpf/idpf_txrx.c
 +++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-@@ -1155,13 +1155,7 @@ int idpf_vport_calc_total_qs(struct idpf_adapter *adapter, u16 vport_idx,
- 		num_req_tx_qs = vport_config->user_config.num_req_tx_qs;
- 		num_req_rx_qs = vport_config->user_config.num_req_rx_qs;
- 	} else {
--		int num_cpus;
--
--		/* Restrict num of queues to cpus online as a default
--		 * configuration to give best performance. User can always
--		 * override to a max number of queues via ethtool.
--		 */
--		num_cpus = num_online_cpus();
-+		u32 num_cpus = netif_get_num_default_rss_queues();
+@@ -3508,6 +3508,20 @@ void idpf_vport_intr_rel(struct idpf_vport *vport)
+ 	vport->q_vectors = NULL;
+ }
  
- 		dflt_splitq_txq_grps = min_t(int, max_q->max_txq, num_cpus);
- 		dflt_singleq_txqs = min_t(int, max_q->max_txq, num_cpus);
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_virtchnl.c b/drivers/net/ethernet/intel/idpf/idpf_virtchnl.c
-index e60438633cc4..6164094c6ae5 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_virtchnl.c
-+++ b/drivers/net/ethernet/intel/idpf/idpf_virtchnl.c
-@@ -1061,21 +1061,35 @@ int idpf_vport_alloc_max_qs(struct idpf_adapter *adapter,
- 	struct idpf_avail_queue_info *avail_queues = &adapter->avail_queues;
- 	struct virtchnl2_get_capabilities *caps = &adapter->caps;
- 	u16 default_vports = idpf_get_default_vports(adapter);
--	int max_rx_q, max_tx_q;
-+	u32 max_rx_q, max_tx_q, max_buf_q, max_compl_q;
- 
- 	mutex_lock(&adapter->queue_lock);
- 
-+	/* Caps are device-wide. Give each vport an equal piece */
- 	max_rx_q = le16_to_cpu(caps->max_rx_q) / default_vports;
- 	max_tx_q = le16_to_cpu(caps->max_tx_q) / default_vports;
--	if (adapter->num_alloc_vports < default_vports) {
--		max_q->max_rxq = min_t(u16, max_rx_q, IDPF_MAX_Q);
--		max_q->max_txq = min_t(u16, max_tx_q, IDPF_MAX_Q);
--	} else {
--		max_q->max_rxq = IDPF_MIN_Q;
--		max_q->max_txq = IDPF_MIN_Q;
-+	max_buf_q = le16_to_cpu(caps->max_rx_bufq) / default_vports;
-+	max_compl_q = le16_to_cpu(caps->max_tx_complq) / default_vports;
++static void idpf_q_vector_set_napi(struct idpf_q_vector *q_vector, bool link)
++{
++	struct napi_struct *napi = link ? &q_vector->napi : NULL;
++	struct net_device *dev = q_vector->vport->netdev;
 +
-+	if (adapter->num_alloc_vports >= default_vports) {
-+		max_rx_q = IDPF_MIN_Q;
-+		max_tx_q = IDPF_MIN_Q;
++	for (u32 i = 0; i < q_vector->num_rxq; i++)
++		netif_queue_set_napi(dev, q_vector->rx[i]->idx,
++				     NETDEV_QUEUE_TYPE_RX, napi);
++
++	for (u32 i = 0; i < q_vector->num_txq; i++)
++		netif_queue_set_napi(dev, q_vector->tx[i]->idx,
++				     NETDEV_QUEUE_TYPE_TX, napi);
++}
++
+ /**
+  * idpf_vport_intr_rel_irq - Free the IRQ association with the OS
+  * @vport: main vport structure
+@@ -3528,6 +3542,7 @@ static void idpf_vport_intr_rel_irq(struct idpf_vport *vport)
+ 		vidx = vport->q_vector_idxs[vector];
+ 		irq_num = adapter->msix_entries[vidx].vector;
+ 
++		idpf_q_vector_set_napi(q_vector, false);
+ 		kfree(free_irq(irq_num, q_vector));
  	}
--	max_q->max_bufq = max_q->max_rxq * IDPF_MAX_BUFQS_PER_RXQ_GRP;
--	max_q->max_complq = max_q->max_txq;
+ }
+@@ -3715,6 +3730,8 @@ static int idpf_vport_intr_req_irq(struct idpf_vport *vport)
+ 				   "Request_irq failed, error: %d\n", err);
+ 			goto free_q_irqs;
+ 		}
 +
-+	/*
-+	 * Harmonize the numbers. The current implementation always creates
-+	 * `IDPF_MAX_BUFQS_PER_RXQ_GRP` buffer queues for each Rx queue and
-+	 * one completion queue for each Tx queue for best performance.
-+	 * If less buffer or completion queues is available, cap the number
-+	 * of the corresponding Rx/Tx queues.
-+	 */
-+	max_rx_q = min(max_rx_q, max_buf_q / IDPF_MAX_BUFQS_PER_RXQ_GRP);
-+	max_tx_q = min(max_tx_q, max_compl_q);
-+
-+	max_q->max_rxq = max_rx_q;
-+	max_q->max_txq = max_tx_q;
-+	max_q->max_bufq = max_rx_q * IDPF_MAX_BUFQS_PER_RXQ_GRP;
-+	max_q->max_complq = max_tx_q;
++		idpf_q_vector_set_napi(q_vector, true);
+ 	}
  
- 	if (avail_queues->avail_rxq < max_q->max_rxq ||
- 	    avail_queues->avail_txq < max_q->max_txq ||
-@@ -1506,7 +1520,7 @@ int idpf_send_destroy_vport_msg(struct idpf_vport *vport)
- 	xn_params.vc_op = VIRTCHNL2_OP_DESTROY_VPORT;
- 	xn_params.send_buf.iov_base = &v_id;
- 	xn_params.send_buf.iov_len = sizeof(v_id);
--	xn_params.timeout_ms = IDPF_VC_XN_MIN_TIMEOUT_MSEC;
-+	xn_params.timeout_ms = IDPF_VC_XN_DEFAULT_TIMEOUT_MSEC;
- 	reply_sz = idpf_vc_xn_exec(vport->adapter, &xn_params);
- 
- 	return reply_sz < 0 ? reply_sz : 0;
-@@ -1554,7 +1568,7 @@ int idpf_send_disable_vport_msg(struct idpf_vport *vport)
- 	xn_params.vc_op = VIRTCHNL2_OP_DISABLE_VPORT;
- 	xn_params.send_buf.iov_base = &v_id;
- 	xn_params.send_buf.iov_len = sizeof(v_id);
--	xn_params.timeout_ms = IDPF_VC_XN_MIN_TIMEOUT_MSEC;
-+	xn_params.timeout_ms = IDPF_VC_XN_DEFAULT_TIMEOUT_MSEC;
- 	reply_sz = idpf_vc_xn_exec(vport->adapter, &xn_params);
- 
- 	return reply_sz < 0 ? reply_sz : 0;
-@@ -1845,7 +1859,9 @@ static int idpf_send_ena_dis_queues_msg(struct idpf_vport *vport, bool ena)
- 	struct virtchnl2_del_ena_dis_queues *eq __free(kfree) = NULL;
- 	struct virtchnl2_queue_chunk *qc __free(kfree) = NULL;
- 	u32 num_msgs, num_chunks, num_txq, num_rxq, num_q;
--	struct idpf_vc_xn_params xn_params = {};
-+	struct idpf_vc_xn_params xn_params = {
-+		.timeout_ms	= IDPF_VC_XN_DEFAULT_TIMEOUT_MSEC,
-+	};
- 	struct virtchnl2_queue_chunks *qcs;
- 	u32 config_sz, chunk_sz, buf_sz;
- 	ssize_t reply_sz;
-@@ -1946,13 +1962,10 @@ static int idpf_send_ena_dis_queues_msg(struct idpf_vport *vport, bool ena)
- 	if (!eq)
- 		return -ENOMEM;
- 
--	if (ena) {
-+	if (ena)
- 		xn_params.vc_op = VIRTCHNL2_OP_ENABLE_QUEUES;
--		xn_params.timeout_ms = IDPF_VC_XN_DEFAULT_TIMEOUT_MSEC;
--	} else {
-+	else
- 		xn_params.vc_op = VIRTCHNL2_OP_DISABLE_QUEUES;
--		xn_params.timeout_ms = IDPF_VC_XN_MIN_TIMEOUT_MSEC;
--	}
- 
- 	for (i = 0, k = 0; i < num_msgs; i++) {
- 		memset(eq, 0, buf_sz);
-@@ -1990,7 +2003,9 @@ int idpf_send_map_unmap_queue_vector_msg(struct idpf_vport *vport, bool map)
- {
- 	struct virtchnl2_queue_vector_maps *vqvm __free(kfree) = NULL;
- 	struct virtchnl2_queue_vector *vqv __free(kfree) = NULL;
--	struct idpf_vc_xn_params xn_params = {};
-+	struct idpf_vc_xn_params xn_params = {
-+		.timeout_ms	= IDPF_VC_XN_DEFAULT_TIMEOUT_MSEC,
-+	};
- 	u32 config_sz, chunk_sz, buf_sz;
- 	u32 num_msgs, num_chunks, num_q;
- 	ssize_t reply_sz;
-@@ -2074,13 +2089,10 @@ int idpf_send_map_unmap_queue_vector_msg(struct idpf_vport *vport, bool map)
- 	if (!vqvm)
- 		return -ENOMEM;
- 
--	if (map) {
-+	if (map)
- 		xn_params.vc_op = VIRTCHNL2_OP_MAP_QUEUE_VECTOR;
--		xn_params.timeout_ms = IDPF_VC_XN_DEFAULT_TIMEOUT_MSEC;
--	} else {
-+	else
- 		xn_params.vc_op = VIRTCHNL2_OP_UNMAP_QUEUE_VECTOR;
--		xn_params.timeout_ms = IDPF_VC_XN_MIN_TIMEOUT_MSEC;
--	}
- 
- 	for (i = 0, k = 0; i < num_msgs; i++) {
- 		memset(vqvm, 0, buf_sz);
-@@ -2207,7 +2219,7 @@ int idpf_send_delete_queues_msg(struct idpf_vport *vport)
- 					 num_chunks);
- 
- 	xn_params.vc_op = VIRTCHNL2_OP_DEL_QUEUES;
--	xn_params.timeout_ms = IDPF_VC_XN_MIN_TIMEOUT_MSEC;
-+	xn_params.timeout_ms = IDPF_VC_XN_DEFAULT_TIMEOUT_MSEC;
- 	xn_params.send_buf.iov_base = eq;
- 	xn_params.send_buf.iov_len = buf_size;
- 	reply_sz = idpf_vc_xn_exec(vport->adapter, &xn_params);
-@@ -2371,7 +2383,7 @@ int idpf_send_dealloc_vectors_msg(struct idpf_adapter *adapter)
- 	xn_params.vc_op = VIRTCHNL2_OP_DEALLOC_VECTORS;
- 	xn_params.send_buf.iov_base = vcs;
- 	xn_params.send_buf.iov_len = buf_size;
--	xn_params.timeout_ms = IDPF_VC_XN_MIN_TIMEOUT_MSEC;
-+	xn_params.timeout_ms = IDPF_VC_XN_DEFAULT_TIMEOUT_MSEC;
- 	reply_sz = idpf_vc_xn_exec(adapter, &xn_params);
- 	if (reply_sz < 0)
- 		return reply_sz;
+ 	return 0;
 -- 
 2.50.1
 
