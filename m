@@ -1,95 +1,121 @@
-Return-Path: <bpf+bounces-65340-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65341-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53B63B20BD4
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 16:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 64A7EB20C5B
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 16:44:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5493E3B2AD3
-	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 14:24:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFCDF4233E6
+	for <lists+bpf@lfdr.de>; Mon, 11 Aug 2025 14:39:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6B1E23B606;
-	Mon, 11 Aug 2025 14:24:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4873D2D3743;
+	Mon, 11 Aug 2025 14:39:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e9EQRBI9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="koNSET90"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F45F2397A4
-	for <bpf@vger.kernel.org>; Mon, 11 Aug 2025 14:24:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1EAC264A60;
+	Mon, 11 Aug 2025 14:39:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754922253; cv=none; b=ca9RtusyGVl/YWAwqmrIvmKRbvLi2tiLcDqgsAQHOKINpHkQqZ57OqMpiHe6srE2M31Eu8AiMfn3UecFxjf3yboGfCEhmRm4O6gOuKHkUy7A2hn34aWBA2VVl7dkd5p5ehJ1pOeiTYyMufK6B5kDkAm2T3fv3uJdOHIz3ro9Wx0=
+	t=1754923147; cv=none; b=Jjm91gQZ5WYTqUGRJkmpjpiq/GRzG6XfCwhQ3wrVtiRky6E4w4JNlanqvgqMasJbsKILr1J+3JGaPgN4ZLSLqhmFPHdcm6HPMYi2ntbRqCZ7WxXsNlRsfx8Mq+9HAZr+PRGuN+km7jReJi4ic5U6KOxivBWGqzOrRm4E9fjyMBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754922253; c=relaxed/simple;
-	bh=y54uHbKJnL4X8HbYK5mRijobivOkYRL4IYus4ChAimg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=B9U7PzngW99H/Fgxdv0jfQQ+E+nktoAtAPU5lhNKz5KYNfuGWs77oqq2SYfZIm8bGp7Fhe6/f3B9zhzNADOEB1gLFh0wk+qFOCqSOXKTDMN/JboyoL246hvZ6vsC9VKTnmj/39J1FMjEeaW4XUXlj6TjRRgVyl0dYjDzoLrGeWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e9EQRBI9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F22F0C4CEF8
-	for <bpf@vger.kernel.org>; Mon, 11 Aug 2025 14:24:12 +0000 (UTC)
+	s=arc-20240116; t=1754923147; c=relaxed/simple;
+	bh=ifGAXlbozYs3K4GIdILeV4fl10TVo7tI2pHUZvvUmKA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hPSAN1S9qZTrsfks73PU5qodxxe6apTqiXU90Btg1C3Aeb9ftLmYCPINJPSVP3hyUgNY88VwcDxv23ShCODMoqrZl79XtWU1cLD5sisX2KyJpa1fzBfH6uMRjrBldcKJr2Qv6HwOk/4YnhnNDgejxJspM3r6SIbgocGkGhLC2U8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=koNSET90; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13EB4C4CEED;
+	Mon, 11 Aug 2025 14:39:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754922253;
-	bh=y54uHbKJnL4X8HbYK5mRijobivOkYRL4IYus4ChAimg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=e9EQRBI90nyUC9yki9qRFcNMEdIoP5viGav7HvYvoK5C073ZYcqJ8vYgAlA0xZ5YZ
-	 ySFbhKwDHsHzsiSf+8onqOaqrb4DkAOkCoXzpiG/X9NVX2SteDFi4WlGPldSV6IYig
-	 ugHcwBrhiZjtB2sepjyS1w5HAltyx68gUhoVgozcy/3oqYgEhO4h2VE5xWixB3cwFG
-	 qpsrQ1Yy3TPIXMt90wPRKDsCnORt8Szto8R7T/f9xRSYPD9OWVGbrFjZlvn8xr6Pzj
-	 JR9yHoF8eurK3VKPrngGIjSm3ugsfnsbpJOjbigFpHgMY4qNglSrwnbUp5NDZ9kJm6
-	 Sd8QcFP3gNzsQ==
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-6154655c8aeso6163292a12.3
-        for <bpf@vger.kernel.org>; Mon, 11 Aug 2025 07:24:12 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzPJnO3Ev7jydSE2UumS6EJi4E8G/QlbYai0qaykFzVctJknaZg
-	3w+Lfufygbfam+cd61/uHca+8Z2Gnwqay5KGt2cUsyElPqtni8rDr4ckQXFkFwyKHcYgPfQbsBq
-	HERMS0yC1GwharnLhaboeh1lSbpWnO2gooYsbSPca
-X-Google-Smtp-Source: AGHT+IHo9DcI0nz5oLtF5ZoCb/t25wgS4J1gVaS9v5nTyvXcR2nKDXXjxHWOHYnBOZEFJUSXbIX/IMzWeVx+A34LQ88=
-X-Received: by 2002:a17:906:9fd0:b0:af9:495b:99e1 with SMTP id
- a640c23a62f3a-af9c65b086cmr1286417966b.43.1754922251592; Mon, 11 Aug 2025
- 07:24:11 -0700 (PDT)
+	s=k20201202; t=1754923147;
+	bh=ifGAXlbozYs3K4GIdILeV4fl10TVo7tI2pHUZvvUmKA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=koNSET90HP7qS3LJV5osLYX3L2l0cZJ0kauDHijdeJcXIV9Qw1dvK2ikrL3fiZE89
+	 vvM0E93JhXCwW0j5wSSeGmV0aWz6Ufu++reTSviE3s7aQG6nrzbZin5mC9dfNgOl7Y
+	 aU0FFesEeZsEvimS/9y4PTt7a6Yp2deEWno8PYF/JczpS76iw3qQUGYQXabp/6mYPc
+	 5rexegRcwsC36+/zfCrc/uE5oW0JyzmfZxGx8rWjLJITrq7PY1vQ+jJtPikqGjlbNN
+	 Fff/aqSGU6Zn2r/B9zrQMsMWtz0Bgyg/si/wv7TUNUUDkjYxbesjl2l4XaK2uIJmaZ
+	 6SV/AHeDCy+0Q==
+Message-ID: <02f7a7d1-297b-4304-8c11-dab091e20f2a@kernel.org>
+Date: Mon, 11 Aug 2025 15:39:04 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250721211958.1881379-1-kpsingh@kernel.org> <20250721211958.1881379-14-kpsingh@kernel.org>
- <CAADnVQ+3XYyJY_zcQtNPt81zyJwK4zv5oA+SLN9ohoLkD9XyZg@mail.gmail.com>
-In-Reply-To: <CAADnVQ+3XYyJY_zcQtNPt81zyJwK4zv5oA+SLN9ohoLkD9XyZg@mail.gmail.com>
-From: KP Singh <kpsingh@kernel.org>
-Date: Mon, 11 Aug 2025 16:24:00 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ48iNq902tRNJ18pd+wyqwdnKJrG40QFZWneRhiwjJDbA@mail.gmail.com>
-X-Gm-Features: Ac12FXw7kOiFzTlcYrO8-2DFOyRsceTpCaGTpWBuKZY1oXQujmd8hYWHtiHPMx4
-Message-ID: <CACYkzJ48iNq902tRNJ18pd+wyqwdnKJrG40QFZWneRhiwjJDbA@mail.gmail.com>
-Subject: Re: [PATCH v2 13/13] selftests/bpf: Add test for signed programs
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, LSM List <linux-security-module@vger.kernel.org>, 
-	Blaise Boscaccy <bboscaccy@linux.microsoft.com>, Paul Moore <paul@paul-moore.com>, 
-	"K. Y. Srinivasan" <kys@microsoft.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 11/13] bpftool: Add support for signing BPF programs
+To: KP Singh <kpsingh@kernel.org>
+Cc: bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+ bboscaccy@linux.microsoft.com, paul@paul-moore.com, kys@microsoft.com,
+ ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+References: <20250721211958.1881379-1-kpsingh@kernel.org>
+ <20250721211958.1881379-12-kpsingh@kernel.org>
+ <2b417a1a-8f0b-4bca-ad44-aa4195040ef1@kernel.org>
+ <CACYkzJ42L-w_eXyc1k+E7yK4DGC3xjdiwjBAznYJdXWzuq4-jA@mail.gmail.com>
+ <CACYkzJ4_DUx-HXmygptxKDg1PjkwnQGKzkfRMms8O_wN2Urpmg@mail.gmail.com>
+From: Quentin Monnet <qmo@kernel.org>
+Content-Language: en-GB
+In-Reply-To: <CACYkzJ4_DUx-HXmygptxKDg1PjkwnQGKzkfRMms8O_wN2Urpmg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jul 29, 2025 at 4:30=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, Jul 21, 2025 at 2:20=E2=80=AFPM KP Singh <kpsingh@kernel.org> wro=
-te:
-> > +
-> > +SEC("fexit/bpf_prog_verify_signature")
-> > +int BPF_PROG(bpf_sign, struct bpf_prog *prog, union bpf_attr *attr, bo=
-ol is_kernel, int ret)
->
-> I don't understand why it needs to peek into the kernel to
-> verify that it goes well. The exposed uapi should be good enough.
-> If the signature was specified and it is loaded fine we're good.
-> Double checking the kernel decisions goes too far.
-> Especially since this function can be inlined by the compiler.
+2025-08-11 16:23 UTC+0200 ~ KP Singh <kpsingh@kernel.org>
+> On Thu, Jul 24, 2025 at 7:07 PM KP Singh <kpsingh@kernel.org> wrote:
+>>
+>> On Tue, Jul 22, 2025 at 5:51 PM Quentin Monnet <qmo@kernel.org> wrote:
+>>>
+>>> 2025-07-21 23:19 UTC+0200 ~ KP Singh <kpsingh@kernel.org>
 
-Fair, I will drop this patch
+[...]
 
-- KP
+>>>> @@ -533,6 +547,11 @@ int main(int argc, char **argv)
+>>>>       if (argc < 0)
+>>>>               usage();
+>>>>
+>>>> +     if (sign_progs && (private_key_path == NULL || cert_path == NULL)) {
+>>>> +             p_err("-i <identity_x509_cert> and -k <private> key must be supplied with -S for signing");
+>>>> +             return -EINVAL;
+>>>> +     }
+>>>
+>>>
+>>> What if -i and/or -k are passed without -S?
+>>
+>> We can either print a warning or error out
+>>
+>> A) User does not want to sign removes --sign and forgets to remove -i
+>> -k (better with warning)
+>> B) User wants to sign but forgets to --sign (better with error)
+>>
+>> I'd say we print an error so that we don't accidentally not sign, WDYT?
+>>
+>> The reason why I think we should keep an explicit --sign is because we
+>> can also extend this to have e.g. --verify.
+> 
+> if (!sign_progs && (private_key_path != NULL || cert_path != NULL)) {
+> p_err("-i <identity_x509_cert> and -k <private> also need --sign to be
+> used for sign programs");
+> return -EINVAL;
+> }
+> 
+> I will error out, I was waiting for Quentin's reply, we can fix it
+> later if needed.
+
+Hi KP, I meant to reply to your email but forgot, apologies.
+
+Yes please, it makes sense to me to error out in that case. Let's make
+sure that users have the right syntax rather than letting them
+accidentally turn off signing.
+
+Thanks for your other comments and clarification too, looks all good to
+me :)
+
+Thanks,
+Quentin
 
