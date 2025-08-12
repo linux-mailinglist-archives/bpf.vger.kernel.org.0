@@ -1,86 +1,94 @@
-Return-Path: <bpf+bounces-65476-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65475-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89644B23C28
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 01:00:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B760B23C25
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 01:00:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4050E1B61A15
-	for <lists+bpf@lfdr.de>; Tue, 12 Aug 2025 23:00:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01A5C1B60B71
+	for <lists+bpf@lfdr.de>; Tue, 12 Aug 2025 23:00:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF87E2DC343;
-	Tue, 12 Aug 2025 23:00:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F3282D9EE8;
+	Tue, 12 Aug 2025 22:59:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dWkEC9ta"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KYoA76D7"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B9292D9787;
-	Tue, 12 Aug 2025 23:00:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B88DC2F0687;
+	Tue, 12 Aug 2025 22:59:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755039606; cv=none; b=REzDmrKpUMACMnT5h3SorDpyWFj98qs7YlNVlLWh1ii/SNpNShNMVzOwi+i03ear6V1KbW1wYYR/gttEo7D5EkjtzbZ7316SumCiW1sougapojmRtZPePDCLFLyJm7hQDCevZ3umvwd2blwCgdZIHwIIfWlYddy1SigPqAvjnL8=
+	t=1755039595; cv=none; b=hOYm4IX9IkSFzjJlDdwNj9I0sycqnnvoHotKnLMqJ9xyzBZuHnKqrPb5Gx8eGRMTDw7Kp459mRwm/h0vcvHzas6geB4gMxRlcgUAzBopmrzLp1kO03erF0pH/4GqQjLy0TSznn7YMkkLHsomuEhJi2r0RT2B0MlBNoY+6Rp1xVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755039606; c=relaxed/simple;
-	bh=WSO2BcJG/GwX1GQjgMeXXXKPUA9sh33in9+xLkssH3g=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=gMF6EhwyWoJ0GbtVdmZK6Sxc2j6JZ7vBECDXMZZLyJRlQSokFBWMe/AWP0EeXojbqfGO5lf0IVoFu8Y9BeFMrtqAm77RdZ/1QKFx5rWmjoEspwqwQkNtdEN3QmkaKHZ/lOj/FpF5aS4lbPo7KC0N0Eufcv+NPpXz2cb8KW/e8F4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dWkEC9ta; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CC71C4CEF0;
-	Tue, 12 Aug 2025 23:00:04 +0000 (UTC)
+	s=arc-20240116; t=1755039595; c=relaxed/simple;
+	bh=fpchoCTZioGd6XRCUCJs0T8y5Ql2Q1u9UY0oUOYuvzc=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=GaPfv3/+41MEMzLrQstnvIthIrJhf4aF+TCo7zH6WRJRPpV18/dG4/NS0qDqEEqMjYoGGE11W6sDjKUQwfqvbA6KH/3ykA7fwwHf+c8OF6BRDElSFUYOsE9tvPan6HuubnN38vzw7RK6UefEVLq2LYGBny7O13TNFPpwnyjfASw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KYoA76D7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 473FEC4CEF0;
+	Tue, 12 Aug 2025 22:59:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755039605;
-	bh=WSO2BcJG/GwX1GQjgMeXXXKPUA9sh33in9+xLkssH3g=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=dWkEC9taJIwPeAnHPyX6fxsSsCx5E1mXT5sWrtwMwKWTAUAigh5b9b+ucOnxCdYUQ
-	 eGdRGL6EufCIzBrezJZkSydNtAacpRIF6pNMc5JlBCLNcAdkYUCHSk1zD/+j585mPk
-	 VQ4RE5l9lpKRLCK94Mu9b/563cZu51q7LpFhSdcSl2wo7IhkZVfod/F6JnOC3wtwk3
-	 Oa4DIaxFYxcCTQltMoacyCpmqIWjW3sk0H4SFjh1mUkG2qvglcRAdQ0SuJYXmrX/ky
-	 7htf/ERVPPn04HnQbQZNPJ/CiCnoZuiS90SeYLulUUOK2n92h7l6SjpQDE9Jy/2WrB
-	 tMHne8lvSlU5A==
-From: Nathan Chancellor <nathan@kernel.org>
-To: linux-kernel@vger.kernel.org, masahiroy@kernel.org, ojeda@kernel.org, 
- Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, kernel-team@meta.com, linux-pm@vger.kernel.org, 
- Eduard Zingerman <eddyz87@gmail.com>
-In-Reply-To: <20250606214840.3165754-1-andrii@kernel.org>
-References: <20250606214840.3165754-1-andrii@kernel.org>
-Subject: Re: [PATCH v2] .gitignore: ignore compile_commands.json globally
-Message-Id: <175503960408.1315825.6402987041334486305.b4-ty@kernel.org>
-Date: Tue, 12 Aug 2025 16:00:04 -0700
+	s=k20201202; t=1755039595;
+	bh=fpchoCTZioGd6XRCUCJs0T8y5Ql2Q1u9UY0oUOYuvzc=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=KYoA76D78cUzEsrGdeDhq8mMz2dFzCUq/WoD3SEp2QkJft1wO8Z3+QHbH+qoJUHtz
+	 lqwYGMQBpXhFtUlSgAilJaTKed0V+IDv8q54koyHfVExlB5Hvt9Nko9zfPUmb9DNEE
+	 tbtZcfdSbXo+Sg788Je7JFGumhej+VXm9cBf5SIiADnAxTCDDYvGSLkC5/GPRtcJUv
+	 aBEdIkWxuCrYggMF0JeKNFCuJrV5WG/U2/YkERCpGYGhSh7SLXesG6xO/raZkK2u2W
+	 BHrp/ZyrytErplBRDohjPVfeFejEXtjbsiWepD/sqlVgDvF/dQO+aYeiZL65BoBYqX
+	 Cy95cfh2kBDog==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70CF8383BF51;
+	Tue, 12 Aug 2025 23:00:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] bpf: replace kvfree with kfree for kzalloc memory
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175503960726.2855347.13670250861747428049.git-patchwork-notify@kernel.org>
+Date: Tue, 12 Aug 2025 23:00:07 +0000
+References: <20250811123949.552885-1-rongqianfeng@vivo.com>
+In-Reply-To: <20250811123949.552885-1-rongqianfeng@vivo.com>
+To: Qianfeng Rong <rongqianfeng@vivo.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 
+Hello:
 
-On Fri, 06 Jun 2025 14:48:40 -0700, Andrii Nakryiko wrote:
-> compile_commands.json can be used with clangd to enable language server
-> protocol-based assistance. For kernel itself this can be built with
-> scripts/gen_compile_commands.py, but other projects (e.g., libbpf, or
-> BPF selftests) can benefit from their own compilation database file,
-> which can be generated successfully using external tools, like bear [0].
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
+
+On Mon, 11 Aug 2025 20:39:49 +0800 you wrote:
+> The 'backedge' pointer is allocated with kzalloc(), which returns
+> physically contiguous memory. Using kvfree() to deallocate such
+> memory is functionally safe but semantically incorrect.
 > 
-> So, instead of adding compile_commands.json to .gitignore in respective
-> individual projects, let's just ignore it globally anywhere in Linux repo.
+> Replace kvfree() with kfree() to avoid unnecessary is_vmalloc_addr()
+> check in kvfree().
 > 
 > [...]
 
-Applied, thanks!
+Here is the summary with links:
+  - bpf: replace kvfree with kfree for kzalloc memory
+    https://git.kernel.org/bpf/bpf-next/c/bf0c2a84df9f
 
-[1/1] .gitignore: ignore compile_commands.json globally
-      https://git.kernel.org/kbuild/c/f7cc3caea0005
-
-Best regards,
+You are awesome, thank you!
 -- 
-Nathan Chancellor <nathan@kernel.org>
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
