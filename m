@@ -1,224 +1,260 @@
-Return-Path: <bpf+bounces-65478-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65479-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9807B23C50
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 01:37:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A096FB23C6A
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 01:47:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66C7F3B5BB7
-	for <lists+bpf@lfdr.de>; Tue, 12 Aug 2025 23:37:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF5F73A5B3A
+	for <lists+bpf@lfdr.de>; Tue, 12 Aug 2025 23:47:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B190D2D9EF3;
-	Tue, 12 Aug 2025 23:37:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 942CB2874F0;
+	Tue, 12 Aug 2025 23:46:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SNtOpros"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H98XV7TD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f67.google.com (mail-ej1-f67.google.com [209.85.218.67])
+Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8485B4C92
-	for <bpf@vger.kernel.org>; Tue, 12 Aug 2025 23:37:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EF7E2F069F;
+	Tue, 12 Aug 2025 23:46:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755041823; cv=none; b=jGAGSINXc7RSsTFYyIpHLDwF6i6fJmb8hqSRupIvgvplNZNo0UmayBWPKpQvrPkMueJtae4mYJovKZ8nlxSpbs3MJya1apZOd6X9+3mIggbNLWa7qlrpxls01CWOXw75Vu37IA+vuk+XCAAHDNQ0BU99yv5BZXVz36HQ85qpLv0=
+	t=1755042417; cv=none; b=twspQ1ZbIqZV7MmS5A/DDQjFmT8HyLjNDIn+sZ3zPl0keB0282a3rgqJEGnldErMQmKDrT7mjp+YSkIpzoHEYLUTnqg0zsGgphYt2gDrhZyRoi/p0nvMFgDnLULRlfAEVDKk1i9+PCglH/Ak6c0rF9bwS/KOM83+tS9V+fkTusM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755041823; c=relaxed/simple;
-	bh=80qmoJYY0enGzRRQcatGILRc+KHEggi+jpYoyL3JJcw=;
+	s=arc-20240116; t=1755042417; c=relaxed/simple;
+	bh=yf/TpEP9k3XhdvkWxK3b3q+7QA+blq7VFiGxGxKzelY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=t45WNftoqvohpK+QIKoWtpmalzemsIEljCA95kgYvwvw6Cao1QVfux9uLJ2JOL/9dvkYYF3zUjOj+9KpEEkE+t3j09I7Jd4/6PJrRw6LVz1CsPEAu+146eUW0shokhpFc48XzM4zOxRm+Ej+e6WKWVDih+KgQULVMldlNXVFDMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SNtOpros; arc=none smtp.client-ip=209.85.218.67
+	 To:Cc:Content-Type; b=lBcWWjkIoU1b/BJea4j48ho3kytf28Swg7QRFJq9Wtj9gDWHtKbm2Ai5L+n7h22MHtnFLPXAkJAQ/DSqHCOFc56ydvOtINrZbXQ+TIuIvH6vu/qTVIePeEM+PZPOdA5fJ+vzT4ESVSmn2QKybQt8rKUJbHNYhN+3OIwRTU1QPho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H98XV7TD; arc=none smtp.client-ip=209.85.166.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f67.google.com with SMTP id a640c23a62f3a-af939afe5efso699707766b.2
-        for <bpf@vger.kernel.org>; Tue, 12 Aug 2025 16:37:01 -0700 (PDT)
+Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-8842a9b0899so1718839f.1;
+        Tue, 12 Aug 2025 16:46:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755041820; x=1755646620; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1755042414; x=1755647214; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NtwU+3Hj55rDEcK9X5I3e4srKubezGXkCK/ehaBfS7g=;
-        b=SNtOprossc47HkywrjeonE684DdSkfdbs7oUZlLneEHTC6q7Twwp9+NYaSxp3nxLox
-         JY41ZYyVxkDPf6uheu6pSlbcB7ZlKIrS3bWo5zQZiYaiquuR5ttozKmYuC/E8nrgjfrR
-         L3JMDB9gBLNczaiE/NvGmU87Q8PadhKEksk7g1BpahMygf5HIHeMRNMSwm33pFi36c33
-         88FOXb8QkhBxbVkaYL5n0P8pQzYe4NQvRvi9FQm5PDxamfd0k6iZrgCZFvO4byfSigpv
-         XLI55eFGDD6CWi95M3aMAdybPAgjyHD52ej8npzns4RpDwWL81CRZaZTqO5EBMNstekx
-         YKvQ==
+        bh=X9q0yuyWp0H/yLFtjBM+2kXrqrRRzZKo9yfmECDwsl4=;
+        b=H98XV7TDEgk/CjWraZGKbMhH8aE4VkNTUuIUQZHPT3gboaxqQqyUVLz6qRmDOYzzmR
+         Xij791lNcuvBmGxOnGxUu+N9rvkWwj2wnjmc+GCSYMsMt57zuf2OvlVsrxIWlhiZf2rY
+         uyU/RqsLYUmMwNFgonDjtKC7v0LJP3DdkrfkYrZSPZg9CA26JT0Ox5FwmsiX/gZ86stR
+         JVUYUHIHgmA5CtAVyC9TJPjSKpFmWRCyWo5LjGJ9Z0dA3pZgTW1ZFF2z3TVrprInbpYw
+         2e+f1NwvMAhx40Uc9H29fGjAnJxaGGMhNJlaXK2twU0U5s1wnApjR+J1Rpm0AgAHCIyq
+         T3Qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755041820; x=1755646620;
+        d=1e100.net; s=20230601; t=1755042414; x=1755647214;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NtwU+3Hj55rDEcK9X5I3e4srKubezGXkCK/ehaBfS7g=;
-        b=EhskHaD+dWGKV5j7IbLoiYF3+ZzK30o1PoGm76lHQr0axrFrz1KnbMImsfriy/rA1d
-         0Vcaq/u7SluXe62Wfzya8mkAv3H1MrAQ9188PNYSdhnE+/Vs/mSUDjhPJVxlMNndgj3D
-         9YZgpttM2yo9hYflJ4r2uHrRLOg/a8I5pYIGEh3eL4ObYQdXAcADycY6hxRgfjlQyRZ5
-         sHwwVaepTffbJFZqRfayVG+Pe/NGnPHiIfR/XKv2uwAKcZZdcPwU4Zume5kg+y9m6ED5
-         6lbuZ/0+lP45KJk3R2RokFIijwnWpVKxbJuFEhI7pN9zETlElBf0I9l2FQ830cbYmntx
-         k04w==
-X-Gm-Message-State: AOJu0YxRL4rNG/gG80qrmQa31V1oFxDhtceX4Y/GNCHKzyQr8dcm7HKA
-	+qNDtkiVtHjrry9GIBW2kwjv4laMHscE4U4iALWYr/M/Qcg/HWnA+KPandkNoPF6Jx/M2wVnRbv
-	F3BJUTwnqpVv2SXlbG6BY7T/PLGt7oW4=
-X-Gm-Gg: ASbGncuef+pIi/LU9GVT3j83lCA28HowEgN3nWn9yvkoAuOtNiLYP/2c11zYBve9Ie2
-	X43u+RFyJU7DJEXSB8TgwNopNQC9t9h2p+wfoTbaTVZI3HLVEXagRYaJkrxEbQkJ7iYLqoAQiUk
-	Z0WzcZK3RJdVeBgowGGEtXkOsqFS7VnvH9p5Q7VVpWsvgBDBniPYPFR7p/GWw0dLj2FDzj85qfW
-	jADAZf5KDsj5MXTii7+wp2Qq4AN9koUt0O32DFv
-X-Google-Smtp-Source: AGHT+IESu1bSSoBzB5nqzoFF3PfHWZIo4KgEJQzXY9utGFsChfVxXL25cc0A6B3IOicY135Y2/NTRQlEpsTJHyCGfVQ=
-X-Received: by 2002:a17:907:9686:b0:ae3:6744:3680 with SMTP id
- a640c23a62f3a-afca4e438admr90567666b.42.1755041819532; Tue, 12 Aug 2025
- 16:36:59 -0700 (PDT)
+        bh=X9q0yuyWp0H/yLFtjBM+2kXrqrRRzZKo9yfmECDwsl4=;
+        b=jnKzalTRqe65ycXkzLov5TcFq+TfbzoTg5St3ZBVoCYlsXANOupvlnCBI4vh+xGHbb
+         RSgzpKneug9HTHMu4ozSmWwruGuZrm8YrbOfQ48m/KXXg6nqgr/lRnbUaLNTD6PrebzK
+         EahmFhdxSU7lftW4sfmyKE0Lf90cYV6uSNBCKo7BqwqHxj/3cBppsrK3E1XbWxZxiX55
+         NYOtvaZuO4OExT0tebNXZ1gZkJ3zRQTTp/BTGGD8oj2wZw5LDZ5AYFqRyKuqLjrw6Pr3
+         KLZUDrLEPCOfDUQ+zePeiLDxFXaD1H4hheykIoL1/sgzi1UzUL5+vAoVvWhfjQQCq6+j
+         zAwg==
+X-Forwarded-Encrypted: i=1; AJvYcCUAtgSyuTzPTfD1vk4IgEXRN9wJw+5gEW8Dr1aa6KWmod79LmM//qEjR4Db9CRGcxxNuyxjGd//@vger.kernel.org, AJvYcCVmIhv/JiR9oubGEjoL8jcimF7V6mwD1Jjned+w6XYWwXWxj9u2ZiUfbkWrEo6n6py0TwM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwW3ps4T9E5yIWJIMPpp1dRBJp1HZhvmJ2w5jutouGeDHKmSNLF
+	EmWESKRPYh+HgUYJNMv8CsiddrUbOF0yy1iruntF04NcK/eRW+VYJXWfXMg5XzolN1epe48cxit
+	meG2nk5adD0YAePfI2gDpv+fA5XLN5rg=
+X-Gm-Gg: ASbGnctKVwYTUojhf+1nQJz7i+BIEyGlIQbCF56zg46SBBlz6AH63C3uNcolywCINBg
+	JkUDBz9hakog7sUO/kgzmD7Eq4dRmV5nDF8cXxPgjsBHuLETV0I9MUmnpO+22dw+K6UCEnlMPqZ
+	L195bXqLahr77XYNX0+xO++7sDlb/QkRS3fI9aIXRvVWneS1GtdZ1sQr/gJMVDm7XAlAPguRgvf
+	2LAjr4=
+X-Google-Smtp-Source: AGHT+IHjOSz2R6AUtf9Q60thDG/jVKyVKH1Q2Br1fnq3TjWbNwCgaInWW1RI8ZNsS0pOk+qoE9o+MiHXwQdBfza5dl8=
+X-Received: by 2002:a5e:990f:0:b0:87c:6851:81f1 with SMTP id
+ ca18e2360f4ac-884296924b3mr191031739f.12.1755042414428; Tue, 12 Aug 2025
+ 16:46:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250811195901.1651800-1-memxor@gmail.com> <20250811195901.1651800-2-memxor@gmail.com>
- <CAEf4BzY6kEGAOpo6-DivyROL5Ma61Niun6X3ic76_jFoZ8DGZw@mail.gmail.com>
-In-Reply-To: <CAEf4BzY6kEGAOpo6-DivyROL5Ma61Niun6X3ic76_jFoZ8DGZw@mail.gmail.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Wed, 13 Aug 2025 01:36:23 +0200
-X-Gm-Features: Ac12FXye9Bnn1Hs5ggzbsova0NFfBF92iBhN1id_X2cRX01fFtPIc2D2a_AMrko
-Message-ID: <CAP01T77+z8hoWWeBi9SGjdZQ=wEYkfowmz5Un0jk1yX7Tckq-Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Do not limit bpf_cgroup_from_id to
- current's namespace
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, tj@kernel.org, Dan Schatzberg <dschatzberg@meta.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, kkd@meta.com, kernel-team@meta.com
+References: <20250811131236.56206-1-kerneljasonxing@gmail.com>
+ <20250811131236.56206-2-kerneljasonxing@gmail.com> <aJtucfMw+mXp79FV@boxer>
+In-Reply-To: <aJtucfMw+mXp79FV@boxer>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Wed, 13 Aug 2025 07:46:17 +0800
+X-Gm-Features: Ac12FXzCzY9QKvnOE6JM-U35E5tfAAPAeZyf0URf4aAEHi2UzRzlfqrN5PvNSSc
+Message-ID: <CAL+tcoA=fdiB5exzgyueBi7kxHbsCxWKbs0Y5QO4WG3P4-6Aig@mail.gmail.com>
+Subject: Re: [PATCH net-next 1/2] xsk: introduce XDP_GENERIC_XMIT_BATCH setsockopt
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com, 
+	jonathan.lemon@gmail.com, sdf@fomichev.me, ast@kernel.org, 
+	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com, 
+	horms@kernel.org, andrew+netdev@lunn.ch, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 13 Aug 2025 at 01:20, Andrii Nakryiko <andrii.nakryiko@gmail.com> w=
-rote:
+On Wed, Aug 13, 2025 at 12:40=E2=80=AFAM Maciej Fijalkowski
+<maciej.fijalkowski@intel.com> wrote:
 >
-> On Mon, Aug 11, 2025 at 12:59=E2=80=AFPM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
+> On Mon, Aug 11, 2025 at 09:12:35PM +0800, Jason Xing wrote:
+> > From: Jason Xing <kernelxing@tencent.com>
 > >
-> > The bpf_cgroup_from_id kfunc relies on cgroup_get_from_id to obtain the
-> > cgroup corresponding to a given cgroup ID. This helper can be called in
-> > a lot of contexts where the current thread can be random. A recent
-> > example was its use in sched_ext's ops.tick(), to obtain the root cgrou=
-p
-> > pointer. Since the current task can be whatever random user space task
-> > preempted by the timer tick, this makes the behavior of the helper
-> > unreliable.
+> > This patch is to prepare for later batch xmit in generic path. Add a ne=
+w
+> > socket option to provide an alternative to achieve a higher overall
+> > throughput.
 > >
-> > Resolve this by refactoring cgroup_get_from_id to take a parameter to
-> > elide the cgroup_is_descendant check when root_cgns parameter is set to
-> > true.
+> > skb_batch will be used to store newly allocated skb at one time in the
+> > xmit path.
+>
+> I don't think we need yet another setsockopt. You previously added a knob
+> for manipulating max tx budget on generic xmit and that should be enough.
+> I think that we should strive for making the batching approach a default
+> path in xsk generic xmit.
+
+You're right, it=E2=80=98s the right direction that we should take. But I
+considered this as well before cooking the series and then gave up, my
+experiments show that in some real cases (not xdpsock) the batch
+process might increase latency. It's a side effect. At that time I
+thought many years ago the invention of GRO didn't become the default.
+
+Thanks,
+Jason
+
+>
 > >
-> > There is no compatibility breakage here, since changing the namespace
-> > against which the lookup is being done to the root cgroup namespace onl=
-y
-> > permits a wider set of lookups to succeed now. The cgroup IDs across
-> > namespaces are globally unique, and thus don't need to be retranslated.
-> >
-> > Reported-by: Dan Schatzberg <dschatzberg@meta.com>
-> > Acked-by: Tejun Heo <tj@kernel.org>
-> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > Signed-off-by: Jason Xing <kernelxing@tencent.com>
 > > ---
-> >  include/linux/cgroup.h   | 2 +-
-> >  kernel/bpf/cgroup_iter.c | 2 +-
-> >  kernel/bpf/helpers.c     | 2 +-
-> >  kernel/cgroup/cgroup.c   | 7 ++++++-
->
-> hmm... I see mm/memcontrol.c and block/blk-cgroup-fc-appid.c using
-> this function as well, but you didn't update them, so under some
-> kernel config this will break?
-
-Yeah, addressed in upcoming v3, I also got a kernel test robot error
-privately about it.
-
->
-> but I'm also wondering if it wouldn't be cleaner to keep
-> cgroup_get_from_id() as is, and add __cgroup_get_from_id(u64 id) that
-> would not perform a cgroup_is_descendant() check. BPF helpers that
-> don't need this root descendancy would call __cgroup_get_from_id()
-> directly, while cgroup_get_from_id() would use __cgroup_get_from_id()
-> first, and then (if successful) would perform addition root_cgrp
-> check?
-
-Yeah, I can refactor as such.
-
->
->
-> >  4 files changed, 9 insertions(+), 4 deletions(-)
+> >  Documentation/networking/af_xdp.rst |  9 ++++++++
+> >  include/net/xdp_sock.h              |  2 ++
+> >  include/uapi/linux/if_xdp.h         |  1 +
+> >  net/xdp/xsk.c                       | 32 +++++++++++++++++++++++++++++
+> >  tools/include/uapi/linux/if_xdp.h   |  1 +
+> >  5 files changed, 45 insertions(+)
 > >
-> > diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-> > index b18fb5fcb38e..da757a496fbe 100644
-> > --- a/include/linux/cgroup.h
-> > +++ b/include/linux/cgroup.h
-> > @@ -650,7 +650,7 @@ static inline void cgroup_kthread_ready(void)
-> >  }
+> > diff --git a/Documentation/networking/af_xdp.rst b/Documentation/networ=
+king/af_xdp.rst
+> > index 50d92084a49c..1194bdfaf61e 100644
+> > --- a/Documentation/networking/af_xdp.rst
+> > +++ b/Documentation/networking/af_xdp.rst
+> > @@ -447,6 +447,15 @@ mode to allow application to tune the per-socket m=
+aximum iteration for
+> >  better throughput and less frequency of send syscall.
+> >  Allowed range is [32, xs->tx->nentries].
 > >
-> >  void cgroup_path_from_kernfs_id(u64 id, char *buf, size_t buflen);
-> > -struct cgroup *cgroup_get_from_id(u64 id);
-> > +struct cgroup *cgroup_get_from_id(u64 id, bool root_cgns);
-> >  #else /* !CONFIG_CGROUPS */
-> >
-> >  struct cgroup_subsys_state;
-> > diff --git a/kernel/bpf/cgroup_iter.c b/kernel/bpf/cgroup_iter.c
-> > index f04a468cf6a7..49234d035583 100644
-> > --- a/kernel/bpf/cgroup_iter.c
-> > +++ b/kernel/bpf/cgroup_iter.c
-> > @@ -212,7 +212,7 @@ static int bpf_iter_attach_cgroup(struct bpf_prog *=
-prog,
-> >         if (fd)
-> >                 cgrp =3D cgroup_v1v2_get_from_fd(fd);
-> >         else if (id)
-> > -               cgrp =3D cgroup_get_from_id(id);
-> > +               cgrp =3D cgroup_get_from_id(id, false);
-> >         else /* walk the entire hierarchy by default. */
-> >                 cgrp =3D cgroup_get_from_path("/");
-> >
-> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> > index 6b4877e85a68..12466103917f 100644
-> > --- a/kernel/bpf/helpers.c
-> > +++ b/kernel/bpf/helpers.c
-> > @@ -2537,7 +2537,7 @@ __bpf_kfunc struct cgroup *bpf_cgroup_from_id(u64=
- cgid)
-> >  {
-> >         struct cgroup *cgrp;
-> >
-> > -       cgrp =3D cgroup_get_from_id(cgid);
-> > +       cgrp =3D cgroup_get_from_id(cgid, true);
-> >         if (IS_ERR(cgrp))
-> >                 return NULL;
-> >         return cgrp;
-> > diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> > index 312c6a8b55bb..b490e1e0d2c4 100644
-> > --- a/kernel/cgroup/cgroup.c
-> > +++ b/kernel/cgroup/cgroup.c
-> > @@ -6345,10 +6345,11 @@ void cgroup_path_from_kernfs_id(u64 id, char *b=
-uf, size_t buflen)
-> >  /*
-> >   * cgroup_get_from_id : get the cgroup associated with cgroup id
-> >   * @id: cgroup id
-> > + * @root_cgns: Select root cgroup namespace instead of current's.
-> >   * On success return the cgrp or ERR_PTR on failure
-> >   * Only cgroups within current task's cgroup NS are valid.
-> >   */
-> > -struct cgroup *cgroup_get_from_id(u64 id)
-> > +struct cgroup *cgroup_get_from_id(u64 id, bool root_cgns)
-> >  {
-> >         struct kernfs_node *kn;
-> >         struct cgroup *cgrp, *root_cgrp;
-> > @@ -6374,6 +6375,10 @@ struct cgroup *cgroup_get_from_id(u64 id)
-> >         if (!cgrp)
-> >                 return ERR_PTR(-ENOENT);
-> >
-> > +       /* We don't need to namespace this operation against current. *=
-/
-> > +       if (root_cgns)
-> > +               return cgrp;
+> > +XDP_GENERIC_XMIT_BATCH
+> > +----------------------
 > > +
-> >         root_cgrp =3D current_cgns_cgroup_dfl();
-> >         if (!cgroup_is_descendant(cgrp, root_cgrp)) {
-> >                 cgroup_put(cgrp);
+> > +It provides an option that allows application to use batch xmit in the=
+ copy
+> > +mode. Batch process minimizes the number of grabbing/releasing queue l=
+ock
+> > +without redundant actions compared to before to gain the overall perfo=
+rmance
+> > +improvement whereas it might increase the latency of per packet. The m=
+aximum
+> > +value shouldn't be larger than xs->max_tx_budget.
+> > +
+> >  XDP_STATISTICS getsockopt
+> >  -------------------------
+> >
+> > diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+> > index ce587a225661..b5a3e37da8db 100644
+> > --- a/include/net/xdp_sock.h
+> > +++ b/include/net/xdp_sock.h
+> > @@ -61,6 +61,7 @@ struct xdp_sock {
+> >               XSK_BOUND,
+> >               XSK_UNBOUND,
+> >       } state;
+> > +     struct sk_buff **skb_batch;
+> >
+> >       struct xsk_queue *tx ____cacheline_aligned_in_smp;
+> >       struct list_head tx_list;
+> > @@ -70,6 +71,7 @@ struct xdp_sock {
+> >        * preventing other XSKs from being starved.
+> >        */
+> >       u32 tx_budget_spent;
+> > +     u32 generic_xmit_batch;
+> >
+> >       /* Statistics */
+> >       u64 rx_dropped;
+> > diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.h
+> > index 23a062781468..44cb72cd328e 100644
+> > --- a/include/uapi/linux/if_xdp.h
+> > +++ b/include/uapi/linux/if_xdp.h
+> > @@ -80,6 +80,7 @@ struct xdp_mmap_offsets {
+> >  #define XDP_STATISTICS                       7
+> >  #define XDP_OPTIONS                  8
+> >  #define XDP_MAX_TX_SKB_BUDGET                9
+> > +#define XDP_GENERIC_XMIT_BATCH               10
+> >
+> >  struct xdp_umem_reg {
+> >       __u64 addr; /* Start of packet data area */
+> > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> > index 9c3acecc14b1..7a149f4ac273 100644
+> > --- a/net/xdp/xsk.c
+> > +++ b/net/xdp/xsk.c
+> > @@ -1122,6 +1122,7 @@ static int xsk_release(struct socket *sock)
+> >       xskq_destroy(xs->tx);
+> >       xskq_destroy(xs->fq_tmp);
+> >       xskq_destroy(xs->cq_tmp);
+> > +     kfree(xs->skb_batch);
+> >
+> >       sock_orphan(sk);
+> >       sock->sk =3D NULL;
+> > @@ -1456,6 +1457,37 @@ static int xsk_setsockopt(struct socket *sock, i=
+nt level, int optname,
+> >               WRITE_ONCE(xs->max_tx_budget, budget);
+> >               return 0;
+> >       }
+> > +     case XDP_GENERIC_XMIT_BATCH:
+> > +     {
+> > +             unsigned int batch, batch_alloc_len;
+> > +             struct sk_buff **new;
+> > +
+> > +             if (optlen !=3D sizeof(batch))
+> > +                     return -EINVAL;
+> > +             if (copy_from_sockptr(&batch, optval, sizeof(batch)))
+> > +                     return -EFAULT;
+> > +             if (batch > xs->max_tx_budget)
+> > +                     return -EACCES;
+> > +
+> > +             mutex_lock(&xs->mutex);
+> > +             if (!batch) {
+> > +                     kfree(xs->skb_batch);
+> > +                     xs->generic_xmit_batch =3D 0;
+> > +                     goto out;
+> > +             }
+> > +             batch_alloc_len =3D sizeof(struct sk_buff *) * batch;
+> > +             new =3D kmalloc(batch_alloc_len, GFP_KERNEL);
+> > +             if (!new)
+> > +                     return -ENOMEM;
+> > +             if (xs->skb_batch)
+> > +                     kfree(xs->skb_batch);
+> > +
+> > +             xs->skb_batch =3D new;
+> > +             xs->generic_xmit_batch =3D batch;
+> > +out:
+> > +             mutex_unlock(&xs->mutex);
+> > +             return 0;
+> > +     }
+> >       default:
+> >               break;
+> >       }
+> > diff --git a/tools/include/uapi/linux/if_xdp.h b/tools/include/uapi/lin=
+ux/if_xdp.h
+> > index 23a062781468..44cb72cd328e 100644
+> > --- a/tools/include/uapi/linux/if_xdp.h
+> > +++ b/tools/include/uapi/linux/if_xdp.h
+> > @@ -80,6 +80,7 @@ struct xdp_mmap_offsets {
+> >  #define XDP_STATISTICS                       7
+> >  #define XDP_OPTIONS                  8
+> >  #define XDP_MAX_TX_SKB_BUDGET                9
+> > +#define XDP_GENERIC_XMIT_BATCH               10
+> >
+> >  struct xdp_umem_reg {
+> >       __u64 addr; /* Start of packet data area */
 > > --
-> > 2.47.3
+> > 2.41.3
 > >
 
