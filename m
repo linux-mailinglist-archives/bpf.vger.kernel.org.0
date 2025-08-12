@@ -1,79 +1,82 @@
-Return-Path: <bpf+bounces-65418-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65419-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CD58B22259
-	for <lists+bpf@lfdr.de>; Tue, 12 Aug 2025 11:07:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50469B2224E
+	for <lists+bpf@lfdr.de>; Tue, 12 Aug 2025 11:04:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D6F31B618CC
-	for <lists+bpf@lfdr.de>; Tue, 12 Aug 2025 09:04:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 702817ABBD0
+	for <lists+bpf@lfdr.de>; Tue, 12 Aug 2025 09:02:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 299A62E7174;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEEB52E7BB8;
 	Tue, 12 Aug 2025 09:04:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="fIm1c6c+"
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="g+0Y/5nx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0169D2E7163
-	for <bpf@vger.kernel.org>; Tue, 12 Aug 2025 09:04:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCA1E2E718F
+	for <bpf@vger.kernel.org>; Tue, 12 Aug 2025 09:04:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754989452; cv=none; b=cRFpcIxY/U66NbiMSvW6dusEYDqH4MM4qT9/PBAmTnHAYRCPa4U4i7hlW0Gw1A/Iucj2qcXDBHwXT2nPkRECStMmZ+soVkWPsxpIzaZ7YlxtaIfx+62o5PMCU0hhNOMDFnH3g2dAebKk9kiCba805JlokQohmVL+MufQgJqOyYk=
+	t=1754989453; cv=none; b=EDqQx640aSzipDc26AB18R+oyaZ+tR9OnEmoKnkD1U5Ko0gE8aPxgAQHWGOdy2Y+z04gPsBadKDmCqPpvoijFOsR4zVYLBD911z3pCVQueG7M/UkujflxkAQoWIgBX96khLJnhz63mHsQSswSvq0Tyvx9EfPSkuEVoI/mv9hVSo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754989452; c=relaxed/simple;
-	bh=SfGibH3LYjDwJHPtxge+VGyiVYm3yPEC0dBeNwgapkg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=BRaFOCAPOkhYSO5nxjEDRQV7GMKS96mxP5rNvG530lOjVWl/LVuVI/j5IYseVomxkEctk9W5DTNBua766qrTd/2+G4NeMPwh2iTqcAiGPcf/Z+XPErY5rkesFWuVzOWLWAjEONBC1KHqfz33ZCjUjBpnAQTmzIKXzApLXJ/b1ZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=fIm1c6c+; arc=none smtp.client-ip=209.85.221.47
+	s=arc-20240116; t=1754989453; c=relaxed/simple;
+	bh=E5jcBn3sV2aUmuDFeWJOAnGKn2umqAnu8zd+iJy0J4Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=H+DAanee7EAmYWHeFLQxQ23aopXBENrJPH+i2206j+adhku3FSRwf90Q7slxav1qKf1b6RyZZKshGvcokG2n377kIUpkeHddw6QfV9OXJlH6+G74NZ9yS1XPzr4Drf9JmLZVNFE5XUX2FdCDZ77+8E9KNUI79VZpTbIbvTrxCLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=g+0Y/5nx; arc=none smtp.client-ip=209.85.221.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3b78f33204eso653587f8f.3
-        for <bpf@vger.kernel.org>; Tue, 12 Aug 2025 02:04:09 -0700 (PDT)
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3b77dece52eso121692f8f.2
+        for <bpf@vger.kernel.org>; Tue, 12 Aug 2025 02:04:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1754989448; x=1755594248; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xtp0f/XAF/TX0R94lrjgjIgA7neAmWsQ9XVPNzUOsGo=;
-        b=fIm1c6c+R4j3BnKlboyp4GFsLEWpuy27plShoPaY5Izhj00+/gj9ETSOBbn/cYgbQi
-         5vIXAXojoVLzda/PyRxVfNTeTkakew6au45UwGTCdzmtRfhrPVmRJHXKnv1lNkELztu2
-         fovR1IUQZPrYxG38jldFOYGFU+pgw8x0OK1jWL3N67XpsU8yTSVSSVocvv/XGPdiQKmC
-         8MXUFcka/pPh3z9BFF1YmzrTuZulsOqzaC3chCyBavvqNlkVSKkgxtV4Wt/Swq5lszTb
-         Mnc3uLLru+H9CJzpEZtDcPQr8Ioqb4BcouhJdyxIDhK3k8v4DvB1PJazLv+Ctcw/0WG2
-         yM0w==
+        d=ventanamicro.com; s=google; t=1754989449; x=1755594249; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=itAcwp1tL7JmEvs/VclPDqKZmFhrZKHjpN5MTKoCPt8=;
+        b=g+0Y/5nxI1+6uP6XdS3aPL4AeXdC1cEHVM68osydwLIWeNx/8Np6qZ8JpmBcC6EZX2
+         M/tFhL/EAsPQlqdqR2Mmep+eUN8qmjY9D7y9uMXFkJ52y7894mJMcCWqFb4IxwlWaHIM
+         3anI6IZMb5CfmV//P+/MkLJXU1sE85hZ685H7QmqnEsrW4XM7i3p8oNpG2KMe3gHhv/8
+         od29EXkFggrunFq7XfDDj+pfCO2yrcZDe0kXgK/oOvt08FfldpigfLg50QeFu098P50r
+         i/UmuD2WBookjo80ZG3ILwlnH8wxrynGZ7O7f8u9I7yPJ9T+BygdTZYkpB1zCWK90tCm
+         G8+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754989448; x=1755594248;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xtp0f/XAF/TX0R94lrjgjIgA7neAmWsQ9XVPNzUOsGo=;
-        b=Mlbnb5hVzTJFqbMfwAMCnM7jOcUkKTNpXMQEJx/jxKloch83jfybTU3E1NGZX9EJ4e
-         wTNMlp+Ckrec92pYYBSPOXIUsgU+ZZGYa0ILV5Edwe+eC7lR6+KYIamL6Riqb6PTbmLx
-         xiSo3uipbccdhVgrQmZ2sW9C3QAVDHvoon6NxDnV3RfX+rOFJo+SmkTgVSvB8ncpgSZr
-         z5lClrKjQq9Z83AvmIDcfYRi7apIct0+1BJMv8WofJcdwwWnrcbqeeKdT/JYdimOyctx
-         x4qtjs20WO540O6pfv4cwtfkDxwubAr3yjBfNY8jRUlo1babRCq3fl5DjmMcgvVQAa54
-         46QA==
-X-Gm-Message-State: AOJu0YzNCiaYlZYDS71I1DRX5eA0KBF4u4maRPiEg5gYSy/3Sb3HcU6X
-	StT/KoWXX2QO0MHriGm1FsermLsf48oL6WxdXVLja/i/5oRGfy/siIM5/YRaEnaQ6kqYIchKPZt
-	iFmbm
-X-Gm-Gg: ASbGnctNyBmLXMOPdRl65ChI1XLoBJY+yLtOMRbUrpUTGOGJdrSdrBNpN1L2FMFsjjz
-	Tz9iaoqEDAEPIHfkkLnAnuuCi37J1eGSEhYQoyv8b3fZaOGgUIoLMEu8i2/7/u22vt9Gj0Df9DH
-	mIIkbiIAI0j3Ci9TEwORa+ZbcYiY15S8iITsQhI4C9pleNSNtqs+5BcbzqQTmOOnrpOnub3CQlf
-	Sok10e+/RmjK/QnL3BTsyF4frwlYZfa3PpsVcEeVoH2ROY1uA6kw8FNXHsafinyZPfIx3hdZVPq
-	BObtNIMLSvPwCnwSOa/hQIUeI3hhGTIyjN15e7sdGMX7Fz/mNaRUD2dj1IZ8ZRBDBDahGGmGec6
-	JNfBvgzOyrsUq1R/nW7/e8SfUxpAyFQ==
-X-Google-Smtp-Source: AGHT+IH6MhMdd/azBMg6FFj7maPvuhuBI0aLHfN/OOEfRoWpInAXZIecXHTDdNehcRNL9lr4GrhaQA==
-X-Received: by 2002:a05:6000:230a:b0:3b7:889c:69d5 with SMTP id ffacd0b85a97d-3b91538ea0emr120027f8f.12.1754989447868;
-        Tue, 12 Aug 2025 02:04:07 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1754989449; x=1755594249;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=itAcwp1tL7JmEvs/VclPDqKZmFhrZKHjpN5MTKoCPt8=;
+        b=p7UwCJWVDz+2wQAwsIfeWjofv9S2mlJvp7DEzatSQSSaqbV4wqdt4M15tHjN7wLDDE
+         d9E9q60DvKAi+awXNSktaD1i6M0RlXTWYONjij3jNjt4eUFaJ69zYdtPECy88qJFt6Q0
+         lCfKXgxoqXbZFnJiMgU3n4Kf2G1iriER+zzvrqsmcF8g/Pmzo6kJ/eVJOrpu83Qkl3pJ
+         hjE6C7+iGQuRZSYLvWstTAbLuJsmmjGInPlkYRENI/8FxNfBjFGlTAGJS7Cbv0m2xltH
+         7QffSFYbxyqqrRwabKFj06oCcYdOCrFAUEGLE+rZVqJAu3UWTYw3aIErS9TkdaUjDvR0
+         iwDA==
+X-Gm-Message-State: AOJu0YxyDnxhrcuMhj97I03ci9Vbzdegpv2zAKNTPlAhTYoE+l4JhO3w
+	WtJPEMC6VMVjcozvThWioI5Ookvu5bZ5LdR0w4ddkBil+f08sgMq/XzckwypLa6MxZ7txUpdY1/
+	aMnVM
+X-Gm-Gg: ASbGnctnFPRjLAnbwJ+4Rm6/bX5gsU1F7qEBxJz46+2t6WWNgY/RyOA3MTRV3U9kD0B
+	lGkB9PF2kBBcDCxB8VxvPYZKjeBdC12JWIn4hEl3qtyo0leS0mlItpiyzJRiIOFhk4S2eMzawV0
+	ZyGmyZBRbbJffEnUAsCUvzFsXe7ANGLAwCZzk/FEqA6woJj5saVPjSFXQUjCYtMRa5bRzA7ZHLr
+	daLj9HsZKznEeIB3AqV7pBNWMGJaBYms8e/oaevrRuN3x5Ukp7OZWkTFVKmN8ND8Yq8QZCc3IKQ
+	H/9esok+gcAU1+R6aS/9f83Cgat03TrbhwAZsuN+YcyOCvAaaMx+oXG9j27Rzxq4wePtH1T1Usd
+	lH+aZQYbZNtfd9R3YLlNdcXZ/NkvnPQ==
+X-Google-Smtp-Source: AGHT+IEKfx5/IibgOl7zdUM/KxazaaZ9Kt824Zr9oOR+gNUohGNLWWuXxmaBUI2dt+CetFzava53Sw==
+X-Received: by 2002:a05:6000:2c10:b0:3b7:99a8:bf6d with SMTP id ffacd0b85a97d-3b9142bcf85mr298562f8f.11.1754989449200;
+        Tue, 12 Aug 2025 02:04:09 -0700 (PDT)
 Received: from localhost ([2a02:8308:a00c:e200:8113:2b11:8f42:672f])
-        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-3b79c3ac574sm43479697f8f.5.2025.08.12.02.04.07
+        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-459e5887b7fsm287090205e9.30.2025.08.12.02.04.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Aug 2025 02:04:07 -0700 (PDT)
+        Tue, 12 Aug 2025 02:04:08 -0700 (PDT)
 From: =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@ventanamicro.com>
 To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
+Cc: stable@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
@@ -95,10 +98,12 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
 	linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 0/2] riscv, bpf: fix reads of thread_info.cpu
-Date: Tue, 12 Aug 2025 11:02:54 +0200
-Message-ID: <20250812090256.757273-2-rkrcmar@ventanamicro.com>
+Subject: [PATCH 1/2] riscv, bpf: use lw when reading int cpu in BPF_MOV64_PERCPU_REG
+Date: Tue, 12 Aug 2025 11:02:55 +0200
+Message-ID: <20250812090256.757273-3-rkrcmar@ventanamicro.com>
 X-Mailer: git-send-email 2.50.0
+In-Reply-To: <20250812090256.757273-2-rkrcmar@ventanamicro.com>
+References: <20250812090256.757273-2-rkrcmar@ventanamicro.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -108,24 +113,30 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Hello,
+emit_ld is wrong, because thread_info.cpu is 32-bit, not xlen-bit wide.
+The struct currently has a hole after cpu, so little endian accesses
+seemed fine.
 
-These patches are related to a recently queued series [1] that fixes the
-same bugs in normal code.  That series finishes with a patch that would
-have exposed the BPF bugs, but luckily it won't get merged until v6.18.
+Fixes: 19c56d4e5be1 ("riscv, bpf: add internal-only MOV instruction to resolve per-CPU addrs")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Radim Krčmář <rkrcmar@ventanamicro.com>
+---
+ arch/riscv/net/bpf_jit_comp64.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I don't know enough about BPF to verify that it emits the correct code
-now, so any pointers are welcome.
-
-1: https://lore.kernel.org/linux-riscv/20250725165410.2896641-3-rkrcmar@ventanamicro.com/
-
-Radim Krčmář (2):
-  riscv, bpf: use lw when reading int cpu in BPF_MOV64_PERCPU_REG
-  riscv, bpf: use lw when reading int cpu in bpf_get_smp_processor_id
-
- arch/riscv/net/bpf_jit_comp64.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
+diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+index 10e01ff06312..6e1554d89681 100644
+--- a/arch/riscv/net/bpf_jit_comp64.c
++++ b/arch/riscv/net/bpf_jit_comp64.c
+@@ -1356,7 +1356,7 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 				emit_mv(rd, rs, ctx);
+ #ifdef CONFIG_SMP
+ 			/* Load current CPU number in T1 */
+-			emit_ld(RV_REG_T1, offsetof(struct thread_info, cpu),
++			emit_lw(RV_REG_T1, offsetof(struct thread_info, cpu),
+ 				RV_REG_TP, ctx);
+ 			/* Load address of __per_cpu_offset array in T2 */
+ 			emit_addr(RV_REG_T2, (u64)&__per_cpu_offset, extra_pass, ctx);
 -- 
 2.50.0
 
