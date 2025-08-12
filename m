@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-65419-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65420-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50469B2224E
-	for <lists+bpf@lfdr.de>; Tue, 12 Aug 2025 11:04:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C651B22250
+	for <lists+bpf@lfdr.de>; Tue, 12 Aug 2025 11:04:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 702817ABBD0
-	for <lists+bpf@lfdr.de>; Tue, 12 Aug 2025 09:02:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DABEE7AE55D
+	for <lists+bpf@lfdr.de>; Tue, 12 Aug 2025 09:03:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEEB52E7BB8;
-	Tue, 12 Aug 2025 09:04:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D24582E54A9;
+	Tue, 12 Aug 2025 09:04:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="g+0Y/5nx"
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="Jl5Y9VlQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCA1E2E718F
-	for <bpf@vger.kernel.org>; Tue, 12 Aug 2025 09:04:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6A432E7641
+	for <bpf@vger.kernel.org>; Tue, 12 Aug 2025 09:04:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754989453; cv=none; b=EDqQx640aSzipDc26AB18R+oyaZ+tR9OnEmoKnkD1U5Ko0gE8aPxgAQHWGOdy2Y+z04gPsBadKDmCqPpvoijFOsR4zVYLBD911z3pCVQueG7M/UkujflxkAQoWIgBX96khLJnhz63mHsQSswSvq0Tyvx9EfPSkuEVoI/mv9hVSo=
+	t=1754989454; cv=none; b=JK6c8ixgD0HcwEcHp2WUTboj+oyYtr61O8bBAP9WlH06QMt9yUXTPkIKaRIF92KxOhvMdovodi0akVPxzb3mBCa1QRwSOOQotU7xjv3+me2xKDO74nOvjrr957X+guTcEJ2xUg5rRmxxh/tbYy1EnlKzrCpcfrj1f6PqURukEJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754989453; c=relaxed/simple;
-	bh=E5jcBn3sV2aUmuDFeWJOAnGKn2umqAnu8zd+iJy0J4Y=;
+	s=arc-20240116; t=1754989454; c=relaxed/simple;
+	bh=jX+YEQB0b2jg/94uudyOzj3RkscIhZDeVVogCJzZ67M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=H+DAanee7EAmYWHeFLQxQ23aopXBENrJPH+i2206j+adhku3FSRwf90Q7slxav1qKf1b6RyZZKshGvcokG2n377kIUpkeHddw6QfV9OXJlH6+G74NZ9yS1XPzr4Drf9JmLZVNFE5XUX2FdCDZ77+8E9KNUI79VZpTbIbvTrxCLY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=g+0Y/5nx; arc=none smtp.client-ip=209.85.221.44
+	 MIME-Version:Content-Type; b=UrLdkxRXWyZ3aR7vCIaJlEY9mpUMMXrmCBgoe3/sPPsV0cS/NKeJ9jhJm4vcJlV3vy1ISML6r3B3My7vnbgwypMVrmk1awJub7N5eXhMZ3eNIxwld+DmqKS2oDcw0bmAFzmXEn7yD4rcisLBHNFYUn6zOnsd/TGgotbNBV7ASs8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=Jl5Y9VlQ; arc=none smtp.client-ip=209.85.128.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3b77dece52eso121692f8f.2
-        for <bpf@vger.kernel.org>; Tue, 12 Aug 2025 02:04:11 -0700 (PDT)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-459ea4f40afso9381505e9.2
+        for <bpf@vger.kernel.org>; Tue, 12 Aug 2025 02:04:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1754989449; x=1755594249; darn=vger.kernel.org;
+        d=ventanamicro.com; s=google; t=1754989451; x=1755594251; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=itAcwp1tL7JmEvs/VclPDqKZmFhrZKHjpN5MTKoCPt8=;
-        b=g+0Y/5nxI1+6uP6XdS3aPL4AeXdC1cEHVM68osydwLIWeNx/8Np6qZ8JpmBcC6EZX2
-         M/tFhL/EAsPQlqdqR2Mmep+eUN8qmjY9D7y9uMXFkJ52y7894mJMcCWqFb4IxwlWaHIM
-         3anI6IZMb5CfmV//P+/MkLJXU1sE85hZ685H7QmqnEsrW4XM7i3p8oNpG2KMe3gHhv/8
-         od29EXkFggrunFq7XfDDj+pfCO2yrcZDe0kXgK/oOvt08FfldpigfLg50QeFu098P50r
-         i/UmuD2WBookjo80ZG3ILwlnH8wxrynGZ7O7f8u9I7yPJ9T+BygdTZYkpB1zCWK90tCm
-         G8+A==
+        bh=DkDi9sQ4u1Zsf5AcaPzYnSO2sPwb0elGC7q2l8b77oI=;
+        b=Jl5Y9VlQtRQgQ0wZapz6JmbwaoLFP6lFy1uOBPSW6zPTVaSiKkYXXB5/Yhgdk1f51I
+         aGHyOg6b4cD8a3Kr7Ltqg58lvN+v4yVURDZMvVqtbPkIaw3tKOPS79iH014g3A5A0JkP
+         Wxlpf89JlXrZlcWb8ktgo63426JPiVwEdADeP2uBM7vGnck3b1cZCsZme+0fdyfH0amo
+         4TJtqmOuYApTj/a32MhsDZ6q9cKshyt/wnYvQlLGX42XnybAOXYgbsRvjsQPwNYum9TN
+         OsFDUVTpnM5jppqVIzV4necufmbZruyzAhpGOmYdU+A3roIz1SWpvAEgdYX+XbURfzjB
+         HqCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754989449; x=1755594249;
+        d=1e100.net; s=20230601; t=1754989451; x=1755594251;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=itAcwp1tL7JmEvs/VclPDqKZmFhrZKHjpN5MTKoCPt8=;
-        b=p7UwCJWVDz+2wQAwsIfeWjofv9S2mlJvp7DEzatSQSSaqbV4wqdt4M15tHjN7wLDDE
-         d9E9q60DvKAi+awXNSktaD1i6M0RlXTWYONjij3jNjt4eUFaJ69zYdtPECy88qJFt6Q0
-         lCfKXgxoqXbZFnJiMgU3n4Kf2G1iriER+zzvrqsmcF8g/Pmzo6kJ/eVJOrpu83Qkl3pJ
-         hjE6C7+iGQuRZSYLvWstTAbLuJsmmjGInPlkYRENI/8FxNfBjFGlTAGJS7Cbv0m2xltH
-         7QffSFYbxyqqrRwabKFj06oCcYdOCrFAUEGLE+rZVqJAu3UWTYw3aIErS9TkdaUjDvR0
-         iwDA==
-X-Gm-Message-State: AOJu0YxyDnxhrcuMhj97I03ci9Vbzdegpv2zAKNTPlAhTYoE+l4JhO3w
-	WtJPEMC6VMVjcozvThWioI5Ookvu5bZ5LdR0w4ddkBil+f08sgMq/XzckwypLa6MxZ7txUpdY1/
-	aMnVM
-X-Gm-Gg: ASbGnctnFPRjLAnbwJ+4Rm6/bX5gsU1F7qEBxJz46+2t6WWNgY/RyOA3MTRV3U9kD0B
-	lGkB9PF2kBBcDCxB8VxvPYZKjeBdC12JWIn4hEl3qtyo0leS0mlItpiyzJRiIOFhk4S2eMzawV0
-	ZyGmyZBRbbJffEnUAsCUvzFsXe7ANGLAwCZzk/FEqA6woJj5saVPjSFXQUjCYtMRa5bRzA7ZHLr
-	daLj9HsZKznEeIB3AqV7pBNWMGJaBYms8e/oaevrRuN3x5Ukp7OZWkTFVKmN8ND8Yq8QZCc3IKQ
-	H/9esok+gcAU1+R6aS/9f83Cgat03TrbhwAZsuN+YcyOCvAaaMx+oXG9j27Rzxq4wePtH1T1Usd
-	lH+aZQYbZNtfd9R3YLlNdcXZ/NkvnPQ==
-X-Google-Smtp-Source: AGHT+IEKfx5/IibgOl7zdUM/KxazaaZ9Kt824Zr9oOR+gNUohGNLWWuXxmaBUI2dt+CetFzava53Sw==
-X-Received: by 2002:a05:6000:2c10:b0:3b7:99a8:bf6d with SMTP id ffacd0b85a97d-3b9142bcf85mr298562f8f.11.1754989449200;
-        Tue, 12 Aug 2025 02:04:09 -0700 (PDT)
+        bh=DkDi9sQ4u1Zsf5AcaPzYnSO2sPwb0elGC7q2l8b77oI=;
+        b=Y3NaGcNBHc5VQ1DXTsZJARsdt0lXsCqzLImvIepa7LguFfpLN44egR7q2luFl79zAJ
+         9KKw4CANYtsF3STaqb9BulrA3HANCed656XShsOxxwDqNWf0DPw/lXKdnlz3b/fyJp5x
+         WhnQNtxM4j3ASXR6NPUfaXWHxRzOAD0f3pdk7MX2YDx8ed6uidep3HkFWnoJER5awhiD
+         QOHNDMxNFQM/HyCANyA4OS2THbLeLL2HhPsVBMoLd7BFG2t4wyDtN3cXIqKHHoMUr68A
+         uYjlTYL5Y15wrYVeepz1A7ebBTO5fzl+H5PU2Z9Znu/1JjSE+NykpIZdIxGO4Ch8yIdQ
+         ultg==
+X-Gm-Message-State: AOJu0YzX519lN+yCZGuoJFPuzZl6K92AOCTEUiLh55VwV/AJ8YLBXanH
+	OQaTxMO2iHPLt9BKeoFIabduyE8UVvFW3v3DRqJtuj56QC2Tt/4liL7DL9eqtZx1ZpZSo0exdgn
+	a17KM
+X-Gm-Gg: ASbGncsPRL8NWqMGyljIQ7fN5Ujt0BxZ6UQE5JSi92/yf8gIvf1fuecLK7r/U8bNHvp
+	Ho1dBDKhij3346goRqYWEH1PSMr5CL+HBisZVJZpRA2P3zSyXTGcIhLwhIWCGOZIvPooOChmRHq
+	EJLknvbxBq9NJc1RYNxxj8emFLFfYEwgQKIoeihIgtwDTEiiLx2jVXs/d6s4qD2sCuiLXvLT2MS
+	oyEgBtorB1/dDZMtadeEmdXH+ANNP6bixM7yZiFruSRozsPY5DP/BSlEs7IWVDgatYe48/02QJY
+	8w1vME6cLBPCZgUsHJGUKYLobsWSyQNoGfqlRJJiloLWx7ZpWWEcDMew1Sq194Y03gxwdvG0mm5
+	PIp7n1EhA25K0JhnbKROutx95guvAtQ==
+X-Google-Smtp-Source: AGHT+IFBefRRbVz8mjWqcsAPH9QQgYekCVsZTS4QORs3XTzsM/mOl+JX5+dSUj2YaHIFPPZ1EW6gKQ==
+X-Received: by 2002:a05:600c:608c:b0:458:a753:f3a1 with SMTP id 5b1f17b1804b1-45a1404e5b0mr2724695e9.3.1754989450650;
+        Tue, 12 Aug 2025 02:04:10 -0700 (PDT)
 Received: from localhost ([2a02:8308:a00c:e200:8113:2b11:8f42:672f])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-459e5887b7fsm287090205e9.30.2025.08.12.02.04.08
+        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-45a053a9019sm104340625e9.21.2025.08.12.02.04.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Aug 2025 02:04:08 -0700 (PDT)
+        Tue, 12 Aug 2025 02:04:10 -0700 (PDT)
 From: =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@ventanamicro.com>
 To: bpf@vger.kernel.org
 Cc: stable@vger.kernel.org,
@@ -98,9 +98,9 @@ Cc: stable@vger.kernel.org,
 	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
 	linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] riscv, bpf: use lw when reading int cpu in BPF_MOV64_PERCPU_REG
-Date: Tue, 12 Aug 2025 11:02:55 +0200
-Message-ID: <20250812090256.757273-3-rkrcmar@ventanamicro.com>
+Subject: [PATCH 2/2] riscv, bpf: use lw when reading int cpu in bpf_get_smp_processor_id
+Date: Tue, 12 Aug 2025 11:02:56 +0200
+Message-ID: <20250812090256.757273-4-rkrcmar@ventanamicro.com>
 X-Mailer: git-send-email 2.50.0
 In-Reply-To: <20250812090256.757273-2-rkrcmar@ventanamicro.com>
 References: <20250812090256.757273-2-rkrcmar@ventanamicro.com>
@@ -117,7 +117,7 @@ emit_ld is wrong, because thread_info.cpu is 32-bit, not xlen-bit wide.
 The struct currently has a hole after cpu, so little endian accesses
 seemed fine.
 
-Fixes: 19c56d4e5be1 ("riscv, bpf: add internal-only MOV instruction to resolve per-CPU addrs")
+Fixes: 2ddec2c80b44 ("riscv, bpf: inline bpf_get_smp_processor_id()")
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Radim Krčmář <rkrcmar@ventanamicro.com>
 ---
@@ -125,18 +125,18 @@ Signed-off-by: Radim Krčmář <rkrcmar@ventanamicro.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-index 10e01ff06312..6e1554d89681 100644
+index 6e1554d89681..9883a55d61b5 100644
 --- a/arch/riscv/net/bpf_jit_comp64.c
 +++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -1356,7 +1356,7 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- 				emit_mv(rd, rs, ctx);
- #ifdef CONFIG_SMP
- 			/* Load current CPU number in T1 */
--			emit_ld(RV_REG_T1, offsetof(struct thread_info, cpu),
-+			emit_lw(RV_REG_T1, offsetof(struct thread_info, cpu),
+@@ -1763,7 +1763,7 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 		 */
+ 		if (insn->src_reg == 0 && insn->imm == BPF_FUNC_get_smp_processor_id) {
+ 			/* Load current CPU number in R0 */
+-			emit_ld(bpf_to_rv_reg(BPF_REG_0, ctx), offsetof(struct thread_info, cpu),
++			emit_lw(bpf_to_rv_reg(BPF_REG_0, ctx), offsetof(struct thread_info, cpu),
  				RV_REG_TP, ctx);
- 			/* Load address of __per_cpu_offset array in T2 */
- 			emit_addr(RV_REG_T2, (u64)&__per_cpu_offset, extra_pass, ctx);
+ 			break;
+ 		}
 -- 
 2.50.0
 
