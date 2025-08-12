@@ -1,228 +1,348 @@
-Return-Path: <bpf+bounces-65437-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65438-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD5F9B22CF9
-	for <lists+bpf@lfdr.de>; Tue, 12 Aug 2025 18:17:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 969D2B22D1A
+	for <lists+bpf@lfdr.de>; Tue, 12 Aug 2025 18:20:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42AEB1678B7
-	for <lists+bpf@lfdr.de>; Tue, 12 Aug 2025 16:11:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8672A16B62A
+	for <lists+bpf@lfdr.de>; Tue, 12 Aug 2025 16:16:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D6DB23D7DF;
-	Tue, 12 Aug 2025 16:11:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E59732F7474;
+	Tue, 12 Aug 2025 16:15:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Ncs6K/51"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QVPgQkwM"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE3F7305E04
-	for <bpf@vger.kernel.org>; Tue, 12 Aug 2025 16:11:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 699212EB5C5;
+	Tue, 12 Aug 2025 16:15:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755015113; cv=none; b=jwl8NkunFSDWj4w+4awuY3qKTvWVnAnLNVLRSOPQEVhhcxEhzEOf2zA2RItF6tVqfZlnSuvReB7OHY5IFM2n82XaC7jREpOTpirwxsqenO2MzMYSuO5uulblU1vrcVNqsN1TSgUidC7HrR2aDxiifgGDSoBJSvTDA6avYVLBEz4=
+	t=1755015344; cv=none; b=Jt3tHY4wbRbeBIVn2LKpnzGg8c1RfVxFnfimuZjzJnEg+p0sE+Q6kFoG8HLcNmy0cKcL++NrK/B5k7RrQKFBlaFPGTBqUupbPrYHAUSqJhfnnIcMorCyEZMqccR6W/7j0lD41NCNdswCBZI/6n6vzc6R8QWW9JYzl6PeJSp4Cwo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755015113; c=relaxed/simple;
-	bh=ZNHzSWxxdQBQ5le7poj2nm65AEXDF8Di90b1RkACNOw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i7cgLPgNFDyOpfugInpbni2nSNlbl1E+7q3a0gCKQHpgowaV/ZU7v2V0T2VmWy9pqohF2qSMWsmnszgtlcQ7YRR6gsDhvoVpCqv5YuyiJO27Ux35ujDgoplZBoXUX6fpcYCgt3+zYZVe0xZqLD3T1XJ6JCXCYukiXxGsAV+RQLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Ncs6K/51; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <2559a8cd-b439-43fc-96e4-d5f2941ca4d8@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1755015109;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=85LD0M+g7vnAQvqfLaFISlWJcgUdOVtpk5d2oOh+o0w=;
-	b=Ncs6K/514Lq4fXrOke0KLWLMuWasTnw9WQfXhrASLXp7Qs2JIX9yfeIqUket2J2JHXRAhg
-	UoASoe1v2osVsYUtzl1cQNAKYLU6nyWinm2N5yUbzqXFH5eH7iizp5OzBHvFV0/1TaZh0C
-	o1JaAuZdOElIGVSFGCYglFd9aZIT8Ro=
-Date: Tue, 12 Aug 2025 09:11:45 -0700
+	s=arc-20240116; t=1755015344; c=relaxed/simple;
+	bh=OH/wwHqRD7WHmtkg2z40iDvgF4fgD12OWh7nGgbdyV8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mOAmeEZraQpgRySU6ZQa/VHcyQIZLiXND8CaGeFWNKQ6vxv7J3WyVcmy1A+n75n5coC4eMZ2MDC8r+xAp974rjfw8VqD1+1r502iaTJbOGwvvh/IlQl+0fIPAAwCvnlIh+d4NruKElk7Zrv8jqOmRTrtG2hHlx1x/U0jVEHQhUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QVPgQkwM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66DCEC4CEF0;
+	Tue, 12 Aug 2025 16:15:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1755015344;
+	bh=OH/wwHqRD7WHmtkg2z40iDvgF4fgD12OWh7nGgbdyV8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=QVPgQkwMw/uvSPcV92klRpzhniw2Fgb8Srav5QmZj8XSue+1+sDV9W2njhgKCjc9d
+	 XYaEIkHDdnB8aaKtNI8ZZxkpACCp/xdyw0PsgmYS0n9/y0eaZ6JpaLzI9kxuO5U2z0
+	 0uLtvyf9+8vmYypBXZfDbt215ohEuVrVEEdTsiuT+9yo3uSYMyCYfMl9XDp8uHit7R
+	 UGjqjHB7kZMsTZqaGb6o809MvoYcbIzbfpdsNlT3RT6BUh6mCgKWTPNsSlFze5gcqF
+	 1rnECf555pLL5h09/564SAj34VpY0x99Y4GtJYhwVdIryvTr+9papNVbFgh2bivOFW
+	 HsOZyODqiMWqg==
+From: Jakub Kicinski <kuba@kernel.org>
+To: netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Cc: Jakub Kicinski <kuba@kernel.org>,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	lorenzo@kernel.org,
+	toke@redhat.com,
+	john.fastabend@gmail.com,
+	sdf@fomichev.me,
+	michael.chan@broadcom.com,
+	anthony.l.nguyen@intel.com,
+	przemyslaw.kitszel@intel.com,
+	marcin.s.wojtas@gmail.com,
+	tariqt@nvidia.com,
+	mbloch@nvidia.com,
+	eperezma@redhat.com
+Subject: [RFC] xdp: pass flags to xdp_update_skb_shared_info() directly
+Date: Tue, 12 Aug 2025 09:15:28 -0700
+Message-ID: <20250812161528.835855-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v7 2/2] selftests/bpf: Force -O2 for USDT selftests to
- cover SIB handling logic
-Content-Language: en-GB
-To: =?UTF-8?B?6LW15L2z54Kc?= <phoenix500526@163.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250806092458.111972-1-phoenix500526@163.com>
- <20250806092458.111972-3-phoenix500526@163.com>
- <f5d8d886-1de3-4521-917a-e98b645b987e@linux.dev>
- <30d8fcac.2669.19882763de2.Coremail.phoenix500526@163.com>
- <e7ba3f7f-38b8-4c06-8aff-ef1fb8d04d86@linux.dev>
- <310495cd.19eb.19893314d03.Coremail.phoenix500526@163.com>
- <0f6d16c1-0e85-4709-9846-3a993a9f041b@linux.dev>
- <65e51538.57aa.1989d162bb8.Coremail.phoenix500526@163.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <65e51538.57aa.1989d162bb8.Coremail.phoenix500526@163.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
+xdp_update_skb_shared_info() needs to update skb state which
+was maintained in xdp_buff / frame. Pass full flags into it,
+instead of breaking it out bit by bit. We will need to add
+a bit for unreadable frags (even tho XDP doesn't support
+those the driver paths may be common), at which point almost
+all call sites would become:
 
+    xdp_update_skb_shared_info(skb, num_frags,
+                               sinfo->xdp_frags_size,
+                               MY_PAGE_SIZE * num_frags,
+                               xdp_buff_is_frag_pfmemalloc(xdp),
+                               xdp_buff_is_frag_unreadable(xdp));
 
-On 8/12/25 12:02 AM, 赵佳炜 wrote:
-> Yes, I've tried that but it didn't help. FYI:
->
-> $ readelf -nsr usdt_rip
->
->
-> Relocation section '.rela.dyn' at offset 0x530 contains 9 entries:
->    Offset          Info           Type           Sym. Value    Sym. Name + Addend
-> 000000003df0  000000000008 R_X86_64_RELATIVE                    1150
-> 000000003df8  000000000008 R_X86_64_RELATIVE                    1110
-> 000000004008  000000000008 R_X86_64_RELATIVE                    4008
-> 000000004018  000000000008 R_X86_64_RELATIVE                    1160
-> 000000003fd8  000100000006 R_X86_64_GLOB_DAT 0000000000000000 __libc_start_main@GLIBC_2.34 + 0
-> 000000003fe0  000200000006 R_X86_64_GLOB_DAT 0000000000000000 _ITM_deregisterTM[...] + 0
-> 000000003fe8  000300000006 R_X86_64_GLOB_DAT 0000000000000000 __gmon_start__ + 0
-> 000000003ff0  000400000006 R_X86_64_GLOB_DAT 0000000000000000 _ITM_registerTMCl[...] + 0
-> 000000003ff8  000500000006 R_X86_64_GLOB_DAT 0000000000000000 __cxa_finalize@GLIBC_2.2.5 + 0
->
->
-> Symbol table '.dynsym' contains 6 entries:
->     Num:    Value          Size Type    Bind   Vis      Ndx Name
->       0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND
->       1: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND _[...]@GLIBC_2.34 (2)
->       2: 0000000000000000     0 NOTYPE  WEAK   DEFAULT  UND _ITM_deregisterT[...]
->       3: 0000000000000000     0 NOTYPE  WEAK   DEFAULT  UND __gmon_start__
->       4: 0000000000000000     0 NOTYPE  WEAK   DEFAULT  UND _ITM_registerTMC[...]
->       5: 0000000000000000     0 FUNC    WEAK   DEFAULT  UND [...]@GLIBC_2.2.5 (3)
->
->
-> Symbol table '.symtab' contains 42 entries:
->     Num:    Value          Size Type    Bind   Vis      Ndx Name
->       0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND
->       1: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS Scrt1.o
->       2: 000000000000038c    32 OBJECT  LOCAL  DEFAULT    4 __abi_tag
->       3: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS usdt_rip.c
->       4: 0000000000004021     1 OBJECT  LOCAL  DEFAULT   25 ti
->       5: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS crtstuff.c
->       6: 00000000000010a0     0 FUNC    LOCAL  DEFAULT   14 deregister_tm_clones
->       7: 00000000000010d0     0 FUNC    LOCAL  DEFAULT   14 register_tm_clones
->       8: 0000000000001110     0 FUNC    LOCAL  DEFAULT   14 __do_global_dtors_aux
->       9: 0000000000004020     1 OBJECT  LOCAL  DEFAULT   25 completed.0
->      10: 0000000000003df8     0 OBJECT  LOCAL  DEFAULT   21 __do_global_dtor[...]
->      11: 0000000000001150     0 FUNC    LOCAL  DEFAULT   14 frame_dummy
->      12: 0000000000003df0     0 OBJECT  LOCAL  DEFAULT   20 __frame_dummy_in[...]
->      13: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS damo.c
->      14: 0000000000004022     1 OBJECT  LOCAL  DEFAULT   25 ti
->      15: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS crtstuff.c
->      16: 00000000000020d8     0 OBJECT  LOCAL  DEFAULT   19 __FRAME_END__
->      17: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS
->      18: 0000000000003e00     0 OBJECT  LOCAL  DEFAULT   22 _DYNAMIC
->      19: 0000000000002008     0 NOTYPE  LOCAL  DEFAULT   18 __GNU_EH_FRAME_HDR
->      20: 0000000000003fc0     0 OBJECT  LOCAL  DEFAULT   23 _GLOBAL_OFFSET_TABLE_
->      21: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND __libc_start_mai[...]
->      22: 0000000000000000     0 NOTYPE  WEAK   DEFAULT  UND _ITM_deregisterT[...]
->      23: 0000000000004000     0 NOTYPE  WEAK   DEFAULT   24 data_start
->      24: 0000000000001160     8 FUNC    GLOBAL DEFAULT   14 add
->      25: 0000000000004020     0 NOTYPE  GLOBAL DEFAULT   24 _edata
->      26: 0000000000002004     1 NOTYPE  WEAK   HIDDEN    17 _.stapsdt.base
->      27: 0000000000004010     8 OBJECT  GLOBAL DEFAULT   24 t1
->      28: 0000000000001168     0 FUNC    GLOBAL HIDDEN    15 _fini
->      29: 0000000000004000     0 NOTYPE  GLOBAL DEFAULT   24 __data_start
->      30: 0000000000000000     0 NOTYPE  WEAK   DEFAULT  UND __gmon_start__
->      31: 0000000000004008     0 OBJECT  GLOBAL HIDDEN    24 __dso_handle
->      32: 0000000000002000     4 OBJECT  GLOBAL DEFAULT   16 _IO_stdin_used
->      33: 0000000000004028     0 NOTYPE  GLOBAL DEFAULT   25 _end
->      34: 0000000000001070    38 FUNC    GLOBAL DEFAULT   14 _start
->      35: 0000000000004020     0 NOTYPE  GLOBAL DEFAULT   25 __bss_start
->      36: 0000000000001040    48 FUNC    GLOBAL DEFAULT   14 main
->      37: 0000000000004018     8 OBJECT  GLOBAL DEFAULT   24 add_ptr
->      38: 0000000000004020     0 OBJECT  GLOBAL HIDDEN    24 __TMC_END__
->      39: 0000000000000000     0 NOTYPE  WEAK   DEFAULT  UND _ITM_registerTMC[...]
->      40: 0000000000000000     0 FUNC    WEAK   DEFAULT  UND __cxa_finalize@G[...]
->      41: 0000000000001000     0 FUNC    GLOBAL HIDDEN    11 _init
->
->
-> Displaying notes found in: .note.gnu.property
->    Owner                Data size        Description
->    GNU                  0x00000020       NT_GNU_PROPERTY_TYPE_0
->        Properties: x86 feature: IBT, SHSTK
->          x86 ISA needed: x86-64-baseline
->
->
-> Displaying notes found in: .note.gnu.build-id
->    Owner                Data size        Description
->    GNU                  0x00000014       NT_GNU_BUILD_ID (unique build ID bitstring)
->      Build ID: eb615daa575687cc44edc1d339b27890c12c27f1
->
->
-> Displaying notes found in: .note.ABI-tag
->    Owner                Data size        Description
->    GNU                  0x00000010       NT_GNU_ABI_TAG (ABI version tag)
->      OS: Linux, ABI: 3.2.0
->
->
-> Displaying notes found in: .note.stapsdt
->    Owner                Data size        Description
->    stapsdt              0x00000066       NT_STAPSDT (SystemTap probe descriptors)
->      Provider: usdt_rip
->      Name: rip_global_var
->      Location: 0x0000000000001058, Base: 0x0000000000002004, Semaphore: 0x0000000000000000
->      Arguments: -1@ti(%rip) 8@add_ptr(%rip) -1@4+t1(%rip) -1@ti(%rip)
+Keep a helper for accessing the flags, in case we need to
+transform them somehow in the future (e.g. to cover up xdp_buff
+vs xdp_frame differences).
 
-Could you share the complete source codes and compiler options which
-reproduce the above result?
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+---
+Does anyone prefer the current form of the API, or can we change
+as prosposed?
 
->
->
->
-> At 2025-08-12 13:06:40, "Yonghong Song" <yonghong.song@linux.dev> wrote:
->>
->> On 8/10/25 1:55 AM, 赵佳炜 wrote:
->>>
->>> Hi Yonghong,
->>>
->>> I found another issue where symbols can be duplicated, and I’m not sure how to tell them apart.
->>>
->>> For example, I created two C files named usdt_rip.c and hello.c. Both define their own static ti variables, like:`static volatile char ti = 0;`.
->>>
->>> After compiling, I obtained an ELF file usdt_rip whose .symtab contains the following entries:
->>>
->>> $ readelf -s usdt_rip
->>>
->>> Symbol table '.symtab' contains 42 entries:
->>>      Num:    Value          Size Type    Bind   Vis      Ndx Name
->>>        0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND
->>>        1: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS Scrt1.o
->>>        2: 000000000000038c    32 OBJECT  LOCAL  DEFAULT    4 __abi_tag
->>>        3: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS usdt_rip.c
->>>        4: 0000000000004021     1 OBJECT  LOCAL  DEFAULT   25 ti
->>>        5: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS crtstuff.c
->>>        6: 00000000000010a0     0 FUNC    LOCAL  DEFAULT   14 deregister_tm_clones
->>>        7: 00000000000010d0     0 FUNC    LOCAL  DEFAULT   14 register_tm_clones
->>>        8: 0000000000001110     0 FUNC    LOCAL  DEFAULT   14 __do_global_dtors_aux
->>>        9: 0000000000004020     1 OBJECT  LOCAL  DEFAULT   25 completed.0
->>>       10: 0000000000003df8     0 OBJECT  LOCAL  DEFAULT   21 __do_global_dtor[...]
->>>       11: 0000000000001150     0 FUNC    LOCAL  DEFAULT   14 frame_dummy
->>>       12: 0000000000003df0     0 OBJECT  LOCAL  DEFAULT   20 __frame_dummy_in[...]
->>>       13: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS damo.c
->>>       14: 0000000000004022     1 OBJECT  LOCAL  DEFAULT   25 ti
->>>       15: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS crtstuff.c
->>>       16: 00000000000020d8     0 OBJECT  LOCAL  DEFAULT   19 __FRAME_END__
->>>
->>>
->>> As you can see, there are two ti variables in the .symtab section. Their values are very close, making them hard to distinguish.
->>>
->>> I’m unsure how to handle this situation. Do you have any suggestions?
->> Did you check relocations? Relocaitons should be able to point exact which symbol.
->>
->>> Thanks,
->>> Jiawei Zhao
->> [...]
+Bonus question: while Im messing with this API could I rename
+xdp_update_skb_shared_info()? Maybe to xdp_update_skb_state() ?
+Not sure why the function name has "shared_info" when most of
+what it updates is skb fields.
+
+CC: ast@kernel.org
+CC: daniel@iogearbox.net
+CC: hawk@kernel.org
+CC: lorenzo@kernel.org
+CC: toke@redhat.com
+CC: john.fastabend@gmail.com
+CC: sdf@fomichev.me
+CC: michael.chan@broadcom.com
+CC: anthony.l.nguyen@intel.com
+CC: przemyslaw.kitszel@intel.com
+CC: marcin.s.wojtas@gmail.com
+CC: tariqt@nvidia.com
+CC: mbloch@nvidia.com
+CC: eperezma@redhat.com
+CC: bpf@vger.kernel.org
+---
+ include/net/xdp.h                             | 21 +++++++++----------
+ drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c |  2 +-
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   |  4 ++--
+ drivers/net/ethernet/intel/ice/ice_txrx.c     |  4 ++--
+ drivers/net/ethernet/marvell/mvneta.c         |  2 +-
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   |  7 +++----
+ drivers/net/virtio_net.c                      |  2 +-
+ net/core/xdp.c                                | 11 +++++-----
+ 8 files changed, 26 insertions(+), 27 deletions(-)
+
+diff --git a/include/net/xdp.h b/include/net/xdp.h
+index b40f1f96cb11..2ff47f53ba26 100644
+--- a/include/net/xdp.h
++++ b/include/net/xdp.h
+@@ -104,17 +104,16 @@ static __always_inline void xdp_buff_clear_frags_flag(struct xdp_buff *xdp)
+ 	xdp->flags &= ~XDP_FLAGS_HAS_FRAGS;
+ }
+ 
+-static __always_inline bool
+-xdp_buff_is_frag_pfmemalloc(const struct xdp_buff *xdp)
+-{
+-	return !!(xdp->flags & XDP_FLAGS_FRAGS_PF_MEMALLOC);
+-}
+-
+ static __always_inline void xdp_buff_set_frag_pfmemalloc(struct xdp_buff *xdp)
+ {
+ 	xdp->flags |= XDP_FLAGS_FRAGS_PF_MEMALLOC;
+ }
+ 
++static __always_inline u32 xdp_buff_get_skb_flags(const struct xdp_buff *xdp)
++{
++	return xdp->flags;
++}
++
+ static __always_inline void
+ xdp_init_buff(struct xdp_buff *xdp, u32 frame_sz, struct xdp_rxq_info *rxq)
+ {
+@@ -272,10 +271,10 @@ static __always_inline bool xdp_frame_has_frags(const struct xdp_frame *frame)
+ 	return !!(frame->flags & XDP_FLAGS_HAS_FRAGS);
+ }
+ 
+-static __always_inline bool
+-xdp_frame_is_frag_pfmemalloc(const struct xdp_frame *frame)
++static __always_inline u32
++xdp_frame_get_skb_flags(const struct xdp_frame *frame)
+ {
+-	return !!(frame->flags & XDP_FLAGS_FRAGS_PF_MEMALLOC);
++	return frame->flags;
+ }
+ 
+ #define XDP_BULK_QUEUE_SIZE	16
+@@ -314,7 +313,7 @@ static inline void xdp_scrub_frame(struct xdp_frame *frame)
+ static inline void
+ xdp_update_skb_shared_info(struct sk_buff *skb, u8 nr_frags,
+ 			   unsigned int size, unsigned int truesize,
+-			   bool pfmemalloc)
++			   u32 skb_flags)
+ {
+ 	struct skb_shared_info *sinfo = skb_shinfo(skb);
+ 
+@@ -328,7 +327,7 @@ xdp_update_skb_shared_info(struct sk_buff *skb, u8 nr_frags,
+ 	skb->len += size;
+ 	skb->data_len += size;
+ 	skb->truesize += truesize;
+-	skb->pfmemalloc |= pfmemalloc;
++	skb->pfmemalloc |= skb_flags & XDP_FLAGS_FRAGS_PF_MEMALLOC;
+ }
+ 
+ /* Avoids inlining WARN macro in fast-path */
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
+index 58d579dca3f1..b35d4a8a8dac 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
+@@ -471,6 +471,6 @@ bnxt_xdp_build_skb(struct bnxt *bp, struct sk_buff *skb, u8 num_frags,
+ 	xdp_update_skb_shared_info(skb, num_frags,
+ 				   sinfo->xdp_frags_size,
+ 				   BNXT_RX_PAGE_SIZE * num_frags,
+-				   xdp_buff_is_frag_pfmemalloc(xdp));
++				   xdp_buff_get_skb_flags(xdp));
+ 	return skb;
+ }
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+index 048c33039130..9cbd614a0d57 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+@@ -2154,7 +2154,7 @@ static struct sk_buff *i40e_construct_skb(struct i40e_ring *rx_ring,
+ 		xdp_update_skb_shared_info(skb, skinfo->nr_frags + nr_frags,
+ 					   sinfo->xdp_frags_size,
+ 					   nr_frags * xdp->frame_sz,
+-					   xdp_buff_is_frag_pfmemalloc(xdp));
++					   xdp_buff_get_skb_flags(xdp));
+ 
+ 		/* First buffer has already been processed, so bump ntc */
+ 		if (++rx_ring->next_to_clean == rx_ring->count)
+@@ -2209,7 +2209,7 @@ static struct sk_buff *i40e_build_skb(struct i40e_ring *rx_ring,
+ 		xdp_update_skb_shared_info(skb, nr_frags,
+ 					   sinfo->xdp_frags_size,
+ 					   nr_frags * xdp->frame_sz,
+-					   xdp_buff_is_frag_pfmemalloc(xdp));
++					   xdp_buff_get_skb_flags(xdp));
+ 
+ 		i40e_process_rx_buffs(rx_ring, I40E_XDP_PASS, xdp);
+ 	} else {
+diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
+index 29e0088ab6b2..014b321e487e 100644
+--- a/drivers/net/ethernet/intel/ice/ice_txrx.c
++++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
+@@ -1038,7 +1038,7 @@ ice_build_skb(struct ice_rx_ring *rx_ring, struct xdp_buff *xdp)
+ 		xdp_update_skb_shared_info(skb, nr_frags,
+ 					   sinfo->xdp_frags_size,
+ 					   nr_frags * xdp->frame_sz,
+-					   xdp_buff_is_frag_pfmemalloc(xdp));
++					   xdp_buff_get_skb_flags(xdp));
+ 
+ 	return skb;
+ }
+@@ -1118,7 +1118,7 @@ ice_construct_skb(struct ice_rx_ring *rx_ring, struct xdp_buff *xdp)
+ 		xdp_update_skb_shared_info(skb, skinfo->nr_frags + nr_frags,
+ 					   sinfo->xdp_frags_size,
+ 					   nr_frags * xdp->frame_sz,
+-					   xdp_buff_is_frag_pfmemalloc(xdp));
++					   xdp_buff_get_skb_flags(xdp));
+ 	}
+ 
+ 	return skb;
+diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
+index 476e73e502fe..79a6bd530619 100644
+--- a/drivers/net/ethernet/marvell/mvneta.c
++++ b/drivers/net/ethernet/marvell/mvneta.c
+@@ -2419,7 +2419,7 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct page_pool *pool,
+ 		xdp_update_skb_shared_info(skb, num_frags,
+ 					   sinfo->xdp_frags_size,
+ 					   num_frags * xdp->frame_sz,
+-					   xdp_buff_is_frag_pfmemalloc(xdp));
++					   xdp_buff_get_skb_flags(xdp));
+ 
+ 	return skb;
+ }
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+index b8c609d91d11..abbe24f71f6a 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+@@ -1798,8 +1798,7 @@ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi
+ 		/* sinfo->nr_frags is reset by build_skb, calculate again. */
+ 		xdp_update_skb_shared_info(skb, wi - head_wi - 1,
+ 					   sinfo->xdp_frags_size, truesize,
+-					   xdp_buff_is_frag_pfmemalloc(
+-						&mxbuf->xdp));
++					   xdp_buff_get_skb_flags(&mxbuf->xdp));
+ 
+ 		for (struct mlx5e_wqe_frag_info *pwi = head_wi + 1; pwi < wi; pwi++)
+ 			pwi->frag_page->frags++;
+@@ -2107,7 +2106,7 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
+ 			/* sinfo->nr_frags is reset by build_skb, calculate again. */
+ 			xdp_update_skb_shared_info(skb, frag_page - head_page,
+ 						   sinfo->xdp_frags_size, truesize,
+-						   xdp_buff_is_frag_pfmemalloc(
++						   xdp_buff_get_skb_flags(
+ 							&mxbuf->xdp));
+ 
+ 			pagep = head_page;
+@@ -2124,7 +2123,7 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
+ 
+ 			xdp_update_skb_shared_info(skb, sinfo->nr_frags,
+ 						   sinfo->xdp_frags_size, truesize,
+-						   xdp_buff_is_frag_pfmemalloc(
++						   xdp_buff_get_skb_flags(
+ 							&mxbuf->xdp));
+ 
+ 			pagep = frag_page - sinfo->nr_frags;
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index d14e6d602273..152b0d5c2122 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -2188,7 +2188,7 @@ static struct sk_buff *build_skb_from_xdp_buff(struct net_device *dev,
+ 		xdp_update_skb_shared_info(skb, nr_frags,
+ 					   sinfo->xdp_frags_size,
+ 					   xdp_frags_truesz,
+-					   xdp_buff_is_frag_pfmemalloc(xdp));
++					   xdp_buff_get_skb_flags(xdp));
+ 
+ 	return skb;
+ }
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index 491334b9b8be..789051763209 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -665,7 +665,7 @@ struct sk_buff *xdp_build_skb_from_buff(const struct xdp_buff *xdp)
+ 		tsize = sinfo->xdp_frags_truesize ? : nr_frags * xdp->frame_sz;
+ 		xdp_update_skb_shared_info(skb, nr_frags,
+ 					   sinfo->xdp_frags_size, tsize,
+-					   xdp_buff_is_frag_pfmemalloc(xdp));
++					   xdp_buff_get_skb_flags(xdp));
+ 	}
+ 
+ 	skb->protocol = eth_type_trans(skb, rxq->dev);
+@@ -692,7 +692,7 @@ static noinline bool xdp_copy_frags_from_zc(struct sk_buff *skb,
+ 	struct skb_shared_info *sinfo = skb_shinfo(skb);
+ 	const struct skb_shared_info *xinfo;
+ 	u32 nr_frags, tsize = 0;
+-	bool pfmemalloc = false;
++	u32 flags = 0;
+ 
+ 	xinfo = xdp_get_shared_info_from_buff(xdp);
+ 	nr_frags = xinfo->nr_frags;
+@@ -714,11 +714,12 @@ static noinline bool xdp_copy_frags_from_zc(struct sk_buff *skb,
+ 		__skb_fill_page_desc_noacc(sinfo, i, page, offset, len);
+ 
+ 		tsize += truesize;
+-		pfmemalloc |= page_is_pfmemalloc(page);
++		if (page_is_pfmemalloc(page))
++			flags |= XDP_FLAGS_FRAGS_PF_MEMALLOC;
+ 	}
+ 
+ 	xdp_update_skb_shared_info(skb, nr_frags, xinfo->xdp_frags_size,
+-				   tsize, pfmemalloc);
++				   tsize, flags);
+ 
+ 	return true;
+ }
+@@ -826,7 +827,7 @@ struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
+ 		xdp_update_skb_shared_info(skb, nr_frags,
+ 					   sinfo->xdp_frags_size,
+ 					   nr_frags * xdpf->frame_sz,
+-					   xdp_frame_is_frag_pfmemalloc(xdpf));
++					   xdp_frame_get_skb_flags(xdpf));
+ 
+ 	/* Essential SKB info: protocol and skb->dev */
+ 	skb->protocol = eth_type_trans(skb, dev);
+-- 
+2.50.1
 
 
