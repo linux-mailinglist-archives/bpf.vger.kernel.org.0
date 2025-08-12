@@ -1,160 +1,86 @@
-Return-Path: <bpf+bounces-65474-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65476-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C8F0B23C03
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 00:51:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89644B23C28
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 01:00:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 170FA1AA3828
-	for <lists+bpf@lfdr.de>; Tue, 12 Aug 2025 22:51:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4050E1B61A15
+	for <lists+bpf@lfdr.de>; Tue, 12 Aug 2025 23:00:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C8852253FE;
-	Tue, 12 Aug 2025 22:51:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF87E2DC343;
+	Tue, 12 Aug 2025 23:00:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lTLauqxA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dWkEC9ta"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 451CE2F0661
-	for <bpf@vger.kernel.org>; Tue, 12 Aug 2025 22:51:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B9292D9787;
+	Tue, 12 Aug 2025 23:00:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755039084; cv=none; b=H/8RU3UItP/ALy2OpNAphMscJaZxUbkTTaAe7A4DYvh9jeVtCuHQpS2mD6EgPpcIyqznZDGNzSAUdxQjrNSj0HDM1LWsJRigUZsSR0sBEt7JJt4zdOQaNVRBAuvNTq3N1Q/KVIe+dGXuBK3k5EPAP7A8rxKyRVRd66hd0sQTaTw=
+	t=1755039606; cv=none; b=REzDmrKpUMACMnT5h3SorDpyWFj98qs7YlNVlLWh1ii/SNpNShNMVzOwi+i03ear6V1KbW1wYYR/gttEo7D5EkjtzbZ7316SumCiW1sougapojmRtZPePDCLFLyJm7hQDCevZ3umvwd2blwCgdZIHwIIfWlYddy1SigPqAvjnL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755039084; c=relaxed/simple;
-	bh=nIhICFYZV96YJLAfePFwkF0LL3nTncggnJ3qzr6Yn8g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=auWXE9+Na6wPJ3nHWQDFdEzyQdEKtT7EyWDXyTXhKWBkx1fPm2J4kjgkH8Oa93JF0qPTR/2CoN/+C+ElUXsuU3yHLtRMJ3sb2lyZFF0t26Mft0EjzwHFW99MmhRhrPfL5nWWELJGPsFRFGfdIT54LPowsxkGyiVlTqgpvdZTtNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lTLauqxA; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-31ee880f7d2so6785237a91.0
-        for <bpf@vger.kernel.org>; Tue, 12 Aug 2025 15:51:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755039082; x=1755643882; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rscLN99lZI2H2ORwai3qyRzSkpvZJiFeiFnTC0prHoo=;
-        b=lTLauqxA17rm3FC5+pBsLhKreBGiNfL3byolegNDuFMozkK9YUp44q3yl02+LEEzeY
-         19U/pZz99P+6Q9IRptMsriBGhGdfFmTY3xeXvPv4Jv7qdd4g1bVwml6soHDjLa9iPKwd
-         1kxvv2FMerNEFFlOWY74XJniJD2TJwRaoJttlRDOlMzUP5+IaU4Rl//OnpsHFDwghYT5
-         MHkO3y295rffNtIH6c93Qtdn7yXgLOuxA2Wfw/24jwobT+NKGU7fEF30fIXeTp6LsSt5
-         T+kx2JTea2vXd0FOQZzsPQHvNZqOeMm85seNOJoxwzxwV7Kb/xHOYfwWnDKWklsdjOvr
-         H3iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755039082; x=1755643882;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rscLN99lZI2H2ORwai3qyRzSkpvZJiFeiFnTC0prHoo=;
-        b=uJfvEgp5EIPCoeXMQs0ArgAO0r+u9q6BuDNsmxPrge35Gaca4YQq6ygxmzoVhz/tPo
-         76kmtEFUfyEnJrIX3TJHT1JlZSyfrZ/HJl4kXFLCPyJXKIsmR4vJ/uNlStpyWBmwCU6Y
-         TnKqddP9YQJym2tiKbeiKs04sWdqB7++2Zn/GCVe9vTz3qOYmUQ8lgdLcojIm0Y3jZj4
-         BTg2Y9DD2JHx02a76R8eY5HimDlfarbt+rqAoBRfT8kWPakahhOSRrVXIPD8VN4meM0A
-         ffU7Z4XoQ/nsOqBSbfvRKsSriI2JvwVxl8gr4xao7UDR5yLnpqeyKhUmdoKh+qQIrBm8
-         oyyg==
-X-Gm-Message-State: AOJu0YxjKT4d54REiHMT/9zMj4XkoOdY4nXDD1t13NCD6ouQtEQ2avfP
-	sWBEZ2AIFkB3xqxzrgCKgZdUYVGz+8Yub+R8unmxVqIPj/rIjrEjEDHhwTINX9FOMkQiWLnUhRl
-	7Bqc9qs4PqafJrHMwouvgWEhHwNl8Wi+ubA==
-X-Gm-Gg: ASbGncvQK2SeQ3qSa+k8BrwU8A1iIH7QWTgHHC3/bmTLqGLanBUrEYfa7AVFw+IAuQO
-	cTusqnV7mN/mi6UGiawalsfBXsVzmMfq9sujMcUs9P1942ai4GbsQ4vN4PSTjwKJOm4JjcHlpmc
-	LHIwRuEJ6/0t5KywZm5BNL1zn2C6XnUf6MH+xS/MLxWI9A/q1wUjPJhPU7fGT2KuDD3V/PkCre3
-	4qkQ2W6/rNCNMg2gAIkg6k=
-X-Google-Smtp-Source: AGHT+IHIK7AMq3HssPrvAmr7hGObGaX3wvlma7a6r6o4uHaEjsCEdPq5mpQkvR8cltWhk5p2icEMCHekqiWXzSPuBRE=
-X-Received: by 2002:a17:90a:d650:b0:31f:3c3:947c with SMTP id
- 98e67ed59e1d1-321d0d8b1c6mr1053628a91.10.1755039082321; Tue, 12 Aug 2025
- 15:51:22 -0700 (PDT)
+	s=arc-20240116; t=1755039606; c=relaxed/simple;
+	bh=WSO2BcJG/GwX1GQjgMeXXXKPUA9sh33in9+xLkssH3g=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=gMF6EhwyWoJ0GbtVdmZK6Sxc2j6JZ7vBECDXMZZLyJRlQSokFBWMe/AWP0EeXojbqfGO5lf0IVoFu8Y9BeFMrtqAm77RdZ/1QKFx5rWmjoEspwqwQkNtdEN3QmkaKHZ/lOj/FpF5aS4lbPo7KC0N0Eufcv+NPpXz2cb8KW/e8F4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dWkEC9ta; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CC71C4CEF0;
+	Tue, 12 Aug 2025 23:00:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1755039605;
+	bh=WSO2BcJG/GwX1GQjgMeXXXKPUA9sh33in9+xLkssH3g=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=dWkEC9taJIwPeAnHPyX6fxsSsCx5E1mXT5sWrtwMwKWTAUAigh5b9b+ucOnxCdYUQ
+	 eGdRGL6EufCIzBrezJZkSydNtAacpRIF6pNMc5JlBCLNcAdkYUCHSk1zD/+j585mPk
+	 VQ4RE5l9lpKRLCK94Mu9b/563cZu51q7LpFhSdcSl2wo7IhkZVfod/F6JnOC3wtwk3
+	 Oa4DIaxFYxcCTQltMoacyCpmqIWjW3sk0H4SFjh1mUkG2qvglcRAdQ0SuJYXmrX/ky
+	 7htf/ERVPPn04HnQbQZNPJ/CiCnoZuiS90SeYLulUUOK2n92h7l6SjpQDE9Jy/2WrB
+	 tMHne8lvSlU5A==
+From: Nathan Chancellor <nathan@kernel.org>
+To: linux-kernel@vger.kernel.org, masahiroy@kernel.org, ojeda@kernel.org, 
+ Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, kernel-team@meta.com, linux-pm@vger.kernel.org, 
+ Eduard Zingerman <eddyz87@gmail.com>
+In-Reply-To: <20250606214840.3165754-1-andrii@kernel.org>
+References: <20250606214840.3165754-1-andrii@kernel.org>
+Subject: Re: [PATCH v2] .gitignore: ignore compile_commands.json globally
+Message-Id: <175503960408.1315825.6402987041334486305.b4-ty@kernel.org>
+Date: Tue, 12 Aug 2025 16:00:04 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <aJo9THBrzo8jFXsh@mail.gmail.com>
-In-Reply-To: <aJo9THBrzo8jFXsh@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 12 Aug 2025 15:51:06 -0700
-X-Gm-Features: Ac12FXyuRgu5g7rkf8YBr4oWvyVqc7uJIn26BgwRs3xnDFuF39da87BjejtMg8I
-Message-ID: <CAEf4BzbMGmXn54sR1z1OX-am3gAsZy8LAwqeEg+iotkvK2bB1w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Tidy verifier bug message
-To: Paul Chaignon <paul.chaignon@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Aug 11, 2025 at 11:58=E2=80=AFAM Paul Chaignon <paul.chaignon@gmail=
-.com> wrote:
->
-> Yonghong noticed that error messages for potential verifier bugs often
-> have a '(1)' at the end. This is happening because verifier_bug_if(cond,
-> env, fmt, args...) prints "(" #cond ")\n" as part of the message and
-> verifier_bug() is defined as:
->
->   #define verifier_bug(env, fmt, args...) verifier_bug_if(1, env, fmt, ##=
-args)
->
-> Hence, verifier_bug() always ends up displaying '(1)'. This small patch
-> fixes it by having verifier_bug_if conditionally call verifier_bug
-> instead of the other way around.
->
-> Fixes: 1cb0f56d9618 ("bpf: WARN_ONCE on verifier bugs")
-> Reported-by: Yonghong Song <yonghong.song@linux.dev>
-> Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
-> ---
->  include/linux/bpf_verifier.h | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
->
-> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> index c823f8efe3ed..d38b5ac6a191 100644
-> --- a/include/linux/bpf_verifier.h
-> +++ b/include/linux/bpf_verifier.h
-> @@ -876,12 +876,15 @@ __printf(3, 4) void verbose_linfo(struct bpf_verifi=
-er_env *env,
->         ({                                                               =
-                       \
->                 bool __cond =3D (cond);                                  =
-                         \
->                 if (unlikely(__cond)) {                                  =
-                       \
-> -                       BPF_WARN_ONCE(1, "verifier bug: " fmt "(" #cond "=
-)\n", ##args);         \
-> -                       bpf_log(&env->log, "verifier bug: " fmt "(" #cond=
- ")\n", ##args);       \
-> +                       verifier_bug(env, fmt " (" #cond ")", ##args);   =
-                       \
->                 }                                                        =
-                       \
-
-dropped now unnecessary {}
-
->                 (__cond);                                                =
-                       \
->         })
-> -#define verifier_bug(env, fmt, args...) verifier_bug_if(1, env, fmt, ##a=
-rgs)
-> +#define verifier_bug(env, fmt, args...)                                 =
-       \
-> +       ({                                                              \
-> +               BPF_WARN_ONCE(1, "verifier bug: " fmt "\n", ##args);    \
-> +               bpf_log(&env->log, "verifier bug: " fmt "\n", ##args);  \
-> +       })
-
-shifted those ending \ to align with verifier_buf_if's ones.
-
-Applied to bpf-next, thanks.
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev
 
 
->
->  static inline struct bpf_func_state *cur_func(struct bpf_verifier_env *e=
-nv)
->  {
-> --
-> 2.43.0
->
+On Fri, 06 Jun 2025 14:48:40 -0700, Andrii Nakryiko wrote:
+> compile_commands.json can be used with clangd to enable language server
+> protocol-based assistance. For kernel itself this can be built with
+> scripts/gen_compile_commands.py, but other projects (e.g., libbpf, or
+> BPF selftests) can benefit from their own compilation database file,
+> which can be generated successfully using external tools, like bear [0].
+> 
+> So, instead of adding compile_commands.json to .gitignore in respective
+> individual projects, let's just ignore it globally anywhere in Linux repo.
+> 
+> [...]
+
+Applied, thanks!
+
+[1/1] .gitignore: ignore compile_commands.json globally
+      https://git.kernel.org/kbuild/c/f7cc3caea0005
+
+Best regards,
+-- 
+Nathan Chancellor <nathan@kernel.org>
+
 
