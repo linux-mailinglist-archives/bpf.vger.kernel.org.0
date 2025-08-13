@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-65555-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65556-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03220B254CE
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 22:56:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF6B6B254D1
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 22:56:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBBD09A50B7
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 20:56:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 58B377B6EA5
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 20:55:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0657F2F069E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46003309DC5;
 	Wed, 13 Aug 2025 20:55:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hPczOFVd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H+YyAmkn"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81A072E7BD4;
-	Wed, 13 Aug 2025 20:55:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDABD2FD7AB;
+	Wed, 13 Aug 2025 20:55:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755118557; cv=none; b=LY2hG4krnR41mrEeZH1T+QURCrtNZJa9OgL2IzJZ/35pUwFcaaYjekF64sKe5GrKCUuHk4VcsBHOjoBRJtS6bC9pCu6cBP31/5RJB03oXFpwRajRhQf+L3iQh5CV7qJdJVBRAZLfveQo3/sToNxt0M1XM4XPhrNkW7/aIKsf+A8=
+	t=1755118557; cv=none; b=hjD27JQi1ChAyZNiZeAOizV7mp7I1scSygyoasyOr/f2opizCVOxe86iYl/snQNvOF1aKfe6VkO+NeatJFwRv3Uf0QrC9eAcGMLHls2B8TKKNtRm0LYDv5PteRMYpDlQpvVFvRtA24AnXQ23hdliQuvzgLZ6qu+V2sAw6WP6Ks4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1755118557; c=relaxed/simple;
-	bh=OZDha6UmFl9QfBLu6+DfVfraY0t/ipA/9or+fwcnKj8=;
+	bh=p1xMijHhrhsV98PWI6O9HtBY9Uzsntl9IkjsuDfOYhM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cndKvgO/UwkoEoNMWq0xj6+C1cuUqaOA6yfT0FDRCLLa/iVolyysKzoA3/WgR1wkCuIbNRp1b/1qEIfyaXOqjvZ4HJcdkucylu0BzXWptjkZqqYiM8kAtq3iqrdFyzWWhw8HxcPODYdXtiRPobudqeRsB4vvvr8MtEkwskKcLYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hPczOFVd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2366AC4CEF5;
-	Wed, 13 Aug 2025 20:55:52 +0000 (UTC)
+	 MIME-Version; b=tDZYBXMZaYgYph73oY681PlbLF6t5pcGL7WT4eSqotjgXShXiOpZnPzMP2xBj4CC2WKpijueKBlBeMrOhPOXpRl0Vpf7cWykNlI7c9GuS3LMUEgQR0Frgb4+EBLJjgzPBExdNhrBn2u0N1KPbZ4OJviDBCYuHa10T9qJLxY1WfM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H+YyAmkn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E687C4CEED;
+	Wed, 13 Aug 2025 20:55:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755118555;
-	bh=OZDha6UmFl9QfBLu6+DfVfraY0t/ipA/9or+fwcnKj8=;
+	s=k20201202; t=1755118557;
+	bh=p1xMijHhrhsV98PWI6O9HtBY9Uzsntl9IkjsuDfOYhM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hPczOFVdvxctoqi8Zz5V1U8F6A1Juo2d5eIhVAQwh4OuqwQtUPi8Y1F7WKgKepZwl
-	 XF0Emi5HPtvqDxpmlEJN57PMqae4YmBPpp64APB//0lMI6/oXnfEbC1G30lr44ZuCH
-	 0ptglzpoDV6sCULzsBFII0e0x0QY+yMStbVX0Smi5CG91dlKfSF7Gf4Gh1TE0hMAAu
-	 8g2kLLw+j1T0fh/YeX6enP7RTaL2IcqvBn/35/0dBm4YjZOaCqTCq0vYiL2spxm9Zk
-	 MLekETqFBY9xjrrO5dclYFBN0R4xk0FTcL8naxxFD8v7RE6Katldo+1nCUVCOjB4Ut
-	 KU6D7OwJdx3fA==
+	b=H+YyAmkn17+1a07oF8oDoHpBRzKl3xbbaSp17TYKEfOAHGA6kYGDVLkevQDsNdw75
+	 2nh+8GT9+M+RIMhHY1/aq5E9tSnU8ljih2lNEJYydIy65QsB4S+D6HC+mKWM/Qpqe1
+	 oHUhToV5rth8JJdSpTwHmE3L89eevtUKk1C2CNRAFuoHxzVxDadhxOugrjNVISsk5a
+	 cxn9IYX0Ugp0sUWhULM2ok77pCc1Mzy6V13gvVjMoovgkVVqbrCCYcQ9em6wcIPLRT
+	 UFqWmVPqgOddxF5gM2e7mF11ByGLMpbkfXVXPWXqanzYxuPq95GQNaFd7HeNckBVxJ
+	 5bkBL9xBItewA==
 From: KP Singh <kpsingh@kernel.org>
 To: bpf@vger.kernel.org,
 	linux-security-module@vger.kernel.org
@@ -51,9 +51,9 @@ Cc: bboscaccy@linux.microsoft.com,
 	daniel@iogearbox.net,
 	andrii@kernel.org,
 	KP Singh <kpsingh@kernel.org>
-Subject: [PATCH v3 10/12] libbpf: Embed and verify the metadata hash in the loader
-Date: Wed, 13 Aug 2025 22:55:24 +0200
-Message-ID: <20250813205526.2992911-11-kpsingh@kernel.org>
+Subject: [PATCH v3 11/12] bpftool: Add support for signing BPF programs
+Date: Wed, 13 Aug 2025 22:55:25 +0200
+Message-ID: <20250813205526.2992911-12-kpsingh@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250813205526.2992911-1-kpsingh@kernel.org>
 References: <20250813205526.2992911-1-kpsingh@kernel.org>
@@ -65,186 +65,660 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-To fulfill the BPF signing contract, represented as Sig(I_loader ||
-H_meta), the generated trusted loader program must verify the integrity
-of the metadata. This signature cryptographically binds the loader's
-instructions (I_loader) to a hash of the metadata (H_meta).
+Two modes of operation being added:
 
-The verification process is embedded directly into the loader program.
-Upon execution, the loader loads the runtime hash from struct bpf_map
-i.e. BPF_PSEUDO_MAP_IDX and compares this runtime hash against an
-expected hash value that has been hardcoded directly by
-bpf_obj__gen_loader.
+Add two modes of operation:
 
-The load from bpf_map can be improved by calling
-BPF_OBJ_GET_INFO_BY_FD from the kernel context after BPF_OBJ_GET_INFO_BY_FD
-has been updated for being called from the kernel context.
+* For prog load, allow signing a program immediately before loading. This
+  is essential for command-line testing and administration.
 
-The following instructions are generated:
+      bpftool prog load -S -k <private_key> -i <identity_cert> fentry_test.bpf.o
 
-    ld_imm64 r1, const_ptr_to_map // insn[0].src_reg == BPF_PSEUDO_MAP_IDX
-    r2 = *(u64 *)(r1 + 0);
-    ld_imm64 r3, sha256_of_map_part1 // constant precomputed by
-bpftool (part of H_meta)
-    if r2 != r3 goto out;
+* For gen skeleton, embed a pre-generated signature into the C skeleton
+  file. This supports the use of signed programs in compiled applications.
 
-    r2 = *(u64 *)(r1 + 8);
-    ld_imm64 r3, sha256_of_map_part2 // (part of H_meta)
-    if r2 != r3 goto out;
+      bpftool gen skeleton -S -k <private_key> -i <identity_cert> fentry_test.bpf.o
 
-    r2 = *(u64 *)(r1 + 16);
-    ld_imm64 r3, sha256_of_map_part3 // (part of H_meta)
-    if r2 != r3 goto out;
-
-    r2 = *(u64 *)(r1 + 24);
-    ld_imm64 r3, sha256_of_map_part4 // (part of H_meta)
-    if r2 != r3 goto out;
-    ...
+Generation of the loader program and its metadata map is implemented in
+libbpf (bpf_obj__gen_loader). bpftool generates a skeleton that loads
+the program and automates the required steps: freezing the map, creating
+an exclusive map, loading, and running. Users can use standard libbpf
+APIs directly or integrate loader program generation into their own
+toolchains.
 
 Signed-off-by: KP Singh <kpsingh@kernel.org>
 ---
- tools/lib/bpf/bpf_gen_internal.h |  2 ++
- tools/lib/bpf/gen_loader.c       | 55 ++++++++++++++++++++++++++++++++
- tools/lib/bpf/libbpf.h           |  3 +-
- 3 files changed, 59 insertions(+), 1 deletion(-)
+ .../bpf/bpftool/Documentation/bpftool-gen.rst |  16 +-
+ .../bpftool/Documentation/bpftool-prog.rst    |  18 +-
+ tools/bpf/bpftool/Makefile                    |   6 +-
+ tools/bpf/bpftool/cgroup.c                    |   4 +
+ tools/bpf/bpftool/gen.c                       |  60 ++++-
+ tools/bpf/bpftool/main.c                      |  26 ++-
+ tools/bpf/bpftool/main.h                      |  11 +
+ tools/bpf/bpftool/prog.c                      |  27 ++-
+ tools/bpf/bpftool/sign.c                      | 212 ++++++++++++++++++
+ 9 files changed, 367 insertions(+), 13 deletions(-)
+ create mode 100644 tools/bpf/bpftool/sign.c
 
-diff --git a/tools/lib/bpf/bpf_gen_internal.h b/tools/lib/bpf/bpf_gen_internal.h
-index 6ff963a491d9..49af4260b8e6 100644
---- a/tools/lib/bpf/bpf_gen_internal.h
-+++ b/tools/lib/bpf/bpf_gen_internal.h
-@@ -4,6 +4,7 @@
- #define __BPF_GEN_INTERNAL_H
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-gen.rst b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
+index ca860fd97d8d..cef469d758ed 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-gen.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
+@@ -16,7 +16,8 @@ SYNOPSIS
  
- #include "bpf.h"
-+#include "libbpf_internal.h"
+ **bpftool** [*OPTIONS*] **gen** *COMMAND*
  
- struct ksym_relo_desc {
- 	const char *name;
-@@ -50,6 +51,7 @@ struct bpf_gen {
- 	__u32 nr_ksyms;
- 	int fd_array;
- 	int nr_fd_array;
-+	int hash_insn_offset[SHA256_DWORD_SIZE];
- };
+-*OPTIONS* := { |COMMON_OPTIONS| | { **-L** | **--use-loader** } }
++*OPTIONS* := { |COMMON_OPTIONS| [ { **-L** | **--use-loader** } ]
++[ { { **-S** | **--sign** } **-k** <private_key.pem> **-i** <certificate.x509> } ] }}
  
- void bpf_gen__init(struct bpf_gen *gen, int log_level, int nr_progs, int nr_maps);
-diff --git a/tools/lib/bpf/gen_loader.c b/tools/lib/bpf/gen_loader.c
-index 113ae4abd345..8eba7c1514ef 100644
---- a/tools/lib/bpf/gen_loader.c
-+++ b/tools/lib/bpf/gen_loader.c
-@@ -110,6 +110,7 @@ static void emit2(struct bpf_gen *gen, struct bpf_insn insn1, struct bpf_insn in
+ *COMMAND* := { **object** | **skeleton** | **help** }
  
- static int add_data(struct bpf_gen *gen, const void *data, __u32 size);
- static void emit_sys_close_blob(struct bpf_gen *gen, int blob_off);
-+static void bpf_gen__signature_match(struct bpf_gen *gen);
+@@ -186,6 +187,19 @@ OPTIONS
+     skeleton). A light skeleton contains a loader eBPF program. It does not use
+     the majority of the libbpf infrastructure, and does not need libelf.
  
- void bpf_gen__init(struct bpf_gen *gen, int log_level, int nr_progs, int nr_maps)
- {
-@@ -152,6 +153,8 @@ void bpf_gen__init(struct bpf_gen *gen, int log_level, int nr_progs, int nr_maps
- 	/* R7 contains the error code from sys_bpf. Copy it into R0 and exit. */
- 	emit(gen, BPF_MOV64_REG(BPF_REG_0, BPF_REG_7));
- 	emit(gen, BPF_EXIT_INSN());
-+	if (OPTS_GET(gen->opts, gen_hash, false))
-+		bpf_gen__signature_match(gen);
- }
- 
- static int add_data(struct bpf_gen *gen, const void *data, __u32 size)
-@@ -368,6 +371,8 @@ static void emit_sys_close_blob(struct bpf_gen *gen, int blob_off)
- 	__emit_sys_close(gen);
- }
- 
-+static int compute_sha_udpate_offsets(struct bpf_gen *gen);
++-S, --sign
++    For skeletons, generate a signed skeleton. This option must be used with
++    **-k** and **-i**. Using this flag implicitly enables **--use-loader**.
++    See the "Signed Skeletons" section in the description of the
++    **gen skeleton** command for more details.
 +
- int bpf_gen__finish(struct bpf_gen *gen, int nr_progs, int nr_maps)
++-k <private_key.pem>
++    Path to the private key file in PEM format, required for signing.
++
++-i <certificate.x509>
++    Path to the X.509 certificate file in PEM or DER format, required for
++    signing.
++
+ EXAMPLES
+ ========
+ **$ cat example1.bpf.c**
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-prog.rst b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
+index f69fd92df8d8..55b812761df2 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-prog.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
+@@ -16,9 +16,9 @@ SYNOPSIS
+ 
+ **bpftool** [*OPTIONS*] **prog** *COMMAND*
+ 
+-*OPTIONS* := { |COMMON_OPTIONS| |
+-{ **-f** | **--bpffs** } | { **-m** | **--mapcompat** } | { **-n** | **--nomount** } |
+-{ **-L** | **--use-loader** } }
++*OPTIONS* := { |COMMON_OPTIONS| [ { **-f** | **--bpffs** } ] [ { **-m** | **--mapcompat** } ]
++[ { **-n** | **--nomount** } ] [ { **-L** | **--use-loader** } ]
++[ { { **-S** | **--sign** } **-k** <private_key.pem> **-i** <certificate.x509> } ] }
+ 
+ *COMMANDS* :=
+ { **show** | **list** | **dump xlated** | **dump jited** | **pin** | **load** |
+@@ -248,6 +248,18 @@ OPTIONS
+     creating the maps, and loading the programs (see **bpftool prog tracelog**
+     as a way to dump those messages).
+ 
++-S, --sign
++    Enable signing of the BPF program before loading. This option must be
++    used with **-k** and **-i**. Using this flag implicitly enables
++    **--use-loader**.
++
++-k <private_key.pem>
++    Path to the private key file in PEM format, required when signing.
++
++-i <certificate.x509>
++    Path to the X.509 certificate file in PEM or DER format, required when
++    signing.
++
+ EXAMPLES
+ ========
+ **# bpftool prog show**
+diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+index 9e9a5f006cd2..586d1b2595d1 100644
+--- a/tools/bpf/bpftool/Makefile
++++ b/tools/bpf/bpftool/Makefile
+@@ -130,8 +130,8 @@ include $(FEATURES_DUMP)
+ endif
+ endif
+ 
+-LIBS = $(LIBBPF) -lelf -lz
+-LIBS_BOOTSTRAP = $(LIBBPF_BOOTSTRAP) -lelf -lz
++LIBS = $(LIBBPF) -lelf -lz -lcrypto
++LIBS_BOOTSTRAP = $(LIBBPF_BOOTSTRAP) -lelf -lz -lcrypto
+ 
+ ifeq ($(feature-libelf-zstd),1)
+ LIBS += -lzstd
+@@ -194,7 +194,7 @@ endif
+ 
+ BPFTOOL_BOOTSTRAP := $(BOOTSTRAP_OUTPUT)bpftool
+ 
+-BOOTSTRAP_OBJS = $(addprefix $(BOOTSTRAP_OUTPUT),main.o common.o json_writer.o gen.o btf.o)
++BOOTSTRAP_OBJS = $(addprefix $(BOOTSTRAP_OUTPUT),main.o common.o json_writer.o gen.o btf.o sign.o)
+ $(BOOTSTRAP_OBJS): $(LIBBPF_BOOTSTRAP)
+ 
+ OBJS = $(patsubst %.c,$(OUTPUT)%.o,$(SRCS)) $(OUTPUT)disasm.o
+diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
+index 944ebe21a216..ec356deb27c9 100644
+--- a/tools/bpf/bpftool/cgroup.c
++++ b/tools/bpf/bpftool/cgroup.c
+@@ -2,6 +2,10 @@
+ // Copyright (C) 2017 Facebook
+ // Author: Roman Gushchin <guro@fb.com>
+ 
++#undef GCC_VERSION
++#ifndef _GNU_SOURCE
++#define _GNU_SOURCE
++#endif
+ #define _XOPEN_SOURCE 500
+ #include <errno.h>
+ #include <fcntl.h>
+diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+index 67a60114368f..427468c9e9c2 100644
+--- a/tools/bpf/bpftool/gen.c
++++ b/tools/bpf/bpftool/gen.c
+@@ -688,10 +688,17 @@ static void codegen_destroy(struct bpf_object *obj, const char *obj_name)
+ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *header_guard)
  {
- 	int i;
-@@ -394,6 +399,12 @@ int bpf_gen__finish(struct bpf_gen *gen, int nr_progs, int nr_maps)
- 			      blob_fd_array_off(gen, i));
- 	emit(gen, BPF_MOV64_IMM(BPF_REG_0, 0));
- 	emit(gen, BPF_EXIT_INSN());
-+	if (OPTS_GET(gen->opts, gen_hash, false)) {
-+		gen->error = compute_sha_udpate_offsets(gen);
-+		if (gen->error)
-+			return gen->error;
+ 	DECLARE_LIBBPF_OPTS(gen_loader_opts, opts);
++	struct bpf_load_and_run_opts sopts = {};
++	char sig_buf[MAX_SIG_SIZE];
++	__u8 prog_sha[SHA256_DIGEST_LENGTH];
+ 	struct bpf_map *map;
++
+ 	char ident[256];
+ 	int err = 0;
+ 
++	if (sign_progs)
++		opts.gen_hash = true;
++
+ 	err = bpf_object__gen_loader(obj, &opts);
+ 	if (err)
+ 		return err;
+@@ -701,6 +708,7 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
+ 		p_err("failed to load object file");
+ 		goto out;
+ 	}
++
+ 	/* If there was no error during load then gen_loader_opts
+ 	 * are populated with the loader program.
+ 	 */
+@@ -780,8 +788,51 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
+ 	print_hex(opts.insns, opts.insns_sz);
+ 	codegen("\
+ 		\n\
+-		\";							    \n\
+-									    \n\
++		\";\n");
++
++	if (sign_progs) {
++		sopts.insns = opts.insns;
++		sopts.insns_sz = opts.insns_sz;
++		sopts.excl_prog_hash = prog_sha;
++		sopts.excl_prog_hash_sz = sizeof(prog_sha);
++		sopts.signature = sig_buf;
++		sopts.signature_sz = MAX_SIG_SIZE;
++		sopts.keyring_id = KEY_SPEC_SESSION_KEYRING;
++
++		err = bpftool_prog_sign(&sopts);
++		if (err < 0)
++			return err;
++
++		codegen("\
++		\n\
++			static const char opts_sig[] __attribute__((__aligned__(8))) = \"\\\n\
++		");
++		print_hex((const void *)sig_buf, sopts.signature_sz);
++		codegen("\
++		\n\
++		\";\n");
++
++		codegen("\
++		\n\
++			static const char opts_excl_hash[] __attribute__((__aligned__(8))) = \"\\\n\
++		");
++		print_hex((const void *)prog_sha, sizeof(prog_sha));
++		codegen("\
++		\n\
++		\";\n");
++
++		codegen("\
++		\n\
++			opts.signature = (void *)opts_sig;			\n\
++			opts.signature_sz = sizeof(opts_sig) - 1;		\n\
++			opts.excl_prog_hash = (void *)opts_excl_hash;		\n\
++			opts.excl_prog_hash_sz = sizeof(opts_excl_hash) - 1;	\n\
++			opts.keyring_id = KEY_SPEC_SESSION_KEYRING;		\n\
++		");
 +	}
 +
- 	pr_debug("gen: finish %s\n", errstr(gen->error));
- 	if (!gen->error) {
- 		struct gen_loader_opts *opts = gen->opts;
-@@ -446,6 +457,27 @@ void bpf_gen__free(struct bpf_gen *gen)
- 	_val;							\
- })
++	codegen("\
++		\n\
+ 			opts.ctx = (struct bpf_loader_ctx *)skel;	    \n\
+ 			opts.data_sz = sizeof(opts_data) - 1;		    \n\
+ 			opts.data = (void *)opts_data;			    \n\
+@@ -1240,7 +1291,7 @@ static int do_skeleton(int argc, char **argv)
+ 		err = -errno;
+ 		libbpf_strerror(err, err_buf, sizeof(err_buf));
+ 		p_err("failed to open BPF object file: %s", err_buf);
+-		goto out;
++		goto out_obj;
+ 	}
  
-+static int compute_sha_udpate_offsets(struct bpf_gen *gen)
+ 	bpf_object__for_each_map(map, obj) {
+@@ -1552,6 +1603,7 @@ static int do_skeleton(int argc, char **argv)
+ 	err = 0;
+ out:
+ 	bpf_object__close(obj);
++out_obj:
+ 	if (obj_data)
+ 		munmap(obj_data, mmap_sz);
+ 	close(fd);
+@@ -1930,7 +1982,7 @@ static int do_help(int argc, char **argv)
+ 		"       %1$s %2$s help\n"
+ 		"\n"
+ 		"       " HELP_SPEC_OPTIONS " |\n"
+-		"                    {-L|--use-loader} }\n"
++		"                    {-L|--use-loader} | [ {-S|--sign } {-k} <private_key.pem> {-i} <certificate.x509> ]}\n"
+ 		"",
+ 		bin_name, "gen");
+ 
+diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+index 0f1183b2ed0a..c78eb80b9c94 100644
+--- a/tools/bpf/bpftool/main.c
++++ b/tools/bpf/bpftool/main.c
+@@ -33,6 +33,9 @@ bool relaxed_maps;
+ bool use_loader;
+ struct btf *base_btf;
+ struct hashmap *refs_table;
++bool sign_progs;
++const char *private_key_path;
++const char *cert_path;
+ 
+ static void __noreturn clean_and_exit(int i)
+ {
+@@ -448,6 +451,7 @@ int main(int argc, char **argv)
+ 		{ "nomount",	no_argument,	NULL,	'n' },
+ 		{ "debug",	no_argument,	NULL,	'd' },
+ 		{ "use-loader",	no_argument,	NULL,	'L' },
++		{ "sign",	no_argument,	NULL,	'S' },
+ 		{ "base-btf",	required_argument, NULL, 'B' },
+ 		{ 0 }
+ 	};
+@@ -474,7 +478,7 @@ int main(int argc, char **argv)
+ 	bin_name = "bpftool";
+ 
+ 	opterr = 0;
+-	while ((opt = getopt_long(argc, argv, "VhpjfLmndB:l",
++	while ((opt = getopt_long(argc, argv, "VhpjfLmndSi:k:B:l",
+ 				  options, NULL)) >= 0) {
+ 		switch (opt) {
+ 		case 'V':
+@@ -520,6 +524,16 @@ int main(int argc, char **argv)
+ 		case 'L':
+ 			use_loader = true;
+ 			break;
++		case 'S':
++			sign_progs = true;
++			use_loader = true;
++			break;
++		case 'k':
++			private_key_path = optarg;
++			break;
++		case 'i':
++			cert_path = optarg;
++			break;
+ 		default:
+ 			p_err("unrecognized option '%s'", argv[optind - 1]);
+ 			if (json_output)
+@@ -534,6 +548,16 @@ int main(int argc, char **argv)
+ 	if (argc < 0)
+ 		usage();
+ 
++	if (sign_progs && (private_key_path == NULL || cert_path == NULL)) {
++		p_err("-i <identity_x509_cert> and -k <private> key must be supplied with -S for signing");
++		return -EINVAL;
++	}
++
++	if (!sign_progs && (private_key_path != NULL || cert_path != NULL)) {
++		p_err("-i <identity_x509_cert> and -k <private> also need --sign to be used for sign programs");
++		return -EINVAL;
++	}
++
+ 	if (version_requested)
+ 		ret = do_version(argc, argv);
+ 	else
+diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
+index a2bb0714b3d6..f7f5b39b66c8 100644
+--- a/tools/bpf/bpftool/main.h
++++ b/tools/bpf/bpftool/main.h
+@@ -6,9 +6,14 @@
+ 
+ /* BFD and kernel.h both define GCC_VERSION, differently */
+ #undef GCC_VERSION
++#ifndef _GNU_SOURCE
++#define _GNU_SOURCE
++#endif
+ #include <stdbool.h>
+ #include <stdio.h>
++#include <errno.h>
+ #include <stdlib.h>
++#include <bpf/skel_internal.h>
+ #include <linux/bpf.h>
+ #include <linux/compiler.h>
+ #include <linux/kernel.h>
+@@ -52,6 +57,7 @@ static inline void *u64_to_ptr(__u64 ptr)
+ 	})
+ 
+ #define ERR_MAX_LEN	1024
++#define MAX_SIG_SIZE	4096
+ 
+ #define BPF_TAG_FMT	"%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx"
+ 
+@@ -85,6 +91,9 @@ extern bool relaxed_maps;
+ extern bool use_loader;
+ extern struct btf *base_btf;
+ extern struct hashmap *refs_table;
++extern bool sign_progs;
++extern const char *private_key_path;
++extern const char *cert_path;
+ 
+ void __printf(1, 2) p_err(const char *fmt, ...);
+ void __printf(1, 2) p_info(const char *fmt, ...);
+@@ -275,4 +284,6 @@ int pathname_concat(char *buf, int buf_sz, const char *path,
+ /* print netfilter bpf_link info */
+ void netfilter_dump_plain(const struct bpf_link_info *info);
+ void netfilter_dump_json(const struct bpf_link_info *info, json_writer_t *wtr);
++int bpftool_prog_sign(struct bpf_load_and_run_opts *opts);
++__u32 register_session_key(const char *key_der_path);
+ #endif
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index 9722d841abc0..82b8da084504 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -23,6 +23,7 @@
+ #include <linux/err.h>
+ #include <linux/perf_event.h>
+ #include <linux/sizes.h>
++#include <linux/keyctl.h>
+ 
+ #include <bpf/bpf.h>
+ #include <bpf/btf.h>
+@@ -1930,6 +1931,8 @@ static int try_loader(struct gen_loader_opts *gen)
+ {
+ 	struct bpf_load_and_run_opts opts = {};
+ 	struct bpf_loader_ctx *ctx;
++	char sig_buf[MAX_SIG_SIZE];
++	__u8 prog_sha[SHA256_DIGEST_LENGTH];
+ 	int ctx_sz = sizeof(*ctx) + 64 * max(sizeof(struct bpf_map_desc),
+ 					     sizeof(struct bpf_prog_desc));
+ 	int log_buf_sz = (1u << 24) - 1;
+@@ -1953,6 +1956,24 @@ static int try_loader(struct gen_loader_opts *gen)
+ 	opts.insns = gen->insns;
+ 	opts.insns_sz = gen->insns_sz;
+ 	fds_before = count_open_fds();
++
++	if (sign_progs) {
++		opts.excl_prog_hash = prog_sha;
++		opts.excl_prog_hash_sz = sizeof(prog_sha);
++		opts.signature = sig_buf;
++		opts.signature_sz = MAX_SIG_SIZE;
++		opts.keyring_id = KEY_SPEC_SESSION_KEYRING;
++
++		err = bpftool_prog_sign(&opts);
++		if (err < 0)
++			return err;
++
++		err = register_session_key(cert_path);
++		if (err < 0) {
++			p_err("failed to add session key");
++			goto out;
++		}
++	}
+ 	err = bpf_load_and_run(&opts);
+ 	fd_delta = count_open_fds() - fds_before;
+ 	if (err < 0 || verifier_logs) {
+@@ -1961,6 +1982,7 @@ static int try_loader(struct gen_loader_opts *gen)
+ 			fprintf(stderr, "loader prog leaked %d FDs\n",
+ 				fd_delta);
+ 	}
++out:
+ 	free(log_buf);
+ 	return err;
+ }
+@@ -1988,6 +2010,9 @@ static int do_loader(int argc, char **argv)
+ 		goto err_close_obj;
+ 	}
+ 
++	if (sign_progs)
++		gen.gen_hash = true;
++
+ 	err = bpf_object__gen_loader(obj, &gen);
+ 	if (err)
+ 		goto err_close_obj;
+@@ -2562,7 +2587,7 @@ static int do_help(int argc, char **argv)
+ 		"       METRIC := { cycles | instructions | l1d_loads | llc_misses | itlb_misses | dtlb_misses }\n"
+ 		"       " HELP_SPEC_OPTIONS " |\n"
+ 		"                    {-f|--bpffs} | {-m|--mapcompat} | {-n|--nomount} |\n"
+-		"                    {-L|--use-loader} }\n"
++		"                    {-L|--use-loader} | [ {-S|--sign } {-k} <private_key.pem> {-i} <certificate.x509> ] \n"
+ 		"",
+ 		bin_name, argv[-2]);
+ 
+diff --git a/tools/bpf/bpftool/sign.c b/tools/bpf/bpftool/sign.c
+new file mode 100644
+index 000000000000..b29d825bb1d4
+--- /dev/null
++++ b/tools/bpf/bpftool/sign.c
+@@ -0,0 +1,212 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++/*
++ * Copyright (C) 2025 Google LLC.
++ */
++
++#ifndef _GNU_SOURCE
++#define _GNU_SOURCE
++#endif
++#include <stdio.h>
++#include <stdlib.h>
++#include <stdint.h>
++#include <stdbool.h>
++#include <string.h>
++#include <string.h>
++#include <getopt.h>
++#include <err.h>
++#include <openssl/opensslv.h>
++#include <openssl/bio.h>
++#include <openssl/evp.h>
++#include <openssl/pem.h>
++#include <openssl/err.h>
++#include <openssl/cms.h>
++#include <linux/keyctl.h>
++#include <errno.h>
++
++#include <bpf/skel_internal.h>
++
++#include "main.h"
++
++#define OPEN_SSL_ERR_BUF_LEN 256
++
++static void display_openssl_errors(int l)
 +{
-+	__u64 sha[SHA256_DWORD_SIZE];
-+	__u64 sha_dw;
-+	int i, err;
++	char buf[OPEN_SSL_ERR_BUF_LEN];
++	const char *file;
++	const char *data;
++	unsigned long e;
++	int flags;
++	int line;
 +
-+	err = libbpf_sha256(gen->data_start, gen->data_cur - gen->data_start, sha, SHA256_DIGEST_LENGTH);
-+	if (err < 0) {
-+		pr_warn("sha256 computation of the metadata failed");
-+		return err;
-+	}
-+	for (i = 0; i < SHA256_DWORD_SIZE; i++) {
-+		struct bpf_insn *insn =
-+			(struct bpf_insn *)(gen->insn_start + gen->hash_insn_offset[i]);
-+		sha_dw = tgt_endian(sha[i]);
-+		insn[0].imm = (__u32)sha_dw;
-+		insn[1].imm = sha_dw >> 32;
-+	}
-+	return 0;
-+}
-+
- void bpf_gen__load_btf(struct bpf_gen *gen, const void *btf_raw_data,
- 		       __u32 btf_raw_size)
- {
-@@ -557,6 +589,29 @@ void bpf_gen__map_create(struct bpf_gen *gen,
- 		emit_sys_close_stack(gen, stack_off(inner_map_fd));
- }
- 
-+static void bpf_gen__signature_match(struct bpf_gen *gen)
-+{
-+	__s64 off;
-+	int i;
-+
-+	for (i = 0; i < SHA256_DWORD_SIZE; i++) {
-+		emit2(gen, BPF_LD_IMM64_RAW_FULL(BPF_REG_1, BPF_PSEUDO_MAP_IDX,
-+						 0, 0, 0, 0));
-+		emit(gen, BPF_LDX_MEM(BPF_DW, BPF_REG_2, BPF_REG_1, i * sizeof(__u64)));
-+		gen->hash_insn_offset[i] = gen->insn_cur - gen->insn_start;
-+		emit2(gen, BPF_LD_IMM64_RAW_FULL(BPF_REG_3, 0, 0, 0, 0, 0));
-+
-+		off =  -(gen->insn_cur - gen->insn_start - gen->cleanup_label) / 8 - 1;
-+		if (is_simm16(off)) {
-+			emit(gen, BPF_MOV64_IMM(BPF_REG_7, -EINVAL));
-+			emit(gen, BPF_JMP_REG(BPF_JNE, BPF_REG_2, BPF_REG_3, off));
++	while ((e = ERR_get_error_all(&file, &line, NULL, &data, &flags))) {
++		ERR_error_string_n(e, buf, sizeof(buf));
++		if (data && (flags & ERR_TXT_STRING)) {
++			p_err("OpenSSL %s: %s:%d: %s", buf, file, line, data);
 +		} else {
-+			gen->error = -ERANGE;
-+			emit(gen, BPF_JMP_IMM(BPF_JA, 0, 0, -1));
++			p_err("OpenSSL %s: %s:%d", buf, file, line);
 +		}
 +	}
 +}
 +
- void bpf_gen__record_attach_target(struct bpf_gen *gen, const char *attach_name,
- 				   enum bpf_attach_type type)
- {
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index ddaf58c8a298..826e0395427d 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -1828,9 +1828,10 @@ struct gen_loader_opts {
- 	const char *insns;
- 	__u32 data_sz;
- 	__u32 insns_sz;
-+	bool gen_hash;
- };
- 
--#define gen_loader_opts__last_field insns_sz
-+#define gen_loader_opts__last_field gen_hash
- LIBBPF_API int bpf_object__gen_loader(struct bpf_object *obj,
- 				      struct gen_loader_opts *opts);
- 
++#define DISPLAY_OSSL_ERR(cond)				 \
++	do {						 \
++		bool __cond = (cond);			 \
++		if (__cond && ERR_peek_error())		 \
++			display_openssl_errors(__LINE__);\
++	} while (0)
++
++static EVP_PKEY *read_private_key(const char *pkey_path)
++{
++	EVP_PKEY *private_key = NULL;
++	BIO *b;
++
++	b = BIO_new_file(pkey_path, "rb");
++	private_key = PEM_read_bio_PrivateKey(b, NULL, NULL, NULL);
++	BIO_free(b);
++	DISPLAY_OSSL_ERR(!private_key);
++	return private_key;
++}
++
++static X509 *read_x509(const char *x509_name)
++{
++	unsigned char buf[2];
++	X509 *x509 = NULL;
++	BIO *b;
++	int n;
++
++	b = BIO_new_file(x509_name, "rb");
++	if (!b)
++		goto cleanup;
++
++	/* Look at the first two bytes of the file to determine the encoding */
++	n = BIO_read(b, buf, 2);
++	if (n != 2)
++		goto cleanup;
++
++	if (BIO_reset(b) != 0)
++		goto cleanup;
++
++	if (buf[0] == 0x30 && buf[1] >= 0x81 && buf[1] <= 0x84)
++		/* Assume raw DER encoded X.509 */
++		x509 = d2i_X509_bio(b, NULL);
++	else
++		/* Assume PEM encoded X.509 */
++		x509 = PEM_read_bio_X509(b, NULL, NULL, NULL);
++
++cleanup:
++	BIO_free(b);
++	DISPLAY_OSSL_ERR(!x509);
++	return x509;
++}
++
++__u32 register_session_key(const char *key_der_path)
++{
++	unsigned char *der_buf = NULL;
++	X509 *x509 = NULL;
++	int key_id = -1;
++	int der_len;
++
++	if (!key_der_path)
++		return key_id;
++	x509 = read_x509(key_der_path);
++	if (!x509)
++		goto cleanup;
++	der_len = i2d_X509(x509, &der_buf);
++	if (der_len < 0)
++		goto cleanup;
++	key_id = syscall(__NR_add_key, "asymmetric", key_der_path, der_buf,
++			     (size_t)der_len, KEY_SPEC_SESSION_KEYRING);
++cleanup:
++	X509_free(x509);
++	OPENSSL_free(der_buf);
++	DISPLAY_OSSL_ERR(key_id == -1);
++	return key_id;
++}
++
++int bpftool_prog_sign(struct bpf_load_and_run_opts *opts)
++{
++	BIO *bd_in = NULL, *bd_out = NULL;
++	EVP_PKEY *private_key = NULL;
++	CMS_ContentInfo *cms = NULL;
++	long actual_sig_len = 0;
++	X509 *x509 = NULL;
++	int err = 0;
++
++	bd_in = BIO_new_mem_buf(opts->insns, opts->insns_sz);
++	if (!bd_in) {
++		err = -ENOMEM;
++		goto cleanup;
++	}
++
++	private_key = read_private_key(private_key_path);
++	if (!private_key) {
++		err = -EINVAL;
++		goto cleanup;
++	}
++
++	x509 = read_x509(cert_path);
++	if (!x509) {
++		err = -EINVAL;
++		goto cleanup;
++	}
++
++	cms = CMS_sign(NULL, NULL, NULL, NULL,
++		       CMS_NOCERTS | CMS_PARTIAL | CMS_BINARY | CMS_DETACHED |
++			       CMS_STREAM);
++	if (!cms) {
++		err = -EINVAL;
++		goto cleanup;
++	}
++
++	if (!CMS_add1_signer(cms, x509, private_key, EVP_sha256(),
++			     CMS_NOCERTS | CMS_BINARY | CMS_NOSMIMECAP |
++			     CMS_USE_KEYID | CMS_NOATTR)) {
++		err = -EINVAL;
++		goto cleanup;
++	}
++
++	if (CMS_final(cms, bd_in, NULL, CMS_NOCERTS | CMS_BINARY) != 1) {
++		err = -EIO;
++		goto cleanup;
++	}
++
++	EVP_Digest(opts->insns, opts->insns_sz, opts->excl_prog_hash,
++		   &opts->excl_prog_hash_sz, EVP_sha256(), NULL);
++
++		bd_out = BIO_new(BIO_s_mem());
++	if (!bd_out) {
++		err = -ENOMEM;
++		goto cleanup;
++	}
++
++	if (!i2d_CMS_bio_stream(bd_out, cms, NULL, 0)) {
++		err = -EIO;
++		goto cleanup;
++	}
++
++	actual_sig_len = BIO_get_mem_data(bd_out, NULL);
++	if (actual_sig_len <= 0) {
++		err = -EIO;
++		goto cleanup;
++	}
++
++	if ((size_t)actual_sig_len > opts->signature_sz) {
++		err = -ENOSPC;
++		goto cleanup;
++	}
++
++	if (BIO_read(bd_out, opts->signature, actual_sig_len) != actual_sig_len) {
++		err = -EIO;
++		goto cleanup;
++	}
++
++	opts->signature_sz = actual_sig_len;
++cleanup:
++	BIO_free(bd_out);
++	CMS_ContentInfo_free(cms);
++	X509_free(x509);
++	EVP_PKEY_free(private_key);
++	BIO_free(bd_in);
++	DISPLAY_OSSL_ERR(err < 0);
++	return err;
++}
 -- 
 2.43.0
 
