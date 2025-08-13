@@ -1,337 +1,161 @@
-Return-Path: <bpf+bounces-65587-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65588-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79E88B257E0
-	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 01:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 262F4B257E3
+	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 01:54:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1E221B65933
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 23:53:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 645DC1BC7363
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 23:53:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 466382FE075;
-	Wed, 13 Aug 2025 23:53:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HFlgr3ew"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C05BE2FE075;
+	Wed, 13 Aug 2025 23:53:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay.hostedemail.com (smtprelay0014.hostedemail.com [216.40.44.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 385AC2F60A9;
-	Wed, 13 Aug 2025 23:53:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBDED28B7F9;
+	Wed, 13 Aug 2025 23:53:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755129184; cv=none; b=FEEovxzdvznxEvfFSHnBcxkwaGtwdCHTDj0VK1XjAwQgVH+we+rGOZFZONku2yNTJEujIECyU5MD71gZfReAcK9boQvKhWy3UuYlAxacgje9wx5F/kR6aQkWUY02s5/5R5/OyvY2KFFPpZ996CzhOMOqrmvgecKEnMWTpEs+l+4=
+	t=1755129210; cv=none; b=YEKrb9DZzal8r2lAuv8U6KCZM0GQy2+jX3IzwoYYArdkND2v+5NFT12BTaYw4m/ItpN4lmN7+wp2yp9g/Gsnoo6cds1QOXea0OScTN3Rsdqu8MQaJl6frFUMelXvsfTEhLuZuOGXYoQ4FqwGBSWXRwluKH6+fKwaldX9LfEM9Bs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755129184; c=relaxed/simple;
-	bh=ptSZAwPL2sgYyeOLgmE6vLPRwFuh8EaCAiNWFH99voo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eSRSHTrdcn88PNQb96UpS+spdKK8Sicy9F+fXxNfEXv4wMu2yuGLv2eDzsxprCh+M1ykF3v+81O6GgCjiRvKMCc0Jl6vaJ1IiuyHXKTCvn5HXOOTZXXxJ+RTBxftUIWal6EZKezGHjn+HR7SdnbLFeqgfMBnD1In8Vr8H1IVW1c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HFlgr3ew; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2445806df50so2403455ad.1;
-        Wed, 13 Aug 2025 16:53:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755129182; x=1755733982; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Yibfqhr60YQhJ0vMmSX+PE0La1PBsoeXQ5fzoaqLw9w=;
-        b=HFlgr3ew8UBhINKcg6m2JqCB0jsRk5/8O9fUHai838q/9yZNAsPpR70V4tfOkP+rif
-         vVMNxGOqFsaYeMF0/+VOx+W8aax/eiXIQ4Ifu3CnDSlEbCB1lH/nhWvGRZhEvqODMMvt
-         LeGp1caEp6p6r3hjH3ypW4iZMMjxyGtmt1sr8IWkjNqeQDATgMj19OPx2GMtgS45qI/t
-         Q6ercop3SvXTlQYwTXLN1Qr0Zfv2xedPC1ZjxbDbKVyLufwgpSL4Y1MW1sGLkmsTksQW
-         RFucSIaxphGWEEkcpSrDNs07y1FBdACXZJBHsFgvl02RKq8lXAz4xpevOwAn6d/rVB93
-         lq6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755129182; x=1755733982;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Yibfqhr60YQhJ0vMmSX+PE0La1PBsoeXQ5fzoaqLw9w=;
-        b=WYCYdZIiATrldzqOXauHzcHmFj9pUhG9FO/g92gVAS5qOAnHb6E4K1Lq6ttn8OWTDF
-         Y962jxk0k+pxDjHE6ilfDRuMSkYcnNRNxmXz2J6P+mQCpN7hoZ+5IiXWxmvaJ9gbYxzz
-         Un2Prl3B4j2YskrUHdqsWunb3N5JQigGpuziFcr/HNzMdGdU6vbqvOJzESb1Fw+TKB/a
-         S4aAikFuQr2ydn8UrLJ/ARTGZwKxPraT6uMJvx3jBJ0tHFemxsum+H74sAhK51YsDB55
-         eG9c+NaUCN7/XirIkjODgrREiZvMdFnqyfgRpujT7J0iDrogx5m2d0xLVxBTYV55w7jc
-         j7LQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVjE+yMAlcDSk/RLb7HRJ2juXnFKz+LUn5vEuzEp5SpI4YwYGviH+3SCoNsUMKrYVkUEgVfQ6ZcTfpowcOj@vger.kernel.org, AJvYcCWwPHQaWv47Y9hwXDebtJqrS6VNbspiamVJCtrwvCeg2f1jB0Cb9xcrYZo1lrnRUT8Kxs4=@vger.kernel.org, AJvYcCXxC03+RGBz9efkHfvyRynI6W0G9hmEhaAMqQ9eaOSUegrvYTB4d7x8BBrZFP9HELKV0Dr4ubsmB+IOlRM1bktH@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz4UgW5ThFeztdSvBmIzIbOPacKEWba/uZCUi81E6V0AVXa51FS
-	5rZiQkAd1DZ8cHTFNZJEu4eiXHkPI7cF5WpLagmriX/NZFCVS5+iVC0hCvUHrze4uw77/iVy+7N
-	gJ1HxPtrzFG54WiN2Ix0xE2+wRxij3T0=
-X-Gm-Gg: ASbGncuQFfk6WbU3ccK+1AItRV0d4NWA4TFTpaP9XVD7GlpqNoeig0+XN2XKvMwofPv
-	8PzBRgghzboot6BYYECdxqIdFlqupLPITluq+Ywae+SOsGlMcUqP9365+hz236/n1CxtXP2USv3
-	504XxFvJ0LKvd01sK2wVw91LvuIFGEqGKRPCc+AOyGYWR8cq5fdjto6RHV0HCBhflUCFrRV17ge
-	om6oDDP3K1IA99H8zNxA85MhqJF4yVWjQ==
-X-Google-Smtp-Source: AGHT+IHG1GLklcVngaU9qlQXqz0M5cGGN5p3IePoCqy+9brfwmo1IfweQEukdUN7/60gv68it2PhsuycMa83eFV5pXw=
-X-Received: by 2002:a17:903:acb:b0:23d:dd04:28e2 with SMTP id
- d9443c01a7336-2445868a8e2mr12595995ad.35.1755129182347; Wed, 13 Aug 2025
- 16:53:02 -0700 (PDT)
+	s=arc-20240116; t=1755129210; c=relaxed/simple;
+	bh=wcUdQkTJ7IV/p3A7DgChTP1Bqgk5rMEVbafp6vUdmxU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=usuEJODFcbrR7QmLaaOqGUnVK1syUMRmZuIe96JJtBb5QMNPlinbxwynEs5wF1z/ueSDJc+LDkmayQwBXHNmcKm3OeDd9yLPXm/Ff/eRdXaYWi/FUxtAB/Qu6wnou9bHOA32954qGUOaAMMGkSIQMBTpaNypK4JJdJVDgwZcAgo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf07.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay07.hostedemail.com (Postfix) with ESMTP id D607916046F;
+	Wed, 13 Aug 2025 23:53:19 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf07.hostedemail.com (Postfix) with ESMTPA id 9D5A820024;
+	Wed, 13 Aug 2025 23:53:16 +0000 (UTC)
+Date: Wed, 13 Aug 2025 19:53:17 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Sven Schnelle
+ <svens@linux.ibm.com>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
+ Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Guo Ren
+ <guoren@kernel.org>, Donglin Peng <dolinux.peng@gmail.com>, Zheng Yejian
+ <zhengyejian@huaweicloud.com>
+Subject: Re: [PATCH v4 2/4] ftrace: Add support for function argument to
+ graph tracer
+Message-ID: <20250813195317.508a29aa@batman.local.home>
+In-Reply-To: <aJaxRVKverIjF4a6@lappy>
+References: <20250227185804.639525399@goodmis.org>
+	<20250227185822.810321199@goodmis.org>
+	<aJaxRVKverIjF4a6@lappy>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250807023430.4566-1-phoenix500526@163.com> <20250807023430.4566-2-phoenix500526@163.com>
-In-Reply-To: <20250807023430.4566-2-phoenix500526@163.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 13 Aug 2025 16:52:47 -0700
-X-Gm-Features: Ac12FXwjAUH5NapzbRp3zxp00pi90baz3EHSoXXRah97NUC2vemMm_Ypx0Iwwvc
-Message-ID: <CAEf4BzaWtO4-JE=++_64y01aWGGBnUSpw_pbQf79rFz_oVhU-Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v8 1/2] libbpf: fix USDT SIB argument handling
- causing unrecognized register error
-To: Jiawei Zhao <phoenix500526@163.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	yonghong.song@linux.dev, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: uu7x1hrokrb99unu8dj1ujno5qjt5p8d
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 9D5A820024
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1+HPF6zc+Fq7HDozljgVIZFEoX/jina3WA=
+X-HE-Tag: 1755129196-978234
+X-HE-Meta: U2FsdGVkX1+00n9ZlSbYdfJM38C+mwzZfjjFjptzs2clG1ZBMsHK1gpngHaoGukdEeSJR/yFjzJ9/wvviAKnVIFFQwYwQd5jhjkTjkl3X5FpLGSJSOdUuIYkykSyIR/UAif3BSL3LBors0ThJxi+Ih++M1wT6ul9RDUAE6fisbj/eC1fX0IXuJpbcTXITov7helTIM0xnwo10MJ0lPIP6P8uQ9PW5HRiSJd9sc5AeS7zxaBX8G4Sr1bJ4EhulDD/VKKBOssRe5EsznGIHVOVjoSzsoWnPerSoWs0yCZXK5pfmxL4zf9Vyz1znmkJwOFPPVF8spncswberAUmDbIf+H91nLxqwiyx
 
-On Wed, Aug 6, 2025 at 7:35=E2=80=AFPM Jiawei Zhao <phoenix500526@163.com> =
-wrote:
->
-> On x86-64, USDT arguments can be specified using Scale-Index-Base (SIB)
-> addressing, e.g. "1@-96(%rbp,%rax,8)". The current USDT implementation
-> in libbpf cannot parse this format, causing `bpf_program__attach_usdt()`
-> to fail with -ENOENT (unrecognized register).
->
-> This patch fixes this by implementing the necessary changes:
-> - add correct handling for SIB-addressed arguments in `bpf_usdt_arg`.
-> - add adaptive support to `__bpf_usdt_arg_type` and
->   `__bpf_usdt_arg_spec` to represent SIB addressing parameters.
->
-> Signed-off-by: Jiawei Zhao <phoenix500526@163.com>
-> ---
->  tools/lib/bpf/usdt.bpf.h | 33 +++++++++++++++++++++++++++++-
->  tools/lib/bpf/usdt.c     | 43 ++++++++++++++++++++++++++++++++++------
->  2 files changed, 69 insertions(+), 7 deletions(-)
->
-> diff --git a/tools/lib/bpf/usdt.bpf.h b/tools/lib/bpf/usdt.bpf.h
-> index 2a7865c8e3fe..246513088c3a 100644
-> --- a/tools/lib/bpf/usdt.bpf.h
-> +++ b/tools/lib/bpf/usdt.bpf.h
-> @@ -34,6 +34,7 @@ enum __bpf_usdt_arg_type {
->         BPF_USDT_ARG_CONST,
->         BPF_USDT_ARG_REG,
->         BPF_USDT_ARG_REG_DEREF,
-> +       BPF_USDT_ARG_SIB,
->  };
->
->  struct __bpf_usdt_arg_spec {
-> @@ -43,6 +44,10 @@ struct __bpf_usdt_arg_spec {
->         enum __bpf_usdt_arg_type arg_type;
->         /* offset of referenced register within struct pt_regs */
->         short reg_off;
-> +       /* offset of index register in pt_regs, only used in SIB mode */
-> +       short idx_reg_off;
-> +       /* scale factor for index register, only used in SIB mode */
-> +       short scale;
+On Fri, 8 Aug 2025 22:24:05 -0400
+Sasha Levin <sashal@kernel.org> wrote:
 
-I'd really prefer not to increase the size of __bpf_usdt_arg_spec and
-not change its layout for all existing BPF_USDT_ARG_* modes just to
-not have to worry about any backwards/forward compatibility issues.
+> So we've added a dynamically sized array to the end of
+> ftrace_graph_ent_entry, but in struct fgraph_data, the saved entry is
+> defined as:
+> 
+>    struct fgraph_data {
+>        ...
+>        union {
+>            struct ftrace_graph_ent_entry ent;
+>            struct fgraph_retaddr_ent_entry rent;
+>        } ent;
+>        ...
+>    }
+> 
+> Which doesn't seem to have room for args?
 
-Scale can be 1, 2,4, 8, is that right? Instead of using 2 bytes for
-it, we should be able to use just 2 bits to represent bit shift (0, 1,
-2, 3 should be enough).
+No it doesn't :-p
 
-We can carve out at least 3 bytes by making arg_type field into packed
-single-byte enum (we'd need to be careful with big endian).
+> 
+> The code in get_return_for_leaf() does:
+> 
+>    data->ent.ent = *curr;
+> 
+> This copies the struct, but curr points to a larger entry with args
+> data. The copy operation only copies sizeof(struct
+> ftrace_graph_ent_entry) bytes, which doesn't include the dynamic args
+> array.
+> 
+> And then later functions (like print_graph_entry()) would go ahead and
+> assume that iter->ent_size is sane and make a mess out of everything.
+> 
+> I can't test right now whether this actually fixes the issues or not,
+> but I wanted to bring this up as this looks somewhat odd and I'm not too
+> familiar with this code.
 
-Then we can add idx_reg_off:12 and idx_scale_shift:4 somewhere between
-arg_type and reg_off, taking 2 bytes in total.
+Thanks for the detail analysis, can you test this patch?
 
-We'll still be left with one byte to spare for the future (and there
-are tricks we can do with arg_signed and arg_bitshift, but I'd not
-touch them yet).
+-- Steve
 
-WDYT?
-
-pw-bot: cr
-
-
->         /* whether arg should be interpreted as signed value */
->         bool arg_signed;
->         /* number of bits that need to be cleared and, optionally,
-> @@ -149,7 +154,7 @@ int bpf_usdt_arg(struct pt_regs *ctx, __u64 arg_num, =
-long *res)
->  {
->         struct __bpf_usdt_spec *spec;
->         struct __bpf_usdt_arg_spec *arg_spec;
-> -       unsigned long val;
-> +       unsigned long val, idx;
->         int err, spec_id;
->
->         *res =3D 0;
-> @@ -202,6 +207,32 @@ int bpf_usdt_arg(struct pt_regs *ctx, __u64 arg_num,=
- long *res)
->                         return err;
->  #if __BYTE_ORDER__ =3D=3D __ORDER_BIG_ENDIAN__
->                 val >>=3D arg_spec->arg_bitshift;
-> +#endif
-> +               break;
-> +       case BPF_USDT_ARG_SIB:
-> +               /* Arg is in memory addressed by SIB (Scale-Index-Base) m=
-ode
-> +                * (e.g., "-1@-96(%rbp,%rax,8)" in USDT arg spec). Regist=
-er
-> +                * is identified like with BPF_USDT_ARG_SIB case, the off=
-set
-> +                * is in arg_spec->val_off, the scale factor is in arg_sp=
-ec->scale.
-> +                * Firstly, we fetch the base register contents and the i=
-ndex
-> +                * register contents from pt_regs. Secondly, we multiply =
-the
-> +                * index register contents by the scale factor, then add =
-the
-> +                * base address and the offset to get the final address. =
-Finally,
-> +                * we do another user-space probe read to fetch argument =
-value
-> +                * itself.
-> +                */
-> +               err =3D bpf_probe_read_kernel(&val, sizeof(val), (void *)=
-ctx + arg_spec->reg_off);
-> +               if (err)
-> +                       return err;
-> +               err =3D bpf_probe_read_kernel(&idx, sizeof(idx), (void *)=
-ctx + arg_spec->idx_reg_off);
-> +               if (err)
-> +                       return err;
-> +               err =3D bpf_probe_read_user(&val, sizeof(val),
-> +                               (void *)val + idx * arg_spec->scale + arg=
-_spec->val_off);
-
-it might be just how gmail renders it, but please make sure that
-wrapped argument is aligned with first argument on the previous line
-
-> +               if (err)
-> +                       return err;
-> +#if __BYTE_ORDER__ =3D=3D __ORDER_BIG_ENDIAN__
-> +               val >>=3D arg_spec->arg_bitshift;
->  #endif
->                 break;
->         default:
-> diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
-> index 4e4a52742b01..1f8b9e1c9819 100644
-> --- a/tools/lib/bpf/usdt.c
-> +++ b/tools/lib/bpf/usdt.c
-> @@ -200,6 +200,7 @@ enum usdt_arg_type {
->         USDT_ARG_CONST,
->         USDT_ARG_REG,
->         USDT_ARG_REG_DEREF,
-> +       USDT_ARG_SIB,
->  };
->
->  /* should match exactly struct __bpf_usdt_arg_spec from usdt.bpf.h */
-> @@ -207,6 +208,8 @@ struct usdt_arg_spec {
->         __u64 val_off;
->         enum usdt_arg_type arg_type;
->         short reg_off;
-> +       short idx_reg_off;
-> +       short scale;
->         bool arg_signed;
->         char arg_bitshift;
->  };
-> @@ -1283,11 +1286,39 @@ static int calc_pt_regs_off(const char *reg_name)
->
->  static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_=
-arg_spec *arg, int *arg_sz)
->  {
-> -       char reg_name[16];
-> -       int len, reg_off;
-> -       long off;
-> +       char reg_name[16] =3D {0}, idx_reg_name[16] =3D {0};
-> +       int len, reg_off, idx_reg_off, scale =3D 1;
-> +       long off =3D 0;
-> +
-> +       if (sscanf(arg_str, " %d @ %ld ( %%%15[^,] , %%%15[^,] , %d ) %n"=
-,
-> +                               arg_sz, &off, reg_name, idx_reg_name, &sc=
-ale, &len) =3D=3D 5 ||
-
-see comment above about aligning wrapped argument list
-
-> +               sscanf(arg_str, " %d @ ( %%%15[^,] , %%%15[^,] , %d ) %n"=
-,
-> +                               arg_sz, reg_name, idx_reg_name, &scale, &=
-len) =3D=3D 4 ||
-> +               sscanf(arg_str, " %d @ %ld ( %%%15[^,] , %%%15[^)] ) %n",
-> +                               arg_sz, &off, reg_name, idx_reg_name, &le=
-n) =3D=3D 4 ||
-> +               sscanf(arg_str, " %d @ ( %%%15[^,] , %%%15[^)] ) %n",
-> +                               arg_sz, reg_name, idx_reg_name, &len) =3D=
-=3D 3
-> +               ) {
-> +               /* Scale Index Base case, e.g., 1@-96(%rbp,%rax,8)
-> +                * 1@(%rbp,%rax,8)
-> +                * 1@-96(%rbp,%rax)
-> +                * 1@(%rbp,%rax)
-
-nit: let's list all variants at the same indentation level (and let's
-use the more standard multi-level comment format)
-
-/*
- * Scale-Index-Base case:
- * - 1@-96(%rbp,%rax,8)
- * - 1@(%rbp,%rax,8)
- * ...
- */
-
-> +                */
-> +               arg->arg_type =3D USDT_ARG_SIB;
-> +               arg->val_off =3D off;
-> +               arg->scale =3D scale;
-> +
-> +               reg_off =3D calc_pt_regs_off(reg_name);
-> +               if (reg_off < 0)
-> +                       return reg_off;
-> +               arg->reg_off =3D reg_off;
->
-> -       if (sscanf(arg_str, " %d @ %ld ( %%%15[^)] ) %n", arg_sz, &off, r=
-eg_name, &len) =3D=3D 3) {
-> +               idx_reg_off =3D calc_pt_regs_off(idx_reg_name);
-> +               if (idx_reg_off < 0)
-> +                       return idx_reg_off;
-> +               arg->idx_reg_off =3D idx_reg_off;
-> +       } else if (sscanf(arg_str, " %d @ %ld ( %%%15[^)] ) %n",
-> +                               arg_sz, &off, reg_name, &len) =3D=3D 3) {
->                 /* Memory dereference case, e.g., -4@-20(%rbp) */
->                 arg->arg_type =3D USDT_ARG_REG_DEREF;
->                 arg->val_off =3D off;
-> @@ -1298,7 +1329,7 @@ static int parse_usdt_arg(const char *arg_str, int =
-arg_num, struct usdt_arg_spec
->         } else if (sscanf(arg_str, " %d @ ( %%%15[^)] ) %n", arg_sz, reg_=
-name, &len) =3D=3D 2) {
->                 /* Memory dereference case without offset, e.g., 8@(%rsp)=
- */
->                 arg->arg_type =3D USDT_ARG_REG_DEREF;
-> -               arg->val_off =3D 0;
-> +               arg->val_off =3D off;
->                 reg_off =3D calc_pt_regs_off(reg_name);
->                 if (reg_off < 0)
->                         return reg_off;
-> @@ -1306,7 +1337,7 @@ static int parse_usdt_arg(const char *arg_str, int =
-arg_num, struct usdt_arg_spec
->         } else if (sscanf(arg_str, " %d @ %%%15s %n", arg_sz, reg_name, &=
-len) =3D=3D 2) {
->                 /* Register read case, e.g., -4@%eax */
->                 arg->arg_type =3D USDT_ARG_REG;
-> -               arg->val_off =3D 0;
-> +               arg->val_off =3D off;
-
-why this change? it makes it seem like val_off might not be zero, for
-no good reason...
-
->
->                 reg_off =3D calc_pt_regs_off(reg_name);
->                 if (reg_off < 0)
-> --
-> 2.43.0
->
->
+diff --git a/kernel/trace/trace_functions_graph.c b/kernel/trace/trace_functions_graph.c
+index 66e1a527cf1a..25ea71edb8da 100644
+--- a/kernel/trace/trace_functions_graph.c
++++ b/kernel/trace/trace_functions_graph.c
+@@ -35,6 +35,11 @@ struct fgraph_data {
+ 		struct ftrace_graph_ent_entry	ent;
+ 		struct fgraph_retaddr_ent_entry	rent;
+ 	} ent;
++	/*
++	 * The @args must be right after @ent, as it is where they
++	 * are stored in case the function graph tracer has arguments.
++	 */
++	unsigned long			args[FTRACE_REGS_MAX_ARGS];
+ 	struct ftrace_graph_ret_entry	ret;
+ 	int				failed;
+ 	int				cpu;
+@@ -623,14 +628,29 @@ get_return_for_leaf(struct trace_iterator *iter,
+ 		next = ring_buffer_event_data(event);
+ 
+ 		if (data) {
++			int args_size;
++			int size;
++
+ 			/*
+ 			 * Save current and next entries for later reference
+ 			 * if the output fails.
+ 			 */
+-			if (unlikely(curr->ent.type == TRACE_GRAPH_RETADDR_ENT))
++			if (unlikely(curr->ent.type == TRACE_GRAPH_RETADDR_ENT)) {
+ 				data->ent.rent = *(struct fgraph_retaddr_ent_entry *)curr;
+-			else
++				size = offsetof(struct fgraph_retaddr_ent_entry, args);
++			} else {
+ 				data->ent.ent = *curr;
++				size = offsetof(struct ftrace_graph_ent_entry, args);
++			}
++
++			/* If this has args, then append them to after the ent. */
++			args_size = iter->ent_size - size;
++			if (args_size > sizeof(long) * FTRACE_REGS_MAX_ARGS)
++				args_size = sizeof(long) * FTRACE_REGS_MAX_ARGS;
++
++			if (args_size >= sizeof(long))
++				memcpy((void *)&data->ent.ent + size,
++				       (void*)curr + size, args_size);
+ 			/*
+ 			 * If the next event is not a return type, then
+ 			 * we only care about what type it is. Otherwise we can
 
