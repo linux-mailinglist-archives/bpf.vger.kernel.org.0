@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-65538-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65539-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73854B25457
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 22:10:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBE73B25453
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 22:10:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 564159A68D8
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 20:09:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C84751C85738
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 20:10:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0752C2C0F95;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E46BD2FE571;
 	Wed, 13 Aug 2025 20:09:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yuka.dev header.i=@yuka.dev header.b="juGJRm1H"
+	dkim=pass (1024-bit key) header.d=yuka.dev header.i=@yuka.dev header.b="IRDsjf7w"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail.cyberchaos.dev (mail.cyberchaos.dev [195.39.247.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4144B2FD7C3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 414142FD7C1;
 	Wed, 13 Aug 2025 20:09:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.39.247.168
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755115766; cv=none; b=anixHLGDt92KfcT1lzqWE3ljc2CkULNn44oCXzt75aVJXl+Hf07P7enF4gTn1m56b6GQoTHPkm6viQifcL1aMhVXLTCgkb09+CfATp/k9Sa8H32uPMPEMPHSAeDwnF2etzG+c94IbY0PJpLNydnUoRJIzy5xZ8ZX5YtoM0DvfrM=
+	t=1755115767; cv=none; b=YsxuTLGLj7ZAZgXqNddB/SDF3B1HfYqzfGfppdf0hQ75oOIXtvncxvQm0pKRe48aknovk9VRAYExzZi2kYr+XWW4m7ryrfVRiL840of7n731P1yzG9cV6ccUFFvzIaL5sutSOnOQYfpapOBNO/ly3rsIXmCcNp/SK0s2iBdvAQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755115766; c=relaxed/simple;
-	bh=uha4YPBwY0siDbPuNcVFmIqyzecp+ej35gK9XBoC900=;
+	s=arc-20240116; t=1755115767; c=relaxed/simple;
+	bh=djItZj1tv/P0GBUI4QzQhkjOwTsgdwRm040K9C8xyUc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=B43p2lo0LlmR3PTy7MxjmTiBl6VkItLStuDIacFgRNzQWGzye6oWbQe7uSlK3xEv6fciE2JmUYrtt6OPtoPnyE792PMR7nL9meTgpk+aU6Xumy822rc6pOCflaFKe6WH8Vs9WoC8spLxKtnKmyRDrlYPgzcX4aWzw+PSCPLEArs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yuka.dev; spf=pass smtp.mailfrom=yuka.dev; dkim=pass (1024-bit key) header.d=yuka.dev header.i=@yuka.dev header.b=juGJRm1H; arc=none smtp.client-ip=195.39.247.168
+	 MIME-Version; b=NblYf37Y6XWmQTlo3xvYVn88VS6hwhbA4VJA4BxrIPu3hcL0h887/goVeTdU5apH5+04q1DDsrGoEoLmZWKGLME7dF+T7am1CTTP7wRqX9y23tfY0V0jXo/1deJk45rqez7oRJOx7JOyDy6la3QBPGrQqnsZXBx8ZU3azug5xdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yuka.dev; spf=pass smtp.mailfrom=yuka.dev; dkim=pass (1024-bit key) header.d=yuka.dev header.i=@yuka.dev header.b=IRDsjf7w; arc=none smtp.client-ip=195.39.247.168
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yuka.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yuka.dev
 From: Yureka Lilian <yuka@yuka.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yuka.dev; s=mail;
-	t=1755115756;
+	t=1755115757;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=m7PissMhQJM4ELvQ0HSUmc/Boqi8269rmDMbPvSD+as=;
-	b=juGJRm1HuS9F/DII8xdkBL7a/v03H17TQTwwoZxqCb4mLAi5dPZsKTf+nyUM8j1lsu3qb5
-	OrRIzXrMskMbeeHFhzNZchHyIlkbcKOl56hKR4HArHQkzA2lHABvsi+DuqHNfEPR0dtBW7
-	R+0h2+SofInvizbFgC0P7P7wUcUIaVE=
+	bh=lGjHGjnND+XLcmoc6stb7T/Y2gjWQ0r/KxkZxrbs9BU=;
+	b=IRDsjf7w9zS6UoK/LsRSBg5Tgx9MRXHPWOaDk+JgeW8K1JBdBmGw63YPsdQsqgnymZmkpT
+	mPZ+kA9zedjJOybAXGbKQVe0mWnAjJ7YcBIVykYkuD+VoG4IzdsfsIZuwr33Qdq+O5m9xy
+	irWMa0CwE50zukYGceScP9NGb5YaLv4=
 To: Andrii Nakryiko <andrii@kernel.org>,
 	Eduard Zingerman <eddyz87@gmail.com>,
 	Alexei Starovoitov <ast@kernel.org>,
@@ -57,9 +57,9 @@ To: Andrii Nakryiko <andrii@kernel.org>,
 Cc: Yureka Lilian <yuka@yuka.dev>,
 	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/2] bpf: fix reuse of DEVMAP
-Date: Wed, 13 Aug 2025 22:09:10 +0200
-Message-ID: <20250813200912.3523279-2-yuka@yuka.dev>
+Subject: [PATCH v2 2/2] bpf: add test for DEVMAP reuse
+Date: Wed, 13 Aug 2025 22:09:11 +0200
+Message-ID: <20250813200912.3523279-3-yuka@yuka.dev>
 In-Reply-To: <20250813200912.3523279-1-yuka@yuka.dev>
 References: <20250813200912.3523279-1-yuka@yuka.dev>
 Precedence: bulk
@@ -70,62 +70,117 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Previously, re-using pinned DEVMAP maps would always fail, because
-get_map_info on a DEVMAP always returns flags with BPF_F_RDONLY_PROG set,
-but BPF_F_RDONLY_PROG being set on a map during creation is invalid.
+The test covers basic re-use of a pinned DEVMAP map,
+with both matching and mismatching parameters.
 
-Thus, ignore the BPF_F_RDONLY_PROG flag on both sides when checking for
-compatibility with an existing DEVMAP.
-
-Ignoring it on both sides ensures that it continues to work on older
-kernels which don't set BPF_F_RDONLY_PROG on get_map_info.
-
-The same problem is handled in a third-party ebpf library:
-- https://github.com/cilium/ebpf/issues/925
-- https://github.com/cilium/ebpf/pull/930
-
-Fixes: 0cdbb4b09a06 ("devmap: Allow map lookups from eBPF")
 Signed-off-by: Yureka Lilian <yuka@yuka.dev>
 ---
- tools/lib/bpf/libbpf.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ .../bpf/prog_tests/pinning_devmap_reuse.c     | 68 +++++++++++++++++++
+ .../selftests/bpf/progs/test_pinning_devmap.c | 20 ++++++
+ 2 files changed, 88 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/pinning_devmap_reuse.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_pinning_devmap.c
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index d41ee26b9..049b0c400 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -5076,6 +5076,7 @@ static bool map_is_reuse_compat(const struct bpf_map *map, int map_fd)
- {
- 	struct bpf_map_info map_info;
- 	__u32 map_info_len = sizeof(map_info);
-+	__u32 map_flags_for_check = map->def.map_flags;
- 	int err;
- 
- 	memset(&map_info, 0, map_info_len);
-@@ -5088,11 +5089,22 @@ static bool map_is_reuse_compat(const struct bpf_map *map, int map_fd)
- 		return false;
- 	}
- 
-+	/* get_map_info on a DEVMAP will always return flags with
-+	 * BPF_F_RDONLY_PROG set, but it will never be set on a map
-+	 * being created.
-+	 * Thus, ignore the BPF_F_RDONLY_PROG flag on both sides when
-+	 * checking for compatibility with an existing DEVMAP.
-+	 */
-+	if (map->def.type == BPF_MAP_TYPE_DEVMAP || map->def.type == BPF_MAP_TYPE_DEVMAP_HASH) {
-+		map_info.map_flags |= BPF_F_RDONLY_PROG;
-+		map_flags_for_check |= BPF_F_RDONLY_PROG;
-+	}
+diff --git a/tools/testing/selftests/bpf/prog_tests/pinning_devmap_reuse.c b/tools/testing/selftests/bpf/prog_tests/pinning_devmap_reuse.c
+new file mode 100644
+index 000000000..06befb03b
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/pinning_devmap_reuse.c
+@@ -0,0 +1,68 @@
++// SPDX-License-Identifier: GPL-2.0
 +
- 	return (map_info.type == map->def.type &&
- 		map_info.key_size == map->def.key_size &&
- 		map_info.value_size == map->def.value_size &&
- 		map_info.max_entries == map->def.max_entries &&
--		map_info.map_flags == map->def.map_flags &&
-+		map_info.map_flags == map_flags_for_check &&
- 		map_info.map_extra == map->map_extra);
- }
- 
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <unistd.h>
++#include <test_progs.h>
++
++void test_pinning_devmap_reuse(void)
++{
++	const char *pinpath1 = "/sys/fs/bpf/pinmap1";
++	const char *pinpath2 = "/sys/fs/bpf/pinmap2";
++	const char *file = "./test_pinning_devmap.bpf.o";
++	struct bpf_object *obj1 = NULL, *obj2 = NULL;
++	int err;
++	__u32 duration = 0;
++	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
++
++	/* load the object a first time */
++	obj1 = bpf_object__open_file(file, NULL);
++	err = libbpf_get_error(obj1);
++	if (CHECK(err, "first open", "err %d\n", err)) {
++		obj1 = NULL;
++		goto out;
++	}
++	err = bpf_object__load(obj1);
++	if (CHECK(err, "first load", "err %d\n", err))
++		goto out;
++
++	/* load the object a second time, re-using the pinned map */
++	obj2 = bpf_object__open_file(file, NULL);
++	if (CHECK(err, "second open", "err %d\n", err)) {
++		obj2 = NULL;
++		goto out;
++	}
++	err = bpf_object__load(obj2);
++	if (CHECK(err, "second load", "err %d\n", err))
++		goto out;
++
++	/* we can close the reference safely without
++	 * the map's refcount falling to 0
++	 */
++	bpf_object__close(obj1);
++	obj1 = NULL;
++
++	/* now, swap the pins */
++	err = renameat2(0, pinpath1, 0, pinpath2, RENAME_EXCHANGE);
++	if (CHECK(err, "swap pins", "err %d\n", err))
++		goto out;
++
++	/* load the object again, this time the re-use should fail */
++	obj1 = bpf_object__open_file(file, NULL);
++	err = libbpf_get_error(obj1);
++	if (CHECK(err, "third open", "err %d\n", err)) {
++		obj1 = NULL;
++		goto out;
++	}
++	err = bpf_object__load(obj1);
++	if (CHECK(err != -EINVAL, "param mismatch load", "err %d\n", err))
++		goto out;
++
++out:
++	unlink(pinpath1);
++	unlink(pinpath2);
++	if (obj1)
++		bpf_object__close(obj1);
++	if (obj2)
++		bpf_object__close(obj2);
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_pinning_devmap.c b/tools/testing/selftests/bpf/progs/test_pinning_devmap.c
+new file mode 100644
+index 000000000..c855f8f87
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_pinning_devmap.c
+@@ -0,0 +1,20 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++
++struct {
++	__uint(type, BPF_MAP_TYPE_DEVMAP);
++	__uint(max_entries, 1);
++	__type(key, __u32);
++	__type(value, __u32);
++	__uint(pinning, LIBBPF_PIN_BY_NAME);
++} pinmap1 SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_DEVMAP);
++	__uint(max_entries, 2);
++	__type(key, __u32);
++	__type(value, __u32);
++	__uint(pinning, LIBBPF_PIN_BY_NAME);
++} pinmap2 SEC(".maps");
 -- 
 2.50.1
 
