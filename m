@@ -1,176 +1,117 @@
-Return-Path: <bpf+bounces-65498-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65499-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F456B2449B
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 10:45:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C207CB24516
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 11:15:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AAA73B288E
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 08:43:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 132C5189303C
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 09:15:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 352152F067C;
-	Wed, 13 Aug 2025 08:43:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C23662EF654;
+	Wed, 13 Aug 2025 09:15:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TKXWQNUy"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ilPFJDdo"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE83A2EFDB5;
-	Wed, 13 Aug 2025 08:43:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0A7675809
+	for <bpf@vger.kernel.org>; Wed, 13 Aug 2025 09:15:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755074607; cv=none; b=R8Kie8Uz3VVVfu4wjc9Kq8yU8UFHew8G4efSe8nl5zG5n4uDTy0zIJ1JXSujDJMaWyZY1abOrQZcMUkme5mrLVX/YDnKQUGcaztcUEQAz8eWMJUL2keAnkklXtjyeyGmeNw0lfPJ6b7uca3zpPJt8m70trKuaRUhSexiT/1m9vE=
+	t=1755076525; cv=none; b=axeSU6yWwgAids7iQWMBM/nCTntHJTnJVWZKR+FLtvRVK+n9naYYjjcutWXdQx4SePXt+wwb6DklICsEVWAz1GEwNOhrG+rzoLSIHNL/pMEI3SLVVZ5PgxrZ6KYzFG7juULFjYAFsfpxnifIaDW0tl0kiFTki7/5jYnzSa8PsJc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755074607; c=relaxed/simple;
-	bh=w8gAexE8HUB0CV05DNC00MXF4b6kSy0iHfD/95EwwEs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XwxlsMpkmmO4viPid75PVomstN/lGBUxrIyPT0o6zjc/bQX93GrwonvRi35SatX8cu3ZvaJ7BtOzVzTVWoL3W2B/zzgU6wR+8D8LlhE6Y1rKXGs7+TZbD2EVX/POMNqXmc6GCCZy4PmobEdPvuzcXyTcyiqyxLVakHxw54i1xxE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TKXWQNUy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83AFBC4CEEB;
-	Wed, 13 Aug 2025 08:43:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755074607;
-	bh=w8gAexE8HUB0CV05DNC00MXF4b6kSy0iHfD/95EwwEs=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=TKXWQNUy4Nypry+jJm861Bpp76KsJzsLO9J9bSFS4/omiS8os+tGxStcEoQKhSYo7
-	 SimvbVRavtza6ljVDbU3iLqiaIccfNI9CVadnMY7ECd1yJXligH21wLfmjGg8oLRsb
-	 oOiK5Iql9fH8qq/e30fMnWYPzEw7mAIEM2Qnzt6hG1nxv3CjxQ1rgerXjOYHUc3aA8
-	 gycMF7RXmfeDRzvd28g7XZ80jHaFEWfpVdYQUBElcKnTZAu3ZMQJIZjaWgjdVhJDw8
-	 kkydB4g/3ZluY4yRB8qXC0pN29MxtASl4Y4N7/CpZ3709d4UF6hA6pD5+eutteREKe
-	 iO9DIpODpVrBQ==
-Message-ID: <2ba29c9f-a44f-4be6-bd3a-eb9cdb34ac8a@kernel.org>
-Date: Wed, 13 Aug 2025 10:43:21 +0200
+	s=arc-20240116; t=1755076525; c=relaxed/simple;
+	bh=FJ9S9xsVuGUMDuUEQIwBA9l7/TjDR/EkMLgbR+IWJmg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SlNumtvZSoaiq/HjOjzLbbhGxivocPuXCa4EDGZB9qX7oZumnaNe8yDu77M41phlj8R1E/sDa3dyQgqbsUoq4tReOo2sMx0YwnOQzYUD34Bmk3Qo7YM1aS8f39hdMuj4hCY2/fa1I6kwdSyZrHJ9bU62VURXrCGgjeFn9tja0RQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ilPFJDdo; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1755076522;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FJ9S9xsVuGUMDuUEQIwBA9l7/TjDR/EkMLgbR+IWJmg=;
+	b=ilPFJDdopF+k9Ta7y9fXA7kywg59EIaMKW0yHGjsdN7C2nmcIpzTNxDfacr0hq5DK3/4Qe
+	l9eZltE7oP/2ViB5jzdO+4ubohO6PbeZhA8js5pcimFGuwnhCe5tpmnT2f2T5LbbjCUU2E
+	WVQ+kJxlb/AIEa+fqBZl6V87rZgCihA=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-140-E3guf-LGPCOgoavMQSPrXg-1; Wed, 13 Aug 2025 05:15:21 -0400
+X-MC-Unique: E3guf-LGPCOgoavMQSPrXg-1
+X-Mimecast-MFC-AGG-ID: E3guf-LGPCOgoavMQSPrXg_1755076520
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-70739ef4ab4so14204166d6.0
+        for <bpf@vger.kernel.org>; Wed, 13 Aug 2025 02:15:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755076520; x=1755681320;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FJ9S9xsVuGUMDuUEQIwBA9l7/TjDR/EkMLgbR+IWJmg=;
+        b=K/lcMDlLvOxu89oMrjUv/WeA8Q4g6CziRuHaciO0hotZuGTWfkDcsp+7GVYugCNpoV
+         Dg74C6ju9/yHd4r0hGaH13Fc0GNy5ispgEvTivj55Wg3NOjrX2ArzRw7EujLRzZm/UMC
+         Q4Zr8OEDXkB1bi/WUChwh5wunxccEOH3qHITW41hsXVyazDxKGC3iZfVLFLENhNEyEHA
+         a93Ud8uUpnNUL9T9LDGwaw6u9oJ67SebmU4zseBUCMZNAaxBwoiSgvuDd1J194zKraUD
+         KKIoWb1WPlxYHsTud6GP0K/Iv/RazAk8nqRdL7b53LEMqT3kxZ9G17ZfcJEipQZT3ViK
+         wjfg==
+X-Forwarded-Encrypted: i=1; AJvYcCWHaYGo5pN35oBbEtRVYb2XJa4g7fGywp98/U4ZrfGC4jko96Mdpa1yIXsBAKolDanFK04=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw03VJjbqeMn6rOfUXJyrAO2OPo1ONm1i8wkD6k1DgYcumBS74Y
+	arslxjKJ3iCArvjgj+5ls+CUE1ZegKdeOmlwL3OSj1LgL2pFD9XWOYpCod2kK2atIRc+P77g4xk
+	eRsrgxSgqTYIfI22goh5n47jSHPv+rQ9v8pcgaHcur+vcvhYmoculNQ==
+X-Gm-Gg: ASbGncsGEfFRtbPrXfMVHvFzDDOUBBNYs1Y9j90U10Vb1kFKt8X2XxeH+BUkMI+Q+eW
+	sQikEyE2d+q29z2rnXlj/4aS1X5fvkJJ1n8vviFreLA1yEqVkXukg7J0dxvTh6Zn5CwZolezemD
+	Ae1f7mLG8Azw4+RjeF8an9cV3WC4N7DD1zzqePaoISsw5E3g7HugRrv889rR+5k9QpmS5y5Ve8M
+	KXhGyqgk9tdW9xr5YjI0sXsF6YAHKAU1xpp3WA5uPQg/wyK2WUt1VmLTfBaTmiwMA4DEF62joRk
+	R6zqi1gNciQUXxnvXc0jKRf6Uz84hs7wJ2rTzrId1HPcjKsyyNCkMzQP45IvF5yjPgR6
+X-Received: by 2002:a05:6214:623:b0:707:2b04:b038 with SMTP id 6a1803df08f44-709eb1feffdmr19627296d6.23.1755076520573;
+        Wed, 13 Aug 2025 02:15:20 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEV/OQOwQfKOsKAz5wKdJV7tOoeeQil/sc1ZfgToMGixY0ksc6c2kTdU4P+wy3LssNk2AeWLg==
+X-Received: by 2002:a05:6214:623:b0:707:2b04:b038 with SMTP id 6a1803df08f44-709eb1feffdmr19626886d6.23.1755076520004;
+        Wed, 13 Aug 2025 02:15:20 -0700 (PDT)
+Received: from jlelli-thinkpadt14gen4.remote.csb ([151.43.47.41])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-7077c9da7dcsm190924776d6.12.2025.08.13.02.15.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Aug 2025 02:15:18 -0700 (PDT)
+Date: Wed, 13 Aug 2025 11:15:10 +0200
+From: Juri Lelli <juri.lelli@redhat.com>
+To: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>, Tejun Heo <tj@kernel.org>,
+	David Vernet <void@manifault.com>, Andrea Righi <arighi@nvidia.com>,
+	Changwoo Min <changwoo@igalia.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH -rebased 00/15] Add a deadline server for sched_ext tasks
+Message-ID: <aJxXnj4C2Nfp5mmI@jlelli-thinkpadt14gen4.remote.csb>
+References: <20250809184800.129831-1-joelagnelf@nvidia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] xdp: pass flags to xdp_update_skb_shared_info() directly
-To: Alexander Lobakin <aleksander.lobakin@intel.com>,
- Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
- daniel@iogearbox.net, lorenzo@kernel.org, toke@redhat.com,
- john.fastabend@gmail.com, sdf@fomichev.me, michael.chan@broadcom.com,
- anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com,
- marcin.s.wojtas@gmail.com, tariqt@nvidia.com, mbloch@nvidia.com,
- eperezma@redhat.com
-References: <20250812161528.835855-1-kuba@kernel.org>
- <46470d2b-4828-48ad-a94e-9d874de1b2fc@intel.com>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <46470d2b-4828-48ad-a94e-9d874de1b2fc@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250809184800.129831-1-joelagnelf@nvidia.com>
 
+Hi Joel,
 
+On 09/08/25 14:47, Joel Fernandes wrote:
+> Just rebased on Linus's master and made adjustments. These patches have been
 
+I failed to apply these to both linus and tip master. What's your
+baseline commit?
 
-On 12/08/2025 18.48, Alexander Lobakin wrote:
-> From: Jakub Kicinski <kuba@kernel.org>
-> Date: Tue, 12 Aug 2025 09:15:28 -0700
-> 
->> xdp_update_skb_shared_info() needs to update skb state which
->> was maintained in xdp_buff / frame. Pass full flags into it,
->> instead of breaking it out bit by bit. We will need to add
->> a bit for unreadable frags (even tho XDP doesn't support
->> those the driver paths may be common), at which point almost
->> all call sites would become:
->>
->>      xdp_update_skb_shared_info(skb, num_frags,
->>                                 sinfo->xdp_frags_size,
->>                                 MY_PAGE_SIZE * num_frags,
->>                                 xdp_buff_is_frag_pfmemalloc(xdp),
->>                                 xdp_buff_is_frag_unreadable(xdp));
-> 
-> Yeah I think this doesn't make sense, it just doesn't scale. We can make
-> more flags in future and adding a new argument for each is not a good
-> idea, even if more drivers would switch to generic
-> xdp_build_skb_from_buff().
-> 
+Thanks,
+Juri
 
-I agree. And good reminder that some driver have already switched to the
-generic xdp_build_skb_from_buff().
-
->>
->> Keep a helper for accessing the flags, in case we need to
->> transform them somehow in the future (e.g. to cover up xdp_buff
->> vs xdp_frame differences).
->>
->> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
->> ---
->> Does anyone prefer the current form of the API, or can we change
->> as prosposed?
->>
-
-I like the proposed change.
-The only thing that confuses me was that the u32 flags is named
-"skb_flags" and not "xdp_flags".
-
-@@ -314,7 +313,7 @@
-  static inline void
-  xdp_update_skb_shared_info(struct sk_buff *skb, u8 nr_frags,
-  			   unsigned int size, unsigned int truesize,
--			   bool pfmemalloc)
-+			   u32 skb_flags)
-
-
->> Bonus question: while Im messing with this API could I rename
->> xdp_update_skb_shared_info()? Maybe to xdp_update_skb_state() ?
->> Not sure why the function name has "shared_info" when most of
->> what it updates is skb fields.
-> 
-> I can only suspect that the author decided to name it this way due to
-> that it's only used when xdp_buff has frags (and frags are in shinfo).
-> But I agree it's not the best choice. xdp_update_skb_state() sounds fine
-> to me, but given that it's all about frags, maybe something like
-> xdp_update_skb_frags_info/state() or so?
-> 
-
-Yes, function is only used when skb_shared_info have already been touched.
-
-Performance wise it can be expensive to touch the cache-line for
-skb_shared_info, so the code carefully checks xdp_buff_has_frags() (flag
-XDP_FLAGS_HAS_FRAGS) before deref of skb_shared_info memory area.
-
-Calling it xdp_update_skb_state() seems misleading. As Olek says, this
-is about updating the "skb_frags".  The original intent is that
-xdp_buff/xdp_frame is using same skb_shared_info area as SKB, and when
-transitioning to a "full" SKB then we need to do some adjustments.
-(Looking at function code, it is of-cause confusing that it doesn't
-touch sinfo->frags[] array, but that is because we don't need to, as
-non-linear XDP and SKB have same layout.).
-
---Jesper
-
->>
->> CC: ast@kernel.org
->> CC: daniel@iogearbox.net
->> CC: hawk@kernel.org
->> CC: lorenzo@kernel.org
->> CC: toke@redhat.com
->> CC: john.fastabend@gmail.com
->> CC: sdf@fomichev.me
->> CC: michael.chan@broadcom.com
->> CC: anthony.l.nguyen@intel.com
->> CC: przemyslaw.kitszel@intel.com
->> CC: marcin.s.wojtas@gmail.com
->> CC: tariqt@nvidia.com
->> CC: mbloch@nvidia.com
->> CC: eperezma@redhat.com
->> CC: bpf@vger.kernel.org
->> ---
->>   include/net/xdp.h                             | 21 +++++++++----------
->>   drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c |  2 +-
->>   drivers/net/ethernet/intel/i40e/i40e_txrx.c   |  4 ++--
->>   drivers/net/ethernet/intel/ice/ice_txrx.c     |  4 ++--
->>   drivers/net/ethernet/marvell/mvneta.c         |  2 +-
->>   .../net/ethernet/mellanox/mlx5/core/en_rx.c   |  7 +++----
->>   drivers/net/virtio_net.c                      |  2 +-
->>   net/core/xdp.c                                | 11 +++++-----
->>   8 files changed, 26 insertions(+), 27 deletions(-)
 
