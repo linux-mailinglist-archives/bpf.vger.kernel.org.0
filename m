@@ -1,287 +1,134 @@
-Return-Path: <bpf+bounces-65533-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65534-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6421B252F3
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 20:22:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DDA4B25314
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 20:34:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA2497B2212
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 18:20:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C2FD568483
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 18:34:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71A6F2D5C7A;
-	Wed, 13 Aug 2025 18:21:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F2892F49FD;
+	Wed, 13 Aug 2025 18:34:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riotgames.com header.i=@riotgames.com header.b="ibzqRE0D"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EwbcUupB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B61C295531
-	for <bpf@vger.kernel.org>; Wed, 13 Aug 2025 18:21:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 867AD291864
+	for <bpf@vger.kernel.org>; Wed, 13 Aug 2025 18:34:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755109314; cv=none; b=EmMMLAeZMaMZmZNat/fslrfZFmPRGtiGp1w4qb1ToFkrFSfz7j74H8d1aGdo0+YTZRB6fDPYjpfXLVXgV88lfHHRaE5Qc9NgHFthLVxQHY/pqTU/htiCRxRdDDw2FHS3TbIDXtpSxEJBVujEVyep56EG4SFKAffA8ese90EPG54=
+	t=1755110049; cv=none; b=YEnatuUV/GAFJ6GN2EDmw9NbRM3kAU83nLeSRuKJ//TTRcgJpAbiezn0jFe3Z1yJQaHQZmjFXCpCnN8OaHlrtPbPj4KlDOcCfE2j4NuCPj3rc6OU/aAt6DF7+Enl30GwCdZwgZ82oIB0XOjLhVi+VzbBkJkQm7TRzF+KSBWsUWc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755109314; c=relaxed/simple;
-	bh=H7Aok+8AsCNXUKSJni83EqB4Qm6rA3DYVwzZH5/eAj0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NeWL00PBH2zUFYKpeQUUoKJu0UfHzKkX3wp4NRuVUgKblet2EU4+v2um/Zcu/TA6WvPUhT00PXg4IRtCycrNskPnaQ/Dp0b+Z/ETmFhyobwwcoQF2vU/K6rpVyPrjam7m54T0ri1CRYz2qDdTFXxtetBcB8yoR7oVDxgtkED5uI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=riotgames.com; spf=pass smtp.mailfrom=riotgames.com; dkim=pass (1024-bit key) header.d=riotgames.com header.i=@riotgames.com header.b=ibzqRE0D; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=riotgames.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riotgames.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-76e2eb6ce24so192840b3a.3
-        for <bpf@vger.kernel.org>; Wed, 13 Aug 2025 11:21:52 -0700 (PDT)
+	s=arc-20240116; t=1755110049; c=relaxed/simple;
+	bh=pwwwZv/8useDNwSP1/lT7v0iLARn/mYf7boEh+nNb9w=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=NWnZnW4nhi1VgPl77fJiJho+MgHco3Lux5hjxFI+8X5mzB9+EmKl+2xn73OE9Qothsrca+SRIZpC6+8Jw72q0lGJ1IfRLgKNnEvvc2nkExN1mr2+ucPWYLcwnJauo4F7siENLjLW5Mi2PmTpwaAsDV5VD2f1SBOjivUvlBOE1Is=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EwbcUupB; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-323267b98a4so244806a91.1
+        for <bpf@vger.kernel.org>; Wed, 13 Aug 2025 11:34:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=riotgames.com; s=riotgames; t=1755109312; x=1755714112; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H7Aok+8AsCNXUKSJni83EqB4Qm6rA3DYVwzZH5/eAj0=;
-        b=ibzqRE0DDjzt16d2wt2NLHbHfReKnm93lrY+oYwY4n0wSUwz3ntidB9bq/vkLwoHwX
-         ix3vFqJkdBxldPO+I1JhtoanWBMVQpxoHC5yOPTFbRXlvr7gxlt0eQTBmM6Gsox3Ja/O
-         VAzNdvTOM4uM9rp/AACmuXOZz6uRjfpIMkDsY=
+        d=gmail.com; s=20230601; t=1755110048; x=1755714848; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=K0+piq9HyCSesXHSBrjcYqPk0QsxLirH4qHcyfN0fRY=;
+        b=EwbcUupBnpbIfGrP2fH31fR/f3Gsv9r1VdS1st88qMe1DCd955ToFgJB2M+bE7Fspu
+         qv3AuYo6+GG5mVUas3jDPgZRFHC0me7KLa4hkGCtknsnqqHJmYoM3NCYCNSQqwsulFo0
+         An90twRJvy4lmxb3Kz8CZKYytkOjXNek3jnIrZl1TnRgD3AR6koMPJg3/KqHst1ahHhc
+         SaF6EUXJwOltTlRkDXRaTuLiL8SE5e+94cbU/xuO4sogrJ4KOWtfq9BCyJdqjytz6p5W
+         jA/maPXHaYL3no3gvmbI91C6TLGwyZ8RHQ28l0oFMj6jYkWBtJH4QLYhfpBGG9VfXLIq
+         Ttww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755109312; x=1755714112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H7Aok+8AsCNXUKSJni83EqB4Qm6rA3DYVwzZH5/eAj0=;
-        b=B1MX3P276umvbtx/+gKILchBNGi/a0eapNsP7sxw5PbnvEf2XJ5iYDd0bBaFkng5+k
-         r8UE3s4Ye36cR6bezkpm3tpXNwV8OIJmsDCaev9g6qLVlXG2d5v7w0PD/RUtXAGojqOj
-         tRT9IvhW6PGPdnAl7mN/16l/IkPCECJ7g+By315ZKVqcm23OzJLlq0MD4a7ZSTArGAav
-         5JtmaI1Iodi++ncSfIz95LCeOPQNTw+Zl91vQAtJZPTCJtsHPnVCAkNEkkCXI2Tx3JBn
-         A3MBwI8Jw/B8Qk7OqCLNXUt3U5TzCNrltdq95M4O/IBE2O/QgmLjF3badHS41n6tSokE
-         BslQ==
-X-Gm-Message-State: AOJu0YyFvTlBKcT12sG6e2zsHGwwPdxGMCk9aHRxIwNXXWnTCcRf7o8n
-	aFIOMwOYIbKexs8ZEVSDdxeVWn6lj2o81WpXvvH6TLqQ5U3jdBw018nW2p3Sqso5tJDegMzkDzN
-	JlkAWhRja5Vhs883P/+OEr/oJbxdH18y3LyCcTKcfVg==
-X-Gm-Gg: ASbGncs9r7ZJe7165h5UNdLxpwSkgv1O/8yUxVL1TNyY0gX0EE+yAq6P9dXpb16W9IY
-	KhGTmzZv2MGsn/uTrnoljehy11ADgzOQbDL4WBV9Ova9vcJK0uZYzf0xZW0LZXFpMEVZUGkPtjz
-	hdYGXewN3uwpoK5Et7Zz6LT7sHoqx2QxhmUmsc/QAGzdV3thb5w6Wd4Dd+WjE3+68PT0SR/05Gy
-	bS1paHcvGneAEZy
-X-Google-Smtp-Source: AGHT+IH1tY6NdVEiDiIOsXh+Mk2DqBPeX3M9xSd8qZwtHHdAHFsFYmz3eY2hG8dt2+kqapTm/ssv5tGMAlMvrUmANCk=
-X-Received: by 2002:a17:903:3c46:b0:240:7247:f738 with SMTP id
- d9443c01a7336-244584af6b0mr1439195ad.1.1755109311644; Wed, 13 Aug 2025
- 11:21:51 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1755110048; x=1755714848;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=K0+piq9HyCSesXHSBrjcYqPk0QsxLirH4qHcyfN0fRY=;
+        b=Ry4meuBY5visbcy8Q/80Fw3ZQ8NdfUjRlCunI01dtbmWUz7PuWf697qH+V/uiWyvVs
+         dS3X7glHjQY0rDHtkahONRh3x+L79mEVI4+bzLDMcgiMAvFWVNmpMj/5AoQaawIIfqKH
+         O+SOIlk2adZbws0SnVrLQDitrjyTQ6HTkDjX0AnasDesKv9XBgrpR+13uhaAE6BibrjX
+         kO8EUd4Jh6JELWsrRcj51mC/CaM3INOB3hljVxpOZhr3ucFqm8ydnrba9zcsDKEGdWE+
+         jjcVVLejZIKz2sIrMnnxvuTTU0mrLYwvufc4HICOxf7z+6NKeIpwQhguSZQLHTZuOu1E
+         RS0A==
+X-Forwarded-Encrypted: i=1; AJvYcCX4HOI32RgzYuWfWMwIiBez4bngfG9fHQ9Sc5+oKPL2uYnb42lrKwgml0JoCBGSOu7EDb4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyFsPJ0vHMWYqzS9dNxv5oKZ8Fk84vgtzX632/tIUlGbMxIONd6
+	A1P6MbSmpIK6YQR+5jzd2JbK9LkM8Xv5gU9gAlRafxMNzsL3KJRd4asR
+X-Gm-Gg: ASbGnctPmTLQHVn2SGLaqSI4TvvCeIcvb8ZnEIgPQSDjdPXEcuHndeaDD1yImg45q+f
+	Y6MMY1MHIEsy1MxvyQrg3IfwlKwlucFq2jSBidtHFFaxHeGNOdMj0kK7EjGn5BzmKPrSxIYvtGg
+	vdb/BgR9o6kGR6Df7u4aKisoVunAmIo0SwGYLPW5l1tcekEwhCZVsnf7osB8kw7wmnQkgIsWFOM
+	31Kw8/UX6quc1/P65sijJLOYWC03B0PeIs+ngbqtDSIDxcr1rKmcVhXqcEiHkJJylhJlFsrEYqY
+	caQwxm9XIY3gXOim3FIexoSgXF1pBKyACrnQHZ1y7oTSSlrW3oy87azMtFmUhF8f82gFN5WKOsO
+	sS5harf+rl6n+QBkbwviZdYspmpoh
+X-Google-Smtp-Source: AGHT+IGk/aRhikKIMMeXAVSXHoTN8bTHUaptf/B1g3ZgDMDn2PB1KAPYupOzlnjsTBXAvSI9UDOSiw==
+X-Received: by 2002:a17:90b:530f:b0:313:2206:adf1 with SMTP id 98e67ed59e1d1-32327998e16mr585735a91.4.1755110047697;
+        Wed, 13 Aug 2025 11:34:07 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c096:14a::e47? ([2620:10d:c090:600::1:68a4])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b471519d8bcsm360080a12.61.2025.08.13.11.34.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Aug 2025 11:34:06 -0700 (PDT)
+Message-ID: <a4c4e38b669a05200570fdfc66f4bdfc29dbb3d1.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Tests for
+ is_scalar_branch_taken tnum logic
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Paul Chaignon <paul.chaignon@gmail.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Date: Wed, 13 Aug 2025 11:34:04 -0700
+In-Reply-To: <85f82f190955844509eb77ae95f4ef20a587acd7.1755098817.git.paul.chaignon@gmail.com>
+References: 
+	<ba9baf9f73d51d9bce9ef13778bd39408d67db79.1755098817.git.paul.chaignon@gmail.com>
+	 <85f82f190955844509eb77ae95f4ef20a587acd7.1755098817.git.paul.chaignon@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250804022101.2171981-1-xukuohai@huaweicloud.com> <20250804022101.2171981-3-xukuohai@huaweicloud.com>
-In-Reply-To: <20250804022101.2171981-3-xukuohai@huaweicloud.com>
-From: Zvi Effron <zeffron@riotgames.com>
-Date: Wed, 13 Aug 2025 11:21:40 -0700
-X-Gm-Features: Ac12FXz9SYBFn_O1HZA19Q6nLQJmBqaWIiON5vvZTvzhr0qNIx5-gxQZM7Ri3GI
-Message-ID: <CAC1LvL2AiNpN86+fz+30ap0Pm5W9C1MtV5sPvupU2uFGoJ94ug@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/4] libbpf: ringbuf: Add overwrite ring buffer process
-To: Xu Kuohai <xukuohai@huaweicloud.com>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yhs@fb.com>, 
-	Song Liu <song@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Willem de Bruijn <willemb@google.com>, 
-	Jason Xing <kerneljasonxing@gmail.com>, Paul Chaignon <paul.chaignon@gmail.com>, 
-	Tao Chen <chen.dylane@linux.dev>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
-	Martin Kelly <martin.kelly@crowdstrike.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Aug 3, 2025 at 7:27=E2=80=AFPM Xu Kuohai <xukuohai@huaweicloud.com>=
- wrote:
->
-> From: Xu Kuohai <xukuohai@huawei.com>
->
-> In overwrite mode, the producer does not wait for the consumer, so the
-> consumer is responsible for handling conflicts. An optimistic method
-> is used to resolve the conflicts: the consumer first reads consumer_pos,
-> producer_pos and overwrite_pos, then calculates a read window and copies
-> data in the window from the ring buffer. After copying, it checks the
-> positions to decide if the data in the copy window have been overwritten
-> by be the producer. If so, it discards the copy and tries again. Once
-> success, the consumer processes the events in the copy.
->
-> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+On Wed, 2025-08-13 at 17:35 +0200, Paul Chaignon wrote:
+> This patch adds tests for the new jeq and jne logic in
+> is_scalar_branch_taken. The following shows the first test failing
+> before the previous patch is applied. Once the previous patch is
+> applied, the verifier can use the tnum values to deduce that instruction
+> 7 is dead code.
+>=20
+>   0: call bpf_get_prandom_u32#7  ; R0_w=3Dscalar()
+>   1: w0 =3D w0                     ; R0_w=3Dscalar(smin=3D0,smax=3Dumax=
+=3D0xffffffff,var_off=3D(0x0; 0xffffffff))
+>   2: r0 >>=3D 30                   ; R0_w=3Dscalar(smin=3Dsmin32=3D0,smax=
+=3Dumax=3Dsmax32=3Dumax32=3D3,var_off=3D(0x0; 0x3))
+>   3: r0 <<=3D 30                   ; R0_w=3Dscalar(smin=3D0,smax=3Dumax=
+=3Dumax32=3D0xc0000000,smax32=3D0x40000000,var_off=3D(0x0; 0xc0000000))
+>   4: r1 =3D r0                     ; R0_w=3Dscalar(id=3D1,smin=3D0,smax=
+=3Dumax=3Dumax32=3D0xc0000000,smax32=3D0x40000000,var_off=3D(0x0; 0xc000000=
+0)) R1_w=3Dscalar(id=3D1,smin=3D0,smax=3Dumax=3Dumax32=3D0xc0000000,smax32=
+=3D0x40000000,var_off=3D(0x0; 0xc0000000))
+>   5: r1 +=3D 1024                  ; R1_w=3Dscalar(smin=3Dumin=3Dumin32=
+=3D1024,smax=3Dumax=3Dumax32=3D0xc0000400,smin32=3D0x80000400,smax32=3D0x40=
+000400,var_off=3D(0x400; 0xc0000000))
+>   6: if r1 !=3D r0 goto pc+1       ; R0_w=3Dscalar(id=3D1,smin=3Dumin=3Du=
+min32=3D1024,smax=3Dumax=3Dumax32=3D0xc0000000,smin32=3D0x80000400,smax32=
+=3D0x40000000,var_off=3D(0x400; 0xc0000000)) R1_w=3Dscalar(smin=3Dumin=3Dum=
+in32=3D1024,smax=3Dumax=3Dumax32=3D0xc0000000,smin32=3D0x80000400,smax32=3D=
+0x40000400,var_off=3D(0x400; 0xc0000000))
+>   7: r10 =3D 0
+>   frame pointer is read only
+>=20
+> Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
 > ---
-> tools/lib/bpf/ringbuf.c | 103 +++++++++++++++++++++++++++++++++++++++-
-> 1 file changed, 102 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-> index 9702b70da444..9c072af675ff 100644
-> --- a/tools/lib/bpf/ringbuf.c
-> +++ b/tools/lib/bpf/ringbuf.c
-> @@ -27,10 +27,13 @@ struct ring {
-> ring_buffer_sample_fn sample_cb;
-> void *ctx;
-> void *data;
-> + void *read_buffer;
-> unsigned long *consumer_pos;
-> unsigned long *producer_pos;
-> + unsigned long *overwrite_pos;
-> unsigned long mask;
-> int map_fd;
-> + bool overwrite_mode;
-> };
->
-> struct ring_buffer {
-> @@ -69,6 +72,9 @@ static void ringbuf_free_ring(struct ring_buffer *rb, s=
-truct ring *r)
-> r->producer_pos =3D NULL;
-> }
->
-> + if (r->read_buffer)
-> + free(r->read_buffer);
-> +
-> free(r);
-> }
->
-> @@ -119,6 +125,14 @@ int ring_buffer__add(struct ring_buffer *rb, int map=
-_fd,
-> r->sample_cb =3D sample_cb;
-> r->ctx =3D ctx;
-> r->mask =3D info.max_entries - 1;
-> + r->overwrite_mode =3D info.map_flags & BPF_F_OVERWRITE;
-> + if (unlikely(r->overwrite_mode)) {
-> + r->read_buffer =3D malloc(info.max_entries);
-> + if (!r->read_buffer) {
-> + err =3D -ENOMEM;
-> + goto err_out;
-> + }
-> + }
->
-> /* Map writable consumer page */
-> tmp =3D mmap(NULL, rb->page_size, PROT_READ | PROT_WRITE, MAP_SHARED, map=
-_fd, 0);
-> @@ -148,6 +162,7 @@ int ring_buffer__add(struct ring_buffer *rb, int map_=
-fd,
-> goto err_out;
-> }
-> r->producer_pos =3D tmp;
-> + r->overwrite_pos =3D r->producer_pos + 1; /* overwrite_pos is next to p=
-roducer_pos */
-> r->data =3D tmp + rb->page_size;
->
-> e =3D &rb->events[rb->ring_cnt];
-> @@ -232,7 +247,7 @@ static inline int roundup_len(__u32 len)
-> return (len + 7) / 8 * 8;
-> }
->
-> -static int64_t ringbuf_process_ring(struct ring *r, size_t n)
-> +static int64_t ringbuf_process_normal_ring(struct ring *r, size_t n)
-> {
-> int *len_ptr, len, err;
-> /* 64-bit to avoid overflow in case of extreme application behavior */
-> @@ -278,6 +293,92 @@ static int64_t ringbuf_process_ring(struct ring *r, =
-size_t n)
-> return cnt;
-> }
->
-> +static int64_t ringbuf_process_overwrite_ring(struct ring *r, size_t n)
-> +{
-> +
-> + int err;
-> + uint32_t *len_ptr, len;
-> + /* 64-bit to avoid overflow in case of extreme application behavior */
-> + int64_t cnt =3D 0;
-> + size_t size, offset;
-> + unsigned long cons_pos, prod_pos, over_pos, tmp_pos;
-> + bool got_new_data;
-> + void *sample;
-> + bool copied;
-> +
-> + size =3D r->mask + 1;
-> +
-> + cons_pos =3D smp_load_acquire(r->consumer_pos);
-> + do {
-> + got_new_data =3D false;
-> +
-> + /* grab a copy of data */
-> + prod_pos =3D smp_load_acquire(r->producer_pos);
-> + do {
-> + over_pos =3D READ_ONCE(*r->overwrite_pos);
-> + /* prod_pos may be outdated now */
-> + if (over_pos < prod_pos) {
-> + tmp_pos =3D max(cons_pos, over_pos);
-> + /* smp_load_acquire(r->producer_pos) before
-> + * READ_ONCE(*r->overwrite_pos) ensures that
-> + * over_pos + r->mask < prod_pos never occurs,
-> + * so size is never larger than r->mask
-> + */
-> + size =3D prod_pos - tmp_pos;
-> + if (!size)
-> + goto done;
-> + memcpy(r->read_buffer,
-> + r->data + (tmp_pos & r->mask), size);
-> + copied =3D true;
-> + } else {
-> + copied =3D false;
-> + }
-> + prod_pos =3D smp_load_acquire(r->producer_pos);
-> + /* retry if data is overwritten by producer */
-> + } while (!copied || prod_pos - tmp_pos > r->mask);
 
-This seems to allow for a situation where a call to process the ring can
-infinite loop if the producers are producing and overwriting fast enough. T=
-hat
-seems suboptimal to me?
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
-Should there be a timeout or maximum number of attempts or something that
-returns -EBUSY or another error to the user?
-
-> +
-> + cons_pos =3D tmp_pos;
-> +
-> + for (offset =3D 0; offset < size; offset +=3D roundup_len(len)) {
-> + len_ptr =3D r->read_buffer + (offset & r->mask);
-> + len =3D *len_ptr;
-> +
-> + if (len & BPF_RINGBUF_BUSY_BIT)
-> + goto done;
-> +
-> + got_new_data =3D true;
-> + cons_pos +=3D roundup_len(len);
-> +
-> + if ((len & BPF_RINGBUF_DISCARD_BIT) =3D=3D 0) {
-> + sample =3D (void *)len_ptr + BPF_RINGBUF_HDR_SZ;
-> + err =3D r->sample_cb(r->ctx, sample, len);
-> + if (err < 0) {
-> + /* update consumer pos and bail out */
-> + smp_store_release(r->consumer_pos,
-> + cons_pos);
-> + return err;
-> + }
-> + cnt++;
-> + }
-> +
-> + if (cnt >=3D n)
-> + goto done;
-> + }
-> + } while (got_new_data);
-> +
-> +done:
-> + smp_store_release(r->consumer_pos, cons_pos);
-> + return cnt;
-> +}
-> +
-> +static int64_t ringbuf_process_ring(struct ring *r, size_t n)
-> +{
-> + if (likely(!r->overwrite_mode))
-> + return ringbuf_process_normal_ring(r, n);
-> + else
-> + return ringbuf_process_overwrite_ring(r, n);
-> +}
-> +
-> /* Consume available ring buffer(s) data without event polling, up to n
-> * records.
-> *
-> --
-> 2.43.0
->
->
+[...]
 
