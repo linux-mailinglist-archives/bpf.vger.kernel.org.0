@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-65546-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65548-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10317B254C5
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 22:55:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53951B254CA
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 22:55:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADE6A9A49D4
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 20:55:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12CF59A470A
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 20:55:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A57D2EB5DB;
-	Wed, 13 Aug 2025 20:55:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB4A82F9995;
+	Wed, 13 Aug 2025 20:55:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WS+mpfYr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jg3fuv20"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A9502D0275;
-	Wed, 13 Aug 2025 20:55:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E8C62F28FC;
+	Wed, 13 Aug 2025 20:55:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755118536; cv=none; b=aSe25Ssmbi1nWMuE7YBIuCFvHrx9gTcYMhrkLbEOD6IA/QaNSvLvdlerVWYP6QWMK+vZpp9xpB9PW0WAa9IdvK/adnMJ1H4/QqFq2FAooy9prIVQAhHTVzujTXvjngV9ns511spwTw2aHRxqcLNRejSQr5XIJhzLA5/YSkS2ZE4=
+	t=1755118540; cv=none; b=WPbl7hvBqChxml3tyDnWORtmxeAAkJ790FPGfG4yfcB1ClAPtmiELYrQemhF1ZPssVgufnlc5VWVHCQouBc61fZpGJXNhMd8YKiy5qu6Qt0NKtJHZw+W7xDlHJpp0Hr7Wt7cRkiJGD9GDfuqqAgChK44BISKbWimFyphsroFtUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755118536; c=relaxed/simple;
-	bh=qiM16ol4XWlWiottEkZ9ol41+7UWQ9lxZaMSNIiuIBc=;
+	s=arc-20240116; t=1755118540; c=relaxed/simple;
+	bh=R6RBBJ+UoXPm+YKr+z5Go8Pp/xR66pnVPokn7HqXPsA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=E4TdCKjY+OymGncpXVeEdlSRNqxL0OUj5iBUAUn6B159iHb9UF7ALkajJbm0f9kdrnlkJbOFXTAG7jvOl6Z2dob0yJUQbvM2h5V4ooFokZ+PizNQZ2FS9fXTLPp/KrqzYr1yd0vwSBGZfql4r9SvcQsWwSEodulX/Q0dyoCHtO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WS+mpfYr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A9DBC4CEED;
-	Wed, 13 Aug 2025 20:55:34 +0000 (UTC)
+	 MIME-Version; b=RxCKOVmE3QMW86piC6okUDliu8frniSiCkbOgklC0NC8Qi3OStXOLZe6b/VpjHPCR/OkkDaNU6azjYobSdv8FTiLCAqGapvwfLPdKiy8GoRHng6vH2cfZd/r+Lr2A6ugzuZdlp0wTBV2i58YG+rcmpn9GXsIQ5Z15PKp9EeWlfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jg3fuv20; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2CEFC4CEED;
+	Wed, 13 Aug 2025 20:55:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755118536;
-	bh=qiM16ol4XWlWiottEkZ9ol41+7UWQ9lxZaMSNIiuIBc=;
+	s=k20201202; t=1755118538;
+	bh=R6RBBJ+UoXPm+YKr+z5Go8Pp/xR66pnVPokn7HqXPsA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WS+mpfYrNM18YR8ssgQ0xg3V7dtLdwB1HmeaJ/zfsCEyi72+6ZVfXYMEF2Dpn17nB
-	 wS9JoFS+HzBQvvkRX5yC6/oIquv1nDGZ4JYWn8acR54ESHziSYcMphvneStx99xV3w
-	 HWXyCY0uRSgyU5JDoJmO38C157pQNNitt2mLjoWsz88RBR0HabPwyd/4B4nr8DahiW
-	 ga1jEwFNVeWE3Ato1w1go2n+cEGbcsLdVykqI4ddYsQMrc5mFyvDDc2U3+80tbpo73
-	 J010p9hBgnAewXFp1vXhxfSFomSgxg4t/ykA1AN71VvALPo2B6Ieb21BLJ19G6gc4T
-	 or7ruStD1eJwQ==
+	b=jg3fuv20q2ecUeiC/5TLIMf5i+ME3Ubw+SSJXgVwQG425MUKMmHOKSLmaLTFZs8b+
+	 oGtIpHmD+ggyH3Ta5eY2QsSCPfAFaYItokuF7oESK3Co7Kloz/ZotFtJduTLbgueii
+	 xM4iJAkk5xz4Jg6zGmoI3cLEDW3JyRt2PU5uqJoyKJZKvERPzz1gr7MeGIJS8+Wguo
+	 COIi49d3Vkj0UmsLJDm2NiJ13s9vfV4Z0G1+/cAGKdQwtnlBL1kGu6lg9SkevHwD2g
+	 lrF1uxTaDr7r4BXpdkSSZrvMWuLxnrb6NMcmnB5BOrve5NIlHdyawq3qIAZIXgSHCw
+	 1q+sELe8NdWHw==
 From: KP Singh <kpsingh@kernel.org>
 To: bpf@vger.kernel.org,
 	linux-security-module@vger.kernel.org
@@ -51,9 +51,9 @@ Cc: bboscaccy@linux.microsoft.com,
 	daniel@iogearbox.net,
 	andrii@kernel.org,
 	KP Singh <kpsingh@kernel.org>
-Subject: [PATCH v3 02/12] bpf: Implement exclusive map creation
-Date: Wed, 13 Aug 2025 22:55:16 +0200
-Message-ID: <20250813205526.2992911-3-kpsingh@kernel.org>
+Subject: [PATCH v3 03/12] libbpf: Implement SHA256 internal helper
+Date: Wed, 13 Aug 2025 22:55:17 +0200
+Message-ID: <20250813205526.2992911-4-kpsingh@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250813205526.2992911-1-kpsingh@kernel.org>
 References: <20250813205526.2992911-1-kpsingh@kernel.org>
@@ -65,142 +65,104 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Exclusive maps allow maps to only be accessed by program with a
-program with a matching hash which is specified in the excl_prog_hash
-attr.
-
-For the signing use-case, this allows the trusted loader program
-to load the map and verify the integrity
+Use AF_ALG sockets to not have libbpf depend on OpenSSL. The helper is
+used for the loader generation code to embed the metadata hash in the
+loader program and also by the bpf_map__make_exclusive API to calculate
+the hash of the program the map is exclusive to.
 
 Signed-off-by: KP Singh <kpsingh@kernel.org>
 ---
- include/linux/bpf.h            |  1 +
- include/uapi/linux/bpf.h       |  2 ++
- kernel/bpf/syscall.c           | 32 ++++++++++++++++++++++++++++----
- kernel/bpf/verifier.c          |  6 ++++++
- tools/include/uapi/linux/bpf.h |  2 ++
- 5 files changed, 39 insertions(+), 4 deletions(-)
+ tools/lib/bpf/libbpf.c          | 59 +++++++++++++++++++++++++++++++++
+ tools/lib/bpf/libbpf_internal.h |  4 +++
+ 2 files changed, 63 insertions(+)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index b98c5b5bf2a1..b23804733f2f 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -329,6 +329,7 @@ struct bpf_map {
- 	atomic64_t sleepable_refcnt;
- 	s64 __percpu *elem_count;
- 	u64 cookie; /* write-once */
-+	char *excl_prog_sha;
- };
- 
- static inline const char *btf_field_type_name(enum btf_field_type type)
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 233de8677382..7873ba7b9468 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1522,6 +1522,8 @@ union bpf_attr {
- 		 * If provided, map_flags should have BPF_F_TOKEN_FD flag set.
- 		 */
- 		__s32	map_token_fd;
-+		__u32 excl_prog_hash_size;
-+		__aligned_u64 excl_prog_hash;
- 	};
- 
- 	struct { /* anonymous struct used by BPF_MAP_*_ELEM and BPF_MAP_FREEZE commands */
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 0fbfa8532c39..943811165510 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -860,6 +860,7 @@ static void bpf_map_free(struct bpf_map *map)
- 	 * the free of values or special fields allocated from bpf memory
- 	 * allocator.
- 	 */
-+	kfree(map->excl_prog_sha);
- 	migrate_disable();
- 	map->ops->map_free(map);
- 	migrate_enable();
-@@ -1338,9 +1339,9 @@ static bool bpf_net_capable(void)
- 	return capable(CAP_NET_ADMIN) || capable(CAP_SYS_ADMIN);
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 8f5a81b672e1..0bb3d71dcd9f 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -43,6 +43,9 @@
+ #include <sys/vfs.h>
+ #include <sys/utsname.h>
+ #include <sys/resource.h>
++#include <sys/socket.h>
++#include <linux/if_alg.h>
++#include <linux/socket.h>
+ #include <libelf.h>
+ #include <gelf.h>
+ #include <zlib.h>
+@@ -14207,3 +14210,59 @@ void bpf_object__destroy_skeleton(struct bpf_object_skeleton *s)
+ 	free(s->progs);
+ 	free(s);
  }
- 
--#define BPF_MAP_CREATE_LAST_FIELD map_token_fd
-+#define BPF_MAP_CREATE_LAST_FIELD excl_prog_hash
- /* called via syscall */
--static int map_create(union bpf_attr *attr, bool kernel)
-+static int map_create(union bpf_attr *attr, bpfptr_t uattr)
- {
- 	const struct bpf_map_ops *ops;
- 	struct bpf_token *token = NULL;
-@@ -1534,7 +1535,30 @@ static int map_create(union bpf_attr *attr, bool kernel)
- 			attr->btf_vmlinux_value_type_id;
- 	}
- 
--	err = security_bpf_map_create(map, attr, token, kernel);
-+	if (attr->excl_prog_hash) {
-+		bpfptr_t uprog_hash = make_bpfptr(attr->excl_prog_hash, uattr.is_kernel);
 +
-+		if (attr->excl_prog_hash_size != SHA256_DIGEST_SIZE) {
-+			err = -EINVAL;
-+			goto free_map;
-+		}
++int libbpf_sha256(const void *data, size_t data_sz, void *sha_out, size_t sha_out_sz)
++{
++	struct sockaddr_alg sa = {
++		.salg_family = AF_ALG,
++		.salg_type   = "hash",
++		.salg_name   = "sha256"
++	};
++	int sock_fd = -1;
++	int op_fd = -1;
++	int err = 0;
 +
-+		map->excl_prog_sha = kzalloc(SHA256_DIGEST_SIZE, GFP_KERNEL);
-+		if (!map->excl_prog_sha) {
-+			err = -ENOMEM;
-+			goto free_map;
-+		}
-+
-+		if (copy_from_bpfptr(map->excl_prog_sha, uprog_hash,
-+				     SHA256_DIGEST_SIZE)) {
-+			err = -EFAULT;
-+			goto free_map;
-+		}
-+	} else if (attr->excl_prog_hash_size) {
-+		return -EINVAL;
++	if (sha_out_sz != SHA256_DIGEST_LENGTH) {
++		pr_warn("sha_out_sz should be exactly 32 bytes for a SHA256 digest");
++		return libbpf_err(-EINVAL);
 +	}
 +
-+	err = security_bpf_map_create(map, attr, token, uattr.is_kernel);
- 	if (err)
- 		goto free_map_sec;
- 
-@@ -6008,7 +6032,7 @@ static int __sys_bpf(enum bpf_cmd cmd, bpfptr_t uattr, unsigned int size)
- 
- 	switch (cmd) {
- 	case BPF_MAP_CREATE:
--		err = map_create(&attr, uattr.is_kernel);
-+		err = map_create(&attr, uattr);
- 		break;
- 	case BPF_MAP_LOOKUP_ELEM:
- 		err = map_lookup_elem(&attr);
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 3a3982fe20d4..2dd4449b946b 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -20360,6 +20360,12 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
- {
- 	enum bpf_prog_type prog_type = resolve_prog_type(prog);
- 
-+	if (map->excl_prog_sha &&
-+	    memcmp(map->excl_prog_sha, prog->digest, SHA256_DIGEST_SIZE)) {
-+		verbose(env, "program's hash doesn't match map's excl_prog_hash\n");
-+		return -EACCES;
++	sock_fd = socket(AF_ALG, SOCK_SEQPACKET, 0);
++	if (sock_fd < 0) {
++		err = -errno;
++		pr_warn("failed to create AF_ALG socket for SHA256: %s\n", errstr(err));
++		return libbpf_err(err);
 +	}
 +
- 	if (btf_record_has_field(map->record, BPF_LIST_HEAD) ||
- 	    btf_record_has_field(map->record, BPF_RB_ROOT)) {
- 		if (is_tracing_prog_type(prog_type)) {
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 233de8677382..7873ba7b9468 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -1522,6 +1522,8 @@ union bpf_attr {
- 		 * If provided, map_flags should have BPF_F_TOKEN_FD flag set.
- 		 */
- 		__s32	map_token_fd;
-+		__u32 excl_prog_hash_size;
-+		__aligned_u64 excl_prog_hash;
- 	};
++	if (bind(sock_fd, (struct sockaddr *)&sa, sizeof(sa)) < 0) {
++		err = -errno;
++		pr_warn("failed to bind to AF_ALG socket for SHA256: %s\n", errstr(err));
++		goto out;
++	}
++
++	op_fd = accept(sock_fd, NULL, 0);
++	if (op_fd < 0) {
++		err = -errno;
++		pr_warn("failed to accept from AF_ALG socket for SHA256: %s\n", errstr(err));
++		goto out;
++	}
++
++	if (write(op_fd, data, data_sz) != data_sz) {
++		err = -errno;
++		pr_warn("failed to write data to AF_ALG socket for SHA256: %s\n", errstr(err));
++		goto out;
++	}
++
++	if (read(op_fd, sha_out, SHA256_DIGEST_LENGTH) != SHA256_DIGEST_LENGTH) {
++		err = -errno;
++		pr_warn("failed to read SHA256 from AF_ALG socket: %s\n", errstr(err));
++		goto out;
++	}
++
++out:
++	if (op_fd >= 0)
++		close(op_fd);
++	if (sock_fd >= 0)
++		close(sock_fd);
++	return libbpf_err(err);
++}
+diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+index 477a3b3389a0..8a055de0d324 100644
+--- a/tools/lib/bpf/libbpf_internal.h
++++ b/tools/lib/bpf/libbpf_internal.h
+@@ -736,4 +736,8 @@ int elf_resolve_pattern_offsets(const char *binary_path, const char *pattern,
  
- 	struct { /* anonymous struct used by BPF_MAP_*_ELEM and BPF_MAP_FREEZE commands */
+ int probe_fd(int fd);
+ 
++#define SHA256_DIGEST_LENGTH 32
++#define SHA256_DWORD_SIZE SHA256_DIGEST_LENGTH / sizeof(__u64)
++
++int libbpf_sha256(const void *data, size_t data_sz, void *sha_out, size_t sha_out_sz);
+ #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
 -- 
 2.43.0
 
