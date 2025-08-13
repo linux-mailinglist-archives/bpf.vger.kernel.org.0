@@ -1,134 +1,166 @@
-Return-Path: <bpf+bounces-65534-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65535-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DDA4B25314
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 20:34:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F357FB25359
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 20:54:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C2FD568483
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 18:34:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AF3D9A1F9A
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 18:53:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F2892F49FD;
-	Wed, 13 Aug 2025 18:34:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C35BE2FF175;
+	Wed, 13 Aug 2025 18:53:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EwbcUupB"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="G6hlxSL2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 867AD291864
-	for <bpf@vger.kernel.org>; Wed, 13 Aug 2025 18:34:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E425F303CAF
+	for <bpf@vger.kernel.org>; Wed, 13 Aug 2025 18:53:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755110049; cv=none; b=YEnatuUV/GAFJ6GN2EDmw9NbRM3kAU83nLeSRuKJ//TTRcgJpAbiezn0jFe3Z1yJQaHQZmjFXCpCnN8OaHlrtPbPj4KlDOcCfE2j4NuCPj3rc6OU/aAt6DF7+Enl30GwCdZwgZ82oIB0XOjLhVi+VzbBkJkQm7TRzF+KSBWsUWc=
+	t=1755111233; cv=none; b=l8HCV4s6QWW51HZ9HILrj5GZmAFmOXavm2e5D+kMgZxCvjbfEkQvq1WHf/dbCV7o5v0u0yOW3IqPFqYk+laHjJkgzicIn5Ox04svJsyXXcXD3NP5SW53qoqj/VQFHplL9hClnvEOlHwcaEkQBZ/o/vCYxPm9Qz6RK/G4ocPGxIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755110049; c=relaxed/simple;
-	bh=pwwwZv/8useDNwSP1/lT7v0iLARn/mYf7boEh+nNb9w=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=NWnZnW4nhi1VgPl77fJiJho+MgHco3Lux5hjxFI+8X5mzB9+EmKl+2xn73OE9Qothsrca+SRIZpC6+8Jw72q0lGJ1IfRLgKNnEvvc2nkExN1mr2+ucPWYLcwnJauo4F7siENLjLW5Mi2PmTpwaAsDV5VD2f1SBOjivUvlBOE1Is=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EwbcUupB; arc=none smtp.client-ip=209.85.216.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-323267b98a4so244806a91.1
-        for <bpf@vger.kernel.org>; Wed, 13 Aug 2025 11:34:08 -0700 (PDT)
+	s=arc-20240116; t=1755111233; c=relaxed/simple;
+	bh=uAIoi3oE2JAfmyQClW7OLg6ZQbAytpR40I4ZrK0A/Ss=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DrLG2xlA22hI/WlhoxsCalxhwT4MTARJGhnMYrAt0WsQrq2rO6nrW6NOkeX5p325pqEAon1r/vpQto5Lc+DcOcMQnWebI3JlAWdEnClblv3U5wu01WXUjWpsX+SLtwmPSUCgzp8ohjL2Y9B4zbYsWkoYMc1fqk8fmAF8glr6Q2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=G6hlxSL2; arc=none smtp.client-ip=209.85.167.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-435de5ccff6so125836b6e.0
+        for <bpf@vger.kernel.org>; Wed, 13 Aug 2025 11:53:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755110048; x=1755714848; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=K0+piq9HyCSesXHSBrjcYqPk0QsxLirH4qHcyfN0fRY=;
-        b=EwbcUupBnpbIfGrP2fH31fR/f3Gsv9r1VdS1st88qMe1DCd955ToFgJB2M+bE7Fspu
-         qv3AuYo6+GG5mVUas3jDPgZRFHC0me7KLa4hkGCtknsnqqHJmYoM3NCYCNSQqwsulFo0
-         An90twRJvy4lmxb3Kz8CZKYytkOjXNek3jnIrZl1TnRgD3AR6koMPJg3/KqHst1ahHhc
-         SaF6EUXJwOltTlRkDXRaTuLiL8SE5e+94cbU/xuO4sogrJ4KOWtfq9BCyJdqjytz6p5W
-         jA/maPXHaYL3no3gvmbI91C6TLGwyZ8RHQ28l0oFMj6jYkWBtJH4QLYhfpBGG9VfXLIq
-         Ttww==
+        d=cloudflare.com; s=google09082023; t=1755111231; x=1755716031; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8TqjUBMBvz3ge0UrPwf2mXPDOUtrqy+wU9/W1Le4cwc=;
+        b=G6hlxSL2o7oP+USDyuTE1+DfucCYUV/oR/xRPvpSuryts1PEjeBdXWypG9hllHxrxN
+         szFvxMauu1JjuCctWPWR+w71Xgt5T4xGEZPoAPrbdjUCbiVoOfRjREiSC40eAGaa7IqN
+         PUrZSESwTAOW4OSOFOnYL9DWOc1NAfZFg3wXIgfHk71zXrrZWF/xm8VFZN1jjj3guRhu
+         w1ymHQfzBWI7ye+kZUOYlKGKyZBV+B3oqmRyhZgW3t5Zb25UgtkhsFiYhOu7/cwf2P8d
+         yjlRwIGfEWZ67T+PmKlPOVGYL3OZlqe/LqgOdT6mUxH3eDE+Qyyg9XxlaSqLifqVzTjv
+         tkCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755110048; x=1755714848;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=K0+piq9HyCSesXHSBrjcYqPk0QsxLirH4qHcyfN0fRY=;
-        b=Ry4meuBY5visbcy8Q/80Fw3ZQ8NdfUjRlCunI01dtbmWUz7PuWf697qH+V/uiWyvVs
-         dS3X7glHjQY0rDHtkahONRh3x+L79mEVI4+bzLDMcgiMAvFWVNmpMj/5AoQaawIIfqKH
-         O+SOIlk2adZbws0SnVrLQDitrjyTQ6HTkDjX0AnasDesKv9XBgrpR+13uhaAE6BibrjX
-         kO8EUd4Jh6JELWsrRcj51mC/CaM3INOB3hljVxpOZhr3ucFqm8ydnrba9zcsDKEGdWE+
-         jjcVVLejZIKz2sIrMnnxvuTTU0mrLYwvufc4HICOxf7z+6NKeIpwQhguSZQLHTZuOu1E
-         RS0A==
-X-Forwarded-Encrypted: i=1; AJvYcCX4HOI32RgzYuWfWMwIiBez4bngfG9fHQ9Sc5+oKPL2uYnb42lrKwgml0JoCBGSOu7EDb4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyFsPJ0vHMWYqzS9dNxv5oKZ8Fk84vgtzX632/tIUlGbMxIONd6
-	A1P6MbSmpIK6YQR+5jzd2JbK9LkM8Xv5gU9gAlRafxMNzsL3KJRd4asR
-X-Gm-Gg: ASbGnctPmTLQHVn2SGLaqSI4TvvCeIcvb8ZnEIgPQSDjdPXEcuHndeaDD1yImg45q+f
-	Y6MMY1MHIEsy1MxvyQrg3IfwlKwlucFq2jSBidtHFFaxHeGNOdMj0kK7EjGn5BzmKPrSxIYvtGg
-	vdb/BgR9o6kGR6Df7u4aKisoVunAmIo0SwGYLPW5l1tcekEwhCZVsnf7osB8kw7wmnQkgIsWFOM
-	31Kw8/UX6quc1/P65sijJLOYWC03B0PeIs+ngbqtDSIDxcr1rKmcVhXqcEiHkJJylhJlFsrEYqY
-	caQwxm9XIY3gXOim3FIexoSgXF1pBKyACrnQHZ1y7oTSSlrW3oy87azMtFmUhF8f82gFN5WKOsO
-	sS5harf+rl6n+QBkbwviZdYspmpoh
-X-Google-Smtp-Source: AGHT+IGk/aRhikKIMMeXAVSXHoTN8bTHUaptf/B1g3ZgDMDn2PB1KAPYupOzlnjsTBXAvSI9UDOSiw==
-X-Received: by 2002:a17:90b:530f:b0:313:2206:adf1 with SMTP id 98e67ed59e1d1-32327998e16mr585735a91.4.1755110047697;
-        Wed, 13 Aug 2025 11:34:07 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c096:14a::e47? ([2620:10d:c090:600::1:68a4])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b471519d8bcsm360080a12.61.2025.08.13.11.34.05
+        d=1e100.net; s=20230601; t=1755111231; x=1755716031;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8TqjUBMBvz3ge0UrPwf2mXPDOUtrqy+wU9/W1Le4cwc=;
+        b=Kn9Z7COXyb9vzN8NWA5CI1GyB5mGmBRKoLuEC30oaYxuhLGMNsZG7Rs8BwbbWRPcaJ
+         Id069X6HA3u77+dCIBZKN2CCFBXyfwfKp5F8cwZpcyU957iU9+zufKY0ESVN+WJZ7qai
+         70g46UdLNTt7raCpU8/O+a0kP516FwoDeasZckxnHV+ATpXXBm4Tk3ELEt/YDzxUilk8
+         O3Z+0PAAxpdnbZr0J4icDGrFZ49wvkvQ54GHX2fSyX5QqPmJ7hxpmUHXJSQlkgj9/O0w
+         hXdvW/XpGjz866fiYDFTJA+jHOzQ4YuaRu1Oei2HsD0k04DxWuYWX21/7Q6CHbYX76oJ
+         SHDA==
+X-Forwarded-Encrypted: i=1; AJvYcCX4juX9ObIF7326NrqwvfLOCYn9Ey3Il4EGsLH2Nn5OxCeHGU68SPidPW4zvTCzOXbSP50=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx8rWJgDLH8fBCUVsfYU0HUC3IoT9mJj5ESOhs6Njt8X9aHL0Qw
+	kwtzq5OdRcI1o+a3SJEQM7mWzvff5DCCdLWg10nN0GGkW8fiEDvmNwCIfnW9BhhLT/A=
+X-Gm-Gg: ASbGncucYfKunGKTZ/o0tDh18je+KFbFGwKiwIh8UQG36sEyDhRokXC+f0/lP0oaI3n
+	Rn2YBaznydv8tbsnu6/L8TGsd0DkfYl0kafzj8HHTZM4BUV1/B8kAxeSf+7GZJAXnp96m5YiP8n
+	G9UrdjPpNLh1HDJrlYwqJCh7jEC8QL4hO9Y2mph4mg8JO76P7qsa+dSDaACfDH55hXna9MhzM/l
+	175VzonisMMrNtqa3BPHiVSsb6Cr01W08iw8scTaIn1Gogy6hZVCx4ZCsdgFo8v1TRVWz5fBQL2
+	xogDay8/G+6GX17TiNN3jH3q7d7f5sgmw2ysGOgw3s6YcVZfVV1UaMR4whurhGRUhatBA8xL8Uu
+	C4s+q
+X-Google-Smtp-Source: AGHT+IH+cxAc1P0YpSjpT5GkMD6yTAL+x39p48U9fLHRa1UvuKJNiSxTcXqK8YDOSg3Bw6mNwWToXw==
+X-Received: by 2002:a05:6808:f03:b0:40a:526e:5e7a with SMTP id 5614622812f47-435df7c035bmr175396b6e.23.1755111230876;
+        Wed, 13 Aug 2025 11:53:50 -0700 (PDT)
+Received: from 861G6M3 ([2a09:bac1:76a0:540::f:384])
+        by smtp.gmail.com with ESMTPSA id 5614622812f47-435ce85684csm777268b6e.18.2025.08.13.11.53.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Aug 2025 11:34:06 -0700 (PDT)
-Message-ID: <a4c4e38b669a05200570fdfc66f4bdfc29dbb3d1.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Tests for
- is_scalar_branch_taken tnum logic
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Paul Chaignon <paul.chaignon@gmail.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Date: Wed, 13 Aug 2025 11:34:04 -0700
-In-Reply-To: <85f82f190955844509eb77ae95f4ef20a587acd7.1755098817.git.paul.chaignon@gmail.com>
-References: 
-	<ba9baf9f73d51d9bce9ef13778bd39408d67db79.1755098817.git.paul.chaignon@gmail.com>
-	 <85f82f190955844509eb77ae95f4ef20a587acd7.1755098817.git.paul.chaignon@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        Wed, 13 Aug 2025 11:53:50 -0700 (PDT)
+Date: Wed, 13 Aug 2025 13:53:48 -0500
+From: Chris Arges <carges@cloudflare.com>
+To: Dragos Tatulea <dtatulea@nvidia.com>
+Cc: Jesse Brandeburg <jbrandeburg@cloudflare.com>, netdev@vger.kernel.org,
+	bpf@vger.kernel.org, kernel-team <kernel-team@cloudflare.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>, tariqt@nvidia.com,
+	saeedm@nvidia.com, Leon Romanovsky <leon@kernel.org>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Simon Horman <horms@kernel.org>,
+	Andrew Rzeznik <arzeznik@cloudflare.com>,
+	Yan Zhai <yan@cloudflare.com>
+Subject: Re: [BUG] mlx5_core memory management issue
+Message-ID: <aJzfPFCTlc35b2Bp@861G6M3>
+References: <CAFzkdvi4BTXb5zrjpwae2dF5--d2qwVDCKDCFnGyeV40S_6o3Q@mail.gmail.com>
+ <dhqeshvesjhyxeimyh6nttlkrrhoxwpmjpn65tesani3tmne5v@msusvzdhuuin>
+ <aIEuZy6fUj_4wtQ6@861G6M3>
+ <jlvrzm6q7dnai6nf5v3ifhtwqlnvvrdg5driqomnl5q4lzfxmk@tmwaadjob5yd>
+ <aJTYNG1AroAnvV31@861G6M3>
+ <hlsks2646fmhbnhxwuihheri2z4ymldtqlca6fob7rmvzncpat@gljjmlorugzw>
+ <aqti6c3imnaffenkgnnw5tnmjwrzw7g7pwbt47bvbgar2c4rbv@af4mch7msf3w>
+ <9b27d605-9211-43c9-aa49-62bbf87f7574@cloudflare.com>
+ <72vpwjc4tosqt2djhyatkycofi2hlktulevzlszmhb6w3mlo46@63sxu3or7suc>
+ <aJuxY9oTtxSn4qZP@861G6M3>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aJuxY9oTtxSn4qZP@861G6M3>
 
-On Wed, 2025-08-13 at 17:35 +0200, Paul Chaignon wrote:
-> This patch adds tests for the new jeq and jne logic in
-> is_scalar_branch_taken. The following shows the first test failing
-> before the previous patch is applied. Once the previous patch is
-> applied, the verifier can use the tnum values to deduce that instruction
-> 7 is dead code.
->=20
->   0: call bpf_get_prandom_u32#7  ; R0_w=3Dscalar()
->   1: w0 =3D w0                     ; R0_w=3Dscalar(smin=3D0,smax=3Dumax=
-=3D0xffffffff,var_off=3D(0x0; 0xffffffff))
->   2: r0 >>=3D 30                   ; R0_w=3Dscalar(smin=3Dsmin32=3D0,smax=
-=3Dumax=3Dsmax32=3Dumax32=3D3,var_off=3D(0x0; 0x3))
->   3: r0 <<=3D 30                   ; R0_w=3Dscalar(smin=3D0,smax=3Dumax=
-=3Dumax32=3D0xc0000000,smax32=3D0x40000000,var_off=3D(0x0; 0xc0000000))
->   4: r1 =3D r0                     ; R0_w=3Dscalar(id=3D1,smin=3D0,smax=
-=3Dumax=3Dumax32=3D0xc0000000,smax32=3D0x40000000,var_off=3D(0x0; 0xc000000=
-0)) R1_w=3Dscalar(id=3D1,smin=3D0,smax=3Dumax=3Dumax32=3D0xc0000000,smax32=
-=3D0x40000000,var_off=3D(0x0; 0xc0000000))
->   5: r1 +=3D 1024                  ; R1_w=3Dscalar(smin=3Dumin=3Dumin32=
-=3D1024,smax=3Dumax=3Dumax32=3D0xc0000400,smin32=3D0x80000400,smax32=3D0x40=
-000400,var_off=3D(0x400; 0xc0000000))
->   6: if r1 !=3D r0 goto pc+1       ; R0_w=3Dscalar(id=3D1,smin=3Dumin=3Du=
-min32=3D1024,smax=3Dumax=3Dumax32=3D0xc0000000,smin32=3D0x80000400,smax32=
-=3D0x40000000,var_off=3D(0x400; 0xc0000000)) R1_w=3Dscalar(smin=3Dumin=3Dum=
-in32=3D1024,smax=3Dumax=3Dumax32=3D0xc0000000,smin32=3D0x80000400,smax32=3D=
-0x40000400,var_off=3D(0x400; 0xc0000000))
->   7: r10 =3D 0
->   frame pointer is read only
->=20
-> Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
+On 2025-08-12 16:25:58, Chris Arges wrote:
+> On 2025-08-12 20:19:30, Dragos Tatulea wrote:
+> > On Tue, Aug 12, 2025 at 11:55:39AM -0700, Jesse Brandeburg wrote:
+> > > On 8/12/25 8:44 AM, 'Dragos Tatulea' via kernel-team wrote:
+> > > 
+> > > > diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+> > > > index 482d284a1553..484216c7454d 100644
+> > > > --- a/kernel/bpf/devmap.c
+> > > > +++ b/kernel/bpf/devmap.c
+> > > > @@ -408,8 +408,10 @@ static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
+> > > >          /* If not all frames have been transmitted, it is our
+> > > >           * responsibility to free them
+> > > >           */
+> > > > +       xdp_set_return_frame_no_direct();
+> > > >          for (i = sent; unlikely(i < to_send); i++)
+> > > >                  xdp_return_frame_rx_napi(bq->q[i]);
+> > > > +       xdp_clear_return_frame_no_direct();
+> > > 
+> > > Why can't this instead just be xdp_return_frame(bq->q[i]); with no
+> > > "no_direct" fussing?
+> > > 
+> > > Wouldn't this be the safest way for this function to call frame completion?
+> > > It seems like presuming the calling context is napi is wrong?
+> > >
+> > It would be better indeed. Thanks for removing my horse glasses!
+> > 
+> > Once Chris verifies that this works for him I can prepare a fix patch.
+> >
+> Working on that now, I'm testing a kernel with the following change:
+> 
 > ---
+> 
+> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+> index 3aa002a47..ef86d9e06 100644
+> --- a/kernel/bpf/devmap.c
+> +++ b/kernel/bpf/devmap.c
+> @@ -409,7 +409,7 @@ static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
+>          * responsibility to free them
+>          */
+>         for (i = sent; unlikely(i < to_send); i++)
+> -               xdp_return_frame_rx_napi(bq->q[i]);
+> +               xdp_return_frame(bq->q[i]);
+>  
+>  out:
+>         bq->count = 0;
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+This patch resolves the issue I was seeing and I am no longer able to
+reproduce the issue. I tested for about 2 hours, when the reproducer usually
+takes about 1-2 minutes.
 
-[...]
+--chris
+
 
