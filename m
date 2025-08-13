@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-65547-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65546-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07507B254C7
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 22:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 10317B254C5
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 22:55:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7DD49A47D4
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 20:55:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADE6A9A49D4
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 20:55:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28F512F0C55;
-	Wed, 13 Aug 2025 20:55:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A57D2EB5DB;
+	Wed, 13 Aug 2025 20:55:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QNBFjLH6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WS+mpfYr"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A23402EBDD2;
-	Wed, 13 Aug 2025 20:55:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A9502D0275;
+	Wed, 13 Aug 2025 20:55:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755118538; cv=none; b=eTHlDvyxJKPF7A3bbmW6ZgZsBJ4N5Hb9wwDnbZxNDp63J5LXyWUsE0jfE+PEhy9sYl+mjcnge1DTkhshNnRe2xUgdjJhlbXJYhYVLfiIKTIrh6vVJn/fbmL+aGiMNLQB7qyMphiBFOnNnGcwZIOQgB1y74dLMuIJbe9SKEjq/i8=
+	t=1755118536; cv=none; b=aSe25Ssmbi1nWMuE7YBIuCFvHrx9gTcYMhrkLbEOD6IA/QaNSvLvdlerVWYP6QWMK+vZpp9xpB9PW0WAa9IdvK/adnMJ1H4/QqFq2FAooy9prIVQAhHTVzujTXvjngV9ns511spwTw2aHRxqcLNRejSQr5XIJhzLA5/YSkS2ZE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755118538; c=relaxed/simple;
-	bh=o+QnQXBbsNnhzc+F7XR5RGGcsAzuJwGoRpwGKKVP7iY=;
+	s=arc-20240116; t=1755118536; c=relaxed/simple;
+	bh=qiM16ol4XWlWiottEkZ9ol41+7UWQ9lxZaMSNIiuIBc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MZYiG6BqF3Lbh6FcQT+rWMiQH3rNJPZ0yFO9Mn61uKvANwTfkVJQ7KHDw72pJc865WAz5pyFAydQYMGyIi8f90DhguISUx79RsnfZMs3i0L7qYj4ZbPfXv1Xpfqjpv7F1f5nsawIzWXb8+IzVg48WgqRUzOlfuWh9xB2YlV6pgc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QNBFjLH6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53B2DC4CEEB;
-	Wed, 13 Aug 2025 20:55:32 +0000 (UTC)
+	 MIME-Version; b=E4TdCKjY+OymGncpXVeEdlSRNqxL0OUj5iBUAUn6B159iHb9UF7ALkajJbm0f9kdrnlkJbOFXTAG7jvOl6Z2dob0yJUQbvM2h5V4ooFokZ+PizNQZ2FS9fXTLPp/KrqzYr1yd0vwSBGZfql4r9SvcQsWwSEodulX/Q0dyoCHtO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WS+mpfYr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A9DBC4CEED;
+	Wed, 13 Aug 2025 20:55:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755118534;
-	bh=o+QnQXBbsNnhzc+F7XR5RGGcsAzuJwGoRpwGKKVP7iY=;
+	s=k20201202; t=1755118536;
+	bh=qiM16ol4XWlWiottEkZ9ol41+7UWQ9lxZaMSNIiuIBc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QNBFjLH6XJmorVw7m/V+G+ydoKpJlWxlSi4khAVSppDyRrLoI/+lcnz9kGhOozG1I
-	 ik6Na3jHYhGBdt8TTyQU6xQQauhY1vgopQfosrOIRn8F3f5MNcBqshYb2KngqY9gzd
-	 Y5b1xRJS0LBKOL/TIEp7W/izdAg6TzCgO3l4BNpa+Q2DGzSYVDcyrNt+VUvBamlYdy
-	 yadvJcg1myzDCK5tAgE4UcTcBw3vPm6mjLlM5ArfmdsQ/edJQKXUE8i5rzbJrPhBRA
-	 ytlRVy7THEmsn5WhpqTeUL+CC7ci8KxJLtnr/elqMZgz8oUmZ9aBEqw/brbRbDaNvN
-	 LAs1ANQrCqVpg==
+	b=WS+mpfYrNM18YR8ssgQ0xg3V7dtLdwB1HmeaJ/zfsCEyi72+6ZVfXYMEF2Dpn17nB
+	 wS9JoFS+HzBQvvkRX5yC6/oIquv1nDGZ4JYWn8acR54ESHziSYcMphvneStx99xV3w
+	 HWXyCY0uRSgyU5JDoJmO38C157pQNNitt2mLjoWsz88RBR0HabPwyd/4B4nr8DahiW
+	 ga1jEwFNVeWE3Ato1w1go2n+cEGbcsLdVykqI4ddYsQMrc5mFyvDDc2U3+80tbpo73
+	 J010p9hBgnAewXFp1vXhxfSFomSgxg4t/ykA1AN71VvALPo2B6Ieb21BLJ19G6gc4T
+	 or7ruStD1eJwQ==
 From: KP Singh <kpsingh@kernel.org>
 To: bpf@vger.kernel.org,
 	linux-security-module@vger.kernel.org
@@ -51,9 +51,9 @@ Cc: bboscaccy@linux.microsoft.com,
 	daniel@iogearbox.net,
 	andrii@kernel.org,
 	KP Singh <kpsingh@kernel.org>
-Subject: [PATCH v3 01/12] bpf: Update the bpf_prog_calc_tag to use SHA256
-Date: Wed, 13 Aug 2025 22:55:15 +0200
-Message-ID: <20250813205526.2992911-2-kpsingh@kernel.org>
+Subject: [PATCH v3 02/12] bpf: Implement exclusive map creation
+Date: Wed, 13 Aug 2025 22:55:16 +0200
+Message-ID: <20250813205526.2992911-3-kpsingh@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250813205526.2992911-1-kpsingh@kernel.org>
 References: <20250813205526.2992911-1-kpsingh@kernel.org>
@@ -65,160 +65,142 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Exclusive maps restrict map access to specific programs using a hash.
-The current hash used for this is SHA1, which is prone to collisions.
-This patch uses SHA256, which  is more resilient against
-collisions. This new hash is stored in bpf_prog and used by the verifier
-to determine if a program can access a given exclusive map.
+Exclusive maps allow maps to only be accessed by program with a
+program with a matching hash which is specified in the excl_prog_hash
+attr.
 
-The original 64-bit tags are kept, as they are used by users as a short,
-possibly colliding program identifier for non-security purposes.
+For the signing use-case, this allows the trusted loader program
+to load the map and verify the integrity
 
 Signed-off-by: KP Singh <kpsingh@kernel.org>
 ---
- include/linux/bpf.h    |  6 ++++-
- include/linux/filter.h |  6 -----
- kernel/bpf/Kconfig     |  2 +-
- kernel/bpf/core.c      | 50 +++++++-----------------------------------
- 4 files changed, 14 insertions(+), 50 deletions(-)
+ include/linux/bpf.h            |  1 +
+ include/uapi/linux/bpf.h       |  2 ++
+ kernel/bpf/syscall.c           | 32 ++++++++++++++++++++++++++++----
+ kernel/bpf/verifier.c          |  6 ++++++
+ tools/include/uapi/linux/bpf.h |  2 ++
+ 5 files changed, 39 insertions(+), 4 deletions(-)
 
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index e7ee089e8a31..b98c5b5bf2a1 100644
+index b98c5b5bf2a1..b23804733f2f 100644
 --- a/include/linux/bpf.h
 +++ b/include/linux/bpf.h
-@@ -31,6 +31,7 @@
- #include <linux/memcontrol.h>
- #include <linux/cfi.h>
- #include <asm/rqspinlock.h>
-+#include <crypto/sha2.h>
+@@ -329,6 +329,7 @@ struct bpf_map {
+ 	atomic64_t sleepable_refcnt;
+ 	s64 __percpu *elem_count;
+ 	u64 cookie; /* write-once */
++	char *excl_prog_sha;
+ };
  
- struct bpf_verifier_env;
- struct bpf_verifier_log;
-@@ -1711,7 +1712,10 @@ struct bpf_prog {
- 	enum bpf_attach_type	expected_attach_type; /* For some prog types */
- 	u32			len;		/* Number of filter blocks */
- 	u32			jited_len;	/* Size of jited insns in bytes */
--	u8			tag[BPF_TAG_SIZE];
-+	union {
-+		u8 digest[SHA256_DIGEST_SIZE];
-+		u8 tag[BPF_TAG_SIZE];
-+	};
- 	struct bpf_prog_stats __percpu *stats;
- 	int __percpu		*active;
- 	unsigned int		(*bpf_func)(const void *ctx,
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 1e7fd3ee759e..1bcc81ab3227 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -997,12 +997,6 @@ static inline u32 bpf_prog_insn_size(const struct bpf_prog *prog)
- 	return prog->len * sizeof(struct bpf_insn);
- }
+ static inline const char *btf_field_type_name(enum btf_field_type type)
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 233de8677382..7873ba7b9468 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1522,6 +1522,8 @@ union bpf_attr {
+ 		 * If provided, map_flags should have BPF_F_TOKEN_FD flag set.
+ 		 */
+ 		__s32	map_token_fd;
++		__u32 excl_prog_hash_size;
++		__aligned_u64 excl_prog_hash;
+ 	};
  
--static inline u32 bpf_prog_tag_scratch_size(const struct bpf_prog *prog)
--{
--	return round_up(bpf_prog_insn_size(prog) +
--			sizeof(__be64) + 1, SHA1_BLOCK_SIZE);
--}
--
- static inline unsigned int bpf_prog_size(unsigned int proglen)
- {
- 	return max(sizeof(struct bpf_prog),
-diff --git a/kernel/bpf/Kconfig b/kernel/bpf/Kconfig
-index 17067dcb4386..eb3de35734f0 100644
---- a/kernel/bpf/Kconfig
-+++ b/kernel/bpf/Kconfig
-@@ -3,7 +3,7 @@
- # BPF interpreter that, for example, classic socket filters depend on.
- config BPF
- 	bool
--	select CRYPTO_LIB_SHA1
-+	select CRYPTO_LIB_SHA256
- 
- # Used by archs to tell that they support BPF JIT compiler plus which
- # flavour. Only one of the two can be selected for a specific arch since
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 5d1650af899d..d1a7ea759c82 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -38,6 +38,7 @@
- #include <linux/bpf_mem_alloc.h>
- #include <linux/memcontrol.h>
- #include <linux/execmem.h>
-+#include <crypto/sha2.h>
- 
- #include <asm/barrier.h>
- #include <linux/unaligned.h>
-@@ -293,28 +294,18 @@ void __bpf_prog_free(struct bpf_prog *fp)
- 
- int bpf_prog_calc_tag(struct bpf_prog *fp)
- {
--	const u32 bits_offset = SHA1_BLOCK_SIZE - sizeof(__be64);
--	u32 raw_size = bpf_prog_tag_scratch_size(fp);
--	u32 digest[SHA1_DIGEST_WORDS];
--	u32 ws[SHA1_WORKSPACE_WORDS];
--	u32 i, bsize, psize, blocks;
-+	u32 insn_size = bpf_prog_insn_size(fp);
- 	struct bpf_insn *dst;
- 	bool was_ld_map;
--	u8 *raw, *todo;
--	__be32 *result;
--	__be64 *bits;
-+	int i, ret = 0;
- 
--	raw = vmalloc(raw_size);
--	if (!raw)
-+	dst = vmalloc(insn_size);
-+	if (!dst)
- 		return -ENOMEM;
- 
--	sha1_init_raw(digest);
--	memset(ws, 0, sizeof(ws));
--
- 	/* We need to take out the map fd for the digest calculation
- 	 * since they are unstable from user space side.
+ 	struct { /* anonymous struct used by BPF_MAP_*_ELEM and BPF_MAP_FREEZE commands */
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 0fbfa8532c39..943811165510 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -860,6 +860,7 @@ static void bpf_map_free(struct bpf_map *map)
+ 	 * the free of values or special fields allocated from bpf memory
+ 	 * allocator.
  	 */
--	dst = (void *)raw;
- 	for (i = 0, was_ld_map = false; i < fp->len; i++) {
- 		dst[i] = fp->insnsi[i];
- 		if (!was_ld_map &&
-@@ -334,34 +325,9 @@ int bpf_prog_calc_tag(struct bpf_prog *fp)
- 			was_ld_map = false;
- 		}
- 	}
--
--	psize = bpf_prog_insn_size(fp);
--	memset(&raw[psize], 0, raw_size - psize);
--	raw[psize++] = 0x80;
--
--	bsize  = round_up(psize, SHA1_BLOCK_SIZE);
--	blocks = bsize / SHA1_BLOCK_SIZE;
--	todo   = raw;
--	if (bsize - psize >= sizeof(__be64)) {
--		bits = (__be64 *)(todo + bsize - sizeof(__be64));
--	} else {
--		bits = (__be64 *)(todo + bsize + bits_offset);
--		blocks++;
--	}
--	*bits = cpu_to_be64((psize - 1) << 3);
--
--	while (blocks--) {
--		sha1_transform(digest, todo, ws);
--		todo += SHA1_BLOCK_SIZE;
--	}
--
--	result = (__force __be32 *)digest;
--	for (i = 0; i < SHA1_DIGEST_WORDS; i++)
--		result[i] = cpu_to_be32(digest[i]);
--	memcpy(fp->tag, result, sizeof(fp->tag));
--
--	vfree(raw);
--	return 0;
-+	sha256((u8 *)dst, insn_size, fp->digest);
-+	vfree(dst);
-+	return ret;
++	kfree(map->excl_prog_sha);
+ 	migrate_disable();
+ 	map->ops->map_free(map);
+ 	migrate_enable();
+@@ -1338,9 +1339,9 @@ static bool bpf_net_capable(void)
+ 	return capable(CAP_NET_ADMIN) || capable(CAP_SYS_ADMIN);
  }
  
- static int bpf_adj_delta_to_imm(struct bpf_insn *insn, u32 pos, s32 end_old,
+-#define BPF_MAP_CREATE_LAST_FIELD map_token_fd
++#define BPF_MAP_CREATE_LAST_FIELD excl_prog_hash
+ /* called via syscall */
+-static int map_create(union bpf_attr *attr, bool kernel)
++static int map_create(union bpf_attr *attr, bpfptr_t uattr)
+ {
+ 	const struct bpf_map_ops *ops;
+ 	struct bpf_token *token = NULL;
+@@ -1534,7 +1535,30 @@ static int map_create(union bpf_attr *attr, bool kernel)
+ 			attr->btf_vmlinux_value_type_id;
+ 	}
+ 
+-	err = security_bpf_map_create(map, attr, token, kernel);
++	if (attr->excl_prog_hash) {
++		bpfptr_t uprog_hash = make_bpfptr(attr->excl_prog_hash, uattr.is_kernel);
++
++		if (attr->excl_prog_hash_size != SHA256_DIGEST_SIZE) {
++			err = -EINVAL;
++			goto free_map;
++		}
++
++		map->excl_prog_sha = kzalloc(SHA256_DIGEST_SIZE, GFP_KERNEL);
++		if (!map->excl_prog_sha) {
++			err = -ENOMEM;
++			goto free_map;
++		}
++
++		if (copy_from_bpfptr(map->excl_prog_sha, uprog_hash,
++				     SHA256_DIGEST_SIZE)) {
++			err = -EFAULT;
++			goto free_map;
++		}
++	} else if (attr->excl_prog_hash_size) {
++		return -EINVAL;
++	}
++
++	err = security_bpf_map_create(map, attr, token, uattr.is_kernel);
+ 	if (err)
+ 		goto free_map_sec;
+ 
+@@ -6008,7 +6032,7 @@ static int __sys_bpf(enum bpf_cmd cmd, bpfptr_t uattr, unsigned int size)
+ 
+ 	switch (cmd) {
+ 	case BPF_MAP_CREATE:
+-		err = map_create(&attr, uattr.is_kernel);
++		err = map_create(&attr, uattr);
+ 		break;
+ 	case BPF_MAP_LOOKUP_ELEM:
+ 		err = map_lookup_elem(&attr);
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 3a3982fe20d4..2dd4449b946b 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -20360,6 +20360,12 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
+ {
+ 	enum bpf_prog_type prog_type = resolve_prog_type(prog);
+ 
++	if (map->excl_prog_sha &&
++	    memcmp(map->excl_prog_sha, prog->digest, SHA256_DIGEST_SIZE)) {
++		verbose(env, "program's hash doesn't match map's excl_prog_hash\n");
++		return -EACCES;
++	}
++
+ 	if (btf_record_has_field(map->record, BPF_LIST_HEAD) ||
+ 	    btf_record_has_field(map->record, BPF_RB_ROOT)) {
+ 		if (is_tracing_prog_type(prog_type)) {
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 233de8677382..7873ba7b9468 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1522,6 +1522,8 @@ union bpf_attr {
+ 		 * If provided, map_flags should have BPF_F_TOKEN_FD flag set.
+ 		 */
+ 		__s32	map_token_fd;
++		__u32 excl_prog_hash_size;
++		__aligned_u64 excl_prog_hash;
+ 	};
+ 
+ 	struct { /* anonymous struct used by BPF_MAP_*_ELEM and BPF_MAP_FREEZE commands */
 -- 
 2.43.0
 
