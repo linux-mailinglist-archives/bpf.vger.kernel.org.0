@@ -1,159 +1,166 @@
-Return-Path: <bpf+bounces-65583-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65584-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C61E6B256EF
-	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 00:47:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7ED80B256F7
+	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 00:50:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 434751BC21A5
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 22:45:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 737087BA6A3
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 22:48:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80BB230275E;
-	Wed, 13 Aug 2025 22:45:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75218311C3D;
+	Wed, 13 Aug 2025 22:49:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b/B19HLK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jQBf8BXy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB1202BE05B;
-	Wed, 13 Aug 2025 22:44:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D14530E833;
+	Wed, 13 Aug 2025 22:49:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755125100; cv=none; b=rddKesYuJ8mCiiYvsw7VAcqC8kmqpuw21k/7aZLLD4it9uW+ygjRUyQ6J0N3SFyaDLFNaPTVIiQDRViDEs8lUAfYToqSlWDRRrm9IMCgGFSlrBIx5d0C+uGGXUdWJRaswXQpRMvb5EDc/EqRES9cHuEnMpIPl3D/12F0eFlGwlU=
+	t=1755125396; cv=none; b=Jf72ORFRRaFky1Bi1eOMtkKf24wcs9lOzaVeK7RqqVQpdQg5JBVrmVGPDmh/+E08ZSVISvAQ0N0+suUc38HJNVZ3G1561mxs7X9rCoux3IYz3k2HkMYIG6B8RQgLnxjaTj0SSYcbN5YxfhTJcy3MpFIAvHaCZztsS+s4YhVKovI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755125100; c=relaxed/simple;
-	bh=OV/ycrOYoNGwhQ5MzDYQKEDIUDuWrki4AJ0O9zrmkks=;
+	s=arc-20240116; t=1755125396; c=relaxed/simple;
+	bh=5IRevcqb+jm2XqmZEVUOyBf2dJpN2L5kyJyS8TjpOaw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=r618nIQiqqgfI4VhKYwwx8JS+JvVQAhz4jyIy5BSZDdi0nt15VUmFl9JD+aYTdWHGZ+IdfI0Q8huWxO1FdqKOwqod/zxeWV7jwf3fex1wOeMsVc9YQXA+ybCnvVNzFLnYJkgAZgVyXBG+Su1CEusPGQEgRmNaL3SlL9/LNSb2Gw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b/B19HLK; arc=none smtp.client-ip=209.85.216.42
+	 To:Cc:Content-Type; b=JGrAAwKziq90DX3wIP4sauaDHAPY3vKBMF+Yi+Lx/1mX70dCpWHL42dk57Xz69+Y7st3MDV+YT75l2yQXL80FGFYrDfhJHReG1uUh9IzwFDuYxctQutiDtusD+PV/gcypjRzIG+KOoXSwbFJOM6Nll3/oxxkHE6ARUf2qK46H1w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jQBf8BXy; arc=none smtp.client-ip=209.85.210.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-323266d2d9eso334229a91.0;
-        Wed, 13 Aug 2025 15:44:58 -0700 (PDT)
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-76e2eb49b83so244838b3a.3;
+        Wed, 13 Aug 2025 15:49:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755125098; x=1755729898; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1755125394; x=1755730194; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yd35egmN4CDcVZKEMWmqSyca6/vnlaqT06CZE8Rd4hc=;
-        b=b/B19HLKmeclIMpF/h9ynnFPSbai4TyF0+cGjyYgkSN4/fYxCcsVshp8WUylYKHx0o
-         vhzu7FM50kd9ziDUsQY0opEMudqxwXcT+QBCzZRlpVfOwyJ92t3l2VzpdRvFgXOfCvJI
-         fmHGV8G9FUenajIUidXLU3R59sBP/kVePriV1YCFj5zkI2F8qyTudnPLDIEY6JEAYcXz
-         DpG58DZeGiEYwF9mUNVfzCYaRacK3S4clF9rnl2ig56k4l6Y6CLNDaXBxRMKr1H8UpOu
-         G4QBWEaxcFSLR6yZsWekX1dcbFzlc8jdliomwIRojmTiBFRS5xnmej6cj0LM3L3Mjx6v
-         NgPQ==
+        bh=/RUKwh6OXwqKnS1xV/OCLPWmpbTtVI8digmBtof10qk=;
+        b=jQBf8BXy9l2Ps/o35EAlhpGBpd9szqaCcxLWBB/OpZcQBBI+cP6Cj6xDhqz8p3Dc6T
+         sCl+etbyKre0Q5SIdXqWd630l4rBWtIry8mHrmcwu6RDM9BIgfc5cpuIErT3BqU18Ww2
+         pdLq9w/sIJUMNzcDvx9DqMJrWhzttLb+0kvy5gwj3aJZ0cdWRbyZ7bzE0tcdLPFK+KDk
+         3k/GKYR6OVpElhXKSCxZJNIvXv22QNDJuBvmk55+ffYqtTkQyQZOoJv7LqIWDrgWAiJm
+         8pdb5+rE3YelbTfp18Op1n21RWyJXX497gsVePuWzLS9cdMP2dvtfiThM4VQ2pQ9Rwld
+         05eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755125098; x=1755729898;
+        d=1e100.net; s=20230601; t=1755125394; x=1755730194;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yd35egmN4CDcVZKEMWmqSyca6/vnlaqT06CZE8Rd4hc=;
-        b=DyskXqycyMnrEyoeW/1MFK8b4ywU2IWvtunZ/NLv8I4Vo0eXxW9S5X5u3fLXTFFg14
-         WklDH2VA9O3kH28XLy7zpikWR+mzKSuU1MW7ffM6LDMS1fDy7bYB5L5XGLkboTQqfVRy
-         8mZNsWSqp/jRdO7SHtspm9PXllZUTmmzkQ/WOVDSNZI5gurks+YZEQXoqVoVYwHbhGhY
-         +Zav1epinrREKeeD86lOGPm7PBUxLOIRHy0vENfkqG2leBMqi1vIkNKow47WNHNSSStj
-         cWavNchTxf7Gm7qDji2wWrETbPU+vevxEggu4OigJ3IasooDS1sXHyy45yeVghexn6/5
-         LMQg==
-X-Forwarded-Encrypted: i=1; AJvYcCUEhgystEJlRjcHNzAv6V93tSG0nRS4U7WEbwqXqAUxRfdgZJ0JZhocHU5XRA0O1tFmce0=@vger.kernel.org, AJvYcCWqNgsjuE64C4qrDYkXOjkZBE2RXG0phNE8ZV3wHCHrklUCzQ3mVgQojux0VZUg7oS4tcXXJQBnDSEnVBqzzAbPLQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzjC10bwWmgr8edomsB0zNyANrdOvsLtCoaFN1MMrlwQk1n7tSu
-	EZ/yxl/CyTKHLiDKTMJ3wzHRFiIu2sJXfaNVRYeGDLf6wptcvNb1dsnB2KQ379eNcWc7PbAqg0K
-	g4h+UUwdS3jsPhiitBqpRpEZTvyH/ozE=
-X-Gm-Gg: ASbGnctPNsh58ZjnqK/ognSlAynxh89TYEigEC8SXWwvy9lqG238nZmu0AzEyWHnxgv
-	Iqpe5JgbZaB0n/MSjF/e8/tDcvVvNu0b6uXNnlDCcJvFL6bKPTk0NleNdnsdycF0SZMC6NElQWx
-	4e923y4SygECEV/i6asQ+2ZCWxpCyPE7QWPcXAaQVmSH3oFnYm2xvzy8nK9qnzZ25YBztDFKnxe
-	EIEW+AravdXbhtb+MP/ck/LmUnekAGehw==
-X-Google-Smtp-Source: AGHT+IEJ4gucRc0WVd7WCFDuWVfhyS5mg1YHXbANwvz4e0fcj21tvta+1mAsqKLmUq7uTcNuWUpFEP2FQGRJzud+2G4=
-X-Received: by 2002:a17:90b:384e:b0:323:264f:bc42 with SMTP id
- 98e67ed59e1d1-32327998e38mr1375144a91.3.1755125097905; Wed, 13 Aug 2025
- 15:44:57 -0700 (PDT)
+        bh=/RUKwh6OXwqKnS1xV/OCLPWmpbTtVI8digmBtof10qk=;
+        b=skIQOnsGpiLl2M1HTJP9ClKUQutuy53HUsUT9FaHYaxVVKEIxF72A6AnaYlbJ7mCuL
+         6qEvTFXpUUh801I2sjKsmM9Rje5SV01ysjog7VmVhNxeBhFEc7B3hx1hQnP4/MJNeeZ+
+         /bA5cwbhdaD8+is62HEBf0pDhHUW2dg2KAtSZ3+c80uXppQMDZPpYYqSedXIgddLyX+G
+         z/qDYsTswCJGbQ+BlxDE6JM2R5S9V5WPPfSRLImedff3MBfm7LSRrl8jMk9bDdX5imUK
+         NSmYmBfZwxbb8c3OEyxHs2RG7/OEN0BW8sfKZv40qRniz5jGuSuKHLEc1GncbIyCetNx
+         k68Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVo9JvKDfZLeNJX7b4CPVZ/oWDKcsKSUWCd+6iiN0VTIqluu1mp+bafuP6rbmUMaiuPwzlM5GQ330LnjRnj@vger.kernel.org, AJvYcCXtQz7vwoIbrj9DjUlviugDMCckvw4Wc6mCwAKVE1BkenrKAiiNrA/HkGcUInjCUMzTNYQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwwPdouzi6JB5FJgfULKqxbX12GYwzsMl097TDSie362hMQ8GSg
+	An4CxsG+5XC3wowayrPSihJKHeMAVhMH+NEcLbg+n8Mn5Qh8w3if8qP/gQCSU5Iz6r7SQTqoOKh
+	a1uM3ZTG0TfSYaZU812s1LjK09Afe8tGIXbxN
+X-Gm-Gg: ASbGncuAGzHeE2GX8/pBS/LxWbwchf1wp8hMrxedax30IzMqI6sqwkPB0k3WPe/BkNY
+	ejABmzjTwRSrr0s+glu/5xPaGW2mOJleT95zw6vRw1iQF9+/X27AMcCr/YF35SPLCdVoGsgl5wH
+	VGTj8Gif5ha8cX/xVDLCt2b43iaLtB8nguTfAPRxpVNmDYAvdhCmapkrKoLD+nIPFY6gRNP+yXp
+	BvRGywdsOHyWLs/qNEsDMhK7gzdMy6/Uw==
+X-Google-Smtp-Source: AGHT+IHVGTCyOG2gBPnGX+e1Psv6H7tAAIWyPZVUPFiu0KiK9i+AFx4HEc1N+nroIdiO3ju8MU6+zdqoJyXSuLk2dJ0=
+X-Received: by 2002:a17:903:244e:b0:240:934f:27ac with SMTP id
+ d9443c01a7336-2445868e726mr11087275ad.33.1755125393683; Wed, 13 Aug 2025
+ 15:49:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250813133832.755428-1-jolsa@kernel.org>
-In-Reply-To: <20250813133832.755428-1-jolsa@kernel.org>
+References: <20250813200912.3523279-1-yuka@yuka.dev> <20250813200912.3523279-2-yuka@yuka.dev>
+In-Reply-To: <20250813200912.3523279-2-yuka@yuka.dev>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 13 Aug 2025 15:44:43 -0700
-X-Gm-Features: Ac12FXzdPMZLJrtvyY1a9fVClNy9bi-m8rUfcsctoVtDz1T5yLFWSAXPYA9ismg
-Message-ID: <CAEf4BzbRL47Qm1T1BQrvG6K3itqFHfSdXbOeFG5vKj4yB0QtbA@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf] bpf: Check the helper function is valid in get_helper_proto
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, syzbot+a9ed3d9132939852d0df@syzkaller.appspotmail.com, 
-	bpf@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	Martin KaFai Lau <kafai@fb.com>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <songliubraving@fb.com>, 
-	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, Hao Luo <haoluo@google.com>
+Date: Wed, 13 Aug 2025 15:49:39 -0700
+X-Gm-Features: Ac12FXwwZuXTqkg_1s1VJsOHqdFQSHcKDpdsgO3MNXSQXopNcD2lt06Fn77MYQ0
+Message-ID: <CAEf4Bzbw_02vrhUa+JEmuqo3snuf5xjNVL1wOu0BT1Z_MZ5S0g@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] bpf: fix reuse of DEVMAP
+To: Yureka Lilian <yuka@yuka.dev>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 13, 2025 at 6:38=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
+On Wed, Aug 13, 2025 at 1:09=E2=80=AFPM Yureka Lilian <yuka@yuka.dev> wrote=
+:
 >
-> From: Jiri Olsa <olsajiri@gmail.com>
+> Previously, re-using pinned DEVMAP maps would always fail, because
+> get_map_info on a DEVMAP always returns flags with BPF_F_RDONLY_PROG set,
+> but BPF_F_RDONLY_PROG being set on a map during creation is invalid.
 >
-> syzbot reported an verifier bug [1] where the helper func pointer
-> could be NULL due to disabled config option.
+> Thus, ignore the BPF_F_RDONLY_PROG flag on both sides when checking for
+> compatibility with an existing DEVMAP.
 >
-> As Alexei suggested we could check on that in get_helper_proto
-> directly. Excluding tail_call helper from the check, because it
-> is NULL by design and valid in all configs.
+> Ignoring it on both sides ensures that it continues to work on older
+> kernels which don't set BPF_F_RDONLY_PROG on get_map_info.
 >
-> [1] https://lore.kernel.org/bpf/68904050.050a0220.7f033.0001.GAE@google.c=
-om/
-> Reported-by: syzbot+a9ed3d9132939852d0df@syzkaller.appspotmail.com
-> Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> The same problem is handled in a third-party ebpf library:
+> - https://github.com/cilium/ebpf/issues/925
+> - https://github.com/cilium/ebpf/pull/930
+>
+> Fixes: 0cdbb4b09a06 ("devmap: Allow map lookups from eBPF")
+> Signed-off-by: Yureka Lilian <yuka@yuka.dev>
 > ---
-> v2 changes:
-> - set bpf_tail_call_proto.func to -1 so we can skip the extra check [Andr=
-ii]
+>  tools/lib/bpf/libbpf.c | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
 >
->  kernel/bpf/core.c     | 5 ++++-
->  kernel/bpf/verifier.c | 2 +-
->  2 files changed, 5 insertions(+), 2 deletions(-)
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index d41ee26b9..049b0c400 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -5076,6 +5076,7 @@ static bool map_is_reuse_compat(const struct bpf_ma=
+p *map, int map_fd)
+>  {
+>         struct bpf_map_info map_info;
+>         __u32 map_info_len =3D sizeof(map_info);
+> +       __u32 map_flags_for_check =3D map->def.map_flags;
+>         int err;
 >
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 5d1650af899d..0f6e9a3d9960 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -3024,7 +3024,10 @@ EXPORT_SYMBOL_GPL(bpf_event_output);
+>         memset(&map_info, 0, map_info_len);
+> @@ -5088,11 +5089,22 @@ static bool map_is_reuse_compat(const struct bpf_=
+map *map, int map_fd)
+>                 return false;
+>         }
 >
->  /* Always built-in helper functions. */
->  const struct bpf_func_proto bpf_tail_call_proto =3D {
-> -       .func           =3D NULL,
-> +       /* func is unused for tail_call, we set it to pass the
-> +        * get_helper_proto check
+> +       /* get_map_info on a DEVMAP will always return flags with
+> +        * BPF_F_RDONLY_PROG set, but it will never be set on a map
+> +        * being created.
+> +        * Thus, ignore the BPF_F_RDONLY_PROG flag on both sides when
+> +        * checking for compatibility with an existing DEVMAP.
 > +        */
-> +       .func           =3D (void *) 1,
+> +       if (map->def.type =3D=3D BPF_MAP_TYPE_DEVMAP || map->def.type =3D=
+=3D BPF_MAP_TYPE_DEVMAP_HASH) {
+> +               map_info.map_flags |=3D BPF_F_RDONLY_PROG;
+> +               map_flags_for_check |=3D BPF_F_RDONLY_PROG;
+> +       }
 
-we seem to have BPF_PTR_POISON in include/linux/poison.h, let's use
-that instead of 1?
+can we instead clear BPF_F_RDONLY_PROG in map_info.map_flags? and then
+keep using map->def.map_flags directly
 
 pw-bot: cr
 
 
->         .gpl_only       =3D false,
->         .ret_type       =3D RET_VOID,
->         .arg1_type      =3D ARG_PTR_TO_CTX,
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index c4f69a9e9af6..c89e2b1bc644 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -11354,7 +11354,7 @@ static int get_helper_proto(struct bpf_verifier_e=
-nv *env, int func_id,
->                 return -EINVAL;
->
->         *ptr =3D env->ops->get_func_proto(func_id, env->prog);
-> -       return *ptr ? 0 : -EINVAL;
-> +       return *ptr && (*ptr)->func ? 0 : -EINVAL;
+> +
+>         return (map_info.type =3D=3D map->def.type &&
+>                 map_info.key_size =3D=3D map->def.key_size &&
+>                 map_info.value_size =3D=3D map->def.value_size &&
+>                 map_info.max_entries =3D=3D map->def.max_entries &&
+> -               map_info.map_flags =3D=3D map->def.map_flags &&
+> +               map_info.map_flags =3D=3D map_flags_for_check &&
+>                 map_info.map_extra =3D=3D map->map_extra);
 >  }
 >
->  static int check_helper_call(struct bpf_verifier_env *env, struct bpf_in=
-sn *insn,
 > --
 > 2.50.1
 >
