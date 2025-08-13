@@ -1,141 +1,164 @@
-Return-Path: <bpf+bounces-65488-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65489-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E99FCB2403A
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 07:34:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 421D5B240C9
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 07:56:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D8157B436C
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 05:33:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1431F5A1A56
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 05:54:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74F4B2BE7BC;
-	Wed, 13 Aug 2025 05:34:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A5E52BEFE0;
+	Wed, 13 Aug 2025 05:54:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="oFFbHKfD";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="JR1S7p3O"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="d6bgEZpr"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A9CA1C6B4;
-	Wed, 13 Aug 2025 05:34:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1B8E2BE05F
+	for <bpf@vger.kernel.org>; Wed, 13 Aug 2025 05:54:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755063282; cv=none; b=RcdIC5/x/wQlPsLryNlTwlDefDWLzzspJXZ30fr9QdHntlDS9W+ePDubrFjgBWrebW+x0f1jren6j/NzCrulqxknHt9iyruhMgZEj8m0JAvy9AHg9pTsFiZi/VD986JpwrKCQL+QDC+/GuA2/22PXQ7lKr+VsvE5UZD4a6u/AVg=
+	t=1755064462; cv=none; b=rLXPb5OtiWkQVheEEJR0zqb0J8HWpeI88GWVIw4TDWptngjCE1RS6mMPbuQ/IiR+rNQWLLTF2+Uu120vV9VUOLKlWWh60zygCe19ixwBeRNqTlYNoiJN/w08GhgPvVmA1/4r8T6+PvicpvphPWLGLvOEKefTzOOnfTUT6jPVn9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755063282; c=relaxed/simple;
-	bh=sSVyc0vfuS5JnCK6jVCCVVS26yC8zr9xB1KconvqMI8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=il4PWUJfyTbaVNLWtbGI2BZNk3S2I0vTpUhdrwT1+6hrm4YIlaOQZQsAsYmLgy6cbnI06LmqcOpCijUPQwbKMzGdXcQKnL/hdPa1kvaxUkek0+pTjO5cxO8rmpRmKOgifQVnWBzOEJng5wh4FREKhb8VkCderzWnfsJgZsNMdJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=oFFbHKfD; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=JR1S7p3O; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 13 Aug 2025 07:34:34 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1755063275;
+	s=arc-20240116; t=1755064462; c=relaxed/simple;
+	bh=fZOVSL1aaBMqAX7y8C8YBr0X/fLnGUZLq38WeFWRXkE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Z3f9VIRaE7zE+LevKqaqlZKeupIpcq7BFXk/iXomuHbXDf7hIqtXV1fRpOVlrUuxAlkKV13mp7+4vrAOFcdjzL2T6ue2w4AOtzvP98oSfSOViLMQshS7wh0dSqaV0j0WGC9kayIMFsHdm2j0+R1kZA8xKZ9QovNe5GIdzZm49l8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=d6bgEZpr; arc=none smtp.client-ip=95.215.58.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <09dc40eb-a84e-472a-8a68-36a2b1835308@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1755064456;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DRtAoFXM6CBbGd0bnclye/NT0dGHwWE/tDm5kNLRpMc=;
-	b=oFFbHKfD6ucfHqJ0RRIgTieMgvuHoFbJBk8LpW5PkcH+AKeKSZq800ctzw8u2IiQkBfrr3
-	YYeV5Jj+SiNOT5alzJFIrseKwe2yYdzGM/KeZmxVZ+K8Y/svnKYP0ucaCMQ11CgHkxmmRl
-	OK+0FASNdgR/EQQk1UFOpV9/iqMl8dnYE9Mv6KFgtHFyHMcgaG0D43t3LT9/PQrFZOJORv
-	AsumwGIKISH6UsL3iesLE0Tf+38QtjBeudpF7j9WV4dUjn1xLhv7gt70L5Q8RRshzoNpWl
-	pfb4AqN1R4S2toFmrCjsDxb68I19rExFSz/QdlOMRcQ6q5smWaK/sDTWV2SLLQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1755063275;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DRtAoFXM6CBbGd0bnclye/NT0dGHwWE/tDm5kNLRpMc=;
-	b=JR1S7p3Ob2pZKbds1Wr6oQ5wyg1CYq0XkgSMHVX2/pbdPo/cKR8fEKn+JkbO6MA1WOQ+GG
-	AgVfKRaME3T2i4Dg==
-From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, 
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bpf: Don't use %pK through printk
-Message-ID: <20250813072929-5c7eb9fd-bdc9-4fe3-b885-bfff31def14f@linutronix.de>
-References: <20250811-restricted-pointers-bpf-v1-1-a1d7cc3cb9e7@linutronix.de>
- <CAEf4Bzb7DFwvh6J8sPv34U+M=prFKQ8QZiJAk2SE5hPvy7DG1g@mail.gmail.com>
+	bh=oPwnB9ps9W0P2V8Lp6Eg8bH+ecaPEc7707QvrsMdmYQ=;
+	b=d6bgEZpr5Uz5ABoe5truZsmAVAosr4BsOTslxGJ9yd68JukM8py6clULdHLPcEaQZtLJoK
+	askYi/r+jaEcihlGv/Qn7wS4joZQNIX0I7hQUz74iglTK/JJKfomIvmfkGxDUkCtME83lo
+	xsjLDuFqO+Lz63FsTHNrCIxVG+CG5PQ=
+Date: Tue, 12 Aug 2025 22:54:02 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: refactor max_depth computation in
+ bpf_get_stack()
+Content-Language: en-GB
+To: Arnaud Lecomte <contact@arnaud-lcm.com>
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
+ john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+ linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me,
+ song@kernel.org, syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com,
+ syzkaller-bugs@googlegroups.com
+References: <ef33d3cb-4346-41af-9e0e-541fdc007f89@linux.dev>
+ <20250812193034.18848-1-contact@arnaud-lcm.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20250812193034.18848-1-contact@arnaud-lcm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4Bzb7DFwvh6J8sPv34U+M=prFKQ8QZiJAk2SE5hPvy7DG1g@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Aug 12, 2025 at 03:19:45PM -0700, Andrii Nakryiko wrote:
-> On Mon, Aug 11, 2025 at 5:08 AM Thomas Weißschuh
-> <thomas.weissschuh@linutronix.de> wrote:
-> >
-> > In the past %pK was preferable to %p as it would not leak raw pointer
-> > values into the kernel log.
-> > Since commit ad67b74d2469 ("printk: hash addresses printed with %p")
-> > the regular %p has been improved to avoid this issue.
-> > Furthermore, restricted pointers ("%pK") were never meant to be used
-> > through printk(). They can still unintentionally leak raw pointers or
-> > acquire sleeping locks in atomic contexts.
-> >
-> > Switch to the regular pointer formatting which is safer and
-> > easier to reason about.
-> >
-> > Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
-> > ---
-> >  include/linux/filter.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/include/linux/filter.h b/include/linux/filter.h
-> > index 1e7fd3ee759e07534eee7d8b48cffa1dfea056fb..52fecb7a1fe36d233328aabbe5eadcbd7e07cc5a 100644
-> > --- a/include/linux/filter.h
-> > +++ b/include/linux/filter.h
-> > @@ -1296,7 +1296,7 @@ void bpf_jit_prog_release_other(struct bpf_prog *fp, struct bpf_prog *fp_other);
-> >  static inline void bpf_jit_dump(unsigned int flen, unsigned int proglen,
-> >                                 u32 pass, void *image)
-> >  {
-> > -       pr_err("flen=%u proglen=%u pass=%u image=%pK from=%s pid=%d\n", flen,
-> > +       pr_err("flen=%u proglen=%u pass=%u image=%p from=%s pid=%d\n", flen,
-> >                proglen, pass, image, current->comm, task_pid_nr(current));
-> 
-> this particular printk won't ever be called from atomic context, so I
-> don't think the leak from atomic context matters much here. On the
-> other hand, %pK behavior is controlled by kptr_restrict and that might
-> be useful for debugging, so not sure there is much of a benefit to
-> switching to always obfuscated %p? Or am I missing something else
-> here?
 
-As %pK is so easy to abuse and the breakage is very non-obvious, I want to
-rework it to enforce its usage from "file context".
-For that, the printk users need to be gone first.
-For debugging, there is still "no_hash_pointers".
 
-How would the image pointer be used for debugging?
-It is logged from nowhere else.
-And the raw image is dumped right after anyways.
+On 8/12/25 12:30 PM, Arnaud Lecomte wrote:
+> A new helper function stack_map_calculate_max_depth() that
+> computes the max depth for a stackmap.
+>
+> Changes in v2:
+>   - Removed the checking 'map_size % map_elem_size' from
+>     stack_map_calculate_max_depth
+>   - Changed stack_map_calculate_max_depth params name to be more generic
+>
+> Changes in v3:
+>   - Changed map size param to size in max depth helper
+>
+> Signed-off-by: Arnaud Lecomte <contact@arnaud-lcm.com>
 
-> 
-> >
-> >         if (image)
-> >
-> > ---
-> > base-commit: 8f5ae30d69d7543eee0d70083daf4de8fe15d585
-> > change-id: 20250811-restricted-pointers-bpf-04da04ea1b8a
-> >
-> > Best regards,
-> > --
-> > Thomas Weißschuh <thomas.weissschuh@linutronix.de>
-> >
+LGTM with a small nit below.
+
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+
+> ---
+>   kernel/bpf/stackmap.c | 30 ++++++++++++++++++++++++------
+>   1 file changed, 24 insertions(+), 6 deletions(-)
+>
+> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+> index 3615c06b7dfa..a267567e36dd 100644
+> --- a/kernel/bpf/stackmap.c
+> +++ b/kernel/bpf/stackmap.c
+> @@ -42,6 +42,27 @@ static inline int stack_map_data_size(struct bpf_map *map)
+>   		sizeof(struct bpf_stack_build_id) : sizeof(u64);
+>   }
+>   
+> +/**
+> + * stack_map_calculate_max_depth - Calculate maximum allowed stack trace depth
+> + * @size:        Size of the buffer/map value in bytes
+> + * @elem_size:       Size of each stack trace element
+> + * @flags:       BPF stack trace flags (BPF_F_USER_STACK, BPF_F_USER_BUILD_ID, ...)
+
+Let us have consistent format, e.g.
+  * @size:  Size of ...
+  * @elem_size:  Size of ...
+  * @flags:  BPF stack trace ...
+
+> + *
+> + * Return: Maximum number of stack trace entries that can be safely stored
+> + */
+> +static u32 stack_map_calculate_max_depth(u32 size, u32 elem_size, u64 flags)
+> +{
+> +	u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
+> +	u32 max_depth;
+> +
+> +	max_depth = size / elem_size;
+> +	max_depth += skip;
+> +	if (max_depth > sysctl_perf_event_max_stack)
+> +		return sysctl_perf_event_max_stack;
+> +
+> +	return max_depth;
+> +}
+> +
+>   static int prealloc_elems_and_freelist(struct bpf_stack_map *smap)
+>   {
+>   	u64 elem_size = sizeof(struct stack_map_bucket) +
+> @@ -406,7 +427,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+>   			    struct perf_callchain_entry *trace_in,
+>   			    void *buf, u32 size, u64 flags, bool may_fault)
+>   {
+> -	u32 trace_nr, copy_len, elem_size, num_elem, max_depth;
+> +	u32 trace_nr, copy_len, elem_size, max_depth;
+>   	bool user_build_id = flags & BPF_F_USER_BUILD_ID;
+>   	bool crosstask = task && task != current;
+>   	u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
+> @@ -438,10 +459,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+>   		goto clear;
+>   	}
+>   
+> -	num_elem = size / elem_size;
+> -	max_depth = num_elem + skip;
+> -	if (sysctl_perf_event_max_stack < max_depth)
+> -		max_depth = sysctl_perf_event_max_stack;
+> +	max_depth = stack_map_calculate_max_depth(size, elem_size, flags);
+>   
+>   	if (may_fault)
+>   		rcu_read_lock(); /* need RCU for perf's callchain below */
+> @@ -461,7 +479,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+>   	}
+>   
+>   	trace_nr = trace->nr - skip;
+> -	trace_nr = (trace_nr <= num_elem) ? trace_nr : num_elem;
+> +	trace_nr = min(trace_nr, max_depth - skip);
+>   	copy_len = trace_nr * elem_size;
+>   
+>   	ips = trace->ip + skip;
+
 
