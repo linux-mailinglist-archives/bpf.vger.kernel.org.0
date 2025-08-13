@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-65574-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65575-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D166CB25660
-	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 00:15:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86905B25666
+	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 00:16:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36FB4888CD9
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 22:14:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DF72888B10
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 22:15:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97F532FCBE9;
-	Wed, 13 Aug 2025 22:13:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0F122FCC1B;
+	Wed, 13 Aug 2025 22:13:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HygGpMvx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VtXPu93m"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8032330E854;
-	Wed, 13 Aug 2025 22:13:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BA7F2FCBFA;
+	Wed, 13 Aug 2025 22:13:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755123222; cv=none; b=eLHwVmifQgiIOJyyYBdI675Mt2j8mh5DNk92cqrGsumlwit9n7uHux+98pJT7deq+iQBqn1sw1xM5JJGuA+wlSrzgXLW8T2VBT3xhLTZEeb+3TszFED6MvvYGQt6EPrn4t34ITSO7fka9FI/onrRIPvNjDP+GoISA4xt5Yh9AI0=
+	t=1755123225; cv=none; b=VSeD06pZPUujQEtpkxODNpGv+zhxT1VxSYJlkPRJDtDgMu7NZUe7ZJTWlAsRtExwACTMja/PFAOuMeCoCxUCsrmMo8gdakX0WcHRY9pKoXvXkwcKa9SvY055TdkSr5n1jeSHwAnvXvjGjTgGUGhsB+TP5reYpoiwnzi6wyfvLrY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755123222; c=relaxed/simple;
-	bh=C+rBWop/URPtiQRFTVupUQvND7/3bGvm87yBA5TUHBw=;
+	s=arc-20240116; t=1755123225; c=relaxed/simple;
+	bh=Q7X/McOJROt+1O6Y5U1wLNV8omQfXEQSD7+POEqQA+E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=P7d29HcgrYJhVJ4beZGv8M9Wkln/IzwIilaDkY21jYF9g9N3d0En+u73ah70a4GmkHvmJ0wuHfbhTQIFDxsJ85+svDFjNS1wxQoiMpZIgb2uYvH/28JpJ5X2o1YAk+Y4AVHAy5vIf5DlkL0zWVbqGx5NHu3jxRg4Lp3ZTMEUqas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HygGpMvx; arc=none smtp.client-ip=209.85.128.50
+	 MIME-Version; b=m4f+tzggUkLmGYsu3XoCyq+a4F/Xr5LJ4/VCdIEb0gOLbtXtGI9WTTvqbFsWDzHIJdm5vIOCx704mZDqFv/oR1m6cuezaYvApbMQS/ZDJE7XQa0/p9MNEUWP+9zlCMHUpFxGDMqZmCBI4TDPP88TvS6ivbK12a6J73oFvfeFlJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VtXPu93m; arc=none smtp.client-ip=209.85.128.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-45a1b00f187so1190165e9.0;
-        Wed, 13 Aug 2025 15:13:40 -0700 (PDT)
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-45a1b0b6ac4so1173375e9.2;
+        Wed, 13 Aug 2025 15:13:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755123218; x=1755728018; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1755123221; x=1755728021; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5lZHQWGUeCx38FxMOkWUZ+QfdA43fkpKsDYcpuopkjg=;
-        b=HygGpMvxY5bpkb10fv+UCyj8BRWEKZRlXvHgb9axuy4wqd/MkZySCADR/hT4UnfAI7
-         2wWXOS1LY9oTnGdO8jpFh+uzB2dZ/kfO+BomzTUPYtrXhXbfnqnvfyrCXA8BSJY7n7zY
-         NWQC2Y6UoNIrilB/7KXTlEu4mXx9w1c74HHYB5Vd/jnyyH/YmXNo7fyMAJmWl1X2XfbP
-         NhulgnXBFt9Kuguzy1fOkhPwRGSLZ3QLMX5BWy7KzmfkJ/7laYEES0pvnVkipDQddJbc
-         f62LFmmVQa0ehjtdFCtJfOCLQbTxirRab72/obEG4b0dD8RTfc87SHjRq7oRtcBudoam
-         0mfA==
+        bh=jKu1YHWyZI2rIL/UlujNk1oC14mLmUdFcb6Re9G/vMs=;
+        b=VtXPu93mWJcdfJaqAa/ZFW/0m7ULoF4vwW438PQM3z656ZyvZP6XTyGF2NDKrcjOGr
+         X8OBgKfvGiDiyE8PF0XQbJrfg+uVB4upLMsh4pmBuBKg+HDBlyQHzhrw6STB2yyrtbFE
+         mwsK+dnVDN/033PLIve2zrHJjV1LBXzuNBYsDCBpbFWUcGEl/EVf3+/eYiu/Wvm2hVDA
+         Q2JQBbiLrZJG5BaSK58CjgKgZxUgusWOTbIl0ZpdRVZP4vAQ+M9Lt2h8yqPeaLaO8uYl
+         s7JBcr97BznMs8JtKNI8V4hdWYMOnWJTThlpxDXemb3GeIhXnLKxtkGe+kX3pga8qP6O
+         9qeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755123218; x=1755728018;
+        d=1e100.net; s=20230601; t=1755123221; x=1755728021;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5lZHQWGUeCx38FxMOkWUZ+QfdA43fkpKsDYcpuopkjg=;
-        b=ZjqIm9bhXrgKKvtq+afSLQGsUXluPLj/Zeh4FcqWy4DimtCrtkahzd9ZE8SOmPmGAu
-         n7fkMrtmM6dkBZPVkzkSgYt5Q8h/g7sVHpceKDFS8hG9KhwU0Jt7VoD2xFPEnODNeyFk
-         9aIkAEfcAtUJxYWn0WzsmsB2LYJE3Z0MEwAEfuj5vo6bb/o4qC1GZhSFax4WCar/HVQn
-         T6iGyd0tnujEPL5DSPkFJSdixZk8GqsXjIeDN+3gbluyTbyP84T/pdK6gsLoI1//xRqz
-         Bvt37Uh2yBi/x8lTzZft6qB9QKHPAgXgGAYL47IhiYHEl6G8eNuSOlN5DIoG+h8O63DC
-         xxfQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVKzkMEw1FWSC0hdjy0Gnnk5vGh2WtWo9lkw2EhAM161GMq6nfpaecdVogj061a1WAfKAt7DVzx6gJYtSRU@vger.kernel.org, AJvYcCVh1JeGmI6ENmPHMNbeiGB0TzKWedTXvbz9jVO4YNTq4H0bV64T8g7awUF+M3C3Pj9A11aP0s0jJqoZ@vger.kernel.org, AJvYcCXOVWg5/k0NBlzDvnO7foeUiavaJfBk5TpG16zoLpk78QunT/V8jPEfYybFIfA22p2wFGU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxJwj2IhtcDHd8PuKml77euYGzbeQ4dlYXpjsYW/KKA2ULvZfge
-	5FYno3PT+DGwMgR7YDNTcDhA6IXJJTutBW+bqyG1OXTBsE9nAJB+TGFOzNiXGY3y
-X-Gm-Gg: ASbGncuVTWmr+fyLUZLhEHn9UchNLVD03EnhFb+AQqFOb5+xGWscjf33XGHzWy67vZS
-	Sr1MlrRYDyT/1pMRcM0hLuDQT/vnKRaFsfVZbdN5RnshaxLDk9BcMUg7FG8q/unOW/UOpJjp8IO
-	N6tYMDLp50stw0/YPp0JRUT2+lOVr4F+2wHafunNJqyM9FKYgv0P8rQFjxMuc5nIE+toLoHEssz
-	2QeiyxqyHvtDaejh9m4AbzjGrFhSMZoLQ9oPpi51oifbJPRp/gLtdAY0+SgfqCw/GeHVPwMEkDN
-	yANQ0O+F8WxeZ9fuFSJKGL6cqddfwS2ZGVPfa7h6LOH35IVqxPvmEEAOIfmO2wjIRZ3aS292sfi
-	buecipOGVR5R7K+XXPR4U
-X-Google-Smtp-Source: AGHT+IHrsQ+9dDzk+oorVaNBNHERtEjkMW/gH3KTy6HYtB6IlnBeuZoCMiiPLd8fevWYY5tWyDXcdQ==
-X-Received: by 2002:a05:600c:1390:b0:456:21d2:c6f7 with SMTP id 5b1f17b1804b1-45a1b667e8fmr2678465e9.23.1755123218126;
-        Wed, 13 Aug 2025 15:13:38 -0700 (PDT)
-Received: from localhost ([2a03:2880:31ff:48::])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45a1a5161e5sm16936955e9.7.2025.08.13.15.13.37
+        bh=jKu1YHWyZI2rIL/UlujNk1oC14mLmUdFcb6Re9G/vMs=;
+        b=Q8Ye7rADE4lQG8i3q/Ef92Zbamk+49oA/AOBE03L+zKsf0h8Tu/rSo+FMoMPV1E7RE
+         LutcYBC10V7mnDKgMDjoG7nvoqHKBdWunZY2dKVokkroX8xSQnT768XjQ9EDs5xMCi/a
+         pPj/Q7Yq9k3iq2BPfYtwEM/UdzhhvFaIvPnTRTZqHno2zRBZ3niy/a2R0SNluVqPHqhR
+         2+YN7hw6gKPcAsWqW8QnU3aEOra6KbAm2ABmbkOEIMUi10mYjJYksWauW2nD/6b5+c7C
+         VogJuaiyRuJJri36M7yFicM0mz7ezOtIDjZiAcxcnijnDzj0DAn249bmDQDd7X39vDyJ
+         vvVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUpzOLcoY02gNJbAMQm8P3SYQllKrMzqZoBabSu9yXTl6mJIAx7kHZlCXdEix/QEK7uf9E=@vger.kernel.org, AJvYcCVVIsbPwwa9krHEpa8E1eKz6dvONco2E2BN0EFc7WmNdvTTVEd4ehp+97PveAtnCic94nvYt+wWBdgA@vger.kernel.org, AJvYcCXnul/zD314bSk3fzZiiTTuvjV1uHXg3q+py/2Qkfyc3BRYqoGLyxUjBnoThIqfClTREKRNsBICoxmB8PQ/@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz2dkoqG3/0kt/yoH6Y8OoH8VWlaq0Ts3HPkdrJa2Tp7LE8cLu1
+	MQdFAEDyjxpPweMdN9Qb4WhaSZV4DsLqLPCs4VfXU6TTTl94RPFbxOz/rAPq60Ge
+X-Gm-Gg: ASbGncsKzFhCyOJY8G0NfU/i2Ugct9Ad+Py7jWYflM5zDGjKxToXuJSi7MaYOObb38Z
+	XlH/tZooFMGL/tWVnPy6GhMsxSR+3+lZdGGMGyL0CN8nLetf3XaLJ7004OgMoWA6TZpNytj4H+4
+	01qqTNFK6XTsm4kMtZgDGQ8/7cl9qnOzEYXRNJnzSs93vwK5cc9yTscoLKcjSPfZUBg5MDSlo+r
+	/TATFLJBUG5zyMt3zckWiJuVk3J714LSZhTrvikBzri1tFZscbo9yP7l+utZuYqO5NTxxlB/6f2
+	owxAYQIMx9BaVBD3CzNBU+381/wevu9FlNS0dHjCGt95D76Avr13EwQHgJxwbckhar3I7UhxWgO
+	oo/f3Tryebr6LRKtC3Z7fTSb6vBJyBWs=
+X-Google-Smtp-Source: AGHT+IGziTKd40E+elbXEwJn2AYMCymOkqU0RInEzBY56WqsulNstT9rkbfUWFy+oTDNeSZy5PCvBw==
+X-Received: by 2002:a05:600c:1c90:b0:458:bc58:850c with SMTP id 5b1f17b1804b1-45a1b605874mr2907895e9.1.1755123221061;
+        Wed, 13 Aug 2025 15:13:41 -0700 (PDT)
+Received: from localhost ([2a03:2880:31ff:4b::])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45a1b855707sm1275775e9.5.2025.08.13.15.13.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Aug 2025 15:13:37 -0700 (PDT)
+        Wed, 13 Aug 2025 15:13:40 -0700 (PDT)
 From: Mohsin Bashir <mohsin.bashr@gmail.com>
 To: netdev@vger.kernel.org
 Cc: aleksander.lobakin@intel.com,
@@ -95,9 +95,9 @@ Cc: aleksander.lobakin@intel.com,
 	pabeni@redhat.com,
 	sdf@fomichev.me,
 	vadim.fedorenko@linux.dev
-Subject: [PATCH net-next V4 4/9] eth: fbnic: Prefetch packet headers on Rx
-Date: Wed, 13 Aug 2025 15:13:14 -0700
-Message-ID: <20250813221319.3367670-5-mohsin.bashr@gmail.com>
+Subject: [PATCH net-next V4 5/9] eth: fbnic: Add XDP pass, drop, abort support
+Date: Wed, 13 Aug 2025 15:13:15 -0700
+Message-ID: <20250813221319.3367670-6-mohsin.bashr@gmail.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20250813221319.3367670-1-mohsin.bashr@gmail.com>
 References: <20250813221319.3367670-1-mohsin.bashr@gmail.com>
@@ -109,28 +109,379 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Issue a prefetch for the start of the buffer on Rx to try to avoid cache
-miss on packet headers.
+Add basic support for attaching an XDP program to the device and support
+for PASS/DROP/ABORT actions. In fbnic, buffers are always mapped as
+DMA_BIDIRECTIONAL.
+
+The BPF program pointer can be read either on a per-packet basis or on a
+per-NAPI poll basis. Both approaches are functionally equivalent, in the
+current code. Stick to per-packet as it limits number of arguments we need
+to pass around.
+
+On the XDP hot path, check that packets with fragments are only allowed
+when multi-buffer support is enabled for the XDP program. Ideally, this
+check should not be necessary because ndo_bpf verifies that for XDP
+programs without multi-buff support, MTU is less than the hds_thresh.
+However, the MTU currently does not enforce the receive size which would
+require cleaning up the data path and bouncing the link. For practical
+reasons, prioritize the ability to enter and exit BPF mode with different
+MTU sizes without requiring a full reconfig.
+
+Testing:
+
+Hook a simple XDP program that passes all the packets destined for a
+specific port
+
+iperf3 -c 192.168.1.10 -P 5 -p 12345
+Connecting to host 192.168.1.10, port 12345
+[  5] local 192.168.1.9 port 46702 connected to 192.168.1.10 port 12345
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[SUM]   1.00-2.00   sec  3.86 GBytes  33.2 Gbits/sec    0
+
+XDP_DROP:
+Hook an XDP program that drops packets destined for a specific port
+
+ iperf3 -c 192.168.1.10 -P 5 -p 12345
+^C- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[SUM]   0.00-0.00   sec  0.00 Bytes  0.00 bits/sec    0       sender
+[SUM]   0.00-0.00   sec  0.00 Bytes  0.00 bits/sec            receiver
+iperf3: interrupt - the client has terminated
+
+XDP with HDS:
+
+- Validate XDP attachment failure when HDS is low
+   ~] ethtool -G eth0 hds-thresh 512
+   ~] sudo ip link set eth0 xdpdrv obj xdp_pass_12345.o sec xdp
+   ~] Error: fbnic: MTU too high, or HDS threshold is too low for single
+      buffer XDP.
+
+- Validate successful XDP attachment when HDS threshold is appropriate
+  ~] ethtool -G eth0 hds-thresh 1536
+  ~] sudo ip link set eth0 xdpdrv obj xdp_pass_12345.o sec xdp
+
+- Validate when the XDP program is attached, changing HDS thresh to a
+  lower value fails
+  ~] ethtool -G eth0 hds-thresh 512
+  ~] netlink error: fbnic: Use higher HDS threshold or multi-buf capable
+     program
+
+- Validate HDS thresh does not matter when xdp frags support is
+  available
+  ~] ethtool -G eth0 hds-thresh 512
+  ~] sudo ip link set eth0 xdpdrv obj xdp_pass_mb_12345.o sec xdp.frags
 
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Mohsin Bashir <mohsin.bashr@gmail.com>
 ---
- drivers/net/ethernet/meta/fbnic/fbnic_txrx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../net/ethernet/meta/fbnic/fbnic_ethtool.c   | 11 +++
+ .../net/ethernet/meta/fbnic/fbnic_netdev.c    | 35 +++++++
+ .../net/ethernet/meta/fbnic/fbnic_netdev.h    |  5 +
+ drivers/net/ethernet/meta/fbnic/fbnic_txrx.c  | 96 +++++++++++++++++--
+ drivers/net/ethernet/meta/fbnic/fbnic_txrx.h  |  1 +
+ 5 files changed, 141 insertions(+), 7 deletions(-)
 
+diff --git a/drivers/net/ethernet/meta/fbnic/fbnic_ethtool.c b/drivers/net/ethernet/meta/fbnic/fbnic_ethtool.c
+index 8ae2ecbae06c..742b557d0e56 100644
+--- a/drivers/net/ethernet/meta/fbnic/fbnic_ethtool.c
++++ b/drivers/net/ethernet/meta/fbnic/fbnic_ethtool.c
+@@ -329,6 +329,17 @@ fbnic_set_ringparam(struct net_device *netdev, struct ethtool_ringparam *ring,
+ 		return -EINVAL;
+ 	}
+ 
++	/* If an XDP program is attached, we should check for potential frame
++	 * splitting. If the new HDS threshold can cause splitting, we should
++	 * only allow if the attached XDP program can handle frags.
++	 */
++	if (fbnic_check_split_frames(fbn->xdp_prog, netdev->mtu,
++				     kernel_ring->hds_thresh)) {
++		NL_SET_ERR_MSG_MOD(extack,
++				   "Use higher HDS threshold or multi-buf capable program");
++		return -EINVAL;
++	}
++
+ 	if (!netif_running(netdev)) {
+ 		fbnic_set_rings(fbn, ring, kernel_ring);
+ 		return 0;
+diff --git a/drivers/net/ethernet/meta/fbnic/fbnic_netdev.c b/drivers/net/ethernet/meta/fbnic/fbnic_netdev.c
+index a7eb7a367b98..fb81d1a7bc51 100644
+--- a/drivers/net/ethernet/meta/fbnic/fbnic_netdev.c
++++ b/drivers/net/ethernet/meta/fbnic/fbnic_netdev.c
+@@ -508,6 +508,40 @@ static void fbnic_get_stats64(struct net_device *dev,
+ 	}
+ }
+ 
++bool fbnic_check_split_frames(struct bpf_prog *prog, unsigned int mtu,
++			      u32 hds_thresh)
++{
++	if (!prog)
++		return false;
++
++	if (prog->aux->xdp_has_frags)
++		return false;
++
++	return mtu + ETH_HLEN > hds_thresh;
++}
++
++static int fbnic_bpf(struct net_device *netdev, struct netdev_bpf *bpf)
++{
++	struct bpf_prog *prog = bpf->prog, *prev_prog;
++	struct fbnic_net *fbn = netdev_priv(netdev);
++
++	if (bpf->command != XDP_SETUP_PROG)
++		return -EINVAL;
++
++	if (fbnic_check_split_frames(prog, netdev->mtu,
++				     fbn->hds_thresh)) {
++		NL_SET_ERR_MSG_MOD(bpf->extack,
++				   "MTU too high, or HDS threshold is too low for single buffer XDP");
++		return -EOPNOTSUPP;
++	}
++
++	prev_prog = xchg(&fbn->xdp_prog, prog);
++	if (prev_prog)
++		bpf_prog_put(prev_prog);
++
++	return 0;
++}
++
+ static const struct net_device_ops fbnic_netdev_ops = {
+ 	.ndo_open		= fbnic_open,
+ 	.ndo_stop		= fbnic_stop,
+@@ -517,6 +551,7 @@ static const struct net_device_ops fbnic_netdev_ops = {
+ 	.ndo_set_mac_address	= fbnic_set_mac,
+ 	.ndo_set_rx_mode	= fbnic_set_rx_mode,
+ 	.ndo_get_stats64	= fbnic_get_stats64,
++	.ndo_bpf		= fbnic_bpf,
+ 	.ndo_hwtstamp_get	= fbnic_hwtstamp_get,
+ 	.ndo_hwtstamp_set	= fbnic_hwtstamp_set,
+ };
+diff --git a/drivers/net/ethernet/meta/fbnic/fbnic_netdev.h b/drivers/net/ethernet/meta/fbnic/fbnic_netdev.h
+index 04c5c7ed6c3a..bfa79ea910d8 100644
+--- a/drivers/net/ethernet/meta/fbnic/fbnic_netdev.h
++++ b/drivers/net/ethernet/meta/fbnic/fbnic_netdev.h
+@@ -18,6 +18,8 @@
+ #define FBNIC_TUN_GSO_FEATURES		NETIF_F_GSO_IPXIP6
+ 
+ struct fbnic_net {
++	struct bpf_prog *xdp_prog;
++
+ 	struct fbnic_ring *tx[FBNIC_MAX_TXQS];
+ 	struct fbnic_ring *rx[FBNIC_MAX_RXQS];
+ 
+@@ -104,4 +106,7 @@ int fbnic_phylink_ethtool_ksettings_get(struct net_device *netdev,
+ int fbnic_phylink_get_fecparam(struct net_device *netdev,
+ 			       struct ethtool_fecparam *fecparam);
+ int fbnic_phylink_init(struct net_device *netdev);
++
++bool fbnic_check_split_frames(struct bpf_prog *prog,
++			      unsigned int mtu, u32 hds_threshold);
+ #endif /* _FBNIC_NETDEV_H_ */
 diff --git a/drivers/net/ethernet/meta/fbnic/fbnic_txrx.c b/drivers/net/ethernet/meta/fbnic/fbnic_txrx.c
-index 2adbe175ac09..65d1e40addec 100644
+index 65d1e40addec..a669e169e3ad 100644
 --- a/drivers/net/ethernet/meta/fbnic/fbnic_txrx.c
 +++ b/drivers/net/ethernet/meta/fbnic/fbnic_txrx.c
-@@ -888,7 +888,7 @@ static void fbnic_pkt_prepare(struct fbnic_napi_vector *nv, u64 rcd,
+@@ -2,17 +2,26 @@
+ /* Copyright (c) Meta Platforms, Inc. and affiliates. */
  
- 	/* Build frame around buffer */
- 	hdr_start = page_address(page) + hdr_pg_start;
--
-+	net_prefetch(pkt->buff.data);
- 	xdp_prepare_buff(&pkt->buff, hdr_start, headroom,
- 			 len - FBNIC_RX_PAD, true);
+ #include <linux/bitfield.h>
++#include <linux/bpf.h>
++#include <linux/bpf_trace.h>
+ #include <linux/iopoll.h>
+ #include <linux/pci.h>
+ #include <net/netdev_queues.h>
+ #include <net/page_pool/helpers.h>
+ #include <net/tcp.h>
++#include <net/xdp.h>
  
+ #include "fbnic.h"
+ #include "fbnic_csr.h"
+ #include "fbnic_netdev.h"
+ #include "fbnic_txrx.h"
+ 
++enum {
++	FBNIC_XDP_PASS = 0,
++	FBNIC_XDP_CONSUME,
++	FBNIC_XDP_LEN_ERR,
++};
++
+ enum {
+ 	FBNIC_XMIT_CB_TS	= 0x01,
+ };
+@@ -877,7 +886,7 @@ static void fbnic_pkt_prepare(struct fbnic_napi_vector *nv, u64 rcd,
+ 
+ 	headroom = hdr_pg_off - hdr_pg_start + FBNIC_RX_PAD;
+ 	frame_sz = hdr_pg_end - hdr_pg_start;
+-	xdp_init_buff(&pkt->buff, frame_sz, NULL);
++	xdp_init_buff(&pkt->buff, frame_sz, &qt->xdp_rxq);
+ 	hdr_pg_start += (FBNIC_RCD_AL_BUFF_FRAG_MASK & rcd) *
+ 			FBNIC_BD_FRAG_SIZE;
+ 
+@@ -967,6 +976,39 @@ static struct sk_buff *fbnic_build_skb(struct fbnic_napi_vector *nv,
+ 	return skb;
+ }
+ 
++static struct sk_buff *fbnic_run_xdp(struct fbnic_napi_vector *nv,
++				     struct fbnic_pkt_buff *pkt)
++{
++	struct fbnic_net *fbn = netdev_priv(nv->napi.dev);
++	struct bpf_prog *xdp_prog;
++	int act;
++
++	xdp_prog = READ_ONCE(fbn->xdp_prog);
++	if (!xdp_prog)
++		goto xdp_pass;
++
++	/* Should never happen, config paths enforce HDS threshold > MTU */
++	if (xdp_buff_has_frags(&pkt->buff) && !xdp_prog->aux->xdp_has_frags)
++		return ERR_PTR(-FBNIC_XDP_LEN_ERR);
++
++	act = bpf_prog_run_xdp(xdp_prog, &pkt->buff);
++	switch (act) {
++	case XDP_PASS:
++xdp_pass:
++		return fbnic_build_skb(nv, pkt);
++	default:
++		bpf_warn_invalid_xdp_action(nv->napi.dev, xdp_prog, act);
++		fallthrough;
++	case XDP_ABORTED:
++		trace_xdp_exception(nv->napi.dev, xdp_prog, act);
++		fallthrough;
++	case XDP_DROP:
++		break;
++	}
++
++	return ERR_PTR(-FBNIC_XDP_CONSUME);
++}
++
+ static enum pkt_hash_types fbnic_skb_hash_type(u64 rcd)
+ {
+ 	return (FBNIC_RCD_META_L4_TYPE_MASK & rcd) ? PKT_HASH_TYPE_L4 :
+@@ -1065,7 +1107,7 @@ static int fbnic_clean_rcq(struct fbnic_napi_vector *nv,
+ 			if (unlikely(pkt->add_frag_failed))
+ 				skb = NULL;
+ 			else if (likely(!fbnic_rcd_metadata_err(rcd)))
+-				skb = fbnic_build_skb(nv, pkt);
++				skb = fbnic_run_xdp(nv, pkt);
+ 
+ 			/* Populate skb and invalidate XDP */
+ 			if (!IS_ERR_OR_NULL(skb)) {
+@@ -1251,6 +1293,7 @@ static void fbnic_free_napi_vector(struct fbnic_net *fbn,
+ 	}
+ 
+ 	for (j = 0; j < nv->rxt_count; j++, i++) {
++		xdp_rxq_info_unreg(&nv->qt[i].xdp_rxq);
+ 		fbnic_remove_rx_ring(fbn, &nv->qt[i].sub0);
+ 		fbnic_remove_rx_ring(fbn, &nv->qt[i].sub1);
+ 		fbnic_remove_rx_ring(fbn, &nv->qt[i].cmpl);
+@@ -1423,6 +1466,11 @@ static int fbnic_alloc_napi_vector(struct fbnic_dev *fbd, struct fbnic_net *fbn,
+ 		fbnic_ring_init(&qt->cmpl, db, rxq_idx, FBNIC_RING_F_STATS);
+ 		fbn->rx[rxq_idx] = &qt->cmpl;
+ 
++		err = xdp_rxq_info_reg(&qt->xdp_rxq, fbn->netdev, rxq_idx,
++				       nv->napi.napi_id);
++		if (err)
++			goto free_ring_cur_qt;
++
+ 		/* Update Rx queue index */
+ 		rxt_count--;
+ 		rxq_idx += v_count;
+@@ -1433,6 +1481,25 @@ static int fbnic_alloc_napi_vector(struct fbnic_dev *fbd, struct fbnic_net *fbn,
+ 
+ 	return 0;
+ 
++	while (rxt_count < nv->rxt_count) {
++		qt--;
++
++		xdp_rxq_info_unreg(&qt->xdp_rxq);
++free_ring_cur_qt:
++		fbnic_remove_rx_ring(fbn, &qt->sub0);
++		fbnic_remove_rx_ring(fbn, &qt->sub1);
++		fbnic_remove_rx_ring(fbn, &qt->cmpl);
++		rxt_count++;
++	}
++	while (txt_count < nv->txt_count) {
++		qt--;
++
++		fbnic_remove_tx_ring(fbn, &qt->sub0);
++		fbnic_remove_tx_ring(fbn, &qt->cmpl);
++
++		txt_count++;
++	}
++	fbnic_napi_free_irq(fbd, nv);
+ pp_destroy:
+ 	page_pool_destroy(nv->page_pool);
+ napi_del:
+@@ -1709,8 +1776,10 @@ static void fbnic_free_nv_resources(struct fbnic_net *fbn,
+ 	for (i = 0; i < nv->txt_count; i++)
+ 		fbnic_free_qt_resources(fbn, &nv->qt[i]);
+ 
+-	for (j = 0; j < nv->rxt_count; j++, i++)
++	for (j = 0; j < nv->rxt_count; j++, i++) {
+ 		fbnic_free_qt_resources(fbn, &nv->qt[i]);
++		xdp_rxq_info_unreg_mem_model(&nv->qt[i].xdp_rxq);
++	}
+ }
+ 
+ static int fbnic_alloc_nv_resources(struct fbnic_net *fbn,
+@@ -1722,19 +1791,32 @@ static int fbnic_alloc_nv_resources(struct fbnic_net *fbn,
+ 	for (i = 0; i < nv->txt_count; i++) {
+ 		err = fbnic_alloc_tx_qt_resources(fbn, &nv->qt[i]);
+ 		if (err)
+-			goto free_resources;
++			goto free_qt_resources;
+ 	}
+ 
+ 	/* Allocate Rx Resources */
+ 	for (j = 0; j < nv->rxt_count; j++, i++) {
++		/* Register XDP memory model for completion queue */
++		err = xdp_reg_mem_model(&nv->qt[i].xdp_rxq.mem,
++					MEM_TYPE_PAGE_POOL,
++					nv->page_pool);
++		if (err)
++			goto xdp_unreg_mem_model;
++
+ 		err = fbnic_alloc_rx_qt_resources(fbn, &nv->qt[i]);
+ 		if (err)
+-			goto free_resources;
++			goto xdp_unreg_cur_model;
+ 	}
+ 
+ 	return 0;
+ 
+-free_resources:
++xdp_unreg_mem_model:
++	while (j-- && i--) {
++		fbnic_free_qt_resources(fbn, &nv->qt[i]);
++xdp_unreg_cur_model:
++		xdp_rxq_info_unreg_mem_model(&nv->qt[i].xdp_rxq);
++	}
++free_qt_resources:
+ 	while (i--)
+ 		fbnic_free_qt_resources(fbn, &nv->qt[i]);
+ 	return err;
+@@ -2026,7 +2108,7 @@ void fbnic_flush(struct fbnic_net *fbn)
+ 			memset(qt->cmpl.desc, 0, qt->cmpl.size);
+ 
+ 			fbnic_put_pkt_buff(nv, qt->cmpl.pkt, 0);
+-			qt->cmpl.pkt->buff.data_hard_start = NULL;
++			memset(qt->cmpl.pkt, 0, sizeof(struct fbnic_pkt_buff));
+ 		}
+ 	}
+ }
+diff --git a/drivers/net/ethernet/meta/fbnic/fbnic_txrx.h b/drivers/net/ethernet/meta/fbnic/fbnic_txrx.h
+index d236152bbaaa..5536f72a1c85 100644
+--- a/drivers/net/ethernet/meta/fbnic/fbnic_txrx.h
++++ b/drivers/net/ethernet/meta/fbnic/fbnic_txrx.h
+@@ -128,6 +128,7 @@ struct fbnic_ring {
+ 
+ struct fbnic_q_triad {
+ 	struct fbnic_ring sub0, sub1, cmpl;
++	struct xdp_rxq_info xdp_rxq;
+ };
+ 
+ struct fbnic_napi_vector {
 -- 
 2.47.3
 
