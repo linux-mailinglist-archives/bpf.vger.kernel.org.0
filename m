@@ -1,243 +1,360 @@
-Return-Path: <bpf+bounces-65540-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65541-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BE73B2547E
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 22:25:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09012B254B2
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 22:48:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 7926A4E0259
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 20:25:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8BD777B3187
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 20:47:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CE562F99A2;
-	Wed, 13 Aug 2025 20:24:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05BD22D0617;
+	Wed, 13 Aug 2025 20:48:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="uiu0T7zy"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VgXkCY+4"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2064.outbound.protection.outlook.com [40.107.92.64])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 260DB2D663D;
-	Wed, 13 Aug 2025 20:24:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.64
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755116689; cv=fail; b=tH249raebYXZbsGH+N6+SnOjDwvQX8eQlGVEgXcmcrS7/axBrdiF7DjuhA6wsX5BpqeEFWwtrsY439zxD8Pu0no7WUIbOZ2Tab7nyY9XE8cgWRoYCYhE4QxOMQz77KaYvMzDpWsOUlKqhlKWFH5zv0VR5+2K6vVUHad9Sy4BwC0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755116689; c=relaxed/simple;
-	bh=MJesp1bqoy+f/S803nE1xfk8wzUAyByaIZwp8DNs3cY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=Zk8U0Y8eS2hWXQ6TxDcHk6QvGj4rwaOxhzKgHfiM5CoUVnSF4R9zB6Y92+5he58BSiipYDkQ8uWI4phmZLipAoSNp1vY9UNQezKn7XGhj81knBdVd3qWJP7NMcB/kNHI6Op5Fyy2+qJNel1K67mvFxgYeDhtQd36c1XrZ+eg2oM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=uiu0T7zy; arc=fail smtp.client-ip=40.107.92.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=iKYjZ6vPOnNVMUMqHASq/OebJD1wiPodI14RNeyqdq5MLLQlTqjW8FQIxaRiedbtNaL8cj49OS/cP9feErs3px4ZUTrRshcmEUBRfpKEqoEG39V77W6m9dPTjkF/1rend95dWZzy5YfCs4t4jv7Bg6TFQSDwnFTts6Jqwnu6rzLiYjceplLUvZGqepL7OJJmmbPrbYlL2IH4lKonJ3jtqBnhZKcfR2cC0fBRwyZlSmoo8bpz4hB3t8GQwnZpriIfws4IJme8DbVx9vjOTJngvN9HZHCMYHWZYHYKyfDH7aMMRC+x8JCLHRCcEImVlD6GKYQBBjKhEpBJC54cWlM6aQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6dvdcCl8JBgn3mGo481nkOElD2mUHuMmIg/JyrPuE1g=;
- b=Hx7bpUpOSlZ7n8GDYt65IjRCoORXXHBA6xJ/GJe9sZ/TRQI1qtQdlnM/bdNk95jUbZXh8QUc9516ATxjQNVbFsjr5sYss5lCkCG3PAwoAYlabzzBI3VwJi2d5hj7PSa304RzKef6F9Eh4GO7cF3+UoGoBToNZkdcldAtq5cBeJdIoeH0pShyt2qbUYMhsYsWt/cPqsUTQF7jXTxcXT51i47jM9CEQkqV8tQT11G4gN1IHH4QzLwYvxpc2aoDD7+l+2dQ+DWVwhccBdLrDKb0FeiI0m9uEzVGc9MOWV0Q7aoRakhL/luJ49RWqQZfZgylXflNCKIT9WgjuDJCgG0Npg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6dvdcCl8JBgn3mGo481nkOElD2mUHuMmIg/JyrPuE1g=;
- b=uiu0T7zyfK0of4ueGTivQvuV/1OkKYhHlUydSgOiHive+QfPVpGNwKiK3lColB1bZg9EAM4SXvbhVU7KWbFraRUwjUrkOf7Q2+/TM8TCL1nH6y4N87rf4kSI5V8F6d7EzulAWhWnKPAWql9KihSTePcUAo3GX6k9N5hIfeZ8n4WSzuAlmJstWU86dw4R68LWjrBTcIzi+5r2zG0OYaSg2FfUl0fnIPu4ACAmK60GWYWyTs0An3dIIeSnJTpjGRyRAOEzAYRrHdH6GWagksuweWTH/RhYqBxWRmbsqOy4m3NtedTGSHCZ0QArclBeCaGO6l9hfHhDOyVYmoWoGVfnQA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS0PR12MB9038.namprd12.prod.outlook.com (2603:10b6:8:f2::20) by
- DM4PR12MB6086.namprd12.prod.outlook.com (2603:10b6:8:b2::16) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9009.22; Wed, 13 Aug 2025 20:24:44 +0000
-Received: from DS0PR12MB9038.namprd12.prod.outlook.com
- ([fe80::7106:f1be:4972:9438]) by DS0PR12MB9038.namprd12.prod.outlook.com
- ([fe80::7106:f1be:4972:9438%5]) with mapi id 15.20.9031.012; Wed, 13 Aug 2025
- 20:24:43 +0000
-Date: Wed, 13 Aug 2025 20:24:37 +0000
-From: Dragos Tatulea <dtatulea@nvidia.com>
-To: Chris Arges <carges@cloudflare.com>
-Cc: Jesse Brandeburg <jbrandeburg@cloudflare.com>, netdev@vger.kernel.org, 
-	bpf@vger.kernel.org, kernel-team <kernel-team@cloudflare.com>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, tariqt@nvidia.com, saeedm@nvidia.com, 
-	Leon Romanovsky <leon@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Simon Horman <horms@kernel.org>, 
-	Andrew Rzeznik <arzeznik@cloudflare.com>, Yan Zhai <yan@cloudflare.com>
-Subject: Re: [BUG] mlx5_core memory management issue
-Message-ID: <4zkm7dmkxhfhf3cm7eniim26z6nbp3zsm4qttapg3xbvkrqhro@cvjnbr624m5h>
-References: <aIEuZy6fUj_4wtQ6@861G6M3>
- <jlvrzm6q7dnai6nf5v3ifhtwqlnvvrdg5driqomnl5q4lzfxmk@tmwaadjob5yd>
- <aJTYNG1AroAnvV31@861G6M3>
- <hlsks2646fmhbnhxwuihheri2z4ymldtqlca6fob7rmvzncpat@gljjmlorugzw>
- <aqti6c3imnaffenkgnnw5tnmjwrzw7g7pwbt47bvbgar2c4rbv@af4mch7msf3w>
- <9b27d605-9211-43c9-aa49-62bbf87f7574@cloudflare.com>
- <72vpwjc4tosqt2djhyatkycofi2hlktulevzlszmhb6w3mlo46@63sxu3or7suc>
- <aJuxY9oTtxSn4qZP@861G6M3>
- <aJzfPFCTlc35b2Bp@861G6M3>
- <5hinwlan55y6fl6ocilg7iccatuu5ftiyruf7wwfi44w5b4gpa@ainmdlgjtm5g>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5hinwlan55y6fl6ocilg7iccatuu5ftiyruf7wwfi44w5b4gpa@ainmdlgjtm5g>
-X-ClientProxiedBy: TLZP290CA0002.ISRP290.PROD.OUTLOOK.COM (2603:1096:950:9::8)
- To DS0PR12MB9038.namprd12.prod.outlook.com (2603:10b6:8:f2::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 360F02FD7A2;
+	Wed, 13 Aug 2025 20:48:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1755118128; cv=none; b=scT/NKCXHwAosc3Awf9n5MJnlQoH5hxbx52Xbf6UyPxhtTLCOp8GO7HOBbKv2cgMesbkkrrb4VmPGvfyU6jBOq47P9GX3dykMQugEwu2tJyx1V29jT1D+oITOGVFXKBgBm1B/KQxAva0m0OKYxJ4as7HVE/gbU1TZGAiKSdjyI8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1755118128; c=relaxed/simple;
+	bh=PgXPt7HUxceyhvTpIsrdpg+x5ZSykD0yX1KPHBbs9g4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ldZV6I0R7lwA0Rlcq/COkil1RV7mh542pTsx8xRDLZ5fKTVaI8DjnfdNGOgRSU1SiBky4u3i8rQkMEPdmX/Ydb6R9QlFEdf+cxivQpFD8ZPQV3IcEqTc3fE3JANxzYJ6ux/2Vig7XKqXK7WVKdEaq/zke1r+6q++7Yo8zLhbjGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VgXkCY+4; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1755118126; x=1786654126;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=PgXPt7HUxceyhvTpIsrdpg+x5ZSykD0yX1KPHBbs9g4=;
+  b=VgXkCY+4OfJ65kNcV75dtoiEiUP6dKXpArbppBMvpUTVj59/LNz4wd8h
+   bRYQtlQTsRTUO6E5tisRiB2B364gKQPRGSH3NCv8pE1HdvXGhOXgkYA8Z
+   bUfEaBnnQX3SHy+XPq7E7Sm3QgoZQ3/6+o06k0VGDTmu4mG56cw08FMYt
+   +GSvh8c2gfoZEhYiSz8UjiZ8o3g5igkWEDraLBnFucl53fsPGPkNXb3Yi
+   np5toHzs+17r5tJSu6F5wEKKzVpVYXzDPFm6gGirlZqLZ97RiLZ7b779z
+   rnUradX3Gou+KXZ8xd7fxQSTjLdZeyVXAuogNo5G1bebDMJTzg8AksgTL
+   Q==;
+X-CSE-ConnectionGUID: T5KeyP69RlST6ShQbVIGPg==
+X-CSE-MsgGUID: h+L3bCD8RLyC7RdRyb4WWw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11520"; a="57576834"
+X-IronPort-AV: E=Sophos;i="6.17,287,1747724400"; 
+   d="scan'208";a="57576834"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2025 13:48:45 -0700
+X-CSE-ConnectionGUID: F4+C6lErRNup9+xFGLOGxg==
+X-CSE-MsgGUID: WEyceoqrRzWLZdAUxD+cPA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.17,287,1747724400"; 
+   d="scan'208";a="203748409"
+Received: from lkp-server02.sh.intel.com (HELO 4ea60e6ab079) ([10.239.97.151])
+  by orviesa001.jf.intel.com with ESMTP; 13 Aug 2025 13:48:42 -0700
+Received: from kbuild by 4ea60e6ab079 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1umINk-000AIy-1n;
+	Wed, 13 Aug 2025 20:47:53 +0000
+Date: Thu, 14 Aug 2025 04:46:00 +0800
+From: kernel test robot <lkp@intel.com>
+To: Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>,
+	Maciej =?utf-8?Q?=C5=BBenczykowski?= <zenczykowski@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>
+Cc: oe-kbuild-all@lists.linux.dev,
+	Linux Network Development Mailing List <netdev@vger.kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	BPF Mailing List <bpf@vger.kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>
+Subject: Re: [PATCH bpf-next] bpf: hashtab - allow
+ BPF_MAP_LOOKUP{,_AND_DELETE}_BATCH with NULL keys/values.
+Message-ID: <202508140435.GA2XXxaK-lkp@intel.com>
+References: <20250813073955.1775315-1-maze@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB9038:EE_|DM4PR12MB6086:EE_
-X-MS-Office365-Filtering-Correlation-Id: f33287c7-2212-4f7f-1384-08dddaa76fe3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014|7416014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?57W2C74ozNctqKfmiwjiMi/Fct3/SvudloHrBTavnR/FC82Y9eVgI9+StfaA?=
- =?us-ascii?Q?T9nHUCPzAOWvpl3hNArFLR5Nb5M30T223BL+x7DP5ygEOyb8zQaGjbecOSvP?=
- =?us-ascii?Q?3DHUqMBvQ2q4QNaGpz5VToAnSW3oZCll0As3DUDeU69nMRMOKoJVTgj1wiPF?=
- =?us-ascii?Q?ksaPvwhE16ocE64Fq4cPe36W3Q8WNXZgjhI73twflS38St53t1FW7YvRFEH1?=
- =?us-ascii?Q?QQ/ZQKrTijW5oZ5jFn/6BrdYSF7QuTa/E1xoEViw4VRUy4m8s6JqD+t3i5eQ?=
- =?us-ascii?Q?ux3Usslm7WWDueNlcoTpmWr6d68kGdQgZRb5o7FOtaUngW+HXFqLMBIem7nT?=
- =?us-ascii?Q?qyFGSsZRih8oHtWopO9ZKmvbzF2TpFyvwhMMGUOJ5QIQkEtJA/gQrSHsgVbR?=
- =?us-ascii?Q?QNUYAFiV7RBcNZ7+anQLSgIF113b3qicbctFqYerenO4zomKBHl/acQYkvXm?=
- =?us-ascii?Q?csmk77jlW5TqFGpHA3rfqq44lpimIMrl7H2pwvabzyVAayimIH9bMetAtLNx?=
- =?us-ascii?Q?BUWjC6HvgL+1jkGamlh5WUhkP3bTZPLMsEVCTIo21pSh+TXBV8EXJVzsOt47?=
- =?us-ascii?Q?ZPMjYsRu/u0H/z4UZH+/Pz1+jq5Y+EjJfWHpyURJlJ0vBICkxK16GyMFVSFd?=
- =?us-ascii?Q?brjLGu+5iqLC45Sl+zRFyLMUDVnj2agdAiTFcHdKGABDfcu2SlNJy9OLdwPM?=
- =?us-ascii?Q?hq+iNYmuWlozd+hy48Dp2EgahrB+PD6bEm8rAoIQJwtyz2s/BFxQ+96LsxHf?=
- =?us-ascii?Q?vTh0rEYTK1avj7Hefsc5s7BPhgkq4VDhX4L4fbMH5Yt6fpFTUpyDeTpE7Y18?=
- =?us-ascii?Q?FL+emcYRI+NUM1vtOnd021Wwi+xbI4nqBrctByqDlAIG7RU6SguXRXqa9jZk?=
- =?us-ascii?Q?cXg6TYCwlyJvb5QoUGIs2KP8MuVXSj2zgc6svdfwNgP27Hpew7nd6/IAS9r+?=
- =?us-ascii?Q?haaJubUQgvrulbOMWJQaakyDzvrW7PcNDiBWpAej6NxJE9/EMPayx+CdzBXS?=
- =?us-ascii?Q?ZG8QKSK+oWL/+QDt0jpYcZ8pF3smPoZEr/ujuq0q6wdKUTmT6S7T1cjd9pPE?=
- =?us-ascii?Q?MbiGSLNU888Udo0xfqLdjMDlIRcNfINBS2MmC7xwC2xtP/e28Xr5Tf6nE5qZ?=
- =?us-ascii?Q?yP/KxddB0BijdBoXmuzwcKSnvRDL491WMPMiusEIqiXVQ2AqE0EjaafG7BeV?=
- =?us-ascii?Q?L50y7pU6RpH9wzqakyTux6o9OUTWEZF23I2SAfZ/u26nBhZPe8/Reoyr3SvO?=
- =?us-ascii?Q?0Ip9/jKdpX0vLy0EwbGchlppaC+AWkT3VzNDDA6oSufHKgKamzrCkkoKqKH6?=
- =?us-ascii?Q?kjHpHNa/pHnH6rzqV85fHseFsIDLjyU7OekF/HZMftG5v1+Uf09anjQvY7Gb?=
- =?us-ascii?Q?CvNbzHpn4lh/UF/gQmMTlpmwquRM2JLAwAlKPsrmT4N9ztt46/SpmFyJGcjZ?=
- =?us-ascii?Q?CIhE1VpXXPo=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB9038.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?ol8jBQCmpf7Ps+Mr3qyoDQTU07BUAX9VXObqIyqyeOS2IR4vliL0ohEWGBDE?=
- =?us-ascii?Q?o1nCHWTT8WVS8XqVL069m/QiXftPp7JwZugslNPZwXa8fED/Mw48vwYA0hXT?=
- =?us-ascii?Q?nxcMrrb2IrPiJ2XjbJTyUY77h7BTbtAkOIbl47eQWjHr6MWSv0+8fqfdsVij?=
- =?us-ascii?Q?JzF3kQofSrx7NgJYM+FhJbigxjpIif3u1Z76/5AZN+gcEkbDQhDcKun+ex8f?=
- =?us-ascii?Q?EE6c5Co/5HMS+TBJuE+QnVdG7Bnj+o9ZGNwgF/JR5FMCuEjkD3ZcEhhWegpj?=
- =?us-ascii?Q?MaH1kZ1h+H5RAkxTPtRn3mQrWp83UUEHTJj1JjpK8F2KQ7JWryW16rusugLw?=
- =?us-ascii?Q?WE/A6AVCkyU9Yp8qq4/rvlIYlZm2WlurxwGdYdzM0pnQfiw2KtMuI4ElUznT?=
- =?us-ascii?Q?GkVNKjg9UupTXkxaE/ZRzkk6MYIX8GmVVZOso05PXrcx1cOhOLDeHiK+F++k?=
- =?us-ascii?Q?CmY3Z/synnBw2EEGZxEE5TVjiX9sAcBeRB4cF2yqndvzpIuTiXSPpl7GFagp?=
- =?us-ascii?Q?ZRASAv9xjm82YtHfnP/3e1ST4i4QtMgHXARCjoE1A/sGBHRcBX4pPseGJhPa?=
- =?us-ascii?Q?HdqjT1N3hTFiPrnVk6wonJQu+o78iSpb++UTku6PYeRgiMBRXbM73q0rNiUt?=
- =?us-ascii?Q?Zj+/t5XGdbQuk2C6LvmT+nBVvQ6KBPwQv5/y5cl3H2nhDZfwQiKCoUqGJ8t+?=
- =?us-ascii?Q?PD5N3/lxBrgbORNR7WMRNpBazUfvMBvbHMuiVZYgysH8iP/GJIUi95ze/L9X?=
- =?us-ascii?Q?tGu3pU6D+ZJLAKA0kojlhs5nxUjMz/Zl1rb4eSQjETLXyC4z9tlGUpvDRe7e?=
- =?us-ascii?Q?q9zVIHqEbNuNXvChyr6/Ig8TYhG0PMPCA0vX2uhyp/dr7HddLpb8otLa05GF?=
- =?us-ascii?Q?X/Z5dWta4kdOuFsXfTVsvGR1jCOXX18byiWbSQAdmXZwx0fcTQqOgpQF/HBE?=
- =?us-ascii?Q?W1ljfzXnl9oS6Vo9lfX68OFERCUr2d+NJNxhH7iCrXY0giZXHx428/zivEBG?=
- =?us-ascii?Q?5aJr+KPdereNA/dC/wGaekxLzdDWlAGB6qSZ09z/CgKhh0XJXQJzH5uyNLP8?=
- =?us-ascii?Q?aGCho1yi5MWmtpXWpMsmsR3AJIQl7BeGrNMKgFtD+MEClZHOh1y1eEVoJx6E?=
- =?us-ascii?Q?KMtdEnlNK7YDKuVLIQGih6eQNyaXJ27gI/zqKgUg0cO9eSk9rx7DfEcvmhrD?=
- =?us-ascii?Q?eHN9IDmKH0xSbB5fU7rlWTXTCdWEoAmSUAwL7dzDS4YJW4Sd89N4DPwRExmK?=
- =?us-ascii?Q?0jMem2kFeMnb//9HxUo84NWlkY3yd7Fz4PGZk2d8LrRU9dKWH5xwtFWKOBCW?=
- =?us-ascii?Q?Jxa9Fe8jGtu/Rxl3nqxWeyWVxtecrIfUmn3+oMut0jo2DmM+B3C/c2UrxnX0?=
- =?us-ascii?Q?l2fwyiptjsn+HN2lefmoCM3+hBRK2hrBnQV5Oz9huKfcsrFOVxp8M4HJ+sa3?=
- =?us-ascii?Q?Sqlf6ErsICd0zb7tXhruIQpznm5ts6A6/DXrd/lQvYnQlBWVZDm9Mng9XzK9?=
- =?us-ascii?Q?f8cN1hBjgiONT2dQhAUdXZyBjCsc+wTSL/kqN2lb47HDTlRezUgmmY96EoEs?=
- =?us-ascii?Q?ZC4XUQ48XemImRxZjKOJDMqYcWVBK2Daz67OkMO3?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f33287c7-2212-4f7f-1384-08dddaa76fe3
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB9038.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Aug 2025 20:24:43.0262
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gyl3dDz2oMdfIvzU0ngNvNfLvxTgSs9nv62uOj5iFfI1EGHSP0Xr91rRhrmjPxrQ8aJCn2dEJlxVH88Ie9rj5A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6086
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250813073955.1775315-1-maze@google.com>
 
-On Wed, Aug 13, 2025 at 07:26:49PM +0000, Dragos Tatulea wrote:
-> On Wed, Aug 13, 2025 at 01:53:48PM -0500, Chris Arges wrote:
-> > On 2025-08-12 16:25:58, Chris Arges wrote:
-> > > On 2025-08-12 20:19:30, Dragos Tatulea wrote:
-> > > > On Tue, Aug 12, 2025 at 11:55:39AM -0700, Jesse Brandeburg wrote:
-> > > > > On 8/12/25 8:44 AM, 'Dragos Tatulea' via kernel-team wrote:
-> > > > > 
-> > > > > > diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-> > > > > > index 482d284a1553..484216c7454d 100644
-> > > > > > --- a/kernel/bpf/devmap.c
-> > > > > > +++ b/kernel/bpf/devmap.c
-> > > > > > @@ -408,8 +408,10 @@ static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
-> > > > > >          /* If not all frames have been transmitted, it is our
-> > > > > >           * responsibility to free them
-> > > > > >           */
-> > > > > > +       xdp_set_return_frame_no_direct();
-> > > > > >          for (i = sent; unlikely(i < to_send); i++)
-> > > > > >                  xdp_return_frame_rx_napi(bq->q[i]);
-> > > > > > +       xdp_clear_return_frame_no_direct();
-> > > > > 
-> > > > > Why can't this instead just be xdp_return_frame(bq->q[i]); with no
-> > > > > "no_direct" fussing?
-> > > > > 
-> > > > > Wouldn't this be the safest way for this function to call frame completion?
-> > > > > It seems like presuming the calling context is napi is wrong?
-> > > > >
-> > > > It would be better indeed. Thanks for removing my horse glasses!
-> > > > 
-> > > > Once Chris verifies that this works for him I can prepare a fix patch.
-> > > >
-> > > Working on that now, I'm testing a kernel with the following change:
-> > > 
-> > > ---
-> > > 
-> > > diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-> > > index 3aa002a47..ef86d9e06 100644
-> > > --- a/kernel/bpf/devmap.c
-> > > +++ b/kernel/bpf/devmap.c
-> > > @@ -409,7 +409,7 @@ static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
-> > >          * responsibility to free them
-> > >          */
-> > >         for (i = sent; unlikely(i < to_send); i++)
-> > > -               xdp_return_frame_rx_napi(bq->q[i]);
-> > > +               xdp_return_frame(bq->q[i]);
-> > >  
-> > >  out:
-> > >         bq->count = 0;
-> > 
-> > This patch resolves the issue I was seeing and I am no longer able to
-> > reproduce the issue. I tested for about 2 hours, when the reproducer usually
-> > takes about 1-2 minutes.
-> >
-> Thanks! Will send a patch tomorrow and also add you in the Tested-by tag.
-> 
-> As follow up work it would be good to have a way to catch this family of
-> issues. Something in the lines of the patch below.
-> 
-> Thanks,
-> Dragos
-> 
-> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> index f1373756cd0f..0c498fbd8df6 100644
-> --- a/net/core/page_pool.c
-> +++ b/net/core/page_pool.c
-> @@ -794,6 +794,10 @@ __page_pool_put_page(struct page_pool *pool, netmem_ref netmem,
->  {
->         lockdep_assert_no_hardirq();
->  
-> +#ifdef CONFIG_PAGE_POOL_CACHEDEBUG
-> +       WARN(page_pool_napi_local(pool), "Page pool cache access from non-direct napi context");
-I meant to negate the condition here.
+Hi Maciej,
 
-Thanks,
-Dragos
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Maciej-enczykowski/bpf-hashtab-allow-BPF_MAP_LOOKUP-_AND_DELETE-_BATCH-with-NULL-keys-values/20250813-154227
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20250813073955.1775315-1-maze%40google.com
+patch subject: [PATCH bpf-next] bpf: hashtab - allow BPF_MAP_LOOKUP{,_AND_DELETE}_BATCH with NULL keys/values.
+config: csky-randconfig-001-20250814 (https://download.01.org/0day-ci/archive/20250814/202508140435.GA2XXxaK-lkp@intel.com/config)
+compiler: csky-linux-gcc (GCC) 15.1.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250814/202508140435.GA2XXxaK-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202508140435.GA2XXxaK-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   kernel/bpf/hashtab.c: In function '__htab_map_lookup_and_delete_batch':
+>> kernel/bpf/hashtab.c:1875:34: warning: suggest parentheses around '&&' within '||' [-Wparentheses]
+    1875 |         if (bucket_cnt && (ukeys && copy_to_user(ukeys + total * key_size, keys,
+         |                            ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    1876 |             key_size * bucket_cnt) ||
+         |             ~~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +1875 kernel/bpf/hashtab.c
+
+  1675	
+  1676	static int
+  1677	__htab_map_lookup_and_delete_batch(struct bpf_map *map,
+  1678					   const union bpf_attr *attr,
+  1679					   union bpf_attr __user *uattr,
+  1680					   bool do_delete, bool is_lru_map,
+  1681					   bool is_percpu)
+  1682	{
+  1683		struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
+  1684		void *keys = NULL, *values = NULL, *value, *dst_key, *dst_val;
+  1685		void __user *uvalues = u64_to_user_ptr(attr->batch.values);
+  1686		void __user *ukeys = u64_to_user_ptr(attr->batch.keys);
+  1687		void __user *ubatch = u64_to_user_ptr(attr->batch.in_batch);
+  1688		u32 batch, max_count, size, bucket_size, map_id;
+  1689		u32 bucket_cnt, total, key_size, value_size;
+  1690		struct htab_elem *node_to_free = NULL;
+  1691		u64 elem_map_flags, map_flags;
+  1692		struct hlist_nulls_head *head;
+  1693		struct hlist_nulls_node *n;
+  1694		unsigned long flags = 0;
+  1695		bool locked = false;
+  1696		struct htab_elem *l;
+  1697		struct bucket *b;
+  1698		int ret = 0;
+  1699	
+  1700		elem_map_flags = attr->batch.elem_flags;
+  1701		if ((elem_map_flags & ~BPF_F_LOCK) ||
+  1702		    ((elem_map_flags & BPF_F_LOCK) && !btf_record_has_field(map->record, BPF_SPIN_LOCK)))
+  1703			return -EINVAL;
+  1704	
+  1705		map_flags = attr->batch.flags;
+  1706		if (map_flags)
+  1707			return -EINVAL;
+  1708	
+  1709		max_count = attr->batch.count;
+  1710		if (!max_count)
+  1711			return 0;
+  1712	
+  1713		if (put_user(0, &uattr->batch.count))
+  1714			return -EFAULT;
+  1715	
+  1716		batch = 0;
+  1717		if (ubatch && copy_from_user(&batch, ubatch, sizeof(batch)))
+  1718			return -EFAULT;
+  1719	
+  1720		if (batch >= htab->n_buckets)
+  1721			return -ENOENT;
+  1722	
+  1723		key_size = htab->map.key_size;
+  1724		value_size = htab->map.value_size;
+  1725		size = round_up(value_size, 8);
+  1726		if (is_percpu)
+  1727			value_size = size * num_possible_cpus();
+  1728		total = 0;
+  1729		/* while experimenting with hash tables with sizes ranging from 10 to
+  1730		 * 1000, it was observed that a bucket can have up to 5 entries.
+  1731		 */
+  1732		bucket_size = 5;
+  1733	
+  1734	alloc:
+  1735		/* We cannot do copy_from_user or copy_to_user inside
+  1736		 * the rcu_read_lock. Allocate enough space here.
+  1737		 */
+  1738		keys = kvmalloc_array(key_size, bucket_size, GFP_USER | __GFP_NOWARN);
+  1739		values = kvmalloc_array(value_size, bucket_size, GFP_USER | __GFP_NOWARN);
+  1740		if (!keys || !values) {
+  1741			ret = -ENOMEM;
+  1742			goto after_loop;
+  1743		}
+  1744	
+  1745	again:
+  1746		bpf_disable_instrumentation();
+  1747		rcu_read_lock();
+  1748	again_nocopy:
+  1749		dst_key = keys;
+  1750		dst_val = values;
+  1751		b = &htab->buckets[batch];
+  1752		head = &b->head;
+  1753		/* do not grab the lock unless need it (bucket_cnt > 0). */
+  1754		if (locked) {
+  1755			ret = htab_lock_bucket(b, &flags);
+  1756			if (ret) {
+  1757				rcu_read_unlock();
+  1758				bpf_enable_instrumentation();
+  1759				goto after_loop;
+  1760			}
+  1761		}
+  1762	
+  1763		bucket_cnt = 0;
+  1764		hlist_nulls_for_each_entry_rcu(l, n, head, hash_node)
+  1765			bucket_cnt++;
+  1766	
+  1767		if (bucket_cnt && !locked) {
+  1768			locked = true;
+  1769			goto again_nocopy;
+  1770		}
+  1771	
+  1772		if (bucket_cnt > (max_count - total)) {
+  1773			if (total == 0)
+  1774				ret = -ENOSPC;
+  1775			/* Note that since bucket_cnt > 0 here, it is implicit
+  1776			 * that the locked was grabbed, so release it.
+  1777			 */
+  1778			htab_unlock_bucket(b, flags);
+  1779			rcu_read_unlock();
+  1780			bpf_enable_instrumentation();
+  1781			goto after_loop;
+  1782		}
+  1783	
+  1784		if (bucket_cnt > bucket_size) {
+  1785			bucket_size = bucket_cnt;
+  1786			/* Note that since bucket_cnt > 0 here, it is implicit
+  1787			 * that the locked was grabbed, so release it.
+  1788			 */
+  1789			htab_unlock_bucket(b, flags);
+  1790			rcu_read_unlock();
+  1791			bpf_enable_instrumentation();
+  1792			kvfree(keys);
+  1793			kvfree(values);
+  1794			goto alloc;
+  1795		}
+  1796	
+  1797		/* Next block is only safe to run if you have grabbed the lock */
+  1798		if (!locked)
+  1799			goto next_batch;
+  1800	
+  1801		hlist_nulls_for_each_entry_safe(l, n, head, hash_node) {
+  1802			memcpy(dst_key, l->key, key_size);
+  1803	
+  1804			if (is_percpu) {
+  1805				int off = 0, cpu;
+  1806				void __percpu *pptr;
+  1807	
+  1808				pptr = htab_elem_get_ptr(l, map->key_size);
+  1809				for_each_possible_cpu(cpu) {
+  1810					copy_map_value_long(&htab->map, dst_val + off, per_cpu_ptr(pptr, cpu));
+  1811					check_and_init_map_value(&htab->map, dst_val + off);
+  1812					off += size;
+  1813				}
+  1814			} else {
+  1815				value = htab_elem_value(l, key_size);
+  1816				if (is_fd_htab(htab)) {
+  1817					struct bpf_map **inner_map = value;
+  1818	
+  1819					 /* Actual value is the id of the inner map */
+  1820					map_id = map->ops->map_fd_sys_lookup_elem(*inner_map);
+  1821					value = &map_id;
+  1822				}
+  1823	
+  1824				if (elem_map_flags & BPF_F_LOCK)
+  1825					copy_map_value_locked(map, dst_val, value,
+  1826							      true);
+  1827				else
+  1828					copy_map_value(map, dst_val, value);
+  1829				/* Zeroing special fields in the temp buffer */
+  1830				check_and_init_map_value(map, dst_val);
+  1831			}
+  1832			if (do_delete) {
+  1833				hlist_nulls_del_rcu(&l->hash_node);
+  1834	
+  1835				/* bpf_lru_push_free() will acquire lru_lock, which
+  1836				 * may cause deadlock. See comments in function
+  1837				 * prealloc_lru_pop(). Let us do bpf_lru_push_free()
+  1838				 * after releasing the bucket lock.
+  1839				 *
+  1840				 * For htab of maps, htab_put_fd_value() in
+  1841				 * free_htab_elem() may acquire a spinlock with bucket
+  1842				 * lock being held and it violates the lock rule, so
+  1843				 * invoke free_htab_elem() after unlock as well.
+  1844				 */
+  1845				l->batch_flink = node_to_free;
+  1846				node_to_free = l;
+  1847			}
+  1848			dst_key += key_size;
+  1849			dst_val += value_size;
+  1850		}
+  1851	
+  1852		htab_unlock_bucket(b, flags);
+  1853		locked = false;
+  1854	
+  1855		while (node_to_free) {
+  1856			l = node_to_free;
+  1857			node_to_free = node_to_free->batch_flink;
+  1858			if (is_lru_map)
+  1859				htab_lru_push_free(htab, l);
+  1860			else
+  1861				free_htab_elem(htab, l);
+  1862		}
+  1863	
+  1864	next_batch:
+  1865		/* If we are not copying data, we can go to next bucket and avoid
+  1866		 * unlocking the rcu.
+  1867		 */
+  1868		if (!bucket_cnt && (batch + 1 < htab->n_buckets)) {
+  1869			batch++;
+  1870			goto again_nocopy;
+  1871		}
+  1872	
+  1873		rcu_read_unlock();
+  1874		bpf_enable_instrumentation();
+> 1875		if (bucket_cnt && (ukeys && copy_to_user(ukeys + total * key_size, keys,
+  1876		    key_size * bucket_cnt) ||
+  1877		    uvalues && copy_to_user(uvalues + total * value_size, values,
+  1878		    value_size * bucket_cnt))) {
+  1879			ret = -EFAULT;
+  1880			goto after_loop;
+  1881		}
+  1882	
+  1883		total += bucket_cnt;
+  1884		batch++;
+  1885		if (batch >= htab->n_buckets) {
+  1886			ret = -ENOENT;
+  1887			goto after_loop;
+  1888		}
+  1889		goto again;
+  1890	
+  1891	after_loop:
+  1892		if (ret == -EFAULT)
+  1893			goto out;
+  1894	
+  1895		/* copy # of entries and next batch */
+  1896		ubatch = u64_to_user_ptr(attr->batch.out_batch);
+  1897		if (copy_to_user(ubatch, &batch, sizeof(batch)) ||
+  1898		    put_user(total, &uattr->batch.count))
+  1899			ret = -EFAULT;
+  1900	
+  1901	out:
+  1902		kvfree(keys);
+  1903		kvfree(values);
+  1904		return ret;
+  1905	}
+  1906	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
