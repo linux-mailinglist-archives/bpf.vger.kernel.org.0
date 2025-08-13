@@ -1,193 +1,182 @@
-Return-Path: <bpf+bounces-65543-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65544-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF641B254C0
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 22:54:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 46A55B254C1
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 22:55:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C7689A4905
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 20:54:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7F089A4756
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 20:55:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D2F02E54D8;
-	Wed, 13 Aug 2025 20:54:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PoBWnEIx"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FA7F2D8364;
+	Wed, 13 Aug 2025 20:55:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from plesk.hostmyservers.fr (plesk.hostmyservers.fr [45.145.164.37])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEED72FD7A2;
-	Wed, 13 Aug 2025 20:54:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C36D62FD7AB;
+	Wed, 13 Aug 2025 20:55:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.145.164.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755118461; cv=none; b=Ux17mD9CGnsV5pQXU6NL+LzwE1n97555PrPi+ncoPbcRvFO3BLjR5b7afHRBupu8AlzVdzNcpVIDePIy0ZTD2gIBbrUmNwhGQVanViLeC2Ne6fkyygetrodzPZlF0Tn7wT/PQ60IB12w5ydrLQzAhJovywSqLUrkHbbNY/puMRA=
+	t=1755118520; cv=none; b=cqFau2mq/nlY0+qzbhYV7qEpEQGUHGFgUmrK+iX7wq1fm6JCEOHSh63THciXS20U6mWjMjYO7gix9b8oBXeuPfEI5qmMvMWtlaYu1KTb2mIsj1DxoGSJxcsUoTvye1i4Q/VTWty20tZ/xhuxIpQ4jjBIk0paTrKzcgOVnjnNdeM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755118461; c=relaxed/simple;
-	bh=9DH8u6qIUtGbxO9LA7iEGvsWUvMMlo8SaH3exJ2B8QU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Dj4Ebu4gPIgAHjp67PU1TkPVRWvLBws+zuhBFnusxs4SodDKiLhszqsh2Uk1kgkNGZQr7yr5K5tePjtSFKZucCWYnu5PnYethN6KJi/W11IT0wD0dP3qwVuotulW+EenqRt+B7XFH7yh6MtQg8HXGnK3mmSSP6Mgo9j1TGkN6pg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PoBWnEIx; arc=none smtp.client-ip=91.218.175.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 13 Aug 2025 13:53:58 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1755118445;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BnHjAcE2afHw2ZH4ahTMmzFeMhbV05T1AU89RXbzZLs=;
-	b=PoBWnEIxIcfMYl/tlSSwqrpgpdkIgUnt+/l5CiIfW4q7tMLS63s9dpu3LCinuWGdf2pZLI
-	PFouMpIDd+OtRzFJ0DZjD6mxEhmzKK6mUYtO0jIMBKS2DPJrYVw2hs6FmH7tH0tstH4dSA
-	7GSmRfkdmXKgTvsCjyX68rxPSWqhU08=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Kuniyuki Iwashima <kuniyu@google.com>
-Cc: "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Neal Cardwell <ncardwell@google.com>, Paolo Abeni <pabeni@redhat.com>, 
-	Willem de Bruijn <willemb@google.com>, Matthieu Baerts <matttbe@kernel.org>, 
-	Mat Martineau <martineau@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Tejun Heo <tj@kernel.org>, Simon Horman <horms@kernel.org>, 
-	Geliang Tang <geliang@kernel.org>, Muchun Song <muchun.song@linux.dev>, 
-	Mina Almasry <almasrymina@google.com>, Kuniyuki Iwashima <kuni1840@gmail.com>, netdev@vger.kernel.org, 
-	mptcp@lists.linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v3 net-next 12/12] net-memcg: Decouple controlled memcg
- from global protocol memory accounting.
-Message-ID: <oafk5om7v5vtxjmo5rtwy6ullprfaf6mk2lh4km7alj3dtainn@jql2rih5es4n>
-References: <20250812175848.512446-1-kuniyu@google.com>
- <20250812175848.512446-13-kuniyu@google.com>
- <w6klr435a4rygmnifuujg6x4k77ch7cwoq6dspmyknqt24cpjz@bbz4wzmxjsfk>
- <CAAVpQUCU=VJxA6NKx+O1_zwzzZOxUEsG9mY+SNK+bzb=dj9s5w@mail.gmail.com>
+	s=arc-20240116; t=1755118520; c=relaxed/simple;
+	bh=mmKEliEz08ZU6AKwRXZkn5xNu5Oaqg1/xcPdosg31bw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=WhzFvfpZWTYvwZxcELkbyLAycsdIpI+PqjpaquJ9vC0vGOjHlp2njxMNwkyhmxFacFCahfUgjlNMXR96QUN7NsD0KdHr/IBZLv0ClVXX26m1oN7HeDZyDQvJdIQAHOAzIvmBGT0+NXt6mOiRy09hX+NOMYwbCKUkAohDmdoYAJ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com; spf=pass smtp.mailfrom=arnaud-lcm.com; arc=none smtp.client-ip=45.145.164.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arnaud-lcm.com
+Received: from arnaudlcm-X570-UD.. (unknown [IPv6:2a02:8084:255b:aa00:c54d:a88a:ec30:aa38])
+	by plesk.hostmyservers.fr (Postfix) with ESMTPSA id D2CF5423D2;
+	Wed, 13 Aug 2025 20:55:14 +0000 (UTC)
+Authentication-Results: Plesk;
+	spf=pass (sender IP is 2a02:8084:255b:aa00:c54d:a88a:ec30:aa38) smtp.mailfrom=contact@arnaud-lcm.com smtp.helo=arnaudlcm-X570-UD..
+Received-SPF: pass (Plesk: connection is authenticated)
+From: Arnaud Lecomte <contact@arnaud-lcm.com>
+To: yonghong.song@linux.dev
+Cc: andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	contact@arnaud-lcm.com,
+	daniel@iogearbox.net,
+	eddyz87@gmail.com,
+	haoluo@google.com,
+	john.fastabend@gmail.com,
+	jolsa@kernel.org,
+	kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org,
+	martin.lau@linux.dev,
+	sdf@fomichev.me,
+	song@kernel.org,
+	syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com,
+	syzkaller-bugs@googlegroups.com
+Subject: [PATCH bpf-next v4 2/2] bpf: fix stackmap overflow check in
+ __bpf_get_stackid()
+Date: Wed, 13 Aug 2025 21:55:06 +0100
+Message-ID: <20250813205506.168069-1-contact@arnaud-lcm.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20250813204606.167019-1-contact@arnaud-lcm.com>
+References: <20250813204606.167019-1-contact@arnaud-lcm.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAVpQUCU=VJxA6NKx+O1_zwzzZOxUEsG9mY+SNK+bzb=dj9s5w@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+X-PPP-Message-ID: <175511851573.21342.5061621153040207200@Plesk>
+X-PPP-Vhost: arnaud-lcm.com
 
-On Wed, Aug 13, 2025 at 11:19:31AM -0700, Kuniyuki Iwashima wrote:
-> On Wed, Aug 13, 2025 at 12:11 AM Shakeel Butt <shakeel.butt@linux.dev> wrote:
-> >
-> > On Tue, Aug 12, 2025 at 05:58:30PM +0000, Kuniyuki Iwashima wrote:
-> > > Some protocols (e.g., TCP, UDP) implement memory accounting for socket
-> > > buffers and charge memory to per-protocol global counters pointed to by
-> > > sk->sk_proto->memory_allocated.
-> > >
-> > > When running under a non-root cgroup, this memory is also charged to the
-> > > memcg as "sock" in memory.stat.
-> > >
-> > > Even when a memcg controls memory usage, sockets of such protocols are
-> > > still subject to global limits (e.g., /proc/sys/net/ipv4/tcp_mem).
-> > >
-> > > This makes it difficult to accurately estimate and configure appropriate
-> > > global limits, especially in multi-tenant environments.
-> > >
-> > > If all workloads were guaranteed to be controlled under memcg, the issue
-> > > could be worked around by setting tcp_mem[0~2] to UINT_MAX.
-> > >
-> > > In reality, this assumption does not always hold, and processes that
-> > > belong to the root cgroup or opt out of memcg can consume memory up to
-> > > the global limit, becoming a noisy neighbour.
-> >
-> > Processes running in root memcg (I am not sure what does 'opt out of
-> > memcg means')
-> 
-> Sorry, I should've clarified memory.max==max (and same
-> up to all ancestors as you pointed out below) as opt-out,
-> where memcg works but has no effect.
-> 
-> 
-> > means admin has intentionally allowed scenarios where
-> 
-> Not really intentionally, but rather reluctantly because the admin
-> cannot guarantee memory.max solely without tcp_mem=UINT_MAX.
-> We should not disregard the cause that the two mem accounting are
-> coupled now.
-> 
-> 
-> > noisy neighbour situation can happen, so I am not really following your
-> > argument here.
-> 
-> So basically here I meant with tcp_mem=UINT_MAX any process
-> can be noisy neighbour unnecessarily.
+Syzkaller reported a KASAN slab-out-of-bounds write in __bpf_get_stackid()
+when copying stack trace data. The issue occurs when the perf trace
+ contains more stack entries than the stack map bucket can hold,
+ leading to an out-of-bounds write in the bucket's data array.
 
-Only if there are processes in cgroups with unlimited memory limits.
+Changes in v2:
+ - Fixed max_depth names across get stack id
 
-I think you are still missing the point. So, let me be very clear:
+Changes in v4:
+ - Removed unnecessary empty line in __bpf_get_stackid
 
-Please stop using the "processes in cgroup with memory.max==max can be
-source of isolation issues" argument. Having unlimited limit means you
-don't want isolation. More importantly you don't really need this
-argument for your work. It is clear (to me at least) that we want global
-TCP memory accounting to be decoupled from memcg accounting. Using the
-flawed argument is just making your series controversial.
+Reported-by: syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=c9b724fbb41cf2538b7b
+Signed-off-by: Arnaud Lecomte <contact@arnaud-lcm.com>
+---
+ kernel/bpf/stackmap.c | 23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
 
-[...]
-> > Why not start with just two global options (maybe start with boot
-> > parameter)?
-> >
-> > Option 1: Existing behavior where memcg and global TCP accounting are
-> > coupled.
-> >
-> > Option 2: Completely decouple memcg and global TCP accounting i.e. use
-> > mem_cgroup_sockets_enabled to either do global TCP accounting or memcg
-> > accounting.
-> >
-> > Keep the option 1 default.
-> >
-> > I assume you want third option where a mix of these options can happen
-> > i.e. some sockets are only accounted to a memcg and some are accounted
-> > to both memcg and global TCP.
-> 
-> Yes because usually not all memcg have memory.max configured
-> and we do not want to allow unlimited TCP memory for them.
-> 
-> Option 2 works for processes in the root cgroup but doesn't for
-> processes in non-root cgroup with memory.max == max.
-> 
-> A good example is system processes managed by systemd where
-> we do not want to specify memory.max but want a global seatbelt.
-> 
-> Note this is how it works _now_, and we want to _preserve_ the case.
-> Does this make sense  ? > why decouple only for some
-> 
-
-I hope I am very clear to stop using the memory.max == max argument.
-
-> 
-> > I would recommend to make that a followup
-> > patch series. Keep this series simple and non-controversial.
-> 
-> I can separate the series, but I'd like to make sure the
-> Option 2 is a must for you or Meta configured memory.max
-> for all cgroups ?  I didn't think it's likely but if there's a real
-> use case, I'm happy to add a boot param.
-> 
-> The only diff would be boot param addition and the condition
-> change in patch 11 so simplicity won't change.
-
-I am not sure if option 2 will be used by Meta or someone else, so no
-objection from me to not pursue it. However I don't want some possibly
-userspace policy to opt-in in one or the other accounting mechanism in
-the kernel.
-
-What I think is the right approach is to have BPF struct ops based
-approach with possible callback 'is this socket under pressure' or maybe
-'is this socket isolated' and then you can do whatever you want in those
-callbacks. In this way your can follow the same approach of caching the
-result in kernel (lower bits of sk->sk_memcg).
-
-I am CCing bpf list to get some suggestions or concerns on this
-approach.
+diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+index b9cc6c72a2a5..318f150460bb 100644
+--- a/kernel/bpf/stackmap.c
++++ b/kernel/bpf/stackmap.c
+@@ -246,7 +246,7 @@ get_callchain_entry_for_task(struct task_struct *task, u32 max_depth)
+ }
+ 
+ static long __bpf_get_stackid(struct bpf_map *map,
+-			      struct perf_callchain_entry *trace, u64 flags)
++			      struct perf_callchain_entry *trace, u64 flags, u32 max_depth)
+ {
+ 	struct bpf_stack_map *smap = container_of(map, struct bpf_stack_map, map);
+ 	struct stack_map_bucket *bucket, *new_bucket, *old_bucket;
+@@ -262,6 +262,8 @@ static long __bpf_get_stackid(struct bpf_map *map,
+ 
+ 	trace_nr = trace->nr - skip;
+ 	trace_len = trace_nr * sizeof(u64);
++	trace_nr = min(trace_nr, max_depth - skip);
++
+ 	ips = trace->ip + skip;
+ 	hash = jhash2((u32 *)ips, trace_len / sizeof(u32), 0);
+ 	id = hash & (smap->n_buckets - 1);
+@@ -321,19 +323,17 @@ static long __bpf_get_stackid(struct bpf_map *map,
+ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
+ 	   u64, flags)
+ {
+-	u32 max_depth = map->value_size / stack_map_data_size(map);
+-	u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
++	u32 elem_size = stack_map_data_size(map);
+ 	bool user = flags & BPF_F_USER_STACK;
+ 	struct perf_callchain_entry *trace;
+ 	bool kernel = !user;
++	u32 max_depth;
+ 
+ 	if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
+ 			       BPF_F_FAST_STACK_CMP | BPF_F_REUSE_STACKID)))
+ 		return -EINVAL;
+ 
+-	max_depth += skip;
+-	if (max_depth > sysctl_perf_event_max_stack)
+-		max_depth = sysctl_perf_event_max_stack;
++	max_depth = stack_map_calculate_max_depth(map->value_size, elem_size, flags);
+ 
+ 	trace = get_perf_callchain(regs, 0, kernel, user, max_depth,
+ 				   false, false);
+@@ -342,7 +342,7 @@ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
+ 		/* couldn't fetch the stack trace */
+ 		return -EFAULT;
+ 
+-	return __bpf_get_stackid(map, trace, flags);
++	return __bpf_get_stackid(map, trace, flags, max_depth);
+ }
+ 
+ const struct bpf_func_proto bpf_get_stackid_proto = {
+@@ -374,6 +374,7 @@ BPF_CALL_3(bpf_get_stackid_pe, struct bpf_perf_event_data_kern *, ctx,
+ 	bool kernel, user;
+ 	__u64 nr_kernel;
+ 	int ret;
++	u32 elem_size, max_depth;
+ 
+ 	/* perf_sample_data doesn't have callchain, use bpf_get_stackid */
+ 	if (!(event->attr.sample_type & PERF_SAMPLE_CALLCHAIN))
+@@ -392,12 +393,13 @@ BPF_CALL_3(bpf_get_stackid_pe, struct bpf_perf_event_data_kern *, ctx,
+ 		return -EFAULT;
+ 
+ 	nr_kernel = count_kernel_ip(trace);
+-
++	elem_size = stack_map_data_size(map);
+ 	if (kernel) {
+ 		__u64 nr = trace->nr;
+ 
+ 		trace->nr = nr_kernel;
+-		ret = __bpf_get_stackid(map, trace, flags);
++		max_depth = stack_map_calculate_max_depth(map->value_size, elem_size, flags);
++		ret = __bpf_get_stackid(map, trace, flags, max_depth);
+ 
+ 		/* restore nr */
+ 		trace->nr = nr;
+@@ -409,7 +411,8 @@ BPF_CALL_3(bpf_get_stackid_pe, struct bpf_perf_event_data_kern *, ctx,
+ 			return -EFAULT;
+ 
+ 		flags = (flags & ~BPF_F_SKIP_FIELD_MASK) | skip;
+-		ret = __bpf_get_stackid(map, trace, flags);
++		max_depth = stack_map_calculate_max_depth(map->value_size, elem_size, flags);
++		ret = __bpf_get_stackid(map, trace, flags, max_depth);
+ 	}
+ 	return ret;
+ }
+-- 
+2.43.0
 
 
