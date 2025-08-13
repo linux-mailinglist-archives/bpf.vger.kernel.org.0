@@ -1,142 +1,287 @@
-Return-Path: <bpf+bounces-65532-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65533-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72C65B252C7
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 20:08:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6421B252F3
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 20:22:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 26B734E153D
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 18:08:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA2497B2212
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 18:20:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D9272BAF9;
-	Wed, 13 Aug 2025 18:08:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71A6F2D5C7A;
+	Wed, 13 Aug 2025 18:21:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kt+Q7ZnA"
+	dkim=pass (1024-bit key) header.d=riotgames.com header.i=@riotgames.com header.b="ibzqRE0D"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33B23242909
-	for <bpf@vger.kernel.org>; Wed, 13 Aug 2025 18:08:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B61C295531
+	for <bpf@vger.kernel.org>; Wed, 13 Aug 2025 18:21:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755108490; cv=none; b=BqlyTLhrc8Ch/tQAxyQfvZnJht3dXtGoF03KnqzVEjv6M2WW4ca8ts/XmI9JljE0N8/i3jt2N2QUt1+CLzrG/kYmrfAY7mRhXshHCQ9x/VL8FMU7/eIHYaxrcSeshCVT7chotwJgi6mdxba4HnSfN6JGD8VgosrhWKYIrJfrjIE=
+	t=1755109314; cv=none; b=EmMMLAeZMaMZmZNat/fslrfZFmPRGtiGp1w4qb1ToFkrFSfz7j74H8d1aGdo0+YTZRB6fDPYjpfXLVXgV88lfHHRaE5Qc9NgHFthLVxQHY/pqTU/htiCRxRdDDw2FHS3TbIDXtpSxEJBVujEVyep56EG4SFKAffA8ese90EPG54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755108490; c=relaxed/simple;
-	bh=1J/dLj7n1DJApGikkN1a6j6APgTvZbqn723HBFzlXoA=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=NqhEgSuscYudmLjbeNAtXn7ZTSMmf+T5pB4oVm1/80aVUVgtpir2f3lsEH69C4AJsYc0lnEwRTHA9R2Ae2Fyo2uPI+sdLYFRr32ie9K2VC9dd77i8IO3M2HiqyO9Gnc86lCO0bGzqpYXYR6F7h4xKns8NrIXPmo5nFbxw6PQSq0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kt+Q7ZnA; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-24458194d83so332535ad.2
-        for <bpf@vger.kernel.org>; Wed, 13 Aug 2025 11:08:08 -0700 (PDT)
+	s=arc-20240116; t=1755109314; c=relaxed/simple;
+	bh=H7Aok+8AsCNXUKSJni83EqB4Qm6rA3DYVwzZH5/eAj0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NeWL00PBH2zUFYKpeQUUoKJu0UfHzKkX3wp4NRuVUgKblet2EU4+v2um/Zcu/TA6WvPUhT00PXg4IRtCycrNskPnaQ/Dp0b+Z/ETmFhyobwwcoQF2vU/K6rpVyPrjam7m54T0ri1CRYz2qDdTFXxtetBcB8yoR7oVDxgtkED5uI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=riotgames.com; spf=pass smtp.mailfrom=riotgames.com; dkim=pass (1024-bit key) header.d=riotgames.com header.i=@riotgames.com header.b=ibzqRE0D; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=riotgames.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riotgames.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-76e2eb6ce24so192840b3a.3
+        for <bpf@vger.kernel.org>; Wed, 13 Aug 2025 11:21:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755108488; x=1755713288; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=IY3jdWMmEJP2fClmeXmsavRVE0Tv/gipQCiFQoR7NSk=;
-        b=Kt+Q7ZnAI7vX/8cvOphvpA7UVdyK+Ea7KGAIZkHhi3FP7sUAXgYQM9fo0S9RJajGQn
-         fq4SUqLV5py1QAnM8QtLHA+btTfqj7Ox8snegahs31MywY9A3ytgrslIaGtIkDo8RTYz
-         sg02jKTEWEd5A6btb50TtC7WGZet765DjGGDA2yEBTqgDWsgHSIqhrfkFQYkd5T1MHac
-         YXjRyAR0tzRO24VhRDnB+rhF6gEvvv7WcND8bteoFDZ646UIEbAaZzqRK8Mbe8i4H8yQ
-         qtpE/6La3Nq47HUmMpaloKiNqPlsJe1ImWnxS2zk0SwlAxxNtWsuAVLcwQ+j8tKxSTOd
-         EtAg==
+        d=riotgames.com; s=riotgames; t=1755109312; x=1755714112; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H7Aok+8AsCNXUKSJni83EqB4Qm6rA3DYVwzZH5/eAj0=;
+        b=ibzqRE0DDjzt16d2wt2NLHbHfReKnm93lrY+oYwY4n0wSUwz3ntidB9bq/vkLwoHwX
+         ix3vFqJkdBxldPO+I1JhtoanWBMVQpxoHC5yOPTFbRXlvr7gxlt0eQTBmM6Gsox3Ja/O
+         VAzNdvTOM4uM9rp/AACmuXOZz6uRjfpIMkDsY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755108488; x=1755713288;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IY3jdWMmEJP2fClmeXmsavRVE0Tv/gipQCiFQoR7NSk=;
-        b=u05Q2FiVQkbOwivjIqMgEemTjfSBuRQGArfiaTuexn2b/Zy96HvixiFTW/Rdve3n2f
-         pZVmC4bYQRk4U+E1a+pVF1ROps6REer1uvvDltPXqF6QZkLjK78Q7QD4uVzURMBi4kBU
-         LN+EjVUN5rEDOnfmmWGUZ66CJVV+cOYRdktHh01lvVBtmLRBRTqfHlmUWKNPRwnIRfe8
-         YpEpVvTJn+EBnUHeVFhr1SjyH+NPBx4PKPnLdGEfAbtHQJbtw+s1JL8OvKKPaInRSuR5
-         rgfueIBogarE5rHmTuCjOAZ6SenfMYlml5wF6twNVzd0ZLL+P057YAgRja6+ITXmUUzL
-         kSpw==
-X-Forwarded-Encrypted: i=1; AJvYcCXvRz2SulN5QMKilPxbZs6qzrjH5Rpm4f6gVz4s+ajqMwRFMeYH5980X2p4VHasJ6XwuHw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyzVeGdSCOpViIVwytPBXgWKNTrT8T4ISTOxIgMxILGD4gGqFrI
-	cq149DF8F3bDnZGn1aGawCvEpkm+8ysFn+c5JABvIHz9mih2oQQ7wH6f
-X-Gm-Gg: ASbGnctuf8sXwknS5DeS+TxGNNRxkpjk1R7XNyobw0Iumwj0Z8nguhBtYmjm4qYv1Mr
-	yH7T7RxMK2v0zXWZtudWUp43pWTRYksJZUocMUjs0KL0DoO5o+fB03TPuHyxYLHCdR21A1dfTXT
-	EB+oJqy9hLj6f8fmSom7e6xKtiQdbHEeahz0TAU6PluYr0Gea0SjpUbebVZCciHX8UGSCUeBaNx
-	NdWL0DtnqUyj+lb0/GEk7PEjPR6ELUNOXjpXpOMC3tha8Hxv4WSGlngiUFKJQf6W8y/h6gZt3T2
-	FWH4DF03KO3crAjtTVHWp7/mMKX9Dz9SK1MrIyw7Ufjw+U997iXtHLBrR/HH+7RSS32uiVtkz2J
-	fDtizjgKDGIV399CUSkj71k/WRoJ84b6h8Pr7Alc=
-X-Google-Smtp-Source: AGHT+IEyX1cIoCYub1+/jIxYWYkL418CXzmZEe27qtnfDBL0lXoC4JEFAW8Mo22hSWfo8rveK6uCfA==
-X-Received: by 2002:a17:902:ce12:b0:240:c9b6:f8ee with SMTP id d9443c01a7336-244586f2aadmr127115ad.50.1755108488315;
-        Wed, 13 Aug 2025 11:08:08 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c096:14a::e47? ([2620:10d:c090:600::1:68a4])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-241d1ef5934sm330339465ad.21.2025.08.13.11.08.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Aug 2025 11:08:07 -0700 (PDT)
-Message-ID: <814ea1fd4f2186b62a03d5ce195a97ee1446771d.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Use tnums for JEQ/JNE is_branch_taken
- logic
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Paul Chaignon <paul.chaignon@gmail.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Date: Wed, 13 Aug 2025 11:08:05 -0700
-In-Reply-To: <ba9baf9f73d51d9bce9ef13778bd39408d67db79.1755098817.git.paul.chaignon@gmail.com>
-References: 
-	<ba9baf9f73d51d9bce9ef13778bd39408d67db79.1755098817.git.paul.chaignon@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        d=1e100.net; s=20230601; t=1755109312; x=1755714112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=H7Aok+8AsCNXUKSJni83EqB4Qm6rA3DYVwzZH5/eAj0=;
+        b=B1MX3P276umvbtx/+gKILchBNGi/a0eapNsP7sxw5PbnvEf2XJ5iYDd0bBaFkng5+k
+         r8UE3s4Ye36cR6bezkpm3tpXNwV8OIJmsDCaev9g6qLVlXG2d5v7w0PD/RUtXAGojqOj
+         tRT9IvhW6PGPdnAl7mN/16l/IkPCECJ7g+By315ZKVqcm23OzJLlq0MD4a7ZSTArGAav
+         5JtmaI1Iodi++ncSfIz95LCeOPQNTw+Zl91vQAtJZPTCJtsHPnVCAkNEkkCXI2Tx3JBn
+         A3MBwI8Jw/B8Qk7OqCLNXUt3U5TzCNrltdq95M4O/IBE2O/QgmLjF3badHS41n6tSokE
+         BslQ==
+X-Gm-Message-State: AOJu0YyFvTlBKcT12sG6e2zsHGwwPdxGMCk9aHRxIwNXXWnTCcRf7o8n
+	aFIOMwOYIbKexs8ZEVSDdxeVWn6lj2o81WpXvvH6TLqQ5U3jdBw018nW2p3Sqso5tJDegMzkDzN
+	JlkAWhRja5Vhs883P/+OEr/oJbxdH18y3LyCcTKcfVg==
+X-Gm-Gg: ASbGncs9r7ZJe7165h5UNdLxpwSkgv1O/8yUxVL1TNyY0gX0EE+yAq6P9dXpb16W9IY
+	KhGTmzZv2MGsn/uTrnoljehy11ADgzOQbDL4WBV9Ova9vcJK0uZYzf0xZW0LZXFpMEVZUGkPtjz
+	hdYGXewN3uwpoK5Et7Zz6LT7sHoqx2QxhmUmsc/QAGzdV3thb5w6Wd4Dd+WjE3+68PT0SR/05Gy
+	bS1paHcvGneAEZy
+X-Google-Smtp-Source: AGHT+IH1tY6NdVEiDiIOsXh+Mk2DqBPeX3M9xSd8qZwtHHdAHFsFYmz3eY2hG8dt2+kqapTm/ssv5tGMAlMvrUmANCk=
+X-Received: by 2002:a17:903:3c46:b0:240:7247:f738 with SMTP id
+ d9443c01a7336-244584af6b0mr1439195ad.1.1755109311644; Wed, 13 Aug 2025
+ 11:21:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20250804022101.2171981-1-xukuohai@huaweicloud.com> <20250804022101.2171981-3-xukuohai@huaweicloud.com>
+In-Reply-To: <20250804022101.2171981-3-xukuohai@huaweicloud.com>
+From: Zvi Effron <zeffron@riotgames.com>
+Date: Wed, 13 Aug 2025 11:21:40 -0700
+X-Gm-Features: Ac12FXz9SYBFn_O1HZA19Q6nLQJmBqaWIiON5vvZTvzhr0qNIx5-gxQZM7Ri3GI
+Message-ID: <CAC1LvL2AiNpN86+fz+30ap0Pm5W9C1MtV5sPvupU2uFGoJ94ug@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/4] libbpf: ringbuf: Add overwrite ring buffer process
+To: Xu Kuohai <xukuohai@huaweicloud.com>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yhs@fb.com>, 
+	Song Liu <song@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Willem de Bruijn <willemb@google.com>, 
+	Jason Xing <kerneljasonxing@gmail.com>, Paul Chaignon <paul.chaignon@gmail.com>, 
+	Tao Chen <chen.dylane@linux.dev>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
+	Martin Kelly <martin.kelly@crowdstrike.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2025-08-13 at 17:34 +0200, Paul Chaignon wrote:
-> In the following toy program (reg states minimized for readability), R0
-> and R1 always have different values at instruction 6. This is obvious
-> when reading the program but cannot be guessed from ranges alone as
-> they overlap (R0 in [0; 0xc0000000], R1 in [1024; 0xc0000400]).
->=20
->   0: call bpf_get_prandom_u32#7  ; R0_w=3Dscalar()
->   1: w0 =3D w0                     ; R0_w=3Dscalar(var_off=3D(0x0; 0xffff=
-ffff))
->   2: r0 >>=3D 30                   ; R0_w=3Dscalar(var_off=3D(0x0; 0x3))
->   3: r0 <<=3D 30                   ; R0_w=3Dscalar(var_off=3D(0x0; 0xc000=
-0000))
->   4: r1 =3D r0                     ; R1_w=3Dscalar(var_off=3D(0x0; 0xc000=
-0000))
->   5: r1 +=3D 1024                  ; R1_w=3Dscalar(var_off=3D(0x400; 0xc0=
-000000))
->   6: if r1 !=3D r0 goto pc+1
->=20
-> Looking at tnums however, we can deduce that R1 is always different from
-> R0 because their tnums don't agree on known bits. This patch uses this
-> logic to improve is_scalar_branch_taken in case of BPF_JEQ and BPF_JNE.
->=20
-> This change has a tiny impact on complexity, which was measured with
-> the Cilium complexity CI test. That test covers 72 programs with
-> various build and load time configurations for a total of 970 test
-> cases. For 80% of test cases, the patch has no impact. On the other
-> test cases, the patch decreases complexity by only 0.08% on average. In
-> the best case, the verifier needs to walk 3% less instructions and, in
-> the worst case, 1.5% more. Overall, the patch has a small positive
-> impact, especially for our largest programs.
->=20
-> Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
+On Sun, Aug 3, 2025 at 7:27=E2=80=AFPM Xu Kuohai <xukuohai@huaweicloud.com>=
+ wrote:
+>
+> From: Xu Kuohai <xukuohai@huawei.com>
+>
+> In overwrite mode, the producer does not wait for the consumer, so the
+> consumer is responsible for handling conflicts. An optimistic method
+> is used to resolve the conflicts: the consumer first reads consumer_pos,
+> producer_pos and overwrite_pos, then calculates a read window and copies
+> data in the window from the ring buffer. After copying, it checks the
+> positions to decide if the data in the copy window have been overwritten
+> by be the producer. If so, it discards the copy and tries again. Once
+> success, the consumer processes the events in the copy.
+>
+> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
 > ---
+> tools/lib/bpf/ringbuf.c | 103 +++++++++++++++++++++++++++++++++++++++-
+> 1 file changed, 102 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
+> index 9702b70da444..9c072af675ff 100644
+> --- a/tools/lib/bpf/ringbuf.c
+> +++ b/tools/lib/bpf/ringbuf.c
+> @@ -27,10 +27,13 @@ struct ring {
+> ring_buffer_sample_fn sample_cb;
+> void *ctx;
+> void *data;
+> + void *read_buffer;
+> unsigned long *consumer_pos;
+> unsigned long *producer_pos;
+> + unsigned long *overwrite_pos;
+> unsigned long mask;
+> int map_fd;
+> + bool overwrite_mode;
+> };
+>
+> struct ring_buffer {
+> @@ -69,6 +72,9 @@ static void ringbuf_free_ring(struct ring_buffer *rb, s=
+truct ring *r)
+> r->producer_pos =3D NULL;
+> }
+>
+> + if (r->read_buffer)
+> + free(r->read_buffer);
+> +
+> free(r);
+> }
+>
+> @@ -119,6 +125,14 @@ int ring_buffer__add(struct ring_buffer *rb, int map=
+_fd,
+> r->sample_cb =3D sample_cb;
+> r->ctx =3D ctx;
+> r->mask =3D info.max_entries - 1;
+> + r->overwrite_mode =3D info.map_flags & BPF_F_OVERWRITE;
+> + if (unlikely(r->overwrite_mode)) {
+> + r->read_buffer =3D malloc(info.max_entries);
+> + if (!r->read_buffer) {
+> + err =3D -ENOMEM;
+> + goto err_out;
+> + }
+> + }
+>
+> /* Map writable consumer page */
+> tmp =3D mmap(NULL, rb->page_size, PROT_READ | PROT_WRITE, MAP_SHARED, map=
+_fd, 0);
+> @@ -148,6 +162,7 @@ int ring_buffer__add(struct ring_buffer *rb, int map_=
+fd,
+> goto err_out;
+> }
+> r->producer_pos =3D tmp;
+> + r->overwrite_pos =3D r->producer_pos + 1; /* overwrite_pos is next to p=
+roducer_pos */
+> r->data =3D tmp + rb->page_size;
+>
+> e =3D &rb->events[rb->ring_cnt];
+> @@ -232,7 +247,7 @@ static inline int roundup_len(__u32 len)
+> return (len + 7) / 8 * 8;
+> }
+>
+> -static int64_t ringbuf_process_ring(struct ring *r, size_t n)
+> +static int64_t ringbuf_process_normal_ring(struct ring *r, size_t n)
+> {
+> int *len_ptr, len, err;
+> /* 64-bit to avoid overflow in case of extreme application behavior */
+> @@ -278,6 +293,92 @@ static int64_t ringbuf_process_ring(struct ring *r, =
+size_t n)
+> return cnt;
+> }
+>
+> +static int64_t ringbuf_process_overwrite_ring(struct ring *r, size_t n)
+> +{
+> +
+> + int err;
+> + uint32_t *len_ptr, len;
+> + /* 64-bit to avoid overflow in case of extreme application behavior */
+> + int64_t cnt =3D 0;
+> + size_t size, offset;
+> + unsigned long cons_pos, prod_pos, over_pos, tmp_pos;
+> + bool got_new_data;
+> + void *sample;
+> + bool copied;
+> +
+> + size =3D r->mask + 1;
+> +
+> + cons_pos =3D smp_load_acquire(r->consumer_pos);
+> + do {
+> + got_new_data =3D false;
+> +
+> + /* grab a copy of data */
+> + prod_pos =3D smp_load_acquire(r->producer_pos);
+> + do {
+> + over_pos =3D READ_ONCE(*r->overwrite_pos);
+> + /* prod_pos may be outdated now */
+> + if (over_pos < prod_pos) {
+> + tmp_pos =3D max(cons_pos, over_pos);
+> + /* smp_load_acquire(r->producer_pos) before
+> + * READ_ONCE(*r->overwrite_pos) ensures that
+> + * over_pos + r->mask < prod_pos never occurs,
+> + * so size is never larger than r->mask
+> + */
+> + size =3D prod_pos - tmp_pos;
+> + if (!size)
+> + goto done;
+> + memcpy(r->read_buffer,
+> + r->data + (tmp_pos & r->mask), size);
+> + copied =3D true;
+> + } else {
+> + copied =3D false;
+> + }
+> + prod_pos =3D smp_load_acquire(r->producer_pos);
+> + /* retry if data is overwritten by producer */
+> + } while (!copied || prod_pos - tmp_pos > r->mask);
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+This seems to allow for a situation where a call to process the ring can
+infinite loop if the producers are producing and overwriting fast enough. T=
+hat
+seems suboptimal to me?
 
-Note: CI reports verifier performance differences for Meta internal program=
-s:
-      https://github.com/kernel-patches/bpf/actions/runs/16942287206
-      But I can't confirm the difference after running veristat for these p=
-rograms,
-      looks like a CI glitch.
+Should there be a timeout or maximum number of attempts or something that
+returns -EBUSY or another error to the user?
 
-[...]
+> +
+> + cons_pos =3D tmp_pos;
+> +
+> + for (offset =3D 0; offset < size; offset +=3D roundup_len(len)) {
+> + len_ptr =3D r->read_buffer + (offset & r->mask);
+> + len =3D *len_ptr;
+> +
+> + if (len & BPF_RINGBUF_BUSY_BIT)
+> + goto done;
+> +
+> + got_new_data =3D true;
+> + cons_pos +=3D roundup_len(len);
+> +
+> + if ((len & BPF_RINGBUF_DISCARD_BIT) =3D=3D 0) {
+> + sample =3D (void *)len_ptr + BPF_RINGBUF_HDR_SZ;
+> + err =3D r->sample_cb(r->ctx, sample, len);
+> + if (err < 0) {
+> + /* update consumer pos and bail out */
+> + smp_store_release(r->consumer_pos,
+> + cons_pos);
+> + return err;
+> + }
+> + cnt++;
+> + }
+> +
+> + if (cnt >=3D n)
+> + goto done;
+> + }
+> + } while (got_new_data);
+> +
+> +done:
+> + smp_store_release(r->consumer_pos, cons_pos);
+> + return cnt;
+> +}
+> +
+> +static int64_t ringbuf_process_ring(struct ring *r, size_t n)
+> +{
+> + if (likely(!r->overwrite_mode))
+> + return ringbuf_process_normal_ring(r, n);
+> + else
+> + return ringbuf_process_overwrite_ring(r, n);
+> +}
+> +
+> /* Consume available ring buffer(s) data without event polling, up to n
+> * records.
+> *
+> --
+> 2.43.0
+>
+>
 
