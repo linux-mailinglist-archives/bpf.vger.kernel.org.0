@@ -1,172 +1,176 @@
-Return-Path: <bpf+bounces-65497-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65498-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4767BB2444B
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 10:29:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F456B2449B
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 10:45:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84C461BC199F
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 08:27:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AAA73B288E
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 08:43:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 086122EF671;
-	Wed, 13 Aug 2025 08:27:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 352152F067C;
+	Wed, 13 Aug 2025 08:43:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U70ShKnN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TKXWQNUy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C40132EA48D;
-	Wed, 13 Aug 2025 08:27:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE83A2EFDB5;
+	Wed, 13 Aug 2025 08:43:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755073641; cv=none; b=fPxMQoI0TaMWWN79VkHx3l6b8M4xXsEOZlOb5vUC75JCqiOCvxSmCYdd+6HgoyHUcT3bNdd1AjRif8Q2SMCshTchWxmq9oM/4iUjLPoBR91wFFqp1vr7ktAcHXI9lNa1AUCWlGTpx2Nu5iZiN4QlsTJlJmBcgqfZTQqidqInkdo=
+	t=1755074607; cv=none; b=R8Kie8Uz3VVVfu4wjc9Kq8yU8UFHew8G4efSe8nl5zG5n4uDTy0zIJ1JXSujDJMaWyZY1abOrQZcMUkme5mrLVX/YDnKQUGcaztcUEQAz8eWMJUL2keAnkklXtjyeyGmeNw0lfPJ6b7uca3zpPJt8m70trKuaRUhSexiT/1m9vE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755073641; c=relaxed/simple;
-	bh=/qszRlWHvoIufrL5GKpOmzlzy1Jky9JBkVIG7XjN968=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U8UQ765LpoSbe36xg/NMVaVWH9nKPEXckSEzOMXiTm7y6LtxOeKUN427UfVXlK1ROT6RHl03xNN+8u+goeQIfZkjSf/x2SejTB1rA6q7/cT3PVNuFQTlH4BV3GFvEJVrRlemRtCOoicEIhWHuZ6SXUIq/TDWetQY3zjhmt7Bqic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U70ShKnN; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-45a16e52e54so3016115e9.2;
-        Wed, 13 Aug 2025 01:27:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755073637; x=1755678437; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=/DtPY1jzZxWng2JYhBR5D4nrxicC7DCuHQxtcUr3N/M=;
-        b=U70ShKnNqD0jbahr0Ybgr9ilZDvKofsvWIaGVRXSlRUjM6EGHaBLrQ1JGGFwm6kf52
-         rnccxJfFMH8GBR1fnzkNYEKOAeWXpChy52IRFQ+fSy3XdhX31cZjq4fQ+KjtHYjL71S0
-         Gz9CZTjJfPCgG0QLtfW4SY0GcURLuWMblK8cjPneQeyH4lSTKU0Yt4oAttAhbamRN97X
-         6IO1oAMR3Y43Frp5kurEfp0/S0DUizY7/g024FKb/dyRyKw/bDsIewXCBaw7VIJCIcry
-         is+ZJ0pItuMkMdw6nHBleCs6fGoWycvLTVoQe3HmUxuq+b1x54P5cTgqB46TdRMSW+Tm
-         c+9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755073637; x=1755678437;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/DtPY1jzZxWng2JYhBR5D4nrxicC7DCuHQxtcUr3N/M=;
-        b=el2GEv3W3YyX7OpBSapSOXqtpv+EbnLy5BnfTaXUyN2St6WwYPUMbrKy30fs5LesU2
-         duy2lFsr1tvsd8QBLXuOgpsGN4T0SjsCmQfqgkz0tiXherzsHxzvUR3IFxHnHJ+7fhvC
-         vCem/KUGhKpIilzoE5csv7y/jzsqkwGxRDVjf0ND+pIwj84oySXRoB+YQAr12rRGfS8x
-         9pdCicg5u0SiN4EGI2VhSEBYTf/divHS3mgEVfqnMhN7tlKCP8z8J63eSrUmDzNROW/I
-         BCzQZ1gZnuh+anujGbX5MpGkNLTKH/Ur3oJi4404uFTee/eg5LdLsyofqutn22fnwknU
-         LguQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXGwH8l75WOPsi3suLKbDfrC8LnejXi3nBStmfHB+e2MkJSJ12w0+0L7j1gKAIZGJl2byM=@vger.kernel.org, AJvYcCXn5An0LhwZSG3HoapIFSC+v7LKCOIB64frVNpEJ1sOHAlPgrtSOh8wcPsSS2mJNqp+KVdTTMb0Xy3GG3s7u1H+4w==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzHnMPTHfNDtRS/3j+U2xtm4fV4z9ZdLqRiDVtFXBDhsZ5XOKfH
-	R7bPC3LVmuVkdSVsiVQZFaQvVQlYAOMA3/E5wuCb1QmayINysGGx3VR5
-X-Gm-Gg: ASbGncvbTWecjYw6ewDZ1dBrMZNI5szqkKYvSmSJDr8tKAws/Z0aa55NGs16tKg87Pu
-	CVUFPuEW/tP3/zjeRp4lcg9z5xzSX2w15Vlx/M2DfPFZThPFAMKNCuAjmTvc/MUjQuhjeuk7HPA
-	0OwJLllr+EfoYTTZ0AqUWop/2ht8nguCIcDolZ20EvjfO9+J2dW7UO61lPOMoHk6FVU31/l8S0O
-	w9xfjBrW+PJLuCi/oUS4au1P1Hcr9DibLTNPHNhpbOZgaN4eR0uv3X3LocCRGztylczhZKyzJ1f
-	kZuD1R9Mo33Ux+pAfxEZUwFc6wxKGkvQrofz5EgTXc7SRO9DS9Q1G8A6cqb5nCIYFaJOWWAk
-X-Google-Smtp-Source: AGHT+IGu3nLYHGtBU4kx2vjSzn0bocNSCnRpLlyhYDDZTduIkjSbcKiqJtoIW4Asj3XRN+QifRXDyA==
-X-Received: by 2002:a05:600c:4f45:b0:450:cabd:b4a9 with SMTP id 5b1f17b1804b1-45a1665a81bmr15335795e9.29.1755073636803;
-        Wed, 13 Aug 2025 01:27:16 -0700 (PDT)
-Received: from krava ([2a02:8308:a00c:e200::31e0])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b8ff860acbsm20579120f8f.51.2025.08.13.01.27.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Aug 2025 01:27:16 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 13 Aug 2025 10:27:14 +0200
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	syzbot+a9ed3d9132939852d0df@syzkaller.appspotmail.com,
-	bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Hao Luo <haoluo@google.com>
-Subject: Re: [PATCH bpf] bpf: Check the helper function is valid in
- get_helper_proto
-Message-ID: <aJxMYlqXjVFOX0O4@krava>
-References: <20250812221220.581452-1-jolsa@kernel.org>
- <CAEf4BzZBe1BkjJDc858W7rv-Eewk+SAoYKGH3qJYO0DP2H3NBQ@mail.gmail.com>
+	s=arc-20240116; t=1755074607; c=relaxed/simple;
+	bh=w8gAexE8HUB0CV05DNC00MXF4b6kSy0iHfD/95EwwEs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XwxlsMpkmmO4viPid75PVomstN/lGBUxrIyPT0o6zjc/bQX93GrwonvRi35SatX8cu3ZvaJ7BtOzVzTVWoL3W2B/zzgU6wR+8D8LlhE6Y1rKXGs7+TZbD2EVX/POMNqXmc6GCCZy4PmobEdPvuzcXyTcyiqyxLVakHxw54i1xxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TKXWQNUy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83AFBC4CEEB;
+	Wed, 13 Aug 2025 08:43:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1755074607;
+	bh=w8gAexE8HUB0CV05DNC00MXF4b6kSy0iHfD/95EwwEs=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=TKXWQNUy4Nypry+jJm861Bpp76KsJzsLO9J9bSFS4/omiS8os+tGxStcEoQKhSYo7
+	 SimvbVRavtza6ljVDbU3iLqiaIccfNI9CVadnMY7ECd1yJXligH21wLfmjGg8oLRsb
+	 oOiK5Iql9fH8qq/e30fMnWYPzEw7mAIEM2Qnzt6hG1nxv3CjxQ1rgerXjOYHUc3aA8
+	 gycMF7RXmfeDRzvd28g7XZ80jHaFEWfpVdYQUBElcKnTZAu3ZMQJIZjaWgjdVhJDw8
+	 kkydB4g/3ZluY4yRB8qXC0pN29MxtASl4Y4N7/CpZ3709d4UF6hA6pD5+eutteREKe
+	 iO9DIpODpVrBQ==
+Message-ID: <2ba29c9f-a44f-4be6-bd3a-eb9cdb34ac8a@kernel.org>
+Date: Wed, 13 Aug 2025 10:43:21 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzZBe1BkjJDc858W7rv-Eewk+SAoYKGH3qJYO0DP2H3NBQ@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC] xdp: pass flags to xdp_update_skb_shared_info() directly
+To: Alexander Lobakin <aleksander.lobakin@intel.com>,
+ Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
+ daniel@iogearbox.net, lorenzo@kernel.org, toke@redhat.com,
+ john.fastabend@gmail.com, sdf@fomichev.me, michael.chan@broadcom.com,
+ anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com,
+ marcin.s.wojtas@gmail.com, tariqt@nvidia.com, mbloch@nvidia.com,
+ eperezma@redhat.com
+References: <20250812161528.835855-1-kuba@kernel.org>
+ <46470d2b-4828-48ad-a94e-9d874de1b2fc@intel.com>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <46470d2b-4828-48ad-a94e-9d874de1b2fc@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Aug 12, 2025 at 03:32:40PM -0700, Andrii Nakryiko wrote:
-> On Tue, Aug 12, 2025 at 3:12 PM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > From: Jiri Olsa <olsajiri@gmail.com>
-> >
-> > syzbot reported an verifier bug [1] where the helper func pointer
-> > could be NULL due to disabled config option.
-> >
-> > As Alexei suggested we could check on that in get_helper_proto
-> > directly. Excluding tail_call helper from the check, because it
-> > is NULL by design and valid in all configs.
-> >
-> > [1] https://lore.kernel.org/bpf/68904050.050a0220.7f033.0001.GAE@google.com/
-> > Reported-by: syzbot+a9ed3d9132939852d0df@syzkaller.appspotmail.com
-> > Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  kernel/bpf/verifier.c | 9 ++++++++-
-> >  1 file changed, 8 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index c4f69a9e9af6..5e38489656e2 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -11344,6 +11344,13 @@ static bool can_elide_value_nullness(enum bpf_map_type type)
-> >         }
-> >  }
-> >
-> > +static bool is_valid_proto(const struct bpf_func_proto *fn)
-> > +{
-> > +       if (fn == &bpf_tail_call_proto)
-> > +               return true;
+
+
+
+On 12/08/2025 18.48, Alexander Lobakin wrote:
+> From: Jakub Kicinski <kuba@kernel.org>
+> Date: Tue, 12 Aug 2025 09:15:28 -0700
 > 
-> ugh... what if we set bpf_tail_call_proto's .func to (void *)0xDEADBAD
-> or some such and avoid this special casing?
-
-right, that's an option, will change
-
+>> xdp_update_skb_shared_info() needs to update skb state which
+>> was maintained in xdp_buff / frame. Pass full flags into it,
+>> instead of breaking it out bit by bit. We will need to add
+>> a bit for unreadable frags (even tho XDP doesn't support
+>> those the driver paths may be common), at which point almost
+>> all call sites would become:
+>>
+>>      xdp_update_skb_shared_info(skb, num_frags,
+>>                                 sinfo->xdp_frags_size,
+>>                                 MY_PAGE_SIZE * num_frags,
+>>                                 xdp_buff_is_frag_pfmemalloc(xdp),
+>>                                 xdp_buff_is_frag_unreadable(xdp));
 > 
-> > +       return fn && fn->func;
-> > +}
-> > +
-> >  static int get_helper_proto(struct bpf_verifier_env *env, int func_id,
-> >                             const struct bpf_func_proto **ptr)
-> >  {
-> > @@ -11354,7 +11361,7 @@ static int get_helper_proto(struct bpf_verifier_env *env, int func_id,
-> >                 return -EINVAL;
-> >
-> >         *ptr = env->ops->get_func_proto(func_id, env->prog);
-> > -       return *ptr ? 0 : -EINVAL;
+> Yeah I think this doesn't make sense, it just doesn't scale. We can make
+> more flags in future and adding a new argument for each is not a good
+> idea, even if more drivers would switch to generic
+> xdp_build_skb_from_buff().
 > 
-> so we explicitly do not want WARN/BUG/verifier_bug() if
-> !is_valid_proto(), is that right?
 
-yes, I don't think it's verifier bug if option is missing, with this change
-we will fail earlier in check_helper_call->get_helper_proto
+I agree. And good reminder that some driver have already switched to the
+generic xdp_build_skb_from_buff().
 
-jirka
+>>
+>> Keep a helper for accessing the flags, in case we need to
+>> transform them somehow in the future (e.g. to cover up xdp_buff
+>> vs xdp_frame differences).
+>>
+>> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+>> ---
+>> Does anyone prefer the current form of the API, or can we change
+>> as prosposed?
+>>
 
+I like the proposed change.
+The only thing that confuses me was that the u32 flags is named
+"skb_flags" and not "xdp_flags".
+
+@@ -314,7 +313,7 @@
+  static inline void
+  xdp_update_skb_shared_info(struct sk_buff *skb, u8 nr_frags,
+  			   unsigned int size, unsigned int truesize,
+-			   bool pfmemalloc)
++			   u32 skb_flags)
+
+
+>> Bonus question: while Im messing with this API could I rename
+>> xdp_update_skb_shared_info()? Maybe to xdp_update_skb_state() ?
+>> Not sure why the function name has "shared_info" when most of
+>> what it updates is skb fields.
 > 
-> > +       return is_valid_proto(*ptr) ? 0 : -EINVAL;
-> >  }
-> >
-> >  static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
-> > --
-> > 2.50.1
-> >
+> I can only suspect that the author decided to name it this way due to
+> that it's only used when xdp_buff has frags (and frags are in shinfo).
+> But I agree it's not the best choice. xdp_update_skb_state() sounds fine
+> to me, but given that it's all about frags, maybe something like
+> xdp_update_skb_frags_info/state() or so?
+> 
+
+Yes, function is only used when skb_shared_info have already been touched.
+
+Performance wise it can be expensive to touch the cache-line for
+skb_shared_info, so the code carefully checks xdp_buff_has_frags() (flag
+XDP_FLAGS_HAS_FRAGS) before deref of skb_shared_info memory area.
+
+Calling it xdp_update_skb_state() seems misleading. As Olek says, this
+is about updating the "skb_frags".  The original intent is that
+xdp_buff/xdp_frame is using same skb_shared_info area as SKB, and when
+transitioning to a "full" SKB then we need to do some adjustments.
+(Looking at function code, it is of-cause confusing that it doesn't
+touch sinfo->frags[] array, but that is because we don't need to, as
+non-linear XDP and SKB have same layout.).
+
+--Jesper
+
+>>
+>> CC: ast@kernel.org
+>> CC: daniel@iogearbox.net
+>> CC: hawk@kernel.org
+>> CC: lorenzo@kernel.org
+>> CC: toke@redhat.com
+>> CC: john.fastabend@gmail.com
+>> CC: sdf@fomichev.me
+>> CC: michael.chan@broadcom.com
+>> CC: anthony.l.nguyen@intel.com
+>> CC: przemyslaw.kitszel@intel.com
+>> CC: marcin.s.wojtas@gmail.com
+>> CC: tariqt@nvidia.com
+>> CC: mbloch@nvidia.com
+>> CC: eperezma@redhat.com
+>> CC: bpf@vger.kernel.org
+>> ---
+>>   include/net/xdp.h                             | 21 +++++++++----------
+>>   drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c |  2 +-
+>>   drivers/net/ethernet/intel/i40e/i40e_txrx.c   |  4 ++--
+>>   drivers/net/ethernet/intel/ice/ice_txrx.c     |  4 ++--
+>>   drivers/net/ethernet/marvell/mvneta.c         |  2 +-
+>>   .../net/ethernet/mellanox/mlx5/core/en_rx.c   |  7 +++----
+>>   drivers/net/virtio_net.c                      |  2 +-
+>>   net/core/xdp.c                                | 11 +++++-----
+>>   8 files changed, 26 insertions(+), 27 deletions(-)
 
