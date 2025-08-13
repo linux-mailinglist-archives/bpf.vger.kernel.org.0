@@ -1,131 +1,143 @@
-Return-Path: <bpf+bounces-65569-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65570-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B8A7B25641
-	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 00:05:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7E4FB2564F
+	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 00:13:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2675A567CED
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 22:05:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9609E883784
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 22:13:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64F5A2EA743;
-	Wed, 13 Aug 2025 22:05:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D2742F39DF;
+	Wed, 13 Aug 2025 22:13:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ElBSNsNv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N+LCJT7O"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9865A2BDC2B;
-	Wed, 13 Aug 2025 22:05:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EB6E1373;
+	Wed, 13 Aug 2025 22:13:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755122736; cv=none; b=Sx/xGUwzFweJnqnODBtWJbnE0xRtr+3VK8yFgRglsDw04mZuhmQQ33w8G8l8nr8LckYrdfBCsatHLkpb229iAudpXrIT459yRpRggKcg6PwbPN5I7f9P4cBcfbzEpdQttWlEHWsyBElMW6BKH/ogqMuyiXEJYbEZX14Z+Ro/y60=
+	t=1755123210; cv=none; b=ateDRULXWH1l5I1p5SQJ06kaWBkRsmzICZ8u8gAb0Z18WwbTTFvdE2P6RUdgDGBFrfChLug3ODB+1/IFJ/TrEukVwVb6Mnu2sbGoWqscwtfjdKI1YBV4DSPzwbruh1/SaFb6eHlT4e16j6csxwbUvX/5aX8Szr+tpPpsX0iiqB0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755122736; c=relaxed/simple;
-	bh=MUaFUoPulFgG8/a1da/RApFMWDCXyyeVhMjgI13XPrY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GnEcTCXl0eXb2WKzRRhFEulrGTozlpRH4AASV9d6usjjgYz741Gm4W73CrI24v3zJQXrd6EU9ARsHo7XQa0mKOXiWF+RsfxyFdxBObGLFcoHBm/F5JV/Jhh/7HRP+SLK7ohpAm1Wxoh786jCk8oz/FAPn3b02RNwUYAggdzWLt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ElBSNsNv; arc=none smtp.client-ip=209.85.215.178
+	s=arc-20240116; t=1755123210; c=relaxed/simple;
+	bh=wsgTYWz+q5jarASqIiz5BIS2G/GGIrV62OlpbkLocaQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TRMOFQJ6uKAgL/EQlq1RyjUNYsiZdExdY7YMATm5/p0aNOFV0PuX6/SFxo+uBLKBKUM6AqV4Zk1dfWpXYwidhRSHpD83es05g9BCQ77Hd3e0VTxG7EuIO4j6acRbk3KAmrsEKLMsP4J8Sku0k8vMjFmQiByF61lklAYp7EDTeHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N+LCJT7O; arc=none smtp.client-ip=209.85.128.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-b47174aec0eso153593a12.2;
-        Wed, 13 Aug 2025 15:05:34 -0700 (PDT)
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-45a1b0bd237so1976755e9.2;
+        Wed, 13 Aug 2025 15:13:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755122734; x=1755727534; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7JBfKkj+UGQ1ABwj7O02ZtdTt4/duiO+Dl+5JziUpEA=;
-        b=ElBSNsNvLQDLNjwZiy4a1NtjXe78HlRWQD+CnVE4JC/zL8GRio/rAdzHmnzESP1UBe
-         GelLG4Yj8tZHctL2fu8n1LC0ZjprHpf6lDpLqvkkUvuIA0TmL5PvvNq5Z8zq3Movq3WO
-         iFgPIE/49TmdqPULfamQeHbwfAhas5esvUHVeVp0CkAnJ9uHCjsX2bZFSwj0Dxgjhk3E
-         HIkkgZ6n94CC6spLaoPEqzIFEsjRpdzwL0PZPwyBQLMF0pc92WG3bS721KMCLceMeSxd
-         LVX5W37f3jWeWxTMQprbK1rK/0nz6Hf7B0K86271mrx8TwBJlpdOunrl9qRrjJuMbkLr
-         W5ew==
+        d=gmail.com; s=20230601; t=1755123207; x=1755728007; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dDFPVS137ylDlXC8OWHO8bXFe2oiIQi6ZcxoEUrV+VY=;
+        b=N+LCJT7OoSn3pyGXTIFnWlVUfLqrSreWsFnAPal5eWh9DmY3fwWDdSjVubkQtDNqiq
+         sTSIXzmF4blWLWjHxtpdK6FBlgcq/iCoBp3lq+JBhsWz6clfYjIVhE+tSMx8f9UJxNf1
+         PkNpqFuxFiYFaqdN//+nHXwkgbxoTnV+meH2dXyJS+rA2vZJl+mhRLkGtODdl4ekANKR
+         pbgEAYYmvi0y7r6sPuvmcphcKPDNzazIbPqI1jqNHbfInBbEAMltJY1lYL4eHHtNe7t4
+         +jPsAwYC0pJIkJLvX7pilPkJqKso+bN/Gn1eBSiLxF3CjIUUBUGhefle67ygbWiS4iHM
+         9rmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755122734; x=1755727534;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7JBfKkj+UGQ1ABwj7O02ZtdTt4/duiO+Dl+5JziUpEA=;
-        b=Zak/KDkic5AoZCX72d0A74GFwggPc1W6MVEflvCpAUct7f3S06B8GJ+S/OjVau8F18
-         0zIPDDfW9D+Olac7UmHgCK4sMrzcARzu3JVyuhhfvAs6ykZj2KjqLJ/yyZWsS5QJ0QXb
-         hHo6bUQA4U0nFQGvIR+fyJIBC9lE09MyfeZ3qE/gFYLAfngMvcIpLoFZyG/BZ1i6wS9V
-         aPGU99gJVHgvbQVINthHY3vxSl4TPD1eFmY5D+F0Is83Q/L9PoDNbzHl6IDpFF5hXgZS
-         X8R0x97e9+w14aFOl2OxSM6M3bbyU/HqVNE2rwtqJD1uD1nuQNYpn118rO2zwK5EItr9
-         DiKA==
-X-Forwarded-Encrypted: i=1; AJvYcCUqmYKxGTcpqZb4LJzZloc2auoZtWmyaCylw20FJ3kMiivbP/8AYwYHlwnx629ppPCbBwE=@vger.kernel.org, AJvYcCV25xv7znKkAoSlHjNiM6GQGTAfnEIjtJGbPXtP+2B6utZZEmCucOmNlaJOHMvA/8zFnke8sMFxfHeodcWO6TtA@vger.kernel.org, AJvYcCXYwLyKvdvqNM6LahKlVoB0TU+cLEgYfsFXKkcJyd3ZGw73EZsrkBK25KQUK2/DkdG6rrlyiAXCjcoyDIbY@vger.kernel.org
-X-Gm-Message-State: AOJu0YxvkRNUzMEQ/4zP+BCAilhfl13L60ia8JpgATZJEOj6kOdbih6N
-	gQthudsh/5DmP+qC9UkipEt0Y91owCGtZxuWKF+EXwzsm18F6FyhW/wb1JmxNQotBAoNA20f2lE
-	LOrpRQkqsMGaHFFGP1v6fALmFNvIhY+4=
-X-Gm-Gg: ASbGncsvPhDggGvl2n9w0Rk9M/XnJckavYadBXqNVZ7NiZBNaPQkNr/p+IBQWuPs1he
-	sX1ybpgAydYfWzR+7KhunC/x6FuPjxNY3Vm/YX9iW2aMa0qs01XI7YI0bHL+zAWZz8nTdrc2ifk
-	yPkz/tg7GDWqIrIz/3bfm0ZgM8xmb6tpsdpp+ZQwpXZx6d5LZWt56mJyDo8LmiQOPqgly2hYPt0
-	9HQ08uRb62I4lCFG30UwNagsjiK+YbrqA==
-X-Google-Smtp-Source: AGHT+IE4ZnX5NFOSNqXjPfzUTcPCZGSi6O/jb/0tQEcr2gXu4GvmAgY2dkXipKjIM3yroVrHul1Wq1khKdFjWD1ObFA=
-X-Received: by 2002:a17:90b:17cc:b0:321:4182:2b9e with SMTP id
- 98e67ed59e1d1-32327ab2df2mr1263041a91.12.1755122733609; Wed, 13 Aug 2025
- 15:05:33 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1755123207; x=1755728007;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dDFPVS137ylDlXC8OWHO8bXFe2oiIQi6ZcxoEUrV+VY=;
+        b=RNYmqgGW7iKtP3J2HuqxpGceMpIxhMcjS3mgMplBySFKhHSUdhvYgo8kp3l5XTXfXm
+         EplMOl1y1aEwMRNu3l4XIhr4jBhvsxYm+Sb4N+JkF4gUO+cdCsPk8Nc0DpomU5hddbUG
+         52mI0wAZB8ZGMch81/wpqfhemo00H7VpHIi9vqhdpBl0MdzJbl6BkNLexe9WtsUS39qO
+         nCuqtT7Q/gRnMp6OWd0B3cEi2n9/6aIewCcSR7y7ifmVagvZIxxtJ/VXMoGVN+SlJdk2
+         D33ecmTD+Oa9s5U3ss/gJz17A6dDvvmclbExgHR50K4kvLXulhcWyhIPMr4UlDjpi7d1
+         sQ6g==
+X-Forwarded-Encrypted: i=1; AJvYcCU7o8r/6bqA4L0ToH+dXDfKX/XmeyYqV7GUlqib/gDVPzXy35rcpUWA3TE35Rm2r24gVuQwtYMrL36p@vger.kernel.org, AJvYcCWLYpHM5uwmX+VpOY6SjoqT6lHnpuZLwdI4APk8H/KpCIz+4G3uqWNTeeE/4MPxScoR34s=@vger.kernel.org, AJvYcCWMtVS29jGJArmJW/j+3dzLmvCP7lNVFeGULhlJkOK99mR/00hb1IUfSZ2gvzdnfQLwfC65mwAM9yqkckY0@vger.kernel.org
+X-Gm-Message-State: AOJu0YyKCeytlpgkROVHMogqa2SL46N93dbZwlIvQEwQLMAMsWF4h4ci
+	pWpQ7jCSskUA7CPwva+7o9f6K4WklR28Z0A9LxXrecVLITUf9H2rXP4R5n3NnNrT
+X-Gm-Gg: ASbGncsZN4r9oxVZcTq2RJVTXFWF08ZVAeZr817PjWAVECdhjdinrWBRe7C1ePhjRAX
+	AcmRWurw02p6ELmjqL8HAA5Ne6b9WFGQskN/NroPcD7TmzIJttQMaECnDZvDKuECb76rIUPZvC6
+	OI+O5XST0Mb8CuXOd1oxQovkwLXwjTrUb70mIEMUKpodB5IE4/AqB9iur1xW/WOqcWRrFFq9DuH
+	kKeykZPg/lqAoxO06bb0l1jc3HHW001JaxE7utJ9lloYlPNzOBr4tuRIqJFf7JakW8EtSpy0XLA
+	rNiJXmo+V9mNcELRAVtyXS2fDttU+nqxllufIqcr6w+6JOsYEbUPU8AyUC/OnmwdZgYwuSorsO1
+	+Zt7N7hK+Lo0g3Z0f
+X-Google-Smtp-Source: AGHT+IECbO9+5qI7uaiWbS5VWSXHf5AGxchCFUBpHcwjiq8LorAwKXhQGgIrDpK4ib5mNrXuEDWaeA==
+X-Received: by 2002:a05:600c:4f89:b0:456:1ac8:cace with SMTP id 5b1f17b1804b1-45a1b60f933mr3496885e9.12.1755123206799;
+        Wed, 13 Aug 2025 15:13:26 -0700 (PDT)
+Received: from localhost ([2a03:2880:31ff::])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45a1a50b90dsm15998425e9.1.2025.08.13.15.13.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Aug 2025 15:13:24 -0700 (PDT)
+From: Mohsin Bashir <mohsin.bashr@gmail.com>
+To: netdev@vger.kernel.org
+Cc: aleksander.lobakin@intel.com,
+	alexanderduyck@fb.com,
+	andrew+netdev@lunn.ch,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	corbet@lwn.net,
+	daniel@iogearbox.net,
+	davem@davemloft.net,
+	edumazet@google.com,
+	hawk@kernel.org,
+	horms@kernel.org,
+	john.fastabend@gmail.com,
+	kernel-team@meta.com,
+	kuba@kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	mohsin.bashr@gmail.com,
+	pabeni@redhat.com,
+	sdf@fomichev.me,
+	vadim.fedorenko@linux.dev
+Subject: [PATCH net-next V4 0/9] eth: fbnic: Add XDP support for fbnic
+Date: Wed, 13 Aug 2025 15:13:10 -0700
+Message-ID: <20250813221319.3367670-1-mohsin.bashr@gmail.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250812153719.36465-1-slopixelz@gmail.com>
-In-Reply-To: <20250812153719.36465-1-slopixelz@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 13 Aug 2025 15:05:19 -0700
-X-Gm-Features: Ac12FXw15X9NSzx_eHUQdPC-I5W_By2TvHBRCp0SbsCBCqcQUekSEXkrWtkohrI
-Message-ID: <CAEf4Bzb47GuSPEjbA_dJON94Dw4JKzpWvR+qm4QQW2p+0z1rSA@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: Fix typo in kprobe_multi_test.c
-To: Shubham Sharma <slopixelz@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, 
-	shuah@kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Aug 12, 2025 at 8:37=E2=80=AFAM Shubham Sharma <slopixelz@gmail.com=
-> wrote:
->
-> Fixed a spelling mistake:
-> - comparision -> comparison
->
-> Signed-off-by: Shubham Sharma <slopixelz@gmail.com>
-> ---
->  tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b=
-/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-> index e19ef509ebf8..f377bea0b82d 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-> @@ -463,7 +463,7 @@ static bool skip_entry(char *name)
->         return false;
->  }
->
-> -/* Do comparision by ignoring '.llvm.<hash>' suffixes. */
-> +/* Do comparison by ignoring '.llvm.<hash>' suffixes. */
+This patch series introduces basic XDP support for fbnic. To enable this,
+it also includes preparatory changes such as making the HDS threshold
+configurable via ethtool, updating headroom for fbnic, tracking
+frag state in shinfo, and prefetching the first cacheline of data.
 
-Is this the only typo in the entire BPF selftests? If we are doing
-single character comment fixes, let's do it as one bigger pass,
-instead of tons of tiny patches?
+---
+Changelog:
+V4: Update P7 and P8 to address cocci complains about PTR_ERR
 
-pw-bot: cr
+V3: https://lore.kernel.org/netdev/20250812220150.161848-1-mohsin.bashr@gmail.com/
+V2: https://lore.kernel.org/netdev/20250811211338.857992-1-mohsin.bashr@gmail.com/
+V1: https://lore.kernel.org/netdev/20250723145926.4120434-1-mohsin.bashr@gmail.com/
 
+Mohsin Bashir (9):
+  eth: fbnic: Add support for HDS configuration
+  eth: fbnic: Update Headroom
+  eth: fbnic: Use shinfo to track frags state on Rx
+  eth: fbnic: Prefetch packet headers on Rx
+  eth: fbnic: Add XDP pass, drop, abort support
+  eth: fbnic: Add support for XDP queues
+  eth: fbnic: Add support for XDP_TX action
+  eth: fbnic: Collect packet statistics for XDP
+  eth: fbnic: Report XDP stats via ethtool
 
->  static int compare_name(const char *name1, const char *name2)
->  {
->         const char *res1, *res2;
-> --
-> 2.43.0
->
+ .../device_drivers/ethernet/meta/fbnic.rst    |  11 +
+ .../net/ethernet/meta/fbnic/fbnic_ethtool.c   |  82 +++-
+ .../net/ethernet/meta/fbnic/fbnic_netdev.c    |  75 ++-
+ .../net/ethernet/meta/fbnic/fbnic_netdev.h    |   9 +-
+ drivers/net/ethernet/meta/fbnic/fbnic_txrx.c  | 458 +++++++++++++++---
+ drivers/net/ethernet/meta/fbnic/fbnic_txrx.h  |  23 +-
+ 6 files changed, 576 insertions(+), 82 deletions(-)
+
+-- 
+2.47.3
+
 
