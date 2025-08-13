@@ -1,223 +1,159 @@
-Return-Path: <bpf+bounces-65579-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65580-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 772D1B25678
-	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 00:17:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 853B3B2567D
+	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 00:18:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF8DA884E05
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 22:16:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E6DB15A2776
+	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 22:17:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7530C302744;
-	Wed, 13 Aug 2025 22:13:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39763302754;
+	Wed, 13 Aug 2025 22:17:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RjtgX1a9"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="eGba5MS2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46D5C2FE067;
-	Wed, 13 Aug 2025 22:13:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DDCD302746
+	for <bpf@vger.kernel.org>; Wed, 13 Aug 2025 22:17:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755123237; cv=none; b=txjhduxFPOTx3XMnxvhcSWFyKCPtA9pROd36ReKjqZr3Mw0ustkIzxQIjYhb2t+tPwaltWazAp1B7vkJ5TGb+aNRpGqACIIF5dXQX7UAoGU8LcLcKewq8FICXFYvJnQ2EFDrM3LZT6Z3vlHsgnOXay0orYMZFVWW5ypxBmyGCpQ=
+	t=1755123444; cv=none; b=SNPH9S3gJqh9guXTjZyY4bq6ercsv6J2hdWqWO1BP1LN9GQVHiAVTxt43WwAMKZ5Ahus74fA0GxDP0tEhSqprVh5RHmczJN8r1cEaQ3M/wLpUwkQqO3PfWwtjFoIxBAGQaEyDRnMx8MAfyPVVq1qXtDp67/y2g/zoicuKtfc6qw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755123237; c=relaxed/simple;
-	bh=VTu1YlP6cbBxPd8KlY7/RgMoLKQvCZlYMTO6Lr73lws=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cjH8y/RkbTLXSJ4TrsMjEeuT2QhV4JWK+MK/V1et/BaJx+9fDIHv/B4H+mbWe3vtQYxI9qha+wmxN7AZc+q86EFNEqKlnDOypWKEe/8qHz/DF/zHplGRZoAmvOgbS97G6K7Qq+H2/2VOMbajaxLzQdlQKKC31YieLm/IVjEWwTo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RjtgX1a9; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-45a1b001f55so1374695e9.0;
-        Wed, 13 Aug 2025 15:13:54 -0700 (PDT)
+	s=arc-20240116; t=1755123444; c=relaxed/simple;
+	bh=7/qVQ0Dfi+F8FGoqdpVC+Er2VJfczbJ8z4znCUYW1gw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=q2IuHXaVyVTpJaA8cz1y4AYlQBHEZzKvHps072prCrWpvkTR8dw+9oGGPD7SGd5e3lu74TVUDMzVCLae0I51jBT5AeBZNWpMfb9O9YyBo1H3LvAWoFQqX7gIFr+H42puzyaRSRwT4jPV1YR2E60R83SSh2OOodjvGxavlSRGink=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=eGba5MS2; arc=none smtp.client-ip=209.85.216.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-323267bc0a8so644513a91.1
+        for <bpf@vger.kernel.org>; Wed, 13 Aug 2025 15:17:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755123233; x=1755728033; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=paul-moore.com; s=google; t=1755123442; x=1755728242; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rtjUK0AZOjm4eF0vnry/hWr4fc/ZinEdNV9kmjIXNAY=;
-        b=RjtgX1a93HGEm3VhOTw/CVWVGuLeDsVdnkMCpQed8DHC+nIzKJVFFs/EqnOQoklQk0
-         VNfOQPwHLCyLI4ZEsdnDW5K7MlheIP+t7qcd07mZYK4i03kcjhqx9pHwvVUze+VuHeDA
-         Ip3s2SDRpj5JkfvM7GapzPkJaSCRwT52kyVlJP1o2FPiw3xK0lwrRmUTwCkOmAhkRFMu
-         AE0C78fSj8Z3NhxFaBXJdKqVgCxna/H2KQCvoJP6nlyXLrBseUk/kAQhroW9fQhFtHcc
-         etVZplB/LQRsVaCt3rhCezXWrOdbDuoFhBTfJTSc2qqZGtz1rPFCgpsggj+WMpa3BlUx
-         fX/Q==
+        bh=nGorcLMkH3QlG/ylkCQf/naoEUCFkupeIISGIHD6yrM=;
+        b=eGba5MS2clABCj6ZtnsMl/e4RQE8kR/IQkak5lesQAjNDlsEbPSSSJK/TUMvTqPJFf
+         L0rWEiiqwWZraZO7fOaRgjBElyqsttXypA3nP++E89P0yrFCmAHa6i2MrqXTS3lSJQX1
+         iHJBeh3x13BqRH6JeAAbWek6s/nV0cryPQFBMu08HkYZ71I1TmuOm6YJh2v/T3TDvABO
+         aGupkpY8ADby6gwRyXgH9CyPdQ0K477Mo58DQYUfBf9P1kSlz9jxum6ZQ+FFB7OE8IK0
+         drxbqS2KZJ9/B0n7iRzDT/KOAJ5F+Aimi5YfHTKzyANmToJ8oUzzZRy8PSFqABbX/ZnH
+         Zvaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755123233; x=1755728033;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1755123442; x=1755728242;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rtjUK0AZOjm4eF0vnry/hWr4fc/ZinEdNV9kmjIXNAY=;
-        b=DzXvH5qcMwOCfMM8C2onpjcWmvuuVkRWAIdwbMByC+0KT09tedlGRzuh/sh0NZWNh/
-         bOgHtxDBCB44FUyBZgNib/6th+Tg5Cn4OXqMLpM9ZhUhxUplrFO9BD5Oxna6QLkXR09c
-         yA/e7kjlcC1m+xLWDJUtx+xRy/RI+byFKxXwrIBXz9Z/Srj/0OvkEUi1ojOAhZj5TRdJ
-         PkVyDR6HhgsyQAJUsCgdz4E9qhvzO1i07q6mDfAMHY5Wvtc7sPnzOu6gpLzFtxOVvi+d
-         P3XrittofbWE3jP/mh6ERj8NZU+y39mzpOUH6kaMcvdMXCdqI4vpt67g6NfsgTuDK6qu
-         ozfw==
-X-Forwarded-Encrypted: i=1; AJvYcCU/ySMAQObuT9NI0sxITyInzIfJOeqpreQKoyv+xDGWqK1GRKc7XWEG4fMRW9Nh2IPV9nkv7GmRUafWwc51@vger.kernel.org, AJvYcCWd6pm86q9uslxwd3gTO4gdEA5bg5P3KFxykdfGoUCbWWX0x2oJSZ6tb/hU1bdtOFYuA1Y=@vger.kernel.org, AJvYcCXrzH+CYv+Dxa//PFIKNnXrIZetToLuoluWioaIH9zL+UecUj4rgZiBPGlzLfwj3bAaAZ5rDo+881bA@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz1dsiTZeT0nr2Aspij6yPfYaIn3kqx2eYAdymvRoW9vaw8Ga6j
-	ahVfsDmlFpwdb6gxqfR1Wjue2BslNr3ARjp3AU5DdQjFD5R8zUut335C8EAOoSUv
-X-Gm-Gg: ASbGnct0QR6CYnY8VSYdf3dYZkEw4lniD4Uz8gVxo1OEoAVdbBcC6k6I0wv1CRIKWcp
-	2nXr1HLgLp38al48BYVRKtQbISc5EFdUVec+3+HOxmaNclGdxr05q6sIOwitPxdo7zjy1eWA3XZ
-	XG/a0VHSfu0xnRWgbjyAVJi/U1bZo90fXG6Z9lmxlsoUxOJVNrIbMo5XGHKHfZB8y906YuMQTHm
-	+wA8vVMTi4wR4NlwBT39Qm0X/xAcZ/y/qgvMpUmxweUKI6UkrEdjy8Ji8r6jejPft8AQy1cbxVP
-	3P5D/0JntuFx2rDHWdr72wGncNl2iM5EI1pBpW9ytY8os0tAX3j3CM67C1cmIiRjfa8wUNPymvQ
-	raFk7IgSu+q+fPw6WIbrQwYWaTA==
-X-Google-Smtp-Source: AGHT+IEgB2v+gCGAWANNa3EKMpLphRvnlwapSV7jWPPQcd9HuQt+NoEXnt3jKfFlDc25gkCc0Dio4g==
-X-Received: by 2002:a05:600c:4f16:b0:442:e9eb:1b48 with SMTP id 5b1f17b1804b1-45a1b65634bmr2958025e9.24.1755123232973;
-        Wed, 13 Aug 2025 15:13:52 -0700 (PDT)
-Received: from localhost ([2a03:2880:31ff:71::])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45a1a59019dsm15967745e9.21.2025.08.13.15.13.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Aug 2025 15:13:52 -0700 (PDT)
-From: Mohsin Bashir <mohsin.bashr@gmail.com>
-To: netdev@vger.kernel.org
-Cc: aleksander.lobakin@intel.com,
-	alexanderduyck@fb.com,
-	andrew+netdev@lunn.ch,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	corbet@lwn.net,
-	daniel@iogearbox.net,
-	davem@davemloft.net,
-	edumazet@google.com,
-	hawk@kernel.org,
-	horms@kernel.org,
-	john.fastabend@gmail.com,
-	kernel-team@meta.com,
-	kuba@kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	mohsin.bashr@gmail.com,
-	pabeni@redhat.com,
-	sdf@fomichev.me,
-	vadim.fedorenko@linux.dev
-Subject: [PATCH net-next V4 9/9] eth: fbnic: Report XDP stats via ethtool
-Date: Wed, 13 Aug 2025 15:13:19 -0700
-Message-ID: <20250813221319.3367670-10-mohsin.bashr@gmail.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20250813221319.3367670-1-mohsin.bashr@gmail.com>
-References: <20250813221319.3367670-1-mohsin.bashr@gmail.com>
+        bh=nGorcLMkH3QlG/ylkCQf/naoEUCFkupeIISGIHD6yrM=;
+        b=ByB7N7BG4aWp/tLqTbJlRX4H6NCS25ZKAW5cSM464GMMlrAvsayFGhhPQ5Y5K/0geo
+         +tpQjftkd7HuGNNMkmtjWjLWrjgR6mEnjxn1mH5Pl3EW3e0b2IXGBGAeJX3VcmuhVI36
+         59HeYnZ/SPnfbGOlBJHZImzWmH0Vm70mDXHsCwheJc1Bp1Mv/5z8hWcrOXPtzHfkd8JO
+         ERTAz4mUeHl0hHHUp57mdZ9iHE8AwHUaKsoi2PDrAL8AkX80Wkxdxhh3/NidcQC1hz2f
+         czbnAUEUyMVai+r7KCYHu/lwyrEeMi7XnBjaDT5xXGwGSVnzpwZwJyyaIwsaMUcpDxr1
+         Xx8w==
+X-Gm-Message-State: AOJu0Yx/8Hks+OQBk4NgbUZXBMWpDMi8UHE4pm37LMZ2oII7QQXCaRw4
+	DwuPwRw4d7YrqwmfXhM2l6R4Zr76XAm55Mx6LSI/5F4UsJLUrK8zeFtTzIBFOFpMVd08B0u1c5+
+	vjD0gWqC7pRbX7DHJRdYvYZm0C4d28rWLSwYGtUCe
+X-Gm-Gg: ASbGnctLSss4sqUR1tl0JAD6VV9APFFJH7nUThpATR7Z7vhmIUI2dWPaJNsaOvF9cvd
+	RvuKYPJhctIqwmQvmdP3sB7mI2cbiOKaF2u+/rYIOfomM94pO94xQcfxez5eknOdjErxMbe/cqD
+	UOX6taKg0BiMdLpnJpuELEd63Q+XREQ7b+Qj9RVQ/X6CYBI0+kEHTKHMTjkDJSZg4ejIhxGFHHu
+	oSGMl0=
+X-Google-Smtp-Source: AGHT+IFV5GwceQPSXx/zKq6bM3b4LTYCAEfUuhLMxq4ITSdoKjsdF7W5ZnjCmvjdtzc/fzdyHvuxbwhnhfIeCsjfn+Y=
+X-Received: by 2002:a17:90b:4985:b0:308:7270:d6ea with SMTP id
+ 98e67ed59e1d1-32327abc414mr1185449a91.30.1755123442415; Wed, 13 Aug 2025
+ 15:17:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250813205526.2992911-1-kpsingh@kernel.org> <20250813205526.2992911-9-kpsingh@kernel.org>
+ <CAHC9VhR=VQ9QB6YfxOp2B8itj82PPtsiF8K+nyJCL26nFVdQww@mail.gmail.com> <CACYkzJ7vBf3v-ezX1_xWp6HBJffDdUMHC3bgNUuSGUH-anKZKg@mail.gmail.com>
+In-Reply-To: <CACYkzJ7vBf3v-ezX1_xWp6HBJffDdUMHC3bgNUuSGUH-anKZKg@mail.gmail.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Wed, 13 Aug 2025 18:17:10 -0400
+X-Gm-Features: Ac12FXxrmR6UMr5zzOnbjrnnBe0Rsu1MlHVcGYGUo65gfWTyXTLY8-zPkRYoHRQ
+Message-ID: <CAHC9VhT2Q4QOKq+mY9qWHz8pYg6GzUuhntg1Vd-cpGcQ7x6TLg@mail.gmail.com>
+Subject: Re: [PATCH v3 08/12] bpf: Implement signature verification for BPF programs
+To: KP Singh <kpsingh@kernel.org>
+Cc: bpf@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	bboscaccy@linux.microsoft.com, kys@microsoft.com, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add support to collect XDP stats via ethtool API. We record
-packets and bytes sent, and packets dropped on the XDP_TX path.
+On Wed, Aug 13, 2025 at 5:37=E2=80=AFPM KP Singh <kpsingh@kernel.org> wrote=
+:
+> On Wed, Aug 13, 2025 at 11:02=E2=80=AFPM Paul Moore <paul@paul-moore.com>=
+ wrote:
+> >
+> > It's nice to see a v3 revision, but it would be good to see some
+> > comments on Blaise's reply to your v2 revision.  From what I can see
+> > it should enable the different use cases and requirements that have
+> > been posted.
+>
+> I will defer to Alexei and others here (mostly due to time crunch). It
+> would however be useful to explain the use-cases in which signed maps
+> are useful (beyond being a different approach than the current
+> delegated verification).
 
-ethtool -S eth0 | grep xdp | grep -v "0"
-     xdp_tx_queue_13_packets: 2
-     xdp_tx_queue_13_bytes: 16126
+The use cases and requirements have been described quite a bit in
+previous threads already, with both you and Alexei participating in
+those discussions.  If you really can't find the threads on lore let
+me know and I'll be happy to send you links to all of the various
+threads from the past several months.
 
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Mohsin Bashir <mohsin.bashr@gmail.com>
----
- .../net/ethernet/meta/fbnic/fbnic_ethtool.c   | 50 ++++++++++++++++++-
- 1 file changed, 49 insertions(+), 1 deletion(-)
+However, if I had to point to a single email that I felt best
+summarized my requirements, I think it might be this:
 
-diff --git a/drivers/net/ethernet/meta/fbnic/fbnic_ethtool.c b/drivers/net/ethernet/meta/fbnic/fbnic_ethtool.c
-index 742b557d0e56..ceb8f88ae41c 100644
---- a/drivers/net/ethernet/meta/fbnic/fbnic_ethtool.c
-+++ b/drivers/net/ethernet/meta/fbnic/fbnic_ethtool.c
-@@ -112,6 +112,20 @@ static const struct fbnic_stat fbnic_gstrings_hw_q_stats[] = {
- 	 FBNIC_HW_RXB_DEQUEUE_STATS_LEN * FBNIC_RXB_DEQUEUE_INDICES + \
- 	 FBNIC_HW_Q_STATS_LEN * FBNIC_MAX_QUEUES)
- 
-+#define FBNIC_QUEUE_STAT(name, stat) \
-+	FBNIC_STAT_FIELDS(fbnic_ring, name, stat)
-+
-+static const struct fbnic_stat fbnic_gstrings_xdp_stats[] = {
-+	FBNIC_QUEUE_STAT("xdp_tx_queue_%u_packets", stats.packets),
-+	FBNIC_QUEUE_STAT("xdp_tx_queue_%u_bytes", stats.bytes),
-+	FBNIC_QUEUE_STAT("xdp_tx_queue_%u_dropped", stats.dropped),
-+};
-+
-+#define FBNIC_XDP_STATS_LEN ARRAY_SIZE(fbnic_gstrings_xdp_stats)
-+
-+#define FBNIC_STATS_LEN \
-+	(FBNIC_HW_STATS_LEN + FBNIC_XDP_STATS_LEN * FBNIC_MAX_XDPQS)
-+
- static void
- fbnic_get_drvinfo(struct net_device *netdev, struct ethtool_drvinfo *drvinfo)
- {
-@@ -422,6 +436,16 @@ static void fbnic_get_rxb_dequeue_strings(u8 **data, unsigned int idx)
- 		ethtool_sprintf(data, stat->string, idx);
- }
- 
-+static void fbnic_get_xdp_queue_strings(u8 **data, unsigned int idx)
-+{
-+	const struct fbnic_stat *stat;
-+	int i;
-+
-+	stat = fbnic_gstrings_xdp_stats;
-+	for (i = 0; i < FBNIC_XDP_STATS_LEN; i++, stat++)
-+		ethtool_sprintf(data, stat->string, idx);
-+}
-+
- static void fbnic_get_strings(struct net_device *dev, u32 sset, u8 *data)
- {
- 	const struct fbnic_stat *stat;
-@@ -447,6 +471,9 @@ static void fbnic_get_strings(struct net_device *dev, u32 sset, u8 *data)
- 			for (i = 0; i < FBNIC_HW_Q_STATS_LEN; i++, stat++)
- 				ethtool_sprintf(&data, stat->string, idx);
- 		}
-+
-+		for (i = 0; i < FBNIC_MAX_XDPQS; i++)
-+			fbnic_get_xdp_queue_strings(&data, i);
- 		break;
- 	}
- }
-@@ -464,6 +491,24 @@ static void fbnic_report_hw_stats(const struct fbnic_stat *stat,
- 	}
- }
- 
-+static void fbnic_get_xdp_queue_stats(struct fbnic_ring *ring, u64 **data)
-+{
-+	const struct fbnic_stat *stat;
-+	int i;
-+
-+	if (!ring) {
-+		*data += FBNIC_XDP_STATS_LEN;
-+		return;
-+	}
-+
-+	stat = fbnic_gstrings_xdp_stats;
-+	for (i = 0; i < FBNIC_XDP_STATS_LEN; i++, stat++, (*data)++) {
-+		u8 *p = (u8 *)ring + stat->offset;
-+
-+		**data = *(u64 *)p;
-+	}
-+}
-+
- static void fbnic_get_ethtool_stats(struct net_device *dev,
- 				    struct ethtool_stats *stats, u64 *data)
- {
-@@ -511,13 +556,16 @@ static void fbnic_get_ethtool_stats(struct net_device *dev,
- 				      FBNIC_HW_Q_STATS_LEN, &data);
- 	}
- 	spin_unlock(&fbd->hw_stats_lock);
-+
-+	for (i = 0; i < FBNIC_MAX_XDPQS; i++)
-+		fbnic_get_xdp_queue_stats(fbn->tx[i + FBNIC_MAX_TXQS], &data);
- }
- 
- static int fbnic_get_sset_count(struct net_device *dev, int sset)
- {
- 	switch (sset) {
- 	case ETH_SS_STATS:
--		return FBNIC_HW_STATS_LEN;
-+		return FBNIC_STATS_LEN;
- 	default:
- 		return -EOPNOTSUPP;
- 	}
--- 
-2.47.3
+<<< QUOTE >>>
+The loader (+ implicit loader verification of maps w/original program)
+signature verification scheme has been requested by Alexei/KP, and
+that's fine, the code is trivial and if the user/admin is satisfied
+with that as a solution, great.  However, the loader + map signature
+verification scheme has some advantages and helps satisfy some
+requirements that are not satisfied by only verifying the loader and
+relying on the loader to verify the original program stored in the
+maps.  One obvious advantage is that the lskel loader is much simpler
+in this case as it doesn't need to worry about verification of the
+program maps as that has already been done in bpf_check_signature().
+I'm sure there are probably some other obvious reasons, but beyond the
+one mentioned above, the other advantages that I'm interested in are a
+little less obvious, or at least I haven't seen them brought up yet.
+As I mentioned in an earlier thread, it's important to have the LSM
+hook that handles authorization of a BPF program load *after* the BPF
+program's signature has been verified.  This is not simply because the
+LSM implementation might want to enforce and access control on a BPF
+program load due to the signature state (signature verified vs no
+signature), but also because the LSM might want to measure system
+state and/or provide a record of the operation.  If we only verify the
+lskel loader, at the point in time that the security_bpf_prog_load()
+hook is called, we haven't properly verified both the loader and the
+original BPF program stored in the map, that doesn't happen until much
+later when the lskel loader executes.  Yes, I understand that may
+sound very pedantic and fussy, but there are users who care very much
+about those details, and if they see an event in the logs that
+indicates that the BPF program signature has been verified as "good",
+they need that log event to be fully, 100% true, and not have an
+asterix of "only the lskel loader has been verified, the original BPF
+program will potentially be verified later without any additional
+events being logged to indicate the verification".
+<<< /QUOTE >>>
 
+The above was taken from this on-list email:
+https://lore.kernel.org/linux-security-module/CAHC9VhQT=3Dymqssa9ymXtvssHTd=
+VH_64T8Mpb0Mh8oxRD0Guo_Q@mail.gmail.com/
+
+Of course I imagine Blaise might have a few things to add here, but
+I'll let him comment on that if he has anything additional to add.
+
+--=20
+paul-moore.com
 
