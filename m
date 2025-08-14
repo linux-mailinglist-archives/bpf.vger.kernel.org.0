@@ -1,175 +1,397 @@
-Return-Path: <bpf+bounces-65660-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65663-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 385A2B269FD
-	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 16:50:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31E6AB26B3D
+	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 17:41:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81F221893C85
-	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 14:46:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 059F9B61A9F
+	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 15:40:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8141B1FBC8C;
-	Thu, 14 Aug 2025 14:46:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F6DC239072;
+	Thu, 14 Aug 2025 15:40:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=163.com header.i=@163.com header.b="W8xB+TnM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lCBZFBpT"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.5])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D19A31DE3DC;
-	Thu, 14 Aug 2025 14:46:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.5
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08D4323315A;
+	Thu, 14 Aug 2025 15:40:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755182791; cv=none; b=AEd5HpA6FWiKEuo3bXFxfzV2NnzwXthfrUXU41GfY9D/cQuHjEBn8L3idCEhDFU+ekcjuWm86smz07Tl4v+S7G+01mC5boDmfq3yYdsZEBAyElkl/D2UEAcsBH4YXXW7EAy1NVRS18xjUJn6adosxlhDbXNksE8Jo+Fb3eHeS5g=
+	t=1755186028; cv=none; b=TuD7nmISNn1VyNmOD6xjbQboChgG9Pguh52TOqAP6sr3zHZs5+8cnJGAyS8ArjRo+aazHfmsDEd7Tneg7WfZxpjEjowgSVPaslHeIChatkjGrKj5q25Ni+QgHJlj5d5h+1l5uNWK3V4ouXz1T9Tq3I15HWTRDd6V89iTgnnn+Ec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755182791; c=relaxed/simple;
-	bh=8hPHzUAgyGwhy43MMAgAV7dpiZxePD5SBMyFrvCu1eE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
-	 MIME-Version:Message-ID; b=hR+vrnBgVI3ameigIxjOceewDZS2ypCmOFLqtY8r551yNV4QW/s7HwqXvzEFh9klfX+GMYxLCdF66xl6dEo+FEHpO7WQu/UsdfHwxo5gV0Ytp4/o7c94QTS6lvrJDuU01VU1aFYlHTZbSK6XF1zZVjWt7Uk6QresEeh7xlyelRQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=fail (1024-bit key) header.d=163.com header.i=@163.com header.b=W8xB+TnM reason="signature verification failed"; arc=none smtp.client-ip=117.135.210.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Date:From:To:Subject:Content-Type:MIME-Version:
-	Message-ID; bh=RseyEhVTZIct83afWcpg19/RHjuLXDuLnFTss+tar0k=; b=W
-	8xB+TnM2aCUZNdCO2CVupd3HmBQFFri6rSUhVmrpejPznMoYmP1cecdeW4pDnO/y
-	Fo1mjnKR8HGIenbOmkpHV2EMj7MEnh/M2fSxXwI3heh8ykkZPHVJdPiFzPJsU1KS
-	jEo7mg+VXQch/ukjWEXJ+M+hU6C2Bb1uP0H7X1n9GM=
-Received: from phoenix500526$163.com ( [120.230.124.83] ) by
- ajax-webmail-wmsvr-40-102 (Coremail) ; Thu, 14 Aug 2025 22:45:40 +0800
- (CST)
-Date: Thu, 14 Aug 2025 22:45:40 +0800 (CST)
-From: =?GBK?B?1dS80ey/?= <phoenix500526@163.com>
-To: "Jiri Olsa" <olsajiri@gmail.com>
-Cc: andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
-	daniel@iogearbox.net, shuah@kernel.org, yonghong.song@linux.dev,
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re:Re: [PATCH bpf-next v8 2/2] selftests/bpf: Add an usdt_o2 test
- case in selftests to cover SIB handling logic
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20250519(9504565a)
- Copyright (c) 2002-2025 www.mailtech.cn 163com
-In-Reply-To: <aJ2lxyUYfQkfQW2-@krava>
-References: <20250814064504.103401-1-phoenix500526@163.com>
- <20250814064504.103401-3-phoenix500526@163.com> <aJ2lxyUYfQkfQW2-@krava>
-X-NTES-SC: AL_Qu2eB/2TvU8v5ieaYukfmUsVh+o9X8K1vfsk3oZfPJp+jCzp6CUNclhTBEr81tCDEh+0kAiHdzxR+P1Xbahacr8MuTAFFW1cj6E5+hJmZdBiYw==
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+	s=arc-20240116; t=1755186028; c=relaxed/simple;
+	bh=qWHyCh4s5aoDVGv8Zl2K1q4zz4KIrH5OJGfZCM+UBwk=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=lX2p8mZre3xIMVnbcoZHv0+jdAkEOL6dBKpjuS06kJatTQ5esh9kg2OB02xRya1KMdjFndf7NMbkX0tvRW3dzJQWPUxNORcK25chLmmujk/lRnum7Gz7Lo/W1n1Nl6xf5VvuzOI8IwKAO3QEAMq5tImBIUwURtQ2WFUmS64A2gY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lCBZFBpT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 639B0C4CEED;
+	Thu, 14 Aug 2025 15:40:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1755186027;
+	bh=qWHyCh4s5aoDVGv8Zl2K1q4zz4KIrH5OJGfZCM+UBwk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=lCBZFBpTlkbIKb60Kv5cnSgcsZbg0IqC7vDT9qrOzFC1E9OCin8qswRsMM7dXQM/2
+	 NIBl62wmVmMPbYh3geoyKACn0sdE9zRv//bZMwbxZAXBv+jSnDIp7GJB2QtaaReyMH
+	 PsgRX7VuBtZBwIwWEXKqmtNk9mXWRvNhYsOnYHJZBCyzmmaabi2WAgxqSMw5lKD8gb
+	 VfVzXM2Oy+UmrbtTsVaEJsH5aRM9fWTcBx4y2smIlYKdtXFdVh7n/CSPn/+aKQmMky
+	 TOGZhOb3eD10JT9h+YKFfkAP9DJpJ85YJazyA3RvKnnotVzwA0B9QihcGCzV8vXUoF
+	 gNTF0ULUC/p+Q==
+Date: Fri, 15 Aug 2025 00:40:23 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: olsajiri@gmail.com, rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+ hca@linux.ibm.com, revest@chromium.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3 1/4] fprobe: use rhltable for
+ fprobe_ip_table
+Message-Id: <20250815004023.144cfbd9ae39fac9ce80ee98@kernel.org>
+In-Reply-To: <20250731092433.49367-2-dongml2@chinatelecom.cn>
+References: <20250731092433.49367-1-dongml2@chinatelecom.cn>
+	<20250731092433.49367-2-dongml2@chinatelecom.cn>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Message-ID: <56f988c1.9066.198a90b34fd.Coremail.phoenix500526@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:ZigvCgD3v7GV9p1oMlUaAA--.2524W
-X-CM-SenderInfo: pskrv0dl0viiqvswqiywtou0bp/1tbiFAOpiGid7mspcQACsc
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-CgoKCgoKCkhpo6xKaXJpLiBJJ3ZlIGFscmVhZHkgbW9kaWZ5IHVzZHRfbzIuYyB0byBnZW5lcmF0
-ZSBpdHMgdXNkdCBhcmd1bWVudCBzcGVjIGluCmFzc2VtYmx5LiBCdXQgSSBjYW5ub3QgcmVwcm9k
-dWNlIHRoaXMgaXNzdWUgb24gbXkgbWFjaGluZS4gQ291bGQgeW91IGhlbHAKbWUgdmVyaWZ5IHRo
-aXMgbW9kaWZpY2F0aW9uPyAKClRoZSBtb2RpZmljYXRpb24gaXMgaW4gdGhlIFtQQVRDSCBicGYt
-bmV4dCB2OSAzLzNdIHNlbGZ0ZXN0cy9icGY6IG1ha2UgdXNkdF9vMiByZWxpYWJseSBnZW5lcmF0
-ZQogU0lCIFVTRFQgYXJnIHNwZWMKClRoYW5rcwoKCgoKCkF0IDIwMjUtMDgtMTQgMTc6MDA6NTUs
-ICJKaXJpIE9sc2EiIDxvbHNhamlyaUBnbWFpbC5jb20+IHdyb3RlOgo+T24gVGh1LCBBdWcgMTQs
-IDIwMjUgYXQgMDY6NDU6MDRBTSArMDAwMCwgSmlhd2VpIFpoYW8gd3JvdGU6Cj4+IFdoZW4gdXNp
-bmcgR0NDIG9uIHg4Ni02NCB0byBjb21waWxlIGFuIHVzZHQgcHJvZyB3aXRoIC1PMSBvciBoaWdo
-ZXIKPj4gb3B0aW1pemF0aW9uLCB0aGUgY29tcGlsZXIgd2lsbCBnZW5lcmF0ZSBTSUIgYWRkcmVz
-c2luZyBtb2RlIGZvciBnbG9iYWwKPj4gYXJyYXkgYW5kIFBDLXJlbGF0aXZlIGFkZHJlc3Npbmcg
-bW9kZSBmb3IgZ2xvYmFsIHZhcmlhYmxlLAo+PiBlLmcuICIxQC05NiglcmJwLCVyYXgsOCkiIGFu
-ZCAiLTFANCt0MSglcmlwKSIuCj4+IAo+PiBJbiB0aGlzIHBhdGNoOgo+PiAtIGFkZCB1c2R0X28y
-IHRlc3QgY2FzZSB0byBjb3ZlciBTSUIgYWRkcmVzc2luZyB1c2R0IGFyZ3VtZW50IHNwZWMKPj4g
-ICBoYW5kbGluZyBsb2dpYwo+Cj5oaSwKPm9uIG15IHNldHVwIChnY2MxNSkgdGhlIHRlc3QgZ2Vu
-ZXJhdGVzIHVzdCByZWdpc3RlciBhcmd1bWVudDoKPgo+ICBzdGFwc2R0ICAgICAgICAgICAgICAw
-eDAwMDAwMDJhICAgICAgIE5UX1NUQVBTRFQgKFN5c3RlbVRhcCBwcm9iZSBkZXNjcmlwdG9ycykK
-PiAgICBQcm92aWRlcjogdGVzdAo+ICAgIE5hbWU6IHVzZHQxCj4gICAgTG9jYXRpb246IDB4MDAw
-MDAwMDAwMDc2NzdjZSwgQmFzZTogMHgwMDAwMDAwMDAzNWJjNzI4LCBTZW1hcGhvcmU6IDB4MDAw
-MDAwMDAwMDAwMDAwMAo+ICAgIEFyZ3VtZW50czogOEAlcmF4Cj4KPgo+ICA3Njc3YzY6ICAgICAg
-IDQ4IDhiIDA0IGM1IDIwIDQ5IDljICAgIG1vdiAgICAweDM5YzQ5MjAoLCVyYXgsOCksJXJheAo+
-ICA3Njc3Y2Q6ICAgICAgIDAzCj4gIDc2NzdjZTogICAgICAgOTAgICAgICAgICAgICAgICAgICAg
-ICAgbm9wCj4KPgo+SSdtIG5vdCBzdXJlIGlmIHRoZXJlJ3MgcmVsaWFibGUgc29sdXRpb24gdG8g
-Z2VuZXJhdGUgU0lCIGFyZ3VtZW50IGZyb20gZ2NjLAo+bWF5YmUgd2UgY291bGQgZ2VuZXJhdGUg
-YWxsIGluIGFzc2VtYmx5LCBidXQgdGhhdCBtaWdodCBnZXQgY29tcGxpY2F0ZWQKPgo+amlya2EK
-Pgo+Cj4+IAo+PiBTaWduZWQtb2ZmLWJ5OiBKaWF3ZWkgWmhhbyA8cGhvZW5peDUwMDUyNkAxNjMu
-Y29tPgo+PiAtLS0KPj4gIHRvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9NYWtlZmlsZSAgICAg
-ICAgICB8ICAxICsKPj4gIC4uLi9zZWxmdGVzdHMvYnBmL3Byb2dfdGVzdHMvdXNkdF9vMi5jICAg
-ICAgICB8IDY5ICsrKysrKysrKysrKysrKysrKysKPj4gIC4uLi9zZWxmdGVzdHMvYnBmL3Byb2dz
-L3Rlc3RfdXNkdF9vMi5jICAgICAgICB8IDM3ICsrKysrKysrKysKPj4gIDMgZmlsZXMgY2hhbmdl
-ZCwgMTA3IGluc2VydGlvbnMoKykKPj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCB0b29scy90ZXN0aW5n
-L3NlbGZ0ZXN0cy9icGYvcHJvZ190ZXN0cy91c2R0X28yLmMKPj4gIGNyZWF0ZSBtb2RlIDEwMDY0
-NCB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvcHJvZ3MvdGVzdF91c2R0X28yLmMKPj4gCj4+
-IGRpZmYgLS1naXQgYS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvTWFrZWZpbGUgYi90b29s
-cy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvTWFrZWZpbGUKPj4gaW5kZXggNDg2MzEwNjAzNGRmLi4y
-NGZmMWEzMjk2MjUgMTAwNjQ0Cj4+IC0tLSBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9N
-YWtlZmlsZQo+PiArKysgYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvTWFrZWZpbGUKPj4g
-QEAgLTc2MCw2ICs3NjAsNyBAQCBUUlVOTkVSX0JQRl9CVUlMRF9SVUxFIDo9ICQkKGVycm9yIG5v
-IEJQRiBvYmplY3RzIHNob3VsZCBiZSBidWlsdCkKPj4gIFRSVU5ORVJfQlBGX0NGTEFHUyA6PQo+
-PiAgJChldmFsICQoY2FsbCBERUZJTkVfVEVTVF9SVU5ORVIsdGVzdF9tYXBzKSkKPj4gIAo+PiAr
-Cj4+ICAjIERlZmluZSB0ZXN0X3ZlcmlmaWVyIHRlc3QgcnVubmVyLgo+PiAgIyBJdCBpcyBtdWNo
-IHNpbXBsZXIgdGhhbiB0ZXN0X21hcHMvdGVzdF9wcm9ncyBhbmQgc3VmZmljaWVudGx5IGRpZmZl
-cmVudCBmcm9tCj4+ICAjIHRoZW0gKGUuZy4sIHRlc3QuaCBpcyB1c2luZyBjb21wbGV0ZWx5IHBh
-dHRlcm4pLCB0aGF0IGl0J3Mgd29ydGgganVzdAo+PiBkaWZmIC0tZ2l0IGEvdG9vbHMvdGVzdGlu
-Zy9zZWxmdGVzdHMvYnBmL3Byb2dfdGVzdHMvdXNkdF9vMi5jIGIvdG9vbHMvdGVzdGluZy9zZWxm
-dGVzdHMvYnBmL3Byb2dfdGVzdHMvdXNkdF9vMi5jCj4+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4+
-IGluZGV4IDAwMDAwMDAwMDAwMC4uZjAyZGNmNTE4OGFiCj4+IC0tLSAvZGV2L251bGwKPj4gKysr
-IGIvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dfdGVzdHMvdXNkdF9vMi5jCj4+IEBA
-IC0wLDAgKzEsNjkgQEAKPj4gKy8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wCj4+
-ICsvKiBDb3B5cmlnaHQgKGMpIDIwMjUgSmlhd2VpIFpoYW8gPHBob2VuaXg1MDA1MjZAMTYzLmNv
-bT4uICovCj4+ICsjaW5jbHVkZSA8dGVzdF9wcm9ncy5oPgo+PiArCj4+ICsjaW5jbHVkZSAiLi4v
-c2R0LmgiCj4+ICsjaW5jbHVkZSAidGVzdF91c2R0X28yLnNrZWwuaCIKPj4gKwo+PiArI2lmIGRl
-ZmluZWQoX19HTlVDX18pICYmICFkZWZpbmVkKF9fY2xhbmdfXykKPj4gK19fYXR0cmlidXRlX18o
-KG9wdGltaXplKCJPMiIpKSkKPj4gKyNlbmRpZgo+PiArCj4+ICsjZGVmaW5lIHRlc3RfdmFsdWUg
-MHhGRURDQkE5ODc2NTQzMjEwVUxMCj4+ICsjZGVmaW5lIFNFQyhuYW1lKSBfX2F0dHJpYnV0ZV9f
-KChzZWN0aW9uKG5hbWUpLCB1c2VkKSkKPj4gKwo+PiAraW50IGxldHNfdGVzdF90aGlzKGludCk7
-Cj4+ICtzdGF0aWMgdm9sYXRpbGUgX191NjQgYXJyYXlbMV0gPSB7dGVzdF92YWx1ZX07Cj4+ICsK
-Pj4gK3N0YXRpYyBfX2Fsd2F5c19pbmxpbmUgdm9pZCB0cmlnZ2VyX2Z1bmModm9pZCkKPj4gK3sK
-Pj4gKwkvKiBCYXNlIGFkZHJlc3MgKyBvZmZzZXQgKyAoaW5kZXggKiBzY2FsZSkgKi8KPj4gKwlm
-b3IgKHZvbGF0aWxlIGludCBpID0gMDsgaSA8PSAwOyBpKyspCj4+ICsJCVNUQVBfUFJPQkUxKHRl
-c3QsIHVzZHQxLCBhcnJheVtpXSk7Cj4+ICt9Cj4+ICsKPj4gK3N0YXRpYyB2b2lkIGJhc2ljX3Np
-Yl91c2R0KHZvaWQpCj4+ICt7Cj4+ICsJTElCQlBGX09QVFMoYnBmX3VzZHRfb3B0cywgb3B0cyk7
-Cj4+ICsJc3RydWN0IHRlc3RfdXNkdF9vMiAqc2tlbDsKPj4gKwlzdHJ1Y3QgdGVzdF91c2R0X28y
-X19ic3MgKmJzczsKPj4gKwlpbnQgZXJyOwo+PiArCj4+ICsJc2tlbCA9IHRlc3RfdXNkdF9vMl9f
-b3Blbl9hbmRfbG9hZCgpOwo+PiArCWlmICghQVNTRVJUX09LX1BUUihza2VsLCAic2tlbF9vcGVu
-IikpCj4+ICsJCXJldHVybjsKPj4gKwo+PiArCWJzcyA9IHNrZWwtPmJzczsKPj4gKwlic3MtPm15
-X3BpZCA9IGdldHBpZCgpOwo+PiArCj4+ICsJZXJyID0gdGVzdF91c2R0X28yX19hdHRhY2goc2tl
-bCk7Cj4+ICsJaWYgKCFBU1NFUlRfT0soZXJyLCAic2tlbF9hdHRhY2giKSkKPj4gKwkJZ290byBj
-bGVhbnVwOwo+PiArCj4+ICsJLyogdXNkdDEgd29uJ3QgYmUgYXV0by1hdHRhY2hlZCAqLwo+PiAr
-CW9wdHMudXNkdF9jb29raWUgPSAweGNhZmVkZWFkYmVlZmZlZWQ7Cj4+ICsJc2tlbC0+bGlua3Mu
-dXNkdDEgPSBicGZfcHJvZ3JhbV9fYXR0YWNoX3VzZHQoc2tlbC0+cHJvZ3MudXNkdDEsCj4+ICsJ
-CQkJCQkgICAgIDAgLypzZWxmKi8sICIvcHJvYy9zZWxmL2V4ZSIsCj4+ICsJCQkJCQkgICAgICJ0
-ZXN0IiwgInVzZHQxIiwgJm9wdHMpOwo+PiArCWlmICghQVNTRVJUX09LX1BUUihza2VsLT5saW5r
-cy51c2R0MSwgInVzZHQxX2xpbmsiKSkKPj4gKwkJZ290byBjbGVhbnVwOwo+PiArCj4+ICsJdHJp
-Z2dlcl9mdW5jKCk7Cj4+ICsKPj4gKwlBU1NFUlRfRVEoYnNzLT51c2R0MV9jYWxsZWQsIDEsICJ1
-c2R0MV9jYWxsZWQiKTsKPj4gKwlBU1NFUlRfRVEoYnNzLT51c2R0MV9jb29raWUsIDB4Y2FmZWRl
-YWRiZWVmZmVlZCwgInVzZHQxX2Nvb2tpZSIpOwo+PiArCUFTU0VSVF9FUShic3MtPnVzZHQxX2Fy
-Z19jbnQsIDEsICJ1c2R0MV9hcmdfY250Iik7Cj4+ICsJQVNTRVJUX0VRKGJzcy0+dXNkdDFfYXJn
-LCB0ZXN0X3ZhbHVlLCAidXNkdDFfYXJnIik7Cj4+ICsJQVNTRVJUX0VRKGJzcy0+dXNkdDFfYXJn
-X3JldCwgMCwgInVzZHQxX2FyZ19yZXQiKTsKPj4gKwlBU1NFUlRfRVEoYnNzLT51c2R0MV9hcmdf
-c2l6ZSwgc2l6ZW9mKGFycmF5WzBdKSwgInVzZHQxX2FyZ19zaXplIik7Cj4+ICsKPj4gK2NsZWFu
-dXA6Cj4+ICsJdGVzdF91c2R0X28yX19kZXN0cm95KHNrZWwpOwo+PiArfQo+PiArCj4+ICsKPj4g
-Kwo+PiArdm9pZCB0ZXN0X3VzZHRfbzIodm9pZCkKPj4gK3sKPj4gKwliYXNpY19zaWJfdXNkdCgp
-Owo+PiArfQo+PiBkaWZmIC0tZ2l0IGEvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dz
-L3Rlc3RfdXNkdF9vMi5jIGIvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dzL3Rlc3Rf
-dXNkdF9vMi5jCj4+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4+IGluZGV4IDAwMDAwMDAwMDAwMC4u
-MTQ2MDJhYTU0NTc4Cj4+IC0tLSAvZGV2L251bGwKPj4gKysrIGIvdG9vbHMvdGVzdGluZy9zZWxm
-dGVzdHMvYnBmL3Byb2dzL3Rlc3RfdXNkdF9vMi5jCj4+IEBAIC0wLDAgKzEsMzcgQEAKPj4gKy8v
-IFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wCj4+ICsvKiBDb3B5cmlnaHQgKGMpIDIw
-MjIgTWV0YSBQbGF0Zm9ybXMsIEluYy4gYW5kIGFmZmlsaWF0ZXMuICovCj4+ICsKPj4gKyNpbmNs
-dWRlICJ2bWxpbnV4LmgiCj4+ICsjaW5jbHVkZSA8YnBmL2JwZl9oZWxwZXJzLmg+Cj4+ICsjaW5j
-bHVkZSA8YnBmL3VzZHQuYnBmLmg+Cj4+ICsKPj4gK2ludCBteV9waWQ7Cj4+ICsKPj4gK2ludCB1
-c2R0MV9jYWxsZWQ7Cj4+ICt1NjQgdXNkdDFfY29va2llOwo+PiAraW50IHVzZHQxX2FyZ19jbnQ7
-Cj4+ICtpbnQgdXNkdDFfYXJnX3JldDsKPj4gK3U2NCB1c2R0MV9hcmc7Cj4+ICtpbnQgdXNkdDFf
-YXJnX3NpemU7Cj4+ICsKPj4gK1NFQygidXNkdCIpCj4+ICtpbnQgdXNkdDEoc3RydWN0IHB0X3Jl
-Z3MgKmN0eCkKPj4gK3sKPj4gKwlsb25nIHRtcDsKPj4gKwo+PiArCWlmIChteV9waWQgIT0gKGJw
-Zl9nZXRfY3VycmVudF9waWRfdGdpZCgpID4+IDMyKSkKPj4gKwkJcmV0dXJuIDA7Cj4+ICsKPj4g
-KwlfX3N5bmNfZmV0Y2hfYW5kX2FkZCgmdXNkdDFfY2FsbGVkLCAxKTsKPj4gKwo+PiArCXVzZHQx
-X2Nvb2tpZSA9IGJwZl91c2R0X2Nvb2tpZShjdHgpOwo+PiArCXVzZHQxX2FyZ19jbnQgPSBicGZf
-dXNkdF9hcmdfY250KGN0eCk7Cj4+ICsKPj4gKwl1c2R0MV9hcmdfcmV0ID0gYnBmX3VzZHRfYXJn
-KGN0eCwgMCwgJnRtcCk7Cj4+ICsJdXNkdDFfYXJnID0gKHU2NCl0bXA7Cj4+ICsJdXNkdDFfYXJn
-X3NpemUgPSBicGZfdXNkdF9hcmdfc2l6ZShjdHgsIDApOwo+PiArCj4+ICsJcmV0dXJuIDA7Cj4+
-ICt9Cj4+ICsKPj4gK2NoYXIgX2xpY2Vuc2VbXSBTRUMoImxpY2Vuc2UiKSA9ICJHUEwiOwo+PiAt
-LSAKPj4gMi40My4wCj4+IAo+PiAK
+On Thu, 31 Jul 2025 17:24:24 +0800
+Menglong Dong <menglong8.dong@gmail.com> wrote:
+
+> For now, all the kernel functions who are hooked by the fprobe will be
+> added to the hash table "fprobe_ip_table". The key of it is the function
+> address, and the value of it is "struct fprobe_hlist_node".
+> 
+> The budget of the hash table is FPROBE_IP_TABLE_SIZE, which is 256. And
+> this means the overhead of the hash table lookup will grow linearly if
+> the count of the functions in the fprobe more than 256. When we try to
+> hook all the kernel functions, the overhead will be huge.
+> 
+> Therefore, replace the hash table with rhltable to reduce the overhead.
+> 
+
+Hi Menglong,
+
+Thanks for update, I have just some nitpicks. 
+
+> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+> ---
+> v3:
+> - some format optimization
+> - handle the error that returned from rhltable_insert in
+>   insert_fprobe_node
+> ---
+>  include/linux/fprobe.h |   3 +-
+>  kernel/trace/fprobe.c  | 154 +++++++++++++++++++++++------------------
+>  2 files changed, 90 insertions(+), 67 deletions(-)
+> 
+> diff --git a/include/linux/fprobe.h b/include/linux/fprobe.h
+> index 702099f08929..f5d8982392b9 100644
+> --- a/include/linux/fprobe.h
+> +++ b/include/linux/fprobe.h
+> @@ -7,6 +7,7 @@
+>  #include <linux/ftrace.h>
+>  #include <linux/rcupdate.h>
+>  #include <linux/refcount.h>
+> +#include <linux/rhashtable.h>
+
+nit: can you also include this header file in fprobe.c ?
+
+>  #include <linux/slab.h>
+>  
+>  struct fprobe;
+> @@ -26,7 +27,7 @@ typedef void (*fprobe_exit_cb)(struct fprobe *fp, unsigned long entry_ip,
+>   * @fp: The fprobe which owns this.
+>   */
+>  struct fprobe_hlist_node {
+> -	struct hlist_node	hlist;
+> +	struct rhlist_head	hlist;
+>  	unsigned long		addr;
+>  	struct fprobe		*fp;
+>  };
+> diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
+> index ba7ff14f5339..2f1683a26c10 100644
+> --- a/kernel/trace/fprobe.c
+> +++ b/kernel/trace/fprobe.c
+> @@ -41,47 +41,46 @@
+>   *  - RCU hlist traversal under disabling preempt
+>   */
+>  static struct hlist_head fprobe_table[FPROBE_TABLE_SIZE];
+> -static struct hlist_head fprobe_ip_table[FPROBE_IP_TABLE_SIZE];
+> +static struct rhltable fprobe_ip_table;
+>  static DEFINE_MUTEX(fprobe_mutex);
+>  
+> -/*
+> - * Find first fprobe in the hlist. It will be iterated twice in the entry
+> - * probe, once for correcting the total required size, the second time is
+> - * calling back the user handlers.
+> - * Thus the hlist in the fprobe_table must be sorted and new probe needs to
+> - * be added *before* the first fprobe.
+> - */
+> -static struct fprobe_hlist_node *find_first_fprobe_node(unsigned long ip)
+> +static u32 fprobe_node_hashfn(const void *data, u32 len, u32 seed)
+>  {
+> -	struct fprobe_hlist_node *node;
+> -	struct hlist_head *head;
+> +	return hash_ptr(*(unsigned long **)data, 32);
+> +}
+>  
+> -	head = &fprobe_ip_table[hash_ptr((void *)ip, FPROBE_IP_HASH_BITS)];
+> -	hlist_for_each_entry_rcu(node, head, hlist,
+> -				 lockdep_is_held(&fprobe_mutex)) {
+> -		if (node->addr == ip)
+> -			return node;
+> -	}
+> -	return NULL;
+> +static int fprobe_node_cmp(struct rhashtable_compare_arg *arg,
+> +			   const void *ptr)
+> +{
+> +	unsigned long key = *(unsigned long *)arg->key;
+> +	const struct fprobe_hlist_node *n = ptr;
+> +
+> +	return n->addr != key;
+>  }
+> -NOKPROBE_SYMBOL(find_first_fprobe_node);
+>  
+> -/* Node insertion and deletion requires the fprobe_mutex */
+> -static void insert_fprobe_node(struct fprobe_hlist_node *node)
+> +static u32 fprobe_node_obj_hashfn(const void *data, u32 len, u32 seed)
+>  {
+> -	unsigned long ip = node->addr;
+> -	struct fprobe_hlist_node *next;
+> -	struct hlist_head *head;
+> +	const struct fprobe_hlist_node *n = data;
+> +
+> +	return hash_ptr((void *)n->addr, 32);
+> +}
+> +
+> +static const struct rhashtable_params fprobe_rht_params = {
+> +	.head_offset		= offsetof(struct fprobe_hlist_node, hlist),
+> +	.key_offset		= offsetof(struct fprobe_hlist_node, addr),
+> +	.key_len		= sizeof_field(struct fprobe_hlist_node, addr),
+> +	.hashfn			= fprobe_node_hashfn,
+> +	.obj_hashfn		= fprobe_node_obj_hashfn,
+> +	.obj_cmpfn		= fprobe_node_cmp,
+> +	.automatic_shrinking	= true,
+> +};
+>  
+> +/* Node insertion and deletion requires the fprobe_mutex */
+> +static int insert_fprobe_node(struct fprobe_hlist_node *node)
+> +{
+>  	lockdep_assert_held(&fprobe_mutex);
+>  
+> -	next = find_first_fprobe_node(ip);
+> -	if (next) {
+> -		hlist_add_before_rcu(&node->hlist, &next->hlist);
+> -		return;
+> -	}
+> -	head = &fprobe_ip_table[hash_ptr((void *)ip, FPROBE_IP_HASH_BITS)];
+> -	hlist_add_head_rcu(&node->hlist, head);
+> +	return rhltable_insert(&fprobe_ip_table, &node->hlist, fprobe_rht_params);
+>  }
+>  
+>  /* Return true if there are synonims */
+> @@ -92,9 +91,11 @@ static bool delete_fprobe_node(struct fprobe_hlist_node *node)
+>  	/* Avoid double deleting */
+>  	if (READ_ONCE(node->fp) != NULL) {
+>  		WRITE_ONCE(node->fp, NULL);
+> -		hlist_del_rcu(&node->hlist);
+> +		rhltable_remove(&fprobe_ip_table, &node->hlist,
+> +				fprobe_rht_params);
+>  	}
+> -	return !!find_first_fprobe_node(node->addr);
+> +	return !!rhltable_lookup(&fprobe_ip_table, &node->addr,
+> +				 fprobe_rht_params);
+>  }
+>  
+>  /* Check existence of the fprobe */
+> @@ -249,9 +250,10 @@ static inline int __fprobe_kprobe_handler(unsigned long ip, unsigned long parent
+>  static int fprobe_entry(struct ftrace_graph_ent *trace, struct fgraph_ops *gops,
+>  			struct ftrace_regs *fregs)
+>  {
+> -	struct fprobe_hlist_node *node, *first;
+>  	unsigned long *fgraph_data = NULL;
+>  	unsigned long func = trace->func;
+> +	struct fprobe_hlist_node *node;
+> +	struct rhlist_head *head, *pos;
+>  	unsigned long ret_ip;
+>  	int reserved_words;
+>  	struct fprobe *fp;
+> @@ -260,14 +262,12 @@ static int fprobe_entry(struct ftrace_graph_ent *trace, struct fgraph_ops *gops,
+>  	if (WARN_ON_ONCE(!fregs))
+>  		return 0;
+>  
+> -	first = node = find_first_fprobe_node(func);
+> -	if (unlikely(!first))
+> -		return 0;
+> -
+> +	rcu_read_lock();
+> +	head = rhltable_lookup(&fprobe_ip_table, &func, fprobe_rht_params);
+>  	reserved_words = 0;
+> -	hlist_for_each_entry_from_rcu(node, hlist) {
+> +	rhl_for_each_entry_rcu(node, pos, head, hlist) {
+>  		if (node->addr != func)
+> -			break;
+> +			continue;
+>  		fp = READ_ONCE(node->fp);
+>  		if (!fp || !fp->exit_handler)
+>  			continue;
+> @@ -278,17 +278,19 @@ static int fprobe_entry(struct ftrace_graph_ent *trace, struct fgraph_ops *gops,
+>  		reserved_words +=
+>  			FPROBE_HEADER_SIZE_IN_LONG + SIZE_IN_LONG(fp->entry_data_size);
+>  	}
+> -	node = first;
+> +	rcu_read_unlock();
+>  	if (reserved_words) {
+>  		fgraph_data = fgraph_reserve_data(gops->idx, reserved_words * sizeof(long));
+>  		if (unlikely(!fgraph_data)) {
+> -			hlist_for_each_entry_from_rcu(node, hlist) {
+> +			rcu_read_lock();
+> +			rhl_for_each_entry_rcu(node, pos, head, hlist) {
+>  				if (node->addr != func)
+> -					break;
+> +					continue;
+>  				fp = READ_ONCE(node->fp);
+>  				if (fp && !fprobe_disabled(fp))
+>  					fp->nmissed++;
+>  			}
+> +			rcu_read_unlock();
+>  			return 0;
+>  		}
+>  	}
+> @@ -299,12 +301,12 @@ static int fprobe_entry(struct ftrace_graph_ent *trace, struct fgraph_ops *gops,
+>  	 */
+>  	ret_ip = ftrace_regs_get_return_address(fregs);
+>  	used = 0;
+> -	hlist_for_each_entry_from_rcu(node, hlist) {
+> +	rhl_for_each_entry_rcu(node, pos, head, hlist) {
+>  		int data_size;
+>  		void *data;
+>  
+>  		if (node->addr != func)
+> -			break;
+> +			continue;
+>  		fp = READ_ONCE(node->fp);
+>  		if (!fp || fprobe_disabled(fp))
+>  			continue;
+> @@ -448,25 +450,21 @@ static int fprobe_addr_list_add(struct fprobe_addr_list *alist, unsigned long ad
+>  	return 0;
+>  }
+>  
+> -static void fprobe_remove_node_in_module(struct module *mod, struct hlist_head *head,
+> -					struct fprobe_addr_list *alist)
+> +static void fprobe_remove_node_in_module(struct module *mod, struct fprobe_hlist_node *node,
+> +					 struct fprobe_addr_list *alist)
+>  {
+> -	struct fprobe_hlist_node *node;
+>  	int ret = 0;
+>  
+> -	hlist_for_each_entry_rcu(node, head, hlist,
+> -				 lockdep_is_held(&fprobe_mutex)) {
+> -		if (!within_module(node->addr, mod))
+> -			continue;
+> -		if (delete_fprobe_node(node))
+> -			continue;
+> -		/*
+> -		 * If failed to update alist, just continue to update hlist.
+> -		 * Therefore, at list user handler will not hit anymore.
+> -		 */
+> -		if (!ret)
+> -			ret = fprobe_addr_list_add(alist, node->addr);
+> -	}
+> +	if (!within_module(node->addr, mod))
+> +		return;
+> +	if (delete_fprobe_node(node))
+> +		return;
+> +	/*
+> +	 * If failed to update alist, just continue to update hlist.
+> +	 * Therefore, at list user handler will not hit anymore.
+> +	 */
+> +	if (!ret)
+> +		ret = fprobe_addr_list_add(alist, node->addr);
+>  }
+>  
+>  /* Handle module unloading to manage fprobe_ip_table. */
+> @@ -474,8 +472,9 @@ static int fprobe_module_callback(struct notifier_block *nb,
+>  				  unsigned long val, void *data)
+>  {
+>  	struct fprobe_addr_list alist = {.size = FPROBE_IPS_BATCH_INIT};
+> +	struct fprobe_hlist_node *node;
+> +	struct rhashtable_iter iter;
+>  	struct module *mod = data;
+> -	int i;
+>  
+>  	if (val != MODULE_STATE_GOING)
+>  		return NOTIFY_DONE;
+> @@ -486,8 +485,16 @@ static int fprobe_module_callback(struct notifier_block *nb,
+>  		return NOTIFY_DONE;
+>  
+>  	mutex_lock(&fprobe_mutex);
+> -	for (i = 0; i < FPROBE_IP_TABLE_SIZE; i++)
+> -		fprobe_remove_node_in_module(mod, &fprobe_ip_table[i], &alist);
+> +	rhashtable_walk_enter(&fprobe_ip_table.ht, &iter);
+
+nit: Use rhltable_walk_enter() instead.
+
+Others looks good to me.
+
+Thank you,
+
+> +	do {
+> +		rhashtable_walk_start(&iter);
+> +
+> +		while ((node = rhashtable_walk_next(&iter)) && !IS_ERR(node))
+> +			fprobe_remove_node_in_module(mod, node, &alist);
+> +
+> +		rhashtable_walk_stop(&iter);
+> +	} while (node == ERR_PTR(-EAGAIN));
+> +	rhashtable_walk_exit(&iter);
+>  
+>  	if (alist.index < alist.size && alist.index > 0)
+>  		ftrace_set_filter_ips(&fprobe_graph_ops.ops,
+> @@ -722,8 +729,16 @@ int register_fprobe_ips(struct fprobe *fp, unsigned long *addrs, int num)
+>  	ret = fprobe_graph_add_ips(addrs, num);
+>  	if (!ret) {
+>  		add_fprobe_hash(fp);
+> -		for (i = 0; i < hlist_array->size; i++)
+> -			insert_fprobe_node(&hlist_array->array[i]);
+> +		for (i = 0; i < hlist_array->size; i++) {
+> +			ret = insert_fprobe_node(&hlist_array->array[i]);
+> +			if (ret)
+> +				break;
+> +		}
+> +		/* fallback on insert error */
+> +		if (ret) {
+> +			for (i--; i >= 0; i--)
+> +				delete_fprobe_node(&hlist_array->array[i]);
+> +		}
+>  	}
+>  	mutex_unlock(&fprobe_mutex);
+>  
+> @@ -819,3 +834,10 @@ int unregister_fprobe(struct fprobe *fp)
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(unregister_fprobe);
+> +
+> +static int __init fprobe_initcall(void)
+> +{
+> +	rhltable_init(&fprobe_ip_table, &fprobe_rht_params);
+> +	return 0;
+> +}
+> +late_initcall(fprobe_initcall);
+> -- 
+> 2.50.1
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
