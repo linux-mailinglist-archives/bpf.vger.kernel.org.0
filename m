@@ -1,161 +1,183 @@
-Return-Path: <bpf+bounces-65588-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65589-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 262F4B257E3
-	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 01:54:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A283BB25809
+	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 02:07:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 645DC1BC7363
-	for <lists+bpf@lfdr.de>; Wed, 13 Aug 2025 23:53:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DFDE1C03392
+	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 00:05:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C05BE2FE075;
-	Wed, 13 Aug 2025 23:53:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93BDF9460;
+	Thu, 14 Aug 2025 00:04:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XbJl8b8S"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0014.hostedemail.com [216.40.44.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBDED28B7F9;
-	Wed, 13 Aug 2025 23:53:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B066C10FD;
+	Thu, 14 Aug 2025 00:04:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755129210; cv=none; b=YEKrb9DZzal8r2lAuv8U6KCZM0GQy2+jX3IzwoYYArdkND2v+5NFT12BTaYw4m/ItpN4lmN7+wp2yp9g/Gsnoo6cds1QOXea0OScTN3Rsdqu8MQaJl6frFUMelXvsfTEhLuZuOGXYoQ4FqwGBSWXRwluKH6+fKwaldX9LfEM9Bs=
+	t=1755129892; cv=none; b=CNfbugXRHxqw5G5Fa7pcZZJMv/yXnQwmeN6NPYM42IbfhzSBFPJ3oSLPYQbY5nHHta3CKfakXdPnKlipHPaCvNr39WoAdhLNxbnwLdPpA65MTpl7IdVnebrtRXEClf8IDgkntAOfqbdcGWmdtPXOZ+ky9bwgPWTjfuYkhMB0llI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755129210; c=relaxed/simple;
-	bh=wcUdQkTJ7IV/p3A7DgChTP1Bqgk5rMEVbafp6vUdmxU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=usuEJODFcbrR7QmLaaOqGUnVK1syUMRmZuIe96JJtBb5QMNPlinbxwynEs5wF1z/ueSDJc+LDkmayQwBXHNmcKm3OeDd9yLPXm/Ff/eRdXaYWi/FUxtAB/Qu6wnou9bHOA32954qGUOaAMMGkSIQMBTpaNypK4JJdJVDgwZcAgo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf07.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay07.hostedemail.com (Postfix) with ESMTP id D607916046F;
-	Wed, 13 Aug 2025 23:53:19 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf07.hostedemail.com (Postfix) with ESMTPA id 9D5A820024;
-	Wed, 13 Aug 2025 23:53:16 +0000 (UTC)
-Date: Wed, 13 Aug 2025 19:53:17 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Sasha Levin <sashal@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>, Sven Schnelle
- <svens@linux.ibm.com>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
- Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Guo Ren
- <guoren@kernel.org>, Donglin Peng <dolinux.peng@gmail.com>, Zheng Yejian
- <zhengyejian@huaweicloud.com>
-Subject: Re: [PATCH v4 2/4] ftrace: Add support for function argument to
- graph tracer
-Message-ID: <20250813195317.508a29aa@batman.local.home>
-In-Reply-To: <aJaxRVKverIjF4a6@lappy>
-References: <20250227185804.639525399@goodmis.org>
-	<20250227185822.810321199@goodmis.org>
-	<aJaxRVKverIjF4a6@lappy>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1755129892; c=relaxed/simple;
+	bh=eyiOaRZMaPlo1kIticKUpdzJroUfNMG5EOtHUB+peAE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=N7wc7cj5n03xcH87ou4Fsa0J6z8SGtoTSNAUPc2pNZA3C0RdQjMTnWGycrI9lsKpptyOneEmYF/aEiqRRcsTgm6DUJBuaga9YM5kn1Ntl4cSommeNoA4BE7Jcpgrg4vTOTRkUBvcN5YLrwP1v/zvhhq3+onNwqSt0tXQ/4Bwkeg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XbJl8b8S; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-323266baa22so379948a91.0;
+        Wed, 13 Aug 2025 17:04:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755129890; x=1755734690; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oc4qoI/UHlG9m/Oy8Ch7qVFS2LZ/r4kxmzgqxzma2fk=;
+        b=XbJl8b8ScHbOAWjaXuwjeAnpcGvkBNkE+zwdY7bwK2HTfBWcjIx6Q0cN/1/nXgZy0C
+         HgGK1ZbweDGBInCeGxw5HeWxDha+Bzk/3abliacI/Q7dQhJzz1VsOipqwq9p7oOau1VS
+         hyBfyElCwfbfghVawtg/1eIOTNYDB4oJOxy8Yi2HMiE9PurhE+To+HclojdiURyhD4CN
+         s3X01p8gFFzpAZeR/oQaVAZoUo7yVMSVFD6AuWsEZSCZuyMKu3cxcUDAysyIyCc6eLuz
+         +g/FBsw1Ev0QYsrLHMLmhIzDxiVmR+CO+mL4wSgt2kzEjl333ldPVpLHgb+7Hu8uDlzS
+         sKPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755129890; x=1755734690;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oc4qoI/UHlG9m/Oy8Ch7qVFS2LZ/r4kxmzgqxzma2fk=;
+        b=UbJLe/+RRr3AhoJs/yIpyVPVIace5nFuQ2f+SzHYoZJK1Or14/1e1Yea1pChK717gY
+         rCl1YPDvd9oRXlWk/xktOt7nKsvjD6tC8z+k3e6DddA0xilnuWnOZAI+zXvep6rGwWwi
+         nIZ4/ktNnS0/xBgB7UZ16JSaWGnmMAwEzgY4UzfTTGXVNFU+1BdBH0qpky6zKqx4IUjV
+         Cqw2Web79tqL6OtjsmdVfiV4YXAbYLE2GxpMc1/S9LZ4eFd1uIWIW7fosYxG/EMbFCgh
+         a6k/M+WS//tfnYNttgHDdDTJNAyQowepdDO2g4Qkd2MSHdKVNQKecuMbHzw5/ursw1+L
+         ud6w==
+X-Forwarded-Encrypted: i=1; AJvYcCUgqDJ9yEyucMppJsn6xlrditGAXyC+Sd9JWibXcpCi2Q0YClwBcKhPnphl1fGmH1UN8Ufxygq4W0DxRBBx@vger.kernel.org, AJvYcCV/QbvOmo0NrNP1iJxwBEelPGt+hwy5qm0Xt3Va6O2qE4m119urbnsI5vwt7AUkP00dKlgJeq4Oz2UAZtN0rtWu@vger.kernel.org, AJvYcCWAkzy7CPxctJrYfRRPlh3ybjHedKZ2hqG9K3RO96SJg5iDtMg7OwvWPbjp31Y0Peo2Gk8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzRO8B31CJIXLhlbr4X3nV4b8iq5A31HS8bkexMaONkbDV3vnlD
+	6++kqBm/pUEQqAhY+a2zeRedEmjpTABE/Shg0RYc4pVPoqojEEccGwVTkkaO+qmLXbfk2asDt/P
+	9uP1aZAxOoQdH1w/qt2ehLbk0lTA3+wk=
+X-Gm-Gg: ASbGncsh3ZrXgIAd29QXb9QwUce9w+AznuHagZHMbY8QCvMwpDl7M0mK1yl2/GfSHMp
+	uJa+g02J0apKujKbf7b2jDEA5Gq7GK2VnMSic3HR8O5WjHDy49wmNP7xkef+neXpYhGgP5WTv2L
+	+juTAEa7Iy8kZax2Y90UyEo+/1aT4kYYjjL8P9TKXNAOLF5Rsbh8reIxpyZni4MZgHuT/jDLZd7
+	rKtPmR3BaOhfCF5If98CQrflcZn66pMwA==
+X-Google-Smtp-Source: AGHT+IF9xS9zIPLVd9mdq7/JMQybGy8Xgz+q9bbofIy+73DmOLi0jPPcTP0oKWLA/uWg+rwJjrrYRhOjvk2YFE279pY=
+X-Received: by 2002:a17:90a:dfcd:b0:311:d05c:936 with SMTP id
+ 98e67ed59e1d1-32327b30c22mr1878474a91.17.1755129889875; Wed, 13 Aug 2025
+ 17:04:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: uu7x1hrokrb99unu8dj1ujno5qjt5p8d
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 9D5A820024
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1+HPF6zc+Fq7HDozljgVIZFEoX/jina3WA=
-X-HE-Tag: 1755129196-978234
-X-HE-Meta: U2FsdGVkX1+00n9ZlSbYdfJM38C+mwzZfjjFjptzs2clG1ZBMsHK1gpngHaoGukdEeSJR/yFjzJ9/wvviAKnVIFFQwYwQd5jhjkTjkl3X5FpLGSJSOdUuIYkykSyIR/UAif3BSL3LBors0ThJxi+Ih++M1wT6ul9RDUAE6fisbj/eC1fX0IXuJpbcTXITov7helTIM0xnwo10MJ0lPIP6P8uQ9PW5HRiSJd9sc5AeS7zxaBX8G4Sr1bJ4EhulDD/VKKBOssRe5EsznGIHVOVjoSzsoWnPerSoWs0yCZXK5pfmxL4zf9Vyz1znmkJwOFPPVF8spncswberAUmDbIf+H91nLxqwiyx
+References: <20250807023430.4566-1-phoenix500526@163.com> <20250807023430.4566-3-phoenix500526@163.com>
+In-Reply-To: <20250807023430.4566-3-phoenix500526@163.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 13 Aug 2025 17:04:35 -0700
+X-Gm-Features: Ac12FXxJ2K6yApet6kDGXukuzPSe5D-s-BU63JZocGB_cjnyo8xhnOBFW7R8JPU
+Message-ID: <CAEf4BzbQ00YtbSqRotMEN4eBJC7aYNy9fFRO-Q_=Z0uS6O06mg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v8 2/2] selftests/bpf: Add an usdt_o2 test case
+ in selftests to cover SIB handling logic
+To: Jiawei Zhao <phoenix500526@163.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	yonghong.song@linux.dev, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 8 Aug 2025 22:24:05 -0400
-Sasha Levin <sashal@kernel.org> wrote:
+On Wed, Aug 6, 2025 at 7:35=E2=80=AFPM Jiawei Zhao <phoenix500526@163.com> =
+wrote:
+>
+> When using GCC on x86-64 to compile an usdt prog with -O1 or higher
+> optimization, the compiler will generate SIB addressing mode for global
+> array and PC-relative addressing mode for global variable,
+> e.g. "1@-96(%rbp,%rax,8)" and "-1@4+t1(%rip)".
+>
+> In this patch:
+> - add usdt_o2 test case to cover SIB addressing usdt argument spec
+>   handling logic
+>
+> Signed-off-by: Jiawei Zhao <phoenix500526@163.com>
+> ---
+>  tools/testing/selftests/bpf/Makefile          |  8 +++
+>  .../selftests/bpf/prog_tests/usdt_o2.c        | 71 +++++++++++++++++++
+>  .../selftests/bpf/progs/test_usdt_o2.c        | 37 ++++++++++
+>  3 files changed, 116 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/usdt_o2.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_usdt_o2.c
+>
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
+ts/bpf/Makefile
+> index 910d8d6402ef..68cf6a9cf05f 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -759,6 +759,14 @@ TRUNNER_BPF_BUILD_RULE :=3D $$(error no BPF objects =
+should be built)
+>  TRUNNER_BPF_CFLAGS :=3D
+>  $(eval $(call DEFINE_TEST_RUNNER,test_maps))
+>
+> +# Use -O2 optimization to generate SIB addressing usdt argument spec
+> +# Only apply on x86 architecture where SIB addressing is relevant
+> +ifeq ($(ARCH), x86)
+> +$(OUTPUT)/usdt_o2.test.o: CFLAGS:=3D$(subst O0,O2,$(CFLAGS))
+> +$(OUTPUT)/cpuv4/usdt_o2.test.o: CFLAGS:=3D$(subst O0,O2,$(CFLAGS))
+> +$(OUTPUT)/no_alu32/usdt_o2.test.o: CFLAGS:=3D$(subst O0,O2,$(CFLAGS))
+> +endif
+> +
 
-> So we've added a dynamically sized array to the end of
-> ftrace_graph_ent_entry, but in struct fgraph_data, the saved entry is
-> defined as:
-> 
->    struct fgraph_data {
->        ...
->        union {
->            struct ftrace_graph_ent_entry ent;
->            struct fgraph_retaddr_ent_entry rent;
->        } ent;
->        ...
->    }
-> 
-> Which doesn't seem to have room for args?
+Have you considered using GCC's __attribute__((optimize("O2")))
+attribute. It seems like Clang doesn't have support for something like
+that, but we'll still have this covered in BPF CI for GCC-built
+selftests. Then I'd just add this as another subtest to existing usdt
+tests.
 
-No it doesn't :-p
+Can you please try that?
 
-> 
-> The code in get_return_for_leaf() does:
-> 
->    data->ent.ent = *curr;
-> 
-> This copies the struct, but curr points to a larger entry with args
-> data. The copy operation only copies sizeof(struct
-> ftrace_graph_ent_entry) bytes, which doesn't include the dynamic args
-> array.
-> 
-> And then later functions (like print_graph_entry()) would go ahead and
-> assume that iter->ent_size is sane and make a mess out of everything.
-> 
-> I can't test right now whether this actually fixes the issues or not,
-> but I wanted to bring this up as this looks somewhat odd and I'm not too
-> familiar with this code.
+>  # Define test_verifier test runner.
+>  # It is much simpler than test_maps/test_progs and sufficiently differen=
+t from
+>  # them (e.g., test.h is using completely pattern), that it's worth just
+> diff --git a/tools/testing/selftests/bpf/prog_tests/usdt_o2.c b/tools/tes=
+ting/selftests/bpf/prog_tests/usdt_o2.c
+> new file mode 100644
+> index 000000000000..f04b756b3640
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/usdt_o2.c
+> @@ -0,0 +1,71 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2025 Jiawei Zhao <phoenix500526@163.com>. */
+> +#include <test_progs.h>
+> +
+> +#define _SDT_HAS_SEMAPHORES 1
+> +#include "../sdt.h"
+> +#include "test_usdt_o2.skel.h"
+> +
+> +int lets_test_this(int);
+> +
+> +#define test_value 0xFEDCBA9876543210ULL
+> +#define SEC(name) __attribute__((section(name), used))
+> +
+> +
+> +static volatile __u64 array[1] =3D {test_value};
+> +unsigned short test_usdt1_semaphore SEC(".probes");
+> +
 
-Thanks for the detail analysis, can you test this patch?
+Is semaphore essential to this test?
 
--- Steve
+> +static __always_inline void trigger_func(void)
+> +{
+> +       /* Base address + offset + (index * scale) */
+> +       if (test_usdt1_semaphore) {
+> +               for (volatile int i =3D 0; i <=3D 0; i++)
+> +                       STAP_PROBE1(test, usdt1, array[i]);
+> +       }
+> +}
+> +
 
-diff --git a/kernel/trace/trace_functions_graph.c b/kernel/trace/trace_functions_graph.c
-index 66e1a527cf1a..25ea71edb8da 100644
---- a/kernel/trace/trace_functions_graph.c
-+++ b/kernel/trace/trace_functions_graph.c
-@@ -35,6 +35,11 @@ struct fgraph_data {
- 		struct ftrace_graph_ent_entry	ent;
- 		struct fgraph_retaddr_ent_entry	rent;
- 	} ent;
-+	/*
-+	 * The @args must be right after @ent, as it is where they
-+	 * are stored in case the function graph tracer has arguments.
-+	 */
-+	unsigned long			args[FTRACE_REGS_MAX_ARGS];
- 	struct ftrace_graph_ret_entry	ret;
- 	int				failed;
- 	int				cpu;
-@@ -623,14 +628,29 @@ get_return_for_leaf(struct trace_iterator *iter,
- 		next = ring_buffer_event_data(event);
- 
- 		if (data) {
-+			int args_size;
-+			int size;
-+
- 			/*
- 			 * Save current and next entries for later reference
- 			 * if the output fails.
- 			 */
--			if (unlikely(curr->ent.type == TRACE_GRAPH_RETADDR_ENT))
-+			if (unlikely(curr->ent.type == TRACE_GRAPH_RETADDR_ENT)) {
- 				data->ent.rent = *(struct fgraph_retaddr_ent_entry *)curr;
--			else
-+				size = offsetof(struct fgraph_retaddr_ent_entry, args);
-+			} else {
- 				data->ent.ent = *curr;
-+				size = offsetof(struct ftrace_graph_ent_entry, args);
-+			}
-+
-+			/* If this has args, then append them to after the ent. */
-+			args_size = iter->ent_size - size;
-+			if (args_size > sizeof(long) * FTRACE_REGS_MAX_ARGS)
-+				args_size = sizeof(long) * FTRACE_REGS_MAX_ARGS;
-+
-+			if (args_size >= sizeof(long))
-+				memcpy((void *)&data->ent.ent + size,
-+				       (void*)curr + size, args_size);
- 			/*
- 			 * If the next event is not a return type, then
- 			 * we only care about what type it is. Otherwise we can
+[...]
 
