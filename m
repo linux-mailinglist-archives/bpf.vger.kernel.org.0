@@ -1,272 +1,145 @@
-Return-Path: <bpf+bounces-65619-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65620-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43253B26045
-	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 11:11:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE03CB26159
+	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 11:47:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1576B16CB64
-	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 09:06:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D8263B1030
+	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 09:41:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82F2D2FC898;
-	Thu, 14 Aug 2025 09:01:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFB602E92AC;
+	Thu, 14 Aug 2025 09:41:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gapjnHf7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WdNHMX1K"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ADC32FC874;
-	Thu, 14 Aug 2025 09:00:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6EF11A9F94;
+	Thu, 14 Aug 2025 09:41:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755162062; cv=none; b=q9bOOBc9xfnFif2X+2KjyeIOBaAEIW/dPTmYlKrH6yf9qdSwlF00589RAIih9mJaRQW/WaTWCGRmU998ZJYeyD7c/dRiHHPNI10GlVxisgmrBJJxiZhDamfKwLelpYraPyneCBxJwMabnlAFA9ljXwPTHCd05G3V9EgDde7v7A8=
+	t=1755164495; cv=none; b=MTYXp1KvVTtVk3qzD5HbbNgomZcI1laAZ+8wOggIibhk2WSN0Ymd7PAvxyaWYH5GAbPt71/DdlMdr6TdJRl6N88p0vXTxzQeOoURuinHex0iwLPjXeVHV1U0g+pngHemhvHx9gnP32YRT8QX3mCCoF8HNGjH0CQ6fFgefEcjO/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755162062; c=relaxed/simple;
-	bh=kfIC01s9yQ5mKJ/rXXEH1XcjUrgB4lPfBVa1ADMWbTM=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lVihG2db9zrOTnh8C9mWe5vxDKUSXB/Br42IWd48zNT85TJtVVrTBJHLVTNUX5ZgrKnqkZymO/Rycl60gdeHxHMMTaEMUh6yM1UEsGw+qefcEnGJc6rraQGeGE+Eius153aN00laRlFFvDLfCA4nVROuim1LGjsA+SeIpaFk50I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gapjnHf7; arc=none smtp.client-ip=209.85.128.41
+	s=arc-20240116; t=1755164495; c=relaxed/simple;
+	bh=fqWw6Rlkb6iW5fYfJR1lVN007rszHDAUsQ5oLmIgy/M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=p88OMIUVGIJ6n2ye3pMy9AcU9ILxo1OxNWHkHdJcguseoqbSCGktNOKtuaWhpge3QbQBty0v20wI/M1WPoFr7iV6xn9gX0W5xMaTw/Vj95DeAzkxNz23S5YrLTQ3DBsGgcuArrrtGZcZdpHwmW5zQ54zupp1e64uwdRNoV/W3is=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WdNHMX1K; arc=none smtp.client-ip=209.85.128.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-45a1b065d58so4449735e9.1;
-        Thu, 14 Aug 2025 02:00:59 -0700 (PDT)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-45a1b0bd237so5753915e9.2;
+        Thu, 14 Aug 2025 02:41:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755162058; x=1755766858; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=yDGB2cR8if6ZH2zs0PF/R7505/JlUyKM0m/lfviOAcM=;
-        b=gapjnHf7zhkDXjd/6RRMMJo54DdfkIloPZjcuOmOhZFBU9Tteyoj+x8UHqn3GP+bon
-         CUYrF7i5qKn+WSsUDNemPHjasXI1tggL2sCjMzopET2DEOlcpVHjF5WbU1FbnL8DNMXz
-         0WAPHolVQ+OPXZdxxKM/pbAW5ZICyKuHozytfhF9x+iFK+FIfElnvuqB0rk1PbUInkBC
-         +NQV0kxtnKPxuiELDc5OAWIVQxPEV1qAVsdtRhGftBIuwU80hgWHTw5jcgLFgLn7Tn2c
-         gXvTod/df6qYvR8tPPJDI/fO0oucwm4y32Y+2wGetfbYZ/rwWcuU8U0DxKiGvc5eaYzq
-         9q8Q==
+        d=gmail.com; s=20230601; t=1755164492; x=1755769292; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mfVsnps5PF16eK/6Z6rbqgY0AeNAHzhL7ZogriCupsE=;
+        b=WdNHMX1KzEEAylfU/Dya/2xOa3nxCBrjaVnGtOPiX9yf+Ib0r1jt3DSx3XbKFBJRY3
+         BgYQNh/8s2zevQPbORjzt1Fzwn62qw/eTL6XgIgUlQyz26RWjvQ/LSyruP9HBVHqXGER
+         HrB5guwvkSZtsqLHpVZYTVvDnd27qONC4xsFs0zU14pXKv7+8BudIw/gD7SPjWQUmpLb
+         dWOTjz8523FCxf+ZFO8KyQIRKjgxgSQaPvaTwP5KHfYLhvdk6MZn4+jRCVZlbPcE1w5P
+         t84QEbtlZNgTwGb+pvDDgjvK69T4vgTS/SdmjxDmXvHaXnZzDDYKWoFqGNSAG/U3ICNv
+         fvJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755162058; x=1755766858;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yDGB2cR8if6ZH2zs0PF/R7505/JlUyKM0m/lfviOAcM=;
-        b=iA0/oZ6mASJepv+h4RGBNiF1Om86USTwYeDu5o55hnlU6wte7XOtT6O2IBvugcUZUd
-         c7+/1lddaXgyn17m0CahZUAGmsCXVsB98NwizkmotLZU5wceefNXDnM1BQjjV1BrpvOu
-         5kgN60zIdPwNg4MlKhtzrCOjHUnho5VNtkgOaDjaETU5YjaOrb9VRxzrBge4LpYDatR4
-         msv83ekOIxJJim4+FnLJv76oVxSWRhrQhaGCxIqkFLm7bJc9xleyxIjF8dP3phFLFvvD
-         9l3v1y/WhKDtLh1snA0EVpUi22+4C0ekUabgleYqg6Xk5d8JhT+d2B6/QT1dQE2RcjNT
-         lE7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVUpzqDibg4tSrSLWPvyrzhc8+4KDIDTg5JIlgNuslLEUptZadRhDBbbHspAqf/k6wopD0=@vger.kernel.org, AJvYcCWZveWSPwIYbAQpJ+uX776iZ7Il51qL7VRYKtIt9txXnoVR4qs1A6lXZvxPl3/WxwubQNoadwR7TJXtdryzWnQy@vger.kernel.org, AJvYcCXsbKTgZesVhLhEXIk1KLMuIt1gxbMzAZ62Bnm176eqQfJybf9QQjdFo/vEhr8koMAowijJV6U4VvQQfq1O@vger.kernel.org
-X-Gm-Message-State: AOJu0YymQ2MiHjrvzbWvrA4ppZh2/GrcHD9rxMgj3xygKWx7D/82Sw2A
-	Zl7nBP21DmxJ6A80jVLI+5HfIiFwMaklDLsvI3pnpCHTzVY91Upki8IY
-X-Gm-Gg: ASbGncuAVRb7P97v2fhocv8oHGeveLOF4o1v/SJWoee6EB1PSF6oyp2UoQrA2Wg78po
-	jrHHfu5laEj+9xGyjNv87m4VCUWMKTD5C82C988TsolMbTo8IwzA+ZM7YaHNb90TpzQk858ZU59
-	/k2RLDjDXMWIbt23nwo9C/0ExZOoACiqqhsRdI3aTF5+LbSgPfouYFPDI9CVMXWBgYMhCu8whD7
-	HuGjZftmWZ9VALAJbiqxyogeUdEsFdJp4VsZKIwGPEPHAhhajBKXJXhYNuuo5tIKCFG4NVdSeso
-	AkzMGGxuC8sWdZx9JekNj4iUiYC2LeQHIKHopscWHxOWQ7c61uw4eWRac9ACesyxKzAfyaFR
-X-Google-Smtp-Source: AGHT+IEf/HOG+lNROoBVhIXSDZhNx2uqtQGIfsWzrtShrYamuDneVKSjmMOtgfiCLgih4GixA55L9Q==
-X-Received: by 2002:a05:600c:3507:b0:43c:ec0a:ddfd with SMTP id 5b1f17b1804b1-45a1b605850mr15218395e9.6.1755162058105;
-        Thu, 14 Aug 2025 02:00:58 -0700 (PDT)
-Received: from krava ([2a02:8308:a00c:e200::31e0])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45a1c6e336csm13777865e9.16.2025.08.14.02.00.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Aug 2025 02:00:57 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 14 Aug 2025 11:00:55 +0200
-To: Jiawei Zhao <phoenix500526@163.com>
-Cc: andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
-	daniel@iogearbox.net, shuah@kernel.org, yonghong.song@linux.dev,
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v8 2/2] selftests/bpf: Add an usdt_o2 test case
- in selftests to cover SIB handling logic
-Message-ID: <aJ2lxyUYfQkfQW2-@krava>
-References: <20250814064504.103401-1-phoenix500526@163.com>
- <20250814064504.103401-3-phoenix500526@163.com>
+        d=1e100.net; s=20230601; t=1755164492; x=1755769292;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mfVsnps5PF16eK/6Z6rbqgY0AeNAHzhL7ZogriCupsE=;
+        b=qUHuyWe02uAb8mVgt0osRhA2aDAGggFB/wQzcWSULcAuzdRCbIqBUMGC59Y7ofGPCK
+         N2EC1zVyvdTYHh0paatuvJShQSgSCp5MVWUZbMqxlE6705suGKYjnEiJUhET+jLIkX/L
+         Ox+n68kG64B9tktSl4I/Im4O6MgiQEk9BvuI65snhKtGAK6eVEa4gjn4wt+OtiRsCtJo
+         Do4nZvcS4/061bbnrFie9fyflhH4YwQydJZADk3vGNYQuFM5HgfhK52ZC4QKCw8au2Pf
+         OsHWcHPp+7t587wHnPdqK7flzTg4cOYan8IZ+RC+VGvtkNTyq1SF+k6kW3ZDMsrPT8Pe
+         a+Rw==
+X-Forwarded-Encrypted: i=1; AJvYcCU0kjEf6iEtjZCvdajw6BIw9N/1i5NK2ZaITCxUU5k5odEyZhoX64QL+f9rTeQ95gFWQk40kdIOsTqOn83c@vger.kernel.org, AJvYcCUhSqEee1nzkkSZPEVUIm9056/35MmKw1w0G7jl7GVhC36OrCNz1kJUm0EtxZupAicVyfots7Dm@vger.kernel.org, AJvYcCUzIf11/JK+OxteUyNnNuxa6MDXsGQ7zAgI85AosVmIQ47j41Pi9buf27uhwZfnXk48tzUAuLDDXthC9w==@vger.kernel.org, AJvYcCUzhSGVJGk5mTYUtyn5/a2bYVFGqBaKTQ8qMn7XGtR1n7ARiX2YEUYzSbEmiV1kEE+Rz3Q=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxexseO+QNzdo8NW7uKOnExUh2P1u65km9GICzTudkSAvJ0WSdQ
+	qURPKQyuxh93tT9hgCojHNr4cgmDVqeiBy+pNLo8YyukR/cwtjtB/3xN
+X-Gm-Gg: ASbGncttQZUudnsUaiVp2jwj9hLEgb4VPD5o5Smv/joQCEn+YY1rYxbPvjf8Rx6xLMn
+	8IvlqUINnZDirCx+EP0cBIYKN94j2Se/ou+QvkTMSqjiR/Gug+Z4x2g0irEnk8x4pHHf278drY6
+	a8JbOkB/1oYEeN4djDuifMc0ZNzF9vxYqxcCDH7/FnhOehrJHvVl1Fe0GH8kB2/ZMhD64KiQ+mC
+	W/zp4SGVrBv0QpF2elJ1k+eOVxSl5sRQGoJ7VLiLT+pHFD+J/wm4xn6iGlun0JtNlpghquP2SJ6
+	9JPc2mh1WYx+6lOhlJiALRkD5u1w0BmFF3ExnMo936v1/69FlWDMBN354K1i6R3S7E6KSwPXf9p
+	+coWFmSP0xKEQCCH6te0Az6oUzcjy9Ww01JqKA3o39UXilw==
+X-Google-Smtp-Source: AGHT+IHBe3UbzHGADMZbxm6C1MQMCttafmz3pDCs0fFtOpYQDzgStuK34BlZw62Cf2j8jvkUuST0pA==
+X-Received: by 2002:a05:600c:3b93:b0:459:d780:3604 with SMTP id 5b1f17b1804b1-45a1b605845mr18547955e9.3.1755164491690;
+        Thu, 14 Aug 2025 02:41:31 -0700 (PDT)
+Received: from ?IPV6:2620:10d:c096:325::26f? ([2620:10d:c092:600::1:7acd])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45a1c6be10esm15261205e9.3.2025.08.14.02.41.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Aug 2025 02:41:30 -0700 (PDT)
+Message-ID: <e8d33a38-6465-432a-9c28-25f2689e95da@gmail.com>
+Date: Thu, 14 Aug 2025 10:42:47 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250814064504.103401-3-phoenix500526@163.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH linux-next v3] mm, page_pool: introduce a new page type
+ for page pool in page type
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Byungchul Park <byungchul@sk.com>, akpm@linux-foundation.org,
+ linux-kernel@vger.kernel.org, kernel_team@skhynix.com, harry.yoo@oracle.com,
+ ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+ john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com,
+ leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
+ andrew+netdev@lunn.ch, edumazet@google.com, pabeni@redhat.com,
+ david@redhat.com, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
+ vbabka@suse.cz, rppt@kernel.org, surenb@google.com, mhocko@suse.com,
+ horms@kernel.org, jackmanb@google.com, hannes@cmpxchg.org, ziy@nvidia.com,
+ ilias.apalodimas@linaro.org, willy@infradead.org, brauner@kernel.org,
+ kas@kernel.org, yuzhao@google.com, usamaarif642@gmail.com,
+ baolin.wang@linux.alibaba.com, almasrymina@google.com, toke@redhat.com,
+ bpf@vger.kernel.org, linux-rdma@vger.kernel.org, sfr@canb.auug.org.au,
+ linux-mm@kvack.org, netdev@vger.kernel.org
+References: <20250729110210.48313-1-byungchul@sk.com>
+ <20250813060901.GA9086@system.software.com>
+ <6bbf6ca2-0c46-43b7-82d8-b990f01ae5dd@gmail.com>
+ <20250813075212.051b5178@kernel.org>
+Content-Language: en-US
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <20250813075212.051b5178@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Aug 14, 2025 at 06:45:04AM +0000, Jiawei Zhao wrote:
-> When using GCC on x86-64 to compile an usdt prog with -O1 or higher
-> optimization, the compiler will generate SIB addressing mode for global
-> array and PC-relative addressing mode for global variable,
-> e.g. "1@-96(%rbp,%rax,8)" and "-1@4+t1(%rip)".
+On 8/13/25 15:52, Jakub Kicinski wrote:
+> On Wed, 13 Aug 2025 12:18:56 +0100 Pavel Begunkov wrote:
+>> It should go to net, there will be enough of conflicts otherwise.
+>> mm maintainers, do you like it as a shared branch or can it just
+>> go through the net tree?
 > 
-> In this patch:
-> - add usdt_o2 test case to cover SIB addressing usdt argument spec
->   handling logic
+> Looks like this is 100% in mm, and the work is not urgent at all.
 
-hi,
-on my setup (gcc15) the test generates ust register argument:
+There is a slight dependency in rc1, but we should be able to
+massage it to be mm only.
 
-  stapsdt              0x0000002a       NT_STAPSDT (SystemTap probe descriptors)
-    Provider: test
-    Name: usdt1
-    Location: 0x00000000007677ce, Base: 0x00000000035bc728, Semaphore: 0x0000000000000000
-    Arguments: 8@%rax
+> So I'm happy for Andrew to take this, and dependent patches (if any)
+> can come in the next cycle.
 
-
-  7677c6:       48 8b 04 c5 20 49 9c    mov    0x39c4920(,%rax,8),%rax
-  7677cd:       03
-  7677ce:       90                      nop
-
-
-I'm not sure if there's reliable solution to generate SIB argument from gcc,
-maybe we could generate all in assembly, but that might get complicated
-
-jirka
-
-
+Yeah, good option. It'd be a good idea to cut the diff down to
+avoid removing the relevant mm page state checks until the next
+cycle.
+  >> @@ -1379,9 +1376,11 @@ __always_inline bool free_pages_prepare(struct page *page,
+>>    		mod_mthp_stat(order, MTHP_STAT_NR_ANON, -1);
+>>    		folio->mapping = NULL;
+>>    	}
+>> -	if (unlikely(page_has_type(page)))
+>> +	if (unlikely(page_has_type(page))) {
+>> +		WARN_ON_ONCE(PageNet_pp(page));
 > 
-> Signed-off-by: Jiawei Zhao <phoenix500526@163.com>
-> ---
->  tools/testing/selftests/bpf/Makefile          |  1 +
->  .../selftests/bpf/prog_tests/usdt_o2.c        | 69 +++++++++++++++++++
->  .../selftests/bpf/progs/test_usdt_o2.c        | 37 ++++++++++
->  3 files changed, 107 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/usdt_o2.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_usdt_o2.c
-> 
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index 4863106034df..24ff1a329625 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -760,6 +760,7 @@ TRUNNER_BPF_BUILD_RULE := $$(error no BPF objects should be built)
->  TRUNNER_BPF_CFLAGS :=
->  $(eval $(call DEFINE_TEST_RUNNER,test_maps))
->  
-> +
->  # Define test_verifier test runner.
->  # It is much simpler than test_maps/test_progs and sufficiently different from
->  # them (e.g., test.h is using completely pattern), that it's worth just
-> diff --git a/tools/testing/selftests/bpf/prog_tests/usdt_o2.c b/tools/testing/selftests/bpf/prog_tests/usdt_o2.c
-> new file mode 100644
-> index 000000000000..f02dcf5188ab
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/usdt_o2.c
-> @@ -0,0 +1,69 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2025 Jiawei Zhao <phoenix500526@163.com>. */
-> +#include <test_progs.h>
-> +
-> +#include "../sdt.h"
-> +#include "test_usdt_o2.skel.h"
-> +
-> +#if defined(__GNUC__) && !defined(__clang__)
-> +__attribute__((optimize("O2")))
-> +#endif
-> +
-> +#define test_value 0xFEDCBA9876543210ULL
-> +#define SEC(name) __attribute__((section(name), used))
-> +
-> +int lets_test_this(int);
-> +static volatile __u64 array[1] = {test_value};
-> +
-> +static __always_inline void trigger_func(void)
-> +{
-> +	/* Base address + offset + (index * scale) */
-> +	for (volatile int i = 0; i <= 0; i++)
-> +		STAP_PROBE1(test, usdt1, array[i]);
-> +}
-> +
-> +static void basic_sib_usdt(void)
-> +{
-> +	LIBBPF_OPTS(bpf_usdt_opts, opts);
-> +	struct test_usdt_o2 *skel;
-> +	struct test_usdt_o2__bss *bss;
-> +	int err;
-> +
-> +	skel = test_usdt_o2__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "skel_open"))
-> +		return;
-> +
-> +	bss = skel->bss;
-> +	bss->my_pid = getpid();
-> +
-> +	err = test_usdt_o2__attach(skel);
-> +	if (!ASSERT_OK(err, "skel_attach"))
-> +		goto cleanup;
-> +
-> +	/* usdt1 won't be auto-attached */
-> +	opts.usdt_cookie = 0xcafedeadbeeffeed;
-> +	skel->links.usdt1 = bpf_program__attach_usdt(skel->progs.usdt1,
-> +						     0 /*self*/, "/proc/self/exe",
-> +						     "test", "usdt1", &opts);
-> +	if (!ASSERT_OK_PTR(skel->links.usdt1, "usdt1_link"))
-> +		goto cleanup;
-> +
-> +	trigger_func();
-> +
-> +	ASSERT_EQ(bss->usdt1_called, 1, "usdt1_called");
-> +	ASSERT_EQ(bss->usdt1_cookie, 0xcafedeadbeeffeed, "usdt1_cookie");
-> +	ASSERT_EQ(bss->usdt1_arg_cnt, 1, "usdt1_arg_cnt");
-> +	ASSERT_EQ(bss->usdt1_arg, test_value, "usdt1_arg");
-> +	ASSERT_EQ(bss->usdt1_arg_ret, 0, "usdt1_arg_ret");
-> +	ASSERT_EQ(bss->usdt1_arg_size, sizeof(array[0]), "usdt1_arg_size");
-> +
-> +cleanup:
-> +	test_usdt_o2__destroy(skel);
-> +}
-> +
-> +
-> +
-> +void test_usdt_o2(void)
-> +{
-> +	basic_sib_usdt();
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/test_usdt_o2.c b/tools/testing/selftests/bpf/progs/test_usdt_o2.c
-> new file mode 100644
-> index 000000000000..14602aa54578
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_usdt_o2.c
-> @@ -0,0 +1,37 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-> +
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/usdt.bpf.h>
-> +
-> +int my_pid;
-> +
-> +int usdt1_called;
-> +u64 usdt1_cookie;
-> +int usdt1_arg_cnt;
-> +int usdt1_arg_ret;
-> +u64 usdt1_arg;
-> +int usdt1_arg_size;
-> +
-> +SEC("usdt")
-> +int usdt1(struct pt_regs *ctx)
-> +{
-> +	long tmp;
-> +
-> +	if (my_pid != (bpf_get_current_pid_tgid() >> 32))
-> +		return 0;
-> +
-> +	__sync_fetch_and_add(&usdt1_called, 1);
-> +
-> +	usdt1_cookie = bpf_usdt_cookie(ctx);
-> +	usdt1_arg_cnt = bpf_usdt_arg_cnt(ctx);
-> +
-> +	usdt1_arg_ret = bpf_usdt_arg(ctx, 0, &tmp);
-> +	usdt1_arg = (u64)tmp;
-> +	usdt1_arg_size = bpf_usdt_arg_size(ctx, 0);
-> +
-> +	return 0;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
-> -- 
-> 2.43.0
-> 
-> 
+> I guess my ask to add a comment here got ignored?
+
+It's an old patch attached as a point of reference. Any actual submission
+surely will need to follow up on the reviews.
+
+-- 
+Pavel Begunkov
+
 
