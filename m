@@ -1,144 +1,199 @@
-Return-Path: <bpf+bounces-65686-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65688-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E551DB26F44
-	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 20:48:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23FD7B26FBB
+	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 21:34:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABBA4188D8E3
-	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 18:47:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 678B71CC740B
+	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 19:34:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BB4E225791;
-	Thu, 14 Aug 2025 18:46:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 604F7242D83;
+	Thu, 14 Aug 2025 19:34:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Led2VQRk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c7zzPeVw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C33A319871;
-	Thu, 14 Aug 2025 18:46:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7641423D7CB;
+	Thu, 14 Aug 2025 19:34:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755197210; cv=none; b=UuE276wwG2w5fC3M1utrPIgYXWB1wjaeV4ohYIylAZZBxuUxLSymHByu3IL118nkppYxi8PLMR13jX+kwdhxQtGFFI0DhcNEpGONijBmdc+AUFGkfdUxO48+Znn00p1iEKXRrBb5GcRUT504SPGlfEBugtogHkfmCbjxPvNn+1I=
+	t=1755200052; cv=none; b=a40dCST6QqEp4ZY8P5gQ97mtdrN8dUDLBICFq1JTxnUTjDyt9mgp6GkiLMCRoJowR9LLQBmBTWFYpACGRv+yybIbBdR8iL1gRTnUucC93Sxy+zG0NpejQf57IhMt9eZcMNk9jQAvj/LgC/eY1ZTxTdDDLBeNP0RtYtclHnSFHpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755197210; c=relaxed/simple;
-	bh=x6H1sCYrMWBlO1+FTMUCZHCK+Sy0NuMWhlPxt+LwaCA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ppOCx2jvS4NZHbafDJ6/mQQjaPw1OlcJKOu5JarcS2FJRWqL0pj7hXPQfTcs0u9FYgjvrWQSDqlvjuxnW3lSyfhVm323DdsQIP3kUrhB28Fdg4egyLMvM47Bq5sGifOVKikJ7fRxLxbX2XOdHywDEIB7LnpeBHtfbdqlXVjyoQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Led2VQRk; arc=none smtp.client-ip=209.85.215.180
+	s=arc-20240116; t=1755200052; c=relaxed/simple;
+	bh=Qk3LJxvLrLeL7w90cyKhd7zyf79hwEGsLTIGa7j9CFM=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=NM6vraLxzq30nmsTrKujDl5SNOFpHb6GQAiJySy5jNJrJC24j196WnFMKUMd0cRf31/AqUhixupOa4yzTjuzqZpzSClNibExiR//DhSHpCJ3/MCN9quroQvXdRuPvdz/3osH0EEhGeazeiuCV/nXpwk2PF115RL1dTXtrd7lisQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c7zzPeVw; arc=none smtp.client-ip=209.85.210.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-b471aaa085aso588896a12.0;
-        Thu, 14 Aug 2025 11:46:49 -0700 (PDT)
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-76e2e88c6a6so1334985b3a.1;
+        Thu, 14 Aug 2025 12:34:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755197208; x=1755802008; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UZt2FwqUJYFYMhgC46MMPPWX4x96r4daHxoYBQIix9M=;
-        b=Led2VQRkHeE8V/TN3SXq9NVhhz9t0YaBo3aKls7cLkjA0CvMfc/+e7lFkj9zgjvCHR
-         kFKDVOv388jQjdnSpNdgXB3sFVJOYve4IDICdVggwmpAXU7S7xgQFRto13p7/xxdTqtQ
-         ci4mODxKxd/plI32Mi5Jv2rPgM3wCoRpTtKlfLF26Kvc26lHI/JD33MYSBlPu4hBEdkE
-         seqt01OtWWk9Ya2KaZTsoo0FoZTy28Ahr+wjrlRK9Npy3mpeYwBjT71SLeDH+vvfdYWI
-         eC0MrpihgCkKAadRFORIFbCld5/abTgLLiJ/uqYV5CdYXEzYcohvcOXNetWVqjTjOjuC
-         4O0A==
+        d=gmail.com; s=20230601; t=1755200051; x=1755804851; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ph3lMnf/naqx4kIu+sBrXc4AAuPsDaAu/FwSldVU/DM=;
+        b=c7zzPeVwsIW+Za7TxB3Ay2eB+OP8QjqjkCIQy6KuCqQKFX5/5XDL5FG0/WXlewzYKT
+         GY2HOrcVngoBe4VKcFz6Lp0V9bL16/R8ERknfXTYr7qYvfQWI1Nm7/HIDlcjUwJDGYDX
+         lpbWt2W8q7rEBZZs2j+3q8ZMGTr/lMu+OCxQphcwLy2Q8PgiyllWr5bqbbIpbRiegXHi
+         Y2EcxuusvIXuSkiWi7SAou/adKEiQK4w+a9DAy+npYa8rRDTXX00k23jDcFgnqezU9jq
+         rthfCurcK1cg0Q8e3iOSvaz1zTJdBPmXwjIfb+NYNUM21JoxfrXm1TLvA4dVhtpnaa4I
+         /xxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755197208; x=1755802008;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UZt2FwqUJYFYMhgC46MMPPWX4x96r4daHxoYBQIix9M=;
-        b=fP5RyB2DkJ/QL2IQtphxwUUDJ2oM6FrqvydKkPN6qaxNuR8wscUfeQxWVe6DmQFqFx
-         DMdwvCe+qchmWaCr/OiO5aQ58m/LYVJJvlE8rTo97TBQa06+U+Tlt1k1fjTYUZGMVaHA
-         oWRWNfPkEN3tiAnXgWoIK0keUwGhfWSd9yrs16PuxvdAfhYoGIokuSZNh8UUx0y1XdDH
-         1ML8txBEl3vGEgHyPpPFhHv7CbP8f/ZCRHjYIVvzOi1PJV0gOtz5k4NUTb7YFksOgnaa
-         vzp/NHFEK+VPnjzYLlcZrZ7jBJqMrnpRzUp+XAg45GeOe6+621Rib/sdTMu7sV0761Xj
-         63mg==
-X-Forwarded-Encrypted: i=1; AJvYcCXEUAPp9sqL6e98Vl0Z+kxd9FGVICpAzetvVqT2527GIbG3BFpxLfllbb2mMPSNfbqd1GJC95UNoJonLZJIPH0Rz9HVg/Y=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz3JxxU+pIWI3TRW/KyVLiqNKzClWKO1x1tn92EGm40CU4fG+tf
-	Wh1jjiyxTqQTfeZXjA2BFVAITBsIamhfDjDgvtkWVxs/Zf/8YWhN9GqZFM3lHnWiWzpXC85tj0o
-	FX5+3GrCOR4U6Jc31Rk4aA6AEBKMEnzw=
-X-Gm-Gg: ASbGnctbZs+BdA+imN8GZM2NiCz19hNNm/TbGxs43C+dqpP7OkTjGfqeKctr6zkLZ7W
-	KWR6hUIPqaCWV7exO8u0lJBjHAtRq8n2q2SyVCKR3Stop5m1DZD6zMmHqMdmQLKfgHTUROze89O
-	MZxByT+rEg86A35OdvDDogFOEU3K4VmIxUk3SB22B0VELIFsv3pQI+udwIQhr0aoKVLDbNLl3xA
-	RJJsYffvsUIBOQ=
-X-Google-Smtp-Source: AGHT+IFECgDEj9+FHO3K4h++ME+N1wfAf8p+Alx12ZcLfHK2jqqfHF47I9PQx1a/IxaPeS7DbpJ0Lbg7CyUaTrmXxsY=
-X-Received: by 2002:a17:90b:2241:b0:31f:2bbb:e6a8 with SMTP id
- 98e67ed59e1d1-3232978cf5emr5315329a91.12.1755197208313; Thu, 14 Aug 2025
- 11:46:48 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1755200051; x=1755804851;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ph3lMnf/naqx4kIu+sBrXc4AAuPsDaAu/FwSldVU/DM=;
+        b=F/lQFfPO35wg7+yb13wmPjApl/tC4DoyoSZxHtvkTNLpfAv0WBNRT2u0O+UbK6oynC
+         APluG5nQ/ixhduD5FQEO8CHIwE2pp7Ght9KOeQbZdfMWnq5XHyA9qIGSvdyEklt3tPVN
+         SEJaSOU80RngTuh4o/lrhqCdPaMzNbVTXnS/PqbiKv/T1PWWzr+UCx/m8+P09fIFgmDZ
+         Ci0WzXl7qJr1Ddjq3SftGjPLNUBKZ4EfzW/nccWYj7I47oaZ2PAC4r+l0HJSTnD3XlSu
+         Ez9DtyUHq4ZRAF+s/ENfCZySe1l8wCIGGeygLEeK0286vusfwdiIQtLvVNgS3movWeoU
+         Rviw==
+X-Forwarded-Encrypted: i=1; AJvYcCUN0RO3IGca2+xAzMy0iss8Ph4xdP8S6wt8l54mNpmOiJrbVhqDO/MUh1VMaocDPwCcz0rj8PPDCSP1H8Bdd2QN@vger.kernel.org, AJvYcCWrpPKPgJw6AyzwSKoXXpj/2E+lgYa53GtSOHn5QRZOZu0jABWMJ6LBmVM1OnRa+RzUupsbTAfZjuSPzYDk@vger.kernel.org, AJvYcCWv2jP1AAqDmSRAr7pXt0aRp178QM1DEp7pnFpwBs077YdoCNqOGv7gEgR4Z4F8phJJ3Qg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzRJU1NGC5nLsr28M6tWlqN9l+gHrDD0dD95VjBdVdV54OIOPAU
+	eGp0laYHtwp4rGKW/Ach1h1RnSFmM7bBgtiR9AcB+5l6lW9behMvgDsA
+X-Gm-Gg: ASbGncv/jxB6Jn6VizeVWUSIwwwKOdRTfD04Jk/gRQVDA6EyuX1xiOEKKV7jPyqrAor
+	Fyqi/i3HxQt57Jvc8C2rnWjp2NJoN/ubCbHQtisfQZ3JewHgBTIYIuuPFZzyuDS0HP3u7JyMScr
+	Elq4vKIe6OGVyGWY5XMsMVrE2O2JoPN7bF8SP60ysgbP6bIMqoydJTQhENWhMKQpAtQmToIsiOV
+	zeZSqHFOv10dJFn5FH9WyjPxvw1/yo4OcSrho7XO2PzzvSMfnsXsmwODrqL+ShSiMG2/O5jBdiq
+	G+25yV08YYiHF1UmQowZRM8vCPdA4VGGNPtP2TjjjUXbawWKkGMtF1+B0zv7IUTf7LgqRmajESz
+	Y1ls0C40Cb+v8NkFVy2c=
+X-Google-Smtp-Source: AGHT+IFUEIY9vORrpt4ExifIxwW7E2UMP0tvZ0JoTmokdM7c0a4ZOgc7aGTVAzSPq1YqpkBgsbMT0g==
+X-Received: by 2002:a05:6a00:4650:b0:76b:ef69:1543 with SMTP id d2e1a72fcca58-76e2fc0c9b8mr7490600b3a.8.1755200050754;
+        Thu, 14 Aug 2025 12:34:10 -0700 (PDT)
+Received: from [192.168.0.226] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-76e16df3a2dsm7038314b3a.33.2025.08.14.12.34.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Aug 2025 12:34:10 -0700 (PDT)
+Message-ID: <8d9cdce252162519c7679132a5e3235d03ac97c0.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 2/4] libbpf: ringbuf: Add overwrite ring buffer
+ process
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Xu Kuohai <xukuohai@huaweicloud.com>, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>, Yonghong Song <yhs@fb.com>, Song Liu	
+ <song@kernel.org>, John Fastabend <john.fastabend@gmail.com>, KP Singh	
+ <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo	
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko
+ <mykolal@fb.com>,  Shuah Khan <shuah@kernel.org>, Stanislav Fomichev
+ <sdf@fomichev.me>, Willem de Bruijn <willemb@google.com>,  Jason Xing
+ <kerneljasonxing@gmail.com>, Paul Chaignon <paul.chaignon@gmail.com>, Tao
+ Chen	 <chen.dylane@linux.dev>, Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+ Martin Kelly <martin.kelly@crowdstrike.com>
+Date: Thu, 14 Aug 2025 12:34:05 -0700
+In-Reply-To: <20250804022101.2171981-3-xukuohai@huaweicloud.com>
+References: <20250804022101.2171981-1-xukuohai@huaweicloud.com>
+	 <20250804022101.2171981-3-xukuohai@huaweicloud.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250813205526.2992911-1-kpsingh@kernel.org> <20250813205526.2992911-10-kpsingh@kernel.org>
-In-Reply-To: <20250813205526.2992911-10-kpsingh@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 14 Aug 2025 11:46:36 -0700
-X-Gm-Features: Ac12FXw-apthRBOTCJyBjTyEFha5FW2vzP0wxRecJbbdzQMLKo8D6HDQ-b34S2s
-Message-ID: <CAEf4BzbYUPLH97fkFQ3oHqKok=OEREyd1VVkmqfVh0rUvX_1sQ@mail.gmail.com>
-Subject: Re: [PATCH v3 09/12] libbpf: Update light skeleton for signing
-To: KP Singh <kpsingh@kernel.org>
-Cc: bpf@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	bboscaccy@linux.microsoft.com, paul@paul-moore.com, kys@microsoft.com, 
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 13, 2025 at 1:55=E2=80=AFPM KP Singh <kpsingh@kernel.org> wrote=
-:
->
-> * The metadata map is created with as an exclusive map (with an
-> excl_prog_hash) This restricts map access exclusively to the signed
-> loader program, preventing tampering by other processes.
->
-> * The map is then frozen, making it read-only from userspace.
->
-> * BPF_OBJ_GET_INFO_BY_ID instructs the kernel to compute the hash of the
->   metadata map (H') and store it in bpf_map->sha.
->
-> * The loader is then loaded with the signature which is then verified by
->   the kernel.
->
-> The sekeleton currently uses the session keyring
-> (KEY_SPEC_SESSION_KEYRING) by default but this can
-> be overridden by the user of the skeleton.
->
-> loading signed programs prebuilt into the kernel are not currently
-> supported. These can supported by enabling BPF_OBJ_GET_INFO_BY_ID to be
-> called from the kernel.
->
-> Signed-off-by: KP Singh <kpsingh@kernel.org>
-> ---
->  tools/lib/bpf/skel_internal.h | 75 +++++++++++++++++++++++++++++++++--
->  1 file changed, 71 insertions(+), 4 deletions(-)
->
+On Mon, 2025-08-04 at 10:20 +0800, Xu Kuohai wrote:
 
 [...]
 
-> +static inline int skel_obj_get_info_by_fd(int fd)
+> @@ -278,6 +293,92 @@ static int64_t ringbuf_process_ring(struct ring *r, =
+size_t n)
+>  	return cnt;
+>  }
+> =20
+> +static int64_t ringbuf_process_overwrite_ring(struct ring *r, size_t n)
 > +{
-> +       const size_t attr_sz =3D offsetofend(union bpf_attr, info);
-> +       __u8 sha[SHA256_DIGEST_LENGTH];
-> +       struct bpf_map_info info =3D {};
-
-memset(0) this instead of relying on =3D {}
-
-> +       __u32 info_len =3D sizeof(info);
-> +       union bpf_attr attr;
 > +
-> +       info.hash =3D (long) &sha;
-> +       info.hash_size =3D SHA256_DIGEST_LENGTH;
+> +	int err;
+> +	uint32_t *len_ptr, len;
+> +	/* 64-bit to avoid overflow in case of extreme application behavior */
+> +	int64_t cnt =3D 0;
+> +	size_t size, offset;
+> +	unsigned long cons_pos, prod_pos, over_pos, tmp_pos;
+> +	bool got_new_data;
+> +	void *sample;
+> +	bool copied;
 > +
-> +       memset(&attr, 0, attr_sz);
-> +       attr.info.bpf_fd =3D fd;
-> +       attr.info.info =3D (long) &info;
-> +       attr.info.info_len =3D info_len;
-> +       return skel_sys_bpf(BPF_OBJ_GET_INFO_BY_FD, &attr, attr_sz);
+> +	size =3D r->mask + 1;
+> +
+> +	cons_pos =3D smp_load_acquire(r->consumer_pos);
+> +	do {
+> +		got_new_data =3D false;
+> +
+> +		/* grab a copy of data */
+> +		prod_pos =3D smp_load_acquire(r->producer_pos);
+> +		do {
+> +			over_pos =3D READ_ONCE(*r->overwrite_pos);
+> +			/* prod_pos may be outdated now */
+> +			if (over_pos < prod_pos) {
+> +				tmp_pos =3D max(cons_pos, over_pos);
+> +				/* smp_load_acquire(r->producer_pos) before
+> +				 * READ_ONCE(*r->overwrite_pos) ensures that
+> +				 * over_pos + r->mask < prod_pos never occurs,
+> +				 * so size is never larger than r->mask
+> +				 */
+> +				size =3D prod_pos - tmp_pos;
+> +				if (!size)
+> +					goto done;
+> +				memcpy(r->read_buffer,
+> +				       r->data + (tmp_pos & r->mask), size);
+> +				copied =3D true;
+> +			} else {
+> +				copied =3D false;
+> +			}
+> +			prod_pos =3D smp_load_acquire(r->producer_pos);
+> +		/* retry if data is overwritten by producer */
+> +		} while (!copied || prod_pos - tmp_pos > r->mask);
+
+Could you please elaborate a bit, why this condition is sufficient to
+guarantee that r->overwrite_pos had not changed while memcpy() was
+executing?
+
+> +
+> +		cons_pos =3D tmp_pos;
+> +
+> +		for (offset =3D 0; offset < size; offset +=3D roundup_len(len)) {
+> +			len_ptr =3D r->read_buffer + (offset & r->mask);
+> +			len =3D *len_ptr;
+> +
+> +			if (len & BPF_RINGBUF_BUSY_BIT)
+> +				goto done;
+> +
+> +			got_new_data =3D true;
+> +			cons_pos +=3D roundup_len(len);
+> +
+> +			if ((len & BPF_RINGBUF_DISCARD_BIT) =3D=3D 0) {
+> +				sample =3D (void *)len_ptr + BPF_RINGBUF_HDR_SZ;
+> +				err =3D r->sample_cb(r->ctx, sample, len);
+> +				if (err < 0) {
+> +					/* update consumer pos and bail out */
+> +					smp_store_release(r->consumer_pos,
+> +							  cons_pos);
+> +					return err;
+> +				}
+> +				cnt++;
+> +			}
+> +
+> +			if (cnt >=3D n)
+> +				goto done;
+> +		}
+> +	} while (got_new_data);
+> +
+> +done:
+> +	smp_store_release(r->consumer_pos, cons_pos);
+> +	return cnt;
 > +}
 
 [...]
