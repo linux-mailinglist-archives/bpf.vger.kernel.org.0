@@ -1,224 +1,148 @@
-Return-Path: <bpf+bounces-65664-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65665-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAE79B26BD4
-	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 18:04:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4345BB26BFB
+	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 18:10:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 672A41CE5CBC
-	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 15:59:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0757173F08
+	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 16:06:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0B7D221FB6;
-	Thu, 14 Aug 2025 15:58:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07AEF248894;
+	Thu, 14 Aug 2025 16:06:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JdZYZAPh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QdhgNAEH"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 237F11C5486;
-	Thu, 14 Aug 2025 15:58:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31049220F55;
+	Thu, 14 Aug 2025 16:06:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755187108; cv=none; b=PYSAIoRwn3JqDioEKtq27Gq5qQF/7pyxljwnRn/nSiOytGRX+/d0PD05IAOdSwfqj1yNsNDa0+fhfn76Gq3I3NGgX27xi52IfvFBBFBWmys1+I4e1hW8vK2+B23fAoYw3eApwwmlzuhH7H3sUDpaJI3VxFoOKqPSsIuaDwG6a6A=
+	t=1755187602; cv=none; b=BceVhMZc7VKP2a+d+fAhPWmHPatDj7UyXa/oMuPJoJX9QnOzMKUuwd4CJRHvwso9J98SuzrLqeEP122UJcOZdZDZgGf7qR697ZJXpqoiPZ134PlugzpsEtdZ+iT5VJvpdd0c6BLAZTYVob2ndIOnR3IoFV6K0mn7E9frqAFZSAg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755187108; c=relaxed/simple;
-	bh=Y5BCUY/vfZOJE/H9WaGMwKhbW4Km+J9Jr+jMcFeKmaY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=b5o4CndmYqe9G12fF1YVUZZVxpljlUh5trTLBY+Bvh+simREeRnry9sy3bZoMSHmMh1tA5utuUHPTaLZR9jEgotj56aCxKUs7IcW/soOz/0EK4qbyCWoHyFjmK//60URAiqKdllLC/K7sfxKd6jGTwJf5I4vXpVOYS0uN1Nx/f4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JdZYZAPh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5767FC4CEED;
-	Thu, 14 Aug 2025 15:58:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755187107;
-	bh=Y5BCUY/vfZOJE/H9WaGMwKhbW4Km+J9Jr+jMcFeKmaY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=JdZYZAPh1M8qq680u8pfMCh5XH71WAVCRZ5tr47DrGsgnX+sCL7rpO3cXA+JLS4PS
-	 aMLWMXXec9SD0dWMHoIkigo7Ji3poUJI4PRQH2MUFjtqxtwHOvOitDWPWb8QgUbP+B
-	 U5UDCDJIgCLrJVi/uv+aud+k1HG1p4IpJCnhYi4EO3XKAW+zpR56aQe5Zlg5QgQ/X6
-	 JQ8yDH7P1qcVqXzm8DjtuR2AQ+4E9t03AOyEZ+LYL4LXYoFJp4GRWFpsMFtsNjTQQ9
-	 DAc/8H+RN2ASV+dzOeoZWIO+9hRa4wqiYO+hX3hChT6VRHL5v14POkIxBMJkPjkTpL
-	 oLvCjly3fnS7g==
-Message-ID: <8d165026-1477-46cb-94d4-a01e1da40833@kernel.org>
-Date: Thu, 14 Aug 2025 17:58:21 +0200
+	s=arc-20240116; t=1755187602; c=relaxed/simple;
+	bh=lz47cxuQXW9kCaneS5tiSGf5QivssZJjHuGYjSUYoDE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=tNggl4fXwHKkn60okcvuOQm+0TQFHF6Bv7qqJX8FBraiZTDnDJpLAYt4tYrbO2tLKW6dVElXE5uzeBFKuswiMsvxLK4vDvfnzK81T800nifSmhEGshNbTNsbGdF9Skmk6VlaKD+RTybVEHuQqhkVKNkH3kAxtNCRq0zxr0cMqSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QdhgNAEH; arc=none smtp.client-ip=209.85.216.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-323266d6f57so1319082a91.0;
+        Thu, 14 Aug 2025 09:06:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755187600; x=1755792400; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=2JQC78ZpgMIMuWQWRfvjMuPKHibgoB05xt+yx0YmXFw=;
+        b=QdhgNAEHZO265vJT4m3HGJ817fIbSIqIVCixapDZ2OMf/kiW4yfhFGRECcIvvECMJh
+         iZsAumfMmtbBpE+qMnRBAmG38RqHOEjk62pIJ3LDECfyLkYED/ngN2SE86Z2K9MrbjOk
+         +ugbq55w2bjRyI/vMRDnwoDjgKKD/J1WnDoZXvc1TLTNFSUyBs0WxavQqEUMtzm3+lcE
+         +//eVSza9qfws79KoUJEhsLsNo+Z3ZyS0YzzD3KetHW/f0grrlrvCob06n6vkS58nkL2
+         AxuGqTvhMy+7AKM36yOWBdKfli5ZB4H8l+fy3tPRIWwsjLZ6LwVg6dKmLElDA/0cXJr5
+         RGKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755187600; x=1755792400;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2JQC78ZpgMIMuWQWRfvjMuPKHibgoB05xt+yx0YmXFw=;
+        b=CRsedaOioT/QLbC5iSgEdJBeC95qdnCmLqySJYvImiKlUKEfTTEFQYRZKVYTy3G65A
+         LSpJGHkqqyecyYp/WMwsfHLaVxNiAfZvvv90qquP419asFyHc3j8gfP428jlnFBtnwXH
+         lFegFA1f3DEoiNJA/QU6albpZJ9F/Wp8sy0rz4v41BjdIAeA/ikPy6Tr+cqJakDeDKHF
+         UZYpTsT/gS1SkesqatJ0YSZkJIl7Z2o/2OpnjrVjV1138DgDQ4Ziz7IQksKvdith1eFA
+         uszBEj2g/PljqkghbNAfB/Zg018AWTNbsIzxJ6vrl7VNEZFxxM4UkWJs8igoC5BVSWVA
+         vM9w==
+X-Forwarded-Encrypted: i=1; AJvYcCU0EdazzusJ9VpP0llZ+DeOQ7CBY84DHcwJ7iQSBT6m9+2rqq+ZnS9zBrWuqUXKsVqwNEkGnoq722ZqnOcy@vger.kernel.org, AJvYcCVG3rQyqU3Pp4/TSwTKtYGlimkHB1xAd9ygDTvxZ42ytNMkFrm4Atd+0xYV1zt1IE7T9P0=@vger.kernel.org, AJvYcCWcV19tz88Qgdo0wViFSIlwgHKg5pNETUMH2BEIzhaZ9ms9m6b2tOKAc33ezl6f2zMl92bohIOCx8tUTJqBDbpa@vger.kernel.org
+X-Gm-Message-State: AOJu0YyJ4JekbJ3hrAn6kKNkhPyXOPz6UUGpkt3bWz4rP1+gc+Flsgj9
+	32h4HfrXK9ColyuaJbz1YLG0dNJd9SdxqLGckX3NQ9tpRupi5UlpnpHZ
+X-Gm-Gg: ASbGncv4tOCpe+KAFj3TeHLDAmwpZRhqo+JIgY+nw8pXYAFc3AG9EnuO0jbvwyyVJ7F
+	BwK8fWy+1WG8NXdk1nQk/M6XZVnGmVJSjF1JXEwptQCOPFTMle373PnIbXftewR5jwmBud0SJNb
+	kSgN7T7i7KKR+fZniBkcdS3c9cKyGtzUsMWp+0e73KiVf/uVfVZmKLodPhq4uJEkEi2iOcAYIF+
+	XFXxlaAWQKOZKVtVvDp3nplPLhgzIqJzpjDSPFt8gWVYbNTweIg6Ch6+gsab5ibDJa9KtWdjsB+
+	miIspqGOULBTmUJ+r75n4Uch4PYzpfD1rsqHGePDnY/9LriRVVfIOjtMTOb+AiDx2EvldS05nGN
+	Cp9gEwj5Sra/5cBFzqNY=
+X-Google-Smtp-Source: AGHT+IEhBBG0ngLQSL1m1pTEMacHumOyYx5CiFYAiylVBFK4bQhJSTeJAL3kGYnVrMJWW2lrkPzzkg==
+X-Received: by 2002:a17:90b:2745:b0:31f:eae:a7e8 with SMTP id 98e67ed59e1d1-32327b28cbdmr5893443a91.11.1755187600264;
+        Thu, 14 Aug 2025 09:06:40 -0700 (PDT)
+Received: from [192.168.0.226] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-32331097831sm2246465a91.33.2025.08.14.09.06.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Aug 2025 09:06:39 -0700 (PDT)
+Message-ID: <35c18502a4870d8a833c1c9af20b85ca3f8a0ff6.camel@gmail.com>
+Subject: Re: [PATCH bpf v2 2/2] selftests/bpf: Add socket filter attach test
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Puranjay Mohan <puranjay12@gmail.com>
+Cc: KaFai Wan <kafai.wan@linux.dev>, puranjay@kernel.org, 
+	xukuohai@huaweicloud.com, ast@kernel.org, daniel@iogearbox.net, 
+	john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
+ song@kernel.org, 	yonghong.song@linux.dev, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, 	jolsa@kernel.org, mykolal@fb.com,
+ shuah@kernel.org, mrpre@163.com, 	linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, 	linux-kselftest@vger.kernel.org
+Date: Thu, 14 Aug 2025 09:06:35 -0700
+In-Reply-To: <CANk7y0hQWOL3OW8Ok4e-kp7Brn5Zq6H5+EfS=mVtoVd+AUxZmA@mail.gmail.com>
+References: <20250813152958.3107403-1-kafai.wan@linux.dev>
+	 <20250813152958.3107403-3-kafai.wan@linux.dev>
+	 <eb6f9ba4acccc7685596a8f1b282667a43d51ca8.camel@gmail.com>
+	 <CANk7y0hQWOL3OW8Ok4e-kp7Brn5Zq6H5+EfS=mVtoVd+AUxZmA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [BUG] mlx5_core memory management issue
-To: Dragos Tatulea <dtatulea@nvidia.com>, Chris Arges
- <carges@cloudflare.com>, Jakub Kicinski <kuba@kernel.org>
-Cc: Jesse Brandeburg <jbrandeburg@cloudflare.com>, netdev@vger.kernel.org,
- bpf@vger.kernel.org, kernel-team <kernel-team@cloudflare.com>,
- tariqt@nvidia.com, saeedm@nvidia.com, Leon Romanovsky <leon@kernel.org>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>, Simon Horman <horms@kernel.org>,
- Andrew Rzeznik <arzeznik@cloudflare.com>, Yan Zhai <yan@cloudflare.com>,
- Kumar Kartikeya Dwivedi <memxor@gmail.com>
-References: <aJTYNG1AroAnvV31@861G6M3>
- <hlsks2646fmhbnhxwuihheri2z4ymldtqlca6fob7rmvzncpat@gljjmlorugzw>
- <aqti6c3imnaffenkgnnw5tnmjwrzw7g7pwbt47bvbgar2c4rbv@af4mch7msf3w>
- <9b27d605-9211-43c9-aa49-62bbf87f7574@cloudflare.com>
- <72vpwjc4tosqt2djhyatkycofi2hlktulevzlszmhb6w3mlo46@63sxu3or7suc>
- <aJuxY9oTtxSn4qZP@861G6M3> <aJzfPFCTlc35b2Bp@861G6M3>
- <5hinwlan55y6fl6ocilg7iccatuu5ftiyruf7wwfi44w5b4gpa@ainmdlgjtm5g>
- <4zkm7dmkxhfhf3cm7eniim26z6nbp3zsm4qttapg3xbvkrqhro@cvjnbr624m5h>
- <e60404e2-4782-409f-8596-ae21ce7272c4@kernel.org>
- <tyioy6vj2os2lnlirqxdbiwdaquoxd64lf3j3quqmyz6qvryft@xrfztbgfk7td>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <tyioy6vj2os2lnlirqxdbiwdaquoxd64lf3j3quqmyz6qvryft@xrfztbgfk7td>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
+On Thu, 2025-08-14 at 13:23 +0200, Puranjay Mohan wrote:
+> On Thu, Aug 14, 2025 at 2:35=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.c=
+om> wrote:
+> >=20
+> > On Wed, 2025-08-13 at 23:29 +0800, KaFai Wan wrote:
+> > > This test verifies socket filter attachment functionality on architec=
+tures
+> > > supporting either BPF JIT compilation or the interpreter.
+> > >=20
+> > > It specifically validates the fallback to interpreter behavior when J=
+IT fails,
+> > > particularly targeting ARMv6 devices with the following configuration=
+:
+> > >   # CONFIG_BPF_JIT_ALWAYS_ON is not set
+> > >   CONFIG_BPF_JIT_DEFAULT_ON=3Dy
+> > >=20
+> > > Signed-off-by: KaFai Wan <kafai.wan@linux.dev>
+> > > ---
+> >=20
+> > This test should not be landed as-is, first let's do an analysis for
+> > why the program fails to jit compile on arm.
+> >=20
+> > I modified kernel to dump BPF program before jit attempt, but don't
+> > see anything obviously wrong with it.  The patch to get disassembly
+> > and disassembly itself with resolved kallsyms are attached.
+> >=20
+> > Can someone with access to ARM vm/machine take a looks at this?
+> > Puranjay, Xu, would you have some time?
+>=20
+> Hi Eduard,
+> Thanks for the email, I will look into it.
+>=20
+> Let me try to boot a kernel on ARMv6 qemu and reproduce this.
 
+Thank you, Puranjay,
 
-On 14/08/2025 16.42, Dragos Tatulea wrote:
-> On Thu, Aug 14, 2025 at 01:26:37PM +0200, Jesper Dangaard Brouer wrote:
->>
->>
->> On 13/08/2025 22.24, Dragos Tatulea wrote:
->>> On Wed, Aug 13, 2025 at 07:26:49PM +0000, Dragos Tatulea wrote:
->>>> On Wed, Aug 13, 2025 at 01:53:48PM -0500, Chris Arges wrote:
->>>>> On 2025-08-12 16:25:58, Chris Arges wrote:
->>>>>> On 2025-08-12 20:19:30, Dragos Tatulea wrote:
->>>>>>> On Tue, Aug 12, 2025 at 11:55:39AM -0700, Jesse Brandeburg wrote:
->>>>>>>> On 8/12/25 8:44 AM, 'Dragos Tatulea' via kernel-team wrote:
->>>>>>>>
->>>>>>>>> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
->>>>>>>>> index 482d284a1553..484216c7454d 100644
->>>>>>>>> --- a/kernel/bpf/devmap.c
->>>>>>>>> +++ b/kernel/bpf/devmap.c
->>>>>>>>> @@ -408,8 +408,10 @@ static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
->>>>>>>>>            /* If not all frames have been transmitted, it is our
->>>>>>>>>             * responsibility to free them
->>>>>>>>>             */
->>>>>>>>> +       xdp_set_return_frame_no_direct();
->>>>>>>>>            for (i = sent; unlikely(i < to_send); i++)
->>>>>>>>>                    xdp_return_frame_rx_napi(bq->q[i]);
->>>>>>>>> +       xdp_clear_return_frame_no_direct();
->>>>>>>>
->>>>>>>> Why can't this instead just be xdp_return_frame(bq->q[i]); with no
->>>>>>>> "no_direct" fussing?
->>>>>>>>
->>>>>>>> Wouldn't this be the safest way for this function to call frame completion?
->>>>>>>> It seems like presuming the calling context is napi is wrong?
->>>>>>>>
->>>>>>> It would be better indeed. Thanks for removing my horse glasses!
->>>>>>>
->>>>>>> Once Chris verifies that this works for him I can prepare a fix patch.
->>>>>>>
->>>>>> Working on that now, I'm testing a kernel with the following change:
->>>>>>
->>>>>> ---
->>>>>>
->>>>>> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
->>>>>> index 3aa002a47..ef86d9e06 100644
->>>>>> --- a/kernel/bpf/devmap.c
->>>>>> +++ b/kernel/bpf/devmap.c
->>>>>> @@ -409,7 +409,7 @@ static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
->>>>>>            * responsibility to free them
->>>>>>            */
->>>>>>           for (i = sent; unlikely(i < to_send); i++)
->>>>>> -               xdp_return_frame_rx_napi(bq->q[i]);
->>>>>> +               xdp_return_frame(bq->q[i]);
->>>>>>    out:
->>>>>>           bq->count = 0;
->>>>>
->>>>> This patch resolves the issue I was seeing and I am no longer able to
->>>>> reproduce the issue. I tested for about 2 hours, when the reproducer usually
->>>>> takes about 1-2 minutes.
->>>>>
->>>> Thanks! Will send a patch tomorrow and also add you in the Tested-by tag.
->>>>
->>
->> Looking at code ... there are more cases we need to deal with.
->> If simply replacing xdp_return_frame_rx_napi() with xdp_return_frame.
->>
->> The normal way to fix this is to use the helpers:
->>   - xdp_set_return_frame_no_direct();
->>   - xdp_clear_return_frame_no_direct()
->>
->> Because __xdp_return() code[1] via xdp_return_frame_no_direct() will
->> disable those napi_direct requests.
->>
->>   [1] https://elixir.bootlin.com/linux/v6.16/source/net/core/xdp.c#L439
->>
->> Something doesn't add-up, because the remote CPUMAP bpf-prog that redirects
->> to veth is running in cpu_map_bpf_prog_run_xdp()[2] and that function
->> already uses the xdp_set_return_frame_no_direct() helper.
->>
->>   [2] https://elixir.bootlin.com/linux/v6.16/source/kernel/bpf/cpumap.c#L189
->>
->> I see the bug now... attached a patch with the fix.
->> The scope for the "no_direct" forgot to wrap the xdp_do_flush() call.
->>
->> Looks like bug was introduced in 11941f8a8536 ("bpf: cpumap: Implement
->> generic cpumap") v5.15.
->>
-> Nice! Thanks for looking at this! Will you send the patch separately?
-> 
+While looking at the code yesterday I found a legit case for failing
+to jit on armv6:
 
-Yes, I will send the patch as an official patch.
+https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/arch/=
+arm/net/bpf_jit_32.c#n445
+https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/arch/=
+arm/net/bpf_jit_32.c#n2089
 
-I want to give both of you credit, so I'm considering adding these tags
-to the patch description (WDYT):
-
-Found-by: Dragos Tatulea <dtatulea@nvidia.com>
-Reported-by: Chris Arges <carges@cloudflare.com>
-
-
->>>> As follow up work it would be good to have a way to catch this family of
->>>> issues. Something in the lines of the patch below.
->>>>
->>
->> Yes, please, we want something that can catch these kind of hard to find
->> bugs.
->>
-> Will send a patch when I find some time.
->
-
-Great! :-)
-
->>>> Thanks,
->>>> Dragos
->>>>
->>>> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
->>>> index f1373756cd0f..0c498fbd8df6 100644
->>>> --- a/net/core/page_pool.c
->>>> +++ b/net/core/page_pool.c
->>>> @@ -794,6 +794,10 @@ __page_pool_put_page(struct page_pool *pool, netmem_ref netmem,
->>>>    {
->>>>           lockdep_assert_no_hardirq();
->>>> +#ifdef CONFIG_PAGE_POOL_CACHEDEBUG
->>>> +       WARN(page_pool_napi_local(pool), "Page pool cache access from non-direct napi context");
->>> I meant to negate the condition here.
->>>
->>
->> The XDP code have evolved since the xdp_set_return_frame_no_direct()
->> calls were added.  Now page_pool keeps track of pp->napi and
->> pool-> cpuid.  Maybe the __xdp_return [1] checks should be updated?
->> (and maybe it allows us to remove the no_direct helpers).
->>
-> So you mean to drop the napi_direct flag in __xdp_return and let
-> page_pool_put_unrefed_netmem() decide if direct should be used by
-> page_pool_napi_local()?
-
-Yes, something like that, but I would like Kuba/Jakub's input, as IIRC
-he introduced the page_pool->cpuid and page_pool->napi.
-
-There are some corner-cases we need to consider if they are valid.  If
-cpumap get redirected to the *same* CPU as "previous" NAPI instance,
-which then makes page_pool->cpuid match, is it then still valid to do
-"direct" return(?).
-
---Jesper
+But attached program does not seem to be that big to hit 0xfff boundary.
 
