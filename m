@@ -1,169 +1,111 @@
-Return-Path: <bpf+bounces-65679-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65680-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B37CB26E93
-	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 20:06:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7491EB26E9B
+	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 20:09:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 788F0AA3276
-	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 18:03:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4BEF81894384
+	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 18:09:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8641329D285;
-	Thu, 14 Aug 2025 18:02:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D16C31986B;
+	Thu, 14 Aug 2025 18:08:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yuka.dev header.i=@yuka.dev header.b="vvgZeQ+0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VKmJFNul"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.cyberchaos.dev (mail.cyberchaos.dev [195.39.247.168])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 342A731987F;
-	Thu, 14 Aug 2025 18:02:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.39.247.168
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78F3A31985C;
+	Thu, 14 Aug 2025 18:08:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755194532; cv=none; b=jQ8aaj2Hfug8gFjTxYhwQzKqthGlZtU/n1CwB3K1IWifTle2vozC2Yia0GzP4ip1snjCPucL2SazL3V/mfRdWMRxVSyH67vcm5/og2V4WyaE2UgaWF8CFCq0PzkMtZflDnEcWaDbZS/P33TCdYv45PuH8gxoXDx9B4R1oQ78Lgc=
+	t=1755194935; cv=none; b=uPCDQrGyBNeBmZEA0SQJjVp4mI9qP9tCStH3bcayaaKNjn3aJDhHzsqcT0HUGSOsfzmcaQVRxLUr9gAQG/YOoLg+bk3U23aMjvmJT+B+g8ph1WSRQyFx+U5bX1kYqJzyWjG+XOL/+bIV/E3rYut+9bjk6wgW5nbUfp/IzQTTEHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755194532; c=relaxed/simple;
-	bh=k5yaaw5MMF921u7G4+XJeBCyXv937dA+VDY2GuubhA8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BTG76rnLoksZSIPthtWFThXEaZT+Ifc30ZnUMXaNC4KdUtQe81SwPi4I4fRz2XqDEmPkJfnws9RCFC70kaq6BzNEBKrSGSsa1rY/rWS9oTrdsD+XHVab0YzuOY9ntGtNFC/viEgIPZRXqOoECKUO5zpnFSASOKt1VkN3xTRvKU4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yuka.dev; spf=pass smtp.mailfrom=yuka.dev; dkim=pass (1024-bit key) header.d=yuka.dev header.i=@yuka.dev header.b=vvgZeQ+0; arc=none smtp.client-ip=195.39.247.168
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yuka.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yuka.dev
-From: Yureka Lilian <yuka@yuka.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yuka.dev; s=mail;
-	t=1755194527;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=os4PiDXRnh9o8dcdOwZ4gvFWrzcLIaQPdyGWa9rpF74=;
-	b=vvgZeQ+0X6Tsy0K5cY1JVzRseL6JjVs/6y8sAw5dldqPJvV8fFsPih0kKiXnnxwXpEmNL9
-	HIoAP6bRLELe6apWzSHjWa53etW8pd1vET8lOsdPqrsKDGHG3p+CR9/Y/gjSky5bpQYgp1
-	yPFrc9NPtGU2UN3h/cu+NU8NOYVIYEw=
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>
-Cc: Yureka Lilian <yuka@yuka.dev>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] selftests/bpf: add test for DEVMAP reuse
-Date: Thu, 14 Aug 2025 20:01:13 +0200
-Message-ID: <20250814180113.1245565-4-yuka@yuka.dev>
-In-Reply-To: <20250814180113.1245565-2-yuka@yuka.dev>
+	s=arc-20240116; t=1755194935; c=relaxed/simple;
+	bh=dQNWgCyeJ+BW1dYvMxNF0Kin8KoABLbjl4TIXbGMrfo=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=mkvmUTgz/oZoFpyCTkALGgusrAPDvFUuAxBYLiciU/PlXhQATRvKD8JeAzqPpKvirKhIAajaivK55R1ObS1ZeaQcUyPkKVYvMnNROz4E/7Gr2LW1BxhNWsFyA8wQi6uKt3jUOmbwzOHO2B1fQSIIzLc+vlGuIqf9DGLvy6R3ktM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VKmJFNul; arc=none smtp.client-ip=209.85.216.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-32326e06496so1785549a91.2;
+        Thu, 14 Aug 2025 11:08:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755194934; x=1755799734; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=dQNWgCyeJ+BW1dYvMxNF0Kin8KoABLbjl4TIXbGMrfo=;
+        b=VKmJFNulj5D1Mi+L7IxxLronxXhG2V6gs+0cnlRAFBy+7C4xL8Zk1uYYgvID7hA2CE
+         uxLtvv9RNEt1LAVDTRMeDFxf6Z2X3b4DWXMrBA9rTmWfBG8AG3yONn+fSMZ9JiSERqDP
+         Qg05sVmZ32uM6e3LN4+loAATcKFL4519xfzxTg0RWjfg29KwAd1uVChNUadJr0VcZEA+
+         P8lwkyU62EIspnSZDUNw1K3MpiN2FN0Oer2cwszBQqYaG07qepjesOSym5PHUlKhjUOd
+         snXkNDMXioXzIbVVRzFShUli96XW5ugC/jWXBLLXgHwMjBYbx+McSKWctMO1kUzyZvoS
+         GsOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755194934; x=1755799734;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dQNWgCyeJ+BW1dYvMxNF0Kin8KoABLbjl4TIXbGMrfo=;
+        b=f1ZXtC4iIPlQeiDXhtaDMr5w+n8Q75XMayZbbPrYycXPhP8oMKlWs4Lvu37aBog0Kn
+         CKNV/gmXMlp4Fej9Y6fTSZIoMSe8IAG9SmVyEXk/J/eFGdzbwBRQh3l3XeM8NuJPedRn
+         LbMxby20g7i4MRHKmctCtggQjdA82xmk9RnZUI3MlEpALhBy+xCN8KI+yCeVDrwIdhxg
+         HbB6jQMoP9pjbp4j/4OFmU6zAnnpip6ycYRukWM/KIo3wU914pv8IHlQX1p3dc1IfasK
+         6UFvQMcZxsK8+A++ymcZu1iZiT/QTnux7TGEg75KKhS2r/R27F660Rtic50JlsKcixO3
+         psMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXLHPC8pgUIlfhojC/aQxKMl3m4pHhLHODOnsBVER/Ttd7TXyIiCMdK6ywx3HWBHaDDrhOQBHUtGFivvhs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyBIbchzC0lIFwGoH1gaJ97Xp8nVYjY8DRV5Y+CcoTBJdzOpgUh
+	ewXFjwpwHAJ4N8Yr5hAVRX54TNhasM7CY/XsOqzNOZNDKVXKwby+aElWojZjyABS
+X-Gm-Gg: ASbGncszUuQ1aytEM2gZCJWldf94z/j/cTwnqybYmGlX9J54BdV2bIWukiscVq2pRwt
+	6CSOaYkHKhShxivgatX/721iZ9PXzpTLH8YnMXNPUsrPOPpMbhrdNQNhQruHwkVfmTvs/QfaOlX
+	XWBIfcuHIYxmH/XvhnkeSJPuwJ7GPX0CuWwkKPejbhiwnpMpNOLXuPhu0n7h5wzf0yiFl4iaOZN
+	2gHKOAe3EIqC3BcWLpo0zUvcH3dkfVwykoIInwO/UBiWaKa7BW3Zd4HDvN5j5iZnFkVCVjysQl1
+	bwkAXfEIZ7H+8UTjALqPtSt7esUoBi6L5U6IQYaaTh5cVgC8mge3ydq36PxyuFml4oqJgD02Pp0
+	sfHzpMVd0nJGfpYSXIvA=
+X-Google-Smtp-Source: AGHT+IG66g1j9rZnCLFplcHZLA00jx8Fq0bLiwgv73ySHJMeH70ApTDeDMzWlUF1hPhQFjkA/1zl4w==
+X-Received: by 2002:a17:90b:5206:b0:31f:20a:b549 with SMTP id 98e67ed59e1d1-32327991b6emr5744628a91.7.1755194933505;
+        Thu, 14 Aug 2025 11:08:53 -0700 (PDT)
+Received: from [192.168.0.226] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-32331127c96sm2469610a91.19.2025.08.14.11.08.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Aug 2025 11:08:53 -0700 (PDT)
+Message-ID: <1aaff6868286a8926bd6942407c3af00d94f72c4.camel@gmail.com>
+Subject: Re: [PATCH v3 2/2] selftests/bpf: add test for DEVMAP reuse
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Yureka Lilian <yuka@yuka.dev>, Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,  Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend	
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev	 <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Thu, 14 Aug 2025 11:08:49 -0700
+In-Reply-To: <20250814180113.1245565-4-yuka@yuka.dev>
 References: <20250814180113.1245565-2-yuka@yuka.dev>
+	 <20250814180113.1245565-4-yuka@yuka.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-The test covers basic re-use of a pinned DEVMAP map,
-with both matching and mismatching parameters.
+On Thu, 2025-08-14 at 20:01 +0200, Yureka Lilian wrote:
+> The test covers basic re-use of a pinned DEVMAP map,
+> with both matching and mismatching parameters.
+>=20
+> Signed-off-by: Yureka Lilian <yuka@yuka.dev>
+> ---
 
-Signed-off-by: Yureka Lilian <yuka@yuka.dev>
----
- .../bpf/prog_tests/pinning_devmap_reuse.c     | 50 +++++++++++++++++++
- .../selftests/bpf/progs/test_pinning_devmap.c | 20 ++++++++
- 2 files changed, 70 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/pinning_devmap_reuse.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_pinning_devmap.c
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/pinning_devmap_reuse.c b/tools/testing/selftests/bpf/prog_tests/pinning_devmap_reuse.c
-new file mode 100644
-index 000000000..9ae49b587
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/pinning_devmap_reuse.c
-@@ -0,0 +1,50 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <unistd.h>
-+#include <test_progs.h>
-+
-+
-+#include "test_pinning_devmap.skel.h"
-+
-+void test_pinning_devmap_reuse(void)
-+{
-+	const char *pinpath1 = "/sys/fs/bpf/pinmap1";
-+	const char *pinpath2 = "/sys/fs/bpf/pinmap2";
-+	struct test_pinning_devmap *skel1 = NULL, *skel2 = NULL;
-+	int err;
-+	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
-+
-+	/* load the object a first time */
-+	skel1 = test_pinning_devmap__open_and_load();
-+	if (!ASSERT_OK_PTR(skel1, "skel_load1"))
-+		goto out;
-+
-+	/* load the object a second time, re-using the pinned map */
-+	skel2 = test_pinning_devmap__open_and_load();
-+	if (!ASSERT_OK_PTR(skel2, "skel_load2"))
-+		goto out;
-+
-+	/* we can close the reference safely without
-+	 * the map's refcount falling to 0
-+	 */
-+	test_pinning_devmap__destroy(skel1);
-+	skel1 = NULL;
-+
-+	/* now, swap the pins */
-+	err = renameat2(0, pinpath1, 0, pinpath2, RENAME_EXCHANGE);
-+	if (!ASSERT_OK(err, "swap pins"))
-+		goto out;
-+
-+	/* load the object again, this time the re-use should fail */
-+	skel1 = test_pinning_devmap__open_and_load();
-+	if (!ASSERT_ERR_PTR(skel1, "skel_load3"))
-+		goto out;
-+
-+out:
-+	unlink(pinpath1);
-+	unlink(pinpath2);
-+	test_pinning_devmap__destroy(skel1);
-+	test_pinning_devmap__destroy(skel2);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_pinning_devmap.c b/tools/testing/selftests/bpf/progs/test_pinning_devmap.c
-new file mode 100644
-index 000000000..c855f8f87
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_pinning_devmap.c
-@@ -0,0 +1,20 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_DEVMAP);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+	__uint(pinning, LIBBPF_PIN_BY_NAME);
-+} pinmap1 SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_DEVMAP);
-+	__uint(max_entries, 2);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+	__uint(pinning, LIBBPF_PIN_BY_NAME);
-+} pinmap2 SEC(".maps");
--- 
-2.50.1
-
+[...]
 
