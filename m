@@ -1,329 +1,209 @@
-Return-Path: <bpf+bounces-65640-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65641-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A489AB265A9
-	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 14:45:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E08D7B265FB
+	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 14:56:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD8795C3D8A
-	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 12:44:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6FFB1C87DE2
+	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 12:55:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91ABB2FD1DD;
-	Thu, 14 Aug 2025 12:43:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A909E2FB977;
+	Thu, 14 Aug 2025 12:55:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="C0uigbRC"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="EK/8dMTO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D1381A8412
-	for <bpf@vger.kernel.org>; Thu, 14 Aug 2025 12:43:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C0B5286436
+	for <bpf@vger.kernel.org>; Thu, 14 Aug 2025 12:55:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755175418; cv=none; b=KZZrxC6IE9Wd9frpsw9+meQN8KAh+WOAvWenMCylDMBEL8YjdpQWWiIBZvtG4JL/bwq52YRQ6AkSKzuf7RrZbpAXAYTjEj3z6YvWx1bPqroiW3//8BJ5ziKaj8cIaobHq0k1hfj4EHbz2LStaqrdVfo6PT/JtmpHeIxeTxhfMuc=
+	t=1755176133; cv=none; b=PPQ+0DqNa6KH62PZP61m/nmf0ep+jIKPvl9zdn4jkE4TV6CuK1ch0fVciUoA3BKp44Rz4Zvs2X5/q3Nria+PUCwSYvFLIU/oqDxFvIgwo7Tn5ZWY2AjZRkP9CYYppEi2ilGekLFGe7pvxFtbGAbN3ZLLGeRbJKlzJRwuM6rs8jQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755175418; c=relaxed/simple;
-	bh=Bm28WVgjq/kMsnVu2+xIHBP2QlRKo+BWnBKdHfD49Xg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PGW6S4LwD1U4T0Wca5MWn74Eg+h5AtesGCI92Bu1dfHFDDDrpd0v5MdIZ6alrYQiAjK6+6QIai5TdqBn6Lr1wqOfVocBKWmmrteCNRsAnTrwE43S0Go0oGMbeu+niD1UvaOtelIACmN7DjLqTCScjCH5EtGnqjd7dW69WUkpIOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=C0uigbRC; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 57EBCLIB015918;
-	Thu, 14 Aug 2025 12:43:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=pp1; bh=jKnlmLPxXhoxQVQOVfJKCHKKaCfD8LeDn4XPAY6k+
-	+Y=; b=C0uigbRCtUOU/bxqLuqQv1/pgO/w+c0G01kCHTLlfd2aeFMkhPsRPrZF9
-	g7+vL84bqppu+BxlwAoVorUFOK1J8uXSepfizYTl2gWEbXxG0O1k5Y1d1KokRaIx
-	keppIpFayCjahBEaMoA6gLSawRpAXk9Bi7lPw0rBogKPQ66FLjFIEawoqx63qzYc
-	YJJN12wX50WMY7rUQIXakZHAnxO7GoMVtSg5rfrdbJYGj/f5NYxzkbhPZG0iTf4p
-	5Y7Wd2z9+r8tcI7GRp5ccQTmrTNcyc6DFOzRYdRx7ki/xXxtjL3TElOh38g1HJ38
-	/7/YtHKNcnMd5BQis1AlOyf3ec1Tg==
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48dx14t2ts-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 14 Aug 2025 12:43:21 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 57EAbm6q017637;
-	Thu, 14 Aug 2025 12:43:20 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 48ekc3utwq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 14 Aug 2025 12:43:20 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 57EChHlH53281218
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 14 Aug 2025 12:43:17 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1D5A52004D;
-	Thu, 14 Aug 2025 12:43:17 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A1C902004B;
-	Thu, 14 Aug 2025 12:43:16 +0000 (GMT)
-Received: from heavy.ibm.com (unknown [9.111.48.128])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 14 Aug 2025 12:43:16 +0000 (GMT)
-From: Ilya Leoshkevich <iii@linux.ibm.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf-next] s390/bpf: Use direct calls and jumps where possible
-Date: Thu, 14 Aug 2025 14:42:34 +0200
-Message-ID: <20250814124314.185516-1-iii@linux.ibm.com>
-X-Mailer: git-send-email 2.50.1
+	s=arc-20240116; t=1755176133; c=relaxed/simple;
+	bh=UjlpuvH4ZqGlpfxfCAoE/zcZqQre2BrpYV/OO0kD8dY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=susLmvGs1OlXZMlCAwEeRKG8P7zDftWiI6oUcBPzRTU36AZFZz+6WNUeGdJ4+aKre1T4gNf+o08eaqEjnftHXbdfleMhVspi8Ip/r4BjMvmBlDok45CADoFCzx5tRHsITBzwIg1kn5c7Qm09KSU7UG3K0FcdPo9AsEfsO6lsuEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=EK/8dMTO; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3b9d41bea3cso795018f8f.0
+        for <bpf@vger.kernel.org>; Thu, 14 Aug 2025 05:55:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1755176129; x=1755780929; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bi6fTIx20MnlBqkuG0GegtygLPIym9mFwcGoaI7KOqY=;
+        b=EK/8dMTO/4/eWVDuWfc6R8svYomZVPnmjKK+U0Dgn0h9SO2kkST4fY+BBKIGfnd2hf
+         vNyHMXtbweRPbXLjo1mU5I6z7qUMR6oWiT5pFKyc0Hh7MrWHstDJRULFi5cMyjKfN9zr
+         KyaGjJItp5EadM8UzxjpTwJ5xIF0ZAzlur/fFO3jM1jgohwF2LOGp6b3tRqY441SWYkN
+         mAou6CEhBc4QXGhvEpkZh4nx0bwR7HQJEu3kG7MKSctYjiS8Rxa951h07g1wK8Jq1H5J
+         QUNvgWpmy3/nsuABn/g7UzFFtAM0K0cRVpfutehYbDbC1e2pADN6aSoh7wNiJFlWfArf
+         ug8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755176129; x=1755780929;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bi6fTIx20MnlBqkuG0GegtygLPIym9mFwcGoaI7KOqY=;
+        b=GFOp1EwBDeOJo0OZCDVnQxvpCUdyf9V9TLHLx+eQoXW7WRVCZGW+RoWR7Z6RQ0nKiC
+         jnYypJ64DkvjcL7I+wrx3nUiIrbGEUr2aXnNexjSMZlUsu2MaWfyoJxKJ6IbislsxuTD
+         4Sd2ridsXJ2xJkQHCMJH9s+lGf4Dsy/NOQRUAOeLthCUPyOLnldZJftBMva7vKJ0P+8J
+         Hqn9P3Sn9poDql03v8XQRA3xEyIZcrsGVgE5k3LIa1fOby+prGq+2b4pdxDysPd6bqeA
+         6WSZiA11Z+I5aCn3gMdm5wDz7KfIXPa6+QByJW8B6gsnmmgaLx43UCpz+1IZLznwMvTV
+         LTNA==
+X-Gm-Message-State: AOJu0YzI+uOnUxZ6NwIxFLYHXjc+SAaeSH/rqniGx1v7Ju1orMePfSyl
+	hAjTleGm+h5exhifU4fBcTnr9rvjj+t/IhfLh0mJilgxfiLQv2rnoyGAIXYaUbqqy0g=
+X-Gm-Gg: ASbGncspHCisSD5YqI0MVPKOHlf//ygpDAsqyXg//VB9wAzKrUC3mYRQQ8+bKcNfrxa
+	khWkUz8nB7CdaztMdNvwHezNsmGge0RgXzyKG2Rid5QXgIDTZ2NwKHcxSDsXyrgg2kU/m17sJFq
+	fMTR1eNZ4OQZXrv1OsvwxZNYDEFbM4rJewfQAr0EdwMcxN5Om3HLelnQD1t0XHjoiOHCzJyT9V2
+	RPIubL/vCokR7a3mdWT8rUCpbkXmE0xGOdn/8iZDxuWTswbook6kSl0QELTB5tuQ7932Op3kI/8
+	v59xA5noD2VTR4h9rc8nnxJRFV1F560cZrwedNPq3w27At4uKhNyBdogtKsJwbJGclzg877kHRk
+	7goIEjTs/Hc3Zp4EcTyDJHZ2k+RrbuU0w95UNaiHxvqU=
+X-Google-Smtp-Source: AGHT+IGRgNa2IPCcBOFayZkep1sLyA+Z4am6zCoJVDoRu6Sv1DaF3oepcT58Gd0OPZBAedn09zdjIQ==
+X-Received: by 2002:a05:6000:2481:b0:3b7:9aff:ef22 with SMTP id ffacd0b85a97d-3b9edf39e9fmr2727989f8f.27.1755176129276;
+        Thu, 14 Aug 2025 05:55:29 -0700 (PDT)
+Received: from u94a (1-174-0-44.dynamic-ip.hinet.net. [1.174.0.44])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-32330f9163asm1771789a91.3.2025.08.14.05.55.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Aug 2025 05:55:28 -0700 (PDT)
+Date: Thu, 14 Aug 2025 20:55:22 +0800
+From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To: Paul Chaignon <paul.chaignon@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Use tnums for JEQ/JNE is_branch_taken
+ logic
+Message-ID: <hxshkvnzsyrmnty25ainifbei732oco3ss6y76iez2cdsxa77q@cdnvjuhsp6c2>
+References: <ba9baf9f73d51d9bce9ef13778bd39408d67db79.1755098817.git.paul.chaignon@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 0uXvLMmcWI_h_PwaXKn20fdu3-tIuZr2
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODEyMDIyNCBTYWx0ZWRfX2MCW/xdClxlJ
- ThCOmqjlpcIx1aACFaKVpTQ4wQ+Ccqe1U7WKUZSmDFpfW4c4JLRMLScXptIgcAAXymFIKNxGCAL
- 4Ex413MS6Q1dYPY0PRlkn/sr0v5quqNTx2XgM6+ZeLaZVgQB/ga9BzNMmH5j/iEPdYM0V5ssKA1
- jySdSn8v4M/BCmTdXJSjF3jRJ8NdC6yuNf9ZEJvk68MvZgBFniC2Y7gFewxVYbDc4Qxtq6s9u7+
- 4o2WZJKYTQAAMJL2p63boEENzDaIomTixjpHZzwd/EXSyEGiWGY1i7HCej6l6u4cB7pC7eLWhC+
- nouRRLqT6Sd4oiRb/4N013RuHUxjOcNHhR1Pj/DU8bx/V9ieQzVgVrHY1cDGECCmSkXDgqu4yAK
- oE22FCHc
-X-Proofpoint-GUID: 0uXvLMmcWI_h_PwaXKn20fdu3-tIuZr2
-X-Authority-Analysis: v=2.4 cv=fLg53Yae c=1 sm=1 tr=0 ts=689dd9e9 cx=c_pps
- a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
- a=2OwXVqhp2XgA:10 a=VnNF1IyMAAAA:8 a=jrmw4pjQCh8f7Ix4FgQA:9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-08-13_02,2025-08-14_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- adultscore=0 clxscore=1015 spamscore=0 priorityscore=1501 impostorscore=0
- phishscore=0 malwarescore=0 bulkscore=0 suspectscore=0 classifier=typeunknown
- authscore=0 authtc= authcc= route=outbound adjust=0 reason=mlx scancount=1
- engine=8.19.0-2507300000 definitions=main-2508120224
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ba9baf9f73d51d9bce9ef13778bd39408d67db79.1755098817.git.paul.chaignon@gmail.com>
 
-After the V!=R rework (commit c98d2ecae08f ("s390/mm: Uncouple physical
-vs virtual address spaces")), all kernel code and related data are
-allocated within a 4G region, making it possible to use relative
-addressing in BPF code more extensively.
+On Wed, Aug 13, 2025 at 05:34:08PM +0200, Paul Chaignon wrote:
+> In the following toy program (reg states minimized for readability), R0
+> and R1 always have different values at instruction 6. This is obvious
+> when reading the program but cannot be guessed from ranges alone as
+> they overlap (R0 in [0; 0xc0000000], R1 in [1024; 0xc0000400]).
+> 
+>   0: call bpf_get_prandom_u32#7  ; R0_w=scalar()
+>   1: w0 = w0                     ; R0_w=scalar(var_off=(0x0; 0xffffffff))
+>   2: r0 >>= 30                   ; R0_w=scalar(var_off=(0x0; 0x3))
+>   3: r0 <<= 30                   ; R0_w=scalar(var_off=(0x0; 0xc0000000))
+>   4: r1 = r0                     ; R1_w=scalar(var_off=(0x0; 0xc0000000))
+>   5: r1 += 1024                  ; R1_w=scalar(var_off=(0x400; 0xc0000000))
+>   6: if r1 != r0 goto pc+1
+> 
+> Looking at tnums however, we can deduce that R1 is always different from
+> R0 because their tnums don't agree on known bits. This patch uses this
+> logic to improve is_scalar_branch_taken in case of BPF_JEQ and BPF_JNE.
+> 
+> This change has a tiny impact on complexity, which was measured with
+> the Cilium complexity CI test. That test covers 72 programs with
+> various build and load time configurations for a total of 970 test
+> cases. For 80% of test cases, the patch has no impact. On the other
+> test cases, the patch decreases complexity by only 0.08% on average. In
+> the best case, the verifier needs to walk 3% less instructions and, in
+> the worst case, 1.5% more. Overall, the patch has a small positive
+> impact, especially for our largest programs.
+> 
+> Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
+> ---
+>  include/linux/tnum.h  | 3 +++
+>  kernel/bpf/tnum.c     | 8 ++++++++
+>  kernel/bpf/verifier.c | 4 ++++
+>  3 files changed, 15 insertions(+)
+> 
+> diff --git a/include/linux/tnum.h b/include/linux/tnum.h
+> index 57ed3035cc30..06a41d070e75 100644
+> --- a/include/linux/tnum.h
+> +++ b/include/linux/tnum.h
+> @@ -51,6 +51,9 @@ struct tnum tnum_xor(struct tnum a, struct tnum b);
+>  /* Multiply two tnums, return @a * @b */
+>  struct tnum tnum_mul(struct tnum a, struct tnum b);
+>  
+> +/* Return true if the known bits of both tnums have the same value */
+> +bool tnum_agree(struct tnum a, struct tnum b);
+> +
+>  /* Return a tnum representing numbers satisfying both @a and @b */
+>  struct tnum tnum_intersect(struct tnum a, struct tnum b);
+>  
+> diff --git a/kernel/bpf/tnum.c b/kernel/bpf/tnum.c
+> index fa353c5d550f..8cb73d35196e 100644
+> --- a/kernel/bpf/tnum.c
+> +++ b/kernel/bpf/tnum.c
+> @@ -143,6 +143,14 @@ struct tnum tnum_mul(struct tnum a, struct tnum b)
+>  	return tnum_add(TNUM(acc_v, 0), acc_m);
+>  }
+>  
+> +bool tnum_agree(struct tnum a, struct tnum b)
+> +{
+> +	u64 mu;
+> +
+> +	mu = ~a.mask & ~b.mask;
+> +	return (a.value & mu) == (b.value & mu);
+> +}
 
-Convert as many indirect calls and jumps to direct calls as possible,
-namely:
+Nit: I finding the naming a bit unconventional compared to other tnum
+helpers we have, with are either usually named after a BPF instruction
+or set operation. tnum_overlap() would be my choice for the name of such
+new helper.
 
-* BPF_CALL
-* __bpf_tramp_enter()
-* __bpf_tramp_exit()
-* __bpf_prog_enter()
-* __bpf_prog_exit()
-* fentry
-* fmod_ret
-* fexit
-* BPF_TRAMP_F_CALL_ORIG without BPF_TRAMP_F_ORIG_STACK
-* Trampoline returns without BPF_TRAMP_F_SKIP_FRAME and
-  BPF_TRAMP_F_ORIG_STACK
+One more comment below.
 
-The following indirect calls and jumps remain:
+>  /* Note that if a and b disagree - i.e. one has a 'known 1' where the other has
+>   * a 'known 0' - this will return a 'known 1' for that bit.
+>   */
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 3a3982fe20d4..fa86833254e3 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -15891,6 +15891,8 @@ static int is_scalar_branch_taken(struct bpf_reg_state *reg1, struct bpf_reg_sta
+>  			return 0;
+>  		if (smin1 > smax2 || smax1 < smin2)
+>  			return 0;
+> +		if (!tnum_agree(t1, t2))
+> +			return 0;
 
-* Prog returns
-* Trampoline returns with BPF_TRAMP_F_SKIP_FRAME or
-  BPF_TRAMP_F_ORIG_STACK
-* BPF_TAIL_CALL
-* BPF_TRAMP_F_CALL_ORIG with BPF_TRAMP_F_ORIG_STACK
+Could we reuse tnum_xor() here instead?
 
-As a result, only one usage of call_r1() remains, so inline it.
+If xor of two register cannot be 0, then the two can never hold the same
+value. Also we can use the tnum_xor() result in place of tnum_is_const()
+checks.
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- arch/s390/net/bpf_jit_comp.c | 80 +++++++++++++++---------------------
- 1 file changed, 32 insertions(+), 48 deletions(-)
+case BPF_JEQ:
+    t = tnum_xor(t1, t2);
+    if (!t.mask) /* Equvalent of tnum_is_const(t1) && tnum_is_const(t2) */
+        return t.value == 0;
+    if (umin1 > umax2 || umax1 < umin2)
+        return 0;
+    if (smin1 > smax2 || smax1 < smin2)
+        return 0;
+    if (!t.value) /* Equvalent of !tnum_agree(t1, t2) */
+      return 0;
+    ...
+case BPF_JNE:
+    t = tnum_xor(t1, t2);
+    if (!t.mask) /* Equvalent of tnum_is_const(t1) && tnum_is_const(t2) */
+        return t.value != 0;
+    /* non-overlapping ranges */
+    if (umin1 > umax2 || umax1 < umin2)
+        return 1;
+    if (smin1 > smax2 || smax1 < smin2)
+        return 1;
+    if (!t.value) /* Equvalent of !tnum_agree(t1, t2) */
+        return 1;
 
-diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index bb17efe29d65..0d61784abd33 100644
---- a/arch/s390/net/bpf_jit_comp.c
-+++ b/arch/s390/net/bpf_jit_comp.c
-@@ -674,20 +674,6 @@ static void bpf_jit_prologue(struct bpf_jit *jit, struct bpf_prog *fp)
- 		_EMIT2(0x07f0 | reg);					\
- } while (0)
- 
--/*
-- * Call r1 either directly or via __s390_indirect_jump_r1 thunk
-- */
--static void call_r1(struct bpf_jit *jit)
--{
--	if (nospec_uses_trampoline())
--		/* brasl %r14,__s390_indirect_jump_r1 */
--		EMIT6_PCREL_RILB_PTR(0xc0050000, REG_14,
--				     __s390_indirect_jump_r1);
--	else
--		/* basr %r14,%r1 */
--		EMIT2(0x0d00, REG_14, REG_1);
--}
--
- /*
-  * Function epilogue
-  */
-@@ -1819,10 +1805,8 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
- 			}
- 		}
- 
--		/* lgrl %w1,func */
--		EMIT6_PCREL_RILB(0xc4080000, REG_W1, _EMIT_CONST_U64(func));
--		/* %r1() */
--		call_r1(jit);
-+		/* brasl %r14,func */
-+		EMIT6_PCREL_RILB_PTR(0xc0050000, REG_14, (void *)func);
- 		/* lgr %b0,%r2: load return value into %b0 */
- 		EMIT4(0xb9040000, BPF_REG_0, REG_2);
- 		break;
-@@ -2517,14 +2501,12 @@ static int invoke_bpf_prog(struct bpf_tramp_jit *tjit,
- 	 *         goto skip;
- 	 */
- 
--	/* %r1 = __bpf_prog_enter */
--	load_imm64(jit, REG_1, (u64)bpf_trampoline_enter(p));
- 	/* %r2 = p */
- 	load_imm64(jit, REG_2, (u64)p);
- 	/* la %r3,run_ctx_off(%r15) */
- 	EMIT4_DISP(0x41000000, REG_3, REG_15, tjit->run_ctx_off);
--	/* %r1() */
--	call_r1(jit);
-+	/* brasl %r14,__bpf_prog_enter */
-+	EMIT6_PCREL_RILB_PTR(0xc0050000, REG_14, bpf_trampoline_enter(p));
- 	/* ltgr %r7,%r2 */
- 	EMIT4(0xb9020000, REG_7, REG_2);
- 	/* brcl 8,skip */
-@@ -2535,15 +2517,13 @@ static int invoke_bpf_prog(struct bpf_tramp_jit *tjit,
- 	 * retval = bpf_func(args, p->insnsi);
- 	 */
- 
--	/* %r1 = p->bpf_func */
--	load_imm64(jit, REG_1, (u64)p->bpf_func);
- 	/* la %r2,bpf_args_off(%r15) */
- 	EMIT4_DISP(0x41000000, REG_2, REG_15, tjit->bpf_args_off);
- 	/* %r3 = p->insnsi */
- 	if (!p->jited)
- 		load_imm64(jit, REG_3, (u64)p->insnsi);
--	/* %r1() */
--	call_r1(jit);
-+	/* brasl %r14,p->bpf_func */
-+	EMIT6_PCREL_RILB_PTR(0xc0050000, REG_14, p->bpf_func);
- 	/* stg %r2,retval_off(%r15) */
- 	if (save_ret) {
- 		if (sign_extend(jit, REG_2, m->ret_size, m->ret_flags))
-@@ -2560,16 +2540,14 @@ static int invoke_bpf_prog(struct bpf_tramp_jit *tjit,
- 	 * __bpf_prog_exit(p, start, &run_ctx);
- 	 */
- 
--	/* %r1 = __bpf_prog_exit */
--	load_imm64(jit, REG_1, (u64)bpf_trampoline_exit(p));
- 	/* %r2 = p */
- 	load_imm64(jit, REG_2, (u64)p);
- 	/* lgr %r3,%r7 */
- 	EMIT4(0xb9040000, REG_3, REG_7);
- 	/* la %r4,run_ctx_off(%r15) */
- 	EMIT4_DISP(0x41000000, REG_4, REG_15, tjit->run_ctx_off);
--	/* %r1() */
--	call_r1(jit);
-+	/* brasl %r14,__bpf_prog_exit */
-+	EMIT6_PCREL_RILB_PTR(0xc0050000, REG_14, bpf_trampoline_exit(p));
- 
- 	return 0;
- }
-@@ -2729,9 +2707,6 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
- 
- 		/* lgr %r8,%r0 */
- 		EMIT4(0xb9040000, REG_8, REG_0);
--	} else {
--		/* %r8 = func_addr + S390X_PATCH_SIZE */
--		load_imm64(jit, REG_8, (u64)func_addr + S390X_PATCH_SIZE);
- 	}
- 
- 	/*
-@@ -2757,12 +2732,10 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
- 		 * __bpf_tramp_enter(im);
- 		 */
- 
--		/* %r1 = __bpf_tramp_enter */
--		load_imm64(jit, REG_1, (u64)__bpf_tramp_enter);
- 		/* %r2 = im */
- 		load_imm64(jit, REG_2, (u64)im);
--		/* %r1() */
--		call_r1(jit);
-+		/* brasl %r14,__bpf_tramp_enter */
-+		EMIT6_PCREL_RILB_PTR(0xc0050000, REG_14, __bpf_tramp_enter);
- 	}
- 
- 	for (i = 0; i < fentry->nr_links; i++)
-@@ -2815,10 +2788,19 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
- 		/* mvc tail_call_cnt(4,%r15),tccnt_off(%r15) */
- 		_EMIT6(0xd203f000 | offsetof(struct prog_frame, tail_call_cnt),
- 		       0xf000 | tjit->tccnt_off);
--		/* lgr %r1,%r8 */
--		EMIT4(0xb9040000, REG_1, REG_8);
--		/* %r1() */
--		call_r1(jit);
-+		if (flags & BPF_TRAMP_F_ORIG_STACK) {
-+			if (nospec_uses_trampoline())
-+				/* brasl %r14,__s390_indirect_jump_r8 */
-+				EMIT6_PCREL_RILB_PTR(0xc0050000, REG_14,
-+						     __s390_indirect_jump_r8);
-+			else
-+				/* basr %r14,%r8 */
-+				EMIT2(0x0d00, REG_14, REG_8);
-+		} else {
-+			/* brasl %r14,func_addr+S390X_PATCH_SIZE */
-+			EMIT6_PCREL_RILB_PTR(0xc0050000, REG_14,
-+					     func_addr + S390X_PATCH_SIZE);
-+		}
- 		/* stg %r2,retval_off(%r15) */
- 		EMIT6_DISP_LH(0xe3000000, 0x0024, REG_2, REG_0, REG_15,
- 			      tjit->retval_off);
-@@ -2846,12 +2828,10 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
- 		 * __bpf_tramp_exit(im);
- 		 */
- 
--		/* %r1 = __bpf_tramp_exit */
--		load_imm64(jit, REG_1, (u64)__bpf_tramp_exit);
- 		/* %r2 = im */
- 		load_imm64(jit, REG_2, (u64)im);
--		/* %r1() */
--		call_r1(jit);
-+		/* brasl %r14,__bpf_tramp_exit */
-+		EMIT6_PCREL_RILB_PTR(0xc0050000, REG_14, __bpf_tramp_exit);
- 	}
- 
- 	/* lmg %r2,%rN,reg_args_off(%r15) */
-@@ -2860,7 +2840,8 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
- 			      REG_2 + (nr_reg_args - 1), REG_15,
- 			      tjit->reg_args_off);
- 	/* lgr %r1,%r8 */
--	if (!(flags & BPF_TRAMP_F_SKIP_FRAME))
-+	if (!(flags & BPF_TRAMP_F_SKIP_FRAME) &&
-+	    (flags & BPF_TRAMP_F_ORIG_STACK))
- 		EMIT4(0xb9040000, REG_1, REG_8);
- 	/* lmg %r7,%r8,r7_r8_off(%r15) */
- 	EMIT6_DISP_LH(0xeb000000, 0x0004, REG_7, REG_8, REG_15,
-@@ -2879,9 +2860,12 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
- 	EMIT4_IMM(0xa70b0000, REG_15, tjit->stack_size);
- 	if (flags & BPF_TRAMP_F_SKIP_FRAME)
- 		EMIT_JUMP_REG(14);
--	else
-+	else if (flags & BPF_TRAMP_F_ORIG_STACK)
- 		EMIT_JUMP_REG(1);
--
-+	else
-+		/* brcl 0xf,func_addr+S390X_PATCH_SIZE */
-+		EMIT6_PCREL_RILC_PTR(0xc0040000, 0xf,
-+				     func_addr + S390X_PATCH_SIZE);
- 	return 0;
- }
- 
--- 
-2.50.1
-
+Looks slighly less readable though.
 
