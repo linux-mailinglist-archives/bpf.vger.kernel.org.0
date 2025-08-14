@@ -1,191 +1,133 @@
-Return-Path: <bpf+bounces-65637-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65638-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8517AB26478
-	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 13:40:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D506B26533
+	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 14:16:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ACBB75E0D35
-	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 11:39:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DF2F1BC1254
+	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 12:16:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 920D12F49E1;
-	Thu, 14 Aug 2025 11:39:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 742B92FE04F;
+	Thu, 14 Aug 2025 12:15:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ilCN0iHd"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35B322EE29B;
-	Thu, 14 Aug 2025 11:39:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4795C2F90C7;
+	Thu, 14 Aug 2025 12:15:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755171562; cv=none; b=CNxnCatTFXQ98oqbS4+kQfNiLHn7hpxTER6Is9UBNhWacTB9WlwDKasPUT/hjm7rxJBY9Cd9GU6PQIbZxb3dv7+s5ZRIkkSQcq8ATnVlLA56LwuoRJ1tElSgH7v2lFh/1L6ngxInlgE6ISifEP3EVff0v+SZ/e50jP4RT8wXnqg=
+	t=1755173751; cv=none; b=DPUauoW6K40n2X7nXOvxPYwb+NeJIBNGydo8oi88aIYud4MgtkT8Hy4CeWCan27s4EveRaOmk5kgGH0f1oxoJDJnj136UMh1sm5UJHpbtOwQrs8DD4culWptfpLInKRBCi4nHr91G3ZNbL6rD3MQgmaYsZl+u/Kwqt/v1XRTwus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755171562; c=relaxed/simple;
-	bh=Eir/rgS3kgL52Co3KkPLtwcZ4CRSV9Q+wvSC4VDLnRk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YHVihryX3iZe8cjzMeiTuCtvUGOg5fvghn9t9BkDJGuN5bONeWmQQXDtNh1j/gkUKTFNU2mySt3ASypK+KDh+/GdMrL3h4W9ar4QdQJvRnaSuszlKkyg2YU2gMVksYC7zLfJ6vkBrxAOJx3qtZVqxWPiXBqInlsDvlEr7OGJCf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A4A0C4CEED;
-	Thu, 14 Aug 2025 11:39:17 +0000 (UTC)
-Date: Thu, 14 Aug 2025 12:39:14 +0100
-From: Catalin Marinas <catalin.marinas@arm.com>
-To: Ankur Arora <ankur.a.arora@oracle.com>
-Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org,
-	arnd@arndb.de, will@kernel.org, peterz@infradead.org,
-	akpm@linux-foundation.org, mark.rutland@arm.com,
-	harisokn@amazon.com, cl@gentwo.org, ast@kernel.org,
-	memxor@gmail.com, zhenglifeng1@huawei.com,
-	xueshuai@linux.alibaba.com, joao.m.martins@oracle.com,
-	boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-	rafael@kernel.org, daniel.lezcano@linaro.org
-Subject: Re: [PATCH v3 1/5] asm-generic: barrier: Add
- smp_cond_load_relaxed_timewait()
-Message-ID: <aJ3K4tQCztOXF6hO@arm.com>
-References: <20250627044805.945491-1-ankur.a.arora@oracle.com>
- <20250627044805.945491-2-ankur.a.arora@oracle.com>
- <aJXWyxzkA3x61fKA@arm.com>
- <877bz98sqb.fsf@oracle.com>
- <aJy414YufthzC1nv@arm.com>
- <87bjoi2wdf.fsf@oracle.com>
+	s=arc-20240116; t=1755173751; c=relaxed/simple;
+	bh=ynSr0E47HmXYcUmddedDfIO1NaYKsuWB4E2xbZAmQgc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Dk2OL7RLt1szQUDq8Z7k13RIzS4TbpzfCeTpfPh17WAimfqJjz5wbRA2TICnVTmYdNSdCnhMDeiGDtE8QRfU88P5bcvn1PchAJuZaDxLRTFqdA7T9FGsGMIfw0zE383BseLto0zdivPlVSguwttILZQnjJQ+KhGYYOEX1JqGaek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ilCN0iHd; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1755173745;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=0ZjbPBfh7ujlNLzE0h5ffJa8LoQU/WhI2aIAZlbPDio=;
+	b=ilCN0iHdM5/+X1oXmtFfbHqTsQxh4P2A1hnbK4M+0T3Jqdwoqs9CIsPYsn5pRDSrNF+UVR
+	09bqkF36bhYOUxNLMNZboon6nwyTCxPlzlbcpHugtr+bruU0r64TbjlO5f8bDcY+EwMQQF
+	VdaYL6tk72VrrSDIHEQ1CQnAcsd8wz0=
+From: Tao Chen <chen.dylane@linux.dev>
+To: song@kernel.org,
+	jolsa@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	mattbobrowski@google.com,
+	rostedt@goodmis.org,
+	mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	Tao Chen <chen.dylane@linux.dev>
+Subject: [PATCH v3 bpf-next] bpf: Remove migrate_disable in kprobe_multi_link_prog_run
+Date: Thu, 14 Aug 2025 20:14:29 +0800
+Message-ID: <20250814121430.2347454-1-chen.dylane@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87bjoi2wdf.fsf@oracle.com>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Aug 14, 2025 at 12:30:36AM -0700, Ankur Arora wrote:
-> Catalin Marinas <catalin.marinas@arm.com> writes:
-> > On Mon, Aug 11, 2025 at 02:15:56PM -0700, Ankur Arora wrote:
-> >> Catalin Marinas <catalin.marinas@arm.com> writes:
-> >> > Also I feel the spinning added to poll_idle() is more of an architecture
-> >> > choice as some CPUs could not cope with local_clock() being called too
-> >> > frequently.
-> >>
-> >> Just on the frequency point -- I think it might be a more general
-> >> problem that just on specific architectures.
-> >>
-> >> Architectures with GENERIC_SCHED_CLOCK could use a multitude of
-> >> clocksources and from a quick look some of them do iomem reads.
-> >> (AFAICT GENERIC_SCHED_CLOCK could also be selected by the clocksource
-> >> itself, so an architecture header might not need to be an arch choice
-> >> at  all.)
-> >>
-> >> Even for something like x86 which doesn't use GENERIC_SCHED_CLOCK,
-> >> we might be using tsc or jiffies or paravirt-clock all of which would
-> >> have very different performance characteristics. Or, just using a
-> >> clock more expensive than local_clock(); rqspinlock uses
-> >> ktime_get_mono_fast_ns().
-> >>
-> >> So, I feel we do need a generic rate limiter.
-> >
-> > That's a good point but the rate limiting is highly dependent on the
-> > architecture, what a CPU does in the loop, how fast a loop iteration is.
-> >
-> > That's why I'd keep it hidden in the arch code.
-> 
-> Yeah, this makes sense. However, I would like to keep as much of the
-> code that does this common.
+Graph tracer framework ensures we won't migrate, kprobe_multi_link_prog_run
+called all the way from graph tracer, which disables preemption in
+function_graph_enter_regs, as Jiri and Yonghong suggested, there is no
+need to use migrate_disable. As a result, some overhead may will be reduced.
+And add cant_sleep check for __this_cpu_inc_return.
 
-You can mimic what poll_idle() does for x86 in the generic
-implementation, maybe with some comment referring to the poll_idle() CPU
-usage of calling local_clock() in a loop. However, allow the arch code
-to override the whole implementation and get rid of the policy. If an
-arch wants to spin for some power reason, it can do it itself. The code
-duplication for a while loop is much more readable than a policy setting
-some spin/wait parameters just to have a single spin loop. If at some
-point we see some pattern, we could revisit the common code.
+Fixes: 0dcac2725406 ("bpf: Add multi kprobe link")
+Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+---
+ kernel/trace/bpf_trace.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-For arm64, I doubt the extra spinning makes any difference. Our
-cpu_relax() doesn't do anything (almost), it's probably about the same
-cost as reading the monotonic clock. I also see a single definition
-close enough to the logic in __delay() on arm64. It would be more
-readable than a policy callback setting wait/spin with a separate call
-for actually waiting. Well, gut feel, let's see how that would look
-like.
+Change list:
+ v1 -> v2:
+  - s/called the way/called all the way/.(Jiri)
+ v1: https://lore.kernel.org/bpf/f7acfd22-bcf3-4dff-9a87-7c1e6f84ce9c@linux.dev
 
-> Currently the spin rate limit is scaled up or down based on the current
-> spin (or SMP_TIMEWAIT_SPIN_BASE) in the common __smp_cond_spinwait()
-> which implements a default policy.
-> SMP_TIMEWAIT_SPIN_BASE can already be chosen by the architecture but
-> that doesn't allow it any runtime say in the spinning.
-> 
-> I think a good way to handle this might be the same way that the wait
-> policy is handled. When the architecture handler (__smp_cond_timewait()
-> on arm64) is used, it should be able to choose both spin and wait and
-> can feed those back into __smp_cond_spinwait() which can do the scaling
-> based on that.
+ v2 -> v3:
+  - add cant_sleep for __this_cpu_inc_return.(Andrii)
+  - shorten comments.(Andrii)
+ v2: https://lore.kernel.org/bpf/20250805162732.1896687-1-chen.dylane@linux.dev
 
-Exactly.
-
-> > However, in the absence of some precision requirement for the potential
-> > two users of this interface, I think we complicate things unnecessarily.
-> > The only advantage is if you want to make it future proof, in case we
-> > ever need more precision.
-> 
-> There's the future proofing aspect but also having time-remaining
-> simplifies the rate limiting of the time-check because now it can
-> rate-limit depending on how often the policy handler is called and
-> the remaining time.
-
-To keep things simple, I'd skip the automatic adjustment of the rate
-limiting in the generic code. Just go for a fixed one until someone
-complains about the slack.
-
-> >> This also gives the WFET a clear end time (though it would still need
-> >> to be converted to timer cycles) but the WFE path could stay simple
-> >> by allowing an overshoot instead of falling back to polling.
-> >
-> > For arm64, both WFE and WFET would be woken up by the event stream
-> > (which is enabled on all production systems). The only reason to use
-> > WFET is if you need smaller granularity than the event stream period
-> > (100us). In this case, we should probably also add a fallback from WFE
-> > to a busy loop.
-> 
-> What do you think would be a good boundary for transitioning to a busy
-> loop?
-> 
-> Say, we have < 100us left and the event-stream is 100us. We could do
-> what __delay() does and spin for the remaining time. But given that we
-> dont' care about precision at least until there's need for it, it seems
-> to be better to err on the side of saving power.
-> 
-> So, how about switching to busy-looping when we get to event-stream-period/4?
-> (and note that in a comment block.)
-
-Let's do like __delay() (the principle, not necessarily copying the
-code) - start with WFET if available, WFE otherwise. For the latter,
-when the time left is <100us, fall back to spinning. We can later get
-someone to benchmark the power usage and we can revisit. Longer term,
-WFET would be sufficient without any spinning.
-
-That said, I thin our __delay() implementation doesn't need spinning if
-WFET is available:
-
-diff --git a/arch/arm64/lib/delay.c b/arch/arm64/lib/delay.c
-index cb2062e7e234..5d4c28db399a 100644
---- a/arch/arm64/lib/delay.c
-+++ b/arch/arm64/lib/delay.c
-@@ -43,10 +43,10 @@ void __delay(unsigned long cycles)
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 3ae52978cae..606007c387c 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -2728,20 +2728,25 @@ kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
+ 	struct pt_regs *regs;
+ 	int err;
  
- 		while ((get_cycles() - start + timer_evt_period) < cycles)
- 			wfe();
--	}
++	/*
++	 * graph tracer framework ensures we won't migrate, so there is no need
++	 * to use migrate_disable for bpf_prog_run again. The check here just for
++	 * __this_cpu_inc_return.
++	 */
++	cant_sleep();
++
+ 	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
+ 		bpf_prog_inc_misses_counter(link->link.prog);
+ 		err = 1;
+ 		goto out;
+ 	}
  
--	while ((get_cycles() - start) < cycles)
--		cpu_relax();
-+		while ((get_cycles() - start) < cycles)
-+			cpu_relax();
-+	}
- }
- EXPORT_SYMBOL(__delay);
+-	migrate_disable();
+ 	rcu_read_lock();
+ 	regs = ftrace_partial_regs(fregs, bpf_kprobe_multi_pt_regs_ptr());
+ 	old_run_ctx = bpf_set_run_ctx(&run_ctx.session_ctx.run_ctx);
+ 	err = bpf_prog_run(link->link.prog, regs);
+ 	bpf_reset_run_ctx(old_run_ctx);
+ 	rcu_read_unlock();
+-	migrate_enable();
  
+  out:
+ 	__this_cpu_dec(bpf_prog_active);
 -- 
-Catalin
+2.48.1
+
 
